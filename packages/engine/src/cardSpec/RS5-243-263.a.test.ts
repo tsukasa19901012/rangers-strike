@@ -306,8 +306,7 @@ describe("RS-245 ガオメインバスター", () => {
   });
 
   // 「ユニット」はラッシュエリア・バトルエリアにあるもの（R-TGT-01）
-  // 既知の不具合: CARD-RS-245 選べるのが敵軍バトルエリアだけで、敵軍ラッシュエリアの S ユニットを選べない
-  it.fails("RS-245: 敵軍ラッシュエリアの S ユニットも選べる（出典: atwiki/page-420・R-TGT-01「ユニット」はラッシュエリア・バトルエリア）", () => {
+  it("RS-245: 敵軍ラッシュエリアの S ユニットも選べる（出典: atwiki/page-420・R-TGT-01「ユニット」はラッシュエリア・バトルエリア）", () => {
     let s = gao({ battle: [inst("TST-UNIT-0", "es")], rush: [inst("TST-UNIT-0", "er")] });
     s = payAndUse(s, "player1", "RS-245:gb");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:er", "TST-UNIT-0:es"]);

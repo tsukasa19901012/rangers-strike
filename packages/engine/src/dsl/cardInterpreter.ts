@@ -1,6 +1,7 @@
 import type { EffectDefinition, EffectPrimitive, PlayerRef } from "@rangers-strike/cards/dsl/types";
 import type { CardInstance, DslChoiceResume, GameState, PlayerId } from "../types/game";
 import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
+import { COMMAND_ZONE_MAX } from "../types/game";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { applyDamageToPlayer } from "../rules/damagePayment";
@@ -96,6 +97,9 @@ function moveCardToZone(
     nextOwner = { ...nextOwner, hand: [...nextOwner.hand, card] };
   } else if (toZone === "discard") {
     nextOwner = { ...nextOwner, discard: [...nextOwner.discard, card] };
+  } else if (toZone === "command" && nextOwner.command.length >= COMMAND_ZONE_MAX) {
+    // R-ZONE-08: 効果で5枚を超えて置かれるカードは捨札になる（例: RS-252「置けなければ捨札にする」）。
+    nextOwner = { ...nextOwner, discard: [...nextOwner.discard, { instanceId: card.instanceId, cardId: card.cardId }] };
   } else if (toZone === "command") {
     nextOwner = {
       ...nextOwner,

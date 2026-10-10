@@ -367,8 +367,7 @@ function flashDebuffTests(id: FlashId, page: string) {
     return bpOf(s, "player1", `${id}:fl`);
   };
 
-  it.fails(`${id}: ※ 自分と相手のコマンドゾーンの「OT」以外のコマンド1つにつき BP-1000（ホールド／リリースを問わない）（出典: ${page}「※このユニットは…BP-1000され」）`, () => {
-    // 既知の不具合: CARD-${id} 「OT」以外のコマンドによる BP-1000 が実装されていない（BP が常に印刷値）
+  it(`${id}: ※ 自分と相手のコマンドゾーンの「OT」以外のコマンド1つにつき BP-1000（ホールド／リリースを問わない）（出典: ${page}「※このユニットは…BP-1000され」）`, () => {
     expect(bpWith([released("TST-OP", "c1"), held("TST-OP-MA", "c2")], [held("TST-OP-ET", "e1")])).toBe(base - 3000);
   });
 
@@ -376,8 +375,7 @@ function flashDebuffTests(id: FlashId, page: string) {
     expect(bpWith([released("TST-OP-OT", "c1"), held("TST-OP-OT", "c2")], [held("TST-OP-OT", "e1")])).toBe(base);
   });
 
-  it.fails(`${id}: ※ BP0 以下になると撃破される（出典: ${page}「BP0以下のとき撃破される」）`, () => {
-    // 既知の不具合: CARD-${id} BP-1000 も BP0 以下での撃破も実装されていない
+  it(`${id}: ※ BP0 以下になると撃破される（出典: ${page}「BP0以下のとき撃破される」）`, () => {
     const n = Math.ceil(base / 1000);
     let s = st(
       {
@@ -468,8 +466,7 @@ describe("RS-266 レッドフラッシュ", () => {
   prismSendTests("RS-266", 2, "TST-UNIT-0", "SPEC-ET-S", "WB", "atwiki/page-127", "【プリズム聖剣】");
 
   // faq-card-5（RS-266 の Q&A。atwiki/page-127 Q1）「はい、その通りです。「ＯＴ以外」とは「ＯＴではないカテゴリを持つ」という意味です。」
-  it.fails("RS-266: Q&A — OT を含むマルチカテゴリ（OT/WB）のコマンドも1つにつき BP-1000 される（出典: atwiki/page-127 Q1）", () => {
-    // 既知の不具合: CARD-RS-266 「OT」以外のコマンドによる BP-1000 が実装されていない
+  it("RS-266: Q&A — OT を含むマルチカテゴリ（OT/WB）のコマンドも1つにつき BP-1000 される（出典: atwiki/page-127 Q1）", () => {
     const s = st({ player1: { battle: [inst("RS-266", "fl")], command: [held("SPEC-OP-OT-WB", "m1")] }, player2: { command: [released("SPEC-OP-OT-WB", "m2")] } }, SPECS);
     expect(bpOf(s, "player1", "RS-266:fl")).toBe(5000);
   });
@@ -487,8 +484,7 @@ describe("RS-267 ブルーフラッシュ", () => {
   it("RS-267: NC 不成立（3番目）では SP！のまま（ストライクできない）（出典: atwiki/page-448「SP：！」・R-CN-02）", () => {
     expect(spOf(ncEnter("RS-267", 3), "player1", "RS-267:x")).toBe(0);
   });
-  it.fails("RS-267: Q&A — OT を含むマルチカテゴリのコマンドも BP-1000 の対象（出典: atwiki/page-448 Q1（RS-266 の公式Q&A を転載））", () => {
-    // 既知の不具合: CARD-RS-267 「OT」以外のコマンドによる BP-1000 が実装されていない
+  it("RS-267: Q&A — OT を含むマルチカテゴリのコマンドも BP-1000 の対象（出典: atwiki/page-448 Q1（RS-266 の公式Q&A を転載））", () => {
     const s = st({ player1: { battle: [inst("RS-267", "fl")], command: [held("SPEC-OP-OT-WB", "m1")] } }, SPECS);
     expect(bpOf(s, "player1", "RS-267:fl")).toBe(5000);
   });
@@ -500,8 +496,7 @@ describe("RS-268 グリーンフラッシュ", () => {
   flashStatsTest("RS-268", "グリーンフラッシュ", 5, "special", 1, ["グリーン", "男"], TEXT, "atwiki/page-449");
   flashDebuffTests("RS-268", "atwiki/page-449");
   prismSendTests("RS-268", 5, "SPEC-ET-S", "SPEC-MA-S", "ET", "atwiki/page-449", "【プリズムカイザー】");
-  it.fails("RS-268: Q&A — OT を含むマルチカテゴリのコマンドも BP-1000 の対象（出典: atwiki/page-449 Q1）", () => {
-    // 既知の不具合: CARD-RS-268 「OT」以外のコマンドによる BP-1000 が実装されていない
+  it("RS-268: Q&A — OT を含むマルチカテゴリのコマンドも BP-1000 の対象（出典: atwiki/page-449 Q1）", () => {
     const s = st({ player1: { battle: [inst("RS-268", "fl")] }, player2: { command: [held("SPEC-OP-OT-WB", "m1")] } }, SPECS);
     expect(bpOf(s, "player1", "RS-268:fl")).toBe(4500);
   });
@@ -513,8 +508,7 @@ describe("RS-269 イエローフラッシュ", () => {
   flashStatsTest("RS-269", "イエローフラッシュ", 3, "special", 2, ["イエロー", "女"], TEXT, "atwiki/page-450");
   flashDebuffTests("RS-269", "atwiki/page-450");
   prismSendTests("RS-269", 3, "SPEC-MA-S", "SPEC-OT-S", "MA", "atwiki/page-450", "【プリズムバトン】");
-  it.fails("RS-269: Q&A — OT を含むマルチカテゴリのコマンドも BP-1000 の対象（出典: atwiki/page-450 Q1）", () => {
-    // 既知の不具合: CARD-RS-269 「OT」以外のコマンドによる BP-1000 が実装されていない
+  it("RS-269: Q&A — OT を含むマルチカテゴリのコマンドも BP-1000 の対象（出典: atwiki/page-450 Q1）", () => {
     const s = st({ player1: { battle: [inst("RS-269", "fl")], command: [released("SPEC-OP-OT-WB", "m1")] } }, SPECS);
     expect(bpOf(s, "player1", "RS-269:fl")).toBe(5000);
   });
@@ -532,8 +526,7 @@ describe("RS-270 ピンクフラッシュ", () => {
     p2: [held("TST-OP-ET", "h2"), released("TST-OP-MA", "r2")],
   });
 
-  it.fails("RS-270: 【プリズムブーツ】NC 成立後、両軍のホールド状態のコマンドは「OT」になり、フラッシュマンの BP-1000 はリリース状態の分だけになる（出典: atwiki/page-451【プリズムブーツ】）", () => {
-    // 既知の不具合: CARD-RS-270 フラッシュマンの BP-1000 自体が実装されていない
+  it("RS-270: 【プリズムブーツ】NC 成立後、両軍のホールド状態のコマンドは「OT」になり、フラッシュマンの BP-1000 はリリース状態の分だけになる（出典: atwiki/page-451【プリズムブーツ】）", () => {
     const c = cmds();
     const s = ncEnter("RS-270", 1, { command: c.p1 }, { command: c.p2 });
     expect(bpOf(s, "player1", "RS-270:x")).toBe(5500 - 2000);

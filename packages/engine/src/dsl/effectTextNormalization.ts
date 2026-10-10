@@ -11,7 +11,13 @@
  *
  * 出典: 各カード本文（例: RS-230 atwiki/page-72、RS-231 atwiki/page-373、RS-235 atwiki/page-500）。
  */
-import type { CardDocument, EffectDefinition } from "@rangers-strike/cards/dsl/types";
+import type {
+  CardDocument,
+  EffectCondition,
+  EffectDefinition,
+  EffectPrimitive,
+  TargetSelector,
+} from "@rangers-strike/cards/dsl/types";
 
 /**
  * 効果テキストが断れる（任意の）文言を含むか。
@@ -36,7 +42,78 @@ export function isReanimateNamedOnDestroyText(text: string | undefined): boolean
   return !!text && REANIMATE_NAMED_ON_DESTROY_RE.test(text.trim());
 }
 
-function normalizeEffect(effect: EffectDefinition): EffectDefinition {
+/**
+ * 「ユニット」はラッシュエリア・バトルエリアにあるもの（R-TGT-01）。
+ * 本文が「敵軍（S/M/L）ユニット」「自軍（S/M/L）ユニット」をエリアの指定なしで選ぶのに、
+ * DSL スタブが選択範囲をバトルエリアだけにしている場合、ラッシュエリアも含める。
+ * 本文に「バトル」「アタック」「ブロック」「ストライク」があるもの（バトル中のユニットに限る文脈）は変えない。
+ */
+export function unitTargetSpansRushArea(text: string | undefined, owner: "self" | "opponent"): boolean {
+  if (!text) return false;
+  if (/バトル|アタック|ブロック|ストライク/.test(text)) return false;
+  const side = owner === "opponent" ? "敵軍" : "自軍";
+  return new RegExp(`${side}[SML]?ユニット(?!の?カード)`).test(text);
+}
+
+function widenSelector(selector: TargetSelector, text: string | undefined): TargetSelector {
+  if (selector.type !== "zone" || selector.zone !== "battle") return selector;
+  if (selector.owner !== "opponent" && selector.owner !== "self") return selector;
+  if (!unitTargetSpansRushArea(text, selector.owner)) return selector;
+  const { filter, owner } = selector;
+  return {
+    type: "zones",
+    zones: [
+      { zone: "rush", owner, ...(filter ? { filter } : {}) },
+      { zone: "battle", owner, ...(filter ? { filter } : {}) },
+    ],
+  } as TargetSelector;
+}
+
+function widenCondition(cond: EffectCondition | undefined, text: string | undefined): EffectCondition | undefined {
+  if (!cond) return cond;
+  if (cond.type === "has_target") {
+    const target = widenSelector(cond.target, text);
+    return target === cond.target ? cond : { ...cond, target };
+  }
+  if (cond.type === "and") {
+    let changed = false;
+    const conditions = cond.conditions.map((c) => {
+      const n = widenCondition(c, text)!;
+      if (n !== c) changed = true;
+      return n;
+    });
+    return changed ? { ...cond, conditions } : cond;
+  }
+  if (cond.type === "not") {
+    const condition = widenCondition(cond.condition, text)!;
+    return condition === cond.condition ? cond : { ...cond, condition };
+  }
+  return cond;
+}
+
+function widenPrimitives(primitives: EffectPrimitive[], text: string | undefined): EffectPrimitive[] {
+  let changed = false;
+  const out = primitives.map((p) => {
+    if (p.type !== "choose") return p;
+    const valid = widenSelector(p.valid, text);
+    const then = widenPrimitives(p.then, text);
+    if (valid === p.valid && then === p.then) return p;
+    changed = true;
+    return { ...p, valid, then };
+  });
+  return changed ? out : primitives;
+}
+
+/** R-TGT-01: 本文の「ユニット」に合わせて選択範囲をラッシュエリアまで広げる。 */
+function widenUnitTargetsToRushArea(effect: EffectDefinition): EffectDefinition {
+  const effects = widenPrimitives(effect.effects, effect.text);
+  const condition = widenCondition(effect.condition, effect.text);
+  if (effects === effect.effects && condition === effect.condition) return effect;
+  return { ...effect, effects, condition } as EffectDefinition;
+}
+
+function normalizeEffect(input: EffectDefinition): EffectDefinition {
+  const effect = widenUnitTargetsToRushArea(input);
   if (isReanimateNamedOnDestroyText(effect.text)) {
     return {
       ...effect,

@@ -210,8 +210,7 @@ describe("RS-250 ジャッジメント", () => {
     expect(canUse(judge("TST-UNIT-0", { power: 4 }), "player1", "RS-250:op")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-250 ターゲットに選べるのが敵軍バトルエリアだけ（「ユニット」はラッシュエリアも含む）
-  it.fails("RS-250: 敵軍ラッシュエリアのユニットもターゲットにできる（出典: atwiki/page-32・R-TGT-01）", () => {
+  it("RS-250: 敵軍ラッシュエリアのユニットもターゲットにできる（出典: atwiki/page-32・R-TGT-01）", () => {
     const s0 = judge("TST-UNIT-0", { p2: { battle: [inst("TST-UNIT-0", "t")], rush: [inst("TST-UNIT-0", "r")] } });
     expect(canUseOn(s0, "player1", "RS-250:op", "TST-UNIT-0:r")).toBe(true);
     const s = useOn(s0, "TST-UNIT-0:r");
@@ -311,15 +310,13 @@ describe("RS-252 バイモーションバスター", () => {
     expect(canUse(bimo({ battle: [inst("TST-UNIT-0", "es")] }, { power: powerCards(3) }), "player1", "RS-252:bb")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-252 選べるのが敵軍バトルエリアだけ（「ユニット」はラッシュエリアも含む）
-  it.fails("RS-252: 敵軍ラッシュエリアの S ユニットも選べる（出典: atwiki/page-423・R-TGT-01）", () => {
+  it("RS-252: 敵軍ラッシュエリアの S ユニットも選べる（出典: atwiki/page-423・R-TGT-01）", () => {
     const s = payAndUse(bimo({ battle: [inst("TST-UNIT-0", "es")], rush: [inst("TST-UNIT-0", "er")] }), "player1", "RS-252:bb");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:er", "TST-UNIT-0:es"]);
   });
 
   // 「置けなければ捨札にする」（コマンドゾーンは5枚まで）
-  // 既知の不具合: CARD-RS-252 コマンドゾーンが上限5枚でも6枚目としてホールド状態で置いてしまう（「置けなければ捨札にする」が働かない）
-  it.fails("RS-252: 持ち主のコマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-423「置けなければ捨札にする」・R-ZONE コマンドゾーン上限5）", () => {
+  it("RS-252: 持ち主のコマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-423「置けなければ捨札にする」・R-ZONE コマンドゾーン上限5）", () => {
     let s = payAndUse(
       bimo({ battle: [inst("TST-UNIT-0", "es")], command: Array.from({ length: 5 }, (_, i) => held("TST-OP", `full${i}`)) }),
       "player1",

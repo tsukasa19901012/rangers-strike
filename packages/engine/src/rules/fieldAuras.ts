@@ -8,6 +8,55 @@ import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
 import { rkPassiveBpBonus } from "./rkFieldPassives";
 import { rs560BeastMBpBonus } from "./rs/rsCatchallField";
+import { commandCategoriesNow } from "./legend3/battleEffects";
+
+const CATEGORY_ABBR: Record<string, Category> = {
+  OT: "OT",
+  ET: "ET",
+  MA: "MA",
+  WB: "WB",
+  DA: "DA",
+  オーバーテクノロジー: "OT",
+  アーステクノロジー: "ET",
+  ミスティックアームズ: "MA",
+  ワイルドビースト: "WB",
+  ダークアライアンス: "DA",
+};
+
+const PER_NON_CATEGORY_COMMAND_RE =
+  /このユニットは、自分と相手のコマンドゾーンにある「([^」]+)」以外のコマンド1つにつき「?BP[-－ー](\d+)」?され/;
+
+/**
+ * 「※このユニットは、自分と相手のコマンドゾーンにある「X」以外のコマンド1つにつき「BP-N」され、BP0以下のとき撃破される。」
+ * （RS-266〜270 フラッシュマン）。本文の文言から計算する。
+ * 「X以外」は「X ではないカテゴリを持つ」（マルチカテゴリの X/WB も数える。faq-card-5 RS-266 Q1）。
+ * ホールド状態のコマンドのカテゴリが【プリズムブーツ】で変わっていればそれに従う（commandCategoriesNow）。
+ * BP0 以下での撃破はルール（R-BP-02）による撃破として applyAction 側で処理される。
+ */
+export function perNonCategoryCommandBpPenalty(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+): number {
+  const def = getDefinition(state.definitions, instance.cardId);
+  const m = def?.text ? PER_NON_CATEGORY_COMMAND_RE.exec(def.text.normalize("NFKC")) : null;
+  if (!m) return 0;
+  const player = state.players[playerId];
+  const inField =
+    player.rush.some((c) => c.instanceId === instance.instanceId) ||
+    player.battle.some((c) => c.instanceId === instance.instanceId);
+  if (!inField) return 0;
+  const excluded = CATEGORY_ABBR[m[1]!] ?? m[1];
+  const amount = Number(m[2]);
+  let count = 0;
+  for (const pid of ["player1", "player2"] as const) {
+    for (const cmd of state.players[pid].command) {
+      const cats = commandCategoriesNow(state, cmd);
+      if (cats.some((c) => c !== excluded)) count += 1;
+    }
+  }
+  return count * amount;
+}
 
 function categoriesInclude(
   categories: Category | Category[],
@@ -190,6 +239,7 @@ export function passiveNamedFieldBpBonus(
     bonus += rkPassiveBpBonus(state, playerId, instance);
     bonus += rs560BeastMBpBonus(state, playerId, instance.cardId);
     bonus += kakuhengeDamageBpBonus(state, playerId, instance);
+    bonus -= perNonCategoryCommandBpPenalty(state, playerId, instance);
   }
 
   return bonus;
