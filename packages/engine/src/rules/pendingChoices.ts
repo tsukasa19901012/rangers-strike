@@ -1,4 +1,5 @@
 import { checkWinner } from "../core/createGame";
+import { CYCLOPS_SCARLET_EFFECT_ID, discardCyclopsResident, tryCyclopsScarletOnReturnToRush } from "./cyclopsScarlet";
 import { finalizeEffectRush, hasPendingPromptBlockingEffectRush } from "../events/emitUnitRushed";
 import { applyOnRushUnitEffects } from "./onRushUnitEffects";
 import {
@@ -534,6 +535,7 @@ export function isValidEffectChoiceTarget(
     isEffectRushChoice(pending) ||
     isAbductionChoice(pending.effectId) ||
     pending.effectId === DISPATCH_ORDER_EFFECT_ID ||
+    pending.effectId === CYCLOPS_SCARLET_EFFECT_ID ||
     pending.effectId === KUROKO_MEMORY_EFFECT_ID
   ) {
     return true;
@@ -2761,6 +2763,20 @@ export function applyEffectChoiceSelect(
   const errata = tryResolveErrataChoice(state, playerId, instanceId);
   if (errata) return errata;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
+  if (pending.effectId === CYCLOPS_SCARLET_EFFECT_ID) {
+    if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+    const discarded = discardCyclopsResident(state, pending, instanceId);
+    if (!discarded) return { error: "invalid_target" };
+    // 「そうしたとき、そのユニットを撃破する」（撃破は離場処理を通す）。
+    const targetId = pending.sourceInstanceId!;
+    const located = findCardOwner(discarded, targetId);
+    let next = discarded;
+    if (located && (located.zone === "rush" || located.zone === "battle")) {
+      const leave = applyUnitLeave(discarded, targetId, "discard", pending.phasePlayerId);
+      if (!("error" in leave)) next = leave.state;
+    }
+    return finishChoice(next, pending, cardName(state.definitions, "RS-417"));
+  }
   if (isAbductionChoice(pending.effectId)) {
     const result = resolveAbductionChoice(state, playerId, instanceId);
     if ("error" in result) return result;
@@ -3596,8 +3612,10 @@ export function applyEffectChoiceSelect(
           if (enemyTargets.length === 0) {
             return finishChoice(nextState, pending, cardName(state.definitions, found.card.cardId));
           }
+          // 後半「可能ならバトルエリアに出す」は強制（atwiki/page-336）。出られる候補がなければ見送れる。
           const secondStep: PendingEffectChoice = {
             ...pending,
+            optional: false,
             kind: "select_unit",
             step: undefined,
             validInstanceIds: enemyTargets,
@@ -3617,6 +3635,21 @@ export function applyEffectChoiceSelect(
               state: {
                 ...withFalcon,
                 pendingEffectChoice: { ...withFalcon.pendingEffectChoice, resumeChoice: secondStep },
+              },
+            };
+          }
+          // RS-417 冥府神サイクロプス【消滅の緋色】も戻ったときに誘発する（faq-card-6 RS-417）。
+          const withCyclops = tryCyclopsScarletOnReturnToRush(
+            clearChoice(nextState, pending.playerId),
+            located.playerId,
+            found.card,
+            pending.phasePlayerId,
+          );
+          if (withCyclops.pendingEffectChoice) {
+            return {
+              state: {
+                ...withCyclops,
+                pendingEffectChoice: { ...withCyclops.pendingEffectChoice, resumeChoice: secondStep },
               },
             };
           }

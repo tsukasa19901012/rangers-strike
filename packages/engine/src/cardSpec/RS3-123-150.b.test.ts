@@ -874,8 +874,7 @@ describe("RS-141 紐男爵", () => {
     expect(attackTargets(s, "RS-141:himo")).toContain("SPEC-E2:small");
   });
 
-  it.fails("RS-141: 戻したときは、敵軍ラッシュエリアのユニットを出す処理は強制（見送れない）（出典: atwiki/page-336「可能ならバトルエリアに出す」）", () => {
-    // 既知の不具合: CARD-RS-141 【紐拳】の後半（敵軍ラッシュエリアのユニットを出す）を任意（skip_effect_choice 可）として扱う
+  it("RS-141: 戻したときは、敵軍ラッシュエリアのユニットを出す処理は強制（見送れない）（出典: atwiki/page-336「可能ならバトルエリアに出す」）", () => {
     const s = pick(himo(), "SPEC-E9:big");
     expect(s.pendingEffectChoice?.effectId).toBe("string_fist");
     expect(canSkip(s)).toBe(false);
@@ -944,8 +943,7 @@ describe("RS-141 紐男爵", () => {
   });
 
   // faq-card-6（RS-417 の項）「はい、できます。」
-  it.fails("RS-141: 公式Q&A — 戻したユニットを冥府神サイクロプスで撃破しても、ラッシュエリアの敵軍ユニットをバトルエリアに出せる（出典: grnrngr/faq-card-6 RS-417）", () => {
-    // 既知の不具合: CARD-RS-141 【紐拳】で敵軍 S ユニットをラッシュエリアに戻しても、自軍ラッシュエリアの冥府神サイクロプス【消滅の緋色】が誘発しない
+  it("RS-141: 公式Q&A — 戻したユニットを冥府神サイクロプスで撃破しても、ラッシュエリアの敵軍ユニットをバトルエリアに出せる（出典: grnrngr/faq-card-6 RS-417）", () => {
     let s = st(
       {
         player1: { battle: fillers(2), rush: [inst("RS-141", "himo"), inst("RS-417", "cy")], operation: [inst("RS-124", "res")] },
