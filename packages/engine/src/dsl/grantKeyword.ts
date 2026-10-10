@@ -11,6 +11,7 @@ import {
 import { findInZone, opponent, takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { tryLeaveField } from "../rules/operationCounters";
+import { startKurokoMemory } from "../rules/kurokoMemory";
 import {
   grantSp1ToBattleUnit,
   markBattleNcEffect,
@@ -1234,6 +1235,14 @@ export function applyGrantKeyword(
         return { state: started, detail: keyword };
       }
 
+      if (keyword === "alternating_draw_3_mill") {
+        // RS-183 黒子ロボの記憶操作。ルール: R-WIN-04
+        return {
+          state: startKurokoMemory(state, ctx.playerId, ctx.phasePlayerId, ctx.sourceCardId),
+          detail: keyword,
+        };
+      }
+
       if (
         keyword.startsWith("power_zone_min_") ||
         (keyword.startsWith("all_") && keyword.endsWith("_auto_battle_entry")) ||
@@ -1252,7 +1261,6 @@ export function applyGrantKeyword(
         keyword.startsWith("hold_all_enemy_bp") ||
         keyword === "opponent_hand_counter_to_power" ||
         keyword === "deck_search_operation_to_power" ||
-        keyword === "alternating_draw_3_mill" ||
         keyword === "deploy_enemy_command_silent" ||
         keyword === "draw_deck_to_command_or_hand" ||
         (keyword.startsWith("return_") && keyword.endsWith("_battle_to_deck_bottom"))

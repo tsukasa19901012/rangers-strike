@@ -810,8 +810,7 @@ describe("R-WIN-04 効果の発動可否はカードごと", () => {
   });
 
   // 「その後の「…山札に戻す」は、手札がある限り必ず３回行ってください」
-  // 既知の不具合: 未登録 — RS-183 の効果（3枚までドロー＋手札3回戻し）が解決されない
-  it.fails("R-WIN-04: 黒子ロボの記憶操作は引く枚数を抑えても「山札に戻す」手順を3回行う（出典: grnrngr/faq-card-4 RS-183）", () => {
+  it("R-WIN-04: 黒子ロボの記憶操作は引く枚数を抑えても「山札に戻す」手順を3回行う（出典: grnrngr/faq-card-4 RS-183）", () => {
     let next = kurokoPlayed();
     for (let i = 0; i < 30 && (next.pendingEffectChoice || next.pendingCommandPayment); i++) {
       const legal = getLegalActions(next).filter((a) => a.type !== "end_phase");

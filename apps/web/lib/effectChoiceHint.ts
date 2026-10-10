@@ -25,6 +25,9 @@ export function effectChoiceHint(
     case "seabed_draw":
       return `山札の上から引くか、下から引くか選んでください`;
     case "optional_deck_draw":
+      if (pending.effectId === "kuroko_memory") {
+        return `1枚ドローしますか？（3枚まで・${pending.kurokoMeta?.drawn ?? 0}枚ドロー済み）`;
+      }
       return `1枚ドローしますか？`;
     case "denji_machine": {
       if (pending.denjiMachineMeta?.step === "order_bottom") {
@@ -88,6 +91,10 @@ export function effectChoiceHint(
       }
       if (pending.effectId === "tricera_lance") {
         return "相手の未ホールドコマンドを1枚選んでホールドします";
+      }
+      if (pending.effectId === "kuroko_memory") {
+        const left = pending.kurokoMeta?.returnsLeft ?? 0;
+        return `コマンドを1つホールドすれば手札を山札に戻さずに済みます（スキップで相手が選んだ1枚を戻す・残り${left}回）`;
       }
       return `コマンドを選んでください`;
     case "pit_in_dive_order": {
@@ -154,6 +161,7 @@ export const SIMULTANEOUS_FRAME_LABELS: Record<string, string> = {
  */
 const RIDER_EFFECT_UI_LABELS: Record<string, string> = {
   simultaneous_order: "処理順の選択",
+  kuroko_memory: "黒子ロボの記憶操作",
   rider_slash_destroy: "ライダースラッシュ",
   rider_kick_send_power: "ライダーキック",
   rider_kick_discard_power_sp1: "ライダーキック",

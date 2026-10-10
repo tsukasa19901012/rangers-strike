@@ -389,6 +389,14 @@ export type PendingEffectChoice = {
   skipShurikenIntercept?: boolean;
   /** RS-322 人身略取: 相手が満たす追加条件の進行。 */
   abductionMeta?: { payerId: PlayerId; cardId: string; remaining: number };
+  /** RS-183 黒子ロボの記憶操作の進行（使用者→相手、ドロー→山札に戻す手順）。 */
+  kurokoMeta?: {
+    initiatorId: PlayerId;
+    actorId: PlayerId;
+    stage: "draw" | "return";
+    drawn: number;
+    returnsLeft: number;
+  };
   /** 相打ちの処理順選択（simultaneous_order。validInstanceIds は撃破された 2 体）。 */
   mutualDestructionMeta?: MutualDestructionMeta;
   /** 敵ターン撃破時の任意パワー送り（to_power_on_destroy）。 */
