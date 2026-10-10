@@ -98,6 +98,8 @@ export type PlayerState = {
   damagedOnEnemyTurn?: boolean;
   /** attack_and_strike_once: ユニットごとの今ターンの行動履歴。 */
   unitActionsThisTurn?: Record<string, { attacked?: boolean; struck?: boolean }>;
+  /** 自軍バトルフェイズを終えた瞬間のバトルエリアの並び順（instanceId → 何番目）。R-TIME-07。 */
+  battlePositionsAtBattleEnd?: Record<string, number>;
   /** ラッシュフェイズごとに1度だけの起動効果を、このラッシュフェイズで使用済みのユニット instanceId。 */
   fieldAbilityUsedThisRush?: string[];
   /** スタートフェイズ: このターンの必須ドロー後 true。 */

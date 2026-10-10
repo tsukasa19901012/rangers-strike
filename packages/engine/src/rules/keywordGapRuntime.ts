@@ -55,16 +55,20 @@ export function applyKeywordTurnEndEffects(
   }
 
   // end_turn_return_hand_wrong_number
+  // ルール: R-TIME-07 — 並び順は「自軍バトルフェイズを終えるとき」の瞬間だけを参照する
+  // （ターン終了時に前のユニットが手札に戻って並びが変わっても再判定しない）。
+  const battleAtStart = state.players[endingPlayerId].battle;
+  const recordedPositions = state.players[endingPlayerId].battlePositionsAtBattleEnd;
   for (const card of [...player().battle]) {
     if (!cardHasGrantKeyword(card.cardId, "end_turn_return_hand_wrong_number")) continue;
     const def = getDefinition(nextState.definitions, card.cardId);
     const printed = typeof def?.comboNumber === "number" ? def.comboNumber : null;
     if (printed === null) continue;
-    const battle = player().battle;
-    const index = battle.findIndex((c) => c.instanceId === card.instanceId);
-    if (index < 0) continue;
-    const position = countLogicalBattleSlots(battle.slice(0, index)) + 1;
-    if (position === printed) continue;
+    const startIndex = battleAtStart.findIndex((c) => c.instanceId === card.instanceId);
+    const position =
+      recordedPositions?.[card.instanceId] ??
+      (startIndex >= 0 ? countLogicalBattleSlots(battleAtStart.slice(0, startIndex)) + 1 : undefined);
+    if (position === undefined || position === printed) continue;
     const bounced = bounceToHand(nextState, {
       playerId: endingPlayerId,
       instanceId: card.instanceId,

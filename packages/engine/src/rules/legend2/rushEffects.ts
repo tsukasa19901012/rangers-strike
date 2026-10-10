@@ -56,18 +56,20 @@ export function resolveLegend2OnRushEffects(
       break;
     }
     case "firefighting": {
-      const powerTargets = rusher.power.filter((c) => c.faceDown).map((c) => c.instanceId);
-      if (powerTargets.length > 0) {
-        const player = nextState.players[rusherPlayerId];
-        const idx = player.power.findIndex((c) => c.instanceId === powerTargets[0]);
-        if (idx >= 0) {
-          const power = [...player.power];
-          power[idx] = { ...power[idx]!, faceDown: false };
-          nextState = {
-            ...nextState,
-            ...updatePlayer(nextState, rusherPlayerId, { ...player, power }),
-          };
-        }
+      // ルール: R-RES-02 — テキストの順に「自分がダメージ1枚をオモテにする」→「そうしたとき、相手も同じようにしてもよい」。
+      // ルール: R-RES-06 — 「そうしたとき」以降は条件ではないので、相手にダメージがなくても自分の分は行える。
+      const flipOneDamage = (base: GameState, pid: PlayerId): GameState | null => {
+        const player = base.players[pid];
+        const idx = player.power.findIndex((c) => c.faceDown);
+        if (idx < 0) return null;
+        const power = [...player.power];
+        power[idx] = { ...power[idx]!, faceDown: false };
+        return { ...base, ...updatePlayer(base, pid, { ...player, power }) };
+      };
+      const own = flipOneDamage(nextState, rusherPlayerId);
+      if (own) {
+        nextState = own;
+        nextState = flipOneDamage(nextState, enemyId) ?? nextState;
       }
       logs.push(
         buildLogEntry(rusherPlayerId, "named_effect", cardId, state.definitions, effectId),

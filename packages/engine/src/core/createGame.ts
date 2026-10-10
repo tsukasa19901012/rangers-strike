@@ -1,3 +1,4 @@
+import { countLogicalBattleSlots } from "../rules/battleLine";
 import { allCardsCatalog, type CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { resetRushPhaseFlags } from "../rules/turnModifiers";
@@ -189,6 +190,22 @@ export function advancePhase(state: GameState): GameState {
       players: {
         ...nextState.players,
         [activePlayer]: resetRushPhaseFlags(nextState.players[activePlayer]),
+      },
+    };
+  }
+
+  if (state.phase === "battle" && next === "end") {
+    // ルール: R-TIME-07 — 「自軍バトルフェイズを終えるときの並び順」はその瞬間だけを参照する。
+    const ender = nextState.players[activePlayer];
+    const positions: Record<string, number> = {};
+    ender.battle.forEach((card, index) => {
+      positions[card.instanceId] = countLogicalBattleSlots(ender.battle.slice(0, index)) + 1;
+    });
+    nextState = {
+      ...nextState,
+      players: {
+        ...nextState.players,
+        [activePlayer]: { ...ender, battlePositionsAtBattleEnd: positions },
       },
     };
   }

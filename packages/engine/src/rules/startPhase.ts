@@ -162,6 +162,7 @@ export function initializeStartPhasePlayer(player: PlayerState): PlayerState {
   return {
     ...player,
     unitActionsThisTurn: undefined,
+    battlePositionsAtBattleEnd: undefined,
     fieldAbilityUsedThisRush: undefined,
     hasDrawnThisStart: false,
     hasBonusDrawnThisStart: false,

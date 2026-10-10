@@ -414,6 +414,7 @@ export function applyAction(
   let next = clearRegisterHoldOffField(result.state);
   next = releaseCounterLockWhenAttackSettled(next);
   next = applyBpZeroRuleDestruction(next);
+  next = syncDamageWithFaceDownPower(state, next);
   if (next.deferredRushReaction && !next.winner) {
     next = withSyncedEffectStack(openDeferredRushReaction(next));
   }
@@ -445,6 +446,27 @@ function discardCounterHolds(
       },
     },
   };
+}
+
+/**
+ * ルール: R-DMG-01 — ダメージはパワーゾーンのウラ向き枚数。効果でダメージをオモテにした（回復した）ときは
+ * 独立カウンタも同じだけ減らす。
+ */
+function syncDamageWithFaceDownPower(before: GameState, after: GameState): GameState {
+  let players = after.players;
+  for (const pid of ["player1", "player2"] as const) {
+    const fdBefore = before.players[pid].power.filter((c) => c.faceDown).length;
+    const fdAfter = after.players[pid].power.filter((c) => c.faceDown).length;
+    const deltaFaceDown = fdAfter - fdBefore;
+    const deltaDamage = after.players[pid].damage - before.players[pid].damage;
+    if (deltaFaceDown < 0 && deltaDamage === 0) {
+      players = {
+        ...players,
+        [pid]: { ...players[pid], damage: Math.max(0, after.players[pid].damage + deltaFaceDown) },
+      };
+    }
+  }
+  return players === after.players ? after : { ...after, players };
 }
 
 function hasBlockingInteraction(state: GameState): boolean {
