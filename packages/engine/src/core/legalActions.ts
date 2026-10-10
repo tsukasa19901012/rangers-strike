@@ -434,6 +434,10 @@ function appendLeaveReactionActions(
       playerId: pending.ownerPlayerId,
     });
   }
+  // RS-324 マジマザー【ジルマ・マジュナ】（rules/legend1/set5NamedEffects.ts）。
+  for (const substituteInstanceId of pending.magiMotherInstanceIds ?? []) {
+    actions.push({ type: "use_super_shield", playerId: pending.ownerPlayerId, substituteInstanceId });
+  }
 
   actions.push({ type: "pass_leave_reaction", playerId: pending.ownerPlayerId });
 }

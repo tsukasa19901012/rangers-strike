@@ -1,6 +1,6 @@
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { applyMagiPunchCounter, isSet4EndTurnEffect, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
-import { applyDekaMasterReturn } from "../rules/legend1/set5NamedEffects";
+import { applyDekaMasterReturn, applyMagiMotherSubstitute } from "../rules/legend1/set5NamedEffects";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import { applyDeusGeneOnRush } from "../rules/rs4NcEffects";
 import type { GameAction } from "../types/actions";
@@ -2583,6 +2583,26 @@ function applyActionCore(
 
     case "use_super_shield": {
       const pending = state.pendingLeave;
+      if (pending && action.substituteInstanceId) {
+        // RS-324 マジマザー【ジルマ・マジュナ】: 撃破を止め、マジマザーをかわりに捨札にする。
+        if (playerId !== pending.ownerPlayerId) return fail("wrong_player");
+        if (!(pending.magiMotherInstanceIds ?? []).includes(action.substituteInstanceId)) return fail("no_super_shield");
+        const prevented = finalizeLeaveReaction(state, pending, true);
+        const motherResult = applyMagiMotherSubstitute(
+          prevented,
+          playerId,
+          action.substituteInstanceId,
+          pending.phasePlayerId,
+        );
+        if (motherResult.deferred) return ok(motherResult.state, motherResult.log);
+        if (pending.resumePendingStrike && state.pendingStrike) {
+          return completeStrike(motherResult.state, {
+            ...state.pendingStrike,
+            damageCancelled: pending.resumePendingStrike.damageCancelled,
+          }, [motherResult.log]);
+        }
+        return ok(motherResult.state, motherResult.log);
+      }
       if (!pending?.superShieldInstanceId) return fail("no_super_shield");
       if (playerId !== pending.ownerPlayerId) return fail("wrong_player");
 

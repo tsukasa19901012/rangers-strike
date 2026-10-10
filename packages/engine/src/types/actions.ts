@@ -225,6 +225,8 @@ export type PassChaseAction = {
 export type UseSuperShieldAction = {
   type: "use_super_shield";
   playerId: PlayerId;
+  /** RS-324 マジマザー【ジルマ・マジュナ】: かわりに捨札にするマジマザー（省略時は RS-052 の超シールド進化）。 */
+  substituteInstanceId?: string;
 };
 
 /** RS-106 ジュウクンドー — アタックの代わりに発動。 */

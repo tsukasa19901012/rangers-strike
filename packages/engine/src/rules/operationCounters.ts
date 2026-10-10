@@ -98,7 +98,7 @@ function markUnitBattleActed(player: PlayerState, instanceId: string): PlayerSta
   return player;
 }
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
-import { openKasumoShieldChoice } from "./legend1/set5NamedEffects";
+import { magiMotherSubstitutes, openKasumoShieldChoice } from "./legend1/set5NamedEffects";
 import { registerBattlePendingResolver } from "../events/listeners/battleDeclaredListener";
 
 function isEnemyTurn(state: GameState, counterPlayerId: PlayerId): boolean {
@@ -1822,7 +1822,9 @@ export function tryLeaveField(
     intent.fromZone,
   );
 
-  if (!dinoChronicle && !dinoGuts && !superShieldInstanceId && !sageAel && !magLoad) {
+  const magiMotherInstanceIds = magiMotherSubstitutes(state, intent);
+
+  if (!dinoChronicle && !dinoGuts && !superShieldInstanceId && !sageAel && !magLoad && magiMotherInstanceIds.length === 0) {
     const owner = state.players[intent.ownerPlayerId];
     const found = findInZone(owner, intent.fromZone, intent.instanceId);
 
@@ -1868,6 +1870,7 @@ export function tryLeaveField(
       pendingLeave: {
         ...intent,
         superShieldInstanceId,
+        ...(magiMotherInstanceIds.length > 0 ? { magiMotherInstanceIds } : {}),
       },
       activePlayer: intent.ownerPlayerId,
     },

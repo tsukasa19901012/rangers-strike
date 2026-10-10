@@ -1,5 +1,5 @@
 import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
-import { kibaGakureBlocksAttack } from "../legend1/set5NamedEffects";
+import { kibaGakureBlocksAttack, magiMergeAllowsRushAttack } from "../legend1/set5NamedEffects";
 import {
   getBattleEntryHandDiscardCount,
   hasUnnamedRule,
@@ -443,7 +443,8 @@ export function canAttackDefender(
     // RS-213【炸裂超力バトン】（相手が選んだユニット）・RS-225【大回転獅子爆裂弾】で得た能力。
     if (
       chikaraBatonAllowsAttack(state, attackerPlayerId, attackerInstanceId, defenderInstanceId) ||
-      lionBlastAllowsRushAttack(attacker.card)
+      lionBlastAllowsRushAttack(attacker.card) ||
+      magiMergeAllowsRushAttack(state, attackerPlayerId, attackerInstanceId)
     ) {
       return true;
     }

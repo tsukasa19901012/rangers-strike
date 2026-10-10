@@ -260,6 +260,8 @@ export type PendingLeave = {
    * 「場を離れるとき」の応答（ダイノガッツ等）は開くが、撃破の誘発・置換は起きない。ルール: R-REPL-01
    */
   notDestruction?: boolean;
+  /** RS-324 マジマザー【ジルマ・マジュナ】: かわりに捨札にできる自軍ラッシュエリアのマジマザー。 */
+  magiMotherInstanceIds?: string[];
   /** RS-317【超シールド進化】の選択を断った（同じ撃破で再び選択を開かない）。 */
   kasumoShieldDeclined?: boolean;
   /**

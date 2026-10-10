@@ -13,6 +13,7 @@ import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice } from "../p
 import { buildLogEntry } from "../../log/formatLog";
 import { unitFeatures } from "../addedFeatures";
 import { bounceToHand } from "../bounce";
+import { hasBattleNcEffect, markBattleNcEffect } from "../namedUnitEffects";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { commandCategoriesNow } from "../legend3/battleEffects";
@@ -319,6 +320,65 @@ export function applySwanIllusionOnStrike(state: GameState, pending: PendingStri
   };
 }
 
+/**
+ * RS-324 マジマザー【ジルマ・マジュナ】
+ * 「これが自軍ラッシュエリアにある間、次の効果を発動できる⇒敵軍ターン中、自軍ユニットが撃破されたとき、
+ *  これをかわりに捨札にしてもよい。そうしたとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。」
+ * 離場の応答（pendingLeave）で use_super_shield（substituteInstanceId）として選ぶ。1回の撃破に1体だけ（faq-card-5 RS-324 Q1）。
+ * BP0 以下でルールにより撃破されるユニットにも使える（Q3）。
+ */
+export function magiMotherSubstitutes(state: GameState, intent: PendingLeave): string[] {
+  if (intent.notDestruction || intent.toZone !== "discard") return [];
+  if (intent.phasePlayerId === intent.ownerPlayerId) return [];
+  return state.players[intent.ownerPlayerId].rush
+    .filter((c) => c.cardId === "RS-324" && c.instanceId !== intent.instanceId)
+    .map((c) => c.instanceId);
+}
+
+/** 撃破を止めたあと（finalizeLeaveReaction 済み）に、マジマザーを捨札にして敵軍の出場を封じる。 */
+export function applyMagiMotherSubstitute(
+  state: GameState,
+  ownerId: PlayerId,
+  motherInstanceId: string,
+  phasePlayerId: PlayerId,
+): { state: GameState; log: string; deferred: boolean } {
+  const found = findInZone(state.players[ownerId], "rush", motherInstanceId);
+  const log = buildLogEntry(ownerId, "named_effect", "RS-324", state.definitions, "jiruma_majuna");
+  if (!found) return { state, log, deferred: false };
+  const blocked = blockRushAreaEntry(state, opponent(ownerId), "RS-324");
+  const leave = tryLeaveField(blocked, {
+    ownerPlayerId: ownerId,
+    instanceId: motherInstanceId,
+    fromZone: "rush",
+    toZone: "discard",
+    leavingCardId: found.card.cardId,
+    phasePlayerId,
+    notDestruction: true,
+  });
+  return { state: leave.state, log, deferred: leave.deferred };
+}
+
+// ---------------------------------------------------------------------------
+// RS-323 マジグリーン・マッスル【マジ・マージ】（NC）
+// 「このユニットからコンビネーションするSユニットは、敵軍ラッシュエリアのユニットにアタックできる。」
+// バトルエリアの並びでマッスルのすぐ次にある S ユニット（マッスルからコンビネーションしたユニット）が対象。
+
+export const MAGI_MERGE_EFFECT_ID = "majimaji";
+
+/** 並びのすぐ前のユニット（このユニットがコンビネーションした元）。 */
+export function comboFromUnit(state: GameState, playerId: PlayerId, instanceId: string): CardInstance | undefined {
+  const battle = state.players[playerId].battle;
+  const index = battle.findIndex((c) => c.instanceId === instanceId);
+  return index > 0 ? battle[index - 1] : undefined;
+}
+
+export function magiMergeAllowsRushAttack(state: GameState, attackerPlayerId: PlayerId, attackerInstanceId: string): boolean {
+  const attacker = findInZone(state.players[attackerPlayerId], "battle", attackerInstanceId)?.card;
+  if (!attacker || !isSmallUnit(state.definitions, attacker.cardId)) return false;
+  const from = comboFromUnit(state, attackerPlayerId, attackerInstanceId);
+  return !!from && from.cardId === "RS-323" && hasBattleNcEffect(from, MAGI_MERGE_EFFECT_ID);
+}
+
 // ---------------------------------------------------------------------------
 // DSL grant_keyword（`cardId::effectId`）からの起点
 
@@ -326,6 +386,11 @@ export function trySet5CardEffect(state: GameState, ctx: GrantKeywordContext, _k
   switch (`${ctx.sourceCardId}::${ctx.effectId}`) {
     case "RS-319::deisodobega":
       return applyDSwordVega(state, ctx);
+    case "RS-323::majimaji": {
+      // NC 成立を記録する。アタック対象の判定は magiMergeAllowsRushAttack（rules/legend3/restrictions.ts）。
+      const id = ctx.triggerSourceInstanceId;
+      return { state: id ? markBattleNcEffect(state, ctx.playerId, id, MAGI_MERGE_EFFECT_ID) : state, detail: MAGI_MERGE_EFFECT_ID };
+    }
     default:
       return null;
   }
