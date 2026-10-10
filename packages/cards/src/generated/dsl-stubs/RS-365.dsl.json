@@ -41,7 +41,7 @@
   },
   "rushAdditionalCondition": {
     "conditionId": "discard_all_hand",
-    "text": "自分の手札を全て捨札にする"
+    "text": "これ以外の自分の手札を全て捨札にする"
   },
   "imageUrl": "/cards/promoted/RS-365.jpg",
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-365.jpg"

@@ -64,7 +64,9 @@ export type NumberComboEffectId =
   | "dolphin_arrow"
   | "bumper_bow"
   | "side_knuckle"
-  | "star_raiser";
+  | "star_raiser"
+  /** RS-065【一点突破】— NC 成立中だけ有効（ルール: R-ERR-RS065）。 */
+  | "focused_breakthrough";
 
 /** エンジン実装済み NC 効果 id（numberComboEffects.ts の switch と一致必須）。 */
 export const IMPLEMENTED_NC_EFFECT_IDS = [
@@ -103,6 +105,7 @@ export const IMPLEMENTED_NC_EFFECT_IDS = [
   "bumper_bow",
   "side_knuckle",
   "star_raiser",
+  "focused_breakthrough",
 ] as const satisfies readonly NumberComboEffectId[];
 
 const IMPLEMENTED_NC_IDS = new Set<string>(IMPLEMENTED_NC_EFFECT_IDS);

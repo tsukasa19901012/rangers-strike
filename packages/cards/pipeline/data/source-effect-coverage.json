@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-10T04:11:43.753Z",
+  "generatedAt": "2026-10-10T04:46:27.000Z",
   "scanned": 1832,
   "withSourceText": 1823,
   "missingSource": [],
@@ -16,13 +16,6 @@
       "cardId": "RS-002",
       "sourceFile": "page-247-RS-002.md",
       "sourceText": "このターン、Sユニットだけでコンビネーションするとき、4番目のユニットはSP1「BP8000」になる。",
-      "definitionCount": 1,
-      "catalogTextEmpty": true
-    },
-    {
-      "cardId": "RS-003",
-      "sourceFile": "page-248-RS-003.md",
-      "sourceText": "※常駐（場に配置して、離れるまで効果が有効になる）\n自分のバトルフェイズに発動できる。自軍コマンドを2つホールドするごとに、自軍Sユニットを1体ラッシュエリアに",
       "definitionCount": 1,
       "catalogTextEmpty": true
     },

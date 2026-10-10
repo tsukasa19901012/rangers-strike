@@ -157,12 +157,13 @@ export function applyDrawThenHandToDeckTop(
   ctx: GrantKeywordContext,
 ): GameState | null {
   const player = state.players[ctx.playerId];
-  if (player.deck.length === 0 || player.hand.length >= 6) return null;
+  if (player.hand.length >= 6) return null;
+  // ルール: R-START-05, R-WIN-03 — 山札が無ければドローできずに敗北（requestDrawFromDeck が deckedOut を立てる）。
   const drawn = requestDrawFromDeck(state, ctx.playerId, ctx.phasePlayerId, {
     count: 1,
     sourceCardId: ctx.sourceCardId,
   });
-  if (drawn.pending) return drawn.state;
+  if (drawn.pending || drawn.drawn === false) return drawn.state;
   const afterDraw = drawn.state;
   const handIds = afterDraw.players[ctx.playerId].hand.map((c) => c.instanceId);
   if (handIds.length === 0) return null;

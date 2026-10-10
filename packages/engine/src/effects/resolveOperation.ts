@@ -405,8 +405,7 @@ function resolveJudgment(ctx: EffectContext): EffectOutcome {
 
 function resolveDraw(ctx: EffectContext): EffectOutcome {
   const player = ctx.state.players[ctx.playerId];
-  if (player.deck.length === 0) return fail(ctx.state, "empty_deck");
-
+  // ルール: R-START-05, R-WIN-03 — 山札が無くても効果は解決し、引けなければ敗北（applySuperBrainDraw が deckedOut を立てる）。
   const drawn = applySuperBrainDraw(
     ctx.state,
     ctx.playerId,

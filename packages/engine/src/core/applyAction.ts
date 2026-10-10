@@ -60,8 +60,8 @@ import {
 import { addRushPhaseRuleModifier } from "./scopedModifiers";
 import { emitBattleDeclaredAndResolve } from "../events/emitBattleDeclared";
 import { applyResidentOpOnPlace } from "../rules/residentOps";
-import { applySelfRushFromZone, battleActBlocked, beginTurnStartSwaps, markUnitBattleAction } from "../rules/keywordGapRuntime";
-import { applyGegeruStartPhase } from "../rules/residentOps";
+import { applySelfRushFromZone, battleActBlocked, markUnitBattleAction } from "../rules/keywordGapRuntime";
+import { applyStartPhaseBeginEffects } from "../rules/startPhaseBegin";
 import { emitStrikeDeclared } from "../events/emitStrikeDeclared";
 import { emitTurnEndingAndResolve } from "../events/emitTurnEnding";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
@@ -307,6 +307,12 @@ function finalizeTurnEnd(state: GameState): GameState {
     };
   }
 
+  if (next.phase === "start" && next.activePlayer !== prevPlayer) {
+    // ルール: R-START-06, R-TIME-06 — 「スタートフェイズ開始時」「ターン開始時」の効果は
+    // 3行程（リリース・戻す・ドロー）より前に発動・解決する。ホールド中のコマンドの有無に依存しない。
+    next = applyStartPhaseBeginEffects(next, next.activePlayer);
+  }
+
   return withWinner(next);
 }
 
@@ -491,8 +497,6 @@ export function applyAction(
     }
 
     case "release_start_commands": {
-      state = applyGegeruStartPhase(state, playerId);
-      state = beginTurnStartSwaps(state, playerId);
       if (state.phase !== "start") return fail("wrong_phase");
       if (player.hasReleasedCommandsThisStart) return fail("already_released");
       if (!player.command.some((c) => c.commandHeld)) {

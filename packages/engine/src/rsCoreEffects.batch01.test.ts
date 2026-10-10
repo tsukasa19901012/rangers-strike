@@ -829,6 +829,24 @@ describe("RS-036 Moss Blizzard", () => {
     const result = resolveNamedOnRushEffects(state, "player1", moss.instanceId, "player1");
     expect(result.state.pendingEffectChoice?.effectId).toBe("moss_blizzard");
   });
+
+  it("R-ERR-RS036: リリース状態が1つしかなければ1つを必ずホールドする（スキップ不可）", () => {
+    const moss = inst("RS-036", "moss");
+    const state = createTestState({
+      phase: "rush",
+      definitions: defs,
+      player1: { rush: [moss] },
+      player2: {
+        command: [{ ...heldWbCommand("c1"), commandHeld: false }, heldWbCommand("c2")],
+      },
+    });
+    const result = resolveNamedOnRushEffects(state, "player1", moss.instanceId, "player1");
+    const choice = result.state.pendingEffectChoice;
+    expect(choice?.effectId).toBe("moss_blizzard");
+    expect(choice?.optional).toBe(false);
+    expect(choice?.selectCount).toBe(1);
+    expect(choice?.validInstanceIds).toHaveLength(1);
+  });
 });
 
 describe("RS-037 Tricera Cannon", () => {
