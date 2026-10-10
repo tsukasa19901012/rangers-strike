@@ -9,6 +9,7 @@ import { buildLogEntry } from "../log/formatLog";
 import { resolveZordFusionPartnerIds } from "../dsl/zordBridge";
 import { applyHungerGodCeaseShuffle } from "./batch04FieldEffects";
 import { resolveAbaRedDestroyDamage } from "./namedUnitEffects";
+import { tagOpenedDestroyTrigger } from "./destroyTriggerTiming";
 
 
 /** Finds a named unit in the player's command OR discard zone and rushes it. */
@@ -139,6 +140,7 @@ export type UnitLeftZoneContext = {
  * 場に留まっても、捨札以外へ置かれても、「撃破された」事実は残るので発動する。
  * 「撃破されて捨札になったとき」は捨札に置かれたときだけ（resolveUnitLeftZoneEffectsImpl）。
  * ルール: R-DESTROY-03 — 除外は撃破ではないので、除外ではこれを呼ばない。
+ * ルール: R-TIME-01 — 段階 2 の誘発（1「撃破したとき」→ 2「撃破されたとき」→ 3 捨札へ移動 → 4「撃破されて捨札になったとき」）。
  */
 export function resolveDestroyedFactEffects(
   state: GameState,
@@ -146,7 +148,11 @@ export function resolveDestroyedFactEffects(
   cardId: string,
 ): { state: GameState; logs: string[] } {
   // RS-054 アバレッド等「※これが撃破されたとき、1点ダメージを受ける。」
-  return resolveAbaRedDestroyDamage(state, ownerPlayerId, cardId);
+  const aba = resolveAbaRedDestroyDamage(state, ownerPlayerId, cardId);
+  // RS-093【かんしゃく】・RS-116【鳴き声】「これが撃破されたとき、…」
+  const legend2 = resolveLegend2OnDestroy(aba.state, ownerPlayerId, cardId);
+  // ルール: R-TIME-01 — ここで開いた選択は段階 2（「撃破されたとき」）の誘発。
+  return { state: tagOpenedDestroyTrigger(state, legend2.state, "destroyed"), logs: [...aba.logs, ...legend2.logs] };
 }
 
 /** UnitLeftZone リスナー本体: 捨札離場時の撃破誘発と自ダメージ。 */
@@ -172,11 +178,17 @@ export function resolveUnitLeftZoneEffectsImpl(
     return { state: nextState, logs };
   }
   nextState = applyDarkLawDrawOnEnemyDestroyed(nextState, ctx);
+  // ルール: R-TIME-01, R-DESTROY-02 — 段階 2「撃破されたとき」→ 3 捨札へ移動 → 4「撃破されて捨札になったとき」。
+  // 段階 2 は捨札以外に置かれても発動し、段階 4 より先に解決する（ユーザー決定 2026-10-11）。
+  const fact = resolveDestroyedFactEffects(nextState, ctx.ownerPlayerId, ctx.cardId);
+  nextState = fact.state;
+  logs.push(...fact.logs);
   if (!wentToDiscard) {
     // 撃破されたが捨札以外（パワーゾーン等）に置かれた: 「撃破されて捨札になったとき」は発動しない（R-REPL-02）。
-    const fact = resolveDestroyedFactEffects(nextState, ctx.ownerPlayerId, ctx.cardId);
-    return { state: fact.state, logs: [...logs, ...fact.logs] };
+    return { state: nextState, logs };
   }
+  // ここから段階 4: 実際に捨札に置かれたときだけ。ここで開いた選択は段階 4 のタイミング。
+  const beforeAfterDiscard = nextState;
 
   const destroyDsl = tryResolveDslTriggeredEffects({
     state: nextState,
@@ -189,10 +201,6 @@ export function resolveUnitLeftZoneEffectsImpl(
   });
   nextState = destroyDsl.state;
   logs.push(...destroyDsl.logs);
-
-  const destroyFx = resolveLegend2OnDestroy(nextState, ctx.ownerPlayerId, ctx.cardId);
-  nextState = destroyFx.state;
-  logs.push(...destroyFx.logs);
 
   // 「※これが撃破されて捨札になったとき、自軍捨札の「X」を1枚選び…ラッシュエリアに出す」は
   // DSL 正規化（dsl/effectTextNormalization）で on_destroy の効果として上の DSL 解決で扱う。
@@ -374,6 +382,5 @@ export function resolveUnitLeftZoneEffectsImpl(
     }
   }
 
-  const fact = resolveDestroyedFactEffects(nextState, ctx.ownerPlayerId, ctx.cardId);
-  return { state: fact.state, logs: [...logs, ...fact.logs] };
+  return { state: tagOpenedDestroyTrigger(beforeAfterDiscard, nextState, "after_discard"), logs };
 }

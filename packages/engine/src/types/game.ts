@@ -366,6 +366,9 @@ export type AttackHoldSource = {
   scope: "battle" | "turn";
 };
 
+/** 撃破に関わる誘発のタイミング（R-TIME-01）。PendingEffectChoice.destroyTriggerTiming を参照。 */
+export type DestroyTriggerTiming = "destroyer" | "destroyed" | "after_discard";
+
 export type PendingEffectChoice = {
   playerId: PlayerId;
   effectId: string;
@@ -455,8 +458,9 @@ export type PendingEffectChoice = {
   /** 相打ちの処理順選択（simultaneous_order。validInstanceIds は撃破された 2 体）。 */
   mutualDestructionMeta?: MutualDestructionMeta;
   /**
-   * バトルで撃破したときの自軍の効果（RS-212【爆烈ミラージュナックル】・RS-226【爆竜必殺デススティンガー】）と、
-   * 同時に開いた別の選択（撃破されたユニットの「撃破されたとき」等）の処理順（simultaneous_order。R-SIM-01）。
+   * 撃破の誘発のうち同じ段階（R-TIME-01 / destroyTriggerTiming）の効果どうし（例: RS-212【爆烈ミラージュナックル】と
+   * 撃破されたユニットの「撃破されて捨札になったとき」）の処理順（simultaneous_order。R-SIM-01。rules/destroyTriggerTiming.ts）。
+   * 段階が違えば選択は開かず、段階の順に解決する。
    * validInstanceIds は [own.sourceInstanceId, existing を表す ID]。
    */
   battleDestroyOrderMeta?: {
@@ -469,6 +473,13 @@ export type PendingEffectChoice = {
    * 他の処理を先に解決したあとで開く選択の候補が、その間に移動したカードを含まないようにする。
    */
   refreshOnOpen?: { key: string; destroyedBattleBp?: number };
+  /**
+   * 撃破に関わる誘発のタイミング（R-TIME-01・R-DESTROY-02。rules/destroyTriggerTiming.ts）。
+   * "destroyer" = 1.「撃破したとき」（撃破した側）、"destroyed" = 2.「撃破されたとき」（撃破された側。捨札を問わない）、
+   * （3. 捨札へ移動）、"after_discard" = 4.「撃破されて捨札になったとき」「捨札になったとき」。
+   * 異なる段階の効果は同時ではなく、この順に解決する（ユーザー決定 2026-10-11。faq-card-4 RS-226 Q1）。
+   */
+  destroyTriggerTiming?: DestroyTriggerTiming;
   /**
    * 「ラッシュしたとき」に同時に発動した、ラッシュしたユニット自身の効果と RS-124 超電子レーダーの処理順
    * （simultaneous_order。validInstanceIds は "super_radar" とラッシュしたユニット）。faq-card-2 RS-092 Q1。

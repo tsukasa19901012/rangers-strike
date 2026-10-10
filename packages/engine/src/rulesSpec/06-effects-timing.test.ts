@@ -21,6 +21,39 @@ import {
   use,
 } from "./06-helpers";
 import type { GameState } from "./06-helpers";
+import type { PendingEffectChoice } from "../types/game";
+import {
+  destroyTriggerTimingOfNamedEffect,
+  destroyTriggerTimingOfText,
+  openDestroyTimedChoice,
+} from "../rules/destroyTriggerTiming";
+import { resolveUnitLeftZoneEffectsImpl } from "../rules/leaveEffects";
+
+/** 撃破の誘発で開いた選択（タイミングだけを持つ最小の選択）。 */
+function destroyChoice(
+  id: string,
+  playerId: "player1" | "player2",
+  timing: PendingEffectChoice["destroyTriggerTiming"],
+): PendingEffectChoice {
+  return {
+    playerId,
+    effectId: `spec_${id}`,
+    sourceCardId: "TST-UNIT-0",
+    sourceInstanceId: `TST-UNIT-0:${id}`,
+    kind: "select_unit",
+    phasePlayerId: "player1",
+    validInstanceIds: ["TST-UNIT-0:t"],
+    selectCount: 1,
+    optional: false,
+    destroyTriggerTiming: timing,
+  };
+}
+
+/** existing が開いている状態で own を開く。 */
+function openOver(existing: PendingEffectChoice, own: PendingEffectChoice): PendingEffectChoice | undefined {
+  const base = st({ phase: "battle", player2: { battle: [inst("TST-UNIT-0", "t")] } });
+  return openDestroyTimedChoice({ ...base, pendingEffectChoice: existing }, own).pendingEffectChoice;
+}
 
 /** sourceInstanceId のカードを playerId が使える合法手があるか。 */
 function hasUseAction(state: GameState, playerId: string, sourceInstanceId: string): boolean {
@@ -105,6 +138,39 @@ describe("R-TIME-01 5つのタイミング", () => {
     expect(s.pendingLeave?.instanceId).toBe("TST-UNIT-0:def");
     expect(inZone(s, "player2", "battle", "TST-UNIT-0:def")).toBe(true);
     expect(inZone(s, "player2", "discard", "TST-UNIT-0:def")).toBe(false);
+  });
+
+  // ユーザー決定（2026-10-11）: 撃破の誘発は 1「撃破したとき」→ 2「撃破されたとき」→ 3 捨札へ移動 →
+  // 4「撃破されて捨札になったとき」の順で、段階の違う効果は同時ではない（根拠: grnrngr/faq-card-4 RS-226 Q1）。
+  it("R-TIME-01: 撃破の誘発の段階は文言で決まる — 撃破したとき=1、撃破されたとき=2、撃破されて捨札になったとき・捨札にしたあとで選ぶ=4（ユーザー決定 2026-10-11）", () => {
+    const s = st();
+    expect(destroyTriggerTimingOfNamedEffect(s, "RS-226", "爆竜必殺デススティンガー")).toBe("destroyer");
+    expect(destroyTriggerTimingOfText(s.definitions["RS-054"]?.text)).toBe("destroyed");
+    expect(destroyTriggerTimingOfText(s.definitions["RS-230"]?.text)).toBe("after_discard");
+    // 「カードを選ぶとき、これが撃破したユニットが捨札になるなら捨札にしたあとで選ぶ」
+    expect(destroyTriggerTimingOfNamedEffect(s, "RS-212", "爆烈ミラージュナックル")).toBe("after_discard");
+  });
+
+  it("R-TIME-01: 「撃破したとき」は「撃破されたとき」より先に解決し、処理順の選択は開かない（ユーザー決定 2026-10-11）", () => {
+    const destroyed = destroyChoice("destroyed", "player2", "destroyed");
+    const destroyer = destroyChoice("destroyer", "player1", "destroyer");
+    // 撃破されたときの選択が先に開いていても、撃破したときの選択が先。
+    const a = openOver(destroyed, destroyer);
+    expect(a?.kind).toBe("select_unit");
+    expect(a?.effectId).toBe("spec_destroyer");
+    expect(a?.resumeChoice?.effectId).toBe("spec_destroyed");
+    // 逆の順で開いても同じ。
+    const b = openOver(destroyer, destroyed);
+    expect(b?.effectId).toBe("spec_destroyer");
+    expect(b?.resumeChoice?.effectId).toBe("spec_destroyed");
+  });
+
+  it("R-TIME-01: 「撃破されたとき」は「撃破されて捨札になったとき」より先に解決し、処理順の選択は開かない（ユーザー決定 2026-10-11）", () => {
+    const destroyed = destroyChoice("destroyed", "player2", "destroyed");
+    const afterDiscard = destroyChoice("after", "player2", "after_discard");
+    const a = openOver(afterDiscard, destroyed);
+    expect(a?.effectId).toBe("spec_destroyed");
+    expect(a?.resumeChoice?.effectId).toBe("spec_after");
   });
 });
 
@@ -628,6 +694,22 @@ describe("R-SIM-01 同時の処理順はターンプレイヤー", () => {
   it.todo(
     "R-SIM-01: 超電子レーダー配置中に冥王ジルフィーザをラッシュしたとき、どちらから処理するかはターンプレイヤーが決める（出典: grnrngr/faq-card-2 RS-092）— ジルフィーザ（追加条件: Sユニット3体を捨札）が公開APIの合法手でラッシュできない",
   );
+
+  // 同じ段階の撃破の誘発だけが同時（ユーザー決定 2026-10-11）。
+  it("R-SIM-01: 同じ段階（「撃破したとき」どうし）の効果は、ターンプレイヤーが処理順を選ぶ（ユーザー決定 2026-10-11）", () => {
+    const first = destroyChoice("d1", "player1", "destroyer");
+    const second = destroyChoice("d2", "player1", "destroyer");
+    const c = openOver(first, second);
+    expect(c?.kind).toBe("simultaneous_order");
+    expect(c?.playerId).toBe("player1");
+    expect(c?.validInstanceIds).toEqual(["TST-UNIT-0:d2", "TST-UNIT-0:d1"]);
+  });
+
+  it("R-SIM-01: 同じ段階 4（捨札にしたあとで選ぶ効果と「撃破されて捨札になったとき」）は、ターンプレイヤーが処理順を選ぶ（出典: grnrngr/faq-card-4 RS-212 Q1）", () => {
+    const am = destroyChoice("am", "player2", "after_discard");
+    const knuckle = destroyChoice("g", "player1", "after_discard");
+    expect(openOver(am, knuckle)?.kind).toBe("simultaneous_order");
+  });
 });
 
 describe("R-SIM-02 例外: マルチカテゴリ等", () => {
@@ -989,6 +1071,43 @@ describe("R-DESTROY-01 撃破の定義", () => {
 });
 
 describe("R-DESTROY-02 撃破 ≠ 捨札", () => {
+  // 「撃破されたとき」（段階 2）は捨札にならなくても発動し、「撃破されて捨札になったとき」（段階 4）は捨札に置かれたときだけ。
+  it("R-DESTROY-02: 撃破されてパワーゾーンに置かれても、童鬼ドロップ【かんしゃく】「撃破されたとき」は発動する（出典: atwiki/page-1289）", () => {
+    const s = st({
+      phase: "battle",
+      player1: { deck: deck(3) },
+      player2: { power: [inst("RS-093", "gb")], deck: deck(3, "e") },
+    });
+    const r = resolveUnitLeftZoneEffectsImpl(s, {
+      ownerPlayerId: "player2",
+      instanceId: "RS-093:gb",
+      cardId: "RS-093",
+      fromZone: "rush",
+      toZone: "power",
+      phasePlayerId: "player1",
+      destroyed: true,
+    });
+    expect(r.state.players.player1.damage).toBe(1);
+    expect(r.state.players.player2.damage).toBe(1);
+  });
+
+  it("R-DESTROY-02: アバレッドAM は捨札に置かれたときだけ「撃破されて捨札になったとき」が発動し、その選択は段階 4（出典: atwiki/page-1289）", () => {
+    const base = st({ phase: "battle", player2: { discard: [inst("RS-230", "am"), inst("RS-054", "red")] } });
+    const ctx = {
+      ownerPlayerId: "player2" as const,
+      instanceId: "RS-230:am",
+      cardId: "RS-230",
+      fromZone: "battle" as const,
+      toZone: "discard",
+      phasePlayerId: "player1" as const,
+    };
+    const toDiscard = resolveUnitLeftZoneEffectsImpl(base, ctx).state.pendingEffectChoice;
+    expect(toDiscard?.validInstanceIds).toEqual(["RS-054:red"]);
+    expect(toDiscard?.destroyTriggerTiming).toBe("after_discard");
+    const toPower = resolveUnitLeftZoneEffectsImpl(base, { ...ctx, toZone: "power", destroyed: true });
+    expect(toPower.state.pendingEffectChoice).toBeUndefined();
+  });
+
   // 「「RS-016 ダイノ伝記」には、撃破されたことを無効にする効果はありません」(faq-card-1 RS-016 Q2)
   it("R-DESTROY-02: ダイノ伝記でアバレッドを場に留めても、撃破された事実は残り1点ダメージを受ける（出典: grnrngr/faq-card-1 RS-016 Q2・RS-054 Q3）", () => {
     // 既知の不具合: E10

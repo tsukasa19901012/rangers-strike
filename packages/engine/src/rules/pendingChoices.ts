@@ -4798,8 +4798,8 @@ export function applyEffectChoiceSelect(
         return { state: { ...resolved.state, log: [...resolved.state.log, ...resolved.logs] }, log };
       }
       if (pending.battleDestroyOrderMeta) {
-        // ルール: R-SIM-01 — バトルで撃破したときの自軍の効果（RS-212 / RS-226）と、同時に起きた別の効果
-        // （撃破されたユニットの「撃破されたとき」等）の処理順はターンプレイヤーが決める（faq-card-4 RS-212 Q1）。
+        // ルール: R-SIM-01 — 撃破の誘発のうち同じ段階（R-TIME-01）の効果どうしの処理順はターンプレイヤーが決める
+        // （faq-card-4 RS-212 Q1）。段階が違う効果はここに来ない（rules/destroyTriggerTiming.ts）。
         const meta = pending.battleDestroyOrderMeta;
         const cleared = clearChoice(state, pending.phasePlayerId);
         const next =

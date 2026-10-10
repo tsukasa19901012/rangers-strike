@@ -626,11 +626,35 @@ describe("RS-226 キラーオー", () => {
     );
     s = attack(s, "RS-226:k", "RS-230:am");
     s = settle(s);
-    for (let i = 0; i < 4 && s.pendingEffectChoice?.effectId !== undefined && !choiceIds(s).includes("SPEC-E4:low"); i++) {
-      s = settle(drain(s, s.pendingEffectChoice.playerId));
-    }
+    // R-TIME-01（ユーザー決定 2026-10-11）: 「撃破したとき」（段階 1）が「撃破されて捨札になったとき」（段階 4）より先。
+    // 処理順の選択（simultaneous_order）は開かず、最初にキラーオーの対象を相手が選ぶ。
+    expect(s.pendingEffectChoice?.kind).toBe("select_unit");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-226");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toEqual(["SPEC-E4:low"]);
+  });
+
+  // faq-card-4 RS-226 Q1 / R-TIME-01（ユーザー決定 2026-10-11）— 処理順は固定。キラーオーの効果のあとでアバレッドAM の効果を解決する。
+  it("RS-226: 公式Q&A — アバレッドAM を撃破したとき、処理順の選択はなく キラーオー → アバレッドAM の順に解決する（出典: grnrngr/faq-card-4 RS-226 Q1、R-TIME-01）", () => {
+    let s = st(
+      {
+        player1: { battle: [inst("RS-226", "k")] },
+        player2: { battle: [inst("RS-230", "am")], rush: [inst("SPEC-E4", "low")], discard: [inst("RS-054", "red")] },
+      },
+      KS,
+    );
+    s = settle(attack(s, "RS-226:k", "RS-230:am"));
+    expect(s.pendingEffectChoice?.kind).not.toBe("simultaneous_order");
+    expect(s.pendingEffectChoice?.battleDestroyOrderMeta).toBeUndefined();
+    expect(s.pendingEffectChoice?.destroyTriggerTiming).toBe("destroyer");
+    expect(s.pendingEffectChoice?.resumeChoice?.sourceCardId).toBe("RS-230");
+    s = settle(pick(s, "SPEC-E4:low"));
+    expect(zoneOf(s, "player2", "SPEC-E4:low")).toBe("discard");
+    // つづいてアバレッドAM の「撃破されて捨札になったとき」— 捨札のアバレッドを出す。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-230");
+    expect(choiceIds(s)).toEqual(["RS-054:red"]);
+    s = settle(pick(s, "RS-054:red"));
+    expect(zoneOf(s, "player2", "RS-054:red")).toBe("rush");
   });
 
   // faq-card-5 RS-289「はい、選ぶことができます。」

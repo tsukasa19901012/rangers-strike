@@ -546,7 +546,7 @@ describe("RS-212 オーグリーン", () => {
     expect(s.players.player2.rush).toHaveLength(0);
   });
 
-  // R-SIM-01 / faq-card-4 RS-212 Q1 — 処理順はターンプレイヤーの選択（simultaneous_order）。AM を先にもできる。
+  // R-SIM-01 / faq-card-4 RS-212 Q1 — 同じ段階 4 なので処理順はターンプレイヤーの選択（simultaneous_order）。AM を先にもできる。
   it("RS-212: 公式Q&A — ターンプレイヤーは アバレッドAM の効果を先に処理させることもでき、そのあと敵軍捨札（アバレッドが出たあと）から選ぶ（出典: grnrngr/faq-card-4 RS-212 Q1、R-SIM-01）", () => {
     let s = st({
       player1: { battle: fillers(2), rush: [{ ...inst("RS-212", "g"), bpSetValue: 9000 }] },
@@ -559,6 +559,9 @@ describe("RS-212 オーグリーン", () => {
     const [own, amFirst] = choiceIds(s);
     expect(own).toBe("RS-212:g");
     expect(s.pendingEffectChoice?.battleDestroyOrderMeta?.existing.sourceCardId).toBe("RS-230");
+    // 「捨札にしたあとで選ぶ」ミラージュナックルと AM の「撃破されて捨札になったとき」はどちらも段階 4（R-TIME-01）なので同時。
+    expect(s.pendingEffectChoice?.battleDestroyOrderMeta?.own.destroyTriggerTiming).toBe("after_discard");
+    expect(s.pendingEffectChoice?.battleDestroyOrderMeta?.existing.destroyTriggerTiming).toBe("after_discard");
     s = pick(s, "player1", amFirst!);
     // 相手の「撃破されたとき」を先に解決する。
     for (let i = 0; i < 6 && s.pendingEffectChoice && s.pendingEffectChoice.playerId === "player2"; i++) {

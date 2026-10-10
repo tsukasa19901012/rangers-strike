@@ -28,6 +28,7 @@ import { countJointLGrant } from "../jointComboGrants";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
 import { registerChoiceRefresher } from "../choiceRefreshers";
+import { destroyTriggerTimingOfNamedEffect, openDestroyTimedChoice } from "../destroyTriggerTiming";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -57,32 +58,6 @@ function finish(state: GameState, phasePlayerId: PlayerId, before?: GameState): 
     if (valid.length > 0) return openEffectChoice(cleared, { ...resume, validInstanceIds: valid });
   }
   return promoteDeferredBattleEntry(cleared);
-}
-
-/**
- * バトルで撃破したときの効果（RS-212 / RS-226）の選択を開く。撃破されたユニットの「撃破されたとき」等、
- * 同時に起きた別の効果の選択が既に開いていれば、ターンプレイヤーがどちらを先に処理するかを選ぶ
- * （simultaneous_order。R-SIM-01・faq-card-4 RS-212 Q1）。後に回した側は、先の処理の後で候補を作り直して開く
- * （faq-card-4 RS-226 Q1 — キラーオーを先に処理すれば、アバレッドAM の効果で出るアバレッドは選べない）。
- */
-function openWithSimultaneousOrder(state: GameState, choice: PendingEffectChoice): GameState {
-  const existing = state.pendingEffectChoice;
-  if (!existing) return openEffectChoice(state, choice);
-  const ownId = choice.sourceInstanceId ?? choice.effectId;
-  let existingId = existing.sourceInstanceId ?? existing.effectId;
-  if (existingId === ownId) existingId = `${existing.effectId}:${existingId}`;
-  const chooser = choice.phasePlayerId;
-  return openEffectChoice(state, {
-    playerId: chooser,
-    effectId: "simultaneous_order",
-    sourceCardId: choice.sourceCardId,
-    sourceInstanceId: choice.sourceInstanceId,
-    kind: "simultaneous_order",
-    phasePlayerId: chooser,
-    validInstanceIds: [ownId, existingId],
-    optional: false,
-    battleDestroyOrderMeta: { own: choice, existing, existingId },
-  });
 }
 
 /**
@@ -122,7 +97,10 @@ export function openMirageKnuckleChoice(
   const enemyId = opponent(attackerId);
   const ids = state.players[enemyId].discard.map((c) => c.instanceId);
   if (ids.length === 0) return state;
-  return openWithSimultaneousOrder(state, {
+  // 「カードを選ぶとき、…捨札になるなら捨札にしたあとで選ぶ」— 選ぶのは捨札に移ったあと（R-TIME-01 の段階 4）。
+  // 同じ段階 4 の「撃破されて捨札になったとき」（アバレッドAM 等）とはターンプレイヤーが順番を選ぶ（faq-card-4 RS-212 Q1）。
+  return openDestroyTimedChoice(state, {
+    destroyTriggerTiming: destroyTriggerTimingOfNamedEffect(state, "RS-212", "爆烈ミラージュナックル") ?? "after_discard",
     playerId: attackerId,
     effectId: MIRAGE_KNUCKLE_EFFECT_ID,
     refreshOnOpen: { key: MIRAGE_KNUCKLE_EFFECT_ID },
@@ -337,7 +315,10 @@ export function openDeathStingerChoice(
     .filter((c) => effectiveBp(state, enemyId, c) < destroyedBattleBp)
     .map((c) => c.instanceId);
   if (ids.length === 0) return state;
-  return openWithSimultaneousOrder(state, {
+  // 「撃破したとき」— R-TIME-01 の段階 1。撃破されたユニットの「撃破されたとき」（段階 2）・
+  // 「撃破されて捨札になったとき」（段階 4）より先に解決する（処理順の選択はない。faq-card-4 RS-226 Q1 — アバレッドAM の効果で出るアバレッドは選べない）。
+  return openDestroyTimedChoice(state, {
+    destroyTriggerTiming: destroyTriggerTimingOfNamedEffect(state, "RS-226", "爆竜必殺デススティンガー") ?? "destroyer",
     playerId: enemyId,
     effectId: DEATH_STINGER_EFFECT_ID,
     refreshOnOpen: { key: DEATH_STINGER_EFFECT_ID, destroyedBattleBp },
