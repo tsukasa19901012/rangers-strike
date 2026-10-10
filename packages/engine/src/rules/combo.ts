@@ -67,6 +67,7 @@ import { tryStartDslConditionalChoice } from "../dsl/conditionalEffects";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import { wingAllowsEmptyBattleStrike } from "../keywords";
 import { canStrikeWithHelloMirage } from "./helloMirage";
+import { applyFivemanOnCombo, trySet5AOnComboEnter } from "./legend1/set5NamedEffectsA";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredBattleListener";
 
@@ -184,6 +185,8 @@ export function resolveEnterBattleEffectsImpl(
     }
     // RS-234【ウイングペンタクト】: アバレキラーからコンビネーションする「WB」の M ユニット。
     nextState = applyWingPentactOnCombo(nextState, playerId, card, battleBeforeEnter);
+    // RS-273〜276 ファイブマン（NC）: アタックしなかったファイブマンの次にコンビネーションする S ユニット。
+    nextState = applyFivemanOnCombo(nextState, playerId, card, battleBeforeEnter);
   }
 
   if (shouldRunEnterStep(resumeFrom, "conditional")) {
@@ -213,6 +216,8 @@ export function resolveEnterBattleEffectsImpl(
     });
     nextState = dslEnter.state;
     logs.push(...dslEnter.logs);
+    // RS-291【大火炎】: 「レッド」を持つユニットからコンビネーションするとき。
+    nextState = trySet5AOnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }

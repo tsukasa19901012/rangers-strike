@@ -78,6 +78,7 @@ import {
   sanitizeUnitLeavingField,
 } from "../keywords";
 import { findFieldInstanceByKeyword } from "../dsl/fieldKeywords";
+import { openCityGuardiansSubstitute } from "./legend1/set5NamedEffectsA";
 
 function findUnitInRushOrBattle(
   player: PlayerState,
@@ -218,7 +219,9 @@ export function isCounterReactionActive(state: GameState): boolean {
     state.pendingLeave ||
     state.pendingMorph ||
     // ストライクの反応窓（RS-184 マジパンチ等。使えるカウンターは legalActions の appendStrikeReactionActions）。
-    state.pendingStrike
+    state.pendingStrike ||
+    // RS-255 巨大化爆弾の使用の窓。
+    state.pendingGiantBomb
   );
 }
 
@@ -1833,6 +1836,9 @@ export function tryLeaveField(
   state: GameState,
   intent: LeaveIntent,
 ): { state: GameState; deferred: boolean } {
+  // RS-303【シティガーディアンズ隊長】: 撃破されたとき、「戦闘員」2体をかわりに捨札にしてもよい。
+  const cityGuardians = openCityGuardiansSubstitute(state, intent);
+  if (cityGuardians) return { state: cityGuardians, deferred: true };
   // RS-317【超シールド進化】: DA の自軍ユニットが撃破されるとき、かわりに恐竜2体を捨札にするかの選択（rules/legend1/set5NamedEffects.ts）。
   const kasumo = openKasumoShieldChoice(state, intent);
   if (kasumo) return { state: kasumo, deferred: true };

@@ -104,16 +104,14 @@ describe("RS-243 獣奏剣", () => {
   });
 
   // 「このターン、すべての自軍ユニットは…そのテキストは無効になる」
-  // 既知の不具合: CARD-RS-243 DSL の grant_keyword ignore_rule_hold_command_entry が何もしない（ホールド要件が無効にならない）
-  it.fails("RS-243: 使用したターン、「1つホールドしなければ出られない」自軍ユニットはホールドせずにバトルエリアに出られる（出典: atwiki/page-418）", () => {
+  it("RS-243: 使用したターン、「1つホールドしなければ出られない」自軍ユニットはホールドせずにバトルエリアに出られる（出典: atwiki/page-418）", () => {
     const s = sabers(true);
     expect(entryHolds(s, "RS-038:t1")).toBe(0);
     const after = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-038:t1" });
     expect(after.players.player1.command.filter((c) => !c.commandHeld)).toHaveLength(2);
   });
 
-  // 既知の不具合: CARD-RS-243 ホールド要件が無効にならない（2体目も同様）
-  it.fails("RS-243: 「すべての自軍ユニット」— 2体目もホールドせずに出られる（出典: atwiki/page-418「すべての自軍ユニットは」）", () => {
+  it("RS-243: 「すべての自軍ユニット」— 2体目もホールドせずに出られる（出典: atwiki/page-418「すべての自軍ユニットは」）", () => {
     let s = sabers(true);
     s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-038:t1" });
     const pass = legal(s).find((a) => a.type === "pass_battle_entry");
@@ -121,8 +119,7 @@ describe("RS-243 獣奏剣", () => {
     expect(entryHolds(s, "RS-038:t2")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-243 ホールド要件が無効にならない（「このターン」の範囲も確認できない）
-  it.fails("RS-243: 効果は「このターン」だけ — 使用したターンはホールド不要、次の自軍ターンは再びホールドが要る（出典: atwiki/page-418「このターン、」）", () => {
+  it("RS-243: 効果は「このターン」だけ — 使用したターンはホールド不要、次の自軍ターンは再びホールドが要る（出典: atwiki/page-418「このターン、」）", () => {
     let s = sabers(true);
     expect(entryHolds(s, "RS-038:t1")).toBe(0);
     s = nextPhase(s);
@@ -158,8 +155,7 @@ describe("RS-243 獣奏剣", () => {
     return nextPhase(s);
   }
 
-  // 既知の不具合: CARD-RS-243 ホールド要件が無効にならない（RS-364 が与えるホールド要件は付与済み）
-  it.fails("RS-243: 公式Q&A — ヘルサターン総統の効果で得た「…ホールドしなければバトルエリアに出られない」も獣奏剣で無効にできる（獣奏剣なしならホールドが要る）（出典: grnrngr/faq-card-6 RS-364 Q）", () => {
+  it("RS-243: 公式Q&A — ヘルサターン総統の効果で得た「…ホールドしなければバトルエリアに出られない」も獣奏剣で無効にできる（獣奏剣なしならホールドが要る）（出典: grnrngr/faq-card-6 RS-364 Q）", () => {
     // 「はい、できます。」
     expect(entryHolds(hellSaturn(false), "SPEC-DA-S:da")).toBe(1);
     expect(entryHolds(hellSaturn(true), "SPEC-DA-S:da")).toBe(0);

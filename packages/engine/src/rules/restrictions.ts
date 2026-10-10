@@ -1,4 +1,5 @@
 import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
+import { beastSwordIgnoresEntryHold, set5ABlocksBattleEntry } from "./legend1/set5NamedEffectsA";
 import { rushAreaEntryBlockedThisTurn } from "./legend1/set5NamedEffects";
 import { hellSaturnGrantCount } from "./hellSaturn";
 import { errataBattleEntryBlocked, isDivingOrochi } from "./errataCardEffects";
@@ -190,6 +191,10 @@ export function requiredBattleEntryHolds(
   if (unitHold > 0 && sliderEvolutionIgnoresEntryHold(state, playerId, unit.instanceId)) {
     unitHold = 0;
   }
+  // RS-243【獣奏剣】: このターン、すべての自軍ユニットの「1つホールドしなければ出られない」を無効にする。
+  if (unitHold > 0 && beastSwordIgnoresEntryHold(state, playerId)) {
+    unitHold = 0;
+  }
   const lgHold = isMediumUnit(state.definitions, unit.cardId)
     ? countActiveLightningGravity(state)
     : 0;
@@ -336,6 +341,8 @@ export function canMoveUnitToBattle(
   if (def.type === "unit" && ryuseioBlocksMove(state, playerId, unit)) return false;
 
   if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
+  // RS-290【飛竜棍・大風車】: 「DA」の敵軍 S ユニットはバトルエリアに出られない。
+  if (set5ABlocksBattleEntry(state, playerId, unit)) return false;
 
   if (needsAllySInBattle(unit.cardId)) {
     const hasAllyS = state.players[playerId].battle.some((c) =>
@@ -457,6 +464,8 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
   if (def.type === "unit" && ryuseioBlocksMove(state, playerId, unit)) return false;
   if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
+  // RS-290【飛竜棍・大風車】: 「DA」の敵軍 S ユニットはバトルエリアに出られない。
+  if (set5ABlocksBattleEntry(state, playerId, unit)) return false;
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {

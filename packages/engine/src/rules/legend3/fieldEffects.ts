@@ -16,6 +16,7 @@ import { opponent } from "../../core/helpers";
 import { promotedKeywordSpFloor } from "../../dsl/promotedKeywordBridge";
 import { legend2EffectiveSp } from "../legend2/fieldEffects";
 import { sameCardName } from "../../core/cardNames";
+import { set5AEffectiveSp } from "../legend1/set5NamedEffectsA";
 import {
   sr003DiscardDinoBpBonus,
   sr003SpFloor,
@@ -209,6 +210,7 @@ export function legend3EffectiveSp(
   if (hellSaturnGrantCount(state, playerId, instance) > 0 && effectiveBp(state, playerId, instance) >= 8000) {
     sp = Math.max(sp, 1);
   }
+  sp = set5AEffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

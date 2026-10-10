@@ -1,4 +1,5 @@
 import type { CardInstance, GameState, PlayerId, TurnEndProgress } from "../types/game";
+import { applyDarkLawTurnEnd } from "./legend1/set5NamedEffectsA";
 import { activeNamedEffect } from "./ncGatedEffects";
 import { effectiveBp, getDefinition } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
@@ -288,6 +289,8 @@ export function resolveTurnEndingEffectsImpl(
   nextState = applyRocketBoosterEndTurnRushReturn(nextState, endingPlayerId);
   nextState = applyNoteOtherNcTurnEndEffects(nextState, endingPlayerId, exodusFirst);
   nextState = applyGegeruTurnEnd(nextState, endingPlayerId);
+  // RS-256 闇の戒律: 重ねたカードが3枚あれば自軍ユニットをすべて撃破し、これを捨札にする。
+  nextState = applyDarkLawTurnEnd(nextState, endingPlayerId);
   nextState = applyTempDiscardAtTurnEnd(nextState, endingPlayerId);
   nextState = applyElectroBeamTurnEnd(nextState, endingPlayerId);
   nextState = applyOrochiTurnEnd(nextState, endingPlayerId);

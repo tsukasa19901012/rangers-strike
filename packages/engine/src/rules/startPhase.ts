@@ -1,4 +1,5 @@
 import { getCardEffect } from "@rangers-strike/cards";
+import { darkLawStackPending, openDarkLawStackIfNeeded } from "./legend1/set5NamedEffectsA";
 import { activeNamedEffect } from "./ncGatedEffects";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { checkWinner } from "../core/createGame";
@@ -231,6 +232,7 @@ export function canAdvanceFromStartPhase(state: GameState, playerId: PlayerId): 
   if (state.phase !== "start") return false;
   if (state.pendingEffectChoice?.playerId === playerId) return false;
   if (!hasCompletedStartPhaseSteps(state, player)) return false;
+  if (darkLawStackPending(state, playerId)) return false;
   if (
     mustResolveEarthForceUpkeepBeforeStartEnd(state, playerId) &&
     canPayEarthForceUpkeep(state, playerId)
@@ -391,6 +393,17 @@ export function mustResolveEarthForceUpkeepBeforeStartEnd(
 }
 
 export function openEarthForceUpkeepChoiceIfNeeded(
+  state: GameState,
+  playerId: PlayerId,
+): GameState {
+  // RS-256 闇の戒律: ドローの後、自軍捨札から1枚選び重ねる（維持費の選択がなければ先に開く）。
+  if (!needsEarthForceUpkeep(state, playerId) || !canPayEarthForceUpkeep(state, playerId)) {
+    return openDarkLawStackIfNeeded(state, playerId);
+  }
+  return openEarthForceUpkeepChoiceIfNeededImpl(state, playerId);
+}
+
+function openEarthForceUpkeepChoiceIfNeededImpl(
   state: GameState,
   playerId: PlayerId,
 ): GameState {

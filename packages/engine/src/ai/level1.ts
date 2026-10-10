@@ -291,6 +291,13 @@ function pickCpuActionInner(
     return pickReactionAction(state, playerId, actions, "pass_leave_reaction", enableSearch, options);
   }
 
+  // RS-255 巨大化爆弾の使用の窓（使うか見送るか）。
+  if (state.pendingGiantBomb) {
+    if (playerId !== state.pendingGiantBomb.ownerId) return null;
+    const actions = getLegalActions(state);
+    return pickReactionAction(state, playerId, actions, "pass_leave_reaction", enableSearch, options);
+  }
+
   if (state.pendingRegister) {
     if (playerId !== state.pendingRegister.ownerPlayerId) return null;
     const actions = getLegalActions(state);
@@ -536,6 +543,9 @@ export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): bo
   }
   if (state.pendingLeave) {
     return state.pendingLeave.ownerPlayerId === cpuPlayer;
+  }
+  if (state.pendingGiantBomb) {
+    return state.pendingGiantBomb.ownerId === cpuPlayer;
   }
   if (state.pendingRegister) {
     return state.pendingRegister.ownerPlayerId === cpuPlayer;

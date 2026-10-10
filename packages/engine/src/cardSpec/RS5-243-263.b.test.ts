@@ -39,6 +39,7 @@ import {
   powerCards,
   released,
   settle,
+  skip,
   spOf,
   st,
   strike,
@@ -92,8 +93,7 @@ describe("RS-249 Vコマンダー", () => {
     expect(canUse(s, "player1", "RS-249:vc")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-249 DSL が grant_keyword deck_search_rush_fx_unknown だけで、山札を見て恐竜ユニットをラッシュエリアに出す処理が何もない
-  it.fails("RS-249: 山札から特徴「恐竜」のユニットカードを1枚選んでラッシュエリアに出す（恐竜でないカードは選べない）（出典: atwiki/page-421）", () => {
+  it("RS-249: 山札から特徴「恐竜」のユニットカードを1枚選んでラッシュエリアに出す（恐竜でないカードは選べない）（出典: atwiki/page-421）", () => {
     let s = vcom([inst("TST-OP", "d0"), inst("RS-051", "tyr"), inst("TST-UNIT-0", "x"), inst("RS-052", "tri")]);
     expect(choiceIds(s)).toEqual(["RS-051:tyr", "RS-052:tri"]);
     s = pick(s, "RS-051:tyr");
@@ -101,15 +101,13 @@ describe("RS-249 Vコマンダー", () => {
     expect(s.players.player1.deck).toHaveLength(3);
   });
 
-  // 既知の不具合: CARD-RS-249 山札から出す処理が未実装
-  it.fails("RS-249: 必要パワーは満たさなくてよい（パワー5で必要パワー8の守護獣サーベルタイガーを出せる）（出典: atwiki/page-421「必要パワーは満たさなくてもよい」）", () => {
+  it("RS-249: 必要パワーは満たさなくてよい（パワー5で必要パワー8の守護獣サーベルタイガーを出せる）（出典: atwiki/page-421「必要パワーは満たさなくてもよい」）", () => {
     let s = vcom([inst("RS-038", "sab"), ...deckCards(2)]);
     s = pickAll(s, ["RS-038:sab"]);
     expect(zoneOf(s, "player1", "RS-038:sab")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-249 山札から出す処理が未実装（追加条件の判定もない）
-  it.fails("RS-249: 追加条件は満たす必要がある — 合体素材がなければアバレンオーは選べず、素材があれば素材を捨札にして出せる（出典: atwiki/page-421「ただし、追加条件は満たすこと」・R-ADD-06）", () => {
+  it("RS-249: 追加条件は満たす必要がある — 合体素材がなければアバレンオーは選べず、素材があれば素材を捨札にして出せる（出典: atwiki/page-421「ただし、追加条件は満たすこと」・R-ADD-06）", () => {
     const none = vcom([inst("RS-050", "ao"), inst("RS-051", "tyr")]);
     expect(choiceIds(none)).toEqual(["RS-051:tyr"]);
     let s = vcom([inst("RS-050", "ao"), ...deckCards(2)], {
@@ -128,7 +126,7 @@ describe("RS-249 Vコマンダー", () => {
   });
 
   // atwiki/page-421 Q1・faq-card-6 RS-359 Q「はい、できます。」（デンジ犬アイシー【最後の手段】で Vレックスロボの追加条件を満たせる）
-  // 既知の不具合: CARD-RS-249 山札から出す処理が未実装のため、最後の手段との連携も起きない
+  // 既知の不具合: CARD-RS-359（範囲外）デンジ犬アイシー【最後の手段】が未実装（山札のカードで追加条件を満たす処理がない）
   it.fails("RS-249: Q&A — デンジ犬アイシーの【最後の手段】で山札の Vレックスを捨札にして、Vレックスロボの追加条件を満たして出せる（出典: atwiki/page-421 Q1・grnrngr/faq-card-6 RS-359 Q）", () => {
     let s = vcom([inst("RS-301", "robo"), inst("RS-302", "rex"), ...deckCards(2)], { rush: [inst("RS-359", "icy")] });
     s = pickAll(s, ["RS-301:robo", "RS-359:icy", "RS-302:rex"]);
@@ -138,8 +136,7 @@ describe("RS-249 Vコマンダー", () => {
   });
 
   // faq-card-6 RS-374 Q「いいえ、捨札にはなりません。…「RS-249 Vコマンダー」の効果によってであり、コマンドをホールドしてラッシュしたわけではないから」
-  // 既知の不具合: CARD-RS-249 山札から出す処理が未実装（恐竜ユニットが出ない）
-  it.fails("RS-249: 公式Q&A — 敵軍に魔女バンドーラがいても、Vコマンダーのためにホールドした自軍コマンドは捨札にならない（恐竜ユニットは出る）（出典: grnrngr/faq-card-6 RS-374 Q）", () => {
+  it("RS-249: 公式Q&A — 敵軍に魔女バンドーラがいても、Vコマンダーのためにホールドした自軍コマンドは捨札にならない（恐竜ユニットは出る）（出典: grnrngr/faq-card-6 RS-374 Q）", () => {
     let s = vcom([inst("RS-051", "tyr"), ...deckCards(2)], {}, { rush: [inst("RS-374", "bandora")] });
     s = pickAll(s, ["RS-051:tyr"]);
     expect(zoneOf(s, "player1", "RS-051:tyr")).toBe("rush");
@@ -238,24 +235,21 @@ describe("RS-251 ブン・ターの特訓", () => {
     expectOpStats("RS-251", { name: "ブン・ターの特訓", category: "OT", powerCost: 0 });
   });
 
-  // 既知の不具合: CARD-RS-251 deck_search_minus_power_rush が何もしない（山札を見て「－」のユニットを出す処理がない）
-  it.fails("RS-251: 山札から必要パワーに「－」のあるユニットカード（アバレッドAM 7-）を選んでラッシュエリアに出す（「－」のないカードは選べない）（出典: atwiki/page-422）", () => {
+  it("RS-251: 山札から必要パワーに「－」のあるユニットカード（アバレッドAM 7-）を選んでラッシュエリアに出す（「－」のないカードは選べない）（出典: atwiki/page-422）", () => {
     let s = bunta([inst("TST-OP", "d0"), inst("RS-230", "aam"), inst("TST-UNIT-0", "x")]);
     expect(choiceIds(s)).toEqual(["RS-230:aam"]);
     s = pick(s, "RS-230:aam");
     expect(zoneOf(s, "player1", "RS-230:aam")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-251 山札から出す処理が未実装
-  it.fails("RS-251: 必要パワーは満たす必要がある — パワー6では選べず、パワー7なら選べる（出典: atwiki/page-422「必要パワーと追加条件は満たすこと」）", () => {
+  it("RS-251: 必要パワーは満たす必要がある — パワー6では選べず、パワー7なら選べる（出典: atwiki/page-422「必要パワーと追加条件は満たすこと」）", () => {
     const six = bunta([inst("RS-230", "aam"), ...deckCards(2)], { power: powerCards(6) });
     expect(six.pendingEffectChoice?.validInstanceIds ?? []).not.toContain("RS-230:aam");
     const seven = bunta([inst("RS-230", "aam"), ...deckCards(2)]);
     expect(seven.pendingEffectChoice?.validInstanceIds ?? []).toContain("RS-230:aam");
   });
 
-  // 既知の不具合: CARD-RS-251 山札から出す処理が未実装（追加条件による必要パワー0も使えない）
-  it.fails("RS-251: 追加条件（自軍アバレッドを捨札にすれば必要パワー0）を満たせばパワー0でも出せる（出典: atwiki/page-422・RS-230 本文）", () => {
+  it("RS-251: 追加条件（自軍アバレッドを捨札にすれば必要パワー0）を満たせばパワー0でも出せる（出典: atwiki/page-422・RS-230 本文）", () => {
     let s = bunta([inst("RS-230", "aam"), ...deckCards(2)], { power: [], rush: [inst("RS-054", "red")] });
     s = pickAll(s, ["RS-230:aam", "RS-054:red"]);
     expect(zoneOf(s, "player1", "RS-230:aam")).toBe("rush");
@@ -568,8 +562,7 @@ describe("RS-255 巨大化爆弾", () => {
     expectOpStats("RS-255", { name: "巨大化爆弾", category: "DA", powerCost: 4, keyword: "カウンター" });
   });
 
-  // 既知の不具合: CARD-RS-255 DSL が trigger nc＋grant_keyword counter_note::kaunta だけで、撃破されて捨札になったときに使用する手段がない
-  it.fails("RS-255: 敵軍ターン中、特徴「怪人」の自軍ユニット（野球仮面）が撃破されて捨札になったとき使用でき、重ねてラッシュエリアに出す（BP+3000・「SP1」）（出典: atwiki/page-37）", () => {
+  it("RS-255: 敵軍ターン中、特徴「怪人」の自軍ユニット（野球仮面）が撃破されて捨札になったとき使用でき、重ねてラッシュエリアに出す（BP+3000・「SP1」）（出典: atwiki/page-37）", () => {
     let s = destroyedByAttack();
     expect(zoneOf(s, "player1", "RS-257:kai")).toBe("discard");
     expect(canUse(s, "player1", "RS-255:bomb")).toBe(true);
@@ -605,22 +598,22 @@ describe("RS-255 巨大化爆弾", () => {
     expect(zoneOf(s, "player1", "RS-255:bomb")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RS-255 使用できない
-  it.fails("RS-255: 重ねたユニットが撃破されてユニットでなくなるとき、巨大化爆弾も捨札になる（出典: atwiki/page-37「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）", () => {
+  it("RS-255: 重ねたユニットが撃破されてユニットでなくなるとき、巨大化爆弾も捨札になる（出典: atwiki/page-37「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）", () => {
     let s = settle(useCard(destroyedByAttack(), "player1", "RS-255:bomb"));
     expect(zoneOf(s, "player1", "RS-257:kai")).toBe("rush");
     // 次の自軍ターン、BP5000（2000+3000）でバトルエリアに出て BP9000 にアタックし、撃破される
     s = toPhase(s, "player1", "battle");
     s = withPlayer(s, "player2", { battle: [inst("SPEC-BIG", "def")] });
-    s = passEntry(enter(s, "RS-257:kai"));
+    s = enter(s, "RS-257:kai");
+    // 1番目に出た野球仮面の NC【予告ホームラン】（任意）は見送る。
+    if (s.pendingEffectChoice?.sourceCardId === "RS-257" && canSkip(s)) s = skip(s);
     s = settle(attack(s, "RS-257:kai", "SPEC-BIG:def"));
     expect(zoneOf(s, "player1", "RS-257:kai")).toBe("discard");
     expect(zoneOf(s, "player1", "RS-255:bomb")).toBe("discard");
   });
 
   // faq-card-5 RS-255 Q1（atwiki Q1）「はい、その通りです。」
-  // 既知の不具合: CARD-RS-255 使用できない（ゴーマ16世の BP 反転で撃破されることも確認できない）
-  it.fails("RS-255: 公式Q&A — ゴーマ16世がラッシュされている状態で、BP3000 以下のユニットに巨大化爆弾を使うと（BP+3000 が−3000 になり）撃破される（出典: grnrngr/faq-card-5 RS-255 Q1・atwiki/page-37 Q1）", () => {
+  it("RS-255: 公式Q&A — ゴーマ16世がラッシュされている状態で、BP3000 以下のユニットに巨大化爆弾を使うと（BP+3000 が−3000 になり）撃破される（出典: grnrngr/faq-card-5 RS-255 Q1・atwiki/page-37 Q1）", () => {
     let s = destroyedByAttack("RS-257");
     s = { ...s, players: { ...s.players, player2: { ...s.players.player2, rush: [inst("RS-210", "goma")] } } };
     s = settle(useCard(s, "player1", "RS-255:bomb"));
@@ -638,8 +631,7 @@ describe("RS-255 巨大化爆弾", () => {
   );
 
   // faq-card-5 RS-255 Q4（atwiki Q4）「いいえ、効果は受けません。…「Ｌユニット」として扱います。」
-  // 既知の不具合: CARD-RS-255 使用できない（L ユニット化もない）
-  it.fails("RS-255: 公式Q&A — 巨大化爆弾を使ったユニットは L ユニットとして扱い、S ユニットを対象にした効果（ガオメインバスター）を受けない（出典: grnrngr/faq-card-5 RS-255 Q4・atwiki/page-37 Q4）", () => {
+  it("RS-255: 公式Q&A — 巨大化爆弾を使ったユニットは L ユニットとして扱い、S ユニットを対象にした効果（ガオメインバスター）を受けない（出典: grnrngr/faq-card-5 RS-255 Q4・atwiki/page-37 Q4）", () => {
     let s = settle(useCard(destroyedByAttack(), "player1", "RS-255:bomb"));
     expect(zoneOf(s, "player1", "RS-257:kai")).toBe("rush");
     s = st({
@@ -662,7 +654,7 @@ describe("RS-255 巨大化爆弾", () => {
   );
 
   // atwiki/page-37 Q7「はい、その通りです。」（場に留まったのではなく、新たにラッシュされた）
-  // 既知の不具合: CARD-RS-255 使用できない
+  // 既知の不具合: CARD-RS-255 巨大化爆弾で出したユニットはラッシュとして扱われる（ラッシュ記録・誘発あり）が、このテストの状況では疾風流超忍法（RS-247）の使用者がターンプレイヤーのため「敵軍ターン中のみ」で使えず、ラッシュの反応窓（pendingRush）が開かない
   it.fails("RS-255: Q&A — 巨大化爆弾で出したユニットは「新たにラッシュされた」扱い（相手は疾風流超忍法を使える）（出典: atwiki/page-37 Q7）", () => {
     let s = destroyedByAttack("RS-257", {});
     s = { ...s, players: { ...s.players, player2: { ...s.players.player2, hand: [inst("RS-247", "ctr")], command: [released(CMD.MA, "m")], power: powerCards(3, "ep") } } };
@@ -715,8 +707,7 @@ describe("RS-256 闇の戒律", () => {
     expect(zoneOf(s, "player1", "RS-256:law")).toBe("operation");
   });
 
-  // 既知の不具合: CARD-RS-256 スタートフェイズの「捨札から1枚選びウラ向きに重ねる」が未実装（hollowResidentAllowlist）
-  it.fails("RS-256: 自軍スタートフェイズに自軍捨札からカードを1枚選び、ウラ向きに重ねる（出典: atwiki/page-425）", () => {
+  it("RS-256: 自軍スタートフェイズに自軍捨札からカードを1枚選び、ウラ向きに重ねる（出典: atwiki/page-425）", () => {
     let s = st({
       phase: "end",
       activePlayer: "player2",
@@ -760,8 +751,7 @@ describe("RS-256 闇の戒律", () => {
     expect(stacked(s)).toEqual(["TST-OP:s1"]);
   });
 
-  // 既知の不具合: CARD-RS-256 エンドフェイズに重ねたカードが3枚あるときの「自軍ユニットをすべて撃破し、これを捨札にする」が未実装
-  it.fails("RS-256: 自軍エンドフェイズに重ねたカードが3枚あれば、自軍ユニットをすべて撃破し、これを捨札にする（重ねたカードも捨札）（出典: atwiki/page-425）", () => {
+  it("RS-256: 自軍エンドフェイズに重ねたカードが3枚あれば、自軍ユニットをすべて撃破し、これを捨札にする（重ねたカードも捨札）（出典: atwiki/page-425）", () => {
     let s = withLaw(
       st({ player1: { battle: [inst("TST-UNIT-0", "b")], rush: [inst("TST-UNIT-2", "r")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } }),
       ["s1", "s2", "s3"],
@@ -783,8 +773,7 @@ describe("RS-256 闇の戒律", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:b")).not.toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-256 常駐置き場を離れても重ねたカードが捨札にならず、パワーゾーンに送られたカードに重なったまま残る
-  it.fails("RS-256: 常駐置き場を離れる（レッドワンでパワーゾーンに送られる）とき、重ねたカードはすべて捨札になる（出典: atwiki/page-425「これが常駐置き場を離れるとき、重ねたカードはすべて捨札になる」）", () => {
+  it("RS-256: 常駐置き場を離れる（レッドワンでパワーゾーンに送られる）とき、重ねたカードはすべて捨札になる（出典: atwiki/page-425「これが常駐置き場を離れるとき、重ねたカードはすべて捨札になる」）", () => {
     let s = st({
       activePlayer: "player2",
       player1: { deck: deckCards(3) },
@@ -817,8 +806,7 @@ describe("RS-256 闇の戒律", () => {
   });
 
   // faq-card-5 RS-256 Q2（atwiki Q2）「はい、できます。」
-  // 既知の不具合: CARD-RS-256 エンドフェイズの「自軍ユニットをすべて撃破」が未実装のため、爆竜トリケラトプスで守る状況にならない
-  it.fails("RS-256: 公式Q&A — 3枚重ねてエンドフェイズに自軍ユニットをすべて撃破するとき、爆竜トリケラトプスの【超シールド進化】で WB の自軍ユニットを場に留められる（出典: grnrngr/faq-card-5 RS-256 Q2・atwiki/page-425 Q2）", () => {
+  it("RS-256: 公式Q&A — 3枚重ねてエンドフェイズに自軍ユニットをすべて撃破するとき、爆竜トリケラトプスの【超シールド進化】で WB の自軍ユニットを場に留められる（出典: grnrngr/faq-card-5 RS-256 Q2・atwiki/page-425 Q2）", () => {
     let s = withLaw(
       st({ player1: { battle: [inst("TST-UNIT-0", "wb")], rush: [inst("RS-052", "tri")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } }),
       ["s1", "s2", "s3"],
@@ -832,7 +820,7 @@ describe("RS-256 闇の戒律", () => {
   });
 
   // faq-card-5 RS-256 Q3（atwiki Q3）「いいえ、できません。…「敵軍ターン中」のみです。」
-  // 既知の不具合: CARD-RS-256 エンドフェイズの「自軍ユニットをすべて撃破」が未実装（マジマザーが使えないことを含め、撃破自体が起きない）
+  // 既知の不具合: CARD-RS-324（範囲外）マジマザー【ジルマ・マジュナ】が自軍ターン中の撃破でも発動を選べてしまう（闇の戒律の撃破自体は実装済み）
   it.fails("RS-256: 公式Q&A — 3枚重ねてエンドフェイズに自軍ユニットをすべて撃破するとき、マジマザーの【ジルマ・マジュナ】は使えずマジマザーも撃破される（出典: grnrngr/faq-card-5 RS-256 Q3・atwiki/page-425 Q3）", () => {
     let s = withLaw(
       st({ player1: { battle: [inst("TST-UNIT-0", "b")], rush: [inst("RS-324", "mother")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } }),
@@ -863,8 +851,7 @@ describe("RS-256 闇の戒律", () => {
   });
 
   // faq-card-5 RS-256 Q5（atwiki Q5）「はい、ドローした後でもかまいません。」
-  // 既知の不具合: CARD-RS-256 スタートフェイズの重ねる処理が未実装
-  it.fails("RS-256: 公式Q&A — スタートフェイズに捨札から選ぶのはドローした後でもよい（ドローしたあとに選べる）（出典: grnrngr/faq-card-5 RS-256 Q5・atwiki/page-425 Q5）", () => {
+  it("RS-256: 公式Q&A — スタートフェイズに捨札から選ぶのはドローした後でもよい（ドローしたあとに選べる）（出典: grnrngr/faq-card-5 RS-256 Q5・atwiki/page-425 Q5）", () => {
     let s = st({
       phase: "end",
       activePlayer: "player2",

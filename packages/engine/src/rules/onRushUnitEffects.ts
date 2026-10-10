@@ -25,6 +25,7 @@ import { tryOnAllyRushNamedReturnSelfToHand } from "./batch07FieldEffects";
 import { tryRsCatchallOnEnemyRush } from "./rs/rsCatchallRuntime";
 import { openEffectChoice, startSelectUnitChoice } from "./pendingChoices";
 import { tryRideRaptorOnRush } from "./legend1/set4NamedEffects";
+import { applyVrvMasterOnRush } from "./legend1/set5NamedEffectsA";
 
 function applyDrawOnRush(
   state: GameState,
@@ -225,6 +226,8 @@ export function applyOnRushUnitEffects(
   if (!nextState.pendingEffectChoice && !options.viaEffect) {
     nextState = tryRideRaptorOnRush(nextState, ownerPlayerId, instanceId, phasePlayerId);
   }
+  // RS-299 VRVマスター【乗ってみないか？】: 自分が S ユニットをラッシュするたび。
+  nextState = applyVrvMasterOnRush(nextState, ownerPlayerId, instanceId);
 
   const noteOther = resolveNoteOtherOnRushEffects(
     nextState,

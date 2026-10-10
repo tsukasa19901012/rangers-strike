@@ -1,4 +1,10 @@
 import { checkWinner } from "../core/createGame";
+import {
+  isSet5AChoiceEffect,
+  tryConfirmSet5AChoice,
+  tryResolveSet5AChoice,
+  trySkipSet5AChoice,
+} from "./legend1/set5NamedEffectsA";
 import { confirmRs4NcChoice, isRs4NcChoice, selectRs4NcChoice } from "./rs4NcEffects";
 import { pickSuperElectronEarDamage, SUPER_ELECTRON_EAR_PICK_EFFECT_ID } from "./powerFlipEffects";
 import {
@@ -585,7 +591,8 @@ export function isValidEffectChoiceTarget(
     pending.effectId === KUROKO_MEMORY_EFFECT_ID ||
     isSet4ChoiceEffect(pending.effectId) ||
     isSet5ChoiceEffect(pending.effectId) ||
-    isSet5AuditChoiceEffect(pending.effectId)
+    isSet5AuditChoiceEffect(pending.effectId) ||
+    isSet5AChoiceEffect(pending.effectId)
   ) {
     return true;
   }
@@ -1918,6 +1925,8 @@ export function applyConfirmEffectChoice(
   if (errata) return errata;
   const set4 = tryConfirmSet4Choice(state, playerId);
   if (set4) return set4;
+  const set5a = tryConfirmSet5AChoice(state, playerId);
+  if (set5a) return set5a;
 
   if (pending.mayConfirm) {
     const log = buildLogEntry(
@@ -2722,6 +2731,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (errata) return errata;
   const set4 = trySkipSet4Choice(state, playerId);
   if (set4) return set4;
+  const set5a = trySkipSet5AChoice(state, playerId);
+  if (set5a) return set5a;
   const set5 = trySkipSet5Choice(state, playerId);
   if (set5) return set5;
   const set5Audit = trySkipSet5AuditChoice(state, playerId);
@@ -2894,6 +2905,8 @@ export function applyEffectChoiceSelect(
   if (errata) return errata;
   const set4 = tryResolveSet4Choice(state, playerId, instanceId);
   if (set4) return set4;
+  const set5a = tryResolveSet5AChoice(state, playerId, instanceId);
+  if (set5a) return set5a;
   const set5 = tryResolveSet5Choice(state, playerId, instanceId);
   if (set5) return set5;
   const set5Audit = tryResolveSet5AuditChoice(state, playerId, instanceId);

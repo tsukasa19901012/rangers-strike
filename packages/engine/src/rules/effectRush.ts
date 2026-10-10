@@ -119,6 +119,7 @@ export function planEffectRush(
   playerId: PlayerId,
   card: CardInstance,
   requireConditions: boolean,
+  ignorePowerCost = false,
 ): EffectRushPlan | null {
   const def = getDefinition(state.definitions, card.cardId);
   if (!def || !isRushable(def)) return null;
@@ -130,7 +131,7 @@ export function planEffectRush(
 
   if (needsZordDownPayment(card.cardId, def.powerCost, def)) {
     // 「－」は任意。必要パワーを満たしていれば追加条件なしで出す。
-    if (power >= cost) return { kind: "none" };
+    if (ignorePowerCost || power >= cost) return { kind: "none" };
     const materials = collectZordDownMaterials(
       player,
       state.definitions,
@@ -143,12 +144,12 @@ export function planEffectRush(
       zordMaterialInstanceIds: materials.slice(0, needed),
       zordMaterialInstanceId: materials[0],
     });
-    if (power < reduced) return null;
+    if (!ignorePowerCost && power < reduced) return null;
     return { kind: "down", materials, needed, destinationChoice: false };
   }
 
   // 必要パワーの確認が先（追加条件の実行で満たすことはできない）。
-  if (power < cost) return null;
+  if (!ignorePowerCost && power < cost) return null;
 
   if (
     !isZordUpCost(def.powerCost) ||
@@ -208,12 +209,13 @@ export function filterEffectRushCandidates(
   fromZone: EffectRushSourceZone,
   candidateIds: string[],
   requireConditions: boolean,
+  ignorePowerCost = false,
 ): string[] {
   const player = state.players[playerId];
   return candidateIds.filter((id) => {
     const found = findInZone(player, fromZone, id);
     if (!found) return false;
-    return planEffectRush(state, playerId, found.card, requireConditions) !== null;
+    return planEffectRush(state, playerId, found.card, requireConditions, ignorePowerCost) !== null;
   });
 }
 
@@ -228,6 +230,8 @@ export type StartEffectRushInput = {
   /** 選べる上限。 */
   maxCount: number;
   requireConditions: boolean;
+  /** 追加条件は満たすが必要パワーは満たさなくてよい（RS-249）。 */
+  ignorePowerCost?: boolean;
   /**
    * 候補が上限以下でもプレイヤーに選ばせる（「1枚選び…出してもよい」）。
    * 既定で選ばせる（効果ラッシュの文言は「出してもよい」で任意 — RS-005 atwiki/page-249、
@@ -251,6 +255,7 @@ export function startEffectRush(state: GameState, input: StartEffectRushInput): 
     input.fromZone,
     input.candidates,
     input.requireConditions,
+    input.ignorePowerCost,
   );
   if (candidates.length === 0 || input.maxCount <= 0) return state;
 
@@ -262,6 +267,7 @@ export function startEffectRush(state: GameState, input: StartEffectRushInput): 
     sourceInstanceId: input.sourceInstanceId,
     fromZone: input.fromZone,
     requireConditions: input.requireConditions,
+    ignorePowerCost: input.ignorePowerCost,
     blockBattleEntryThisTurn: input.blockBattleEntryThisTurn,
     queue: [],
   };
@@ -447,7 +453,7 @@ export function continuePendingEffectRush(state: GameState): GameState {
     const owner = next.players[pending.playerId];
     const found = findInZone(owner, pending.fromZone, head!);
     if (!found) continue;
-    const plan = planEffectRush(next, pending.playerId, found.card, pending.requireConditions);
+    const plan = planEffectRush(next, pending.playerId, found.card, pending.requireConditions, pending.ignorePowerCost);
     if (!plan) continue;
 
     if (plan.kind === "none") {

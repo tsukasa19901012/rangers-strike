@@ -241,15 +241,13 @@ describe("RS-265 ジェットシーカー", () => {
   const radarOpen = (s: GameState, owner: PlayerId = "player1") =>
     s.pendingEffectChoice?.playerId === owner && (s.pendingEffectChoice.sourceCardId === "RS-265");
 
-  it.fails("RS-265: ラウンドレーダー — 相手が手札からオペレーションを使用したとき、敵軍パワーゾーンからカードを2枚まで選び捨札にできる（出典: atwiki/page-455【ラウンドレーダー】）", () => {
-    // 既知の不具合: CARD-RS-265 【ラウンドレーダー】が実装されておらず、相手のオペレーション使用で何も起きない
+  it("RS-265: ラウンドレーダー — 相手が手札からオペレーションを使用したとき、敵軍パワーゾーンからカードを2枚まで選び捨札にできる（出典: atwiki/page-455【ラウンドレーダー】）", () => {
     const s = useAnimalHeart(radarState(), "TST-UNIT-0:e1");
     expect(radarOpen(s)).toBe(true);
     expect(s.pendingEffectChoice?.validInstanceIds).toContain("TST-P:q0");
   });
 
-  it.fails("RS-265: ラウンドレーダー — 「してもよい」なので捨札にしないことを選べる（出典: atwiki/page-455「捨札にしてもよい」）", () => {
-    // 既知の不具合: CARD-RS-265 【ラウンドレーダー】が実装されていない（任意の選択が開かない）
+  it("RS-265: ラウンドレーダー — 「してもよい」なので捨札にしないことを選べる（出典: atwiki/page-455「捨札にしてもよい」）", () => {
     const s = useAnimalHeart(radarState(), "TST-UNIT-0:e1");
     expect(radarOpen(s)).toBe(true);
     expect(canSkip(s)).toBe(true);
@@ -283,23 +281,20 @@ describe("RS-265 ジェットシーカー", () => {
   });
 
   // faq-card-5 RS-265 Q1「はい、発動できます。」
-  it.fails("RS-265: 公式Q&A — オペレーション（百獣アニマルハート）の効果で撃破されても【ラウンドレーダー】は発動できる（出典: grnrngr/faq-card-5 RS-265 Q1）", () => {
-    // 既知の不具合: CARD-RS-265 【ラウンドレーダー】が実装されていない
+  it("RS-265: 公式Q&A — オペレーション（百獣アニマルハート）の効果で撃破されても【ラウンドレーダー】は発動できる（出典: grnrngr/faq-card-5 RS-265 Q1）", () => {
     const s = useAnimalHeart(radarState(), "RS-265:js0");
     expect(zoneOf(s, "player1", "RS-265:js0")).toBe("discard");
     expect(radarOpen(s)).toBe(true);
   });
 
   // faq-card-5 RS-265 Q2「はい、選ぶことができます。」
-  it.fails("RS-265: 公式Q&A — ダメージになっている敵軍パワーゾーンのカードも選べる（出典: grnrngr/faq-card-5 RS-265 Q2）", () => {
-    // 既知の不具合: CARD-RS-265 【ラウンドレーダー】が実装されていない
+  it("RS-265: 公式Q&A — ダメージになっている敵軍パワーゾーンのカードも選べる（出典: grnrngr/faq-card-5 RS-265 Q2）", () => {
     const s = useAnimalHeart(radarState(), "TST-UNIT-0:e1");
     expect(s.pendingEffectChoice?.validInstanceIds).toContain("TST-P:qd0");
   });
 
   // faq-card-5 RS-265 Q3「はい、重複します。」
-  it.fails("RS-265: 公式Q&A — ジェットシーカーが2体あれば効果は重複し、合計4枚まで捨札にできる（出典: grnrngr/faq-card-5 RS-265 Q3）", () => {
-    // 既知の不具合: CARD-RS-265 【ラウンドレーダー】が実装されていない
+  it("RS-265: 公式Q&A — ジェットシーカーが2体あれば効果は重複し、合計4枚まで捨札にできる（出典: grnrngr/faq-card-5 RS-265 Q3）", () => {
     let s = useAnimalHeart(radarState({ jets: 2 }), "TST-UNIT-0:e1");
     for (let i = 0; i < 4; i += 1) {
       expect(radarOpen(s)).toBe(true);
@@ -313,8 +308,7 @@ describe("RS-265 ジェットシーカー", () => {
   });
 
   // faq-card-5 RS-265 Q4「はい、捨札にできます。」
-  it.fails("RS-265: 公式Q&A — ラッシュしたジェットシーカーに相手が疾風流超忍法を使っても【ラウンドレーダー】で捨札にできる（出典: grnrngr/faq-card-5 RS-265 Q4・faq-card-1）", () => {
-    // 既知の不具合: CARD-RS-265 【ラウンドレーダー】が実装されていない
+  it("RS-265: 公式Q&A — ラッシュしたジェットシーカーに相手が疾風流超忍法を使っても【ラウンドレーダー】で捨札にできる（出典: grnrngr/faq-card-5 RS-265 Q4・faq-card-1）", () => {
     let s = st(
       {
         phase: "rush",
@@ -656,11 +650,10 @@ describe("RS-271 マグ", () => {
   }
   const magActions = (s: GameState) =>
     (legal(s) as unknown as Record<string, unknown>[]).filter(
-      (a) => a.sourceInstanceId === "RS-271:mg" || a.instanceId === "RS-271:mg" || (s.pendingEffectChoice?.sourceCardId === "RS-271"),
+      (a) => a.sourceInstanceId === "RS-271:mg" || a.instanceId === "RS-271:mg" || a.unitInstanceId === "RS-271:mg" || (s.pendingEffectChoice?.sourceCardId === "RS-271"),
     );
 
-  it.fails("RS-271: 【修復作業】自軍スタートフェイズ中、ラッシュエリアのマグを捨札にして、ダメージ1枚をオモテにできる（出典: atwiki/page-447【修復作業】）", () => {
-    // 既知の不具合: CARD-RS-271 【修復作業】が実装されていない（スタートフェイズにマグを捨札にする選択肢がない）
+  it("RS-271: 【修復作業】自軍スタートフェイズ中、ラッシュエリアのマグを捨札にして、ダメージ1枚をオモテにできる（出典: atwiki/page-447【修復作業】）", () => {
     let s = magStart();
     let found = magActions(s).length > 0;
     if (!found) {
