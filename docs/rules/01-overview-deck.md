@@ -1,167 +1,172 @@
 # 01 概要・デッキ構築・ゲーム準備・勝敗
 
-記法は [README](README.md#記法) を参照。照合状態はすべて `web未照合`（保存スナップショットのみで確認）。
+記法は [README](README.md#記法) を参照。2026-10-10 にライブページ（`docs/rules/sources/web/`）と照合した。カードページ（atwiki page-326 / 962 / 1278）も後から取得し、R-DECK-03 を照合した。
 
 ---
 
 ## 1. フォーマット
 
-#### R-FMT-01 対戦人数 [wiki] `web未照合`
+#### R-FMT-01 対戦人数 [公式] `web照合済(2026-10-10)`
 通常は2人対戦。4人（2対2）は特殊ルール「タッグストライク」（R-FMT-04）。
-- 出典: `atwiki/page-750`（タッグストライク）
-- Web: https://w.atwiki.jp/renst/pages/750.html
+- 出典: 公式ルール準備ページ「レンジャーズストライクは二人で対戦するゲーム」、`atwiki/page-750`「４人でレンジャーズストライクをプレイするための特別ルール」
+- Web: https://www.grnrngr.com/documents/rangersstrike/rule/rule_preparation.html , https://w.atwiki.jp/renst/pages/750.html
 - 実装: ✅ 2人戦のみ（01-D16）
 
-#### R-FMT-02 シリーズと使用可能カード [wiki] `web未照合`
+#### R-FMT-02 シリーズと使用可能カード [wiki] `web照合済(2026-10-10)`
 戦隊（英雄の再誕〜蒼九の翼）、ライダーEXP vol.1〜4、メタルエディション、リバイヴァ、ベルトコレクション、プロモを経て、2009年6月からクロスギャザー（XG1〜XG7）に統一。旧ナンバーのカードも引き続き使用できる。「クロスギャザー」はシリーズ名で、キーワード「クロス」（R-KW-CROSS）とは別物。
-- 出典: `atwiki/page-1535`、`atwiki/page-604`
-- Web: https://w.atwiki.jp/renst/pages/1535.html , https://w.atwiki.jp/renst/pages/604.html
+- 出典: `atwiki/page-1535`「09年6月から始まる」「旧ナンバーのカードも続けてゲームに使用できる」、`atwiki/page-174`（エクスパンション一覧）、wikiwiki メニュー（XG1〜XG7、英雄の再誕〜蒼九の翼、ライダーEXP vol.1〜4、メタルエディション、リバイヴァ、ベルトコレクション、プロモーションカード）
+- Web: https://w.atwiki.jp/renst/pages/1535.html , https://w.atwiki.jp/renst/pages/174.html , https://wikiwiki.jp/renst/
 
-#### R-FMT-03 スタックは存在しない [wiki] `web未照合`
+#### R-FMT-03 スタックは存在しない [wiki] `web照合済(2026-10-10)`
 効果を積み重ねて逆順に解決する「スタック」の概念はない（カウンターは存在する）。解決順は R-TIME 系に従う。
-- 出典: `atwiki/page-604`「スタック概念は今のところ存在しません」
+- 出典: `atwiki/page-604`「スタック概念は今のところ存在しません。ただし、似たタイプで「カウンター」は存在します」
 - Web: https://w.atwiki.jp/renst/pages/604.html
 
-#### R-FMT-04 タッグストライク（4人戦） [wiki] `web未照合`
-2人1チームで、相手チームの各プレイヤーに5点のダメージを与えたチームの勝利。常駐（4枚まで）・パワー・コマンド・NC をチームで共有。リーダーが全フェイズを終えてからサポーターが行動する（スタートフェイズのみリーダーの次にサポーター）。命の泉（RS-244）・ドラゴンレンジャー（RS-289）・メディテーション（RS-348）は禁止。
-- 出典: `atwiki/page-750`「相手チームの各プレイヤーに５点のダメージを与えることができたチームが勝利」、`atwiki/page-2079`
+#### R-FMT-04 タッグストライク（4人戦） [wiki] `web照合済(2026-10-10)`
+2人1チームで、相手チームの各プレイヤーに5点のダメージを与えたチームの勝利（5点を受けたプレイヤーは行動不能になる）。常駐（4枚まで）・パワー・コマンド・NC をチームで共有。リーダーが全フェイズを終えてからサポーターが行動する（スタートフェイズのみリーダーの次にサポーター）。命の泉（RS-244）・ドラゴンレンジャー（RS-289）・メディテーション（RS-348）は禁止。
+- 出典: `atwiki/page-750`「相手チームの各プレイヤーに５点のダメージを与えることができたチームが勝利」「５点ダメージを与えられたプレイヤーは行動不可能になる」、`atwiki/page-2079`（禁止カード一覧）
 - Web: https://w.atwiki.jp/renst/pages/750.html , https://w.atwiki.jp/renst/pages/2079.html
-- [未確定] 公式ルール全文（共有の詳細）は未取得。
+- [未確定] 公式ルール全文（共有の詳細）は未取得。page-750 は後発の同種効果カード（ブラスト持ち等）も「使用不可能と思われる」とするが推測にとどまる。（2026-10-10 web確認: 記載なし）
 - 実装: 未実装（対象外）。
 
-#### R-FMT-05 大会レギュレーション [wiki] `web未照合`
+#### R-FMT-05 大会レギュレーション [wiki] `web照合済(2026-10-10)`
 混合、ライダー単、合体ロボ大会、ハイランダー大会（同名1枚まで、R-DECK-08）、特撮ヒーロー大会などがある。
-- 出典: `atwiki/page-730`、`atwiki/page-731`、`atwiki/page-1690`、`atwiki/page-2252`
-- Web: https://w.atwiki.jp/renst/pages/2252.html , https://w.atwiki.jp/renst/pages/1690.html
-- [未確定] 各レギュレーションの公式文書は未取得。
+- 出典: `atwiki/page-730`（混合）、`atwiki/page-731`（ライダー単）、`atwiki/page-1690`（合体ロボ大会）、`atwiki/page-2252`（ハイランダー大会）、`atwiki/page-750`（特撮ヒーロー大会）
+- Web: https://w.atwiki.jp/renst/pages/730.html , https://w.atwiki.jp/renst/pages/731.html , https://w.atwiki.jp/renst/pages/2252.html , https://w.atwiki.jp/renst/pages/1690.html
+- [未確定] 各レギュレーションの公式文書は未取得。（2026-10-10 web確認: 記載なし）
 
 ---
 
 ## 2. デッキ構築
 
-#### R-DECK-01 デッキ枚数 [wiki] `web未照合`
-XG 以降: 40枚以上、上限なし。XG 以前: 40枚ちょうど。
-- 出典: `atwiki/page-71`「クロスギャザーからはデッキ枚数の上限がなくなり、40枚以上ならば何枚でもよくなった」
-- Web: https://w.atwiki.jp/renst/pages/71.html
-- [未確定] 公式の告知文と、XG 以前が「ちょうど40」か「40以上」かは公式ルール（rule_preparation 相当）で要確認。
+#### R-DECK-01 デッキ枚数 [wiki] `web照合済(2026-10-10)`
+XG 以降: 40枚以上、上限なし。XG 以前: 40枚ちょうど（公式ルールの準備ページは「40枚１組」と記載）。
+- 出典: 公式ルール準備ページ「40枚１組のカードのことをデッキと呼びます」、`atwiki/page-71`「クロスギャザーからはデッキ枚数の上限がなくなり、40枚以上ならば何枚でもよくなった」、`atwiki/page-604`「デッキの40枚制限が無くなった」
+- Web: https://www.grnrngr.com/documents/rangersstrike/rule/rule_preparation.html , https://w.atwiki.jp/renst/pages/71.html
+- [未確定] 上限撤廃の公式告知文は未取得（公式ルールページは「40枚１組」のまま更新されていない）。XG 以前が「ちょうど40」である点は公式準備ページの記述で裏付けられた。（2026-10-10 web確認: 告知文は記載なし）
 - 実装: ✅ 下限40・上限なし（01-D3）。旧弾レギュレーション（ちょうど40）は未対応。
 
-#### R-DECK-02 同名カードは3枚まで [wiki] `web未照合`
+#### R-DECK-02 同名カードは3枚まで [公式] `web照合済(2026-10-10)`
 カード名が同じなら、テキスト・種類が違っても合算して1デッキ3枚まで。コマンダーカードは数えない。
-- 出典: `atwiki/page-1739`「同じカード名を持つカードは、テキストや種類の違いに関わらず1つのデッキに3枚までしか入れられない」
-- Web: https://w.atwiki.jp/renst/pages/1739.html
+- 出典: 公式ルール準備ページ「デッキには同じカード名のカードは３枚まで入れることができます」、`atwiki/page-1739`「同じカード名を持つカードは、テキストや種類の違いに関わらず1つのデッキに3枚までしか入れられない」「コマンダーカードは枚数には含まれない」
+- Web: https://www.grnrngr.com/documents/rangersstrike/rule/rule_preparation.html , https://w.atwiki.jp/renst/pages/1739.html
 - 実装: ✅（01-D15）
 
-#### R-DECK-03 3枚制限の例外はカード本文の注記で決まる [公式] `web未照合`
+#### R-DECK-03 3枚制限の例外はカード本文の注記で決まる [公式] `web照合済(2026-10-10)`
 注記「※このカードはデッキに好きな枚数入れてもよい。」を持つカードは枚数無制限。最初期の RS-080 のみ「※このカードはデッキに3枚以上入れてもよい。」。特徴「戦闘員」の有無では決まらない（戦闘員でない無制限カードもある）。
-- 出典: `atwiki/page-1278`（RK-303）、`atwiki/page-962`（PK-002）、`atwiki/page-326`（RS-080）のカード本文
-- Web: https://w.atwiki.jp/renst/pages/1278.html , https://w.atwiki.jp/renst/pages/326.html
+- 出典: `atwiki/page-1278`（RK-303 ワームサナギ体（4弾）、特徴「ワーム／怪人」）「※このカードはデッキに好きな枚数入れてもよい。」、`atwiki/page-962`（PK-002 ゼクトルーパー）同文、`atwiki/page-326`（RS-080 ヒドラー兵）「※このカードはデッキに3枚以上入れてもよい。」のカード本文。例外の存在自体は `atwiki/page-71`「戦闘員等無制限で入れることのできるカードもある」、`atwiki/page-1739`「ただし戦闘員カードなど例外が存在する」で確認。
+- Web: https://w.atwiki.jp/renst/pages/1278.html , https://w.atwiki.jp/renst/pages/962.html , https://w.atwiki.jp/renst/pages/326.html
 - 実装: ❌ E13 / 01-D1（「好きな枚数」注記の14枚が3枚制限のまま）。01-D4（無制限カードが40枚で頭打ち）。
 
-#### R-DECK-04 2nd は同名扱い [wiki] `web未照合`
+#### R-DECK-04 2nd は同名扱い [wiki] `web照合済(2026-10-10)`
 1st と 2nd は同名として合計3枚まで。XG 以降は同名カードに「2nd」が付かない。
 - 出典: `atwiki/page-1646`「同名のカードはデッキに３枚までである」「クロスギャザーからは同名カードでも特徴に2ndは付かず」
 - Web: https://w.atwiki.jp/renst/pages/1646.html
-- 実装: ✅（01-D15）。印刷名と wiki 区別表記の対応は [未確定]（01-D2）。
+- 実装: ✅（01-D15）。印刷名と wiki 区別表記の対応は [未確定]（01-D2）。（2026-10-10 web確認: 記載なし）
 
-#### R-DECK-05 「『○○』としてつかえる」カード [公式] `web未照合`
-ゲーム中は「○○」として扱うが、デッキ構築では本来の名前の別カード。
+#### R-DECK-05 「『○○』としてつかえる」カード [公式] `web照合済(2026-10-10)`
+ゲーム中は「○○」として扱うが、デッキ構築では本来の名前の別カード（「○○」とは別に3枚まで入れられる）。
 - 出典: `atwiki/page-1739` Q1/A1「本来のカード名は異なりますので、デッキ構築の際は別のカードとして扱います」
 - Web: https://w.atwiki.jp/renst/pages/1739.html
 
-#### R-DECK-06 禁止カード [wiki] `web未照合`
-通常大会: コマンダーカード以外の禁止はない。ドギー・クルーガー（XG2、コマンダー版）は2010-04-01から禁止。2010-07-10 以降、混合（XG）大会では全コマンダーが使用禁止（合体ロボ大会では可）。タッグストライク限定禁止は R-FMT-04。
-- 出典: `atwiki/page-1704`「コマンダーカード以外は今のところ存在しない」、`atwiki/page-2079`、`atwiki/page-1690`
+#### R-DECK-06 禁止カード [wiki] `web照合済(2026-10-10)`
+通常大会: コマンダーカード以外の禁止はない。ドギー・クルーガー（XG2、コマンダー版）は2010-04-01から禁止。2010-07-10 以降、混合（XG）大会では全コマンダーが使用禁止（合体ロボ大会では可）。タッグストライク限定禁止は R-FMT-04。（参考: ツアーフェスティバル'08 のガンスリンガー大会のみ魔法猫スモーキーが禁止された。）
+- 出典: `atwiki/page-1704`「通常ルールの公式大会で使用できないカードはコマンダーカード以外は今のところ存在しない」、`atwiki/page-2079`「ドギー・クルーガー（XG2）(2010年4月1日より)」、`atwiki/page-1690`「2010年7月10日付けで、クロスギャザー大会（混合大会）では全てのコマンダーが使用禁止」
 - Web: https://w.atwiki.jp/renst/pages/1704.html , https://w.atwiki.jp/renst/pages/2079.html , https://w.atwiki.jp/renst/pages/1690.html
 - 実装: ✅ 禁止リスト空、コマンダーはデッキ不可（01-D11）
 
-#### R-DECK-07 コマンダーカード [公式] `web未照合`
+#### R-DECK-07 コマンダーカード [公式] `web照合済(2026-10-10)`
 デッキとは別に扱い、デッキ枚数にも同名制限にも数えない。事前にウラ向きで提示し、先攻後攻決定後にオモテにする。発動は先攻プレイヤーがスタートフェイズに入る前に、先攻→後攻の順。使用の有無・種類は試合ごとに選べる。
 - 出典: `atwiki/page-1690` A1、A2「先攻プレイヤーがスタートフェイズに入る前のタイミングで、先行・後攻の順に効果を発動して下さい」、本文「デッキの総枚数にも含まれない」
 - Web: https://w.atwiki.jp/renst/pages/1690.html
-- [未確定] ゲーム中の扱い（専用ゾーン、除去されうるか）。「コマンダーが離れたら敗北」に当たる記述は原文にない。
+- [未確定] ゲーム中の扱い（専用ゾーン、除去されうるか）。「コマンダーが離れたら敗北」に当たる記述は原文にない。（2026-10-10 web確認: 記載なし）
 - 実装: ❌ 01-D10（根拠のない「コマンダー離脱で敗北」）。開始前の発動は未接続（04-#33）。
 
-#### R-DECK-08 ハイランダー [wiki] `web未照合`
+#### R-DECK-08 ハイランダー [wiki] `web照合済(2026-10-10)`
 ハイランダー大会では同名カード1枚まで（カードナンバー違いも合算）。コマンダーは使えない。
-- 出典: `atwiki/page-2252`
+- 出典: `atwiki/page-2252`「コマンダーカードは使用不可」「カードナンバーが異なるカードでもカード名が同じならばあわせて1枚まで」
 - Web: https://w.atwiki.jp/renst/pages/2252.html
 
 ---
 
 ## 3. ゲーム準備
 
-#### R-SETUP-01 山札 [wiki] `web未照合`
+#### R-SETUP-01 山札 [公式] `web照合済(2026-10-10)`
 デッキをシャッフルし、ウラ向きで山札として置く。
-- 出典: `atwiki/page-154`「シャッフルされた自軍のカードが重なったもの。裏側を上にして積み上げられる」
-- Web: https://w.atwiki.jp/renst/pages/154.html
+- 出典: 公式ルール準備ページ「用意したデッキをよくシャッフルして、プレイシートの「山札」と書かれた部分に置いて下さい」、`atwiki/page-154`「シャッフルされた自軍のカードが重なったもの。裏側を上にして積み上げられる」
+- Web: https://www.grnrngr.com/documents/rangersstrike/rule/rule_preparation.html , https://w.atwiki.jp/renst/pages/154.html
 - 実装: ✅（01-D12）
 
-#### R-SETUP-02 相手の山札のシャッフル・カット [公式] `web未照合`
+#### R-SETUP-02 相手の山札のシャッフル・カット [公式] `web照合済(2026-10-10)`
 大会では大会規定に従う。フリープレイでは相手の同意のもとで行う。
-- 出典: `atwiki/page-1287` Q2/A2（同趣旨が page-154 にもある）
-- Web: https://w.atwiki.jp/renst/pages/1287.html
+- 出典: 公式FAQ リファレンス「山札」、`atwiki/page-154` Q2/A2・`atwiki/page-1287` Q2/A2「フリープレイの場合は、対戦相手との同意のもとで行ってください」
+- Web: https://www.grnrngr.com/documents/rangersstrike/faq/index.html , https://w.atwiki.jp/renst/pages/1287.html
 
-#### R-SETUP-03 初期手札7枚 [wiki] `web未照合`
+#### R-SETUP-03 初期手札7枚 [公式] `web照合済(2026-10-10)`
 ゲーム開始時、互いに山札から7枚引く。
-- 出典: `atwiki/page-122`「ゲーム開始時に互いに自分の山札から７枚を引く」
-- Web: https://w.atwiki.jp/renst/pages/122.html
+- 出典: 公式ルール準備ページ「山札からカードを７枚引いて手札にします」、`atwiki/page-122`「ゲーム開始時に互いに自分の山札から７枚を引く」
+- Web: https://www.grnrngr.com/documents/rangersstrike/rule/rule_preparation.html , https://w.atwiki.jp/renst/pages/122.html
 - 実装: ✅（01-D12）
 
-#### R-SETUP-04 手札上限なし [公式] `web未照合`
+#### R-SETUP-04 手札上限なし [公式] `web照合済(2026-10-10)`
 手札は何枚でも持てる。エンドフェイズに捨てる手順もない。
-- 出典: `atwiki/page-122` Q1/A1「ありません。何枚でも持つことができます」
-- Web: https://w.atwiki.jp/renst/pages/122.html
+- 出典: 公式FAQ リファレンス「手札」、`atwiki/page-122` Q1/A1「ありません。何枚でも持つことができます」
+- Web: https://www.grnrngr.com/documents/rangersstrike/faq/index.html , https://w.atwiki.jp/renst/pages/122.html
 - 実装: ✅
 
-#### R-SETUP-05 先攻の決め方 [未確定] `web未照合`
-保存資料に記述なし（「先攻後攻を決定後」とあるのみ）。「ジャンケン勝者が先攻・選択不可」という記述は出典不明。
-- 出典: `atwiki/page-1690`（「先攻後攻を決定後」）
-- Web: https://www.grnrngr.com/documents/rangersstrike/rule/index.html （準備ページ）
-- 確定方法: 公式ルールの準備ページを取得する。
+#### R-SETUP-05 先攻の決め方 [公式] `web照合済(2026-10-10)`
+ジャンケンで先攻・後攻を決める。ジャンケンの勝者が自動的に先攻になり、先攻・後攻を選ぶことはできない。公式準備ページの手順は「シャッフル → 7枚引く → ジャンケンなどで先攻・後攻を決定 → プレイ開始」。
+- 出典: 公式FAQ リファレンス「先攻後攻」「いいえ、選ぶことはできません。ジャンケンで勝ったプレイヤーが自動的に先攻になります」、公式ルール「ターンの流れ」「ジャンケンでの勝者が先攻となり」、公式ルール準備ページ「ジャンケンなどで先攻・後攻を決めます」
+- Web: https://www.grnrngr.com/documents/rangersstrike/faq/index.html , https://www.grnrngr.com/documents/rangersstrike/rule/rule_tarn.html , https://www.grnrngr.com/documents/rangersstrike/rule/rule_preparation.html
+- 旧記述: 保存資料に記述なしとして [未確定]。「ジャンケン勝者が先攻・選択不可」は出典不明としていた（2026-10-10 公式FAQで確定）。
 - 実装: ? 既定 player1、UI で選択（01-D5）。
 
-#### R-SETUP-06 マリガン [未確定] `web未照合`
-保存資料にマリガン（引き直し）の記述はない。現時点では「なし」として扱う。
-- 確定方法: 公式ルールの準備ページ。
+#### R-SETUP-06 マリガン [公式] `web照合済(2026-10-10)`
+マリガン（引き直し）はない。公式ルールの準備手順（シャッフル → 7枚引く → 先攻・後攻決定 → プレイ開始）に引き直しの工程はない。
+- 出典: 公式ルール準備ページ「山札からカードを７枚引いて手札にします」「先攻・後攻が決定したらいよいよプレイ開始です！」
+- Web: https://www.grnrngr.com/documents/rangersstrike/rule/rule_preparation.html
+- 旧記述: 保存資料に記述なし、暫定で「なし」として [未確定]。
+- [未確定] 明示的な「マリガンなし」の文言はなく、公式手順に工程がないことからの判断。大会規定での扱いは未確認。
 - 実装: マリガンなし。
 
-#### R-SETUP-07 先攻1ターン目 [wiki] `web未照合`
+#### R-SETUP-07 先攻1ターン目 [公式] `web照合済(2026-10-10)`
 先攻は1ターン目のみスタートフェイズを飛ばし、チャージフェイズから始める（したがってドローしない）。これ以外の先攻1ターン目の制限は資料にない。
-- 出典: `atwiki/page-264`「先攻側は１ターン目のみ、このフェイズを飛ばしてチャージフェイズからの始まりとなる」
-- Web: https://w.atwiki.jp/renst/pages/264.html
-- [未確定] バトル・ストライク禁止など追加制限の有無（公式ルールで要確認）。
+- 出典: 公式ルール「スタートフェイズ」「先攻１ターン目はスタートフェイズがスキップされ、先攻の2.チャージフェイズから開始となります」、`atwiki/page-264`「先攻側は１ターン目のみ、このフェイズを飛ばしてチャージフェイズからの始まりとなる」
+- Web: https://www.grnrngr.com/documents/rangersstrike/rule/rule_phase1-2.html , https://w.atwiki.jp/renst/pages/264.html
+- [未確定] バトル・ストライク禁止など追加制限の有無。公式ルールのフェイズ説明（rule_phase1-2 / phase3 / phase4）にも先攻1ターン目の追加制限の記述はない。（2026-10-10 web確認: 記載なし）
 - 実装: ✅（01-D8）
 
 ---
 
 ## 4. 勝敗
 
-#### R-WIN-01 ダメージ7点で敗北 [wiki] `web未照合`
-ダメージが7点になったプレイヤーは敗北する。カード効果で閾値が変わることがある（命の泉など）。
-- 出典: `atwiki/page-105`「7点になるとそのプレイヤーは敗北となる」
-- Web: https://w.atwiki.jp/renst/pages/105.html
+#### R-WIN-01 ダメージ7点で敗北 [公式] `web照合済(2026-10-10)`
+ダメージが7点になったプレイヤーは敗北する（その時点で相手の勝利）。カード効果で閾値が変わることがある（命の泉など）。
+- 出典: 公式ルール「バトルフェイズ」「相手に７点ダメージを与えた時点（相手のパワーゾーンの裏向きのカードが７枚になった時点）で勝利となります」、`atwiki/page-105`「7点になるとそのプレイヤーは敗北となる」
+- Web: https://www.grnrngr.com/documents/rangersstrike/rule/rule_phase4.html , https://w.atwiki.jp/renst/pages/105.html
 - 実装: ✅ WIN_DAMAGE=7（01-D13）
 
-#### R-WIN-02 同時に勝敗条件を満たしたらターンプレイヤーの勝ち [公式] `web未照合`
+#### R-WIN-02 同時に勝敗条件を満たしたらターンプレイヤーの勝ち [公式] `web照合済(2026-10-10)`
 両者が同時に7点目のダメージを受けた場合など、同時に勝敗条件を満たしたときはターンプレイヤーが勝つ。引き分けはない。
 - 出典: `grnrngr/faq-card-1` RS-054、`grnrngr/faq-card-2` RS-093「同時に７点目のダメージを受けた場合はターンプレイヤーがゲームに勝利します」。`atwiki/page-1827`「このゲームに引き分けは存在しない」
 - Web: https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_2.html , https://w.atwiki.jp/renst/pages/1827.html
 - 実装: ❌ E1（常に player2 が勝つ）
 
-#### R-WIN-03 デッキアウト [公式] `web未照合`
+#### R-WIN-03 デッキアウト [公式] `web照合済(2026-10-10)`
 山札が0枚になっただけでは負けない。カードを引くべきときに引けなかったプレイヤーが負ける。効果による「ひく」（ドローでない「ひく」を含む）でも同じ。
-- 出典: `atwiki/page-154` Q1/A1「山札が無くなったあとで、カードを引くべきときに引けなかった場合にゲームに負けてしまいます」、`grnrngr/faq-card-1` RS-027 Q4「はい、ゲームに負けてしまいます」
-- Web: https://w.atwiki.jp/renst/pages/154.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html
+- 出典: 公式ルール「スタートフェイズ」「山札が無くドローできないときは、ゲームに負けてしまいます」、公式FAQ リファレンス「山札」／`atwiki/page-154` Q1/A1「山札が無くなったあとで、カードを引くべきときに引けなかった場合にゲームに負けてしまいます」、`grnrngr/faq-card-1` RS-027「はい、ゲームに負けてしまいます。カードをひくべきときにひけなかった場合はゲームに負けてしまいます」
+- Web: https://www.grnrngr.com/documents/rangersstrike/rule/rule_phase1-2.html , https://www.grnrngr.com/documents/rangersstrike/faq/index.html , https://w.atwiki.jp/renst/pages/154.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html
 - 実装: ❌ E2（効果ドローで山札切れでも敗北しない）。ダイノガッツは山札不足で使用不可にしている（05-D3、誤り）。
 
-#### R-WIN-04 効果の発動可否はカードごと [公式] `web未照合`
-山札不足時に効果を「発動できない」か「発動して引けずに負ける」かはカード別の裁定。例: RS-004 デンジマシーンは自軍山札2枚以下では発動不可（コスト目的の使用は可）、RS-027 ダイノガッツは使えて途中で尽きれば敗北。
-- 出典: `grnrngr/faq-card-1` RS-004、RS-027 Q4
-- Web: https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html
-- [未確定] 部分不足（2枚引く効果で山札1枚）の一般則。
+#### R-WIN-04 効果の発動可否はカードごと [公式] `web照合済(2026-10-10)`
+山札不足時に効果を「発動できない」か「発動して引けずに負ける」かはカード別の裁定。例: RS-004 デンジマシーンは自軍山札2枚以下では発動不可（コスト目的の使用は可）、RS-027 ダイノガッツは使えて途中で尽きれば敗北、RS-237 サイレンビルダー「トリプルリキッドボンバー」は敵軍山札2枚以下では発動不可。「N枚まで」引く効果（RS-183 黒子ロボの記憶操作「３枚まで」）は、山札を残す枚数だけ引いて敗北を避けられる。
+- 出典: `grnrngr/faq-card-1` RS-004、RS-027、`grnrngr/faq-card-4` RS-237「敵軍山札が２枚以下のときは、その効果は発動できません」、RS-183「山札にカードを残すようにドローすることで、ゲームに負けてしまうことを回避できます」
+- Web: https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_4.html
+- [未確定] 部分不足（「まで」のない2枚引く効果で山札1枚）の一般則。（2026-10-10 web確認: 記載なし）
 
-#### R-WIN-05 ダメージを置く山札がない場合 [未確定] `web未照合`
-ダメージは山札の上から置くことがある（R-DMG-02）が、山札が空のときの処理は資料にない。
-- 確定方法: 公式ルール本体／リファレンスFAQ。
+#### R-WIN-05 ダメージを置く山札がない場合 [未確定] `web照合済(2026-10-10)`
+ダメージは、パワーゾーンにオモテ向きのカードがなければ山札の上から1枚を「ひいて」ウラ向きで置く（R-DMG-02）が、山札が空のときの処理を明記した資料はない。
+- 出典: 公式ルール「バトルフェイズ」「裏返しにできるカードがなければ、山札の上から１枚を裏向きのままパワーゾーンに置き１点とします」、`atwiki/page-105`「無ければ山札の上から１枚ひいてパワーゾーンにウラ向きのまま置く」
+- Web: https://www.grnrngr.com/documents/rangersstrike/rule/rule_phase4.html , https://w.atwiki.jp/renst/pages/105.html
+- 確定方法: 公式ルール本体／リファレンスFAQ。（2026-10-10 web確認: 記載なし。atwiki と公式FAQ RK-086 は山札から置くカードを「ひいたカード」と表現しており、R-WIN-03「引くべきときに引けなかった場合は負け」が適用される可能性があるが、明文はない）
 - 実装: ? カウンタのみ加算、敗北判定なし（01-D14、03-D8）。

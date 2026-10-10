@@ -12,6 +12,14 @@
   `implementation-report.md` / `coverage-report.md` / `simulation-report.md`、古い `docs/architecture/*`）は
   **削除する前提**。`docs/rules/` はこれらにリンクしない。
 
+## 進捗（2026-10-10 ローカル）
+
+- 手順1・2は完了。公式と wikiwiki はスクリプトで、atwiki は Cloudflare に弾かれるためブラウザ経由で本文を
+  `docs/rules/sources/web/` に保存し、全章を照合した（照合済 237 件、未照合は R-KW-BLAST-03 のみ）。
+- 公式と atwiki の食い違いは README §5.7。a（スタートでリリースするのはコマンドだけ）と
+  b（「アタックするかわりに」は対象なしでも使える）はユーザー決定。
+- 次は手順3（古いドキュメントの削除）と E5〜E7。
+
 ## 最初にやること
 
 1. web のルールページを取得する（クラウド環境からは接続できなかった）:
