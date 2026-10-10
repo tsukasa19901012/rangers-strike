@@ -607,6 +607,7 @@ function evaluateRushPowerAndZord(
     ) {
       return false;
     }
+    // ルール: R-ADD-04 — 「2体をそれぞれ」は選んだ素材すべてで検証する（先頭1体だけではない）。
     return validateZordAdditionalPayment(
       player,
       definitions,
@@ -615,6 +616,7 @@ function evaluateRushPowerAndZord(
       fieldIds[0],
       zordMaterialDestination,
       zordMothershipHoldInstanceIds,
+      fieldIds,
     );
   }
 

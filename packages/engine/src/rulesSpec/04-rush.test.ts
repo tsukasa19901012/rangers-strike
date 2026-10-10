@@ -710,9 +710,8 @@ describe("R-ADD-04 「コマンドゾーンに送るか捨札」", () => {
     expect(sent?.commandHeld ?? false).toBe(false);
   });
 
-  // 既知の不具合: 未登録 — 「自軍Sユニット2体をそれぞれ…」の追加条件（ダイナギャリー）を満たしてもラッシュを開始できない
   // 「「それぞれ」について「コマンドゾーンに送るか捨札にする」を選ぶ」
-  it.fails("R-ADD-04: 「2体をそれぞれ」は1体目をコマンドゾーンに送っても2体目もコマンドゾーンに送れる（出典: grnrngr/faq-card-4 RS-197 Q5）", () => {
+  it("R-ADD-04: 「2体をそれぞれ」は1体目をコマンドゾーンに送っても2体目もコマンドゾーンに送れる（出典: grnrngr/faq-card-4 RS-197 Q5）", () => {
     const gally = inst("RS-197", "gally");
     const s1u = inst("TST-UNIT-0", "s1");
     const s2u = inst("TST-UNIT-0", "s2");
@@ -1437,9 +1436,8 @@ describe("R-RUSH-21 テキストで条件を課す場合", () => {
     expect(heldCount(s1, "player1")).toBe(2);
   });
 
-  // 既知の不具合: 未登録 — 空輸搬送（「ただし…追加条件は満たすこと」）で出すMユニットの追加条件を実行しない
   // 「その場合はＳユニットは捨札にしなければなりません」
-  it.fails("R-RUSH-21: コマンド5枚のとき、空輸搬送で出すMユニットの追加条件のSユニットはコマンドゾーンに送れず捨札にする（出典: grnrngr/faq-card-2 RS-120 Q1・grnrngr/faq-card-4 RS-197 Q4）", () => {
+  it("R-RUSH-21: コマンド5枚のとき、空輸搬送で出すMユニットの追加条件のSユニットはコマンドゾーンに送れず捨札にする（出典: grnrngr/faq-card-2 RS-120 Q1・grnrngr/faq-card-4 RS-197 Q4）", () => {
     const gyro = inst("RS-120", "gyro");
     const dump = inst("RS-118", "dump");
     const sA = inst("TST-UNIT-0", "sa");
@@ -1558,9 +1556,8 @@ describe("R-RUSH-22 効果ラッシュでも誘発とカウンター窓がある
     expect(s.players.player2.hand.some((c) => c.cardId === "TST-OP")).toBe(true);
   });
 
-  // 既知の不具合: 未登録 — ダイナギャリー【パーツキャリアー】でコマンドゾーンのMユニットがラッシュエリアに出ない（ログのみ）
   // 「ラッシュしたときの効果は発動しますか？」「はい、発動します」
-  it.fails("R-RUSH-22: パーツキャリアーで出したブルバルカンの「ラッシュしたとき」（救助活動）が発動する（出典: grnrngr/faq-card-4 RS-197 Q1・Q3）", () => {
+  it("R-RUSH-22: パーツキャリアーで出したブルバルカンの「ラッシュしたとき」（救助活動）が発動する（出典: grnrngr/faq-card-4 RS-197 Q1・Q3）", () => {
     const gally = inst("RS-197", "gally");
     const bull = inst("RS-075", "bull");
     const sUnit = inst("TST-UNIT-0", "s");

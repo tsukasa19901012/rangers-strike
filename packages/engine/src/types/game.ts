@@ -424,6 +424,8 @@ export type PendingZordSetup = {
   step: PendingZordSetupStep;
   validInstanceIds: string[];
   materialInstanceId?: string;
+  /** 複数体の素材が必要な追加条件（「2体をそれぞれ」）で選び終えた素材。 */
+  chosenMaterialIds?: string[];
   /** send_s_unit_to_command_or_discard 時、素材選択前に選ぶ。 */
   materialDestination?: ZordMaterialDestination;
   /** このゾードでは母艦ホールドがSユニット素材の代用になる場合がある。 */

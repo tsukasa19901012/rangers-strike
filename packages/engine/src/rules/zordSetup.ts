@@ -459,6 +459,30 @@ export function advanceZordSetup(
       return { kind: "error", error: "invalid_destination" };
     }
 
+    // ルール: R-ADD-04 — 「Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする」（RS-197 等）は
+    // 必要な体数だけ素材を選ぶ。
+    const needed = zordMaterialUnitCount(state, setup.zordCardId);
+    if (needed > 1) {
+      const chosen = [...(setup.chosenMaterialIds ?? []), materialId];
+      if (chosen.length < needed) {
+        const remaining = setup.validInstanceIds.filter((id) => !chosen.includes(id));
+        if (remaining.length < needed - chosen.length) {
+          return { kind: "error", error: "invalid_material" };
+        }
+        return {
+          kind: "continue",
+          setup: {
+            ...setup,
+            step: "material",
+            chosenMaterialIds: chosen,
+            materialDestination: destination,
+            validInstanceIds: remaining,
+          },
+        };
+      }
+      return completeMultiZordPayment(state, setup, chosen, destination);
+    }
+
     return completeZordPayment(state, setup, materialId, destination);
   }
 
@@ -475,6 +499,61 @@ export function advanceZordSetup(
   }
 
   return { kind: "error", error: "invalid_step" };
+}
+
+function zordMaterialUnitCount(state: GameState, zordCardId: string): number {
+  const def = getDefinition(state.definitions, zordCardId);
+  const condition = getZordCondition(zordCardId);
+  if (!condition || !isSendSUnitZordCondition(condition)) return 1;
+  const count = def?.rushAdditionalCondition?.unitCount;
+  return typeof count === "number" && count > 1 ? count : 1;
+}
+
+function completeMultiZordPayment(
+  state: GameState,
+  setup: PendingZordSetup,
+  materialInstanceIds: string[],
+  materialDestination: ZordMaterialDestination | undefined,
+): ZordSetupAdvanceResult {
+  const playerId = setup.playerId;
+  const player = state.players[playerId];
+  const def = getDefinition(state.definitions, setup.zordCardId);
+  if (!def) return { kind: "error", error: "invalid_card" };
+  if (
+    materialDestination === "command" &&
+    player.command.length + materialInstanceIds.length > COMMAND_ZONE_MAX
+  ) {
+    return { kind: "error", error: "invalid_destination" };
+  }
+  const shironRush = isShironLightRushTarget(player, setup.zordInstanceId);
+  if (shironRush || isCostWindowSatisfied(player, "rush_category")) {
+    return {
+      kind: "rush",
+      action: {
+        type: "rush",
+        playerId,
+        instanceId: setup.zordInstanceId,
+        zordMaterialInstanceIds: materialInstanceIds,
+        zordMaterialDestination: materialDestination,
+      },
+    };
+  }
+  const payment = buildCategoryPayment(
+    state,
+    playerId,
+    setup.zordInstanceId,
+    setup.zordCardId,
+    cardCategories(def),
+    {
+      type: "rush",
+      zordMaterialInstanceIds: materialInstanceIds,
+      zordMaterialDestination: materialDestination,
+    },
+    false,
+    { perRushPayment: true },
+  );
+  if (payment) return { kind: "payment", payment };
+  return { kind: "error", error: "cannot_complete_zord" };
 }
 
 function completeZordDownPayment(

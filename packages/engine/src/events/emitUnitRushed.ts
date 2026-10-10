@@ -212,17 +212,23 @@ export function drainEffectRushTriggers(state: GameState): RushEffectOutcome {
     // バトルエリアに出たユニットのアタック／ストライク選択待ち（pendingBattleEntry）はイベント解決を
     // 止めるが、「バトルエリアに出たとき」の効果で出したユニットの誘発はその前に解決する。
     const parkedEntry = nextState.pendingBattleEntry;
+    const parkedDeferred = nextState.deferredBattleEntry;
     const result = emitUnitRushedAndFinalize(
-      parkedEntry ? { ...nextState, pendingBattleEntry: undefined } : nextState,
+      parkedEntry || parkedDeferred
+        ? { ...nextState, pendingBattleEntry: undefined, deferredBattleEntry: undefined }
+        : nextState,
       head.rusherPlayerId,
       head.instanceId,
       head.phasePlayerId,
       { silent: head.silent },
     );
-    nextState =
-      parkedEntry && !result.state.pendingBattleEntry
-        ? { ...result.state, pendingBattleEntry: parkedEntry }
-        : result.state;
+    nextState = result.state;
+    if (parkedEntry && !nextState.pendingBattleEntry) {
+      nextState = { ...nextState, pendingBattleEntry: parkedEntry };
+    }
+    if (parkedDeferred && !nextState.deferredBattleEntry) {
+      nextState = { ...nextState, deferredBattleEntry: parkedDeferred };
+    }
     logs.push(...result.logs);
     if (!head.silent && !hasPendingPromptBlockingEffectRush(nextState)) {
       // ルール: R-RUSH-22 — 効果で出したレッドレーサーも「ラッシュするとき可能ならバトルエリアに置く」に従う。

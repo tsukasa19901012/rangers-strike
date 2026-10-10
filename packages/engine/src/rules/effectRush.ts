@@ -32,6 +32,7 @@ import {
   hasPendingPromptBlockingEffectRush,
 } from "../events/emitUnitRushed";
 import { rushAdditionalConditionApplies } from "./bkOperationTurnRules";
+import { promoteDeferredBattleEntry } from "./battleEntry";
 import {
   applyAllZordFusionMaterials,
   collectZordMaterials,
@@ -150,6 +151,21 @@ export function planEffectRush(
   return { kind: "none" };
 }
 
+/** 自軍コマンドゾーンのリリース状態の、指定サイズのユニットカード。 */
+export function releasedCommandUnitIds(
+  state: GameState,
+  playerId: PlayerId,
+  size: "S" | "M" | "L",
+): string[] {
+  return state.players[playerId].command
+    .filter((c) => {
+      if (c.commandHeld) return false;
+      const def = getDefinition(state.definitions, c.cardId);
+      return def?.type === "unit" && def.size === size;
+    })
+    .map((c) => c.instanceId);
+}
+
 /** 効果ラッシュの候補のうち、実際に出せるもの。 */
 export function filterEffectRushCandidates(
   state: GameState,
@@ -177,6 +193,8 @@ export type StartEffectRushInput = {
   /** 選べる上限。 */
   maxCount: number;
   requireConditions: boolean;
+  /** 候補が上限以下でもプレイヤーに選ばせる（「1枚選び…出してもよい」）。 */
+  alwaysAsk?: boolean;
 };
 
 /**
@@ -204,7 +222,7 @@ export function startEffectRush(state: GameState, input: StartEffectRushInput): 
     queue: [],
   };
 
-  if (candidates.length <= input.maxCount) {
+  if (candidates.length <= input.maxCount && !input.alwaysAsk) {
     return continuePendingEffectRush({
       ...state,
       pendingEffectRush: { ...base, queue: candidates },
@@ -375,7 +393,9 @@ export function continuePendingEffectRush(state: GameState): GameState {
     if (pending.picking || pending.current) return next;
     if (hasPendingPromptBlockingEffectRush(next)) return next;
     if (pending.queue.length === 0) {
-      return withPending(next, undefined);
+      // 「バトルエリアに出たとき」の効果（パーツキャリアー等）から来た場合、保留していた
+      // アタック／ストライク選択を再開する。
+      return promoteDeferredBattleEntry(withPending(next, undefined));
     }
     const [head, ...rest] = pending.queue;
     next = withPending(next, { ...pending, queue: rest });
