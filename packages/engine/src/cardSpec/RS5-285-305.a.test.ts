@@ -272,8 +272,7 @@ describe("RS-287 剛龍神", () => {
   };
 
   // 「敵軍バトルエリアからBP8000以下のユニットを1体選び撃破してもよい。そうしたとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び撃破する」
-  it.fails("RS-287: 【超爆裂龍神突き】敵軍バトルエリアの BP8000 以下を撃破し、続けて敵軍ラッシュエリアの BP4000 以下を撃破する（出典: atwiki/page-417）", () => {
-    // 既知の不具合: CARD-RS-287 敵軍ラッシュエリアの BP4000 以下を撃破する後半の効果が実装されていない
+  it("RS-287: 【超爆裂龍神突き】敵軍バトルエリアの BP8000 以下を撃破し、続けて敵軍ラッシュエリアの BP4000 以下を撃破する（出典: atwiki/page-417）", () => {
     let s = gouEnters(fullBoard);
     expect(choiceIds(s)).toEqual(["SPEC-E8:b8"]);
     s = settle(pick(s, "SPEC-E8:b8"));
@@ -293,8 +292,7 @@ describe("RS-287 剛龍神", () => {
     expect(zoneOf(s, "player2", "SPEC-E9:b9")).toBe("battle");
   });
 
-  it.fails("RS-287: 【超爆裂龍神突き】バトルエリアの撃破は任意（見送れる）で、見送ればラッシュエリアのユニットも撃破しない（出典: atwiki/page-417「撃破してもよい。そうしたとき」）", () => {
-    // 既知の不具合: CARD-RS-287 バトルエリアの撃破が強制（見送れない）
+  it("RS-287: 【超爆裂龍神突き】バトルエリアの撃破は任意（見送れる）で、見送ればラッシュエリアのユニットも撃破しない（出典: atwiki/page-417「撃破してもよい。そうしたとき」）", () => {
     let s = gouEnters(fullBoard);
     expect(canSkip(s)).toBe(true);
     s = settle(skip(s));
@@ -308,8 +306,7 @@ describe("RS-287 剛龍神", () => {
     expect(zoneOf(s, "player2", "SPEC-E4:r4")).toBe("rush");
   });
 
-  it.fails("RS-287: 【超爆裂龍神突き】ラッシュエリアの撃破は強制（見送れない）（出典: atwiki/page-417「撃破する」）", () => {
-    // 既知の不具合: CARD-RS-287 敵軍ラッシュエリアの BP4000 以下を撃破する後半の効果が実装されていない
+  it("RS-287: 【超爆裂龍神突き】ラッシュエリアの撃破は強制（見送れない）（出典: atwiki/page-417「撃破する」）", () => {
     let s = gouEnters(fullBoard);
     s = settle(pick(s, "SPEC-E8:b8"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-287");
@@ -463,15 +460,13 @@ describe("RS-289 ドラゴンレンジャー", () => {
     expect(canEnter(s, "RS-289:dr")).toBe(true);
   });
 
-  it.fails("RS-289: ※ 直前の敵軍ターンにダメージを受けていなければバトルエリアに出られない（出典: atwiki/page-416「にしか…出られない」）", () => {
-    // 既知の不具合: CARD-RS-289 ダメージを受けていなくてもバトルエリアに出られる（damageGateBlocksEntry が合法手判定 canMoveUnitToBattle で使われていない）
+  it("RS-289: ※ 直前の敵軍ターンにダメージを受けていなければバトルエリアに出られない（出典: atwiki/page-416「にしか…出られない」）", () => {
     const s = nextOwnBattle(false);
     expect(s.players.player1.damage).toBe(0);
     expect(canEnter(s, "RS-289:dr")).toBe(false);
   });
 
-  it.fails("RS-289: ※ ダメージを受けた敵軍ターンの「次の」自軍ターンだけ — その次の自軍ターン（間の敵軍ターンにダメージなし）には出られない（出典: atwiki/page-416「次の自軍ターンにしか」）", () => {
-    // 既知の不具合: CARD-RS-289 ダメージを受けていなくてもバトルエリアに出られる
+  it("RS-289: ※ ダメージを受けた敵軍ターンの「次の」自軍ターンだけ — その次の自軍ターン（間の敵軍ターンにダメージなし）には出られない（出典: atwiki/page-416「次の自軍ターンにしか」）", () => {
     let s = nextOwnBattle(true);
     s = endTurn(passEntry(s));
     s = endTurn(s);
@@ -481,7 +476,6 @@ describe("RS-289 ドラゴンレンジャー", () => {
 
   // faq-card-5 RS-289 Q1「はい、出ることができます。」（カードをダメージにして置く効果でもダメージを受けたとみなす）
   it("RS-289: 公式Q&A — 敵軍ターン中に「ダメージにして置く」効果（カーナビック）を受けた場合も、次の自軍ターンに出られる（出典: grnrngr/faq-card-5 RS-289 Q1）", () => {
-    // 潜在的な不具合メモ: 効果でダメージにして置かれたとき PlayerState.damagedOnEnemyTurn が立たない（現状は ※ の判定自体が働かないため表面化しない）。
     let s = st({
       activePlayer: "player2",
       phase: "rush",

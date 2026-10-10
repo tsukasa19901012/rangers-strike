@@ -116,6 +116,8 @@ export type PlayerState = {
   hasChargedThisTurn?: boolean;
   /** damage_gate_battle_entry: 敵軍ターン中にダメージを受けた（自軍ターン終了で消える）。 */
   damagedOnEnemyTurn?: boolean;
+  /** damage_gate_battle_entry: ターン開始時のウラ向きパワー（ダメージ）の枚数（効果で置かれたダメージの検出用）。 */
+  faceDownPowerAtTurnStart?: number;
   /** attack_and_strike_once: ユニットごとの今ターンの行動履歴。 */
   unitActionsThisTurn?: Record<string, { attacked?: boolean; struck?: boolean }>;
   /** 自軍バトルフェイズを終えた瞬間のバトルエリアの並び順（instanceId → 何番目）。R-TIME-07。 */

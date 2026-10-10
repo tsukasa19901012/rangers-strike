@@ -663,7 +663,27 @@ export function applyAction(
   next = settleResolvingOperations(next);
   next = applyBpZeroRuleDestruction(next);
   next = syncDamageWithFaceDownPower(state, next);
+  next = markEnemyTurnFaceDownDamage(state, next);
   return next === result.state ? result : { ok: true, state: next };
+}
+
+/**
+ * damage_gate_battle_entry（RS-289 ドラゴンレンジャー等）: 敵軍ターン中にダメージ（ウラ向きのパワー）が増えたら、
+ * ストライク以外（「ダメージにして置く」効果）でも「ダメージを受けた」と記録する（faq-card-5 RS-289 Q1）。
+ */
+function markEnemyTurnFaceDownDamage(before: GameState, after: GameState): GameState {
+  if (before.turn !== after.turn) return after;
+  const turnPlayer = turnPlayerOf(before);
+  let players = after.players;
+  for (const pid of ["player1", "player2"] as const) {
+    if (pid === turnPlayer || after.players[pid].damagedOnEnemyTurn) continue;
+    const fdBefore = before.players[pid].power.filter((c) => c.faceDown).length;
+    const fdAfter = after.players[pid].power.filter((c) => c.faceDown).length;
+    if (fdAfter > fdBefore) {
+      players = { ...players, [pid]: { ...players[pid], damagedOnEnemyTurn: true } };
+    }
+  }
+  return players === after.players ? after : { ...after, players };
 }
 
 /** RS-107【ディースナイパー】: カウンターのためにホールドしたコマンドを捨札にする。 */

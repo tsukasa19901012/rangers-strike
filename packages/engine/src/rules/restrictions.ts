@@ -316,6 +316,8 @@ export function canMoveUnitToBattle(
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
 
   if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
+  // RS-289 / XP-023「※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない」（atwiki/page-416）。
+  if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (needsAllySInBattle(unit.cardId)) {
     const hasAllyS = state.players[playerId].battle.some((c) =>

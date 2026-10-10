@@ -162,6 +162,41 @@ export function checkWinner(state: GameState): PlayerId | null {
   return null;
 }
 
+function faceDownPowerCount(player: PlayerState): number {
+  return player.power.filter((c) => c.faceDown).length;
+}
+
+/**
+ * damage_gate_battle_entry（RS-289 / XP-023「ダメージを受けた敵軍ターンの次の自軍ターンにしか出られない」）:
+ * ターンが替わるとき、
+ * - ターンを終えたプレイヤーの「敵軍ターン中にダメージを受けた」記録を消す（その次の自軍ターンだけ有効）。
+ * - これから自軍ターンになるプレイヤーが、終わったターン（敵軍ターン）中にダメージ（ウラ向きのパワー）を
+ *   増やしていれば記録する。ストライク以外の「ダメージにして置く」効果も含む（faq-card-5 RS-289 Q1）。
+ * - 次のターンの比較用に、両プレイヤーのダメージ枚数を記録する。
+ */
+function recordEnemyTurnDamage(state: GameState, endingPlayerId: PlayerId, nextPlayerId: PlayerId): GameState {
+  const ending = state.players[endingPlayerId];
+  const upcoming = state.players[nextPlayerId];
+  const snapshot = upcoming.faceDownPowerAtTurnStart;
+  const damagedByCount = snapshot !== undefined && faceDownPowerCount(upcoming) > snapshot;
+  return {
+    ...state,
+    players: {
+      ...state.players,
+      [endingPlayerId]: {
+        ...ending,
+        damagedOnEnemyTurn: undefined,
+        faceDownPowerAtTurnStart: faceDownPowerCount(ending),
+      },
+      [nextPlayerId]: {
+        ...upcoming,
+        damagedOnEnemyTurn: upcoming.damagedOnEnemyTurn || damagedByCount || undefined,
+        faceDownPowerAtTurnStart: faceDownPowerCount(upcoming),
+      },
+    } as GameState["players"],
+  };
+}
+
 export function advancePhase(state: GameState): GameState {
   if (state.winner) return state;
 
@@ -219,6 +254,10 @@ export function advancePhase(state: GameState): GameState {
         [activePlayer]: { ...ender, battlePositionsAtBattleEnd: positions },
       },
     };
+  }
+
+  if (state.phase === "end") {
+    nextState = recordEnemyTurnDamage(nextState, state.activePlayer, activePlayer);
   }
 
   if (next === "start") {
