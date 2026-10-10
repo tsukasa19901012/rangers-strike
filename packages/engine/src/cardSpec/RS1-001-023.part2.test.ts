@@ -149,8 +149,7 @@ describe("RS-009 パワーバズーカ", () => {
     expect(back.includes(abaKiller.instanceId) && back.includes(top.instanceId)).toBe(false);
   });
 
-  it.fails("RS-009: atwiki Q&A — アバレキラーは「トップゲイラー＋ステゴスライドン」としてキラーオーの素材に選んで戻せる（出典: atwiki/page-252 Q1）", () => {
-    // 既知の不具合: CARD-RS-009 合体素材の探索が合体元のカード番号一覧だけで、「〜としてつかえる」カード（XG6-018）を素材として戻さない
+  it("RS-009: atwiki Q&A — アバレキラーは「トップゲイラー＋ステゴスライドン」としてキラーオーの素材に選んで戻せる（出典: atwiki/page-252 Q1）", () => {
     const ko = inst("RS-226", "ko");
     const abaKiller = inst("XG6-018", "ak");
     const { s: s0, baz } = bazState({ battle: [ko], discard: [abaKiller], released: 3 });
@@ -442,8 +441,7 @@ describe("RS-012 科学アカデミアの科学力", () => {
     ).toBe(false);
   });
 
-  it.fails("RS-012: 特徴「メカ」を持つビークルのカードは選べない（出典: atwiki/page-253 「ユニットのカード」、R-CARD-04）", () => {
-    // 既知の不具合: CARD-RS-012 対象判定が特徴「メカ」だけで、カードの種類（ユニット）を確認していない
+  it("RS-012: 特徴「メカ」を持つビークルのカードは選べない（出典: atwiki/page-253 「ユニットのカード」、R-CARD-04）", () => {
     const vehicle = inst("CS-VEH-MECHA", "v");
     const { s, op } = academyState([vehicle], {
       "CS-VEH-MECHA": { id: "CS-VEH-MECHA", name: "CS-VEH-MECHA", type: "vehicle", category: "ET", rarity: "N", expansion: "test", powerCost: 0, size: "S", features: ["メカ"] },

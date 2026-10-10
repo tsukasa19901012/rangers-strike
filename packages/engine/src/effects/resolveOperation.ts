@@ -522,7 +522,8 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
       const found = findInZone(player, "discard", ctx.targetInstanceId);
       if (!found) return fail(ctx.state, "invalid_target");
       const def = getDefinition(ctx.state.definitions, found.card.cardId);
-      if (!def?.features?.includes("メカ")) return fail(ctx.state, "invalid_target");
+      // 「特徴「メカ」を持つユニットのカード」— ビークル等ユニット以外は不可（R-CARD-04）。
+      if (!isUnit(def) || !def.features?.includes("メカ")) return fail(ctx.state, "invalid_target");
 
       const [, discard] = removeAt(player.discard, found.index);
       const nextPlayer = {
@@ -659,7 +660,9 @@ function cardHasMechaFeature(
   definitions: GameState["definitions"],
   cardId: string,
 ): boolean {
-  return getDefinition(definitions, cardId)?.features?.includes("メカ") ?? false;
+  const def = getDefinition(definitions, cardId);
+  // RS-012「特徴「メカ」を持つユニットのカード」— ユニット以外（ビークル等）は含めない（R-CARD-04）。
+  return isUnit(def) && (def.features?.includes("メカ") ?? false);
 }
 
 export function isValidOperationTarget(
