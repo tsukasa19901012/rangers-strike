@@ -2,6 +2,8 @@ import { finalizeEffectRush } from "../events/emitUnitRushed";
 import type { Category } from "@rangers-strike/cards";
 import { canonicalCardName } from "@rangers-strike/cards";
 import { markBattleBlocked } from "./turnModifiers";
+import { countLogicalBattleSlots } from "./battleLine";
+import { tryLegend3BattleToRush } from "./legend3/restrictions";
 import type {
   CardInstance,
   GameState,
@@ -2003,6 +2005,51 @@ function finishSeabedDrawChoice(
   return finishChoice(cleared, pending, detail);
 }
 
+/**
+ * ルール: R-CN-04 — 自軍バトルフェイズ中に相手の効果で出された自軍ユニットは、自分で出したときと同じように扱う
+ * （NC の条件がそろえば発動し、アタック・ストライクできる）。その時点でバトル進入の処理中だったユニットは
+ * 「なにもしない」を選んだのと同じになりアタックできない（faq-card-3 RS-141 Q1）。
+ */
+function treatOpponentDeployedAsOwnEntry(
+  state: GameState,
+  ownerId: PlayerId,
+  card: CardInstance,
+  battleBeforeEnter: CardInstance[],
+  pending: PendingEffectChoice,
+): GameState {
+  if (state.phase !== "battle" || pending.phasePlayerId !== ownerId || pending.playerId === ownerId) {
+    return state;
+  }
+  let next = state;
+  const previous = next.deferredBattleEntry ?? next.pendingBattleEntry;
+  if (previous && previous.playerId === ownerId && previous.instanceId !== card.instanceId) {
+    const owner = next.players[ownerId];
+    next = {
+      ...next,
+      ...updatePlayer(next, ownerId, {
+        ...owner,
+        battle: owner.battle.map((c) =>
+          c.instanceId === previous.instanceId ? { ...c, battleActed: true } : c,
+        ),
+      }),
+      pendingBattleEntry: undefined,
+    };
+  }
+  return {
+    ...next,
+    deferredBattleEntry: {
+      playerId: ownerId,
+      instanceId: card.instanceId,
+      phasePlayerId: ownerId,
+      resumeEnterBattle: {
+        battlePosition: countLogicalBattleSlots(battleBeforeEnter) + 1,
+        battleBeforeEnterInstanceIds: battleBeforeEnter.map((c) => c.instanceId),
+        from: "conditional",
+      },
+    },
+  };
+}
+
 function finishChoice(
   state: GameState,
   pending: PendingEffectChoice,
@@ -2015,6 +2062,13 @@ function finishChoice(
     state.definitions,
     `${pending.effectId}:${detail}`,
   );
+  if (pending.resumeChoice) {
+    // 割り込んだ効果の解決後、中断していた元の効果の選択を再開する。
+    return {
+      state: openEffectChoice(clearChoice(state, pending.phasePlayerId), pending.resumeChoice),
+      log,
+    };
+  }
   return {
     state: promoteDeferredBattleEntry(clearChoice(state, pending.phasePlayerId)),
     log,
@@ -2890,11 +2944,9 @@ export function applyEffectChoiceSelect(
           },
           "battle_entry_hold",
         );
-        return finishChoice(
-          { ...state, ...updatePlayer(state, located.playerId, nextOwner) },
-          pending,
-          cardName(state.definitions, found.card.cardId),
-        );
+        let deployed: GameState = { ...state, ...updatePlayer(state, located.playerId, nextOwner) };
+        deployed = treatOpponentDeployedAsOwnEntry(deployed, located.playerId, found.card, readyOwner.battle, pending);
+        return finishChoice(deployed, pending, cardName(state.definitions, found.card.cardId));
       }
       if (dest === "swap_battle" && pending.sourceInstanceId) {
         const player = state.players[pending.playerId];
@@ -3011,14 +3063,32 @@ export function applyEffectChoiceSelect(
           if (enemyTargets.length === 0) {
             return finishChoice(nextState, pending, cardName(state.definitions, found.card.cardId));
           }
+          const secondStep: PendingEffectChoice = {
+            ...pending,
+            kind: "select_unit",
+            step: undefined,
+            validInstanceIds: enemyTargets,
+            selectedInstanceIds: [],
+            unitDestination: "enemy_battle",
+          };
+          // ルール: R-CN-04 / R-TIME-04 — 戻したユニットの「ラッシュエリアに戻るとき」（ジェットファルコンの
+          // ファルコンクロー）が割り込んで解決され、その後で紐拳の残りを続ける（faq-card-3 RS-141 Q1）。
+          const withFalcon = tryLegend3BattleToRush(
+            clearChoice(nextState, pending.playerId),
+            located.playerId,
+            found.card,
+            pending.phasePlayerId,
+          );
+          if (withFalcon.pendingEffectChoice) {
+            return {
+              state: {
+                ...withFalcon,
+                pendingEffectChoice: { ...withFalcon.pendingEffectChoice, resumeChoice: secondStep },
+              },
+            };
+          }
           return {
-            state: openEffectChoice(clearChoice(nextState, pending.playerId), {
-              ...pending,
-              kind: "select_unit",
-              step: undefined,
-              validInstanceIds: enemyTargets,
-              unitDestination: "enemy_battle",
-            }),
+            state: openEffectChoice(clearChoice(nextState, pending.playerId), secondStep),
           };
         }
         return { error: "invalid_step" };

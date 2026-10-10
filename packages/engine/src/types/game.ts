@@ -304,6 +304,8 @@ export type PendingEffectChoice = {
   selectedInstanceIds?: string[];
   step?: "own" | "enemy";
   viewedInstanceIds?: string[];
+  /** この選択の解決後に続けて開く選択（割り込んだ誘発効果の後で元の効果を再開する。R-TIME-04）。 */
+  resumeChoice?: PendingEffectChoice;
   /** 複数対象の撃破で処理済みの対象（離場反応で中断→再開したときに同じユニットを再び処理しない。R-TGT-03）。 */
   processedInstanceIds?: string[];
   optional?: boolean;

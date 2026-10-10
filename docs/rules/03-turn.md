@@ -27,7 +27,7 @@
 「このターン」は、そのテキストが有効になった時点から、ターンプレイヤーが「ターンエンド」を宣言するまで。どちらのプレイヤーのカードに付いた効果でも同じ。発動前の事象には遡らない（例: 発動前にホールドされていたコマンドには及ばない）。
 - 出典: `atwiki/page-588` Q1/A1・`grnrngr/faq-index`「ターン」「ターンプレイヤーが「ターンエンド」と宣言するまでです」、`grnrngr/faq-card-2` RS-107 Q1「その効果が発動した以降のターン中にのみ適用される」（RS-363 バルパンサー（2nd）の FAQ〔faq/card_6〕も同旨）
 - Web: https://w.atwiki.jp/renst/pages/588.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_2.html , https://www.grnrngr.com/documents/rangersstrike/faq/index.html
-- 実装: ✅ E4。`finalizeTurnEnd`（core/applyAction.ts）が「ターンを終えるとき」の効果をすべて処理した後に両プレイヤーの「このターン」修正を消し、ターンを1回だけ渡す。残り: RS-107 ディースナイパーの「発動後のターン中」継続（デカブルーが場を離れた後のカウンター用ホールド）は未実装。
+- 実装: ✅ E4。`finalizeTurnEnd`（core/applyAction.ts）が「ターンを終えるとき」の効果をすべて処理した後に両プレイヤーの「このターン」修正を消し、ターンを1回だけ渡す。RS-107 ディースナイパーの「発動後のターン中」継続（デカブルーが場を離れた後のカウンター用ホールドを捨札）も ✅。
 
 #### R-TURN-05 ターンプレイヤー [wiki] `web照合済(2026-10-10)`
 現在ターンを行っているプレイヤー。同時に起きた処理の順番を決める権利を持つ（R-SIM-01）。
