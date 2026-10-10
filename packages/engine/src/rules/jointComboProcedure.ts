@@ -239,6 +239,7 @@ function applyJointLTrigger(
       partner.instanceId,
     );
     nextState = result.state;
+    nextPlayer = nextState.players[playerId];
     logs.push(...result.logs);
   }
 

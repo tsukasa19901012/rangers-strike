@@ -525,14 +525,20 @@ describe("RS-173 wall_shoot", () => {
       "wall_shoot",
       "player1",
     );
-    expect(result.state.players.player2.command).toHaveLength(1);
-    expect(result.state.players.player2.command[0]?.commandHeld).toBe(true);
-    expect(result.state.players.player2.deck.length).toBeGreaterThan(0);
+    // 「次の効果を発動できる」（atwiki/page-355）— 発動するかの確認を経て処理する。
+    expect(result.state.pendingEffectChoice?.effectId).toBe("wall_shoot");
+    const r = applyAction(result.state, { type: "confirm_effect_choice", playerId: "player1" });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.state.players.player2.command).toHaveLength(1);
+    expect(r.state.players.player2.command[0]?.commandHeld).toBe(true);
+    expect(r.state.players.player2.deck).toHaveLength(2);
   });
 });
 
 describe("RS-175 nature_big_bang_final", () => {
-  it("offers optional destroy on enemy units with BP 20000 or less", () => {
+  // 「1体選んで撃破する」は強制（atwiki/page-348）。対象の選択を開く。
+  it("offers a destroy choice on enemy units with BP 20000 or less", () => {
     const gaonight = inst("RS-175", "gaonight");
     const target = inst("TST-UNIT-2", "target");
     const state = createTestState({

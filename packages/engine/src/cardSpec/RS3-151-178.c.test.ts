@@ -316,16 +316,14 @@ describe("RS-173 ゴーゴーミキサー", () => {
     expect(s.players.player2.deck).toHaveLength(40);
   });
 
-  it.fails("RS-173: 戻したカードは山札とシャッフルされるので、40枚の山札に戻した3枚がそのまま戻ってくることはまずない（出典: atwiki/page-355「山札に戻してシャッフルする」）", () => {
-    // 既知の不具合: CARD-RS-173 コマンドを山札の上に置いてそのままひき直しており、シャッフルしない（同じカードがホールド状態で戻るだけ）
+  it("RS-173: 戻したカードは山札とシャッフルされるので、40枚の山札に戻した3枚がそのまま戻ってくることはまずない（出典: atwiki/page-355「山札に戻してシャッフルする」）", () => {
     let s = lThenR("RS-173", "SPEC-ET-L", [ET_L], {}, { command: enemyCmd(), deck: bigDeck() });
     s = settle(accept(s, "wall_shoot"));
     const back = zoneIds(s, "player2", "command").sort();
     expect(back).not.toEqual(["TST-OP:c1", "TST-OP:c2", "TST-OP:c3"]);
   });
 
-  it.fails("RS-173: 効果を発動しない（任意）こともできる（出典: atwiki/page-355「次の効果を発動できる」）", () => {
-    // 既知の不具合: CARD-RS-173 【ウォールシュート】が任意効果として提示されず、コンビネーション成立で強制的に処理される
+  it("RS-173: 効果を発動しない（任意）こともできる（出典: atwiki/page-355「次の効果を発動できる」）", () => {
     let s = lThenR("RS-173", "SPEC-ET-L", [ET_L], {}, { command: enemyCmd(), deck: bigDeck() });
     expect(legalOfType(s, "skip_effect_choice").some((a) => a.playerId === "player1")).toBe(true);
     s = act(s, { type: "skip_effect_choice", playerId: "player1" });
@@ -365,8 +363,7 @@ describe("RS-174 ゴーゴークレーン", () => {
   const craneDeck = () => [inst("TST-OP-DA", "top"), inst("TST-OP-DA", "second")];
 
   // 「自軍コマンドゾーンからカードを1枚選んで手札に戻す。その後、山札から1枚ひいて自軍コマンドゾーンに置く」
-  it.fails("RS-174: 自軍コマンドを1枚選んで手札に戻し、山札の上から1枚をコマンドゾーンに置く（出典: atwiki/page-356）", () => {
-    // 既知の不具合: CARD-RS-174 選んだコマンドは手札に戻るが、その後の「山札から1枚ひいて自軍コマンドゾーンに置く」が行われない
+  it("RS-174: 自軍コマンドを1枚選んで手札に戻し、山札の上から1枚をコマンドゾーンに置く（出典: atwiki/page-356）", () => {
     let s = lThenR("RS-174", "SPEC-ET-L", [ET_L], { command: [held("TST-OP", "c1"), released("TST-OP", "c2")], deck: craneDeck() });
     expect(s.pendingEffectChoice?.effectId).toBe("lift_up");
     expect(choiceIds(s)).toEqual(expect.arrayContaining(["TST-OP:c1", "TST-OP:c2"]));
@@ -452,8 +449,7 @@ describe("RS-175 ガオナイト", () => {
     expect(zoneOf(s, "player2", "SPEC-BIG21:b21")).toBe("battle");
   });
 
-  it.fails("RS-175: 「撃破する」は強制 — 対象がいれば選ばないことはできない（出典: atwiki/page-348「選んで撃破する」）", () => {
-    // 既知の不具合: CARD-RS-175 【森羅万象ビッグバンファイナル】の選択に skip_effect_choice が出て、撃破しないことを選べてしまう
+  it("RS-175: 「撃破する」は強制 — 対象がいれば選ばないことはできない（出典: atwiki/page-348「選んで撃破する」）", () => {
     const s = rushKnight().state;
     expect(legalOfType(s, "skip_effect_choice").some((a) => a.playerId === "player1")).toBe(false);
   });
@@ -504,8 +500,7 @@ describe("RS-176 ダイタンケン", () => {
   });
 
   // 「敵軍Lユニットを1体選んで撃破してもよい」
-  it.fails("RS-176: ラッシュしたとき、敵軍の L ユニット（バトル・ラッシュエリア）だけを選べる（出典: atwiki/page-342）", () => {
-    // 既知の不具合: CARD-RS-176 【大突撃】の候補が敵軍バトルエリアの L ユニットだけで、敵軍ラッシュエリアの L ユニットを選べない
+  it("RS-176: ラッシュしたとき、敵軍の L ユニット（バトル・ラッシュエリア）だけを選べる（出典: atwiki/page-342）", () => {
     const s = rushTanken(kingField()).state;
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(s)).toEqual(["RS-151:king", "TST-UNIT-7:zord", "TST-UNIT-7:zordB"]);
@@ -678,8 +673,7 @@ describe("RS-178 ボウケンシルバー", () => {
   });
 
   // faq-card-3 RS-178 Q2「お互いに撃破となっても、ユニットを撃破したことには違いありませんので…発動させることができます」
-  it.fails("RS-178: 公式Q&A — バトルで引き分け、お互いに撃破となっても発動する（出典: grnrngr/faq-card-3 RS-178 Q2）", () => {
-    // 既知の不具合: CARD-RS-178 【サガスナイパー】がバトルに勝ったときにしか発動せず、引き分けで相打ちのときは発動しない
+  it("RS-178: 公式Q&A — バトルで引き分け、お互いに撃破となっても発動する（出典: grnrngr/faq-card-3 RS-178 Q2）", () => {
     const s = silverAttacks("SPEC-PC3-4000:e3", { battle: [inst("SPEC-PC3-4000", "e3")] });
     expect(zoneOf(s, "player1", "RS-178:sv")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-PC3-4000:e3")).toBe("discard");
@@ -708,8 +702,7 @@ describe("RS-178 ボウケンシルバー", () => {
     expect(choiceIds(s)).toEqual(["TST-UNIT-2:c2"]);
   });
 
-  it.fails("RS-178: 公式Q&A — 隠流忍術で味方（自軍）のユニットとバトルさせられ、引き分けでお互いに撃破となっても発動する（出典: grnrngr/faq-card-3 RS-178 Q1）", () => {
-    // 既知の不具合: CARD-RS-178 引き分け（相打ち）では【サガスナイパー】が発動しない（Q2 と同じ原因）
+  it("RS-178: 公式Q&A — 隠流忍術で味方（自軍）のユニットとバトルさせられ、引き分けでお互いに撃破となっても発動する（出典: grnrngr/faq-card-3 RS-178 Q1）", () => {
     let s = st(
       {
         player1: { battle: [inst("RS-178", "sv"), inst("SPEC-PC3-4000", "ally")], deck: silverDeck() },

@@ -1,5 +1,7 @@
 import { getJointLNamedEffect, getJointRNamedEffect } from "@rangers-strike/cards";
-import type { GameState, PlayerId, PlayerState } from "../../types/game";
+import type { GameState, PlayerId } from "../../types/game";
+import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEffects";
+import { shuffleCards } from "../errataCardEffects";
 import { getDefinition } from "../../core/catalog";
 import { opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { buildLogEntry } from "../../log/formatLog";
@@ -70,28 +72,15 @@ export function resolveLegend3JointComboR(
       );
       break;
     case "wall_shoot": {
-      const enemy = nextState.players[enemyId];
-      const returned = enemy.command.length;
-      if (returned > 0) {
-        const nextEnemy: PlayerState = {
-          ...enemy,
-          command: [],
-          deck: [...enemy.command, ...enemy.deck],
-        };
-        nextState = { ...nextState, ...updatePlayer(nextState, enemyId, nextEnemy) };
-        for (let i = 0; i < returned; i++) {
-          const p = nextState.players[enemyId];
-          if (p.deck.length === 0 || p.command.length >= 5) break;
-          const [drawn, deck] = removeAt(p.deck, 0);
-          nextState = {
-            ...nextState,
-            ...updatePlayer(nextState, enemyId, {
-              ...p,
-              deck,
-              command: [...p.command, { ...drawn, commandHeld: true }],
-            }),
-          };
-        }
+      // 「次の効果を発動できる⇒相手は…全て山札に戻してシャッフルする。その後、戻した枚数を山札の上からひいて、
+      // コマンドゾーンにホールド状態で置く」（atwiki/page-355）— 発動するかを選ぶ。
+      if (nextState.players[enemyId].command.length > 0) {
+        nextState = openOptionalEffectConfirm(nextState, {
+          playerId,
+          effectId: "wall_shoot",
+          sourceCardId: rCardId,
+          phasePlayerId,
+        });
       }
       logs.push(
         buildLogEntry(playerId, "joint_combo_r", rCardId, state.definitions, "wall_shoot"),
@@ -99,6 +88,8 @@ export function resolveLegend3JointComboR(
       break;
     }
     case "lift_up": {
+      // 「次の効果を発動できる⇒自軍コマンドゾーンからカードを1枚選んで手札に戻す。その後、山札から1枚ひいて
+      // 自軍コマンドゾーンに置く」（atwiki/page-356）。選んだあとで山札から置く（pendingChoices の lift_up）。
       const player = nextState.players[playerId];
       if (player.command.length > 0) {
         const withChoice = startSelectCommandChoice(nextState, {
@@ -112,18 +103,6 @@ export function resolveLegend3JointComboR(
           validInstanceIds: player.command.map((c) => c.instanceId),
         });
         if (withChoice) nextState = withChoice;
-      }
-      const afterPlayer = nextState.players[playerId];
-      if (afterPlayer.deck.length > 0) {
-        const [drawn, rest] = removeAt(afterPlayer.deck, 0);
-        nextState = {
-          ...nextState,
-          ...updatePlayer(nextState, playerId, {
-            ...afterPlayer,
-            deck: rest,
-            command: [...afterPlayer.command, { ...drawn!, commandHeld: false }],
-          }),
-        };
       }
       logs.push(
         buildLogEntry(playerId, "joint_combo_r", rCardId, state.definitions, "lift_up"),
@@ -175,4 +154,49 @@ export function isLegend3JointREffect(effectId: string): boolean {
     "wall_shoot",
     "lift_up",
   ].includes(effectId);
+}
+
+registerOptionalEffect("wall_shoot", {
+  apply: (state, pending) => {
+    const enemyId = opponent(pending.playerId);
+    const enemy = state.players[enemyId];
+    const returned = enemy.command.length;
+    let nextState: GameState = {
+      ...state,
+      ...updatePlayer(state, enemyId, {
+        ...enemy,
+        command: [],
+        deck: shuffleCards([...enemy.command.map((c) => ({ ...c, commandHeld: undefined })), ...enemy.deck]),
+      }),
+    };
+    for (let i = 0; i < returned; i++) {
+      const p = nextState.players[enemyId];
+      if (p.deck.length === 0 || p.command.length >= 5) break;
+      const [drawn, deck] = removeAt(p.deck, 0);
+      nextState = {
+        ...nextState,
+        ...updatePlayer(nextState, enemyId, {
+          ...p,
+          deck,
+          command: [...p.command, { ...drawn!, commandHeld: true }],
+        }),
+      };
+    }
+    return nextState;
+  },
+});
+
+/** RS-174【リフトアップ】の後半: 山札から1枚ひいて自軍コマンドゾーンに置く。 */
+export function liftUpPlaceFromDeck(state: GameState, playerId: PlayerId): GameState {
+  const player = state.players[playerId];
+  if (player.deck.length === 0 || player.command.length >= 5) return state;
+  const [drawn, rest] = removeAt(player.deck, 0);
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      deck: rest,
+      command: [...player.command, { ...drawn!, commandHeld: false }],
+    }),
+  };
 }

@@ -1,4 +1,6 @@
 import type { Category } from "@rangers-strike/cards";
+import { getConditionalNamedEffect } from "@rangers-strike/cards";
+import { startSagasSniperChoice } from "./pendingChoices";
 import { getCardEffect, winButDestroyedVsSp1 } from "@rangers-strike/cards";
 import type {
   CardInstance,
@@ -1019,7 +1021,35 @@ export function processMutualDestruction(
   if (r1.deferred) return r1;
   const r2 = tryLeaveField(r1.state, second);
   if (r2.deferred) return r2;
-  return { state: r2.state, deferred: false };
+  return { state: applySagasSniperOnMutualDestruction(r2.state, ctx), deferred: false };
+}
+
+/**
+ * RS-178 シルバー【サガスナイパー】「自軍ターン中、これがユニットを撃破したとき」— 引き分けでお互いに撃破と
+ * なっても、ユニットを撃破したことには違いないので発動する（faq-card-3 RS-178 Q1・Q2）。
+ */
+function applySagasSniperOnMutualDestruction(state: GameState, ctx: MutualDestructionContext): GameState {
+  if (state.pendingEffectChoice || state.winner) return state;
+  if (state.activePlayer !== ctx.attackerPlayerId) return state;
+  if (getConditionalNamedEffect(ctx.attackerCardId)?.effectId !== "sagas_sniper") return state;
+  const destroyedCost = parsePowerCost(
+    getDefinition(state.definitions, ctx.defenderCard.cardId)?.powerCost ?? 99,
+  );
+  const withChoice = startSagasSniperChoice(state, {
+    playerId: ctx.attackerPlayerId,
+    sourceCardId: ctx.attackerCardId,
+    sourceInstanceId: ctx.attackerInstanceId,
+    phasePlayerId: ctx.attackerPlayerId,
+    maxPowerCost: destroyedCost,
+  });
+  if (withChoice?.pendingEffectChoice?.effectId !== "sagas_sniper") return state;
+  return {
+    ...withChoice,
+    log: [
+      ...withChoice.log,
+      buildLogEntry(ctx.attackerPlayerId, "named_effect", ctx.attackerCardId, state.definitions, "sagas_sniper"),
+    ],
+  };
 }
 
 function zoneFingerprint(state: GameState): string {

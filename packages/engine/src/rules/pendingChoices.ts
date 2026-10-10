@@ -1,6 +1,7 @@
 import { checkWinner } from "../core/createGame";
 import { resolveSubmergePick, SUBMERGE_EFFECT_ID } from "./legend3/rushEffects";
 import { finishHououOwnStep, HOUOU_TORNADO_EFFECT_ID, isHououChoice, resolveHououPick } from "./hououTornado";
+import { liftUpPlaceFromDeck } from "./legend3/jointComboEffects";
 import { CYCLOPS_SCARLET_EFFECT_ID, discardCyclopsResident, tryCyclopsScarletOnReturnToRush } from "./cyclopsScarlet";
 import { finalizeEffectRush, hasPendingPromptBlockingEffectRush } from "../events/emitUnitRushed";
 import { applyOnRushUnitEffects } from "./onRushUnitEffects";
@@ -3981,7 +3982,10 @@ export function applyEffectChoiceSelect(
           fromZone: "command",
         });
         if (!bounced.bounced) return { error: "invalid_target" };
-        return finishChoice(bounced.state, pending, cardName(state.definitions, found.card.cardId));
+        // RS-174【リフトアップ】「その後、山札から1枚ひいて自軍コマンドゾーンに置く」（atwiki/page-356）。
+        const afterReturn =
+          pending.effectId === "lift_up" ? liftUpPlaceFromDeck(bounced.state, pending.playerId) : bounced.state;
+        return finishChoice(afterReturn, pending, cardName(state.definitions, found.card.cardId));
       } else if (pending.commandAction === "return_deck_top") {
         const [, command] = removeAt(player.command, found.index);
         nextPlayer = {

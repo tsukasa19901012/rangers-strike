@@ -214,10 +214,14 @@ export function resolveLegend3OnRushEffects(
 
   switch (effectId) {
     case "great_assault": {
+      // 「敵軍Lユニット」— バトルエリア・ラッシュエリアの L ユニット（atwiki/page-342）。
       const targets = collectFieldUnitIds(nextState, enemyId, Number.MAX_SAFE_INTEGER, [
         "battle",
+        "rush",
       ]).filter((id) => {
-        const inst = nextState.players[enemyId].battle.find((c) => c.instanceId === id);
+        const inst =
+          nextState.players[enemyId].battle.find((c) => c.instanceId === id) ??
+          nextState.players[enemyId].rush.find((c) => c.instanceId === id);
         if (!inst) return false;
         return getDefinition(nextState.definitions, inst.cardId)?.size === "L";
       });
@@ -339,7 +343,8 @@ export function resolveLegend3OnRushEffects(
           phasePlayerId,
           validInstanceIds: targets,
           unitDestination: "discard",
-          optional: true,
+          // 「1体選んで撃破する」— 対象がいれば強制（atwiki/page-348）。
+          optional: false,
         });
         if (withChoice) nextState = withChoice;
       }
