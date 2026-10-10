@@ -603,12 +603,13 @@ describe("R-ATK-03 アタック時の効果の期間", () => {
       player1: {
         operation: [inst("RS-019", "chouriki")],
         battle: [inst("TST-UNIT-0", "a")],
-        command: heldCommands(3),
+        // 超力はアタックするときに新たにホールドしたコマンドを数える（atwiki/page-243）ので、リリース状態で用意する。
+        command: releasedCommands(3),
       },
       player2: { battle: [inst("TST-UNIT-2", "d")] },
     });
     s = settle(attack(s, "TST-UNIT-0:a", "TST-UNIT-2:d"));
-    // BP1000 + ホールド3枚×1000 = 4000 > 3000
+    // BP1000 + アタック時にホールドした3枚×1000 = 4000 > 3000
     expect(zoneOf(s, "player2", "TST-UNIT-2:d")).toBe("discard");
     expect(zoneOf(s, "player1", "TST-UNIT-0:a")).toBe("battle");
     const a = s.players.player1.battle.find((c) => c.instanceId === "TST-UNIT-0:a")!;

@@ -107,7 +107,7 @@ import { isEngineNativeGrantKeyword } from "./promotedKeywordBridge";
 import { isCatchallGrantKeyword } from "./hashGrantKeywordStub";
 import { isStableCardDelegateKeyword } from "./effectCardGrantKeywordBridge";
 import { setGenericSComboFinisher, setBattleDestroyToPower, addComboNumberDelta } from "../rules/turnModifierBridge";
-import { superPowerAttackBonus } from "../core/catalog";
+import { applySuperPowerHolds } from "../core/catalog";
 import { matchRkGrantKeyword } from "../rules/rkEffects";
 import { matchSrGrantKeyword } from "../rules/srEffects";
 import { tryRkBkGrantKeywordFromEffect } from "../rules/rk/rkBkCatchallRuntime";
@@ -1181,13 +1181,15 @@ export function applyGrantKeyword(
             "optional_battle_no_attack",
           );
         }
+        const superPower = applySuperPowerHolds(nextState, ctx.playerId, attacker);
+        nextState = superPower.state;
         const pending: PendingBattle = {
           attackerPlayerId: ctx.playerId,
           attackerInstanceId: attacker.instanceId,
           defenderPlayerId: enemyId,
           defenderInstanceId,
           phasePlayerId: ctx.phasePlayerId,
-          attackerBpBonus: superPowerAttackBonus(nextState, ctx.playerId, attacker),
+          attackerBpBonus: superPower.bonus,
         };
         return {
           state: { ...nextState, pendingBattle: pending },

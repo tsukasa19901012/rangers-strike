@@ -83,7 +83,8 @@ describe("R-BP-01 BP の計算順", () => {
       player1: {
         operation: [inst("RS-019", "chouriki")],
         battle: [inst("RS-131", "metz")],
-        command: heldCommands(2),
+        // 超力はアタックするときに新たにホールドしたコマンドを数える（atwiki/page-243）ので、リリース状態で用意する。
+        command: releasedCommands(2),
         deck: [inst("TST-UNIT-2", "top"), ...deckCards(2)],
       },
       player2: { battle: [inst("RS-062", "bred")] },

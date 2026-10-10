@@ -25,7 +25,7 @@ import {
   needsZordMaterial,
   parsePowerCost,
   rushPowerCost,
-  superPowerAttackBonus,
+  applySuperPowerHolds,
 } from "./catalog";
 import {
   isPermanentCard,
@@ -2579,13 +2579,22 @@ function applyActionCore(
         battleState = { ...battleState, counterLockedPlayerId: enemyId };
       }
 
+      // ルール: RS-019 超力 — アタックするとき自軍コマンドをホールドし、ホールドした数だけ BP+1000。
+      const superPower = applySuperPowerHolds(
+        battleState,
+        playerId,
+        attackerFound.card,
+        action.superPowerHolds,
+      );
+      battleState = superPower.state;
+
       const pending: PendingBattle = {
         attackerPlayerId: playerId,
         attackerInstanceId: action.attackerInstanceId,
         defenderPlayerId: enemyId,
         defenderInstanceId: action.defenderInstanceId,
         phasePlayerId: playerId,
-        attackerBpBonus: superPowerAttackBonus(battleState, playerId, attackerFound.card),
+        attackerBpBonus: superPower.bonus,
         mirageBeamBpOverride: miragePrep.bpOverride,
         mirageBeamDiscard: miragePrep.revealedCard,
       };

@@ -103,8 +103,7 @@ describe("RS-017 気力", () => {
     expect(bpOf(s, "player1", m.instanceId)).toBe(4000);
   });
 
-  it.fails("RS-017: 2枚配置すれば効果は重複する（出典: R-CONT-01、atwiki/page-27）", () => {
-    // 既知の不具合: CARD-RS-017 常駐の有無だけを見ており、2枚目の気力が重複しない
+  it("RS-017: 2枚配置すれば効果は重複する（出典: R-CONT-01、atwiki/page-27）", () => {
     const { s, s1 } = kiState({ active: "player2", releasedN: 2, kiCount: 2 });
     expect(bpOf(s, "player1", s1.instanceId)).toBe(1000 + 2 * 2000);
   });
@@ -377,8 +376,7 @@ describe("RS-019 超力", () => {
     expect(cardDef("RS-019")?.powerCost).toBe(5);
   });
 
-  it.fails("RS-019: アタックするとき自軍コマンドを2つホールドすれば、そのSユニットはBP+2000でバトルする（出典: atwiki/page-243）", () => {
-    // 既知の不具合: CARD-RS-019 アタック時にコマンドをホールドする手段がなく、既にホールド中のコマンド数をそのまま数えている
+  it("RS-019: アタックするとき自軍コマンドを2つホールドすれば、そのSユニットはBP+2000でバトルする（出典: atwiki/page-243）", () => {
     const atk = inst("CS-S1", "atk");
     const { s: s0, def } = powState(atk, { releasedN: 2, heldN: 0, defBp: 2500 });
     let s = act(s0, { type: "battle", playerId: "player1", attackerInstanceId: atk.instanceId, defenderInstanceId: def.instanceId });
@@ -387,8 +385,7 @@ describe("RS-019 超力", () => {
     expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(2);
   });
 
-  it.fails("RS-019: アタック時に新たにホールドしなければ上がらない（他の目的で既にホールドしたコマンドは数えない）（出典: atwiki/page-243 「ホールドするごとに」）", () => {
-    // 既知の不具合: CARD-RS-019 既にホールド状態のコマンド（別の支払いでホールドしたもの）も1つにつきBP+1000として数える
+  it("RS-019: アタック時に新たにホールドしなければ上がらない（他の目的で既にホールドしたコマンドは数えない）（出典: atwiki/page-243 「ホールドするごとに」）", () => {
     const atk = inst("CS-S1", "atk");
     const { s: s0, def } = powState(atk, { releasedN: 0, heldN: 2, defBp: 2500 });
     let s = act(s0, { type: "battle", playerId: "player1", attackerInstanceId: atk.instanceId, defenderInstanceId: def.instanceId });

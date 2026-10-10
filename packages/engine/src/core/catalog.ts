@@ -51,7 +51,6 @@ import {
   breakerBlocksSameNameRush,
 } from "../keywords/battleKeywords";
 import { effectiveRushAdditionalCondition } from "../rules/rushAdditionalCondition";
-import { countHeldCommands } from "../rules/restrictions";
 import { countAvailablePower, effectivePowerCost, rushEffectivePowerCost } from "./power";
 
 export function buildDefinitionMap(
@@ -248,8 +247,12 @@ export function passiveBpBonus(
   const player = state.players[playerId];
   let bonus = 0;
 
+  // RS-017 気力（常駐）: 枚数分重複する（R-CONT-01）。
+  const kiCount = player.operation.filter(
+    (card) => getCardEffect(card.cardId)?.effectId === "ki_power",
+  ).length;
   if (
-    hasOperationEffect(player, "ki_power", state.definitions) &&
+    kiCount > 0 &&
     state.activePlayer !== playerId &&
     isSmallUnit(state.definitions, instance.cardId)
   ) {
@@ -258,7 +261,7 @@ export function passiveBpBonus(
       player.battle.some((c) => c.instanceId === instance.instanceId);
     if (inField) {
       const released = player.command.filter((c) => !c.commandHeld).length;
-      bonus += released * 1000;
+      bonus += kiCount * released * 1000;
     }
   }
 
@@ -286,16 +289,32 @@ export function passiveBpBonus(
   return bonus;
 }
 
-/** RS-019: Sユニット攻撃時の任意BP上昇。 */
-export function superPowerAttackBonus(
+/**
+ * RS-019 超力: 自軍Sユニットがアタックするとき、自軍コマンドを新たにホールドした数×BP+1000。
+ * 既にホールド状態のコマンド（別の支払い等）は数えない（atwiki/page-243「ホールドするごとに」）。
+ * requested を省略するとリリース状態のコマンドをすべてホールドする（0 なら発動しない）。
+ */
+export function applySuperPowerHolds(
   state: GameState,
   playerId: PlayerId,
   attacker: CardInstance,
-): number {
+  requested?: number,
+): { state: GameState; bonus: number } {
   const player = state.players[playerId];
-  if (!hasOperationEffect(player, "super_power", state.definitions)) return 0;
-  if (!isSmallUnit(state.definitions, attacker.cardId)) return 0;
-  return countHeldCommands(player) * 1000;
+  if (!hasOperationEffect(player, "super_power", state.definitions)) return { state, bonus: 0 };
+  if (!isSmallUnit(state.definitions, attacker.cardId)) return { state, bonus: 0 };
+  const released = player.command.filter((c) => !c.commandHeld);
+  const count = Math.max(0, Math.min(requested ?? released.length, released.length));
+  if (count === 0) return { state, bonus: 0 };
+  const holdIds = new Set(released.slice(0, count).map((c) => c.instanceId));
+  const nextPlayer: PlayerState = {
+    ...player,
+    command: player.command.map((c) => (holdIds.has(c.instanceId) ? { ...c, commandHeld: true } : c)),
+  };
+  return {
+    state: { ...state, players: { ...state.players, [playerId]: nextPlayer } },
+    bonus: count * 1000,
+  };
 }
 
 export function effectiveBp(

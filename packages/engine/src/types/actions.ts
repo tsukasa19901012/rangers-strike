@@ -73,6 +73,11 @@ export type BattleAction = {
   playerId: PlayerId;
   attackerInstanceId: string;
   defenderInstanceId: string;
+  /**
+   * RS-019 超力: アタックするときにホールドする自軍コマンドの数（省略時はリリース状態のコマンドすべて、0 で発動しない）。
+   * 合法手の判定では無視される（攻撃者・防御者が一致すればよい）。
+   */
+  superPowerHolds?: number;
 };
 
 export type HoldForWingAction = {

@@ -2,7 +2,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import { describe, expect, it } from "vitest";
 import { legend1Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
-import { effectiveBp, hasOperationEffect, superPowerAttackBonus } from "./core/catalog";
+import { applySuperPowerHolds, effectiveBp, hasOperationEffect } from "./core/catalog";
 import { battleAttackerBpBonus, battleDefenderBp } from "./rules/namedUnitEffects";
 import { passiveNamedFieldBpBonus } from "./rules/fieldAuras";
 import { collectHiddenNinjaSubstitutes, finalizeLeaveReaction } from "./rules/operationCounters";
@@ -475,7 +475,7 @@ describe("RS-018 Hidden Ninja", () => {
 });
 
 describe("RS-019 Super Power", () => {
-  it("adds BP from held commands when S unit attacks", () => {
+  it("holds released commands when S unit attacks and adds BP per newly held command", () => {
     const attacker = inst("TST-UNIT-0", "atk");
     const state = createTestState({
       phase: "battle",
@@ -485,12 +485,17 @@ describe("RS-019 Super Power", () => {
         operation: [inst("RS-019", "sp")],
         battle: [attacker],
         command: [
-          { ...heldMaCommand("c1"), commandHeld: true },
-          { ...heldMaCommand("c2"), commandHeld: true },
+          { ...heldMaCommand("c1"), commandHeld: false },
+          { ...heldMaCommand("c2"), commandHeld: false },
+          { ...heldMaCommand("c3"), commandHeld: true },
         ],
       },
     });
-    expect(superPowerAttackBonus(state, "player1", attacker)).toBe(2000);
+    const all = applySuperPowerHolds(state, "player1", attacker);
+    expect(all.bonus).toBe(2000);
+    expect(all.state.players.player1.command.every((c) => c.commandHeld)).toBe(true);
+    expect(applySuperPowerHolds(state, "player1", attacker, 1).bonus).toBe(1000);
+    expect(applySuperPowerHolds(state, "player1", attacker, 0).bonus).toBe(0);
   });
 });
 
