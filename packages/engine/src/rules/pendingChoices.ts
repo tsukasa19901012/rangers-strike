@@ -43,6 +43,7 @@ import {
 import { maybeInterceptDeckRevealForShuriken, grantSp1ToRushUnit, completeShurikenDeckRevealSwap, applyShurikenRevealToHand, findEnemySWithPowerCost } from "./srEffects";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
 import { SCRAMBLE_EFFECT_ID, filterScrambleRemaining } from "./fieldActivatedAbilities";
+import { tryResolveErrataChoice } from "./errataCardEffects";
 import {
   applyFlowerBombDeclaredNumber,
   continueMagiBlueAfterSelfDraw,
@@ -2227,6 +2228,9 @@ export function applyEffectChoiceSelect(
   if (!pending) return { error: "no_pending_choice" };
   if (pending.playerId !== playerId) return { error: "wrong_player" };
 
+  const errata = tryResolveErrataChoice(state, playerId, instanceId);
+  if (errata) return errata;
+
   if (pending.effectId === "morph_replacement") {
     const result = resolveMorphReplacementChoice(state, playerId, instanceId);
     if ("error" in result) return { error: result.error };
@@ -3344,6 +3348,16 @@ export function applyEffectChoiceSelect(
               ...player,
               command,
               discard: [...player.discard, found.card],
+            }),
+          };
+        } else if (pending.commandAction === "return_hand") {
+          const [, command] = removeAt(player.command, found.index);
+          nextState = {
+            ...nextState,
+            ...updatePlayer(nextState, pending.playerId, {
+              ...player,
+              command,
+              hand: [...player.hand, { ...found.card, commandHeld: false }],
             }),
           };
         } else if (pending.commandAction === "rush") {

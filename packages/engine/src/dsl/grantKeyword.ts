@@ -77,6 +77,7 @@ import {
 } from "../rules/batch06FieldEffects";
 import { beginCastoffOnRush } from "../rules/castoff";
 import { tryReportedRiderEffect } from "../rules/riderKickEffects";
+import { tryErrataCardEffect } from "../rules/errataCardEffects";
 import { tryGenericTextFallback } from "./genericTextFallback";
 import {
   beginDeclareNumberDeckReveal,
@@ -374,6 +375,9 @@ export function applyGrantKeyword(
   // cardId::effectId で正確に解決する。effect_card 委譲より前に置く。
   const reported = tryReportedRiderEffect(state, ctx, keyword);
   if (reported) return reported;
+  // エラッタ・公式回答に合わせたカード固有効果（docs/rules/08-errata.md）。
+  const errata = tryErrataCardEffect(state, ctx, keyword);
+  if (errata) return errata;
 
   if (keyword.startsWith("hand_named_to_rush::")) {
     const withChoice = applyHandNamedToRush(state, ctx, keyword);

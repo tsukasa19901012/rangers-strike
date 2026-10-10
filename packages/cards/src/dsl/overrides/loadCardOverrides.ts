@@ -10,8 +10,11 @@ import rs106 from "./RS-106.json";
 import rs118 from "./RS-118.json";
 import rs036 from "./RS-036.json";
 import rs365 from "./RS-365.json";
+import rs030 from "./RS-030.json";
+import xg2030 from "./XG2-030.json";
 import rk043 from "./RK-043.json";
 import rk125 from "./RK-125.json";
+import rk168 from "./RK-168.json";
 import xg1029 from "./XG1-029.json";
 import xg1030 from "./XG1-030.json";
 import xg3005 from "./XG3-005.json";
@@ -44,10 +47,17 @@ const CARD_OVERRIDES: Record<string, Partial<CardDocument>> = {
   "RS-036": rs036 as Partial<CardDocument>,
   // ルール: R-ERR-RS365 — 追加条件は「これ以外の自分の手札を全て捨札にする」（挙動は従来から自身を除外）。
   "RS-365": rs365 as Partial<CardDocument>,
+  // ルール: R-ERR-RS030 — 「自分も相手も次の制限を受ける→」を含む修正後テキスト（両軍に効く処理は engine 側）。
+  "RS-030": rs030 as Partial<CardDocument>,
+  // ルール: R-ERR-XG2-030 — 公式回答の読み替え文（コマンダー。ゲーム開始時効果はエンジン未実装）。
+  "XG2-030": xg2030 as Partial<CardDocument>,
   // ルール: R-ERR-RK043 — 【突入】に「このターン、」を追加（公式読み替え文）。
   "RK-043": rk043 as Partial<CardDocument>,
   // ルール: R-ERR-RK125 — wiki 注記「※赤文字は…」が本文・効果に混入していたのを除去。
   "RK-125": rk125 as Partial<CardDocument>,
+  // ルール: R-ERR-RK125 — 【ブレイラウザー】は手札をちょうど3枚見せる（engine: rules/errataCardEffects.ts）。
+  // ルール: R-ERR-RK168 — 【てんこもりだぜ！】は電王CF 進入時のイマジン効果で処理する（自身の DSL は起点だけ）。
+  "RK-168": rk168 as Partial<CardDocument>,
   // E7: 効果文が補われたカードのうち、パイプライン出力が原文とずれる効果を人手で修正。
   // 【無敵の竜人魂】対象を本来BP8000以下のLユニットに限定（DA なら SP1 は未実装）。
   "XG1-029": xg1029 as Partial<CardDocument>,

@@ -330,8 +330,7 @@ describe("R-ERR-XG1-048 仮面ライダースーパー1・EH", () => {
 // ---------------------------------------------------------------------------
 describe("R-ERR-XG2-030 ヌマ・O長官", () => {
   // atwiki/page-1689 Q1 公式回答の読み替え文
-  // 既知の不具合: 未登録 — カード定義（wiki_stub のコマンダー）にテキストがない
-  it.fails("R-ERR-XG2-030: 修正後テキスト「…手札に加えたカードの合体に必要なユニットのカードを、それぞれ1枚まで選び…」を持つ（出典: atwiki/page-1689 Q1）", () => {
+  it("R-ERR-XG2-030: 修正後テキスト「…手札に加えたカードの合体に必要なユニットのカードを、それぞれ1枚まで選び…」を持つ（出典: atwiki/page-1689 Q1）", () => {
     expectCorrectedText(
       "XG2-030",
       "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札を見て、特徴「メカ」を持つLユニットのカードを1枚選び、相手に見せてから自分の手札に加える。そして、手札に加えたカードの合体に必要なユニットのカードを、それぞれ1枚まで選び、相手に見せてから自分の手札に加える。その後、手札に加えた枚数と同じだけ手札からカードを選び、山札に戻してシャッフルする。",
@@ -702,8 +701,7 @@ describe("R-ERR-RS030 アドベンチャー", () => {
     );
   });
 
-  // 既知の不具合: 未登録 — 「自分も相手も次の制限を受ける→」が欠落
-  it.fails("R-ERR-RS030: 修正後テキスト「自分も相手も次の制限を受ける→」を持つ（出典: atwiki/page-259）", () => {
+  it("R-ERR-RS030: 修正後テキスト「自分も相手も次の制限を受ける→」を持つ（出典: atwiki/page-259）", () => {
     expectCorrectedText("RS-030", "自分も相手も次の制限を受ける→");
   });
 
@@ -738,22 +736,19 @@ describe("R-ERR-RS030 アドベンチャー", () => {
     return s;
   }
 
-  // 既知の不具合: 未登録 — ターン終了時の処理（applyAdventureEndTurn）が呼ばれていない
-  it.fails("R-ERR-RS030: 自分のターンを終えるとき、ホールド状態のコマンドを1つ手札に戻す（出典: atwiki/page-259）", () => {
+  it("R-ERR-RS030: 自分のターンを終えるとき、ホールド状態のコマンドを1つ手札に戻す（出典: atwiki/page-259）", () => {
     const s = endTurnOf("player1", { player1: 1, player2: 0 });
     expect(s.players.player1.hand.filter((c) => c.cardId === "TST-OP")).toHaveLength(1);
   });
 
   // 「自分も相手も次の制限を受ける」— 相手も自分自身のターン終了時に戻す
-  // 既知の不具合: 未登録 — 同上
-  it.fails("R-ERR-RS030: 相手も自分自身のターンを終えるときホールド状態のコマンドを1つ手札に戻す（出典: atwiki/page-259）", () => {
+  it("R-ERR-RS030: 相手も自分自身のターンを終えるときホールド状態のコマンドを1つ手札に戻す（出典: atwiki/page-259）", () => {
     const s = endTurnOf("player2", { player1: 1, player2: 0 });
     expect(zoneIds(s, "player2", "hand").filter((id) => id.startsWith("TST-OP:p2h"))).toHaveLength(1);
   });
 
   // card_1.html RS-030 Q1:「ターンを終えたプレイヤーが、自分自身のコマンドゾーンからホールド状態のコマンドを２枚選んで手札に戻します」
-  // 既知の不具合: 未登録 — 同上
-  it.fails("R-ERR-RS030: 公式Q&A — 双方が常駐していれば重複し、ターンを終えたプレイヤーは2つ戻す（出典: grnrngr/faq-card-1 RS-030 Q1）", () => {
+  it("R-ERR-RS030: 公式Q&A — 双方が常駐していれば重複し、ターンを終えたプレイヤーは2つ戻す（出典: grnrngr/faq-card-1 RS-030 Q1）", () => {
     const s = endTurnOf("player1", { player1: 1, player2: 1 });
     expect(zoneIds(s, "player1", "hand").filter((id) => id.startsWith("TST-OP:p1h"))).toHaveLength(2);
   });

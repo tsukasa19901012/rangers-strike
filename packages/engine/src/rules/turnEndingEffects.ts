@@ -8,6 +8,7 @@ import { applyRocketBoosterEndTurnRushReturn } from "./rocketBooster";
 import { applyKeywordTurnEndEffects, clearEnemyTurnDamageFlag } from "./keywordGapRuntime";
 import { applyGegeruTurnEnd } from "./residentOps";
 import { applyTempDiscardAtTurnEnd } from "./riderKickEffects";
+import { applyAdventureEndTurn } from "./turnModifiers";
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
   const copy = [...deck];
@@ -149,7 +150,9 @@ export function resolveTurnEndingEffectsImpl(
   state: GameState,
   endingPlayerId: PlayerId,
 ): { state: GameState; logs: string[] } {
-  let nextState = applyResidentOperationTurnEnd(state, endingPlayerId);
+  // ルール: R-ERR-RS030 — アドベンチャーは両軍の常駐が、ターンを終えたプレイヤーに効く。
+  let nextState = applyAdventureEndTurn(state, endingPlayerId);
+  nextState = applyResidentOperationTurnEnd(nextState, endingPlayerId);
   nextState = applyOnTurnEndBattleEffects(nextState, endingPlayerId);
   nextState = applyRocketBoosterEndTurnRushReturn(nextState, endingPlayerId);
   nextState = applyNoteOtherNcTurnEndEffects(nextState, endingPlayerId);

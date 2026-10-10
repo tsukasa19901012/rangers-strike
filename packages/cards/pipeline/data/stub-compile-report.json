@@ -1,6 +1,6 @@
 {
   "summary": {
-    "generatedAt": "2026-10-10T04:10:32.052Z",
+    "generatedAt": "2026-10-10T05:38:31.066Z",
     "grades": [
       "A",
       "B",
@@ -9,9 +9,9 @@
       "E"
     ],
     "prefix": null,
-    "batchTargets": 9,
-    "batchCompiled": 9,
-    "batchValidationOk": 9,
+    "batchTargets": 1,
+    "batchCompiled": 1,
+    "batchValidationOk": 1,
     "totalEntries": 1670,
     "totalDslFiles": 1849,
     "validationOk": 1668,
