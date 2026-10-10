@@ -1,4 +1,4 @@
-import { getJointLNamedEffect } from "@rangers-strike/cards";
+import { canonicalCardName, getJointLNamedEffect } from "@rangers-strike/cards";
 import { activeOnAttackNamedEffect } from "../ncGatedEffects";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
 import { cardCategories, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
@@ -115,7 +115,11 @@ export function resolveLegend3EnterBattle(
       const discarded =
         getCostWindowMetadata(state.players[playerId], "battle_entry_rush_discard")
           ?.discardedCardId;
-      if (discarded !== "RS-079") return { state, logs: [] };
+      // 「捨札にしたのが「バイオハンター・シルバ」なら」— カード名で判定（PR-008 等の同名カードも含む。atwiki/page-40）。
+      const discardedDef = discarded ? getDefinition(state.definitions, discarded) : undefined;
+      if (!discardedDef || canonicalCardName(discardedDef.name) !== "バイオハンター・シルバ") {
+        return { state, logs: [] };
+      }
       const player = state.players[playerId];
       const battle = player.battle.map((c) =>
         c.cardId === cardId
