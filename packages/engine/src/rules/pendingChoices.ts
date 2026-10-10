@@ -1,5 +1,6 @@
 import type { Category } from "@rangers-strike/cards";
 import { canonicalCardName } from "@rangers-strike/cards";
+import { markBattleBlocked } from "./turnModifiers";
 import type {
   CardInstance,
   GameState,
@@ -1547,7 +1548,8 @@ export function applyConfirmEffectChoice(
       .join(",");
     const finished = finishChoice(nextState, pending, names || "none");
     if ("error" in finished) return finished;
-    if (pending.effectId === "juu_kun_do") {
+    // ルール: R-ERR-RS106 — 「そうしたとき、これはアタックすることができない」。撃破していなければアタックできる。
+    if (pending.effectId === "juu_kun_do" && selected.length > 0) {
       return {
         ...finished,
         state: markJuuKunDoAttackerActed(
@@ -2855,15 +2857,21 @@ export function applyEffectChoiceSelect(
         if (!canMoveUnitToBattle(withPrepared, pending.playerId, entering.card, "rush")) {
           return { error: "cannot_enter_battle" };
         }
-        let battle = readyPlayer.battle.filter((c) => c.instanceId !== instanceId);
-        battle = [...battle, { ...entering.card, battleActed: true }];
+        // ルール: R-ERR-RS118 — 置きかえ（同じ位置に出す）。Sユニットに重ねたカード（stackedCards 等）は
+        // インスタンスごと移すので重ねたまま。置きかえたSユニットはこのターン再びバトルエリアに出られない。
+        const swapIndex = readyPlayer.battle.findIndex((c) => c.instanceId === instanceId);
+        const battle = [...readyPlayer.battle];
+        battle.splice(swapIndex, 1, { ...entering.card, battleActed: true });
         const rush = readyPlayer.rush.filter((c) => c.instanceId !== pending.sourceInstanceId);
         const nextPlayer = clearCostWindow(
-          {
-            ...readyPlayer,
-            battle,
-            rush: [...rush, swapTarget.card],
-          },
+          markBattleBlocked(
+            {
+              ...readyPlayer,
+              battle,
+              rush: [...rush, swapTarget.card],
+            },
+            swapTarget.card.instanceId,
+          ),
           "battle_entry_hold",
         );
         return finishChoice(

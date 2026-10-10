@@ -218,6 +218,12 @@ export function applyLegacyNumberComboEffect(
       logs.push(ncLog(playerId, card.cardId, state.definitions, effectId));
       break;
     }
+    case "focused_breakthrough": {
+      // ルール: R-ERR-RS065 — 【一点突破】は NC 成立時だけ有効。撃破時の判定は resolveFocusedBreakthroughDamage。
+      nextState = markBattleNcEffect(nextState, playerId, card.instanceId, effectId);
+      logs.push(ncLog(playerId, card.cardId, state.definitions, effectId));
+      break;
+    }
     case "yellow_thunder": {
       nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
       nextState = markBattleNcEffect(nextState, playerId, card.instanceId, effectId);

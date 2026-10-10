@@ -1,0 +1,21 @@
+{
+  "text": "【一点突破】これが「SP1」以上または「SP！」のあるユニットを撃破したとき、相手に1点ダメージを与える。",
+  "rawText": "【一点突破】これが「SP1」以上または「SP！」のあるユニットを撃破したとき、相手に1点ダメージを与える。",
+  "effects": [
+    {
+      "id": "focused_breakthrough",
+      "name": "一点突破",
+      "text": "これが「SP1」以上または「SP！」のあるユニットを撃破したとき、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ]
+}

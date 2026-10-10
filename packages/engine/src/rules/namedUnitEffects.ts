@@ -411,10 +411,11 @@ export function resolveNamedOnRushEffects(
         effectId: "moss_blizzard",
         sourceCardId: found.card.cardId,
         phasePlayerId,
+        // ルール: R-ERR-RS036 — リリース状態のコマンドを2つ（1つしかなければ1つ）必ずホールドする。
         selectCount: 2,
         commandFilter: "released",
         commandAction: "hold",
-        optional: true,
+        optional: false,
       });
       if (withChoice) nextState = withChoice;
       break;
@@ -503,18 +504,26 @@ export function resolveSkyMagicSlash(
   };
 }
 
-const OWN_TURN_BATTLE_ENTRY_EFFECTS = new Set([
-  "super_drill",
-  "judgment_sword",
-  "justice_flasher",
-]);
+const OWN_TURN_BATTLE_ENTRY_EFFECTS = new Set(["justice_flasher"]);
 
-/** RS-051 / RS-043 / RS-042 — 自軍ターンのバトルフェイズ中にバトル進入したときのみ。 */
+/**
+ * エラッタで「自軍ターン中、これがバトルエリアに出たとき」に限定された効果。
+ * ルール: R-ERR-RS043（【ジャッジメントソード】）、R-ERR-RS051（【超ドリル進化】）
+ */
+const ERRATA_OWN_TURN_ENTER_EFFECTS = new Set(["super_drill", "judgment_sword"]);
+
+/**
+ * RS-042 — 自軍ターンのバトルフェイズ中にバトル進入したときのみ。
+ * RS-051 / RS-043 — エラッタ後テキストどおり自軍ターン中にバトルエリアに出たときのみ。
+ */
 export function canRunEnterBattleConditionalEffect(
   state: GameState,
   ownerId: PlayerId,
   effectId: string,
 ): boolean {
+  if (ERRATA_OWN_TURN_ENTER_EFFECTS.has(effectId)) {
+    return state.activePlayer === ownerId;
+  }
   if (OWN_TURN_BATTLE_ENTRY_EFFECTS.has(effectId)) {
     return state.phase === "battle" && state.activePlayer === ownerId;
   }
@@ -625,6 +634,8 @@ export function resolveFocusedBreakthroughDamage(
   const striker = state.players[strikerPlayerId];
   const strikerCard = striker.battle.find((c) => c.instanceId === strikerInstanceId);
   if (!strikerCard || strikerCard.cardId !== "RS-065") return { state, logs: [] };
+  // ルール: R-ERR-RS065 — 【一点突破】は NC（CN3）が成立しているときだけ有効。
+  if (!hasBattleNcEffect(strikerCard, "focused_breakthrough")) return { state, logs: [] };
   if (!unitQualifiesForFocusedBreakthrough(state, defenderOwner, defender)) {
     return { state, logs: [] };
   }
