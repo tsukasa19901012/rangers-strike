@@ -92,6 +92,8 @@ const KNOWN_EFFECT_IDS = new Set<string>([
   "end_turn_battle_to_rush",
   "rocket_booster",
   "simultaneous_order",
+  // RS-019 超力／RK-186【Jパンチ】: アタック時のホールド数選択（EffectChoiceModal の数字ボタン）。
+  "attack_hold_bonus",
   "kuroko_memory",
   "super_geki_yellow_reanimate",
   "reorder_enemy_battle",

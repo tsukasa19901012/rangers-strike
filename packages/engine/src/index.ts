@@ -72,6 +72,11 @@ export {
   applyOnRushUnitEffects,
 } from "./rules/onRushUnitEffects";
 export {
+  ATTACK_HOLD_BONUS_EFFECT_ID,
+  ATTACK_HOLD_BP_PER_COMMAND,
+  previewAttackHoldBp,
+} from "./rules/attackHoldBonus";
+export {
   getMorphReactionActorId,
   morphOrderChooserPlayerId,
   morphReplacementChooserPlayerId,

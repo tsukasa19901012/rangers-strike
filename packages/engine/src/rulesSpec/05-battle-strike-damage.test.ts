@@ -608,7 +608,7 @@ describe("R-ATK-03 アタック時の効果の期間", () => {
       },
       player2: { battle: [inst("TST-UNIT-2", "d")] },
     });
-    s = settle(attack(s, "TST-UNIT-0:a", "TST-UNIT-2:d"));
+    s = settle(holdForAttack(attack(s, "TST-UNIT-0:a", "TST-UNIT-2:d"), 3));
     // BP1000 + アタック時にホールドした3枚×1000 = 4000 > 3000
     expect(zoneOf(s, "player2", "TST-UNIT-2:d")).toBe("discard");
     expect(zoneOf(s, "player1", "TST-UNIT-0:a")).toBe("battle");
@@ -977,3 +977,9 @@ describe("R-BTL-03 「勝っても撃破される」は撃破されたユニッ�
     expect(legalOfType(s, "use_register").map((a) => a.playerId)).toContain("player2");
   });
 });
+
+/** RS-019 超力: アタック時に開くホールド数の選択（0〜リリース数）で n を選ぶ。 */
+function holdForAttack(s: GameState, n: number): GameState {
+  expect(s.pendingEffectChoice?.effectId).toBe("attack_hold_bonus");
+  return act(s, { type: "resolve_effect_choice", playerId: s.pendingEffectChoice!.playerId, instanceId: String(n) });
+}

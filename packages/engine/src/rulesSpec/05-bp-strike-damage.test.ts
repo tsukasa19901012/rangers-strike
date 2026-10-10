@@ -90,7 +90,7 @@ describe("R-BP-01 BP の計算順", () => {
       player2: { battle: [inst("RS-062", "bred")] },
     });
     // 指定値 3000（山札トップ）vs BP4000。超力 +2000 を足すと 5000 で勝ってしまう
-    s = settle(attack(s, "RS-131:metz", "RS-062:bred"));
+    s = settle(holdForAttack(attack(s, "RS-131:metz", "RS-062:bred"), 2));
     expect(zoneOf(s, "player1", "RS-131:metz")).toBe("discard");
     expect(zoneOf(s, "player2", "RS-062:bred")).toBe("battle");
   });
@@ -517,3 +517,9 @@ describe("R-DMG-02 ダメージの受け方", () => {
 
   it.todo("R-DMG-02: [未確定] 山札が空でダメージを山札から置けない場合の処理（R-WIN-05・資料に記載なし）");
 });
+
+/** RS-019 超力: アタック時に開くホールド数の選択（0〜リリース数）で n を選ぶ。 */
+function holdForAttack(s: GameState, n: number): GameState {
+  expect(s.pendingEffectChoice?.effectId).toBe("attack_hold_bonus");
+  return act(s, { type: "resolve_effect_choice", playerId: s.pendingEffectChoice!.playerId, instanceId: String(n) });
+}

@@ -290,34 +290,6 @@ export function passiveBpBonus(
 }
 
 /**
- * RS-019 超力: 自軍Sユニットがアタックするとき、自軍コマンドを新たにホールドした数×BP+1000。
- * 既にホールド状態のコマンド（別の支払い等）は数えない（atwiki/page-243「ホールドするごとに」）。
- * requested を省略するとリリース状態のコマンドをすべてホールドする（0 なら発動しない）。
- */
-export function applySuperPowerHolds(
-  state: GameState,
-  playerId: PlayerId,
-  attacker: CardInstance,
-  requested?: number,
-): { state: GameState; bonus: number } {
-  const player = state.players[playerId];
-  if (!hasOperationEffect(player, "super_power", state.definitions)) return { state, bonus: 0 };
-  if (!isSmallUnit(state.definitions, attacker.cardId)) return { state, bonus: 0 };
-  const released = player.command.filter((c) => !c.commandHeld);
-  const count = Math.max(0, Math.min(requested ?? released.length, released.length));
-  if (count === 0) return { state, bonus: 0 };
-  const holdIds = new Set(released.slice(0, count).map((c) => c.instanceId));
-  const nextPlayer: PlayerState = {
-    ...player,
-    command: player.command.map((c) => (holdIds.has(c.instanceId) ? { ...c, commandHeld: true } : c)),
-  };
-  return {
-    state: { ...state, players: { ...state.players, [playerId]: nextPlayer } },
-    bonus: count * 1000,
-  };
-}
-
-/**
  * ルール: R-BP-01 — 「BP○○になる」で指定された値（あれば）。増減の計算より優先される。
  * カードに書き込まれた値（bpSetValue）と、並び順で決まる継続効果（RS-001/RS-002 等）の両方を見る。
  */

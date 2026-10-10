@@ -2,7 +2,8 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import { describe, expect, it } from "vitest";
 import { legend1Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
-import { applySuperPowerHolds, effectiveBp, hasOperationEffect } from "./core/catalog";
+import { effectiveBp, hasOperationEffect } from "./core/catalog";
+import { listAttackHoldSources, openAttackHoldChoice, resolveAttackHoldChoice } from "./rules/attackHoldBonus";
 import { battleAttackerBpBonus, battleDefenderBp } from "./rules/namedUnitEffects";
 import { passiveNamedFieldBpBonus } from "./rules/fieldAuras";
 import { collectHiddenNinjaSubstitutes, finalizeLeaveReaction } from "./rules/operationCounters";
@@ -499,11 +500,30 @@ describe("RS-019 Super Power", () => {
         ],
       },
     });
-    const all = applySuperPowerHolds(state, "player1", attacker);
-    expect(all.bonus).toBe(2000);
+    const battle = {
+      attackerPlayerId: "player1" as const,
+      attackerInstanceId: attacker.instanceId,
+      defenderPlayerId: "player2" as const,
+      defenderInstanceId: "none",
+      phasePlayerId: "player1" as const,
+    };
+    const opened = openAttackHoldChoice(state, {
+      battle,
+      wingAttackFromRush: false,
+      sources: listAttackHoldSources(state, "player1", attacker),
+    })!;
+    // リリース状態の 2 枚から 0〜2 を選べる（既にホールド状態の c3 は数えない）
+    expect(opened.pendingEffectChoice?.validInstanceIds).toEqual(["0", "1", "2"]);
+    const pick = (n: number) => {
+      const r = resolveAttackHoldChoice(opened, "player1", String(n));
+      if ("error" in r) throw new Error(r.error);
+      return r;
+    };
+    const all = pick(2);
+    expect(all.battle.attackerBpBonus).toBe(2000);
     expect(all.state.players.player1.command.every((c) => c.commandHeld)).toBe(true);
-    expect(applySuperPowerHolds(state, "player1", attacker, 1).bonus).toBe(1000);
-    expect(applySuperPowerHolds(state, "player1", attacker, 0).bonus).toBe(0);
+    expect(pick(1).battle.attackerBpBonus).toBe(1000);
+    expect(pick(0).battle.attackerBpBonus ?? 0).toBe(0);
   });
 });
 

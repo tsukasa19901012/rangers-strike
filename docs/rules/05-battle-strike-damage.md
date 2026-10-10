@@ -54,6 +54,7 @@
 「アタックするとき」「アタックされるとき」の効果はアタックの処理（バトル）が終わった時点で終了する。「アタックするとき」に得た BP 上昇はそのバトルが終わるまで続く。
 - 出典: `atwiki/page-138`、`grnrngr/faq-card-1` RS-019「「アタックしてバトルが終了するまで」を期限とする」
 - Web: https://w.atwiki.jp/renst/pages/138.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html
+- 実装: ✅ RS-019 超力／RK-186【Jパンチ】はアタックのたびに、アタックしたプレイヤーがホールドする自軍コマンドの数（0〜リリース状態の数）を選ぶ（`attack_hold_bonus` の `declare_number` 選択、`rules/attackHoldBonus.ts`。Web UI は `EffectChoiceModal` の数字ボタンに BP を併記、CPU は勝てる最小の数・勝てなければ 0）。新たにホールドした数だけ、超力はそのバトル中、Jパンチはそのターン BP+1000。効果による「バトルしてもよい」（XP-024 等）はアタックではないので超力は発動しない（R-BTL-01）。
 
 #### R-ATK-04 アタック対象とバトル対象は別 [公式] `web照合済(2026-10-10)`
 隠流忍術などが変えるのはバトルの対象だけで、アタック対象を参照する条件はそのまま残る。

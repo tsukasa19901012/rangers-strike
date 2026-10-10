@@ -25,7 +25,6 @@ import {
   needsZordMaterial,
   parsePowerCost,
   rushPowerCost,
-  applySuperPowerHolds,
 } from "./catalog";
 import {
   isPermanentCard,
@@ -63,6 +62,12 @@ import {
 } from "../rules/combo";
 import { addRushPhaseRuleModifier } from "./scopedModifiers";
 import { emitBattleDeclaredAndResolve } from "../events/emitBattleDeclared";
+import {
+  ATTACK_HOLD_BONUS_EFFECT_ID,
+  listAttackHoldSources,
+  openAttackHoldChoice,
+  resolveAttackHoldChoice,
+} from "../rules/attackHoldBonus";
 import { applyResidentOpOnPlace } from "../rules/residentOps";
 import { applySelfRushFromZone, battleActBlocked, markUnitBattleAction } from "../rules/keywordGapRuntime";
 import { applyStartPhaseBeginEffects } from "../rules/startPhaseBegin";
@@ -315,6 +320,56 @@ function hasStartReturnInProgress(state: GameState): boolean {
 
 function fail(error: string): ActionResult {
   return { ok: false, error };
+}
+
+/**
+ * アタック宣言後の処理（「アタックするとき」のホールド数選択の後）: カウンター窓を開くか、そのままバトルする。
+ */
+function continueAttackAfterDeclaration(
+  battleState: GameState,
+  pending: PendingBattle,
+  wingAttackFromRush: boolean,
+): ActionResult {
+  const playerId = pending.attackerPlayerId;
+  const enemyId = pending.defenderPlayerId;
+  if (
+    hasBattleCounterReactions(
+      battleState,
+      enemyId,
+      pending.defenderInstanceId,
+      playerId,
+      pending.attackerInstanceId,
+    )
+  ) {
+    let pendingState: GameState = {
+      ...battleState,
+      pendingBattle: pending,
+      activePlayer: enemyId,
+    };
+    if (battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId) {
+      pendingState = { ...pendingState, pendingBattleEntry: undefined };
+    }
+    return ok(pendingState, buildSimpleLogEntry(playerId, "battle_pending"));
+  }
+
+  const resolved = emitBattleDeclaredAndResolve(battleState, pending);
+  let finalState = resolved.state;
+  if (wingAttackFromRush) {
+    let wingPlayer = finalState.players[playerId];
+    const rushIndex = wingPlayer.rush.findIndex(
+      (c) => c.instanceId === pending.attackerInstanceId,
+    );
+    if (rushIndex >= 0) {
+      const rush = [...wingPlayer.rush];
+      rush[rushIndex] = {
+        ...rush[rushIndex]!,
+        battleActed: true,
+      };
+      wingPlayer = markBattleBlocked({ ...wingPlayer, rush }, pending.attackerInstanceId);
+      finalState = { ...finalState, ...updatePlayer(finalState, playerId, wingPlayer) };
+    }
+  }
+  return ok(finalState, resolved.log);
 }
 
 function markBattleActed(player: PlayerState, instanceId: string): PlayerState {
@@ -2178,6 +2233,14 @@ function applyActionCore(
 
     case "resolve_effect_choice": {
       const pending = state.pendingEffectChoice;
+      if (pending?.effectId === ATTACK_HOLD_BONUS_EFFECT_ID && pending.attackHoldMeta) {
+        const held = resolveAttackHoldChoice(state, playerId, action.instanceId);
+        if ("error" in held) return fail(held.error);
+        if (!held.done) {
+          return ok(held.state, buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId));
+        }
+        return continueAttackAfterDeclaration(held.state, held.battle, held.wingAttackFromRush);
+      }
       if (pending?.kind === "denji_machine") {
         const result = applyDenjiBottomOrderSelect(state, playerId, action.instanceId);
         if ("error" in result) return fail(result.error);
@@ -2608,64 +2671,27 @@ function applyActionCore(
         battleState = { ...battleState, counterLockedPlayerId: enemyId };
       }
 
-      // ルール: RS-019 超力 — アタックするとき自軍コマンドをホールドし、ホールドした数だけ BP+1000。
-      const superPower = applySuperPowerHolds(
-        battleState,
-        playerId,
-        attackerFound.card,
-        action.superPowerHolds,
-      );
-      battleState = superPower.state;
-
       const pending: PendingBattle = {
         attackerPlayerId: playerId,
         attackerInstanceId: action.attackerInstanceId,
         defenderPlayerId: enemyId,
         defenderInstanceId: action.defenderInstanceId,
         phasePlayerId: playerId,
-        attackerBpBonus: superPower.bonus,
         mirageBeamBpOverride: miragePrep.bpOverride,
         mirageBeamDiscard: miragePrep.revealedCard,
       };
 
-      if (
-        hasBattleCounterReactions(
-          battleState,
-          enemyId,
-          action.defenderInstanceId,
-          playerId,
-          action.attackerInstanceId,
-        )
-      ) {
-        let pendingState: GameState = {
-          ...battleState,
-          pendingBattle: pending,
-          activePlayer: enemyId,
-        };
-        if (state.pendingBattleEntry?.instanceId === action.attackerInstanceId) {
-          pendingState = { ...pendingState, pendingBattleEntry: undefined };
-        }
-        return ok(pendingState, buildSimpleLogEntry(playerId, "battle_pending"));
+      // ルール: RS-019 超力／RK-186【Jパンチ】 — アタックするとき、ホールドするコマンドの数をアタックした
+      // プレイヤーが選ぶ（0〜リリース数）。新たにホールドした数だけ BP+1000（rules/attackHoldBonus.ts）。
+      const holdChoice = openAttackHoldChoice(battleState, {
+        battle: pending,
+        wingAttackFromRush,
+        sources: listAttackHoldSources(battleState, playerId, attackerFound.card),
+      });
+      if (holdChoice) {
+        return ok(holdChoice, buildSimpleLogEntry(playerId, "attack_hold_choice", action.attackerInstanceId));
       }
-
-      const resolved = emitBattleDeclaredAndResolve(battleState, pending);
-      let finalState = resolved.state;
-      if (wingAttackFromRush) {
-        let wingPlayer = finalState.players[playerId];
-        const rushIndex = wingPlayer.rush.findIndex(
-          (c) => c.instanceId === action.attackerInstanceId,
-        );
-        if (rushIndex >= 0) {
-          const rush = [...wingPlayer.rush];
-          rush[rushIndex] = {
-            ...rush[rushIndex]!,
-            battleActed: true,
-          };
-          wingPlayer = markBattleBlocked({ ...wingPlayer, rush }, action.attackerInstanceId);
-          finalState = { ...finalState, ...updatePlayer(finalState, playerId, wingPlayer) };
-        }
-      }
-      return ok(finalState, resolved.log);
+      return continueAttackAfterDeclaration(battleState, pending, wingAttackFromRush);
     }
 
     case "battle_dance_retreat": {

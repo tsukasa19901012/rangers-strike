@@ -345,6 +345,12 @@ describe("RS-018 隠流忍術", () => {
   );
 });
 
+/** RS-019 超力: アタック時に開くホールド数の選択で n を選ぶ。 */
+function holdForSuperPower(s: GameState, n: number): GameState {
+  expect(s.pendingEffectChoice?.effectId).toBe("attack_hold_bonus");
+  return act(s, { type: "resolve_effect_choice", playerId: s.pendingEffectChoice!.playerId, instanceId: String(n) });
+}
+
 // ===========================================================================
 describe("RS-019 超力", () => {
   const TEXT =
@@ -378,9 +384,86 @@ describe("RS-019 超力", () => {
     const atk = inst("CS-S1", "atk");
     const { s: s0, def } = powState(atk, { releasedN: 2, heldN: 0, defBp: 2500 });
     let s = act(s0, { type: "battle", playerId: "player1", attackerInstanceId: atk.instanceId, defenderInstanceId: def.instanceId });
+    s = holdForSuperPower(s, 2);
     s = settle(s);
     expect(zoneOf(s, "player2", def.instanceId)).toBe("discard");
     expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(2);
+  });
+
+  describe("アタックのたびにホールドする数を選ぶ（0〜リリース状態のコマンド数）（出典: atwiki/page-243「自軍コマンドを1つホールドするごとに」）", () => {
+    function attackWith3Released(defBp: number) {
+      const atk = inst("CS-S1", "atk");
+      const { s: s0, def } = powState(atk, { releasedN: 3, heldN: 1, defBp });
+      const s = act(s0, { type: "battle", playerId: "player1", attackerInstanceId: atk.instanceId, defenderInstanceId: def.instanceId });
+      return { s, atk, def };
+    }
+
+    it("RS-019: アタックすると、アタックしたプレイヤーにホールド数（0〜3）の選択が開き、選ぶまでバトルしない", () => {
+      const { s, def } = attackWith3Released(2500);
+      expect(s.pendingEffectChoice?.effectId).toBe("attack_hold_bonus");
+      expect(s.pendingEffectChoice?.playerId).toBe("player1");
+      expect(legalOfType(s, "resolve_effect_choice").map((a) => a.instanceId)).toEqual(["0", "1", "2", "3"]);
+      expect(zoneOf(s, "player2", def.instanceId)).toBe("battle");
+      expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(1);
+    });
+
+    it("RS-019: 0 を選ぶとホールドせず BP も上がらない（BP1000 vs 2500 で負ける）", () => {
+      const { s: s0, atk, def } = attackWith3Released(2500);
+      const s = settle(holdForSuperPower(s0, 0));
+      expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(1);
+      expect(zoneOf(s, "player1", atk.instanceId)).toBe("discard");
+      expect(zoneOf(s, "player2", def.instanceId)).toBe("battle");
+    });
+
+    it("RS-019: 1 を選ぶと 1 つだけホールドし BP+1000（BP2000 vs 2500 で負ける）", () => {
+      const { s: s0, atk, def } = attackWith3Released(2500);
+      const s = settle(holdForSuperPower(s0, 1));
+      expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(2);
+      expect(zoneOf(s, "player1", atk.instanceId)).toBe("discard");
+      expect(zoneOf(s, "player2", def.instanceId)).toBe("battle");
+    });
+
+    it("RS-019: 1 を選べば BP2000 で BP1500 に勝ち、残り 2 つはリリース状態のまま", () => {
+      const { s: s0, atk, def } = attackWith3Released(1500);
+      const s = settle(holdForSuperPower(s0, 1));
+      expect(zoneOf(s, "player2", def.instanceId)).toBe("discard");
+      expect(zoneOf(s, "player1", atk.instanceId)).toBe("battle");
+      expect(s.players.player1.command.filter((c) => !c.commandHeld)).toHaveLength(2);
+    });
+
+    it("RS-019: すべて（3）を選ぶと 3 つホールドし BP+3000（BP4000 vs 3500 で勝つ）", () => {
+      const { s: s0, atk, def } = attackWith3Released(3500);
+      const s = settle(holdForSuperPower(s0, 3));
+      expect(s.players.player1.command.every((c) => c.commandHeld)).toBe(true);
+      expect(zoneOf(s, "player2", def.instanceId)).toBe("discard");
+      expect(zoneOf(s, "player1", atk.instanceId)).toBe("battle");
+      expect(bpOf(s, "player1", atk.instanceId)).toBe(1000);
+    });
+
+    it("RS-019: 次のアタックでもあらためて選ぶ（リリース状態の残りの数まで）", () => {
+      const atk1 = inst("CS-S1", "a1");
+      const atk2 = inst("CS-S1", "a2");
+      const d1 = { ...inst("CS-S1", "d1"), bpModifier: 500 };
+      const d2 = { ...inst("CS-S1", "d2"), bpModifier: 500 };
+      let s = specState(["RS-019"], {
+        phase: "battle",
+        activePlayer: "player1",
+        player1: {
+          operation: [inst("RS-019", "ch")],
+          battle: [atk1, atk2],
+          command: Array.from({ length: 3 }, (_, i) => released("TST-OP-MA", `r${i}`)),
+        },
+        player2: { battle: [d1, d2] },
+      });
+      s = act(s, { type: "battle", playerId: "player1", attackerInstanceId: atk1.instanceId, defenderInstanceId: d1.instanceId });
+      s = settle(holdForSuperPower(s, 1));
+      expect(zoneOf(s, "player2", d1.instanceId)).toBe("discard");
+      s = act(s, { type: "battle", playerId: "player1", attackerInstanceId: atk2.instanceId, defenderInstanceId: d2.instanceId });
+      expect(legalOfType(s, "resolve_effect_choice").map((a) => a.instanceId)).toEqual(["0", "1", "2"]);
+      s = settle(holdForSuperPower(s, 2));
+      expect(zoneOf(s, "player2", d2.instanceId)).toBe("discard");
+      expect(s.players.player1.command.every((c) => c.commandHeld)).toBe(true);
+    });
   });
 
   it("RS-019: アタック時に新たにホールドしなければ上がらない（他の目的で既にホールドしたコマンドは数えない）（出典: atwiki/page-243 「ホールドするごとに」）", () => {

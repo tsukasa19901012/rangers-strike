@@ -109,7 +109,6 @@ import { isCatchallGrantKeyword } from "./hashGrantKeywordStub";
 import { isStableCardDelegateKeyword } from "./effectCardGrantKeywordBridge";
 import { startSwanWingChoice } from "../rules/swanWing";
 import { setGenericSComboFinisher, setBattleDestroyToPower, addComboNumberDelta } from "../rules/turnModifierBridge";
-import { applySuperPowerHolds } from "../core/catalog";
 import { matchRkGrantKeyword } from "../rules/rkEffects";
 import { matchSrGrantKeyword } from "../rules/srEffects";
 import { tryRkBkGrantKeywordFromEffect } from "../rules/rk/rkBkCatchallRuntime";
@@ -1194,15 +1193,14 @@ export function applyGrantKeyword(
             "optional_battle_no_attack",
           );
         }
-        const superPower = applySuperPowerHolds(nextState, ctx.playerId, attacker);
-        nextState = superPower.state;
+        // ルール: R-BTL-01 — 効果による「バトルしてもよい」はアタックではないので、「アタックするとき」の
+        // 超力（RS-019）等は発動しない。
         const pending: PendingBattle = {
           attackerPlayerId: ctx.playerId,
           attackerInstanceId: attacker.instanceId,
           defenderPlayerId: enemyId,
           defenderInstanceId,
           phasePlayerId: ctx.phasePlayerId,
-          attackerBpBonus: superPower.bonus,
         };
         return {
           state: { ...nextState, pendingBattle: pending },

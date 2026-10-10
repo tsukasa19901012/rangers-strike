@@ -1,5 +1,6 @@
 import type { Category } from "@rangers-strike/cards";
 import { cpuAcceptsOptionalEffect } from "../rules/optionalEffects";
+import { ATTACK_HOLD_BONUS_EFFECT_ID, pickAttackHoldCount } from "../rules/attackHoldBonus";
 import { getCardEffect, listZordFusionPartnerIds } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
@@ -1228,6 +1229,16 @@ export function pickEffectChoice(
       return draw;
     }
     return skip ?? null;
+  }
+
+  if (pending.kind === "declare_number" && pending.effectId === ATTACK_HOLD_BONUS_EFFECT_ID) {
+    // RS-019 超力／RK-186【Jパンチ】: バトルに勝てる最小のホールド数（勝てなければ 0）。
+    const count = pickAttackHoldCount(state, playerId);
+    return (
+      actions.find((a) => a.type === "resolve_effect_choice" && a.instanceId === count) ??
+      actions.find((a) => a.type === "resolve_effect_choice") ??
+      null
+    );
   }
 
   if (pending.kind === "declare_number") {

@@ -4,6 +4,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import { resolvePlayableCard } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "@rangers-strike/engine";
 import {
+  attackHoldOptionLabel,
   effectChoiceHint,
   effectChoiceTitle,
   sagasSniperDeckCardMeta,
@@ -233,7 +234,9 @@ export function EffectChoiceModal({
                     className="btn effect-action-modal__target effect-action-modal__target--number"
                     onClick={() => onSelect(value)}
                   >
-                    {value}
+                    {pending.effectId === "attack_hold_bonus"
+                      ? attackHoldOptionLabel(state, pending, value)
+                      : value}
                   </button>
                 ))}
               </div>

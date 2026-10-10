@@ -1,6 +1,7 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import { EFFECT_LABELS } from "@rangers-strike/cards";
 import type { GameState } from "@rangers-strike/engine";
+import { previewAttackHoldBp } from "@rangers-strike/engine";
 
 export function sagasSniperDeckCardMeta(
   card: CardDefinition,
@@ -145,6 +146,11 @@ export function effectChoiceHint(
         return "特徴が一致するユニットカードを選び、モーフで置き換えてください";
       }
       return "対象を選んでください";
+    case "declare_number":
+      if (pending.effectId === "attack_hold_bonus") {
+        return "アタックするとき、ホールドする自軍コマンドの数を選んでください（1つにつきBP+1000・0でホールドしない）";
+      }
+      return "数字を宣言してください";
     case "simultaneous_order":
       // ルール: R-SIM-01, R-BTL-02 — 同時に起きた処理の順番はターンプレイヤーが決める。
       return pending.mutualDestructionMeta
@@ -170,6 +176,7 @@ export const SIMULTANEOUS_FRAME_LABELS: Record<string, string> = {
  */
 const RIDER_EFFECT_UI_LABELS: Record<string, string> = {
   simultaneous_order: "処理順の選択",
+  attack_hold_bonus: "アタック時のホールド",
   kuroko_memory: "黒子ロボの記憶操作",
   rider_slash_destroy: "ライダースラッシュ",
   rider_kick_send_power: "ライダーキック",
@@ -189,4 +196,18 @@ export function effectChoiceTitle(
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;
   return `【${label}】`;
+}
+
+/**
+ * RS-019 超力／RK-186【Jパンチ】のホールド数ボタンの表示（「2（BP3000 vs 2500）」）。
+ * アタック側 BP はその数をホールドしたときのこのバトルでの値。
+ */
+export function attackHoldOptionLabel(
+  state: GameState,
+  pending: NonNullable<GameState["pendingEffectChoice"]>,
+  value: string,
+): string {
+  const preview = previewAttackHoldBp(state, pending.playerId, value);
+  if (!preview) return value;
+  return `${value}（BP${preview.attackerBp} vs ${preview.defenderBp}）`;
 }

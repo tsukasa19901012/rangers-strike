@@ -318,6 +318,14 @@ export type DslChoiceResume = {
   operationCard?: CardInstance;
 };
 
+/** 「アタックするとき、自軍コマンドを好きな数ホールド…1つにつき BP+」の効果（rules/attackHoldBonus.ts）。 */
+export type AttackHoldSource = {
+  sourceCardId: string;
+  sourceInstanceId?: string;
+  /** battle: このバトル中だけ（RS-019 超力）／turn: このターン（RK-186【Jパンチ】）。 */
+  scope: "battle" | "turn";
+};
+
 export type PendingEffectChoice = {
   playerId: PlayerId;
   effectId: string;
@@ -411,6 +419,16 @@ export type PendingEffectChoice = {
   mayConfirm?: boolean;
   /** mayConfirm が DSL の任意効果（optional）のとき、行う効果の特定情報。 */
   optionalDslMeta?: { effectId: string; triggerType: string };
+  /**
+   * アタック時のホールド数選択（effectId attack_hold_bonus、kind declare_number）。
+   * 選択後に続けるアタック（battle）と、残りの同種効果。
+   */
+  attackHoldMeta?: {
+    battle: PendingBattle;
+    wingAttackFromRush: boolean;
+    scope: AttackHoldSource["scope"];
+    remainingSources: AttackHoldSource[];
+  };
   /** 敵ターン撃破時の任意パワー送り（to_power_on_destroy）。 */
   toPowerOnDestroyMeta?: {
     card: CardInstance;

@@ -14,6 +14,7 @@ import {
   IMPLEMENTED_NC_EFFECT_IDS,
   isOperationImplemented,
 } from "@rangers-strike/cards";
+import { isAttackHoldSelfEffect } from "../rules/attackHoldBonus";
 import type { GameState, PlayerId } from "../types/game";
 import { getCardDslDocument } from "./effectLookup";
 import { SUPPORTED_GRANT_KEYWORDS } from "./grantKeyword";
@@ -143,6 +144,8 @@ export function shouldUseDslTriggeredEffect(
   }
 
   if (triggerType === "on_attack") {
+    // 「アタックするとき、自軍コマンドを好きな数ホールド…」は rules/attackHoldBonus のホールド数選択で扱う。
+    if (isAttackHoldSelfEffect(cardId, effect.id)) return false;
     const wired = getWiredOnAttackEffect(cardId);
     if (wired && wired.effectId === effect.id) return false;
   }
