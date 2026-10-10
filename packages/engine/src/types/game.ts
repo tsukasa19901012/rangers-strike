@@ -883,6 +883,10 @@ export type PendingEffectRush = {
     needed: number;
     chosen: string[];
     destination?: "command" | "discard";
+    /** RS-359 デンジ犬アイシー【最後の手段】で山札から捨札にして「捨札にしたことにした」素材の数。 */
+    icyCount?: number;
+    /** デンジ犬アイシーを捨札にして、山札から素材のカードを選んでいる途中のアイシー。 */
+    icyPending?: string;
   };
 };
 

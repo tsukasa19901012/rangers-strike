@@ -126,7 +126,6 @@ describe("RS-249 Vコマンダー", () => {
   });
 
   // atwiki/page-421 Q1・faq-card-6 RS-359 Q「はい、できます。」（デンジ犬アイシー【最後の手段】で Vレックスロボの追加条件を満たせる）
-  // 既知の不具合: CARD-RS-359（範囲外）デンジ犬アイシー【最後の手段】が未実装（山札のカードで追加条件を満たす処理がない）
   it("RS-249: Q&A — デンジ犬アイシーの【最後の手段】で山札の Vレックスを捨札にして、Vレックスロボの追加条件を満たして出せる（出典: atwiki/page-421 Q1・grnrngr/faq-card-6 RS-359 Q）", () => {
     let s = vcom([inst("RS-301", "robo"), inst("RS-302", "rex"), ...deckCards(2)], { rush: [inst("RS-359", "icy")] });
     s = pickAll(s, ["RS-301:robo", "RS-359:icy", "RS-302:rex"]);

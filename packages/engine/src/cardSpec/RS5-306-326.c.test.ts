@@ -568,7 +568,7 @@ describe("RS-325 天空勇者マジシャイン", () => {
 
   // atwiki/page-485 Q1「いいえ、そのようにはなりません。…実際には手札から使用していないので、…該当しません。」
   // 既知の不具合: CARD-RS-325 XG7-054 オーズドライバーがゲームのカード定義に無い（マジチケット自体は実装済み）
-  it.fails("RS-325: 公式Q&A — マジチケットで発動したオーズドライバーの「次に手札から使用するカード」の軽減は、続けてマジチケットで発動するカードには適用されない（出典: atwiki/page-485 Q1）", () => {
+  it("RS-325: 公式Q&A — マジチケットで発動したオーズドライバーの「次に手札から使用するカード」の軽減は、続けてマジチケットで発動するカードには適用されない（出典: atwiki/page-485 Q1）", () => {
     let s = shine({ power: 0, command: [released("XG7-054", "ooo"), released("RS-011", "aura")] });
     s = { ...s, players: { ...s.players, player1: { ...s.players.player1, power: powerCards(3) } } };
     s = useVia(s, "player1", "XG7-054:ooo");
