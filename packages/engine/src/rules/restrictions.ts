@@ -788,12 +788,20 @@ export function findMandatoryBattleEntries(
   if (state.phase !== "battle") return [];
   const player = state.players[playerId];
   const mandatory: CardInstance[] = [];
+  // RS-198 帝王アトン【帝王剣の呪い】: これが自軍エリアにある間、すべての敵軍 S ユニットは、毎ターン、
+  // 可能ならバトルエリアに出る（atwiki/page-382）。
+  const enemy = state.players[opponent(playerId)];
+  const emperorCurse = [...enemy.rush, ...enemy.battle].some((c) => c.cardId === "RS-198");
 
   for (const card of player.rush) {
     if (wingTurnBlocksStrike(player, card.instanceId)) continue;
     // ルール: R-BA-04 — ホールドが必要なユニットも、ホールドできるなら「可能なら出る」に含む。
     if (!canMoveUnitToBattleWithHolds(state, playerId, card)) continue;
-    if (hasAutoBattleEntryEachTurnNote(card.cardId) || earthForceRequiresBattleEntry(state)) {
+    if (
+      hasAutoBattleEntryEachTurnNote(card.cardId) ||
+      earthForceRequiresBattleEntry(state) ||
+      (emperorCurse && isSmallUnit(state.definitions, card.cardId))
+    ) {
       mandatory.push(card);
     }
   }
