@@ -606,8 +606,9 @@ function passesBattleEntryHoldRequirements(
 ): boolean {
   const requiredTotal = requiredBattleEntryHolds(state, playerId, unit);
 
+  // RS-301 / RS-302 ※: リリース状態の「Vコマンダー」をホールドして出る（既にホールド状態のものでは満たせない。R-ADD-07）。
   if (needsVCommanderHold(state, playerId, unit)) {
-    if (!hasHeldVCommanderCommand(player, state.definitions)) return false;
+    if (!releasedVCommanderCommand(player, state.definitions)) return false;
   }
 
   // ルール: R-ADD-07 — 「コマンドをホールドしなければ出られない」制限は、出る直前に制限ごとに
@@ -633,14 +634,41 @@ function allyHasVCommanderFeature(
   });
 }
 
-function hasHeldVCommanderCommand(
+function releasedVCommanderCommand(
   player: PlayerState,
   definitions: GameState["definitions"],
-): boolean {
-  return player.command.some((c) => {
-    if (!c.commandHeld) return false;
-    return getDefinition(definitions, c.cardId)?.name === "Vコマンダー";
-  });
+): CardInstance | undefined {
+  return player.command.find(
+    (c) => !c.commandHeld && getDefinition(definitions, c.cardId)?.name === "Vコマンダー",
+  );
+}
+
+/**
+ * RS-301 / RS-302「※これは、特徴「Vコマンダー」を持つ自軍ユニットがないとき、自軍コマンドゾーンの
+ * 「Vコマンダー」をホールドしなければバトルエリアに出られない」— 出たときにリリース状態の「Vコマンダー」を
+ * ホールドする（atwiki/page-444, page-445）。
+ */
+export function applyVCommanderHoldOnEnter(
+  state: GameState,
+  playerId: PlayerId,
+  entering: CardInstance,
+): GameState {
+  if (!needsVCommanderHold(state, playerId, entering)) return state;
+  const player = state.players[playerId];
+  const vc = releasedVCommanderCommand(player, state.definitions);
+  if (!vc) return state;
+  return {
+    ...state,
+    players: {
+      ...state.players,
+      [playerId]: {
+        ...player,
+        command: player.command.map((c) =>
+          c.instanceId === vc.instanceId ? { ...c, commandHeld: true, mothershipHold: false } : c,
+        ),
+      },
+    },
+  };
 }
 
 function needsVCommanderHold(

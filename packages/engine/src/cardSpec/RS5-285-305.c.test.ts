@@ -178,14 +178,15 @@ function vCommanderTests(id: string, page: string) {
     expect(zoneOf(s, "player1", `${id}:v`)).toBe("battle");
   });
 
-  it.fails(`${id}: ※ 自軍コマンドゾーンのリリース状態の「Vコマンダー」をホールドして出られる（出典: ${page}）`, () => {
-    // 既知の不具合: CARD-${id} リリース状態の「Vコマンダー」をホールドしてバトルエリアに出る手段がない（すでにホールド状態の「Vコマンダー」を要求する実装）
+  it(`${id}: ※ 自軍コマンドゾーンのリリース状態の「Vコマンダー」をホールドして出られる（出典: ${page}）`, () => {
     const s0 = st({ player1: { rush: [inst(id, "v")], command: [released("RS-249", "vc")] } });
     expect(canEnter(s0, `${id}:v`)).toBe(true);
+    const s = enter(s0, `${id}:v`);
+    expect(zoneOf(s, "player1", `${id}:v`)).toBe("battle");
+    expect(s.players.player1.command[0]?.commandHeld).toBe(true);
   });
 
-  it.fails(`${id}: ※ すでにホールド状態の「Vコマンダー」では満たせない（出典: ${page}・R-ADD-07）`, () => {
-    // 既知の不具合: CARD-${id} すでにホールド状態の「Vコマンダー」があるだけで出られてしまう
+  it(`${id}: ※ すでにホールド状態の「Vコマンダー」では満たせない（出典: ${page}・R-ADD-07）`, () => {
     const s = st({ player1: { rush: [inst(id, "v")], command: [held("RS-249", "vc")] } });
     expect(canEnter(s, `${id}:v`)).toBe(false);
   });
