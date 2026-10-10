@@ -45,7 +45,9 @@ function isOptionalWording(effect: { optional?: boolean; text?: string }): boole
   if (!effect.optional) return false;
   const text = (effect.text ?? "").replace(/^【[^】]*】/, "").replace(/^「SP\d+」/, "");
   const first = text.split("。")[0] ?? "";
-  return /てもよい$/.test(first) && !/相手(は|も)/.test(first);
+  // 「～してもよい」「～してよい」「～しても良い」。「～選んでもよい」は選択そのものを断れる（選択を開く効果の skip）ので
+  // ここでの確認の対象にしない。
+  return /ても?(?:よい|良い)$/.test(first) && !/相手(は|も)/.test(first);
 }
 
 const SP_GRANT_RE = /^SP\d+$/;
