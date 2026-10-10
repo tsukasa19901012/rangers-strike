@@ -21,3 +21,4 @@ packages/cards/src/**/*.d.ts.map
 test-results/
 playwright-report/
 playwright/.cache/
+.claude/worktrees/
