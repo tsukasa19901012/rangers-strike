@@ -91,6 +91,7 @@ import {
   tryResolveErrataChoice,
   trySkipErrataChoice,
 } from "./errataCardEffects";
+import { isSet4ChoiceEffect, tryResolveSet4Choice, trySkipSet4Choice } from "./legend1/set4NamedEffects";
 import {
   applyFlowerBombDeclaredNumber,
   continueMagiBlueAfterSelfDraw,
@@ -543,7 +544,8 @@ export function isValidEffectChoiceTarget(
     pending.effectId === SUBMERGE_EFFECT_ID ||
     pending.effectId === FIRE_DANCE_EFFECT_ID ||
     isHououChoice(pending) ||
-    pending.effectId === KUROKO_MEMORY_EFFECT_ID
+    pending.effectId === KUROKO_MEMORY_EFFECT_ID ||
+    isSet4ChoiceEffect(pending.effectId)
   ) {
     return true;
   }
@@ -2629,6 +2631,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (pending.playerId !== playerId) return { error: "wrong_player" };
   const errata = trySkipErrataChoice(state, playerId);
   if (errata) return errata;
+  const set4 = trySkipSet4Choice(state, playerId);
+  if (set4) return set4;
   if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
   if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
     // 選択を省略したときは先にひいた1枚を手札に残す（どちらか1枚は必ず残る）。
@@ -2784,6 +2788,8 @@ export function applyEffectChoiceSelect(
 
   const errata = tryResolveErrataChoice(state, playerId, instanceId);
   if (errata) return errata;
+  const set4 = tryResolveSet4Choice(state, playerId, instanceId);
+  if (set4) return set4;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };

@@ -83,6 +83,7 @@ import {
 import { beginCastoffOnRush } from "../rules/castoff";
 import { tryReportedRiderEffect } from "../rules/riderKickEffects";
 import { tryErrataCardEffect } from "../rules/errataCardEffects";
+import { trySet4CardEffect } from "../rules/legend1/set4NamedEffects";
 import { tryGenericTextFallback } from "./genericTextFallback";
 import {
   beginDeclareNumberDeckReveal,
@@ -383,6 +384,9 @@ export function applyGrantKeyword(
   // エラッタ・公式回答に合わせたカード固有効果（docs/rules/08-errata.md）。
   const errata = tryErrataCardEffect(state, ctx, keyword);
   if (errata) return errata;
+  // 第4弾（legend1）のカード固有の名前付き効果（rules/legend1/set4NamedEffects.ts）。
+  const set4 = trySet4CardEffect(state, ctx, keyword);
+  if (set4) return set4;
 
   if (keyword.startsWith("hand_named_to_rush::")) {
     const withChoice = applyHandNamedToRush(state, ctx, keyword);

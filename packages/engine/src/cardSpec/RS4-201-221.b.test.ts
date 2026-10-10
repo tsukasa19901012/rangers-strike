@@ -503,8 +503,7 @@ describe("RS-212 オーグリーン", () => {
   }
 
   // 「敵軍捨札からカードを1枚選び、敵軍パワーゾーンにダメージにして置く。（…これが撃破したユニットが捨札になるなら捨札にしたあとで選ぶ）」
-  // 既知の不具合: CARD-RS-212 【爆烈ミラージュナックル】が発動しない（敵軍捨札のカードをダメージにする選択が出ない）
-  it.fails("RS-212: NC（3番目）でバトルに勝つと、撃破したユニットを含む敵軍捨札から1枚選び敵軍のダメージにする（出典: atwiki/page-113）", () => {
+  it("RS-212: NC（3番目）でバトルに勝つと、撃破したユニットを含む敵軍捨札から1枚選び敵軍のダメージにする（出典: atwiki/page-113）", () => {
     let s = ohGreenAttack(3);
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
@@ -514,8 +513,7 @@ describe("RS-212 オーグリーン", () => {
     expect(s.players.player2.power.find((c) => c.instanceId === "TST-UNIT-0:e")?.faceDown).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-212 【爆烈ミラージュナックル】が発動しない（敵軍捨札のカードをダメージにする選択が出ない）
-  it.fails("RS-212: NC 不成立（1番目）では発動しない／3番目なら発動する（出典: atwiki/page-113、R-CN-02）", () => {
+  it("RS-212: NC 不成立（1番目）では発動しない／3番目なら発動する（出典: atwiki/page-113、R-CN-02）", () => {
     const first = ohGreenAttack(1);
     expect(first.pendingEffectChoice).toBeUndefined();
     expect(first.players.player2.damage).toBe(0);
@@ -523,8 +521,7 @@ describe("RS-212 オーグリーン", () => {
   });
 
   // 「自軍ターン中」
-  // 既知の不具合: CARD-RS-212 【爆烈ミラージュナックル】が発動しない（敵軍捨札のカードをダメージにする選択が出ない）
-  it.fails("RS-212: 敵軍ターン中にアタックされて撃破しても発動しない／自軍ターンなら発動する（出典: atwiki/page-113「自軍ターン中」）", () => {
+  it("RS-212: 敵軍ターン中にアタックされて撃破しても発動しない／自軍ターンなら発動する（出典: atwiki/page-113「自軍ターン中」）", () => {
     let s = st({
       player1: { battle: fillers(2), rush: [inst("RS-212", "g")], deck: deckCards(5) },
       player2: { rush: [inst("TST-UNIT-0", "e")], discard: [inst("TST-OP-DA", "x1")], power: powerCards(2, "e"), deck: deckCards(5, "e") },
@@ -541,8 +538,7 @@ describe("RS-212 オーグリーン", () => {
   });
 
   // faq-card-4 RS-212 Q1「同時タイミングで発動した処理はターンプレイヤーが任意の順番で実行できます」
-  // 既知の不具合: CARD-RS-212 【爆烈ミラージュナックル】が発動しない（敵軍捨札のカードをダメージにする選択が出ない）
-  it.fails("RS-212: 公式Q&A — アバレッドAM を撃破したとき、ターンプレイヤーはミラージュナックルを先に処理してアバレッドをダメージにでき、AM の効果で戻らない（出典: grnrngr/faq-card-4 RS-212 Q1）", () => {
+  it("RS-212: 公式Q&A — アバレッドAM を撃破したとき、ターンプレイヤーはミラージュナックルを先に処理してアバレッドをダメージにでき、AM の効果で戻らない（出典: grnrngr/faq-card-4 RS-212 Q1）", () => {
     let s = st({
       player1: { battle: fillers(2), rush: [{ ...inst("RS-212", "g"), bpSetValue: 9000 }] },
       player2: { battle: [inst("RS-230", "am")], discard: [inst("RS-054", "red")], power: powerCards(2, "e") },
@@ -590,8 +586,7 @@ describe("RS-213 オーイエロー", () => {
   }
 
   // 「相手は自分自身のラッシュエリアからユニットを1体選ぶ。このターン、このユニットは、相手の選んだユニットにアタックできる」
-  // 既知の不具合: CARD-RS-213 【炸裂超力バトン】で相手がラッシュエリアのユニットを選ばず、ラッシュエリアのユニットにアタックできない
-  it.fails("RS-213: NC（2番目）で相手が自分のラッシュエリアから1体選び、オーイエローはそのユニットにアタックして撃破できる（選ばれなかったユニットにはアタックできない）（出典: atwiki/page-114）", () => {
+  it("RS-213: NC（2番目）で相手が自分のラッシュエリアから1体選び、オーイエローはそのユニットにアタックして撃破できる（選ばれなかったユニットにはアタックできない）（出典: atwiki/page-114）", () => {
     let s = ohYellow(2);
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:er1", "TST-UNIT-0:er2"]);
@@ -604,8 +599,7 @@ describe("RS-213 オーイエロー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:er2")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-213 【炸裂超力バトン】で相手がラッシュエリアのユニットを選ばず、ラッシュエリアのユニットにアタックできない
-  it.fails("RS-213: NC 不成立（1番目）ではラッシュエリアのユニットにアタックできない／2番目ならできる（出典: atwiki/page-114、R-CN-02）", () => {
+  it("RS-213: NC 不成立（1番目）ではラッシュエリアのユニットにアタックできない／2番目ならできる（出典: atwiki/page-114、R-CN-02）", () => {
     const first = ohYellow(1);
     expect(first.pendingEffectChoice).toBeUndefined();
     expect(attackTargets(first, "RS-213:y")).toEqual(["TST-UNIT-0:e0"]);

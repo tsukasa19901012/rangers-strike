@@ -430,8 +430,7 @@ describe("RS-225 ガトリングレオ", () => {
   }
 
   // 「このユニットからコンビネーションする同カテゴリのLユニットは…敵軍ラッシュエリアのユニットにアタックできる」
-  // 既知の不具合: CARD-RS-225【大回転獅子爆裂弾】が未実装（JC した同カテゴリの L ユニットが敵軍ラッシュエリアにアタックできない）
-  it.fails("RS-225: ガトリングレオから JC した MA の L ユニットは敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-381）", () => {
+  it("RS-225: ガトリングレオから JC した MA の L ユニットは敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-381）", () => {
     const s = leoThen("SPEC-MA-L");
     expect(attackTargets(s, "SPEC-MA-L:nx")).toEqual(expect.arrayContaining(["TST-UNIT-0:er", "TST-UNIT-0:eb"]));
   });
@@ -507,8 +506,7 @@ describe("RS-226 キラーオー", () => {
   }
 
   // 「これがバトルで撃破したユニットよりBPの低いユニットを、相手は自分自身のユニットの中から1体選び撃破する」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: バトルで撃破したとき、相手は撃破されたユニットより BP の低い自分のユニット（バトルエリア・ラッシュエリア）から1体選んで撃破する（出典: atwiki/page-376）", () => {
+  it("RS-226: バトルで撃破したとき、相手は撃破されたユニットより BP の低い自分のユニット（バトルエリア・ラッシュエリア）から1体選んで撃破する（出典: atwiki/page-376）", () => {
     let s = killerAttack({
       battle: [inst("SPEC-E5", "t"), inst("SPEC-E4", "b4")],
       rush: [inst("SPEC-E3", "r3"), inst("SPEC-E5", "r5")],
@@ -547,8 +545,7 @@ describe("RS-226 キラーオー", () => {
   });
 
   // atwiki/page-376 Q4「いいえ、選ぶことはできません。「〜より低い」は同じ値を含みません。」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: 公式Q&A — 撃破したユニットと同じ BP のユニットは選べない（出典: atwiki/page-376 Q4）", () => {
+  it("RS-226: 公式Q&A — 撃破したユニットと同じ BP のユニットは選べない（出典: atwiki/page-376 Q4）", () => {
     const s = killerAttack({ battle: [inst("SPEC-E5", "t")], rush: [inst("SPEC-E5", "same"), inst("SPEC-E4", "low")] });
     expect(choiceIds(s)).toEqual(["SPEC-E4:low"]);
   });
@@ -558,8 +555,7 @@ describe("RS-226 キラーオー", () => {
   const M6 = sUnit("SPEC-M6", { size: "M", bp: 6000 });
 
   // faq-card-4 RS-226 Q2「その場合は、バトルの時点でのＢＰを元に選んでください。」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: 公式Q&A — 撃破したユニットの BP は、気力等で上がっていればバトルの時点の BP（3000+2000=5000）を参照する（出典: grnrngr/faq-card-4 RS-226 Q2）", () => {
+  it("RS-226: 公式Q&A — 撃破したユニットの BP は、気力等で上がっていればバトルの時点の BP（3000+2000=5000）を参照する（出典: grnrngr/faq-card-4 RS-226 Q2）", () => {
     // 敵軍の気力（RS-017）: 敵軍から見た「敵軍ターン中」（＝自軍ターン）に、リリース状態のコマンド2つで S ユニット BP+2000
     const s = killerAttack(
       {
@@ -576,16 +572,14 @@ describe("RS-226 キラーオー", () => {
   });
 
   // faq-card-4 RS-226 Q3「その場合は、バトルの時点でのＢＰを参照しますので、ＢＰ５０００より低いＢＰのユニットが対象になります。」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: 公式Q&A — アタックされるとき BP が上がるユニット（ザビーMF：1000+5000）を撃破したら、上がった BP（6000）より低いユニットが対象（出典: grnrngr/faq-card-4 RS-226 Q3・atwiki/page-376 Q3）", () => {
+  it("RS-226: 公式Q&A — アタックされるとき BP が上がるユニット（ザビーMF：1000+5000）を撃破したら、上がった BP（6000）より低いユニットが対象（出典: grnrngr/faq-card-4 RS-226 Q3・atwiki/page-376 Q3）", () => {
     const s = killerAttack({ battle: [inst("RK-056", "t")], rush: [inst("SPEC-M5", "m5"), inst("SPEC-M6", "m6")] }, "RK-056:t", [M5, M6]);
     expect(zoneOf(s, "player2", "RK-056:t")).toBe("discard");
     expect(choiceIds(s)).toEqual(["SPEC-M5:m5"]);
   });
 
   // atwiki/page-376 Q5「『BP5000よりBPの低いユニット』です。【分析能力】は…BPの変動自体を無効にする能力ではない」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: 公式Q&A — デスガロン【分析能力】下でガタックMF（2000、アタックされるとき+3000）を撃破したとき、選ぶのは「BP5000 より低い」ユニット（出典: atwiki/page-376 Q5）", () => {
+  it("RS-226: 公式Q&A — デスガロン【分析能力】下でガタックMF（2000、アタックされるとき+3000）を撃破したとき、選ぶのは「BP5000 より低い」ユニット（出典: atwiki/page-376 Q5）", () => {
     const s = killerAttack(
       { battle: [inst("RK-268", "dg"), inst("RK-053", "t")], rush: [inst("SPEC-M4", "m4"), inst("SPEC-M5", "m5")] },
       "RK-053:t",
@@ -596,8 +590,7 @@ describe("RS-226 キラーオー", () => {
   });
 
   // faq-card-4 RS-226 Q1「「RS-054 アバレッド」を選ぶことはできません…先に「RS-226 キラーオー」の効果の対象を選択してください」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: 公式Q&A — 撃破したアバレッドAM の効果で捨札から出るアバレッドは選べない（キラーオーの選択が先）（出典: grnrngr/faq-card-4 RS-226 Q1）", () => {
+  it("RS-226: 公式Q&A — 撃破したアバレッドAM の効果で捨札から出るアバレッドは選べない（キラーオーの選択が先）（出典: grnrngr/faq-card-4 RS-226 Q1）", () => {
     let s = st(
       {
         player1: { battle: [inst("RS-226", "k")] },
@@ -615,8 +608,7 @@ describe("RS-226 キラーオー", () => {
   });
 
   // faq-card-5 RS-289「はい、選ぶことができます。」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: 公式Q&A（相互参照）— ドラゴンレンジャー（BP6000）を撃破したとき、【獣奏剣】で BP6000 になっていた本来 BP5000 の恐竜ユニットを選べる（出典: grnrngr/faq-card-5 RS-289）", () => {
+  it("RS-226: 公式Q&A（相互参照）— ドラゴンレンジャー（BP6000）を撃破したとき、【獣奏剣】で BP6000 になっていた本来 BP5000 の恐竜ユニットを選べる（出典: grnrngr/faq-card-5 RS-289）", () => {
     const DINO5 = sUnit("SPEC-DINO5", { bp: 5000, features: ["恐竜"] });
     const s = killerAttack({ battle: [inst("RS-289", "t")], rush: [inst("SPEC-DINO5", "d")] }, "RS-289:t", [DINO5]);
     expect(zoneOf(s, "player2", "RS-289:t")).toBe("discard");
