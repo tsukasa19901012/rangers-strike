@@ -120,6 +120,11 @@ import {
   trySkipSet4Choice,
 } from "./legend1/set4NamedEffects";
 import {
+  isSet5AuditChoiceEffect,
+  tryResolveSet5AuditChoice,
+  trySkipSet5AuditChoice,
+} from "./legend1/set5AuditFixes";
+import {
   applyFlowerBombDeclaredNumber,
   continueMagiBlueAfterSelfDraw,
   moveCommandUnitToBattleSilent,
@@ -577,7 +582,8 @@ export function isValidEffectChoiceTarget(
     pending.effectId === FIRE_DANCE_EFFECT_ID ||
     isHououChoice(pending) ||
     pending.effectId === KUROKO_MEMORY_EFFECT_ID ||
-    isSet4ChoiceEffect(pending.effectId)
+    isSet4ChoiceEffect(pending.effectId) ||
+    isSet5AuditChoiceEffect(pending.effectId)
   ) {
     return true;
   }
@@ -2714,6 +2720,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (errata) return errata;
   const set4 = trySkipSet4Choice(state, playerId);
   if (set4) return set4;
+  const set5 = trySkipSet5AuditChoice(state, playerId);
+  if (set5) return set5;
   if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
   if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
     // 選択を省略したときは先にひいた1枚を手札に残す（どちらか1枚は必ず残る）。
@@ -2764,12 +2772,11 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
       "skipped",
     );
   }
-  if (pending.kind === "optional_deck_draw") {
-    return finishChoice(state, pending, "skipped");
-  }
+  // RS-335【マジボルト】の自分のドロー（optional_deck_draw）は見送っても、1枚でもひいていれば相手のドローへ進む
+  // （faq-card-5 RS-335 Q1）。汎用の optional_deck_draw の見送りより先に判定する。
   if (pending.effectId === "magi_blue_self_draw_1") {
     const chained = continueMagiBlueAfterSelfDraw(
-      state,
+      { ...state, pendingEffectChoice: undefined },
       pending.playerId,
       pending.sourceCardId,
       pending.phasePlayerId,
@@ -2781,7 +2788,7 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   }
   if (pending.effectId === "magi_blue_self_draw_2") {
     const chained = continueMagiBlueAfterSelfDraw(
-      state,
+      { ...state, pendingEffectChoice: undefined },
       pending.playerId,
       pending.sourceCardId,
       pending.phasePlayerId,
@@ -2789,6 +2796,9 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
       pending.magiBlueMeta?.drewAny ?? false,
     );
     if (chained.pendingEffectChoice) return { state: chained };
+    return finishChoice(state, pending, "skipped");
+  }
+  if (pending.kind === "optional_deck_draw") {
     return finishChoice(state, pending, "skipped");
   }
   if (pending.effectId === "morph_replacement" && pending.morphMeta?.activeMorphUnitInstanceId) {
@@ -2880,6 +2890,8 @@ export function applyEffectChoiceSelect(
   if (errata) return errata;
   const set4 = tryResolveSet4Choice(state, playerId, instanceId);
   if (set4) return set4;
+  const set5 = tryResolveSet5AuditChoice(state, playerId, instanceId);
+  if (set5) return set5;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };

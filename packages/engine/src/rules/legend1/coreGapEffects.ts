@@ -204,8 +204,9 @@ export function applyCoreGapNcEffect(
       nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
       const commands = collectCommandIds(nextState, enemyId, "any");
       if (commands.length > 0) {
+        // 選ぶのは自分（敵軍コマンドゾーンから。リリース・ホールドどちらも。atwiki/page-498）。
         const withChoice = startSelectCommandChoice(nextState, {
-          playerId: enemyId,
+          playerId,
           effectId,
           sourceCardId: card.cardId,
           phasePlayerId: playerId,

@@ -1298,7 +1298,11 @@ function appendBattleEntryActions(
   // ルール: R-ATK-05 — ゴーマ宮で「可能ならアタックする」ユニットはアタックしなければならない。
   const forcedAttack = gomaPalaceForcesAttack(state, playerId, pending.instanceId);
   if (forcedAttack) return;
-  if (canStrikeUnit(state.definitions, unit, state, playerId) && !requiredDefenderId) {
+  if (
+    canStrikeUnit(state.definitions, unit, state, playerId) &&
+    !requiredDefenderId &&
+    !battleActBlocked(player, unit, "strike")
+  ) {
     actions.push({ type: "strike", playerId, instanceId: pending.instanceId });
   }
   if (

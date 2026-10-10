@@ -313,8 +313,7 @@ describe("RS-309 轟雷神", () => {
   }
 
   // 「敵軍コマンドゾーンと敵軍パワーゾーンのダメージ以外のカードから、それぞれ1枚ずつ選んでもよい。そうしたとき、選んだカードを持ち主の手札に戻す」
-  // 既知の不具合: CARD-RS-309 ゴウライキャノンが敵軍コマンド／パワーではなく敵軍バトルエリアのユニットを選ばせる（汎用 return_to_zone パターン）
-  it.fails("RS-309: ストライクでダメージを与えたとき、敵軍コマンドとダメージ以外の敵軍パワーから1枚ずつ選んで持ち主の手札に戻す（出典: atwiki/page-479）", () => {
+  it("RS-309: ストライクでダメージを与えたとき、敵軍コマンドとダメージ以外の敵軍パワーから1枚ずつ選んで持ち主の手札に戻す（出典: atwiki/page-479）", () => {
     let s = gouraiStrike({ power: [...powerCards(2, "ep"), ...damageCards(1, "ed")], command: [held("TST-OP", "c0")] });
     const faceUp = s.players.player2.power.filter((c) => !c.faceDown).map((c) => c.instanceId);
     expect(faceUp).toHaveLength(1);
@@ -331,8 +330,7 @@ describe("RS-309 轟雷神", () => {
   });
 
   // 「選んでもよい」— 任意
-  // 既知の不具合: CARD-RS-309 ゴウライキャノンの選択肢に敵軍コマンドが出ない（敵軍バトルエリアのユニットが候補になる）
-  it.fails("RS-309: 選ばないことを選べ、その場合は敵軍コマンド・パワーは動かない（出典: atwiki/page-479「選んでもよい」）", () => {
+  it("RS-309: 選ばないことを選べ、その場合は敵軍コマンド・パワーは動かない（出典: atwiki/page-479「選んでもよい」）", () => {
     let s = gouraiStrike({ power: powerCards(2, "ep"), command: [held("TST-OP", "c0")] });
     expect(choiceIds(s)).toContain("TST-OP:c0");
     expect(canSkip(s)).toBe(true);
@@ -353,8 +351,7 @@ describe("RS-309 轟雷神", () => {
   });
 
   // faq-card-5 RS-309 Q1「はい、できます。」
-  // 既知の不具合: CARD-RS-309 ゴウライキャノンで敵軍コマンドゾーンのカードを選べない
-  it.fails("RS-309: 公式Q&A — 敵軍パワーにダメージ以外のカードがなくても、敵軍コマンドのカードだけを選んで手札に戻せる（出典: grnrngr/faq-card-5 RS-309 Q1）", () => {
+  it("RS-309: 公式Q&A — 敵軍パワーにダメージ以外のカードがなくても、敵軍コマンドのカードだけを選んで手札に戻せる（出典: grnrngr/faq-card-5 RS-309 Q1）", () => {
     let s = gouraiStrike({ power: [inst("TST-P", "only")], command: [held("TST-OP", "c0")] });
     expect(s.players.player2.power.every((c) => c.faceDown)).toBe(true);
     expect(choiceIds(s)).toEqual(["TST-OP:c0"]);
@@ -363,8 +360,7 @@ describe("RS-309 轟雷神", () => {
   });
 
   // faq-card-5 RS-309 Q2「いいえ、どちらか1枚でも選ぶことができれば発動できます。」
-  // 既知の不具合: CARD-RS-309 ゴウライキャノンで敵軍パワーゾーンのカードを選べない
-  it.fails("RS-309: 公式Q&A — 敵軍コマンドが空でも、ダメージ以外の敵軍パワーが1枚あれば発動できる（出典: grnrngr/faq-card-5 RS-309 Q2）", () => {
+  it("RS-309: 公式Q&A — 敵軍コマンドが空でも、ダメージ以外の敵軍パワーが1枚あれば発動できる（出典: grnrngr/faq-card-5 RS-309 Q2）", () => {
     let s = gouraiStrike({ power: powerCards(2, "ep"), command: [] });
     const faceUp = s.players.player2.power.filter((c) => !c.faceDown).map((c) => c.instanceId);
     expect(choiceIds(s)).toEqual(faceUp);
@@ -421,8 +417,7 @@ describe("RS-310 ゴウライビートル", () => {
   });
 
   // 「BP8000以上のとき「SP1」になる」
-  // 既知の不具合: CARD-RS-310 BP8000 以上でも「SP1」にならず（SP！のまま）ストライクできない
-  it.fails("RS-310: BP8000 以上（ダメージ合計6点）のとき「SP1」になりストライクできる（出典: atwiki/page-480「BP8000以上のとき「SP1」になる」）", () => {
+  it("RS-310: BP8000 以上（ダメージ合計6点）のとき「SP1」になりストライクできる（出典: atwiki/page-480「BP8000以上のとき「SP1」になる」）", () => {
     const s = beetle(3, 3);
     expect(bpOf(s, "player1", "RS-310:b")).toBe(8000);
     expect(spOf(s, "player1", "RS-310:b")).toBe(1);

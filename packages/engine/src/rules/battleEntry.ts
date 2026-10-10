@@ -1,6 +1,7 @@
 import { getRidingComboEffect } from "@rangers-strike/cards";
 import type { GameState, PendingBattleEntry, PlayerId } from "../types/game";
 import { continueEnterBattleEffects } from "./combo";
+import { hasScopedRestriction } from "../core/scopedModifiers";
 
 export function riderHasRidingComboOnRideOff(cardId: string): boolean {
   return !!getRidingComboEffect(cardId);
@@ -34,6 +35,13 @@ export function createBattleEntryPrompt(
 export function afterEnterBattle(state: GameState, entry: PendingBattleEntry): GameState {
   if (state.pendingEffectChoice) {
     return { ...state, deferredBattleEntry: entry };
+  }
+  // RS-326【究極奥義・猫だまし】で出したユニットはアタックもストライクもできない（atwiki/page-487）—
+  // 出た直後の行動の機会（アタック／ストライク）を開かない。
+  if (
+    hasScopedRestriction(state.players[entry.playerId], entry.instanceId, "neko_damashi_no_attack_strike", "turn")
+  ) {
+    return { ...state, activePlayer: entry.phasePlayerId };
   }
   return {
     ...state,

@@ -19,6 +19,7 @@ import type {
   PlayerState,
 } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
+import { unitFeatures } from "./addedFeatures";
 import { addTurnRuleModifier } from "../core/scopedModifiers";
 import {
   allCategoriesExistInCommandZone,
@@ -122,6 +123,24 @@ function isWildBeastUnit(
 }
 
 /** 超シールド進化 — WB味方を撃破する代わりにシールドを捨てる。 */
+
+/**
+ * 「※これは敵軍ターン中、〜を持つユニットとバトルしたときバトルに勝っても撃破される」の相手側の条件。
+ * 通常は「SP1以上のユニット」（ストライクできるユニット）。RS-315 バクレンオーは
+ * 「特徴「人型」を持つユニット」で判定する（atwiki/page-440。SP は問わない）。
+ */
+function winDestroyOpponentQualifies(
+  state: GameState,
+  selfCardId: string,
+  opponentCard: CardInstance,
+  opponentOwner: PlayerId,
+): boolean {
+  const text = state.definitions[selfCardId]?.text ?? "";
+  const feature = text.match(/※これは敵軍ターン中、特徴「([^」]+)」を持つユニットとバトルしたとき/)?.[1];
+  if (feature) return unitFeatures(state, opponentOwner, opponentCard).includes(feature);
+  return canStrikeUnit(state.definitions, opponentCard, state, opponentOwner);
+}
+
 export function findSuperShieldSubstitute(
   state: GameState,
   intent: LeaveIntent,
@@ -1298,17 +1317,22 @@ export function resolveBattlePendingCore(
     destroyDefender &&
     battleState.activePlayer !== attackerId &&
     winButDestroyedVsSp1(refreshedAttackerFound.card.cardId) &&
-    canStrikeUnit(battleState.definitions, refreshedDefenderFound.card, battleState, defenderOwner);
+    winDestroyOpponentQualifies(
+      battleState,
+      refreshedAttackerFound.card.cardId,
+      refreshedDefenderFound.card,
+      defenderOwner,
+    );
 
   const winButDefenderSelfDestruct =
     destroyAttacker &&
     !destroyDefender &&
     battleState.activePlayer !== defenderOwner &&
     winButDestroyedVsSp1(refreshedDefenderFound.card.cardId) &&
-    canStrikeUnit(
-      battleState.definitions,
-      refreshedAttackerFound.card,
+    winDestroyOpponentQualifies(
       battleState,
+      refreshedDefenderFound.card.cardId,
+      refreshedAttackerFound.card,
       attackerId,
     );
 

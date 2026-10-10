@@ -155,15 +155,13 @@ describe("RS-315 バクレンオー", () => {
   }
 
   // 「※これは敵軍ターン中、特徴「人型」を持つユニットとバトルしたときバトルに勝っても撃破される。」
-  // 既知の不具合: CARD-RS-315 ※の判定が特徴「人型」ではなく相手の「SP1」以上で行われる（SP なしの人型に勝っても撃破されない）
-  it.fails("RS-315: 敵軍ターン中、特徴「人型」を持つユニット（SP なし）とバトルして勝っても撃破される（出典: atwiki/page-440）", () => {
+  it("RS-315: 敵軍ターン中、特徴「人型」を持つユニット（SP なし）とバトルして勝っても撃破される（出典: atwiki/page-440）", () => {
     const s = enemyAttacks("SPEC-HUMANOID");
     expect(zoneOf(s, "player2", "SPEC-HUMANOID:a")).toBe("discard");
     expect(zoneOf(s, "player1", "RS-315:b")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-315 ※の判定が「SP1」以上で行われ、人型でない SP1 のユニットとのバトルでも撃破される
-  it.fails("RS-315: 人型を持たないユニット（SP1）とのバトルに勝っても撃破されない（出典: atwiki/page-440「特徴「人型」を持つユニット」）", () => {
+  it("RS-315: 人型を持たないユニット（SP1）とのバトルに勝っても撃破されない（出典: atwiki/page-440「特徴「人型」を持つユニット」）", () => {
     const s = enemyAttacks("SPEC-SP1");
     expect(zoneOf(s, "player2", "SPEC-SP1:a")).toBe("discard");
     expect(zoneOf(s, "player1", "RS-315:b")).toBe("battle");

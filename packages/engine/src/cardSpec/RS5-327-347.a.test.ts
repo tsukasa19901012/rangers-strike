@@ -65,8 +65,7 @@ describe("RS-327 天空聖者ブレイジェル", () => {
   const rushState = (p1: Partial<GameState["players"]["player1"]>) =>
     st({ phase: "rush", player1: { hand: [inst("RS-327", "bz")], command: releasedCat("MA", 1), power: powerCards(5), deck: deckCards(3), ...p1 } });
 
-  it.fails("RS-327: 追加条件 — 自軍捨札に「魔導騎士ウルザード」があればラッシュでき、そのウルザードは捨札に残る（出典: atwiki/page-488「自軍捨札に「魔導騎士ウルザード」がある」・評価欄「捨札になっていればよい」）", () => {
-    // 既知の不具合: CARD-RS-327 追加条件を「場のウルザードを捨札にする」として扱い、捨札にあるだけではラッシュできない
+  it("RS-327: 追加条件 — 自軍捨札に「魔導騎士ウルザード」があればラッシュでき、そのウルザードは捨札に残る（出典: atwiki/page-488「自軍捨札に「魔導騎士ウルザード」がある」・評価欄「捨札になっていればよい」）", () => {
     const s = rushState({ discard: [inst("RS-115", "u")] });
     expect(canStartRush(s, "player1", "RS-327:bz")).toBe(true);
     const r = rushFromHand(s, "player1", "RS-327:bz");
@@ -75,8 +74,7 @@ describe("RS-327 天空聖者ブレイジェル", () => {
     expect(zoneOf(r.state, "player1", "RS-115:u")).toBe("discard");
   });
 
-  it.fails("RS-327: 追加条件 — ウルザードが自軍ラッシュエリアにあっても捨札になければラッシュできない（場のウルザードを捨札にすることでは満たせない）（出典: atwiki/page-488「自軍捨札に…がある」）", () => {
-    // 既知の不具合: CARD-RS-327 場のウルザードを捨札にしてラッシュできてしまう
+  it("RS-327: 追加条件 — ウルザードが自軍ラッシュエリアにあっても捨札になければラッシュできない（場のウルザードを捨札にすることでは満たせない）（出典: atwiki/page-488「自軍捨札に…がある」）", () => {
     const s = rushState({ rush: [inst("RS-115", "u")] });
     expect(canStartRush(s, "player1", "RS-327:bz")).toBe(false);
   });
@@ -110,15 +108,13 @@ describe("RS-327 天空聖者ブレイジェル", () => {
     return { s, drew: s.players.player1.hand.length - h0 };
   }
 
-  it.fails("RS-327: 自軍ラッシュエリアにある間、特徴「レッド」の自軍ユニット（デカレッド）がバトルで敵軍ユニットを撃破すると1枚ドローする（出典: atwiki/page-488「撃破するたび、自分は1枚ドローする」）", () => {
-    // 既知の不具合: CARD-RS-327 【フェイタルブレイドの伝授】が未実装（DSL スタブが NC トリガーになっており発動しない）
+  it("RS-327: 自軍ラッシュエリアにある間、特徴「レッド」の自軍ユニット（デカレッド）がバトルで敵軍ユニットを撃破すると1枚ドローする（出典: atwiki/page-488「撃破するたび、自分は1枚ドローする」）", () => {
     const { s, drew } = redAttack("RS-106");
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
     expect(drew).toBe(1);
   });
 
-  it.fails("RS-327: 「撃破するたび」— レッドの自軍ユニットが効果（デカレッドSWAT【Dリボルバー】）で敵軍ユニットを撃破しても1枚ドローする（出典: atwiki/page-488「撃破するたび」）", () => {
-    // 既知の不具合: CARD-RS-327 【フェイタルブレイドの伝授】が未実装
+  it("RS-327: 「撃破するたび」— レッドの自軍ユニットが効果（デカレッドSWAT【Dリボルバー】）で敵軍ユニットを撃破しても1枚ドローする（出典: atwiki/page-488「撃破するたび」）", () => {
     let s = st({
       player1: { rush: [inst("RS-327", "bz"), inst("RS-345", "sw")], deck: deckCards(5) },
       player2: { rush: [inst("TST-UNIT-0", "e")], deck: deckCards(5, "e") },
@@ -129,8 +125,7 @@ describe("RS-327 天空聖者ブレイジェル", () => {
     expect(s.players.player1.hand.length - h0).toBe(1);
   });
 
-  it.fails("RS-327: 「撃破するたび」— 同じターンにレッドの自軍ユニット2体がそれぞれ撃破すれば合計2枚ドローする（出典: atwiki/page-488・評価欄「複数体撃破…ドローエンジン」）", () => {
-    // 既知の不具合: CARD-RS-327 【フェイタルブレイドの伝授】が未実装
+  it("RS-327: 「撃破するたび」— 同じターンにレッドの自軍ユニット2体がそれぞれ撃破すれば合計2枚ドローする（出典: atwiki/page-488・評価欄「複数体撃破…ドローエンジン」）", () => {
     let s = st({
       player1: { rush: [inst("RS-327", "bz")], battle: [inst("RS-106", "r1"), inst("RS-057", "r2")], deck: deckCards(5) },
       player2: { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2")], deck: deckCards(5, "e") },
@@ -376,8 +371,7 @@ describe("RS-330 マジレジェンド", () => {
     expect(canStartRush(legendRush([inst("RS-332", "li"), inst("TST-UNIT-2", "m")]), "player1", "RS-330:ml")).toBe(false);
   });
 
-  it.fails("RS-330: 【ファイヤートルネード】ラッシュしたとき、敵軍ユニット（ラッシュエリア・バトルエリア）と敵軍コマンドゾーンのカードをすべて持ち主の山札に戻す（出典: atwiki/page-491）", () => {
-    // 既知の不具合: CARD-RS-330 【ファイヤートルネード】が敵軍バトルエリアのユニット1体を選んで山札に戻すだけで、ラッシュエリアのユニットとコマンドゾーンのカードが残る
+  it("RS-330: 【ファイヤートルネード】ラッシュしたとき、敵軍ユニット（ラッシュエリア・バトルエリア）と敵軍コマンドゾーンのカードをすべて持ち主の山札に戻す（出典: atwiki/page-491）", () => {
     const r = rushFromHand(
       legendRush([inst("RS-331", "fb"), inst("RS-332", "li")], {
         rush: [inst("TST-UNIT-0", "er")],

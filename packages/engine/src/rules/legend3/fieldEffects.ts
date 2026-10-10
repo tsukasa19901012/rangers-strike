@@ -202,6 +202,8 @@ export function legend3EffectiveSp(
   // RS-188 アチャとコチャ【地球征服宣告書】: これが自軍エリアにある間、自軍パワーゾーンが12枚以上なら、
   // 特徴「メカ」を持つすべての自軍 S ユニットは「SP1」になる（atwiki/page-121）。
   if (earthConquestDeclarationActive(state, playerId, instance)) sp = Math.max(sp, 1);
+  // RS-310 ゴウライビートル【カラクリ忍法・角変化】: BP8000以上のとき「SP1」になる（atwiki/page-480）。
+  if (instance.cardId === "RS-310" && effectiveBp(state, playerId, instance) >= 8000) sp = Math.max(sp, 1);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

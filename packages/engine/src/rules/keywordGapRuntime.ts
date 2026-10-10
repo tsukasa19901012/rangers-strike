@@ -1,3 +1,4 @@
+import { hasScopedRestriction } from "../core/scopedModifiers";
 /**
  * 監査で検出された「付与のみで未消費」キーワードのランタイム実装。
  *
@@ -212,6 +213,8 @@ export function battleActBlocked(
   card: { cardId: string; instanceId: string; battleActed?: boolean; activatedNcEffects?: string[] },
   action: "attack" | "strike",
 ): boolean {
+  // RS-326【究極奥義・猫だまし】で出したユニットはアタックもストライクもできない（atwiki/page-487）。
+  if (hasScopedRestriction(player, card.instanceId, "neko_damashi_no_attack_strike", "turn")) return true;
   // RS-167【爆竜必殺バキバキパンチ】で得た「アタックしてバトルに勝つたび、追加でアタックできる」。
   if (action === "attack" && hasBakiBakiExtraAttack(player, card.instanceId)) return false;
   // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックする権利を失っている。

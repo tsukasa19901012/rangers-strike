@@ -214,8 +214,7 @@ describe("RS-335 レジェンドマジブルー", () => {
   });
 
   // grnrngr/faq-card-5 RS-335 Q1「はい、その通りです。」（自分が1枚しかドローしなかった場合でも相手は1枚ドローできる）
-  it.fails("RS-335: 公式Q&A — 自分が1枚しかドローしなかった場合でも、相手は1枚ドローできる（出典: grnrngr/faq-card-5 RS-335 Q1・atwiki/page-496 Q1）", () => {
-    // 既知の不具合: CARD-RS-335 1枚ドローして2枚目を見送ると、相手のドロー選択が出ない
+  it("RS-335: 公式Q&A — 自分が1枚しかドローしなかった場合でも、相手は1枚ドローできる（出典: grnrngr/faq-card-5 RS-335 Q1・atwiki/page-496 Q1）", () => {
     let s = enterAt("RS-335", 2);
     s = pick(s, "draw");
     s = skip(s);
@@ -345,8 +344,7 @@ describe("RS-337 レジェンドマジグリーン", () => {
     expect(spOf(s, "player1", "RS-337:x")).toBe(1);
   });
 
-  it.fails("RS-337: 【マジボルト】敵軍コマンドゾーンのカードを選ぶのは自分（レジェンドマジグリーンのプレイヤー）で、リリース・ホールドどちらも選べる（出典: atwiki/page-498「敵軍コマンドゾーンからカードを1枚選び」）", () => {
-    // 既知の不具合: CARD-RS-337 選択が相手（敵軍コマンドの持ち主）に渡される
+  it("RS-337: 【マジボルト】敵軍コマンドゾーンのカードを選ぶのは自分（レジェンドマジグリーンのプレイヤー）で、リリース・ホールドどちらも選べる（出典: atwiki/page-498「敵軍コマンドゾーンからカードを1枚選び」）", () => {
     const s = greenAt(3);
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(s)).toEqual(["TST-OP:ehld", "TST-OP:erel"]);
@@ -362,8 +360,7 @@ describe("RS-337 レジェンドマジグリーン", () => {
     expect(s.players.player1.hand).toHaveLength(0);
   });
 
-  it.fails("RS-337: 任意 — 自分は戻さないことを選べる（出典: atwiki/page-498「戻してもよい」）", () => {
-    // 既知の不具合: CARD-RS-337 見送りの判断が相手に渡される（自分の skip が不正手になる）
+  it("RS-337: 任意 — 自分は戻さないことを選べる（出典: atwiki/page-498「戻してもよい」）", () => {
     let s = greenAt(3);
     s = raw(s, { type: "skip_effect_choice", playerId: "player1" });
     expect(s.players.player2.command).toHaveLength(2);

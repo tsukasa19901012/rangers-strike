@@ -33,6 +33,7 @@ import {
   released,
   rushFromHand,
   rushVia,
+  passEntry,
   settle,
   skip,
   st,
@@ -618,8 +619,7 @@ describe("RS-326 魔法猫スモーキー", () => {
   }
 
   // 「自分の手札からBP16000以下のLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい」
-  // 既知の不具合: CARD-RS-326 【猫だまし】が手札の L ユニットではなく敵軍ユニットを選ばせ、それをラッシュエリアに移す
-  it.fails("RS-326: 3番目に出ると、手札の BP16000 以下の L ユニットを1枚選んで自軍ラッシュエリアに出す（BP17000 や M は選べない）（出典: atwiki/page-487）", () => {
+  it("RS-326: 3番目に出ると、手札の BP16000 以下の L ユニットを1枚選んで自軍ラッシュエリアに出す（BP17000 や M は選べない）（出典: atwiki/page-487）", () => {
     let s = smokey(3, [inst("SPEC-L16K", "l"), inst("SPEC-L17K", "big"), inst("SPEC-M", "m")]);
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(s)).toEqual(["SPEC-L16K:l"]);
@@ -629,8 +629,7 @@ describe("RS-326 魔法猫スモーキー", () => {
   });
 
   // 「出してもよい」
-  // 既知の不具合: CARD-RS-326 【猫だまし】の候補が手札の L ユニットにならない
-  it.fails("RS-326: 出さないことを選べる（任意）（出典: atwiki/page-487「出してもよい」）", () => {
+  it("RS-326: 出さないことを選べる（任意）（出典: atwiki/page-487「出してもよい」）", () => {
     let s = smokey(3, [inst("SPEC-L16K", "l")]);
     expect(choiceIds(s)).toEqual(["SPEC-L16K:l"]);
     expect(canSkip(s)).toBe(true);
@@ -639,11 +638,10 @@ describe("RS-326 魔法猫スモーキー", () => {
   });
 
   // 「この効果で出したユニットは、アタックもストライクもできず、自分がターンを終えるとき捨札になる」
-  // 既知の不具合: CARD-RS-326 【猫だまし】で L ユニットを出せない
-  it.fails("RS-326: この効果で出した L ユニットはバトルエリアに出てもアタックもストライクもできず、ターンを終えるとき捨札になる（出典: atwiki/page-487）", () => {
+  it("RS-326: この効果で出した L ユニットはバトルエリアに出てもアタックもストライクもできず、ターンを終えるとき捨札になる（出典: atwiki/page-487）", () => {
     let s = smokey(3, [inst("SPEC-L16K", "l")]);
     s = pick(s, "SPEC-L16K:l");
-    s = settle(s);
+    s = passEntry(settle(s));
     s = enter(s, "SPEC-L16K:l");
     expect(attackTargets(s, "SPEC-L16K:l")).toEqual([]);
     expect(canStrike(s, "SPEC-L16K:l")).toBe(false);
@@ -658,8 +656,7 @@ describe("RS-326 魔法猫スモーキー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:eb")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-326 【猫だまし】が手札に L ユニットが無くても敵軍ユニットを候補にした選択を出す
-  it.fails("RS-326: 手札に BP16000 以下の L ユニットがなければ何も起きない（敵軍ユニットには触れない）（出典: atwiki/page-487）", () => {
+  it("RS-326: 手札に BP16000 以下の L ユニットがなければ何も起きない（敵軍ユニットには触れない）（出典: atwiki/page-487）", () => {
     const s = smokey(3, [inst("SPEC-L17K", "big")]);
     expect(s.pendingEffectChoice).toBeFalsy();
     expect(zoneOf(s, "player2", "TST-UNIT-0:eb")).toBe("battle");

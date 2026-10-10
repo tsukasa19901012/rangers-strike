@@ -1,4 +1,5 @@
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
+import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import { applyMagiPunchCounter, isSet4EndTurnEffect, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import { applyDeusGeneOnRush } from "../rules/rs4NcEffects";
@@ -469,6 +470,8 @@ function finishStrikeResolution(
     activePlayer: pending.battlePhasePlayer,
   });
   resolved = finishBattleEntryIf(resolved, pending.strikerInstanceId);
+  // 「ストライクしてダメージを与えたとき」（RS-309【ゴウライキャノン】）。
+  resolved = applySet5StrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -648,12 +651,21 @@ function settleEffectRushes(before: GameState, after: GameState): GameState {
   });
 }
 
+/** applyAction の入れ子の深さ（外側の呼び出しだけで行う後処理のため）。 */
+let applyActionDepth = 0;
+
 export function applyAction(
   state: GameState,
   action: GameAction,
   options?: { trustLegality?: boolean },
 ): ActionResult {
-  const result = applyActionCore(state, action, options);
+  applyActionDepth += 1;
+  let result: ActionResult;
+  try {
+    result = applyActionCore(state, action, options);
+  } finally {
+    applyActionDepth -= 1;
+  }
   if (!result.ok) return result;
   // ルール: R-ZONE-04, R-HOLD-02 — エリアを離れたカードの付加情報はどの経路で移動しても消える。
   let next = clearRegisterHoldOffField(result.state);
@@ -663,6 +675,8 @@ export function applyAction(
   next = settleResolvingOperations(next);
   next = applyBpZeroRuleDestruction(next);
   next = syncDamageWithFaceDownPower(state, next);
+  // RS-327【フェイタルブレイドの伝授】: 1アクションで撃破された敵軍ユニットを数える（入れ子の applyAction では数えない）。
+  if (applyActionDepth === 0) next = applyFatalBladeDraws(state, next, action);
   return next === result.state ? result : { ok: true, state: next };
 }
 
