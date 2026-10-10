@@ -227,6 +227,8 @@ export type PendingMorph = {
 };
 
 export type PendingLeave = {
+  /** RS-303【シティガーディアンズ隊長】の「かわりに捨札にしてもよい」を見送った（再度は尋ねない）。 */
+  cityGuardiansDeclined?: boolean;
   ownerPlayerId: PlayerId;
   instanceId: string;
   fromZone: "rush" | "battle";
@@ -495,6 +497,8 @@ export type PendingEffectChoice = {
    * skip_effect_choice で行わない。行うときの処理は rules/optionalEffects.ts の登録先。
    */
   mayConfirm?: boolean;
+  /** RS-303【シティガーディアンズ隊長】: かわりに捨札にするかを選んでいる間、保留している離場。 */
+  leaveIntentMeta?: PendingLeave;
   /** mayConfirm が DSL の任意効果（optional）のとき、行う効果の特定情報。 */
   optionalDslMeta?: { effectId: string; triggerType: string };
   /**
@@ -763,6 +767,16 @@ export type GameState = {
    * 捨札（常駐なら常駐置き場）に置く（applyAction の後処理 settleResolvingOperations）。
    */
   resolvingOperations?: Array<{ playerId: PlayerId; card: CardInstance }>;
+  /**
+   * RS-265 ジェットシーカー【ラウンドレーダー】: 相手が手札からオペレーションを使用したときの「2枚まで選び捨札にしてもよい」で、
+   * まだ処理していないもの（使用したオペレーションの解決が終わってから開く。ジェットシーカー1体につき1回）。
+   */
+  roundRadarQueue?: Array<{ ownerId: PlayerId; phasePlayerId: PlayerId }>;
+  /**
+   * RS-255 巨大化爆弾: 敵軍ターン中に「怪人」の自軍ユニットが撃破されて捨札になったときの使用の窓。
+   * 持ち主は巨大化爆弾を使う（play_counter）か見送る（pass_leave_reaction）。
+   */
+  pendingGiantBomb?: { ownerId: PlayerId; unitInstanceIds: string[]; phasePlayerId: PlayerId };
 };
 
 export type EffectRushTrigger = {
@@ -779,7 +793,7 @@ export type EffectRushTrigger = {
 };
 
 /** 効果でラッシュエリアに出せるカードの置き場。 */
-export type EffectRushSourceZone = "command" | "hand" | "discard" | "power";
+export type EffectRushSourceZone = "command" | "hand" | "discard" | "power" | "deck";
 
 export type PendingEffectRush = {
   /** 出すユニットの持ち主。 */
@@ -791,6 +805,8 @@ export type PendingEffectRush = {
   fromZone: EffectRushSourceZone;
   /** R-RUSH-21: 「ただし、ラッシュするための必要パワーと追加条件は満たすこと」。 */
   requireConditions: boolean;
+  /** 「ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）」（RS-249 Vコマンダー）。 */
+  ignorePowerCost?: boolean;
   /** 「この効果でラッシュしたユニットは、このターン、バトルエリアに出られない」（RS-180 ライドラプター）。 */
   blockBattleEntryThisTurn?: boolean;
   /** 選び終えて、まだ出していないユニット（1体ずつ出す）。 */

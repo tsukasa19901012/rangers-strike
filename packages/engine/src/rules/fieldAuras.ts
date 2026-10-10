@@ -7,6 +7,7 @@ import { opponent } from "../core/helpers";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
 import { rkPassiveBpBonus } from "./rkFieldPassives";
+import { set5AFieldBpBonus } from "./legend1/set5NamedEffectsA";
 import { rs560BeastMBpBonus } from "./rs/rsCatchallField";
 
 function categoriesInclude(
@@ -181,6 +182,8 @@ export function passiveNamedFieldBpBonus(
     bonus -= 500 * state.players[opponent(playerId)].battle.filter((c) => c.cardId === "RK-046").length;
   }
 
+  // RS-303【シティガーディアンズ隊長】・RS-255 巨大化爆弾を重ねたユニット。
+  if (role === "general") bonus += set5AFieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

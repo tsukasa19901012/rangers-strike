@@ -1,4 +1,5 @@
 import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
+import { set5ADefenderBlocksAttack } from "../legend1/set5NamedEffectsA";
 import {
   getBattleEntryHandDiscardCount,
   hasUnnamedRule,
@@ -396,6 +397,8 @@ export function canAttackDefender(
   // RS-158【エレファントシールド】: コンビネーションが成立している間、敵軍ユニットはこれ以外にアタックできない。
   const mustTarget = elephantShieldMustTarget(state, defenderPlayerId);
   if (mustTarget && mustTarget !== defenderInstanceId) return false;
+  // RS-297【変形】: 自軍コマンドがすべてリリース状態なら、「航空機」を持たないユニットにアタックされない。
+  if (set5ADefenderBlocksAttack(state, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
 
   const attackerInRush = findInZone(attackerPlayer, "rush", attackerInstanceId);
   if (

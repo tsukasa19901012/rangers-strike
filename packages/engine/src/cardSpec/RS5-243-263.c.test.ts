@@ -94,8 +94,7 @@ describe("RS-257 野球仮面", () => {
     expect(canStrike(passEntry(s), "RS-257:y")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-257 NC は成立する（ログに homuran）が、DSL が grant_keyword reveal_enemy_deck_1 だけで、オモテにする選択も以降の処理も起きない
-  it.fails("RS-257: 1番目に出て NC が成立すると敵軍山札の上をオモテにしてよい。同じ必要パワー（2）の自軍コマンドをホールドすれば、そのカードは持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-432）", () => {
+  it("RS-257: 1番目に出て NC が成立すると敵軍山札の上をオモテにしてよい。同じ必要パワー（2）の自軍コマンドをホールドすれば、そのカードは持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-432）", () => {
     let s = homerun("TST-UNIT-2", [released("TST-UNIT-2", "c2"), released("TST-OP-ET", "c1")]);
     expect(ncLogged(s, "RS-257")).toBe(true);
     expect(canSkip(s)).toBe(true);
@@ -107,8 +106,7 @@ describe("RS-257 野球仮面", () => {
     expect(s.players.player2.damage).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-257 【予告ホームラン】の処理が未実装
-  it.fails("RS-257: 同じ必要パワーの自軍コマンドがなければ（ホールドできなければ）、オモテにしたカードは持ち主の手札に加わる（出典: atwiki/page-432「できなければ、そのカードを持ち主の手札に加える」）", () => {
+  it("RS-257: 同じ必要パワーの自軍コマンドがなければ（ホールドできなければ）、オモテにしたカードは持ち主の手札に加わる（出典: atwiki/page-432「できなければ、そのカードを持ち主の手札に加える」）", () => {
     let s = homerun("TST-UNIT-2", [released("TST-OP-ET", "c1")]);
     s = pickAll(s, ["TST-UNIT-2:top"], 4);
     s = settle(s);
@@ -132,8 +130,7 @@ describe("RS-257 野球仮面", () => {
   });
 
   // faq-card-5 RS-257 Q1（atwiki Q1）「いいえ、ホールドしたくなければしなくても構いません。ただしその場合は…「できなければ」以降のテキストに従ってください。」
-  // 既知の不具合: CARD-RS-257 【予告ホームラン】の処理が未実装（ホールドしない選択もない）
-  it.fails("RS-257: 公式Q&A — ホールドできるときもホールドしなくてよい。その場合はカードを持ち主の手札に加える（出典: grnrngr/faq-card-5 RS-257 Q1・atwiki/page-432 Q1）", () => {
+  it("RS-257: 公式Q&A — ホールドできるときもホールドしなくてよい。その場合はカードを持ち主の手札に加える（出典: grnrngr/faq-card-5 RS-257 Q1・atwiki/page-432 Q1）", () => {
     let s = homerun("TST-UNIT-2", [released("TST-UNIT-2", "c2")]);
     s = pickAll(s, ["TST-UNIT-2:top"], 1);
     expect(canSkip(s)).toBe(true);
@@ -143,8 +140,7 @@ describe("RS-257 野球仮面", () => {
   });
 
   // faq-card-5 RS-257 Q2（atwiki Q2）「「オモテにしたカードの必要パワーと同じ必要パワーのカードをホールドする」と解釈してください。」
-  // 既知の不具合: CARD-RS-257 【予告ホームラン】の処理が未実装
-  it.fails("RS-257: 公式Q&A — 比べるのは必要パワーどうし（必要パワー2のカードに対し、ナンバー2で必要パワー1のマジブルーはホールドに使えず手札へ）（出典: grnrngr/faq-card-5 RS-257 Q2・atwiki/page-432 Q2）", () => {
+  it("RS-257: 公式Q&A — 比べるのは必要パワーどうし（必要パワー2のカードに対し、ナンバー2で必要パワー1のマジブルーはホールドに使えず手札へ）（出典: grnrngr/faq-card-5 RS-257 Q2・atwiki/page-432 Q2）", () => {
     let s = homerun("TST-UNIT-2", [released("RS-059", "cn2")]);
     s = pickAll(s, ["TST-UNIT-2:top"], 4);
     s = settle(s);
@@ -543,8 +539,7 @@ describe("RS-262 フラッシュキング", () => {
     expect(spOf(s, "player1", "RS-262:fk")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-262 【スーパーコズモフラッシュ】の選択が出ない（DSL は enter_battle で SP2 を付けるだけだが、実際は SP も変わらない）
-  it.fails("RS-262: 自軍ターン中にバトルエリアに出たとき、パワーゾーンのダメージ以外の「OT」以外のカード2枚を捨札にすれば、このターン「SP2」になる（出典: atwiki/page-452）", () => {
+  it("RS-262: 自軍ターン中にバトルエリアに出たとき、パワーゾーンのダメージ以外の「OT」以外のカード2枚を捨札にすれば、このターン「SP2」になる（出典: atwiki/page-452）", () => {
     let s = flash([inst("TST-OP", "w1"), inst("TST-OP-ET", "e1"), inst("TST-OP-OT", "o1"), { ...inst("TST-OP", "dmg"), faceDown: true }]);
     expect(choiceIds(s)).toEqual(["TST-OP-ET:e1", "TST-OP:w1"]);
     s = pick(s, "TST-OP:w1");
@@ -556,8 +551,7 @@ describe("RS-262 フラッシュキング", () => {
     expect(spOf(s, "player1", "RS-262:fk")).toBe(2);
   });
 
-  // 既知の不具合: CARD-RS-262 【スーパーコズモフラッシュ】の選択が出ない
-  it.fails("RS-262: 「してもよい」— 捨札にしないことを選べ、その場合は「SP1」のまま（出典: atwiki/page-452「捨札にしてもよい」）", () => {
+  it("RS-262: 「してもよい」— 捨札にしないことを選べ、その場合は「SP1」のまま（出典: atwiki/page-452「捨札にしてもよい」）", () => {
     let s = flash([inst("TST-OP", "w1"), inst("TST-OP-ET", "e1")]);
     expect(canSkip(s)).toBe(true);
     s = skip(s);
@@ -572,8 +566,7 @@ describe("RS-262 フラッシュキング", () => {
     expect(zoneOf(s, "player1", "TST-OP:w1")).toBe("power");
   });
 
-  // 既知の不具合: CARD-RS-262 SP2 にならない（「このターン」の範囲も確認できない）
-  it.fails("RS-262: 「SP2」は「このターン」だけ（次の自軍ターンは SP1）（出典: atwiki/page-452「このターン、これは「SP2」になる」）", () => {
+  it("RS-262: 「SP2」は「このターン」だけ（次の自軍ターンは SP1）（出典: atwiki/page-452「このターン、これは「SP2」になる」）", () => {
     let s = flash([inst("TST-OP", "w1"), inst("TST-OP-ET", "e1")]);
     s = pickAll(s, ["TST-OP:w1", "TST-OP-ET:e1"], 2);
     if (legal(s).some((a) => a.type === "confirm_effect_choice")) s = confirm(s);
@@ -590,8 +583,7 @@ describe("RS-262 フラッシュキング", () => {
   );
 
   // faq-card-5 RS-262 Q1（atwiki Q1）「いいえ、それはできません。OTを含むカードは「OTのカードである」として扱われます。」
-  // 既知の不具合: CARD-RS-262 【スーパーコズモフラッシュ】の選択が出ない
-  it.fails("RS-262: Q&A — OT を含むマルチカテゴリ（ET/OT）のカードは捨札に選べない（出典: atwiki/page-452 Q1）", () => {
+  it("RS-262: Q&A — OT を含むマルチカテゴリ（ET/OT）のカードは捨札に選べない（出典: atwiki/page-452 Q1）", () => {
     const s = flash([inst("TST-OP", "w1"), inst("TST-OP-ET", "e1"), inst("SPEC-OP-ET-OT", "mc")]);
     expect(choiceIds(s)).toEqual(["TST-OP-ET:e1", "TST-OP:w1"]);
   });

@@ -113,6 +113,7 @@ import { listKamenRideAbilityUnits } from "../rules/riderKickEffects";
 import { listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities";
 import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
 import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
+import { giantBombCounterIds, isSet5AConfirmableChoice, operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
 import {
   getMorphReactionActorId,
@@ -786,7 +787,8 @@ function appendOperationCategoryPaymentActions(
     if (canPlayOperation(state, playerId, definition)) continue;
     if (!canPlayOperationExceptCommandHold(state, playerId, definition)) continue;
 
-    const categories = cardCategories(definition);
+    // RS-292【虎の子大秘術】: 手札のオペレーションはどのカテゴリのコマンドをホールドしてもよい。
+    const categories = operationPaymentCategories(state, playerId, definition);
     if (categories.length === 0) continue;
 
     const options = getCategoryPaymentOptions(state, playerId, categories, {
@@ -1114,7 +1116,11 @@ function appendEffectChoiceActions(
     return;
   }
 
-  if (isErrataConfirmableChoice(pending.effectId) || isSet4ConfirmableChoice(pending.effectId)) {
+  if (
+    isErrataConfirmableChoice(pending.effectId) ||
+    isSet4ConfirmableChoice(pending.effectId) ||
+    isSet5AConfirmableChoice(pending)
+  ) {
     for (const instanceId of pending.validInstanceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
@@ -1471,6 +1477,19 @@ export function getLegalActions(state: GameState): GameAction[] {
     return actions;
   }
 
+  if (state.pendingGiantBomb && !state.pendingZordSetup) {
+    // RS-255 巨大化爆弾: 使う（カテゴリのホールド→使用）か見送る。
+    const ownerId = state.pendingGiantBomb.ownerId;
+    for (const counterId of giantBombCounterIds(state, ownerId)) {
+      appendCounterCategoryPaymentActions(state, ownerId, counterId, actions);
+      if (canExecuteHandCounter(state, ownerId, counterId)) {
+        actions.push({ type: "play_counter", playerId: ownerId, instanceId: counterId });
+      }
+    }
+    actions.push({ type: "pass_leave_reaction", playerId: ownerId });
+    return actions;
+  }
+
   if (state.pendingZordSetup) {
     if (state.pendingZordSetup.playerId === playerId) {
       actions.push(
@@ -1564,6 +1583,10 @@ export function getLegalActions(state: GameState): GameAction[] {
       }
       if (!player.hasDrawnThisStart) {
         actions.push({ type: "draw", playerId });
+      }
+      // RS-271【修復作業】等、自軍スタートフェイズ中に起動できる場のユニットの効果。
+      for (const unitInstanceId of listFieldActivatedAbilityCards(state, playerId)) {
+        actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
       }
       if (canBonusDraw(state, playerId)) {
         actions.push({ type: "bonus_draw", playerId });

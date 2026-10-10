@@ -17,6 +17,7 @@ import { getPlayerModifiers } from "../core/scopedModifiers";
 import { collectPowerIds, openEffectChoice, startSelectPowerChoice } from "./pendingChoices";
 import { getConditionalNamedEffect } from "@rangers-strike/cards";
 import { beginAbarenohFromHand } from "./errataCardEffects";
+import { canActivateMagRepair, openMagRepair } from "./legend1/set5NamedEffectsA";
 
 type FieldZone = "rush" | "battle";
 
@@ -26,7 +27,7 @@ type FieldActivatedAbility = {
   /** 起動できる場（「このユニット／ビークル」が置かれている自軍エリア）。 */
   zones: FieldZone[];
   /** 起動できるフェイズ（自軍ターン）。省略時はラッシュフェイズ。 */
-  phase?: "rush" | "battle";
+  phase?: "start" | "rush" | "battle";
   /** コストとしてこのカードを捨札にするか（省略時 true）。 */
   discardSelf?: boolean;
   /** カードを特定する述語（省略時は cardId 一致）。同効果の再録カードにも適用するため。 */
@@ -238,6 +239,15 @@ function canActivateGhostAbsorption(state: GameState, playerId: PlayerId, card: 
 
 const ABILITIES: FieldActivatedAbility[] = [
   {
+    // RS-271 マグ【修復作業】: 自軍スタートフェイズ中、ラッシュエリアのこれを捨札にして、ダメージ1枚をオモテにする。
+    cardId: "RS-271",
+    effectId: "mag_repair",
+    zones: ["rush"],
+    phase: "start",
+    canActivate: (state, playerId) => canActivateMagRepair(state, playerId),
+    resolve: (state, playerId, card) => openMagRepair(state, playerId, card),
+  },
+  {
     cardId: "RS-094",
     effectId: "ghost_absorption",
     zones: ["battle"],
@@ -347,7 +357,7 @@ function abilityFor(cardId: string): FieldActivatedAbility | undefined {
 /** 起動できる場のカード（instanceId）。自軍ターンの、能力ごとに決まったフェイズ中のみ。 */
 export function listFieldActivatedAbilityCards(state: GameState, playerId: PlayerId): string[] {
   if (state.activePlayer !== playerId) return [];
-  if (state.phase !== "rush" && state.phase !== "battle") return [];
+  if (state.phase !== "start" && state.phase !== "rush" && state.phase !== "battle") return [];
   if (state.pendingEffectChoice) return [];
   const player = state.players[playerId];
   const ids: string[] = [];

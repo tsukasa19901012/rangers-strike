@@ -1,4 +1,13 @@
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
+import {
+  applyGiantBombCounter,
+  closeGiantBombWindow,
+  openGiantBombWindow,
+  openRoundRadarIfReady,
+  queueRoundRadar,
+  settleStackedCards,
+} from "../rules/legend1/set5NamedEffectsA";
+import { finalizeEffectRush } from "../events/emitUnitRushed";
 import { applyMagiPunchCounter, isSet4EndTurnEffect, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import { applyDeusGeneOnRush } from "../rules/rs4NcEffects";
@@ -661,6 +670,13 @@ export function applyAction(
   next = releaseCounterLockWhenAttackSettled(next);
   next = trackResolvingOperations(state, next);
   next = settleResolvingOperations(next);
+  // RS-256 闇の戒律・RS-255 巨大化爆弾: 置き場を離れたら重ねたカードは捨札になる。
+  next = settleStackedCards(next);
+  // RS-265【ラウンドレーダー】: 相手が手札からオペレーションを使用したとき（解決が終わってから開く）。
+  next = queueRoundRadar(state, next, action);
+  next = openRoundRadarIfReady(next);
+  // RS-255 巨大化爆弾: 敵軍ターン中に「怪人」の自軍ユニットが撃破されて捨札になったとき。
+  next = openGiantBombWindow(state, next);
   next = applyBpZeroRuleDestruction(next);
   next = syncDamageWithFaceDownPower(state, next);
   return next === result.state ? result : { ok: true, state: next };
@@ -2043,6 +2059,17 @@ function applyActionCore(
         return fail("command_not_held");
       }
 
+      if (state.pendingGiantBomb) {
+        if (playerId !== state.pendingGiantBomb.ownerId) return fail("wrong_player");
+        const used = applyGiantBombCounter(state, playerId, action.instanceId);
+        let nextState = clearCounterHoldReady(used.state, playerId);
+        if (used.unitInstanceId) {
+          const rushed = finalizeEffectRush(nextState, playerId, [used.unitInstanceId], state.pendingGiantBomb.phasePlayerId);
+          nextState = { ...rushed.state, log: [...rushed.state.log, ...rushed.logs] };
+        }
+        return ok(nextState, used.log);
+      }
+
       if (state.pendingLeave) {
         const pending = state.pendingLeave;
         if (playerId !== pending.ownerPlayerId) return fail("wrong_player");
@@ -2607,6 +2634,10 @@ function applyActionCore(
     }
 
     case "pass_leave_reaction": {
+      if (!state.pendingLeave && state.pendingGiantBomb) {
+        if (playerId !== state.pendingGiantBomb.ownerId) return fail("wrong_player");
+        return ok(closeGiantBombWindow(state), buildSimpleLogEntry(playerId, "pass_leave_reaction"));
+      }
       const pending = state.pendingLeave;
       if (!pending) return fail("no_pending_leave");
       if (playerId !== pending.ownerPlayerId) return fail("wrong_player");
@@ -2957,7 +2988,7 @@ function applyActionCore(
     }
 
     case "activate_field_unit_ability": {
-      if (state.phase !== "rush" && state.phase !== "battle") return fail("wrong_phase");
+      if (state.phase !== "start" && state.phase !== "rush" && state.phase !== "battle") return fail("wrong_phase");
       const unit =
         player.rush.find((c) => c.instanceId === action.unitInstanceId) ??
         player.battle.find((c) => c.instanceId === action.unitInstanceId);

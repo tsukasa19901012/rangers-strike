@@ -15,6 +15,7 @@ import { opponent } from "../../core/helpers";
 import { promotedKeywordSpFloor } from "../../dsl/promotedKeywordBridge";
 import { legend2EffectiveSp } from "../legend2/fieldEffects";
 import { sameCardName } from "../../core/cardNames";
+import { set5AEffectiveSp } from "../legend1/set5NamedEffectsA";
 import {
   sr003DiscardDinoBpBonus,
   sr003SpFloor,
@@ -202,6 +203,7 @@ export function legend3EffectiveSp(
   // RS-188 アチャとコチャ【地球征服宣告書】: これが自軍エリアにある間、自軍パワーゾーンが12枚以上なら、
   // 特徴「メカ」を持つすべての自軍 S ユニットは「SP1」になる（atwiki/page-121）。
   if (earthConquestDeclarationActive(state, playerId, instance)) sp = Math.max(sp, 1);
+  sp = set5AEffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

@@ -95,6 +95,7 @@ import { beginCastoffOnRush } from "../rules/castoff";
 import { tryReportedRiderEffect } from "../rules/riderKickEffects";
 import { tryErrataCardEffect } from "../rules/errataCardEffects";
 import { trySet4CardEffect } from "../rules/legend1/set4NamedEffects";
+import { trySet5ACardEffect } from "../rules/legend1/set5NamedEffectsA";
 import { tryGenericTextFallback } from "./genericTextFallback";
 import {
   beginDeclareNumberDeckReveal,
@@ -398,6 +399,9 @@ export function applyGrantKeyword(
   // 第4弾（legend1）のカード固有の名前付き効果（rules/legend1/set4NamedEffects.ts）。
   const set4 = trySet4CardEffect(state, ctx, keyword);
   if (set4) return set4;
+  // 第5弾 RS-243〜RS-305 のカード固有の名前付き効果（rules/legend1/set5NamedEffectsA.ts）。
+  const set5a = trySet5ACardEffect(state, ctx, keyword);
+  if (set5a) return set5a;
 
   if (keyword.startsWith("hand_named_to_rush::")) {
     const withChoice = applyHandNamedToRush(state, ctx, keyword);

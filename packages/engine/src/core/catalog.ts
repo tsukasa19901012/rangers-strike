@@ -1,4 +1,5 @@
 import { isCostWindowSatisfied } from "./costWindow";
+import { operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
 import type { CardDefinition, UnitSize } from "@rangers-strike/cards";
 import {
   cardCategories,
@@ -772,7 +773,8 @@ export function canPlayOperation(
   const opCats = cardCategories(definition);
   if (opCats.length === 0) return true;
   if (isCostWindowSatisfied(player, "operation_category")) {
-    return hasCommandForCardUse(player, state.definitions, opCats, "lead");
+    // RS-292【虎の子大秘術】: どのカテゴリのコマンドのホールドでも使用できる。
+    return hasCommandForCardUse(player, state.definitions, operationPaymentCategories(state, playerId, definition), "lead");
   }
   // ルール: R-CMD-01 — 使用のたびにリリース状態のコマンドをホールドする。別のカードの使用のために
   // 支払いでホールドしたコマンド（paymentHeld）は、このオペレーションの支払いに再利用できない。

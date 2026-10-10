@@ -187,6 +187,7 @@ function hasReactionWindow(game: GameState): boolean {
     game.pendingBattle ||
     game.pendingRush ||
     game.pendingLeave ||
+    game.pendingGiantBomb ||
     game.pendingEffectChoice ||
     game.pendingBattleEntry ||
     game.pendingCommandPayment ||

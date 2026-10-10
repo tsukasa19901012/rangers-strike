@@ -598,8 +598,7 @@ describe("RS-290 気伝武人龍星王", () => {
   }
 
   // 「これが自軍バトルエリアにある間、「DA」の敵軍Sユニットはバトルエリアに出られない」
-  it.fails("RS-290: 【飛竜棍・大風車】自軍バトルエリアにある間、DA の敵軍 S ユニットはバトルエリアに出られない（出典: atwiki/page-474）", () => {
-    // 既知の不具合: CARD-RS-290 【飛竜棍・大風車】が実装されていない（while_da_s_cannot_battle_entry を参照する処理がない）
+  it("RS-290: 【飛竜棍・大風車】自軍バトルエリアにある間、DA の敵軍 S ユニットはバトルエリアに出られない（出典: atwiki/page-474）", () => {
     const s = enemyTurn({ battle: [inst("RS-290", "b")] }, [inst("SPEC-DA-S", "s")]);
     expect(canEnter(s, "SPEC-DA-S:s", "player2")).toBe(false);
   });
@@ -621,8 +620,7 @@ describe("RS-290 気伝武人龍星王", () => {
   });
 
   // faq-card-5 RS-290 Q1「いいえ、できません。…そのカテゴリを含むものはすべて対象となります。」／faq-card-5 RS-339 Q「「ＤＡのＳユニット」として扱います」
-  it.fails("RS-290: 公式Q&A — 闇のヤイバでカテゴリに DA が追加された（特徴「男」を持つ WB の）S ユニットもバトルエリアに出られない（出典: grnrngr/faq-card-5 RS-290 Q1・RS-339 Q1）", () => {
-    // 既知の不具合: CARD-RS-290 【飛竜棍・大風車】が実装されていない
+  it("RS-290: 公式Q&A — 闇のヤイバでカテゴリに DA が追加された（特徴「男」を持つ WB の）S ユニットもバトルエリアに出られない（出典: grnrngr/faq-card-5 RS-290 Q1・RS-339 Q1）", () => {
     const s = st(
       { player1: { rush: [inst("SPEC-WB-MAN", "m")] }, player2: { battle: [inst("RS-290", "b")], rush: [inst("RS-339", "y")] } },
       SPECS,
@@ -632,7 +630,7 @@ describe("RS-290 気伝武人龍星王", () => {
 
   // atwiki/page-474 Q2・Q4「はい、その通りです。公開情報を確認した上で、実行できないことが明確であれば、それを実行することはできません。」
   it.fails("RS-290: Q&A — 闇のヤイバで DA を持つ S ユニットになる「仮面ライダークウガRD」とはモーフで置き換えられない（モーフを使えない）（出典: atwiki/page-474 Q2・Q4）", () => {
-    // 既知の不具合: CARD-RS-290 【飛竜棍・大風車】が実装されていない（モーフの置き換え先として選べてしまう）
+    // 既知の不具合: CARD-RS-290 バトルエリアに出られない制限は実装済みだが、モーフの置き換え先の判定に反映されず、置き換え先として選べてしまう
     // 龍星王（player1 のバトルエリア）と闇のヤイバ（player1 のラッシュエリア）は player2 から見て敵軍。
     const s = st({
       phase: "rush",
@@ -702,8 +700,7 @@ describe("RS-291 気伝獣龍星王", () => {
   }
 
   // 「これが特徴「レッド」を持つユニットからコンビネーションするとき、敵軍バトルエリアから特徴「メカ」を持たないBP5000以下のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」
-  it.fails("RS-291: 【大火炎】「レッド」を持つユニットからコンビネーションするとき、敵軍バトルエリアの「メカ」を持たない BP5000 以下を1体選び、持ち主のパワーゾーンにダメージにして置く（出典: atwiki/page-475）", () => {
-    // 既知の不具合: CARD-RS-291 【大火炎】が発動しない（CN を持たないのに NC 扱いの DSL スタブ）
+  it("RS-291: 【大火炎】「レッド」を持つユニットからコンビネーションするとき、敵軍バトルエリアの「メカ」を持たない BP5000 以下を1体選び、持ち主のパワーゾーンにダメージにして置く（出典: atwiki/page-475）", () => {
     let s = fromUnit("SPEC-RED");
     expect(choiceIds(s)).toEqual(["SPEC-E5:e5"]);
     s = settle(pick(s, "SPEC-E5:e5"));
@@ -712,8 +709,7 @@ describe("RS-291 気伝獣龍星王", () => {
     expect(s.players.player2.damage).toBe(1);
   });
 
-  it.fails("RS-291: 【大火炎】選ぶのは強制（見送れない）（出典: atwiki/page-475「1体選び…置く」）", () => {
-    // 既知の不具合: CARD-RS-291 【大火炎】が発動しない
+  it("RS-291: 【大火炎】選ぶのは強制（見送れない）（出典: atwiki/page-475「1体選び…置く」）", () => {
     const s = fromUnit("SPEC-RED");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-291");
     expect(canSkip(s)).toBe(false);
