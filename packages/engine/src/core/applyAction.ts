@@ -1,3 +1,4 @@
+import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { applyMagiPunchCounter, isSet4EndTurnEffect, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import type { GameAction } from "../types/actions";
@@ -649,6 +650,8 @@ export function applyAction(
   let next = clearRegisterHoldOffField(result.state);
   next = settleEffectRushes(state, next);
   next = releaseCounterLockWhenAttackSettled(next);
+  next = trackResolvingOperations(state, next);
+  next = settleResolvingOperations(next);
   next = applyBpZeroRuleDestruction(next);
   next = syncDamageWithFaceDownPower(state, next);
   return next === result.state ? result : { ok: true, state: next };

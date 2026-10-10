@@ -449,6 +449,21 @@ export type PendingEffectChoice = {
   /** 相打ちの処理順選択（simultaneous_order。validInstanceIds は撃破された 2 体）。 */
   mutualDestructionMeta?: MutualDestructionMeta;
   /**
+   * バトルで撃破したときの自軍の効果（RS-212【爆烈ミラージュナックル】・RS-226【爆竜必殺デススティンガー】）と、
+   * 同時に開いた別の選択（撃破されたユニットの「撃破されたとき」等）の処理順（simultaneous_order。R-SIM-01）。
+   * validInstanceIds は [own.sourceInstanceId, existing を表す ID]。
+   */
+  battleDestroyOrderMeta?: {
+    own: PendingEffectChoice;
+    existing: PendingEffectChoice;
+    existingId: string;
+  };
+  /**
+   * 再開（resumeChoice）で開くときに候補を作り直す選択（rules/choiceRefreshers.ts registerChoiceRefresher）。
+   * 他の処理を先に解決したあとで開く選択の候補が、その間に移動したカードを含まないようにする。
+   */
+  refreshOnOpen?: { key: string; destroyedBattleBp?: number };
+  /**
    * 「ラッシュしたとき」に同時に発動した、ラッシュしたユニット自身の効果と RS-124 超電子レーダーの処理順
    * （simultaneous_order。validInstanceIds は "super_radar" とラッシュしたユニット）。faq-card-2 RS-092 Q1。
    */
@@ -719,6 +734,12 @@ export type GameState = {
   fieldEntryHandledIds?: string[];
   /** 「選んだ1枚ごとにラッシュエリアに出す」効果の進行（R-RUSH-21, R-RUSH-23）。 */
   pendingEffectRush?: PendingEffectRush;
+  /**
+   * 使用して手札を離れたが、効果の解決が選択待ち等で中断していてまだどのゾーンにも置かれていない
+   * オペレーション（カウンターを含む）。解決が終わった時点で（効果が別のゾーンへ移していなければ）
+   * 捨札（常駐なら常駐置き場）に置く（applyAction の後処理 settleResolvingOperations）。
+   */
+  resolvingOperations?: Array<{ playerId: PlayerId; card: CardInstance }>;
 };
 
 export type EffectRushTrigger = {

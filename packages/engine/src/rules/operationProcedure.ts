@@ -25,8 +25,9 @@ export function isCounterPlayPhase(state: GameState, playerId: PlayerId): boolea
 }
 
 export function operationCardsToDiscardWithStack(card: CardInstance): CardInstance[] {
-  const stacked = card.stackedCards ?? [];
-  return [card, ...stacked.map((stackedCard) => ({ ...stackedCard, stackedCards: undefined }))];
+  // 重ねたカードは別々のカードとして捨札に置く（元のカードに stackedCards を残すと同じカードが二重に存在する）。
+  const { stackedCards: stacked = [], ...base } = card;
+  return [base, ...stacked.map(({ stackedCards: _nested, ...stackedCard }) => stackedCard)];
 }
 
 export function canPayOperationPowerCost(

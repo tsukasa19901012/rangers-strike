@@ -124,7 +124,12 @@ function pickNonBattleEntryStallAction(
  */
 export function playStarterMatchUntilEnd(
   initial: GameState,
-  options: { maxSteps?: number; cpuLevel?: CpuLevel } = {},
+  options: {
+    maxSteps?: number;
+    cpuLevel?: CpuLevel;
+    /** 各ステップの開始時の状態を受け取る（不変条件テスト用）。 */
+    onState?: (state: GameState) => void;
+  } = {},
 ): StarterMatchResult {
   const maxSteps = options.maxSteps ?? 12_000;
   const cpuLevel = options.cpuLevel ?? 4;
@@ -150,6 +155,7 @@ export function playStarterMatchUntilEnd(
   let sameFingerprintCount = 0;
 
   for (let steps = 0; steps < maxSteps; steps += 1) {
+    options.onState?.(state);
     phasesSeen.add(state.phase);
 
     if (state.winner) {
