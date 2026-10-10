@@ -245,7 +245,7 @@ export function isAliasKeyword(keyword: string): boolean {
 
 /**
  * 自軍ターン開始時: 手札の指定名カードとフィールドのこれを置き換えてもよい。
- * release_start_commands 適用時に選択を開く。
+ * スタートフェイズ開始時（3行程より前）に選択を開く（ルール: R-START-06）。
  */
 export function beginTurnStartSwaps(
   state: GameState,
