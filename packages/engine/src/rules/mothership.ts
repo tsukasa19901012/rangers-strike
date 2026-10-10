@@ -5,8 +5,10 @@ import {
   mothershipHoldsRequiredForRush,
   mothershipHoldCountForRush,
   mothershipKindForZordRush,
+  parseMothershipText,
   zordSlotsFilledByMaterial,
   type MothershipKind,
+  type MothershipTextAbility,
 } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { Category } from "@rangers-strike/cards";
@@ -29,14 +31,70 @@ import { collectZordMaterials, requiresAllFusionPartners } from "./zord";
 
 export type MothershipHoldZone = "command" | "rush";
 
+export type ActiveMothership = MothershipTextAbility & { sourceCardId: string };
+
+/**
+ * 自軍ラッシュエリアの【母艦】のうち、このMユニットのラッシュに使えるもの。
+ * 本文の文言（parseMothershipText）で判断する（RS-076・RS-105・RS-260 等。カード ID の一覧には頼らない）。
+ */
+export function mothershipAbilityForZordRush(
+  definitions: Record<string, CardDefinition>,
+  player: PlayerState,
+  rushingCardId: string,
+): ActiveMothership | null {
+  if (!isMediumUnit(definitions, rushingCardId)) return null;
+  const rushingDef = getDefinition(definitions, rushingCardId);
+  const condition = getZordCondition(rushingCardId);
+  for (const card of player.rush) {
+    const def = getDefinition(definitions, card.cardId);
+    const ability = parseMothershipText(def?.text);
+    if (!ability) continue;
+    if (!mothershipSubstitutesConditionText(ability, condition)) continue;
+    if (ability.requiredFeature && !(rushingDef?.features ?? []).includes(ability.requiredFeature)) continue;
+    if (ability.requiredCategory && !(rushingDef && cardHasCategory(rushingDef, ability.requiredCategory))) {
+      continue;
+    }
+    return { ...ability, sourceCardId: card.cardId };
+  }
+  // 本文を持たない定義（テスト用など）は従来の効果 ID 登録で判断する。
+  const legacy = mothershipKindForZordRush(rushingCardId, player.rush.map((c) => c.cardId));
+  if (!legacy) return null;
+  const config = MOTHERSHIP_CONFIG[legacy];
+  return {
+    kind: legacy,
+    commandCategory: config.commandCategory,
+    substitutesCondition: config.substitutesCondition,
+    topDeckToPower: false,
+    sourceCardId: config.cardId,
+  };
+}
+
+function mothershipCategoryOf(kind: ActiveMothership | MothershipKind): Category {
+  return typeof kind === "string" ? MOTHERSHIP_CONFIG[kind].commandCategory : kind.commandCategory;
+}
+
+function mothershipSubstitutesConditionText(
+  ability: MothershipTextAbility,
+  condition: ReturnType<typeof getZordCondition>,
+): boolean {
+  return condition !== undefined && condition === ability.substitutesCondition;
+}
+
 export function canUseMothershipForZordRush(
   definitions: Record<string, CardDefinition>,
   player: PlayerState,
   rushingCardId: string,
-): MothershipKind | null {
-  if (!isMediumUnit(definitions, rushingCardId)) return null;
-  const rushIds = player.rush.map((c) => c.cardId);
-  return mothershipKindForZordRush(rushingCardId, rushIds);
+): ActiveMothership | null {
+  return mothershipAbilityForZordRush(definitions, player, rushingCardId);
+}
+
+/** この M ユニットのラッシュで【母艦】がホールドさせるコマンドのカテゴリ。 */
+export function mothershipCommandCategory(
+  definitions: Record<string, CardDefinition>,
+  player: PlayerState,
+  rushingCardId: string,
+): Category | null {
+  return mothershipAbilityForZordRush(definitions, player, rushingCardId)?.commandCategory ?? null;
 }
 
 export function isMothershipEligibleCommand(
@@ -59,12 +117,12 @@ export function isMothershipEligibleCommand(
 export function mothershipSelfHoldMaterialIds(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
-  kind: MothershipKind,
+  kind: ActiveMothership | MothershipKind,
   materialIds: readonly string[],
   materialDestination: ZordMaterialDestination | undefined,
 ): string[] {
   if (materialDestination !== "command") return [];
-  const category = MOTHERSHIP_CONFIG[kind].commandCategory;
+  const category = mothershipCategoryOf(kind);
   return materialIds.filter((id) => {
     const card = [...player.rush, ...player.battle].find((c) => c.instanceId === id);
     const def = card ? getDefinition(definitions, card.cardId) : undefined;
@@ -114,12 +172,12 @@ export function listMothershipHoldSets(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
   rushingCardId: string,
-  kind: MothershipKind,
+  kind: ActiveMothership | MothershipKind,
   holdsRequired: number,
 ): string[][] {
   if (holdsRequired <= 0) return [[]];
 
-  const category = MOTHERSHIP_CONFIG[kind].commandCategory;
+  const category = mothershipCategoryOf(kind);
   const eligible = collectMothershipEligibleCommands(player, definitions, category);
   if (eligible.length < holdsRequired) return [];
 
@@ -132,13 +190,14 @@ export function applyMothershipHolds(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
   holdInstanceIds: string[],
-  kind: MothershipKind,
+  kind: ActiveMothership | MothershipKind,
 ): PlayerState | null {
-  const category = MOTHERSHIP_CONFIG[kind].commandCategory;
+  const category = mothershipCategoryOf(kind);
   if (holdInstanceIds.length === 0) return player;
 
   let nextPlayer = player;
   const used = new Set<string>();
+  let newlyHeld = 0;
 
   for (const instanceId of holdInstanceIds) {
     if (used.has(instanceId)) return null;
@@ -154,6 +213,7 @@ export function applyMothershipHolds(
       const command = [...nextPlayer.command];
       command[commandIndex] = { ...card, commandHeld: true, mothershipHold: true };
       nextPlayer = { ...nextPlayer, command };
+      newlyHeld += 1;
       continue;
     }
 
@@ -167,10 +227,21 @@ export function applyMothershipHolds(
       const rush = [...nextPlayer.rush];
       rush[rushIndex] = { ...card, commandHeld: true, mothershipHold: true };
       nextPlayer = { ...nextPlayer, rush };
+      newlyHeld += 1;
       continue;
     }
 
     return null;
+  }
+
+  // RS-260 バイオドラゴン【母艦】「…ホールドし、自軍山札の上から1枚を自軍パワーゾーンに置く」（代用1回につき1枚）。
+  if (typeof kind !== "string" && kind.topDeckToPower && newlyHeld > 0) {
+    const moved = nextPlayer.deck.slice(0, newlyHeld);
+    nextPlayer = {
+      ...nextPlayer,
+      deck: nextPlayer.deck.slice(moved.length),
+      power: [...nextPlayer.power, ...moved.map((c) => ({ ...c, faceDown: false }))],
+    };
   }
 
   return nextPlayer;
@@ -180,7 +251,7 @@ export function validateMothershipHolds(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
   rushingCardId: string,
-  kind: MothershipKind,
+  kind: ActiveMothership | MothershipKind,
   holdInstanceIds: string[],
   holdsRequired: number,
 ): boolean {
@@ -262,7 +333,7 @@ export function validateZordAdditionalPayment(
       : zordSlotsFilledByMaterial(rushingCardId, hasMaterial, materialDestination);
 
   if (
-    kind === "jaguar" &&
+    kind?.kind === "jaguar" &&
     hasMaterial &&
     materialDestination === "discard"
   ) {

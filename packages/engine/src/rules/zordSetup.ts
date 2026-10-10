@@ -310,7 +310,7 @@ function collectMothershipTargetIds(
     zordCardId,
   );
   if (!mothershipKind) return [];
-  const category = MOTHERSHIP_CONFIG[mothershipKind].commandCategory;
+  const category = mothershipKind.commandCategory;
   return collectMothershipEligibleCommands(player, state.definitions, category).map(
     (e) => e.card.instanceId,
   );
@@ -588,7 +588,7 @@ function partialMothershipStep(
     !isCostWindowSatisfied(player, "rush_category") &&
     !isShironLightRushTarget(player, setup.zordInstanceId) &&
     def !== undefined &&
-    cardCategories(def).includes(MOTHERSHIP_CONFIG[kind].commandCategory);
+    cardCategories(def).includes(kind.commandCategory);
   const commandHolds = listMothershipHoldSets(
     player,
     state.definitions,

@@ -94,7 +94,7 @@ function effectRushMothershipHoldIds(
   const player = state.players[playerId];
   const kind = canUseMothershipForZordRush(state.definitions, player, card.cardId);
   if (!kind) return undefined;
-  const category = MOTHERSHIP_CONFIG[kind].commandCategory;
+  const category = kind.commandCategory;
   const ids = player.command
     .filter((c) => {
       if (c.commandHeld) return false;

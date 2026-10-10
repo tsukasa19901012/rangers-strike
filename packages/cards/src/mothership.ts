@@ -78,6 +78,53 @@ export function jaguarMothershipAllowedWithMaterial(
   return materialDestination !== "discard";
 }
 
+const CATEGORY_NAMES: Record<string, Category> = {
+  OT: "OT",
+  ET: "ET",
+  MA: "MA",
+  WB: "WB",
+  DA: "DA",
+  オーバーテクノロジー: "OT",
+  アーステクノロジー: "ET",
+  ミスティックアームズ: "MA",
+  ワイルドビースト: "WB",
+  ダークアライアンス: "DA",
+};
+
+/** 本文から読み取った【母艦】の内容（RS-076・RS-105・RS-260 等。カード ID ではなく文言で判断する）。 */
+export type MothershipTextAbility = {
+  kind: MothershipKind;
+  commandCategory: Category;
+  substitutesCondition: ZordConditionId;
+  /** ラッシュする M ユニットが持つべき特徴（例: RS-260「特徴「航空機」を持つ」）。 */
+  requiredFeature?: string;
+  /** ラッシュする M ユニットが持つべきカテゴリ（例: RS-260「「OT」のMユニット」）。 */
+  requiredCategory?: Category;
+  /** ホールドに加えて「自軍山札の上から1枚を自軍パワーゾーンに置く」（RS-260）。 */
+  topDeckToPower: boolean;
+};
+
+const MOTHERSHIP_TEXT_RE =
+  /【母艦】これが自軍ラッシュエリアにある(?:とき|間)、自分が(?:特徴「([^」]+)」を持つ)?(?:「([^」]+)」の)?Mユニットをラッシュする(?:とき)?、追加条件を満たすために次のようにしてもよい⇒自軍Sユニットを1体(コマンドゾーン|パワーゾーン)に送るかわりに、「([^」]+)」の自軍コマンドを1つホールド(?:する|し)(、自軍山札の上から1枚を自軍パワーゾーンに置く)?/;
+
+/** カード本文の【母艦】を読み取る（なければ null）。 */
+export function parseMothershipText(text: string | undefined): MothershipTextAbility | null {
+  if (!text) return null;
+  const m = MOTHERSHIP_TEXT_RE.exec(text.normalize("NFKC").replace(/\s+/g, ""));
+  if (!m) return null;
+  const commandCategory = CATEGORY_NAMES[m[4]!];
+  if (!commandCategory) return null;
+  const toCommand = m[3] === "コマンドゾーン";
+  return {
+    kind: toCommand ? "jaguar" : "dekabase",
+    commandCategory,
+    substitutesCondition: toCommand ? "send_s_unit_to_command_or_discard" : "send_s_unit_to_power",
+    requiredFeature: m[1],
+    requiredCategory: m[2] ? CATEGORY_NAMES[m[2]] : undefined,
+    topDeckToPower: !!m[5],
+  };
+}
+
 const MOTHERSHIP_EFFECT_IDS: Record<MothershipKind, string> = {
   jaguar: "jaguar_mothership",
   dekabase: "dekabase_mothership",

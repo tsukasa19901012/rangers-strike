@@ -247,8 +247,7 @@ describe("RS-259 モモレンジャー", () => {
   });
 
   // 「このとき、その「アカレンジャー」は「SP2」になる」
-  // 既知の不具合: CARD-RS-259 「SP2」（spOverride）に【レッドビュート】の「SP1」（spModifier）が加算され、SP3（3点）になる
-  it.fails("RS-259: そのアカレンジャーは「SP2」になり、ストライクで2点を与える（出典: atwiki/page-460「その「アカレンジャー」は「SP2」になる」）", () => {
+  it("RS-259: そのアカレンジャーは「SP2」になり、ストライクで2点を与える（出典: atwiki/page-460「その「アカレンジャー」は「SP2」になる」）", () => {
     let s = chain(GORENGER, { battle: [inst("SPEC-E9", "b9")], power: powerCards(4, "ep") });
     expect(spOf(s, "player1", "RS-126:aka")).toBe(2);
     s = settle(strike(s, "RS-126:aka"));
@@ -277,8 +276,7 @@ describe("RS-259 モモレンジャー", () => {
   );
 
   // faq-card-5 RS-259 Q2（atwiki Q2）「はい、SP２になります。」
-  // 既知の不具合: CARD-RS-259 「SP2」に【レッドビュート】の「SP1」が加算されて SP3 になる
-  it.fails("RS-259: 公式Q&A — 1体も撃破できなくても、そのアカレンジャーは「SP2」になる（出典: grnrngr/faq-card-5 RS-259 Q2・atwiki/page-460 Q2）", () => {
+  it("RS-259: 公式Q&A — 1体も撃破できなくても、そのアカレンジャーは「SP2」になる（出典: grnrngr/faq-card-5 RS-259 Q2・atwiki/page-460 Q2）", () => {
     const s = chain(GORENGER, { battle: [inst("SPEC-E9", "b9")] });
     expect(zoneOf(s, "player2", "SPEC-E9:b9")).toBe("battle");
     expect(spOf(s, "player1", "RS-126:aka")).toBe(2);
@@ -409,8 +407,7 @@ describe("RS-260 バイオドラゴン", () => {
     expect(rushFromHand(s, "player1", "RS-263:tank").ok).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-260 【母艦】が未実装（rules/mothership の MOTHERSHIP_CONFIG に RS-076・RS-105 しかない）
-  it.fails("RS-260: ラッシュエリアにあれば、OT の航空機 M ユニット（タンクコマンド）の追加条件のかわりに OT の自軍コマンドを1つホールドし、山札の上から1枚をパワーゾーンに置いてラッシュできる（出典: atwiki/page-456）", () => {
+  it("RS-260: ラッシュエリアにあれば、OT の航空機 M ユニット（タンクコマンド）の追加条件のかわりに OT の自軍コマンドを1つホールドし、山札の上から1枚をパワーゾーンに置いてラッシュできる（出典: atwiki/page-456）", () => {
     const r = mothershipRush(bio());
     expect(r.ok).toBe(true);
     expect(zoneOf(r.state, "player1", "RS-263:tank")).toBe("rush");
@@ -446,8 +443,7 @@ describe("RS-260 バイオドラゴン", () => {
   });
 
   // faq-card-5 RS-260 Q1（faq-card-2 RS-322）「はい、その通りです。」
-  // 既知の不具合: CARD-RS-260 【母艦】が未実装のため、ベン・G【人身略取】で母艦による代用が求められない
-  it.fails("RS-260: 公式Q&A — 相手のベン・G【人身略取】で、追加条件のための S ユニットがなくてもバイオドラゴンで満たせるなら、満たさなければならない（出典: grnrngr/faq-card-5 RS-260 Q1・faq-card-2 RS-322）", () => {
+  it("RS-260: 公式Q&A — 相手のベン・G【人身略取】で、追加条件のための S ユニットがなくてもバイオドラゴンで満たせるなら、満たさなければならない（出典: grnrngr/faq-card-5 RS-260 Q1・faq-card-2 RS-322）", () => {
     let s = st({
       activePlayer: "player2",
       player1: { rush: [inst("RS-260", "bd")], command: [released(CMD.OT, "o1")], deck: [inst("TST-OP", "top"), ...deckCards(3)] },

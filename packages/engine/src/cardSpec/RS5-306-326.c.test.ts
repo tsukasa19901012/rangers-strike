@@ -245,8 +245,7 @@ describe("RS-322 ベン・G", () => {
   });
 
   // faq-card-5 RS-322 Q3（= faq-card-2 RS-260）「はい、その通りです。」（母艦の効果を使えるなら、S ユニットがなくても満たさなければならない）
-  // 既知の不具合: CARD-RS-322 相手が S ユニットを持たずバイオドラゴン（母艦）で代えられるときに、追加条件を満たさず（OT コマンドをホールドせず）終わる
-  it.fails("RS-322: 公式Q&A — 相手に S ユニットがなくても、バイオドラゴン（母艦）の効果で満たせるなら満たさなければならない（OT コマンドをホールドする）（出典: grnrngr/faq-card-5 RS-322 Q3・R-ADD-08）", () => {
+  it("RS-322: 公式Q&A — 相手に S ユニットがなくても、バイオドラゴン（母艦）の効果で満たせるなら満たさなければならない（OT コマンドをホールドする）（出典: grnrngr/faq-card-5 RS-322 Q3・R-ADD-08）", () => {
     let s = benEnters([inst("RS-129", "bj")], {
       rush: [inst("RS-260", "dragon")],
       command: [released("TST-OP-OT", "o1"), released("TST-OP-OT", "o2"), released("TST-OP-OT", "o3")],

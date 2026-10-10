@@ -12,7 +12,11 @@ import { cardName, getDefinition } from "../core/catalog";
 import { opponent, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { collectZordMaterials, applyZordMaterial } from "./zord";
-import { canUseMothershipForZordRush, collectMothershipEligibleCommands } from "./mothership";
+import {
+  applyMothershipHolds,
+  canUseMothershipForZordRush,
+  collectMothershipEligibleCommands,
+} from "./mothership";
 
 export const ABDUCTION_MATERIAL_EFFECT_ID = "abduction_material";
 export const ABDUCTION_DESTINATION_EFFECT_ID = "abduction_destination";
@@ -52,13 +56,18 @@ function mothershipCommands(state: GameState, ctx: AbductionContext): string[] {
   return collectMothershipEligibleCommands(
     payer,
     state.definitions,
-    MOTHERSHIP_CONFIG[kind].commandCategory,
+    kind.commandCategory,
   )
     .filter((e) => e.zone === "command")
     .map((e) => e.card.instanceId);
 }
 
-function holdCommand(player: PlayerState, instanceId: string): PlayerState {
+/** 【母艦】で S ユニット1体の代わりにコマンドをホールドする（RS-260 は山札の上から1枚をパワーゾーンにも置く）。 */
+function holdCommand(state: GameState, ctx: AbductionContext, instanceId: string): PlayerState {
+  const player = state.players[ctx.payerId];
+  const ability = canUseMothershipForZordRush(state.definitions, player, ctx.cardId);
+  const applied = ability ? applyMothershipHolds(player, state.definitions, [instanceId], ability) : null;
+  if (applied) return applied;
   return {
     ...player,
     command: player.command.map((c) =>
@@ -116,7 +125,7 @@ function proceed(state: GameState, ctx: AbductionContext): GameState {
       if (!commandId) break;
       next = {
         ...next,
-        ...updatePlayer(next, current.payerId, holdCommand(next.players[current.payerId], commandId)),
+        ...updatePlayer(next, current.payerId, holdCommand(next, current, commandId)),
       };
       current = { ...current, remaining: current.remaining - 1 };
       continue;
@@ -187,7 +196,7 @@ export function resolveAbductionChoice(
     if (!commandId) return { error: "invalid_target" };
     const next = {
       ...state,
-      ...updatePlayer(state, ctx.payerId, holdCommand(state.players[ctx.payerId], commandId)),
+      ...updatePlayer(state, ctx.payerId, holdCommand(state, ctx, commandId)),
     };
     return { state: proceed(next, { ...ctx, remaining: ctx.remaining - 1 }) };
   }

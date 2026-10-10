@@ -88,8 +88,12 @@ export function legend2EffectiveSp(
   const battle = state.players[playerId].battle;
   const battlePosition = battlePositionOneBased(battle, instance.instanceId);
   const printed = resolveInstanceSpValue(def, instance);
-  let sp =
-    printedSpBase(printed, battlePosition, crossReductionFor(battle, instance.instanceId)) + modifier;
+  // 「SP！」のユニットの「SPN」（spModifier）は「SPN になる」効果で、加算ではない。
+  // 「SP2」になる等の上書き（spOverride）と重なっても足し合わせない（RS-259 アカレンジャーの「SP2」＋【レッドビュート】「SP1」は SP2。R-STK-02/04）。
+  const overrideOnSpecial = typeof instance.spOverride === "number" && def?.sp === "special";
+  let sp = overrideOnSpecial
+    ? Math.max(instance.spOverride as number, modifier)
+    : printedSpBase(printed, battlePosition, crossReductionFor(battle, instance.instanceId)) + modifier;
   sp = Math.max(sp, taxisSpFloor(state, playerId, instance));
   sp = Math.max(sp, fieldPositionSpFloor(state, playerId, instance));
   // RK-081 ゲゲル: 発動ターン中は自軍 S ユニットすべて SP1

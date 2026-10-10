@@ -626,7 +626,7 @@ export function buildMothershipHoldPayment(
   const holdsRequired = mothershipHoldsRequiredForRush(setup.zordCardId, slotsFilled);
   if (holdsRequired <= 0) return null;
 
-  const category = MOTHERSHIP_CONFIG[kind].commandCategory;
+  const category = kind.commandCategory;
   const validInstanceIds = collectMothershipEligibleCommands(
     player,
     state.definitions,
@@ -753,7 +753,7 @@ export function buildPartialMothershipHoldPayment(
   const player = state.players[playerId];
   const kind = canUseMothershipForZordRush(state.definitions, player, sourceCardId);
   if (!kind || holdsRequired <= 0) return null;
-  const category = MOTHERSHIP_CONFIG[kind].commandCategory;
+  const category = kind.commandCategory;
   const validInstanceIds = [
     ...collectMothershipEligibleCommands(player, state.definitions, category).map(
       (e) => e.card.instanceId,
