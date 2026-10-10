@@ -36,6 +36,7 @@ const PROMOTED_NC_BY_CARD: Record<string, string> = {
   "RS-218": "asarutobekuta",
   "RS-219": "supiningusurashu",
   "RS-221": "gurapufuaita",
+  "RS-313": "ikazuchibureika",
   // RS-232: NC の欄は【アバレウィング】だけ（※の「撃破されて捨札になったとき」は rules/leaveEffects の撃破時処理）。
   "RS-232": "abareuingu",
   "RS-358": "denjisandage",
@@ -93,6 +94,12 @@ export function applyPromotedNcEffect(
     case "gurapufuaita": {
       // RS-221【グラップファイター】（rules/grapFighter.ts）。
       nextState = startGrapFighter(nextState, playerId, card.instanceId);
+      logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, effectId));
+      break;
+    }
+    case "ikazuchibureika": {
+      // RS-313【イカヅチブレイカー】: グラップファイターからダメージの一文を除いたもの（rules/grapFighter.ts）。
+      nextState = startGrapFighter(nextState, playerId, card.instanceId, "RS-313");
       logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, effectId));
       break;
     }

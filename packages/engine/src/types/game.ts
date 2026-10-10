@@ -260,6 +260,8 @@ export type PendingLeave = {
    * 「場を離れるとき」の応答（ダイノガッツ等）は開くが、撃破の誘発・置換は起きない。ルール: R-REPL-01
    */
   notDestruction?: boolean;
+  /** RS-317【超シールド進化】の選択を断った（同じ撃破で再び選択を開かない）。 */
+  kasumoShieldDeclined?: boolean;
   /**
    * RS-182 ジャイアントローラー: 撃破されて捨札になったとき、持ち主のパワーゾーンにダメージ（ウラ向き）にして置く。
    * 置換・カウンターで捨札にならなければ置かれない（faq-card-4 RS-182 Q1〜Q3）。
@@ -507,6 +509,8 @@ export type PendingEffectChoice = {
     scope: AttackHoldSource["scope"];
     remainingSources: AttackHoldSource[];
   };
+  /** RS-317【超シールド進化】: 選択を開いた撃破（場を離れる処理）。 */
+  kasumoShieldMeta?: { intent: PendingLeave };
   /** RS-196【迎撃モビルミサイル】: 発動を選んでいる間、保留しているストライク。 */
   mobilMissileStrike?: PendingStrike;
   /** RS-215【不滅のマシン帝国】: 手札2枚を選んだあと（または断ったあと）に続けるアタック。 */

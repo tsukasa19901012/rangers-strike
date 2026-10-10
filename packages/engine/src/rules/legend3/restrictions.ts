@@ -1,4 +1,5 @@
 import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
+import { kibaGakureBlocksAttack } from "../legend1/set5NamedEffects";
 import {
   getBattleEntryHandDiscardCount,
   hasUnnamedRule,
@@ -408,6 +409,10 @@ export function canAttackDefender(
   const enemy = state.players[defenderPlayerId];
   const inBattle = findInZone(enemy, "battle", defenderInstanceId);
   const inRush = findInZone(enemy, "rush", defenderInstanceId);
+
+  // RS-311【カラクリ忍法・牙がくれ】（rules/legend1/set5NamedEffects.ts）。
+  const defenderCard = (inBattle ?? inRush)?.card;
+  if (defenderCard && kibaGakureBlocksAttack(state, attackerPlayerId, attackerInstanceId, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;

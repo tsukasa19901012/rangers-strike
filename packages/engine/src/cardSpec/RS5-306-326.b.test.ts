@@ -322,8 +322,7 @@ describe("RS-317 爆竜カスモシールドン", () => {
   }
 
   // 「DAの自軍ユニットが撃破されたとき、自軍ラッシュエリアから特徴「恐竜」を持つユニットを2体選び、かわりに捨札にしてもよい」
-  // 既知の不具合: CARD-RS-317 【超シールド進化】が未実装（DA の自軍ユニットが撃破されても選択が出ない）
-  it.fails("RS-317: DA の自軍ユニットが撃破されるとき、自軍ラッシュエリアの恐竜2体をかわりに捨札にでき、そのユニットは場に残る（出典: atwiki/page-442）", () => {
+  it("RS-317: DA の自軍ユニットが撃破されるとき、自軍ラッシュエリアの恐竜2体をかわりに捨札にでき、そのユニットは場に残る（出典: atwiki/page-442）", () => {
     let s = shieldCase("SPEC-DA", [inst("SPEC-DINO", "d1"), inst("SPEC-DINO", "d2")]);
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(s)).toEqual(["RS-317:k", "SPEC-DINO:d1", "SPEC-DINO:d2"]);
@@ -335,8 +334,7 @@ describe("RS-317 爆竜カスモシールドン", () => {
   });
 
   // 「してもよい」
-  // 既知の不具合: CARD-RS-317 【超シールド進化】が未実装
-  it.fails("RS-317: かわりに捨札にしないことを選べ、その場合は撃破される（出典: atwiki/page-442「かわりに捨札にしてもよい」）", () => {
+  it("RS-317: かわりに捨札にしないことを選べ、その場合は撃破される（出典: atwiki/page-442「かわりに捨札にしてもよい」）", () => {
     let s = shieldCase("SPEC-DA", [inst("SPEC-DINO", "d1"), inst("SPEC-DINO", "d2")]);
     expect(canSkip(s)).toBe(true);
     s = settle(skip(s));
@@ -358,8 +356,7 @@ describe("RS-317 爆竜カスモシールドン", () => {
   });
 
   // faq-card-5 RS-317 Q1「はい、できます。」
-  // 既知の不具合: CARD-RS-317 【超シールド進化】が未実装
-  it.fails("RS-317: 公式Q&A — 選ぶ恐竜2体のうち1体をカスモシールドン自身にできる（出典: grnrngr/faq-card-5 RS-317 Q1）", () => {
+  it("RS-317: 公式Q&A — 選ぶ恐竜2体のうち1体をカスモシールドン自身にできる（出典: grnrngr/faq-card-5 RS-317 Q1）", () => {
     let s = shieldCase("SPEC-DA", [inst("SPEC-DINO", "d1")]);
     expect(choiceIds(s)).toEqual(["RS-317:k", "SPEC-DINO:d1"]);
     s = settle(useShield(s, ["RS-317:k", "SPEC-DINO:d1"]));

@@ -98,6 +98,7 @@ function markUnitBattleActed(player: PlayerState, instanceId: string): PlayerSta
   return player;
 }
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
+import { openKasumoShieldChoice } from "./legend1/set5NamedEffects";
 import { registerBattlePendingResolver } from "../events/listeners/battleDeclaredListener";
 
 function isEnemyTurn(state: GameState, counterPlayerId: PlayerId): boolean {
@@ -1794,6 +1795,9 @@ export function tryLeaveField(
   state: GameState,
   intent: LeaveIntent,
 ): { state: GameState; deferred: boolean } {
+  // RS-317【超シールド進化】: DA の自軍ユニットが撃破されるとき、かわりに恐竜2体を捨札にするかの選択（rules/legend1/set5NamedEffects.ts）。
+  const kasumo = openKasumoShieldChoice(state, intent);
+  if (kasumo) return { state: kasumo, deferred: true };
   const superShieldInstanceId = findSuperShieldSubstitute(state, intent);
   const dinoChronicle = hasDinoChronicleLeaveReaction(
     state,
