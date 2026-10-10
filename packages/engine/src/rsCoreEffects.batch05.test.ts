@@ -412,7 +412,11 @@ describe("RS-231 destroy recruit", () => {
       pendingLeave,
       player1: { battle: [am], discard: [base], rush: [] },
     });
-    const after = finalizeLeaveReaction(state, pendingLeave, false);
+    let after = finalizeLeaveReaction(state, pendingLeave, false);
+    // 「※…1枚選び、自軍ラッシュエリアに出す」は強制の選択（断れない）。
+    expect(after.pendingEffectChoice?.validInstanceIds).toEqual([base.instanceId]);
+    expect(after.pendingEffectChoice?.optional).toBe(false);
+    after = applyAction(after, { type: "resolve_effect_choice", playerId: "player1", instanceId: base.instanceId }).state;
     expect(after.players.player1.rush.some((c) => c.cardId === "RS-055")).toBe(true);
   });
 });
@@ -434,7 +438,11 @@ describe("RS-335 destroy recruit", () => {
       pendingLeave,
       player1: { battle: [legend], discard: [base], rush: [] },
     });
-    const after = finalizeLeaveReaction(state, pendingLeave, false);
+    let after = finalizeLeaveReaction(state, pendingLeave, false);
+    // 「※…1枚選び、自軍ラッシュエリアに出す」は強制の選択（断れない）。
+    expect(after.pendingEffectChoice?.validInstanceIds).toEqual([base.instanceId]);
+    expect(after.pendingEffectChoice?.optional).toBe(false);
+    after = applyAction(after, { type: "resolve_effect_choice", playerId: "player1", instanceId: base.instanceId }).state;
     expect(after.players.player1.rush.some((c) => c.cardId === "RS-059")).toBe(true);
   });
 });

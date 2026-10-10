@@ -3,6 +3,7 @@ import { cardName } from "../core/catalog";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import { buildLogEntry } from "../log/formatLog";
 import { startSelectUnitChoice } from "./pendingChoices";
+import { isDeclinableEffectText } from "../dsl/effectTextNormalization";
 
 function cardHasAllyRushReturnKeyword(cardId: string): boolean {
   const doc = getCardDslDocument(cardId);
@@ -70,7 +71,8 @@ export function tryOnAllyRushNamedReturnSelfToHand(
         phasePlayerId,
         validInstanceIds: [card.instanceId],
         unitDestination: "hand",
-        optional: true,
+        // 「※…1体選んで手札に戻す」は強制。「戻してもよい」の文言のときだけ断れる。
+        optional: isDeclinableEffectText(effect?.text),
       });
       if (withChoice) {
         logs.push(

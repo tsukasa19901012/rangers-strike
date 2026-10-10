@@ -1524,17 +1524,20 @@ export function startPhoenixMereDestroyChoice(
     sourceCardId: string;
     phasePlayerId: PlayerId;
     partnerName: string;
+    /** 「出してもよい」なら true。「※…1枚選び、出す」は強制なので false（省略時）。 */
+    optional?: boolean;
   },
 ): GameState | null {
   const valid = collectNamedUnitsInDiscard(state, params.playerId, params.partnerName);
   if (valid.length === 0) return null;
+  const { optional, ...rest } = params;
   return openEffectChoice(state, {
-    ...params,
+    ...rest,
     kind: "select_unit",
     validInstanceIds: valid,
     unitDestination: "rush_from_discard",
     selectCount: 1,
-    optional: true,
+    optional: optional === true,
   });
 }
 

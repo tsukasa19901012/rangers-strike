@@ -169,10 +169,7 @@ describe("RS-230 アバレッドAM", () => {
     });
   });
 
-  amReanimateTests("RS-230", "RS-054", "アバレッド", "atwiki/page-72", {
-    // 既知の不具合: CARD-RS-230 ※の「1枚選び、自軍ラッシュエリアに出す」が任意になっている（出さないことを選べる）
-    onlyPartner: "CARD-RS-230 ※の「アバレッド」を出す処理が任意（スキップできる）になっている",
-  });
+  amReanimateTests("RS-230", "RS-054", "アバレッド", "atwiki/page-72");
 
   // 「※これは毎ターン、可能ならバトルエリアに出る。」
   it("RS-230: ※ バトルエリアに出られるのに出さずにバトルフェイズを終えることはできない（出典: atwiki/page-72）", () => {
@@ -264,11 +261,7 @@ describe("RS-231 アバレブルーAM", () => {
     });
   });
 
-  amReanimateTests("RS-231", "RS-055", "アバレブルー", "atwiki/page-373", {
-    // 既知の不具合: CARD-RS-231 ※の選択肢が自軍捨札のユニットカードすべて（自身を含む）で、出さないことも選べる
-    onlyPartner: "CARD-RS-231 ※の選択肢が「アバレブルー」に限られず（自身を含む）、出さないことも選べる",
-    none: "CARD-RS-231 捨札に「アバレブルー」がなくても、ほかのユニットカードを選んでラッシュエリアに出せてしまう",
-  });
+  amReanimateTests("RS-231", "RS-055", "アバレブルー", "atwiki/page-373");
 
   it("RS-231: 2番目に出て NC が成立すると「SP1」、1番目なら SP！のまま（出典: atwiki/page-373「【アバレタックル】「SP1」」）", () => {
     const two = enter(st({ player1: { battle: fillers(1), rush: [inst("RS-231", "am")] } }), "RS-231:am");
@@ -304,11 +297,7 @@ describe("RS-232 アバレイエローAM", () => {
     });
   });
 
-  amReanimateTests("RS-232", "RS-104", "アバレイエロー", "atwiki/page-374", {
-    // 既知の不具合: CARD-RS-232 ※「撃破されて捨札になったとき」の効果が発動しない（DSL の trigger が nc）
-    reanimate: "CARD-RS-232 ※撃破されて捨札になっても「アバレイエロー」を出さない",
-    onlyPartner: "CARD-RS-232 ※撃破されて捨札になっても「アバレイエロー」を出さない",
-  });
+  amReanimateTests("RS-232", "RS-104", "アバレイエロー", "atwiki/page-374");
 
   /**
    * イエローAM を pos 番目に出し、敵軍の気力（RS-017。敵軍から見て「敵軍ターン中」＝自軍ターン、リリース状態のコマンド2つで
@@ -595,8 +584,7 @@ describe("RS-235 デカベースロボ", () => {
     expect(zoneOf(s, "player1", "RS-235:robo")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RS-235 ※（デカベースクローラーをラッシュしたときに手札に戻す）が任意になっている（戻さないことを選べる）
-  it.fails("RS-235: ※ 戻すのは強制（戻さないことは選べない）（出典: atwiki/page-500「1体選んで手札に戻す」）", () => {
+  it("RS-235: ※ 戻すのは強制（戻さないことは選べない）（出典: atwiki/page-500「1体選んで手札に戻す」）", () => {
     const s = st({ phase: "rush", player1: { hand: [inst("RS-105", "cr")], rush: [inst("RS-235", "robo")], command: [released("TST-OP-OT", "ot")], power: powerCards(5) } });
     const r = rushFromHand(s, "player1", "RS-105:cr");
     expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-235");
