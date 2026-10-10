@@ -9,7 +9,7 @@ import { openRushCounterWindow } from "../rules/rushEffects";
 import { cardHasKeyword } from "./cardKeywords";
 import {
   featuresExactlyMatch,
-  listMorphReplacementCandidates,
+  listPlaceableMorphReplacementCandidates,
   MORPH_REPLACEMENT_ZONES,
 } from "./morph";
 import {
@@ -65,11 +65,7 @@ export function listMorphReactors(
   for (const zone of ["rush", "battle"] as const) {
     for (const unit of defender[zone]) {
       if (!cardHasKeyword(state.definitions, unit.cardId, "morph")) continue;
-      const candidates = listMorphReplacementCandidates(
-        defender,
-        state.definitions,
-        unit.cardId,
-      );
+      const candidates = listPlaceableMorphReplacementCandidates(state, defenderId, unit);
       if (candidates.length > 0) {
         results.push({
           instanceId: unit.instanceId,
@@ -133,11 +129,7 @@ export function applyMorphSwap(
     return { error: "invalid_target" };
   }
 
-  const candidates = listMorphReplacementCandidates(
-    player,
-    state.definitions,
-    morphFound.card.cardId,
-  );
+  const candidates = listPlaceableMorphReplacementCandidates(state, defenderId, morphFound.card);
   if (!candidates.some((c) => c.instanceId === replacementInstanceId)) {
     return { error: "invalid_target" };
   }
@@ -182,10 +174,10 @@ function openMorphReplacementChoice(
   const morphUnit = findMorphUnit(defender, morphUnitInstanceId);
   if (!morphUnit) return finalizeMorphAndContinue(state, pending);
 
-  const candidates = listMorphReplacementCandidates(
-    defender,
-    state.definitions,
-    morphUnit.card.cardId,
+  const candidates = listPlaceableMorphReplacementCandidates(
+    state,
+    pending.defenderPlayerId,
+    morphUnit.card,
   );
 
   return openEffectChoice(state, {
@@ -309,7 +301,7 @@ export function continueMorphAfterReplacement(
     const morphUnit = findMorphUnit(defender, id);
     if (!morphUnit) return false;
     return (
-      listMorphReplacementCandidates(defender, state.definitions, morphUnit.card.cardId)
+      listPlaceableMorphReplacementCandidates(state, pending.defenderPlayerId, morphUnit.card)
         .length > 0
     );
   });

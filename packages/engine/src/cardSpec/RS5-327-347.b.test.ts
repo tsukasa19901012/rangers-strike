@@ -553,14 +553,12 @@ describe("RS-339 闇のヤイバ", () => {
 
   // atwiki/page-439 Q3「はい、その通りです。公開情報を確認した上で、実行できないことが明確であれば、それを実行することはできません。」
   it("RS-339: Q&A — ヤイバで DA を持つ S ユニットとなるクウガRD は龍星王のためバトルエリアに出られないので、クウガRM と置き換えられず《モーフ》を使えない（出典: atwiki/page-439 Q3）", () => {
-    // 既知の不具合: CARD-RS-339 追加された DA が龍星王の制限に反映されず、《モーフ》の置き換えが提示される
     const s = kuugaMorph();
     expect(s.pendingEffectChoice?.effectId).not.toBe("morph_replacement");
   });
 
   // atwiki/page-439 Q4「はい、その通りです。…実行できないことが明確であればそれを実行することはできません。」
   it("RS-339: Q&A — 同状況で《モーフ》は使えず、クウガRM はバトルエリアに、クウガRD はコマンドゾーンに残る（出典: atwiki/page-439 Q4）", () => {
-    // 既知の不具合: CARD-RS-339 《モーフ》でクウガRD をバトルエリアに出せてしまう
     let s = kuugaMorph();
     const p = s.pendingEffectChoice;
     if (p?.effectId === "morph_replacement") s = act(s, { type: "resolve_effect_choice", playerId: p.playerId, instanceId: "RK-272:rd" });

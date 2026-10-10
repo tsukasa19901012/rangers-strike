@@ -179,7 +179,7 @@ import {
   isKamenRideMorphTargetValid,
   resolveKamenRideMorphChoice,
 } from "../keywords/activeMorph";
-import { listMorphReplacementCandidates } from "../keywords/morph";
+import { listPlaceableMorphReplacementCandidates } from "../keywords/morph";
 import { prepareWingUnitReturnedToRush } from "../keywords/battleKeywords";
 import {
   applyGaroaRedToEnemyRush,
@@ -557,7 +557,7 @@ export function isValidEffectChoiceTarget(
       findInZone(player, "rush", pending.morphMeta.activeMorphUnitInstanceId)?.card ??
       findInZone(player, "battle", pending.morphMeta.activeMorphUnitInstanceId)?.card;
     if (!morphUnit) return false;
-    return listMorphReplacementCandidates(player, state.definitions, morphUnit.cardId).some(
+    return listPlaceableMorphReplacementCandidates(state, pending.playerId, morphUnit).some(
       (candidate) => candidate.instanceId === instanceId,
     );
   }

@@ -1,7 +1,7 @@
 import type { CardInstance, GameState, PendingMorph, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
 import { cardHasKeyword } from "../keywords/cardKeywords";
-import { listMorphReplacementCandidates, MORPH_REPLACEMENT_ZONES } from "../keywords/morph";
+import { listPlaceableMorphReplacementCandidates, MORPH_REPLACEMENT_ZONES } from "../keywords/morph";
 
 export { MORPH_REPLACEMENT_ZONES };
 
@@ -40,11 +40,7 @@ export function morphUnitCanReact(
   if (!cardHasKeyword(state.definitions, morphUnit.cardId, "morph")) return false;
   if (rushMethodBlocksMorphReaction(rushMethod)) return false;
   return (
-    listMorphReplacementCandidates(
-      state.players[defenderId],
-      state.definitions,
-      morphUnit.cardId,
-    ).length > 0
+    listPlaceableMorphReplacementCandidates(state, defenderId, morphUnit).length > 0
   );
 }
 
