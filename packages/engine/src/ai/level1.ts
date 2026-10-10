@@ -185,6 +185,8 @@ function collectRushCandidates(
 
   candidates.push(...actionsOfType(actions, "begin_zord_setup"));
   candidates.push(...actionsOfType(actions, "play_operation").slice(0, 3));
+  // RS-325【マジチケット】: コマンドゾーンのオペレーションの発動。
+  candidates.push(...actionsOfType(actions, "use_magi_ticket").slice(0, 3));
   candidates.push(...actionsOfType(actions, "initiate_command_payment").slice(0, 4));
 
   const end = endPhase(actions);

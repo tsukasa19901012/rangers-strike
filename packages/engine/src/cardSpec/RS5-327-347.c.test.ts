@@ -87,8 +87,7 @@ function gekiRedTests(id: string, page: string) {
     expect(canStrike(s, `${id}:x`)).toBe(false);
   });
 
-  it.fails(`${id}: 【ゲキヌンチャク】特徴「獣」を持つユニット（ギガゼール）からコンビネーションしたとき、このターン BP+2000 され、次のターンには元に戻る（出典: ${page}「このターン、これはBP＋2000される」）`, () => {
-    // 既知の不具合: CARD-RS-340 「獣」からのコンビネーションでの BP+2000 が未実装（DSL スタブは「SP1」だけ）
+  it(`${id}: 【ゲキヌンチャク】特徴「獣」を持つユニット（ギガゼール）からコンビネーションしたとき、このターン BP+2000 され、次のターンには元に戻る（出典: ${page}「このターン、これはBP＋2000される」）`, () => {
     let s = enterAfter(id, [inst("RK-119", "beast")], { battle: [inst("TST-UNIT-2", "e")] });
     expect(bpOf(s, "player1", `${id}:x`)).toBe(5000);
     s = settle(attack(s, `${id}:x`, "TST-UNIT-2:e"));
@@ -183,8 +182,7 @@ describe("RS-342 ゲキイエロー", () => {
     });
   });
 
-  it.fails("RS-342: 【ゲキロッド】NC 成立時、自軍ターン中に敵軍 S ユニットとバトルするとき BP+4000（4500）される（出典: atwiki/page-41）", () => {
-    // 既知の不具合: CARD-RS-342 【ゲキロッド】の BP+4000 が適用されない（BP500 のままバトルする）
+  it("RS-342: 【ゲキロッド】NC 成立時、自軍ターン中に敵軍 S ユニットとバトルするとき BP+4000（4500）される（出典: atwiki/page-41）", () => {
     let s = enterAfter("RS-342", fillers(2), { battle: [inst("TST-UNIT-0", "e")] });
     s = settle(attack(s, "RS-342:x", "TST-UNIT-0:e"));
     expect(lastBattleBps(s)?.attacker).toBe(4500);
@@ -251,8 +249,7 @@ describe("RS-344 天空勇者ウルザードファイヤー", () => {
 
   const cmds = () => [...releasedCat("MA", 2), held("TST-OP-MA", "h")];
 
-  it.fails("RS-344: 【ブレイジングストームスラッシュ】アタックするとき、リリース状態の自軍コマンド1つにつき BP+1000（リリース2・ホールド1 → 9500）（出典: atwiki/page-499）", () => {
-    // 既知の不具合: CARD-RS-344 【ブレイジングストームスラッシュ】の BP 加算が適用されない
+  it("RS-344: 【ブレイジングストームスラッシュ】アタックするとき、リリース状態の自軍コマンド1つにつき BP+1000（リリース2・ホールド1 → 9500）（出典: atwiki/page-499）", () => {
     let s = st({ player1: { battle: [inst("RS-344", "uf")], command: cmds(), deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-7", "e")], deck: deckCards(3, "e") } });
     s = settle(attack(s, "RS-344:uf", "TST-UNIT-7:e"));
     expect(lastBattleBps(s)?.attacker).toBe(9500);
@@ -451,8 +448,7 @@ describe("RS-347 スーパーフォーメーション", () => {
     expect(canStartRush(s, "player1", "RS-382:vr")).toBe(false);
   });
 
-  it.fails("RS-347: 使ったターン、自軍コマンドゾーンのリリース状態の同名カードで不足分（3体）を補ってビクトリーロボをラッシュでき、そのカードは捨札になる（出典: atwiki/page-388）", () => {
-    // 既知の不具合: CARD-RS-347 使ってもコマンドゾーンのカードを合体ユニットのかわりに捨札にするラッシュ手段が提示されない（効果未実装）
+  it("RS-347: 使ったターン、自軍コマンドゾーンのリリース状態の同名カードで不足分（3体）を補ってビクトリーロボをラッシュでき、そのカードは捨札になる（出典: atwiki/page-388）", () => {
     let s = victoryState(["RS-383", "RS-385"], ["RS-384", "RS-386", "RS-387"].map((id) => released(id, "c")));
     s = useSF(s);
     const r = rushFromHand(s, "player1", "RS-382:vr");
@@ -478,7 +474,7 @@ describe("RS-347 スーパーフォーメーション", () => {
 
   // atwiki/page-388 Q1「はい、できます。」（コマンドゾーンのビクトリーウォーカー＋自軍エリアのレッドラダー・グリーンホバー）
   it.fails("RS-347: Q&A — リリース状態のビクトリーウォーカー（ブルースローワー＋イエローアーマー＋ピンクエイダーとして使える）をコマンドゾーンから、レッドラダー・グリーンホバーを自軍エリアから捨札にしてビクトリーロボをラッシュできる（出典: atwiki/page-388 Q1）", () => {
-    // 既知の不具合: CARD-RS-347 効果未実装（加えて CARD-XG3-006 自軍エリアのビクトリーウォーカーでも3体分として使えない）
+    // 既知の不具合: CARD-XG3-006 ビクトリーウォーカーを3体分（ブルースローワー＋イエローアーマー＋ピンクエイダー）として使えない（RS-347 の効果自体は実装済み）
     let s = victoryState(["RS-383", "RS-385"], [released("XG3-006", "vw")]);
     s = useSF(s);
     const r = rushFromHand(s, "player1", "RS-382:vr");
@@ -505,7 +501,7 @@ describe("RS-347 スーパーフォーメーション", () => {
 
   // grnrngr/faq-card-8 RS-569 Q1「はい、できます。」（追加条件が「合体ユニットをパワー送りにする」ユニットでも使える）
   it.fails("RS-347: 公式Q&A — 追加条件が「合体ユニットをパワーゾーンに送る」スーパーデカレンジャーロボ（デカバイクロボ＋パトストライカー〜パトシグナーの6体合体）にも使える（出典: grnrngr/faq-card-8 RS-569 Q1）", () => {
-    // 既知の不具合: CARD-RS-347 効果未実装（加えて CARD-RS-569 の「または」側の6体合体でのラッシュ自体ができない）
+    // 既知の不具合: CARD-RS-569 の「または」側の6体合体でのラッシュ自体ができない（RS-347 の効果自体は実装済み）
     let s = st({
       phase: "rush",
       player1: {
@@ -524,7 +520,7 @@ describe("RS-347 スーパーフォーメーション", () => {
 
   // grnrngr/faq-card-8 RS-565 Q1「…5体合体以上の組み合わせを選択すれば…対象にすることは可能です。…「風雷丸」「旋風神」「轟雷神」を捨札にするだけでは3体合体としかみなされません」
   it.fails("RS-347: 公式Q&A — 轟雷旋風神は5体以上の組み合わせ（風雷丸＋ハリケン3体＋ゴウライ2体）を選べば対象にできる（出典: grnrngr/faq-card-8 RS-565 Q1）", () => {
-    // 既知の不具合: CARD-RS-347 効果未実装（加えて CARD-RS-565 の6体合体の組み合わせでのラッシュ自体ができない）
+    // 既知の不具合: CARD-RS-565 の6体合体の組み合わせでのラッシュ自体ができない（RS-347 の効果自体は実装済み）
     let s = st({
       phase: "rush",
       player1: {

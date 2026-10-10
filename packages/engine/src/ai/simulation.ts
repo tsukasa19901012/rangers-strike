@@ -34,6 +34,10 @@ function actionKey(action: GameAction): string {
       return `${action.type}:${action.riderInstanceId}:${action.vehicleInstanceId}`;
     case "play_operation":
       return `${action.type}:${action.instanceId}:${action.targetInstanceId ?? ""}:${action.extraInstanceId ?? ""}`;
+    case "use_magi_ticket":
+      return `${action.type}:${action.instanceId}:${action.targetInstanceId ?? ""}:${action.extraInstanceId ?? ""}`;
+    case "use_super_shield":
+      return `${action.type}:${action.substituteInstanceId ?? ""}`;
     case "move_to_battle":
       return `${action.type}:${action.instanceId}:${action.rideOff ?? false}`;
     case "five_tech_intercept":

@@ -3,6 +3,7 @@ import { findInZone, updatePlayer } from "../core/helpers";
 import type { RushEffectOutcome } from "../rules/rushEffects";
 import { openMorphReactionWindow } from "../keywords/morphReaction";
 import { openRushCounterWindow } from "../rules/rushEffects";
+import { applyPassiveRushTriggers } from "../rules/onRushUnitEffects";
 import { markRushedThisTurn } from "../rules/turnModifiers";
 import { buildUnitRushedEvent } from "./builders";
 import { EventQueue } from "./EventQueue";
@@ -66,6 +67,21 @@ function openRushReactionWindows(
   rushedInstanceId: string,
   phasePlayerId: PlayerId,
 ): { state: GameState; counterPending: boolean } {
+  // ルール: R-TIME-01 — 「ラッシュしたとき」の効果（選択を含む）をすべて解決したあとの「ラッシュされたとき」。
+  // RS-318 ドギー・クルーガー【出動指令】の選択が開けば、それを解決してからモーフ・カウンターの窓を開く
+  // （deferredRushReaction → core/applyAction.ts の後処理 openDeferredRushReaction）。
+  if (!state.pendingEffectChoice) {
+    const passive = applyPassiveRushTriggers(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
+    const withLogs =
+      passive.logs.length > 0 ? { ...passive.state, log: [...passive.state.log, ...passive.logs] } : passive.state;
+    if (hasPendingPromptBlockingEffectRush(withLogs)) {
+      return {
+        state: { ...withLogs, deferredRushReaction: { rusherPlayerId, rushedInstanceId, phasePlayerId } },
+        counterPending: false,
+      };
+    }
+    state = withLogs;
+  }
   const beforePending = state.pendingRush;
   const withMorph = openMorphReactionWindow(
     state,
