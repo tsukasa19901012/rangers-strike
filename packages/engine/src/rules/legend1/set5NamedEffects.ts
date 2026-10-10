@@ -17,6 +17,7 @@ import { bounceToHand } from "../bounce";
 import { hasBattleNcEffect, markBattleNcEffect } from "../namedUnitEffects";
 import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEffects";
 import { shuffleCards } from "../errataCardEffects";
+import { SUPER_FORMATION_RULE } from "../zord";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { commandCategoriesNow } from "../legend3/battleEffects";
@@ -649,6 +650,11 @@ export function trySet5CardEffect(state: GameState, ctx: GrantKeywordContext, _k
   switch (`${ctx.sourceCardId}::${ctx.effectId}`) {
     case "RS-319::deisodobega":
       return applyDSwordVega(state, ctx);
+    case "RS-347::supafuomeshon": {
+      // RS-347 スーパーフォーメーション: このターン、合体ユニットの不足分をコマンドゾーンのカードで補える（rules/zord.ts）。
+      const player = addTurnRuleModifier(state.players[ctx.playerId], SUPER_FORMATION_RULE, { sourceCardId: "RS-347" });
+      return { state: { ...state, ...updatePlayer(state, ctx.playerId, player) }, detail: "supafuomeshon" };
+    }
     case "RS-328::desutorakushonfuaiya":
       return openDestructionFire(state, ctx);
     case "RS-323::majimaji": {
