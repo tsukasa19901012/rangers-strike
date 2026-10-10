@@ -40,7 +40,7 @@ import {
   isCostWindowSatisfied,
   satisfyCostWindow as satisfyCostWindowBridge,
 } from "../core/costWindow";
-import { hasTurnRuleModifier } from "../core/scopedModifiers";
+import { hasScopedRestriction, hasTurnRuleModifier } from "../core/scopedModifiers";
 import { findInZone, opponent } from "../core/helpers";
 import { TURN_RULE_IDS } from "../types/scopedModifiers";
 import { earthForceActive } from "./strikeReactions";
@@ -82,6 +82,22 @@ import {
   rs579BlocksAttackStrikeOnRushTurn,
   rs603BlocksVehicle,
 } from "./rs/rsCatchallField";
+
+
+/** 「可能ならバトルエリアに置く」で直接バトルエリアにラッシュしたユニットに付ける（このターン有効）。 */
+export const DIRECT_BATTLE_RUSH_RESTRICTION = "direct_battle_rush";
+
+/**
+ * RS-110【ゼニボム】:「次の相手ターン、新しくラッシュエリアに出たユニットは、ターンが終わるまでバトルエリアに出られない」。
+ * 「ラッシュするとき可能ならバトルエリアに置く」（RS-090 レッドレーサー）はバトルエリアに直接ラッシュする効果で、
+ * 「新しくラッシュエリアに出たユニット」にあたらない（atwiki/page-308 Q2・page-303 Q1「（2010/10/25修正）」。
+ * docs/rules/README.md §1.2 例外2・§5.7 e）。
+ */
+export function zenibombBlocksBattleEntry(player: PlayerState, instanceId: string): boolean {
+  if (!hasTurnRuleModifier(player, TURN_RULE_IDS.ZENIBOMB)) return false;
+  if (!wasRushedThisTurn(player, instanceId)) return false;
+  return !hasScopedRestriction(player, instanceId, DIRECT_BATTLE_RUSH_RESTRICTION);
+}
 
 export function countLightningGravityOperations(state: GameState): number {
   return countLightningGravityPermanents(
@@ -317,7 +333,7 @@ export function canMoveUnitToBattle(
     return false;
   }
 
-  if (hasTurnRuleModifier(player, TURN_RULE_IDS.ZENIBOMB) && wasRushedThisTurn(player, unit.instanceId)) {
+  if (zenibombBlocksBattleEntry(player, unit.instanceId)) {
     return false;
   }
 
@@ -426,7 +442,7 @@ export function canMoveUnitToBattleExceptHoldRequirements(
     return false;
   }
 
-  if (hasTurnRuleModifier(player, TURN_RULE_IDS.ZENIBOMB) && wasRushedThisTurn(player, unit.instanceId)) {
+  if (zenibombBlocksBattleEntry(player, unit.instanceId)) {
     return false;
   }
 
@@ -714,7 +730,7 @@ export function explainCannotEnterBattle(
     return `「${unitName}」はラッシュしたターンはバトルエリアに出せません。`;
   }
 
-  if (hasTurnRuleModifier(player, TURN_RULE_IDS.ZENIBOMB) && wasRushedThisTurn(player, unit.instanceId)) {
+  if (zenibombBlocksBattleEntry(player, unit.instanceId)) {
     return "相手の【ゼニボム】の効果で、このターンにラッシュしたユニットはバトルエリアに出せません。";
   }
 

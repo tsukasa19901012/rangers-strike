@@ -845,8 +845,10 @@ describe("RS-090 レッドレーサー", () => {
     expect(zoneOf(s, "player1", "RS-074:cosmo")).toBe("rush");
   });
 
-  // faq-card-2 RS-110 Q（RS-090 の項にも同文）「はい、その通りです。「可能なら」とありますので…ラッシュエリアに置きます。」
-  it("RS-090: 公式Q&A — 相手のゼニボムでバトルエリアに出られないときはラッシュエリアに置く（出典: grnrngr/faq-card-2 RS-090 Q5・RS-110。atwiki/page-303 の写しは逆の回答＝出典相違）", () => {
+  // atwiki/page-303 Q1「…バトルエリアに直接ラッシュする効果なので、【ゼニボム】の「新しくラッシュエリアに出たユニット」にはあたりません。
+  // ですので「RS-090 レッドレーサー」はバトルエリアに置かれます。（2010/10/25修正）」
+  // （faq-card-2 RS-090 Q5・RS-110 Q2「ラッシュエリアに置きます」は修正前の回答。docs/rules/README.md §1.2 例外2・§5.7 e）
+  it("RS-090: 公式Q&A（2010/10/25修正）— 相手のゼニボムが効いていてもバトルエリアに置かれる（出典: atwiki/page-303 Q1「（2010/10/25修正）」。faq-card-2 RS-090 Q5・RS-110 Q2 は修正前）", () => {
     let s = st({
       activePlayer: "player2",
       phase: "battle",
@@ -873,7 +875,7 @@ describe("RS-090 レッドレーサー", () => {
       s = act(s, { type: "resolve_command_payment", playerId: p.playerId, commandInstanceIds: p.validInstanceIds.slice(0, p.totalNeeded) });
     }
     s = settle(s);
-    expect(zoneOf(s, "player1", "RS-090:rr")).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-090:rr")).toBe("battle");
   });
 
   // faq-card-2 RS-121 Q（RS-090 の項にも同文）「はい、その通りです。」（遺跡発掘で出したレッドレーサーはラッシュエリアに置く）

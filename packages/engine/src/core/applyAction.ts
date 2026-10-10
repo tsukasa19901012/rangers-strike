@@ -61,7 +61,7 @@ import {
   canStrikeUnit,
   strikeDamageFor,
 } from "../rules/combo";
-import { addRushPhaseRuleModifier } from "./scopedModifiers";
+import { addRushPhaseRuleModifier, addTurnRestrictionModifier } from "./scopedModifiers";
 import { emitBattleDeclaredAndResolve } from "../events/emitBattleDeclared";
 import {
   ATTACK_HOLD_BONUS_EFFECT_ID,
@@ -156,6 +156,7 @@ import {
   mustEnterBattleBeforePhaseEnd,
   countHeldCommands,
   requiredBattleEntryHolds,
+  DIRECT_BATTLE_RUSH_RESTRICTION,
 } from "../rules/restrictions";
 import {
   applyCommandPaymentResolve,
@@ -486,17 +487,30 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
  * 既にホールドしたコマンドでは満たせない。
  */
 function applyAutoBattleEntryOnRush(
-  state: GameState,
+  initialState: GameState,
   playerId: PlayerId,
   instanceId: string,
 ): GameState {
+  let state = initialState;
   const found = findInZone(state.players[playerId], "rush", instanceId);
   if (!found || !hasAutoBattleEntryOnRushNote(found.card.cardId)) return state;
   if (state.pendingCommandPayment || state.pendingEffectChoice || state.pendingRush) return state;
+  // 直接バトルエリアにラッシュする効果なので、【ゼニボム】の「新しくラッシュエリアに出たユニット」にあたらない
+  // （atwiki/page-308 Q2・page-303 Q1「（2010/10/25修正）」、docs/rules/README.md §1.2 例外2）。
+  // 出られずラッシュエリアに置かれたときは目印を付けない（そのユニットはラッシュエリアに出たユニット）。
+  const original = state;
+  state = {
+    ...state,
+    ...updatePlayer(
+      state,
+      playerId,
+      addTurnRestrictionModifier(state.players[playerId], instanceId, DIRECT_BATTLE_RUSH_RESTRICTION),
+    ),
+  };
   const direct = applyAction(state, { type: "move_to_battle", playerId, instanceId });
   if (direct.ok) return direct.state;
   const payment = buildBattleEntryPayment(state, playerId, found.card);
-  if (!payment) return state;
+  if (!payment) return original;
   if (payment.validInstanceIds.length <= payment.totalNeeded) {
     const paid = applyAction(
       { ...state, pendingCommandPayment: payment },
@@ -506,7 +520,7 @@ function applyAutoBattleEntryOnRush(
         commandInstanceIds: payment.validInstanceIds.slice(0, payment.totalNeeded),
       },
     );
-    return paid.ok ? paid.state : state;
+    return paid.ok ? paid.state : original;
   }
   return { ...state, pendingCommandPayment: payment };
 }

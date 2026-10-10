@@ -433,8 +433,10 @@ describe("R-BA-04 「可能なら出る」の判定", () => {
     expect(s.players.player1.hand).toHaveLength(1);
   });
 
-  // 「「バトルエリアに出られない」と判断して、ラッシュエリアに置きます」
-  it("R-BA-04: ゼニボムで出られないターンはレッドレーサーの「可能なら」はラッシュエリアに置く（出典: grnrngr/faq-card-2 RS-090 Q5・RS-110 Q2）", () => {
+  // atwiki/page-303 Q1・page-308 Q2「…バトルエリアに直接ラッシュする効果なので、【ゼニボム】の「新しくラッシュエリアに出たユニット」
+  // にはあたりません。ですので…バトルエリアに置かれます。（2010/10/25修正）」
+  // （faq-card-2 RS-090 Q5・RS-110 Q2「ラッシュエリアに置きます」は修正前の回答。docs/rules/README.md §1.2 例外2・§5.7 e）
+  it("R-BA-04: ゼニボムが効いているターンでも、レッドレーサーの「ラッシュするとき可能ならバトルエリアに置く」はバトルエリアに置く（出典: atwiki/page-303 Q1・page-308 Q2「（2010/10/25修正）」。faq-card-2 RS-090 Q5・RS-110 Q2 は修正前）", () => {
     // player2 の自軍バトルフェイズにデカピンクを5番目に出してゼニボムを発動 → 次の player1 ターンにレッドレーサーをラッシュ
     let s = battleState({
       activePlayer: "player2",
@@ -463,7 +465,7 @@ describe("R-BA-04 「可能なら出る」の判定", () => {
     const r = rushWithCategoryHold(s, "player1", "RS-090:red", "TST-OP-OT:ot0");
     expect(r.ok).toBe(true);
     s = settle(r.ok ? r.state : s);
-    expect(zoneOf(s, "player1", "RS-090:red")).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-090:red")).toBe("battle");
   });
 });
 

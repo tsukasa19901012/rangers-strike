@@ -18,6 +18,7 @@ import {
 import type { Category } from "@rangers-strike/cards";
 import { canonicalCardName } from "@rangers-strike/cards";
 import { markBattleBlocked } from "./turnModifiers";
+import { greenCrushTargets } from "./legend2/ncEffects";
 import { countLogicalBattleSlots } from "./battleLine";
 import { tryLegend3BattleToRush } from "./legend3/restrictions";
 import type {
@@ -2261,6 +2262,66 @@ function treatOpponentDeployedAsOwnEntry(
   };
 }
 
+const GREEN_CRUSH_EFFECT_ID = "green_crush";
+
+/**
+ * RS-108【グリーンクラッシュ】: 「Sユニットを2体まで選んでバトルエリアに出してもよい（出す順番は自分が選ぶ）」。
+ * 1体出すごとに呼ばれ、2体目を選べるなら選択を開き直す（任意）。出し終えたら、出したユニットの
+ * 「バトルエリアに出たとき」（RS-115 ウルザード: 相手＝グリーンクラッシュの使用者は1枚ドローしてもよい。
+ * faq-card-2 RS-115 Q1、R-TIME-08）を処理する。
+ */
+function continueGreenCrush(
+  state: GameState,
+  pending: PendingEffectChoice,
+  enemyId: PlayerId,
+  deployedCard: CardInstance,
+): ChoiceOutcome {
+  const processed = [...(pending.processedInstanceIds ?? []), deployedCard.instanceId];
+  const next: PendingEffectChoice = { ...pending, processedInstanceIds: processed };
+  const remaining = processed.length < 2 ? greenCrushTargets(state, enemyId) : [];
+  if (remaining.length > 0) {
+    return {
+      state: openEffectChoice(clearChoice(state, pending.playerId), {
+        ...next,
+        validInstanceIds: remaining,
+        selectedInstanceIds: [],
+        optional: true,
+      }),
+      log: buildLogEntry(
+        pending.playerId,
+        "resolve_effect_choice",
+        pending.sourceCardId,
+        state.definitions,
+        `${pending.effectId}:${cardName(state.definitions, deployedCard.cardId)}`,
+      ),
+    };
+  }
+  return finishGreenCrush(state, next, enemyId, cardName(state.definitions, deployedCard.cardId));
+}
+
+function finishGreenCrush(
+  state: GameState,
+  pending: PendingEffectChoice,
+  enemyId: PlayerId,
+  detail: string,
+): ChoiceOutcome {
+  const finished = finishChoice(state, pending, detail);
+  if ("error" in finished || finished.state.pendingEffectChoice) return finished;
+  const enemyBattle = finished.state.players[enemyId].battle;
+  const urzards = (pending.processedInstanceIds ?? []).filter((id) =>
+    enemyBattle.some((c) => c.instanceId === id && c.cardId === "RS-115"),
+  );
+  let resume: PendingEffectChoice | undefined;
+  let next = finished.state;
+  for (let i = urzards.length - 1; i >= 0; i -= 1) {
+    const opened = startOpponentMayDrawChoice(next, pending.playerId, pending.phasePlayerId);
+    if (!opened?.pendingEffectChoice) break;
+    resume = { ...opened.pendingEffectChoice, resumeChoice: resume };
+  }
+  if (resume) next = openEffectChoice(next, resume);
+  return { ...finished, state: next };
+}
+
 function finishChoice(
   state: GameState,
   pending: PendingEffectChoice,
@@ -2411,6 +2472,10 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   }
   if (pending.kind === "seabed_draw") {
     return applySeabedDrawSkip(state, playerId);
+  }
+  if (pending.effectId === GREEN_CRUSH_EFFECT_ID && (pending.processedInstanceIds?.length ?? 0) > 0) {
+    // RS-108: 1体目を出したあと2体目を出さないことを選んだ — 出したユニットの「出たとき」を処理する。
+    return finishGreenCrush(state, pending, opponent(playerId), "skipped");
   }
   if (pending.effectId === LION_DANCE_EFFECT_ID) {
     // RS-100【超忍法・舞獅子】: 出さないことを選んでも「その後、山札をシャッフルする」。
@@ -3242,6 +3307,9 @@ export function applyEffectChoiceSelect(
         );
         let deployed: GameState = { ...state, ...updatePlayer(state, located.playerId, nextOwner) };
         deployed = treatOpponentDeployedAsOwnEntry(deployed, located.playerId, found.card, readyOwner.battle, pending);
+        if (pending.effectId === GREEN_CRUSH_EFFECT_ID) {
+          return continueGreenCrush(deployed, pending, located.playerId, found.card);
+        }
         return finishChoice(deployed, pending, cardName(state.definitions, found.card.cardId));
       }
       if (dest === "swap_battle" && pending.sourceInstanceId) {

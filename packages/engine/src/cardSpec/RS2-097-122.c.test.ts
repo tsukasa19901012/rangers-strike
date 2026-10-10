@@ -342,8 +342,7 @@ describe("RS-115 魔導騎士ウルザード", () => {
   });
 
   // faq-card-2 RS-115 Q1「はい、相手はドローすることができます。」
-  it.fails("RS-115: 公式Q&A — 相手のデカグリーンでバトルエリアに出されたときも、相手（デカグリーンの持ち主）はドローできる（出典: grnrngr/faq-card-2 RS-115 Q1）", () => {
-    // 既知の不具合: CARD-RS-115 相手の効果（グリーンクラッシュ等）でバトルエリアに出されたとき「相手は1枚ドローしてもよい」が発動しない
+  it("RS-115: 公式Q&A — 相手のデカグリーンでバトルエリアに出されたときも、相手（デカグリーンの持ち主）はドローできる（出典: grnrngr/faq-card-2 RS-115 Q1）", () => {
     let s = st({
       player1: { battle: fillers(2), rush: [inst("RS-108", "g")], deck: deckCards(3), hand: [] },
       player2: { rush: [inst("RS-115", "uz")], deck: deckCards(3, "e") },

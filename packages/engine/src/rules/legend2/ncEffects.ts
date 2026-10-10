@@ -147,6 +147,14 @@ function destroyAllEnemyAtBp(
   };
 }
 
+/** RS-108【グリーンクラッシュ】で出せる敵軍ラッシュエリアの S ユニット。 */
+export function greenCrushTargets(state: GameState, enemyId: PlayerId): string[] {
+  return state.players[enemyId].rush
+    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => canBeDeployedToBattleByEffect(state, enemyId, c))
+    .map((c) => c.instanceId);
+}
+
 export function applyLegend2NcEffect(
   state: GameState,
   playerId: PlayerId,
@@ -260,11 +268,9 @@ export function applyLegend2NcEffect(
     case "space_ninpo_rope_skull":
       return destroyAllEnemyAtBp(state, playerId, card, 3000, "space_ninpo_rope_skull");
     case "green_crush": {
-      const targets = state.players[enemyId].rush
-        .filter((c) => isSmallUnit(state.definitions, c.cardId))
-        .filter((c) => canBeDeployedToBattleByEffect(state, enemyId, c))
-        .map((c) => c.instanceId)
-        .slice(0, 2);
+      // 出典: atwiki/page-307「Sユニットを2体まで選んで…（出す順番は自分が選ぶ）」— 候補は敵軍ラッシュエリアの
+      // S ユニットすべて。1体ずつ選んで出し、2体目は rules/pendingChoices.ts（continueGreenCrush）で続けて選ぶ。
+      const targets = greenCrushTargets(state, enemyId);
       const withChoice = startSelectUnitChoice(state, {
         playerId,
         effectId,
@@ -306,7 +312,8 @@ export function applyLegend2NcEffect(
     case "zenibomb": {
       // ルール: R-RES-07 — 「次の相手ターン」の効果。デカピンクが撃破されても有効。
       // 「次の相手ターン、新しくラッシュエリアに出たユニットは…バトルエリアに出られない」。
-      // ルール: R-BA-04 — 出られないターンはレッドレーサーの「可能なら」もラッシュエリアに置く（RS-110 Q2）。
+      // レッドレーサーの「ラッシュするとき可能ならバトルエリアに置く」は直接バトルエリアへのラッシュで対象外
+      // （atwiki/page-308 Q2「（2010/10/25修正）」。rules/restrictions.ts の zenibombBlocksBattleEntry）。
       const enemy = addNextTurnRuleModifier(state.players[enemyId], TURN_RULE_IDS.ZENIBOMB, {
         sourceCardId: card.cardId,
       });
