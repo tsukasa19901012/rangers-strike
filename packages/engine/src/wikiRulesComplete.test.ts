@@ -1,7 +1,11 @@
 /**
- * 完成版ルール E2E テスト — docs/wiki/*.md 準拠。
+ * 完成版ルール E2E テスト — docs/rules/ 準拠。
+ * ruleRef は docs/rules/*.md のルールID（複数は ", " 区切り）。
  * 仕様: apps/web/lib/wikiTestSpecs/ruleSpecs.ts
  */
+import { readdirSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { legend1Catalog, legend2Catalog, JOINT_L_EFFECTS } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
@@ -16,7 +20,8 @@ const LEGEND2_DEFINITIONS = {
 
 type RuleCase = {
   ruleId: string;
-  wikiRef: string;
+  /** docs/rules/*.md のルールID（例: "R-WIN-01"） */
+  ruleRef: string;
   title: string;
   run: () => void;
 };
@@ -24,7 +29,7 @@ type RuleCase = {
 const RULE_CASES: RuleCase[] = [
   {
     ruleId: "RULE-CORE-01",
-    wikiRef: "docs/wiki/core-rules.md#ゲーム概要",
+    ruleRef: "R-SETUP-07, R-TURN-03",
     title: "先攻1ターン目はチャージから開始",
     run() {
       const state = createTestState({ phase: "charge", turn: 1 });
@@ -34,7 +39,7 @@ const RULE_CASES: RuleCase[] = [
   },
   {
     ruleId: "RULE-CORE-02",
-    wikiRef: "docs/wiki/core-rules.md#勝利条件",
+    ruleRef: "R-WIN-01",
     title: "7ダメージで勝利",
     run() {
       const state = createTestState({
@@ -60,7 +65,7 @@ const RULE_CASES: RuleCase[] = [
   },
   {
     ruleId: "RULE-PHASE-02",
-    wikiRef: "docs/wiki/phases.md#2-チャージフェイズ",
+    ruleRef: "R-CHARGE-01",
     title: "チャージは1ターン1回",
     run() {
       const handCard = inst("TST-OP", "h1");
@@ -86,7 +91,7 @@ const RULE_CASES: RuleCase[] = [
   },
   {
     ruleId: "RULE-BATTLE-01",
-    wikiRef: "docs/wiki/battle.md#アタック（バトル）",
+    ruleRef: "R-ATK-01",
     title: "相手バトル空ではアタック不可",
     run() {
       const attacker = inst("TST-UNIT-2", "a1");
@@ -101,7 +106,7 @@ const RULE_CASES: RuleCase[] = [
   },
   {
     ruleId: "RULE-BATTLE-03",
-    wikiRef: "docs/wiki/battle.md#ナンバーコンビネーション（NC）",
+    ruleRef: "R-BA-02",
     title: "バトル進入で左詰め配置",
     run() {
       const unit = inst("TST-UNIT-0", "r1");
@@ -122,7 +127,7 @@ const RULE_CASES: RuleCase[] = [
   },
   {
     ruleId: "RULE-RUSH-01",
-    wikiRef: "docs/wiki/rush.md#基本ラッシュ",
+    ruleRef: "R-CMD-01, R-RUSH-11",
     title: "ラッシュにはホールド済みコマンドが必要",
     run() {
       const unit = inst("TST-UNIT-2", "h1");
@@ -140,7 +145,7 @@ const RULE_CASES: RuleCase[] = [
   },
   {
     ruleId: "RULE-OP-01",
-    wikiRef: "docs/wiki/glossary/p581.md",
+    ruleRef: "R-CARD-02",
     title: "通常オペはラッシュフェイズのみ使用",
     run() {
       const op = inst("RS-015", "op");
@@ -162,7 +167,7 @@ const RULE_CASES: RuleCase[] = [
   },
   {
     ruleId: "RULE-OP-02",
-    wikiRef: "docs/wiki/phases.md#3-ラッシュフェイズ",
+    ruleRef: "R-CARD-02",
     title: "通常オペ使用後は捨札",
     run() {
       const op = inst("RS-015", "op");
@@ -189,7 +194,7 @@ const RULE_CASES: RuleCase[] = [
   },
   {
     ruleId: "RULE-KW-02",
-    wikiRef: "docs/wiki/keywords.md#常駐オペレーション",
+    ruleRef: "R-KW-PERM-01",
     title: "常駐は各プレイヤー1枚・上書き可",
     run() {
       const rk001 = inst("RK-001", "op1");
@@ -226,7 +231,7 @@ const RULE_CASES: RuleCase[] = [
   },
   {
     ruleId: "RULE-KW-03",
-    wikiRef: "docs/wiki/keywords.md#カウンター",
+    ruleRef: "R-CTR-01",
     title: "自軍ターン中はカウンター使用不可",
     run() {
       const counter = inst("RK-004", "c1");
@@ -245,7 +250,9 @@ const RULE_CASES: RuleCase[] = [
   },
   {
     ruleId: "RULE-KW-09",
-    wikiRef: "docs/wiki/glossary/p1294.md",
+    // ルール: R-KW-MORPH-02 では置換先は自軍コマンド・パワーゾーンのみ。下記は手札のカードを選んでおり
+    // ルールと食い違う（既知の不一致 E16）。挙動は変えず現行エンジンを記録している。
+    ruleRef: "R-KW-MORPH-01, R-KW-MORPH-02",
     title: "敵ラッシュ時に特徴一致でモーフ置換",
     run() {
       const FEATURE = "wiki-morph";
@@ -304,7 +311,8 @@ const RULE_CASES: RuleCase[] = [
   },
   {
     ruleId: "RULE-KW-10",
-    wikiRef: "docs/wiki/glossary/p266.md",
+    // ルール: R-CN-01（ジョイントコンビネーション専用の項目は未収載。最も近い章: docs/rules/05-battle-strike-damage.md）
+    ruleRef: "R-CN-01",
     title: "L/Rナンバーはバトル進入時に隣接LサイズとJC発動",
     run() {
       const helper = inst("TST-JC-L", "jl");
@@ -392,12 +400,25 @@ const RULE_CASES: RuleCase[] = [
   },
 ];
 
-describe("Wiki complete rules (engine E2E)", () => {
+const RULES_DIR = join(dirname(fileURLToPath(import.meta.url)), "../../../docs/rules");
+const RULEBOOK_IDS = new Set(
+  readdirSync(RULES_DIR)
+    .filter((f) => /^\d\d-.*\.md$/.test(f))
+    .flatMap((f) =>
+      [...readFileSync(join(RULES_DIR, f), "utf8").matchAll(/^#### (R-[A-Z0-9-]+)/gm)].map(
+        (m) => m[1]!,
+      ),
+    ),
+);
+
+describe("Complete rules (engine E2E, docs/rules)", () => {
   for (const ruleCase of RULE_CASES) {
     describe(ruleCase.ruleId, () => {
-      it(ruleCase.title, ruleCase.run);
-      it(`documents wiki ref ${ruleCase.wikiRef}`, () => {
-        expect(ruleCase.wikiRef).toMatch(/^docs\/wiki\//);
+      it(`${ruleCase.ruleRef}: ${ruleCase.title}`, ruleCase.run);
+      it(`cites rulebook IDs ${ruleCase.ruleRef}`, () => {
+        for (const id of ruleCase.ruleRef.split(", ")) {
+          expect(RULEBOOK_IDS.has(id), `${id} は docs/rules/ に存在しない`).toBe(true);
+        }
       });
     });
   }

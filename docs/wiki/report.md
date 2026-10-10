@@ -40,7 +40,7 @@
 
 | 項目 | 状態 |
 |------|------|
-| 用語 md | 167件（`docs/wiki/glossary/`） |
+| 用語 md | 167件（旧 docs/wiki/glossary/。削除済み — ルールは `docs/rules/` を参照） |
 | atwiki 取得 | batch63〜69 完了 |
 | 同期 | sync-glossary-from-atwiki.mjs |
 
@@ -49,13 +49,13 @@
 ## 追加ファイル（主要）
 
 ### コア仕様
-* docs/wiki/core-rules.md, phases.md, battle.md, rush.md, damage.md
-* docs/wiki/keywords.md, timing.md, faq.md, state-mapping.md, engine-gaps.md
+* docs/wiki/core-rules.md, phases.md, battle.md, rush.md, damage.md（削除済み — `docs/rules/` に統合）
+* docs/wiki/keywords.md, timing.md（削除済み）, faq.md, state-mapping.md, engine-gaps.md
 * docs/wiki/unresolved.md, report.md
 
 ### カード・用語
 * docs/wiki/cards/*.md（1810件）
-* docs/wiki/glossary/*.md（167件）
+* docs/wiki/glossary/*.md（167件、削除済み）
 
 ### atwiki ソース・スクリプト
 * docs/wiki/sources/atwiki/page-*.md（1983件）

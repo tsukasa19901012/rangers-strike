@@ -72,7 +72,7 @@ const RULE_GAPS: ImplementationGapsReport["ruleGaps"] = [
     priority: "P1",
     status: "partial",
     impact: "基盤配線済み。複雑な同時発動シナリオの網羅は継続。",
-    refs: ["packages/engine/src/types/game.ts (simultaneousGroupId)", "docs/wiki/timing.md"],
+    refs: ["packages/engine/src/types/game.ts (simultaneousGroupId)", "docs/rules/06-effects-timing.md (R-SIM-01)"],
   },
   {
     id: "RULE-03",

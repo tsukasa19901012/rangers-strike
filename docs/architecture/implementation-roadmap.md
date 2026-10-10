@@ -434,4 +434,4 @@ M6: Tier5 表面化した裁定のみ対応
 | [event-architecture.md](./event-architecture.md) | Event 層移行 Phase 0–4 |
 | [docs/wiki/engine-gaps.md](../wiki/engine-gaps.md) | 意図的未実装 |
 | [docs/wiki/unresolved.md](../wiki/unresolved.md) | Issue トラッカー |
-| [docs/wiki/timing.md](../wiki/timing.md) | スタック優先度 |
+| [docs/rules/06-effects-timing.md](../rules/06-effects-timing.md) | 同時処理順・優先順位（R-SIM-01, R-PRI-01, R-PRI-02） |

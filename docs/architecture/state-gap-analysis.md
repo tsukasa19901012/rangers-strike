@@ -1,7 +1,7 @@
 # State ギャップ分析
 
 **対象:** `GameState` / `PlayerState` / `EffectStack` / Pending 系  
-**参照:** `docs/wiki/core-rules.md`, `phases.md`, `battle.md`, `rush.md`, `damage.md`, `timing.md`, `state-mapping.md`, `engine-gaps.md`  
+**参照:** 作成時は旧要約 docs/wiki/core-rules.md, phases.md, battle.md, rush.md, damage.md, timing.md（いずれも削除済み）、`state-mapping.md`, `engine-gaps.md`。現在のルールの正は `docs/rules/`  
 **実装:** `packages/engine/src/types/game.ts`, `packages/engine/src/rules/effectStack.ts`  
 **日付:** 2026-06-09  
 **コード変更:** なし（分析のみ）

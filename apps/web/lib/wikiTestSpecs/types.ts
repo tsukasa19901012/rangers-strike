@@ -25,10 +25,11 @@ export type WikiCardCompleteSpec = {
   expectedDslKeywords?: string[];
 };
 
-/** 完成版ルール E2E テスト仕様。 */
+/** 完成版ルール E2E テスト仕様（docs/rules/ 準拠）。 */
 export type WikiRuleCompleteSpec = {
   ruleId: string;
-  wikiRef: string;
+  /** docs/rules/*.md のルールID（例: "R-WIN-01"。複数は ", " 区切り） */
+  ruleRef: string;
   title: string;
   /** 検証観点の要約 */
   assertions: string[];
