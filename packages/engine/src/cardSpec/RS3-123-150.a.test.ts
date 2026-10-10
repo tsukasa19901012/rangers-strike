@@ -189,8 +189,7 @@ describe("RS-124 超電子レーダー", () => {
     expect(s.players.player1.hand).toHaveLength(0);
   });
 
-  it.fails("RS-124: 戻すカードは持ち主が選ぶ（出典: atwiki/page-362「1枚選んで」）", () => {
-    // 既知の不具合: CARD-RS-124 戻すパワーを選ばせず、先頭のオモテ向きカードを自動で手札に戻す
+  it("RS-124: 戻すカードは持ち主が選ぶ（出典: atwiki/page-362「1枚選んで」）", () => {
     const r = radarRush("SPEC-S1", powerCards(2));
     expect(choiceIds(r.state)).toEqual(["TST-P:pw0", "TST-P:pw1"]);
     const s = pick(r.state, "TST-P:pw1");
@@ -199,8 +198,7 @@ describe("RS-124 超電子レーダー", () => {
   });
 
   // faq-card-3 RS-124 Q1「その合体ユニットであるＳユニットを捨札からバトルエリアに１体出すたび…はい、その通りです。」
-  it.fails("RS-124: 公式Q&A — パワーバズーカで撃破された合体ユニットの S ユニットを捨札からバトルエリアに出すと、その持ち主はパワーを1枚戻す（出典: grnrngr/faq-card-3 RS-124 Q1）", () => {
-    // 既知の不具合: CARD-RS-124 S ユニットがラッシュエリアを経ずに直接バトルエリアに出された（ラッシュされた）ときにレーダーの処理をしない
+  it("RS-124: 公式Q&A — パワーバズーカで撃破された合体ユニットの S ユニットを捨札からバトルエリアに出すと、その持ち主はパワーを1枚戻す（出典: grnrngr/faq-card-3 RS-124 Q1）", () => {
     // RS-112 ウルカイザー（合体―ウルザード（S）＋バリキオン）を RS-009 パワーバズーカで撃破する
     let s = st({
       phase: "rush",
@@ -231,8 +229,7 @@ describe("RS-124 超電子レーダー", () => {
   });
 
   // faq-card-3 RS-124 Q2「はい、その通りです。」（ガロア艦長の古傷の因縁）
-  it.fails("RS-124: 公式Q&A — ガロア艦長の【古傷の因縁】で敵軍ラッシュエリアに出された S ユニットの持ち主（相手）がパワーを戻す（出典: grnrngr/faq-card-3 RS-124 Q2）", () => {
-    // 既知の不具合: CARD-RS-124 Q2 の状況を再現できない — RS-277【古傷の因縁】の選択（unitDestination "rush"）がバトルエリアのユニットしか受け付けず、敵軍コマンドゾーンのカードを選べない
+  it("RS-124: 公式Q&A — ガロア艦長の【古傷の因縁】で敵軍ラッシュエリアに出された S ユニットの持ち主（相手）がパワーを戻す（出典: grnrngr/faq-card-3 RS-124 Q2）", () => {
     const RED = sUnit("SPEC-RED", { features: ["レッド"] });
     let s = st(
       {
@@ -250,8 +247,7 @@ describe("RS-124 超電子レーダー", () => {
   });
 
   // faq-card-3 RS-124 Q3「はい、その通りです。」（ダイナロボで敵軍バトルエリアに出す）
-  it.fails("RS-124: 公式Q&A — ダイナロボの効果で敵軍コマンドゾーンから S ユニットをバトルエリアに出したときも相手がパワーを戻す（出典: grnrngr/faq-card-3 RS-124 Q3）", () => {
-    // 既知の不具合: CARD-RS-124 S ユニットがラッシュエリアを経ずに直接バトルエリアに出された（ラッシュされた）ときにレーダーの処理をしない
+  it("RS-124: 公式Q&A — ダイナロボの効果で敵軍コマンドゾーンから S ユニットをバトルエリアに出したときも相手がパワーを戻す（出典: grnrngr/faq-card-3 RS-124 Q3）", () => {
     let s = st({
       player1: { rush: [inst("RS-194", "dyna")], operation: [inst("RS-124", "radar")] },
       player2: { command: [released("TST-UNIT-0", "s")], power: powerCards(2, "ep") },
@@ -336,8 +332,7 @@ describe("RS-124 超電子レーダー", () => {
   });
 
   // faq-card-4（RS-241 の項）「はい、その通りです。」（ボウケンレッドAT 撃破→ボウケンレッドをラッシュエリアへ）
-  it.fails("RS-124: 公式Q&A — ボウケンレッドAT が撃破され、捨札のボウケンレッドをラッシュエリアに出したとき、持ち主はパワーを戻す（出典: grnrngr/faq-card-4 RS-241）", () => {
-    // 既知の不具合: CARD-RS-124 faq-card-4 の状況を再現できない — RS-241 ボウケンレッドAT が撃破されて捨札になっても捨札のボウケンレッドをラッシュエリアに出さない
+  it("RS-124: 公式Q&A — ボウケンレッドAT が撃破され、捨札のボウケンレッドをラッシュエリアに出したとき、持ち主はパワーを戻す（出典: grnrngr/faq-card-4 RS-241）", () => {
     let s = st({
       player1: { battle: [inst("TST-UNIT-7", "big")], operation: [inst("RS-124", "radar")] },
       player2: {

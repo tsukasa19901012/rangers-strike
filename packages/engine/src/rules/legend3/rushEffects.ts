@@ -87,26 +87,67 @@ export function superRadarAppliesOnRush(
 ): boolean {
   if (!isSuperRadarActive(state)) return false;
   const rusher = state.players[rusherPlayerId];
-  const found = findInZone(rusher, "rush", rushedInstanceId);
+  const found = findRushedUnit(rusher, rushedInstanceId);
   if (!found || !isSmallUnit(state.definitions, found.card.cardId)) return false;
   return rusher.power.some((c) => !c.faceDown);
 }
+
+/**
+ * ラッシュしたユニット（ラッシュエリア、またはラッシュエリアを経ずに直接バトルエリアに出たもの）。
+ * faq-card-3 RS-124 Q1/Q3 — 捨札・敵軍コマンドゾーンから直接バトルエリアに出した S ユニットもラッシュに含む。
+ */
+function findRushedUnit(player: GameState["players"][PlayerId], instanceId: string) {
+  return findInZone(player, "rush", instanceId) ?? findInZone(player, "battle", instanceId);
+}
+
+export const SUPER_RADAR_RETURN_EFFECT_ID = "super_radar_return";
 
 export function applySuperRadarOnRush(
   state: GameState,
   rusherPlayerId: PlayerId,
   rushedInstanceId: string,
+  phasePlayerId: PlayerId = state.activePlayer,
+  options: { allowChoice?: boolean } = {},
 ): NamedEffectOutcome {
   if (!isSuperRadarActive(state)) return { state, logs: [] };
 
   const rusher = state.players[rusherPlayerId];
-  const found = findInZone(rusher, "rush", rushedInstanceId);
+  const found = findRushedUnit(rusher, rushedInstanceId);
   if (!found || !isSmallUnit(state.definitions, found.card.cardId)) {
     return { state, logs: [] };
   }
 
   const faceUpIndex = rusher.power.findIndex((c) => !c.faceDown);
   if (faceUpIndex < 0) return { state, logs: [] };
+
+  // atwiki/page-362「1枚選んで手札に戻す」— 選ぶのはユニットの持ち主。
+  // 候補が2枚以上あり、ほかの選択が開いていなければ選ばせる（開いていれば先頭を戻す）。
+  const faceUpIds = rusher.power.filter((c) => !c.faceDown).map((c) => c.instanceId);
+  if (faceUpIds.length > 1 && options.allowChoice !== false && !state.pendingEffectChoice) {
+    const withChoice = startSelectUnitChoice(state, {
+      playerId: rusherPlayerId,
+      effectId: SUPER_RADAR_RETURN_EFFECT_ID,
+      sourceCardId: "RS-124",
+      phasePlayerId,
+      validInstanceIds: faceUpIds,
+      unitDestination: "hand_from_power",
+      optional: false,
+    });
+    if (withChoice) {
+      return {
+        state: withChoice,
+        logs: [
+          buildLogEntry(
+            rusherPlayerId,
+            "rush_effect",
+            "RS-124",
+            state.definitions,
+            "super_radar_power_to_hand",
+          ),
+        ],
+      };
+    }
+  }
 
   const [card, restPower] = removeAt(rusher.power, faceUpIndex);
   const nextPlayer = {

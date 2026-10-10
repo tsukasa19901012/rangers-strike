@@ -81,6 +81,7 @@ import {
   registerAutoBattleEntryOnRush,
 } from "../events/emitUnitRushed";
 import { continuePendingEffectRush } from "../rules/effectRush";
+import { applySuperRadarOnRush } from "../rules/legend3/rushEffects";
 import { RUSH_PHASE_RULE_IDS } from "../types/scopedModifiers";
 import { attackerBlocksDefenderCounters, canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import {
@@ -563,6 +564,7 @@ function settleEffectRushes(before: GameState, after: GameState): GameState {
   let next = after;
   const turnPlayer = turnPlayerOf(after);
   const triggers: NonNullable<GameState["effectRushTriggerQueue"]> = [];
+  const directBattleEntries: Array<{ pid: PlayerId; instanceId: string }> = [];
   for (const pid of ["player1", "player2"] as const) {
     let owner = next.players[pid];
     let changed = false;
@@ -574,10 +576,20 @@ function settleEffectRushes(before: GameState, after: GameState): GameState {
         changed = true;
         if (zone === "rush") {
           triggers.push({ rusherPlayerId: pid, instanceId: card.instanceId, phasePlayerId: turnPlayer });
+        } else {
+          directBattleEntries.push({ pid, instanceId: card.instanceId });
         }
       }
     }
     if (changed) next = { ...next, ...updatePlayer(next, pid, owner) };
+  }
+  // faq-card-3 RS-124 Q1/Q3 — ラッシュエリアを経ずに直接バトルエリアに出た S ユニットにも
+  // 超電子レーダー（「Sユニットをラッシュしたとき」）を適用する。
+  for (const entry of directBattleEntries) {
+    const radar = applySuperRadarOnRush(next, entry.pid, entry.instanceId, turnPlayer);
+    if (radar.state !== next) {
+      next = { ...radar.state, log: [...radar.state.log, ...radar.logs] };
+    }
   }
   if (triggers.length > 0) {
     next = {

@@ -132,7 +132,10 @@ export function applyOnRushUnitEffects(
     };
   }
   if (options.rushTriggerOrder === "super_radar_first") {
-    const radarFirst = applySuperRadarOnRush(nextState, ownerPlayerId, instanceId);
+    // 自身の効果を続けて処理するので、ここでは選択を開かない（先頭のオモテ向きカードを戻す）。
+    const radarFirst = applySuperRadarOnRush(nextState, ownerPlayerId, instanceId, phasePlayerId, {
+      allowChoice: false,
+    });
     nextState = radarFirst.state;
     logs.push(...radarFirst.logs);
   }
@@ -216,12 +219,6 @@ export function applyOnRushUnitEffects(
     logs.push(...formation.logs);
   }
 
-  if (options.rushTriggerOrder !== "super_radar_first") {
-    const radar = applySuperRadarOnRush(nextState, ownerPlayerId, instanceId);
-    nextState = radar.state;
-    logs.push(...radar.logs);
-  }
-
   const noteOther = resolveNoteOtherOnRushEffects(
     nextState,
     ownerPlayerId,
@@ -268,6 +265,13 @@ export function applyOnRushUnitEffects(
   );
   nextState = rsEnemyRush.state;
   if (rsEnemyRush.logs.length > 0) logs.push(...rsEnemyRush.logs);
+
+  // RS-124 超電子レーダー（戻すパワーを持ち主が選ぶ選択を開くことがあるので最後に処理する）。
+  if (options.rushTriggerOrder !== "super_radar_first") {
+    const radar = applySuperRadarOnRush(nextState, ownerPlayerId, instanceId, phasePlayerId);
+    nextState = radar.state;
+    logs.push(...radar.logs);
+  }
 
   return { state: nextState, logs };
 }

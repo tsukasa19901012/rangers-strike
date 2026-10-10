@@ -529,6 +529,16 @@ export function isValidEffectChoiceTarget(
     return !!findInZone(state.players[pending.playerId], "operation", instanceId);
   }
 
+  if (pending.effectId === "no_e58fa4") {
+    // RS-277【古傷の因縁】: 候補は敵軍コマンドゾーンと敵軍パワーゾーン（ダメージ以外）のカード
+    // （atwiki/page-438「敵軍コマンドゾーンか、敵軍パワーゾーンのダメージ以外のカード」）。
+    const enemy = state.players[opponent(pending.playerId)];
+    return (
+      !!findInZone(enemy, "command", instanceId) ||
+      enemy.power.some((c) => c.instanceId === instanceId && !c.faceDown)
+    );
+  }
+
   if (isCommandLeaveRefillChoice(pending)) {
     return isValidCommandLeaveRefillTarget(state, pending, instanceId);
   }

@@ -9,6 +9,7 @@ import {
 } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { removeAt, updatePlayer } from "../core/helpers";
+import { applySuperRadarOnRush } from "./legend3/rushEffects";
 import {
   autoHoldForBattleEntry,
   clearEffectBattleEntryWindows,
@@ -101,6 +102,7 @@ export function returnFusionPartnersFromDiscard(
   let battle = [...owner.battle];
   let hand = [...owner.hand];
   const picks = pickFusionMaterials(state, discard, destroyedCardId);
+  const placedInBattle: string[] = [];
 
   for (const pick of picks) {
     const index = discard.findIndex((c) => c.instanceId === pick.instanceId);
@@ -132,10 +134,17 @@ export function returnFusionPartnersFromDiscard(
     battle = [...battle, { ...card, battleActed: false }];
     // ルール: R-RUSH-02 — 捨札からバトルエリアに直接出た合体素材も「ラッシュされた」扱い（RS-009 Q2）。
     owner = markRushedThisTurn(clearEffectBattleEntryWindows(owner), card.instanceId);
+    placedInBattle.push(card.instanceId);
   }
 
-  return {
+  let next: GameState = {
     ...state,
     ...updatePlayer(state, ownerId, { ...owner, discard, battle, hand }),
   };
+  // faq-card-3 RS-124 Q1 — 捨札からバトルエリアに出した S ユニット1体ごとに超電子レーダーを適用する。
+  for (const instanceId of placedInBattle) {
+    const radar = applySuperRadarOnRush(next, ownerId, instanceId, state.activePlayer);
+    if (radar.state !== next) next = { ...radar.state, log: [...radar.state.log, ...radar.logs] };
+  }
+  return next;
 }
