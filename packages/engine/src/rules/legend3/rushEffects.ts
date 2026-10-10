@@ -1,6 +1,7 @@
 import { getUnitEffectBlock, hasUnnamedRule } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit } from "../../core/catalog";
+import { crossReductionFor } from "../../keywords/battleKeywords";
 import {
   battlePositionOneBased,
   printedSpBase,
@@ -203,7 +204,9 @@ export function resolveLegend3OnRushEffects(
         if (spValue === "special") return inBattle;
         if (!inBattle) return false;
         const position = battlePositionOneBased(enemy.battle, c.instanceId);
-        const sp = (c.spModifier ?? 0) + printedSpBase(spValue, position);
+        const sp =
+          (c.spModifier ?? 0) +
+          printedSpBase(spValue, position, crossReductionFor(enemy.battle, c.instanceId));
         return sp >= 1;
       });
       if (toReturn.length > 0) {

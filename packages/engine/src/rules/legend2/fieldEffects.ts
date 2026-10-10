@@ -11,7 +11,7 @@ import {
   resolveInstanceSpValue,
 } from "../fractionalSp";
 import {
-  crossAdjustedBattlePosition,
+  crossReductionFor,
   taxisSpFloor,
   fieldPositionSpFloor,
 } from "../../keywords/battleKeywords";
@@ -80,10 +80,10 @@ export function legend2EffectiveSp(
   const def = getDefinition(state.definitions, instance.cardId);
   const modifier = instance.spModifier ?? 0;
   const battle = state.players[playerId].battle;
-  const battlePosition = crossAdjustedBattlePosition(battle, instance.instanceId)
-    ?? battlePositionOneBased(battle, instance.instanceId);
+  const battlePosition = battlePositionOneBased(battle, instance.instanceId);
   const printed = resolveInstanceSpValue(def, instance);
-  let sp = printedSpBase(printed, battlePosition) + modifier;
+  let sp =
+    printedSpBase(printed, battlePosition, crossReductionFor(battle, instance.instanceId)) + modifier;
   sp = Math.max(sp, taxisSpFloor(state, playerId, instance));
   sp = Math.max(sp, fieldPositionSpFloor(state, playerId, instance));
   // RK-081 ゲゲル: 発動ターン中は自軍 S ユニットすべて SP1

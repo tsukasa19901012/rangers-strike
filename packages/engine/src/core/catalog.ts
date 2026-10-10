@@ -568,15 +568,16 @@ function evaluateRushPowerAndZord(
     );
   }
 
+  if (breakerBlocksSameNameRush(player, definitions, unitDefinition.id)) {
+    return false;
+  }
+
+  // ブラストが免除するのは追加条件だけ（ブレイカーの同名禁止は免除しない）。ルール: R-KW-BLAST-01
   if (
     powerContext &&
     blastBypassesRushAdditionalCondition(powerContext, powerContext.playerId, unitDefinition.id)
   ) {
     return true;
-  }
-
-  if (breakerBlocksSameNameRush(player, definitions, unitDefinition.id)) {
-    return false;
   }
 
   if (!needsZordMaterial(definitions, unitDefinition.id)) return true;

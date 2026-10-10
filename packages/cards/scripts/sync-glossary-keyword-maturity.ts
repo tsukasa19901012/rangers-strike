@@ -18,7 +18,7 @@ export const KEYWORD_GLOSSARY_MATURITY: Record<string, string> = {
   "p1289.md": "**高** — `resist.ts`, `registerEligible` on battle destroy",
   "p1290.md": "**高** — `scrumBlocksAttack`（右隣 CN+1 のみ）",
   "wing.md": "**高** — `hold_for_wing`, `canWingAttackFromRush`, `resetWingUnitForReuse`",
-  "p2393.md": "**高** — `crossValueForCard`, `crossAdjustedBattlePosition`",
+  "p2393.md": "**高** — `crossValueForCard`, `crossReductionFor`, `crossReducedNumber`",
   "p1701.md": "**高** — `blastBypassesRushAdditionalCondition`（damage≥WIN-1 OR 表パワー≤1）",
   "p2355.md": "**高** — `effectTargetability.ts`, `breakerBlocksEffectTarget`",
   "p1291.md": "**中** — `taxisSpFloor` → `legend3EffectiveSp`",

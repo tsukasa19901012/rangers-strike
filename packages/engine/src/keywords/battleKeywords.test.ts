@@ -11,7 +11,8 @@ import {
   breakerBlocksSameNameRush,
   canHoldForWing,
   canWingAttackFromRush,
-  crossAdjustedBattlePosition,
+  crossReducedNumber,
+  crossReductionFor,
   crossValueForCard,
   prepareWingUnitReturnedToRush,
   resetWingUnitForReuse,
@@ -27,14 +28,31 @@ import { wingCanAttackEnemyRush } from "./index";
 import { addTurnRestrictionModifier } from "../core/scopedModifiers";
 import { RESTRICTION_IDS } from "../types/scopedModifiers";
 import { applyAction, getLegalActions } from "../index";
+import { printedSpBase } from "../rules/fractionalSp";
 
 describe("cross1 keyword", () => {
-  it("shifts battle position for units to the right of cross holder", () => {
+  it("R-KW-CROSS-01: 右側ユニットの減少量は左側のクロス合計（並び順は変えない）", () => {
     const cross = inst("XG7-013", "c1");
     const follower = inst("TST-FOLLOW", "f1");
     const battle = [cross, follower];
     expect(crossValueForCard("XG7-013")).toBeGreaterThan(0);
-    expect(crossAdjustedBattlePosition(battle, follower.instanceId)).toBe(1);
+    expect(crossReductionFor(battle, follower.instanceId)).toBe(crossValueForCard("XG7-013"));
+    expect(crossReductionFor(battle, cross.instanceId)).toBe(0);
+    expect(crossReductionFor(battle, "not-in-battle")).toBe(0);
+  });
+
+  it("R-KW-CROSS-01: 数字は X 少なくなるが 2 より少なくならず、元が 2 未満なら変わらない", () => {
+    expect(crossReducedNumber(5, 2)).toBe(3);
+    expect(crossReducedNumber(3, 2)).toBe(2);
+    expect(crossReducedNumber(2, 1)).toBe(2);
+    expect(crossReducedNumber(1, 1)).toBe(1);
+    expect(crossReducedNumber(4, 0)).toBe(4);
+  });
+
+  it("R-KW-CROSS-01: 分数SPの分母も減る（1/3 は左にクロス1があれば2番目で SP1）", () => {
+    expect(printedSpBase("1/3", 2, 1)).toBe(1);
+    expect(printedSpBase("1/3", 3, 1)).toBe(0);
+    expect(printedSpBase("1/2", 2, 1)).toBe(1);
   });
 });
 
@@ -414,8 +432,8 @@ describe("wing keyword", () => {
 });
 
 describe("blast keyword", () => {
-  it("bypasses additional conditions at one face-up power remaining", () => {
-    const defs = buildDefinitionMap([
+  const blastDefs = () =>
+    buildDefinitionMap([
       [
         {
           id: "TST-BLAST",
@@ -429,68 +447,43 @@ describe("blast keyword", () => {
           size: "L",
           text: "※ブラスト",
         },
+        { id: "TST-L", name: "Big", type: "unit", category: "WB", rarity: "C", expansion: "test", powerCost: 5, bp: 9000, size: "L", text: "" },
+        { id: "TST-S", name: "Small", type: "unit", category: "WB", rarity: "C", expansion: "test", powerCost: 1, bp: 3000, size: "S", text: "" },
       ],
     ]);
 
-    const state = {
-      ...createTestState(defs),
-      definitions: defs,
-      players: {
-        ...createTestState(defs).players,
-        player1: {
-          ...createTestState(defs).players.player1,
-          power: [
-            { ...inst("TST-P1", "p1"), faceDown: true },
-            { ...inst("TST-P2", "p2"), faceDown: true },
-            { ...inst("TST-P3", "p3"), faceDown: true },
-            { ...inst("TST-P4", "p4"), faceDown: true },
-            { ...inst("TST-P5", "p5"), faceDown: true },
-            inst("TST-P6", "p6"),
-          ],
-        },
-      },
-    };
+  const stateWith = (damage: number, rush: ReturnType<typeof inst>[] = [], operation: ReturnType<typeof inst>[] = []) => {
+    const defs = blastDefs();
+    const state = createTestState(defs);
+    state.definitions = defs;
+    state.players.player1.damage = damage;
+    state.players.player1.rush = rush;
+    state.players.player1.operation = operation;
+    return state;
+  };
 
-    expect(blastBypassesRushAdditionalCondition(state, "player1", "TST-BLAST")).toBe(true);
+  it("R-KW-BLAST-01: 残りダメージ1点で自軍Lユニットがいなければ追加条件を免除する", () => {
+    expect(blastBypassesRushAdditionalCondition(stateWith(WIN_DAMAGE - 1), "player1", "TST-BLAST")).toBe(true);
+    expect(
+      blastBypassesRushAdditionalCondition(stateWith(WIN_DAMAGE - 1, [inst("TST-S", "s1")]), "player1", "TST-BLAST"),
+    ).toBe(true);
   });
 
-  it("bypasses additional conditions at WIN_DAMAGE-1", () => {
-    const defs = buildDefinitionMap([
-      [
-        {
-          id: "TST-BLAST",
-          name: "Blast Zord",
-          type: "unit",
-          category: "WB",
-          rarity: "SR",
-          expansion: "test",
-          powerCost: "7+",
-          bp: 12000,
-          size: "L",
-          text: "※ブラスト",
-        },
-      ],
-    ]);
+  it("R-KW-BLAST-01: 自軍にLユニットがいれば免除しない", () => {
+    expect(
+      blastBypassesRushAdditionalCondition(stateWith(WIN_DAMAGE - 1, [inst("TST-L", "l1")]), "player1", "TST-BLAST"),
+    ).toBe(false);
+  });
 
-    const state = {
-      ...createTestState(defs),
-      definitions: defs,
-      players: {
-        ...createTestState(defs).players,
-        player1: {
-          ...createTestState(defs).players.player1,
-          damage: WIN_DAMAGE - 1,
-          power: [
-            { ...inst("TST-P1", "p1"), faceDown: true },
-            { ...inst("TST-P2", "p2"), faceDown: true },
-            inst("TST-P3", "p3"),
-            inst("TST-P4", "p4"),
-          ],
-        },
-      },
-    };
+  it("R-KW-BLAST-01: 残りダメージが1点でなければ免除しない（オモテのパワー枚数は関係ない）", () => {
+    expect(blastBypassesRushAdditionalCondition(stateWith(WIN_DAMAGE - 2), "player1", "TST-BLAST")).toBe(false);
+    expect(blastBypassesRushAdditionalCondition(stateWith(0), "player1", "TST-BLAST")).toBe(false);
+  });
 
-    expect(blastBypassesRushAdditionalCondition(state, "player1", "TST-BLAST")).toBe(true);
+  it("R-KW-BLAST-02: 命の泉で敗北が9点になれば8点で免除する", () => {
+    const spring = [inst("RS-244", "spring")];
+    expect(blastBypassesRushAdditionalCondition(stateWith(8, [], spring), "player1", "TST-BLAST")).toBe(true);
+    expect(blastBypassesRushAdditionalCondition(stateWith(WIN_DAMAGE - 1, [], spring), "player1", "TST-BLAST")).toBe(false);
   });
 });
 

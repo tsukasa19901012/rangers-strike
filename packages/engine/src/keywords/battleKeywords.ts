@@ -3,16 +3,15 @@ import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { sameCanonicalCardName } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
-import { WIN_DAMAGE } from "../types/game";
 import { cardHasKeyword } from "./cardKeywords";
 import { getDefinition, isLargeUnit } from "../core/catalog";
+import { loseDamageThreshold } from "../core/createGame";
 import {
   addTurnRestrictionModifier,
   clearTurnRestrictionModifiersForInstance,
 } from "../core/scopedModifiers";
 import { cardHasGrantKeyword, listCardGrantKeywords, stackedEquipmentGrantsWing } from "../dsl/promotedKeywordBridge";
 import { battlePositionOneBased } from "../rules/fractionalSp";
-import { logicalBattlePosition } from "../rules/battleLine";
 import { srBigBatonTaxisCategory } from "../rules/srEffects";
 import { isBattleBlocked, markBattleBlocked } from "../rules/turnModifiers";
 import { RESTRICTION_IDS } from "../types/scopedModifiers";
@@ -56,7 +55,7 @@ export function cardHasBattleKeyword(
   return labels[keyword]?.some((label) => def.text!.includes(label)) ?? false;
 }
 
-/** 左側ユニットのクロス合計（以降ユニットの CN / 分数 SP 繰り上げ）。 */
+/** 左側ユニットのクロス合計。ルール: R-KW-CROSS-01, R-KW-CROSS-02 */
 export function crossShiftLeftOf(
   battle: CardInstance[],
   index: number,
@@ -68,16 +67,23 @@ export function crossShiftLeftOf(
   return shift;
 }
 
-export function crossAdjustedBattlePosition(
+/** バトルエリアのユニットに左側のクロスが与える減少量 X（バトルエリアにいなければ 0）。 */
+export function crossReductionFor(
   battle: CardInstance[],
   instanceId: string,
-): number | null {
+): number {
   const index = battle.findIndex((c) => c.instanceId === instanceId);
-  if (index < 0) return null;
-  const logical = logicalBattlePosition(battle, instanceId);
-  if (logical === null) return null;
-  const shift = crossShiftLeftOf(battle, index);
-  return Math.max(1, logical - shift);
+  if (index < 0) return 0;
+  return crossShiftLeftOf(battle, index);
+}
+
+/**
+ * クロス: ナンバーの数字と分数 SP の分母を X 少なくする。ただし 2 より少なくならない
+ * （元が 2 未満なら変えない）。並び順は変わらない。ルール: R-KW-CROSS-01
+ */
+export function crossReducedNumber(value: number, reduction: number): number {
+  if (reduction <= 0 || value < 2) return value;
+  return Math.max(2, value - reduction);
 }
 
 export function parseTaxisCategory(cardId: string): Category | null {
@@ -213,7 +219,10 @@ export function breakerBlocksSameNameRush(
   return false;
 }
 
-/** ブラスト: 敗北直前（ダメージ WIN-1）または表パワー≤1 で追加条件スキップ。 */
+/**
+ * ブラスト: 負けるまで残りダメージ1点で、自軍 L ユニットが1体もなければ追加条件を満たさなくてよい。
+ * ルール: R-KW-BLAST-01（敗北の閾値は命の泉等で変わる: R-KW-BLAST-02）
+ */
 export function blastBypassesRushAdditionalCondition(
   state: Pick<GameState, "players" | "definitions">,
   playerId: PlayerId,
@@ -221,13 +230,12 @@ export function blastBypassesRushAdditionalCondition(
 ): boolean {
   if (!cardHasBattleKeyword(state.definitions, rushingCardId, "blast")) return false;
   const player = state.players[playerId];
-  if (player.damage >= WIN_DAMAGE - 1) return true;
-  const faceUp = player.power.filter((c) => !c.faceDown).length;
-  return faceUp <= 1;
+  if (player.damage !== loseDamageThreshold(state, playerId) - 1) return false;
+  return !playerHasAllyLargeUnit(state, playerId);
 }
 
 export function playerHasAllyLargeUnit(
-  state: GameState,
+  state: Pick<GameState, "players" | "definitions">,
   playerId: PlayerId,
 ): boolean {
   const player = state.players[playerId];

@@ -18,7 +18,7 @@
   `docs/rules/sources/web/` に保存し、全章を照合した（照合済 237 件、未照合は R-KW-BLAST-03 のみ）。
 - 公式と atwiki の食い違いは README §5.7。a（スタートでリリースするのはコマンドだけ）と
   b（「アタックするかわりに」は対象なしでも使える）はユーザー決定。
-- 次は手順3（古いドキュメントの削除）と E5〜E7。
+- E5・E6 は修正済み。次は E7 と手順3（古いドキュメントの削除。`docs/wiki/cards` などはカード生成スクリプトとテストが読んでいるので、そのままは消せない）。
 
 ## 最初にやること
 
@@ -56,8 +56,8 @@
 | E2 | 効果ドローで引けなければデッキアウト敗北 | ✅ `PlayerState.deckedOut`、`performDeckDraws` / `requestDrawFromDeck` |
 | E3 | 追加ドローは1ターン1回 | ✅ `hasBonusDrawnThisStart` |
 | E4 | ターン終了で両プレイヤーの「このターン」修正を消す | ✅ `finalizeTurnEnd` |
-| E5 | ブラスト条件 | 未着手 |
-| E6 | クロスの向き | 未着手 |
+| E5 | ブラスト条件 | ✅ `blastBypassesRushAdditionalCondition`（閾値−1 かつ L なし、ブレイカー判定を先に） |
+| E6 | クロスの向き | ✅ `crossReductionFor` / `crossReducedNumber`（CN・分数SP分母を減らす） |
 | E7 | 効果なしで動いている13枚 | 未着手 |
 
 ### E5 ブラスト（`packages/engine/src/keywords/battleKeywords.ts` `blastBypassesRushAdditionalCondition`）

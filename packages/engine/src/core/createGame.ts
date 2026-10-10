@@ -125,7 +125,10 @@ export function createGame(options: CreateGameOptions): GameState {
  * RS-244 命の泉: どちらかの場にあれば両者 9 点まで負けない。
  * RS-348 メディテーション: 配置者は 14 点まで負けない。
  */
-export function loseDamageThreshold(state: GameState, playerId: PlayerId): number {
+export function loseDamageThreshold(
+  state: Pick<GameState, "players">,
+  playerId: PlayerId,
+): number {
   let threshold = WIN_DAMAGE;
   const anyLifeSpring = (["player1", "player2"] as const).some((pid) =>
     state.players[pid].operation.some((c) => c.cardId === "RS-244"),

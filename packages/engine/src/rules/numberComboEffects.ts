@@ -6,7 +6,7 @@ import {
   effectiveComboNumber,
   getDefinition,
 } from "../core/catalog";
-import { crossAdjustedBattlePosition } from "../keywords/battleKeywords";
+import { crossReducedNumber, crossReductionFor } from "../keywords/battleKeywords";
 import { requestDrawFromDeck } from "./drawFromDeck";
 import { buildLogEntry } from "../log/formatLog";
 import { startRuinSurvey } from "./ruinSurvey";
@@ -44,15 +44,18 @@ function ncLog(
   return buildLogEntry(playerId, "number_combo", cardId, definitions, detail);
 }
 
-function ncBattlePosition(
+/** NC 判定用のナンバー: ターン効果等で補正したうえで、左側のクロスで減らす（R-KW-CROSS-01）。 */
+function ncEffectiveNumber(
   state: GameState,
   playerId: PlayerId,
   card: CardInstance,
-  rawBattlePosition: number,
+  definition: CardDefinition,
 ): number {
-  const battle = state.players[playerId].battle;
-  const adjusted = crossAdjustedBattlePosition(battle, card.instanceId);
-  return adjusted ?? rawBattlePosition;
+  if (typeof definition.comboNumber !== "number") return -1;
+  return crossReducedNumber(
+    effectiveComboNumber(state, playerId, definition.comboNumber, card.cardId),
+    crossReductionFor(state.players[playerId].battle, card.instanceId),
+  );
 }
 
 export function numberComboTriggers(
@@ -63,11 +66,8 @@ export function numberComboTriggers(
   battlePosition: number,
   battleBeforeEnter: CardInstance[],
 ): boolean {
-  const effectiveNumber =
-    typeof definition.comboNumber === "number"
-      ? effectiveComboNumber(state, playerId, definition.comboNumber, card.cardId)
-      : -1;
-  const position = ncBattlePosition(state, playerId, card, battlePosition);
+  const effectiveNumber = ncEffectiveNumber(state, playerId, card, definition);
+  const position = battlePosition;
 
   if (
     findNcNamedEffect(
@@ -97,13 +97,10 @@ export function resolveNamedNcEffectId(
   battlePosition: number,
   battleBeforeEnter: CardInstance[],
 ): ReturnType<typeof getNumberComboEffect> {
-  const effectiveNumber =
-    typeof definition.comboNumber === "number"
-      ? effectiveComboNumber(state, playerId, definition.comboNumber, card.cardId)
-      : -1;
+  const effectiveNumber = ncEffectiveNumber(state, playerId, card, definition);
   const named = findNcNamedEffect(
     card.cardId,
-    ncBattlePosition(state, playerId, card, battlePosition),
+    battlePosition,
     effectiveNumber,
     battleBeforeEnter,
     card.instanceId,

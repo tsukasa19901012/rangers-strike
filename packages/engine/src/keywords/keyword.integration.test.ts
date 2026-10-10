@@ -44,13 +44,13 @@ describe("keyword regression smoke", () => {
     ).toBe(cardHasRegisterKeyword(state, "RS-001") || false);
   });
 
-  it("blast bypass uses damage threshold or low face-up power", () => {
+  it("R-KW-BLAST-01: blast bypass needs one damage left and no ally L unit", () => {
     const defs = buildDefinitionMap([
       [{ id: "TST-B", name: "B", type: "unit", category: "WB", rarity: "SR", expansion: "t", powerCost: 7, bp: 12000, size: "L", text: "※ブラスト" }],
     ]);
-    const lowPower = createTestState(defs);
-    lowPower.definitions = defs;
-    expect(blastBypassesRushAdditionalCondition(lowPower, "player1", "TST-B")).toBe(true);
+    const fresh = createTestState(defs);
+    fresh.definitions = defs;
+    expect(blastBypassesRushAdditionalCondition(fresh, "player1", "TST-B")).toBe(false);
 
     const nearLoss = createTestState(defs);
     nearLoss.definitions = defs;
