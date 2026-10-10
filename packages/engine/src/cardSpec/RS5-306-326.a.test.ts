@@ -580,8 +580,7 @@ describe("RS-312 カブトライジャー", () => {
   }
 
   // NC の効果は「撃破したとき」に発動する。出ただけでは何も起きない。
-  // 既知の不具合: CARD-RS-312 【雷撃斬】が「撃破したとき」を落としてバトルエリアに出た時点で発動する
-  it.fails("RS-312: 3番目に出ただけ（まだ撃破していない）では発動しない（出典: atwiki/page-482「これがユニットを撃破したとき」）", () => {
+  it("RS-312: 3番目に出ただけ（まだ撃破していない）では発動しない（出典: atwiki/page-482「これがユニットを撃破したとき」）", () => {
     const s = kabuto(3, { battle: [inst("SPEC-NINJA", "eb")], rush: [inst("SPEC-NINJA", "er")] });
     expect(s.pendingEffectChoice).toBeFalsy();
     expect(zoneOf(s, "player2", "SPEC-NINJA:er")).toBe("rush");
@@ -611,8 +610,7 @@ describe("RS-312 カブトライジャー", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-312 【雷撃斬】が出た時点で特徴の一致を見ずに敵軍ラッシュエリアのユニットを強制で選ばせる
-  it.fails("RS-312: 撃破したユニットと同じ特徴を持つユニットが敵軍ラッシュエリアになければ何も起きない（出典: atwiki/page-482「…ユニットが敵軍ラッシュエリアにあれば」）", () => {
+  it("RS-312: 撃破したユニットと同じ特徴を持つユニットが敵軍ラッシュエリアになければ何も起きない（出典: atwiki/page-482「…ユニットが敵軍ラッシュエリアにあれば」）", () => {
     let s = kabuto(3, { battle: [inst("SPEC-NINJA", "eb")], rush: [inst("SPEC-BEAST", "ex")] });
     s = settle(attack(s, "RS-312:k", "SPEC-NINJA:eb"));
     expect(zoneOf(s, "player2", "SPEC-BEAST:ex")).toBe("rush");

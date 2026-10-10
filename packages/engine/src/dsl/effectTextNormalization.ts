@@ -150,6 +150,52 @@ function fixDidNotAttackTrigger(effect: EffectDefinition, doc: CardDocument): Ef
   return { ...effect, trigger: hasCn ? { type: "nc" } : { type: "conditional" } } as EffectDefinition;
 }
 
+/** 「これが（…）ユニットを撃破したとき」— 撃破した側の誘発（R-TIME-01 段階 1）の文言。 */
+export const DESTROYER_TRIGGER_RE = /これ(?:が|は)[^。⇒]*?撃破したとき/;
+
+const NON_DESTROY_TRIGGERS = new Set(["nc", "on_attack", "enter_battle", "on_rush"]);
+
+/** 撃破したときの処理を、出たとき・アタックしたときに実行してしまう DSL 要素か。SP の付与（NC の「SP1」）は残す。 */
+function isDestroyerActionPrimitive(p: EffectPrimitive): boolean {
+  if (p.type === "grant_keyword") return !/^SP\d+$/.test(p.keyword);
+  return true;
+}
+
+/**
+ * DSL スタブが「これが…撃破したとき」の条件を落とし、出たとき（NC）・アタックしたときに処理を実行している場合、
+ * その処理を取り除く（撃破したときの処理は撃破の段階で別に扱う。例: RS-312【雷撃斬】、RS-346【雷光剣唐竹割り】）。
+ * 同じ効果文に条件のない「これはアタックするときBP＋N される」があれば、アタックしたときの BP 修正として残す。
+ */
+function dropDestroyerClauseAtWrongTrigger(effect: EffectDefinition): EffectDefinition {
+  const text = effect.text?.normalize("NFKC");
+  if (!text || !NON_DESTROY_TRIGGERS.has(effect.trigger.type)) return effect;
+  if (!DESTROYER_TRIGGER_RE.test(text)) return effect;
+  // 撃破したとき以外の文（例: 「自軍ターン中、これがバトルエリアに出たとき…」）に処理があるものは触らない。
+  const sentences = text.split("。").filter((x) => x.trim() !== "");
+  const other = sentences.filter((x) => !DESTROYER_TRIGGER_RE.test(x));
+  const attackBonus = other
+    .map((x) => /^(?:「SP\d+」)?これはアタックするときBP\+(\d+)される$/.exec(x.trim()))
+    .find((m) => m);
+  const otherIsBenign = other.every(
+    (x) => /^(?:「SP\d+」)+$/.test(x.trim()) || /^(?:「SP\d+」)?これはアタックするときBP\+(\d+)される$/.test(x.trim()),
+  );
+  if (!otherIsBenign) return effect;
+  const kept = effect.effects.filter((p) => !isDestroyerActionPrimitive(p));
+  if (attackBonus) {
+    return {
+      ...effect,
+      trigger: { type: "on_attack" },
+      condition: undefined,
+      effects: [
+        ...kept,
+        { type: "modify_bp", target: { type: "trigger_source" }, amount: Number(attackBonus[1]), duration: "turn" },
+      ],
+    } as EffectDefinition;
+  }
+  if (kept.length === effect.effects.length) return effect;
+  return { ...effect, condition: kept.length > 0 ? effect.condition : undefined, effects: kept } as EffectDefinition;
+}
+
 /** R-TGT-01: 本文の「ユニット」に合わせて選択範囲をラッシュエリアまで広げる。 */
 function widenUnitTargetsToRushArea(effect: EffectDefinition): EffectDefinition {
   const effects = widenPrimitives(effect.effects, effect.text);
@@ -159,7 +205,9 @@ function widenUnitTargetsToRushArea(effect: EffectDefinition): EffectDefinition 
 }
 
 function normalizeEffect(input: EffectDefinition, doc: CardDocument): EffectDefinition {
-  const effect = fixDidNotAttackTrigger(fixPowerNonDamage(widenUnitTargetsToRushArea(input)), doc);
+  const effect = dropDestroyerClauseAtWrongTrigger(
+    fixDidNotAttackTrigger(fixPowerNonDamage(widenUnitTargetsToRushArea(input)), doc),
+  );
   if (isReanimateNamedOnDestroyText(effect.text)) {
     return {
       ...effect,

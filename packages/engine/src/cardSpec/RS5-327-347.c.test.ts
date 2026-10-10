@@ -365,8 +365,7 @@ describe("RS-346 バトルフィーバーロボ", () => {
     return s;
   };
 
-  it.fails("RS-346: 【雷光剣唐竹割り】アタックするとき BP+2000（9000）される（出典: atwiki/page-473「これはアタックするときBP＋2000される」）", () => {
-    // 既知の不具合: CARD-RS-346 アタック時の BP+2000 が適用されない
+  it("RS-346: 【雷光剣唐竹割り】アタックするとき BP+2000（9000）される（出典: atwiki/page-473「これはアタックするときBP＋2000される」）", () => {
     const s = atk("TST-UNIT-7:e");
     expect(lastBattleBps(s)?.attacker).toBe(9000);
   });
@@ -377,29 +376,25 @@ describe("RS-346 バトルフィーバーロボ", () => {
   });
 
   it("RS-346: アタックして L ユニット（トラベリオンエクスプレス）を撃破したとき、相手に2点ダメージを与える（出典: atwiki/page-473「これがLユニットを撃破したとき、相手に2点ダメージを与える」）", () => {
-    // 注: エンジンはアタックしただけで2点を与える（下の it.fails 参照）ため、このケースは結果的に一致している。
     const s = atk("RS-329:e");
     expect(zoneOf(s, "player2", "RS-329:e")).toBe("discard");
     expect(s.players.player2.damage).toBe(2);
     expect(s.players.player1.damage).toBe(0);
   });
 
-  it.fails("RS-346: S ユニットを撃破したときはダメージを与えない（出典: atwiki/page-473「Lユニットを撃破したとき」）", () => {
-    // 既知の不具合: CARD-RS-346 アタックしただけで（撃破した相手のサイズ・撃破の有無に関係なく）相手に2点ダメージを与える
+  it("RS-346: S ユニットを撃破したときはダメージを与えない（出典: atwiki/page-473「Lユニットを撃破したとき」）", () => {
     const s = atk("TST-UNIT-0:e");
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
     expect(s.players.player2.damage).toBe(0);
   });
 
-  it.fails("RS-346: L ユニットにアタックしても撃破できなかった（負けた）ときはダメージを与えない（出典: atwiki/page-473「撃破したとき」）", () => {
-    // 既知の不具合: CARD-RS-346 アタックしただけで相手に2点ダメージを与える
+  it("RS-346: L ユニットにアタックしても撃破できなかった（負けた）ときはダメージを与えない（出典: atwiki/page-473「撃破したとき」）", () => {
     const s = atk("TST-UNIT-7:e");
     expect(zoneOf(s, "player2", "TST-UNIT-7:e")).toBe("battle");
     expect(s.players.player2.damage).toBe(0);
   });
 
-  it.fails("RS-346: 敵軍ターン中にアタックしてきた L ユニットをバトルで撃破したときも、相手に2点ダメージを与える（出典: atwiki/page-473「これがLユニットを撃破したとき」— アタック時に限定されていない）", () => {
-    // 既知の不具合: CARD-RS-346 「Lユニットを撃破したとき」が自軍のアタック時にしか（しかも撃破と無関係に）処理されない
+  it("RS-346: 敵軍ターン中にアタックしてきた L ユニットをバトルで撃破したときも、相手に2点ダメージを与える（出典: atwiki/page-473「これがLユニットを撃破したとき」— アタック時に限定されていない）", () => {
     const s = resolveAll(attackedInEnemyTurn({ battle: [inst("RS-346", "bf")] }, "RS-346:bf", {}, "SPEC-L5:atk", [L5]));
     expect(zoneOf(s, "player2", "SPEC-L5:atk")).toBe("discard");
     expect(s.players.player2.damage).toBe(2);

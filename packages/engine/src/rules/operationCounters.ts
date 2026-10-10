@@ -40,6 +40,7 @@ import { emitUnitLeftZoneAndResolve } from "../events/emitUnitLeftZone";
 import { resolveDestroyedFactEffects } from "./leaveEffects";
 import { isCostWindowSatisfied } from "../core/costWindow";
 import { buildLogEntry } from "../log/formatLog";
+import { resolveDestroyerDamageByText } from "./destroyerTextEffects";
 import { finishBattleEntryIf, restorePhaseActivePlayerUnlessBlocked } from "./battleEntry";
 import {
   attackerBlocksDefenderCounters,
@@ -1494,6 +1495,17 @@ export function resolveBattlePendingCore(
       defenderBp,
       pending.phasePlayerId,
     );
+    {
+      // 「これが（L）ユニットを撃破したとき、相手に N 点ダメージ」（本文の文言で判断。RS-346 等）。
+      const dd = resolveDestroyerDamageByText(
+        nextState,
+        attackerId,
+        refreshedAttackerFound.card.cardId,
+        refreshedDefenderFound.card.cardId,
+      );
+      nextState = dd.state;
+      extraLogs = [...extraLogs, ...dd.logs];
+    }
     if (refreshedAttackerFound.card.cardId === "RS-685") {
       const bc = resolveBlackCondorDestroyDamage(
         nextState,
@@ -1513,6 +1525,17 @@ export function resolveBattlePendingCore(
       return finish(leaveResult.state, log);
     }
     nextState = leaveResult.state;
+    if (!finalDestroyDefender) {
+      // アタックしてきたユニットをバトルで撃破した側の「撃破したとき、相手に N 点ダメージ」（RS-346 等）。
+      const dd = resolveDestroyerDamageByText(
+        nextState,
+        defenderOwner,
+        refreshedDefenderFound.card.cardId,
+        refreshedAttackerFound.card.cardId,
+      );
+      nextState = dd.state;
+      extraLogs = [...extraLogs, ...dd.logs];
+    }
   } else if (destroyDefender) {
     const winFx = resolveLegend3OnBattleWin(
       nextState,
