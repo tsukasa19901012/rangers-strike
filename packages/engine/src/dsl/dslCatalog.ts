@@ -154,8 +154,16 @@ export function shouldUseDslTriggeredEffect(
     return false;
   }
 
+  // 「自軍ユニットが撃破されたとき（かわりに…）」の置き換えは離場の応答（pendingLeave）で扱い、
+  // これ自身が撃破されたときの誘発ではない（RS-324【ジルマ・マジュナ】: rules/legend1/set5NamedEffects.ts）。
+  if (triggerType === "on_destroy" && NAMED_LEAVE_REPLACEMENT_EFFECTS.has(`${cardId}:${effect.id}`)) {
+    return false;
+  }
+
   return true;
 }
+
+const NAMED_LEAVE_REPLACEMENT_EFFECTS = new Set(["RS-324:jirumamajuna"]);
 
 /** TS 専用ハンドラがある wired オペは DSL スタブよりネイティブ解決を優先する。 */
 export function shouldUseDslOperation(

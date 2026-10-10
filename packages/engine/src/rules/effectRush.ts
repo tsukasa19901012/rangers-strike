@@ -37,6 +37,7 @@ import {
   applyAllZordFusionMaterials,
   collectZordMaterials,
   hasAllRequiredFusionMaterials,
+  isValidZordUpMaterial,
   needsZordMaterial,
   requiresAllFusionPartners,
 } from "./zord";
@@ -55,13 +56,53 @@ export const EFFECT_RUSH_MATERIAL = "effect_rush_material";
 export const EFFECT_RUSH_DESTINATION = "effect_rush_destination";
 /** 母艦（ジャガーバルカン等）: S ユニットを送るかわりにコマンドをホールドする。 */
 export const EFFECT_RUSH_MOTHERSHIP = "effect_rush_mothership";
+/** RS-359 デンジ犬アイシー【最後の手段】: 山札から追加条件に必要なユニットのカードを選ぶ。 */
+export const EFFECT_RUSH_ICY_DECK = "effect_rush_icy_deck";
 
 const EFFECT_RUSH_CHOICE_IDS = new Set([
   EFFECT_RUSH_PICK,
   EFFECT_RUSH_MATERIAL,
   EFFECT_RUSH_DESTINATION,
   EFFECT_RUSH_MOTHERSHIP,
+  EFFECT_RUSH_ICY_DECK,
 ]);
+
+/**
+ * RS-359 デンジ犬アイシー【最後の手段】
+ * 「これが自軍ラッシュエリアにある間、自分がOTのLユニットをラッシュするとき、これを捨札にして次の効果を発動できる⇒
+ *  自軍山札から、そのLユニットの追加条件を満たすために必要なユニットのカードを1枚選び捨札にすれば、
+ *  必要なユニットの1体を捨札にしたことにできる。その後、山札をシャッフルする。」
+ * RS-249 Vコマンダーで山札から出す Vレックスロボにも使える（grnrngr/faq-card-6 RS-359 Q）。2体あればそれぞれ使える（同 Q）。
+ */
+const DENJI_ICY_CARD_ID = "RS-359";
+
+function icyApplies(state: GameState, card: CardInstance): boolean {
+  const def = getDefinition(state.definitions, card.cardId);
+  return !!def && def.type === "unit" && def.size === "L" && cardHasCategory(def, "OT");
+}
+
+/** 使えるデンジ犬アイシー（自軍ラッシュエリア）。 */
+function icyIds(state: GameState, playerId: PlayerId, card: CardInstance): string[] {
+  if (!icyApplies(state, card)) return [];
+  return state.players[playerId].rush
+    .filter((c) => c.cardId === DENJI_ICY_CARD_ID && c.instanceId !== card.instanceId)
+    .map((c) => c.instanceId);
+}
+
+/** 山札にある、追加条件に必要なユニットのカード。 */
+function icyDeckMaterialIds(state: GameState, playerId: PlayerId, card: CardInstance): string[] {
+  return state.players[playerId].deck
+    .filter((c) => c.instanceId !== card.instanceId)
+    .filter((c) => isValidZordUpMaterial(state.definitions, card.cardId, card.instanceId, c))
+    .map((c) => c.instanceId);
+}
+
+/** デンジ犬アイシーで補える素材の数（アイシーの数と山札の候補の少ない方）。 */
+function icySupplyCount(state: GameState, playerId: PlayerId, card: CardInstance): number {
+  const icy = icyIds(state, playerId, card);
+  if (icy.length === 0) return 0;
+  return Math.min(icy.length, icyDeckMaterialIds(state, playerId, card).length);
+}
 
 export function isEffectRushChoice(pending: PendingEffectChoice | undefined): boolean {
   return !!pending && EFFECT_RUSH_CHOICE_IDS.has(pending.effectId);
@@ -173,7 +214,8 @@ export function planEffectRush(
     ).map((c) => c.instanceId);
     const needed = additionalUnitCount(def);
     const mothershipHoldIds = effectRushMothershipHoldIds(state, playerId, card, needed);
-    if (materials.length < needed && !mothershipHoldIds) return null;
+    const icySupply = icySupplyCount(state, playerId, card);
+    if (materials.length + icySupply < needed && !mothershipHoldIds) return null;
     return {
       kind: "up",
       materials,
@@ -357,6 +399,10 @@ function executeConditionAndPlace(state: GameState): GameState {
   const found = findInZone(owner, pending.fromZone, current.instanceId);
   let next: GameState = withPending(state, { ...pending, current: undefined });
   if (!found) return continuePendingEffectRush(next);
+  if (current.chosen.length === 0) {
+    // デンジ犬アイシーですべての素材を「捨札にしたことにした」。
+    return continueAfterPlacement(placeUnit(next, current.instanceId));
+  }
   const applied =
     current.direction === "down"
       ? applyMultipleZordDownMaterials(
@@ -410,12 +456,95 @@ function currentMaterials(state: GameState): string[] {
   return all.map((c) => c.instanceId).filter((id) => !current.chosen.includes(id));
 }
 
+/** 今のユニットに使えるデンジ犬アイシー（山札に素材の候補があるときだけ）。 */
+function currentIcyIds(state: GameState): string[] {
+  const pending = state.pendingEffectRush!;
+  const current = pending.current!;
+  const owner = state.players[pending.playerId];
+  const found = findInZone(owner, pending.fromZone, current.instanceId);
+  if (!found) return [];
+  if (icyDeckMaterialIds(state, pending.playerId, found.card).length === 0) return [];
+  return icyIds(state, pending.playerId, found.card);
+}
+
+/** デンジ犬アイシーを捨札にして、山札から素材のカードを選ぶ。 */
+function activateIcy(state: GameState, icyInstanceId: string): GameState {
+  const pending = state.pendingEffectRush!;
+  const current = pending.current!;
+  const owner = state.players[pending.playerId];
+  const found = findInZone(owner, pending.fromZone, current.instanceId);
+  const icy = findInZone(owner, "rush", icyInstanceId);
+  if (!found || !icy) return proceedMaterials(state);
+  const deckIds = icyDeckMaterialIds(state, pending.playerId, found.card);
+  const discarded: GameState = {
+    ...state,
+    ...updatePlayer(state, pending.playerId, {
+      ...owner,
+      rush: owner.rush.filter((c) => c.instanceId !== icyInstanceId),
+      discard: [...owner.discard, icy.card],
+    }),
+  };
+  const withIcy = withPending(discarded, {
+    ...pending,
+    current: { ...current, icyPending: icyInstanceId },
+  });
+  return openChoice(withIcy, {
+    effectId: EFFECT_RUSH_ICY_DECK,
+    sourceCardId: DENJI_ICY_CARD_ID,
+    sourceInstanceId: icyInstanceId,
+    kind: "select_unit",
+    validInstanceIds: deckIds,
+    optional: true,
+  });
+}
+
+function shuffledDeck(cards: CardInstance[]): CardInstance[] {
+  const copy = [...cards];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
+  }
+  return copy;
+}
+
+/** 山札から選んだ素材のカードを捨札にし（捨札にしたことにする）、山札をシャッフルする。 */
+function resolveIcyDeckPick(state: GameState, deckInstanceId: string | undefined): GameState {
+  const pending = state.pendingEffectRush!;
+  const current = pending.current!;
+  const owner = state.players[pending.playerId];
+  let nextOwner: PlayerState = owner;
+  let icyCount = current.icyCount ?? 0;
+  if (deckInstanceId) {
+    const found = findInZone(owner, "deck", deckInstanceId);
+    if (found) {
+      nextOwner = {
+        ...owner,
+        deck: owner.deck.filter((c) => c.instanceId !== deckInstanceId),
+        discard: [...owner.discard, { ...found.card, faceDown: false }],
+      };
+      icyCount += 1;
+    }
+  }
+  nextOwner = { ...nextOwner, deck: shuffledDeck(nextOwner.deck) };
+  const next = withPending(
+    closeChoice({ ...state, ...updatePlayer(state, pending.playerId, nextOwner) }),
+    { ...pending, current: { ...current, icyPending: undefined, icyCount } },
+  );
+  return proceedMaterials(next);
+}
+
 /** 追加条件の素材選択（選択肢が必要数ちょうどなら自動）。 */
 function proceedMaterials(state: GameState): GameState {
   const current = state.pendingEffectRush!.current!;
-  const remainingNeeded = current.needed - current.chosen.length;
+  const remainingNeeded = current.needed - current.chosen.length - (current.icyCount ?? 0);
   if (remainingNeeded <= 0) return executeConditionAndPlace(state);
-  const materials = currentMaterials(state);
+  const fieldMaterials = currentMaterials(state);
+  const icy = current.direction === "up" ? currentIcyIds(state) : [];
+  if (icy.length > 0 && fieldMaterials.length + icy.length >= remainingNeeded) {
+    // デンジ犬アイシーを使うかどうかはプレイヤーが選ぶ（「発動できる」）。
+    return openMaterialChoice(state, [...fieldMaterials, ...icy]);
+  }
+  const materials = fieldMaterials;
   if (materials.length < remainingNeeded) {
     // 満たせなくなった: このユニットは出さない。
     return continuePendingEffectRush(
@@ -587,8 +716,19 @@ export function resolveEffectRushChoice(
     return { state: proceedMaterials(next) };
   }
 
+  if (choice.effectId === EFFECT_RUSH_ICY_DECK) {
+    return { state: resolveIcyDeckPick(state, instanceId) };
+  }
+
   // 素材選択
   const current = pending.current!;
+  if (
+    choice.effectId === EFFECT_RUSH_MATERIAL &&
+    state.players[pending.playerId].rush.some((c) => c.instanceId === instanceId && c.cardId === DENJI_ICY_CARD_ID) &&
+    !currentMaterials(state).includes(instanceId)
+  ) {
+    return { state: activateIcy(closeChoice(state), instanceId) };
+  }
   const next = closeChoice(
     withPending(state, { ...pending, current: { ...current, chosen: [...current.chosen, instanceId] } }),
   );

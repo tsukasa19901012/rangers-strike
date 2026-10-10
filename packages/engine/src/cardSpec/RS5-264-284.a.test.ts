@@ -407,8 +407,7 @@ function prismSendTests(id: "RS-266" | "RS-268" | "RS-269", cn: number, okUnit: 
     expect(zoneOf(s, "player1", `${ngUnit}:ng`)).toBe("rush");
   });
 
-  it.fails(`${id}: ${effect} — 送ったとき、このターン「SP1」になりストライクできる（出典: ${page}「そうしたとき、このターン、これは「SP1」になる」）`, () => {
-    // 既知の不具合: CARD-${id} NC でユニットをパワーゾーンに送っても SP1 にならず、ストライクできない
+  it(`${id}: ${effect} — 送ったとき、このターン「SP1」になりストライクできる（出典: ${page}「そうしたとき、このターン、これは「SP1」になる」）`, () => {
     let s = ncEnter(id, cn, { rush: [inst(okUnit, "ok")] });
     s = pick(s, `${okUnit}:ok`);
     expect(spOf(s, "player1", `${id}:x`)).toBe(1);

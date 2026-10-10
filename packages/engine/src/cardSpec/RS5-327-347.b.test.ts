@@ -297,12 +297,12 @@ describe("RS-336 レジェンドマジピンク", () => {
   });
 
   // grnrngr/faq-card-5 RS-312 Q「いいえ、その場合は「RS-060 マジピンク」を選ぶことはできません。…「撃破したとき」が捨札になる前に割り込みますので」
-  it.fails("RS-336: 公式Q&A — カブトライジャーに撃破されたとき、【迅雷流剣技・雷撃斬】の対象は先に選ぶので、※で自軍捨札から出るマジピンクは選べない（出典: grnrngr/faq-card-5 RS-312 Q1・ユーザー決定「撃破したとき→撃破されたとき→捨札→捨札になったとき」）", () => {
-    // 既知の不具合: CARD-RS-312 カブトライジャーがユニットを撃破しても【迅雷流剣技・雷撃斬】が発動しない
+  it("RS-336: 公式Q&A — カブトライジャーに撃破されたとき、【迅雷流剣技・雷撃斬】の対象は先に選ぶので、※で自軍捨札から出るマジピンクは選べない（出典: grnrngr/faq-card-5 RS-312 Q1・ユーザー決定「撃破したとき→撃破されたとき→捨札→捨札になったとき」）", () => {
+    // 【雷撃斬】は CN 3 の NC の効果（atwiki/page-482「CN：3」・R-CN-02）。Q&A の前提どおり NC 成立済みのカブトライジャーでアタックする。
     let s = attackedInEnemyTurn(
       { battle: [inst("RS-336", "pk")], rush: [inst("RS-059", "mb")], discard: [inst("RS-060", "mp")] },
       "RS-336:pk",
-      {},
+      { battle: [{ ...inst("RS-312", "kb"), activatedNcEffects: ["kami_ken_kami_geki_zan"] }] },
       "RS-312:kb",
     );
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-312");
@@ -552,15 +552,13 @@ describe("RS-339 闇のヤイバ", () => {
   }
 
   // atwiki/page-439 Q3「はい、その通りです。公開情報を確認した上で、実行できないことが明確であれば、それを実行することはできません。」
-  it.fails("RS-339: Q&A — ヤイバで DA を持つ S ユニットとなるクウガRD は龍星王のためバトルエリアに出られないので、クウガRM と置き換えられず《モーフ》を使えない（出典: atwiki/page-439 Q3）", () => {
-    // 既知の不具合: CARD-RS-339 追加された DA が龍星王の制限に反映されず、《モーフ》の置き換えが提示される
+  it("RS-339: Q&A — ヤイバで DA を持つ S ユニットとなるクウガRD は龍星王のためバトルエリアに出られないので、クウガRM と置き換えられず《モーフ》を使えない（出典: atwiki/page-439 Q3）", () => {
     const s = kuugaMorph();
     expect(s.pendingEffectChoice?.effectId).not.toBe("morph_replacement");
   });
 
   // atwiki/page-439 Q4「はい、その通りです。…実行できないことが明確であればそれを実行することはできません。」
-  it.fails("RS-339: Q&A — 同状況で《モーフ》は使えず、クウガRM はバトルエリアに、クウガRD はコマンドゾーンに残る（出典: atwiki/page-439 Q4）", () => {
-    // 既知の不具合: CARD-RS-339 《モーフ》でクウガRD をバトルエリアに出せてしまう
+  it("RS-339: Q&A — 同状況で《モーフ》は使えず、クウガRM はバトルエリアに、クウガRD はコマンドゾーンに残る（出典: atwiki/page-439 Q4）", () => {
     let s = kuugaMorph();
     const p = s.pendingEffectChoice;
     if (p?.effectId === "morph_replacement") s = act(s, { type: "resolve_effect_choice", playerId: p.playerId, instanceId: "RK-272:rd" });

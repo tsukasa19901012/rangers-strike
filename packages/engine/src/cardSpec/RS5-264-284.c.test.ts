@@ -210,14 +210,20 @@ describe("RS-279 グリーンサイ", () => {
     expect(s.players.player2.deck.some((c) => c.instanceId === "TST-UNIT-0:u1")).toBe(false);
   });
 
-  it.fails("RS-279: 公式Q&A — 処理順はターンプレイヤーが決める（疾風流超忍法を先に処理することも選べ、そのときユニットは山札の上に戻る）（出典: grnrngr/faq-card-5 RS-279 Q1「同時に発動した効果の処理順はターンプレイヤーが決定」）", () => {
-    // 既知の不具合: CARD-RS-279 サイカッターの撃破がラッシュ直後に即時解決され、疾風流超忍法との処理順をターンプレイヤーが選べない
+  // 旧スペック「疾風流超忍法を先に処理することも選べ、そのときユニットは山札の上に戻る」は、ターンプレイヤー（サイカッター側）の
+  // 選択なしに非ターンプレイヤーの望む順で処理されることを期待しており、直前のスペック（同じ盤面で撃破が先＝捨札）と矛盾していた。
+  // 出典 faq-card-5 RS-279 Q1・atwiki/page-467 A1 は「処理順はターンプレイヤーが決定」「ターンプレイヤーである相手が…撃破を先に処理
+  // することにすれば、疾風流超忍法は対象を失い無効」と答えており、非ターンプレイヤーが順番を決めることはない。出典どおりに修正した。
+  it("RS-279: 公式Q&A — 処理順は非ターンプレイヤーではなくターンプレイヤーが決める（撃破が先に処理され、疾風流超忍法は対象を失いユニットは山札の上に戻らない）（出典: grnrngr/faq-card-5 RS-279 Q1「同時に発動した効果の処理順はターンプレイヤーが決定」・atwiki/page-467 A1）", () => {
     let s = saiSwan([], { p2: { hand: [inst("RS-026", "sp")], power: powerCards(4, "q"), command: [held("TST-UNIT-0", "u1"), ...releasedN(3, "TST-OP-MA", "ma")] } });
-    expect(zoneOf(s, "player2", "TST-UNIT-0:u1")).toBe("rush");
+    expect(zoneOf(s, "player2", "TST-UNIT-0:u1")).toBe("discard");
     const use = legal(s).find((a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RS-026:sp");
-    s = act(s, use!);
-    for (let i = 0; i < 4 && s.pendingEffectChoice; i += 1) s = pick(s, s.pendingEffectChoice.validInstanceIds[0]!);
-    expect(s.players.player2.deck[0]?.instanceId).toBe("TST-UNIT-0:u1");
+    if (use) {
+      s = act(s, use);
+      for (let i = 0; i < 4 && s.pendingEffectChoice; i += 1) s = pick(s, s.pendingEffectChoice.validInstanceIds[0]!);
+    }
+    expect(s.players.player2.deck.some((c) => c.instanceId === "TST-UNIT-0:u1")).toBe(false);
+    expect(zoneOf(s, "player2", "TST-UNIT-0:u1")).toBe("discard");
   });
 
   // faq-card-5 RS-279 Q2「はい、撃破できます。」

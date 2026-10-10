@@ -10,7 +10,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
-import { validateDeckEntries } from "@rangers-strike/cards";
+import { fullPlayableCatalog, validateDeckEntries } from "@rangers-strike/cards";
 import {
   attack,
   attackedInEnemyTurn,
@@ -45,6 +45,7 @@ import {
   zoneOf,
   zordDownTests,
 } from "./RS5-327-347.helpers";
+import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState } from "../types/game";
 
 const L5 = sUnit("SPEC-L5", { size: "L", bp: 5000, sp: undefined });
@@ -414,7 +415,7 @@ describe("RS-347 スーパーフォーメーション", () => {
   });
 
   /** ビクトリーロボ（RS-382、5体合体）。onField は自軍ラッシュエリア、inCommand はコマンドゾーン（リリース／ホールド）。 */
-  function victoryState(onField: string[], inCommand: CardInstance[], withSF = true) {
+  function victoryState(onField: string[], inCommand: CardInstance[], withSF = true, extra: CardDefinition[] = []) {
     return st({
       phase: "rush",
       player1: {
@@ -424,7 +425,7 @@ describe("RS-347 スーパーフォーメーション", () => {
         power: powerCards(7),
         deck: deckCards(3),
       },
-    });
+    }, extra);
   }
   const useSF = (s: GameState) => {
     const r = playOp(s, "player1", "RS-347:sf");
@@ -468,9 +469,10 @@ describe("RS-347 スーパーフォーメーション", () => {
   });
 
   // atwiki/page-388 Q1「はい、できます。」（コマンドゾーンのビクトリーウォーカー＋自軍エリアのレッドラダー・グリーンホバー）
-  it.fails("RS-347: Q&A — リリース状態のビクトリーウォーカー（ブルースローワー＋イエローアーマー＋ピンクエイダーとして使える）をコマンドゾーンから、レッドラダー・グリーンホバーを自軍エリアから捨札にしてビクトリーロボをラッシュできる（出典: atwiki/page-388 Q1）", () => {
-    // 既知の不具合: CARD-XG3-006 ビクトリーウォーカーを3体分（ブルースローワー＋イエローアーマー＋ピンクエイダー）として使えない（RS-347 の効果自体は実装済み）
-    let s = victoryState(["RS-383", "RS-385"], [released("XG3-006", "vw")]);
+  it("RS-347: Q&A — リリース状態のビクトリーウォーカー（ブルースローワー＋イエローアーマー＋ピンクエイダーとして使える）をコマンドゾーンから、レッドラダー・グリーンホバーを自軍エリアから捨札にしてビクトリーロボをラッシュできる（出典: atwiki/page-388 Q1）", () => {
+    // XG3-006 はゲームのカード定義（core-playable）の外なので、full-playable カタログの定義を加える（RS5-audit-out-of-range と同じ）。
+    const XG3_006 = fullPlayableCatalog.cards.find((c) => c.id === "XG3-006")!;
+    let s = victoryState(["RS-383", "RS-385"], [released("XG3-006", "vw")], true, [XG3_006]);
     s = useSF(s);
     const r = rushFromHand(s, "player1", "RS-382:vr");
     expect(r.ok).toBe(true);
@@ -495,8 +497,7 @@ describe("RS-347 スーパーフォーメーション", () => {
   });
 
   // grnrngr/faq-card-8 RS-569 Q1「はい、できます。」（追加条件が「合体ユニットをパワー送りにする」ユニットでも使える）
-  it.fails("RS-347: 公式Q&A — 追加条件が「合体ユニットをパワーゾーンに送る」スーパーデカレンジャーロボ（デカバイクロボ＋パトストライカー〜パトシグナーの6体合体）にも使える（出典: grnrngr/faq-card-8 RS-569 Q1）", () => {
-    // 既知の不具合: CARD-RS-569 の「または」側の6体合体でのラッシュ自体ができない（RS-347 の効果自体は実装済み）
+  it("RS-347: 公式Q&A — 追加条件が「合体ユニットをパワーゾーンに送る」スーパーデカレンジャーロボ（デカバイクロボ＋パトストライカー〜パトシグナーの6体合体）にも使える（出典: grnrngr/faq-card-8 RS-569 Q1）", () => {
     let s = st({
       phase: "rush",
       player1: {
@@ -514,8 +515,7 @@ describe("RS-347 スーパーフォーメーション", () => {
   });
 
   // grnrngr/faq-card-8 RS-565 Q1「…5体合体以上の組み合わせを選択すれば…対象にすることは可能です。…「風雷丸」「旋風神」「轟雷神」を捨札にするだけでは3体合体としかみなされません」
-  it.fails("RS-347: 公式Q&A — 轟雷旋風神は5体以上の組み合わせ（風雷丸＋ハリケン3体＋ゴウライ2体）を選べば対象にできる（出典: grnrngr/faq-card-8 RS-565 Q1）", () => {
-    // 既知の不具合: CARD-RS-565 の6体合体の組み合わせでのラッシュ自体ができない（RS-347 の効果自体は実装済み）
+  it("RS-347: 公式Q&A — 轟雷旋風神は5体以上の組み合わせ（風雷丸＋ハリケン3体＋ゴウライ2体）を選べば対象にできる（出典: grnrngr/faq-card-8 RS-565 Q1）", () => {
     let s = st({
       phase: "rush",
       player1: {

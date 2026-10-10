@@ -9,7 +9,7 @@ import {
   isSmallUnit,
   parsePowerCost,
 } from "../core/catalog";
-import { withSpBecomes } from "./fractionalSp";
+import { spBecomesInZone } from "./fractionalSp";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { collectPowerIds, openEffectChoice } from "./pendingChoices";
 
@@ -210,11 +210,14 @@ export function grantSp1ToRushUnit(
   playerId: PlayerId,
   instanceId: string,
 ): GameState {
+  // ラッシュしたとき（ラッシュエリア）／NC（バトルエリアに出た直後）のどちらでも「SP1」になる。
   const player = state.players[playerId];
-  const rush = player.rush.map((c) =>
-    c.instanceId === instanceId ? withSpBecomes(state.definitions, undefined, c, 1) : c,
-  );
-  return { ...state, ...updatePlayer(state, playerId, { ...player, rush }) };
+  for (const zone of ["rush", "battle"] as const) {
+    if (player[zone].some((c) => c.instanceId === instanceId)) {
+      return spBecomesInZone(state, playerId, zone, instanceId, 1);
+    }
+  }
+  return state;
 }
 
 export function playerHasShurikenFm(state: GameState, playerId: PlayerId): boolean {

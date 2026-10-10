@@ -21,6 +21,8 @@ import { SUPER_FORMATION_RULE } from "../zord";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { commandCategoriesNow } from "../legend3/battleEffects";
+import { namedEffectActive } from "../ncGatedEffects";
+import { openDestroyTimedChoice } from "../destroyTriggerTiming";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -665,4 +667,49 @@ export function trySet5CardEffect(state: GameState, ctx: GrantKeywordContext, _k
     default:
       return null;
   }
+}
+
+// ---------------------------------------------------------------------------
+// RS-312 カブトライジャー【迅雷流剣技・雷撃斬】（NC: CN 3）
+// 「これがユニットを撃破したとき、これが撃破したユニットと同じ特徴を1つ以上持つユニットが敵軍ラッシュエリアにあれば
+//  1体選び、持ち主のパワーゾーンにダメージにして置く。」（atwiki/page-482）
+// 「撃破したとき」— R-TIME-01 の段階 1。撃破されたユニットの「撃破されて捨札になったとき」（段階 4。RS-336 の※）より先に
+// 対象を選ぶので、その効果で後から出たユニットは選べない（grnrngr/faq-card-5 RS-312 Q1）。置くのは強制（「置く」）。
+// 置かれるユニットは場を離れるので、ダイノガッツ等で留められる（同 Q2。applyUnitLeave の離場の応答）。
+
+export const RAIGEKI_ZAN_EFFECT_ID = "kami_ken_kami_geki_zan";
+
+export function openRaigekiZanChoice(
+  state: GameState,
+  destroyerOwner: PlayerId,
+  destroyerInstanceId: string,
+  destroyed: CardInstance,
+  phasePlayerId: PlayerId,
+): GameState {
+  const owner = state.players[destroyerOwner];
+  const kabuto = [...owner.battle, ...owner.rush].find((c) => c.instanceId === destroyerInstanceId);
+  if (!kabuto || kabuto.cardId !== "RS-312") return state;
+  if (!namedEffectActive(kabuto, RAIGEKI_ZAN_EFFECT_ID)) return state;
+  const enemyId = opponent(destroyerOwner);
+  const features = new Set(unitFeatures(state, enemyId, destroyed));
+  if (features.size === 0) return state;
+  const ids = state.players[enemyId].rush
+    .filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit")
+    .filter((c) => unitFeatures(state, enemyId, c).some((f) => features.has(f)))
+    .map((c) => c.instanceId);
+  if (ids.length === 0) return state;
+  return openDestroyTimedChoice(state, {
+    destroyTriggerTiming: "destroyer",
+    playerId: destroyerOwner,
+    effectId: RAIGEKI_ZAN_EFFECT_ID,
+    sourceCardId: "RS-312",
+    sourceInstanceId: destroyerInstanceId,
+    kind: "select_unit",
+    unitDestination: "power",
+    placeAsDamage: true,
+    phasePlayerId,
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: false,
+  });
 }

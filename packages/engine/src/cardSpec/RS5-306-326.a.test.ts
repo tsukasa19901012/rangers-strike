@@ -580,8 +580,7 @@ describe("RS-312 カブトライジャー", () => {
   });
 
   // 「これが撃破したユニットと同じ特徴を1つ以上持つユニットが敵軍ラッシュエリアにあれば1体選び、持ち主のパワーゾーンにダメージにして置く」
-  // 既知の不具合: CARD-RS-312 【雷撃斬】が撃破時に発動せず、特徴の一致も見ず、ダメージ（ウラ向き）にもしない
-  it.fails("RS-312: 3番目に出てバトルで撃破したとき、撃破したユニットと同じ特徴を持つ敵軍ラッシュエリアのユニットを1体選び、ダメージにする（出典: atwiki/page-482）", () => {
+  it("RS-312: 3番目に出てバトルで撃破したとき、撃破したユニットと同じ特徴を持つ敵軍ラッシュエリアのユニットを1体選び、ダメージにする（出典: atwiki/page-482）", () => {
     let s = kabuto(3, { battle: [inst("SPEC-NINJA", "eb")], rush: [inst("SPEC-NINJA", "er"), inst("SPEC-BEAST", "ex")] });
     s = settle(attack(s, "RS-312:k", "SPEC-NINJA:eb"));
     expect(zoneOf(s, "player2", "SPEC-NINJA:eb")).toBe("discard");
@@ -595,8 +594,7 @@ describe("RS-312 カブトライジャー", () => {
   });
 
   // 「1体選び…置く」（「してもよい」ではない＝強制）
-  // 既知の不具合: CARD-RS-312 【雷撃斬】が撃破時に発動しない
-  it.fails("RS-312: 対象がいれば置くのは強制（スキップできない）（出典: atwiki/page-482「1体選び、…置く」）", () => {
+  it("RS-312: 対象がいれば置くのは強制（スキップできない）（出典: atwiki/page-482「1体選び、…置く」）", () => {
     let s = kabuto(3, { battle: [inst("SPEC-NINJA", "eb")], rush: [inst("SPEC-NINJA", "er")] });
     s = settle(attack(s, "RS-312:k", "SPEC-NINJA:eb"));
     expect(choiceIds(s)).toEqual(["SPEC-NINJA:er"]);
@@ -619,8 +617,7 @@ describe("RS-312 カブトライジャー", () => {
   });
 
   // faq-card-5 RS-312 Q1「いいえ、その場合は「RS-060 マジピンク」を選ぶことはできません。…「撃破したとき」が捨札になる前に割り込みますので、先に…対象を選択してください。」
-  // 既知の不具合: CARD-RS-312 【雷撃斬】が撃破時に発動しない
-  it.fails("RS-312: 公式Q&A — 撃破したレジェンドマジピンクの※で後から出たマジピンクは選べない（撃破したときの対象選択が先）（出典: grnrngr/faq-card-5 RS-312 Q1・ユーザー決定の撃破時処理順）", () => {
+  it("RS-312: 公式Q&A — 撃破したレジェンドマジピンクの※で後から出たマジピンクは選べない（撃破したときの対象選択が先）（出典: grnrngr/faq-card-5 RS-312 Q1・ユーザー決定の撃破時処理順）", () => {
     let s = kabuto(3, {
       battle: [inst("RS-336", "lmp")],
       rush: [inst("SPEC-FEMALE", "fem"), inst("TST-UNIT-0", "plain")],
@@ -633,8 +630,7 @@ describe("RS-312 カブトライジャー", () => {
   });
 
   // faq-card-5 RS-312 Q2「はい、使用することができます。また、その場合はダメージは無かったことになります。」
-  // 既知の不具合: CARD-RS-312 【雷撃斬】が撃破時に発動しない
-  it.fails("RS-312: 公式Q&A — ダメージとして置かれるために場を離れる自軍ユニットにダイノガッツを使えば、その場に留まりダメージは無かったことになる（出典: grnrngr/faq-card-5 RS-312 Q2）", () => {
+  it("RS-312: 公式Q&A — ダメージとして置かれるために場を離れる自軍ユニットにダイノガッツを使えば、その場に留まりダメージは無かったことになる（出典: grnrngr/faq-card-5 RS-312 Q2）", () => {
     let s = kabuto(3, {
       battle: [inst("SPEC-NINJA", "eb")],
       rush: [inst("SPEC-NINJA", "er")],

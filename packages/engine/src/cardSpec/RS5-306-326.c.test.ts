@@ -567,14 +567,9 @@ describe("RS-325 天空勇者マジシャイン", () => {
   });
 
   // atwiki/page-485 Q1「いいえ、そのようにはなりません。…実際には手札から使用していないので、…該当しません。」
-  // 既知の不具合: CARD-RS-325 XG7-054 オーズドライバーがゲームのカード定義に無い（マジチケット自体は実装済み）
-  it.fails("RS-325: 公式Q&A — マジチケットで発動したオーズドライバーの「次に手札から使用するカード」の軽減は、続けてマジチケットで発動するカードには適用されない（出典: atwiki/page-485 Q1）", () => {
-    let s = shine({ power: 0, command: [released("XG7-054", "ooo"), released("RS-011", "aura")] });
-    s = { ...s, players: { ...s.players, player1: { ...s.players.player1, power: powerCards(3) } } };
-    s = useVia(s, "player1", "XG7-054:ooo");
-    s = { ...s, players: { ...s.players, player1: { ...s.players.player1, power: powerCards(1) } } };
-    expect(actionUsing(s, "player1", "RS-011:aura")).toBeUndefined();
-  });
+  it.todo(
+    "RS-325: 公式Q&A — マジチケットで発動したオーズドライバーの「次に手札から使用するカード」の軽減は、続けてマジチケットで発動するカードには適用されない（出典: atwiki/page-485 Q1）— XG7-054 未収録（ゲームのカード定義 allCardsCatalog に XG 系のカードが無く、wiki スタブ／vanilla-promoted カタログにも効果データが無いため、使用の場を作れない）",
+  );
 
   it.todo("RS-325: 公式Q&A — マジチケットでオーズドライバーを2回発動すると、次に手札から使用するカードの必要パワーは6少なくなる（出典: atwiki/page-485 Q2）— XG7-054 の選択式効果（2つ目の◎）の選び方と「次に手札から使用するカード」の軽減をこのカード範囲で検証する手段が無いため（マジチケット自体も未実装）");
 

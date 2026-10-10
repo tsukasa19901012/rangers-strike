@@ -280,6 +280,11 @@ export type PendingLeave = {
   discardAsDamage?: boolean;
   /** RS-009: Lユニットが捨札に到達したときのみ合体パーツを戻す。 */
   fusionReturnOnDiscard?: "battle";
+  /**
+   * バトルでこのユニットを撃破したユニット。離場の応答を待ったあと実際に撃破されたら、その「撃破したとき」
+   * （R-TIME-01 段階 1。RS-312【雷撃斬】）を開く。
+   */
+  destroyedByInBattle?: { ownerPlayerId: PlayerId; instanceId: string };
 };
 
 /**
@@ -893,6 +898,10 @@ export type PendingEffectRush = {
     needed: number;
     chosen: string[];
     destination?: "command" | "discard";
+    /** RS-359 デンジ犬アイシー【最後の手段】で山札から捨札にして「捨札にしたことにした」素材の数。 */
+    icyCount?: number;
+    /** デンジ犬アイシーを捨札にして、山札から素材のカードを選んでいる途中のアイシー。 */
+    icyPending?: string;
   };
 };
 
