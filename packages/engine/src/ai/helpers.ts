@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { cpuAcceptsOptionalEffect } from "../rules/optionalEffects";
 import { getCardEffect, listZordFusionPartnerIds } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
@@ -1183,6 +1184,12 @@ export function pickEffectChoice(
   const playerId = pending.playerId;
   const skip = actions.find((a) => a.type === "skip_effect_choice");
 
+  // 「～してもよい」の任意効果の確認（rules/optionalEffects.ts）。
+  if (pending.mayConfirm) {
+    const confirm = actions.find((a) => a.type === "confirm_effect_choice");
+    return (cpuAcceptsOptionalEffect(state, pending) ? confirm : skip) ?? skip ?? confirm ?? null;
+  }
+
   if (pending.kind === "simultaneous_order" && pending.mutualDestructionMeta) {
     // ルール: R-BTL-02, R-SIM-01 — 相打ちの処理順: 各順で処理した結果を評価し、自分に有利な順を選ぶ。
     let best: GameAction | null = null;
@@ -1421,6 +1428,11 @@ export function pickEffectChoice(
 
   if (pending.kind === "select_unit" || pending.kind === "select_unit_step") {
     return pickWeakestEffectTarget(state, actions);
+  }
+
+  // RS-029【勇気の魔法】「リリースしてもよい」— ホールド状態のコマンドのリリースは常に得なのでする。
+  if (pending.effectId === "courage_magic") {
+    return actions.find((a) => a.type === "resolve_effect_choice") ?? skip ?? null;
   }
 
   if (needsEffectHoldPayment(pending)) {

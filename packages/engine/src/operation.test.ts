@@ -311,8 +311,17 @@ describe("land balkan RS-005", () => {
     const result = applyAction(state, action!);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
+    // 「出してもよい」— 候補が1枚でも出すカードを選ぶ（atwiki/page-249）。
+    expect(result.state.pendingEffectChoice?.validInstanceIds).toEqual([sCmd.instanceId]);
+    const picked = applyAction(result.state, {
+      type: "resolve_effect_choice",
+      playerId: "player1",
+      instanceId: sCmd.instanceId,
+    });
+    expect(picked.ok).toBe(true);
+    if (!picked.ok) return;
 
-    expect(result.state.players.player1.rush.some((c) => c.instanceId === sCmd.instanceId)).toBe(
+    expect(picked.state.players.player1.rush.some((c) => c.instanceId === sCmd.instanceId)).toBe(
       true,
     );
   });

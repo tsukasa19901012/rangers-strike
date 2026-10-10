@@ -1206,8 +1206,7 @@ describe("RS-057 マジレッド", () => {
     expect(zoneOf(s, "player1", "RS-057:red")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-057 【レッドファイヤー】の BP 上昇が NC 不成立（1番目）でも適用される
-  it.fails("RS-057: NC が成立しなければ（1番目）BP は上がらない（出典: atwiki/page-14）", () => {
+  it("RS-057: NC が成立しなければ（1番目）BP は上がらない（出典: atwiki/page-14）", () => {
     let s = redState({ position: 1, releasedCmds: 2 });
     s = enter(s, "RS-057:red");
     s = settle(attack(s, "RS-057:red", "TST-UNIT-2:d"));
@@ -1601,8 +1600,7 @@ describe("RS-062 ボウケンレッド", () => {
     expect(zoneOf(s, "player1", "RS-062:r")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-062 【ボウケンジャベリン】の BP+4000 が NC 不成立（1番目）でも適用される
-  it.fails("RS-062: NCが成立しなければ（1番目）メカにアタックしても BP は上がらない（出典: atwiki/page-30）", () => {
+  it("RS-062: NCが成立しなければ（1番目）メカにアタックしても BP は上がらない（出典: atwiki/page-30）", () => {
     let s = red(1, "RS-043");
     s = settle(attack(s, "RS-062:r", "RS-043:d"));
     expect(zoneOf(s, "player1", "RS-062:r")).toBe("discard");
@@ -1678,8 +1676,7 @@ describe("RS-063 ボウケンブラック", () => {
   });
 
   // 「見てもよい」
-  // 既知の不具合: CARD-RS-063 【ラジアルハンマー】が任意（「見てもよい」）にならず、必ず3枚を見て2枚を捨札にする
-  it.fails("RS-063: 見ないことを選べる（山札は変わらない）（出典: atwiki/page-265）", () => {
+  it("RS-063: 見ないことを選べる（山札は変わらない）（出典: atwiki/page-265）", () => {
     let s = black();
     expect(legalOfType(s, "skip_effect_choice")).toHaveLength(1);
     s = act(s, { type: "skip_effect_choice", playerId: "player1" });
@@ -1742,8 +1739,7 @@ describe("RS-064 ボウケンブルー", () => {
   });
 
   // 「戻してもよい」
-  // 既知の不具合: CARD-RS-064 【ブロウナックル】が任意にならず、NC 成立時に必ず両者のコマンドを戻す
-  it.fails("RS-064: 戻さないことを選べる（任意）（出典: atwiki/page-268）", () => {
+  it("RS-064: 戻さないことを選べる（任意）（出典: atwiki/page-268）", () => {
     const s = blue({ released: 2, held: 0 }, { released: 2, held: 0 });
     expect(s.players.player1.command).toHaveLength(2);
     expect(
@@ -1760,8 +1756,7 @@ describe("RS-064 ボウケンブルー", () => {
   });
 
   // card_1 RS-064 Q3「「自分はリリース状態のコマンドを０枚戻した」として発動させることはできますか？」「いいえ、できません。」
-  // 既知の不具合: CARD-RS-064 自軍のリリース状態コマンドが0枚でも相手のコマンドだけ手札に戻ってしまう
-  it.fails("RS-064: 公式Q&A — 自軍のリリース状態コマンドが0枚なら発動できず、相手のコマンドも戻らない（出典: grnrngr/faq-card-1 RS-064 Q3）", () => {
+  it("RS-064: 公式Q&A — 自軍のリリース状態コマンドが0枚なら発動できず、相手のコマンドも戻らない（出典: grnrngr/faq-card-1 RS-064 Q3）", () => {
     let s = blue({ released: 0, held: 2 }, { released: 2, held: 0 });
     s = confirmIfAsked(s);
     expect(s.players.player2.command).toHaveLength(2);
@@ -1769,8 +1764,7 @@ describe("RS-064 ボウケンブルー", () => {
   });
 
   // card_1 RS-064 Q1「離れた枚数と同じだけ捨て札からコマンドゾーンに置くことができますか？」「はい」
-  // 既知の不具合: CARD-RS-064 ブロウナックルで相手（ゴーゴーファイヤー所持）のコマンドが複数離れても【プロジェットカノン】の置き直しが起きない
-  it.fails("RS-064: 公式Q&A — 相手のゴーゴーファイヤーは離れた枚数（2枚）だけ捨札からコマンドゾーンに置ける（出典: grnrngr/faq-card-1 RS-064 Q1）", () => {
+  it("RS-064: 公式Q&A — 相手のゴーゴーファイヤーは離れた枚数（2枚）だけ捨札からコマンドゾーンに置ける（出典: grnrngr/faq-card-1 RS-064 Q1）", () => {
     let s = blue(
       { released: 1, held: 0 },
       { released: 2, held: 0 },
@@ -1924,8 +1918,7 @@ describe("RS-066 ボウケンピンク", () => {
   });
 
   // 「見てもよい」
-  // 既知の不具合: CARD-RS-066 【遺跡調査】が任意（「見てもよい」）にならず、必ず見て上か下を選ぶ（軽微: 結果は「元に戻す」と同じにできる）
-  it.fails("RS-066: 見ないことを選べる（任意）（出典: atwiki/page-270）", () => {
+  it("RS-066: 見ないことを選べる（任意）（出典: atwiki/page-270）", () => {
     const s = pink();
     expect(legal(s).some((a) => a.type === "skip_effect_choice")).toBe(true);
   });
@@ -2178,8 +2171,7 @@ describe("RS-070 マジキング", () => {
   });
 
   // 「ホールドしてもよい」
-  // 既知の不具合: CARD-RS-070 【天空魔法斬り】が任意にならず、出たときに必ず敵軍コマンドをすべてホールドする
-  it.fails("RS-070: ホールドしないことも選べる（任意）（出典: atwiki/page-24）", () => {
+  it("RS-070: ホールドしないことも選べる（任意）（出典: atwiki/page-24）", () => {
     const s = kingEnters();
     expect(s.players.player2.command.filter((c) => !c.commandHeld)).toHaveLength(2);
     expect(legal(s).some((a) => a.type === "skip_effect_choice" && a.playerId === "player1")).toBe(true);

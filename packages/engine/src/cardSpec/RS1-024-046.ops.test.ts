@@ -752,8 +752,7 @@ describe("RS-029 勇気の魔法", () => {
     });
   }
 
-  it.fails("RS-029: カタログのテキストが原文と一致する（出典: atwiki/page-245 テキスト）", () => {
-    // 既知の不具合: CARD-RS-029 カタログ本文が「コマンドを1つリリースできる（常駐）」で原文（「自軍コマンド」「してもよい」）と異なる
+  it("RS-029: カタログのテキストが原文と一致する（出典: atwiki/page-245 テキスト）", () => {
     expectTextMatches("RS-029", SOURCE);
   });
 
@@ -785,8 +784,7 @@ describe("RS-029 勇気の魔法", () => {
     expect(heldCount(state, "player1")).toBe(1);
   });
 
-  it.fails("RS-029: リリースは任意（しなくてもよい）（出典: atwiki/page-245「リリースしてもよい」）", () => {
-    // 既知の不具合: CARD-RS-029 Sユニットが出ると選択なしで自動的にリリースされ、しないことを選べない
+  it("RS-029: リリースは任意（しなくてもよい）（出典: atwiki/page-245「リリースしてもよい」）", () => {
     const s = inst("SPEC-S-1000", "s");
     let state = setup({ rush: [s], command: [held(CMD.ET, "h1")] });
     state = enterBattle(state, "player1", s.instanceId);

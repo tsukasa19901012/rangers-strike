@@ -406,7 +406,7 @@ describe("special SP strike eligibility", () => {
 
     expect(state.players.player1.power).toHaveLength(1);
     expect(state.players.player1.discard).toHaveLength(2);
-    expect(battleUnit(state, "player1", patStriker.instanceId)?.spModifier).toBe(1);
+    expect(battleUnit(state, "player1", patStriker.instanceId)?.spOverride).toBe(1);
     expect(
       getLegalActions(state).some(
         (a) => a.type === "strike" && a.instanceId === patStriker.instanceId,

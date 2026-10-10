@@ -1,4 +1,5 @@
-import { findNamedEffectByEffectId } from "@rangers-strike/cards";
+import { findNamedEffectByEffectId, getCardEffect } from "@rangers-strike/cards";
+import { openEffectChoice } from "./pendingChoices";
 import type { GameState, PendingStrike, PlayerId, PlayerState } from "../types/game";
 import {
   cardName,
@@ -145,6 +146,10 @@ export function releaseOneHeldCommand(player: PlayerState): PlayerState {
   return { ...player, command };
 }
 
+/**
+ * RS-029【勇気の魔法】「自軍Sユニットがバトルエリアに出るたびに、自軍コマンドを1つリリースしてもよい」。
+ * 任意効果なので、ホールド状態の自軍コマンドから1つ選ぶ（または選ばない）選択を開く（出典: atwiki/page-245）。
+ */
 export function applyCourageMagicRelease(
   state: GameState,
   playerId: PlayerId,
@@ -158,21 +163,36 @@ export function applyCourageMagicRelease(
   if (!hasOperationEffect(player, "courage_magic", state.definitions)) {
     return { state };
   }
+  if (state.pendingEffectChoice) return { state };
 
-  if (!player.command.some((c) => c.commandHeld)) {
+  const heldIds = player.command.filter((c) => c.commandHeld).map((c) => c.instanceId);
+  if (heldIds.length === 0) {
     return { state };
   }
+  const source = player.operation.find(
+    (c) => getCardEffect(c.cardId)?.effectId === "courage_magic",
+  );
 
-  const nextPlayer = releaseOneHeldCommand(player);
   const log = buildLogEntry(
     playerId,
     "courage_magic",
-    "RS-029",
+    source?.cardId ?? "RS-029",
     state.definitions,
   );
 
   return {
-    state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+    state: openEffectChoice(state, {
+      playerId,
+      effectId: "courage_magic",
+      sourceCardId: source?.cardId ?? "RS-029",
+      sourceInstanceId: source?.instanceId,
+      phasePlayerId: state.activePlayer,
+      kind: "select_command",
+      validInstanceIds: heldIds,
+      selectCount: 1,
+      commandAction: "release",
+      optional: true,
+    }),
     log,
   };
 }

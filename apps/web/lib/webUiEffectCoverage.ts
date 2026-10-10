@@ -107,6 +107,8 @@ const KNOWN_EFFECT_IDS = new Set<string>([
 ]);
 
 export function isKnownEffectChoice(pending: PendingEffectChoice): boolean {
+  // 「～してもよい」の任意効果の確認（行う／行わない）は汎用モーダルで操作できる。
+  if (pending.mayConfirm) return true;
   if (
     KNOWN_EFFECT_IDS.has(pending.effectId) &&
     KNOWN_EFFECT_CHOICE_KINDS.has(pending.kind)

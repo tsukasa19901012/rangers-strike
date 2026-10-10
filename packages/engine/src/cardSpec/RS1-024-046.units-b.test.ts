@@ -127,8 +127,7 @@ describe("RS-042 デカレンジャーロボ", () => {
     expect(state.players.player1.discard.filter((c) => c.cardId === "TST-P")).toHaveLength(5);
   });
 
-  it.fails("RS-042: 「SP3」を得たストライクのダメージはちょうど3点（SP2 に加算して5点にはならない）（出典: atwiki/page-279「次の能力を得る⇒「SP3」」）", () => {
-    // 既知の不具合: CARD-RS-042 「SP3」を得る効果が spModifier+3 として SP2 に加算され、ストライクが5点になる
+  it("RS-042: 「SP3」を得たストライクのダメージはちょうど3点（SP2 に加算して5点にはならない）（出典: atwiki/page-279「次の能力を得る⇒「SP3」」）", () => {
     let { robo, state } = entered(powers(5));
     state = choosePowers(state, 5);
     expect(strikeDamage(state, "player1", robo.instanceId)).toBe(3);
@@ -149,8 +148,7 @@ describe("RS-042 デカレンジャーロボ", () => {
     expect(legal(state).some((a) => a.type === "skip_effect_choice" && a.playerId === "player1")).toBe(true);
   });
 
-  it.fails("RS-042: SP を得る効果は自軍バトルフェイズ中に発動できる（出た時に見送っても同じバトルフェイズ中に発動できる）（出典: grnrngr/faq-card-1 RS-051 Q3）", () => {
-    // 既知の不具合: CARD-RS-042 【ジャスティスフラッシャー】がバトルエリアに出た瞬間にしか発動できない
+  it("RS-042: SP を得る効果は自軍バトルフェイズ中に発動できる（出た時に見送っても同じバトルフェイズ中に発動できる）（出典: grnrngr/faq-card-1 RS-051 Q3）", () => {
     // 「ストライクポイントを得る効果は、自軍バトルフェイズに発動できます」
     let { robo, state } = entered(powers(5));
     state = act(state, { type: "skip_effect_choice", playerId: "player1" });

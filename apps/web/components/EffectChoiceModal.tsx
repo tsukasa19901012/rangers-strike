@@ -240,6 +240,14 @@ export function EffectChoiceModal({
             </div>
           )}
 
+          {!isGenericFallback && pending.kind === "confirm" && pending.mayConfirm && !readOnly && (
+            <div className="effect-action-modal__actions">
+              <button type="button" className="btn btn--primary" onClick={onConfirmEffectChoice}>
+                効果を使う
+              </button>
+            </div>
+          )}
+
           {!isGenericFallback && pending.kind === "confirm" && !readOnly && (
             <div className="effect-action-modal__section">
               <div className="effect-action-modal__targets">

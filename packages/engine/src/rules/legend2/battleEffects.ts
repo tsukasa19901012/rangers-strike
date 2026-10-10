@@ -1,4 +1,4 @@
-import { getOnAttackNamedEffect } from "@rangers-strike/cards";
+import { activeOnAttackNamedEffect } from "../ncGatedEffects";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
 import {
   getDefinition,
@@ -119,7 +119,7 @@ export function legend2AttackerBpBonus(
   const attacker = { card: attackerCard };
 
   let bonus = 0;
-  const atkEffect = getOnAttackNamedEffect(attacker.card.cardId);
+  const atkEffect = activeOnAttackNamedEffect(attacker.card);
 
   if (atkEffect?.effectId === "dump_punch") bonus += 2000;
   if (atkEffect?.effectId === "adventure_drive_sword") bonus += 4000;
@@ -162,7 +162,7 @@ export function legend2UsePrintedDefenderBp(
   );
   if (!attacker) return false;
 
-  const effect = getOnAttackNamedEffect(attacker.card.cardId);
+  const effect = activeOnAttackNamedEffect(attacker.card);
   return (
     effect?.effectId === "val_cannon" ||
     effect?.effectId === "ptera_dagger" ||
@@ -182,7 +182,7 @@ export function legend2BlocksDefenderCounters(
   );
   if (!attacker) return false;
 
-  const effect = getOnAttackNamedEffect(attacker.card.cardId);
+  const effect = activeOnAttackNamedEffect(attacker.card);
   if (effect?.effectId !== "val_cannon") return false;
 
   const player = state.players[attackerPlayerId];

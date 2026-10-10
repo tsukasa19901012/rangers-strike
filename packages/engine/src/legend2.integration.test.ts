@@ -237,6 +237,9 @@ describe("legend2 integration", () => {
         instanceId: "RS-111:phantom",
       }),
     );
-    expect(entered.players.player2.command[0]?.commandHeld).toBe(true);
+    // 「ホールドしてもよい」— 任意なので行うことを選ぶ。
+    expect(entered.pendingEffectChoice?.effectId).toBe("sky_magic_slash");
+    const confirmed = unwrap(applyAction(entered, { type: "confirm_effect_choice", playerId: "player1" }));
+    expect(confirmed.players.player2.command[0]?.commandHeld).toBe(true);
   });
 });

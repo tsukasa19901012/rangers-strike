@@ -242,7 +242,16 @@ describe("courage magic", () => {
       }),
     );
 
-    expect(next.players.player1.command[0]?.commandHeld).toBe(false);
+    // 「リリースしてもよい」— 任意なのでリリースするコマンドを選ぶ（atwiki/page-245）。
+    expect(next.pendingEffectChoice?.effectId).toBe("courage_magic");
+    const released = unwrap(
+      applyAction(next, {
+        type: "resolve_effect_choice",
+        playerId: "player1",
+        instanceId: next.players.player1.command[0]!.instanceId,
+      }),
+    );
+    expect(released.players.player1.command[0]?.commandHeld).toBe(false);
   });
 });
 

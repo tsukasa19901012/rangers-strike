@@ -21,6 +21,7 @@ import {
   unwrap,
   zoneOf,
   zordRush,
+  pickAllEffectRushCandidates,
 } from "./02-helpers";
 
 /** player1 のターンを終えて player1 の次のチャージフェイズまで公開アクションで進める。 */
@@ -135,8 +136,11 @@ describe("R-POW-02 必要パワーは閾値", () => {
     const r = payAndPlayOperation(s, "player1", "RS-005:lb", ["TST-OP-ET:c"]);
     expect(r.ok).toBe(true);
     if (!r.ok) return;
-    expect(zoneOf(r.state, "player1", "SPEC-S-ET-3:three")).toBe("rush");
-    expect(zoneOf(r.state, "player1", "SPEC-S-WB-5:five")).toBe("command");
+    // 必要パワーを満たさない「five」はそもそも候補に出ない。出せる候補はすべて選んで出す。
+    expect(r.state.pendingEffectChoice?.validInstanceIds ?? []).not.toContain("SPEC-S-WB-5:five");
+    const after = pickAllEffectRushCandidates(r.state);
+    expect(zoneOf(after, "player1", "SPEC-S-ET-3:three")).toBe("rush");
+    expect(zoneOf(after, "player1", "SPEC-S-WB-5:five")).toBe("command");
   });
 
   // 「ラッシュのための必要パワーと追加条件は満たすこと」
@@ -264,7 +268,7 @@ describe("R-CMD-02 効果による使用ではホールド不要", () => {
         command: [inst("TST-OP-ET", "et"), inst("SPEC-S-WB", "wbS")],
       },
     });
-    const r = unwrap(payAndPlayOperation(s, "player1", "RS-005:lb", ["TST-OP-ET:et"]));
+    const r = pickAllEffectRushCandidates(unwrap(payAndPlayOperation(s, "player1", "RS-005:lb", ["TST-OP-ET:et"])));
     expect(zoneOf(r, "player1", "SPEC-S-WB:wbS")).toBe("rush");
     // ホールドされたのはランドバルカン用の ET コマンド1つだけ
     expect(r.players.player1.command.filter((c) => c.commandHeld).map((c) => c.instanceId)).toEqual(["TST-OP-ET:et"]);

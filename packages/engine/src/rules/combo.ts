@@ -18,7 +18,7 @@ import {
 import { opponent, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { applyCourageMagicRelease } from "./strikeReactions";
-import { getSComboFinisher, getGenericSComboFinisher } from "./turnModifierBridge";
+import { sComboFinisherSetValues } from "./turnModifierBridge";
 import { isSOnlyComboLine } from "./turnModifiers";
 import {
   canRunEnterBattleConditionalEffect,
@@ -50,6 +50,7 @@ import {
 import type { ComboOutcome } from "./comboTypes";
 import {
   applyNumberComboEffect,
+  markOnAttackNcEffectOnEnter,
   numberComboTriggers,
   resolveNamedNcEffectId,
 } from "./numberComboEffects";
@@ -65,50 +66,17 @@ import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredB
 
 export type { ComboOutcome } from "./comboTypes";
 
-function applySComboFinisher(
+/**
+ * RS-001/RS-002 等の S コンビネーション・フィニッシャー。BP/SP は `sComboFinisherSetValues`
+ * （effectiveBp / SP 計算）で常に現在の並びから求めるため、ここではカードを書き換えない。
+ * 進入時に条件を満たしたかどうか（ログ用）だけを返す。
+ */
+function sComboFinisherApplies(
   state: GameState,
   playerId: PlayerId,
   card: CardInstance,
-  battlePosition: number,
-): CardInstance {
-  const player = state.players[playerId];
-  const finisher = getSComboFinisher(player);
-  if (!finisher || !isSOnlyComboLine(state.definitions, player.battle)) {
-    return card;
-  }
-
-  const definition = getDefinition(state.definitions, card.cardId);
-  if (!definition || !isSmallUnit(state.definitions, card.cardId)) return card;
-
-  if (finisher === "goren_storm" && battlePosition === 5) {
-    const baseBp = unitBp(definition);
-    return {
-      ...card,
-      bpModifier: 12000 - baseBp,
-      spModifier: (card.spModifier ?? 0) + 1,
-    };
-  }
-
-  if (finisher === "jacker_hurricane" && battlePosition === 4) {
-    const baseBp = unitBp(definition);
-    return {
-      ...card,
-      bpModifier: 8000 - baseBp,
-      spModifier: (card.spModifier ?? 0) + 1,
-    };
-  }
-
-  const generic = getGenericSComboFinisher(player);
-  if (generic && battlePosition === generic.position && isSmallUnit(state.definitions, card.cardId)) {
-    const baseBp = unitBp(definition);
-    return {
-      ...card,
-      bpModifier: generic.bp - baseBp,
-      spModifier: (card.spModifier ?? 0) + generic.sp,
-    };
-  }
-
-  return card;
+): boolean {
+  return sComboFinisherSetValues(state, playerId, card) !== null;
 }
 
 function destroyWeakestEnemy(
@@ -186,17 +154,8 @@ export function resolveEnterBattleEffectsImpl(
 
   let battleCard = card;
   if (!resumeFrom) {
-    battleCard = applySComboFinisher(nextState, playerId, card, battlePosition);
-    if (battleCard !== card) {
-      const player = nextState.players[playerId];
-      const battle = [...player.battle];
-      const index = battle.findIndex((c) => c.instanceId === card.instanceId);
-      if (index >= 0) {
-        battle[index] = battleCard;
-        nextState = {
-          ...nextState,
-          ...updatePlayer(nextState, playerId, { ...player, battle }),
-        };
+    if (sComboFinisherApplies(nextState, playerId, card)) {
+      {
         logs.push(
           buildLogEntry(
             playerId,
@@ -267,9 +226,12 @@ export function resolveEnterBattleEffectsImpl(
       }
     }
     if (!dslEnter.handled && enterEffect === "sky_magic_slash") {
-      const slash = resolveSkyMagicSlash(nextState, playerId, card.cardId);
+      const slash = resolveSkyMagicSlash(nextState, playerId, card.cardId, card.instanceId);
       nextState = slash.state;
       logs.push(...slash.logs);
+      if (nextState.pendingEffectChoice) {
+        return { state: nextState, logs, enterResumeFrom: "nc" };
+      }
     }
     if (
       !dslEnter.handled &&
@@ -391,6 +353,16 @@ export function resolveEnterBattleEffectsImpl(
   if (shouldRunEnterStep(resumeFrom, "nc")) {
     // ルール: R-CN-04 — コンビネーションは自軍バトルフェイズにバトルエリアへ出たときだけ（ラッシュフェイズに
     // 置かれたレッドレーサー等は並び順が CN と一致しても NC を発動しない）。
+    if (nextState.phase === "battle" && definition) {
+      nextState = markOnAttackNcEffectOnEnter(
+        nextState,
+        playerId,
+        card,
+        definition,
+        battlePosition,
+        battleBeforeEnter,
+      );
+    }
     if (
       nextState.phase === "battle" &&
       definition &&
@@ -431,10 +403,6 @@ export function resolveEnterBattleEffectsImpl(
       logs.push(...rcResult.logs);
     }
 
-    const courage = applyCourageMagicRelease(nextState, playerId, card.cardId);
-    nextState = courage.state;
-    if (courage.log) logs.push(courage.log);
-
     const baseAttack = applyBaseAttackOnEnter(
       nextState,
       playerId,
@@ -452,6 +420,11 @@ export function resolveEnterBattleEffectsImpl(
     );
     nextState = destroyOnEnter.state;
     logs.push(...destroyOnEnter.logs);
+
+    // RS-029【勇気の魔法】は任意（選択を開く）ため、進入処理の最後に置く（後続の処理を再開しなくてよい）。
+    const courage = applyCourageMagicRelease(nextState, playerId, card.cardId);
+    nextState = courage.state;
+    if (courage.log) logs.push(courage.log);
   }
 
   return { state: nextState, logs };

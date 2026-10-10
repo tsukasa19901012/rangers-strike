@@ -94,8 +94,7 @@ describe("RS-001 ゴレンジャーストーム", () => {
     expect(bpOf(s, "player1", units[3]!.instanceId)).toBe(1000);
   });
 
-  it.fails("RS-001: 5番目は「SP1」に“なる”（元のSPが2でもSP1）（出典: atwiki/page-246）", () => {
-    // 既知の不具合: CARD-RS-001 「SP1になる」をSP+1として実装しており、元SPが1以上だとSP2以上になる
+  it("RS-001: 5番目は「SP1」に“なる”（元のSPが2でもSP1）（出典: atwiki/page-246）", () => {
     const { s: s0, op, units } = gorenState(["CS-S1", "CS-S1", "CS-S1", "CS-S1", "CS-S2"]);
     let s = playThenBattle(s0, op.instanceId);
     for (const u of units) s = enter(s, u.instanceId);
@@ -116,8 +115,7 @@ describe("RS-001 ゴレンジャーストーム", () => {
     expect(bpOf(s, "player1", units[4]!.instanceId)).toBe(1000);
   });
 
-  it.fails("RS-001: 「BP12000になる」は他の増減より優先（オーラパワーの上昇があっても12000）（出典: R-BP-01、atwiki/page-246 カード評価）", () => {
-    // 既知の不具合: CARD-RS-001 BP12000を bpModifier（差分）で表しており、常駐等のBP増加が上乗せされる
+  it("RS-001: 「BP12000になる」は他の増減より優先（オーラパワーの上昇があっても12000）（出典: R-BP-01、atwiki/page-246 カード評価）", () => {
     const aura = inst("RS-011", "aura");
     const { s: s0, op, units } = gorenState(["CS-S1", "CS-S1", "CS-S1", "CS-S1", "CS-S1"]);
     let s: GameState = {
@@ -211,8 +209,7 @@ describe("RS-002 ジャッカーハリケーン", () => {
     expect(bpOf(s, "player1", units[2]!.instanceId)).toBe(1000);
   });
 
-  it.fails("RS-002: 4番目は「SP1」に“なる”（元のSPが2でもSP1）（出典: atwiki/page-247）", () => {
-    // 既知の不具合: CARD-RS-002 「SP1になる」をSP+1として実装しており、元SPが1以上だとSP2以上になる
+  it("RS-002: 4番目は「SP1」に“なる”（元のSPが2でもSP1）（出典: atwiki/page-247）", () => {
     const { s: s0, op, units } = jackerState(["CS-S1", "CS-S1", "CS-S1", "CS-S2"]);
     let s = playThenBattle(s0, op.instanceId);
     for (const u of units) s = enter(s, u.instanceId);
@@ -248,8 +245,7 @@ describe("RS-002 ジャッカーハリケーン", () => {
     expect(bpOf(s, "player1", units[4]!.instanceId)).toBe(8000);
   });
 
-  it.fails("RS-002: 公式Q&A — 4番目でなくなったユニットは効果を失う（出典: grnrngr/faq-card-1 RS-002 Q2）", () => {
-    // 既知の不具合: CARD-RS-002 進入時に一度だけBP/SPを書き換えるため、並びが変わっても元の4番目に効果が残る
+  it("RS-002: 公式Q&A — 4番目でなくなったユニットは効果を失う（出典: grnrngr/faq-card-1 RS-002 Q2）", () => {
     const { s: s0, op, units } = jackerState(["CS-S1", "CS-S1", "CS-S1", "CS-S1"]);
     let s = playThenBattle(s0, op.instanceId);
     for (const u of units) s = enter(s, u.instanceId);
@@ -512,8 +508,7 @@ describe("RS-005 ランドバルカン", () => {
     expect(zoneOf(s, "player1", c3.instanceId)).toBe("command");
   });
 
-  it.fails("RS-005: 「出してもよい」— 候補が2枚以下でも、出さない（1枚だけ出す）選択ができる（出典: atwiki/page-249、grnrngr/faq-card-1 RS-005 Q1）", () => {
-    // 既知の不具合: CARD-RS-005 候補が上限（2枚）以下だと選択なしで全員を自動でラッシュし、出さない選択ができない
+  it("RS-005: 「出してもよい」— 候補が2枚以下でも、出さない（1枚だけ出す）選択ができる（出典: atwiki/page-249、grnrngr/faq-card-1 RS-005 Q1）", () => {
     const c1 = released("CS-S1", "s1");
     const c2 = released("CS-S1", "s2");
     const { s: s0, op } = balkanState([c1, c2]);

@@ -227,12 +227,18 @@ export type StartEffectRushInput = {
   /** 選べる上限。 */
   maxCount: number;
   requireConditions: boolean;
-  /** 候補が上限以下でもプレイヤーに選ばせる（「1枚選び…出してもよい」）。 */
+  /**
+   * 候補が上限以下でもプレイヤーに選ばせる（「1枚選び…出してもよい」）。
+   * 既定で選ばせる（効果ラッシュの文言は「出してもよい」で任意 — RS-005 atwiki/page-249、
+   * grnrngr/faq-card-1 RS-005 Q1）。`mandatory: true` のときだけ候補全員を自動で出す。
+   */
   alwaysAsk?: boolean;
+  /** 「出す」（任意でない）効果ラッシュ。候補が上限以下なら選択なしで全員を出す。 */
+  mandatory?: boolean;
 };
 
 /**
- * 効果ラッシュを開始する。候補が上限以下なら全員を出す順に積み、上限を超えるならプレイヤーが選ぶ。
+ * 効果ラッシュを開始する。プレイヤーが上限まで選ぶ（任意）。`mandatory` で候補が上限以下なら全員を出す順に積む。
  * 出せる候補が無ければ state をそのまま返す。
  */
 export function startEffectRush(state: GameState, input: StartEffectRushInput): GameState {
@@ -256,7 +262,7 @@ export function startEffectRush(state: GameState, input: StartEffectRushInput): 
     queue: [],
   };
 
-  if (candidates.length <= input.maxCount && !input.alwaysAsk) {
+  if (input.mandatory && candidates.length <= input.maxCount && !input.alwaysAsk) {
     return continuePendingEffectRush({
       ...state,
       pendingEffectRush: { ...base, queue: candidates },

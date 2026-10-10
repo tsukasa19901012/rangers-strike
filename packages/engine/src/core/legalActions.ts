@@ -1041,6 +1041,12 @@ function appendEffectChoiceActions(
     actions.push({ type: "skip_effect_choice", playerId });
   }
 
+  // 「～してもよい」の任意効果の確認（rules/optionalEffects.ts）: 行う＝confirm、行わない＝skip。
+  if (pending.mayConfirm) {
+    actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
   if (needsEffectHoldPayment(pending) && buildEffectHoldPayment(state)) {
     actions.push({
       type: "initiate_command_payment",
@@ -1787,6 +1793,10 @@ export function getLegalActions(state: GameState): GameAction[] {
         });
       }
 
+      // RS-042【ジャスティスフラッシャー】等、自軍バトルフェイズ中に起動できる場のユニットの効果。
+      for (const unitInstanceId of listFieldActivatedAbilityCards(state, playerId)) {
+        actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+      }
       appendBattleDanceActions(state, playerId, actions);
       if (!mustEnterBattleBeforePhaseEnd(state, playerId)) {
         actions.push({ type: "end_phase", playerId });

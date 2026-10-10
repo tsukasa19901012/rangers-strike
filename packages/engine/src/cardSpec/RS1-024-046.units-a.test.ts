@@ -177,8 +177,7 @@ describe("RS-032 バルシャーク", () => {
     expect(zoneOf(s, "player2", enemy.instanceId)).toBe("discard");
   });
 
-  it.fails("RS-032: コンビネーションしなければ修正後の BP（5000）とバトルして負ける（出典: R-CN-02 / atwiki/page-73）", () => {
-    // 既知の不具合: CARD-RS-032 【シャークジョーズ】が CN5／コンビネーションの条件なしに常に適用される（getOnAttackNamedEffect が無条件）
+  it("RS-032: コンビネーションしなければ修正後の BP（5000）とバトルして負ける（出典: R-CN-02 / atwiki/page-73）", () => {
     const { shark, enemy, state } = setup(fillers(1));
     let s = enterBattle(state, "player1", shark.instanceId);
     s = passReactions(attack(s, "player1", shark.instanceId, enemy.instanceId));
@@ -233,8 +232,7 @@ describe("RS-033 バルパンサー", () => {
     expect(def.features).toEqual(["イエロー", "男"]);
   });
 
-  it.fails("RS-033: コンビネーションしないアタックには相手はカウンター（新体操アクション）を使える（出典: R-CTR-01 / atwiki/page-74）", () => {
-    // 既知の不具合: CARD-RS-033 【パンサークロー】が CN5／コンビネーションの条件なしに常に適用される（getOnAttackNamedEffect が無条件）
+  it("RS-033: コンビネーションしないアタックには相手はカウンター（新体操アクション）を使える（出典: R-CTR-01 / atwiki/page-74）", () => {
     const { panther, enemy, state } = setup(fillers(1));
     let s = enterBattle(state, "player1", panther.instanceId);
     s = attack(s, "player1", panther.instanceId, enemy.instanceId);

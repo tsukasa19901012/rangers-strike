@@ -128,12 +128,24 @@ function holdCommandsForEffect(state: GameState, playerId: PlayerId, ids: string
 }
 
 /** ランドバルカン（RS-005, ET 必要パワー3）を P1 が使用する。 */
-function playLandVulcan(state: GameState): GameState {
+/** ランドバルカン（RS-005）を使用する（出すカードの選択は開いたまま）。 */
+function playLandVulcanOnly(state: GameState): GameState {
   const action = legal(state).find(
     (a) => a.type === "play_operation" && a.playerId === "player1" && a.instanceId === "RS-005:lv",
   );
   if (!action) throw new Error("land vulcan not playable");
   return act(state, action);
+}
+
+function playLandVulcan(state: GameState): GameState {
+  // 「出してもよい」— 出せる候補を選ぶ選択が開くので、候補を順にすべて選んで出す（atwiki/page-249）。
+  let s = playLandVulcanOnly(state);
+  for (let i = 0; i < 10 && s.pendingEffectChoice?.effectId === "effect_rush_pick"; i += 1) {
+    const id = s.pendingEffectChoice.validInstanceIds[0];
+    if (!id) break;
+    s = act(s, { type: "resolve_effect_choice", playerId: s.pendingEffectChoice.playerId, instanceId: id });
+  }
+  return s;
 }
 
 /** パワーバズーカ（RS-009, ET 必要パワー8）を P1 が敵軍 L ユニットに使用する。 */
@@ -1607,7 +1619,7 @@ describe("R-RUSH-23 複数体を出す効果は1体ずつ", () => {
         ],
       },
     });
-    const s1 = playLandVulcan(s0);
+    const s1 = playLandVulcanOnly(s0);
     expect(s1.pendingEffectChoice?.playerId).toBe("player1");
   });
 });
