@@ -1,5 +1,6 @@
 import { getCardEffect } from "@rangers-strike/cards";
 import { activeNamedEffect } from "./ncGatedEffects";
+import { applySwanIllusionOnStrike } from "./legend1/set5NamedEffects";
 import { openEffectChoice } from "./pendingChoices";
 import type { GameState, PendingStrike, PlayerId, PlayerState } from "../types/game";
 import {
@@ -362,7 +363,8 @@ export function finalizeStrike(
 
   if (!pending.damageCancelled && pending.damage > 0 && !pending.damageApplied) {
     const withDamage = applyDamageToPlayer(
-      state,
+      // RS-320【スワンイリュージョン】: 敵軍 S ユニットにストライクされてダメージを受けたとき（rules/legend1/set5NamedEffects.ts）。
+      applySwanIllusionOnStrike(state, pending),
       defenderId,
       pending.damage,
       {

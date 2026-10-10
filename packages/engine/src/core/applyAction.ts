@@ -1,5 +1,6 @@
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { applyMagiPunchCounter, isSet4EndTurnEffect, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
+import { applyDekaMasterReturn } from "../rules/legend1/set5NamedEffects";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import { applyDeusGeneOnRush } from "../rules/rs4NcEffects";
 import type { GameAction } from "../types/actions";
@@ -662,6 +663,8 @@ export function applyAction(
   next = trackResolvingOperations(state, next);
   next = settleResolvingOperations(next);
   next = applyBpZeroRuleDestruction(next);
+  // RS-319 デカマスター ※: 自軍ラッシュフェイズ中、条件を満たせば即座に手札に戻る（進行中の処理がないとき）。
+  if (!hasBlockingInteraction(next)) next = applyDekaMasterReturn(next);
   next = syncDamageWithFaceDownPower(state, next);
   return next === result.state ? result : { ok: true, state: next };
 }

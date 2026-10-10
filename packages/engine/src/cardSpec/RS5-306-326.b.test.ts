@@ -524,8 +524,7 @@ describe("RS-319 デカマスター", () => {
   }
 
   // 「※自軍ラッシュフェイズ中、敵軍ダメージが自軍ダメージ以上なら、このユニットを持ち主の手札に戻す。」
-  // 既知の不具合: CARD-RS-319 ※（自軍ラッシュフェイズ中に手札に戻る）が未実装
-  it.fails("RS-319: 自軍ラッシュフェイズ中、敵軍ダメージが自軍ダメージより多ければ手札に戻る（出典: atwiki/page-47）", () => {
+  it("RS-319: 自軍ラッシュフェイズ中、敵軍ダメージが自軍ダメージより多ければ手札に戻る（出典: atwiki/page-47）", () => {
     const s = masterRushPhase(1, 3);
     expect(zoneOf(s, "player1", "RS-319:dm")).toBe("hand");
   });
@@ -542,28 +541,24 @@ describe("RS-319 デカマスター", () => {
   });
 
   // faq-card-5 RS-319 Q1「いいえ、それはできません。…ラッシュした直後であっても、他の宣言を行うより先に、即座に自分の手札に戻さなければなりません。」
-  // 既知の不具合: CARD-RS-319 ※が未実装（自軍ラッシュフェイズ中に残り続け、M ユニットの追加条件に使えてしまう）
-  it.fails("RS-319: 公式Q&A — 条件を満たしていれば、手札に戻る前に M ユニットの追加条件（S ユニットを捨札）に使うことはできない（出典: grnrngr/faq-card-5 RS-319 Q1）", () => {
+  it("RS-319: 公式Q&A — 条件を満たしていれば、手札に戻る前に M ユニットの追加条件（S ユニットを捨札）に使うことはできない（出典: grnrngr/faq-card-5 RS-319 Q1）", () => {
     const s = masterRushPhase(0, 1, { hand: [inst("RS-310", "beetle")], power: powerCards(3), command: [released("TST-OP-MA", "c")] });
     expect(rushFromHand(s, "player1", "RS-310:beetle").ok).toBe(false);
     expect(zoneOf(s, "player1", "RS-319:dm")).toBe("hand");
   });
 
   // faq-card-5 RS-319 Q2「はい、発動します。「以上」はその基準点を含みます。」
-  // 既知の不具合: CARD-RS-319 ※が未実装
-  it.fails("RS-319: 公式Q&A — お互いのダメージが同点（2点ずつ）でも手札に戻る（出典: grnrngr/faq-card-5 RS-319 Q2）", () => {
+  it("RS-319: 公式Q&A — お互いのダメージが同点（2点ずつ）でも手札に戻る（出典: grnrngr/faq-card-5 RS-319 Q2）", () => {
     expect(zoneOf(masterRushPhase(2, 2), "player1", "RS-319:dm")).toBe("hand");
   });
 
   // faq-card-5 RS-319 Q3「はい、発動します。」
-  // 既知の不具合: CARD-RS-319 ※が未実装
-  it.fails("RS-319: 公式Q&A — お互いのダメージが0点でも手札に戻る（出典: grnrngr/faq-card-5 RS-319 Q3）", () => {
+  it("RS-319: 公式Q&A — お互いのダメージが0点でも手札に戻る（出典: grnrngr/faq-card-5 RS-319 Q3）", () => {
     expect(zoneOf(masterRushPhase(0, 0), "player1", "RS-319:dm")).toBe("hand");
   });
 
   // 「【ディーソードベガ】自軍ターン中、これがバトルエリアに出たとき、BPの下三桁が500の敵軍Sユニットをすべて撃破する。」
-  // 既知の不具合: CARD-RS-319 【ディーソードベガ】が「BPの下三桁が500」を解釈できず対象なし（no_targets）で何も撃破しない
-  it.fails("RS-319: 自軍ターン中にバトルエリアに出たとき、BP の下三桁が500の敵軍 S ユニット（バトル・ラッシュ両エリア）をすべて撃破する（出典: atwiki/page-47）", () => {
+  it("RS-319: 自軍ターン中にバトルエリアに出たとき、BP の下三桁が500の敵軍 S ユニット（バトル・ラッシュ両エリア）をすべて撃破する（出典: atwiki/page-47）", () => {
     let s = st(
       {
         player1: { rush: [inst("RS-319", "dm")] },

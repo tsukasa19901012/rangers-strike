@@ -4,11 +4,15 @@
  * 各関数はエンジンの該当箇所（アタック対象の判定・撃破の置換・BP 計算など）から呼ばれる参照関数と、
  * このモジュールが開いた選択の解決（tryResolveSet5Choice / trySkipSet5Choice）。
  */
-import type { CardInstance, GameState, PendingLeave, PlayerId } from "../../types/game";
-import { cardName, getDefinition, unitEffectiveCategories } from "../../core/catalog";
-import { findInZone, removeAt, updatePlayer } from "../../core/helpers";
+import type { CardInstance, GameState, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
+import { addTurnRuleModifier, hasTurnRuleModifier } from "../../core/scopedModifiers";
+import { cardName, effectiveBp, getDefinition, isSmallUnit, unitEffectiveCategories } from "../../core/catalog";
+import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
+import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
+import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice } from "../pendingChoices";
 import { buildLogEntry } from "../../log/formatLog";
 import { unitFeatures } from "../addedFeatures";
+import { bounceToHand } from "../bounce";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { commandCategoriesNow } from "../legend3/battleEffects";
@@ -204,3 +208,125 @@ function skipKasumoShield(state: GameState, playerId: PlayerId): ChoiceOutcome {
 
 CHOICE_RESOLVERS[KASUMO_SHIELD_EFFECT_ID] = resolveKasumoShield;
 CHOICE_SKIPPERS[KASUMO_SHIELD_EFFECT_ID] = skipKasumoShield;
+
+// ---------------------------------------------------------------------------
+// RS-319 デカマスター【ディーソードベガ】
+// 「自軍ターン中、これがバトルエリアに出たとき、BPの下三桁が500の敵軍Sユニットをすべて撃破する。」
+// 敵軍ラッシュエリア・バトルエリアの両方が対象。BP は現在の値。
+
+export const D_SWORD_VEGA_EFFECT_ID = "deisodobega";
+
+/**
+ * RS-319 ※「自軍ラッシュフェイズ中、敵軍ダメージが自軍ダメージ以上なら、このユニットを持ち主の手札に戻す。」
+ * 条件を満たしたら他の宣言より先に即座に戻す（faq-card-5 RS-319 Q1）。同点・0点どうしでも戻る（Q2・Q3）。
+ * 進行中の処理がないとき（applyAction の後処理）に呼ぶ。
+ */
+export function applyDekaMasterReturn(state: GameState): GameState {
+  if (state.phase !== "rush" || state.winner) return state;
+  const turnPlayerId = state.activePlayer;
+  const enemyId = opponent(turnPlayerId);
+  let next = state;
+  for (let guard = 0; guard < 10; guard += 1) {
+    const owner = next.players[turnPlayerId];
+    if (next.players[enemyId].damage < owner.damage) return next;
+    const zone = owner.rush.some((c) => c.cardId === "RS-319") ? "rush" : owner.battle.some((c) => c.cardId === "RS-319") ? "battle" : null;
+    if (!zone) return next;
+    const card = owner[zone].find((c) => c.cardId === "RS-319")!;
+    const bounced = bounceToHand(next, { playerId: turnPlayerId, instanceId: card.instanceId, fromZone: zone }).state;
+    if (bounced === next) return next;
+    next = {
+      ...bounced,
+      log: [...bounced.log, buildLogEntry(turnPlayerId, "named_effect", "RS-319", state.definitions, "return_to_hand_rush_phase")],
+    };
+  }
+  return next;
+}
+
+function bpLastThreeDigitsIs500(bp: number): boolean {
+  return bp > 0 && bp % 1000 === 500;
+}
+
+function applyDSwordVega(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  if (ctx.phasePlayerId !== ctx.playerId) return { state, detail: `${D_SWORD_VEGA_EFFECT_ID}:not_own_turn` };
+  const enemyId = opponent(ctx.playerId);
+  const enemy = state.players[enemyId];
+  const targets = [...enemy.battle, ...enemy.rush]
+    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => bpLastThreeDigitsIs500(effectiveBp(state, enemyId, c)))
+    .map((c) => c.instanceId);
+  if (targets.length === 0) return { state, detail: `${D_SWORD_VEGA_EFFECT_ID}:no_targets` };
+  let next = state;
+  if (next.pendingEffectChoice) {
+    for (const id of targets) {
+      const leave = applyUnitLeave(next, id, "discard", ctx.phasePlayerId);
+      if (!("error" in leave)) next = leave.state;
+    }
+    return { state: next, detail: D_SWORD_VEGA_EFFECT_ID };
+  }
+  // 複数体の撃破（離場反応での中断／再開）は select_units_bp_budget の確定処理を共用する。
+  const opened = openEffectChoice(next, {
+    playerId: ctx.playerId,
+    effectId: D_SWORD_VEGA_EFFECT_ID,
+    sourceCardId: "RS-319",
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "select_units_bp_budget",
+    validInstanceIds: targets,
+    selectedInstanceIds: targets,
+    bpBudget: Number.MAX_SAFE_INTEGER,
+    optional: false,
+  });
+  const confirmed = applyConfirmEffectChoice(opened, ctx.playerId);
+  if ("error" in confirmed) return { state, detail: `${D_SWORD_VEGA_EFFECT_ID}:failed` };
+  return { state: confirmed.state, detail: D_SWORD_VEGA_EFFECT_ID };
+}
+
+// ---------------------------------------------------------------------------
+// RS-320 デカスワン【スワンイリュージョン】・RS-324 マジマザー【マジ・ロッドルーシー】
+// 「敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない」— 対象プレイヤーへのターン限定のルール。
+// 発動した後にラッシュしたユニットも出られない（faq-card-5 RS-324 Q2）。
+
+export const RUSH_AREA_NO_ENTRY_RULE = "rs5_rush_area_no_battle_entry_this_turn";
+
+/** このターン、ラッシュエリアのユニットをバトルエリアに出せないか。 */
+export function rushAreaEntryBlockedThisTurn(state: GameState, playerId: PlayerId): boolean {
+  return hasTurnRuleModifier(state.players[playerId], RUSH_AREA_NO_ENTRY_RULE);
+}
+
+function blockRushAreaEntry(state: GameState, playerId: PlayerId, sourceCardId: string): GameState {
+  if (rushAreaEntryBlockedThisTurn(state, playerId)) return state;
+  const player = addTurnRuleModifier(state.players[playerId], RUSH_AREA_NO_ENTRY_RULE, { sourceCardId });
+  return { ...state, ...updatePlayer(state, playerId, player) };
+}
+
+/**
+ * RS-320: 「これが自軍ラッシュエリアにある間、敵軍ターン中、敵軍Sユニットにストライクされてダメージを受けたとき、
+ *  敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない。」
+ * ストライクのダメージを与える処理（rules/strikeReactions.ts finalizeStrike）から呼ぶ。
+ */
+export function applySwanIllusionOnStrike(state: GameState, pending: PendingStrike): GameState {
+  const strikerId = pending.strikerPlayerId;
+  const defenderId = opponent(strikerId);
+  if (pending.battlePhasePlayer !== strikerId) return state;
+  if (!state.players[defenderId].rush.some((c) => c.cardId === "RS-320")) return state;
+  const striker = findInZone(state.players[strikerId], "battle", pending.strikerInstanceId)?.card;
+  if (!striker || !isSmallUnit(state.definitions, striker.cardId)) return state;
+  const next = blockRushAreaEntry(state, strikerId, "RS-320");
+  if (next === state) return state;
+  return {
+    ...next,
+    log: [...next.log, buildLogEntry(defenderId, "named_effect", "RS-320", state.definitions, "suwaniryujon")],
+  };
+}
+
+// ---------------------------------------------------------------------------
+// DSL grant_keyword（`cardId::effectId`）からの起点
+
+export function trySet5CardEffect(state: GameState, ctx: GrantKeywordContext, _keyword: string): GrantKeywordResult | null {
+  switch (`${ctx.sourceCardId}::${ctx.effectId}`) {
+    case "RS-319::deisodobega":
+      return applyDSwordVega(state, ctx);
+    default:
+      return null;
+  }
+}
