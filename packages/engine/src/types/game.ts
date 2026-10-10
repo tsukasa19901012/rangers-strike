@@ -403,6 +403,8 @@ export type PendingEffectChoice = {
   shironLightMeta?: ShironLightMeta;
   /** DSL choose 解決後の続行データ。 */
   dslResume?: DslChoiceResume;
+  /** unitDestination "power" のとき、ウラ向き（ダメージ）にして置く（「パワーゾーンにダメージにして置く」）。 */
+  placeAsDamage?: boolean;
   /** キャストオフ: 山札からラッシュするカード名。 */
   castoffTargetName?: string;
   /** キャストオフ: MF ユニット instanceId（ゾードダウン素材）。 */

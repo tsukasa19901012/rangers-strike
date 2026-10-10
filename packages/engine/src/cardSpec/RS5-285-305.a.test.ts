@@ -313,9 +313,24 @@ describe("RS-287 剛龍神", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.todo(
-    "RS-287: 【超爆裂龍神突き】敵軍ターン中にバトルエリアに出たときは発動しない（出典: atwiki/page-417「自軍ターン中」）— 敵軍ターン中に L ユニットをバトルエリアに出す手段（紐男爵【紐拳】等）がエンジンで発動せず状況を作れない",
-  );
+  it("RS-287: 【超爆裂龍神突き】敵軍ターン中にバトルエリアに出たとき（相手の紐男爵【紐拳】で出された）は発動しない（出典: atwiki/page-417「自軍ターン中」・atwiki/page-336【紐拳】）", () => {
+    let s = st(
+      {
+        activePlayer: "player2",
+        player1: { battle: [inst("TST-UNIT-0", "b")], rush: [inst("RS-287", "g")], deck: deckCards(3) },
+        player2: { battle: [inst("SPEC-E8", "b8"), inst("TST-UNIT-0", "ef")], rush: [inst("RS-141", "himo"), inst("SPEC-E4", "r4")], deck: deckCards(3, "e") },
+      },
+      SPECS,
+    );
+    s = enter(s, "RS-141:himo", "player2");
+    s = pick(s, "TST-UNIT-0:b");
+    expect(choiceIds(s)).toContain("RS-287:g");
+    s = settle(pick(s, "RS-287:g"));
+    expect(zoneOf(s, "player1", "RS-287:g")).toBe("battle");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-287");
+    expect(zoneOf(s, "player2", "SPEC-E8:b8")).toBe("battle");
+    expect(zoneOf(s, "player2", "SPEC-E4:r4")).toBe("rush");
+  });
 });
 
 // ===========================================================================
@@ -638,8 +653,7 @@ describe("RS-290 気伝武人龍星王", () => {
   });
 
   // atwiki/page-474 Q3「はい、可能です。…「Lユニット」になり、【飛竜棍・大風車】の効果対象ではなくなるため、バトルエリアに出すことが出来ます。」
-  it.fails("RS-290: Q&A — DA の S ユニット（バイオハンター・シルバ）もバルジオン（2nd）にライドすれば L ユニットになり、バトルエリアに出られる（出典: atwiki/page-474 Q3）", () => {
-    // 既知の不具合: CARD-RS-527 本来のカテゴリに DA を持つ S ユニットがバルジオン（2nd）にライドする合法手が出ない（範囲外カード）
+  it("RS-290: Q&A — DA の S ユニット（バイオハンター・シルバ）もバルジオン（2nd）にライドすれば L ユニットになり、バトルエリアに出られる（出典: atwiki/page-474 Q3）", () => {
     const s = st({ activePlayer: "player2", player1: { battle: [inst("RS-290", "b")] }, player2: { rush: [inst("RS-079", "s"), inst("RS-527", "bj")] } });
     const ride = legal(s).find((a) => a.type === "mount_ride" && a.riderInstanceId === "RS-079:s" && a.vehicleInstanceId === "RS-527:bj");
     expect(ride).toBeDefined();

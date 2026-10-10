@@ -16,7 +16,8 @@ import {
 } from "../core/catalog";
 import { applyDamageToPlayer } from "./damagePayment";
 import { sameCardName } from "../core/cardNames";
-import { isZordUpCost } from "@rangers-strike/cards";
+import { isZordUpCost, resolveRushAdditionalCondition } from "@rangers-strike/cards";
+import { countAvailablePower, rushEffectivePowerCost } from "../core/power";
 import { opponent, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import {
@@ -1524,6 +1525,115 @@ function resolveChokiScissors(state: GameState, playerId: PlayerId, instanceId: 
 }
 
 // ---------------------------------------------------------------------------
+// RK-022 ライダーパス（常駐。起動は rules/permanentOperation.ts の activate_resident_operation）
+
+const RIDER_PASS_CARD = "rider_pass_card";
+const RIDER_PASS_UNIT = "rider_pass_unit";
+
+/**
+ * 出典: atwiki/page-128 — 自軍ラッシュフェイズに重ねたカードから1枚選び、本来の特徴に「DEN-O」を持つ自軍ユニットと
+ * 置き換えてもよい（必要パワーと追加条件は満たすこと）。Q6: ラッシュフェイズ中なら何度でも使える。
+ * 追加条件のあるカードは、ここでは置き換え先に選べない（追加条件の支払いを伴う置き換えは未対応）。
+ */
+function riderPassCardIds(state: GameState, playerId: PlayerId, op: CardInstance): string[] {
+  const power = countAvailablePower(state, playerId);
+  return (op.stackedCards ?? [])
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      if (def?.type !== "unit") return false;
+      if (resolveRushAdditionalCondition(c.cardId, def as never)) return false;
+      return rushEffectivePowerCost(state, playerId, parsePowerCost(def.powerCost), c.cardId) <= power;
+    })
+    .map((c) => c.instanceId);
+}
+
+function riderPassUnitIds(state: GameState, playerId: PlayerId): string[] {
+  return fieldUnits(state.players[playerId])
+    .filter((c) => (getDefinition(state.definitions, c.cardId)?.features ?? []).includes("DEN-O"))
+    .map((c) => c.instanceId);
+}
+
+export function canActivateRiderPass(state: GameState, playerId: PlayerId, op: CardInstance): boolean {
+  if (op.cardId !== "RK-022" || state.phase !== "rush" || state.activePlayer !== playerId) return false;
+  return riderPassCardIds(state, playerId, op).length > 0 && riderPassUnitIds(state, playerId).length > 0;
+}
+
+export function beginRiderPass(state: GameState, playerId: PlayerId, op: CardInstance): GameState {
+  const ids = riderPassCardIds(state, playerId, op);
+  if (ids.length === 0 || riderPassUnitIds(state, playerId).length === 0) return state;
+  return openEffectChoice(state, {
+    playerId,
+    effectId: RIDER_PASS_CARD,
+    sourceCardId: op.cardId,
+    sourceInstanceId: op.instanceId,
+    kind: "scry_keep_one",
+    phasePlayerId: playerId,
+    validInstanceIds: ids,
+    viewedInstanceIds: (op.stackedCards ?? []).map((c) => c.instanceId),
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+function resolveRiderPass(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  if (pending.effectId === RIDER_PASS_CARD) {
+    return {
+      state: openEffectChoice(clearPending(state, pending.phasePlayerId), {
+        playerId,
+        effectId: RIDER_PASS_UNIT,
+        sourceCardId: pending.sourceCardId,
+        sourceInstanceId: pending.sourceInstanceId,
+        kind: "select_unit",
+        phasePlayerId: pending.phasePlayerId,
+        validInstanceIds: riderPassUnitIds(state, playerId),
+        selectCount: 1,
+        optional: false,
+        selectedInstanceIds: [instanceId],
+      }),
+    };
+  }
+  // 置き換え: 重ねたカードがユニットの位置と状態（ホールド・ライド等）を引き継ぎ、置き換えたユニットのカードは
+  // ライダーパスに重ねる（Q2/Q4: ライド状態は維持。R-REPL-04）。エリアに出たカードは「ラッシュ」扱い（Q3/Q5。
+  // core/applyAction.ts の settleEffectRushes が処理する）。
+  const passCardId = pending.selectedInstanceIds?.[0];
+  const player = state.players[playerId];
+  const op = player.operation.find((c) => c.instanceId === pending.sourceInstanceId);
+  const passCard = op?.stackedCards?.find((c) => c.instanceId === passCardId);
+  if (!op || !passCard) return { error: "invalid_target" };
+  let replaced: CardInstance | undefined;
+  const swap = (cards: CardInstance[]) =>
+    cards.map((c) => {
+      if (c.instanceId !== instanceId) return c;
+      replaced = c;
+      const { stackedCards: _s, faceDown: _f, ...incoming } = passCard;
+      return {
+        ...incoming,
+        ...(c.commandHeld ? { commandHeld: true } : {}),
+        ...(c.mountedOnInstanceId ? { mountedOnInstanceId: c.mountedOnInstanceId } : {}),
+      } as CardInstance;
+    });
+  const rush = swap(player.rush);
+  const battle = swap(player.battle);
+  if (!replaced) return { error: "invalid_target" };
+  const replacedCard = { instanceId: replaced.instanceId, cardId: replaced.cardId } as CardInstance;
+  const operation = player.operation.map((c) =>
+    c.instanceId === op.instanceId
+      ? { ...c, stackedCards: [...(c.stackedCards ?? []).filter((x) => x.instanceId !== passCard.instanceId), replacedCard] }
+      : c,
+  );
+  const next = clearPending(
+    { ...state, ...updatePlayer(state, playerId, { ...player, rush, battle, operation }) },
+    pending.phasePlayerId,
+  );
+  return {
+    state: next,
+    log: logFor(state, playerId, op.cardId, `${RIDER_PASS_UNIT}:${replaced.cardId}->${passCard.cardId}`),
+  };
+}
+
+// ---------------------------------------------------------------------------
 // 登録
 
 type ChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
@@ -1535,6 +1645,8 @@ const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [ELECTRO_BEAM_PICK]: resolveElectroBeam,
   [DENSHA_GIRI]: resolveDenshaGiri,
   [DRAGON_HARLEY]: resolveDragonHarleyPick,
+  [RIDER_PASS_CARD]: resolveRiderPass,
+  [RIDER_PASS_UNIT]: resolveRiderPass,
   [ABARENOH_FROM_HAND]: resolveAbarenohFromHand,
   [CHOKI_SCISSORS]: resolveChokiScissors,
   [WILD_CYCLONE]: resolveWildCyclone,
