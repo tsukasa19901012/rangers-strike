@@ -535,6 +535,24 @@ export type GameState = {
   /** スタートフェイズ: 一括戻し後の任意 battle→rush 効果（例: falcon_claw）。 */
   pendingBattleToRushQueue?: string[];
   pendingBattleToRushPhasePlayerId?: PlayerId;
+  /**
+   * スタートフェイズ: 「すべて戻す」で、まだバトルエリアに残っていて順に戻す予定のユニット。
+   * 戻すたびに誘発効果を解決してから次を戻す（R-START-01, RS-135 FAQ）。
+   */
+  pendingStartReturnQueue?: string[];
+  /**
+   * エンドフェイズ: 「ターンを終えるとき」の効果を処理中（まだ終えるプレイヤーのターン）。
+   * 選択待ちで中断したら、解決後にここから再開する（R-END-01）。
+   */
+  turnEndProgress?: TurnEndProgress;
+};
+
+export type TurnEndProgress = {
+  endingPlayerId: PlayerId;
+  /** まだ処理していない「ターンを終えるとき」の常駐（持ち主と instanceId）。 */
+  residentQueue: Array<{ ownerId: PlayerId; instanceId: string }>;
+  /** 常駐以外の「ターンを終えるとき」の効果を処理済みか。 */
+  restDone: boolean;
 };
 
 export const INITIAL_HAND_SIZE = 7;

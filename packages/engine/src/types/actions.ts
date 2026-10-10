@@ -153,9 +153,16 @@ export type ReleaseStartCommandsAction = {
   playerId: PlayerId;
 };
 
+/**
+ * スタートフェイズ: バトルエリアのユニットをラッシュエリアに戻す（R-START-01）。
+ * `instanceId` を指定するとそのユニット（ライドの組は一緒に）だけを戻す。
+ * 省略するとバトルエリアの並び順で1体ずつ戻し、誘発した効果の選択が開いたらそこで止まり、
+ * 解決後に残りを戻す。
+ */
 export type ReturnAllBattleToRushAction = {
   type: "return_all_battle_to_rush";
   playerId: PlayerId;
+  instanceId?: string;
 };
 
 export type PassStrikeReactionAction = {

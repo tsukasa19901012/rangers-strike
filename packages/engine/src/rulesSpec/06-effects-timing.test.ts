@@ -1304,8 +1304,7 @@ describe("R-CONT-01 同じ継続効果は重複する", () => {
   });
 
   // 「ホールド状態のコマンドを２枚選んで手札に戻します」(faq-card-1 RS-030 Q1)
-  it.fails("R-CONT-01: 自分も相手もアドベンチャーを常駐していれば、ターンを終えたプレイヤーはホールド状態のコマンドを2つ手札に戻す（出典: grnrngr/faq-card-1 RS-030 Q1）", () => {
-    // 既知の不具合: 未登録（相手のアドベンチャーと重複せず1つしか戻さない）
+  it("R-CONT-01: 自分も相手もアドベンチャーを常駐していれば、ターンを終えたプレイヤーはホールド状態のコマンドを2つ手札に戻す（出典: grnrngr/faq-card-1 RS-030 Q1）", () => {
     let s = st({
       phase: "end",
       player1: { operation: [inst("RS-030", "a1")], command: [cmd("TST-OP", "h1", true), cmd("TST-OP", "h2", true), cmd("TST-OP", "h3", true)], deck: deck(5) },

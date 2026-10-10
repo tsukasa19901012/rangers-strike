@@ -8,6 +8,8 @@ type StartPhaseModalProps = {
   status: StartPhaseStatus;
   onRelease: () => void;
   onReturnAllBattle: () => void;
+  /** 1体ずつ戻す（戻す順は任意: R-START-01）。 */
+  onReturnBattleUnit?: (instanceId: string) => void;
   onDraw: () => void;
   onBonusDraw: () => void;
   onSkipBonusDraw: () => void;
@@ -42,6 +44,7 @@ export function StartPhaseModal({
   status,
   onRelease,
   onReturnAllBattle,
+  onReturnBattleUnit,
   onDraw,
   onBonusDraw,
   onSkipBonusDraw,
@@ -89,16 +92,29 @@ export function StartPhaseModal({
               done={status.returnDone}
               detail={
                 !status.returnDone && status.battleUnitCount > 0
-                  ? `バトルエリア ${status.battleUnitCount} 体を一括でラッシュに戻します`
+                  ? `バトルエリア ${status.battleUnitCount} 体を1体ずつラッシュに戻します`
                   : status.returnDone
                     ? "すべてラッシュに戻しました"
                     : "バトルエリアにユニットなし"
               }
               action={
                 status.canReturn ? (
-                  <button type="button" className="btn btn--primary" onClick={onReturnAllBattle}>
-                    すべてラッシュに戻す
-                  </button>
+                  <div className="effect-action-modal__actions">
+                    <button type="button" className="btn btn--primary" onClick={onReturnAllBattle}>
+                      すべてラッシュに戻す
+                    </button>
+                    {onReturnBattleUnit &&
+                      status.returnChoices.map((unit) => (
+                        <button
+                          key={unit.instanceId}
+                          type="button"
+                          className="btn"
+                          onClick={() => onReturnBattleUnit(unit.instanceId)}
+                        >
+                          {unit.name}を先に戻す
+                        </button>
+                      ))}
+                  </div>
                 ) : undefined
               }
             />
