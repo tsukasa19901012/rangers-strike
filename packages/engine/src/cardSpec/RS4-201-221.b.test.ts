@@ -327,21 +327,18 @@ describe("RS-210 ゴーマ16世", () => {
   });
 
   // 「ナンバーを持つすべてのSユニットは、BPが「＋」されるかわりにBPが「－」される」
-  // 既知の不具合: CARD-RS-210 【大地動転の玉】が適用されない（BP 加算が減算にならない）
-  it.fails("RS-210: 自軍のナンバーを持つ S（キリンレンジャー、イエロー）はカレーの＋2000が－2000になり BP1000（出典: atwiki/page-107）", () => {
+  it("RS-210: 自軍のナンバーを持つ S（キリンレンジャー、イエロー）はカレーの＋2000が－2000になり BP1000（出典: atwiki/page-107）", () => {
     const s = st({ player1: { battle: [inst("RS-210", "g"), inst("RS-208", "k")], operation: [inst("RS-179", "cur")] } });
     expect(bpOf(s, "player1", "RS-208:k")).toBe(1000);
   });
 
-  // 既知の不具合: CARD-RS-210 【大地動転の玉】が適用されない（BP 加算が減算にならない）
-  it.fails("RS-210: 敵軍のナンバーを持つ S にも適用される（出典: atwiki/page-107「すべてのSユニット」）", () => {
+  it("RS-210: 敵軍のナンバーを持つ S にも適用される（出典: atwiki/page-107「すべてのSユニット」）", () => {
     const s = st({ player1: { battle: [inst("RS-210", "g")] }, player2: { battle: [inst("RS-208", "k")], operation: [inst("RS-179", "cur")] } });
     expect(bpOf(s, "player2", "RS-208:k")).toBe(1000);
   });
 
   // 「ナンバーを持つ」— ナンバーの無い S は＋のまま
-  // 既知の不具合: CARD-RS-210 【大地動転の玉】が適用されない（BP 加算が減算にならない）
-  it.fails("RS-210: ナンバーを持たない S は＋のまま、ナンバーを持つ S は－になる（出典: atwiki/page-107「ナンバーを持つ」）", () => {
+  it("RS-210: ナンバーを持たない S は＋のまま、ナンバーを持つ S は－になる（出典: atwiki/page-107「ナンバーを持つ」）", () => {
     const NO_CN_YELLOW = { id: "SPEC-YELLOW-NOCN", name: "SPEC-YELLOW-NOCN", type: "unit", category: "MA", rarity: "N", expansion: "card-spec", powerCost: 0, bp: 1000, size: "S", features: ["イエロー"] } as const;
     const s = st(
       { player1: { battle: [inst("RS-210", "g"), inst("SPEC-YELLOW-NOCN", "n"), inst("RS-208", "k")], operation: [inst("RS-179", "cur")] } },
@@ -352,8 +349,7 @@ describe("RS-210 ゴーマ16世", () => {
   });
 
   // 「（BP0以下になったユニットは撃破される）」
-  // 既知の不具合: CARD-RS-210 【大地動転の玉】が適用されない（BP 加算が減算にならない）
-  it.fails("RS-210: BP0 以下になったユニットは撃破される（BP1000 のイエローフォーにカレーで－1000）（出典: atwiki/page-107）", () => {
+  it("RS-210: BP0 以下になったユニットは撃破される（BP1000 のイエローフォーにカレーで－1000）（出典: atwiki/page-107）", () => {
     let s = st({
       phase: "rush",
       player1: { rush: [inst("RS-201", "y")], hand: [inst("RS-210", "g")], operation: [inst("RS-179", "cur")], power: powerCards(4), command: releasedN(1, "TST-OP-DA") },
