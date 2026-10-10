@@ -1090,13 +1090,16 @@ function pickSelectHandChoice(
 
   let best: GameAction | null = null;
   let bestPriority = Number.POSITIVE_INFINITY;
+  // 超電子頭脳（RS-008）は「手札に残す1枚」を選ぶので、捨てる優先度が最も低いカードを選ぶ。
+  const keepChoice = pending.effectId === "super_brain_keep";
 
   for (const action of actions) {
     if (action.type !== "resolve_effect_choice") continue;
     if (selected.has(action.instanceId)) continue;
     const found = findInZone(state.players[playerId], "hand", action.instanceId);
     if (!found) continue;
-    const priority = handDiscardPriority(state.definitions, found.card.cardId);
+    const raw = handDiscardPriority(state.definitions, found.card.cardId);
+    const priority = keepChoice ? -raw : raw;
     if (priority < bestPriority) {
       bestPriority = priority;
       best = action;

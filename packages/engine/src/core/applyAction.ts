@@ -218,7 +218,7 @@ import {
 } from "../rules/operationCounters";
 import { applyLionDance, applyUseJuuKunDo, isLionDanceCard } from "../rules/juuKunDo";
 import { applyResolveRuinSurvey } from "../rules/ruinSurvey";
-import { applySeabedDrawPlacement, openEffectChoice } from "../rules/pendingChoices";
+import { applySeabedDrawPlacement, openEffectChoice, SUPER_BRAIN_KEEP_EFFECT_ID } from "../rules/pendingChoices";
 import {
   applyConfirmDenjiReveal,
   applyDenjiBottomOrderSelect,
@@ -1244,10 +1244,13 @@ function applyActionCore(
         nextState = outcome.state;
         outcomeDetail = outcome.detail;
 
+        // 超電子頭脳の「どちらを残すか」選択はドローの一部なので、使ったオペレーションはそのまま捨札にする。
+        const superBrainKeepPending =
+          nextState.pendingEffectChoice?.effectId === SUPER_BRAIN_KEEP_EFFECT_ID;
         if (
-          outcome.discardOperation !== false &&
+          (outcome.discardOperation !== false || superBrainKeepPending) &&
           !isPermanent &&
-          !nextState.pendingEffectChoice
+          (!nextState.pendingEffectChoice || superBrainKeepPending)
         ) {
           const current = nextState.players[playerId];
           nextState = {
@@ -2191,6 +2194,14 @@ function applyActionCore(
         nextState = continueBattleToRushEffectQueue(nextState);
       }
       if (
+        pending?.effectId === SUPER_BRAIN_KEEP_EFFECT_ID &&
+        nextState.phase === "start" &&
+        nextState.players[playerId].hasDrawnThisStart &&
+        !nextState.pendingEffectChoice
+      ) {
+        nextState = openEarthForceUpkeepChoiceIfNeeded(nextState, playerId);
+      }
+      if (
         nextState.phase === "end" &&
         !nextState.pendingEffectChoice &&
         pending?.effectId === "jet_skateboard" ||
@@ -2244,7 +2255,7 @@ function applyActionCore(
         afterSkip.phase === "start" &&
         afterSkip.players[playerId].hasDrawnThisStart &&
         !afterSkip.pendingEffectChoice &&
-        pending?.effectId === "seabed_survey"
+        (pending?.effectId === "seabed_survey" || pending?.effectId === SUPER_BRAIN_KEEP_EFFECT_ID)
       ) {
         afterSkip = openEarthForceUpkeepChoiceIfNeeded(afterSkip, playerId);
       }

@@ -217,11 +217,80 @@ export function requestDrawFromDeck(
     "top",
     options?.superBrainDiscardSecond,
   );
+  const afterDraw: GameState = { ...state, ...updatePlayer(state, playerId, nextPlayer) };
+  if (options?.superBrainDiscardSecond) {
+    const kept = openSuperBrainKeepChoice(
+      afterDraw,
+      playerId,
+      phasePlayerId,
+      player.hand.map((c) => c.instanceId),
+      options.seabedResume,
+    );
+    if (kept) return { state: kept, pending: true };
+  }
   return {
-    state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+    state: afterDraw,
     pending: false,
     drawn: true,
   };
+}
+
+export const SUPER_BRAIN_KEEP_EFFECT_ID = "super_brain_keep";
+
+/**
+ * RS-008 超電子頭脳 — 2枚ひいたあと、どちらを手札に残すかを自分で選ぶ（もう1枚は捨札）。
+ * 新たに手札に入ったカードが2枚未満（山札が1枚だった）なら選択は開かない。
+ * ルール: atwiki/page-275「そのうちの1枚を手札に加え、もう1枚を捨札にする」
+ */
+function openSuperBrainKeepChoice(
+  state: GameState,
+  playerId: PlayerId,
+  phasePlayerId: PlayerId,
+  handBeforeIds: string[],
+  resume?: NonNullable<SeabedDrawMeta["resume"]>,
+): GameState | null {
+  const before = new Set(handBeforeIds);
+  const drawnIds = state.players[playerId].hand
+    .map((c) => c.instanceId)
+    .filter((id) => !before.has(id));
+  if (drawnIds.length < 2) return null;
+  return openEffectChoice(
+    { ...state, pendingEffectChoice: undefined },
+    {
+      playerId,
+      effectId: SUPER_BRAIN_KEEP_EFFECT_ID,
+      sourceCardId: "RS-008",
+      kind: "select_hand",
+      phasePlayerId,
+      validInstanceIds: drawnIds,
+      selectCount: 1,
+      // 省略（skip）は「先にひいた1枚を残す」。
+      optional: true,
+      seabedDrawMeta: { drawCount: drawnIds.length, superBrainDiscardSecond: true, resume },
+    },
+  );
+}
+
+function resolveSuperBrainKeepChoice(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const discardIds = new Set(pending.validInstanceIds.filter((id) => id !== instanceId));
+  const player = state.players[playerId];
+  const toDiscard = player.hand.filter((c) => discardIds.has(c.instanceId));
+  const nextPlayer = {
+    ...player,
+    hand: player.hand.filter((c) => !discardIds.has(c.instanceId)),
+    discard: [...player.discard, ...toDiscard],
+  };
+  return finishSeabedDrawChoice(
+    { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+    pending,
+    "keep",
+  );
 }
 
 export type ChoiceOutcome =
@@ -450,12 +519,24 @@ export function applySeabedDrawPlacement(
     from,
     meta.superBrainDiscardSecond,
   );
+  const afterDraw: GameState = { ...state, ...updatePlayer(state, playerId, nextPlayer) };
+  if (meta.superBrainDiscardSecond) {
+    const kept = openSuperBrainKeepChoice(
+      afterDraw,
+      playerId,
+      pending.phasePlayerId,
+      player.hand.map((c) => c.instanceId),
+      meta.resume,
+    );
+    if (kept) {
+      return {
+        state: kept,
+        log: buildLogEntry(playerId, "resolve_effect_choice", pending.sourceCardId, state.definitions, `${pending.effectId}:${from}`),
+      };
+    }
+  }
 
-  return finishSeabedDrawChoice(
-    { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-    pending,
-    from,
-  );
+  return finishSeabedDrawChoice(afterDraw, pending, from);
 }
 
 export function applySeabedDrawSkip(state: GameState, playerId: PlayerId): ChoiceOutcome {
@@ -2220,6 +2301,10 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   const errata = trySkipErrataChoice(state, playerId);
   if (errata) return errata;
   if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
+  if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
+    // 選択を省略したときは先にひいた1枚を手札に残す（どちらか1枚は必ず残る）。
+    return resolveSuperBrainKeepChoice(state, playerId, pending.validInstanceIds[0]!);
+  }
   if (pending.effectId === KUROKO_MEMORY_EFFECT_ID && pending.kurokoMeta) {
     const result = skipKurokoMemoryChoice(state, playerId);
     if ("error" in result) return result;
@@ -2362,6 +2447,9 @@ export function applyEffectChoiceSelect(
     const result = resolveDispatchOrder(state, playerId, instanceId);
     if ("error" in result) return result;
     return { state: promoteDeferredBattleEntry(result.state), log: result.log };
+  }
+  if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
+    return resolveSuperBrainKeepChoice(state, playerId, instanceId);
   }
   if (pending.effectId === KUROKO_MEMORY_EFFECT_ID && pending.kurokoMeta) {
     const result = resolveKurokoMemoryChoice(state, playerId, instanceId);

@@ -48,7 +48,7 @@ export function drawOne(player: PlayerState): PlayerState {
   return performDeckDraws(player, 1, "top");
 }
 
-/** 山札の上または下から手札へドロー（任意で2枚目の超脳カードを捨てる）。 */
+/** 山札の上または下から手札へドロー（超電子頭脳の2枚目が引けなくても敗北にしない）。 */
 export function performDeckDraws(
   player: PlayerState,
   count: number,
@@ -64,11 +64,8 @@ export function performDeckDraws(
     }
     const index = from === "top" ? 0 : next.deck.length - 1;
     const [drawn, deck] = removeAt(next.deck, index);
-    if (superBrainDiscardSecond && i === 1) {
-      next = { ...next, deck, discard: [...next.discard, drawn] };
-    } else {
-      next = { ...next, deck, hand: [...next.hand, drawn] };
-    }
+    // 超電子頭脳の2枚目もいったん手札に入れ、どちらを残すかは呼び出し側の選択（super_brain_keep）で決める。
+    next = { ...next, deck, hand: [...next.hand, drawn] };
   }
   return next;
 }

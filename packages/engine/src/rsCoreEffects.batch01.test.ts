@@ -218,8 +218,13 @@ describe("RS-008 Super Brain", () => {
         deck: [inst("TST-OP", "d1"), inst("TST-OP", "d2"), inst("TST-OP", "d3")],
       },
     });
-    const next = unwrap(applyAction(state, { type: "draw", playerId: "player1" }));
-    expect(next.players.player1.hand).toHaveLength(1);
+    const drawn = unwrap(applyAction(state, { type: "draw", playerId: "player1" }));
+    // どちらを手札に残すかは自分で選ぶ（atwiki/page-275）。
+    const keep = drawn.pendingEffectChoice!.validInstanceIds[0]!;
+    const next = unwrap(
+      applyAction(drawn, { type: "resolve_effect_choice", playerId: "player1", instanceId: keep }),
+    );
+    expect(next.players.player1.hand.map((c) => c.instanceId)).toEqual([keep]);
     expect(next.players.player1.discard).toHaveLength(1);
   });
 });

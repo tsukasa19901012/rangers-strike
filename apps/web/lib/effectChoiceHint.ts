@@ -66,6 +66,9 @@ export function effectChoiceHint(
       return "選ばれたカードを相手に公開してください";
     }
     case "select_hand": {
+      if (pending.effectId === "super_brain_keep") {
+        return "超電子頭脳：手札に加える1枚を選んでください（もう1枚は捨札）";
+      }
       if (pending.effectId === "battle_entry_hand_discard") {
         const picked = pending.selectedInstanceIds?.length ?? 0;
         const total = pending.selectCount ?? 2;

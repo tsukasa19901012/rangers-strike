@@ -732,8 +732,7 @@ describe("RS-008 超電子頭脳", () => {
     expect(zoneIds(s, "player1", "deck")).toEqual([d[2]!.instanceId]);
   });
 
-  it.fails("RS-008: どちらを手札に加えるかは自分が選ぶ（出典: atwiki/page-275 「そのうちの1枚を手札に加え」）", () => {
-    // 既知の不具合: CARD-RS-008 2枚目を自動で捨札にし、手札に加える1枚を選べない
+  it("RS-008: どちらを手札に加えるかは自分が選ぶ（出典: atwiki/page-275 「そのうちの1枚を手札に加え」）", () => {
     const d = [inst("CS-S1", "a"), inst("CS-M", "b"), inst("TST-OP", "c")];
     const s = brainDraw(d);
     expect(s.pendingEffectChoice).toBeDefined();
@@ -743,7 +742,6 @@ describe("RS-008 超電子頭脳", () => {
   });
 
   it("RS-008: 公式Q&A — マジブルーの効果によるドローでも発動する（出典: grnrngr/faq-card-1 RS-008 Q1）", () => {
-    // 既知の不具合: CARD-RS-008 マジブルー【未来予知】のドローが超電子頭脳を通らず1枚だけひく
     // 「はい、発動します」
     const blue = inst("RS-059", "blue");
     const d = deckCards(4);

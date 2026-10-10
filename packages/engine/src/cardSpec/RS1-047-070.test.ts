@@ -2027,8 +2027,7 @@ describe("RS-068 地球と宇宙のエネルギー", () => {
     expect(zoneOf(s, "player1", "RS-007:o")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-068 選択肢がユニットカードに限られ、捨札のオペレーションカードを選べない（本文は「カードを1枚」）
-  it.fails("RS-068: 自軍捨札のオペレーションカードも選んで手札に加えられる（出典: atwiki/page-272）", () => {
+  it("RS-068: 自軍捨札のオペレーションカードも選んで手札に加えられる（出典: atwiki/page-272）", () => {
     const s = playEarth(earth(6), "RS-007:o");
     expect(zoneOf(s, "player1", "RS-007:o")).toBe("hand");
   });

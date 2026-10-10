@@ -17,7 +17,7 @@ function matchesFilter(
   card: CardInstance,
   filter?: {
     size?: string;
-    cardType?: "unit" | "operation";
+    cardType?: "unit" | "operation" | "any";
     category?: string;
     categoryExcept?: string;
     maxBp?: number;
@@ -30,7 +30,7 @@ function matchesFilter(
 ): boolean {
   if (!filter) return true;
   const def = getDefinition(state.definitions, card.cardId);
-  if (filter.cardType && def?.type !== filter.cardType) return false;
+  if (filter.cardType && filter.cardType !== "any" && def?.type !== filter.cardType) return false;
   if (filter.size && def?.size !== filter.size) return false;
   if (filter.maxPowerCost !== undefined && parsePowerCost(def?.powerCost ?? 99) > filter.maxPowerCost) {
     return false;
@@ -51,6 +51,8 @@ function matchesFilter(
 function withUnitTypeFilter(
   filter?: NonNullable<Extract<TargetSelector, { type: "zone" }>["filter"]>,
 ): NonNullable<Extract<TargetSelector, { type: "zone" }>["filter"]> {
+  // cardType: "any" は「カードを1枚」（種類を問わない）の明示。暗黙のユニット絞り込みをしない。
+  if (filter?.cardType === "any") return filter;
   return { ...filter, cardType: "unit" };
 }
 

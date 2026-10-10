@@ -71,7 +71,7 @@ export type TargetSelector =
       owner: "self" | "opponent" | "any";
       filter?: {
         size?: UnitSize;
-        cardType?: "unit" | "operation";
+        cardType?: "unit" | "operation" | "any";
         category?: string;
         categoryExcept?: string;
         faceDown?: boolean;
@@ -89,7 +89,7 @@ export type TargetSelector =
         owner: "self" | "opponent" | "any";
         filter?: {
           size?: UnitSize;
-          cardType?: "unit" | "operation";
+          cardType?: "unit" | "operation" | "any";
           category?: string;
           faceDown?: boolean;
           commandHeld?: boolean;
