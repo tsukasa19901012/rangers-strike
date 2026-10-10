@@ -27,7 +27,7 @@ export function updatePlayer(
 
 export function findInZone(
   player: PlayerState,
-  zone: keyof Pick<PlayerState, "hand" | "power" | "command" | "rush" | "battle" | "discard" | "operation">,
+  zone: keyof Pick<PlayerState, "hand" | "power" | "command" | "rush" | "battle" | "discard" | "operation" | "deck">,
   instanceId: string,
 ) {
   const index = player[zone].findIndex((c) => c.instanceId === instanceId);

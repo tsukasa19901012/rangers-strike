@@ -151,9 +151,19 @@ export function resolveRushAdditionalCondition(
   card?: { rushAdditionalCondition?: RushAdditionalCondition },
 ): RushAdditionalCondition | undefined {
   const fromBlock = getUnitEffectBlock(cardId)?.rushAdditionalCondition;
-  if (fromBlock) return fromBlock;
-  if (card?.rushAdditionalCondition) return card.rushAdditionalCondition;
-  return getRushAdditionalCondition(cardId);
+  const resolved = fromBlock ?? card?.rushAdditionalCondition ?? getRushAdditionalCondition(cardId);
+  return resolved ? normalizeDiscardPresenceCondition(resolved) : undefined;
+}
+
+/**
+ * 「追加条件：自軍捨札に「X」がある」（RS-327 天空聖者ブレイジェル）は捨札にする支払いではなく状態の条件。
+ * 取り込みデータは discard_named_unit になっているので、ここで state_gate として扱う（atwiki/page-488）。
+ */
+function normalizeDiscardPresenceCondition(condition: RushAdditionalCondition): RushAdditionalCondition {
+  if (condition.conditionId === "discard_named_unit" && /^自軍捨札に「[^」]+」がある$/.test(condition.text)) {
+    return { conditionId: "state_gate", text: condition.text };
+  }
+  return condition;
 }
 
 export function getZordCondition(cardId: string): ZordConditionId | undefined {

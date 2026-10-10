@@ -7,6 +7,7 @@ import {
   isSmallUnit,
 } from "../core/catalog";
 import { cardHasKeyword } from "../keywords/cardKeywords";
+import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -314,6 +315,9 @@ export function tryZubazubanOnAllyRush(
   if (!found) return state;
   const def = getDefinition(state.definitions, found.card.cardId);
   if (def?.size !== "L" || !(def.features ?? []).includes("メカ")) return state;
+  // 「その追加条件を満たすために捨札にした合体ユニット」— 追加条件が「自軍合体ユニットを捨札にする」のユニットだけ
+  // （faq-card-6 RS-420 Q1: トラベリオンエクスプレスを捨札にしたトラベリオンでは発動しない）。
+  if (resolveRushAdditionalCondition(found.card.cardId, def)?.conditionId !== "discard_fusion_unit") return state;
   const withChoice = startZubazubanDestroyChoice(state, {
     playerId: rusherPlayerId,
     effectId: "zubazubankiku",

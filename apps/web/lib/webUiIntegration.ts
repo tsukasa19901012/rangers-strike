@@ -49,10 +49,13 @@ export function resolveHumanReactionKind(
   if (state.pendingLeave && getReactionChooserPlayerId(state) === humanPlayerId) {
     return "leave";
   }
+  // RS-255 巨大化爆弾の使用の窓（見送りは pass_leave_reaction）。
+  if (state.pendingGiantBomb?.ownerId === humanPlayerId) return "leave";
   return null;
 }
 
 function isHumanReactionTurn(state: GameState, humanPlayerId: PlayerId): boolean {
+  if (!state.winner && state.pendingGiantBomb?.ownerId === humanPlayerId) return true;
   if (state.winner || getReactionChooserPlayerId(state) !== humanPlayerId) return false;
   return !!(
     (state.pendingStrike && !state.pendingDamagePayment) ||
@@ -67,7 +70,7 @@ export function resolveCounterInstanceIds(
   humanPlayerId: PlayerId,
   legalActions: GameAction[] = getLegalActions(state),
 ): string[] {
-  if (getReactionChooserPlayerId(state) !== humanPlayerId) return [];
+  if (getReactionChooserPlayerId(state) !== humanPlayerId && state.pendingGiantBomb?.ownerId !== humanPlayerId) return [];
   const ids = new Set<string>();
   for (const action of legalActions) {
     if (action.type === "play_counter") {

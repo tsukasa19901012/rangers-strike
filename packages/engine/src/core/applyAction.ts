@@ -1,5 +1,22 @@
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
+import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
+import {
+  applyGiantBombCounter,
+  closeGiantBombWindow,
+  openGiantBombWindow,
+  openRoundRadarIfReady,
+  queueRoundRadar,
+  settleStackedCards,
+} from "../rules/legend1/set5NamedEffectsA";
+import { finalizeEffectRush } from "../events/emitUnitRushed";
 import { applyMagiPunchCounter, isSet4EndTurnEffect, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
+import {
+  applyDekaMasterReturn,
+  applyMagiMotherSubstitute,
+  finishMagiTicketStaging,
+  settleMagiTicket,
+  stageMagiTicket,
+} from "../rules/legend1/set5NamedEffects";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import { applyDeusGeneOnRush } from "../rules/rs4NcEffects";
 import type { GameAction } from "../types/actions";
@@ -16,6 +33,8 @@ import {
 } from "@rangers-strike/cards";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { checkWinner, advancePhase } from "./createGame";
+import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
+import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import {
   canPlayOperation,
   cardName,
@@ -350,6 +369,35 @@ function continueAttackAfterDeclaration(
 ): ActionResult {
   const playerId = pending.attackerPlayerId;
   const enemyId = pending.defenderPlayerId;
+  if (!pending.onAttackResolved) {
+    // ルール: R-TIME-01 — 「アタックするとき／アタックしたとき」（アタックしたユニットの DSL on_attack）は、
+    // 「アタックされたとき」（RS-215・カウンター窓）より先に解決する。選択が開けば、それを解決してから続ける。
+    const marked: PendingBattle = { ...pending, onAttackResolved: true };
+    const attacker = battleState.players[playerId];
+    const found =
+      findInZone(attacker, "battle", pending.attackerInstanceId) ??
+      findInZone(attacker, "rush", pending.attackerInstanceId);
+    let afterOnAttack = battleState;
+    if (found) {
+      const fx = tryResolveDslTriggeredEffects({
+        state: battleState,
+        cardId: found.card.cardId,
+        instanceId: pending.attackerInstanceId,
+        playerId,
+        phasePlayerId: pending.phasePlayerId,
+        triggerType: "on_attack",
+      });
+      afterOnAttack = fx.logs.length > 0 ? { ...fx.state, log: [...fx.state.log, ...fx.logs] } : fx.state;
+    }
+    if (afterOnAttack.pendingEffectChoice && afterOnAttack.pendingEffectChoice !== battleState.pendingEffectChoice) {
+      let parked: GameState = { ...afterOnAttack, deferredAttack: { battle: marked, wingAttackFromRush } };
+      if (parked.pendingBattleEntry?.instanceId === pending.attackerInstanceId) {
+        parked = { ...parked, pendingBattleEntry: undefined };
+      }
+      return ok(parked, buildSimpleLogEntry(playerId, "battle_pending"));
+    }
+    return continueAttackAfterDeclaration(afterOnAttack, marked, wingAttackFromRush);
+  }
   // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
   const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
   if (machineEmpire) {
@@ -469,6 +517,8 @@ function finishStrikeResolution(
     activePlayer: pending.battlePhasePlayer,
   });
   resolved = finishBattleEntryIf(resolved, pending.strikerInstanceId);
+  // 「ストライクしてダメージを与えたとき」（RS-309【ゴウライキャノン】）。
+  resolved = applySet5StrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -487,6 +537,70 @@ function finishStrikeResolution(
       log: [...resolved.log, strikeLog, ...extraLogs],
     },
   };
+}
+
+/**
+ * 「ストライクしたとき」の効果のあと: 「ストライクされたとき」（RS-196【迎撃モビルミサイル】・カウンター窓）→ ダメージ。
+ * ルール: R-TIME-01 — 能動（したとき）が受動（されたとき）より先。
+ */
+function continueStrikeAfterDeclaration(
+  state: GameState,
+  nextState: GameState,
+  pending: PendingStrike,
+  strikerInstanceId: string,
+): ActionResult {
+  const playerId = pending.strikerPlayerId;
+  const damage = pending.damage;
+  // RS-196 ダイナモビル【迎撃モビルミサイル】: ストライクされたとき発動できる（任意）。
+  const mobil = openMobilMissileChoice(nextState, pending);
+  if (mobil) {
+    const cleared =
+      state.pendingBattleEntry?.instanceId === strikerInstanceId ? { ...mobil, pendingBattleEntry: undefined } : mobil;
+    return ok(cleared, buildSimpleLogEntry(playerId, "strike_pending", String(damage)));
+  }
+
+  const defenderId = opponent(playerId);
+  if (hasStrikeReactions(nextState, defenderId, pending)) {
+    let withWindow: GameState = {
+      ...nextState,
+      pendingStrike: pending,
+      activePlayer: defenderId,
+    };
+    if (state.pendingBattleEntry?.instanceId === strikerInstanceId) {
+      withWindow = { ...withWindow, pendingBattleEntry: undefined };
+    }
+    return ok(withWindow, buildSimpleLogEntry(playerId, "strike_pending", String(damage)));
+  }
+
+  return completeStrike(nextState, pending);
+}
+
+/** R-TIME-01: 「アタックしたとき」の選択が解決し終えたら、待たせていたアタックの続き（「アタックされたとき」→ バトル）を処理する。 */
+function continueDeferredAttack(state: GameState): GameState {
+  const deferred = state.deferredAttack;
+  if (!deferred || state.winner) return state;
+  if (state.pendingEffectChoice || state.pendingDamagePayment || state.pendingLeave || state.pendingRegister) {
+    return state;
+  }
+  const cleared: GameState = {
+    ...state,
+    deferredAttack: undefined,
+    activePlayer: deferred.battle.phasePlayerId,
+  };
+  const result = continueAttackAfterDeclaration(cleared, deferred.battle, deferred.wingAttackFromRush);
+  return result.ok ? result.state : cleared;
+}
+
+/** R-TIME-01: 「ストライクしたとき」の選択が解決し終えたら、待たせていたストライクの続きを処理する。 */
+function continueDeferredStrike(state: GameState): GameState {
+  const pending = state.deferredStrike;
+  if (!pending || state.winner) return state;
+  if (state.pendingEffectChoice || state.pendingDamagePayment || state.pendingLeave || state.pendingRegister) {
+    return state;
+  }
+  const cleared: GameState = { ...state, deferredStrike: undefined, activePlayer: pending.battlePhasePlayer };
+  const result = continueStrikeAfterDeclaration(cleared, cleared, pending, pending.strikerInstanceId);
+  return result.ok ? result.state : cleared;
 }
 
 function completeStrike(state: GameState, pending: PendingStrike, extraLogs: string[] = []): ActionResult {
@@ -648,12 +762,21 @@ function settleEffectRushes(before: GameState, after: GameState): GameState {
   });
 }
 
+/** applyAction の入れ子の深さ（外側の呼び出しだけで行う後処理のため）。 */
+let applyActionDepth = 0;
+
 export function applyAction(
   state: GameState,
   action: GameAction,
   options?: { trustLegality?: boolean },
 ): ActionResult {
-  const result = applyActionCore(state, action, options);
+  applyActionDepth += 1;
+  let result: ActionResult;
+  try {
+    result = applyActionCore(state, action, options);
+  } finally {
+    applyActionDepth -= 1;
+  }
   if (!result.ok) return result;
   // ルール: R-ZONE-04, R-HOLD-02 — エリアを離れたカードの付加情報はどの経路で移動しても消える。
   let next = clearRegisterHoldOffField(result.state);
@@ -661,8 +784,25 @@ export function applyAction(
   next = releaseCounterLockWhenAttackSettled(next);
   next = trackResolvingOperations(state, next);
   next = settleResolvingOperations(next);
+  next = continueDeferredAttack(next);
+  next = continueDeferredStrike(next);
+  // ルール: R-TIME-01 — 先の段階の効果（選択）が解決し終えたら、待たせていた撃破の誘発を段階の順に解決する。
+  next = drainDeferredDestroyTriggers(next);
+  // RS-256 闇の戒律・RS-255 巨大化爆弾: 置き場を離れたら重ねたカードは捨札になる。
+  next = settleStackedCards(next);
+  // RS-265【ラウンドレーダー】: 相手が手札からオペレーションを使用したとき（解決が終わってから開く）。
+  next = queueRoundRadar(state, next, action);
+  next = openRoundRadarIfReady(next);
+  // RS-255 巨大化爆弾: 敵軍ターン中に「怪人」の自軍ユニットが撃破されて捨札になったとき。
+  next = openGiantBombWindow(state, next);
   next = applyBpZeroRuleDestruction(next);
+  // RS-319 デカマスター ※: 自軍ラッシュフェイズ中、条件を満たせば即座に手札に戻る（進行中の処理がないとき）。
+  if (!hasBlockingInteraction(next)) next = applyDekaMasterReturn(next);
+  // RS-325【マジチケット】: 発動したカードが捨札になったら「かわりに」の選択を開く。
+  if (next.magiTicketPending && !hasBlockingInteraction(next)) next = settleMagiTicket(next);
   next = syncDamageWithFaceDownPower(state, next);
+  // RS-327【フェイタルブレイドの伝授】: 1アクションで撃破された敵軍ユニットを数える（入れ子の applyAction では数えない）。
+  if (applyActionDepth === 0) next = applyFatalBladeDraws(state, next, action);
   return next === result.state ? result : { ok: true, state: next };
 }
 
@@ -1223,6 +1363,29 @@ function applyActionCore(
       return ok(
         cancelled,
         buildSimpleLogEntry(playerId, "command_payment_cancel"),
+      );
+    }
+
+    case "use_magi_ticket": {
+      // RS-325【マジチケット】（rules/legend1/set5NamedEffects.ts）: 手札から使うのと同じ解決（play_operation）に通す。
+      if (state.phase !== "rush") return fail("wrong_phase");
+      const staged = stageMagiTicket(state, playerId, action.instanceId);
+      if (!staged) return fail("card_not_in_command");
+      const played = applyAction(
+        staged,
+        {
+          type: "play_operation",
+          playerId,
+          instanceId: action.instanceId,
+          targetInstanceId: action.targetInstanceId,
+          extraInstanceId: action.extraInstanceId,
+        },
+        { trustLegality: true },
+      );
+      if (!played.ok) return played;
+      return ok(
+        finishMagiTicketStaging(played.state, playerId, action.instanceId),
+        buildLogEntry(playerId, "named_effect", "RS-325", state.definitions, "maji_chiketto"),
       );
     }
 
@@ -1990,31 +2153,16 @@ function applyActionCore(
       };
       nextState = emitStrikeDeclared(nextState, pending);
 
-      // RS-196 ダイナモビル【迎撃モビルミサイル】: ストライクされたとき発動できる（任意）。
-      const mobil = openMobilMissileChoice(nextState, pending);
-      if (mobil) {
-        const cleared =
-          state.pendingBattleEntry?.instanceId === action.instanceId ? { ...mobil, pendingBattleEntry: undefined } : mobil;
-        return ok(cleared, buildSimpleLogEntry(playerId, "strike_pending", String(damage)));
-      }
-
-      const defenderId = opponent(playerId);
-      if (hasStrikeReactions(nextState, defenderId, pending)) {
-        nextState = {
-          ...nextState,
-          pendingStrike: pending,
-          activePlayer: defenderId,
-        };
+      if (nextState.pendingEffectChoice) {
+        // ルール: R-TIME-01 — 「ストライクしたとき」の効果の選択をすべて解決してから、「ストライクされたとき」
+        // （RS-196 等・カウンター）とストライクのダメージに進む（core/applyAction の後処理 continueDeferredStrike）。
+        let parked: GameState = { ...nextState, deferredStrike: pending };
         if (state.pendingBattleEntry?.instanceId === action.instanceId) {
-          nextState = { ...nextState, pendingBattleEntry: undefined };
+          parked = { ...parked, pendingBattleEntry: undefined };
         }
-        return ok(
-          nextState,
-          buildSimpleLogEntry(playerId, "strike_pending", String(damage)),
-        );
+        return ok(parked, buildSimpleLogEntry(playerId, "strike_pending", String(damage)));
       }
-
-      return completeStrike(nextState, pending);
+      return continueStrikeAfterDeclaration(state, nextState, pending, action.instanceId);
     }
 
     case "five_tech_intercept": {
@@ -2041,6 +2189,17 @@ function applyActionCore(
     case "play_counter": {
       if (!canExecuteHandCounter(state, playerId, action.instanceId)) {
         return fail("command_not_held");
+      }
+
+      if (state.pendingGiantBomb) {
+        if (playerId !== state.pendingGiantBomb.ownerId) return fail("wrong_player");
+        const used = applyGiantBombCounter(state, playerId, action.instanceId);
+        let nextState = clearCounterHoldReady(used.state, playerId);
+        if (used.unitInstanceId) {
+          const rushed = finalizeEffectRush(nextState, playerId, [used.unitInstanceId], state.pendingGiantBomb.phasePlayerId);
+          nextState = { ...rushed.state, log: [...rushed.state.log, ...rushed.logs] };
+        }
+        return ok(nextState, used.log);
       }
 
       if (state.pendingLeave) {
@@ -2580,6 +2739,26 @@ function applyActionCore(
 
     case "use_super_shield": {
       const pending = state.pendingLeave;
+      if (pending && action.substituteInstanceId) {
+        // RS-324 マジマザー【ジルマ・マジュナ】: 撃破を止め、マジマザーをかわりに捨札にする。
+        if (playerId !== pending.ownerPlayerId) return fail("wrong_player");
+        if (!(pending.magiMotherInstanceIds ?? []).includes(action.substituteInstanceId)) return fail("no_super_shield");
+        const prevented = finalizeLeaveReaction(state, pending, true);
+        const motherResult = applyMagiMotherSubstitute(
+          prevented,
+          playerId,
+          action.substituteInstanceId,
+          pending.phasePlayerId,
+        );
+        if (motherResult.deferred) return ok(motherResult.state, motherResult.log);
+        if (pending.resumePendingStrike && state.pendingStrike) {
+          return completeStrike(motherResult.state, {
+            ...state.pendingStrike,
+            damageCancelled: pending.resumePendingStrike.damageCancelled,
+          }, [motherResult.log]);
+        }
+        return ok(motherResult.state, motherResult.log);
+      }
       if (!pending?.superShieldInstanceId) return fail("no_super_shield");
       if (playerId !== pending.ownerPlayerId) return fail("wrong_player");
 
@@ -2607,6 +2786,10 @@ function applyActionCore(
     }
 
     case "pass_leave_reaction": {
+      if (!state.pendingLeave && state.pendingGiantBomb) {
+        if (playerId !== state.pendingGiantBomb.ownerId) return fail("wrong_player");
+        return ok(closeGiantBombWindow(state), buildSimpleLogEntry(playerId, "pass_leave_reaction"));
+      }
       const pending = state.pendingLeave;
       if (!pending) return fail("no_pending_leave");
       if (playerId !== pending.ownerPlayerId) return fail("wrong_player");
@@ -2957,7 +3140,7 @@ function applyActionCore(
     }
 
     case "activate_field_unit_ability": {
-      if (state.phase !== "rush" && state.phase !== "battle") return fail("wrong_phase");
+      if (state.phase !== "start" && state.phase !== "rush" && state.phase !== "battle") return fail("wrong_phase");
       const unit =
         player.rush.find((c) => c.instanceId === action.unitInstanceId) ??
         player.battle.find((c) => c.instanceId === action.unitInstanceId);

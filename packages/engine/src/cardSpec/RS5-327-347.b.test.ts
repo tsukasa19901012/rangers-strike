@@ -214,8 +214,7 @@ describe("RS-335 レジェンドマジブルー", () => {
   });
 
   // grnrngr/faq-card-5 RS-335 Q1「はい、その通りです。」（自分が1枚しかドローしなかった場合でも相手は1枚ドローできる）
-  it.fails("RS-335: 公式Q&A — 自分が1枚しかドローしなかった場合でも、相手は1枚ドローできる（出典: grnrngr/faq-card-5 RS-335 Q1・atwiki/page-496 Q1）", () => {
-    // 既知の不具合: CARD-RS-335 1枚ドローして2枚目を見送ると、相手のドロー選択が出ない
+  it("RS-335: 公式Q&A — 自分が1枚しかドローしなかった場合でも、相手は1枚ドローできる（出典: grnrngr/faq-card-5 RS-335 Q1・atwiki/page-496 Q1）", () => {
     let s = enterAt("RS-335", 2);
     s = pick(s, "draw");
     s = skip(s);
@@ -345,8 +344,7 @@ describe("RS-337 レジェンドマジグリーン", () => {
     expect(spOf(s, "player1", "RS-337:x")).toBe(1);
   });
 
-  it.fails("RS-337: 【マジボルト】敵軍コマンドゾーンのカードを選ぶのは自分（レジェンドマジグリーンのプレイヤー）で、リリース・ホールドどちらも選べる（出典: atwiki/page-498「敵軍コマンドゾーンからカードを1枚選び」）", () => {
-    // 既知の不具合: CARD-RS-337 選択が相手（敵軍コマンドの持ち主）に渡される
+  it("RS-337: 【マジボルト】敵軍コマンドゾーンのカードを選ぶのは自分（レジェンドマジグリーンのプレイヤー）で、リリース・ホールドどちらも選べる（出典: atwiki/page-498「敵軍コマンドゾーンからカードを1枚選び」）", () => {
     const s = greenAt(3);
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(s)).toEqual(["TST-OP:ehld", "TST-OP:erel"]);
@@ -362,8 +360,7 @@ describe("RS-337 レジェンドマジグリーン", () => {
     expect(s.players.player1.hand).toHaveLength(0);
   });
 
-  it.fails("RS-337: 任意 — 自分は戻さないことを選べる（出典: atwiki/page-498「戻してもよい」）", () => {
-    // 既知の不具合: CARD-RS-337 見送りの判断が相手に渡される（自分の skip が不正手になる）
+  it("RS-337: 任意 — 自分は戻さないことを選べる（出典: atwiki/page-498「戻してもよい」）", () => {
     let s = greenAt(3);
     s = raw(s, { type: "skip_effect_choice", playerId: "player1" });
     expect(s.players.player2.command).toHaveLength(2);
@@ -501,8 +498,7 @@ describe("RS-339 闇のヤイバ", () => {
   });
 
   // grnrngr/faq-card-5 RS-339 Q1「カテゴリにＤＡを追加されているＳユニットも、「ＤＡのＳユニット」として扱いますので、…バトルエリアに出ることはできません。」
-  it.fails("RS-339: 公式Q&A — DA を追加された特徴「男」の S ユニットは、敵軍バトルエリアに気伝武人龍星王があるとバトルエリアに出られない（出典: grnrngr/faq-card-5 RS-339 Q1・atwiki/page-439 Q1）", () => {
-    // 既知の不具合: CARD-RS-339 追加された DA が龍星王の制限に反映されない（加えて CARD-RS-290 本来の DA の S ユニットも制限されていない）
+  it("RS-339: 公式Q&A — DA を追加された特徴「男」の S ユニットは、敵軍バトルエリアに気伝武人龍星王があるとバトルエリアに出られない（出典: grnrngr/faq-card-5 RS-339 Q1・atwiki/page-439 Q1）", () => {
     const s = st({
       player1: { rush: [inst("RS-057", "man"), inst("RS-339", "y")], deck: deckCards(3) },
       player2: { battle: [inst("RS-290", "ry")], deck: deckCards(3, "e") },
@@ -511,8 +507,7 @@ describe("RS-339 闇のヤイバ", () => {
   });
 
   // grnrngr/faq-card-5 RS-290 Q1「いいえ、できません。…特徴「男」を持つ自軍ユニットはバトルエリアに出られないことになります。」
-  it.fails("RS-339: 公式Q&A — 敵軍エリアにヤイバ、敵軍バトルエリアに龍星王があるとき、特徴「男」を持つワイルドビーストの自軍 S ユニット（ゲキレッド）はバトルエリアに出られない（出典: grnrngr/faq-card-5 RS-290 Q1）", () => {
-    // 既知の不具合: CARD-RS-339 追加された DA が龍星王の制限に反映されない（CARD-RS-290 の制限自体も未適用）
+  it("RS-339: 公式Q&A — 敵軍エリアにヤイバ、敵軍バトルエリアに龍星王があるとき、特徴「男」を持つワイルドビーストの自軍 S ユニット（ゲキレッド）はバトルエリアに出られない（出典: grnrngr/faq-card-5 RS-290 Q1）", () => {
     const s = st({
       player1: { battle: fillers(1), rush: [inst("RS-340", "gr")], deck: deckCards(3) },
       player2: { battle: [inst("RS-290", "ry")], rush: [inst("RS-339", "y")], deck: deckCards(3, "e") },
@@ -575,15 +570,13 @@ describe("RS-339 闇のヤイバ", () => {
   });
 
   // grnrngr/faq-card-6 RS-364 Q3「はい、発動します。」（ヤイバで DA が追加されたユニットがいても「自軍ユニットがすべて DA」）
-  it.fails("RS-339: 公式Q&A — ヤイバで DA が追加された特徴「男」のユニット（ティラノレンジャー）がいても、ヘルサターン総統の「自軍ユニットがすべてDA」は満たされ BP+3000 される（出典: grnrngr/faq-card-6 RS-364 Q3）", () => {
-    // 既知の不具合: CARD-RS-339 追加された DA がヘルサターン総統の条件に反映されない（CARD-RS-364 の BP+3000 も確認できない）
+  it("RS-339: 公式Q&A — ヤイバで DA が追加された特徴「男」のユニット（ティラノレンジャー）がいても、ヘルサターン総統の「自軍ユニットがすべてDA」は満たされ BP+3000 される（出典: grnrngr/faq-card-6 RS-364 Q3）", () => {
     const s = st({ player1: { rush: [inst("RS-364", "hs"), inst("RS-339", "y"), inst("RS-081", "ty")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
     expect(bpOf(s, "player1", "RS-081:ty")).toBe(6000);
   });
 
   // grnrngr/faq-card-6 RS-364 Q1「はい、ＢＰ+３０００されてＳＰ１になります。」
-  it.fails("RS-339: 公式Q&A — ヘルサターン総統・ヤイバ・ティラノレンジャーが自軍ラッシュエリアにあり、ティラノレンジャーが NC を発動したとき、BP+3000 されて SP1 になる（出典: grnrngr/faq-card-6 RS-364 Q1）", () => {
-    // 既知の不具合: CARD-RS-339 追加された DA がヘルサターン総統の条件に反映されない
+  it("RS-339: 公式Q&A — ヘルサターン総統・ヤイバ・ティラノレンジャーが自軍ラッシュエリアにあり、ティラノレンジャーが NC を発動したとき、BP+3000 されて SP1 になる（出典: grnrngr/faq-card-6 RS-364 Q1）", () => {
     let s = st({
       player1: {
         battle: [inst("RS-338", "j1"), inst("RS-338", "j2"), inst("RS-338", "j3")],

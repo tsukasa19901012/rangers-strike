@@ -313,8 +313,7 @@ describe("RS-309 轟雷神", () => {
   }
 
   // 「敵軍コマンドゾーンと敵軍パワーゾーンのダメージ以外のカードから、それぞれ1枚ずつ選んでもよい。そうしたとき、選んだカードを持ち主の手札に戻す」
-  // 既知の不具合: CARD-RS-309 ゴウライキャノンが敵軍コマンド／パワーではなく敵軍バトルエリアのユニットを選ばせる（汎用 return_to_zone パターン）
-  it.fails("RS-309: ストライクでダメージを与えたとき、敵軍コマンドとダメージ以外の敵軍パワーから1枚ずつ選んで持ち主の手札に戻す（出典: atwiki/page-479）", () => {
+  it("RS-309: ストライクでダメージを与えたとき、敵軍コマンドとダメージ以外の敵軍パワーから1枚ずつ選んで持ち主の手札に戻す（出典: atwiki/page-479）", () => {
     let s = gouraiStrike({ power: [...powerCards(2, "ep"), ...damageCards(1, "ed")], command: [held("TST-OP", "c0")] });
     const faceUp = s.players.player2.power.filter((c) => !c.faceDown).map((c) => c.instanceId);
     expect(faceUp).toHaveLength(1);
@@ -331,8 +330,7 @@ describe("RS-309 轟雷神", () => {
   });
 
   // 「選んでもよい」— 任意
-  // 既知の不具合: CARD-RS-309 ゴウライキャノンの選択肢に敵軍コマンドが出ない（敵軍バトルエリアのユニットが候補になる）
-  it.fails("RS-309: 選ばないことを選べ、その場合は敵軍コマンド・パワーは動かない（出典: atwiki/page-479「選んでもよい」）", () => {
+  it("RS-309: 選ばないことを選べ、その場合は敵軍コマンド・パワーは動かない（出典: atwiki/page-479「選んでもよい」）", () => {
     let s = gouraiStrike({ power: powerCards(2, "ep"), command: [held("TST-OP", "c0")] });
     expect(choiceIds(s)).toContain("TST-OP:c0");
     expect(canSkip(s)).toBe(true);
@@ -353,8 +351,7 @@ describe("RS-309 轟雷神", () => {
   });
 
   // faq-card-5 RS-309 Q1「はい、できます。」
-  // 既知の不具合: CARD-RS-309 ゴウライキャノンで敵軍コマンドゾーンのカードを選べない
-  it.fails("RS-309: 公式Q&A — 敵軍パワーにダメージ以外のカードがなくても、敵軍コマンドのカードだけを選んで手札に戻せる（出典: grnrngr/faq-card-5 RS-309 Q1）", () => {
+  it("RS-309: 公式Q&A — 敵軍パワーにダメージ以外のカードがなくても、敵軍コマンドのカードだけを選んで手札に戻せる（出典: grnrngr/faq-card-5 RS-309 Q1）", () => {
     let s = gouraiStrike({ power: [inst("TST-P", "only")], command: [held("TST-OP", "c0")] });
     expect(s.players.player2.power.every((c) => c.faceDown)).toBe(true);
     expect(choiceIds(s)).toEqual(["TST-OP:c0"]);
@@ -363,8 +360,7 @@ describe("RS-309 轟雷神", () => {
   });
 
   // faq-card-5 RS-309 Q2「いいえ、どちらか1枚でも選ぶことができれば発動できます。」
-  // 既知の不具合: CARD-RS-309 ゴウライキャノンで敵軍パワーゾーンのカードを選べない
-  it.fails("RS-309: 公式Q&A — 敵軍コマンドが空でも、ダメージ以外の敵軍パワーが1枚あれば発動できる（出典: grnrngr/faq-card-5 RS-309 Q2）", () => {
+  it("RS-309: 公式Q&A — 敵軍コマンドが空でも、ダメージ以外の敵軍パワーが1枚あれば発動できる（出典: grnrngr/faq-card-5 RS-309 Q2）", () => {
     let s = gouraiStrike({ power: powerCards(2, "ep"), command: [] });
     const faceUp = s.players.player2.power.filter((c) => !c.faceDown).map((c) => c.instanceId);
     expect(choiceIds(s)).toEqual(faceUp);
@@ -421,8 +417,7 @@ describe("RS-310 ゴウライビートル", () => {
   });
 
   // 「BP8000以上のとき「SP1」になる」
-  // 既知の不具合: CARD-RS-310 BP8000 以上でも「SP1」にならず（SP！のまま）ストライクできない
-  it.fails("RS-310: BP8000 以上（ダメージ合計6点）のとき「SP1」になりストライクできる（出典: atwiki/page-480「BP8000以上のとき「SP1」になる」）", () => {
+  it("RS-310: BP8000 以上（ダメージ合計6点）のとき「SP1」になりストライクできる（出典: atwiki/page-480「BP8000以上のとき「SP1」になる」）", () => {
     const s = beetle(3, 3);
     expect(bpOf(s, "player1", "RS-310:b")).toBe(8000);
     expect(spOf(s, "player1", "RS-310:b")).toBe(1);
@@ -524,8 +519,7 @@ describe("RS-311 ゴウライスタッグ", () => {
   }
 
   // 「コマンドゾーンにあるリリース状態のカードと同じカテゴリを持つ敵軍ユニットにアタックされない」
-  // 既知の不具合: CARD-RS-311 【カラクリ忍法・牙がくれ】が未実装（リリース状態のコマンドと同カテゴリの敵軍ユニットもアタックできる）
-  it.fails("RS-311: 自軍コマンドゾーンにリリース状態の MA のカードがあれば、MA の敵軍ユニットにアタックされない（出典: atwiki/page-481）", () => {
+  it("RS-311: 自軍コマンドゾーンにリリース状態の MA のカードがあれば、MA の敵軍ユニットにアタックされない（出典: atwiki/page-481）", () => {
     const s = stagDefends([released("TST-OP-MA", "c")]);
     expect(attackTargets(s, "SPEC-MA-S:a", "player2")).toEqual(["TST-UNIT-0:x"]);
   });
@@ -541,8 +535,7 @@ describe("RS-311 ゴウライスタッグ", () => {
   });
 
   // faq-card-5 RS-311 Q1「はい、間違いありません。」（自軍と敵軍のコマンドゾーンが対象）
-  // 既知の不具合: CARD-RS-311 【カラクリ忍法・牙がくれ】が未実装
-  it.fails("RS-311: 公式Q&A — 敵軍コマンドゾーンのリリース状態のカードも参照する（敵軍に MA のリリース状態コマンドがあれば MA の敵軍ユニットにアタックされない）（出典: grnrngr/faq-card-5 RS-311 Q1）", () => {
+  it("RS-311: 公式Q&A — 敵軍コマンドゾーンのリリース状態のカードも参照する（敵軍に MA のリリース状態コマンドがあれば MA の敵軍ユニットにアタックされない）（出典: grnrngr/faq-card-5 RS-311 Q1）", () => {
     const s = stagDefends([], [released("TST-OP-MA", "ec")]);
     expect(attackTargets(s, "SPEC-MA-S:a", "player2")).toEqual(["TST-UNIT-0:x"]);
   });
@@ -689,8 +682,7 @@ describe("RS-313 クワガライジャー", () => {
   }
 
   // 「敵軍バトルエリアにあるSユニットを1体選び、敵軍ラッシュエリアに戻してもよい。そうしたとき、…1体選び、戻したユニットとバトルさせる」
-  // 既知の不具合: CARD-RS-313 【イカヅチブレイカー】が未実装（空の確認だけが出て何も起きない）
-  it.fails("RS-313: 2番目に出ると、敵軍バトルエリアの S ユニットをラッシュエリアに戻し、敵軍ラッシュエリアの別のユニットとバトルさせる（出典: atwiki/page-483）", () => {
+  it("RS-313: 2番目に出ると、敵軍バトルエリアの S ユニットをラッシュエリアに戻し、敵軍ラッシュエリアの別のユニットとバトルさせる（出典: atwiki/page-483）", () => {
     let s = kuwaga(2, { battle: [inst("TST-UNIT-0", "eb")], rush: [inst("TST-UNIT-2", "er")] });
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:eb"]);
@@ -705,8 +697,7 @@ describe("RS-313 クワガライジャー", () => {
   });
 
   // 「戻してもよい」
-  // 既知の不具合: CARD-RS-313 【イカヅチブレイカー】の選択に敵軍ユニットが出ない
-  it.fails("RS-313: 戻さないことを選べる（任意）（出典: atwiki/page-483「戻してもよい」）", () => {
+  it("RS-313: 戻さないことを選べる（任意）（出典: atwiki/page-483「戻してもよい」）", () => {
     let s = kuwaga(2, { battle: [inst("TST-UNIT-0", "eb")], rush: [inst("TST-UNIT-2", "er")] });
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:eb"]);
     expect(canSkip(s)).toBe(true);
@@ -715,15 +706,13 @@ describe("RS-313 クワガライジャー", () => {
   });
 
   // 「Sユニットを1体選び」— M ユニットは選べない
-  // 既知の不具合: CARD-RS-313 【イカヅチブレイカー】が未実装
-  it.fails("RS-313: 敵軍バトルエリアの M ユニットは選べない（S のみ）（出典: atwiki/page-483「Sユニットを1体選び」）", () => {
+  it("RS-313: 敵軍バトルエリアの M ユニットは選べない（S のみ）（出典: atwiki/page-483「Sユニットを1体選び」）", () => {
     const s = kuwaga(2, { battle: [inst("SPEC-EM", "m"), inst("TST-UNIT-0", "eb")], rush: [inst("TST-UNIT-2", "er")] });
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:eb"]);
   });
 
   // 「戻したユニット以外のユニットがあれば」
-  // 既知の不具合: CARD-RS-313 【イカヅチブレイカー】が未実装
-  it.fails("RS-313: 敵軍ラッシュエリアに戻したユニット以外のユニットがなければ、戻すだけでバトルは起きない（出典: atwiki/page-483「…以外のユニットがあれば」）", () => {
+  it("RS-313: 敵軍ラッシュエリアに戻したユニット以外のユニットがなければ、戻すだけでバトルは起きない（出典: atwiki/page-483「…以外のユニットがあれば」）", () => {
     let s = kuwaga(2, { battle: [inst("TST-UNIT-0", "eb")], rush: [] });
     s = pick(s, "TST-UNIT-0:eb");
     s = settle(s);
@@ -738,8 +727,7 @@ describe("RS-313 クワガライジャー", () => {
   });
 
   // faq-card-5 RS-256 Q「はい、その通りです。」（クワガライジャー等で敵軍ユニット同士をバトルさせて撃破すると「自軍バトルフェイズに敵軍ユニットを1体撃破するたび」を満たす）
-  // 既知の不具合: CARD-RS-313 【イカヅチブレイカー】が未実装
-  it.fails("RS-313: 公式Q&A — 敵軍ユニット同士をバトルさせて撃破すると、闇の戒律の重ねたカードを手札に加えられる（出典: grnrngr/faq-card-5 RS-256）", () => {
+  it("RS-313: 公式Q&A — 敵軍ユニット同士をバトルさせて撃破すると、闇の戒律の重ねたカードを手札に加えられる（出典: grnrngr/faq-card-5 RS-256）", () => {
     let s = kuwaga(2, { battle: [inst("TST-UNIT-0", "eb")], rush: [inst("TST-UNIT-2", "er")] }, { operation: [inst("RS-256", "law")] });
     const law = s.players.player1.operation[0]!;
     s = { ...s, players: { ...s.players, player1: { ...s.players.player1, operation: [{ ...law, stackedCards: [inst("TST-OP", "stacked")] } as typeof law] } } };

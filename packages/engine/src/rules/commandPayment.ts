@@ -2,6 +2,7 @@ import {
   emergencyRequestEnemyCommandIds,
   releaseEmergencyRequestCommands,
 } from "./legend1/set4NamedEffects";
+import { operationPaymentCategories } from "./legend1/set5NamedEffectsA";
 import type { Category } from "@rangers-strike/cards";
 import {
   getBattleEntryHoldCount,
@@ -864,7 +865,8 @@ export function buildPaymentFromInitiateAction(
   const def = getDefinition(state.definitions, handFound.card.cardId);
   if (!def) return null;
 
-  const categories = cardCategories(def);
+  // RS-292【虎の子大秘術】: 手札のオペレーションはどのカテゴリのコマンドをホールドしてもよい。
+  const categories = operationPaymentCategories(state, playerId, def);
   if (isRushable(def)) {
     if (
       !canRushUnitExceptCommandHold(

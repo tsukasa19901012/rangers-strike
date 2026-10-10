@@ -185,6 +185,8 @@ function collectRushCandidates(
 
   candidates.push(...actionsOfType(actions, "begin_zord_setup"));
   candidates.push(...actionsOfType(actions, "play_operation").slice(0, 3));
+  // RS-325【マジチケット】: コマンドゾーンのオペレーションの発動。
+  candidates.push(...actionsOfType(actions, "use_magi_ticket").slice(0, 3));
   candidates.push(...actionsOfType(actions, "initiate_command_payment").slice(0, 4));
 
   const end = endPhase(actions);
@@ -285,6 +287,13 @@ function pickCpuActionInner(
 
   if (state.pendingLeave) {
     if (playerId !== state.pendingLeave.ownerPlayerId) return null;
+    const actions = getLegalActions(state);
+    return pickReactionAction(state, playerId, actions, "pass_leave_reaction", enableSearch, options);
+  }
+
+  // RS-255 巨大化爆弾の使用の窓（使うか見送るか）。
+  if (state.pendingGiantBomb) {
+    if (playerId !== state.pendingGiantBomb.ownerId) return null;
     const actions = getLegalActions(state);
     return pickReactionAction(state, playerId, actions, "pass_leave_reaction", enableSearch, options);
   }
@@ -534,6 +543,9 @@ export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): bo
   }
   if (state.pendingLeave) {
     return state.pendingLeave.ownerPlayerId === cpuPlayer;
+  }
+  if (state.pendingGiantBomb) {
+    return state.pendingGiantBomb.ownerId === cpuPlayer;
   }
   if (state.pendingRegister) {
     return state.pendingRegister.ownerPlayerId === cpuPlayer;

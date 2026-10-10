@@ -1,4 +1,5 @@
 import { isCostWindowSatisfied } from "./costWindow";
+import { operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
 import type { CardDefinition, UnitSize } from "@rangers-strike/cards";
 import {
   cardCategories,
@@ -52,6 +53,7 @@ import {
   breakerBlocksSameNameRush,
 } from "../keywords/battleKeywords";
 import { effectiveRushAdditionalCondition } from "../rules/rushAdditionalCondition";
+import { set5PassiveBpBonus } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower, effectivePowerCost, rushEffectivePowerCost } from "./power";
 
 export function buildDefinitionMap(
@@ -246,7 +248,8 @@ export function passiveBpBonus(
   instance: CardInstance,
 ): number {
   const player = state.players[playerId];
-  let bonus = 0;
+  // RS-340/343【ゲキヌンチャク】（rules/legend1/set5NamedEffects.ts）。
+  let bonus = set5PassiveBpBonus(state, playerId, instance);
 
   const inField =
     player.rush.some((c) => c.instanceId === instance.instanceId) ||
@@ -772,7 +775,8 @@ export function canPlayOperation(
   const opCats = cardCategories(definition);
   if (opCats.length === 0) return true;
   if (isCostWindowSatisfied(player, "operation_category")) {
-    return hasCommandForCardUse(player, state.definitions, opCats, "lead");
+    // RS-292【虎の子大秘術】: どのカテゴリのコマンドのホールドでも使用できる。
+    return hasCommandForCardUse(player, state.definitions, operationPaymentCategories(state, playerId, definition), "lead");
   }
   // ルール: R-CMD-01 — 使用のたびにリリース状態のコマンドをホールドする。別のカードの使用のために
   // 支払いでホールドしたコマンド（paymentHeld）は、このオペレーションの支払いに再利用できない。

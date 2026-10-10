@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { hellSaturnGrantCount } from "./hellSaturn";
 import { activeNamedEffect } from "./ncGatedEffects";
 import { countActiveFieldKeyword } from "../dsl/fieldKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
@@ -7,6 +8,7 @@ import { opponent } from "../core/helpers";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
 import { rkPassiveBpBonus } from "./rkFieldPassives";
+import { set5AFieldBpBonus } from "./legend1/set5NamedEffectsA";
 import { rs560BeastMBpBonus } from "./rs/rsCatchallField";
 import { commandCategoriesNow } from "./legend3/battleEffects";
 
@@ -194,6 +196,9 @@ export function passiveNamedFieldBpBonus(
 
   let bonus = 0;
 
+  // RS-364 ヘルサターン総統【黒き太陽神への忠誠】: 自軍ユニットがすべて DA なら、総統以外の自軍 S ユニットは BP+3000（重複する）。
+  if (role === "general") bonus += 3000 * hellSaturnGrantCount(state, playerId, instance);
+
   // RS-034 大獣神【守護獣の神】（RS-286 同）: これ以外の「ワイルドビースト」のユニットすべては BP+2000。
   // 敵軍の WB ユニットにも適用される（faq-card-1 RS-034 Q）。複数あれば重複する（R-CONT-01）。
   if (categoriesInclude(def.category, "WB")) {
@@ -230,6 +235,8 @@ export function passiveNamedFieldBpBonus(
     bonus -= 500 * state.players[opponent(playerId)].battle.filter((c) => c.cardId === "RK-046").length;
   }
 
+  // RS-303【シティガーディアンズ隊長】・RS-255 巨大化爆弾を重ねたユニット。
+  if (role === "general") bonus += set5AFieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

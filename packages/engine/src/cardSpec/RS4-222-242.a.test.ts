@@ -647,7 +647,9 @@ describe("RS-226 キラーオー", () => {
     expect(s.pendingEffectChoice?.kind).not.toBe("simultaneous_order");
     expect(s.pendingEffectChoice?.battleDestroyOrderMeta).toBeUndefined();
     expect(s.pendingEffectChoice?.destroyTriggerTiming).toBe("destroyer");
-    expect(s.pendingEffectChoice?.resumeChoice?.sourceCardId).toBe("RS-230");
+    // アバレッドAM の段階 4 の効果は、キラーオーの解決まで待っている（未解決: アバレッドは捨札のまま）。
+    expect(s.deferredDestroyTriggers?.map((f) => f.kind)).toEqual(["destroyed_fact", "after_discard"]);
+    expect(zoneOf(s, "player2", "RS-054:red")).toBe("discard");
     s = settle(pick(s, "SPEC-E4:low"));
     expect(zoneOf(s, "player2", "SPEC-E4:low")).toBe("discard");
     // つづいてアバレッドAM の「撃破されて捨札になったとき」— 捨札のアバレッドを出す。
@@ -655,6 +657,54 @@ describe("RS-226 キラーオー", () => {
     expect(choiceIds(s)).toEqual(["RS-054:red"]);
     s = settle(pick(s, "RS-054:red"));
     expect(zoneOf(s, "player2", "RS-054:red")).toBe("rush");
+  });
+
+  // R-TIME-01（ユーザー決定 2026-10-11）: 段階 1「撃破したとき」の選択が解決し終えるまで、撃破された側の
+  // 段階 2「撃破されたとき」の自動処理（アバレッドの1点ダメージ。RS-054）は解決しない。
+  it("RS-226: アバレッド（撃破されたとき 1点ダメージ）を撃破したとき、キラーオーの選択を解決してから1点ダメージを受ける（出典: R-TIME-01・grnrngr/faq-card-4 RS-226 Q1・atwiki/page-1828）", () => {
+    const E0 = sUnit("SPEC-E0", { bp: 500 });
+    let s = st(
+      {
+        player1: { battle: [inst("RS-226", "k")] },
+        player2: { battle: [inst("RS-054", "ab")], rush: [inst("SPEC-E0", "low")], power: powerCards(3), deck: deckCards(5) },
+      },
+      [E0],
+    );
+    s = settle(attack(s, "RS-226:k", "RS-054:ab"));
+    expect(zoneOf(s, "player2", "RS-054:ab")).toBe("discard");
+    // 段階 1: キラーオーの選択が開いている。段階 2 の1点ダメージはまだ。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-226");
+    expect(s.pendingEffectChoice?.destroyTriggerTiming).toBe("destroyer");
+    expect(s.players.player2.damage).toBe(0);
+    expect(s.pendingDamagePayment).toBeUndefined();
+    s = settle(pick(s, "SPEC-E0:low"));
+    expect(zoneOf(s, "player2", "SPEC-E0:low")).toBe("discard");
+    // 段階 2: キラーオーの解決後に、アバレッドの「撃破されたとき」1点ダメージ。
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(s.players.player2.damage).toBe(1);
+    expect(s.deferredDestroyTriggers).toBeUndefined();
+  });
+
+  // R-TIME-01: 段階 4「撃破されて捨札になったとき」の自動処理（スーパーゲキレッド RS-426: 手札にスーパーゲキレッドが
+  // なく捨札にゲキレッドがあれば、選択なしでそのゲキレッドをラッシュエリアに出す）も、段階 1 の選択の解決を待つ。
+  it("RS-226: スーパーゲキレッド（撃破されて捨札になったとき・自動）を撃破したとき、キラーオーの選択を解決してからゲキレッドが出る（出典: R-TIME-01・grnrngr/faq-card-4 RS-226 Q1）", () => {
+    let s = st(
+      {
+        player1: { battle: [inst("RS-226", "k")] },
+        player2: { battle: [inst("RS-426", "sr")], rush: [inst("SPEC-E3", "low")], discard: [inst("RS-340", "gr")] },
+      },
+      KS,
+    );
+    s = settle(attack(s, "RS-226:k", "RS-426:sr"));
+    expect(zoneOf(s, "player2", "RS-426:sr")).toBe("discard");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-226");
+    // 段階 4 はまだ: ゲキレッドは捨札のまま（キラーオーの対象にもならない）。
+    expect(zoneOf(s, "player2", "RS-340:gr")).toBe("discard");
+    expect(choiceIds(s)).toEqual(["SPEC-E3:low"]);
+    s = settle(pick(s, "SPEC-E3:low"));
+    expect(zoneOf(s, "player2", "SPEC-E3:low")).toBe("discard");
+    expect(zoneOf(s, "player2", "RS-340:gr")).toBe("rush");
+    expect(s.pendingEffectChoice).toBeUndefined();
   });
 
   // faq-card-5 RS-289「はい、選ぶことができます。」

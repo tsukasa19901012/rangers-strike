@@ -109,6 +109,16 @@ export type PlayOperationAction = {
   extraInstanceId?: string;
 };
 
+/** RS-325 天空勇者マジシャイン【マジチケット】: 自軍コマンドゾーンのオペレーションを、そのコマンドをホールドして発動する。 */
+export type UseMagiTicketAction = {
+  type: "use_magi_ticket";
+  playerId: PlayerId;
+  /** コマンドゾーンのオペレーションカード。 */
+  instanceId: string;
+  targetInstanceId?: string;
+  extraInstanceId?: string;
+};
+
 export type ShironLightAction = {
   type: "shiron_light";
   playerId: PlayerId;
@@ -225,6 +235,8 @@ export type PassChaseAction = {
 export type UseSuperShieldAction = {
   type: "use_super_shield";
   playerId: PlayerId;
+  /** RS-324 マジマザー【ジルマ・マジュナ】: かわりに捨札にするマジマザー（省略時は RS-052 の超シールド進化）。 */
+  substituteInstanceId?: string;
 };
 
 /** RS-106 ジュウクンドー — アタックの代わりに発動。 */
@@ -362,6 +374,7 @@ export type GameAction =
   | DrawAction
   | EndPhaseAction
   | PlayOperationAction
+  | UseMagiTicketAction
   | BonusDrawAction
   | SkipBonusDrawAction
   | ReleaseStartCommandsAction

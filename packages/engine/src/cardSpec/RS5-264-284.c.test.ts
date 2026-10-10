@@ -337,8 +337,7 @@ describe("RS-282 イエローオウル", () => {
     expectStats("RS-282", { name: "イエローオウル", category: "ET", size: "S", bp: 1000, sp: undefined, powerCost: 2, comboNumber: 4, features: ["イエロー", "男"] });
   });
 
-  it.fails("RS-282: 【岩石落とし】NC 成立（4番目）で、BP2000 以下の敵軍ユニット（バトルエリア・ラッシュエリア）をすべて持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-470【岩石落とし】）", () => {
-    // 既知の不具合: CARD-RS-282 【岩石落とし】が実装されておらず、NC が成立しても敵軍ユニットが動かない
+  it("RS-282: 【岩石落とし】NC 成立（4番目）で、BP2000 以下の敵軍ユニット（バトルエリア・ラッシュエリア）をすべて持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-470【岩石落とし】）", () => {
     const s = ncEnter("RS-282", 4, {}, { battle: [inst("TST-UNIT-0", "a"), inst("SPEC-3000", "big")], rush: [inst("TST-UNIT-0", "r")] });
     const cmd = s.players.player2.command;
     expect(cmd.find((c) => c.instanceId === "TST-UNIT-0:a")?.commandHeld).toBe(true);
@@ -357,8 +356,7 @@ describe("RS-282 イエローオウル", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:fill0")).toBe("battle");
   });
 
-  it.fails("RS-282: 【岩石落とし】コマンドゾーンに置けない（5枚）ときは捨札にする（出典: atwiki/page-470「置けなければ捨札にする」・R-ZONE-08）", () => {
-    // 既知の不具合: CARD-RS-282 【岩石落とし】が実装されていない
+  it("RS-282: 【岩石落とし】コマンドゾーンに置けない（5枚）ときは捨札にする（出典: atwiki/page-470「置けなければ捨札にする」・R-ZONE-08）", () => {
     const s = ncEnter("RS-282", 4, {}, { battle: [inst("TST-UNIT-0", "a")], command: heldN(5, "TST-OP", "c") });
     expect(zoneOf(s, "player2", "TST-UNIT-0:a")).toBe("discard");
   });
@@ -366,8 +364,7 @@ describe("RS-282 イエローオウル", () => {
   wrongNumberTests("RS-282", 4, "atwiki/page-470");
 
   // faq-card-5 RS-282 Q1「その場合、選ぶ権利はターンプレイヤーである「イエローオウル」の持ち主にあります。」
-  it.fails("RS-282: 公式Q&A — 2体のうち1体しか置けないとき、捨札にするユニットはターンプレイヤー（イエローオウルの持ち主）が選ぶ（出典: grnrngr/faq-card-5 RS-282 Q1）", () => {
-    // 既知の不具合: CARD-RS-282 【岩石落とし】が実装されていない（選択が開かない）
+  it("RS-282: 公式Q&A — 2体のうち1体しか置けないとき、捨札にするユニットはターンプレイヤー（イエローオウルの持ち主）が選ぶ（出典: grnrngr/faq-card-5 RS-282 Q1）", () => {
     let s = ncEnter("RS-282", 4, {}, { battle: [inst("TST-UNIT-0", "a"), inst("TST-UNIT-0", "b")], command: heldN(4, "TST-OP", "c") });
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:a", "TST-UNIT-0:b"]);
@@ -377,8 +374,7 @@ describe("RS-282 イエローオウル", () => {
   });
 
   // faq-card-5 RS-282 Q2「はい、対象になります。…「選ばれない」と書かれていても対象になります。」
-  it.fails("RS-282: 公式Q&A — 「アタックされる以外では相手に選ばれない」ユニット（仮面ライダーガタックRF）も、BP2000 以下なら岩石落としの対象になる（出典: grnrngr/faq-card-5 RS-282 Q2）", () => {
-    // 既知の不具合: CARD-RS-282 【岩石落とし】が実装されていない
+  it("RS-282: 公式Q&A — 「アタックされる以外では相手に選ばれない」ユニット（仮面ライダーガタックRF）も、BP2000 以下なら岩石落としの対象になる（出典: grnrngr/faq-card-5 RS-282 Q2）", () => {
     // RK-054 仮面ライダーガタックRF は BP2000・S ユニット
     const s = ncEnter("RS-282", 4, {}, { battle: [inst("RK-054", "gt")] });
     expect(zoneOf(s, "player2", "RK-054:gt")).toBe("command");
@@ -386,7 +382,7 @@ describe("RS-282 イエローオウル", () => {
 
   // faq-card-5 RS-282 Q3「はい、間違いありません。」
   it.fails("RS-282: 公式Q&A — 対象は修正後の BP で判定する（BP3000 でも修正で 2000 以下なら対象）（出典: grnrngr/faq-card-5 RS-282 Q3）", () => {
-    // 既知の不具合: CARD-RS-282 【岩石落とし】が実装されていない
+    // 既知の不具合: CARD-RS-270（範囲外）フラッシュマンの「OT」以外のコマンドによる BP-1000 が未実装で、修正後 BP2000 以下にならない（【岩石落とし】自体は実装済み）
     // ファイブマン・フラッシュマン系の BP 修正は未実装のため、ターン開始前から有効な修正としてフラッシュマン（BP5500、非OTコマンドで減る）を使う
     const s = ncEnter("RS-282", 4, {}, { battle: [inst("RS-270", "pink")], command: releasedN(4, "TST-OP", "c") });
     expect(zoneOf(s, "player2", "RS-270:pink")).toBe("command");

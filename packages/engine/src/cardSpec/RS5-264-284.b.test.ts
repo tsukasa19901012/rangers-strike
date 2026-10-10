@@ -110,8 +110,7 @@ function fiveTests(id: FiveId, name: string, effect: string, bp: number, cn: num
     expectStats(id, { name, category: "ET", size: "S", bp, sp: undefined, powerCost: cost, comboNumber: cn, features });
   });
 
-  it.fails(`${id}: 【${effect}】NC 成立・アタックしなかったとき、次にコンビネーションする S ユニットの BP は +${bp}（出典: ${page}【${effect}】）`, () => {
-    // 既知の不具合: CARD-${id} 【${effect}】が実装されておらず、次の S ユニットの BP が増えない
+  it(`${id}: 【${effect}】NC 成立・アタックしなかったとき、次にコンビネーションする S ユニットの BP は +${bp}（出典: ${page}【${effect}】）`, () => {
     const s = fiveThen(id, cn);
     expect(bpOf(s, "player1", "TST-UNIT-0:nx")).toBe(1000 + bp);
   });
@@ -136,8 +135,7 @@ describe("RS-273 ファイブブルー", () => {
   fiveTests("RS-273", "ファイブブルー", "ツインアレイ", 3000, 4, 1, ["ブルー", "男"], "atwiki/page-462");
 
   // faq-card-5 RS-273 Q1「自軍ターンが終わるまで有効です。」
-  it.fails("RS-273: 公式Q&A — 効果は自軍ターンが終わるまで有効（ターン中は＋され、敵軍ターンには元の BP）（出典: grnrngr/faq-card-5 RS-273 Q1）", () => {
-    // 既知の不具合: CARD-RS-273 【ツインアレイ】が実装されていない
+  it("RS-273: 公式Q&A — 効果は自軍ターンが終わるまで有効（ターン中は＋され、敵軍ターンには元の BP）（出典: grnrngr/faq-card-5 RS-273 Q1）", () => {
     let s = fiveThen("RS-273", 4);
     expect(bpOf(s, "player1", "TST-UNIT-0:nx")).toBe(4000);
     s = passEntry(s);
@@ -147,8 +145,7 @@ describe("RS-273 ファイブブルー", () => {
   });
 
   // faq-card-5 RS-273 Q2「はい、「＋」されます。」
-  it.fails("RS-273: 公式Q&A — ＋された S ユニットをバトルダンスでラッシュエリアに戻し、入れ替わりに出た別の S ユニットも BP を＋される（出典: grnrngr/faq-card-5 RS-273 Q2）", () => {
-    // 既知の不具合: CARD-RS-273 【ツインアレイ】が実装されていない
+  it("RS-273: 公式Q&A — ＋された S ユニットをバトルダンスでラッシュエリアに戻し、入れ替わりに出た別の S ユニットも BP を＋される（出典: grnrngr/faq-card-5 RS-273 Q2）", () => {
     let s = st(
       {
         turn: 3,

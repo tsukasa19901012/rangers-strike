@@ -112,6 +112,9 @@ import { listKamenRideAbilityUnits } from "../rules/riderKickEffects";
 import { listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities";
 import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
 import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
+import { giantBombCounterIds, isSet5AConfirmableChoice, operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
+import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
+import { countAvailablePower } from "./power";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
 import {
   getMorphReactionActorId,
@@ -433,6 +436,10 @@ function appendLeaveReactionActions(
       playerId: pending.ownerPlayerId,
     });
   }
+  // RS-324 マジマザー【ジルマ・マジュナ】（rules/legend1/set5NamedEffects.ts）。
+  for (const substituteInstanceId of pending.magiMotherInstanceIds ?? []) {
+    actions.push({ type: "use_super_shield", playerId: pending.ownerPlayerId, substituteInstanceId });
+  }
 
   actions.push({ type: "pass_leave_reaction", playerId: pending.ownerPlayerId });
 }
@@ -465,6 +472,33 @@ function appendZordSetupActions(
       playerId,
       zordInstanceId: card.instanceId,
     });
+  }
+}
+
+/**
+ * RS-325【マジチケット】: 自軍コマンドゾーンのリリース状態のオペレーションを、手札から使うときと同じ選択肢で発動する
+ * （rules/legend1/set5NamedEffects.ts。必要パワーは印刷値）。
+ */
+function appendMagiTicketActions(state: GameState, playerId: PlayerId, actions: GameAction[]): void {
+  const player = state.players[playerId];
+  if (!player.rush.some((c) => c.cardId === "RS-325")) return;
+  const power = countAvailablePower(state, playerId);
+  for (const card of player.command) {
+    if (!magiTicketUsable(state, playerId, card, (id) => canPlayOperationCard(state.definitions, id), power)) continue;
+    const staged = stageMagiTicket(state, playerId, card.instanceId);
+    if (!staged) continue;
+    const viaHand: GameAction[] = [];
+    appendOperationActions(staged, playerId, viaHand);
+    for (const a of viaHand) {
+      if (a.type !== "play_operation" || a.instanceId !== card.instanceId) continue;
+      actions.push({
+        type: "use_magi_ticket",
+        playerId,
+        instanceId: card.instanceId,
+        ...(a.targetInstanceId ? { targetInstanceId: a.targetInstanceId } : {}),
+        ...(a.extraInstanceId ? { extraInstanceId: a.extraInstanceId } : {}),
+      });
+    }
   }
 }
 
@@ -785,7 +819,8 @@ function appendOperationCategoryPaymentActions(
     if (canPlayOperation(state, playerId, definition)) continue;
     if (!canPlayOperationExceptCommandHold(state, playerId, definition)) continue;
 
-    const categories = cardCategories(definition);
+    // RS-292【虎の子大秘術】: 手札のオペレーションはどのカテゴリのコマンドをホールドしてもよい。
+    const categories = operationPaymentCategories(state, playerId, definition);
     if (categories.length === 0) continue;
 
     const options = getCategoryPaymentOptions(state, playerId, categories, {
@@ -1113,7 +1148,11 @@ function appendEffectChoiceActions(
     return;
   }
 
-  if (isErrataConfirmableChoice(pending.effectId) || isSet4ConfirmableChoice(pending.effectId)) {
+  if (
+    isErrataConfirmableChoice(pending.effectId) ||
+    isSet4ConfirmableChoice(pending.effectId) ||
+    isSet5AConfirmableChoice(pending)
+  ) {
     for (const instanceId of pending.validInstanceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
@@ -1297,7 +1336,11 @@ function appendBattleEntryActions(
   // ルール: R-ATK-05 — ゴーマ宮で「可能ならアタックする」ユニットはアタックしなければならない。
   const forcedAttack = gomaPalaceForcesAttack(state, playerId, pending.instanceId);
   if (forcedAttack) return;
-  if (canStrikeUnit(state.definitions, unit, state, playerId) && !requiredDefenderId) {
+  if (
+    canStrikeUnit(state.definitions, unit, state, playerId) &&
+    !requiredDefenderId &&
+    !battleActBlocked(player, unit, "strike")
+  ) {
     actions.push({ type: "strike", playerId, instanceId: pending.instanceId });
   }
   if (
@@ -1470,6 +1513,19 @@ export function getLegalActions(state: GameState): GameAction[] {
     return actions;
   }
 
+  if (state.pendingGiantBomb && !state.pendingZordSetup) {
+    // RS-255 巨大化爆弾: 使う（カテゴリのホールド→使用）か見送る。
+    const ownerId = state.pendingGiantBomb.ownerId;
+    for (const counterId of giantBombCounterIds(state, ownerId)) {
+      appendCounterCategoryPaymentActions(state, ownerId, counterId, actions);
+      if (canExecuteHandCounter(state, ownerId, counterId)) {
+        actions.push({ type: "play_counter", playerId: ownerId, instanceId: counterId });
+      }
+    }
+    actions.push({ type: "pass_leave_reaction", playerId: ownerId });
+    return actions;
+  }
+
   if (state.pendingZordSetup) {
     if (state.pendingZordSetup.playerId === playerId) {
       actions.push(
@@ -1563,6 +1619,10 @@ export function getLegalActions(state: GameState): GameAction[] {
       }
       if (!player.hasDrawnThisStart) {
         actions.push({ type: "draw", playerId });
+      }
+      // RS-271【修復作業】等、自軍スタートフェイズ中に起動できる場のユニットの効果。
+      for (const unitInstanceId of listFieldActivatedAbilityCards(state, playerId)) {
+        actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
       }
       if (canBonusDraw(state, playerId)) {
         actions.push({ type: "bonus_draw", playerId });
@@ -1669,6 +1729,7 @@ export function getLegalActions(state: GameState): GameAction[] {
       appendRushCategoryPaymentActions(state, playerId, actions);
       appendZordSetupActions(state, playerId, actions);
       appendOperationActions(state, playerId, actions);
+      appendMagiTicketActions(state, playerId, actions);
       appendOperationCategoryPaymentActions(state, playerId, actions);
       appendHidoraEggActions(state, playerId, actions);
       appendShironLightActions(state, playerId, actions);

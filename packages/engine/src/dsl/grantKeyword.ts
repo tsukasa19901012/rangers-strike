@@ -95,6 +95,9 @@ import { beginCastoffOnRush } from "../rules/castoff";
 import { tryReportedRiderEffect } from "../rules/riderKickEffects";
 import { tryErrataCardEffect } from "../rules/errataCardEffects";
 import { trySet4CardEffect } from "../rules/legend1/set4NamedEffects";
+import { trySet5ACardEffect } from "../rules/legend1/set5NamedEffectsA";
+import { applySet5GrantSideEffects, trySet5CardEffect } from "../rules/legend1/set5NamedEffects";
+import { trySet5AuditCardEffect } from "../rules/legend1/set5AuditFixes";
 import { tryGenericTextFallback } from "./genericTextFallback";
 import {
   beginDeclareNumberDeckReveal,
@@ -395,9 +398,20 @@ export function applyGrantKeyword(
   // エラッタ・公式回答に合わせたカード固有効果（docs/rules/08-errata.md）。
   const errata = tryErrataCardEffect(state, ctx, keyword);
   if (errata) return errata;
+  // RS-340/343【ゲキヌンチャク】の BP+2000 の記録など、通常処理に付随する第5弾の処理。
+  state = applySet5GrantSideEffects(state, ctx);
   // 第4弾（legend1）のカード固有の名前付き効果（rules/legend1/set4NamedEffects.ts）。
   const set4 = trySet4CardEffect(state, ctx, keyword);
   if (set4) return set4;
+  // 第5弾 RS-243〜RS-305 のカード固有の名前付き効果（rules/legend1/set5NamedEffectsA.ts）。
+  const set5a = trySet5ACardEffect(state, ctx, keyword);
+  if (set5a) return set5a;
+  // 第5弾（legend1）のカード固有の名前付き効果（rules/legend1/set5NamedEffects.ts）。
+  const set5 = trySet5CardEffect(state, ctx, keyword);
+  if (set5) return set5;
+  // 第5弾監査のカード固有の修正（rules/legend1/set5AuditFixes.ts）。
+  const set5Audit = trySet5AuditCardEffect(state, ctx, keyword);
+  if (set5Audit) return set5Audit;
 
   if (keyword.startsWith("hand_named_to_rush::")) {
     const withChoice = applyHandNamedToRush(state, ctx, keyword);

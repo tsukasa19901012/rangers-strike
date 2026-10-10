@@ -34,6 +34,7 @@ import {
   released,
   rushFromHand,
   rushVia,
+  passEntry,
   settle,
   skip,
   st,
@@ -105,8 +106,7 @@ describe("RS-320 デカスワン", () => {
   }
 
   // 「敵軍Sユニットにストライクされてダメージを受けたとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない」
-  // 既知の不具合: CARD-RS-320 【スワンイリュージョン】が未実装（ストライクされた後も敵軍ラッシュエリアのユニットがバトルエリアに出られる）
-  it.fails("RS-320: 敵軍ターン中に敵軍 S ユニットにストライクされてダメージを受けると、敵軍ラッシュエリアのユニットはそのターン バトルエリアに出られない（出典: atwiki/page-426）", () => {
+  it("RS-320: 敵軍ターン中に敵軍 S ユニットにストライクされてダメージを受けると、敵軍ラッシュエリアのユニットはそのターン バトルエリアに出られない（出典: atwiki/page-426）", () => {
     const s = struck("TST-UNIT-0");
     expect(canEnter(s, "TST-UNIT-0:r", "player2")).toBe(false);
   });
@@ -359,8 +359,7 @@ describe("RS-323 マジグリーン・マッスル", () => {
   });
 
   // 「【マジ・マージ】このユニットからコンビネーションするSユニットは、敵軍ラッシュエリアのユニットにアタックできる。」
-  // 既知の不具合: CARD-RS-323 【マジ・マージ】が未実装（次にコンビネーションした S ユニットが敵軍ラッシュエリアにアタックできない）
-  it.fails("RS-323: 1番目に出て NC が成立すると、このユニットからコンビネーションした S ユニットは敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-484「CN：1」）", () => {
+  it("RS-323: 1番目に出て NC が成立すると、このユニットからコンビネーションした S ユニットは敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-484「CN：1」）", () => {
     let s = st({
       player1: { rush: [inst("RS-323", "mg"), inst("TST-UNIT-0", "next")] },
       player2: { battle: [inst("TST-UNIT-0", "eb")], rush: [inst("TST-UNIT-0", "er")], deck: deckCards(3, "e") },
@@ -421,8 +420,7 @@ describe("RS-324 マジマザー", () => {
   }
 
   // 「敵軍ターン中、自軍ユニットが撃破されたとき、これをかわりに捨札にしてもよい。そうしたとき、敵軍ラッシュエリアのユニットは、その敵軍ターン中バトルエリアに出られない」
-  // 既知の不具合: CARD-RS-324 【ジルマ・マジュナ】が未実装（撃破時に身代わりの選択が出ない）
-  it.fails("RS-324: 敵軍ターン中に自軍ユニットが撃破されるとき、かわりにマジマザーを捨札にでき、敵軍ラッシュエリアのユニットはそのターン バトルエリアに出られない（出典: atwiki/page-486）", () => {
+  it("RS-324: 敵軍ターン中に自軍ユニットが撃破されるとき、かわりにマジマザーを捨札にでき、敵軍ラッシュエリアのユニットはそのターン バトルエリアに出られない（出典: atwiki/page-486）", () => {
     let s = motherCase();
     s = settle(useVia(s, "player1", "RS-324:mm"));
     expect(zoneOf(s, "player1", "TST-UNIT-0:v")).toBe("battle");
@@ -431,8 +429,7 @@ describe("RS-324 マジマザー", () => {
   });
 
   // 「してもよい」
-  // 既知の不具合: CARD-RS-324 【ジルマ・マジュナ】が未実装
-  it.fails("RS-324: 使わないことを選べ、その場合はユニットは撃破され、敵軍ユニットはバトルエリアに出られる（出典: atwiki/page-486「捨札にしてもよい」）", () => {
+  it("RS-324: 使わないことを選べ、その場合はユニットは撃破され、敵軍ユニットはバトルエリアに出られる（出典: atwiki/page-486「捨札にしてもよい」）", () => {
     let s = motherCase();
     expect(actionUsing(s, "player1", "RS-324:mm")).toBeDefined();
     s = settle(s);
@@ -454,8 +451,7 @@ describe("RS-324 マジマザー", () => {
   });
 
   // faq-card-5 RS-324 Q1「いいえ、それはできません。…ひとつのタイミングに対して1つしか発動できません。」
-  // 既知の不具合: CARD-RS-324 【ジルマ・マジュナ】が未実装
-  it.fails("RS-324: 公式Q&A — マジマザーが2体あっても、1回の撃破に対して2体とも捨札にすることはできない（出典: grnrngr/faq-card-5 RS-324 Q1）", () => {
+  it("RS-324: 公式Q&A — マジマザーが2体あっても、1回の撃破に対して2体とも捨札にすることはできない（出典: grnrngr/faq-card-5 RS-324 Q1）", () => {
     let s = motherCase([inst("RS-324", "m1"), inst("RS-324", "m2")]);
     s = useVia(s, "player1", "RS-324:m1");
     expect(actionUsing(s, "player1", "RS-324:m2")).toBeUndefined();
@@ -465,8 +461,7 @@ describe("RS-324 マジマザー", () => {
   });
 
   // faq-card-5 RS-324 Q2「いいえ。そのターンにラッシュされたユニットはすべて効果対象になりますので、…発動した以降にラッシュされたユニットであってもバトルエリアに出ることはできません。」
-  // 既知の不具合: CARD-RS-324 【ジルマ・マジュナ】が未実装
-  it.fails("RS-324: 公式Q&A — 発動した後に敵軍がラッシュしたユニットも、そのターン バトルエリアに出られない（出典: grnrngr/faq-card-5 RS-324 Q2）", () => {
+  it("RS-324: 公式Q&A — 発動した後に敵軍がラッシュしたユニットも、そのターン バトルエリアに出られない（出典: grnrngr/faq-card-5 RS-324 Q2）", () => {
     let s = motherCase(undefined, { hand: [inst("TST-UNIT-0", "late")], command: [released("TST-OP", "c")] });
     s = settle(useVia(s, "player1", "RS-324:mm"));
     // 発動より後に敵軍ラッシュエリアへ置かれたユニット（発動後にラッシュされたユニットに相当）も出られない。
@@ -475,8 +470,7 @@ describe("RS-324 マジマザー", () => {
   });
 
   // faq-card-5 RS-324 Q3「はい、できます。」（ゴーマ16世で BP0 以下になって撃破されるユニットにも使える）
-  // 既知の不具合: CARD-RS-324 【ジルマ・マジュナ】が未実装
-  it.fails("RS-324: 公式Q&A — 敵軍ターン中、気力の BP 修正がゴーマ16世で反転し BP0 以下で撃破されるユニットにも使える（出典: grnrngr/faq-card-5 RS-324 Q3・R-BP-02）", () => {
+  it("RS-324: 公式Q&A — 敵軍ターン中、気力の BP 修正がゴーマ16世で反転し BP0 以下で撃破されるユニットにも使える（出典: grnrngr/faq-card-5 RS-324 Q3・R-BP-02）", () => {
     let s = st({
       activePlayer: "player2",
       phase: "rush",
@@ -526,8 +520,7 @@ describe("RS-325 天空勇者マジシャイン", () => {
   }
 
   // 「自軍コマンドゾーンにあるオペレーションカードの効果を、そのコマンドをホールドして手札から使用するかのように発動できる」
-  // 既知の不具合: CARD-RS-325 【マジチケット】が未実装（コマンドゾーンのオペレーションを使う合法手がない）
-  it.fails("RS-325: 自軍ラッシュエリアにある間、コマンドゾーンのオペレーション（オーラパワー）をそのコマンドをホールドして発動できる（出典: atwiki/page-485）", () => {
+  it("RS-325: 自軍ラッシュエリアにある間、コマンドゾーンのオペレーション（オーラパワー）をそのコマンドをホールドして発動できる（出典: atwiki/page-485）", () => {
     let s = shine();
     s = useVia(s, "player1", "RS-011:aura");
     if (s.pendingEffectChoice?.validInstanceIds.includes("TST-UNIT-0:target")) s = pick(s, "TST-UNIT-0:target");
@@ -545,8 +538,7 @@ describe("RS-325 天空勇者マジシャイン", () => {
   });
 
   // 「発動したカードは、捨札になるときリリース状態の自軍コマンドをかわりに1つ捨札にすればコマンドゾーンに留まる」
-  // 既知の不具合: CARD-RS-325 【マジチケット】が未実装
-  it.fails("RS-325: 発動したカードが捨札になるとき、リリース状態の自軍コマンドをかわりに1つ捨札にすればコマンドゾーンに留まる（出典: atwiki/page-485）", () => {
+  it("RS-325: 発動したカードが捨札になるとき、リリース状態の自軍コマンドをかわりに1つ捨札にすればコマンドゾーンに留まる（出典: atwiki/page-485）", () => {
     let s = shine();
     s = useVia(s, "player1", "RS-011:aura");
     if (s.pendingEffectChoice?.validInstanceIds.includes("TST-UNIT-0:target")) s = pick(s, "TST-UNIT-0:target");
@@ -556,8 +548,7 @@ describe("RS-325 天空勇者マジシャイン", () => {
   });
 
   // 「かわりに1つ捨札にすれば」— 任意
-  // 既知の不具合: CARD-RS-325 【マジチケット】が未実装
-  it.fails("RS-325: かわりに捨札にしないことを選べば、発動したカードは捨札になる（出典: atwiki/page-485「捨札にすれば」）", () => {
+  it("RS-325: かわりに捨札にしないことを選べば、発動したカードは捨札になる（出典: atwiki/page-485「捨札にすれば」）", () => {
     let s = shine();
     s = useVia(s, "player1", "RS-011:aura");
     if (s.pendingEffectChoice?.validInstanceIds.includes("TST-UNIT-0:target")) s = pick(s, "TST-UNIT-0:target");
@@ -568,8 +559,7 @@ describe("RS-325 天空勇者マジシャイン", () => {
   });
 
   // faq-card-5 RS-325 Q4・Q6（atwiki Q4・Q6）「使いたいオペレーションカード自体をホールドして使用することができます。それとは別にコマンドをホールドする必要はありません。」
-  // 既知の不具合: CARD-RS-325 【マジチケット】が未実装
-  it.fails("RS-325: 公式Q&A — 使うオペレーションカード自体をホールドすればよく、同じカテゴリの別のコマンドをホールドする必要はない（出典: grnrngr/faq-card-5 RS-325 Q4・Q6）", () => {
+  it("RS-325: 公式Q&A — 使うオペレーションカード自体をホールドすればよく、同じカテゴリの別のコマンドをホールドする必要はない（出典: grnrngr/faq-card-5 RS-325 Q4・Q6）", () => {
     let s = shine({ command: [released("RS-011", "aura")] });
     s = useVia(s, "player1", "RS-011:aura");
     if (s.pendingEffectChoice?.validInstanceIds.includes("TST-UNIT-0:target")) s = pick(s, "TST-UNIT-0:target");
@@ -577,7 +567,7 @@ describe("RS-325 天空勇者マジシャイン", () => {
   });
 
   // atwiki/page-485 Q1「いいえ、そのようにはなりません。…実際には手札から使用していないので、…該当しません。」
-  // 既知の不具合: CARD-RS-325 【マジチケット】が未実装
+  // 既知の不具合: CARD-RS-325 XG7-054 オーズドライバーがゲームのカード定義に無い（マジチケット自体は実装済み）
   it.fails("RS-325: 公式Q&A — マジチケットで発動したオーズドライバーの「次に手札から使用するカード」の軽減は、続けてマジチケットで発動するカードには適用されない（出典: atwiki/page-485 Q1）", () => {
     let s = shine({ power: 0, command: [released("XG7-054", "ooo"), released("RS-011", "aura")] });
     s = { ...s, players: { ...s.players, player1: { ...s.players.player1, power: powerCards(3) } } };
@@ -592,8 +582,7 @@ describe("RS-325 天空勇者マジシャイン", () => {
   it.todo("RS-325: 公式Q&A — マジチケットで巨大化爆弾を使いユニットを重ねてラッシュエリアに出したとき、コマンドを捨札にしなくても巨大化爆弾はラッシュエリアに留まり、かわりに捨札にすることもできない（出典: grnrngr/faq-card-5 RS-325 Q3）— 巨大化爆弾は※カウンター（敵軍ターン中のみ・ユーザー決定）で「怪人」の撃破に応じる手順を要し、マジチケット未実装のため場を作れない");
 
   // faq-card-5 RS-325 Q5「はい、発動します。」
-  // 既知の不具合: CARD-RS-325 【マジチケット】が未実装
-  it.fails("RS-325: 公式Q&A — 相手がマジチケットでオペレーションの効果を発動すると、自軍ジェットシーカーの【ラウンドレーダー】は発動する（出典: grnrngr/faq-card-5 RS-325 Q5・faq-card-5 RS-265）", () => {
+  it("RS-325: 公式Q&A — 相手がマジチケットでオペレーションの効果を発動すると、自軍ジェットシーカーの【ラウンドレーダー】は発動する（出典: grnrngr/faq-card-5 RS-325 Q5・faq-card-5 RS-265）", () => {
     let s = shine();
     s = { ...s, players: { ...s.players, player2: { ...s.players.player2, rush: [inst("RS-265", "seeker")], power: powerCards(3, "ep") } } };
     s = useVia(s, "player1", "RS-011:aura");
@@ -636,8 +625,7 @@ describe("RS-326 魔法猫スモーキー", () => {
   }
 
   // 「自分の手札からBP16000以下のLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい」
-  // 既知の不具合: CARD-RS-326 【猫だまし】が手札の L ユニットではなく敵軍ユニットを選ばせ、それをラッシュエリアに移す
-  it.fails("RS-326: 3番目に出ると、手札の BP16000 以下の L ユニットを1枚選んで自軍ラッシュエリアに出す（BP17000 や M は選べない）（出典: atwiki/page-487）", () => {
+  it("RS-326: 3番目に出ると、手札の BP16000 以下の L ユニットを1枚選んで自軍ラッシュエリアに出す（BP17000 や M は選べない）（出典: atwiki/page-487）", () => {
     let s = smokey(3, [inst("SPEC-L16K", "l"), inst("SPEC-L17K", "big"), inst("SPEC-M", "m")]);
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(s)).toEqual(["SPEC-L16K:l"]);
@@ -647,8 +635,7 @@ describe("RS-326 魔法猫スモーキー", () => {
   });
 
   // 「出してもよい」
-  // 既知の不具合: CARD-RS-326 【猫だまし】の候補が手札の L ユニットにならない
-  it.fails("RS-326: 出さないことを選べる（任意）（出典: atwiki/page-487「出してもよい」）", () => {
+  it("RS-326: 出さないことを選べる（任意）（出典: atwiki/page-487「出してもよい」）", () => {
     let s = smokey(3, [inst("SPEC-L16K", "l")]);
     expect(choiceIds(s)).toEqual(["SPEC-L16K:l"]);
     expect(canSkip(s)).toBe(true);
@@ -657,11 +644,10 @@ describe("RS-326 魔法猫スモーキー", () => {
   });
 
   // 「この効果で出したユニットは、アタックもストライクもできず、自分がターンを終えるとき捨札になる」
-  // 既知の不具合: CARD-RS-326 【猫だまし】で L ユニットを出せない
-  it.fails("RS-326: この効果で出した L ユニットはバトルエリアに出てもアタックもストライクもできず、ターンを終えるとき捨札になる（出典: atwiki/page-487）", () => {
+  it("RS-326: この効果で出した L ユニットはバトルエリアに出てもアタックもストライクもできず、ターンを終えるとき捨札になる（出典: atwiki/page-487）", () => {
     let s = smokey(3, [inst("SPEC-L16K", "l")]);
     s = pick(s, "SPEC-L16K:l");
-    s = settle(s);
+    s = passEntry(settle(s));
     s = enter(s, "SPEC-L16K:l");
     expect(attackTargets(s, "SPEC-L16K:l")).toEqual([]);
     expect(canStrike(s, "SPEC-L16K:l")).toBe(false);
@@ -676,8 +662,7 @@ describe("RS-326 魔法猫スモーキー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:eb")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-326 【猫だまし】が手札に L ユニットが無くても敵軍ユニットを候補にした選択を出す
-  it.fails("RS-326: 手札に BP16000 以下の L ユニットがなければ何も起きない（敵軍ユニットには触れない）（出典: atwiki/page-487）", () => {
+  it("RS-326: 手札に BP16000 以下の L ユニットがなければ何も起きない（敵軍ユニットには触れない）（出典: atwiki/page-487）", () => {
     const s = smokey(3, [inst("SPEC-L17K", "big")]);
     expect(s.pendingEffectChoice).toBeFalsy();
     expect(zoneOf(s, "player2", "TST-UNIT-0:eb")).toBe("battle");

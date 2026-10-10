@@ -106,8 +106,7 @@ describe("RS-292 気伝武人ウォンタイガー", () => {
   }
 
   // 「自分が手札からオペレーションカードを使用するためにホールドするコマンドは、使用するカードと同じカテゴリのコマンドでなくてもよい」
-  it.fails("RS-292: 【虎の子大秘術】自軍ラッシュエリアにある間、手札のオペレーション（WB）を別カテゴリ（DA）のコマンドをホールドして使用できる（出典: atwiki/page-476）", () => {
-    // 既知の不具合: CARD-RS-292 【虎の子大秘術】が実装されていない（汎用パッシブ登録のみ）
+  it("RS-292: 【虎の子大秘術】自軍ラッシュエリアにある間、手札のオペレーション（WB）を別カテゴリ（DA）のコマンドをホールドして使用できる（出典: atwiki/page-476）", () => {
     expect(canUseCard(opState({ rush: [inst("RS-292", "w")] }), "player1", "RS-243:op")).toBe(true);
   });
 
@@ -159,8 +158,7 @@ describe("RS-293 気伝獣ウォンタイガー", () => {
 
   // 「敵軍山札の上から3枚をオモテにしてもよい。そうしたとき、…「DA」のカードをすべて捨札にし、それ以外を山札の上に好きな順で戻す」
   // atwiki/page-477 コメント「DAのカードとはマルチカテゴリも含みますか？」「↑含みます。」
-  it.fails("RS-293: 【吼新星・大咆哮】敵軍山札の上3枚をオモテにし、DA のカード（マルチカテゴリを含む）をすべて捨札にし、それ以外を山札の上に戻す（出典: atwiki/page-477）", () => {
-    // 既知の不具合: CARD-RS-293 【吼新星・大咆哮】が実装されていない（reveal_enemy_deck_3 を処理する箇所がない）
+  it("RS-293: 【吼新星・大咆哮】敵軍山札の上3枚をオモテにし、DA のカード（マルチカテゴリを含む）をすべて捨札にし、それ以外を山札の上に戻す（出典: atwiki/page-477）", () => {
     let s = wonEnters();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-293");
     s = settle(confirm(s));
@@ -170,8 +168,7 @@ describe("RS-293 気伝獣ウォンタイガー", () => {
     expect(s.players.player2.deck.map((c) => c.instanceId)).toEqual(["SPEC-OT-S:o1", "TST-OP:x"]);
   });
 
-  it.fails("RS-293: 【吼新星・大咆哮】オモテにしないことを選べる（任意）（出典: atwiki/page-477「オモテにしてもよい」）", () => {
-    // 既知の不具合: CARD-RS-293 【吼新星・大咆哮】が実装されていない
+  it("RS-293: 【吼新星・大咆哮】オモテにしないことを選べる（任意）（出典: atwiki/page-477「オモテにしてもよい」）", () => {
     let s = wonEnters();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-293");
     expect(canSkip(s)).toBe(true);
@@ -223,8 +220,7 @@ describe("RS-294 キバレンジャー", () => {
   }
 
   // 「相手はオモテにしたカードを手札に加えるか…を選ぶ。相手が手札に加えることを選んだとき、敵軍Sユニットがあれば1体選び撃破する」
-  it.fails("RS-294: 【吼新星・乱れ山彦】（NC 成立）相手が手札に加えることを選んだら、敵軍 S ユニットを1体選び撃破する（出典: atwiki/page-478）", () => {
-    // 既知の不具合: CARD-RS-294 【吼新星・乱れ山彦】が実装されていない（reveal_enemy_deck_1 を処理する箇所がない）
+  it("RS-294: 【吼新星・乱れ山彦】（NC 成立）相手が手札に加えることを選んだら、敵軍 S ユニットを1体選び撃破する（出典: atwiki/page-478）", () => {
     let s = kibaAt(3);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-294");
     s = confirm(s);
@@ -236,8 +232,7 @@ describe("RS-294 キバレンジャー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:es")).toBe("discard");
   });
 
-  it.fails("RS-294: 【吼新星・乱れ山彦】相手がダメージにして置くことを選んだら、ウラ向きでパワーゾーンに置き（1点）、ユニットは撃破しない（出典: atwiki/page-478）", () => {
-    // 既知の不具合: CARD-RS-294 【吼新星・乱れ山彦】が実装されていない
+  it("RS-294: 【吼新星・乱れ山彦】相手がダメージにして置くことを選んだら、ウラ向きでパワーゾーンに置き（1点）、ユニットは撃破しない（出典: atwiki/page-478）", () => {
     let s = kibaAt(3);
     s = confirm(s);
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
@@ -247,15 +242,13 @@ describe("RS-294 キバレンジャー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:es")).toBe("battle");
   });
 
-  it.fails("RS-294: 【吼新星・乱れ山彦】オモテにしないことを選べる（任意）（出典: atwiki/page-478「オモテにしてもよい」）", () => {
-    // 既知の不具合: CARD-RS-294 【吼新星・乱れ山彦】が実装されていない
+  it("RS-294: 【吼新星・乱れ山彦】オモテにしないことを選べる（任意）（出典: atwiki/page-478「オモテにしてもよい」）", () => {
     const s = kibaAt(3);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-294");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RS-294: 【吼新星・乱れ山彦】手札に加えることを選んでも、敵軍 S ユニットがなければ撃破しない（M ユニットは選べない）（出典: atwiki/page-478「敵軍Sユニットがあれば」）", () => {
-    // 既知の不具合: CARD-RS-294 【吼新星・乱れ山彦】が実装されていない
+  it("RS-294: 【吼新星・乱れ山彦】手札に加えることを選んでも、敵軍 S ユニットがなければ撃破しない（M ユニットは選べない）（出典: atwiki/page-478「敵軍Sユニットがあれば」）", () => {
     let s = kibaAt(3, [inst("SPEC-DA-M", "em")]);
     s = confirm(s);
     s = settle(pick(s, "TST-OP:top"));
@@ -580,8 +573,7 @@ describe("RS-297 タコンパス", () => {
   }
 
   // 「自軍コマンドがすべてリリース状態なら、これは特徴「航空機」を持たないユニットにアタックされない」
-  it.fails("RS-297: 【変形】自軍コマンドがすべてリリース状態なら、航空機を持たないユニットにアタックされない（出典: atwiki/page-435）", () => {
-    // 既知の不具合: CARD-RS-297 【変形】が実装されていない（NC 扱いの DSL スタブで、アタック対象の制限がない）
+  it("RS-297: 【変形】自軍コマンドがすべてリリース状態なら、航空機を持たないユニットにアタックされない（出典: atwiki/page-435）", () => {
     expect(attackTargets(attacked(releasedN(2)), "TST-UNIT-0:a", "player2")).not.toContain("RS-297:t");
   });
 

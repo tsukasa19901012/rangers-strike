@@ -1,4 +1,6 @@
 import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
+import { set5ADefenderBlocksAttack } from "../legend1/set5NamedEffectsA";
+import { kibaGakureBlocksAttack, magiMergeAllowsRushAttack } from "../legend1/set5NamedEffects";
 import {
   getBattleEntryHandDiscardCount,
   hasUnnamedRule,
@@ -396,6 +398,8 @@ export function canAttackDefender(
   // RS-158【エレファントシールド】: コンビネーションが成立している間、敵軍ユニットはこれ以外にアタックできない。
   const mustTarget = elephantShieldMustTarget(state, defenderPlayerId);
   if (mustTarget && mustTarget !== defenderInstanceId) return false;
+  // RS-297【変形】: 自軍コマンドがすべてリリース状態なら、「航空機」を持たないユニットにアタックされない。
+  if (set5ADefenderBlocksAttack(state, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
 
   const attackerInRush = findInZone(attackerPlayer, "rush", attackerInstanceId);
   if (
@@ -408,6 +412,10 @@ export function canAttackDefender(
   const enemy = state.players[defenderPlayerId];
   const inBattle = findInZone(enemy, "battle", defenderInstanceId);
   const inRush = findInZone(enemy, "rush", defenderInstanceId);
+
+  // RS-311【カラクリ忍法・牙がくれ】（rules/legend1/set5NamedEffects.ts）。
+  const defenderCard = (inBattle ?? inRush)?.card;
+  if (defenderCard && kibaGakureBlocksAttack(state, attackerPlayerId, attackerInstanceId, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;
@@ -438,7 +446,8 @@ export function canAttackDefender(
     // RS-213【炸裂超力バトン】（相手が選んだユニット）・RS-225【大回転獅子爆裂弾】で得た能力。
     if (
       chikaraBatonAllowsAttack(state, attackerPlayerId, attackerInstanceId, defenderInstanceId) ||
-      lionBlastAllowsRushAttack(attacker.card)
+      lionBlastAllowsRushAttack(attacker.card) ||
+      magiMergeAllowsRushAttack(state, attackerPlayerId, attackerInstanceId)
     ) {
       return true;
     }

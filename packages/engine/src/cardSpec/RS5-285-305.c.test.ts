@@ -90,16 +90,14 @@ describe("RS-299 VRVマスター", () => {
   }
 
   // 「自分がSユニットをラッシュするたび、自軍山札の上から1枚をオモテにする。…特徴「メカ」を持つMユニットのカードなら手札に加え」
-  it.fails("RS-299: 【乗ってみないか？】S ユニットをラッシュしたとき、山札の上が「メカ」を持つ M ユニットのカードなら手札に加える（出典: atwiki/page-446）", () => {
-    // 既知の不具合: CARD-RS-299 【乗ってみないか？】が実装されていない（汎用パッシブ登録のみ）
+  it("RS-299: 【乗ってみないか？】S ユニットをラッシュしたとき、山札の上が「メカ」を持つ M ユニットのカードなら手札に加える（出典: atwiki/page-446）", () => {
     const r = rushFromHand(vrv([inst("TST-UNIT-0", "s")], [inst("SPEC-MECHA-M", "top"), inst("TST-OP", "x")]), "player1", "TST-UNIT-0:s");
     expect(r.ok).toBe(true);
     const s = settle(r.state);
     expect(zoneOf(s, "player1", "SPEC-MECHA-M:top")).toBe("hand");
   });
 
-  it.fails("RS-299: 【乗ってみないか？】S ユニットをラッシュする「たび」— 2回ラッシュすれば2回オモテにする（出典: atwiki/page-446「ラッシュするたび」）", () => {
-    // 既知の不具合: CARD-RS-299 【乗ってみないか？】が実装されていない
+  it("RS-299: 【乗ってみないか？】S ユニットをラッシュする「たび」— 2回ラッシュすれば2回オモテにする（出典: atwiki/page-446「ラッシュするたび」）", () => {
     const deck = [inst("SPEC-MECHA-M", "t1"), inst("SPEC-MECHA-M", "t2"), inst("TST-OP", "x")];
     let r = rushFromHand(vrv([inst("TST-UNIT-0", "s1"), inst("TST-UNIT-0", "s2")], deck), "player1", "TST-UNIT-0:s1");
     r = rushFromHand(settle(r.state), "player1", "TST-UNIT-0:s2");
@@ -229,8 +227,7 @@ describe("RS-301 Vレックスロボ", () => {
   }
 
   // 「敵軍ユニットを1体選び、敵軍パワーゾーンからカードを1枚選ぶ。そうしたとき、相手はどちらかを選び捨札にする」
-  it.fails("RS-301: 【リボルバーミサイル】敵軍ユニット1体と敵軍パワーゾーンのカード1枚を選び、相手がどちらかを捨札にする（出典: atwiki/page-445）", () => {
-    // 既知の不具合: CARD-RS-301 【リボルバーミサイル】が実装されていない（opponent_must の汎用ハンドラで何も起きない）
+  it("RS-301: 【リボルバーミサイル】敵軍ユニット1体と敵軍パワーゾーンのカード1枚を選び、相手がどちらかを捨札にする（出典: atwiki/page-445）", () => {
     let s = roboEnters({ battle: [inst("TST-UNIT-0", "e")], power: powerCards(2, "ep") });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-301");
     expect(canSkip(s)).toBe(false);
@@ -243,8 +240,7 @@ describe("RS-301 Vレックスロボ", () => {
   });
 
   // faq-card-5 RS-301 Q1「はい、できます。」
-  it.fails("RS-301: 公式Q&A — 敵軍パワーゾーンのダメージになっているカードも選べる（出典: grnrngr/faq-card-5 RS-301 Q1）", () => {
-    // 既知の不具合: CARD-RS-301 【リボルバーミサイル】が実装されていない
+  it("RS-301: 公式Q&A — 敵軍パワーゾーンのダメージになっているカードも選べる（出典: grnrngr/faq-card-5 RS-301 Q1）", () => {
     let s = roboEnters({ battle: [inst("TST-UNIT-0", "e")], power: damageCards(1, "dm"), damage: 1 });
     s = pick(s, "TST-UNIT-0:e");
     expect(choiceIds(s)).toContain("TST-P:dm0");
@@ -270,7 +266,7 @@ describe("RS-301 Vレックスロボ", () => {
 
   // faq-card-6 RS-359 Q「はい、できます。」（Vコマンダーで山札から出す Vレックスロボの追加条件を、デンジ犬アイシーで山札の Vレックスを捨札にして満たす）
   it.fails("RS-301: 公式Q&A — Vコマンダーで山札から出すとき、デンジ犬アイシーで山札の「Vレックス」を捨札にして追加条件を満たせる（出典: grnrngr/faq-card-6 RS-359 Q）", () => {
-    // 既知の不具合: CARD-RS-249 Vコマンダーを使用しても山札の「恐竜」のユニットを選ぶ処理が起きない（範囲外カード。RS-359 の連携も確認できない）
+    // 既知の不具合: CARD-RS-359（範囲外）デンジ犬アイシー【最後の手段】が未実装（Vコマンダーの山札からのラッシュは実装済み）
     let s = st({
       phase: "rush",
       player1: {
@@ -378,8 +374,7 @@ describe("RS-303 タイムファイヤー", () => {
   });
 
   // 「これは自軍バトルエリアの特徴「戦闘員」を持つユニット1体につきBP＋1000され」
-  it.fails("RS-303: 【シティガーディアンズ隊長】自軍バトルエリアの「戦闘員」1体につき BP＋1000（出典: atwiki/page-443）", () => {
-    // 既知の不具合: CARD-RS-303 【シティガーディアンズ隊長】が実装されていない（on_destroy の bp_modify スタブで BP も SP も変わらない）
+  it("RS-303: 【シティガーディアンズ隊長】自軍バトルエリアの「戦闘員」1体につき BP＋1000（出典: atwiki/page-443）", () => {
     const s = st({ player1: { battle: [inst("RS-303", "tf"), inst("RS-298", "a"), inst("RS-300", "b")] } });
     expect(bpOf(s, "player1", "RS-303:tf")).toBe(4000);
   });
@@ -390,8 +385,7 @@ describe("RS-303 タイムファイヤー", () => {
   });
 
   // 「BP5000以上のとき「SP1」になる」
-  it.fails("RS-303: 【シティガーディアンズ隊長】「戦闘員」3体で BP5000 になり「SP1」（ストライクできる）（出典: atwiki/page-443）", () => {
-    // 既知の不具合: CARD-RS-303 【シティガーディアンズ隊長】が実装されていない
+  it("RS-303: 【シティガーディアンズ隊長】「戦闘員」3体で BP5000 になり「SP1」（ストライクできる）（出典: atwiki/page-443）", () => {
     const s = st({ player1: { battle: [inst("RS-298", "a"), inst("RS-300", "b"), inst("RS-304", "c"), inst("RS-303", "tf")] } });
     expect(bpOf(s, "player1", "RS-303:tf")).toBe(5000);
     expect(spOf(s, "player1", "RS-303:tf")).toBe(1);
@@ -413,8 +407,7 @@ describe("RS-303 タイムファイヤー", () => {
   }
 
   // 「これが撃破されたとき、特徴「戦闘員」を持つ自軍ユニットを2体選び、かわりに捨札にしてもよい」
-  it.fails("RS-303: 【シティガーディアンズ隊長】撃破されたとき、自軍の「戦闘員」2体をかわりに捨札にして場に残れる（出典: atwiki/page-443）", () => {
-    // 既知の不具合: CARD-RS-303 【シティガーディアンズ隊長】が実装されていない
+  it("RS-303: 【シティガーディアンズ隊長】撃破されたとき、自軍の「戦闘員」2体をかわりに捨札にして場に残れる（出典: atwiki/page-443）", () => {
     let s = tfAttacked([inst("RS-298", "a"), inst("RS-300", "b"), inst("RS-304", "c")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-303");
     expect(canSkip(s)).toBe(true);

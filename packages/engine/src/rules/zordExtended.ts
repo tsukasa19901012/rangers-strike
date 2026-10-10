@@ -11,6 +11,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 type StateGateContext = Pick<GameState, "players" | "definitions">;
 import { COMMAND_ZONE_MAX } from "../types/game";
 import {
+  cardName,
   getDefinition,
   isLargeUnit,
   isOperation,
@@ -231,6 +232,12 @@ export function evaluateStateGate(
     const total =
       state.players.player1.discard.length + state.players.player2.discard.length;
     return total >= Number(discardTotalMatch[1]);
+  }
+
+  const namedDiscardMatch = text.match(/^自軍捨札に[「｢]([^」｣]+)[」｣]がある$/);
+  if (namedDiscardMatch) {
+    // RS-327: 自軍捨札にその名前のカードがあること（捨札にはしない。atwiki/page-488）。
+    return player.discard.some((c) => cardName(state.definitions, c.cardId) === namedDiscardMatch[1]);
   }
 
   const namedAreaMatch = text.match(/自軍エリアに[「｢]([^」｣]+)[」｣]がある/);
