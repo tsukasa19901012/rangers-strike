@@ -1,4 +1,5 @@
 import { canonicalCardName, getJointLNamedEffect } from "@rangers-strike/cards";
+import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEffects";
 import { activeOnAttackNamedEffect } from "../ncGatedEffects";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
 import { cardCategories, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
@@ -139,16 +140,18 @@ export function resolveLegend3EnterBattle(
       };
     }
     case "crown_final_crush": {
-      const player = state.players[playerId];
-      const nextPlayer = {
-        ...player,
-        command: player.command.map((c) => ({ ...c, commandHeld: false })),
-      };
+      // 「自軍コマンドをすべてリリース状態に戻してもよい」（atwiki/page-368）— 行うかを選ぶ。
+      if (!state.players[playerId].command.some((c) => c.commandHeld)) return { state, logs: [] };
+      const opened = openOptionalEffectConfirm(state, {
+        playerId,
+        effectId: CROWN_FINAL_CRUSH_EFFECT_ID,
+        sourceCardId: cardId,
+        sourceInstanceId,
+        phasePlayerId: playerId,
+      });
       return {
-        state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-        logs: [
-          buildLogEntry(playerId, "enter_battle", cardId, state.definitions, effectId),
-        ],
+        state: { ...opened, pendingEffectChoice: { ...opened.pendingEffectChoice!, validInstanceIds: ["accept"] } },
+        logs: [buildLogEntry(playerId, "enter_battle", cardId, state.definitions, effectId)],
       };
     }
     case "hyper_civilization_guard": {
@@ -311,3 +314,18 @@ export function commandCategoriesNow(state: GameState, card: CardInstance): stri
   }
   return printed;
 }
+
+const CROWN_FINAL_CRUSH_EFFECT_ID = "crown_final_crush";
+
+registerOptionalEffect(CROWN_FINAL_CRUSH_EFFECT_ID, {
+  apply: (state, pending) => {
+    const player = state.players[pending.playerId];
+    return {
+      ...state,
+      ...updatePlayer(state, pending.playerId, {
+        ...player,
+        command: player.command.map((c) => ({ ...c, commandHeld: false })),
+      }),
+    };
+  },
+});

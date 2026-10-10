@@ -2777,6 +2777,10 @@ export function applyEffectChoiceSelect(
   const errata = tryResolveErrataChoice(state, playerId, instanceId);
   if (errata) return errata;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
+  if (pending.mayConfirm) {
+    if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+    return applyConfirmEffectChoice(state, playerId);
+  }
   if (isHououChoice(pending)) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
     const next = resolveHououPick(state, pending, instanceId);
@@ -4108,6 +4112,27 @@ export function applyEffectChoiceSelect(
     }
 
     case "select_power": {
+      if (pending.effectId === "bumper_bow") {
+        // RS-150【バンパーボウ】: 選んだ敵軍パワーを持ち主のコマンドゾーンにホールド状態で置く。
+        const enemyId = opponent(pending.playerId);
+        const enemy = state.players[enemyId];
+        const found = findInZone(enemy, "power", instanceId);
+        if (!found || found.card.faceDown) return { error: "invalid_target" };
+        if (enemy.command.length >= 5) return finishChoice(state, pending, "no_room");
+        const [, power] = removeAt(enemy.power, found.index);
+        return finishChoice(
+          {
+            ...state,
+            ...updatePlayer(state, enemyId, {
+              ...enemy,
+              power,
+              command: [...enemy.command, { ...found.card, commandHeld: true }],
+            }),
+          },
+          pending,
+          cardName(state.definitions, found.card.cardId),
+        );
+      }
       if (isFirefightingChoice(pending)) {
         const next = resolveFirefightingPick(state, pending, instanceId);
         if (!next) return { error: "invalid_target" };

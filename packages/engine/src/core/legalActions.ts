@@ -1046,6 +1046,10 @@ function appendEffectChoiceActions(
   // 「～してもよい」の任意効果の確認（rules/optionalEffects.ts）: 行う＝confirm、行わない＝skip。
   if (pending.mayConfirm) {
     actions.push({ type: "confirm_effect_choice", playerId });
+    // 「行う」を選択肢（validInstanceIds）として選んでもよい（confirm と同じ）。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
     return;
   }
 

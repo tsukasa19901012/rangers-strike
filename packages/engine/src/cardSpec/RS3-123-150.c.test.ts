@@ -110,8 +110,7 @@ describe("RS-142 オーレンジャーロボ", () => {
     expect(s.players.player1.command.every((c) => !c.commandHeld)).toBe(true);
   });
 
-  it.fails("RS-142: リリースしないことを選べる（任意）（出典: atwiki/page-368「戻してもよい」）", () => {
-    // 既知の不具合: CARD-RS-142 【クラウンファイナルクラッシュ】を強制で処理し、リリースしない選択肢がない
+  it("RS-142: リリースしないことを選べる（任意）（出典: atwiki/page-368「戻してもよい」）", () => {
     let s = robo();
     expect(canSkip(s)).toBe(true);
     s = skip(s);
@@ -202,8 +201,7 @@ describe("RS-144 グランタウラス", () => {
     expect(zoneOf(s, "player2", "SPEC-MSP:msp")).toBe("battle");
   });
 
-  it.fails("RS-144: 敵軍ラッシュエリアの「SP1」「SP！」の S ユニットも戻す（出典: atwiki/page-369「敵軍Sユニット」・faq-card-3 RS-144 Q1「分数表記のユニットはラッシュエリアにある間は…」）", () => {
-    // 既知の不具合: CARD-RS-144 【タウラスダイブ】の対象を敵軍バトルエリアのユニットに限り、ラッシュエリアの SP1・SP！ の S ユニットを戻さない
+  it("RS-144: 敵軍ラッシュエリアの「SP1」「SP！」の S ユニットも戻す（出典: atwiki/page-369「敵軍Sユニット」・faq-card-3 RS-144 Q1「分数表記のユニットはラッシュエリアにある間は…」）", () => {
     const s = taurus({ rush: [inst("TST-UNIT-0", "sp1"), inst("SPEC-BANG", "bang")] });
     expect(zoneOf(s, "player2", "TST-UNIT-0:sp1")).toBe("hand");
     expect(zoneOf(s, "player2", "SPEC-BANG:bang")).toBe("hand");
@@ -565,8 +563,7 @@ describe("RS-150 ピンクレーサー", () => {
     expect(zoneOf(s, "player2", "TST-P:ed0")).toBe("power");
   });
 
-  it.fails("RS-150: 置くカードは自分が選ぶ（出典: atwiki/page-366「1枚選んで」）", () => {
-    // 既知の不具合: CARD-RS-150 【バンパーボウ】で置くカードを選ばせず、先頭のオモテ向きカードを自動で置く
+  it("RS-150: 置くカードは自分が選ぶ（出典: atwiki/page-366「1枚選んで」）", () => {
     let s = pinkSecond();
     expect(choiceIds(s)).toEqual(["TST-P:ep0", "TST-P:ep1"]);
     s = pick(s, "TST-P:ep1");

@@ -155,7 +155,12 @@ describe("RS-142 crown_final_crush", () => {
       },
     });
     const result = resolveLegend3EnterBattle(state, "player1", "RS-142", "crown_final_crush");
-    expect(result.state.players.player1.command.every((c) => !c.commandHeld)).toBe(true);
+    // 「リリース状態に戻してもよい」（atwiki/page-368）— 行うかの確認を経てリリースする。
+    expect(result.state.pendingEffectChoice?.effectId).toBe("crown_final_crush");
+    const r = applyAction(result.state, { type: "confirm_effect_choice", playerId: "player1" });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.state.players.player1.command.every((c) => !c.commandHeld)).toBe(true);
   });
 });
 
@@ -184,7 +189,9 @@ describe("RS-144 taurus_dive", () => {
     expect(result.state.players.player2.hand.some((c) => c.cardId === "RS-138")).toBe(true);
   });
 
-  it("does not return rush-area S-units without SP", () => {
+  // atwiki/page-369「敵軍Sユニット」・faq-card-3 RS-144 Q1 — ラッシュエリアの「SP1」の S ユニットも戻す
+  // （SP を持たない・分数表記のユニットは戻さない。cardSpec/RS3-123-150.c.test.ts）。
+  it("also returns rush-area S-units with printed SP1", () => {
     const gran = inst("RS-144", "gran");
     const rushS = inst("TST-UNIT-0", "rush-s");
     const state = createTestState({
@@ -201,8 +208,8 @@ describe("RS-144 taurus_dive", () => {
       "RS-144",
       "taurus_dive",
     );
-    expect(result.state.players.player2.rush).toHaveLength(1);
-    expect(result.state.players.player2.hand).toHaveLength(0);
+    expect(result.state.players.player2.rush).toHaveLength(0);
+    expect(result.state.players.player2.hand).toHaveLength(1);
   });
 });
 
@@ -279,7 +286,13 @@ describe("RS-150 bumper_bow", () => {
         command: [],
       },
     });
-    const result = applyLegend3NcEffect(state, "player1", pink, "bumper_bow");
+    const outcome = applyLegend3NcEffect(state, "player1", pink, "bumper_bow");
+    // 「1枚選んで」（atwiki/page-366）— 置くカードを選ぶ。
+    expect(outcome.state.pendingEffectChoice?.validInstanceIds).toEqual([powerCard.instanceId]);
+    const r = applyAction(outcome.state, { type: "resolve_effect_choice", playerId: "player1", instanceId: powerCard.instanceId });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    const result = r;
     expect(result.state.players.player2.power).toHaveLength(0);
     expect(
       result.state.players.player2.command.some(

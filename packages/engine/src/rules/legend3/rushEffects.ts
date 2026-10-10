@@ -292,8 +292,12 @@ export function resolveLegend3OnRushEffects(
         const def = getDefinition(nextState.definitions, c.cardId);
         const spValue = resolveInstanceSpValue(def, c);
         const inBattle = enemy.battle.some((u) => u.instanceId === c.instanceId);
-        if (spValue === "special") return inBattle;
-        if (!inBattle) return false;
+        // 「SP！」はラッシュエリアでも戻す（atwiki/page-369「敵軍Sユニット」）。
+        if (spValue === "special") return true;
+        if (!inBattle) {
+          // ラッシュエリアでは「SP1」以上の整数表記だけ（分数表記はラッシュエリアにある間は SP を得ない。faq-card-3 RS-144 Q1）。
+          return typeof spValue === "number" && spValue + (c.spModifier ?? 0) >= 1;
+        }
         const position = battlePositionOneBased(enemy.battle, c.instanceId);
         const sp =
           (c.spModifier ?? 0) +

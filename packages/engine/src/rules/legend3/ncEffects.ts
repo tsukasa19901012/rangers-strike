@@ -69,17 +69,25 @@ export function applyLegend3NcEffect(
       break;
     }
     case "bumper_bow": {
+      // 「敵軍パワーゾーンのダメージ以外のカードを1枚選んで」— 置くカードは自分が選ぶ（atwiki/page-366）。
       const enemy = nextState.players[enemyId];
-      const faceUp = enemy.power.find((c) => !c.faceDown);
-      if (faceUp && enemy.command.length < 5) {
-        const power = enemy.power.filter((c) => c.instanceId !== faceUp.instanceId);
+      const faceUp = enemy.power.filter((c) => !c.faceDown).map((c) => c.instanceId);
+      if (faceUp.length > 0 && enemy.command.length < 5 && !nextState.pendingEffectChoice) {
         nextState = {
           ...nextState,
-          ...updatePlayer(nextState, enemyId, {
-            ...enemy,
-            power,
-            command: [...enemy.command, { ...faceUp, commandHeld: true }],
-          }),
+          pendingEffectChoice: {
+            playerId,
+            effectId: "bumper_bow",
+            sourceCardId: card.cardId,
+            sourceInstanceId: card.instanceId,
+            kind: "select_power",
+            phasePlayerId: playerId,
+            validInstanceIds: faceUp,
+            selectCount: 1,
+            selectedInstanceIds: [],
+            optional: false,
+          },
+          activePlayer: playerId,
         };
       }
       logs.push(ncLog(playerId, card.cardId, state.definitions, "bumper_bow"));
