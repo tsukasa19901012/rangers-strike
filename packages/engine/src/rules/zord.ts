@@ -149,10 +149,15 @@ export function collectRequiredFusionMaterials(
   // 1枚で複数の合体ユニットとしてつかえるカード（XG3-006「ブルースローワー＋イエローアーマー＋ピンクエイダー」。
   // atwiki/page-388 Q1）で、その名前の枠をまとめて満たす。
   const slots = resolveZordFusionPartnerSlots(rushingCardId);
-  for (const zone of ZORD_MATERIAL_ZONES) {
+  // RS-347 スーパーフォーメーションを使ったターンは、コマンドゾーンのリリース状態のカードでもよい（atwiki/page-388 Q1）。
+  const aliasZones: PartnerZone[] = superFormationApplies(player, definitions, rushingCardId, slots.length)
+    ? [...ZORD_MATERIAL_ZONES, "command"]
+    : ZORD_MATERIAL_ZONES;
+  for (const zone of aliasZones) {
     for (let index = 0; index < player[zone].length; index++) {
       const card = player[zone][index]!;
       if (card.instanceId === rushingInstanceId) continue;
+      if (zone === "command" && card.commandHeld) continue;
       const names = multiFusionAliasNames(getDefinition(definitions, card.cardId));
       if (names.length === 0) continue;
       const covered = new Set<number>();
@@ -184,8 +189,56 @@ function collectRequiredFusionMaterialsWith(
   const slots = resolveZordFusionPartnerSlots(rushingCardId);
   if (slots.length === 0) return null;
   const alternatives = resolveZordFusionSlotAlternatives(rushingCardId);
-  const includeCommand = superFormationApplies(player, definitions, rushingCardId, slots.length);
+  // 「X（または、A＋B＋…）」の枠ごとに、X と A・B…のどちらでそろえるか（組み合わせ）を決める。
+  const altSlotIndexes = [...alternatives.keys()].filter((i) => !preassigned?.slots.has(i));
+  const masks = Array.from({ length: 1 << altSlotIndexes.length }, (_, m) => m).sort(
+    (a, b) => popcount(a) - popcount(b) || a - b,
+  );
+  // RS-347 スーパーフォーメーション: 「5体以上の合体ユニットを必要とする」かは選んだ組み合わせの合体ユニットの数で決まる
+  // （grnrngr/faq-card-8 RS-565 Q1「5体合体以上の組み合わせを選択すれば…対象にすることは可能」「3体合体としかみなされません」、
+  //  RS-569 Q1・Q2）。場のユニットだけでそろうなら、それを優先する。
+  for (const includeCommand of [false, true]) {
+    for (const mask of masks) {
+      const useAlt = new Set(altSlotIndexes.filter((_, bit) => (mask >> bit) & 1));
+      if (includeCommand) {
+        const unitCount = slots.reduce(
+          (sum, _slot, i) => sum + (useAlt.has(i) ? alternatives.get(i)!.length : 1),
+          0,
+        );
+        if (!superFormationApplies(player, definitions, rushingCardId, unitCount)) continue;
+      }
+      const found = matchFusionCombination(
+        player,
+        definitions,
+        rushingInstanceId,
+        slots,
+        alternatives,
+        useAlt,
+        includeCommand,
+        preassigned,
+      );
+      if (found) return found;
+    }
+  }
+  return null;
+}
 
+function popcount(n: number): number {
+  let c = 0;
+  for (let x = n; x > 0; x >>= 1) c += x & 1;
+  return c;
+}
+
+function matchFusionCombination(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  rushingInstanceId: string,
+  slots: string[][],
+  alternatives: Map<number, string[][]>,
+  useAlt: Set<number>,
+  includeCommand: boolean,
+  preassigned: { slots: Set<number>; material: FusionMaterialFound } | null,
+): FusionMaterialFound[] | null {
   type Found = FusionMaterialFound;
   const found: Found[] = preassigned ? [preassigned.material] : [];
   const usedInstanceIds = new Set<string>(preassigned ? [preassigned.material.card.instanceId] : []);
@@ -210,23 +263,14 @@ function collectRequiredFusionMaterialsWith(
 
   for (const [slotIndex, slot] of slots.entries()) {
     if (preassigned?.slots.has(slotIndex)) continue;
-    const match = matchSlot(slot);
-    if (match) {
+    // 「X（または、A＋B＋…）」— X のかわりに A・B…をすべてそろえてもよい（RS-236）。
+    const parts = useAlt.has(slotIndex) ? alternatives.get(slotIndex)! : [slot];
+    for (const part of parts) {
+      const match = matchSlot(part);
+      if (!match) return null;
       usedInstanceIds.add(match.card.instanceId);
       found.push(match);
-      continue;
     }
-    // 「X（または、A＋B＋…）」— X のかわりに A・B…をすべてそろえてもよい（RS-236）。
-    const alternative = alternatives.get(slotIndex);
-    if (!alternative) return null;
-    const altFound: Found[] = [];
-    for (const altSlot of alternative) {
-      const altMatch = matchSlot(altSlot);
-      if (!altMatch) return null;
-      usedInstanceIds.add(altMatch.card.instanceId);
-      altFound.push(altMatch);
-    }
-    found.push(...altFound);
   }
 
   return found;
