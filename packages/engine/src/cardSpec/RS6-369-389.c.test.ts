@@ -343,8 +343,7 @@ describe("RS-385 グリーンホバー", () => {
   });
 
   // grnrngr/faq-card-6 SR-004「リリース状態で置いた後、「SR-004 へドリアン女王(２nd)」の効果でホールド状態になります。」
-  it.fails("RS-385: 公式Q&A — 敵軍にヘドリアン女王（2nd）があるとき、チャージフェイズに置く ET のカードはリリース状態で置いた後ホールド状態になる（出典: grnrngr/faq-card-6 SR-004 Q）", () => {
-    // 既知の不具合: CARD-SR-004 【妖魔力】が働かず、チャージした ET のカードがリリース状態のまま（グリーンホバーの有無に関係ない）
+  it("RS-385: 公式Q&A — 敵軍にヘドリアン女王（2nd）があるとき、チャージフェイズに置く ET のカードはリリース状態で置いた後ホールド状態になる（出典: grnrngr/faq-card-6 SR-004 Q）", () => {
     let s = st({
       phase: "charge",
       player1: { rush: [inst("RS-385", "gh")], hand: [inst("TST-OP-ET", "ch")], deck: deckCards(3) },

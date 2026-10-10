@@ -91,8 +91,7 @@ describe("RS-488 ハリケンウィンガー", () => {
     expect(canMount(mountState("RS-488", "SPEC-PLAIN"), "SPEC-PLAIN:r", "RS-488:v")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-488 ※ の「Sユニット」の限定が落ちており、RC を持たない「忍者」の M ユニットもライドできてしまう
-  it.fails("RS-488: ※ 「忍者」でも M ユニットはライドできない（出典: atwiki/page-810「Sユニットは」・R-KW-RIDE-02）", () => {
+  it("RS-488: ※ 「忍者」でも M ユニットはライドできない（出典: atwiki/page-810「Sユニットは」・R-KW-RIDE-02）", () => {
     expect(canMount(mountState("RS-488", "SPEC-NINJA-M"), "SPEC-NINJA-M:r", "RS-488:v")).toBe(false);
   });
 
