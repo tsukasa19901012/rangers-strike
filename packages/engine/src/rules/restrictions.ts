@@ -277,7 +277,7 @@ function noteOtherNcBattleEntryBlock(
 }
 
 /** 無条件の「※これはバトルエリアに出られない。」（定義テキストからも判定する）。 */
-function unconditionalNoEntryText(def: CardDefinition): boolean {
+export function unconditionalNoEntryText(def: CardDefinition): boolean {
   return /(^|\s)※これはバトルエリアに出られない。/.test(def.text ?? "");
 }
 

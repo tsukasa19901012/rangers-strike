@@ -82,6 +82,7 @@ import {
 } from "../events/emitUnitRushed";
 import { continuePendingEffectRush } from "../rules/effectRush";
 import { applySuperRadarOnRush } from "../rules/legend3/rushEffects";
+import { tryRsCatchallOnEnemyRush } from "../rules/rs/rsCatchallRuntime";
 import { RUSH_PHASE_RULE_IDS } from "../types/scopedModifiers";
 import { attackerBlocksDefenderCounters, canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import {
@@ -589,6 +590,12 @@ function settleEffectRushes(before: GameState, after: GameState): GameState {
     const radar = applySuperRadarOnRush(next, entry.pid, entry.instanceId, turnPlayer);
     if (radar.state !== next) {
       next = { ...radar.state, log: [...radar.state.log, ...radar.logs] };
+    }
+    // 「敵軍ユニットが新しくラッシュされたとき」（RS-279 グリーンサイ【サイカッター】）も、直接バトルエリアに
+    // 出されたユニット（RS-194 ダイナロボ【ビートハンマー】等）に発動する（grnrngr/faq-card-5）。
+    const enemyRush = tryRsCatchallOnEnemyRush(next, entry.pid, entry.instanceId, turnPlayer);
+    if (enemyRush.state !== next) {
+      next = { ...enemyRush.state, log: [...enemyRush.state.log, ...enemyRush.logs] };
     }
   }
   if (triggers.length > 0) {

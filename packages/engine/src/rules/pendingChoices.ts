@@ -129,6 +129,7 @@ import {
   autoHoldForBattleEntry,
   clearEffectBattleEntryWindows,
   canMoveUnitToBattle,
+  unconditionalNoEntryText,
 } from "./restrictions";
 import {
   continueMorphAfterReplacement,
@@ -316,8 +317,12 @@ export function startBeatHammerChoice(
   sourceInstanceId?: string,
 ): GameState | null {
   const enemyId = opponent(playerId);
+  // 「※これはバトルエリアに出られない」ユニットのカードは選べない（grnrngr/faq-card-4 RS-194 Q3）。
   const ids = state.players[enemyId].command
-    .filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit")
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return def?.type === "unit" && !unconditionalNoEntryText(def);
+    })
     .map((c) => c.instanceId);
   if (ids.length === 0) return null;
   return openEffectChoice(state, {
