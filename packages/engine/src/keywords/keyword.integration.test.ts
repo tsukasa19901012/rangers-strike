@@ -116,18 +116,20 @@ describe("keyword regression smoke", () => {
     const defs = buildDefinitionMap([
       [
         { id: "ENEMY", name: "E", type: "unit", category: "WB", rarity: "N", expansion: "t", powerCost: 1, bp: 1000, size: "S", features: ["特徴A"] },
-        { id: "MORPH", name: "M", type: "unit", category: "WB", rarity: "N", expansion: "t", powerCost: 1, bp: 1000, size: "S", features: ["特徴A"], text: "【モーフ】" },
+        { id: "MORPH", name: "M", type: "unit", category: "WB", rarity: "N", expansion: "t", powerCost: 1, bp: 1000, size: "S", features: ["特徴A"], text: "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき…）" },
         { id: "HAND", name: "H", type: "unit", category: "WB", rarity: "N", expansion: "t", powerCost: 1, bp: 1000, size: "S", features: ["特徴A"] },
       ],
     ]);
     const state = createTestState({
       player2: {
         rush: [inst("MORPH", "m")],
-        hand: [inst("HAND", "h")],
+        command: [inst("HAND", "h")],
       },
     });
     state.definitions = defs;
-    expect(listMorphReactors(state, "player2", "ENEMY").length).toBe(1);
+    expect(listMorphReactors(state, "player2").length).toBe(1);
+    // R-KW-MORPH-01: モーフによる置き換えで出たユニットには反応しない
+    expect(listMorphReactors(state, "player2", "morph").length).toBe(0);
   });
 
   it("riding combo effect table includes grant_sp beyond sp1", () => {

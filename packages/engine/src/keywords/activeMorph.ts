@@ -165,10 +165,12 @@ export function applyActiveFeatureMorphSwap(
     return { error: "invalid_target" };
   }
 
+  // 能動的な置き換え効果（キーワードのモーフではない）は従来どおり手札・ラッシュも候補にする。
   const candidates = listMorphReplacementCandidates(
     player,
     state.definitions,
     fieldFound.card.cardId,
+    ["hand", "rush", "power", "command"],
   );
   if (!candidates.some((c) => c.instanceId === replacementInstanceId)) {
     return { error: "invalid_target" };

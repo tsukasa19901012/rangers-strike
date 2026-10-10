@@ -250,14 +250,15 @@ const RULE_CASES: RuleCase[] = [
   },
   {
     ruleId: "RULE-KW-09",
-    // ルール: R-KW-MORPH-02 では置換先は自軍コマンド・パワーゾーンのみ。下記は手札のカードを選んでおり
-    // ルールと食い違う（既知の不一致 E16）。挙動は変えず現行エンジンを記録している。
+    // ルール: R-KW-MORPH-01（モーフ以外のラッシュで誘発。ラッシュされたカードがモーフ持ちでもよい）、
+    // R-KW-MORPH-02（置き換え先は自軍コマンド・パワーゾーンのみ。手札は不可）
     ruleRef: "R-KW-MORPH-01, R-KW-MORPH-02",
     title: "敵ラッシュ時に特徴一致でモーフ置換",
     run() {
       const FEATURE = "wiki-morph";
       const rusher = inst("TST-RUSH", "rusher");
       const morphField = inst("TST-MORPH-F", "mf");
+      const morphCommand = { ...inst("TST-MORPH-C", "mc"), commandHeld: true };
       const morphHand = inst("TST-MORPH-H", "mh");
       const unitDef = {
         id: "TST-RUSH",
@@ -272,21 +273,23 @@ const RULE_CASES: RuleCase[] = [
         size: "S" as const,
         features: [FEATURE],
       };
-      const morphDef = {
-        ...unitDef,
-        id: "TST-MORPH-F",
-        text: "【モーフ】",
-      };
+      const morphText =
+        "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選びこれと置き換えてもよい）";
+      // ラッシュされる敵ユニット自身もモーフ持ち（R-KW-MORPH-01: 判定はラッシュの手段）
+      const rusherDef = { ...unitDef, text: morphText };
+      const morphDef = { ...unitDef, id: "TST-MORPH-F", text: morphText };
+      const commandDef = { ...unitDef, id: "TST-MORPH-C" };
       const handDef = { ...unitDef, id: "TST-MORPH-H" };
 
-      let state = createTestState({
+      const state = createTestState({
         phase: "rush",
         activePlayer: "player1",
         player1: { rush: [rusher] },
-        player2: { rush: [morphField], hand: [morphHand] },
+        player2: { rush: [morphField], command: [morphCommand], hand: [morphHand] },
       });
-      state.definitions["TST-RUSH"] = unitDef;
+      state.definitions["TST-RUSH"] = rusherDef;
       state.definitions["TST-MORPH-F"] = morphDef;
+      state.definitions["TST-MORPH-C"] = commandDef;
       state.definitions["TST-MORPH-H"] = handDef;
 
       const opened = emitUnitRushedAndFinalize(
@@ -296,17 +299,27 @@ const RULE_CASES: RuleCase[] = [
         "player1",
       );
       expect(opened.state.pendingEffectChoice?.effectId).toBe("morph_replacement");
-
-      const chosen = applyAction(opened.state, {
+      // 手札のカードは候補にならない
+      expect(opened.state.pendingEffectChoice?.validInstanceIds).toEqual([morphCommand.instanceId]);
+      const handChoice = applyAction(opened.state, {
         type: "resolve_effect_choice",
         playerId: "player2",
         instanceId: morphHand.instanceId,
       });
+      expect(handChoice.ok).toBe(false);
+
+      const chosen = applyAction(opened.state, {
+        type: "resolve_effect_choice",
+        playerId: "player2",
+        instanceId: morphCommand.instanceId,
+      });
       expect(chosen.ok).toBe(true);
       if (!chosen.ok) return;
-      expect(
-        chosen.state.players.player2.rush.some((c) => c.instanceId === morphHand.instanceId),
-      ).toBe(true);
+      const p2 = chosen.state.players.player2;
+      expect(p2.rush.map((c) => c.instanceId)).toEqual([morphCommand.instanceId]);
+      expect(p2.rush[0]!.commandHeld).toBeFalsy();
+      // コマンドゾーンへ行くユニットはホールド状態を引き継ぐ
+      expect(p2.command.find((c) => c.instanceId === morphField.instanceId)?.commandHeld).toBe(true);
     },
   },
   {

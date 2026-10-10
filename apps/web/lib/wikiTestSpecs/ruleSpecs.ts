@@ -298,13 +298,14 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-KW-09",
-    // ルール: R-KW-MORPH-01/02 では置換先はコマンド・パワーゾーンのみ、判定はラッシュ手段。下記 assertions は現行エンジン挙動（E16）の記述。
+    // ルール: R-KW-MORPH-01（判定はラッシュの手段）、R-KW-MORPH-02（置き換え先はコマンド・パワーゾーンのみ、状態と位置を引き継ぐ）
     ruleRef: "R-KW-MORPH-01, R-KW-MORPH-02, R-KW-MORPH-03",
     title: "敵ラッシュ時に特徴一致でモーフ置換",
     assertions: [
       "emitUnitRushed 後 pendingMorph / morph_replacement",
-      "置換先は hand/rush/power/command のオモテユニット",
-      "モーフキーワード持ちのラッシュには反応不可",
+      "置換先は自軍コマンドゾーン・パワーゾーンのオモテ向きユニットカードのみ（手札・ラッシュは不可）",
+      "モーフ以外の手段でのラッシュに反応（ラッシュされたカードがモーフ持ちでも反応可）",
+      "置き換えでホールド／リリース状態と位置を引き継ぐ",
       "複数モーフ時はターンプレイヤーが順序決定",
       "pass_morph_reaction でスキップ可",
     ],

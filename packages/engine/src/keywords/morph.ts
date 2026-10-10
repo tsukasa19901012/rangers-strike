@@ -1,11 +1,19 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { getDefinition } from "../core/catalog";
-import { cardHasMorphKeyword } from "./battleKeywords";
 import { cardHasKeyword } from "./cardKeywords";
 
+/**
+ * モーフの置き換え先を探すゾーン。「自軍ゾーン」はコマンドゾーンとパワーゾーンだけ
+ * （手札・ラッシュエリアは含まない）。ルール: R-KW-MORPH-02
+ */
+export const MORPH_REPLACEMENT_ZONES = ["power", "command"] as const;
+
+/** 置き換え元ゾーン（モーフ以外の置き換え効果は手札・ラッシュも使う）。 */
+export type ReplacementSourceZone = "hand" | "rush" | "power" | "command";
+
 export type MorphReplacementCandidate = {
-  zone: "hand" | "rush" | "power" | "command";
+  zone: ReplacementSourceZone;
   instanceId: string;
   card: CardInstance;
 };
@@ -32,12 +40,12 @@ export function listMorphReplacementCandidates(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
   morphUnitCardId: string,
+  zones: readonly ReplacementSourceZone[] = MORPH_REPLACEMENT_ZONES,
 ): MorphReplacementCandidate[] {
   const morphFeatures = unitFeatures(getDefinition(definitions, morphUnitCardId));
   if (morphFeatures.length === 0) return [];
 
   const results: MorphReplacementCandidate[] = [];
-  const zones = ["hand", "rush", "power", "command"] as const;
   for (const zone of zones) {
     for (const card of player[zone]) {
       if (!isFaceUpMorphUnitCard(definitions, card)) continue;
@@ -50,13 +58,16 @@ export function listMorphReplacementCandidates(
   return results;
 }
 
-/** 敵ラッシュ（モーフ以外）に対し、モーフ置換候補があるか。 */
+/**
+ * 敵ラッシュ（モーフ以外の手段）に対し、モーフ置換候補があるか。
+ * ルール: R-KW-MORPH-01 — 判定はラッシュの手段。ラッシュされたカードがモーフを持っていても反応できる。
+ */
 export function defenderCanMorphAgainstRush(
   state: GameState,
   defenderId: PlayerId,
-  rushedCardId: string,
+  rushMethod: "normal" | "effect" | "morph" = "normal",
 ): boolean {
-  if (cardHasMorphKeyword(state.definitions, rushedCardId)) return false;
+  if (rushMethod === "morph") return false;
 
   const defender = state.players[defenderId];
   for (const zone of ["rush", "battle"] as const) {

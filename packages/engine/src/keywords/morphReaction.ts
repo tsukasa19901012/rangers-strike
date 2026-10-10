@@ -1,7 +1,7 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingMorph, PlayerId, PlayerState } from "../types/game";
 import { getDefinition } from "../core/catalog";
-import { findInZone, removeAt, updatePlayer } from "../core/helpers";
+import { findInZone, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { openEffectChoice } from "../rules/pendingChoices";
 import { openRushCounterWindow } from "../rules/rushEffects";
@@ -9,17 +9,19 @@ import { cardHasKeyword } from "./cardKeywords";
 import {
   featuresExactlyMatch,
   listMorphReplacementCandidates,
-  type MorphReplacementCandidate,
+  MORPH_REPLACEMENT_ZONES,
 } from "./morph";
 import {
   morphOrderChooserPlayerId,
   morphReplacementChooserPlayerId,
+  rushMethodBlocksMorphReaction,
   shouldMorphOrderChooserAct,
+  type MorphReplacementZone,
+  type RushMethod,
 } from "../rules/morphProcedure";
 import { applyOnRushUnitEffects } from "../rules/onRushUnitEffects";
 
 type FieldZone = "rush" | "battle";
-type MorphZone = FieldZone | MorphReplacementCandidate["zone"];
 
 function findMorphUnit(
   player: PlayerState,
@@ -32,23 +34,29 @@ function findMorphUnit(
   return null;
 }
 
+/** 置き換え先はコマンドゾーンとパワーゾーンだけ。ルール: R-KW-MORPH-02 */
 function findReplacement(
   player: PlayerState,
   instanceId: string,
-): { zone: MorphReplacementCandidate["zone"]; index: number; card: CardInstance } | null {
-  for (const zone of ["hand", "rush", "power", "command"] as const) {
+): { zone: MorphReplacementZone; index: number; card: CardInstance } | null {
+  for (const zone of MORPH_REPLACEMENT_ZONES) {
     const index = player[zone].findIndex((c) => c.instanceId === instanceId);
     if (index >= 0) return { zone, index, card: player[zone][index]! };
   }
   return null;
 }
 
+/**
+ * 敵軍ユニットのラッシュに反応できるモーフ持ちユニット。
+ * ルール: R-KW-MORPH-01 — 「モーフ以外で」ラッシュされたときに誘発する（ラッシュの手段で判定）。
+ * ラッシュされたカード自身がモーフを持っていても反応できる。
+ */
 export function listMorphReactors(
   state: GameState,
   defenderId: PlayerId,
-  rushedCardId: string,
+  rushMethod: RushMethod = "normal",
 ): Array<{ instanceId: string; cardId: string; candidateCount: number }> {
-  if (cardHasKeyword(state.definitions, rushedCardId, "morph")) return [];
+  if (rushMethodBlocksMorphReaction(rushMethod)) return [];
 
   const defender = state.players[defenderId];
   const results: Array<{ instanceId: string; cardId: string; candidateCount: number }> = [];
@@ -73,12 +81,17 @@ export function listMorphReactors(
   return results;
 }
 
-function stripFieldState(card: CardInstance): CardInstance {
+/**
+ * 自軍ゾーンへ移るユニット: 置き換えたカードのいたゾーンの状態（コマンドのホールド／リリース）を引き継ぐ。
+ * ルール: R-KW-MORPH-02, R-REPL-04
+ */
+function inheritZoneState(replaced: CardInstance, leaving: CardInstance): CardInstance {
   const next: CardInstance = {
-    instanceId: card.instanceId,
-    cardId: card.cardId,
+    instanceId: leaving.instanceId,
+    cardId: leaving.cardId,
   };
-  if (card.faceDown) next.faceDown = true;
+  if (replaced.commandHeld) next.commandHeld = true;
+  if (replaced.mothershipHold) next.mothershipHold = true;
   return next;
 }
 
@@ -128,24 +141,18 @@ export function applyMorphSwap(
     return { error: "invalid_target" };
   }
 
-  let nextPlayer = { ...player };
-  const [, morphZoneCards] = removeAt(nextPlayer[morphFound.zone], morphFound.index);
-  nextPlayer = { ...nextPlayer, [morphFound.zone]: morphZoneCards };
-
-  const replacementIndex = nextPlayer[replacementFound.zone].findIndex(
-    (c) => c.instanceId === replacementInstanceId,
-  );
-  if (replacementIndex < 0) return { error: "invalid_target" };
-  const [, replacementZoneCards] = removeAt(nextPlayer[replacementFound.zone], replacementIndex);
-  nextPlayer = { ...nextPlayer, [replacementFound.zone]: replacementZoneCards };
-
+  // 置き換えは位置と状態を入れ替える（バトルエリアの並び順も変えない）。ルール: R-KW-MORPH-02, R-REPL-04
   const entering = inheritFieldState(morphFound.card, replacementFound.card);
-  const leaving = stripFieldState(morphFound.card);
+  const leaving = inheritZoneState(replacementFound.card, morphFound.card);
 
-  nextPlayer = {
-    ...nextPlayer,
-    [morphFound.zone]: [...nextPlayer[morphFound.zone], entering],
-    [replacementFound.zone]: [...nextPlayer[replacementFound.zone], leaving],
+  const fieldCards = [...player[morphFound.zone]];
+  fieldCards[morphFound.index] = entering;
+  const zoneCards = [...player[replacementFound.zone]];
+  zoneCards[replacementFound.index] = leaving;
+  const nextPlayer = {
+    ...player,
+    [morphFound.zone]: fieldCards,
+    [replacementFound.zone]: zoneCards,
   };
 
   const log = buildLogEntry(
@@ -198,12 +205,13 @@ export function openMorphReactionWindow(
   rusherPlayerId: PlayerId,
   rushedInstanceId: string,
   phasePlayerId: PlayerId,
+  rushMethod: RushMethod = "normal",
 ): GameState {
   const defenderId = rusherPlayerId === "player1" ? "player2" : "player1";
   const rushed = findInZone(state.players[rusherPlayerId], "rush", rushedInstanceId);
   if (!rushed) return state;
 
-  const reactors = listMorphReactors(state, defenderId, rushed.card.cardId);
+  const reactors = listMorphReactors(state, defenderId, rushMethod);
   if (reactors.length === 0) return state;
 
   const pending: PendingMorph = {
