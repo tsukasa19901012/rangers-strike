@@ -18,7 +18,7 @@ export function emitUnitRushedAndFinalize(
   rusherPlayerId: PlayerId,
   rushedInstanceId: string,
   phasePlayerId: PlayerId,
-  options: { silent?: boolean } = {},
+  options: { silent?: boolean; viaEffect?: boolean } = {},
 ): RushEffectOutcome & { counterPending: boolean } {
   const rusher = state.players[rusherPlayerId];
   const found = findInZone(rusher, "rush", rushedInstanceId);
@@ -35,6 +35,7 @@ export function emitUnitRushedAndFinalize(
       instanceId: rushedInstanceId,
       cardId: found.card.cardId,
       selfEffectsSuppressed: options.silent,
+      viaEffect: options.viaEffect,
     }),
   );
 
@@ -220,7 +221,7 @@ export function drainEffectRushTriggers(state: GameState): RushEffectOutcome {
       head.rusherPlayerId,
       head.instanceId,
       head.phasePlayerId,
-      { silent: head.silent },
+      { silent: head.silent, viaEffect: true },
     );
     nextState = result.state;
     if (parkedEntry && !nextState.pendingBattleEntry) {

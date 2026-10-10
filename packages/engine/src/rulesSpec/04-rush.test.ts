@@ -336,9 +336,8 @@ describe("R-RUSH-04 同名ユニットは複数出せる", () => {
 });
 
 describe("R-RUSH-05 ラッシュ時に適用中の修正", () => {
-  // 既知の不具合: 未登録 — 恐竜やのカレー（特徴「イエロー」の自軍Sユニット BP+2000）がラッシュされたユニットのBPに反映されない
   // 「最初から修正・追加された状態のユニットがラッシュされたものとして扱う」
-  it.fails("R-RUSH-05: 恐竜やのカレー適用中に BP7000 のイエローSをラッシュすると最初から BP9000 で、疾風流超忍法（BP8000以下）を使えない（出典: atwiki/page-146）", () => {
+  it("R-RUSH-05: 恐竜やのカレー適用中に BP7000 のイエローSをラッシュすると最初から BP9000 で、疾風流超忍法（BP8000以下）を使えない（出典: atwiki/page-146）", () => {
     const yellow = inst("T04-YELLOW", "y");
     const s0 = mk4({
       player1: {
@@ -492,9 +491,8 @@ describe("R-RUSH-11 手順", () => {
     expect(cardIn(r.state, "player1", "command", "TST-OP-OT:ot")?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: 未登録 — アブレラ（闇の取引）でパワー不足を補うラッシュが公開 API から開始できない
   // 「「必要パワー」を満たしていることを確認してから」
-  it.fails("R-RUSH-11: アブレラでパワー不足を補った後、そのアブレラを追加条件で捨札にしてもラッシュは続行される（出典: grnrngr/faq-card-3 RS-169 Q・RS-170 Q2, atwiki/page-146）", () => {
+  it("R-RUSH-11: アブレラでパワー不足を補った後、そのアブレラを追加条件で捨札にしてもラッシュは続行される（出典: grnrngr/faq-card-3 RS-169 Q・RS-170 Q2, atwiki/page-146）", () => {
     const fan = inst("RS-169", "fan");
     const abrera = inst("RS-170", "abrera");
     const s0 = mk4({
@@ -610,9 +608,8 @@ describe("R-ADD-02 「＋」と「－」", () => {
     expect(zoneOf(r.state, "player1", am.instanceId)).toBe("rush");
   });
 
-  // 既知の不具合: 未登録 — ドギー・クルーガーの【出動指令】が敵軍DAユニットのラッシュで誘発しない
   // 「「追加条件」の欄に記述があるものは「追加条件を持つ」と考えて下さい」
-  it.fails("R-ADD-02: ドギー・クルーガーでオモテにした「－」のSユニット（デカレッドSWAT）は追加条件を持つので手札に加える（出典: grnrngr/faq-card-5 RS-318 Q3）", () => {
+  it("R-ADD-02: ドギー・クルーガーでオモテにした「－」のSユニット（デカレッドSWAT）は追加条件を持つので手札に加える（出典: grnrngr/faq-card-5 RS-318 Q3）", () => {
     const swat = inst("RS-345", "swat");
     const defs = {
       "T04-DA": { ...(T04["T04-S5"] as CardDefinition), id: "T04-DA", category: "DA" as const, powerCost: 0 },
@@ -1088,9 +1085,8 @@ describe("R-ADD-08 追加条件の代替手段がある場合", () => {
     "R-ADD-08: ダイナギャリーで選んだダイナマッハそのものをジャガーバルカンでホールドして追加条件の代わりにできる（出典: grnrngr/faq-card-2 RS-076 Q3・grnrngr/faq-card-4 RS-197 Q2）— パーツキャリアーの追加条件処理で母艦を選ぶ公開 API がない",
   );
 
-  // 既知の不具合: 未登録 — ベン・Gの【人身略取】で相手に追加条件を満たさせる処理がない
   // 「はい、その通りです」（人身略取は代替手段があれば満たす）
-  it.fails("R-ADD-08: 人身略取の追加条件は、Sユニットがなくてもジャガーバルカンで満たせるなら満たさなければならない（出典: grnrngr/faq-card-2 RS-076 Q1・RS-105 Q1）", () => {
+  it("R-ADD-08: 人身略取の追加条件は、Sユニットがなくてもジャガーバルカンで満たせるなら満たさなければならない（出典: grnrngr/faq-card-2 RS-076 Q1・RS-105 Q1）", () => {
     const ben = inst("RS-322", "ben");
     const bullInHand = inst("RS-075", "bull");
     let s = mk4({
@@ -1191,9 +1187,8 @@ describe("R-RUSH-20 既定では条件不要", () => {
     expect(zoneOf(s, "player2", bull.instanceId)).toBe("battle");
   });
 
-  // 既知の不具合: 未登録 — ドギー・クルーガーの【出動指令】が敵軍DAユニットのラッシュで誘発しない
   // 「コマンドをホールドする必要はありません」
-  it.fails("R-RUSH-20: ドギー・クルーガーの効果で警察Sユニットをラッシュエリアに出すときコマンドのホールドは不要（出典: grnrngr/faq-card-5 RS-318 Q1）", () => {
+  it("R-RUSH-20: ドギー・クルーガーの効果で警察Sユニットをラッシュエリアに出すときコマンドのホールドは不要（出典: grnrngr/faq-card-5 RS-318 Q1）", () => {
     const daInst = inst("T04-DA", "da");
     const pink = inst("RS-110", "pink");
     const defs = {
@@ -1219,9 +1214,8 @@ describe("R-RUSH-20 既定では条件不要", () => {
     expect(zoneOf(s, "player2", pink.instanceId)).toBe("rush");
   });
 
-  // 既知の不具合: 未登録 — バラクティカ【編隊出撃】で出したカードが手札から捨札にも置かれ、2か所に重複する
   // 「その場合はコマンドをホールドする必要はありません」（バラクティカ）
-  it.fails("R-RUSH-20: バラクティカの効果で同名ユニットを追加でラッシュエリアに出すときコマンドのホールドは不要（出典: grnrngr/faq-card-5 RS-318 Q1）", () => {
+  it("R-RUSH-20: バラクティカの効果で同名ユニットを追加でラッシュエリアに出すときコマンドのホールドは不要（出典: grnrngr/faq-card-5 RS-318 Q1）", () => {
     const air1 = inst("T04-AIR", "a1");
     const air2 = inst("T04-AIR", "a2");
     let s = mk4({
@@ -1240,9 +1234,8 @@ describe("R-RUSH-20 既定では条件不要", () => {
     expect(heldCount(s, "player1")).toBe(1);
   });
 
-  // 既知の不具合: 未登録 — アブレラ（闇の取引）でパワー不足を補うラッシュが公開 API から開始できない
   // 「必要パワーを満たしていなくてもラッシュエリアに出すことができます」
-  it.fails("R-RUSH-20: アブレラで必要パワー不足を補ってラッシュした航空機ユニットと同名のユニットを、バラクティカで必要パワー不足のままラッシュエリアに出せる（出典: grnrngr/faq-card-3 RS-170 Q2）", () => {
+  it("R-RUSH-20: アブレラで必要パワー不足を補ってラッシュした航空機ユニットと同名のユニットを、バラクティカで必要パワー不足のままラッシュエリアに出せる（出典: grnrngr/faq-card-3 RS-170 Q2）", () => {
     const air1 = inst("T04-AIR", "a1");
     const air2 = inst("T04-AIR", "a2");
     let s = mk4({
@@ -1471,7 +1464,6 @@ describe("R-RUSH-21 テキストで条件を課す場合", () => {
 });
 
 describe("R-RUSH-22 効果ラッシュでも誘発とカウンター窓がある", () => {
-  // 既知の不具合: E11
   // 「「ラッシュされたとき」に発動できるカウンタを発動させることもできます」
   it("R-RUSH-22: ランドバルカンで出したユニットにも「ラッシュされたとき」のカウンターを使える（出典: grnrngr/faq-card-1 RS-005 Q2）", () => {
     const sUnit = inst("TST-UNIT-0", "cmd-s");

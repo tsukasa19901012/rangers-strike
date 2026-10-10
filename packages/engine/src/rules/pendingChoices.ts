@@ -1,4 +1,6 @@
 import { finalizeEffectRush } from "../events/emitUnitRushed";
+import { DISPATCH_ORDER_EFFECT_ID, resolveDispatchOrder } from "./dispatchOrder";
+import { isAbductionChoice, resolveAbductionChoice, startAbductionCondition } from "./abduction";
 import {
   isEffectRushChoice,
   resolveEffectRushChoice,
@@ -307,7 +309,13 @@ export function isValidEffectChoiceTarget(
   }
   if (!pending.validInstanceIds.includes(instanceId)) return false;
 
-  if (isEffectRushChoice(pending)) return true;
+  if (
+    isEffectRushChoice(pending) ||
+    isAbductionChoice(pending.effectId) ||
+    pending.effectId === DISPATCH_ORDER_EFFECT_ID
+  ) {
+    return true;
+  }
 
   if (pending.effectId === "fire_sword") {
     return !!findInZone(state.players[pending.playerId], "operation", instanceId);
@@ -2234,6 +2242,16 @@ export function applyEffectChoiceSelect(
   if (pending.playerId !== playerId) return { error: "wrong_player" };
 
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
+  if (isAbductionChoice(pending.effectId)) {
+    const result = resolveAbductionChoice(state, playerId, instanceId);
+    if ("error" in result) return result;
+    return { state: promoteDeferredBattleEntry(result.state), log: result.log };
+  }
+  if (pending.effectId === DISPATCH_ORDER_EFFECT_ID) {
+    const result = resolveDispatchOrder(state, playerId, instanceId);
+    if ("error" in result) return result;
+    return { state: promoteDeferredBattleEntry(result.state), log: result.log };
+  }
 
   if (pending.effectId === "morph_replacement") {
     const result = resolveMorphReplacementChoice(state, playerId, instanceId);
@@ -3647,11 +3665,19 @@ export function applyEffectChoiceSelect(
           cardName(state.definitions, found.card.cardId),
         );
       }
-      let nextPlayer = {
-        ...player,
-        hand,
-        discard: [...player.discard, found.card],
-      };
+      // 選んだ手札の行き先は1か所だけ（以前は捨札にも置かれ、RS-296 編隊出撃でカードが2か所に重複していた）。
+      const handDestination =
+        pending.effectId === "geki_e7b7a8" || pending.unitDestination === "rush"
+          ? "rush"
+          : pending.unitDestination === "deck_top"
+            ? "deck_top"
+            : "discard";
+      let nextPlayer: PlayerState =
+        handDestination === "rush"
+          ? { ...player, hand, rush: [...player.rush, found.card] }
+          : handDestination === "deck_top"
+            ? { ...player, hand, deck: [found.card, ...player.deck] }
+            : { ...player, hand, discard: [...player.discard, found.card] };
       if (pending.sourceInstanceId) {
         nextPlayer = {
           ...nextPlayer,
@@ -3662,27 +3688,26 @@ export function applyEffectChoiceSelect(
           ),
         };
       }
-      if (pending.effectId === "geki_e7b7a8") {
-        nextPlayer = {
-          ...nextPlayer,
-          hand: nextPlayer.hand.filter((c) => c.instanceId !== instanceId),
-          rush: [...nextPlayer.rush, found.card],
-        };
-      } else if (pending.unitDestination === "rush") {
-        nextPlayer = {
-          ...nextPlayer,
-          hand,
-          rush: [...nextPlayer.rush, found.card],
-        };
-      } else if (pending.unitDestination === "deck_top") {
-        nextPlayer = {
-          ...nextPlayer,
-          hand,
-          deck: [found.card, ...nextPlayer.deck],
-        };
+      let nextState: GameState = { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) };
+      if (pending.effectId === "fx_unknown_2" && pending.sourceCardId === "RS-322") {
+        // ルール: R-ADD-08 — 相手は捨札にしたカードの追加条件を可能なら満たす（母艦の代替手段も含む）。
+        nextState = startAbductionCondition(
+          { ...nextState, pendingEffectChoice: undefined },
+          pending.playerId,
+          found.card.cardId,
+          pending.phasePlayerId,
+        );
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState };
+        }
+      }
+      if (handDestination === "rush") {
+        // ルール: R-RUSH-20 — 効果でラッシュエリアに出すのにコマンドのホールドは不要。
+        // ルール: R-RUSH-22 — 出したユニットにも「ラッシュしたとき」誘発と窓がある（選択の解決後に処理）。
+        nextState = finalizeEffectRush(nextState, pending.playerId, [instanceId], pending.phasePlayerId).state;
       }
       return finishChoice(
-        { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+        nextState,
         pending,
         cardName(state.definitions, found.card.cardId),
       );

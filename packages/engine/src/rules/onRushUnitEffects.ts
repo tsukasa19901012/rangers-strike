@@ -14,6 +14,7 @@ import {
   applyMotoSharianPowerTrigger,
 } from "./noteOtherRushEffects";
 import { tryFormationDeployOnRush } from "./formationDeploy";
+import { tryDispatchOrderOnEnemyRush } from "./dispatchOrder";
 import {
   applyBandoraHeldCommandDiscard,
   tryZubazubanOnAllyRush,
@@ -52,7 +53,7 @@ export function applyOnRushUnitEffects(
   instanceId: string,
   phasePlayerId: PlayerId,
   zone: "rush" | "battle" = "rush",
-  options: { suppressSelfEffects?: boolean } = {},
+  options: { suppressSelfEffects?: boolean; viaEffect?: boolean } = {},
 ): { state: GameState; logs: string[] } {
   // ルール: R-RUSH-24 — 「このとき出したユニットの効果は発動しない」は、そのユニット自身の
   // 「ラッシュしたとき」の効果だけを止める（他のカードの「ラッシュしたとき」は発動する）。
@@ -126,7 +127,8 @@ export function applyOnRushUnitEffects(
     logs.push(...allyReturn.logs);
   }
 
-  if (!nextState.pendingEffectChoice) {
+  // RS-296 編隊出撃は「自軍コマンドをホールドして」ラッシュしたときだけ（効果ラッシュでは発動しない）。
+  if (!nextState.pendingEffectChoice && !options.viaEffect) {
     const formation = tryFormationDeployOnRush(
       nextState,
       ownerPlayerId,
@@ -174,6 +176,9 @@ export function applyOnRushUnitEffects(
       phasePlayerId,
     );
   }
+
+  // RS-318 ドギー・クルーガー【出動指令】（敵軍の DA ユニットがラッシュされたとき）。
+  nextState = tryDispatchOrderOnEnemyRush(nextState, ownerPlayerId, instanceId, phasePlayerId);
 
   const rsEnemyRush = tryRsCatchallOnEnemyRush(
     nextState,

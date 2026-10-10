@@ -261,6 +261,19 @@ export function passiveBpBonus(
     }
   }
 
+  // RS-179 恐竜やのカレー（常駐）: 特徴「イエロー」を持つ自軍SユニットはBP＋2000（枚数分重複、R-CONT-01）。
+  // ルール: R-RUSH-05 — 適用中の継続効果はラッシュの瞬間から反映される（最初から修正済みの状態でラッシュされた扱い）。
+  const curries = player.operation.filter((c) => c.cardId === "RS-179").length;
+  if (
+    curries > 0 &&
+    isSmallUnit(state.definitions, instance.cardId) &&
+    (getDefinition(state.definitions, instance.cardId)?.features ?? []).includes("イエロー") &&
+    (player.rush.some((c) => c.instanceId === instance.instanceId) ||
+      player.battle.some((c) => c.instanceId === instance.instanceId))
+  ) {
+    bonus += curries * 2000;
+  }
+
   const auraTarget = getAuraPowerInstanceId(player);
   if (
     auraTarget === instance.instanceId &&

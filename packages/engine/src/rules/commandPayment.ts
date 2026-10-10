@@ -56,7 +56,7 @@ import {
   shouldUseDslOperation,
 } from "../dsl/dslCatalog";
 import { collectTargetInstanceIds } from "../dsl/targetSelectors";
-import { canCompleteRushAfterCommandPayment } from "./rushDeclaration";
+import { canCompleteRushAfterCommandPayment, rushPowerBudget } from "./rushDeclaration";
 import {
   collectHoldExtraCommandCandidates,
   needsHoldExtraCommand,
@@ -698,7 +698,7 @@ export function buildPaymentFromInitiateAction(
         action.zordMaterialInstanceId,
         action.zordMothershipHoldInstanceIds,
         action.zordMaterialDestination,
-        undefined,
+        rushPowerBudget(state, playerId, player, def),
         { ...state, playerId },
         action.zordMaterialInstanceIds,
         action.zordExtraCommandHoldInstanceIds,

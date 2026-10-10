@@ -32,6 +32,7 @@ export function buildUnitRushedEvent(
     instanceId: string;
     cardId: string;
     selfEffectsSuppressed?: boolean;
+    viaEffect?: boolean;
   },
 ): UnitRushedEvent {
   return {
@@ -41,6 +42,7 @@ export function buildUnitRushedEvent(
     instanceId: input.instanceId,
     cardId: input.cardId,
     ...(input.selfEffectsSuppressed ? { selfEffectsSuppressed: true } : {}),
+    ...(input.viaEffect ? { viaEffect: true } : {}),
   };
 }
 

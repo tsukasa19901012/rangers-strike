@@ -36,6 +36,8 @@ export type UnitRushedEvent = GameEventBase & {
   cardId: string;
   /** R-RUSH-24: 「このとき出したユニットの効果は発動しない」— 出たユニット自身の効果を止める。 */
   selfEffectsSuppressed?: boolean;
+  /** 効果によるラッシュ（コマンドをホールドしての通常ラッシュではない）。 */
+  viaEffect?: boolean;
 };
 
 export type UnitEnteredBattleEvent = GameEventBase & {

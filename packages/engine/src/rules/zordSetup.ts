@@ -16,6 +16,7 @@ import {
   parsePowerCost,
 } from "../core/catalog";
 import { isShironLightRushTarget } from "./shironLight";
+import { rushPowerBudget } from "./rushDeclaration";
 import { countAvailablePower, effectivePowerCost } from "../core/power";
 import { findInZone } from "../core/helpers";
 import { buildCategoryPayment, buildMothershipHoldPayment } from "./commandPayment";
@@ -73,7 +74,7 @@ export function hasLegalZordRush(
       undefined,
       undefined,
       undefined,
-      undefined,
+      rushPowerBudget(state, playerId, player, def!),
       { ...state, playerId },
     );
   }
@@ -101,7 +102,7 @@ export function hasLegalZordRush(
       variant.zordMaterialInstanceId,
       variant.zordMothershipHoldInstanceIds,
       variant.zordMaterialDestination,
-      undefined,
+      rushPowerBudget(state, playerId, player, def!),
       { ...state, playerId },
     ),
   );
@@ -113,7 +114,8 @@ function canAffordZordPower(
   def: NonNullable<ReturnType<typeof getDefinition>>,
 ): boolean {
   const cost = effectivePowerCost(state, playerId, parsePowerCost(def.powerCost));
-  return countAvailablePower(state, playerId) >= cost;
+  // ルール: R-RUSH-11 — アブレラ【闇の取引】等の補填を含めて、追加条件の実行前に確認する。
+  return rushPowerBudget(state, playerId, state.players[playerId], def) >= cost;
 }
 
 /** advanceZordSetup が現在のウィザードステップで受け付ける解決。 */
@@ -577,7 +579,7 @@ function completeZordDownPayment(
         materialInstanceId,
         undefined,
         materialDestination,
-        undefined,
+        rushPowerBudget(state, playerId, player, def!),
         { ...state, playerId },
       )
     : canRushUnit(
@@ -588,7 +590,7 @@ function completeZordDownPayment(
         materialInstanceId,
         undefined,
         materialDestination,
-        undefined,
+        rushPowerBudget(state, playerId, player, def!),
         { ...state, playerId },
       );
 
@@ -672,7 +674,7 @@ function completeZordPayment(
           materialInstanceId,
           undefined,
           materialDestination,
-          undefined,
+          rushPowerBudget(state, playerId, player, def!),
           { ...state, playerId },
         )
       : canRushUnit(
@@ -683,7 +685,7 @@ function completeZordPayment(
           materialInstanceId,
           undefined,
           materialDestination,
-          undefined,
+          rushPowerBudget(state, playerId, player, def!),
           { ...state, playerId },
         ))
   ) {

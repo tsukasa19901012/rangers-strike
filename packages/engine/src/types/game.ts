@@ -347,6 +347,8 @@ export type PendingEffectChoice = {
     residentIds?: string[];
   };
   skipShurikenIntercept?: boolean;
+  /** RS-322 人身略取: 相手が満たす追加条件の進行。 */
+  abductionMeta?: { payerId: PlayerId; cardId: string; remaining: number };
   /** 敵ターン撃破時の任意パワー送り（to_power_on_destroy）。 */
   toPowerOnDestroyMeta?: {
     card: CardInstance;
