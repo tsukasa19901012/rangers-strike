@@ -33,6 +33,7 @@ import {
   zoneOf,
 } from "./RS2-071-096.helpers";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
+import type { GameAction } from "../types/actions";
 
 function expectStats(
   id: string,
@@ -528,8 +529,7 @@ describe("RS-086 ポリスファイター", () => {
   });
 
   // faq-card-2 RS-086 Q1「…それ以降はいかなるサイズのユニットであってもバトルエリアに出すことができなくなります。」
-  it.fails("RS-086: 公式Q&A — 相手のバトルエリアにすでに違うサイズのユニットが並んでいれば、以後どのサイズのユニットも出せない（出典: grnrngr/faq-card-2 RS-086 Q1）", () => {
-    // 既知の不具合: CARD-RS-086 交通整理がバトルエリア1体目のサイズとだけ比べるため、既にサイズが混在していても1体目と同じサイズなら出せてしまう
+  it("RS-086: 公式Q&A — 相手のバトルエリアにすでに違うサイズのユニットが並んでいれば、以後どのサイズのユニットも出せない（出典: grnrngr/faq-card-2 RS-086 Q1）", () => {
     const s = police({
       battle: [inst("TST-UNIT-0", "s1"), inst("TST-UNIT-2", "m1")],
       rush: [inst("TST-UNIT-0", "s2"), inst("TST-UNIT-2", "m2")],
@@ -726,9 +726,57 @@ describe("RS-089 レスキューファイター", () => {
   });
 
   // faq-card-2 RS-089 Q3「…正確にはターンプレイヤーが、捨札にするかパワーゾーンに送るかを選択できます。」
-  it.todo(
-    "RS-089: 公式Q&A — 守護獣プテラノドンとレスキューファイターが隠流忍術で相撃ちになったとき、ターンプレイヤーが処理順（＝プテラノドンを捨札にするかパワーゾーンに送るか）を選べる（出典: grnrngr/faq-card-2 RS-089 Q3）— 同時撃破の処理順を選ぶ公開 API がない（一般ルール側の不一致として rulesSpec の R-BTL-02／R-PRI-02 が扱う）",
-  );
+  /** プテラノドンのアタックに隠流忍術（身代わりにレスキューファイター）で相撃ちにし、ターンプレイヤーが first を先に処理する。 */
+  function pteraRescueMutual(first: "RS-039:pt" | "RS-089:rf") {
+    let s = st({
+      phase: "battle",
+      player1: { rush: [inst("RS-089", "rf")], battle: [inst("RS-039", "pt")] },
+      player2: {
+        battle: [inst("TST-UNIT-2", "eb")],
+        hand: [inst("RS-018", "n1")],
+        command: [released("TST-OP-MA", "m1")],
+        power: powerCards(5, "e"),
+      },
+    });
+    s = attack(s, "RS-039:pt", "TST-UNIT-2:eb");
+    s = act(s, {
+      type: "initiate_command_payment",
+      playerId: "player2",
+      kind: "category_use",
+      sourceInstanceId: "RS-018:n1",
+      substituteInstanceId: "RS-089:rf",
+    } as GameAction);
+    let chose = false;
+    for (let i = 0; i < 12; i += 1) {
+      const order = legal(s).find(
+        (a) => a.type === "resolve_effect_choice" && a.playerId === "player1" && a.instanceId.includes(first),
+      );
+      if (order && !chose) {
+        chose = true;
+        s = act(s, order);
+        continue;
+      }
+      const next = s.pendingLeave || s.pendingEffectChoice || s.pendingDamagePayment ? legal(s)[0] : undefined;
+      if (!next) break;
+      s = act(s, next);
+    }
+    expect(chose).toBe(true);
+    return s;
+  }
+
+  // faq-card-2 RS-089 Q3「…正確にはターンプレイヤーが、捨札にするかパワーゾーンに送るかを選択できます。」
+  it("RS-089: 公式Q&A — 隠流忍術で相撃ちになったとき、ターンプレイヤーがプテラノドンを先に処理するとパワーゾーンに送れる（出典: grnrngr/faq-card-2 RS-089 Q3）", () => {
+    const s = pteraRescueMutual("RS-039:pt");
+    expect(zoneOf(s, "player1", "RS-039:pt")).toBe("power");
+    expect(zoneOf(s, "player1", "RS-089:rf")).toBe("discard");
+  });
+
+  // 同 Q3「逆に、先に「RS-089 レスキューファイター」を捨札にした場合は、「RS-039 守護獣プテラノドン」も捨札になります。」
+  it("RS-089: 公式Q&A — 先にレスキューファイターを捨札にすると、プテラノドンも捨札になる（出典: grnrngr/faq-card-2 RS-089 Q3）", () => {
+    const s = pteraRescueMutual("RS-089:rf");
+    expect(zoneOf(s, "player1", "RS-039:pt")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-089:rf")).toBe("discard");
+  });
 });
 
 // ===========================================================================

@@ -2,11 +2,13 @@ import type { GameState, PlayerId } from "../types/game";
 import { findInZone } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { requestDrawFromDeck } from "./drawFromDeck";
+import { getOnRushNamedEffect } from "@rangers-strike/cards";
 import { resolveNamedOnRushEffects } from "./namedUnitEffects";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import {
   applySuperRadarOnRush,
   resolveLegend3UnnamedRushEffects,
+  superRadarAppliesOnRush,
 } from "./legend3/rushEffects";
 import { ON_RUSH_EFFECTS } from "./rushEffects";
 import {
@@ -21,7 +23,7 @@ import {
 } from "./batch06FieldEffects";
 import { tryOnAllyRushNamedReturnSelfToHand } from "./batch07FieldEffects";
 import { tryRsCatchallOnEnemyRush } from "./rs/rsCatchallRuntime";
-import { startSelectUnitChoice } from "./pendingChoices";
+import { openEffectChoice, startSelectUnitChoice } from "./pendingChoices";
 
 function applyDrawOnRush(
   state: GameState,
@@ -87,7 +89,12 @@ export function applyOnRushUnitEffects(
   instanceId: string,
   phasePlayerId: PlayerId,
   zone: "rush" | "battle" = "rush",
-  options: { suppressSelfEffects?: boolean; viaEffect?: boolean } = {},
+  options: {
+    suppressSelfEffects?: boolean;
+    viaEffect?: boolean;
+    /** RS-124 超電子レーダーと自身の「ラッシュしたとき」の処理順（ターンプレイヤーが選んだ結果）。 */
+    rushTriggerOrder?: "super_radar_first" | "self_first";
+  } = {},
 ): { state: GameState; logs: string[] } {
   // ルール: R-RUSH-24 — 「このとき出したユニットの効果は発動しない」は、そのユニット自身の
   // 「ラッシュしたとき」の効果だけを止める（他のカードの「ラッシュしたとき」は発動する）。
@@ -98,6 +105,37 @@ export function applyOnRushUnitEffects(
 
   let nextState = state;
   const logs: string[] = [];
+
+  // faq-card-2 RS-092 Q1 — 自身の「ラッシュしたとき」の効果と超電子レーダーが同時に発動したら、
+  // ターンプレイヤーが望む順で処理する（R-SIM-01）。
+  const radarApplies = superRadarAppliesOnRush(state, ownerPlayerId, instanceId);
+  if (
+    radarApplies &&
+    !suppressSelf &&
+    options.rushTriggerOrder === undefined &&
+    getOnRushNamedEffect(found.card.cardId) &&
+    !state.pendingEffectChoice
+  ) {
+    return {
+      state: openEffectChoice(state, {
+        playerId: phasePlayerId,
+        effectId: "rush_trigger_order",
+        sourceCardId: found.card.cardId,
+        sourceInstanceId: instanceId,
+        kind: "simultaneous_order",
+        phasePlayerId,
+        validInstanceIds: ["super_radar", instanceId],
+        optional: false,
+        rushTriggerOrderMeta: { ownerPlayerId, instanceId, zone, viaEffect: options.viaEffect },
+      }),
+      logs: [],
+    };
+  }
+  if (options.rushTriggerOrder === "super_radar_first") {
+    const radarFirst = applySuperRadarOnRush(nextState, ownerPlayerId, instanceId);
+    nextState = radarFirst.state;
+    logs.push(...radarFirst.logs);
+  }
 
   const onRush = suppressSelf ? undefined : ON_RUSH_EFFECTS[found.card.cardId];
   if (onRush === "draw_1") {
@@ -178,9 +216,11 @@ export function applyOnRushUnitEffects(
     logs.push(...formation.logs);
   }
 
-  const radar = applySuperRadarOnRush(nextState, ownerPlayerId, instanceId);
-  nextState = radar.state;
-  logs.push(...radar.logs);
+  if (options.rushTriggerOrder !== "super_radar_first") {
+    const radar = applySuperRadarOnRush(nextState, ownerPlayerId, instanceId);
+    nextState = radar.state;
+    logs.push(...radar.logs);
+  }
 
   const noteOther = resolveNoteOtherOnRushEffects(
     nextState,

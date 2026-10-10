@@ -159,10 +159,10 @@ export function trafficControlRequiresSameSize(
 ): boolean {
   const controller = findControllerOfNamedEffect(state, "traffic_control", ["battle"]);
   if (!controller || controller.playerId === playerId) return false;
-  const battle = state.players[playerId].battle;
-  if (battle.length === 0) return false;
-  const firstSize = getDefinition(state.definitions, battle[0]!.cardId)?.size;
-  return unitSize !== firstSize;
+  // 「並べるユニットはすべて同じサイズ」— 既にサイズが混在していれば、どのサイズも出せない（faq-card-2 RS-086 Q1）。
+  return state.players[playerId].battle.some(
+    (c) => getDefinition(state.definitions, c.cardId)?.size !== unitSize,
+  );
 }
 
 /**

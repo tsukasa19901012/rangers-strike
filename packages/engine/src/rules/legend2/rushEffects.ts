@@ -84,7 +84,8 @@ export function resolveLegend2OnRushEffects(
           ...nextState,
           ...updatePlayer(nextState, pid, {
             ...player,
-            power: [...faceDown, ...player.hand.map((c) => ({ ...c, faceDown: true }))],
+            // 「手札をすべてパワーゾーンに置く」— ダメージ（ウラ向き）ではなくオモテ向きのパワー（R-ZONE-07）。
+            power: [...faceDown, ...player.hand.map((c) => ({ ...c, faceDown: false }))],
             discard: [...player.discard, ...toDiscard],
             hand: [],
           }),

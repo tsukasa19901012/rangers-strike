@@ -423,6 +423,16 @@ export type PendingEffectChoice = {
   /** 相打ちの処理順選択（simultaneous_order。validInstanceIds は撃破された 2 体）。 */
   mutualDestructionMeta?: MutualDestructionMeta;
   /**
+   * 「ラッシュしたとき」に同時に発動した、ラッシュしたユニット自身の効果と RS-124 超電子レーダーの処理順
+   * （simultaneous_order。validInstanceIds は "super_radar" とラッシュしたユニット）。faq-card-2 RS-092 Q1。
+   */
+  rushTriggerOrderMeta?: {
+    ownerPlayerId: PlayerId;
+    instanceId: string;
+    zone: "rush" | "battle";
+    viaEffect?: boolean;
+  };
+  /**
    * 「～してもよい」の任意効果を行うかどうかの確認（kind "confirm"）。confirm_effect_choice で行い、
    * skip_effect_choice で行わない。行うときの処理は rules/optionalEffects.ts の登録先。
    */

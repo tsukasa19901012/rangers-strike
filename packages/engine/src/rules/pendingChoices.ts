@@ -1,4 +1,5 @@
 import { finalizeEffectRush, hasPendingPromptBlockingEffectRush } from "../events/emitUnitRushed";
+import { applyOnRushUnitEffects } from "./onRushUnitEffects";
 import {
   DISMANTLING_EFFECT_ID,
   isFirefightingChoice,
@@ -541,7 +542,7 @@ export function isValidEffectChoiceTarget(
       );
     }
     if (dest === "hand_from_discard") {
-      return !!findInZone(state.players[pending.playerId], "discard", instanceId);
+      return !!findInZone(state.players[handFromDiscardOwner(pending)], "discard", instanceId);
     }
     if (dest === "rush_from_discard") {
       return !!findInZone(state.players[pending.playerId], "discard", instanceId);
@@ -2124,6 +2125,37 @@ export function startPitInDiveOrderChoice(
   });
 }
 
+/** 捨札から手札に戻す選択で、捨札を見るプレイヤー（RS-094【幽魔吸収】は敵軍捨札から持ち主の手札へ）。 */
+function handFromDiscardOwner(pending: PendingEffectChoice): PlayerId {
+  return pending.effectId === "ghost_absorption" ? opponent(pending.playerId) : pending.playerId;
+}
+
+/**
+ * RS-094【幽魔吸収】「そうしたとき、このターンこのユニットのBPは相手の手札に戻したカードのBPとの合計になり、SP1になる」。
+ * 「～になる」なので指定値（bpSetValue / spOverride。ターン終了で消える）として扱う（R-BP-01）。
+ */
+function applyGhostAbsorption(
+  state: GameState,
+  playerId: PlayerId,
+  sourceInstanceId: string,
+  returnedCardId: string,
+): GameState {
+  const actor = state.players[playerId];
+  const unit = actor.battle.find((c) => c.instanceId === sourceInstanceId);
+  if (!unit) return state;
+  const returnedBp = unitBp(getDefinition(state.definitions, returnedCardId));
+  const total = effectiveBp(state, playerId, unit) + returnedBp;
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...actor,
+      battle: actor.battle.map((c) =>
+        c.instanceId === sourceInstanceId ? { ...c, bpSetValue: total, spOverride: 1 } : c,
+      ),
+    }),
+  };
+}
+
 function clearChoice(state: GameState, phasePlayerId: PlayerId): GameState {
   return {
     ...state,
@@ -3278,16 +3310,19 @@ export function applyEffectChoiceSelect(
       }
       if (dest === "hand" || dest === "hand_from_discard" || dest === "hand_from_power") {
         if (dest === "hand_from_discard") {
-          const ownerId = pending.playerId;
+          const ownerId = handFromDiscardOwner(pending);
           const owner = state.players[ownerId];
           const found = findInZone(owner, "discard", instanceId);
           if (!found) return { error: "invalid_target" };
-          const nextState = applyReanimate(state, {
+          let nextState = applyReanimate(state, {
             playerId: ownerId,
             instanceId,
             from: "discard",
             to: "hand",
           });
+          if (pending.effectId === "ghost_absorption" && pending.sourceInstanceId) {
+            nextState = applyGhostAbsorption(nextState, pending.playerId, pending.sourceInstanceId, found.card.cardId);
+          }
           return finishChoice(
             nextState,
             pending,
@@ -3309,27 +3344,6 @@ export function applyEffectChoiceSelect(
         });
         if (!bounced.bounced) return { error: "invalid_target" };
         let nextState = bounced.state;
-        if (pending.effectId === "ghost_absorption" && pending.sourceInstanceId) {
-          const actor = nextState.players[pending.playerId];
-          const returnedBp = unitBp(
-            getDefinition(state.definitions, bounced.bounced.cardId),
-          );
-          nextState = {
-            ...nextState,
-            ...updatePlayer(nextState, pending.playerId, {
-              ...actor,
-              battle: actor.battle.map((c) =>
-                c.instanceId === pending.sourceInstanceId
-                  ? {
-                      ...c,
-                      spModifier: (c.spModifier ?? 0) + 1,
-                      bpModifier: returnedBp,
-                    }
-                  : c,
-              ),
-            }),
-          };
-        }
         return finishChoice(
           nextState,
           pending,
@@ -4351,6 +4365,30 @@ export function applyEffectChoiceSelect(
     case "simultaneous_order": {
       if (!pending.validInstanceIds.includes(instanceId)) {
         return { error: "invalid_target" };
+      }
+      if (pending.rushTriggerOrderMeta) {
+        // faq-card-2 RS-092 Q1 — 同時に発動した「ラッシュしたとき」の効果は、ターンプレイヤーが望む順で処理する。
+        const meta = pending.rushTriggerOrderMeta;
+        const cleared = clearChoice(state, pending.phasePlayerId);
+        const resolved = applyOnRushUnitEffects(
+          cleared,
+          meta.ownerPlayerId,
+          meta.instanceId,
+          pending.phasePlayerId,
+          meta.zone,
+          {
+            viaEffect: meta.viaEffect,
+            rushTriggerOrder: instanceId === "super_radar" ? "super_radar_first" : "self_first",
+          },
+        );
+        const log = buildLogEntry(
+          pending.playerId,
+          "resolve_effect_choice",
+          pending.sourceCardId,
+          state.definitions,
+          `${pending.effectId}:${instanceId}`,
+        );
+        return { state: { ...resolved.state, log: [...resolved.state.log, ...resolved.logs] }, log };
       }
       if (pending.mutualDestructionMeta) {
         // ルール: R-BTL-02, R-SIM-01 — 相打ちの処理順はターンプレイヤーが決める。

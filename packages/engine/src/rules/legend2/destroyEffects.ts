@@ -34,7 +34,7 @@ export function resolveLegend2OnDestroy(
           kind: "none",
           activePlayer: ownerId,
         });
-        if (nextState.pendingDamagePayment) break;
+        // 1人目の支払いで選択が発生しても、2人目のダメージは後回し（queuedDamagePayments）にして必ず受ける。
       }
       logs.push(
         buildLogEntry(ownerId, "named_effect", cardId, state.definitions, "tantrum"),

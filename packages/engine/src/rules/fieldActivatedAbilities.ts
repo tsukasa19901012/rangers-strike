@@ -208,7 +208,57 @@ function canActivateJusticeFlasher(state: GameState, playerId: PlayerId, card: C
   return collectPowerIds(state, playerId).length >= 5;
 }
 
+// ---------------------------------------------------------------------------
+// RS-094 龍冥王サラマンデス【幽魔吸収】
+
+/**
+ * 「自軍バトルフェイズに次の効果を発動できる。敵軍捨札からSユニットのカードを1枚選んで持ち主の手札に戻す。…」
+ * — 誘発条件はないので、バトルエリアに出たときだけでなく自軍バトルフェイズ中に発動できる（出典: atwiki/page-329）。
+ */
+function isGhostAbsorptionCard(cardId: string): boolean {
+  return getConditionalNamedEffect(cardId)?.effectId === "ghost_absorption";
+}
+
+function ghostAbsorptionTargets(state: GameState, playerId: PlayerId): string[] {
+  const enemyId: PlayerId = playerId === "player1" ? "player2" : "player1";
+  return state.players[enemyId].discard
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return def?.type === "unit" && def.size === "S";
+    })
+    .map((c) => c.instanceId);
+}
+
+function canActivateGhostAbsorption(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  // このターンすでに吸収済み（SP1 になっている）なら繰り返さない。
+  if (card.spOverride === 1) return false;
+  if (fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId)) return false;
+  return ghostAbsorptionTargets(state, playerId).length > 0;
+}
+
 const ABILITIES: FieldActivatedAbility[] = [
+  {
+    cardId: "RS-094",
+    effectId: "ghost_absorption",
+    zones: ["battle"],
+    phase: "battle",
+    discardSelf: false,
+    matches: isGhostAbsorptionCard,
+    canActivate: canActivateGhostAbsorption,
+    resolve: (state, playerId, card) =>
+      openEffectChoice(state, {
+        playerId,
+        effectId: "ghost_absorption",
+        sourceCardId: card.cardId,
+        sourceInstanceId: card.instanceId,
+        phasePlayerId: playerId,
+        kind: "select_unit",
+        validInstanceIds: ghostAbsorptionTargets(state, playerId),
+        unitDestination: "hand_from_discard",
+        selectCount: 1,
+        optional: true,
+      }),
+  },
   {
     cardId: "RS-042",
     effectId: "justice_flasher",

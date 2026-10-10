@@ -79,6 +79,19 @@ export function isSuperRadarActive(state: GameState): boolean {
 }
 
 /** RS-124: Sラッシュ → 所有者がダメージ以外のパワーカード1枚を手札へ戻す。 */
+/** RS-124 超電子レーダーがこのラッシュで実際に処理されるか（S ユニットで、ダメージ以外のパワーがある）。 */
+export function superRadarAppliesOnRush(
+  state: GameState,
+  rusherPlayerId: PlayerId,
+  rushedInstanceId: string,
+): boolean {
+  if (!isSuperRadarActive(state)) return false;
+  const rusher = state.players[rusherPlayerId];
+  const found = findInZone(rusher, "rush", rushedInstanceId);
+  if (!found || !isSmallUnit(state.definitions, found.card.cardId)) return false;
+  return rusher.power.some((c) => !c.faceDown);
+}
+
 export function applySuperRadarOnRush(
   state: GameState,
   rusherPlayerId: PlayerId,

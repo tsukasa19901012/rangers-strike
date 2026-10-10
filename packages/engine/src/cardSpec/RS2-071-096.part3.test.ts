@@ -189,8 +189,7 @@ describe("RS-092 冥王ジルフィーザ", () => {
   });
 
   // 「パワーゾーンに置く」— ダメージ（ウラ向き）として置くとは書かれていない
-  it.fails("RS-092: 【天の災】で手札から置いたカードはダメージではない（オモテ向き）（出典: atwiki/page-327、R-ZONE-07）", () => {
-    // 既知の不具合: CARD-RS-092 天の災で手札をパワーゾーンにウラ向き（ダメージ扱い）で置いている
+  it("RS-092: 【天の災】で手札から置いたカードはダメージではない（オモテ向き）（出典: atwiki/page-327、R-ZONE-07）", () => {
     const s = rushZil(zilState(3)).state;
     expect(s.players.player2.power.find((c) => c.instanceId === "TST-OP:eh1")?.faceDown ?? false).toBe(false);
     expect(s.players.player2.power.filter((c) => c.faceDown)).toHaveLength(1);
@@ -230,9 +229,41 @@ describe("RS-092 冥王ジルフィーザ", () => {
   });
 
   // faq-card-2 RS-092 Q1「その場合は、ターンプレイヤーが望む順で処理します。」
-  it.todo(
-    "RS-092: 公式Q&A — 超電子レーダーが配置されているときにラッシュした場合、天の災と超電子レーダーの処理順はターンプレイヤーが選ぶ（出典: grnrngr/faq-card-2 RS-092 Q1）— 同時に誘発した効果の処理順を選ぶ公開 API がない",
-  );
+  /** 超電子レーダー（RS-124）が配置されている状態でジルフィーザをラッシュし、ターンプレイヤーが first を先に処理する。 */
+  function zilWithRadar(first: "super_radar" | "RS-092:zil") {
+    const s0 = st({
+      phase: "rush",
+      player1: {
+        hand: [inst("RS-092", "zil"), inst("TST-OP", "myhand")],
+        rush: fillers(3),
+        command: [released("TST-OP-DA", "da")],
+        power: powerCards(9),
+        operation: [inst("RS-124", "radar")],
+      },
+      player2: { hand: [inst("TST-OP", "eh1")], power: powerCards(2, "ep") },
+    });
+    let s = rushZil(s0).state;
+    expect(s.pendingEffectChoice?.kind).toBe("simultaneous_order");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(expect.arrayContaining(["super_radar", "RS-092:zil"]));
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: first });
+    return settle(s);
+  }
+
+  // faq-card-2 RS-092 Q1「その場合は、ターンプレイヤーが望む順で処理します。」
+  it("RS-092: 公式Q&A — 超電子レーダーを先に処理すると、手札に戻したパワーも天の災でパワーゾーンに置かれる（出典: grnrngr/faq-card-2 RS-092 Q1）", () => {
+    const s = zilWithRadar("super_radar");
+    expect(s.players.player1.hand).toHaveLength(0);
+    expect(zoneOf(s, "player1", "TST-OP:myhand")).toBe("power");
+    expect(s.players.player1.power).toHaveLength(2);
+  });
+
+  it("RS-092: 公式Q&A — 天の災を先に処理すると、超電子レーダーで手札から置いたカードを1枚手札に戻す（出典: grnrngr/faq-card-2 RS-092 Q1）", () => {
+    const s = zilWithRadar("RS-092:zil");
+    expect(zoneOf(s, "player1", "TST-OP:myhand")).toBe("hand");
+    expect(s.players.player1.power).toHaveLength(0);
+    expect(zoneOf(s, "player1", "TST-P:pw0")).toBe("discard");
+  });
 });
 
 // ===========================================================================
@@ -289,8 +320,7 @@ describe("RS-093 童鬼ドロップ", () => {
     expect(s.players.player2.damage).toBe(1);
   });
 
-  it.fails("RS-093: パワーゾーンのカードからダメージにするカードを選ぶ場合も、お互いに1点ダメージを受ける（出典: atwiki/page-328）", () => {
-    // 既知の不具合: CARD-RS-093 1人目のダメージ支払いで選択が発生すると処理が打ち切られ、2人目がダメージを受けない
+  it("RS-093: パワーゾーンのカードからダメージにするカードを選ぶ場合も、お互いに1点ダメージを受ける（出典: atwiki/page-328）", () => {
     const s = juuKunDoDrop(0, 0, 3);
     expect(s.players.player1.damage).toBe(1);
     expect(s.players.player2.damage).toBe(1);
@@ -361,8 +391,7 @@ describe("RS-094 龍冥王サラマンデス", () => {
     expect(s.pendingEffectChoice?.validInstanceIds).not.toContain("SPEC-M-WB:em");
   });
 
-  it.fails("RS-094: 敵軍捨札の S ユニット（BP3000）を相手の手札に戻すと、このターン BP9000・SP1（ストライクで1点）（出典: atwiki/page-329）", () => {
-    // 既知の不具合: CARD-RS-094 敵軍捨札のカードを選ぶ resolve_effect_choice が不正手になり、幽魔吸収を実行できない（スキップしか選べない）
+  it("RS-094: 敵軍捨札の S ユニット（BP3000）を相手の手札に戻すと、このターン BP9000・SP1（ストライクで1点）（出典: atwiki/page-329）", () => {
     let s = enter(absorbState([inst("SPEC-S-3000", "es"), inst("SPEC-M-WB", "em")]), "RS-094:sala");
     s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "SPEC-S-3000:es" });
     expect(zoneOf(s, "player2", "SPEC-S-3000:es")).toBe("hand");
@@ -380,8 +409,7 @@ describe("RS-094 龍冥王サラマンデス", () => {
   });
 
   // 「自軍バトルフェイズに次の効果を発動できる」— バトルエリアに出たときに限られない
-  it.fails("RS-094: バトルフェイズ開始時からバトルエリアにいても、自軍バトルフェイズ中に発動できる（出典: atwiki/page-329「自軍バトルフェイズに次の効果を発動できる」）", () => {
-    // 既知の不具合: CARD-RS-094 幽魔吸収がバトルエリアに出たときの選択としてしか発動できない
+  it("RS-094: バトルフェイズ開始時からバトルエリアにいても、自軍バトルフェイズ中に発動できる（出典: atwiki/page-329「自軍バトルフェイズに次の効果を発動できる」）", () => {
     const s = passEntry(st({
       player1: { battle: [inst("RS-094", "sala")] },
       player2: { discard: [inst("SPEC-S-3000", "es")] },
@@ -393,8 +421,7 @@ describe("RS-094 龍冥王サラマンデス", () => {
   });
 
   // 「このターン」
-  it.fails("RS-094: 幽魔吸収の BP・SP は「このターン」だけ（相手ターンには BP6000）（出典: atwiki/page-329）", () => {
-    // 既知の不具合: CARD-RS-094 幽魔吸収を実行できない（上記）ため、前提状態を作れない
+  it("RS-094: 幽魔吸収の BP・SP は「このターン」だけ（相手ターンには BP6000）（出典: atwiki/page-329）", () => {
     let s = enter(absorbState([inst("SPEC-S-3000", "es")]), "RS-094:sala");
     s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "SPEC-S-3000:es" });
     s = endTurn(s);
