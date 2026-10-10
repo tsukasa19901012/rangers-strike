@@ -69,7 +69,20 @@ export function legend2FieldBpBonus(
     bonus += released * 1000;
   }
 
+  if (role === "general") bonus += ryuuGekiKenBpBonus(state, playerId, instance);
+
   return bonus;
+}
+
+/**
+ * RS-081【龍撃剣】: このターン、ホールド状態の敵軍コマンド1つにつき BP+1000。
+ * ルール: R-RES-05 — 参照は即時更新（発動後に相手がホールドした分も加算される。faq-card-2 RS-081 Q1）。
+ */
+function ryuuGekiKenBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
+  if (!instance.activatedNcEffects?.includes("ryuu_geki_ken")) return 0;
+  if (!state.players[playerId].battle.some((c) => c.instanceId === instance.instanceId)) return 0;
+  const enemyId = playerId === "player1" ? "player2" : "player1";
+  return state.players[enemyId].command.filter((c) => c.commandHeld).length * 1000;
 }
 
 export function legend2EffectiveSp(
@@ -112,7 +125,8 @@ export function legend2EffectiveSp(
 
   if (
     findNamedEffectByEffectId(instance.cardId, "bio_buster") ||
-    findNamedEffectByEffectId(instance.cardId, "fire_spin_blade")
+    findNamedEffectByEffectId(instance.cardId, "fire_spin_blade") ||
+    instance.activatedNcEffects?.includes("ryuu_geki_ken")
   ) {
     const bp =
       unitBp(def) +

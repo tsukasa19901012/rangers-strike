@@ -1,6 +1,7 @@
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState, CardInstance } from "../types/game";
+import { hasTurnRuleModifier, TURN_RULE_IDS } from "./scopedModifiers";
 import { clearRegisterHoldOffField } from "../rules/resist";
 import { operationFizzles } from "../rules/operationFizzle";
 import { openDeferredRushReaction } from "../events/emitUnitRushed";
@@ -418,6 +419,33 @@ export function applyAction(
   return next === result.state ? result : { ok: true, state: next };
 }
 
+/** RS-107【ディースナイパー】: カウンターのためにホールドしたコマンドを捨札にする。 */
+function discardCounterHolds(
+  state: GameState,
+  playerId: PlayerId,
+  commandInstanceIds: string[],
+): GameState {
+  const ids = new Set(commandInstanceIds);
+  const player = state.players[playerId];
+  const moved = player.command.filter((c) => ids.has(c.instanceId));
+  if (moved.length === 0) return state;
+  const discarded = moved.map((c) => {
+    const { commandHeld: _h, mothershipHold: _m, paymentHeld: _p, ...rest } = c;
+    return rest;
+  });
+  return {
+    ...state,
+    players: {
+      ...state.players,
+      [playerId]: {
+        ...player,
+        command: player.command.filter((c) => !ids.has(c.instanceId)),
+        discard: [...player.discard, ...discarded],
+      },
+    },
+  };
+}
+
 /** ルール: R-CTR-03 — アタックの処理が終われば（次の宣言のタイミング）カウンター封じは解ける。 */
 function releaseCounterLockWhenAttackSettled(state: GameState): GameState {
   if (!state.counterLockedPlayerId) return state;
@@ -798,7 +826,7 @@ function applyActionInner(
         );
       }
       if (cont.type === "play_counter") {
-        return applyAction(
+        const countered = applyAction(
           nextState,
           {
             type: "play_counter",
@@ -808,6 +836,15 @@ function applyActionInner(
           },
           { trustLegality: true },
         );
+        // ルール: R-RES-03 — 【ディースナイパー】は発動元が場を離れても有効。
+        // このターン、カウンターを発動するためにホールドしたコマンドは捨札になる。
+        if (
+          countered.ok &&
+          hasTurnRuleModifier(nextState.players[playerId], TURN_RULE_IDS.DEACE_SNIPER)
+        ) {
+          return { ok: true, state: discardCounterHolds(countered.state, playerId, action.commandInstanceIds) };
+        }
+        return countered;
       }
       return applyAction(
         nextState,

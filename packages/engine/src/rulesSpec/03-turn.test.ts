@@ -259,8 +259,7 @@ describe("R-TURN-04 「このターン」の期間", () => {
   });
 
   // 「継続して有効になりますか？」「はい」(faq-card-2 RS-107 Q2)
-  it.fails("R-TURN-04: ディースナイパー発動後は、デカブルーが場を離れても相手がカウンターのためにホールドしたコマンドは捨札になる（出典: grnrngr/faq-card-2 RS-107 Q2）", () => {
-    // 既知の不具合: 未登録（ディースナイパーの turn modifier を参照する処理がなく、カウンター用ホールドが捨札にならない）
+  it("R-TURN-04: ディースナイパー発動後は、デカブルーが場を離れても相手がカウンターのためにホールドしたコマンドは捨札になる（出典: grnrngr/faq-card-2 RS-107 Q2）", () => {
     const blue = inst("RS-107", "blue");
     const guts = inst("RS-027", "guts");
     const victim = inst("TST-UNIT-2", "victim");

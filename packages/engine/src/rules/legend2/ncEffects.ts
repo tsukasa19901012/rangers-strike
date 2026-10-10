@@ -15,7 +15,7 @@ import {
   startSelectUnitChoice,
 } from "../pendingChoices";
 import {
-  grantBpBoostToBattleUnit,
+  markBattleNcEffect,
   grantSp1ToBattleUnit,
 } from "../namedUnitEffects";
 import { addTurnRuleModifier } from "../../core/scopedModifiers";
@@ -82,27 +82,10 @@ function applyRyuuGekiKen(
   playerId: PlayerId,
   card: CardInstance,
 ): ComboOutcome {
-  const enemyId = opponent(playerId);
-  const heldCount = state.players[enemyId].command.filter((c) => c.commandHeld).length;
-  let nextState = state;
-  if (heldCount > 0) {
-    nextState = grantBpBoostToBattleUnit(nextState, playerId, card.instanceId, heldCount * 1000);
-  }
-  const unit = findInZone(nextState.players[playerId], "battle", card.instanceId);
-  if (!unit) {
-    return {
-      state: nextState,
-      logs: [ncLog(playerId, card.cardId, state.definitions, "ryuu_geki_ken")],
-    };
-  }
-  const bp =
-    unitBp(getDefinition(state.definitions, unit.card.cardId)) +
-    (unit.card.bpModifier ?? 0);
-  if (bp >= 5000) {
-    nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
-  }
+  // ルール: R-RES-05 — BP+1000×（ホールド状態の敵軍コマンド数）と「BP5000以上で SP1」は
+  // 固定値ではなく常に再計算する（legend2FieldBpBonus / legend2EffectiveSp で参照）。
   return {
-    state: nextState,
+    state: markBattleNcEffect(state, playerId, card.instanceId, "ryuu_geki_ken"),
     logs: [ncLog(playerId, card.cardId, state.definitions, "ryuu_geki_ken")],
   };
 }
