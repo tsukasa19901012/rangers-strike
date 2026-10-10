@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { findNamedEffectByEffectId } from "@rangers-strike/cards";
 import { playerHasActiveFieldKeyword } from "../dsl/fieldKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition, cardName, isLargeUnit } from "../core/catalog";
@@ -177,7 +178,23 @@ export function passiveNamedFieldBpBonus(
     bonus += noteOtherNcBpBonus(state, playerId, instance);
     bonus += rkPassiveBpBonus(state, playerId, instance);
     bonus += rs560BeastMBpBonus(state, playerId, instance.cardId);
+    bonus += kakuhengeDamageBpBonus(state, playerId, instance);
   }
 
   return bonus;
+}
+
+/** RS-310 ゴウライビートル【カラクリ忍法・角変化】: 自分と相手のダメージ1点につき BP+1000。 */
+function kakuhengeDamageBpBonus(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+): number {
+  if (!findNamedEffectByEffectId(instance.cardId, "karakuri_ninpo_tsuno")) return 0;
+  const player = state.players[playerId];
+  const inField =
+    player.rush.some((c) => c.instanceId === instance.instanceId) ||
+    player.battle.some((c) => c.instanceId === instance.instanceId);
+  if (!inField) return 0;
+  return (player.damage + state.players[opponent(playerId)].damage) * 1000;
 }

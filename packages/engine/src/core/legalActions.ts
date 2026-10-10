@@ -69,7 +69,7 @@ import {
   listZordSetupResolveActions,
 } from "../rules/zordSetup";
 import { canToggleBpBudgetTarget, isValidEffectChoiceTarget } from "../rules/pendingChoices";
-import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart, isReleaseStepComplete } from "../rules/startPhase";
+import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart, isReleaseStepComplete, listStartReturnGroupIds } from "../rules/startPhase";
 import {
   listZordRushPaymentVariants,
   listZordUpRushPaymentVariants,
@@ -1450,6 +1450,13 @@ export function getLegalActions(state: GameState): GameAction[] {
       }
       if (canReturnBattleAtStart(state, playerId)) {
         actions.push({ type: "return_all_battle_to_rush", playerId });
+        // ルール: R-START-01 — 戻す順は任意。2組以上あれば1体ずつ選んで戻せる。
+        const groups = listStartReturnGroupIds(player);
+        if (groups.length >= 2) {
+          for (const instanceId of groups) {
+            actions.push({ type: "return_all_battle_to_rush", playerId, instanceId });
+          }
+        }
       }
       if (!player.hasDrawnThisStart) {
         actions.push({ type: "draw", playerId });
@@ -1973,7 +1980,7 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
   }
 
   if (a.type === "return_all_battle_to_rush" && b.type === "return_all_battle_to_rush") {
-    return a.playerId === b.playerId;
+    return a.playerId === b.playerId && a.instanceId === b.instanceId;
   }
 
   if (a.type === "shiron_light" && b.type === "shiron_light") {

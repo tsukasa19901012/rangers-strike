@@ -28,7 +28,7 @@ import { bounceToHand } from "./bounce";
 import { applyReanimate } from "./reanimate";
 import { tryLeaveField } from "./operationCounters";
 import { completeToPowerOnDestroyChoice } from "./toPowerOnDestroy";
-import { hasSeabedSurvey } from "./legend2/fieldEffects";
+import { hasSeabedSurvey, karakuriLionChainBlocksEntry } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
 import {
   MURPHY_CHASE_EFFECT_ID,
@@ -2834,7 +2834,10 @@ export function applyEffectChoiceSelect(
         const owner = state.players[located.playerId];
         const found = findInZone(owner, "rush", instanceId);
         if (!found) return { error: "invalid_target" };
-        const prepared = autoHoldForBattleEntry(owner, found.card);
+        const autoHeld = autoHoldForBattleEntry(owner, found.card);
+        const prepared = autoHeld
+          ? holdForKarakuriLionChain(state, located.playerId, autoHeld, found.card)
+          : null;
         if (!prepared) return { error: "cannot_enter_battle" };
         const readyOwner = markBattleEntryHoldReadyIfNoteSatisfied(prepared, found.card);
         const withPrepared = {
@@ -3936,6 +3939,27 @@ export function applyEffectChoiceSelect(
     default:
       return { error: "invalid_choice_kind" };
   }
+}
+
+/**
+ * 効果で敵軍ユニットをバトルエリアに出すとき、RS-097【カラクリ忍法・連獅子】が効いていれば
+ * 持ち主がコマンドを1つホールドする（ホールドできなければ出せない）。
+ * ルール: R-START-01（faq-card-3 RS-135: ジェットファルコンで引き出せば相手はコマンドをホールドする）
+ */
+function holdForKarakuriLionChain(
+  state: GameState,
+  ownerId: PlayerId,
+  owner: PlayerState,
+  unit: CardInstance,
+): PlayerState | null {
+  const heldCount = owner.command.filter((c) => c.commandHeld).length;
+  if (!karakuriLionChainBlocksEntry(state, ownerId, unit, heldCount)) return owner;
+  const idx = owner.command.findIndex((c) => !c.commandHeld);
+  if (idx < 0) return null;
+  return {
+    ...owner,
+    command: owner.command.map((c, i) => (i === idx ? { ...c, commandHeld: true } : c)),
+  };
 }
 
 export function getValidTargetsForChoice(state: GameState): string[] {

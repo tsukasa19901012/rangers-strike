@@ -2757,6 +2757,9 @@ export function GameApp() {
           onReturnAllBattle={() =>
             apply({ type: "return_all_battle_to_rush", playerId: HUMAN_PLAYER })
           }
+          onReturnBattleUnit={(instanceId) =>
+            apply({ type: "return_all_battle_to_rush", playerId: HUMAN_PLAYER, instanceId })
+          }
           onDraw={() => apply({ type: "draw", playerId: HUMAN_PLAYER })}
           onBonusDraw={() => apply({ type: "bonus_draw", playerId: HUMAN_PLAYER })}
           onSkipBonusDraw={() =>

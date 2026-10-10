@@ -1,7 +1,7 @@
 import { findNamedEffectByEffectId, getCardEffect } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { checkWinner } from "../core/createGame";
-import { hasOperationEffect } from "../core/catalog";
+import { cardName, hasOperationEffect } from "../core/catalog";
 import { findInZone, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry, buildSimpleLogEntry } from "../log/formatLog";
 import { applyMegaSilverStartEndToggle } from "./batch04FieldEffects";
@@ -34,70 +34,126 @@ function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
     .map((card) => card.instanceId);
 }
 
-/** スタートフェイズ一括復帰後、次の任意の戦闘→ラッシュ効果を開く。 */
-export function continueBattleToRushEffectQueue(state: GameState): GameState {
-  const queue = state.pendingBattleToRushQueue ?? [];
-  const phasePlayerId = state.pendingBattleToRushPhasePlayerId;
-  if (!phasePlayerId || queue.length === 0 || state.pendingEffectChoice) {
-    if (queue.length === 0) {
-      return {
-        ...state,
-        pendingBattleToRushQueue: undefined,
-        pendingBattleToRushPhasePlayerId: undefined,
-      };
-    }
-    return state;
-  }
-
-  const [nextId, ...rest] = queue;
-  const owner = state.players[phasePlayerId];
-  const card = owner.rush.find((c) => c.instanceId === nextId);
-  if (!card) {
-    return continueBattleToRushEffectQueue({
-      ...state,
-      pendingBattleToRushQueue: rest,
-    });
-  }
-
-  const withChoice = tryLegend3BattleToRush(state, phasePlayerId, card, phasePlayerId);
-  if (withChoice.pendingEffectChoice) {
-    return { ...withChoice, pendingBattleToRushQueue: rest };
-  }
-
-  return continueBattleToRushEffectQueue({
-    ...withChoice,
-    pendingBattleToRushQueue: rest,
-  });
+/**
+ * スタートフェイズに戻す単位（ライドの組は1組）の代表 instanceId を並び順で返す。
+ * ビークルにライドしているユニットはビークルと一緒に戻るので代表に含めない。
+ */
+export function listStartReturnGroupIds(player: PlayerState): string[] {
+  const battleIds = new Set(player.battle.map((c) => c.instanceId));
+  return player.battle
+    .filter((c) => !(c.mountedOnInstanceId && battleIds.has(c.mountedOnInstanceId)))
+    .map((c) => c.instanceId);
 }
 
-/** スタートフェイズ: 戦闘ユニットを一括でラッシュに戻し、任意効果をキューに入れる。 */
+/** instanceId を含むライドの組（ビークルとライドしているユニット）の instanceId 一覧。 */
+function returnGroupMembers(player: PlayerState, instanceId: string): Set<string> {
+  const card = player.battle.find((c) => c.instanceId === instanceId);
+  if (!card) return new Set();
+  const battleIds = new Set(player.battle.map((c) => c.instanceId));
+  const rootId =
+    card.mountedOnInstanceId && battleIds.has(card.mountedOnInstanceId)
+      ? card.mountedOnInstanceId
+      : card.instanceId;
+  const members = new Set([rootId]);
+  for (const c of player.battle) {
+    if (c.mountedOnInstanceId === rootId) members.add(c.instanceId);
+  }
+  return members;
+}
+
+/**
+ * スタートフェイズ: 戻す予定のユニットを1組ずつ戻し、そのつど誘発した効果（falcon_claw 等）を解決する。
+ * 選択が開いたらそこで止まり、解決後にもう一度呼ばれて続きを戻す。
+ * ルール: R-START-01（戻す順は任意。戻す途中で誘発した効果を解決してから残りを戻せる: faq-card-3 RS-135）
+ */
+export function continueBattleToRushEffectQueue(state: GameState): GameState {
+  if (state.pendingEffectChoice || state.winner) return state;
+  const phasePlayerId = state.pendingBattleToRushPhasePlayerId;
+  const queue = state.pendingBattleToRushQueue ?? [];
+
+  if (phasePlayerId && queue.length > 0) {
+    const [nextId, ...rest] = queue;
+    const owner = state.players[phasePlayerId];
+    const card = owner.rush.find((c) => c.instanceId === nextId);
+    if (!card) {
+      return continueBattleToRushEffectQueue({ ...state, pendingBattleToRushQueue: rest });
+    }
+    const withChoice = tryLegend3BattleToRush(state, phasePlayerId, card, phasePlayerId);
+    return continueBattleToRushEffectQueue({ ...withChoice, pendingBattleToRushQueue: rest });
+  }
+
+  const returnQueue = state.pendingStartReturnQueue ?? [];
+  if (phasePlayerId && returnQueue.length > 0) {
+    const [nextId, ...rest] = returnQueue;
+    const base: GameState = { ...state, pendingStartReturnQueue: rest };
+    const moved = returnBattleGroupToRush(base, phasePlayerId, nextId!);
+    return continueBattleToRushEffectQueue(moved ?? base);
+  }
+
+  return {
+    ...state,
+    pendingBattleToRushQueue: undefined,
+    pendingStartReturnQueue: undefined,
+    pendingBattleToRushPhasePlayerId: undefined,
+  };
+}
+
+/**
+ * バトルエリアの1組をラッシュエリアに戻し、誘発効果をキューに積む（解決は呼び出し側）。
+ * ルール: R-START-02 — ラッシュではない。ライド状態・ホールド状態はそのまま。
+ */
+function returnBattleGroupToRush(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): GameState | null {
+  const player = state.players[playerId];
+  const members = returnGroupMembers(player, instanceId);
+  if (members.size === 0) return null;
+
+  const movedCards = player.battle
+    .filter((c) => members.has(c.instanceId))
+    .map(prepareRegisterUnitReturnedToRush);
+  const battle = player.battle.filter((c) => !members.has(c.instanceId));
+  const effectQueue = collectBattleToRushEffectQueue(movedCards);
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      battle,
+      rush: [...player.rush, ...movedCards],
+      hasReturnedBattleThisStart: battle.length === 0,
+    }),
+    pendingBattleToRushQueue: [...(state.pendingBattleToRushQueue ?? []), ...effectQueue],
+    pendingBattleToRushPhasePlayerId: playerId,
+  };
+}
+
+/**
+ * スタートフェイズ: バトルエリアのユニットをラッシュエリアに戻す。
+ * `instanceId` 指定時はその1組だけ、省略時は並び順で1組ずつすべて戻す（途中で選択が開いたら中断）。
+ */
 export function returnAllBattleUnitsToRush(
   state: GameState,
   playerId: PlayerId,
+  instanceId?: string,
 ): GameState | null {
   const player = state.players[playerId];
   if (player.battle.length === 0) return null;
 
-  const movedCards = player.battle.map(prepareRegisterUnitReturnedToRush);
-  const effectQueue = collectBattleToRushEffectQueue(movedCards);
-  let nextState: GameState = {
-    ...state,
-    ...updatePlayer(state, playerId, {
-      ...player,
-      battle: [],
-      rush: [...player.rush, ...movedCards],
-      hasReturnedBattleThisStart: true,
-    }),
-    pendingBattleToRushQueue: effectQueue.length > 0 ? effectQueue : undefined,
-    pendingBattleToRushPhasePlayerId:
-      effectQueue.length > 0 ? playerId : undefined,
-  };
-
-  if (effectQueue.length > 0) {
-    nextState = continueBattleToRushEffectQueue(nextState);
+  if (instanceId) {
+    const moved = returnBattleGroupToRush(state, playerId, instanceId);
+    if (!moved) return null;
+    return continueBattleToRushEffectQueue(moved);
   }
 
-  return nextState;
+  const [first, ...rest] = listStartReturnGroupIds(player);
+  if (!first) return null;
+  return continueBattleToRushEffectQueue({
+    ...state,
+    pendingStartReturnQueue: [first, ...rest],
+    pendingBattleToRushPhasePlayerId: playerId,
+  });
 }
 
 export function initializeStartPhasePlayer(player: PlayerState): PlayerState {
@@ -260,6 +316,8 @@ export type StartPhaseStatus = {
   heldCommandCount: number;
   battleUnitCount: number;
   battleUnits: StartPhaseBattleUnit[];
+  /** 1体ずつ戻すときに選べるユニット（ライドの組は代表1体）。2組以上のときだけ並ぶ。 */
+  returnChoices: Array<StartPhaseBattleUnit & { name: string }>;
 };
 
 export function getStartPhaseStatus(
@@ -287,6 +345,14 @@ export function getStartPhaseStatus(
       instanceId: c.instanceId,
       cardId: c.cardId,
     })),
+    returnChoices: (() => {
+      const ids = listStartReturnGroupIds(player);
+      if (ids.length < 2 || !canReturnBattleAtStart(state, playerId)) return [];
+      return ids.map((id) => {
+        const cardId = player.battle.find((c) => c.instanceId === id)?.cardId ?? id;
+        return { instanceId: id, cardId, name: cardName(state.definitions, cardId) };
+      });
+    })(),
   };
 }
 
