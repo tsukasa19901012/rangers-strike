@@ -1,3 +1,4 @@
+import { isSameCardIdentity } from "@rangers-strike/cards";
 /**
  * 「自軍ラッシュフェイズ中、この〇〇を捨札にして（捨札にしてもよい）…」型の起動効果。
  *
@@ -341,7 +342,7 @@ const ABILITIES: FieldActivatedAbility[] = [
 ];
 
 function abilityFor(cardId: string): FieldActivatedAbility | undefined {
-  return ABILITIES.find((a) => (a.matches ? a.matches(cardId) : a.cardId === cardId));
+  return ABILITIES.find((a) => (a.matches ? a.matches(cardId) : isSameCardIdentity(a.cardId, cardId)));
 }
 
 /** 起動できる場のカード（instanceId）。自軍ターンの、能力ごとに決まったフェイズ中のみ。 */

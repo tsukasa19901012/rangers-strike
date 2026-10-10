@@ -361,8 +361,7 @@ describe("RS-253 ファイブテクター", () => {
     expect(zoneOf(s, "player1", "RS-253:ft")).toBe("operation");
   });
 
-  // 既知の不具合: CARD-RS-253 再録のファイブテクターが five_tech として扱われず（RS-014 だけ有効）、迎撃の選択肢が出ない
-  it.fails("RS-253: ストライクされるとき、ラッシュエリアの S ユニットをバトルエリアに出してバトルし、ストライクは無効（出典: atwiki/page-255）", () => {
+  it("RS-253: ストライクされるとき、ラッシュエリアの S ユニットをバトルエリアに出してバトルし、ストライクは無効（出典: atwiki/page-255）", () => {
     let s = strikeState({ rush: [{ ...inst("TST-UNIT-0", "gs"), bpModifier: 5000 }, inst("TST-UNIT-2", "m")] });
     s = act(s, legal(s).find((a) => a.type === "five_tech_intercept" && a.interceptInstanceId === "TST-UNIT-0:gs")!);
     s = settle(s);
@@ -376,8 +375,7 @@ describe("RS-253 ファイブテクター", () => {
     expect(legalOfType(s, "five_tech_intercept")).toHaveLength(0);
   });
 
-  // 既知の不具合: CARD-RS-253 迎撃の反応窓が開かない（使うかどうかの選択がなく、ストライクは即座にダメージになる）
-  it.fails("RS-253: 「してもよい」— 迎撃の選択肢がある状態で、使わずにストライクを受けることもできる（出典: atwiki/page-255）", () => {
+  it("RS-253: 「してもよい」— 迎撃の選択肢がある状態で、使わずにストライクを受けることもできる（出典: atwiki/page-255）", () => {
     let s = strikeState({ rush: [inst("TST-UNIT-0", "g")] });
     expect(legalOfType(s, "five_tech_intercept").length).toBeGreaterThan(0);
     expect(legal(s).some((a) => a.type === "pass_strike_reaction")).toBe(true);
@@ -387,16 +385,14 @@ describe("RS-253 ファイブテクター", () => {
   });
 
   // atwiki/page-255 Q1「そ れは出来ません。…アタックされたときを発動条件とする隠流忍術を発動することもできません。」
-  // 既知の不具合: CARD-RS-253 迎撃できない
-  it.fails("RS-253: Q&A — ファイブテクターでバトルに持ち込んだ後、隠流忍術でバトルの相手を変えられない（出典: atwiki/page-255 Q1）", () => {
+  it("RS-253: Q&A — ファイブテクターでバトルに持ち込んだ後、隠流忍術でバトルの相手を変えられない（出典: atwiki/page-255 Q1）", () => {
     let s = strikeState({ rush: [inst("TST-UNIT-0", "g")], battle: [inst("TST-UNIT-2", "other")], hand: [inst("RS-018", "ninja")], command: [released(CMD.MA, "ma")] });
     s = act(s, legal(s).find((a) => a.type === "five_tech_intercept" && a.interceptInstanceId === "TST-UNIT-0:g")!);
     expect(canUse(s, "player2", "RS-018:ninja")).toBe(false);
   });
 
   // atwiki/page-255 Q2「はい、その通りです。」
-  // 既知の不具合: CARD-RS-253 迎撃できない
-  it.fails("RS-253: Q&A — 敵軍にハリケンレオンがいれば、SP1以上のユニットを出すときコマンドを1つホールドする（なければ出せない）（出典: atwiki/page-255 Q2）", () => {
+  it("RS-253: Q&A — 敵軍にハリケンレオンがいれば、SP1以上のユニットを出すときコマンドを1つホールドする（なければ出せない）（出典: atwiki/page-255 Q2）", () => {
     const base = { player1: { battle: [inst("RS-097", "leon"), inst("TST-UNIT-0", "striker")] } };
     let none = st({ ...base, player2: { operation: [inst("RS-253", "ft")], rush: [inst("TST-UNIT-0", "g")], command: [] } });
     none = strike(none, "TST-UNIT-0:striker");
@@ -409,8 +405,7 @@ describe("RS-253 ファイブテクター", () => {
   });
 
   // atwiki/page-255 Q3「いいえ、発動しません。コンビネーションの効果を発動できるのは、自分のバトルフェイズになります。」
-  // 既知の不具合: CARD-RS-253 迎撃できない
-  it.fails("RS-253: Q&A — ファイブテクターで出したユニットがナンバーの位置に並んでも NC は発動しない（出典: atwiki/page-255 Q3）", () => {
+  it("RS-253: Q&A — ファイブテクターで出したユニットがナンバーの位置に並んでも NC は発動しない（出典: atwiki/page-255 Q3）", () => {
     let s = strikeState({ rush: [inst("RS-059", "blue")], battle: [inst("TST-UNIT-2", "f")] });
     s = act(s, legal(s).find((a) => a.type === "five_tech_intercept" && a.interceptInstanceId === "RS-059:blue")!);
     expect(zoneOf(s, "player2", "RS-059:blue")).toBe("battle");

@@ -1,3 +1,4 @@
+import { lookupByCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { cardName } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
@@ -53,7 +54,7 @@ const CORE_GAP_NC_EFFECTS = new Set([
 ]);
 
 export function getPromotedNcEffectId(cardId: string): string | null {
-  return PROMOTED_NC_BY_CARD[cardId] ?? null;
+  return lookupByCardIdentity(PROMOTED_NC_BY_CARD, cardId) ?? null;
 }
 
 export function applyPromotedNcEffect(

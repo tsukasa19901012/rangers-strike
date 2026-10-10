@@ -1,4 +1,5 @@
 import { WIKI_OPERATION_TEXT } from "./wikiReference";
+import { normalizeCardIdentityText } from "./reprints";
 import { ERRATA_EFFECT_TEXT } from "./errata";
 import { inferCatalogTierForCardId, loadCardById } from "./dsl/loader";
 import type { OperationTiming } from "./dsl/types";
@@ -174,8 +175,41 @@ function resolveWiredEffectId(
   return doc.effectId ?? staticMeta?.effectId ?? block.id;
 }
 
-/** U4 — CardDocument 優先。静的 ALL_EFFECTS は target / 空テキスト・kind 補完用。 */
+let staticEffectByText: Map<string, CardEffectMeta> | null = null;
+
+/** 静的に実装済みの効果を本文で引く表（再録・プロモの同文カード用）。 */
+function staticEffectForText(text: string | undefined): CardEffectMeta | undefined {
+  const key = normalizeCardIdentityText(text);
+  if (!key) return undefined;
+  if (!staticEffectByText) {
+    staticEffectByText = new Map();
+    for (const meta of Object.values(ALL_EFFECTS)) {
+      const k = normalizeCardIdentityText(meta.text);
+      if (k && !staticEffectByText.has(k)) staticEffectByText.set(k, meta);
+    }
+  }
+  return staticEffectByText.get(key);
+}
+
+/**
+ * U4 — CardDocument 優先。静的 ALL_EFFECTS は target / 空テキスト・kind 補完用。
+ * 再録・プロモ（例: RS-253 ファイブテクター = RS-014）は、カード ID ではなく効果文の同一性で
+ * 実装済みの効果（effectId・kind・target）に結び付ける。
+ */
 export function getCardEffect(cardId: string): CardEffectMeta | undefined {
+  const own = getCardEffectByDocument(cardId);
+  if (ALL_EFFECTS[cardId]) return own;
+  const reprint = staticEffectForText(own?.text ?? ERRATA_EFFECT_TEXT[cardId]);
+  if (!reprint) return own;
+  return {
+    effectId: reprint.effectId,
+    text: own?.text || reprint.text,
+    kind: reprint.kind,
+    target: reprint.target,
+  };
+}
+
+function getCardEffectByDocument(cardId: string): CardEffectMeta | undefined {
   const staticMeta = ALL_EFFECTS[cardId];
   try {
     const doc = loadCardById(cardId, inferCatalogTierForCardId(cardId));
