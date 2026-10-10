@@ -121,15 +121,13 @@ describe("RS-411 冥府神ダゴン", () => {
     expect(choiceIds(s)).toEqual([`${DA_RESIDENT2}:res2`, `${DA_RESIDENT}:res`].sort());
   });
 
-  // 既知の不具合: CARD-RS-411 選んだ常駐オペレーションが自軍常駐置き場ではなくラッシュエリアに置かれる
-  it.fails("RS-411: 【今は俺が戒律だ】選んだ DA の常駐オペレーションは自軍常駐置き場に配置される（出典: atwiki/page-608「自軍常駐置き場に配置してもよい」）", () => {
+  it("RS-411: 【今は俺が戒律だ】選んだ DA の常駐オペレーションは自軍常駐置き場に配置される（出典: atwiki/page-608「自軍常駐置き場に配置してもよい」）", () => {
     const t = resolveAll(pick(rushDagon(), `${DA_RESIDENT}:res`));
     expect(zoneOf(t, "player1", `${DA_RESIDENT}:res`)).toBe("operation");
     expect(t.players.player1.rush.map((c) => c.instanceId)).toEqual(["RS-411:dg"]);
   });
 
-  // 既知の不具合: CARD-RS-411 すでに配置されている自軍常駐オペレーションが捨札にならない
-  it.fails("RS-411: 【今は俺が戒律だ】すでに配置されている自軍常駐オペレーションは捨札にしてから配置する（出典: atwiki/page-608「（すでに配置されている自軍常駐オペレーションは捨札にしてから配置する）」）", () => {
+  it("RS-411: 【今は俺が戒律だ】すでに配置されている自軍常駐オペレーションは捨札にしてから配置する（出典: atwiki/page-608「（すでに配置されている自軍常駐オペレーションは捨札にしてから配置する）」）", () => {
     const t = resolveAll(pick(rushDagon({ operation: [inst(WB_RESIDENT, "old")] }), `${DA_RESIDENT}:res`));
     expect(zoneOf(t, "player1", `${WB_RESIDENT}:old`)).toBe("discard");
     expect(t.players.player1.operation.map((c) => c.instanceId)).toEqual([`${DA_RESIDENT}:res`]);

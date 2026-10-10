@@ -255,14 +255,13 @@ describe("RS-428 スーパーゲキブルー", () => {
       ["RS-428:sb"],
     );
 
-  // 既知の不具合: CARD-RS-428 【ファンタスティック・テクニック】が NC（CN3）ではなく「ラッシュしたとき」の効果として実装されており、3番目に出ても発動しない
-  it.fails("RS-428: 【ファンタスティック・テクニック】3番目に出て NC が成立すると、自軍ラッシュエリアの「ラッシュしたとき」とある WB の M ユニット（ゲキジャガー）を選べる（効果のないゲキチーター・M ユニットは選べない）（出典: atwiki/page-511）", () => {
+  it("RS-428: 【ファンタスティック・テクニック】3番目に出て NC が成立すると、自軍ラッシュエリアの「ラッシュしたとき」とある WB の M ユニット（ゲキジャガー）を選べる（効果のないゲキチーター・M ユニットは選べない）（出典: atwiki/page-511）", () => {
     const s = fantastic();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-428");
     expect(choiceIds(s)).toEqual(["RS-425:jg"]);
   });
 
-  // 既知の不具合: CARD-RS-428 【ファンタスティック・テクニック】が NC として発動せず、選んだユニットの「ラッシュしたとき」の効果も発動しない
+  // 既知の不具合: CARD-RS-428 発動したゲキジャガー【転転弾】に「必要パワーの数字が敵軍ダメージの点数以下」の制限がなく（CARD-RS-425）、必要パワー3 のユニットも選べる
   it.fails("RS-428: 【ファンタスティック・テクニック】選んだゲキジャガーの【転転弾】を発動し、必要パワーが敵軍ダメージ（2点）以下の敵軍ユニットを撃破できる。ゲキジャガーはラッシュエリアに残る（出典: atwiki/page-511「そのラッシュしたときの効果を発動する」）", () => {
     let s = pick(fantastic(), "RS-425:jg");
     expect(zoneOf(s, "player1", "RS-425:jg")).toBe("rush");
@@ -276,16 +275,14 @@ describe("RS-428 スーパーゲキブルー", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-428");
   });
 
-  // 既知の不具合: CARD-RS-428 【ファンタスティック・テクニック】が「ラッシュしたとき」に誘発してしまう（NC の効果なのでラッシュでは発動しない）
-  it.fails("RS-428: 【ファンタスティック・テクニック】は NC の効果なので、ラッシュしただけでは発動しない（出典: atwiki/page-511（CN3・タイミングの記載がない【】効果は NC）・R-CN-02）", () => {
+  it("RS-428: 【ファンタスティック・テクニック】は NC の効果なので、ラッシュしただけでは発動しない（出典: atwiki/page-511（CN3・タイミングの記載がない【】効果は NC）・R-CN-02）", () => {
     const s = st({ phase: "rush", player1: { hand: [inst("RS-428", "sb")], rush: [inst("RS-425", "jg")], command: releasedCat("WB", 2), power: powerCards(7), deck: deckCards(3) } });
     const r = rushFromHand(s, "player1", "RS-428:sb");
     expect(r.ok).toBe(true);
     expect(r.state.pendingEffectChoice?.sourceCardId).not.toBe("RS-428");
   });
 
-  // 既知の不具合: CARD-RS-428 【ファンタスティック・テクニック】が NC として発動しない（任意性を確認できない）
-  it.fails("RS-428: 【ファンタスティック・テクニック】「選んでもよい」— 見送れる（出典: atwiki/page-511）", () => {
+  it("RS-428: 【ファンタスティック・テクニック】「選んでもよい」— 見送れる（出典: atwiki/page-511）", () => {
     let s = fantastic();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-428");
     expect(canSkip(s)).toBe(true);

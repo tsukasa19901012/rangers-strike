@@ -80,6 +80,11 @@ export type TargetSelector =
         minBp?: number;
         maxPowerCost?: number;
         noRushAdditionalCondition?: boolean;
+        /** 特徴「X」を持つ（requireFeature）／持たない（excludeFeature）ユニット。 */
+        requireFeature?: string;
+        excludeFeature?: string;
+        /** 「BPの下三桁が500」— そのときの BP を1000で割った余り。 */
+        bpLastThreeDigits?: number;
       };
     }
   | {

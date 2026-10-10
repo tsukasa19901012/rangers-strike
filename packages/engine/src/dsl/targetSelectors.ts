@@ -1,7 +1,7 @@
 import type { EffectChoiceKind, TargetSelector } from "@rangers-strike/cards/dsl/types";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
-import { cardCategories, getDefinition, isSmallUnit, parsePowerCost } from "../core/catalog";
+import { cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
@@ -27,10 +27,21 @@ function matchesFilter(
     commandHeld?: boolean;
     faceDown?: boolean;
     noRushAdditionalCondition?: boolean;
+    requireFeature?: string;
+    excludeFeature?: string;
+    bpLastThreeDigits?: number;
   },
+  ownerId?: PlayerId,
 ): boolean {
   if (!filter) return true;
   const def = getDefinition(state.definitions, card.cardId);
+  const features = def?.features ?? [];
+  if (filter.requireFeature && !features.includes(filter.requireFeature)) return false;
+  if (filter.excludeFeature && features.includes(filter.excludeFeature)) return false;
+  if (filter.bpLastThreeDigits !== undefined) {
+    const bp = ownerId ? effectiveBp(state, ownerId, card) : (def?.bp ?? 0);
+    if (bp % 1000 !== filter.bpLastThreeDigits) return false;
+  }
   if (filter.cardType && filter.cardType !== "any" && def?.type !== filter.cardType) return false;
   // 効果でサイズが変わったユニット（RS-255 巨大化爆弾を重ねたユニットは「Lユニット」）は変わったサイズで判定する。
   if (filter.size && (hasGiantBomb(card) ? "L" : def?.size) !== filter.size) return false;
@@ -105,7 +116,7 @@ export function collectTargetInstanceIds(
         for (const ownerId of ownerIds) {
           ids.push(
             ...cardsInZone(state, ownerId, zone as FieldZone)
-              .filter((c) => matchesFilter(state, c, selector.filter))
+              .filter((c) => matchesFilter(state, c, selector.filter, ownerId))
               .filter((c) => {
                 if (ownerId === playerId) return true;
                 return isSelectableByOpponentEffect(state, playerId, c.instanceId, sourceCardId);

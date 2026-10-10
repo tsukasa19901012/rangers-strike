@@ -92,14 +92,12 @@ describe("RS-376 ギンガレッド", () => {
     expect(holdEffectOffered(s, "RS-376:x")).toBe(false);
   });
 
-  it.fails("RS-376: 【炎一閃】NC 成立時、「MA」の自軍コマンドを1つホールドして発動できる（出典: atwiki/page-501「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる」）", () => {
-    // 既知の不具合: CARD-RS-376 NC で SP1 になるだけで、【炎一閃】（MA ホールド→撃破）の発動手段がない
+  it("RS-376: 【炎一閃】NC 成立時、「MA」の自軍コマンドを1つホールドして発動できる（出典: atwiki/page-501「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる」）", () => {
     const s = ncEnter("RS-376", 2, { command: MA1() }, { battle: [inst("SPEC-NONUM-S", "t")] });
     expect(holdEffectOffered(s, "RS-376:x")).toBe(true);
   });
 
-  it.fails("RS-376: 【炎一閃】敵軍バトルエリアのナンバーを持たない S ユニットだけが候補（ナンバー持ち・M ユニット・ラッシュエリアは不可）で、選んだユニットを撃破する（出典: atwiki/page-501）", () => {
-    // 既知の不具合: CARD-RS-376 【炎一閃】の発動手段がない
+  it("RS-376: 【炎一閃】敵軍バトルエリアのナンバーを持たない S ユニットだけが候補（ナンバー持ち・M ユニット・ラッシュエリアは不可）で、選んだユニットを撃破する（出典: atwiki/page-501）", () => {
     let s = ncEnter(
       "RS-376",
       2,
@@ -141,8 +139,7 @@ describe("RS-377 ギンガグリーン", () => {
     expectStats("RS-377", { name: "ギンガグリーン", category: "WB", size: "S", bp: 3000, sp: undefined, powerCost: 2, comboNumber: 1, features: ["グリーン", "男"] });
   });
 
-  it.fails("RS-377: 【キバショット】の発動は任意で、NC 成立時に敵軍コマンドを強制的に選ばせない（出典: atwiki/page-502「発動できる」）", () => {
-    // 既知の不具合: CARD-RS-377 NC 成立で、見送れない「敵軍コマンドを1つ選んでホールドする」選択が出る（MA の自軍コマンドの支払いもない）
+  it("RS-377: 【キバショット】の発動は任意で、NC 成立時に敵軍コマンドを強制的に選ばせない（出典: atwiki/page-502「発動できる」）", () => {
     const s = ncEnter("RS-377", 1, { command: MA1() }, { command: releasedCat("WB", 2, "ec") });
     const forced = s.pendingEffectChoice?.sourceInstanceId === "RS-377:x" && !canSkip(s);
     expect(forced).toBe(false);
@@ -150,7 +147,7 @@ describe("RS-377 ギンガグリーン", () => {
   });
 
   it.fails("RS-377: 【キバショット】MA をホールドして発動すると、このターン、リリース状態の敵軍コマンドがホールドされたとき、その必要パワーと同じ必要パワーの敵軍 S ユニットを1体選び撃破する（出典: atwiki/page-502）", () => {
-    // 既知の不具合: CARD-RS-377 【キバショット】の発動手段がない（NC で敵軍コマンドを1つホールドさせる別の処理になっている）
+    // 既知の不具合: CARD-RS-377 【キバショット】の本文（このターン、リリース状態の敵軍コマンドがホールドされたときの撃破）が未実装で、起動の申し出がない
     // 敵軍がダイノガッツ（RS-027）をコマンド TST-UNIT-2（必要パワー2）をホールドして使う → 必要パワー2の敵軍 S ユニット（RS-372）を撃破。
     let s = kibaShot(inst("TST-UNIT-2", "cmd"), { battle: [inst("RS-372", "c2"), inst("RS-369", "c3")] });
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
@@ -160,8 +157,7 @@ describe("RS-377 ギンガグリーン", () => {
     expect(zoneOf(s, "player2", "RS-369:c3")).toBe("battle");
   });
 
-  it.fails("RS-377: 【キバショット】を発動しなければ、敵軍コマンドがホールドされても何も撃破しない（出典: atwiki/page-502「次の効果を発動できる⇒このターン、…」）", () => {
-    // 既知の不具合: CARD-RS-377 NC 成立で見送れない敵軍コマンドの選択が出るため、【キバショット】を見送ってアタックへ進めない
+  it("RS-377: 【キバショット】を発動しなければ、敵軍コマンドがホールドされても何も撃破しない（出典: atwiki/page-502「次の効果を発動できる⇒このターン、…」）", () => {
     const s = resolveAll(kibaShot(inst("TST-UNIT-2", "cmd"), { battle: [inst("RS-372", "c2")] }, { activate: false }));
     expect(zoneOf(s, "player2", "RS-372:c2")).toBe("battle");
   });
@@ -200,8 +196,7 @@ describe("RS-378 ギンガブルー", () => {
     expect(holdEffectOffered(s, "RS-378:x")).toBe(false);
   });
 
-  it.fails("RS-378: 【流水の鼓動】ナンバーを持つ MA コマンド（ブルーマスク・CN3）をホールドすると、ナンバー3の敵軍 S ユニットを1体選び撃破する（出典: atwiki/page-503）", () => {
-    // 既知の不具合: CARD-RS-378 NC で SP1 になるだけで、【流水の鼓動】の発動手段がない
+  it("RS-378: 【流水の鼓動】ナンバーを持つ MA コマンド（ブルーマスク・CN3）をホールドすると、ナンバー3の敵軍 S ユニットを1体選び撃破する（出典: atwiki/page-503）", () => {
     let s = ncEnter("RS-378", 2, { command: [released("RS-369", "cmd")] }, { battle: [inst("RS-370", "n3"), inst("RS-371", "n2"), inst("TST-UNIT-0", "nn")] });
     s = useHoldEffect(s, "player1", "RS-378:x", ["RS-369:cmd"]);
     expect(choiceIds(s)).toEqual(["RS-370:n3"]);
@@ -209,8 +204,7 @@ describe("RS-378 ギンガブルー", () => {
     expect(zoneOf(s, "player2", "RS-370:n3")).toBe("discard");
   });
 
-  it.fails("RS-378: 【流水の鼓動】ホールドした MA コマンドにナンバーがなければ（オペレーション）何も撃破しない（出典: atwiki/page-503「ホールドしたコマンドにナンバーがあれば」）", () => {
-    // 既知の不具合: CARD-RS-378 【流水の鼓動】の発動手段がない
+  it("RS-378: 【流水の鼓動】ホールドした MA コマンドにナンバーがなければ（オペレーション）何も撃破しない（出典: atwiki/page-503「ホールドしたコマンドにナンバーがあれば」）", () => {
     let s = ncEnter("RS-378", 2, { command: MA1() }, { battle: [inst("RS-370", "n3")] });
     s = resolveAll(useHoldEffect(s, "player1", "RS-378:x", ["TST-OP-MA:cMA0"]));
     expect(s.players.player1.command[0]?.commandHeld).toBe(true);
@@ -224,7 +218,7 @@ describe("RS-378 ギンガブルー", () => {
 
   // grnrngr/faq-card-6 RS-378「ホールドしたコマンドに該当するのは「ミスティックアームズ」のコマンドの代わりとしてホールドした「ワイルドビースト」のコマンド１つ」
   it.fails("RS-378: 公式Q&A — マスター・シャーフーで MA の代わりに WB コマンド＋追加1つをホールドしたとき、「ホールドしたコマンド」は代わりの WB コマンド1つだけ（出典: grnrngr/faq-card-6 RS-378 Q）", () => {
-    // 既知の不具合: CARD-RS-378 【流水の鼓動】の発動手段がない
+    // 既知の不具合: CARD-RS-378 マスター・シャーフー（RS-429）の「MA の代わりに WB＋追加1つをホールド」が未実装で、MA 以外のコマンドで【流水の鼓動】を発動できない
     // 代わりの WB コマンド = ギンガレッド（CN2）、追加分 = ブルーマスク（CN3）。ナンバー2の敵軍 S ユニットだけが候補。
     let s = ncEnter(
       "RS-378",
@@ -259,7 +253,7 @@ describe("RS-379 ギンガイエロー", () => {
   });
 
   it.fails("RS-379: 【雷の雄叫び】MA をホールドして発動すると、このターン、メカの敵軍ユニットの効果名を持つテキスト（【シグナルキャノン】）は無効（アタックされた OT の M ユニットは BP5000 のまま）（出典: atwiki/page-504）", () => {
-    // 既知の不具合: CARD-RS-379 NC は成立するが、【雷の雄叫び】の発動手段がなく、効果名テキストの無効化もない
+    // 既知の不具合: CARD-RS-379 【雷の雄叫び】の本文（メカの敵軍ユニットの効果名テキストの無効化）が未実装で、起動の申し出がない
     let s = st({ player1: { rush: [inst("RS-379", "x"), inst("TST-UNIT-7", "atk")], command: MA1(), deck: deckCards(5) }, player2: ENEMY() });
     s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-379:x" });
     s = useHoldEffect(s, "player1", "RS-379:x", ["TST-OP-MA:cMA0"]);
@@ -270,7 +264,7 @@ describe("RS-379 ギンガイエロー", () => {
   });
 
   it.fails("RS-379: 【雷の雄叫び】効果名を持たない ※ テキストは無効にならない（ジェットファルコンは発動後も「航空機」を持たないユニットにアタックされない）（出典: atwiki/page-504「効果名を持つテキストは無効になり」）", () => {
-    // 既知の不具合: CARD-RS-379 【雷の雄叫び】の発動手段がない
+    // 既知の不具合: CARD-RS-379 【雷の雄叫び】の本文が未実装で、起動の申し出がない
     let s = st({ player1: { rush: [inst("RS-379", "x"), inst("TST-UNIT-7", "atk")], command: MA1(), deck: deckCards(5) }, player2: { battle: [inst("RS-135", "jf")], deck: deckCards(5, "e") } });
     s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-379:x" });
     s = passEntry(resolveAll(useHoldEffect(s, "player1", "RS-379:x", ["TST-OP-MA:cMA0"])));
@@ -308,8 +302,7 @@ describe("RS-380 ギンガピンク", () => {
     expect(spOf(ncEnter("RS-380", 1), "player1", "RS-380:x")).toBe(0);
   });
 
-  it.fails("RS-380: 【花弁の爪】MA をホールドして発動すると、敵軍コマンドをすべてホールドする（出典: atwiki/page-505「敵軍コマンドをすべてホールドする」）", () => {
-    // 既知の不具合: CARD-RS-380 NC で SP1 になるだけで、【花弁の爪】の発動手段がない
+  it("RS-380: 【花弁の爪】MA をホールドして発動すると、敵軍コマンドをすべてホールドする（出典: atwiki/page-505「敵軍コマンドをすべてホールドする」）", () => {
     let s = ncEnter("RS-380", 2, { command: MA1() }, { command: releasedCat("WB", 3, "ec") });
     s = resolveAll(useHoldEffect(s, "player1", "RS-380:x", ["TST-OP-MA:cMA0"]));
     expect(s.players.player1.command[0]?.commandHeld).toBe(true);

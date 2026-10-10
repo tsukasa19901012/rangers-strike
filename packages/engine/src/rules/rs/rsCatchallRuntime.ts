@@ -15,6 +15,8 @@ import { applyPickEffectBranch } from "../bkOperationEffects";
 import type { GrantKeywordContext } from "../../dsl/grantKeyword";
 import { tryLeaveField } from "../operationCounters";
 import {
+  adjacentPairCandidates,
+  openEffectChoice,
   startEnterHoldEnemyPowerLeDamageChoice,
   startSelectHandChoice,
 } from "../pendingChoices";
@@ -402,6 +404,44 @@ function buildExtendedPrimitives(body: string, pattern: string): EffectPrimitive
   return null;
 }
 
+const MAY_TEXT = /てもよい|ても良い/;
+
+const ADJACENT_PAIR_TO_POWER =
+  /^敵軍(バトル|ラッシュ)エリアから、BPの合計が(\d+)になるように隣り合う2体の(S|M|L)ユニットを選び、持ち主のパワーゾーンに送ってもよい/;
+
+/**
+ * 「敵軍バトルエリアから、BPの合計がNになるように隣り合う2体のSユニットを選び、持ち主のパワーゾーンに送ってもよい」。
+ * 候補は条件を満たす組に入るユニットだけで、1体目を選ぶと2体目はその組の相手に絞られる（pairConstraint）。
+ */
+function startAdjacentPairToPowerChoice(
+  state: GameState,
+  ctx: DslCardContext,
+  body: string,
+): { state: GameState; detail?: string } | null {
+  const m = body.match(ADJACENT_PAIR_TO_POWER);
+  if (!m) return null;
+  const zone = m[1] === "ラッシュ" ? "rush" : "battle";
+  const bpSum = Number(m[2]);
+  const size = m[3] as "S" | "M" | "L";
+  const pairConstraint = { adjacentZone: zone, bpSum, size } as const;
+  const valid = adjacentPairCandidates(state, ctx.playerId, pairConstraint, []);
+  if (valid.length === 0) return { state, detail: `${ctx.effectId}:no_targets` };
+  const opened = openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: ctx.effectId,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "select_unit",
+    validInstanceIds: valid,
+    unitDestination: "power",
+    selectCount: 2,
+    optional: true,
+    pairConstraint,
+  });
+  return { state: opened, detail: ctx.effectId };
+}
+
 /** RS catchall 効果のパターン別ランタイム解決。 */
 export function tryRsCatchallRuntime(
   state: GameState,
@@ -437,10 +477,17 @@ export function tryRsCatchallRuntime(
 
   // 「…敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい」は、条件（特徴・BP・サイズ）と
   // 任意・ウラ向き（ダメージ）を扱うパターン別ハンドラで処理する（汎用の構造化プリミティブでは条件が落ちる）。
+  // 「BPの合計が6000になるように隣り合う2体のSユニットを選び、持ち主のパワーゾーンに送ってもよい」（RS-355）。
+  const adjacentPair = startAdjacentPairToPowerChoice(state, ctx, body);
+  if (adjacentPair) return adjacentPair;
+
   const structured =
     pattern === "enemy_to_power_damage_generic" ? null : buildCatchallStructuredPrimitives(body, pattern);
   if (structured) {
-    return interpret(state, buildRematchContext(effect!, ctx), structured);
+    const rematchCtx = buildRematchContext(effect!, ctx);
+    // 「…してもよい」「…ても良い」は任意（見送れる）。文言で判断する（R-EFF: 任意効果）。
+    if (MAY_TEXT.test(body)) rematchCtx.optional = true;
+    return interpret(state, rematchCtx, structured);
   }
 
   const handler = PATTERN_HANDLERS[pattern];

@@ -393,6 +393,12 @@ function pickCpuActionInner(
     const actions = getLegalActions(state);
     const lethal = pickBestStrike(state, playerId, actions);
     if (lethal) return lethal;
+    // 出た直後に起動できる NC 効果（「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる」等）は、
+    // アタック・ストライクの前に使う（1ターンに1回）。
+    const entryActivation = actions.find(
+      (a) => a.type === "activate_field_unit_ability" && a.unitInstanceId === state.pendingBattleEntry!.instanceId,
+    );
+    if (entryActivation) return entryActivation;
 
     if (enableSearch) {
       const candidates = [

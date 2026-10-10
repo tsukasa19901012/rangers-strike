@@ -1,4 +1,5 @@
 import { hasTurnRuleModifier } from "./scopedModifiers";
+import { isHoldToActivateNc } from "../rules/holdToActivate";
 import type { GameAction, RushAction } from "../types/actions";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
@@ -1353,6 +1354,14 @@ function appendBattleEntryActions(
       playerId,
       attackerInstanceId: pending.instanceId,
     });
+  }
+  // 「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒…」（NC。rules/holdToActivate.ts）は
+  // 出た直後の行動ウィンドウで起動できる。
+  if (
+    isHoldToActivateNc(unit.cardId) &&
+    listFieldActivatedAbilityCards(state, playerId).includes(pending.instanceId)
+  ) {
+    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId: pending.instanceId });
   }
   if (!requiredDefenderId || actions.every((a) => a.type !== "battle")) {
     actions.push({ type: "pass_battle_entry", playerId });

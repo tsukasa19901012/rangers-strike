@@ -19,6 +19,7 @@ import { collectPowerIds, openEffectChoice, startSelectPowerChoice } from "./pen
 import { getConditionalNamedEffect } from "@rangers-strike/cards";
 import { beginAbarenohFromHand } from "./errataCardEffects";
 import { canActivateMagRepair, openMagRepair } from "./legend1/set5NamedEffectsA";
+import { beginHoldToActivate, canActivateHoldToActivate, isHoldToActivateNc } from "./holdToActivate";
 
 type FieldZone = "rush" | "battle";
 
@@ -350,6 +351,22 @@ const ABILITIES: FieldActivatedAbility[] = [
     },
   },
 ];
+
+// ---------------------------------------------------------------------------
+// 「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒…」型の NC 効果（rules/holdToActivate.ts）。
+// 文言で判定するので、カードを列挙しない。NC が成立して出た直後の行動ウィンドウで1回だけ起動できる。
+ABILITIES.push({
+  cardId: "",
+  effectId: "hold_to_activate",
+  zones: ["battle"],
+  phase: "battle",
+  discardSelf: false,
+  matches: (cardId) => isHoldToActivateNc(cardId),
+  canActivate: (state, playerId, card) =>
+    !fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId) &&
+    canActivateHoldToActivate(state, playerId, card),
+  resolve: (state, playerId, card) => beginHoldToActivate(state, playerId, card),
+});
 
 function abilityFor(cardId: string): FieldActivatedAbility | undefined {
   return ABILITIES.find((a) => (a.matches ? a.matches(cardId) : isSameCardIdentity(a.cardId, cardId)));
