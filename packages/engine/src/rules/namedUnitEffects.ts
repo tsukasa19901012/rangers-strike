@@ -6,6 +6,7 @@ import {
 } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../types/game";
 import {
+  cardCategories,
   cardName,
   effectiveBp,
   getDefinition,
@@ -992,4 +993,44 @@ export function grantBpBoostToBattleUnit(
       : c,
   );
   return { ...state, ...updatePlayer(state, playerId, { ...player, battle }) };
+}
+
+/** RS-234 アバレキラー【ウイングペンタクト】の NC 記録名。 */
+export const WING_PENTACT_NC = "uingupentakuto";
+/** 【ウイングペンタクト】でアバレキラーからコンビネーションした「WB」の M ユニットの印（ターン終了時に撃破）。 */
+export const WING_PENTACT_COMBO_MARK = "wing_pentact_combo";
+
+/**
+ * RS-234 アバレキラー【ウイングペンタクト】（NC）: 自軍ターン中、このユニットからコンビネーションする「WB」の
+ * M ユニットは BP+3000 され、BP8000 以上のとき「SP1」になる。
+ * ルール: R-CN-05 — コンビネーションは直前に出たユニット（左隣）との間で成立する。
+ */
+export function applyWingPentactOnCombo(
+  state: GameState,
+  playerId: PlayerId,
+  card: CardInstance,
+  battleBeforeEnter: CardInstance[],
+): GameState {
+  if (state.phase !== "battle" || state.activePlayer !== playerId) return state;
+  const left = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
+  if (!left || !hasBattleNcEffect(left, WING_PENTACT_NC)) return state;
+  const def = getDefinition(state.definitions, card.cardId);
+  if (def?.type !== "unit" || def.size !== "M" || !cardCategories(def).includes("WB")) return state;
+  let next = grantBpBoostToBattleUnit(state, playerId, card.instanceId, 3000);
+  next = markBattleNcEffect(next, playerId, card.instanceId, WING_PENTACT_COMBO_MARK);
+  const entered = next.players[playerId].battle.find((c) => c.instanceId === card.instanceId);
+  if (entered && effectiveBp(next, playerId, entered) >= 8000) {
+    next = grantSp1ToBattleUnit(next, playerId, card.instanceId);
+  }
+  return {
+    ...next,
+    log: [...next.log, buildLogEntry(playerId, "named_effect", left.cardId, state.definitions, "wing_pentact")],
+  };
+}
+
+/** 【ウイングペンタクト】自分がターンを終えるとき、アバレキラーからコンビネーションした「WB」の M ユニットは撃破される。 */
+export function wingPentactUnitsToDestroy(state: GameState, endingPlayerId: PlayerId): string[] {
+  return state.players[endingPlayerId].battle
+    .filter((c) => hasBattleNcEffect(c, WING_PENTACT_COMBO_MARK))
+    .map((c) => c.instanceId);
 }

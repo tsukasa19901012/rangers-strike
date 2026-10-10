@@ -1245,6 +1245,17 @@ export function applyGrantKeyword(
         };
       }
 
+      if (keyword === "combo_wb_m_bp3000_sp1_destroy_end") {
+        // RS-234【ウイングペンタクト】: NC 成立を記録し、続いてコンビネーションする「WB」の M ユニットに
+        // rules/combo.ts（applyWingPentactOnCombo）で BP+3000／SP1 を与える。
+        const instanceId = ctx.triggerSourceInstanceId;
+        if (!instanceId) return { state, detail: keyword };
+        return {
+          state: markBattleNcEffect(state, ctx.playerId, instanceId, "uingupentakuto"),
+          detail: keyword,
+        };
+      }
+
       if (
         keyword.startsWith("power_zone_min_") ||
         (keyword.startsWith("all_") && keyword.endsWith("_auto_battle_entry")) ||
@@ -1254,7 +1265,6 @@ export function applyGrantKeyword(
         keyword.startsWith("end_turn_return_hand_if_no_") ||
         keyword.startsWith("attack_bp_plus_vs_") ||
         keyword === "ignore_rule_hold_command_entry" ||
-        keyword === "combo_wb_m_bp3000_sp1_destroy_end" ||
         keyword === "deck_search_minus_power_rush" ||
         keyword === "opponent_rush_s_to_hand" ||
         keyword === "opponent_rush_s_to_battle" ||

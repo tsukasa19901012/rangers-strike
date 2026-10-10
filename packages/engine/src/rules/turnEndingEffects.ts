@@ -15,6 +15,8 @@ import {
   applyElectroBeamTurnEnd,
   applyOrochiTurnEnd,
 } from "./errataCardEffects";
+import { applyUnitLeave } from "./pendingChoices";
+import { wingPentactUnitsToDestroy } from "./namedUnitEffects";
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
   const copy = [...deck];
@@ -213,6 +215,11 @@ export function resolveTurnEndingEffectsImpl(
   nextState = applyElectroBeamTurnEnd(nextState, endingPlayerId);
   nextState = applyOrochiTurnEnd(nextState, endingPlayerId);
   nextState = applyDragonHarleyTurnEnd(nextState, endingPlayerId);
+  // RS-234【ウイングペンタクト】: アバレキラーからコンビネーションした「WB」の M ユニットは撃破される。
+  for (const id of wingPentactUnitsToDestroy(nextState, endingPlayerId)) {
+    const leave = applyUnitLeave(nextState, id, "discard", endingPlayerId);
+    if (!("error" in leave)) nextState = leave.state;
+  }
   const keywordEnd = applyKeywordTurnEndEffects(nextState, endingPlayerId);
   nextState = clearEnemyTurnDamageFlag(keywordEnd.state, endingPlayerId);
   return save(nextState, keywordEnd.logs);

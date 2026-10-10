@@ -191,8 +191,7 @@ describe("RS-025 ガオ・ソウル", () => {
     expect(effectiveBp(next, "player1", unit)).toBe(9000);
   });
 
-  it.fails("RS-025: アバレキラーからコンビネーションした WB の M ユニットは、ガオ・ソウルで BP8000 以上なら SP1 になる（出典: grnrngr/faq-card-1 RS-025 Q1）", () => {
-    // 既知の不具合: CARD-RS-025 （原因は依存先）RS-234【ウイングペンタクト】がコンビネーションしたMユニットにBP+3000／SP1を与えないため成立しない
+  it("RS-025: アバレキラーからコンビネーションした WB の M ユニットは、ガオ・ソウルで BP8000 以上なら SP1 になる（出典: grnrngr/faq-card-1 RS-025 Q1）", () => {
     // 「はい、ＳＰ１になります。」
     const killer = inst("RS-234", "killer");
     const mUnit = inst("SPEC-M-WB-4000", "m");
@@ -205,6 +204,20 @@ describe("RS-025 ガオ・ソウル", () => {
     expect(
       legal(next).some((a) => a.type === "strike" && a.instanceId === mUnit.instanceId),
     ).toBe(true);
+  });
+
+  it("RS-025: アバレキラーからコンビネーションした WB の M ユニットは、自分がターンを終えるとき撃破される（出典: atwiki RS-234【ウイングペンタクト】）", () => {
+    const killer = inst("RS-234", "killer");
+    const mUnit = inst("SPEC-M-WB-4000", "m");
+    const { op, state } = setup({ rush: [killer, mUnit] });
+    let next = payAndUse(state, "player1", op.instanceId, { targetInstanceId: mUnit.instanceId });
+    next = { ...next, phase: "battle" };
+    next = enterBattle(next, "player1", killer.instanceId);
+    next = enterBattle(next, "player1", mUnit.instanceId);
+    expect(findCard(next, "player1", mUnit.instanceId)).toBeDefined();
+    next = endTurn(next);
+    expect(next.players.player1.discard.some((c) => c.instanceId === mUnit.instanceId)).toBe(true);
+    expect(next.players.player1.battle.some((c) => c.instanceId === killer.instanceId)).toBe(true);
   });
 
   it("RS-025: ガオ・ソウルで BP5000 以上になったバイオハンター・シルバは「SP1」になる（出典: grnrngr/faq-card-2 RS-079 Q）", () => {

@@ -36,8 +36,9 @@ describe("unitEffects registry (U4)", () => {
     expect(getUnitEffectBlock("UNKNOWN-999")).toBeUndefined();
   });
 
-  it("infers nc_or_combo_from for RS-056 via alias partner name", () => {
+  it("infers nc_or_combo_from for RS-056 from every 「マジフェニックス」 (alias and real card)", () => {
     resetUnitEffectBlockCache();
-    expect(listAltNcPartnerIds("RS-056")).toEqual(["RS-057"]);
+    // マジレッド（RS-057 とその再録）は「マジフェニックス」としてつかえる。本来のマジフェニックスは RS-576。
+    expect(listAltNcPartnerIds("RS-056")).toEqual(["RS-057", "RS-576", "RS-577", "XG7-014"]);
   });
 });

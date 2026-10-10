@@ -40,6 +40,30 @@ function resolveCardNameToId(name: string): string | undefined {
   return CARD_ALIAS_TO_ID.get(key) ?? CARD_NAME_TO_ID.get(key);
 }
 
+/**
+ * 「X」からコンビネーション の X に当たるすべてのカード（同名の別収録・「X としてつかえる」カード）。
+ * 例: 「マジフェニックス」→ 本来のマジフェニックス（RS-576 等）とマジレッド（RS-057「これは「マジフェニックス」としてつかえる」）。
+ */
+const CARD_NAME_TO_ALL_IDS = new Map<string, Set<string>>();
+function registerAllIds(name: string, cardId: string): void {
+  const set = CARD_NAME_TO_ALL_IDS.get(name) ?? new Set<string>();
+  set.add(cardId);
+  CARD_NAME_TO_ALL_IDS.set(name, set);
+}
+for (const card of fullPlayableCatalog.cards) {
+  registerAllIds(canonicalCardName(card.name), card.id);
+  for (const alias of fusionMaterialAliasNames(card.text)) {
+    registerAllIds(alias, card.id);
+  }
+}
+
+function resolveCardNameToAllIds(name: string): string[] {
+  const key = canonicalCardName(name);
+  const primary = resolveCardNameToId(name);
+  const all = [...(CARD_NAME_TO_ALL_IDS.get(key) ?? [])].sort();
+  return primary ? [primary, ...all.filter((id) => id !== primary)] : all;
+}
+
 function extractComboFromPartnerIds(text: string): string[] {
   const comboIdx = text.indexOf("からコンビネーション");
   if (comboIdx < 0) return [];
@@ -47,9 +71,7 @@ function extractComboFromPartnerIds(text: string): string[] {
   const segment = text.slice(Math.max(0, comboIdx - 120), comboIdx);
   const partnerCardIds = [
     ...new Set(
-      [...segment.matchAll(/「([^」]+)」/g)]
-        .map((match) => resolveCardNameToId(match[1]!))
-        .filter((id): id is string => id !== undefined),
+      [...segment.matchAll(/「([^」]+)」/g)].flatMap((match) => resolveCardNameToAllIds(match[1]!)),
     ),
   ];
   return partnerCardIds;

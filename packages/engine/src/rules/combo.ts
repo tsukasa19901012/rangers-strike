@@ -25,6 +25,7 @@ import {
   tryStartConditionalChoice,
   tryStartDestroyEnemyChoice,
   resolveSkyMagicSlash,
+  applyWingPentactOnCombo,
 } from "./namedUnitEffects";
 import { resolveLegend2EnterBattle, applyLegend2ConditionalModifiers } from "./legend2/battleEffects";
 import {
@@ -207,6 +208,8 @@ export function resolveEnterBattleEffectsImpl(
         );
       }
     }
+    // RS-234【ウイングペンタクト】: アバレキラーからコンビネーションする「WB」の M ユニット。
+    nextState = applyWingPentactOnCombo(nextState, playerId, card, battleBeforeEnter);
   }
 
   if (shouldRunEnterStep(resumeFrom, "conditional")) {
