@@ -70,7 +70,7 @@ import { emitTurnEndingAndResolve } from "../events/emitTurnEnding";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import { emitUnitRushedAndFinalize } from "../events/emitUnitRushed";
 import { RUSH_PHASE_RULE_IDS } from "../types/scopedModifiers";
-import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
+import { attackerBlocksDefenderCounters, canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import {
   applyDarkDealRushHolds,
   battleEntryHandDiscardSatisfied,
@@ -411,10 +411,27 @@ export function applyAction(
   if (!result.ok) return result;
   // ルール: R-ZONE-04, R-HOLD-02 — エリアを離れたカードの付加情報はどの経路で移動しても消える。
   let next = clearRegisterHoldOffField(result.state);
+  next = releaseCounterLockWhenAttackSettled(next);
   if (next.deferredRushReaction && !next.winner) {
     next = withSyncedEffectStack(openDeferredRushReaction(next));
   }
   return next === result.state ? result : { ok: true, state: next };
+}
+
+/** ルール: R-CTR-03 — アタックの処理が終われば（次の宣言のタイミング）カウンター封じは解ける。 */
+function releaseCounterLockWhenAttackSettled(state: GameState): GameState {
+  if (!state.counterLockedPlayerId) return state;
+  if (
+    state.pendingBattle ||
+    state.pendingLeave ||
+    state.pendingStrike ||
+    state.pendingEffectChoice ||
+    state.pendingDamagePayment ||
+    state.pendingCommandPayment
+  ) {
+    return state;
+  }
+  return { ...state, counterLockedPlayerId: undefined };
 }
 
 function applyActionInner(
@@ -1766,6 +1783,25 @@ function applyActionInner(
             action.substituteInstanceId,
             pending,
           );
+          // ルール: R-TIME-05 / R-CTR-02 — 同じ「アタックされたとき」に隠流忍術を続けて使える。
+          // まだ使えるカウンターがあればバトルの解決を待ち、反応ウィンドウを開いたままにする。
+          if (
+            hasBattleCounterReactions(
+              { ...result.state, activePlayer: pending.attackerPlayerId },
+              playerId,
+              pending.defenderInstanceId,
+              pending.attackerPlayerId,
+              pending.attackerInstanceId,
+            )
+          ) {
+            return ok(
+              clearCounterHoldReady(
+                { ...result.state, pendingBattle: result.pending, activePlayer: playerId },
+                playerId,
+              ),
+              result.log,
+            );
+          }
           const resolved = emitBattleDeclaredAndResolve(result.state, result.pending);
           return {
             ok: true,
@@ -2272,6 +2308,10 @@ function applyActionInner(
           markUnitBattleAction(battleState.players[playerId], action.attackerInstanceId, "attack"),
         ),
       };
+      // ルール: R-CTR-03 — 「アタックするとき、相手はカウンターを発動できない」はアタック処理の終わりまで続く。
+      if (attackerBlocksDefenderCounters(battleState, playerId, action.attackerInstanceId)) {
+        battleState = { ...battleState, counterLockedPlayerId: enemyId };
+      }
 
       const pending: PendingBattle = {
         attackerPlayerId: playerId,

@@ -499,6 +499,11 @@ export type GameState = {
   endPhaseStep?: "end_effects" | "finalize";
   /** 同時解決中の反応窓グループ ID（RULE-02）。 */
   activeSimultaneousGroupId?: string;
+  /**
+   * ルール: R-CTR-03 — カウンターを発動できないプレイヤー（パンサークロー等）。
+   * アタック宣言からそのアタックの処理が終わる（次の宣言のタイミング）まで有効。
+   */
+  counterLockedPlayerId?: PlayerId;
   /** ターンプレイヤーが選んだ反応窓の解決順（フレーム ID）。 */
   reactionResolutionOrder?: string[];
   players: Record<PlayerId, PlayerState>;

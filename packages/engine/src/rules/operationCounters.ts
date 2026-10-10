@@ -224,6 +224,8 @@ export function canInitiateCounterCategoryPayment(
 
   const ctx = counterDefinition(state, playerId, instanceId);
   if (!ctx) return false;
+  // ルール: R-CTR-03 — パンサークロー等のアタック処理中は、撃破時のカウンター（ダイノガッツ等）も発動できない。
+  if (state.counterLockedPlayerId === playerId) return false;
   if (!canPlayOperationExceptCommandHold(state, playerId, ctx.definition)) {
     return false;
   }
