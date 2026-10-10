@@ -55,7 +55,7 @@ import {
   updatePlayer,
 } from "./helpers";
 import { isLegalAction } from "./legalActions";
-import { resolveDamagePaymentSelect } from "../rules/damagePayment";
+import { resolveDamagePaymentSelect, startNextQueuedDamage } from "../rules/damagePayment";
 import {
   battlePositionAfterMove,
   canStrikeUnit,
@@ -968,17 +968,20 @@ function applyActionCore(
           buildSimpleLogEntry(playerId, "damage_payment", action.instanceId),
         );
       }
-      if (result.resume.kind === "strike") {
-        return finishStrikeResolution(
-          state,
-          { ...result.resume.pending, damageApplied: true },
-          result.state,
-        );
+      const finished =
+        result.resume.kind === "strike"
+          ? finishStrikeResolution(
+              state,
+              { ...result.resume.pending, damageApplied: true },
+              result.state,
+            )
+          : ok(result.state, buildSimpleLogEntry(playerId, "damage_payment", "done"));
+      // 同時に発生して後回しにしたダメージがあれば続けて処理する。
+      if (finished.ok && (finished.state.queuedDamagePayments?.length ?? 0) > 0 && !finished.state.pendingDamagePayment) {
+        const nextDamage = startNextQueuedDamage({ ...finished.state, winner: null });
+        return { ok: true, state: { ...nextDamage, winner: checkWinner(nextDamage) } };
       }
-      return ok(
-        result.state,
-        buildSimpleLogEntry(playerId, "damage_payment", "done"),
-      );
+      return finished;
     }
 
     case "resolve_command_payment": {

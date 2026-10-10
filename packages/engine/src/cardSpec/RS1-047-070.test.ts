@@ -972,8 +972,7 @@ describe("RS-054 アバレッド", () => {
   });
 
   // card_1 RS-054「同時に７点目のダメージを受けた場合はターンプレイヤーがゲームに勝利します」
-  // 既知の不具合: CARD-RS-054 同時に7点目のとき勝者がターンプレイヤーにならない（player2 固定。E1）
-  it.fails("RS-054: 公式Q&A — 相討ちで互いに7点目を受けたらターンプレイヤーの勝ち（出典: grnrngr/faq-card-1 RS-054 Q4）", () => {
+  it("RS-054: 公式Q&A — 相討ちで互いに7点目を受けたらターンプレイヤーの勝ち（出典: grnrngr/faq-card-1 RS-054 Q4）", () => {
     let s = st({
       player1: { battle: [inst("RS-054", "r1")], damage: 6, power: powerCards(7) },
       player2: { battle: [inst("RS-054", "r2")], damage: 6, power: powerCards(7), deck: deckCards(3, "e") },
@@ -1876,8 +1875,7 @@ describe("RS-065 ボウケンイエロー", () => {
   });
 
   // card_1 RS-065 Q4「はい、その通りです。」
-  // 既知の不具合: CARD-RS-065 アバレッドの自傷1点と【一点突破】の1点が同時に発生すると、ダメージ支払いが1点分しか行われない
-  it.fails("RS-065: 公式Q&A — 敵軍アバレッドを撃破すると相手は2点受ける（出典: grnrngr/faq-card-1 RS-065 Q4）", () => {
+  it("RS-065: 公式Q&A — 敵軍アバレッドを撃破すると相手は2点受ける（出典: grnrngr/faq-card-1 RS-065 Q4）", () => {
     const { s } = yellowAttacks(undefined, { defender: { ...inst("RS-054", "red"), bpModifier: -500 } });
     expect(zoneOf(s, "player2", "RS-054:red")).toBe("discard");
     expect(s.players.player2.damage).toBe(2);

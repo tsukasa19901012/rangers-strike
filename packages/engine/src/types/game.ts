@@ -597,6 +597,17 @@ export type GameState = {
   pendingZordSetup?: PendingZordSetup;
   /** ダメージ支払いで裏返す表向きパワーを選ぶ。 */
   pendingDamagePayment?: PendingDamagePayment;
+  /**
+   * 支払い中に同時に発生した別のダメージ（例: 相討ちのアバレッド2体の自傷、アバレッドの自傷と【一点突破】）。
+   * 先の支払いが終わったら順に処理する。すべて終わるまで勝敗は判定しない（R-WIN-02、faq-card-1 RS-054 Q4）。
+   */
+  queuedDamagePayments?: Array<{
+    playerId: PlayerId;
+    amount: number;
+    resume: DamagePaymentResume;
+    choosingPlayerId?: PlayerId;
+    bloodVesselPreferMorph?: boolean;
+  }>;
   /** 進入効果が先に選択を必要とするときに開く。 */
   deferredBattleEntry?: PendingBattleEntry;
   /** @deprecated エイリアス — pendingEffectChoice を使用 */

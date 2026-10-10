@@ -226,6 +226,16 @@ export function startDamagePayment(
   choosingPlayerId?: PlayerId,
   options?: { bloodVesselPreferMorph?: boolean },
 ): GameState {
+  if (state.pendingDamagePayment) {
+    // 支払い中に同時に発生したダメージは上書きせず、先の支払いのあとに処理する。
+    return {
+      ...state,
+      queuedDamagePayments: [
+        ...(state.queuedDamagePayments ?? []),
+        { playerId, amount, resume, choosingPlayerId, bloodVesselPreferMorph: options?.bloodVesselPreferMorph },
+      ],
+    };
+  }
   const player = state.players[playerId];
   const faceUpCount = player.power.filter((c) => !c.faceDown).length;
   const flipsFromPower = Math.min(amount, faceUpCount);
@@ -261,6 +271,32 @@ export function applyDamageToPlayer(
   if (state.players[playerId].operation.some((c) => c.cardId === "RS-348")) {
     amount = amount * 2;
   }
+  return applyDamageAmount(state, playerId, amount, resume, choosingPlayerId, options);
+}
+
+/** 後回しにしたダメージ（queuedDamagePayments）を1件処理する。 */
+export function startNextQueuedDamage(state: GameState): GameState {
+  const [next, ...rest] = state.queuedDamagePayments ?? [];
+  if (!next || state.pendingDamagePayment) return state;
+  return applyDamageAmount(
+    { ...state, queuedDamagePayments: rest.length > 0 ? rest : undefined },
+    next.playerId,
+    next.amount,
+    next.resume,
+    next.choosingPlayerId,
+    { bloodVesselPreferMorph: next.bloodVesselPreferMorph },
+  );
+}
+
+/** メディテーション等の倍化を適用済みのダメージを処理する。 */
+function applyDamageAmount(
+  state: GameState,
+  playerId: PlayerId,
+  amount: number,
+  resume: DamagePaymentResume,
+  choosingPlayerId?: PlayerId,
+  options?: { bloodVesselPreferMorph?: boolean },
+): GameState {
   const player = state.players[playerId];
   if (
     requiresDamagePowerChoice(player, amount) ||

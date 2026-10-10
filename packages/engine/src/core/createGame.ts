@@ -152,6 +152,8 @@ function hasLost(state: GameState, playerId: PlayerId): boolean {
  * （公式FAQ RS-054 / RS-093）。
  */
 export function checkWinner(state: GameState): PlayerId | null {
+  // 同時に受けるダメージの支払いが残っている間は勝敗を決めない（すべて受けてから判定。faq-card-1 RS-054 Q4）。
+  if (state.pendingDamagePayment || (state.queuedDamagePayments?.length ?? 0) > 0) return null;
   const p1Lost = hasLost(state, "player1");
   const p2Lost = hasLost(state, "player2");
   if (p1Lost && p2Lost) return state.activePlayer;
