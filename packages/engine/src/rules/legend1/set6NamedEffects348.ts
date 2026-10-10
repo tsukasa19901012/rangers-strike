@@ -14,6 +14,9 @@ import { addNextTurnRuleModifier, addTurnRuleModifier, hasTurnRuleModifier } fro
 import { grantSp1ToBattleUnit } from "../namedUnitEffects";
 import { redRacerPowerCostBonus } from "../../core/power";
 import { strikeDamageFor } from "../combo";
+import { cardHasCategory } from "@rangers-strike/cards";
+import { shuffleCards } from "../errataCardEffects";
+import { startEffectRush } from "../effectRush";
 import { CHIKARA_BATON_RULE } from "./set4NamedEffects";
 import { buildLogEntry } from "../../log/formatLog";
 import { unitFeatures } from "../addedFeatures";
@@ -567,6 +570,99 @@ function moveArmorToDamage(state: GameState, ownerId: PlayerId, armorId: string)
   const owner = next.players[ownerId];
   return { ...next, ...updatePlayer(next, ownerId, { ...owner, power: [...owner.power, card], damage: owner.damage + 1 }) };
 }
+
+// ---------------------------------------------------------------------------
+// RS-366 グランギズモ【総員搭乗】（起動効果。rules/fieldActivatedAbilities.ts の activate_field_unit_ability）
+// 「これが自軍ラッシュエリアにある間、自軍ラッシュフェイズ中、特徴「戦闘員」を持つ自軍ユニットを1体捨札にして次の効果を
+//  発動できる⇒自軍山札から、追加条件に「自軍Sユニットを1体捨札にする」とあるDAのMユニットのカードを1枚選び、
+//  ラッシュエリアに出してもよい。その後、山札をシャッフルする。」（atwiki/page-606）
+// コストの「戦闘員」を選んで捨札にしてから、山札の候補を効果ラッシュ（任意・追加条件なし）で出す。
+
+export const ALL_ABOARD_COST_EFFECT_ID = "rs366_all_aboard_cost";
+
+function grunts(state: GameState, playerId: PlayerId): string[] {
+  return fieldUnits(state, playerId)
+    .filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit")
+    .filter((c) => unitFeatures(state, playerId, c).includes("戦闘員"))
+    .map((c) => c.instanceId);
+}
+
+function allAboardDeckTargets(state: GameState, playerId: PlayerId): string[] {
+  return state.players[playerId].deck
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      if (!def || def.type !== "unit" || def.size !== "M") return false;
+      if (!cardHasCategory(def, "DA")) return false;
+      const cond = (def as { rushAdditionalCondition?: { conditionId?: string; text?: string; unitCount?: number } }).rushAdditionalCondition;
+      if (!cond) return false;
+      return (cond.text ?? "").replace(/\s/g, "") === "自軍Sユニットを1体捨札にする";
+    })
+    .map((c) => c.instanceId);
+}
+
+/** 起動できるか（自軍ラッシュエリアにあり、「戦闘員」の自軍ユニットがいる）。 */
+export function canActivateAllAboard(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  if (!state.players[playerId].rush.some((c) => c.instanceId === card.instanceId)) return false;
+  return grunts(state, playerId).length > 0;
+}
+
+/** 起動: コストの「戦闘員」を選ぶ。 */
+export function beginAllAboard(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
+  const ids = grunts(state, playerId);
+  if (ids.length === 0) return state;
+  return openEffectChoice(state, {
+    playerId,
+    effectId: ALL_ABOARD_COST_EFFECT_ID,
+    sourceCardId: "RS-366",
+    sourceInstanceId: card.instanceId,
+    kind: "select_unit",
+    unitDestination: "discard",
+    phasePlayerId: playerId,
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: false,
+  });
+}
+
+CHOICE_RESOLVERS[ALL_ABOARD_COST_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const p = state.players[playerId];
+  const unit = [...p.battle, ...p.rush].find((c) => c.instanceId === instanceId);
+  if (!unit) return { error: "invalid_target" };
+  // コストとして捨札にする（撃破ではない）。重ねたカードは別々に捨札に置く。
+  let next: GameState = clearPending(state, pending.phasePlayerId);
+  const owner = next.players[playerId];
+  const { stackedCards, ...base } = unit;
+  next = {
+    ...next,
+    ...updatePlayer(next, playerId, {
+      ...owner,
+      battle: owner.battle.filter((c) => c.instanceId !== instanceId).map((c) => (c.mountedOnInstanceId === instanceId ? { ...c, mountedOnInstanceId: undefined } : c)),
+      rush: owner.rush.filter((c) => c.instanceId !== instanceId),
+      discard: [...owner.discard, { instanceId: base.instanceId, cardId: base.cardId }, ...(stackedCards ?? []).map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }))],
+    }),
+  };
+  // 「その後、山札をシャッフルする」— 候補の公開・選択の前後で山札の順は意味を持たないので先にシャッフルする。
+  const shuffledOwner = next.players[playerId];
+  next = { ...next, ...updatePlayer(next, playerId, { ...shuffledOwner, deck: shuffleCards(shuffledOwner.deck) }) };
+  const candidates = allAboardDeckTargets(next, playerId);
+  const log = logFor(state, playerId, "RS-366", `${ALL_ABOARD_COST_EFFECT_ID}:${cardName(state.definitions, unit.cardId)}`);
+  if (candidates.length === 0) return { state: finish(next, pending.phasePlayerId), log };
+  next = startEffectRush(next, {
+    playerId,
+    phasePlayerId: pending.phasePlayerId,
+    effectId: "rs366_all_aboard_rush",
+    sourceCardId: "RS-366",
+    sourceInstanceId: pending.sourceInstanceId,
+    fromZone: "deck",
+    candidates,
+    maxCount: 1,
+    requireConditions: false,
+    alwaysAsk: true,
+  });
+  return { state: finish(next, pending.phasePlayerId), log };
+};
 
 // ---------------------------------------------------------------------------
 // DSL の grant_keyword からの起点

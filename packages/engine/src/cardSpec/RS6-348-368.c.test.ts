@@ -431,8 +431,7 @@ describe("RS-366 グランギズモ", () => {
         !(a.type === "initiate_command_payment" && (a as { kind?: string }).kind === "battle_entry"),
     );
 
-  // 既知の不具合: CARD-RS-366 【総員搭乗】が未実装（起動する手段がない）
-  it.fails("RS-366: 【総員搭乗】自軍ラッシュフェイズ中、「戦闘員」の自軍ユニット（ゾロー兵）を捨札にして、山札の該当 DA の M ユニット（メラージュ戦闘機）をラッシュエリアに出せる（出典: atwiki/page-606）", () => {
+  it("RS-366: 【総員搭乗】自軍ラッシュフェイズ中、「戦闘員」の自軍ユニット（ゾロー兵）を捨札にして、山札の該当 DA の M ユニット（メラージュ戦闘機）をラッシュエリアに出せる（出典: atwiki/page-606）", () => {
     let s = gizmo([inst("RS-367", "zo")], [inst("TST-OP", "o"), inst("RS-261", "mel"), inst("SPEC-DA-M-OTHER", "oth")]);
     const a = activation(s);
     expect(a).toBeDefined();
@@ -452,7 +451,12 @@ describe("RS-366 グランギズモ", () => {
     expect(activation(s)).toBeUndefined();
   });
 
-  it.todo("RS-366: 追加条件が「自軍Sユニットを1体捨札にする」でない DA の M ユニットは選べない（出典: atwiki/page-606）— 【総員搭乗】が未実装（上の it.fails）で選択の段階まで進めない");
+  it("RS-366: 追加条件が「自軍Sユニットを1体捨札にする」でない DA の M ユニットは選べない（出典: atwiki/page-606）", () => {
+    let s = gizmo([inst("RS-367", "zo")], [inst("TST-OP", "o"), inst("RS-261", "mel"), inst("SPEC-DA-M-OTHER", "oth")]);
+    s = act(s, activation(s)!);
+    s = pick(s, "RS-367:zo");
+    expect(choiceIds(s)).toEqual(["RS-261:mel"]);
+  });
 });
 
 // ===========================================================================
