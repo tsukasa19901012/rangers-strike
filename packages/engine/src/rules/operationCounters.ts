@@ -1,6 +1,5 @@
 import {
   openDeathStingerChoice,
-  openMirageKnuckleChoice,
   reflectBarrierDestroysWinner,
 } from "./legend1/set4NamedEffects";
 import type { Category } from "@rangers-strike/cards";
@@ -38,6 +37,12 @@ import { findInZone, opponent, removeAt, takeFromDeckTop, updatePlayer } from ".
 import { drawToDiscardFromDeck } from "./pendingChoices";
 import { emitUnitLeftZoneAndResolve } from "../events/emitUnitLeftZone";
 import { resolveDestroyedFactEffects } from "./leaveEffects";
+import {
+  beginDestroyTriggerHold,
+  drainDeferredDestroyTriggers,
+  endDestroyTriggerHold,
+  queueMirageKnuckle,
+} from "./destroyTriggerQueue";
 import { isCostWindowSatisfied } from "../core/costWindow";
 import { buildLogEntry } from "../log/formatLog";
 import { finishBattleEntryIf, restorePhaseActivePlayerUnlessBlocked } from "./battleEntry";
@@ -1450,12 +1455,15 @@ export function resolveBattlePendingCore(
   }
 
   if (finalDestroyDefender) {
-    const leaveResult = tryLeaveField(nextState, defenderLeaveIntent);
+    // ルール: R-TIME-01 — 撃破された側の誘発（段階 2「撃破されたとき」・段階 4「撃破されて捨札になったとき」）は、
+    // 撃破した側の段階 1「撃破したとき」（自動処理・選択とも）を解決し終えるまで待たせる（rules/destroyTriggerQueue.ts）。
+    const leaveResult = tryLeaveField(beginDestroyTriggerHold(nextState), defenderLeaveIntent);
     if (leaveResult.deferred) {
-      let withAttacker = finalDestroyAttacker ? leaveResult.state : markAttackerActed(leaveResult.state);
+      const released = endDestroyTriggerHold(leaveResult.state);
+      let withAttacker = finalDestroyAttacker ? released : markAttackerActed(released);
       if (!withAttacker.pendingLeave && !withAttacker.pendingRegister) {
-        // 撃破は済み、撃破されたユニットの「撃破されたとき」の選択だけが開いている — RS-212 / RS-226 を先に処理する。
-        withAttacker = openMirageKnuckleChoice(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+        // 撃破は済み、別の選択が開いている — RS-226（段階 1）を先に、RS-212（段階 4）は段階の順に処理する。
+        withAttacker = queueMirageKnuckle(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
         withAttacker = openDeathStingerChoice(
           withAttacker,
           attackerId,
@@ -1463,10 +1471,11 @@ export function resolveBattlePendingCore(
           defenderBp,
           pending.phasePlayerId,
         );
+        withAttacker = drainDeferredDestroyTriggers(withAttacker);
       }
       return finish(withAttacker, log);
     }
-    nextState = leaveResult.state;
+    nextState = endDestroyTriggerHold(leaveResult.state);
 
     if (refreshedAttackerFound.card.cardId === "RS-065") {
       const fb = resolveFocusedBreakthroughDamage(
@@ -1484,9 +1493,9 @@ export function resolveBattlePendingCore(
     if (destroyDefender) {
       nextState = openMiracleKikoudanChoice(nextState, attackerId, refreshedAttackerFound.card.cardId);
     }
-    // RS-212【爆烈ミラージュナックル】・RS-226【爆竜必殺デススティンガー】（自軍ターン中、バトルで撃破したとき）。
-    // 撃破されたユニットの「撃破されたとき」や RS-214 の選択が開いていれば、こちらを先に処理する。
-    nextState = openMirageKnuckleChoice(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+    // RS-212【爆烈ミラージュナックル】（「捨札にしたあとで選ぶ」— 段階 4）は段階の順に解決する待ち行列へ。
+    // RS-226【爆竜必殺デススティンガー】（撃破したとき — 段階 1）は今開く。
+    nextState = queueMirageKnuckle(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
     nextState = openDeathStingerChoice(
       nextState,
       attackerId,
@@ -1505,6 +1514,9 @@ export function resolveBattlePendingCore(
       nextState = bc.state;
       extraLogs = [...extraLogs, ...bc.logs];
     }
+    // 段階 1 を処理し終えた: 撃破された側の段階 2・4 と RS-212 を段階の順に解決する。
+    // 段階 1 の選択が開いていれば、その解決後（core/applyAction.ts の後処理）に続きを解決する。
+    nextState = drainDeferredDestroyTriggers(nextState);
   }
 
   if (finalDestroyAttacker) {

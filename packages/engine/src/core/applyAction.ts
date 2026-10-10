@@ -16,6 +16,7 @@ import {
 } from "@rangers-strike/cards";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { checkWinner, advancePhase } from "./createGame";
+import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
 import {
   canPlayOperation,
   cardName,
@@ -661,6 +662,8 @@ export function applyAction(
   next = releaseCounterLockWhenAttackSettled(next);
   next = trackResolvingOperations(state, next);
   next = settleResolvingOperations(next);
+  // ルール: R-TIME-01 — 先の段階の効果（選択）が解決し終えたら、待たせていた撃破の誘発を段階の順に解決する。
+  next = drainDeferredDestroyTriggers(next);
   next = applyBpZeroRuleDestruction(next);
   next = syncDamageWithFaceDownPower(state, next);
   return next === result.state ? result : { ok: true, state: next };
