@@ -518,8 +518,7 @@ function gekiMConditionTests(id: string, color: string, ok: string, okName: stri
   const mk = (material: string) =>
     st({ phase: "rush", player1: { hand: [inst(id, "me")], rush: [inst(material, "m")], command: releasedCat("WB", 1), power: powerCards(cost), deck: deckCards(3) } });
 
-  // 既知の不具合: CARD-RS-423 / CARD-RS-424 / CARD-RS-425 追加条件「特徴「激気」と「<色>」を持つ自軍ユニット」がカード名に「激気」を含むかの判定（partnerName「激気」）になっており、満たせない
-  it.fails(`${id}: 追加条件 — 特徴「激気」と「${color}」を持つ自軍ユニット（${okName}）を捨札にしてラッシュできる（出典: atwiki/${page}「追加条件：特徴「激気」と「${color}」を持つ自軍ユニット1体を捨札にする」）`, () => {
+  it(`${id}: 追加条件 — 特徴「激気」と「${color}」を持つ自軍ユニット（${okName}）を捨札にしてラッシュできる（出典: atwiki/${page}「追加条件：特徴「激気」と「${color}」を持つ自軍ユニット1体を捨札にする」）`, () => {
     const r = rushFromHand(mk(ok), "player1", `${id}:me`);
     expect(r.ok).toBe(true);
     const t = resolveAll(r.state);
@@ -578,7 +577,7 @@ describe("RS-423 ゲキタイガー", () => {
   };
   const foes = { battle: [inst("TST-UNIT-0", "e1"), inst("RS-430", "mecha")], rush: [inst("TST-UNIT-2", "e3"), inst("RS-340", "e3b"), inst("RS-422", "big")] };
 
-  // 既知の不具合: CARD-RS-423 追加条件を満たせずラッシュできないため【咆咆弾】に到達しない
+  // 既知の不具合: CARD-RS-423 【咆咆弾】が実装されていない（ラッシュしても撃破の選択が出ない）
   it.fails("RS-423: 【咆咆弾】メカを持たない BP の合計5000以下の敵軍ユニットを、WB の自軍 M ユニットの数（ゲキタイガー＋1体＝2体）まで選んで撃破できる（出典: atwiki/page-519）", () => {
     let s = rushTiger(1, foes);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-423");
@@ -589,7 +588,7 @@ describe("RS-423 ゲキタイガー", () => {
     expect(zoneOf(s, "player2", "RS-340:e3b")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-423 追加条件を満たせずラッシュできないため【咆咆弾】に到達しない
+  // 既知の不具合: CARD-RS-423 【咆咆弾】が実装されていない（ラッシュしても撃破の選択が出ない）
   it.fails("RS-423: 【咆咆弾】WB の自軍 M ユニットがゲキタイガー1体だけなら1体までしか撃破できない（出典: atwiki/page-519「選べるユニットの数は、WBの自軍Mユニットの数までとする」）", () => {
     let s = rushTiger(0, foes);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-423");
@@ -598,7 +597,7 @@ describe("RS-423 ゲキタイガー", () => {
     expect(destroyed).toHaveLength(1);
   });
 
-  // 既知の不具合: CARD-RS-423 追加条件を満たせずラッシュできないため【咆咆弾】に到達しない
+  // 既知の不具合: CARD-RS-423 【咆咆弾】が実装されていない（ラッシュしても撃破の選択が出ない）
   it.fails("RS-423: 【咆咆弾】BP の合計は5000以下 — BP3000＋BP3000 の2体は選べない（出典: atwiki/page-519「BPの合計が5000以下になるように」）", () => {
     let s = rushTiger(1, { battle: [inst("RS-340", "a")], rush: [inst("RS-340", "b")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-423");
@@ -607,7 +606,7 @@ describe("RS-423 ゲキタイガー", () => {
     expect(destroyed).toHaveLength(1);
   });
 
-  // 既知の不具合: CARD-RS-423 追加条件を満たせずラッシュできないため【咆咆弾】の任意性も確認できない
+  // 既知の不具合: CARD-RS-423 【咆咆弾】が実装されていない（任意性も確認できない）
   it.fails("RS-423: 【咆咆弾】「撃破してもよい」— 見送れる（出典: atwiki/page-519）", () => {
     let s = rushTiger(1, foes);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-423");
@@ -654,8 +653,7 @@ describe("RS-424 ゲキチーター", () => {
     expect(spOf(s, "player1", "RS-424:ch")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-424 NC の発動判定がフェイズ（バトル）だけで、敵軍のバトルフェイズに効果で2番目に出されても「SP1」になる（R-CN-04）
-  it.fails("RS-424: 【瞬瞬弾】敵軍ターン中に2番目に出されても NC は発動しない（出典: R-CN-04「コンビネーションの効果を発動できるのは、自分のバトルフェイズ」）", () => {
+  it("RS-424: 【瞬瞬弾】敵軍ターン中に2番目に出されても NC は発動しない（出典: R-CN-04「コンビネーションの効果を発動できるのは、自分のバトルフェイズ」）", () => {
     const s = st({ activePlayer: "player2", player1: { battle: [inst("TST-UNIT-0", "f1")], rush: [inst("RS-424", "ch")], deck: deckCards(3) } });
     const t = enterBattleByEffect(s, "player1", "RS-424:ch");
     expect(spOf(t, "player1", "RS-424:ch")).toBe(0);
@@ -699,7 +697,7 @@ describe("RS-425 ゲキジャガー", () => {
     return r.state;
   };
 
-  // 既知の不具合: CARD-RS-425 追加条件を満たせずラッシュできないため【転転弾】に到達しない
+  // 既知の不具合: CARD-RS-425 【転転弾】の「必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない」が実装されておらず、必要パワー3 のユニットも選べる
   it.fails("RS-425: 【転転弾】必要パワーの数字が敵軍ダメージ（2点）以下の敵軍ユニットだけを選んで撃破できる（必要パワー3・「7-」は選べない）（出典: atwiki/page-521「必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない」）", () => {
     let s = rushJaguar(2);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-425");
@@ -708,8 +706,7 @@ describe("RS-425 ゲキジャガー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-2:c2")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-425 追加条件を満たせずラッシュできないため【転転弾】に到達しない
-  it.fails("RS-425: 【転転弾】「撃破してもよい」— 見送れる（出典: atwiki/page-521）", () => {
+  it("RS-425: 【転転弾】「撃破してもよい」— 見送れる（出典: atwiki/page-521）", () => {
     let s = rushJaguar(3);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-425");
     expect(canSkip(s)).toBe(true);

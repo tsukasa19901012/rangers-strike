@@ -1,6 +1,7 @@
 import type { CardDocument, Category, RushAdditionalCondition } from "../dsl/types";
 import { effectIdFromName } from "./effectNameIds";
 import { slugifyJapaneseEffectName } from "./japaneseEffectSlug";
+import { parseFeatureDiscardCondition } from "../featureDiscardCondition";
 
 const CATEGORY_CODES = new Set(["ET", "WB", "OT", "MA", "DA"]);
 
@@ -163,6 +164,9 @@ function inferZordUpAdditionalCondition(addCond: string): RushAdditionalConditio
       unitCount,
     };
   }
+  // 「特徴「激気」と「レッド」を持つ自軍ユニット1体を捨札にする」（複数の特徴をすべて持つ）。
+  const multiFeature = parseFeatureDiscardCondition(addCond);
+  if (multiFeature?.requiredFeatures) return multiFeature;
   const featureSMatch = addCond.match(/特徴[「｢]([^」｣]+)[」｣]を持つ自軍Sユニット/);
   if (featureSMatch && addCond.includes("捨")) {
     return {

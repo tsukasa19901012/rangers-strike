@@ -397,6 +397,7 @@ export function isValidZordUpMaterial(
         def.type === "unit" &&
         !!condition.requiredFeature &&
         (def.features ?? []).includes(condition.requiredFeature) &&
+        (condition.requiredFeatures ?? []).every((f) => (def.features ?? []).includes(f)) &&
         (!condition.requiredSize || def.size === condition.requiredSize)
       );
     case "discard_name_contains_unit":
