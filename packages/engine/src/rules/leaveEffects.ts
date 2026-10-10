@@ -95,6 +95,33 @@ function reanimateNamedToRush(
   return { state: ns, log: buildLogEntry(ctx.ownerPlayerId, "destroy_effect", ctx.cardId, ns.definitions, effectId) };
 }
 
+/**
+ * RS-256 闇の戒律（常駐）の一部:「自軍バトルフェイズに敵軍ユニットを1体撃破するたび、重ねたカードの上から1枚を手札に加える」。
+ * 撃破の方法は問わない（タイムイエロー等で敵軍ユニット同士をバトルさせて撃破しても満たす。faq-card-5 RS-256）。
+ * 重ねたカード（stackedCards）は後から重ねたものが上。
+ */
+function applyDarkLawDrawOnEnemyDestroyed(state: GameState, ctx: UnitLeftZoneContext): GameState {
+  if (state.phase !== "battle") return state;
+  const lawOwner = ctx.phasePlayerId;
+  if (lawOwner === ctx.ownerPlayerId) return state;
+  const player = state.players[lawOwner];
+  const index = player.operation.findIndex((c) => c.cardId === "RS-256" && (c.stackedCards?.length ?? 0) > 0);
+  if (index < 0) return state;
+  const law = player.operation[index]!;
+  const stacked = [...(law.stackedCards ?? [])];
+  const top = stacked.pop()!;
+  const operation = [...player.operation];
+  operation[index] = { ...law, stackedCards: stacked };
+  return {
+    ...state,
+    ...updatePlayer(state, lawOwner, {
+      ...player,
+      operation,
+      hand: [...player.hand, { ...top, faceDown: undefined }],
+    }),
+  };
+}
+
 export type UnitLeftZoneContext = {
   ownerPlayerId: PlayerId;
   instanceId: string;
@@ -135,7 +162,7 @@ export function resolveUnitLeftZoneEffectsImpl(
     (ctx.toZone === "discard" || ctx.toZone === "power") &&
     ctx.cardId === "RS-580"
   ) {
-    nextState = applyHungerGodCeaseShuffle(nextState);
+    nextState = applyHungerGodCeaseShuffle(nextState, [ctx.instanceId]);
   }
 
   const wentToDiscard = ctx.toZone === "discard";
@@ -144,6 +171,7 @@ export function resolveUnitLeftZoneEffectsImpl(
   if (!destroyed) {
     return { state: nextState, logs };
   }
+  nextState = applyDarkLawDrawOnEnemyDestroyed(nextState, ctx);
   if (!wentToDiscard) {
     // 撃破されたが捨札以外（パワーゾーン等）に置かれた: 「撃破されて捨札になったとき」は発動しない（R-REPL-02）。
     const fact = resolveDestroyedFactEffects(nextState, ctx.ownerPlayerId, ctx.cardId);

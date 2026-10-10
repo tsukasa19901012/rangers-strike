@@ -48,6 +48,7 @@ export function buildUnnamedRules(
       text: fusion.text,
       partnerCardIds: fusion.partnerCardIds,
       partnerSlotCardIds: fusion.partnerSlotCardIds,
+      ...(fusion.partnerSlotAlternatives ? { partnerSlotAlternatives: fusion.partnerSlotAlternatives } : {}),
     });
   }
   for (const eff of effects) {

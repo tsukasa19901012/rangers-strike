@@ -643,8 +643,7 @@ describe("RS-214 オーピンク", () => {
   const heldCount = (s: GameState) => s.players.player1.command.filter((c) => c.commandHeld).length;
 
   // 「このターン、自軍Sユニットがバトルでユニットを撃破するたび、自軍コマンドを2つまで選び、リリースしてもよい」
-  // 既知の不具合: CARD-RS-214 【閃光ミラクル気功弾】で自軍 S ユニットがバトルで撃破してもコマンドをリリースする選択が出ない
-  it.fails("RS-214: NC（1番目）のあと、自軍 S がバトルでユニットを撃破するとコマンドを2つまでリリースできる（出典: atwiki/page-115）", () => {
+  it("RS-214: NC（1番目）のあと、自軍 S がバトルでユニットを撃破するとコマンドを2つまでリリースできる（出典: atwiki/page-115）", () => {
     let s = pinkActive();
     s = attack(s, "RS-214:p", "TST-UNIT-0:e1");
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("discard");
@@ -653,8 +652,7 @@ describe("RS-214 オーピンク", () => {
     expect(heldCount(s)).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-214 【閃光ミラクル気功弾】で自軍 S ユニットがバトルで撃破してもコマンドをリリースする選択が出ない
-  it.fails("RS-214: 撃破する「たび」— 2回撃破すれば2回リリースできる（出典: atwiki/page-115「撃破するたび」）", () => {
+  it("RS-214: 撃破する「たび」— 2回撃破すれば2回リリースできる（出典: atwiki/page-115「撃破するたび」）", () => {
     let s = pinkActive();
     s = drain(attack(s, "RS-214:p", "TST-UNIT-0:e1"), "player1");
     expect(heldCount(s)).toBe(1);
@@ -665,8 +663,7 @@ describe("RS-214 オーピンク", () => {
   });
 
   // 「リリースしてもよい」
-  // 既知の不具合: CARD-RS-214 【閃光ミラクル気功弾】で自軍 S ユニットがバトルで撃破してもコマンドをリリースする選択が出ない
-  it.fails("RS-214: リリースしないことを選べる（出典: atwiki/page-115「リリースしてもよい」）", () => {
+  it("RS-214: リリースしないことを選べる（出典: atwiki/page-115「リリースしてもよい」）", () => {
     let s = attack(pinkActive(), "RS-214:p", "TST-UNIT-0:e1");
     expect(canDecline(s, "player1")).toBe(true);
     s = decline(s, "player1");
@@ -674,8 +671,7 @@ describe("RS-214 オーピンク", () => {
   });
 
   // 「自軍Sユニットが」— M ユニットが撃破してもリリースできない（S なら出来ることも確認）
-  // 既知の不具合: CARD-RS-214 【閃光ミラクル気功弾】で自軍 S ユニットがバトルで撃破してもコマンドをリリースする選択が出ない
-  it.fails("RS-214: 自軍 M ユニットが撃破してもリリースできない／S ならできる（出典: atwiki/page-115「自軍Sユニット」）", () => {
+  it("RS-214: 自軍 M ユニットが撃破してもリリースできない／S ならできる（出典: atwiki/page-115「自軍Sユニット」）", () => {
     let s = passEntry(pinkActive());
     s = enter(s, "TST-UNIT-2:m");
     s = attack(s, "TST-UNIT-2:m", "TST-UNIT-0:e1");
@@ -686,8 +682,7 @@ describe("RS-214 オーピンク", () => {
     expect(sKill.pendingEffectChoice?.playerId).toBe("player1");
   });
 
-  // 既知の不具合: CARD-RS-214 【閃光ミラクル気功弾】で自軍 S ユニットがバトルで撃破してもコマンドをリリースする選択が出ない
-  it.fails("RS-214: NC 不成立（2番目）では撃破してもリリースできない／1番目ならできる（出典: atwiki/page-115、R-CN-02）", () => {
+  it("RS-214: NC 不成立（2番目）では撃破してもリリースできない／1番目ならできる（出典: atwiki/page-115、R-CN-02）", () => {
     let s = st({
       player1: { battle: fillers(1), rush: [inst("RS-214", "p")], command: heldN(3, "TST-OP-MA") },
       player2: { battle: [inst("TST-UNIT-0", "e1")] },
@@ -700,8 +695,7 @@ describe("RS-214 オーピンク", () => {
   });
 
   // faq-card-4 RS-214 Q1「いいえ、できません。」（※「敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」敵軍ユニットを SP1 以上の自軍ユニットで撃破したとき）
-  // 既知の不具合: CARD-RS-214 【閃光ミラクル気功弾】で自軍 S ユニットがバトルで撃破してもコマンドをリリースする選択が出ない
-  it.fails("RS-214: 公式Q&A — 皇帝バッカスフンドが自身の※で撃破されてもリリースできない（通常のバトル勝利ならできる）（出典: grnrngr/faq-card-4 RS-214 Q1）", () => {
+  it("RS-214: 公式Q&A — 皇帝バッカスフンドが自身の※で撃破されてもリリースできない（通常のバトル勝利ならできる）（出典: grnrngr/faq-card-4 RS-214 Q1）", () => {
     let s = pinkActive();
     s = { ...s, players: { ...s.players, player2: { ...s.players.player2, battle: [inst("RS-215", "bac"), ...s.players.player2.battle] } } };
     s = passEntry(s);

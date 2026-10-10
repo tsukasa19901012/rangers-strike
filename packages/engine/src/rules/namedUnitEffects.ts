@@ -134,6 +134,9 @@ export function battleAttackerBpBonus(
     }
   }
 
+  // RS-232【アバレウィング】（CN3）: これがアタックするとき、これは BP+1000 される。
+  if (namedEffectActive(attacker.card, "abareuingu")) total += 1000;
+
   if (namedEffectActive(attacker.card, "red_fire")) {
     const released = state.players[pending.attackerPlayerId].command.filter(
       (c) => !c.commandHeld,
@@ -192,6 +195,7 @@ export function battleDefenderBp(
     (hasBattleNcEffect(attackerCard, "shark_jaws") ||
       hasBattleNcEffect(attackerCard, "super_cutter") ||
       hasBattleNcEffect(attackerCard, "use_printed_bp_in_battle") ||
+      namedEffectActive(attackerCard, "abareuingu") ||
       activeOnAttackNamedEffect(attackerCard)?.effectId === "shark_jaws" ||
       activeOnAttackNamedEffect(attackerCard)?.effectId === "super_cutter" ||
       activeOnAttackNamedEffect(attackerCard)?.effectId === "raidakiku" ||

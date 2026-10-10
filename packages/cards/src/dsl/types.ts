@@ -169,6 +169,10 @@ export type UnnamedRuleEntry = {
   partnerCardIds?: string[];
   /** 合体―行の各枠ごとに使える cardId。 */
   partnerSlotCardIds?: string[][];
+  /**
+   * 「X（または、A＋B＋…）」— 枠 slot は、かわりに slots の全枠（A・B…）をそろえても満たせる（RS-236 スーパーダイボウケン）。
+   */
+  partnerSlotAlternatives?: { slot: number; slots: string[][] }[];
 };
 
 import type { RushAdditionalCondition } from "../effectTaxonomy";

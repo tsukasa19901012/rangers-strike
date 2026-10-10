@@ -10,6 +10,17 @@ export function resolveZordFusionPartnerIds(zordCardId: string): string[] {
   return zordRuleFor(zordCardId)?.partnerCardIds ?? [];
 }
 
+/**
+ * 「X（または、A＋B＋…）」の代替素材: 枠番号 → かわりにそろえる枠の並び（RS-236 スーパーダイボウケン）。
+ */
+export function resolveZordFusionSlotAlternatives(zordCardId: string): Map<number, string[][]> {
+  const map = new Map<number, string[][]>();
+  for (const alt of zordRuleFor(zordCardId)?.partnerSlotAlternatives ?? []) {
+    map.set(alt.slot, alt.slots);
+  }
+  return map;
+}
+
 /** 合体―行の各枠ごとに使える cardId。レガシーは 1 ID = 1 枠として扱う。 */
 export function resolveZordFusionPartnerSlots(zordCardId: string): string[][] {
   const zordRule = zordRuleFor(zordCardId);

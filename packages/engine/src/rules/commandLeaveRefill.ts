@@ -5,6 +5,7 @@
  *
  * - これが自軍ラッシュエリアにある間、敵軍ターン中のみ。
  * - 複数枚が同時に離れたら、離れた枚数だけ置ける（grnrngr/faq-card-1 RS-064 Q1「はい」）。
+ * - 離れ方は問わない（手札に戻る・捨札になる。サーガイン／ダイノスラスターでも発動。faq-card-4 RS-238 Q2・RS-233 Q1）。
  * - 任意（「置いてもよい」）。skip でそれ以上置かない。
  */
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
@@ -17,9 +18,9 @@ export const COMMAND_LEAVE_REFILL_EFFECT_ID = "command_leave_refill_from_discard
 const KEYWORD = "while_command_leave_hold_from_discard";
 const COMMAND_ZONE_MAX = 5;
 
-function refillSource(state: GameState, ownerId: PlayerId) {
-  if (state.activePlayer === ownerId) return undefined;
-  return state.players[ownerId].rush.find((c) => cardHasGrantKeyword(c.cardId, KEYWORD));
+function refillSources(state: GameState, ownerId: PlayerId) {
+  if (state.activePlayer === ownerId) return [];
+  return state.players[ownerId].rush.filter((c) => cardHasGrantKeyword(c.cardId, KEYWORD));
 }
 
 function openRefill(
@@ -59,9 +60,11 @@ export function afterCommandCardsLeft(
   count: number,
 ): GameState {
   if (count <= 0 || state.pendingEffectChoice) return state;
-  const source = refillSource(state, ownerId);
+  const sources = refillSources(state, ownerId);
+  const source = sources[0];
   if (!source) return state;
-  return openRefill(state, ownerId, count, source.cardId, source.instanceId, state.activePlayer);
+  // ゴーゴーファイヤーが2体あれば、1枚離れるごとに2枚置ける（faq-card-4 RS-238 Q3）。
+  return openRefill(state, ownerId, count * sources.length, source.cardId, source.instanceId, state.activePlayer);
 }
 
 export function isCommandLeaveRefillChoice(pending: PendingEffectChoice | undefined): boolean {

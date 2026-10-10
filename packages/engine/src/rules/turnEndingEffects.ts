@@ -79,10 +79,87 @@ function destroyUnitToDiscard(
   };
 }
 
+function isVehicleUnit(state: GameState, cardId: string): boolean {
+  return !!getDefinition(state.definitions, cardId)?.features?.includes("車両");
+}
+
+/** RS-216 エグゾスの※: 自分がターンを終えるとき、特徴「車両」を持つ自軍ユニットがなければ山札に戻してシャッフルする。 */
+function applyExodusTurnEnd(state: GameState, endingPlayerId: PlayerId): GameState {
+  let nextState = state;
+  const units = () => [...nextState.players[endingPlayerId].rush, ...nextState.players[endingPlayerId].battle];
+  for (const card of units()) {
+    if (card.cardId !== "RS-216") continue;
+    if (!findUnitInField(nextState, endingPlayerId, card.instanceId)) continue;
+    const hasVehicleUnit = units().some(
+      (c) => c.instanceId !== card.instanceId && isVehicleUnit(nextState, c.cardId),
+    );
+    if (!hasVehicleUnit) {
+      nextState = returnUnitToDeckShuffle(nextState, endingPlayerId, card.instanceId);
+    }
+  }
+  return nextState;
+}
+
+/** RS-310【カラクリ忍法・角変化】でこのターン終了時に撃破されるユニットか。 */
+function kakuhengeWillDestroy(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  return !!activeNamedEffect(card, "karakuri_ninpo_tsuno") && effectiveBp(state, playerId, card) >= 8000;
+}
+
+export const TURN_END_EXODUS_ORDER_EFFECT_ID = "turn_end_exodus_order";
+
+/**
+ * ルール: R-SIM-01 / faq-card-5 RS-310 — エグゾスの※とゴウライビートルの撃破は同時に発動するので、処理順はターンプレイヤーが選ぶ。
+ * 順番で結果が変わる（撃破される車両しか残っていない）ときだけ選択を開く。
+ */
+function exodusOrderChoice(state: GameState, endingPlayerId: PlayerId): GameState | null {
+  const player = state.players[endingPlayerId];
+  const units = [...player.rush, ...player.battle];
+  const exodus = units.find((c) => c.cardId === "RS-216");
+  if (!exodus) return null;
+  const vehicles = units.filter((c) => c.instanceId !== exodus.instanceId && isVehicleUnit(state, c.cardId));
+  if (vehicles.length === 0) return null;
+  const surviving = vehicles.filter((c) => !kakuhengeWillDestroy(state, endingPlayerId, c));
+  if (surviving.length > 0) return null;
+  const beetle = vehicles[0]!;
+  return {
+    ...state,
+    pendingEffectChoice: {
+      playerId: endingPlayerId,
+      effectId: TURN_END_EXODUS_ORDER_EFFECT_ID,
+      sourceCardId: "engine",
+      kind: "select_unit",
+      phasePlayerId: endingPlayerId,
+      validInstanceIds: [exodus.instanceId, beetle.instanceId],
+      selectedInstanceIds: [],
+      optional: false,
+    },
+    activePlayer: endingPlayerId,
+  };
+}
+
+/** 処理順の選択を確定する（先に処理するユニットを選ぶ）。 */
+export function resolveTurnEndExodusOrder(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): GameState | null {
+  const pending = state.pendingEffectChoice;
+  const progress = state.turnEndProgress;
+  if (!pending || pending.effectId !== TURN_END_EXODUS_ORDER_EFFECT_ID || !progress) return null;
+  if (pending.playerId !== playerId || !pending.validInstanceIds.includes(instanceId)) return null;
+  const chosen = findUnitInField(state, playerId, instanceId);
+  return {
+    ...state,
+    pendingEffectChoice: undefined,
+    turnEndProgress: { ...progress, exodusFirst: chosen?.card.cardId === "RS-216" },
+  };
+}
+
 /** note_other_* nc ターン終了時効果を適用する。 */
 function applyNoteOtherNcTurnEndEffects(
   state: GameState,
   endingPlayerId: PlayerId,
+  skipExodus = false,
 ): GameState {
   let nextState = state;
   const player = () => nextState.players[endingPlayerId];
@@ -95,15 +172,8 @@ function applyNoteOtherNcTurnEndEffects(
     if (!findUnitInField(nextState, endingPlayerId, card.instanceId)) continue;
 
     // RS-216: if no own 車両-featured unit, return to deck and shuffle
-    if (card.cardId === "RS-216") {
-      const hasVehicleUnit = allUnits().some((c) => {
-        if (c.instanceId === card.instanceId) return false;
-        const d = getDefinition(nextState.definitions, c.cardId);
-        return d?.features?.includes("車両");
-      });
-      if (!hasVehicleUnit) {
-        nextState = returnUnitToDeckShuffle(nextState, endingPlayerId, card.instanceId);
-      }
+    if (card.cardId === "RS-216" && !skipExodus) {
+      nextState = applyExodusTurnEnd(nextState, endingPlayerId);
     }
 
     // RS-281: if no own 女-featured unit, return to hand
@@ -204,12 +274,19 @@ export function resolveTurnEndingEffectsImpl(
     nextState = resolveTurnEndResident(nextState, entry!, endingPlayerId);
   }
   if (turnEndBlocked(nextState) || progress.restDone) return save(nextState);
+  if (!progress.exodusOrderAsked) {
+    progress = { ...progress, exodusOrderAsked: true };
+    const ask = exodusOrderChoice(nextState, endingPlayerId);
+    if (ask) return save(ask);
+  }
   progress = { ...progress, restDone: true };
 
+  const exodusFirst = progress.exodusFirst === true;
+  if (exodusFirst) nextState = applyExodusTurnEnd(nextState, endingPlayerId);
   nextState = applyOnTurnEndBattleEffects(nextState, endingPlayerId);
   nextState = applyKakuhengeTurnEndDestroy(nextState);
   nextState = applyRocketBoosterEndTurnRushReturn(nextState, endingPlayerId);
-  nextState = applyNoteOtherNcTurnEndEffects(nextState, endingPlayerId);
+  nextState = applyNoteOtherNcTurnEndEffects(nextState, endingPlayerId, exodusFirst);
   nextState = applyGegeruTurnEnd(nextState, endingPlayerId);
   nextState = applyTempDiscardAtTurnEnd(nextState, endingPlayerId);
   nextState = applyElectroBeamTurnEnd(nextState, endingPlayerId);
