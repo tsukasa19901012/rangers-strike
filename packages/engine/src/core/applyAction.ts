@@ -1,3 +1,4 @@
+import { isSet4EndTurnEffect } from "../rules/legend1/set4NamedEffects";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState, CardInstance } from "../types/game";
@@ -2252,8 +2253,21 @@ function applyActionCore(
     }
 
     case "confirm_effect_choice": {
+      const confirming = state.pendingEffectChoice;
       const result = applyConfirmEffectChoice(state, playerId);
       if ("error" in result) return fail(result.error);
+      if (
+        result.state.phase === "end" &&
+        !result.state.pendingEffectChoice &&
+        isSet4EndTurnEffect(confirming?.effectId)
+      ) {
+        // RS-192【アタックボード】等、エンドフェイズの任意効果を行った — 残りの「ターンを終えるとき」へ進む。
+        const reopened = tryOpenEndTurnEffectsMenu(result.state, confirming!.phasePlayerId) ?? result.state;
+        return withEndPhaseAutoFinalize(
+          ok(reopened, result.log ?? buildSimpleLogEntry(playerId, "confirm_effect_choice")),
+          playerId,
+        );
+      }
       return withStartPhaseAutoAdvance(
         ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "confirm_effect_choice")),
         playerId,
@@ -2322,6 +2336,9 @@ function applyActionCore(
       ) {
         nextState = tryOpenEndTurnEffectsMenu(nextState, playerId) ?? nextState;
       }
+      if (nextState.phase === "end" && !nextState.pendingEffectChoice && isSet4EndTurnEffect(pending?.effectId)) {
+        nextState = tryOpenEndTurnEffectsMenu(nextState, pending!.phasePlayerId) ?? nextState;
+      }
       return withEndPhaseAutoFinalize(
         withStartPhaseAutoAdvance(
           ok(nextState, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice")),
@@ -2379,6 +2396,9 @@ function applyActionCore(
         pending?.effectId === "end_turn_battle_to_rush"
       ) {
         afterSkip = tryOpenEndTurnEffectsMenu(afterSkip, playerId) ?? afterSkip;
+      }
+      if (afterSkip.phase === "end" && !afterSkip.pendingEffectChoice && isSet4EndTurnEffect(pending?.effectId)) {
+        afterSkip = tryOpenEndTurnEffectsMenu(afterSkip, pending!.phasePlayerId) ?? afterSkip;
       }
       return withEndPhaseAutoFinalize(
         withStartPhaseAutoAdvance(

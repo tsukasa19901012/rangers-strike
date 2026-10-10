@@ -6,6 +6,8 @@
  * - バトル解決・アタック対象の判定から呼ばれる参照関数（RS-212 / RS-213 / RS-220 / RS-225 / RS-226）。
  */
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import { COMMAND_ZONE_MAX } from "../../types/game";
+import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEffects";
 import { findCardInField } from "../fieldLookup";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { cardName, effectiveBp, getDefinition, isSmallUnit } from "../../core/catalog";
@@ -334,6 +336,156 @@ function resolveDeathStinger(state: GameState, playerId: PlayerId, instanceId: s
   };
 }
 
+
+// ---------------------------------------------------------------------------
+// RS-192 ダイナブルー【アタックボード】（NC）
+// 「自分がターンを終えるとき、このユニットがバトルエリアにあればラッシュエリアに戻してもよい。」
+
+export const ATTACK_BOARD_EFFECT_ID = "atakubodo_return_to_rush";
+const ATTACK_BOARD_DONE_RULE = "rs192_attack_board_done";
+
+function moveBattleUnitToRush(state: GameState, playerId: PlayerId, instanceId: string): GameState {
+  const player = state.players[playerId];
+  const found = findInZone(player, "battle", instanceId);
+  if (!found) return state;
+  const [card, battle] = removeAt(player.battle, found.index);
+  return { ...state, ...updatePlayer(state, playerId, { ...player, battle, rush: [...player.rush, card] }) };
+}
+
+registerOptionalEffect(ATTACK_BOARD_EFFECT_ID, {
+  apply: (state, pending) =>
+    pending.sourceInstanceId ? moveBattleUnitToRush(state, pending.playerId, pending.sourceInstanceId) : state,
+  // CPU は戻さない（次のターンもバトルエリアに残す）。
+  cpuAccepts: () => false,
+});
+
+function openAttackBoard(state: GameState, endingPlayerId: PlayerId): GameState | null {
+  const player = state.players[endingPlayerId];
+  const unit = player.battle.find(
+    (c) =>
+      c.cardId === "RS-192" &&
+      hasBattleNcEffect(c, "atakubodo") &&
+      !hasTurnRuleModifier(player, `${ATTACK_BOARD_DONE_RULE}::${c.instanceId}`),
+  );
+  if (!unit) return null;
+  const marked = addTurnRuleModifier(player, `${ATTACK_BOARD_DONE_RULE}::${unit.instanceId}`, { sourceCardId: "RS-192" });
+  const next = { ...state, ...updatePlayer(state, endingPlayerId, marked) };
+  return openOptionalEffectConfirm(next, {
+    playerId: endingPlayerId,
+    effectId: ATTACK_BOARD_EFFECT_ID,
+    sourceCardId: "RS-192",
+    sourceInstanceId: unit.instanceId,
+    phasePlayerId: endingPlayerId,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// RS-193 ダイナピンク【フラワーカーニバル】（NC）
+// 「敵軍コマンドゾーンのリリース状態のカードをすべて持ち主の手札に戻す。その後、自分がターンを終えるとき、
+//  相手は自分自身の手札から好きな枚数を自分自身のコマンドゾーンに置く。」
+
+export const FLOWER_CARNIVAL_EFFECT_ID = "furawakanibaru_hand_to_command";
+const FLOWER_CARNIVAL_RULE = "rs193_flower_carnival";
+
+function applyFlowerCarnival(state: GameState, ctx: GrantKeywordContext): GameState {
+  const enemyId = opponent(ctx.playerId);
+  const enemy = state.players[enemyId];
+  const returning = enemy.command.filter((c) => !c.commandHeld);
+  const nextEnemy = {
+    ...enemy,
+    command: enemy.command.filter((c) => c.commandHeld),
+    hand: [...enemy.hand, ...returning.map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }))],
+  };
+  const self = addTurnRuleModifier(
+    state.players[ctx.playerId],
+    `${FLOWER_CARNIVAL_RULE}::${ctx.triggerSourceInstanceId ?? ctx.sourceCardId}`,
+    { sourceCardId: ctx.sourceCardId },
+  );
+  let next = { ...state, ...updatePlayer(state, enemyId, nextEnemy) };
+  next = { ...next, ...updatePlayer(next, ctx.playerId, self) };
+  return {
+    ...next,
+    log: [
+      ...next.log,
+      buildLogEntry(ctx.playerId, "number_combo", ctx.sourceCardId, state.definitions, `furawakanibaru:${returning.length}`),
+    ],
+  };
+}
+
+function flowerCarnivalCandidates(state: GameState, placerId: PlayerId): string[] {
+  const placer = state.players[placerId];
+  if (placer.command.length >= COMMAND_ZONE_MAX) return [];
+  return placer.hand.map((c) => c.instanceId);
+}
+
+function openFlowerCarnival(state: GameState, endingPlayerId: PlayerId): GameState | null {
+  const player = state.players[endingPlayerId];
+  const mod = getPlayerModifiers(player).find(
+    (m) => m.kind === "rule" && m.scope === "turn" && m.ruleId.startsWith(`${FLOWER_CARNIVAL_RULE}::`),
+  );
+  if (!mod) return null;
+  const remaining = getPlayerModifiers(player).filter((m) => m !== mod);
+  const next = {
+    ...state,
+    ...updatePlayer(state, endingPlayerId, { ...player, modifiers: remaining.length > 0 ? remaining : undefined }),
+  };
+  const placerId = opponent(endingPlayerId);
+  const ids = flowerCarnivalCandidates(next, placerId);
+  if (ids.length === 0) return next;
+  return openEffectChoice(next, {
+    playerId: placerId,
+    effectId: FLOWER_CARNIVAL_EFFECT_ID,
+    sourceCardId: "RS-193",
+    kind: "select_hand",
+    phasePlayerId: endingPlayerId,
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+/** 相手が手札から1枚ずつコマンドゾーンに置く（置き終えるときは skip）。 */
+function resolveFlowerCarnival(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const player = state.players[playerId];
+  const found = findInZone(player, "hand", instanceId);
+  if (!found || player.command.length >= COMMAND_ZONE_MAX) return { error: "invalid_target" };
+  const [card, hand] = removeAt(player.hand, found.index);
+  const next = {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      hand,
+      command: [...player.command, { instanceId: card.instanceId, cardId: card.cardId, commandHeld: false }],
+    }),
+  };
+  const log = logFor(state, playerId, "RS-193", `${FLOWER_CARNIVAL_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`);
+  const ids = flowerCarnivalCandidates(next, playerId);
+  if (ids.length > 0) {
+    return { state: { ...next, pendingEffectChoice: { ...pending, validInstanceIds: ids } }, log };
+  }
+  return { state: clearPending(next, pending.phasePlayerId), log };
+}
+
+/** 「自分がターンを終えるとき」の RS-192 / RS-193 の選択を開く（エンドフェイズの効果メニューの前）。 */
+export function tryOpenSet4EndTurnChoice(state: GameState, endingPlayerId: PlayerId): GameState | null {
+  if (state.phase !== "end" || state.pendingEffectChoice) return null;
+  const board = openAttackBoard(state, endingPlayerId);
+  if (board) return board;
+  const flower = openFlowerCarnival(state, endingPlayerId);
+  if (flower) {
+    if (flower.pendingEffectChoice) return flower;
+    return tryOpenSet4EndTurnChoice(flower, endingPlayerId) ?? flower;
+  }
+  return null;
+}
+
+/** 解決後にエンドフェイズの効果メニューを開き直す選択か。 */
+export function isSet4EndTurnEffect(effectId: string | undefined): boolean {
+  return effectId === ATTACK_BOARD_EFFECT_ID || effectId === FLOWER_CARNIVAL_EFFECT_ID;
+}
+
 // ---------------------------------------------------------------------------
 // 登録
 
@@ -344,6 +496,7 @@ const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [CHIKARA_BATON_EFFECT_ID]: resolveChikaraBaton,
   [RUNAWAY_GASOLINE_EFFECT_ID]: resolveRunawayGasoline,
   [DEATH_STINGER_EFFECT_ID]: resolveDeathStinger,
+  [FLOWER_CARNIVAL_EFFECT_ID]: resolveFlowerCarnival,
 };
 
 export function isSet4ChoiceEffect(effectId: string): boolean {
@@ -395,6 +548,11 @@ export function trySet4CardEffect(
       const next = beginRunawayGasoline(state, ctx);
       return next ? { state: next, detail: RUNAWAY_GASOLINE_EFFECT_ID } : { state, detail: `${RUNAWAY_GASOLINE_EFFECT_ID}:no_targets` };
     }
+    case "RS-193::furawakanibaru":
+      return { state: applyFlowerCarnival(state, ctx), detail: "furawakanibaru" };
+    // RS-192【アタックボード】: ターン終了時の処理（tryOpenSet4EndTurnChoice）。NC 成立は activatedNcEffects に記録済み。
+    case "RS-192::atakubodo":
+      return { state, detail: ctx.effectId };
     case "RS-220::baria_e58f8d":
       return { state: applyReflectBarrier(state, ctx), detail: REFLECT_BARRIER_RULE };
     default:

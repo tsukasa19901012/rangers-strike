@@ -438,8 +438,7 @@ describe("RS-192 ダイナブルー", () => {
   });
 
   // 「自分がターンを終えるとき、このユニットがバトルエリアにあればラッシュエリアに戻してもよい」
-  // 既知の不具合: CARD-RS-192 【アタックボード】が未実装（ターン終了時に戻す選択が出ない）
-  it.fails("RS-192: NC（3番目）— 自分がターンを終えるとき、バトルエリアにあればラッシュエリアに戻せる（出典: atwiki/page-394）", () => {
+  it("RS-192: NC（3番目）— 自分がターンを終えるとき、バトルエリアにあればラッシュエリアに戻せる（出典: atwiki/page-394）", () => {
     let s = atPosition(inst("RS-192", "b"), 2);
     s = act(s, { type: "pass_battle_entry", playerId: "player1" });
     s = act(s, { type: "end_phase", playerId: "player1" });
@@ -448,8 +447,7 @@ describe("RS-192 ダイナブルー", () => {
   });
 
   // 「戻してもよい」
-  // 既知の不具合: CARD-RS-192 【アタックボード】が未実装（選択自体が出ない）
-  it.fails("RS-192: 戻すかは任意 — 選択が出て、断ればバトルエリアに残る（出典: atwiki/page-394「戻してもよい」）", () => {
+  it("RS-192: 戻すかは任意 — 選択が出て、断ればバトルエリアに残る（出典: atwiki/page-394「戻してもよい」）", () => {
     let s = atPosition(inst("RS-192", "b"), 2);
     s = act(s, { type: "pass_battle_entry", playerId: "player1" });
     s = act(s, { type: "end_phase", playerId: "player1" });
@@ -458,8 +456,7 @@ describe("RS-192 ダイナブルー", () => {
     expect(zoneOf(s, "player1", "RS-192:b")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-192 【アタックボード】が未実装（NC 成立時の側も確認できない）
-  it.fails("RS-192: NC 不成立（1番目）なら戻せない（NC 成立なら戻せる）（出典: atwiki/page-394・R-CN-02）", () => {
+  it("RS-192: NC 不成立（1番目）なら戻せない（NC 成立なら戻せる）（出典: atwiki/page-394・R-CN-02）", () => {
     let plain = atPosition(inst("RS-192", "b"), 0);
     plain = act(plain, { type: "pass_battle_entry", playerId: "player1" });
     plain = pickEffect(act(plain, { type: "end_phase", playerId: "player1" }), "player1");
@@ -492,16 +489,14 @@ describe("RS-193 ダイナピンク", () => {
   });
 
   // 「敵軍コマンドゾーンのリリース状態のカードをすべて持ち主の手札に戻す」
-  // 既知の不具合: CARD-RS-193 【フラワーカーニバル】が未実装（NC が成立してもコマンドが戻らない）
-  it.fails("RS-193: NC（2番目）— 敵軍コマンドゾーンのリリース状態のカードをすべて手札に戻す（ホールド状態は残る）（出典: atwiki/page-395）", () => {
+  it("RS-193: NC（2番目）— 敵軍コマンドゾーンのリリース状態のカードをすべて手札に戻す（ホールド状態は残る）（出典: atwiki/page-395）", () => {
     const s = atPosition(inst("RS-193", "p"), 1, enemyCmd);
     expect(s.players.player2.hand.map((c) => c.instanceId).sort()).toEqual(["TST-OP:er0", "TST-OP:er1"]);
     expect(s.players.player2.command.map((c) => c.instanceId)).toEqual(["TST-OP:eh"]);
   });
 
   // 「その後、自分がターンを終えるとき、相手は自分自身の手札から好きな枚数を自分自身のコマンドゾーンに置く」
-  // 既知の不具合: CARD-RS-193 【フラワーカーニバル】が未実装
-  it.fails("RS-193: 自分がターンを終えるとき、相手は手札から好きな枚数（1枚だけでもよい）をコマンドゾーンに置く（出典: atwiki/page-395）", () => {
+  it("RS-193: 自分がターンを終えるとき、相手は手札から好きな枚数（1枚だけでもよい）をコマンドゾーンに置く（出典: atwiki/page-395）", () => {
     let s = atPosition(inst("RS-193", "p"), 1, enemyCmd);
     expect(s.players.player2.hand).toHaveLength(2);
     s = act(s, { type: "pass_battle_entry", playerId: "player1" });
@@ -513,8 +508,7 @@ describe("RS-193 ダイナピンク", () => {
     expect(zoneOf(s, "player2", "TST-OP:er1")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RS-193 【フラワーカーニバル】が未実装（NC 成立時の側も確認できない）
-  it.fails("RS-193: NC 不成立（1番目）ならコマンドは戻らない（NC 成立なら戻る）（出典: atwiki/page-395・R-CN-02）", () => {
+  it("RS-193: NC 不成立（1番目）ならコマンドは戻らない（NC 成立なら戻る）（出典: atwiki/page-395・R-CN-02）", () => {
     const plain = atPosition(inst("RS-193", "p"), 0, enemyCmd);
     expect(plain.players.player2.command).toHaveLength(3);
     const nc = atPosition(inst("RS-193", "p"), 1, enemyCmd);
