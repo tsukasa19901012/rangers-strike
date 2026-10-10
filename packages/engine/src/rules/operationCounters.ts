@@ -106,7 +106,7 @@ function markUnitBattleActed(player: PlayerState, instanceId: string): PlayerSta
   return player;
 }
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
-import { magiMotherSubstitutes, openKasumoShieldChoice } from "./legend1/set5NamedEffects";
+import { magiMotherSubstitutes, openKasumoShieldChoice, openRaigekiZanChoice } from "./legend1/set5NamedEffects";
 import { registerBattlePendingResolver } from "../events/listeners/battleDeclaredListener";
 
 function isEnemyTurn(state: GameState, counterPlayerId: PlayerId): boolean {
@@ -1491,6 +1491,20 @@ export function resolveBattlePendingCore(
     if (leaveResult.deferred) {
       const released = endDestroyTriggerHold(leaveResult.state);
       let withAttacker = finalDestroyAttacker ? released : markAttackerActed(released);
+      if (
+        withAttacker.pendingLeave &&
+        withAttacker.pendingLeave.instanceId === defenderInstanceId &&
+        !withAttacker.pendingLeave.notDestruction
+      ) {
+        // 離場の応答（ダイノガッツ等）を待つ: 実際に撃破されたら「撃破したとき」を開く（finalizeLeaveReaction）。
+        withAttacker = {
+          ...withAttacker,
+          pendingLeave: {
+            ...withAttacker.pendingLeave,
+            destroyedByInBattle: { ownerPlayerId: attackerId, instanceId: pending.attackerInstanceId },
+          },
+        };
+      }
       if (!withAttacker.pendingLeave && !withAttacker.pendingRegister) {
         // 撃破は済み、別の選択が開いている — RS-226（段階 1）を先に、RS-212（段階 4）は段階の順に処理する。
         withAttacker = queueMirageKnuckle(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
@@ -1499,6 +1513,13 @@ export function resolveBattlePendingCore(
           attackerId,
           pending.attackerInstanceId,
           defenderBp,
+          pending.phasePlayerId,
+        );
+        withAttacker = openRaigekiZanChoice(
+          withAttacker,
+          attackerId,
+          pending.attackerInstanceId,
+          refreshedDefenderFound.card,
           pending.phasePlayerId,
         );
         withAttacker = drainDeferredDestroyTriggers(withAttacker);
@@ -1533,6 +1554,13 @@ export function resolveBattlePendingCore(
       defenderBp,
       pending.phasePlayerId,
     );
+    nextState = openRaigekiZanChoice(
+      nextState,
+      attackerId,
+      pending.attackerInstanceId,
+      refreshedDefenderFound.card,
+      pending.phasePlayerId,
+    );
     {
       // 「これが（L）ユニットを撃破したとき、相手に N 点ダメージ」（本文の文言で判断。RS-346 等）。
       const dd = resolveDestroyerDamageByText(
@@ -1564,6 +1592,13 @@ export function resolveBattlePendingCore(
     }
     nextState = leaveResult.state;
     if (!finalDestroyDefender) {
+      nextState = openRaigekiZanChoice(
+        nextState,
+        defenderOwner,
+        defenderInstanceId,
+        refreshedAttackerFound.card,
+        pending.phasePlayerId,
+      );
       // アタックしてきたユニットをバトルで撃破した側の「撃破したとき、相手に N 点ダメージ」（RS-346 等）。
       const dd = resolveDestroyerDamageByText(
         nextState,
@@ -1841,6 +1876,17 @@ export function finalizeLeaveReaction(
       };
     }
     return nextState;
+  }
+
+  if (pending.destroyedByInBattle) {
+    const by = pending.destroyedByInBattle;
+    nextState = openRaigekiZanChoice(
+      nextState,
+      by.ownerPlayerId,
+      by.instanceId,
+      { instanceId: pending.instanceId, cardId: pending.leavingCardId },
+      pending.phasePlayerId,
+    );
   }
 
   if (pending.followUpAttackerLeave) {

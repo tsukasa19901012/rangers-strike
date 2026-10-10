@@ -280,6 +280,11 @@ export type PendingLeave = {
   discardAsDamage?: boolean;
   /** RS-009: Lユニットが捨札に到達したときのみ合体パーツを戻す。 */
   fusionReturnOnDiscard?: "battle";
+  /**
+   * バトルでこのユニットを撃破したユニット。離場の応答を待ったあと実際に撃破されたら、その「撃破したとき」
+   * （R-TIME-01 段階 1。RS-312【雷撃斬】）を開く。
+   */
+  destroyedByInBattle?: { ownerPlayerId: PlayerId; instanceId: string };
 };
 
 /**

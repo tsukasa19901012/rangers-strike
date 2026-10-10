@@ -298,11 +298,11 @@ describe("RS-336 レジェンドマジピンク", () => {
 
   // grnrngr/faq-card-5 RS-312 Q「いいえ、その場合は「RS-060 マジピンク」を選ぶことはできません。…「撃破したとき」が捨札になる前に割り込みますので」
   it("RS-336: 公式Q&A — カブトライジャーに撃破されたとき、【迅雷流剣技・雷撃斬】の対象は先に選ぶので、※で自軍捨札から出るマジピンクは選べない（出典: grnrngr/faq-card-5 RS-312 Q1・ユーザー決定「撃破したとき→撃破されたとき→捨札→捨札になったとき」）", () => {
-    // 既知の不具合: CARD-RS-312 カブトライジャーがユニットを撃破しても【迅雷流剣技・雷撃斬】が発動しない
+    // 【雷撃斬】は CN 3 の NC の効果（atwiki/page-482「CN：3」・R-CN-02）。Q&A の前提どおり NC 成立済みのカブトライジャーでアタックする。
     let s = attackedInEnemyTurn(
       { battle: [inst("RS-336", "pk")], rush: [inst("RS-059", "mb")], discard: [inst("RS-060", "mp")] },
       "RS-336:pk",
-      {},
+      { battle: [{ ...inst("RS-312", "kb"), activatedNcEffects: ["kami_ken_kami_geki_zan"] }] },
       "RS-312:kb",
     );
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-312");
