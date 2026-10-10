@@ -30,6 +30,14 @@ import xg1062 from "./XG1-062.json";
 import rk140 from "./RK-140.json";
 import rk334 from "./RK-334.json";
 import xg6015 from "./XG6-015.json";
+import rs007 from "./RS-007.json";
+import rs021 from "./RS-021.json";
+import rs022 from "./RS-022.json";
+import rs023 from "./RS-023.json";
+import rs039 from "./RS-039.json";
+import rs050 from "./RS-050.json";
+import rs068 from "./RS-068.json";
+import rs069 from "./RS-069.json";
 import type { CardDocument } from "../types";
 import { mergeCardDocument } from "../cardDocumentMerge";
 
@@ -100,6 +108,16 @@ const CARD_OVERRIDES: Record<string, Partial<CardDocument>> = {
   "RK-334": rk334 as Partial<CardDocument>,
   // E7: 【爆竜必殺チョキチョキシザース】は L からのコンビネーション（joint_combo_r）で発動（engine: rules/errataCardEffects.ts）。
   "XG6-015": xg6015 as Partial<CardDocument>,
+  // cardSpec 監査（セット1）: カード本文を出典（atwiki）の文面に揃える。効果定義・挙動は変えない。
+  // RS-007/RS-021 は注釈「（コマンドゾーンに置けるカードは通常5枚まで）」を含める。
+  "RS-007": rs007 as Partial<CardDocument>,
+  "RS-021": rs021 as Partial<CardDocument>,
+  "RS-022": rs022 as Partial<CardDocument>,
+  "RS-023": rs023 as Partial<CardDocument>,
+  "RS-039": rs039 as Partial<CardDocument>,
+  "RS-050": rs050 as Partial<CardDocument>,
+  "RS-068": rs068 as Partial<CardDocument>,
+  "RS-069": rs069 as Partial<CardDocument>,
 };
 
 let cachedOverrides: Map<string, Partial<CardDocument>> | null = null;

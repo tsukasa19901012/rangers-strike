@@ -701,8 +701,7 @@ describe("RS-039 守護獣プテラノドン", () => {
     return { ptera, state: rush(state, "player1", ptera.instanceId) };
   }
 
-  it.fails("RS-039: カタログのテキストが原文と一致する（出典: atwiki/page-81 テキスト）", () => {
-    // 既知の不具合: CARD-RS-039 カタログ本文が「捨て札にする」で原文「捨札にする」と表記が異なる
+  it("RS-039: カタログのテキストが原文と一致する（出典: atwiki/page-81 テキスト）", () => {
     expectTextMatches("RS-039", SOURCE);
   });
 
