@@ -740,6 +740,8 @@ export type PendingEffectRush = {
   fromZone: EffectRushSourceZone;
   /** R-RUSH-21: 「ただし、ラッシュするための必要パワーと追加条件は満たすこと」。 */
   requireConditions: boolean;
+  /** 「この効果でラッシュしたユニットは、このターン、バトルエリアに出られない」（RS-180 ライドラプター）。 */
+  blockBattleEntryThisTurn?: boolean;
   /** 選び終えて、まだ出していないユニット（1体ずつ出す）。 */
   queue: string[];
   /** 選ぶ段階: 候補とあと何枚選べるか。 */

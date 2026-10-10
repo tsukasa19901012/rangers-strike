@@ -150,8 +150,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // 「自軍コマンドをホールドしてSユニットをラッシュしたとき、次の効果を発動できる⇒…コマンドをホールドせずにラッシュする」
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装（Sユニットをラッシュしても追加ラッシュの選択が出ない）
-  it.fails("RS-180: コマンドをホールドして S ユニットをラッシュしたとき、手札の「WB」の S ユニットをホールドせずにラッシュできる（出典: atwiki/page-377）", () => {
+  it("RS-180: コマンドをホールドして S ユニットをラッシュしたとき、手札の「WB」の S ユニットをホールドせずにラッシュできる（出典: atwiki/page-377）", () => {
     const r = rushFromHand(raptor(), "player1", "TST-UNIT-0:a");
     expect(r.ok).toBe(true);
     const s = pickEffect(r.state, "player1", ["TST-UNIT-0:b"]);
@@ -160,8 +159,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // 「発動できる」
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装（発動するかどうかの選択自体が出ない）
-  it.fails("RS-180: 発動は任意 — 選択が出て、発動しなければ手札の S ユニットは手札に残る（出典: atwiki/page-377「発動できる」）", () => {
+  it("RS-180: 発動は任意 — 選択が出て、発動しなければ手札の S ユニットは手札に残る（出典: atwiki/page-377「発動できる」）", () => {
     const r = rushFromHand(raptor(), "player1", "TST-UNIT-0:a");
     expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-180");
     const s = declineEffect(r.state, "player1");
@@ -171,8 +169,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // 「手札から「WB」のSユニットのカードを1枚選び」
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装
-  it.fails("RS-180: 選べるのは「WB」の S ユニットのカードだけ（WB の S は選べ、DA の S・WB の M は選べない）（出典: atwiki/page-377）", () => {
+  it("RS-180: 選べるのは「WB」の S ユニットのカードだけ（WB の S は選べ、DA の S・WB の M は選べない）（出典: atwiki/page-377）", () => {
     const r = rushFromHand(raptor([inst("RS-188", "da"), inst("TST-UNIT-2", "m")]), "player1", "TST-UNIT-0:a");
     const p = r.state.pendingEffectChoice;
     expect(p?.validInstanceIds ?? []).toContain("TST-UNIT-0:b");
@@ -181,8 +178,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // 「ただし、ラッシュのための必要パワーと追加条件は満たすこと」
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装
-  it.fails("RS-180: 必要パワーは満たす必要がある（パワー0の S は出せ、必要パワー3の S はパワー2では出せない）（出典: atwiki/page-377）", () => {
+  it("RS-180: 必要パワーは満たす必要がある（パワー0の S は出せ、必要パワー3の S はパワー2では出せない）（出典: atwiki/page-377）", () => {
     const WB_S3 = sUnit("SPEC-WB-S3", { powerCost: 3 });
     const s0 = st(
       {
@@ -205,8 +201,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // 「この効果でラッシュしたユニットは、このターン、バトルエリアに出られない」
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装
-  it.fails("RS-180: この効果でラッシュしたユニットはそのターンのバトルフェイズにバトルエリアに出られない（通常ラッシュした方は出られる）（出典: atwiki/page-377）", () => {
+  it("RS-180: この効果でラッシュしたユニットはそのターンのバトルフェイズにバトルエリアに出られない（通常ラッシュした方は出られる）（出典: atwiki/page-377）", () => {
     const r = rushFromHand(raptor(), "player1", "TST-UNIT-0:a");
     let s = pickEffect(r.state, "player1", ["TST-UNIT-0:b"]);
     expect(zoneOf(s, "player1", "TST-UNIT-0:b")).toBe("rush");
@@ -218,8 +213,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // 「自軍コマンドをホールドしてSユニットをラッシュしたとき」— M ユニットのラッシュでは発動しない。
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装（S ユニット側の発動も確認できない）
-  it.fails("RS-180: M ユニットをラッシュしても発動せず、続けて S ユニットをラッシュしたときは発動する（出典: atwiki/page-377「Sユニットをラッシュしたとき」）", () => {
+  it("RS-180: M ユニットをラッシュしても発動せず、続けて S ユニットをラッシュしたときは発動する（出典: atwiki/page-377「Sユニットをラッシュしたとき」）", () => {
     const s0 = st({
       phase: "rush",
       turn: 3,
@@ -241,8 +235,7 @@ describe("RS-180 ライドラプター", () => {
   });
 
   // atwiki/page-377 Q1「自軍ユニットのコールの効果でユニットをラッシュしました。…発動することはできますか？」「はい、できます。」
-  // 既知の不具合: CARD-RS-180 常駐の誘発効果が未実装（コールでホールドしたラッシュでも発動しない）
-  it.fails("RS-180: コール（ユニットをコマンドとしてホールド）でラッシュしたときも発動できる（出典: atwiki/page-377 Q1）", () => {
+  it("RS-180: コール（ユニットをコマンドとしてホールド）でラッシュしたときも発動できる（出典: atwiki/page-377 Q1）", () => {
     const s0 = st({
       phase: "rush",
       turn: 3,

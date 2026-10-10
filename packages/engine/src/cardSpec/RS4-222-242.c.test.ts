@@ -214,7 +214,6 @@ describe("RS-237 サイレンビルダー", () => {
   });
 
   // faq-card-4 RS-237 Q1「「３枚オモテにする」ことが発動の条件ですので、敵軍山札が２枚以下のときは、その効果は発動できません。」
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-237: 公式Q&A — 敵軍山札が2枚以下なら発動できない（出典: grnrngr/faq-card-4 RS-237 Q1）", () => {
     const s = siren([inst("TST-OP", "t0"), inst("TST-OP", "t1")]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-237");

@@ -7,6 +7,8 @@
  */
 import type { CardInstance, GameState, PendingEffectChoice, PendingStrike, PlayerId } from "../../types/game";
 import { bounceToHand } from "../bounce";
+import { startEffectRush } from "../effectRush";
+import { cardHasCategory } from "@rangers-strike/cards";
 import { canPlayHandCounter } from "../operationCounters";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEffects";
@@ -885,6 +887,53 @@ function resolveTripleLiquid(state: GameState, playerId: PlayerId, instanceId: s
   };
   if (remaining.length === 0) return finishTripleLiquid(updated, playerId);
   return { state: updated };
+}
+
+
+// ---------------------------------------------------------------------------
+// RS-180 ライドラプター（※常駐）
+// 「自軍コマンドをホールドしてSユニットをラッシュしたとき、次の効果を発動できる⇒自分の手札から「WB」のSユニットのカードを
+//  1枚選び、コマンドをホールドせずにラッシュする。ただし、ラッシュのための必要パワーと追加条件は満たすこと。
+//  この効果でラッシュしたユニットは、このターン、バトルエリアに出られない。」
+// コールでユニットをホールドしてラッシュしたときも発動できる（atwiki/page-377 Q1）。効果によるラッシュでは発動しない。
+
+export const RIDE_RAPTOR_EFFECT_ID = "ride_raptor_rush";
+
+export function tryRideRaptorOnRush(
+  state: GameState,
+  rusherPlayerId: PlayerId,
+  rushedInstanceId: string,
+  phasePlayerId: PlayerId,
+): GameState {
+  if (state.pendingEffectChoice || state.pendingEffectRush) return state;
+  const player = state.players[rusherPlayerId];
+  const raptor = player.operation.find((c) => c.cardId === "RS-180");
+  if (!raptor) return state;
+  const rushed = findInZone(player, "rush", rushedInstanceId)?.card;
+  if (!rushed || !isSmallUnit(state.definitions, rushed.cardId)) return state;
+  // 自軍コマンド（コールのユニットを含む）をホールドしてラッシュしたか。
+  const payment = player.lastRushPayment;
+  if (!payment || payment.rushedInstanceId !== rushedInstanceId || payment.holdInstanceIds.length === 0) return state;
+  const candidates = player.hand
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return !!def && def.type === "unit" && def.size === "S" && cardHasCategory(def, "WB");
+    })
+    .map((c) => c.instanceId);
+  if (candidates.length === 0) return state;
+  return startEffectRush(state, {
+    playerId: rusherPlayerId,
+    phasePlayerId,
+    effectId: RIDE_RAPTOR_EFFECT_ID,
+    sourceCardId: raptor.cardId,
+    sourceInstanceId: raptor.instanceId,
+    fromZone: "hand",
+    candidates,
+    maxCount: 1,
+    requireConditions: true,
+    alwaysAsk: true,
+    blockBattleEntryThisTurn: true,
+  });
 }
 
 // ---------------------------------------------------------------------------
