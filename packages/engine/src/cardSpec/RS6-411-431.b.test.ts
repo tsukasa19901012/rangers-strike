@@ -338,13 +338,13 @@ describe("RS-421 アカレッド", () => {
   });
 
   // 既知の不具合: CARD-RS-421 【ソウル降臨】ですでにホールド状態のコマンドも選べる（ホールドできないカードが候補に入る）
-  it.fails("RS-421: 【ソウル降臨】すでにホールド状態のカードはホールドできないので選べない（出典: atwiki/page-574「選びホールドしてもよい」）", () => {
+  it("RS-421: 【ソウル降臨】すでにホールド状態のカードはホールドできないので選べない（出典: atwiki/page-574「選びホールドしてもよい」）", () => {
     const s = enter(soulState(), "RS-421:ak");
     expect(choiceIds(s)).toEqual(["RS-099:hr"]);
   });
 
   // 既知の不具合: CARD-RS-421 【ソウル降臨】でカードをホールドしても NC の効果が発動しない（ストライク不可だけが付く）
-  it.fails("RS-421: 【ソウル降臨】ホールドしたハリケンレッドの NC「SP1」をこのユニットの効果として発動し、アカレッドは「SP1」を持つユニットになる（出典: atwiki/page-574・grnrngr/faq-card-6 RS-421 Q2「はい、「ＳＰ１」を持つユニットとして扱われます」）", () => {
+  it("RS-421: 【ソウル降臨】ホールドしたハリケンレッドの NC「SP1」をこのユニットの効果として発動し、アカレッドは「SP1」を持つユニットになる（出典: atwiki/page-574・grnrngr/faq-card-6 RS-421 Q2「はい、「ＳＰ１」を持つユニットとして扱われます」）", () => {
     const s = soul(enter(soulState(), "RS-421:ak"), "RS-099:hr");
     expect(s.players.player1.command.find((c) => c.instanceId === "RS-099:hr")?.commandHeld).toBe(true);
     expect(spOf(s, "player1", "RS-421:ak")).toBe(1);
@@ -356,7 +356,7 @@ describe("RS-421 アカレッド", () => {
   });
 
   // 既知の不具合: CARD-RS-421 【ソウル降臨】で NC の効果が発動しない（ゴーレッド【人命救助】の選択が出ない）
-  it.fails("RS-421: 【ソウル降臨】ホールドしたカードの CN（ゴーレッドは5）をアカレッドが満たしていなくても（1番目でも）NC を発動できる（ゴーレッド【人命救助】）（出典: grnrngr/faq-card-6 RS-421 Q6「はい、発動できます」）", () => {
+  it("RS-421: 【ソウル降臨】ホールドしたカードの CN（ゴーレッドは5）をアカレッドが満たしていなくても（1番目でも）NC を発動できる（ゴーレッド【人命救助】）（出典: grnrngr/faq-card-6 RS-421 Q6「はい、発動できます」）", () => {
     let s = enter(
       soulState({ command: [released("RS-091", "gr")], discard: [inst("TST-UNIT-0", "dead")] }),
       "RS-421:ak",
@@ -387,7 +387,7 @@ describe("RS-421 アカレッド", () => {
   });
 
   // 既知の不具合: CARD-RS-421 【ソウル降臨】で NC の効果が発動しない（NC の効果として扱われるかを確認できない）
-  it.fails("RS-421: 【ソウル降臨】で発動した効果はアカレッドがコンビネーションしていなくても NC の効果として扱われる（「SP1」が NC として付く）（出典: grnrngr/faq-card-6 RS-421 Q1「はい、ＮＣの効果として扱われます」）", () => {
+  it("RS-421: 【ソウル降臨】で発動した効果はアカレッドがコンビネーションしていなくても NC の効果として扱われる（「SP1」が NC として付く）（出典: grnrngr/faq-card-6 RS-421 Q1「はい、ＮＣの効果として扱われます」）", () => {
     const s = soul(enter(soulState(), "RS-421:ak"), "RS-099:hr");
     expect(spOf(s, "player1", "RS-421:ak")).toBe(1);
     expect(s.log.some((l) => l.includes("number_combo") || l.includes("RS-099"))).toBe(true);
@@ -398,7 +398,7 @@ describe("RS-421 アカレッド", () => {
   );
 
   // 既知の不具合: CARD-RS-421 【ソウル降臨】で NC が発動せず、RS-418 イフリートの【炎の眼光】も実装されていない
-  it.fails("RS-421: 【ソウル降臨】で発動した NC の効果は、敵軍の冥府神イフリートの【炎の眼光】で無効にできる（出典: grnrngr/faq-card-6 RS-421 Q5「はい、できます」）", () => {
+  it("RS-421: 【ソウル降臨】で発動した NC の効果は、敵軍の冥府神イフリートの【炎の眼光】で無効にできる（出典: grnrngr/faq-card-6 RS-421 Q5「はい、できます」）", () => {
     let s = st({
       player1: { rush: [inst("RS-421", "ak")], command: [released("RS-099", "hr")], deck: deckCards(3) },
       player2: { battle: [inst("RS-418", "if")], operation: [inst("RS-256", "op")], deck: deckCards(3, "e") },

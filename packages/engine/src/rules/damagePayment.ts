@@ -6,6 +6,7 @@ import type {
   PlayerState,
 } from "../types/game";
 import { cardCategories, getDefinition } from "../core/catalog";
+import { meditationActive } from "../core/createGame";
 import { applyPlayerDamage, removeAt, updatePlayer } from "../core/helpers";
 import { emitDamageAppliedAndResolve } from "../events/emitDamageApplied";
 import { applyPowerFlipTriggers } from "./powerFlipEffects";
@@ -269,7 +270,7 @@ export function applyDamageToPlayer(
 ): GameState {
   if (amount <= 0) return state;
   // RS-348 メディテーション: 1点受けるたび追加1点（追加分に追加はない）
-  if (state.players[playerId].operation.some((c) => c.cardId === "RS-348")) {
+  if (meditationActive(state, playerId)) {
     amount = amount * 2;
   }
   return applyDamageAmount(state, playerId, amount, resume, choosingPlayerId, options);

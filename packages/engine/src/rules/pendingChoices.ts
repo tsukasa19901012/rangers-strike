@@ -1,4 +1,4 @@
-import { checkWinner } from "../core/createGame";
+import { checkWinner, meditationActive } from "../core/createGame";
 import {
   isSet5AChoiceEffect,
   tryConfirmSet5AChoice,
@@ -78,7 +78,7 @@ import {
 import { applyRocketBoosterDeclaredName } from "./rocketBooster";
 import { applySimultaneousOrderChoice } from "./simultaneousEffects";
 import { applyAssaultToCommandHold } from "./legend3/restrictions";
-import { findInZone, opponent, performDeckDraws, removeAt, takeFromDeckTop, updatePlayer } from "../core/helpers";
+import { applyPlayerDamage, findInZone, opponent, performDeckDraws, removeAt, takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { LION_DANCE_EFFECT_ID, markJuuKunDoAttackerActed } from "./juuKunDo";
 import { findCardInField, findCardOwner } from "./fieldLookup";
@@ -3824,14 +3824,17 @@ export function applyEffectChoiceSelect(
       if (pending.placeAsDamage && dest === "power" && located) {
         const owner = nextState.players[located.playerId];
         if (owner.power.some((c) => c.instanceId === instanceId && !c.faceDown)) {
-          nextState = {
-            ...nextState,
-            ...updatePlayer(nextState, located.playerId, {
-              ...owner,
-              power: owner.power.map((c) => (c.instanceId === instanceId ? { ...c, faceDown: true } : c)),
-              damage: owner.damage + 1,
-            }),
+          let placed: PlayerState = {
+            ...owner,
+            power: owner.power.map((c) => (c.instanceId === instanceId ? { ...c, faceDown: true } : c)),
+            damage: owner.damage + 1,
           };
+          // RS-348 メディテーション: ダメージにして置かれた場合も追加で1点受ける
+          // （grnrngr/faq-card-6 RS-348 Q5「はい、追加ダメージを受けます」。追加分に追加はない）。
+          if (meditationActive(nextState, located.playerId)) {
+            placed = applyPlayerDamage(placed, 1);
+          }
+          nextState = { ...nextState, ...updatePlayer(nextState, located.playerId, placed) };
         }
       }
       if (

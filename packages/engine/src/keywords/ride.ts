@@ -10,6 +10,7 @@ import {
   listCardGrantKeywords,
   listRideWithoutRcFeatures,
   riderMatchesVehicleRideWithoutRc,
+  vehicleRideWithoutRcNeedsHold,
 } from "../dsl/promotedKeywordBridge";
 
 function isVehicle(definitions: Record<string, CardDefinition>, cardId: string): boolean {
@@ -111,7 +112,8 @@ export function findRideVehicleForRider(
         state.definitions,
         vehicle.cardId,
         rider.cardId,
-      )
+      ) &&
+      (!vehicleRideWithoutRcNeedsHold(vehicle.cardId) || player.command.some((cmd) => !cmd.commandHeld))
     ) {
       return vehicle;
     }
@@ -141,12 +143,14 @@ export function findRideVehicleForRider(
   }
 
   return (
-    candidates.find((vehicle) =>
-      riderMatchesVehicleRideWithoutRc(
-        state.definitions,
-        vehicle.cardId,
-        rider.cardId,
-      ),
+    candidates.find(
+      (vehicle) =>
+        riderMatchesVehicleRideWithoutRc(
+          state.definitions,
+          vehicle.cardId,
+          rider.cardId,
+        ) &&
+        (!vehicleRideWithoutRcNeedsHold(vehicle.cardId) || player.command.some((cmd) => !cmd.commandHeld)),
     ) ?? null
   );
 }
@@ -189,6 +193,10 @@ export function canRiderMountVehicle(
       rider.cardId,
     )
   ) {
+    // RS-381「自軍コマンドを1つホールドすれば」— ホールドできるリリース状態の自軍コマンドが必要。
+    if (vehicleRideWithoutRcNeedsHold(vehicle.card.cardId)) {
+      return player.command.some((cmd) => !cmd.commandHeld);
+    }
     return true;
   }
 
@@ -215,6 +223,21 @@ export function canRiderMountVehicle(
   if (allowed.length > 0) return false;
 
   return false;
+}
+
+/**
+ * RC を持たないユニットが「自軍コマンドを1つホールドすれば」ライドできるビークル（RS-381）にライドするとき、
+ * ホールドする自軍コマンドが要るか。
+ */
+export function rideNeedsCommandHold(
+  state: GameState,
+  rider: CardInstance,
+  vehicleCardId: string,
+): boolean {
+  const riderDef = getDefinition(state.definitions, rider.cardId);
+  if (!riderDef || riderHasRc(riderDef)) return false;
+  if (riderKeywordAllowsRide(rider.cardId, getDefinition(state.definitions, vehicleCardId))) return false;
+  return vehicleRideWithoutRcNeedsHold(vehicleCardId);
 }
 
 /** ライド状態を付与（バトル進入前検証用）。 */

@@ -14,9 +14,16 @@ import {
 } from "@rangers-strike/cards";
 import type { CardInstance, GameState } from "../types/game";
 
+function cardCategoriesOf(def: { category?: unknown } | undefined): string[] {
+  const c = def?.category;
+  return Array.isArray(c) ? (c as string[]) : typeof c === "string" ? [c] : [];
+}
+
 type OnAttackNamed = NonNullable<ReturnType<typeof getOnAttackNamedEffect>>;
 
 const PARTNER_FEATURE_RE = /特徴「([^」]+)」を持つユニットからコンビネーション/;
+/** 「WBのユニットからコンビネーションするときは」（カテゴリ指定。RS-361【飛羽返し】atwiki/page-512）。 */
+const PARTNER_CATEGORY_RE = /(?:^|[（(、。」])「?(WB|OT|ET|MA|DA)」?のユニットからコンビネーション/;
 
 function partnerCardIds(named: OnAttackNamed): string[] | undefined {
   const trigger = named.trigger as { comboPartnerCardIds?: string[]; partnerCardIds?: string[] };
@@ -43,10 +50,17 @@ export function comboFromNamedPartner(
   state: Pick<GameState, "definitions">,
   named: OnAttackNamed,
   leftNeighborCardId: string | undefined,
+  leftNeighborCategories?: readonly string[],
 ): boolean {
   if (!leftNeighborCardId) return false;
   const ids = partnerCardIds(named);
   if (ids?.includes(leftNeighborCardId)) return true;
+  // カテゴリ指定はバトルエリアでのカテゴリ（「※バトルエリアにあるとき、カテゴリにWBが追加される」を含む）で判定する。
+  const category = (named.text ?? "").match(PARTNER_CATEGORY_RE)?.[1];
+  if (category) {
+    const cats = leftNeighborCategories ?? cardCategoriesOf(state.definitions[leftNeighborCardId]);
+    return cats.includes(category);
+  }
   const feature = (named.text ?? "").match(PARTNER_FEATURE_RE)?.[1];
   if (!feature) return false;
   return (state.definitions[leftNeighborCardId]?.features ?? []).includes(feature);
@@ -121,10 +135,11 @@ export function ncColumnEffectIdsEstablished(
   cardId: string,
   numberMatches: boolean,
   leftNeighborCardId: string | undefined,
+  leftNeighborCategories?: readonly string[],
 ): string[] {
   const ids: string[] = [];
   for (const named of listNcColumnNamedEffects(cardId)) {
-    if (numberMatches || comboFromNamedPartner(state, named, leftNeighborCardId)) {
+    if (numberMatches || comboFromNamedPartner(state, named, leftNeighborCardId, leftNeighborCategories)) {
       ids.push(named.effectId);
     }
   }

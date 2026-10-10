@@ -220,6 +220,7 @@ import {
 import { applyPassChase, applyResolveChase, listValidChaseVehicleIds } from "../keywords/chase";
 import {
   canRiderMountVehicle,
+  rideNeedsCommandHold,
   extractMountedVehicleFromRush,
 } from "../keywords/ride";
 import {
@@ -2033,6 +2034,15 @@ function applyActionCore(
         };
         if (!canMoveUnitToBattle(state, playerId, battleCard, "rush")) {
           return fail("cannot_enter_battle");
+        }
+        // RS-381 ガレオパルサー「自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもライドできる」（atwiki/page-522）。
+        const vehicleCard = findInZone(player, "rush", action.vehicleInstanceId)?.card;
+        if (vehicleCard && rideNeedsCommandHold(state, found.card, vehicleCard.cardId)) {
+          const holdIdx = nextPlayer.command.findIndex((c) => !c.commandHeld);
+          if (holdIdx < 0) return fail("illegal_action");
+          const command = [...nextPlayer.command];
+          command[holdIdx] = { ...command[holdIdx]!, commandHeld: true };
+          nextPlayer = { ...nextPlayer, command };
         }
       }
 

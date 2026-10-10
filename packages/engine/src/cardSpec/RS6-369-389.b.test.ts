@@ -362,13 +362,13 @@ describe("RS-381 ガレオパルサー", () => {
     expect(t.players.player1.battle.find((c) => c.instanceId === "RS-376:rd")?.mountedOnInstanceId).toBe("RS-381:v");
   });
 
-  it.fails("RS-381: ※ RC を持たない「レッド」の S ユニットがライドするときは自軍コマンドを1つホールドする（出典: atwiki/page-522「自軍コマンドを1つホールドすれば」）", () => {
+  it("RS-381: ※ RC を持たない「レッド」の S ユニットがライドするときは自軍コマンドを1つホールドする（出典: atwiki/page-522「自軍コマンドを1つホールドすれば」）", () => {
     // 既知の不具合: CARD-RS-381 リリース状態のコマンドがあればライドできるが、コマンドがホールドされない
     const t = ride(rideState("RS-376"), "RS-376:rd");
     expect(t.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(1);
   });
 
-  it.fails("RS-381: ※ リリース状態の自軍コマンドがなければ「レッド」の S ユニットはライドできない（出典: atwiki/page-522「自軍コマンドを1つホールドすれば」）", () => {
+  it("RS-381: ※ リリース状態の自軍コマンドがなければ「レッド」の S ユニットはライドできない（出典: atwiki/page-522「自軍コマンドを1つホールドすれば」）", () => {
     // 既知の不具合: CARD-RS-381 ホールドできるコマンドがなくても「レッド」の S ユニットがライドできる
     const s = rideState("RS-376", [{ ...inst("TST-OP", "h"), commandHeld: true }]);
     expect(canRide(s, "RS-376:rd")).toBe(false);
@@ -378,7 +378,7 @@ describe("RS-381 ガレオパルサー", () => {
     expect(canRide(rideState("RS-378"), "RS-378:rd")).toBe(false);
   });
 
-  it.fails("RS-381: ※ 「レッド」でも M ユニットはライドできない（出典: atwiki/page-522「特徴「レッド」を持つSユニット」）", () => {
+  it("RS-381: ※ 「レッド」でも M ユニットはライドできない（出典: atwiki/page-522「特徴「レッド」を持つSユニット」）", () => {
     // 既知の不具合: CARD-RS-381 RC を持たない「レッド」の M ユニットもライドできる（サイズの条件がない）
     expect(canRide(rideState("SPEC-RED-M"), "SPEC-RED-M:rd")).toBe(false);
   });
