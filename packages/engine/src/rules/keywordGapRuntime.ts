@@ -207,6 +207,8 @@ export function battleActBlocked(
   card: { cardId: string; instanceId: string; battleActed?: boolean },
   action: "attack" | "strike",
 ): boolean {
+  // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックする権利を失っている。
+  if (action === "attack" && player.unitActionsThisTurn?.[card.instanceId]?.attacked) return true;
   if (!card.battleActed) return false;
   if (!cardHasGrantKeyword(card.cardId, "attack_and_strike_once")) return true;
   const rec = player.unitActionsThisTurn?.[card.instanceId];

@@ -18,7 +18,8 @@ import {
   markBattleNcEffect,
   grantSp1ToBattleUnit,
 } from "../namedUnitEffects";
-import { addTurnRuleModifier } from "../../core/scopedModifiers";
+import { markUnitBattleAction } from "../keywordGapRuntime";
+import { addNextTurnRuleModifier, addTurnRuleModifier } from "../../core/scopedModifiers";
 import { canBeDeployedToBattleByEffect } from "../restrictions";
 import { TURN_RULE_IDS } from "../../types/scopedModifiers";
 import type { ComboOutcome } from "../comboTypes";
@@ -282,7 +283,8 @@ export function applyLegend2NcEffect(
       };
     }
     case "zenibomb": {
-      const enemy = addTurnRuleModifier(state.players[enemyId], TURN_RULE_IDS.ZENIBOMB, {
+      // ルール: R-RES-07 — 「次の相手ターン」の効果。デカピンクが撃破されても有効。
+      const enemy = addNextTurnRuleModifier(state.players[enemyId], TURN_RULE_IDS.ZENIBOMB, {
         sourceCardId: card.cardId,
       });
       return {
@@ -311,11 +313,12 @@ export function applyLegend2NcEffect(
       }
       const player = state.players[playerId];
       const deck = player.deck.filter((c) => c.instanceId !== deckCard.instanceId);
-      const nextPlayer = {
-        ...player,
-        deck,
-        battle: [...player.battle, deckCard],
-      };
+      // ルール: R-REPL-03 — 「アタックするかわりに」発動したので、これはアタックする権利を失う。
+      const nextPlayer = markUnitBattleAction(
+        { ...player, deck, battle: [...player.battle, deckCard] },
+        card.instanceId,
+        "attack",
+      );
       return {
         state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
         logs: [ncLog(playerId, card.cardId, state.definitions, "super_ninpo_lion_dance")],

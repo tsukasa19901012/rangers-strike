@@ -1153,10 +1153,14 @@ function appendBattleEntryActions(
   }
 
   const requiredDefenderId = pending.requiredDefenderInstanceId;
-  const battleDefenders = requiredDefenderId
-    ? enemy.battle.filter((c) => c.instanceId === requiredDefenderId)
-    : enemy.battle;
-  const rushDefenders = requiredDefenderId ? [] : enemy.rush;
+  // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックできない。
+  const attackBlocked = battleActBlocked(player, unit, "attack");
+  const battleDefenders = attackBlocked
+    ? []
+    : requiredDefenderId
+      ? enemy.battle.filter((c) => c.instanceId === requiredDefenderId)
+      : enemy.battle;
+  const rushDefenders = requiredDefenderId || attackBlocked ? [] : enemy.rush;
 
   for (const defender of battleDefenders) {
     if (

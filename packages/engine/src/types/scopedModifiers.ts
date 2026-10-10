@@ -1,5 +1,8 @@
-/** 修飾子の有効スコープ。ターン終了 / ラッシュフェイズ終了でフィルタする。 */
-export type ModifierScope = "turn" | "rush_phase" | "permanent";
+/**
+ * 修飾子の有効スコープ。ターン終了 / ラッシュフェイズ終了でフィルタする。
+ * next_turn は「次の（相手）ターン」の効果で、ターン終了時に turn へ昇格する（ルール: R-RES-07）。
+ */
+export type ModifierScope = "turn" | "rush_phase" | "permanent" | "next_turn";
 
 export type ScopedModifier =
   | {

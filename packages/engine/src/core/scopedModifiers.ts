@@ -85,6 +85,18 @@ export function addTurnRuleModifier(
   return addScopedRuleModifier(player, ruleId, "turn", options);
 }
 
+/**
+ * 「次の相手ターン」の効果。発動元が場を離れても有効（ルール: R-RES-07）。
+ * 今のターンの終了時に turn スコープへ昇格し、そのターンの終了で消える。
+ */
+export function addNextTurnRuleModifier(
+  player: PlayerState,
+  ruleId: TurnRuleId | string,
+  options?: { sourceCardId?: string; payload?: unknown },
+): PlayerState {
+  return addScopedRuleModifier(player, ruleId, "next_turn", options);
+}
+
 export function addRushPhaseRuleModifier(
   player: PlayerState,
   ruleId: RushPhaseRuleId | string,
@@ -120,7 +132,13 @@ export function clearScopedModifiersByScope(
 }
 
 export function clearTurnScopedModifiers(player: PlayerState): PlayerState {
-  return clearScopedModifiersByScope(player, "turn");
+  const cleared = clearScopedModifiersByScope(player, "turn");
+  const modifiers = getPlayerModifiers(cleared);
+  if (!modifiers.some((m) => m.scope === "next_turn")) return cleared;
+  return {
+    ...cleared,
+    modifiers: modifiers.map((m) => (m.scope === "next_turn" ? { ...m, scope: "turn" as const } : m)),
+  };
 }
 
 export function clearRushPhaseScopedModifiers(player: PlayerState): PlayerState {
