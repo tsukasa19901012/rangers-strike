@@ -2,6 +2,8 @@ import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState, CardInstance } from "../types/game";
 import { clearRegisterHoldOffField } from "../rules/resist";
+import { operationFizzles } from "../rules/operationFizzle";
+import { openDeferredRushReaction } from "../events/emitUnitRushed";
 import {
   getBattleEntryHoldCount,
   getCardEffect,
@@ -188,6 +190,8 @@ import {
   applyHiddenNinjaCounter,
   applyMagLoadCounter,
   applyNewGymnasticsCounter,
+  applyMechanicNinjaCounter,
+  isMechanicNinjaCounter,
   applySageAelCounter,
   applyShippuNinjaCounter,
   applySuperShieldSubstitute,
@@ -366,6 +370,21 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
 }
 
 export function applyAction(
+  state: GameState,
+  action: GameAction,
+  options?: { trustLegality?: boolean },
+): ActionResult {
+  const result = applyActionInner(state, action, options);
+  if (!result.ok) return result;
+  // ルール: R-ZONE-04, R-HOLD-02 — エリアを離れたカードの付加情報はどの経路で移動しても消える。
+  let next = clearRegisterHoldOffField(result.state);
+  if (next.deferredRushReaction && !next.winner) {
+    next = withSyncedEffectStack(openDeferredRushReaction(next));
+  }
+  return next === result.state ? result : { ok: true, state: next };
+}
+
+function applyActionInner(
   state: GameState,
   action: GameAction,
   options?: { trustLegality?: boolean },
@@ -791,11 +810,19 @@ export function applyAction(
       const definition = getDefinition(state.definitions, found.card.cardId);
       if (!definition || definition.type !== "operation") return fail("not_operation");
 
-      if (operationNeedsUpfrontTarget(found.card.cardId) && !action.targetInstanceId) {
+      // ルール: R-CARD-03, R-RES-04 — 適正な対象がなければ空撃ち（効果を発動せず捨札）。
+      const fizzle =
+        !action.targetInstanceId &&
+        !action.extraInstanceId &&
+        !isPermanentCard(state.definitions, found.card.cardId) &&
+        operationFizzles(state, playerId, found.card.instanceId, found.card.cardId);
+
+      if (!fizzle && operationNeedsUpfrontTarget(found.card.cardId) && !action.targetInstanceId) {
         return fail("target_required");
       }
 
       if (
+        !fizzle &&
         getCardEffect(found.card.cardId)?.effectId === "cyber_s_rider" &&
         !action.targetInstanceId
       ) {
@@ -810,11 +837,26 @@ export function applyAction(
       if (!payPowerCost(state, playerId, cost)) return fail("insufficient_power");
 
       const [, hand] = removeAt(player.hand, found.index);
-      let nextPlayer = { ...player, hand };
+      let nextPlayer = clearCostWindow({ ...player, hand }, "operation_category");
       let nextState: GameState = {
         ...state,
         ...updatePlayer(state, playerId, nextPlayer),
       };
+
+      if (fizzle) {
+        const current = nextState.players[playerId];
+        nextState = {
+          ...nextState,
+          ...updatePlayer(nextState, playerId, {
+            ...current,
+            discard: [...current.discard, found.card],
+          }),
+        };
+        return ok(
+          nextState,
+          buildLogEntry(playerId, "play_operation", found.card.cardId, state.definitions, "fizzle"),
+        );
+      }
 
       const effectMeta = getCardEffect(found.card.cardId);
       const dslEffect = getDslOperationEffect(found.card.cardId, "rush");
@@ -1642,6 +1684,28 @@ export function applyAction(
         const pending = state.pendingBattle;
         if (playerId !== pending.defenderPlayerId) return fail("wrong_player");
         const effectId = getCounterEffectId(state, playerId, action.instanceId);
+        const counterCardId = findInZone(player, "hand", action.instanceId)?.card.cardId;
+        if (counterCardId && isMechanicNinjaCounter(counterCardId)) {
+          const result = applyMechanicNinjaCounter(
+            state,
+            playerId,
+            action.instanceId,
+            action.substituteInstanceId,
+            pending,
+          );
+          const nextPending: PendingBattle = result.battleCancelled
+            ? { ...pending, battleCancelled: true }
+            : pending;
+          const resolved = emitBattleDeclaredAndResolve(result.state, nextPending);
+          return {
+            ok: true,
+            state: {
+              ...clearCounterHoldReady(resolved.state, playerId),
+              log: [...resolved.state.log, result.log, resolved.log],
+              winner: checkWinner(resolved.state),
+            },
+          };
+        }
         if (effectId === "new_gymnastics") {
           const result = applyNewGymnasticsCounter(
             state,

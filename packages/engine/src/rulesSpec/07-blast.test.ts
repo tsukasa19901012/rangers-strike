@@ -85,15 +85,13 @@ describe("R-KW-BLAST-02 条件の変更", () => {
   const BUGGY = realDef("XG2-034");
 
   // 「ブラストの効果は次のルールに変更される⇒…残りダメージ1点または2点で」
-  it.fails("R-KW-BLAST-02: 自軍エリアに XG2-034 ブラストバギーがあれば、ダメージ5点（残り2点）でも追加条件を無視できる（出典: atwiki/page-1801 XG2-034 本文）", () => {
-    // 既知の不具合: 04-#3（未対応）
+  it("R-KW-BLAST-02: 自軍エリアに XG2-034 ブラストバギーがあれば、ダメージ5点（残り2点）でも追加条件を無視できる（出典: atwiki/page-1801 XG2-034 本文）", () => {
     const s = rushPhase({ damage: 5, rush: [inst(BUGGY.id, "bg")], extra: [BUGGY] });
     expect(canRush(s, b.instanceId)).toBe(true);
   });
 
   // 「ただし相手にも適用されるので注意が必要」
-  it.fails("R-KW-BLAST-02: 変更後のルールは敵軍にも適用される（相手の XG2-034 でも自分がダメージ5点で追加条件を無視できる）（出典: atwiki/page-1801 カード評価）", () => {
-    // 既知の不具合: 04-#3（未対応）
+  it("R-KW-BLAST-02: 変更後のルールは敵軍にも適用される（相手の XG2-034 でも自分がダメージ5点で追加条件を無視できる）（出典: atwiki/page-1801 カード評価）", () => {
     const s = rushPhase({ damage: 5, enemyRush: [inst(BUGGY.id, "bg")], extra: [BUGGY] });
     expect(canRush(s, b.instanceId)).toBe(true);
   });

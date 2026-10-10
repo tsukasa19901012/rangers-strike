@@ -421,13 +421,15 @@ export function resolveNamedOnRushEffects(
       break;
     }
     case "ptera_beam": {
+      // ルール: R-RES-01 — テキストに指定がなければ、効果の持ち主（ラッシュしたプレイヤー）が選ぶ。
       const withChoice = startSelectCommandChoice(nextState, {
-        playerId: enemyId,
+        playerId: rusherPlayerId,
         effectId: "ptera_beam",
         sourceCardId: found.card.cardId,
         phasePlayerId,
         commandFilter: "held",
         commandAction: "discard",
+        validInstanceIds: collectCommandIds(nextState, enemyId, "held"),
       });
       if (withChoice) nextState = withChoice;
       break;

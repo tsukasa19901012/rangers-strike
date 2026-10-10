@@ -77,6 +77,7 @@ import {
 import { collectZordMaterials, requiresAllFusionPartners } from "../rules/zord";
 import { isZordUpCost, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
+import { operationFizzles } from "../rules/operationFizzle";
 import {
   canExecuteHandCounter,
   canInitiateCounterCategoryPayment,
@@ -85,6 +86,8 @@ import {
   canPlayMagLoadLeaveCounter,
   canPlaySageAelLeaveCounter,
   collectHiddenNinjaSubstitutes,
+  collectMechanicNinjaRecruits,
+  isMechanicNinjaCounter,
   getCounterEffectId,
   hasPlayableDinoChronicleCounter,
   isCounterReactionActive,
@@ -238,6 +241,25 @@ function appendBattleReactionActions(
       if (canExecuteHandCounter(state, playerId, card.instanceId)) {
         actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
       }
+    }
+    if (isMechanicNinjaCounter(card.cardId)) {
+      if (!defenderCard || !isSmallUnit(state.definitions, defenderCard.cardId)) continue;
+      const recruits = collectMechanicNinjaRecruits(state, playerId);
+      const options: Array<string | undefined> = recruits.length > 0 ? recruits : [undefined];
+      for (const recruit of options) {
+        appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions, {
+          substituteInstanceId: recruit,
+        });
+        if (canExecuteHandCounter(state, playerId, card.instanceId)) {
+          actions.push({
+            type: "play_counter",
+            playerId,
+            instanceId: card.instanceId,
+            substituteInstanceId: recruit,
+          });
+        }
+      }
+      continue;
     }
     if (effectId === "hidden_ninja") {
       for (const sub of collectHiddenNinjaSubstitutes(state, [
@@ -443,6 +465,12 @@ function appendOperationActions(
 
     const effect = getCardEffect(card.cardId);
 
+    if (operationFizzles(state, playerId, card.instanceId, card.cardId)) {
+      // ルール: R-CARD-03, R-RES-04 — 対象がなくても空撃ちで使用できる（効果は発動しない）。
+      actions.push({ type: "play_operation", playerId, instanceId: card.instanceId });
+      continue;
+    }
+
     if (effect?.effectId === "cyber_s_rider") {
       const others = player.hand.filter((c) => c.instanceId !== card.instanceId);
       if (others.length === 0) continue;
@@ -454,7 +482,6 @@ function appendOperationActions(
           targetInstanceId: others[i]!.instanceId,
         });
         for (let j = i + 1; j < others.length; j += 1) {
-          if (player.command.length + 2 > COMMAND_ZONE_MAX) continue;
           actions.push({
             type: "play_operation",
             playerId,
@@ -512,8 +539,6 @@ function appendOperationActions(
           targetInstanceId,
         });
       }
-    } else if (effect?.effectId === "denji_machine" && player.deck.length < 3) {
-      continue;
     } else {
       actions.push({
         type: "play_operation",
@@ -751,16 +776,34 @@ function appendOperationCategoryPaymentActions(
       for (let i = 0; i < others.length; i += 1) {
         pushPayment(card.instanceId, others[i]!.instanceId, undefined, options.prismSubstitute);
         for (let j = i + 1; j < others.length; j += 1) {
-          if (player.command.length + 2 > COMMAND_ZONE_MAX) continue;
           pushPayment(card.instanceId, others[i]!.instanceId, others[j]!.instanceId, options.prismSubstitute);
         }
       }
       continue;
     }
 
-    pushPayment(card.instanceId, undefined, undefined, options.prismSubstitute);
-    if (options.prismAvailable && !options.prismSubstitute) {
-      pushPayment(card.instanceId, undefined, undefined, true);
+    const dslEffect = getDslOperationEffect(card.cardId, "rush");
+    const dslChoose =
+      dslEffect &&
+      shouldUseDslOperation(card.cardId, dslEffect) &&
+      dslOperationOpensChoose(dslEffect);
+    // 対象を先に選ぶオペレーションは、対象ごとに支払いを開始する（空撃ちは対象なし）。
+    // DSL の choose は対象を指定しても、指定せず解決時に選んでもよい。
+    const fizzles = operationFizzles(state, playerId, card.instanceId, card.cardId);
+    let targets: Array<string | undefined> = [undefined];
+    if (!fizzles && dslChoose && dslEffect.effects[0]?.type === "choose") {
+      targets = [
+        ...collectTargetInstanceIds(state, playerId, dslEffect.effects[0].valid, card.instanceId, card.cardId),
+        undefined,
+      ];
+    } else if (!fizzles && needsOperationTarget(card.cardId) && !dslChoose) {
+      targets = collectOperationTargets(state, playerId, card.cardId);
+    }
+    for (const targetInstanceId of targets) {
+      pushPayment(card.instanceId, targetInstanceId, undefined, options.prismSubstitute);
+      if (options.prismAvailable && !options.prismSubstitute) {
+        pushPayment(card.instanceId, targetInstanceId, undefined, true);
+      }
     }
   }
 }

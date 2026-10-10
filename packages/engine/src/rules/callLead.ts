@@ -77,6 +77,8 @@ export function holdPaymentSource(
       ...command[commandIndex]!,
       commandHeld: true,
       mothershipHold: false,
+      // ルール: R-CMD-01 — 支払いに使ったホールドは消費済み（別の使用に再利用できない）。
+      paymentHeld: true,
     };
     return { ...player, command };
   }

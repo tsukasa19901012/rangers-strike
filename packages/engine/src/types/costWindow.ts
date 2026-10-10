@@ -3,6 +3,7 @@ export type CostWindowKind =
   | "battle_entry_hold"
   | "rush_category"
   | "counter_category"
+  | "operation_category"
   | "battle_entry_rush_discard"
   | "battle_entry_hand_discard"
   | "battle_entry_power_discard";

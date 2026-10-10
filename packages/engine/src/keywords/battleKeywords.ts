@@ -5,7 +5,7 @@ import { sameCanonicalCardName, textHasKeywordNotation } from "@rangers-strike/c
 import type { KeywordNotationLabel } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { cardHasKeyword } from "./cardKeywords";
-import { getDefinition, isLargeUnit } from "../core/catalog";
+import { getDefinition, isLargeUnit, isSmallUnit } from "../core/catalog";
 import { loseDamageThreshold } from "../core/createGame";
 import {
   addTurnRestrictionModifier,
@@ -115,6 +115,8 @@ export function taxisSpFloor(
 
   const def = getDefinition(state.definitions, instance.cardId);
   if (!def || def.type !== "unit") return 0;
+  // ルール: R-KW-TAKUS-01 — 対象は指定カテゴリを持つ「S ユニット」だけ。
+  if (!isSmallUnit(state.definitions, instance.cardId)) return 0;
   if (!cardCategories(def).includes(taxisCategory)) return 0;
   return 1;
 }
@@ -238,8 +240,18 @@ export function blastBypassesRushAdditionalCondition(
 ): boolean {
   if (!cardHasBattleKeyword(state.definitions, rushingCardId, "blast")) return false;
   const player = state.players[playerId];
-  if (player.damage !== loseDamageThreshold(state, playerId) - 1) return false;
+  const remaining = loseDamageThreshold(state, playerId) - player.damage;
+  // ルール: R-KW-BLAST-02 — XG2-034 ブラストバギーが（どちらかの）エリアにある間は残り1点または2点。
+  const maxRemaining = blastRuleChangedByBuggy(state) ? 2 : 1;
+  if (remaining < 1 || remaining > maxRemaining) return false;
   return !playerHasAllyLargeUnit(state, playerId);
+}
+
+/** XG2-034 ブラストバギー（【奇襲】）がいずれかのプレイヤーのエリアにあるか。変更後のルールは敵軍にも適用される。 */
+function blastRuleChangedByBuggy(state: Pick<GameState, "players" | "definitions">): boolean {
+  return (["player1", "player2"] as const).some((pid) =>
+    [...state.players[pid].rush, ...state.players[pid].battle].some((c) => c.cardId === "XG2-034"),
+  );
 }
 
 export function playerHasAllyLargeUnit(
@@ -320,9 +332,10 @@ export function canHoldForWing(
   ) {
     return false;
   }
-  if (unit.battleActed) return false;
+  // ルール: R-KW-WING-02 — バトルエリアに出られない制限を受けていても発動できる。
+  // ルール: R-KW-WING-03 — ウイングでアタックした後もリリースされれば同じターンに再び発動できる
+  // （発動できるかはリリース状態かどうかだけで決まる）。
   if (unit.commandHeld) return false;
-  if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
   return state.players[playerId].rush.some((c) => c.instanceId === unit.instanceId);
 }
 
@@ -335,10 +348,19 @@ export function applyHoldForWing(
   const found = findInZone(player, "rush", instanceId);
   if (!found || !canHoldForWing(state, playerId, found.card)) return null;
 
-  const rush = player.rush.map((c) =>
-    c.instanceId === instanceId ? { ...c, commandHeld: true } : c,
-  );
+  const rush = player.rush.map((c) => {
+    if (c.instanceId !== instanceId) return c;
+    // 新たなウイングの発動ごとにアタックの権利を得る（R-KW-WING-03）。
+    const held = { ...c, commandHeld: true };
+    delete held.battleActed;
+    return held;
+  });
   let nextPlayer = markBattleBlocked({ ...player, rush }, instanceId);
+  if (nextPlayer.unitActionsThisTurn?.[instanceId]) {
+    const actions = { ...nextPlayer.unitActionsThisTurn };
+    delete actions[instanceId];
+    nextPlayer = { ...nextPlayer, unitActionsThisTurn: actions };
+  }
   nextPlayer = addTurnRestrictionModifier(
     nextPlayer,
     instanceId,

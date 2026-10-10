@@ -39,6 +39,8 @@ export type CardInstance = {
   commandHeld?: boolean;
   /** 母艦ゾード支払いによるホールド。融合バトル進入ホールドの※要件は満たさない。 */
   mothershipHold?: boolean;
+  /** コマンドゾーン: カードの使用・ラッシュ等の支払いとしてホールドされた（R-CMD-01 再利用不可）。 */
+  paymentHeld?: boolean;
   /** パワーゾーン: true = 裏向き（ダメージマーカー）。 */
   faceDown?: boolean;
   /** 一時的なSP変更（ターン終了時にクリア）。 */
@@ -79,6 +81,8 @@ export type PlayerState = {
   operation: CardInstance[];
   /** 除外ゾーン（ゲーム外。フレームワーク）。 */
   exile?: CardInstance[];
+  /** 直近のラッシュのカテゴリ支払いでホールドしたコマンド（コールのユニットを含む）。魔女バンドーラ等が参照。 */
+  lastRushPayment?: { rushedInstanceId: string; holdInstanceIds: string[] };
   /** コマンダーゾーン（フレームワーク）。 */
   commander?: CardInstance[];
   /** 裏向きパワーカードは受けたダメージとしてカウント。 */
@@ -181,7 +185,8 @@ export type PendingLeave = {
   ownerPlayerId: PlayerId;
   instanceId: string;
   fromZone: "rush" | "battle";
-  toZone: "discard" | "power" | "command";
+  /** deck_top: 持ち主の山札の上（ピンクストーム等。R-MOVE-01）。 */
+  toZone: "discard" | "power" | "command" | "deck_top";
   leavingCardId: string;
   phasePlayerId: PlayerId;
   /** レジスト選択をスキップして捨札へ。 */
@@ -195,7 +200,7 @@ export type PendingLeave = {
     ownerPlayerId: PlayerId;
     instanceId: string;
     fromZone: "rush" | "battle";
-    toZone: "discard" | "power" | "command";
+    toZone: "discard" | "power" | "command" | "deck_top";
     leavingCardId: string;
     phasePlayerId: PlayerId;
   };
@@ -508,6 +513,11 @@ export type GameState = {
   pendingRush?: PendingRush;
   /** 敵ラッシュへのモーフ反応窓。 */
   pendingMorph?: PendingMorph;
+  /**
+   * 「ラッシュしたとき」の効果の解決（選択）待ちのため、まだ開いていない「ラッシュされたとき」の反応
+   * （モーフ・カウンター）。選択がすべて終わった時点で開く（R-TIME-01, R-KW-MORPH-01）。
+   */
+  deferredRushReaction?: { rusherPlayerId: PlayerId; rushedInstanceId: string; phasePlayerId: PlayerId };
   /** ユニットがフィールドを離れる際の所有者応答。 */
   pendingLeave?: PendingLeave;
   /** チェイス: ライド中ユニット離場時のビークル乗り換え選択。 */

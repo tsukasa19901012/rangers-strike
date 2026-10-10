@@ -36,8 +36,7 @@ describe("R-KW-CALL-01 規定文", () => {
   });
 
   // 「単色はコマンドゾーンにそのカテゴリがなくてもよい [Q&A]」
-  it.fails("R-KW-CALL-01: 単色のユニットなら、コマンドゾーンに OT のコマンドがなくてもコールで OT ユニットをラッシュできる（出典: docs/rules/07 R-KW-CALL-01 補足、atwiki/page-1559）", () => {
-    // 既知の不具合: 未登録（コマンドゾーンに同カテゴリのカードがないとコールを使えない）
+  it("R-KW-CALL-01: 単色のユニットなら、コマンドゾーンに OT のコマンドがなくてもコールで OT ユニットをラッシュできる（出典: docs/rules/07 R-KW-CALL-01 補足、atwiki/page-1559）", () => {
     const s = state([CALL_OT, OT_S], {
       phase: "rush",
       player1: { hand: [inst(OT_S.id, "u")], rush: [call], power: powerCards(3) },
@@ -46,8 +45,7 @@ describe("R-KW-CALL-01 規定文", () => {
   });
 
   // 「ビークルをラッシュする際のコマンドのホールドには使えない」
-  it.fails("R-KW-CALL-01: コールのユニットはビークルをラッシュするためのコマンドとしてはホールドできない（出典: atwiki/page-1293 本文）", () => {
-    // 既知の不具合: 未登録（ビークルのラッシュでもコールのユニットがホールド候補に出る）
+  it("R-KW-CALL-01: コールのユニットはビークルをラッシュするためのコマンドとしてはホールドできない（出典: atwiki/page-1293 本文）", () => {
     const OT_V = vehicleDef("RSPEC-OT-V", { category: "OT" });
     const s = state([CALL_OT, OT_V], {
       phase: "rush",
@@ -82,8 +80,7 @@ describe("R-KW-CALL-01 規定文", () => {
   });
 
   // 「コールを持つユニットは…【ドーラ魔法】の対象になります」
-  it.fails("R-KW-CALL-01: 敵軍 RS-374 魔女バンドーラがいるとき、コールでホールドして特徴「魔法」のユニットをラッシュすると、そのコールのユニットが捨札になる（出典: atwiki/page-1293 Q2）", () => {
-    // 既知の不具合: 未登録（ホールドしたコールのユニットではなく、別の自軍コマンドが捨札になる）
+  it("R-KW-CALL-01: 敵軍 RS-374 魔女バンドーラがいるとき、コールでホールドして特徴「魔法」のユニットをラッシュすると、そのコールのユニットが捨札になる（出典: atwiki/page-1293 Q2）", () => {
     const MAGIC = unitDef("RSPEC-MAGIC", { category: "DA", powerCost: 1, features: ["魔法"] });
     const c = inst(CALL_DA.id, "call");
     const otherCmd = { ...inst("TST-OP-DA", "other"), commandHeld: true };

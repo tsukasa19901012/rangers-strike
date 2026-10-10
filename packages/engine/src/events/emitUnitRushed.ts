@@ -37,6 +37,18 @@ export function emitUnitRushedAndFinalize(
 
   const resolved = resolveUntilBlocked(state, queue, getEngineEventDispatcher());
   const beforePending = resolved.state.pendingRush;
+  // ルール: R-TIME-01, R-KW-MORPH-01 — 「ラッシュしたとき」の効果を解決し終えてから、相手の
+  // 「ラッシュされたとき」の反応（モーフ・カウンター）の機会が来る。選択待ちならその完了まで遅らせる。
+  if (hasPendingPromptBlockingEffectRush(resolved.state)) {
+    return {
+      state: {
+        ...resolved.state,
+        deferredRushReaction: { rusherPlayerId, rushedInstanceId, phasePlayerId },
+      },
+      logs: resolved.logs,
+      counterPending: false,
+    };
+  }
   const withMorph = openMorphReactionWindow(
     resolved.state,
     rusherPlayerId,
@@ -66,7 +78,7 @@ export function emitUnitRushedAndFinalize(
 }
 
 /** 効果ラッシュの誘発を止める（先に解決すべき操作待ちがある）状態か。 */
-function hasPendingPromptBlockingEffectRush(state: GameState): boolean {
+export function hasPendingPromptBlockingEffectRush(state: GameState): boolean {
   return !!(
     state.pendingDamagePayment ||
     state.pendingLeave ||
@@ -107,4 +119,28 @@ export function finalizeEffectRush(
     logs.push(...result.logs);
   }
   return { state: nextState, logs };
+}
+
+/**
+ * 遅らせていた「ラッシュされたとき」の反応（モーフ・カウンター）を、操作待ちがなくなった時点で開く。
+ */
+export function openDeferredRushReaction(state: GameState): GameState {
+  const deferred = state.deferredRushReaction;
+  if (!deferred || hasPendingPromptBlockingEffectRush(state)) return state;
+  const cleared: GameState = { ...state, deferredRushReaction: undefined };
+  const rushed = findInZone(cleared.players[deferred.rusherPlayerId], "rush", deferred.rushedInstanceId);
+  if (!rushed) return { ...cleared, activePlayer: deferred.phasePlayerId };
+  const withMorph = openMorphReactionWindow(
+    { ...cleared, activePlayer: deferred.phasePlayerId },
+    deferred.rusherPlayerId,
+    deferred.rushedInstanceId,
+    deferred.phasePlayerId,
+  );
+  if (withMorph.pendingMorph || withMorph.pendingEffectChoice) return withMorph;
+  return openRushCounterWindow(
+    withMorph,
+    deferred.rusherPlayerId,
+    deferred.rushedInstanceId,
+    deferred.phasePlayerId,
+  );
 }

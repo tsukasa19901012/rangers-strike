@@ -136,8 +136,7 @@ describe("R-KW-WRECKER-01 レッカー（総称）", () => {
   });
 
   // 「「バトルエリアに出られない」効果を持つユニットはレッカーできない」
-  it.fails("R-KW-WRECKER-01: 「バトルエリアに出られない」ユニットはレッカーで出せない（出典: atwiki/page-1740 本文）", () => {
-    // 既知の不具合: 未登録（RS-108 の選択候補に「バトルエリアに出られない」ユニットが含まれる）
+  it("R-KW-WRECKER-01: 「バトルエリアに出られない」ユニットはレッカーで出せない（出典: atwiki/page-1740 本文）", () => {
     const NO_ENTRY = unitDef("RSPEC-NO-ENTRY", { text: "※これはバトルエリアに出られない。" });
     const n = inst(NO_ENTRY.id, "n");
     const s = wreckerEnters([n], [NO_ENTRY]);
@@ -157,8 +156,7 @@ describe("R-KW-WRECKER-01 レッカー（総称）", () => {
   });
 
   // 「相手が条件を満たせるならば」（満たせなければ出せない）
-  it.fails("R-KW-WRECKER-01: 相手が条件（コマンドのホールド）を満たせないなら、そのユニットはレッカーで出せない（出典: atwiki/page-1740 本文）", () => {
-    // 既知の不具合: 未登録（ホールドできるコマンドがなくても RK-040 が RS-108 の候補に入り、条件なしで出される）
+  it("R-KW-WRECKER-01: 相手が条件（コマンドのホールド）を満たせないなら、そのユニットはレッカーで出せない（出典: atwiki/page-1740 本文）", () => {
     const VENO = realDef("RK-040");
     const bv = inst(VENO.id, "bv");
     const s = wreckerEnters([bv], [VENO as ReturnType<typeof unitDef>]);

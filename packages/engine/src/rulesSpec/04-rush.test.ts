@@ -1720,9 +1720,8 @@ describe("R-RUSH-30 「ラッシュされたとき」の窓", () => {
     expect(canCounter(s1, "player2", "RS-026:shippu")).toBe(false);
   });
 
-  // 既知の不具合: 未登録 — 「ラッシュしたとき」効果の選択（コマンドのホールド）を解決した後に「ラッシュされたとき」の窓が開かない
   // 「まずユニットのラッシュしたときの効果を適用してから、相手は可能であれば…発動」
-  it.fails("R-RUSH-30: 「ラッシュしたとき」の効果（モスブリザード）を適用した後、リリース状態のコマンドが残っていればカウンターできる（出典: grnrngr/faq-card-1 RS-026 Q10）", () => {
+  it("R-RUSH-30: 「ラッシュしたとき」の効果（モスブリザード）を適用した後、リリース状態のコマンドが残っていればカウンターできる（出典: grnrngr/faq-card-1 RS-026 Q10）", () => {
     const mammoth = inst("RS-036", "mammoth");
     const s0 = mk4({
       player1: { hand: [mammoth], power: powers(5), command: [released("TST-OP", "c1")] },

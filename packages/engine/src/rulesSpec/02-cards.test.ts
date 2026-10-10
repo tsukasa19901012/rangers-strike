@@ -109,8 +109,7 @@ describe("R-CARD-02 オペレーションの使用時期", () => {
 
 describe("R-CARD-03 空撃ち", () => {
   // 「発動しないが、発動したものとして捨札にする…はい、できます」
-  // 既知の不具合: 未登録 — 適正な対象がないオペレーションを空撃ち（ホールド・手札消費目的）で使用できない
-  it.fails("R-CARD-03: 対象のない（捨札が空の）オペレーションもコマンドをホールドして使用でき、捨札になる（出典: atwiki/page-581 Q1/A1, grnrngr/faq オペレーション）", () => {
+  it("R-CARD-03: 対象のない（捨札が空の）オペレーションもコマンドをホールドして使用でき、捨札になる（出典: atwiki/page-581 Q1/A1, grnrngr/faq オペレーション）", () => {
     const s = st({
       phase: "rush",
       player1: { hand: [inst("RS-068", "op")], power: powerCards(6), command: [inst("TST-OP-ET", "c")], discard: [] },
@@ -122,8 +121,7 @@ describe("R-CARD-03 空撃ち", () => {
   });
 
   // 「コマンドをホールドしたり、手札を減らす目的で…使用する…ことはできます」
-  // 既知の不具合: 未登録 — 山札2枚以下のデンジマシーンを空撃ちで使用できない
-  it.fails("R-CARD-03: 自軍山札が2枚以下でもデンジマシーンを使用でき、効果は発動せず捨札になる（出典: grnrngr/faq-card-1 RS-004）", () => {
+  it("R-CARD-03: 自軍山札が2枚以下でもデンジマシーンを使用でき、効果は発動せず捨札になる（出典: grnrngr/faq-card-1 RS-004）", () => {
     const deck = deckCards(2);
     const s = st({
       phase: "rush",
@@ -153,8 +151,7 @@ describe("R-CARD-04 ビークル", () => {
   });
 
   // 「ユニットを選ぶとき、ビークルを選ぶことはできますか？…いいえ」
-  // 既知の不具合: 未登録 — 「ユニットを選ぶ」効果（RS-024 any_field_unit）がビークルを対象にできてしまう
-  it.fails("R-CARD-04: 「ユニットを1体選ぶ」効果（圧縮冷凍）でビークルは選べない（出典: atwiki/page-141 Q5/A5）", () => {
+  it("R-CARD-04: 「ユニットを1体選ぶ」効果（圧縮冷凍）でビークルは選べない（出典: atwiki/page-141 Q5/A5）", () => {
     const s = st({
       phase: "rush",
       player1: { hand: [inst("RS-024", "op")], power: powerCards(6), command: [inst("TST-OP-OT", "c")] },

@@ -70,8 +70,7 @@ describe("R-TIME-01 5つのタイミング", () => {
   });
 
   // 「まずユニットのラッシュしたときの効果を適用してから」(faq-card-1 RS-026)
-  it.fails("R-TIME-01: 「ラッシュしたとき」の効果（プテラビーム）を解決した後、相手は「ラッシュされたとき」の疾風流超忍法を発動できる（出典: grnrngr/faq-card-1 RS-026 Q11）", () => {
-    // 既知の不具合: 未登録（ラッシュ時効果の選択を挟むと「ラッシュされたとき」の反応窓が開かない）
+  it("R-TIME-01: 「ラッシュしたとき」の効果（プテラビーム）を解決した後、相手は「ラッシュされたとき」の疾風流超忍法を発動できる（出典: grnrngr/faq-card-1 RS-026 Q11）", () => {
     let s = st({
       phase: "rush",
       player1: { hand: [inst("RS-039", "pt")], power: powers(6), command: [cmd("TST-OP", "c1")] },
@@ -321,8 +320,7 @@ describe("R-RES-01 1つずつ解決", () => {
   });
 
   // 「解決自体は持ち主あるいはテキストで指定されたプレイヤーが行う」(atwiki/page-1869)
-  it.fails("R-RES-01: プテラビームの「ホールド状態のカードを1枚選んで捨札」は効果の持ち主（ラッシュしたプレイヤー）が選ぶ（出典: atwiki/page-1869）", () => {
-    // 既知の不具合: 未登録（テキストに指定がないのに、選択権が相手プレイヤーに渡される）
+  it("R-RES-01: プテラビームの「ホールド状態のカードを1枚選んで捨札」は効果の持ち主（ラッシュしたプレイヤー）が選ぶ（出典: atwiki/page-1869）", () => {
     let s = st({
       phase: "rush",
       player1: { hand: [inst("RS-039", "pt")], power: powers(6), command: [cmd("TST-OP", "c1")] },
@@ -420,8 +418,7 @@ describe("R-RES-03 発動元が離れても解決は続く", () => {
 
 describe("R-RES-04 回数・空撃ち", () => {
   // 「適正な対象が存在しない…オペレーションを…使用する…はい、できます。」(faq-index オペレーション)
-  it.fails("R-RES-04: 山札が2枚以下で解決できないデンジマシーンでも、コマンドをホールドして使用し捨札にできる（出典: grnrngr/faq-index オペレーション, grnrngr/faq-card-1 RS-004 Q1）", () => {
-    // 既知の不具合: 未登録（解決不能なオペレーションの空撃ち使用が合法手にない）
+  it("R-RES-04: 山札が2枚以下で解決できないデンジマシーンでも、コマンドをホールドして使用し捨札にできる（出典: grnrngr/faq-index オペレーション, grnrngr/faq-card-1 RS-004 Q1）", () => {
     const s = st({
       phase: "rush",
       player1: { hand: [inst("RS-004", "dj")], power: powers(6), command: [cmd("TST-OP-OT", "c1")], deck: deck(2) },
@@ -431,8 +428,7 @@ describe("R-RES-04 回数・空撃ち", () => {
   });
 
   // 「「空撃ち」は可能。その場合は効果は不発となり」(atwiki/page-1869)
-  it.fails("R-RES-04: 自軍ユニットが1体もなくても、ガオ・ソウルを空撃ちで使用できる（出典: atwiki/page-1869, grnrngr/faq-index オペレーション）", () => {
-    // 既知の不具合: 未登録（対象のないオペレーションの空撃ちができない）
+  it("R-RES-04: 自軍ユニットが1体もなくても、ガオ・ソウルを空撃ちで使用できる（出典: atwiki/page-1869, grnrngr/faq-index オペレーション）", () => {
     const s0 = st({
       phase: "rush",
       player1: { hand: [inst("RS-025", "gs")], power: powers(6), command: [cmd("TST-OP", "c1")], deck: deck(3) },
@@ -749,8 +745,7 @@ describe("R-TGT-01 「ユニット」と「ユニットのカード」", () => {
   });
 
   // 「「ユニット」と表記されているときは、バトルエリアかラッシュエリアにある…」(faq-index リファレンス)
-  it.fails("R-TGT-01: ピンクストームの「ユニット」にはラッシュエリアのユニットも含まれる（出典: grnrngr/faq-index リファレンス）", () => {
-    // 既知の不具合: 未登録（ピンクストームの対象候補がバトルエリアのユニットに限られている）
+  it("R-TGT-01: ピンクストームの「ユニット」にはラッシュエリアのユニットも含まれる（出典: grnrngr/faq-index リファレンス）", () => {
     let s = st({
       phase: "battle",
       player1: { rush: [inst("RS-060", "mp")], battle: [inst("TST-UNIT-0", "f1"), inst("TST-UNIT-0", "f2"), inst("TST-UNIT-0", "f3")] },
@@ -777,8 +772,7 @@ describe("R-TGT-02 「選ばれない」と範囲指定", () => {
   });
 
   // 「これはアタックされる以外では相手に選ばれない」(RK-065 テキスト)
-  it.fails("R-TGT-02: 対照: プレイヤーが「選ぶ」ティラノソニックでは、相手に選ばれない仮面ライダーカブトRFを選べない（出典: grnrngr/faq-card-1 RS-026 Q1）", () => {
-    // 既知の不具合: 未登録（「相手に選ばれない」がティラノソニックの対象候補から除外されない）
+  it("R-TGT-02: 対照: プレイヤーが「選ぶ」ティラノソニックでは、相手に選ばれない仮面ライダーカブトRFを選べない（出典: grnrngr/faq-card-1 RS-026 Q1）", () => {
     let s = st({
       phase: "rush",
       player1: { hand: [inst("RS-035", "ty")], power: powers(6), command: [cmd("TST-OP", "c1")] },
@@ -933,8 +927,7 @@ describe("R-MOVE-01 移動は「場を離れる」", () => {
   });
 
   // 「「場を離れるとき」という表現は、場の中でそれぞれの場所から移動するときも含まれる」(atwiki/page-591)
-  it.fails("R-MOVE-01: ピンクストームで山札の上に戻されるときも、ダイノガッツを発動できる（出典: atwiki/page-591, grnrngr/faq-card-1 RS-027 Q5）", () => {
-    // 既知の不具合: 未登録（山札へ戻す効果で「場を離れるとき」の反応窓が開かない）
+  it("R-MOVE-01: ピンクストームで山札の上に戻されるときも、ダイノガッツを発動できる（出典: atwiki/page-591, grnrngr/faq-card-1 RS-027 Q5）", () => {
     let s = st({
       phase: "battle",
       player1: { rush: [inst("RS-060", "mp")], battle: [inst("TST-UNIT-0", "f1"), inst("TST-UNIT-0", "f2"), inst("TST-UNIT-0", "f3")] },

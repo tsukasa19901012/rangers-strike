@@ -19,6 +19,7 @@ import {
   grantSp1ToBattleUnit,
 } from "../namedUnitEffects";
 import { addTurnRuleModifier } from "../../core/scopedModifiers";
+import { canBeDeployedToBattleByEffect } from "../restrictions";
 import { TURN_RULE_IDS } from "../../types/scopedModifiers";
 import type { ComboOutcome } from "../comboTypes";
 
@@ -213,6 +214,7 @@ export function applyLegend2NcEffect(
     case "super_ninpo_water_transform": {
       const targets = state.players[enemyId].rush
         .filter((c) => isSmallUnit(state.definitions, c.cardId))
+        .filter((c) => canBeDeployedToBattleByEffect(state, enemyId, c))
         .map((c) => c.instanceId);
       const withChoice = startSelectUnitChoice(state, {
         playerId: enemyId,
@@ -255,6 +257,7 @@ export function applyLegend2NcEffect(
     case "green_crush": {
       const targets = state.players[enemyId].rush
         .filter((c) => isSmallUnit(state.definitions, c.cardId))
+        .filter((c) => canBeDeployedToBattleByEffect(state, enemyId, c))
         .map((c) => c.instanceId)
         .slice(0, 2);
       const withChoice = startSelectUnitChoice(state, {

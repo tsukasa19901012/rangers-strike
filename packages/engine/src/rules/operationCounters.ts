@@ -41,6 +41,7 @@ import {
 import { findCardOwner } from "./fieldLookup";
 import { canOfferRegister, toPendingRegister } from "./resist";
 import { canStrikeUnit } from "./combo";
+import { effectiveRushAdditionalCondition } from "./rushAdditionalCondition";
 import { opponentInfiniteChainBlocks } from "./turnModifiers";
 import { shouldBattleDestroyToPower } from "./turnModifierBridge";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
@@ -326,9 +327,87 @@ export function hasBattleCounterReactions(
       return true;
     }
     if (effectId === "hidden_ninja") return true;
+    if (isMechanicNinjaCounter(card.cardId) && isSmallUnit(state.definitions, defenderCard.cardId)) {
+      return true;
+    }
   }
 
   return false;
+}
+
+/** RK-008 メカニック忍者（自軍Sユニットがアタックされたときのカウンター）。 */
+export function isMechanicNinjaCounter(cardId: string): boolean {
+  return cardId === "RK-008";
+}
+
+/** RK-008: 自軍コマンドゾーンの、追加条件を持たない特徴「改造人間」の S ユニットのカード。 */
+export function collectMechanicNinjaRecruits(state: GameState, playerId: PlayerId): string[] {
+  const player = state.players[playerId];
+  return player.command
+    .filter((c) => {
+      const def = state.definitions[c.cardId];
+      if (!def || def.type !== "unit") return false;
+      if (!isSmallUnit(state.definitions, c.cardId)) return false;
+      if (!(def.features ?? []).includes("改造人間")) return false;
+      return !effectiveRushAdditionalCondition(state, playerId, c.cardId, def);
+    })
+    .map((c) => c.instanceId);
+}
+
+/**
+ * RK-008 メカニック忍者: 改造人間の S ユニットのカードをコマンドゾーンからラッシュエリアに出し、
+ * その後アタックされたユニットをコマンドゾーンにホールド状態で置く（このときバトルは行われない）。
+ * ルール: R-ZONE-08 — コマンドゾーンが5枚で置けないときはその場に留まり、バトルは通常通り行う。
+ */
+export function applyMechanicNinjaCounter(
+  state: GameState,
+  defenderId: PlayerId,
+  counterInstanceId: string,
+  recruitInstanceId: string | undefined,
+  pending: PendingBattle,
+): { state: GameState; log: string; battleCancelled: boolean } {
+  const discarded = discardHandCounter(state, defenderId, counterInstanceId);
+  if (!discarded) {
+    return {
+      state,
+      log: buildLogEntry(defenderId, "play_counter", "RK-008", state.definitions, "failed"),
+      battleCancelled: false,
+    };
+  }
+  let nextState = discarded.state;
+  let defender = nextState.players[defenderId];
+  if (recruitInstanceId && collectMechanicNinjaRecruits(nextState, defenderId).includes(recruitInstanceId)) {
+    const found = findInZone(defender, "command", recruitInstanceId);
+    if (found) {
+      const [, command] = removeAt(defender.command, found.index);
+      const recruit = { ...found.card };
+      delete recruit.commandHeld;
+      defender = { ...defender, command, rush: [...defender.rush, recruit] };
+    }
+  }
+  let battleCancelled = false;
+  const attacked = findInZone(defender, "battle", pending.defenderInstanceId);
+  if (attacked && defender.command.length < COMMAND_ZONE_MAX) {
+    const [, battle] = removeAt(defender.battle, attacked.index);
+    defender = {
+      ...defender,
+      battle,
+      command: [...defender.command, { instanceId: attacked.card.instanceId, cardId: attacked.card.cardId, commandHeld: true }],
+    };
+    battleCancelled = true;
+  }
+  nextState = { ...nextState, ...updatePlayer(nextState, defenderId, defender) };
+  return {
+    state: nextState,
+    log: buildLogEntry(
+      defenderId,
+      "play_counter",
+      "RK-008",
+      nextState.definitions,
+      battleCancelled ? "mechanic_ninja" : "mechanic_ninja:stay",
+    ),
+    battleCancelled,
+  };
 }
 
 export function hasRushCounterReactions(
@@ -1094,12 +1173,19 @@ export function finalizeLeavePending(
   const leavingCard = sanitizeUnitLeavingField(
     found.card,
     pending.fromZone,
-    pending.toZone,
+    pending.toZone === "deck_top" ? "deck" : pending.toZone,
   );
   let nextOwner: typeof owner;
   let medicalRescueToPower = false;
 
-  if (pending.toZone === "command") {
+  if (pending.toZone === "deck_top") {
+    // ルール: R-MOVE-01 — 山札に戻すのも「場を離れる」移動（ウラ向きで山札の上へ）。
+    nextOwner = {
+      ...owner,
+      [pending.fromZone]: fromCards,
+      deck: [{ instanceId: leavingCard.instanceId, cardId: leavingCard.cardId }, ...owner.deck],
+    };
+  } else if (pending.toZone === "command") {
     if (owner.command.length < COMMAND_ZONE_MAX) {
       nextOwner = {
         ...owner,
@@ -1160,7 +1246,9 @@ export function finalizeLeavePending(
     ? "power" // ルール: R-REPL-02 — 捨札を経由しないので「撃破されて捨札になったとき」は発動しない
     : pending.toZone === "command" && owner.command.length >= COMMAND_ZONE_MAX
       ? "discard"
-      : pending.toZone;
+      : pending.toZone === "deck_top"
+        ? "deck"
+        : pending.toZone;
 
   const leaveFx = emitUnitLeftZoneAndResolve(nextStateBase, {
     ownerPlayerId: pending.ownerPlayerId,
