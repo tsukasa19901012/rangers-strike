@@ -8,7 +8,7 @@ import { getReactionChooserPlayerId } from "./core/legalActions";
 import { createTestState, inst } from "./testing/fixtures";
 
 describe("effectStack", () => {
-  it("orders leave before strike before battle before rush", () => {
+  it("without a turn-player order, frames follow the nesting order (no fixed type priority; R-PRI-02)", () => {
     const state = createTestState({
       pendingLeave: {
         ownerPlayerId: "player2",
@@ -59,7 +59,6 @@ describe("effectStack", () => {
             id: "stale",
             kind: "strike_reaction",
             actorPlayerId: "player1",
-            priority: 2,
           },
         ],
       },
@@ -88,5 +87,25 @@ describe("effectStack", () => {
     const stack = buildEffectStack(state);
     expect(stack.frames[0]?.kind).toBe("register_choice");
     expect(getReactionChooserPlayerId(state)).toBe("player2");
+  });
+
+  it("follows the turn player's chosen resolution order over the nesting order (R-SIM-01)", () => {
+    const state = createTestState({
+      reactionResolutionOrder: ["pendingRush", "pendingLeave"],
+      pendingLeave: {
+        ownerPlayerId: "player2",
+        instanceId: "u1",
+        fromZone: "battle",
+        toZone: "discard",
+        leavingCardId: "TST-UNIT-0",
+        phasePlayerId: "player1",
+      },
+      pendingRush: {
+        rusherPlayerId: "player1",
+        rushedInstanceId: "r1",
+        phasePlayerId: "player1",
+      },
+    });
+    expect(buildEffectStack(state).frames.map((f) => f.id)).toEqual(["pendingRush", "pendingLeave"]);
   });
 });

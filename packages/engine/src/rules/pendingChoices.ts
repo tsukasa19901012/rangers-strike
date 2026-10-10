@@ -39,6 +39,7 @@ import { applyReanimate } from "./reanimate";
 import {
   hasDinoChronicleLeaveReaction,
   hasDinoGutsLeaveReaction,
+  processMutualDestruction,
   tryLeaveField,
 } from "./operationCounters";
 import { completeToPowerOnDestroyChoice } from "./toPowerOnDestroy";
@@ -3957,6 +3958,22 @@ export function applyEffectChoiceSelect(
     case "simultaneous_order": {
       if (!pending.validInstanceIds.includes(instanceId)) {
         return { error: "invalid_target" };
+      }
+      if (pending.mutualDestructionMeta) {
+        // ルール: R-BTL-02, R-SIM-01 — 相打ちの処理順はターンプレイヤーが決める。
+        const cleared = clearChoice(state, pending.phasePlayerId);
+        const processed = processMutualDestruction(cleared, pending.mutualDestructionMeta, instanceId);
+        if (processed.deferred) {
+          const log = buildLogEntry(
+            pending.playerId,
+            "resolve_effect_choice",
+            pending.sourceCardId,
+            state.definitions,
+            `${pending.effectId}:${instanceId}`,
+          );
+          return { state: processed.state, log };
+        }
+        return finishChoice(processed.state, pending, instanceId);
       }
       const nextState = applySimultaneousOrderChoice(state, instanceId);
       return finishChoice(nextState, pending, instanceId);

@@ -201,11 +201,12 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-TIME-01",
-    // ルール: R-PRI-02 は種類別の固定優先順位を否定している。下記 assertions はエンジン内部の反応窓順（02-D13）の記述であり、ルールではない。
-    ruleRef: "R-PRI-02, R-TIME-04",
-    title: "反応窓優先度: 離場→レジスト→ストライク→バトル→ラッシュ",
+    // ルール: R-PRI-02 — 種類別の固定優先順位はない。同時に開いた反応窓はターンプレイヤーが順番を選び、
+    // それ以外は入れ子（R-TIME-04）の順に解決する。
+    ruleRef: "R-PRI-02, R-SIM-01, R-TIME-04",
+    title: "反応窓の順序: 同時ならターンプレイヤーが選択、それ以外は入れ子順",
     assertions: [
-      "buildEffectStack の priority 順",
+      "buildEffectStack は reactionResolutionOrder（ターンプレイヤーの選択）→入れ子順",
       "hasOpenReactionWindow 中はフェイズ行動制限",
     ],
   },

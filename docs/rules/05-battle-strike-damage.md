@@ -79,7 +79,7 @@
 相打ちの2体は同時に撃破された扱い。互いに相手を撃破したことになる。その後の捨札処理と効果の順はターンプレイヤーが決める。
 - 出典: `atwiki/page-1826`「２つのユニットは同時に撃破された扱いになる」、`grnrngr/faq-card-1` RS-018 Q12「まず同タイミングでお互いに「撃破」扱いになります」、`page-1974`（「バトルの結果が相打ちならゴーオンゴールドは敵軍ユニットを撃破したし、敵軍ユニットはゴーオンゴールドを撃破した事になる」）[Q&A]
 - Web: https://w.atwiki.jp/renst/pages/1826.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html , https://w.atwiki.jp/renst/pages/1974.html
-- 実装: ? 順序選択 UI は一部未実装（05-D17）
+- 実装: ✅ 05-D17 修正済み。相打ちで処理順により結果が変わるとき（プテラノドンとレスキューファイター等）、ターンプレイヤーに `simultaneous_order` の選択を開き、選んだユニットから処理する（`rules/operationCounters.ts` `processMutualDestruction`、Web UI は `EffectChoiceModal`、CPU は各順の結果を評価して選ぶ）。「撃破した」ことによる攻撃側の効果（一点突破等）は順番によらず解決する。
 
 #### R-BTL-03 「勝っても撃破される」は撃破されたユニット自身の効果 [Q&A] `web照合済(2026-10-10)`
 「敵軍ターン中、SP1以上のユニットとバトルしたとき勝っても撃破される」による撃破は、バトルで負けた撃破ではない。相手はそのユニットを撃破したことにならない。

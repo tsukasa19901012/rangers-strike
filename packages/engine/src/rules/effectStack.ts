@@ -13,20 +13,15 @@ import {
 } from "./simultaneousEffects";
 import { getMorphReactionActorId } from "./morphProcedure";
 
-/** 反応窓の優先順位（小さいほど先に解決）。公式: 離場 → ストライク → バトル → ラッシュ。 */
-const FRAME_PRIORITY: Record<EffectStackFrameKind, number> = {
-  leave_reaction: 0,
-  register_choice: 1,
-  strike_reaction: 2,
-  battle_reaction: 3,
-  morph_reaction: 4,
-  rush_reaction: 5,
-  damage_payment: 6,
-  effect_choice: 7,
-  battle_entry: 8,
-  command_payment: 9,
-  zord_setup: 10,
-};
+/*
+ * ルール: R-PRI-02 — 効果の種類別の固定優先順位はない（旧実装の固定 priority 0〜10 は廃止。02-D13）。
+ * フレームの並びは次の 2 つだけで決まる。
+ *   1. ターンプレイヤーが選んだ解決順（reactionResolutionOrder。R-SIM-01）。同時に 2 つ以上の
+ *      反応窓が開いたら simultaneous_order の選択を開く（simultaneousEffects.ts）。
+ *   2. 選択の対象でないフレームは処理の入れ子順（R-TIME-04）。buildEffectStack が push する順
+ *      ＝「いま処理している手続きの内側にあるもの」から並べる（離場の対応・レジストは撃破処理の
+ *      内側、支払い・選択はそれを要求した効果の内側、バトル進入は最も外側）。数値の優先度は持たない。
+ */
 
 function frame(
   id: string,
@@ -39,7 +34,6 @@ function frame(
     kind,
     actorPlayerId,
     simultaneousGroupId,
-    priority: FRAME_PRIORITY[kind],
   };
 }
 
@@ -124,12 +118,26 @@ export function buildEffectStack(state: GameState): EffectStack {
       ),
     );
   }
+  if (state.pendingChase) {
+    frames.push(
+      frame("pendingChase", "effect_choice", state.pendingChase.chaserPlayerId),
+    );
+  }
   if (state.pendingEffectChoice && state.pendingEffectChoice.effectId !== "morph_replacement") {
     frames.push(
       frame(
         "pendingEffectChoice",
         "effect_choice",
         state.pendingEffectChoice.playerId,
+      ),
+    );
+  }
+  if (state.pendingRideOffChoice) {
+    frames.push(
+      frame(
+        "pendingRideOffChoice",
+        "effect_choice",
+        state.pendingRideOffChoice.playerId,
       ),
     );
   }
@@ -151,38 +159,26 @@ export function buildEffectStack(state: GameState): EffectStack {
       ),
     );
   }
-  if (state.pendingChase) {
-    frames.push(
-      frame("pendingChase", "effect_choice", state.pendingChase.chaserPlayerId),
-    );
-  }
-  if (state.pendingRideOffChoice) {
-    frames.push(
-      frame(
-        "pendingRideOffChoice",
-        "effect_choice",
-        state.pendingRideOffChoice.playerId,
-      ),
-    );
-  }
   if (state.pendingZordSetup) {
     frames.push(
       frame("pendingZordSetup", "zord_setup", state.pendingZordSetup.playerId),
     );
   }
 
+  // ルール: R-SIM-01 — ターンプレイヤーが選んだ順が入れ子順より優先する。
+  const nesting = frames.map((f, i) => ({ f, i }));
   const order = state.reactionResolutionOrder;
-  frames.sort((a, b) => {
+  nesting.sort((a, b) => {
     if (order?.length) {
-      const aIdx = order.indexOf(a.id);
-      const bIdx = order.indexOf(b.id);
+      const aIdx = order.indexOf(a.f.id);
+      const bIdx = order.indexOf(b.f.id);
       if (aIdx >= 0 && bIdx >= 0) return aIdx - bIdx;
       if (aIdx >= 0) return -1;
       if (bIdx >= 0) return 1;
     }
-    return a.priority - b.priority || a.id.localeCompare(b.id);
+    return a.i - b.i;
   });
-  return { frames };
+  return { frames: nesting.map((n) => n.f) };
 }
 
 export function withSyncedEffectStack(state: GameState): GameState {

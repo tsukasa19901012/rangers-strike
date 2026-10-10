@@ -226,6 +226,21 @@ export type PendingLeave = {
   fusionReturnOnDiscard?: "battle";
 };
 
+/**
+ * 相打ち（R-BTL-02）の処理順選択の続行データ。2 体の撃破は同時に起きた扱いで、
+ * ターンプレイヤーが先に処理するユニットを選ぶ（R-SIM-01）。
+ */
+export type MutualDestructionMeta = {
+  attackerPlayerId: PlayerId;
+  attackerInstanceId: string;
+  attackerCardId: string;
+  defenderOwner: PlayerId;
+  defenderCard: CardInstance;
+  defenderIntent: PendingLeave;
+  attackerIntent: PendingLeave;
+  focusedBreakthroughQualifies: boolean;
+};
+
 /** ゲーム続行前にプレイヤーが対象/オプションを選ぶ必要がある。 */
 export type SeabedDrawMeta = {
   drawCount: number;
@@ -374,6 +389,8 @@ export type PendingEffectChoice = {
   skipShurikenIntercept?: boolean;
   /** RS-322 人身略取: 相手が満たす追加条件の進行。 */
   abductionMeta?: { payerId: PlayerId; cardId: string; remaining: number };
+  /** 相打ちの処理順選択（simultaneous_order。validInstanceIds は撃破された 2 体）。 */
+  mutualDestructionMeta?: MutualDestructionMeta;
   /** 敵ターン撃破時の任意パワー送り（to_power_on_destroy）。 */
   toPowerOnDestroyMeta?: {
     card: CardInstance;
@@ -506,7 +523,7 @@ export type EffectStackFrame = {
   actorPlayerId?: PlayerId;
   /** 同時解決グループID。同じIDのフレームは一括解決。 */
   simultaneousGroupId?: string;
-  priority: number;
+  // ルール: R-PRI-02 — 種類別の固定優先度（旧 priority 0〜10）は持たない。順序は rules/effectStack.ts 参照。
 };
 
 export type EffectStack = {
