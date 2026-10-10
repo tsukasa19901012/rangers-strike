@@ -41,7 +41,7 @@ import { applySimultaneousOrderChoice } from "./simultaneousEffects";
 import { applyAssaultToCommandHold } from "./legend3/restrictions";
 import { findInZone, opponent, performDeckDraws, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
-import { markJuuKunDoAttackerActed } from "./juuKunDo";
+import { LION_DANCE_EFFECT_ID, markJuuKunDoAttackerActed } from "./juuKunDo";
 import { findCardInField, findCardOwner } from "./fieldLookup";
 import { bounceToHand } from "./bounce";
 import { applyReanimate } from "./reanimate";
@@ -2412,6 +2412,15 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (pending.kind === "seabed_draw") {
     return applySeabedDrawSkip(state, playerId);
   }
+  if (pending.effectId === LION_DANCE_EFFECT_ID) {
+    // RS-100【超忍法・舞獅子】: 出さないことを選んでも「その後、山札をシャッフルする」。
+    const player = state.players[playerId];
+    return finishChoice(
+      { ...state, ...updatePlayer(state, playerId, { ...player, deck: shuffleDeck(player.deck) }) },
+      pending,
+      "skipped",
+    );
+  }
   if (pending.kind === "optional_deck_draw") {
     return finishChoice(state, pending, "skipped");
   }
@@ -3496,33 +3505,26 @@ export function applyEffectChoiceSelect(
 
     case "select_command": {
       if (pending.effectId === "dark_dual_blade") {
+        // RS-102【暗黒二刀流・巌流剣】: パワーを1枚選び、続けてコマンドを1枚選ぶ。2枚そろってから捨札にする。
         const enemyId = opponent(pending.playerId);
         const enemy = state.players[enemyId];
         const powerFound = findInZone(enemy, "power", instanceId);
-        if (powerFound) {
-          const [, power] = removeAt(enemy.power, powerFound.index);
-          let nextState = {
-            ...state,
-            ...updatePlayer(state, enemyId, {
-              ...enemy,
-              power,
-              discard: [...enemy.discard, powerFound.card],
-            }),
-          };
-          const commandTargets = collectCommandIds(nextState, enemyId, "any");
-          if (commandTargets.length === 0) {
-            return finishChoice(nextState, pending, cardName(state.definitions, powerFound.card.cardId));
-          }
-          return {
-            state: openEffectChoice(clearChoice(nextState, pending.playerId), {
-              ...pending,
-              effectId: "dark_dual_blade_command",
-              playerId: pending.playerId,
-              validInstanceIds: commandTargets,
-              commandAction: "discard",
-            }),
-          };
+        if (!powerFound || powerFound.card.faceDown) return { error: "invalid_target" };
+        const commandTargets = collectCommandIds(state, enemyId, "any");
+        if (commandTargets.length === 0) {
+          return finishChoice(state, pending, "none");
         }
+        return {
+          state: openEffectChoice(clearChoice(state, pending.playerId), {
+            ...pending,
+            effectId: "dark_dual_blade_command",
+            playerId: pending.playerId,
+            validInstanceIds: commandTargets,
+            selectedInstanceIds: [],
+            darkDualBladePowerInstanceId: instanceId,
+            commandAction: "discard",
+          }),
+        };
       }
       if (pending.effectId === "dark_dual_blade_command") {
         const enemyId = opponent(pending.playerId);
@@ -3530,10 +3532,13 @@ export function applyEffectChoiceSelect(
         const found = findInZone(enemy, "command", instanceId);
         if (!found) return { error: "invalid_target" };
         const [, command] = removeAt(enemy.command, found.index);
+        const powerId = pending.darkDualBladePowerInstanceId;
+        const powerCard = enemy.power.find((c) => c.instanceId === powerId);
         const nextEnemy = {
           ...enemy,
           command,
-          discard: [...enemy.discard, found.card],
+          power: enemy.power.filter((c) => c.instanceId !== powerId),
+          discard: [...enemy.discard, ...(powerCard ? [powerCard] : []), found.card],
         };
         return finishChoice(
           { ...state, ...updatePlayer(state, enemyId, nextEnemy) },
@@ -4171,6 +4176,13 @@ export function applyEffectChoiceSelect(
         );
         if (!castoff) return { error: "invalid_target" };
         return finishChoice(castoff.state, pending, castoff.log ?? cardName(state.definitions, kept.cardId));
+      } else if (pending.effectId === LION_DANCE_EFFECT_ID) {
+        // RS-100【超忍法・舞獅子】: 選んだハリケンイエローをバトルエリアに出し、山札をシャッフルする。
+        nextPlayer = {
+          ...player,
+          deck: shuffleDeck([...rest, ...deckTail]),
+          battle: [...player.battle, kept],
+        };
       } else if (pending.unitDestination === "rush") {
         nextPlayer = {
           ...player,

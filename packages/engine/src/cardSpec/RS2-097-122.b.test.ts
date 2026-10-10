@@ -154,8 +154,7 @@ describe("RS-106 デカレッド", () => {
   });
 
   // R-CN-02: CN の欄の効果は並び順が CN と一致して出たときだけ
-  it.fails("RS-106: 1番目以外で出たとき（NC 不成立）は【ジュウクンドー】を発動できない（出典: atwiki/page-23「CN：1」・R-CN-02）", () => {
-    // 既知の不具合: CARD-RS-106 【ジュウクンドー】が NC の成立を確認せず、何番目に出ても（バトルエリアにいれば）発動できる
+  it("RS-106: 1番目以外で出たとき（NC 不成立）は【ジュウクンドー】を発動できない（出典: atwiki/page-23「CN：1」・R-CN-02）", () => {
     const s = redFirst({ rush: [inst("SPEC-E1K", "a")] }, 1);
     expect(canJuu(s, "RS-106:dr")).toBe(false);
   });
@@ -178,8 +177,7 @@ describe("RS-106 デカレッド", () => {
     expect(canJuu(s, "RS-106:dr")).toBe(true);
   });
 
-  it.fails("RS-106: 公式Q&A — コロンで CN が2になっているとき、1番目に出ても発動しない（出典: grnrngr/faq-card-2 RS-106 Q2・R-CN-02）", () => {
-    // 既知の不具合: CARD-RS-106 【ジュウクンドー】が NC の成立を確認しない（CN と並び順が違っても発動できる）
+  it("RS-106: 公式Q&A — コロンで CN が2になっているとき、1番目に出ても発動しない（出典: grnrngr/faq-card-2 RS-106 Q2・R-CN-02）", () => {
     const s = redFirst({ rush: [inst("RS-140", "colon"), inst("SPEC-E1K", "a")] }, 0);
     expect(canJuu(s, "RS-106:dr")).toBe(false);
   });

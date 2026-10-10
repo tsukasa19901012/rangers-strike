@@ -709,7 +709,7 @@ describe("R-ATK-05 「アタックするかわりに」", () => {
   // 「アタックとみなして「RS-018 隠流忍術」を発動できますか？」「いいえ」
   it("R-ATK-05: ジュウクンドーはアタックではないので相手は隠流忍術を使えない（出典: grnrngr/faq-card-2 RS-106 Q4）", () => {
     let s = battleState({
-      player1: { battle: [inst("RS-106", "deka")] },
+      player1: { battle: [{ ...inst("RS-106", "deka"), activatedNcEffects: ["juu_kun_do"] }] },
       player2: {
         battle: [inst("TST-UNIT-2", "d")],
         rush: [inst("TST-UNIT-0", "r")],
@@ -727,7 +727,7 @@ describe("R-ATK-05 「アタックするかわりに」", () => {
   // 「「アタックするかわりに」を発動条件とする「ジュウクンドー」の効果は発動できない」
   it("R-ATK-05: 敵軍がジェットファルコンだけでデカレッドがアタックできないならジュウクンドーは発動できない（出典: grnrngr/faq-card-2 RS-106 Q3・faq-card-3 RS-135 Q7）", () => {
     const s = battleState({
-      player1: { battle: [inst("RS-106", "deka")] },
+      player1: { battle: [{ ...inst("RS-106", "deka"), activatedNcEffects: ["juu_kun_do"] }] },
       player2: { battle: [inst("RS-135", "jet")], rush: [inst("TST-UNIT-0", "r")] },
     });
     expect(legalOfType(s, "use_juu_kun_do")).toHaveLength(0);
@@ -736,7 +736,7 @@ describe("R-ATK-05 「アタックするかわりに」", () => {
   // RS-106 はエラッタで「アタックできるとき」が条件（R-ERR-RS106）
   it("R-ATK-05: デカレッドはエラッタにより、敵軍バトルエリアにユニットがいなければジュウクンドーを発動できない（出典: grnrngr/faq-card-2 RS-106 Q6・wikiwiki/エラッタ）", () => {
     const s = battleState({
-      player1: { battle: [inst("RS-106", "deka")] },
+      player1: { battle: [{ ...inst("RS-106", "deka"), activatedNcEffects: ["juu_kun_do"] }] },
       player2: { rush: [inst("TST-UNIT-0", "r")] },
     });
     expect(legalOfType(s, "use_juu_kun_do")).toHaveLength(0);
@@ -745,7 +745,7 @@ describe("R-ATK-05 「アタックするかわりに」", () => {
   // 「アタックしてもよいタイミング（…まだしていない）であれば」
   it("R-ATK-05: アタック済みのデカレッドはジュウクンドーを発動できない（出典: atwiki/page-318 注釈）", () => {
     let s = battleState({
-      player1: { battle: [inst("RS-106", "deka")] },
+      player1: { battle: [{ ...inst("RS-106", "deka"), activatedNcEffects: ["juu_kun_do"] }] },
       player2: { battle: [inst("TST-UNIT-0", "d1"), inst("TST-UNIT-0", "d2")], rush: [inst("TST-UNIT-0", "r")] },
     });
     s = settle(attack(s, "RS-106:deka", "TST-UNIT-0:d1"));
@@ -756,7 +756,7 @@ describe("R-ATK-05 「アタックするかわりに」", () => {
   // 「アタックする権利を失う代わりに効果を発動」
   it("R-ATK-05: ジュウクンドーを発動したデカレッドはそのターンにアタックできない（出典: atwiki/page-318 注釈）", () => {
     let s = battleState({
-      player1: { battle: [inst("RS-106", "deka")] },
+      player1: { battle: [{ ...inst("RS-106", "deka"), activatedNcEffects: ["juu_kun_do"] }] },
       player2: { battle: [inst("TST-UNIT-0", "d")], rush: [inst("TST-UNIT-0", "r")] },
     });
     s = act(s, { type: "use_juu_kun_do", playerId: "player1", attackerInstanceId: "RS-106:deka" });
@@ -951,7 +951,7 @@ describe("R-BTL-03 「勝っても撃破される」は撃破されたユニッ�
   // 「オペレーションやユニットの効果で…「撃破」…レジストは発動できません」
   it("R-BTL-03: 効果（ジュウクンドー）で撃破されたレジスト持ちユニットはレジストを発動できない（出典: atwiki/page-1289 Q2）", () => {
     let s = battleState({
-      player1: { battle: [inst("RS-106", "deka")] },
+      player1: { battle: [{ ...inst("RS-106", "deka"), activatedNcEffects: ["juu_kun_do"] }] },
       player2: { battle: [inst("TST-UNIT-0", "d")], rush: [inst("RS-548", "tyranno")] },
     });
     s = act(s, { type: "use_juu_kun_do", playerId: "player1", attackerInstanceId: "RS-106:deka" });

@@ -18,8 +18,17 @@ function partnerCardIds(named: OnAttackNamed): string[] | undefined {
   return trigger.comboPartnerCardIds;
 }
 
-/** NC 成立が必要な「アタックするとき」の効果か（「ナンバーに関係なく発動する」の但し書きを持つ）。 */
+/**
+ * CN の欄に書かれた（ナンバーコンビネーションの）「アタックするとき」の効果。但し書きが無くても
+ * NC が成立したときだけ有効（ルール: R-CN-01 / R-CN-02）。
+ * - RS-104 アバレイエロー【プテラダガー】（atwiki/page-233「CN：3」）
+ * - RS-106 / PR-006 デカレッド【ジュウクンドー】（atwiki/page-23「CN：1」。発動可否は rules/juuKunDo.ts）
+ */
+const CN_COLUMN_ON_ATTACK_EFFECT_IDS = new Set<string>(["ptera_dagger", "juu_kun_do"]);
+
+/** NC 成立が必要な「アタックするとき」の効果か（「ナンバーに関係なく発動する」の但し書きを持つ、または CN の欄の効果）。 */
 export function isNcGatedOnAttackEffect(named: OnAttackNamed): boolean {
+  if (CN_COLUMN_ON_ATTACK_EFFECT_IDS.has(named.effectId)) return true;
   return !!partnerCardIds(named)?.length || (named.text ?? "").includes("ナンバーに関係なく");
 }
 

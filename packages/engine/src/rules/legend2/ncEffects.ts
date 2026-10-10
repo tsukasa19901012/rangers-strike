@@ -10,7 +10,10 @@ import {
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { buildLogEntry } from "../../log/formatLog";
 import {
+  applyConfirmEffectChoice,
+  applyUnitLeave,
   collectCommandIds,
+  openEffectChoice,
   startSelectCommandChoice,
   startSelectUnitChoice,
 } from "../pendingChoices";
@@ -111,19 +114,35 @@ function destroyAllEnemyAtBp(
     return { state, logs: [ncLog(playerId, card.cardId, state.definitions, `${effectId}:none`)] };
   }
 
-  let nextEnemy = { ...enemy };
-  for (const zone of ["rush", "battle"] as const) {
-    const kept = nextEnemy[zone].filter((c) => !destroyIds.has(c.instanceId));
-    const removed = nextEnemy[zone].filter((c) => destroyIds.has(c.instanceId));
-    nextEnemy = {
-      ...nextEnemy,
-      [zone]: kept,
-      discard: [...nextEnemy.discard, ...removed],
-    };
+  // 撃破は離場パイプライン（applyUnitLeave）を通す。直接捨札に移すと「撃破されたとき」の効果
+  // （RS-116 マンドラ坊や【鳴き声】等）が誘発しない（ルール: R-DESTROY-01、R-TIME-04）。
+  // 複数体の撃破・離場反応での中断／再開は select_units_bp_budget の確定処理を共用する。
+  if (state.pendingEffectChoice) {
+    // 別の選択が開いているときは、残りを順に撃破する（中断・再開の仕組みは使えない）。
+    let next = state;
+    for (const id of destroyIds) {
+      const leave = applyUnitLeave(next, id, "discard", playerId);
+      if (!("error" in leave)) next = leave.state;
+    }
+    return { state: next, logs: [ncLog(playerId, card.cardId, state.definitions, effectId)] };
   }
-
+  const opened = openEffectChoice(state, {
+    playerId,
+    effectId,
+    sourceCardId: card.cardId,
+    sourceInstanceId: card.instanceId,
+    phasePlayerId: playerId,
+    kind: "select_units_bp_budget",
+    validInstanceIds: [...destroyIds],
+    selectedInstanceIds: [...destroyIds],
+    optional: false,
+  });
+  const confirmed = applyConfirmEffectChoice(opened, playerId);
+  if ("error" in confirmed) {
+    return { state, logs: [ncLog(playerId, card.cardId, state.definitions, `${effectId}:none`)] };
+  }
   return {
-    state: { ...state, ...updatePlayer(state, enemyId, nextEnemy) },
+    state: confirmed.state,
     logs: [ncLog(playerId, card.cardId, state.definitions, effectId)],
   };
 }
@@ -195,9 +214,10 @@ export function applyLegend2NcEffect(
       };
     }
     case "super_ninpo_water_transform": {
+      // 出典: atwiki/page-319 — 「Sユニットを1体選んで手札に戻す」。バトルエリアに出られるかは関係しない
+      // （マンドラ坊やなど出られない S ユニットも戻す対象）。
       const targets = state.players[enemyId].rush
         .filter((c) => isSmallUnit(state.definitions, c.cardId))
-        .filter((c) => canBeDeployedToBattleByEffect(state, enemyId, c))
         .map((c) => c.instanceId);
       const withChoice = startSelectUnitChoice(state, {
         playerId: enemyId,
@@ -217,7 +237,9 @@ export function applyLegend2NcEffect(
       const enemy = state.players[enemyId];
       const powerTargets = enemy.power.filter((c) => !c.faceDown).map((c) => c.instanceId);
       const commandTargets = collectCommandIds(state, enemyId, "any");
-      if (powerTargets.length === 0 && commandTargets.length === 0) {
+      // 公式Q&A（faq-card-2 RS-102 Q1）: どちらか一方のゾーンにしか選べるカードが無ければ発動できない
+      // （「そうしたとき、選んだ2枚を捨札にする」— 2枚とも選べたときだけ捨札にする）。
+      if (powerTargets.length === 0 || commandTargets.length === 0) {
         return { state, logs: [ncLog(playerId, card.cardId, state.definitions, "dark_dual_blade:none")] };
       }
       const withChoice = startSelectCommandChoice(state, {
@@ -228,7 +250,7 @@ export function applyLegend2NcEffect(
         phasePlayerId: playerId,
         commandFilter: "any",
         commandAction: "discard",
-        validInstanceIds: powerTargets.length > 0 ? powerTargets : commandTargets,
+        validInstanceIds: powerTargets,
       });
       return {
         state: withChoice ?? state,

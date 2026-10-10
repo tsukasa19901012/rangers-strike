@@ -32,7 +32,8 @@ function unitDef(id: string, name: string, bp: number) {
 
 describe("RS-106 juu_kun_do attack replacement", () => {
   it("offers use_juu_kun_do when RS-106 can attack an enemy", () => {
-    const attacker = inst("RS-106", "att");
+    // R-CN-02: 【ジュウクンドー】は NC（CN1）成立時のみ — 成立済みとして置く。
+    const attacker = { ...inst("RS-106", "att"), activatedNcEffects: ["juu_kun_do"] };
     const defender = inst("TST-UNIT-0", "def");
     const state = createTestState({
       phase: "battle",
@@ -48,7 +49,8 @@ describe("RS-106 juu_kun_do attack replacement", () => {
   });
 
   it("does not offer use_juu_kun_do when no legal attack target exists", () => {
-    const attacker = inst("RS-106", "att");
+    // R-CN-02: 【ジュウクンドー】は NC（CN1）成立時のみ — 成立済みとして置く。
+    const attacker = { ...inst("RS-106", "att"), activatedNcEffects: ["juu_kun_do"] };
     const jetFalcon = inst("RS-135", "jf");
     const state = createTestState({
       phase: "battle",
@@ -76,7 +78,8 @@ describe("RS-106 juu_kun_do attack replacement", () => {
   });
 
   it("R-ERR-RS106: 撃破したとき（そうしたとき）だけ、これはアタックできなくなる", () => {
-    const attacker = inst("RS-106", "att");
+    // R-CN-02: 【ジュウクンドー】は NC（CN1）成立時のみ — 成立済みとして置く。
+    const attacker = { ...inst("RS-106", "att"), activatedNcEffects: ["juu_kun_do"] };
     const e1 = inst("E1", "e1");
     const r1 = inst("E1", "r1");
     let state = createTestState({
@@ -122,7 +125,8 @@ describe("RS-106 juu_kun_do attack replacement", () => {
   });
 
   it("R-ERR-RS106: 1体も撃破しなかったときはアタックできる", () => {
-    const attacker = inst("RS-106", "att");
+    // R-CN-02: 【ジュウクンドー】は NC（CN1）成立時のみ — 成立済みとして置く。
+    const attacker = { ...inst("RS-106", "att"), activatedNcEffects: ["juu_kun_do"] };
     const e1 = inst("E1", "e1");
     let state = createTestState({
       phase: "battle",
@@ -157,7 +161,8 @@ describe("RS-106 juu_kun_do attack replacement", () => {
   });
 
   it("allows attack after skipping juu_kun_do", () => {
-    const attacker = inst("RS-106", "att");
+    // R-CN-02: 【ジュウクンドー】は NC（CN1）成立時のみ — 成立済みとして置く。
+    const attacker = { ...inst("RS-106", "att"), activatedNcEffects: ["juu_kun_do"] };
     const defender = inst("TST-UNIT-0", "def");
     let state = createTestState({
       phase: "battle",
@@ -191,7 +196,8 @@ describe("RS-106 juu_kun_do attack replacement", () => {
 
 describe("RS-106 juu_kun_do", () => {
   it("opens multi-select with all enemy rush units", () => {
-    const attacker = inst("RS-106", "att");
+    // R-CN-02: 【ジュウクンドー】は NC（CN1）成立時のみ — 成立済みとして置く。
+    const attacker = { ...inst("RS-106", "att"), activatedNcEffects: ["juu_kun_do"] };
     const e1 = inst("E1", "e1");
     const e2 = inst("E2", "e2");
     const state = createTestState({
@@ -218,7 +224,8 @@ describe("RS-106 juu_kun_do", () => {
   });
 
   it("allows selecting multiple units until printed BP sum exceeds 3000", () => {
-    const attacker = inst("RS-106", "att");
+    // R-CN-02: 【ジュウクンドー】は NC（CN1）成立時のみ — 成立済みとして置く。
+    const attacker = { ...inst("RS-106", "att"), activatedNcEffects: ["juu_kun_do"] };
     const e1 = inst("E1", "e1");
     const e2 = inst("E2", "e2");
     let state = createTestState({
@@ -278,7 +285,8 @@ describe("RS-106 juu_kun_do", () => {
   });
 
   it("destroys all confirmed targets on confirm", () => {
-    const attacker = inst("RS-106", "att");
+    // R-CN-02: 【ジュウクンドー】は NC（CN1）成立時のみ — 成立済みとして置く。
+    const attacker = { ...inst("RS-106", "att"), activatedNcEffects: ["juu_kun_do"] };
     const e1 = inst("E1", "e1");
     const e2 = inst("E2", "e2");
     let state = createTestState({
@@ -329,7 +337,8 @@ describe("RS-106 juu_kun_do", () => {
   });
 
   it("opens optional choice with no targets when enemy rush is empty", () => {
-    const attacker = inst("RS-106", "att");
+    // R-CN-02: 【ジュウクンドー】は NC（CN1）成立時のみ — 成立済みとして置く。
+    const attacker = { ...inst("RS-106", "att"), activatedNcEffects: ["juu_kun_do"] };
     const state = createTestState({
       phase: "battle",
       player1: { battle: [attacker] },
@@ -348,7 +357,8 @@ describe("RS-106 juu_kun_do", () => {
   });
 
   it("allows skip when enemy rush is empty", () => {
-    const attacker = inst("RS-106", "att");
+    // R-CN-02: 【ジュウクンドー】は NC（CN1）成立時のみ — 成立済みとして置く。
+    const attacker = { ...inst("RS-106", "att"), activatedNcEffects: ["juu_kun_do"] };
     const state = createTestState({
       phase: "battle",
       player1: { battle: [attacker] },
@@ -380,7 +390,8 @@ describe("RS-106 juu_kun_do", () => {
   });
 
   it("lists confirm and toggle actions in legal actions", () => {
-    const attacker = inst("RS-106", "att");
+    // R-CN-02: 【ジュウクンドー】は NC（CN1）成立時のみ — 成立済みとして置く。
+    const attacker = { ...inst("RS-106", "att"), activatedNcEffects: ["juu_kun_do"] };
     const e1 = inst("E1", "e1");
     const state = createTestState({
       phase: "battle",

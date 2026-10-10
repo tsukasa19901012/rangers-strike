@@ -38,6 +38,7 @@ import rs039 from "./RS-039.json";
 import rs050 from "./RS-050.json";
 import rs068 from "./RS-068.json";
 import rs069 from "./RS-069.json";
+import rs105 from "./RS-105.json";
 import type { CardDocument } from "../types";
 import { mergeCardDocument } from "../cardDocumentMerge";
 
@@ -118,6 +119,8 @@ const CARD_OVERRIDES: Record<string, Partial<CardDocument>> = {
   "RS-050": rs050 as Partial<CardDocument>,
   "RS-068": rs068 as Partial<CardDocument>,
   "RS-069": rs069 as Partial<CardDocument>,
+  // cardSpec 監査（セット2）: RS-105 デカベースクローラーは「種類：XLユニット」（atwiki/page-304）。
+  "RS-105": rs105 as Partial<CardDocument>,
 };
 
 let cachedOverrides: Map<string, Partial<CardDocument>> | null = null;

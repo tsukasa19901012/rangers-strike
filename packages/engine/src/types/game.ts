@@ -355,6 +355,8 @@ export type PendingEffectChoice = {
   /** 印刷BPの合計上限（例: RS-106 ジュウクンドー）。 */
   bpBudget?: number;
   unitDestination?: "power" | "discard" | "deck_top" | "hand" | "hand_from_discard" | "hand_from_power" | "rush_from_discard" | "enemy_battle" | "enemy_command" | "swap_battle" | "rush" | "vehicle_battle_without_ride";
+  /** RS-102【巌流剣】: 先に選んだ敵軍パワーゾーンのカード（コマンドを選んだあと2枚一緒に捨札にする）。 */
+  darkDualBladePowerInstanceId?: string;
   commandAction?: "discard" | "hold" | "return_hand" | "return_deck_top" | "rush" | "rush_silent" | "battle_silent" | "power" | "release" | "sp_half";
   commandFilter?: "held" | "released" | "any";
   seabedDrawMeta?: SeabedDrawMeta;

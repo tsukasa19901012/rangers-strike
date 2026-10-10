@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-10-10T10:02:58.196Z",
+  "generatedAt": "2026-10-10T11:02:36.989Z",
   "suite": "simulateFullPromoted",
   "games": 50,
   "unresolvedCount": 0,
-  "effectLogCount": 550,
+  "effectLogCount": 552,
   "unresolvedRate": 0,
   "warnThreshold": 0.25,
   "topUnresolvedByEffectId": [],
