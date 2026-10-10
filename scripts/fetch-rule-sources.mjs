@@ -9,6 +9,10 @@
  *
  * 出力: docs/rules/sources/web/<host>/<path>.html と manifest.json
  * 逐次取得・各リクエスト間に 3〜6 秒待機（サイト負荷への配慮）。
+ * 取得済み（status 200）の URL は飛ばし、失敗したものだけ取り直す。
+ *
+ * atwiki は Cloudflare の確認画面で 403 になるため、2026-10-10 はブラウザで開いて
+ * 本文（#wikibody の innerText）を w.atwiki.jp/renst/pages/N.txt に保存した。
  *
  * 使い方: node scripts/fetch-rule-sources.mjs [--only=grnrngr|atwiki|wikiwiki]
  */
@@ -54,7 +58,7 @@ async function fetchText(url) {
 }
 
 async function save(manifest, url) {
-  if (manifest.pages[url]) return manifest.pages[url];
+  if (manifest.pages[url]?.status === 200) return manifest.pages[url];
   let entry;
   try {
     const { status, text } = await fetchText(url);
