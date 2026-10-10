@@ -1,3 +1,4 @@
+import { isDivingOrochi } from "../rules/errataCardEffects";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
@@ -452,6 +453,14 @@ export function promotedDefenderBlocksAttack(
     findInZone(state.players[defenderPlayerId], "battle", defenderInstanceId) ??
     findInZone(state.players[defenderPlayerId], "rush", defenderInstanceId);
   if (!attacker || !defender) return false;
+
+  // RK-231 オロチ【潜水】: ホールド状態のとき敵軍ユニットにアタックされない（ルール: R-ERR-RK231）。
+  if (
+    isDivingOrochi(defender.card) &&
+    attackerPlayerId !== defenderPlayerId
+  ) {
+    return true;
+  }
 
   if (
     isSmallUnit(state.definitions, attacker.card.cardId) &&

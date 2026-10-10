@@ -813,6 +813,246 @@ function resolveDenebCandy(state: GameState, playerId: PlayerId, instanceId: str
 }
 
 // ---------------------------------------------------------------------------
+// RK-231 オロチ【潜水】
+
+const OROCHI_DIVE = "orochi_dive";
+
+/** ホールド状態で【潜水】の制限を受けるオロチか。 */
+export function isDivingOrochi(card: CardInstance): boolean {
+  return card.cardId === "RK-231" && card.commandHeld === true;
+}
+
+function openOrochiDive(
+  state: GameState,
+  playerId: PlayerId,
+  candidates: string[],
+): GameState {
+  const [first, ...rest] = candidates;
+  if (!first) return state;
+  return openEffectChoice(state, {
+    playerId,
+    effectId: OROCHI_DIVE,
+    sourceCardId: "RK-231",
+    sourceInstanceId: first,
+    phasePlayerId: playerId,
+    kind: "confirm",
+    validInstanceIds: [first],
+    viewedInstanceIds: rest,
+    optional: true,
+  });
+}
+
+/**
+ * ルール: R-ERR-RK231 — 自分がターンを終えるとき、このユニットをリリースするか、ホールドしてもよい。
+ * resolve（instanceId）で状態を切り替え、skip でそのまま。
+ */
+export function applyOrochiTurnEnd(state: GameState, endingPlayerId: PlayerId): GameState {
+  if (state.pendingEffectChoice) return state;
+  const ids = fieldUnits(state.players[endingPlayerId])
+    .filter((c) => c.cardId === "RK-231")
+    .map((c) => c.instanceId);
+  return openOrochiDive(state, endingPlayerId, ids);
+}
+
+function resolveOrochiDive(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const player = state.players[playerId];
+  const toggle = (c: CardInstance) =>
+    c.instanceId === instanceId ? { ...c, commandHeld: !c.commandHeld } : c;
+  const toggled = {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      rush: player.rush.map(toggle),
+      battle: player.battle.map(toggle),
+    }),
+  };
+  const next = openOrochiDive(clearPending(toggled, pending.phasePlayerId), playerId, pending.viewedInstanceIds ?? []);
+  return { state: next, log: logFor(state, playerId, "RK-231", `${OROCHI_DIVE}:${instanceId}`) };
+}
+
+// ---------------------------------------------------------------------------
+// XG4-004 副長ゼルモダ【ワンパーの壺】
+
+const WANPA_POT = "wanpa_pot";
+
+/**
+ * ルール: R-ERR-XG4-004 — 自軍山札を見て特徴「戦闘員」を持つカードを2枚まで選び、自軍ラッシュエリアに
+ * 出してもよい。その後、山札をシャッフルする（戦闘員がなければ0枚として続行: atwiki/page-2069 Q1）。
+ */
+function beginWanpaPot(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  const valid = state.players[ctx.playerId].deck
+    .filter((c) => (getDefinition(state.definitions, c.cardId)?.features ?? []).includes("戦闘員"))
+    .map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: WANPA_POT,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "scry_keep_one",
+    validInstanceIds: valid,
+    viewedInstanceIds: valid,
+    selectCount: Math.min(2, valid.length),
+    optional: true,
+  });
+}
+
+function finishWanpaPot(
+  state: GameState,
+  pending: NonNullable<GameState["pendingEffectChoice"]>,
+  selected: string[],
+): ChoiceOutcome {
+  const playerId = pending.playerId;
+  const player = state.players[playerId];
+  const chosen = player.deck.filter((c) => selected.includes(c.instanceId));
+  const next = {
+    ...clearPending(state, pending.phasePlayerId),
+    ...updatePlayer(state, playerId, {
+      ...player,
+      deck: shuffleCards(player.deck.filter((c) => !selected.includes(c.instanceId))),
+      rush: [...player.rush, ...chosen],
+    }),
+  };
+  return {
+    state: { ...next, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId },
+    log: logFor(state, playerId, pending.sourceCardId, `${WANPA_POT}:${chosen.length}`),
+  };
+}
+
+function resolveWanpaPot(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+  if (selected.length < (pending.selectCount ?? 1)) {
+    return {
+      state: {
+        ...state,
+        pendingEffectChoice: {
+          ...pending,
+          selectedInstanceIds: selected,
+          validInstanceIds: pending.validInstanceIds.filter((id) => id !== instanceId),
+        },
+      },
+    };
+  }
+  return finishWanpaPot(state, pending, selected);
+}
+
+// ---------------------------------------------------------------------------
+// XG2-014 鉄面臂張遼【気力妖力合体】
+
+const KIRYOKU_HOLD = "kiryoku_youryoku_hold";
+const KIRYOKU_DESTROY = "kiryoku_youryoku_destroy";
+
+type MaDaKind = "both" | "ma" | "da" | null;
+
+function maDaKind(state: GameState, cardId: string): MaDaKind {
+  const def = getDefinition(state.definitions, cardId);
+  const cats = def ? cardCategories(def) : [];
+  const ma = cats.includes("MA");
+  const da = cats.includes("DA");
+  if (ma && da) return "both";
+  if (ma && cats.length === 1) return "ma";
+  if (da && cats.length === 1) return "da";
+  return null;
+}
+
+function releasedOfKind(state: GameState, playerId: PlayerId, kinds: MaDaKind[]): string[] {
+  return state.players[playerId].command
+    .filter((c) => !c.commandHeld && kinds.includes(maDaKind(state, c.cardId)))
+    .map((c) => c.instanceId);
+}
+
+/**
+ * ルール: R-ERR-XG2-014 — MAとDAの両方を持つ自軍コマンドを1つ、または MAのみ・DAのみのコマンドを1つずつ
+ * 選びホールドしてもよい。そうしたとき、敵軍Sユニットを1体選び撃破する。
+ */
+function beginKiryoku(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  const both = releasedOfKind(state, ctx.playerId, ["both"]);
+  const ma = releasedOfKind(state, ctx.playerId, ["ma"]);
+  const da = releasedOfKind(state, ctx.playerId, ["da"]);
+  const valid = [...both, ...(ma.length && da.length ? [...ma, ...da] : [])];
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: KIRYOKU_HOLD,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "select_commands",
+    validInstanceIds: valid,
+    selectCount: 2,
+    commandFilter: "released",
+    // commandAction: "hold" にすると effect_hold 支払い UI に回るため、ホールドはこのモジュールで行う。
+    optional: true,
+  });
+}
+
+function resolveKiryoku(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+
+  if (pending.effectId === KIRYOKU_DESTROY) {
+    const leave = applyUnitLeave(state, instanceId, "discard", pending.phasePlayerId);
+    if ("error" in leave) return leave;
+    let next = leave.state;
+    if (next.pendingEffectChoice === pending) next = clearPending(next, pending.phasePlayerId);
+    return { state: next, log: logFor(state, playerId, pending.sourceCardId, `${KIRYOKU_DESTROY}:${instanceId}`) };
+  }
+
+  const player = state.players[playerId];
+  const held = {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      command: player.command.map((c) =>
+        c.instanceId === instanceId ? { ...c, commandHeld: true, mothershipHold: false } : c,
+      ),
+    }),
+  };
+  const card = player.command.find((c) => c.instanceId === instanceId)!;
+  const kind = maDaKind(state, card.cardId);
+  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+  if (kind !== "both" && selected.length < 2) {
+    // MAのみを選んだら DAのみ、DAのみを選んだら MAのみをもう1つ。
+    const partner = releasedOfKind(held, playerId, [kind === "ma" ? "da" : "ma"]);
+    return {
+      state: {
+        ...held,
+        pendingEffectChoice: {
+          ...pending,
+          selectedInstanceIds: selected,
+          validInstanceIds: partner,
+          optional: false,
+        },
+      },
+    };
+  }
+  const targets = fieldUnits(held.players[opponent(playerId)])
+    .filter((c) => isSmallUnit(held.definitions, c.cardId))
+    .map((c) => c.instanceId);
+  const cleared = clearPending(held, pending.phasePlayerId);
+  const log = logFor(state, playerId, pending.sourceCardId, `${KIRYOKU_HOLD}:${selected.length}`);
+  if (targets.length === 0) return { state: cleared, log };
+  return {
+    state: openEffectChoice(cleared, {
+      ...pending,
+      effectId: KIRYOKU_DESTROY,
+      kind: "select_unit",
+      validInstanceIds: targets,
+      selectedInstanceIds: [],
+      selectCount: 1,
+      optional: false,
+      unitDestination: "discard",
+    }),
+    log,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // 登録
 
 type ChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
@@ -822,6 +1062,10 @@ const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [BLAY_HOLD]: resolveBlayRouzer,
   [BLAY_DESTROY]: resolveBlayRouzer,
   [ELECTRO_BEAM_PICK]: resolveElectroBeam,
+  [KIRYOKU_HOLD]: resolveKiryoku,
+  [KIRYOKU_DESTROY]: resolveKiryoku,
+  [WANPA_POT]: resolveWanpaPot,
+  [OROCHI_DIVE]: resolveOrochiDive,
   [ADDRESS_BOOK]: resolveAddressBook,
   [DENEB_CANDY]: resolveDenebCandy,
   [COUNTER_STRIKE]: resolveCounterStrike,
@@ -851,7 +1095,7 @@ export function isErrataChoiceEffect(effectId: string): boolean {
 }
 
 /** 「好きな数」選んで確定できる選択（confirm_effect_choice を出す）。 */
-const CONFIRMABLE_CHOICES = new Set([SENBON_RETURN]);
+const CONFIRMABLE_CHOICES = new Set([SENBON_RETURN, WANPA_POT]);
 
 export function isErrataConfirmableChoice(effectId: string): boolean {
   return CONFIRMABLE_CHOICES.has(effectId);
@@ -864,6 +1108,15 @@ export function trySkipErrataChoice(state: GameState, playerId: PlayerId): Choic
   if (pending.effectId === DENEB_CANDY) {
     return { state: continueDenebCandy(state, pending) };
   }
+  if (pending.effectId === OROCHI_DIVE) {
+    return {
+      state: openOrochiDive(
+        clearPending(state, pending.phasePlayerId),
+        playerId,
+        pending.viewedInstanceIds ?? [],
+      ),
+    };
+  }
   return null;
 }
 
@@ -873,6 +1126,9 @@ export function tryConfirmErrataChoice(state: GameState, playerId: PlayerId): Ch
   if (!pending || pending.playerId !== playerId) return null;
   if (pending.effectId === SENBON_RETURN) {
     return finishSenbonReturn(state, pending, pending.selectedInstanceIds ?? []);
+  }
+  if (pending.effectId === WANPA_POT) {
+    return finishWanpaPot(state, pending, pending.selectedInstanceIds ?? []);
   }
   return null;
 }
@@ -915,6 +1171,14 @@ export function tryErrataCardEffect(
         [opponent(ctx.playerId), ctx.playerId],
       );
       return { state: next, detail: DENEB_CANDY };
+    }
+    case "XG4-004::wanpano": {
+      const next = beginWanpaPot(state, ctx);
+      return next ? { state: next, detail: WANPA_POT } : { state, detail: `${WANPA_POT}:none` };
+    }
+    case "XG2-014::chikara_chikara": {
+      const next = beginKiryoku(state, ctx);
+      return next ? { state: next, detail: KIRYOKU_HOLD } : { state, detail: `${KIRYOKU_HOLD}:no_commands` };
     }
     case "RK-125::bureirauza": {
       const next = beginBlayRouzer(state, ctx);

@@ -336,9 +336,12 @@ export function isValidEffectChoiceTarget(
     }
     if (dest === "swap_battle" && pending.sourceInstanceId) {
       const player = state.players[pending.playerId];
+      // ルール: R-ERR-RS118 — 出るときの置きかえ。選択が開いた時点で既にバトルエリアに出ていてもよい。
       return (
+        instanceId !== pending.sourceInstanceId &&
         !!findInZone(player, "battle", instanceId) &&
-        !!findInZone(player, "rush", pending.sourceInstanceId)
+        (!!findInZone(player, "rush", pending.sourceInstanceId) ||
+          !!findInZone(player, "battle", pending.sourceInstanceId))
       );
     }
     const located = findCardInField(state, instanceId);
@@ -2876,6 +2879,25 @@ export function applyEffectChoiceSelect(
       if (dest === "swap_battle" && pending.sourceInstanceId) {
         const player = state.players[pending.playerId];
         const swapTarget = findInZone(player, "battle", instanceId);
+        const alreadyEntered = findInZone(player, "battle", pending.sourceInstanceId);
+        if (swapTarget && alreadyEntered && swapTarget.card.instanceId !== alreadyEntered.card.instanceId) {
+          // ルール: R-ERR-RS118 — 既に出ている（出たときに選択が開いた）場合は、置きかえた S ユニットの位置へ
+          // 移し、置きかえた S ユニットは重ねたカードごとラッシュエリアへ。これはアタックできない。
+          const battle = player.battle
+            .map((c) =>
+              c.instanceId === instanceId ? { ...alreadyEntered.card, battleActed: true } : c,
+            )
+            .filter((c, i) => !(c.instanceId === pending.sourceInstanceId && i === alreadyEntered.index));
+          const nextPlayer = markBattleBlocked(
+            { ...player, battle, rush: [...player.rush, swapTarget.card] },
+            swapTarget.card.instanceId,
+          );
+          return finishChoice(
+            { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+            pending,
+            cardName(state.definitions, swapTarget.card.cardId),
+          );
+        }
         const entering = findInZone(player, "rush", pending.sourceInstanceId);
         if (!swapTarget || !entering) return { error: "invalid_target" };
         const prepared = autoHoldForBattleEntry(player, entering.card);

@@ -1,3 +1,4 @@
+import { isDivingOrochi } from "./errataCardEffects";
 import {
   battleHasComboPartner,
   cannotEnterBattle,
@@ -357,6 +358,8 @@ export function cannotAttackOrStrikeThisTurn(
     if (rs603BlocksVehicle(state, playerId, unit.cardId)) return true;
   }
   if (unit.activatedNcEffects?.includes("optional_battle_no_attack")) return true;
+  // RK-231 オロチ【潜水】: ホールド状態のときアタックもストライクもできない（ルール: R-ERR-RK231）。
+  if (isDivingOrochi(unit)) return true;
   // ルール: R-HOLD-03 — ホールド中のユニットがアタック・ストライクできるかは [未確定]。
   // 確定するまでレジストでホールド中のユニットは従来どおりアタック・ストライク不可とする。
   if (unit.registerHeld) return true;

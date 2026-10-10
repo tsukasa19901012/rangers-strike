@@ -24,6 +24,8 @@ import xg5014 from "./XG5-014.json";
 import xg6044 from "./XG6-044.json";
 import rs349 from "./RS-349.json";
 import rk146 from "./RK-146.json";
+import xg4004 from "./XG4-004.json";
+import xg2014 from "./XG2-014.json";
 import type { CardDocument } from "../types";
 import { mergeCardDocument } from "../cardDocumentMerge";
 
@@ -82,6 +84,10 @@ const CARD_OVERRIDES: Record<string, Partial<CardDocument>> = {
   "RS-349": rs349 as Partial<CardDocument>,
   // ルール: R-ERR-RK146 — 【デネブキャンディー】は修正後テキストの1効果（相手→自分の順。engine: rules/errataCardEffects.ts）。
   "RK-146": rk146 as Partial<CardDocument>,
+  // ルール: R-ERR-XG4-004 — 【ワンパーの壺】は修正後テキストの1効果（engine: rules/errataCardEffects.ts）。
+  "XG4-004": xg4004 as Partial<CardDocument>,
+  // ルール: R-ERR-XG2-014 — 【気力妖力合体】は修正後テキストの1効果（engine: rules/errataCardEffects.ts）。
+  "XG2-014": xg2014 as Partial<CardDocument>,
 };
 
 let cachedOverrides: Map<string, Partial<CardDocument>> | null = null;

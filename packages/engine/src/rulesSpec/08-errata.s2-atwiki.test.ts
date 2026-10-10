@@ -881,8 +881,7 @@ describe("R-ERR-RS118 ゴーゴーダンプ", () => {
     return { s, d: d.instanceId, s1: s1.instanceId };
   }
 
-  // 既知の不具合: 未登録 — 置きかえの選択がバトルエリアに出た後に開き、「ラッシュエリアにあること」の検証で解決できない
-  it.fails("R-ERR-RS118: 置きかえたSユニットの下に重ねたカードは、そのSユニットに重ねたままラッシュエリアへ移る（出典: atwiki/page-292）", () => {
+  it("R-ERR-RS118: 置きかえたSユニットの下に重ねたカードは、そのSユニットに重ねたままラッシュエリアへ移る（出典: atwiki/page-292）", () => {
     const { s, d, s1 } = dumpSwap();
     expect(zoneIds(s, "player1", "battle")).toContain(d);
     const moved = s.players.player1.rush.find((c) => c.instanceId === s1);
@@ -890,8 +889,7 @@ describe("R-ERR-RS118 ゴーゴーダンプ", () => {
     expect(moved?.stackedCards?.map((c) => c.instanceId)).toEqual(["TST-OP:under"]);
   });
 
-  // 既知の不具合: 未登録 — 同上（置きかえ自体ができない）
-  it.fails("R-ERR-RS118: 置きかえて出したゴーゴーダンプはアタックできず、置きかえたSユニットはこのターン再びバトルエリアに出られない（出典: atwiki/page-292）", () => {
+  it("R-ERR-RS118: 置きかえて出したゴーゴーダンプはアタックできず、置きかえたSユニットはこのターン再びバトルエリアに出られない（出典: atwiki/page-292）", () => {
     const { s, d, s1 } = dumpSwap();
     expect(legalOfType(s, "battle").some((a) => a.attackerInstanceId === d)).toBe(false);
     expect(legal(s).some((a) => a.type === "move_to_battle" && a.instanceId === s1)).toBe(false);
@@ -914,8 +912,7 @@ describe("R-ERR-XG2-014 鉄面臂張遼", () => {
   });
 
   // atwiki/page-1754 Q1:「「MAのみを持つ自軍コマンドとDAのみを持つ自軍コマンドを1つずつ選んでその両方をホールドする」のいずれかの操作を行ってください」
-  // 既知の不具合: 未登録 — NC（CN3）成立時に【気力妖力合体】が発動しない
-  it.fails("R-ERR-XG2-014: Q&A — MAのみとDAのみのコマンドを1つずつホールドして敵軍Sユニットを撃破できる（出典: atwiki/page-1754 Q1）", () => {
+  it("R-ERR-XG2-014: Q&A — MAのみとDAのみのコマンドを1つずつホールドして敵軍Sユニットを撃破できる（出典: atwiki/page-1754 Q1）", () => {
     const z = inst("XG2-014", "z");
     let s = specState(["XG2-014"], {
       phase: "battle",
@@ -959,8 +956,7 @@ describe("R-ERR-XG4-004 副長ゼルモダ", () => {
     return { s, z: z.instanceId };
   }
 
-  // 既知の不具合: 未登録 — 山札から戦闘員を出す処理が起きない（ログのみ）
-  it.fails("R-ERR-XG4-004: ラッシュしたとき、山札の「戦闘員」を2枚までラッシュエリアに出せる（出典: atwiki/page-2069）", () => {
+  it("R-ERR-XG4-004: ラッシュしたとき、山札の「戦闘員」を2枚までラッシュエリアに出せる（出典: atwiki/page-2069）", () => {
     let { s } = zerumodaRushed([
       inst("SENT", "s1"),
       inst("SENT", "s2"),
@@ -991,7 +987,7 @@ describe("R-ERR-RK231 オロチ", () => {
     expect(norm(engineText("RK-231"))).not.toContain(norm("【潜水】自分がターンを終えるとき、これを"));
   });
 
-  // 既知の不具合: 未登録 — ターン終了時に【潜水】の選択が出ない
+  // 既知の不具合: 未登録 — 【潜水】の選択（orochi_dive）は開くが、ターン終了時効果の選択中に手番が相手へ移る（ターン進行側。R-END-01 と同根）
   it.fails("R-ERR-RK231: 自分がターンを終えるとき、このユニットをホールドするかを選べる（出典: atwiki/page-948）", () => {
     const o = inst("RK-231", "o");
     let s = specState(["RK-231"], {
@@ -1004,8 +1000,7 @@ describe("R-ERR-RK231 オロチ", () => {
     expect(legal(s).some((a) => a.playerId === "player1" && J(a).includes(o.instanceId))).toBe(true);
   });
 
-  // 既知の不具合: 未登録 — ホールド状態のオロチに【潜水】の制限がかからない
-  it.fails("R-ERR-RK231: ホールド状態のオロチは敵軍ユニットにアタックされない（出典: atwiki/page-948）", () => {
+  it("R-ERR-RK231: ホールド状態のオロチは敵軍ユニットにアタックされない（出典: atwiki/page-948）", () => {
     const o = { ...inst("RK-231", "o"), commandHeld: true };
     const atk = inst("TST-UNIT-7", "atk");
     const s = specState(["RK-231"], {
@@ -1016,8 +1011,7 @@ describe("R-ERR-RK231 オロチ", () => {
     expect(legalOfType(s, "battle").some((a) => a.defenderInstanceId === o.instanceId)).toBe(false);
   });
 
-  // 既知の不具合: 未登録 — ホールド状態のオロチに【潜水】の制限がかからない
-  it.fails("R-ERR-RK231: ホールド状態のオロチはアタックもストライクもできない（出典: atwiki/page-948）", () => {
+  it("R-ERR-RK231: ホールド状態のオロチはアタックもストライクもできない（出典: atwiki/page-948）", () => {
     const o = { ...inst("RK-231", "o"), commandHeld: true };
     const s = specState(["RK-231"], {
       phase: "battle",
