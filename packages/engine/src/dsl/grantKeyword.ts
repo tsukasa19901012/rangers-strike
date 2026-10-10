@@ -98,6 +98,7 @@ import { trySet4CardEffect } from "../rules/legend1/set4NamedEffects";
 import { trySet5ACardEffect } from "../rules/legend1/set5NamedEffectsA";
 import { applySet5GrantSideEffects, trySet5CardEffect } from "../rules/legend1/set5NamedEffects";
 import { trySet5AuditCardEffect } from "../rules/legend1/set5AuditFixes";
+import { trySet6LowCardEffect } from "../rules/legend1/set6NamedEffects348";
 import { tryGenericTextFallback } from "./genericTextFallback";
 import {
   beginDeclareNumberDeckReveal,
@@ -412,6 +413,9 @@ export function applyGrantKeyword(
   // 第5弾監査のカード固有の修正（rules/legend1/set5AuditFixes.ts）。
   const set5Audit = trySet5AuditCardEffect(state, ctx, keyword);
   if (set5Audit) return set5Audit;
+  // 第6弾 RS-348〜RS-389 のカード固有の名前付き効果（rules/legend1/set6NamedEffects348.ts）。
+  const set6Low = trySet6LowCardEffect(state, ctx, keyword);
+  if (set6Low) return set6Low;
 
   if (keyword.startsWith("hand_named_to_rush::")) {
     const withChoice = applyHandNamedToRush(state, ctx, keyword);

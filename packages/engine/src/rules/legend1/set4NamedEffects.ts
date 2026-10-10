@@ -147,7 +147,7 @@ function resolveMirageKnuckle(state: GameState, playerId: PlayerId, instanceId: 
 // 「相手は自分自身のラッシュエリアからユニットを1体選ぶ。このターン、このユニットは、相手の選んだユニットにアタックできる。」
 
 export const CHIKARA_BATON_EFFECT_ID = "chikara_baton_opponent_pick_rush";
-const CHIKARA_BATON_RULE = "rs213_chikara_baton";
+export const CHIKARA_BATON_RULE = "rs213_chikara_baton";
 
 type BatonPayload = { attackerInstanceId: string; targetInstanceId: string };
 

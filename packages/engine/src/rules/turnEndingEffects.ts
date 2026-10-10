@@ -1,5 +1,6 @@
 import type { CardInstance, GameState, PlayerId, TurnEndProgress } from "../types/game";
 import { applyDarkLawTurnEnd } from "./legend1/set5NamedEffectsA";
+import { applyChangePowerTurnEnd, hedrianBeautyCount, openHedrianBeautyChoice } from "./legend1/set6NamedEffects348";
 import { activeNamedEffect } from "./ncGatedEffects";
 import { effectiveBp, getDefinition } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
@@ -280,12 +281,21 @@ export function resolveTurnEndingEffectsImpl(
     const ask = exodusOrderChoice(nextState, endingPlayerId);
     if (ask) return save(ask);
   }
+  // RS-360 ヘドリアン女王【宇宙で一番美しいのは誰？】: 敵軍ラッシュエリアの女王1体につき「女」の自軍ユニットを1体選び撃破する。
+  if (progress.hedrianLeft === undefined) progress = { ...progress, hedrianLeft: hedrianBeautyCount(nextState, endingPlayerId) };
+  while ((progress.hedrianLeft ?? 0) > 0) {
+    progress = { ...progress, hedrianLeft: (progress.hedrianLeft ?? 0) - 1 };
+    const ask = openHedrianBeautyChoice(nextState, endingPlayerId);
+    if (ask) return save(ask);
+  }
   progress = { ...progress, restDone: true };
 
   const exodusFirst = progress.exodusFirst === true;
   if (exodusFirst) nextState = applyExodusTurnEnd(nextState, endingPlayerId);
   nextState = applyOnTurnEndBattleEffects(nextState, endingPlayerId);
   nextState = applyKakuhengeTurnEndDestroy(nextState);
+  // RS-372 X1マスク【チェンジパワー】: 自分がターンを終えるとき BP8000 以上なら撃破される。
+  nextState = applyChangePowerTurnEnd(nextState, endingPlayerId);
   nextState = applyRocketBoosterEndTurnRushReturn(nextState, endingPlayerId);
   nextState = applyNoteOtherNcTurnEndEffects(nextState, endingPlayerId, exodusFirst);
   nextState = applyGegeruTurnEnd(nextState, endingPlayerId);

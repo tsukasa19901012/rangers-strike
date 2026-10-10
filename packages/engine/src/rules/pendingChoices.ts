@@ -1,3 +1,5 @@
+import { redRacerPowerCostBonus } from "../core/power";
+import { isSet6LowChoiceEffect, tryResolveSet6LowChoice, trySkipSet6LowChoice } from "./legend1/set6NamedEffects348";
 import { checkWinner } from "../core/createGame";
 import {
   isSet5AChoiceEffect,
@@ -592,7 +594,8 @@ export function isValidEffectChoiceTarget(
     isSet4ChoiceEffect(pending.effectId) ||
     isSet5ChoiceEffect(pending.effectId) ||
     isSet5AuditChoiceEffect(pending.effectId) ||
-    isSet5AChoiceEffect(pending.effectId)
+    isSet5AChoiceEffect(pending.effectId) ||
+    isSet6LowChoiceEffect(pending.effectId)
   ) {
     return true;
   }
@@ -2737,6 +2740,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set5) return set5;
   const set5Audit = trySkipSet5AuditChoice(state, playerId);
   if (set5Audit) return set5Audit;
+  const set6Low = trySkipSet6LowChoice(state, playerId);
+  if (set6Low) return set6Low;
   if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
   if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
     // 選択を省略したときは先にひいた1枚を手札に残す（どちらか1枚は必ず残る）。
@@ -2911,6 +2916,8 @@ export function applyEffectChoiceSelect(
   if (set5) return set5;
   const set5Audit = tryResolveSet5AuditChoice(state, playerId, instanceId);
   if (set5Audit) return set5Audit;
+  const set6Low = tryResolveSet6LowChoice(state, playerId, instanceId);
+  if (set6Low) return set6Low;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
@@ -4482,9 +4489,10 @@ export function applyEffectChoiceSelect(
             "no_discard",
           );
         }
-        const powerCost = parsePowerCost(
-          getDefinition(state.definitions, discarded.cardId)?.powerCost ?? 99,
-        );
+        // RS-375 レッドレーサー（2nd）: 自軍エリアにあれば、パワーゾーンから捨札にしたユニットカードの必要パワーは1増えたものとして参照する。
+        const powerCost =
+          parsePowerCost(getDefinition(state.definitions, discarded.cardId)?.powerCost ?? 99) +
+          redRacerPowerCostBonus(state, pending.playerId, discarded.cardId);
         const enemyId = opponent(pending.playerId);
         const targets = findEnemySWithPowerCost(state, enemyId, powerCost).map(
           (c) => c.instanceId,

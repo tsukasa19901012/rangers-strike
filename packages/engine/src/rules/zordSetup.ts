@@ -1,3 +1,4 @@
+import { redRacerPowerCostBonus } from "../core/power";
 import { getZordCondition, isSendSUnitZordCondition } from "@rangers-strike/cards";
 import type {
   ResolveZordSetupAction,
@@ -119,7 +120,7 @@ function canAffordZordPower(
   playerId: PlayerId,
   def: NonNullable<ReturnType<typeof getDefinition>>,
 ): boolean {
-  const cost = effectivePowerCost(state, playerId, parsePowerCost(def.powerCost));
+  const cost = effectivePowerCost(state, playerId, parsePowerCost(def.powerCost) + redRacerPowerCostBonus(state, playerId, def.id));
   // ルール: R-RUSH-11 — アブレラ【闇の取引】等の補填を含めて、追加条件の実行前に確認する。
   return rushPowerBudget(state, playerId, state.players[playerId], def) >= cost;
 }

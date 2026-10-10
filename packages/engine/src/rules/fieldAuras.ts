@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { changePowerBpBonus } from "./legend1/set6NamedEffects348";
 import { hellSaturnGrantCount } from "./hellSaturn";
 import { activeNamedEffect } from "./ncGatedEffects";
 import { countActiveFieldKeyword } from "../dsl/fieldKeywords";
@@ -246,6 +247,8 @@ export function passiveNamedFieldBpBonus(
     bonus += rkPassiveBpBonus(state, playerId, instance);
     bonus += rs560BeastMBpBonus(state, playerId, instance.cardId);
     bonus += kakuhengeDamageBpBonus(state, playerId, instance);
+    // RS-372 X1マスク【チェンジパワー】: 自軍ダメージ1点につき BP+1000。
+    bonus += changePowerBpBonus(state, playerId, instance);
     bonus -= perNonCategoryCommandBpPenalty(state, playerId, instance);
   }
 

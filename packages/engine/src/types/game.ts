@@ -907,6 +907,8 @@ export type TurnEndProgress = {
    */
   exodusOrderAsked?: boolean;
   exodusFirst?: boolean;
+  /** RS-360【宇宙で一番美しいのは誰？】で、まだ選んで撃破していない回数（未計算なら undefined）。 */
+  hedrianLeft?: number;
 };
 
 export const INITIAL_HAND_SIZE = 7;

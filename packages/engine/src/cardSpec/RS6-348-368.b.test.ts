@@ -162,8 +162,7 @@ describe("RS-356 デンジイエロー", () => {
     return toPhase(s, "player2", "battle");
   };
 
-  // 既知の不具合: CARD-RS-356 【ハンマーパンチ】が未実装（次の相手ターンに必要パワー3以下の敵軍ユニットがバトルエリアに出られる）
-  it.fails("RS-356: 【ハンマーパンチ】次の相手ターン、必要パワー3以下の敵軍ユニットはバトルエリアに出られない（出典: atwiki/page-544）", () => {
+  it("RS-356: 【ハンマーパンチ】次の相手ターン、必要パワー3以下の敵軍ユニットはバトルエリアに出られない（出典: atwiki/page-544）", () => {
     const s = nextEnemyTurn(4, [inst("TST-UNIT-2", "c2"), inst("RS-354", "c3")]);
     expect(canEnter(s, "TST-UNIT-2:c2", "player2")).toBe(false);
     expect(canEnter(s, "RS-354:c3", "player2")).toBe(false);
@@ -186,8 +185,7 @@ describe("RS-356 デンジイエロー", () => {
   });
 
   // grnrngr/faq-card-6 RS-375 Q「いいえ、効果を及ぼしません。ラッシュされて「ユニット」として扱われているものは「ユニットカード」を対象にした効果を受けません。」
-  // 既知の不具合: CARD-RS-356 【ハンマーパンチ】が未実装
-  it.fails("RS-356: 公式Q&A — レッドレーサー（2nd）の「ユニットカードの必要パワーの数字は1増える」はラッシュ済みのユニットには及ばず、必要パワー3のユニットはやはり出られない（出典: grnrngr/faq-card-6 RS-375 Q）", () => {
+  it("RS-356: 公式Q&A — レッドレーサー（2nd）の「ユニットカードの必要パワーの数字は1増える」はラッシュ済みのユニットには及ばず、必要パワー3のユニットはやはり出られない（出典: grnrngr/faq-card-6 RS-375 Q）", () => {
     const s = nextEnemyTurn(4, [inst("RS-354", "c3"), inst("RS-375", "rr")]);
     expect(canEnter(s, "RS-354:c3", "player2")).toBe(false);
   });
@@ -394,8 +392,7 @@ describe("RS-360 ヘドリアン女王", () => {
     return endTurn(s);
   };
 
-  // 既知の不具合: CARD-RS-360 【宇宙で一番美しいのは誰？】が未実装（相手がターンを終えても「女」のユニットを撃破しない）
-  it.fails("RS-360: 【宇宙で一番美しいのは誰？】自軍ラッシュエリアにある間、相手は自分のターンを終えるとき、特徴「女」の自分のユニットを1体選び撃破する（出典: atwiki/page-601）", () => {
+  it("RS-360: 【宇宙で一番美しいのは誰？】自軍ラッシュエリアにある間、相手は自分のターンを終えるとき、特徴「女」の自分のユニットを1体選び撃破する（出典: atwiki/page-601）", () => {
     let s = st({ activePlayer: "player2", player1: { rush: [inst("RS-360", "hq")], deck: deckCards(5) }, player2: { battle: [inst("RS-358", "w1"), inst("TST-UNIT-0", "m")], rush: [inst("RS-358", "w2")], deck: deckCards(5, "e") } }, SPECS);
     s = settle(s);
     s = act(s, legal(s).find((a) => a.type === "end_phase")!);
@@ -426,8 +423,7 @@ describe("RS-360 ヘドリアン女王", () => {
   });
 
   // grnrngr/faq-card-6 RS-360 Q1「はい、2体になります。」
-  // 既知の不具合: CARD-RS-360 【宇宙で一番美しいのは誰？】が未実装
-  it.fails("RS-360: 公式Q&A — 自軍ラッシュエリアにヘドリアン女王が2体あれば、相手がターンを終えるときに撃破する「女」は2体になる（出典: grnrngr/faq-card-6 RS-360 Q1）", () => {
+  it("RS-360: 公式Q&A — 自軍ラッシュエリアにヘドリアン女王が2体あれば、相手がターンを終えるときに撃破する「女」は2体になる（出典: grnrngr/faq-card-6 RS-360 Q1）", () => {
     const s = resolveAll(enemyTurnEnd({ rush: [inst("RS-360", "h1"), inst("RS-360", "h2")] }, { battle: [inst("RS-358", "w1"), inst("RS-358", "w2"), inst("RS-358", "w3")] }));
     expect(s.players.player2.discard.filter((c) => c.cardId === "RS-358")).toHaveLength(2);
     expect(s.players.player2.battle.filter((c) => c.cardId === "RS-358")).toHaveLength(1);
