@@ -80,6 +80,8 @@ export type TargetSelector =
         minBp?: number;
         maxPowerCost?: number;
         noRushAdditionalCondition?: boolean;
+        /** 「BPの下三桁が500の」— BP を 1000 で割った余り（RS-403【ハイブリッドマグナム】atwiki/page-560）。 */
+        bpLastThreeDigits?: number;
       };
     }
   | {

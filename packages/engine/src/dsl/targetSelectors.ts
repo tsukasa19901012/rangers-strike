@@ -27,6 +27,7 @@ function matchesFilter(
     commandHeld?: boolean;
     faceDown?: boolean;
     noRushAdditionalCondition?: boolean;
+    bpLastThreeDigits?: number;
   },
 ): boolean {
   if (!filter) return true;
@@ -39,6 +40,7 @@ function matchesFilter(
   }
   if (filter.maxBp !== undefined && (def?.bp ?? 0) > filter.maxBp) return false;
   if (filter.minBp !== undefined && (def?.bp ?? 0) < filter.minBp) return false;
+  if (filter.bpLastThreeDigits !== undefined && (def?.bp ?? 0) % 1000 !== filter.bpLastThreeDigits) return false;
   if (filter.commandHeld !== undefined && !!card.commandHeld !== filter.commandHeld) return false;
   if (filter.faceDown !== undefined && !!card.faceDown !== filter.faceDown) return false;
   if (filter.noRushAdditionalCondition && resolveRushAdditionalCondition(card.cardId, def)) {

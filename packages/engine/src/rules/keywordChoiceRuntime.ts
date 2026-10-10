@@ -8,6 +8,7 @@ import type { GameState, PlayerId } from "../types/game";
 import type { GrantKeywordContext } from "../dsl/grantKeyword";
 import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
 import { applyPlayerDamage, opponent, updatePlayer } from "../core/helpers";
+import { meditationActive } from "../core/createGame";
 import { openEffectChoice, applyUnitLeave } from "./pendingChoices";
 
 /** RS-496 / XP-010: 敵ダメージ1枚をオモテに→敵オモテ向きパワー1枚をダメージに。 */
@@ -298,7 +299,7 @@ export function resolveHoldEntryDestroy(
     const power = enemy.power.map((c, i) => (i === matchIdx ? { ...c, faceDown: true } : c));
     let damaged = { ...enemy, power, damage: enemy.damage + 1 };
     // atwiki/page-1963 Q1: RS-348 メディテーションの追加ダメージも受ける（追加分に追加はない）。
-    if (damaged.operation.some((c) => c.cardId === "RS-348")) {
+    if (meditationActive(nextState, enemyId)) {
       damaged = applyPlayerDamage(damaged, 1);
     }
     nextState = { ...nextState, ...updatePlayer(nextState, enemyId, damaged) };

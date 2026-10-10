@@ -114,6 +114,7 @@ import { listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities
 import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
 import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { giantBombCounterIds, isSet5AConfirmableChoice, operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
+import { isSet6AuditConfirmableChoice } from "../rules/legend1/set6AuditFixes";
 import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower } from "./power";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
@@ -1152,7 +1153,8 @@ function appendEffectChoiceActions(
   if (
     isErrataConfirmableChoice(pending.effectId) ||
     isSet4ConfirmableChoice(pending.effectId) ||
-    isSet5AConfirmableChoice(pending)
+    isSet5AConfirmableChoice(pending) ||
+    isSet6AuditConfirmableChoice(pending.effectId)
   ) {
     for (const instanceId of pending.validInstanceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });

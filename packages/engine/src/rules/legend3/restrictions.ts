@@ -9,6 +9,7 @@ import {
 } from "@rangers-strike/cards";
 import { elephantShieldMustTarget } from "./fieldEffects";
 import { activeNamedEffect } from "../ncGatedEffects";
+import { unitFeatures } from "../addedFeatures";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { isCostWindowSatisfied } from "../../core/costWindow";
@@ -376,6 +377,18 @@ function noteOtherNcAttackRestriction(
   return false;
 }
 
+function timeJetRearGuardBlocksAttack(
+  state: GameState,
+  defenderPlayerId: PlayerId,
+  defenderInstanceId: string,
+): boolean {
+  const battle = state.players[defenderPlayerId].battle;
+  if (battle.at(-1)?.cardId !== "RS-401") return false;
+  const defender = battle.find((c) => c.instanceId === defenderInstanceId);
+  if (!defender) return false;
+  return unitFeatures(state, defenderPlayerId, defender).includes("航空機");
+}
+
 export function canAttackDefender(
   state: GameState,
   attackerPlayerId: PlayerId,
@@ -401,6 +414,9 @@ export function canAttackDefender(
   if (mustTarget && mustTarget !== defenderInstanceId) return false;
   // RS-297【変形】: 自軍コマンドがすべてリリース状態なら、「航空機」を持たないユニットにアタックされない。
   if (set5ADefenderBlocksAttack(state, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
+  // RS-401 タイムジェット5【最後尾からの警戒】: これが自軍バトルエリアの最後に並んでいる間、自軍バトルエリアの
+  // 特徴「航空機」を持つユニットは敵軍ユニットにアタックされない（atwiki/page-559）。
+  if (timeJetRearGuardBlocksAttack(state, defenderPlayerId, defenderInstanceId)) return false;
 
   const attackerInRush = findInZone(attackerPlayer, "rush", attackerInstanceId);
   if (

@@ -300,8 +300,7 @@ describe("RS-401 タイムジェット5", () => {
       SPECS,
     );
 
-  it.fails("RS-401: 【最後尾からの警戒】最後に並んでいる間、自軍バトルエリアの航空機ユニット（これ自身を含む）は敵軍ユニットにアタックされない（出典: atwiki/page-559「特徴「航空機」を持つユニットは…アタックされない」）", () => {
-    // 既知の不具合: CARD-RS-401 【最後尾からの警戒】が未実装（航空機ユニットがアタック対象に残る）
+  it("RS-401: 【最後尾からの警戒】最後に並んでいる間、自軍バトルエリアの航空機ユニット（これ自身を含む）は敵軍ユニットにアタックされない（出典: atwiki/page-559「特徴「航空機」を持つユニットは…アタックされない」）", () => {
     const s = enemyTurn([inst("SPEC-AIR", "air"), inst("TST-UNIT-0", "plain"), inst("RS-401", "j")]);
     expect(attackTargets(s, "TST-UNIT-7:atk", "player2").sort()).toEqual(["TST-UNIT-0:plain"]);
   });
@@ -399,8 +398,7 @@ describe("RS-403 デカレッド（2nd）", () => {
     battle: [inst("SPEC-S2500", "bt")],
   });
 
-  it.fails("RS-403: 【ハイブリッドマグナム】選べるのは敵軍ラッシュエリアの BP の下三桁が500の S ユニットだけ（BP1000・M ユニット・バトルエリアは不可）（出典: atwiki/page-560「BPの下三桁が500の敵軍Sユニット」）", () => {
-    // 既知の不具合: CARD-RS-403 【ハイブリッドマグナム】の「BPの下三桁が500」の条件が落ちていて、BP1000 の S ユニットも選べる
+  it("RS-403: 【ハイブリッドマグナム】選べるのは敵軍ラッシュエリアの BP の下三桁が500の S ユニットだけ（BP1000・M ユニット・バトルエリアは不可）（出典: atwiki/page-560「BPの下三桁が500の敵軍Sユニット」）", () => {
     const s = enterAt("RS-403", 1, {}, foe());
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-403");
     expect(choiceIds(s)).toEqual(["SPEC-S2500:a", "SPEC-S500:b"]);

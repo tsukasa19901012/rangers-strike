@@ -419,7 +419,32 @@ export function riderMatchesVehicleRideWithoutRc(
   if (allowedFeatures.length === 0) return false;
   const riderDef = definitions[riderCardId];
   if (!riderDef?.features?.length) return false;
+  // 「※特徴「○○」を持つ（自軍）Sユニットは、…ライドできる」— S ユニットに限る
+  // （RS-381 atwiki/page-522・RS-406 atwiki/page-563）。
+  if (rideWithoutRcTexts(vehicleCardId).every((t) => /Sユニットは/.test(t)) && riderDef.size !== "S") {
+    return false;
+  }
   return allowedFeatures.some((feature) => riderDef.features!.includes(feature));
+}
+
+function rideWithoutRcTexts(vehicleCardId: string): string[] {
+  const doc = getCardDslDocument(vehicleCardId);
+  return (doc?.effects ?? [])
+    .filter((e) =>
+      e.effects.some((p) => p.type === "grant_keyword" && /^ride_(?:command_)?without_rc_/.test(p.keyword)),
+    )
+    .map((e) => e.text ?? "");
+}
+
+/**
+ * 「※…Sユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる」
+ * （ride_command_without_rc_*。RS-381 ガレオパルサー atwiki/page-522）— RC なしでライドするときコマンドを1つホールドする。
+ */
+export function vehicleRideWithoutRcNeedsHold(vehicleCardId: string): boolean {
+  const doc = getCardDslDocument(vehicleCardId);
+  return (doc?.effects ?? []).some((e) =>
+    e.effects.some((p) => p.type === "grant_keyword" && p.keyword.startsWith("ride_command_without_rc_")),
+  );
 }
 
 export function cardHasEngineNativeKeyword(cardId: string, keyword: string): boolean {

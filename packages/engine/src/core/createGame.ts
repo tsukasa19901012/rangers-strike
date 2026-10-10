@@ -11,6 +11,7 @@ import {
 } from "../types/game";
 import { buildDefinitionMap } from "./catalog";
 import { hasTurnRuleModifier } from "./scopedModifiers";
+import { TURN_RULE_IDS } from "../types/scopedModifiers";
 
 let instanceCounter = 0;
 
@@ -136,10 +137,24 @@ export function loseDamageThreshold(
     state.players[pid].operation.some((c) => c.cardId === "RS-244"),
   );
   if (anyLifeSpring) threshold = Math.max(threshold, 9);
-  if (state.players[playerId].operation.some((c) => c.cardId === "RS-348")) {
+  if (meditationActive(state, playerId)) {
     threshold = Math.max(threshold, 14);
   }
   return threshold;
+}
+
+/**
+ * RS-348 メディテーションが働いているか。
+ * 相手の「無限連鎖カード」（RS-072）で常駐が無効になっている間は働かない
+ * （grnrngr/faq-card-6 RS-348 Q2「はい、その通りです」）。
+ */
+export function meditationActive(
+  state: Pick<GameState, "players">,
+  playerId: PlayerId,
+): boolean {
+  const opponentId: PlayerId = playerId === "player1" ? "player2" : "player1";
+  if (hasTurnRuleModifier(state.players[opponentId], TURN_RULE_IDS.INFINITE_CHAIN)) return false;
+  return state.players[playerId].operation.some((c) => c.cardId === "RS-348");
 }
 
 function hasLost(state: GameState, playerId: PlayerId): boolean {

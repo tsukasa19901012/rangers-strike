@@ -86,6 +86,27 @@ export function applyOpponentHoldOtEtOnCommandRelease(
   return { ...state, ...updatePlayer(state, playerId, { ...player, command }) };
 }
 
+/**
+ * SR-004 妖魔力: 相手が自分自身のコマンドゾーンに OT または ET のカードをリリース状態で置いたとき、そのカードをホールドする
+ * （チャージフェイズに置いたカードも含む。atwiki/page-578 Q1「リリース状態で置いた後、…ホールド状態になります」）。
+ */
+export function holdPlacedCommandUnderMaChikara(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): GameState {
+  if (!opponentHasMaChikara(state, playerId)) return state;
+  const player = state.players[playerId];
+  const idx = player.command.findIndex((c) => c.instanceId === instanceId);
+  const card = player.command[idx];
+  if (!card || card.commandHeld) return state;
+  const cats = cardCategories(getDefinition(state.definitions, card.cardId));
+  if (!cats.includes("OT") && !cats.includes("ET")) return state;
+  const command = [...player.command];
+  command[idx] = { ...card, commandHeld: true, mothershipHold: false };
+  return { ...state, ...updatePlayer(state, playerId, { ...player, command }) };
+}
+
 /** SR-007: スタート終了時、大神龍以外がいなければ山札へ。 */
 export function applyPlasmaShockwaveShuffleBack(
   state: GameState,

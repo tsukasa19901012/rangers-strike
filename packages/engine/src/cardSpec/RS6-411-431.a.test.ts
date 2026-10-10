@@ -528,8 +528,7 @@ describe("RS-416 冥府神トード", () => {
   };
   const enemyDamage = (): Partial<GameState["players"]["player2"]> => ({ power: [{ ...inst("TST-P", "ed"), faceDown: true }, inst("TST-P", "eu")], damage: 1 });
 
-  // 既知の不具合: CARD-RS-416 【魂のコレクション】が「敵軍のダメージのカードを1枚捨札にする」手順を経ずに直接 S ユニット選択になり、ダメージのカードが捨札にならない
-  it.fails("RS-416: 【魂のコレクション】敵軍のダメージのカードを1枚捨札にし、敵軍 S ユニットを1体持ち主のパワーゾーンにダメージ（ウラ向き）にして置く（出典: atwiki/page-610「敵軍パワーゾーンにダメージになっているカードがあれば1枚選び捨札にしてもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("RS-416: 【魂のコレクション】敵軍のダメージのカードを1枚捨札にし、敵軍 S ユニットを1体持ち主のパワーゾーンにダメージ（ウラ向き）にして置く（出典: atwiki/page-610「敵軍パワーゾーンにダメージになっているカードがあれば1枚選び捨札にしてもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
     let s = toad({ ...enemyDamage(), battle: [inst("TST-UNIT-0", "es")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-416");
     expect(choiceIds(s)).toEqual(["TST-P:ed"]);
@@ -540,8 +539,7 @@ describe("RS-416 冥府神トード", () => {
     expect(placed?.faceDown).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-416 【魂のコレクション】で敵軍ラッシュエリアの S ユニットを選べない（バトルエリアだけに限定されている）
-  it.fails("RS-416: 【魂のコレクション】敵軍ラッシュエリアの S ユニットも選べる（L ユニットは選べない）（出典: atwiki/page-610「敵軍Sユニットを1体選び」）", () => {
+  it("RS-416: 【魂のコレクション】敵軍ラッシュエリアの S ユニットも選べる（L ユニットは選べない）（出典: atwiki/page-610「敵軍Sユニットを1体選び」）", () => {
     let s = toad({ ...enemyDamage(), rush: [inst("TST-UNIT-0", "er"), inst("TST-UNIT-7", "el")] });
     for (let i = 0; i < 3 && s.pendingEffectChoice && !s.pendingEffectChoice.validInstanceIds.includes("TST-UNIT-0:er"); i++) {
       s = pick(s, s.pendingEffectChoice.validInstanceIds[0]!);
@@ -551,8 +549,7 @@ describe("RS-416 冥府神トード", () => {
     expect(s.players.player2.power.find((c) => c.instanceId === "TST-UNIT-0:er")?.faceDown).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-416 【魂のコレクション】が敵軍にダメージがなくても発動する（「ダメージになっているカードがあれば」の条件が落ちている）
-  it.fails("RS-416: 【魂のコレクション】敵軍パワーゾーンにダメージがなければ発動しない（出典: atwiki/page-610「ダメージになっているカードがあれば」）", () => {
+  it("RS-416: 【魂のコレクション】敵軍パワーゾーンにダメージがなければ発動しない（出典: atwiki/page-610「ダメージになっているカードがあれば」）", () => {
     const s = toad({ power: [inst("TST-P", "eu")], damage: 0, battle: [inst("TST-UNIT-0", "es")] });
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(zoneOf(resolveAll(s), "player2", "TST-UNIT-0:es")).toBe("battle");
@@ -616,8 +613,7 @@ describe("RS-417 冥府神サイクロプス", () => {
     });
   const returnAll = (s: GameState) => act(s, { type: "return_all_battle_to_rush", playerId: "player2" });
 
-  // 既知の不具合: CARD-RS-417 【消滅の緋色】がスタートフェイズの「バトルエリアからラッシュエリアに戻る」で誘発しない（紐男爵の効果で戻したときだけ実装）
-  it.fails("RS-417: 【消滅の緋色】敵軍スタートフェイズに敵軍 S ユニットが戻るとき、自軍常駐置き場のカードを捨札にしてそのユニットを撃破する（出典: atwiki/page-614「敵軍Sユニットがバトルエリアからラッシュエリアに戻るたび」）", () => {
+  it("RS-417: 【消滅の緋色】敵軍スタートフェイズに敵軍 S ユニットが戻るとき、自軍常駐置き場のカードを捨札にしてそのユニットを撃破する（出典: atwiki/page-614「敵軍Sユニットがバトルエリアからラッシュエリアに戻るたび」）", () => {
     let s = returnAll(enemyStart({ rush: [inst("RS-417", "cy")], operation: [inst(DA_RESIDENT, "op")] }, [inst("TST-UNIT-0", "e1")]));
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-417");
@@ -665,8 +661,7 @@ describe("RS-417 冥府神サイクロプス", () => {
     "RS-417: 【消滅の緋色】で撃破したユニットはバトルエリアで撃破したことになる（「戻るたび」なので、まだバトルエリアにある）（出典: grnrngr/faq-card-6 RS-417 Q1「バトルエリアで撃破したことになります」）— どのエリアで撃破されたかを公開 API の状態から観測する手段がないため",
   );
 
-  // 既知の不具合: CARD-RS-417 スタートフェイズの戻しで誘発しないため、2体のサイクロプス・1枚の常駐の組み合わせを検証できない（誘発自体が欠落）
-  it.fails("RS-417: サイクロプス2体・常駐1枚・敵軍 S ユニット2体が戻るとき、2体とも撃破することはできない（常駐はサイクロプス1体につき1枚必要）（出典: grnrngr/faq-card-6 RS-417 Q2「いいえ、それはできません」）", () => {
+  it("RS-417: サイクロプス2体・常駐1枚・敵軍 S ユニット2体が戻るとき、2体とも撃破することはできない（常駐はサイクロプス1体につき1枚必要）（出典: grnrngr/faq-card-6 RS-417 Q2「いいえ、それはできません」）", () => {
     let s = returnAll(
       enemyStart({ rush: [inst("RS-417", "cy1"), inst("RS-417", "cy2")], operation: [inst(DA_RESIDENT, "op")] }, [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2")]),
     );
@@ -677,8 +672,7 @@ describe("RS-417 冥府神サイクロプス", () => {
     expect(s.players.player1.operation).toHaveLength(0);
   });
 
-  // 既知の不具合: CARD-RS-417 スタートフェイズの戻しで誘発しない（敵軍 S ユニットの数だけの誘発もない）
-  it.fails("RS-417: サイクロプス1体・常駐3枚で、戻った敵軍 S ユニット3体それぞれに発動して3体とも撃破できる（出典: grnrngr/faq-card-6 RS-417 Q3「はい、できます」）", () => {
+  it("RS-417: サイクロプス1体・常駐3枚で、戻った敵軍 S ユニット3体それぞれに発動して3体とも撃破できる（出典: grnrngr/faq-card-6 RS-417 Q3「はい、できます」）", () => {
     let s = returnAll(
       enemyStart(
         { rush: [inst("RS-417", "cy")], operation: [inst(DA_RESIDENT, "op1"), inst(DA_RESIDENT2, "op2"), inst(WB_RESIDENT, "op3")] },

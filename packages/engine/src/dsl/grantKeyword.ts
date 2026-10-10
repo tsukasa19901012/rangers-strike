@@ -99,6 +99,7 @@ import { trySet5ACardEffect } from "../rules/legend1/set5NamedEffectsA";
 import { applySet5GrantSideEffects, trySet5CardEffect } from "../rules/legend1/set5NamedEffects";
 import { trySet5AuditCardEffect } from "../rules/legend1/set5AuditFixes";
 import { trySet6LowCardEffect } from "../rules/legend1/set6NamedEffects348";
+import { trySet6AuditCardEffect } from "../rules/legend1/set6AuditFixes";
 import { tryGenericTextFallback } from "./genericTextFallback";
 import {
   beginDeclareNumberDeckReveal,
@@ -392,6 +393,9 @@ export function applyGrantKeyword(
   ctx: GrantKeywordContext,
   keyword: string,
 ): GrantKeywordResult {
+  // 第6弾監査のカード固有の修正（rules/legend1/set6AuditFixes.ts）。
+  const set6Audit = trySet6AuditCardEffect(state, ctx, keyword);
+  if (set6Audit) return set6Audit;
   // 「選択を伴う能動効果」で従来はパターン照合で受動扱い（不発）だったカードを
   // cardId::effectId で正確に解決する。effect_card 委譲より前に置く。
   const reported = tryReportedRiderEffect(state, ctx, keyword);

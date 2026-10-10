@@ -1,5 +1,6 @@
 import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw, settleDarkArmor } from "../rules/legend1/set6NamedEffects348";
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
+import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
   applyGiantBombCounter,
@@ -222,6 +223,7 @@ import {
 import { applyPassChase, applyResolveChase, listValidChaseVehicleIds } from "../keywords/chase";
 import {
   canRiderMountVehicle,
+  rideNeedsCommandHold,
   extractMountedVehicleFromRush,
   holdCommandForGaleoPulsarRide,
 } from "../keywords/ride";
@@ -1182,7 +1184,12 @@ function applyActionCore(
         command: [...player.command, commandCard],
         hasChargedThisTurn: true,
       };
-      const chargedState = { ...state, ...updatePlayer(state, playerId, nextPlayer) };
+      // SR-004【妖魔力】: 相手の場にあれば、置いた OT / ET のカードをホールドする（atwiki/page-578 Q1）。
+      const chargedState = holdPlacedCommandUnderMaChikara(
+        { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+        playerId,
+        commandCard.instanceId,
+      );
       return {
         ok: true,
         state: advanceFromCharge(
@@ -2055,6 +2062,15 @@ function applyActionCore(
         };
         if (!canMoveUnitToBattle(state, playerId, battleCard, "rush")) {
           return fail("cannot_enter_battle");
+        }
+        // RS-381 ガレオパルサー「自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもライドできる」（atwiki/page-522）。
+        const vehicleCard = findInZone(player, "rush", action.vehicleInstanceId)?.card;
+        if (vehicleCard && rideNeedsCommandHold(state, found.card, vehicleCard.cardId)) {
+          const holdIdx = nextPlayer.command.findIndex((c) => !c.commandHeld);
+          if (holdIdx < 0) return fail("illegal_action");
+          const command = [...nextPlayer.command];
+          command[holdIdx] = { ...command[holdIdx]!, commandHeld: true };
+          nextPlayer = { ...nextPlayer, command };
         }
       }
 

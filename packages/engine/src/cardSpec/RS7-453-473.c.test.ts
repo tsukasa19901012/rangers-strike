@@ -64,9 +64,10 @@ const rideState = (vehicle: string, riderId: string, command: CardInstance[] = r
 function featureRideTests(vehicle: string, feature: string, okRider: string, page: string, works: boolean) {
   // works=false: 既知の不具合（RS-469・RS-470）— 特徴「イエロー」「ピンク」の RC なしライド許可（※）が DSL で note 扱いになり、ライドできない
   const okTest = works ? it : it.fails;
-  // works=true: 既知の不具合（RS-466〜RS-468）— リリース状態の自軍コマンドがなくても RC なしでライドできてしまう
-  // （works=false のカードはそもそもライドできないので、この項目は満たされる）
-  const noCommandTest = works ? it.fails : it;
+  // works=false のカードはそもそもライドできないので、この項目は満たされる。
+  const noCommandTest = it;
+  // works=false: ライドできないので、ホールドの確認もできない（上の既知の不具合）。
+  const holdTest = works ? it : it.fails;
   okTest(`${vehicle}: ※ 特徴「${feature}」を持つ S ユニットは RC がなくてもこのビークルにライドしてバトルエリアに出られる（出典: atwiki/${page}「ＲＣを持っていなくてもこのビークルにライドできる」・R-KW-RIDE-02）`, () => {
     const s = rideState(vehicle, okRider);
     expect(rideOptions(s)).toEqual([`${okRider}:r>${vehicle}:v`]);
@@ -74,8 +75,7 @@ function featureRideTests(vehicle: string, feature: string, okRider: string, pag
     expect(t.players.player1.battle.find((c) => c.instanceId === `${okRider}:r`)?.mountedOnInstanceId).toBe(`${vehicle}:v`);
   });
 
-  // 既知の不具合（各カード共通）: ライドに必要な「自軍コマンドを1つホールド」が支払われない（RS-466〜RS-470）
-  it.fails(`${vehicle}: ※ ライドするとき自軍コマンドを1つホールドする（出典: atwiki/${page}「自軍コマンドを1つホールドすれば」）`, () => {
+  holdTest(`${vehicle}: ※ ライドするとき自軍コマンドを1つホールドする（出典: atwiki/${page}「自軍コマンドを1つホールドすれば」）`, () => {
     const s = rideState(vehicle, okRider);
     const t = act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: `${okRider}:r`, vehicleInstanceId: `${vehicle}:v` });
     expect(heldCommandIds(t)).toHaveLength(1);
@@ -103,8 +103,7 @@ describe("RS-466 ギンガレオン", () => {
 
   featureRideTests("RS-466", "レッド", "SPEC-RED", "page-765", true);
 
-  // 既知の不具合: CARD-RS-466 RC なしライド許可がサイズ（S ユニット）を見ていない
-  it.fails("RS-466: ※ 特徴「レッド」でも S ユニットでない（M ユニット）なら RC なしではライドできない（出典: atwiki/page-765「特徴「レッド」を持つSユニットは」）", () => {
+  it("RS-466: ※ 特徴「レッド」でも S ユニットでない（M ユニット）なら RC なしではライドできない（出典: atwiki/page-765「特徴「レッド」を持つSユニットは」）", () => {
     expect(rideOptions(rideState("RS-466", "SPEC-RED-M"))).toEqual([]);
   });
 
