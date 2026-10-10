@@ -36,7 +36,7 @@ function mapPrimitive(primitive: EffectPrimitive): DslPrimitive | null {
       return {
         op: "damage",
         amount: primitive.amount,
-        target: primitive.target === "controller" ? "opponent" : "opponent",
+        target: primitive.target === "controller" ? "controller" : "opponent",
       };
     case "modify_bp":
       return { op: "modify_bp", delta: primitive.amount, target: "self" };

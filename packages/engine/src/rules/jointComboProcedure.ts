@@ -14,6 +14,7 @@ import { getDefinition, unitEffectiveCategories } from "../core/catalog";
 import { updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
+import { listDslEffectsForTrigger } from "../dsl/effectLookup";
 import {
   getLegend3JointLEffect,
   getLegend3JointREffect,
@@ -243,15 +244,25 @@ function applyJointLTrigger(
     logs.push(...result.logs);
   }
 
-  const dsl = tryResolveDslTriggeredEffects({
-    state: nextState,
-    cardId: lCard.cardId,
-    instanceId: lCard.instanceId,
-    playerId,
-    phasePlayerId: playerId,
-    triggerType: "joint_combo_l",
-    logAction: "joint_combo_l",
-  });
+  // 「…コンビネーションするLユニットは、次の能力を得る⇒…」は下の addJointComboGrant で能力として付与する。
+  // その DSL スタブ（例: RS-171 の deal_damage）を成立時に即時解決すると、条件（撃破したなら等）を
+  // 無視したダメージになるため、付与型の効果だけのカードでは DSL を解決しない。
+  const grantOnlyDsl =
+    jointLGrantingEffect(lCard.cardId) !== undefined &&
+    listDslEffectsForTrigger(lCard.cardId, "joint_combo_l").every((effect) =>
+      effect.effects.every((p) => p.type === "deal_damage"),
+    );
+  const dsl = grantOnlyDsl
+    ? { state: nextState, logs: [] as string[], handled: false }
+    : tryResolveDslTriggeredEffects({
+        state: nextState,
+        cardId: lCard.cardId,
+        instanceId: lCard.instanceId,
+        playerId,
+        phasePlayerId: playerId,
+        triggerType: "joint_combo_l",
+        logAction: "joint_combo_l",
+      });
   if (dsl.handled) {
     if (logs.length > 0) {
       nextState = { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) };

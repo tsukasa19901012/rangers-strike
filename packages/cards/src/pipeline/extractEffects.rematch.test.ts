@@ -210,3 +210,24 @@ describe("rematchExtractedEffect (M20)", () => {
     expect(built?.matchedPattern).toBe("grant_ability_generic");
   });
 });
+
+describe("deal_damage の受け手（主語で判定）", () => {
+  // 出典: atwiki page-1215 RS-572「相手は1点ダメージを受けるか、自分自身のユニットを1体選び撃破するかを選ぶ。」
+  // 「自分自身」は相手側を指すため受け手は opponent（旧パターンは「自分」の語だけで controller にしていた）。
+  it("「相手は1点ダメージを受けるか、自分自身の…」は opponent", () => {
+    const built = rematchExtractedEffect(
+      "自軍ターン中、これがバトルエリアに出たとき、相手は1点ダメージを受けるか、自分自身のユニットを1体選び撃破するかを選ぶ。",
+      { name: "ディーソードベガ", kind: "named", trigger: { type: "enter_battle" } },
+    );
+    expect(built?.effects).toContainEqual({ type: "deal_damage", amount: 1, target: "opponent" });
+  });
+
+  it("「自分は1点ダメージを受ける」は controller", () => {
+    const built = rematchExtractedEffect("これがバトルエリアに出たとき、自分は1点ダメージを受ける。", {
+      name: "テスト",
+      kind: "named",
+      trigger: { type: "enter_battle" },
+    });
+    expect(built?.effects).toContainEqual({ type: "deal_damage", amount: 1, target: "controller" });
+  });
+});

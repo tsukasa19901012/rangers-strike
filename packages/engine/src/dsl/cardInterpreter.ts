@@ -1,4 +1,4 @@
-import type { EffectDefinition, EffectPrimitive } from "@rangers-strike/cards/dsl/types";
+import type { EffectDefinition, EffectPrimitive, PlayerRef } from "@rangers-strike/cards/dsl/types";
 import type { CardInstance, DslChoiceResume, GameState, PlayerId } from "../types/game";
 import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
@@ -132,6 +132,27 @@ function applyModifyBp(
   };
 }
 
+/**
+ * DSL の PlayerRef を実プレイヤーに解決する。
+ * controller = 効果の使用者（ctx.playerId）、opponent = その相手、phase_player = ターンプレイヤー。
+ */
+export function resolvePlayerRef(
+  ctx: Pick<DslCardContext, "playerId" | "phasePlayerId">,
+  ref: PlayerRef,
+): PlayerId {
+  switch (ref) {
+    case "controller":
+      return ctx.playerId;
+    case "opponent":
+      return opponent(ctx.playerId);
+    case "phase_player":
+      return ctx.phasePlayerId;
+    case "player1":
+    case "player2":
+      return ref;
+  }
+}
+
 function applyPrimitive(
   state: GameState,
   ctx: DslCardContext,
@@ -139,14 +160,17 @@ function applyPrimitive(
 ): { state: GameState; detail?: string; pending?: boolean } {
   switch (primitive.type) {
     case "draw": {
-      const result = requestDrawFromDeck(state, ctx.playerId, ctx.phasePlayerId, {
+      // 「相手は1枚ドローしてもよい」等は player: "opponent"。省略時は効果の使用者（自分）。
+      const drawerId = resolvePlayerRef(ctx, primitive.player ?? "controller");
+      const result = requestDrawFromDeck(state, drawerId, ctx.phasePlayerId, {
         count: primitive.amount,
         sourceCardId: ctx.sourceCardId,
       });
       return { state: result.state, detail: "draw" };
     }
     case "deal_damage": {
-      const targetId = primitive.target === "controller" ? opponent(ctx.playerId) : ctx.playerId;
+      // 「相手にN点ダメージを与える」= opponent（効果の使用者の相手）、「自分はN点ダメージを受ける」= controller。
+      const targetId = resolvePlayerRef(ctx, primitive.target);
       const next = applyDamageToPlayer(state, targetId, primitive.amount, {
         kind: "none",
         activePlayer: ctx.phasePlayerId,
