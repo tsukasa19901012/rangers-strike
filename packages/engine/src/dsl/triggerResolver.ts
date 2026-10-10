@@ -123,8 +123,10 @@ export function tryResolveDslTriggeredEffects(args: {
     // NC の効果（ナンバーの欄の名前つき効果）は、バトルエリアに出たときに NC が成立していなければ発動しない
     // （ルール: R-CN-02。「ナンバーに関係なく発動する」の但し書きの相手からのコンビネーションも成立として記録済み）。
     // trigger が nc の効果は NC の成立そのもので呼ばれるので、ここで止めるのはそれ以外（「アタックするとき」等）。
+    // ライドオフ時（riding_combo）の「ライドオフしたとき、ナンバーに関係なく発動する」はライドオフそのものが発動条件（RS-405）。
     if (
       args.triggerType !== "nc" &&
+      args.triggerType !== "riding_combo" &&
       !dslNcGateAllows(current, args.playerId, args.instanceId, args.cardId, effect.id)
     ) {
       continue;

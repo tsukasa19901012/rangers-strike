@@ -115,7 +115,7 @@ export function effectChoiceHint(
         : `自分のユニットを選んでください`;
     case "confirm":
       if (pending.effectId === "reorder_enemy_battle") {
-        return "敵軍バトルエリアのユニットを逆順に並び替えますか？";
+        return "敵軍バトルエリアのユニットを並び替えますか？（逆順にするか、新しい並びの1番目にするユニットを選ぶ）";
       }
       if (pending.effectId === "swan_wing_deploy_enemy_command_s") {
         return "スワンウィング：敵軍コマンドゾーンのSユニットをすべてラッシュエリアに出しますか？";
@@ -211,6 +211,15 @@ export function effectChoiceTitle(
  * RS-019 超力／RK-186【Jパンチ】のホールド数ボタンの表示（「2（BP3000 vs 2500）」）。
  * アタック側 BP はその数をホールドしたときのこのバトルでの値。
  */
+/** RS-397【予期せぬ出現】の選択肢（「逆順に並び替える」か、新しい並びの1番目にするユニット）の表示名。 */
+export function reorderOptionLabel(state: GameState, value: string): string {
+  for (const pid of ["player1", "player2"] as const) {
+    const card = state.players[pid].battle.find((c) => c.instanceId === value);
+    if (card) return `${state.definitions[card.cardId]?.name ?? card.cardId}を1番目に`;
+  }
+  return value;
+}
+
 export function attackHoldOptionLabel(
   state: GameState,
   pending: NonNullable<GameState["pendingEffectChoice"]>,

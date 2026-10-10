@@ -182,6 +182,12 @@ export function canRiderMountVehicle(
 
   if (riderHasRc(riderDef)) return true;
 
+  // RS-393 コマンドアタッカー「※ETのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。」（atwiki/page-539）
+  if (vehicle.card.cardId === "RS-393" && riderDef.size === "S") {
+    const cats = Array.isArray(riderDef.category) ? riderDef.category : riderDef.category ? [riderDef.category] : [];
+    if (cats.includes("ET" as never)) return true;
+  }
+
   if (
     riderMatchesVehicleRideWithoutRc(
       state.definitions,

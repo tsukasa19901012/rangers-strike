@@ -1,4 +1,5 @@
 import { getCardEffect } from "@rangers-strike/cards";
+import { gorgonBlocksRelease, isSet6BBattleToRushTrigger, trySet6BBattleToRush } from "./legend1/set6NamedEffectsB";
 import { darkLawStackPending, openDarkLawStackIfNeeded } from "./legend1/set5NamedEffectsA";
 import { activeNamedEffect } from "./ncGatedEffects";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
@@ -20,7 +21,8 @@ import {
 export function releaseAllCommands(state: GameState, playerId: PlayerId): GameState {
   const player = state.players[playerId];
   const command = player.command.map((c) =>
-    c.commandHeld ? { ...c, commandHeld: false, mothershipHold: false } : c,
+    // RS-413 冥府神ゴーゴン【もの言わぬ石と化せ】: 制限を受けているプレイヤーのコマンドゾーンの S ユニットのカードはリリースできない。
+    c.commandHeld && !gorgonBlocksRelease(state, playerId, c) ? { ...c, commandHeld: false, mothershipHold: false } : c,
   );
   let nextState: GameState = {
     ...state,
@@ -32,7 +34,7 @@ export function releaseAllCommands(state: GameState, playerId: PlayerId): GameSt
 
 function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
   return cards
-    .filter((card) => activeNamedEffect(card, "falcon_claw"))
+    .filter((card) => activeNamedEffect(card, "falcon_claw") || isSet6BBattleToRushTrigger(card))
     .map((card) => card.instanceId);
 }
 
@@ -80,7 +82,9 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
     if (!card) {
       return continueBattleToRushEffectQueue({ ...state, pendingBattleToRushQueue: rest });
     }
-    const withChoice = tryLegend3BattleToRush(state, phasePlayerId, card, phasePlayerId);
+    let withChoice = tryLegend3BattleToRush(state, phasePlayerId, card, phasePlayerId);
+    // RS-394/RS-395【チェンジフォーメーション】（rules/legend1/set6NamedEffectsB.ts）。
+    if (!withChoice.pendingEffectChoice) withChoice = trySet6BBattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     return continueBattleToRushEffectQueue({ ...withChoice, pendingBattleToRushQueue: rest });
   }
 

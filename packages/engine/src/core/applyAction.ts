@@ -1,4 +1,5 @@
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
+import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
   applyGiantBombCounter,
@@ -1894,20 +1895,8 @@ function applyActionCore(
       };
 
       if (found.card.cardId === "RS-397") {
-        const enemyId = opponent(playerId);
-        const enemyBattle = nextState.players[enemyId].battle;
-        if (enemyBattle.length >= 2) {
-          nextState = openEffectChoice(nextState, {
-            playerId,
-            effectId: "reorder_enemy_battle",
-            sourceCardId: "RS-397",
-            sourceInstanceId: found.card.instanceId,
-            kind: "confirm",
-            phasePlayerId: playerId,
-            validInstanceIds: ["逆順に並び替える"],
-            optional: true,
-          });
-        }
+        // RS-397【予期せぬ出現】: 敵軍バトルエリアを好きな順に並び替えてもよい（rules/legend1/set6NamedEffectsB.ts）。
+        nextState = openReorderEnemyBattle(nextState, playerId, found.card);
       }
 
       // RK-301 等: ライドされている指定ビークルからのコンビネーション（配置時）。

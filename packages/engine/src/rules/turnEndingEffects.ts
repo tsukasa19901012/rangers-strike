@@ -1,4 +1,5 @@
 import type { CardInstance, GameState, PlayerId, TurnEndProgress } from "../types/game";
+import { collectSet6BTurnEndQueue, openSet6BTurnEndEntry } from "./legend1/set6NamedEffectsB";
 import { applyDarkLawTurnEnd } from "./legend1/set5NamedEffectsA";
 import { activeNamedEffect } from "./ncGatedEffects";
 import { effectiveBp, getDefinition } from "../core/catalog";
@@ -275,6 +276,14 @@ export function resolveTurnEndingEffectsImpl(
     nextState = resolveTurnEndResident(nextState, entry!, endingPlayerId);
   }
   if (turnEndBlocked(nextState) || progress.restDone) return save(nextState);
+  // RS-398【時間漂流者の送還】・RS-413【もの言わぬ石と化せ】（rules/legend1/set6NamedEffectsB.ts）。
+  if (!progress.set6bQueue) progress = { ...progress, set6bQueue: collectSet6BTurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.set6bQueue ?? []).length > 0) {
+    const [entry, ...rest] = progress.set6bQueue!;
+    progress = { ...progress, set6bQueue: rest };
+    nextState = openSet6BTurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
   if (!progress.exodusOrderAsked) {
     progress = { ...progress, exodusOrderAsked: true };
     const ask = exodusOrderChoice(nextState, endingPlayerId);

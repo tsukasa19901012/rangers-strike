@@ -126,6 +126,7 @@ import {
   trySkipSet4Choice,
 } from "./legend1/set4NamedEffects";
 import { isSet5ChoiceEffect, tryResolveSet5Choice, trySkipSet5Choice } from "./legend1/set5NamedEffects";
+import { isSet6BChoiceEffect, tryResolveSet6BChoice, trySkipSet6BChoice } from "./legend1/set6NamedEffectsB";
 import {
   isSet5AuditChoiceEffect,
   tryResolveSet5AuditChoice,
@@ -592,7 +593,8 @@ export function isValidEffectChoiceTarget(
     isSet4ChoiceEffect(pending.effectId) ||
     isSet5ChoiceEffect(pending.effectId) ||
     isSet5AuditChoiceEffect(pending.effectId) ||
-    isSet5AChoiceEffect(pending.effectId)
+    isSet5AChoiceEffect(pending.effectId) ||
+    isSet6BChoiceEffect(pending.effectId)
   ) {
     return true;
   }
@@ -2733,6 +2735,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set4) return set4;
   const set5a = trySkipSet5AChoice(state, playerId);
   if (set5a) return set5a;
+  const set6b = trySkipSet6BChoice(state, playerId);
+  if (set6b) return set6b;
   const set5 = trySkipSet5Choice(state, playerId);
   if (set5) return set5;
   const set5Audit = trySkipSet5AuditChoice(state, playerId);
@@ -2907,6 +2911,8 @@ export function applyEffectChoiceSelect(
   if (set4) return set4;
   const set5a = tryResolveSet5AChoice(state, playerId, instanceId);
   if (set5a) return set5a;
+  const set6b = tryResolveSet6BChoice(state, playerId, instanceId);
+  if (set6b) return set6b;
   const set5 = tryResolveSet5Choice(state, playerId, instanceId);
   if (set5) return set5;
   const set5Audit = tryResolveSet5AuditChoice(state, playerId, instanceId);
@@ -4948,17 +4954,6 @@ export function applyEffectChoiceSelect(
         }
         const nextState = applyRocketBoosterDeclaredName(state, playerId, declaredName);
         return finishChoice(nextState, pending, declaredName);
-      }
-      if (pending.effectId === "reorder_enemy_battle") {
-        if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
-        const enemyId = opponent(playerId);
-        const enemy = state.players[enemyId];
-        const reversed = [...enemy.battle].reverse();
-        const nextState = {
-          ...state,
-          ...updatePlayer(state, enemyId, { ...enemy, battle: reversed }),
-        };
-        return finishChoice(nextState, pending, "reversed");
       }
       if (pending.effectId === "disco_dance") {
         if (instanceId !== "return") return { error: "invalid_target" };

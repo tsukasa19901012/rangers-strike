@@ -98,6 +98,7 @@ import { trySet4CardEffect } from "../rules/legend1/set4NamedEffects";
 import { trySet5ACardEffect } from "../rules/legend1/set5NamedEffectsA";
 import { applySet5GrantSideEffects, trySet5CardEffect } from "../rules/legend1/set5NamedEffects";
 import { trySet5AuditCardEffect } from "../rules/legend1/set5AuditFixes";
+import { trySet6BCardEffect } from "../rules/legend1/set6NamedEffectsB";
 import { tryGenericTextFallback } from "./genericTextFallback";
 import {
   beginDeclareNumberDeckReveal,
@@ -396,6 +397,9 @@ export function applyGrantKeyword(
   const reported = tryReportedRiderEffect(state, ctx, keyword);
   if (reported) return reported;
   // エラッタ・公式回答に合わせたカード固有効果（docs/rules/08-errata.md）。
+  // 第6弾 RS-390〜RS-431 のカード固有の名前付き効果（`set6b::` キーワード。rules/legend1/set6NamedEffectsB.ts）。
+  const set6b = trySet6BCardEffect(state, ctx, keyword);
+  if (set6b) return set6b;
   const errata = tryErrataCardEffect(state, ctx, keyword);
   if (errata) return errata;
   // RS-340/343【ゲキヌンチャク】の BP+2000 の記録など、通常処理に付随する第5弾の処理。

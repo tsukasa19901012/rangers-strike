@@ -131,8 +131,7 @@ describe("RS-397 タイムジェット1", () => {
     expect(order(s)).toEqual(["TST-UNIT-0:c", "TST-UNIT-0:b", "TST-UNIT-0:a"]);
   });
 
-  it.fails("RS-397: 「好きな順」— 逆順以外の任意の順（b,c,a など）にも並び替えられる（出典: atwiki/page-555「好きな順に」）", () => {
-    // 既知の不具合: CARD-RS-397 【予期せぬ出現】の並び替えが「逆順」の一択しかなく、任意の順を指定できない
+  it("RS-397: 「好きな順」— 逆順以外の任意の順（b,c,a など）にも並び替えられる（出典: atwiki/page-555「好きな順に」）", () => {
     let s = rushJet("RS-397", enemy3()).state;
     expect(s.pendingEffectChoice?.validInstanceIds.length).toBeGreaterThan(1);
     s = resolveAll(s, ["TST-UNIT-0:b", "TST-UNIT-0:c", "TST-UNIT-0:a"]);
@@ -187,15 +186,13 @@ describe("RS-398 タイムジェット2", () => {
     return act(s, legal(s).find((a) => a.type === "end_phase")!);
   };
 
-  it.fails("RS-398: 【時間漂流者の送還】自軍ラッシュエリアにある間、ターンを終えるとき自軍バトルエリアの特徴「忍者」を持つ S ユニットだけを選べる（出典: atwiki/page-556「自軍バトルエリアから特徴「忍者」を持つSユニットを」）", () => {
-    // 既知の不具合: CARD-RS-398 【時間漂流者の送還】が未実装（ターン終了時に選択が出ない）
+  it("RS-398: 【時間漂流者の送還】自軍ラッシュエリアにある間、ターンを終えるとき自軍バトルエリアの特徴「忍者」を持つ S ユニットだけを選べる（出典: atwiki/page-556「自軍バトルエリアから特徴「忍者」を持つSユニットを」）", () => {
     const s = turnEnd();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-398");
     expect(choiceIds(s)).toEqual(["SPEC-NIN:n1", "SPEC-NIN:n2", "SPEC-NIN:n3"]);
   });
 
-  it.fails("RS-398: 「2体まで」— 2体選んで自軍パワーゾーンに送れ、3体目は送れない（出典: atwiki/page-556「2体まで選び、自軍パワーゾーンに送ってもよい」）", () => {
-    // 既知の不具合: CARD-RS-398 【時間漂流者の送還】が未実装
+  it("RS-398: 「2体まで」— 2体選んで自軍パワーゾーンに送れ、3体目は送れない（出典: atwiki/page-556「2体まで選び、自軍パワーゾーンに送ってもよい」）", () => {
     let s = turnEnd();
     s = resolveAll(s, ["SPEC-NIN:n1", "SPEC-NIN:n2", "SPEC-NIN:n3"]);
     expect(zoneOf(s, "player1", "SPEC-NIN:n1")).toBe("power");

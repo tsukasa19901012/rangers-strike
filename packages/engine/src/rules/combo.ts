@@ -68,6 +68,7 @@ import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import { wingAllowsEmptyBattleStrike } from "../keywords";
 import { canStrikeWithHelloMirage } from "./helloMirage";
 import { applyFivemanOnCombo, trySet5AOnComboEnter } from "./legend1/set5NamedEffectsA";
+import { set6BBlocksStrike } from "./legend1/set6NamedEffectsB";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredBattleListener";
 
@@ -569,6 +570,10 @@ export function canStrikeUnit(
       return false;
     }
     if (rideOffBlocksStrike(state.players[playerId], instance.instanceId)) {
+      return false;
+    }
+    // 第6弾 RS-431 ※「自軍コマンドが１つ以上あるときストライクできない」等（rules/legend1/set6NamedEffectsB.ts）。
+    if (set6BBlocksStrike(state, playerId, instance)) {
       return false;
     }
     if (instance.activatedNcEffects?.includes("souru_no_strike")) {

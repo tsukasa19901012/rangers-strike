@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-396::ganmatorunedo",
+          "keyword": "set6b::RS-396::gamma_tornado",
           "duration": "turn"
         }
       ],

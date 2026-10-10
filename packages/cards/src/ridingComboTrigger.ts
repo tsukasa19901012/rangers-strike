@@ -4,7 +4,7 @@ import type { EffectTrigger } from "./dsl/types";
 
 /** 「ライドオフしたときナンバーに関係なく発動」— NC 位置と併用する RC 相当の効果。 */
 export const RIDE_OFF_UNCONDITIONAL_NC_TEXT =
-  /ライドオフしたときナンバーに関係なく発動/;
+  /ライドオフしたとき[、,]?ナンバーに関係なく発動/;
 
 export function isRideOffUnconditionalEffectText(text: string): boolean {
   return RIDE_OFF_UNCONDITIONAL_NC_TEXT.test(text);

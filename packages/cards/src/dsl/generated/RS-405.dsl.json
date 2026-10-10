@@ -22,7 +22,7 @@
       "id": "cannot_attack_bp1000_or_less",
       "text": "※これはBP1000以下のユニットにアタックできない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {

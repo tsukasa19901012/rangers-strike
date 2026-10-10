@@ -299,8 +299,7 @@ describe("RS-413 冥府神ゴーゴン", () => {
   const release = (s: GameState) => act(s, { type: "release_start_commands", playerId: "player2" });
   const heldOf = (s: GameState, id: string) => s.players.player2.command.find((c) => c.instanceId === id)?.commandHeld;
 
-  // 既知の不具合: CARD-RS-413 【もの言わぬ石と化せ】の制限（相手コマンドゾーンの S ユニットカードはリリースできない）が実装されていない
-  it.fails("RS-413: 【もの言わぬ石と化せ】自軍バトルエリアにある間、相手のコマンドゾーンにある S ユニットのカードはスタートフェイズにリリースされない（オペレーションはリリースされる）（出典: atwiki/page-609「自分自身のコマンドゾーンにあるSユニットのカードは、リリースできない」）", () => {
+  it("RS-413: 【もの言わぬ石と化せ】自軍バトルエリアにある間、相手のコマンドゾーンにある S ユニットのカードはスタートフェイズにリリースされない（オペレーションはリリースされる）（出典: atwiki/page-609「自分自身のコマンドゾーンにあるSユニットのカードは、リリースできない」）", () => {
     const t = release(enemyStart("battle"));
     expect(heldOf(t, "TST-UNIT-0:cs")).toBe(true);
     expect(heldOf(t, "TST-OP:co")).toBe(false);
@@ -312,8 +311,7 @@ describe("RS-413 冥府神ゴーゴン", () => {
     expect(heldOf(t, "TST-OP:co")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-413 相手がターンを終えるときの「自分自身のコマンドを1つ選び捨札にしてもよい」が提示されない
-  it.fails("RS-413: 【もの言わぬ石と化せ】ただし相手は自分自身のターンを終えるとき、自分自身のコマンドを1つ選び捨札にしてもよい（任意）（出典: atwiki/page-609「自分自身のターンを終えるとき、自分自身のコマンドを1つ選び捨札にしてもよい」）", () => {
+  it("RS-413: 【もの言わぬ石と化せ】ただし相手は自分自身のターンを終えるとき、自分自身のコマンドを1つ選び捨札にしてもよい（任意）（出典: atwiki/page-609「自分自身のターンを終えるとき、自分自身のコマンドを1つ選び捨札にしてもよい」）", () => {
     let s = st({
       activePlayer: "player2",
       phase: "battle",
@@ -374,8 +372,7 @@ describe("RS-414 冥府神ティターン", () => {
       "player2",
     );
 
-  // 既知の不具合: CARD-RS-414 【ディオネを守る壁】が実装されていない（冥府神がアタックされても常駐を捨札にする選択が出ず、バトルが行われる）
-  it.fails("RS-414: 【ディオネを守る壁】冥府神（これ自身）がアタックされたとき、自軍常駐置き場のカードを捨札にすればバトルは行われない（出典: atwiki/page-611「捨札にしてもよい。そうしたとき、バトルは行われない」）", () => {
+  it("RS-414: 【ディオネを守る壁】冥府神（これ自身）がアタックされたとき、自軍常駐置き場のカードを捨札にすればバトルは行われない（出典: atwiki/page-611「捨札にしてもよい。そうしたとき、バトルは行われない」）", () => {
     let s = attacked({ battle: [inst("RS-414", "ti")], operation: [inst(DA_RESIDENT, "op")] }, "RS-414:ti");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(s)).toEqual([`${DA_RESIDENT}:op`]);
@@ -384,8 +381,7 @@ describe("RS-414 冥府神ティターン", () => {
     expect(zoneOf(s, "player1", "RS-414:ti")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-414 【ディオネを守る壁】が実装されていない（他の冥府神がアタックされたときも選択が出ない）
-  it.fails("RS-414: 【ディオネを守る壁】他の冥府神（スフィンクス）がアタックされたときも発動できる（出典: atwiki/page-611「特徴「冥府神」を持つ自軍ユニットがアタックされたとき」）", () => {
+  it("RS-414: 【ディオネを守る壁】他の冥府神（スフィンクス）がアタックされたときも発動できる（出典: atwiki/page-611「特徴「冥府神」を持つ自軍ユニットがアタックされたとき」）", () => {
     let s = attacked({ battle: [inst("RS-414", "ti"), inst("RS-412", "sx")], operation: [inst(DA_RESIDENT, "op")] }, "RS-412:sx");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     s = resolveAll(pick(s, `${DA_RESIDENT}:op`));
@@ -452,8 +448,7 @@ describe("RS-415 冥府神ワイバーン", () => {
   const wyvern = (damage: number) =>
     st({ player1: { battle: [inst("RS-415", "wy")], power: damageCards(damage), damage, deck: deckCards(3) } });
 
-  // 既知の不具合: CARD-RS-415 【飛竜剣法・散弾月】が実装されていない（自軍ダメージ5点以上でも BP4000・SP なしのまま）
-  it.fails("RS-415: 【飛竜剣法・散弾月】自軍ダメージが5点以上なら BP+4000（8000）され「SP1」になる（出典: atwiki/page-612「自軍ダメージが5点以上なら、これはBP+4000され「SP1」になる」）", () => {
+  it("RS-415: 【飛竜剣法・散弾月】自軍ダメージが5点以上なら BP+4000（8000）され「SP1」になる（出典: atwiki/page-612「自軍ダメージが5点以上なら、これはBP+4000され「SP1」になる」）", () => {
     const s = wyvern(5);
     expect(bpOf(s, "player1", "RS-415:wy")).toBe(8000);
     expect(spOf(s, "player1", "RS-415:wy")).toBe(1);
@@ -725,8 +720,7 @@ describe("RS-418 冥府神イフリート", () => {
       "player2",
     );
 
-  // 既知の不具合: CARD-RS-418 【炎の眼光】が実装されていない（敵軍の NC が発動しても無効にする選択が出ない）
-  it.fails("RS-418: 【炎の眼光】敵軍ユニットが NC を発動させたとき、自軍常駐置き場のカードを捨札にしてその NC を無効にできる（ゲキブルーは「SP1」にならない）（出典: atwiki/page-613「そのNCの効果を無効にする」）", () => {
+  it("RS-418: 【炎の眼光】敵軍ユニットが NC を発動させたとき、自軍常駐置き場のカードを捨札にしてその NC を無効にできる（ゲキブルーは「SP1」にならない）（出典: atwiki/page-613「そのNCの効果を無効にする」）", () => {
     let s = enemyNc({ battle: [inst("RS-418", "if")], operation: [inst(DA_RESIDENT, "op")] });
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-418");
@@ -756,8 +750,7 @@ describe("RS-418 冥府神イフリート", () => {
     expect(zoneOf(s, "player1", `${DA_RESIDENT}:op`)).toBe("operation");
   });
 
-  // 既知の不具合: CARD-RS-418 【炎の眼光】が実装されていない（グリーンサイからの「ナンバーに関係なく」発動する NC も無効にできない）
-  it.fails("RS-418: 【炎の眼光】グリーンサイからコンビネーションしてナンバーに関係なく発動したブラックバイソンの NC も無効にできる（出典: grnrngr/faq-card-6 RS-418 Q「はい、できます。…ＮＣの効果であることに違いありません」）", () => {
+  it("RS-418: 【炎の眼光】グリーンサイからコンビネーションしてナンバーに関係なく発動したブラックバイソンの NC も無効にできる（出典: grnrngr/faq-card-6 RS-418 Q「はい、できます。…ＮＣの効果であることに違いありません」）", () => {
     let s = enter(
       st({
         activePlayer: "player2",

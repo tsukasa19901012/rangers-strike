@@ -18,6 +18,7 @@ import {
   getDefinition,
 } from "../core/catalog";
 import { crossReducedNumber, crossReductionFor } from "../keywords/battleKeywords";
+import { attackerPodNumber } from "./legend1/set6NamedEffectsB";
 import { applySuperBrainDraw } from "../effects/drawEffects";
 import { buildLogEntry } from "../log/formatLog";
 import { startRuinSurvey } from "./ruinSurvey";
@@ -64,7 +65,13 @@ export function ncEffectiveNumber(
 ): number {
   if (typeof definition.comboNumber !== "number") return -1;
   return crossReducedNumber(
-    effectiveComboNumber(state, playerId, definition.comboNumber, card.cardId),
+    // RS-393 コマンドアタッカー【アタッカーポッド】: ライドされたままのコマンドアタッカーからコンビネーションする S ユニットは −3（最低2）。
+    attackerPodNumber(
+      state,
+      playerId,
+      card,
+      effectiveComboNumber(state, playerId, definition.comboNumber, card.cardId),
+    ),
     crossReductionFor(state.players[playerId].battle, card.instanceId),
   );
 }

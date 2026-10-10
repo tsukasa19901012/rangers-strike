@@ -907,6 +907,8 @@ export type TurnEndProgress = {
    */
   exodusOrderAsked?: boolean;
   exodusFirst?: boolean;
+  /** 第6弾の「ターンを終えるとき」の選択（RS-398【時間漂流者の送還】・RS-413 のコマンド捨札）のうち未処理のもの。 */
+  set6bQueue?: string[];
 };
 
 export const INITIAL_HAND_SIZE = 7;
