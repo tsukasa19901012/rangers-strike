@@ -150,7 +150,6 @@ describe("RS-370 ブラックマスク", () => {
   });
 
   it("RS-370: 【マスキーロッド】NC 成立（3番目）で SP1 になり、特徴「女」の敵軍ユニットがなければストライクできる（出典: atwiki/page-566「【マスキーロッド】SP1」）", () => {
-    // 既知の不具合: CARD-RS-370 3番目に出ても NC が成立せず（ログなし）SP1 にならない
     const s = ncEnter("RS-370", 3, {}, { battle: [inst("SPEC-MALE", "m")] });
     expect(spOf(s, "player1", "RS-370:x")).toBe(1);
     expect(canStrike(s, "RS-370:x")).toBe(true);
@@ -172,13 +171,11 @@ describe("RS-370 ブラックマスク", () => {
   });
 
   it("RS-370: ※ 自軍ダメージが4点以上なら制限は無効になり、「女」の敵軍ユニットがいてもストライクできる（出典: atwiki/page-566「この制限は自軍ダメージが4点以上あれば無効になる」）", () => {
-    // 既知の不具合: CARD-RS-370 NC が成立せず SP1 にならないため、ストライクできない
     const s = ncEnter("RS-370", 3, { power: damageCards(4) }, { battle: [inst("SPEC-FEMALE", "f")] });
     expect(canStrike(s, "RS-370:x")).toBe(true);
   });
 
   it("RS-370: ※ 自軍の「女」のユニットは制限に関係しない — 敵軍に「女」がなく自軍に「女」がいれば、NC 成立でストライクできる（出典: atwiki/page-566「特徴「女」を持つ敵軍ユニット」）", () => {
-    // 既知の不具合: CARD-RS-370 3番目に出ても NC が成立せず SP1 にならない
     const s = ncEnter("RS-370", 3, { battle: [inst("SPEC-FEMALE", "own"), ...fillers(1)] });
     expect(canStrike(s, "RS-370:x")).toBe(true);
   });
@@ -211,20 +208,17 @@ describe("RS-371 ピンクマスク", () => {
   });
 
   it("RS-371: 【マスキーリボン】敵軍ラッシュエリアのユニットも選べる（出典: atwiki/page-567「追加条件を持たない敵軍ユニット」— エリアを問わない。評価欄「エリアもサイズも問わない」）", () => {
-    // 既知の不具合: CARD-RS-371 候補が敵軍バトルエリアに限られ、ラッシュエリアのユニットを選べない
     const s = ncEnter("RS-371", 2, { power: damageCards(2) }, { battle: [inst("TST-UNIT-0", "e1")], rush: [inst("TST-UNIT-2", "r1")] });
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e1", "TST-UNIT-2:r1"]);
   });
 
   it("RS-371: 【マスキーリボン】追加条件を持つ敵軍ユニット（ファイブレッドFT）は選べない（出典: atwiki/page-567「追加条件を持たない」・grnrngr/faq-card-6 RS-430 Q「追加条件の記述欄に記述のあるものはすべて「追加条件を持つ」」）", () => {
-    // 既知の不具合: CARD-RS-371 追加条件を持つユニット（必要パワー「7-」のファイブレッドFT）も候補に入る
     const s = ncEnter("RS-371", 2, { power: damageCards(2) }, { battle: [inst("TST-UNIT-0", "e1"), inst("RS-373", "ft")] });
     expect(choiceIds(s)).toContain("TST-UNIT-0:e1");
     expect(choiceIds(s)).not.toContain("RS-373:ft");
   });
 
   it("RS-371: 【マスキーリボン】自軍ダメージの数まで（2点なら2体）手札に戻せる（出典: atwiki/page-567「自軍ダメージの数まで選び」）", () => {
-    // 既知の不具合: CARD-RS-371 自軍ダメージに関係なく1体しか選べない
     let s = ncEnter("RS-371", 2, { power: damageCards(2) }, { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-2", "e2"), inst("TST-UNIT-0", "e3")] });
     s = pick(s, "TST-UNIT-0:e1");
     s = pick(s, "TST-UNIT-2:e2");
@@ -235,7 +229,6 @@ describe("RS-371 ピンクマスク", () => {
   });
 
   it("RS-371: 【マスキーリボン】自軍ダメージが0点なら1体も戻せない（出典: atwiki/page-567「自軍ダメージの数まで」）", () => {
-    // 既知の不具合: CARD-RS-371 自軍ダメージ0でも1体選べる
     const s = ncEnter("RS-371", 2, {}, { battle: [inst("TST-UNIT-0", "e1")] });
     expect(choiceIds(s)).toEqual([]);
     expect(zoneOf(resolveAll(s), "player2", "TST-UNIT-0:e1")).toBe("battle");
@@ -261,7 +254,6 @@ describe("RS-371 ピンクマスク", () => {
   });
 
   it("RS-371: 公式Q&A — ダメージ5点・候補3体（ラッシュエリア含む）なら3体すべて戻すこともできる（出典: grnrngr/faq-card-6 RS-371 Q「任意の数を選んで戻させることができます」）", () => {
-    // 既知の不具合: CARD-RS-371 1体しか選べず、ラッシュエリアのユニットも選べない
     let s = ncEnter("RS-371", 2, { power: damageCards(5) }, { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2")], rush: [inst("TST-UNIT-0", "r1")] });
     s = pick(pick(pick(s, "TST-UNIT-0:e1"), "TST-UNIT-0:e2"), "TST-UNIT-0:r1");
     s = resolveAll(s);
@@ -276,7 +268,6 @@ describe("RS-371 ピンクマスク", () => {
   });
 
   it("RS-371: 【マスキーリボン】その後、自分がターンを終えるとき、相手は手札のユニットカードを自分自身のラッシュエリアに出せる（出典: atwiki/page-567「自分がターンを終えるとき、相手は…ラッシュエリアに出してもよい」・評価欄コメント「自軍エンドフェイズに」）", () => {
-    // 既知の不具合: CARD-RS-371 ターン終了時に相手が手札からラッシュエリアに出す処理がない
     let s = ncEnter("RS-371", 2, { power: damageCards(1) }, { battle: [inst("TST-UNIT-0", "e1")], power: powerCards(3) });
     s = resolveAll(pick(s, "TST-UNIT-0:e1"));
     s = toEndOfTurn(s);
@@ -296,7 +287,6 @@ describe("RS-371 ピンクマスク", () => {
   });
 
   it("RS-371: 【マスキーリボン】ターン終了時に出すユニットは必要パワーを満たすこと — パワーが足りないユニットカードは出せない（出典: atwiki/page-567「ただし、必要パワーと追加条件は満たすこと」）", () => {
-    // 既知の不具合: CARD-RS-371 ターン終了時に相手が手札からラッシュエリアに出す処理がない（出せるユニットの候補が出ない）
     let s = ncEnter("RS-371", 2, { power: damageCards(2) }, { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-2", "e2")], power: powerCards(1) });
     s = resolveAll(pick(s, "TST-UNIT-0:e1"));
     s = toEndOfTurn(s);

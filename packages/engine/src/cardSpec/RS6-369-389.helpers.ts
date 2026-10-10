@@ -890,7 +890,10 @@ export function toEndOfTurn(s: GameState): GameState {
   let next = settle(s);
   const start = next.activePlayer;
   for (let i = 0; i < 10 && next.activePlayer === start && !next.pendingEffectChoice; i++) {
-    const end = legal(next).find((a) => a.type === "end_phase");
+    // 出た直後のユニットの行動の機会（バトル進入のプロンプト）は何もせずに終える。
+    const end =
+      legal(next).find((a) => a.type === "end_phase") ??
+      legal(next).find((a) => a.type === "pass_battle_entry");
     if (!end) break;
     next = act(next, end);
   }

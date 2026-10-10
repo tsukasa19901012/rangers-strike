@@ -173,6 +173,8 @@ export function collectOwnRedNcCommands(state: GameState, playerId: PlayerId): s
   const player = state.players[playerId];
   const ids: string[] = [];
   for (const card of player.command) {
+    // すでにホールド状態のカードはホールドできない（atwiki/page-574「選びホールドしてもよい」）。
+    if (card.commandHeld) continue;
     const def = getDefinition(state.definitions, card.cardId);
     if (def?.type !== "unit") continue;
     if (!(def.features ?? []).includes("レッド")) continue;

@@ -135,8 +135,21 @@ export function applyPromotedNcEffect(
       break;
     }
     case "invalidate_next_opponent_turn": {
+      // RS-427【オネスト・ハート】: 直前のターンに敵軍ユニットが発動した「次の相手ターン」とある効果を無効にする
+      // （atwiki/page-510）。直前のターンに「次の相手ターン」として付いた（next_turn から繰り上がった）修飾子のうち、
+      // ユニットの効果によるものを取り除く（例: RS-110【ゼニボム】）。
+      const own = state.players[playerId];
+      const kept = (own.modifiers ?? []).filter(
+        (m) =>
+          !(
+            m.kind === "rule" &&
+            m.fromNextTurn &&
+            m.sourceCardId &&
+            state.definitions[m.sourceCardId]?.type === "unit"
+          ),
+      );
       const player = addTurnRuleModifier(
-        state.players[playerId],
+        { ...own, modifiers: kept.length > 0 ? kept : undefined },
         "invalidate_next_opponent_turn_effects",
         { sourceCardId: card.cardId },
       );

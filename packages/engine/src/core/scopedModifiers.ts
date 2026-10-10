@@ -134,7 +134,13 @@ export function clearTurnScopedModifiers(player: PlayerState): PlayerState {
   if (!modifiers.some((m) => m.scope === "next_turn")) return cleared;
   return {
     ...cleared,
-    modifiers: modifiers.map((m) => (m.scope === "next_turn" ? { ...m, scope: "turn" as const } : m)),
+    modifiers: modifiers.map((m) =>
+      m.scope !== "next_turn"
+        ? m
+        : m.kind === "rule"
+          ? { ...m, scope: "turn" as const, fromNextTurn: true }
+          : { ...m, scope: "turn" as const },
+    ),
   };
 }
 

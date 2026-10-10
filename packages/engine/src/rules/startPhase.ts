@@ -10,6 +10,9 @@ import { applyMegaSilverStartEndToggle } from "./batch04FieldEffects";
 import { startSelectPowerChoice } from "./pendingChoices";
 import { tryLegend3BattleToRush } from "./legend3/restrictions";
 import { prepareRegisterUnitReturnedToRush } from "./resist";
+import { tryCyclopsScarletOnReturnToRush } from "./cyclopsScarlet";
+import { isSmallUnit } from "../core/catalog";
+import { opponent } from "../core/helpers";
 import {
   applyOpponentHoldOtEtOnCommandRelease,
   applyPlasmaShockwaveShuffleBack,
@@ -34,6 +37,31 @@ function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
   return cards
     .filter((card) => activeNamedEffect(card, "falcon_claw"))
     .map((card) => card.instanceId);
+}
+
+const CYCLOPS_QUEUE_PREFIX = "cyclops_scarlet::";
+
+/**
+ * RS-417 冥府神サイクロプス【消滅の緋色】「これが自軍ラッシュエリアにある間、敵軍Sユニットがバトルエリアから
+ * ラッシュエリアに戻るたび…」（atwiki/page-614）— スタートフェイズの「戻す」でも誘発する。
+ * 戻った S ユニット1体・サイクロプス1体ごとにキューへ積む（faq-card-6 RS-417 Q2/Q3）。
+ */
+function collectCyclopsScarletQueue(state: GameState, playerId: PlayerId, movedCards: CardInstance[]): string[] {
+  const cyclopses = state.players[opponent(playerId)].rush.filter((c) => c.cardId === "RS-417");
+  if (cyclopses.length === 0) return [];
+  const entries: string[] = [];
+  for (const card of movedCards) {
+    if (!isSmallUnit(state.definitions, card.cardId)) continue;
+    for (const cy of cyclopses) entries.push(`${CYCLOPS_QUEUE_PREFIX}${cy.instanceId}::${card.instanceId}`);
+  }
+  return entries;
+}
+
+function parseCyclopsQueueEntry(entry: string): { cyclopsInstanceId: string; unitInstanceId: string } | null {
+  if (!entry.startsWith(CYCLOPS_QUEUE_PREFIX)) return null;
+  const [cyclopsInstanceId, unitInstanceId] = entry.slice(CYCLOPS_QUEUE_PREFIX.length).split("::");
+  if (!cyclopsInstanceId || !unitInstanceId) return null;
+  return { cyclopsInstanceId, unitInstanceId };
 }
 
 /**
@@ -76,6 +104,19 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
   if (phasePlayerId && queue.length > 0) {
     const [nextId, ...rest] = queue;
     const owner = state.players[phasePlayerId];
+    const cyclops = parseCyclopsQueueEntry(nextId!);
+    if (cyclops) {
+      // RS-417【消滅の緋色】: 戻った敵軍 S ユニット1体・サイクロプス1体ごとに1回（grnrngr/faq-card-6 RS-417 Q2/Q3）。
+      const returned = owner.rush.find((c) => c.instanceId === cyclops.unitInstanceId);
+      const controller = state.players[opponent(phasePlayerId)];
+      const base: GameState = { ...state, pendingBattleToRushQueue: rest };
+      if (!returned || !controller.rush.some((c) => c.instanceId === cyclops.cyclopsInstanceId)) {
+        return continueBattleToRushEffectQueue(base);
+      }
+      return continueBattleToRushEffectQueue(
+        tryCyclopsScarletOnReturnToRush(base, phasePlayerId, returned, phasePlayerId),
+      );
+    }
     const card = owner.rush.find((c) => c.instanceId === nextId);
     if (!card) {
       return continueBattleToRushEffectQueue({ ...state, pendingBattleToRushQueue: rest });
@@ -118,7 +159,10 @@ function returnBattleGroupToRush(
     .map(prepareRegisterUnitReturnedToRush)
     .map(({ jointComboGrants: _grants, ...rest }) => rest);
   const battle = player.battle.filter((c) => !members.has(c.instanceId));
-  const effectQueue = collectBattleToRushEffectQueue(movedCards);
+  const effectQueue = [
+    ...collectBattleToRushEffectQueue(movedCards),
+    ...collectCyclopsScarletQueue(state, playerId, movedCards),
+  ];
   return {
     ...state,
     ...updatePlayer(state, playerId, {

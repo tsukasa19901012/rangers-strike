@@ -1,4 +1,5 @@
 import type { CardInstance, GameState, PlayerId, TurnEndProgress } from "../types/game";
+import { applySet6TurnEnd } from "./legend1/set6AuditFixes";
 import { applyDarkLawTurnEnd } from "./legend1/set5NamedEffectsA";
 import { activeNamedEffect } from "./ncGatedEffects";
 import { effectiveBp, getDefinition } from "../core/catalog";
@@ -302,5 +303,7 @@ export function resolveTurnEndingEffectsImpl(
   }
   const keywordEnd = applyKeywordTurnEndEffects(nextState, endingPlayerId);
   nextState = clearEnemyTurnDamageFlag(keywordEnd.state, endingPlayerId);
+  // RS-371【マスキーリボン】の後半（相手が手札のユニットカードをラッシュエリアに出す。rules/legend1/set6AuditFixes.ts）。
+  nextState = applySet6TurnEnd(nextState, endingPlayerId);
   return save(nextState, keywordEnd.logs);
 }

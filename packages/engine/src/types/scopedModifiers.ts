@@ -9,6 +9,8 @@ export type ScopedModifier =
       scope: ModifierScope;
       sourceCardId?: string;
       payload?: unknown;
+      /** next_turn から繰り上がった（直前のターンに発動した「次の相手ターン」の効果。RS-427【オネスト・ハート】）。 */
+      fromNextTurn?: boolean;
     }
   | {
       kind: "stat";

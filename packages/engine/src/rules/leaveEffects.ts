@@ -5,6 +5,7 @@ import { resolveLegend2OnDestroy } from "./legend2/destroyEffects";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import { startSelectUnitChoice, startSelectCommandChoice } from "./pendingChoices";
 import { applyReanimate } from "./reanimate";
+import { startSuperGekiRedChoice } from "./legend1/set6AuditFixes";
 import { buildLogEntry } from "../log/formatLog";
 import { resolveZordFusionPartnerIds } from "../dsl/zordBridge";
 import { applyHungerGodCeaseShuffle } from "./batch04FieldEffects";
@@ -368,14 +369,15 @@ export function resolveAfterDiscardDestroyEffects(
       };
       logs.push(buildLogEntry(ctx.ownerPlayerId, "destroy_effect", ctx.cardId, nextState.definitions, "super_geki_red_reanimate"));
     } else if (superInHand.length > 0 && baseInDiscard.length > 0) {
-      // Both available: prefer discard option (auto-pick, strategic note: hand is more valuable)
-      nextState = applyReanimate(nextState, {
-        playerId: ctx.ownerPlayerId,
-        instanceId: baseInDiscard[0]!.instanceId,
-        from: "discard",
-        to: "rush",
-      });
-      logs.push(buildLogEntry(ctx.ownerPlayerId, "destroy_effect", ctx.cardId, nextState.definitions, "super_geki_red_reanimate"));
+      // 両方あればどちらか1枚をプレイヤーが選ぶ（「どちらか1枚を選び」atwiki/page-509。見送れない）。
+      nextState = startSuperGekiRedChoice(
+        nextState,
+        ctx.ownerPlayerId,
+        ctx.phasePlayerId,
+        superInHand.map((c) => c.instanceId),
+        baseInDiscard.map((c) => c.instanceId),
+      );
+      logs.push(buildLogEntry(ctx.ownerPlayerId, "destroy_effect", ctx.cardId, nextState.definitions, "super_geki_red_reanimate_choice"));
     }
   }
 

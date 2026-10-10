@@ -130,7 +130,6 @@ describe("RS-348 メディテーション", () => {
     expect(r.state.winner).toBe("player2");
   });
 
-  // 既知の不具合: CARD-RS-348 無限連鎖カードで常駐が無効になっても、メディテーションの「14点まで負けない」が働き続ける
   it("RS-348: 公式Q&A — ダメージ7点以上で相手に「無限連鎖カード」を使われるとメディテーションが無効になり負ける（出典: grnrngr/faq-card-6 RS-348 Q2「はい、その通りです」）", () => {
     const s = st({
       activePlayer: "player2",
@@ -187,7 +186,6 @@ describe("RS-348 メディテーション", () => {
     expect(c.winner).toBe("player1");
   });
 
-  // 既知の不具合: CARD-RS-348 「ダメージにして置く」効果で受けたダメージに追加ダメージが付かない
   it("RS-348: 公式Q&A — カードをダメージにして置く効果（レッドマスク【ゴッドハンド】）を受けた場合も追加ダメージを受ける（計2点）（出典: grnrngr/faq-card-6 RS-348 Q5「はい、追加ダメージを受けます」）", () => {
     let s = st({
       player1: { battle: fillers(3), rush: [inst("RS-368", "rm")], deck: deckCards(5) },
@@ -542,7 +540,6 @@ describe("RS-353 デンジファイター", () => {
     inst("RS-352", "l6"),
   ];
 
-  // 既知の不具合: CARD-RS-353 山札の一番上の1枚しか見ず、メカの L ユニットを手札に加えられない
   it("RS-353: 【ファイターチェンジ】パワーゾーンの枚数（5枚）までオモテにし、その中の特徴「メカ」の L ユニットをすべて手札に加え、それ以外は山札の下に戻す（出典: atwiki/page-551）", () => {
     const r = rushFromHand(rushState(fillers(5), deck()), "player1", "RS-353:df");
     const s = resolveAll(r.state);
@@ -563,7 +560,6 @@ describe("RS-353 デンジファイター", () => {
   });
 
   // grnrngr/faq-card-6 RS-353 Q1「好きな枚数までオモテにすることが可能です。…好きな枚数で止めることができます。」
-  // 既知の不具合: CARD-RS-353 山札の一番上の1枚しか見ず、メカの L ユニットを手札に加えられない
   it("RS-353: 公式Q&A — パワー5枚でも、1枚ずつオモテにして好きな枚数（2枚）で止められる（出典: grnrngr/faq-card-6 RS-353 Q1）", () => {
     const r = rushFromHand(rushState(fillers(5), deck()), "player1", "RS-353:df");
     let s = r.state;

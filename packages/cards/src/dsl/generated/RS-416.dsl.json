@@ -39,40 +39,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      },
       "optional": true,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "power"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "effect_card::RS-416::nokorekushon",
+          "duration": "turn"
         }
       ]
     }

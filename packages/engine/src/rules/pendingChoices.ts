@@ -132,6 +132,13 @@ import {
   trySkipSet5AuditChoice,
 } from "./legend1/set5AuditFixes";
 import {
+  isSet6AuditChoiceEffect,
+  tryConfirmSet6AuditChoice,
+  tryResolveSet6AuditChoice,
+  trySkipSet6AuditChoice,
+  fireAkaRedSoulNc,
+} from "./legend1/set6AuditFixes";
+import {
   applyFlowerBombDeclaredNumber,
   continueMagiBlueAfterSelfDraw,
   moveCommandUnitToBattleSilent,
@@ -592,6 +599,7 @@ export function isValidEffectChoiceTarget(
     isSet4ChoiceEffect(pending.effectId) ||
     isSet5ChoiceEffect(pending.effectId) ||
     isSet5AuditChoiceEffect(pending.effectId) ||
+    isSet6AuditChoiceEffect(pending.effectId) ||
     isSet5AChoiceEffect(pending.effectId)
   ) {
     return true;
@@ -1927,6 +1935,8 @@ export function applyConfirmEffectChoice(
   if (set4) return set4;
   const set5a = tryConfirmSet5AChoice(state, playerId);
   if (set5a) return set5a;
+  const set6Audit = tryConfirmSet6AuditChoice(state, playerId);
+  if (set6Audit) return set6Audit;
 
   if (pending.mayConfirm) {
     const log = buildLogEntry(
@@ -2700,6 +2710,24 @@ function applyPostHoldContinuation(
   return { state: nextState, done: false };
 }
 
+/**
+ * RS-421【ソウル降臨】: ホールドしたカードの NC の効果をアカレッドの効果として発動してから選択を閉じる
+ * （rules/legend1/set6AuditFixes.ts fireAkaRedSoulNc）。
+ */
+function finishAkaRedSoul(state: GameState, pending: PendingEffectChoice, heldCardId: string): ChoiceOutcome {
+  const cleared = clearChoice(state, pending.phasePlayerId);
+  const fired = fireAkaRedSoulNc(cleared, pending.playerId, pending.sourceInstanceId!, heldCardId);
+  if (fired.pendingEffectChoice) {
+    const opened = fired.pendingEffectChoice;
+    return {
+      state: pending.resumeChoice
+        ? { ...fired, pendingEffectChoice: appendResumeChoice(opened, pending.resumeChoice) }
+        : fired,
+    };
+  }
+  return finishChoice(fired, pending, cardName(state.definitions, heldCardId));
+}
+
 export function completeEffectHoldChoice(
   state: GameState,
   playerId: PlayerId,
@@ -2713,6 +2741,14 @@ export function completeEffectHoldChoice(
   if (commandInstanceIds.length !== selectCount) return { error: "wrong_count" };
   for (const id of commandInstanceIds) {
     if (!pending.validInstanceIds.includes(id)) return { error: "invalid_target" };
+  }
+  if (pending.effectId === "souru" && pending.sourceCardId === "RS-421" && pending.sourceInstanceId) {
+    // RS-421【ソウル降臨】（支払いでホールド済み）: ストライク不可を付け、ホールドしたカードの NC を発動する。
+    const heldId = commandInstanceIds[0]!;
+    const held = state.players[playerId].command.find((c) => c.instanceId === heldId);
+    if (!held) return { error: "invalid_target" };
+    const marked = markBattleNcEffect(state, playerId, pending.sourceInstanceId, "souru_no_strike");
+    return finishAkaRedSoul(marked, pending, held.cardId);
   }
   const continued = applyPostHoldContinuation(state, pending);
   if (continued.done) return { state: continued.state };
@@ -2737,6 +2773,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set5) return set5;
   const set5Audit = trySkipSet5AuditChoice(state, playerId);
   if (set5Audit) return set5Audit;
+  const set6Audit = trySkipSet6AuditChoice(state, playerId);
+  if (set6Audit) return set6Audit;
   if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
   if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
     // 選択を省略したときは先にひいた1枚を手札に残す（どちらか1枚は必ず残る）。
@@ -2911,6 +2949,8 @@ export function applyEffectChoiceSelect(
   if (set5) return set5;
   const set5Audit = tryResolveSet5AuditChoice(state, playerId, instanceId);
   if (set5Audit) return set5Audit;
+  const set6Audit = tryResolveSet6AuditChoice(state, playerId, instanceId);
+  if (set6Audit) return set6Audit;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
@@ -4168,11 +4208,7 @@ export function applyEffectChoiceSelect(
             pending.sourceInstanceId,
           );
           if (!moved) return { error: "invalid_target" };
-          return finishChoice(
-            moved,
-            pending,
-            cardName(state.definitions, found.card.cardId),
-          );
+          return finishAkaRedSoul(moved, pending, found.card.cardId);
         }
         const command = [...player.command];
         command[found.index] = { ...found.card, commandHeld: true };

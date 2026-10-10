@@ -150,7 +150,6 @@ describe("RS-382 ビクトリーロボ", () => {
   });
 
   it("RS-382: 【人の命は地球の未来】このターン自軍捨札から手札に加えた S ユニットのカード1枚につき SP+1（1枚で2点、2枚で3点）（出典: atwiki/page-541）", () => {
-    // 既知の不具合: CARD-RS-382 SP 加算が NC 効果（victory_robo_strike）の発動を条件にしており、ナンバーを持たないビクトリーロボでは発動しない
     expect(roboStrike(1)).toBe(2);
     expect(roboStrike(2)).toBe(3);
   });
@@ -266,7 +265,6 @@ describe("RS-384 ブルースローワー", () => {
   });
 
   it("RS-384: 【放水作業】敵軍コマンド4・自軍コマンド1なら、自軍山札の上から3枚をホールド状態で自軍コマンドゾーンに置き、同じ数にできる（出典: atwiki/page-529）", () => {
-    // 既知の不具合: CARD-RS-384 「敵軍コマンドを1つ選んでホールドする」別の処理になっている（自軍山札からコマンドを置かない）
     let s = rushGogo("RS-384", 4, {}, { command: releasedCat("WB", 4, "ec") }).state;
     if (s.pendingEffectChoice?.sourceCardId === "RS-384" && legal(s).some((a) => a.type === "confirm_effect_choice")) s = confirm(s);
     s = resolveAll(s);
@@ -277,7 +275,6 @@ describe("RS-384 ブルースローワー", () => {
   });
 
   it("RS-384: 【放水作業】は任意 — 行わないこともできる（出典: atwiki/page-529「以下の手順を行ってもよい」）", () => {
-    // 既知の不具合: CARD-RS-384 見送れない「敵軍コマンドを1つ選んでホールドする」選択が出る
     let s = rushGogo("RS-384", 4, {}, { command: releasedCat("WB", 4, "ec") }).state;
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));
@@ -286,7 +283,6 @@ describe("RS-384 ブルースローワー", () => {
   });
 
   it("RS-384: 【放水作業】敵軍コマンドの数が自軍コマンドの数より多くなければ何もしない（素材をコマンドゾーンに送って同数になった場合も）（出典: atwiki/page-529「敵軍コマンドの数が自軍コマンドの数より多ければ」）", () => {
-    // 既知の不具合: CARD-RS-384 敵軍コマンドがあれば数に関係なく「敵軍コマンドを1つ選んでホールドする」選択が出る
     const s = rushGogo("RS-384", 4, {}, { command: releasedCat("WB", 2, "ec") }, "command").state;
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(s.players.player1.command).toHaveLength(2);
@@ -335,7 +331,7 @@ describe("RS-385 グリーンホバー", () => {
   });
 
   it.fails("RS-385: 【特殊消化弾】自軍ラッシュエリアにある間、自軍コマンドゾーンにホールド状態で置くカード（ブルースローワー【放水作業】）をリリース状態で置ける（出典: atwiki/page-530）", () => {
-    // 既知の不具合: CARD-RS-385 【特殊消化弾】が働かない（CARD-RS-384 【放水作業】も未実装）
+    // 既知の不具合: CARD-RS-385 【特殊消化弾】が働かない（【放水作業】はホールド状態で置く）
     let s = rushGogo("RS-384", 4, { rush: [inst("RS-385", "gh")] }, { command: releasedCat("WB", 3, "ec") }).state;
     for (let i = 0; i < 6 && s.pendingEffectChoice?.playerId === "player1"; i++) {
       s = legal(s).some((a) => a.type === "confirm_effect_choice") ? confirm(s) : pick(s, s.pendingEffectChoice.validInstanceIds[0]!);
@@ -496,7 +492,6 @@ describe("RS-387 ピンクエイダー", () => {
   });
 
   it("RS-387: 【緊急車両誘導】同じ持ち主の山札の下に戻す順は自分が選べる（出典: atwiki/page-532「好きな順で戻してもよい」）", () => {
-    // 既知の不具合: CARD-RS-387 戻す順を選ぶ手段がなく、場の並び順で自動的に戻す
     let s = rushGogo("RS-387", 3, {}, { rush: [inst("RS-381", "v2"), inst("RK-045", "v3")] }).state;
     s = confirm(s);
     expect(choiceIds(s)).toEqual(["RK-045:v3", "RS-381:v2"]);
@@ -548,7 +543,6 @@ describe("RS-388 ゴーレッド（2nd）", () => {
   }
 
   it("RS-388: 【ブイランサー】このターン自軍捨札から S ユニットのカードを手札に加えていれば、ナンバーに関係なく（1番目でも）SP1（出典: atwiki/page-537「ナンバーに関係なく発動する」）", () => {
-    // 既知の不具合: CARD-RS-388 「捨札から S ユニットを手札に加えていればナンバーに関係なく発動」の条件がなく、NC 不成立なら SP0
     const s = afterRescue(true);
     expect(spOf(s, "player1", "RS-388:x")).toBe(1);
   });
@@ -577,7 +571,6 @@ describe("RS-389 ゴーブルー", () => {
     });
 
   it("RS-389: 【人命検索】NC 成立（3番目）で、捨札をシャッフルしたら相手が自軍捨札から1枚選ぶ（候補は自軍捨札のカード）（出典: atwiki/page-533）", () => {
-    // 既知の不具合: CARD-RS-389 自軍山札の上を見て1枚手札に加える別の処理になっている（捨札・相手の選択がない）
     let s = enterGB([inst("TST-UNIT-0", "s"), inst("TST-OP", "op"), inst("TST-UNIT-2", "mu")]);
     if (s.pendingEffectChoice?.playerId === "player1" && legal(s).some((a) => a.type === "confirm_effect_choice")) s = confirm(s);
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
@@ -585,7 +578,6 @@ describe("RS-389 ゴーブルー", () => {
   });
 
   it("RS-389: 【人命検索】相手の選んだカードが S ユニットのカードなら手札に加える（出典: atwiki/page-533）", () => {
-    // 既知の不具合: CARD-RS-389 捨札・相手の選択がない
     let s = enterGB([inst("TST-UNIT-0", "s"), inst("TST-OP", "op")]);
     if (s.pendingEffectChoice?.playerId === "player1" && legal(s).some((a) => a.type === "confirm_effect_choice")) s = confirm(s);
     s = resolveAll(act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "TST-UNIT-0:s" }));
@@ -594,7 +586,6 @@ describe("RS-389 ゴーブルー", () => {
   });
 
   it("RS-389: 【人命検索】相手の選んだカードが S ユニットでなければ（オペレーション・M ユニット）手札に加えず、捨札はすべてオモテに戻る（出典: atwiki/page-533）", () => {
-    // 既知の不具合: CARD-RS-389 捨札・相手の選択がない
     let s = enterGB([inst("TST-UNIT-0", "s"), inst("TST-OP", "op")]);
     if (s.pendingEffectChoice?.playerId === "player1" && legal(s).some((a) => a.type === "confirm_effect_choice")) s = confirm(s);
     s = resolveAll(act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "TST-OP:op" }));
@@ -618,14 +609,12 @@ describe("RS-389 ゴーブルー", () => {
 
   // atwiki/page-533 Q1「捨札が1枚しかない場合は、シャッフルすることができないため、…効果は発動できません」
   it("RS-389: Q&A — 自軍捨札が1枚しかなければシャッフルできないため、【人命検索】は発動できない（出典: atwiki/page-533 Q1）", () => {
-    // 既知の不具合: CARD-RS-389 捨札の枚数に関係なく（山札を見る）選択が出る
     const s = enterGB([inst("TST-UNIT-0", "s")]);
     expect(holdEffectOffered(s, "RS-389:x")).toBe(false);
     expect(zoneOf(resolveAll(s), "player1", "TST-UNIT-0:s")).toBe("discard");
   });
 
   it("RS-389: Q&A — 自軍捨札が0枚でも発動できない（出典: atwiki/page-533 Q1「2枚以上のカードをランダムに混ぜて」）", () => {
-    // 既知の不具合: CARD-RS-389 捨札の枚数に関係なく（山札を見る）選択が出る
     const s = enterGB([]);
     expect(holdEffectOffered(s, "RS-389:x")).toBe(false);
   });
