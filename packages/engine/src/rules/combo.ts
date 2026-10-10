@@ -37,6 +37,7 @@ import { applyDestroyOnEnterBattle } from "./destroyOnEnterBattle";
 import { tryStartOpponentDrawOnEnter } from "./legend2/destroyEffects";
 import { tryMereChameleonOnAllyEnterBattle } from "./batch04FieldEffects";
 import { tryPowerFaceupRaidaOnAllyEnter } from "./riderKickEffects";
+import { applyBeastSwordHoldOnEnter } from "./errataCardEffects";
 import { countLogicalBattleSlots } from "./battleLine";
 import { applyBaseAttackOnEnter } from "./legend3/enterBattleEffects";
 import { cannotAttackOrStrikeThisTurn, countHeldCommands } from "./restrictions";
@@ -224,6 +225,7 @@ export function resolveEnterBattleEffectsImpl(
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }
 
+    nextState = applyBeastSwordHoldOnEnter(nextState, playerId, battleCard);
     nextState = tryMereChameleonOnAllyEnterBattle(
       nextState,
       playerId,
@@ -501,6 +503,8 @@ export function canStrikeUnit(
   if (isVehicle(getDefinition(definitions, instance.cardId))) return false;
   // ルール: R-HOLD-03 — ホールド中のストライク可否は [未確定]。従来どおり不可。
   if (instance.registerHeld) return false;
+  // XG1-028 アバレンオージ: ※これはホールド状態のときストライクできない（出典: atwiki/page-1665）。
+  if (instance.cardId === "XG1-028" && instance.commandHeld) return false;
   if (state && playerId) {
     if (hasBakiBakiExtraAttackOnly(state, playerId, instance.instanceId)) {
       return false;

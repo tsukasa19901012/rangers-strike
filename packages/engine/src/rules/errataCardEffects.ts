@@ -9,10 +9,12 @@ import type { GrantKeywordContext, GrantKeywordResult } from "../dsl/grantKeywor
 import {
   cardCategories,
   cardName,
+  effectiveBp,
   getDefinition,
   isSmallUnit,
   parsePowerCost,
 } from "../core/catalog";
+import { applyDamageToPlayer } from "./damagePayment";
 import { sameCardName } from "../core/cardNames";
 import { isZordUpCost } from "@rangers-strike/cards";
 import { opponent, updatePlayer } from "../core/helpers";
@@ -1053,6 +1055,435 @@ function resolveKiryoku(state: GameState, playerId: PlayerId, instanceId: string
 }
 
 // ---------------------------------------------------------------------------
+// XG1-029 アバレブラックAM【無敵の竜人魂】（E7）
+
+const DRAGON_SOUL = "invincible_dragon_soul";
+
+/**
+ * 出典: atwiki/page-1620（docs/wiki/sources/atwiki/page-1620-XG1-029.md）
+ * 敵軍バトルエリアから本来のBPが8000以下のLユニットを1体選び撃破してもよい。そうしたとき、撃破した
+ * ユニットがDAを持っていたなら、このターン、これは「SP1」になる。
+ */
+function beginDragonSoul(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  const targets = state.players[opponent(ctx.playerId)].battle
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return def?.type === "unit" && def.size === "L" && (def.bp ?? 0) <= 8000;
+    })
+    .map((c) => c.instanceId);
+  if (targets.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: DRAGON_SOUL,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "select_unit",
+    validInstanceIds: targets,
+    selectCount: 1,
+    optional: true,
+    unitDestination: "discard",
+  });
+}
+
+function resolveDragonSoul(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const enemyId = opponent(playerId);
+  const target = state.players[enemyId].battle.find((c) => c.instanceId === instanceId);
+  const def = target ? getDefinition(state.definitions, target.cardId) : undefined;
+  const hadDa = !!def && cardCategories(def).includes("DA");
+  const leave = applyUnitLeave(state, instanceId, "discard", pending.phasePlayerId);
+  if ("error" in leave) return leave;
+  let next = leave.state;
+  if (next.pendingEffectChoice === pending) next = clearPending(next, pending.phasePlayerId);
+  const destroyed = !next.players[enemyId].battle.some((c) => c.instanceId === instanceId);
+  if (hadDa && destroyed) {
+    next = updateEntering(next, playerId, pending.sourceInstanceId, (c) => ({ ...c, spOverride: 1 }));
+  }
+  return {
+    state: next,
+    log: logFor(state, playerId, pending.sourceCardId, `${DRAGON_SOUL}:${instanceId}${hadDa ? ":sp1" : ""}`),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// XG1-062 仮面ライダーワイルドカリス【ワイルドサイクロン】（E7）
+
+const WILD_CYCLONE = "wild_cyclone";
+
+/**
+ * 出典: atwiki/page-1667（docs/wiki/sources/atwiki/page-1667-XG1-062.md）
+ * 自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからSユニットを好きな数選び、ホールドしてもよい。
+ * そうしたとき、ホールドしたユニットのBPを合計して、BP10000ごとに相手に1点ダメージを与える。
+ */
+function beginWildCyclone(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  if (state.activePlayer !== ctx.playerId) return null;
+  const targets = state.players[opponent(ctx.playerId)].battle
+    .filter((c) => !c.commandHeld && isSmallUnit(state.definitions, c.cardId))
+    .map((c) => c.instanceId);
+  if (targets.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: WILD_CYCLONE,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "select_unit",
+    validInstanceIds: targets,
+    selectCount: targets.length,
+    optional: true,
+  });
+}
+
+function finishWildCyclone(
+  state: GameState,
+  pending: NonNullable<GameState["pendingEffectChoice"]>,
+  selected: string[],
+): ChoiceOutcome {
+  const playerId = pending.playerId;
+  const enemyId = opponent(playerId);
+  let next = clearPending(state, pending.phasePlayerId);
+  if (selected.length === 0) return { state: next };
+  let total = 0;
+  for (const id of selected) {
+    const unit = next.players[enemyId].battle.find((c) => c.instanceId === id);
+    if (!unit) continue;
+    total += effectiveBp(next, enemyId, unit);
+    next = holdFieldUnit(next, enemyId, id);
+  }
+  const damage = Math.floor(total / 10000);
+  if (damage > 0) {
+    next = applyDamageToPlayer(next, enemyId, damage, {
+      kind: "none",
+      activePlayer: pending.phasePlayerId,
+    });
+  }
+  return {
+    state: next,
+    log: logFor(state, playerId, pending.sourceCardId, `${WILD_CYCLONE}:${selected.length}:bp${total}:dmg${damage}`),
+  };
+}
+
+function resolveWildCyclone(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+  const remaining = pending.validInstanceIds.filter((id) => id !== instanceId);
+  if (remaining.length > 0) {
+    return {
+      state: {
+        ...state,
+        pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: remaining },
+      },
+    };
+  }
+  return finishWildCyclone(state, pending, selected);
+}
+
+// ---------------------------------------------------------------------------
+// E7: RK-140 / RK-334 仮面ライダー電王LF、RS-288 守護獣ドラゴンシーザー、XG1-028 アバレンオージ、
+//     XG6-015 爆竜パラサロッキル
+
+/**
+ * バトルエリアに出られない（カード固有の※制限）。
+ * - RK-140 / RK-334: これが自軍エリアにある間、必要パワーの数字が2以下のユニットはバトルエリアに出られない
+ *   （出典: atwiki/page-671, page-1369。どちらの軍のユニットにも掛かる）。
+ * - RS-288: 特徴「獣奏剣」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「獣奏剣」をホールドしなければ
+ *   バトルエリアに出られない（出典: atwiki/page-99）。ホールドできるリリース状態の「獣奏剣」が要る。
+ */
+export function errataBattleEntryBlocked(
+  state: GameState,
+  playerId: PlayerId,
+  unit: CardInstance,
+): boolean {
+  const def = getDefinition(state.definitions, unit.cardId);
+  if (!def || def.type !== "unit") return false;
+  const lock = (["player1", "player2"] as const).some((pid) =>
+    fieldUnits(state.players[pid]).some(
+      (c) => (c.cardId === "RK-140" || c.cardId === "RK-334") && c.instanceId !== unit.instanceId,
+    ),
+  );
+  if (lock && parsePowerCost(def.powerCost) <= 2) return true;
+  if (unit.cardId === "RS-288" && needsBeastSwordHold(state, playerId, unit)) {
+    return releasedBeastSword(state, playerId) === undefined;
+  }
+  return false;
+}
+
+function needsBeastSwordHold(state: GameState, playerId: PlayerId, unit: CardInstance): boolean {
+  return !fieldUnits(state.players[playerId]).some(
+    (c) =>
+      c.instanceId !== unit.instanceId &&
+      (getDefinition(state.definitions, c.cardId)?.features ?? []).includes("獣奏剣"),
+  );
+}
+
+function releasedBeastSword(state: GameState, playerId: PlayerId): CardInstance | undefined {
+  return state.players[playerId].command.find(
+    (c) => !c.commandHeld && sameCardName(getDefinition(state.definitions, c.cardId)?.name, "獣奏剣"),
+  );
+}
+
+/** RS-288 がバトルエリアに出たとき、※の「獣奏剣」をホールドする。 */
+export function applyBeastSwordHoldOnEnter(
+  state: GameState,
+  playerId: PlayerId,
+  entering: CardInstance,
+): GameState {
+  if (entering.cardId !== "RS-288" || !needsBeastSwordHold(state, playerId, entering)) return state;
+  const sword = releasedBeastSword(state, playerId);
+  if (!sword) return state;
+  const player = state.players[playerId];
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      command: player.command.map((c) =>
+        c.instanceId === sword.instanceId ? { ...c, commandHeld: true, mothershipHold: false } : c,
+      ),
+    }),
+  };
+}
+
+// RK-140【電車斬り】
+const DENSHA_GIRI = "densha_giri";
+
+function residentDenOCards(state: GameState, playerId: PlayerId): string[] {
+  const ids: string[] = [];
+  for (const op of state.players[playerId].operation) {
+    for (const c of [op, ...(op.stackedCards ?? [])]) {
+      if (c.faceDown) continue;
+      const def = getDefinition(state.definitions, c.cardId);
+      if (def?.type === "unit" && (def.features ?? []).includes("DEN-O")) ids.push(c.instanceId);
+    }
+  }
+  return ids;
+}
+
+/**
+ * 出典: atwiki/page-671 — 自軍ターン中、これがバトルエリアに出たとき、自軍常駐置き場のオモテ向きのカードの中から、
+ * 本来の特徴に「DEN-O」を持つユニットカードを1枚選び、捨札にしてもよい。そうしたとき、相手に1点ダメージを与える。
+ */
+function beginDenshaGiri(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  if (state.activePlayer !== ctx.playerId) return null;
+  const valid = residentDenOCards(state, ctx.playerId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: DENSHA_GIRI,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "scry_keep_one",
+    validInstanceIds: valid,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+function resolveDenshaGiri(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const player = state.players[playerId];
+  let picked: CardInstance | undefined;
+  const operation = player.operation
+    .filter((op) => {
+      if (op.instanceId === instanceId) {
+        picked = op;
+        return false;
+      }
+      return true;
+    })
+    .map((op) => {
+      const stacked = op.stackedCards ?? [];
+      const hit = stacked.find((c) => c.instanceId === instanceId);
+      if (!hit) return op;
+      picked = hit;
+      return { ...op, stackedCards: stacked.filter((c) => c.instanceId !== instanceId) };
+    });
+  if (!picked) return { error: "invalid_target" };
+  let next: GameState = {
+    ...clearPending(state, pending.phasePlayerId),
+    ...updatePlayer(state, playerId, {
+      ...player,
+      operation,
+      discard: [...player.discard, picked],
+    }),
+  };
+  next = { ...next, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+  next = applyDamageToPlayer(next, opponent(playerId), 1, {
+    kind: "none",
+    activePlayer: pending.phasePlayerId,
+  });
+  return { state: next, log: logFor(state, playerId, pending.sourceCardId, `${DENSHA_GIRI}:${instanceId}`) };
+}
+
+/**
+ * RK-334【電車斬り】（CN1 の NC）— 出典: atwiki/page-1369。このターン、自軍ラッシュエリアに「モモタロス」
+ * 「ウラタロス」「キンタロス」「リュウタロス」（4枚すべて）があれば「SP2」になる。
+ */
+function applyDenshaGiri2nd(state: GameState, ctx: GrantKeywordContext): GameState {
+  const rush = state.players[ctx.playerId].rush;
+  const all = IMAGIN_NAMES.every((n) =>
+    rush.some((c) => sameCardName(getDefinition(state.definitions, c.cardId)?.name, n)),
+  );
+  if (!all) return state;
+  return updateEntering(state, ctx.playerId, ctx.triggerSourceInstanceId, (c) => ({ ...c, spOverride: 2 }));
+}
+
+// RS-288【ドラゴンハーレー】
+const DRAGON_HARLEY = "dragon_harley";
+
+/**
+ * 出典: atwiki/page-99 — これが自軍ラッシュエリアにある間、自分がターンを終えるとき、BP3000のユニットがあれば
+ * 1体選び撃破する（どちらの軍のユニットでもよい。選択は必須）。
+ */
+export function applyDragonHarleyTurnEnd(state: GameState, endingPlayerId: PlayerId): GameState {
+  if (state.pendingEffectChoice) return state;
+  const source = state.players[endingPlayerId].rush.find((c) => c.cardId === "RS-288");
+  if (!source) return state;
+  const targets = (["player1", "player2"] as const).flatMap((pid) =>
+    fieldUnits(state.players[pid])
+      .filter((c) => {
+        const def = getDefinition(state.definitions, c.cardId);
+        return def?.type === "unit" && effectiveBp(state, pid, c) === 3000;
+      })
+      .map((c) => c.instanceId),
+  );
+  if (targets.length === 0) return state;
+  return openEffectChoice(state, {
+    playerId: endingPlayerId,
+    effectId: DRAGON_HARLEY,
+    sourceCardId: "RS-288",
+    sourceInstanceId: source.instanceId,
+    phasePlayerId: endingPlayerId,
+    kind: "select_unit",
+    validInstanceIds: targets,
+    selectCount: 1,
+    optional: false,
+    unitDestination: "discard",
+  });
+}
+
+function resolveDestroyPick(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const leave = applyUnitLeave(state, instanceId, "discard", pending.phasePlayerId);
+  if ("error" in leave) return leave;
+  let next = leave.state;
+  if (next.pendingEffectChoice === pending) next = clearPending(next, pending.phasePlayerId);
+  return { state: next, log: logFor(state, playerId, pending.sourceCardId, `${pending.effectId}:${instanceId}`) };
+}
+
+// XG1-028【アバレンオーになりかけだから…】（起動は rules/fieldActivatedAbilities.ts）
+export const ABARENOH_FROM_HAND = "abarenoh_from_hand";
+
+/**
+ * 出典: atwiki/page-1665 — 自軍ラッシュフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自分の手札から
+ * 「アバレンオー」のカードを1枚選び、自軍ラッシュエリアに出してもよい。
+ */
+export function beginAbarenohFromHand(
+  state: GameState,
+  playerId: PlayerId,
+  source: CardInstance,
+): GameState {
+  const valid = state.players[playerId].hand
+    .filter((c) => sameCardName(getDefinition(state.definitions, c.cardId)?.name, "アバレンオー"))
+    .map((c) => c.instanceId);
+  if (valid.length === 0) return state;
+  return openEffectChoice(state, {
+    playerId,
+    effectId: ABARENOH_FROM_HAND,
+    sourceCardId: source.cardId,
+    sourceInstanceId: source.instanceId,
+    phasePlayerId: playerId,
+    kind: "select_hand",
+    validInstanceIds: valid,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+function resolveAbarenohFromHand(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const player = state.players[playerId];
+  const card = player.hand.find((c) => c.instanceId === instanceId)!;
+  const next = {
+    ...clearPending(state, pending.phasePlayerId),
+    ...updatePlayer(state, playerId, {
+      ...player,
+      hand: player.hand.filter((c) => c.instanceId !== instanceId),
+      rush: [...player.rush, card],
+    }),
+  };
+  return {
+    state: { ...next, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId },
+    log: logFor(state, playerId, pending.sourceCardId, `${ABARENOH_FROM_HAND}:${instanceId}`),
+  };
+}
+
+// XG6-015【爆竜必殺チョキチョキシザース】
+const CHOKI_SCISSORS = "choki_choki_scissors";
+
+/**
+ * 出典: atwiki/page-2298 — これが同カテゴリのLユニットからコンビネーションするとき（joint_combo_r）、
+ * 相手は可能なら、自分自身のゾーンのオモテ向きのカードか手札を1枚選び捨札にする。
+ */
+function beginChokiScissors(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  const enemyId = opponent(ctx.playerId);
+  const enemy = state.players[enemyId];
+  const valid = [
+    ...enemy.hand,
+    ...enemy.command.filter((c) => !c.faceDown),
+    ...enemy.power.filter((c) => !c.faceDown),
+    ...enemy.operation.filter((c) => !c.faceDown),
+  ].map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: enemyId,
+    effectId: CHOKI_SCISSORS,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "scry_keep_one",
+    validInstanceIds: valid,
+    selectCount: 1,
+    optional: false,
+  });
+}
+
+function resolveChokiScissors(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const player = state.players[playerId];
+  const zones = ["hand", "command", "power", "operation"] as const;
+  let picked: CardInstance | undefined;
+  const patch: Partial<PlayerState> = {};
+  for (const zone of zones) {
+    const hit = player[zone].find((c) => c.instanceId === instanceId);
+    if (!hit) continue;
+    picked = hit;
+    patch[zone] = player[zone].filter((c) => c.instanceId !== instanceId);
+  }
+  if (!picked) return { error: "invalid_target" };
+  const { commandHeld: _h, faceDown: _f, ...clean } = picked;
+  const next = {
+    ...clearPending(state, pending.phasePlayerId),
+    ...updatePlayer(state, playerId, {
+      ...player,
+      ...patch,
+      discard: [...player.discard, clean as CardInstance],
+    }),
+  };
+  return {
+    state: { ...next, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId },
+    log: logFor(state, playerId, pending.sourceCardId, `${CHOKI_SCISSORS}:${instanceId}`),
+  };
+}
+
+// ---------------------------------------------------------------------------
 // 登録
 
 type ChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
@@ -1062,6 +1493,12 @@ const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [BLAY_HOLD]: resolveBlayRouzer,
   [BLAY_DESTROY]: resolveBlayRouzer,
   [ELECTRO_BEAM_PICK]: resolveElectroBeam,
+  [DENSHA_GIRI]: resolveDenshaGiri,
+  [DRAGON_HARLEY]: resolveDestroyPick,
+  [ABARENOH_FROM_HAND]: resolveAbarenohFromHand,
+  [CHOKI_SCISSORS]: resolveChokiScissors,
+  [WILD_CYCLONE]: resolveWildCyclone,
+  [DRAGON_SOUL]: resolveDragonSoul,
   [KIRYOKU_HOLD]: resolveKiryoku,
   [KIRYOKU_DESTROY]: resolveKiryoku,
   [WANPA_POT]: resolveWanpaPot,
@@ -1095,7 +1532,7 @@ export function isErrataChoiceEffect(effectId: string): boolean {
 }
 
 /** 「好きな数」選んで確定できる選択（confirm_effect_choice を出す）。 */
-const CONFIRMABLE_CHOICES = new Set([SENBON_RETURN, WANPA_POT]);
+const CONFIRMABLE_CHOICES = new Set([SENBON_RETURN, WANPA_POT, WILD_CYCLONE]);
 
 export function isErrataConfirmableChoice(effectId: string): boolean {
   return CONFIRMABLE_CHOICES.has(effectId);
@@ -1129,6 +1566,9 @@ export function tryConfirmErrataChoice(state: GameState, playerId: PlayerId): Ch
   }
   if (pending.effectId === WANPA_POT) {
     return finishWanpaPot(state, pending, pending.selectedInstanceIds ?? []);
+  }
+  if (pending.effectId === WILD_CYCLONE) {
+    return finishWildCyclone(state, pending, pending.selectedInstanceIds ?? []);
   }
   return null;
 }
@@ -1179,6 +1619,28 @@ export function tryErrataCardEffect(
     case "XG2-014::chikara_chikara": {
       const next = beginKiryoku(state, ctx);
       return next ? { state: next, detail: KIRYOKU_HOLD } : { state, detail: `${KIRYOKU_HOLD}:no_commands` };
+    }
+    case "XG1-029::no": {
+      const next = beginDragonSoul(state, ctx);
+      return next ? { state: next, detail: DRAGON_SOUL } : { state, detail: `${DRAGON_SOUL}:no_targets` };
+    }
+    case "XG1-062::wairudosaikuron": {
+      const next = beginWildCyclone(state, ctx);
+      return next ? { state: next, detail: WILD_CYCLONE } : { state, detail: `${WILD_CYCLONE}:unmet` };
+    }
+    case "RK-140::zan_ri": {
+      const next = beginDenshaGiri(state, ctx);
+      return next ? { state: next, detail: DENSHA_GIRI } : { state, detail: `${DENSHA_GIRI}:unmet` };
+    }
+    case "RK-334::zan_ri":
+      return { state: applyDenshaGiri2nd(state, ctx), detail: "densha_giri_sp2" };
+    // XG1-028 の起動効果は fieldActivatedAbilities、RS-288【ドラゴンハーレー】はターン終了時処理で扱う。
+    case "XG1-028::abarenoninarikakedakara":
+    case "RS-288::doragonhare":
+      return { state, detail: ctx.effectId };
+    case "XG6-015::baku_chokichokishizasu": {
+      const next = beginChokiScissors(state, ctx);
+      return next ? { state: next, detail: CHOKI_SCISSORS } : { state, detail: `${CHOKI_SCISSORS}:none` };
     }
     case "RK-125::bureirauza": {
       const next = beginBlayRouzer(state, ctx);

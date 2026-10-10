@@ -3410,11 +3410,16 @@ export function applyEffectChoiceSelect(
       }
       if (pending.effectId === "bio_particle_slash" && pending.sourceCardId) {
         const player = nextState.players[pending.playerId];
+        // 「SP2」（SP が 2 になる）と BP+3000。対象は出たこのユニット（同名の別カードではない）。
+        const isSource = (c: CardInstance) =>
+          pending.sourceInstanceId
+            ? c.instanceId === pending.sourceInstanceId
+            : c.cardId === pending.sourceCardId;
         const battle = player.battle.map((c) =>
-          c.cardId === pending.sourceCardId
+          isSource(c)
             ? {
                 ...c,
-                spModifier: (c.spModifier ?? 0) + 2,
+                spOverride: 2,
                 bpModifier: (c.bpModifier ?? 0) + 3000,
               }
             : c,

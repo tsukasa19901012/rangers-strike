@@ -1,4 +1,4 @@
-import { isDivingOrochi } from "./errataCardEffects";
+import { errataBattleEntryBlocked, isDivingOrochi } from "./errataCardEffects";
 import {
   battleHasComboPartner,
   cannotEnterBattle,
@@ -326,6 +326,8 @@ export function canMoveUnitToBattle(
   if (cannotEnterBattleOwnTurn(state, playerId, unit.cardId)) return false;
 
   if (noteOtherNcBattleEntryBlock(state, playerId, player, unit)) return false;
+  // RK-140 / RK-334 のロック、RS-288 の「獣奏剣」ホールド要件（rules/errataCardEffects.ts）。
+  if (errataBattleEntryBlocked(state, playerId, unit)) return false;
 
   if (
     needsBattleEntryHandDiscard(unit.cardId) &&

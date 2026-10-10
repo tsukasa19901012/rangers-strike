@@ -1,6 +1,6 @@
 import { getOnAttackNamedEffect, getJointLNamedEffect } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
-import { getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
+import { cardCategories, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
 import { getCostWindowMetadata } from "../../core/costWindow";
 import { hasTurnRuleModifier } from "../../core/scopedModifiers";
 import { findBattleAttacker, findInZone, opponent, updatePlayer } from "../../core/helpers";
@@ -105,6 +105,7 @@ export function resolveLegend3EnterBattle(
   playerId: PlayerId,
   cardId: string,
   effectId: string,
+  sourceInstanceId?: string,
 ): ComboOutcome {
   const enemyId = opponent(playerId);
 
@@ -210,10 +211,13 @@ export function resolveLegend3EnterBattle(
       };
     }
     case "bio_particle_slash": {
+      // RS-127 / PR-015【バイオ粒子斬り】自軍ターン中、これがバトルエリアに出るとき、「OT」の自軍コマンドを
+      // 2つ選んでパワーゾーンに送ってもよい。そうしたとき、このターン、これは「SP2」「BP＋3000」。
+      if (state.activePlayer !== playerId) return { state, logs: [] };
       const otCommands = state.players[playerId].command
         .filter((c) => {
           const def = getDefinition(state.definitions, c.cardId);
-          return def?.category === "OT";
+          return !!def && cardCategories(def).includes("OT");
         })
         .map((c) => c.instanceId);
       if (otCommands.length < 2) return { state, logs: [] };
@@ -221,11 +225,13 @@ export function resolveLegend3EnterBattle(
         playerId,
         effectId,
         sourceCardId: cardId,
+        sourceInstanceId,
         phasePlayerId: playerId,
         selectCount: 2,
         commandFilter: "any",
         commandAction: "power",
         validInstanceIds: otCommands,
+        optional: true,
       });
       return {
         state: withChoice ?? state,

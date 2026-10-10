@@ -5,6 +5,7 @@
  * - RK-043 ライドシューター【突入】
  * - XG4-102 ケンローダー【ギンクロン発進】
  * - RS-446 ダイジュピター【スクランブル】
+ * - XG1-028 アバレンオージ【アバレンオーになりかけだから…】
  */
 import { isZordUpCost } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
@@ -14,6 +15,7 @@ import { sameCardName } from "../core/cardNames";
 import { countAvailablePower, rushEffectivePowerCost } from "../core/power";
 import { getPlayerModifiers } from "../core/scopedModifiers";
 import { openEffectChoice } from "./pendingChoices";
+import { beginAbarenohFromHand } from "./errataCardEffects";
 
 type FieldZone = "rush" | "battle";
 
@@ -146,6 +148,13 @@ export function filterScrambleRemaining(
 // ---------------------------------------------------------------------------
 
 const ABILITIES: FieldActivatedAbility[] = [
+  {
+    // XG1-028 アバレンオージ【アバレンオーになりかけだから…】（E7、出典: atwiki/page-1665）
+    cardId: "XG1-028",
+    effectId: "abarenoh_from_hand",
+    zones: ["rush", "battle"],
+    resolve: (state, playerId, card) => beginAbarenohFromHand(state, playerId, card),
+  },
   {
     cardId: "RK-043",
     effectId: "ride_shooter_charge",

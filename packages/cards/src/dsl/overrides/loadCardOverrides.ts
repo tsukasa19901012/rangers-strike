@@ -26,6 +26,10 @@ import rs349 from "./RS-349.json";
 import rk146 from "./RK-146.json";
 import xg4004 from "./XG4-004.json";
 import xg2014 from "./XG2-014.json";
+import xg1062 from "./XG1-062.json";
+import rk140 from "./RK-140.json";
+import rk334 from "./RK-334.json";
+import xg6015 from "./XG6-015.json";
 import type { CardDocument } from "../types";
 import { mergeCardDocument } from "../cardDocumentMerge";
 
@@ -66,7 +70,7 @@ const CARD_OVERRIDES: Record<string, Partial<CardDocument>> = {
   // ルール: R-ERR-RK168 — 【てんこもりだぜ！】は電王CF 進入時のイマジン効果で処理する（自身の DSL は起点だけ）。
   "RK-168": rk168 as Partial<CardDocument>,
   // E7: 効果文が補われたカードのうち、パイプライン出力が原文とずれる効果を人手で修正。
-  // 【無敵の竜人魂】対象を本来BP8000以下のLユニットに限定（DA なら SP1 は未実装）。
+  // 【無敵の竜人魂】本来BP8000以下のLユニットを撃破し、DA なら SP1（engine: rules/errataCardEffects.ts）。
   "XG1-029": xg1029 as Partial<CardDocument>,
   // 【キラークロー】NC で「SP1」+ BP+2000（RS-031 と同形）。ウイング時のナンバー不問は未実装。
   "XG1-030": xg1030 as Partial<CardDocument>,
@@ -88,6 +92,14 @@ const CARD_OVERRIDES: Record<string, Partial<CardDocument>> = {
   "XG4-004": xg4004 as Partial<CardDocument>,
   // ルール: R-ERR-XG2-014 — 【気力妖力合体】は修正後テキストの1効果（engine: rules/errataCardEffects.ts）。
   "XG2-014": xg2014 as Partial<CardDocument>,
+  // E7: 【ワイルドサイクロン】敵軍バトルエリアの S を好きな数ホールドし、BP合計10000ごとに1点（engine: rules/errataCardEffects.ts）。
+  "XG1-062": xg1062 as Partial<CardDocument>,
+  // E7: 【電車斬り】常駐置き場の DEN-O ユニットを捨札にして1点（engine: rules/errataCardEffects.ts。※ロックは restrictions 経由）。
+  "RK-140": rk140 as Partial<CardDocument>,
+  // E7: 【電車斬り】（NC）イマジン4種がラッシュエリアにあれば SP2（engine: rules/errataCardEffects.ts）。
+  "RK-334": rk334 as Partial<CardDocument>,
+  // E7: 【爆竜必殺チョキチョキシザース】は L からのコンビネーション（joint_combo_r）で発動（engine: rules/errataCardEffects.ts）。
+  "XG6-015": xg6015 as Partial<CardDocument>,
 };
 
 let cachedOverrides: Map<string, Partial<CardDocument>> | null = null;

@@ -35,14 +35,14 @@
       "name": "爆竜必殺チョキチョキシザース",
       "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒相手は可能なら、自分自身のゾーンのオモテ向きのカードか手札を1枚選び捨札にする。",
       "trigger": {
-        "type": "nc"
+        "type": "joint_combo_r"
       },
       "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-015::bakuchokichokishizasu",
-          "duration": "permanent"
+          "keyword": "effect_card::XG6-015::baku_chokichokishizasu",
+          "duration": "turn"
         }
       ]
     }

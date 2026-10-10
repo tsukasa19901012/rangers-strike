@@ -1,0 +1,34 @@
+{
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "text": "※これが自軍エリアにある間、必要パワーの数字が2以下のユニットはバトルエリアに出られず、効果名を持つテキストは無効になり発動もできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RK-334::koregaerianiarup",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "zan_ri",
+      "name": "電車斬り",
+      "text": "このターン、これは、自軍ラッシュエリアに「モモタロス」「ウラタロス」「キンタロス」「リュウタロス」があれば「SP2」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_card::RK-334::zan_ri",
+          "duration": "turn"
+        }
+      ]
+    }
+  ]
+}
