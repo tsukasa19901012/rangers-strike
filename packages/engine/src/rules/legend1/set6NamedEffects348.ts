@@ -21,6 +21,7 @@ import { commandCategoriesNow } from "../legend3/battleEffects";
 import { CHIKARA_BATON_RULE } from "./set4NamedEffects";
 import { buildLogEntry } from "../../log/formatLog";
 import { unitFeatures } from "../addedFeatures";
+import { holdPlacedCommandUnderMaChikara } from "../srEffects";
 import { afterEnterBattle, promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
 
@@ -838,6 +839,8 @@ export function applySpecialExtinguisher(before: GameState, after: GameState): G
         command: p.command.map((c) => (placed(c) ? { ...c, commandHeld: false } : c)),
       }),
     };
+    // SR-004【妖魔力】: リリース状態で置いた後、OT / ET のカードはホールド状態になる（faq-card-6 SR-004 Q）。
+    for (const c of p.command.filter(placed)) next = holdPlacedCommandUnderMaChikara(next, pid, c.instanceId);
   }
   return next;
 }

@@ -329,8 +329,7 @@ describe("RS-385 グリーンホバー", () => {
     expect(attackTargets(s, "RS-135:jf")).toContain("RS-385:gh");
   });
 
-  it.fails("RS-385: 【特殊消化弾】自軍ラッシュエリアにある間、自軍コマンドゾーンにホールド状態で置くカード（ブルースローワー【放水作業】）をリリース状態で置ける（出典: atwiki/page-530）", () => {
-    // 既知の不具合: CARD-RS-384 【放水作業】が未実装（【特殊消化弾】は上のテストのとおり働く）
+  it("RS-385: 【特殊消化弾】自軍ラッシュエリアにある間、自軍コマンドゾーンにホールド状態で置くカード（ブルースローワー【放水作業】）をリリース状態で置ける（出典: atwiki/page-530）", () => {
     let s = rushGogo("RS-384", 4, { rush: [inst("RS-385", "gh")] }, { command: releasedCat("WB", 3, "ec") }).state;
     for (let i = 0; i < 6 && s.pendingEffectChoice?.playerId === "player1"; i++) {
       s = legal(s).some((a) => a.type === "confirm_effect_choice") ? confirm(s) : pick(s, s.pendingEffectChoice.validInstanceIds[0]!);
