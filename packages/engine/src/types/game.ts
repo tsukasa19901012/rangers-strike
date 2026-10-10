@@ -192,6 +192,11 @@ export type PendingBattle = {
   battleCancelled?: boolean;
   /** RS-215【不滅のマシン帝国】の選択をこのアタックで既に出したか。 */
   machineEmpireOffered?: boolean;
+  /**
+   * アタックしたユニットの「アタックするとき／アタックしたとき」（DSL on_attack）を、「アタックされたとき」の
+   * 反応（カウンター等）より前に解決済みか（R-TIME-01。core/applyAction.ts continueAttackAfterDeclaration）。
+   */
+  onAttackResolved?: boolean;
   /** RS-018: 代わりに代用ユニットが戦闘 */
   substituteInstanceId?: string;
   /** RS-131 mirage_beam: このバトル用の印刷BP上書き。 */
@@ -763,6 +768,16 @@ export type GameState = {
    * 立っている間の撃破では、撃破された側の誘発を解決せず deferredDestroyTriggers に積む（rules/destroyTriggerQueue.ts）。
    */
   destroyTriggerHold?: boolean;
+  /**
+   * 「ストライクしたとき」の効果の選択を解決し終えるまで待たせているストライク（R-TIME-01）。
+   * 解決後に「ストライクされたとき」（RS-196・カウンター窓）→ ダメージへ進む（core/applyAction.ts continueDeferredStrike）。
+   */
+  deferredStrike?: PendingStrike;
+  /**
+   * アタックしたユニットの「アタックしたとき」の選択を解決し終えるまで待たせているアタック（R-TIME-01）。
+   * 解決後に「アタックされたとき」（RS-215・カウンター窓）→ バトルへ進む（core/applyAction.ts continueDeferredAttack）。
+   */
+  deferredAttack?: { battle: PendingBattle; wingAttackFromRush: boolean };
   /** 先の段階の効果（選択を含む）の解決待ちの撃破の誘発（R-TIME-01。rules/destroyTriggerQueue.ts）。 */
   deferredDestroyTriggers?: DeferredDestroyTrigger[];
   /** @deprecated エイリアス — pendingEffectChoice を使用 */

@@ -1250,7 +1250,8 @@ export function resolveBattlePendingCore(
     findInZone(attacker, "rush", pending.attackerInstanceId);
   const defenderFound = findInZone(defenderPlayer, defenderZone, defenderInstanceId);
 
-  if (attackerFound) {
+  // ルール: R-TIME-01 — 通常のアタックでは「アタックされたとき」の反応より前に解決済み（core/applyAction.ts）。
+  if (attackerFound && !pending.onAttackResolved) {
     battleState = tryResolveDslTriggeredEffects({
       state: battleState,
       cardId: attackerFound.card.cardId,
@@ -1514,9 +1515,6 @@ export function resolveBattlePendingCore(
       nextState = bc.state;
       extraLogs = [...extraLogs, ...bc.logs];
     }
-    // 段階 1 を処理し終えた: 撃破された側の段階 2・4 と RS-212 を段階の順に解決する。
-    // 段階 1 の選択が開いていれば、その解決後（core/applyAction.ts の後処理）に続きを解決する。
-    nextState = drainDeferredDestroyTriggers(nextState);
   }
 
   if (finalDestroyAttacker) {
@@ -1544,6 +1542,10 @@ export function resolveBattlePendingCore(
     nextState = markAttackerActed(nextState);
   }
 
+  // 撃破した側の段階 1（上の RS-226 等と、バトルに勝ったときの RS-126【レッドビュート】等）を処理し終えた:
+  // 撃破された側の段階 2・4 と RS-212 を段階の順に解決する（R-TIME-01）。
+  // 段階 1 の選択が開いていれば、その解決後（core/applyAction.ts の後処理）に続きを解決する。
+  nextState = drainDeferredDestroyTriggers(nextState);
   let finishedState: GameState = {
     ...nextState,
     log: [...nextState.log, ...extraLogs],

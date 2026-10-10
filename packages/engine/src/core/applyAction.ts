@@ -17,6 +17,7 @@ import {
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { checkWinner, advancePhase } from "./createGame";
 import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
+import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import {
   canPlayOperation,
   cardName,
@@ -351,6 +352,35 @@ function continueAttackAfterDeclaration(
 ): ActionResult {
   const playerId = pending.attackerPlayerId;
   const enemyId = pending.defenderPlayerId;
+  if (!pending.onAttackResolved) {
+    // ルール: R-TIME-01 — 「アタックするとき／アタックしたとき」（アタックしたユニットの DSL on_attack）は、
+    // 「アタックされたとき」（RS-215・カウンター窓）より先に解決する。選択が開けば、それを解決してから続ける。
+    const marked: PendingBattle = { ...pending, onAttackResolved: true };
+    const attacker = battleState.players[playerId];
+    const found =
+      findInZone(attacker, "battle", pending.attackerInstanceId) ??
+      findInZone(attacker, "rush", pending.attackerInstanceId);
+    let afterOnAttack = battleState;
+    if (found) {
+      const fx = tryResolveDslTriggeredEffects({
+        state: battleState,
+        cardId: found.card.cardId,
+        instanceId: pending.attackerInstanceId,
+        playerId,
+        phasePlayerId: pending.phasePlayerId,
+        triggerType: "on_attack",
+      });
+      afterOnAttack = fx.logs.length > 0 ? { ...fx.state, log: [...fx.state.log, ...fx.logs] } : fx.state;
+    }
+    if (afterOnAttack.pendingEffectChoice && afterOnAttack.pendingEffectChoice !== battleState.pendingEffectChoice) {
+      let parked: GameState = { ...afterOnAttack, deferredAttack: { battle: marked, wingAttackFromRush } };
+      if (parked.pendingBattleEntry?.instanceId === pending.attackerInstanceId) {
+        parked = { ...parked, pendingBattleEntry: undefined };
+      }
+      return ok(parked, buildSimpleLogEntry(playerId, "battle_pending"));
+    }
+    return continueAttackAfterDeclaration(afterOnAttack, marked, wingAttackFromRush);
+  }
   // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
   const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
   if (machineEmpire) {
@@ -488,6 +518,70 @@ function finishStrikeResolution(
       log: [...resolved.log, strikeLog, ...extraLogs],
     },
   };
+}
+
+/**
+ * 「ストライクしたとき」の効果のあと: 「ストライクされたとき」（RS-196【迎撃モビルミサイル】・カウンター窓）→ ダメージ。
+ * ルール: R-TIME-01 — 能動（したとき）が受動（されたとき）より先。
+ */
+function continueStrikeAfterDeclaration(
+  state: GameState,
+  nextState: GameState,
+  pending: PendingStrike,
+  strikerInstanceId: string,
+): ActionResult {
+  const playerId = pending.strikerPlayerId;
+  const damage = pending.damage;
+  // RS-196 ダイナモビル【迎撃モビルミサイル】: ストライクされたとき発動できる（任意）。
+  const mobil = openMobilMissileChoice(nextState, pending);
+  if (mobil) {
+    const cleared =
+      state.pendingBattleEntry?.instanceId === strikerInstanceId ? { ...mobil, pendingBattleEntry: undefined } : mobil;
+    return ok(cleared, buildSimpleLogEntry(playerId, "strike_pending", String(damage)));
+  }
+
+  const defenderId = opponent(playerId);
+  if (hasStrikeReactions(nextState, defenderId, pending)) {
+    let withWindow: GameState = {
+      ...nextState,
+      pendingStrike: pending,
+      activePlayer: defenderId,
+    };
+    if (state.pendingBattleEntry?.instanceId === strikerInstanceId) {
+      withWindow = { ...withWindow, pendingBattleEntry: undefined };
+    }
+    return ok(withWindow, buildSimpleLogEntry(playerId, "strike_pending", String(damage)));
+  }
+
+  return completeStrike(nextState, pending);
+}
+
+/** R-TIME-01: 「アタックしたとき」の選択が解決し終えたら、待たせていたアタックの続き（「アタックされたとき」→ バトル）を処理する。 */
+function continueDeferredAttack(state: GameState): GameState {
+  const deferred = state.deferredAttack;
+  if (!deferred || state.winner) return state;
+  if (state.pendingEffectChoice || state.pendingDamagePayment || state.pendingLeave || state.pendingRegister) {
+    return state;
+  }
+  const cleared: GameState = {
+    ...state,
+    deferredAttack: undefined,
+    activePlayer: deferred.battle.phasePlayerId,
+  };
+  const result = continueAttackAfterDeclaration(cleared, deferred.battle, deferred.wingAttackFromRush);
+  return result.ok ? result.state : cleared;
+}
+
+/** R-TIME-01: 「ストライクしたとき」の選択が解決し終えたら、待たせていたストライクの続きを処理する。 */
+function continueDeferredStrike(state: GameState): GameState {
+  const pending = state.deferredStrike;
+  if (!pending || state.winner) return state;
+  if (state.pendingEffectChoice || state.pendingDamagePayment || state.pendingLeave || state.pendingRegister) {
+    return state;
+  }
+  const cleared: GameState = { ...state, deferredStrike: undefined, activePlayer: pending.battlePhasePlayer };
+  const result = continueStrikeAfterDeclaration(cleared, cleared, pending, pending.strikerInstanceId);
+  return result.ok ? result.state : cleared;
 }
 
 function completeStrike(state: GameState, pending: PendingStrike, extraLogs: string[] = []): ActionResult {
@@ -662,6 +756,8 @@ export function applyAction(
   next = releaseCounterLockWhenAttackSettled(next);
   next = trackResolvingOperations(state, next);
   next = settleResolvingOperations(next);
+  next = continueDeferredAttack(next);
+  next = continueDeferredStrike(next);
   // ルール: R-TIME-01 — 先の段階の効果（選択）が解決し終えたら、待たせていた撃破の誘発を段階の順に解決する。
   next = drainDeferredDestroyTriggers(next);
   next = applyBpZeroRuleDestruction(next);
@@ -1993,31 +2089,16 @@ function applyActionCore(
       };
       nextState = emitStrikeDeclared(nextState, pending);
 
-      // RS-196 ダイナモビル【迎撃モビルミサイル】: ストライクされたとき発動できる（任意）。
-      const mobil = openMobilMissileChoice(nextState, pending);
-      if (mobil) {
-        const cleared =
-          state.pendingBattleEntry?.instanceId === action.instanceId ? { ...mobil, pendingBattleEntry: undefined } : mobil;
-        return ok(cleared, buildSimpleLogEntry(playerId, "strike_pending", String(damage)));
-      }
-
-      const defenderId = opponent(playerId);
-      if (hasStrikeReactions(nextState, defenderId, pending)) {
-        nextState = {
-          ...nextState,
-          pendingStrike: pending,
-          activePlayer: defenderId,
-        };
+      if (nextState.pendingEffectChoice) {
+        // ルール: R-TIME-01 — 「ストライクしたとき」の効果の選択をすべて解決してから、「ストライクされたとき」
+        // （RS-196 等・カウンター）とストライクのダメージに進む（core/applyAction の後処理 continueDeferredStrike）。
+        let parked: GameState = { ...nextState, deferredStrike: pending };
         if (state.pendingBattleEntry?.instanceId === action.instanceId) {
-          nextState = { ...nextState, pendingBattleEntry: undefined };
+          parked = { ...parked, pendingBattleEntry: undefined };
         }
-        return ok(
-          nextState,
-          buildSimpleLogEntry(playerId, "strike_pending", String(damage)),
-        );
+        return ok(parked, buildSimpleLogEntry(playerId, "strike_pending", String(damage)));
       }
-
-      return completeStrike(nextState, pending);
+      return continueStrikeAfterDeclaration(state, nextState, pending, action.instanceId);
     }
 
     case "five_tech_intercept": {
