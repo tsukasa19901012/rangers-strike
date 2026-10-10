@@ -792,7 +792,7 @@
       "type": "unit",
       "category": "OT",
       "rarity": "N",
-      "expansion": "vanilla-promoted",
+      "expansion": "complexity-promoted",
       "powerCost": "6+",
       "imageUrl": "/cards/promoted/PR-015.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-015.jpg",
@@ -803,7 +803,7 @@
       "bp": 11000,
       "size": "L",
       "sp": 1,
-      "text": "",
+      "text": "合体―バイオジェット1号＋バイオジェット2号 【バイオ粒子斬り】自軍ターン中、これがバトルエリアに出るとき、「OT」の自軍コマンドを2つ選んでパワーゾーンに送ってもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP2」「BP＋3000」",
       "features": [
         "メカ",
         "人型"
@@ -815,7 +815,7 @@
       "type": "unit",
       "category": "WB",
       "rarity": "N",
-      "expansion": "vanilla-promoted",
+      "expansion": "complexity-promoted",
       "powerCost": "7-",
       "imageUrl": "/cards/promoted/PR-016.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-016.jpg",
@@ -829,7 +829,7 @@
       "size": "S",
       "sp": "special",
       "comboNumber": 2,
-      "text": "",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。 ※これが撃破されて捨札になったとき、自軍捨札に「アバレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【アバレスラッシュ】「SP1」",
       "features": [
         "レッド",
         "男",
@@ -3558,7 +3558,7 @@
       "bp": 6000,
       "size": "S",
       "sp": "1/4",
-      "text": "",
+      "text": "※これが自軍エリアにある間、必要パワーの数字が2以下のユニットはバトルエリアに出られない。 【電車斬り】自軍ターン中、これがバトルエリアに出たとき、自軍常駐置き場のオモテ向きのカードの中から、本来の特徴に「DEN-O」を持つユニットカードを1枚選び、捨札にしてもよい。そうしたとき、相手に1点ダメージを与える。",
       "features": [
         "仮面ライダー",
         "男",
@@ -7473,7 +7473,7 @@
       "size": "S",
       "sp": "special",
       "comboNumber": 1,
-      "text": "",
+      "text": "※これが自軍エリアにある間、必要パワーの数字が2以下のユニットはバトルエリアに出られず、効果名を持つテキストは無効になり発動もできない。 【電車斬り】このターン、これは、自軍ラッシュエリアに「モモタロス」「ウラタロス」「キンタロス」「リュウタロス」があれば「SP2」になる。",
       "features": [
         "仮面ライダー",
         "男",
@@ -12955,7 +12955,7 @@
       "size": "S",
       "sp": "special",
       "comboNumber": 2,
-      "text": "",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。 ※これが撃破されて捨札になったとき、自軍捨札に「アバレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【アバレスラッシュ】「SP1」",
       "features": [
         "レッド",
         "男",
@@ -14044,7 +14044,7 @@
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-288.jpg",
       "bp": 6000,
       "size": "M",
-      "text": "",
+      "text": "※これは、特徴「獣奏剣」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「獣奏剣」をホールドしなければバトルエリアに出られない。 【ドラゴンハーレー】これが自軍ラッシュエリアにある間、自分がターンを終えるとき、BP3000のユニットがあれば1体選び撃破する。",
       "features": [
         "恐竜",
         "ドラゴン"
@@ -23361,7 +23361,7 @@
       "bp": 8000,
       "size": "L",
       "sp": 1,
-      "text": "",
+      "text": "合体―爆竜ティラノサウルス＋爆竜トリケラトプス ※レジスト ※これはホールド状態のときストライクできない。 【アバレンオーになりかけだから…】自軍ラッシュフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自分の手札から「アバレンオー」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
       "features": [
         "恐竜",
         "人型"
@@ -23373,7 +23373,7 @@
       "type": "unit",
       "category": "WB",
       "rarity": "N",
-      "expansion": "vanilla-promoted",
+      "expansion": "complexity-promoted",
       "powerCost": "7-",
       "imageUrl": "/cards/promoted/XG1-029.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-029-RS.jpg",
@@ -23387,7 +23387,7 @@
       "size": "S",
       "sp": "special",
       "comboNumber": 1,
-      "text": "",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「アバレブラック」のカードを1枚選び、自軍ラッシュエリアに出す。 【無敵の竜人魂】敵軍バトルエリアから、本来のBPが8000以下のLユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがDAを持っていたなら、このターン、これは「SP1」になる。",
       "features": [
         "ブラック",
         "男",
@@ -23400,7 +23400,7 @@
       "type": "unit",
       "category": "WB",
       "rarity": "N",
-      "expansion": "vanilla-promoted",
+      "expansion": "complexity-promoted",
       "powerCost": "7-",
       "imageUrl": "/cards/promoted/XG1-030.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-030-RS.jpg",
@@ -23414,7 +23414,7 @@
       "size": "S",
       "sp": "special",
       "comboNumber": 2,
-      "text": "",
+      "text": "これが撃破されて捨札になったとき、自軍捨札から「アバレキラー」のカードを1枚選び、自軍ラッシュエリアに出す。 ※ウイング 【キラークロー】「SP1」このターン、これはBP+2000される。（この効果はこれがウイングでアタックするときはナンバーに関係なく発動する）",
       "features": [
         "ホワイト",
         "男",
@@ -24073,7 +24073,7 @@
       "type": "unit",
       "category": "WB",
       "rarity": "N",
-      "expansion": "vanilla-promoted",
+      "expansion": "complexity-promoted",
       "powerCost": "7-",
       "imageUrl": "/cards/promoted/XG1-062.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-062-RK.jpg",
@@ -24086,7 +24086,7 @@
       "bp": 4500,
       "size": "S",
       "sp": "1/2",
-      "text": "",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーカリス」のカードを1枚選び、自軍ラッシュエリアに出す。 【ワイルドサイクロン】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからSユニットを好きな数選び、ホールドしてもよい。そうしたとき、ホールドしたユニットのBPを合計して、BP10000ごとに相手に1点ダメージを与える。",
       "features": [
         "アンデッド",
         "仮面ライダー",
@@ -27098,7 +27098,7 @@
       "type": "unit",
       "category": "ET",
       "rarity": "N",
-      "expansion": "vanilla-promoted",
+      "expansion": "complexity-promoted",
       "powerCost": "7+",
       "imageUrl": "/cards/promoted/XG3-005.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-005-RS.jpg",
@@ -27109,7 +27109,7 @@
       "bp": 17000,
       "size": "L",
       "sp": 1,
-      "text": "",
+      "text": "合体―ビクトリーロボ（またはレッドラダー＋ブルースローワー＋グリーンホバー＋イエローアーマー＋ピンクエイダー）＋ライナーボーイ（またはマックスライナー） ※ブラスト 【マックスノバ】このユニットは、自軍捨札6枚につき「SP+1」される。",
       "features": [
         "メカ",
         "人型"
@@ -31444,7 +31444,7 @@
       "bp": 8000,
       "size": "L",
       "sp": "special",
-      "text": "",
+      "text": "※レジスト ※自軍捨札にSユニットのカードが1枚もなければ、これは「SP1」になる。 【マックスビクトリープロミネンス】このユニットは自軍ターン中、自軍ラッシュエリアのSユニット1体につきBP+1000される。",
       "features": [
         "メカ",
         "人型"
@@ -33366,14 +33366,14 @@
       "type": "unit",
       "category": "WB",
       "rarity": "N",
-      "expansion": "vanilla-promoted",
+      "expansion": "complexity-promoted",
       "powerCost": 5,
       "imageUrl": "/cards/promoted/XG6-015.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-015-RS.jpg",
       "bp": 3000,
       "size": "M",
       "comboNumber": "R",
-      "text": "",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【爆竜必殺チョキチョキシザース】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒相手は可能なら、自分自身のゾーンのオモテ向きのカードか手札を1枚選び捨札にする。",
       "features": [
         "恐竜"
       ]

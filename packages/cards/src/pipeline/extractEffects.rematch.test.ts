@@ -27,7 +27,15 @@ describe("rematchExtractedEffect (M20)", () => {
       { kind: "note", trigger: { type: "nc" } },
     );
     expect(built?.matchedPattern).toBe("recruit_named_from_discard_if_present");
-    expect(built?.trigger).toEqual({ type: "nc" });
+    // ルール: R-DESTROY-01 / R-DESTROY-02 — 撃破されて捨札になったときに誘発（nc ではない）。E7
+    expect(built?.trigger).toEqual({ type: "on_destroy" });
+    expect(built?.effects).toEqual([
+      {
+        type: "grant_keyword",
+        keyword: "on_destroy_reanimate_named_from_discard",
+        duration: "turn",
+      },
+    ]);
   });
 
   it("matches DA enemy S destroy (XG1-064)", () => {

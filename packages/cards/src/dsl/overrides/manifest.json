@@ -1,5 +1,12 @@
 {
   "generatedAt": "2026-06-10T00:00:00.000Z",
   "description": "Manual DSL fixes applied after pipeline compile (M8).",
-  "cards": ["SK-000"]
+  "cards": [
+    "PR-015",
+    "SK-000",
+    "XG1-029",
+    "XG1-030",
+    "XG3-005",
+    "XG5-014"
+  ]
 }

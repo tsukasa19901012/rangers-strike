@@ -38,6 +38,7 @@ const steps = [
   ["metrics:extended-registry", "metrics:extended-registry"],
   ["metrics:full-playable", "metrics:full-playable"],
   ["audit:runtime-effects", "audit:runtime-effects"],
+  ["audit:source-effect-coverage", "audit:source-effect-coverage"],
   ["extract-effect-catalog", "extract-effect-catalog"],
   ["audit:rollout-status", "audit:rollout-status"],
 ];

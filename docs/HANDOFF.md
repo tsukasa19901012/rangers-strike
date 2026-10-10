@@ -18,7 +18,7 @@
   `docs/rules/sources/web/` に保存し、全章を照合した（照合済 237 件、未照合は R-KW-BLAST-03 のみ）。
 - 公式と atwiki の食い違いは README §5.7。a（スタートでリリースするのはコマンドだけ）と
   b（「アタックするかわりに」は対象なしでも使える）はユーザー決定。
-- E5・E6 は修正済み。次は E7 と手順3（古いドキュメントの削除。`docs/wiki/cards` などはカード生成スクリプトとテストが読んでいるので、そのままは消せない）。
+- E5・E6 は修正済み、E7 は一部（下記）。次は手順3（古いドキュメントの削除。`docs/wiki/cards` などはカード生成スクリプトとテストが読んでいるので、そのままは消せない）。
 
 ## 最初にやること
 
@@ -58,7 +58,7 @@
 | E4 | ターン終了で両プレイヤーの「このターン」修正を消す | ✅ `finalizeTurnEnd` |
 | E5 | ブラスト条件 | ✅ `blastBypassesRushAdditionalCondition`（閾値−1 かつ L なし、ブレイカー判定を先に） |
 | E6 | クロスの向き | ✅ `crossReductionFor` / `crossReducedNumber`（CN・分数SP分母を減らす） |
-| E7 | 効果なしで動いている13枚 | 未着手 |
+| E7 | 効果なしで動いている13枚 | 一部✅ 全13枚に text と効果定義。原文どおりに動くのは RS-230, PR-016, XG1-030, XG3-005, XG5-014。下記の残りあり |
 
 ### E5 ブラスト（`packages/engine/src/keywords/battleKeywords.ts` `blastBypassesRushAdditionalCondition`）
 
@@ -83,6 +83,13 @@ PR-015, PR-016, RK-140, RK-334, RS-230, RS-288, XG1-028, XG1-029, XG1-030, XG1-0
 原文には効果テキストがあるが、カタログ `text` が空で DSL stub の `effects` / `unnamedRules` も 0 件。
 カタログ生成のテキスト抽出（原文の「テキスト:」半角コロンやラベルなし形式）を疑う。
 修正後、監査に「原文に効果テキストがあるのに効果定義0件」の検出を追加する。
+
+**2026-10-10 対応済み**: 原因は `docs/wiki/scripts/sync-cards-from-atwiki.mjs` が全角「テキスト：」しか拾わなかったこと
+（＋ `generateDsl.ts` の `??` で空文字が残っていた）。抽出を直し、監査 `npm run audit:source-effect-coverage` を追加（`pipeline:all` に組込み）。
+残り:
+- 一部: XG1-029（DA なら SP1 が未実装）、XG1-062（ワイルドサイクロンは無条件1点の近似）
+- 未実装: PR-015 粒子斬り、RK-140/334 のロック注記と電車斬り、RS-288 の2効果、XG1-028 の入れ替え、XG6-015 の L コンビ効果
+- RS-055 など29枚の wiki md も同じ原因で「効果文: UNKNOWN」のまま（リポジトリ側の効果文で動作中）
 
 ## P1 以降
 

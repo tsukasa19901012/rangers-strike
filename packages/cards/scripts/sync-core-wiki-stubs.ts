@@ -4,6 +4,7 @@
  *
  * Usage:
  *   npm run sync-core-wiki-stubs
+ *   npm run sync-core-wiki-stubs -- --ids RS-230,RS-288   # 指定カードのみ
  */
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -17,7 +18,14 @@ const root = join(__dirname, "..");
 const stubsDir = join(root, "src/generated/dsl-stubs");
 
 function main(): void {
-  const coreIds = allCardsCatalog.cards.map((c) => c.id);
+  const idsArg = process.argv.indexOf("--ids");
+  const onlyIds =
+    idsArg >= 0 && process.argv[idsArg + 1]
+      ? new Set(process.argv[idsArg + 1]!.split(",").map((id) => id.trim()))
+      : undefined;
+  const coreIds = allCardsCatalog.cards
+    .map((c) => c.id)
+    .filter((id) => !onlyIds || onlyIds.has(id));
   let written = 0;
   let skipped = 0;
 

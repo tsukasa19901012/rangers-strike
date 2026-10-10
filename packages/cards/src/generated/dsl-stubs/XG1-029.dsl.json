@@ -7,8 +7,8 @@
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "7-",
-  "text": "",
-  "rawText": "",
+  "text": "※これが撃破されて捨札になったとき、自軍捨札から「アバレブラック」のカードを1枚選び、自軍ラッシュエリアに出す。 【無敵の竜人魂】敵軍バトルエリアから、本来のBPが8000以下のLユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがDAを持っていたなら、このターン、これは「SP1」になる。",
+  "rawText": "※これが撃破されて捨札になったとき、自軍捨札から「アバレブラック」のカードを1枚選び、自軍ラッシュエリアに出す。 【無敵の竜人魂】敵軍バトルエリアから、本来のBPが8000以下のLユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがDAを持っていたなら、このターン、これは「SP1」になる。",
   "bp": 5500,
   "size": "S",
   "sp": "special",
@@ -24,6 +24,68 @@
     "partnerName": "アバレブラック",
     "unitCount": 1
   },
+  "effects": [
+    {
+      "id": "recruit_from_discard_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「アバレブラック」のカードを1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_destroy_reanimate_named_from_discard",
+          "duration": "turn"
+        }
+      ]
+    },
+    {
+      "id": "no",
+      "name": "無敵の竜人魂",
+      "text": "敵軍バトルエリアから、本来のBPが8000以下のLユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがDAを持っていたなら、このターン、これは「SP1」になる。",
+      "trigger": {
+        "type": "nc"
+      },
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "L",
+            "maxBp": 8000
+          }
+        }
+      },
+      "effects": [
+        {
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zone",
+            "zone": "battle",
+            "owner": "opponent",
+            "filter": {
+              "size": "L",
+              "maxBp": 8000
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "discard",
+              "target": {
+                "type": "trigger_source"
+              }
+            }
+          ]
+        }
+      ],
+      "optional": true
+    }
+  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

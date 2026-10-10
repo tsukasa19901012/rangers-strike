@@ -2,10 +2,15 @@
 /**
  * docs/wiki/sources/atwiki/page-*-{CARD_ID}.md から
  * docs/wiki/cards/{CARD_ID}.md を更新（atwiki 効果文・Q&A 抜粋）
+ *
+ * Usage:
+ *   node docs/wiki/scripts/sync-cards-from-atwiki.mjs            # 全カード
+ *   node docs/wiki/scripts/sync-cards-from-atwiki.mjs PR-015 ... # 指定カードのみ
  */
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { extractEffectTextFromAtwikiSource } from "../../../packages/cards/scripts/atwikiText.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.join(__dirname, "../sources/atwiki");
@@ -129,9 +134,11 @@ function cardIdFromSourceFile(file) {
 }
 
 async function main() {
-  const files = (await readdir(SRC)).filter((f) =>
-    WIKI_CARD_ID.test(cardIdFromSourceFile(f)),
-  );
+  const onlyIds = new Set(process.argv.slice(2).filter((a) => WIKI_CARD_ID.test(a)));
+  const files = (await readdir(SRC)).filter((f) => {
+    const id = cardIdFromSourceFile(f);
+    return WIKI_CARD_ID.test(id) && (onlyIds.size === 0 || onlyIds.has(id));
+  });
   let updated = 0;
 
   for (const file of files) {
@@ -144,13 +151,8 @@ async function main() {
     const pageId = pageMatch?.[1] ?? "?";
     const url = `https://w.atwiki.jp/renst/pages/${pageId}.html`;
 
-    const effectText = extractSection(body, "テキスト：", [
-      "フレーバーテキスト",
-      "イラストレーター",
-      "レアリティ",
-      "Q&A",
-      "関連カード",
-    ]);
+    // 「テキスト:」（半角）やコロンなしの見出しも拾う（E7）。
+    const effectText = extractEffectTextFromAtwikiSource(body);
     const feature =
       extractFeature(body) ||
       extractSection(body, "特徴：", ["\n"]) ||
@@ -205,7 +207,9 @@ confidence: ${effectText ? "HIGH" : "MEDIUM"}
 `;
 
     if (md.includes("## atwiki 取得")) {
-      md = md.replace(/## atwiki 取得[\s\S]*?(?=\n## |\nconfidence:|$)/, newSection.trim() + "\n\n");
+      // 既存セクション末尾の confidence 行も置き換える（残すと再実行のたびに古い confidence が最後に残り、
+      // parseWiki の inferConfidence が古い値を読む）。
+      md = md.replace(/## atwiki 取得[\s\S]*?(?=\n## |$)/, newSection.trim() + "\n");
     } else {
       md = md.replace(/\nconfidence:.*\n?$/, `\n\n${newSection}`);
     }

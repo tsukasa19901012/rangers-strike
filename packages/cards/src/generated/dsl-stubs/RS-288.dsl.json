@@ -1,4 +1,5 @@
 {
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-288",
   "name": "守護獣ドラゴンシーザー",
   "type": "unit",
@@ -6,17 +7,49 @@
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 5,
+  "text": "※これは、特徴「獣奏剣」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「獣奏剣」をホールドしなければバトルエリアに出られない。 【ドラゴンハーレー】これが自軍ラッシュエリアにある間、自分がターンを終えるとき、BP3000のユニットがあれば1体選び撃破する。",
+  "rawText": "※これは、特徴「獣奏剣」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「獣奏剣」をホールドしなければバトルエリアに出られない。 【ドラゴンハーレー】これが自軍ラッシュエリアにある間、自分がターンを終えるとき、BP3000のユニットがあれば1体選び撃破する。",
+  "imageUrl": "/cards/promoted/RS-288.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-288.jpg",
   "bp": 6000,
   "size": "M",
-  "text": "",
   "features": [
     "恐竜",
     "ドラゴン"
   ],
-  "imageUrl": "/cards/promoted/RS-288.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-288.jpg",
-  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
-  "rawText": "",
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38193e3828ce381af",
+      "text": "※これは、特徴「獣奏剣」を持つ自軍ユニットがないとき、自軍コマンドゾーンの「獣奏剣」をホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RS-288::koreha_ken_wotsu",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "doragonhare",
+      "name": "ドラゴンハーレー",
+      "text": "これが自軍ラッシュエリアにある間、自分がターンを終えるとき、BP3000のユニットがあれば1体選び撃破する。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_card::RS-288::doragonhare",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

@@ -7,13 +7,53 @@
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": 5,
-  "text": "",
-  "rawText": "",
+  "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【爆竜必殺チョキチョキシザース】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒相手は可能なら、自分自身のゾーンのオモテ向きのカードか手札を1枚選び捨札にする。",
+  "rawText": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【爆竜必殺チョキチョキシザース】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒相手は可能なら、自分自身のゾーンのオモテ向きのカードか手札を1枚選び捨札にする。",
   "bp": 3000,
   "size": "M",
   "comboNumber": "R",
   "features": [
     "恐竜"
+  ],
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "baku_chokichokishizasu",
+      "name": "爆竜必殺チョキチョキシザース",
+      "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒相手は可能なら、自分自身のゾーンのオモテ向きのカードか手札を1枚選び捨札にする。",
+      "trigger": {
+        "type": "nc"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_card::XG6-015::bakuchokichokishizasu",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "rule": "battle_entry_hold",
+      "holdCount": 1
+    }
   ],
   "implementation": {
     "source": "dsl",

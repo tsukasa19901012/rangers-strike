@@ -1,4 +1,5 @@
 {
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RS-230",
   "name": "アバレッドAM",
   "type": "unit",
@@ -6,26 +7,78 @@
   "rarity": "N",
   "expansion": "legend1",
   "powerCost": "7-",
+  "text": "※これは毎ターン、可能ならバトルエリアに出る。 ※これが撃破されて捨札になったとき、自軍捨札に「アバレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【アバレスラッシュ】「SP1」",
+  "rawText": "※これは毎ターン、可能ならバトルエリアに出る。 ※これが撃破されて捨札になったとき、自軍捨札に「アバレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【アバレスラッシュ】「SP1」",
+  "imageUrl": "/cards/promoted/RS-230.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-230.jpg",
   "bp": 5500,
-  "sp": "special",
   "size": "S",
+  "sp": "special",
   "comboNumber": 2,
-  "text": "",
   "features": [
     "レッド",
     "男",
     "アバレモード"
   ],
-  "imageUrl": "/cards/promoted/RS-230.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-230.jpg",
   "rushAdditionalCondition": {
     "conditionId": "zord_down_discard_named",
     "text": "自軍「アバレッド」1体を捨札にすれば必要パワー0になる",
     "partnerName": "アバレッド",
     "unitCount": 1
   },
-  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
-  "rawText": "",
+  "effects": [
+    {
+      "id": "unnamed_auto_battle_entry_each_turn",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "auto_battle_entry_each_turn",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "recruit_abaredo_on_destroy",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札に「アバレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "on_destroy_reanimate_named_from_discard",
+          "duration": "turn"
+        }
+      ]
+    },
+    {
+      "id": "abaresurashu",
+      "name": "アバレスラッシュ",
+      "text": "「SP1」",
+      "trigger": {
+        "type": "nc"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    }
+  ],
+  "unnamedRules": [
+    {
+      "kind": "note",
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。",
+      "rule": "auto_battle_entry_each_turn"
+    }
+  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

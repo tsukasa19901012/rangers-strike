@@ -167,8 +167,9 @@ export function generateCardDocument(
     rarity: catalog?.rarity ?? "N",
     expansion: inferExpansion(parse, catalog),
     powerCost,
-    text: catalog?.text ?? parse.effectTexts[0] ?? "",
-    rawText: catalog?.text ?? parse.effectTexts[0] ?? "",
+    // E7: コアカタログの text が空文字のときも Wiki 効果文で補う（?? だと "" が残り効果なし扱いになる）。
+    text: catalog?.text || parse.effectTexts[0] || "",
+    rawText: catalog?.text || parse.effectTexts[0] || "",
   };
 
   if (catalog?.imageUrl) card.imageUrl = catalog.imageUrl;

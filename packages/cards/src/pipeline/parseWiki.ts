@@ -109,6 +109,13 @@ export function splitEffectSegments(text: string): WikiEffectSegment[] {
   }
 
   tagged.sort((a, b) => a.index - b.index);
+
+  // E7: atwiki では「※」が落ちた注記が先頭に来ることがある（XG1-030「これが撃破されて…」）。
+  // 「。」で終わる文で、合体行（unnamedRules.zord が別途処理）でなければ注記として扱う。
+  const lead = text.slice(0, tagged[0]!.index).trim();
+  if (lead && lead.endsWith("。") && !/^合体[―-]/.test(lead)) {
+    tagged.unshift({ index: 0, kind: "note", body: `※${lead}` });
+  }
   return tagged.map((t) =>
     t.kind === "named"
       ? { kind: "named" as const, name: t.name, body: t.body }

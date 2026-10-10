@@ -34,8 +34,22 @@ const ENGINE_NATIVE_PREFIXES = [
   "ride_command_without_rc_",
 ] as const;
 
+/**
+ * E7: 常時の BP / SP 補正マーカー。promotedKeywordBpBonus / promotedKeywordSpFloor が
+ * 盤面から毎回計算するため、grant_keyword 実行時は何もしない（汎用テキスト解釈に回さない）。
+ */
+export const CONTINUOUS_STAT_KEYWORDS = new Set([
+  /** XG5-014 【マックスビクトリープロミネンス】自軍ターン中、自軍ラッシュエリアのSユニット1体につきBP+1000。 */
+  "bp_per_own_rush_s_1000_own_turn",
+  /** XG5-014 ※自軍捨札にSユニットのカードが1枚もなければ「SP1」。 */
+  "sp1_if_no_own_discard_s_unit",
+  /** XG3-005 【マックスノバ】自軍捨札6枚につき「SP+1」。 */
+  "sp_plus1_per_own_discard_6",
+]);
+
 export function isEngineNativeGrantKeyword(keyword: string): boolean {
   if (ENGINE_NATIVE_KEYWORDS.has(keyword)) return true;
+  if (CONTINUOUS_STAT_KEYWORDS.has(keyword)) return true;
   if (/^(call|lead|taxis)_(MA|ET|DA|WB|OT)$/.test(keyword)) return true;
   if (/^cross\d+$/.test(keyword)) return true;
   if (keyword.startsWith("attacked_bp_boost_")) return true;
@@ -183,6 +197,17 @@ export function promotedKeywordBpBonus(
       continue;
     }
 
+    // XG5-014: 自軍ターン中、自軍ラッシュエリアのSユニット1体につき BP+1000
+    if (keyword === "bp_per_own_rush_s_1000_own_turn") {
+      if (state.activePlayer === playerId) {
+        const sCount = state.players[playerId].rush.filter((c) =>
+          isSmallUnit(state.definitions, c.cardId),
+        ).length;
+        bonus += sCount * 1000;
+      }
+      continue;
+    }
+
     const perCard = keyword.match(/^power_faceup_bp_per_(\d+)$/);
     if (perCard) {
       bonus += faceUpPower * Number(perCard[1]);
@@ -315,6 +340,25 @@ export function promotedKeywordSpFloor(
     const featureSp = keyword.match(/^power_feature_bp_sp_.+_\d+_(\d+)_sp(\d+)$/);
     if (featureSp && bp >= Number(featureSp[1])) {
       floor = Math.max(floor, Number(featureSp[2]));
+      continue;
+    }
+
+    // XG5-014: 自軍捨札に S ユニットのカードが1枚もなければ「SP1」
+    if (keyword === "sp1_if_no_own_discard_s_unit") {
+      const hasSInDiscard = state.players[playerId].discard.some((c) => {
+        const def = getDefinition(state.definitions, c.cardId);
+        return def?.type === "unit" && def.size === "S";
+      });
+      if (!hasSInDiscard) floor = Math.max(floor, 1);
+      continue;
+    }
+
+    // XG3-005: 自軍捨札6枚につき「SP+1」（印刷 SP に加算）
+    if (keyword === "sp_plus1_per_own_discard_6") {
+      const printed = getDefinition(state.definitions, instance.cardId)?.sp;
+      const base = typeof printed === "number" ? printed : 0;
+      const plus = Math.floor(state.players[playerId].discard.length / 6);
+      if (plus > 0) floor = Math.max(floor, base + plus);
     }
   }
 

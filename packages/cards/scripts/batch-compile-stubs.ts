@@ -6,6 +6,7 @@
  *   npm run pipeline:compile-stubs -- --grades A,B,C,D,E
  *   npm run pipeline:compile-stubs-extended   # C,D,E のみ追加
  *   npm run pipeline:compile-stubs -- --prefix BK- --limit 10
+ *   npm run pipeline:compile-stubs -- --grades A,B,C,D,E --ids PR-015,XG1-028 --merge-report
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -36,6 +37,7 @@ type CompileEntry = {
 function parseArgs(): {
   grades: Set<string>;
   prefix?: string;
+  ids?: Set<string>;
   dryRun: boolean;
   limit?: number;
   mergeReport: boolean;
@@ -43,6 +45,7 @@ function parseArgs(): {
   const args = process.argv.slice(2);
   const grades = new Set(["A", "B"]);
   let prefix: string | undefined;
+  let ids: Set<string> | undefined;
   let dryRun = false;
   let limit: number | undefined;
   let mergeReport = false;
@@ -58,13 +61,16 @@ function parseArgs(): {
     } else if (arg === "--prefix" && args[i + 1]) {
       prefix = args[i + 1];
       i += 1;
+    } else if (arg === "--ids" && args[i + 1]) {
+      ids = new Set(args[i + 1]!.split(",").map((id) => id.trim()).filter(Boolean));
+      i += 1;
     } else if (arg === "--limit" && args[i + 1]) {
       limit = Number(args[i + 1]);
       i += 1;
     }
   }
 
-  return { grades, prefix, dryRun, limit, mergeReport };
+  return { grades, prefix, ids, dryRun, limit, mergeReport };
 }
 
 function wikiPath(cardId: string): string {
@@ -87,7 +93,7 @@ function loadPreviousEntries(): CompileEntry[] {
 }
 
 function main(): void {
-  const { grades, prefix, dryRun, limit, mergeReport } = parseArgs();
+  const { grades, prefix, ids, dryRun, limit, mergeReport } = parseArgs();
   const playableIds = new Set(allCardsCatalog.cards.map((c) => c.id));
   const stubsFile = JSON.parse(readFileSync(stubsPath, "utf8")) as StubsFile;
 
@@ -96,6 +102,9 @@ function main(): void {
   );
   if (prefix) {
     targets = targets.filter((s) => s.id.startsWith(prefix));
+  }
+  if (ids) {
+    targets = targets.filter((s) => ids.has(s.id));
   }
   if (limit !== undefined && limit > 0) {
     targets = targets.slice(0, limit);

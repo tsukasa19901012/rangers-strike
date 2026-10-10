@@ -1,0 +1,135 @@
+{
+  "generatedAt": "2026-10-10T04:11:43.753Z",
+  "scanned": 1832,
+  "withSourceText": 1823,
+  "missingSource": [],
+  "noDefinitions": [],
+  "emptyCatalogText": [
+    {
+      "cardId": "RS-001",
+      "sourceFile": "page-246-RS-001.md",
+      "sourceText": "このターン、Sユニットだけでコンビネーションするとき、5番目のユニットは「SP1」「BP12000」になる。",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-002",
+      "sourceFile": "page-247-RS-002.md",
+      "sourceText": "このターン、Sユニットだけでコンビネーションするとき、4番目のユニットはSP1「BP8000」になる。",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-003",
+      "sourceFile": "page-248-RS-003.md",
+      "sourceText": "※常駐（場に配置して、離れるまで効果が有効になる）\n自分のバトルフェイズに発動できる。自軍コマンドを2つホールドするごとに、自軍Sユニットを1体ラッシュエリアに",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-004",
+      "sourceFile": "page-274-RS-004.md",
+      "sourceText": "自軍山札の上から3枚をオモテにして相手に見せる。その中からSユニットのカードをすべて手札に加え、それ以外は好きな順で山札の下に戻す。",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-005",
+      "sourceFile": "page-249-RS-005.md",
+      "sourceText": "自軍コマンドゾーンからリリース状態のSユニットのカードを2枚まで選び、ラッシュエリアに出してもよい。ただし、ラッシュするための必要パワーと追加条件は満たすこと。",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-006",
+      "sourceFile": "page-250-RS-006.md",
+      "sourceText": "※カウンター（これは敵軍ターン中にのみ使用できる）\n自軍Sユニットがアタックされたとき発動できる。⇒アタックされたユニットをラッシュエリアに戻す。このときバトル",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-007",
+      "sourceFile": "page-251-RS-007.md",
+      "sourceText": "BP8000以下の敵軍ユニットを1体選ぶ。選んだユニットを持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。（コマンドゾーンに置けるカードは通",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-008",
+      "sourceFile": "page-275-RS-008.md",
+      "sourceText": "※常駐（場に配置して、離れるまで効果が有効になる）\n自分はドローするとき2枚ひいて、そのうちの1枚を手札に加え、もう1枚を捨札にする。",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-009",
+      "sourceFile": "page-252-RS-009.md",
+      "sourceText": "敵軍Lユニットを1体選んで撃破する。そうしたとき、相手はそのLユニットの合体に必要なユニットのカードを捨札から探してバトルエリアに戻す。このとき、戻したユニット",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-012",
+      "sourceFile": "page-253-RS-012.md",
+      "sourceText": "自軍捨札から、特徴「メカ」を持つユニットのカードを1枚選んで手札に加える。",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-013",
+      "sourceFile": "page-254-RS-013.md",
+      "sourceText": "※常駐（場に配置して、離れるまで効果が有効になる）\n自分のラッシュフェイズごとに1度だけ発動できる。自分の手札から相手に1枚選ばせ見せる。ユニットカードが選ばれ",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-015",
+      "sourceFile": "page-256-RS-015.md",
+      "sourceText": "このターン、すべての自軍ユニットのコンビネーションナンバーは1少なくなる。ただし、2より少なくならない。",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-016",
+      "sourceFile": "page-49-RS-016.md",
+      "sourceText": "※カウンター（これは敵軍ターン中にのみ使用できる）\n自軍ユニットが場を離れるとき発動できる。⇒場を離れるユニットと同じ名前のユニットのカードが自軍捨札にあれば、",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-018",
+      "sourceFile": "page-242-RS-018.md",
+      "sourceText": "※カウンター（これは敵軍ターン中にのみ使用できる）\n自軍ユニットがアタックされたとき発動できる。⇒すべての場からユニットを1体選んで、かわりにバトルさせる。\n・",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-019",
+      "sourceFile": "page-243-RS-019.md",
+      "sourceText": "※常駐（場に配置して、離れるまで効果が有効になる）\n自軍Sユニットがアタックするとき発動できる。アタックするユニットは、自軍コマンドを1つホールドするごとにBP",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-021",
+      "sourceFile": "page-257-RS-021.md",
+      "sourceText": "自分の手札からカードを2枚まで選んで、自軍コマンドゾーンにホールド状態で置く。（コマンドゾーンに置けるカードは通常5枚まで）",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-024",
+      "sourceFile": "page-278-RS-024.md",
+      "sourceText": "BP8000以下のユニットを1体選ぶ。選んだユニットを持ち主のパワーゾーンに送る。",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    },
+    {
+      "cardId": "RS-026",
+      "sourceFile": "page-424-RS-026.md",
+      "sourceText": "※カウンター（これは敵軍ターン中にのみ使用できる）\nBP8000以下のユニットがラッシュされたとき発動できる⇒そのユニットを持ち主の山札の上に戻す。",
+      "definitionCount": 1,
+      "catalogTextEmpty": true
+    }
+  ]
+}

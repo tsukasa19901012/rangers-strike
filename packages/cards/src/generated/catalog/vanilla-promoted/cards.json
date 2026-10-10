@@ -153,56 +153,6 @@
       ]
     },
     {
-      "id": "PR-015",
-      "name": "バイオロボ",
-      "type": "unit",
-      "category": "OT",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": "6+",
-      "imageUrl": "/cards/promoted/PR-015.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-015.jpg",
-      "rushAdditionalCondition": {
-        "conditionId": "discard_fusion_unit",
-        "text": "自軍合体ユニットを捨札にする"
-      },
-      "bp": 11000,
-      "size": "L",
-      "sp": 1,
-      "text": "",
-      "features": [
-        "メカ",
-        "人型"
-      ]
-    },
-    {
-      "id": "PR-016",
-      "name": "アバレッドAM",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": "7-",
-      "imageUrl": "/cards/promoted/PR-016.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-016.jpg",
-      "rushAdditionalCondition": {
-        "conditionId": "zord_down_discard_named",
-        "text": "自軍「アバレッド」1体を捨札にすれば必要パワー0になる",
-        "partnerName": "アバレッド",
-        "unitCount": 1
-      },
-      "bp": 5500,
-      "size": "S",
-      "sp": "special",
-      "comboNumber": 2,
-      "text": "",
-      "features": [
-        "レッド",
-        "男",
-        "アバレモード"
-      ]
-    },
-    {
       "id": "PR-025",
       "name": "スーパーハイウェイバスター",
       "type": "operation",
@@ -728,64 +678,10 @@
       "bp": 8000,
       "size": "L",
       "sp": 1,
-      "text": "",
+      "text": "合体―爆竜ティラノサウルス＋爆竜トリケラトプス ※レジスト ※これはホールド状態のときストライクできない。 【アバレンオーになりかけだから…】自軍ラッシュフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自分の手札から「アバレンオー」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
       "features": [
         "恐竜",
         "人型"
-      ]
-    },
-    {
-      "id": "XG1-029",
-      "name": "アバレブラックAM",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": "7-",
-      "imageUrl": "/cards/promoted/XG1-029.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-029-RS.jpg",
-      "rushAdditionalCondition": {
-        "conditionId": "zord_down_discard_named",
-        "text": "自軍「アバレブラック」1体を捨札にすれば必要パワー0になる",
-        "partnerName": "アバレブラック",
-        "unitCount": 1
-      },
-      "bp": 5500,
-      "size": "S",
-      "sp": "special",
-      "comboNumber": 1,
-      "text": "",
-      "features": [
-        "ブラック",
-        "男",
-        "アバレモード"
-      ]
-    },
-    {
-      "id": "XG1-030",
-      "name": "アバレキラーAM",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": "7-",
-      "imageUrl": "/cards/promoted/XG1-030.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-030-RS.jpg",
-      "rushAdditionalCondition": {
-        "conditionId": "zord_down_discard_named",
-        "text": "自軍「アバレキラー」1体を捨札にすれば必要パワー0になる",
-        "partnerName": "アバレキラー",
-        "unitCount": 1
-      },
-      "bp": 4500,
-      "size": "S",
-      "sp": "special",
-      "comboNumber": 2,
-      "text": "",
-      "features": [
-        "ホワイト",
-        "男",
-        "アバレモード"
       ]
     },
     {
@@ -887,32 +783,6 @@
       "imageUrl": "/cards/promoted/XG1-050.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-050-RK.jpg",
       "text": "本来の特徴に「仮面ライダー」を持つ自軍ユニットが10体以上あれば、すべての敵軍ユニットを撃破する。9体以下なら、本来の特徴に「仮面ライダー」を持つ自軍ユニットのBPを合計して、その合計以下のBPを持つ敵軍ユニットを1体選び撃破する。"
-    },
-    {
-      "id": "XG1-062",
-      "name": "仮面ライダーワイルドカリス",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": "7-",
-      "imageUrl": "/cards/promoted/XG1-062.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-062-RK.jpg",
-      "rushAdditionalCondition": {
-        "conditionId": "zord_down_discard_named",
-        "text": "自軍「仮面ライダーカリス」1体を捨札にすれば必要パワー0になる",
-        "partnerName": "仮面ライダーカリス",
-        "unitCount": 1
-      },
-      "bp": 4500,
-      "size": "S",
-      "sp": "1/2",
-      "text": "",
-      "features": [
-        "アンデッド",
-        "仮面ライダー",
-        "男"
-      ]
     },
     {
       "id": "XG1-064",
@@ -1477,29 +1347,6 @@
       "imageUrl": "/cards/promoted/XG3-004.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-004-RS.jpg",
       "text": "特徴「怪人」を持つ自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、BP+3000され、Lユニットになる。重ねたユニットがユニットでなくなるとき、このカードは捨札になる。"
-    },
-    {
-      "id": "XG3-005",
-      "name": "マックスビクトリーロボ",
-      "type": "unit",
-      "category": "ET",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": "7+",
-      "imageUrl": "/cards/promoted/XG3-005.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-005-RS.jpg",
-      "rushAdditionalCondition": {
-        "conditionId": "discard_fusion_unit",
-        "text": "自軍合体ユニットを捨札にする"
-      },
-      "bp": 17000,
-      "size": "L",
-      "sp": 1,
-      "text": "",
-      "features": [
-        "メカ",
-        "人型"
-      ]
     },
     {
       "id": "XG3-021",
@@ -2352,7 +2199,7 @@
       "bp": 8000,
       "size": "L",
       "sp": "special",
-      "text": "",
+      "text": "※レジスト ※自軍捨札にSユニットのカードが1枚もなければ、これは「SP1」になる。 【マックスビクトリープロミネンス】このユニットは自軍ターン中、自軍ラッシュエリアのSユニット1体につきBP+1000される。",
       "features": [
         "メカ",
         "人型"
@@ -2726,24 +2573,6 @@
       "imageUrl": "/cards/promoted/XG6-008.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-008-RS.jpg",
       "text": "お互いに山札の上から１枚をオモテにし、必要パワーの数字を比べる勝負を２回繰り返す。数字の大きい方を勝ちとして、自分が２回連続で勝ったなら、敵軍ユニットを１体選び撃破する。２回連続で負けたなら、相手に自軍ユニットを１体選ばせて、選ばれたユニットを撃破する。その後、オモテにしたカードは、好きな順番で持ち主の山札の下に戻す。（これが自軍コマンドゾーンにある間、OTを持つ自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する）"
-    },
-    {
-      "id": "XG6-015",
-      "name": "爆竜パラサロッキル",
-      "type": "unit",
-      "category": "WB",
-      "rarity": "N",
-      "expansion": "vanilla-promoted",
-      "powerCost": 5,
-      "imageUrl": "/cards/promoted/XG6-015.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-015-RS.jpg",
-      "bp": 3000,
-      "size": "M",
-      "comboNumber": "R",
-      "text": "",
-      "features": [
-        "恐竜"
-      ]
     },
     {
       "id": "XG6-024",

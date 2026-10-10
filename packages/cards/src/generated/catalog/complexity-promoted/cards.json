@@ -408,6 +408,56 @@
       ]
     },
     {
+      "id": "PR-015",
+      "name": "バイオロボ",
+      "type": "unit",
+      "category": "OT",
+      "rarity": "N",
+      "expansion": "complexity-promoted",
+      "powerCost": "6+",
+      "imageUrl": "/cards/promoted/PR-015.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-015.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
+      "bp": 11000,
+      "size": "L",
+      "sp": 1,
+      "text": "合体―バイオジェット1号＋バイオジェット2号 【バイオ粒子斬り】自軍ターン中、これがバトルエリアに出るとき、「OT」の自軍コマンドを2つ選んでパワーゾーンに送ってもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP2」「BP＋3000」",
+      "features": [
+        "メカ",
+        "人型"
+      ]
+    },
+    {
+      "id": "PR-016",
+      "name": "アバレッドAM",
+      "type": "unit",
+      "category": "WB",
+      "rarity": "N",
+      "expansion": "complexity-promoted",
+      "powerCost": "7-",
+      "imageUrl": "/cards/promoted/PR-016.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/PR-016.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「アバレッド」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "アバレッド",
+        "unitCount": 1
+      },
+      "bp": 5500,
+      "size": "S",
+      "sp": "special",
+      "comboNumber": 2,
+      "text": "※これは毎ターン、可能ならバトルエリアに出る。 ※これが撃破されて捨札になったとき、自軍捨札に「アバレッド」のカードがあれば1枚選び、自軍ラッシュエリアに出す。 【アバレスラッシュ】「SP1」",
+      "features": [
+        "レッド",
+        "男",
+        "アバレモード"
+      ]
+    },
+    {
       "id": "PR-017",
       "name": "ゲキレッド",
       "type": "unit",
@@ -2158,6 +2208,60 @@
       ]
     },
     {
+      "id": "XG1-029",
+      "name": "アバレブラックAM",
+      "type": "unit",
+      "category": "WB",
+      "rarity": "N",
+      "expansion": "complexity-promoted",
+      "powerCost": "7-",
+      "imageUrl": "/cards/promoted/XG1-029.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-029-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「アバレブラック」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "アバレブラック",
+        "unitCount": 1
+      },
+      "bp": 5500,
+      "size": "S",
+      "sp": "special",
+      "comboNumber": 1,
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「アバレブラック」のカードを1枚選び、自軍ラッシュエリアに出す。 【無敵の竜人魂】敵軍バトルエリアから、本来のBPが8000以下のLユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットがDAを持っていたなら、このターン、これは「SP1」になる。",
+      "features": [
+        "ブラック",
+        "男",
+        "アバレモード"
+      ]
+    },
+    {
+      "id": "XG1-030",
+      "name": "アバレキラーAM",
+      "type": "unit",
+      "category": "WB",
+      "rarity": "N",
+      "expansion": "complexity-promoted",
+      "powerCost": "7-",
+      "imageUrl": "/cards/promoted/XG1-030.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-030-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「アバレキラー」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "アバレキラー",
+        "unitCount": 1
+      },
+      "bp": 4500,
+      "size": "S",
+      "sp": "special",
+      "comboNumber": 2,
+      "text": "これが撃破されて捨札になったとき、自軍捨札から「アバレキラー」のカードを1枚選び、自軍ラッシュエリアに出す。 ※ウイング 【キラークロー】「SP1」このターン、これはBP+2000される。（この効果はこれがウイングでアタックするときはナンバーに関係なく発動する）",
+      "features": [
+        "ホワイト",
+        "男",
+        "アバレモード"
+      ]
+    },
+    {
       "id": "XG1-031",
       "name": "ゴーオンレッド",
       "type": "unit",
@@ -2697,6 +2801,32 @@
       "sp": "1/2",
       "comboNumber": "RC",
       "text": "※これはライドオフしたときストライクできない。 【スピニングウェーブ】自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍コマンドをすべてホールドする。その後、見せたカードの必要パワーの数字が「3」と「6」なら、敵軍バトルエリアからSユニットを1体選び撃破する。",
+      "features": [
+        "アンデッド",
+        "仮面ライダー",
+        "男"
+      ]
+    },
+    {
+      "id": "XG1-062",
+      "name": "仮面ライダーワイルドカリス",
+      "type": "unit",
+      "category": "WB",
+      "rarity": "N",
+      "expansion": "complexity-promoted",
+      "powerCost": "7-",
+      "imageUrl": "/cards/promoted/XG1-062.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG-062-RK.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "zord_down_discard_named",
+        "text": "自軍「仮面ライダーカリス」1体を捨札にすれば必要パワー0になる",
+        "partnerName": "仮面ライダーカリス",
+        "unitCount": 1
+      },
+      "bp": 4500,
+      "size": "S",
+      "sp": "1/2",
+      "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーカリス」のカードを1枚選び、自軍ラッシュエリアに出す。 【ワイルドサイクロン】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからSユニットを好きな数選び、ホールドしてもよい。そうしたとき、ホールドしたユニットのBPを合計して、BP10000ごとに相手に1点ダメージを与える。",
       "features": [
         "アンデッド",
         "仮面ライダー",
@@ -5133,6 +5263,29 @@
       "size": "S",
       "sp": "1/4",
       "text": "※自分か相手のLユニットがあれば、これはLユニットになり、BP+3000される。 【チーキュでは1分間しかもたない】これが自軍エリアにある間、自分がターンを終えるとき、自軍捨札の「ラジエッカー」のカードとこれを置き換える。置き換えられなければこれを捨札にする。",
+      "features": [
+        "メカ",
+        "人型"
+      ]
+    },
+    {
+      "id": "XG3-005",
+      "name": "マックスビクトリーロボ",
+      "type": "unit",
+      "category": "ET",
+      "rarity": "N",
+      "expansion": "complexity-promoted",
+      "powerCost": "7+",
+      "imageUrl": "/cards/promoted/XG3-005.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-005-RS.jpg",
+      "rushAdditionalCondition": {
+        "conditionId": "discard_fusion_unit",
+        "text": "自軍合体ユニットを捨札にする"
+      },
+      "bp": 17000,
+      "size": "L",
+      "sp": 1,
+      "text": "合体―ビクトリーロボ（またはレッドラダー＋ブルースローワー＋グリーンホバー＋イエローアーマー＋ピンクエイダー）＋ライナーボーイ（またはマックスライナー） ※ブラスト 【マックスノバ】このユニットは、自軍捨札6枚につき「SP+1」される。",
       "features": [
         "メカ",
         "人型"
@@ -10155,6 +10308,24 @@
       "text": "【英雄の遺産】自軍パワーゾーンのオモテ向きのカードがこれだけなら、自軍ラッシュフェイズ中、次の効果を発動できる→自軍山札を見て、OTを持ち合体を必要としない、 Sユニット以外のユニットカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーは満たすこと。その後、山札をシャッフルし、これを捨札にする。",
       "features": [
         "男"
+      ]
+    },
+    {
+      "id": "XG6-015",
+      "name": "爆竜パラサロッキル",
+      "type": "unit",
+      "category": "WB",
+      "rarity": "N",
+      "expansion": "complexity-promoted",
+      "powerCost": 5,
+      "imageUrl": "/cards/promoted/XG6-015.jpg",
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG6-015-RS.jpg",
+      "bp": 3000,
+      "size": "M",
+      "comboNumber": "R",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【爆竜必殺チョキチョキシザース】これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒相手は可能なら、自分自身のゾーンのオモテ向きのカードか手札を1枚選び捨札にする。",
+      "features": [
+        "恐竜"
       ]
     },
     {

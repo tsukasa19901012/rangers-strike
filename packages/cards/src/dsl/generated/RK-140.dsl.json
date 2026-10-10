@@ -1,4 +1,5 @@
 {
+  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
   "id": "RK-140",
   "name": "仮面ライダー電王LF",
   "type": "unit",
@@ -6,24 +7,54 @@
   "rarity": "N",
   "expansion": "legend2",
   "powerCost": "5+",
+  "text": "※これが自軍エリアにある間、必要パワーの数字が2以下のユニットはバトルエリアに出られない。 【電車斬り】自軍ターン中、これがバトルエリアに出たとき、自軍常駐置き場のオモテ向きのカードの中から、本来の特徴に「DEN-O」を持つユニットカードを1枚選び、捨札にしてもよい。そうしたとき、相手に1点ダメージを与える。",
+  "rawText": "※これが自軍エリアにある間、必要パワーの数字が2以下のユニットはバトルエリアに出られない。 【電車斬り】自軍ターン中、これがバトルエリアに出たとき、自軍常駐置き場のオモテ向きのカードの中から、本来の特徴に「DEN-O」を持つユニットカードを1枚選び、捨札にしてもよい。そうしたとき、相手に1点ダメージを与える。",
+  "imageUrl": "/cards/promoted/RK-140.jpg",
+  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-140.jpg",
   "bp": 6000,
-  "sp": "1/4",
   "size": "S",
-  "text": "",
+  "sp": "1/4",
   "features": [
     "仮面ライダー",
     "男",
     "DEN-O"
   ],
-  "imageUrl": "/cards/promoted/RK-140.jpg",
-  "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RK-140.jpg",
   "rushAdditionalCondition": {
     "conditionId": "send_s_unit_to_power",
     "text": "自軍「仮面ライダー電王PF」1体をパワーゾーンに送る",
     "unitCount": 1
   },
-  "$schema": "https://rangers-strike.dev/schema/card.schema.json",
-  "rawText": "",
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38193e3828ce3818c",
+      "text": "※これが自軍エリアにある間、必要パワーの数字が2以下のユニットはバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::RK-140::koregaerianiarup",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "zan_ri",
+      "name": "電車斬り",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、自軍常駐置き場のオモテ向きのカードの中から、本来の特徴に「DEN-O」を持つユニットカードを1枚選び、捨札にしてもよい。そうしたとき、相手に1点ダメージを与える。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "deal_damage",
+          "amount": 1,
+          "target": "opponent"
+        }
+      ]
+    }
+  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

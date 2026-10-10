@@ -2375,18 +2375,22 @@ const PATTERNS: PatternMatch[] = [
       /^※これが撃破されて捨札になったとき、自軍捨札に「[^」]+」のカードがあれば1枚選び、自軍ラッシュエリアに出す/.test(
         body,
       ),
-    build: (body, segment, trigger) => {
+    // E7（RS-230/PR-016）: 「撃破されて捨札になったとき」誘発（R-DESTROY-01/02）。以前は extractTriggers の
+    // nc（ナンバーコンビネーション）をそのまま使い、名前を問わず捨札の任意ユニットを選んでいた。
+    // 「自軍捨札から「X」を1枚選び」版（recruit_from_discard_on_destroy）と同じ実行時ハンドラに揃える。
+    build: (body) => {
       const cardName = body.match(/「([^」]+)」/)?.[1] ?? "named";
       return {
         id: `recruit_${slugifyEffectId(cardName)}_on_destroy`,
         text: body,
-        trigger: trigger.type === "while_in_field" ? { type: "on_destroy" } : trigger,
+        trigger: { type: "on_destroy" },
         optional: true,
-        condition: { type: "has_target", target: zone("discard", "self") },
         effects: [
-          chooseUnit(zone("discard", "self"), 1, [
-            { type: "move", target: { type: "trigger_source" }, to: "rush" },
-          ]),
+          {
+            type: "grant_keyword",
+            keyword: "on_destroy_reanimate_named_from_discard",
+            duration: "turn",
+          },
         ],
         matchedPattern: "recruit_named_from_discard_if_present",
       };
