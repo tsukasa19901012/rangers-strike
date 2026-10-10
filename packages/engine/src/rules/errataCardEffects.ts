@@ -1343,11 +1343,15 @@ export function applyDragonHarleyTurnEnd(state: GameState, endingPlayerId: Playe
   if (state.pendingEffectChoice) return state;
   const source = state.players[endingPlayerId].rush.find((c) => c.cardId === "RS-288");
   if (!source) return state;
+  const canHold = state.players[endingPlayerId].command.some((c) => !c.commandHeld);
   const targets = (["player1", "player2"] as const).flatMap((pid) =>
     fieldUnits(state.players[pid])
       .filter((c) => {
         const def = getDefinition(state.definitions, c.cardId);
-        return def?.type === "unit" && effectiveBp(state, pid, c) === 3000;
+        if (def?.type !== "unit" || effectiveBp(state, pid, c) !== 3000) return false;
+        // ミラーワールドの能力を得た敵軍ユニットは、自軍コマンドを1つホールドしなければ選べない（faq-rider-1 RS-288 Q）。
+        if (pid !== endingPlayerId && mirrorWorldProtected(state, pid, c) && !canHold) return false;
+        return true;
       })
       .map((c) => c.instanceId),
   );
@@ -1364,6 +1368,42 @@ export function applyDragonHarleyTurnEnd(state: GameState, endingPlayerId: Playe
     optional: false,
     unitDestination: "discard",
   });
+}
+
+/**
+ * RK-016 ミラーワールド（常駐）: これに重ねたカードと同じカード名の持ち主のユニットは
+ * 「相手は自分自身のコマンドを1つホールドしなければ、このユニットを選べない」を得る（atwiki RK-016）。
+ */
+export function mirrorWorldProtected(state: GameState, ownerId: PlayerId, unit: CardInstance): boolean {
+  const name = getDefinition(state.definitions, unit.cardId)?.name;
+  if (!name) return false;
+  return (state.players[ownerId].operation ?? []).some(
+    (op) =>
+      op.cardId === "RK-016" &&
+      (op.stackedCards ?? []).some((st) => sameCardName(getDefinition(state.definitions, st.cardId)?.name, name)),
+  );
+}
+
+/** RS-288【ドラゴンハーレー】: ミラーワールドで守られた敵軍ユニットを選んだら、自軍コマンドを1つホールドしてから撃破する。 */
+function resolveDragonHarleyPick(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const enemyId = opponent(playerId);
+  const enemyUnit = fieldUnits(state.players[enemyId]).find((c) => c.instanceId === instanceId);
+  let next = state;
+  if (enemyUnit && mirrorWorldProtected(state, enemyId, enemyUnit)) {
+    const player = state.players[playerId];
+    const idx = player.command.findIndex((c) => !c.commandHeld);
+    if (idx < 0) return { error: "invalid_target" };
+    next = {
+      ...next,
+      ...updatePlayer(next, playerId, {
+        ...player,
+        command: player.command.map((c, i) => (i === idx ? { ...c, commandHeld: true } : c)),
+      }),
+    };
+  }
+  return resolveDestroyPick(next, playerId, instanceId);
 }
 
 function resolveDestroyPick(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
@@ -1494,7 +1534,7 @@ const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [BLAY_DESTROY]: resolveBlayRouzer,
   [ELECTRO_BEAM_PICK]: resolveElectroBeam,
   [DENSHA_GIRI]: resolveDenshaGiri,
-  [DRAGON_HARLEY]: resolveDestroyPick,
+  [DRAGON_HARLEY]: resolveDragonHarleyPick,
   [ABARENOH_FROM_HAND]: resolveAbarenohFromHand,
   [CHOKI_SCISSORS]: resolveChokiScissors,
   [WILD_CYCLONE]: resolveWildCyclone,

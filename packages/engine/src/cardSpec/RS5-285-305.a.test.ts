@@ -401,8 +401,7 @@ describe("RS-288 守護獣ドラゴンシーザー", () => {
   });
 
   // faq-rider-1 RK-016「その敵軍ユニットを選ぶためには自軍コマンドを１つホールドしなくてはいけません。ホールドするコマンドが無い場合は選ぶことはできません…」
-  it.fails("RS-288: 公式Q&A — ミラーワールドの能力を得た敵軍ユニットは、ホールドする自軍コマンドがなければ選べず、選べる自軍ユニットを選ぶ（出典: grnrngr/faq-rider-1 RS-288 Q）", () => {
-    // 既知の不具合: CARD-RS-288 【ドラゴンハーレー】の対象選択がミラーワールドの能力（選ぶにはコマンドのホールドが必要）を考慮しない
+  it("RS-288: 公式Q&A — ミラーワールドの能力を得た敵軍ユニットは、ホールドする自軍コマンドがなければ選べず、選べる自軍ユニットを選ぶ（出典: grnrngr/faq-rider-1 RS-288 Q）", () => {
     const s = harleyEnd(
       { rush: [inst("RS-288", "d")], battle: [inst("SPEC-S3", "own")], command: [] },
       { battle: [inst("SPEC-S3", "en")], operation: [{ ...inst("RK-016", "mw"), stackedCards: [inst("SPEC-S3", "stk")] }] },
@@ -410,8 +409,7 @@ describe("RS-288 守護獣ドラゴンシーザー", () => {
     expect(choiceIds(s)).toEqual(["SPEC-S3:own"]);
   });
 
-  it.fails("RS-288: 公式Q&A — ミラーワールドの能力を得た敵軍ユニットを選ぶときは、自軍コマンドを1つホールドする（出典: grnrngr/faq-rider-1 RS-288 Q「自軍コマンドを１つホールドしなくてはいけません」）", () => {
-    // 既知の不具合: CARD-RS-288 【ドラゴンハーレー】の対象選択がミラーワールドの能力（選ぶにはコマンドのホールドが必要）を考慮しない
+  it("RS-288: 公式Q&A — ミラーワールドの能力を得た敵軍ユニットを選ぶときは、自軍コマンドを1つホールドする（出典: grnrngr/faq-rider-1 RS-288 Q「自軍コマンドを１つホールドしなくてはいけません」）", () => {
     let s = harleyEnd(
       { rush: [inst("RS-288", "d")], command: releasedN(1) },
       { battle: [inst("SPEC-S3", "en")], operation: [{ ...inst("RK-016", "mw"), stackedCards: [inst("SPEC-S3", "stk")] }] },
