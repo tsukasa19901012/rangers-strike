@@ -170,31 +170,75 @@ export function prepareRegisterUnitReturnedToRush(card: CardInstance): CardInsta
   return next;
 }
 
-const NON_UNIT_ZONES = ["deck", "hand", "discard", "power", "command", "operation"] as const;
+const NON_UNIT_ZONES = ["deck", "hand", "discard", "power", "command", "operation", "exile"] as const;
+
+/** エリア（ラッシュ・バトル）にあるユニットだけが持つ付加情報。 */
+const AREA_ONLY_FIELDS = [
+  "bpModifier",
+  "spModifier",
+  "spOverride",
+  "registerHeld",
+  "battleActed",
+  "activatedNcEffects",
+  "mountedOnInstanceId",
+] as const;
+
+function stripAreaState(card: CardInstance, zone: (typeof NON_UNIT_ZONES)[number]): CardInstance {
+  const hasAreaField = AREA_ONLY_FIELDS.some((f) => card[f] !== undefined);
+  // コマンドゾーン以外ではホールド（横向き）という状態自体がない。
+  const staleHold = zone !== "command" && (card.commandHeld || card.mothershipHold || card.paymentHeld);
+  // レジストのホールドが残ったままコマンドゾーンへ来たカードはリリース状態で置く（R-ZONE-09）。
+  const registerHeldInCommand = zone === "command" && card.registerHeld;
+  // リリースされたコマンドには「支払い済み」の印は残らない。
+  const releasedPayment = zone === "command" && card.paymentHeld && !card.commandHeld;
+  if (!hasAreaField && !staleHold && !registerHeldInCommand && !releasedPayment) return card;
+  const cleared = { ...card };
+  for (const f of AREA_ONLY_FIELDS) delete cleared[f];
+  if (releasedPayment) delete cleared.paymentHeld;
+  if (staleHold || registerHeldInCommand) {
+    delete cleared.commandHeld;
+    delete cleared.mothershipHold;
+    delete cleared.paymentHeld;
+  }
+  return cleared;
+}
 
 /**
- * ルール: R-HOLD-02 — ユニットでなくなれば（捨札・コマンド・パワー・手札等）ユニットのホールドは解除される。
- * レジストのホールドがスタートフェイズに解除されなくなったため、場を離れたカードに残った
- * registerHeld / commandHeld をここで消す。
+ * ルール: R-HOLD-02, R-ZONE-04 — ユニットでなくなれば（捨札・コマンド・パワー・手札等）ユニットのホールドは解除され、
+ * エリアで得た付加情報（BP/SP修正・ホールド状態等）もすべて消える。
+ * 場を離れたカードに残った registerHeld / commandHeld / bpModifier 等をここで消す。
  */
 export function clearRegisterHoldOffField(state: GameState): GameState {
   let next = state;
   for (const pid of ["player1", "player2"] as const) {
     const player = next.players[pid];
     let patch: Partial<typeof player> | undefined;
-    for (const zone of NON_UNIT_ZONES) {
+    // ルール: R-KW-RIDE-05, R-KW-RC-01 — ライドしていたビークルがエリアを離れたら、ユニットはライドしていない状態になる
+    // （ライドオフの手順ではないので RC は発動しない）。
+    const fieldIds = new Set([...player.rush, ...player.battle].map((c) => c.instanceId));
+    for (const zone of ["rush", "battle"] as const) {
       const cards = player[zone];
-      if (!cards.some((c) => c.registerHeld)) continue;
+      if (!cards.some((c) => c.mountedOnInstanceId && !fieldIds.has(c.mountedOnInstanceId))) continue;
       patch = {
         ...patch,
         [zone]: cards.map((c) => {
-          if (!c.registerHeld) return c;
-          const cleared = { ...c };
-          delete cleared.registerHeld;
-          delete cleared.commandHeld;
-          return cleared;
+          if (!c.mountedOnInstanceId || fieldIds.has(c.mountedOnInstanceId)) return c;
+          const dismounted = { ...c };
+          delete dismounted.mountedOnInstanceId;
+          return dismounted;
         }),
       };
+    }
+    for (const zone of NON_UNIT_ZONES) {
+      const cards = player[zone];
+      if (!cards) continue;
+      let changed = false;
+      const mapped = cards.map((c) => {
+        const n = stripAreaState(c, zone);
+        if (n !== c) changed = true;
+        return n;
+      });
+      if (changed) patch = { ...patch, [zone]: mapped };
     }
     if (patch) next = { ...next, ...updatePlayer(next, pid, { ...player, ...patch }) };
   }

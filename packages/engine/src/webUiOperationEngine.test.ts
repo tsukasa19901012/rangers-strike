@@ -30,6 +30,8 @@ describe("Web UI operation engine backing", () => {
           command: [heldEtCommand("c1")],
           rush: [enemyUnit],
           discard: [inst("RS-063", "disc1")],
+          // デンジマシーン等は山札3枚以上でないと発動しない（R-WIN-04。2枚以下は空撃ち）
+          deck: Array.from({ length: 3 }, (_, i) => inst("TST-OP", `d${i}`)),
         },
         player2: {
           rush: [enemyUnit],

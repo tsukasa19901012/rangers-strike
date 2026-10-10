@@ -39,6 +39,8 @@ export type CardInstance = {
   commandHeld?: boolean;
   /** 母艦ゾード支払いによるホールド。融合バトル進入ホールドの※要件は満たさない。 */
   mothershipHold?: boolean;
+  /** コマンドゾーン: カードの使用・ラッシュ等の支払いとしてホールドされた（R-CMD-01 再利用不可）。 */
+  paymentHeld?: boolean;
   /** パワーゾーン: true = 裏向き（ダメージマーカー）。 */
   faceDown?: boolean;
   /** 一時的なSP変更（ターン終了時にクリア）。 */
@@ -79,6 +81,8 @@ export type PlayerState = {
   operation: CardInstance[];
   /** 除外ゾーン（ゲーム外。フレームワーク）。 */
   exile?: CardInstance[];
+  /** 直近のラッシュのカテゴリ支払いでホールドしたコマンド（コールのユニットを含む）。魔女バンドーラ等が参照。 */
+  lastRushPayment?: { rushedInstanceId: string; holdInstanceIds: string[] };
   /** コマンダーゾーン（フレームワーク）。 */
   commander?: CardInstance[];
   /** 裏向きパワーカードは受けたダメージとしてカウント。 */
@@ -181,7 +185,8 @@ export type PendingLeave = {
   ownerPlayerId: PlayerId;
   instanceId: string;
   fromZone: "rush" | "battle";
-  toZone: "discard" | "power" | "command";
+  /** deck_top: 持ち主の山札の上（ピンクストーム等。R-MOVE-01）。 */
+  toZone: "discard" | "power" | "command" | "deck_top";
   leavingCardId: string;
   phasePlayerId: PlayerId;
   /** レジスト選択をスキップして捨札へ。 */
@@ -195,7 +200,7 @@ export type PendingLeave = {
     ownerPlayerId: PlayerId;
     instanceId: string;
     fromZone: "rush" | "battle";
-    toZone: "discard" | "power" | "command";
+    toZone: "discard" | "power" | "command" | "deck_top";
     leavingCardId: string;
     phasePlayerId: PlayerId;
   };
@@ -512,6 +517,11 @@ export type GameState = {
   pendingRush?: PendingRush;
   /** 敵ラッシュへのモーフ反応窓。 */
   pendingMorph?: PendingMorph;
+  /**
+   * 「ラッシュしたとき」の効果の解決（選択）待ちのため、まだ開いていない「ラッシュされたとき」の反応
+   * （モーフ・カウンター）。選択がすべて終わった時点で開く（R-TIME-01, R-KW-MORPH-01）。
+   */
+  deferredRushReaction?: { rusherPlayerId: PlayerId; rushedInstanceId: string; phasePlayerId: PlayerId };
   /** ユニットがフィールドを離れる際の所有者応答。 */
   pendingLeave?: PendingLeave;
   /** チェイス: ライド中ユニット離場時のビークル乗り換え選択。 */
@@ -539,6 +549,16 @@ export type GameState = {
   /** スタートフェイズ: 一括戻し後の任意 battle→rush 効果（例: falcon_claw）。 */
   pendingBattleToRushQueue?: string[];
   pendingBattleToRushPhasePlayerId?: PlayerId;
+  /**
+   * スタートフェイズ: 「すべて戻す」で、まだバトルエリアに残っていて順に戻す予定のユニット。
+   * 戻すたびに誘発効果を解決してから次を戻す（R-START-01, RS-135 FAQ）。
+   */
+  pendingStartReturnQueue?: string[];
+  /**
+   * エンドフェイズ: 「ターンを終えるとき」の効果を処理中（まだ終えるプレイヤーのターン）。
+   * 選択待ちで中断したら、解決後にここから再開する（R-END-01）。
+   */
+  turnEndProgress?: TurnEndProgress;
   /**
    * 効果でラッシュエリアに出たが、先に解決すべき操作待ちがあり「ラッシュしたとき」の誘発と
    * 「ラッシュされたとき」の窓をまだ処理していないユニット（出た順）。
@@ -592,6 +612,14 @@ export type PendingEffectRush = {
     chosen: string[];
     destination?: "command" | "discard";
   };
+};
+
+export type TurnEndProgress = {
+  endingPlayerId: PlayerId;
+  /** まだ処理していない「ターンを終えるとき」の常駐（持ち主と instanceId）。 */
+  residentQueue: Array<{ ownerId: PlayerId; instanceId: string }>;
+  /** 常駐以外の「ターンを終えるとき」の効果を処理済みか。 */
+  restDone: boolean;
 };
 
 export const INITIAL_HAND_SIZE = 7;

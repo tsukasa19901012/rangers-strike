@@ -241,3 +241,27 @@ export function drainEffectRushTriggers(state: GameState): RushEffectOutcome {
   }
   return { state: nextState, logs };
 }
+
+/**
+ * 遅らせていた「ラッシュされたとき」の反応（モーフ・カウンター）を、操作待ちがなくなった時点で開く。
+ */
+export function openDeferredRushReaction(state: GameState): GameState {
+  const deferred = state.deferredRushReaction;
+  if (!deferred || hasPendingPromptBlockingEffectRush(state)) return state;
+  const cleared: GameState = { ...state, deferredRushReaction: undefined };
+  const rushed = findInZone(cleared.players[deferred.rusherPlayerId], "rush", deferred.rushedInstanceId);
+  if (!rushed) return { ...cleared, activePlayer: deferred.phasePlayerId };
+  const withMorph = openMorphReactionWindow(
+    { ...cleared, activePlayer: deferred.phasePlayerId },
+    deferred.rusherPlayerId,
+    deferred.rushedInstanceId,
+    deferred.phasePlayerId,
+  );
+  if (withMorph.pendingMorph || withMorph.pendingEffectChoice) return withMorph;
+  return openRushCounterWindow(
+    withMorph,
+    deferred.rusherPlayerId,
+    deferred.rushedInstanceId,
+    deferred.phasePlayerId,
+  );
+}

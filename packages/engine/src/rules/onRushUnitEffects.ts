@@ -166,6 +166,7 @@ export function applyOnRushUnitEffects(
       nextState,
       ownerPlayerId,
       found.card.cardId,
+      instanceId,
     );
   }
   if (!nextState.pendingEffectChoice) {

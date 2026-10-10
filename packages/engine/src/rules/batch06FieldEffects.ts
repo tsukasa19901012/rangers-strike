@@ -324,10 +324,17 @@ export function tryZubazubanOnAllyRush(
   return withChoice ?? state;
 }
 
+/**
+ * RS-374 魔女バンドーラ【ドーラ魔法】: 相手がコマンドをホールドして「魔法」「恐竜」のユニットをラッシュしたとき、
+ * そのホールドしたコマンドを捨札にする。
+ * ルール: R-KW-CALL-01 — コールでホールドしたユニットも「ホールドしたコマンド」として捨札になる（page-1293 Q2）。
+ * 捨札にするのはこのラッシュのためにホールドしたものだけ。
+ */
 export function applyBandoraHeldCommandDiscard(
   state: GameState,
   rusherPlayerId: PlayerId,
   cardId: string,
+  rushedInstanceId?: string,
 ): GameState {
   const def = getDefinition(state.definitions, cardId);
   const features = def?.features ?? [];
@@ -335,16 +342,32 @@ export function applyBandoraHeldCommandDiscard(
   const ownerId = opponent(rusherPlayerId);
   if (!playerHasRs374OnRush(state, ownerId)) return state;
   const player = state.players[rusherPlayerId];
-  const held = player.command.filter((c) => c.commandHeld || c.mothershipHold);
-  if (held.length === 0) return state;
-  const heldIds = new Set(held.map((c) => c.instanceId));
-  const command = player.command.filter((c) => !heldIds.has(c.instanceId));
+  const payment =
+    rushedInstanceId && player.lastRushPayment?.rushedInstanceId === rushedInstanceId
+      ? player.lastRushPayment
+      : undefined;
+  if (!payment || payment.holdInstanceIds.length === 0) return state;
+  const heldIds = new Set(payment.holdInstanceIds);
+  const discarded: typeof player.command = [];
+  const take = (cards: typeof player.command) =>
+    cards.filter((c) => {
+      if (!heldIds.has(c.instanceId)) return true;
+      discarded.push({ instanceId: c.instanceId, cardId: c.cardId });
+      return false;
+    });
+  const command = take(player.command);
+  const rush = take(player.rush);
+  const battle = take(player.battle);
+  if (discarded.length === 0) return state;
   return {
     ...state,
     ...updatePlayer(state, rusherPlayerId, {
       ...player,
       command,
-      discard: [...player.discard, ...held],
+      rush,
+      battle,
+      discard: [...player.discard, ...discarded],
+      lastRushPayment: undefined,
     }),
   };
 }

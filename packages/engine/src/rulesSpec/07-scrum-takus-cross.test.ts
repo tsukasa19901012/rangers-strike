@@ -105,8 +105,7 @@ describe("R-KW-TAKUS-01 規定文", () => {
   });
 
   // 「○○を持つSユニット」（S ユニット限定）
-  it.fails("R-KW-TAKUS-01: 指定カテゴリでも S ユニットでなければ（M ユニット）SP1 を得ない（出典: atwiki/page-1291 規定文）", () => {
-    // 既知の不具合: 04-#7（S ユニット限定なし）
+  it("R-KW-TAKUS-01: 指定カテゴリでも S ユニットでなければ（M ユニット）SP1 を得ない（出典: atwiki/page-1291 規定文）", () => {
     const x = inst(ET_M.id, "x");
     const s = enter([COSSACK, ET_M], [...battleFillers(3), inst(COSSACK.id, "t")], x);
     expect(canStrike(s, x.instanceId)).toBe(false);

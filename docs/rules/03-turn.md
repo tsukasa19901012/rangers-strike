@@ -27,7 +27,7 @@
 「このターン」は、そのテキストが有効になった時点から、ターンプレイヤーが「ターンエンド」を宣言するまで。どちらのプレイヤーのカードに付いた効果でも同じ。発動前の事象には遡らない（例: 発動前にホールドされていたコマンドには及ばない）。
 - 出典: `atwiki/page-588` Q1/A1・`grnrngr/faq-index`「ターン」「ターンプレイヤーが「ターンエンド」と宣言するまでです」、`grnrngr/faq-card-2` RS-107 Q1「その効果が発動した以降のターン中にのみ適用される」（RS-363 バルパンサー（2nd）の FAQ〔faq/card_6〕も同旨）
 - Web: https://w.atwiki.jp/renst/pages/588.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_2.html , https://www.grnrngr.com/documents/rangersstrike/faq/index.html
-- 実装: ❌ E4（相手ユニットに付いた「このターン」修正が残る）
+- 実装: ✅ E4。`finalizeTurnEnd`（core/applyAction.ts）が「ターンを終えるとき」の効果をすべて処理した後に両プレイヤーの「このターン」修正を消し、ターンを1回だけ渡す。残り: RS-107 ディースナイパーの「発動後のターン中」継続（デカブルーが場を離れた後のカウンター用ホールド）は未実装。
 
 #### R-TURN-05 ターンプレイヤー [wiki] `web照合済(2026-10-10)`
 現在ターンを行っているプレイヤー。同時に起きた処理の順番を決める権利を持つ（R-SIM-01）。
@@ -48,12 +48,13 @@
 - 出典: `grnrngr/rule_phase1-2`（ラッシュエリアに戻す・ホールド状態のカードをリリース・１枚ドローの3項目）、`atwiki/page-264`「スタートフェイズでは次の３つの行程を好きな順に必ず行う」、`atwiki/page-457` Q1/A1・`grnrngr/faq-index`「任意の順番で戻すことができます」、`atwiki/page-141` Q9、`grnrngr/faq-card-3` RS-135 Q（ジェットファルコンを戻して効果を解決してからハリケンレオンを戻す →「はい、できます」）
 - Web: https://www.grnrngr.com/documents/rangersstrike/rule/rule_phase1-2.html , https://w.atwiki.jp/renst/pages/264.html , https://w.atwiki.jp/renst/pages/457.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_3.html
 - 注: 公式 rule_phase1-2 は「自分の場にホールド状態（ヨコ置き）のカードがあれば、すべてリリース状態」と入門向けに広く書いているが、`atwiki/page-157`「ホールド状態のユニットはスタートフェイズになってもリリースされず」、`atwiki/page-151`・`page-158` によりリリースされるのはコマンドのみとする（R-HOLD-02）。
-- 実装: ✅
+- 実装: ✅ `return_all_battle_to_rush`（rules/startPhase.ts）。`instanceId` 指定で1組（ライドの組は一緒）ずつ任意の順に戻せる。省略時は並び順で1組ずつ戻し、誘発した効果（RS-135【ファルコンクロー】等）の選択が開いたら中断し、解決後に残りを戻す（`pendingStartReturnQueue`）。CPU は省略形を使う。
 
 #### R-START-02 戻すことはラッシュではない [wiki] `web照合済(2026-10-10)`
 スタートフェイズにバトルエリアからラッシュエリアへ戻すのはラッシュではない。ライド状態は維持され（R-KW-RIDE-04）、このときライドオフはできない。バトルエリア⇔ラッシュエリアの移動ではホールド状態も消えない（R-ZONE-04）。
 - 出典: `atwiki/page-146`「スタートフェイズでバトルエリアからラッシュエリアにユニットやビークルを戻すのはラッシュでは無い」、`atwiki/page-141` Q1/A1、`atwiki/page-1512`、`grnrngr/faq/rider`（ライドオフ）「いいえ、できません」
 - Web: https://w.atwiki.jp/renst/pages/146.html , https://w.atwiki.jp/renst/pages/141.html , https://www.grnrngr.com/documents/rangersstrike/faq/rider.html
+- 実装: ✅ 戻すのはラッシュとして扱わない（「ラッシュされたとき」は誘発しない）。ライド状態・ホールド状態はそのまま（`prepareRegisterUnitReturnedToRush`）。
 
 #### R-START-03 追加ドロー [公式] `web照合済(2026-10-10)`
 通常ドローをしたあとで、手札（引いたカードを含む）の枚数が自軍ダメージより少ないなら、もう1枚だけドローしてよい（任意）。**1ターンに1度だけ**。
@@ -126,9 +127,10 @@
 - 出典: `atwiki/page-155`「タイミングが「自軍エンドフェイズ」のテキストの場合は「ターンを終えるとき」のテキストよりも先に処理する」、`grnrngr/faq-card-4` RS-238「「ターンを終えるとき」はまだ自分のターンです」、`grnrngr/faq-card-5` RS-310、`atwiki/page-122`・`grnrngr/faq-index`（手札上限なし）
 - Web: https://w.atwiki.jp/renst/pages/155.html , https://www.grnrngr.com/documents/rangersstrike/faq/card_4.html , https://w.atwiki.jp/renst/pages/122.html
 - [未確定] エンドフェイズの公式ステップ一覧。（2026-10-10 web確認: 記載なし。公式ルールのエンドフェイズ項は rule_tarn.html#5 へのリンクのみで本文テキストがない）
-- 実装: ✅
+- 実装: ✅ `finalizeTurnEnd`／`resolveTurnEndingEffectsImpl`（rules/turnEndingEffects.ts）。「ターンを終えるとき」の効果は phase "end"・終えるプレイヤーの手番のまま処理し、選択が開いたら `turnEndProgress` に進捗を残して止まり、解決後に続きから処理してからターンを渡す。RS-310 ゴウライビートルの撃破判定は「このターン」の修正込みで行う。残り: 同時に処理する効果の順序選択（RS-310 Q2）、「自軍エンドフェイズ」効果（闇の戒律等）は未実装。
 
 #### R-END-02 ターン終了処理は終えたプレイヤーのみ [公式] `web照合済(2026-10-10)`
 「ターンを終えるとき」系の常駐（例: RS-030 アドベンチャー）は、ターンを終えたプレイヤーだけが処理する。
 - 出典: `grnrngr/faq-card-1` RS-030 Q2「いいえ。ターンを終えたプレイヤーのみ行います」
 - Web: https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html
+- 実装: ✅ 自軍の常駐に加え、相手のアドベンチャーもターンを終えたプレイヤーが自分のコマンドで処理する。2枚あれば重複（rules/residentOperation.ts `collectTurnEndResidentQueue`）。

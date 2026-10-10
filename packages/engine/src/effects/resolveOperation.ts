@@ -155,12 +155,18 @@ function resolveCyberSRider(ctx: EffectContext): EffectOutcome {
   let nextPlayer = { ...player };
   let placed = 0;
 
+  let discarded = 0;
   for (const instanceId of uniqueIds) {
-    if (nextPlayer.command.length >= COMMAND_ZONE_MAX) break;
     const found = findInZone(nextPlayer, "hand", instanceId);
     if (!found) continue;
 
     const [, hand] = removeAt(nextPlayer.hand, found.index);
+    if (nextPlayer.command.length >= COMMAND_ZONE_MAX) {
+      // ルール: R-ZONE-08 — コマンドゾーンに5枚を越えて置かれるカードは捨札になる。
+      nextPlayer = { ...nextPlayer, hand, discard: [...nextPlayer.discard, found.card] };
+      discarded += 1;
+      continue;
+    }
     nextPlayer = {
       ...nextPlayer,
       hand,
@@ -172,7 +178,7 @@ function resolveCyberSRider(ctx: EffectContext): EffectOutcome {
     placed += 1;
   }
 
-  if (placed === 0) return fail(ctx.state, "invalid_target");
+  if (placed === 0 && discarded === 0) return fail(ctx.state, "invalid_target");
 
   return {
     state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
@@ -755,6 +761,8 @@ export function isValidOperationTarget(
       const owner = state.players[located.playerId];
       const found = findInZone(owner, located.zone, targetInstanceId);
       if (!found) return false;
+      // ルール: R-CARD-04 — 「ユニットを選ぶ」効果でビークルは選べない。
+      if (!isUnit(getDefinition(state.definitions, found.card.cardId))) return false;
       return effectiveBp(state, located.playerId, found.card) <= 8000;
     }
     default:

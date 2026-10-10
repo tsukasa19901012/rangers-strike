@@ -10,8 +10,11 @@ export const DECK_MIN_SIZE = 40;
 /** デッキ1枚あたりの同名カード枚数上限（既定）。 */
 export const DECK_NAME_COPY_LIMIT = 3;
 
-/** デッキビルダー UI で無制限枚数カードの上限。 */
-export const DECK_UNLIMITED_COPY_CAP = 40;
+/**
+ * 無制限枚数カードの上限（上限なし）。
+ * ルール: R-DECK-03 — 「好きな枚数入れてもよい」カードは41枚以上でもよい（デッキ枚数自体にも上限はない）。
+ */
+export const DECK_UNLIMITED_COPY_CAP = Number.POSITIVE_INFINITY;
 
 /**
  * 3枚制限の例外を示すカード本文の注記。

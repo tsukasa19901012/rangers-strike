@@ -193,8 +193,7 @@ describe("R-ZONE-03 エリアのカードはユニット／ビークル", () => 
 
 describe("R-ZONE-04 エリア出入りで付加情報は消える", () => {
   // 「エリアとエリア以外の間をカードが移動した場合…すべて消える」
-  // 既知の不具合: 未登録 — エリア外（パワーゾーン）へ送られても bpModifier/spModifier/registerHeld が残る
-  it.fails("R-ZONE-04: BP修正・ホールド状態を持つユニットがパワーゾーンに送られると付加情報は消える（出典: atwiki/page-1512）", () => {
+  it("R-ZONE-04: BP修正・ホールド状態を持つユニットがパワーゾーンに送られると付加情報は消える（出典: atwiki/page-1512）", () => {
     const s = st({
       phase: "rush",
       player1: { hand: [inst("RS-024", "op")], power: powerCards(6), command: [inst("TST-OP-OT", "c")] },
@@ -503,8 +502,7 @@ describe("R-ZONE-08 コマンドゾーン", () => {
   });
 
   // 「5枚を越えて置かれるときは、そのカードは捨札になります」
-  // 既知の不具合: 未登録 — 5枚超で置かれるカードを捨札にせず invalid_target で手札に残す
-  it.fails("R-ZONE-08: コマンドゾーンが5枚のときサイバースライダーで置かれるカードは捨札になる（出典: atwiki/page-108 Q3/A3, grnrngr rule_phase1-2 チャージフェイズ）", () => {
+  it("R-ZONE-08: コマンドゾーンが5枚のときサイバースライダーで置かれるカードは捨札になる（出典: atwiki/page-108 Q3/A3, grnrngr rule_phase1-2 チャージフェイズ）", () => {
     const s = st({
       phase: "rush",
       player1: {
@@ -518,8 +516,7 @@ describe("R-ZONE-08 コマンドゾーン", () => {
   });
 
   // 「アタックされたユニットはその場に留まります」
-  // 既知の不具合: 未登録 — RK-008 メカニック忍者をアタック時のカウンターとして使用できない（反応窓が開かない）
-  it.fails("R-ZONE-08: メカニック忍者でアタックされたユニットを5枚のコマンドゾーンに置けないときはその場に留まり、バトルは通常通り行う（出典: grnrngr/faq-rider-1 RK-008 Q3）", () => {
+  it("R-ZONE-08: メカニック忍者でアタックされたユニットを5枚のコマンドゾーンに置けないときはその場に留まり、バトルは通常通り行う（出典: grnrngr/faq-rider-1 RK-008 Q3）", () => {
     const attacked = inst("SPEC-S-WB", "def");
     const s = st({
       phase: "battle",
@@ -734,8 +731,7 @@ describe("R-ZONE-11 除外", () => {
   });
 
   // 「そのゲーム中再びプレイに使うことはできない」
-  // 既知の不具合: 04-#34（除外からの復帰を許す関数 moveFromExile が存在する）
-  it.fails("R-ZONE-11: 除外ゾーンからカードを手札・ラッシュエリアに戻す操作は成立しない（出典: atwiki/page-1970 公式コラム引用）", () => {
+  it("R-ZONE-11: 除外ゾーンからカードを手札・ラッシュエリアに戻す操作は成立しない（出典: atwiki/page-1970 公式コラム引用）", () => {
     const s = st({ phase: "rush", player1: { exile: [inst("SPEC-S-WB", "x")] } });
     const toHand = moveFromExile(s, "player1", "SPEC-S-WB:x", "hand");
     expect(zoneOf(toHand, "player1", "SPEC-S-WB:x")).toBe("exile");

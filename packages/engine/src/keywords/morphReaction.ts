@@ -264,7 +264,12 @@ export function finalizeMorphAndContinue(
   state: GameState,
   pending: PendingMorph,
 ): GameState {
-  const withoutMorph = { ...state, pendingMorph: undefined };
+  // ルール: R-KW-MORPH-01 — モーフは相手のラッシュへの応答。解決後はラッシュしたプレイヤーの手番に戻る。
+  const withoutMorph: GameState = {
+    ...state,
+    pendingMorph: undefined,
+    activePlayer: state.pendingEffectChoice ? state.activePlayer : pending.phasePlayerId,
+  };
   return openRushCounterWindow(
     withoutMorph,
     pending.rusherPlayerId,

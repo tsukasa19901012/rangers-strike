@@ -1,3 +1,4 @@
+import { getLegalActions } from "../index";
 /**
  * docs/rules/08-errata.md §2 atwiki 記載の修正後テキスト（21件）[wiki]
  *
@@ -736,26 +737,33 @@ describe("R-ERR-RS030 アドベンチャー", () => {
         deck: [inst("TST-OP", "e1"), inst("TST-OP", "e2")],
       },
     });
-    s = act(s, { type: "end_phase", playerId: ender });
+    // ターンが相手に渡るまで進める。「1つ選んで手札に戻す」の選択には先頭の候補で応える（R-END-01）。
+    for (let i = 0; i < 12 && s.activePlayer === ender; i += 1) {
+      const choice = s.pendingEffectChoice;
+      if (choice) {
+        const pick = getLegalActions(s, choice.playerId).find((a) => a.type === "resolve_effect_choice");
+        if (!pick) break;
+        s = act(s, pick);
+        continue;
+      }
+      s = act(s, { type: "end_phase", playerId: ender });
+    }
     return s;
   }
 
-  // 既知の不具合: 未登録 — ターン終了時の処理（applyAdventureEndTurn）が呼ばれていない
-  it.fails("R-ERR-RS030: 自分のターンを終えるとき、ホールド状態のコマンドを1つ手札に戻す（出典: atwiki/page-259）", () => {
+  it("R-ERR-RS030: 自分のターンを終えるとき、ホールド状態のコマンドを1つ手札に戻す（出典: atwiki/page-259）", () => {
     const s = endTurnOf("player1", { player1: 1, player2: 0 });
     expect(s.players.player1.hand.filter((c) => c.cardId === "TST-OP")).toHaveLength(1);
   });
 
   // 「自分も相手も次の制限を受ける」— 相手も自分自身のターン終了時に戻す
-  // 既知の不具合: 未登録 — 同上
-  it.fails("R-ERR-RS030: 相手も自分自身のターンを終えるときホールド状態のコマンドを1つ手札に戻す（出典: atwiki/page-259）", () => {
+  it("R-ERR-RS030: 相手も自分自身のターンを終えるときホールド状態のコマンドを1つ手札に戻す（出典: atwiki/page-259）", () => {
     const s = endTurnOf("player2", { player1: 1, player2: 0 });
     expect(zoneIds(s, "player2", "hand").filter((id) => id.startsWith("TST-OP:p2h"))).toHaveLength(1);
   });
 
   // card_1.html RS-030 Q1:「ターンを終えたプレイヤーが、自分自身のコマンドゾーンからホールド状態のコマンドを２枚選んで手札に戻します」
-  // 既知の不具合: 未登録 — 同上
-  it.fails("R-ERR-RS030: 公式Q&A — 双方が常駐していれば重複し、ターンを終えたプレイヤーは2つ戻す（出典: grnrngr/faq-card-1 RS-030 Q1）", () => {
+  it("R-ERR-RS030: 公式Q&A — 双方が常駐していれば重複し、ターンを終えたプレイヤーは2つ戻す（出典: grnrngr/faq-card-1 RS-030 Q1）", () => {
     const s = endTurnOf("player1", { player1: 1, player2: 1 });
     expect(zoneIds(s, "player1", "hand").filter((id) => id.startsWith("TST-OP:p1h"))).toHaveLength(2);
   });

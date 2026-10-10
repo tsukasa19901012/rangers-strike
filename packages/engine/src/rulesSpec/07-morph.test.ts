@@ -124,8 +124,7 @@ describe("R-KW-MORPH-01 規定文", () => {
   });
 
   // 「敵軍ユニットが…ラッシュされたとき」（応答）
-  it.fails("R-KW-MORPH-01: モーフの解決後も、ラッシュしたプレイヤーのラッシュフェイズが続く（手番が相手に移ったままにならない）（出典: atwiki/page-1294 規定文。モーフは相手のラッシュへの応答）", () => {
-    // 既知の不具合: 未登録（モーフ解決後に activePlayer が置き換えた側のままになり、相手が end_phase できてしまう）
+  it("R-KW-MORPH-01: モーフの解決後も、ラッシュしたプレイヤーのラッシュフェイズが続く（手番が相手に移ったままにならない）（出典: atwiki/page-1294 規定文。モーフは相手のラッシュへの応答）", () => {
     let s = enemyRushes({ rush: [m], command: [t] });
     s = swap(s, t.instanceId);
     expect(s.activePlayer).toBe("player1");

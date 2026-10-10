@@ -1,3 +1,4 @@
+import { isCostWindowSatisfied } from "./costWindow";
 import type { CardDefinition, UnitSize } from "@rangers-strike/cards";
 import {
   cardCategories,
@@ -693,7 +694,14 @@ export function canPlayOperation(
   if (!canPlayOperationExceptCommandHold(state, playerId, definition)) return false;
 
   const opCats = cardCategories(definition);
-  return hasCommandForCardUse(player, state.definitions, opCats, "lead");
+  if (opCats.length === 0) return true;
+  if (isCostWindowSatisfied(player, "operation_category")) {
+    return hasCommandForCardUse(player, state.definitions, opCats, "lead");
+  }
+  // ルール: R-CMD-01 — 使用のたびにリリース状態のコマンドをホールドする。別のカードの使用のために
+  // 支払いでホールドしたコマンド（paymentHeld）は、このオペレーションの支払いに再利用できない。
+  const unspent = { ...player, command: player.command.filter((c) => !(c.paymentHeld && c.commandHeld)) };
+  return hasCommandForCardUse(unspent, state.definitions, opCats, "lead");
 }
 
 export { needsZordMaterial } from "../rules/zord";

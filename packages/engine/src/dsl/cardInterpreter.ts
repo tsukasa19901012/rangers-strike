@@ -7,6 +7,7 @@ import { applyDamageToPlayer } from "../rules/damagePayment";
 import { requestDrawFromDeck } from "../rules/drawFromDeck";
 import { openEffectChoice } from "../rules/pendingChoices";
 import { findCardInField } from "../rules/fieldLookup";
+import { tryLeaveField } from "../rules/operationCounters";
 import { canMoveCardToRushFromZone } from "../rules/rushFromHandOnly";
 import { applyGrantKeyword } from "./grantKeyword";
 import {
@@ -187,6 +188,23 @@ function applyPrimitive(
       }
       if (!instanceId) return { state };
       const toZone = primitive.to as ZoneKey | "deck";
+      // ルール: R-KW-CHASE-01, R-MOVE-01 — エリアのユニットをパワーゾーン・捨札へ送るのは「場を離れる」移動。
+      // チェイス・ダイノガッツ等の離場反応の機会を与えるため、離場処理を通す。
+      const deckTop = toZone === "deck" && primitive.position === "left";
+      if (toZone === "power" || toZone === "discard" || deckTop) {
+        const located = findCardInField(state, instanceId);
+        if (located && (located.zone === "rush" || located.zone === "battle")) {
+          const leave = tryLeaveField(state, {
+            ownerPlayerId: located.playerId,
+            instanceId,
+            fromZone: located.zone,
+            toZone: deckTop ? "deck_top" : (toZone as "power" | "discard"),
+            leavingCardId: located.card.cardId,
+            phasePlayerId: ctx.phasePlayerId,
+          });
+          return { state: leave.state, detail: primitive.to === "power" ? "place_in_power" : "move" };
+        }
+      }
       const next = moveCardToZone(state, instanceId, toZone, patch, primitive.position);
       if (!next) return { state };
       return { state: next, detail: primitive.to === "power" ? "place_in_power" : "move" };

@@ -246,8 +246,9 @@ export function isValidZordUpMaterial(
     case "discard_vehicle_unit":
       return def.type === "vehicle";
     case "discard_named_unit":
+      // 「自軍「X」1体」はカード名で指定するので、その名前のビークルも満たす（RK-046 の「オートバジンVM」）。
       return (
-        def.type === "unit" &&
+        (def.type === "unit" || def.type === "vehicle") &&
         !!condition.partnerName &&
         matchesPartnerName(def, condition.partnerName)
       );

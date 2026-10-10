@@ -238,6 +238,11 @@ function noteOtherNcBattleEntryBlock(
   return false;
 }
 
+/** 無条件の「※これはバトルエリアに出られない。」（定義テキストからも判定する）。 */
+function unconditionalNoEntryText(def: CardDefinition): boolean {
+  return /(^|\s)※これはバトルエリアに出られない。/.test(def.text ?? "");
+}
+
 export function canMoveUnitToBattle(
   state: GameState,
   playerId: PlayerId,
@@ -260,7 +265,7 @@ export function canMoveUnitToBattle(
 
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
 
-  if (cannotEnterBattle(unit.cardId)) return false;
+  if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
 
   if (needsAllySInBattle(unit.cardId)) {
     const hasAllyS = state.players[playerId].battle.some((c) =>
@@ -364,7 +369,7 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   if (fromZone === "hand") return false;
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
-  if (cannotEnterBattle(unit.cardId)) return false;
+  if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {
@@ -510,6 +515,21 @@ export function canMoveUnitToBattleWithHolds(
     unit,
     "rush",
   );
+}
+
+/**
+ * 効果で（ラッシュエリアから）バトルエリアに出されるユニットが、持ち主が条件を満たした上で出られるか。
+ * ルール: R-KW-WRECKER-01 — 「出られない」ユニットは出せず、「～しなければ出られない」は持ち主が満たせるときだけ出せる。
+ */
+export function canBeDeployedToBattleByEffect(
+  state: GameState,
+  ownerId: PlayerId,
+  unit: CardInstance,
+): boolean {
+  const prepared = autoHoldForBattleEntry(state, ownerId, unit);
+  if (!prepared) return false;
+  const withPrepared: GameState = { ...state, players: { ...state.players, [ownerId]: prepared } };
+  return canMoveUnitToBattle(withPrepared, ownerId, unit, "rush");
 }
 
 function passesBattleEntryHoldRequirements(
