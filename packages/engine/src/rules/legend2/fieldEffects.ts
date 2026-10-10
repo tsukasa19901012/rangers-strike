@@ -4,7 +4,7 @@ import {
 } from "@rangers-strike/cards";
 import type { Category } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
-import { getDefinition, isSmallUnit, unitBp } from "../../core/catalog";
+import { getDefinition, isSmallUnit, spSetValueOf, unitBp } from "../../core/catalog";
 import {
   battlePositionOneBased,
   printedSpBase,
@@ -137,6 +137,9 @@ export function legend2EffectiveSp(
       sp = Math.max(sp, 1);
     }
   }
+
+  const setSp = spSetValueOf(state, playerId, instance);
+  if (setSp !== undefined) return setSp;
 
   return sp;
 }

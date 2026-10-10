@@ -1420,6 +1420,11 @@ export function pickEffectChoice(
     return pickWeakestEffectTarget(state, actions);
   }
 
+  // RS-029【勇気の魔法】「リリースしてもよい」— ホールド状態のコマンドのリリースは常に得なのでする。
+  if (pending.effectId === "courage_magic") {
+    return actions.find((a) => a.type === "resolve_effect_choice") ?? skip ?? null;
+  }
+
   if (needsEffectHoldPayment(pending)) {
     const initiate = actions.find(
       (a) =>

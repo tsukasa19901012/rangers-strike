@@ -22,6 +22,7 @@ import {
   zoneOf,
   zordRush,
   mothershipRush,
+  pickAllEffectRushCandidates,
 } from "./02-helpers";
 
 describe("R-ZONE-01 場所の一覧と総称", () => {
@@ -236,9 +237,11 @@ describe("R-ZONE-04 エリア出入りで付加情報は消える", () => {
     expect(inCmd?.commandHeld ?? false).toBe(false);
     // ランドバルカン（効果によるラッシュ）でコマンドゾーンから再ラッシュ
     const paid = payAndPlayOperation(s1, "player1", "RS-005:lb", ["TST-OP-ET:c2"]);
-    const s2 = paid.ok
-      ? paid.state
-      : unwrap(applyAction(s1, legal(s1).find((a) => a.type === "play_operation" && a.instanceId === "RS-005:lb")!));
+    const s2 = pickAllEffectRushCandidates(
+      paid.ok
+        ? paid.state
+        : unwrap(applyAction(s1, legal(s1).find((a) => a.type === "play_operation" && a.instanceId === "RS-005:lb")!)),
+    );
     const back = s2.players.player1.rush.find((c) => c.instanceId === heldS.instanceId);
     expect(back).toBeDefined();
     expect(back?.registerHeld ?? false).toBe(false);

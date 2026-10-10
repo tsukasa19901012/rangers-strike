@@ -10,6 +10,7 @@ import {
   isMediumUnit,
   isSmallUnit,
   unitEffectiveCategories,
+  spSetValueOf,
 } from "../../core/catalog";
 import { countReleasedCommands } from "../restrictions";
 import { opponent } from "../../core/helpers";
@@ -277,6 +278,10 @@ export function legend3EffectiveSp(
   if (instance.cardId === "XG4-008" && instance.mountedOnInstanceId) {
     sp = Math.max(sp, 1);
   }
+
+  // 「SP○になる」（RS-001/RS-002 等）は加算・下限より優先して指定値にする。
+  const setSp = spSetValueOf(state, playerId, instance);
+  if (setSp !== undefined) return setSp;
 
   return sp;
 }

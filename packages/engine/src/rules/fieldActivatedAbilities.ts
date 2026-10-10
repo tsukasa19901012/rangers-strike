@@ -14,7 +14,8 @@ import { cardCategories, getDefinition, parsePowerCost } from "../core/catalog";
 import { sameCardName } from "../core/cardNames";
 import { countAvailablePower, rushEffectivePowerCost } from "../core/power";
 import { getPlayerModifiers } from "../core/scopedModifiers";
-import { openEffectChoice } from "./pendingChoices";
+import { collectPowerIds, openEffectChoice, startSelectPowerChoice } from "./pendingChoices";
+import { getConditionalNamedEffect } from "@rangers-strike/cards";
 import { beginAbarenohFromHand } from "./errataCardEffects";
 
 type FieldZone = "rush" | "battle";
@@ -24,7 +25,13 @@ type FieldActivatedAbility = {
   effectId: string;
   /** 起動できる場（「このユニット／ビークル」が置かれている自軍エリア）。 */
   zones: FieldZone[];
-  canActivate?: (state: GameState, playerId: PlayerId) => boolean;
+  /** 起動できるフェイズ（自軍ターン）。省略時はラッシュフェイズ。 */
+  phase?: "rush" | "battle";
+  /** コストとしてこのカードを捨札にするか（省略時 true）。 */
+  discardSelf?: boolean;
+  /** カードを特定する述語（省略時は cardId 一致）。同効果の再録カードにも適用するため。 */
+  matches?: (cardId: string) => boolean;
+  canActivate?: (state: GameState, playerId: PlayerId, card: CardInstance) => boolean;
   /** コスト（このカードを捨札にする）の後の処理。 */
   resolve: (state: GameState, playerId: PlayerId, card: CardInstance) => GameState;
 };
@@ -147,7 +154,80 @@ export function filterScrambleRemaining(
 
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// 捨札コストのない起動効果は、同じターンに同じカードで何度も起動（→見送り）を繰り返せないよう1回に限る。
+
+const FIELD_ABILITY_USED_RULE = "field_ability_used";
+
+function fieldAbilityUsedThisTurn(player: PlayerState, instanceId: string): boolean {
+  return getPlayerModifiers(player).some(
+    (m) =>
+      m.kind === "rule" &&
+      m.ruleId === FIELD_ABILITY_USED_RULE &&
+      m.scope === "turn" &&
+      m.payload === instanceId,
+  );
+}
+
+function markFieldAbilityUsed(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
+  const player = state.players[playerId];
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      modifiers: [
+        ...getPlayerModifiers(player),
+        {
+          kind: "rule",
+          ruleId: FIELD_ABILITY_USED_RULE,
+          scope: "turn",
+          payload: card.instanceId,
+          sourceCardId: card.cardId,
+        },
+      ],
+    }),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// RS-042 デカレンジャーロボ【ジャスティスフラッシャー】（PR-005 等の同効果カードも）
+
+/**
+ * 「自軍パワーゾーンからダメージ以外のカードを5枚選び捨札にしてもよい。そうしたとき、このターン、
+ * このユニットは次の能力を得る⇒「SP3」」— 誘発条件のない効果で、出たときだけでなく自軍バトルフェイズ中に
+ * 発動できる（grnrngr/faq-card-1 RS-051 Q3「ストライクポイントを得る効果は、自軍バトルフェイズに発動できます」）。
+ */
+function isJusticeFlasherCard(cardId: string): boolean {
+  return getConditionalNamedEffect(cardId)?.effectId === "justice_flasher";
+}
+
+function canActivateJusticeFlasher(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  // すでに「SP3」を得ていれば、再発動しても何も変わらない。
+  if (card.spOverride === 3) return false;
+  if (fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId)) return false;
+  return collectPowerIds(state, playerId).length >= 5;
+}
+
 const ABILITIES: FieldActivatedAbility[] = [
+  {
+    cardId: "RS-042",
+    effectId: "justice_flasher",
+    zones: ["battle"],
+    phase: "battle",
+    discardSelf: false,
+    matches: isJusticeFlasherCard,
+    canActivate: canActivateJusticeFlasher,
+    resolve: (state, playerId, card) =>
+      startSelectPowerChoice(state, {
+        playerId,
+        effectId: "justice_flasher",
+        sourceCardId: card.cardId,
+        sourceInstanceId: card.instanceId,
+        phasePlayerId: playerId,
+        selectCount: 5,
+        optional: true,
+      }) ?? state,
+  },
   {
     // XG1-028 アバレンオージ【アバレンオーになりかけだから…】（E7、出典: atwiki/page-1665）
     cardId: "XG1-028",
@@ -211,12 +291,13 @@ const ABILITIES: FieldActivatedAbility[] = [
 ];
 
 function abilityFor(cardId: string): FieldActivatedAbility | undefined {
-  return ABILITIES.find((a) => a.cardId === cardId);
+  return ABILITIES.find((a) => (a.matches ? a.matches(cardId) : a.cardId === cardId));
 }
 
-/** 起動できる場のカード（instanceId）。自軍ラッシュフェイズ中のみ。 */
+/** 起動できる場のカード（instanceId）。自軍ターンの、能力ごとに決まったフェイズ中のみ。 */
 export function listFieldActivatedAbilityCards(state: GameState, playerId: PlayerId): string[] {
-  if (state.phase !== "rush" || state.activePlayer !== playerId) return [];
+  if (state.activePlayer !== playerId) return [];
+  if (state.phase !== "rush" && state.phase !== "battle") return [];
   if (state.pendingEffectChoice) return [];
   const player = state.players[playerId];
   const ids: string[] = [];
@@ -224,7 +305,8 @@ export function listFieldActivatedAbilityCards(state: GameState, playerId: Playe
     for (const card of player[zone]) {
       const ability = abilityFor(card.cardId);
       if (!ability || !ability.zones.includes(zone)) continue;
-      if (ability.canActivate && !ability.canActivate(state, playerId)) continue;
+      if ((ability.phase ?? "rush") !== state.phase) continue;
+      if (ability.canActivate && !ability.canActivate(state, playerId, card)) continue;
       ids.push(card.instanceId);
     }
   }
@@ -248,6 +330,9 @@ export function activateFieldAbility(
   const found = findInZone(player, zone, instanceId)!;
   const ability = abilityFor(found.card.cardId);
   if (!ability) return null;
+  if (ability.discardSelf === false) {
+    return ability.resolve(markFieldAbilityUsed(state, playerId, found.card), playerId, found.card);
+  }
 
   const [, rest] = removeAt(player[zone], found.index);
   const unmount = (c: CardInstance) => {

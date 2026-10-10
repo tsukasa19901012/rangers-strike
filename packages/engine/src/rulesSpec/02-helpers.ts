@@ -373,3 +373,20 @@ export function advanceUntil(
   }
   throw new Error("advanceUntil: step limit");
 }
+
+/**
+ * 効果ラッシュ（ランドバルカン等「出してもよい」）で、出せる候補を順にすべて選んで出す。
+ * 任意効果なので候補が上限以下でも選択が開く（atwiki/page-249、grnrngr/faq-card-1 RS-005 Q1）。
+ */
+export function pickAllEffectRushCandidates(state: GameState): GameState {
+  let s = state;
+  for (let i = 0; i < 10 && s.pendingEffectChoice?.effectId === "effect_rush_pick"; i += 1) {
+    const choice = s.pendingEffectChoice;
+    const id = choice.validInstanceIds[0];
+    if (!id) break;
+    const r = applyAction(s, { type: "resolve_effect_choice", playerId: choice.playerId, instanceId: id });
+    if (!r.ok) throw new Error(r.error);
+    s = r.state;
+  }
+  return s;
+}

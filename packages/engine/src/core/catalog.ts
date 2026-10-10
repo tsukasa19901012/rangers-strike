@@ -42,7 +42,7 @@ import {
 } from "../rules/zordExtended";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import { isShironLightRushTarget } from "../rules/shironLight";
-import { getAuraPowerInstanceId, getComboNumberDelta } from "../rules/turnModifierBridge";
+import { getAuraPowerInstanceId, getComboNumberDelta, sComboFinisherSetValues } from "../rules/turnModifierBridge";
 import { opponentInfiniteChainBlocks } from "../rules/turnModifiers";
 import { heldCallLeadMatchesCategories } from "../rules/callLead";
 import { heldUndeadCommandRushHoldMatches } from "../rules/undeadCommandRushHold";
@@ -298,13 +298,36 @@ export function superPowerAttackBonus(
   return countHeldCommands(player) * 1000;
 }
 
+/**
+ * ルール: R-BP-01 — 「BP○○になる」で指定された値（あれば）。増減の計算より優先される。
+ * カードに書き込まれた値（bpSetValue）と、並び順で決まる継続効果（RS-001/RS-002 等）の両方を見る。
+ */
+export function bpSetValueOf(
+  state: Pick<GameState, "players" | "definitions">,
+  playerId: PlayerId,
+  instance: CardInstance,
+): number | undefined {
+  if (instance.bpSetValue !== undefined) return instance.bpSetValue;
+  return sComboFinisherSetValues(state, playerId, instance)?.bp;
+}
+
+/** 「SP○になる」で指定された値（あれば）。加算ではなく上書き（RS-001/RS-002「「SP1」…になる」）。 */
+export function spSetValueOf(
+  state: Pick<GameState, "players" | "definitions">,
+  playerId: PlayerId,
+  instance: CardInstance,
+): number | undefined {
+  return sComboFinisherSetValues(state, playerId, instance)?.sp;
+}
+
 export function effectiveBp(
   state: GameState,
   playerId: PlayerId,
   instance: CardInstance,
 ): number {
   // ルール: R-BP-01 — 「BP○○になる」が最優先で、増減は計算しない。
-  if (instance.bpSetValue !== undefined) return instance.bpSetValue;
+  const setValue = bpSetValueOf(state, playerId, instance);
+  if (setValue !== undefined) return setValue;
   const base =
     instanceBp(state.definitions, instance) +
     passiveBpBonus(state, playerId, instance) +

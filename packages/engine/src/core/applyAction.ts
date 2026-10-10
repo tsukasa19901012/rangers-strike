@@ -1247,7 +1247,8 @@ function applyActionCore(
         if (
           outcome.discardOperation !== false &&
           !isPermanent &&
-          !nextState.pendingEffectChoice
+          // 効果ラッシュ（RS-005 等）の「出すカードを選ぶ」選択中も、オペレーション自体の解決は終わっている。
+          (!nextState.pendingEffectChoice || !!nextState.pendingEffectRush)
         ) {
           const current = nextState.players[playerId];
           nextState = {
@@ -2723,7 +2724,7 @@ function applyActionCore(
     }
 
     case "activate_field_unit_ability": {
-      if (state.phase !== "rush") return fail("wrong_phase");
+      if (state.phase !== "rush" && state.phase !== "battle") return fail("wrong_phase");
       const unit =
         player.rush.find((c) => c.instanceId === action.unitInstanceId) ??
         player.battle.find((c) => c.instanceId === action.unitInstanceId);
@@ -2735,6 +2736,7 @@ function applyActionCore(
           buildLogEntry(playerId, "activate_field_unit_ability", unit.cardId, state.definitions),
         );
       }
+      if (state.phase !== "rush") return fail("wrong_phase");
       const withChoice = beginKamenRideDeploy(state, playerId, action.unitInstanceId);
       if (!withChoice) return fail("illegal_action");
       return ok(

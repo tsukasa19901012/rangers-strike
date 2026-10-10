@@ -18,6 +18,12 @@ function unwrap(result: ReturnType<typeof applyAction>): GameState {
 
 const FX_UNIT = "TST-EFFECT-RUSH-FX";
 
+/** 効果ラッシュの「出すカードを選ぶ」選択で instanceId を選ぶ。 */
+function pickToRush(state: GameState, instanceId: string): GameState {
+  expect(state.pendingEffectChoice?.validInstanceIds).toContain(instanceId);
+  return unwrap(applyAction(state, { type: "resolve_effect_choice", playerId: "player1", instanceId }));
+}
+
 function withDefinitions(state: GameState): GameState {
   state.definitions[FX_UNIT] = {
     id: FX_UNIT,
@@ -71,7 +77,8 @@ describe("効果ラッシュ（E11）", () => {
       (a) => a.type === "play_operation" && a.instanceId === op.instanceId,
     );
     expect(action).toBeDefined();
-    const next = unwrap(applyAction(state, action!));
+    // 「出してもよい」— 候補が1枚でも出すかどうかを選ぶ（RS-005 atwiki/page-249）。
+    const next = pickToRush(unwrap(applyAction(state, action!)), sCmd.instanceId);
 
     expect(next.players.player1.rush.some((c) => c.instanceId === sCmd.instanceId)).toBe(true);
     // 「ラッシュしたとき」1枚ドロー
@@ -139,7 +146,7 @@ describe("効果ラッシュ（E11）", () => {
     const action = getLegalActions(state).find(
       (a) => a.type === "play_operation" && a.instanceId === op.instanceId,
     );
-    const next = unwrap(applyAction(state, action!));
+    const next = pickToRush(unwrap(applyAction(state, action!)), sCmd.instanceId);
     expect(next.players.player1.deck).toHaveLength(1);
     expect(next.pendingRush).toBeUndefined();
     expect(next.activePlayer).toBe("player1");

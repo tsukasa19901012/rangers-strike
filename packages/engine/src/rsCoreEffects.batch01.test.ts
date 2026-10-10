@@ -156,7 +156,15 @@ describe("RS-005 Land Balkan", () => {
         command: [sCmd, heldEtCommand("held")],
       },
     });
-    expect(state.players.player1.rush.some((c) => c.instanceId === sCmd.instanceId)).toBe(true);
+    // 「出してもよい」— 候補が1枚でも出すカードを選ぶ（atwiki/page-249）。
+    const picked = applyAction(state, {
+      type: "resolve_effect_choice",
+      playerId: "player1",
+      instanceId: sCmd.instanceId,
+    });
+    expect(picked.ok).toBe(true);
+    if (!picked.ok) return;
+    expect(picked.state.players.player1.rush.some((c) => c.instanceId === sCmd.instanceId)).toBe(true);
   });
 });
 
@@ -672,6 +680,11 @@ describe("RS-029 Courage Magic", () => {
       },
     });
     state = moveToBattle(state, sUnit.instanceId);
+    // 「リリースしてもよい」— 任意なのでリリースするコマンドを選ぶ（atwiki/page-245）。
+    expect(state.pendingEffectChoice?.effectId).toBe("courage_magic");
+    state = unwrap(
+      applyAction(state, { type: "resolve_effect_choice", playerId: "player1", instanceId: held.instanceId }),
+    );
     expect(state.players.player1.command.some((c) => !c.commandHeld)).toBe(true);
   });
 });

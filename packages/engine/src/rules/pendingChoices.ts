@@ -3707,12 +3707,12 @@ export function applyEffectChoiceSelect(
               : 0
           : 0;
         if (spGain > 0) {
+          // 「次の能力を得る⇒「SPn」」は SP を n にする（印刷 SP への加算ではない）。
+          // 出典: atwiki/page-279（RS-042「SP3」）、08-errata R-ERR-RS043（RS-043「SP1」）。
           nextPlayer = {
             ...nextPlayer,
             battle: nextPlayer.battle.map((c) =>
-              c.instanceId === pending.sourceInstanceId
-                ? { ...c, spModifier: (c.spModifier ?? 0) + spGain }
-                : c,
+              c.instanceId === pending.sourceInstanceId ? { ...c, spOverride: spGain } : c,
             ),
           };
         }
