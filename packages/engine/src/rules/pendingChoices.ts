@@ -9,6 +9,8 @@ import {
 } from "./kurokoMemory";
 import { isAbductionChoice, resolveAbductionChoice, startAbductionCondition } from "./abduction";
 import {
+  continueEffectRushAfterMothershipHold,
+  EFFECT_RUSH_MOTHERSHIP,
   isEffectRushChoice,
   resolveEffectRushChoice,
   skipEffectRushChoice,
@@ -2125,6 +2127,9 @@ function applyPostHoldContinuation(
 ): { state: GameState; done: boolean } {
   if (pending.effectId === KUROKO_MEMORY_EFFECT_ID && pending.kurokoMeta) {
     return { state: continueKurokoMemoryAfterHold(state, pending), done: true };
+  }
+  if (pending.effectId === EFFECT_RUSH_MOTHERSHIP) {
+    return { state: continueEffectRushAfterMothershipHold(state), done: true };
   }
   if (pending.effectId === "castoff_hold_command") {
     const continued = continueCastoffAfterHold(state, pending);
