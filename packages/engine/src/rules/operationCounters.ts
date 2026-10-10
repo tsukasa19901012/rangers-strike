@@ -36,6 +36,7 @@ import {
   battleAttackerBpBonus,
   battleDefenderBp,
   resolveFocusedBreakthroughDamage,
+  unitQualifiesForFocusedBreakthrough,
   resolveBlackCondorDestroyDamage,
 } from "./namedUnitEffects";
 import { findCardOwner } from "./fieldLookup";
@@ -943,6 +944,10 @@ export function resolveBattlePendingCore(
 
   let nextState = battleState;
   let extraLogs: string[] = [];
+  // ルール: R-ERR-RS065 — 分数SPは並びにある間の値で判定する（撃破されて並びから外れる前に判定）。
+  const focusedBreakthroughQualifies =
+    refreshedAttackerFound.card.cardId === "RS-065" &&
+    unitQualifiesForFocusedBreakthrough(battleState, defenderOwner, refreshedDefenderFound.card);
 
   if (finalDestroyDefender) {
     const leaveResult = tryLeaveField(nextState, {
@@ -969,6 +974,7 @@ export function resolveBattlePendingCore(
         pending.attackerInstanceId,
         defenderOwner,
         refreshedDefenderFound.card,
+        focusedBreakthroughQualifies,
       );
       nextState = fb.state;
       extraLogs = fb.logs;

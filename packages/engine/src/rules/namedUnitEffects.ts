@@ -263,9 +263,18 @@ export function canAttackRushWithYellowThunder(
     hasBattleNcEffect(attacker.card, "attack_rush_zone") ||
     hasBattleNcEffect(attacker.card, "magi_yellow_bolt");
 
+  // ルール: R-ERR-RS575 — ユニゴルオンにライドしているユニットは敵軍ラッシュエリアのユニットにアタックできる。
+  const mountedId = attacker.card.mountedOnInstanceId;
+  const ridesUnigoruon =
+    !!mountedId &&
+    [...state.players[attackerPlayerId].battle, ...state.players[attackerPlayerId].rush].some(
+      (c) => c.instanceId === mountedId && c.cardId === "RS-575",
+    );
+
   return (
     yellowThunderActive ||
     attackRushZoneActive ||
+    ridesUnigoruon ||
     canAttackRushWithMoonlightSonic(state, attackerPlayerId, attackerInstanceId) ||
     canAttackEnemyRushS(state, attackerPlayerId, attackerInstanceId)
   );
@@ -630,13 +639,17 @@ export function resolveFocusedBreakthroughDamage(
   strikerInstanceId: string,
   defenderOwner: PlayerId,
   defender: CardInstance,
+  /** 撃破前（並びにある間）に判定した結果。省略時はこの state で判定する。 */
+  qualifiesBeforeLeave?: boolean,
 ): NamedEffectOutcome {
   const striker = state.players[strikerPlayerId];
   const strikerCard = striker.battle.find((c) => c.instanceId === strikerInstanceId);
   if (!strikerCard || strikerCard.cardId !== "RS-065") return { state, logs: [] };
   // ルール: R-ERR-RS065 — 【一点突破】は NC（CN3）が成立しているときだけ有効。
   if (!hasBattleNcEffect(strikerCard, "focused_breakthrough")) return { state, logs: [] };
-  if (!unitQualifiesForFocusedBreakthrough(state, defenderOwner, defender)) {
+  const qualifies =
+    qualifiesBeforeLeave ?? unitQualifiesForFocusedBreakthrough(state, defenderOwner, defender);
+  if (!qualifies) {
     return { state, logs: [] };
   }
 

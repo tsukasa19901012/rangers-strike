@@ -1,6 +1,7 @@
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { cardName, getDefinition } from "../core/catalog";
+import { sameCardName } from "../core/cardNames";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import {
@@ -49,7 +50,8 @@ export function tryMereChameleonOnAllyEnterBattle(
 ): GameState {
   if (entering.cardId === "RS-504") return state;
   const name = cardName(state.definitions, entering.cardId);
-  if (name === "獣人メレ" || name === "メレ") return state;
+  // ルール: R-ERR-RS504 — 「メレ」は「獣人メレ」の読み替え。除外は「獣人メレ」（同名カード）だけ。
+  if (sameCardName(name, "獣人メレ")) return state;
 
   const sourceCardId = playerHasMereChameleonOnField(state, playerId);
   if (!sourceCardId) return state;

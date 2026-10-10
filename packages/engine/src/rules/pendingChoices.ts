@@ -42,6 +42,7 @@ import {
 } from "./namedUnitEffects";
 import { maybeInterceptDeckRevealForShuriken, grantSp1ToRushUnit, completeShurikenDeckRevealSwap, applyShurikenRevealToHand, findEnemySWithPowerCost } from "./srEffects";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
+import { SCRAMBLE_EFFECT_ID, filterScrambleRemaining } from "./fieldActivatedAbilities";
 import {
   applyFlowerBombDeclaredNumber,
   continueMagiBlueAfterSelfDraw,
@@ -3297,7 +3298,10 @@ export function applyEffectChoiceSelect(
       const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
       const selectCount = pending.selectCount ?? 1;
       if (selected.length < selectCount) {
-        const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+        let remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+        if (pending.effectId === SCRAMBLE_EFFECT_ID) {
+          remaining = filterScrambleRemaining(state, pending.playerId, selected, remaining);
+        }
         return {
           state: {
             ...state,
@@ -3340,6 +3344,16 @@ export function applyEffectChoiceSelect(
               ...player,
               command,
               discard: [...player.discard, found.card],
+            }),
+          };
+        } else if (pending.commandAction === "rush") {
+          const [, command] = removeAt(player.command, found.index);
+          nextState = {
+            ...nextState,
+            ...updatePlayer(nextState, pending.playerId, {
+              ...player,
+              command,
+              rush: [...player.rush, { ...found.card, commandHeld: undefined }],
             }),
           };
         }

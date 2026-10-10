@@ -842,9 +842,8 @@ describe("R-ADD-07 複数の「〜しなければ出られない」", () => {
     expect(battleEntryHoldsRequired(s0, "player1", m.instanceId)).toBe(2);
   });
 
-  // 既知の不具合: 未登録 — パワーバズーカで戻す合体素材の※ホールド要件を1体ごとに要求しない（1ホールドで全員戻る）
   // 「そのユニットを戻すたびに、コマンドを１つホールドする必要があります」
-  it.fails("R-ADD-07: パワーバズーカで戻す※ホールド要件付きの合体素材は1体ごとにホールドし、足りなくなったら止まる（出典: grnrngr/faq-card-1 RS-009 Q3）", () => {
+  it("R-ADD-07: パワーバズーカで戻す※ホールド要件付きの合体素材は1体ごとにホールドし、足りなくなったら止まる（出典: grnrngr/faq-card-1 RS-009 Q3）", () => {
     const zord = { ...inst("RS-050", "abarenoh"), zordMaterialCardId: "RS-051" };
     const tyr = inst("RS-051", "tyr");
     const ptera = inst("RS-053", "ptera");

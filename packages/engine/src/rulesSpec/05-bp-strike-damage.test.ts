@@ -296,8 +296,7 @@ describe("R-STK-03 分数 SP", () => {
   });
 
   // 「はい、持続します。…常に「SP1」として扱います」（Q1）
-  // 既知の不具合: 未登録 — 分母の位置で撃破された分数 SP ユニットを一点突破が SP1 と判定しない（ダメージ不発）
-  it.fails("R-STK-03: 分数 SP の SP1 は敵軍ターン中も持続し、一点突破の対象になる（出典: atwiki/page-104 Q1・grnrngr/faq-card-1 RS-065 Q1）", () => {
+  it("R-STK-03: 分数 SP の SP1 は敵軍ターン中も持続し、一点突破の対象になる（出典: atwiki/page-104 Q1・grnrngr/faq-card-1 RS-065 Q1）", () => {
     // player2 ターン: ボウケンイエロー（3番目, 一点突破）が player1 の2番目の SP1/2（BP1000）と相打ち → 1点
     let s = battleState({
       activePlayer: "player2",

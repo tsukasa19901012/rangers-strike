@@ -7,6 +7,7 @@ import { godomDiscardPowerBonus } from "../rules/godomRushPay";
 import { flowerBombPowerCostOverride } from "../rules/legend1/coreGapEffects";
 import { cityGuardRushPowerSurcharge } from "../rules/batch06FieldEffects";
 import { hasTurnRuleModifier } from "./scopedModifiers";
+import { isRideShooterRushTarget } from "../rules/fieldActivatedAbilities";
 import {
   countMirrorMonstersOnField,
   hasMirrorRiderPowerMinusRule,
@@ -81,6 +82,10 @@ export function rushEffectivePowerCost(
 ): number {
   if (cardId) {
     const def = getDefinition(state.definitions, cardId);
+    // ルール: R-ERR-RK043 — 【突入】の後、次にラッシュするミラーライダーの必要パワーは3少なくなる。
+    if (isRideShooterRushTarget(state, playerId, cardId)) {
+      rawCost = Math.max(0, rawCost - 3);
+    }
     if (
       (def?.features ?? []).includes("ミラーライダー") &&
       hasMirrorRiderPowerMinusRule(state.players[playerId])

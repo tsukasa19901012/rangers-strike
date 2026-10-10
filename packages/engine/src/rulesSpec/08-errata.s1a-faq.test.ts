@@ -72,8 +72,7 @@ describe("R-ERR-RS575 一角聖馬ユニゴルオン", () => {
   }
 
   // 08 章 正:「これにライドしているユニットは、次の能力を得る⇒敵軍ラッシュエリアのユニットにアタックできる」
-  // 既知の不具合: 未登録 — ライドしているユニットに敵軍ラッシュエリアへのアタックが付与されない
-  it.fails("R-ERR-RS575: ライドしているユニットは敵軍ラッシュエリアのユニットにアタックできる（出典: grnrngr/faq-card-8 RK-575）", () => {
+  it("R-ERR-RS575: ライドしているユニットは敵軍ラッシュエリアのユニットにアタックできる（出典: grnrngr/faq-card-8 RK-575）", () => {
     const { s, rider, enemyRush } = riderEntered();
     expect(
       legalOfType(s, "battle").some(
@@ -130,8 +129,7 @@ describe("R-ERR-RS603 蛮機獣ボンベバンキ", () => {
   });
 
   // 正文の対象は「本来の特徴に「車両」を持つユニット」で、自軍・敵軍を限定しない
-  // 既知の不具合: 未登録 — ボンベバンキの持ち主側のユニットにしか制限をかけない
-  it.fails("R-ERR-RS603: 敵軍の本来の特徴「車両」ユニットもアタック・ストライクできない（出典: grnrngr/faq-card-8 RS-603）", () => {
+  it("R-ERR-RS603: 敵軍の本来の特徴「車両」ユニットもアタック・ストライクできない（出典: grnrngr/faq-card-8 RS-603）", () => {
     const { s, car } = vehicleUnitState("player2");
     expect(attacksOrStrikes(s, car)).toBe(false);
   });
@@ -218,8 +216,7 @@ describe("R-ERR-RK043 ライドシューター", () => {
   });
 
   // 08 章 効果:「対象は「捨札にしたそのターン中に、最初にラッシュする特徴「ミラーライダー」を持つユニットカード」」
-  // 既知の不具合: 未登録 — 【突入】（ライドシューターを捨札にする操作）が合法手に出ない
-  it.fails("R-ERR-RK043: 【突入】で捨札にしたターン、必要パワー3のミラーライダーをパワー0・コマンドのホールドなしでラッシュできる（出典: grnrngr/faq-rider-1 RK-043）", () => {
+  it("R-ERR-RK043: 【突入】で捨札にしたターン、必要パワー3のミラーライダーをパワー0・コマンドのホールドなしでラッシュできる（出典: grnrngr/faq-rider-1 RK-043）", () => {
     const rs = inst("RK-043", "rs");
     const raia = inst("RK-036", "raia");
     let s = specState(["RK-043", "RK-036"], {
@@ -336,8 +333,7 @@ describe("R-ERR-RS504 獣人メレ", () => {
   });
 
   // 「メレ」→「獣人メレ」の読み替えにより、除外されるのは「獣人メレ」だけ
-  // 既知の不具合: 未登録 — カード名「メレ」のユニットも除外している
-  it.fails("R-ERR-RS504: カード名「メレ」のユニットは「獣人メレ」ではないので発動条件を満たす（出典: grnrngr/faq-card-7 RS-504）", () => {
+  it("R-ERR-RS504: カード名「メレ」のユニットは「獣人メレ」ではないので発動条件を満たす（出典: grnrngr/faq-card-7 RS-504）", () => {
     const { s: s0, entering } = meleState("MERE", "メレ");
     const s = act(s0, { type: "move_to_battle", playerId: "player1", instanceId: entering });
     expect(meleTriggered(s)).toBe(true);
@@ -381,8 +377,7 @@ describe("R-ERR-RK086 アカネタカ", () => {
   const usesAkanetaka = (s: GameState, id: string) =>
     legal(s).find((a) => a.playerId === "player2" && J(a).includes(id));
 
-  // 既知の不具合: 未登録 — ストライクのダメージ時にアカネタカを使う手段がない
-  it.fails("R-ERR-RK086: ストライクのダメージにするときアカネタカをかわりにダメージにして1枚ドローする（出典: grnrngr/faq-rider-2 RK-086）", () => {
+  it("R-ERR-RK086: ストライクのダメージにするときアカネタカをかわりにダメージにして1枚ドローする（出典: grnrngr/faq-rider-2 RK-086）", () => {
     const { s: s0, a1 } = struckWithTwoAkanetaka();
     const use = usesAkanetaka(s0, a1);
     expect(use).toBeDefined();
@@ -392,8 +387,7 @@ describe("R-ERR-RK086 アカネタカ", () => {
   });
 
   // rider_2.html:「続けて2枚目の「RK-086 アカネタカ」を使用することはできますか？ いいえ、それはできません。」
-  // 既知の不具合: 未登録 — 1枚目のアカネタカも使えないため前提が作れない
-  it.fails("R-ERR-RK086: 公式Q&A — 1回のストライクに対して2枚目のアカネタカは使えない（出典: grnrngr/faq-rider-2 RK-086 Q1）", () => {
+  it("R-ERR-RK086: 公式Q&A — 1回のストライクに対して2枚目のアカネタカは使えない（出典: grnrngr/faq-rider-2 RK-086 Q1）", () => {
     const { s: s0, a1, a2 } = struckWithTwoAkanetaka();
     const use = usesAkanetaka(s0, a1);
     expect(use).toBeDefined();

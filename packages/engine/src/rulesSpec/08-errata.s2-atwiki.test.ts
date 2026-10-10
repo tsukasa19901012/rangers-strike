@@ -380,8 +380,7 @@ describe("R-ERR-XG4-102 ケンローダー", () => {
     return { s, kr: kr.instanceId };
   }
 
-  // 既知の不具合: 未登録 — 【ギンクロン発進】が合法手に出ない
-  it.fails("R-ERR-XG4-102: 自軍ラッシュエリアのケンローダーを捨札にして、山札のOT Sビークルをラッシュエリアに出せる（出典: atwiki/page-2060）", () => {
+  it("R-ERR-XG4-102: 自軍ラッシュエリアのケンローダーを捨札にして、山札のOT Sビークルをラッシュエリアに出せる（出典: atwiki/page-2060）", () => {
     const { s: s0, kr } = kenroaderState("rush");
     const use = legal(s0).find((a) => a.type !== "end_phase" && J(a).includes(kr));
     expect(use).toBeDefined();
@@ -618,8 +617,7 @@ describe("R-ERR-RS446 ダイジュピター", () => {
     return { s, z: z.instanceId };
   }
 
-  // 既知の不具合: 未登録 — 【スクランブル】が合法手に出ない
-  it.fails("R-ERR-RS446: 同じカード名は1枚までしか選べない（同名2枚＋別名1枚 → 2体だけラッシュエリアに出る）（出典: atwiki/page-785）", () => {
+  it("R-ERR-RS446: 同じカード名は1枚までしか選べない（同名2枚＋別名1枚 → 2体だけラッシュエリアに出る）（出典: atwiki/page-785）", () => {
     const { s: s0, z } = jupiterState("rush");
     const use = legal(s0).find((a) => a.type !== "end_phase" && J(a).includes(z));
     expect(use).toBeDefined();

@@ -5,7 +5,7 @@ import type {
   PlayerId,
   PlayerState,
 } from "../types/game";
-import { getDefinition } from "../core/catalog";
+import { cardCategories, getDefinition } from "../core/catalog";
 import { applyPlayerDamage, removeAt, updatePlayer } from "../core/helpers";
 import { emitDamageAppliedAndResolve } from "../events/emitDamageApplied";
 import {
@@ -46,6 +46,123 @@ export function getValidDamagePowerTargets(
     }
   }
   return candidates.map((c) => c.instanceId);
+}
+
+// ---------------------------------------------------------------------------
+// RK-086 アカネタカ（※カウンター）
+
+const AKANETAKA_CARD_ID = "RK-086";
+/** アカネタカを使わずにダメージを受ける（パワーに選べるカードがないとき用）。 */
+export const DAMAGE_PAYMENT_DECLINE_COUNTER = "__decline_counter__";
+
+/** アカネタカの使用コスト（同カテゴリのリリース状態コマンドを1つホールド）に使うコマンド。 */
+function akanetakaHoldCommandId(
+  state: GameState,
+  playerId: PlayerId,
+  cardId: string,
+): string | undefined {
+  const def = getDefinition(state.definitions, cardId);
+  const cats = def ? cardCategories(def) : [];
+  return state.players[playerId].command.find((c) => {
+    if (c.commandHeld) return false;
+    const cdef = getDefinition(state.definitions, c.cardId);
+    return !!cdef && cardCategories(cdef).some((cat) => cats.includes(cat));
+  })?.instanceId;
+}
+
+/**
+ * ルール: R-ERR-RK086 — 敵軍ユニットにストライクされてダメージにするとき、手札のアカネタカを
+ * かわりにダメージにできる（1つのタイミングに1枚だけ）。
+ */
+export function getAkanetakaCandidates(
+  state: GameState,
+  pending: PendingDamagePayment,
+): string[] {
+  if (pending.resume.kind !== "strike") return [];
+  if (pending.resume.pending.strikerPlayerId === pending.playerId) return [];
+  if (pending.akanetakaUsed) return [];
+  if (pending.remainingFlips + pending.deckDraws <= 0) return [];
+  const player = state.players[pending.playerId];
+  return player.hand
+    .filter(
+      (c) =>
+        c.cardId === AKANETAKA_CARD_ID &&
+        !!akanetakaHoldCommandId(state, pending.playerId, c.cardId),
+    )
+    .map((c) => c.instanceId);
+}
+
+function hasAkanetakaOption(
+  state: GameState,
+  playerId: PlayerId,
+  amount: number,
+  resume: DamagePaymentResume,
+): boolean {
+  if (resume.kind !== "strike") return false;
+  return (
+    getAkanetakaCandidates(state, {
+      playerId,
+      remainingFlips: amount,
+      deckDraws: 0,
+      totalDamage: amount,
+      selectedFlipIds: [],
+      resume,
+    }).length > 0
+  );
+}
+
+/** 支払い中に選べる操作（パワー・アカネタカ・使わない）。 */
+export function getDamagePaymentChoices(
+  state: GameState,
+  pending: PendingDamagePayment,
+): string[] {
+  const power = getValidDamagePowerTargets(state, pending);
+  const counters = getAkanetakaCandidates(state, pending);
+  if (counters.length === 0) return power;
+  return [
+    ...power,
+    ...counters,
+    ...(pending.remainingFlips === 0 || power.length === 0 ? [DAMAGE_PAYMENT_DECLINE_COUNTER] : []),
+  ];
+}
+
+function useAkanetaka(
+  state: GameState,
+  pending: PendingDamagePayment,
+  instanceId: string,
+): { state: GameState; pending: PendingDamagePayment } {
+  const playerId = pending.playerId;
+  const player = state.players[playerId];
+  const handIdx = player.hand.findIndex((c) => c.instanceId === instanceId);
+  const [card, hand] = removeAt(player.hand, handIdx);
+  const holdId = akanetakaHoldCommandId(state, playerId, card.cardId);
+  const command = player.command.map((c) =>
+    c.instanceId === holdId ? { ...c, commandHeld: true } : c,
+  );
+  // ダメージにするカードのかわりに、このカードをパワーゾーンにダメージ（ウラ向き）として置く。
+  let next: PlayerState = {
+    ...player,
+    hand,
+    command,
+    power: [...player.power, { ...card, faceDown: true }],
+    damage: player.damage + 1,
+  };
+  // その後、自分は1枚ドローする。
+  if (next.deck.length > 0) {
+    const [drawn, deck] = removeAt(next.deck, 0);
+    next = { ...next, deck, hand: [...next.hand, drawn] };
+  } else {
+    next = { ...next, deckedOut: true };
+  }
+  const nextPending: PendingDamagePayment = {
+    ...pending,
+    akanetakaUsed: true,
+    replacedDamage: (pending.replacedDamage ?? 0) + 1,
+    totalDamage: pending.totalDamage - 1,
+    deckDraws: pending.deckDraws > 0 ? pending.deckDraws - 1 : 0,
+    remainingFlips: pending.deckDraws > 0 ? pending.remainingFlips : pending.remainingFlips - 1,
+  };
+  return { state: { ...state, ...updatePlayer(state, playerId, next) }, pending: nextPending };
 }
 
 function stillRequiresDamagePowerChoice(
@@ -144,7 +261,10 @@ export function applyDamageToPlayer(
     amount = amount * 2;
   }
   const player = state.players[playerId];
-  if (requiresDamagePowerChoice(player, amount)) {
+  if (
+    requiresDamagePowerChoice(player, amount) ||
+    hasAkanetakaOption(state, playerId, amount, resume)
+  ) {
     return startDamagePayment(state, playerId, amount, resume, choosingPlayerId, options);
   }
   const damaged = applyPlayerDamage(player, amount);
@@ -168,24 +288,40 @@ export function resolveDamagePaymentSelect(
   playerId: PlayerId,
   instanceId: string,
 ): { state: GameState; resume: DamagePaymentResume } | { error: string } {
-  const pending = state.pendingDamagePayment;
-  if (!pending || damagePaymentChoosingPlayer(pending) !== playerId) {
+  const initial = state.pendingDamagePayment;
+  if (!initial || damagePaymentChoosingPlayer(initial) !== playerId) {
     return { error: "no_pending_damage" };
   }
-  if (!getValidDamagePowerTargets(state, pending).includes(instanceId)) {
+  let pending: PendingDamagePayment = initial;
+  if (!getDamagePaymentChoices(state, pending).includes(instanceId)) {
     return { error: "invalid_target" };
   }
 
-  const selectedFlipIds = [...pending.selectedFlipIds, instanceId];
-  const remainingFlips = pending.remainingFlips - 1;
-  const faceUpRemaining =
-    getValidDamagePowerTargets(state, pending).filter((id) => id !== instanceId).length;
+  let selectedFlipIds = pending.selectedFlipIds;
+  let remainingFlips = pending.remainingFlips;
+  if (getAkanetakaCandidates(state, pending).includes(instanceId)) {
+    const used = useAkanetaka(state, pending, instanceId);
+    state = used.state;
+    pending = used.pending;
+    remainingFlips = pending.remainingFlips;
+  } else if (instanceId === DAMAGE_PAYMENT_DECLINE_COUNTER) {
+    pending = { ...pending, akanetakaUsed: true };
+  } else {
+    selectedFlipIds = [...pending.selectedFlipIds, instanceId];
+    remainingFlips = pending.remainingFlips - 1;
+  }
+  const faceUpRemaining = getValidDamagePowerTargets(state, {
+    ...pending,
+    selectedFlipIds,
+  }).length;
 
   if (
     stillRequiresDamagePowerChoice(
       { ...pending, selectedFlipIds, remainingFlips },
       faceUpRemaining,
-    )
+    ) ||
+    (remainingFlips + pending.deckDraws > 0 &&
+      getAkanetakaCandidates(state, { ...pending, selectedFlipIds, remainingFlips }).length > 0)
   ) {
     return {
       state: {
@@ -220,7 +356,7 @@ export function resolveDamagePaymentSelect(
     },
     {
       playerId: defenderId,
-      amount: pending.totalDamage,
+      amount: pending.totalDamage + (pending.replacedDamage ?? 0),
       source: pending.resume.kind,
       phasePlayerId: state.activePlayer,
     },

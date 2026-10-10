@@ -68,7 +68,8 @@ export function returnFusionPartnersFromDiscard(
       continue;
     }
 
-    const prepared = autoHoldForBattleEntry(owner, card);
+    // ルール: R-ERR-RS009 — ※ホールド要求の素材は戻すたびに1つホールドし、ホールドできなくなったらそこで終了。
+    const prepared = autoHoldForBattleEntry(owner, card, { freshHold: true });
     if (!prepared) {
       discard = [...discard, card];
       break;

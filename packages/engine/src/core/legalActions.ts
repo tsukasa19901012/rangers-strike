@@ -94,13 +94,14 @@ import {
   canPlayPlasmaEnergyCounter,
   collectFiveTechInterceptors,
 } from "../rules/strikeReactions";
-import { getValidDamagePowerTargets, damagePaymentChoosingPlayer } from "../rules/damagePayment";
+import { getDamagePaymentChoices, damagePaymentChoosingPlayer } from "../rules/damagePayment";
 import { getStackActorPlayerId, hasOpenReactionWindow, peekEffectStackTop } from "../rules/effectStack";
 import { getCardEffect } from "@rangers-strike/cards";
 import { isHidoraEggUsed } from "../rules/turnModifiers";
 import { listValidChaseVehicleIds } from "../keywords/chase";
 import { canDeclareRush } from "../rules/rushDeclaration";
 import { listKamenRideAbilityUnits } from "../rules/riderKickEffects";
+import { listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
 import {
   getMorphReactionActorId,
@@ -582,6 +583,14 @@ function appendActivateFieldUnitAbilityActions(
   actions: GameAction[],
 ): void {
   for (const unitInstanceId of listKamenRideAbilityUnits(state, playerId)) {
+    actions.push({
+      type: "activate_field_unit_ability",
+      playerId,
+      unitInstanceId,
+    });
+  }
+  // RK-043【突入】・XG4-102【ギンクロン発進】・RS-446【スクランブル】（このカードを捨札にして発動）。
+  for (const unitInstanceId of listFieldActivatedAbilityCards(state, playerId)) {
     actions.push({
       type: "activate_field_unit_ability",
       playerId,
@@ -1177,7 +1186,7 @@ function appendDamagePaymentActions(
 ): void {
   const pending = state.pendingDamagePayment;
   if (!pending || damagePaymentChoosingPlayer(pending) !== playerId) return;
-  for (const instanceId of getValidDamagePowerTargets(state, pending)) {
+  for (const instanceId of getDamagePaymentChoices(state, pending)) {
     actions.push({ type: "resolve_damage_payment", playerId, instanceId });
   }
 }
@@ -1767,7 +1776,7 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
     return (
       !!pending &&
       damagePaymentChoosingPlayer(pending) === action.playerId &&
-      getValidDamagePowerTargets(state, pending).includes(action.instanceId)
+      getDamagePaymentChoices(state, pending).includes(action.instanceId)
     );
   }
 

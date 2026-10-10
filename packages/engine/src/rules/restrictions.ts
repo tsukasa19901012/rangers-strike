@@ -465,9 +465,23 @@ export function markBattleEntryHoldReadyIfNoteSatisfied(
 export function autoHoldForBattleEntry(
   player: PlayerState,
   unit: CardInstance,
+  options: { freshHold?: boolean } = {},
 ): PlayerState | null {
   const unitHold = getBattleEntryHoldCount(unit.cardId);
   if (unitHold <= 0) return player;
+
+  if (options.freshHold) {
+    // ルール: R-ERR-RS009 — 出すたびにリリース状態のコマンドを新たにホールドする（足りなければ出せない）。
+    const releasedIdx = player.command
+      .map((c, i) => (c.commandHeld ? -1 : i))
+      .filter((i) => i >= 0)
+      .slice(0, unitHold);
+    if (releasedIdx.length < unitHold) return null;
+    const command = player.command.map((c, i) =>
+      releasedIdx.includes(i) ? { ...c, commandHeld: true, mothershipHold: false } : c,
+    );
+    return satisfyCostWindowBridge({ ...player, command }, "battle_entry_hold");
+  }
 
   if (countBattleEntryEligibleHolds(player) >= unitHold) {
     return player;

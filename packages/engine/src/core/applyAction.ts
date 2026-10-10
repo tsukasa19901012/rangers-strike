@@ -227,6 +227,10 @@ import {
 } from "../rules/battleEntry";
 import { resolveRidingComboOnRideOff } from "../rules/ridingComboEffects";
 import { beginKamenRideDeploy, tryExtendRiderComboOnRush } from "../rules/riderKickEffects";
+import {
+  activateFieldAbility,
+  consumeRideShooterRushRule,
+} from "../rules/fieldActivatedAbilities";
 import { applyShinobiBallRequiredDefender } from "../rules/batch06FieldEffects";
 import { applySuperBrainDraw } from "../effects/drawEffects";
 
@@ -1212,6 +1216,8 @@ export function applyAction(
       };
       nextPlayer = markRushedThisTurn(nextPlayer, handFound.card.instanceId);
       nextPlayer = clearShironLightRushTarget(nextPlayer);
+      // ルール: R-ERR-RK043 — 【突入】の軽減は「次にラッシュする」ミラーライダー1枚だけ。
+      nextPlayer = consumeRideShooterRushRule(state, playerId, nextPlayer, found.card.cardId);
       nextPlayer = clearCostWindow(nextPlayer, "rush_category");
       let nextState: GameState = {
         ...nextStateAfterRush,
@@ -2336,6 +2342,13 @@ export function applyAction(
         player.rush.find((c) => c.instanceId === action.unitInstanceId) ??
         player.battle.find((c) => c.instanceId === action.unitInstanceId);
       if (!unit) return fail("illegal_action");
+      const activated = activateFieldAbility(state, playerId, action.unitInstanceId);
+      if (activated) {
+        return ok(
+          activated,
+          buildLogEntry(playerId, "activate_field_unit_ability", unit.cardId, state.definitions),
+        );
+      }
       const withChoice = beginKamenRideDeploy(state, playerId, action.unitInstanceId);
       if (!withChoice) return fail("illegal_action");
       return ok(

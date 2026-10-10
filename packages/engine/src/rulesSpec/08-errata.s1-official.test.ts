@@ -215,8 +215,7 @@ describe("R-ERR-RS009 パワーバズーカ", () => {
   });
 
   // card_1.html RS-009:「ホールドするコマンドがなくなって、バトルエリアに出せなくなった場合は、そこでその効果は終了します」
-  // 既知の不具合: 未登録 — 「ホールドしなければ出られない」素材を戻すときのホールドを要求せず全員戻す
-  it.fails("R-ERR-RS009: 公式Q&A — ※ホールド要求の素材はホールドできる数までしか戻らない（出典: grnrngr/faq-card-1 RS-009 Q3）", () => {
+  it("R-ERR-RS009: 公式Q&A — ※ホールド要求の素材はホールドできる数までしか戻らない（出典: grnrngr/faq-card-1 RS-009 Q3）", () => {
     const ao = inst("RS-050", "ao");
     const m1 = inst("RS-051", "m1");
     const m2 = inst("RS-052", "m2");
@@ -299,8 +298,7 @@ describe("R-ERR-RS065 ボウケンイエロー", () => {
     expect(s.players.player2.damage).toBe(0);
   });
 
-  // 既知の不具合: 未登録 — 撃破後（並びから外れた後）に分数SPを判定するため「SP1」にならない
-  it.fails("R-ERR-RS065: 公式Q&A — 分数SP「1/3」がバトルエリア3番目で「SP1」なら対象（出典: grnrngr/faq-card-1 RS-065 Q1）", () => {
+  it("R-ERR-RS065: 公式Q&A — 分数SP「1/3」がバトルエリア3番目で「SP1」なら対象（出典: grnrngr/faq-card-1 RS-065 Q1）", () => {
     const { s, d } = attackWithYellow("1/3", 2);
     expect(zoneIds(s, "player2", "discard")).toContain(d.instanceId);
     expect(s.players.player2.damage).toBe(1);

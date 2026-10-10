@@ -142,6 +142,10 @@ export type PendingDamagePayment = {
   resume: DamagePaymentResume;
   /** RK-294 ブラッドベセル: モーフユニットを優先してダメージ支払い。 */
   bloodVesselPreferMorph?: boolean;
+  /** RK-086 アカネタカ: このダメージで使用済み（1つのタイミングに1枚だけ）。 */
+  akanetakaUsed?: boolean;
+  /** RK-086 アカネタカ: かわりにダメージにした枚数（totalDamage には含めない）。 */
+  replacedDamage?: number;
 };
 
 export type PendingBattle = {
