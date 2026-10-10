@@ -1524,8 +1524,15 @@ export function GameApp() {
         (c) => c.instanceId === pending.vehicleInstanceId,
       );
     const vehicleCard = vehicle ? resolvePlayableCard(vehicle.cardId) : undefined;
-    return { riderCard, vehicleCard };
-  }, [isHumanRideOffChoice, state]);
+    // RS-381【獅子の装光】等、ライドオフさせるかわりに発動できる効果（ビークルを対象にした起動）。
+    const alternative = legalActions.find(
+      (a) =>
+        a.type === "activate_field_unit_ability" &&
+        a.playerId === HUMAN_PLAYER &&
+        a.unitInstanceId === pending.vehicleInstanceId,
+    );
+    return { riderCard, vehicleCard, alternative };
+  }, [isHumanRideOffChoice, state, legalActions]);
 
   const handleRideOffConfirm = useCallback(() => {
     apply({
@@ -2498,6 +2505,7 @@ export function GameApp() {
           vehicleCard={rideOffModal.vehicleCard}
           onRideOff={handleRideOffConfirm}
           onStayMounted={handleRideOffStay}
+          onAlternative={rideOffModal.alternative ? () => apply(rideOffModal.alternative!) : undefined}
         />
       )}
       {showRegisterModal && registerModal && (
