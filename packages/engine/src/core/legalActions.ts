@@ -102,6 +102,7 @@ import { listValidChaseVehicleIds } from "../keywords/chase";
 import { canDeclareRush } from "../rules/rushDeclaration";
 import { listKamenRideAbilityUnits } from "../rules/riderKickEffects";
 import { listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities";
+import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
 import {
   getMorphReactionActorId,
@@ -1024,6 +1025,14 @@ function appendEffectChoiceActions(
     for (const instanceId of pending.validInstanceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
+    return;
+  }
+
+  if (isErrataConfirmableChoice(pending.effectId)) {
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

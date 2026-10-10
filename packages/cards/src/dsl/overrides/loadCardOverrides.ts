@@ -16,9 +16,14 @@ import rk043 from "./RK-043.json";
 import rk125 from "./RK-125.json";
 import rk168 from "./RK-168.json";
 import xg1029 from "./XG1-029.json";
+import xg1048 from "./XG1-048.json";
+import xg4023 from "./XG4-023.json";
 import xg1030 from "./XG1-030.json";
 import xg3005 from "./XG3-005.json";
 import xg5014 from "./XG5-014.json";
+import xg6044 from "./XG6-044.json";
+import rs349 from "./RS-349.json";
+import rk146 from "./RK-146.json";
 import type { CardDocument } from "../types";
 import { mergeCardDocument } from "../cardDocumentMerge";
 
@@ -67,6 +72,16 @@ const CARD_OVERRIDES: Record<string, Partial<CardDocument>> = {
   "XG3-005": xg3005 as Partial<CardDocument>,
   // ※SP1 条件と【マックスビクトリープロミネンス】は CN なしの常時効果。
   "XG5-014": xg5014 as Partial<CardDocument>,
+  // ルール: R-ERR-XG1-048 — 【エレキ光線】は修正後テキストの1効果だけ（旧テキストとの重複定義を除く）。
+  "XG1-048": xg1048 as Partial<CardDocument>,
+  // ルール: R-ERR-XG4-023 — 【超忍法・秘打千本ノック】は修正後テキストの1効果（engine: rules/errataCardEffects.ts）。
+  "XG4-023": xg4023 as Partial<CardDocument>,
+  // ルール: R-ERR-XG6-044 — 【カウンターストライク】は修正後テキストの1効果（engine: rules/errataCardEffects.ts）。
+  "XG6-044": xg6044 as Partial<CardDocument>,
+  // ルール: R-ERR-RS349 — 修正後テキスト（DA を持たない S ユニット）。山札サーチは engine: rules/errataCardEffects.ts。
+  "RS-349": rs349 as Partial<CardDocument>,
+  // ルール: R-ERR-RK146 — 【デネブキャンディー】は修正後テキストの1効果（相手→自分の順。engine: rules/errataCardEffects.ts）。
+  "RK-146": rk146 as Partial<CardDocument>,
 };
 
 let cachedOverrides: Map<string, Partial<CardDocument>> | null = null;

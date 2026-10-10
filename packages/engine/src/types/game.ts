@@ -65,6 +65,8 @@ export type CardInstance = {
   tempDiscardAtTurnEnd?: boolean;
   /** レジスト: バトル撃破後にホールド留場。 */
   registerHeld?: boolean;
+  /** XG1-048【エレキ光線】で選ばれたターン番号（そのターンを終えるとき隣のユニットが撃破される）。 */
+  electroBeamTurn?: number;
 };
 
 export type PlayerState = {

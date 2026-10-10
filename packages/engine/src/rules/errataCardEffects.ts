@@ -14,6 +14,7 @@ import {
   parsePowerCost,
 } from "../core/catalog";
 import { sameCardName } from "../core/cardNames";
+import { isZordUpCost } from "@rangers-strike/cards";
 import { opponent, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import {
@@ -406,6 +407,412 @@ function resolveImaginSubChoice(
 }
 
 // ---------------------------------------------------------------------------
+// XG1-048 仮面ライダースーパー1・EH【エレキ光線】
+
+const ELECTRO_BEAM_PICK = "ereki_hikari_pick";
+
+/**
+ * ルール: R-ERR-XG1-048 — 敵軍Sユニットを1体選んでもよい。次の相手のターン、選んだユニットがバトルエリアに
+ * あるとき、選んだユニットと隣り合っているユニットは、そのターンを終えるとき撃破される。
+ */
+function beginElectroBeam(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  const enemy = state.players[opponent(ctx.playerId)];
+  const targets = fieldUnits(enemy)
+    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .map((c) => c.instanceId);
+  if (targets.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: ELECTRO_BEAM_PICK,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "select_unit",
+    validInstanceIds: targets,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+function resolveElectroBeam(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const enemyId = opponent(playerId);
+  const enemy = state.players[enemyId];
+  // 「次の相手のターン」= 次のターン（ターン番号はプレイヤーごとに進む）。
+  const mark = (c: CardInstance) =>
+    c.instanceId === instanceId ? { ...c, electroBeamTurn: state.turn + 1 } : c;
+  const next = {
+    ...state,
+    ...updatePlayer(state, enemyId, {
+      ...enemy,
+      rush: enemy.rush.map(mark),
+      battle: enemy.battle.map(mark),
+    }),
+  };
+  return {
+    state: clearPending(next, pending.phasePlayerId),
+    log: logFor(state, playerId, pending.sourceCardId, `${ELECTRO_BEAM_PICK}:${instanceId}`),
+  };
+}
+
+/** ターンを終えるとき: 選ばれたユニットがバトルエリアにあれば、隣り合っているユニットを撃破する。 */
+export function applyElectroBeamTurnEnd(state: GameState, endingPlayerId: PlayerId): GameState {
+  const battle = state.players[endingPlayerId].battle;
+  const adjacent = new Set<string>();
+  battle.forEach((c, i) => {
+    if (c.electroBeamTurn !== state.turn) return;
+    if (i > 0) adjacent.add(battle[i - 1]!.instanceId);
+    if (i + 1 < battle.length) adjacent.add(battle[i + 1]!.instanceId);
+  });
+  let next = state;
+  for (const id of adjacent) {
+    const leave = applyUnitLeave(next, id, "discard", endingPlayerId);
+    if (!("error" in leave)) next = leave.state;
+  }
+  return next;
+}
+
+// ---------------------------------------------------------------------------
+// XG4-023 シュリケンジャーFM【超忍法・秘打千本ノック】
+
+const SENBON_RETURN = "senbon_knock_return";
+const SENBON_BOTTOM = "senbon_knock_bottom";
+
+/** 自軍コマンドを好きな数選び手札に戻してもよい（選び終えたら確定）。 */
+function beginSenbonKnock(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  const command = state.players[ctx.playerId].command;
+  if (command.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: SENBON_RETURN,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "select_commands",
+    validInstanceIds: command.map((c) => c.instanceId),
+    selectCount: command.length,
+    commandFilter: "any",
+    commandAction: "return_hand",
+    optional: true,
+  });
+}
+
+function enemyRushSUnits(state: GameState, enemyId: PlayerId): string[] {
+  return state.players[enemyId].rush
+    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .map((c) => c.instanceId);
+}
+
+/**
+ * ルール: R-ERR-XG4-023 — そうしたとき、相手は戻した数と同じ数まで「可能な限り」自分自身のラッシュエリアの
+ * Sユニットを選び、持ち主の山札の下に好きな順番で戻す（選んだ順に山札の下へ）。
+ */
+function finishSenbonReturn(
+  state: GameState,
+  pending: NonNullable<GameState["pendingEffectChoice"]>,
+  selected: string[],
+): ChoiceOutcome {
+  const playerId = pending.playerId;
+  let next = clearPending(state, pending.phasePlayerId);
+  if (selected.length === 0) return { state: next };
+  const player = next.players[playerId];
+  const returned = player.command
+    .filter((c) => selected.includes(c.instanceId))
+    .map((c) => ({ ...c, commandHeld: false, mothershipHold: false }));
+  next = {
+    ...next,
+    ...updatePlayer(next, playerId, {
+      ...player,
+      command: player.command.filter((c) => !selected.includes(c.instanceId)),
+      hand: [...player.hand, ...returned],
+    }),
+  };
+  const log = logFor(state, playerId, pending.sourceCardId, `${SENBON_RETURN}:${returned.length}`);
+  const enemyId = opponent(playerId);
+  const targets = enemyRushSUnits(next, enemyId);
+  const count = Math.min(returned.length, targets.length);
+  if (count === 0) return { state: next, log };
+  return {
+    state: openEffectChoice(next, {
+      playerId: enemyId,
+      effectId: SENBON_BOTTOM,
+      sourceCardId: pending.sourceCardId,
+      sourceInstanceId: pending.sourceInstanceId,
+      phasePlayerId: pending.phasePlayerId,
+      kind: "select_unit",
+      validInstanceIds: targets,
+      selectCount: count,
+      selectedInstanceIds: [],
+      optional: false,
+      unitDestination: "deck_top",
+    }),
+    log,
+  };
+}
+
+function resolveSenbonKnock(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+
+  if (pending.effectId === SENBON_RETURN) {
+    if (selected.length < (pending.selectCount ?? 1)) {
+      return {
+        state: {
+          ...state,
+          pendingEffectChoice: {
+            ...pending,
+            selectedInstanceIds: selected,
+            validInstanceIds: pending.validInstanceIds.filter((id) => id !== instanceId),
+          },
+        },
+      };
+    }
+    return finishSenbonReturn(state, pending, selected);
+  }
+
+  // SENBON_BOTTOM: 選んだ順に持ち主の山札の下へ。
+  const owner = state.players[playerId];
+  const card = owner.rush.find((c) => c.instanceId === instanceId)!;
+  const { commandHeld: _h, mountedOnInstanceId: _m, ...clean } = card;
+  let next: GameState = {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...owner,
+      rush: owner.rush.filter((c) => c.instanceId !== instanceId),
+      deck: [...owner.deck, clean as CardInstance],
+    }),
+  };
+  if (selected.length < (pending.selectCount ?? 1)) {
+    const remaining = enemyRushSUnits(next, playerId);
+    if (remaining.length > 0) {
+      return {
+        state: {
+          ...next,
+          pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: remaining },
+        },
+      };
+    }
+  }
+  next = clearPending(next, pending.phasePlayerId);
+  return { state: next, log: logFor(state, playerId, pending.sourceCardId, `${SENBON_BOTTOM}:${selected.length}`) };
+}
+
+// ---------------------------------------------------------------------------
+// XG6-044 仮面ライダーNEW電王SF【カウンターストライク】
+
+const COUNTER_STRIKE = "counter_strike_reveal";
+
+function beginCounterStrike(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  if (state.players[ctx.playerId].deck.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: COUNTER_STRIKE,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "confirm",
+    validInstanceIds: ["reveal"],
+    optional: true,
+  });
+}
+
+/** 場から直接捨札へ（撃破ではない「捨札にする」）。乗っているユニットのライドは外す。 */
+function moveFieldCardToDiscard(state: GameState, ownerId: PlayerId, instanceId: string): GameState {
+  const owner = state.players[ownerId];
+  const card = [...owner.rush, ...owner.battle].find((c) => c.instanceId === instanceId);
+  if (!card) return state;
+  const unmount = (c: CardInstance) => {
+    if (c.mountedOnInstanceId !== instanceId) return c;
+    const { mountedOnInstanceId: _m, ...rest } = c;
+    return rest as CardInstance;
+  };
+  const { commandHeld: _h, mountedOnInstanceId: _r, ...clean } = card;
+  return {
+    ...state,
+    ...updatePlayer(state, ownerId, {
+      ...owner,
+      rush: owner.rush.filter((c) => c.instanceId !== instanceId).map(unmount),
+      battle: owner.battle.filter((c) => c.instanceId !== instanceId).map(unmount),
+      discard: [...owner.discard, clean as CardInstance],
+    }),
+  };
+}
+
+/**
+ * ルール: R-ERR-XG6-044 — 山札の上を1枚オモテにし、その必要パワーの数字と同じ並びにある敵軍Sユニット
+ * （またはライドされていない敵軍Sビークル）を捨札にする。その後、オモテにしたカードは山札の下に戻す。
+ */
+function resolveCounterStrike(state: GameState, playerId: PlayerId, _instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  const player = state.players[playerId];
+  const top = player.deck[0];
+  let next = clearPending(state, pending.phasePlayerId);
+  if (!top) return { state: next };
+  const def = getDefinition(state.definitions, top.cardId);
+  const position = parsePowerCost(def?.powerCost);
+  const enemyId = opponent(playerId);
+  const enemyBattle = next.players[enemyId].battle;
+  const target = position >= 1 ? enemyBattle[position - 1] : undefined;
+  const targetDef = target ? getDefinition(state.definitions, target.cardId) : undefined;
+  const ridden = (id: string) =>
+    [...next.players[enemyId].battle, ...next.players[enemyId].rush].some(
+      (c) => c.mountedOnInstanceId === id,
+    );
+  const valid =
+    !!target &&
+    !!targetDef &&
+    targetDef.size === "S" &&
+    (targetDef.type === "unit" || (targetDef.type === "vehicle" && !ridden(target.instanceId)));
+  if (valid) next = moveFieldCardToDiscard(next, enemyId, target!.instanceId);
+  // その後、オモテにしたカードは山札の下に戻す（atwiki/page-2322 Q2）。
+  const after = next.players[playerId];
+  next = {
+    ...next,
+    ...updatePlayer(next, playerId, {
+      ...after,
+      deck: [...after.deck.filter((c) => c.instanceId !== top.instanceId), top],
+    }),
+  };
+  return {
+    state: next,
+    log: logFor(
+      state,
+      playerId,
+      pending.sourceCardId,
+      `${COUNTER_STRIKE}:${cardName(state.definitions, top.cardId)}:${valid ? target!.instanceId : "none"}`,
+    ),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// 山札サーチ共通
+
+export function shuffleCards<T>(cards: T[]): T[] {
+  const copy = [...cards];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
+  }
+  return copy;
+}
+
+/** 山札の1枚を手札に加え、山札をシャッフルする。 */
+function deckCardToHandShuffle(state: GameState, playerId: PlayerId, instanceId: string): GameState {
+  const player = state.players[playerId];
+  const card = player.deck.find((c) => c.instanceId === instanceId);
+  if (!card) return state;
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      deck: shuffleCards(player.deck.filter((c) => c.instanceId !== instanceId)),
+      hand: [...player.hand, card],
+    }),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// RS-349 スーパー戦隊アドレスブック
+
+const ADDRESS_BOOK = "address_book_search";
+
+/**
+ * ルール: R-ERR-RS349 — 自軍山札を見て、追加条件を持たず DA を持たない（マルチカテゴリも不可）
+ * Sユニットのカードを1枚選び、手札に加えてもよい。その後、山札をシャッフルする。
+ */
+function beginAddressBook(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  const valid = state.players[ctx.playerId].deck
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      if (!def || def.type !== "unit" || def.size !== "S") return false;
+      if (cardCategories(def).includes("DA")) return false;
+      return !def.rushAdditionalCondition && !isZordUpCost(def.powerCost);
+    })
+    .map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: ADDRESS_BOOK,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.operationInstanceId ?? ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+    kind: "scry_keep_one",
+    validInstanceIds: valid,
+    viewedInstanceIds: valid,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+function resolveAddressBook(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const next = deckCardToHandShuffle(clearPending(state, pending.phasePlayerId), playerId, instanceId);
+  return { state: next, log: logFor(state, playerId, pending.sourceCardId, `${ADDRESS_BOOK}:${instanceId}`) };
+}
+
+// ---------------------------------------------------------------------------
+// RK-146 デネブ【デネブキャンディー】
+
+const DENEB_CANDY = "deneb_candy";
+
+/**
+ * ルール: R-ERR-RK146 — 相手、自分の順に「自分自身の山札を見てもよい。そうしたとき、その中から
+ * オペレーションカードを1枚選び手札に加える。その後、山札をシャッフルする。」
+ * selectedInstanceIds[0] に残りの手番（"self"）を持たせる。
+ */
+function openDenebCandyFor(
+  state: GameState,
+  base: { sourceCardId: string; sourceInstanceId?: string; phasePlayerId: PlayerId },
+  order: PlayerId[],
+): GameState {
+  let next = state;
+  for (let i = 0; i < order.length; i += 1) {
+    const pid = order[i]!;
+    const ops = next.players[pid].deck
+      .filter((c) => getDefinition(next.definitions, c.cardId)?.type === "operation")
+      .map((c) => c.instanceId);
+    if (ops.length === 0) continue;
+    return openEffectChoice(next, {
+      playerId: pid,
+      effectId: DENEB_CANDY,
+      sourceCardId: base.sourceCardId,
+      sourceInstanceId: base.sourceInstanceId,
+      phasePlayerId: base.phasePlayerId,
+      kind: "scry_keep_one",
+      validInstanceIds: ops,
+      viewedInstanceIds: ops,
+      selectedInstanceIds: order.slice(i + 1),
+      selectCount: 1,
+      optional: true,
+    });
+  }
+  return next;
+}
+
+function continueDenebCandy(
+  state: GameState,
+  pending: NonNullable<GameState["pendingEffectChoice"]>,
+): GameState {
+  const rest = (pending.selectedInstanceIds ?? []).filter(
+    (p): p is PlayerId => p === "player1" || p === "player2",
+  );
+  return openDenebCandyFor(clearPending(state, pending.phasePlayerId), pending, rest);
+}
+
+function resolveDenebCandy(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const next = deckCardToHandShuffle(state, playerId, instanceId);
+  return {
+    state: continueDenebCandy(next, pending),
+    log: logFor(state, playerId, pending.sourceCardId, `${DENEB_CANDY}:${instanceId}`),
+  };
+}
+
+// ---------------------------------------------------------------------------
 // 登録
 
 type ChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
@@ -414,6 +821,12 @@ const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [BLAY_SHOW]: resolveBlayRouzer,
   [BLAY_HOLD]: resolveBlayRouzer,
   [BLAY_DESTROY]: resolveBlayRouzer,
+  [ELECTRO_BEAM_PICK]: resolveElectroBeam,
+  [ADDRESS_BOOK]: resolveAddressBook,
+  [DENEB_CANDY]: resolveDenebCandy,
+  [COUNTER_STRIKE]: resolveCounterStrike,
+  [SENBON_RETURN]: resolveSenbonKnock,
+  [SENBON_BOTTOM]: resolveSenbonKnock,
   [IMAGIN_DISCARD_EFFECT]: resolveImaginPower,
   [IMAGIN_TENKOMORI_EFFECT]: resolveImaginPower,
   [IMAGIN_URATAROS_SEND]: resolveImaginSubChoice,
@@ -437,6 +850,33 @@ export function isErrataChoiceEffect(effectId: string): boolean {
   return effectId in CHOICE_RESOLVERS;
 }
 
+/** 「好きな数」選んで確定できる選択（confirm_effect_choice を出す）。 */
+const CONFIRMABLE_CHOICES = new Set([SENBON_RETURN]);
+
+export function isErrataConfirmableChoice(effectId: string): boolean {
+  return CONFIRMABLE_CHOICES.has(effectId);
+}
+
+/** 任意の選択をしない（skip_effect_choice）。続きのある効果だけ扱う。 */
+export function trySkipErrataChoice(state: GameState, playerId: PlayerId): ChoiceOutcome | null {
+  const pending = state.pendingEffectChoice;
+  if (!pending || pending.playerId !== playerId || !pending.optional) return null;
+  if (pending.effectId === DENEB_CANDY) {
+    return { state: continueDenebCandy(state, pending) };
+  }
+  return null;
+}
+
+/** 確定（confirm_effect_choice）。 */
+export function tryConfirmErrataChoice(state: GameState, playerId: PlayerId): ChoiceOutcome | null {
+  const pending = state.pendingEffectChoice;
+  if (!pending || pending.playerId !== playerId) return null;
+  if (pending.effectId === SENBON_RETURN) {
+    return finishSenbonReturn(state, pending, pending.selectedInstanceIds ?? []);
+  }
+  return null;
+}
+
 /** DSL grant_keyword（`cardId::effectId`）からの起点。対象外なら null。 */
 export function tryErrataCardEffect(
   state: GameState,
@@ -448,6 +888,34 @@ export function tryErrataCardEffect(
     // ルール: R-ERR-RK168 — 本体の処理は進入時のイマジン効果（openImaginPowerChoice）。ここでは何もしない。
     case "RK-168::tenkomoridaze":
       return { state, detail: "tenkomoridaze" };
+    case "XG1-048::ereki_hikari": {
+      const next = beginElectroBeam(state, ctx);
+      return next ? { state: next, detail: ELECTRO_BEAM_PICK } : { state, detail: `${ELECTRO_BEAM_PICK}:no_targets` };
+    }
+    case "XG4-023::choninpo_noku": {
+      const next = beginSenbonKnock(state, ctx);
+      return next ? { state: next, detail: SENBON_RETURN } : { state, detail: `${SENBON_RETURN}:no_commands` };
+    }
+    case "XG6-044::kauntasutoraiku": {
+      const next = beginCounterStrike(state, ctx);
+      return next ? { state: next, detail: COUNTER_STRIKE } : { state, detail: `${COUNTER_STRIKE}:no_deck` };
+    }
+    case "RS-349::deck_to_hand": {
+      const next = beginAddressBook(state, ctx);
+      return next ? { state: next, detail: ADDRESS_BOOK } : { state, detail: `${ADDRESS_BOOK}:no_targets` };
+    }
+    case "RK-146::denebukyandei": {
+      const next = openDenebCandyFor(
+        state,
+        {
+          sourceCardId: ctx.sourceCardId,
+          sourceInstanceId: ctx.triggerSourceInstanceId,
+          phasePlayerId: ctx.phasePlayerId,
+        },
+        [opponent(ctx.playerId), ctx.playerId],
+      );
+      return { state: next, detail: DENEB_CANDY };
+    }
     case "RK-125::bureirauza": {
       const next = beginBlayRouzer(state, ctx);
       return next ? { state: next, detail: BLAY_SHOW } : { state, detail: `${BLAY_SHOW}:unmet` };

@@ -43,7 +43,11 @@ import {
 import { maybeInterceptDeckRevealForShuriken, grantSp1ToRushUnit, completeShurikenDeckRevealSwap, applyShurikenRevealToHand, findEnemySWithPowerCost } from "./srEffects";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
 import { SCRAMBLE_EFFECT_ID, filterScrambleRemaining } from "./fieldActivatedAbilities";
-import { tryResolveErrataChoice } from "./errataCardEffects";
+import {
+  tryConfirmErrataChoice,
+  tryResolveErrataChoice,
+  trySkipErrataChoice,
+} from "./errataCardEffects";
 import {
   applyFlowerBombDeclaredNumber,
   continueMagiBlueAfterSelfDraw,
@@ -1530,6 +1534,9 @@ export function applyConfirmEffectChoice(
   if (!pending) return { error: "no_pending_choice" };
   if (pending.playerId !== playerId) return { error: "wrong_player" };
 
+  const errata = tryConfirmErrataChoice(state, playerId);
+  if (errata) return errata;
+
   if (pending.kind === "select_units_bp_budget") {
     const selected = pending.selectedInstanceIds ?? [];
     let nextState = state;
@@ -2104,6 +2111,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   const pending = state.pendingEffectChoice;
   if (!pending) return { error: "no_pending_choice" };
   if (pending.playerId !== playerId) return { error: "wrong_player" };
+  const errata = trySkipErrataChoice(state, playerId);
+  if (errata) return errata;
   if (!pending.optional) {
     const hasValidTarget = pending.validInstanceIds.some((instanceId) =>
       isValidEffectChoiceTarget(state, pending, instanceId),

@@ -9,6 +9,7 @@ import { applyKeywordTurnEndEffects, clearEnemyTurnDamageFlag } from "./keywordG
 import { applyGegeruTurnEnd } from "./residentOps";
 import { applyTempDiscardAtTurnEnd } from "./riderKickEffects";
 import { applyAdventureEndTurn } from "./turnModifiers";
+import { applyElectroBeamTurnEnd } from "./errataCardEffects";
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
   const copy = [...deck];
@@ -158,6 +159,7 @@ export function resolveTurnEndingEffectsImpl(
   nextState = applyNoteOtherNcTurnEndEffects(nextState, endingPlayerId);
   nextState = applyGegeruTurnEnd(nextState, endingPlayerId);
   nextState = applyTempDiscardAtTurnEnd(nextState, endingPlayerId);
+  nextState = applyElectroBeamTurnEnd(nextState, endingPlayerId);
   const keywordEnd = applyKeywordTurnEndEffects(nextState, endingPlayerId);
   nextState = clearEnemyTurnDamageFlag(keywordEnd.state, endingPlayerId);
   return { state: nextState, logs: keywordEnd.logs };

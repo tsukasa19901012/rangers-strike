@@ -160,7 +160,28 @@ export function requiredBattleEntryHolds(
   const lgHold = isMediumUnit(state.definitions, unit.cardId)
     ? countActiveLightningGravity(state)
     : 0;
-  return unitHold + lgHold;
+  return unitHold + lgHold + accelMemoryHoldCount(state, playerId, unit);
+}
+
+/**
+ * XG4-062【アクセルメモリ】: ライドされているこのビークルがバトルエリアにある間、特徴「加速」を持たない
+ * 敵軍Sユニットは自分自身のコマンドを1つホールドしなければバトルエリアに出られない。
+ * ルール: R-ERR-XG4-062 — 「自軍コマンド」は制限を受ける側（敵軍プレイヤー）にとっての自軍コマンド。
+ */
+export function accelMemoryHoldCount(
+  state: GameState,
+  playerId: PlayerId,
+  unit: CardInstance,
+): number {
+  const def = getDefinition(state.definitions, unit.cardId);
+  if (!def || def.type !== "unit" || def.size !== "S") return 0;
+  if ((def.features ?? []).includes("加速")) return 0;
+  const enemy = state.players[opponent(playerId)];
+  const riders = [...enemy.battle, ...enemy.rush];
+  return enemy.battle.filter(
+    (c) =>
+      c.cardId === "XG4-062" && riders.some((r) => r.mountedOnInstanceId === c.instanceId),
+  ).length;
 }
 
 /** RS-047 Pat Signer: BP>=5000 のMユニットの戦闘進入をブロック。 */
@@ -509,7 +530,7 @@ function passesBattleEntryHoldRequirements(
   const lgHold = isMediumUnit(state.definitions, unit.cardId)
     ? countActiveLightningGravity(state)
     : 0;
-  const requiredTotal = unitHold + lgHold;
+  const requiredTotal = unitHold + lgHold + accelMemoryHoldCount(state, playerId, unit);
 
   if (requiredTotal === 0 && !needsVCommanderHold(state, playerId, unit)) {
     return true;
