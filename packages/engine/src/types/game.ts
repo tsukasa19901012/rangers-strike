@@ -556,6 +556,11 @@ export type EffectRushTrigger = {
   phasePlayerId: PlayerId;
   /** R-RUSH-24: 出たユニット自身の効果は発動しない。 */
   silent?: boolean;
+  /**
+   * 誘発は解決済みで、「ラッシュされたとき」の窓（モーフ・カウンター）だけが残っている
+   * （「ラッシュしたとき」の効果の選択待ちの後に開く、R-RUSH-30）。
+   */
+  windowOnly?: boolean;
 };
 
 /** 効果でラッシュエリアに出せるカードの置き場。 */

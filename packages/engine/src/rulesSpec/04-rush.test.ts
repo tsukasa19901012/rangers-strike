@@ -1491,9 +1491,8 @@ describe("R-RUSH-22 効果ラッシュでも誘発とカウンター窓がある
     expect(canCounter(s1, "player2", "RS-026:shippu")).toBe(true);
   });
 
-  // 既知の不具合: E11
   // 「「ラッシュしたとき」の効果は発動します」
-  it.fails("R-RUSH-22: ランドバルカンで出したSユニットにも「Sユニットをラッシュしたとき」（超電子レーダー）が誘発する（出典: grnrngr/faq-card-1 RS-005 Q2）", () => {
+  it("R-RUSH-22: ランドバルカンで出したSユニットにも「Sユニットをラッシュしたとき」（超電子レーダー）が誘発する（出典: grnrngr/faq-card-1 RS-005 Q2）", () => {
     const sUnit = inst("TST-UNIT-0", "cmd-s");
     const s0 = mk4({
       definitions: {
@@ -1540,9 +1539,8 @@ describe("R-RUSH-22 効果ラッシュでも誘発とカウンター窓がある
     expect(canCounter(s1, "player2", "RS-026:shippu")).toBe(true);
   });
 
-  // 既知の不具合: E11
   // 「手札に戻さなければなりませんか？」「はい」
-  it.fails("R-RUSH-22: 遺跡発掘で相手がSユニットを出したとき、超電子レーダーにより相手はパワーを1枚手札に戻す（出典: grnrngr/faq-card-2 RS-121 Q2）", () => {
+  it("R-RUSH-22: 遺跡発掘で相手がSユニットを出したとき、超電子レーダーにより相手はパワーを1枚手札に戻す（出典: grnrngr/faq-card-2 RS-121 Q2）", () => {
     const sCard = inst("TST-UNIT-0", "p2s");
     let s = mk4({
       phase: "battle",
@@ -1706,9 +1704,8 @@ describe("R-RUSH-30 「ラッシュされたとき」の窓", () => {
     expect(canCounter(s1, "player2", "RS-026:shippu")).toBe(false);
   });
 
-  // 既知の不具合: 未登録 — 「ラッシュしたとき」効果の選択（コマンドのホールド）を解決した後に「ラッシュされたとき」の窓が開かない
   // 「まずユニットのラッシュしたときの効果を適用してから、相手は可能であれば…発動」
-  it.fails("R-RUSH-30: 「ラッシュしたとき」の効果（モスブリザード）を適用した後、リリース状態のコマンドが残っていればカウンターできる（出典: grnrngr/faq-card-1 RS-026 Q10）", () => {
+  it("R-RUSH-30: 「ラッシュしたとき」の効果（モスブリザード）を適用した後、リリース状態のコマンドが残っていればカウンターできる（出典: grnrngr/faq-card-1 RS-026 Q10）", () => {
     const mammoth = inst("RS-036", "mammoth");
     const s0 = mk4({
       player1: { hand: [mammoth], power: powers(5), command: [released("TST-OP", "c1")] },

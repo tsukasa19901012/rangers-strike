@@ -3289,7 +3289,15 @@ export function applyEffectChoiceSelect(
         };
       }
 
-      const withHold = { ...state, ...updatePlayer(state, owner, nextPlayer) };
+      let withHold = { ...state, ...updatePlayer(state, owner, nextPlayer) };
+      if (pending.commandAction === "rush" || pending.commandAction === "rush_silent") {
+        // ルール: R-RUSH-22 / R-RUSH-24 — 効果でラッシュエリアに出したユニットの誘発と窓
+        // （「このとき出したユニットの効果は発動しない」なら自身の効果だけ止める）。
+        // 選択の解決後（applyAction の後処理）に処理される。
+        withHold = finalizeEffectRush(withHold, owner, [instanceId], pending.phasePlayerId, {
+          silent: pending.commandAction === "rush_silent",
+        }).state;
+      }
       const continued = applyPostHoldContinuation(withHold, pending);
       if (continued.done) return { state: continued.state };
 

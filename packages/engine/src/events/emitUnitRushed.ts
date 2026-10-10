@@ -39,19 +39,41 @@ export function emitUnitRushedAndFinalize(
   );
 
   const resolved = resolveUntilBlocked(state, queue, getEngineEventDispatcher());
-  const beforePending = resolved.state.pendingRush;
+  if (hasPendingPromptBlockingEffectRush(resolved.state)) {
+    // ルール: R-RUSH-30 — 「ラッシュされたとき」の窓は、ラッシュしたユニットの「ラッシュしたとき」の
+    // 効果とそれに誘発する処理をすべて終えてから開く。選択待ちが解けたら窓を開く（applyAction の後処理）。
+    return {
+      state: {
+        ...resolved.state,
+        effectRushTriggerQueue: [
+          { rusherPlayerId, instanceId: rushedInstanceId, phasePlayerId, windowOnly: true },
+          ...(resolved.state.effectRushTriggerQueue ?? []),
+        ],
+      },
+      logs: resolved.logs,
+      counterPending: false,
+    };
+  }
+  const windows = openRushReactionWindows(resolved.state, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  return { state: windows.state, logs: resolved.logs, counterPending: windows.counterPending };
+}
+
+/** 「ラッシュされたとき」の窓（モーフ → カウンター）を開く。 */
+function openRushReactionWindows(
+  state: GameState,
+  rusherPlayerId: PlayerId,
+  rushedInstanceId: string,
+  phasePlayerId: PlayerId,
+): { state: GameState; counterPending: boolean } {
+  const beforePending = state.pendingRush;
   const withMorph = openMorphReactionWindow(
-    resolved.state,
+    state,
     rusherPlayerId,
     rushedInstanceId,
     phasePlayerId,
   );
   if (withMorph.pendingMorph || withMorph.pendingEffectChoice) {
-    return {
-      state: withMorph,
-      logs: resolved.logs,
-      counterPending: false,
-    };
+    return { state: withMorph, counterPending: false };
   }
 
   const withCounter = openRushCounterWindow(
@@ -63,7 +85,6 @@ export function emitUnitRushedAndFinalize(
 
   return {
     state: withCounter,
-    logs: resolved.logs,
     counterPending: !beforePending && !!withCounter.pendingRush,
   };
 }
@@ -179,14 +200,29 @@ export function drainEffectRushTriggers(state: GameState): RushEffectOutcome {
       effectRushTriggerQueue: rest.length > 0 ? rest : undefined,
     };
     if (!findInZone(nextState.players[head.rusherPlayerId], "rush", head.instanceId)) continue;
+    if (head.windowOnly) {
+      nextState = openRushReactionWindows(
+        nextState,
+        head.rusherPlayerId,
+        head.instanceId,
+        head.phasePlayerId,
+      ).state;
+      continue;
+    }
+    // バトルエリアに出たユニットのアタック／ストライク選択待ち（pendingBattleEntry）はイベント解決を
+    // 止めるが、「バトルエリアに出たとき」の効果で出したユニットの誘発はその前に解決する。
+    const parkedEntry = nextState.pendingBattleEntry;
     const result = emitUnitRushedAndFinalize(
-      nextState,
+      parkedEntry ? { ...nextState, pendingBattleEntry: undefined } : nextState,
       head.rusherPlayerId,
       head.instanceId,
       head.phasePlayerId,
       { silent: head.silent },
     );
-    nextState = result.state;
+    nextState =
+      parkedEntry && !result.state.pendingBattleEntry
+        ? { ...result.state, pendingBattleEntry: parkedEntry }
+        : result.state;
     logs.push(...result.logs);
     if (!head.silent && !hasPendingPromptBlockingEffectRush(nextState)) {
       // ルール: R-RUSH-22 — 効果で出したレッドレーサーも「ラッシュするとき可能ならバトルエリアに置く」に従う。

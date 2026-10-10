@@ -99,8 +99,7 @@ describe("R-KW-MORPH-01 規定文", () => {
   });
 
   // 「「ラッシュしたとき」…効果が…モーフより先に発動します」
-  it.fails("R-KW-MORPH-01: ラッシュした側の「ラッシュしたとき」の効果（RS-046 パトアーマー）が先に解決し、その後にモーフの機会がある（出典: grnrngr/faq-rider_2 RK-150、atwiki/page-1294 Q6）", () => {
-    // 既知の不具合: 未登録（「ラッシュしたとき」の解決後にモーフの機会が来ない）
+  it("R-KW-MORPH-01: ラッシュした側の「ラッシュしたとき」の効果（RS-046 パトアーマー）が先に解決し、その後にモーフの機会がある（出典: grnrngr/faq-rider_2 RK-150、atwiki/page-1294 Q6）", () => {
     const A = inst(MORPH.id, "A");
     const B = inst(MORPH.id, "B");
     let s = state([MORPH, realDef("RS-046")], {
@@ -212,8 +211,7 @@ describe("R-KW-MORPH-02 自軍ゾーンと状態", () => {
   });
 
   // 「実際に処理を実行する段階になってから…選んで下さい」
-  it.fails("R-KW-MORPH-02: 同時に発動した B・C のモーフは順に実行し、B と A（パワーゾーン）を置き換えた後、C と B を置き換えられる（出典: atwiki/page-1294 Q6）", () => {
-    // 既知の不具合: 未登録（RS-046 の「ラッシュしたとき」でパワーゾーンに送られたカードに対してモーフの機会が来ない）
+  it("R-KW-MORPH-02: 同時に発動した B・C のモーフは順に実行し、B と A（パワーゾーン）を置き換えた後、C と B を置き換えられる（出典: atwiki/page-1294 Q6）", () => {
     const A = inst(MORPH.id, "A");
     const B = inst(MORPH.id, "B");
     const C = inst(MORPH.id, "C");

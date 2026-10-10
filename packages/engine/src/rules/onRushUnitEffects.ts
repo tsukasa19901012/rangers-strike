@@ -20,7 +20,6 @@ import {
 } from "./batch06FieldEffects";
 import { tryOnAllyRushNamedReturnSelfToHand } from "./batch07FieldEffects";
 import { tryRsCatchallOnEnemyRush } from "./rs/rsCatchallRuntime";
-import { applyRadarOnRush } from "./residentOps";
 
 function applyDrawOnRush(
   state: GameState,
@@ -87,10 +86,8 @@ export function applyOnRushUnitEffects(
     logs.push(...unnamedLegend3.logs);
   }
 
-  {
-    const radar = applyRadarOnRush(nextState, ownerPlayerId, found.card.cardId);
-    nextState = radar;
-  }
+  // RS-124 超電子レーダーは applySuperRadarOnRush（下）で1回だけ処理する
+  // （residentOps.applyRadarOnRush と二重に適用されてパワーが2枚戻っていた）。
 
   const dslRush = suppressSelf
     ? { state: nextState, logs: [] as string[], handled: true }
