@@ -142,6 +142,12 @@ export function startAbductionCondition(
     cardId: discardedCardId,
     remaining: neededUnits(state, discardedCardId),
   };
+  // 「可能なら満たす」— 追加条件をすべて満たせないなら、満たす必要はない（S ユニットも送らない）。
+  // 出典: grnrngr/faq-card-5 RS-322（自軍 S ユニットが1体しかなければバイオジェット2号の条件は満たさない）。
+  // 母艦（ジャガーバルカン等）で代えられるなら満たす（R-ADD-08、faq-card-5 RS-260）。
+  if (mothershipCommands(state, ctx).length === 0 && materialsFor(state, ctx).length < ctx.remaining) {
+    return state;
+  }
   const next = proceed(state, ctx);
   return next.pendingEffectChoice ? next : finish(next, ctx);
 }

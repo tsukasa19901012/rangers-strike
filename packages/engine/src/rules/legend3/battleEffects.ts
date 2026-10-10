@@ -215,11 +215,9 @@ export function resolveLegend3EnterBattle(
       // RS-127 / PR-015【バイオ粒子斬り】自軍ターン中、これがバトルエリアに出るとき、「OT」の自軍コマンドを
       // 2つ選んでパワーゾーンに送ってもよい。そうしたとき、このターン、これは「SP2」「BP＋3000」。
       if (state.activePlayer !== playerId) return { state, logs: [] };
+      // ピンクフラッシュ【プリズムブーツ】で「OT」になったホールド状態のコマンドも数える（faq-card-3 RS-127 Q1）。
       const otCommands = state.players[playerId].command
-        .filter((c) => {
-          const def = getDefinition(state.definitions, c.cardId);
-          return !!def && cardCategories(def).includes("OT");
-        })
+        .filter((c) => commandCategoriesNow(state, c).includes("OT"))
         .map((c) => c.instanceId);
       if (otCommands.length < 2) return { state, logs: [] };
       const withChoice = startMultiCommandChoice(state, {
@@ -311,4 +309,22 @@ export function isLegend3EnterBattleEffect(effectId: string): boolean {
     "bio_particle_slash",
     "anti_bio_cannon",
   ].includes(effectId);
+}
+
+/**
+ * コマンドゾーンのカードの現在のカテゴリ。RS-270 ピンクフラッシュ【プリズムブーツ】
+ * 「このターン、自分と相手のコマンドゾーンにあるホールド状態のコマンドのカテゴリは、すべて「OT」になる」を反映する。
+ */
+export function commandCategoriesNow(state: GameState, card: CardInstance): string[] {
+  const def = getDefinition(state.definitions, card.cardId);
+  const printed = def ? cardCategories(def) : [];
+  if (!card.commandHeld) return printed;
+  for (const pid of ["player1", "player2"] as const) {
+    for (const category of ["OT", "ET", "MA", "WB", "DA"]) {
+      if (hasTurnRuleModifier(state.players[pid], `rs_category_modify_all_held::${category}`)) {
+        return [category];
+      }
+    }
+  }
+  return printed;
 }

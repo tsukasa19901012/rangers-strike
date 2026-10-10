@@ -1064,6 +1064,16 @@ export function resolveBattlePendingCore(
         }),
       };
     }
+    if (pending.mirageBeamDefenderDiscard) {
+      const player = resolved.players[pending.defenderPlayerId];
+      resolved = {
+        ...resolved,
+        ...updatePlayer(resolved, pending.defenderPlayerId, {
+          ...player,
+          discard: [...player.discard, pending.mirageBeamDefenderDiscard],
+        }),
+      };
+    }
     return {
       state: finishBattleEntryIf(
         restorePhaseActivePlayerUnlessBlocked(

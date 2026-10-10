@@ -176,6 +176,10 @@ export type PendingBattle = {
   mirageBeamBpOverride?: number;
   /** RS-131: バトル後に捨てるため公開したデッキカード。 */
   mirageBeamDiscard?: CardInstance;
+  /** RS-131: アタックされたメッツラーの【ミラージュビーム】（faq-card-3 RS-131 Q1）— 防御側の BP 上書き。 */
+  mirageBeamDefenderBpOverride?: number;
+  /** RS-131: 防御側のメッツラーが公開したデッキカード（バトル後に防御側の捨札へ）。 */
+  mirageBeamDefenderDiscard?: CardInstance;
 };
 
 export type PendingRush = {

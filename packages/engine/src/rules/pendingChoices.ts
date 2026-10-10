@@ -1,3 +1,4 @@
+import { checkWinner } from "../core/createGame";
 import { finalizeEffectRush, hasPendingPromptBlockingEffectRush } from "../events/emitUnitRushed";
 import { applyOnRushUnitEffects } from "./onRushUnitEffects";
 import {
@@ -526,7 +527,10 @@ export function isValidEffectChoiceTarget(
   }
 
   if (pending.effectId === "fire_sword") {
-    return !!findInZone(state.players[pending.playerId], "operation", instanceId);
+    return (
+      !!findInZone(state.players[pending.playerId], "operation", instanceId) ||
+      !!findInZone(state.players[opponent(pending.playerId)], "operation", instanceId)
+    );
   }
 
   if (pending.effectId === "no_e58fa4") {
@@ -2039,7 +2043,10 @@ export function startFireSwordOperationChoice(
     phasePlayerId: PlayerId;
   },
 ): GameState | null {
-  const valid = state.players[params.playerId].operation.map((c) => c.instanceId);
+  const valid = [
+    ...state.players[params.playerId].operation,
+    ...state.players[opponent(params.playerId)].operation,
+  ].map((c) => c.instanceId);
   if (valid.length === 0) return null;
   return openEffectChoice(state, {
     playerId: params.playerId,
@@ -3217,7 +3224,11 @@ export function applyEffectChoiceSelect(
         return finishChoice(nextState, pending, formatInstanceIdsAsNames(nextState, selected));
       }
       if (pending.effectId === "fire_sword") {
-        const owner = state.players[pending.playerId];
+        // 「常駐しているオペレーションを1つ選んで、持ち主のパワーゾーンに送って」— 敵軍の常駐も選べる（atwiki/page-364）。
+        const ownerId: PlayerId = findInZone(state.players[pending.playerId], "operation", instanceId)
+          ? pending.playerId
+          : opponent(pending.playerId);
+        const owner = state.players[ownerId];
         const found = findInZone(owner, "operation", instanceId);
         if (!found) return { error: "invalid_target" };
         const [, operation] = removeAt(owner.operation, found.index);
@@ -3226,11 +3237,15 @@ export function applyEffectChoiceSelect(
           operation,
           power: [...owner.power, { ...found.card, faceDown: false }],
         };
-        return finishChoice(
-          { ...state, ...updatePlayer(state, pending.playerId, nextOwner) },
+        const finished = finishChoice(
+          { ...state, ...updatePlayer(state, ownerId, nextOwner) },
           pending,
           cardName(state.definitions, found.card.cardId),
         );
+        if ("error" in finished || finished.state.winner) return finished;
+        // RS-244 命の泉などが場を離れたら、その時点で勝敗を判定する（faq-card-3 RS-130 Q2: 互いに7点以上ならターンプレイヤーの勝利）。
+        const winner = checkWinner(finished.state);
+        return winner ? { ...finished, state: { ...finished.state, winner } } : finished;
       }
       if (pending.effectId === "no_e58fa4") {
         const enemyId = opponent(pending.playerId);

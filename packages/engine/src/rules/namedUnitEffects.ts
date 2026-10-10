@@ -198,9 +198,13 @@ export function battleDefenderBp(
       legend2UsePrintedDefenderBp(state, pending) ||
       legend3UsePrintedDefenderBp(state, pending));
 
-  const base = usePrintedBp
-    ? unitBp(getDefinition(state.definitions, defenderFound.card.cardId))
-    : effectiveBp(state, defenderOwner, defenderFound.card);
+  const mirageOverride = pending.substituteInstanceId ? undefined : pending.mirageBeamDefenderBpOverride;
+  const base =
+    mirageOverride !== undefined
+      ? mirageOverride + (defenderFound.card.bpModifier ?? 0)
+      : usePrintedBp
+        ? unitBp(getDefinition(state.definitions, defenderFound.card.cardId))
+        : effectiveBp(state, defenderOwner, defenderFound.card);
 
   if (usePrintedBp) {
     return base;

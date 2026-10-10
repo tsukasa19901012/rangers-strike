@@ -662,8 +662,7 @@ describe("RS-127 バイオロボ", () => {
   });
 
   // faq-card-3 RS-127 Q1「はい、発動できます。」（プリズムブーツで OT 扱いのコマンド）
-  it.fails("RS-127: 公式Q&A — ピンクフラッシュの【プリズムブーツ】で OT 扱いになったホールド状態のコマンドを送って発動できる（出典: grnrngr/faq-card-3 RS-127 Q1）", () => {
-    // 既知の不具合: CARD-RS-127 【バイオ粒子斬り】の「OT」判定が印刷カテゴリだけを見て、プリズムブーツで OT 扱いになったコマンドを数えない
+  it("RS-127: 公式Q&A — ピンクフラッシュの【プリズムブーツ】で OT 扱いになったホールド状態のコマンドを送って発動できる（出典: grnrngr/faq-card-3 RS-127 Q1）", () => {
     let s = st({
       player1: {
         rush: [inst("RS-270", "pf"), inst("RS-127", "bio")],
@@ -902,8 +901,7 @@ describe("RS-129 バイオジェット2号", () => {
   });
 
   // faq-card-5（RS-322 の項）「いいえ、送る必要はありません。「可能なら満たす」ということは…」
-  it.fails("RS-129: 公式Q&A — 自軍 S ユニットが1体しかなければ、人身略取でもパワーゾーンに送らなくてよい（出典: grnrngr/faq-card-5 RS-322）", () => {
-    // 既知の不具合: CARD-RS-129 人身略取（abduction_material）で、3体に足りない（満たせない）追加条件でも S ユニットを1体ずつ強制で送らせる
+  it("RS-129: 公式Q&A — 自軍 S ユニットが1体しかなければ、人身略取でもパワーゾーンに送らなくてよい（出典: grnrngr/faq-card-5 RS-322）", () => {
     const s = abduct(1);
     expect(s.players.player1.rush).toHaveLength(1);
   });
@@ -951,8 +949,7 @@ describe("RS-130 レッドワン", () => {
     expect(canStrike(s, "RS-130:r1")).toBe(true);
   });
 
-  it.fails("RS-130: 相手の常駐オペレーションも選べ、相手（持ち主）のパワーゾーンに送る（出典: atwiki/page-364「常駐しているオペレーション」「持ち主の」）", () => {
-    // 既知の不具合: CARD-RS-130 【ファイヤーソード】の候補が自軍の常駐オペレーションだけで、敵軍の常駐オペレーションを選べない
+  it("RS-130: 相手の常駐オペレーションも選べ、相手（持ち主）のパワーゾーンに送る（出典: atwiki/page-364「常駐しているオペレーション」「持ち主の」）", () => {
     let s = redOne(3);
     expect(choiceIds(s)).toContain("RS-124:enop");
     s = pick(s, "RS-124:enop");
@@ -979,11 +976,10 @@ describe("RS-130 レッドワン", () => {
   );
 
   // faq-card-3 RS-130 Q2「ターンプレイヤーの勝利となります。」
-  it.fails("RS-130: 公式Q&A — 互いにダメージ7点以上で命の泉をパワーゾーンに送ると、ターンプレイヤーの勝利（出典: grnrngr/faq-card-3 RS-130 Q2）", () => {
-    // 既知の不具合: CARD-RS-130 【ファイヤーソード】で命の泉が場を離れても、その時点で勝敗判定をしない（winner が null のまま）
+  it("RS-130: 公式Q&A — 互いにダメージ7点以上で命の泉をパワーゾーンに送ると、ターンプレイヤーの勝利（出典: grnrngr/faq-card-3 RS-130 Q2）", () => {
     let s = st({
-      player1: { battle: fillers(3), rush: [inst("RS-130", "r1")], operation: [inst("RS-244", "izumi")], power: damageCards(7, "d1") },
-      player2: { power: damageCards(7, "d2") },
+      player1: { battle: fillers(3), rush: [inst("RS-130", "r1")], operation: [inst("RS-244", "izumi")], power: damageCards(7, "d1"), damage: 7 },
+      player2: { power: damageCards(7, "d2"), damage: 7 },
     });
     s = enter(s, "RS-130:r1");
     s = pick(s, "RS-244:izumi");
@@ -1055,8 +1051,7 @@ describe("RS-131 メッツラー", () => {
   });
 
   // faq-card-3 RS-131 Q1「はい、適用されます。」
-  it.fails("RS-131: 公式Q&A — 相手ターン中にアタックされてバトルするときも適用される（出典: grnrngr/faq-card-3 RS-131 Q1）", () => {
-    // 既知の不具合: CARD-RS-131 【ミラージュビーム】をメッツラーがアタックしたときだけ処理し、アタックされたバトルでは山札をめくらない
+  it("RS-131: 公式Q&A — 相手ターン中にアタックされてバトルするときも適用される（出典: grnrngr/faq-card-3 RS-131 Q1）", () => {
     let s = st(
       {
         activePlayer: "player2",

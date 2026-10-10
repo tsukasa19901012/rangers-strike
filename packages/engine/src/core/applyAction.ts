@@ -2687,6 +2687,9 @@ function applyActionCore(
         attackerFound.card.cardId,
       );
       let battleState = miragePrep.state;
+      // RS-131【ミラージュビーム】「このユニットがバトルするとき」— アタックされたときも山札をめくる（faq-card-3 RS-131 Q1）。
+      const defenderMirage = prepareMirageBeamForBattle(battleState, enemyId, defenderFound.card.cardId);
+      battleState = defenderMirage.state;
       battleState = {
         ...battleState,
         ...updatePlayer(
@@ -2708,6 +2711,8 @@ function applyActionCore(
         phasePlayerId: playerId,
         mirageBeamBpOverride: miragePrep.bpOverride,
         mirageBeamDiscard: miragePrep.revealedCard,
+        mirageBeamDefenderBpOverride: defenderMirage.bpOverride,
+        mirageBeamDefenderDiscard: defenderMirage.revealedCard,
       };
 
       // ルール: RS-019 超力／RK-186【Jパンチ】 — アタックするとき、ホールドするコマンドの数をアタックした
