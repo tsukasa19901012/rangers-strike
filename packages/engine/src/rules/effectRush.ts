@@ -48,6 +48,7 @@ import {
 import { applyMultipleFieldZordMaterials } from "./zordExtended";
 import { canUseMothershipForZordRush } from "./mothership";
 import { buildEffectHoldPayment } from "./commandPayment";
+import { markBattleBlocked } from "./turnModifiers";
 
 export const EFFECT_RUSH_PICK = "effect_rush_pick";
 export const EFFECT_RUSH_MATERIAL = "effect_rush_material";
@@ -235,6 +236,8 @@ export type StartEffectRushInput = {
   alwaysAsk?: boolean;
   /** 「出す」（任意でない）効果ラッシュ。候補が上限以下なら選択なしで全員を出す。 */
   mandatory?: boolean;
+  /** 出したユニットは、このターン、バトルエリアに出られない。 */
+  blockBattleEntryThisTurn?: boolean;
 };
 
 /**
@@ -259,6 +262,7 @@ export function startEffectRush(state: GameState, input: StartEffectRushInput): 
     sourceInstanceId: input.sourceInstanceId,
     fromZone: input.fromZone,
     requireConditions: input.requireConditions,
+    blockBattleEntryThisTurn: input.blockBattleEntryThisTurn,
     queue: [],
   };
 
@@ -325,11 +329,12 @@ function placeUnit(state: GameState, instanceId: string): GameState {
   const found = findInZone(owner, pending.fromZone, instanceId);
   if (!found) return state;
   const zoneCards = owner[pending.fromZone].filter((c) => c.instanceId !== instanceId);
-  const nextOwner: PlayerState = {
+  let nextOwner: PlayerState = {
     ...owner,
     [pending.fromZone]: zoneCards,
     rush: [...owner.rush, stripCommandFlags(found.card)],
   };
+  if (pending.blockBattleEntryThisTurn) nextOwner = markBattleBlocked(nextOwner, instanceId);
   const placed = { ...state, ...updatePlayer(state, pending.playerId, nextOwner) };
   const result = finalizeEffectRush(placed, pending.playerId, [instanceId], pending.phasePlayerId);
   return {

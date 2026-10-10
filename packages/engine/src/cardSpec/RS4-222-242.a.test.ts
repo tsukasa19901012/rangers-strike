@@ -136,8 +136,7 @@ describe("RS-222 タイムピンク", () => {
   });
 
   // NC（CN4）の効果なので、タイムピンクの NC が成立していなければ【戦闘指揮】は働かない。
-  // 既知の不具合: CARD-RS-222 タイムピンク自身の NC（4番目）が成立していなくても【戦闘指揮】が発動する
-  it.fails("RS-222: タイムピンクの NC が成立していない（2番目に出た）ときは、次の S ユニットに【戦闘指揮】は働かない（出典: atwiki/page-414「CN：4」・R-CN-02）", () => {
+  it("RS-222: タイムピンクの NC が成立していない（2番目に出た）ときは、次の S ユニットに【戦闘指揮】は働かない（出典: atwiki/page-414「CN：4」・R-CN-02）", () => {
     const s = pinkThen("RS-139", { pinkPos: 2 });
     expect(s.pendingEffectChoice?.effectId).not.toBe("battle_command");
     expect(releasedEnemy(s)).toBe(0);
@@ -182,7 +181,8 @@ describe("RS-222 タイムピンク", () => {
 
   // faq-card-4 RS-222 Q2「「RS-106 デカレッド」は「RS-140 コロン」の効果でコンビネーションナンバーが２になっていますので、２枚の敵軍コマンドをリリースすれば…」
   it("RS-222: 公式Q&A — 敵軍ラッシュエリアにコロンがあると、タイムピンクからコンビネーションしたデカレッド（CN1→2）の【ジュウクンドー】は敵軍コマンド2枚のリリースで発動できる（出典: grnrngr/faq-card-4 RS-222 Q2・faq-card-2/3）", () => {
-    let s = pinkThen("RS-106", { heldCount: 2, p2: { rush: [inst("RS-140", "colon")], battle: [inst("TST-UNIT-0", "eb")] } });
+    // コロンがあるとタイムピンク自身も CN4→5 になるので、【戦闘指揮】（CN の効果）が有効になるよう5番目に出す（R-CN-02）。
+    let s = pinkThen("RS-106", { pinkPos: 5, heldCount: 2, p2: { rush: [inst("RS-140", "colon")], battle: [inst("TST-UNIT-0", "eb")] } });
     const use = legal(s).find((a) => a.type === "use_juu_kun_do" && a.attackerInstanceId === "RS-106:nx");
     expect(use).toBeDefined();
     s = act(s, use!);
@@ -190,7 +190,7 @@ describe("RS-222 タイムピンク", () => {
   });
 
   it("RS-222: 公式Q&A — 同条件で敵軍コマンドが1枚しかリリースできなければ【ジュウクンドー】は発動できない（出典: grnrngr/faq-card-4 RS-222 Q2）", () => {
-    const s = pinkThen("RS-106", { heldCount: 1, p2: { rush: [inst("RS-140", "colon")], battle: [inst("TST-UNIT-0", "eb")] } });
+    const s = pinkThen("RS-106", { pinkPos: 5, heldCount: 1, p2: { rush: [inst("RS-140", "colon")], battle: [inst("TST-UNIT-0", "eb")] } });
     expect(legal(s).some((a) => a.type === "use_juu_kun_do" && a.attackerInstanceId === "RS-106:nx")).toBe(false);
   });
 });
@@ -232,8 +232,7 @@ describe("RS-223 タック", () => {
   }
 
   // 「自分がMユニットをラッシュするとき、敵軍コマンドを1つリリースしてもよい。そうしたとき…自軍コマンドを1つホールドしたことにできる」
-  // 既知の不具合: CARD-RS-223【緊急システム発動要請】が未実装（敵軍コマンドのリリースでラッシュのホールドを代替できない）
-  it.fails("RS-223: 自軍コマンドがなくても、敵軍コマンドを1つリリースして M ユニットをラッシュできる（出典: atwiki/page-406）", () => {
+  it("RS-223: 自軍コマンドがなくても、敵軍コマンドを1つリリースして M ユニットをラッシュできる（出典: atwiki/page-406）", () => {
     const s = tuckRush([], 1);
     expect(canStartRush(s, "player1", "SPEC-WB-M:m")).toBe(true);
     const r = rushFromHand(s, "player1", "SPEC-WB-M:m");
@@ -251,13 +250,11 @@ describe("RS-223 タック", () => {
     expect(r.state.players.player2.command[0]?.commandHeld).toBe(true);
   });
 
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-223: S ユニットのラッシュには使えない（自軍コマンドがなければラッシュできない）（出典: atwiki/page-406「Mユニットをラッシュするとき」）", () => {
     const s = tuckRush([], 1, inst("TST-UNIT-0", "s"));
     expect(canStartRush(s, "player1", "TST-UNIT-0:s")).toBe(false);
   });
 
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-223: タックが自軍ラッシュエリアになければ、自軍コマンドなしで M ユニットはラッシュできない（出典: atwiki/page-406「これが自軍ラッシュエリアにある間」）", () => {
     const s = st(
       {
@@ -271,25 +268,58 @@ describe("RS-223 タック", () => {
   });
 
   // faq-card-4 RS-223 Q3「はい、できます。」（M ユニットとリリースする敵軍コマンドのカテゴリが違ってもよい）
-  // 既知の不具合: CARD-RS-223【緊急システム発動要請】が未実装
-  it.fails("RS-223: 公式Q&A — ラッシュする M ユニット（ET）とリリースする敵軍コマンド（WB）のカテゴリが違ってもラッシュできる（出典: grnrngr/faq-card-4 RS-223 Q3）", () => {
+  it("RS-223: 公式Q&A — ラッシュする M ユニット（ET）とリリースする敵軍コマンド（WB）のカテゴリが違ってもラッシュできる（出典: grnrngr/faq-card-4 RS-223 Q3）", () => {
     const s = tuckRush([], 1, inst("SPEC-ET-M", "m"));
     const r = rushFromHand(s, "player1", "SPEC-ET-M:m");
     expect(r.ok).toBe(true);
     expect(zoneOf(r.state, "player1", "SPEC-ET-M:m")).toBe("rush");
   });
 
-  it.todo(
-    "RS-223: 公式Q&A — 緊急システム発動要請で特徴「航空機」のユニットをラッシュしても、バラクティカの【編隊出撃】を発動できる（出典: grnrngr/faq-card-4 RS-223 Q1・faq-card-5 RS-296）— 【緊急システム発動要請】自体が未実装（上の it.fails）のため組み立てられない",
-  );
+  // faq-card-5 RS-296「はい、発動することができます。」
+  it("RS-223: 公式Q&A — 緊急システム発動要請で特徴「航空機」のユニットをラッシュしても、バラクティカの【編隊出撃】を発動できる（出典: grnrngr/faq-card-4 RS-223 Q1・faq-card-5 RS-296）", () => {
+    const AIR_M = sUnit("SPEC-AIR-M", { size: "M", category: "OT", bp: 4000, powerCost: 2, features: ["航空機"] });
+    const s = st(
+      {
+        phase: "rush",
+        player1: {
+          rush: [inst("RS-223", "tk"), inst("RS-296", "bal")],
+          hand: [inst("SPEC-AIR-M", "a1"), inst("SPEC-AIR-M", "a2")],
+          power: powerCards(4),
+          command: [],
+        },
+        player2: { command: [held("TST-OP", "eh0")] },
+      },
+      [AIR_M],
+    );
+    const r = rushFromHand(s, "player1", "SPEC-AIR-M:a1");
+    expect(r.ok).toBe(true);
+    expect(r.state.players.player2.command[0]?.commandHeld).toBe(false);
+    expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-296");
+    const after = pick(r.state, "SPEC-AIR-M:a2");
+    expect(zoneOf(after, "player1", "SPEC-AIR-M:a2")).toBe("rush");
+  });
 
   it.todo(
-    "RS-223: 公式Q&A — ジャガーバルカン／デカベースクローラーで追加条件のかわりにホールドするコマンドは「ラッシュに必要なコマンド」ではなく、敵軍コマンドのリリースで代替できない（出典: grnrngr/faq-card-4 RS-223 Q2）— 【緊急システム発動要請】自体が未実装のため組み立てられない",
+    "RS-223: 公式Q&A — ジャガーバルカン／デカベースクローラーで追加条件のかわりにホールドするコマンドは「ラッシュに必要なコマンド」ではなく、敵軍コマンドのリリースで代替できない（出典: grnrngr/faq-card-4 RS-223 Q2）— XL ユニット（母艦）の追加条件のかわりのホールドを、通常の支払いと分けて公開 API で組み立てられなかった",
   );
 
-  it.todo(
-    "RS-223: 公式Q&A — 魔女バンドーラがあるとき、緊急システム発動要請で恐竜をラッシュしても、リリースした敵軍コマンドは捨札にならない（出典: grnrngr/faq-card-6 RS-374）— 【緊急システム発動要請】自体が未実装のため組み立てられない",
-  );
+  // faq-card-6 RS-374「いいえ、捨札にはなりません。」
+  it("RS-223: 公式Q&A — 魔女バンドーラがあるとき、緊急システム発動要請で恐竜をラッシュしても、リリースした敵軍コマンドは捨札にならない（出典: grnrngr/faq-card-6 RS-374）", () => {
+    const DINO_M = sUnit("SPEC-DINO-M", { size: "M", category: "WB", bp: 4000, powerCost: 2, features: ["恐竜"] });
+    const s = st(
+      {
+        phase: "rush",
+        player1: { rush: [inst("RS-223", "tk")], hand: [inst("SPEC-DINO-M", "d")], power: powerCards(4), command: [] },
+        player2: { rush: [inst("RS-374", "bandora")], command: [held("TST-OP", "eh0")] },
+      },
+      [DINO_M],
+    );
+    const r = rushFromHand(s, "player1", "SPEC-DINO-M:d");
+    expect(r.ok).toBe(true);
+    expect(zoneOf(r.state, "player1", "SPEC-DINO-M:d")).toBe("rush");
+    expect(zoneOf(r.state, "player2", "TST-OP:eh0")).toBe("command");
+    expect(r.state.players.player2.command[0]?.commandHeld).toBe(false);
+  });
 
   // faq-card-6 RS-358「はい、できます。」（デンジサンダー投げでタックを選び、結果として出さずに済ませる）
   it("RS-223: 公式Q&A（相互参照）— 敵軍デンジピンク【デンジサンダー投げ】でタックを選ぶと、出られないのでラッシュエリアに残る（出典: grnrngr/faq-card-6 RS-358）", () => {
@@ -430,8 +460,7 @@ describe("RS-225 ガトリングレオ", () => {
   }
 
   // 「このユニットからコンビネーションする同カテゴリのLユニットは…敵軍ラッシュエリアのユニットにアタックできる」
-  // 既知の不具合: CARD-RS-225【大回転獅子爆裂弾】が未実装（JC した同カテゴリの L ユニットが敵軍ラッシュエリアにアタックできない）
-  it.fails("RS-225: ガトリングレオから JC した MA の L ユニットは敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-381）", () => {
+  it("RS-225: ガトリングレオから JC した MA の L ユニットは敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-381）", () => {
     const s = leoThen("SPEC-MA-L");
     expect(attackTargets(s, "SPEC-MA-L:nx")).toEqual(expect.arrayContaining(["TST-UNIT-0:er", "TST-UNIT-0:eb"]));
   });
@@ -442,13 +471,11 @@ describe("RS-225 ガトリングレオ", () => {
     expect(attackTargets(s, "SPEC-WB-L:nx")).toContain("TST-UNIT-0:eb");
   });
 
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-225: L ユニットでない（MA の M ユニット）なら敵軍ラッシュエリアにアタックできない（出典: atwiki/page-381「Lユニット」）", () => {
     const s = leoThen("SPEC-MA-M");
     expect(attackTargets(s, "SPEC-MA-M:nx")).not.toContain("TST-UNIT-0:er");
   });
 
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-225: ガトリングレオがいなければ MA の L ユニットは敵軍ラッシュエリアにアタックできない（出典: atwiki/page-381）", () => {
     let s = st({ player1: { rush: [inst("SPEC-MA-L", "nx")] }, player2: { rush: [inst("TST-UNIT-0", "er")], battle: [inst("TST-UNIT-0", "eb")] } }, SPECS);
     s = enter(s, "SPEC-MA-L:nx");
@@ -507,8 +534,7 @@ describe("RS-226 キラーオー", () => {
   }
 
   // 「これがバトルで撃破したユニットよりBPの低いユニットを、相手は自分自身のユニットの中から1体選び撃破する」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: バトルで撃破したとき、相手は撃破されたユニットより BP の低い自分のユニット（バトルエリア・ラッシュエリア）から1体選んで撃破する（出典: atwiki/page-376）", () => {
+  it("RS-226: バトルで撃破したとき、相手は撃破されたユニットより BP の低い自分のユニット（バトルエリア・ラッシュエリア）から1体選んで撃破する（出典: atwiki/page-376）", () => {
     let s = killerAttack({
       battle: [inst("SPEC-E5", "t"), inst("SPEC-E4", "b4")],
       rush: [inst("SPEC-E3", "r3"), inst("SPEC-E5", "r5")],
@@ -522,14 +548,12 @@ describe("RS-226 キラーオー", () => {
     expect(zoneOf(s, "player2", "SPEC-E4:b4")).toBe("battle");
   });
 
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-226: BP の低いユニットがいなければ何も撃破しない（出典: atwiki/page-376）", () => {
     const s = killerAttack({ battle: [inst("SPEC-E5", "t")], rush: [inst("SPEC-E5", "r5")] });
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(zoneOf(s, "player2", "SPEC-E5:r5")).toBe("rush");
   });
 
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-226: 敵軍ターン中、アタックしてきたユニットをバトルで撃破しても発動しない（出典: atwiki/page-376「自軍ターン中」）", () => {
     let s = st(
       {
@@ -547,8 +571,7 @@ describe("RS-226 キラーオー", () => {
   });
 
   // atwiki/page-376 Q4「いいえ、選ぶことはできません。「〜より低い」は同じ値を含みません。」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: 公式Q&A — 撃破したユニットと同じ BP のユニットは選べない（出典: atwiki/page-376 Q4）", () => {
+  it("RS-226: 公式Q&A — 撃破したユニットと同じ BP のユニットは選べない（出典: atwiki/page-376 Q4）", () => {
     const s = killerAttack({ battle: [inst("SPEC-E5", "t")], rush: [inst("SPEC-E5", "same"), inst("SPEC-E4", "low")] });
     expect(choiceIds(s)).toEqual(["SPEC-E4:low"]);
   });
@@ -558,8 +581,7 @@ describe("RS-226 キラーオー", () => {
   const M6 = sUnit("SPEC-M6", { size: "M", bp: 6000 });
 
   // faq-card-4 RS-226 Q2「その場合は、バトルの時点でのＢＰを元に選んでください。」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: 公式Q&A — 撃破したユニットの BP は、気力等で上がっていればバトルの時点の BP（3000+2000=5000）を参照する（出典: grnrngr/faq-card-4 RS-226 Q2）", () => {
+  it("RS-226: 公式Q&A — 撃破したユニットの BP は、気力等で上がっていればバトルの時点の BP（3000+2000=5000）を参照する（出典: grnrngr/faq-card-4 RS-226 Q2）", () => {
     // 敵軍の気力（RS-017）: 敵軍から見た「敵軍ターン中」（＝自軍ターン）に、リリース状態のコマンド2つで S ユニット BP+2000
     const s = killerAttack(
       {
@@ -576,16 +598,14 @@ describe("RS-226 キラーオー", () => {
   });
 
   // faq-card-4 RS-226 Q3「その場合は、バトルの時点でのＢＰを参照しますので、ＢＰ５０００より低いＢＰのユニットが対象になります。」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: 公式Q&A — アタックされるとき BP が上がるユニット（ザビーMF：1000+5000）を撃破したら、上がった BP（6000）より低いユニットが対象（出典: grnrngr/faq-card-4 RS-226 Q3・atwiki/page-376 Q3）", () => {
+  it("RS-226: 公式Q&A — アタックされるとき BP が上がるユニット（ザビーMF：1000+5000）を撃破したら、上がった BP（6000）より低いユニットが対象（出典: grnrngr/faq-card-4 RS-226 Q3・atwiki/page-376 Q3）", () => {
     const s = killerAttack({ battle: [inst("RK-056", "t")], rush: [inst("SPEC-M5", "m5"), inst("SPEC-M6", "m6")] }, "RK-056:t", [M5, M6]);
     expect(zoneOf(s, "player2", "RK-056:t")).toBe("discard");
     expect(choiceIds(s)).toEqual(["SPEC-M5:m5"]);
   });
 
   // atwiki/page-376 Q5「『BP5000よりBPの低いユニット』です。【分析能力】は…BPの変動自体を無効にする能力ではない」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: 公式Q&A — デスガロン【分析能力】下でガタックMF（2000、アタックされるとき+3000）を撃破したとき、選ぶのは「BP5000 より低い」ユニット（出典: atwiki/page-376 Q5）", () => {
+  it("RS-226: 公式Q&A — デスガロン【分析能力】下でガタックMF（2000、アタックされるとき+3000）を撃破したとき、選ぶのは「BP5000 より低い」ユニット（出典: atwiki/page-376 Q5）", () => {
     const s = killerAttack(
       { battle: [inst("RK-268", "dg"), inst("RK-053", "t")], rush: [inst("SPEC-M4", "m4"), inst("SPEC-M5", "m5")] },
       "RK-053:t",
@@ -596,8 +616,7 @@ describe("RS-226 キラーオー", () => {
   });
 
   // faq-card-4 RS-226 Q1「「RS-054 アバレッド」を選ぶことはできません…先に「RS-226 キラーオー」の効果の対象を選択してください」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: 公式Q&A — 撃破したアバレッドAM の効果で捨札から出るアバレッドは選べない（キラーオーの選択が先）（出典: grnrngr/faq-card-4 RS-226 Q1）", () => {
+  it("RS-226: 公式Q&A — 撃破したアバレッドAM の効果で捨札から出るアバレッドは選べない（キラーオーの選択が先）（出典: grnrngr/faq-card-4 RS-226 Q1）", () => {
     let s = st(
       {
         player1: { battle: [inst("RS-226", "k")] },
@@ -615,8 +634,7 @@ describe("RS-226 キラーオー", () => {
   });
 
   // faq-card-5 RS-289「はい、選ぶことができます。」
-  // 既知の不具合: CARD-RS-226【爆竜必殺デススティンガー】が未実装（バトルで撃破しても相手の BP の低いユニットの撃破が起きない）
-  it.fails("RS-226: 公式Q&A（相互参照）— ドラゴンレンジャー（BP6000）を撃破したとき、【獣奏剣】で BP6000 になっていた本来 BP5000 の恐竜ユニットを選べる（出典: grnrngr/faq-card-5 RS-289）", () => {
+  it("RS-226: 公式Q&A（相互参照）— ドラゴンレンジャー（BP6000）を撃破したとき、【獣奏剣】で BP6000 になっていた本来 BP5000 の恐竜ユニットを選べる（出典: grnrngr/faq-card-5 RS-289）", () => {
     const DINO5 = sUnit("SPEC-DINO5", { bp: 5000, features: ["恐竜"] });
     const s = killerAttack({ battle: [inst("RS-289", "t")], rush: [inst("SPEC-DINO5", "d")] }, "RS-289:t", [DINO5]);
     expect(zoneOf(s, "player2", "RS-289:t")).toBe("discard");
@@ -731,8 +749,7 @@ describe("RS-228 爆竜ステゴスライドン", () => {
   }
 
   // 「…と書かれている自軍ユニットを1体選んでもよい。そうしたとき、このターン、そのテキストを無効にする」
-  // 既知の不具合: CARD-RS-228【超スライダー進化】が未実装（バトルエリアに出ても対象を選ぶ選択が開かない）
-  it.fails("RS-228: 「コマンドを1つホールドしなければ出られない」自軍ユニット（トップゲイラー）を選ぶと、このターン、ホールドせずに出られる（出典: atwiki/page-1285）", () => {
+  it("RS-228: 「コマンドを1つホールドしなければ出られない」自軍ユニット（トップゲイラー）を選ぶと、このターン、ホールドせずに出られる（出典: atwiki/page-1285）", () => {
     let s = stego([inst("RS-227", "g")]);
     expect(choiceIds(s)).toContain("RS-227:g");
     s = passEntry(pick(s, "RS-227:g"));
@@ -741,22 +758,19 @@ describe("RS-228 爆竜ステゴスライドン", () => {
     expect(zoneOf(s, "player1", "RS-227:g")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-228【超スライダー進化】が未実装（バトルエリアに出ても対象を選ぶ選択が開かない）
-  it.fails("RS-228: 選ばないこともできる（任意。選ばなければホールドが必要なまま）（出典: atwiki/page-1285「選んでもよい」）", () => {
+  it("RS-228: 選ばないこともできる（任意。選ばなければホールドが必要なまま）（出典: atwiki/page-1285「選んでもよい」）", () => {
     let s = stego([inst("RS-227", "g")]);
     expect(canSkip(s)).toBe(true);
     s = passEntry(skip(s));
     expect(canEnter(s, "RS-227:g")).toBe(false);
   });
 
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-228: 「2つホールドしなければ」と書かれたユニット（ブラキオサウルス）は選べない（出典: atwiki/page-1285「コマンドを1つホールドしなければ」）", () => {
     const s = stego([inst("RS-229", "br"), inst("RS-227", "g")]);
     expect(choiceIds(s)).not.toContain("RS-229:br");
   });
 
-  // 既知の不具合: CARD-RS-228【超スライダー進化】が未実装（バトルエリアに出ても対象を選ぶ選択が開かない）
-  it.fails("RS-228: 無効になるのは「このターン」だけ（次の自軍ターンにはホールドが必要）（出典: atwiki/page-1285「このターン」）", () => {
+  it("RS-228: 無効になるのは「このターン」だけ（次の自軍ターンにはホールドが必要）（出典: atwiki/page-1285「このターン」）", () => {
     let s = stego([inst("RS-227", "g")]);
     s = passEntry(pick(s, "RS-227:g"));
     s = { ...s, players: { ...s.players, player1: { ...s.players.player1, deck: deckCards(6), command: [held("TST-OP", "c")] } } };

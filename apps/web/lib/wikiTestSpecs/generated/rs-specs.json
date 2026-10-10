@@ -3142,10 +3142,11 @@
     "expectedDslKeywords": [
       "opponent_hand_counter_to_power"
     ],
-    "operationKind": "counter",
+    "operationKind": "instant",
     "expectedMechanisms": [
-      "operation_counter_reaction"
-    ]
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
   },
   {
     "cardId": "RS-186",

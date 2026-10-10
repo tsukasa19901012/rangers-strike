@@ -24,6 +24,7 @@ import {
   clearEffectBattleEntryWindows,
 } from "./restrictions";
 import { tryDestroyStrikerForStrike, tryLeaveField } from "./operationCounters";
+import { magiPunchCounterIds } from "./legend1/set4NamedEffects";
 
 export function earthForceActive(state: GameState): boolean {
   return (
@@ -132,9 +133,12 @@ export function applyPlasmaEnergyCounter(
 export function hasStrikeReactions(
   state: GameState,
   defenderId: PlayerId,
+  pending?: PendingStrike,
 ): boolean {
   if (collectFiveTechInterceptors(state, defenderId).length > 0) return true;
   if (canPlayPlasmaEnergyCounter(state, defenderId)) return true;
+  // RS-184 マジパンチ（BP8000以下の敵軍ユニットにストライクされたとき）。
+  if (pending && magiPunchCounterIds(state, defenderId, pending).length > 0) return true;
 
   return false;
 }

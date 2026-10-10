@@ -1,0 +1,21 @@
+{
+  "effects": [
+    {
+      "id": "kanabiku",
+      "name": "カーナビック",
+      "text": "相手の手札を見て、カウンターのオペレーションカードがあれば1枚選び、持ち主のパワーゾーンにダメージにして置く。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "opponent_hand_counter_to_power",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ]
+}

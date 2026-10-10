@@ -247,35 +247,25 @@ export function passiveBpBonus(
   const player = state.players[playerId];
   let bonus = 0;
 
-  // RS-017 気力（常駐）: 枚数分重複する（R-CONT-01）。
-  const kiCount = player.operation.filter(
-    (card) => getCardEffect(card.cardId)?.effectId === "ki_power",
-  ).length;
-  if (
-    kiCount > 0 &&
-    state.activePlayer !== playerId &&
-    isSmallUnit(state.definitions, instance.cardId)
-  ) {
-    const inField =
-      player.rush.some((c) => c.instanceId === instance.instanceId) ||
-      player.battle.some((c) => c.instanceId === instance.instanceId);
-    if (inField) {
-      const released = player.command.filter((c) => !c.commandHeld).length;
-      bonus += kiCount * released * 1000;
+  const inField =
+    player.rush.some((c) => c.instanceId === instance.instanceId) ||
+    player.battle.some((c) => c.instanceId === instance.instanceId);
+  if (inField && isSmallUnit(state.definitions, instance.cardId)) {
+    const features = getDefinition(state.definitions, instance.cardId)?.features ?? [];
+    for (const op of player.operation) {
+      const aura = permanentSUnitBpAura(state.definitions, op.cardId);
+      if (!aura) continue;
+      // RS-017／RS-246 気力（常駐）: 敵軍ターン中、リリース状態の自軍コマンド1つにつき BP＋（枚数分重複、R-CONT-01）。
+      if (aura.kind === "per_released_command_enemy_turn") {
+        if (state.activePlayer === playerId) continue;
+        const released = player.command.filter((c) => !c.commandHeld).length;
+        bonus += released * aura.amount;
+      } else if (features.includes(aura.feature)) {
+        // RS-179 恐竜やのカレー（常駐）: 特徴「イエロー」を持つ自軍SユニットはBP＋2000（枚数分重複、R-CONT-01）。
+        // ルール: R-RUSH-05 — 適用中の継続効果はラッシュの瞬間から反映される（最初から修正済みの状態でラッシュされた扱い）。
+        bonus += aura.amount;
+      }
     }
-  }
-
-  // RS-179 恐竜やのカレー（常駐）: 特徴「イエロー」を持つ自軍SユニットはBP＋2000（枚数分重複、R-CONT-01）。
-  // ルール: R-RUSH-05 — 適用中の継続効果はラッシュの瞬間から反映される（最初から修正済みの状態でラッシュされた扱い）。
-  const curries = player.operation.filter((c) => c.cardId === "RS-179").length;
-  if (
-    curries > 0 &&
-    isSmallUnit(state.definitions, instance.cardId) &&
-    (getDefinition(state.definitions, instance.cardId)?.features ?? []).includes("イエロー") &&
-    (player.rush.some((c) => c.instanceId === instance.instanceId) ||
-      player.battle.some((c) => c.instanceId === instance.instanceId))
-  ) {
-    bonus += curries * 2000;
   }
 
   const auraTarget = getAuraPowerInstanceId(player);
@@ -311,6 +301,69 @@ export function spSetValueOf(
   return sComboFinisherSetValues(state, playerId, instance)?.sp;
 }
 
+type PermanentSUnitBpAura =
+  | { kind: "per_released_command_enemy_turn"; amount: number }
+  | { kind: "feature"; feature: string; amount: number };
+
+const permanentAuraCache = new Map<string, PermanentSUnitBpAura | null>();
+
+/**
+ * 常駐オペレーションの「自軍Sユニットは BP＋される」効果を本文から読む（カード ID ではなく文言で判定。
+ * RS-017 と RS-246 の「気力」のように同じ本文のカードは同じ扱い）。
+ * - 「すべての自軍Sユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP＋n される」
+ * - 「特徴「X」を持つ自軍SユニットはBP＋n される」
+ */
+export function permanentSUnitBpAura(
+  definitions: Record<string, CardDefinition>,
+  cardId: string,
+): PermanentSUnitBpAura | null {
+  const cached = permanentAuraCache.get(cardId);
+  if (cached !== undefined) return cached;
+  const def = getDefinition(definitions, cardId);
+  let aura: PermanentSUnitBpAura | null = null;
+  if (def?.type === "operation") {
+    const text = (def.text ?? "").replace(/^※常駐（[^）]*）\s*/, "").trim();
+    const ki = text.match(/^すべての自軍Sユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP[+＋](\d+)される/);
+    const feature = text.match(/^特徴「([^」]+)」を持つ自軍SユニットはBP[+＋](\d+)される。?$/);
+    if (ki) aura = { kind: "per_released_command_enemy_turn", amount: Number(ki[1]) };
+    else if (feature) aura = { kind: "feature", feature: feature[1]!, amount: Number(feature[2]) };
+  }
+  permanentAuraCache.set(cardId, aura);
+  return aura;
+}
+
+const BP_PLUS_INVERT_RE = /ナンバーを持つすべてのSユニットは、BPが「[+＋]」されるかわりにBPが「[-－]」される/;
+const bpInvertSourceCache = new Map<string, boolean>();
+
+function isBpPlusInvertSource(definitions: Record<string, CardDefinition>, cardId: string): boolean {
+  const cached = bpInvertSourceCache.get(cardId);
+  if (cached !== undefined) return cached;
+  const result = BP_PLUS_INVERT_RE.test(getDefinition(definitions, cardId)?.text ?? "");
+  bpInvertSourceCache.set(cardId, result);
+  return result;
+}
+
+/**
+ * 「これが自軍エリアにある間、ナンバーを持つすべてのSユニットは、BPが「＋」されるかわりにBPが「－」される」
+ * （RS-210 ゴーマ16世【大地動転の玉】）が、このユニットに及んでいるか。
+ * どちらのプレイヤーのエリア（ラッシュ・バトル）にあっても、敵味方を問わずナンバーを持つ S ユニットすべてに及ぶ。
+ * 出典: atwiki/page-107、grnrngr/faq-card-3 RS-179 Q1。
+ */
+export function bpPlusInvertedFor(
+  state: Pick<GameState, "players" | "definitions">,
+  instance: CardInstance,
+): boolean {
+  const def = getDefinition(state.definitions, instance.cardId);
+  if (def?.type !== "unit" || def.comboNumber == null) return false;
+  if (!isSmallUnit(state.definitions, instance.cardId)) return false;
+  for (const p of Object.values(state.players)) {
+    for (const c of [...p.rush, ...p.battle]) {
+      if (isBpPlusInvertSource(state.definitions, c.cardId)) return true;
+    }
+  }
+  return false;
+}
+
 export function effectiveBp(
   state: GameState,
   playerId: PlayerId,
@@ -319,12 +372,16 @@ export function effectiveBp(
   // ルール: R-BP-01 — 「BP○○になる」が最優先で、増減は計算しない。
   const setValue = bpSetValueOf(state, playerId, instance);
   if (setValue !== undefined) return setValue;
+  // 「BPが「＋」されるかわりにBPが「－」される」（RS-210【大地動転の玉】等）の下では、BP の増加分を減少として数える。
+  const invert = bpPlusInvertedFor(state, instance);
+  const signed = (delta: number) => (invert && delta > 0 ? -delta : delta);
   const base =
-    instanceBp(state.definitions, instance) +
-    passiveBpBonus(state, playerId, instance) +
-    passiveNamedFieldBpBonus(state, playerId, instance, "general") +
-    promotedKeywordBpBonus(state, playerId, instance) +
-    rideMountedVehicleBpBonus(state, playerId, instance);
+    unitBp(getDefinition(state.definitions, instance.cardId)) +
+    signed(instance.bpModifier ?? 0) +
+    signed(passiveBpBonus(state, playerId, instance)) +
+    signed(passiveNamedFieldBpBonus(state, playerId, instance, "general")) +
+    signed(promotedKeywordBpBonus(state, playerId, instance)) +
+    signed(rideMountedVehicleBpBonus(state, playerId, instance));
   const floor = srBigBatonBpFloor(state, playerId, instance);
   return floor > 0 ? Math.max(base, floor) : base;
 }

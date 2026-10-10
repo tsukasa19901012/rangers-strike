@@ -1,3 +1,4 @@
+import { applyMagiPunchCounter, isSet4EndTurnEffect, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState, CardInstance } from "../types/game";
@@ -1968,7 +1969,7 @@ function applyActionCore(
       nextState = emitStrikeDeclared(nextState, pending);
 
       const defenderId = opponent(playerId);
-      if (hasStrikeReactions(nextState, defenderId)) {
+      if (hasStrikeReactions(nextState, defenderId, pending)) {
         nextState = {
           ...nextState,
           pendingStrike: pending,
@@ -2199,7 +2200,20 @@ function applyActionCore(
       }
 
       if (state.pendingStrike) {
-        return fail("invalid_counter");
+        const pending = state.pendingStrike;
+        const defenderId = opponent(pending.strikerPlayerId);
+        if (playerId !== defenderId) return fail("wrong_player");
+        if (!magiPunchCounterIds(state, defenderId, pending).includes(action.instanceId)) {
+          return fail("invalid_counter");
+        }
+        // RS-184 マジパンチ: ストライクしてきたユニットを持ち主の手札に戻し、ストライクを無効にする。
+        const result = applyMagiPunchCounter(state, defenderId, action.instanceId, pending);
+        const cleared = clearCounterHoldReady(result.state, playerId);
+        if (magiPunchCounterIds(cleared, defenderId, result.pending).length > 0) {
+          // 同じストライクに続けて使える（faq-card-4 RS-184 Q1）。反応窓を開いたままにする。
+          return ok({ ...cleared, pendingStrike: result.pending, activePlayer: defenderId }, result.log);
+        }
+        return completeStrike({ ...cleared, pendingStrike: result.pending }, result.pending, [result.log]);
       }
 
       return fail("no_pending_reaction");
@@ -2272,8 +2286,21 @@ function applyActionCore(
     }
 
     case "confirm_effect_choice": {
+      const confirming = state.pendingEffectChoice;
       const result = applyConfirmEffectChoice(state, playerId);
       if ("error" in result) return fail(result.error);
+      if (
+        result.state.phase === "end" &&
+        !result.state.pendingEffectChoice &&
+        isSet4EndTurnEffect(confirming?.effectId)
+      ) {
+        // RS-192【アタックボード】等、エンドフェイズの任意効果を行った — 残りの「ターンを終えるとき」へ進む。
+        const reopened = tryOpenEndTurnEffectsMenu(result.state, confirming!.phasePlayerId) ?? result.state;
+        return withEndPhaseAutoFinalize(
+          ok(reopened, result.log ?? buildSimpleLogEntry(playerId, "confirm_effect_choice")),
+          playerId,
+        );
+      }
       return withStartPhaseAutoAdvance(
         ok(result.state, result.log ?? buildSimpleLogEntry(playerId, "confirm_effect_choice")),
         playerId,
@@ -2358,6 +2385,9 @@ function applyActionCore(
       ) {
         nextState = tryOpenEndTurnEffectsMenu(nextState, playerId) ?? nextState;
       }
+      if (nextState.phase === "end" && !nextState.pendingEffectChoice && isSet4EndTurnEffect(pending?.effectId)) {
+        nextState = tryOpenEndTurnEffectsMenu(nextState, pending!.phasePlayerId) ?? nextState;
+      }
       return withEndPhaseAutoFinalize(
         withStartPhaseAutoAdvance(
           ok(nextState, result.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice")),
@@ -2420,6 +2450,9 @@ function applyActionCore(
         pending?.effectId === "end_turn_battle_to_rush"
       ) {
         afterSkip = tryOpenEndTurnEffectsMenu(afterSkip, playerId) ?? afterSkip;
+      }
+      if (afterSkip.phase === "end" && !afterSkip.pendingEffectChoice && isSet4EndTurnEffect(pending?.effectId)) {
+        afterSkip = tryOpenEndTurnEffectsMenu(afterSkip, pending!.phasePlayerId) ?? afterSkip;
       }
       return withEndPhaseAutoFinalize(
         withStartPhaseAutoAdvance(

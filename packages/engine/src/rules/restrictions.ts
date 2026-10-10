@@ -1,3 +1,4 @@
+import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
 import { errataBattleEntryBlocked, isDivingOrochi } from "./errataCardEffects";
 import {
   battleHasComboPartner,
@@ -177,6 +178,10 @@ export function requiredBattleEntryHolds(
 ): number {
   let unitHold = unitBattleEntryHoldCount(state, playerId, unit.cardId);
   if (unitHold > 0 && scorchingRoarBypassesHold(unit.cardId, state, playerId)) {
+    unitHold = 0;
+  }
+  // RS-228【超スライダー進化】: このターン、「1つホールドしなければ出られない」テキストを無効にしたユニット。
+  if (unitHold > 0 && sliderEvolutionIgnoresEntryHold(state, playerId, unit.instanceId)) {
     unitHold = 0;
   }
   const lgHold = isMediumUnit(state.definitions, unit.cardId)

@@ -28,7 +28,7 @@ export function applyBaseAttackOnEnter(
   }
 
   const nextState = patchPlayer(state, playerId, (player) =>
-    grantSp1OnPlayer(player, card.instanceId),
+    grantSp1OnPlayer(player, card.instanceId, state.definitions),
   );
   return {
     state: nextState,

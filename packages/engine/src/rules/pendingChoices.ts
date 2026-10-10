@@ -61,6 +61,7 @@ import type {
 } from "../types/game";
 import { clearCostWindow, satisfyCostWindow } from "../core/costWindow";
 import { cardName, cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp } from "../core/catalog";
+import { withSpBecomes } from "./fractionalSp";
 import {
   applyDiscoDanceReturnFemaleSToRush,
   startEndTurnBattleToRushChoiceForUnit,
@@ -109,6 +110,12 @@ import {
   tryResolveErrataChoice,
   trySkipErrataChoice,
 } from "./errataCardEffects";
+import {
+  isSet4ChoiceEffect,
+  tryConfirmSet4Choice,
+  tryResolveSet4Choice,
+  trySkipSet4Choice,
+} from "./legend1/set4NamedEffects";
 import {
   applyFlowerBombDeclaredNumber,
   continueMagiBlueAfterSelfDraw,
@@ -561,7 +568,8 @@ export function isValidEffectChoiceTarget(
     pending.effectId === SUBMERGE_EFFECT_ID ||
     pending.effectId === FIRE_DANCE_EFFECT_ID ||
     isHououChoice(pending) ||
-    pending.effectId === KUROKO_MEMORY_EFFECT_ID
+    pending.effectId === KUROKO_MEMORY_EFFECT_ID ||
+    isSet4ChoiceEffect(pending.effectId)
   ) {
     return true;
   }
@@ -1542,17 +1550,20 @@ export function startPhoenixMereDestroyChoice(
     sourceCardId: string;
     phasePlayerId: PlayerId;
     partnerName: string;
+    /** 「出してもよい」なら true。「※…1枚選び、出す」は強制なので false（省略時）。 */
+    optional?: boolean;
   },
 ): GameState | null {
   const valid = collectNamedUnitsInDiscard(state, params.playerId, params.partnerName);
   if (valid.length === 0) return null;
+  const { optional, ...rest } = params;
   return openEffectChoice(state, {
-    ...params,
+    ...rest,
     kind: "select_unit",
     validInstanceIds: valid,
     unitDestination: "rush_from_discard",
     selectCount: 1,
-    optional: true,
+    optional: optional === true,
   });
 }
 
@@ -1853,6 +1864,8 @@ export function applyConfirmEffectChoice(
 
   const errata = tryConfirmErrataChoice(state, playerId);
   if (errata) return errata;
+  const set4 = tryConfirmSet4Choice(state, playerId);
+  if (set4) return set4;
 
   if (pending.mayConfirm) {
     const log = buildLogEntry(
@@ -2570,10 +2583,9 @@ function applyPostHoldContinuation(
       ...nextState,
       ...updatePlayer(nextState, pending.playerId, {
         ...actor,
+        // 「次の能力を得る⇒「SP1」」— SP1 になる（加算しない）。
         battle: actor.battle.map((c) =>
-          c.instanceId === pending.sourceInstanceId
-            ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-            : c,
+          c.instanceId === pending.sourceInstanceId ? withSpBecomes(state.definitions, actor.battle, c, 1) : c,
         ),
       }),
     };
@@ -2647,6 +2659,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (pending.playerId !== playerId) return { error: "wrong_player" };
   const errata = trySkipErrataChoice(state, playerId);
   if (errata) return errata;
+  const set4 = trySkipSet4Choice(state, playerId);
+  if (set4) return set4;
   if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
   if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
     // 選択を省略したときは先にひいた1枚を手札に残す（どちらか1枚は必ず残る）。
@@ -2802,6 +2816,8 @@ export function applyEffectChoiceSelect(
 
   const errata = tryResolveErrataChoice(state, playerId, instanceId);
   if (errata) return errata;
+  const set4 = tryResolveSet4Choice(state, playerId, instanceId);
+  if (set4) return set4;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
@@ -4531,10 +4547,9 @@ export function applyEffectChoiceSelect(
         if (pending.sourceInstanceId) {
           nextPlayer = {
             ...nextPlayer,
+            // 「次の能力を得る⇒SP1」— SP1 になる（加算しない）。
             battle: nextPlayer.battle.map((c) =>
-              c.instanceId === pending.sourceInstanceId
-                ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-                : c,
+              c.instanceId === pending.sourceInstanceId ? withSpBecomes(state.definitions, nextPlayer.battle, c, 1) : c,
             ),
           };
         }
@@ -4816,10 +4831,9 @@ export function applyEffectChoiceSelect(
             ...nextState,
             ...updatePlayer(nextState, pending.playerId, {
               ...owner,
+              // 「このターン、これは「SP1」になる」— 加算しない。
               battle: owner.battle.map((c) =>
-                c.instanceId === pending.sourceInstanceId
-                  ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-                  : c,
+                c.instanceId === pending.sourceInstanceId ? withSpBecomes(state.definitions, owner.battle, c, 1) : c,
               ),
             }),
           };

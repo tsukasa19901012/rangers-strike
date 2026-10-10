@@ -1,3 +1,8 @@
+import {
+  openDeathStingerChoice,
+  openMirageKnuckleChoice,
+  reflectBarrierDestroysWinner,
+} from "./legend1/set4NamedEffects";
 import type { Category } from "@rangers-strike/cards";
 import { getConditionalNamedEffect } from "@rangers-strike/cards";
 import { startSagasSniperChoice } from "./pendingChoices";
@@ -182,7 +187,14 @@ export function applySuperShieldSubstitute(
 }
 
 export function isCounterReactionActive(state: GameState): boolean {
-  return !!(state.pendingBattle || state.pendingRush || state.pendingLeave || state.pendingMorph);
+  return !!(
+    state.pendingBattle ||
+    state.pendingRush ||
+    state.pendingLeave ||
+    state.pendingMorph ||
+    // ストライクの反応窓（RS-184 マジパンチ等。使えるカウンターは legalActions の appendStrikeReactionActions）。
+    state.pendingStrike
+  );
 }
 
 export function isHandCounterCard(
@@ -1300,7 +1312,27 @@ export function resolveBattlePendingCore(
       attackerId,
     );
 
-  const finalDestroyDefender = destroyDefender || winButDefenderSelfDestruct;
+  // RS-220【反射バリア】: 自軍 S ユニットとバトルした敵軍 S ユニットは、バトルに勝っても撃破される。
+  const reflectBarrierDefender =
+    destroyAttacker &&
+    !destroyDefender &&
+    reflectBarrierDestroysWinner(
+      battleState,
+      defenderOwner,
+      refreshedDefenderFound.card.cardId,
+      refreshedAttackerFound.card.cardId,
+    );
+  const reflectBarrierAttacker =
+    !destroyAttacker &&
+    destroyDefender &&
+    reflectBarrierDestroysWinner(
+      battleState,
+      attackerId,
+      refreshedAttackerFound.card.cardId,
+      refreshedDefenderFound.card.cardId,
+    );
+
+  const finalDestroyDefender = destroyDefender || winButDefenderSelfDestruct || reflectBarrierDefender;
 
   // XG2-086: during enemy turn (attacker's turn), units that win are also destroyed
   // XG3-087: same but only for S-units
@@ -1315,7 +1347,8 @@ export function resolveBattlePendingCore(
       return false;
     })();
 
-  const finalDestroyAttacker = destroyAttacker || winButSelfDestruct || defenderCausesWinnerDestruction;
+  const finalDestroyAttacker =
+    destroyAttacker || winButSelfDestruct || defenderCausesWinnerDestruction || reflectBarrierAttacker;
   const detail = `${cardName(battleState.definitions, refreshedDefenderFound.card.cardId)}:${attackerBp}vs${defenderBp}`;
   const log = buildLogEntry(
     attackerId,
@@ -1363,6 +1396,7 @@ export function resolveBattlePendingCore(
       finalDestroyAttacker &&
       !winButSelfDestruct &&
       !defenderCausesWinnerDestruction &&
+      !reflectBarrierAttacker &&
       attackerZone === "battle",
   };
 
@@ -1381,7 +1415,8 @@ export function resolveBattlePendingCore(
     leavingCardId: refreshedDefenderFound.card.cardId,
     phasePlayerId: pending.phasePlayerId,
     // ルール: R-KW-RESIST-03 — 防御側も「勝っても撃破」で倒された場合はレジスト不可（BP で負けたときだけ可）。
-    registerEligible: destroyDefender && !winButDefenderSelfDestruct && defenderZone === "battle",
+    registerEligible:
+      destroyDefender && !winButDefenderSelfDestruct && !reflectBarrierDefender && defenderZone === "battle",
   };
 
   if (finalDestroyDefender && finalDestroyAttacker) {
@@ -1424,7 +1459,18 @@ export function resolveBattlePendingCore(
   if (finalDestroyDefender) {
     const leaveResult = tryLeaveField(nextState, defenderLeaveIntent);
     if (leaveResult.deferred) {
-      const withAttacker = finalDestroyAttacker ? leaveResult.state : markAttackerActed(leaveResult.state);
+      let withAttacker = finalDestroyAttacker ? leaveResult.state : markAttackerActed(leaveResult.state);
+      if (!withAttacker.pendingLeave && !withAttacker.pendingRegister) {
+        // 撃破は済み、撃破されたユニットの「撃破されたとき」の選択だけが開いている — RS-212 / RS-226 を先に処理する。
+        withAttacker = openMirageKnuckleChoice(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+        withAttacker = openDeathStingerChoice(
+          withAttacker,
+          attackerId,
+          pending.attackerInstanceId,
+          defenderBp,
+          pending.phasePlayerId,
+        );
+      }
       return finish(withAttacker, log);
     }
     nextState = leaveResult.state;
@@ -1445,6 +1491,16 @@ export function resolveBattlePendingCore(
     if (destroyDefender) {
       nextState = openMiracleKikoudanChoice(nextState, attackerId, refreshedAttackerFound.card.cardId);
     }
+    // RS-212【爆烈ミラージュナックル】・RS-226【爆竜必殺デススティンガー】（自軍ターン中、バトルで撃破したとき）。
+    // 撃破されたユニットの「撃破されたとき」や RS-214 の選択が開いていれば、こちらを先に処理する。
+    nextState = openMirageKnuckleChoice(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+    nextState = openDeathStingerChoice(
+      nextState,
+      attackerId,
+      pending.attackerInstanceId,
+      defenderBp,
+      pending.phasePlayerId,
+    );
     if (refreshedAttackerFound.card.cardId === "RS-685") {
       const bc = resolveBlackCondorDestroyDamage(
         nextState,

@@ -327,21 +327,18 @@ describe("RS-210 ゴーマ16世", () => {
   });
 
   // 「ナンバーを持つすべてのSユニットは、BPが「＋」されるかわりにBPが「－」される」
-  // 既知の不具合: CARD-RS-210 【大地動転の玉】が適用されない（BP 加算が減算にならない）
-  it.fails("RS-210: 自軍のナンバーを持つ S（キリンレンジャー、イエロー）はカレーの＋2000が－2000になり BP1000（出典: atwiki/page-107）", () => {
+  it("RS-210: 自軍のナンバーを持つ S（キリンレンジャー、イエロー）はカレーの＋2000が－2000になり BP1000（出典: atwiki/page-107）", () => {
     const s = st({ player1: { battle: [inst("RS-210", "g"), inst("RS-208", "k")], operation: [inst("RS-179", "cur")] } });
     expect(bpOf(s, "player1", "RS-208:k")).toBe(1000);
   });
 
-  // 既知の不具合: CARD-RS-210 【大地動転の玉】が適用されない（BP 加算が減算にならない）
-  it.fails("RS-210: 敵軍のナンバーを持つ S にも適用される（出典: atwiki/page-107「すべてのSユニット」）", () => {
+  it("RS-210: 敵軍のナンバーを持つ S にも適用される（出典: atwiki/page-107「すべてのSユニット」）", () => {
     const s = st({ player1: { battle: [inst("RS-210", "g")] }, player2: { battle: [inst("RS-208", "k")], operation: [inst("RS-179", "cur")] } });
     expect(bpOf(s, "player2", "RS-208:k")).toBe(1000);
   });
 
   // 「ナンバーを持つ」— ナンバーの無い S は＋のまま
-  // 既知の不具合: CARD-RS-210 【大地動転の玉】が適用されない（BP 加算が減算にならない）
-  it.fails("RS-210: ナンバーを持たない S は＋のまま、ナンバーを持つ S は－になる（出典: atwiki/page-107「ナンバーを持つ」）", () => {
+  it("RS-210: ナンバーを持たない S は＋のまま、ナンバーを持つ S は－になる（出典: atwiki/page-107「ナンバーを持つ」）", () => {
     const NO_CN_YELLOW = { id: "SPEC-YELLOW-NOCN", name: "SPEC-YELLOW-NOCN", type: "unit", category: "MA", rarity: "N", expansion: "card-spec", powerCost: 0, bp: 1000, size: "S", features: ["イエロー"] } as const;
     const s = st(
       { player1: { battle: [inst("RS-210", "g"), inst("SPEC-YELLOW-NOCN", "n"), inst("RS-208", "k")], operation: [inst("RS-179", "cur")] } },
@@ -352,8 +349,7 @@ describe("RS-210 ゴーマ16世", () => {
   });
 
   // 「（BP0以下になったユニットは撃破される）」
-  // 既知の不具合: CARD-RS-210 【大地動転の玉】が適用されない（BP 加算が減算にならない）
-  it.fails("RS-210: BP0 以下になったユニットは撃破される（BP1000 のイエローフォーにカレーで－1000）（出典: atwiki/page-107）", () => {
+  it("RS-210: BP0 以下になったユニットは撃破される（BP1000 のイエローフォーにカレーで－1000）（出典: atwiki/page-107）", () => {
     let s = st({
       phase: "rush",
       player1: { rush: [inst("RS-201", "y")], hand: [inst("RS-210", "g")], operation: [inst("RS-179", "cur")], power: powerCards(4), command: releasedN(1, "TST-OP-DA") },
@@ -503,8 +499,7 @@ describe("RS-212 オーグリーン", () => {
   }
 
   // 「敵軍捨札からカードを1枚選び、敵軍パワーゾーンにダメージにして置く。（…これが撃破したユニットが捨札になるなら捨札にしたあとで選ぶ）」
-  // 既知の不具合: CARD-RS-212 【爆烈ミラージュナックル】が発動しない（敵軍捨札のカードをダメージにする選択が出ない）
-  it.fails("RS-212: NC（3番目）でバトルに勝つと、撃破したユニットを含む敵軍捨札から1枚選び敵軍のダメージにする（出典: atwiki/page-113）", () => {
+  it("RS-212: NC（3番目）でバトルに勝つと、撃破したユニットを含む敵軍捨札から1枚選び敵軍のダメージにする（出典: atwiki/page-113）", () => {
     let s = ohGreenAttack(3);
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
@@ -514,8 +509,7 @@ describe("RS-212 オーグリーン", () => {
     expect(s.players.player2.power.find((c) => c.instanceId === "TST-UNIT-0:e")?.faceDown).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-212 【爆烈ミラージュナックル】が発動しない（敵軍捨札のカードをダメージにする選択が出ない）
-  it.fails("RS-212: NC 不成立（1番目）では発動しない／3番目なら発動する（出典: atwiki/page-113、R-CN-02）", () => {
+  it("RS-212: NC 不成立（1番目）では発動しない／3番目なら発動する（出典: atwiki/page-113、R-CN-02）", () => {
     const first = ohGreenAttack(1);
     expect(first.pendingEffectChoice).toBeUndefined();
     expect(first.players.player2.damage).toBe(0);
@@ -523,8 +517,7 @@ describe("RS-212 オーグリーン", () => {
   });
 
   // 「自軍ターン中」
-  // 既知の不具合: CARD-RS-212 【爆烈ミラージュナックル】が発動しない（敵軍捨札のカードをダメージにする選択が出ない）
-  it.fails("RS-212: 敵軍ターン中にアタックされて撃破しても発動しない／自軍ターンなら発動する（出典: atwiki/page-113「自軍ターン中」）", () => {
+  it("RS-212: 敵軍ターン中にアタックされて撃破しても発動しない／自軍ターンなら発動する（出典: atwiki/page-113「自軍ターン中」）", () => {
     let s = st({
       player1: { battle: fillers(2), rush: [inst("RS-212", "g")], deck: deckCards(5) },
       player2: { rush: [inst("TST-UNIT-0", "e")], discard: [inst("TST-OP-DA", "x1")], power: powerCards(2, "e"), deck: deckCards(5, "e") },
@@ -541,8 +534,7 @@ describe("RS-212 オーグリーン", () => {
   });
 
   // faq-card-4 RS-212 Q1「同時タイミングで発動した処理はターンプレイヤーが任意の順番で実行できます」
-  // 既知の不具合: CARD-RS-212 【爆烈ミラージュナックル】が発動しない（敵軍捨札のカードをダメージにする選択が出ない）
-  it.fails("RS-212: 公式Q&A — アバレッドAM を撃破したとき、ターンプレイヤーはミラージュナックルを先に処理してアバレッドをダメージにでき、AM の効果で戻らない（出典: grnrngr/faq-card-4 RS-212 Q1）", () => {
+  it("RS-212: 公式Q&A — アバレッドAM を撃破したとき、ターンプレイヤーはミラージュナックルを先に処理してアバレッドをダメージにでき、AM の効果で戻らない（出典: grnrngr/faq-card-4 RS-212 Q1）", () => {
     let s = st({
       player1: { battle: fillers(2), rush: [{ ...inst("RS-212", "g"), bpSetValue: 9000 }] },
       player2: { battle: [inst("RS-230", "am")], discard: [inst("RS-054", "red")], power: powerCards(2, "e") },
@@ -590,8 +582,7 @@ describe("RS-213 オーイエロー", () => {
   }
 
   // 「相手は自分自身のラッシュエリアからユニットを1体選ぶ。このターン、このユニットは、相手の選んだユニットにアタックできる」
-  // 既知の不具合: CARD-RS-213 【炸裂超力バトン】で相手がラッシュエリアのユニットを選ばず、ラッシュエリアのユニットにアタックできない
-  it.fails("RS-213: NC（2番目）で相手が自分のラッシュエリアから1体選び、オーイエローはそのユニットにアタックして撃破できる（選ばれなかったユニットにはアタックできない）（出典: atwiki/page-114）", () => {
+  it("RS-213: NC（2番目）で相手が自分のラッシュエリアから1体選び、オーイエローはそのユニットにアタックして撃破できる（選ばれなかったユニットにはアタックできない）（出典: atwiki/page-114）", () => {
     let s = ohYellow(2);
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:er1", "TST-UNIT-0:er2"]);
@@ -604,8 +595,7 @@ describe("RS-213 オーイエロー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:er2")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-213 【炸裂超力バトン】で相手がラッシュエリアのユニットを選ばず、ラッシュエリアのユニットにアタックできない
-  it.fails("RS-213: NC 不成立（1番目）ではラッシュエリアのユニットにアタックできない／2番目ならできる（出典: atwiki/page-114、R-CN-02）", () => {
+  it("RS-213: NC 不成立（1番目）ではラッシュエリアのユニットにアタックできない／2番目ならできる（出典: atwiki/page-114、R-CN-02）", () => {
     const first = ohYellow(1);
     expect(first.pendingEffectChoice).toBeUndefined();
     expect(attackTargets(first, "RS-213:y")).toEqual(["TST-UNIT-0:e0"]);

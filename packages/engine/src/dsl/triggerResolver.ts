@@ -8,6 +8,7 @@ import {
 import { PASSIVE_GRANT_KEYWORDS } from "./grantKeyword";
 import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
 import { listDslEffectsForTrigger } from "./effectLookup";
+import { ncGateAllows } from "../rules/ncGatedEffects";
 import {
   DSL_OPTIONAL_EFFECT_HANDLER,
   openOptionalEffectConfirm,
@@ -44,7 +45,9 @@ function isOptionalWording(effect: { optional?: boolean; text?: string }): boole
   if (!effect.optional) return false;
   const text = (effect.text ?? "").replace(/^【[^】]*】/, "").replace(/^「SP\d+」/, "");
   const first = text.split("。")[0] ?? "";
-  return /てもよい$/.test(first) && !/相手(は|も)/.test(first);
+  // 「～してもよい」「～してよい」「～しても良い」。「～選んでもよい」は選択そのものを断れる（選択を開く効果の skip）ので
+  // ここでの確認の対象にしない。
+  return /ても?(?:よい|良い)$/.test(first) && !/相手(は|も)/.test(first);
 }
 
 const SP_GRANT_RE = /^SP\d+$/;
@@ -84,6 +87,19 @@ function buildTriggerContext(args: {
   };
 }
 
+/** 場のユニットの DSL 効果が NC ゲートで止められていないか（場に見つからなければ止めない）。 */
+function dslNcGateAllows(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+  cardId: string,
+  effectId: string,
+): boolean {
+  const card = state.players[playerId]?.battle.find((c) => c.instanceId === instanceId);
+  if (!card) return true;
+  return ncGateAllows({ cardId, activatedNcEffects: card.activatedNcEffects }, effectId);
+}
+
 export function tryResolveDslTriggeredEffects(args: {
   state: GameState;
   cardId: string;
@@ -104,6 +120,15 @@ export function tryResolveDslTriggeredEffects(args: {
 
   for (const effect of effects) {
     if (!shouldUseDslTriggeredEffect(args.cardId, effect, args.triggerType)) continue;
+    // NC の効果（ナンバーの欄の名前つき効果）は、バトルエリアに出たときに NC が成立していなければ発動しない
+    // （ルール: R-CN-02。「ナンバーに関係なく発動する」の但し書きの相手からのコンビネーションも成立として記録済み）。
+    // trigger が nc の効果は NC の成立そのもので呼ばれるので、ここで止めるのはそれ以外（「アタックするとき」等）。
+    if (
+      args.triggerType !== "nc" &&
+      !dslNcGateAllows(current, args.playerId, args.instanceId, args.cardId, effect.id)
+    ) {
+      continue;
+    }
     if (!evaluateDslCondition(current, args.playerId, effect.condition, args.instanceId, effect.effects)) {
       continue;
     }

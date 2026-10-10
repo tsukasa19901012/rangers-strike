@@ -14,6 +14,8 @@ import { getDefinition, isSmallUnit } from "../core/catalog";
 import { opponent, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEffects";
+import { ncGateAllows } from "./ncGatedEffects";
+import { listNcColumnNamedEffects } from "@rangers-strike/cards";
 
 export const BATTLE_COMMAND_EFFECT_ID = "battle_command";
 
@@ -72,6 +74,20 @@ export function registerBattleCommandHooks(next: NcHooks): void {
   hooks = next;
 }
 
+const GRANT_NC_REGARDLESS_RE = /このユニットからコンビネーションするとき、そのユニットの[ＮN][ＣC]の効果は、ナンバーに関係なく発動できる/;
+
+/**
+ * 左隣のユニットが「Sユニットがこのユニットからコンビネーションするとき、そのユニットのＮＣの効果は、
+ * ナンバーに関係なく発動できる」（【戦闘指揮】等）を、いま有効な効果として持つか。
+ * ナンバーの欄（CN）の効果なら、そのユニット自身の NC が成立しているときだけ有効（R-CN-02。
+ * RS-222 タイムピンクは CN4 なので4番目に出たときだけ）。
+ */
+function grantsNcRegardlessOfNumber(state: GameState, left: CardInstance): boolean {
+  const named = listNcColumnNamedEffects(left.cardId).find((n) => GRANT_NC_REGARDLESS_RE.test(n.text ?? ""));
+  if (named) return ncGateAllows(left, named.effectId);
+  return GRANT_NC_REGARDLESS_RE.test(getDefinition(state.definitions, left.cardId)?.text ?? "");
+}
+
 function heldEnemyCommands(state: GameState, playerId: PlayerId): string[] {
   return state.players[opponent(playerId)].command.filter((c) => c.commandHeld).map((c) => c.instanceId);
 }
@@ -89,7 +105,7 @@ export function tryOpenBattleCommand(
   if (state.pendingEffectChoice) return null;
   if (!isSmallUnit(state.definitions, card.cardId) || typeof definition.comboNumber !== "number") return null;
   const left = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
-  if (!left || !(getDefinition(state.definitions, left.cardId)?.text ?? "").includes("【戦闘指揮】")) return null;
+  if (!left || !grantsNcRegardlessOfNumber(state, left)) return null;
   const number = hooks.ncEffectiveNumber(state, playerId, card, definition);
   if (number === battlePosition) return null;
   if (!hooks.hasNcEffect(card)) return null;

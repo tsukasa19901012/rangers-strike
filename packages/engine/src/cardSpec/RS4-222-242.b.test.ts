@@ -169,10 +169,7 @@ describe("RS-230 アバレッドAM", () => {
     });
   });
 
-  amReanimateTests("RS-230", "RS-054", "アバレッド", "atwiki/page-72", {
-    // 既知の不具合: CARD-RS-230 ※の「1枚選び、自軍ラッシュエリアに出す」が任意になっている（出さないことを選べる）
-    onlyPartner: "CARD-RS-230 ※の「アバレッド」を出す処理が任意（スキップできる）になっている",
-  });
+  amReanimateTests("RS-230", "RS-054", "アバレッド", "atwiki/page-72");
 
   // 「※これは毎ターン、可能ならバトルエリアに出る。」
   it("RS-230: ※ バトルエリアに出られるのに出さずにバトルフェイズを終えることはできない（出典: atwiki/page-72）", () => {
@@ -264,11 +261,7 @@ describe("RS-231 アバレブルーAM", () => {
     });
   });
 
-  amReanimateTests("RS-231", "RS-055", "アバレブルー", "atwiki/page-373", {
-    // 既知の不具合: CARD-RS-231 ※の選択肢が自軍捨札のユニットカードすべて（自身を含む）で、出さないことも選べる
-    onlyPartner: "CARD-RS-231 ※の選択肢が「アバレブルー」に限られず（自身を含む）、出さないことも選べる",
-    none: "CARD-RS-231 捨札に「アバレブルー」がなくても、ほかのユニットカードを選んでラッシュエリアに出せてしまう",
-  });
+  amReanimateTests("RS-231", "RS-055", "アバレブルー", "atwiki/page-373");
 
   it("RS-231: 2番目に出て NC が成立すると「SP1」、1番目なら SP！のまま（出典: atwiki/page-373「【アバレタックル】「SP1」」）", () => {
     const two = enter(st({ player1: { battle: fillers(1), rush: [inst("RS-231", "am")] } }), "RS-231:am");
@@ -529,9 +522,8 @@ describe("RS-234 アバレキラー", () => {
     "RS-234: 公式Q&A — 守護獣トリケラトプスの「アタックするとき」の BP 上昇で BP8000 以上になって SP1 になってもストライクはできない（出典: grnrngr/faq-card-4 RS-234 Q1 後段）— 現行カタログの RS-023 は「スーパーレスキュー」で、Q&A が指す「守護獣トリケラトプス」の定義がない",
   );
 
-  // 既知の不具合: CARD-RS-234【ウイングペンタクト】の「SP1」になる が SP+1 として加算される（SP1 の M ユニットが SP2 になる）
   // faq-card-4 RS-234 Q2「「ＳＰ１に『なる』」という効果は、ＳＰに１を加算するという意味ではなく…その値に置き換わる」
-  it.fails("RS-234: 公式Q&A — もともと「SP1」の WB の M ユニットも SP2 にはならず「SP1」のまま（出典: grnrngr/faq-card-4 RS-234 Q2）", () => {
+  it("RS-234: 公式Q&A — もともと「SP1」の WB の M ユニットも SP2 にはならず「SP1」のまま（出典: grnrngr/faq-card-4 RS-234 Q2）", () => {
     const s = killerThen("SPEC-WB-M5SP");
     expect(bpOf(s, "player1", "SPEC-WB-M5SP:m")).toBe(8000);
     expect(spOf(s, "player1", "SPEC-WB-M5SP:m")).toBe(1);
@@ -588,8 +580,7 @@ describe("RS-235 デカベースロボ", () => {
     expect(zoneOf(s, "player1", "RS-235:robo")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RS-235 ※（デカベースクローラーをラッシュしたときに手札に戻す）が任意になっている（戻さないことを選べる）
-  it.fails("RS-235: ※ 戻すのは強制（戻さないことは選べない）（出典: atwiki/page-500「1体選んで手札に戻す」）", () => {
+  it("RS-235: ※ 戻すのは強制（戻さないことは選べない）（出典: atwiki/page-500「1体選んで手札に戻す」）", () => {
     const s = st({ phase: "rush", player1: { hand: [inst("RS-105", "cr")], rush: [inst("RS-235", "robo")], command: [released("TST-OP-OT", "ot")], power: powerCards(5) } });
     const r = rushFromHand(s, "player1", "RS-105:cr");
     expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-235");

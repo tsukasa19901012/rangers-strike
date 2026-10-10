@@ -24,6 +24,7 @@ import {
 import { tryOnAllyRushNamedReturnSelfToHand } from "./batch07FieldEffects";
 import { tryRsCatchallOnEnemyRush } from "./rs/rsCatchallRuntime";
 import { openEffectChoice, startSelectUnitChoice } from "./pendingChoices";
+import { tryRideRaptorOnRush } from "./legend1/set4NamedEffects";
 
 function applyDrawOnRush(
   state: GameState,
@@ -217,6 +218,10 @@ export function applyOnRushUnitEffects(
     );
     nextState = formation.state;
     logs.push(...formation.logs);
+  }
+  // RS-180 ライドラプター（自軍コマンドをホールドして S ユニットをラッシュしたとき）。
+  if (!nextState.pendingEffectChoice && !options.viaEffect) {
+    nextState = tryRideRaptorOnRush(nextState, ownerPlayerId, instanceId, phasePlayerId);
   }
 
   const noteOther = resolveNoteOtherOnRushEffects(

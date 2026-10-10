@@ -180,8 +180,7 @@ describe("RS-237 サイレンビルダー", () => {
   }
 
   // 「敵軍山札の上から3枚をオモテにしてもよい。そうしたとき、相手は…好きな数選び手札に加える。…1枚につき、これは「SP+1」される。その後、残りのカードは捨札にする」
-  // 既知の不具合: CARD-RS-237【トリプルリキッドボンバー】が未実装（バトルエリアに出ても選択が開かない）
-  it.fails("RS-237: 敵軍山札の上から3枚をオモテにし、相手が2枚を手札に加えると「SP2」になり、残り1枚は捨札（出典: atwiki/page-402）", () => {
+  it("RS-237: 敵軍山札の上から3枚をオモテにし、相手が2枚を手札に加えると「SP2」になり、残り1枚は捨札（出典: atwiki/page-402）", () => {
     let s = siren(top3());
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
@@ -195,8 +194,7 @@ describe("RS-237 サイレンビルダー", () => {
     expect(canStrike(s, "RS-237:sb")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-237【トリプルリキッドボンバー】が未実装
-  it.fails("RS-237: 相手が1枚も手札に加えなければ SP！のまま（ストライクできない）で、3枚とも捨札（出典: atwiki/page-402「好きな数」）", () => {
+  it("RS-237: 相手が1枚も手札に加えなければ SP！のまま（ストライクできない）で、3枚とも捨札（出典: atwiki/page-402「好きな数」）", () => {
     let s = siren(top3());
     s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
     s = opponentTakes(s, []);
@@ -205,8 +203,7 @@ describe("RS-237 サイレンビルダー", () => {
     expect(canStrike(s, "RS-237:sb")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-237【トリプルリキッドボンバー】が未実装（発動するかの確認が開かない）
-  it.fails("RS-237: オモテにしないことを選べる（任意）（出典: atwiki/page-402「オモテにしてもよい」）", () => {
+  it("RS-237: オモテにしないことを選べる（任意）（出典: atwiki/page-402「オモテにしてもよい」）", () => {
     let s = siren(top3());
     expect(canSkip(s)).toBe(true);
     s = skip(s);
@@ -216,7 +213,6 @@ describe("RS-237 サイレンビルダー", () => {
   });
 
   // faq-card-4 RS-237 Q1「「３枚オモテにする」ことが発動の条件ですので、敵軍山札が２枚以下のときは、その効果は発動できません。」
-  // 注: 効果本体が未実装のため現状は空振りで通る（本体は上の it.fails を参照）。
   it("RS-237: 公式Q&A — 敵軍山札が2枚以下なら発動できない（出典: grnrngr/faq-card-4 RS-237 Q1）", () => {
     const s = siren([inst("TST-OP", "t0"), inst("TST-OP", "t1")]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-237");
@@ -482,8 +478,7 @@ describe("RS-241 ボウケンレッドAT", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:other")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-241 ※の「1枚選び、自軍ラッシュエリアに出す」が任意になっている（出さないことを選べる）
-  it.fails("RS-241: ※ 選べるのはボウケンレッドのカードだけで、出さないことは選べない（出典: atwiki/page-29「「ボウケンレッド」のカード」「出す」）", () => {
+  it("RS-241: ※ 選べるのはボウケンレッドのカードだけで、出さないことは選べない（出典: atwiki/page-29「「ボウケンレッド」のカード」「出す」）", () => {
     let s = attackedInEnemyTurn({ discard: [inst("TST-UNIT-0", "other"), inst("RS-062", "bk")] });
     for (let i = 0; i < 4 && s.pendingEffectChoice && s.pendingEffectChoice.sourceCardId !== "RS-241"; i++) s = settle(drain(drain(s, "player2"), "player1"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-241");

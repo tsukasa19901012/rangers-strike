@@ -270,8 +270,7 @@ describe("RS-217 SSスタタンゾ", () => {
   }
 
   // 「バトルエリアにある特徴「車両」を持つユニットを1体選び、持ち主の山札の下に戻してもよい」
-  // 既知の不具合: CARD-RS-217 【家出したくなるガソリン】でユニットを選べず、山札の下に戻らない
-  it.fails("RS-217: NC（2番目）で敵軍バトルエリアの「車両」ユニットを持ち主の山札の下に戻す（ラッシュエリアの車両は選べない）（出典: atwiki/page-386）", () => {
+  it("RS-217: NC（2番目）で敵軍バトルエリアの「車両」ユニットを持ち主の山札の下に戻す（ラッシュエリアの車両は選べない）（出典: atwiki/page-386）", () => {
     let s = statanzo(2);
     s = confirmIfAsked(s, "player1");
     expect(choiceIds(s)).toEqual(["SPEC-CAR:eCar"]);
@@ -281,8 +280,7 @@ describe("RS-217 SSスタタンゾ", () => {
     expect(zoneOf(s, "player2", "SPEC-CAR:eRushCar")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-217 【家出したくなるガソリン】でユニットを選べず、山札の下に戻らない
-  it.fails("RS-217: 自軍バトルエリアの「車両」も選べ、自分の山札の下に戻る（出典: atwiki/page-386「持ち主の山札の下」）", () => {
+  it("RS-217: 自軍バトルエリアの「車両」も選べ、自分の山札の下に戻る（出典: atwiki/page-386「持ち主の山札の下」）", () => {
     let s = st(
       { player1: { battle: [inst("SPEC-CAR", "ownCar")], rush: [inst("RS-217", "s")], deck: deckCards(2) }, player2: { deck: deckCards(2, "e") } },
       [CAR],
@@ -294,16 +292,14 @@ describe("RS-217 SSスタタンゾ", () => {
   });
 
   // 「戻してもよい」
-  // 既知の不具合: CARD-RS-217 【家出したくなるガソリン】でユニットを選べず、山札の下に戻らない
-  it.fails("RS-217: 戻さないことを選べる（出典: atwiki/page-386「戻してもよい」）", () => {
+  it("RS-217: 戻さないことを選べる（出典: atwiki/page-386「戻してもよい」）", () => {
     let s = statanzo(2);
     expect(canDecline(s, "player1")).toBe(true);
     s = decline(s, "player1");
     expect(zoneOf(s, "player2", "SPEC-CAR:eCar")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-217 【家出したくなるガソリン】でユニットを選べず、山札の下に戻らない
-  it.fails("RS-217: NC 不成立（1番目）では選べない／2番目なら選べる（出典: atwiki/page-386、R-CN-02）", () => {
+  it("RS-217: NC 不成立（1番目）では選べない／2番目なら選べる（出典: atwiki/page-386、R-CN-02）", () => {
     const first = statanzo(1);
     expect(first.pendingEffectChoice).toBeUndefined();
     expect(zoneOf(first, "player2", "SPEC-CAR:eCar")).toBe("battle");
@@ -529,8 +525,7 @@ describe("RS-220 タイムグリーン", () => {
   }
 
   // 「次の相手ターン、自軍Sユニットとバトルした敵軍Sユニットは、バトルに勝っても撃破される」
-  // 既知の不具合: CARD-RS-220 【反射バリア】が適用されず、自軍 S ユニットとバトルして勝った敵軍 S ユニットが撃破されない
-  it.fails("RS-220: NC（5番目）の次の相手ターン、自軍 S とバトルして勝った敵軍 S は撃破される（出典: atwiki/page-412）", () => {
+  it("RS-220: NC（5番目）の次の相手ターン、自軍 S とバトルして勝った敵軍 S は撃破される（出典: atwiki/page-412）", () => {
     let s = toEnemyBattle(5);
     s = enter(s, "SPEC-BIG-S:bs", "player2");
     s = settle(attack(s, "SPEC-BIG-S:bs", "TST-UNIT-0:fill0", "player2"));
@@ -539,8 +534,7 @@ describe("RS-220 タイムグリーン", () => {
   });
 
   // 「自軍Sユニットとバトルした敵軍Sユニット」— 敵軍 M・自軍 M とのバトルには及ばない（S 同士なら撃破されることも確認）
-  // 既知の不具合: CARD-RS-220 【反射バリア】が適用されず、自軍 S ユニットとバトルして勝った敵軍 S ユニットが撃破されない
-  it.fails("RS-220: 敵軍 M が勝っても・敵軍 S が自軍 M に勝っても撃破されない／S 同士なら撃破される（出典: atwiki/page-412）", () => {
+  it("RS-220: 敵軍 M が勝っても・敵軍 S が自軍 M に勝っても撃破されない／S 同士なら撃破される（出典: atwiki/page-412）", () => {
     let s = toEnemyBattle(5);
     s = enter(s, "SPEC-BIG-M:bm", "player2");
     s = settle(attack(s, "SPEC-BIG-M:bm", "TST-UNIT-0:fill0", "player2"));
@@ -554,8 +548,7 @@ describe("RS-220 タイムグリーン", () => {
     expect(zoneOf(s, "player2", "SPEC-BIG-S:bs2")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-220 【反射バリア】が適用されず、自軍 S ユニットとバトルして勝った敵軍 S ユニットが撃破されない
-  it.fails("RS-220: NC 不成立（1番目）なら勝った敵軍 S は残る／5番目なら撃破される（出典: atwiki/page-412、R-CN-02）", () => {
+  it("RS-220: NC 不成立（1番目）なら勝った敵軍 S は残る／5番目なら撃破される（出典: atwiki/page-412、R-CN-02）", () => {
     let first = toEnemyBattle(1);
     first = enter(first, "SPEC-BIG-S:bs", "player2");
     first = settle(attack(first, "SPEC-BIG-S:bs", "RS-220:g", "player2"));

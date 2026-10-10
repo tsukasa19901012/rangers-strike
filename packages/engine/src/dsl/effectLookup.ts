@@ -10,6 +10,8 @@ import type {
   OperationTiming,
 } from "@rangers-strike/cards/dsl/types";
 
+import { normalizeCardDslDocument } from "./effectTextNormalization";
+
 let fullPlayableRegistry: CardRegistry | null = null;
 
 function getFullPlayableRegistry(): CardRegistry {
@@ -22,8 +24,8 @@ function getFullPlayableRegistry(): CardRegistry {
 /** コア 179 枚 → なければ full-playable（昇格 stub）レジストリへフォールバック。 */
 export function getCardDslDocument(cardId: string) {
   const core = getDefaultCardRegistry().getCard(cardId);
-  if (core) return core;
-  return getFullPlayableRegistry().getCard(cardId);
+  if (core) return normalizeCardDslDocument(core);
+  return normalizeCardDslDocument(getFullPlayableRegistry().getCard(cardId));
 }
 
 export function isDslInterpreterCard(cardId: string): boolean {
