@@ -381,8 +381,7 @@ describe("R-CN-06 NC 効果の期間", () => {
   });
 
   // 「一度発動してしまえば…撃破されても…効果は有効」
-  // 既知の不具合: 未登録 — RS-110 ゼニボムが NC ログのみで、次の相手ターンの進入制限を設定しない
-  it.fails("R-CN-06: ゼニボムは発動元のデカピンクが撃破されても次の相手ターンに有効（出典: grnrngr/faq-card-2 RS-110 Q1）", () => {
+  it("R-CN-06: ゼニボムは発動元のデカピンクが撃破されても次の相手ターンに有効（出典: grnrngr/faq-card-2 RS-110 Q1）", () => {
     let s = battleState({
       player1: { battle: fillers(4), rush: [inst("RS-110", "pink")], deck: deckCards(3) },
       player2: {

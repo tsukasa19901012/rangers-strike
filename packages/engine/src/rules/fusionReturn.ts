@@ -7,9 +7,9 @@ import {
 } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { removeAt, updatePlayer } from "../core/helpers";
-import { clearCostWindow } from "../core/costWindow";
 import {
   autoHoldForBattleEntry,
+  clearEffectBattleEntryWindows,
   canMoveUnitToBattle,
 } from "./restrictions";
 
@@ -85,7 +85,7 @@ export function returnFusionPartnersFromDiscard(
     }
     battle = [...battle, { ...card, battleActed: false }];
     // ルール: R-RUSH-02 — 捨札からバトルエリアに直接出た合体素材も「ラッシュされた」扱い（RS-009 Q2）。
-    owner = markRushedThisTurn(clearCostWindow(owner, "battle_entry_hold"), card.instanceId);
+    owner = markRushedThisTurn(clearEffectBattleEntryWindows(owner), card.instanceId);
     returned += 1;
   }
 

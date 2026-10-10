@@ -4,6 +4,7 @@ import {
   countLightningGravityPermanents,
   getBattleEntryComboFromOwnTurnPartnerIds,
   getBattleEntryComboFromPartnerIds,
+  getBattleEntryHandDiscardCount,
   getBattleEntryHoldCount,
   hasAutoBattleEntryEachTurnNote,
   needsAllySInBattle,
@@ -33,7 +34,11 @@ import {
   heldCallLeadMatchesCategories,
   type CallLeadKind,
 } from "./callLead";
-import { isCostWindowSatisfied, satisfyCostWindow as satisfyCostWindowBridge } from "../core/costWindow";
+import {
+  clearCostWindow as clearCostWindowBridge,
+  isCostWindowSatisfied,
+  satisfyCostWindow as satisfyCostWindowBridge,
+} from "../core/costWindow";
 import { hasTurnRuleModifier } from "../core/scopedModifiers";
 import { findInZone, opponent } from "../core/helpers";
 import { TURN_RULE_IDS } from "../types/scopedModifiers";
@@ -438,8 +443,32 @@ export function autoHoldForBattleEntry(
   playerId: PlayerId,
   unit: CardInstance,
 ): PlayerState | null {
-  const player = state.players[playerId];
-  const required = requiredBattleEntryHolds(state, playerId, unit);
+  let player = state.players[playerId];
+
+  // ルール: R-BA-04 — 「手札を2枚捨てなければ出られない」（狼鬼）も、効果で出すときに満たせるなら満たして出る
+  // （RS-108 Q2）。捨てるカードは手札の先頭から選ぶ。
+  if (
+    needsBattleEntryHandDiscard(unit.cardId) &&
+    !battleEntryHandDiscardSatisfied(player, unit.cardId)
+  ) {
+    const count = getBattleEntryHandDiscardCount(unit.cardId);
+    if (player.hand.length < count) return null;
+    const discarded = player.hand.slice(0, count);
+    player = satisfyCostWindowBridge(
+      {
+        ...player,
+        hand: player.hand.slice(count),
+        discard: [...player.discard, ...discarded],
+      },
+      "battle_entry_hand_discard",
+    );
+  }
+
+  const required = requiredBattleEntryHolds(
+    { ...state, players: { ...state.players, [playerId]: player } },
+    playerId,
+    unit,
+  );
   if (required <= 0) return player;
   if (countReleasedCommands(player) < required) return null;
 
@@ -452,6 +481,14 @@ export function autoHoldForBattleEntry(
     return c;
   });
   return satisfyCostWindowBridge({ ...player, command }, "battle_entry_hold");
+}
+
+/** 効果でバトルエリアに出し終えたら、出るための支払い済み記録を消す。 */
+export function clearEffectBattleEntryWindows(player: PlayerState): PlayerState {
+  return clearCostWindowBridge(
+    clearCostWindowBridge(player, "battle_entry_hold"),
+    "battle_entry_hand_discard",
+  );
 }
 
 /**

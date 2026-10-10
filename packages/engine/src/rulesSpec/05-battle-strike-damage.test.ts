@@ -243,8 +243,7 @@ describe("R-BA-03 出る制限は直前に判定", () => {
     expect(canApply(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-140:colon" })).toBe(false);
   });
   // 「コマンドを１つホールドしなければなりませんか？」「はい、その通りです」
-  // 既知の不具合: 未登録 — ファイブテクターで出すユニットにハリケンレオンの進入ホールドを要求しない
-  it.fails("R-BA-03: 敵軍ハリケンレオン下でファイブテクターにより SP1 のユニットを出すときもコマンドを1つホールドする（出典: grnrngr/faq-card-1 RS-014 Q2・faq-card-2 RS-097 Q7）", () => {
+  it("R-BA-03: 敵軍ハリケンレオン下でファイブテクターにより SP1 のユニットを出すときもコマンドを1つホールドする（出典: grnrngr/faq-card-1 RS-014 Q2・faq-card-2 RS-097 Q7）", () => {
     let s = battleState({
       player1: { battle: [inst("RS-097", "leon"), inst("TST-UNIT-2", "atk")] },
       player2: {
@@ -263,8 +262,7 @@ describe("R-BA-03 出る制限は直前に判定", () => {
   });
 
   // 「バトルエリアに出す…ためにホールドするコマンドが無い」→ 出られない
-  // 既知の不具合: 未登録 — ファイブテクターで出すユニットにハリケンレオンの進入ホールドを要求しない
-  it.fails("R-BA-03: 敵軍ハリケンレオン下でホールドできるコマンドが無ければ、ファイブテクターで SP1 のユニットを出せない（出典: grnrngr/faq-card-1 RS-014 Q2・faq-card-2 RS-097 Q2）", () => {
+  it("R-BA-03: 敵軍ハリケンレオン下でホールドできるコマンドが無ければ、ファイブテクターで SP1 のユニットを出せない（出典: grnrngr/faq-card-1 RS-014 Q2・faq-card-2 RS-097 Q2）", () => {
     let s = battleState({
       player1: { battle: [inst("RS-097", "leon"), inst("TST-UNIT-2", "atk")] },
       player2: {
@@ -384,8 +382,7 @@ describe("R-BA-04 「可能なら出る」の判定", () => {
   });
 
   // 「手札を２枚捨てればバトルエリアに出ることは可能である」
-  // 既知の不具合: 未登録 — 効果で出される狼鬼が手札2枚を捨てずにバトルエリアに出る
-  it.fails("R-BA-04: 敵軍デカグリーンに引き出される狼鬼は、手札が2枚以上なら2枚捨ててバトルエリアに出る（出典: grnrngr/faq-card-2 RS-108 Q2）", () => {
+  it("R-BA-04: 敵軍デカグリーンに引き出される狼鬼は、手札が2枚以上なら2枚捨ててバトルエリアに出る（出典: grnrngr/faq-card-2 RS-108 Q2）", () => {
     let s = battleState({
       activePlayer: "player2",
       player2: { battle: fillers(2, "e"), rush: [inst("RS-108", "green")] },
@@ -437,8 +434,7 @@ describe("R-BA-04 「可能なら出る」の判定", () => {
   });
 
   // 「「バトルエリアに出られない」と判断して、ラッシュエリアに置きます」
-  // 既知の不具合: 未登録 — RS-110 ゼニボムが次の相手ターンの進入制限を設定せず、レッドレーサーが自動でバトルエリアに置かれる
-  it.fails("R-BA-04: ゼニボムで出られないターンはレッドレーサーの「可能なら」はラッシュエリアに置く（出典: grnrngr/faq-card-2 RS-090 Q5・RS-110 Q2）", () => {
+  it("R-BA-04: ゼニボムで出られないターンはレッドレーサーの「可能なら」はラッシュエリアに置く（出典: grnrngr/faq-card-2 RS-090 Q5・RS-110 Q2）", () => {
     // player2 の自軍バトルフェイズにデカピンクを5番目に出してゼニボムを発動 → 次の player1 ターンにレッドレーサーをラッシュ
     let s = battleState({
       activePlayer: "player2",
@@ -679,8 +675,7 @@ describe("R-ATK-04 アタック対象とバトル対象は別", () => {
 
 describe("R-ATK-05 「アタックするかわりに」", () => {
   // 「アタックする対象がいない）状態でも…効果を発動することができる」
-  // 既知の不具合: 未登録 — RS-100 の「アタックするかわりに」効果を起動する手段がエンジンに無い
-  it.fails("R-ATK-05: 敵軍バトルエリアが空でもハリケンイエローは「超忍法・舞獅子」を発動できる（出典: atwiki/page-318 Q2 公式コラムvol44・ユーザー決定）", () => {
+  it("R-ATK-05: 敵軍バトルエリアが空でもハリケンイエローは「超忍法・舞獅子」を発動できる（出典: atwiki/page-318 Q2 公式コラムvol44・ユーザー決定）", () => {
     let s = battleState({
       player1: { rush: [inst("RS-100", "hy")], deck: [inst("RS-100", "deckhy"), ...deckCards(2)] },
       player2: { rush: [inst("TST-UNIT-0", "r")] },
@@ -690,8 +685,7 @@ describe("R-ATK-05 「アタックするかわりに」", () => {
   });
 
   // 「Ａを行う権利を失うかわりに、Ｂを行うことができる」
-  // 既知の不具合: 未登録 — RS-100 の「アタックするかわりに」効果を起動する手段がエンジンに無い
-  it.fails("R-ATK-05: アタックできる状態のハリケンイエローも、アタックのかわりに「超忍法・舞獅子」を選べる（出典: atwiki/page-318 Q2）", () => {
+  it("R-ATK-05: アタックできる状態のハリケンイエローも、アタックのかわりに「超忍法・舞獅子」を選べる（出典: atwiki/page-318 Q2）", () => {
     let s = battleState({
       player1: { rush: [inst("RS-100", "hy")], deck: [inst("RS-100", "deckhy"), ...deckCards(2)] },
       player2: { battle: [inst("TST-UNIT-0", "d")] },
@@ -702,8 +696,7 @@ describe("R-ATK-05 「アタックするかわりに」", () => {
   });
 
   // 「「ハリケンイエロー」が１枚もないと判明…でも発動できますか？」「はい」
-  // 既知の不具合: 未登録 — RS-100 の「アタックするかわりに」効果を起動する手段がエンジンに無い
-  it.fails("R-ATK-05: 山札にハリケンイエローが無くても「超忍法・舞獅子」は発動できる（出典: grnrngr/faq-card-2 RS-100 Q1・atwiki/page-318 Q1）", () => {
+  it("R-ATK-05: 山札にハリケンイエローが無くても「超忍法・舞獅子」は発動できる（出典: grnrngr/faq-card-2 RS-100 Q1・atwiki/page-318 Q1）", () => {
     let s = battleState({
       player1: { rush: [inst("RS-100", "hy")], deck: deckCards(3) },
       player2: { battle: [inst("TST-UNIT-0", "d")] },
@@ -774,8 +767,7 @@ describe("R-ATK-05 「アタックするかわりに」", () => {
   });
 
   // 「アタックできる状態であれば、アタックしなければなりません」
-  // 既知の不具合: 未登録 — ゴーマ宮の「可能ならアタックする」下でもジュウクンドー（アタックするかわりに）を選べる
-  it.fails("R-ATK-05: ゴーマ宮下で1番目に並んだデカレッドは、アタックできるならジュウクンドーを使えない（出典: grnrngr/faq-card-4 RS-187 Q3）", () => {
+  it("R-ATK-05: ゴーマ宮下で1番目に並んだデカレッドは、アタックできるならジュウクンドーを使えない（出典: grnrngr/faq-card-4 RS-187 Q3）", () => {
     let s = battleState({
       player1: { operation: [inst("RS-187", "goma")], rush: [inst("RS-106", "deka")] },
       player2: { battle: [inst("TST-UNIT-0", "d")], rush: [inst("TST-UNIT-0", "r")] },

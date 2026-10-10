@@ -574,8 +574,7 @@ describe("R-RES-06 「そうしたとき」", () => {
 
 describe("R-RES-07 期限付き効果は発動元に依存しない", () => {
   // 「一度発動してしまえば…撃破されても…効果は有効になります」(faq-card-2 RS-110)
-  it.fails("R-RES-07: ゼニボム発動後にデカピンクが撃破されても、次の相手ターンに新しくラッシュしたユニットはバトルエリアに出られない（出典: grnrngr/faq-card-2 RS-110 Q1）", () => {
-    // 既知の不具合: 未登録（ゼニボムの修飾子が発動ターン限りで切れ、次の相手ターンに効かない。デカピンクが残っていても同様）
+  it("R-RES-07: ゼニボム発動後にデカピンクが撃破されても、次の相手ターンに新しくラッシュしたユニットはバトルエリアに出られない（出典: grnrngr/faq-card-2 RS-110 Q1）", () => {
     let s = st({
       phase: "battle",
       player1: {
@@ -1152,6 +1151,11 @@ describe("R-REPL-03 「AするかわりにBする」の一般則", () => {
       player2: {},
     });
     s = run(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-100:hy" });
+    // 舞獅子は「アタックするかわりに」プレイヤーが選んで発動する（R-ATK-05）。
+    const lionDance = legal(s).find(
+      (a) => a.type === "use_juu_kun_do" && a.attackerInstanceId === "RS-100:hy",
+    );
+    if (lionDance) s = run(s, lionDance);
     while (s.pendingEffectChoice) {
       const pick = legal(s).find((a) => a.type === "resolve_effect_choice" || a.type === "confirm_effect_choice");
       if (!pick) break;
@@ -1161,14 +1165,18 @@ describe("R-REPL-03 「AするかわりにBする」の一般則", () => {
   });
 
   // 「これはアタックするかわりに次の効果を発動できる」(RS-100 テキスト)
-  it.fails("R-REPL-03: 超忍法・舞獅子を発動したハリケンイエローは、アタックする権利を失っておりアタックできない（出典: atwiki/page-2395, atwiki/page-318）", () => {
-    // 既知の不具合: 未登録（舞獅子がバトルエリアに出たときに自動解決され、アタックの権利を消費しない）
+  it("R-REPL-03: 超忍法・舞獅子を発動したハリケンイエローは、アタックする権利を失っておりアタックできない（出典: atwiki/page-2395, atwiki/page-318）", () => {
     let s = st({
       phase: "battle",
       player1: { rush: [inst("RS-100", "hy")], deck: [inst("RS-100", "hy2"), ...deck(3)] },
       player2: { battle: [inst("TST-UNIT-0", "e1")] },
     });
     s = run(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-100:hy" });
+    // 舞獅子は「アタックするかわりに」プレイヤーが選んで発動する（R-ATK-05）。
+    const lionDance = legal(s).find(
+      (a) => a.type === "use_juu_kun_do" && a.attackerInstanceId === "RS-100:hy",
+    );
+    if (lionDance) s = run(s, lionDance);
     while (s.pendingEffectChoice) {
       const pick = legal(s).find((a) => a.type === "resolve_effect_choice" || a.type === "confirm_effect_choice");
       if (!pick) break;

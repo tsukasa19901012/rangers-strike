@@ -79,6 +79,7 @@ import {
 import { countDistinctCategoriesInCommandZone } from "./zoneCategoryLimit";
 import {
   autoHoldForBattleEntry,
+  clearEffectBattleEntryWindows,
   canMoveUnitToBattle,
 } from "./restrictions";
 import {
@@ -2871,13 +2872,12 @@ export function applyEffectChoiceSelect(
           return { error: "cannot_enter_battle" };
         }
         const [, rush] = removeAt(readyOwner.rush, found.index);
-        const nextOwner = clearCostWindow(
+        const nextOwner = clearEffectBattleEntryWindows(
           {
             ...readyOwner,
             rush,
             battle: [...readyOwner.battle, found.card],
           },
-          "battle_entry_hold",
         );
         return finishChoice(
           { ...state, ...updatePlayer(state, located.playerId, nextOwner) },
@@ -2905,7 +2905,7 @@ export function applyEffectChoiceSelect(
         const battle = [...readyPlayer.battle];
         battle.splice(swapIndex, 1, { ...entering.card, battleActed: true });
         const rush = readyPlayer.rush.filter((c) => c.instanceId !== pending.sourceInstanceId);
-        const nextPlayer = clearCostWindow(
+        const nextPlayer = clearEffectBattleEntryWindows(
           markBattleBlocked(
             {
               ...readyPlayer,
@@ -2914,7 +2914,6 @@ export function applyEffectChoiceSelect(
             },
             swapTarget.card.instanceId,
           ),
-          "battle_entry_hold",
         );
         return finishChoice(
           { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
@@ -3937,13 +3936,12 @@ export function applyEffectChoiceSelect(
       }
 
       const [, rush] = removeAt(readyEnemy.rush, found.index);
-      const nextEnemy = clearCostWindow(
+      const nextEnemy = clearEffectBattleEntryWindows(
         {
           ...readyEnemy,
           rush,
           battle: [...readyEnemy.battle, found.card],
         },
-        "battle_entry_hold",
       );
       let nextState = { ...state, ...updatePlayer(state, enemyId, nextEnemy) };
 

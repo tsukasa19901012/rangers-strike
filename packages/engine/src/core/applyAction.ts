@@ -209,7 +209,7 @@ import {
   finalizeRushPending,
   tryLeaveField,
 } from "../rules/operationCounters";
-import { applyUseJuuKunDo } from "../rules/juuKunDo";
+import { applyLionDance, applyUseJuuKunDo, isLionDanceCard } from "../rules/juuKunDo";
 import { applyResolveRuinSurvey } from "../rules/ruinSurvey";
 import { applySeabedDrawPlacement, openEffectChoice } from "../rules/pendingChoices";
 import {
@@ -2058,6 +2058,16 @@ function applyActionCore(
 
     case "use_juu_kun_do": {
       if (state.phase !== "battle") return fail("wrong_phase");
+      const lionDanceUnit = findInZone(player, "battle", action.attackerInstanceId);
+      if (lionDanceUnit && isLionDanceCard(lionDanceUnit.card.cardId)) {
+        // ルール: R-ATK-05 — 【超忍法・舞獅子】はアタックするかわりに発動する。
+        const danced = applyLionDance(state, playerId, action.attackerInstanceId);
+        if (!danced) return fail("illegal_action");
+        return ok(
+          finishBattleEntryIf(danced, action.attackerInstanceId),
+          buildSimpleLogEntry(playerId, "super_ninpo_lion_dance", action.attackerInstanceId),
+        );
+      }
       const nextState = applyUseJuuKunDo(
         state,
         playerId,
