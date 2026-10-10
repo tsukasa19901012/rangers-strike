@@ -194,6 +194,8 @@ export type PendingBattle = {
   battleCancelled?: boolean;
   /** RS-215【不滅のマシン帝国】の選択をこのアタックで既に出したか。 */
   machineEmpireOffered?: boolean;
+  /** RS-414【ディオネを守る壁】の選択を出したか。 */
+  dioneWallOffered?: boolean;
   /**
    * アタックしたユニットの「アタックするとき／アタックしたとき」（DSL on_attack）を、「アタックされたとき」の
    * 反応（カウンター等）より前に解決済みか（R-TIME-01。core/applyAction.ts continueAttackAfterDeclaration）。

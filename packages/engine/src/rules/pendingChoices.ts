@@ -594,7 +594,8 @@ export function isValidEffectChoiceTarget(
     isSet5ChoiceEffect(pending.effectId) ||
     isSet5AuditChoiceEffect(pending.effectId) ||
     isSet5AChoiceEffect(pending.effectId) ||
-    isSet6BChoiceEffect(pending.effectId)
+    isSet6BChoiceEffect(pending.effectId) ||
+    pending.effectId === "rs414_dione_wall"
   ) {
     return true;
   }
