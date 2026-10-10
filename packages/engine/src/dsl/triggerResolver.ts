@@ -109,8 +109,11 @@ export function tryResolveDslTriggeredEffects(args: {
   phasePlayerId: PlayerId;
   triggerType: EffectTrigger["type"];
   logAction?: string;
+  /** 解決する効果を絞る（例: 「ストライクしてダメージを与えたとき」だけ／それ以外だけ）。 */
+  effectFilter?: (effect: { id: string; text?: string }) => boolean;
 }): DslTriggerOutcome {
-  const effects = listDslEffectsForTrigger(args.cardId, args.triggerType);
+  const all = listDslEffectsForTrigger(args.cardId, args.triggerType);
+  const effects = args.effectFilter ? all.filter((e) => args.effectFilter!(e)) : all;
   if (effects.length === 0) {
     return { state: args.state, logs: [], handled: false };
   }

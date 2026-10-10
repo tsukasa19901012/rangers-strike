@@ -35,6 +35,7 @@ import {
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { checkWinner, advancePhase } from "./createGame";
 import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
+import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import {
   canPlayOperation,
@@ -519,7 +520,8 @@ function finishStrikeResolution(
     activePlayer: pending.battlePhasePlayer,
   });
   resolved = finishBattleEntryIf(resolved, pending.strikerInstanceId);
-  // 「ストライクしてダメージを与えたとき」（RS-309【ゴウライキャノン】）。
+  // ルール: R-TIME-01 — 「ストライクしてダメージを与えたとき」はダメージを与えたあと（DSL: RS-686 等、RS-309【ゴウライキャノン】）。
+  resolved = applyStrikeDamageDealtDslTriggers(resolved, pending);
   resolved = applySet5StrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];

@@ -29,6 +29,10 @@ import {
   openDestroyTimedChoice,
 } from "../rules/destroyTriggerTiming";
 import { resolveUnitLeftZoneEffectsImpl } from "../rules/leaveEffects";
+import { battleFillers, moveToBattle } from "../testing/battleEntry";
+import { heldWbCommand } from "../testing/fixtures";
+import { addTurnRuleModifier } from "../core/scopedModifiers";
+import { PINK_BARRIER_RULE_ID } from "../rules/powerFlipEffects";
 
 /** 撃破の誘発で開いた選択（タイミングだけを持つ最小の選択）。 */
 function destroyChoice(
@@ -236,6 +240,134 @@ describe("R-TIME-01 5つのタイミング", () => {
     // つづいて「ストライクされたとき」の迎撃モビルミサイル（上書きされず、ここで発動できる）。
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-196");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
+  });
+
+  // 「完了形（「～したとき」）のタイミングは「～」を行った後に処理する」(atwiki/page-1828)
+  it("R-TIME-01: 「ストライクしてダメージを与えたとき」（セイクウオー【セイクウインパルス】）はストライクのダメージを与えたあとで発動する（出典: atwiki/page-1828）", () => {
+    let s = st({
+      phase: "battle",
+      player1: { battle: [inst("RS-686", "sk")], deck: deck(3) },
+      player2: {
+        power: [...powers(2), inst("TST-UNIT-0", "pu")],
+        deck: deck(5, "e"),
+      },
+    });
+    s = run(s, { type: "strike", playerId: "player1", instanceId: "RS-686:sk" });
+    // ダメージの支払い中は、まだ【セイクウインパルス】は発動していない。
+    expect(s.pendingDamagePayment).toBeDefined();
+    expect(s.pendingEffectChoice).toBeUndefined();
+    s = run(s, { type: "resolve_damage_payment", playerId: "player2", instanceId: "TST-P:pw0" });
+    // ダメージ（SP1 → 1点）を与えてから、【セイクウインパルス】の選択が開く。
+    expect(s.players.player2.damage).toBe(1);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-686");
+    const pick = legal(s).find((a) => a.type === "resolve_effect_choice" && a.instanceId === "TST-UNIT-0:pu");
+    expect(pick).toBeDefined();
+    s = run(s, pick!);
+    expect(inZone(s, "player2", "discard", "TST-UNIT-0:pu")).toBe(true);
+    expect(s.players.player2.damage).toBe(1);
+  });
+
+  it("R-TIME-01: ストライクのダメージが無効になれば「ストライクしてダメージを与えたとき」（セイクウオー）は発動しない（出典: atwiki/page-1828）", () => {
+    let s = st({
+      phase: "battle",
+      player1: { battle: [inst("RS-686", "sk")], deck: deck(3) },
+      player2: {
+        rush: [inst("RS-196", "mob")],
+        command: [cmd("TST-OP-ET", "et1"), cmd("TST-OP-ET", "et2"), cmd("TST-OP-ET", "et3"), cmd("TST-OP-ET", "et4")],
+        power: [inst("TST-UNIT-0", "pu")],
+        deck: deck(5, "e"),
+      },
+    });
+    s = run(s, { type: "strike", playerId: "player1", instanceId: "RS-686:sk" });
+    // 先に「ストライクされたとき」の迎撃モビルミサイル（ストライクを無効にする）。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-196");
+    const accept = legal(s).find((a) => a.type === "resolve_effect_choice" || a.type === "resolve_optional_effect");
+    expect(accept).toBeDefined();
+    s = settle(run(s, accept!));
+    expect(s.players.player2.damage).toBe(0);
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-686");
+    expect(inZone(s, "player2", "power", "TST-UNIT-0:pu")).toBe(true);
+  });
+
+  // ユーザー決定（2026-10-11）: 効果による撃破も 1「撃破したとき」→ 2「撃破されたとき」→ 3 捨札へ → 4「撃破されて捨札になったとき」。
+  it("R-TIME-01: 効果で撃破したとき — ブラックコンドル（2nd）【ブリンガーソード】で撃破したときの1点ダメージ（段階 1）を与えてから、スーパーゲキイエロー（段階 4・選択）が発動する（ユーザー決定 2026-10-11）", () => {
+    let s = st({
+      phase: "battle",
+      player1: {
+        rush: [inst("RS-685", "bc")],
+        battle: battleFillers(4),
+        command: [heldWbCommand("c1"), heldWbCommand("c2")],
+        deck: deck(3),
+      },
+      player2: {
+        battle: [inst("RS-427", "sy")],
+        discard: [inst("RS-342", "y1"), inst("RS-342", "y2")],
+        deck: deck(5, "e"),
+      },
+    });
+    s = moveToBattle(s, "RS-685:bc");
+    expect(s.pendingEffectChoice?.effectId).toBe("buringasodo");
+    s = run(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-427:sy" });
+    expect(inZone(s, "player2", "discard", "RS-427:sy")).toBe(true);
+    // 段階 1（撃破したとき・1点）が先、つづいて段階 4 のスーパーゲキイエローの選択（失われない）。
+    expect(s.players.player2.damage).toBe(1);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-427");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["RS-342:y1", "RS-342:y2"]);
+    s = run(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "RS-342:y2" });
+    expect(inZone(s, "player2", "rush", "RS-342:y2")).toBe(true);
+    expect(s.pendingEffectChoice).toBeUndefined();
+  });
+
+  // 複数体を撃破する効果: 1体ずつ撃破し（R-RES-01）、撃破された側の誘発（選択を含む）はその都度割り込む（R-TIME-04）。
+  it("R-TIME-01: 複数体を撃破する効果（サンダール【宇宙忍法・縄頭蓋】）で、先に撃破されたデカピンクSWATの「撃破されて捨札になったとき」の選択が失われず、解決後に残りを撃破する（ユーザー決定 2026-10-11・atwiki/page-1869）", () => {
+    let s = st({
+      phase: "battle",
+      player1: { battle: battleFillers(6), rush: [inst("RS-103", "sd")], deck: deck(3) },
+      player2: {
+        rush: [inst("RS-660", "swat"), inst("TST-UNIT-0", "x")],
+        discard: [inst("RS-110", "p1"), inst("RS-110", "p2")],
+        deck: deck(5, "e"),
+      },
+    });
+    s = settle(moveToBattle(s, "RS-103:sd"));
+    expect(inZone(s, "player2", "discard", "RS-660:swat")).toBe(true);
+    // デカピンクSWATの段階 4（捨札のデカピンクを1枚選びラッシュエリアに出す）が開いている。残りの対象はまだ撃破していない。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-660");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["RS-110:p1", "RS-110:p2"]);
+    expect(inZone(s, "player2", "rush", "TST-UNIT-0:x")).toBe(true);
+    s = settle(run(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "RS-110:p2" }));
+    expect(inZone(s, "player2", "rush", "RS-110:p2")).toBe(true);
+    // つづいて残りの対象を撃破する（あとからラッシュエリアに出たデカピンクは対象に含まれない）。
+    expect(inZone(s, "player2", "discard", "TST-UNIT-0:x")).toBe(true);
+    expect(s.pendingEffectChoice).toBeUndefined();
+  });
+
+  // 「ダメージにするとき」（現在形）は、ダメージになる（「ダメージが6点になったとき」等）より前。
+  it("R-TIME-01: ピンクファイブ【ピンクバリヤー】（ウラ返してダメージにするとき）は、6点目のダメージで手札に戻るウルザードより先に撃破する（出典: atwiki/page-1828・atwiki/page-410）", () => {
+    const p1Base = st().players.player1;
+    const withBarrier = addTurnRuleModifier(p1Base, PINK_BARRIER_RULE_ID, { sourceCardId: "RS-202" });
+    let s = st({
+      phase: "battle",
+      activePlayer: "player2",
+      player1: {
+        modifiers: withBarrier.modifiers,
+        damage: 5,
+        power: [...[0, 1, 2, 3, 4].map((i) => faceDown(`d${i}`)), inst("RS-007", "six"), inst("TST-P", "one")],
+        deck: deck(5),
+      },
+      player2: {
+        battle: [inst("TST-UNIT-0", "st"), inst("RS-112", "urz")],
+        deck: deck(5, "e"),
+      },
+    });
+    expect(s.players.player1.damage).toBe(5);
+    s = run(s, { type: "strike", playerId: "player2", instanceId: "TST-UNIT-0:st" });
+    expect(s.pendingDamagePayment).toBeDefined();
+    s = settle(run(s, { type: "resolve_damage_payment", playerId: "player1", instanceId: "RS-007:six" }));
+    expect(s.players.player1.damage).toBe(6);
+    // 必要パワー6のカードをウラ返すとき → 必要パワー6のウルザード（6+）を撃破。その後で6点になる（手札には戻らない）。
+    expect(inZone(s, "player2", "discard", "RS-112:urz")).toBe(true);
+    expect(inZone(s, "player2", "hand", "RS-112:urz")).toBe(false);
   });
 
   // 「現在形（「～するとき」）のタイミングは「～」を行う前に処理する」(atwiki/page-1828)
