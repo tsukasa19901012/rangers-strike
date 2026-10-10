@@ -119,40 +119,54 @@ export function findSuperShieldSubstitute(
   intent: LeaveIntent,
 ): string | undefined {
   if (intent.toZone !== "discard") return undefined;
+  if (intent.notDestruction) return undefined;
   if (!isWildBeastUnit(state.definitions, intent.leavingCardId)) return undefined;
 
+  // ルール: R-ERR-RS052 — ユニットとして場（ラッシュエリア・バトルエリア）にあるときだけ（faq-card-1 RS-052 Q5）。
   return findFieldInstanceByKeyword(
     state,
     intent.ownerPlayerId,
     "substitute_on_wb_destroy",
-    ["battle"],
+    ["battle", "rush"],
     intent.instanceId,
   );
 }
 
+/**
+ * RS-052【超シールド進化】: 守ったユニットの離場を止めたあと、かわりにトリケラを捨札にする。
+ * トリケラの捨札は撃破ではないが「場を離れる」ので、ダイノガッツ等の応答が開く（faq-card-1 RS-052 Q2・Q4）。
+ */
 export function applySuperShieldSubstitute(
   state: GameState,
   ownerId: PlayerId,
   shieldInstanceId: string,
-): { state: GameState; log: string } {
+  phasePlayerId: PlayerId,
+  resumePendingStrike?: PendingLeave["resumePendingStrike"],
+): { state: GameState; log: string; deferred: boolean } {
   const owner = state.players[ownerId];
-  const found = findInZone(owner, "battle", shieldInstanceId);
+  const zone = findInZone(owner, "battle", shieldInstanceId) ? "battle" : "rush";
+  const found = findInZone(owner, zone, shieldInstanceId);
   if (!found) {
     return {
       state,
       log: buildLogEntry(ownerId, "named_effect", "RS-052", state.definitions, "super_shield_failed"),
+      deferred: false,
     };
   }
 
-  const [, battle] = removeAt(owner.battle, found.index);
-  const nextOwner = {
-    ...owner,
-    battle,
-    discard: [...owner.discard, found.card],
-  };
+  const leave = tryLeaveField(state, {
+    ownerPlayerId: ownerId,
+    instanceId: shieldInstanceId,
+    fromZone: zone,
+    toZone: "discard",
+    leavingCardId: found.card.cardId,
+    phasePlayerId,
+    notDestruction: true,
+    ...(resumePendingStrike ? { resumePendingStrike } : {}),
+  });
 
   return {
-    state: { ...state, ...updatePlayer(state, ownerId, nextOwner) },
+    state: leave.state,
     log: buildLogEntry(
       ownerId,
       "named_effect",
@@ -160,6 +174,7 @@ export function applySuperShieldSubstitute(
       state.definitions,
       "super_shield",
     ),
+    deferred: leave.deferred,
   };
 }
 
@@ -1392,8 +1407,9 @@ export function finalizeRushPending(state: GameState, pending: PendingRush): Gam
  * （registerEligible）は置き先がパワーゾーンでも撃破。効果でパワー／コマンドゾーンに置くのは撃破ではない。
  */
 export function isDestructionLeave(
-  pending: Pick<PendingLeave, "toZone" | "registerEligible">,
+  pending: Pick<PendingLeave, "toZone" | "registerEligible" | "notDestruction">,
 ): boolean {
+  if (pending.notDestruction) return false;
   return pending.toZone === "discard" || pending.registerEligible === true;
 }
 
@@ -1481,6 +1497,7 @@ export function finalizeLeavePending(
     }
   } else if (
     pending.toZone === "discard" &&
+    !pending.notDestruction &&
     (medicalRescueToPower = shouldMedicalRescueToPower(state, pending.ownerPlayerId, found.card.cardId))
   ) {
     nextOwner = {
@@ -1490,6 +1507,7 @@ export function finalizeLeavePending(
     };
   } else if (
     pending.toZone === "discard" &&
+    !pending.notDestruction &&
     shouldOfferToPowerOnDestroy(pending)
   ) {
     return startToPowerOnDestroyChoice(state, pending, leavingCard, fromCards);

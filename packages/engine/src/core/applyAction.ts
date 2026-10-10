@@ -2364,12 +2364,20 @@ function applyActionCore(
       if (!pending?.superShieldInstanceId) return fail("no_super_shield");
       if (playerId !== pending.ownerPlayerId) return fail("wrong_player");
 
+      // 守ったユニットはその場に留まる（撃破された事実は残る）。そのあとトリケラを捨札にする。
+      const prevented = finalizeLeaveReaction(state, pending, true);
       const shieldResult = applySuperShieldSubstitute(
-        state,
+        prevented,
         playerId,
         pending.superShieldInstanceId,
+        pending.phasePlayerId,
+        pending.resumePendingStrike,
       );
-      let nextState = finalizeLeaveReaction(shieldResult.state, pending, true);
+      let nextState = shieldResult.state;
+      if (shieldResult.deferred) {
+        // トリケラが場を離れるときの応答（ダイノガッツ等）を待つ。ストライクの再開はその解決後。
+        return ok(nextState, shieldResult.log);
+      }
       if (pending.resumePendingStrike && state.pendingStrike) {
         return completeStrike(nextState, {
           ...state.pendingStrike,

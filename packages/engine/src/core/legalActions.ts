@@ -1911,6 +1911,10 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
   const reactionActor = getReactionChooserPlayerId(state);
   if (reactionActor && isReactionWindowAction(action)) {
     if (action.playerId !== reactionActor) return false;
+  } else if (state.pendingEffectChoice?.kind === "simultaneous_order") {
+    // 同時に開いた反応窓（離場・ストライク等）の処理順はターンプレイヤーが選ぶ（R-SIM-01）。
+    // 離場の持ち主より先にこの選択を受け付ける。
+    if (action.playerId !== state.pendingEffectChoice.playerId) return false;
   } else if (state.pendingLeave) {
     if (action.playerId !== state.pendingLeave.ownerPlayerId) return false;
   } else if (state.pendingEffectChoice) {

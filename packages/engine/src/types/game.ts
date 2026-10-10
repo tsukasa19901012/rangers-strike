@@ -222,6 +222,11 @@ export type PendingLeave = {
   };
   /** RS-052: WB味方が破壊される際の任意代用。 */
   superShieldInstanceId?: string;
+  /**
+   * 撃破ではなく効果で捨札にする離場（RS-052【超シールド進化】でかわりに捨札になるトリケラ）。
+   * 「場を離れるとき」の応答（ダイノガッツ等）は開くが、撃破の誘発・置換は起きない。ルール: R-REPL-01
+   */
+  notDestruction?: boolean;
   /** RS-009: Lユニットが捨札に到達したときのみ合体パーツを戻す。 */
   fusionReturnOnDiscard?: "battle";
 };

@@ -26,7 +26,7 @@ wikiwiki「エラッタ」(https://wikiwiki.jp/renst/エラッタ 、最終更�
 - 効果: 手札からは使えず、ユニットとして場にあるときだけ発動できる。かわりに捨札になったトリケラ自身は撃破扱いではない（R-REPL-01）。守ったユニットの「撃破された」事実は残る（R-DESTROY-02）。
 - 出典: errata.html、`grnrngr/faq-card-1` RS-052 Q5「この効果は「RS-052 爆竜トリケラトプス」がユニットとして場に出ているときにだけ発動できます」、`atwiki/page-84`
 - Web: https://www.grnrngr.com/documents/rangersstrike/faq/errata.html 、https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html （RS-052 の回答にも「このカードはエラッタの対象となります」として同じ正文を掲載）
-- 実装: ✅ 挙動（バトルエリアのみ）。✅ テキスト反映（E14: `packages/cards/src/dsl/overrides/RS-052.json`）。撃破誘発が消える件は E10 で別途。
+- 実装: ✅ 挙動（ユニットとして場＝ラッシュエリア・バトルエリアにあるとき。Q5）。かわりの捨札は撃破ではない離場（`notDestruction`）として処理し、「場を離れるとき」の応答（ダイノガッツ等、Q4）は開くが、撃破の誘発・置換（レスキューファイター等、Q2）は起きない（`rules/operationCounters.ts` `applySuperShieldSubstitute`）。✅ テキスト反映（E14: `packages/cards/src/dsl/overrides/RS-052.json`）。撃破誘発が消える件は E10 で別途。
 
 #### R-ERR-RS009 パワーバズーカ（オペレーション） [公式] `web照合済(2026-10-10)`
 - 誤: 敵軍Ｌユニットを１体選んで撃破する。**そうしたとき**、相手はそのＬユニットの合体に必要なユニットのカードを捨札から探してバトルエリアに戻す。このとき、戻したユニットの効果は発動しない。
