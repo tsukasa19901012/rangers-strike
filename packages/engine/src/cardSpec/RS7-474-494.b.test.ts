@@ -55,8 +55,7 @@ function noAttackFromNonAircraftTests(id: string, page: string) {
       },
       [AIR_S],
     );
-  // 既知の不具合: CARD-RS-481/RS-482 ※（航空機を持たないユニットにアタックされない）の特徴名が DSL で「fx_unknown」に化けており、航空機を持たないユニットにもアタックされる
-  it.fails(`${id}: ※ 特徴「航空機」を持たないユニットにはアタックされない（出典: atwiki/${page}「特徴「航空機」を持たないユニットにアタックされない」）`, () => {
+  it(`${id}: ※ 特徴「航空機」を持たないユニットにはアタックされない（出典: atwiki/${page}「特徴「航空機」を持たないユニットにアタックされない」）`, () => {
     expect(attackTargets(s(), "TST-UNIT-7:l", "player2")).toEqual(["TST-UNIT-0:f"]);
   });
   it(`${id}: ※ 特徴「航空機」を持つユニットにはアタックされる（出典: atwiki/${page}）`, () => {

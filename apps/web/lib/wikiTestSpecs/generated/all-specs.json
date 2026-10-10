@@ -195,7 +195,7 @@
       "自分の手札か、自軍常駐置き場でオモテ向きになって"
     ],
     "expectedDslKeywords": [
-      "hand_resident_rush_no_seki"
+      "hand_resident_rush_feat_e8b3a2e88085e381aee79fb3"
     ],
     "operationKind": "permanent",
     "expectedMechanisms": [
@@ -445,7 +445,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -462,7 +462,7 @@
       "【カギ爪アーム】"
     ],
     "expectedDslKeywords": [
-      "ally_raida_protects_from_enemy_s",
+      "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
       "return_rush_deploy_enemy_s"
     ],
     "bp": 1000,
@@ -573,7 +573,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hand_rush_ma_chikara_s_on_battle"
+      "hand_rush_feat_e9ad94e79a87e58a9b_s_on_battle"
     ],
     "bp": 5000,
     "sp": "1/3",
@@ -1574,7 +1574,7 @@
     ],
     "expectedDslKeywords": [
       "no_attack_while_riding_enemy_s",
-      "per_ally_fx_unknown_bp_1000"
+      "per_ally_feat_e8ada6e5af9f_bp_1000"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -2038,7 +2038,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_5000",
-      "battle_position_sp_fx_unknown_pos4_sp1"
+      "battle_position_sp_feat_e688a6e99798e593a1_pos4_sp1"
     ],
     "bp": 1000,
     "sp": null,
@@ -2074,7 +2074,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_500",
-      "ride_without_rc_raida"
+      "ride_without_rc_feat_e4bbaee99da2e383a9e382a4e38380e383bc"
     ],
     "sp": null,
     "size": "S"
@@ -2342,7 +2342,7 @@
       "【カギ爪アーム】"
     ],
     "expectedDslKeywords": [
-      "ally_raida_protects_from_enemy_s",
+      "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
       "return_rush_deploy_enemy_s"
     ],
     "bp": 1000,
@@ -2999,7 +2999,7 @@
       "【非常警戒態勢】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e8ada6e5af9f",
       "rk_fx::RK-111::fx_unknown_e99d9e"
     ],
     "sp": null,
@@ -3542,7 +3542,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -3560,7 +3560,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -3578,7 +3578,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 5000,
     "sp": null,
@@ -3596,7 +3596,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -4518,7 +4518,7 @@
       "【ドライブディバイダー】"
     ],
     "expectedDslKeywords": [
-      "ally_reiyou_protects_from_enemy_s",
+      "ally_feat_e383ace382a4e383a8e382a6e59e8b_protects_from_enemy_s",
       "rk_fx::RK-198::doraibudeibaida"
     ],
     "bp": 1000,
@@ -5522,7 +5522,7 @@
       "【ウルトラサイクロン】"
     ],
     "expectedDslKeywords": [
-      "ally_raida_protects_from_enemy_s",
+      "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
       "rk_fx::RK-255::urutorasaikuron"
     ],
     "bp": 1000,
@@ -5556,7 +5556,7 @@
       "【高性能レーダー】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e5a5b3",
       "ride_bp_boost_500",
       "rk_fx::RK-257::reda"
     ],
@@ -5924,7 +5924,7 @@
       "【飛翔斬】"
     ],
     "expectedDslKeywords": [
-      "register_if_discard_has_feature_fx_unknown"
+      "register_if_discard_has_feature_feat_e5a5b3"
     ],
     "bp": 4000,
     "sp": "1/2",
@@ -6318,7 +6318,7 @@
       "【クロックアップ】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e58aa0e9809f",
       "ride_bp_boost_500",
       "rk_fx::RK-300::kurokuapu"
     ],
@@ -6336,7 +6336,7 @@
       "【エクステンドライダー落とし】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e58aa0e9809f",
       "ride_bp_boost_500",
       "rk_fx::RK-301::ekusutendoraidatoshi"
     ],
@@ -6498,7 +6498,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "destroy_on_win_vs_fx_unknown",
+      "destroy_on_win_vs_feat_e5a5b3",
       "SP1"
     ],
     "bp": 4000,
@@ -6569,7 +6569,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hand_rush_ma_chikara_s_on_battle"
+      "hand_rush_feat_e9ad94e79a87e58a9b_s_on_battle"
     ],
     "bp": 5000,
     "sp": "1/3",
@@ -6726,7 +6726,7 @@
       "【シャドウベール】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_ma_chikara",
+      "ride_without_rc_feat_e9ad94e79a87e58a9b",
       "rk_fx::RK-323::shadouberu"
     ],
     "sp": null,
@@ -6743,7 +6743,7 @@
       "【凄いのが来るぜ！】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_ma_chikara",
+      "ride_without_rc_feat_e9ad94e79a87e58a9b",
       "rk_fx::RK-324::inogaruze"
     ],
     "sp": null,
@@ -6939,7 +6939,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "destroy_on_win_vs_fx_unknown",
+      "destroy_on_win_vs_feat_e5a5b3",
       "SP1"
     ],
     "bp": 4000,
@@ -7779,7 +7779,7 @@
       "【ビッグキャノン】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e8ada6e5af9f",
       "rm_fx::RM-047::bigukyanon"
     ],
     "sp": null,
@@ -7865,7 +7865,7 @@
       "【マグネアタッチメント】"
     ],
     "expectedDslKeywords": [
-      "ride_command_without_rc_fx_unknown",
+      "ride_command_without_rc_feat_e69886e899ab",
       "while_riding_stagger_tank_block_return_held_mecha"
     ],
     "sp": null,
@@ -7882,7 +7882,7 @@
       "【ドリルアタッチメント】"
     ],
     "expectedDslKeywords": [
-      "ride_command_without_rc_fx_unknown",
+      "ride_command_without_rc_feat_e69886e899ab",
       "rm_fx::RM-053::doriruatachimento"
     ],
     "sp": null,
@@ -7899,7 +7899,7 @@
       "【レッドパルサー】"
     ],
     "expectedDslKeywords": [
-      "ride_command_without_rc_fx_unknown",
+      "ride_command_without_rc_feat_e69886e899ab",
       "rm_fx::RM-054::redoparusa"
     ],
     "sp": null,
@@ -11716,8 +11716,8 @@
       "【大宇宙ハイウェイ計画】"
     ],
     "expectedDslKeywords": [
-      "end_turn_return_if_no_ryo",
-      "all_ryo_auto_battle_entry"
+      "end_turn_return_if_no_feat_e8bb8ae4b8a1",
+      "all_feat_e8bb8ae4b8a1_auto_battle_entry"
     ],
     "bp": 8000,
     "sp": 1,
@@ -11734,7 +11734,7 @@
       "【家出したくなるガソリン】"
     ],
     "expectedDslKeywords": [
-      "return_ryo_battle_to_deck_bottom"
+      "return_feat_e8bb8ae4b8a1_battle_to_deck_bottom"
     ],
     "bp": 2000,
     "sp": null,
@@ -12156,7 +12156,7 @@
     ],
     "expectedDslKeywords": [
       "require_discard_rush_s_entry",
-      "rush_skip_command_hold_fx_unknown"
+      "rush_skip_command_hold_feat_e688a6e99798e593a1"
     ],
     "bp": 6000,
     "sp": 1,
@@ -12838,7 +12838,7 @@
       "【俺に惚れろ！】"
     ],
     "expectedDslKeywords": [
-      "end_turn_return_hand_if_no_fx_unknown",
+      "end_turn_return_hand_if_no_feat_e5a5b3",
       "effect_card::RS-281::nirero"
     ],
     "bp": 2000,
@@ -12978,7 +12978,7 @@
     "expectedDslKeywords": [
       "damage_gate_battle_entry",
       "self_destroy_low_damage_remaining",
-      "ally_fx_unknown_bp_boost_1000"
+      "ally_feat_e68190e7ab9c_bp_boost_1000"
     ],
     "bp": 6000,
     "sp": 1,
@@ -14621,7 +14621,7 @@
       "【特殊消化弾】"
     ],
     "expectedDslKeywords": [
-      "no_attack_without_fx_unknown",
+      "no_attack_without_feat_e888aae7a9bae6a99f",
       "effect_card::RS-385::dane789b9"
     ],
     "bp": 2000,
@@ -14975,7 +14975,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_500",
-      "ride_without_rc_fx_unknown"
+      "ride_without_rc_feat_e8ada6e5af9f"
     ],
     "sp": null,
     "size": "S"
@@ -16296,7 +16296,7 @@
       "【ホバリング】"
     ],
     "expectedDslKeywords": [
-      "no_attack_without_fx_unknown"
+      "no_attack_without_feat_e888aae7a9bae6a99f"
     ],
     "bp": 4000,
     "sp": 1,
@@ -16313,7 +16313,7 @@
       "【カラクリ忍法・天空裂破】"
     ],
     "expectedDslKeywords": [
-      "no_attack_without_fx_unknown",
+      "no_attack_without_feat_e888aae7a9bae6a99f",
       "effect_card::RS-482::karakurininpoha"
     ],
     "bp": 4000,
@@ -16420,7 +16420,7 @@
       "【滑空】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e5bf8de88085",
       "effect_card::RS-488::fxunknowne6bb91"
     ],
     "sp": null,
@@ -20153,7 +20153,7 @@
       "【龍撃剣＆獣奏剣】"
     ],
     "expectedDslKeywords": [
-      "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000"
+      "bp_plus_per_discard_feature_feat_e68190e7ab9c_1000_sp_at_8000"
     ],
     "bp": 4000,
     "sp": "special",
@@ -20319,7 +20319,7 @@
       "【音速の赤き侍】"
     ],
     "expectedDslKeywords": [
-      "can_ride_vehicle_ryo",
+      "can_ride_vehicle_feat_e8bb8ae4b8a1",
       "SP1"
     ],
     "bp": 4000,
@@ -23007,7 +23007,7 @@
       "【ファイナルアタックライド】"
     ],
     "expectedDslKeywords": [
-      "register_stay_on_power_discard_raida",
+      "register_stay_on_power_discard_feat_e4bbaee99da2e383a9e382a4e38380e383bc",
       "effect_card::XG2-042::fuainaruatakuraido"
     ],
     "bp": 6000,
@@ -25324,7 +25324,7 @@
     ],
     "expectedDslKeywords": [
       "note_card::XG3-072::koreganoniaruras",
-      "hold_entry_destroy_fx_unknown"
+      "hold_entry_destroy_feat_e794b7"
     ],
     "bp": 2000,
     "sp": null,
@@ -25949,7 +25949,7 @@
       "【ワンパーの壺】"
     ],
     "expectedDslKeywords": [
-      "can_ride_vehicle_ryo",
+      "can_ride_vehicle_feat_e8bb8ae4b8a1",
       "effect_card::XG4-004::wanpano"
     ],
     "bp": 2000,
@@ -31002,7 +31002,7 @@
       "【マッハ全開！】"
     ],
     "expectedDslKeywords": [
-      "can_ride_vehicle_ryo",
+      "can_ride_vehicle_feat_e8bb8ae4b8a1",
       "effect_card::XG7-017::maha"
     ],
     "bp": 3000,
@@ -32061,7 +32061,7 @@
       "【全てを集めた先にあるもの】"
     ],
     "expectedDslKeywords": [
-      "register_stay_on_power_discard_raida",
+      "register_stay_on_power_discard_feat_e4bbaee99da2e383a9e382a4e38380e383bc",
       "effect_card::XP-005::tewometaniarumono"
     ],
     "bp": 4000,
@@ -32396,7 +32396,7 @@
     "expectedDslKeywords": [
       "damage_gate_battle_entry",
       "self_destroy_low_damage_remaining",
-      "ally_fx_unknown_bp_boost_1000"
+      "ally_feat_e68190e7ab9c_bp_boost_1000"
     ],
     "bp": 6000,
     "sp": 1,

@@ -36,7 +36,7 @@
       ]
     },
     {
-      "id": "per_ally_fx_unknown_bp_1000",
+      "id": "per_ally_feat_e8ada6e5af9f_bp_1000",
       "name": "マイティキック",
       "text": "自軍ターン中、これは自軍バトルエリアにある特徴「警察」を持つユニット1体につきBP+1000される。",
       "trigger": {
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "per_ally_fx_unknown_bp_1000",
+          "keyword": "per_ally_feat_e8ada6e5af9f_bp_1000",
           "duration": "turn"
         }
       ]

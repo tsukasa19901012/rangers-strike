@@ -114,7 +114,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -131,7 +131,7 @@
       "【カギ爪アーム】"
     ],
     "expectedDslKeywords": [
-      "ally_raida_protects_from_enemy_s",
+      "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
       "return_rush_deploy_enemy_s"
     ],
     "bp": 1000,
@@ -242,7 +242,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hand_rush_ma_chikara_s_on_battle"
+      "hand_rush_feat_e9ad94e79a87e58a9b_s_on_battle"
     ],
     "bp": 5000,
     "sp": "1/3",

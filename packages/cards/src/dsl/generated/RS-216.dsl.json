@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "end_turn_return_if_no_ryo",
+          "keyword": "end_turn_return_if_no_feat_e8bb8ae4b8a1",
           "duration": "permanent"
         }
       ],
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "all_ryo_auto_battle_entry",
+          "keyword": "all_feat_e8bb8ae4b8a1_auto_battle_entry",
           "duration": "permanent"
         }
       ],

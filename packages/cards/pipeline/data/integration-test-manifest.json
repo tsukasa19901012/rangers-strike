@@ -183,13 +183,13 @@
     },
     {
       "cardId": "PK-007",
-      "effectId": "power_faceup_raida_on_enter",
+      "effectId": "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_on_enter",
       "trigger": "enter_battle",
       "skip": false
     },
     {
       "cardId": "PK-008",
-      "effectId": "ally_raida_protects_from_enemy_s",
+      "effectId": "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
       "trigger": "nc",
       "skip": false
     },
@@ -675,7 +675,7 @@
     },
     {
       "cardId": "RK-029",
-      "effectId": "per_ally_fx_unknown_bp_1000",
+      "effectId": "per_ally_feat_e8ada6e5af9f_bp_1000",
       "trigger": "nc",
       "skip": false
     },
@@ -951,7 +951,7 @@
     },
     {
       "cardId": "RK-058",
-      "effectId": "ride_without_rc_raida",
+      "effectId": "ride_without_rc_feat_e4bbaee99da2e383a9e382a4e38380e383bc",
       "trigger": "nc",
       "skip": false
     },
@@ -1089,7 +1089,7 @@
     },
     {
       "cardId": "RK-074",
-      "effectId": "ally_raida_protects_from_enemy_s",
+      "effectId": "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
       "trigger": "nc",
       "skip": false
     },
@@ -1389,7 +1389,7 @@
     },
     {
       "cardId": "RK-111",
-      "effectId": "ride_without_rc_fx_unknown",
+      "effectId": "ride_without_rc_feat_e8ada6e5af9f",
       "trigger": "nc",
       "skip": false
     },
@@ -1719,7 +1719,7 @@
     },
     {
       "cardId": "RK-142",
-      "effectId": "power_faceup_raida_on_enter",
+      "effectId": "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_on_enter",
       "trigger": "enter_battle",
       "skip": false
     },
@@ -1731,7 +1731,7 @@
     },
     {
       "cardId": "RK-143",
-      "effectId": "power_faceup_raida_on_enter",
+      "effectId": "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_on_enter",
       "trigger": "enter_battle",
       "skip": false
     },
@@ -1743,7 +1743,7 @@
     },
     {
       "cardId": "RK-144",
-      "effectId": "power_faceup_raida_on_enter",
+      "effectId": "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_on_enter",
       "trigger": "enter_battle",
       "skip": false
     },
@@ -1755,7 +1755,7 @@
     },
     {
       "cardId": "RK-145",
-      "effectId": "power_faceup_raida_on_enter",
+      "effectId": "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_on_enter",
       "trigger": "enter_battle",
       "skip": false
     },
@@ -2943,7 +2943,7 @@
     },
     {
       "cardId": "RK-257",
-      "effectId": "ride_without_rc_fx_unknown",
+      "effectId": "ride_without_rc_feat_e5a5b3",
       "trigger": "nc",
       "skip": false
     },
@@ -3441,7 +3441,7 @@
     },
     {
       "cardId": "RK-300",
-      "effectId": "ride_without_rc_fx_unknown",
+      "effectId": "ride_without_rc_feat_e58aa0e9809f",
       "trigger": "nc",
       "skip": false
     },
@@ -3459,7 +3459,7 @@
     },
     {
       "cardId": "RK-301",
-      "effectId": "ride_without_rc_fx_unknown",
+      "effectId": "ride_without_rc_feat_e58aa0e9809f",
       "trigger": "nc",
       "skip": false
     },
@@ -3573,7 +3573,7 @@
     },
     {
       "cardId": "RK-310",
-      "effectId": "destroy_on_win_vs_fx_unknown",
+      "effectId": "destroy_on_win_vs_feat_e5a5b3",
       "trigger": "while_in_field",
       "skip": false
     },
@@ -3723,7 +3723,7 @@
     },
     {
       "cardId": "RK-323",
-      "effectId": "ride_without_rc_ma_chikara",
+      "effectId": "ride_without_rc_feat_e9ad94e79a87e58a9b",
       "trigger": "nc",
       "skip": false
     },
@@ -3735,7 +3735,7 @@
     },
     {
       "cardId": "RK-324",
-      "effectId": "ride_without_rc_ma_chikara",
+      "effectId": "ride_without_rc_feat_e9ad94e79a87e58a9b",
       "trigger": "nc",
       "skip": false
     },
@@ -3873,7 +3873,7 @@
     },
     {
       "cardId": "RK-335",
-      "effectId": "destroy_on_win_vs_fx_unknown",
+      "effectId": "destroy_on_win_vs_feat_e5a5b3",
       "trigger": "while_in_field",
       "skip": false
     },
@@ -4311,7 +4311,7 @@
     },
     {
       "cardId": "RM-047",
-      "effectId": "ride_without_rc_fx_unknown",
+      "effectId": "ride_without_rc_feat_e8ada6e5af9f",
       "trigger": "nc",
       "skip": false
     },
@@ -4353,7 +4353,7 @@
     },
     {
       "cardId": "RM-052",
-      "effectId": "ride_command_without_rc_fx_unknown",
+      "effectId": "ride_command_without_rc_feat_e69886e899ab",
       "trigger": "nc",
       "skip": false
     },
@@ -4365,7 +4365,7 @@
     },
     {
       "cardId": "RM-053",
-      "effectId": "ride_command_without_rc_fx_unknown",
+      "effectId": "ride_command_without_rc_feat_e69886e899ab",
       "trigger": "nc",
       "skip": false
     },
@@ -4377,7 +4377,7 @@
     },
     {
       "cardId": "RM-054",
-      "effectId": "ride_command_without_rc_fx_unknown",
+      "effectId": "ride_command_without_rc_feat_e69886e899ab",
       "trigger": "nc",
       "skip": false
     },
@@ -6621,7 +6621,7 @@
     },
     {
       "cardId": "RS-289",
-      "effectId": "ally_fx_unknown_bp_1000",
+      "effectId": "ally_feat_e68190e7ab9c_bp_1000",
       "trigger": "nc",
       "skip": false
     },
@@ -7407,7 +7407,7 @@
     },
     {
       "cardId": "RS-385",
-      "effectId": "no_attack_without_fx_unknown",
+      "effectId": "no_attack_without_feat_e888aae7a9bae6a99f",
       "trigger": "nc",
       "skip": false
     },
@@ -7563,7 +7563,7 @@
     },
     {
       "cardId": "RS-406",
-      "effectId": "ride_without_rc_fx_unknown",
+      "effectId": "ride_without_rc_feat_e8ada6e5af9f",
       "trigger": "nc",
       "skip": false
     },
@@ -8349,7 +8349,7 @@
     },
     {
       "cardId": "RS-481",
-      "effectId": "no_attack_without_fx_unknown",
+      "effectId": "no_attack_without_feat_e888aae7a9bae6a99f",
       "trigger": "nc",
       "skip": false
     },
@@ -8361,7 +8361,7 @@
     },
     {
       "cardId": "RS-482",
-      "effectId": "no_attack_without_fx_unknown",
+      "effectId": "no_attack_without_feat_e888aae7a9bae6a99f",
       "trigger": "nc",
       "skip": false
     },
@@ -8433,7 +8433,7 @@
     },
     {
       "cardId": "RS-488",
-      "effectId": "ride_without_rc_fx_unknown",
+      "effectId": "ride_without_rc_feat_e5bf8de88085",
       "trigger": "nc",
       "skip": false
     },
@@ -10797,7 +10797,7 @@
     },
     {
       "cardId": "SX-004",
-      "effectId": "unnamed_can_ride_vehicle_ryo",
+      "effectId": "unnamed_can_ride_vehicle_feat_e8bb8ae4b8a1",
       "trigger": "nc",
       "skip": false
     },
@@ -12339,7 +12339,7 @@
     },
     {
       "cardId": "XG2-042",
-      "effectId": "register_stay_raida",
+      "effectId": "register_stay_feat_e4bbaee99da2e383a9e382a4e38380e383bc",
       "trigger": "while_in_field",
       "skip": false
     },
@@ -14115,7 +14115,7 @@
     },
     {
       "cardId": "XG4-004",
-      "effectId": "unnamed_can_ride_vehicle_ryo",
+      "effectId": "unnamed_can_ride_vehicle_feat_e8bb8ae4b8a1",
       "trigger": "nc",
       "skip": false
     },
@@ -17409,7 +17409,7 @@
     },
     {
       "cardId": "XG7-017",
-      "effectId": "unnamed_can_ride_vehicle_ryo",
+      "effectId": "unnamed_can_ride_vehicle_feat_e8bb8ae4b8a1",
       "trigger": "nc",
       "skip": false
     },
@@ -18225,7 +18225,7 @@
     },
     {
       "cardId": "XP-005",
-      "effectId": "register_stay_raida",
+      "effectId": "register_stay_feat_e4bbaee99da2e383a9e382a4e38380e383bc",
       "trigger": "while_in_field",
       "skip": false
     },
@@ -18435,7 +18435,7 @@
     },
     {
       "cardId": "XP-023",
-      "effectId": "ally_fx_unknown_bp_1000",
+      "effectId": "ally_feat_e68190e7ab9c_bp_1000",
       "trigger": "nc",
       "skip": false
     },

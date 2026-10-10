@@ -3670,8 +3670,8 @@
       "【大宇宙ハイウェイ計画】"
     ],
     "expectedDslKeywords": [
-      "end_turn_return_if_no_ryo",
-      "all_ryo_auto_battle_entry"
+      "end_turn_return_if_no_feat_e8bb8ae4b8a1",
+      "all_feat_e8bb8ae4b8a1_auto_battle_entry"
     ],
     "bp": 8000,
     "sp": 1,
@@ -3688,7 +3688,7 @@
       "【家出したくなるガソリン】"
     ],
     "expectedDslKeywords": [
-      "return_ryo_battle_to_deck_bottom"
+      "return_feat_e8bb8ae4b8a1_battle_to_deck_bottom"
     ],
     "bp": 2000,
     "sp": null,
@@ -4110,7 +4110,7 @@
     ],
     "expectedDslKeywords": [
       "require_discard_rush_s_entry",
-      "rush_skip_command_hold_fx_unknown"
+      "rush_skip_command_hold_feat_e688a6e99798e593a1"
     ],
     "bp": 6000,
     "sp": 1,
@@ -4792,7 +4792,7 @@
       "【俺に惚れろ！】"
     ],
     "expectedDslKeywords": [
-      "end_turn_return_hand_if_no_fx_unknown",
+      "end_turn_return_hand_if_no_feat_e5a5b3",
       "effect_card::RS-281::nirero"
     ],
     "bp": 2000,
@@ -4932,7 +4932,7 @@
     "expectedDslKeywords": [
       "damage_gate_battle_entry",
       "self_destroy_low_damage_remaining",
-      "ally_fx_unknown_bp_boost_1000"
+      "ally_feat_e68190e7ab9c_bp_boost_1000"
     ],
     "bp": 6000,
     "sp": 1,
@@ -6575,7 +6575,7 @@
       "【特殊消化弾】"
     ],
     "expectedDslKeywords": [
-      "no_attack_without_fx_unknown",
+      "no_attack_without_feat_e888aae7a9bae6a99f",
       "effect_card::RS-385::dane789b9"
     ],
     "bp": 2000,
@@ -6929,7 +6929,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_500",
-      "ride_without_rc_fx_unknown"
+      "ride_without_rc_feat_e8ada6e5af9f"
     ],
     "sp": null,
     "size": "S"
@@ -8250,7 +8250,7 @@
       "【ホバリング】"
     ],
     "expectedDslKeywords": [
-      "no_attack_without_fx_unknown"
+      "no_attack_without_feat_e888aae7a9bae6a99f"
     ],
     "bp": 4000,
     "sp": 1,
@@ -8267,7 +8267,7 @@
       "【カラクリ忍法・天空裂破】"
     ],
     "expectedDslKeywords": [
-      "no_attack_without_fx_unknown",
+      "no_attack_without_feat_e888aae7a9bae6a99f",
       "effect_card::RS-482::karakurininpoha"
     ],
     "bp": 4000,
@@ -8374,7 +8374,7 @@
       "【滑空】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e5bf8de88085",
       "effect_card::RS-488::fxunknowne6bb91"
     ],
     "sp": null,

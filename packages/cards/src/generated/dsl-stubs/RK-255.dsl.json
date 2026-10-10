@@ -20,7 +20,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_ally_raida_protects_s",
+      "id": "unnamed_ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_s",
       "text": "※特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。",
       "trigger": {
         "type": "while_in_field"
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ally_raida_protects_from_enemy_s",
+          "keyword": "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
           "duration": "permanent"
         }
       ],

@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_entry_destroy_fx_unknown",
+          "keyword": "hold_entry_destroy_feat_e794b7",
           "duration": "turn"
         }
       ]
@@ -59,7 +59,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_entry_destroy_fx_unknown",
+          "keyword": "hold_entry_destroy_feat_e794b7",
           "duration": "turn"
         }
       ]

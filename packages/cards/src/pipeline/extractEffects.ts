@@ -1,4 +1,12 @@
 import type { EffectDefinition, EffectPrimitive } from "../dsl/types";
+import { featureKeywordSlug } from "./featureSlug";
+
+export {
+  decodeFeatureKeywordSlug,
+  featureKeywordSlug,
+  featureMatchesKeywordSlug,
+  hexFeatureSlug,
+} from "./featureSlug";
 import { canonicalCardName } from "../cardName";
 import type {
   CardAnalysis,
@@ -307,7 +315,7 @@ const KEYWORD_NOTE_PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: `unnamed_ally_${feature}_protects_s`,
         text: body,
@@ -436,7 +444,7 @@ const KEYWORD_NOTE_PATTERNS: PatternMatch[] = [
     test: (body) =>
       /^※これは特徴「([^」]+)」を持つ自軍ユニット1体につきBP[＋+](\d+)される/.test(body),
     build: (body) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const amount = body.match(/BP[＋+](\d+)/)?.[1] ?? "1000";
       const keyword = `bp_plus_per_ally_feature_${feature}_${amount}`;
       return {
@@ -455,7 +463,7 @@ const KEYWORD_NOTE_PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const keyword = `register_if_discard_has_feature_${feature}`;
       return {
         id: `unnamed_${keyword}`,
@@ -1214,7 +1222,7 @@ const PATTERNS: PatternMatch[] = [
       const m = body.match(
         /特徴「([^」]+)」.*BP[＋+](\d+).*BP(\d+)以上.*「SP(\d+)/,
       );
-      const feature = slugifyEffectId(m?.[1] ?? "feature");
+      const feature = featureKeywordSlug(m?.[1] ?? "feature");
       const bpPer = m?.[2] ?? "1000";
       const threshold = m?.[3] ?? "3000";
       const sp = m?.[4] ?? "1";
@@ -1240,7 +1248,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: `ride_without_rc_${feature}`,
         text: body,
@@ -1263,7 +1271,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: `ride_command_without_rc_${feature}`,
         text: body,
@@ -1287,7 +1295,7 @@ const PATTERNS: PatternMatch[] = [
     build: (body, segment, trigger) => {
       const feature = body.match(/特徴「([^」]+)」/)?.[1];
       const keyword = feature
-        ? `can_ride_vehicle_${slugifyEffectId(feature)}`
+        ? `can_ride_vehicle_${featureKeywordSlug(feature)}`
         : "can_ride_vehicle";
       return {
         id: `unnamed_${keyword}`,
@@ -1384,7 +1392,7 @@ const PATTERNS: PatternMatch[] = [
     pattern: "no_attack_without_feature",
     test: (body) => /^※これは、特徴「([^」]+)」を持たないユニットにアタックされない/.test(body),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: `no_attack_without_${feature}`,
         text: body,
@@ -1621,7 +1629,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: `ally_${feature}_protects_from_enemy_s`,
         text: body,
@@ -2542,7 +2550,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const amount = body.match(/BP[＋+](\d+)される/)?.[1] ?? "1000";
       return {
         id: `ally_${feature}_bp_${amount}`,
@@ -2655,7 +2663,7 @@ const PATTERNS: PatternMatch[] = [
     test: (body) =>
       /^※これは特徴「([^」]+)」を持つユニットとバトルしたとき、バトルに勝っても撃破される/.test(body),
     build: (body) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: `destroy_on_win_vs_${feature}`,
         text: body,
@@ -2865,7 +2873,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const amount = body.match(/BP\+(\d+)される/)?.[1] ?? "3000";
       return {
         id: `ally_${feature}_attacked_bp_${amount}`,
@@ -3092,7 +3100,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: `register_stay_${feature}`,
         text: body,
@@ -3160,7 +3168,7 @@ const PATTERNS: PatternMatch[] = [
     test: (body) =>
       /バトルエリアに出るとき、自分の手札から特徴「([^」]+)」を持つ.*Sユニットのカードを1枚選び/.test(body),
     build: (body, segment) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: segment.name ? slugifyEffectId(segment.name) : `hand_rush_${feature}_s`,
         name: segment.name,
@@ -3399,7 +3407,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const amount = body.match(/BP\+(\d+)される/)?.[1] ?? "1000";
       return {
         id: `per_ally_${feature}_bp_${amount}`,
@@ -3713,7 +3721,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: `power_faceup_${feature}_on_enter`,
         name: segment.name,
@@ -3859,7 +3867,7 @@ const PATTERNS: PatternMatch[] = [
     pattern: "draw_per_two_ally_feature",
     test: (body) => /特徴「([^」]+)」を持つ自軍ユニット2体につき1枚ドローする/.test(body),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: segment.name ? slugifyEffectId(segment.name) : `draw_per2_${feature}`,
         name: segment.name,
@@ -4145,7 +4153,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/本来の特徴に「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/本来の特徴に「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: segment.name ? slugifyEffectId(segment.name) : `hand_resident_rush_${feature}`,
         name: segment.name,
@@ -4248,7 +4256,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: segment.name ? slugifyEffectId(segment.name) : `battle_orig_bp_${feature}`,
         name: segment.name,
@@ -4313,7 +4321,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const amount = body.match(/BP\+(\d+)される/)?.[1] ?? "5000";
       return {
         id: `bp_if_no_${feature}_${amount}`,
@@ -4595,7 +4603,7 @@ const PATTERNS: PatternMatch[] = [
     test: (body) =>
       /隣り合う特徴「([^」]+)」を持つSユニットは、敵軍ユニットにアタックされない/.test(body),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: `adjacent_${feature}_no_attack`,
         name: segment.name,
@@ -4787,7 +4795,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: segment.name ? slugifyEffectId(segment.name) : `enemy_s_to_power_${feature}`,
         name: segment.name,
@@ -4916,7 +4924,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: segment.name ? slugifyEffectId(segment.name) : `cannot_counter_combo_${feature}`,
         name: segment.name,
@@ -4956,7 +4964,7 @@ const PATTERNS: PatternMatch[] = [
     test: (body) =>
       /隣り合う特徴「([^」]+)」を持つSユニットは、バトルするときBP\+(\d+)される/.test(body),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const amount = body.match(/BP\+(\d+)される/)?.[1] ?? "2000";
       return {
         id: `adjacent_${feature}_bp_${amount}`,
@@ -5272,7 +5280,7 @@ const PATTERNS: PatternMatch[] = [
       /自軍山札か、自軍常駐置き場でオモテ向きになっている/.test(body) &&
       /本来の特徴に「([^」]+)」を持つユニットカードを1枚選び、ラッシュエリアに出す/.test(body),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/本来の特徴に「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/本来の特徴に「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: segment.name ? slugifyEffectId(segment.name) : `recruit_${feature}_deck_resident`,
         name: segment.name,
@@ -5488,7 +5496,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ) && /撃破/.test(body),
     build: (body, segment) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: segment.name ? slugifyEffectId(segment.name) : `hold_entry_destroy_${feature}`,
         name: segment.name,
@@ -5618,7 +5626,7 @@ const PATTERNS: PatternMatch[] = [
       ),
     build: (body, segment, trigger) => {
       const fromRush = /自軍ラッシュエリアから/.test(body);
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const valid = fromRush
         ? zone("rush", "self", { size: "S" })
         : zone("battle", "self", { size: "S" });
@@ -5691,7 +5699,7 @@ const PATTERNS: PatternMatch[] = [
       ),
     build: (body, segment, trigger) => {
       const count = Number(body.match(/(\d+)枚まで選び/)?.[1] ?? 5);
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const nonS = /Sユニット以外/.test(body);
       return {
         id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
@@ -5717,7 +5725,7 @@ const PATTERNS: PatternMatch[] = [
       ),
     build: (body, segment, trigger) => {
       const minCards = body.match(/パワーゾーンのカードが(\d+)枚以上/)?.[1] ?? "12";
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const sp = body.match(/「SP(\d+)」/)?.[1] ?? "1";
       return {
         id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
@@ -5828,7 +5836,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
         name: segment.name,
@@ -5936,7 +5944,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
         name: segment.name,
@@ -5981,7 +5989,7 @@ const PATTERNS: PatternMatch[] = [
     test: (body) =>
       /自軍山札を見て、特徴「([^」]+)」を持つユニットカードを1枚選び、ラッシュエリアに出す/.test(body),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
         name: segment.name,
@@ -6070,7 +6078,7 @@ const PATTERNS: PatternMatch[] = [
     test: (body) =>
       /これは特徴「([^」]+)」を持つユニットにアタックするときBP[＋+](\d+)される/.test(body),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const amount = Number(body.match(/BP[＋+](\d+)される/)?.[1] ?? 4000);
       return {
         id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
@@ -6244,7 +6252,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
         name: segment.name,
@@ -6310,7 +6318,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: noteEffectIdFromBody(body),
         text: body,
@@ -6391,7 +6399,7 @@ const PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       return {
         id: noteEffectIdFromBody(body),
         text: body,
@@ -6665,7 +6673,7 @@ const PATTERNS: PatternMatch[] = [
     test: (body) =>
       /特徴「([^」]+)」.*コンビネーション.*次の能力を得る⇒「SP(\d+)」/.test(body),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const sp = body.match(/「SP(\d+)」/)?.[1] ?? "1";
       return {
         id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
@@ -6725,7 +6733,7 @@ const PATTERNS: PatternMatch[] = [
       const pos = body.match(/(\d+)番目に並んだ/)?.[1] ?? "4";
       const sp = body.match(/「SP(\d+)」/)?.[1] ?? "1";
       const feature = body.match(/特徴「([^」]+)」/)?.[1];
-      const featureSlug = feature ? slugifyEffectId(feature) : "any";
+      const featureSlug = feature ? featureKeywordSlug(feature) : "any";
       return {
         id: segment.name ? slugifyEffectId(segment.name) : noteEffectIdFromBody(body),
         name: segment.name,
@@ -7271,7 +7279,7 @@ const PATTERNS: PatternMatch[] = [
       /^※これは特徴「([^」]+)」を持つ自軍コマンド1つにつきBP[＋+]1000される/.test(body),
     build: (body, segment) => {
       const feature = body.match(/特徴「([^」]+)」/)?.[1] ?? "レッド";
-      const slug = slugifyEffectId(feature);
+      const slug = featureKeywordSlug(feature);
       const keyword =
         feature === "レッド"
           ? "note_bp_per_own_command_feature_red"

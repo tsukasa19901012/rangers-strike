@@ -1,4 +1,5 @@
 import type { CardDefinition } from "@rangers-strike/cards";
+import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
 import type { CardInstance, GameState, PlayerId, PlayerState, ZoneName } from "../types/game";
 import { getDefinition, isUnit } from "../core/catalog";
 import { findInZone } from "../core/helpers";
@@ -24,7 +25,7 @@ function riderKeywordAllowsRide(
 ): boolean {
   if (cardHasGrantKeyword(riderCardId, "can_ride_vehicle")) return true;
   if (
-    cardHasGrantKeyword(riderCardId, "can_ride_vehicle_ryo") &&
+    cardHasGrantKeyword(riderCardId, FEATURE_KEYWORDS.canRideVehicleCar) &&
     (vehicleDef?.features ?? []).includes("車両")
   ) {
     return true;

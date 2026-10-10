@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
 import { activeNamedEffect } from "./ncGatedEffects";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../types/game";
 import type { GrantKeywordContext } from "../dsl/grantKeyword";
@@ -418,7 +419,7 @@ export function matchSrGrantKeyword(
     keyword === "opponent_must_hold_ot_et_on_command_release" ||
     keyword.startsWith("plasma_shockwave_start_phase") ||
     keyword === "big_baton_command_zone_features" ||
-    keyword === "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000" ||
+    keyword === FEATURE_KEYWORDS.bpPerDiscardDinosaur ||
     keyword === "destroy_on_win_vs_sp1" ||
     keyword === "attacked_bp_boost_5000" ||
     keyword === "cannot_attack"

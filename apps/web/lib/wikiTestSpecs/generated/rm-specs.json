@@ -832,7 +832,7 @@
       "【ビッグキャノン】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e8ada6e5af9f",
       "rm_fx::RM-047::bigukyanon"
     ],
     "sp": null,
@@ -918,7 +918,7 @@
       "【マグネアタッチメント】"
     ],
     "expectedDslKeywords": [
-      "ride_command_without_rc_fx_unknown",
+      "ride_command_without_rc_feat_e69886e899ab",
       "while_riding_stagger_tank_block_return_held_mecha"
     ],
     "sp": null,
@@ -935,7 +935,7 @@
       "【ドリルアタッチメント】"
     ],
     "expectedDslKeywords": [
-      "ride_command_without_rc_fx_unknown",
+      "ride_command_without_rc_feat_e69886e899ab",
       "rm_fx::RM-053::doriruatachimento"
     ],
     "sp": null,
@@ -952,7 +952,7 @@
       "【レッドパルサー】"
     ],
     "expectedDslKeywords": [
-      "ride_command_without_rc_fx_unknown",
+      "ride_command_without_rc_feat_e69886e899ab",
       "rm_fx::RM-054::redoparusa"
     ],
     "sp": null,

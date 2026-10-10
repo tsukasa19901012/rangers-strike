@@ -6,6 +6,7 @@ import { getDefinition, instanceBp, isSmallUnit, unitEffectiveCategories } from 
 import { findInZone, opponent } from "../core/helpers";
 import { lastBattleProtectsOtherS } from "../rules/promotedNcEffects";
 import { getCardDslDocument } from "./effectLookup";
+import { decodeFeatureKeywordSlug, featuresMatchKeywordSlug } from "./featureKeywords";
 
 /** rematch 不可の D/E 区分キーワード（grant_keyword マーカー）。 */
 export const ENGINE_NATIVE_KEYWORDS = new Set([
@@ -100,19 +101,8 @@ export function rideMountedVehicleBpBonus(
   return rideBpBoostAmount(vehicle.cardId);
 }
 
-function featureSlug(feature: string): string {
-  const ascii = feature
-    .normalize("NFKD")
-    .replace(/[^\w]+/g, "_")
-    .replace(/^_+|_+$/g, "")
-    .toLowerCase();
-  if (ascii.length >= 2) return ascii;
-  return `named_${Buffer.from(feature, "utf8").toString("hex").slice(0, 12)}`;
-}
-
 function unitHasFeatureSlug(def: CardDefinition | undefined, slug: string): boolean {
-  if (!def?.features) return false;
-  return def.features.some((f) => featureSlug(f) === slug);
+  return featuresMatchKeywordSlug(def?.features, slug);
 }
 
 export function listCardGrantKeywords(cardId: string): string[] {
@@ -168,7 +158,8 @@ export function promotedKeywordBpBonus(
   instance: CardInstance,
 ): number {
   const keywords = listCardGrantKeywords(instance.cardId);
-  if (keywords.length === 0) return 0;
+  // 自軍エリアのオーラ（RS-289【獣奏剣】等）はキーワードを持たないユニットにもかかる。
+  if (keywords.length === 0) return fieldAuraBpBonus(state, playerId, instance);
 
   let bonus = 0;
   const faceUpPower = countFaceUpPowerCards(state, playerId);
@@ -266,8 +257,9 @@ function fieldAuraBpBonus(
     }
     for (const keyword of listCardGrantKeywords(source.cardId)) {
       // RS-289 / XP-023: 特徴「恐竜」を持つすべての自軍ユニットは BP+1000
-      if (keyword === "ally_fx_unknown_bp_boost_1000") {
-        if ((def.features ?? []).includes("恐竜")) bonus += 1000;
+      const allyFeatureBoost = keyword.match(/^ally_(.+)_bp_boost_(\d+)$/);
+      if (allyFeatureBoost && unitHasFeatureSlug(def, allyFeatureBoost[1]!)) {
+        bonus += Number(allyFeatureBoost[2]);
       }
       // RS-430（ラッシュエリアにある間）: 追加条件を持たない WB の S ユニットは
       // 必要パワーの数字2ごとに BP+1000
@@ -387,6 +379,8 @@ export function decodeRideWithoutRcFeature(keyword: string): string | null {
   const match = keyword.match(/^ride_(?:command_)?without_rc_(?:named_)?(.+)$/);
   if (!match) return null;
   const slug = match[1]!;
+  const decoded = decodeFeatureKeywordSlug(slug) ?? decodeFeatureKeywordSlug(`named_${slug}`);
+  if (decoded) return decoded;
   if (/^[0-9a-f]+$/.test(slug) && slug.length >= 4) {
     try {
       return Buffer.from(slug, "hex").toString("utf8");
@@ -515,6 +509,13 @@ export function promotedDefenderBlocksAttack(
       return true;
     }
 
+    // ※これは、特徴「X」を持たないユニットにアタックされない（RS-385 / RS-481 / RS-482）。
+    const noFeature = keyword.match(/^no_attack_without_(.+)$/);
+    if (noFeature) {
+      const attackerDef = getDefinition(state.definitions, attacker.card.cardId);
+      if (!unitHasFeatureSlug(attackerDef, noFeature[1]!)) return true;
+    }
+
     if (
       keyword === "no_attack_from_enemy_s" &&
       attackerPlayerId !== defenderPlayerId &&
@@ -589,11 +590,6 @@ export function promotedAttackerCannotTarget(
 
     if (keyword === "cannot_attack_enemy_battle" && defenderZone === "battle") return true;
 
-    const noFeature = keyword.match(/^no_attack_without_(.+)$/);
-    if (noFeature) {
-      const def = getDefinition(state.definitions, defender.card.cardId);
-      if (!unitHasFeatureSlug(def, noFeature[1]!)) return true;
-    }
   }
 
   return false;

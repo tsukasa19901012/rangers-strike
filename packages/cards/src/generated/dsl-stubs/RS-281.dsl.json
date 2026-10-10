@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "end_turn_return_hand_if_no_fx_unknown",
+          "keyword": "end_turn_return_hand_if_no_feat_e5a5b3",
           "duration": "permanent"
         }
       ],

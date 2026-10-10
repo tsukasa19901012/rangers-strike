@@ -11,7 +11,7 @@
   "rawText": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。 【凄いのが来るぜ！】これにライドしているユニットがBP4000以上の敵軍Sユニットを撃破して捨札にしたとき、捨札にしたそのユニットカードを持ち主のパワーゾーンにダメージにして置いてもよい。",
   "effects": [
     {
-      "id": "ride_without_rc_ma_chikara",
+      "id": "ride_without_rc_feat_e9ad94e79a87e58a9b",
       "text": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,7 +19,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_ma_chikara",
+          "keyword": "ride_without_rc_feat_e9ad94e79a87e58a9b",
           "duration": "permanent"
         }
       ]

@@ -1,4 +1,5 @@
 import { releasedCommandUnitIds, startEffectRush } from "../rules/effectRush";
+import { FEATURE_KEYWORDS } from "./featureKeywords";
 import {
   INAZUMA_HOLD_EFFECT_ID,
   KIRIGAKURE_EFFECT_ID,
@@ -197,7 +198,7 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "while_command_hold_immune",
   "on_deck_reveal_swap_effect_target",
   "combo_l_repeat_attack_strike_after_combo",
-  "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000",
+  FEATURE_KEYWORDS.bpPerDiscardDinosaur,
   "while_riding_stagger_tank_block_return_held_mecha",
 ]);
 
@@ -231,7 +232,7 @@ export const SUPPORTED_GRANT_KEYWORDS = new Set([
   "enemy_resident_pick_hold",
   "declare_number_deck_reveal_destroy",
   "destroy_vehicle_and_rider",
-  "hold_entry_destroy_fx_unknown",
+  FEATURE_KEYWORDS.holdEntryDestroyMale,
   "stack_da_less_l_on_rush",
   "stack_vehicle_on_rush",
   "battle_original_bp_combo_pinku",
@@ -1141,7 +1142,7 @@ export function applyGrantKeyword(
       if (!withChoice) return { state, detail: `${keyword}:no_targets` };
       return { state: withChoice, detail: keyword };
     }
-    case "hold_entry_destroy_fx_unknown": {
+    case FEATURE_KEYWORDS.holdEntryDestroyMale: {
       const withChoice = beginHoldEntryDestroy(state, ctx);
       if (!withChoice) return { state, detail: `${keyword}:no_targets` };
       return { state: withChoice, detail: keyword };

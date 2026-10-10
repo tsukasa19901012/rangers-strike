@@ -1,4 +1,5 @@
 import type { EffectDefinition } from "../dsl/types";
+import { featureKeywordSlug } from "./featureSlug";
 import { canonicalCardName } from "../cardName";
 import type { ExtractedEffect, WikiEffectSegment } from "./types";
 import { slugifyEffectId } from "./metaMaps";
@@ -47,7 +48,7 @@ export const SR_NAMED_PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment, trigger) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const amount = body.match(/BP[＋+](\d+)される/)?.[1] ?? "1000";
       const threshold = body.match(/BP(\d+)以上/)?.[1] ?? "8000";
       return grantKw(
