@@ -1,4 +1,4 @@
-import { openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw, settleDarkArmor } from "../rules/legend1/set6NamedEffects348";
+import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw, settleDarkArmor } from "../rules/legend1/set6NamedEffects348";
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
@@ -222,6 +222,7 @@ import { applyPassChase, applyResolveChase, listValidChaseVehicleIds } from "../
 import {
   canRiderMountVehicle,
   extractMountedVehicleFromRush,
+  holdCommandForGaleoPulsarRide,
 } from "../keywords/ride";
 import {
   beginMorphUnitSelection,
@@ -793,6 +794,8 @@ export function applyAction(
   next = settleStackedCards(next);
   // RS-350 暗黒の鎧: 重ねたユニットがユニットでなくなったら、鎧を持ち主のパワーゾーンにダメージにして置く。
   if (applyActionDepth === 0) next = settleDarkArmor(state, next);
+  // RS-385【特殊消化弾】: 自軍コマンドゾーンにホールド状態で置くカードは、かわりにリリース状態で置く。
+  if (applyActionDepth === 0) next = applySpecialExtinguisher(state, next);
   // RS-265【ラウンドレーダー】: 相手が手札からオペレーションを使用したとき（解決が終わってから開く）。
   next = queueRoundRadar(state, next, action);
   next = openRoundRadarIfReady(next);
@@ -992,6 +995,8 @@ function applyActionCore(
   if (
     state.pendingRideOffChoice &&
     action.type !== "resolve_ride_off_choice" &&
+    // RS-381【獅子の装光】（ライドオフさせるかわりに発動）。
+    !(action.type === "activate_field_unit_ability" && lionArmorAvailable(state, action.playerId)) &&
     !(
       action.type === "resolve_damage_payment" &&
       state.pendingDamagePayment &&
@@ -2915,7 +2920,7 @@ function applyActionCore(
 
     case "mount_ride": {
       if (state.phase !== "battle") return fail("wrong_phase");
-      return applyAction(
+      const mounted = applyAction(
         state,
         {
           type: "move_to_battle",
@@ -2925,6 +2930,10 @@ function applyActionCore(
         },
         { ...options, trustLegality: true },
       );
+      if (!mounted.ok) return mounted;
+      // RS-381 ガレオパルサー: RC を持たない「レッド」の S ユニットは自軍コマンドを1つホールドしてライドする。
+      const held = holdCommandForGaleoPulsarRide(mounted.state, playerId, action.riderInstanceId, action.vehicleInstanceId);
+      return held === mounted.state ? mounted : { ...mounted, state: held };
     }
 
     case "resolve_ride_off_choice": {
@@ -3180,6 +3189,13 @@ function applyActionCore(
 
     case "activate_field_unit_ability": {
       if (state.phase !== "start" && state.phase !== "rush" && state.phase !== "battle") return fail("wrong_phase");
+      // RS-381 ガレオパルサー【獅子の装光】: ライドオフさせるかわりに発動する（ライドオフの選択中のみ）。
+      if (state.pendingRideOffChoice) {
+        if (!lionArmorAvailable(state, playerId) || state.pendingRideOffChoice.vehicleInstanceId !== action.unitInstanceId) {
+          return fail("illegal_action");
+        }
+        return ok(beginLionArmor(state), buildLogEntry(playerId, "activate_field_unit_ability", "RS-381", state.definitions));
+      }
       const unit =
         player.rush.find((c) => c.instanceId === action.unitInstanceId) ??
         player.battle.find((c) => c.instanceId === action.unitInstanceId);

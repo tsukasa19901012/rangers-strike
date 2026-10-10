@@ -494,6 +494,8 @@ export type PendingEffectChoice = {
     residentIds?: string[];
   };
   skipShurikenIntercept?: boolean;
+  /** RS-381【獅子の装光】: 解決後に続けるバトル進入（ライドオフの選択のかわりに発動した）。 */
+  battleEntryResume?: PendingBattleEntry;
   /** RS-322 人身略取: 相手が満たす追加条件の進行。 */
   abductionMeta?: { payerId: PlayerId; cardId: string; remaining: number };
   /** RS-183 黒子ロボの記憶操作の進行（使用者→相手、ドロー→山札に戻す手順）。 */

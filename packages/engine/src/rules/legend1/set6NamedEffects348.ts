@@ -21,7 +21,7 @@ import { commandCategoriesNow } from "../legend3/battleEffects";
 import { CHIKARA_BATON_RULE } from "./set4NamedEffects";
 import { buildLogEntry } from "../../log/formatLog";
 import { unitFeatures } from "../addedFeatures";
-import { promoteDeferredBattleEntry } from "../battleEntry";
+import { afterEnterBattle, promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
 
 type ChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
@@ -733,6 +733,113 @@ export function namedTextNegated(state: Pick<GameState, "players" | "definitions
   if (!hasTurnRuleModifier(state.players[opponent(ownerId)], THUNDER_ROAR_RULE)) return false;
   if (getDefinition(state.definitions, card.cardId)?.type !== "unit") return false;
   return unitFeatures(state, ownerId, card).includes("メカ");
+}
+
+// ---------------------------------------------------------------------------
+// RS-381 ガレオパルサー【獅子の装光】
+// 「自軍ターン中、これにライドしたユニットをライドオフさせるかわりに次の効果を発動できる⇒ライドされていない敵軍Sビークルを
+//  1体選び捨札にする。その後、これを捨札にする。」（atwiki/page-522）
+// ライドオフの選択（pendingRideOffChoice）のかわりに activate_field_unit_ability（unitInstanceId = このビークル）で発動する。
+// ライドしていたユニットはバトルエリアに残り（ライドは解除）、続けてバトル進入の処理を行う。
+
+export const LION_ARMOR_EFFECT_ID = "rs381_lion_armor";
+
+function unriddenEnemySVehicles(state: GameState, playerId: PlayerId): string[] {
+  const enemy = state.players[opponent(playerId)];
+  const ridden = new Set(enemy.battle.map((c) => c.mountedOnInstanceId).filter((id): id is string => !!id));
+  return [...enemy.rush, ...enemy.battle]
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return def?.type === "vehicle" && def.size === "S" && !ridden.has(c.instanceId);
+    })
+    .map((c) => c.instanceId);
+}
+
+/** ライドオフの選択中に【獅子の装光】を発動できるか（自軍ターン中・ガレオパルサーにライド・候補がある）。 */
+export function lionArmorAvailable(state: GameState, playerId: PlayerId): boolean {
+  const pending = state.pendingRideOffChoice;
+  if (!pending || pending.playerId !== playerId || state.activePlayer !== playerId) return false;
+  const vehicle = [...state.players[playerId].battle, ...state.players[playerId].rush].find((c) => c.instanceId === pending.vehicleInstanceId);
+  if (vehicle?.cardId !== "RS-381") return false;
+  return unriddenEnemySVehicles(state, playerId).length > 0;
+}
+
+/** 【獅子の装光】を発動する: ライドオフの選択を閉じ、捨札にする敵軍 S ビークルを選ぶ。 */
+export function beginLionArmor(state: GameState): GameState {
+  const pending = state.pendingRideOffChoice!;
+  const cleared: GameState = { ...state, pendingRideOffChoice: undefined };
+  return openEffectChoice(cleared, {
+    playerId: pending.playerId,
+    effectId: LION_ARMOR_EFFECT_ID,
+    sourceCardId: "RS-381",
+    sourceInstanceId: pending.vehicleInstanceId,
+    kind: "select_unit",
+    unitDestination: "discard",
+    phasePlayerId: pending.phasePlayerId,
+    validInstanceIds: unriddenEnemySVehicles(state, pending.playerId),
+    selectCount: 1,
+    optional: false,
+    battleEntryResume: pending.battleEntry,
+  });
+}
+
+function discardFromField(state: GameState, ownerId: PlayerId, instanceId: string): GameState {
+  const p = state.players[ownerId];
+  const card = [...p.battle, ...p.rush].find((c) => c.instanceId === instanceId);
+  if (!card) return state;
+  return {
+    ...state,
+    ...updatePlayer(state, ownerId, {
+      ...p,
+      battle: p.battle
+        .filter((c) => c.instanceId !== instanceId)
+        .map((c) => {
+          if (c.mountedOnInstanceId !== instanceId) return c;
+          const { mountedOnInstanceId: _m, ...rest } = c;
+          return rest;
+        }),
+      rush: p.rush.filter((c) => c.instanceId !== instanceId),
+      discard: [...p.discard, { instanceId: card.instanceId, cardId: card.cardId }, ...(card.stackedCards ?? []).map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }))],
+    }),
+  };
+}
+
+CHOICE_RESOLVERS[LION_ARMOR_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const enemyId = opponent(playerId);
+  const target = fieldUnits(state, enemyId).find((c) => c.instanceId === instanceId);
+  let next = clearPending(state, pending.phasePlayerId);
+  next = discardFromField(next, enemyId, instanceId);
+  if (pending.sourceInstanceId) next = discardFromField(next, playerId, pending.sourceInstanceId);
+  if (pending.battleEntryResume) next = afterEnterBattle(next, pending.battleEntryResume);
+  return { state: finish(next, pending.phasePlayerId), log: logFor(state, playerId, "RS-381", `${LION_ARMOR_EFFECT_ID}:${cardName(state.definitions, target?.cardId ?? instanceId)}`) };
+};
+
+// ---------------------------------------------------------------------------
+// RS-385 グリーンホバー【特殊消化弾】
+// 「これが自軍ラッシュエリアにある間、自軍コマンドゾーンにホールド状態でカードを置くとき、かわりにリリース状態で置いてもよい。」
+// （atwiki/page-530）applyAction の後処理で、新たにホールド状態で置かれた自軍コマンドをリリース状態にする
+// （リリース状態で置くほうが常に有利なので、選択は省いて「置く」を選んだものとして扱う）。
+// 置いた後にホールド状態にする効果（SR-004【妖魔力】）はその後で適用される（faq-card-6 SR-004 Q）。
+
+export function applySpecialExtinguisher(before: GameState, after: GameState): GameState {
+  let next = after;
+  for (const pid of ["player1", "player2"] as const) {
+    if (!after.players[pid].rush.some((c) => c.cardId === "RS-385")) continue;
+    const prev = new Set(before.players[pid].command.map((c) => c.instanceId));
+    const p = next.players[pid];
+    const placed = (c: CardInstance) => !prev.has(c.instanceId) && c.commandHeld && !c.instanceId.includes("#");
+    if (!p.command.some(placed)) continue;
+    next = {
+      ...next,
+      ...updatePlayer(next, pid, {
+        ...p,
+        command: p.command.map((c) => (placed(c) ? { ...c, commandHeld: false } : c)),
+      }),
+    };
+  }
+  return next;
 }
 
 // ---------------------------------------------------------------------------

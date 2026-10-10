@@ -360,14 +360,12 @@ describe("RS-381 ガレオパルサー", () => {
     expect(t.players.player1.battle.find((c) => c.instanceId === "RS-376:rd")?.mountedOnInstanceId).toBe("RS-381:v");
   });
 
-  it.fails("RS-381: ※ RC を持たない「レッド」の S ユニットがライドするときは自軍コマンドを1つホールドする（出典: atwiki/page-522「自軍コマンドを1つホールドすれば」）", () => {
-    // 既知の不具合: CARD-RS-381 リリース状態のコマンドがあればライドできるが、コマンドがホールドされない
+  it("RS-381: ※ RC を持たない「レッド」の S ユニットがライドするときは自軍コマンドを1つホールドする（出典: atwiki/page-522「自軍コマンドを1つホールドすれば」）", () => {
     const t = ride(rideState("RS-376"), "RS-376:rd");
     expect(t.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(1);
   });
 
-  it.fails("RS-381: ※ リリース状態の自軍コマンドがなければ「レッド」の S ユニットはライドできない（出典: atwiki/page-522「自軍コマンドを1つホールドすれば」）", () => {
-    // 既知の不具合: CARD-RS-381 ホールドできるコマンドがなくても「レッド」の S ユニットがライドできる
+  it("RS-381: ※ リリース状態の自軍コマンドがなければ「レッド」の S ユニットはライドできない（出典: atwiki/page-522「自軍コマンドを1つホールドすれば」）", () => {
     const s = rideState("RS-376", [{ ...inst("TST-OP", "h"), commandHeld: true }]);
     expect(canRide(s, "RS-376:rd")).toBe(false);
   });
@@ -376,13 +374,11 @@ describe("RS-381 ガレオパルサー", () => {
     expect(canRide(rideState("RS-378"), "RS-378:rd")).toBe(false);
   });
 
-  it.fails("RS-381: ※ 「レッド」でも M ユニットはライドできない（出典: atwiki/page-522「特徴「レッド」を持つSユニット」）", () => {
-    // 既知の不具合: CARD-RS-381 RC を持たない「レッド」の M ユニットもライドできる（サイズの条件がない）
+  it("RS-381: ※ 「レッド」でも M ユニットはライドできない（出典: atwiki/page-522「特徴「レッド」を持つSユニット」）", () => {
     expect(canRide(rideState("SPEC-RED-M"), "SPEC-RED-M:rd")).toBe(false);
   });
 
-  it.fails("RS-381: 【獅子の装光】自軍ターン中、ライドしたユニットをライドオフさせるかわりに、ライドされていない敵軍 S ビークルを1体選び捨札にし、その後これを捨札にする（出典: atwiki/page-522）", () => {
-    // 既知の不具合: CARD-RS-381 ライドオフの選択（resolve_ride_off_choice）に【獅子の装光】の選択肢がない
+  it("RS-381: 【獅子の装光】自軍ターン中、ライドしたユニットをライドオフさせるかわりに、ライドされていない敵軍 S ビークルを1体選び捨札にし、その後これを捨札にする（出典: atwiki/page-522）", () => {
     let s = ride(rideState("RS-376", releasedCat("WB", 1), { rush: [inst("RK-045", "ev")] }), "RS-376:rd");
     const alt = legal(s).find(
       (a) => a.playerId === "player1" && a.type !== "resolve_ride_off_choice" && Object.values(a).includes("RS-381:v"),
