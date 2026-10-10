@@ -378,8 +378,7 @@ describe("RS-182 ジャイアントローラー", () => {
   });
 
   // 一般ルール R-TGT-01「「ユニット」はユニットとして扱われているもの（ラッシュエリア・バトルエリア）」、R-RUSHPH-01（使えるのはラッシュフェイズ）
-  // 既知の不具合: CARD-RS-182 選べる候補がバトルエリアだけで、ラッシュフェイズに通常いるラッシュエリアの自軍 S ユニットを選べず不発になる
-  it.fails("RS-182: ラッシュエリアの自軍 S ユニットを選べる（出典: atwiki/page-379「自軍Sユニットを1体選ぶ」・R-TGT-01）", () => {
+  it("RS-182: ラッシュエリアの自軍 S ユニットを選べる（出典: atwiki/page-379「自軍Sユニットを1体選ぶ」・R-TGT-01）", () => {
     const s = st({
       phase: "rush",
       turn: 3,
@@ -404,8 +403,7 @@ describe("RS-182 ジャイアントローラー", () => {
   });
 
   // 「選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く」
-  // 既知の不具合: CARD-RS-182 撃破されたユニットが捨札を経由せずオモテ向きでパワーゾーンに置かれ、ダメージ（ウラ向き・ダメージ数+1）にならない
-  it.fails("RS-182: 選んだユニットとバトルして撃破されたユニットは、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-379）", () => {
+  it("RS-182: 選んだユニットとバトルして撃破されたユニットは、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-379）", () => {
     let s = rolled({ battle: [inst("TST-UNIT-0", "e1")] });
     s = settle(attack(s, "RS-189:k", "TST-UNIT-0:e1"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("power");
@@ -413,8 +411,7 @@ describe("RS-182 ジャイアントローラー", () => {
     expect(s.players.player2.damage).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-182 選んだユニット側のバトルでもダメージにならない（上記）ため、対比が成立しない
-  it.fails("RS-182: 選んでいないユニットとのバトルで撃破されたユニットは通常どおり捨札になり、選んだユニットとのバトルではダメージになる（出典: atwiki/page-379「選んだユニットとバトルしたユニットは」）", () => {
+  it("RS-182: 選んでいないユニットとのバトルで撃破されたユニットは通常どおり捨札になり、選んだユニットとのバトルではダメージになる（出典: atwiki/page-379「選んだユニットとバトルしたユニットは」）", () => {
     let s = rolled({ battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2")] }, { battle: [inst("RS-189", "k"), inst("RS-190", "other")] });
     s = settle(attack(s, "RS-190:other", "TST-UNIT-0:e1"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("discard");
@@ -424,8 +421,7 @@ describe("RS-182 ジャイアントローラー", () => {
   });
 
   // atwiki/page-379 カード評価「効果の対象が「バトルしたユニット」で持ち主の記載がない」— 選んだユニット自身ではなく相手のユニットが対象。
-  // 既知の不具合: CARD-RS-182 選んだユニット自身もバトルで撃破されるとパワーゾーンに置かれる（捨札にならない）
-  it.fails("RS-182: 選んだユニット自身がバトルで撃破されてもダメージにはならない（出典: atwiki/page-379「選んだユニットとバトルしたユニット」）", () => {
+  it("RS-182: 選んだユニット自身がバトルで撃破されてもダメージにはならない（出典: atwiki/page-379「選んだユニットとバトルしたユニット」）", () => {
     let s = rolled({ battle: [inst("TST-UNIT-2", "big")] });
     s = settle(attack(s, "RS-189:k", "TST-UNIT-2:big"));
     expect(zoneOf(s, "player1", "RS-189:k")).toBe("discard");
@@ -434,8 +430,7 @@ describe("RS-182 ジャイアントローラー", () => {
   });
 
   // 「このターン」— 次のターンには効果が残らない（R-TURN-04）。
-  // 既知の不具合: CARD-RS-182 使用ターンにもダメージにならない（上記）ため、ターンの区切りを確認できない
-  it.fails("RS-182: 効果は「このターン」だけ — 使用ターンはダメージになり、次の敵軍ターンにバトルした相手は捨札になる（出典: atwiki/page-379・R-TURN-04）", () => {
+  it("RS-182: 効果は「このターン」だけ — 使用ターンはダメージになり、次の敵軍ターンにバトルした相手は捨札になる（出典: atwiki/page-379・R-TURN-04）", () => {
     let s = rolled({ battle: [inst("TST-UNIT-0", "e0")], rush: [inst("TST-UNIT-0", "e1")] });
     s = settle(attack(s, "RS-189:k", "TST-UNIT-0:e0"));
     expect(s.players.player2.damage).toBe(1);
@@ -479,8 +474,7 @@ describe("RS-182 ジャイアントローラー", () => {
   });
 
   // grnrngr/faq-card-4 RS-182 Q3「「RS-052 爆竜トリケラトプス」が捨札になるだけです。」
-  // 既知の不具合: CARD-RS-182 ジャイアントローラーの対象とバトルすると撃破先が「パワーゾーン」に置き換わり、【超シールド進化】の窓が開かない
-  it.fails("RS-182: 相手が爆竜トリケラトプスをかわりに捨札にしたら、トリケラトプスは捨札になるだけでダメージにならない（出典: grnrngr/faq-card-4 RS-182 Q3・R-REPL-01）", () => {
+  it("RS-182: 相手が爆竜トリケラトプスをかわりに捨札にしたら、トリケラトプスは捨札になるだけでダメージにならない（出典: grnrngr/faq-card-4 RS-182 Q3・R-REPL-01）", () => {
     let s = rolled({ battle: [inst("TST-UNIT-0", "e1"), inst("RS-052", "tri")], power: powerCards(3, "ep") });
     s = attack(s, "RS-189:k", "TST-UNIT-0:e1");
     expect(legalOfType(s, "use_super_shield")).toHaveLength(1);

@@ -246,12 +246,13 @@ export function shouldBattleDestroyToPower(
     ...getBattleDestroyToPowerInstanceIds(state.players.player1),
     ...getBattleDestroyToPowerInstanceIds(state.players.player2),
   ];
-  if (marked.includes(instanceId)) return true;
+  // 「選んだユニットとバトルしたユニット」— 選んだユニット自身ではなく、そのバトル相手（atwiki/page-379）。
   if (!pending) return false;
   const participants = [
     pending.attackerInstanceId,
     pending.substituteInstanceId ?? pending.defenderInstanceId,
   ];
   if (!participants.includes(instanceId)) return false;
-  return marked.some((m) => participants.includes(m));
+  const other = participants.find((id) => id !== instanceId);
+  return !!other && marked.includes(other);
 }

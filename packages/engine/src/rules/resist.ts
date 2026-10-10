@@ -44,6 +44,7 @@ export function toPendingRegister(intent: LeaveIntent): PendingRegister {
     phasePlayerId: intent.phasePlayerId,
     followUpAttackerLeave: intent.followUpAttackerLeave,
     resumePendingStrike: intent.resumePendingStrike,
+    discardAsDamage: intent.discardAsDamage,
   };
 }
 
@@ -105,6 +106,7 @@ export function finalizeRegisterDiscard(
     phasePlayerId: pending.phasePlayerId,
     followUpAttackerLeave: pending.followUpAttackerLeave,
     resumePendingStrike: pending.resumePendingStrike,
+    discardAsDamage: pending.discardAsDamage,
     skipRegister: true,
   };
   return {

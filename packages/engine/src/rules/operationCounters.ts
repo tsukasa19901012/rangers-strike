@@ -1264,20 +1264,11 @@ export function resolveBattlePendingCore(
   };
 
   const attackerZone = refreshedAttackerFound.zone;
-  const defenderLeaveZone = shouldBattleDestroyToPower(
-    battleState,
-    pending,
-    defenderInstanceId,
-  )
-    ? "power"
-    : "discard";
-  const attackerLeaveZone = shouldBattleDestroyToPower(
-    battleState,
-    pending,
-    pending.attackerInstanceId,
-  )
-    ? "power"
-    : "discard";
+  // RS-182 ジャイアントローラー: 捨札になったときにダメージにする（置き先は捨札のまま。置換・カウンターの窓を開く）。
+  const defenderAsDamage = shouldBattleDestroyToPower(battleState, pending, defenderInstanceId);
+  const attackerAsDamage = shouldBattleDestroyToPower(battleState, pending, pending.attackerInstanceId);
+  const defenderLeaveZone = "discard" as const;
+  const attackerLeaveZone = "discard" as const;
   const attackerLeaveIntent: LeaveIntent = {
     ownerPlayerId: attackerId,
     instanceId: pending.attackerInstanceId,
@@ -1285,6 +1276,7 @@ export function resolveBattlePendingCore(
     toZone: attackerLeaveZone,
     leavingCardId: refreshedAttackerFound.card.cardId,
     phasePlayerId: pending.phasePlayerId,
+    discardAsDamage: attackerAsDamage || undefined,
     // ルール: R-KW-RESIST-03 — 「バトルに勝っても撃破される」効果での撃破はレジスト不可。
     registerEligible:
       finalDestroyAttacker &&
@@ -1307,6 +1299,7 @@ export function resolveBattlePendingCore(
     toZone: defenderLeaveZone,
     leavingCardId: refreshedDefenderFound.card.cardId,
     phasePlayerId: pending.phasePlayerId,
+    discardAsDamage: defenderAsDamage || undefined,
     // ルール: R-KW-RESIST-03 — 防御側も「勝っても撃破」で倒された場合はレジスト不可（BP で負けたときだけ可）。
     registerEligible: destroyDefender && !winButDefenderSelfDestruct && defenderZone === "battle",
   };
@@ -1511,6 +1504,7 @@ export function finalizeLeavePending(
   );
   let nextOwner: typeof owner;
   let medicalRescueToPower = false;
+  let discardAsDamage = false;
 
   if (pending.toZone === "deck_top") {
     // ルール: R-MOVE-01 — 山札に戻すのも「場を離れる」移動（ウラ向きで山札の上へ）。
@@ -1549,6 +1543,15 @@ export function finalizeLeavePending(
     shouldOfferToPowerOnDestroy(pending)
   ) {
     return startToPowerOnDestroyChoice(state, pending, leavingCard, fromCards);
+  } else if (pending.toZone === "discard" && pending.discardAsDamage && !pending.notDestruction) {
+    // RS-182 ジャイアントローラー: 撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く。
+    discardAsDamage = true;
+    nextOwner = {
+      ...owner,
+      [pending.fromZone]: fromCards,
+      power: [...owner.power, { ...leavingCard, faceDown: true }],
+      damage: owner.damage + 1,
+    };
   } else if (pending.toZone === "discard") {
     nextOwner = {
       ...owner,
@@ -1578,7 +1581,7 @@ export function finalizeLeavePending(
     ...updatePlayer(state, pending.ownerPlayerId, nextOwner),
   };
 
-  const effectiveToZone = medicalRescueToPower
+  const effectiveToZone = medicalRescueToPower || discardAsDamage
     ? "power" // ルール: R-REPL-02 — 捨札を経由しないので「撃破されて捨札になったとき」は発動しない
     : pending.toZone === "command" && owner.command.length >= COMMAND_ZONE_MAX
       ? "discard"
