@@ -38,7 +38,7 @@ export function DeckCardAdjustBar({
         +
       </button>
       <span className="deck-builder__deck-adjust-count" aria-live="polite">
-        {current}/{max}
+        {current}/{Number.isFinite(max) ? max : "∞"}
       </span>
       <button
         type="button"
