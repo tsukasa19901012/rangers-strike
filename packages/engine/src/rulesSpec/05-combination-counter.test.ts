@@ -193,8 +193,9 @@ describe("R-CN-03 NC は出た時点の並び順で判定", () => {
 describe("R-CN-04 コンビネーションは自軍バトルフェイズのみ", () => {
   // 「コンビネーションの効果を発動できるのは、自分のバトルフェイズになります」
   it("R-CN-04: ファイブテクターで CN の位置に出した S ユニットの NC は発動しない（出典: grnrngr/faq-card-1 RS-014 Q3）", () => {
+    // ストライクしてくるのは BP1000 の SP1 ユニット（マジブルー BP2000 がバトルに勝ってバトルエリアに残る。R-STK-05）
     let s = battleState({
-      player1: { battle: [inst("TST-UNIT-2", "atk")] },
+      player1: { battle: [inst("TST-UNIT-0", "atk")] },
       player2: {
         operation: [inst("RS-014", "ft")],
         battle: [inst("TST-UNIT-0", "e0")],
@@ -204,7 +205,7 @@ describe("R-CN-04 コンビネーションは自軍バトルフェイズのみ",
         power: powerCards(4),
       },
     });
-    s = strike(s, "TST-UNIT-2:atk");
+    s = strike(s, "TST-UNIT-0:atk");
     s = act(s, { type: "five_tech_intercept", playerId: "player2", interceptInstanceId: "RS-059:blue" });
     expect(ids(s.players.player2.battle)).toEqual(["TST-UNIT-0:e0", "RS-059:blue"]);
     s = settle(s);

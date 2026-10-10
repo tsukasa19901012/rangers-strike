@@ -166,6 +166,16 @@ export function passiveNamedFieldBpBonus(
     bonus += 1000 * state.players[playerId].rush.filter((c) => c.cardId === "RS-037").length;
   }
 
+  // RK-046【バスターホイール】: これが自軍バトルエリアにある間、敵軍バトルエリアのすべての S ユニットは BP-500。
+  // ルール: R-CONT-01（体数分重複）、R-BP-02（BP0 以下はルールで撃破）
+  if (
+    role === "general" &&
+    def.size === "S" &&
+    state.players[playerId].battle.some((c) => c.instanceId === instance.instanceId)
+  ) {
+    bonus -= 500 * state.players[opponent(playerId)].battle.filter((c) => c.cardId === "RK-046").length;
+  }
+
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

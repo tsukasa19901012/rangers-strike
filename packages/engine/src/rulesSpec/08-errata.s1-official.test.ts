@@ -299,8 +299,7 @@ describe("R-ERR-RS065 ボウケンイエロー", () => {
     expect(s.players.player2.damage).toBe(0);
   });
 
-  // 既知の不具合: 未登録 — 撃破後（並びから外れた後）に分数SPを判定するため「SP1」にならない
-  it.fails("R-ERR-RS065: 公式Q&A — 分数SP「1/3」がバトルエリア3番目で「SP1」なら対象（出典: grnrngr/faq-card-1 RS-065 Q1）", () => {
+  it("R-ERR-RS065: 公式Q&A — 分数SP「1/3」がバトルエリア3番目で「SP1」なら対象（出典: grnrngr/faq-card-1 RS-065 Q1）", () => {
     const { s, d } = attackWithYellow("1/3", 2);
     expect(zoneIds(s, "player2", "discard")).toContain(d.instanceId);
     expect(s.players.player2.damage).toBe(1);

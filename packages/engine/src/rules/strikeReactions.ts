@@ -16,7 +16,7 @@ import {
   sanitizeUnitLeavingField,
 } from "../keywords/ride";
 import { buildLogEntry } from "../log/formatLog";
-import { tryDestroyStrikerForStrike } from "./operationCounters";
+import { tryDestroyStrikerForStrike, tryLeaveField } from "./operationCounters";
 
 export function earthForceActive(state: GameState): boolean {
   return (
@@ -252,11 +252,33 @@ export function applyFiveTechIntercept(
     `${cardName(state.definitions, interceptFound.card.cardId)}:${interceptorBp}vs${strikerBp}`,
   );
 
+  // ルール: R-STK-05 — ファイブテクターで出したユニットとバトルになり、敵軍のストライクは（勝敗に関わらず）無効になる。
+  nextPending.damageCancelled = true;
   if (strikerBp <= interceptorBp) {
     const destroyResult = destroyStrikerOrDeferLeave(nextState, pending, true);
     nextState = destroyResult.state;
-    nextPending.damageCancelled = true;
     if (destroyResult.deferred) {
+      return {
+        state: { ...nextState, pendingStrike: pending },
+        pending: nextPending,
+        log,
+      };
+    }
+  }
+  if (interceptorBp <= strikerBp) {
+    // BP の低い（同じ）ファイブテクターのユニットはバトルで撃破される（R-BP-02: BP0 でも先にバトルになる）。
+    const left = tryLeaveField(nextState, {
+      ownerPlayerId: defenderId,
+      instanceId: interceptFound.card.instanceId,
+      fromZone: "battle",
+      toZone: "discard",
+      leavingCardId: interceptFound.card.cardId,
+      phasePlayerId: pending.battlePhasePlayer,
+      registerEligible: true,
+      resumePendingStrike: { damageCancelled: true },
+    });
+    nextState = left.state;
+    if (left.deferred) {
       return {
         state: { ...nextState, pendingStrike: pending },
         pending: nextPending,

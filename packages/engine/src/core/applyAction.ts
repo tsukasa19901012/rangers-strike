@@ -413,6 +413,7 @@ export function applyAction(
   // ルール: R-ZONE-04, R-HOLD-02 — エリアを離れたカードの付加情報はどの経路で移動しても消える。
   let next = clearRegisterHoldOffField(result.state);
   next = releaseCounterLockWhenAttackSettled(next);
+  next = applyBpZeroRuleDestruction(next);
   if (next.deferredRushReaction && !next.winner) {
     next = withSyncedEffectStack(openDeferredRushReaction(next));
   }
@@ -444,6 +445,71 @@ function discardCounterHolds(
       },
     },
   };
+}
+
+function hasBlockingInteraction(state: GameState): boolean {
+  return !!(
+    state.pendingStrike ||
+    state.pendingBattle ||
+    state.pendingRush ||
+    state.pendingMorph ||
+    state.pendingLeave ||
+    state.pendingChase ||
+    state.pendingRideOffChoice ||
+    state.pendingRegister ||
+    state.pendingEffectChoice ||
+    state.pendingCommandPayment ||
+    state.pendingZordSetup ||
+    state.pendingDamagePayment ||
+    state.pendingScry
+  );
+}
+
+/**
+ * ルール: R-BP-02 — 効果で BP が0以下になったユニットはルールにより撃破される。
+ * 進行中の処理（バトル・効果の選択・離場反応など）が終わってから適用する（faq-rider-1 RK-046 Q5）。
+ */
+function applyBpZeroRuleDestruction(state: GameState): GameState {
+  let next = state;
+  for (let guard = 0; guard < 20; guard += 1) {
+    if (next.winner || hasBlockingInteraction(next)) return next;
+    const turnPlayer = next.activePlayer;
+    const order: PlayerId[] = [turnPlayer, opponent(turnPlayer)];
+    let victim: { ownerId: PlayerId; card: CardInstance; zone: "rush" | "battle" } | undefined;
+    for (const ownerId of order) {
+      for (const zone of ["battle", "rush"] as const) {
+        const card = next.players[ownerId][zone].find((c) => {
+          const def = next.definitions[c.cardId];
+          if (!def || def.type !== "unit" || typeof def.bp !== "number" || def.bp <= 0) return false;
+          return effectiveBp(next, ownerId, c) <= 0;
+        });
+        if (card) {
+          victim = { ownerId, card, zone };
+          break;
+        }
+      }
+      if (victim) break;
+    }
+    if (!victim) return next;
+    const left = tryLeaveField(next, {
+      ownerPlayerId: victim.ownerId,
+      instanceId: victim.card.instanceId,
+      fromZone: victim.zone,
+      toZone: "discard",
+      leavingCardId: victim.card.cardId,
+      phasePlayerId: turnPlayer,
+    });
+    const logged: GameState = {
+      ...left.state,
+      log: [
+        ...left.state.log,
+        buildLogEntry(victim.ownerId, "rule_destroy", victim.card.cardId, next.definitions, "bp0"),
+      ],
+    };
+    if (left.deferred) return logged;
+    next = finishBattleEntryIf(logged, victim.card.instanceId);
+  }
+  return next;
 }
 
 /** ルール: R-CTR-03 — アタックの処理が終われば（次の宣言のタイミング）カウンター封じは解ける。 */
