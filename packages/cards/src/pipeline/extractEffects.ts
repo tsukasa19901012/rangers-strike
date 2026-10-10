@@ -34,7 +34,7 @@ function zone(
   owner: "self" | "opponent" | "any",
   filter?: {
     size?: "S";
-    cardType?: "unit" | "operation";
+    cardType?: "unit" | "operation" | "any";
     maxBp?: number;
     minBp?: number;
     maxPowerCost?: number;
@@ -1603,10 +1603,11 @@ const PATTERNS: PatternMatch[] = [
       id: "discard_power_on_rush",
       text: body,
       trigger: trigger.type === "nc" ? { type: "on_rush" } : trigger,
+      // 「ダメージ以外のカード」— ユニットに限らず（オペレーションも）、ダメージ（ウラ向き）は除く。
       optional: true,
-      condition: { type: "has_target", target: zone("power", "self") },
+      condition: { type: "has_target", target: zone("power", "self", { cardType: "any", faceDown: false }) },
       effects: [
-        chooseUnit(zone("power", "self"), 1, [
+        chooseUnit(zone("power", "self", { cardType: "any", faceDown: false }), 1, [
           { type: "discard", target: { type: "trigger_source" } },
         ]),
       ],

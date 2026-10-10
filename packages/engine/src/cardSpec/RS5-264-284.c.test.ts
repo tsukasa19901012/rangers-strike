@@ -101,8 +101,7 @@ describe("RS-278 ブラックバイソン", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:n")).toBe("battle");
   });
 
-  it.fails("RS-278: 【バイソンロッド】必要パワーに「－」のあるユニットは敵軍に限らず選べる（自軍ユニットも候補）（出典: atwiki/page-466「必要パワーの数字に「－」のあるユニットを1体選び」— 「敵軍」の限定がない）", () => {
-    // 既知の不具合: CARD-RS-278 撃破対象の候補が敵軍ユニットに限られ、必要パワーに「－」のある自軍ユニットを選べない
+  it("RS-278: 【バイソンロッド】必要パワーに「－」のあるユニットは敵軍に限らず選べる（自軍ユニットも候補）（出典: atwiki/page-466「必要パワーの数字に「－」のあるユニットを1体選び」— 「敵軍」の限定がない）", () => {
     const s = ncEnter("RS-278", 5, { rush: [inst("SPEC-MINUS", "own")] }, { battle: [inst("SPEC-MINUS", "t")] });
     expect(choiceIds(s)).toEqual(["SPEC-MINUS:own", "SPEC-MINUS:t"]);
   });
@@ -251,8 +250,7 @@ describe("RS-280 レッドホーク", () => {
     expect(canStrike(s, "RS-280:x")).toBe(true);
   });
 
-  it.fails("RS-280: 【ウィングガントレット】NC 成立時、自軍ターン中は BP＋2000（4000）（出典: atwiki/page-468「自軍ターン中、これはBP＋2000される」）", () => {
-    // 既知の不具合: CARD-RS-280 【ウィングガントレット】の「自軍ターン中 BP＋2000」が実装されていない（SP1 のみ付与）
+  it("RS-280: 【ウィングガントレット】NC 成立時、自軍ターン中は BP＋2000（4000）（出典: atwiki/page-468「自軍ターン中、これはBP＋2000される」）", () => {
     expect(bpOf(ncEnter("RS-280", 5), "player1", "RS-280:x")).toBe(4000);
   });
 
@@ -307,8 +305,7 @@ describe("RS-281 ブラックコンドル", () => {
     expect(spOf(s, "player1", "RS-281:x")).toBe(0);
   });
 
-  it.fails("RS-281: 【俺に惚れろ！】NC 不成立（2番目）では特徴「女」が2体以上あっても SP！のまま（出典: atwiki/page-469「CN：3」・R-CN-02）", () => {
-    // 既知の不具合: CARD-RS-281 【俺に惚れろ！】が NC の成立を見ずに常時「SP1」を与える
+  it("RS-281: 【俺に惚れろ！】NC 不成立（2番目）では特徴「女」が2体以上あっても SP！のまま（出典: atwiki/page-469「CN：3」・R-CN-02）", () => {
     const s = ncEnter("RS-281", 2, { rush: [inst("SPEC-F", "f1"), inst("SPEC-F", "f2")] });
     expect(spOf(s, "player1", "RS-281:x")).toBe(0);
   });

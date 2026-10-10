@@ -191,7 +191,8 @@ export function applyPromotedNcEffect(
         playerId,
         card.cardId,
         playerId,
-        { effectId: "bison_rod", enemyOnly: true },
+        // 「必要パワーの数字に「－」のあるユニットを1体選び」— 敵軍に限らない（atwiki/page-466）。
+        { effectId: "bison_rod", anyOwner: true },
       );
       if (withChoice) nextState = withChoice;
       logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, "bison_rod"));

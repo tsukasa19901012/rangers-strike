@@ -47,6 +47,27 @@
               "target": {
                 "type": "trigger_source"
               }
+            },
+            {
+              "type": "choose",
+              "kind": "select_unit",
+              "valid": {
+                "type": "zone",
+                "zone": "rush",
+                "owner": "opponent",
+                "filter": {
+                  "maxBp": 4000
+                }
+              },
+              "count": 1,
+              "then": [
+                {
+                  "type": "discard",
+                  "target": {
+                    "type": "trigger_source"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -61,7 +82,8 @@
             "maxBp": 8000
           }
         }
-      }
+      },
+      "optional": true
     }
   ],
   "implementation": {

@@ -9,7 +9,6 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
-import { enterBattleByEffect } from "../testing/battleEntry";
 import {
   act,
   attack,
@@ -273,8 +272,7 @@ describe("RS-287 剛龍神", () => {
   };
 
   // 「敵軍バトルエリアからBP8000以下のユニットを1体選び撃破してもよい。そうしたとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び撃破する」
-  it.fails("RS-287: 【超爆裂龍神突き】敵軍バトルエリアの BP8000 以下を撃破し、続けて敵軍ラッシュエリアの BP4000 以下を撃破する（出典: atwiki/page-417）", () => {
-    // 既知の不具合: CARD-RS-287 敵軍ラッシュエリアの BP4000 以下を撃破する後半の効果が実装されていない
+  it("RS-287: 【超爆裂龍神突き】敵軍バトルエリアの BP8000 以下を撃破し、続けて敵軍ラッシュエリアの BP4000 以下を撃破する（出典: atwiki/page-417）", () => {
     let s = gouEnters(fullBoard);
     expect(choiceIds(s)).toEqual(["SPEC-E8:b8"]);
     s = settle(pick(s, "SPEC-E8:b8"));
@@ -294,8 +292,7 @@ describe("RS-287 剛龍神", () => {
     expect(zoneOf(s, "player2", "SPEC-E9:b9")).toBe("battle");
   });
 
-  it.fails("RS-287: 【超爆裂龍神突き】バトルエリアの撃破は任意（見送れる）で、見送ればラッシュエリアのユニットも撃破しない（出典: atwiki/page-417「撃破してもよい。そうしたとき」）", () => {
-    // 既知の不具合: CARD-RS-287 バトルエリアの撃破が強制（見送れない）
+  it("RS-287: 【超爆裂龍神突き】バトルエリアの撃破は任意（見送れる）で、見送ればラッシュエリアのユニットも撃破しない（出典: atwiki/page-417「撃破してもよい。そうしたとき」）", () => {
     let s = gouEnters(fullBoard);
     expect(canSkip(s)).toBe(true);
     s = settle(skip(s));
@@ -309,24 +306,26 @@ describe("RS-287 剛龍神", () => {
     expect(zoneOf(s, "player2", "SPEC-E4:r4")).toBe("rush");
   });
 
-  it.fails("RS-287: 【超爆裂龍神突き】ラッシュエリアの撃破は強制（見送れない）（出典: atwiki/page-417「撃破する」）", () => {
-    // 既知の不具合: CARD-RS-287 敵軍ラッシュエリアの BP4000 以下を撃破する後半の効果が実装されていない
+  it("RS-287: 【超爆裂龍神突き】ラッシュエリアの撃破は強制（見送れない）（出典: atwiki/page-417「撃破する」）", () => {
     let s = gouEnters(fullBoard);
     s = settle(pick(s, "SPEC-E8:b8"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-287");
     expect(canSkip(s)).toBe(false);
   });
 
-  // 敵軍ターン中にバトルエリアに出る状況は、効果で出したときと同じ進入処理を行うテスト用の enterBattleByEffect で作る。
-  function gouEntersByEffect(activePlayer: "player1" | "player2") {
-    const s = st({ activePlayer, player1: { rush: [inst("RS-287", "g")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e"), ...fullBoard } }, SPECS);
-    return enterBattleByEffect(s, "player1", "RS-287:g");
-  }
-
-  it("RS-287: 【超爆裂龍神突き】敵軍ターン中にバトルエリアに出たときは発動しない（出典: atwiki/page-417「自軍ターン中」）", () => {
-    // 対照: 自軍ターン中に同じ手順で出せば発動する
-    expect(choiceIds(gouEntersByEffect("player1"))).toEqual(["SPEC-E8:b8"]);
-    const s = settle(gouEntersByEffect("player2"));
+  it("RS-287: 【超爆裂龍神突き】敵軍ターン中にバトルエリアに出たとき（相手の紐男爵【紐拳】で出された）は発動しない（出典: atwiki/page-417「自軍ターン中」・atwiki/page-336【紐拳】）", () => {
+    let s = st(
+      {
+        activePlayer: "player2",
+        player1: { battle: [inst("TST-UNIT-0", "b")], rush: [inst("RS-287", "g")], deck: deckCards(3) },
+        player2: { battle: [inst("SPEC-E8", "b8"), inst("TST-UNIT-0", "ef")], rush: [inst("RS-141", "himo"), inst("SPEC-E4", "r4")], deck: deckCards(3, "e") },
+      },
+      SPECS,
+    );
+    s = enter(s, "RS-141:himo", "player2");
+    s = pick(s, "TST-UNIT-0:b");
+    expect(choiceIds(s)).toContain("RS-287:g");
+    s = settle(pick(s, "RS-287:g"));
     expect(zoneOf(s, "player1", "RS-287:g")).toBe("battle");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-287");
     expect(zoneOf(s, "player2", "SPEC-E8:b8")).toBe("battle");
@@ -417,8 +416,7 @@ describe("RS-288 守護獣ドラゴンシーザー", () => {
   });
 
   // faq-rider-1 RK-016「その敵軍ユニットを選ぶためには自軍コマンドを１つホールドしなくてはいけません。ホールドするコマンドが無い場合は選ぶことはできません…」
-  it.fails("RS-288: 公式Q&A — ミラーワールドの能力を得た敵軍ユニットは、ホールドする自軍コマンドがなければ選べず、選べる自軍ユニットを選ぶ（出典: grnrngr/faq-rider-1 RS-288 Q）", () => {
-    // 既知の不具合: CARD-RS-288 【ドラゴンハーレー】の対象選択がミラーワールドの能力（選ぶにはコマンドのホールドが必要）を考慮しない
+  it("RS-288: 公式Q&A — ミラーワールドの能力を得た敵軍ユニットは、ホールドする自軍コマンドがなければ選べず、選べる自軍ユニットを選ぶ（出典: grnrngr/faq-rider-1 RS-288 Q）", () => {
     const s = harleyEnd(
       { rush: [inst("RS-288", "d")], battle: [inst("SPEC-S3", "own")], command: [] },
       { battle: [inst("SPEC-S3", "en")], operation: [{ ...inst("RK-016", "mw"), stackedCards: [inst("SPEC-S3", "stk")] }] },
@@ -426,8 +424,7 @@ describe("RS-288 守護獣ドラゴンシーザー", () => {
     expect(choiceIds(s)).toEqual(["SPEC-S3:own"]);
   });
 
-  it.fails("RS-288: 公式Q&A — ミラーワールドの能力を得た敵軍ユニットを選ぶときは、自軍コマンドを1つホールドする（出典: grnrngr/faq-rider-1 RS-288 Q「自軍コマンドを１つホールドしなくてはいけません」）", () => {
-    // 既知の不具合: CARD-RS-288 【ドラゴンハーレー】の対象選択がミラーワールドの能力（選ぶにはコマンドのホールドが必要）を考慮しない
+  it("RS-288: 公式Q&A — ミラーワールドの能力を得た敵軍ユニットを選ぶときは、自軍コマンドを1つホールドする（出典: grnrngr/faq-rider-1 RS-288 Q「自軍コマンドを１つホールドしなくてはいけません」）", () => {
     let s = harleyEnd(
       { rush: [inst("RS-288", "d")], command: releasedN(1) },
       { battle: [inst("SPEC-S3", "en")], operation: [{ ...inst("RK-016", "mw"), stackedCards: [inst("SPEC-S3", "stk")] }] },
@@ -476,15 +473,13 @@ describe("RS-289 ドラゴンレンジャー", () => {
     expect(canEnter(s, "RS-289:dr")).toBe(true);
   });
 
-  it.fails("RS-289: ※ 直前の敵軍ターンにダメージを受けていなければバトルエリアに出られない（出典: atwiki/page-416「にしか…出られない」）", () => {
-    // 既知の不具合: CARD-RS-289 ダメージを受けていなくてもバトルエリアに出られる（damageGateBlocksEntry が合法手判定 canMoveUnitToBattle で使われていない）
+  it("RS-289: ※ 直前の敵軍ターンにダメージを受けていなければバトルエリアに出られない（出典: atwiki/page-416「にしか…出られない」）", () => {
     const s = nextOwnBattle(false);
     expect(s.players.player1.damage).toBe(0);
     expect(canEnter(s, "RS-289:dr")).toBe(false);
   });
 
-  it.fails("RS-289: ※ ダメージを受けた敵軍ターンの「次の」自軍ターンだけ — その次の自軍ターン（間の敵軍ターンにダメージなし）には出られない（出典: atwiki/page-416「次の自軍ターンにしか」）", () => {
-    // 既知の不具合: CARD-RS-289 ダメージを受けていなくてもバトルエリアに出られる
+  it("RS-289: ※ ダメージを受けた敵軍ターンの「次の」自軍ターンだけ — その次の自軍ターン（間の敵軍ターンにダメージなし）には出られない（出典: atwiki/page-416「次の自軍ターンにしか」）", () => {
     let s = nextOwnBattle(true);
     s = endTurn(passEntry(s));
     s = endTurn(s);
@@ -494,7 +489,6 @@ describe("RS-289 ドラゴンレンジャー", () => {
 
   // faq-card-5 RS-289 Q1「はい、出ることができます。」（カードをダメージにして置く効果でもダメージを受けたとみなす）
   it("RS-289: 公式Q&A — 敵軍ターン中に「ダメージにして置く」効果（カーナビック）を受けた場合も、次の自軍ターンに出られる（出典: grnrngr/faq-card-5 RS-289 Q1）", () => {
-    // 潜在的な不具合メモ: 効果でダメージにして置かれたとき PlayerState.damagedOnEnemyTurn が立たない（現状は ※ の判定自体が働かないため表面化しない）。
     let s = st({
       activePlayer: "player2",
       phase: "rush",
@@ -657,8 +651,7 @@ describe("RS-290 気伝武人龍星王", () => {
   });
 
   // atwiki/page-474 Q3「はい、可能です。…「Lユニット」になり、【飛竜棍・大風車】の効果対象ではなくなるため、バトルエリアに出すことが出来ます。」
-  it.fails("RS-290: Q&A — DA の S ユニット（バイオハンター・シルバ）もバルジオン（2nd）にライドすれば L ユニットになり、バトルエリアに出られる（出典: atwiki/page-474 Q3）", () => {
-    // 既知の不具合: CARD-RS-527 本来のカテゴリに DA を持つ S ユニットがバルジオン（2nd）にライドする合法手が出ない（範囲外カード）
+  it("RS-290: Q&A — DA の S ユニット（バイオハンター・シルバ）もバルジオン（2nd）にライドすれば L ユニットになり、バトルエリアに出られる（出典: atwiki/page-474 Q3）", () => {
     const s = st({ activePlayer: "player2", player1: { battle: [inst("RS-290", "b")] }, player2: { rush: [inst("RS-079", "s"), inst("RS-527", "bj")] } });
     const ride = legal(s).find((a) => a.type === "mount_ride" && a.riderInstanceId === "RS-079:s" && a.vehicleInstanceId === "RS-527:bj");
     expect(ride).toBeDefined();

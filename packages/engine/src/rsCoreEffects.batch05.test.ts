@@ -291,8 +291,9 @@ describe("RS-216 暴走皇帝エグゾス turn-end return to deck", () => {
 // ---------------------------------------------------------------------------
 
 describe("RS-281 ブラックコンドル conditional SP1", () => {
-  it("has SP1 when own rush contains 2+ female units", () => {
-    const condor = inst("RS-281", "condor");
+  it("has SP1 when own rush contains 2+ female units (NC established)", () => {
+    // 【俺に惚れろ！】は CN：3 の NC の効果（atwiki/page-469）。NC 成立済みの状態で検証する。
+    const condor = { ...inst("RS-281", "condor"), activatedNcEffects: ["nirero"] };
     // RS-201 and RS-202 both have features: ["女"]
     const female1 = inst("RS-201", "f1");
     const female2 = inst("RS-202", "f2");

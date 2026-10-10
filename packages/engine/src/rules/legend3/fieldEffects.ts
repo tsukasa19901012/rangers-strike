@@ -55,6 +55,14 @@ export function legend3FieldBpBonus(
     ) {
       bonus += sr003DiscardDinoBpBonus(state, playerId);
     }
+    // RS-280 レッドホーク【ウィングガントレット】「SP1」自軍ターン中、これはBP＋2000される（NC。atwiki/page-468）。
+    if (
+      instance.cardId === "RS-280" &&
+      instance.activatedNcEffects?.includes("uingugantoreto") &&
+      state.activePlayer === playerId
+    ) {
+      bonus += 2000;
+    }
     if (namedEffectActive(instance, "iron_broken") && state.activePlayer === playerId) {
       bonus += 3000;
     }
@@ -251,7 +259,8 @@ export function legend3EffectiveSp(
   }
 
   // RS-281: SP1 if own rush has 2+ 女-featured units
-  if (instance.cardId === "RS-281") {
+  // 【俺に惚れろ！】は CN：3 の NC の効果。NC が成立していなければ発動しない（atwiki/page-469・R-CN-02）。
+  if (instance.cardId === "RS-281" && instance.activatedNcEffects?.includes("nirero")) {
     const femaleCount = state.players[playerId].rush.filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
       return d?.features?.includes("女");
