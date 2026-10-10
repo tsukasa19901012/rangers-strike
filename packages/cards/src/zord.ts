@@ -1,6 +1,7 @@
 import { allCardsCatalog } from "./catalog";
 import type { RushAdditionalCondition, ZordConditionId } from "./effectTaxonomy";
 import { isFusionMaterialForPartners } from "./fusionMaterial";
+import { parseFeatureDiscardCondition } from "./featureDiscardCondition";
 import type { CardDefinition } from "./schema";
 import { isZordDownCost, isZordUpCost } from "./powerCost";
 
@@ -163,8 +164,11 @@ function normalizeDiscardPresenceCondition(condition: RushAdditionalCondition): 
   if (condition.conditionId === "discard_named_unit" && /^自軍捨札に「[^」]+」がある$/.test(condition.text)) {
     return { conditionId: "state_gate", text: condition.text };
   }
+  const features = parseFeatureDiscardCondition(condition.text);
+  if (features && condition.conditionId !== "discard_feature_unit") return { ...features, unitCount: condition.unitCount ?? features.unitCount };
   return condition;
 }
+
 
 export function getZordCondition(cardId: string): ZordConditionId | undefined {
   const legacy = ZORD_CONDITIONS[cardId];

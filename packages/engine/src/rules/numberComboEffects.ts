@@ -45,6 +45,7 @@ import { isDslInterpretableEffect, shouldUseDslTriggeredEffect } from "../dsl/ds
 import { listDslEffectsForTrigger } from "../dsl/effectLookup";
 import { tryResolveDslNcEffects } from "../dsl/triggerResolver";
 import { applyPromotedNcEffect, getPromotedNcEffectId } from "./promotedNcEffects";
+import { tryApplyHoldToActivateNc } from "./holdToActivate";
 import type { ComboOutcome } from "./comboTypes";
 
 function ncLog(
@@ -251,6 +252,10 @@ export function applyNumberComboEffect(
   if (getPromotedNcEffectId(card.cardId)) {
     return applyPromotedNcEffect(state, playerId, card);
   }
+
+  // 「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒…」は任意の起動（rules/holdToActivate.ts）。
+  const holdActivate = tryApplyHoldToActivateNc(state, playerId, card);
+  if (holdActivate) return holdActivate;
 
   if (ncEffectUsesDsl(card.cardId)) {
     const dslNc = tryResolveDslNcEffects({

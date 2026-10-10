@@ -381,8 +381,7 @@ describe("RS-351 アカレンジャー（2nd）", () => {
     expect(choiceIds(s)).toEqual(["RS-354:s"]);
   });
 
-  // 既知の不具合: CARD-RS-351 【ニューレッドビュート】の選択を相手（敵軍）に行わせている
-  it.fails("RS-351: 【ニューレッドビュート】カードを選ぶ・出すかを決めるのは効果を使う自分（出典: atwiki/page-538「選び、…出してもよい」）", () => {
+  it("RS-351: 【ニューレッドビュート】カードを選ぶ・出すかを決めるのは効果を使う自分（出典: atwiki/page-538「選び、…出してもよい」）", () => {
     const s = nc({ command: [held("RS-354", "s")] });
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
   });

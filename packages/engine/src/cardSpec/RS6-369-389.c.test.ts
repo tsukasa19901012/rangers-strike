@@ -213,8 +213,7 @@ describe("RS-383 レッドラダー", () => {
     expect(choiceIds(r.state)).toEqual(["RS-376:s1", "RS-377:s2", "RS-378:s3"]);
   });
 
-  it.fails("RS-383: 【救出作業】2枚まで選んで手札に加える（出典: atwiki/page-528「2枚まで選び手札に加えてもよい」）", () => {
-    // 既知の不具合: CARD-RS-383 2枚目を選ぶと効果が「見送り（skipped）」で終わり、選んだカードが手札に加わらない
+  it("RS-383: 【救出作業】2枚まで選んで手札に加える（出典: atwiki/page-528「2枚まで選び手札に加えてもよい」）", () => {
     let s = rushGogo("RS-383", 7, { discard: DISCARD() }, {}, "command").state;
     s = pick(pick(s, "RS-376:s1"), "RS-378:s3");
     if (s.pendingEffectChoice?.sourceCardId === "RS-383") s = confirm(s);
@@ -437,8 +436,7 @@ describe("RS-386 イエローアーマー", () => {
   });
 
   // grnrngr/faq-card-6 RS-386「「発動しない効果」とは「これをラッシュしたとき」という条件で発動する効果を指します」
-  it.fails("RS-386: 公式Q&A — 出したユニットの「これをラッシュしたとき」の効果（レッドラダー【救出作業】）は発動しない（出典: grnrngr/faq-card-6 RS-386 Q）", () => {
-    // 既知の不具合: CARD-RS-386 【ショベルアーム】で出したレッドラダーの【救出作業】（ラッシュしたとき）が発動する
+  it("RS-386: 公式Q&A — 出したユニットの「これをラッシュしたとき」の効果（レッドラダー【救出作業】）は発動しない（出典: grnrngr/faq-card-6 RS-386 Q）", () => {
     const s = resolveAll(pick(enterYA([inst("RS-383", "rl"), inst("RS-376", "s1")]), "RS-383:rl"));
     expect(zoneOf(s, "player1", "RS-383:rl")).toBe("rush");
     expect(zoneOf(s, "player1", "RS-376:s1")).toBe("discard");

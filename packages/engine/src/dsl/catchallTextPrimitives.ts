@@ -1,4 +1,4 @@
-import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
+import type { EffectPrimitive, TargetSelector } from "@rangers-strike/cards/dsl/types";
 
 function chooseDeck(count: number, then: EffectPrimitive[]): EffectPrimitive {
   return {
@@ -36,6 +36,45 @@ function selectOwnUnit(zone: "battle" | "rush", then: EffectPrimitive[], count =
     kind: "select_unit",
     valid: { type: "zone", zone, owner: "self" },
     count,
+    then,
+  };
+}
+
+type ZoneFilter = NonNullable<Extract<TargetSelector, { type: "zone" }>["filter"]>;
+
+/**
+ * 「敵軍バトルエリアから、<条件>のユニットを1体選び、持ち主の…」の候補の側・場所・条件を文言から読む。
+ * 「敵軍…から」なら敵軍のユニット（R-TGT: 候補は文言のとおり）。条件は必要パワー・特徴・サイズ・BP の下三桁。
+ */
+export function parseEnemyAreaUnitSelector(
+  body: string,
+): { zone: "battle" | "rush"; filter: ZoneFilter } | null {
+  const head = body.match(/^敵軍(バトル|ラッシュ)エリアから、(.+?)を(\d+)体選び/);
+  if (!head) return null;
+  const zone = head[1] === "ラッシュ" ? "rush" : "battle";
+  const noun = head[2]!;
+  const filter: ZoneFilter = {};
+  const cost = noun.match(/必要パワーの数字が(\d+)以下/);
+  if (cost) filter.maxPowerCost = Number(cost[1]);
+  const without = noun.match(/特徴「([^」]+)」を持たない/);
+  if (without) filter.excludeFeature = without[1];
+  const withFeature = noun.match(/特徴「([^」]+)」を持つ/);
+  if (withFeature) filter.requireFeature = withFeature[1];
+  const lastDigits = noun.match(/BPの下三桁が(\d+)/);
+  if (lastDigits) filter.bpLastThreeDigits = Number(lastDigits[1]);
+  const size = noun.match(/(XL|S|M|L)ユニット/);
+  if (size) filter.size = size[1] as ZoneFilter["size"];
+  return { zone, filter };
+}
+
+function selectEnemyAreaUnit(body: string, then: EffectPrimitive[]): EffectPrimitive | null {
+  const parsed = parseEnemyAreaUnitSelector(body);
+  if (!parsed) return null;
+  return {
+    type: "choose",
+    kind: "select_unit",
+    valid: { type: "zone", zone: parsed.zone, owner: "opponent", filter: parsed.filter },
+    count: 1,
     then,
   };
 }
@@ -171,6 +210,11 @@ export function buildCatchallStructuredPrimitives(
       return null;
     }
     case "power_zone_action": {
+      // 「敵軍バトルエリアから、…敵軍ユニットを1体選び、持ち主のパワーゾーンに送ってもよい」（RS-354【デンジパンチ】）。
+      const enemyArea = /持ち主のパワーゾーンに送/.test(body)
+        ? selectEnemyAreaUnit(body, [{ type: "move", target: { type: "trigger_source" }, to: "power" }])
+        : null;
+      if (enemyArea) return [enemyArea];
       if (/パワーゾーンに送|パワーゾーンに置/.test(body)) {
         return [
           selectOwnUnit(
@@ -203,6 +247,12 @@ export function buildCatchallStructuredPrimitives(
     }
     case "hold_enemy_unit":
     case "hold_on_enter_battle": {
+      // 「敵軍バトルエリアから、<条件>のユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置いてもよい」
+      // （RS-362【シャークジョーズ】）— 条件（必要パワー・特徴）を候補に反映する。
+      const enemyArea = /持ち主のコマンドゾーンにホールド状態で置/.test(body) && !/発動できない/.test(body)
+        ? selectEnemyAreaUnit(body, [{ type: "hold_command", target: { type: "trigger_source" } }])
+        : null;
+      if (enemyArea) return [enemyArea];
       if (/ホールド/.test(body)) {
         return [
           selectEnemyUnit([{ type: "hold_command", target: { type: "trigger_source" } }]),

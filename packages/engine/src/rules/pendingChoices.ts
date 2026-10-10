@@ -116,6 +116,8 @@ import {
 } from "./murphyChase";
 import { continueDslAfterChoice } from "../dsl/cardInterpreter";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
+import { isHoldActivateChoice, resolveHoldActivateChoice } from "./holdToActivate";
+import { getDslEffectById } from "../dsl/effectLookup";
 import {
   markBattleNcEffect,
   resolveBlackCondorDestroyDamage,
@@ -1717,7 +1719,7 @@ export function startOnRushDeckResidentChoice(
     kind: "scry_keep_one",
     validInstanceIds: valid,
     viewedInstanceIds: valid,
-    unitDestination: "rush",
+    unitDestination: "operation",
     selectCount: 1,
     optional: true,
   });
@@ -2770,6 +2772,15 @@ export function completeEffectHoldChoice(
     const marked = markBattleNcEffect(state, playerId, pending.sourceInstanceId, "souru_no_strike");
     return finishAkaRedSoul(marked, pending, held.cardId);
   }
+  if (isHoldActivateChoice(pending)) {
+    // 「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒…」の支払いを終えた（rules/holdToActivate.ts）。
+    const resolved = resolveHoldActivateChoice(state, pending, commandInstanceIds[0]!);
+    if (!resolved) return { error: "invalid_target" };
+    return {
+      state: resolved.pendingEffectChoice ? resolved : promoteDeferredBattleEntry(resolved),
+      log: buildLogEntry(playerId, "resolve_effect_choice", pending.sourceCardId, state.definitions, `${pending.effectId}:${formatInstanceIdsAsNames(state, commandInstanceIds)}`),
+    };
+  }
   const continued = applyPostHoldContinuation(state, pending);
   if (continued.done) return { state: continued.state };
   return finishChoice(
@@ -2952,6 +2963,88 @@ export function applyEffectChoicePlacement(
   );
 }
 
+/**
+ * ルール: R-RUSH-24 — 効果の文言に「このとき出したユニットの効果は発動しない」とあれば、その効果で出したユニットの
+ * 「ラッシュしたとき」等の自身の効果は発動しない（RS-386【ショベルアーム】、faq-card-6 RS-386 Q）。
+ */
+export function suppressesDeployedUnitEffects(pending: Pick<PendingEffectChoice, "sourceCardId" | "effectId">): boolean {
+  const effect = getDslEffectById(pending.sourceCardId, pending.effectId);
+  const text = effect?.text ?? "";
+  return DEPLOYED_EFFECTS_SUPPRESSED_RE.test(text);
+}
+
+const DEPLOYED_EFFECTS_SUPPRESSED_RE = /(このとき|この効果で)出したユニットの効果は発動しない/;
+
+/**
+ * 敵軍の zone で隣り合う size ユニット2体のうち、BP（そのときの値）の合計が bpSum になる組に入るユニット。
+ * selected に1体あれば、その相手になれるユニットだけを返す。
+ */
+export function adjacentPairCandidates(
+  state: GameState,
+  actorId: PlayerId,
+  constraint: NonNullable<PendingEffectChoice["pairConstraint"]>,
+  selected: string[],
+): string[] {
+  const enemyId = opponent(actorId);
+  const row = state.players[enemyId][constraint.adjacentZone];
+  const sizeOk = (c: CardInstance) =>
+    constraint.size === "S"
+      ? isSmallUnit(state.definitions, c.cardId)
+      : getDefinition(state.definitions, c.cardId)?.size === constraint.size;
+  const ok = (c: CardInstance) => sizeOk(c) && isSelectableByOpponentEffect(state, actorId, c.instanceId);
+  const result = new Set<string>();
+  for (let i = 0; i + 1 < row.length; i++) {
+    const a = row[i]!;
+    const b = row[i + 1]!;
+    if (!ok(a) || !ok(b)) continue;
+    if (effectiveBp(state, enemyId, a) + effectiveBp(state, enemyId, b) !== constraint.bpSum) continue;
+    if (selected.length === 0) {
+      result.add(a.instanceId);
+      result.add(b.instanceId);
+    } else if (selected[0] === a.instanceId) {
+      result.add(b.instanceId);
+    } else if (selected[0] === b.instanceId) {
+      result.add(a.instanceId);
+    }
+  }
+  return [...result];
+}
+
+/**
+ * 複数選択（selectCount > 1）で選び終えたカードを、1枚ずつ単独の選択（selectCount 1）として順に解決する。
+ * 途中で別の選択が開いたら（誘発等）、そこで止めてその選択に委ねる。
+ */
+function resolveSelectedOneByOne(
+  state: GameState,
+  playerId: PlayerId,
+  pending: PendingEffectChoice,
+  selected: string[],
+): ChoiceOutcome {
+  let next = state;
+  let log: string | undefined;
+  const logs: string[] = [];
+  for (let i = 0; i < selected.length; i++) {
+    const id = selected[i]!;
+    const last = i === selected.length - 1;
+    const single: PendingEffectChoice = {
+      ...pending,
+      selectCount: 1,
+      selectedInstanceIds: [],
+      validInstanceIds: [id],
+      optional: false,
+      resumeChoice: last ? pending.resumeChoice : undefined,
+    };
+    const result = applyEffectChoiceSelect({ ...next, pendingEffectChoice: single }, playerId, id);
+    if ("error" in result) return result;
+    next = result.state;
+    if (log) logs.push(log);
+    if ("logs" in result && result.logs) logs.push(...result.logs);
+    log = result.log;
+    if (!last && next.pendingEffectChoice) break;
+  }
+  return { state: next, log, ...(logs.length > 0 ? { logs } : {}) };
+}
+
 export function applyEffectChoiceSelect(
   state: GameState,
   playerId: PlayerId,
@@ -2976,6 +3069,13 @@ export function applyEffectChoiceSelect(
   const set6Audit = tryResolveSet6AuditChoice(state, playerId, instanceId);
   if (set6Audit) return set6Audit;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
+  if (isHoldActivateChoice(pending)) {
+    // 「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒…」（rules/holdToActivate.ts）。
+    const resolved = resolveHoldActivateChoice(state, pending, instanceId);
+    if (!resolved) return { error: "invalid_target" };
+    const log = buildLogEntry(playerId, "resolve_effect_choice", pending.sourceCardId, state.definitions, `${pending.effectId}:${cardName(state.definitions, findCommandCard(state, instanceId)?.card.cardId ?? instanceId)}`);
+    return { state: resolved.pendingEffectChoice ? resolved : promoteDeferredBattleEntry(resolved), log };
+  }
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
     return applyConfirmEffectChoice(state, playerId);
@@ -3547,11 +3647,13 @@ export function applyEffectChoiceSelect(
       }
       if (pending.effectId === "fuantasuteikutekuniku") {
         const nextState = triggerCopiedOnRushFromRush(
-          state,
+          clearChoice(state, pending.phasePlayerId),
           pending.playerId,
           instanceId,
           pending.phasePlayerId,
         );
+        // 発動した「ラッシュしたとき」の効果が選択を開いたら、それを残す（閉じない）。
+        if (nextState.pendingEffectChoice) return { state: nextState };
         return finishChoice(
           nextState,
           pending,
@@ -3574,7 +3676,9 @@ export function applyEffectChoiceSelect(
         if (prev.includes(instanceId)) return { error: "already_selected" };
         const selected = [...prev, instanceId];
         if (selected.length < requiredCount) {
-          const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+          const remaining = pending.pairConstraint
+            ? adjacentPairCandidates(state, pending.playerId, pending.pairConstraint, selected)
+            : pending.validInstanceIds.filter((id) => !selected.includes(id));
           return {
             state: {
               ...state,
@@ -3585,6 +3689,11 @@ export function applyEffectChoiceSelect(
               },
             },
           };
+        }
+        if (dest !== "power" && dest !== "discard" && dest !== "deck_top") {
+          // 「N枚まで選び手札に加える」等、場を離れる処理（撃破・送る）でない行き先は、選んだカードを
+          // 1枚ずつ単独の選択として解決する（RS-383【救出作業】: 捨札から2枚まで手札に加える）。
+          return resolveSelectedOneByOne(state, playerId, pending, selected);
         }
         let nextState = state;
         for (const id of selected) {
@@ -3736,7 +3845,9 @@ export function applyEffectChoiceSelect(
         ) {
           return finished;
         }
-        const rushed = finalizeEffectRush(finished.state, ownerId, [instanceId], pending.phasePlayerId);
+        const rushed = finalizeEffectRush(finished.state, ownerId, [instanceId], pending.phasePlayerId, {
+          silent: suppressesDeployedUnitEffects(pending),
+        });
         return {
           ...finished,
           state:
@@ -4335,7 +4446,7 @@ export function applyEffectChoiceSelect(
         // （「このとき出したユニットの効果は発動しない」なら自身の効果だけ止める）。
         // 選択の解決後（applyAction の後処理）に処理される。
         withHold = finalizeEffectRush(withHold, owner, [instanceId], pending.phasePlayerId, {
-          silent: pending.commandAction === "rush_silent",
+          silent: pending.commandAction === "rush_silent" || suppressesDeployedUnitEffects(pending),
         }).state;
       }
       const continued = applyPostHoldContinuation(withHold, pending);
@@ -4862,6 +4973,15 @@ export function applyEffectChoiceSelect(
           ...player,
           deck: shuffleDeck([...rest, ...deckTail]),
           battle: [...player.battle, kept],
+        };
+      } else if (pending.unitDestination === "operation") {
+        // 「自軍山札から…常駐オペレーションのカードを1枚選び、自軍常駐置き場に配置してもよい。（すでに配置されている
+        // 自軍常駐オペレーションは捨札にしてから配置する）その後、山札をシャッフルする」（RS-411【今は俺が戒律だ】）。
+        nextPlayer = {
+          ...player,
+          deck: shuffleDeck([...rest, ...deckTail]),
+          discard: [...player.discard, ...player.operation],
+          operation: [kept],
         };
       } else if (pending.unitDestination === "rush") {
         nextPlayer = {

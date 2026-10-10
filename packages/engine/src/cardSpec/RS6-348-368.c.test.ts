@@ -123,8 +123,7 @@ describe("RS-362 バルシャーク（2nd）", () => {
 
   const enemy = { battle: [inst("TST-UNIT-0", "c0"), inst("RS-354", "c3"), inst("RS-361", "c5"), inst("SPEC-MECHA2", "mecha")], rush: [inst("TST-UNIT-2", "r2")] };
 
-  // 既知の不具合: CARD-RS-362 【シャークジョーズ】の候補が「必要パワー3以下」「メカを持たない」の条件を見ていない
-  it.fails("RS-362: 【シャークジョーズ】2番目に出て NC が成立すると、敵軍バトルエリアの必要パワー3以下・メカでないユニットだけを選べる（出典: atwiki/page-526）", () => {
+  it("RS-362: 【シャークジョーズ】2番目に出て NC が成立すると、敵軍バトルエリアの必要パワー3以下・メカでないユニットだけを選べる（出典: atwiki/page-526）", () => {
     const s = enterAfter("RS-362", fillers(1), enemy);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-362");
     expect(choiceIds(s)).toEqual(["RS-354:c3", "TST-UNIT-0:c0"]);
@@ -138,8 +137,7 @@ describe("RS-362 バルシャーク（2nd）", () => {
     expect(c?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-362 【シャークジョーズ】が任意（「置いてもよい」）になっていない
-  it.fails("RS-362: 【シャークジョーズ】「置いてもよい」— 置かないことも選べる（出典: atwiki/page-526「置いてもよい」）", () => {
+  it("RS-362: 【シャークジョーズ】「置いてもよい」— 置かないことも選べる（出典: atwiki/page-526「置いてもよい」）", () => {
     const s = enterAfter("RS-362", fillers(1), enemy);
     expect(canSkip(s)).toBe(true);
   });
@@ -267,8 +265,7 @@ describe("RS-364 ヘルサターン総統", () => {
   });
 
   // grnrngr/faq-card-6 RS-364 Q1「はい、BP+3000されてSP1になります。」
-  // 既知の不具合: CARD-RS-364 総統の BP+3000 がティラノレンジャー【龍撃剣】の「BP5000以上のとき SP1」の判定に反映されない（BP6000 なのに SP！のまま）
-  it.fails("RS-364: 公式Q&A — 闇のヤイバで DA が追加されたティラノレンジャーが NC を発動したとき、BP+3000 されて「SP1」になる（出典: grnrngr/faq-card-6 RS-364 Q1）", () => {
+  it("RS-364: 公式Q&A — 闇のヤイバで DA が追加されたティラノレンジャーが NC を発動したとき、BP+3000 されて「SP1」になる（出典: grnrngr/faq-card-6 RS-364 Q1）", () => {
     // ティラノレンジャー（CN4）を4番目に出すため、DA の S ユニット3体を先に並べる
     let s = st({ player1: { battle: [inst("SPEC-DA3000", "a"), inst("SPEC-DA3000", "b"), inst("SPEC-DA3000", "c")], rush: [inst("RS-364", "hs"), inst("RS-339", "yaiba"), inst("RS-081", "tyr")], command: [released("TST-OP-DA", "d")], deck: deckCards(5) } }, SPECS);
     s = enterHold(s, "RS-081:tyr");
@@ -374,8 +371,7 @@ describe("RS-365 イナズマギンガー", () => {
     expect(spOf(s, "player1", "RS-365:ig")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-365 【帝国の掌握】の SP+1 がターンを越えて残る（instance の spModifier が消えない）
-  it.fails("RS-365: 【帝国の掌握】SP+1 は「このターン」だけ — 次の自軍ターンには SP！に戻る（出典: atwiki/page-605「このターン」）", () => {
+  it("RS-365: 【帝国の掌握】SP+1 は「このターン」だけ — 次の自軍ターンには SP！に戻る（出典: atwiki/page-605「このターン」）", () => {
     let s = entered([inst("RS-354", "h1")], enemy);
     s = endTurn(endTurn(s));
     s = toPhase(s, "player1", "battle");

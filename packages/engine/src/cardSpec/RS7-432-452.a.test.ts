@@ -432,36 +432,31 @@ describe("RS-436 激気", () => {
       { type: "move_to_battle", playerId: "player1", instanceId: `${unit}:x` },
     );
 
-  // 既知の不具合: CARD-RS-436 常駐の本文がスタブで、激気の S ユニットがバトルエリアに出ても選択が出ない
-  it.fails("RS-436: 自軍バトルフェイズに特徴「激気」の自軍 S ユニットが出たとき、それより必要パワーの小さい WB の M ユニットのカードだけを手札から選べる（出典: atwiki/page-515）", () => {
+  it("RS-436: 自軍バトルフェイズに特徴「激気」の自軍 S ユニットが出たとき、それより必要パワーの小さい WB の M ユニットのカードだけを手札から選べる（出典: atwiki/page-515）", () => {
     const s = entered();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-436");
     expect(choiceIds(s)).toEqual(["RS-425:gj", "SPEC-WBM3:m3"]);
   });
 
-  // 既知の不具合: CARD-RS-436 常駐の本文がスタブで、M ユニットをラッシュエリアに出せない
-  it.fails("RS-436: 選んだ WB の M ユニットは自軍ラッシュエリアに出る（出典: atwiki/page-515「自軍ラッシュエリアに出す」）", () => {
+  it("RS-436: 選んだ WB の M ユニットは自軍ラッシュエリアに出る（出典: atwiki/page-515「自軍ラッシュエリアに出す」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-WBM3:m3"));
     expect(zoneOf(s, "player1", "SPEC-WBM3:m3")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-436 常駐の本文がスタブで、「発動できる」の選択自体が出ない
-  it.fails("RS-436: 「発動できる」— 発動しないことを選べる（出典: atwiki/page-515「次の効果を発動できる」）", () => {
+  it("RS-436: 「発動できる」— 発動しないことを選べる（出典: atwiki/page-515「次の効果を発動できる」）", () => {
     const s = entered();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-436");
     expect(canSkip(s)).toBe(true);
     expect(zoneOf(resolveAll(skip(s)), "player1", "SPEC-WBM3:m3")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RS-436 常駐の本文がスタブで、追加条件のある M ユニット（ゲキジャガー）も出せない
-  it.fails("RS-436: この効果で出すとき、M ユニットの追加条件を満たす必要はない（ゲキジャガーを捨札なしで出せる）（出典: grnrngr/faq-card-7 RS-436 Q1「いいえ、その場合は追加条件を満たす必要はありません」）", () => {
+  it("RS-436: この効果で出すとき、M ユニットの追加条件を満たす必要はない（ゲキジャガーを捨札なしで出せる）（出典: grnrngr/faq-card-7 RS-436 Q1「いいえ、その場合は追加条件を満たす必要はありません」）", () => {
     const s = resolveAll(pick(entered("SPEC-GEKI", { battle: [inst("TST-UNIT-0", "e0")], damage: 3, power: powerCards(3, "ep").map((c) => ({ ...c, faceDown: true })) }), "RS-425:gj"), []);
     expect(zoneOf(s, "player1", "RS-425:gj")).toBe("rush");
     expect(s.players.player1.discard).toHaveLength(0);
   });
 
-  // 既知の不具合: CARD-RS-436 常駐の本文がスタブで、出したゲキジャガーの「ラッシュしたとき」【転転弾】も発動しない
-  it.fails("RS-436: この効果で出した M ユニットの「ラッシュしたとき」の効果は発動する（ゲキジャガー【転転弾】の選択が出る）（出典: grnrngr/faq-card-7 RS-436 Q2「はい、発動します」）", () => {
+  it("RS-436: この効果で出した M ユニットの「ラッシュしたとき」の効果は発動する（ゲキジャガー【転転弾】の選択が出る）（出典: grnrngr/faq-card-7 RS-436 Q2「はい、発動します」）", () => {
     const s = pick(entered("SPEC-GEKI", { battle: [inst("TST-UNIT-0", "e0")], damage: 3, power: powerCards(3, "ep").map((c) => ({ ...c, faceDown: true })) }), "RS-425:gj");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-425");
     expect(choiceIds(s)).toContain("TST-UNIT-0:e0");
