@@ -8417,7 +8417,7 @@
     "powerCost": 6,
     "category": "WB",
     "textSnippets": [
-      "ラッシュエリアにある全てのユニットは、可能であれ"
+      "すべてのユニットは可能なら毎ターンバトルエリア"
     ],
     "expectedDslKeywords": [
       "auto_battle_entry_from_rush"
@@ -8436,7 +8436,7 @@
     "powerCost": 3,
     "category": "ET",
     "textSnippets": [
-      "自軍捨札からSユニット1枚を選び、手札に加える。"
+      "自軍捨札から、Sユニットのカードを1枚選んで手札"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -9203,7 +9203,7 @@
     "powerCost": 6,
     "category": "ET",
     "textSnippets": [
-      "自軍捨札からカード1枚を選び、手札に加える。"
+      "自軍捨札からカードを1枚選んで手札に加える。"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -9219,7 +9219,7 @@
     "powerCost": 4,
     "category": "ET",
     "textSnippets": [
-      "すべてのMユニットはコマンドを1つホールドしない"
+      "すべてのMユニットは、コマンドを1つホールドしな"
     ],
     "expectedDslKeywords": [
       "m_battle_entry_requires_hold"

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-10T07:59:27.527Z",
+  "generatedAt": "2026-10-10T10:06:17.812Z",
   "scanned": 1832,
   "withSourceText": 1823,
   "missingSource": [],
@@ -37,13 +37,6 @@
       "cardId": "RS-006",
       "sourceFile": "page-250-RS-006.md",
       "sourceText": "※カウンター（これは敵軍ターン中にのみ使用できる）\n自軍Sユニットがアタックされたとき発動できる。⇒アタックされたユニットをラッシュエリアに戻す。このときバトル",
-      "definitionCount": 1,
-      "catalogTextEmpty": true
-    },
-    {
-      "cardId": "RS-007",
-      "sourceFile": "page-251-RS-007.md",
-      "sourceText": "BP8000以下の敵軍ユニットを1体選ぶ。選んだユニットを持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。（コマンドゾーンに置けるカードは通",
       "definitionCount": 1,
       "catalogTextEmpty": true
     },
@@ -100,13 +93,6 @@
       "cardId": "RS-019",
       "sourceFile": "page-243-RS-019.md",
       "sourceText": "※常駐（場に配置して、離れるまで効果が有効になる）\n自軍Sユニットがアタックするとき発動できる。アタックするユニットは、自軍コマンドを1つホールドするごとにBP",
-      "definitionCount": 1,
-      "catalogTextEmpty": true
-    },
-    {
-      "cardId": "RS-021",
-      "sourceFile": "page-257-RS-021.md",
-      "sourceText": "自分の手札からカードを2枚まで選んで、自軍コマンドゾーンにホールド状態で置く。（コマンドゾーンに置けるカードは通常5枚まで）",
       "definitionCount": 1,
       "catalogTextEmpty": true
     },
