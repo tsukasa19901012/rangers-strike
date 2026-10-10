@@ -18,7 +18,7 @@ import {
   grantBpBoostToBattleUnit,
   grantSp1ToBattleUnit,
 } from "../namedUnitEffects";
-import { addTurnRuleModifier } from "../../core/scopedModifiers";
+import { addNextTurnRuleModifier, addTurnRuleModifier } from "../../core/scopedModifiers";
 import { canBeDeployedToBattleByEffect } from "../restrictions";
 import { TURN_RULE_IDS } from "../../types/scopedModifiers";
 import type { ComboOutcome } from "../comboTypes";
@@ -299,7 +299,9 @@ export function applyLegend2NcEffect(
       };
     }
     case "zenibomb": {
-      const enemy = addTurnRuleModifier(state.players[enemyId], TURN_RULE_IDS.ZENIBOMB, {
+      // 「次の相手ターン、新しくラッシュエリアに出たユニットは…バトルエリアに出られない」。
+      // ルール: R-BA-04 — 出られないターンはレッドレーサーの「可能なら」もラッシュエリアに置く（RS-110 Q2）。
+      const enemy = addNextTurnRuleModifier(state.players[enemyId], TURN_RULE_IDS.ZENIBOMB, {
         sourceCardId: card.cardId,
       });
       return {
@@ -317,25 +319,18 @@ export function applyLegend2NcEffect(
       };
     }
     case "super_ninpo_lion_dance": {
-      const deckCard = state.players[playerId].deck.find(
-        (c) => getDefinition(state.definitions, c.cardId)?.name === "ハリケンイエロー",
+      // ルール: R-ATK-05 — 「アタックするかわりに」発動する効果。CN を満たしてバトルエリアに出ても自動では
+      // 発動せず、発動できる状態になるだけ。バトルフェイズにプレイヤーが選ぶ
+      // （use_juu_kun_do アクション、rules/juuKunDo.ts の applyLionDance）。
+      const owner = state.players[playerId];
+      const battle = owner.battle.map((c) =>
+        c.instanceId === card.instanceId
+          ? { ...c, activatedNcEffects: [...(c.activatedNcEffects ?? []), "super_ninpo_lion_dance"] }
+          : c,
       );
-      if (!deckCard) {
-        return {
-          state,
-          logs: [ncLog(playerId, card.cardId, state.definitions, "super_ninpo_lion_dance:none")],
-        };
-      }
-      const player = state.players[playerId];
-      const deck = player.deck.filter((c) => c.instanceId !== deckCard.instanceId);
-      const nextPlayer = {
-        ...player,
-        deck,
-        battle: [...player.battle, deckCard],
-      };
       return {
-        state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-        logs: [ncLog(playerId, card.cardId, state.definitions, "super_ninpo_lion_dance")],
+        state: { ...state, ...updatePlayer(state, playerId, { ...owner, battle }) },
+        logs: [ncLog(playerId, card.cardId, state.definitions, "super_ninpo_lion_dance:available")],
       };
     }
     default:

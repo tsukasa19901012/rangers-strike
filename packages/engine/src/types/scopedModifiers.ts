@@ -1,5 +1,6 @@
 /** 修飾子の有効スコープ。ターン終了 / ラッシュフェイズ終了でフィルタする。 */
-export type ModifierScope = "turn" | "rush_phase" | "permanent";
+/** next_turn: 次のターン（ターン終了の処理で turn に繰り上がる。例: ゼニボム「次の相手ターン」）。 */
+export type ModifierScope = "turn" | "rush_phase" | "permanent" | "next_turn";
 
 export type ScopedModifier =
   | {

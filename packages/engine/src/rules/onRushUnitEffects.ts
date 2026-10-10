@@ -14,13 +14,13 @@ import {
   applyMotoSharianPowerTrigger,
 } from "./noteOtherRushEffects";
 import { tryFormationDeployOnRush } from "./formationDeploy";
+import { tryDispatchOrderOnEnemyRush } from "./dispatchOrder";
 import {
   applyBandoraHeldCommandDiscard,
   tryZubazubanOnAllyRush,
 } from "./batch06FieldEffects";
 import { tryOnAllyRushNamedReturnSelfToHand } from "./batch07FieldEffects";
 import { tryRsCatchallOnEnemyRush } from "./rs/rsCatchallRuntime";
-import { applyRadarOnRush } from "./residentOps";
 
 function applyDrawOnRush(
   state: GameState,
@@ -53,7 +53,11 @@ export function applyOnRushUnitEffects(
   instanceId: string,
   phasePlayerId: PlayerId,
   zone: "rush" | "battle" = "rush",
+  options: { suppressSelfEffects?: boolean; viaEffect?: boolean } = {},
 ): { state: GameState; logs: string[] } {
+  // ルール: R-RUSH-24 — 「このとき出したユニットの効果は発動しない」は、そのユニット自身の
+  // 「ラッシュしたとき」の効果だけを止める（他のカードの「ラッシュしたとき」は発動する）。
+  const suppressSelf = options.suppressSelfEffects === true;
   const owner = state.players[ownerPlayerId];
   const found = findInZone(owner, zone, instanceId);
   if (!found) return { state, logs: [] };
@@ -61,7 +65,7 @@ export function applyOnRushUnitEffects(
   let nextState = state;
   const logs: string[] = [];
 
-  const onRush = ON_RUSH_EFFECTS[found.card.cardId];
+  const onRush = suppressSelf ? undefined : ON_RUSH_EFFECTS[found.card.cardId];
   if (onRush === "draw_1") {
     const result = applyDrawOnRush(
       nextState,
@@ -73,28 +77,30 @@ export function applyOnRushUnitEffects(
     logs.push(...result.logs);
   }
 
-  const unnamedLegend3 = resolveLegend3UnnamedRushEffects(
-    nextState,
-    ownerPlayerId,
-    instanceId,
-  );
-  nextState = unnamedLegend3.state;
-  logs.push(...unnamedLegend3.logs);
-
-  {
-    const radar = applyRadarOnRush(nextState, ownerPlayerId, found.card.cardId);
-    nextState = radar;
+  if (!suppressSelf) {
+    const unnamedLegend3 = resolveLegend3UnnamedRushEffects(
+      nextState,
+      ownerPlayerId,
+      instanceId,
+    );
+    nextState = unnamedLegend3.state;
+    logs.push(...unnamedLegend3.logs);
   }
 
-  const dslRush = tryResolveDslTriggeredEffects({
-    state: nextState,
-    cardId: found.card.cardId,
-    instanceId,
-    playerId: ownerPlayerId,
-    phasePlayerId,
-    triggerType: "on_rush",
-    logAction: "named_effect",
-  });
+  // RS-124 超電子レーダーは applySuperRadarOnRush（下）で1回だけ処理する
+  // （residentOps.applyRadarOnRush と二重に適用されてパワーが2枚戻っていた）。
+
+  const dslRush = suppressSelf
+    ? { state: nextState, logs: [] as string[], handled: true }
+    : tryResolveDslTriggeredEffects({
+        state: nextState,
+        cardId: found.card.cardId,
+        instanceId,
+        playerId: ownerPlayerId,
+        phasePlayerId,
+        triggerType: "on_rush",
+        logAction: "named_effect",
+      });
   nextState = dslRush.state;
   logs.push(...dslRush.logs);
 
@@ -121,7 +127,8 @@ export function applyOnRushUnitEffects(
     logs.push(...allyReturn.logs);
   }
 
-  if (!nextState.pendingEffectChoice) {
+  // RS-296 編隊出撃は「自軍コマンドをホールドして」ラッシュしたときだけ（効果ラッシュでは発動しない）。
+  if (!nextState.pendingEffectChoice && !options.viaEffect) {
     const formation = tryFormationDeployOnRush(
       nextState,
       ownerPlayerId,
@@ -170,6 +177,9 @@ export function applyOnRushUnitEffects(
       phasePlayerId,
     );
   }
+
+  // RS-318 ドギー・クルーガー【出動指令】（敵軍の DA ユニットがラッシュされたとき）。
+  nextState = tryDispatchOrderOnEnemyRush(nextState, ownerPlayerId, instanceId, phasePlayerId);
 
   const rsEnemyRush = tryRsCatchallOnEnemyRush(
     nextState,

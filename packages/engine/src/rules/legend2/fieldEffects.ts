@@ -155,23 +155,26 @@ export function trafficControlRequiresSameSize(
   return unitSize !== firstSize;
 }
 
-/** RS-097 連獅子: SP1+ または ! の敵ユニットは戦闘進入にホールドが必要。 */
-export function karakuriLionChainBlocksEntry(
+/**
+ * RS-097 連獅子: SP1 以上または「！」の敵軍ユニットがバトルエリアに出るために
+ * ホールドしなければならないコマンドの数（敵軍バトルエリアのハリケンレオンの数だけ重複）。
+ * ルール: R-ADD-07 — 同じ継続効果は枚数分重複する（RS-097 Q7）。
+ */
+export function karakuriLionChainHoldCount(
   state: GameState,
   defenderId: PlayerId,
   unit: CardInstance,
-  heldCount: number,
-): boolean {
-  const controller = findControllerOfNamedEffect(state, "karakuri_lion_chain", ["battle"]);
-  if (!controller || controller.playerId === defenderId) return false;
+): number {
+  const enemyId: PlayerId = defenderId === "player1" ? "player2" : "player1";
+  const chains = state.players[enemyId].battle.filter((c) =>
+    findNamedEffectByEffectId(c.cardId, "karakuri_lion_chain"),
+  ).length;
+  if (chains === 0) return 0;
 
   const def = getDefinition(state.definitions, unit.cardId);
   const hasBang = def?.sp === "special" || def?.features?.includes("!");
   const effectiveSp = legend2EffectiveSp(state, defenderId, unit);
-  if (effectiveSp >= 1 || hasBang) {
-    return heldCount < 1;
-  }
-  return false;
+  return effectiveSp >= 1 || hasBang ? chains : 0;
 }
 
 export function findLegend2NamedEffectOnField(

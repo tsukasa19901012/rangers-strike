@@ -3,6 +3,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 import { getDefinition } from "../core/catalog";
 import { findInZone, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
+import { markFieldEntryHandled } from "../events/emitUnitRushed";
 import { openEffectChoice } from "../rules/pendingChoices";
 import { resolveRidingComboOnRideOff } from "../rules/ridingComboEffects";
 import {
@@ -140,7 +141,10 @@ function applyZoneMorphSwap(
   );
 
   return {
-    state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+    state: markFieldEntryHandled(
+      { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+      [replacementFound.card.instanceId],
+    ),
     log,
   };
 }

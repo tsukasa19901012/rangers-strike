@@ -1,4 +1,11 @@
 import { finalizeEffectRush } from "../events/emitUnitRushed";
+import { DISPATCH_ORDER_EFFECT_ID, resolveDispatchOrder } from "./dispatchOrder";
+import { isAbductionChoice, resolveAbductionChoice, startAbductionCondition } from "./abduction";
+import {
+  isEffectRushChoice,
+  resolveEffectRushChoice,
+  skipEffectRushChoice,
+} from "./effectRush";
 import type { Category } from "@rangers-strike/cards";
 import { canonicalCardName } from "@rangers-strike/cards";
 import { markBattleBlocked } from "./turnModifiers";
@@ -28,7 +35,7 @@ import { bounceToHand } from "./bounce";
 import { applyReanimate } from "./reanimate";
 import { tryLeaveField } from "./operationCounters";
 import { completeToPowerOnDestroyChoice } from "./toPowerOnDestroy";
-import { hasSeabedSurvey, karakuriLionChainBlocksEntry } from "./legend2/fieldEffects";
+import { hasSeabedSurvey } from "./legend2/fieldEffects";
 import { promoteDeferredBattleEntry } from "./battleEntry";
 import {
   MURPHY_CHASE_EFFECT_ID,
@@ -78,8 +85,8 @@ import {
 import { countDistinctCategoriesInCommandZone } from "./zoneCategoryLimit";
 import {
   autoHoldForBattleEntry,
+  clearEffectBattleEntryWindows,
   canMoveUnitToBattle,
-  markBattleEntryHoldReadyIfNoteSatisfied,
 } from "./restrictions";
 import {
   continueMorphAfterReplacement,
@@ -308,6 +315,14 @@ export function isValidEffectChoiceTarget(
     );
   }
   if (!pending.validInstanceIds.includes(instanceId)) return false;
+
+  if (
+    isEffectRushChoice(pending) ||
+    isAbductionChoice(pending.effectId) ||
+    pending.effectId === DISPATCH_ORDER_EFFECT_ID
+  ) {
+    return true;
+  }
 
   if (pending.effectId === "fire_sword") {
     return !!findInZone(state.players[pending.playerId], "operation", instanceId);
@@ -2116,6 +2131,7 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (pending.playerId !== playerId) return { error: "wrong_player" };
   const errata = trySkipErrataChoice(state, playerId);
   if (errata) return errata;
+  if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
   if (!pending.optional) {
     const hasValidTarget = pending.validInstanceIds.some((instanceId) =>
       isValidEffectChoiceTarget(state, pending, instanceId),
@@ -2242,6 +2258,17 @@ export function applyEffectChoiceSelect(
 
   const errata = tryResolveErrataChoice(state, playerId, instanceId);
   if (errata) return errata;
+  if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
+  if (isAbductionChoice(pending.effectId)) {
+    const result = resolveAbductionChoice(state, playerId, instanceId);
+    if ("error" in result) return result;
+    return { state: promoteDeferredBattleEntry(result.state), log: result.log };
+  }
+  if (pending.effectId === DISPATCH_ORDER_EFFECT_ID) {
+    const result = resolveDispatchOrder(state, playerId, instanceId);
+    if ("error" in result) return result;
+    return { state: promoteDeferredBattleEntry(result.state), log: result.log };
+  }
 
   if (pending.effectId === "morph_replacement") {
     const result = resolveMorphReplacementChoice(state, playerId, instanceId);
@@ -2851,12 +2878,8 @@ export function applyEffectChoiceSelect(
         const owner = state.players[located.playerId];
         const found = findInZone(owner, "rush", instanceId);
         if (!found) return { error: "invalid_target" };
-        const autoHeld = autoHoldForBattleEntry(owner, found.card);
-        const prepared = autoHeld
-          ? holdForKarakuriLionChain(state, located.playerId, autoHeld, found.card)
-          : null;
-        if (!prepared) return { error: "cannot_enter_battle" };
-        const readyOwner = markBattleEntryHoldReadyIfNoteSatisfied(prepared, found.card);
+        const readyOwner = autoHoldForBattleEntry(state, located.playerId, found.card);
+        if (!readyOwner) return { error: "cannot_enter_battle" };
         const withPrepared = {
           ...state,
           ...updatePlayer(state, located.playerId, readyOwner),
@@ -2865,13 +2888,12 @@ export function applyEffectChoiceSelect(
           return { error: "cannot_enter_battle" };
         }
         const [, rush] = removeAt(readyOwner.rush, found.index);
-        const nextOwner = clearCostWindow(
+        const nextOwner = clearEffectBattleEntryWindows(
           {
             ...readyOwner,
             rush,
             battle: [...readyOwner.battle, found.card],
           },
-          "battle_entry_hold",
         );
         return finishChoice(
           { ...state, ...updatePlayer(state, located.playerId, nextOwner) },
@@ -2903,9 +2925,8 @@ export function applyEffectChoiceSelect(
         }
         const entering = findInZone(player, "rush", pending.sourceInstanceId);
         if (!swapTarget || !entering) return { error: "invalid_target" };
-        const prepared = autoHoldForBattleEntry(player, entering.card);
-        if (!prepared) return { error: "cannot_enter_battle" };
-        const readyPlayer = markBattleEntryHoldReadyIfNoteSatisfied(prepared, entering.card);
+        const readyPlayer = autoHoldForBattleEntry(state, pending.playerId, entering.card);
+        if (!readyPlayer) return { error: "cannot_enter_battle" };
         const withPrepared = {
           ...state,
           ...updatePlayer(state, pending.playerId, readyPlayer),
@@ -2919,7 +2940,7 @@ export function applyEffectChoiceSelect(
         const battle = [...readyPlayer.battle];
         battle.splice(swapIndex, 1, { ...entering.card, battleActed: true });
         const rush = readyPlayer.rush.filter((c) => c.instanceId !== pending.sourceInstanceId);
-        const nextPlayer = clearCostWindow(
+        const nextPlayer = clearEffectBattleEntryWindows(
           markBattleBlocked(
             {
               ...readyPlayer,
@@ -2928,7 +2949,6 @@ export function applyEffectChoiceSelect(
             },
             swapTarget.card.instanceId,
           ),
-          "battle_entry_hold",
         );
         return finishChoice(
           { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
@@ -3327,7 +3347,15 @@ export function applyEffectChoiceSelect(
         };
       }
 
-      const withHold = { ...state, ...updatePlayer(state, owner, nextPlayer) };
+      let withHold = { ...state, ...updatePlayer(state, owner, nextPlayer) };
+      if (pending.commandAction === "rush" || pending.commandAction === "rush_silent") {
+        // ルール: R-RUSH-22 / R-RUSH-24 — 効果でラッシュエリアに出したユニットの誘発と窓
+        // （「このとき出したユニットの効果は発動しない」なら自身の効果だけ止める）。
+        // 選択の解決後（applyAction の後処理）に処理される。
+        withHold = finalizeEffectRush(withHold, owner, [instanceId], pending.phasePlayerId, {
+          silent: pending.commandAction === "rush_silent",
+        }).state;
+      }
       const continued = applyPostHoldContinuation(withHold, pending);
       if (continued.done) return { state: continued.state };
 
@@ -3705,11 +3733,19 @@ export function applyEffectChoiceSelect(
           cardName(state.definitions, found.card.cardId),
         );
       }
-      let nextPlayer = {
-        ...player,
-        hand,
-        discard: [...player.discard, found.card],
-      };
+      // 選んだ手札の行き先は1か所だけ（以前は捨札にも置かれ、RS-296 編隊出撃でカードが2か所に重複していた）。
+      const handDestination =
+        pending.effectId === "geki_e7b7a8" || pending.unitDestination === "rush"
+          ? "rush"
+          : pending.unitDestination === "deck_top"
+            ? "deck_top"
+            : "discard";
+      let nextPlayer: PlayerState =
+        handDestination === "rush"
+          ? { ...player, hand, rush: [...player.rush, found.card] }
+          : handDestination === "deck_top"
+            ? { ...player, hand, deck: [found.card, ...player.deck] }
+            : { ...player, hand, discard: [...player.discard, found.card] };
       if (pending.sourceInstanceId) {
         nextPlayer = {
           ...nextPlayer,
@@ -3720,27 +3756,26 @@ export function applyEffectChoiceSelect(
           ),
         };
       }
-      if (pending.effectId === "geki_e7b7a8") {
-        nextPlayer = {
-          ...nextPlayer,
-          hand: nextPlayer.hand.filter((c) => c.instanceId !== instanceId),
-          rush: [...nextPlayer.rush, found.card],
-        };
-      } else if (pending.unitDestination === "rush") {
-        nextPlayer = {
-          ...nextPlayer,
-          hand,
-          rush: [...nextPlayer.rush, found.card],
-        };
-      } else if (pending.unitDestination === "deck_top") {
-        nextPlayer = {
-          ...nextPlayer,
-          hand,
-          deck: [found.card, ...nextPlayer.deck],
-        };
+      let nextState: GameState = { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) };
+      if (pending.effectId === "fx_unknown_2" && pending.sourceCardId === "RS-322") {
+        // ルール: R-ADD-08 — 相手は捨札にしたカードの追加条件を可能なら満たす（母艦の代替手段も含む）。
+        nextState = startAbductionCondition(
+          { ...nextState, pendingEffectChoice: undefined },
+          pending.playerId,
+          found.card.cardId,
+          pending.phasePlayerId,
+        );
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState };
+        }
+      }
+      if (handDestination === "rush") {
+        // ルール: R-RUSH-20 — 効果でラッシュエリアに出すのにコマンドのホールドは不要。
+        // ルール: R-RUSH-22 — 出したユニットにも「ラッシュしたとき」誘発と窓がある（選択の解決後に処理）。
+        nextState = finalizeEffectRush(nextState, pending.playerId, [instanceId], pending.phasePlayerId).state;
       }
       return finishChoice(
-        { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+        nextState,
         pending,
         cardName(state.definitions, found.card.cardId),
       );
@@ -3962,22 +3997,20 @@ export function applyEffectChoiceSelect(
       const found = findInZone(enemy, "rush", instanceId);
       if (!found) return { error: "invalid_target" };
 
-      const prepared = autoHoldForBattleEntry(enemy, found.card);
-      if (!prepared) return { error: "cannot_enter_battle" };
-      const readyEnemy = markBattleEntryHoldReadyIfNoteSatisfied(prepared, found.card);
+      const readyEnemy = autoHoldForBattleEntry(state, enemyId, found.card);
+      if (!readyEnemy) return { error: "cannot_enter_battle" };
       const withPrepared = { ...state, ...updatePlayer(state, enemyId, readyEnemy) };
       if (!canMoveUnitToBattle(withPrepared, enemyId, found.card, "rush")) {
         return { error: "cannot_enter_battle" };
       }
 
-      const [, rush] = removeAt(prepared.rush, found.index);
-      const nextEnemy = clearCostWindow(
+      const [, rush] = removeAt(readyEnemy.rush, found.index);
+      const nextEnemy = clearEffectBattleEntryWindows(
         {
           ...readyEnemy,
           rush,
           battle: [...readyEnemy.battle, found.card],
         },
-        "battle_entry_hold",
       );
       let nextState = { ...state, ...updatePlayer(state, enemyId, nextEnemy) };
 
@@ -4003,27 +4036,6 @@ export function applyEffectChoiceSelect(
     default:
       return { error: "invalid_choice_kind" };
   }
-}
-
-/**
- * 効果で敵軍ユニットをバトルエリアに出すとき、RS-097【カラクリ忍法・連獅子】が効いていれば
- * 持ち主がコマンドを1つホールドする（ホールドできなければ出せない）。
- * ルール: R-START-01（faq-card-3 RS-135: ジェットファルコンで引き出せば相手はコマンドをホールドする）
- */
-function holdForKarakuriLionChain(
-  state: GameState,
-  ownerId: PlayerId,
-  owner: PlayerState,
-  unit: CardInstance,
-): PlayerState | null {
-  const heldCount = owner.command.filter((c) => c.commandHeld).length;
-  if (!karakuriLionChainBlocksEntry(state, ownerId, unit, heldCount)) return owner;
-  const idx = owner.command.findIndex((c) => !c.commandHeld);
-  if (idx < 0) return null;
-  return {
-    ...owner,
-    command: owner.command.map((c, i) => (i === idx ? { ...c, commandHeld: true } : c)),
-  };
 }
 
 export function getValidTargetsForChoice(state: GameState): string[] {

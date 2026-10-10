@@ -5,6 +5,7 @@ import {
   countLightningGravityPermanents,
   getBattleEntryComboFromOwnTurnPartnerIds,
   getBattleEntryComboFromPartnerIds,
+  getBattleEntryHandDiscardCount,
   getBattleEntryHoldCount,
   hasAutoBattleEntryEachTurnNote,
   needsAllySInBattle,
@@ -34,7 +35,11 @@ import {
   heldCallLeadMatchesCategories,
   type CallLeadKind,
 } from "./callLead";
-import { isCostWindowSatisfied, satisfyCostWindow as satisfyCostWindowBridge } from "../core/costWindow";
+import {
+  clearCostWindow as clearCostWindowBridge,
+  isCostWindowSatisfied,
+  satisfyCostWindow as satisfyCostWindowBridge,
+} from "../core/costWindow";
 import { hasTurnRuleModifier } from "../core/scopedModifiers";
 import { findInZone, opponent } from "../core/helpers";
 import { TURN_RULE_IDS } from "../types/scopedModifiers";
@@ -48,7 +53,7 @@ import {
 } from "./turnModifiers";
 import {
   findLegend2NamedEffectOnField,
-  karakuriLionChainBlocksEntry,
+  karakuriLionChainHoldCount,
   trafficControlRequiresSameSize,
 } from "./legend2/fieldEffects";
 import {
@@ -161,7 +166,10 @@ export function requiredBattleEntryHolds(
   const lgHold = isMediumUnit(state.definitions, unit.cardId)
     ? countActiveLightningGravity(state)
     : 0;
-  return unitHold + lgHold + accelMemoryHoldCount(state, playerId, unit);
+  // ルール: R-ADD-07 — 「〜しなければバトルエリアに出られない」制限は1つずつ別々に満たす
+  // （ハリケンレオンは体数分重複）。
+  const lionHold = karakuriLionChainHoldCount(state, playerId, unit);
+  return unitHold + lgHold + lionHold + accelMemoryHoldCount(state, playerId, unit);
 }
 
 /**
@@ -315,17 +323,6 @@ export function canMoveUnitToBattle(
 
   if (trafficControlRequiresSameSize(state, playerId, def.size)) return false;
 
-  if (
-    karakuriLionChainBlocksEntry(
-      state,
-      playerId,
-      unit,
-      countHeldCommands(state.players[playerId]),
-    )
-  ) {
-    return false;
-  }
-
   if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
 
   if (cannotEnterBattleOwnTurn(state, playerId, unit.cardId)) return false;
@@ -435,17 +432,6 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   if (trafficControlRequiresSameSize(state, playerId, def.size)) return false;
 
-  if (
-    karakuriLionChainBlocksEntry(
-      state,
-      playerId,
-      unit,
-      countHeldCommands(state.players[playerId]),
-    )
-  ) {
-    return false;
-  }
-
   if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
 
   if (cannotEnterBattleOwnTurn(state, playerId, unit.cardId)) return false;
@@ -478,53 +464,84 @@ export function countReleasedCommands(player: PlayerState): number {
 }
 
 /**
- * 効果など支払いUIなしで※進入するとき、リリース中のコマンドを1枚ホールドする。
- * プレイヤー操作の進入は initiate_command_payment を使う。
+ * 効果でバトルエリアに出すとき、「ホールドしなければ出られない」制限の分だけ
+ * リリース状態のコマンドをホールドする（左から自動選択）。ホールドできなければ null。
+ * ルール: R-ADD-07 — 効果で出す場合も1体ごとに制限を満たす（RS-009 Q3、RS-097 Q2・Q6）。
+ * プレイヤー操作の進入は initiate_command_payment（battle_entry）を使う。
  */
-/** 効果/自動進入: ※用ホールドが既に揃っているとき支払い済みフラグを立てる。 */
-export function markBattleEntryHoldReadyIfNoteSatisfied(
-  player: PlayerState,
-  unit: CardInstance,
-): PlayerState {
-  const unitHold = getBattleEntryHoldCount(unit.cardId);
-  if (unitHold > 0 && countBattleEntryEligibleHolds(player) >= unitHold) {
-    return satisfyCostWindowBridge(player, "battle_entry_hold");
-  }
-  return player;
-}
-
 export function autoHoldForBattleEntry(
-  player: PlayerState,
+  state: GameState,
+  playerId: PlayerId,
   unit: CardInstance,
   options: { freshHold?: boolean } = {},
 ): PlayerState | null {
-  const unitHold = getBattleEntryHoldCount(unit.cardId);
-  if (unitHold <= 0) return player;
+  let player = state.players[playerId];
 
-  if (options.freshHold) {
-    // ルール: R-ERR-RS009 — 出すたびにリリース状態のコマンドを新たにホールドする（足りなければ出せない）。
-    const releasedIdx = player.command
-      .map((c, i) => (c.commandHeld ? -1 : i))
-      .filter((i) => i >= 0)
-      .slice(0, unitHold);
-    if (releasedIdx.length < unitHold) return null;
-    const command = player.command.map((c, i) =>
-      releasedIdx.includes(i) ? { ...c, commandHeld: true, mothershipHold: false } : c,
+  // ルール: R-BA-04 — 「手札を2枚捨てなければ出られない」（狼鬼）も、効果で出すときに満たせるなら満たして出る
+  // （RS-108 Q2）。捨てるカードは手札の先頭から選ぶ。
+  if (
+    needsBattleEntryHandDiscard(unit.cardId) &&
+    !battleEntryHandDiscardSatisfied(player, unit.cardId)
+  ) {
+    const count = getBattleEntryHandDiscardCount(unit.cardId);
+    if (player.hand.length < count) return null;
+    const discarded = player.hand.slice(0, count);
+    player = satisfyCostWindowBridge(
+      {
+        ...player,
+        hand: player.hand.slice(count),
+        discard: [...player.discard, ...discarded],
+      },
+      "battle_entry_hand_discard",
     );
-    return satisfyCostWindowBridge({ ...player, command }, "battle_entry_hold");
   }
 
-  if (countBattleEntryEligibleHolds(player) >= unitHold) {
-    return player;
-  }
-
-  const idx = player.command.findIndex((c) => !c.commandHeld);
-  if (idx < 0) return null;
-
-  const command = player.command.map((c, i) =>
-    i === idx ? { ...c, commandHeld: true, mothershipHold: false } : c,
+  const required = requiredBattleEntryHolds(
+    { ...state, players: { ...state.players, [playerId]: player } },
+    playerId,
+    unit,
   );
+  if (required <= 0) return player;
+  if (countReleasedCommands(player) < required) return null;
+
+  let remaining = required;
+  const command = player.command.map((c) => {
+    if (remaining > 0 && !c.commandHeld) {
+      remaining -= 1;
+      return { ...c, commandHeld: true, mothershipHold: false };
+    }
+    return c;
+  });
   return satisfyCostWindowBridge({ ...player, command }, "battle_entry_hold");
+}
+
+/** 効果でバトルエリアに出し終えたら、出るための支払い済み記録を消す。 */
+export function clearEffectBattleEntryWindows(player: PlayerState): PlayerState {
+  return clearCostWindowBridge(
+    clearCostWindowBridge(player, "battle_entry_hold"),
+    "battle_entry_hand_discard",
+  );
+}
+
+/**
+ * バトルエリアに出すために必要なホールドを満たせるか（リリース状態のコマンドが足りるか）。
+ * ルール: R-BA-04 — 「可能なら出る」はホールドが必要なユニットも、ホールドできれば出る。
+ */
+export function canMoveUnitToBattleWithHolds(
+  state: GameState,
+  playerId: PlayerId,
+  unit: CardInstance,
+): boolean {
+  if (canMoveUnitToBattle(state, playerId, unit, "rush")) return true;
+  if (!canMoveUnitToBattleExceptHoldRequirements(state, playerId, unit, "rush")) return false;
+  const prepared = autoHoldForBattleEntry(state, playerId, unit);
+  if (!prepared) return false;
+  return canMoveUnitToBattle(
+    { ...state, players: { ...state.players, [playerId]: prepared } },
+    playerId,
+    unit,
+    "rush",
+  );
 }
 
 /**
@@ -536,11 +553,9 @@ export function canBeDeployedToBattleByEffect(
   ownerId: PlayerId,
   unit: CardInstance,
 ): boolean {
-  const owner = state.players[ownerId];
-  const prepared = autoHoldForBattleEntry(owner, unit);
+  const prepared = autoHoldForBattleEntry(state, ownerId, unit);
   if (!prepared) return false;
-  const ready = markBattleEntryHoldReadyIfNoteSatisfied(prepared, unit);
-  const withPrepared: GameState = { ...state, players: { ...state.players, [ownerId]: ready } };
+  const withPrepared: GameState = { ...state, players: { ...state.players, [ownerId]: prepared } };
   return canMoveUnitToBattle(withPrepared, ownerId, unit, "rush");
 }
 
@@ -550,29 +565,20 @@ function passesBattleEntryHoldRequirements(
   player: PlayerState,
   unit: CardInstance,
 ): boolean {
-  let unitHold = unitBattleEntryHoldCount(state, playerId, unit.cardId);
-  if (unitHold > 0 && scorchingRoarBypassesHold(unit.cardId, state, playerId)) {
-    unitHold = 0;
-  }
-  const lgHold = isMediumUnit(state.definitions, unit.cardId)
-    ? countActiveLightningGravity(state)
-    : 0;
-  const requiredTotal = unitHold + lgHold + accelMemoryHoldCount(state, playerId, unit);
-
-  if (requiredTotal === 0 && !needsVCommanderHold(state, playerId, unit)) {
-    return true;
-  }
+  const requiredTotal = requiredBattleEntryHolds(state, playerId, unit);
 
   if (needsVCommanderHold(state, playerId, unit)) {
     if (!hasHeldVCommanderCommand(player, state.definitions)) return false;
   }
 
-  if (unitHold > 0) {
-    if (countBattleEntryEligibleHolds(player) < unitHold) return false;
-    if (!isCostWindowSatisfied(player, "battle_entry_hold")) return false;
+  // ルール: R-ADD-07 — 「コマンドをホールドしなければ出られない」制限は、出る直前に制限ごとに
+  // リリース状態のコマンドを新たにホールドして満たす（既にホールド済みのコマンドでは満たせない）。
+  // ホールドは battle_entry 支払い（または効果進入の autoHoldForBattleEntry）で行い、
+  // 済んだことを battle_entry_hold コスト窓で表す。
+  if (requiredTotal > 0) {
+    return isCostWindowSatisfied(player, "battle_entry_hold");
   }
-
-  return countHeldCommands(player) >= requiredTotal;
+  return true;
 }
 
 function allyHasVCommanderFeature(
@@ -723,49 +729,16 @@ export function explainCannotEnterBattle(
     return `${who}の「${controllerName}」の【交通整理】の効果で、先にバトルエリアへ入ったユニット（${requiredSize}）と同じサイズのユニットしか出せません。`;
   }
 
-  if (
-    karakuriLionChainBlocksEntry(
-      state,
-      playerId,
-      unit,
-      countHeldCommands(player),
-    )
-  ) {
-    const chain = findLegend2NamedEffectOnField(state, "karakuri_lion_chain", ["battle"]);
-    const who = chain?.playerId === playerId ? "自軍" : "敵軍";
-    const chainName = chain ? cardName(state.definitions, chain.cardId) : "ハリケンレオン";
-    return `${who}の「${chainName}」の【カラクリ忍法・連獅子】の効果で、SP1以上または「!」のユニットはコマンドを1枚ホールドしないとバトルエリアに出せません。`;
-  }
-
   if (isBattleBlocked(player, unit.instanceId)) {
     return "【バトルダンス】でラッシュエリアに戻したユニットは、このターンはバトルエリアに出せません。";
   }
 
   const unitHolds = unitBattleEntryHoldCount(state, playerId, unit.cardId);
-  const lgCount = countActiveLightningGravity(state);
-  const requiredTotal = unitHolds + lgCount;
-  const held = countHeldCommands(player);
+  const lgCount = isMediumUnit(state.definitions, unit.cardId) ? countActiveLightningGravity(state) : 0;
+  const lionCount = karakuriLionChainHoldCount(state, playerId, unit);
+  const requiredTotal = requiredBattleEntryHolds(state, playerId, unit);
   const released = countReleasedCommands(player);
-  const battleEntryHeld = countBattleEntryEligibleHolds(player);
-  if (unitHolds > 0 && !isCostWindowSatisfied(player, "battle_entry_hold")) {
-    if (released < unitHolds) {
-      if (held > battleEntryHeld) {
-        return `「${unitName}」をバトルエリアに出すには、リリース状態の自軍コマンドを${unitHolds}枚ホールドする必要があります（母艦のホールドはバトル進入の条件になりません）。`;
-      }
-      return `「${unitName}」をバトルエリアに出すには、リリース状態の自軍コマンドが${unitHolds}枚以上必要です（リリース${released}枚）。`;
-    }
-    if (battleEntryHeld < unitHolds) {
-      return `「${unitName}」をバトルエリアに出すには、リリース状態のコマンドを${unitHolds}枚選んでホールドしてください。`;
-    }
-    return `「${unitName}」をバトルエリアに出すには、※のコマンドホールド支払いを完了してください。`;
-  }
-  if (unitHolds > 0 && battleEntryHeld < unitHolds) {
-    if (held > battleEntryHeld) {
-      return `「${unitName}」をバトルエリアに出すには、リリース状態の自軍コマンドを${unitHolds}枚ホールドする必要があります（母艦のホールドはバトル進入の条件になりません）。`;
-    }
-    return `「${unitName}」をバトルエリアに出すには、リリース状態のコマンドを${unitHolds}枚選んでホールドしてください。`;
-  }
-  if (requiredTotal > 0 && held < requiredTotal) {
+  if (requiredTotal > 0 && !isCostWindowSatisfied(player, "battle_entry_hold")) {
     const parts: string[] = [];
     if (unitHolds > 0) {
       parts.push(`「${unitName}」の能力によりコマンドを${unitHolds}枚ホールド`);
@@ -773,8 +746,14 @@ export function explainCannotEnterBattle(
     if (lgCount > 0) {
       parts.push(`【稲妻重力エネルギー】の効果によりコマンドを${lgCount}枚ホールド`);
     }
+    if (lionCount > 0) {
+      parts.push(`【カラクリ忍法・連獅子】の効果によりコマンドを${lionCount}枚ホールド`);
+    }
     const requirement = parts.length > 0 ? parts.join("、") : "コマンドをホールド";
-    return `${requirement}する必要があります（現在${held}枚 / 必要${requiredTotal}枚）。`;
+    if (released < requiredTotal) {
+      return `${requirement}する必要があります（リリース状態のコマンド${released}枚 / 必要${requiredTotal}枚。ホールド済みのコマンド（母艦のホールドを含む）では満たせません）。`;
+    }
+    return `${requirement}してください（バトルエリアに出る直前に新たにホールドします）。`;
   }
 
   return `「${unitName}」はバトルエリアに出せません。`;
@@ -796,7 +775,8 @@ export function findMandatoryBattleEntries(
 
   for (const card of player.rush) {
     if (wingTurnBlocksStrike(player, card.instanceId)) continue;
-    if (!canMoveUnitToBattle(state, playerId, card, "rush")) continue;
+    // ルール: R-BA-04 — ホールドが必要なユニットも、ホールドできるなら「可能なら出る」に含む。
+    if (!canMoveUnitToBattleWithHolds(state, playerId, card)) continue;
     if (hasAutoBattleEntryEachTurnNote(card.cardId) || earthForceRequiresBattleEntry(state)) {
       mandatory.push(card);
     }

@@ -17,6 +17,22 @@ import { godomRushPowerBudget } from "./godomRushPay";
 import { requiresAllFusionPartners, hasAllRequiredFusionMaterials } from "./zord";
 import { rushAdditionalConditionApplies } from "./bkOperationTurnRules";
 
+/**
+ * 手札からのラッシュで必要パワーの判定に使える量（アブレラ【闇の取引】・ゴードム等の補填を含む）。
+ * ルール: R-RUSH-11 — 必要パワーは追加条件を実行する前の状態で確認する。
+ */
+export function rushPowerBudget(
+  state: GameState,
+  playerId: PlayerId,
+  player: PlayerState,
+  definition: CardDefinition,
+): number {
+  return Math.max(
+    darkDealRushPowerBudget(state, playerId, player, definition),
+    godomRushPowerBudget(state, playerId, player, definition),
+  );
+}
+
 /** カテゴリ支払い済み、またはカテゴリ不要なユニットのみ直接 rush 可能。 */
 export function canDeclareRush(
   state: GameState,
