@@ -13,7 +13,15 @@ export const DECK_NAME_COPY_LIMIT = 3;
 /** デッキビルダー UI で無制限枚数カードの上限。 */
 export const DECK_UNLIMITED_COPY_CAP = 40;
 
-const UNLIMITED_DECK_NOTE = "デッキに3枚以上入れてもよい";
+/**
+ * 3枚制限の例外を示すカード本文の注記。
+ * ルール: R-DECK-03 — 「※このカードはデッキに好きな枚数入れてもよい。」が標準。
+ * 最初期の RS-080 だけ「※このカードはデッキに3枚以上入れてもよい。」。
+ */
+const UNLIMITED_DECK_NOTES = [
+  "デッキに好きな枚数入れてもよい",
+  "デッキに3枚以上入れてもよい",
+] as const;
 
 const EXCLUDED_DECK_TYPES = new Set<string>(PLAYABLE_EXCLUDED_CARD_TYPES);
 
@@ -36,12 +44,13 @@ export type DeckValidationResult = {
   errors: string[];
 };
 
-/** 通常3枚制限を超えてよいカード（例: 戦闘員）。 */
+/**
+ * 通常3枚制限を超えてよいカード。
+ * ルール: R-DECK-03 — 例外はカード本文の注記だけで決まる（特徴「戦闘員」の有無では決まらない）。
+ */
 export function deckCopyUnlimited(card: CardDefinition): boolean {
-  if (card.features?.includes("戦闘員")) {
-    return true;
-  }
-  if (card.text?.includes(UNLIMITED_DECK_NOTE)) {
+  const text = card.text ?? "";
+  if (UNLIMITED_DECK_NOTES.some((note) => text.includes(note))) {
     return true;
   }
   if (hasUnnamedRule(card.id, "deck_copy_unlimited")) {
