@@ -207,8 +207,7 @@ describe("RS-328 魔法鉄神トラベリオン", () => {
   }
   const enemyUnitsLeft = (s: GameState) => s.players.player2.rush.length + s.players.player2.battle.length;
 
-  it.fails("RS-328: 敵軍ユニット（3体）が自軍コマンド（2つ）より多いとき、発動すると相手が自分自身のユニットを1体選び、相手の山札に戻す（出典: atwiki/page-489）", () => {
-    // 既知の不具合: CARD-RS-328 【デストラクションファイヤー】が未実装（バトルエリアに出ても何も起きない）
+  it("RS-328: 敵軍ユニット（3体）が自軍コマンド（2つ）より多いとき、発動すると相手が自分自身のユニットを1体選び、相手の山札に戻す（出典: atwiki/page-489）", () => {
     let s = enterTravelion(2, 3);
     // 発動を選ぶ（自分）→ 相手が自分自身のユニットを選ぶ
     for (let i = 0; i < 4 && s.pendingEffectChoice?.playerId === "player1"; i++) s = drain(s, "player1");
@@ -219,8 +218,7 @@ describe("RS-328 魔法鉄神トラベリオン", () => {
     expect(enemyUnitsLeft(s)).toBe(2);
   });
 
-  it.fails("RS-328: 「発動できる」— 発動しないことを選べる（敵軍ユニットはそのまま）（出典: atwiki/page-489「次の効果を発動できる」）", () => {
-    // 既知の不具合: CARD-RS-328 【デストラクションファイヤー】が未実装（発動の選択肢が出ない）
+  it("RS-328: 「発動できる」— 発動しないことを選べる（敵軍ユニットはそのまま）（出典: atwiki/page-489「次の効果を発動できる」）", () => {
     let s = enterTravelion(2, 3);
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(canSkip(s)).toBe(true);

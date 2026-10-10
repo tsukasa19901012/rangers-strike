@@ -15,6 +15,8 @@ import { buildLogEntry } from "../../log/formatLog";
 import { unitFeatures } from "../addedFeatures";
 import { bounceToHand } from "../bounce";
 import { hasBattleNcEffect, markBattleNcEffect } from "../namedUnitEffects";
+import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEffects";
+import { shuffleCards } from "../errataCardEffects";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { commandCategoriesNow } from "../legend3/battleEffects";
@@ -511,12 +513,83 @@ CHOICE_RESOLVERS[MAGI_TICKET_KEEP_EFFECT_ID] = resolveMagiTicketKeep;
 CHOICE_SKIPPERS[MAGI_TICKET_KEEP_EFFECT_ID] = skipMagiTicketKeep;
 
 // ---------------------------------------------------------------------------
+// RS-328 魔法鉄神トラベリオン【デストラクションファイヤー】
+// 「自軍ターン中、これがバトルエリアに出たとき、自軍コマンドの数よりも敵軍ユニットの数が多ければ、次の効果を発動できる⇒
+//  相手は自分自身のユニットを1体選び、自分自身の山札に戻してシャッフルする。」
+
+export const DESTRUCTION_FIRE_CONFIRM_EFFECT_ID = "rs328_destruction_fire_confirm";
+export const DESTRUCTION_FIRE_PICK_EFFECT_ID = "rs328_destruction_fire_pick";
+
+function openDestructionFire(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  if (ctx.phasePlayerId !== ctx.playerId) return { state, detail: "desutorakushonfuaiya:not_own_turn" };
+  const enemyId = opponent(ctx.playerId);
+  const enemyUnits = state.players[enemyId].rush.length + state.players[enemyId].battle.length;
+  if (enemyUnits <= state.players[ctx.playerId].command.length) return { state, detail: "desutorakushonfuaiya:unmet" };
+  const sourceInstanceId = ctx.triggerSourceInstanceId;
+  const opened = openOptionalEffectConfirm(state, {
+    playerId: ctx.playerId,
+    effectId: DESTRUCTION_FIRE_CONFIRM_EFFECT_ID,
+    sourceCardId: "RS-328",
+    sourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+  });
+  // 「発動する」をトラベリオン自身の選択としても選べるようにする（confirm と同じ）。
+  const withId = sourceInstanceId
+    ? { ...opened, pendingEffectChoice: { ...opened.pendingEffectChoice!, validInstanceIds: [sourceInstanceId] } }
+    : opened;
+  return { state: withId, detail: "desutorakushonfuaiya" };
+}
+
+registerOptionalEffect(DESTRUCTION_FIRE_CONFIRM_EFFECT_ID, {
+  apply: (state, pending) => {
+    const enemyId = opponent(pending.playerId);
+    const enemy = state.players[enemyId];
+    const ids = [...enemy.battle, ...enemy.rush].map((c) => c.instanceId);
+    if (ids.length === 0) return state;
+    return openEffectChoice(state, {
+      playerId: enemyId,
+      effectId: DESTRUCTION_FIRE_PICK_EFFECT_ID,
+      sourceCardId: "RS-328",
+      sourceInstanceId: pending.sourceInstanceId,
+      kind: "select_unit",
+      phasePlayerId: pending.phasePlayerId,
+      validInstanceIds: ids,
+      selectCount: 1,
+      optional: false,
+    });
+  },
+});
+
+function resolveDestructionFirePick(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const player = state.players[playerId];
+  const zone = findInZone(player, "battle", instanceId) ? "battle" : findInZone(player, "rush", instanceId) ? "rush" : null;
+  if (!zone) return { error: "invalid_target" };
+  const cardId = findInZone(player, zone, instanceId)!.card.cardId;
+  let next: GameState = { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+  const moved = applyUnitLeave(next, instanceId, "deck_top", pending.phasePlayerId);
+  if ("error" in moved) return moved;
+  next = moved.state;
+  const owner = next.players[playerId];
+  next = { ...next, ...updatePlayer(next, playerId, { ...owner, deck: shuffleCards(owner.deck) }) };
+  return {
+    state: settled(next),
+    log: logFor(state, playerId, "RS-328", `${DESTRUCTION_FIRE_PICK_EFFECT_ID}:${cardName(state.definitions, cardId)}`),
+  };
+}
+
+CHOICE_RESOLVERS[DESTRUCTION_FIRE_PICK_EFFECT_ID] = resolveDestructionFirePick;
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword（`cardId::effectId`）からの起点
 
 export function trySet5CardEffect(state: GameState, ctx: GrantKeywordContext, _keyword: string): GrantKeywordResult | null {
   switch (`${ctx.sourceCardId}::${ctx.effectId}`) {
     case "RS-319::deisodobega":
       return applyDSwordVega(state, ctx);
+    case "RS-328::desutorakushonfuaiya":
+      return openDestructionFire(state, ctx);
     case "RS-323::majimaji": {
       // NC 成立を記録する。アタック対象の判定は magiMergeAllowsRushAttack（rules/legend3/restrictions.ts）。
       const id = ctx.triggerSourceInstanceId;
