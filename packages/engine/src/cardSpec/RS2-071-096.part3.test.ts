@@ -262,7 +262,8 @@ describe("RS-093 童鬼ドロップ", () => {
   /** player1 のデカレッドが、player2 のラッシュエリアの童鬼ドロップをジュウクンドーで撃破する。 */
   function juuKunDoDrop(p1Damage: number, p2Damage: number, power = 0) {
     let s = st({
-      player1: { battle: [inst("RS-106", "deka")], damage: p1Damage, power: powerCards(power), deck: [inst("TST-OP", "d1"), inst("TST-OP", "d2")] },
+      // デカレッドは1番目に出て NC（CN1）が成立した状態（【ジュウクンドー】は CN の欄の効果。R-CN-02）。
+      player1: { battle: [{ ...inst("RS-106", "deka"), activatedNcEffects: ["juu_kun_do"] }], damage: p1Damage, power: powerCards(power), deck: [inst("TST-OP", "d1"), inst("TST-OP", "d2")] },
       player2: {
         battle: [inst("SPEC-S-NOSP", "wall")],
         rush: [inst("RS-093", "drop")],

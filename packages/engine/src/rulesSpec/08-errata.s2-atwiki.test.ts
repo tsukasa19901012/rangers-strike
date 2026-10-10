@@ -209,7 +209,8 @@ describe("R-ERR-RS106 デカレッド", () => {
   });
 
   function decaRed(enemyBattle: CardInstance[]) {
-    const r = inst("RS-106", "red");
+    // 1番目に出て NC（CN1）が成立した状態（R-CN-02。【ジュウクンドー】は CN の欄の効果）。
+    const r = { ...inst("RS-106", "red"), activatedNcEffects: ["juu_kun_do"] };
     const s = specState(["RS-106"], {
       phase: "battle",
       player1: { battle: [r] },

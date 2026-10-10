@@ -342,8 +342,7 @@ describe("RS-115 魔導騎士ウルザード", () => {
   });
 
   // faq-card-2 RS-115 Q1「はい、相手はドローすることができます。」
-  it.fails("RS-115: 公式Q&A — 相手のデカグリーンでバトルエリアに出されたときも、相手（デカグリーンの持ち主）はドローできる（出典: grnrngr/faq-card-2 RS-115 Q1）", () => {
-    // 既知の不具合: CARD-RS-115 相手の効果（グリーンクラッシュ等）でバトルエリアに出されたとき「相手は1枚ドローしてもよい」が発動しない
+  it("RS-115: 公式Q&A — 相手のデカグリーンでバトルエリアに出されたときも、相手（デカグリーンの持ち主）はドローできる（出典: grnrngr/faq-card-2 RS-115 Q1）", () => {
     let s = st({
       player1: { battle: fillers(2), rush: [inst("RS-108", "g")], deck: deckCards(3), hand: [] },
       player2: { rush: [inst("RS-115", "uz")], deck: deckCards(3, "e") },
@@ -634,8 +633,7 @@ describe("RS-119 ゴーゴーフォーミュラ", () => {
     expect(canStrike(s, "RS-119:fm")).toBe(true);
   });
 
-  it.fails("RS-119: 「SP1」を得るためにホールドするコマンドは5つ（出典: atwiki/page-293「自軍コマンドを5つホールドしてもよい」）", () => {
-    // 既知の不具合: CARD-RS-119 シフトアップがコマンドを1つホールドしただけで「SP1」を与える（5つホールドされない）
+  it("RS-119: 「SP1」を得るためにホールドするコマンドは5つ（出典: atwiki/page-293「自軍コマンドを5つホールドしてもよい」）", () => {
     const s = acceptShiftUp(formulaEnters(releasedN(5)));
     expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(5);
   });
@@ -917,8 +915,7 @@ describe("RS-122 ゴーゴーマリン", () => {
   });
 
   // faq-card-2 RS-122 Q1「カードを「ひく」とき以外には発動できません。たとえば…「RS-027 ダイノガッツ」の効果で「カードをひいて捨札にする」といったときに…「下からひく」ことができます」
-  it.fails("RS-122: 公式Q&A — ダイノガッツの「ひいて捨札にする」でも下からひける（出典: grnrngr/faq-card-2 RS-122 Q1）", () => {
-    // 既知の不具合: CARD-RS-122 ダイノガッツ等の効果で「ひく」ときに海底探査（下からひく）の選択が出ない（常に上からひく）
+  it("RS-122: 公式Q&A — ダイノガッツの「ひいて捨札にする」でも下からひける（出典: grnrngr/faq-card-2 RS-122 Q1）", () => {
     const PC1 = sUnit("SPEC-PC1", { powerCost: 1 });
     let s = st({
       player1: { battle: [inst("TST-UNIT-7", "big")] },
@@ -947,9 +944,21 @@ describe("RS-122 ゴーゴーマリン", () => {
     expect(zoneOf(s, "player2", "TST-OP:top")).toBe("deck");
   });
 
-  it.todo(
-    "RS-122: 公式Q&A — 「山札の上から1枚を見る」効果のかわりに下から見ることはできない（出典: grnrngr/faq-card-2 RS-122 Q1）— 「山札の上を見る」効果（例: ボウケンブルー系の遺跡調査）は seabed_survey の選択を出さないことを別カードの仕様として確認する必要があり、本範囲のカードでは状況を作れない",
-  );
+  // faq-card-2 RS-122 Q1「カードを「ひく」とき以外には発動できません」— 「山札の上から1枚を見る」（RS-066【遺跡調査】）は下から見られない
+  it("RS-122: 公式Q&A — 「山札の上から1枚を見る」効果（ボウケンピンク【遺跡調査】）では下から見ることはできない（出典: grnrngr/faq-card-2 RS-122 Q1）", () => {
+    let s = st({
+      player1: {
+        battle: fillers(1),
+        rush: [inst("RS-066", "pink"), inst("RS-122", "mar")],
+        deck: [inst("TST-OP", "top"), inst("TST-OP", "mid"), inst("TST-OP", "bottom")],
+      },
+    });
+    s = enter(s, "RS-066:pink");
+    expect(s.pendingEffectChoice?.effectId).not.toBe("seabed_survey");
+    expect(s.pendingEffectChoice?.viewedInstanceIds).toEqual(["TST-OP:top"]);
+    s = act(s, { type: "resolve_ruin_survey", playerId: "player1", placement: "bottom" });
+    expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:mid", "TST-OP:bottom", "TST-OP:top"]);
+  });
 });
 
 void [useCard, strike];

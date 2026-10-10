@@ -24,6 +24,7 @@ import {
 import type { Category } from "@rangers-strike/cards";
 import { canonicalCardName } from "@rangers-strike/cards";
 import { markBattleBlocked } from "./turnModifiers";
+import { greenCrushTargets } from "./legend2/ncEffects";
 import { countLogicalBattleSlots } from "./battleLine";
 import { tryLegend3BattleToRush } from "./legend3/restrictions";
 import type {
@@ -45,9 +46,9 @@ import {
 import { applyRocketBoosterDeclaredName } from "./rocketBooster";
 import { applySimultaneousOrderChoice } from "./simultaneousEffects";
 import { applyAssaultToCommandHold } from "./legend3/restrictions";
-import { findInZone, opponent, performDeckDraws, removeAt, updatePlayer } from "../core/helpers";
+import { findInZone, opponent, performDeckDraws, removeAt, takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
-import { markJuuKunDoAttackerActed } from "./juuKunDo";
+import { LION_DANCE_EFFECT_ID, markJuuKunDoAttackerActed } from "./juuKunDo";
 import { findCardInField, findCardOwner } from "./fieldLookup";
 import { bounceToHand } from "./bounce";
 import { applyReanimate } from "./reanimate";
@@ -250,6 +251,43 @@ export function requestDrawFromDeck(
     state: afterDraw,
     pending: false,
     drawn: true,
+  };
+}
+
+/** 山札の上（または下）から count 枚取り出す。足りなければ引けるだけ引き、敗北フラグを立てる（R-START-05, R-WIN-03）。 */
+function takeFromDeck(
+  player: PlayerState,
+  count: number,
+  from: "top" | "bottom",
+): { player: PlayerState; taken: CardInstance[] } {
+  if (from === "top") return takeFromDeckTop(player, count);
+  const want = Math.max(0, count);
+  const n = Math.min(want, player.deck.length);
+  // 下から1枚ずつひく（最初にひいたのが最下段）。
+  const taken = player.deck.slice(player.deck.length - n).reverse();
+  const deck = player.deck.slice(0, player.deck.length - n);
+  return { player: { ...player, deck, ...(n < want ? { deckedOut: true } : {}) }, taken };
+}
+
+/**
+ * 山札から count 枚「ひいて捨札にする」（RS-027 ダイノガッツ等）。自軍ラッシュエリアに RS-122【海底探査】があれば
+ * 上からひくかわりに下からひくかを選ぶ（faq-card-2 RS-122 Q1「ダイノガッツの効果で「カードをひいて捨札にする」
+ * といったときに…「下からひく」ことができます」）。
+ */
+export function drawToDiscardFromDeck(
+  state: GameState,
+  playerId: PlayerId,
+  phasePlayerId: PlayerId,
+  count: number,
+): GameState {
+  if (count > 0) {
+    const opened = tryStartSeabedDrawChoice(state, playerId, phasePlayerId, { drawCount: count, toDiscard: true });
+    if (opened) return opened;
+  }
+  const taken = takeFromDeckTop(state.players[playerId], count);
+  return {
+    ...state,
+    ...updatePlayer(state, playerId, { ...taken.player, discard: [...taken.player.discard, ...taken.taken] }),
   };
 }
 
@@ -592,6 +630,14 @@ export function applySeabedDrawPlacement(
   const meta = pending.seabedDrawMeta ?? { drawCount: 1 };
   const from = placement === "bottom" ? "bottom" : "top";
   const player = state.players[playerId];
+  if (meta.toDiscard) {
+    const taken = takeFromDeck(player, meta.drawCount, from);
+    const afterTake: GameState = {
+      ...state,
+      ...updatePlayer(state, playerId, { ...taken.player, discard: [...taken.player.discard, ...taken.taken] }),
+    };
+    return finishSeabedDrawChoice(afterTake, pending, from);
+  }
   const nextPlayer = performDeckDraws(
     player,
     meta.drawCount,
@@ -1907,12 +1953,15 @@ export function startSelectCommandChoice(
     optional?: boolean;
     validInstanceIds?: string[];
     sourceInstanceId?: string;
+    /** 選ぶ（ホールドする）数。既定 1。 */
+    selectCount?: number;
   },
 ): GameState | null {
   const valid =
     params.validInstanceIds ??
     collectCommandIds(state, params.playerId, params.commandFilter);
-  if (valid.length === 0) return null;
+  const selectCount = params.selectCount ?? 1;
+  if (valid.length === 0 || valid.length < selectCount) return null;
   return openEffectChoice(state, {
     playerId: params.playerId,
     effectId: params.effectId,
@@ -1921,7 +1970,7 @@ export function startSelectCommandChoice(
     kind: "select_command",
     phasePlayerId: params.phasePlayerId,
     validInstanceIds: valid,
-    selectCount: 1,
+    selectCount,
     commandAction: params.commandAction,
     commandFilter: params.commandFilter,
     optional: params.optional,
@@ -2267,6 +2316,66 @@ function treatOpponentDeployedAsOwnEntry(
   };
 }
 
+const GREEN_CRUSH_EFFECT_ID = "green_crush";
+
+/**
+ * RS-108【グリーンクラッシュ】: 「Sユニットを2体まで選んでバトルエリアに出してもよい（出す順番は自分が選ぶ）」。
+ * 1体出すごとに呼ばれ、2体目を選べるなら選択を開き直す（任意）。出し終えたら、出したユニットの
+ * 「バトルエリアに出たとき」（RS-115 ウルザード: 相手＝グリーンクラッシュの使用者は1枚ドローしてもよい。
+ * faq-card-2 RS-115 Q1、R-TIME-08）を処理する。
+ */
+function continueGreenCrush(
+  state: GameState,
+  pending: PendingEffectChoice,
+  enemyId: PlayerId,
+  deployedCard: CardInstance,
+): ChoiceOutcome {
+  const processed = [...(pending.processedInstanceIds ?? []), deployedCard.instanceId];
+  const next: PendingEffectChoice = { ...pending, processedInstanceIds: processed };
+  const remaining = processed.length < 2 ? greenCrushTargets(state, enemyId) : [];
+  if (remaining.length > 0) {
+    return {
+      state: openEffectChoice(clearChoice(state, pending.playerId), {
+        ...next,
+        validInstanceIds: remaining,
+        selectedInstanceIds: [],
+        optional: true,
+      }),
+      log: buildLogEntry(
+        pending.playerId,
+        "resolve_effect_choice",
+        pending.sourceCardId,
+        state.definitions,
+        `${pending.effectId}:${cardName(state.definitions, deployedCard.cardId)}`,
+      ),
+    };
+  }
+  return finishGreenCrush(state, next, enemyId, cardName(state.definitions, deployedCard.cardId));
+}
+
+function finishGreenCrush(
+  state: GameState,
+  pending: PendingEffectChoice,
+  enemyId: PlayerId,
+  detail: string,
+): ChoiceOutcome {
+  const finished = finishChoice(state, pending, detail);
+  if ("error" in finished || finished.state.pendingEffectChoice) return finished;
+  const enemyBattle = finished.state.players[enemyId].battle;
+  const urzards = (pending.processedInstanceIds ?? []).filter((id) =>
+    enemyBattle.some((c) => c.instanceId === id && c.cardId === "RS-115"),
+  );
+  let resume: PendingEffectChoice | undefined;
+  let next = finished.state;
+  for (let i = urzards.length - 1; i >= 0; i -= 1) {
+    const opened = startOpponentMayDrawChoice(next, pending.playerId, pending.phasePlayerId);
+    if (!opened?.pendingEffectChoice) break;
+    resume = { ...opened.pendingEffectChoice, resumeChoice: resume };
+  }
+  if (resume) next = openEffectChoice(next, resume);
+  return { ...finished, state: next };
+}
+
 function finishChoice(
   state: GameState,
   pending: PendingEffectChoice,
@@ -2417,6 +2526,19 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   }
   if (pending.kind === "seabed_draw") {
     return applySeabedDrawSkip(state, playerId);
+  }
+  if (pending.effectId === GREEN_CRUSH_EFFECT_ID && (pending.processedInstanceIds?.length ?? 0) > 0) {
+    // RS-108: 1体目を出したあと2体目を出さないことを選んだ — 出したユニットの「出たとき」を処理する。
+    return finishGreenCrush(state, pending, opponent(playerId), "skipped");
+  }
+  if (pending.effectId === LION_DANCE_EFFECT_ID) {
+    // RS-100【超忍法・舞獅子】: 出さないことを選んでも「その後、山札をシャッフルする」。
+    const player = state.players[playerId];
+    return finishChoice(
+      { ...state, ...updatePlayer(state, playerId, { ...player, deck: shuffleDeck(player.deck) }) },
+      pending,
+      "skipped",
+    );
   }
   if (pending.kind === "optional_deck_draw") {
     return finishChoice(state, pending, "skipped");
@@ -3239,6 +3361,9 @@ export function applyEffectChoiceSelect(
         );
         let deployed: GameState = { ...state, ...updatePlayer(state, located.playerId, nextOwner) };
         deployed = treatOpponentDeployedAsOwnEntry(deployed, located.playerId, found.card, readyOwner.battle, pending);
+        if (pending.effectId === GREEN_CRUSH_EFFECT_ID) {
+          return continueGreenCrush(deployed, pending, located.playerId, found.card);
+        }
         return finishChoice(deployed, pending, cardName(state.definitions, found.card.cardId));
       }
       if (dest === "swap_battle" && pending.sourceInstanceId) {
@@ -3502,33 +3627,26 @@ export function applyEffectChoiceSelect(
 
     case "select_command": {
       if (pending.effectId === "dark_dual_blade") {
+        // RS-102【暗黒二刀流・巌流剣】: パワーを1枚選び、続けてコマンドを1枚選ぶ。2枚そろってから捨札にする。
         const enemyId = opponent(pending.playerId);
         const enemy = state.players[enemyId];
         const powerFound = findInZone(enemy, "power", instanceId);
-        if (powerFound) {
-          const [, power] = removeAt(enemy.power, powerFound.index);
-          let nextState = {
-            ...state,
-            ...updatePlayer(state, enemyId, {
-              ...enemy,
-              power,
-              discard: [...enemy.discard, powerFound.card],
-            }),
-          };
-          const commandTargets = collectCommandIds(nextState, enemyId, "any");
-          if (commandTargets.length === 0) {
-            return finishChoice(nextState, pending, cardName(state.definitions, powerFound.card.cardId));
-          }
-          return {
-            state: openEffectChoice(clearChoice(nextState, pending.playerId), {
-              ...pending,
-              effectId: "dark_dual_blade_command",
-              playerId: pending.playerId,
-              validInstanceIds: commandTargets,
-              commandAction: "discard",
-            }),
-          };
+        if (!powerFound || powerFound.card.faceDown) return { error: "invalid_target" };
+        const commandTargets = collectCommandIds(state, enemyId, "any");
+        if (commandTargets.length === 0) {
+          return finishChoice(state, pending, "none");
         }
+        return {
+          state: openEffectChoice(clearChoice(state, pending.playerId), {
+            ...pending,
+            effectId: "dark_dual_blade_command",
+            playerId: pending.playerId,
+            validInstanceIds: commandTargets,
+            selectedInstanceIds: [],
+            darkDualBladePowerInstanceId: instanceId,
+            commandAction: "discard",
+          }),
+        };
       }
       if (pending.effectId === "dark_dual_blade_command") {
         const enemyId = opponent(pending.playerId);
@@ -3536,10 +3654,13 @@ export function applyEffectChoiceSelect(
         const found = findInZone(enemy, "command", instanceId);
         if (!found) return { error: "invalid_target" };
         const [, command] = removeAt(enemy.command, found.index);
+        const powerId = pending.darkDualBladePowerInstanceId;
+        const powerCard = enemy.power.find((c) => c.instanceId === powerId);
         const nextEnemy = {
           ...enemy,
           command,
-          discard: [...enemy.discard, found.card],
+          power: enemy.power.filter((c) => c.instanceId !== powerId),
+          discard: [...enemy.discard, ...(powerCard ? [powerCard] : []), found.card],
         };
         return finishChoice(
           { ...state, ...updatePlayer(state, enemyId, nextEnemy) },
@@ -4189,6 +4310,13 @@ export function applyEffectChoiceSelect(
         );
         if (!castoff) return { error: "invalid_target" };
         return finishChoice(castoff.state, pending, castoff.log ?? cardName(state.definitions, kept.cardId));
+      } else if (pending.effectId === LION_DANCE_EFFECT_ID) {
+        // RS-100【超忍法・舞獅子】: 選んだハリケンイエローをバトルエリアに出し、山札をシャッフルする。
+        nextPlayer = {
+          ...player,
+          deck: shuffleDeck([...rest, ...deckTail]),
+          battle: [...player.battle, kept],
+        };
       } else if (pending.unitDestination === "rush") {
         nextPlayer = {
           ...player,

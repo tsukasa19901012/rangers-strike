@@ -4,7 +4,7 @@ import { findInZone, opponent, updatePlayer } from "../core/helpers";
 import { cannotAttackOrStrikeThisTurn } from "./restrictions";
 import { canAttackDefender } from "./legend3/restrictions";
 import { canAttackRushWithYellowThunder } from "./namedUnitEffects";
-import { startJuuKunDoChoice } from "./pendingChoices";
+import { openEffectChoice, startJuuKunDoChoice } from "./pendingChoices";
 
 /** ジュウクンドー同型（アタックの代わりに本来BP合計3000以下を撃破）: RS-106 / PR-006。 */
 const JUU_KUN_DO_CARD_IDS = new Set(["RS-106", "PR-006"]);
@@ -87,7 +87,15 @@ function shuffleCards(deck: CardInstance[]): CardInstance[] {
   return copy;
 }
 
-/** 【超忍法・舞獅子】: アタックの権利を失い、山札のハリケンイエローを1枚バトルエリアに出して山札をシャッフル。 */
+export const LION_DANCE_EFFECT_ID = "super_ninpo_lion_dance";
+
+/**
+ * 【超忍法・舞獅子】: アタックの権利を失い、山札を見てハリケンイエローを1枚選んでバトルエリアに出してもよい。
+ * その後、山札をシャッフルする。
+ * 出典: atwiki/page-318「自軍山札を見て「ハリケンイエロー」のカードを1枚選んで自軍バトルエリアに出してもよい」—
+ * 出すかどうか・どのイエローを出すかはプレイヤーが選ぶ（scry_keep_one, optional）。選択の解決／スキップ時に
+ * 山札をシャッフルする（rules/pendingChoices.ts）。
+ */
 export function applyLionDance(
   state: GameState,
   playerId: PlayerId,
@@ -95,19 +103,30 @@ export function applyLionDance(
 ): GameState | null {
   if (!canUseLionDance(state, playerId, attackerInstanceId)) return null;
   const player = state.players[playerId];
-  const deckCard = player.deck.find(
-    (c) => getDefinition(state.definitions, c.cardId)?.name === "ハリケンイエロー",
-  );
+  const yellows = player.deck
+    .filter((c) => getDefinition(state.definitions, c.cardId)?.name === "ハリケンイエロー")
+    .map((c) => c.instanceId);
   const battle = player.battle.map((c) =>
     c.instanceId === attackerInstanceId ? { ...c, battleActed: true } : c,
   );
-  const deck = player.deck.filter((c) => c.instanceId !== deckCard?.instanceId);
-  const nextPlayer = {
-    ...player,
-    battle: deckCard ? [...battle, deckCard] : battle,
-    deck: shuffleCards(deck),
-  };
-  return { ...state, ...updatePlayer(state, playerId, nextPlayer) };
+  if (yellows.length === 0) {
+    const nextPlayer = { ...player, battle, deck: shuffleCards(player.deck) };
+    return { ...state, ...updatePlayer(state, playerId, nextPlayer) };
+  }
+  const acted: GameState = { ...state, ...updatePlayer(state, playerId, { ...player, battle }) };
+  return openEffectChoice(acted, {
+    playerId,
+    effectId: LION_DANCE_EFFECT_ID,
+    sourceCardId: player.battle.find((c) => c.instanceId === attackerInstanceId)?.cardId ?? "RS-100",
+    sourceInstanceId: attackerInstanceId,
+    phasePlayerId: playerId,
+    kind: "scry_keep_one",
+    validInstanceIds: yellows,
+    viewedInstanceIds: yellows,
+    selectedInstanceIds: [],
+    selectCount: 1,
+    optional: true,
+  });
 }
 
 export function isLionDanceCard(cardId: string): boolean {
@@ -129,6 +148,10 @@ export function canUseJuuKunDo(
     findInZone(player, "rush", attackerInstanceId);
   if (!attackerFound) return false;
   if (!JUU_KUN_DO_CARD_IDS.has(attackerFound.card.cardId)) return false;
+  // ルール: R-CN-02 — CN の欄の効果。CN を満たしてバトルエリアに出たとき（NC 成立）だけ発動できる
+  // （atwiki/page-23「CN：1」、faq-card-2 RS-106 Q2 のコロンで CN が変わる場合も含む。rules/numberComboEffects.ts
+  // の markOnAttackNcEffectOnEnter が成立を記録する）。
+  if (!attackerFound.card.activatedNcEffects?.includes("juu_kun_do")) return false;
   if (attackerFound.card.battleActed) return false;
   if (cannotAttackOrStrikeThisTurn(player, attackerFound.card)) return false;
   // ルール: R-ATK-05 — ゴーマ宮でアタックを強制されているなら「アタックするかわりに」は使えない（RS-187 Q3）。

@@ -229,7 +229,9 @@ export function tryStartLegend2ConditionalChoice(
         commandFilter: "released",
         commandAction: "hold",
         optional: true,
-        validInstanceIds: targets.slice(0, 5),
+        // 出典: atwiki/page-293「自軍コマンドを5つホールドしてもよい」— どの5つかは自分が選ぶ。
+        validInstanceIds: targets,
+        selectCount: 5,
       });
     }
     case "precious_guardian": {

@@ -490,6 +490,8 @@ export function tryResolveDslLeaveCounter(args: {
   counterInstanceId: string;
   leavingCardId: string;
   sourceCardId: string;
+  /** 離場が起きているフェイズのプレイヤー（効果の選択を閉じたあとに手番を戻す先）。 */
+  phasePlayerId?: PlayerId;
 }): { state: GameState; detail: string; prevented: boolean } | null {
   const effect = getDslOperationEffect(args.sourceCardId, "counter");
   if (!effect || !isDslInterpretableEffect(effect)) return null;
@@ -512,7 +514,7 @@ export function tryResolveDslLeaveCounter(args: {
     effectId: effect.id,
     sourceCardId: args.sourceCardId,
     playerId: args.playerId,
-    phasePlayerId: args.playerId,
+    phasePlayerId: args.phasePlayerId ?? args.playerId,
     operationInstanceId: args.counterInstanceId,
     leavingCardId: args.leavingCardId,
     discardOperation: true,

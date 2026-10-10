@@ -460,12 +460,21 @@ describe("RS-100 ハリケンイエロー", () => {
   });
 
   // 「出してもよい」
-  it.fails("RS-100: 山札にハリケンイエローがあっても出さないことを選べる（任意）（出典: atwiki/page-318「出してもよい」）", () => {
-    // 既知の不具合: CARD-RS-100 舞獅子は山札の先頭のハリケンイエローを自動で出し、出さない選択・どれを出すかの選択ができない
+  it("RS-100: 山札にハリケンイエローがあっても出さないことを選べる（任意）（出典: atwiki/page-318「出してもよい」）", () => {
     let s = yellowFirst();
     s = act(s, { type: "use_juu_kun_do", playerId: "player1", attackerInstanceId: "RS-100:y" });
     expect(legalOfType(s, "skip_effect_choice")).toHaveLength(1);
     s = act(s, { type: "skip_effect_choice", playerId: "player1" });
+    expect(zoneOf(s, "player1", "RS-100:d1")).toBe("deck");
+  });
+
+  // 「「ハリケンイエロー」のカードを1枚選んで」— どのイエローを出すかは自分が選ぶ
+  it("RS-100: 山札にハリケンイエローが複数あれば、どれを出すか選べる（出典: atwiki/page-318「1枚選んで」）", () => {
+    let s = yellowFirst([inst("RS-100", "d1"), ...deckCards(2), inst("RS-100", "d2")]);
+    s = act(s, { type: "use_juu_kun_do", playerId: "player1", attackerInstanceId: "RS-100:y" });
+    expect(choiceIds(s)).toEqual(["RS-100:d1", "RS-100:d2"]);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-100:d2" });
+    expect(zoneOf(s, "player1", "RS-100:d2")).toBe("battle");
     expect(zoneOf(s, "player1", "RS-100:d1")).toBe("deck");
   });
 
@@ -530,8 +539,7 @@ describe("RS-101 ハリケンブルー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("rush");
   });
 
-  it.fails("RS-101: バトルエリアに出られない S ユニット（マンドラ坊や）も戻す対象になる（出典: atwiki/page-319）", () => {
-    // 既知の不具合: CARD-RS-101 水変化の候補を「効果でバトルエリアに出せるSユニット」に絞っており、出られないSユニットを選べない
+  it("RS-101: バトルエリアに出られない S ユニット（マンドラ坊や）も戻す対象になる（出典: atwiki/page-319）", () => {
     const s = blueFourth([inst("RS-116", "man")]);
     expect(choiceIds(s)).toEqual(["RS-116:man"]);
   });
@@ -590,8 +598,7 @@ describe("RS-102 五の槍サーガイン", () => {
   });
 
   // faq-card-2 RS-102 Q1「いいえ、できません。」（どちらか一方しか選べなければ発動できない）
-  it.fails("RS-102: 公式Q&A — 敵軍コマンドゾーンが空なら、パワーゾーンのカードも捨札にならない（出典: grnrngr/faq-card-2 RS-102 Q1）", () => {
-    // 既知の不具合: CARD-RS-102 巌流剣は片方のゾーンにしか選べるカードが無くても発動し、選んだパワーを捨札にする
+  it("RS-102: 公式Q&A — 敵軍コマンドゾーンが空なら、パワーゾーンのカードも捨札にならない（出典: grnrngr/faq-card-2 RS-102 Q1）", () => {
     let s = sagainFifth({ power: [inst("TST-P", "p0")], command: [] });
     for (let i = 0; i < 3 && s.pendingEffectChoice; i++) {
       const id = s.pendingEffectChoice.validInstanceIds[0]!;
@@ -600,8 +607,7 @@ describe("RS-102 五の槍サーガイン", () => {
     expect(zoneOf(s, "player2", "TST-P:p0")).toBe("power");
   });
 
-  it.fails("RS-102: 公式Q&A — 敵軍パワーゾーンにダメージ以外のカードが無ければ、コマンドも捨札にならない（出典: grnrngr/faq-card-2 RS-102 Q1）", () => {
-    // 既知の不具合: CARD-RS-102 巌流剣はパワーゾーンに選べるカードが無いとコマンドだけを捨札にする
+  it("RS-102: 公式Q&A — 敵軍パワーゾーンにダメージ以外のカードが無ければ、コマンドも捨札にならない（出典: grnrngr/faq-card-2 RS-102 Q1）", () => {
     let s = sagainFifth({ power: [{ ...inst("TST-P", "dmg"), faceDown: true }], command: [held("TST-OP", "c0")] });
     for (let i = 0; i < 3 && s.pendingEffectChoice; i++) {
       const id = s.pendingEffectChoice.validInstanceIds[0]!;
@@ -670,8 +676,7 @@ describe("RS-103 七の槍サンダール", () => {
   });
 
   // 一般ルール: 撃破されたときの効果は撃破なら誘発する（R-TIME-04、faq-card-2 RS-116「撃破された瞬間に手札に戻ります」）
-  it.fails("RS-103: 縄頭蓋の撃破でもマンドラ坊やの【鳴き声】が誘発する（出典: atwiki/page-331・grnrngr/faq-card-2 RS-116）", () => {
-    // 既知の不具合: CARD-RS-103 縄頭蓋は撃破処理を通さず直接捨札に移すため、撃破時の効果（鳴き声など）が誘発しない
+  it("RS-103: 縄頭蓋の撃破でもマンドラ坊やの【鳴き声】が誘発する（出典: atwiki/page-331・grnrngr/faq-card-2 RS-116）", () => {
     let s = st({
       player1: { battle: fillers(6), rush: [inst("RS-103", "sd")] },
       player2: { rush: [inst("RS-116", "man"), inst("TST-UNIT-2", "keep")] },
@@ -716,8 +721,7 @@ describe("RS-104 アバレイエロー", () => {
   });
 
   // R-CN-01/R-CN-02: CN の欄の【】効果はナンバーコンビネーション（並び順が CN と一致したときだけ発動）
-  it.fails("RS-104: NC 不成立（2番目）なら修正後の BP でバトルする（出典: atwiki/page-233「CN：3」・R-CN-02）", () => {
-    // 既知の不具合: CARD-RS-104 【プテラダガー】が NC の成立に関係なく常に有効（3番目以外で出ても本来の BP でバトルする）
+  it("RS-104: NC 不成立（2番目）なら修正後の BP でバトルする（出典: atwiki/page-233「CN：3」・R-CN-02）", () => {
     const pumped = { ...inst("TST-UNIT-0", "def"), bpModifier: 5000 };
     let s = st({ player1: { battle: fillers(1), rush: [inst("RS-104", "ay")] }, player2: { battle: [pumped] } });
     s = enter(s, "RS-104:ay");
@@ -736,8 +740,7 @@ describe("RS-105 デカベースクローラー", () => {
   });
 
   // atwiki/page-304「種類：XLユニット」
-  it.fails("RS-105: スペック（XLユニット・BP5000・必要パワー5・特徴 メカ／母艦）が出典と一致（出典: atwiki/page-304）", () => {
-    // 既知の不具合: CARD-RS-105 サイズが XL ではなく L で定義されている
+  it("RS-105: スペック（XLユニット・BP5000・必要パワー5・特徴 メカ／母艦）が出典と一致（出典: atwiki/page-304）", () => {
     expectStats("RS-105", {
       name: "デカベースクローラー",
       category: "OT",

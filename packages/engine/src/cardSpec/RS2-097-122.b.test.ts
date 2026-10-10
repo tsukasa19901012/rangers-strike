@@ -154,8 +154,7 @@ describe("RS-106 デカレッド", () => {
   });
 
   // R-CN-02: CN の欄の効果は並び順が CN と一致して出たときだけ
-  it.fails("RS-106: 1番目以外で出たとき（NC 不成立）は【ジュウクンドー】を発動できない（出典: atwiki/page-23「CN：1」・R-CN-02）", () => {
-    // 既知の不具合: CARD-RS-106 【ジュウクンドー】が NC の成立を確認せず、何番目に出ても（バトルエリアにいれば）発動できる
+  it("RS-106: 1番目以外で出たとき（NC 不成立）は【ジュウクンドー】を発動できない（出典: atwiki/page-23「CN：1」・R-CN-02）", () => {
     const s = redFirst({ rush: [inst("SPEC-E1K", "a")] }, 1);
     expect(canJuu(s, "RS-106:dr")).toBe(false);
   });
@@ -178,8 +177,7 @@ describe("RS-106 デカレッド", () => {
     expect(canJuu(s, "RS-106:dr")).toBe(true);
   });
 
-  it.fails("RS-106: 公式Q&A — コロンで CN が2になっているとき、1番目に出ても発動しない（出典: grnrngr/faq-card-2 RS-106 Q2・R-CN-02）", () => {
-    // 既知の不具合: CARD-RS-106 【ジュウクンドー】が NC の成立を確認しない（CN と並び順が違っても発動できる）
+  it("RS-106: 公式Q&A — コロンで CN が2になっているとき、1番目に出ても発動しない（出典: grnrngr/faq-card-2 RS-106 Q2・R-CN-02）", () => {
     const s = redFirst({ rush: [inst("RS-140", "colon"), inst("SPEC-E1K", "a")] }, 0);
     expect(canJuu(s, "RS-106:dr")).toBe(false);
   });
@@ -434,8 +432,7 @@ describe("RS-108 デカグリーン", () => {
     expect(zoneOf(s, "player2", "SPEC-EM:m")).toBe("rush");
   });
 
-  it.fails("RS-108: 2体目も選んで、選んだ順に出せる（出典: atwiki/page-307「2体まで選んで…（出す順番は自分が選ぶ）」）", () => {
-    // 既知の不具合: CARD-RS-108 グリーンクラッシュが1体選ぶと終了し、2体目を出せない（selectCount 1）
+  it("RS-108: 2体目も選んで、選んだ順に出せる（出典: atwiki/page-307「2体まで選んで…（出す順番は自分が選ぶ）」）", () => {
     let s = greenThird([inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2")]);
     s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-UNIT-0:e2" });
     if (s.pendingEffectChoice?.playerId === "player1" && !s.pendingEffectChoice.validInstanceIds.includes("TST-UNIT-0:e1")) {
@@ -447,8 +444,7 @@ describe("RS-108 デカグリーン", () => {
     expect(zoneIds(s, "player2", "battle")).toEqual(["TST-UNIT-0:e2", "TST-UNIT-0:e1"]);
   });
 
-  it.fails("RS-108: S ユニットが3体以上いれば、どの2体でも選べる（3体目も候補）（出典: atwiki/page-307「2体まで選んで」）", () => {
-    // 既知の不具合: CARD-RS-108 グリーンクラッシュの候補が敵軍ラッシュエリアの先頭2体に切り詰められ、3体目以降を選べない
+  it("RS-108: S ユニットが3体以上いれば、どの2体でも選べる（3体目も候補）（出典: atwiki/page-307「2体まで選んで」）", () => {
     const s = greenThird([inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2"), inst("TST-UNIT-0", "e3")]);
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e1", "TST-UNIT-0:e2", "TST-UNIT-0:e3"]);
   });
@@ -700,13 +696,15 @@ describe("RS-110 デカピンク", () => {
     expect(canEnter(s, "TST-UNIT-0:newbie", "player2")).toBe(false);
   });
 
-  // faq-card-2 RS-110 Q2「はい、その通りです。「可能なら」とありますので…ラッシュエリアに置きます」
-  // （出典の食い違い: atwiki/page-308 Q2 は「（2010/10/25修正）いいえ…バトルエリアに置かれます」。優先順位により公式FAQを採る）
-  it("RS-110: 公式Q&A — ゼニボムの効いているターンに相手がラッシュしたレッドレーサーはラッシュエリアに置く（出典: grnrngr/faq-card-2 RS-110 Q2。atwiki/page-308 Q2 とは食い違い）", () => {
+  // atwiki/page-308 Q2「いいえ、そのようにはなりません。…バトルエリアに直接ラッシュする効果なので、【ゼニボム】の
+  // 「新しくラッシュエリアに出たユニット」にはあたりません。ですので…バトルエリアに置かれます。（2010/10/25修正）」
+  // （公式FAQ card_2 RS-110 Q2「…ラッシュエリアに置きます」は修正前の回答。日付付きの後日修正を採る:
+  //  docs/rules/README.md §1.2 例外2・§5.7 e、ユーザー決定 2026-10-10。atwiki/page-303 Q1 も同文）
+  it("RS-110: 公式Q&A（2010/10/25修正）— ゼニボムの効いているターンに相手がラッシュしたレッドレーサーはバトルエリアに置かれる（出典: atwiki/page-308 Q2「（2010/10/25修正）」。faq-card-2 RS-110 Q2 は修正前）", () => {
     const s = pinkFifth();
     const r = rushFromHand(s, "player2", "RS-090:red");
     expect(r.ok).toBe(true);
-    expect(zoneOf(settle(r.state), "player2", "RS-090:red")).toBe("rush");
+    expect(zoneOf(settle(r.state), "player2", "RS-090:red")).toBe("battle");
   });
 });
 
