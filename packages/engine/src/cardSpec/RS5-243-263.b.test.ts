@@ -127,7 +127,7 @@ describe("RS-249 Vコマンダー", () => {
 
   // atwiki/page-421 Q1・faq-card-6 RS-359 Q「はい、できます。」（デンジ犬アイシー【最後の手段】で Vレックスロボの追加条件を満たせる）
   // 既知の不具合: CARD-RS-359（範囲外）デンジ犬アイシー【最後の手段】が未実装（山札のカードで追加条件を満たす処理がない）
-  it.fails("RS-249: Q&A — デンジ犬アイシーの【最後の手段】で山札の Vレックスを捨札にして、Vレックスロボの追加条件を満たして出せる（出典: atwiki/page-421 Q1・grnrngr/faq-card-6 RS-359 Q）", () => {
+  it("RS-249: Q&A — デンジ犬アイシーの【最後の手段】で山札の Vレックスを捨札にして、Vレックスロボの追加条件を満たして出せる（出典: atwiki/page-421 Q1・grnrngr/faq-card-6 RS-359 Q）", () => {
     let s = vcom([inst("RS-301", "robo"), inst("RS-302", "rex"), ...deckCards(2)], { rush: [inst("RS-359", "icy")] });
     s = pickAll(s, ["RS-301:robo", "RS-359:icy", "RS-302:rex"]);
     expect(zoneOf(s, "player1", "RS-301:robo")).toBe("rush");
@@ -646,10 +646,16 @@ describe("RS-255 巨大化爆弾", () => {
   );
 
   // atwiki/page-37 Q7「はい、その通りです。」（場に留まったのではなく、新たにラッシュされた）
-  // 既知の不具合: CARD-RS-255 巨大化爆弾で出したユニットはラッシュとして扱われる（ラッシュ記録・誘発あり）が、このテストの状況では疾風流超忍法（RS-247）の使用者がターンプレイヤーのため「敵軍ターン中のみ」で使えず、ラッシュの反応窓（pendingRush）が開かない
-  it.fails("RS-255: Q&A — 巨大化爆弾で出したユニットは「新たにラッシュされた」扱い（相手は疾風流超忍法を使える）（出典: atwiki/page-37 Q7）", () => {
-    let s = destroyedByAttack("RS-257", {});
-    s = { ...s, players: { ...s.players, player2: { ...s.players.player2, hand: [inst("RS-247", "ctr")], command: [released(CMD.MA, "m")], power: powerCards(3, "ep") } } };
+  // 巨大化爆弾はカウンター（敵軍ターン中のみ）なので、使うのは非ターンプレイヤー。ターンプレイヤーはカウンター（疾風流超忍法）を使えない
+  // （R-CTR-01・atwiki/page-424 RS-247「これは敵軍ターン中にのみ使用できる」）。新たにラッシュされたユニットへの「ラッシュされたとき」の窓で
+  // 応答するのは非ターンプレイヤーで、自軍ユニットにも疾風流超忍法を使える（atwiki/page-424 Q2「はい、使用することができます」）。
+  // 旧スペックは疾風流超忍法をターンプレイヤー側に持たせており、出典上使えない（窓が開かない）ため、持ち主（非ターンプレイヤー）に持たせる。
+  it("RS-255: Q&A — 巨大化爆弾で出したユニットは「新たにラッシュされた」扱い（ラッシュされたときの窓が開き、疾風流超忍法を使える）（出典: atwiki/page-37 Q7・atwiki/page-424 Q2）", () => {
+    let s = destroyedByAttack("RS-257", {
+      hand: [inst("RS-255", "bomb"), inst("RS-247", "ctr")],
+      command: [released(CMD.DA, "c"), released(CMD.MA, "m")],
+      power: powerCards(7),
+    });
     s = useCard(s, "player1", "RS-255:bomb");
     expect(zoneOf(s, "player1", "RS-257:kai")).toBe("rush");
     expect(s.pendingRush?.rushedInstanceId).toBe("RS-257:kai");
@@ -812,8 +818,7 @@ describe("RS-256 闇の戒律", () => {
   });
 
   // faq-card-5 RS-256 Q3（atwiki Q3）「いいえ、できません。…「敵軍ターン中」のみです。」
-  // 既知の不具合: CARD-RS-324（範囲外）マジマザー【ジルマ・マジュナ】が自軍ターン中の撃破でも発動を選べてしまう（闇の戒律の撃破自体は実装済み）
-  it.fails("RS-256: 公式Q&A — 3枚重ねてエンドフェイズに自軍ユニットをすべて撃破するとき、マジマザーの【ジルマ・マジュナ】は使えずマジマザーも撃破される（出典: grnrngr/faq-card-5 RS-256 Q3・atwiki/page-425 Q3）", () => {
+  it("RS-256: 公式Q&A — 3枚重ねてエンドフェイズに自軍ユニットをすべて撃破するとき、マジマザーの【ジルマ・マジュナ】は使えずマジマザーも撃破される（出典: grnrngr/faq-card-5 RS-256 Q3・atwiki/page-425 Q3）", () => {
     let s = withLaw(
       st({ player1: { battle: [inst("TST-UNIT-0", "b")], rush: [inst("RS-324", "mother")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } }),
       ["s1", "s2", "s3"],
