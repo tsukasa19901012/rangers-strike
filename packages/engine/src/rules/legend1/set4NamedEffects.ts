@@ -693,6 +693,200 @@ export function applyMagiPunchCounter(
   };
 }
 
+
+// ---------------------------------------------------------------------------
+// RS-223 タック【緊急システム発動要請】
+// 「これが自軍ラッシュエリアにある間、自軍ラッシュフェイズ中、自分がMユニットをラッシュするとき、敵軍コマンドを1つ
+//  リリースしてもよい。そうしたとき、そのユニットのラッシュに必要な自軍コマンドを1つホールドしたことにできる。」
+// ラッシュの支払い（category_use）の候補に、ホールド状態の敵軍コマンドを加える（選べば自軍コマンドのかわりに
+// その敵軍コマンドをリリースする）。カテゴリは問わない（faq-card-4 RS-223 Q3）。
+
+export function isTuckCard(state: Pick<GameState, "definitions">, cardId: string): boolean {
+  return cardId === "RS-223" || getDefinition(state.definitions, cardId)?.name === "タック";
+}
+
+/** M ユニットのラッシュの支払いで、自軍コマンドのホールドのかわりにリリースできる敵軍コマンド。 */
+export function emergencyRequestEnemyCommandIds(
+  state: Pick<GameState, "players" | "definitions" | "phase" | "activePlayer">,
+  playerId: PlayerId,
+  rushingCardId: string | undefined,
+): string[] {
+  if (!rushingCardId) return [];
+  if (state.phase !== "rush" || state.activePlayer !== playerId) return [];
+  if (getDefinition(state.definitions, rushingCardId)?.size !== "M") return [];
+  if (!state.players[playerId].rush.some((c) => isTuckCard(state, c.cardId))) return [];
+  return state.players[opponent(playerId)].command.filter((c) => c.commandHeld).map((c) => c.instanceId);
+}
+
+/** 支払いで選ばれた敵軍コマンドをリリースする（自軍コマンドのホールドのかわり）。 */
+export function releaseEmergencyRequestCommands(state: GameState, playerId: PlayerId, ids: string[]): GameState {
+  if (ids.length === 0) return state;
+  const enemyId = opponent(playerId);
+  const enemy = state.players[enemyId];
+  const command = enemy.command.map((c) => (ids.includes(c.instanceId) ? { ...c, commandHeld: false } : c));
+  const next = { ...state, ...updatePlayer(state, enemyId, { ...enemy, command }) };
+  return {
+    ...next,
+    log: [...next.log, buildLogEntry(playerId, "named_effect", "RS-223", state.definitions, `kinkyu_system:${ids.length}`)],
+  };
+}
+
+
+// ---------------------------------------------------------------------------
+// RS-228 爆竜ステゴスライドン【超スライダー進化】
+// 「自軍ターン中、これがバトルエリアに出たとき、「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と
+//  書かれている自軍ユニットを1体選んでもよい。そうしたとき、このターン、そのテキストを無効にする。」
+
+export const SLIDER_EVOLUTION_EFFECT_ID = "suraida_ignore_entry_hold";
+const SLIDER_EVOLUTION_RULE = "rs228_slider_evolution";
+const ONE_HOLD_ENTRY_TEXT = "これは自軍コマンドを1つホールドしなければバトルエリアに出られない";
+
+function beginSliderEvolution(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  if (ctx.phasePlayerId !== ctx.playerId) return null;
+  const ids = fieldUnits(state, ctx.playerId)
+    .filter((c) => c.instanceId !== ctx.triggerSourceInstanceId)
+    .filter((c) => (getDefinition(state.definitions, c.cardId)?.text ?? "").includes(ONE_HOLD_ENTRY_TEXT))
+    .map((c) => c.instanceId);
+  if (ids.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: SLIDER_EVOLUTION_EFFECT_ID,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    kind: "select_unit",
+    phasePlayerId: ctx.phasePlayerId,
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+function resolveSliderEvolution(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const card = fieldUnits(state, playerId).find((c) => c.instanceId === instanceId);
+  if (!card) return { error: "invalid_target" };
+  const player = addTurnRuleModifier(state.players[playerId], `${SLIDER_EVOLUTION_RULE}::${instanceId}`, {
+    sourceCardId: pending.sourceCardId,
+  });
+  const next = { ...state, ...updatePlayer(state, playerId, player) };
+  return {
+    state: finish(next, pending.phasePlayerId, state),
+    log: logFor(state, playerId, pending.sourceCardId, `${SLIDER_EVOLUTION_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`),
+  };
+}
+
+/** RS-228: このターン、「1つホールドしなければ出られない」テキストが無効になっているユニットか。 */
+export function sliderEvolutionIgnoresEntryHold(
+  state: Pick<GameState, "players">,
+  playerId: PlayerId,
+  instanceId: string,
+): boolean {
+  return hasTurnRuleModifier(state.players[playerId], `${SLIDER_EVOLUTION_RULE}::${instanceId}`);
+}
+
+// ---------------------------------------------------------------------------
+// RS-237 サイレンビルダー【トリプルリキッドボンバー】
+// 「自軍ターン中、これがバトルエリアに出たとき、敵軍山札の上から3枚をオモテにしてもよい。そうしたとき、相手はオモテにした
+//  カードの中から好きな数選び手札に加える。このとき相手が手札に加えたカード1枚につき、これは「SP+1」される。
+//  その後、残りのカードは捨札にする。」
+// 敵軍山札が2枚以下なら発動できない（faq-card-4 RS-237 Q1）。
+
+export const TRIPLE_LIQUID_CONFIRM_EFFECT_ID = "toripururikidobonba_reveal";
+export const TRIPLE_LIQUID_PICK_EFFECT_ID = "toripururikidobonba_take";
+
+function beginTripleLiquid(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  if (ctx.phasePlayerId !== ctx.playerId || !ctx.triggerSourceInstanceId) return null;
+  if (state.players[opponent(ctx.playerId)].deck.length < 3) return null;
+  return openOptionalEffectConfirm(state, {
+    playerId: ctx.playerId,
+    effectId: TRIPLE_LIQUID_CONFIRM_EFFECT_ID,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    phasePlayerId: ctx.phasePlayerId,
+  });
+}
+
+registerOptionalEffect(TRIPLE_LIQUID_CONFIRM_EFFECT_ID, {
+  apply: (state, pending) => {
+    const enemyId = opponent(pending.playerId);
+    const revealed = state.players[enemyId].deck.slice(0, 3).map((c) => c.instanceId);
+    if (revealed.length < 3) return state;
+    const logged = {
+      ...state,
+      log: [
+        ...state.log,
+        buildLogEntry(
+          pending.playerId,
+          "named_effect",
+          pending.sourceCardId,
+          state.definitions,
+          `toripururikidobonba:${state.players[enemyId].deck.slice(0, 3).map((c) => cardName(state.definitions, c.cardId)).join(",")}`,
+        ),
+      ],
+    };
+    return openEffectChoice(logged, {
+      playerId: enemyId,
+      effectId: TRIPLE_LIQUID_PICK_EFFECT_ID,
+      sourceCardId: pending.sourceCardId,
+      sourceInstanceId: pending.sourceInstanceId,
+      kind: "select_unit",
+      unitDestination: "hand",
+      phasePlayerId: pending.phasePlayerId,
+      validInstanceIds: revealed,
+      viewedInstanceIds: revealed,
+      selectCount: 3,
+      selectedInstanceIds: [],
+      optional: true,
+    });
+  },
+  // CPU（相手に手札を与える）は行わない。
+  cpuAccepts: () => false,
+});
+
+/** 選んだカードを相手の手札に、残りを捨札に置き、手札に加えた数だけ「SP+1」する。 */
+function finishTripleLiquid(state: GameState, playerId: PlayerId): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  const revealed = pending.viewedInstanceIds ?? [];
+  const taken = (pending.selectedInstanceIds ?? []).filter((id) => revealed.includes(id));
+  const player = state.players[playerId];
+  const toHand = player.deck.filter((c) => taken.includes(c.instanceId));
+  const toDiscard = player.deck.filter((c) => revealed.includes(c.instanceId) && !taken.includes(c.instanceId));
+  let next: GameState = {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      deck: player.deck.filter((c) => !revealed.includes(c.instanceId)),
+      hand: [...player.hand, ...toHand],
+      discard: [...player.discard, ...toDiscard],
+    }),
+  };
+  const ownerId = opponent(playerId);
+  if (taken.length > 0 && pending.sourceInstanceId) {
+    const owner = next.players[ownerId];
+    const bump = (c: CardInstance) =>
+      c.instanceId === pending.sourceInstanceId ? { ...c, spModifier: (c.spModifier ?? 0) + taken.length } : c;
+    next = { ...next, ...updatePlayer(next, ownerId, { ...owner, battle: owner.battle.map(bump), rush: owner.rush.map(bump) }) };
+  }
+  return {
+    state: finish(next, pending.phasePlayerId, state),
+    log: logFor(state, playerId, pending.sourceCardId, `${TRIPLE_LIQUID_PICK_EFFECT_ID}:${taken.length}`),
+  };
+}
+
+function resolveTripleLiquid(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+  const remaining = pending.validInstanceIds.filter((id) => id !== instanceId);
+  const updated: GameState = {
+    ...state,
+    pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: remaining },
+  };
+  if (remaining.length === 0) return finishTripleLiquid(updated, playerId);
+  return { state: updated };
+}
+
 // ---------------------------------------------------------------------------
 // 登録
 
@@ -706,10 +900,12 @@ const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [FLOWER_CARNIVAL_EFFECT_ID]: resolveFlowerCarnival,
   [CAR_NAVIC_EFFECT_ID]: resolveCarNavic,
   [PROVIDER_BASE_EFFECT_ID]: resolveProviderBase,
+  [SLIDER_EVOLUTION_EFFECT_ID]: resolveSliderEvolution,
+  [TRIPLE_LIQUID_PICK_EFFECT_ID]: resolveTripleLiquid,
 };
 
 /** 「好きな数」選んで確定できる選択（confirm_effect_choice を出す）。 */
-const CONFIRMABLE_CHOICES = new Set([PROVIDER_BASE_EFFECT_ID]);
+const CONFIRMABLE_CHOICES = new Set([PROVIDER_BASE_EFFECT_ID, TRIPLE_LIQUID_PICK_EFFECT_ID]);
 
 export function isSet4ConfirmableChoice(effectId: string): boolean {
   return CONFIRMABLE_CHOICES.has(effectId);
@@ -720,6 +916,7 @@ export function tryConfirmSet4Choice(state: GameState, playerId: PlayerId): Choi
   const pending = state.pendingEffectChoice;
   if (!pending || pending.playerId !== playerId) return null;
   if (pending.effectId === PROVIDER_BASE_EFFECT_ID) return finishProviderBase(state, playerId);
+  if (pending.effectId === TRIPLE_LIQUID_PICK_EFFECT_ID) return finishTripleLiquid(state, playerId);
   return null;
 }
 
@@ -746,6 +943,7 @@ export function trySkipSet4Choice(state: GameState, playerId: PlayerId): ChoiceO
   if (!pending || pending.playerId !== playerId || !(pending.effectId in CHOICE_RESOLVERS)) return null;
   if (!pending.optional) return null;
   if (pending.effectId === PROVIDER_BASE_EFFECT_ID) return finishProviderBase(state, playerId);
+  if (pending.effectId === TRIPLE_LIQUID_PICK_EFFECT_ID) return finishTripleLiquid(state, playerId);
   return {
     state: finish(state, pending.phasePlayerId),
     log: buildLogEntry(playerId, "skip_effect_choice", pending.sourceCardId, state.definitions, `${pending.effectId}:skipped`),
@@ -785,6 +983,14 @@ export function trySet4CardEffect(
         state: next.pendingEffectChoice ? discardUsedOperation(next, ctx) : next,
         detail: PROVIDER_BASE_EFFECT_ID,
       };
+    }
+    case "RS-228::suraida": {
+      const next = beginSliderEvolution(state, ctx);
+      return next ? { state: next, detail: SLIDER_EVOLUTION_EFFECT_ID } : { state, detail: `${SLIDER_EVOLUTION_EFFECT_ID}:no_targets` };
+    }
+    case "RS-237::toripururikidobonba": {
+      const next = beginTripleLiquid(state, ctx);
+      return next ? { state: next, detail: TRIPLE_LIQUID_CONFIRM_EFFECT_ID } : { state, detail: `${TRIPLE_LIQUID_CONFIRM_EFFECT_ID}:unmet` };
     }
     case "RS-193::furawakanibaru":
       return { state: applyFlowerCarnival(state, ctx), detail: "furawakanibaru" };

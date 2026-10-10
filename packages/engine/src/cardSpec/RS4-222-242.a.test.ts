@@ -232,8 +232,7 @@ describe("RS-223 タック", () => {
   }
 
   // 「自分がMユニットをラッシュするとき、敵軍コマンドを1つリリースしてもよい。そうしたとき…自軍コマンドを1つホールドしたことにできる」
-  // 既知の不具合: CARD-RS-223【緊急システム発動要請】が未実装（敵軍コマンドのリリースでラッシュのホールドを代替できない）
-  it.fails("RS-223: 自軍コマンドがなくても、敵軍コマンドを1つリリースして M ユニットをラッシュできる（出典: atwiki/page-406）", () => {
+  it("RS-223: 自軍コマンドがなくても、敵軍コマンドを1つリリースして M ユニットをラッシュできる（出典: atwiki/page-406）", () => {
     const s = tuckRush([], 1);
     expect(canStartRush(s, "player1", "SPEC-WB-M:m")).toBe(true);
     const r = rushFromHand(s, "player1", "SPEC-WB-M:m");
@@ -271,8 +270,7 @@ describe("RS-223 タック", () => {
   });
 
   // faq-card-4 RS-223 Q3「はい、できます。」（M ユニットとリリースする敵軍コマンドのカテゴリが違ってもよい）
-  // 既知の不具合: CARD-RS-223【緊急システム発動要請】が未実装
-  it.fails("RS-223: 公式Q&A — ラッシュする M ユニット（ET）とリリースする敵軍コマンド（WB）のカテゴリが違ってもラッシュできる（出典: grnrngr/faq-card-4 RS-223 Q3）", () => {
+  it("RS-223: 公式Q&A — ラッシュする M ユニット（ET）とリリースする敵軍コマンド（WB）のカテゴリが違ってもラッシュできる（出典: grnrngr/faq-card-4 RS-223 Q3）", () => {
     const s = tuckRush([], 1, inst("SPEC-ET-M", "m"));
     const r = rushFromHand(s, "player1", "SPEC-ET-M:m");
     expect(r.ok).toBe(true);
@@ -723,8 +721,7 @@ describe("RS-228 爆竜ステゴスライドン", () => {
   }
 
   // 「…と書かれている自軍ユニットを1体選んでもよい。そうしたとき、このターン、そのテキストを無効にする」
-  // 既知の不具合: CARD-RS-228【超スライダー進化】が未実装（バトルエリアに出ても対象を選ぶ選択が開かない）
-  it.fails("RS-228: 「コマンドを1つホールドしなければ出られない」自軍ユニット（トップゲイラー）を選ぶと、このターン、ホールドせずに出られる（出典: atwiki/page-1285）", () => {
+  it("RS-228: 「コマンドを1つホールドしなければ出られない」自軍ユニット（トップゲイラー）を選ぶと、このターン、ホールドせずに出られる（出典: atwiki/page-1285）", () => {
     let s = stego([inst("RS-227", "g")]);
     expect(choiceIds(s)).toContain("RS-227:g");
     s = passEntry(pick(s, "RS-227:g"));
@@ -733,8 +730,7 @@ describe("RS-228 爆竜ステゴスライドン", () => {
     expect(zoneOf(s, "player1", "RS-227:g")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-228【超スライダー進化】が未実装（バトルエリアに出ても対象を選ぶ選択が開かない）
-  it.fails("RS-228: 選ばないこともできる（任意。選ばなければホールドが必要なまま）（出典: atwiki/page-1285「選んでもよい」）", () => {
+  it("RS-228: 選ばないこともできる（任意。選ばなければホールドが必要なまま）（出典: atwiki/page-1285「選んでもよい」）", () => {
     let s = stego([inst("RS-227", "g")]);
     expect(canSkip(s)).toBe(true);
     s = passEntry(skip(s));
@@ -747,8 +743,7 @@ describe("RS-228 爆竜ステゴスライドン", () => {
     expect(choiceIds(s)).not.toContain("RS-229:br");
   });
 
-  // 既知の不具合: CARD-RS-228【超スライダー進化】が未実装（バトルエリアに出ても対象を選ぶ選択が開かない）
-  it.fails("RS-228: 無効になるのは「このターン」だけ（次の自軍ターンにはホールドが必要）（出典: atwiki/page-1285「このターン」）", () => {
+  it("RS-228: 無効になるのは「このターン」だけ（次の自軍ターンにはホールドが必要）（出典: atwiki/page-1285「このターン」）", () => {
     let s = stego([inst("RS-227", "g")]);
     s = passEntry(pick(s, "RS-227:g"));
     s = { ...s, players: { ...s.players, player1: { ...s.players.player1, deck: deckCards(6), command: [held("TST-OP", "c")] } } };

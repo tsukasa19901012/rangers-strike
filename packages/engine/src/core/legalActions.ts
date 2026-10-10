@@ -917,6 +917,7 @@ function appendRushCategoryPaymentActions(
         const options = getCategoryPaymentOptions(state, playerId, categories, {
           perRushPayment: true,
           callLeadKind: "call",
+          emergencyRushCardId: card.cardId,
         });
         if (!options) continue;
         pushPayment(card.instanceId, undefined, options.prismSubstitute);
@@ -957,6 +958,7 @@ function appendRushCategoryPaymentActions(
           const options = getCategoryPaymentOptions(state, playerId, categories, {
             perRushPayment: true,
             callLeadKind: "call",
+            emergencyRushCardId: card.cardId,
           });
           if (!options) continue;
           pushPayment(card.instanceId, variant, options.prismSubstitute);
@@ -1001,6 +1003,7 @@ function appendRushCategoryPaymentActions(
         const options = getCategoryPaymentOptions(state, playerId, categories, {
           perRushPayment: true,
           callLeadKind: "call",
+          emergencyRushCardId: card.cardId,
         });
         if (!options) continue;
         pushPayment(card.instanceId, zord, options.prismSubstitute);
@@ -1030,6 +1033,7 @@ function appendRushCategoryPaymentActions(
       const options = getCategoryPaymentOptions(state, playerId, categories, {
         perRushPayment: true,
         callLeadKind: "call",
+        emergencyRushCardId: card.cardId,
       });
       if (!options) continue;
       pushPayment(card.instanceId, undefined, options.prismSubstitute);

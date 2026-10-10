@@ -181,8 +181,7 @@ describe("RS-237 サイレンビルダー", () => {
   }
 
   // 「敵軍山札の上から3枚をオモテにしてもよい。そうしたとき、相手は…好きな数選び手札に加える。…1枚につき、これは「SP+1」される。その後、残りのカードは捨札にする」
-  // 既知の不具合: CARD-RS-237【トリプルリキッドボンバー】が未実装（バトルエリアに出ても選択が開かない）
-  it.fails("RS-237: 敵軍山札の上から3枚をオモテにし、相手が2枚を手札に加えると「SP2」になり、残り1枚は捨札（出典: atwiki/page-402）", () => {
+  it("RS-237: 敵軍山札の上から3枚をオモテにし、相手が2枚を手札に加えると「SP2」になり、残り1枚は捨札（出典: atwiki/page-402）", () => {
     let s = siren(top3());
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
@@ -196,8 +195,7 @@ describe("RS-237 サイレンビルダー", () => {
     expect(canStrike(s, "RS-237:sb")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-237【トリプルリキッドボンバー】が未実装
-  it.fails("RS-237: 相手が1枚も手札に加えなければ SP！のまま（ストライクできない）で、3枚とも捨札（出典: atwiki/page-402「好きな数」）", () => {
+  it("RS-237: 相手が1枚も手札に加えなければ SP！のまま（ストライクできない）で、3枚とも捨札（出典: atwiki/page-402「好きな数」）", () => {
     let s = siren(top3());
     s = act(s, { type: "confirm_effect_choice", playerId: "player1" });
     s = opponentTakes(s, []);
@@ -206,8 +204,7 @@ describe("RS-237 サイレンビルダー", () => {
     expect(canStrike(s, "RS-237:sb")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-237【トリプルリキッドボンバー】が未実装（発動するかの確認が開かない）
-  it.fails("RS-237: オモテにしないことを選べる（任意）（出典: atwiki/page-402「オモテにしてもよい」）", () => {
+  it("RS-237: オモテにしないことを選べる（任意）（出典: atwiki/page-402「オモテにしてもよい」）", () => {
     let s = siren(top3());
     expect(canSkip(s)).toBe(true);
     s = skip(s);
