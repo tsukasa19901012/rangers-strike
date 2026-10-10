@@ -398,8 +398,7 @@ function gekiMConditionTests(id: string, color: string, ok: string, okName: stri
   const mk = (material: string) =>
     st({ phase: "rush", player1: { hand: [inst(id, "me")], rush: [inst(material, "m")], command: releasedCat("WB", 1), power: powerCards(cost), deck: deckCards(3) } }, [VIOLET_ONLY]);
 
-  // 既知の不具合: CARD-RS-498 追加条件「特徴「激気」と「バイオレット」を持つ自軍ユニット」が満たせない（partnerName「激気」のカード名判定）
-  it.fails(`${id}: 追加条件 — 特徴「激気」と「${color}」を持つ自軍ユニット（${okName}）を捨札にしてラッシュできる（出典: atwiki/${page}「追加条件：特徴「激気」と「${color}」を持つ自軍ユニット1体を捨札にする」）`, () => {
+  it(`${id}: 追加条件 — 特徴「激気」と「${color}」を持つ自軍ユニット（${okName}）を捨札にしてラッシュできる（出典: atwiki/${page}「追加条件：特徴「激気」と「${color}」を持つ自軍ユニット1体を捨札にする」）`, () => {
     const r = rushFromHand(mk(ok), "player1", `${id}:me`);
     expect(r.ok).toBe(true);
     const t = resolveAll(r.state);
@@ -681,8 +680,7 @@ describe("RS-500 ゲキチョッパー", () => {
     expect(choiceIds(s)).toEqual(["RS-498:w", "RS-499:v"]);
   });
 
-  // 既知の不具合: CARD-RS-500 【サイブレードカッター】を見送れない（「見せてもよい」が強制になっている）
-  it.fails("RS-500: 【サイブレードカッター】「見せてもよい」— 見送れる（出典: atwiki/page-776「相手に見せてもよい」）", () => {
+  it("RS-500: 【サイブレードカッター】「見せてもよい」— 見送れる（出典: atwiki/page-776「相手に見せてもよい」）", () => {
     const s = enterChopper();
     expect(canSkip(s)).toBe(true);
   });
