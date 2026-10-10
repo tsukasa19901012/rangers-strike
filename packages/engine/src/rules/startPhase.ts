@@ -108,6 +108,7 @@ export function initializeStartPhasePlayer(player: PlayerState): PlayerState {
     unitActionsThisTurn: undefined,
     fieldAbilityUsedThisRush: undefined,
     hasDrawnThisStart: false,
+    hasBonusDrawnThisStart: false,
     hasPaidEarthForceUpkeep: false,
     hasReleasedCommandsThisStart: !hasHeld,
     hasReturnedBattleThisStart: !hasBattle,
@@ -160,6 +161,7 @@ export function canBonusDraw(state: GameState, playerId: PlayerId): boolean {
   const player = state.players[playerId];
   return (
     player.hasDrawnThisStart === true &&
+    player.hasBonusDrawnThisStart !== true &&
     player.hand.length < player.damage &&
     player.deck.length > 0
   );
@@ -223,6 +225,7 @@ export function transitionStartToChargePhase(
     ...nextState.players[playerId],
     hasChargedThisTurn: false,
     hasDrawnThisStart: false,
+    hasBonusDrawnThisStart: false,
     hasReleasedCommandsThisStart: false,
     hasReturnedBattleThisStart: false,
   };

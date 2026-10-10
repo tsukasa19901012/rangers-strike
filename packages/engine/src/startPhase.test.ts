@@ -98,6 +98,28 @@ describe("start phase steps", () => {
     expect(state.players.player1.hand).toHaveLength(2);
   });
 
+  it("allows the bonus draw only once per turn (page-123 Q1)", () => {
+    let state = createTestState({
+      phase: "start",
+      player1: {
+        damage: 5,
+        deck: ["d1", "d2", "d3", "d4", "d5"].map((id) => inst("TST-OP", id)),
+        hand: [],
+        command: [{ ...inst("TST-OP", "c1"), commandHeld: true }],
+        hasReturnedBattleThisStart: true,
+      },
+    });
+
+    state = unwrap(applyAction(state, { type: "draw", playerId: "player1" }));
+    state = unwrap(applyAction(state, { type: "bonus_draw", playerId: "player1" }));
+    expect(state.phase).toBe("start");
+    expect(state.players.player1.hand).toHaveLength(2);
+    expect(getLegalActions(state).some((a) => a.type === "bonus_draw")).toBe(false);
+    expect(
+      applyAction(state, { type: "bonus_draw", playerId: "player1" }, { trustLegality: true }).ok,
+    ).toBe(false);
+  });
+
   it("allows skipping optional bonus draw to advance to charge", () => {
     let state = createTestState({
       phase: "start",

@@ -93,6 +93,8 @@ export type PlayerState = {
   fieldAbilityUsedThisRush?: string[];
   /** スタートフェイズ: このターンの必須ドロー後 true。 */
   hasDrawnThisStart?: boolean;
+  /** スタートフェイズ: このターンに追加ドロー済み（1ターンに1度だけ。page-123 Q1）。 */
+  hasBonusDrawnThisStart?: boolean;
   /** スタートフェイズ: このターンにホールド中コマンドをリリースした後 true。 */
   hasReleasedCommandsThisStart?: boolean;
   /** スタートフェイズ: このターンにバトルユニットをラッシュに戻した後 true。 */

@@ -453,18 +453,23 @@ export function applyAction(
     case "bonus_draw": {
       if (state.phase !== "start") return fail("wrong_phase");
       if (!player.hasDrawnThisStart) return fail("must_draw_first");
-      if (player.hand.length >= player.damage || player.deck.length === 0) {
-        return fail("bonus_draw_unavailable");
-      }
+      if (!canBonusDraw(state, playerId)) return fail("bonus_draw_unavailable");
       const drawn = applySuperBrainDraw(state, playerId, player, playerId);
       if (drawn.detail === "empty_deck") {
         return fail("bonus_draw_unavailable");
       }
+      const afterBonus: GameState = {
+        ...drawn.state,
+        ...updatePlayer(drawn.state, playerId, {
+          ...drawn.state.players[playerId],
+          hasBonusDrawnThisStart: true,
+        }),
+      };
       if (drawn.pending) {
-        return ok(drawn.state, buildSimpleLogEntry(playerId, "bonus_draw"));
+        return ok(afterBonus, buildSimpleLogEntry(playerId, "bonus_draw"));
       }
       return withStartPhaseAutoAdvance(
-        ok(drawn.state, buildSimpleLogEntry(playerId, "bonus_draw")),
+        ok(afterBonus, buildSimpleLogEntry(playerId, "bonus_draw")),
         playerId,
       );
     }
