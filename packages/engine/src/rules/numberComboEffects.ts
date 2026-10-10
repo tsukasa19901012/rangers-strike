@@ -124,6 +124,14 @@ export function numberComboTriggers(
     if (ncEffectUsesDsl(card.cardId)) return true;
   }
 
+  // 「（この効果は特徴「○○」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）」の
+  // DSL の NC 効果（RS-258 アオレンジャー【ブルーチェリー】等）: 直前のユニット（左隣）が指定どおりなら成立
+  // （ルール: R-CN-05）。
+  if (ncEffectUsesDsl(card.cardId)) {
+    const leftNeighbor = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
+    if (ncColumnEffectIdsEstablished(state, card.cardId, false, leftNeighbor?.cardId).length > 0) return true;
+  }
+
   return false;
 }
 

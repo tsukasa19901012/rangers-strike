@@ -55,14 +55,18 @@ export function tryStartDestroyPowerCostMinusChoice(
   options: {
     effectId: string;
     enemyOnly?: boolean;
+    /** 「ユニットを1体選び」— 敵軍に限らず自軍のユニットも候補にする（RS-278【バイソンロッド】）。 */
+    anyOwner?: boolean;
     size?: UnitSize;
     optional?: boolean;
   },
 ): GameState | null {
-  const targetPlayerId = options.enemyOnly === false ? playerId : opponent(playerId);
-  const targets = collectPowerCostMinusUnitIds(state, targetPlayerId, {
-    size: options.size,
-  });
+  const targetPlayerIds: PlayerId[] = options.anyOwner
+    ? [playerId, opponent(playerId)]
+    : [options.enemyOnly === false ? playerId : opponent(playerId)];
+  const targets = targetPlayerIds.flatMap((targetPlayerId) =>
+    collectPowerCostMinusUnitIds(state, targetPlayerId, { size: options.size }),
+  );
   if (targets.length === 0) return null;
 
   return startSelectUnitChoice(state, {
