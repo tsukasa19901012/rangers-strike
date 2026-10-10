@@ -71,7 +71,7 @@ import {
   canBeginZordSetup,
   listZordSetupResolveActions,
 } from "../rules/zordSetup";
-import { canToggleBpBudgetTarget, isValidEffectChoiceTarget } from "../rules/pendingChoices";
+import { canToggleBpBudgetTarget, FIRE_DANCE_EFFECT_ID, isValidEffectChoiceTarget } from "../rules/pendingChoices";
 import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart, isReleaseStepComplete, listStartReturnGroupIds } from "../rules/startPhase";
 import {
   listZordRushPaymentVariants,
@@ -1050,6 +1050,15 @@ function appendEffectChoiceActions(
     for (const instanceId of pending.validInstanceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
+    return;
+  }
+
+  if (pending.effectId === FIRE_DANCE_EFFECT_ID) {
+    // RS-159【ファイヤーダンス】「敵軍ダメージの数まで選んで」— 1つずつ選び、少なくても確定できる。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

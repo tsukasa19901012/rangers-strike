@@ -298,6 +298,7 @@ export function drawToDiscardFromDeck(
 
 export const SUPER_BRAIN_KEEP_EFFECT_ID = "super_brain_keep";
 
+export const FIRE_DANCE_EFFECT_ID = "fire_dance";
 export const BEAT_HAMMER_EFFECT_ID = "beat_hammer_deploy_enemy_command";
 
 /**
@@ -539,6 +540,7 @@ export function isValidEffectChoiceTarget(
     pending.effectId === DISPATCH_ORDER_EFFECT_ID ||
     pending.effectId === CYCLOPS_SCARLET_EFFECT_ID ||
     pending.effectId === SUBMERGE_EFFECT_ID ||
+    pending.effectId === FIRE_DANCE_EFFECT_ID ||
     isHououChoice(pending) ||
     pending.effectId === KUROKO_MEMORY_EFFECT_ID
   ) {
@@ -1845,6 +1847,11 @@ export function applyConfirmEffectChoice(
     return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next), log };
   }
 
+  if (pending.effectId === FIRE_DANCE_EFFECT_ID) {
+    // 「数まで」— 選んだところで確定する。
+    return finishChoice(state, pending, String(pending.processedInstanceIds?.length ?? 0));
+  }
+
   if (pending.effectId === HOUOU_TORNADO_EFFECT_ID) {
     const next = finishHououOwnStep(state, pending);
     return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next) };
@@ -2780,6 +2787,25 @@ export function applyEffectChoiceSelect(
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
     return applyConfirmEffectChoice(state, playerId);
+  }
+  if (pending.effectId === FIRE_DANCE_EFFECT_ID) {
+    // RS-159【ファイヤーダンス】: 選んだ敵軍コマンドを1つずつホールドする。
+    if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+    const enemyId = opponent(pending.playerId);
+    const enemy = state.players[enemyId];
+    const found = findInZone(enemy, "command", instanceId);
+    if (!found) return { error: "invalid_target" };
+    const command = [...enemy.command];
+    command[found.index] = { ...found.card, commandHeld: true };
+    const next: GameState = { ...state, ...updatePlayer(state, enemyId, { ...enemy, command }) };
+    const processed = [...(pending.processedInstanceIds ?? []), instanceId];
+    const remaining = pending.validInstanceIds.filter((id) => id !== instanceId);
+    if (processed.length < (pending.selectCount ?? 1) && remaining.length > 0) {
+      return {
+        state: { ...next, pendingEffectChoice: { ...pending, validInstanceIds: remaining, processedInstanceIds: processed } },
+      };
+    }
+    return finishChoice(next, pending, String(processed.length));
   }
   if (isHououChoice(pending)) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };

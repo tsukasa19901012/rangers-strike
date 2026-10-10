@@ -122,14 +122,17 @@ export function resolveLegend3EnterBattle(
       if (damage === 0) return { state, logs: [] };
       const held = collectCommandIds(state, enemyId, "released");
       if (held.length === 0) return { state, logs: [] };
+      // 「敵軍コマンドを敵軍ダメージの数まで選んでホールドする」— 選ぶのはガオコングの持ち主で、
+      // 「数まで」なので少なく選んで確定（confirm_effect_choice）してもよい（atwiki/page-93）。
       const withChoice = startMultiCommandChoice(state, {
-        playerId: enemyId,
+        playerId,
         effectId,
         sourceCardId: cardId,
         phasePlayerId: playerId,
         selectCount: Math.min(damage, held.length),
         commandFilter: "released",
         commandAction: "hold",
+        validInstanceIds: held,
         optional: false,
       });
       return {

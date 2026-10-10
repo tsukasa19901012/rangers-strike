@@ -298,8 +298,7 @@ describe("RS-154 ガオシャーク", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:rs")).toBe("discard");
   });
 
-  it.fails("RS-154: 敵軍ラッシュエリアの M ユニットにはアタックできない（出典: atwiki/page-89「ラッシュエリアのSユニット」）", () => {
-    // 既知の不具合: CARD-RS-154 ラッシュエリアへのアタック許可がサイズを問わず、敵軍ラッシュエリアの M ユニットにもアタックできてしまう
+  it("RS-154: 敵軍ラッシュエリアの M ユニットにはアタックできない（出典: atwiki/page-89「ラッシュエリアのSユニット」）", () => {
     const s = st({ player1: { battle: [inst("RS-154", "sh")] }, player2: { rush: [inst("TST-UNIT-2", "rm")] } });
     expect(attackTargets(s, "RS-154:sh")).not.toContain("TST-UNIT-2:rm");
   });
@@ -706,15 +705,13 @@ describe("RS-159 ガオコング", () => {
     expect(s.players.player2.command.filter((c) => c.commandHeld)).toHaveLength(2);
   });
 
-  it.fails("RS-159: ホールドする敵軍コマンドを選ぶのはガオコングの持ち主（自分）（出典: atwiki/page-93「敵軍コマンドを…選んでホールドする」）", () => {
-    // 既知の不具合: CARD-RS-159 【ファイヤーダンス】の選択が相手（player2）に渡される
+  it("RS-159: ホールドする敵軍コマンドを選ぶのはガオコングの持ち主（自分）（出典: atwiki/page-93「敵軍コマンドを…選んでホールドする」）", () => {
     const s = kongEnters(2);
     expect(s.pendingEffectChoice?.effectId).toBe("fire_dance");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
   });
 
-  it.fails("RS-159: 「数まで」なので敵軍ダメージの数より少なく選んでもよい（出典: atwiki/page-93「敵軍ダメージの数まで選んで」）", () => {
-    // 既知の不具合: CARD-RS-159 選ぶ数が敵軍ダメージの数ちょうどに固定され（selectCount・optional=false）、少なく選べない
+  it("RS-159: 「数まで」なので敵軍ダメージの数より少なく選んでもよい（出典: atwiki/page-93「敵軍ダメージの数まで選んで」）", () => {
     const s = kongEnters(2);
     expect(s.pendingEffectChoice?.optional === true || legalOfType(s, "confirm_effect_choice").length > 0).toBe(true);
   });

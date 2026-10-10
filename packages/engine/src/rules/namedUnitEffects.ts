@@ -44,7 +44,6 @@ import {
 } from "./legend3/battleEffects";
 import { legend2EffectiveSp } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
-import { canAttackEnemyRushS } from "./legend3/restrictions";
 import { findBattleAttacker, findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { applyDamageToPlayer } from "./damagePayment";
 import { buildLogEntry } from "../log/formatLog";
@@ -292,8 +291,10 @@ export function canAttackRushWithYellowThunder(
     yellowThunderActive ||
     attackRushZoneActive ||
     ridesUnigoruon ||
-    canAttackRushWithMoonlightSonic(state, attackerPlayerId, attackerInstanceId) ||
-    canAttackEnemyRushS(state, attackerPlayerId, attackerInstanceId)
+    canAttackRushWithMoonlightSonic(state, attackerPlayerId, attackerInstanceId)
+    // RS-154 等「※これは敵軍ラッシュエリアのSユニットにアタックできる」は S ユニットだけが対象なので、
+    // ここ（ラッシュエリアのユニットすべてにアタックできる効果）には含めない。サイズの判定は
+    // legend3/restrictions.ts の can_attack_enemy_rush_s で行う（atwiki/page-89）。
   );
 }
 
