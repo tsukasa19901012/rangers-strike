@@ -5,7 +5,11 @@ import {
   getOnAttackNamedEffect,
   IMPLEMENTED_NC_EFFECT_IDS,
 } from "@rangers-strike/cards";
-import { comboFromNamedPartner, isNcGatedOnAttackEffect } from "./ncGatedEffects";
+import {
+  comboFromNamedPartner,
+  isNcGatedOnAttackEffect,
+  ncColumnEffectIdsEstablished,
+} from "./ncGatedEffects";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import {
   cardName,
@@ -155,14 +159,42 @@ export function markOnAttackNcEffectOnEnter(
   battlePosition: number,
   battleBeforeEnter: CardInstance[],
 ): GameState {
+  let nextState = state;
   const named = getOnAttackNamedEffect(card.cardId);
-  if (!named || !isNcGatedOnAttackEffect(named)) return state;
+  if (named && isNcGatedOnAttackEffect(named, card.cardId) && !tankCommandBlocksNc(state, card, definition)) {
+    const fromPosition = ncEffectiveNumber(state, playerId, card, definition) === battlePosition;
+    const leftNeighbor = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
+    const fromPartner = comboFromNamedPartner(state, named, leftNeighbor?.cardId);
+    if (fromPosition || fromPartner) {
+      nextState = markBattleNcEffect(nextState, playerId, card.instanceId, named.effectId);
+    }
+  }
+  return markNcColumnEffectsOnEnter(nextState, playerId, card, definition, battlePosition, battleBeforeEnter);
+}
+
+/**
+ * バトルエリアに出たときに NC が成立したら、そのカードのナンバーの欄の効果をすべて activatedNcEffects に記録する。
+ * 記録された効果だけが、後から参照される場面（BP 補正・撃破時・ターン終了時等）で有効になる
+ * （ncGatedEffects.activeNamedEffect / namedEffectActive）。ルール: R-CN-02 / R-CN-03 / R-CN-05。
+ */
+export function markNcColumnEffectsOnEnter(
+  state: GameState,
+  playerId: PlayerId,
+  card: CardInstance,
+  definition: CardDefinition,
+  battlePosition: number,
+  battleBeforeEnter: CardInstance[],
+): GameState {
   if (tankCommandBlocksNc(state, card, definition)) return state;
-  const fromPosition = ncEffectiveNumber(state, playerId, card, definition) === battlePosition;
+  const numberMatches =
+    typeof definition.comboNumber === "number" &&
+    ncEffectiveNumber(state, playerId, card, definition) === battlePosition;
   const leftNeighbor = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
-  const fromPartner = comboFromNamedPartner(state, named, leftNeighbor?.cardId);
-  if (!fromPosition && !fromPartner) return state;
-  return markBattleNcEffect(state, playerId, card.instanceId, named.effectId);
+  let nextState = state;
+  for (const effectId of ncColumnEffectIdsEstablished(state, card.cardId, numberMatches, leftNeighbor?.cardId)) {
+    nextState = markBattleNcEffect(nextState, playerId, card.instanceId, effectId);
+  }
+  return nextState;
 }
 
 function ncEffectUsesDsl(cardId: string): boolean {

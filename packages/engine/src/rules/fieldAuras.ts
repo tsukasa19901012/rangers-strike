@@ -1,5 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
-import { findNamedEffectByEffectId } from "@rangers-strike/cards";
+import { activeNamedEffect } from "./ncGatedEffects";
 import { countActiveFieldKeyword } from "../dsl/fieldKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition, cardName, isLargeUnit } from "../core/catalog";
@@ -201,7 +201,7 @@ function kakuhengeDamageBpBonus(
   playerId: PlayerId,
   instance: CardInstance,
 ): number {
-  if (!findNamedEffectByEffectId(instance.cardId, "karakuri_ninpo_tsuno")) return 0;
+  if (!activeNamedEffect(instance, "karakuri_ninpo_tsuno")) return 0;
   const player = state.players[playerId];
   const inField =
     player.rush.some((c) => c.instanceId === instance.instanceId) ||

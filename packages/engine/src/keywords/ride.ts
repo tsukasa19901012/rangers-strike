@@ -317,6 +317,7 @@ export function sanitizeUnitLeavingField(
       delete next.battleActed;
       delete next.mountedOnInstanceId;
       delete next.activatedNcEffects;
+      delete next.jointComboGrants;
     }
   }
   return next;

@@ -1,8 +1,6 @@
-import {
-  findNamedEffectByEffectId,
-  getJointLNamedEffect,
-  hasUnnamedRule,
-} from "@rangers-strike/cards";
+import { hasUnnamedRule } from "@rangers-strike/cards";
+import { activeNamedEffect, namedEffectActive } from "../ncGatedEffects";
+import { countJointLGrant, jointLGrantSpPlus, jointRGrantActive } from "../jointComboGrants";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import {
   effectiveBp,
@@ -33,8 +31,8 @@ export function legend3FieldBpBonus(
   const def = getDefinition(state.definitions, instance.cardId);
   if (!def) return 0;
 
-  if (findNamedEffectByEffectId(instance.cardId, "furious_shark_shot") ||
-      findNamedEffectByEffectId(instance.cardId, "heaven_earth_animal_heart")) {
+  if (activeNamedEffect(instance, "furious_shark_shot") ||
+      activeNamedEffect(instance, "heaven_earth_animal_heart")) {
     const wbMCount = state.players[playerId].battle.filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
       return d?.category === "WB" && isMediumUnit(state.definitions, c.cardId);
@@ -42,28 +40,36 @@ export function legend3FieldBpBonus(
     bonus += wbMCount * 2000;
   }
 
-  if (role === "attacking" || role === "general") {
-    if (findNamedEffectByEffectId(instance.cardId, "star_raiser") && state.activePlayer === playerId) {
+  // 自軍ターン中の常時の BP 補正は "general"（effectiveBp）でだけ数える（アタック時に重ねて数えない）。
+  // NC の効果は NC が成立していなければ有効にならない（R-CN-02、ncGatedEffects.namedEffectActive）。
+  if (role === "general") {
+    if (namedEffectActive(instance, "star_raiser") && state.activePlayer === playerId) {
       bonus += countReleasedCommands(state.players[playerId]) * 2000;
     }
     if (
       (instance.cardId === "SR-003" ||
-        findNamedEffectByEffectId(instance.cardId, "ryu_geki_ken_ken")) &&
+        activeNamedEffect(instance, "ryu_geki_ken_ken")) &&
       state.activePlayer === playerId
     ) {
       bonus += sr003DiscardDinoBpBonus(state, playerId);
     }
-    if (findNamedEffectByEffectId(instance.cardId, "iron_broken") && state.activePlayer === playerId) {
+    if (namedEffectActive(instance, "iron_broken") && state.activePlayer === playerId) {
       bonus += 3000;
     }
-    if (findNamedEffectByEffectId(instance.cardId, "blazing_fire") && state.activePlayer === playerId) {
+    if (namedEffectActive(instance, "blazing_fire") && state.activePlayer === playerId) {
       bonus += 2000;
+    }
+    // JC で得た能力「自軍ターン中、BP+4000され」（RS-157【悪鬼貫徹ネックスラスト】、RS-171【マキシマムペネトレーション】）。
+    if (state.activePlayer === playerId) {
+      bonus +=
+        4000 *
+        (countJointLGrant(instance, "oni_neck_last") + countJointLGrant(instance, "maximum_penetration"));
     }
   }
 
   if (role === "general" && state.activePlayer !== playerId) {
     const hasMoaLoader = state.players[playerId].rush.some(
-      (c) => findNamedEffectByEffectId(c.cardId, "super_moa_cannon"),
+      (c) => activeNamedEffect(c, "super_moa_cannon"),
     );
     if (
       hasMoaLoader &&
@@ -83,7 +89,7 @@ export function isStealthUnit(state: GameState, instanceId: string): boolean {
     const player = state.players[pid];
     for (const zone of ["battle", "rush"] as const) {
       const found = player[zone].find((c) => c.instanceId === instanceId);
-      if (found && findNamedEffectByEffectId(found.cardId, "stealth")) {
+      if (found && activeNamedEffect(found, "stealth")) {
         return true;
       }
     }
@@ -96,7 +102,7 @@ function hasScorchingRoarOnField(state: GameState, playerId: PlayerId): boolean 
   for (const zone of ["rush", "battle"] as const) {
     if (
       player[zone].some((c) =>
-        findNamedEffectByEffectId(c.cardId, "scorching_roar"),
+        activeNamedEffect(c, "scorching_roar"),
       )
     ) {
       return true;
@@ -124,48 +130,39 @@ export function legend3EnemySComboDelta(state: GameState, playerId: PlayerId): n
   let delta = 0;
   const enemyId = playerId === "player1" ? "player2" : "player1";
   for (const card of state.players[enemyId].battle) {
-    if (findNamedEffectByEffectId(card.cardId, "data_analysis")) {
+    if (activeNamedEffect(card, "data_analysis")) {
       delta += 1;
     }
   }
   for (const card of state.players[enemyId].rush) {
-    if (findNamedEffectByEffectId(card.cardId, "data_analysis")) {
+    if (activeNamedEffect(card, "data_analysis")) {
       delta += 1;
     }
   }
   return delta;
 }
 
+/**
+ * RS-158【エレファントシールド】: 発動していて、コンビネーションが成立している間（相手の L ユニットが左隣）、
+ * 敵軍ユニットはこれ以外のユニットにアタックできない。アタックできるユニットの instanceId（なければ null）。
+ */
 export function elephantShieldMustTarget(
   state: GameState,
   defenderPlayerId: PlayerId,
 ): string | null {
   const player = state.players[defenderPlayerId];
-  for (let i = 0; i < player.battle.length; i++) {
-    const card = player.battle[i]!;
-    if (getDefinition(state.definitions, card.cardId)?.comboNumber !== "R") continue;
-    const partner = player.battle[i - 1];
-    if (!partner) continue;
-    const joint = findNamedEffectByEffectId(card.cardId, "elephant_shield");
-    if (joint) return card.instanceId;
+  for (const card of player.battle) {
+    if (jointRGrantActive(state, defenderPlayerId, card, "elephant_shield")) return card.instanceId;
   }
   return null;
 }
 
+/** RS-172【ショベルディフェンス】: 発動していてコンビネーションが成立している間、敵軍ユニットはストライクできない。 */
 export function shovelDefenseBlocksStrike(state: GameState, strikerPlayerId: PlayerId): boolean {
-  const enemyId = strikerPlayerId === "player1" ? "player2" : "player1";
-  const player = state.players[enemyId];
-  for (let i = 0; i < player.battle.length; i++) {
-    const card = player.battle[i]!;
-    if (getDefinition(state.definitions, card.cardId)?.comboNumber !== "R") continue;
-    if (findNamedEffectByEffectId(card.cardId, "shovel_defense")) {
-      const partner = player.battle[i - 1];
-      if (partner && getDefinition(state.definitions, partner.cardId)?.size === "L") {
-        return true;
-      }
-    }
-  }
-  return false;
+  const enemyId = opponent(strikerPlayerId);
+  return state.players[enemyId].battle.some((card) =>
+    jointRGrantActive(state, enemyId, card, "shovel_defense"),
+  );
 }
 
 export function cannotEnterBattleOwnTurn(
@@ -180,21 +177,6 @@ export function cannotEnterBattleOwnTurn(
   );
 }
 
-function jointLEffectIdForUnit(
-  state: GameState,
-  playerId: PlayerId,
-  instance: CardInstance,
-): string | undefined {
-  const player = state.players[playerId];
-  const index = player.battle.findIndex((c) => c.instanceId === instance.instanceId);
-  if (index <= 0) return undefined;
-  const partner = player.battle[index - 1];
-  if (!partner || getDefinition(state.definitions, partner.cardId)?.size !== "L") {
-    return undefined;
-  }
-  return getJointLNamedEffect(partner.cardId)?.effectId;
-}
-
 /** RS-157 oni_neck_last: BP20000+ で自ターンにSP2付与。 */
 export function legend3EffectiveSp(
   state: GameState,
@@ -202,10 +184,12 @@ export function legend3EffectiveSp(
   instance: CardInstance,
 ): number {
   let sp = legend2EffectiveSp(state, playerId, instance);
+  // JC で得た能力「SP+N」（RS-224【ロックドバスター】）。
+  sp += jointLGrantSpPlus(instance);
   if (state.activePlayer !== playerId) return sp;
 
-  const joint = jointLEffectIdForUnit(state, playerId, instance);
-  if (joint === "oni_neck_last") {
+  // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。
+  if (countJointLGrant(instance, "oni_neck_last") > 0) {
     const bp = effectiveBp(state, playerId, instance);
     if (bp >= 20000) {
       sp = Math.max(sp, 2);

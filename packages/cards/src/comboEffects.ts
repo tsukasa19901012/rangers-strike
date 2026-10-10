@@ -407,7 +407,11 @@ export function cardHasComboNumber(cardId: string): boolean {
   return isNumericComboNumber(card?.comboNumber);
 }
 
-/** マルチカテゴリは双方が持つ全カテゴリを満たすときのみ同一（atwiki 1559）。 */
+/**
+ * ジョイントコンビネーションの「同カテゴリ」: 双方が共通のカテゴリを持てば同カテゴリ。
+ * 公式 Q&A（grnrngr/faq-card-3 RS-166 Q1）: バトルエリアで DA と MA を持つ「RS-166 ガインガイン」は、MA の
+ * 「RS-224 トータスハンマー」からコンビネーションさせると「SP1」になる（全カテゴリの一致は求めない）。
+ */
 export function partnerCategoryMatches(
   unitCategory: Category | Category[],
   partnerCategory: Category | Category[],
@@ -416,8 +420,5 @@ export function partnerCategoryMatches(
   const partnerCats = Array.isArray(partnerCategory)
     ? partnerCategory
     : [partnerCategory];
-  return (
-    unitCats.every((c) => partnerCats.includes(c)) &&
-    partnerCats.every((c) => unitCats.includes(c))
-  );
+  return unitCats.some((c) => partnerCats.includes(c));
 }

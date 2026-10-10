@@ -19,9 +19,15 @@ describe("partnerCategoryMatches", () => {
     expect(partnerCategoryMatches(["WB", "ET"], ["ET", "WB"])).toBe(true);
   });
 
-  it("does not match when only one category overlaps", () => {
-    expect(partnerCategoryMatches(["WB", "ET"], "WB")).toBe(false);
-    expect(partnerCategoryMatches("WB", ["WB", "ET"])).toBe(false);
+  // grnrngr/faq-card-3 RS-166 Q1: DA と MA を持つガインガインは MA のトータスハンマーと同カテゴリとしてコンビネーションする
+  it("matches when a category is shared (official FAQ RS-166 Q1)", () => {
+    expect(partnerCategoryMatches(["WB", "ET"], "WB")).toBe(true);
+    expect(partnerCategoryMatches("MA", ["DA", "MA"])).toBe(true);
+  });
+
+  it("does not match when no category is shared", () => {
+    expect(partnerCategoryMatches(["WB", "ET"], "DA")).toBe(false);
+    expect(partnerCategoryMatches("MA", ["DA", "OT"])).toBe(false);
   });
 });
 

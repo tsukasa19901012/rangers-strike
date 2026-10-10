@@ -34,6 +34,8 @@ import {
   shouldRunConditionalOnEnter,
 } from "./legend3/battleEffects";
 import { resolveJointCombosOnEnter } from "./jointComboProcedure";
+import { ncGateAllows } from "./ncGatedEffects";
+import { patchPlayer } from "./playerPatches";
 import { applyDestroyOnEnterBattle } from "./destroyOnEnterBattle";
 import { tryStartOpponentDrawOnEnter } from "./legend2/destroyEffects";
 import { tryMereChameleonOnAllyEnterBattle } from "./batch04FieldEffects";
@@ -55,7 +57,7 @@ import {
   resolveNamedNcEffectId,
 } from "./numberComboEffects";
 import { resolveRidingComboOnRideOff } from "./ridingComboEffects";
-import { legend3EffectiveSp } from "./legend3/fieldEffects";
+import { legend3EffectiveSp, shovelDefenseBlocksStrike } from "./legend3/fieldEffects";
 import { hasBakiBakiExtraAttackOnly } from "./legend3/destroyEffects";
 import { tryStartDslConditionalChoice } from "../dsl/conditionalEffects";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -153,6 +155,15 @@ export function resolveEnterBattleEffectsImpl(
     state.players[playerId].battle.filter((c) => c.instanceId !== card.instanceId);
 
   let battleCard = card;
+  if (!resumeFrom && card.jointComboGrants) {
+    // バトルエリアに出直したユニットは、前に得た JC の能力を持たない（R-CN-06）。
+    const { jointComboGrants: _stale, ...fresh } = card;
+    battleCard = fresh;
+    nextState = patchPlayer(nextState, playerId, (player) => ({
+      ...player,
+      battle: player.battle.map((c) => (c.instanceId === card.instanceId ? fresh : c)),
+    }));
+  }
   if (!resumeFrom) {
     if (sComboFinisherApplies(nextState, playerId, card)) {
       {
@@ -172,6 +183,21 @@ export function resolveEnterBattleEffectsImpl(
   }
 
   if (shouldRunEnterStep(resumeFrom, "conditional")) {
+    // NC の成立（ナンバーの欄の効果の有効化）は、出たときの並び順で先に判定しておく。ナンバーの欄の効果のうち
+    // 出たときに処理する効果（RS-141【紐拳】等）も、成立していなければ発動しない（R-CN-02 / R-CN-04）。
+    if (nextState.phase === "battle" && definition) {
+      nextState = markOnAttackNcEffectOnEnter(
+        nextState,
+        playerId,
+        card,
+        definition,
+        battlePosition,
+        battleBeforeEnter,
+      );
+      battleCard =
+        nextState.players[playerId].battle.find((c) => c.instanceId === card.instanceId) ?? battleCard;
+    }
+
     const dslEnter = tryResolveDslTriggeredEffects({
       state: nextState,
       cardId: card.cardId,
@@ -306,6 +332,7 @@ export function resolveEnterBattleEffectsImpl(
     const conditional = getConditionalNamedEffect(card.cardId);
     if (
       conditional &&
+      ncGateAllows(battleCard, conditional.effectId) &&
       shouldRunConditionalOnEnter(conditional.effectId) &&
       canRunEnterBattleConditionalEffect(nextState, playerId, conditional.effectId)
     ) {
@@ -486,6 +513,10 @@ export function canStrikeUnit(
   if (instance.cardId === "XG1-028" && instance.commandHeld) return false;
   if (state && playerId) {
     if (hasBakiBakiExtraAttackOnly(state, playerId, instance.instanceId)) {
+      return false;
+    }
+    // RS-172【ショベルディフェンス】: コンビネーションが成立している間、敵軍ユニットはストライクできない。
+    if (shovelDefenseBlocksStrike(state, playerId)) {
       return false;
     }
     if (cannotAttackOrStrikeThisTurn(state.players[playerId], instance)) {

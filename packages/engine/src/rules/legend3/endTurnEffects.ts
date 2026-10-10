@@ -1,4 +1,4 @@
-import { findNamedEffectByEffectId } from "@rangers-strike/cards";
+import { namedEffectActive } from "../ncGatedEffects";
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit } from "../../core/catalog";
 import { findInZone, updatePlayer } from "../../core/helpers";
@@ -7,7 +7,8 @@ import { openEffectChoice, startSelectUnitChoice } from "../pendingChoices";
 const END_TURN_EFFECT_IDS = ["jet_skateboard", "end_turn_battle_to_rush"] as const;
 
 function hasEndTurnBattleEffect(card: { cardId: string; activatedNcEffects?: string[] }, effectId: string): boolean {
-  if (findNamedEffectByEffectId(card.cardId, effectId)) return true;
+  // ナンバーの欄の効果（RS-138【ジェットスケボー】）は NC が成立していなければ有効でない（R-CN-02）。
+  if (namedEffectActive(card, effectId)) return true;
   return card.activatedNcEffects?.includes(effectId) ?? false;
 }
 

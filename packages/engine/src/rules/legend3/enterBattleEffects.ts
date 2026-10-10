@@ -1,4 +1,5 @@
 import { battleHasComboPartner, findNamedEffectByEffectId } from "@rangers-strike/cards";
+import { activeNamedEffect } from "../ncGatedEffects";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { buildLogEntry } from "../../log/formatLog";
 import { grantSp1OnPlayer, patchPlayer } from "../playerPatches";
@@ -13,7 +14,7 @@ export function applyBaseAttackOnEnter(
   card: CardInstance,
   battleBeforeEnter: CardInstance[],
 ): ComboOutcome {
-  if (!findNamedEffectByEffectId(card.cardId, "base_attack")) {
+  if (!activeNamedEffect(card, "base_attack")) {
     return { state, logs: [] };
   }
   if (

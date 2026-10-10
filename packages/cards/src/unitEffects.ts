@@ -22,10 +22,12 @@ export type {
 export type { NamedEffectTrigger as EffectTrigger } from "./effectTaxonomy";
 
 const blockCache = new Map<string, UnitEffectBlock | undefined>();
+const comboNumberCache = new Map<string, unknown>();
 let fullPlayableBlocks: Map<string, UnitEffectBlock> | null = null;
 
 export function resetUnitEffectBlockCache(): void {
   blockCache.clear();
+  comboNumberCache.clear();
   fullPlayableBlocks = null;
 }
 
@@ -35,6 +37,7 @@ function loadBlockForCard(cardId: string): UnitEffectBlock | undefined {
   }
   try {
     const doc = loadCardById(cardId, inferCatalogTierForCardId(cardId));
+    comboNumberCache.set(cardId, (doc as { comboNumber?: unknown }).comboNumber);
     const block = cardDocumentToUnitEffectBlock(doc);
     const value = unitEffectBlockHasData(block) ? block : undefined;
     blockCache.set(cardId, value);
@@ -117,14 +120,24 @@ export function buildFusionPartnerIdSet(): Set<string> {
   return ids;
 }
 
+/**
+ * 「○○からコンビネーションする」: コンビネーションは直前に出たユニット（左隣）との間にだけ成立する
+ * （ルール: R-CN-05）。battle の末尾（excludeInstanceId を除く）が左隣。左隣がビークルにライドしている
+ * ユニットなら、ライドの組（ライダーとビークル）のどちらかが一致すればよい。
+ */
 function battleHasPartner(
-  battle: Array<{ instanceId: string; cardId: string }>,
+  battle: Array<{ instanceId: string; cardId: string; mountedOnInstanceId?: string }>,
   partnerCardIds: string[],
   excludeInstanceId: string,
 ): boolean {
-  return battle.some(
-    (entry) => entry.instanceId !== excludeInstanceId && partnerCardIds.includes(entry.cardId),
-  );
+  const line = battle.filter((entry) => entry.instanceId !== excludeInstanceId);
+  const left = line.at(-1);
+  if (!left) return false;
+  if (partnerCardIds.includes(left.cardId)) return true;
+  const vehicle = left.mountedOnInstanceId
+    ? line.find((entry) => entry.instanceId === left.mountedOnInstanceId)
+    : undefined;
+  return !!vehicle && partnerCardIds.includes(vehicle.cardId);
 }
 
 /** バトル投入時に発火すべき NC 効果名（CN/NC または文面上書き）。 */
@@ -367,7 +380,7 @@ export function needsBattleEntryHandDiscard(cardId: string): boolean {
 }
 
 export function battleHasComboPartner(
-  battle: Array<{ instanceId: string; cardId: string }>,
+  battle: Array<{ instanceId: string; cardId: string; mountedOnInstanceId?: string }>,
   partnerCardIds: string[],
   excludeInstanceId: string,
 ): boolean {
@@ -381,4 +394,32 @@ export function findNamedEffectByEffectId(
   return loadBlockForCard(cardId)?.namedEffects.find(
     (named) => named.effectId === effectId,
   );
+}
+
+/**
+ * 名前つき効果が「ナンバーの欄（CN）」の効果か。NC の効果は、バトルエリアに出たときに NC が成立したときだけ有効
+ * （ルール: R-CN-01 / R-CN-02 / R-CN-03）。
+ * 数字のナンバーを持つカードの名前つき効果のうち、
+ * - trigger が nc / nc_or_combo_from のもの
+ * - ※の注記（ナンバーと無関係のルール文）でないもの。
+ *   カタログ上は「「SP1」…」の SP 部分だけが nc に分かれ、残りが conditional / on_attack 等で載ることがある
+ *   （RS-126【レッドビュート】、RS-138【ジェットスケボー】、RS-141【紐拳】、RS-162【サージングチョッパー】等）。
+ */
+export function isNcColumnNamedEffect(cardId: string, named: NamedUnitEffect): boolean {
+  // 数字のナンバーを持たないカード（M/L ユニット、ナンバー L/R 等）にはナンバーの欄の効果がない。
+  // カタログ上 trigger が nc でも、ジョイントコンビネーションで与える能力（RS-224）等は NC ではない。
+  if (!loadBlockForCard(cardId)) return false;
+  if (typeof comboNumberCache.get(cardId) !== "number") return false;
+  const type = named.trigger.type;
+  if (type === "nc" || type === "nc_or_combo_from") return true;
+  if (/^(unnamed|note_)/.test(named.effectId)) return false;
+  if ((named.text ?? "").trimStart().startsWith("※")) return false;
+  return true;
+}
+
+/** カードのナンバーの欄（CN）の名前つき効果。 */
+export function listNcColumnNamedEffects(cardId: string): NamedUnitEffect[] {
+  const block = loadBlockForCard(cardId);
+  if (!block) return [];
+  return block.namedEffects.filter((named) => isNcColumnNamedEffect(cardId, named));
 }

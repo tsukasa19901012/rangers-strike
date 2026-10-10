@@ -327,6 +327,19 @@ export function startBeatHammerChoice(
   });
 }
 
+/** 効果でラッシュエリアのユニットをバトルエリアに出せるか（※の出場制限・ホールドを満たせるか）。 */
+export function canEffectPutRushUnitIntoBattle(
+  state: GameState,
+  ownerId: PlayerId,
+  instanceId: string,
+): boolean {
+  const found = findInZone(state.players[ownerId], "rush", instanceId);
+  if (!found) return false;
+  const ready = autoHoldForBattleEntry(state, ownerId, found.card);
+  if (!ready) return false;
+  return canMoveUnitToBattle({ ...state, ...updatePlayer(state, ownerId, ready) }, ownerId, found.card, "rush");
+}
+
 function resolveBeatHammerChoice(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
   const pending = state.pendingEffectChoice!;
   if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };

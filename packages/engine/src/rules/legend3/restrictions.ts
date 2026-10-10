@@ -3,6 +3,8 @@ import {
   hasUnnamedRule,
   needsBattleEntryHandDiscard,
 } from "@rangers-strike/cards";
+import { elephantShieldMustTarget } from "./fieldEffects";
+import { activeNamedEffect } from "../ncGatedEffects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { isCostWindowSatisfied } from "../../core/costWindow";
@@ -27,15 +29,15 @@ import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers
 import { countReleasedCommands } from "../restrictions";
 import { getBattleEntryPowerDiscardCount } from "../batch07FieldEffects";
 import {
+  canEffectPutRushUnitIntoBattle,
   collectFieldUnitIds,
   startSelectUnitChoice,
 } from "../pendingChoices";
-import { findNamedEffectByEffectId } from "@rangers-strike/cards";
 import { keywordAllowsAttackIntoRush } from "../keywordGapRuntime";
 
 export function hasDarkDealInRush(state: GameState, playerId: PlayerId): boolean {
   return state.players[playerId].rush.some(
-    (c) => findNamedEffectByEffectId(c.cardId, "dark_deal"),
+    (c) => activeNamedEffect(c, "dark_deal"),
   );
 }
 
@@ -389,6 +391,10 @@ export function canAttackDefender(
 
   if (isVehicle(getDefinition(state.definitions, attacker.card.cardId))) return false;
 
+  // RS-158【エレファントシールド】: コンビネーションが成立している間、敵軍ユニットはこれ以外にアタックできない。
+  const mustTarget = elephantShieldMustTarget(state, defenderPlayerId);
+  if (mustTarget && mustTarget !== defenderInstanceId) return false;
+
   const attackerInRush = findInZone(attackerPlayer, "rush", attackerInstanceId);
   if (
     attackerInRush &&
@@ -505,10 +511,13 @@ export function tryLegend3BattleToRush(
   card: CardInstance,
   phasePlayerId: PlayerId,
 ): GameState {
-  if (!findNamedEffectByEffectId(card.cardId, "falcon_claw")) return state;
+  if (!activeNamedEffect(card, "falcon_claw")) return state;
 
   const enemyId = opponent(playerId);
-  const targets = collectFieldUnitIds(state, enemyId, Number.MAX_SAFE_INTEGER, ["rush"]);
+  // バトルエリアに出られない（※の出場制限を満たせない）ユニットは選べない。
+  const targets = collectFieldUnitIds(state, enemyId, Number.MAX_SAFE_INTEGER, ["rush"]).filter((id) =>
+    canEffectPutRushUnitIntoBattle(state, enemyId, id),
+  );
   if (targets.length === 0) return state;
 
   const withChoice = startSelectUnitChoice(state, {

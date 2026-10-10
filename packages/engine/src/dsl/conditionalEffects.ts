@@ -3,6 +3,7 @@ import { canRunEnterBattleConditionalEffect } from "../rules/namedUnitEffects";
 import { startSelectHandChoice, startSelectPowerChoice } from "../rules/pendingChoices";
 import { isDslInterpretableEffect } from "./dslCatalog";
 import { listDslEffectsForTrigger } from "./effectLookup";
+import { ncGateAllows } from "../rules/ncGatedEffects";
 
 /** DSL conditional 効果 — バトル投入時任意コスト。legacy より先に試行。 */
 export function tryStartDslConditionalChoice(
@@ -14,6 +15,8 @@ export function tryStartDslConditionalChoice(
   const effects = listDslEffectsForTrigger(card.cardId, "conditional");
   for (const effect of effects) {
     if (!canRunEnterBattleConditionalEffect(state, playerId, effect.id)) continue;
+    // ナンバーの欄の効果は NC が成立していなければ発動しない（R-CN-02）。
+    if (!ncGateAllows(card, effect.id)) continue;
     if (!isDslInterpretableEffect(effect)) continue;
     const keyword = effect.effects.find(
       (primitive) => primitive.type === "grant_keyword",

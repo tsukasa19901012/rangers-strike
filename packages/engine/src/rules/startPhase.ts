@@ -1,4 +1,5 @@
-import { findNamedEffectByEffectId, getCardEffect } from "@rangers-strike/cards";
+import { getCardEffect } from "@rangers-strike/cards";
+import { activeNamedEffect } from "./ncGatedEffects";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { checkWinner } from "../core/createGame";
 import { cardName, hasOperationEffect } from "../core/catalog";
@@ -30,7 +31,7 @@ export function releaseAllCommands(state: GameState, playerId: PlayerId): GameSt
 
 function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
   return cards
-    .filter((card) => findNamedEffectByEffectId(card.cardId, "falcon_claw"))
+    .filter((card) => activeNamedEffect(card, "falcon_claw"))
     .map((card) => card.instanceId);
 }
 
@@ -113,7 +114,8 @@ function returnBattleGroupToRush(
 
   const movedCards = player.battle
     .filter((c) => members.has(c.instanceId))
-    .map(prepareRegisterUnitReturnedToRush);
+    .map(prepareRegisterUnitReturnedToRush)
+    .map(({ jointComboGrants: _grants, ...rest }) => rest);
   const battle = player.battle.filter((c) => !members.has(c.instanceId));
   const effectQueue = collectBattleToRushEffectQueue(movedCards);
   return {
