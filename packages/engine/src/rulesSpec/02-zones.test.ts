@@ -214,8 +214,7 @@ describe("R-ZONE-04 エリア出入りで付加情報は消える", () => {
   });
 
   // 「ユニットでなくなった時点で…情報はすべて失われる」
-  // 既知の不具合: 未登録 — コマンドゾーンへ送っても registerHeld が残り、再ラッシュ時にホールド状態のまま
-  it.fails("R-ZONE-04: ホールド状態でコマンドゾーンに送られたユニットが再びラッシュされるとリリース状態（出典: grnrngr/faq-rider-2 RK-166 Q4）", () => {
+  it("R-ZONE-04: ホールド状態でコマンドゾーンに送られたユニットが再びラッシュされるとリリース状態（出典: grnrngr/faq-rider-2 RK-166 Q4）", () => {
     // ホールド状態のSユニットを追加条件でコマンドゾーンへ送り、ランドバルカンで再ラッシュする
     const heldS = { ...inst("SPEC-RESIST", "s"), commandHeld: true, registerHeld: true };
     const s0 = st({
@@ -248,8 +247,7 @@ describe("R-ZONE-04 エリア出入りで付加情報は消える", () => {
   });
 
   // 「エリアとエリア以外の間」（BA⇔RA は対象外）
-  // 既知の不具合: E8
-  it.fails("R-ZONE-04: スタートフェイズにバトルエリアからラッシュエリアへ戻ってもホールド状態は消えない（出典: atwiki/page-1512 の限定読み, page-157）", () => {
+  it("R-ZONE-04: スタートフェイズにバトルエリアからラッシュエリアへ戻ってもホールド状態は消えない（出典: atwiki/page-1512 の限定読み, page-157）", () => {
     const held = { ...inst("SPEC-RESIST", "r"), commandHeld: true, registerHeld: true };
     let s = st({
       phase: "start",

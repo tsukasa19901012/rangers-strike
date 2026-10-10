@@ -32,7 +32,7 @@ const canEnter = (s: GameState, id = w.instanceId) =>
 
 describe("R-KW-00 共通（キーワードは※記載のものだけ）", () => {
   // 「ダークウイング」はウイングではない
-  it.fails("R-KW-00: 効果名に「ウイング」を含むだけのユニットはウイングを発動できない（出典: docs/rules/07 R-KW-00、atwiki/page-2355 本文）", () => {
+  it("R-KW-00: 効果名に「ウイング」を含むだけのユニットはウイングを発動できない（出典: docs/rules/07 R-KW-00、atwiki/page-2355 本文）", () => {
     // 既知の不具合: E12（テキスト部分一致で判定）
     const darkWing = unitDef("RSPEC-DARKWING", {
       text: "【ダークウイング】これがバトルエリアに出たとき、敵軍Sユニットを1体選びホールドする。",

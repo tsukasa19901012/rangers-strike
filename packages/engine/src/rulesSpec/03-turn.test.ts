@@ -534,7 +534,7 @@ describe("R-START-02 戻すことはラッシュではない", () => {
   });
 
   // 「ホールド状態も消えない」(03-turn R-START-02 / R-ZONE-04)
-  it.fails("R-START-02: バトルエリアのホールド状態のユニット（レジストで留まったもの）は戻してもホールドのまま（出典: atwiki/page-157, atwiki/page-1512）", () => {
+  it("R-START-02: バトルエリアのホールド状態のユニット（レジストで留まったもの）は戻してもホールドのまま（出典: atwiki/page-157, atwiki/page-1512）", () => {
     // 既知の不具合: 未登録（prepareRegisterUnitReturnedToRush がラッシュエリアへ戻す際にホールドを解除する）
     let state = startOfPlayer2Turn({
       deck: cards("d", 3),
@@ -788,7 +788,7 @@ describe("R-START-05 引けなければ敗北", () => {
   });
 
   // 「カードをひくべきときにひけなかった場合はゲームに負けてしまいます」(faq-card-1 RS-027)
-  it.fails("R-START-05: ダイノガッツでひくべき枚数をひけなければ負ける（出典: grnrngr/faq-card-1 RS-027 Q4）", () => {
+  it("R-START-05: ダイノガッツでひくべき枚数をひけなければ負ける（出典: grnrngr/faq-card-1 RS-027 Q4）", () => {
     // 既知の不具合: E2（効果で山札からひけなくても敗北しない。ダイノガッツは山札不足でも途中で止まるだけ）
     const guts = inst("RS-027", "guts");
     const victim = inst("TST-UNIT-2", "victim"); // 必要パワー2
@@ -857,7 +857,7 @@ describe("R-START-06 「フェイズ開始時」の効果", () => {
   );
 
   // 「ターン開始時」の効果はホールド中のコマンドの有無に関係なく発動する
-  it.fails("R-START-06: ゲゲル（重ね10枚以上）のターン開始時の効果は、ホールド中の自軍コマンドがなくても発動する（出典: atwiki/page-1828）", () => {
+  it("R-START-06: ゲゲル（重ね10枚以上）のターン開始時の効果は、ホールド中の自軍コマンドがなくても発動する（出典: atwiki/page-1828）", () => {
     // 既知の不具合: E17（ホールド中のコマンドがないと発動しない）
     const gegeru = { ...inst("RK-081", "gegeru"), stackedCards: cards("st", 10) };
     let state = startOfPlayer2Turn({

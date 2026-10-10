@@ -70,7 +70,7 @@ describe("R-KW-MORPH-01 規定文", () => {
   });
 
   // 「判定はラッシュの手段であって、ラッシュされたカードがモーフを持つかではない」
-  it.fails("R-KW-MORPH-01: モーフを持つ敵軍ユニットが通常の手段（手札から）でラッシュされたときも、モーフは発動できる（出典: atwiki/page-1294 規定文「モーフ以外でラッシュされたとき」）", () => {
+  it("R-KW-MORPH-01: モーフを持つ敵軍ユニットが通常の手段（手札から）でラッシュされたときも、モーフは発動できる（出典: atwiki/page-1294 規定文「モーフ以外でラッシュされたとき」）", () => {
     // 既知の不具合: E16（判定がカード側の能力有無）
     const ENEMY_MORPH = unitDef("RSPEC-ENEMY-MORPH", { category: "WB", powerCost: 1, text: KW.morph, features: ["怪人"] });
     const s = enemyRushes({ rush: [m], command: [t] }, [ENEMY_MORPH], ENEMY_MORPH);
@@ -142,14 +142,14 @@ describe("R-KW-MORPH-02 自軍ゾーンと状態", () => {
   });
 
   // 「自軍ゾーン」は…のみ→「はい、間違いありません」
-  it.fails("R-KW-MORPH-02: 手札のユニットカードは置き換え先にならない（出典: atwiki/page-1294 A1）", () => {
+  it("R-KW-MORPH-02: 手札のユニットカードは置き換え先にならない（出典: atwiki/page-1294 A1）", () => {
     // 既知の不具合: E16（手札・ラッシュも候補）
     const s = enemyRushes({ rush: [m], hand: [t] });
     expect(morphCandidates(s)).not.toContain(t.instanceId);
   });
 
   // 「自軍ゾーン」はコマンド・パワーのみ（ラッシュエリアのユニットは含まない）
-  it.fails("R-KW-MORPH-02: 自軍ラッシュエリアのユニットは置き換え先にならない（出典: atwiki/page-1294 A1）", () => {
+  it("R-KW-MORPH-02: 自軍ラッシュエリアのユニットは置き換え先にならない（出典: atwiki/page-1294 A1）", () => {
     // 既知の不具合: E16（手札・ラッシュも候補）
     const s = enemyRushes({ rush: [m, t] });
     expect(morphCandidates(s)).not.toContain(t.instanceId);
@@ -162,7 +162,7 @@ describe("R-KW-MORPH-02 自軍ゾーンと状態", () => {
   });
 
   // 「送られるユニットはホールド…ラッシュされるカードはリリース」
-  it.fails("R-KW-MORPH-02: リリース状態のユニットとホールド状態のコマンドを置き換えると、コマンドゾーンへ行くユニットはホールド、出るカードはリリースになる（出典: atwiki/page-1294 A2）", () => {
+  it("R-KW-MORPH-02: リリース状態のユニットとホールド状態のコマンドを置き換えると、コマンドゾーンへ行くユニットはホールド、出るカードはリリースになる（出典: atwiki/page-1294 A2）", () => {
     // 既知の不具合: 04-#23（状態・位置を引き継がない）
     let s = enemyRushes({ rush: [m], command: [{ ...t, commandHeld: true }] });
     s = swap(s, t.instanceId);
@@ -179,7 +179,7 @@ describe("R-KW-MORPH-02 自軍ゾーンと状態", () => {
   });
 
   // 置き換えは位置を引き継ぐ（R-REPL-04）
-  it.fails("R-KW-MORPH-02: バトルエリアのユニットを置き換えると、出てくるカードは同じ並び順の位置に入る（出典: docs/rules/07 R-KW-MORPH-02、R-REPL-04）", () => {
+  it("R-KW-MORPH-02: バトルエリアのユニットを置き換えると、出てくるカードは同じ並び順の位置に入る（出典: docs/rules/07 R-KW-MORPH-02、R-REPL-04）", () => {
     // 既知の不具合: 04-#23（状態・位置を引き継がない）
     const left = inst("TST-UNIT-0", "left");
     const right = inst("TST-UNIT-0", "right");

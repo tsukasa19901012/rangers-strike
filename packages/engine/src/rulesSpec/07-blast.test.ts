@@ -39,8 +39,7 @@ function rushPhase(opts: { damage: number; power?: number; rush?: CardInstance[]
 
 describe("R-KW-BLAST-01 規定文", () => {
   // 「あと１点のダメージで負けるようなピンチのときに、追加条件を無視できる」
-  it.fails("R-KW-BLAST-01: ダメージ6点（残り1点）で自軍 L ユニットがなければ、追加条件を満たさずにラッシュできる（出典: grnrngr/faq-card-9 ブラスト Q1）", () => {
-    // 既知の不具合: 未登録（blastBypassesRushAdditionalCondition は真になるが、追加条件の素材がないとラッシュが合法手に出ず applyAction も拒否する）
+  it("R-KW-BLAST-01: ダメージ6点（残り1点）で自軍 L ユニットがなければ、追加条件を満たさずにラッシュできる（出典: grnrngr/faq-card-9 ブラスト Q1）", () => {
     const s = rushPhase({ damage: 6 });
     expect(canRush(s, b.instanceId)).toBe(true);
   });

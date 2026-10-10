@@ -458,8 +458,7 @@ describe("R-HOLD-01 コマンドはスタートフェイズに強制リリース
 
 describe("R-HOLD-02 ユニットのホールドは自動で解除されない", () => {
   // 「ホールド状態のユニットはスタートフェイズになってもリリースされず」
-  // 既知の不具合: E8
-  it.fails("R-HOLD-02: レジストでホールド状態のユニットは自軍スタートフェイズを経てもホールドのまま（出典: atwiki/page-157, page-1289）", () => {
+  it("R-HOLD-02: レジストでホールド状態のユニットは自軍スタートフェイズを経てもホールドのまま（出典: atwiki/page-157, page-1289）", () => {
     const s = st({
       phase: "end",
       activePlayer: "player2",
@@ -505,8 +504,7 @@ describe("R-HOLD-02 ユニットのホールドは自動で解除されない", 
 
 describe("R-HOLD-03 ホールド状態のユニットに制限はない", () => {
   // 「ホールド状態でも特にユニットとしての働きに制限はない」
-  // 既知の不具合: E8
-  it.fails("R-HOLD-03: ホールド状態のユニットもラッシュエリアからバトルエリアに出られる（出典: atwiki/page-157, page-1289）", () => {
+  it("R-HOLD-03: ホールド状態のユニットもラッシュエリアからバトルエリアに出られる（出典: atwiki/page-157, page-1289）", () => {
     const s = st({
       phase: "battle",
       player1: { rush: [{ ...inst("SPEC-RESIST", "r"), commandHeld: true, registerHeld: true }] },
@@ -518,8 +516,7 @@ describe("R-HOLD-03 ホールド状態のユニットに制限はない", () => 
   });
 
   // 「ライドオンやコンビネーションも当然可能」
-  // 既知の不具合: E8
-  it.fails("R-HOLD-03: ホールド状態のRCユニットもビークルにライドしてバトルエリアに出られる（出典: atwiki/page-1289）", () => {
+  it("R-HOLD-03: ホールド状態のRCユニットもビークルにライドしてバトルエリアに出られる（出典: atwiki/page-1289）", () => {
     const s = st({
       phase: "battle",
       player1: { rush: [{ ...inst("SPEC-RIDER", "r"), commandHeld: true, registerHeld: true }, inst("SPEC-VEHICLE-S", "v")] },
@@ -547,8 +544,7 @@ describe("R-HOLD-03 ホールド状態のユニットに制限はない", () => 
   });
 
   // 「一度レジストを行った後…当然使うことは出来ない」
-  // 既知の不具合: 未登録 — ホールド状態（レジスト使用済み）のユニットにも再度レジスト（use_register）が提示される
-  it.fails("R-HOLD-03: ホールド状態のユニットはレジストを使えない（バトルで撃破されると捨札）（出典: atwiki/page-157, page-1289）", () => {
+  it("R-HOLD-03: ホールド状態のユニットはレジストを使えない（バトルで撃破されると捨札）（出典: atwiki/page-157, page-1289）", () => {
     let s = st({
       phase: "battle",
       activePlayer: "player2",
@@ -566,8 +562,7 @@ describe("R-HOLD-03 ホールド状態のユニットに制限はない", () => 
   });
 
   // 「レジストとウイングなどホールドが必要な能力を複数持つ…普通片方しか使えない」
-  // 既知の不具合: 未登録 — レジストでホールド状態のウイング持ちが、ウイング未使用なのにラッシュエリアからアタックできる
-  it.fails("R-HOLD-03: ホールド状態のウイング持ちユニットはウイング（ホールドしてラッシュエリアからアタック）を使えない（出典: atwiki/page-157）", () => {
+  it("R-HOLD-03: ホールド状態のウイング持ちユニットはウイング（ホールドしてラッシュエリアからアタック）を使えない（出典: atwiki/page-157）", () => {
     const s = st({
       phase: "battle",
       player1: { rush: [{ ...inst("RS-622", "w"), commandHeld: true, registerHeld: true }] },

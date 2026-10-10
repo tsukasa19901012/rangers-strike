@@ -126,7 +126,7 @@ describe("R-KW-RESIST-03 「勝っても撃破」では不可", () => {
   const SP1_STRONG = unitDef("RSPEC-SP1-STRONG", { bp: 9000, sp: 1 });
 
   // 「「バトルに勝っても撃破される」の効果で撃破された場合は…できません」
-  it.fails("R-KW-RESIST-03: バトルに勝ったのに「バトルに勝っても撃破される」で撃破されたときはレジストできない（出典: atwiki/page-1289 Q3）", () => {
+  it("R-KW-RESIST-03: バトルに勝ったのに「バトルに勝っても撃破される」で撃破されたときはレジストできない（出典: atwiki/page-1289 Q3）", () => {
     // 既知の不具合: E9（防御側の分岐で除外していない）
     const r = inst(WINDIE.id, "r");
     const a = inst(SP1_WEAK.id, "a");
@@ -160,7 +160,7 @@ describe("R-KW-RESIST-04 リリース状態が必要／ホールドは続く", (
   }
 
   // 「リリース状態でなければ使えない」
-  it.fails("R-KW-RESIST-04: レジストでホールドされたユニットが同じターンに再びバトルで撃破されても、リリース状態でないのでレジストできない（出典: atwiki/page-1289 本文）", () => {
+  it("R-KW-RESIST-04: レジストでホールドされたユニットが同じターンに再びバトルで撃破されても、リリース状態でないのでレジストできない（出典: atwiki/page-1289 本文）", () => {
     // 既知の不具合: E8（再レジスト可）／04-#15（リリース状態を確認していない）
     let s = resistedOnce();
     expect(card(s, "player2", r.instanceId)?.commandHeld).toBe(true);
@@ -170,7 +170,7 @@ describe("R-KW-RESIST-04 リリース状態が必要／ホールドは続く", (
   });
 
   // 「もちろんリリース状態でなければ使えない」（効果でホールドされたユニット）
-  it.fails("R-KW-RESIST-04: 効果でホールドされているレジスト持ちはバトルで撃破されてもレジストできない（出典: atwiki/page-1289 本文）", () => {
+  it("R-KW-RESIST-04: 効果でホールドされているレジスト持ちはバトルで撃破されてもレジストできない（出典: atwiki/page-1289 本文）", () => {
     // 既知の不具合: 04-#15（リリース状態を確認していない）
     const held = { ...inst(RES.id, "held"), commandHeld: true };
     let s = state([RES, ATK], { phase: "battle", player1: { rush: [a1] }, player2: { battle: [held] } });
@@ -179,7 +179,7 @@ describe("R-KW-RESIST-04 リリース状態が必要／ホールドは続く", (
   });
 
   // 「リリースする効果のカードが無ければ…ずっとホールド状態のまま」
-  it.fails("R-KW-RESIST-04: レジストでホールドしたユニットは、持ち主のスタートフェイズにラッシュエリアへ戻ってもホールドのまま（出典: atwiki/page-1289 本文、R-HOLD-02）", () => {
+  it("R-KW-RESIST-04: レジストでホールドしたユニットは、持ち主のスタートフェイズにラッシュエリアへ戻ってもホールドのまま（出典: atwiki/page-1289 本文、R-HOLD-02）", () => {
     // 既知の不具合: E8（スタートで解除）
     let s = resistedOnce();
     s = act(s, { type: "end_phase", playerId: "player1" });

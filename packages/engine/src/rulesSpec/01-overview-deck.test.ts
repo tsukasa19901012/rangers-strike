@@ -232,8 +232,7 @@ describe("R-DECK-02 同名カードは3枚まで", () => {
 
 describe("R-DECK-03 3枚制限の例外はカード本文の注記で決まる", () => {
   // 「※このカードはデッキに好きな枚数入れてもよい。」
-  // 既知の不具合: E13
-  it.fails("R-DECK-03: 注記「好きな枚数」を持つ RK-303 ワームサナギ体（特徴 ワーム／怪人）は4枚以上入れられる（出典: atwiki/page-1278）", () => {
+  it("R-DECK-03: 注記「好きな枚数」を持つ RK-303 ワームサナギ体（特徴 ワーム／怪人）は4枚以上入れられる（出典: atwiki/page-1278）", () => {
     const entries = [{ cardId: "RK-303", count: 10 }, ...fillerEntries(30, ["ワームサナギ体"])];
     expect(nameErrors(entries)).toEqual([]);
     expect(validateDeckEntries(entries).ok).toBe(true);
@@ -262,8 +261,7 @@ describe("R-DECK-03 3枚制限の例外はカード本文の注記で決まる",
   });
 
   // 「戦闘員等無制限で入れることのできるカードもある」— 例外は注記で決まる
-  // 既知の不具合: E13（特徴「戦闘員」だけで無制限扱いしている）
-  it.fails("R-DECK-03: 注記の無い特徴「戦闘員」のカードは3枚まで（出典: atwiki/page-1739, page-71）", () => {
+  it("R-DECK-03: 注記の無い特徴「戦闘員」のカードは3枚まで（出典: atwiki/page-1739, page-71）", () => {
     const grunt: CardDefinition = {
       id: "TST-GRUNT",
       name: "テスト戦闘員",
@@ -284,8 +282,7 @@ describe("R-DECK-03 3枚制限の例外はカード本文の注記で決まる",
   });
 
   // 「好きな枚数入れてもよい」（RK-137 と RK-303 は同名「ワームサナギ体」）
-  // 既知の不具合: E13
-  it.fails("R-DECK-03: 同名の無制限カード RK-137 と RK-303 は合算しても制限されない（出典: atwiki/page-1278）", () => {
+  it("R-DECK-03: 同名の無制限カード RK-137 と RK-303 は合算しても制限されない（出典: atwiki/page-1278）", () => {
     const entries = [
       { cardId: "RK-137", count: 5 },
       { cardId: "RK-303", count: 5 },
@@ -682,8 +679,7 @@ describe("R-WIN-03 デッキアウト", () => {
   });
 
   // 「カードをひくべきときにひけなかった場合はゲームに負けてしまいます」
-  // 既知の不具合: E2（効果の「ひく」で山札切れでも敗北しない／ダイノガッツを山札不足で使用不可にしている 05-D3）
-  it.fails("R-WIN-03: ダイノガッツで山札から引いて捨てる途中で山札が尽きたら敗北（必要パワー2・山札1枚）（出典: grnrngr/faq-card-1 RS-027）", () => {
+  it("R-WIN-03: ダイノガッツで山札から引いて捨てる途中で山札が尽きたら敗北（必要パワー2・山札1枚）（出典: grnrngr/faq-card-1 RS-027）", () => {
     const attacker = inst("TST-UNIT-2", "a1");
     const defender = inst("TST-UNIT-2", "d1");
     const counter = inst("RS-027", "dg");

@@ -1008,7 +1008,7 @@ describe("R-DESTROY-01 撃破の定義", () => {
 
 describe("R-DESTROY-02 撃破 ≠ 捨札", () => {
   // 「「RS-016 ダイノ伝記」には、撃破されたことを無効にする効果はありません」(faq-card-1 RS-016 Q2)
-  it.fails("R-DESTROY-02: ダイノ伝記でアバレッドを場に留めても、撃破された事実は残り1点ダメージを受ける（出典: grnrngr/faq-card-1 RS-016 Q2・RS-054 Q3）", () => {
+  it("R-DESTROY-02: ダイノ伝記でアバレッドを場に留めても、撃破された事実は残り1点ダメージを受ける（出典: grnrngr/faq-card-1 RS-016 Q2・RS-054 Q3）", () => {
     // 既知の不具合: E10
     let s = st({
       phase: "battle",
@@ -1030,7 +1030,7 @@ describe("R-DESTROY-02 撃破 ≠ 捨札", () => {
   });
 
   // 「「RS-027 ダイノガッツ」には、撃破されたことを無効にする効果はありません」(faq-card-1 RS-027 Q6)
-  it.fails("R-DESTROY-02: ダイノガッツでアバレッドを場に留めても、1点ダメージを受ける（出典: grnrngr/faq-card-1 RS-027 Q6・RS-054 Q4）", () => {
+  it("R-DESTROY-02: ダイノガッツでアバレッドを場に留めても、1点ダメージを受ける（出典: grnrngr/faq-card-1 RS-027 Q6・RS-054 Q4）", () => {
     // 既知の不具合: E10
     let s = st({
       phase: "battle",
@@ -1045,7 +1045,7 @@ describe("R-DESTROY-02 撃破 ≠ 捨札", () => {
   });
 
   // 「撃破されたことを無効にはできません」(faq-card-1 RS-052 Q6)
-  it.fails("R-DESTROY-02: 超シールド進化でアバレッドのかわりに爆竜トリケラトプスを捨てても、アバレッドは撃破されており1点ダメージを受ける（出典: grnrngr/faq-card-1 RS-052 Q6・RS-054 Q5）", () => {
+  it("R-DESTROY-02: 超シールド進化でアバレッドのかわりに爆竜トリケラトプスを捨てても、アバレッドは撃破されており1点ダメージを受ける（出典: grnrngr/faq-card-1 RS-052 Q6・RS-054 Q5）", () => {
     // 既知の不具合: E10
     let s = st({
       phase: "battle",

@@ -26,7 +26,7 @@ function canPlayGaoMainBusterOn(s: GameState, target: string): boolean {
 
 describe("R-KW-00 共通（キーワードは※記載のものだけ）", () => {
   // 「【モスブレイカー】はブレイカーではない」
-  it.fails("R-KW-00: 効果名【モスブレイカー】を持つだけのユニットは、同名が場にいてもラッシュできる（ブレイカーではない）（出典: docs/rules/07 R-KW-00）", () => {
+  it("R-KW-00: 効果名【モスブレイカー】を持つだけのユニットは、同名が場にいてもラッシュできる（ブレイカーではない）（出典: docs/rules/07 R-KW-00）", () => {
     // 既知の不具合: E12（テキスト部分一致で判定）
     const MOTH = unitDef("RSPEC-MOTH", { name: "モスラ", text: "【モスブレイカー】これがバトルエリアに出たとき、敵軍Sユニットを1体選びホールドする。" });
     const s = state([MOTH], {
@@ -47,7 +47,7 @@ describe("R-KW-BREAKER-01 規定文", () => {
   });
 
   // 「本来のカード名がこれと同名の自軍ユニットまたは自軍ビークル」
-  it.fails("R-KW-BREAKER-01: 同名の自軍ビークルがあるときもブレイカー持ちはラッシュできない（出典: atwiki/page-2355 A1 規定文）", () => {
+  it("R-KW-BREAKER-01: 同名の自軍ビークルがあるときもブレイカー持ちはラッシュできない（出典: atwiki/page-2355 A1 規定文）", () => {
     // 既知の不具合: E15（場の同名がブレイカー持ちのときだけ禁止）
     const SAME_V = vehicleDef("RSPEC-SAME-V", { name: "仮面ライダーW・CJX" });
     const s = rushPhase([inst(BRK.id, "h")], [inst(SAME_V.id, "v")], [SAME_V]);
@@ -87,7 +87,7 @@ describe("R-KW-BREAKER-01 規定文", () => {
 
 describe("R-KW-BREAKER-02 同名ラッシュ制限", () => {
   // 「その逆はできない」（ブレイカー持ちは、ブレイカーなし同名がいるとラッシュ不可）
-  it.fails("R-KW-BREAKER-02: ブレイカーを持たない同名ユニットが自軍にいても、ブレイカー持ちはラッシュできない（出典: atwiki/page-2355 本文）", () => {
+  it("R-KW-BREAKER-02: ブレイカーを持たない同名ユニットが自軍にいても、ブレイカー持ちはラッシュできない（出典: atwiki/page-2355 本文）", () => {
     // 既知の不具合: E15（場の同名がブレイカー持ちのときだけ禁止）
     const s = rushPhase([inst(BRK.id, "h")], [inst(SAME_PLAIN.id, "f")]);
     expect(canRush(s, `${BRK.id}:h`)).toBe(false);
@@ -147,7 +147,7 @@ describe("R-KW-BREAKER-03 選ばれない範囲", () => {
   });
 
   // 「オペレーションの効果は防げない」
-  it.fails("R-KW-BREAKER-03: オペレーション（RS-245 ガオメインバスター）の効果ではブレイカー持ちを選べる（出典: atwiki/page-2355 本文）", () => {
+  it("R-KW-BREAKER-03: オペレーション（RS-245 ガオメインバスター）の効果ではブレイカー持ちを選べる（出典: atwiki/page-2355 本文）", () => {
     // 既知の不具合: E15（オペレーションからも保護）
     const b = inst(BRK.id, "b");
     const s = state([BRK, realDef("RS-245")], {

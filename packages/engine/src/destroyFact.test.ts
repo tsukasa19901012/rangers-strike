@@ -21,7 +21,13 @@ function abaredState(extra: { resist?: boolean } = {}) {
     definitions: {
       ...legendDefinitions,
       ...(extra.resist
-        ? { [ABARED]: { ...legendDefinitions[ABARED]!, features: ["レジスト"] } }
+        ? {
+            [ABARED]: {
+              ...legendDefinitions[ABARED]!,
+              // キーワードは本文の「※レジスト」表記で持つ（R-KW-00）
+              text: `※レジスト ${legendDefinitions[ABARED]!.text ?? ""}`,
+            },
+          }
         : {}),
     },
     phase: "battle",
