@@ -2451,6 +2451,21 @@ export function applyEffectChoiceSelect(
   if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
     return resolveSuperBrainKeepChoice(state, playerId, instanceId);
   }
+  if (pending.effectId === "chikara_tonfua_command_to_damage") {
+    // RS-211【稲妻超力トンファ】: 選んだ自分自身のコマンドを自分自身のパワーゾーンにダメージ（ウラ向き）として置く。
+    if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+    const player = state.players[playerId];
+    const found = findInZone(player, "command", instanceId);
+    if (!found) return { error: "invalid_target" };
+    const [card, command] = removeAt(player.command, found.index);
+    const nextPlayer = {
+      ...player,
+      command,
+      power: [...player.power, { ...card, commandHeld: undefined, faceDown: true }],
+      damage: player.damage + 1,
+    };
+    return finishChoice({ ...state, ...updatePlayer(state, playerId, nextPlayer) }, pending, "damage");
+  }
   if (pending.effectId === KUROKO_MEMORY_EFFECT_ID && pending.kurokoMeta) {
     const result = resolveKurokoMemoryChoice(state, playerId, instanceId);
     if ("error" in result) return result;

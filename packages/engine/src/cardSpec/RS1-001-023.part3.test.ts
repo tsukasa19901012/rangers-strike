@@ -247,8 +247,7 @@ describe("RS-018 隠流忍術", () => {
     "RS-018: atwiki Q&A（公式）— 仮面ライダー裁鬼「音撃斬・閻魔裁き」はアタック宣言→隠流忍術の可否→バトルする数字の宣言の順（出典: atwiki/page-242 Q3、grnrngr/faq-card-1 RS-018）— RK-050 の「バトルする数字の宣言」を公開APIで行う手段が見つからず未検証",
   );
 
-  it.fails("RS-018: atwiki Q&A（公式）— オーブルーが隠流忍術で選ばれたユニットを撃破したら、隠流忍術を使った相手が自分のコマンドをダメージにする（出典: atwiki/page-242 Q4、grnrngr/faq-card-1 RS-018）", () => {
-    // 既知の不具合: CARD-RS-018 （RS-211 側）オーブルー【稲妻超力トンファ】が「バトルで撃破したとき」ではなく進入時に、相手の手札をパワーゾーンに置かせる効果として発動するため、この Q&A の処理にならない
+  it("RS-018: atwiki Q&A（公式）— オーブルーが隠流忍術で選ばれたユニットを撃破したら、隠流忍術を使った相手が自分のコマンドをダメージにする（出典: atwiki/page-242 Q4、grnrngr/faq-card-1 RS-018）", () => {
     // 「「RS-018 隠流忍術」を発動した相手が、自分自身のコマンドゾーンからカードを１枚選び…ダメージにして置きます」
     const blue = inst("RS-211", "blue"); // CN3 → 3番目に出して NC を有効にする
     const def = inst("CS-S1", "def");
@@ -318,8 +317,7 @@ describe("RS-018 隠流忍術", () => {
     expect(canUseCounter(s, "player2", "RS-018:n")).toBe(false);
   });
 
-  it.fails("RS-018: atwiki Q&A（公式）— ガオシャークが自軍ラッシュエリアのSユニットにアタックしたとき、自軍バトルエリアのSユニットをかわりにバトルさせられる（出典: atwiki/page-242 Q10、grnrngr/faq-card-1 RS-018）", () => {
-    // 既知の不具合: CARD-RS-018 アタックされたユニットがラッシュエリアにいるとカウンターの反応窓（hasBattleCounterReactions）が開かず使えない
+  it("RS-018: atwiki Q&A（公式）— ガオシャークが自軍ラッシュエリアのSユニットにアタックしたとき、自軍バトルエリアのSユニットをかわりにバトルさせられる（出典: atwiki/page-242 Q10、grnrngr/faq-card-1 RS-018）", () => {
     const shark = inst("RS-154", "shark"); // ※敵軍ラッシュエリアのSユニットにアタックできる
     const rushS = inst("CS-S1", "rushS");
     const battleS = inst("CS-S2", "battleS");

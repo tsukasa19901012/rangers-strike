@@ -39,6 +39,7 @@ import {
   resolveFocusedBreakthroughDamage,
   unitQualifiesForFocusedBreakthrough,
   resolveBlackCondorDestroyDamage,
+  hasBattleNcEffect,
 } from "./namedUnitEffects";
 import { findCardOwner } from "./fieldLookup";
 import { canOfferRegister, toPendingRegister } from "./resist";
@@ -321,7 +322,10 @@ export function hasBattleCounterReactions(
   if (opponentInfiniteChainBlocks(state, defenderId)) return false;
 
   const defender = state.players[defenderId];
-  const defenderCard = findInZone(defender, "battle", defenderInstanceId)?.card;
+  // ラッシュエリアのユニットがアタックされたとき（ガオシャーク等）もカウンターを使える（faq-card-1 RS-018 Q10）。
+  const defenderCard =
+    findInZone(defender, "battle", defenderInstanceId)?.card ??
+    findInZone(defender, "rush", defenderInstanceId)?.card;
   if (!defenderCard) return false;
 
   for (const card of defender.hand) {
@@ -337,6 +341,42 @@ export function hasBattleCounterReactions(
   }
 
   return false;
+}
+
+export const INAZUMA_TONFA_CHOICE_EFFECT_ID = "chikara_tonfua_command_to_damage";
+
+/**
+ * RS-211 オーブルー【稲妻超力トンファ】（NC）: 自軍ターン中、これがバトルでユニットを撃破したとき、
+ * 相手は自分自身のコマンドゾーンからカードを1枚選び、自分自身のパワーゾーンにダメージにして置く。
+ * 撃破したユニットの持ち主は問わない（隠流忍術で選ばれた自軍ユニットでもよい。faq-card-1 RS-018 Q4）。
+ */
+function openInazumaTonfaChoice(
+  state: GameState,
+  strikerPlayerId: PlayerId,
+  strikerInstanceId: string,
+): GameState {
+  // アタックしたユニット側の処理なので、常に自軍ターン中（アタックするのはターンプレイヤー）。
+  const striker = state.players[strikerPlayerId].battle.find((c) => c.instanceId === strikerInstanceId);
+  if (!striker || striker.cardId !== "RS-211" || !hasBattleNcEffect(striker, "chikara_tonfua")) return state;
+  const enemyId = opponent(strikerPlayerId);
+  const commandIds = state.players[enemyId].command.map((c) => c.instanceId);
+  if (commandIds.length === 0) return state;
+  return {
+    ...state,
+    pendingEffectChoice: {
+      playerId: enemyId,
+      effectId: INAZUMA_TONFA_CHOICE_EFFECT_ID,
+      sourceCardId: "RS-211",
+      sourceInstanceId: strikerInstanceId,
+      kind: "select_command",
+      phasePlayerId: strikerPlayerId,
+      validInstanceIds: commandIds,
+      selectedInstanceIds: [],
+      selectCount: 1,
+      optional: false,
+    },
+    activePlayer: enemyId,
+  };
 }
 
 /** RK-008 メカニック忍者（自軍Sユニットがアタックされたときのカウンター）。 */
@@ -1175,6 +1215,7 @@ export function resolveBattlePendingCore(
       nextState = fb.state;
       extraLogs = fb.logs;
     }
+    nextState = openInazumaTonfaChoice(nextState, attackerId, pending.attackerInstanceId);
     if (refreshedAttackerFound.card.cardId === "RS-685") {
       const bc = resolveBlackCondorDestroyDamage(
         nextState,

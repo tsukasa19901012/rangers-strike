@@ -4,7 +4,7 @@ import type { DslCardContext } from "../../dsl/cardInterpreter";
 import { buildRematchContext } from "../../dsl/hashGrantKeywordBridge";
 import type { InterpretFn } from "../../dsl/interpretEffectRuntime";
 import { getDslEffectById } from "../../dsl/effectLookup";
-import { grantSp1ToBattleUnit } from "../namedUnitEffects";
+import { grantSp1ToBattleUnit, markBattleNcEffect } from "../namedUnitEffects";
 import { addTurnRuleModifier } from "../../core/scopedModifiers";
 import { opponent, updatePlayer } from "../../core/helpers";
 import { effectiveBp } from "../../core/catalog";
@@ -150,6 +150,14 @@ const handleDestroyRemaining: PatternHandler = (state, ctx, body) => {
 };
 
 const handleOpponentMust: PatternHandler = (state, ctx, body) => {
+  // 「これがバトルでユニットを撃破したとき」の NC 効果（RS-211【稲妻超力トンファ】）は、出たときには何もせず
+  // NC 成立だけを記録する。撃破時の処理はバトル解決（operationCounters の openInazumaTonfaChoice）。
+  if (/これがバトルでユニットを撃破したとき/.test(body) && ctx.triggerSourceInstanceId) {
+    return {
+      state: markBattleNcEffect(state, ctx.playerId, ctx.triggerSourceInstanceId, ctx.effectId),
+      detail: ctx.effectId,
+    };
+  }
   if (/コマンドゾーンからカードを1枚選び.*パワーゾーン/.test(body)) {
     const enemyId = opponent(ctx.playerId);
     const instanceId = ctx.triggerSourceInstanceId ?? `${ctx.sourceCardId}:field`;

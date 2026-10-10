@@ -89,6 +89,9 @@ export function effectChoiceHint(
       if (pending.effectId === "dark_dual_blade_command") {
         return "相手のコマンドを1枚選んで捨札にします";
       }
+      if (pending.effectId === "chikara_tonfua_command_to_damage") {
+        return "稲妻超力トンファ：自分のコマンドを1枚選んで、パワーゾーンにダメージとして置きます";
+      }
       if (pending.effectId === "ptera_arrow") {
         return "相手のホールド中コマンドを1枚選んで捨札にします";
       }
