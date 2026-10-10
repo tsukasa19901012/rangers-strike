@@ -2187,7 +2187,8 @@
       "【ブレイラウザー】"
     ],
     "expectedDslKeywords": [
-      "no_strike_after_rideoff"
+      "no_strike_after_rideoff",
+      "effect_card::RK-125::bureirauza"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -2446,7 +2447,13 @@
     "cardType": "unit",
     "powerCost": "5+",
     "category": "OT",
-    "textSnippets": [],
+    "textSnippets": [
+      "【電車斬り】"
+    ],
+    "expectedDslKeywords": [
+      "note_card::RK-140::koregaerianiarup",
+      "effect_card::RK-140::zan_ri"
+    ],
     "bp": 6000,
     "sp": "1/4",
     "size": "S"
@@ -2551,8 +2558,7 @@
       "【デネブキャンディー】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-146::denebukyandei",
-      "rk_fx::RK-146::denebukyandei_koreworashus"
+      "effect_card::RK-146::denebukyandei"
     ],
     "bp": 1000,
     "sp": "1/4",
@@ -2927,7 +2933,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-168::tenkomoridaze"
+      "effect_card::RK-168::tenkomoridaze"
     ],
     "bp": 5000,
     "sp": "1/4",
@@ -5855,7 +5861,13 @@
     "cardType": "unit",
     "powerCost": "7-",
     "category": "OT",
-    "textSnippets": [],
+    "textSnippets": [
+      "【電車斬り】"
+    ],
+    "expectedDslKeywords": [
+      "note_card::RK-334::koregaerianiarup",
+      "effect_card::RK-334::zan_ri"
+    ],
     "bp": 4500,
     "sp": "special",
     "size": "S"

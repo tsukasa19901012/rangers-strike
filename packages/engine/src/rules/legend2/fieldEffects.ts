@@ -170,8 +170,9 @@ export function trafficControlRequiresSameSize(
 }
 
 /**
- * RS-097 連獅子: SP1+ または ! の敵ユニットは戦闘進入にホールドが必要。
- * ルール: R-CONT-01 — 敵軍バトルエリアのハリケンレオンの数だけ重複する（faq-card-2 RS-097 Q7）。
+ * RS-097 連獅子: SP1 以上または「！」の敵軍ユニットがバトルエリアに出るために
+ * ホールドしなければならないコマンドの数（敵軍バトルエリアのハリケンレオンの数だけ重複）。
+ * ルール: R-ADD-07 — 同じ継続効果は枚数分重複する（RS-097 Q7）。
  */
 export function karakuriLionChainHoldCount(
   state: GameState,
@@ -188,15 +189,6 @@ export function karakuriLionChainHoldCount(
   const hasBang = def?.sp === "special" || def?.features?.includes("!");
   const effectiveSp = legend2EffectiveSp(state, defenderId, unit);
   return effectiveSp >= 1 || hasBang ? chains : 0;
-}
-
-export function karakuriLionChainBlocksEntry(
-  state: GameState,
-  defenderId: PlayerId,
-  unit: CardInstance,
-  heldCount: number,
-): boolean {
-  return heldCount < karakuriLionChainHoldCount(state, defenderId, unit);
 }
 
 export function findLegend2NamedEffectOnField(

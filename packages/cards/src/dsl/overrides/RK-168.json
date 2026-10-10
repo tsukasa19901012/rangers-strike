@@ -1,0 +1,34 @@
+{
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "tenkomoridaze",
+      "name": "てんこもりだぜ！",
+      "text": "自軍ターン中、これがバトルエリアに出たとき、パワーゾーンでオモテ向きになっている「モモタロス」「ウラタロス」「キンタロス」「リュウタロス」のカードを捨札にしたときに発動する効果は、捨札にせずに発動できる。",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_card::RK-168::tenkomoridaze",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
+    }
+  ]
+}

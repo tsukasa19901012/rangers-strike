@@ -7,7 +7,7 @@ import { cardCategories } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
 import type { GrantKeywordContext } from "../dsl/grantKeyword";
 import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
-import { opponent, updatePlayer } from "../core/helpers";
+import { applyPlayerDamage, opponent, updatePlayer } from "../core/helpers";
 import { openEffectChoice, applyUnitLeave } from "./pendingChoices";
 
 /** RS-496 / XP-010: 敵ダメージ1枚をオモテに→敵オモテ向きパワー1枚をダメージに。 */
@@ -294,8 +294,14 @@ export function resolveHoldEntryDestroy(
     return fs.size === targetFeatures.size && [...fs].every((f) => targetFeatures.has(f));
   });
   if (matchIdx >= 0) {
+    // ルール: R-ERR-XG3-072 — ウラ向きにしたカードは「ダメージにする」（相手は1点受ける）。
     const power = enemy.power.map((c, i) => (i === matchIdx ? { ...c, faceDown: true } : c));
-    nextState = { ...nextState, ...updatePlayer(nextState, enemyId, { ...enemy, power }) };
+    let damaged = { ...enemy, power, damage: enemy.damage + 1 };
+    // atwiki/page-1963 Q1: RS-348 メディテーションの追加ダメージも受ける（追加分に追加はない）。
+    if (damaged.operation.some((c) => c.cardId === "RS-348")) {
+      damaged = applyPlayerDamage(damaged, 1);
+    }
+    nextState = { ...nextState, ...updatePlayer(nextState, enemyId, damaged) };
   }
   return nextState;
 }

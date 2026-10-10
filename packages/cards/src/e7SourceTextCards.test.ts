@@ -106,9 +106,11 @@ describe("E7 効果なしで動いていた 13 枚", () => {
   it("XG1-029 【無敵の竜人魂】の対象は敵軍バトルエリアの BP8000 以下の L ユニット", () => {
     const effect = primitives("XG1-029", "no");
     expect(effect?.trigger).toEqual({ type: "nc" });
+    // 対象（本来BP8000以下の L）と「DA なら SP1」は engine の rules/errataCardEffects.ts が処理する
+    // （挙動テスト: packages/engine/src/errataCardEffects.test.ts）。
     expect(effect?.effects[0]).toMatchObject({
-      type: "choose",
-      valid: { zone: "battle", owner: "opponent", filter: { size: "L", maxBp: 8000 } },
+      type: "grant_keyword",
+      keyword: "effect_card::XG1-029::no",
     });
   });
 

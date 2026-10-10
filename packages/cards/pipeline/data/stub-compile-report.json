@@ -1,6 +1,6 @@
 {
   "summary": {
-    "generatedAt": "2026-10-10T04:10:32.052Z",
+    "generatedAt": "2026-10-10T07:54:52.408Z",
     "grades": [
       "A",
       "B",
@@ -9456,7 +9456,7 @@
       "id": "XG1-048",
       "grade": "D",
       "validationOk": true,
-      "effectCount": 3,
+      "effectCount": 2,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -10050,7 +10050,7 @@
       "id": "XG2-014",
       "grade": "D",
       "validationOk": true,
-      "effectCount": 3,
+      "effectCount": 2,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -11814,7 +11814,7 @@
       "id": "XG4-004",
       "grade": "D",
       "validationOk": true,
-      "effectCount": 3,
+      "effectCount": 2,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -11985,7 +11985,7 @@
       "id": "XG4-023",
       "grade": "C",
       "validationOk": true,
-      "effectCount": 3,
+      "effectCount": 2,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -13956,7 +13956,7 @@
       "id": "XG6-044",
       "grade": "D",
       "validationOk": true,
-      "effectCount": 4,
+      "effectCount": 3,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true

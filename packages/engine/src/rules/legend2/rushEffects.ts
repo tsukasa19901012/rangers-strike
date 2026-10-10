@@ -1,3 +1,4 @@
+import { releasedCommandUnitIds, startEffectRush } from "../effectRush";
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition } from "../../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
@@ -132,24 +133,19 @@ export function resolveLegend2OnRushEffects(
       break;
     }
     case "air_transport": {
-      const targets = rusher.command
-        .filter((c) => {
-          if (c.commandHeld) return false;
-          const def = getDefinition(state.definitions, c.cardId);
-          return def?.type === "unit" && def.size === "M";
-        })
-        .map((c) => c.instanceId);
-      const withChoice = startSelectCommandChoice(nextState, {
+      // ルール: R-RUSH-21 — 「ただしラッシュのための必要パワーと追加条件は満たすこと」。
+      // ルール: R-RUSH-22 — 出したMユニットにも「ラッシュしたとき」誘発と窓がある。
+      nextState = startEffectRush(nextState, {
         playerId: rusherPlayerId,
+        phasePlayerId,
         effectId,
         sourceCardId: cardId,
-        phasePlayerId,
-        commandFilter: "released",
-        commandAction: "rush",
-        optional: true,
-        validInstanceIds: targets,
+        fromZone: "command",
+        candidates: releasedCommandUnitIds(nextState, rusherPlayerId, "M"),
+        maxCount: 1,
+        requireConditions: true,
+        alwaysAsk: true,
       });
-      if (withChoice) nextState = withChoice;
       break;
     }
   }

@@ -22,40 +22,11 @@
       "trigger": {
         "type": "nc"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "L",
-            "maxBp": 8000
-          }
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "L",
-              "maxBp": 8000
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "effect_card::XG1-029::no",
+          "duration": "turn"
         }
       ],
       "optional": true

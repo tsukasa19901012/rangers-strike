@@ -59,7 +59,13 @@
     "cardType": "unit",
     "powerCost": "7+",
     "category": "ET",
-    "textSnippets": [],
+    "textSnippets": [
+      "【マックスノバ】"
+    ],
+    "expectedDslKeywords": [
+      "blast",
+      "sp_plus1_per_own_discard_6"
+    ],
     "bp": 17000,
     "sp": 1,
     "size": "L"

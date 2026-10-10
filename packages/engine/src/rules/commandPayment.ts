@@ -57,7 +57,7 @@ import {
 } from "../dsl/dslCatalog";
 import { collectTargetInstanceIds } from "../dsl/targetSelectors";
 import { operationFizzles } from "./operationFizzle";
-import { canCompleteRushAfterCommandPayment } from "./rushDeclaration";
+import { canCompleteRushAfterCommandPayment, rushPowerBudget } from "./rushDeclaration";
 import {
   collectHoldExtraCommandCandidates,
   needsHoldExtraCommand,
@@ -156,31 +156,15 @@ export function getBattleEntryPaymentNeeds(
   if (canMoveUnitToBattle(state, playerId, unit, "rush")) return null;
 
   const player = state.players[playerId];
-  const unitHold = getBattleEntryHoldCount(unit.cardId);
+  // ルール: R-ADD-07 — 「ホールドしなければ出られない」制限（※・稲妻重力エネルギー・ハリケンレオン）は
+  // 1つずつ別々に、出る直前にリリース状態のコマンドを新たにホールドして満たす。
   const requiredTotal = requiredBattleEntryHolds(state, playerId, unit);
-  const held = countHeldCommands(player);
-  const battleEligible = countBattleEntryEligibleHolds(player);
+  if (requiredTotal <= 0) return null;
+  if (isCostWindowSatisfied(player, "battle_entry_hold")) return null;
+  if (countReleasedCommands(player) < requiredTotal) return null;
 
-  const holdShortfall = Math.max(0, requiredTotal - held);
-  const noteEligibleShortfall = Math.max(0, unitHold - battleEligible);
-  const needsNoteConfirm = unitHold > 0 && !isCostWindowSatisfied(player, "battle_entry_hold");
-
-  if (!needsNoteConfirm && holdShortfall <= 0) {
-    return null;
-  }
-
-  const eligibleNeeded = needsNoteConfirm
-    ? noteEligibleShortfall > 0
-      ? noteEligibleShortfall
-      : unitHold
-    : 0;
-  const totalNeeded = Math.max(holdShortfall, eligibleNeeded);
-  if (totalNeeded <= 0) return null;
-
-  const unheld = countReleasedCommands(player);
-  if (unheld < totalNeeded) return null;
-
-  return { eligibleNeeded, totalNeeded };
+  const unitHold = Math.min(getBattleEntryHoldCount(unit.cardId), requiredTotal);
+  return { eligibleNeeded: unitHold, totalNeeded: requiredTotal };
 }
 
 function callLeadKindForContinuation(
@@ -753,7 +737,7 @@ export function buildPaymentFromInitiateAction(
         action.zordMaterialInstanceId,
         action.zordMothershipHoldInstanceIds,
         action.zordMaterialDestination,
-        undefined,
+        rushPowerBudget(state, playerId, player, def),
         { ...state, playerId },
         action.zordMaterialInstanceIds,
         action.zordExtraCommandHoldInstanceIds,

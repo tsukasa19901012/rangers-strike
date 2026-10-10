@@ -16,6 +16,7 @@ import {
   parsePowerCost,
 } from "../core/catalog";
 import { isShironLightRushTarget } from "./shironLight";
+import { rushPowerBudget } from "./rushDeclaration";
 import { countAvailablePower, effectivePowerCost } from "../core/power";
 import { findInZone } from "../core/helpers";
 import { buildCategoryPayment, buildMothershipHoldPayment } from "./commandPayment";
@@ -73,7 +74,7 @@ export function hasLegalZordRush(
       undefined,
       undefined,
       undefined,
-      undefined,
+      rushPowerBudget(state, playerId, player, def!),
       { ...state, playerId },
     );
   }
@@ -101,7 +102,7 @@ export function hasLegalZordRush(
       variant.zordMaterialInstanceId,
       variant.zordMothershipHoldInstanceIds,
       variant.zordMaterialDestination,
-      undefined,
+      rushPowerBudget(state, playerId, player, def!),
       { ...state, playerId },
     ),
   );
@@ -113,7 +114,8 @@ function canAffordZordPower(
   def: NonNullable<ReturnType<typeof getDefinition>>,
 ): boolean {
   const cost = effectivePowerCost(state, playerId, parsePowerCost(def.powerCost));
-  return countAvailablePower(state, playerId) >= cost;
+  // ルール: R-RUSH-11 — アブレラ【闇の取引】等の補填を含めて、追加条件の実行前に確認する。
+  return rushPowerBudget(state, playerId, state.players[playerId], def) >= cost;
 }
 
 /** advanceZordSetup が現在のウィザードステップで受け付ける解決。 */
@@ -459,6 +461,30 @@ export function advanceZordSetup(
       return { kind: "error", error: "invalid_destination" };
     }
 
+    // ルール: R-ADD-04 — 「Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする」（RS-197 等）は
+    // 必要な体数だけ素材を選ぶ。
+    const needed = zordMaterialUnitCount(state, setup.zordCardId);
+    if (needed > 1) {
+      const chosen = [...(setup.chosenMaterialIds ?? []), materialId];
+      if (chosen.length < needed) {
+        const remaining = setup.validInstanceIds.filter((id) => !chosen.includes(id));
+        if (remaining.length < needed - chosen.length) {
+          return { kind: "error", error: "invalid_material" };
+        }
+        return {
+          kind: "continue",
+          setup: {
+            ...setup,
+            step: "material",
+            chosenMaterialIds: chosen,
+            materialDestination: destination,
+            validInstanceIds: remaining,
+          },
+        };
+      }
+      return completeMultiZordPayment(state, setup, chosen, destination);
+    }
+
     return completeZordPayment(state, setup, materialId, destination);
   }
 
@@ -475,6 +501,61 @@ export function advanceZordSetup(
   }
 
   return { kind: "error", error: "invalid_step" };
+}
+
+function zordMaterialUnitCount(state: GameState, zordCardId: string): number {
+  const def = getDefinition(state.definitions, zordCardId);
+  const condition = getZordCondition(zordCardId);
+  if (!condition || !isSendSUnitZordCondition(condition)) return 1;
+  const count = def?.rushAdditionalCondition?.unitCount;
+  return typeof count === "number" && count > 1 ? count : 1;
+}
+
+function completeMultiZordPayment(
+  state: GameState,
+  setup: PendingZordSetup,
+  materialInstanceIds: string[],
+  materialDestination: ZordMaterialDestination | undefined,
+): ZordSetupAdvanceResult {
+  const playerId = setup.playerId;
+  const player = state.players[playerId];
+  const def = getDefinition(state.definitions, setup.zordCardId);
+  if (!def) return { kind: "error", error: "invalid_card" };
+  if (
+    materialDestination === "command" &&
+    player.command.length + materialInstanceIds.length > COMMAND_ZONE_MAX
+  ) {
+    return { kind: "error", error: "invalid_destination" };
+  }
+  const shironRush = isShironLightRushTarget(player, setup.zordInstanceId);
+  if (shironRush || isCostWindowSatisfied(player, "rush_category")) {
+    return {
+      kind: "rush",
+      action: {
+        type: "rush",
+        playerId,
+        instanceId: setup.zordInstanceId,
+        zordMaterialInstanceIds: materialInstanceIds,
+        zordMaterialDestination: materialDestination,
+      },
+    };
+  }
+  const payment = buildCategoryPayment(
+    state,
+    playerId,
+    setup.zordInstanceId,
+    setup.zordCardId,
+    cardCategories(def),
+    {
+      type: "rush",
+      zordMaterialInstanceIds: materialInstanceIds,
+      zordMaterialDestination: materialDestination,
+    },
+    false,
+    { perRushPayment: true },
+  );
+  if (payment) return { kind: "payment", payment };
+  return { kind: "error", error: "cannot_complete_zord" };
 }
 
 function completeZordDownPayment(
@@ -498,7 +579,7 @@ function completeZordDownPayment(
         materialInstanceId,
         undefined,
         materialDestination,
-        undefined,
+        rushPowerBudget(state, playerId, player, def!),
         { ...state, playerId },
       )
     : canRushUnit(
@@ -509,7 +590,7 @@ function completeZordDownPayment(
         materialInstanceId,
         undefined,
         materialDestination,
-        undefined,
+        rushPowerBudget(state, playerId, player, def!),
         { ...state, playerId },
       );
 
@@ -593,7 +674,7 @@ function completeZordPayment(
           materialInstanceId,
           undefined,
           materialDestination,
-          undefined,
+          rushPowerBudget(state, playerId, player, def!),
           { ...state, playerId },
         )
       : canRushUnit(
@@ -604,7 +685,7 @@ function completeZordPayment(
           materialInstanceId,
           undefined,
           materialDestination,
-          undefined,
+          rushPowerBudget(state, playerId, player, def!),
           { ...state, playerId },
         ))
   ) {

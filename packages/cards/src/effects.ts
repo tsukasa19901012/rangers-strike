@@ -207,6 +207,16 @@ export function getCardEffect(cardId: string): CardEffectMeta | undefined {
         target: staticMeta?.target,
       };
     }
+    // コマンダー（XG2-030 等）: デッキに入らないが、効果文は参照できるようにする。
+    if (doc.type === "commander" && doc.effects?.length) {
+      const block = firstEffectBlock(doc)!;
+      return {
+        effectId: resolveWiredEffectId(doc, block, staticMeta),
+        text: resolveEffectText(cardId, doc, block, staticMeta),
+        kind: "permanent",
+        target: staticMeta?.target,
+      };
+    }
     if (doc.type === "operation" && doc.effects?.length) {
       const block = firstEffectBlock(doc)!;
       return {

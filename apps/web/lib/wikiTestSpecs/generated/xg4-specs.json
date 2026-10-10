@@ -45,8 +45,7 @@
     ],
     "expectedDslKeywords": [
       "can_ride_vehicle_ryo",
-      "effect_card::XG4-004::wanpano",
-      "effect_card::XG4-004::wanpanokoreworashus"
+      "effect_card::XG4-004::wanpano"
     ],
     "bp": 2000,
     "sp": null,
@@ -398,8 +397,7 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_reanimate_named_from_discard",
-      "effect_card::XG4-023::choninponoku",
-      "effect_card::XG4-023::choninponokukomandowokin"
+      "effect_card::XG4-023::choninpo_noku"
     ],
     "bp": 3500,
     "sp": 1,

@@ -59,7 +59,7 @@
 | E4 | ターン終了で両プレイヤーの「このターン」修正を消す | ✅ `finalizeTurnEnd` |
 | E5 | ブラスト条件 | ✅ `blastBypassesRushAdditionalCondition`（閾値−1 かつ L なし、ブレイカー判定を先に） |
 | E6 | クロスの向き | ✅ `crossReductionFor` / `crossReducedNumber`（CN・分数SP分母を減らす） |
-| E7 | 効果なしで動いている13枚 | 一部✅ 全13枚に text と効果定義。原文どおりに動くのは RS-230, PR-016, XG1-030, XG3-005, XG5-014。下記の残りあり |
+| E7 | 効果なしで動いている13枚 | ✅ 全13枚。RK-334 の効果名無効化だけ未実装（下記） |
 
 ### E5 ブラスト（`packages/engine/src/keywords/battleKeywords.ts` `blastBypassesRushAdditionalCondition`）
 
@@ -87,9 +87,14 @@ PR-015, PR-016, RK-140, RK-334, RS-230, RS-288, XG1-028, XG1-029, XG1-030, XG1-0
 
 **2026-10-10 対応済み**: 原因は `docs/wiki/scripts/sync-cards-from-atwiki.mjs` が全角「テキスト：」しか拾わなかったこと
 （＋ `generateDsl.ts` の `??` で空文字が残っていた）。抽出を直し、監査 `npm run audit:source-effect-coverage` を追加（`pipeline:all` に組込み）。
-残り:
-- 一部: XG1-029（DA なら SP1 が未実装）、XG1-062（ワイルドサイクロンは無条件1点の近似）
-- 未実装: PR-015 粒子斬り、RK-140/334 のロック注記と電車斬り、RS-288 の2効果、XG1-028 の入れ替え、XG6-015 の L コンビ効果
+**2026-10-10 残りも対応**（`packages/engine/src/rules/errataCardEffects.ts`、テスト `packages/engine/src/errataCardEffects.test.ts`）:
+- XG1-029: 本来BP8000以下の L を撃破し、DA ならこのターン SP1。
+- XG1-062: 敵軍バトルエリアの S を好きな数ホールド、BP合計10000ごとに1点。
+- PR-015（と RS-127）: 自軍ターン・任意、OT コマンド2つ→「SP2」（従来は SP+2）・BP+3000、対象はこのユニットだけ。
+- RK-140/RK-334: ※必要パワー2以下のユニットはバトルエリアに出られない（両軍）。RK-140【電車斬り】は常駐置き場の DEN-O ユニットを捨札→1点。RK-334【電車斬り】はイマジン4種がラッシュエリアにあれば SP2（4種すべてと解釈）。RK-334 の「効果名を持つテキストは無効」は未実装。
+- RS-288: ※獣奏剣のホールド要件（ホールドできる「獣奏剣」がなければ出られず、出るとき自動でホールド）、【ドラゴンハーレー】はターン終了時に BP3000 のユニットを1体撃破。
+- XG1-028: 起動効果（自軍ラッシュフェイズにこれを捨札→手札のアバレンオーをラッシュエリアへ）、※ホールド中はストライク不可。
+- XG6-015: L からのコンビネーション（joint_combo_r）で相手がオモテ向きのカードか手札を1枚捨札。
 - RS-055 など29枚の wiki md も同じ原因で「効果文: UNKNOWN」のまま（リポジトリ側の効果文で動作中）
 
 ## P1 以降

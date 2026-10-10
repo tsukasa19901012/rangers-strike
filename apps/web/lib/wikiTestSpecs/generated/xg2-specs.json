@@ -259,7 +259,8 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
-      "SP1"
+      "SP1",
+      "effect_card::XG2-014::chikara_chikara"
     ],
     "bp": 5000,
     "sp": "special",

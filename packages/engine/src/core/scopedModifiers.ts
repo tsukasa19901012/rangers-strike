@@ -85,10 +85,7 @@ export function addTurnRuleModifier(
   return addScopedRuleModifier(player, ruleId, "turn", options);
 }
 
-/**
- * 「次の相手ターン」の効果。発動元が場を離れても有効（ルール: R-RES-07）。
- * 今のターンの終了時に turn スコープへ昇格し、そのターンの終了で消える。
- */
+/** 次のターンだけ有効なルール修飾子（ターン終了時に turn へ繰り上がる）。 */
 export function addNextTurnRuleModifier(
   player: PlayerState,
   ruleId: TurnRuleId | string,

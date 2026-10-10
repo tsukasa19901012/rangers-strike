@@ -839,7 +839,12 @@
     "cardType": "unit",
     "powerCost": "6+",
     "category": "OT",
-    "textSnippets": [],
+    "textSnippets": [
+      "【バイオ粒子斬り】"
+    ],
+    "expectedDslKeywords": [
+      "effect_card::PR-015::bioparticleslash"
+    ],
     "bp": 11000,
     "sp": 1,
     "size": "L"
@@ -851,7 +856,14 @@
     "cardType": "unit",
     "powerCost": "7-",
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【アバレスラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "auto_battle_entry_each_turn",
+      "on_destroy_reanimate_named_from_discard",
+      "SP1"
+    ],
     "bp": 5500,
     "sp": "special",
     "size": "S"
@@ -3230,7 +3242,8 @@
       "【ブレイラウザー】"
     ],
     "expectedDslKeywords": [
-      "no_strike_after_rideoff"
+      "no_strike_after_rideoff",
+      "effect_card::RK-125::bureirauza"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -3489,7 +3502,13 @@
     "cardType": "unit",
     "powerCost": "5+",
     "category": "OT",
-    "textSnippets": [],
+    "textSnippets": [
+      "【電車斬り】"
+    ],
+    "expectedDslKeywords": [
+      "note_card::RK-140::koregaerianiarup",
+      "effect_card::RK-140::zan_ri"
+    ],
     "bp": 6000,
     "sp": "1/4",
     "size": "S"
@@ -3594,8 +3613,7 @@
       "【デネブキャンディー】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-146::denebukyandei",
-      "rk_fx::RK-146::denebukyandei_koreworashus"
+      "effect_card::RK-146::denebukyandei"
     ],
     "bp": 1000,
     "sp": "1/4",
@@ -3970,7 +3988,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-168::tenkomoridaze"
+      "effect_card::RK-168::tenkomoridaze"
     ],
     "bp": 5000,
     "sp": "1/4",
@@ -6898,7 +6916,13 @@
     "cardType": "unit",
     "powerCost": "7-",
     "category": "OT",
-    "textSnippets": [],
+    "textSnippets": [
+      "【電車斬り】"
+    ],
+    "expectedDslKeywords": [
+      "note_card::RK-334::koregaerianiarup",
+      "effect_card::RK-334::zan_ri"
+    ],
     "bp": 4500,
     "sp": "special",
     "size": "S"
@@ -8062,7 +8086,9 @@
     "cardType": "operation",
     "powerCost": 3,
     "category": "ET",
-    "textSnippets": [],
+    "textSnippets": [
+      "※常駐"
+    ],
     "expectedDslKeywords": [
       "note_card::RS-003::nobatorufueizuni"
     ],
@@ -8531,7 +8557,7 @@
     "powerCost": 3,
     "category": "ET",
     "textSnippets": [
-      "自分自身のターンを終えるとき、自分自身のコマンド"
+      "※常駐"
     ],
     "operationKind": "permanent",
     "expectedMechanisms": [
@@ -11926,7 +11952,14 @@
     "cardType": "unit",
     "powerCost": "7-",
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【アバレスラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "auto_battle_entry_each_turn",
+      "on_destroy_reanimate_named_from_discard",
+      "SP1"
+    ],
     "bp": 5500,
     "sp": "special",
     "size": "S"
@@ -12920,7 +12953,13 @@
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【ドラゴンハーレー】"
+    ],
+    "expectedDslKeywords": [
+      "note_card::RS-288::koreha_ken_wotsu",
+      "effect_card::RS-288::doragonhare"
+    ],
     "bp": 6000,
     "sp": null,
     "size": "M"
@@ -13959,6 +13998,9 @@
     "category": "ET",
     "textSnippets": [
       "自軍山札を見て、追加条件を持たずDAを持たないS"
+    ],
+    "expectedDslKeywords": [
+      "effect_card::RS-349::deck_to_hand"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -20898,7 +20940,14 @@
     "cardType": "unit",
     "powerCost": "5+",
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【アバレンオーになりかけだから…】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "note_card::XG1-028::korehahorudonoto",
+      "effect_card::XG1-028::abarenoninarikakedakara"
+    ],
     "bp": 8000,
     "sp": 1,
     "size": "L"
@@ -20910,7 +20959,13 @@
     "cardType": "unit",
     "powerCost": "7-",
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【無敵の竜人魂】"
+    ],
+    "expectedDslKeywords": [
+      "on_destroy_reanimate_named_from_discard",
+      "effect_card::XG1-029::no"
+    ],
     "bp": 5500,
     "sp": "special",
     "size": "S"
@@ -20922,7 +20977,14 @@
     "cardType": "unit",
     "powerCost": "7-",
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【キラークロー】"
+    ],
+    "expectedDslKeywords": [
+      "on_destroy_reanimate_named_from_discard",
+      "wing",
+      "SP1"
+    ],
     "bp": 4500,
     "sp": "special",
     "size": "S"
@@ -21250,8 +21312,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "effect_card::XG1-048::erekihikari",
-      "effect_card::XG1-048::erekihikariyunitowondem"
+      "effect_card::XG1-048::ereki_hikari"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -21491,7 +21552,13 @@
     "cardType": "unit",
     "powerCost": "7-",
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【ワイルドサイクロン】"
+    ],
+    "expectedDslKeywords": [
+      "on_destroy_reanimate_named_from_discard",
+      "effect_card::XG1-062::wairudosaikuron"
+    ],
     "bp": 4500,
     "sp": "1/2",
     "size": "S"
@@ -22454,7 +22521,8 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
-      "SP1"
+      "SP1",
+      "effect_card::XG2-014::chikara_chikara"
     ],
     "bp": 5000,
     "sp": "special",
@@ -24075,7 +24143,13 @@
     "cardType": "unit",
     "powerCost": "7+",
     "category": "ET",
-    "textSnippets": [],
+    "textSnippets": [
+      "【マックスノバ】"
+    ],
+    "expectedDslKeywords": [
+      "blast",
+      "sp_plus1_per_own_discard_6"
+    ],
     "bp": 17000,
     "sp": 1,
     "size": "L"
@@ -25875,8 +25949,7 @@
     ],
     "expectedDslKeywords": [
       "can_ride_vehicle_ryo",
-      "effect_card::XG4-004::wanpano",
-      "effect_card::XG4-004::wanpanokoreworashus"
+      "effect_card::XG4-004::wanpano"
     ],
     "bp": 2000,
     "sp": null,
@@ -26228,8 +26301,7 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_reanimate_named_from_discard",
-      "effect_card::XG4-023::choninponoku",
-      "effect_card::XG4-023::choninponokukomandowokin"
+      "effect_card::XG4-023::choninpo_noku"
     ],
     "bp": 3500,
     "sp": 1,
@@ -27855,7 +27927,14 @@
     "cardType": "unit",
     "powerCost": "6+",
     "category": "ET",
-    "textSnippets": [],
+    "textSnippets": [
+      "【マックスビクトリープロミネンス】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "sp1_if_no_own_discard_s_unit",
+      "bp_per_own_rush_s_1000_own_turn"
+    ],
     "bp": 8000,
     "sp": "special",
     "size": "L"
@@ -29646,7 +29725,13 @@
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【爆竜必殺チョキチョキシザース】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "effect_card::XG6-015::baku_chokichokishizasu"
+    ],
     "bp": 3000,
     "sp": null,
     "size": "M"
@@ -30179,7 +30264,7 @@
     "expectedDslKeywords": [
       "note_card::XG6-044::koreworashushita",
       "sp_at_bp5000_sp1",
-      "deck_reveal_position_destroy_s"
+      "effect_card::XG6-044::kauntasutoraiku"
     ],
     "bp": 3000,
     "sp": "1/4",

@@ -1,3 +1,4 @@
+import { releasedCommandUnitIds, startEffectRush } from "../rules/effectRush";
 import type { Category } from "@rangers-strike/cards";
 import type { GameState, PendingBattle, PlayerId } from "../types/game";
 import {
@@ -77,6 +78,7 @@ import {
 } from "../rules/batch06FieldEffects";
 import { beginCastoffOnRush } from "../rules/castoff";
 import { tryReportedRiderEffect } from "../rules/riderKickEffects";
+import { tryErrataCardEffect } from "../rules/errataCardEffects";
 import { tryGenericTextFallback } from "./genericTextFallback";
 import {
   beginDeclareNumberDeckReveal,
@@ -374,6 +376,9 @@ export function applyGrantKeyword(
   // cardId::effectId で正確に解決する。effect_card 委譲より前に置く。
   const reported = tryReportedRiderEffect(state, ctx, keyword);
   if (reported) return reported;
+  // エラッタ・公式回答に合わせたカード固有効果（docs/rules/08-errata.md）。
+  const errata = tryErrataCardEffect(state, ctx, keyword);
+  if (errata) return errata;
 
   if (keyword.startsWith("hand_named_to_rush::")) {
     const withChoice = applyHandNamedToRush(state, ctx, keyword);
@@ -1210,6 +1215,25 @@ export function applyGrantKeyword(
         };
       }
 
+      if (keyword === "release_m_command_to_rush") {
+        // RS-197 ダイナギャリー【パーツキャリアー】。
+        // ルール: R-RUSH-21 — 必要パワーと追加条件を満たして出す（コマンドのホールドは不要）。
+        // ルール: R-RUSH-22 — 出したユニットの「ラッシュしたとき」も発動する（RS-197 Q1・Q3）。
+        const started = startEffectRush(state, {
+          playerId: ctx.playerId,
+          phasePlayerId: ctx.phasePlayerId,
+          effectId: "parts_carrier",
+          sourceCardId: ctx.sourceCardId,
+          sourceInstanceId: ctx.triggerSourceInstanceId,
+          fromZone: "command",
+          candidates: releasedCommandUnitIds(state, ctx.playerId, "M"),
+          maxCount: 1,
+          requireConditions: true,
+          alwaysAsk: true,
+        });
+        return { state: started, detail: keyword };
+      }
+
       if (
         keyword.startsWith("power_zone_min_") ||
         (keyword.startsWith("all_") && keyword.endsWith("_auto_battle_entry")) ||
@@ -1230,7 +1254,6 @@ export function applyGrantKeyword(
         keyword === "deck_search_operation_to_power" ||
         keyword === "alternating_draw_3_mill" ||
         keyword === "deploy_enemy_command_silent" ||
-        keyword === "release_m_command_to_rush" ||
         keyword === "draw_deck_to_command_or_hand" ||
         (keyword.startsWith("return_") && keyword.endsWith("_battle_to_deck_bottom"))
       ) {

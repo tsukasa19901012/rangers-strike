@@ -11,10 +11,27 @@ import {
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { validateZordAdditionalPayment } from "./mothership";
 import { isShironLightRushTarget } from "./shironLight";
+import { isRideShooterRushTarget } from "./fieldActivatedAbilities";
 import { darkDealRushPowerBudget } from "./legend3/restrictions";
 import { godomRushPowerBudget } from "./godomRushPay";
 import { requiresAllFusionPartners, hasAllRequiredFusionMaterials } from "./zord";
 import { rushAdditionalConditionApplies } from "./bkOperationTurnRules";
+
+/**
+ * 手札からのラッシュで必要パワーの判定に使える量（アブレラ【闇の取引】・ゴードム等の補填を含む）。
+ * ルール: R-RUSH-11 — 必要パワーは追加条件を実行する前の状態で確認する。
+ */
+export function rushPowerBudget(
+  state: GameState,
+  playerId: PlayerId,
+  player: PlayerState,
+  definition: CardDefinition,
+): number {
+  return Math.max(
+    darkDealRushPowerBudget(state, playerId, player, definition),
+    godomRushPowerBudget(state, playerId, player, definition),
+  );
+}
 
 /** カテゴリ支払い済み、またはカテゴリ不要なユニットのみ直接 rush 可能。 */
 export function canDeclareRush(
@@ -56,6 +73,8 @@ export function canDeclareRush(
   const categories = cardCategories(definition);
   if (categories.length === 0) return true;
   if (isShironLightRushTarget(player, instanceId)) return true;
+  // ルール: R-ERR-RK043 — 【突入】の後、次にラッシュするミラーライダーはコマンドをホールドせずにラッシュできる。
+  if (isRideShooterRushTarget(state, playerId, definition.id)) return true;
   if (isCostWindowSatisfied(player, "rush_category")) return true;
   return false;
 }

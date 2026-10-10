@@ -1025,12 +1025,10 @@ export function resolveBattlePendingCore(
 
   let nextState = battleState;
   let extraLogs: string[] = [];
-  // ルール: R-STK-03 — 分数 SP 等の並び順依存の SP は、撃破される直前（バトルエリアにいる状態）で判定する。
-  const defenderQualifiesForBreakthrough = unitQualifiesForFocusedBreakthrough(
-    battleState,
-    defenderOwner,
-    refreshedDefenderFound.card,
-  );
+  // ルール: R-ERR-RS065 — 分数SPは並びにある間の値で判定する（撃破されて並びから外れる前に判定）。
+  const focusedBreakthroughQualifies =
+    refreshedAttackerFound.card.cardId === "RS-065" &&
+    unitQualifiesForFocusedBreakthrough(battleState, defenderOwner, refreshedDefenderFound.card);
 
   if (finalDestroyDefender) {
     const leaveResult = tryLeaveField(nextState, {
@@ -1057,7 +1055,7 @@ export function resolveBattlePendingCore(
         pending.attackerInstanceId,
         defenderOwner,
         refreshedDefenderFound.card,
-        defenderQualifiesForBreakthrough,
+        focusedBreakthroughQualifies,
       );
       nextState = fb.state;
       extraLogs = fb.logs;

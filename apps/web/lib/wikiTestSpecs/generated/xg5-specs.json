@@ -233,7 +233,14 @@
     "cardType": "unit",
     "powerCost": "6+",
     "category": "ET",
-    "textSnippets": [],
+    "textSnippets": [
+      "【マックスビクトリープロミネンス】"
+    ],
+    "expectedDslKeywords": [
+      "register",
+      "sp1_if_no_own_discard_s_unit",
+      "bp_per_own_rush_s_1000_own_turn"
+    ],
     "bp": 8000,
     "sp": "special",
     "size": "L"

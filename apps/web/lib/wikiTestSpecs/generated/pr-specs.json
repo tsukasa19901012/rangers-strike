@@ -245,7 +245,12 @@
     "cardType": "unit",
     "powerCost": "6+",
     "category": "OT",
-    "textSnippets": [],
+    "textSnippets": [
+      "【バイオ粒子斬り】"
+    ],
+    "expectedDslKeywords": [
+      "effect_card::PR-015::bioparticleslash"
+    ],
     "bp": 11000,
     "sp": 1,
     "size": "L"
@@ -257,7 +262,14 @@
     "cardType": "unit",
     "powerCost": "7-",
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【アバレスラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "auto_battle_entry_each_turn",
+      "on_destroy_reanimate_named_from_discard",
+      "SP1"
+    ],
     "bp": 5500,
     "sp": "special",
     "size": "S"

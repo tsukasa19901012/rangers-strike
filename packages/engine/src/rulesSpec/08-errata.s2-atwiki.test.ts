@@ -184,8 +184,7 @@ describe("R-ERR-XG3-072 仮面ライダーキバーラ", () => {
     return s;
   }
 
-  // 既知の不具合: 未登録 — ウラ向きにするだけでダメージとして数えない
-  it.fails("R-ERR-XG3-072: 特徴が完全一致する敵軍パワーをウラ向きにし、相手は1点ダメージを受ける（出典: atwiki/page-1963 Q1）", () => {
+  it("R-ERR-XG3-072: 特徴が完全一致する敵軍パワーをウラ向きにし、相手は1点ダメージを受ける（出典: atwiki/page-1963 Q1）", () => {
     const s = kivalaEntered();
     expect(zoneIds(s, "player2", "discard")).toContain("MAN:man");
     expect(s.players.player2.power.find((c) => c.instanceId === "MAN:pw-man")?.faceDown).toBe(true);
@@ -193,8 +192,7 @@ describe("R-ERR-XG3-072 仮面ライダーキバーラ", () => {
   });
 
   // atwiki/page-1963 Q1:「このとき「RS-348 メディテーション」の効果で追加ダメージを受けますか？ はい、そのとおりです。」
-  // 既知の不具合: 未登録 — 同上（ダメージ扱いにならない）
-  it.fails("R-ERR-XG3-072: 公式Q&A — 相手のメディテーションで追加ダメージも受ける（計2点）（出典: atwiki/page-1963 Q1）", () => {
+  it("R-ERR-XG3-072: 公式Q&A — 相手のメディテーションで追加ダメージも受ける（計2点）（出典: atwiki/page-1963 Q1）", () => {
     const s = kivalaEntered([inst("RS-348", "medi")]);
     expect(s.players.player2.damage).toBe(2);
   });
@@ -276,8 +274,7 @@ describe("R-ERR-RS633 メガシルバー", () => {
   }
 
   // atwiki/page-1529 Q1:「改めて状態を確認し…捨札になりますか？ いいえ、なりません。」
-  // 既知の不具合: 未登録 — ユニットとしてのメガシルバーに※効果が適用されない（コマンドゾーンのカードにだけ適用）
-  it.fails("R-ERR-RS633: 公式Q&A — リリース状態のユニットはスタートフェイズ終了時にホールドされ、同じスタートフェイズ中に捨札にはならない（出典: atwiki/page-1529 Q1）", () => {
+  it("R-ERR-RS633: 公式Q&A — リリース状態のユニットはスタートフェイズ終了時にホールドされ、同じスタートフェイズ中に捨札にはならない（出典: atwiki/page-1529 Q1）", () => {
     const ms = inst("RS-633", "ms");
     const s = endStartPhase(ms);
     expect(s.phase).not.toBe("start");
@@ -286,8 +283,7 @@ describe("R-ERR-RS633 メガシルバー", () => {
     expect(unit?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: 未登録 — 同上
-  it.fails("R-ERR-RS633: ホールド状態のユニットはスタートフェイズ終了時に捨札になる（出典: atwiki/page-1529 Q1）", () => {
+  it("R-ERR-RS633: ホールド状態のユニットはスタートフェイズ終了時に捨札になる（出典: atwiki/page-1529 Q1）", () => {
     const ms = { ...inst("RS-633", "ms"), commandHeld: true };
     let s = specState(["RS-633"], {
       phase: "start",
@@ -311,8 +307,7 @@ describe("R-ERR-XG1-048 仮面ライダースーパー1・EH", () => {
     );
   });
 
-  // 既知の不具合: 未登録 — ライドオフ時に敵軍Sユニットを選ぶ手段がない
-  it.fails("R-ERR-XG1-048: ライドオフしたとき敵軍Sユニットを1体選べる（出典: atwiki/page-1632）", () => {
+  it("R-ERR-XG1-048: ライドオフしたとき敵軍Sユニットを1体選べる（出典: atwiki/page-1632）", () => {
     const { s } = rideOffState("XG1-048", {
       p2: { battle: [inst("TST-UNIT-0", "b1"), inst("TST-UNIT-0", "b2"), inst("TST-UNIT-0", "b3")] },
     });
@@ -331,8 +326,7 @@ describe("R-ERR-XG1-048 仮面ライダースーパー1・EH", () => {
 // ---------------------------------------------------------------------------
 describe("R-ERR-XG2-030 ヌマ・O長官", () => {
   // atwiki/page-1689 Q1 公式回答の読み替え文
-  // 既知の不具合: 未登録 — カード定義（wiki_stub のコマンダー）にテキストがない
-  it.fails("R-ERR-XG2-030: 修正後テキスト「…手札に加えたカードの合体に必要なユニットのカードを、それぞれ1枚まで選び…」を持つ（出典: atwiki/page-1689 Q1）", () => {
+  it("R-ERR-XG2-030: 修正後テキスト「…手札に加えたカードの合体に必要なユニットのカードを、それぞれ1枚まで選び…」を持つ（出典: atwiki/page-1689 Q1）", () => {
     expectCorrectedText(
       "XG2-030",
       "ゲーム開始時、一度だけ次の効果を発動できる⇒自軍山札を見て、特徴「メカ」を持つLユニットのカードを1枚選び、相手に見せてから自分の手札に加える。そして、手札に加えたカードの合体に必要なユニットのカードを、それぞれ1枚まで選び、相手に見せてから自分の手札に加える。その後、手札に加えた枚数と同じだけ手札からカードを選び、山札に戻してシャッフルする。",
@@ -381,8 +375,7 @@ describe("R-ERR-XG4-102 ケンローダー", () => {
     return { s, kr: kr.instanceId };
   }
 
-  // 既知の不具合: 未登録 — 【ギンクロン発進】が合法手に出ない
-  it.fails("R-ERR-XG4-102: 自軍ラッシュエリアのケンローダーを捨札にして、山札のOT Sビークルをラッシュエリアに出せる（出典: atwiki/page-2060）", () => {
+  it("R-ERR-XG4-102: 自軍ラッシュエリアのケンローダーを捨札にして、山札のOT Sビークルをラッシュエリアに出せる（出典: atwiki/page-2060）", () => {
     const { s: s0, kr } = kenroaderState("rush");
     const use = legal(s0).find((a) => a.type !== "end_phase" && J(a).includes(kr));
     expect(use).toBeDefined();
@@ -426,8 +419,7 @@ describe("R-ERR-XG4-062 仮面ライダーアクセル バイクフォーム", (
   }
 
   // atwiki/page-2139 Q1:「「自軍コマンド」とは、敵軍プレイヤーにとっての自軍コマンドですか？ はい」
-  // 既知の不具合: 未登録 — 【アクセルメモリ】の制限が敵軍Sユニットにかからない
-  it.fails("R-ERR-XG4-062: 公式Q&A — 相手は自分自身のコマンドをホールドできなければ、Sユニットをバトルエリアに出せない（出典: atwiki/page-2139 Q1）", () => {
+  it("R-ERR-XG4-062: 公式Q&A — 相手は自分自身のコマンドをホールドできなければ、Sユニットをバトルエリアに出せない（出典: atwiki/page-2139 Q1）", () => {
     const { s, es } = accelState([]);
     expect(
       legal(s).some(
@@ -438,8 +430,7 @@ describe("R-ERR-XG4-062 仮面ライダーアクセル バイクフォーム", (
     ).toBe(false);
   });
 
-  // 既知の不具合: 未登録 — 同上（ホールドを要求しない）
-  it.fails("R-ERR-XG4-062: 相手のSユニットは自分自身のコマンドを1つホールドしてバトルエリアに出る（出典: atwiki/page-2139）", () => {
+  it("R-ERR-XG4-062: 相手のSユニットは自分自身のコマンドを1つホールドしてバトルエリアに出る（出典: atwiki/page-2139）", () => {
     const { s: s0, es } = accelState([released("TST-OP", "p2c")]);
     const s = enterBattleWithHold(s0, es, "player2");
     expect(zoneIds(s, "player2", "battle")).toContain(es);
@@ -457,8 +448,7 @@ describe("R-ERR-XG4-023 シュリケンジャーFM（XG4）", () => {
     );
   });
 
-  // 既知の不具合: 未登録 — NC（CN1）成立時に【超忍法・秘打千本ノック】が発動しない
-  it.fails("R-ERR-XG4-023: コマンド2つを手札に戻すと、相手はラッシュエリアのSユニットを2体山札の下に戻す（出典: atwiki/page-2145）", () => {
+  it("R-ERR-XG4-023: コマンド2つを手札に戻すと、相手はラッシュエリアのSユニットを2体山札の下に戻す（出典: atwiki/page-2145）", () => {
     const sh = inst("XG4-023", "sh");
     let s = specState(["XG4-023"], {
       phase: "battle",
@@ -495,16 +485,14 @@ describe("R-ERR-XG6-044 仮面ライダーNEW電王SF（XG6）", () => {
     });
   }
 
-  // 既知の不具合: 未登録 — 【カウンターストライク】が盤面を変えない（ログのみ）
-  it.fails("R-ERR-XG6-044: オモテにしたカードの必要パワー3 → 敵軍バトルエリア3番目のSユニットを捨札にする（出典: atwiki/page-2322 Q1）", () => {
+  it("R-ERR-XG6-044: オモテにしたカードの必要パワー3 → 敵軍バトルエリア3番目のSユニットを捨札にする（出典: atwiki/page-2322 Q1）", () => {
     let { s } = sfRideOff();
     s = resolveChoices(s);
     expect(zoneIds(s, "player2", "discard")).toEqual(["TST-UNIT-0:b3"]);
   });
 
   // atwiki/page-2322 Q2:「オモテにしたカードは、山札の下に戻してください」
-  // 既知の不具合: 未登録 — 同上（オモテにしたカードが山札の上に残る）
-  it.fails("R-ERR-XG6-044: 公式Q&A — オモテにしたカードは効果の後で山札の下に戻る（出典: atwiki/page-2322 Q2）", () => {
+  it("R-ERR-XG6-044: 公式Q&A — オモテにしたカードは効果の後で山札の下に戻る（出典: atwiki/page-2322 Q2）", () => {
     let { s } = sfRideOff();
     s = resolveChoices(s);
     const deck = zoneIds(s, "player1", "deck");
@@ -539,16 +527,14 @@ describe("R-ERR-RS349 スーパー戦隊アドレスブック", () => {
     return s;
   }
 
-  // 既知の不具合: 未登録 — 山札から選ぶ処理が起きず手札に加わらない
-  it.fails("R-ERR-RS349: DAを持たないSユニットを山札から選んで手札に加えられる（出典: atwiki/page-523）", () => {
+  it("R-ERR-RS349: DAを持たないSユニットを山札から選んで手札に加えられる（出典: atwiki/page-523）", () => {
     let s = addressBookPlayed();
     s = resolveChoices(s);
     expect(zoneIds(s, "player1", "hand")).toEqual(["TST-UNIT-0:wb"]);
   });
 
   // atwiki/page-523 Q1:「ＤＡを含むマルチカテゴリのカードも選ぶことはできますか？ いいえ、それはできません」
-  // 既知の不具合: 未登録 — 選択肢自体が出ない
-  it.fails("R-ERR-RS349: 公式Q&A — DAを含むマルチカテゴリのSユニットは選べない（出典: atwiki/page-523 Q1）", () => {
+  it("R-ERR-RS349: 公式Q&A — DAを含むマルチカテゴリのSユニットは選べない（出典: atwiki/page-523 Q1）", () => {
     const s = addressBookPlayed();
     const valid = s.pendingEffectChoice?.validInstanceIds ?? [];
     expect(valid).toContain("TST-UNIT-0:wb");
@@ -567,8 +553,7 @@ describe("R-ERR-RK146 デネブ", () => {
     );
   });
 
-  // 既知の不具合: 未登録 — ラッシュしても山札のオペレーションカードを手札に加える処理が起きない
-  it.fails("R-ERR-RK146: ラッシュしたとき、相手・自分の順にそれぞれ山札のオペレーションカードを1枚手札に加えられる（出典: atwiki/page-672）", () => {
+  it("R-ERR-RK146: ラッシュしたとき、相手・自分の順にそれぞれ山札のオペレーションカードを1枚手札に加えられる（出典: atwiki/page-672）", () => {
     const d = inst("RK-146", "d");
     let s = specState(["RK-146"], {
       phase: "rush",
@@ -619,8 +604,7 @@ describe("R-ERR-RS446 ダイジュピター", () => {
     return { s, z: z.instanceId };
   }
 
-  // 既知の不具合: 未登録 — 【スクランブル】が合法手に出ない
-  it.fails("R-ERR-RS446: 同じカード名は1枚までしか選べない（同名2枚＋別名1枚 → 2体だけラッシュエリアに出る）（出典: atwiki/page-785）", () => {
+  it("R-ERR-RS446: 同じカード名は1枚までしか選べない（同名2枚＋別名1枚 → 2体だけラッシュエリアに出る）（出典: atwiki/page-785）", () => {
     const { s: s0, z } = jupiterState("rush");
     const use = legal(s0).find((a) => a.type !== "end_phase" && J(a).includes(z));
     expect(use).toBeDefined();
@@ -705,8 +689,7 @@ describe("R-ERR-RS030 アドベンチャー", () => {
     );
   });
 
-  // 既知の不具合: 未登録 — 「自分も相手も次の制限を受ける→」が欠落
-  it.fails("R-ERR-RS030: 修正後テキスト「自分も相手も次の制限を受ける→」を持つ（出典: atwiki/page-259）", () => {
+  it("R-ERR-RS030: 修正後テキスト「自分も相手も次の制限を受ける→」を持つ（出典: atwiki/page-259）", () => {
     expectCorrectedText("RS-030", "自分も相手も次の制限を受ける→");
   });
 
@@ -909,8 +892,7 @@ describe("R-ERR-RS118 ゴーゴーダンプ", () => {
     return { s, d: d.instanceId, s1: s1.instanceId };
   }
 
-  // 既知の不具合: 未登録 — 置きかえの選択がバトルエリアに出た後に開き、「ラッシュエリアにあること」の検証で解決できない
-  it.fails("R-ERR-RS118: 置きかえたSユニットの下に重ねたカードは、そのSユニットに重ねたままラッシュエリアへ移る（出典: atwiki/page-292）", () => {
+  it("R-ERR-RS118: 置きかえたSユニットの下に重ねたカードは、そのSユニットに重ねたままラッシュエリアへ移る（出典: atwiki/page-292）", () => {
     const { s, d, s1 } = dumpSwap();
     expect(zoneIds(s, "player1", "battle")).toContain(d);
     const moved = s.players.player1.rush.find((c) => c.instanceId === s1);
@@ -918,8 +900,7 @@ describe("R-ERR-RS118 ゴーゴーダンプ", () => {
     expect(moved?.stackedCards?.map((c) => c.instanceId)).toEqual(["TST-OP:under"]);
   });
 
-  // 既知の不具合: 未登録 — 同上（置きかえ自体ができない）
-  it.fails("R-ERR-RS118: 置きかえて出したゴーゴーダンプはアタックできず、置きかえたSユニットはこのターン再びバトルエリアに出られない（出典: atwiki/page-292）", () => {
+  it("R-ERR-RS118: 置きかえて出したゴーゴーダンプはアタックできず、置きかえたSユニットはこのターン再びバトルエリアに出られない（出典: atwiki/page-292）", () => {
     const { s, d, s1 } = dumpSwap();
     expect(legalOfType(s, "battle").some((a) => a.attackerInstanceId === d)).toBe(false);
     expect(legal(s).some((a) => a.type === "move_to_battle" && a.instanceId === s1)).toBe(false);
@@ -942,8 +923,7 @@ describe("R-ERR-XG2-014 鉄面臂張遼", () => {
   });
 
   // atwiki/page-1754 Q1:「「MAのみを持つ自軍コマンドとDAのみを持つ自軍コマンドを1つずつ選んでその両方をホールドする」のいずれかの操作を行ってください」
-  // 既知の不具合: 未登録 — NC（CN3）成立時に【気力妖力合体】が発動しない
-  it.fails("R-ERR-XG2-014: Q&A — MAのみとDAのみのコマンドを1つずつホールドして敵軍Sユニットを撃破できる（出典: atwiki/page-1754 Q1）", () => {
+  it("R-ERR-XG2-014: Q&A — MAのみとDAのみのコマンドを1つずつホールドして敵軍Sユニットを撃破できる（出典: atwiki/page-1754 Q1）", () => {
     const z = inst("XG2-014", "z");
     let s = specState(["XG2-014"], {
       phase: "battle",
@@ -987,8 +967,7 @@ describe("R-ERR-XG4-004 副長ゼルモダ", () => {
     return { s, z: z.instanceId };
   }
 
-  // 既知の不具合: 未登録 — 山札から戦闘員を出す処理が起きない（ログのみ）
-  it.fails("R-ERR-XG4-004: ラッシュしたとき、山札の「戦闘員」を2枚までラッシュエリアに出せる（出典: atwiki/page-2069）", () => {
+  it("R-ERR-XG4-004: ラッシュしたとき、山札の「戦闘員」を2枚までラッシュエリアに出せる（出典: atwiki/page-2069）", () => {
     let { s } = zerumodaRushed([
       inst("SENT", "s1"),
       inst("SENT", "s2"),
@@ -1019,8 +998,7 @@ describe("R-ERR-RK231 オロチ", () => {
     expect(norm(engineText("RK-231"))).not.toContain(norm("【潜水】自分がターンを終えるとき、これを"));
   });
 
-  // 既知の不具合: 未登録 — ターン終了時に【潜水】の選択が出ない
-  it.fails("R-ERR-RK231: 自分がターンを終えるとき、このユニットをホールドするかを選べる（出典: atwiki/page-948）", () => {
+  it("R-ERR-RK231: 自分がターンを終えるとき、このユニットをホールドするかを選べる（出典: atwiki/page-948）", () => {
     const o = inst("RK-231", "o");
     let s = specState(["RK-231"], {
       phase: "battle",
@@ -1032,8 +1010,7 @@ describe("R-ERR-RK231 オロチ", () => {
     expect(legal(s).some((a) => a.playerId === "player1" && J(a).includes(o.instanceId))).toBe(true);
   });
 
-  // 既知の不具合: 未登録 — ホールド状態のオロチに【潜水】の制限がかからない
-  it.fails("R-ERR-RK231: ホールド状態のオロチは敵軍ユニットにアタックされない（出典: atwiki/page-948）", () => {
+  it("R-ERR-RK231: ホールド状態のオロチは敵軍ユニットにアタックされない（出典: atwiki/page-948）", () => {
     const o = { ...inst("RK-231", "o"), commandHeld: true };
     const atk = inst("TST-UNIT-7", "atk");
     const s = specState(["RK-231"], {
@@ -1044,8 +1021,7 @@ describe("R-ERR-RK231 オロチ", () => {
     expect(legalOfType(s, "battle").some((a) => a.defenderInstanceId === o.instanceId)).toBe(false);
   });
 
-  // 既知の不具合: 未登録 — ホールド状態のオロチに【潜水】の制限がかからない
-  it.fails("R-ERR-RK231: ホールド状態のオロチはアタックもストライクもできない（出典: atwiki/page-948）", () => {
+  it("R-ERR-RK231: ホールド状態のオロチはアタックもストライクもできない（出典: atwiki/page-948）", () => {
     const o = { ...inst("RK-231", "o"), commandHeld: true };
     const s = specState(["RK-231"], {
       phase: "battle",

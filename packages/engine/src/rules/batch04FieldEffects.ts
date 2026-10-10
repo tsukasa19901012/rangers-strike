@@ -1,6 +1,7 @@
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { cardName, getDefinition } from "../core/catalog";
+import { sameCardName } from "../core/cardNames";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import {
@@ -49,7 +50,8 @@ export function tryMereChameleonOnAllyEnterBattle(
 ): GameState {
   if (entering.cardId === "RS-504") return state;
   const name = cardName(state.definitions, entering.cardId);
-  if (name === "獣人メレ" || name === "メレ") return state;
+  // ルール: R-ERR-RS504 — 「メレ」は「獣人メレ」の読み替え。除外は「獣人メレ」（同名カード）だけ。
+  if (sameCardName(name, "獣人メレ")) return state;
 
   const sourceCardId = playerHasMereChameleonOnField(state, playerId);
   if (!sourceCardId) return state;
@@ -64,37 +66,40 @@ export function tryMereChameleonOnAllyEnterBattle(
   return withChoice ?? state;
 }
 
-/** RS-633: スタート終了時コマンドのホールド⇔捨札。 */
+/**
+ * RS-633: ※自軍スタートフェイズを終えるとき、このユニットがリリース状態ならホールドし、ホールド状態なら捨札にする。
+ * ルール: R-ERR-RS633 — 対象は場（ラッシュ／バトルエリア）のこのユニット。終える時点の状態で1回だけ判定する
+ * （ホールドした同じスタートフェイズ中に捨札にはならない: atwiki/page-1529 Q1）。
+ */
 export function applyMegaSilverStartEndToggle(
   state: GameState,
   playerId: PlayerId,
 ): GameState {
-  let next = state;
-  const player = next.players[playerId];
-  let command = [...player.command];
-  let discard = [...player.discard];
+  const player = state.players[playerId];
+  const isTarget = (card: CardInstance) =>
+    card.cardId === "RS-633" || cardHasKeyword(card.cardId, "start_end_command_toggle_hold_discard");
+  const discarded: CardInstance[] = [];
   let changed = false;
-
-  for (let i = 0; i < command.length; i += 1) {
-    const card = command[i]!;
-    if (card.cardId !== "RS-633" && !cardHasKeyword(card.cardId, "start_end_command_toggle_hold_discard")) {
-      continue;
-    }
-    if (!card.commandHeld) {
-      command[i] = { ...card, commandHeld: true, mothershipHold: false };
+  const toggle = (zone: CardInstance[]): CardInstance[] =>
+    zone.flatMap((card) => {
+      if (!isTarget(card)) return [card];
       changed = true;
-    } else {
-      const [removed] = command.splice(i, 1);
-      if (removed) discard.push(removed);
-      i -= 1;
-      changed = true;
-    }
-  }
-
+      if (!card.commandHeld) return [{ ...card, commandHeld: true, mothershipHold: false }];
+      const { commandHeld: _h, mothershipHold: _m, mountedOnInstanceId: _r, ...rest } = card;
+      discarded.push(rest as CardInstance);
+      return [];
+    });
+  const rush = toggle(player.rush);
+  const battle = toggle(player.battle);
   if (!changed) return state;
   return {
-    ...next,
-    ...updatePlayer(next, playerId, { ...player, command, discard }),
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      rush,
+      battle,
+      discard: [...player.discard, ...discarded],
+    }),
   };
 }
 

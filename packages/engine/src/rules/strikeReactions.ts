@@ -16,6 +16,11 @@ import {
   sanitizeUnitLeavingField,
 } from "../keywords/ride";
 import { buildLogEntry } from "../log/formatLog";
+import {
+  autoHoldForBattleEntry,
+  canMoveUnitToBattleWithHolds,
+  clearEffectBattleEntryWindows,
+} from "./restrictions";
 import { tryDestroyStrikerForStrike, tryLeaveField } from "./operationCounters";
 
 export function earthForceActive(state: GameState): boolean {
@@ -37,8 +42,11 @@ export function collectFiveTechInterceptors(
     return [];
   }
 
+  // ルール: R-BA-03 — 効果で出す場合も「出る制限」は出る直前に判定する。
+  // ルール: R-ADD-07 — ハリケンレオン等の「ホールドしなければ出られない」はホールドできなければ出せない（RS-014 Q2）。
   return defender.rush
     .filter((card) => isSmallUnit(state.definitions, card.cardId))
+    .filter((card) => canMoveUnitToBattleWithHolds(state, defenderId, card))
     .map((card) => card.instanceId);
 }
 
@@ -229,12 +237,19 @@ export function applyFiveTechIntercept(
     return { state, pending, log: buildSimpleFiveTechLog(defenderId, interceptFound.card.cardId, state, "failed") };
   }
 
-  const [, rush] = removeAt(defender.rush, interceptFound.index);
-  let nextDefender = {
-    ...defender,
-    rush,
-    battle: [...defender.battle, interceptFound.card],
-  };
+  // 「ホールドしなければ出られない」制限の分のコマンドをホールドしてから出す（RS-014 Q2・RS-097 Q7）。
+  const held = autoHoldForBattleEntry(state, defenderId, interceptFound.card);
+  if (!held) {
+    return { state, pending, log: buildSimpleFiveTechLog(defenderId, interceptFound.card.cardId, state, "failed") };
+  }
+  const [, rush] = removeAt(held.rush, interceptFound.index);
+  let nextDefender = clearEffectBattleEntryWindows(
+    {
+      ...held,
+      rush,
+      battle: [...held.battle, interceptFound.card],
+    },
+  );
 
   let nextState: GameState = {
     ...state,

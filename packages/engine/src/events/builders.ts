@@ -31,6 +31,8 @@ export function buildUnitRushedEvent(
     rusherPlayerId: PlayerId;
     instanceId: string;
     cardId: string;
+    selfEffectsSuppressed?: boolean;
+    viaEffect?: boolean;
   },
 ): UnitRushedEvent {
   return {
@@ -39,6 +41,8 @@ export function buildUnitRushedEvent(
     rusherPlayerId: input.rusherPlayerId,
     instanceId: input.instanceId,
     cardId: input.cardId,
+    ...(input.selfEffectsSuppressed ? { selfEffectsSuppressed: true } : {}),
+    ...(input.viaEffect ? { viaEffect: true } : {}),
   };
 }
 

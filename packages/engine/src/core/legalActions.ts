@@ -38,12 +38,13 @@ import {
 import { findInZone, opponent, payPowerCost } from "./helpers";
 import { canStrikeUnit } from "../rules/combo";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
-import { canUseJuuKunDo } from "../rules/juuKunDo";
+import { canUseJuuKunDo, canUseLionDance, gomaPalaceForcesAttack } from "../rules/juuKunDo";
 import {
   canMoveUnitToBattle,
   cannotAttackOrStrikeThisTurn,
   unitCannotInitiateAttack,
   countReleasedCommands,
+  findMandatoryBattleEntries,
   mustEnterBattleBeforePhaseEnd,
 } from "../rules/restrictions";
 import { canInitiateShironLight, isShironLightRushTarget } from "../rules/shironLight";
@@ -60,6 +61,7 @@ import {
   isInitiateCommandPaymentLegal,
   isResolveCommandPaymentLegal,
   buildEffectHoldPayment,
+  getBattleEntryPaymentNeeds,
   needsEffectHoldPayment,
   validatePaymentSelection,
 } from "../rules/commandPayment";
@@ -97,13 +99,15 @@ import {
   canPlayPlasmaEnergyCounter,
   collectFiveTechInterceptors,
 } from "../rules/strikeReactions";
-import { getValidDamagePowerTargets, damagePaymentChoosingPlayer } from "../rules/damagePayment";
+import { getDamagePaymentChoices, damagePaymentChoosingPlayer } from "../rules/damagePayment";
 import { getStackActorPlayerId, hasOpenReactionWindow, peekEffectStackTop } from "../rules/effectStack";
 import { getCardEffect } from "@rangers-strike/cards";
 import { isHidoraEggUsed } from "../rules/turnModifiers";
 import { listValidChaseVehicleIds } from "../keywords/chase";
 import { canDeclareRush } from "../rules/rushDeclaration";
 import { listKamenRideAbilityUnits } from "../rules/riderKickEffects";
+import { listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities";
+import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
 import {
   getMorphReactionActorId,
@@ -613,6 +617,14 @@ function appendActivateFieldUnitAbilityActions(
       unitInstanceId,
     });
   }
+  // RK-043【突入】・XG4-102【ギンクロン発進】・RS-446【スクランブル】（このカードを捨札にして発動）。
+  for (const unitInstanceId of listFieldActivatedAbilityCards(state, playerId)) {
+    actions.push({
+      type: "activate_field_unit_ability",
+      playerId,
+      unitInstanceId,
+    });
+  }
 }
 
 function appendBattleDanceActions(
@@ -1061,6 +1073,14 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (isErrataConfirmableChoice(pending.effectId)) {
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
   if (pending.kind === "select_commands" && pending.siteTransportMeta?.step === "discard") {
     for (const instanceId of pending.validInstanceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
@@ -1202,10 +1222,17 @@ function appendBattleEntryActions(
       defenderInstanceId: defender.instanceId,
     });
   }
+  // ルール: R-ATK-05 — ゴーマ宮で「可能ならアタックする」ユニットはアタックしなければならない。
+  const forcedAttack = gomaPalaceForcesAttack(state, playerId, pending.instanceId);
+  if (forcedAttack) return;
   if (canStrikeUnit(state.definitions, unit, state, playerId) && !requiredDefenderId) {
     actions.push({ type: "strike", playerId, instanceId: pending.instanceId });
   }
-  if (canUseJuuKunDo(state, playerId, pending.instanceId) && !requiredDefenderId) {
+  if (
+    (canUseJuuKunDo(state, playerId, pending.instanceId) ||
+      canUseLionDance(state, playerId, pending.instanceId)) &&
+    !requiredDefenderId
+  ) {
     actions.push({
       type: "use_juu_kun_do",
       playerId,
@@ -1224,7 +1251,7 @@ function appendDamagePaymentActions(
 ): void {
   const pending = state.pendingDamagePayment;
   if (!pending || damagePaymentChoosingPlayer(pending) !== playerId) return;
-  for (const instanceId of getValidDamagePowerTargets(state, pending)) {
+  for (const instanceId of getDamagePaymentChoices(state, pending)) {
     actions.push({ type: "resolve_damage_payment", playerId, instanceId });
   }
 }
@@ -1590,6 +1617,19 @@ export function getLegalActions(state: GameState): GameAction[] {
         });
       }
 
+      // ルール: R-BA-04 — 「可能なら出る」ユニットがホールドすれば出られるなら、出さなければならない。
+      // その進入（battle_entry 支払いの開始）を合法手に含める（バトルフェイズを終えられないため）。
+      for (const card of findMandatoryBattleEntries(state, playerId)) {
+        if (canMoveUnitToBattle(state, playerId, card, "rush")) continue;
+        if (!getBattleEntryPaymentNeeds(state, playerId, card)) continue;
+        actions.push({
+          type: "initiate_command_payment",
+          playerId,
+          kind: "battle_entry",
+          sourceInstanceId: card.instanceId,
+        });
+      }
+
       for (const rider of player.rush) {
         const riderDef = getDefinition(state.definitions, rider.cardId);
         if (!riderDef || !isUnit(riderDef)) continue;
@@ -1721,7 +1761,11 @@ export function getLegalActions(state: GameState): GameAction[] {
           defenderInstanceId: defender.instanceId,
         });
         }
-        if (canUseJuuKunDo(state, playerId, attacker.instanceId)) {
+        if (
+          canUseJuuKunDo(state, playerId, attacker.instanceId) ||
+          canUseLionDance(state, playerId, attacker.instanceId)
+        ) {
+          // 「アタックするかわりに」の効果（ジュウクンドー・超忍法・舞獅子）。ルール: R-ATK-05
           actions.push({
             type: "use_juu_kun_do",
             playerId,
@@ -1821,7 +1865,7 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
     return (
       !!pending &&
       damagePaymentChoosingPlayer(pending) === action.playerId &&
-      getValidDamagePowerTargets(state, pending).includes(action.instanceId)
+      getDamagePaymentChoices(state, pending).includes(action.instanceId)
     );
   }
 

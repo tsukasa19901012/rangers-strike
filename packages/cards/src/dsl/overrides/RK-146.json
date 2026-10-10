@@ -1,0 +1,20 @@
+{
+  "effects": [
+    {
+      "id": "denebukyandei",
+      "name": "デネブキャンディー",
+      "text": "これをラッシュしたとき、次の効果を、相手、自分の順に行う⇒自分自身の山札を見てもよい。そうしたとき、その中からオペレーションカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_card::RK-146::denebukyandei",
+          "duration": "turn"
+        }
+      ]
+    }
+  ]
+}

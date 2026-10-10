@@ -1,0 +1,49 @@
+{
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38193e3828ce38292",
+      "text": "※これをラッシュしたとき、自軍パワーゾーンから「テディ」のカードを1枚選び自軍ラッシュエリアに出してもよい。",
+      "trigger": {
+        "type": "on_rush"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "note_card::XG6-044::koreworashushita",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "sp_at_bp5000",
+      "text": "※これはBP5000以上のとき「SP1」になる",
+      "trigger": {
+        "type": "riding_combo"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "sp_at_bp5000_sp1",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "kauntasutoraiku",
+      "name": "カウンターストライク",
+      "text": "自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードの必要パワーの数字を見て、その数字と同じ並びにある敵軍Sユニット、またはライドされていない敵軍Sビークルがあれば1体選び捨札にする。その後、オモテにしたカードは山札の下に戻す。",
+      "trigger": {
+        "type": "riding_combo"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_card::XG6-044::kauntasutoraiku",
+          "duration": "turn"
+        }
+      ]
+    }
+  ]
+}

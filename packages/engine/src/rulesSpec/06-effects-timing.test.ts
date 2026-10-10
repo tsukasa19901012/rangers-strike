@@ -1136,6 +1136,11 @@ describe("R-REPL-03 「AするかわりにBする」の一般則", () => {
       player2: {},
     });
     s = run(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-100:hy" });
+    // 舞獅子は「アタックするかわりに」プレイヤーが選んで発動する（R-ATK-05）。
+    const lionDance = legal(s).find(
+      (a) => a.type === "use_juu_kun_do" && a.attackerInstanceId === "RS-100:hy",
+    );
+    if (lionDance) s = run(s, lionDance);
     while (s.pendingEffectChoice) {
       const pick = legal(s).find((a) => a.type === "resolve_effect_choice" || a.type === "confirm_effect_choice");
       if (!pick) break;
@@ -1152,6 +1157,11 @@ describe("R-REPL-03 「AするかわりにBする」の一般則", () => {
       player2: { battle: [inst("TST-UNIT-0", "e1")] },
     });
     s = run(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-100:hy" });
+    // 舞獅子は「アタックするかわりに」プレイヤーが選んで発動する（R-ATK-05）。
+    const lionDance = legal(s).find(
+      (a) => a.type === "use_juu_kun_do" && a.attackerInstanceId === "RS-100:hy",
+    );
+    if (lionDance) s = run(s, lionDance);
     while (s.pendingEffectChoice) {
       const pick = legal(s).find((a) => a.type === "resolve_effect_choice" || a.type === "confirm_effect_choice");
       if (!pick) break;

@@ -72,8 +72,7 @@ describe("R-ERR-RS575 一角聖馬ユニゴルオン", () => {
   }
 
   // 08 章 正:「これにライドしているユニットは、次の能力を得る⇒敵軍ラッシュエリアのユニットにアタックできる」
-  // 既知の不具合: 未登録 — ライドしているユニットに敵軍ラッシュエリアへのアタックが付与されない
-  it.fails("R-ERR-RS575: ライドしているユニットは敵軍ラッシュエリアのユニットにアタックできる（出典: grnrngr/faq-card-8 RK-575）", () => {
+  it("R-ERR-RS575: ライドしているユニットは敵軍ラッシュエリアのユニットにアタックできる（出典: grnrngr/faq-card-8 RK-575）", () => {
     const { s, rider, enemyRush } = riderEntered();
     expect(
       legalOfType(s, "battle").some(
@@ -130,8 +129,7 @@ describe("R-ERR-RS603 蛮機獣ボンベバンキ", () => {
   });
 
   // 正文の対象は「本来の特徴に「車両」を持つユニット」で、自軍・敵軍を限定しない
-  // 既知の不具合: 未登録 — ボンベバンキの持ち主側のユニットにしか制限をかけない
-  it.fails("R-ERR-RS603: 敵軍の本来の特徴「車両」ユニットもアタック・ストライクできない（出典: grnrngr/faq-card-8 RS-603）", () => {
+  it("R-ERR-RS603: 敵軍の本来の特徴「車両」ユニットもアタック・ストライクできない（出典: grnrngr/faq-card-8 RS-603）", () => {
     const { s, car } = vehicleUnitState("player2");
     expect(attacksOrStrikes(s, car)).toBe(false);
   });
@@ -218,8 +216,7 @@ describe("R-ERR-RK043 ライドシューター", () => {
   });
 
   // 08 章 効果:「対象は「捨札にしたそのターン中に、最初にラッシュする特徴「ミラーライダー」を持つユニットカード」」
-  // 既知の不具合: 未登録 — 【突入】（ライドシューターを捨札にする操作）が合法手に出ない
-  it.fails("R-ERR-RK043: 【突入】で捨札にしたターン、必要パワー3のミラーライダーをパワー0・コマンドのホールドなしでラッシュできる（出典: grnrngr/faq-rider-1 RK-043）", () => {
+  it("R-ERR-RK043: 【突入】で捨札にしたターン、必要パワー3のミラーライダーをパワー0・コマンドのホールドなしでラッシュできる（出典: grnrngr/faq-rider-1 RK-043）", () => {
     const rs = inst("RK-043", "rs");
     const raia = inst("RK-036", "raia");
     let s = specState(["RK-043", "RK-036"], {
@@ -336,8 +333,7 @@ describe("R-ERR-RS504 獣人メレ", () => {
   });
 
   // 「メレ」→「獣人メレ」の読み替えにより、除外されるのは「獣人メレ」だけ
-  // 既知の不具合: 未登録 — カード名「メレ」のユニットも除外している
-  it.fails("R-ERR-RS504: カード名「メレ」のユニットは「獣人メレ」ではないので発動条件を満たす（出典: grnrngr/faq-card-7 RS-504）", () => {
+  it("R-ERR-RS504: カード名「メレ」のユニットは「獣人メレ」ではないので発動条件を満たす（出典: grnrngr/faq-card-7 RS-504）", () => {
     const { s: s0, entering } = meleState("MERE", "メレ");
     const s = act(s0, { type: "move_to_battle", playerId: "player1", instanceId: entering });
     expect(meleTriggered(s)).toBe(true);
@@ -381,8 +377,7 @@ describe("R-ERR-RK086 アカネタカ", () => {
   const usesAkanetaka = (s: GameState, id: string) =>
     legal(s).find((a) => a.playerId === "player2" && J(a).includes(id));
 
-  // 既知の不具合: 未登録 — ストライクのダメージ時にアカネタカを使う手段がない
-  it.fails("R-ERR-RK086: ストライクのダメージにするときアカネタカをかわりにダメージにして1枚ドローする（出典: grnrngr/faq-rider-2 RK-086）", () => {
+  it("R-ERR-RK086: ストライクのダメージにするときアカネタカをかわりにダメージにして1枚ドローする（出典: grnrngr/faq-rider-2 RK-086）", () => {
     const { s: s0, a1 } = struckWithTwoAkanetaka();
     const use = usesAkanetaka(s0, a1);
     expect(use).toBeDefined();
@@ -392,8 +387,7 @@ describe("R-ERR-RK086 アカネタカ", () => {
   });
 
   // rider_2.html:「続けて2枚目の「RK-086 アカネタカ」を使用することはできますか？ いいえ、それはできません。」
-  // 既知の不具合: 未登録 — 1枚目のアカネタカも使えないため前提が作れない
-  it.fails("R-ERR-RK086: 公式Q&A — 1回のストライクに対して2枚目のアカネタカは使えない（出典: grnrngr/faq-rider-2 RK-086 Q1）", () => {
+  it("R-ERR-RK086: 公式Q&A — 1回のストライクに対して2枚目のアカネタカは使えない（出典: grnrngr/faq-rider-2 RK-086 Q1）", () => {
     const { s: s0, a1, a2 } = struckWithTwoAkanetaka();
     const use = usesAkanetaka(s0, a1);
     expect(use).toBeDefined();
@@ -450,8 +444,7 @@ describe("R-ERR-RK125 仮面ライダーブレイド", () => {
   });
 
   // rider_2.html Q2:「自分の手札を選ぶときは、必ず3枚選ぶようにしてください」
-  // 既知の不具合: 未登録 — 手札2枚でも敵軍Sユニットを選ぶ処理に進む
-  it.fails("R-ERR-RK125: 公式Q&A — 手札が2枚では3枚選べないので、敵軍Sユニットはホールドされない（出典: grnrngr/faq-rider-2 RK-125 Q2）", () => {
+  it("R-ERR-RK125: 公式Q&A — 手札が2枚では3枚選べないので、敵軍Sユニットはホールドされない（出典: grnrngr/faq-rider-2 RK-125 Q2）", () => {
     let { s, enemyS } = bladeRideOff(2);
     s = act(s, { type: "resolve_ride_off_choice", playerId: "player1", rideOff: true });
     expect(
@@ -520,23 +513,20 @@ describe("R-ERR-RK168 仮面ライダー電王CF", () => {
   }
 
   // rider_2.html:「「キンタロス」…のカードの捨札にしたときに発動する効果を、1枚につき1度ずつ、捨札にせずに発動できる」
-  // 既知の不具合: 未登録 — 【てんこもりだぜ！】がパワーゾーンの効果を発動しない
-  it.fails("R-ERR-RK168: キンタロス1枚の効果を捨札にせず1度発動し、BP+3000（5000→8000）（出典: grnrngr/faq-rider-2 RK-168）", () => {
+  it("R-ERR-RK168: キンタロス1枚の効果を捨札にせず1度発動し、BP+3000（5000→8000）（出典: grnrngr/faq-rider-2 RK-168）", () => {
     const { s, bp, kins } = cfEntered(1);
     expect(bp).toBe(8000);
     expect(zoneIds(s, "player1", "power")).toEqual(kins);
   });
 
   // rider_2.html Q1:「複数重複して同時に発動することができますので、その場合はBP＋6000されることになります」
-  // 既知の不具合: 未登録 — 同上
-  it.fails("R-ERR-RK168: 公式Q&A — キンタロス2枚なら2枚分発動してBP+6000（出典: grnrngr/faq-rider-2 RK-168 Q1）", () => {
+  it("R-ERR-RK168: 公式Q&A — キンタロス2枚なら2枚分発動してBP+6000（出典: grnrngr/faq-rider-2 RK-168 Q1）", () => {
     const { bp } = cfEntered(2);
     expect(bp).toBe(11000);
   });
 
   // rider_2.html Q2:「…BPが無制限に上昇するということですか？ いいえ、違います。」
-  // 既知の不具合: 未登録 — 同上（1度も発動しないため 8000 にならない）
-  it.fails("R-ERR-RK168: 公式Q&A — キンタロス1枚からは1度だけ（BP+3000で止まり無制限には上がらない）（出典: grnrngr/faq-rider-2 RK-168 Q2）", () => {
+  it("R-ERR-RK168: 公式Q&A — キンタロス1枚からは1度だけ（BP+3000で止まり無制限には上がらない）（出典: grnrngr/faq-rider-2 RK-168 Q2）", () => {
     const { bp } = cfEntered(1);
     expect(bp).toBe(8000);
   });

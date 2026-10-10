@@ -10,6 +10,7 @@
  *  - senko_sosa                   : 数字宣言→山札下公開→一致で手札（RK-135 等）
  *  - extend_rider_drop            : 指定ビークルからのコンビで本来 BP 8000 以下の敵をパワー送り（RK-301 等）
  */
+import { openImaginPowerChoice } from "./errataCardEffects";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../dsl/grantKeyword";
 import { cardName, getDefinition, parsePowerCost } from "../core/catalog";
@@ -489,17 +490,6 @@ export function tryPowerFaceupRaidaOnAllyEnter(
   const powerIds = faceUpPowerFaceupRaidaIds(state, playerId);
   if (powerIds.length === 0) return state;
 
-  return (
-    openEffectChoice(state, {
-      playerId,
-      effectId: "power_faceup_sp1_grant",
-      sourceCardId: "RK-142",
-      sourceInstanceId: entering.instanceId,
-      phasePlayerId,
-      kind: "select_power",
-      validInstanceIds: powerIds,
-      selectCount: 1,
-      optional: true,
-    }) ?? state
-  );
+  // RK-142〜145 は各カードの効果（SP1 / 送る / BP+3000 / 撃破）。RK-168 電王CF は捨札にせずに発動。
+  return openImaginPowerChoice(state, playerId, entering, phasePlayerId, powerIds) ?? state;
 }

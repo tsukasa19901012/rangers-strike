@@ -10,12 +10,26 @@ import rs106 from "./RS-106.json";
 import rs118 from "./RS-118.json";
 import rs036 from "./RS-036.json";
 import rs365 from "./RS-365.json";
+import rs030 from "./RS-030.json";
+import xg2030 from "./XG2-030.json";
 import rk043 from "./RK-043.json";
 import rk125 from "./RK-125.json";
+import rk168 from "./RK-168.json";
 import xg1029 from "./XG1-029.json";
+import xg1048 from "./XG1-048.json";
+import xg4023 from "./XG4-023.json";
 import xg1030 from "./XG1-030.json";
 import xg3005 from "./XG3-005.json";
 import xg5014 from "./XG5-014.json";
+import xg6044 from "./XG6-044.json";
+import rs349 from "./RS-349.json";
+import rk146 from "./RK-146.json";
+import xg4004 from "./XG4-004.json";
+import xg2014 from "./XG2-014.json";
+import xg1062 from "./XG1-062.json";
+import rk140 from "./RK-140.json";
+import rk334 from "./RK-334.json";
+import xg6015 from "./XG6-015.json";
 import type { CardDocument } from "../types";
 import { mergeCardDocument } from "../cardDocumentMerge";
 
@@ -44,12 +58,19 @@ const CARD_OVERRIDES: Record<string, Partial<CardDocument>> = {
   "RS-036": rs036 as Partial<CardDocument>,
   // ルール: R-ERR-RS365 — 追加条件は「これ以外の自分の手札を全て捨札にする」（挙動は従来から自身を除外）。
   "RS-365": rs365 as Partial<CardDocument>,
+  // ルール: R-ERR-RS030 — 「自分も相手も次の制限を受ける→」を含む修正後テキスト（両軍に効く処理は engine 側）。
+  "RS-030": rs030 as Partial<CardDocument>,
+  // ルール: R-ERR-XG2-030 — 公式回答の読み替え文（コマンダー。ゲーム開始時効果はエンジン未実装）。
+  "XG2-030": xg2030 as Partial<CardDocument>,
   // ルール: R-ERR-RK043 — 【突入】に「このターン、」を追加（公式読み替え文）。
   "RK-043": rk043 as Partial<CardDocument>,
   // ルール: R-ERR-RK125 — wiki 注記「※赤文字は…」が本文・効果に混入していたのを除去。
   "RK-125": rk125 as Partial<CardDocument>,
+  // ルール: R-ERR-RK125 — 【ブレイラウザー】は手札をちょうど3枚見せる（engine: rules/errataCardEffects.ts）。
+  // ルール: R-ERR-RK168 — 【てんこもりだぜ！】は電王CF 進入時のイマジン効果で処理する（自身の DSL は起点だけ）。
+  "RK-168": rk168 as Partial<CardDocument>,
   // E7: 効果文が補われたカードのうち、パイプライン出力が原文とずれる効果を人手で修正。
-  // 【無敵の竜人魂】対象を本来BP8000以下のLユニットに限定（DA なら SP1 は未実装）。
+  // 【無敵の竜人魂】本来BP8000以下のLユニットを撃破し、DA なら SP1（engine: rules/errataCardEffects.ts）。
   "XG1-029": xg1029 as Partial<CardDocument>,
   // 【キラークロー】NC で「SP1」+ BP+2000（RS-031 と同形）。ウイング時のナンバー不問は未実装。
   "XG1-030": xg1030 as Partial<CardDocument>,
@@ -57,6 +78,28 @@ const CARD_OVERRIDES: Record<string, Partial<CardDocument>> = {
   "XG3-005": xg3005 as Partial<CardDocument>,
   // ※SP1 条件と【マックスビクトリープロミネンス】は CN なしの常時効果。
   "XG5-014": xg5014 as Partial<CardDocument>,
+  // ルール: R-ERR-XG1-048 — 【エレキ光線】は修正後テキストの1効果だけ（旧テキストとの重複定義を除く）。
+  "XG1-048": xg1048 as Partial<CardDocument>,
+  // ルール: R-ERR-XG4-023 — 【超忍法・秘打千本ノック】は修正後テキストの1効果（engine: rules/errataCardEffects.ts）。
+  "XG4-023": xg4023 as Partial<CardDocument>,
+  // ルール: R-ERR-XG6-044 — 【カウンターストライク】は修正後テキストの1効果（engine: rules/errataCardEffects.ts）。
+  "XG6-044": xg6044 as Partial<CardDocument>,
+  // ルール: R-ERR-RS349 — 修正後テキスト（DA を持たない S ユニット）。山札サーチは engine: rules/errataCardEffects.ts。
+  "RS-349": rs349 as Partial<CardDocument>,
+  // ルール: R-ERR-RK146 — 【デネブキャンディー】は修正後テキストの1効果（相手→自分の順。engine: rules/errataCardEffects.ts）。
+  "RK-146": rk146 as Partial<CardDocument>,
+  // ルール: R-ERR-XG4-004 — 【ワンパーの壺】は修正後テキストの1効果（engine: rules/errataCardEffects.ts）。
+  "XG4-004": xg4004 as Partial<CardDocument>,
+  // ルール: R-ERR-XG2-014 — 【気力妖力合体】は修正後テキストの1効果（engine: rules/errataCardEffects.ts）。
+  "XG2-014": xg2014 as Partial<CardDocument>,
+  // E7: 【ワイルドサイクロン】敵軍バトルエリアの S を好きな数ホールドし、BP合計10000ごとに1点（engine: rules/errataCardEffects.ts）。
+  "XG1-062": xg1062 as Partial<CardDocument>,
+  // E7: 【電車斬り】常駐置き場の DEN-O ユニットを捨札にして1点（engine: rules/errataCardEffects.ts。※ロックは restrictions 経由）。
+  "RK-140": rk140 as Partial<CardDocument>,
+  // E7: 【電車斬り】（NC）イマジン4種がラッシュエリアにあれば SP2（engine: rules/errataCardEffects.ts）。
+  "RK-334": rk334 as Partial<CardDocument>,
+  // E7: 【爆竜必殺チョキチョキシザース】は L からのコンビネーション（joint_combo_r）で発動（engine: rules/errataCardEffects.ts）。
+  "XG6-015": xg6015 as Partial<CardDocument>,
 };
 
 let cachedOverrides: Map<string, Partial<CardDocument>> | null = null;

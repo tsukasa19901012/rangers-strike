@@ -263,7 +263,13 @@
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【爆竜必殺チョキチョキシザース】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "effect_card::XG6-015::baku_chokichokishizasu"
+    ],
     "bp": 3000,
     "sp": null,
     "size": "M"
@@ -796,7 +802,7 @@
     "expectedDslKeywords": [
       "note_card::XG6-044::koreworashushita",
       "sp_at_bp5000_sp1",
-      "deck_reveal_position_destroy_s"
+      "effect_card::XG6-044::kauntasutoraiku"
     ],
     "bp": 3000,
     "sp": "1/4",

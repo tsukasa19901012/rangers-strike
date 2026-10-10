@@ -72,6 +72,8 @@ export type CardInstance = {
    * ルール: R-BP-01 — 指定の値になる効果が最優先で、増減の計算は行わない。
    */
   bpSetValue?: number;
+  /** XG1-048【エレキ光線】で選ばれたターン番号（そのターンを終えるとき隣のユニットが撃破される）。 */
+  electroBeamTurn?: number;
 };
 
 export type PlayerState = {
@@ -153,6 +155,10 @@ export type PendingDamagePayment = {
   resume: DamagePaymentResume;
   /** RK-294 ブラッドベセル: モーフユニットを優先してダメージ支払い。 */
   bloodVesselPreferMorph?: boolean;
+  /** RK-086 アカネタカ: このダメージで使用済み（1つのタイミングに1枚だけ）。 */
+  akanetakaUsed?: boolean;
+  /** RK-086 アカネタカ: かわりにダメージにした枚数（totalDamage には含めない）。 */
+  replacedDamage?: number;
 };
 
 export type PendingBattle = {
@@ -366,6 +372,8 @@ export type PendingEffectChoice = {
     residentIds?: string[];
   };
   skipShurikenIntercept?: boolean;
+  /** RS-322 人身略取: 相手が満たす追加条件の進行。 */
+  abductionMeta?: { payerId: PlayerId; cardId: string; remaining: number };
   /** 敵ターン撃破時の任意パワー送り（to_power_on_destroy）。 */
   toPowerOnDestroyMeta?: {
     card: CardInstance;
@@ -443,6 +451,8 @@ export type PendingZordSetup = {
   step: PendingZordSetupStep;
   validInstanceIds: string[];
   materialInstanceId?: string;
+  /** 複数体の素材が必要な追加条件（「2体をそれぞれ」）で選び終えた素材。 */
+  chosenMaterialIds?: string[];
   /** send_s_unit_to_command_or_discard 時、素材選択前に選ぶ。 */
   materialDestination?: ZordMaterialDestination;
   /** このゾードでは母艦ホールドがSユニット素材の代用になる場合がある。 */
@@ -574,6 +584,59 @@ export type GameState = {
    * 選択待ちで中断したら、解決後にここから再開する（R-END-01）。
    */
   turnEndProgress?: TurnEndProgress;
+  /**
+   * 効果でラッシュエリアに出たが、先に解決すべき操作待ちがあり「ラッシュしたとき」の誘発と
+   * 「ラッシュされたとき」の窓をまだ処理していないユニット（出た順）。
+   * ルール: R-RUSH-22, R-RUSH-30
+   */
+  effectRushTriggerQueue?: EffectRushTrigger[];
+  /**
+   * このアクション中にエリアへ出たが、効果ラッシュの後処理（ラッシュ記録・誘発）の対象外とするユニット
+   * （モーフ等の置き換え。置き換え側の処理で扱う）。applyAction の後処理で消える。
+   */
+  fieldEntryHandledIds?: string[];
+  /** 「選んだ1枚ごとにラッシュエリアに出す」効果の進行（R-RUSH-21, R-RUSH-23）。 */
+  pendingEffectRush?: PendingEffectRush;
+};
+
+export type EffectRushTrigger = {
+  rusherPlayerId: PlayerId;
+  instanceId: string;
+  phasePlayerId: PlayerId;
+  /** R-RUSH-24: 出たユニット自身の効果は発動しない。 */
+  silent?: boolean;
+  /**
+   * 誘発は解決済みで、「ラッシュされたとき」の窓（モーフ・カウンター）だけが残っている
+   * （「ラッシュしたとき」の効果の選択待ちの後に開く、R-RUSH-30）。
+   */
+  windowOnly?: boolean;
+};
+
+/** 効果でラッシュエリアに出せるカードの置き場。 */
+export type EffectRushSourceZone = "command" | "hand" | "discard" | "power";
+
+export type PendingEffectRush = {
+  /** 出すユニットの持ち主。 */
+  playerId: PlayerId;
+  phasePlayerId: PlayerId;
+  effectId: string;
+  sourceCardId: string;
+  sourceInstanceId?: string;
+  fromZone: EffectRushSourceZone;
+  /** R-RUSH-21: 「ただし、ラッシュするための必要パワーと追加条件は満たすこと」。 */
+  requireConditions: boolean;
+  /** 選び終えて、まだ出していないユニット（1体ずつ出す）。 */
+  queue: string[];
+  /** 選ぶ段階: 候補とあと何枚選べるか。 */
+  picking?: { candidates: string[]; remaining: number };
+  /** 追加条件を実行中のユニット。 */
+  current?: {
+    instanceId: string;
+    direction: "up" | "down";
+    needed: number;
+    chosen: string[];
+    destination?: "command" | "discard";
+  };
 };
 
 export type TurnEndProgress = {

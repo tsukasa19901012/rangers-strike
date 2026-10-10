@@ -1,0 +1,34 @@
+{
+  "effects": [
+    {
+      "id": "unnamed_morph",
+      "text": "※モーフ",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "morph",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "ereki_hikari",
+      "name": "エレキ光線",
+      "text": "敵軍Ｓユニットを１体選んでもよい。次の相手のターン、選んだユニットがバトルエリアにあるとき、選んだユニットと隣り合っているユニットは、そのターンを終えるとき撃破される。",
+      "trigger": {
+        "type": "riding_combo"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_card::XG1-048::ereki_hikari",
+          "duration": "turn"
+        }
+      ]
+    }
+  ]
+}

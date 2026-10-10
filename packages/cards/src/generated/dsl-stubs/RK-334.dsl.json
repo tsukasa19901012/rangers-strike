@@ -53,8 +53,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RK-334::zanri",
-          "duration": "permanent"
+          "keyword": "effect_card::RK-334::zan_ri",
+          "duration": "turn"
         }
       ]
     }

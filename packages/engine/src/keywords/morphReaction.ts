@@ -3,6 +3,7 @@ import type { CardInstance, GameState, PendingMorph, PlayerId, PlayerState } fro
 import { getDefinition } from "../core/catalog";
 import { findInZone, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
+import { markFieldEntryHandled } from "../events/emitUnitRushed";
 import { openEffectChoice } from "../rules/pendingChoices";
 import { openRushCounterWindow } from "../rules/rushEffects";
 import { cardHasKeyword } from "./cardKeywords";
@@ -164,7 +165,10 @@ export function applyMorphSwap(
   );
 
   return {
-    state: { ...state, ...updatePlayer(state, defenderId, nextPlayer) },
+    state: markFieldEntryHandled(
+      { ...state, ...updatePlayer(state, defenderId, nextPlayer) },
+      [replacementFound.card.instanceId],
+    ),
     log,
   };
 }

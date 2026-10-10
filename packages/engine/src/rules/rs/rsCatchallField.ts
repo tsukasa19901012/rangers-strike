@@ -72,7 +72,14 @@ export function rs603BlocksVehicle(
   playerId: PlayerId,
   cardId: string,
 ): boolean {
-  if (!playerHasFieldCard(state, playerId, "RS-603")) return false;
+  // ルール: R-ERR-RS603 — 対象は「本来の特徴に「車両」を持つユニット」で、自軍・敵軍を問わない。
+  const enemyId: PlayerId = playerId === "player1" ? "player2" : "player1";
+  if (
+    !playerHasFieldCard(state, playerId, "RS-603") &&
+    !playerHasFieldCard(state, enemyId, "RS-603")
+  ) {
+    return false;
+  }
   const def = getDefinition(state.definitions, cardId);
   return (def?.features ?? []).includes("車両");
 }
