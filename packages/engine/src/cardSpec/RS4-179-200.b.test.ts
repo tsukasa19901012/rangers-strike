@@ -366,8 +366,7 @@ describe("RS-191 ダイナレッド", () => {
   });
 
   // 「これはアタックとストライクを1度ずつ行ってもよい」
-  // 既知の不具合: CARD-RS-191 「アタックとストライクを1度ずつ」が未実装（SP1 付与のみ。アタック後にストライクできない）
-  it.fails("RS-191: NC 成立時、アタックした後にストライクもできる（出典: atwiki/page-393）", () => {
+  it("RS-191: NC 成立時、アタックした後にストライクもできる（出典: atwiki/page-393）", () => {
     let s = atPosition(inst("RS-191", "r"), 4, { battle: [inst("TST-UNIT-0", "e")] });
     s = settle(attack(s, "RS-191:r", "TST-UNIT-0:e"));
     expect(zoneOf(s, "player1", "RS-191:r")).toBe("battle");
@@ -376,16 +375,14 @@ describe("RS-191 ダイナレッド", () => {
     expect(s.players.player2.damage).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-191 「アタックとストライクを1度ずつ」が未実装（ストライク後にアタックできない）
-  it.fails("RS-191: NC 成立時、ストライクした後にアタックもできる（出典: atwiki/page-393）", () => {
+  it("RS-191: NC 成立時、ストライクした後にアタックもできる（出典: atwiki/page-393）", () => {
     let s = atPosition(inst("RS-191", "r"), 4, { battle: [inst("TST-UNIT-0", "e")] });
     s = settle(strike(s, "RS-191:r"));
     expect(s.players.player2.damage).toBe(1);
     expect(legalOfType(s, "battle").map((a) => a.attackerInstanceId)).toContain("RS-191:r");
   });
 
-  // 既知の不具合: CARD-RS-191 「アタックとストライクを1度ずつ」が未実装（ストライク後のアタックも出ない）
-  it.fails("RS-191: 1度ずつまで — ストライクの後はアタックはできるが、2回目のストライクはできない（出典: atwiki/page-393「1度ずつ」）", () => {
+  it("RS-191: 1度ずつまで — ストライクの後はアタックはできるが、2回目のストライクはできない（出典: atwiki/page-393「1度ずつ」）", () => {
     let s = atPosition(inst("RS-191", "r"), 4, { battle: [inst("TST-UNIT-0", "e")] });
     s = settle(strike(s, "RS-191:r"));
     expect(legalOfType(s, "battle").map((a) => a.attackerInstanceId)).toContain("RS-191:r");
@@ -393,8 +390,7 @@ describe("RS-191 ダイナレッド", () => {
   });
 
   // grnrngr/faq-card-4 RS-191 Q1「ナンバーコンビネーションを発動している時点でSP1になっていますので、SP1以上のユニットとして扱われます。」
-  // 既知の不具合: CARD-RS-191 ストライク後にアタックできない（「1度ずつ」未実装）
-  it.fails("RS-191: ストライクした後でアタックした帝王アトンは、SP1 以上のユニットとのバトルとして勝っても撃破される（出典: grnrngr/faq-card-4 RS-191 Q1）", () => {
+  it("RS-191: ストライクした後でアタックした帝王アトンは、SP1 以上のユニットとのバトルとして勝っても撃破される（出典: grnrngr/faq-card-4 RS-191 Q1）", () => {
     let s = atPosition(inst("RS-191", "r"), 4, { battle: [inst("RS-198", "aton")] });
     s = settle(strike(s, "RS-191:r"));
     s = settle(attack(s, "RS-191:r", "RS-198:aton"));
