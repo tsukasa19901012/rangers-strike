@@ -721,17 +721,17 @@ export function applyMultipleFieldZordMaterials(
   rushingCardId: string,
   rushingInstanceId: string,
   materialInstanceIds: string[],
-  destination?: ZordMaterialDestination,
+  destination?: ZordMaterialDestination | ZordMaterialDestination[],
 ): PlayerState | null {
   let nextPlayer = player;
-  for (const materialId of materialInstanceIds) {
+  for (const [index, materialId] of materialInstanceIds.entries()) {
     const applied = applyZordMaterial(
       nextPlayer,
       definitions,
       rushingCardId,
       rushingInstanceId,
       materialId,
-      destination,
+      Array.isArray(destination) ? destination[index] : destination,
     );
     if (!applied) return null;
     nextPlayer = applied;

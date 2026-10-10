@@ -139,6 +139,20 @@ export function listZordSetupResolveActions(
         actions.push({ type: "resolve_zord_setup", playerId, destination });
       }
     }
+    if ((setup.chosenMaterialIds?.length ?? 0) > 0) {
+      // 「それぞれ」の2体目以降: 行き先を選ばずに素材を選ぶと直前と同じ行き先になる。
+      for (const materialInstanceId of setup.validInstanceIds) {
+        const advanced = advanceZordSetup(state, setup, { materialInstanceId });
+        if (advanced.kind !== "error") {
+          actions.push({ type: "resolve_zord_setup", playerId, materialInstanceId });
+        }
+      }
+      // 残りを【母艦】ホールドで代えることもできる（RS-076 Q7・RS-075 Q2）。
+      const advanced = advanceZordSetup(state, setup, { paymentPath: "mothership" });
+      if (advanced.kind !== "error") {
+        actions.push({ type: "resolve_zord_setup", playerId, paymentPath: "mothership" });
+      }
+    }
     return actions;
   }
 
@@ -360,13 +374,22 @@ export function advanceZordSetup(
   if (!found) return { kind: "error", error: "card_not_in_hand" };
 
   if (setup.step === "destination") {
+    if (
+      input.destination === undefined &&
+      (setup.chosenMaterialIds?.length ?? 0) > 0 &&
+      (input.materialInstanceId !== undefined || input.paymentPath === "mothership")
+    ) {
+      // 2体目以降で行き先を選ばずに素材（または母艦）を選んだ — 直前と同じ行き先にする。
+      const prev = setup.chosenMaterialDestinations?.at(-1) ?? "discard";
+      return advanceZordSetup(state, { ...setup, step: "material", materialDestination: prev }, input);
+    }
     const dest = input.destination;
     if (dest !== "command" && dest !== "discard") {
       return { kind: "error", error: "invalid_destination" };
     }
 
     const materialIds =
-      setup.validInstanceIds.length > 0
+      setup.validInstanceIds.length > 0 || (setup.chosenMaterialIds?.length ?? 0) > 0
         ? setup.validInstanceIds
         : setup.direction === "down"
           ? collectZordDownMaterials(
@@ -476,6 +499,11 @@ export function advanceZordSetup(
     const needed = zordMaterialUnitCount(state, setup.zordCardId);
     if (needed > 1) {
       const chosen = [...(setup.chosenMaterialIds ?? []), materialId];
+      // 「それぞれ」— 行き先は1体ごとに選ぶ（grnrngr/faq-card-4 RS-196 Q2）。
+      const perUnitDestination = needsDestinationChoice(setup.zordCardId, commandZoneHasSpace);
+      const chosenDestinations = destination
+        ? [...(setup.chosenMaterialDestinations ?? []), destination]
+        : setup.chosenMaterialDestinations;
       if (chosen.length < needed) {
         const remaining = setup.validInstanceIds.filter((id) => !chosen.includes(id));
         if (
@@ -485,18 +513,28 @@ export function advanceZordSetup(
         ) {
           return { kind: "error", error: "invalid_material" };
         }
+        const commandCount = (chosenDestinations ?? []).filter((d) => d === "command").length;
+        const askNextDestination =
+          perUnitDestination &&
+          remaining.length > 0 &&
+          player.command.length + commandCount < COMMAND_ZONE_MAX;
         return {
           kind: "continue",
           setup: {
             ...setup,
-            step: "material",
+            step: askNextDestination ? "destination" : "material",
             chosenMaterialIds: chosen,
-            materialDestination: destination,
+            chosenMaterialDestinations: chosenDestinations,
+            materialDestination: askNextDestination
+              ? undefined
+              : perUnitDestination && remaining.length > 0
+                ? "discard" // コマンドゾーンが埋まった — 残りは捨札にするしかない
+                : destination,
             validInstanceIds: remaining,
           },
         };
       }
-      return completeMultiZordPayment(state, setup, chosen, destination);
+      return completeMultiZordPayment(state, setup, chosen, destination, chosenDestinations);
     }
 
     return completeZordPayment(state, setup, materialId, destination);
@@ -628,16 +666,29 @@ function completeMultiZordPayment(
   state: GameState,
   setup: PendingZordSetup,
   materialInstanceIds: string[],
-  materialDestination: ZordMaterialDestination | undefined,
+  singleDestination: ZordMaterialDestination | undefined,
+  perMaterialDestinations?: ZordMaterialDestination[],
 ): ZordSetupAdvanceResult {
   const playerId = setup.playerId;
   const player = state.players[playerId];
   const def = getDefinition(state.definitions, setup.zordCardId);
   if (!def) return { kind: "error", error: "invalid_card" };
-  if (
-    materialDestination === "command" &&
-    player.command.length + materialInstanceIds.length > COMMAND_ZONE_MAX
-  ) {
+  const destinations =
+    perMaterialDestinations && perMaterialDestinations.length === materialInstanceIds.length
+      ? perMaterialDestinations
+      : undefined;
+  // 行き先が混在するときは、コマンドゾーンの空き確認のため「command」を代表にする。
+  const materialDestination = destinations
+    ? destinations.includes("command")
+      ? "command"
+      : "discard"
+    : singleDestination;
+  const commandCount = destinations
+    ? destinations.filter((d) => d === "command").length
+    : materialDestination === "command"
+      ? materialInstanceIds.length
+      : 0;
+  if (player.command.length + commandCount > COMMAND_ZONE_MAX) {
     return { kind: "error", error: "invalid_destination" };
   }
   const shironRush = isShironLightRushTarget(player, setup.zordInstanceId);
@@ -650,6 +701,7 @@ function completeMultiZordPayment(
         instanceId: setup.zordInstanceId,
         zordMaterialInstanceIds: materialInstanceIds,
         zordMaterialDestination: materialDestination,
+        ...(destinations ? { zordMaterialDestinations: destinations } : {}),
       },
     };
   }
@@ -663,6 +715,7 @@ function completeMultiZordPayment(
       type: "rush",
       zordMaterialInstanceIds: materialInstanceIds,
       zordMaterialDestination: materialDestination,
+      ...(destinations ? { zordMaterialDestinations: destinations } : {}),
     },
     false,
     { perRushPayment: true },

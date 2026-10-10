@@ -334,8 +334,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // 「追加条件：自軍Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする」
-  // 既知の不具合: CARD-RS-196 追加条件の行き先（コマンド／捨札）を2体まとめて1回しか選べず、「それぞれ」別の行き先にできない
-  it.fails("RS-196: 自軍 S ユニット2体を（1体はコマンド、1体は捨札に）送ってラッシュでき、1体では満たせない（出典: atwiki/page-398・R-ADD-04）", () => {
+  it("RS-196: 自軍 S ユニット2体を（1体はコマンド、1体は捨札に）送ってラッシュでき、1体では満たせない（出典: atwiki/page-398・R-ADD-04）", () => {
     const mk = (rush: CardInstance[]) =>
       st({ phase: "rush", turn: 3, player1: { hand: [inst("RS-196", "mob")], rush, command: releasedN(1, "TST-OP-ET"), power: powerCards(5) } });
     expect(canStartRush(mk([inst("TST-UNIT-0", "a")]), "player1", "RS-196:mob")).toBe(false);
@@ -360,8 +359,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // 「相手にストライクされたとき…Sユニットなら2つ、ETの自軍コマンドをホールドする。そうしたとき、敵軍のストライクは無効になる」
-  // 既知の不具合: CARD-RS-196 【迎撃モビルミサイル】が未実装（ストライクされても発動の機会がない）
-  it.fails("RS-196: S ユニットにストライクされたとき、ET のコマンドを2つホールドしてストライクを無効にできる（出典: atwiki/page-398）", () => {
+  it("RS-196: S ユニットにストライクされたとき、ET のコマンドを2つホールドしてストライクを無効にできる（出典: atwiki/page-398）", () => {
     let s = struckBy(inst("TST-UNIT-0", "s"), releasedN(3, "TST-OP-ET"));
     s = pickEffect(s, "player1", ["TST-OP-ET:rc0", "TST-OP-ET:rc1"]);
     for (let i = 0; i < 3 && s.pendingCommandPayment; i++) {
@@ -373,8 +371,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // 「Lユニットなら4つ、Mユニットなら3つ」
-  // 既知の不具合: CARD-RS-196 【迎撃モビルミサイル】が未実装
-  it.fails("RS-196: M ユニットのストライクは ET コマンド3つ（2つでは足りない）（出典: atwiki/page-398）", () => {
+  it("RS-196: M ユニットのストライクは ET コマンド3つ（2つでは足りない）（出典: atwiki/page-398）", () => {
     const M = inst("TST-UNIT-2", "m");
     const three = struckBy(M, releasedN(3, "TST-OP-ET"));
     expect(three.pendingEffectChoice?.sourceCardId).toBe("RS-196");
@@ -386,8 +383,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // 「ETの自軍コマンド」
-  // 既知の不具合: CARD-RS-196 【迎撃モビルミサイル】が未実装
-  it.fails("RS-196: ET 以外のコマンドではホールドできない（ET が2つあれば発動できる）（出典: atwiki/page-398「ETの自軍コマンド」）", () => {
+  it("RS-196: ET 以外のコマンドではホールドできない（ET が2つあれば発動できる）（出典: atwiki/page-398「ETの自軍コマンド」）", () => {
     const wb = struckBy(inst("TST-UNIT-0", "s"), releasedN(3, "TST-OP"));
     expect(wb.pendingEffectChoice?.sourceCardId === "RS-196").toBe(false);
     const et = struckBy(inst("TST-UNIT-0", "s"), releasedN(2, "TST-OP-ET"));
@@ -395,8 +391,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // 「発動できる」
-  // 既知の不具合: CARD-RS-196 【迎撃モビルミサイル】が未実装（選択自体が出ない）
-  it.fails("RS-196: 発動は任意 — 発動しなければストライクは通る（出典: atwiki/page-398「発動できる」）", () => {
+  it("RS-196: 発動は任意 — 発動しなければストライクは通る（出典: atwiki/page-398「発動できる」）", () => {
     let s = struckBy(inst("TST-UNIT-0", "s"), releasedN(2, "TST-OP-ET"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-196");
     s = settle(declineEffect(s, "player1"));
@@ -404,8 +399,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // 「これが自軍ラッシュエリアにある間」
-  // 既知の不具合: CARD-RS-196 【迎撃モビルミサイル】が未実装（ラッシュエリア側も発動しない）
-  it.fails("RS-196: バトルエリアにあるときは発動しない（ラッシュエリアなら発動する）（出典: atwiki/page-398「自軍ラッシュエリアにある間」）", () => {
+  it("RS-196: バトルエリアにあるときは発動しない（ラッシュエリアなら発動する）（出典: atwiki/page-398「自軍ラッシュエリアにある間」）", () => {
     const inBattle = struckBy(inst("TST-UNIT-0", "s"), releasedN(2, "TST-OP-ET"), "battle");
     expect(inBattle.pendingEffectChoice?.sourceCardId === "RS-196").toBe(false);
     const inRush = struckBy(inst("TST-UNIT-0", "s"), releasedN(2, "TST-OP-ET"), "rush");
@@ -413,8 +407,7 @@ describe("RS-196 ダイナモビル", () => {
   });
 
   // grnrngr/faq-card-5 RS-196 Q1「はい、発動できます。」（ピンクフラッシュ【プリズムブーツ】の後でも）
-  // 既知の不具合: CARD-RS-196 【迎撃モビルミサイル】が未実装
-  it.fails("RS-196: ピンクフラッシュの【プリズムブーツ】が発動したターンでも【迎撃モビルミサイル】を発動できる（出典: grnrngr/faq-card-5 RS-196 Q1）", () => {
+  it("RS-196: ピンクフラッシュの【プリズムブーツ】が発動したターンでも【迎撃モビルミサイル】を発動できる（出典: grnrngr/faq-card-5 RS-196 Q1）", () => {
     let s = st({
       turn: 4,
       activePlayer: "player2",

@@ -477,6 +477,8 @@ export type PendingEffectChoice = {
     scope: AttackHoldSource["scope"];
     remainingSources: AttackHoldSource[];
   };
+  /** RS-196【迎撃モビルミサイル】: 発動を選んでいる間、保留しているストライク。 */
+  mobilMissileStrike?: PendingStrike;
   /** 敵ターン撃破時の任意パワー送り（to_power_on_destroy）。 */
   toPowerOnDestroyMeta?: {
     card: CardInstance;
@@ -528,6 +530,7 @@ export type CommandPaymentContinuation =
       zordMaterialInstanceId?: string;
       zordMaterialInstanceIds?: string[];
       zordMaterialDestination?: "command" | "discard";
+      zordMaterialDestinations?: Array<"command" | "discard">;
       zordMothershipHoldInstanceIds?: string[];
       zordExtraCommandHoldInstanceIds?: string[];
       /**
@@ -563,6 +566,8 @@ export type PendingZordSetup = {
   chosenMaterialIds?: string[];
   /** send_s_unit_to_command_or_discard 時、素材選択前に選ぶ。 */
   materialDestination?: ZordMaterialDestination;
+  /** 「それぞれ」: 選び終えた素材ごとの行き先（chosenMaterialIds と同じ順）。 */
+  chosenMaterialDestinations?: ZordMaterialDestination[];
   /** このゾードでは母艦ホールドがSユニット素材の代用になる場合がある。 */
   mothershipAvailable?: boolean;
 };

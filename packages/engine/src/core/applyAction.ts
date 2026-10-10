@@ -83,6 +83,7 @@ import {
 import { continuePendingEffectRush } from "../rules/effectRush";
 import { applySuperRadarOnRush } from "../rules/legend3/rushEffects";
 import { tryRsCatchallOnEnemyRush } from "../rules/rs/rsCatchallRuntime";
+import { MOBIL_MISSILE_EFFECT_ID, openMobilMissileChoice, selectMobilMissileCommand } from "../rules/mobilMissile";
 import { RUSH_PHASE_RULE_IDS } from "../types/scopedModifiers";
 import { attackerBlocksDefenderCounters, canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import {
@@ -1129,6 +1130,7 @@ function applyActionCore(
             zordMaterialInstanceId: cont.zordMaterialInstanceId,
             zordMaterialInstanceIds: cont.zordMaterialInstanceIds,
             zordMaterialDestination: cont.zordMaterialDestination,
+            zordMaterialDestinations: cont.zordMaterialDestinations,
             zordMothershipHoldInstanceIds: holdIds,
             zordExtraCommandHoldInstanceIds: cont.zordExtraCommandHoldInstanceIds,
           },
@@ -1538,7 +1540,9 @@ function applyActionCore(
                 found.card.cardId,
                 found.card.instanceId,
                 fieldIds,
-                action.zordMaterialDestination,
+                action.zordMaterialDestinations?.length === fieldIds.length
+                  ? action.zordMaterialDestinations
+                  : action.zordMaterialDestination,
               );
             }
             if (!afterZord) return fail("invalid_zord_material");
@@ -1954,6 +1958,14 @@ function applyActionCore(
       };
       nextState = emitStrikeDeclared(nextState, pending);
 
+      // RS-196 ダイナモビル【迎撃モビルミサイル】: ストライクされたとき発動できる（任意）。
+      const mobil = openMobilMissileChoice(nextState, pending);
+      if (mobil) {
+        const cleared =
+          state.pendingBattleEntry?.instanceId === action.instanceId ? { ...mobil, pendingBattleEntry: undefined } : mobil;
+        return ok(cleared, buildSimpleLogEntry(playerId, "strike_pending", String(damage)));
+      }
+
       const defenderId = opponent(playerId);
       if (hasStrikeReactions(nextState, defenderId)) {
         nextState = {
@@ -2269,6 +2281,16 @@ function applyActionCore(
 
     case "resolve_effect_choice": {
       const pending = state.pendingEffectChoice;
+      if (pending?.effectId === MOBIL_MISSILE_EFFECT_ID && pending.mobilMissileStrike) {
+        const picked = selectMobilMissileCommand(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        if (!picked.done) {
+          return ok(picked.state, buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId));
+        }
+        return completeStrike(picked.state, picked.strike, [
+          buildLogEntry(playerId, "resolve_effect_choice", "RS-196", state.definitions, `${MOBIL_MISSILE_EFFECT_ID}:strike_nullified`),
+        ]);
+      }
       if (pending?.effectId === ATTACK_HOLD_BONUS_EFFECT_ID && pending.attackHoldMeta) {
         const held = resolveAttackHoldChoice(state, playerId, action.instanceId);
         if ("error" in held) return fail(held.error);
@@ -2340,6 +2362,15 @@ function applyActionCore(
 
     case "skip_effect_choice": {
       const pending = state.pendingEffectChoice;
+      if (pending?.effectId === MOBIL_MISSILE_EFFECT_ID && pending.mobilMissileStrike && pending.playerId === playerId) {
+        // 発動しない — ストライクは通常どおり（ほかのストライクへの応答があれば開く）。
+        const strikePending = pending.mobilMissileStrike;
+        const base: GameState = { ...state, pendingEffectChoice: undefined };
+        if (hasStrikeReactions(base, playerId)) {
+          return ok({ ...base, pendingStrike: strikePending, activePlayer: playerId }, buildSimpleLogEntry(playerId, "skip_effect_choice"));
+        }
+        return completeStrike(base, strikePending);
+      }
       if (pending?.effectId === "earth_force" && pending.playerId === playerId) {
         const { state: afterDiscard, discarded } = discardEarthForceForUnpaidUpkeep(
           state,
