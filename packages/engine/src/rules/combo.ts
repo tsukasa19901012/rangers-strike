@@ -68,7 +68,7 @@ import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import { wingAllowsEmptyBattleStrike } from "../keywords";
 import { canStrikeWithHelloMirage } from "./helloMirage";
 import { applyFivemanOnCombo, trySet5AOnComboEnter } from "./legend1/set5NamedEffectsA";
-import { set6BBlocksStrike } from "./legend1/set6NamedEffectsB";
+import { set6BBlocksStrike, trySet6BOnComboEnter } from "./legend1/set6NamedEffectsB";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredBattleListener";
 
@@ -219,6 +219,11 @@ export function resolveEnterBattleEffectsImpl(
     logs.push(...dslEnter.logs);
     // RS-291【大火炎】: 「レッド」を持つユニットからコンビネーションするとき。
     nextState = trySet5AOnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
+    if (nextState.pendingEffectChoice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+    // RS-419【ゴールデンクラッシュ】: DA 以外のユニットからコンビネーションするとき（rules/legend1/set6NamedEffectsB.ts）。
+    nextState = trySet6BOnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }

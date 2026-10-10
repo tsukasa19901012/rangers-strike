@@ -61,9 +61,13 @@ function skipLog(state: GameState, playerId: PlayerId, cardId: string, effectId:
 
 /** 選択を閉じる。割り込まれていた選択（resumeChoice）があれば再開し、無ければ保留中のバトル進入を続ける。 */
 function finish(state: GameState, pending: PendingEffectChoice): GameState {
-  const cleared: GameState = { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
-  if (pending.resumeChoice) return openEffectChoice(cleared, pending.resumeChoice);
+  // 解決の途中で別の選択（離場の応答で開いた選択等）が開いていれば、それを残す。
+  const stillOpen = state.pendingEffectChoice === pending;
+  const cleared: GameState = stillOpen
+    ? { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId }
+    : state;
   if (cleared.pendingLeave || cleared.pendingEffectChoice) return cleared;
+  if (pending.resumeChoice) return openEffectChoice(cleared, pending.resumeChoice);
   return promoteDeferredBattleEntry(cleared);
 }
 
@@ -796,6 +800,172 @@ export function applyProminenceShower(state: GameState, destroyedOwnerId: Player
     log: [...damaged.log, buildLogEntry(sangelOwner, "named_effect", "RS-408", state.definitions, `purominensushawa:${count}`)],
   };
 }
+
+// ---------------------------------------------------------------------------
+// RS-419 聖剣ズバーン
+// 「※これはSユニットかLユニットからコンビネーションしなければバトルエリアに出られない。
+//  【ゴールデンクラッシュ】これがDA以外のユニットからコンビネーションするとき、次の効果を発動できる⇒
+//  コンビネーションしたユニットよりもBPの低い敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。」
+// ジョイントコンビネーション（CN「R」）の効果なので、タンクコマンド（NC を止める）では止まらない（faq-card-6 RS-419 Q1）。
+// DA と DA 以外の両方のカテゴリを持つユニットからでも発動できる（同 Q2）。
+
+export const GOLDEN_CRUSH_EFFECT_ID = "rs419_golden_crush";
+
+/** バトルエリアの並びの最後のユニット（これがコンビネーションする元）。ライドしているユニットは L ユニットとして扱う。 */
+function lastBattleUnit(state: GameState, playerId: PlayerId, excludeInstanceId?: string): CardInstance | undefined {
+  return state.players[playerId].battle.filter((c) => c.instanceId !== excludeInstanceId).at(-1);
+}
+
+function isSOrLUnitForCombo(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  if (card.mountedOnInstanceId) return true;
+  const def = getDefinition(state.definitions, card.cardId);
+  if (def?.type !== "unit") return false;
+  return def.size === "S" || def.size === "L" || zubaanIsLarge(state, card);
+}
+
+/** バトルエリアに出る制限（rules/restrictions.ts canMoveUnitToBattle から呼ぶ）。true なら出られない。 */
+export function set6BBattleEntryBlocked(state: GameState, playerId: PlayerId, unit: CardInstance): boolean {
+  if (unit.cardId === "RS-419") {
+    const last = lastBattleUnit(state, playerId, unit.instanceId);
+    return !last || !isSOrLUnitForCombo(state, playerId, last);
+  }
+  return false;
+}
+
+/**
+ * バトルエリアに出たときの処理（rules/combo.ts の進入処理から呼ぶ）。選択を開いたら選択を開いた state。
+ * - RS-419【ゴールデンクラッシュ】
+ */
+export function trySet6BOnComboEnter(
+  state: GameState,
+  playerId: PlayerId,
+  card: CardInstance,
+  battleBeforeEnter: CardInstance[],
+): GameState {
+  if (state.pendingEffectChoice || state.phase !== "battle") return state;
+  if (card.cardId !== "RS-419") return state;
+  const from = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
+  if (!from) return state;
+  const fromDef = getDefinition(state.definitions, from.cardId);
+  const cats = Array.isArray(fromDef?.category) ? fromDef!.category : fromDef?.category ? [fromDef.category] : [];
+  if (!cats.some((c) => c !== "DA")) return state;
+  const fromBp = effectiveBp(state, playerId, from);
+  const enemyId = opponent(playerId);
+  const ids = fieldUnits(state, enemyId)
+    .filter((c) => effectiveBp(state, enemyId, c) < fromBp)
+    .map((c) => c.instanceId);
+  if (ids.length === 0) return state;
+  return openEffectChoice(state, {
+    playerId,
+    effectId: GOLDEN_CRUSH_EFFECT_ID,
+    sourceCardId: card.cardId,
+    sourceInstanceId: card.instanceId,
+    kind: "select_unit",
+    unitDestination: "power",
+    placeAsDamage: true,
+    phasePlayerId: turnPlayerOf(state),
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+/** 場のユニットを持ち主のパワーゾーンにダメージ（ウラ向き）にして置く。重ねたカードは捨札。 */
+function placeFieldUnitAsDamage(state: GameState, ownerId: PlayerId, instanceId: string): GameState {
+  return patchPlayer(state, ownerId, (p) => {
+    const card = [...p.battle, ...p.rush].find((c) => c.instanceId === instanceId);
+    if (!card) return p;
+    const unmount = (cards: CardInstance[]) =>
+      cards.map((c) => {
+        if (c.mountedOnInstanceId !== instanceId) return c;
+        const { mountedOnInstanceId: _m, ...rest } = c;
+        return rest as CardInstance;
+      });
+    return {
+      ...p,
+      battle: unmount(p.battle.filter((c) => c.instanceId !== instanceId)),
+      rush: unmount(p.rush.filter((c) => c.instanceId !== instanceId)),
+      discard: [...p.discard, ...(card.stackedCards ?? []).map((c) => stripForZone(c))],
+      power: [...p.power, { ...stripForZone(card), faceDown: true }],
+      damage: p.damage + 1,
+    };
+  });
+}
+
+function resolveGoldenCrush(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const found = findCardInField(state, instanceId);
+  if (!found || found.playerId !== opponent(playerId)) return { error: "invalid_target" };
+  const next = placeFieldUnitAsDamage(state, found.playerId, instanceId);
+  return {
+    state: finish(next, pending),
+    log: logFor(state, playerId, "RS-419", `${GOLDEN_CRUSH_EFFECT_ID}:${cardName(state.definitions, found.card.cardId)}`),
+  };
+}
+
+CHOICE_RESOLVERS[GOLDEN_CRUSH_EFFECT_ID] = resolveGoldenCrush;
+CHOICE_SKIPPERS[GOLDEN_CRUSH_EFFECT_ID] = simpleSkip("RS-419");
+
+// ---------------------------------------------------------------------------
+// RS-420 大剣人ズバーン【ズバズバンキック】
+// 「これが自軍ラッシュエリアにある間、自分が特徴「メカ」を持つLユニットをラッシュしたとき、その追加条件を満たすために捨札にした
+//  合体ユニット1体につき、敵軍Sユニットを1体選び撃破してもよい。」
+// 1体ずつ選んで撃破する（残りの回数を selectCount に持つ）。発動の判定は rules/batch06FieldEffects.ts tryZubazubanOnAllyRush。
+
+export const ZUBAZUBAN_EFFECT_ID = "zubazubankiku";
+
+function zubazubanTargets(state: GameState, playerId: PlayerId): string[] {
+  const enemyId = opponent(playerId);
+  return fieldUnits(state, enemyId)
+    .filter((c) => isSmallUnitNow(state, enemyId, c))
+    .map((c) => c.instanceId);
+}
+
+export function openZubazubanKick(
+  state: GameState,
+  playerId: PlayerId,
+  rushedInstanceId: string,
+  phasePlayerId: PlayerId,
+  count: number,
+): GameState {
+  if (count <= 0) return state;
+  const ids = zubazubanTargets(state, playerId);
+  if (ids.length === 0) return state;
+  return openEffectChoice(state, {
+    playerId,
+    effectId: ZUBAZUBAN_EFFECT_ID,
+    sourceCardId: "RS-420",
+    sourceInstanceId: rushedInstanceId,
+    kind: "select_unit",
+    unitDestination: "discard",
+    phasePlayerId,
+    validInstanceIds: ids,
+    selectCount: count,
+    optional: true,
+  });
+}
+
+function resolveZubazuban(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const found = findCardInField(state, instanceId);
+  if (!found) return { error: "invalid_target" };
+  const cleared: GameState = { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+  const leave = applyUnitLeave(cleared, instanceId, "discard", pending.phasePlayerId);
+  if ("error" in leave) return leave;
+  let next = leave.state;
+  const log = logFor(state, playerId, "RS-420", `${ZUBAZUBAN_EFFECT_ID}:${cardName(state.definitions, found.card.cardId)}`);
+  const remaining = (pending.selectCount ?? 1) - 1;
+  if (remaining > 0 && !next.pendingEffectChoice && !next.pendingLeave) {
+    const reopened = openZubazubanKick(next, playerId, pending.sourceInstanceId ?? "", pending.phasePlayerId, remaining);
+    if (reopened.pendingEffectChoice) return { state: reopened, log };
+  }
+  return { state: finish(next, pending), log };
+}
+
+CHOICE_RESOLVERS[ZUBAZUBAN_EFFECT_ID] = resolveZubazuban;
+CHOICE_SKIPPERS[ZUBAZUBAN_EFFECT_ID] = simpleSkip("RS-420");
 
 // ---------------------------------------------------------------------------
 // DSL grant_keyword（`set6b::cardId::name`）からの起点

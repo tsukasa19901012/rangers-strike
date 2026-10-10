@@ -1524,32 +1524,6 @@ export function startZorobAntGeneChoice(
   });
 }
 
-/** RS-420 ズバズバンキック: 敵S撃破。 */
-export function startZubazubanDestroyChoice(
-  state: GameState,
-  params: {
-    playerId: PlayerId;
-    effectId: string;
-    sourceCardId: string;
-    sourceInstanceId?: string;
-    phasePlayerId: PlayerId;
-  },
-): GameState | null {
-  const enemyId = opponent(params.playerId);
-  const valid = state.players[enemyId].rush
-    .concat(state.players[enemyId].battle)
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
-    .map((c) => c.instanceId);
-  if (valid.length === 0) return null;
-  return openEffectChoice(state, {
-    ...params,
-    kind: "select_unit",
-    validInstanceIds: valid,
-    unitDestination: "discard",
-    optional: true,
-  });
-}
-
 /** RS-662 火将危願。 */
 export function startFireGeneralChoice(
   state: GameState,
@@ -3498,15 +3472,6 @@ export function applyEffectChoiceSelect(
           nextState,
           pending,
           cardName(state.definitions, findFieldUnitCardId(nextState, instanceId)),
-        );
-      }
-      if (pending.effectId === "zubazubankiku") {
-        const leave = applyUnitLeave(state, instanceId, "discard", pending.phasePlayerId);
-        if ("error" in leave) return leave;
-        return finishChoice(
-          leave.state,
-          pending,
-          cardName(state.definitions, findFieldUnitCardId(leave.state, instanceId)),
         );
       }
       const dest = pending.unitDestination ?? "discard";
