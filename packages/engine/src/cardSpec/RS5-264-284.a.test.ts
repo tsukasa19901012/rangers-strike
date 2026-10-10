@@ -94,14 +94,12 @@ function jetRushClauseTests(cardId: "RS-264" | "RS-265", page: string) {
     expect(s.players.player1.power).toHaveLength(5);
   });
 
-  it.fails(`${cardId}: パワーゾーンのオモテのオペレーションカード（ユニット以外）も「ダメージ以外のカード」として選べる（出典: ${page}「ダメージ以外のカード」）`, () => {
-    // 既知の不具合: CARD-${cardId} 捨札にするカードの候補がユニットカードに限られ、パワーゾーンのオペレーションカードを選べない
+  it(`${cardId}: パワーゾーンのオモテのオペレーションカード（ユニット以外）も「ダメージ以外のカード」として選べる（出典: ${page}「ダメージ以外のカード」）`, () => {
     const r = rushJet(cardId, powerCards(4));
     expect(r.state.pendingEffectChoice?.validInstanceIds).toContain("TST-P:pw0");
   });
 
-  it.fails(`${cardId}: ダメージになっているカードは選べない（出典: ${page}「ダメージ以外のカード」）`, () => {
-    // 既知の不具合: CARD-${cardId} パワーゾーンのダメージ（ウラ向き）のユニットカードも捨札にする候補に含まれる
+  it(`${cardId}: ダメージになっているカードは選べない（出典: ${page}「ダメージ以外のカード」）`, () => {
     const r = rushJet(cardId, [...powerCards(3), damageUnit("dmgU")]);
     expect(r.ok).toBe(true);
     expect(r.state.pendingEffectChoice?.validInstanceIds ?? []).not.toContain("TST-UNIT-0:dmgU");

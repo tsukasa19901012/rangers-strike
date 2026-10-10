@@ -283,11 +283,13 @@ const KEYWORD_NOTE_PATTERNS: PatternMatch[] = [
       /アタックしなかったとき.*コンビネーションするSユニットのBPは、このユニットのBPを「＋」した値になる/.test(
         body,
       ),
-    build: (body, segment) => ({
+    // 「アタックしなかったとき」はアタック時（on_attack）ではない。NC の欄（【名前】）ならその NC のトリガーのまま、
+    // アタックしなかったことは効果側（combo_bp_from_skipped_attack）で判定する。
+    build: (body, segment, trigger) => ({
       id: segment.name ? slugifyEffectId(segment.name) : "on_skip_attack_combo_bp",
       name: segment.name,
       text: body,
-      trigger: { type: "on_attack" },
+      trigger: trigger.type === "on_attack" ? { type: "conditional" } : trigger,
       effects: [
         {
           type: "grant_keyword",

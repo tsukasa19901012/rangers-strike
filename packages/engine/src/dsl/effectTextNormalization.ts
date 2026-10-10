@@ -104,6 +104,52 @@ function widenPrimitives(primitives: EffectPrimitive[], text: string | undefined
   return changed ? out : primitives;
 }
 
+/**
+ * 「パワーゾーンにダメージ以外のカード」を選ぶ文言: ユニットカードに限らず（オペレーションカードも）、
+ * ウラ向き（ダメージ）のカードは除く（RS-264/265 ジェットデルタ／ジェットシーカー）。
+ */
+function powerNonDamageCardSelector(selector: TargetSelector, text: string | undefined): TargetSelector {
+  if (selector.type !== "zone" || selector.zone !== "power") return selector;
+  if (!text || !/パワーゾーン(?:に|の|から)ダメージ以外のカード/.test(text)) return selector;
+  return { ...selector, filter: { ...selector.filter, cardType: "any", faceDown: false } };
+}
+
+function fixPowerNonDamage(effect: EffectDefinition): EffectDefinition {
+  const text = effect.text;
+  let changed = false;
+  const fix = (primitives: EffectPrimitive[]): EffectPrimitive[] =>
+    primitives.map((p) => {
+      if (p.type !== "choose") return p;
+      const valid = powerNonDamageCardSelector(p.valid, text);
+      const then = fix(p.then);
+      if (valid === p.valid && then === p.then) return p;
+      changed = true;
+      return { ...p, valid, then };
+    });
+  const effects = fix(effect.effects);
+  let condition = effect.condition;
+  if (condition?.type === "has_target") {
+    const target = powerNonDamageCardSelector(condition.target, text);
+    if (target !== condition.target) {
+      condition = { ...condition, target };
+      changed = true;
+    }
+  }
+  return changed ? ({ ...effect, effects, condition } as EffectDefinition) : effect;
+}
+
+/**
+ * 「これがアタックしなかったとき」はアタックしたとき（on_attack）ではない。
+ * DSL スタブが on_attack にしていたら、CN を持つカード（NC の欄）は NC のトリガーにし、
+ * アタックしなかったことの判定は効果側に任せる（RS-273〜276 ファイブマン）。
+ */
+function fixDidNotAttackTrigger(effect: EffectDefinition, doc: CardDocument): EffectDefinition {
+  if (effect.trigger.type !== "on_attack") return effect;
+  if (!effect.text || !/^これがアタックしなかったとき/.test(effect.text.trim())) return effect;
+  const hasCn = (doc as { comboNumber?: unknown }).comboNumber !== undefined;
+  return { ...effect, trigger: hasCn ? { type: "nc" } : { type: "conditional" } } as EffectDefinition;
+}
+
 /** R-TGT-01: 本文の「ユニット」に合わせて選択範囲をラッシュエリアまで広げる。 */
 function widenUnitTargetsToRushArea(effect: EffectDefinition): EffectDefinition {
   const effects = widenPrimitives(effect.effects, effect.text);
@@ -112,8 +158,8 @@ function widenUnitTargetsToRushArea(effect: EffectDefinition): EffectDefinition 
   return { ...effect, effects, condition } as EffectDefinition;
 }
 
-function normalizeEffect(input: EffectDefinition): EffectDefinition {
-  const effect = widenUnitTargetsToRushArea(input);
+function normalizeEffect(input: EffectDefinition, doc: CardDocument): EffectDefinition {
+  const effect = fixDidNotAttackTrigger(fixPowerNonDamage(widenUnitTargetsToRushArea(input)), doc);
   if (isReanimateNamedOnDestroyText(effect.text)) {
     return {
       ...effect,
@@ -137,7 +183,7 @@ export function normalizeCardDslDocument<T extends CardDocument | undefined>(doc
   if (hit) return hit as T;
   let changed = false;
   const effects = doc.effects.map((e) => {
-    const n = normalizeEffect(e);
+    const n = normalizeEffect(e, doc);
     if (n !== e) changed = true;
     return n;
   });
