@@ -45,7 +45,6 @@ import {
   cannotAttackOrStrikeThisTurn,
   unitCannotInitiateAttack,
   countReleasedCommands,
-  findMandatoryBattleEntries,
   mustEnterBattleBeforePhaseEnd,
 } from "../rules/restrictions";
 import { canInitiateShironLight, isShironLightRushTarget } from "../rules/shironLight";
@@ -1698,7 +1697,10 @@ export function getLegalActions(state: GameState): GameAction[] {
 
       // ルール: R-BA-04 — 「可能なら出る」ユニットがホールドすれば出られるなら、出さなければならない。
       // その進入（battle_entry 支払いの開始）を合法手に含める（バトルフェイズを終えられないため）。
-      for (const card of findMandatoryBattleEntries(state, playerId)) {
+      // ルール: R-ADD-07 — 「自軍コマンドを1つホールドしなければバトルエリアに出られない」ユニット（RS-052・RS-305・RS-316 等）は、
+      // 任意の進入でもホールドして出る行動を合法手に含める（出ないこともできる）。
+      // 「可能なら出る」ユニット（findMandatoryBattleEntries）もこの中に含まれる。
+      for (const card of player.rush) {
         if (canMoveUnitToBattle(state, playerId, card, "rush")) continue;
         if (!getBattleEntryPaymentNeeds(state, playerId, card)) continue;
         actions.push({

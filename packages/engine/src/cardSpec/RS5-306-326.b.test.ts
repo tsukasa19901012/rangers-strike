@@ -232,8 +232,7 @@ describe("RS-316 爆竜カルノリュータス", () => {
     expect(s.players.player1.command[0]?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-316 「ホールドしなければ出られない」ユニットのホールド進入（battle_entry 支払い）が任意の進入では合法手に列挙されない（適用はできる）
-  it.fails("RS-316: リリース状態のコマンドがあれば、ホールドしてバトルエリアに出る行動が合法手として示される（出典: atwiki/page-441・grnrngr/faq-card-5 RS-316 Q1）", () => {
+  it("RS-316: リリース状態のコマンドがあれば、ホールドしてバトルエリアに出る行動が合法手として示される（出典: atwiki/page-441・grnrngr/faq-card-5 RS-316 Q1）", () => {
     expect(canEnter(carno([], [released("TST-OP", "wb")]), "RS-316:c")).toBe(true);
   });
 
