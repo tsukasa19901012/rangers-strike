@@ -1,8 +1,9 @@
-import type { GameState, PlayerId } from "../types/game";
-import { findInZone } from "../core/helpers";
+import type { EffectRushTrigger, GameState, PlayerId } from "../types/game";
+import { findInZone, updatePlayer } from "../core/helpers";
 import type { RushEffectOutcome } from "../rules/rushEffects";
 import { openMorphReactionWindow } from "../keywords/morphReaction";
 import { openRushCounterWindow } from "../rules/rushEffects";
+import { markRushedThisTurn } from "../rules/turnModifiers";
 import { buildUnitRushedEvent } from "./builders";
 import { EventQueue } from "./EventQueue";
 import { getEngineEventDispatcher } from "./globalDispatcher";
@@ -17,6 +18,7 @@ export function emitUnitRushedAndFinalize(
   rusherPlayerId: PlayerId,
   rushedInstanceId: string,
   phasePlayerId: PlayerId,
+  options: { silent?: boolean } = {},
 ): RushEffectOutcome & { counterPending: boolean } {
   const rusher = state.players[rusherPlayerId];
   const found = findInZone(rusher, "rush", rushedInstanceId);
@@ -32,6 +34,7 @@ export function emitUnitRushedAndFinalize(
       rusherPlayerId,
       instanceId: rushedInstanceId,
       cardId: found.card.cardId,
+      selfEffectsSuppressed: options.silent,
     }),
   );
 
@@ -65,8 +68,20 @@ export function emitUnitRushedAndFinalize(
   };
 }
 
+/**
+ * 置き換え（モーフ等）でエリアに出たユニットを、applyAction 後処理の効果ラッシュ検出から外す。
+ * 置き換え側が「ラッシュしたとき」等を自前で処理する。
+ */
+export function markFieldEntryHandled(state: GameState, instanceIds: string[]): GameState {
+  if (instanceIds.length === 0) return state;
+  return {
+    ...state,
+    fieldEntryHandledIds: [...(state.fieldEntryHandledIds ?? []), ...instanceIds],
+  };
+}
+
 /** 効果ラッシュの誘発を止める（先に解決すべき操作待ちがある）状態か。 */
-function hasPendingPromptBlockingEffectRush(state: GameState): boolean {
+export function hasPendingPromptBlockingEffectRush(state: GameState): boolean {
   return !!(
     state.pendingDamagePayment ||
     state.pendingLeave ||
@@ -79,32 +94,107 @@ function hasPendingPromptBlockingEffectRush(state: GameState): boolean {
     state.pendingMorph ||
     state.pendingRegister ||
     state.pendingBattle ||
-    state.pendingStrike
+    state.pendingStrike ||
+    state.winner
   );
 }
 
 /**
+ * 「ラッシュするとき可能ならバトルエリアに置く」（レッドレーサー等）の自動進入。
+ * applyAction 側で登録する（循環 import を避けるため）。
+ */
+type AutoBattleEntryHandler = (
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+) => GameState;
+
+let autoBattleEntryHandler: AutoBattleEntryHandler | null = null;
+
+export function registerAutoBattleEntryOnRush(handler: AutoBattleEntryHandler): void {
+  autoBattleEntryHandler = handler;
+}
+
+export function applyAutoBattleEntryOnRushHook(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): GameState {
+  return autoBattleEntryHandler ? autoBattleEntryHandler(state, playerId, instanceId) : state;
+}
+
+/**
  * 効果でラッシュエリアに出したユニットの「ラッシュしたとき」誘発と「ラッシュされたとき」カウンター窓。
+ * ルール: R-RUSH-01 — 効果でエリアに出たユニットも「ラッシュされた」扱い（ラッシュ記録を付ける）。
  * ルール: R-RUSH-22 — 効果でラッシュしたユニットにも「ラッシュしたとき」は発動し、
  * 「ラッシュされたとき」のカウンターも発動できる（通常ラッシュと同じ `emitUnitRushedAndFinalize`）。
- * ルール: R-RUSH-24 — 「このとき出したユニットの効果は発動しない」効果からは呼ばないこと。
+ * ルール: R-RUSH-24 — 「このとき出したユニットの効果は発動しない」効果は `silent` を付ける
+ * （出たユニット自身の効果と「可能ならバトルエリアに置く」だけを止める）。
+ * ルール: R-RUSH-30 — 窓は「ラッシュしたとき」の効果をすべて終えてから開く。
  *
- * 複数体を出した場合は出した順に処理し、カウンター窓や選択待ちが開いたら残りの誘発は行わない
- * （R-RUSH-23 の「1体ずつ出す」は呼び出し側が未対応のため）。操作待ちが残っている状態では何もしない。
+ * 複数体を出した場合は出した順に処理する。先に解決すべき操作待ち（選択・カウンター窓など）が
+ * あれば残りは `effectRushTriggerQueue` に積み、操作待ちが解けた時点（applyAction の後処理）で続ける。
  */
 export function finalizeEffectRush(
   state: GameState,
   rusherPlayerId: PlayerId,
   rushedInstanceIds: string[],
   phasePlayerId: PlayerId,
+  options: { silent?: boolean } = {},
 ): RushEffectOutcome {
+  let owner = state.players[rusherPlayerId];
+  for (const instanceId of rushedInstanceIds) {
+    owner = markRushedThisTurn(owner, instanceId);
+  }
+  const marked: GameState = {
+    ...state,
+    ...updatePlayer(state, rusherPlayerId, owner),
+    effectRushTriggerQueue: [
+      ...(state.effectRushTriggerQueue ?? []),
+      ...rushedInstanceIds.map(
+        (instanceId): EffectRushTrigger => ({
+          rusherPlayerId,
+          instanceId,
+          phasePlayerId,
+          ...(options.silent ? { silent: true } : {}),
+        }),
+      ),
+    ],
+  };
+  return drainEffectRushTriggers(marked);
+}
+
+/** 積まれた効果ラッシュの誘発を、操作待ちが無い間だけ順に処理する。 */
+export function drainEffectRushTriggers(state: GameState): RushEffectOutcome {
   let nextState = state;
   const logs: string[] = [];
-  for (const instanceId of rushedInstanceIds) {
+  for (let guard = 0; guard < 32; guard += 1) {
+    const queue = nextState.effectRushTriggerQueue ?? [];
+    if (queue.length === 0) break;
     if (hasPendingPromptBlockingEffectRush(nextState)) break;
-    const result = emitUnitRushedAndFinalize(nextState, rusherPlayerId, instanceId, phasePlayerId);
+    const head = queue[0]!;
+    const rest = queue.slice(1);
+    nextState = {
+      ...nextState,
+      effectRushTriggerQueue: rest.length > 0 ? rest : undefined,
+    };
+    if (!findInZone(nextState.players[head.rusherPlayerId], "rush", head.instanceId)) continue;
+    const result = emitUnitRushedAndFinalize(
+      nextState,
+      head.rusherPlayerId,
+      head.instanceId,
+      head.phasePlayerId,
+      { silent: head.silent },
+    );
     nextState = result.state;
     logs.push(...result.logs);
+    if (!head.silent && !hasPendingPromptBlockingEffectRush(nextState)) {
+      // ルール: R-RUSH-22 — 効果で出したレッドレーサーも「ラッシュするとき可能ならバトルエリアに置く」に従う。
+      nextState = applyAutoBattleEntryOnRushHook(nextState, head.rusherPlayerId, head.instanceId);
+    }
+  }
+  if (nextState.effectRushTriggerQueue && nextState.effectRushTriggerQueue.length === 0) {
+    nextState = { ...nextState, effectRushTriggerQueue: undefined };
   }
   return { state: nextState, logs };
 }

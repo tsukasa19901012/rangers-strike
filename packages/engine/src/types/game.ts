@@ -535,6 +535,54 @@ export type GameState = {
   /** スタートフェイズ: 一括戻し後の任意 battle→rush 効果（例: falcon_claw）。 */
   pendingBattleToRushQueue?: string[];
   pendingBattleToRushPhasePlayerId?: PlayerId;
+  /**
+   * 効果でラッシュエリアに出たが、先に解決すべき操作待ちがあり「ラッシュしたとき」の誘発と
+   * 「ラッシュされたとき」の窓をまだ処理していないユニット（出た順）。
+   * ルール: R-RUSH-22, R-RUSH-30
+   */
+  effectRushTriggerQueue?: EffectRushTrigger[];
+  /**
+   * このアクション中にエリアへ出たが、効果ラッシュの後処理（ラッシュ記録・誘発）の対象外とするユニット
+   * （モーフ等の置き換え。置き換え側の処理で扱う）。applyAction の後処理で消える。
+   */
+  fieldEntryHandledIds?: string[];
+  /** 「選んだ1枚ごとにラッシュエリアに出す」効果の進行（R-RUSH-21, R-RUSH-23）。 */
+  pendingEffectRush?: PendingEffectRush;
+};
+
+export type EffectRushTrigger = {
+  rusherPlayerId: PlayerId;
+  instanceId: string;
+  phasePlayerId: PlayerId;
+  /** R-RUSH-24: 出たユニット自身の効果は発動しない。 */
+  silent?: boolean;
+};
+
+/** 効果でラッシュエリアに出せるカードの置き場。 */
+export type EffectRushSourceZone = "command" | "hand" | "discard" | "power";
+
+export type PendingEffectRush = {
+  /** 出すユニットの持ち主。 */
+  playerId: PlayerId;
+  phasePlayerId: PlayerId;
+  effectId: string;
+  sourceCardId: string;
+  sourceInstanceId?: string;
+  fromZone: EffectRushSourceZone;
+  /** R-RUSH-21: 「ただし、ラッシュするための必要パワーと追加条件は満たすこと」。 */
+  requireConditions: boolean;
+  /** 選び終えて、まだ出していないユニット（1体ずつ出す）。 */
+  queue: string[];
+  /** 選ぶ段階: 候補とあと何枚選べるか。 */
+  picking?: { candidates: string[]; remaining: number };
+  /** 追加条件を実行中のユニット。 */
+  current?: {
+    instanceId: string;
+    direction: "up" | "down";
+    needed: number;
+    chosen: string[];
+    destination?: "command" | "discard";
+  };
 };
 
 export const INITIAL_HAND_SIZE = 7;

@@ -53,7 +53,11 @@ export function applyOnRushUnitEffects(
   instanceId: string,
   phasePlayerId: PlayerId,
   zone: "rush" | "battle" = "rush",
+  options: { suppressSelfEffects?: boolean } = {},
 ): { state: GameState; logs: string[] } {
+  // ルール: R-RUSH-24 — 「このとき出したユニットの効果は発動しない」は、そのユニット自身の
+  // 「ラッシュしたとき」の効果だけを止める（他のカードの「ラッシュしたとき」は発動する）。
+  const suppressSelf = options.suppressSelfEffects === true;
   const owner = state.players[ownerPlayerId];
   const found = findInZone(owner, zone, instanceId);
   if (!found) return { state, logs: [] };
@@ -61,7 +65,7 @@ export function applyOnRushUnitEffects(
   let nextState = state;
   const logs: string[] = [];
 
-  const onRush = ON_RUSH_EFFECTS[found.card.cardId];
+  const onRush = suppressSelf ? undefined : ON_RUSH_EFFECTS[found.card.cardId];
   if (onRush === "draw_1") {
     const result = applyDrawOnRush(
       nextState,
@@ -73,28 +77,32 @@ export function applyOnRushUnitEffects(
     logs.push(...result.logs);
   }
 
-  const unnamedLegend3 = resolveLegend3UnnamedRushEffects(
-    nextState,
-    ownerPlayerId,
-    instanceId,
-  );
-  nextState = unnamedLegend3.state;
-  logs.push(...unnamedLegend3.logs);
+  if (!suppressSelf) {
+    const unnamedLegend3 = resolveLegend3UnnamedRushEffects(
+      nextState,
+      ownerPlayerId,
+      instanceId,
+    );
+    nextState = unnamedLegend3.state;
+    logs.push(...unnamedLegend3.logs);
+  }
 
   {
     const radar = applyRadarOnRush(nextState, ownerPlayerId, found.card.cardId);
     nextState = radar;
   }
 
-  const dslRush = tryResolveDslTriggeredEffects({
-    state: nextState,
-    cardId: found.card.cardId,
-    instanceId,
-    playerId: ownerPlayerId,
-    phasePlayerId,
-    triggerType: "on_rush",
-    logAction: "named_effect",
-  });
+  const dslRush = suppressSelf
+    ? { state: nextState, logs: [] as string[], handled: true }
+    : tryResolveDslTriggeredEffects({
+        state: nextState,
+        cardId: found.card.cardId,
+        instanceId,
+        playerId: ownerPlayerId,
+        phasePlayerId,
+        triggerType: "on_rush",
+        logAction: "named_effect",
+      });
   nextState = dslRush.state;
   logs.push(...dslRush.logs);
 

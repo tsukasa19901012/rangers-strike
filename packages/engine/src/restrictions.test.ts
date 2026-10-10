@@ -441,19 +441,21 @@ describe("battle entry hold requirements", () => {
     expect(threeHolds.state.players.player1.command.filter((c) => c.commandHeld).length).toBe(3);
   });
 
-  it("allows second battle-entry payment when RS-053 already has ※ hold but lightning gravity needs one more", () => {
+  // ルール: R-ADD-07 — ※ と稲妻重力エネルギーの制限は1つずつ別々に、出る直前に新たにホールドして満たす。
+  // 既にホールド済みのコマンドでは満たせない。
+  it("requires a fresh hold for each restriction when RS-053 enters under lightning gravity (held commands do not count)", () => {
     const unit = inst("RS-053", "ptera");
     const gravity = inst("RS-069", "lg");
     const cmd1 = { ...inst("RS-007", "c1"), commandHeld: true };
     const cmd2 = inst("RS-008", "c2");
+    const cmd3 = inst("RS-008", "c3");
     let state = createTestState({
       definitions: legendDefinitions,
       phase: "battle",
       player1: {
         rush: [unit],
         operation: [gravity],
-        command: [cmd1, cmd2],
-        ...withCostWindow("battle_entry_hold"),
+        command: [cmd1, cmd2, cmd3],
       },
     });
 
@@ -467,12 +469,12 @@ describe("battle entry hold requirements", () => {
     });
     expect(initiated.ok).toBe(true);
     if (!initiated.ok) return;
-    expect(initiated.state.pendingCommandPayment?.totalNeeded).toBe(1);
+    expect(initiated.state.pendingCommandPayment?.totalNeeded).toBe(2);
 
     const resolved = applyAction(initiated.state, {
       type: "resolve_command_payment",
       playerId: "player1",
-      commandInstanceIds: [cmd2.instanceId],
+      commandInstanceIds: [cmd2.instanceId, cmd3.instanceId],
     });
     expect(resolved.ok).toBe(true);
     if (!resolved.ok) return;

@@ -1,0 +1,507 @@
+/**
+ * 効果で「選んだユニットを1体ずつラッシュエリアに出す」処理（ランドバルカン・空輸搬送・パーツキャリアー等）。
+ *
+ * ルール: R-RUSH-20 — 効果によるラッシュでは、指定がない限り必要パワー・追加条件・コマンドのホールドは不要。
+ * ルール: R-RUSH-21 — 「ただし、ラッシュするための必要パワーと追加条件は満たすこと」とあれば、
+ *   「必要パワー確認 → 追加条件の実行 → 出す」の順で処理する（コマンドのホールドは不要。「－」は任意）。
+ * ルール: R-RUSH-23 — 「2枚まで選び…出してもよい」は先に選んでから、選んだ1枚ごとに出す。
+ *   1枚出すごとに「ラッシュしたとき」誘発と「ラッシュされたとき」窓を処理し（R-RUSH-22, R-RUSH-30）、
+ *   窓が閉じてから次の1枚に進む。
+ */
+import type { CardDefinition } from "@rangers-strike/cards";
+import { getZordCondition, isZordUpCost } from "@rangers-strike/cards";
+import type {
+  CardInstance,
+  EffectRushSourceZone,
+  GameState,
+  PendingEffectChoice,
+  PendingEffectRush,
+  PlayerId,
+  PlayerState,
+} from "../types/game";
+import { COMMAND_ZONE_MAX } from "../types/game";
+import {
+  getDefinition,
+  isRushable,
+  parsePowerCost,
+  rushPowerCost,
+} from "../core/catalog";
+import { countAvailablePower, effectivePowerCost, findInZone, updatePlayer } from "../core/helpers";
+import {
+  finalizeEffectRush,
+  hasPendingPromptBlockingEffectRush,
+} from "../events/emitUnitRushed";
+import { rushAdditionalConditionApplies } from "./bkOperationTurnRules";
+import {
+  applyAllZordFusionMaterials,
+  collectZordMaterials,
+  hasAllRequiredFusionMaterials,
+  needsZordMaterial,
+  requiresAllFusionPartners,
+} from "./zord";
+import {
+  applyMultipleZordDownMaterials,
+  collectZordDownMaterials,
+  needsZordDownPayment,
+} from "./zordDown";
+import { applyMultipleFieldZordMaterials } from "./zordExtended";
+
+export const EFFECT_RUSH_PICK = "effect_rush_pick";
+export const EFFECT_RUSH_MATERIAL = "effect_rush_material";
+export const EFFECT_RUSH_DESTINATION = "effect_rush_destination";
+
+const EFFECT_RUSH_CHOICE_IDS = new Set([
+  EFFECT_RUSH_PICK,
+  EFFECT_RUSH_MATERIAL,
+  EFFECT_RUSH_DESTINATION,
+]);
+
+export function isEffectRushChoice(pending: PendingEffectChoice | undefined): boolean {
+  return !!pending && EFFECT_RUSH_CHOICE_IDS.has(pending.effectId);
+}
+
+type EffectRushPlan =
+  | { kind: "none" }
+  | { kind: "fusion" }
+  | {
+      kind: "up" | "down";
+      materials: string[];
+      needed: number;
+      /** 「コマンドゾーンに送るか捨札にする」で送り先を選べる。 */
+      destinationChoice: boolean;
+    };
+
+function additionalUnitCount(def: CardDefinition): number {
+  const count = def.rushAdditionalCondition?.unitCount;
+  return typeof count === "number" && count > 0 ? count : 1;
+}
+
+/**
+ * 効果でラッシュエリアに出せるか、出すときに実行する追加条件。出せなければ null。
+ * requireConditions が false なら条件なし（R-RUSH-20）。
+ */
+export function planEffectRush(
+  state: GameState,
+  playerId: PlayerId,
+  card: CardInstance,
+  requireConditions: boolean,
+): EffectRushPlan | null {
+  const def = getDefinition(state.definitions, card.cardId);
+  if (!def || !isRushable(def)) return null;
+  if (!requireConditions) return { kind: "none" };
+
+  const player = state.players[playerId];
+  const power = countAvailablePower(state, playerId);
+  const cost = effectivePowerCost(state, playerId, parsePowerCost(def.powerCost));
+
+  if (needsZordDownPayment(card.cardId, def.powerCost, def)) {
+    // 「－」は任意。必要パワーを満たしていれば追加条件なしで出す。
+    if (power >= cost) return { kind: "none" };
+    const materials = collectZordDownMaterials(
+      player,
+      state.definitions,
+      card.cardId,
+      card.instanceId,
+    ).map((c) => c.instanceId);
+    const needed = additionalUnitCount(def);
+    if (materials.length < needed) return null;
+    const reduced = rushPowerCost(state, playerId, def, {
+      zordMaterialInstanceIds: materials.slice(0, needed),
+      zordMaterialInstanceId: materials[0],
+    });
+    if (power < reduced) return null;
+    return { kind: "down", materials, needed, destinationChoice: false };
+  }
+
+  // 必要パワーの確認が先（追加条件の実行で満たすことはできない）。
+  if (power < cost) return null;
+
+  if (
+    !isZordUpCost(def.powerCost) ||
+    !rushAdditionalConditionApplies(state, playerId, card.cardId)
+  ) {
+    return { kind: "none" };
+  }
+
+  if (requiresAllFusionPartners(card.cardId)) {
+    return hasAllRequiredFusionMaterials(player, state.definitions, card.cardId, card.instanceId)
+      ? { kind: "fusion" }
+      : null;
+  }
+
+  if (needsZordMaterial(state.definitions, card.cardId)) {
+    const materials = collectZordMaterials(
+      player,
+      state.definitions,
+      card.cardId,
+      card.instanceId,
+    ).map((c) => c.instanceId);
+    const needed = additionalUnitCount(def);
+    if (materials.length < needed) return null;
+    return {
+      kind: "up",
+      materials,
+      needed,
+      destinationChoice: getZordCondition(card.cardId) === "send_s_unit_to_command_or_discard",
+    };
+  }
+
+  // その他の追加条件（状態条件・相手ドロー等）は効果ラッシュでは条件なしとして扱う。
+  return { kind: "none" };
+}
+
+/** 効果ラッシュの候補のうち、実際に出せるもの。 */
+export function filterEffectRushCandidates(
+  state: GameState,
+  playerId: PlayerId,
+  fromZone: EffectRushSourceZone,
+  candidateIds: string[],
+  requireConditions: boolean,
+): string[] {
+  const player = state.players[playerId];
+  return candidateIds.filter((id) => {
+    const found = findInZone(player, fromZone, id);
+    if (!found) return false;
+    return planEffectRush(state, playerId, found.card, requireConditions) !== null;
+  });
+}
+
+export type StartEffectRushInput = {
+  playerId: PlayerId;
+  phasePlayerId: PlayerId;
+  effectId: string;
+  sourceCardId: string;
+  sourceInstanceId?: string;
+  fromZone: EffectRushSourceZone;
+  candidates: string[];
+  /** 選べる上限。 */
+  maxCount: number;
+  requireConditions: boolean;
+};
+
+/**
+ * 効果ラッシュを開始する。候補が上限以下なら全員を出す順に積み、上限を超えるならプレイヤーが選ぶ。
+ * 出せる候補が無ければ state をそのまま返す。
+ */
+export function startEffectRush(state: GameState, input: StartEffectRushInput): GameState {
+  const candidates = filterEffectRushCandidates(
+    state,
+    input.playerId,
+    input.fromZone,
+    input.candidates,
+    input.requireConditions,
+  );
+  if (candidates.length === 0 || input.maxCount <= 0) return state;
+
+  const base: PendingEffectRush = {
+    playerId: input.playerId,
+    phasePlayerId: input.phasePlayerId,
+    effectId: input.effectId,
+    sourceCardId: input.sourceCardId,
+    sourceInstanceId: input.sourceInstanceId,
+    fromZone: input.fromZone,
+    requireConditions: input.requireConditions,
+    queue: [],
+  };
+
+  if (candidates.length <= input.maxCount) {
+    return continuePendingEffectRush({
+      ...state,
+      pendingEffectRush: { ...base, queue: candidates },
+    });
+  }
+
+  return openPickChoice(
+    { ...state, pendingEffectRush: { ...base, picking: { candidates, remaining: input.maxCount } } },
+  );
+}
+
+function openChoice(state: GameState, choice: Omit<PendingEffectChoice, "phasePlayerId" | "playerId">): GameState {
+  const pending = state.pendingEffectRush!;
+  return {
+    ...state,
+    pendingEffectChoice: {
+      playerId: pending.playerId,
+      phasePlayerId: pending.phasePlayerId,
+      selectedInstanceIds: [],
+      ...choice,
+    },
+    activePlayer: pending.playerId,
+  };
+}
+
+function openPickChoice(state: GameState): GameState {
+  const pending = state.pendingEffectRush!;
+  return openChoice(state, {
+    effectId: EFFECT_RUSH_PICK,
+    sourceCardId: pending.sourceCardId,
+    sourceInstanceId: pending.sourceInstanceId,
+    kind: "select_unit",
+    validInstanceIds: pending.picking!.candidates,
+    optional: true,
+  });
+}
+
+function closeChoice(state: GameState): GameState {
+  const pending = state.pendingEffectRush;
+  return {
+    ...state,
+    pendingEffectChoice: undefined,
+    activePlayer: pending?.phasePlayerId ?? state.activePlayer,
+  };
+}
+
+function withPending(state: GameState, pending: PendingEffectRush | undefined): GameState {
+  return { ...state, pendingEffectRush: pending };
+}
+
+function stripCommandFlags(card: CardInstance): CardInstance {
+  const { commandHeld: _held, mothershipHold: _mothership, faceDown: _faceDown, ...rest } = card;
+  return rest;
+}
+
+/** 1体をラッシュエリアに出し、誘発とカウンター窓を処理する。 */
+function placeUnit(state: GameState, instanceId: string): GameState {
+  const pending = state.pendingEffectRush!;
+  const owner = state.players[pending.playerId];
+  const found = findInZone(owner, pending.fromZone, instanceId);
+  if (!found) return state;
+  const zoneCards = owner[pending.fromZone].filter((c) => c.instanceId !== instanceId);
+  const nextOwner: PlayerState = {
+    ...owner,
+    [pending.fromZone]: zoneCards,
+    rush: [...owner.rush, stripCommandFlags(found.card)],
+  };
+  const placed = { ...state, ...updatePlayer(state, pending.playerId, nextOwner) };
+  const result = finalizeEffectRush(placed, pending.playerId, [instanceId], pending.phasePlayerId);
+  return {
+    ...result.state,
+    log: result.logs.length > 0 ? [...result.state.log, ...result.logs] : result.state.log,
+  };
+}
+
+/** 選んだ素材で追加条件を実行して出す。 */
+function executeConditionAndPlace(state: GameState): GameState {
+  const pending = state.pendingEffectRush!;
+  const current = pending.current!;
+  const owner = state.players[pending.playerId];
+  const found = findInZone(owner, pending.fromZone, current.instanceId);
+  let next: GameState = withPending(state, { ...pending, current: undefined });
+  if (!found) return continuePendingEffectRush(next);
+  const applied =
+    current.direction === "down"
+      ? applyMultipleZordDownMaterials(
+          owner,
+          state.definitions,
+          found.card.cardId,
+          found.card.instanceId,
+          current.chosen,
+          current.destination ?? "discard",
+        )
+      : applyMultipleFieldZordMaterials(
+          owner,
+          state.definitions,
+          found.card.cardId,
+          found.card.instanceId,
+          current.chosen,
+          current.destination ?? "discard",
+        );
+  if (!applied) return continuePendingEffectRush(next);
+  next = { ...next, ...updatePlayer(next, pending.playerId, applied) };
+  return continueAfterPlacement(placeUnit(next, current.instanceId));
+}
+
+function continueAfterPlacement(state: GameState): GameState {
+  if (hasPendingPromptBlockingEffectRush(state)) return state;
+  return continuePendingEffectRush(state);
+}
+
+function openMaterialChoice(state: GameState, materials: string[]): GameState {
+  const pending = state.pendingEffectRush!;
+  return openChoice(state, {
+    effectId: EFFECT_RUSH_MATERIAL,
+    sourceCardId: pending.sourceCardId,
+    sourceInstanceId: pending.current?.instanceId,
+    kind: "select_unit",
+    validInstanceIds: materials,
+    optional: true,
+  });
+}
+
+function currentMaterials(state: GameState): string[] {
+  const pending = state.pendingEffectRush!;
+  const current = pending.current!;
+  const owner = state.players[pending.playerId];
+  const found = findInZone(owner, pending.fromZone, current.instanceId);
+  if (!found) return [];
+  const all =
+    current.direction === "down"
+      ? collectZordDownMaterials(owner, state.definitions, found.card.cardId, found.card.instanceId)
+      : collectZordMaterials(owner, state.definitions, found.card.cardId, found.card.instanceId);
+  return all.map((c) => c.instanceId).filter((id) => !current.chosen.includes(id));
+}
+
+/** 追加条件の素材選択（選択肢が必要数ちょうどなら自動）。 */
+function proceedMaterials(state: GameState): GameState {
+  const current = state.pendingEffectRush!.current!;
+  const remainingNeeded = current.needed - current.chosen.length;
+  if (remainingNeeded <= 0) return executeConditionAndPlace(state);
+  const materials = currentMaterials(state);
+  if (materials.length < remainingNeeded) {
+    // 満たせなくなった: このユニットは出さない。
+    return continuePendingEffectRush(
+      withPending(state, { ...state.pendingEffectRush!, current: undefined }),
+    );
+  }
+  if (materials.length === remainingNeeded) {
+    return executeConditionAndPlace(
+      withPending(state, {
+        ...state.pendingEffectRush!,
+        current: { ...current, chosen: [...current.chosen, ...materials] },
+      }),
+    );
+  }
+  return openMaterialChoice(state, materials);
+}
+
+/**
+ * 積まれた効果ラッシュを、操作待ちが無い間だけ1体ずつ進める。
+ */
+export function continuePendingEffectRush(state: GameState): GameState {
+  let next = state;
+  for (let guard = 0; guard < 16; guard += 1) {
+    const pending = next.pendingEffectRush;
+    if (!pending) return next;
+    if (pending.picking || pending.current) return next;
+    if (hasPendingPromptBlockingEffectRush(next)) return next;
+    if (pending.queue.length === 0) {
+      return withPending(next, undefined);
+    }
+    const [head, ...rest] = pending.queue;
+    next = withPending(next, { ...pending, queue: rest });
+    const owner = next.players[pending.playerId];
+    const found = findInZone(owner, pending.fromZone, head!);
+    if (!found) continue;
+    const plan = planEffectRush(next, pending.playerId, found.card, pending.requireConditions);
+    if (!plan) continue;
+
+    if (plan.kind === "none") {
+      next = placeUnit(next, head!);
+      continue;
+    }
+    if (plan.kind === "fusion") {
+      const applied = applyAllZordFusionMaterials(
+        owner,
+        next.definitions,
+        found.card.cardId,
+        found.card.instanceId,
+      );
+      if (!applied) continue;
+      next = placeUnit({ ...next, ...updatePlayer(next, pending.playerId, applied) }, head!);
+      continue;
+    }
+
+    const withCurrent = withPending(next, {
+      ...next.pendingEffectRush!,
+      current: {
+        instanceId: head!,
+        direction: plan.kind,
+        needed: plan.needed,
+        chosen: [],
+      },
+    });
+    if (plan.destinationChoice) {
+      // ルール: R-ADD-04 — 空きがあっても捨札を選べる。空きが無ければ捨札（RS-120 Q1）。
+      // 判定は出すユニットがまだ元の場所にある時点（RS-197 Q4）。
+      if (owner.command.length >= COMMAND_ZONE_MAX) {
+        return proceedMaterials(
+          withPending(withCurrent, {
+            ...withCurrent.pendingEffectRush!,
+            current: { ...withCurrent.pendingEffectRush!.current!, destination: "discard" },
+          }),
+        );
+      }
+      return openChoice(withCurrent, {
+        effectId: EFFECT_RUSH_DESTINATION,
+        sourceCardId: pending.sourceCardId,
+        sourceInstanceId: head,
+        kind: "confirm",
+        validInstanceIds: ["command", "discard"],
+        optional: true,
+      });
+    }
+    return proceedMaterials(withCurrent);
+  }
+  return next;
+}
+
+/** 効果ラッシュの選択を解決する（applyEffectChoiceSelect から呼ぶ）。 */
+export function resolveEffectRushChoice(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): { state: GameState } | { error: string } {
+  const choice = state.pendingEffectChoice;
+  const pending = state.pendingEffectRush;
+  if (!choice || !pending || !isEffectRushChoice(choice)) return { error: "no_pending_choice" };
+  if (choice.playerId !== playerId) return { error: "wrong_player" };
+  if (!choice.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+
+  if (choice.effectId === EFFECT_RUSH_PICK) {
+    const picking = pending.picking!;
+    const queue = [...pending.queue, instanceId];
+    const candidates = picking.candidates.filter((id) => id !== instanceId);
+    const remaining = picking.remaining - 1;
+    if (remaining > 0 && candidates.length > 0) {
+      return {
+        state: openPickChoice(
+          withPending(state, { ...pending, queue, picking: { candidates, remaining } }),
+        ),
+      };
+    }
+    return {
+      state: continuePendingEffectRush(
+        closeChoice(withPending(state, { ...pending, queue, picking: undefined })),
+      ),
+    };
+  }
+
+  if (choice.effectId === EFFECT_RUSH_DESTINATION) {
+    if (instanceId !== "command" && instanceId !== "discard") return { error: "invalid_target" };
+    const next = closeChoice(
+      withPending(state, { ...pending, current: { ...pending.current!, destination: instanceId } }),
+    );
+    return { state: proceedMaterials(next) };
+  }
+
+  // 素材選択
+  const current = pending.current!;
+  const next = closeChoice(
+    withPending(state, { ...pending, current: { ...current, chosen: [...current.chosen, instanceId] } }),
+  );
+  return { state: proceedMaterials(next) };
+}
+
+/** 効果ラッシュの選択をスキップする（「出してもよい」を出さない）。 */
+export function skipEffectRushChoice(
+  state: GameState,
+  playerId: PlayerId,
+): { state: GameState } | { error: string } {
+  const choice = state.pendingEffectChoice;
+  const pending = state.pendingEffectRush;
+  if (!choice || !pending || !isEffectRushChoice(choice)) return { error: "no_pending_choice" };
+  if (choice.playerId !== playerId) return { error: "wrong_player" };
+  if (choice.effectId === EFFECT_RUSH_PICK) {
+    return {
+      state: continuePendingEffectRush(
+        closeChoice(withPending(state, { ...pending, picking: undefined })),
+      ),
+    };
+  }
+  // 追加条件の途中: このユニットは出さず、次のユニットへ。
+  return {
+    state: continuePendingEffectRush(
+      closeChoice(withPending(state, { ...pending, current: undefined })),
+    ),
+  };
+}

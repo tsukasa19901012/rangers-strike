@@ -187,9 +187,8 @@ describe("R-RUSH-01 ラッシュとは", () => {
     expect(canCounter(s1, "player2", "RS-026:shippu")).toBe(true);
   });
 
-  // 既知の不具合: E11
   // 「ラッシュエリアやバトルエリア）に置いたとき、「ラッシュした」」
-  it.fails("R-RUSH-01: 効果（ランドバルカン）でコマンドゾーンからラッシュエリアに置いたユニットもラッシュされた扱い（出典: grnrngr/faq-card-1 RS-005 Q2）", () => {
+  it("R-RUSH-01: 効果（ランドバルカン）でコマンドゾーンからラッシュエリアに置いたユニットもラッシュされた扱い（出典: grnrngr/faq-card-1 RS-005 Q2）", () => {
     const sUnit = inst("TST-UNIT-0", "cmd-s");
     const s0 = mk4({
       player1: {
@@ -232,9 +231,8 @@ describe("R-RUSH-02 ラッシュエリアを経由しないラッシュ", () => 
     expect(s1.players.player2.rush.some((c) => c.instanceId === cosmo.instanceId)).toBe(false);
   });
 
-  // 既知の不具合: 未登録 — 効果で捨札からバトルエリアに出たユニットにラッシュ記録が付かない
   // 「捨札からバトルエリアに出た合体素材のユニットは、ラッシュされたとして扱います」
-  it.fails("R-RUSH-02: パワーバズーカで捨札からバトルエリアに出た合体素材は「ラッシュされた」扱い（出典: grnrngr/faq-card-1 RS-009 Q2）", () => {
+  it("R-RUSH-02: パワーバズーカで捨札からバトルエリアに出た合体素材は「ラッシュされた」扱い（出典: grnrngr/faq-card-1 RS-009 Q2）", () => {
     const zord = { ...inst("RS-073", "z"), zordMaterialCardId: "RS-074" };
     const cosmo = inst("RS-074", "m1");
     const s0 = mk4({
@@ -842,9 +840,8 @@ describe("R-ADD-07 複数の「〜しなければ出られない」", () => {
     expect(battleEntryHoldsRequired(s0, "player1", m.instanceId)).toBe(2);
   });
 
-  // 既知の不具合: 未登録 — パワーバズーカで戻す合体素材の※ホールド要件を1体ごとに要求しない（1ホールドで全員戻る）
   // 「そのユニットを戻すたびに、コマンドを１つホールドする必要があります」
-  it.fails("R-ADD-07: パワーバズーカで戻す※ホールド要件付きの合体素材は1体ごとにホールドし、足りなくなったら止まる（出典: grnrngr/faq-card-1 RS-009 Q3）", () => {
+  it("R-ADD-07: パワーバズーカで戻す※ホールド要件付きの合体素材は1体ごとにホールドし、足りなくなったら止まる（出典: grnrngr/faq-card-1 RS-009 Q3）", () => {
     const zord = { ...inst("RS-050", "abarenoh"), zordMaterialCardId: "RS-051" };
     const tyr = inst("RS-051", "tyr");
     const ptera = inst("RS-053", "ptera");
@@ -880,9 +877,8 @@ describe("R-ADD-07 複数の「〜しなければ出られない」", () => {
     expect(zoneOf(s, "player2", urzard.instanceId)).toBe("discard");
   });
 
-  // 既知の不具合: 05-D5
   // 「コマンドを１つホールドしてバトルエリアに出さなければ」→「はい」
-  it.fails("R-ADD-07: 敵軍ハリケンレオンがいるとき、ホールドできるコマンドがあればレッドレーサーは1つホールドしてバトルエリアに置く（出典: grnrngr/faq-card-2 RS-097 Q3・RS-090 Q1）", () => {
+  it("R-ADD-07: 敵軍ハリケンレオンがいるとき、ホールドできるコマンドがあればレッドレーサーは1つホールドしてバトルエリアに置く（出典: grnrngr/faq-card-2 RS-097 Q3・RS-090 Q1）", () => {
     const racer = inst("RS-090", "racer");
     const s0 = mk4({
       player1: {
@@ -899,9 +895,8 @@ describe("R-ADD-07 複数の「〜しなければ出られない」", () => {
     expect(heldCount(s, "player1")).toBe(2);
   });
 
-  // 既知の不具合: 05-D5
   // 「ホールドできる自軍コマンドがなければ…ラッシュエリアに置かれます」
-  it.fails("R-ADD-07: 敵軍ハリケンレオンがいてホールドできるコマンドがなければ、レッドレーサーはラッシュエリアに置かれる（出典: grnrngr/faq-card-2 RS-097 Q3・RS-090 Q1）", () => {
+  it("R-ADD-07: 敵軍ハリケンレオンがいてホールドできるコマンドがなければ、レッドレーサーはラッシュエリアに置かれる（出典: grnrngr/faq-card-2 RS-097 Q3・RS-090 Q1）", () => {
     const racer = inst("RS-090", "racer");
     const s0 = mk4({
       player1: { hand: [racer], power: powers(2), command: [released("TST-OP-OT", "o1")] },
@@ -923,9 +918,8 @@ describe("R-ADD-07 複数の「〜しなければ出られない」", () => {
     expect(battleEntryHoldsRequired(s0, "player1", frac.instanceId)).toBe(0);
   });
 
-  // 既知の不具合: 05-D5
   // 「ホールドしてバトルエリアに出さなければなりません」
-  it.fails("R-ADD-07: 敵軍ハリケンレオンがいるとき「可能ならバトルエリアに出る」タイガーレンジャーは、ホールドできるコマンドがあれば出なければならない（出典: grnrngr/faq-card-2 RS-097 Q5）", () => {
+  it("R-ADD-07: 敵軍ハリケンレオンがいるとき「可能ならバトルエリアに出る」タイガーレンジャーは、ホールドできるコマンドがあれば出なければならない（出典: grnrngr/faq-card-2 RS-097 Q5）", () => {
     const tiger = inst("RS-041", "tiger");
     const s0 = mk4({
       phase: "battle",
@@ -936,9 +930,8 @@ describe("R-ADD-07 複数の「〜しなければ出られない」", () => {
     expect(applyAction(s0, { type: "end_phase", playerId: "player1" }).ok).toBe(false);
   });
 
-  // 既知の不具合: 05-D5
   // 「ホールドできるコマンドが無ければ…ラッシュエリアに留まります」
-  it.fails("R-ADD-07: 敵軍ハリケンレオンがいてホールドできるコマンドがなければ、タイガーレンジャーはラッシュエリアに留まる（出典: grnrngr/faq-card-2 RS-097 Q5）", () => {
+  it("R-ADD-07: 敵軍ハリケンレオンがいてホールドできるコマンドがなければ、タイガーレンジャーはラッシュエリアに留まる（出典: grnrngr/faq-card-2 RS-097 Q5）", () => {
     const tiger = inst("RS-041", "tiger");
     const s0 = mk4({
       phase: "battle",
@@ -952,9 +945,8 @@ describe("R-ADD-07 複数の「〜しなければ出られない」", () => {
     expect(zoneOf(ended.state, "player1", tiger.instanceId)).toBe("rush");
   });
 
-  // 既知の不具合: 05-D5
   // 「はい、重複しますので、その通りになります」
-  it.fails("R-ADD-07: 敵軍ハリケンレオンが2体いれば、SP1のユニットはバトルエリアに出るのに2ホールド必要（出典: grnrngr/faq-card-2 RS-097 Q7）", () => {
+  it("R-ADD-07: 敵軍ハリケンレオンが2体いれば、SP1のユニットはバトルエリアに出るのに2ホールド必要（出典: grnrngr/faq-card-2 RS-097 Q7）", () => {
     const unit = inst("TST-UNIT-0", "u");
     const s0 = mk4({
       phase: "battle",
@@ -1304,9 +1296,8 @@ describe("R-RUSH-21 テキストで条件を課す場合", () => {
     expect(zoneOf(s1, "player1", wbS.instanceId)).toBe("rush");
   });
 
-  // 既知の不具合: 03-D9 / 05-D7
   // 「追加条件…があればそれを満たす必要があります」
-  it.fails("R-RUSH-21: ランドバルカンでは追加条件を満たせないSユニット（龍冥王サラマンデス）は出せない（出典: grnrngr/faq-card-1 RS-005 Q3, atwiki/page-249）", () => {
+  it("R-RUSH-21: ランドバルカンでは追加条件を満たせないSユニット（龍冥王サラマンデス）は出せない（出典: grnrngr/faq-card-1 RS-005 Q3, atwiki/page-249）", () => {
     const sala = inst("RS-094", "sala");
     const s0 = mk4({
       player1: {
@@ -1319,9 +1310,8 @@ describe("R-RUSH-21 テキストで条件を課す場合", () => {
     expect(zoneOf(s1, "player1", sala.instanceId)).toBe("command");
   });
 
-  // 既知の不具合: 03-D9 / 05-D7
   // 「ただし、ラッシュするための必要パワーと追加条件は満たすこと」
-  it.fails("R-RUSH-21: ランドバルカンでは追加条件（童鬼ドロップを捨札）を実行して龍冥王サラマンデスを出す（出典: atwiki/page-249, grnrngr/faq-card-1 RS-005 Q3）", () => {
+  it("R-RUSH-21: ランドバルカンでは追加条件（童鬼ドロップを捨札）を実行して龍冥王サラマンデスを出す（出典: atwiki/page-249, grnrngr/faq-card-1 RS-005 Q3）", () => {
     const sala = inst("RS-094", "sala");
     const drop = inst("RS-093", "drop");
     const s0 = mk4({
@@ -1353,9 +1343,8 @@ describe("R-RUSH-21 テキストで条件を課す場合", () => {
     expect(zoneOf(s1, "player1", am.instanceId)).toBe("rush");
   });
 
-  // 既知の不具合: 03-D9 / 05-D7
   // 「追加条件を満たすことでパワーを軽減してラッシュすることもできる」
-  it.fails("R-RUSH-21: ランドバルカンで「－」の追加条件を満たせば、パワー不足でもアバレッドAMを出せる（出典: atwiki/page-586）", () => {
+  it("R-RUSH-21: ランドバルカンで「－」の追加条件を満たせば、パワー不足でもアバレッドAMを出せる（出典: atwiki/page-586）", () => {
     const am = inst("RS-230", "am");
     const red = inst("RS-054", "red");
     const s0 = mk4({
@@ -1523,9 +1512,8 @@ describe("R-RUSH-22 効果ラッシュでも誘発とカウンター窓がある
     expect(s1.players.player1.power).toHaveLength(3);
   });
 
-  // 既知の不具合: E11
   // 「ラッシュエリアに出した後で、可能であればバトルエリアに置いてください」
-  it.fails("R-RUSH-22: ランドバルカンで出したレッドレーサーは「ラッシュするとき可能ならバトルエリアに置く」に従う（出典: grnrngr/faq-card-2 RS-090 Q2）", () => {
+  it("R-RUSH-22: ランドバルカンで出したレッドレーサーは「ラッシュするとき可能ならバトルエリアに置く」に従う（出典: grnrngr/faq-card-2 RS-090 Q2）", () => {
     const racer = inst("RS-090", "racer");
     const s0 = mk4({
       player1: {
@@ -1598,9 +1586,8 @@ describe("R-RUSH-22 効果ラッシュでも誘発とカウンター窓がある
 });
 
 describe("R-RUSH-23 複数体を出す効果は1体ずつ", () => {
-  // 既知の不具合: 05-D7
   // 「選んだ１枚ごとに「ラッシュエリアに出してもよい」」
-  it.fails("R-RUSH-23: ランドバルカンは2枚まで選んでから1枚ずつ出し、1枚目のラッシュ後にカウンター窓が開き2枚目はまだコマンドゾーンにある（出典: grnrngr/faq-card-1 RS-005 Q1）", () => {
+  it("R-RUSH-23: ランドバルカンは2枚まで選んでから1枚ずつ出し、1枚目のラッシュ後にカウンター窓が開き2枚目はまだコマンドゾーンにある（出典: grnrngr/faq-card-1 RS-005 Q1）", () => {
     const a = inst("TST-UNIT-0", "a");
     const b = inst("TST-UNIT-0", "b");
     const s0 = mk4({
@@ -1619,9 +1606,8 @@ describe("R-RUSH-23 複数体を出す効果は1体ずつ", () => {
     expect(zoneOf(s1, "player1", secondId)).toBe("command");
   });
 
-  // 既知の不具合: 05-D7
   // 「「２枚まで選び」」（プレイヤーが選ぶ）
-  it.fails("R-RUSH-23: ランドバルカンで出すSユニットはプレイヤーが選ぶ（候補が3枚あれば選択が求められる）（出典: grnrngr/faq-card-1 RS-005 Q1）", () => {
+  it("R-RUSH-23: ランドバルカンで出すSユニットはプレイヤーが選ぶ（候補が3枚あれば選択が求められる）（出典: grnrngr/faq-card-1 RS-005 Q1）", () => {
     const s0 = mk4({
       player1: {
         hand: [inst("RS-005", "lv")],

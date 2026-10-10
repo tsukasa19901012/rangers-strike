@@ -1,3 +1,4 @@
+import { markRushedThisTurn } from "./turnModifiers";
 import {
   fusionPartnerReturnCount,
   isFusionUnit,
@@ -10,7 +11,6 @@ import { clearCostWindow } from "../core/costWindow";
 import {
   autoHoldForBattleEntry,
   canMoveUnitToBattle,
-  markBattleEntryHoldReadyIfNoteSatisfied,
 } from "./restrictions";
 
 export type FusionReturnDestination = "battle" | "hand";
@@ -68,19 +68,24 @@ export function returnFusionPartnersFromDiscard(
       continue;
     }
 
-    const prepared = autoHoldForBattleEntry(owner, card);
+    // ルール: R-ADD-07 — 効果で出す合体素材も1体ごとに「ホールドしなければ出られない」制限を満たす
+    // （RS-009 Q3）。ホールドできなくなったら残りは捨札のまま。
+    const current = { ...owner, discard, battle, hand };
+    const beforeHold = { ...state, ...updatePlayer(state, ownerId, current) };
+    const prepared = autoHoldForBattleEntry(beforeHold, ownerId, card);
     if (!prepared) {
       discard = [...discard, card];
       break;
     }
-    owner = markBattleEntryHoldReadyIfNoteSatisfied(prepared, card);
+    owner = prepared;
     const withPrepared = { ...state, ...updatePlayer(state, ownerId, owner) };
     if (!canMoveUnitToBattle(withPrepared, ownerId, card, "rush")) {
       discard = [...discard, card];
       break;
     }
     battle = [...battle, { ...card, battleActed: false }];
-    owner = clearCostWindow(owner, "battle_entry_hold");
+    // ルール: R-RUSH-02 — 捨札からバトルエリアに直接出た合体素材も「ラッシュされた」扱い（RS-009 Q2）。
+    owner = markRushedThisTurn(clearCostWindow(owner, "battle_entry_hold"), card.instanceId);
     returned += 1;
   }
 

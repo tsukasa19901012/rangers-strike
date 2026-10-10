@@ -44,6 +44,7 @@ import {
   cannotAttackOrStrikeThisTurn,
   unitCannotInitiateAttack,
   countReleasedCommands,
+  findMandatoryBattleEntries,
   mustEnterBattleBeforePhaseEnd,
 } from "../rules/restrictions";
 import { canInitiateShironLight, isShironLightRushTarget } from "../rules/shironLight";
@@ -60,6 +61,7 @@ import {
   isInitiateCommandPaymentLegal,
   isResolveCommandPaymentLegal,
   buildEffectHoldPayment,
+  getBattleEntryPaymentNeeds,
   needsEffectHoldPayment,
   validatePaymentSelection,
 } from "../rules/commandPayment";
@@ -1533,6 +1535,19 @@ export function getLegalActions(state: GameState): GameAction[] {
           type: "move_to_battle",
           playerId,
           instanceId: card.instanceId,
+        });
+      }
+
+      // ルール: R-BA-04 — 「可能なら出る」ユニットがホールドすれば出られるなら、出さなければならない。
+      // その進入（battle_entry 支払いの開始）を合法手に含める（バトルフェイズを終えられないため）。
+      for (const card of findMandatoryBattleEntries(state, playerId)) {
+        if (canMoveUnitToBattle(state, playerId, card, "rush")) continue;
+        if (!getBattleEntryPaymentNeeds(state, playerId, card)) continue;
+        actions.push({
+          type: "initiate_command_payment",
+          playerId,
+          kind: "battle_entry",
+          sourceInstanceId: card.instanceId,
         });
       }
 

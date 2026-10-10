@@ -66,7 +66,12 @@ import { applyStartPhaseBeginEffects } from "../rules/startPhaseBegin";
 import { emitStrikeDeclared } from "../events/emitStrikeDeclared";
 import { emitTurnEndingAndResolve } from "../events/emitTurnEnding";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
-import { emitUnitRushedAndFinalize } from "../events/emitUnitRushed";
+import {
+  drainEffectRushTriggers,
+  emitUnitRushedAndFinalize,
+  registerAutoBattleEntryOnRush,
+} from "../events/emitUnitRushed";
+import { continuePendingEffectRush } from "../rules/effectRush";
 import { RUSH_PHASE_RULE_IDS } from "../types/scopedModifiers";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
 import {
@@ -143,6 +148,7 @@ import {
 } from "../rules/restrictions";
 import {
   applyCommandPaymentResolve,
+  buildBattleEntryPayment,
   buildPaymentFromInitiateAction,
   validatePaymentSelection,
 } from "../rules/commandPayment";
@@ -158,7 +164,12 @@ import {
   finalizeStrike,
   hasStrikeReactions,
 } from "../rules/strikeReactions";
-import { isHidoraEggUsed, markBattleBlocked, markRushedThisTurn } from "../rules/turnModifiers";
+import {
+  isHidoraEggUsed,
+  markBattleBlocked,
+  markRushedThisTurn,
+  wasRushedThisTurn,
+} from "../rules/turnModifiers";
 import { applyPassChase, applyResolveChase, listValidChaseVehicleIds } from "../keywords/chase";
 import {
   canRiderMountVehicle,
@@ -365,7 +376,131 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
   return needsOperationTarget(cardId);
 }
 
+/**
+ * 「ラッシュするとき可能ならバトルエリアに置く」（RS-090 レッドレーサー等）の自動進入。
+ * ルール: R-BA-04 — 「可能なら」はホールドが必要なら新たにホールドして出る。ホールドするコマンドの
+ * 選択肢が無ければ自動でホールドし、複数あれば battle_entry 支払いを開く。出られなければラッシュエリアに置く。
+ * ルール: R-ADD-07 — ハリケンレオン等の「ホールドしなければ出られない」制限はラッシュ支払いで
+ * 既にホールドしたコマンドでは満たせない。
+ */
+function applyAutoBattleEntryOnRush(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): GameState {
+  const found = findInZone(state.players[playerId], "rush", instanceId);
+  if (!found || !hasAutoBattleEntryOnRushNote(found.card.cardId)) return state;
+  if (state.pendingCommandPayment || state.pendingEffectChoice || state.pendingRush) return state;
+  const direct = applyAction(state, { type: "move_to_battle", playerId, instanceId });
+  if (direct.ok) return direct.state;
+  const payment = buildBattleEntryPayment(state, playerId, found.card);
+  if (!payment) return state;
+  if (payment.validInstanceIds.length <= payment.totalNeeded) {
+    const paid = applyAction(
+      { ...state, pendingCommandPayment: payment },
+      {
+        type: "resolve_command_payment",
+        playerId,
+        commandInstanceIds: payment.validInstanceIds.slice(0, payment.totalNeeded),
+      },
+    );
+    return paid.ok ? paid.state : state;
+  }
+  return { ...state, pendingCommandPayment: payment };
+}
+
+registerAutoBattleEntryOnRush(applyAutoBattleEntryOnRush);
+
+function fieldInstanceIds(state: GameState): Set<string> {
+  const ids = new Set<string>();
+  for (const pid of ["player1", "player2"] as const) {
+    for (const card of state.players[pid].rush) ids.add(card.instanceId);
+    for (const card of state.players[pid].battle) ids.add(card.instanceId);
+  }
+  return ids;
+}
+
+function turnPlayerOf(state: GameState): PlayerId {
+  return (
+    state.pendingRush?.phasePlayerId ??
+    state.pendingEffectChoice?.phasePlayerId ??
+    state.pendingLeave?.phasePlayerId ??
+    state.pendingMorph?.phasePlayerId ??
+    state.activePlayer
+  );
+}
+
+/**
+ * アクション後処理: 効果でエリアに出たユニットのラッシュ扱いと「ラッシュしたとき」誘発・
+ * 「ラッシュされたとき」窓、1体ずつ出す効果ラッシュの続行。
+ * ルール: R-RUSH-01 / R-RUSH-02 — エリア外からエリアに出たユニットはすべて「ラッシュされた」扱い。
+ * カード個別処理が直接ラッシュエリアに置いた場合もここで拾う（finalizeEffectRush 未接続の経路の受け皿）。
+ * 既にラッシュ記録の付いたユニット（通常ラッシュ・finalizeEffectRush 経由・モーフ置換）は対象外。
+ */
+function settleEffectRushes(before: GameState, after: GameState): GameState {
+  if (after.winner) return after;
+  const handled = new Set(after.fieldEntryHandledIds ?? []);
+  if (after.fieldEntryHandledIds) {
+    after = { ...after, fieldEntryHandledIds: undefined };
+  }
+  const beforeIds = fieldInstanceIds(before);
+  let next = after;
+  const turnPlayer = turnPlayerOf(after);
+  const triggers: NonNullable<GameState["effectRushTriggerQueue"]> = [];
+  for (const pid of ["player1", "player2"] as const) {
+    let owner = next.players[pid];
+    let changed = false;
+    for (const zone of ["rush", "battle"] as const) {
+      for (const card of owner[zone]) {
+        if (beforeIds.has(card.instanceId) || handled.has(card.instanceId)) continue;
+        if (wasRushedThisTurn(owner, card.instanceId)) continue;
+        owner = markRushedThisTurn(owner, card.instanceId);
+        changed = true;
+        if (zone === "rush") {
+          triggers.push({ rusherPlayerId: pid, instanceId: card.instanceId, phasePlayerId: turnPlayer });
+        }
+      }
+    }
+    if (changed) next = { ...next, ...updatePlayer(next, pid, owner) };
+  }
+  if (triggers.length > 0) {
+    next = {
+      ...next,
+      effectRushTriggerQueue: [...(next.effectRushTriggerQueue ?? []), ...triggers],
+    };
+  }
+  if (!next.effectRushTriggerQueue?.length && !next.pendingEffectRush) return next;
+
+  const logs: string[] = [];
+  for (let guard = 0; guard < 8; guard += 1) {
+    const drained = drainEffectRushTriggers(next);
+    next = drained.state;
+    logs.push(...drained.logs);
+    if (next.effectRushTriggerQueue?.length) break;
+    const continued = continuePendingEffectRush(next);
+    if (continued === next) break;
+    next = continued;
+  }
+  if (next === after) return after;
+  return withSyncedEffectStack({
+    ...next,
+    log: logs.length > 0 ? [...next.log, ...logs] : next.log,
+    winner: checkWinner(next),
+  });
+}
+
 export function applyAction(
+  state: GameState,
+  action: GameAction,
+  options?: { trustLegality?: boolean },
+): ActionResult {
+  const result = applyActionCore(state, action, options);
+  if (!result.ok) return result;
+  const settled = settleEffectRushes(state, result.state);
+  return settled === result.state ? result : { ok: true, state: settled };
+}
+
+function applyActionCore(
   state: GameState,
   action: GameAction,
   options?: { trustLegality?: boolean },
@@ -1266,18 +1401,8 @@ export function applyAction(
         rushFinal.counterPending ? "counter_pending" : undefined,
       );
 
-      if (
-        !rushFinal.counterPending &&
-        hasAutoBattleEntryOnRushNote(found.card.cardId)
-      ) {
-        const autoBattle = applyAction(nextState, {
-          type: "move_to_battle",
-          playerId,
-          instanceId: handFound.card.instanceId,
-        });
-        if (autoBattle.ok) {
-          return ok(autoBattle.state, mainLog);
-        }
+      if (!rushFinal.counterPending) {
+        nextState = applyAutoBattleEntryOnRush(nextState, playerId, handFound.card.instanceId);
       }
 
       return ok(nextState, mainLog);
@@ -1909,7 +2034,9 @@ export function applyAction(
       const pending = state.pendingRush;
       if (!pending) return fail("no_pending_rush");
       if (playerId !== opponent(pending.rusherPlayerId)) return fail("wrong_player");
-      const nextState = finalizeRushPending(state, pending);
+      let nextState = finalizeRushPending(state, pending);
+      // ルール: R-RUSH-22 — 窓を閉じた後で「ラッシュするとき可能ならバトルエリアに置く」を処理する。
+      nextState = applyAutoBattleEntryOnRush(nextState, pending.rusherPlayerId, pending.rushedInstanceId);
       return ok(nextState, buildSimpleLogEntry(playerId, "pass_rush_reaction"));
     }
 

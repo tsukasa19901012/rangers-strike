@@ -1,4 +1,4 @@
-import { finalizeEffectRush } from "../events/emitUnitRushed";
+import { startEffectRush } from "../rules/effectRush";
 import { getCardEffect } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import {
@@ -114,57 +114,34 @@ function resolveDenjiMachine(ctx: EffectContext): EffectOutcome {
 
 function resolveLandBalkan(ctx: EffectContext): EffectOutcome {
   const player = ctx.state.players[ctx.playerId];
-  const candidates = player.command.filter(
-    (card) =>
-      !card.commandHeld &&
-      isUnit(getDefinition(ctx.state.definitions, card.cardId)) &&
-      isSmallUnit(ctx.state.definitions, card.cardId),
-  );
+  const candidates = player.command
+    .filter(
+      (card) =>
+        !card.commandHeld &&
+        isUnit(getDefinition(ctx.state.definitions, card.cardId)) &&
+        isSmallUnit(ctx.state.definitions, card.cardId),
+    )
+    .map((card) => card.instanceId);
 
   if (candidates.length === 0) return fail(ctx.state, "no_command_units");
 
-  let nextPlayer = { ...player };
-  let rushed = 0;
-  const rushedIds: string[] = [];
-
-  for (const card of candidates.slice(0, 2)) {
-    const definition = getDefinition(ctx.state.definitions, card.cardId);
-    if (!definition || !isUnit(definition)) continue;
-
-    const cost = parsePowerCost(definition.powerCost);
-    const powerState = {
-      ...ctx.state,
-      players: { ...ctx.state.players, [ctx.playerId]: nextPlayer },
-    };
-    if (!payPowerCost(powerState, ctx.playerId, cost)) continue;
-
-    const found = findInZone(nextPlayer, "command", card.instanceId);
-    if (!found) continue;
-
-    const [, command] = removeAt(nextPlayer.command, found.index);
-    nextPlayer = {
-      ...nextPlayer,
-      command,
-      rush: [...nextPlayer.rush, found.card],
-    };
-    rushed += 1;
-    rushedIds.push(found.card.instanceId);
-  }
-
-  if (rushed === 0) return fail(ctx.state, "cannot_rush");
-
-  // ルール: R-RUSH-22 — 効果でラッシュしたユニットにも「ラッシュしたとき」誘発と
-  // 「ラッシュされたとき」カウンター窓がある（公式FAQ RS-005 Q2）。
-  const rushedState = finalizeEffectRush(
-    { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
-    ctx.playerId,
-    rushedIds,
-    ctx.playerId,
-  );
+  // ルール: R-RUSH-21 — 「ただし、ラッシュするための必要パワーと追加条件は満たすこと」。
+  // ルール: R-RUSH-23 — 2枚まで選んでから1枚ずつ出す（1枚ごとに誘発とカウンター窓、R-RUSH-22）。
+  const started = startEffectRush(ctx.state, {
+    playerId: ctx.playerId,
+    phasePlayerId: ctx.playerId,
+    effectId: "land_balkan",
+    sourceCardId: ctx.operationCardId,
+    fromZone: "command",
+    candidates,
+    maxCount: 2,
+    requireConditions: true,
+  });
+  if (started === ctx.state) return fail(ctx.state, "cannot_rush");
 
   return {
-    state: { ...rushedState.state, log: [...rushedState.state.log, ...rushedState.logs] },
-    detail: `land_balkan:${rushed}`,
+    state: started,
+    detail: "land_balkan",
     discardOperation: true,
   };
 }

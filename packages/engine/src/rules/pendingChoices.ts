@@ -1,4 +1,9 @@
 import { finalizeEffectRush } from "../events/emitUnitRushed";
+import {
+  isEffectRushChoice,
+  resolveEffectRushChoice,
+  skipEffectRushChoice,
+} from "./effectRush";
 import type { Category } from "@rangers-strike/cards";
 import { canonicalCardName } from "@rangers-strike/cards";
 import { markBattleBlocked } from "./turnModifiers";
@@ -73,7 +78,6 @@ import { countDistinctCategoriesInCommandZone } from "./zoneCategoryLimit";
 import {
   autoHoldForBattleEntry,
   canMoveUnitToBattle,
-  markBattleEntryHoldReadyIfNoteSatisfied,
 } from "./restrictions";
 import {
   continueMorphAfterReplacement,
@@ -302,6 +306,8 @@ export function isValidEffectChoiceTarget(
     );
   }
   if (!pending.validInstanceIds.includes(instanceId)) return false;
+
+  if (isEffectRushChoice(pending)) return true;
 
   if (pending.effectId === "fire_sword") {
     return !!findInZone(state.players[pending.playerId], "operation", instanceId);
@@ -2102,6 +2108,7 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   const pending = state.pendingEffectChoice;
   if (!pending) return { error: "no_pending_choice" };
   if (pending.playerId !== playerId) return { error: "wrong_player" };
+  if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
   if (!pending.optional) {
     const hasValidTarget = pending.validInstanceIds.some((instanceId) =>
       isValidEffectChoiceTarget(state, pending, instanceId),
@@ -2225,6 +2232,8 @@ export function applyEffectChoiceSelect(
   const pending = state.pendingEffectChoice;
   if (!pending) return { error: "no_pending_choice" };
   if (pending.playerId !== playerId) return { error: "wrong_player" };
+
+  if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
 
   if (pending.effectId === "morph_replacement") {
     const result = resolveMorphReplacementChoice(state, playerId, instanceId);
@@ -2834,9 +2843,8 @@ export function applyEffectChoiceSelect(
         const owner = state.players[located.playerId];
         const found = findInZone(owner, "rush", instanceId);
         if (!found) return { error: "invalid_target" };
-        const prepared = autoHoldForBattleEntry(owner, found.card);
-        if (!prepared) return { error: "cannot_enter_battle" };
-        const readyOwner = markBattleEntryHoldReadyIfNoteSatisfied(prepared, found.card);
+        const readyOwner = autoHoldForBattleEntry(state, located.playerId, found.card);
+        if (!readyOwner) return { error: "cannot_enter_battle" };
         const withPrepared = {
           ...state,
           ...updatePlayer(state, located.playerId, readyOwner),
@@ -2864,9 +2872,8 @@ export function applyEffectChoiceSelect(
         const swapTarget = findInZone(player, "battle", instanceId);
         const entering = findInZone(player, "rush", pending.sourceInstanceId);
         if (!swapTarget || !entering) return { error: "invalid_target" };
-        const prepared = autoHoldForBattleEntry(player, entering.card);
-        if (!prepared) return { error: "cannot_enter_battle" };
-        const readyPlayer = markBattleEntryHoldReadyIfNoteSatisfied(prepared, entering.card);
+        const readyPlayer = autoHoldForBattleEntry(state, pending.playerId, entering.card);
+        if (!readyPlayer) return { error: "cannot_enter_battle" };
         const withPrepared = {
           ...state,
           ...updatePlayer(state, pending.playerId, readyPlayer),
@@ -3889,15 +3896,14 @@ export function applyEffectChoiceSelect(
       const found = findInZone(enemy, "rush", instanceId);
       if (!found) return { error: "invalid_target" };
 
-      const prepared = autoHoldForBattleEntry(enemy, found.card);
-      if (!prepared) return { error: "cannot_enter_battle" };
-      const readyEnemy = markBattleEntryHoldReadyIfNoteSatisfied(prepared, found.card);
+      const readyEnemy = autoHoldForBattleEntry(state, enemyId, found.card);
+      if (!readyEnemy) return { error: "cannot_enter_battle" };
       const withPrepared = { ...state, ...updatePlayer(state, enemyId, readyEnemy) };
       if (!canMoveUnitToBattle(withPrepared, enemyId, found.card, "rush")) {
         return { error: "cannot_enter_battle" };
       }
 
-      const [, rush] = removeAt(prepared.rush, found.index);
+      const [, rush] = removeAt(readyEnemy.rush, found.index);
       const nextEnemy = clearCostWindow(
         {
           ...readyEnemy,

@@ -34,6 +34,8 @@ export type UnitRushedEvent = GameEventBase & {
   rusherPlayerId: PlayerId;
   instanceId: string;
   cardId: string;
+  /** R-RUSH-24: 「このとき出したユニットの効果は発動しない」— 出たユニット自身の効果を止める。 */
+  selfEffectsSuppressed?: boolean;
 };
 
 export type UnitEnteredBattleEvent = GameEventBase & {

@@ -22,6 +22,7 @@ export const unitRushedListener: EventListener = (event, state) => {
     rushedInstanceId,
     rushEvent.phasePlayerId,
     "rush",
+    { suppressSelfEffects: rushEvent.selfEffectsSuppressed === true },
   );
 
   return {
