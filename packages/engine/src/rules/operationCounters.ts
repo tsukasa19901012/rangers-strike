@@ -934,8 +934,12 @@ export function resolveBattlePendingCore(
     toZone: attackerLeaveZone,
     leavingCardId: refreshedAttackerFound.card.cardId,
     phasePlayerId: pending.phasePlayerId,
+    // ルール: R-KW-RESIST-03 — 「バトルに勝っても撃破される」効果での撃破はレジスト不可。
     registerEligible:
-      finalDestroyAttacker && !winButSelfDestruct && attackerZone === "battle",
+      finalDestroyAttacker &&
+      !winButSelfDestruct &&
+      !defenderCausesWinnerDestruction &&
+      attackerZone === "battle",
   };
 
   let nextState = battleState;
@@ -949,7 +953,8 @@ export function resolveBattlePendingCore(
       toZone: defenderLeaveZone,
       leavingCardId: refreshedDefenderFound.card.cardId,
       phasePlayerId: pending.phasePlayerId,
-      registerEligible: defenderZone === "battle",
+      // ルール: R-KW-RESIST-03 — 防御側も「勝っても撃破」で倒された場合はレジスト不可（BP で負けたときだけ可）。
+      registerEligible: destroyDefender && !winButDefenderSelfDestruct && defenderZone === "battle",
       followUpAttackerLeave: finalDestroyAttacker ? attackerLeaveIntent : undefined,
     });
     if (leaveResult.deferred) {

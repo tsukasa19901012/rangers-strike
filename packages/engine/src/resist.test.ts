@@ -5,7 +5,8 @@ import { finalizeLeavePending } from "./rules/operationCounters";
 import { clearRegisterHoldOffField } from "./rules/resist";
 import { canMoveUnitToBattle, cannotAttackOrStrikeThisTurn } from "./rules/restrictions";
 import { canStrikeUnit } from "./rules/combo";
-import { createTestState, inst } from "./testing/fixtures";
+import { createTestState, heldWbCommand, inst } from "./testing/fixtures";
+import { legendDefinitions } from "./testing/battleEntry";
 
 function unwrap(result: ReturnType<typeof applyAction>) {
   if (!result.ok) throw new Error("expected ok");
@@ -241,5 +242,48 @@ describe("register (resist)", () => {
     const cleared = clearRegisterHoldOffField(state);
     expect(cleared.players.player2.hand[0]?.registerHeld).toBeUndefined();
     expect(cleared.players.player2.hand[0]?.commandHeld).toBeUndefined();
+  });
+
+  describe("R-KW-RESIST-03: 「バトルに勝っても撃破される」で撃破されたときはレジスト不可", () => {
+    function setup(defenderCardId: string, attackerCardId: string) {
+      const defsWithResist = {
+        ...legendDefinitions,
+        "SR-004": { ...legendDefinitions["SR-004"]!, features: ["レジスト"] },
+        "TST-RESIST": RESIST_UNIT,
+      };
+      const defender = inst(defenderCardId, "def");
+      const attacker = inst(attackerCardId, "atk");
+      const state = createTestState({
+        definitions: defsWithResist,
+        phase: "battle",
+        activePlayer: "player2",
+        player1: {
+          battle: [defender],
+          command: [heldWbCommand("c1"), heldWbCommand("c2")],
+        },
+        player2: { battle: [attacker], command: [heldWbCommand("c3")] },
+      });
+      const battleAction = getLegalActions(state).find(
+        (a) =>
+          a.type === "battle" &&
+          a.attackerInstanceId === attacker.instanceId &&
+          a.defenderInstanceId === defender.instanceId,
+      );
+      expect(battleAction).toBeDefined();
+      return { state: unwrap(applyAction(state, battleAction!)), defender };
+    }
+
+    it("R-KW-RESIST-03: 防御側が勝ったのに自身の効果で撃破された場合はレジストを提示しない", () => {
+      const { state, defender } = setup("SR-004", "TST-UNIT-0");
+      expect(state.pendingRegister).toBeUndefined();
+      expect(state.players.player1.discard.some((c) => c.instanceId === defender.instanceId)).toBe(
+        true,
+      );
+    });
+
+    it("R-KW-RESIST-03: 防御側がバトルに負けて撃破された場合はレジストできる", () => {
+      const { state, defender } = setup("TST-RESIST", "SR-004");
+      expect(state.pendingRegister?.instanceId).toBe(defender.instanceId);
+    });
   });
 });
