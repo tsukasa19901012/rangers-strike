@@ -69,6 +69,12 @@ import {
   openAttackHoldChoice,
   resolveAttackHoldChoice,
 } from "../rules/attackHoldBonus";
+import {
+  MACHINE_EMPIRE_EFFECT_ID,
+  openMachineEmpireChoice,
+  resolveMachineEmpirePick,
+  skipMachineEmpireChoice,
+} from "../rules/machineEmpire";
 import { applyResidentOpOnPlace } from "../rules/residentOps";
 import { applySelfRushFromZone, battleActBlocked, markUnitBattleAction } from "../rules/keywordGapRuntime";
 import { applyStartPhaseBeginEffects } from "../rules/startPhaseBegin";
@@ -105,7 +111,11 @@ import {
   shouldAutoFinalizeEndPhase,
   tryOpenEndTurnEffectsMenu,
 } from "../rules/legend3/endTurnEffects";
-import { resolveTurnEndingEffectsImpl } from "../rules/turnEndingEffects";
+import {
+  resolveTurnEndingEffectsImpl,
+  resolveTurnEndExodusOrder,
+  TURN_END_EXODUS_ORDER_EFFECT_ID,
+} from "../rules/turnEndingEffects";
 import { clearBakiBakiExtraAttack, hasBakiBakiExtraAttackOnly } from "../rules/legend3/destroyEffects";
 import {
   canBonusDraw,
@@ -335,7 +345,17 @@ function continueAttackAfterDeclaration(
 ): ActionResult {
   const playerId = pending.attackerPlayerId;
   const enemyId = pending.defenderPlayerId;
+  // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
+  const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
+  if (machineEmpire) {
+    let pendingState = machineEmpire;
+    if (battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId) {
+      pendingState = { ...pendingState, pendingBattleEntry: undefined };
+    }
+    return ok(pendingState, buildSimpleLogEntry(playerId, "machine_empire_choice"));
+  }
   if (
+    !pending.battleCancelled &&
     hasBattleCounterReactions(
       battleState,
       enemyId,
@@ -2262,6 +2282,22 @@ function applyActionCore(
 
     case "resolve_effect_choice": {
       const pending = state.pendingEffectChoice;
+      if (pending?.effectId === TURN_END_EXODUS_ORDER_EFFECT_ID) {
+        const ordered = resolveTurnEndExodusOrder(state, playerId, action.instanceId);
+        if (!ordered) return fail("invalid_target");
+        return withEndPhaseAutoFinalize(
+          ok(ordered, buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId)),
+          playerId,
+        );
+      }
+      if (pending?.effectId === MACHINE_EMPIRE_EFFECT_ID && pending.machineEmpireMeta) {
+        const picked = resolveMachineEmpirePick(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        if (!picked.done) {
+          return ok(picked.state, buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId));
+        }
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
+      }
       if (pending?.effectId === ATTACK_HOLD_BONUS_EFFECT_ID && pending.attackHoldMeta) {
         const held = resolveAttackHoldChoice(state, playerId, action.instanceId);
         if ("error" in held) return fail(held.error);
@@ -2333,6 +2369,11 @@ function applyActionCore(
 
     case "skip_effect_choice": {
       const pending = state.pendingEffectChoice;
+      if (pending?.effectId === MACHINE_EMPIRE_EFFECT_ID && pending.machineEmpireMeta) {
+        const skipped = skipMachineEmpireChoice(state, playerId);
+        if ("error" in skipped) return fail(skipped.error);
+        return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
+      }
       if (pending?.effectId === "earth_force" && pending.playerId === playerId) {
         const { state: afterDiscard, discarded } = discardEarthForceForUnpaidUpkeep(
           state,

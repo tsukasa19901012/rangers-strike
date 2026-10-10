@@ -188,6 +188,8 @@ export type PendingBattle = {
   attackerBpBonus?: number;
   /** RS-006: バトルキャンセル、守り側はラッシュに戻る */
   battleCancelled?: boolean;
+  /** RS-215【不滅のマシン帝国】の選択をこのアタックで既に出したか。 */
+  machineEmpireOffered?: boolean;
   /** RS-018: 代わりに代用ユニットが戦闘 */
   substituteInstanceId?: string;
   /** RS-131 mirage_beam: このバトル用の印刷BP上書き。 */
@@ -470,6 +472,11 @@ export type PendingEffectChoice = {
     wingAttackFromRush: boolean;
     scope: AttackHoldSource["scope"];
     remainingSources: AttackHoldSource[];
+  };
+  /** RS-215【不滅のマシン帝国】: 手札2枚を選んだあと（または断ったあと）に続けるアタック。 */
+  machineEmpireMeta?: {
+    battle: PendingBattle;
+    wingAttackFromRush: boolean;
   };
   /** 敵ターン撃破時の任意パワー送り（to_power_on_destroy）。 */
   toPowerOnDestroyMeta?: {
@@ -758,6 +765,12 @@ export type TurnEndProgress = {
   residentQueue: Array<{ ownerId: PlayerId; instanceId: string }>;
   /** 常駐以外の「ターンを終えるとき」の効果を処理済みか。 */
   restDone: boolean;
+  /**
+   * RS-216 エグゾスの※と RS-310 ゴウライビートルの撃破の処理順の選択を済ませたか（faq-card-5 RS-310）。
+   * exodusFirst が true ならエグゾスの※を先に処理する。
+   */
+  exodusOrderAsked?: boolean;
+  exodusFirst?: boolean;
 };
 
 export const INITIAL_HAND_SIZE = 7;

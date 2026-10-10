@@ -9,6 +9,8 @@ import { tryStartMegatomahokuChoice } from "./pendingChoices";
 import { buildLogEntry } from "../log/formatLog";
 import { applyCoreGapNcEffect } from "./legend1/coreGapEffects";
 import type { ComboOutcome } from "./comboTypes";
+import { startAssaultVector, startSpinningSlash } from "./timeRangerNc";
+import { startGrapFighter } from "./grapFighter";
 
 const PROMOTED_NC_BY_CARD: Record<string, string> = {
   "RK-282": "scissors_attack",
@@ -30,6 +32,9 @@ const PROMOTED_NC_BY_CARD: Record<string, string> = {
   "RS-278": "bison_rod",
   "RS-685": "buringasodo",
   "RS-630": "megatomahoku",
+  "RS-218": "asarutobekuta",
+  "RS-219": "supiningusurashu",
+  "RS-221": "gurapufuaita",
 };
 
 const CORE_GAP_NC_EFFECTS = new Set([
@@ -63,6 +68,24 @@ export function applyPromotedNcEffect(
   }
 
   switch (effectId) {
+    case "asarutobekuta":
+    case "supiningusurashu": {
+      // RS-218【アサルトベクター】/ RS-219【スピニングスラッシュ】: 「SP1」＋相手パワーの整理／敵軍 S の撃破。
+      nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
+      nextState = markBattleNcEffect(nextState, playerId, card.instanceId, effectId);
+      nextState =
+        effectId === "asarutobekuta"
+          ? startAssaultVector(nextState, playerId, card.instanceId)
+          : startSpinningSlash(nextState, playerId, card.instanceId);
+      logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, effectId));
+      break;
+    }
+    case "gurapufuaita": {
+      // RS-221【グラップファイター】（rules/grapFighter.ts）。
+      nextState = startGrapFighter(nextState, playerId, card.instanceId);
+      logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, effectId));
+      break;
+    }
     case "scissors_attack": {
       const player = state.players[playerId];
       const hasVolcancer = player.rush.some(

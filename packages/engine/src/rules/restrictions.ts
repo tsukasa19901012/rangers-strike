@@ -793,12 +793,29 @@ export function findMandatoryBattleEntries(
     if (wingTurnBlocksStrike(player, card.instanceId)) continue;
     // ルール: R-BA-04 — ホールドが必要なユニットも、ホールドできるなら「可能なら出る」に含む。
     if (!canMoveUnitToBattleWithHolds(state, playerId, card)) continue;
-    if (hasAutoBattleEntryEachTurnNote(card.cardId) || earthForceRequiresBattleEntry(state)) {
+    if (
+      hasAutoBattleEntryEachTurnNote(card.cardId) ||
+      earthForceRequiresBattleEntry(state) ||
+      highwayPlanRequiresBattleEntry(state, card.cardId)
+    ) {
       mandatory.push(card);
     }
   }
 
   return mandatory;
+}
+
+/**
+ * RS-216 暴走皇帝エグゾス【大宇宙ハイウェイ計画】: これが自軍エリアにある間、特徴「車両」を持つすべてのユニットは、
+ * 毎ターン、可能ならバトルエリアに出る（敵軍の車両ユニットも対象）。
+ */
+function highwayPlanRequiresBattleEntry(state: GameState, cardId: string): boolean {
+  const def = getDefinition(state.definitions, cardId);
+  if (def?.type !== "unit" || !(def.features ?? []).includes("車両")) return false;
+  return (["player1", "player2"] as const).some((pid) => {
+    const p = state.players[pid];
+    return [...p.rush, ...p.battle].some((c) => c.cardId === "RS-216");
+  });
 }
 
 export function mustEnterBattleBeforePhaseEnd(

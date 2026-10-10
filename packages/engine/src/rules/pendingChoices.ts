@@ -1,4 +1,15 @@
 import { checkWinner } from "../core/createGame";
+import {
+  ASSAULT_VECTOR_EFFECT_ID,
+  resolveAssaultVectorPick,
+  SPINNING_SLASH_EFFECT_ID,
+} from "./timeRangerNc";
+import {
+  GRAP_FIGHTER_BATTLE_EFFECT_ID,
+  GRAP_FIGHTER_EFFECT_ID,
+  grapFighterLosers,
+  resolveGrapFighterReturn,
+} from "./grapFighter";
 import { resolveSubmergePick, SUBMERGE_EFFECT_ID } from "./legend3/rushEffects";
 import { finishHououOwnStep, HOUOU_TORNADO_EFFECT_ID, isHououChoice, resolveHououPick } from "./hououTornado";
 import { liftUpPlaceFromDeck } from "./legend3/jointComboEffects";
@@ -3120,6 +3131,60 @@ export function applyEffectChoiceSelect(
       return finishChoice(nextState, pending, String(declared));
     }
     case "select_unit": {
+      if (pending.effectId === GRAP_FIGHTER_EFFECT_ID) {
+        const returned = resolveGrapFighterReturn(state, instanceId);
+        if (!returned) return { error: "invalid_target" };
+        if (returned.pendingEffectChoice?.effectId === GRAP_FIGHTER_BATTLE_EFFECT_ID) return { state: returned };
+        return finishChoice({ ...returned, pendingEffectChoice: pending }, pending, "damage");
+      }
+      if (pending.effectId === GRAP_FIGHTER_BATTLE_EFFECT_ID) {
+        if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+        const returnedId = pending.processedInstanceIds?.[0];
+        if (!returnedId) return { error: "invalid_target" };
+        const losers = grapFighterLosers(state, returnedId, instanceId);
+        return applyConfirmEffectChoice(
+          {
+            ...state,
+            pendingEffectChoice: {
+              ...pending,
+              kind: "select_units_bp_budget",
+              selectedInstanceIds: losers,
+              processedInstanceIds: [],
+            },
+          },
+          pending.playerId,
+        );
+      }
+      if (pending.effectId === SPINNING_SLASH_EFFECT_ID) {
+        // RS-219【スピニングスラッシュ】: 対象をすべて選んでから1体ずつ撃破する（faq-card-4 RS-219 Q1・Q3）。
+        if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+        const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+        if (selected.length < (pending.selectCount ?? 1)) {
+          return {
+            state: {
+              ...state,
+              pendingEffectChoice: {
+                ...pending,
+                selectedInstanceIds: selected,
+                validInstanceIds: pending.validInstanceIds.filter((id) => !selected.includes(id)),
+                optional: false,
+              },
+            },
+          };
+        }
+        return applyConfirmEffectChoice(
+          {
+            ...state,
+            pendingEffectChoice: {
+              ...pending,
+              kind: "select_units_bp_budget",
+              selectedInstanceIds: selected,
+              optional: false,
+            },
+          },
+          pending.playerId,
+        );
+      }
       if (pending.effectId === "rk154_head_held_high") {
         // RK-154【頭が高い！】: このターン BP500 になる（R-BP-01）。
         const located = findCardOwner(state, instanceId);
@@ -4063,9 +4128,9 @@ export function applyEffectChoiceSelect(
         const player = nextState.players[pending.playerId];
         const found = findInZone(player, "command", cmdId);
         if (!found) continue;
-        if (pending.commandAction === "hold") {
+        if (pending.commandAction === "hold" || pending.commandAction === "release") {
           const command = [...player.command];
-          command[found.index] = { ...found.card, commandHeld: true };
+          command[found.index] = { ...found.card, commandHeld: pending.commandAction === "hold" };
           nextState = {
             ...nextState,
             ...updatePlayer(nextState, pending.playerId, { ...player, command }),
@@ -4142,6 +4207,12 @@ export function applyEffectChoiceSelect(
     }
 
     case "select_power": {
+      if (pending.effectId === ASSAULT_VECTOR_EFFECT_ID) {
+        const picked = resolveAssaultVectorPick(state, instanceId);
+        if (!picked) return { error: "invalid_target" };
+        if (!picked.done) return { state: picked.state };
+        return finishChoice(picked.state, pending, cardName(state.definitions, pending.sourceCardId));
+      }
       if (pending.effectId === "bumper_bow") {
         // RS-150【バンパーボウ】: 選んだ敵軍パワーを持ち主のコマンドゾーンにホールド状態で置く。
         const enemyId = opponent(pending.playerId);

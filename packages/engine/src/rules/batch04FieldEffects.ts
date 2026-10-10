@@ -138,18 +138,27 @@ export function applyHungerGodOnRush(
   return next;
 }
 
-/** RS-580: ユニットでなくなるとき、各プレイヤー捨札を山札に戻してシャッフル。 */
-export function applyHungerGodCeaseShuffle(state: GameState): GameState {
+/**
+ * RS-580: ユニットでなくなるとき、各プレイヤー捨札を山札に戻してシャッフル。
+ * ※はユニットでなくなる「とき」に実行するので、捨札になる途中のン・マ自身（keepInstanceIds）は山札に戻さず
+ * 捨札に残る（faq-card-8 RS-580: テキストを実行してから捨札になる）。
+ */
+export function applyHungerGodCeaseShuffle(
+  state: GameState,
+  keepInstanceIds: readonly string[] = [],
+): GameState {
   let next = state;
   for (const playerId of ["player1", "player2"] as const) {
     const player = next.players[playerId];
-    if (player.discard.length === 0) continue;
+    const kept = player.discard.filter((c) => keepInstanceIds.includes(c.instanceId));
+    const returned = player.discard.filter((c) => !keepInstanceIds.includes(c.instanceId));
+    if (returned.length === 0) continue;
     next = {
       ...next,
       ...updatePlayer(next, playerId, {
         ...player,
-        deck: shuffleDeck([...player.deck, ...player.discard]),
-        discard: [],
+        deck: shuffleDeck([...player.deck, ...returned]),
+        discard: kept,
       }),
     };
   }
