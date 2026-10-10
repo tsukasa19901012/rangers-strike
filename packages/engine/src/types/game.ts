@@ -192,6 +192,11 @@ export type PendingBattle = {
   battleCancelled?: boolean;
   /** RS-215【不滅のマシン帝国】の選択をこのアタックで既に出したか。 */
   machineEmpireOffered?: boolean;
+  /**
+   * アタックしたユニットの「アタックするとき／アタックしたとき」（DSL on_attack）を、「アタックされたとき」の
+   * 反応（カウンター等）より前に解決済みか（R-TIME-01。core/applyAction.ts continueAttackAfterDeclaration）。
+   */
+  onAttackResolved?: boolean;
   /** RS-018: 代わりに代用ユニットが戦闘 */
   substituteInstanceId?: string;
   /** RS-131 mirage_beam: このバトル用の印刷BP上書き。 */
@@ -372,6 +377,35 @@ export type AttackHoldSource = {
 
 /** 撃破に関わる誘発のタイミング（R-TIME-01）。PendingEffectChoice.destroyTriggerTiming を参照。 */
 export type DestroyTriggerTiming = "destroyer" | "destroyed" | "after_discard";
+
+/**
+ * 撃破の誘発のうち、先の段階（R-TIME-01）の効果がすべて解決するまで待たせている処理（rules/destroyTriggerQueue.ts）。
+ * - destroyed_fact: 2.「撃破されたとき」（撃破された側。自動処理・選択とも）
+ * - after_discard: 4.「撃破されて捨札になったとき」「捨札になったとき」（撃破された側）
+ * - mirage_knuckle: 4. RS-212【爆烈ミラージュナックル】（撃破した側。「捨札にしたあとで選ぶ」）
+ */
+export type DeferredDestroyTrigger =
+  | { kind: "destroyed_fact"; step: DestroyTriggerTiming; ownerPlayerId: PlayerId; cardId: string }
+  | {
+      kind: "after_discard";
+      step: DestroyTriggerTiming;
+      ctx: {
+        ownerPlayerId: PlayerId;
+        instanceId: string;
+        cardId: string;
+        fromZone: "rush" | "battle";
+        toZone: string;
+        phasePlayerId: PlayerId;
+        destroyed?: boolean;
+      };
+    }
+  | {
+      kind: "mirage_knuckle";
+      step: DestroyTriggerTiming;
+      attackerId: PlayerId;
+      attackerInstanceId: string;
+      phasePlayerId: PlayerId;
+    };
 
 export type PendingEffectChoice = {
   playerId: PlayerId;
@@ -735,6 +769,23 @@ export type GameState = {
   }>;
   /** 進入効果が先に選択を必要とするときに開く。 */
   deferredBattleEntry?: PendingBattleEntry;
+  /**
+   * 撃破の誘発を段階順（R-TIME-01）に解決するため、撃破した側の段階 1 の効果を処理する間だけ立てる。
+   * 立っている間の撃破では、撃破された側の誘発を解決せず deferredDestroyTriggers に積む（rules/destroyTriggerQueue.ts）。
+   */
+  destroyTriggerHold?: boolean;
+  /**
+   * 「ストライクしたとき」の効果の選択を解決し終えるまで待たせているストライク（R-TIME-01）。
+   * 解決後に「ストライクされたとき」（RS-196・カウンター窓）→ ダメージへ進む（core/applyAction.ts continueDeferredStrike）。
+   */
+  deferredStrike?: PendingStrike;
+  /**
+   * アタックしたユニットの「アタックしたとき」の選択を解決し終えるまで待たせているアタック（R-TIME-01）。
+   * 解決後に「アタックされたとき」（RS-215・カウンター窓）→ バトルへ進む（core/applyAction.ts continueDeferredAttack）。
+   */
+  deferredAttack?: { battle: PendingBattle; wingAttackFromRush: boolean };
+  /** 先の段階の効果（選択を含む）の解決待ちの撃破の誘発（R-TIME-01。rules/destroyTriggerQueue.ts）。 */
+  deferredDestroyTriggers?: DeferredDestroyTrigger[];
   /** @deprecated エイリアス — pendingEffectChoice を使用 */
   pendingScry?: PendingScry;
   /** スタートフェイズ: 一括戻し後の任意 battle→rush 効果（例: falcon_claw）。 */

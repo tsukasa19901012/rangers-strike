@@ -9,6 +9,7 @@ import {
   card,
   cmd,
   deck,
+  defs,
   endTurn,
   ids,
   inst,
@@ -120,6 +121,121 @@ describe("R-TIME-01 5つのタイミング", () => {
     s = run(s, pick!);
     expect(inZone(s, "player2", "discard", "TST-OP:h1")).toBe(true);
     expect(hasUseAction(s, "player2", "RS-026:sn")).toBe(true);
+  });
+
+  // 「能動（「～したとき」）と受動（「～されたとき」）は別のタイミング。能動のタイミングが先に処理される」(atwiki/page-1828)
+  it("R-TIME-01: 「ラッシュしたとき」の選択（プテラビーム）を解決してから、「ラッシュされたとき」のドギー・クルーガー【出動指令】が発動する（出典: atwiki/page-1828）", () => {
+    const daPtera = { ...defs["RS-039"]!, category: "DA" as const };
+    let s = st({
+      phase: "rush",
+      definitions: { ...defs, "RS-039": daPtera },
+      player1: { hand: [inst("RS-039", "pt")], power: powers(6), command: [cmd("TST-OP-DA", "c1")] },
+      player2: {
+        rush: [inst("RS-318", "doggie")],
+        deck: deck(3),
+        command: [cmd("TST-OP", "h1", true)],
+      },
+    });
+    s = payAndUse(s, "player1", "RS-039:pt", ["TST-OP-DA:c1"]);
+    // 先に「ラッシュしたとき」（プテラビーム）の選択。【出動指令】はまだ。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-039");
+    const pick = legal(s).find((a) => a.type === "resolve_effect_choice");
+    expect(pick).toBeDefined();
+    s = run(s, pick!);
+    expect(inZone(s, "player2", "discard", "TST-OP:h1")).toBe(true);
+    // つづいて「ラッシュされたとき」の【出動指令】（失われない）。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-318");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+  });
+
+  // ユーザー決定（2026-10-11）: 撃破の誘発は 1「撃破したとき」→ 2「撃破されたとき」→ 3 捨札へ → 4「撃破されて捨札になったとき」。
+  it("R-TIME-01: バトルに勝って撃破したときのアカレンジャー【レッドビュート】（段階 1・選択）を解決してから、撃破されたアバレッドの1点ダメージ（段階 2・自動）を受ける（ユーザー決定 2026-10-11）", () => {
+    let s = st({
+      phase: "battle",
+      player1: { battle: [{ ...inst("RS-126", "aka"), activatedNcEffects: ["red_boot"] }], deck: deck(3) },
+      player2: { battle: [inst("RS-054", "ab")], rush: [inst("TST-UNIT-0", "r")], power: powers(3), deck: deck(5, "e") },
+    });
+    s = settle(run(s, { type: "battle", playerId: "player1", attackerInstanceId: "RS-126:aka", defenderInstanceId: "RS-054:ab" }));
+    expect(inZone(s, "player2", "discard", "RS-054:ab")).toBe(true);
+    expect(s.pendingEffectChoice?.effectId).toBe("red_boot");
+    expect(s.players.player2.damage).toBe(0);
+    const pick = legal(s).find((a) => a.type === "resolve_effect_choice");
+    expect(pick).toBeDefined();
+    s = settle(run(s, pick!));
+    expect(inZone(s, "player2", "discard", "TST-UNIT-0:r")).toBe(true);
+    expect(s.players.player2.damage).toBe(1);
+  });
+
+  // 「～するとき」→「～されるとき」→ 実際の行動 (atwiki/page-1828)
+  it("R-TIME-01: 「アタックするとき」の選択（デカブルー×デカレッド）を解決してから、アタックされたとき（反応）→ バトルに進む（出典: atwiki/page-1828）", () => {
+    // XG7-013 はテスト用の定義集にないので、スペック（OT・S・BP4000）だけ足す（効果は DSL から）。
+    const deka = {
+      id: "XG7-013",
+      name: "デカブルー×デカレッド",
+      type: "unit" as const,
+      category: "OT" as const,
+      rarity: "N" as const,
+      expansion: "test",
+      powerCost: 3,
+      bp: 4000,
+      size: "S" as const,
+    };
+    let s = st({
+      phase: "battle",
+      definitions: { ...defs, "XG7-013": deka } as typeof defs,
+      player1: {
+        battle: [{ ...inst("XG7-013", "deka"), activatedNcEffects: ["fuaiyasourukuruburein"] }],
+        deck: deck(3),
+      },
+      player2: {
+        battle: [inst("TST-UNIT-0", "def")],
+        rush: [inst("TST-UNIT-0", "r")],
+        power: powers(3),
+        deck: deck(5, "e"),
+      },
+    });
+    s = run(s, { type: "battle", playerId: "player1", attackerInstanceId: "XG7-013:deka", defenderInstanceId: "TST-UNIT-0:def" });
+    // 先に「アタックするとき」の選択。バトルはまだ（防御側はバトルエリアのまま）。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG7-013");
+    expect(s.pendingBattle).toBeUndefined();
+    expect(inZone(s, "player2", "battle", "TST-UNIT-0:def")).toBe(true);
+    const pick = legal(s).find((a) => a.type === "resolve_effect_choice" && a.instanceId === "TST-UNIT-0:r");
+    expect(pick).toBeDefined();
+    s = settle(run(s, pick!));
+    expect(inZone(s, "player2", "discard", "TST-UNIT-0:r")).toBe(true);
+    // そのあとでバトル（BP4000 対 1000）。
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(inZone(s, "player2", "discard", "TST-UNIT-0:def")).toBe(true);
+  });
+
+  // 能動（「ストライクしたとき」）が受動（「ストライクされたとき」）より先 (atwiki/page-1828)
+  it("R-TIME-01: 「ストライクしたとき」の選択（スピンビーの能力）を解決してから、「ストライクされたとき」のダイナモビル【迎撃モビルミサイル】を発動できる（出典: atwiki/page-1828）", () => {
+    // 本文の【暴れ独楽】は「コンビネーションする L ユニットが得る能力」だが、DSL では XG3-018 自身の on_strike として
+    // 登録されている。ここではストライクできる（SP1）ようにして、その「ストライクしたとき」の選択を使う。
+    const spin = { ...defs["XG3-018"]!, sp: 1 };
+    let s = st({
+      phase: "battle",
+      definitions: { ...defs, "XG3-018": spin },
+      player1: { battle: [inst("XG3-018", "spin")], deck: deck(3) },
+      player2: {
+        battle: [inst("TST-UNIT-0", "e")],
+        rush: [inst("RS-196", "mob")],
+        command: [cmd("TST-OP-ET", "et1"), cmd("TST-OP-ET", "et2")],
+        power: powers(3),
+        deck: deck(5, "e"),
+      },
+    });
+    s = run(s, { type: "strike", playerId: "player1", instanceId: "XG3-018:spin" });
+    // 先に「ストライクしたとき」の選択。迎撃モビルミサイルの選択・ダメージはまだ。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG3-018");
+    expect(s.players.player2.damage).toBe(0);
+    const pick = legal(s).find((a) => a.type === "resolve_effect_choice");
+    expect(pick).toBeDefined();
+    s = run(s, pick!);
+    expect(inZone(s, "player2", "hand", "TST-UNIT-0:e")).toBe(true);
+    // つづいて「ストライクされたとき」の迎撃モビルミサイル（上書きされず、ここで発動できる）。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-196");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
   });
 
   // 「現在形（「～するとき」）のタイミングは「～」を行う前に処理する」(atwiki/page-1828)
