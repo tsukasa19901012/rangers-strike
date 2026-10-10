@@ -22,13 +22,13 @@
       "name": "ゴレンジャーハリケーン",
       "text": "このターン、このユニットから「キレンジャー，ミドレンジャー，アオレンジャー，アカレンジャー」の順にコンビネーションしたとき、BP8000以下の敵軍ユニットをすべて撃破する。このとき、その「アカレンジャー」は「SP2」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP2",
-          "duration": "turn"
+          "keyword": "note_card::RS-259::gorenger_hurricane",
+          "duration": "permanent"
         }
       ]
     }

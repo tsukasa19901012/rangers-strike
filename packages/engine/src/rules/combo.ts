@@ -1,4 +1,5 @@
 import type { CardDefinition } from "@rangers-strike/cards";
+import { applyGorengerHurricaneOnEnter } from "./legend3/gorengerHurricane";
 import {
   getEnterBattleEffect,
   getEnterBattleNamedEffect,
@@ -420,6 +421,11 @@ export function resolveEnterBattleEffectsImpl(
     );
     nextState = destroyOnEnter.state;
     logs.push(...destroyOnEnter.logs);
+
+    // RS-259【ゴレンジャーハリケーン】（モモレンジャーから順にコンビネーションしたアカレンジャー）。
+    const hurricane = applyGorengerHurricaneOnEnter(nextState, playerId, battleCard.instanceId);
+    nextState = hurricane.state;
+    logs.push(...hurricane.logs);
 
     // RS-029【勇気の魔法】は任意（選択を開く）ため、進入処理の最後に置く（後続の処理を再開しなくてよい）。
     const courage = applyCourageMagicRelease(nextState, playerId, card.cardId);

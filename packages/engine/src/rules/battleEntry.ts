@@ -106,7 +106,8 @@ export function promoteDeferredBattleEntry(state: GameState): GameState {
     playerId: entry.playerId,
     instanceId: entry.instanceId,
     phasePlayerId: entry.phasePlayerId,
-    resumeEnterBattle: entry.resumeEnterBattle,
+    // 中断していた進入処理は上で再開済み（最後の任意効果の選択が開いていても、もう一度再開しない）。
+    resumeEnterBattle: undefined,
     requiredDefenderInstanceId: entry.requiredDefenderInstanceId,
   });
 }

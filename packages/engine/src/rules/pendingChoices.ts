@@ -1731,13 +1731,31 @@ export function printedBpForInstance(
   return unitBp(getDefinition(state.definitions, found.card.cardId));
 }
 
+/**
+ * BP 合計上限の選択で数える BP。RS-106 ジュウクンドーは「本来のBP」、
+ * RS-125 百獣アニマルハートは補正後の BP（faq-card-3 RS-125 Q1「BPの補正分も含めての合計」）。
+ */
+export function budgetBpForInstance(
+  state: GameState,
+  instanceId: string,
+  pending?: PendingEffectChoice,
+): number | null {
+  if (pending?.effectId !== "animal_heart") return printedBpForInstance(state, instanceId);
+  const located = findCardOwner(state, instanceId);
+  if (!located) return null;
+  const found = findInZone(state.players[located.playerId], located.zone, instanceId);
+  if (!found) return null;
+  return effectiveBp(state, located.playerId, found.card);
+}
+
 export function selectedPrintedBpSum(
   state: GameState,
   selectedIds: string[],
+  pending?: PendingEffectChoice,
 ): number {
   let sum = 0;
   for (const id of selectedIds) {
-    sum += printedBpForInstance(state, id) ?? 0;
+    sum += budgetBpForInstance(state, id, pending) ?? 0;
   }
   return sum;
 }
@@ -1749,10 +1767,10 @@ export function canToggleBpBudgetTarget(
 ): boolean {
   const selected = pending.selectedInstanceIds ?? [];
   if (selected.includes(instanceId)) return true;
-  const bp = printedBpForInstance(state, instanceId);
+  const bp = budgetBpForInstance(state, instanceId, pending);
   if (bp === null) return false;
   const budget = pending.bpBudget ?? 3000;
-  if (selectedPrintedBpSum(state, selected) + bp > budget) return false;
+  if (selectedPrintedBpSum(state, selected, pending) + bp > budget) return false;
   const maxCount = pending.selectCount;
   if (maxCount !== undefined && selected.length >= maxCount) return false;
   return true;
@@ -2827,7 +2845,9 @@ export function applyEffectChoiceSelect(
   if (pending.dslResume && dslResumeSimpleKinds.has(pending.kind)) {
     const result = continueDslAfterChoice(state, playerId, instanceId, pending);
     if (result.error) return { error: result.error };
-    return { state: result.state, log: result.log };
+    // 進入時の DSL 効果（NC 等）の選択が終わったら、中断していたバトル進入処理を再開する。
+    const next = result.state.pendingEffectChoice ? result.state : promoteDeferredBattleEntry(result.state);
+    return { state: next, log: result.log };
   }
 
   const selectedSoFar = pending.selectedInstanceIds ?? [];

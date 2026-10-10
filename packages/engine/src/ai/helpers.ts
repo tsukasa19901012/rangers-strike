@@ -35,7 +35,7 @@ import {
 } from "../rules/zordSetup";
 import {
   canToggleBpBudgetTarget,
-  printedBpForInstance,
+  budgetBpForInstance,
 } from "../rules/pendingChoices";
 import { COMMAND_ZONE_MAX, WIN_DAMAGE } from "../types/game";
 import { evaluateState } from "./scoring";
@@ -1260,7 +1260,7 @@ export function pickEffectChoice(
     const candidates = state.players[enemyId].rush
       .map((c) => ({
         instanceId: c.instanceId,
-        bp: printedBpForInstance(state, c.instanceId) ?? 0,
+        bp: budgetBpForInstance(state, c.instanceId, pending) ?? 0,
       }))
       .filter((c) => c.bp > 0)
       .sort((a, b) => b.bp - a.bp);

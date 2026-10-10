@@ -27,13 +27,15 @@ export function resolveSuperDynamite(
   };
 }
 
-/** RS-125: 印刷BP合計 ≤ 12000 の敵ユニットを撃破、枚数 ≤ 自軍WB Mユニット数。 */
+/** RS-125: BP（補正後）合計 ≤ 12000 の敵ユニットを撃破、枚数 ≤ 自軍WB Mユニット数。 */
 export function resolveAnimalHeart(
   state: GameState,
   playerId: PlayerId,
 ): OperationOutcome {
   const enemyId = opponent(playerId);
-  const maxCount = state.players[playerId].battle.filter((c) => {
+  // 「自軍WBのMユニットの数」— 自軍のエリア（ラッシュエリア・バトルエリア）のユニット（atwiki/page-343）。
+  const own = state.players[playerId];
+  const maxCount = [...own.rush, ...own.battle].filter((c) => {
     const def = getDefinition(state.definitions, c.cardId);
     return def?.category === "WB" && isMediumUnit(state.definitions, c.cardId);
   }).length;

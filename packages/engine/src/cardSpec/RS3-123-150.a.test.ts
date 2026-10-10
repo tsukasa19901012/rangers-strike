@@ -414,8 +414,7 @@ describe("RS-125 百獣アニマルハート", () => {
     expect(s.players.player2.battle).toHaveLength(3);
   });
 
-  it.fails("RS-125: 自軍ラッシュエリアの WB の M ユニットも数える（ラッシュフェイズにはふつうバトルエリアは空）（出典: atwiki/page-343「自軍WBのMユニットの数」）", () => {
-    // 既知の不具合: CARD-RS-125 選べる数に自軍バトルエリアの WB M ユニットだけを数え、ラッシュエリアの WB M を数えない
+  it("RS-125: 自軍ラッシュエリアの WB の M ユニットも数える（ラッシュフェイズにはふつうバトルエリアは空）（出典: atwiki/page-343「自軍WBのMユニットの数」）", () => {
     let s = heart({ rush: ["SPEC-WBM", "SPEC-WBM"] });
     s = pick(s, "SPEC-E5:e5");
     s = pick(s, "SPEC-E6:e6");
@@ -438,8 +437,7 @@ describe("RS-125 百獣アニマルハート", () => {
   });
 
   // faq-card-3 RS-125 Q1「BPの補正分も含めての合計になりますか？」「はい、その通りです。」
-  it.fails("RS-125: 公式Q&A — 合計は補正後の BP で数える（本来 5000 に +8000 されたユニットは 12000 の枠を超える）（出典: grnrngr/faq-card-3 RS-125 Q1）", () => {
-    // 既知の不具合: CARD-RS-125 合計を印刷（本来の）BP で数え、BP の補正を含めない
+  it("RS-125: 公式Q&A — 合計は補正後の BP で数える（本来 5000 に +8000 されたユニットは 12000 の枠を超える）（出典: grnrngr/faq-card-3 RS-125 Q1）", () => {
     let s = heart({
       battle: ["SPEC-WBM", "SPEC-WBM"],
       enemy: [{ ...inst("SPEC-E5", "e5"), bpModifier: 8000 }, inst("SPEC-E6", "e6")],
@@ -521,8 +519,7 @@ describe("RS-126 アカレンジャー", () => {
     expect(zoneOf(s, "player2", "SPEC-E3:r3")).toBe("rush");
   });
 
-  it.fails("RS-126: 対象がいれば撃破は強制（見送れない）（出典: atwiki/page-25「1体選んで撃破する」）", () => {
-    // 既知の不具合: CARD-RS-126 【レッドビュート】の撃破を任意（skip_effect_choice 可）として扱う
+  it("RS-126: 対象がいれば撃破は強制（見送れない）（出典: atwiki/page-25「1体選んで撃破する」）", () => {
     const s = settle(attack(fifth(), "RS-126:aka", "TST-UNIT-0:def"));
     expect(s.pendingEffectChoice?.effectId).toBe("red_boot");
     expect(canSkip(s)).toBe(false);
@@ -552,8 +549,7 @@ describe("RS-126 アカレンジャー", () => {
   });
 
   // faq-card-3 RS-126 Q1「その「RS-126 アカレンジャー」はＳＰ２でストライクすることができます」
-  it.fails("RS-126: 公式Q&A — ゴレンジャーハリケーンを発動させたアカレンジャーは、【レッドビュート】が発動しなくても SP2 でストライクできる（出典: grnrngr/faq-card-3 RS-126 Q1）", () => {
-    // 既知の不具合: CARD-RS-126 モモレンジャーから順にコンビネーションして5番目に出たアカレンジャーに【ゴレンジャーハリケーン】の「SP2」を与えない（モモレンジャー自身の spModifier を増やす）
+  it("RS-126: 公式Q&A — ゴレンジャーハリケーンを発動させたアカレンジャーは、【レッドビュート】が発動しなくても SP2 でストライクできる（出典: grnrngr/faq-card-3 RS-126 Q1）", () => {
     // 敵軍ラッシュエリアのタンクコマンド＋敵軍コマンドのナンバー5のカードで、アカレンジャー（CN5）の NC（レッドビュート）は発動できない
     let s = st({
       player1: { rush: [inst("RS-259", "momo"), inst("RS-189", "ki"), inst("RS-190", "mido"), inst("RS-258", "ao"), inst("RS-126", "aka")] },

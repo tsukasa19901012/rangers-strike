@@ -72,7 +72,7 @@ export function resolveLegend3OnBattleWin(
         phasePlayerId: attackerId,
         validInstanceIds: targets,
         unitDestination: "discard",
-        optional: true,
+        optional: false,
       });
       if (withChoice) nextState = withChoice;
       logs.push(
