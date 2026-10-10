@@ -136,8 +136,7 @@ describe("RS-222 タイムピンク", () => {
   });
 
   // NC（CN4）の効果なので、タイムピンクの NC が成立していなければ【戦闘指揮】は働かない。
-  // 既知の不具合: CARD-RS-222 タイムピンク自身の NC（4番目）が成立していなくても【戦闘指揮】が発動する
-  it.fails("RS-222: タイムピンクの NC が成立していない（2番目に出た）ときは、次の S ユニットに【戦闘指揮】は働かない（出典: atwiki/page-414「CN：4」・R-CN-02）", () => {
+  it("RS-222: タイムピンクの NC が成立していない（2番目に出た）ときは、次の S ユニットに【戦闘指揮】は働かない（出典: atwiki/page-414「CN：4」・R-CN-02）", () => {
     const s = pinkThen("RS-139", { pinkPos: 2 });
     expect(s.pendingEffectChoice?.effectId).not.toBe("battle_command");
     expect(releasedEnemy(s)).toBe(0);
@@ -182,7 +181,8 @@ describe("RS-222 タイムピンク", () => {
 
   // faq-card-4 RS-222 Q2「「RS-106 デカレッド」は「RS-140 コロン」の効果でコンビネーションナンバーが２になっていますので、２枚の敵軍コマンドをリリースすれば…」
   it("RS-222: 公式Q&A — 敵軍ラッシュエリアにコロンがあると、タイムピンクからコンビネーションしたデカレッド（CN1→2）の【ジュウクンドー】は敵軍コマンド2枚のリリースで発動できる（出典: grnrngr/faq-card-4 RS-222 Q2・faq-card-2/3）", () => {
-    let s = pinkThen("RS-106", { heldCount: 2, p2: { rush: [inst("RS-140", "colon")], battle: [inst("TST-UNIT-0", "eb")] } });
+    // コロンがあるとタイムピンク自身も CN4→5 になるので、【戦闘指揮】（CN の効果）が有効になるよう5番目に出す（R-CN-02）。
+    let s = pinkThen("RS-106", { pinkPos: 5, heldCount: 2, p2: { rush: [inst("RS-140", "colon")], battle: [inst("TST-UNIT-0", "eb")] } });
     const use = legal(s).find((a) => a.type === "use_juu_kun_do" && a.attackerInstanceId === "RS-106:nx");
     expect(use).toBeDefined();
     s = act(s, use!);
@@ -190,7 +190,7 @@ describe("RS-222 タイムピンク", () => {
   });
 
   it("RS-222: 公式Q&A — 同条件で敵軍コマンドが1枚しかリリースできなければ【ジュウクンドー】は発動できない（出典: grnrngr/faq-card-4 RS-222 Q2）", () => {
-    const s = pinkThen("RS-106", { heldCount: 1, p2: { rush: [inst("RS-140", "colon")], battle: [inst("TST-UNIT-0", "eb")] } });
+    const s = pinkThen("RS-106", { pinkPos: 5, heldCount: 1, p2: { rush: [inst("RS-140", "colon")], battle: [inst("TST-UNIT-0", "eb")] } });
     expect(legal(s).some((a) => a.type === "use_juu_kun_do" && a.attackerInstanceId === "RS-106:nx")).toBe(false);
   });
 });

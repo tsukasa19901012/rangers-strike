@@ -258,6 +258,11 @@ export function attackerBlocksDefenderCounters(
     hasBattleNcEffect(attacker.card, "panther_claw") ||
     hasBattleNcEffect(attacker.card, "cannot_counter_on_attack") ||
     activeOnAttackNamedEffect(attacker.card)?.effectId === "panther_claw" ||
+    // 「これがアタックするとき、相手はカウンターを発動できない」（RS-190【ミドメラン】等）— 文言で判定し、
+    // NC の効果なら NC が成立しているときだけ（activeOnAttackNamedEffect が NC ゲートを見る。R-CN-02）。
+    /これがアタックするとき、相手はカウンターを(?:発動|使用)できない/.test(
+      activeOnAttackNamedEffect(attacker.card)?.text ?? "",
+    ) ||
     attackerSuppressesAttackedCounters(attacker.card.cardId) ||
     legend2BlocksDefenderCounters(state, attackerPlayerId, attackerInstanceId)
   );
