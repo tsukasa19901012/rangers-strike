@@ -150,8 +150,7 @@ describe("RS-202 ピンクファイブ", () => {
   }
 
   // 「ウラ返すカードと必要パワーの数字が同じ敵軍ユニットをすべて撃破する」
-  // 既知の不具合: CARD-RS-202 次の相手ターンにパワーゾーンのカードをウラ返しても、必要パワーが同じ敵軍ユニットが撃破されない
-  it.fails("RS-202: 次の相手ターン、必要パワー3のカードをウラ返すと必要パワー3の敵軍ユニットがすべて（ラッシュエリアも）撃破される（出典: atwiki/page-410）", () => {
+  it("RS-202: 次の相手ターン、必要パワー3のカードをウラ返すと必要パワー3の敵軍ユニットがすべて（ラッシュエリアも）撃破される（出典: atwiki/page-410）", () => {
     const s = takeStrike(toEnemyBattle(5), "RS-205:c3");
     expect(s.players.player1.damage).toBe(1);
     expect(zoneOf(s, "player2", "RS-211:e3")).toBe("discard");
@@ -161,8 +160,7 @@ describe("RS-202 ピンクファイブ", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:e0")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-202 次の相手ターンにパワーゾーンのカードをウラ返しても、必要パワーが同じ敵軍ユニットが撃破されない
-  it.fails("RS-202: NC 不成立（1番目）なら撃破しない／5番目なら撃破する（出典: atwiki/page-410、R-CN-02）", () => {
+  it("RS-202: NC 不成立（1番目）なら撃破しない／5番目なら撃破する（出典: atwiki/page-410、R-CN-02）", () => {
     const first = takeStrike(toEnemyBattle(1), "RS-205:c3");
     expect(zoneOf(first, "player2", "RS-211:e3")).toBe("rush");
     const fifth = takeStrike(toEnemyBattle(5), "RS-205:c3");
@@ -170,8 +168,7 @@ describe("RS-202 ピンクファイブ", () => {
   });
 
   // faq-card-4 RS-202 Q1「一度発動してしまえば、「RS-202 ピンクファイブ」が撃破されても、そのコンビネーションが崩されても、効果は有効になります」
-  // 既知の不具合: CARD-RS-202 次の相手ターンにパワーゾーンのカードをウラ返しても、必要パワーが同じ敵軍ユニットが撃破されない
-  it.fails("RS-202: 公式Q&A — 発動後にピンクファイブが撃破されても効果は有効（出典: grnrngr/faq-card-4 RS-202 Q1）", () => {
+  it("RS-202: 公式Q&A — 発動後にピンクファイブが撃破されても効果は有効（出典: grnrngr/faq-card-4 RS-202 Q1）", () => {
     let s = toEnemyBattle(5);
     s = enter(s, "TST-UNIT-2:e2", "player2");
     s = settle(attack(s, "TST-UNIT-2:e2", "RS-202:p", "player2"));

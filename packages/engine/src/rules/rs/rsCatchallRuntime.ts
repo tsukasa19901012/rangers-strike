@@ -1,4 +1,5 @@
 import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
+import { registerPinkBarrier } from "../powerFlipEffects";
 import { buildCatchallStructuredPrimitives } from "../../dsl/catchallTextPrimitives";
 import type { DslCardContext } from "../../dsl/cardInterpreter";
 import { buildRematchContext } from "../../dsl/hashGrantKeywordBridge";
@@ -244,7 +245,11 @@ const handleHoldEnemyUnit: PatternHandler = (state, ctx, body) => {
   return { state: choice, detail: ctx.effectId };
 };
 
-const handleDamageAction: PatternHandler = (state, ctx, body) => ({
+const handleDamageAction: PatternHandler = (state, ctx, body) =>
+  /次の相手ターン、自軍パワーゾーンのカードをウラ返してダメージにするとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットをすべて撃破する/.test(body)
+    ? // RS-202 ピンクファイブ【ピンクバリヤー】（rules/powerFlipEffects.ts）。
+      { state: registerPinkBarrier(state, ctx.playerId, ctx.sourceCardId), detail: ctx.effectId }
+    : ({
   state: registerTurnKeyword(
     state,
     ctx.playerId,

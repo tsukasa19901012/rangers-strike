@@ -1,4 +1,5 @@
 import { checkWinner } from "../core/createGame";
+import { pickSuperElectronEarDamage, SUPER_ELECTRON_EAR_PICK_EFFECT_ID } from "./powerFlipEffects";
 import { resolveSubmergePick, SUBMERGE_EFFECT_ID } from "./legend3/rushEffects";
 import { finishHououOwnStep, HOUOU_TORNADO_EFFECT_ID, isHououChoice, resolveHououPick } from "./hououTornado";
 import { liftUpPlaceFromDeck } from "./legend3/jointComboEffects";
@@ -2827,6 +2828,12 @@ export function applyEffectChoiceSelect(
   if (pending.mayConfirm) {
     if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
     return applyConfirmEffectChoice(state, playerId);
+  }
+  if (pending.effectId === SUPER_ELECTRON_EAR_PICK_EFFECT_ID) {
+    // RS-200【超電子イヤー】: 元のダメージの数になるまで、パワーゾーンのカードを選びダメージにする。
+    const next = pickSuperElectronEarDamage(state, pending, instanceId);
+    if (!next) return { error: "invalid_target" };
+    return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next) };
   }
   if (pending.effectId === FIRE_DANCE_EFFECT_ID) {
     // RS-159【ファイヤーダンス】: 選んだ敵軍コマンドを1つずつホールドする。

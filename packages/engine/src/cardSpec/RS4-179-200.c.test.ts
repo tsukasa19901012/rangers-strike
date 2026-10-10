@@ -743,8 +743,7 @@ describe("RS-199 グリーンツー", () => {
   });
 
   // 「ウラ返すカードと必要パワーの数字が同じ敵軍ユニットをすべて撃破してもよい」
-  // 既知の不具合: CARD-RS-199 【ブレイクアクション】の撃破が未実装（SP1 付与のみ）
-  it.fails("RS-199: ウラ返したカードと必要パワーの数字が同じ敵軍ユニット（バトル・ラッシュエリアとも）をすべて撃破できる（出典: atwiki/page-407）", () => {
+  it("RS-199: ウラ返したカードと必要パワーの数字が同じ敵軍ユニット（バトル・ラッシュエリアとも）をすべて撃破できる（出典: atwiki/page-407）", () => {
     let s = brokeWith("TST-OP:pw3", enemyField);
     s = settle(pickEffect(s, "player1"));
     expect(zoneOf(s, "player2", "RS-189:cost3")).toBe("discard");
@@ -753,8 +752,7 @@ describe("RS-199 グリーンツー", () => {
   });
 
   // 「撃破してもよい」
-  // 既知の不具合: CARD-RS-199 【ブレイクアクション】の撃破が未実装（選択自体が出ない）
-  it.fails("RS-199: 撃破は任意 — 選択が出て、断れば撃破しない（出典: atwiki/page-407「撃破してもよい」）", () => {
+  it("RS-199: 撃破は任意 — 選択が出て、断れば撃破しない（出典: atwiki/page-407「撃破してもよい」）", () => {
     let s = brokeWith("TST-OP:pw3", enemyField);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-199");
     s = settle(declineEffect(s, "player1"));
@@ -762,8 +760,7 @@ describe("RS-199 グリーンツー", () => {
   });
 
   // 一般ルール R-TGT-04 ではなく本文が「敵軍ユニット」に限定 — 自軍の同じ必要パワーのユニットは撃破しない。
-  // 既知の不具合: CARD-RS-199 【ブレイクアクション】の撃破が未実装
-  it.fails("RS-199: 撃破するのは敵軍ユニットだけ（自軍の必要パワー3のグリーンツー自身は残る）（出典: atwiki/page-407「敵軍ユニットをすべて」）", () => {
+  it("RS-199: 撃破するのは敵軍ユニットだけ（自軍の必要パワー3のグリーンツー自身は残る）（出典: atwiki/page-407「敵軍ユニットをすべて」）", () => {
     let s = brokeWith("TST-OP:pw3", enemyField);
     s = settle(pickEffect(s, "player1"));
     expect(zoneOf(s, "player2", "RS-189:cost3")).toBe("discard");
@@ -771,8 +768,7 @@ describe("RS-199 グリーンツー", () => {
   });
 
   // grnrngr/faq-card-6「はい、対象になります。」（メディテーションで2枚ウラ返したとき）
-  // 既知の不具合: CARD-RS-199 【ブレイクアクション】の撃破が未実装
-  it.fails("RS-199: 相手がメディテーションで2枚ウラ返したとき、その2枚とも対象になる（出典: grnrngr/faq-card-6 RS-199 の Q）", () => {
+  it("RS-199: 相手がメディテーションで2枚ウラ返したとき、その2枚とも対象になる（出典: grnrngr/faq-card-6 RS-199 の Q）", () => {
     let s = atPosition(inst("RS-199", "g"), 3, {
       operation: [inst("RS-348", "med")],
       battle: [inst("RS-189", "cost3")],
@@ -815,8 +811,7 @@ describe("RS-200 ブルースリー", () => {
   });
 
   // 「自軍パワーゾーンのダメージになっているカードをすべてオモテにしてもよい。そうしたとき、元のダメージの数と同じになるまで、自軍パワーゾーンのカードを選びダメージにする」
-  // 既知の不具合: CARD-RS-200 【超電子イヤー】のダメージの入れ替えが未実装（SP1 付与のみ）
-  it.fails("RS-200: ダメージをすべてオモテにし、選んだカードを元の数（2点）だけダメージにし直せる（出典: atwiki/page-408）", () => {
+  it("RS-200: ダメージをすべてオモテにし、選んだカードを元の数（2点）だけダメージにし直せる（出典: atwiki/page-408）", () => {
     let s = atPosition(inst("RS-200", "b"), 3, {}, damaged);
     s = pickEffect(s, "player1", ["TST-P:p0", "TST-P:p1"]);
     const power = s.players.player1.power;
@@ -828,8 +823,7 @@ describe("RS-200 ブルースリー", () => {
   });
 
   // 「オモテにしてもよい」
-  // 既知の不具合: CARD-RS-200 【超電子イヤー】が未実装（選択自体が出ない）
-  it.fails("RS-200: 入れ替えは任意 — 選択が出て、断ればダメージはそのまま（出典: atwiki/page-408「オモテにしてもよい」）", () => {
+  it("RS-200: 入れ替えは任意 — 選択が出て、断ればダメージはそのまま（出典: atwiki/page-408「オモテにしてもよい」）", () => {
     let s = atPosition(inst("RS-200", "b"), 3, {}, damaged);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-200");
     s = declineEffect(s, "player1");
@@ -837,8 +831,7 @@ describe("RS-200 ブルースリー", () => {
     expect(s.players.player1.damage).toBe(2);
   });
 
-  // 既知の不具合: CARD-RS-200 【超電子イヤー】が未実装（NC 成立時の側も確認できない）
-  it.fails("RS-200: NC 不成立（1番目）ではダメージの入れ替えはできない（NC 成立ならできる）（出典: atwiki/page-408・R-CN-02）", () => {
+  it("RS-200: NC 不成立（1番目）ではダメージの入れ替えはできない（NC 成立ならできる）（出典: atwiki/page-408・R-CN-02）", () => {
     const plain = atPosition(inst("RS-200", "b"), 0, {}, damaged);
     expect(plain.pendingEffectChoice?.sourceCardId === "RS-200").toBe(false);
     const nc = atPosition(inst("RS-200", "b"), 3, {}, damaged);

@@ -1,4 +1,5 @@
 import { releasedCommandUnitIds, startEffectRush } from "../rules/effectRush";
+import { openSuperElectronEar, SUPER_ELECTRON_EAR_EFFECT_ID } from "../rules/powerFlipEffects";
 import { startHououTornado } from "../rules/hououTornado";
 import type { Category } from "@rangers-strike/cards";
 import type { GameState, PendingBattle, PlayerId } from "../types/game";
@@ -514,8 +515,13 @@ export function applyGrantKeyword(
     case "SP1": {
       const instanceId = ctx.triggerSourceInstanceId;
       if (!instanceId) return { state };
+      let granted = grantSpLevel(state, ctx.playerId, instanceId, 1);
+      if (ctx.sourceCardId === "RS-200" && ctx.effectId === SUPER_ELECTRON_EAR_EFFECT_ID) {
+        // RS-200【超電子イヤー】: 「SP1」に続けてダメージの入れ替え（任意）。
+        granted = openSuperElectronEar(granted, ctx.playerId, instanceId, ctx.phasePlayerId);
+      }
       return {
-        state: grantSpLevel(state, ctx.playerId, instanceId, 1),
+        state: granted,
         detail: "sp1",
       };
     }
