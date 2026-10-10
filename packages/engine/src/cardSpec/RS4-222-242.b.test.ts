@@ -525,9 +525,8 @@ describe("RS-234 アバレキラー", () => {
     "RS-234: 公式Q&A — 守護獣トリケラトプスの「アタックするとき」の BP 上昇で BP8000 以上になって SP1 になってもストライクはできない（出典: grnrngr/faq-card-4 RS-234 Q1 後段）— 現行カタログの RS-023 は「スーパーレスキュー」で、Q&A が指す「守護獣トリケラトプス」の定義がない",
   );
 
-  // 既知の不具合: CARD-RS-234【ウイングペンタクト】の「SP1」になる が SP+1 として加算される（SP1 の M ユニットが SP2 になる）
   // faq-card-4 RS-234 Q2「「ＳＰ１に『なる』」という効果は、ＳＰに１を加算するという意味ではなく…その値に置き換わる」
-  it.fails("RS-234: 公式Q&A — もともと「SP1」の WB の M ユニットも SP2 にはならず「SP1」のまま（出典: grnrngr/faq-card-4 RS-234 Q2）", () => {
+  it("RS-234: 公式Q&A — もともと「SP1」の WB の M ユニットも SP2 にはならず「SP1」のまま（出典: grnrngr/faq-card-4 RS-234 Q2）", () => {
     const s = killerThen("SPEC-WB-M5SP");
     expect(bpOf(s, "player1", "SPEC-WB-M5SP:m")).toBe(8000);
     expect(spOf(s, "player1", "SPEC-WB-M5SP:m")).toBe(1);

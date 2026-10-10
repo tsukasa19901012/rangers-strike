@@ -9,6 +9,7 @@ import {
   isSmallUnit,
   parsePowerCost,
 } from "../core/catalog";
+import { withSpBecomes } from "./fractionalSp";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { collectPowerIds, openEffectChoice } from "./pendingChoices";
 
@@ -211,9 +212,7 @@ export function grantSp1ToRushUnit(
 ): GameState {
   const player = state.players[playerId];
   const rush = player.rush.map((c) =>
-    c.instanceId === instanceId
-      ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-      : c,
+    c.instanceId === instanceId ? withSpBecomes(state.definitions, undefined, c, 1) : c,
   );
   return { ...state, ...updatePlayer(state, playerId, { ...player, rush }) };
 }

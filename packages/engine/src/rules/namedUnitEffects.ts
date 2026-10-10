@@ -13,6 +13,7 @@ import {
   getDefinition,
   unitBp,
 } from "../core/catalog";
+import { withSpBecomes } from "./fractionalSp";
 import {
   attackedBpBoostAmount,
   listCardGrantKeywords,
@@ -755,9 +756,10 @@ export function applyShirubaOnRush(
     const rush = [...player.rush];
     const index = rush.findIndex((c) => c.instanceId === rushedInstanceId);
     if (index < 0) return player;
+    // 「次の能力を得る⇒BP+2000、「SP1」」— SP は加算ではなく SP1 になる。
+    const withSp = withSpBecomes(state.definitions, undefined, rush[index]!, 1);
     rush[index] = {
-      ...rush[index]!,
-      spModifier: (rush[index]!.spModifier ?? 0) + 1,
+      ...withSp,
       bpModifier: (rush[index]!.bpModifier ?? 0) + 2000,
     };
     return { ...player, rush };
@@ -1039,9 +1041,8 @@ export function grantSp1ToBattleUnit(
 ): GameState {
   const player = state.players[playerId];
   const battle = player.battle.map((c) =>
-    c.instanceId === instanceId
-      ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-      : c,
+    // 「SP1」を得る＝SP1 になる（加算ではなく置き換え。rules/fractionalSp の withSpBecomes）。
+    c.instanceId === instanceId ? withSpBecomes(state.definitions, player.battle, c, 1) : c,
   );
   return { ...state, ...updatePlayer(state, playerId, { ...player, battle }) };
 }

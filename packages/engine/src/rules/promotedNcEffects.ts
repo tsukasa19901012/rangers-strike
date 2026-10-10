@@ -69,8 +69,12 @@ export function applyPromotedNcEffect(
         (u) => cardName(state.definitions, u.cardId) === "ボルキャンサー",
       );
       if (hasVolcancer) {
-        nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
-        nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
+        // 「このユニットは「SP1/2」になる」— 指定値に置き換える（加算しない）。
+        {
+          const owner = nextState.players[playerId];
+          const battle = owner.battle.map((c) => (c.instanceId === card.instanceId ? { ...c, spOverride: "1/2" as const } : c));
+          nextState = { ...nextState, ...updatePlayer(nextState, playerId, { ...owner, battle }) };
+        }
         logs.push(
           buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, "scissors_attack:sp12"),
         );

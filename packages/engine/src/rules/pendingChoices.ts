@@ -44,6 +44,7 @@ import type {
 } from "../types/game";
 import { clearCostWindow, satisfyCostWindow } from "../core/costWindow";
 import { cardName, cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp } from "../core/catalog";
+import { withSpBecomes } from "./fractionalSp";
 import {
   applyDiscoDanceReturnFemaleSToRush,
   startEndTurnBattleToRushChoiceForUnit,
@@ -2555,10 +2556,9 @@ function applyPostHoldContinuation(
       ...nextState,
       ...updatePlayer(nextState, pending.playerId, {
         ...actor,
+        // 「次の能力を得る⇒「SP1」」— SP1 になる（加算しない）。
         battle: actor.battle.map((c) =>
-          c.instanceId === pending.sourceInstanceId
-            ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-            : c,
+          c.instanceId === pending.sourceInstanceId ? withSpBecomes(state.definitions, actor.battle, c, 1) : c,
         ),
       }),
     };
@@ -4428,10 +4428,9 @@ export function applyEffectChoiceSelect(
         if (pending.sourceInstanceId) {
           nextPlayer = {
             ...nextPlayer,
+            // 「次の能力を得る⇒SP1」— SP1 になる（加算しない）。
             battle: nextPlayer.battle.map((c) =>
-              c.instanceId === pending.sourceInstanceId
-                ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-                : c,
+              c.instanceId === pending.sourceInstanceId ? withSpBecomes(state.definitions, nextPlayer.battle, c, 1) : c,
             ),
           };
         }
@@ -4713,10 +4712,9 @@ export function applyEffectChoiceSelect(
             ...nextState,
             ...updatePlayer(nextState, pending.playerId, {
               ...owner,
+              // 「このターン、これは「SP1」になる」— 加算しない。
               battle: owner.battle.map((c) =>
-                c.instanceId === pending.sourceInstanceId
-                  ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-                  : c,
+                c.instanceId === pending.sourceInstanceId ? withSpBecomes(state.definitions, owner.battle, c, 1) : c,
               ),
             }),
           };
