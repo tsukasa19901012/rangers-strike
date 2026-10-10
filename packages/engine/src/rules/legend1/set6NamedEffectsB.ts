@@ -1014,6 +1014,82 @@ CHOICE_RESOLVERS[DAIGANGAN_EFFECT_ID] = resolveDaigangan;
 CHOICE_SKIPPERS[DAIGANGAN_EFFECT_ID] = simpleSkip("RS-422");
 
 // ---------------------------------------------------------------------------
+// RS-418 冥府神イフリート【炎の眼光】
+// 「これが自軍バトルエリアにある間、敵軍ユニットがＮＣの効果を発動させたとき、自軍常駐置き場からカードを1枚選び捨札にしてもよい。
+//  そうしたとき、そのNCの効果を無効にする。」
+// 「ナンバーに関係なく発動する」NC も NC の効果（faq-card-6 RS-418 Q）。
+// 進入処理（rules/combo.ts）の NC の段階で、NC の効果を適用する前に選択を開き、決定を ncNegationDecision に記録して再開する。
+
+export const FLAME_GLARE_EFFECT_ID = "rs418_flame_glare";
+
+/** NC の効果を適用する前に呼ぶ。"open" なら選択を開いた state、"negate" なら無効、"apply" なら通常どおり。 */
+export function checkFlameGlare(
+  state: GameState,
+  playerId: PlayerId,
+  card: CardInstance,
+): { decision: "apply" | "negate" } | { decision: "open"; state: GameState } {
+  const recorded = state.ncNegationDecision;
+  if (recorded && recorded.instanceId === card.instanceId) {
+    return { decision: recorded.negate ? "negate" : "apply" };
+  }
+  const ownerId = opponent(playerId);
+  const ifrit = state.players[ownerId].battle.find((c) => c.cardId === "RS-418");
+  const ops = state.players[ownerId].operation.map((c) => c.instanceId);
+  if (!ifrit || ops.length === 0 || state.pendingEffectChoice) return { decision: "apply" };
+  const opened = openEffectChoice(state, {
+    playerId: ownerId,
+    effectId: FLAME_GLARE_EFFECT_ID,
+    sourceCardId: "RS-418",
+    sourceInstanceId: ifrit.instanceId,
+    kind: "select_unit",
+    phasePlayerId: turnPlayerOf(state),
+    validInstanceIds: ops,
+    selectedInstanceIds: [card.instanceId],
+    selectCount: 1,
+    optional: true,
+  });
+  return { decision: "open", state: opened };
+}
+
+/** NC の段階を終えたら記録を消す。 */
+export function clearFlameGlareDecision(state: GameState): GameState {
+  return state.ncNegationDecision ? { ...state, ncNegationDecision: undefined } : state;
+}
+
+/** 無効にした NC の成立の記録（activatedNcEffects）を外す。 */
+export function negateNcOnUnit(state: GameState, playerId: PlayerId, instanceId: string): GameState {
+  return patchPlayer(state, playerId, (p) => ({
+    ...p,
+    battle: p.battle.map((c) => {
+      if (c.instanceId !== instanceId || !c.activatedNcEffects) return c;
+      const { activatedNcEffects: _a, ...rest } = c;
+      return rest as CardInstance;
+    }),
+  }));
+}
+
+function resolveFlameGlare(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const target = pending.selectedInstanceIds?.[0] ?? "";
+  let next = patchPlayer(state, playerId, (p) => {
+    const op = p.operation.find((c) => c.instanceId === instanceId);
+    if (!op) return p;
+    return { ...p, operation: p.operation.filter((c) => c.instanceId !== instanceId), discard: [...p.discard, stripForZone(op)] };
+  });
+  next = { ...next, ncNegationDecision: { instanceId: target, negate: true } };
+  return { state: finish(next, pending), log: logFor(state, playerId, "RS-418", `${FLAME_GLARE_EFFECT_ID}:negate`) };
+}
+
+CHOICE_RESOLVERS[FLAME_GLARE_EFFECT_ID] = resolveFlameGlare;
+CHOICE_SKIPPERS[FLAME_GLARE_EFFECT_ID] = (state, playerId) => {
+  const pending = state.pendingEffectChoice!;
+  const target = pending.selectedInstanceIds?.[0] ?? "";
+  const next = { ...state, ncNegationDecision: { instanceId: target, negate: false } };
+  return { state: finish(next, pending), log: skipLog(state, playerId, "RS-418", FLAME_GLARE_EFFECT_ID) };
+};
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword（`set6b::cardId::name`）からの起点
 
 export const SET6B_KEYWORD_PREFIX = "set6b::";

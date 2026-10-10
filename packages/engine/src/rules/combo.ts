@@ -68,7 +68,13 @@ import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import { wingAllowsEmptyBattleStrike } from "../keywords";
 import { canStrikeWithHelloMirage } from "./helloMirage";
 import { applyFivemanOnCombo, trySet5AOnComboEnter } from "./legend1/set5NamedEffectsA";
-import { set6BBlocksStrike, trySet6BOnComboEnter } from "./legend1/set6NamedEffectsB";
+import {
+  checkFlameGlare,
+  clearFlameGlareDecision,
+  negateNcOnUnit,
+  set6BBlocksStrike,
+  trySet6BOnComboEnter,
+} from "./legend1/set6NamedEffectsB";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredBattleListener";
 
@@ -418,19 +424,29 @@ export function resolveEnterBattleEffectsImpl(
         battleBeforeEnter,
       )
     ) {
-      const ncEffect = resolveNamedNcEffectId(
-        nextState,
-        playerId,
-        card,
-        definition,
-        battlePosition,
-        battleBeforeEnter,
-      );
-      const ncResult = applyNumberComboEffect(nextState, playerId, card, ncEffect);
-      nextState = ncResult.state;
-      logs.push(...ncResult.logs);
-      if (nextState.pendingEffectChoice) {
-        return { state: nextState, logs, enterResumeFrom: "tail" };
+      // RS-418【炎の眼光】: 敵軍のイフリートが NC の効果を無効にするか（rules/legend1/set6NamedEffectsB.ts）。
+      const glare = checkFlameGlare(nextState, playerId, card);
+      if (glare.decision === "open") {
+        return { state: glare.state, logs, enterResumeFrom: "nc" };
+      }
+      nextState = clearFlameGlareDecision(nextState);
+      if (glare.decision === "negate") {
+        nextState = negateNcOnUnit(nextState, playerId, card.instanceId);
+      } else {
+        const ncEffect = resolveNamedNcEffectId(
+          nextState,
+          playerId,
+          card,
+          definition,
+          battlePosition,
+          battleBeforeEnter,
+        );
+        const ncResult = applyNumberComboEffect(nextState, playerId, card, ncEffect);
+        nextState = ncResult.state;
+        logs.push(...ncResult.logs);
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState, logs, enterResumeFrom: "tail" };
+        }
       }
     }
     // RS-222 タイムピンク【戦闘指揮】: ナンバーに関係なく NC を発動するか（敵軍コマンドをリリース）。

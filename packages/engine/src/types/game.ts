@@ -831,6 +831,8 @@ export type GameState = {
   pendingEffectRush?: PendingEffectRush;
   /** RS-325【マジチケット】で発動したオペレーション（捨札になるときの「かわりに」の選択待ち。rules/legend1/set5NamedEffects.ts）。 */
   magiTicketPending?: { playerId: PlayerId; instanceId: string };
+  /** RS-418【炎の眼光】: 進入中のユニットの NC の効果を無効にするかの決定（進入処理の NC の段階で使い、消す）。 */
+  ncNegationDecision?: { instanceId: string; negate: boolean };
   /**
    * 使用して手札を離れたが、効果の解決が選択待ち等で中断していてまだどのゾーンにも置かれていない
    * オペレーション（カウンターを含む）。解決が終わった時点で（効果が別のゾーンへ移していなければ）
