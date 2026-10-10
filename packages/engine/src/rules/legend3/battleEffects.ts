@@ -47,29 +47,8 @@ export function legend3AttackerBpBonus(
     }
   }
 
-  return bonus + legend3JointComboBpBonus(state, pending.attackerPlayerId, attacker.card);
-}
-
-function legend3JointComboBpBonus(
-  state: GameState,
-  playerId: PlayerId,
-  card: CardInstance,
-): number {
-  const player = state.players[playerId];
-  const index = player.battle.findIndex((c) => c.instanceId === card.instanceId);
-  if (index <= 0) return 0;
-  const partner = player.battle[index - 1];
-  if (!partner || getDefinition(state.definitions, partner.cardId)?.size !== "L") return 0;
-
-  const joint = getJointLNamedEffect(partner.cardId);
-  if (
-    joint?.effectId !== "oni_neck_last" &&
-    joint?.effectId !== "maximum_penetration"
-  ) {
-    return 0;
-  }
-  if (state.activePlayer !== playerId) return 0;
-  return 4000;
+  // JC で得た BP+4000（RS-157 / RS-171）は常時の補正として legend3FieldBpBonus（effectiveBp）で数える。
+  return bonus;
 }
 
 export function canAttackRushWithMoonlightSonic(

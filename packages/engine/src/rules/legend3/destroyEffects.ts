@@ -1,8 +1,6 @@
-import {
-  findNamedEffectByEffectId,
-  getConditionalNamedEffect,
-  getJointLNamedEffect,
-} from "@rangers-strike/cards";
+import { getConditionalNamedEffect } from "@rangers-strike/cards";
+import { activeNamedEffect, namedEffectActive } from "../ncGatedEffects";
+import { countJointLGrant } from "../jointComboGrants";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
 import {
   getDefinition,
@@ -29,21 +27,6 @@ export type BattleWinOutcome = {
   skipMarkAttackerActed?: boolean;
 };
 
-function attackerJointLEffectId(
-  state: GameState,
-  playerId: PlayerId,
-  attacker: CardInstance,
-): string | undefined {
-  const player = state.players[playerId];
-  const index = player.battle.findIndex((c) => c.instanceId === attacker.instanceId);
-  if (index <= 0) return undefined;
-  const partner = player.battle[index - 1];
-  if (!partner || getDefinition(state.definitions, partner.cardId)?.size !== "L") {
-    return undefined;
-  }
-  return getJointLNamedEffect(partner.cardId)?.effectId;
-}
-
 /** RS-126 red_boot / RS-178 sagas_sniper / RS-171 maximum_penetration / RS-133 blue_bados / RS-158 baki_baki。 */
 export function resolveLegend3OnBattleWin(
   state: GameState,
@@ -61,7 +44,8 @@ export function resolveLegend3OnBattleWin(
   let skipMarkAttackerActed = false;
 
   const redBoot = getConditionalNamedEffect(attacker.card.cardId);
-  if (ownTurn && redBoot?.effectId === "red_boot") {
+  // 【レッドビュート】はナンバーの欄の効果。NC が成立していなければ発動しない（R-CN-02）。
+  if (ownTurn && redBoot?.effectId === "red_boot" && namedEffectActive(attacker.card, "red_boot")) {
     const targets = collectFieldUnitIds(nextState, opponent(attackerId), 2000, ["rush"]);
     if (targets.length > 0) {
       const withChoice = startSelectUnitChoice(nextState, {
@@ -72,6 +56,7 @@ export function resolveLegend3OnBattleWin(
         phasePlayerId: attackerId,
         validInstanceIds: targets,
         unitDestination: "discard",
+        // 「1体選んで撃破する」— 対象がいれば強制（atwiki/page-25）。
         optional: false,
       });
       if (withChoice) nextState = withChoice;
@@ -101,11 +86,13 @@ export function resolveLegend3OnBattleWin(
     }
   }
 
-  const jointEffect = attackerJointLEffectId(nextState, attackerId, attacker.card);
-  if (ownTurn && jointEffect === "maximum_penetration") {
+  // JC で得た能力（L ナンバーのカードから L ユニットへ。faq-card-3 RS-167 Q1: 得た後は離れても有効）。
+  const maximumPenetration = countJointLGrant(attacker.card, "maximum_penetration");
+  if (ownTurn && maximumPenetration > 0) {
     const bp = battleAttackerBpBonus(nextState, pending);
     if (bp >= 20000) {
-      nextState = applyDamageToPlayer(nextState, opponent(attackerId), 1, {
+      // 2回コンビネーションして2つ得ていれば重複して2点（faq-card-3 RS-171 Q1、R-CONT-01）。
+      nextState = applyDamageToPlayer(nextState, opponent(attackerId), maximumPenetration, {
         kind: "none",
         activePlayer: attackerId,
       });
@@ -121,7 +108,7 @@ export function resolveLegend3OnBattleWin(
     }
   }
 
-  if (ownTurn && findNamedEffectByEffectId(attacker.card.cardId, "blue_bados_life_sword")) {
+  if (ownTurn && activeNamedEffect(attacker.card, "blue_bados_life_sword")) {
     const features = getDefinition(state.definitions, defender.cardId)?.features ?? [];
     if (features.includes("女")) {
       const owner = nextState.players[defenderOwnerId];
@@ -149,7 +136,7 @@ export function resolveLegend3OnBattleWin(
     }
   }
 
-  if (jointEffect === "baki_baki_punch") {
+  if (countJointLGrant(attacker.card, "baki_baki_punch") > 0) {
     const player = nextState.players[attackerId];
     const withExtra = addBakiBakiExtraAttack(player, attacker.card.instanceId);
     nextState = {

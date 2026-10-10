@@ -180,6 +180,7 @@ const AREA_ONLY_FIELDS = [
   "registerHeld",
   "battleActed",
   "activatedNcEffects",
+  "jointComboGrants",
   "mountedOnInstanceId",
 ] as const;
 

@@ -525,8 +525,7 @@ describe("RS-126 アカレンジャー", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RS-126: NC 不成立（5番目以外）なら撃破しても【レッドビュート】は発動しない（出典: atwiki/page-25「CN：5」・R-CN-02）", () => {
-    // 既知の不具合: CARD-RS-126 NC の成立を見ずに【レッドビュート】を発動する
+  it("RS-126: NC 不成立（5番目以外）なら撃破しても【レッドビュート】は発動しない（出典: atwiki/page-25「CN：5」・R-CN-02）", () => {
     const s = settle(attack(fifth(1), "RS-126:aka", "TST-UNIT-0:def"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:def")).toBe("discard");
     expect(s.pendingEffectChoice).toBeFalsy();
@@ -765,8 +764,7 @@ describe("RS-128 バイオジェット1号", () => {
     expect(canStrike(s, "RS-128:j1")).toBe(false);
   });
 
-  it.fails("RS-128: バトルエリアにバイオジェット2号がいても、直前（左隣）でなければコンビネーションではない（出典: atwiki/page-360・R-CN-05）", () => {
-    // 既知の不具合: CARD-RS-128 【拠点攻撃】の判定で、バイオジェット2号が左隣にいるかではなくバトルエリアにいるかを見ている
+  it("RS-128: バトルエリアにバイオジェット2号がいても、直前（左隣）でなければコンビネーションではない（出典: atwiki/page-360・R-CN-05）", () => {
     let s = st({ player1: { battle: [inst("RS-129", "j2"), inst("TST-UNIT-0", "f")], rush: [inst("RS-128", "j1")] } });
     s = enter(s, "RS-128:j1");
     expect(canStrike(s, "RS-128:j1")).toBe(false);

@@ -106,7 +106,7 @@ import {
   tryOpenEndTurnEffectsMenu,
 } from "../rules/legend3/endTurnEffects";
 import { resolveTurnEndingEffectsImpl } from "../rules/turnEndingEffects";
-import { clearBakiBakiExtraAttack } from "../rules/legend3/destroyEffects";
+import { clearBakiBakiExtraAttack, hasBakiBakiExtraAttackOnly } from "../rules/legend3/destroyEffects";
 import {
   canBonusDraw,
   canPayEarthForceUpkeep,
@@ -2632,6 +2632,8 @@ function applyActionCore(
 
     case "battle": {
       if (state.phase !== "battle") return fail("wrong_phase");
+      // RS-167 の追加アタック権はこのアタックで使う（勝てばまた得る）。
+      const bakiBakiExtra = hasBakiBakiExtraAttackOnly(state, playerId, action.attackerInstanceId);
       state = clearBakiBakiExtraAttack(state, playerId, action.attackerInstanceId);
       if (state.pendingBattle) return fail("pending_battle");
       if (
@@ -2655,7 +2657,7 @@ function applyActionCore(
       ) {
         return fail("wing_attack_not_allowed");
       }
-      if (battleActBlocked(actor, attackerFound.card, "attack")) return fail("already_acted");
+      if (!bakiBakiExtra && battleActBlocked(actor, attackerFound.card, "attack")) return fail("already_acted");
       if (cannotAttackOrStrikeThisTurn(actor, attackerFound.card)) {
         return fail("cannot_attack_turn_rushed");
       }

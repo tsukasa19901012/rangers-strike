@@ -201,6 +201,7 @@ export function applySelfRushFromZone(
 /* --- attack_and_strike_once（PR-013 / RS-236 / XG5-063） --- */
 
 import type { PlayerState } from "../types/game";
+import { hasBakiBakiExtraAttack } from "./turnModifierBridge";
 
 /**
  * battleActed 済みでも「アタックとストライクを1度ずつ」持ちなら
@@ -211,6 +212,8 @@ export function battleActBlocked(
   card: { cardId: string; instanceId: string; battleActed?: boolean },
   action: "attack" | "strike",
 ): boolean {
+  // RS-167【爆竜必殺バキバキパンチ】で得た「アタックしてバトルに勝つたび、追加でアタックできる」。
+  if (action === "attack" && hasBakiBakiExtraAttack(player, card.instanceId)) return false;
   // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックする権利を失っている。
   if (action === "attack" && player.unitActionsThisTurn?.[card.instanceId]?.attacked) return true;
   if (!card.battleActed) return false;

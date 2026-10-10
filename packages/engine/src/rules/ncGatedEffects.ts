@@ -6,7 +6,12 @@
  * NC の効果であり、ナンバーと並び順が一致するか、指定のユニットからコンビネーションしてバトルエリアに出たときだけ
  * 有効になる（ルール: R-CN-02、R-CN-05）。成立はバトルエリアに出たときに判定し、activatedNcEffects に記録する。
  */
-import { findNamedEffectByEffectId, getOnAttackNamedEffect } from "@rangers-strike/cards";
+import {
+  findNamedEffectByEffectId,
+  getOnAttackNamedEffect,
+  isNcColumnNamedEffect,
+  listNcColumnNamedEffects,
+} from "@rangers-strike/cards";
 import type { CardInstance, GameState } from "../types/game";
 
 type OnAttackNamed = NonNullable<ReturnType<typeof getOnAttackNamedEffect>>;
@@ -14,8 +19,8 @@ type OnAttackNamed = NonNullable<ReturnType<typeof getOnAttackNamedEffect>>;
 const PARTNER_FEATURE_RE = /特徴「([^」]+)」を持つユニットからコンビネーション/;
 
 function partnerCardIds(named: OnAttackNamed): string[] | undefined {
-  const trigger = named.trigger as { comboPartnerCardIds?: string[] };
-  return trigger.comboPartnerCardIds;
+  const trigger = named.trigger as { comboPartnerCardIds?: string[]; partnerCardIds?: string[] };
+  return trigger.comboPartnerCardIds ?? trigger.partnerCardIds;
 }
 
 /**
@@ -27,8 +32,9 @@ function partnerCardIds(named: OnAttackNamed): string[] | undefined {
 const CN_COLUMN_ON_ATTACK_EFFECT_IDS = new Set<string>(["ptera_dagger", "juu_kun_do"]);
 
 /** NC 成立が必要な「アタックするとき」の効果か（「ナンバーに関係なく発動する」の但し書きを持つ、または CN の欄の効果）。 */
-export function isNcGatedOnAttackEffect(named: OnAttackNamed): boolean {
+export function isNcGatedOnAttackEffect(named: OnAttackNamed, cardId?: string): boolean {
   if (CN_COLUMN_ON_ATTACK_EFFECT_IDS.has(named.effectId)) return true;
+  if (cardId && isNcColumnNamedEffect(cardId, named)) return true;
   return !!partnerCardIds(named)?.length || (named.text ?? "").includes("ナンバーに関係なく");
 }
 
@@ -53,7 +59,7 @@ export function comboFromNamedPartner(
 export function activeOnAttackNamedEffect(card: Pick<CardInstance, "cardId" | "activatedNcEffects">): OnAttackNamed | undefined {
   const named = getOnAttackNamedEffect(card.cardId);
   if (!named) return undefined;
-  if (isNcGatedOnAttackEffect(named) && !card.activatedNcEffects?.includes(named.effectId)) {
+  if (isNcGatedOnAttackEffect(named, card.cardId) && !card.activatedNcEffects?.includes(named.effectId)) {
     return undefined;
   }
   return named;
@@ -72,11 +78,55 @@ export function namedEffectActive(
   card: Pick<CardInstance, "cardId" | "activatedNcEffects">,
   effectId: string,
 ): boolean {
+  return activeNamedEffect(card, effectId) !== undefined;
+}
+
+/**
+ * findNamedEffectByEffectId の NC ゲート付き版。カードがその効果を持ち、かつ（NC の効果なら）NC が成立して
+ * いるときだけ効果を返す。場のユニットの効果を参照するときは原則こちらを使う（ルール: R-CN-02）。
+ */
+export function activeNamedEffect(
+  card: Pick<CardInstance, "cardId" | "activatedNcEffects">,
+  effectId: string,
+): ReturnType<typeof findNamedEffectByEffectId> {
   const named = findNamedEffectByEffectId(card.cardId, effectId);
-  if (!named) return false;
-  const type = (named.trigger as { type: string }).type;
-  if (type === "nc" || type === "nc_or_combo_from") {
-    return card.activatedNcEffects?.includes(effectId) ?? false;
+  if (!named) return undefined;
+  if (isNcColumnNamedEffect(card.cardId, named) && !(card.activatedNcEffects?.includes(effectId) ?? false)) {
+    return undefined;
   }
-  return true;
+  return named;
+}
+
+/**
+ * effectId（名前つき効果に限らない。DSL の効果 id 等）の発動が NC ゲートで止められていないか。
+ * カードの NC の効果でなければ常に true。
+ */
+export function ncGateAllows(
+  card: Pick<CardInstance, "cardId" | "activatedNcEffects">,
+  effectId: string,
+): boolean {
+  const named = findNamedEffectByEffectId(card.cardId, effectId);
+  if (!named || !isNcColumnNamedEffect(card.cardId, named)) return true;
+  return card.activatedNcEffects?.includes(effectId) ?? false;
+}
+
+/**
+ * バトルエリアに出たときに成立した NC の効果の effectId。
+ * - ナンバーと並び順が一致すれば、ナンバーの欄の効果すべて（R-CN-02）
+ * - 「（この効果は○○からコンビネーションするときは、ナンバーに関係なく発動する）」の効果は、直前のユニット
+ *   （左隣）が指定どおりならその効果（R-CN-05）
+ */
+export function ncColumnEffectIdsEstablished(
+  state: Pick<GameState, "definitions">,
+  cardId: string,
+  numberMatches: boolean,
+  leftNeighborCardId: string | undefined,
+): string[] {
+  const ids: string[] = [];
+  for (const named of listNcColumnNamedEffects(cardId)) {
+    if (numberMatches || comboFromNamedPartner(state, named, leftNeighborCardId)) {
+      ids.push(named.effectId);
+    }
+  }
+  return ids;
 }

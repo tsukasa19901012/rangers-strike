@@ -622,8 +622,7 @@ describe("RS-138 イエローライオン", () => {
     expect(zoneOf(s, "player1", "RS-138:yl")).toBe("battle");
   });
 
-  it.fails("RS-138: 5番目以外で出たとき（NC 不成立）は戻せない（出典: atwiki/page-357「CN：5」・R-CN-02）", () => {
-    // 既知の不具合: CARD-RS-138 【ジェットスケボー】を NC の成立に関係なく、バトルエリアにあればターン終了時に提示する
+  it("RS-138: 5番目以外で出たとき（NC 不成立）は戻せない（出典: atwiki/page-357「CN：5」・R-CN-02）", () => {
     const s = toEnd(1);
     expect(endMenuOffers(s)).toBe(false);
   });
@@ -703,7 +702,8 @@ describe("RS-140 コロン", () => {
     let s = st({
       activePlayer: "player2",
       player1: { battle: [inst("TST-UNIT-0", "mine")], rush: [inst("RS-140", "c")] },
-      player2: { battle: fillers(2, "ef"), rush: [inst("RS-141", "himo")] },
+      // 場のコロン【データ解析】で敵軍（player2）の紐男爵の CN は 3+1=4 になるため、4番目に出して【紐拳】の NC を成立させる（R-CN-02）
+      player2: { battle: fillers(3, "ef"), rush: [inst("RS-141", "himo")] },
     });
     s = enter(s, "RS-141:himo", "player2");
     s = pick(s, "TST-UNIT-0:mine");
@@ -890,8 +890,7 @@ describe("RS-141 紐男爵", () => {
     expect(zoneOf(s, "player2", "SPEC-E2:small")).toBe("rush");
   });
 
-  it.fails("RS-141: 3番目以外では発動しない（出典: atwiki/page-336「CN：3」）", () => {
-    // 既知の不具合: CARD-RS-141 【紐拳】を NC の成立（3番目）を見ずに、バトルエリアに出るたびに発動する
+  it("RS-141: 3番目以外では発動しない（出典: atwiki/page-336「CN：3」）", () => {
     const s = himo(0);
     expect(s.pendingEffectChoice).toBeFalsy();
   });

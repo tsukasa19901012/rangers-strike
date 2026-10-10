@@ -30,6 +30,15 @@ export type { PendingChase, WingBattleRule, CommanderZoneRule } from "./keywords
 export type { ScopedModifier, ModifierScope, RushPhaseRuleId, TurnRuleId } from "./scopedModifiers";
 export { RUSH_PHASE_RULE_IDS, RESTRICTION_IDS, TURN_RULE_IDS } from "./scopedModifiers";
 
+export type JointComboGrant = {
+  kind: "l" | "r";
+  /** 効果を持つカード（L/R ナンバーのカード）の名前つき効果 id。 */
+  effectId: string;
+  sourceCardId: string;
+  /** コンビネーションの相手（kind "l" は L ナンバーのカード、kind "r" は左隣の L ユニット）。 */
+  partnerInstanceId: string;
+};
+
 export type CardInstance = {
   instanceId: string;
   cardId: string;
@@ -49,6 +58,13 @@ export type CardInstance = {
   spOverride?: import("@rangers-strike/cards").SpValue;
   /** バトル進入時に発動したNC効果ID（ターン終了時にクリア）。 */
   activatedNcEffects?: string[];
+  /**
+   * ジョイントコンビネーション（JC）が成立して、このユニットが得た能力／発動した効果（R-CN-06）。
+   * L ナンバーのカードから得た能力（kind "l"）は、得た後は L ナンバーのカードが離れても有効
+   * （faq-card-3 RS-167 Q1）。R ナンバーの「このコンビネーションが成立している間」の効果（kind "r"）は、
+   * partnerInstanceId のユニットが左隣にいる間だけ有効。バトルエリアに出直すと消える。
+   */
+  jointComboGrants?: JointComboGrant[];
   /** バトルフェイズ: このターンにこのユニットがバトルまたはストライク済みなら true。 */
   battleActed?: boolean;
   /** このゾードがラッシュされた際に捨てた融合ユニット（RS-009 回収用）。 */

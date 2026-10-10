@@ -1,5 +1,7 @@
-import type { ComboNumber } from "@rangers-strike/cards";
+import type { CardDefinition, Category, ComboNumber } from "@rangers-strike/cards";
 import {
+  getJointLNamedEffect,
+  getJointRNamedEffect,
   getJointLEffect,
   getJointREffect,
   matchesJointLPartnerById,
@@ -8,7 +10,7 @@ import {
   getUnitEffectBlock,
 } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { getDefinition } from "../core/catalog";
+import { getDefinition, unitEffectiveCategories } from "../core/catalog";
 import { updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -20,6 +22,23 @@ import {
 } from "./legend3/jointComboEffects";
 import { grantSp1OnPlayer, grantSpOverrideOnPlayer, patchPlayer } from "./playerPatches";
 import type { ComboOutcome } from "./comboTypes";
+import { addJointComboGrant } from "./jointComboGrants";
+import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEffects";
+
+/** カードの効果を判定するときのカテゴリ（バトルエリアで追加されるカテゴリを含む。RS-166 ガインガイン）。 */
+export type JointCategoriesOf = (card: CardInstance) => Category[] | undefined;
+
+function definitionWithCategories(
+  definitions: GameState["definitions"],
+  card: CardInstance,
+  categoriesOf: JointCategoriesOf | undefined,
+): CardDefinition | undefined {
+  const def = getDefinition(definitions, card.cardId);
+  if (!def || !categoriesOf) return def;
+  const categories = categoriesOf(card);
+  if (!categories || categories.length === 0) return def;
+  return { ...def, category: categories.length === 1 ? categories[0]! : categories } as CardDefinition;
+}
 
 /** wiki p266 / combo-number: ナンバー L または R はジョイントコンビネーション。 */
 export function isJointComboNumber(
@@ -41,9 +60,10 @@ function isJointLPartnerMatch(
   definitions: GameState["definitions"],
   anchor: CardInstance,
   partner: CardInstance,
+  categoriesOf?: JointCategoriesOf,
 ): boolean {
-  const anchorDef = getDefinition(definitions, anchor.cardId);
-  const partnerDef = getDefinition(definitions, partner.cardId);
+  const anchorDef = definitionWithCategories(definitions, anchor, categoriesOf);
+  const partnerDef = definitionWithCategories(definitions, partner, categoriesOf);
   if (!anchorDef || !partnerDef) return false;
   return matchesJointLPartnerById(anchor.cardId, anchorDef, partnerDef);
 }
@@ -52,9 +72,10 @@ function isJointRPartnerMatch(
   definitions: GameState["definitions"],
   rUnit: CardInstance,
   leftPartner: CardInstance,
+  categoriesOf?: JointCategoriesOf,
 ): boolean {
-  const rDef = getDefinition(definitions, rUnit.cardId);
-  const partnerDef = getDefinition(definitions, leftPartner.cardId);
+  const rDef = definitionWithCategories(definitions, rUnit, categoriesOf);
+  const partnerDef = definitionWithCategories(definitions, leftPartner, categoriesOf);
   if (!rDef || !partnerDef) return false;
   return matchesJointRPartnerById(rUnit.cardId, rDef, partnerDef);
 }
@@ -83,6 +104,7 @@ export function findJointComboTriggersOnEnter(
   battle: CardInstance[],
   definitions: GameState["definitions"],
   enterIndex: number,
+  categoriesOf?: JointCategoriesOf,
 ): JointComboTrigger[] {
   const triggers: JointComboTrigger[] = [];
   const entering = battle[enterIndex];
@@ -93,14 +115,14 @@ export function findJointComboTriggersOnEnter(
 
   if (enteringDef.comboNumber === "L") {
     const partner = battle[enterIndex + 1];
-    if (partner && isJointLPartnerMatch(definitions, entering, partner)) {
+    if (partner && isJointLPartnerMatch(definitions, entering, partner, categoriesOf)) {
       triggers.push({ kind: "joint_l", lIndex: enterIndex, partnerIndex: enterIndex + 1 });
     }
   }
 
   if (enteringDef.comboNumber === "R") {
     const partner = battle[enterIndex - 1];
-    if (partner && isJointRPartnerMatch(definitions, entering, partner)) {
+    if (partner && isJointRPartnerMatch(definitions, entering, partner, categoriesOf)) {
       triggers.push({ kind: "joint_r", rIndex: enterIndex, partnerIndex: enterIndex - 1 });
     }
   }
@@ -110,7 +132,7 @@ export function findJointComboTriggersOnEnter(
   if (
     left &&
     leftDef?.comboNumber === "L" &&
-    isJointLPartnerMatch(definitions, left, entering)
+    isJointLPartnerMatch(definitions, left, entering, categoriesOf)
   ) {
     triggers.push({ kind: "joint_l", lIndex: enterIndex - 1, partnerIndex: enterIndex });
   }
@@ -142,6 +164,40 @@ function applyJointLPartnerGrants(
   }
   return nextState;
 }
+
+/** L ナンバーのカードの「このユニットからコンビネーションする…は、次の能力を得る⇒…」の効果。 */
+function jointLGrantingEffect(cardId: string) {
+  const joint = getJointLNamedEffect(cardId);
+  if (joint && /次の能力を得る/.test(joint.text)) return joint;
+  return getUnitEffectBlock(cardId)?.namedEffects.find((named) =>
+    /この(?:ユニット|ビークル)からコンビネーションする.*次の能力を得る/.test(named.text),
+  );
+}
+
+/** R ナンバーのカードの「次の効果を発動できる⇒このコンビネーションが成立している間、…」の効果。 */
+function jointRWhileEstablishedEffect(cardId: string) {
+  const joint = getJointRNamedEffect(cardId);
+  if (joint && /このコンビネーションが成立している間/.test(joint.text)) return joint;
+  return undefined;
+}
+
+/** 任意確認で「発動する」を選んだとき、R ナンバーのカードに効果を記録する。effectId はカードの効果 id。 */
+const jointRWhileEstablishedHandler = {
+  apply: (state: GameState, pending: { playerId: PlayerId; sourceCardId: string; sourceInstanceId?: string; effectId: string }) => {
+    const rId = pending.sourceInstanceId;
+    if (!rId) return state;
+    const battle = state.players[pending.playerId].battle;
+    const index = battle.findIndex((c) => c.instanceId === rId);
+    const left = index > 0 ? battle[index - 1] : undefined;
+    if (!left) return state;
+    return addJointComboGrant(state, pending.playerId, rId, {
+      kind: "r",
+      effectId: pending.effectId,
+      sourceCardId: pending.sourceCardId,
+      partnerInstanceId: left.instanceId,
+    });
+  },
+};
 
 function applyJointLTrigger(
   state: GameState,
@@ -212,6 +268,20 @@ function applyJointLTrigger(
     (c) => c.instanceId === partner.instanceId,
   );
   nextState = applyJointLPartnerGrants(nextState, playerId, lCard, partner);
+  const grantEffect = jointLGrantingEffect(lCard.cardId);
+  if (grantEffect) {
+    nextState = addJointComboGrant(nextState, playerId, partner.instanceId, {
+      kind: "l",
+      effectId: grantEffect.effectId,
+      sourceCardId: lCard.cardId,
+      partnerInstanceId: lCard.instanceId,
+    });
+    if (!logs.some((entry) => entry.includes("joint_combo_l"))) {
+      logs.push(
+        buildLogEntry(playerId, "joint_combo_l", lCard.cardId, state.definitions, partner.cardId),
+      );
+    }
+  }
   const partnerAfter = nextState.players[playerId].battle.find(
     (c) => c.instanceId === partner.instanceId,
   );
@@ -257,6 +327,27 @@ function applyJointRTrigger(
         "sp1",
       ),
     );
+  }
+
+  // 「次の効果を発動できる⇒このコンビネーションが成立している間、…」（RS-158【エレファントシールド】、
+  // RS-172【ショベルディフェンス】等）は任意。発動したら R ナンバーのカードに記録する（R-CN-06）。
+  const whileEstablished = jointRWhileEstablishedEffect(rCard.cardId);
+  if (whileEstablished) {
+    if (logs.length > 0) {
+      nextState = { ...nextState, ...updatePlayer(nextState, playerId, nextPlayer) };
+    }
+    logs.push(
+      buildLogEntry(playerId, "joint_combo_r", rCard.cardId, state.definitions, whileEstablished.effectId),
+    );
+    registerOptionalEffect(whileEstablished.effectId, jointRWhileEstablishedHandler);
+    const withConfirm = openOptionalEffectConfirm(nextState, {
+      playerId,
+      effectId: whileEstablished.effectId,
+      sourceCardId: rCard.cardId,
+      sourceInstanceId: rCard.instanceId,
+      phasePlayerId: playerId,
+    });
+    return { state: withConfirm, logs };
   }
 
   const legend3R = getLegend3JointREffect(rCard.cardId);
@@ -317,6 +408,7 @@ export function resolveJointCombosOnEnter(
     player.battle,
     state.definitions,
     enterIndex,
+    (c) => unitEffectiveCategories(state, playerId, c, "battle"),
   );
   if (triggers.length === 0) {
     return { state, logs: [] };

@@ -1,4 +1,5 @@
-import { findNamedEffectByEffectId, getCardEffect } from "@rangers-strike/cards";
+import { getCardEffect } from "@rangers-strike/cards";
+import { activeNamedEffect } from "./ncGatedEffects";
 import { openEffectChoice } from "./pendingChoices";
 import type { GameState, PendingStrike, PlayerId, PlayerState } from "../types/game";
 import {
@@ -343,7 +344,7 @@ function sideKnuckleChoosingPlayer(
     "battle",
     pending.strikerInstanceId,
   );
-  if (!striker || !findNamedEffectByEffectId(striker.card.cardId, "side_knuckle")) {
+  if (!striker || !activeNamedEffect(striker.card, "side_knuckle")) {
     return undefined;
   }
   return pending.strikerPlayerId;

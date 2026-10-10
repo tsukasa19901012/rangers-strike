@@ -194,7 +194,8 @@ describe("damage power choice", () => {
   });
 
   it("RS-149 side_knuckle opens striker flip choice on strike damage", () => {
-    const striker = inst("RS-149", "yellow");
+    // NC（CN4）成立済み（R-CN-02）
+    const striker = { ...inst("RS-149", "yellow"), activatedNcEffects: ["side_knuckle"] };
     const powers = [
       { ...inst("TST-P", "p1"), faceDown: false },
       { ...inst("TST-P", "p2"), faceDown: false },

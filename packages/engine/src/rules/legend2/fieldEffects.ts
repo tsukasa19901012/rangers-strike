@@ -1,7 +1,7 @@
 import {
-  findNamedEffectByEffectId,
   playerHasNamedEffectInZones,
 } from "@rangers-strike/cards";
+import { activeNamedEffect } from "../ncGatedEffects";
 import type { Category } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit, spSetValueOf, unitBp } from "../../core/catalog";
@@ -33,7 +33,7 @@ function findControllerOfNamedEffect(
     const player = state.players[playerId];
     for (const zone of zones) {
       for (const card of player[zone]) {
-        if (findNamedEffectByEffectId(card.cardId, effectId)) {
+        if (activeNamedEffect(card, effectId)) {
           return { playerId, cardId: card.cardId };
         }
       }
@@ -57,7 +57,7 @@ export function legend2FieldBpBonus(
   // RS-079【バイバスター】の BP 加算は DSL（bp_per_enemy_command_…）がリリース・ホールドを問わず数える。
   // ここで重ねて数えない（atwiki/page-15「OTのコマンド1つにつきBP+1000」）。
 
-  if (findNamedEffectByEffectId(instance.cardId, "fire_spin_blade")) {
+  if (activeNamedEffect(instance, "fire_spin_blade")) {
     const released = state.players[playerId].command.filter((c) => !c.commandHeld).length;
     bonus += released * 1000;
   }
@@ -117,15 +117,15 @@ export function legend2EffectiveSp(
   }
 
   if (
-    findNamedEffectByEffectId(instance.cardId, "bio_buster") ||
-    findNamedEffectByEffectId(instance.cardId, "fire_spin_blade") ||
+    activeNamedEffect(instance, "bio_buster") ||
+    activeNamedEffect(instance, "fire_spin_blade") ||
     instance.activatedNcEffects?.includes("ryuu_geki_ken")
   ) {
     const bp =
       unitBp(def) +
       (instance.bpModifier ?? 0) +
       legend2FieldBpBonus(state, playerId, instance, "general");
-    const threshold = findNamedEffectByEffectId(instance.cardId, "fire_spin_blade") ? 10000 : 5000;
+    const threshold = activeNamedEffect(instance, "fire_spin_blade") ? 10000 : 5000;
     if (bp >= threshold) {
       sp = Math.max(sp, 1);
     }
@@ -177,7 +177,7 @@ export function karakuriLionChainHoldCount(
 ): number {
   const enemyId: PlayerId = defenderId === "player1" ? "player2" : "player1";
   const chains = state.players[enemyId].battle.filter((c) =>
-    findNamedEffectByEffectId(c.cardId, "karakuri_lion_chain"),
+    activeNamedEffect(c, "karakuri_lion_chain"),
   ).length;
   if (chains === 0) return 0;
 

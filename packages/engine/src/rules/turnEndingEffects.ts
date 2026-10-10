@@ -1,5 +1,5 @@
-import { findNamedEffectByEffectId } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, TurnEndProgress } from "../types/game";
+import { activeNamedEffect } from "./ncGatedEffects";
 import { effectiveBp, getDefinition } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { bounceToHand } from "./bounce";
@@ -162,7 +162,7 @@ function applyKakuhengeTurnEndDestroy(state: GameState): GameState {
   for (const pid of ["player1", "player2"] as const) {
     const units = [...nextState.players[pid].rush, ...nextState.players[pid].battle];
     for (const card of units) {
-      if (!findNamedEffectByEffectId(card.cardId, "karakuri_ninpo_tsuno")) continue;
+      if (!activeNamedEffect(card, "karakuri_ninpo_tsuno")) continue;
       if (effectiveBp(nextState, pid, card) < 8000) continue;
       nextState = destroyUnitToDiscard(nextState, pid, card.instanceId);
     }

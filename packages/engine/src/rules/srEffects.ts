@@ -1,5 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
-import { findNamedEffectByEffectId } from "@rangers-strike/cards";
+import { activeNamedEffect } from "./ncGatedEffects";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../types/game";
 import type { GrantKeywordContext } from "../dsl/grantKeyword";
 import {
@@ -32,7 +32,7 @@ function opponentHasMaChikara(state: GameState, playerId: PlayerId): boolean {
   const enemyId = opponent(playerId);
   const enemy = state.players[enemyId];
   return [...enemy.rush, ...enemy.battle].some((c) =>
-    findNamedEffectByEffectId(c.cardId, "ma_chikara"),
+    activeNamedEffect(c, "ma_chikara"),
   );
 }
 
