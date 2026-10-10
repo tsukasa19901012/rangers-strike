@@ -1,4 +1,4 @@
-import { isSet4EndTurnEffect } from "../rules/legend1/set4NamedEffects";
+import { applyMagiPunchCounter, isSet4EndTurnEffect, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState, CardInstance } from "../types/game";
@@ -1949,7 +1949,7 @@ function applyActionCore(
       nextState = emitStrikeDeclared(nextState, pending);
 
       const defenderId = opponent(playerId);
-      if (hasStrikeReactions(nextState, defenderId)) {
+      if (hasStrikeReactions(nextState, defenderId, pending)) {
         nextState = {
           ...nextState,
           pendingStrike: pending,
@@ -2180,7 +2180,20 @@ function applyActionCore(
       }
 
       if (state.pendingStrike) {
-        return fail("invalid_counter");
+        const pending = state.pendingStrike;
+        const defenderId = opponent(pending.strikerPlayerId);
+        if (playerId !== defenderId) return fail("wrong_player");
+        if (!magiPunchCounterIds(state, defenderId, pending).includes(action.instanceId)) {
+          return fail("invalid_counter");
+        }
+        // RS-184 マジパンチ: ストライクしてきたユニットを持ち主の手札に戻し、ストライクを無効にする。
+        const result = applyMagiPunchCounter(state, defenderId, action.instanceId, pending);
+        const cleared = clearCounterHoldReady(result.state, playerId);
+        if (magiPunchCounterIds(cleared, defenderId, result.pending).length > 0) {
+          // 同じストライクに続けて使える（faq-card-4 RS-184 Q1）。反応窓を開いたままにする。
+          return ok({ ...cleared, pendingStrike: result.pending, activePlayer: defenderId }, result.log);
+        }
+        return completeStrike({ ...cleared, pendingStrike: result.pending }, result.pending, [result.log]);
       }
 
       return fail("no_pending_reaction");

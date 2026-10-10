@@ -111,6 +111,7 @@ import { canDeclareRush } from "../rules/rushDeclaration";
 import { listKamenRideAbilityUnits } from "../rules/riderKickEffects";
 import { listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities";
 import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
+import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
 import {
   getMorphReactionActorId,
@@ -224,6 +225,14 @@ function appendStrikeReactionActions(
 
   if (canPlayPlasmaEnergyCounter(state, defenderId)) {
     actions.push({ type: "use_plasma_energy", playerId: defenderId });
+  }
+
+  // RS-184 マジパンチ（BP8000以下の敵軍ユニットにストライクされたとき）。
+  for (const counterId of magiPunchCounterIds(state, defenderId, pending)) {
+    appendCounterCategoryPaymentActions(state, defenderId, counterId, actions);
+    if (canExecuteHandCounter(state, defenderId, counterId)) {
+      actions.push({ type: "play_counter", playerId: defenderId, instanceId: counterId });
+    }
   }
 
   actions.push({ type: "pass_strike_reaction", playerId: defenderId });
@@ -1096,7 +1105,7 @@ function appendEffectChoiceActions(
     return;
   }
 
-  if (isErrataConfirmableChoice(pending.effectId)) {
+  if (isErrataConfirmableChoice(pending.effectId) || isSet4ConfirmableChoice(pending.effectId)) {
     for (const instanceId of pending.validInstanceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }

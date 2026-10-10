@@ -5,12 +5,14 @@
  * - `tryResolveSet4Choice` / `trySkipSet4Choice` / `tryConfirmSet4Choice`: このモジュールが開いた選択の解決。
  * - バトル解決・アタック対象の判定から呼ばれる参照関数（RS-212 / RS-213 / RS-220 / RS-225 / RS-226）。
  */
-import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PendingEffectChoice, PendingStrike, PlayerId } from "../../types/game";
+import { bounceToHand } from "../bounce";
+import { canPlayHandCounter } from "../operationCounters";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEffects";
 import { findCardInField } from "../fieldLookup";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
-import { cardName, effectiveBp, getDefinition, isSmallUnit } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, isCounterOperation, isSmallUnit } from "../../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import {
   addNextTurnRuleModifier,
@@ -61,6 +63,18 @@ function finish(state: GameState, phasePlayerId: PlayerId, before?: GameState): 
 function openBeforeExisting(state: GameState, choice: PendingEffectChoice): GameState {
   const existing = state.pendingEffectChoice;
   return openEffectChoice(state, existing ? { ...choice, resumeChoice: existing } : choice);
+}
+
+/**
+ * 選択を開いたオペレーションは、使用処理（play_operation）では捨札にならない（選択の解決待ち）ので、
+ * 選択を開いた時点で捨札に置く（効果の解決中、使ったオペレーションは場に残らない）。
+ */
+function discardUsedOperation(state: GameState, ctx: GrantKeywordContext): GameState {
+  if (!ctx.operationInstanceId) return state;
+  const player = state.players[ctx.playerId];
+  if (player.discard.some((c) => c.instanceId === ctx.operationInstanceId)) return state;
+  const card: CardInstance = { instanceId: ctx.operationInstanceId, cardId: ctx.sourceCardId };
+  return { ...state, ...updatePlayer(state, ctx.playerId, { ...player, discard: [...player.discard, card] }) };
 }
 
 function fieldUnits(state: GameState, playerId: PlayerId): CardInstance[] {
@@ -486,6 +500,199 @@ export function isSet4EndTurnEffect(effectId: string | undefined): boolean {
   return effectId === ATTACK_BOARD_EFFECT_ID || effectId === FLOWER_CARNIVAL_EFFECT_ID;
 }
 
+
+// ---------------------------------------------------------------------------
+// RS-185 カーナビック（オペレーション。※カウンターではない）
+// 「相手の手札を見て、カウンターのオペレーションカードがあれば1枚選び、持ち主のパワーゾーンにダメージにして置く。」
+
+export const CAR_NAVIC_EFFECT_ID = "kanabiku_counter_to_damage";
+
+function beginCarNavic(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  const enemyId = opponent(ctx.playerId);
+  const enemy = state.players[enemyId];
+  const ids = enemy.hand
+    .filter((c) => isCounterOperation(getDefinition(state.definitions, c.cardId)))
+    .map((c) => c.instanceId);
+  if (ids.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: CAR_NAVIC_EFFECT_ID,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.operationInstanceId,
+    kind: "select_hand",
+    phasePlayerId: ctx.phasePlayerId,
+    validInstanceIds: ids,
+    // 見た手札（相手の手札すべて）。
+    viewedInstanceIds: enemy.hand.map((c) => c.instanceId),
+    selectCount: 1,
+    optional: false,
+  });
+}
+
+function resolveCarNavic(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const enemyId = opponent(playerId);
+  const enemy = state.players[enemyId];
+  const found = findInZone(enemy, "hand", instanceId);
+  if (!found) return { error: "invalid_target" };
+  const [card, hand] = removeAt(enemy.hand, found.index);
+  const next = {
+    ...state,
+    ...updatePlayer(state, enemyId, {
+      ...enemy,
+      hand,
+      power: [...enemy.power, { instanceId: card.instanceId, cardId: card.cardId, faceDown: true }],
+      damage: enemy.damage + 1,
+    }),
+  };
+  return {
+    state: finish(next, pending.phasePlayerId, state),
+    log: logFor(state, playerId, "RS-185", `${CAR_NAVIC_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// RS-186 プロバイダーベース（オペレーション）
+// 「自軍山札を見て、Sユニット以外の特徴「メカ」を持つユニットのカードを5枚まで選び、相手に見せる。
+//  その後、山札をシャッフルし、選んだカードを好きな順で山札の上に戻す。」
+// 1枚ずつ選び（選んだ順に山札の上から並ぶ）、確定（confirm）で終える。5枚選ぶか候補が尽きたら自動で終える。
+
+export const PROVIDER_BASE_EFFECT_ID = "purobaidabesu_deck_top";
+const PROVIDER_BASE_MAX = 5;
+
+function providerBaseCandidates(state: GameState, playerId: PlayerId, exclude: string[]): string[] {
+  return state.players[playerId].deck
+    .filter((c) => {
+      if (exclude.includes(c.instanceId)) return false;
+      const def = getDefinition(state.definitions, c.cardId);
+      return def?.type === "unit" && def.size !== "S" && (def.features ?? []).includes("メカ");
+    })
+    .map((c) => c.instanceId);
+}
+
+function beginProviderBase(state: GameState, ctx: GrantKeywordContext): GameState {
+  const ids = providerBaseCandidates(state, ctx.playerId, []);
+  if (ids.length === 0) return finishProviderBaseWith(state, ctx.playerId, []);
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: PROVIDER_BASE_EFFECT_ID,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.operationInstanceId,
+    kind: "select_unit",
+    unitDestination: "deck_top",
+    phasePlayerId: ctx.phasePlayerId,
+    validInstanceIds: ids,
+    selectCount: PROVIDER_BASE_MAX,
+    selectedInstanceIds: [],
+    optional: true,
+  });
+}
+
+function shuffled<T>(cards: T[]): T[] {
+  const copy = [...cards];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
+  }
+  return copy;
+}
+
+/** 山札をシャッフルし、選んだカードを（選んだ順に）山札の上に置く。 */
+function finishProviderBaseWith(state: GameState, playerId: PlayerId, selected: string[]): GameState {
+  const player = state.players[playerId];
+  const picked = selected
+    .map((id) => player.deck.find((c) => c.instanceId === id))
+    .filter((c): c is CardInstance => !!c);
+  const rest = player.deck.filter((c) => !selected.includes(c.instanceId));
+  return { ...state, ...updatePlayer(state, playerId, { ...player, deck: [...picked, ...shuffled(rest)] }) };
+}
+
+function finishProviderBase(state: GameState, playerId: PlayerId): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  const selected = pending.selectedInstanceIds ?? [];
+  const next = finishProviderBaseWith(state, playerId, selected);
+  const names = selected
+    .map((id) => state.players[playerId].deck.find((c) => c.instanceId === id))
+    .map((c) => (c ? cardName(state.definitions, c.cardId) : ""))
+    .join(",");
+  return {
+    state: finish(next, pending.phasePlayerId, state),
+    log: logFor(state, playerId, "RS-186", `${PROVIDER_BASE_EFFECT_ID}:${names || "none"}`),
+  };
+}
+
+function resolveProviderBase(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+  const remaining = providerBaseCandidates(state, playerId, selected);
+  const updated: GameState = {
+    ...state,
+    pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: remaining },
+  };
+  if (selected.length >= PROVIDER_BASE_MAX || remaining.length === 0) return finishProviderBase(updated, playerId);
+  return { state: updated };
+}
+
+
+// ---------------------------------------------------------------------------
+// RS-184 マジパンチ（※カウンター）
+// 「BP8000以下の敵軍ユニットにストライクされたとき発動できる⇒ストライクしてきた敵軍ユニットを持ち主の手札に戻す。
+//  そのとき、敵軍のストライクは無効になる。」
+// 1回のストライクに対して同時に2枚使える（faq-card-4 RS-184 Q1・R-CTR-02）— 1枚目の解決後も、
+// 手札にマジパンチが残っていれば反応窓を開いたままにする（2枚目は戻すユニットがいないので何もしない）。
+
+const MAGI_PUNCH_MAX_BP = 8000;
+
+export function isMagiPunchCard(state: GameState, cardId: string): boolean {
+  return cardId === "RS-184" || getDefinition(state.definitions, cardId)?.name === "マジパンチ";
+}
+
+/** ストライクの反応窓で使えるマジパンチ（手札）。 */
+export function magiPunchCounterIds(state: GameState, defenderId: PlayerId, pending: PendingStrike): string[] {
+  // ※カウンター — 敵軍ターン中のみ。
+  if (pending.battlePhasePlayer === defenderId) return [];
+  if (!pending.magiPunchApplied) {
+    const striker = findInZone(state.players[pending.strikerPlayerId], "battle", pending.strikerInstanceId);
+    if (!striker) return [];
+    if (effectiveBp(state, pending.strikerPlayerId, striker.card) > MAGI_PUNCH_MAX_BP) return [];
+  }
+  return state.players[defenderId].hand
+    .filter((c) => isMagiPunchCard(state, c.cardId) && canPlayHandCounter(state, defenderId, c.instanceId))
+    .map((c) => c.instanceId);
+}
+
+export function applyMagiPunchCounter(
+  state: GameState,
+  defenderId: PlayerId,
+  counterInstanceId: string,
+  pending: PendingStrike,
+): { state: GameState; pending: PendingStrike; log: string } {
+  const defender = state.players[defenderId];
+  const found = findInZone(defender, "hand", counterInstanceId);
+  let next = state;
+  if (found) {
+    const [card, hand] = removeAt(defender.hand, found.index);
+    next = { ...next, ...updatePlayer(next, defenderId, { ...defender, hand, discard: [...defender.discard, card] }) };
+  }
+  let detail = "none";
+  const striker = findInZone(next.players[pending.strikerPlayerId], "battle", pending.strikerInstanceId);
+  if (striker && effectiveBp(next, pending.strikerPlayerId, striker.card) <= MAGI_PUNCH_MAX_BP) {
+    next = bounceToHand(next, {
+      playerId: pending.strikerPlayerId,
+      instanceId: pending.strikerInstanceId,
+      fromZone: "battle",
+    }).state;
+    detail = cardName(state.definitions, striker.card.cardId);
+  }
+  return {
+    state: next,
+    pending: { ...pending, damageCancelled: true, magiPunchApplied: true },
+    log: buildLogEntry(defenderId, "play_counter", found?.card.cardId ?? "RS-184", state.definitions, `magi_punch:${detail}`),
+  };
+}
+
 // ---------------------------------------------------------------------------
 // 登録
 
@@ -497,7 +704,24 @@ const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [RUNAWAY_GASOLINE_EFFECT_ID]: resolveRunawayGasoline,
   [DEATH_STINGER_EFFECT_ID]: resolveDeathStinger,
   [FLOWER_CARNIVAL_EFFECT_ID]: resolveFlowerCarnival,
+  [CAR_NAVIC_EFFECT_ID]: resolveCarNavic,
+  [PROVIDER_BASE_EFFECT_ID]: resolveProviderBase,
 };
+
+/** 「好きな数」選んで確定できる選択（confirm_effect_choice を出す）。 */
+const CONFIRMABLE_CHOICES = new Set([PROVIDER_BASE_EFFECT_ID]);
+
+export function isSet4ConfirmableChoice(effectId: string): boolean {
+  return CONFIRMABLE_CHOICES.has(effectId);
+}
+
+/** 確定（confirm_effect_choice）。対象外なら null。 */
+export function tryConfirmSet4Choice(state: GameState, playerId: PlayerId): ChoiceOutcome | null {
+  const pending = state.pendingEffectChoice;
+  if (!pending || pending.playerId !== playerId) return null;
+  if (pending.effectId === PROVIDER_BASE_EFFECT_ID) return finishProviderBase(state, playerId);
+  return null;
+}
 
 export function isSet4ChoiceEffect(effectId: string): boolean {
   return effectId in CHOICE_RESOLVERS;
@@ -521,6 +745,7 @@ export function trySkipSet4Choice(state: GameState, playerId: PlayerId): ChoiceO
   const pending = state.pendingEffectChoice;
   if (!pending || pending.playerId !== playerId || !(pending.effectId in CHOICE_RESOLVERS)) return null;
   if (!pending.optional) return null;
+  if (pending.effectId === PROVIDER_BASE_EFFECT_ID) return finishProviderBase(state, playerId);
   return {
     state: finish(state, pending.phasePlayerId),
     log: buildLogEntry(playerId, "skip_effect_choice", pending.sourceCardId, state.definitions, `${pending.effectId}:skipped`),
@@ -547,6 +772,19 @@ export function trySet4CardEffect(
     case "RS-217::shitakunarugasorin": {
       const next = beginRunawayGasoline(state, ctx);
       return next ? { state: next, detail: RUNAWAY_GASOLINE_EFFECT_ID } : { state, detail: `${RUNAWAY_GASOLINE_EFFECT_ID}:no_targets` };
+    }
+    case "RS-185::kanabiku": {
+      const next = beginCarNavic(state, ctx);
+      return next
+        ? { state: discardUsedOperation(next, ctx), detail: CAR_NAVIC_EFFECT_ID }
+        : { state, detail: `${CAR_NAVIC_EFFECT_ID}:no_counter` };
+    }
+    case "RS-186::purobaidabesu": {
+      const next = beginProviderBase(state, ctx);
+      return {
+        state: next.pendingEffectChoice ? discardUsedOperation(next, ctx) : next,
+        detail: PROVIDER_BASE_EFFECT_ID,
+      };
     }
     case "RS-193::furawakanibaru":
       return { state: applyFlowerCarnival(state, ctx), detail: "furawakanibaru" };

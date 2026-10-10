@@ -152,6 +152,8 @@ export type PendingStrike = {
   damageCancelled?: boolean;
   /** 守り側がこのストライクのダメージ支払いを完了した後に設定。 */
   damageApplied?: boolean;
+  /** RS-184 マジパンチを使った（ストライクしたユニットは手札に戻った）。続けて同じストライクに使える。 */
+  magiPunchApplied?: boolean;
 };
 
 export type DamagePaymentResume =

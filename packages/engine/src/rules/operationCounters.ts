@@ -187,7 +187,14 @@ export function applySuperShieldSubstitute(
 }
 
 export function isCounterReactionActive(state: GameState): boolean {
-  return !!(state.pendingBattle || state.pendingRush || state.pendingLeave || state.pendingMorph);
+  return !!(
+    state.pendingBattle ||
+    state.pendingRush ||
+    state.pendingLeave ||
+    state.pendingMorph ||
+    // ストライクの反応窓（RS-184 マジパンチ等。使えるカウンターは legalActions の appendStrikeReactionActions）。
+    state.pendingStrike
+  );
 }
 
 export function isHandCounterCard(

@@ -91,7 +91,12 @@ import {
   tryResolveErrataChoice,
   trySkipErrataChoice,
 } from "./errataCardEffects";
-import { isSet4ChoiceEffect, tryResolveSet4Choice, trySkipSet4Choice } from "./legend1/set4NamedEffects";
+import {
+  isSet4ChoiceEffect,
+  tryConfirmSet4Choice,
+  tryResolveSet4Choice,
+  trySkipSet4Choice,
+} from "./legend1/set4NamedEffects";
 import {
   applyFlowerBombDeclaredNumber,
   continueMagiBlueAfterSelfDraw,
@@ -1837,6 +1842,8 @@ export function applyConfirmEffectChoice(
 
   const errata = tryConfirmErrataChoice(state, playerId);
   if (errata) return errata;
+  const set4 = tryConfirmSet4Choice(state, playerId);
+  if (set4) return set4;
 
   if (pending.mayConfirm) {
     const log = buildLogEntry(
