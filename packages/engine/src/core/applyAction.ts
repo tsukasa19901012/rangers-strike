@@ -1,4 +1,5 @@
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
+import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
   applyGiantBombCounter,
@@ -1161,7 +1162,12 @@ function applyActionCore(
         command: [...player.command, commandCard],
         hasChargedThisTurn: true,
       };
-      const chargedState = { ...state, ...updatePlayer(state, playerId, nextPlayer) };
+      // SR-004【妖魔力】: 相手の場にあれば、置いた OT / ET のカードをホールドする（atwiki/page-578 Q1）。
+      const chargedState = holdPlacedCommandUnderMaChikara(
+        { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+        playerId,
+        commandCard.instanceId,
+      );
       return {
         ok: true,
         state: advanceFromCharge(

@@ -20,6 +20,7 @@ import { applyReanimate } from "../reanimate";
 import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
 import { startGenericEnemyUnitChoice } from "../rs/rsCatchallChoices";
 import { openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
+import { registerChoiceRefresher } from "../choiceRefreshers";
 import { applyNumberComboEffect } from "../numberComboEffects";
 import { getNumberComboEffect } from "@rangers-strike/cards";
 
@@ -670,6 +671,85 @@ export function fireAkaRedSoulNc(
 }
 
 // ---------------------------------------------------------------------------
+// RK-062 仮面ライダー電王AF【ダイナミックチョップ】
+// 「自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンのダメージ以外のカードを好きな枚数捨札にしてもよい。
+//  そうしたとき、このターン、これは捨札にしたカード1枚につきBP+1000される」（atwiki/page-167）
+// - 選んだパワーゾーンのカードを実際に捨札にしてから、その枚数だけ BP を上げる。
+
+export const DYNAMIC_CHOP_EFFECT_ID = "rk062_dynamic_chop";
+
+function beginDynamicChop(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  if (ctx.phasePlayerId !== ctx.playerId || !ctx.triggerSourceInstanceId) return null;
+  const valid = state.players[ctx.playerId].power.filter((c) => !c.faceDown).map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: DYNAMIC_CHOP_EFFECT_ID,
+    sourceCardId: "RK-062",
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    kind: "select_power",
+    phasePlayerId: ctx.phasePlayerId,
+    validInstanceIds: valid,
+    selectCount: valid.length,
+    selectedInstanceIds: [],
+    optional: true,
+  });
+}
+
+function resolveDynamicChop(state: GameState, _playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+  const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+  if (remaining.length > 0) {
+    return { state: { ...state, pendingEffectChoice: { ...pending, validInstanceIds: remaining, selectedInstanceIds: selected } } };
+  }
+  return finishDynamicChop(state, pending, selected);
+}
+
+function finishDynamicChop(state: GameState, pending: PendingEffectChoice, selected: string[]): ChoiceOutcome {
+  const playerId = pending.playerId;
+  const player = state.players[playerId];
+  const ids = new Set(selected);
+  const discarded = player.power.filter((c) => ids.has(c.instanceId) && !c.faceDown);
+  if (discarded.length === 0) {
+    return { state: finish(state, pending), log: log(playerId, "RK-062", state, "dynamic_chop:0") };
+  }
+  const discardedIds = new Set(discarded.map((c) => c.instanceId));
+  const battle = player.battle.map((c) =>
+    c.instanceId === pending.sourceInstanceId ? { ...c, bpModifier: (c.bpModifier ?? 0) + 1000 * discarded.length } : c,
+  );
+  const next: GameState = {
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      power: player.power.filter((c) => !discardedIds.has(c.instanceId)),
+      discard: [...player.discard, ...discarded],
+      battle,
+    }),
+  };
+  return { state: finish(next, pending), log: log(playerId, "RK-062", state, `dynamic_chop:${discarded.length}`) };
+}
+
+function confirmDynamicChop(state: GameState, _playerId: PlayerId): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  return finishDynamicChop(state, pending, pending.selectedInstanceIds ?? []);
+}
+
+// ---------------------------------------------------------------------------
+// RS-141 紐男爵【紐拳】の後半「敵軍ラッシュエリアのユニットを1体選んで、可能ならバトルエリアに出す」:
+// 前半で戻したユニットの誘発（RS-417【消滅の緋色】等）を先に解決したあとで開くので、
+// その間に撃破されて場を離れたユニットを候補から外す（atwiki/page-336・grnrngr/faq-card-6 RS-417 Q4）。
+
+export const STRING_FIST_SECOND_STEP_REFRESH = "rs141_string_fist_second_step";
+
+registerChoiceRefresher(STRING_FIST_SECOND_STEP_REFRESH, (state, choice) => {
+  const rush = state.players[opponent(choice.playerId)].rush;
+  const valid = choice.validInstanceIds.filter((id) => rush.some((c) => c.instanceId === id));
+  return valid.length > 0 ? { ...choice, validInstanceIds: valid } : null;
+});
+
+// ---------------------------------------------------------------------------
 // 共通の入口
 
 const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
@@ -684,6 +764,7 @@ const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [LIFE_SEARCH_PICK_EFFECT_ID]: resolveLifeSearchPick,
   [SOUL_COLLECTION_EFFECT_ID]: resolveSoulCollection,
   [SUPER_GEKI_RED_EFFECT_ID]: resolveSuperGekiRed,
+  [DYNAMIC_CHOP_EFFECT_ID]: resolveDynamicChop,
 };
 
 function skipSimple(cardId: string): ChoiceSkipper {
@@ -704,6 +785,7 @@ const CHOICE_SKIPPERS: Record<string, ChoiceSkipper> = {
   [EMERGENCY_GUIDE_EFFECT_ID]: skipSimple("RS-387"),
   [LIFE_SEARCH_EFFECT_ID]: skipSimple("RS-389"),
   [SOUL_COLLECTION_EFFECT_ID]: skipSimple("RS-416"),
+  [DYNAMIC_CHOP_EFFECT_ID]: (s, p) => confirmDynamicChop(s, p),
 };
 
 /** confirm_effect_choice で確定できる選択（「まで」「好きな枚数」・行うかの確認）。 */
@@ -713,6 +795,7 @@ const CHOICE_CONFIRMERS: Record<string, ChoiceConfirmer> = {
   [WATER_DISCHARGE_EFFECT_ID]: applyWaterDischarge,
   [EMERGENCY_GUIDE_EFFECT_ID]: applyEmergencyGuide,
   [LIFE_SEARCH_EFFECT_ID]: applyLifeSearch,
+  [DYNAMIC_CHOP_EFFECT_ID]: confirmDynamicChop,
 };
 
 export function isSet6AuditChoiceEffect(effectId: string): boolean {
@@ -768,6 +851,8 @@ export function trySet6AuditCardEffect(
       return open(beginEmergencyGuide(state, ctx), EMERGENCY_GUIDE_EFFECT_ID);
     case "RS-389::fx_unknown_e4baba":
       return open(beginLifeSearch(state, ctx), LIFE_SEARCH_EFFECT_ID);
+    case "RK-062::dainamikuchopu":
+      return open(beginDynamicChop(state, ctx), DYNAMIC_CHOP_EFFECT_ID);
     case "RS-416::nokorekushon":
       return open(beginSoulCollection(state, ctx), SOUL_COLLECTION_EFFECT_ID);
     default:

@@ -137,6 +137,7 @@ import {
   tryResolveSet6AuditChoice,
   trySkipSet6AuditChoice,
   fireAkaRedSoulNc,
+  STRING_FIST_SECOND_STEP_REFRESH,
 } from "./legend1/set6AuditFixes";
 import {
   applyFlowerBombDeclaredNumber,
@@ -3951,6 +3952,8 @@ export function applyEffectChoiceSelect(
             validInstanceIds: enemyTargets,
             selectedInstanceIds: [],
             unitDestination: "enemy_battle",
+            // 割り込んだ効果（RS-417【消滅の緋色】等）で撃破されたユニットを候補から外して開く。
+            refreshOnOpen: { key: STRING_FIST_SECOND_STEP_REFRESH },
           };
           // ルール: R-CN-04 / R-TIME-04 — 戻したユニットの「ラッシュエリアに戻るとき」（ジェットファルコンの
           // ファルコンクロー）が割り込んで解決され、その後で紐拳の残りを続ける（faq-card-3 RS-141 Q1）。
