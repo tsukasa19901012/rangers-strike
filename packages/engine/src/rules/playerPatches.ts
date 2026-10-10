@@ -1,6 +1,8 @@
 import type { SpValue } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { updatePlayer } from "../core/helpers";
+import type { CardDefinition } from "@rangers-strike/cards";
+import { withSpBecomes } from "./fractionalSp";
 
 /** 不変プレイヤーパッチ — NC / コンボ効果後の古い状態上書きを防ぐ。 */
 export function patchPlayer(
@@ -25,17 +27,21 @@ export function grantSpOverrideOnPlayer(
   return { ...player, [zone]: cards };
 }
 
+/**
+ * バトルエリアのユニットに「SP1」を与える。定義（definitions）を渡すと「SP1 になる」（置き換え。
+ * もともと SP1 のユニットは SP2 にならない。rules/fractionalSp の withSpBecomes）として扱う。
+ */
 export function grantSp1OnPlayer(
   player: PlayerState,
   instanceId: string,
+  definitions?: Record<string, CardDefinition>,
 ): PlayerState {
   const battle = [...player.battle];
   const index = battle.findIndex((c) => c.instanceId === instanceId);
   if (index < 0) return player;
-  battle[index] = {
-    ...battle[index]!,
-    spModifier: (battle[index]!.spModifier ?? 0) + 1,
-  };
+  battle[index] = definitions
+    ? withSpBecomes(definitions, player.battle, battle[index]!, 1)
+    : { ...battle[index]!, spModifier: (battle[index]!.spModifier ?? 0) + 1 };
   return { ...player, battle };
 }
 

@@ -828,6 +828,7 @@ export function applyGrantKeyword(
         sourceCardId: ctx.sourceCardId,
         phasePlayerId: ctx.phasePlayerId,
         partnerName,
+        optional: ctx.optional === true,
       });
       if (!withChoice) return { state, detail: `${ctx.effectId}:no_targets` };
       return { state: withChoice, detail: ctx.effectId };

@@ -72,3 +72,44 @@ export function battlePrintedSpBase(
     crossReductionFor(battle, instance.instanceId),
   );
 }
+
+/**
+ * 「「SPn」になる」「次の能力を得る⇒「SPn」」の付与: SP に n を加算するのではなく、その値に置き換える
+ * （faq-card-4 RS-234 Q2「ＳＰに１を加算するという意味ではなく…その値に置き換わる」・atwiki/page-1291「SPを1にする」）。
+ * 付与した時点の SP（印刷値・並び順の分数・これまでの増減）との差を spModifier に入れるので、
+ * もともと SP1 のユニットは SP1 のまま（SP2 にならない）、SP！／空欄のユニットは SP1 になり、
+ * その後の「SP+n」はその上に加算される（atwiki/page-104 の適用順の例）。
+ * battle を渡さない（ラッシュエリア等）ときは並び順による分数 SP を 0 とみなす。
+ */
+export function withSpBecomes<T extends CardInstance>(
+  definitions: Record<string, CardDefinition>,
+  battle: CardInstance[] | undefined,
+  instance: T,
+  sp: number,
+): T {
+  const def = getDefinition(definitions, instance.cardId);
+  const inBattle = battle?.some((c) => c.instanceId === instance.instanceId) ?? false;
+  const base = printedSpBase(
+    resolveInstanceSpValue(def, instance),
+    inBattle ? battlePositionOneBased(battle!, instance.instanceId) : null,
+    inBattle ? crossReductionFor(battle!, instance.instanceId) : 0,
+  );
+  const current = base + (instance.spModifier ?? 0);
+  if (current === sp) return instance;
+  return { ...instance, spModifier: (instance.spModifier ?? 0) + (sp - current) };
+}
+
+/** 盤面上のユニットを「SPn」にする（withSpBecomes の GameState 版）。 */
+export function spBecomesInZone(
+  state: GameState,
+  playerId: PlayerId,
+  zone: "battle" | "rush",
+  instanceId: string,
+  sp: number,
+): GameState {
+  const player = state.players[playerId];
+  const cards = player[zone].map((c) =>
+    c.instanceId === instanceId ? withSpBecomes(state.definitions, player.battle, c, sp) : c,
+  );
+  return { ...state, players: { ...state.players, [playerId]: { ...player, [zone]: cards } } };
+}

@@ -478,8 +478,7 @@ describe("RS-241 ボウケンレッドAT", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:other")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-241 ※の「1枚選び、自軍ラッシュエリアに出す」が任意になっている（出さないことを選べる）
-  it.fails("RS-241: ※ 選べるのはボウケンレッドのカードだけで、出さないことは選べない（出典: atwiki/page-29「「ボウケンレッド」のカード」「出す」）", () => {
+  it("RS-241: ※ 選べるのはボウケンレッドのカードだけで、出さないことは選べない（出典: atwiki/page-29「「ボウケンレッド」のカード」「出す」）", () => {
     let s = attackedInEnemyTurn({ discard: [inst("TST-UNIT-0", "other"), inst("RS-062", "bk")] });
     for (let i = 0; i < 4 && s.pendingEffectChoice && s.pendingEffectChoice.sourceCardId !== "RS-241"; i++) s = settle(drain(drain(s, "player2"), "player1"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-241");

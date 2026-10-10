@@ -229,8 +229,7 @@ describe("RS-189 キレンジャー", () => {
     expect(zoneOf(s, "player1", "RS-189:k")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-189 【キーステッカー】が NC の成立に関係なく（1番目でも、ピンク以外からの3番目でも）発動する
-  it.fails("RS-189: NC が成立していない（1番目）ときは修正後の BP（5000）でバトルし、キレンジャーが負ける（出典: atwiki/page-391・R-CN-02）", () => {
+  it("RS-189: NC が成立していない（1番目）ときは修正後の BP（5000）でバトルし、キレンジャーが負ける（出典: atwiki/page-391・R-CN-02）", () => {
     let s = atPosition(inst("RS-189", "k"), 0, boostedEnemy);
     s = settle(attack(s, "RS-189:k", "RS-189:ek"));
     expect(zoneOf(s, "player1", "RS-189:k")).toBe("discard");
@@ -253,8 +252,7 @@ describe("RS-189 キレンジャー", () => {
     expect(zoneOf(s, "player2", "RS-189:ek")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-189 【キーステッカー】が NC の成立に関係なく（1番目でも、ピンク以外からの3番目でも）発動する
-  it.fails("RS-189: 「ピンク」でないユニットからの3番目では発動しない（出典: atwiki/page-391）", () => {
+  it("RS-189: 「ピンク」でないユニットからの3番目では発動しない（出典: atwiki/page-391）", () => {
     let s = atPosition(inst("RS-189", "k"), 2, boostedEnemy);
     s = settle(attack(s, "RS-189:k", "RS-189:ek"));
     expect(zoneOf(s, "player2", "RS-189:ek")).toBe("battle");
@@ -300,8 +298,7 @@ describe("RS-190 ミドレンジャー", () => {
   });
 
   // 「これがアタックするとき、相手はカウンターを発動できない」
-  // 既知の不具合: CARD-RS-190 【ミドメラン】が効かない（NC 成立時も相手が隠流忍術を使える）
-  it.fails("RS-190: NC（3番目）— アタックしたとき相手は隠流忍術を使えず、NC 不成立（1番目）なら使える（出典: atwiki/page-392・R-CTR-03）", () => {
+  it("RS-190: NC（3番目）— アタックしたとき相手は隠流忍術を使えず、NC 不成立（1番目）なら使える（出典: atwiki/page-392・R-CTR-03）", () => {
     let nc = atPosition(inst("RS-190", "m"), 2, ninjaEnemy);
     nc = attack(nc, "RS-190:m", "TST-UNIT-0:d");
     expect(substitutes(nc, "RS-018:nin")).toHaveLength(0);
@@ -315,8 +312,7 @@ describe("RS-190 ミドレンジャー", () => {
   });
 
   // 「（この効果は特徴「イエロー」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）」
-  // 既知の不具合: CARD-RS-190 【ミドメラン】が効かない（NC 成立時も相手が隠流忍術を使える）
-  it.fails("RS-190: 「イエロー」のユニット（キレンジャー）からコンビネーションするときは2番目でも発動する（出典: atwiki/page-392）", () => {
+  it("RS-190: 「イエロー」のユニット（キレンジャー）からコンビネーションするときは2番目でも発動する（出典: atwiki/page-392）", () => {
     let s = st({
       turn: 3,
       player1: { rush: [inst("RS-189", "k"), inst("RS-190", "m")], deck: deckCards(3) },
@@ -328,8 +324,7 @@ describe("RS-190 ミドレンジャー", () => {
     expect(substitutes(s, "RS-018:nin")).toHaveLength(0);
   });
 
-  // 既知の不具合: CARD-RS-190 【ミドメラン】が効かない（NC 成立時も相手が隠流忍術を使える）
-  it.fails("RS-190: 「イエロー」でないユニットからの2番目では発動しない（3番目の NC なら発動する）（出典: atwiki/page-392）", () => {
+  it("RS-190: 「イエロー」でないユニットからの2番目では発動しない（3番目の NC なら発動する）（出典: atwiki/page-392）", () => {
     let s = atPosition(inst("RS-190", "m"), 1, ninjaEnemy);
     s = attack(s, "RS-190:m", "TST-UNIT-0:d");
     expect(substitutes(s, "RS-018:nin")).toContain("TST-UNIT-0:sub");
