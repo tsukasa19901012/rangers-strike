@@ -1158,6 +1158,8 @@ CHOICE_SKIPPERS[GEKIKI_EFFECT_ID] = simpleSkip("RS-436");
 export const SET6B_KEYWORD_PREFIX = "set6b::";
 
 export function trySet6BCardEffect(state: GameState, ctx: GrantKeywordContext, keyword: string): GrantKeywordResult | null {
+  // RS-396【ガンマトルネード】は effect_card キーワード（Wiki スペックの期待値）で受ける。
+  if (keyword === "effect_card::RS-396::ganmatorunedo") return applyGammaTornado(state, ctx);
   if (!keyword.startsWith(SET6B_KEYWORD_PREFIX)) return null;
   switch (keyword.slice(SET6B_KEYWORD_PREFIX.length)) {
     case "RS-390::five_laser":
@@ -1166,8 +1168,6 @@ export function trySet6BCardEffect(state: GameState, ctx: GrantKeywordContext, k
       return openMilkTornado(state, ctx);
     case "RS-392::first_aid":
       return openFirstAid(state, ctx);
-    case "RS-396::gamma_tornado":
-      return applyGammaTornado(state, ctx);
     default:
       return { state, detail: keyword };
   }
