@@ -5,7 +5,8 @@ import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { applyDamageToPlayer } from "../rules/damagePayment";
 import { requestDrawFromDeck } from "../rules/drawFromDeck";
-import { openEffectChoice } from "../rules/pendingChoices";
+import { applyUnitLeave, openEffectChoice } from "../rules/pendingChoices";
+import { getDslEffectById } from "./effectLookup";
 import { findCardInField } from "../rules/fieldLookup";
 import { tryLeaveField } from "../rules/operationCounters";
 import { canMoveCardToRushFromZone } from "../rules/rushFromHandOnly";
@@ -256,6 +257,18 @@ function applyPrimitive(
         ctx.triggerSourceInstanceId,
       );
       if (!instanceId) return { state };
+      // 「選んで撃破する」の場合は撃破（離場パイプライン）として捨札にする。単に捨札へ移すと
+      // 「撃破されたとき」（RS-054 アバレッドの1点等）が発生しない。ルール: R-DESTROY-01
+      // 例: RS-050 アバレンオー【爆竜電撃ドリルスピン】（atwiki/page-77）
+      const located = findCardInField(state, instanceId);
+      if (
+        located &&
+        (located.zone === "rush" || located.zone === "battle") &&
+        /撃破(する|し)/.test(getDslEffectById(ctx.sourceCardId, ctx.effectId)?.text ?? "")
+      ) {
+        const leave = applyUnitLeave(state, instanceId, "discard", ctx.phasePlayerId);
+        if (!("error" in leave)) return { state: leave.state, detail: "destroy" };
+      }
       const next = moveCardToZone(state, instanceId, "discard");
       return next ? { state: next, detail: "discard" } : { state };
     }

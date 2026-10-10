@@ -436,8 +436,7 @@ describe("RS-050 アバレンオー", () => {
     expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["TST-UNIT-2:d3000"]);
   });
 
-  // 既知の不具合: CARD-RS-050 【爆竜電撃ドリルスピン】が「撃破」ではなく単なる捨札移動で、撃破時効果（アバレッドの1点）が発生しない
-  it.fails("RS-050: 選んだユニットを撃破する（撃破なのでアバレッドの「撃破されたとき1点」が発生する）（出典: atwiki/page-77）", () => {
+  it("RS-050: 選んだユニットを撃破する（撃破なのでアバレッドの「撃破されたとき1点」が発生する）（出典: atwiki/page-77）", () => {
     let s = abarenohEnters([inst("RS-054", "red")]);
     s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-054:red" });
     s = settle(s);
