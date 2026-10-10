@@ -1180,6 +1180,23 @@ export function pickEffectChoice(
   const playerId = pending.playerId;
   const skip = actions.find((a) => a.type === "skip_effect_choice");
 
+  if (pending.kind === "simultaneous_order" && pending.mutualDestructionMeta) {
+    // ルール: R-BTL-02, R-SIM-01 — 相打ちの処理順: 各順で処理した結果を評価し、自分に有利な順を選ぶ。
+    let best: GameAction | null = null;
+    let bestScore = -Infinity;
+    for (const action of actions) {
+      if (action.type !== "resolve_effect_choice") continue;
+      const result = applyAction(state, action);
+      if (!result.ok) continue;
+      const score = evaluateState(result.state, playerId);
+      if (score > bestScore) {
+        bestScore = score;
+        best = action;
+      }
+    }
+    return best;
+  }
+
   if (pending.kind === "simultaneous_order") {
     const prefer =
       pending.validInstanceIds.find((id) => id === "pendingLeave") ??

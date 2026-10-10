@@ -1,7 +1,16 @@
 import { finalizeEffectRush } from "../events/emitUnitRushed";
 import { DISPATCH_ORDER_EFFECT_ID, resolveDispatchOrder } from "./dispatchOrder";
+import {
+  continueKurokoMemoryAfterDraw,
+  continueKurokoMemoryAfterHold,
+  KUROKO_MEMORY_EFFECT_ID,
+  resolveKurokoMemoryChoice,
+  skipKurokoMemoryChoice,
+} from "./kurokoMemory";
 import { isAbductionChoice, resolveAbductionChoice, startAbductionCondition } from "./abduction";
 import {
+  continueEffectRushAfterMothershipHold,
+  EFFECT_RUSH_MOTHERSHIP,
   isEffectRushChoice,
   resolveEffectRushChoice,
   skipEffectRushChoice,
@@ -39,6 +48,7 @@ import { applyReanimate } from "./reanimate";
 import {
   hasDinoChronicleLeaveReaction,
   hasDinoGutsLeaveReaction,
+  processMutualDestruction,
   tryLeaveField,
 } from "./operationCounters";
 import { completeToPowerOnDestroyChoice } from "./toPowerOnDestroy";
@@ -326,7 +336,8 @@ export function isValidEffectChoiceTarget(
   if (
     isEffectRushChoice(pending) ||
     isAbductionChoice(pending.effectId) ||
-    pending.effectId === DISPATCH_ORDER_EFFECT_ID
+    pending.effectId === DISPATCH_ORDER_EFFECT_ID ||
+    pending.effectId === KUROKO_MEMORY_EFFECT_ID
   ) {
     return true;
   }
@@ -2026,6 +2037,9 @@ function finishSeabedDrawChoice(
 ): ChoiceOutcome {
   const cleared = clearChoice(state, pending.phasePlayerId);
   const resume = pending.seabedDrawMeta?.resume;
+  if (resume?.pending.kurokoMeta) {
+    return { state: continueKurokoMemoryAfterDraw(cleared, resume.pending) };
+  }
   if (resume) {
     return finishChoice(cleared, resume.pending, resume.detail);
   }
@@ -2111,6 +2125,12 @@ function applyPostHoldContinuation(
   state: GameState,
   pending: PendingEffectChoice,
 ): { state: GameState; done: boolean } {
+  if (pending.effectId === KUROKO_MEMORY_EFFECT_ID && pending.kurokoMeta) {
+    return { state: continueKurokoMemoryAfterHold(state, pending), done: true };
+  }
+  if (pending.effectId === EFFECT_RUSH_MOTHERSHIP) {
+    return { state: continueEffectRushAfterMothershipHold(state), done: true };
+  }
   if (pending.effectId === "castoff_hold_command") {
     const continued = continueCastoffAfterHold(state, pending);
     if (continued) return { state: continued, done: true };
@@ -2200,6 +2220,12 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   const errata = trySkipErrataChoice(state, playerId);
   if (errata) return errata;
   if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
+  if (pending.effectId === KUROKO_MEMORY_EFFECT_ID && pending.kurokoMeta) {
+    const result = skipKurokoMemoryChoice(state, playerId);
+    if ("error" in result) return result;
+    const next = result.state.pendingEffectChoice ? result.state : promoteDeferredBattleEntry(result.state);
+    return { state: next, log: result.log };
+  }
   if (!pending.optional) {
     const hasValidTarget = pending.validInstanceIds.some((instanceId) =>
       isValidEffectChoiceTarget(state, pending, instanceId),
@@ -2336,6 +2362,12 @@ export function applyEffectChoiceSelect(
     const result = resolveDispatchOrder(state, playerId, instanceId);
     if ("error" in result) return result;
     return { state: promoteDeferredBattleEntry(result.state), log: result.log };
+  }
+  if (pending.effectId === KUROKO_MEMORY_EFFECT_ID && pending.kurokoMeta) {
+    const result = resolveKurokoMemoryChoice(state, playerId, instanceId);
+    if ("error" in result) return result;
+    const next = result.state.pendingEffectChoice ? result.state : promoteDeferredBattleEntry(result.state);
+    return { state: next, log: result.log };
   }
 
   if (pending.effectId === "morph_replacement") {
@@ -3957,6 +3989,22 @@ export function applyEffectChoiceSelect(
     case "simultaneous_order": {
       if (!pending.validInstanceIds.includes(instanceId)) {
         return { error: "invalid_target" };
+      }
+      if (pending.mutualDestructionMeta) {
+        // ルール: R-BTL-02, R-SIM-01 — 相打ちの処理順はターンプレイヤーが決める。
+        const cleared = clearChoice(state, pending.phasePlayerId);
+        const processed = processMutualDestruction(cleared, pending.mutualDestructionMeta, instanceId);
+        if (processed.deferred) {
+          const log = buildLogEntry(
+            pending.playerId,
+            "resolve_effect_choice",
+            pending.sourceCardId,
+            state.definitions,
+            `${pending.effectId}:${instanceId}`,
+          );
+          return { state: processed.state, log };
+        }
+        return finishChoice(processed.state, pending, instanceId);
       }
       const nextState = applySimultaneousOrderChoice(state, instanceId);
       return finishChoice(nextState, pending, instanceId);

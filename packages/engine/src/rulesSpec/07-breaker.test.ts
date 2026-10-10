@@ -112,8 +112,7 @@ describe("R-KW-BREAKER-02 同名ラッシュ制限", () => {
 
 describe("R-KW-BREAKER-03 選ばれない範囲", () => {
   // 「選ぶのが自分であっても…選ぶことはできません」
-  it.fails("R-KW-BREAKER-03: 敵軍ユニットの効果で自分が自分自身のユニットを選ぶときも、ブレイカー持ちは選べない（出典: atwiki/page-2355 Q2）", () => {
-    // 既知の不具合: E15（自分が選ぶ場合は素通し）
+  it("R-KW-BREAKER-03: 敵軍ユニットの効果で自分が自分自身のユニットを選ぶときも、ブレイカー持ちは選べない（出典: atwiki/page-2355 Q2）", () => {
     // RK-264 アクロバッター／XG6-040 ジョーカーの効果は起動経路がないため、対象可否判定を直接確かめる
     const b = inst(BRK.id, "b");
     const s = state([BRK, realDef("RK-264")], { phase: "battle", player2: { battle: [b] } });

@@ -1,4 +1,4 @@
-import type { GameState, PlayerId, PlayerState } from "../types/game";
+import type { GameState, PlayerId, PlayerState, SeabedDrawMeta } from "../types/game";
 import { hasOperationEffect } from "../core/catalog";
 import { requestDrawFromDeck } from "../rules/drawFromDeck";
 
@@ -13,6 +13,8 @@ export function applySuperBrainDraw(
   playerId: PlayerId,
   player: PlayerState,
   phasePlayerId: PlayerId,
+  /** 海底ドロー等の選択が割り込んだとき、その解決後に再開する選択。 */
+  seabedResume?: NonNullable<SeabedDrawMeta["resume"]>,
 ): SuperBrainDrawResult {
   const usesSuperBrain = hasOperationEffect(
     player,
@@ -29,6 +31,7 @@ export function applySuperBrainDraw(
     const result = requestDrawFromDeck(state, playerId, phasePlayerId, {
       count: 1,
       sourceCardId: "RS-014",
+      seabedResume,
     });
     if (result.pending) {
       return { state: result.state, detail: "seabed_pending", pending: true };
@@ -40,6 +43,7 @@ export function applySuperBrainDraw(
     count: 2,
     superBrainDiscardSecond: true,
     sourceCardId: "RS-014",
+    seabedResume,
   });
   if (result.pending) {
     return { state: result.state, detail: "seabed_pending", pending: true };

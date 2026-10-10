@@ -1216,9 +1216,9 @@ function applyActionCore(
         nextState = dslOutcome.state;
         outcomeDetail = dslOutcome.detail;
         if (
-          dslOutcome.discardOperation !== false &&
+          (dslOutcome.discardOperation !== false || !!nextState.pendingEffectChoice?.kurokoMeta) &&
           !isPermanent &&
-          !nextState.pendingEffectChoice
+          (!nextState.pendingEffectChoice || !!nextState.pendingEffectChoice.kurokoMeta)
         ) {
           const current = nextState.players[playerId];
           nextState = {

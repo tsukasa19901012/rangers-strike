@@ -101,13 +101,14 @@
 全く同じタイミングで発動・発生した同じ優先順位の効果や処理は、発動者に関係なくターンプレイヤーが処理順・解決順・適用順を決める。「すべて撃破する」など一度に複数を処理する効果も同時に当たる。
 - 出典: `grnrngr/faq-card-1` RS-054「まったく同タイミングで発動した効果は、ターンプレイヤーが適用する順番を決めて処理します」、`grnrngr/faq-card-2` RS-092「同時タイミングで発動する効果は、発動時点でのターンプレイヤーに処理する順番を決める権利があります」、`grnrngr/faq-index` リファレンス（同文）、`atwiki/page-1827`、`atwiki/page-1869`「同じ優先順位の効果はターンプレイヤーが自由に解決の順番を決められる」
 - Web: https://www.grnrngr.com/documents/rangersstrike/faq/card_1.html , https://www.grnrngr.com/documents/rangersstrike/faq/index.html , https://w.atwiki.jp/renst/pages/1827.html , https://w.atwiki.jp/renst/pages/1869.html
-- 実装: ? 順序選択は一部未実装（02-D15）
+- 実装: ? 同時に開いた反応窓（離場・ストライク・アタック・ラッシュ）と相打ちの撃破処理は、ターンプレイヤーの選択（`pendingEffectChoice` kind `simultaneous_order` → `resolve_effect_choice`）で順番を決める（`rules/simultaneousEffects.ts`、`rules/operationCounters.ts` `processMutualDestruction`）。相打ちは順番で結果が変わるときだけ選択を開く。フェイズ開始時の効果の順番（R-TIME-06）、「すべて撃破する」等の複数対象処理の順番選択は未実装（02-D15）
 
 #### R-SIM-02 例外: マルチカテゴリ等 [wiki] `web照合済(2026-10-10)`
 ゾーンのカテゴリ数を制限する効果などでは「できるだけ解決できるよう処理する」必要があり、マルチカテゴリのカードを優先して捨てるなど、ターンプレイヤーが自由に決められない場合がある。敵軍ターン中に複数のモーフを発動したときの順は相手（そのターンのターンプレイヤー）が決める。
 - 出典: `atwiki/page-1559`「「物理的に実行不可能な場合は効果をストップするが、出来るだけ解決できるよう処理する」という裁定が出ている」、`atwiki/page-1827`、`atwiki/page-2167`
 - Web: https://w.atwiki.jp/renst/pages/1559.html , https://w.atwiki.jp/renst/pages/1827.html , https://w.atwiki.jp/renst/pages/2167.html
 - [未確定] 例外の全容。（2026-10-10 web確認: 記載なし）
+- 実装: ✅ モーフの順番はそのターンのターンプレイヤーが決める（`morphOrderChooserPlayerId`）。それ以外は R-SIM-01 の選択に従う。マルチカテゴリ優先の例外は該当カードが legend1〜3 にないため未対応。[未確定] の例外は扱わない。
 
 #### R-SIM-03 複数枚を捨てる処理 [wiki] `web照合済(2026-10-10)`
 パワーなど複数枚を捨てる場合、順番を決めて1枚ずつ捨てる扱い（捨てた数だけ誘発しうる）。
@@ -128,7 +129,7 @@
 - 出典: `grnrngr/faq-index` リファレンス（列挙されるのは否定文優先・同時はターンプレイヤー・BP計算順序のみ）、「ＢＰの値を変化させる効果の計算順序は「＋」→「－」の順になります」、`atwiki/page-1869`「優先順位の高い効果から順に解決する。同じ優先順位の効果はターンプレイヤーが自由に解決の順番を決められる」、`atwiki/page-1864`
 - Web: https://www.grnrngr.com/documents/rangersstrike/faq/index.html , https://w.atwiki.jp/renst/pages/1869.html
 - 旧記述: 「保存資料に根拠がない」として [未確定]、確定方法「公式リファレンスFAQ（faq/ 索引のルール編）」。2026-10-10 に同ページを取得し、種類別の表がないことを確認した。
-- 実装: ? 固定 priority 0〜9 を使用（02-D13）。公式に種類別の表はないため、同時発動はターンプレイヤーの選択にすべき
+- 実装: ✅ 02-D13 修正済み。効果スタックの固定 priority（0〜10）を廃止した（`rules/effectStack.ts`）。フレームはターンプレイヤーが選んだ順（`reactionResolutionOrder`）→処理の入れ子順（R-TIME-04）で並ぶ。同時発動は R-SIM-01 の選択で決める。否定文優先（R-PRI-01）は各「できない」判定で、BP 計算順は `effectiveBp` で従来どおり。
 
 ---
 

@@ -9,7 +9,7 @@
  *   窓が閉じてから次の1枚に進む。
  */
 import type { CardDefinition } from "@rangers-strike/cards";
-import { getZordCondition, isZordUpCost } from "@rangers-strike/cards";
+import { cardHasCategory, getZordCondition, isZordUpCost, MOTHERSHIP_CONFIG } from "@rangers-strike/cards";
 import type {
   CardInstance,
   EffectRushSourceZone,
@@ -46,15 +46,20 @@ import {
   needsZordDownPayment,
 } from "./zordDown";
 import { applyMultipleFieldZordMaterials } from "./zordExtended";
+import { canUseMothershipForZordRush } from "./mothership";
+import { buildEffectHoldPayment } from "./commandPayment";
 
 export const EFFECT_RUSH_PICK = "effect_rush_pick";
 export const EFFECT_RUSH_MATERIAL = "effect_rush_material";
 export const EFFECT_RUSH_DESTINATION = "effect_rush_destination";
+/** 母艦（ジャガーバルカン等）: S ユニットを送るかわりにコマンドをホールドする。 */
+export const EFFECT_RUSH_MOTHERSHIP = "effect_rush_mothership";
 
 const EFFECT_RUSH_CHOICE_IDS = new Set([
   EFFECT_RUSH_PICK,
   EFFECT_RUSH_MATERIAL,
   EFFECT_RUSH_DESTINATION,
+  EFFECT_RUSH_MOTHERSHIP,
 ]);
 
 export function isEffectRushChoice(pending: PendingEffectChoice | undefined): boolean {
@@ -70,7 +75,34 @@ type EffectRushPlan =
       needed: number;
       /** 「コマンドゾーンに送るか捨札にする」で送り先を選べる。 */
       destinationChoice: boolean;
+      /** 母艦の代替でホールドできるコマンド（必要数以上あるときだけ）。 */
+      mothershipHoldIds?: string[];
     };
+
+/**
+ * ルール: R-HOLD-04, R-RUSH-21 — 効果で「追加条件を満たして」出すときも、母艦（RS-076 ジャガーバルカン等）の
+ * 「S ユニットを送るかわりに『アーステクノロジー』の自軍コマンドを1つホールドする」を使える。選んだ時点で
+ * 適正な対象なら、出すカード自身（コマンドゾーンのダイナマッハ）をホールドしてもよい（faq-card-2 RS-076 Q3）。
+ */
+function effectRushMothershipHoldIds(
+  state: GameState,
+  playerId: PlayerId,
+  card: CardInstance,
+  needed: number,
+): string[] | undefined {
+  const player = state.players[playerId];
+  const kind = canUseMothershipForZordRush(state.definitions, player, card.cardId);
+  if (!kind) return undefined;
+  const category = MOTHERSHIP_CONFIG[kind].commandCategory;
+  const ids = player.command
+    .filter((c) => {
+      if (c.commandHeld) return false;
+      const def = getDefinition(state.definitions, c.cardId);
+      return !!def && cardHasCategory(def, category);
+    })
+    .map((c) => c.instanceId);
+  return ids.length >= needed ? ids : undefined;
+}
 
 function additionalUnitCount(def: CardDefinition): number {
   const count = def.rushAdditionalCondition?.unitCount;
@@ -138,12 +170,14 @@ export function planEffectRush(
       card.instanceId,
     ).map((c) => c.instanceId);
     const needed = additionalUnitCount(def);
-    if (materials.length < needed) return null;
+    const mothershipHoldIds = effectRushMothershipHoldIds(state, playerId, card, needed);
+    if (materials.length < needed && !mothershipHoldIds) return null;
     return {
       kind: "up",
       materials,
       needed,
       destinationChoice: getZordCondition(card.cardId) === "send_s_unit_to_command_or_discard",
+      mothershipHoldIds,
     };
   }
 
@@ -430,6 +464,10 @@ export function continuePendingEffectRush(state: GameState): GameState {
         chosen: [],
       },
     });
+    const materialsAvailable = plan.materials.length >= plan.needed;
+    if (plan.mothershipHoldIds && !materialsAvailable) {
+      return openMothershipHold(withCurrent, plan.mothershipHoldIds, plan.needed);
+    }
     if (plan.destinationChoice) {
       // ルール: R-ADD-04 — 空きがあっても捨札を選べる。空きが無ければ捨札（RS-120 Q1）。
       // 判定は出すユニットがまだ元の場所にある時点（RS-197 Q4）。
@@ -446,7 +484,7 @@ export function continuePendingEffectRush(state: GameState): GameState {
         sourceCardId: pending.sourceCardId,
         sourceInstanceId: head,
         kind: "confirm",
-        validInstanceIds: ["command", "discard"],
+        validInstanceIds: plan.mothershipHoldIds ? ["command", "discard", "mothership"] : ["command", "discard"],
         optional: true,
       });
     }
@@ -484,6 +522,44 @@ export function resolveEffectRushChoice(
         closeChoice(withPending(state, { ...pending, queue, picking: undefined })),
       ),
     };
+  }
+
+  if (choice.effectId === EFFECT_RUSH_DESTINATION && instanceId === "mothership") {
+    const current = pending.current!;
+    const owner = state.players[pending.playerId];
+    const found = findInZone(owner, pending.fromZone, current.instanceId);
+    const holdIds = found
+      ? effectRushMothershipHoldIds(state, pending.playerId, found.card, current.needed)
+      : undefined;
+    if (!holdIds) return { error: "invalid_target" };
+    return { state: openMothershipHold(closeChoice(state), holdIds, current.needed) };
+  }
+
+  if (choice.effectId === EFFECT_RUSH_MOTHERSHIP) {
+    // 直接選択（1枚ずつ）。通常は effect_hold の支払い（resolve_command_payment）で解決される。
+    const selected = [...(choice.selectedInstanceIds ?? []), instanceId];
+    const needed = choice.selectCount ?? 1;
+    if (selected.length < needed) {
+      return {
+        state: {
+          ...state,
+          pendingEffectChoice: {
+            ...choice,
+            selectedInstanceIds: selected,
+            validInstanceIds: choice.validInstanceIds.filter((id) => id !== instanceId),
+          },
+        },
+      };
+    }
+    const owner = state.players[pending.playerId];
+    const held: GameState = {
+      ...state,
+      ...updatePlayer(state, pending.playerId, {
+        ...owner,
+        command: owner.command.map((c) => (selected.includes(c.instanceId) ? { ...c, commandHeld: true } : c)),
+      }),
+    };
+    return { state: continueEffectRushAfterMothershipHold(held) };
   }
 
   if (choice.effectId === EFFECT_RUSH_DESTINATION) {
@@ -524,4 +600,35 @@ export function skipEffectRushChoice(
       closeChoice(withPending(state, { ...pending, current: undefined })),
     ),
   };
+}
+
+/**
+ * 母艦の代替: ホールドするコマンドを選ぶ（effect_hold の支払いを開いた状態にする）。
+ * ルール: R-HOLD-04 — 選んだ時点で適正な対象なら、その後ホールドしても出せる（RS-076 Q3）。
+ */
+function openMothershipHold(state: GameState, holdIds: string[], needed: number): GameState {
+  const pending = state.pendingEffectRush!;
+  const withChoice = openChoice(state, {
+    effectId: EFFECT_RUSH_MOTHERSHIP,
+    sourceCardId: pending.sourceCardId,
+    sourceInstanceId: pending.current?.instanceId,
+    kind: "select_command",
+    commandAction: "hold",
+    commandFilter: "released",
+    selectCount: needed,
+    validInstanceIds: holdIds,
+    optional: true,
+  });
+  const payment = buildEffectHoldPayment(withChoice);
+  return payment ? { ...withChoice, pendingCommandPayment: payment } : withChoice;
+}
+
+/** 母艦の代替でコマンドをホールドしたあと、追加条件を満たしたものとして出す。 */
+export function continueEffectRushAfterMothershipHold(state: GameState): GameState {
+  const pending = state.pendingEffectRush;
+  const current = pending?.current;
+  const cleared = closeChoice(state);
+  if (!pending || !current) return cleared;
+  const next = withPending(cleared, { ...pending, current: undefined });
+  return continueAfterPlacement(placeUnit(next, current.instanceId));
 }

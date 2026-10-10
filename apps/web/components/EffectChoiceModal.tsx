@@ -7,6 +7,7 @@ import {
   effectChoiceHint,
   effectChoiceTitle,
   sagasSniperDeckCardMeta,
+  SIMULTANEOUS_FRAME_LABELS,
 } from "@/lib/effectChoiceHint";
 import {
   cardTargetMetaLine,
@@ -202,6 +203,23 @@ export function EffectChoiceModal({
                   {effectiveSkipLabel}
                 </button>
               )}
+            </div>
+          )}
+
+          {!isGenericFallback && pending.kind === "simultaneous_order" && !readOnly && (
+            <div className="effect-action-modal__targets">
+              {pending.validInstanceIds
+                .filter((id) => SIMULTANEOUS_FRAME_LABELS[id])
+                .map((id) => (
+                  <button
+                    key={id}
+                    type="button"
+                    className="btn effect-action-modal__target"
+                    onClick={() => onSelect(id)}
+                  >
+                    {SIMULTANEOUS_FRAME_LABELS[id]}
+                  </button>
+                ))}
             </div>
           )}
 

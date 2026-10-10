@@ -3,6 +3,7 @@ import { getCardEffect, winButDestroyedVsSp1 } from "@rangers-strike/cards";
 import type {
   CardInstance,
   GameState,
+  MutualDestructionMeta,
   PendingBattle,
   PendingLeave,
   PendingRush,
@@ -817,6 +818,82 @@ export function applyDinoChronicleCounter(
   };
 }
 
+type MutualDestructionContext = MutualDestructionMeta;
+
+/**
+ * ルール: R-BTL-02, R-SIM-01 — 相打ちで撃破された 2 体を、firstInstanceId のユニットから順に処理する。
+ * 守り側を撃破したことによる攻撃側の効果（一点突破・ブラックコンドル）は処理順に依存しない。
+ */
+export function processMutualDestruction(
+  state: GameState,
+  ctx: MutualDestructionContext,
+  firstInstanceId: string,
+): { state: GameState; deferred: boolean } {
+  const defenderFirst = firstInstanceId !== ctx.attackerInstanceId;
+  const [first, second] = defenderFirst
+    ? [ctx.defenderIntent, ctx.attackerIntent]
+    : [ctx.attackerIntent, ctx.defenderIntent];
+  const applyDefenderDestroyedEffects = (base: GameState): GameState => {
+    let next = base;
+    if (ctx.attackerCardId === "RS-065") {
+      const fb = resolveFocusedBreakthroughDamage(
+        next,
+        ctx.attackerPlayerId,
+        ctx.attackerInstanceId,
+        ctx.defenderOwner,
+        ctx.defenderCard,
+        ctx.focusedBreakthroughQualifies,
+      );
+      next = { ...fb.state, log: [...fb.state.log, ...fb.logs] };
+    }
+    if (ctx.attackerCardId === "RS-685") {
+      const bc = resolveBlackCondorDestroyDamage(
+        next,
+        ctx.attackerPlayerId,
+        ctx.attackerInstanceId,
+        ctx.defenderOwner,
+        ctx.defenderCard,
+      );
+      next = { ...bc.state, log: [...bc.state.log, ...bc.logs] };
+    }
+    return next;
+  };
+
+  // 攻撃側が守り側を撃破した事実（R-BTL-02「互いに相手を撃破したことになる」）による効果は、
+  // 攻撃側がまだ並びにある時点で処理順に関係なく解決する。
+  const withDestroyFx = applyDefenderDestroyedEffects(state);
+  const r1 = tryLeaveField(withDestroyFx, { ...first, followUpAttackerLeave: second });
+  if (r1.deferred) return r1;
+  const r2 = tryLeaveField(r1.state, second);
+  if (r2.deferred) return r2;
+  return { state: r2.state, deferred: false };
+}
+
+function zoneFingerprint(state: GameState): string {
+  const zones = ["deck", "hand", "discard", "power", "command", "rush", "battle", "operation"] as const;
+  const parts: string[] = [String(state.winner)];
+  for (const playerId of Object.keys(state.players).sort() as PlayerId[]) {
+    const player = state.players[playerId];
+    parts.push(`${playerId}:dmg=${player.damage}`);
+    for (const zone of zones) {
+      const cards = (player[zone] ?? []) as CardInstance[];
+      parts.push(`${playerId}.${zone}=${cards.map((c) => `${c.instanceId}${c.faceDown ? "~" : ""}`).sort().join(",")}`);
+    }
+  }
+  return parts.join("|");
+}
+
+/**
+ * 相打ちの処理順で結果（各カードの置き場・ダメージ・勝敗）が変わるか。
+ * どちらかの順で離場の対応（反応窓・選択）が挟まる場合は、従来どおり守り側から処理する。
+ */
+function mutualDestructionOrderMatters(state: GameState, ctx: MutualDestructionContext): boolean {
+  const defenderFirst = processMutualDestruction(state, ctx, ctx.defenderIntent.instanceId);
+  const attackerFirst = processMutualDestruction(state, ctx, ctx.attackerInstanceId);
+  if (defenderFirst.deferred || attackerFirst.deferred) return false;
+  return zoneFingerprint(defenderFirst.state) !== zoneFingerprint(attackerFirst.state);
+}
+
 /** Event Listener から呼ばれるバトル解決の実装本体。 */
 export function resolveBattlePendingCore(
   state: GameState,
@@ -1030,18 +1107,56 @@ export function resolveBattlePendingCore(
     refreshedAttackerFound.card.cardId === "RS-065" &&
     unitQualifiesForFocusedBreakthrough(battleState, defenderOwner, refreshedDefenderFound.card);
 
+  const defenderLeaveIntent: LeaveIntent = {
+    ownerPlayerId: defenderOwner,
+    instanceId: defenderInstanceId,
+    fromZone: defenderZone,
+    toZone: defenderLeaveZone,
+    leavingCardId: refreshedDefenderFound.card.cardId,
+    phasePlayerId: pending.phasePlayerId,
+    // ルール: R-KW-RESIST-03 — 防御側も「勝っても撃破」で倒された場合はレジスト不可（BP で負けたときだけ可）。
+    registerEligible: destroyDefender && !winButDefenderSelfDestruct && defenderZone === "battle",
+  };
+
+  if (finalDestroyDefender && finalDestroyAttacker) {
+    // ルール: R-BTL-02, R-SIM-01 — 相打ちの 2 体は同時に撃破された扱い。その後の処理順は
+    // ターンプレイヤーが決める。順番で結果が変わるときだけ選択を開く（例: プテラノドンと
+    // レスキューファイター。faq-card-1 RS-018 Q12）。
+    const ctx: MutualDestructionContext = {
+      attackerPlayerId: attackerId,
+      attackerInstanceId: pending.attackerInstanceId,
+      attackerCardId: refreshedAttackerFound.card.cardId,
+      defenderOwner,
+      defenderCard: refreshedDefenderFound.card,
+      defenderIntent: defenderLeaveIntent,
+      attackerIntent: attackerLeaveIntent,
+      focusedBreakthroughQualifies,
+    };
+    const chooser = pending.phasePlayerId;
+    if (mutualDestructionOrderMatters(nextState, ctx)) {
+      const withChoice: GameState = {
+        ...nextState,
+        pendingEffectChoice: {
+          playerId: chooser,
+          effectId: "simultaneous_order",
+          sourceCardId: "engine",
+          kind: "simultaneous_order",
+          phasePlayerId: chooser,
+          validInstanceIds: [defenderInstanceId, pending.attackerInstanceId],
+          selectedInstanceIds: [],
+          optional: false,
+          mutualDestructionMeta: ctx,
+        },
+        activePlayer: chooser,
+      };
+      return finish(withChoice, log);
+    }
+    const processed = processMutualDestruction(nextState, ctx, defenderInstanceId);
+    return finish(processed.state, log);
+  }
+
   if (finalDestroyDefender) {
-    const leaveResult = tryLeaveField(nextState, {
-      ownerPlayerId: defenderOwner,
-      instanceId: defenderInstanceId,
-      fromZone: defenderZone,
-      toZone: defenderLeaveZone,
-      leavingCardId: refreshedDefenderFound.card.cardId,
-      phasePlayerId: pending.phasePlayerId,
-      // ルール: R-KW-RESIST-03 — 防御側も「勝っても撃破」で倒された場合はレジスト不可（BP で負けたときだけ可）。
-      registerEligible: destroyDefender && !winButDefenderSelfDestruct && defenderZone === "battle",
-      followUpAttackerLeave: finalDestroyAttacker ? attackerLeaveIntent : undefined,
-    });
+    const leaveResult = tryLeaveField(nextState, defenderLeaveIntent);
     if (leaveResult.deferred) {
       const withAttacker = finalDestroyAttacker ? leaveResult.state : markAttackerActed(leaveResult.state);
       return finish(withAttacker, log);

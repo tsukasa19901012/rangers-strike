@@ -667,8 +667,7 @@ describe("R-START-04 ドローの定義", () => {
   });
 
   // 「マジブルーの効果でドローするときや…発動します」(faq-card-1 RS-008 Q1)
-  it.fails("R-START-04: 超電子頭脳はマジブルー【未来予知】（NC）の効果ドローにも適用される（出典: grnrngr/faq-card-1 RS-008 Q1）", () => {
-    // 既知の不具合: 05-D11（DSL/NC ドローに超電子頭脳が適用されない）
+  it("R-START-04: 超電子頭脳はマジブルー【未来予知】（NC）の効果ドローにも適用される（出典: grnrngr/faq-card-1 RS-008 Q1）", () => {
     const blue = inst("RS-059", "blue"); // ナンバー2
     let state = createTestState({
       phase: "battle",

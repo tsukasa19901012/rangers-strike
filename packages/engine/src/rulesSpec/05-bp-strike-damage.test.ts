@@ -235,18 +235,32 @@ describe("R-STK-02 SP「！」", () => {
   });
 
   // 「ストライクポイントを得る効果は、自軍バトルフェイズに発動できます」
-  // 既知の不具合: 未登録 — RS-051「超ドリル進化」（手札の同名カードを捨てて SP1）を起動するアクションが無い
-  // 注意: R-ERR-RS051（08-errata.md）の読み替え後テキストは「自軍ターン中、これがバトルエリアに出たとき」で、
-  // バトルエリアにいる爆竜ティラノサウルスが後から起動する手段はない。このスペックは読み替え前の FAQ（RS-051 Q3）
-  // を前提にしており、エラッタと矛盾する可能性がある（要確認）。
-  it.fails("R-STK-02: 爆竜ティラノサウルスの SP を得る効果は自軍バトルフェイズに発動できる（出典: grnrngr/faq-card-1 RS-051 Q3）", () => {
-    const s = battleState({
-      player1: { battle: [inst("RS-051", "t")], hand: [inst("RS-051", "h")], command: heldCommands(1) },
+  // R-ERR-RS051 の読み替え後テキストは「自軍ターン中、これがバトルエリアに出たとき」。バトルエリアに
+  // 居続ける爆竜ティラノサウルスが後から起動する手段はないため、FAQ Q3 の内容（SP を得る効果を
+  // 自軍バトルフェイズに発動できる）を、エラッタ後の発動タイミング＝自軍バトルフェイズにバトルエリアへ
+  // 出たときで確かめる。
+  it("R-STK-02: 爆竜ティラノサウルスの SP を得る効果は、自軍バトルフェイズにバトルエリアに出たとき発動でき、SP1 を得てストライクで1点与える（出典: grnrngr/faq-card-1 RS-051 Q3, R-ERR-RS051）", () => {
+    let s = battleState({
+      player1: {
+        battle: fillers(2),
+        rush: [inst("RS-051", "t")],
+        hand: [inst("RS-051", "h")],
+        command: [inst("TST-OP-OT", "ot")],
+      },
+      player2: { power: powerCards(3) },
     });
-    const uses = legal(s).filter(
-      (a) => !["end_phase", "battle", "strike"].includes(a.type) && JSON.stringify(a).includes("RS-051:t"),
-    );
-    expect(uses.length).toBeGreaterThan(0);
+    s = act(s, { type: "initiate_command_payment", playerId: "player1", kind: "battle_entry", sourceInstanceId: "RS-051:t" });
+    s = act(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP-OT:ot"] });
+    expect(zoneOf(s, "player1", "RS-051:t")).toBe("battle");
+    expect(s.pendingEffectChoice?.effectId).toBe("super_drill");
+    expect(s.pendingEffectChoice?.validInstanceIds).toContain("RS-051:h");
+    // 対照: 発動しなければ SP「！」のままでストライクできない
+    expect(canStrike(act(s, { type: "skip_effect_choice", playerId: "player1" } as never), "RS-051:t")).toBe(false);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-051:h" } as never);
+    expect(zoneOf(s, "player1", "RS-051:h")).toBe("discard");
+    expect(canStrike(s, "RS-051:t")).toBe(true);
+    s = settle(strike(s, "RS-051:t"));
+    expect(s.players.player2.damage).toBe(1);
   });
 });
 

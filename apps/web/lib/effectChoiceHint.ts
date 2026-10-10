@@ -25,6 +25,9 @@ export function effectChoiceHint(
     case "seabed_draw":
       return `山札の上から引くか、下から引くか選んでください`;
     case "optional_deck_draw":
+      if (pending.effectId === "kuroko_memory") {
+        return `1枚ドローしますか？（3枚まで・${pending.kurokoMeta?.drawn ?? 0}枚ドロー済み）`;
+      }
       return `1枚ドローしますか？`;
     case "denji_machine": {
       if (pending.denjiMachineMeta?.step === "order_bottom") {
@@ -89,6 +92,10 @@ export function effectChoiceHint(
       if (pending.effectId === "tricera_lance") {
         return "相手の未ホールドコマンドを1枚選んでホールドします";
       }
+      if (pending.effectId === "kuroko_memory") {
+        const left = pending.kurokoMeta?.returnsLeft ?? 0;
+        return `コマンドを1つホールドすれば手札を山札に戻さずに済みます（スキップで相手が選んだ1枚を戻す・残り${left}回）`;
+      }
       return `コマンドを選んでください`;
     case "pit_in_dive_order": {
       const picked = pending.selectedInstanceIds?.length ?? 0;
@@ -129,10 +136,23 @@ export function effectChoiceHint(
         return "特徴が一致するユニットカードを選び、モーフで置き換えてください";
       }
       return "対象を選んでください";
+    case "simultaneous_order":
+      // ルール: R-SIM-01, R-BTL-02 — 同時に起きた処理の順番はターンプレイヤーが決める。
+      return pending.mutualDestructionMeta
+        ? "相打ちで同時に撃破されました。先に処理するユニットを選んでください"
+        : "同時に起きた処理です。先に解決するものを選んでください";
     default:
       return `対象を選んでください`;
   }
 }
+
+/** simultaneous_order の反応窓フレーム ID の表示名（ユニットでない選択肢）。 */
+export const SIMULTANEOUS_FRAME_LABELS: Record<string, string> = {
+  pendingLeave: "離場への対応",
+  pendingStrike: "ストライクへの対応",
+  pendingBattle: "アタックへの対応",
+  pendingRush: "ラッシュへの対応",
+};
 
 /**
  * riderKickEffects ランタイム由来の effectId → 日本語効果名（UI 表示専用）。
@@ -140,6 +160,8 @@ export function effectChoiceHint(
  * 同名の実カード効果名の解決を壊すため）。
  */
 const RIDER_EFFECT_UI_LABELS: Record<string, string> = {
+  simultaneous_order: "処理順の選択",
+  kuroko_memory: "黒子ロボの記憶操作",
   rider_slash_destroy: "ライダースラッシュ",
   rider_kick_send_power: "ライダーキック",
   rider_kick_discard_power_sp1: "ライダーキック",

@@ -92,6 +92,7 @@ const KNOWN_EFFECT_IDS = new Set<string>([
   "end_turn_battle_to_rush",
   "rocket_booster",
   "simultaneous_order",
+  "kuroko_memory",
   "super_geki_yellow_reanimate",
   "reorder_enemy_battle",
   // 仮面ライダー系 能動効果（riderKickEffects ランタイム）
