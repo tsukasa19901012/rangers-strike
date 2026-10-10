@@ -99,8 +99,7 @@ describe("R-KW-RIDE-02 ライドできるユニット", () => {
   });
 
   // 「それ以外のユニットはライドできない」→RC持ちも不可
-  it.fails("R-KW-RIDE-02: ビークルに「それ以外のユニットはライドできない」とあれば、RC を持つユニットでも条件外ならライドできない（出典: atwiki/page-156 本文）", () => {
-    // 既知の不具合: 04-#28（RC があれば排他条件を見ない）
+  it("R-KW-RIDE-02: ビークルに「それ以外のユニットはライドできない」とあれば、RC を持つユニットでも条件外ならライドできない（出典: atwiki/page-156 本文）", () => {
     const EXCLUSIVE = {
       ...BOXER,
       text: "※特徴「警察」を持つ自軍Sユニットは、ＲＣを持っていなくてもこのビークルにライドできる。それ以外のユニットはライドできない。",
@@ -126,8 +125,7 @@ describe("R-KW-RIDE-03 1台1体", () => {
   });
 
   // 「すでにライドしているユニットは…別のビークルに」→「いいえ」
-  it.fails("R-KW-RIDE-03: すでにライドしているユニットは、ライドされていない別のビークルにライドできない（出典: atwiki/page-156 Q2、grnrngr/faq-rider ライド Q2）", () => {
-    // 既知の不具合: 未登録（ラッシュエリアでライド中のユニットに別ビークルへの mount_ride が合法手として出る）
+  it("R-KW-RIDE-03: すでにライドしているユニットは、ライドされていない別のビークルにライドできない（出典: atwiki/page-156 Q2、grnrngr/faq-rider ライド Q2）", () => {
     const v2 = inst(V.id, "v2");
     const s = battlePhase([v, v2, { ...r, mountedOnInstanceId: v.instanceId }]);
     expect(canMount(s, r.instanceId, v2.instanceId)).toBe(false);
@@ -281,8 +279,7 @@ describe("R-KW-RC-01 ライディングコンビネーション", () => {
   });
 
   // 「RCの効果は…ライドオフしたときにのみ発動します」
-  it.fails("R-KW-RC-01: RK-046 の追加条件で RK-045 オートバジンVM を送ると、ライドしていたユニットはライドオフするが RC は発動しない（出典: grnrngr/faq-rider_1 RK-046）", () => {
-    // 既知の不具合: 未登録（RK-045 オートバジンVM（ビークル）を RK-046 の追加条件「自軍「オートバジンVM」1体」に使えずラッシュできない）
+  it("R-KW-RC-01: RK-046 の追加条件で RK-045 オートバジンVM を送ると、ライドしていたユニットはライドオフするが RC は発動しない（出典: grnrngr/faq-rider_1 RK-046）", () => {
     const s = state([realDef("RK-045"), realDef("RK-046"), W], {
       phase: "rush",
       player1: {

@@ -253,8 +253,7 @@ describe("R-DECK-03 3枚制限の例外はカード本文の注記で決まる",
   });
 
   // 「好きな枚数入れてもよい」
-  // 既知の不具合: 01-D4（無制限カードが40枚で頭打ち）
-  it.fails("R-DECK-03: 無制限カードは41枚以上でもよい（RS-080 ×41）（出典: atwiki/page-326, page-71）", () => {
+  it("R-DECK-03: 無制限カードは41枚以上でもよい（RS-080 ×41）（出典: atwiki/page-326, page-71）", () => {
     const entries = [{ cardId: "RS-080", count: 41 }];
     expect(validateDeckEntries(entries).errors).toEqual([]);
     expect(validateDeckEntries(entries).ok).toBe(true);
@@ -749,8 +748,7 @@ describe("R-WIN-04 効果の発動可否はカードごと", () => {
   });
 
   // 「コマンドをホールドしたり、手札を減らす目的で…使用する…ことはできます」
-  // 既知の不具合: 未登録 — 山札2枚以下だと RS-004 を手札から使用（効果なしで捨札）すること自体ができない
-  it.fails("R-WIN-04: 自軍山札2枚でも RS-004 をコスト目的で使用し（効果は解決せず）捨札にできる（出典: grnrngr/faq-card-1 RS-004、公式FAQ リファレンス「オペレーション」）", () => {
+  it("R-WIN-04: 自軍山札2枚でも RS-004 をコスト目的で使用し（効果は解決せず）捨札にできる（出典: grnrngr/faq-card-1 RS-004、公式FAQ リファレンス「オペレーション」）", () => {
     const state = denjiState(2);
     const play = getLegalActions(state).find(
       (a) => a.type !== "end_phase" && "sourceInstanceId" in a && a.sourceInstanceId === "RS-004:op",

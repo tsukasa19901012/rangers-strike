@@ -1,14 +1,15 @@
-import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { getDefinition } from "../core/catalog";
+import { findNamedEffectByEffectId } from "@rangers-strike/cards";
+import type { CardInstance, GameState, PlayerId, TurnEndProgress } from "../types/game";
+import { effectiveBp, getDefinition } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { bounceToHand } from "./bounce";
 import { applyOnTurnEndBattleEffects } from "./legend2/destroyEffects";
-import { applyResidentOperationTurnEnd } from "./residentOperation";
+import { hasEndPhaseBlockingPending } from "./legend3/endTurnEffects";
+import { collectTurnEndResidentQueue, resolveTurnEndResident } from "./residentOperation";
 import { applyRocketBoosterEndTurnRushReturn } from "./rocketBooster";
 import { applyKeywordTurnEndEffects, clearEnemyTurnDamageFlag } from "./keywordGapRuntime";
 import { applyGegeruTurnEnd } from "./residentOps";
 import { applyTempDiscardAtTurnEnd } from "./riderKickEffects";
-import { applyAdventureEndTurn } from "./turnModifiers";
 import {
   applyDragonHarleyTurnEnd,
   applyElectroBeamTurnEnd,
@@ -150,15 +151,61 @@ function applyNoteOtherNcTurnEndEffects(
   return nextState;
 }
 
-/** TurnEnding リスナー本体: ターン終了時の常駐・バトル効果。 */
+/**
+ * RS-310 ゴウライビートル【カラクリ忍法・角変化】: 自分か相手がターンを終えるとき BP8000 以上なら撃破。
+ * ルール: R-END-01 — 「ターンを終えるとき」はまだターン中なので「このターン」の修正込みで判定する（faq-card-5 RS-310 Q1）。
+ */
+function applyKakuhengeTurnEndDestroy(state: GameState): GameState {
+  let nextState = state;
+  for (const pid of ["player1", "player2"] as const) {
+    const units = [...nextState.players[pid].rush, ...nextState.players[pid].battle];
+    for (const card of units) {
+      if (!findNamedEffectByEffectId(card.cardId, "karakuri_ninpo_tsuno")) continue;
+      if (effectiveBp(nextState, pid, card) < 8000) continue;
+      nextState = destroyUnitToDiscard(nextState, pid, card.instanceId);
+    }
+  }
+  return nextState;
+}
+
+function turnEndBlocked(state: GameState): boolean {
+  return !!state.winner || hasEndPhaseBlockingPending(state);
+}
+
+/**
+ * TurnEnding リスナー本体: 「ターンを終えるとき」の常駐・バトル効果。
+ * ルール: R-END-01 — まだ終えるプレイヤーのターン中に処理する。選択が開いたら進捗を
+ * `turnEndProgress` に残して止まり、選択の解決後に同じ関数で再開する。
+ */
 export function resolveTurnEndingEffectsImpl(
   state: GameState,
   endingPlayerId: PlayerId,
 ): { state: GameState; logs: string[] } {
-  // ルール: R-ERR-RS030 — アドベンチャーは両軍の常駐が、ターンを終えたプレイヤーに効く。
-  let nextState = applyAdventureEndTurn(state, endingPlayerId);
-  nextState = applyResidentOperationTurnEnd(nextState, endingPlayerId);
+  let progress: TurnEndProgress =
+    state.turnEndProgress?.endingPlayerId === endingPlayerId
+      ? state.turnEndProgress
+      : {
+          endingPlayerId,
+          residentQueue: collectTurnEndResidentQueue(state, endingPlayerId),
+          restDone: false,
+        };
+  let nextState = state;
+  const save = (s: GameState, logs: string[] = []) => ({
+    state: { ...s, turnEndProgress: progress },
+    logs,
+  });
+
+  while (progress.residentQueue.length > 0) {
+    if (turnEndBlocked(nextState)) return save(nextState);
+    const [entry, ...rest] = progress.residentQueue;
+    progress = { ...progress, residentQueue: rest };
+    nextState = resolveTurnEndResident(nextState, entry!, endingPlayerId);
+  }
+  if (turnEndBlocked(nextState) || progress.restDone) return save(nextState);
+  progress = { ...progress, restDone: true };
+
   nextState = applyOnTurnEndBattleEffects(nextState, endingPlayerId);
+  nextState = applyKakuhengeTurnEndDestroy(nextState);
   nextState = applyRocketBoosterEndTurnRushReturn(nextState, endingPlayerId);
   nextState = applyNoteOtherNcTurnEndEffects(nextState, endingPlayerId);
   nextState = applyGegeruTurnEnd(nextState, endingPlayerId);
@@ -168,5 +215,5 @@ export function resolveTurnEndingEffectsImpl(
   nextState = applyDragonHarleyTurnEnd(nextState, endingPlayerId);
   const keywordEnd = applyKeywordTurnEndEffects(nextState, endingPlayerId);
   nextState = clearEnemyTurnDamageFlag(keywordEnd.state, endingPlayerId);
-  return { state: nextState, logs: keywordEnd.logs };
+  return save(nextState, keywordEnd.logs);
 }

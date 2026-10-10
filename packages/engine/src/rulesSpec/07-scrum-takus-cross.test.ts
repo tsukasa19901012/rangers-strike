@@ -105,8 +105,7 @@ describe("R-KW-TAKUS-01 規定文", () => {
   });
 
   // 「○○を持つSユニット」（S ユニット限定）
-  it.fails("R-KW-TAKUS-01: 指定カテゴリでも S ユニットでなければ（M ユニット）SP1 を得ない（出典: atwiki/page-1291 規定文）", () => {
-    // 既知の不具合: 04-#7（S ユニット限定なし）
+  it("R-KW-TAKUS-01: 指定カテゴリでも S ユニットでなければ（M ユニット）SP1 を得ない（出典: atwiki/page-1291 規定文）", () => {
     const x = inst(ET_M.id, "x");
     const s = enter([COSSACK, ET_M], [...battleFillers(3), inst(COSSACK.id, "t")], x);
     expect(canStrike(s, x.instanceId)).toBe(false);
@@ -200,8 +199,7 @@ describe("R-KW-CROSS-02 補足", () => {
   });
 
   // 対照（同 Q1 の前提）: S ユニットが2体いれば追加条件を満たせる
-  it.fails("R-KW-CROSS-02: クロス持ちを含めて S ユニットが2体いれば、RS-197 ダイナギャリーの追加条件を満たしてラッシュできる（出典: atwiki/page-2393 Q1 の対照）", () => {
-    // 既知の不具合: 未登録（RS-197 は S ユニット2体がいてもラッシュが合法手に出ない。上の Q1 テストはこのため現状では判別力がない）
+  it("R-KW-CROSS-02: クロス持ちを含めて S ユニットが2体いれば、RS-197 ダイナギャリーの追加条件を満たしてラッシュできる（出典: atwiki/page-2393 Q1 の対照）", () => {
     const s2 = state([CROSS, DYNA], {
       phase: "rush",
       player1: {

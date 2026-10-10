@@ -2,6 +2,8 @@ import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState, CardInstance } from "../types/game";
 import { clearRegisterHoldOffField } from "../rules/resist";
+import { operationFizzles } from "../rules/operationFizzle";
+import { openDeferredRushReaction } from "../events/emitUnitRushed";
 import {
   getBattleEntryHoldCount,
   getCardEffect,
@@ -86,9 +88,11 @@ import {
 import { applyGodomSenshoDiscardPay } from "../rules/godomRushPay";
 import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
 import {
+  hasEndPhaseBlockingPending,
   shouldAutoFinalizeEndPhase,
   tryOpenEndTurnEffectsMenu,
 } from "../rules/legend3/endTurnEffects";
+import { resolveTurnEndingEffectsImpl } from "../rules/turnEndingEffects";
 import { clearBakiBakiExtraAttack } from "../rules/legend3/destroyEffects";
 import {
   canBonusDraw,
@@ -188,6 +192,8 @@ import {
   applyHiddenNinjaCounter,
   applyMagLoadCounter,
   applyNewGymnasticsCounter,
+  applyMechanicNinjaCounter,
+  isMechanicNinjaCounter,
   applySageAelCounter,
   applyShippuNinjaCounter,
   applySuperShieldSubstitute,
@@ -273,7 +279,22 @@ function withEndPhaseAutoFinalize(
   playerId: PlayerId,
 ): ActionResult {
   if (!result.ok || !shouldAutoFinalizeEndPhase(result.state)) return result;
-  return ok(finalizeTurnEnd(result.state), buildSimpleLogEntry(playerId, "end_turn"));
+  return finishTurnEnd(result.state, playerId);
+}
+
+/** {@link finalizeTurnEnd} を実行し、ターンが渡ったときだけ end_turn を記録する。 */
+function finishTurnEnd(state: GameState, playerId: PlayerId): ActionResult {
+  const next = finalizeTurnEnd(state);
+  if (next.phase === "end") return ok(next, buildSimpleLogEntry(playerId, "turn_ending_effects"));
+  return ok(next, buildSimpleLogEntry(playerId, "end_turn"));
+}
+
+/** スタートフェイズの「戻す」が途中（誘発効果の選択で中断中）か。 */
+function hasStartReturnInProgress(state: GameState): boolean {
+  return (
+    (state.pendingBattleToRushQueue?.length ?? 0) > 0 ||
+    (state.pendingStartReturnQueue?.length ?? 0) > 0
+  );
 }
 
 function fail(error: string): ActionResult {
@@ -296,21 +317,37 @@ function advanceFromCharge(state: GameState, chargeLog: string): GameState {
   return withWinner(advancePhase(logged));
 }
 
+/**
+ * エンドフェイズの「ターンを終えるとき」を処理し、終わっていればターンを渡す。
+ * ルール: R-END-01 — 効果の処理中はまだ終えるプレイヤーのターン（選択もそのプレイヤーの手番で行う）。
+ * 選択待ちで止まったら phase "end" のまま返し、解決後に再度呼ばれて続きから処理する。
+ * ルール: R-TURN-04 — 効果をすべて処理してから「このターン」の修正を消し、ターンを1回だけ渡す。
+ */
 function finalizeTurnEnd(state: GameState): GameState {
-  const prevPlayer = state.activePlayer;
-  const { state: afterEffects } = emitTurnEndingAndResolve(state, prevPlayer);
-  let next = advancePhase(afterEffects);
-
-  if (next.activePlayer !== prevPlayer) {
-    // 「このターン」の修正はターン終了で消える。どちらのプレイヤーのカードかは問わない（page-588 Q1）。
-    next = {
-      ...next,
-      players: {
-        player1: clearTurnModifiers(next.players.player1),
-        player2: clearTurnModifiers(next.players.player2),
-      },
-    };
+  const prevPlayer = state.turnEndProgress?.endingPlayerId ?? state.activePlayer;
+  const afterEffects = state.turnEndProgress
+    ? resolveTurnEndingEffectsImpl(state, prevPlayer).state
+    : emitTurnEndingAndResolve(state, prevPlayer).state;
+  if (afterEffects.winner || hasEndPhaseBlockingPending(afterEffects)) {
+    return withWinner(afterEffects);
   }
+
+  let next: GameState = {
+    ...afterEffects,
+    activePlayer: prevPlayer,
+    phase: "end",
+    turnEndProgress: undefined,
+    endPhaseStep: undefined,
+  };
+  // 「このターン」の修正はターン終了で消える。どちらのプレイヤーのカードかは問わない（page-588 Q1）。
+  next = {
+    ...next,
+    players: {
+      player1: clearTurnModifiers(next.players.player1),
+      player2: clearTurnModifiers(next.players.player2),
+    },
+  };
+  next = advancePhase(next);
 
   if (next.phase === "start" && next.activePlayer !== prevPlayer) {
     // ルール: R-START-06, R-TIME-06 — 「スタートフェイズ開始時」「ターン開始時」の効果は
@@ -370,6 +407,21 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
 }
 
 export function applyAction(
+  state: GameState,
+  action: GameAction,
+  options?: { trustLegality?: boolean },
+): ActionResult {
+  const result = applyActionInner(state, action, options);
+  if (!result.ok) return result;
+  // ルール: R-ZONE-04, R-HOLD-02 — エリアを離れたカードの付加情報はどの経路で移動しても消える。
+  let next = clearRegisterHoldOffField(result.state);
+  if (next.deferredRushReaction && !next.winner) {
+    next = withSyncedEffectStack(openDeferredRushReaction(next));
+  }
+  return next === result.state ? result : { ok: true, state: next };
+}
+
+function applyActionInner(
   state: GameState,
   action: GameAction,
   options?: { trustLegality?: boolean },
@@ -524,7 +576,7 @@ export function applyAction(
     case "return_all_battle_to_rush": {
       if (state.phase !== "start") return fail("wrong_phase");
       if (player.hasReturnedBattleThisStart) return fail("already_returned");
-      const moved = returnAllBattleUnitsToRush(state, playerId);
+      const moved = returnAllBattleUnitsToRush(state, playerId, action.instanceId);
       if (!moved) return fail("card_not_in_battle");
       return withStartPhaseAutoAdvance(
         ok(moved, buildSimpleLogEntry(playerId, "return_all_battle_to_rush")),
@@ -795,11 +847,19 @@ export function applyAction(
       const definition = getDefinition(state.definitions, found.card.cardId);
       if (!definition || definition.type !== "operation") return fail("not_operation");
 
-      if (operationNeedsUpfrontTarget(found.card.cardId) && !action.targetInstanceId) {
+      // ルール: R-CARD-03, R-RES-04 — 適正な対象がなければ空撃ち（効果を発動せず捨札）。
+      const fizzle =
+        !action.targetInstanceId &&
+        !action.extraInstanceId &&
+        !isPermanentCard(state.definitions, found.card.cardId) &&
+        operationFizzles(state, playerId, found.card.instanceId, found.card.cardId);
+
+      if (!fizzle && operationNeedsUpfrontTarget(found.card.cardId) && !action.targetInstanceId) {
         return fail("target_required");
       }
 
       if (
+        !fizzle &&
         getCardEffect(found.card.cardId)?.effectId === "cyber_s_rider" &&
         !action.targetInstanceId
       ) {
@@ -814,11 +874,26 @@ export function applyAction(
       if (!payPowerCost(state, playerId, cost)) return fail("insufficient_power");
 
       const [, hand] = removeAt(player.hand, found.index);
-      let nextPlayer = { ...player, hand };
+      let nextPlayer = clearCostWindow({ ...player, hand }, "operation_category");
       let nextState: GameState = {
         ...state,
         ...updatePlayer(state, playerId, nextPlayer),
       };
+
+      if (fizzle) {
+        const current = nextState.players[playerId];
+        nextState = {
+          ...nextState,
+          ...updatePlayer(nextState, playerId, {
+            ...current,
+            discard: [...current.discard, found.card],
+          }),
+        };
+        return ok(
+          nextState,
+          buildLogEntry(playerId, "play_operation", found.card.cardId, state.definitions, "fizzle"),
+        );
+      }
 
       const effectMeta = getCardEffect(found.card.cardId);
       const dslEffect = getDslOperationEffect(found.card.cardId, "rush");
@@ -1648,6 +1723,28 @@ export function applyAction(
         const pending = state.pendingBattle;
         if (playerId !== pending.defenderPlayerId) return fail("wrong_player");
         const effectId = getCounterEffectId(state, playerId, action.instanceId);
+        const counterCardId = findInZone(player, "hand", action.instanceId)?.card.cardId;
+        if (counterCardId && isMechanicNinjaCounter(counterCardId)) {
+          const result = applyMechanicNinjaCounter(
+            state,
+            playerId,
+            action.instanceId,
+            action.substituteInstanceId,
+            pending,
+          );
+          const nextPending: PendingBattle = result.battleCancelled
+            ? { ...pending, battleCancelled: true }
+            : pending;
+          const resolved = emitBattleDeclaredAndResolve(result.state, nextPending);
+          return {
+            ok: true,
+            state: {
+              ...clearCounterHoldReady(resolved.state, playerId),
+              log: [...resolved.state.log, result.log, resolved.log],
+              winner: checkWinner(resolved.state),
+            },
+          };
+        }
         if (effectId === "new_gymnastics") {
           const result = applyNewGymnasticsCounter(
             state,
@@ -1817,7 +1914,7 @@ export function applyAction(
       if (result.logs?.length) {
         nextState = { ...nextState, log: [...nextState.log, ...result.logs] };
       }
-      if (!nextState.pendingEffectChoice && pending?.effectId === "falcon_claw") {
+      if (!nextState.pendingEffectChoice && hasStartReturnInProgress(nextState)) {
         nextState = continueBattleToRushEffectQueue(nextState);
       }
       if (
@@ -1867,7 +1964,7 @@ export function applyAction(
       const result = skipEffectChoice(state, playerId);
       if ("error" in result) return fail(result.error);
       let afterSkip = result.state;
-      if (!afterSkip.pendingEffectChoice && pending?.effectId === "falcon_claw") {
+      if (!afterSkip.pendingEffectChoice && hasStartReturnInProgress(afterSkip)) {
         afterSkip = continueBattleToRushEffectQueue(afterSkip);
       }
       if (
@@ -2363,8 +2460,7 @@ export function applyAction(
       }
 
       if (state.phase === "end") {
-        let nextState = finalizeTurnEnd({ ...state, endPhaseStep: undefined });
-        return ok(nextState, buildSimpleLogEntry(playerId, "end_turn"));
+        return finishTurnEnd({ ...state, endPhaseStep: undefined }, playerId);
       }
 
       const nextState: GameState = {

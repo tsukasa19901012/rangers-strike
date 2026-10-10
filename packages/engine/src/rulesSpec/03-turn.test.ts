@@ -450,8 +450,7 @@ describe("R-START-01 3つの行程", () => {
   });
 
   // 「任意の順番で戻すことができます」(faq-index / atwiki/page-457 Q1)
-  it.fails("R-START-01: バトルエリアの複数ユニットを1体ずつ任意の順で戻せる（出典: grnrngr/faq-index, atwiki/page-457 Q1）", () => {
-    // 既知の不具合: 未登録（return_all_battle_to_rush で一括移動のみ。戻す順・個別指定ができない）
+  it("R-START-01: バトルエリアの複数ユニットを1体ずつ任意の順で戻せる（出典: grnrngr/faq-index, atwiki/page-457 Q1）", () => {
     const state = startOfPlayer2Turn({
       deck: cards("d", 3),
       battle: [inst("TST-UNIT-0", "b1"), inst("TST-UNIT-2", "b2")],
@@ -463,8 +462,7 @@ describe("R-START-01 3つの行程", () => {
   });
 
   // 「はい、できます」(faq-card-3 RS-135)
-  it.fails("R-START-01: ジェットファルコンを先に戻して効果を解決し、ハリケンレオンがバトルエリアに残る間に敵軍ユニットを引き出せば、相手はコマンドをホールドする（出典: grnrngr/faq-card-3 RS-135）", () => {
-    // 既知の不具合: 未登録（一括で戻すため、ファルコンクロー解決時にハリケンレオンが既にラッシュエリアにいて連獅子が効かない）
+  it("R-START-01: ジェットファルコンを先に戻して効果を解決し、ハリケンレオンがバトルエリアに残る間に敵軍ユニットを引き出せば、相手はコマンドをホールドする（出典: grnrngr/faq-card-3 RS-135）", () => {
     const falcon = inst("RS-135", "falcon");
     const leon = inst("RS-097", "leon");
     const enemy = inst("TST-UNIT-0", "enemy"); // SP1
@@ -1131,8 +1129,7 @@ describe("R-END-01 ターン終了", () => {
   );
 
   // 「その時点ではまだターンは継続中」(faq-card-5 RS-310 Q1)
-  it.fails("R-END-01: ガオ・ソウルでBP8000になったゴウライビートルは、ターンを終えるとき（このターンの修正が残っている時点）に撃破される（出典: grnrngr/faq-card-5 RS-310 Q1）", () => {
-    // 既知の不具合: 未登録（RS-310 角変化の「ターンを終えるとき BP8000以上なら撃破」が処理されない）
+  it("R-END-01: ガオ・ソウルでBP8000になったゴウライビートルは、ターンを終えるとき（このターンの修正が残っている時点）に撃破される（出典: grnrngr/faq-card-5 RS-310 Q1）", () => {
     const beetle = inst("RS-310", "beetle"); // BP2000 + ダメージ合計2 → 4000、+4000 → 8000
     const gao = inst("RS-025", "gao");
     let state = createTestState({
@@ -1164,8 +1161,7 @@ describe("R-END-01 ターン終了", () => {
   });
 
   // 「「ターンを終えるとき」はまだ自分のターンです」(faq-card-4 RS-238)
-  it.fails("R-END-01: 「ターンを終えるとき」の効果（アドベンチャー）を処理している間は、まだターンを終えるプレイヤーのターンである（出典: grnrngr/faq-card-4 RS-238, grnrngr/faq-card-5 RS-310 Q1）", () => {
-    // 既知の不具合: 未登録（ターン終了時効果の選択が開いた時点で既に相手ターン・ターン数+1になっている）
+  it("R-END-01: 「ターンを終えるとき」の効果（アドベンチャー）を処理している間は、まだターンを終えるプレイヤーのターンである（出典: grnrngr/faq-card-4 RS-238, grnrngr/faq-card-5 RS-310 Q1）", () => {
     let state = createTestState({
       phase: "battle",
       activePlayer: "player1",

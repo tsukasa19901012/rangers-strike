@@ -71,8 +71,7 @@ describe("R-KW-WING-01 規定文", () => {
 
 describe("R-KW-WING-02 公式Q&A", () => {
   // 「なんらかの制限を受けて…出られない状態でも」→「はい、できます」
-  it.fails("R-KW-WING-02: バトルエリアに出られない制限を受けていてもウイングは発動できる（出典: grnrngr/faq-card-9 ウイング Q2）", () => {
-    // 既知の不具合: 04-#18（進入制限下で発動不可にしている）
+  it("R-KW-WING-02: バトルエリアに出られない制限を受けていてもウイングは発動できる（出典: grnrngr/faq-card-9 ウイング Q2）", () => {
     const s0 = battlePhase();
     const s: GameState = {
       ...s0,
@@ -144,8 +143,7 @@ describe("R-KW-WING-02 公式Q&A", () => {
 
 describe("R-KW-WING-03 リリースされれば再ウイング", () => {
   // 「同じユニットのウイングを1ターンに複数回使う」
-  it.fails("R-KW-WING-03: ウイングでアタックした後、効果でリリースされれば同じターンにもう一度ウイングできる（出典: atwiki/page-1537 本文、page-1974 ゴセイアルティメット）", () => {
-    // 既知の不具合: 04-#20（アタック済みフラグが残り、リリース後も再ウイングできない）
+  it("R-KW-WING-03: ウイングでアタックした後、効果でリリースされれば同じターンにもう一度ウイングできる（出典: atwiki/page-1537 本文、page-1974 ゴセイアルティメット）", () => {
     const e2 = inst(ENEMY.id, "e2");
     let s = state([WING, ENEMY], { phase: "battle", player1: { rush: [w] }, player2: { battle: [e, e2] } });
     s = act(s, { type: "hold_for_wing", playerId: "player1", instanceId: w.instanceId });

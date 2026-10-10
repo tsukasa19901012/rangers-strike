@@ -412,8 +412,9 @@ function pickCpuActionInner(
     case "start": {
       const release = actions.find((action) => action.type === "release_start_commands");
       if (release) return release;
+      // 既定は並び順で1体ずつすべて戻す（instanceId なし）。
       const returnBattle = actions.find(
-        (action) => action.type === "return_all_battle_to_rush",
+        (action) => action.type === "return_all_battle_to_rush" && !action.instanceId,
       );
       if (returnBattle) return returnBattle;
       const draw = actions.find((action) => action.type === "draw");

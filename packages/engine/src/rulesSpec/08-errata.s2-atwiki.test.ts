@@ -1,3 +1,4 @@
+import { getLegalActions } from "../index";
 /**
  * docs/rules/08-errata.md §2 atwiki 記載の修正後テキスト（21件）[wiki]
  *
@@ -719,7 +720,17 @@ describe("R-ERR-RS030 アドベンチャー", () => {
         deck: [inst("TST-OP", "e1"), inst("TST-OP", "e2")],
       },
     });
-    s = act(s, { type: "end_phase", playerId: ender });
+    // ターンが相手に渡るまで進める。「1つ選んで手札に戻す」の選択には先頭の候補で応える（R-END-01）。
+    for (let i = 0; i < 12 && s.activePlayer === ender; i += 1) {
+      const choice = s.pendingEffectChoice;
+      if (choice) {
+        const pick = getLegalActions(s, choice.playerId).find((a) => a.type === "resolve_effect_choice");
+        if (!pick) break;
+        s = act(s, pick);
+        continue;
+      }
+      s = act(s, { type: "end_phase", playerId: ender });
+    }
     return s;
   }
 
@@ -987,8 +998,7 @@ describe("R-ERR-RK231 オロチ", () => {
     expect(norm(engineText("RK-231"))).not.toContain(norm("【潜水】自分がターンを終えるとき、これを"));
   });
 
-  // 既知の不具合: 未登録 — 【潜水】の選択（orochi_dive）は開くが、ターン終了時効果の選択中に手番が相手へ移る（ターン進行側。R-END-01 と同根）
-  it.fails("R-ERR-RK231: 自分がターンを終えるとき、このユニットをホールドするかを選べる（出典: atwiki/page-948）", () => {
+  it("R-ERR-RK231: 自分がターンを終えるとき、このユニットをホールドするかを選べる（出典: atwiki/page-948）", () => {
     const o = inst("RK-231", "o");
     let s = specState(["RK-231"], {
       phase: "battle",

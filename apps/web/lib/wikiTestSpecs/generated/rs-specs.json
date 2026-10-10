@@ -40,7 +40,9 @@
     "cardType": "operation",
     "powerCost": 3,
     "category": "ET",
-    "textSnippets": [],
+    "textSnippets": [
+      "※常駐"
+    ],
     "expectedDslKeywords": [
       "note_card::RS-003::nobatorufueizuni"
     ],
@@ -509,7 +511,7 @@
     "powerCost": 3,
     "category": "ET",
     "textSnippets": [
-      "自分自身のターンを終えるとき、自分自身のコマンド"
+      "※常駐"
     ],
     "operationKind": "permanent",
     "expectedMechanisms": [
@@ -3904,7 +3906,14 @@
     "cardType": "unit",
     "powerCost": "7-",
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【アバレスラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "auto_battle_entry_each_turn",
+      "on_destroy_reanimate_named_from_discard",
+      "SP1"
+    ],
     "bp": 5500,
     "sp": "special",
     "size": "S"
@@ -4898,7 +4907,13 @@
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【ドラゴンハーレー】"
+    ],
+    "expectedDslKeywords": [
+      "note_card::RS-288::koreha_ken_wotsu",
+      "effect_card::RS-288::doragonhare"
+    ],
     "bp": 6000,
     "sp": null,
     "size": "M"
@@ -5937,6 +5952,9 @@
     "category": "ET",
     "textSnippets": [
       "自軍山札を見て、追加条件を持たずDAを持たないS"
+    ],
+    "expectedDslKeywords": [
+      "effect_card::RS-349::deck_to_hand"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [

@@ -44,6 +44,13 @@ function vehicleFeatureHoldRideFeature(vehicleCardId: string): string | null {
   return null;
 }
 
+function vehicleRideIsExclusive(
+  definitions: Record<string, CardDefinition>,
+  vehicleCardId: string,
+): boolean {
+  return /それ以外のユニットはライドできない/.test(getDefinition(definitions, vehicleCardId)?.text ?? "");
+}
+
 function riderHasRc(definition: CardDefinition | undefined): boolean {
   if (!definition) return false;
   if (definition.comboNumber === "RC") return true;
@@ -150,6 +157,12 @@ export function canRiderMountVehicle(
   const riderDef = getDefinition(state.definitions, rider.cardId);
   if (!riderDef || !isUnit(riderDef)) return false;
 
+  // ルール: R-KW-RIDE-02 — ビークルに「それ以外のユニットはライドできない」とあれば、
+  // RC を持っていても指定外のユニットはライドできない。
+  if (vehicleRideIsExclusive(state.definitions, vehicle.card.cardId)) {
+    return riderMatchesVehicleRideWithoutRc(state.definitions, vehicle.card.cardId, rider.cardId);
+  }
+
   if (riderHasRc(riderDef)) return true;
 
   if (
@@ -229,6 +242,8 @@ export function canMountRideIntoBattle(
   const player = state.players[playerId];
   const riderFound = findInZone(player, "rush", riderInstanceId);
   if (!riderFound) return false;
+  // ルール: R-KW-RIDE-03 — すでにライドしているユニットは別のビークルにライドできない。
+  if (riderFound.card.mountedOnInstanceId) return false;
   if (!canRiderMountVehicle(state, playerId, riderFound.card, vehicleInstanceId)) {
     return false;
   }

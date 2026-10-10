@@ -56,6 +56,7 @@ import {
   shouldUseDslOperation,
 } from "../dsl/dslCatalog";
 import { collectTargetInstanceIds } from "../dsl/targetSelectors";
+import { operationFizzles } from "./operationFizzle";
 import { canCompleteRushAfterCommandPayment } from "./rushDeclaration";
 import {
   collectHoldExtraCommandCandidates,
@@ -69,9 +70,12 @@ export function canPayRushCategoryHold(
   categories: Category[],
 ): boolean {
   if (categories.length === 0) return true;
+  const callUnits = collectCallLeadFieldUnits(player, definitions, "call", categories);
+  // ルール: R-KW-CALL-01 補足 — 単色ならコマンドゾーンにそのカテゴリがなくてもコールで支払える。
+  if (categories.length === 1 && callUnits.length > 0) return true;
   if (!allCategoriesExistInCommandZone(player, definitions, categories)) return false;
   if (hasReleasedCommandForCategories(player, definitions, categories)) return true;
-  if (collectCallLeadFieldUnits(player, definitions, "call", categories).length > 0) {
+  if (callUnits.length > 0) {
     return true;
   }
   return (
@@ -197,7 +201,12 @@ function unheldPaymentSourcesMatchingCategory(
     const cmdCats = effectiveCommandCategories(player, definitions, cmd.cardId);
     return categories.some((cat) => cmdCats.includes(cat));
   });
-  const fromField = collectCallLeadFieldUnits(player, definitions, callLeadKind, categories);
+  // ルール: R-KW-CALL-01 — コールのユニットはビークルのラッシュには使えない。
+  const rushingVehicle =
+    rushingCardId !== undefined && getDefinition(definitions, rushingCardId)?.type === "vehicle";
+  const fromField = rushingVehicle
+    ? []
+    : collectCallLeadFieldUnits(player, definitions, callLeadKind, categories);
   const undeadHold =
     rushingCardId !== undefined && unitHasUndeadFeature(definitions, rushingCardId)
       ? collectUndeadCommandRushHoldUnits(player)
@@ -213,7 +222,20 @@ export function getCategoryPaymentOptions(
 ): { selectCount: number; prismAvailable: boolean; prismSubstitute: boolean } | null {
   const player = state.players[playerId];
   const callLeadKind = options?.callLeadKind ?? "call";
-  if (!allCategoriesExistInCommandZone(player, state.definitions, categories)) {
+  // ルール: R-KW-CALL-01 補足 — 単色のカードなら、コマンドゾーンにそのカテゴリがなくてもコール／リードで支払える。
+  const singleCategoryCallLead =
+    categories.length === 1 &&
+    unheldPaymentSourcesMatchingCategory(
+      player,
+      state.definitions,
+      categories,
+      callLeadKind,
+      options?.rushingCardId,
+    ).some((c) => !player.command.some((cmd) => cmd.instanceId === c.instanceId));
+  if (
+    !singleCategoryCallLead &&
+    !allCategoriesExistInCommandZone(player, state.definitions, categories)
+  ) {
     return null;
   }
 
@@ -407,7 +429,14 @@ export function validatePaymentSelection(
     const player = state.players[pending.playerId];
     const categories = pending.categories ?? [];
     const callLeadKind = callLeadKindForContinuation(pending.continuation);
-    if (!allCategoriesExistInCommandZone(player, state.definitions, categories)) {
+    const singleCategoryByCallLead =
+      categories.length === 1 &&
+      commandInstanceIds.length > 0 &&
+      commandInstanceIds.every((id) => !player.command.some((c) => c.instanceId === id));
+    if (
+      !singleCategoryByCallLead &&
+      !allCategoriesExistInCommandZone(player, state.definitions, categories)
+    ) {
       return "invalid_command";
     }
     if (!pending.prismSubstitute) {
@@ -485,9 +514,19 @@ export function applyCommandPaymentResolve(
   }
   if (pending.kind === "category_use" && pending.continuation.type === "rush") {
     playerPatch = satisfyCostWindow(playerPatch, "rush_category");
+    playerPatch = {
+      ...playerPatch,
+      lastRushPayment: {
+        rushedInstanceId: pending.sourceInstanceId,
+        holdInstanceIds: [...commandInstanceIds],
+      },
+    };
   }
   if (pending.kind === "category_use" && pending.continuation.type === "play_counter") {
     playerPatch = satisfyCostWindow(playerPatch, "counter_category");
+  }
+  if (pending.kind === "category_use" && pending.continuation.type === "play_operation") {
+    playerPatch = satisfyCostWindow(playerPatch, "operation_category");
   }
   if (playerPatch !== player) {
     nextState = {
@@ -771,8 +810,21 @@ export function buildPaymentFromInitiateAction(
     }
 
     if (needsOperationTarget(handFound.card.cardId)) {
-      if (!action.targetInstanceId) return null;
-      if (
+      if (!action.targetInstanceId) {
+        // ルール: R-CARD-03 — 対象がないときだけ空撃ちとして対象なしで使用できる。
+        const dslEffect = getDslOperationEffect(handFound.card.cardId, "rush");
+        const dslChoose =
+          dslEffect &&
+          shouldUseDslOperation(handFound.card.cardId, dslEffect) &&
+          dslOperationOpensChoose(dslEffect);
+        // DSL の choose で解決時に対象を選ぶものは、対象なしで支払いを始めてよい。
+        if (
+          !dslChoose &&
+          !operationFizzles(state, playerId, handFound.card.instanceId, handFound.card.cardId)
+        ) {
+          return null;
+        }
+      } else if (
         !isValidOperationTarget(
           state,
           playerId,
@@ -789,6 +841,7 @@ export function buildPaymentFromInitiateAction(
       targetInstanceId: action.targetInstanceId,
       extraInstanceId: action.extraInstanceId,
     };
+    // ルール: R-CMD-01 — 既にホールド済みのコマンドがあっても、使用ごとに新たにホールドして支払う。
     return buildCategoryPayment(
       state,
       playerId,
@@ -797,6 +850,7 @@ export function buildPaymentFromInitiateAction(
       categories,
       continuation,
       action.prismSubstitute ?? false,
+      { perRushPayment: true },
     );
   }
 
@@ -817,7 +871,10 @@ function isPlayOperationContinuationLegal(
   const definition = getDefinition(state.definitions, found.cardId);
   if (!definition || definition.type !== "operation") return false;
   if (!canPlayOperation(state, playerId, definition)) return false;
-  if (getCardEffect(found.cardId)?.effectId === "denji_machine" && player.deck.length < 3) return false;
+  if (operationFizzles(state, playerId, sourceInstanceId, found.cardId)) {
+    // ルール: R-CARD-03, R-RES-04 — 空撃ち（対象なし）での使用のみ。
+    return !targetInstanceId && !extraInstanceId;
+  }
 
   const dslEffect = getDslOperationEffect(found.cardId, "rush");
   const dslChoose =

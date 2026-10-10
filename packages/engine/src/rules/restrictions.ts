@@ -252,6 +252,11 @@ function noteOtherNcBattleEntryBlock(
   return false;
 }
 
+/** 無条件の「※これはバトルエリアに出られない。」（定義テキストからも判定する）。 */
+function unconditionalNoEntryText(def: CardDefinition): boolean {
+  return /(^|\s)※これはバトルエリアに出られない。/.test(def.text ?? "");
+}
+
 export function canMoveUnitToBattle(
   state: GameState,
   playerId: PlayerId,
@@ -274,7 +279,7 @@ export function canMoveUnitToBattle(
 
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
 
-  if (cannotEnterBattle(unit.cardId)) return false;
+  if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
 
   if (needsAllySInBattle(unit.cardId)) {
     const hasAllyS = state.players[playerId].battle.some((c) =>
@@ -393,7 +398,7 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   if (fromZone === "hand") return false;
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
-  if (cannotEnterBattle(unit.cardId)) return false;
+  if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {
@@ -520,6 +525,23 @@ export function autoHoldForBattleEntry(
     i === idx ? { ...c, commandHeld: true, mothershipHold: false } : c,
   );
   return satisfyCostWindowBridge({ ...player, command }, "battle_entry_hold");
+}
+
+/**
+ * 効果で（ラッシュエリアから）バトルエリアに出されるユニットが、持ち主が条件を満たした上で出られるか。
+ * ルール: R-KW-WRECKER-01 — 「出られない」ユニットは出せず、「～しなければ出られない」は持ち主が満たせるときだけ出せる。
+ */
+export function canBeDeployedToBattleByEffect(
+  state: GameState,
+  ownerId: PlayerId,
+  unit: CardInstance,
+): boolean {
+  const owner = state.players[ownerId];
+  const prepared = autoHoldForBattleEntry(owner, unit);
+  if (!prepared) return false;
+  const ready = markBattleEntryHoldReadyIfNoteSatisfied(prepared, unit);
+  const withPrepared: GameState = { ...state, players: { ...state.players, [ownerId]: ready } };
+  return canMoveUnitToBattle(withPrepared, ownerId, unit, "rush");
 }
 
 function passesBattleEntryHoldRequirements(
