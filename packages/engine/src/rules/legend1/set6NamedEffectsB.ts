@@ -18,6 +18,7 @@ import { patchPlayer } from "../playerPatches";
 import { findCardInField } from "../fieldLookup";
 import { unitFeatures } from "../addedFeatures";
 import { applyDamageToPlayer } from "../damagePayment";
+import { addBakiBakiExtraAttack } from "../turnModifierBridge";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -966,6 +967,51 @@ function resolveZubazuban(state: GameState, playerId: PlayerId, instanceId: stri
 
 CHOICE_RESOLVERS[ZUBAZUBAN_EFFECT_ID] = resolveZubazuban;
 CHOICE_SKIPPERS[ZUBAZUBAN_EFFECT_ID] = simpleSkip("RS-420");
+
+// ---------------------------------------------------------------------------
+// RS-422 ゲキトージャ【大頑頑拳】
+// 「これがアタックしてバトルに勝つたび、敵軍コマンドを1つ選びホールドしてもよい。そうしたとき、これは追加でアタックできる
+//  （ストライクはできない）。」
+// 追加アタックは RS-167【バキバキパンチ】と同じ「追加でアタックできる（ストライク不可）」の記録を使う。
+// バトルの処理（rules/operationCounters.ts）で、アタックしたこれが勝ったときに呼ぶ。
+
+export const DAIGANGAN_EFFECT_ID = "rs422_daigangan_ken";
+
+export function openDaiganganKen(state: GameState, attackerId: PlayerId, attackerInstanceId: string): GameState {
+  if (state.pendingEffectChoice || state.pendingLeave) return state;
+  const attacker = state.players[attackerId].battle.find((c) => c.instanceId === attackerInstanceId);
+  if (!attacker || attacker.cardId !== "RS-422") return state;
+  const ids = state.players[opponent(attackerId)].command.filter((c) => !c.commandHeld).map((c) => c.instanceId);
+  if (ids.length === 0) return state;
+  return openEffectChoice(state, {
+    playerId: attackerId,
+    effectId: DAIGANGAN_EFFECT_ID,
+    sourceCardId: "RS-422",
+    sourceInstanceId: attackerInstanceId,
+    kind: "select_command",
+    commandFilter: "released",
+    phasePlayerId: turnPlayerOf(state),
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+function resolveDaigangan(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  let next = patchPlayer(state, opponent(playerId), (p) => ({
+    ...p,
+    command: p.command.map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: true } : c)),
+  }));
+  if (pending.sourceInstanceId) {
+    next = patchPlayer(next, playerId, (p) => addBakiBakiExtraAttack(p, pending.sourceInstanceId!));
+  }
+  return { state: finish(next, pending), log: logFor(state, playerId, "RS-422", DAIGANGAN_EFFECT_ID) };
+}
+
+CHOICE_RESOLVERS[DAIGANGAN_EFFECT_ID] = resolveDaigangan;
+CHOICE_SKIPPERS[DAIGANGAN_EFFECT_ID] = simpleSkip("RS-422");
 
 // ---------------------------------------------------------------------------
 // DSL grant_keyword（`set6b::cardId::name`）からの起点

@@ -2,7 +2,7 @@ import {
   openDeathStingerChoice,
   reflectBarrierDestroysWinner,
 } from "./legend1/set4NamedEffects";
-import { applyProminenceShower } from "./legend1/set6NamedEffectsB";
+import { applyProminenceShower, openDaiganganKen } from "./legend1/set6NamedEffectsB";
 import type { Category } from "@rangers-strike/cards";
 import { getConditionalNamedEffect } from "@rangers-strike/cards";
 import { startSagasSniperChoice } from "./pendingChoices";
@@ -1629,6 +1629,8 @@ export function resolveBattlePendingCore(
     if (!winFx.skipMarkAttackerActed) {
       nextState = markAttackerActed(nextState);
     }
+    // RS-422【大頑頑拳】: アタックしてバトルに勝つたび、敵軍コマンドをホールドして追加でアタックできる。
+    nextState = openDaiganganKen(nextState, attackerId, pending.attackerInstanceId);
   } else {
     nextState = markAttackerActed(nextState);
   }
