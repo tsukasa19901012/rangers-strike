@@ -2456,6 +2456,17 @@ function finishGreenCrush(
   return { ...finished, state: next };
 }
 
+/** 選択の再開チェーンの最後に、続けて開く選択を足す。 */
+function appendResumeChoice(
+  choice: PendingEffectChoice,
+  next: PendingEffectChoice,
+): PendingEffectChoice {
+  return {
+    ...choice,
+    resumeChoice: choice.resumeChoice ? appendResumeChoice(choice.resumeChoice, next) : next,
+  };
+}
+
 function finishChoice(
   state: GameState,
   pending: PendingEffectChoice,
@@ -2470,8 +2481,23 @@ function finishChoice(
   );
   if (pending.resumeChoice) {
     // 割り込んだ効果の解決後、中断していた元の効果の選択を再開する。
+    let base = clearChoice(state, pending.phasePlayerId);
+    const deferred = base.deferredBattleEntry;
+    if (deferred && deferred.playerId === pending.phasePlayerId && pending.playerId !== deferred.playerId) {
+      // 相手の効果（ジェットファルコン【ファルコンクロー】等）で出された自軍ユニットの進入時の処理（NC 等）は、
+      // 元の効果を再開する前に解決する（faq-card-3 RS-135 Q4・RS-141 Q1）。
+      const promoted = promoteDeferredBattleEntry(base);
+      if (promoted.pendingEffectChoice) {
+        const opened = promoted.pendingEffectChoice;
+        return {
+          state: { ...promoted, pendingEffectChoice: appendResumeChoice(opened, pending.resumeChoice) },
+          log,
+        };
+      }
+      base = promoted;
+    }
     return {
-      state: openEffectChoice(clearChoice(state, pending.phasePlayerId), pending.resumeChoice),
+      state: openEffectChoice(base, pending.resumeChoice),
       log,
     };
   }
