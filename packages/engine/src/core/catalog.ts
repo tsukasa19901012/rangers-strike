@@ -52,6 +52,7 @@ import {
   breakerBlocksSameNameRush,
 } from "../keywords/battleKeywords";
 import { effectiveRushAdditionalCondition } from "../rules/rushAdditionalCondition";
+import { set5PassiveBpBonus } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower, effectivePowerCost, rushEffectivePowerCost } from "./power";
 
 export function buildDefinitionMap(
@@ -246,7 +247,8 @@ export function passiveBpBonus(
   instance: CardInstance,
 ): number {
   const player = state.players[playerId];
-  let bonus = 0;
+  // RS-340/343【ゲキヌンチャク】（rules/legend1/set5NamedEffects.ts）。
+  let bonus = set5PassiveBpBonus(state, playerId, instance);
 
   const inField =
     player.rush.some((c) => c.instanceId === instance.instanceId) ||

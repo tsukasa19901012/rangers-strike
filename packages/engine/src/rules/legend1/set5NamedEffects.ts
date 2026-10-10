@@ -582,6 +582,67 @@ function resolveDestructionFirePick(state: GameState, playerId: PlayerId, instan
 CHOICE_RESOLVERS[DESTRUCTION_FIRE_PICK_EFFECT_ID] = resolveDestructionFirePick;
 
 // ---------------------------------------------------------------------------
+// RS-340 / RS-343 ゲキレッド【ゲキヌンチャク】（NC）
+// 「「SP1」特徴「獣」を持つユニットからコンビネーションするとき、このターン、これはBP＋2000される。」
+// NC 成立時（「SP1」の付与と同時）に、並びのすぐ前のユニットが「獣」を持てば、このターンの BP+2000 を記録する。
+
+const GEKI_NUNCHAKU_RULE = "rs340_gekinunchaku_bp";
+
+function applyGekiNunchaku(state: GameState, ctx: GrantKeywordContext): GameState {
+  const id = ctx.triggerSourceInstanceId;
+  if (!id) return state;
+  const from = comboFromUnit(state, ctx.playerId, id);
+  if (!from || !unitFeatures(state, ctx.playerId, from).includes("獣")) return state;
+  const rule = `${GEKI_NUNCHAKU_RULE}::${id}`;
+  const player = state.players[ctx.playerId];
+  if (hasTurnRuleModifier(player, rule)) return state;
+  return { ...state, ...updatePlayer(state, ctx.playerId, addTurnRuleModifier(player, rule, { sourceCardId: ctx.sourceCardId })) };
+}
+
+/** 効果による BP の継続修正（core/catalog.ts passiveBpBonus から呼ぶ）。 */
+export function set5PassiveBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
+  if (instance.cardId !== "RS-340" && instance.cardId !== "RS-343") return 0;
+  return hasTurnRuleModifier(state.players[playerId], `${GEKI_NUNCHAKU_RULE}::${instance.instanceId}`) ? 2000 : 0;
+}
+
+/**
+ * アタックするときの BP 修正（rules/namedUnitEffects.ts battleAttackerBpBonus から呼ぶ）。
+ * - RS-342 ゲキイエロー【ゲキロッド】（NC）: 自軍ターン中、敵軍Sユニットとバトルするとき BP+4000。
+ * - RS-344 天空勇者ウルザードファイヤー【ブレイジングストームスラッシュ】: アタックするとき、リリース状態の自軍コマンド1つにつき BP+1000。
+ */
+export function set5AttackerBpBonus(
+  state: GameState,
+  attackerPlayerId: PlayerId,
+  attacker: CardInstance,
+  defenderPlayerId: PlayerId,
+  defenderInstanceId: string,
+  isNamedEffectActive: (card: CardInstance, effectId: string) => boolean,
+): number {
+  let total = 0;
+  if (
+    attacker.cardId === "RS-342" &&
+    state.activePlayer === attackerPlayerId &&
+    isNamedEffectActive(attacker, "gekirodo")
+  ) {
+    const enemy = state.players[defenderPlayerId];
+    const defender = findInZone(enemy, "battle", defenderInstanceId) ?? findInZone(enemy, "rush", defenderInstanceId);
+    if (defender && isSmallUnit(state.definitions, defender.card.cardId)) total += 4000;
+  }
+  if (attacker.cardId === "RS-344") {
+    total += state.players[attackerPlayerId].command.filter((c) => !c.commandHeld).length * 1000;
+  }
+  return total;
+}
+
+/** grant_keyword の通常処理の前に行う、カード固有の付随処理（効果の本体は通常どおり処理する）。 */
+export function applySet5GrantSideEffects(state: GameState, ctx: GrantKeywordContext): GameState {
+  if ((ctx.sourceCardId === "RS-340" || ctx.sourceCardId === "RS-343") && ctx.effectId === "gekinunchaku") {
+    return applyGekiNunchaku(state, ctx);
+  }
+  return state;
+}
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword（`cardId::effectId`）からの起点
 
 export function trySet5CardEffect(state: GameState, ctx: GrantKeywordContext, _keyword: string): GrantKeywordResult | null {

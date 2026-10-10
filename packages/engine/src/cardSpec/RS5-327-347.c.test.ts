@@ -87,8 +87,7 @@ function gekiRedTests(id: string, page: string) {
     expect(canStrike(s, `${id}:x`)).toBe(false);
   });
 
-  it.fails(`${id}: 【ゲキヌンチャク】特徴「獣」を持つユニット（ギガゼール）からコンビネーションしたとき、このターン BP+2000 され、次のターンには元に戻る（出典: ${page}「このターン、これはBP＋2000される」）`, () => {
-    // 既知の不具合: CARD-RS-340 「獣」からのコンビネーションでの BP+2000 が未実装（DSL スタブは「SP1」だけ）
+  it(`${id}: 【ゲキヌンチャク】特徴「獣」を持つユニット（ギガゼール）からコンビネーションしたとき、このターン BP+2000 され、次のターンには元に戻る（出典: ${page}「このターン、これはBP＋2000される」）`, () => {
     let s = enterAfter(id, [inst("RK-119", "beast")], { battle: [inst("TST-UNIT-2", "e")] });
     expect(bpOf(s, "player1", `${id}:x`)).toBe(5000);
     s = settle(attack(s, `${id}:x`, "TST-UNIT-2:e"));
@@ -183,8 +182,7 @@ describe("RS-342 ゲキイエロー", () => {
     });
   });
 
-  it.fails("RS-342: 【ゲキロッド】NC 成立時、自軍ターン中に敵軍 S ユニットとバトルするとき BP+4000（4500）される（出典: atwiki/page-41）", () => {
-    // 既知の不具合: CARD-RS-342 【ゲキロッド】の BP+4000 が適用されない（BP500 のままバトルする）
+  it("RS-342: 【ゲキロッド】NC 成立時、自軍ターン中に敵軍 S ユニットとバトルするとき BP+4000（4500）される（出典: atwiki/page-41）", () => {
     let s = enterAfter("RS-342", fillers(2), { battle: [inst("TST-UNIT-0", "e")] });
     s = settle(attack(s, "RS-342:x", "TST-UNIT-0:e"));
     expect(lastBattleBps(s)?.attacker).toBe(4500);
@@ -251,8 +249,7 @@ describe("RS-344 天空勇者ウルザードファイヤー", () => {
 
   const cmds = () => [...releasedCat("MA", 2), held("TST-OP-MA", "h")];
 
-  it.fails("RS-344: 【ブレイジングストームスラッシュ】アタックするとき、リリース状態の自軍コマンド1つにつき BP+1000（リリース2・ホールド1 → 9500）（出典: atwiki/page-499）", () => {
-    // 既知の不具合: CARD-RS-344 【ブレイジングストームスラッシュ】の BP 加算が適用されない
+  it("RS-344: 【ブレイジングストームスラッシュ】アタックするとき、リリース状態の自軍コマンド1つにつき BP+1000（リリース2・ホールド1 → 9500）（出典: atwiki/page-499）", () => {
     let s = st({ player1: { battle: [inst("RS-344", "uf")], command: cmds(), deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-7", "e")], deck: deckCards(3, "e") } });
     s = settle(attack(s, "RS-344:uf", "TST-UNIT-7:e"));
     expect(lastBattleBps(s)?.attacker).toBe(9500);

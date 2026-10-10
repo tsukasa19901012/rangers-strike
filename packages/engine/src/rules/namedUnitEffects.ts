@@ -65,6 +65,7 @@ import {
   startTyrannoSonicChoice,
 } from "./pendingChoices";
 import { tryLeaveField } from "./operationCounters";
+import { set5AttackerBpBonus } from "./legend1/set5NamedEffects";
 import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEffects";
 import { afterCommandCardsLeft } from "./commandLeaveRefill";
 import { attackerSuppressesAttackedCounters } from "./keywordGapRuntime";
@@ -138,6 +139,16 @@ export function battleAttackerBpBonus(
       if (features.includes("メカ")) total += 4000;
     }
   }
+
+  // RS-342【ゲキロッド】・RS-344【ブレイジングストームスラッシュ】（rules/legend1/set5NamedEffects.ts）。
+  total += set5AttackerBpBonus(
+    state,
+    pending.attackerPlayerId,
+    attacker.card,
+    pending.defenderPlayerId,
+    pending.defenderInstanceId,
+    namedEffectActive,
+  );
 
   // RS-232【アバレウィング】（CN3）: これがアタックするとき、これは BP+1000 される。
   if (namedEffectActive(attacker.card, "abareuingu")) total += 1000;
