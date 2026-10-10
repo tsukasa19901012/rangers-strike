@@ -239,7 +239,7 @@ export const RS_CATCHALL_KEYWORDS = new Set<string>([
   "release_command_action_konotansyunitogabatorudeyunitowo_geki_ha_surutabi",
   "while_in_field_body_koregaerianiarumekawotsuyunitogaatakusaretatokino",
   "battle_win_notansyunitotobatorushitasyunitohabatorunitemo_geki_ha_sare",
-  "deck_search_rush_fx_unknown",
+  "deck_search_rush_feat_e68190e7ab9c",
   "deck_search_minus_power_rush",
   "while_in_field_body_koregarashuerianiaruririsunokomandoninanbawotsuyuni",
   "category_modify_konotantonokomandozonniaruhorudonokomandonokategorihasub",

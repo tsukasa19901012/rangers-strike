@@ -519,7 +519,7 @@
     ],
     "expectedDslKeywords": [
       "no_attack_while_riding_enemy_s",
-      "per_ally_fx_unknown_bp_1000"
+      "per_ally_feat_e8ada6e5af9f_bp_1000"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -983,7 +983,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_5000",
-      "battle_position_sp_fx_unknown_pos4_sp1"
+      "battle_position_sp_feat_e688a6e99798e593a1_pos4_sp1"
     ],
     "bp": 1000,
     "sp": null,
@@ -1019,7 +1019,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_500",
-      "ride_without_rc_raida"
+      "ride_without_rc_feat_e4bbaee99da2e383a9e382a4e38380e383bc"
     ],
     "sp": null,
     "size": "S"
@@ -1287,7 +1287,7 @@
       "【カギ爪アーム】"
     ],
     "expectedDslKeywords": [
-      "ally_raida_protects_from_enemy_s",
+      "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
       "return_rush_deploy_enemy_s"
     ],
     "bp": 1000,
@@ -1944,7 +1944,7 @@
       "【非常警戒態勢】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e8ada6e5af9f",
       "rk_fx::RK-111::fx_unknown_e99d9e"
     ],
     "sp": null,
@@ -2487,7 +2487,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -2505,7 +2505,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -2523,7 +2523,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 5000,
     "sp": null,
@@ -2541,7 +2541,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -3463,7 +3463,7 @@
       "【ドライブディバイダー】"
     ],
     "expectedDslKeywords": [
-      "ally_reiyou_protects_from_enemy_s",
+      "ally_feat_e383ace382a4e383a8e382a6e59e8b_protects_from_enemy_s",
       "rk_fx::RK-198::doraibudeibaida"
     ],
     "bp": 1000,
@@ -4467,7 +4467,7 @@
       "【ウルトラサイクロン】"
     ],
     "expectedDslKeywords": [
-      "ally_raida_protects_from_enemy_s",
+      "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
       "rk_fx::RK-255::urutorasaikuron"
     ],
     "bp": 1000,
@@ -4501,7 +4501,7 @@
       "【高性能レーダー】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e5a5b3",
       "ride_bp_boost_500",
       "rk_fx::RK-257::reda"
     ],
@@ -4869,7 +4869,7 @@
       "【飛翔斬】"
     ],
     "expectedDslKeywords": [
-      "register_if_discard_has_feature_fx_unknown"
+      "register_if_discard_has_feature_feat_e5a5b3"
     ],
     "bp": 4000,
     "sp": "1/2",
@@ -5263,7 +5263,7 @@
       "【クロックアップ】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e58aa0e9809f",
       "ride_bp_boost_500",
       "rk_fx::RK-300::kurokuapu"
     ],
@@ -5281,7 +5281,7 @@
       "【エクステンドライダー落とし】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e58aa0e9809f",
       "ride_bp_boost_500",
       "rk_fx::RK-301::ekusutendoraidatoshi"
     ],
@@ -5443,7 +5443,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "destroy_on_win_vs_fx_unknown",
+      "destroy_on_win_vs_feat_e5a5b3",
       "SP1"
     ],
     "bp": 4000,
@@ -5514,7 +5514,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hand_rush_ma_chikara_s_on_battle"
+      "hand_rush_feat_e9ad94e79a87e58a9b_s_on_battle"
     ],
     "bp": 5000,
     "sp": "1/3",
@@ -5671,7 +5671,7 @@
       "【シャドウベール】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_ma_chikara",
+      "ride_without_rc_feat_e9ad94e79a87e58a9b",
       "rk_fx::RK-323::shadouberu"
     ],
     "sp": null,
@@ -5688,7 +5688,7 @@
       "【凄いのが来るぜ！】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_ma_chikara",
+      "ride_without_rc_feat_e9ad94e79a87e58a9b",
       "rk_fx::RK-324::inogaruze"
     ],
     "sp": null,
@@ -5884,7 +5884,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "destroy_on_win_vs_fx_unknown",
+      "destroy_on_win_vs_feat_e5a5b3",
       "SP1"
     ],
     "bp": 4000,

@@ -25,7 +25,7 @@
   },
   "effects": [
     {
-      "id": "register_stay_raida",
+      "id": "register_stay_feat_e4bbaee99da2e383a9e382a4e38380e383bc",
       "text": "※これがユニットでなくなるとき、オモテ向きの自軍パワーから特徴「仮面ライダー」を持つカードを1枚選び捨札にすれば、その場に留まる。",
       "trigger": {
         "type": "while_in_field"
@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "register_stay_on_power_discard_raida",
+          "keyword": "register_stay_on_power_discard_feat_e4bbaee99da2e383a9e382a4e38380e383bc",
           "duration": "permanent"
         }
       ]

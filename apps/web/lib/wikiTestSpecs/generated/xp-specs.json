@@ -86,7 +86,7 @@
       "【全てを集めた先にあるもの】"
     ],
     "expectedDslKeywords": [
-      "register_stay_on_power_discard_raida",
+      "register_stay_on_power_discard_feat_e4bbaee99da2e383a9e382a4e38380e383bc",
       "effect_card::XP-005::tewometaniarumono"
     ],
     "bp": 4000,
@@ -421,7 +421,7 @@
     "expectedDslKeywords": [
       "damage_gate_battle_entry",
       "self_destroy_low_damage_remaining",
-      "ally_fx_unknown_bp_boost_1000"
+      "ally_feat_e68190e7ab9c_bp_boost_1000"
     ],
     "bp": 6000,
     "sp": 1,

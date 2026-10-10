@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "unnamed_ally_reiyou_protects_s",
+      "id": "unnamed_ally_feat_e383ace382a4e383a8e382a6e59e8b_protects_s",
       "text": "※これは特徴「レイヨウ型」を持つユニットが自軍バトルエリアにあれば敵軍Sユニットにアタックされない。",
       "trigger": {
         "type": "while_in_field"
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ally_reiyou_protects_from_enemy_s",
+          "keyword": "ally_feat_e383ace382a4e383a8e382a6e59e8b_protects_from_enemy_s",
           "duration": "permanent"
         }
       ],

@@ -1,7 +1,7 @@
 {
   "effects": [
     {
-      "id": "unnamed_can_ride_vehicle_ryo",
+      "id": "unnamed_can_ride_vehicle_feat_e8bb8ae4b8a1",
       "text": "※これは特徴「車両」を持つビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -9,7 +9,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "can_ride_vehicle_ryo",
+          "keyword": "can_ride_vehicle_feat_e8bb8ae4b8a1",
           "duration": "permanent"
         }
       ]

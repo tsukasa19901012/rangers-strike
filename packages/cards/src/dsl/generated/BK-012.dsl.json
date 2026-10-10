@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_resident_rush_no_seki",
+          "keyword": "hand_resident_rush_feat_e8b3a2e88085e381aee79fb3",
           "duration": "turn"
         }
       ]
