@@ -447,14 +447,14 @@ describe("RS-352 ダイデンジン", () => {
   });
 
   /** バイオジェット1号（RS-128）をラッシュし、その※効果で自軍パワーゾーンの powerCard を捨札にする。 */
-  function boomerang(opts: { daidenjin: boolean; powerCard?: string; extraP1?: ReturnType<typeof inst>[] }) {
+  function boomerang(opts: { daidenjin: boolean; powerCard?: string; extraP1?: ReturnType<typeof inst>[]; extraPower?: number }) {
     const powerCard = opts.powerCard ?? "RS-354";
     let s = rushPhase(
       {
         hand: [inst("RS-128", "bj")],
         rush: [...(opts.daidenjin ? [inst("RS-352", "dd")] : []), ...fillers(2), ...(opts.extraP1 ?? [])],
         command: releasedCat("OT", 1),
-        power: [inst(powerCard, "pc"), ...powerCards(4)],
+        power: [inst(powerCard, "pc"), ...powerCards(opts.extraPower ?? 4)],
       },
       { battle: [inst("TST-UNIT-2", "c2"), inst("RS-361", "c5")], rush: [inst("RS-360", "c4")] },
     );
@@ -466,8 +466,7 @@ describe("RS-352 ダイデンジン", () => {
     return s;
   }
 
-  // 既知の不具合: CARD-RS-352 【ダイデンジンブーメラン】が未実装（パワーゾーンのカードが離れても相手は何も撃破しない）
-  it.fails("RS-352: 【ダイデンジンブーメラン】自軍パワーゾーンのカード（必要パワー3）が離れると、相手は必要パワー3以下の自分自身のユニットから1体選び撃破する（出典: atwiki/page-550）", () => {
+  it("RS-352: 【ダイデンジンブーメラン】自軍パワーゾーンのカード（必要パワー3）が離れると、相手は必要パワー3以下の自分自身のユニットから1体選び撃破する（出典: atwiki/page-550）", () => {
     const s = boomerang({ daidenjin: true });
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toEqual(["TST-UNIT-2:c2"]);
@@ -482,8 +481,7 @@ describe("RS-352 ダイデンジン", () => {
   });
 
   // grnrngr/faq-card-6 RS-352 Q1「その場合は5回発動します。すべてのカード操作は、…1枚ごとに実行しているものとして扱います。」
-  // 既知の不具合: CARD-RS-352 【ダイデンジンブーメラン】が未実装
-  it.fails("RS-352: 公式Q&A — 複数枚が同時にパワーゾーンを離れたときは1枚ごとに発動する（バイオジェット2号で2枚 → 2回）（出典: grnrngr/faq-card-6 RS-352 Q1）", () => {
+  it("RS-352: 公式Q&A — 複数枚が同時にパワーゾーンを離れたときは1枚ごとに発動する（バイオジェット2号で2枚 → 2回）（出典: grnrngr/faq-card-6 RS-352 Q1）", () => {
     let s = rushPhase(
       { hand: [inst("RS-129", "bj2")], rush: [inst("RS-352", "dd"), ...fillers(3)], command: releasedCat("OT", 1), power: [inst("RS-354", "pa"), inst("RS-354", "pb"), ...powerCards(2)] },
       { battle: [inst("TST-UNIT-2", "c2"), inst("TST-UNIT-0", "c0"), inst("RS-361", "c5")] },
@@ -499,9 +497,9 @@ describe("RS-352 ダイデンジン", () => {
   it.todo("RS-352: 公式Q&A — 《モーフ》の「置き換え」でパワーゾーンのカードが離れても発動する（出典: grnrngr/faq-card-6 RS-352 Q2）— 置き換え元の電王SF/RF とモーフの手順を API で組めない（ブーメラン自体も未実装）");
 
   // grnrngr/faq-card-6 RS-375 Q「はい、パワーゾーンのカードにも効果を及ぼします。」
-  // 既知の不具合: CARD-RS-352 【ダイデンジンブーメラン】が未実装
-  it.fails("RS-352: 公式Q&A — レッドレーサー（2nd）の「必要パワーの数字は1増える」は、ブーメランで参照するパワーゾーンのカードにも及ぶ（必要パワー3 → 4 以下を撃破）（出典: grnrngr/faq-card-6 RS-375 Q）", () => {
-    const s = boomerang({ daidenjin: true, extraP1: [inst("RS-375", "rr")] });
+  it("RS-352: 公式Q&A — レッドレーサー（2nd）の「必要パワーの数字は1増える」は、ブーメランで参照するパワーゾーンのカードにも及ぶ（必要パワー3 → 4 以下を撃破）（出典: grnrngr/faq-card-6 RS-375 Q）", () => {
+    // レッドレーサー（2nd）の※でバイオジェット1号（5+）の必要パワーも6になるため、パワーを6枚にする。
+    const s = boomerang({ daidenjin: true, extraP1: [inst("RS-375", "rr")], extraPower: 5 });
     expect(choiceIds(s)).toEqual(["RS-360:c4", "TST-UNIT-2:c2"]);
   });
 });

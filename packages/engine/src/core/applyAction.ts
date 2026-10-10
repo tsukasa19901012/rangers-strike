@@ -1,3 +1,4 @@
+import { openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw } from "../rules/legend1/set6NamedEffects348";
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
@@ -800,6 +801,18 @@ export function applyAction(
   if (!hasBlockingInteraction(next)) next = applyDekaMasterReturn(next);
   // RS-325【マジチケット】: 発動したカードが捨札になったら「かわりに」の選択を開く。
   if (next.magiTicketPending && !hasBlockingInteraction(next)) next = settleMagiTicket(next);
+  // RS-352【ダイデンジンブーメラン】: パワーゾーンのカードが離れたら1枚ごとに相手が撃破するユニットを選ぶ。
+  if (applyActionDepth === 0) {
+    next = queueDaidenjinBoomerang(state, next);
+    if (next.boomerangQueue?.length && !hasBlockingInteraction(next) && !next.winner) {
+      next = openDaidenjinBoomerangIfReady(next, turnPlayerOf(next));
+    }
+    // RS-363【パンサークロー】: 発動したターン、敵軍コマンドゾーンにホールド状態で置かれたユニットカードを捨札にしてもよい。
+    next = queuePantherClaw(state, next);
+    if (next.pantherClawQueue?.length && !hasBlockingInteraction(next) && !next.winner) {
+      next = openPantherClawIfReady(next, turnPlayerOf(next));
+    }
+  }
   next = syncDamageWithFaceDownPower(state, next);
   // RS-327【フェイタルブレイドの伝授】: 1アクションで撃破された敵軍ユニットを数える（入れ子の applyAction では数えない）。
   if (applyActionDepth === 0) next = applyFatalBladeDraws(state, next, action);

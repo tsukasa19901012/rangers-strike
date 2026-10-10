@@ -181,8 +181,7 @@ describe("RS-363 バルパンサー（2nd）", () => {
     return pick(s, "RS-354:c3");
   }
 
-  // 既知の不具合: CARD-RS-363 【パンサークロー】が未実装（NC が成立しても敵軍コマンドゾーンに置かれたユニットカードを捨札にできない）
-  it.fails("RS-363: 【パンサークロー】1番目に出て NC が成立したターン、敵軍コマンドゾーンにホールド状態でユニットカードが置かれたとき、それを捨札にできる（出典: atwiki/page-527）", () => {
+  it("RS-363: 【パンサークロー】1番目に出て NC が成立したターン、敵軍コマンドゾーンにホールド状態でユニットカードが置かれたとき、それを捨札にできる（出典: atwiki/page-527）", () => {
     let s = pantherThenShark();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-363");
     expect(canSkip(s)).toBe(true);

@@ -12,6 +12,7 @@ import { cardName, effectiveBp, getDefinition, parsePowerCost } from "../../core
 import { findInZone, opponent, updatePlayer } from "../../core/helpers";
 import { addNextTurnRuleModifier, addTurnRuleModifier, hasTurnRuleModifier } from "../../core/scopedModifiers";
 import { grantSp1ToBattleUnit } from "../namedUnitEffects";
+import { redRacerPowerCostBonus } from "../../core/power";
 import { CHIKARA_BATON_RULE } from "./set4NamedEffects";
 import { buildLogEntry } from "../../log/formatLog";
 import { unitFeatures } from "../addedFeatures";
@@ -274,6 +275,153 @@ function applyHammerPunch(state: GameState, ctx: GrantKeywordContext): GameState
 }
 
 // ---------------------------------------------------------------------------
+// RS-352 ダイデンジン【ダイデンジンブーメラン】
+// 「これが自軍エリアにある間、自軍パワーゾーンのカードがパワーゾーンを離れるとき、そのカードの必要パワーの数字をお互いに見る。
+//  そして、その数字以下の必要パワーを持つユニットを、相手は自分自身のユニットから1体選び撃破する。」（atwiki/page-550）
+// - 複数枚が同時に離れたら1枚ごとに発動する（faq-card-6 RS-352 Q1）。
+// - 離れたカードがユニットカードなら RS-375 の※（必要パワー+1）を受ける（faq-card-6 RS-375 Q）。
+// applyAction の後処理で、パワーゾーンを離れたカードを待ち行列に積み、進行中の処理がなくなったら1枚ずつ選択を開く。
+
+export const DAIDENJIN_BOOMERANG_EFFECT_ID = "rs352_daidenjin_boomerang";
+
+function hasDaidenjin(state: GameState, playerId: PlayerId): boolean {
+  return fieldUnits(state, playerId).some((c) => c.cardId === "RS-352");
+}
+
+/** applyAction の後処理: ダイデンジンの持ち主のパワーゾーンを離れたカードを待ち行列に積む。 */
+export function queueDaidenjinBoomerang(before: GameState, after: GameState): GameState {
+  let queue = after.boomerangQueue ?? [];
+  for (const pid of ["player1", "player2"] as const) {
+    if (!hasDaidenjin(before, pid)) continue;
+    const now = new Set(after.players[pid].power.map((c) => c.instanceId));
+    for (const card of before.players[pid].power) {
+      if (now.has(card.instanceId)) continue;
+      const def = getDefinition(before.definitions, card.cardId);
+      const cost = parsePowerCost(def?.powerCost ?? 0) + redRacerPowerCostBonus(before, pid, card.cardId);
+      queue = [...queue, { ownerId: pid, cost, cardId: card.cardId }];
+    }
+  }
+  return queue === (after.boomerangQueue ?? []) ? after : { ...after, boomerangQueue: queue };
+}
+
+/** 待ち行列の先頭について、相手に撃破するユニットを選ばせる（候補がなければ何もしない）。 */
+export function openDaidenjinBoomerangIfReady(state: GameState, phasePlayerId: PlayerId): GameState {
+  let next = state;
+  while ((next.boomerangQueue?.length ?? 0) > 0) {
+    const [entry, ...rest] = next.boomerangQueue!;
+    next = { ...next, boomerangQueue: rest.length > 0 ? rest : undefined };
+    const enemyId = opponent(entry!.ownerId);
+    const ids = fieldUnits(next, enemyId)
+      .filter((c) => {
+        const def = getDefinition(next.definitions, c.cardId);
+        return def?.type === "unit" && def.powerCost !== undefined && parsePowerCost(def.powerCost) <= entry!.cost;
+      })
+      .map((c) => c.instanceId);
+    if (ids.length === 0) continue;
+    const source = fieldUnits(next, entry!.ownerId).find((c) => c.cardId === "RS-352");
+    return openEffectChoice(next, {
+      playerId: enemyId,
+      effectId: DAIDENJIN_BOOMERANG_EFFECT_ID,
+      sourceCardId: "RS-352",
+      sourceInstanceId: source?.instanceId,
+      kind: "select_unit",
+      unitDestination: "discard",
+      phasePlayerId,
+      validInstanceIds: ids,
+      selectCount: 1,
+      optional: false,
+    });
+  }
+  return next;
+}
+
+CHOICE_RESOLVERS[DAIDENJIN_BOOMERANG_EFFECT_ID] = destroyChosen("RS-352", DAIDENJIN_BOOMERANG_EFFECT_ID);
+
+// ---------------------------------------------------------------------------
+// RS-363 バルパンサー（2nd）【パンサークロー】（NC: CN1）
+// 「このターン、敵軍コマンドゾーンにホールド状態でユニットカードが置かれたとき、それを捨札にしてもよい。」（atwiki/page-527）
+// 発動した後に置かれたものだけが対象（faq-card-6 RS-363 Q1）。applyAction の後処理で、新たにホールド状態で置かれた
+// 敵軍のユニットカードを見つけたら（進行中の処理がなければ）捨札にするかを選ぶ。
+
+export const PANTHER_CLAW_EFFECT_ID = "rs363_panther_claw";
+const PANTHER_CLAW_RULE = "rs363_panther_claw";
+
+function applyPantherClaw(state: GameState, ctx: GrantKeywordContext): GameState {
+  const player = addTurnRuleModifier(state.players[ctx.playerId], PANTHER_CLAW_RULE, { sourceCardId: "RS-363" });
+  return { ...state, ...updatePlayer(state, ctx.playerId, player) };
+}
+
+/** applyAction の後処理: 【パンサークロー】の発動中に敵軍コマンドゾーンにホールド状態で置かれたユニットカードを積む。 */
+export function queuePantherClaw(before: GameState, after: GameState): GameState {
+  let queue = after.pantherClawQueue ?? [];
+  for (const pid of ["player1", "player2"] as const) {
+    if (!hasTurnRuleModifier(after.players[pid], PANTHER_CLAW_RULE)) continue;
+    const enemyId = opponent(pid);
+    const prev = new Set(before.players[enemyId].command.map((c) => c.instanceId));
+    for (const c of after.players[enemyId].command) {
+      if (prev.has(c.instanceId) || !c.commandHeld) continue;
+      if (getDefinition(after.definitions, c.cardId)?.type !== "unit") continue;
+      if (queue.some((q) => q.instanceId === c.instanceId)) continue;
+      queue = [...queue, { playerId: pid, instanceId: c.instanceId }];
+    }
+  }
+  return queue === (after.pantherClawQueue ?? []) ? after : { ...after, pantherClawQueue: queue };
+}
+
+/** 待ち行列のカードについて、捨札にするか（任意）を選ばせる。 */
+export function openPantherClawIfReady(state: GameState, phasePlayerId: PlayerId): GameState {
+  const queue = state.pantherClawQueue ?? [];
+  if (queue.length === 0) return state;
+  const playerId = queue[0]!.playerId;
+  const enemy = state.players[opponent(playerId)];
+  const ids = queue
+    .filter((q) => q.playerId === playerId)
+    .map((q) => q.instanceId)
+    .filter((id) => enemy.command.some((c) => c.instanceId === id && c.commandHeld));
+  const rest = queue.filter((q) => q.playerId !== playerId);
+  const next = { ...state, pantherClawQueue: rest.length > 0 ? rest : undefined };
+  if (ids.length === 0) return openPantherClawIfReady(next, phasePlayerId);
+  const source = fieldUnits(state, playerId).find((c) => c.cardId === "RS-363");
+  return openEffectChoice(next, {
+    playerId,
+    effectId: PANTHER_CLAW_EFFECT_ID,
+    sourceCardId: "RS-363",
+    sourceInstanceId: source?.instanceId,
+    kind: "select_command",
+    commandAction: "discard",
+    phasePlayerId,
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+CHOICE_RESOLVERS[PANTHER_CLAW_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const enemyId = opponent(playerId);
+  const enemy = state.players[enemyId];
+  const card = enemy.command.find((c) => c.instanceId === instanceId);
+  if (!card) return { error: "invalid_target" };
+  const { commandHeld: _h, paymentHeld: _p, ...clean } = card as CardInstance & { paymentHeld?: boolean };
+  let next: GameState = {
+    ...state,
+    ...updatePlayer(state, enemyId, {
+      ...enemy,
+      command: enemy.command.filter((c) => c.instanceId !== instanceId),
+      discard: [...enemy.discard, clean],
+    }),
+  };
+  next = clearPending(next, pending.phasePlayerId);
+  const remaining = pending.validInstanceIds.filter((id) => id !== instanceId);
+  if (remaining.length > 0) {
+    next = openEffectChoice(next, { ...pending, validInstanceIds: remaining, selectedInstanceIds: [] });
+  }
+  return { state: finish(next, pending.phasePlayerId), log: logFor(state, playerId, "RS-363", `${PANTHER_CLAW_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
+};
+CHOICE_SKIPPERS[PANTHER_CLAW_EFFECT_ID] = skipChoice("RS-363", PANTHER_CLAW_EFFECT_ID);
+
+// ---------------------------------------------------------------------------
 // DSL の grant_keyword からの起点
 
 export function trySet6LowCardEffect(state: GameState, ctx: GrantKeywordContext, keyword: string): GrantKeywordResult | null {
@@ -282,6 +430,8 @@ export function trySet6LowCardEffect(state: GameState, ctx: GrantKeywordContext,
       return { state: beginSoushuken(state, ctx), detail: SOUSHUKEN_EFFECT_ID };
     case "effect_card::RS-375::twin_cam_crash":
       return { state: beginTwinCamCrash(state, ctx), detail: TWIN_CAM_CRASH_EFFECT_ID };
+    case "effect_card::RS-363::panther_claw":
+      return { state: applyPantherClaw(state, ctx), detail: PANTHER_CLAW_EFFECT_ID };
     case "effect_card::RS-356::hanmapanchi":
       return { state: applyHammerPunch(state, ctx), detail: HAMMER_PUNCH_RULE };
     default:

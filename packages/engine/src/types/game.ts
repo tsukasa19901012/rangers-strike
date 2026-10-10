@@ -814,6 +814,10 @@ export type GameState = {
    * 選択待ちで中断したら、解決後にここから再開する（R-END-01）。
    */
   turnEndProgress?: TurnEndProgress;
+  /** RS-352【ダイデンジンブーメラン】: パワーゾーンを離れたカード（1枚ごとに相手が撃破するユニットを選ぶ）の待ち行列。 */
+  boomerangQueue?: Array<{ ownerId: PlayerId; cost: number; cardId: string }>;
+  /** RS-363【パンサークロー】: 敵軍コマンドゾーンにホールド状態で置かれたユニットカード（捨札にするかを選ぶ）の待ち行列。 */
+  pantherClawQueue?: Array<{ playerId: PlayerId; instanceId: string }>;
   /**
    * 効果でラッシュエリアに出たが、先に解決すべき操作待ちがあり「ラッシュしたとき」の誘発と
    * 「ラッシュされたとき」の窓をまだ処理していないユニット（出た順）。
