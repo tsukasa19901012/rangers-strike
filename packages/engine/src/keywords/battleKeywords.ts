@@ -1,7 +1,8 @@
 import type { Category } from "@rangers-strike/cards";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
-import { sameCanonicalCardName } from "@rangers-strike/cards";
+import { sameCanonicalCardName, textHasKeywordNotation } from "@rangers-strike/cards";
+import type { KeywordNotationLabel } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { cardHasKeyword } from "./cardKeywords";
 import { getDefinition, isLargeUnit } from "../core/catalog";
@@ -44,15 +45,14 @@ export function cardHasBattleKeyword(
     return crossValueForCard(cardId) > 0 || cardHasGrantKeyword(cardId, "cross1");
   }
   if (cardHasGrantKeyword(cardId, keyword)) return true;
-  const labels: Record<string, string[]> = {
-    blast: ["blast", "ブラスト"],
-    breaker: ["breaker", "ブレイカー"],
-    scrum: ["scrum", "スクラム"],
-    taxis: ["taxis", "タクス"],
+  // ルール: R-KW-00 — 本文の「※キーワード」表記だけを見る（【モスブレイカー】等の効果名は除外）。
+  const labels: Record<"blast" | "breaker" | "scrum" | "taxis", KeywordNotationLabel> = {
+    blast: "ブラスト",
+    breaker: "ブレイカー",
+    scrum: "スクラム",
+    taxis: "タクス",
   };
-  const def = definitions[cardId];
-  if (!def?.text) return false;
-  return labels[keyword]?.some((label) => def.text!.includes(label)) ?? false;
+  return textHasKeywordNotation(definitions[cardId]?.text, labels[keyword]);
 }
 
 /** 左側ユニットのクロス合計。ルール: R-KW-CROSS-01, R-KW-CROSS-02 */
@@ -180,16 +180,22 @@ export function scrumBlocksAttack(
   return rightCn === defenderCn + 1;
 }
 
-/** ブレイカー: 敵ユニット/ビークル効果の対象にならない（ブレイカー同士は可）。 */
+/**
+ * ブレイカー: 自軍エリアにある間、ブレイカーを持たない敵軍ユニット／敵軍ビークルの効果に選ばれない。
+ * オペレーションの効果では選べる（防ぐのはユニット／ビークルの効果だけ）。
+ * 発生源が不明な呼び出しは従来どおり敵軍ユニットの効果として扱う。
+ * ルール: R-KW-BREAKER-01, R-KW-BREAKER-03
+ */
 export function breakerBlocksEffectTarget(
   definitions: Record<string, CardDefinition>,
   targetCardId: string,
   sourceCardId?: string,
 ): boolean {
   if (!cardHasBattleKeyword(definitions, targetCardId, "breaker")) return false;
-  if (sourceCardId && cardHasBattleKeyword(definitions, sourceCardId, "breaker")) {
-    return false;
-  }
+  if (!sourceCardId) return true;
+  const sourceType = getDefinition(definitions, sourceCardId)?.type;
+  if (sourceType && sourceType !== "unit" && sourceType !== "vehicle") return false;
+  if (cardHasBattleKeyword(definitions, sourceCardId, "breaker")) return false;
   return true;
 }
 
@@ -197,7 +203,11 @@ export function cardHasNotSelectableExceptAttack(cardId: string): boolean {
   return cardHasGrantKeyword(cardId, "not_selectable_except_attack");
 }
 
-/** ブレイカー同名制限: ブレイカー持ち同名が場にいるとラッシュ不可。 */
+/**
+ * ブレイカー同名制限: 本来のカード名が同名の自軍ユニット／ビークルが場にあれば、ブレイカー持ちはラッシュできない。
+ * 場の同名カードがブレイカーを持つかどうかは問わない。逆にブレイカーを持たないカードは制限されない。
+ * ルール: R-KW-BREAKER-01, R-KW-BREAKER-02
+ */
 export function breakerBlocksSameNameRush(
   player: { rush: CardInstance[]; battle: CardInstance[] },
   definitions: Record<string, CardDefinition>,
@@ -211,9 +221,7 @@ export function breakerBlocksSameNameRush(
     for (const card of player[zone]) {
       const def = getDefinition(definitions, card.cardId);
       if (!def?.name || !sameCanonicalCardName(def.name, rushingName)) continue;
-      if (cardHasBattleKeyword(definitions, card.cardId, "breaker")) {
-        return true;
-      }
+      if (def.type === "unit" || def.type === "vehicle") return true;
     }
   }
   return false;

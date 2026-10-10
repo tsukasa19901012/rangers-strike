@@ -377,7 +377,12 @@ export function applyAction(
   }
   if (
     state.pendingRideOffChoice &&
-    action.type !== "resolve_ride_off_choice"
+    action.type !== "resolve_ride_off_choice" &&
+    !(
+      action.type === "resolve_damage_payment" &&
+      state.pendingDamagePayment &&
+      peekEffectStackTop(state)?.kind === "damage_payment"
+    )
   ) {
     return fail("pending_ride_off_choice");
   }

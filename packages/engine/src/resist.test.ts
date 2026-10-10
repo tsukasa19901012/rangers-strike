@@ -20,7 +20,8 @@ const RESIST_UNIT: CardDefinition = {
   bp: 2000,
   sp: 1,
   size: "S",
-  features: ["レジスト"],
+  // ルール: R-KW-00 — キーワードは本文の「※レジスト」表記で持つ（特徴ではない）
+  text: "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにホールド状態にしてもよい）",
 };
 
 describe("register (resist)", () => {

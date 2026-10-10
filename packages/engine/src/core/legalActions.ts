@@ -480,6 +480,7 @@ function appendOperationActions(
         playerId,
         choose.valid,
         card.instanceId,
+        card.cardId,
       );
       if (choose.kind === "optional_deck_draw") {
         if (player.deck.length === 0 && targets.length === 0) continue;
@@ -1226,6 +1227,17 @@ export function getLegalActions(state: GameState): GameAction[] {
       });
     }
     actions.push({ type: "pass_chase", playerId: pending.chaserPlayerId });
+    return actions;
+  }
+
+  // 進入効果のダメージ支払いが先に積まれていれば、ライドオフ選択より先に解決する
+  // （applyAction の pending_damage_payment ガードと同じ優先順）。
+  if (
+    state.pendingRideOffChoice &&
+    state.pendingDamagePayment &&
+    peekEffectStackTop(state)?.kind === "damage_payment"
+  ) {
+    appendDamagePaymentActions(state, playerId, actions);
     return actions;
   }
 
