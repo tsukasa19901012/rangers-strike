@@ -2,6 +2,7 @@ import {
   emergencyRequestEnemyCommandIds,
   releaseEmergencyRequestCommands,
 } from "./legend1/set4NamedEffects";
+import { shifuSubstituteAvailable } from "./legend1/set6NamedEffectsB";
 import { operationPaymentCategories } from "./legend1/set5NamedEffectsA";
 import type { Category } from "@rangers-strike/cards";
 import {
@@ -215,8 +216,10 @@ export function getCategoryPaymentOptions(
     /** ラッシュするカード（RS-223【緊急システム発動要請】の判定だけに使う）。 */
     emergencyRushCardId?: string;
   },
-): { selectCount: number; prismAvailable: boolean; prismSubstitute: boolean } | null {
+): { selectCount: number; prismAvailable: boolean; prismSubstitute: boolean; shifuSubstitute?: boolean } | null {
   const player = state.players[playerId];
+  // RS-429【暮らしの中に修行あり】: 自軍ターン中、MA のコマンドのかわりに WB のコマンド＋追加1つをホールドしてよい。
+  const shifu = (options?.callLeadKind ?? "call") === "call" && shifuSubstituteAvailable(state, playerId, categories);
   const callLeadKind = options?.callLeadKind ?? "call";
   // RS-223【緊急システム発動要請】: 敵軍コマンドのリリースで自軍コマンド1つのホールドを代替できる（カテゴリは問わない）。
   const emergencyIds =
@@ -238,7 +241,7 @@ export function getCategoryPaymentOptions(
     emergencyIds.length === 0 &&
     !allCategoriesExistInCommandZone(player, state.definitions, categories)
   ) {
-    return null;
+    return shifu ? { selectCount: 2, prismAvailable: false, prismSubstitute: false, shifuSubstitute: true } : null;
   }
 
   if (
@@ -265,6 +268,8 @@ export function getCategoryPaymentOptions(
   if (prismAvailable) {
     return { selectCount: 2, prismAvailable: true, prismSubstitute: true };
   }
+
+  if (shifu) return { selectCount: 2, prismAvailable: false, prismSubstitute: false, shifuSubstitute: true };
 
   return null;
 }
@@ -314,9 +319,10 @@ export function buildCategoryPayment(
   if (!paymentOptions) return null;
 
   const usePrism = prismSubstitute && paymentOptions.prismAvailable;
-  const selectCount = usePrism ? 2 : paymentOptions.selectCount;
+  const useShifu = !usePrism && paymentOptions.shifuSubstitute === true;
+  const selectCount = usePrism || useShifu ? 2 : paymentOptions.selectCount;
   const player = state.players[playerId];
-  const validInstanceIds = usePrism
+  const validInstanceIds = usePrism || useShifu
     ? player.command.filter((c) => !c.commandHeld).map((c) => c.instanceId)
     : [
         ...unheldPaymentSourcesMatchingCategory(
@@ -341,6 +347,7 @@ export function buildCategoryPayment(
     sourceCardId,
     categories,
     prismSubstitute: usePrism,
+    ...(useShifu ? { shifuSubstitute: true } : {}),
     eligibleNeeded: 0,
     totalNeeded: selectCount,
     validInstanceIds,
@@ -424,6 +431,14 @@ export function validatePaymentSelection(
     if (emergencyPicked.length > 0) {
       // 敵軍コマンドのリリースで「ラッシュに必要な自軍コマンドを1つホールドした」ことにする。
       return null;
+    }
+    if (pending.shifuSubstitute) {
+      // RS-429: 選んだ2つのうち1つは WB のコマンド（もう1つは追加のコマンド。カテゴリは問わない）。
+      const hasWb = commandInstanceIds.some((id) => {
+        const cmd = player.command.find((c) => c.instanceId === id);
+        return !!cmd && !cmd.commandHeld && effectiveCommandCategories(player, state.definitions, cmd.cardId).includes("WB");
+      });
+      return hasWb ? null : "invalid_command";
     }
     const singleCategoryByCallLead =
       categories.length === 1 &&
@@ -1260,7 +1275,11 @@ export function explainCannotRush(
   }
 
   const catLabel = formatCategories(categories);
-  if (categories.length > 0 && !canPayRushCategoryHold(player, state.definitions, categories)) {
+  if (
+    categories.length > 0 &&
+    !canPayRushCategoryHold(player, state.definitions, categories) &&
+    !shifuSubstituteAvailable(state, playerId, categories)
+  ) {
     return `「${unitName}」をラッシュするには${catLabel}のリリース状態のコマンドが必要ですが、ありません。`;
   }
 

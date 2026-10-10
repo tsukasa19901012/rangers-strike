@@ -675,6 +675,8 @@ export type PendingCommandPayment = {
   validInstanceIds: string[];
   categories?: Category[];
   prismSubstitute?: boolean;
+  /** RS-429【暮らしの中に修行あり】: MA のかわりに WB のコマンド＋追加1つ（計2つ）をホールドする支払い。 */
+  shifuSubstitute?: boolean;
   continuation: CommandPaymentContinuation;
 };
 

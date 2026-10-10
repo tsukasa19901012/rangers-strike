@@ -844,7 +844,7 @@ export function trySet6BOnComboEnter(
   battleBeforeEnter: CardInstance[],
 ): GameState {
   if (state.pendingEffectChoice || state.phase !== "battle") return state;
-  if (card.cardId !== "RS-419") return state;
+  if (card.cardId !== "RS-419") return openGekiki(state, playerId, card);
   const from = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
   if (!from) return state;
   const fromDef = getDefinition(state.definitions, from.cardId);
@@ -1090,6 +1090,69 @@ CHOICE_SKIPPERS[FLAME_GLARE_EFFECT_ID] = (state, playerId) => {
 };
 
 // ---------------------------------------------------------------------------
+// RS-436 激気（※常駐）
+// 「自軍バトルフェイズ中、特徴「激気」を持つ自軍Sユニットがバトルエリアに出たとき、次の効果を発動できる⇒バトルエリアに出たユニットの
+//  必要パワーの数字よりも、必要パワーの数字が小さいWBのMユニットのカードを、自分の手札から1枚選び、自軍ラッシュエリアに出す。」
+// RS-429【暮らしの中に修行あり】で「激気」が追加された S ユニットも対象（rules/addedFeatures.ts）。
+
+export const GEKIKI_EFFECT_ID = "rs436_gekiki";
+
+function powerCostNumber(state: GameState, cardId: string): number {
+  const cost = getDefinition(state.definitions, cardId)?.powerCost;
+  const n = typeof cost === "number" ? cost : parseInt(String(cost ?? ""), 10);
+  return Number.isFinite(n) ? n : Number.NaN;
+}
+
+function openGekiki(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
+  const player = state.players[playerId];
+  const resident = player.operation.find((c) => c.cardId === "RS-436");
+  if (!resident) return state;
+  if (turnPlayerOf(state) !== playerId || state.phase !== "battle") return state;
+  if (!isSmallUnitNow(state, playerId, card)) return state;
+  if (!unitFeatures(state, playerId, card).includes("激気")) return state;
+  const enteredCost = powerCostNumber(state, card.cardId);
+  if (!Number.isFinite(enteredCost)) return state;
+  const ids = player.hand
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      if (def?.type !== "unit" || def.size !== "M") return false;
+      const cats = Array.isArray(def.category) ? def.category : def.category ? [def.category] : [];
+      if (!cats.includes("WB" as never)) return false;
+      const cost = powerCostNumber(state, c.cardId);
+      return Number.isFinite(cost) && cost < enteredCost;
+    })
+    .map((c) => c.instanceId);
+  if (ids.length === 0) return state;
+  return openEffectChoice(state, {
+    playerId,
+    effectId: GEKIKI_EFFECT_ID,
+    sourceCardId: "RS-436",
+    sourceInstanceId: resident.instanceId,
+    kind: "select_hand",
+    phasePlayerId: playerId,
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+function resolveGekiki(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const card = state.players[playerId].hand.find((c) => c.instanceId === instanceId);
+  if (!card) return { error: "invalid_target" };
+  const next = patchPlayer(state, playerId, (p) => ({
+    ...p,
+    hand: p.hand.filter((c) => c.instanceId !== instanceId),
+    rush: [...p.rush, stripForZone(card)],
+  }));
+  return { state: finish(next, pending), log: logFor(state, playerId, "RS-436", `${GEKIKI_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
+}
+
+CHOICE_RESOLVERS[GEKIKI_EFFECT_ID] = resolveGekiki;
+CHOICE_SKIPPERS[GEKIKI_EFFECT_ID] = simpleSkip("RS-436");
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword（`set6b::cardId::name`）からの起点
 
 export const SET6B_KEYWORD_PREFIX = "set6b::";
@@ -1108,4 +1171,24 @@ export function trySet6BCardEffect(state: GameState, ctx: GrantKeywordContext, k
     default:
       return { state, detail: keyword };
   }
+}
+
+// ---------------------------------------------------------------------------
+// RS-429 マスター・シャーフー【暮らしの中に修行あり】（後半）
+// 「また、自軍ターン中、「MA」の自軍コマンドをホールドする代わりに「WB」の自軍コマンドをホールドしてもよい。
+//  ただし、追加で自軍コマンドを1つホールドすること。」
+// カテゴリの支払い（rules/commandPayment.ts）で、MA を求める支払いを WB のコマンド＋追加1つ（計2つ）で行えるようにする。
+
+export function shifuSubstituteAvailable(state: GameState, playerId: PlayerId, categories: readonly string[]): boolean {
+  if (!categories.includes("MA")) return false;
+  if (turnPlayerOf(state) !== playerId) return false;
+  const player = state.players[playerId];
+  if (!player.rush.some((c) => c.cardId === "RS-429")) return false;
+  const released = player.command.filter((c) => !c.commandHeld);
+  if (released.length < 2) return false;
+  return released.some((c) => {
+    const def = getDefinition(state.definitions, c.cardId);
+    const cats = Array.isArray(def?.category) ? def!.category : def?.category ? [def.category] : [];
+    return cats.includes("WB" as never);
+  });
 }
