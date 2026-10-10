@@ -1,3 +1,4 @@
+import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState, CardInstance } from "../types/game";
 import { clearRegisterHoldOffField } from "../rules/resist";
@@ -1008,7 +1009,10 @@ export function applyAction(
         }
         if (!afterZordDown) return fail("invalid_zord_material");
         nextPlayer = afterZordDown;
-      } else if (isZordUpCost(definition!.powerCost)) {
+      } else if (
+        isZordUpCost(definition!.powerCost) &&
+        rushAdditionalConditionApplies(state, playerId, found.card.cardId)
+      ) {
         if (needsZordStateGate(state.definitions, found.card.cardId)) {
           const gate = resolveRushAdditionalCondition(found.card.cardId, definition!);
           if (!gate || !evaluateStateGate(state, playerId, gate)) {

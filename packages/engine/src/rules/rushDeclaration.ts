@@ -14,6 +14,7 @@ import { isShironLightRushTarget } from "./shironLight";
 import { darkDealRushPowerBudget } from "./legend3/restrictions";
 import { godomRushPowerBudget } from "./godomRushPay";
 import { requiresAllFusionPartners, hasAllRequiredFusionMaterials } from "./zord";
+import { rushAdditionalConditionApplies } from "./bkOperationTurnRules";
 
 /** カテゴリ支払い済み、またはカテゴリ不要なユニットのみ直接 rush 可能。 */
 export function canDeclareRush(
@@ -82,6 +83,11 @@ export function canCompleteRushAfterCommandPayment(
     !canDeclareRush(state, playerId, player, state.definitions, definition, sourceInstanceId, zord)
   ) {
     return false;
+  }
+
+  // 追加条件が免除されている（ブラスト等）なら素材は要らない。ルール: R-KW-BLAST-01
+  if (isZordUpCost(definition.powerCost) && !rushAdditionalConditionApplies(state, playerId, handCard.cardId)) {
+    return true;
   }
 
   if (isZordUpCost(definition.powerCost) && requiresAllFusionPartners(handCard.cardId)) {

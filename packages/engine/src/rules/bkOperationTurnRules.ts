@@ -1,3 +1,4 @@
+import { blastBypassesRushAdditionalCondition } from "../keywords/battleKeywords";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { getDefinition } from "../core/catalog";
@@ -99,6 +100,8 @@ export function rushAdditionalConditionApplies(
 ): boolean {
   const definition = getDefinition(state.definitions, cardId);
   if (!definition || !resolveRushAdditionalCondition(cardId, definition)) return false;
+  // ブラスト: 負けるまで残り1点で自軍 L ユニットがなければ追加条件を満たさなくてよい。ルール: R-KW-BLAST-01
+  if (blastBypassesRushAdditionalCondition(state, playerId, cardId)) return false;
   return !isAccelerateRushWaived(state, playerId, cardId);
 }
 
