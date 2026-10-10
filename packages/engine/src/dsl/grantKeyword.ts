@@ -107,6 +107,7 @@ import { effectDelegateSlot } from "./effectDelegateSlot";
 import { isEngineNativeGrantKeyword } from "./promotedKeywordBridge";
 import { isCatchallGrantKeyword } from "./hashGrantKeywordStub";
 import { isStableCardDelegateKeyword } from "./effectCardGrantKeywordBridge";
+import { startSwanWingChoice } from "../rules/swanWing";
 import { setGenericSComboFinisher, setBattleDestroyToPower, addComboNumberDelta } from "../rules/turnModifierBridge";
 import { applySuperPowerHolds } from "../core/catalog";
 import { matchRkGrantKeyword } from "../rules/rkEffects";
@@ -409,6 +410,17 @@ export function applyGrantKeyword(
 
   const sr = matchSrGrantKeyword(state, ctx, keyword);
   if (sr) return sr;
+
+  if (keyword === "effect_card::RS-284::suwanuingu") {
+    // RS-284 ホワイトスワン【スワンウィング】（NC）。rules/swanWing.ts
+    const withChoice = startSwanWingChoice(state, {
+      playerId: ctx.playerId,
+      phasePlayerId: ctx.phasePlayerId,
+      sourceCardId: ctx.sourceCardId,
+      sourceInstanceId: ctx.triggerSourceInstanceId,
+    });
+    return { state: withChoice ?? state, detail: withChoice ? keyword : `${keyword}:no_targets` };
+  }
 
   if (isStableCardDelegateKeyword(keyword)) {
     const resolved = effectDelegateSlot.resolver?.(state, ctx, keyword);

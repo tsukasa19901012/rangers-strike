@@ -116,6 +116,9 @@ export function effectChoiceHint(
       if (pending.effectId === "reorder_enemy_battle") {
         return "敵軍バトルエリアのユニットを逆順に並び替えますか？";
       }
+      if (pending.effectId === "swan_wing_deploy_enemy_command_s") {
+        return "スワンウィング：敵軍コマンドゾーンのSユニットをすべてラッシュエリアに出しますか？";
+      }
       return "宣言するカード名を選んでください";
     case "select_units_bp_budget": {
       const budget = pending.bpBudget ?? 3000;

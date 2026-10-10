@@ -100,6 +100,7 @@ import {
   beginDinoSlasherDiscard,
 } from "./zoneCategoryEffects";
 import { countDistinctCategoriesInCommandZone } from "./zoneCategoryLimit";
+import { applySwanWing, SWAN_WING_EFFECT_ID } from "./swanWing";
 import {
   autoHoldForBattleEntry,
   clearEffectBattleEntryWindows,
@@ -2507,6 +2508,15 @@ export function applyEffectChoiceSelect(
   }
   if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
     return resolveSuperBrainKeepChoice(state, playerId, instanceId);
+  }
+  if (pending.effectId === SWAN_WING_EFFECT_ID) {
+    // RS-284【スワンウィング】を使う（「出してもよい」。使わないときは skip）。
+    const cleared = clearChoice(state, pending.phasePlayerId);
+    const applied = applySwanWing(cleared, pending.playerId, pending.phasePlayerId);
+    if (applied.pendingEffectChoice) {
+      return { state: applied, log: buildLogEntry(playerId, "resolve_effect_choice", pending.sourceCardId, state.definitions, "swan_wing") };
+    }
+    return finishChoice(applied, pending, "swan_wing");
   }
   if (pending.effectId === BEAT_HAMMER_EFFECT_ID) {
     return resolveBeatHammerChoice(state, playerId, instanceId);

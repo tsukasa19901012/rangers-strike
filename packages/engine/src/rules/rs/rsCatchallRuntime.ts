@@ -25,6 +25,7 @@ import {
   startGenericEnemyUnitChoice,
 } from "./rsCatchallChoices";
 import { RS_CATCHALL_SPECS } from "./rsCatchallSpecs.generated";
+import { startSwanWingChoice } from "../swanWing";
 
 const PASSIVE_FIELD_PATTERNS = new Set([
   "while_in_field_body",
@@ -188,7 +189,20 @@ const handleOpponentMust: PatternHandler = (state, ctx, body) => {
   return { state, detail: ctx.effectId };
 };
 
+const SWAN_WING_BODY = /敵軍コマンドゾーンにあるSユニットのカードをすべてラッシュエリアに出/;
+
 const handleDeployRush: PatternHandler = (state, ctx, body) => {
+  // RS-284【スワンウィング】: 敵軍コマンドゾーンの S ユニットのカードをすべて（相手の）ラッシュエリアに出してもよい。
+  if (SWAN_WING_BODY.test(body)) {
+    const withChoice = startSwanWingChoice(state, {
+      playerId: ctx.playerId,
+      phasePlayerId: ctx.phasePlayerId,
+      sourceCardId: ctx.sourceCardId,
+      sourceInstanceId: ctx.triggerSourceInstanceId,
+    });
+    if (!withChoice) return { state, detail: `${ctx.effectId}:no_targets` };
+    return { state: withChoice, detail: ctx.effectId };
+  }
   const filter = parseEnemyUnitFilter(body);
   filter.zone = "both";
   if (!filter.size && /Sユニット/.test(body)) filter.size = "S";
@@ -391,6 +405,11 @@ export function tryRsCatchallRuntime(
 
   const effect = getDslEffectById(ctx.sourceCardId, ctx.effectId);
   const body = effect?.text ?? "";
+
+  // RS-284【スワンウィング】は汎用の構造化プリミティブ（場のユニット選択）では表せないので先に処理する。
+  if (pattern === "deploy_rush_area" && SWAN_WING_BODY.test(body)) {
+    return handleDeployRush(state, ctx, body, interpret);
+  }
 
   const structured = buildCatchallStructuredPrimitives(body, pattern);
   if (structured) {
