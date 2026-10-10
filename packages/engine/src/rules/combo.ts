@@ -384,7 +384,10 @@ export function resolveEnterBattleEffectsImpl(
   }
 
   if (shouldRunEnterStep(resumeFrom, "nc")) {
+    // ルール: R-CN-04 — コンビネーションは自軍バトルフェイズにバトルエリアへ出たときだけ（ラッシュフェイズに
+    // 置かれたレッドレーサー等は並び順が CN と一致しても NC を発動しない）。
     if (
+      nextState.phase === "battle" &&
       definition &&
       numberComboTriggers(
         nextState,

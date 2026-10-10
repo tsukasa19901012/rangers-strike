@@ -140,11 +140,10 @@ export function findNcNamedEffect(
 
   for (const named of block.namedEffects) {
     if (named.trigger.type === "nc_or_combo_from") {
-      const fromPartners = battleHasPartner(
-        battleBeforeEnter,
-        named.trigger.partnerCardIds,
-        excludeInstanceId,
-      );
+      // ルール: R-CN-05 — コンビネーションは直前に出たユニット（左隣）との間にだけ成立する。
+      const leftNeighbor = battleBeforeEnter.filter((c) => c.instanceId !== excludeInstanceId).at(-1);
+      const fromPartners =
+        leftNeighbor !== undefined && named.trigger.partnerCardIds.includes(leftNeighbor.cardId);
       const fromPosition = effectiveComboNumber === battlePosition;
       if (fromPartners || fromPosition) return named;
       continue;

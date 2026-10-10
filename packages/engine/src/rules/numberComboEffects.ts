@@ -58,6 +58,30 @@ function ncEffectiveNumber(
   );
 }
 
+/**
+ * RS-263【弾幕タンクコマンドミサイル】: これが自軍ラッシュエリアにある間、リリース状態の自軍コマンドに
+ * ナンバーを持つユニットカードがあれば、本来のナンバーがそれと同じ S ユニットは NC の効果を発動できない。
+ * ルール: R-CN-05 — 参照するのは「カードに表記された本来のナンバー」（コロン等の補正は無関係。faq-card-1 RS-015 Q1）。
+ */
+function tankCommandBlocksNc(
+  state: GameState,
+  card: CardInstance,
+  definition: CardDefinition,
+): boolean {
+  if (definition.size !== "S" || typeof definition.comboNumber !== "number") return false;
+  for (const pid of ["player1", "player2"] as const) {
+    const player = state.players[pid];
+    if (!player.rush.some((c) => c.cardId === "RS-263")) continue;
+    const blocked = player.command.some((c) => {
+      if (c.commandHeld) return false;
+      const def = state.definitions[c.cardId];
+      return def?.type === "unit" && def.comboNumber === definition.comboNumber;
+    });
+    if (blocked) return true;
+  }
+  return false;
+}
+
 export function numberComboTriggers(
   state: GameState,
   playerId: PlayerId,
@@ -66,6 +90,7 @@ export function numberComboTriggers(
   battlePosition: number,
   battleBeforeEnter: CardInstance[],
 ): boolean {
+  if (tankCommandBlocksNc(state, card, definition)) return false;
   const effectiveNumber = ncEffectiveNumber(state, playerId, card, definition);
   const position = battlePosition;
 

@@ -632,13 +632,15 @@ export function resolveFocusedBreakthroughDamage(
   strikerInstanceId: string,
   defenderOwner: PlayerId,
   defender: CardInstance,
+  /** 撃破直前に判定した結果（R-STK-03: 分数 SP は撃破前の並び順で SP1）。 */
+  defenderQualifies?: boolean,
 ): NamedEffectOutcome {
   const striker = state.players[strikerPlayerId];
   const strikerCard = striker.battle.find((c) => c.instanceId === strikerInstanceId);
   if (!strikerCard || strikerCard.cardId !== "RS-065") return { state, logs: [] };
   // ルール: R-ERR-RS065 — 【一点突破】は NC（CN3）が成立しているときだけ有効。
   if (!hasBattleNcEffect(strikerCard, "focused_breakthrough")) return { state, logs: [] };
-  if (!unitQualifiesForFocusedBreakthrough(state, defenderOwner, defender)) {
+  if (!(defenderQualifies ?? unitQualifiesForFocusedBreakthrough(state, defenderOwner, defender))) {
     return { state, logs: [] };
   }
 

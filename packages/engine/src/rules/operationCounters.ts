@@ -36,6 +36,7 @@ import {
   battleAttackerBpBonus,
   battleDefenderBp,
   resolveFocusedBreakthroughDamage,
+  unitQualifiesForFocusedBreakthrough,
   resolveBlackCondorDestroyDamage,
 } from "./namedUnitEffects";
 import { findCardOwner } from "./fieldLookup";
@@ -1024,6 +1025,12 @@ export function resolveBattlePendingCore(
 
   let nextState = battleState;
   let extraLogs: string[] = [];
+  // ルール: R-STK-03 — 分数 SP 等の並び順依存の SP は、撃破される直前（バトルエリアにいる状態）で判定する。
+  const defenderQualifiesForBreakthrough = unitQualifiesForFocusedBreakthrough(
+    battleState,
+    defenderOwner,
+    refreshedDefenderFound.card,
+  );
 
   if (finalDestroyDefender) {
     const leaveResult = tryLeaveField(nextState, {
@@ -1050,6 +1057,7 @@ export function resolveBattlePendingCore(
         pending.attackerInstanceId,
         defenderOwner,
         refreshedDefenderFound.card,
+        defenderQualifiesForBreakthrough,
       );
       nextState = fb.state;
       extraLogs = fb.logs;
