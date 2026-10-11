@@ -34,7 +34,10 @@ import {
   isUnit,
   needsZordMaterial,
   parsePowerCost,
+  rushPowerCost,
 } from "./catalog";
+import { effectivePowerCost } from "./power";
+import { godomDiscardCandidates } from "../rules/godomRushPay";
 import {
   listZordDownRushPaymentVariants,
   needsZordDownPayment,
@@ -110,7 +113,7 @@ import { getStackActorPlayerId, hasOpenReactionWindow, peekEffectStackTop } from
 import { getCardEffect } from "@rangers-strike/cards";
 import { isHidoraEggUsed } from "../rules/turnModifiers";
 import { listValidChaseVehicleIds } from "../keywords/chase";
-import { canDeclareRush } from "../rules/rushDeclaration";
+import { canDeclareRush, rushPowerBudget } from "../rules/rushDeclaration";
 import { jaryuInvasionAllowsRushWithoutHold } from "../rules/jaryuInvasion";
 import { listKamenRideAbilityUnits } from "../rules/riderKickEffects";
 import { SCRAMBLE_EFFECT_ID, listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities";
@@ -460,6 +463,60 @@ function appendLeaveReactionActions(
   }
 
   actions.push({ type: "pass_leave_reaction", playerId: pending.ownerPlayerId });
+}
+
+function combinationsOf<T>(items: T[], count: number): T[][] {
+  if (count <= 0) return [[]];
+  if (count > items.length) return [];
+  const [head, ...rest] = items;
+  return [...combinationsOf(rest, count - 1).map((c) => [head!, ...c]), ...combinationsOf(rest, count)];
+}
+
+/**
+ * RS-586 巨神ゴードム【魔神に不足する物】「必要パワーに足りない数だけ、特徴「戦闘員」を持つユニットを捨札にする」:
+ * 捨札にするユニットはプレイヤーが選ぶ。候補が足りない数より多ければ、ラッシュの宣言（rush / initiate_command_payment /
+ * begin_zord_setup）を選び方ごとに分ける（godomDiscardInstanceIds）。アブレラ【闇の取引】等の別の手段でも満たせるなら、
+ * ゴードムを使わない宣言（[]）も残す（「してもよい」）。
+ */
+function expandGodomRushVariants(state: GameState, playerId: PlayerId, actions: GameAction[]): void {
+  const player = state.players[playerId];
+  const expanded: GameAction[] = [];
+  let changed = false;
+  for (const action of actions) {
+    const sourceId =
+      action.type === "rush"
+        ? action.instanceId
+        : action.type === "initiate_command_payment" && action.kind === "category_use"
+          ? action.sourceInstanceId
+          : action.type === "begin_zord_setup"
+            ? action.zordInstanceId
+            : undefined;
+    const handCard = sourceId ? player.hand.find((c) => c.instanceId === sourceId) : undefined;
+    const def = handCard ? getDefinition(state.definitions, handCard.cardId) : undefined;
+    if (!handCard || !def || !isUnit(def) || "godomDiscardInstanceIds" in action && action.godomDiscardInstanceIds) {
+      expanded.push(action);
+      continue;
+    }
+    const zord = action as { zordMaterialInstanceId?: string; zordMaterialInstanceIds?: string[] };
+    const materials = new Set([...(zord.zordMaterialInstanceIds ?? []), ...(zord.zordMaterialInstanceId ? [zord.zordMaterialInstanceId] : [])]);
+    const cost = effectivePowerCost(state, playerId, rushPowerCost(state, playerId, def, zord));
+    const shortage = cost - countAvailablePower(state, playerId);
+    const candidates = shortage > 0 ? godomDiscardCandidates(state, playerId, player, def).filter((id) => !materials.has(id)) : [];
+    if (candidates.length < shortage || candidates.length === 0) {
+      expanded.push(action);
+      continue;
+    }
+    changed = true;
+    // 候補がちょうど足りない数なら選ぶ余地はない（1通り）。省略した宣言も同じ組を捨札にする。
+    for (const set of combinationsOf(candidates, shortage)) {
+      expanded.push({ ...action, godomDiscardInstanceIds: set } as GameAction);
+    }
+    if (darkDealRushPowerBudget(state, playerId, player, def) >= cost) {
+      expanded.push({ ...action, godomDiscardInstanceIds: [] } as GameAction);
+    }
+  }
+  if (!changed) return;
+  actions.splice(0, actions.length, ...expanded);
 }
 
 function appendZordSetupActions(
@@ -979,7 +1036,8 @@ function appendRushCategoryPaymentActions(
             undefined,
             undefined,
             undefined,
-            undefined,
+            // RS-586【魔神に不足する物】・アブレラ【闇の取引】で必要パワーを補える分も含める。
+            rushPowerBudget(state, playerId, player, definition),
             { ...state, playerId },
           )
         ) {
@@ -1018,7 +1076,8 @@ function appendRushCategoryPaymentActions(
               variant.zordMaterialInstanceId,
               variant.zordMothershipHoldInstanceIds,
               variant.zordMaterialDestination,
-              undefined,
+              // RS-586【魔神に不足する物】・アブレラ【闇の取引】で必要パワーを補える分も含める。
+              rushPowerBudget(state, playerId, player, definition),
               { ...state, playerId },
               variant.zordMaterialInstanceIds,
               variant.zordExtraCommandHoldInstanceIds,
@@ -1065,7 +1124,8 @@ function appendRushCategoryPaymentActions(
             zord.zordMaterialInstanceId,
             undefined,
             zord.zordMaterialDestination,
-            undefined,
+            // RS-586【魔神に不足する物】・アブレラ【闇の取引】で必要パワーを補える分も含める。
+            rushPowerBudget(state, playerId, player, definition),
             { ...state, playerId },
           )
         ) {
@@ -1099,7 +1159,8 @@ function appendRushCategoryPaymentActions(
           undefined,
           undefined,
           undefined,
-          undefined,
+          // RS-586【魔神に不足する物】・アブレラ【闇の取引】で必要パワーを補える分も含める。
+          rushPowerBudget(state, playerId, player, definition),
           { ...state, playerId },
         )
       ) {
@@ -1900,6 +1961,7 @@ function getLegalActionsCore(state: GameState): GameAction[] {
       appendShironLightActions(state, playerId, actions);
       appendActivateResidentOperationActions(state, playerId, actions);
       appendActivateFieldUnitAbilityActions(state, playerId, actions);
+      expandGodomRushVariants(state, playerId, actions);
       actions.push({ type: "end_phase", playerId });
       break;
 
@@ -2293,6 +2355,11 @@ export function isLegalActionBase(state: GameState, action: GameAction): boolean
   return getLegalActions(state).some((candidate) => actionsEqual(candidate, action));
 }
 
+/** RS-586【魔神に不足する物】の選び方の比較用（省略・使わない・選んだユニットを区別する）。 */
+function godomKey(ids: string[] | undefined): string {
+  return ids === undefined ? "auto" : [...ids].sort().join(",");
+}
+
 function actionsEqual(a: GameAction, b: GameAction): boolean {
   if (a.type !== b.type || a.playerId !== b.playerId) return false;
 
@@ -2316,7 +2383,8 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
       matsA === matsB &&
       (a.zordMaterialDestination ?? "") === (b.zordMaterialDestination ?? "") &&
       holdsA === holdsB &&
-      extraA === extraB
+      extraA === extraB &&
+      godomKey(a.godomDiscardInstanceIds) === godomKey(b.godomDiscardInstanceIds)
     );
   }
 
@@ -2423,8 +2491,13 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
       holdsA === holdsB &&
       (a.targetInstanceId ?? "") === (b.targetInstanceId ?? "") &&
       (a.extraInstanceId ?? "") === (b.extraInstanceId ?? "") &&
-      (a.substituteInstanceId ?? "") === (b.substituteInstanceId ?? "")
+      (a.substituteInstanceId ?? "") === (b.substituteInstanceId ?? "") &&
+      godomKey(a.godomDiscardInstanceIds) === godomKey(b.godomDiscardInstanceIds)
     );
+  }
+
+  if (a.type === "begin_zord_setup" && b.type === "begin_zord_setup") {
+    return a.zordInstanceId === b.zordInstanceId && godomKey(a.godomDiscardInstanceIds) === godomKey(b.godomDiscardInstanceIds);
   }
 
   if (a.type === "skip_effect_choice" && b.type === "skip_effect_choice") {

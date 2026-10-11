@@ -770,6 +770,8 @@ export type CommandPaymentContinuation =
       zordMaterialDestinations?: Array<"command" | "discard">;
       zordMothershipHoldInstanceIds?: string[];
       zordExtraCommandHoldInstanceIds?: string[];
+      /** RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニット（RushAction と同じ）。 */
+      godomDiscardInstanceIds?: string[];
       /**
        * 「Sユニット2体をそれぞれ…」の一部を素材で満たし、残りを【母艦】ホールドで代える（RS-076 Q7・RS-075 Q2）。
        * カテゴリのホールドの後に、この数の母艦ホールドを選ぶ。
@@ -807,6 +809,8 @@ export type PendingZordSetup = {
   chosenMaterialDestinations?: ZordMaterialDestination[];
   /** このゾードでは母艦ホールドがSユニット素材の代用になる場合がある。 */
   mothershipAvailable?: boolean;
+  /** RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニット（begin_zord_setup で選び、最後のラッシュに引き継ぐ）。 */
+  godomDiscardInstanceIds?: string[];
 };
 
 /** プレイヤーアクションの一部としてコマンドホールドを支払う（単独ホールド不可）。 */

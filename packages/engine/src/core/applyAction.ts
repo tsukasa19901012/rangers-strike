@@ -152,7 +152,7 @@ import {
   tryStartBattleEntryPowerDiscard,
   tryStartBattleEntryRushDiscard,
 } from "../rules/legend3/restrictions";
-import { applyGodomSenshoDiscardPay } from "../rules/godomRushPay";
+import { applyGodomSenshoDiscardPay, godomDeclarationError } from "../rules/godomRushPay";
 import { activateSet9AResident, isSet9AResidentCard, settleSet9AAfterAction, settleSet9ATurnEnd } from "../rules/legend1/set9NamedEffectsA";
 import { openCastTransferOnCharge } from "../rules/legend1/set9NamedEffectsD";
 import { openMegaCaptureIfReady, queueMegaCapture } from "../rules/legend1/set9NamedEffectsB";
@@ -1345,6 +1345,14 @@ function applyActionCore(
     }
 
     case "initiate_command_payment": {
+      if (action.kind === "category_use") {
+        // RS-586【魔神に不足する物】: 捨札にする「戦闘員」のユニットの選び方（rules/godomRushPay.ts）。
+        const godomError = godomDeclarationError(state, playerId, action.sourceInstanceId, action.godomDiscardInstanceIds, [
+          ...(action.zordMaterialInstanceIds ?? []),
+          ...(action.zordMaterialInstanceId ? [action.zordMaterialInstanceId] : []),
+        ]);
+        if (godomError) return fail(godomError);
+      }
       const pending = buildPaymentFromInitiateAction(state, action);
       if (!pending) return fail("cannot_pay");
       return ok(
@@ -1355,11 +1363,17 @@ function applyActionCore(
 
     case "begin_zord_setup": {
       if (state.phase !== "rush") return fail("wrong_phase");
+      if (action.godomDiscardInstanceIds) {
+        const godomError = godomDeclarationError(state, playerId, action.zordInstanceId, action.godomDiscardInstanceIds);
+        if (godomError) return fail(godomError);
+      }
       if (!canBeginZordSetup(state, playerId, action.zordInstanceId)) {
         return fail("cannot_begin_zord_setup");
       }
-      const setup = createZordSetup(state, playerId, action.zordInstanceId);
-      if (!setup) return fail("cannot_begin_zord_setup");
+      const created = createZordSetup(state, playerId, action.zordInstanceId);
+      if (!created) return fail("cannot_begin_zord_setup");
+      // RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニットは、最後のラッシュに引き継ぐ。
+      const setup = action.godomDiscardInstanceIds ? { ...created, godomDiscardInstanceIds: action.godomDiscardInstanceIds } : created;
       return ok(
         { ...state, pendingZordSetup: setup },
         buildSimpleLogEntry(playerId, "zord_setup_pending"),
@@ -1375,23 +1389,28 @@ function applyActionCore(
         paymentPath: action.paymentPath,
       });
       if (advanced.kind === "error") return fail(advanced.error);
+      const godom = setup.godomDiscardInstanceIds;
       if (advanced.kind === "continue") {
         return ok(
-          { ...state, pendingZordSetup: advanced.setup },
+          { ...state, pendingZordSetup: godom ? { ...advanced.setup, godomDiscardInstanceIds: godom } : advanced.setup },
           buildSimpleLogEntry(playerId, "zord_setup_step"),
         );
       }
       if (advanced.kind === "rush") {
         return applyAction(
           { ...state, pendingZordSetup: undefined },
-          advanced.action,
+          godom ? { ...advanced.action, godomDiscardInstanceIds: godom } : advanced.action,
         );
       }
+      const payment =
+        godom && advanced.payment.continuation.type === "rush"
+          ? { ...advanced.payment, continuation: { ...advanced.payment.continuation, godomDiscardInstanceIds: godom } }
+          : advanced.payment;
       return ok(
         {
           ...state,
           pendingZordSetup: undefined,
-          pendingCommandPayment: advanced.payment,
+          pendingCommandPayment: payment,
         },
         buildSimpleLogEntry(playerId, "command_payment_pending"),
       );
@@ -1497,6 +1516,7 @@ function applyActionCore(
             zordMaterialDestinations: cont.zordMaterialDestinations,
             zordMothershipHoldInstanceIds: holdIds,
             zordExtraCommandHoldInstanceIds: cont.zordExtraCommandHoldInstanceIds,
+            godomDiscardInstanceIds: cont.godomDiscardInstanceIds,
           },
           { trustLegality: true },
         );
@@ -1991,8 +2011,21 @@ function applyActionCore(
 
         if (shortage > 0) {
           // RS-586【魔神に不足する物】: 足りない数だけ場の「戦闘員」のユニットを捨札にする（rules/godomRushPay.ts）。
-          const withGodom = applyGodomSenshoDiscardPay(powerState, playerId, candidate, definition!, shortage);
-          if (withGodom) {
+          const withGodom = applyGodomSenshoDiscardPay(
+            powerState,
+            playerId,
+            candidate,
+            definition!,
+            shortage,
+            action.godomDiscardInstanceIds,
+          );
+          if (withGodom && "error" in withGodom) {
+            // 選び方が不正なら失敗。候補が多いのに選んでいないときは、アブレラ【闇の取引】等の別の手段で満たせればそちらで払う
+            // （ゴードムは「してもよい」）。満たせなければ、捨札にするユニットを選ぶ必要がある。
+            if (action.godomDiscardInstanceIds || darkDealRushPowerBudget(state, playerId, candidate, definition!) < effectiveCost) {
+              return fail(withGodom.error);
+            }
+          } else if (withGodom) {
             candidate = withGodom.player;
             shortage -= withGodom.covered;
           }

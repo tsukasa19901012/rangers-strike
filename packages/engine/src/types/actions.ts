@@ -38,6 +38,11 @@ export type RushAction = {
   zordMothershipHoldInstanceIds?: string[];
   /** hold_extra_command: 追加でホールドするコマンド。 */
   zordExtraCommandHoldInstanceIds?: string[];
+  /**
+   * RS-586 巨神ゴードム【魔神に不足する物】: 必要パワーに足りない数だけ捨札にする「戦闘員」のユニット（プレイヤーが選ぶ）。
+   * [] なら使わない。省略時は候補がちょうど足りない数のときだけ使う（rules/godomRushPay.ts）。
+   */
+  godomDiscardInstanceIds?: string[];
 };
 
 export type MoveToBattleAction = {
@@ -318,6 +323,8 @@ export type InitiateCommandPaymentAction = {
   zordMaterialDestination?: ZordMaterialDestination;
   zordMothershipHoldInstanceIds?: string[];
   zordExtraCommandHoldInstanceIds?: string[];
+  /** RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニット（RushAction と同じ）。 */
+  godomDiscardInstanceIds?: string[];
   targetInstanceId?: string;
   extraInstanceId?: string;
   /** RS-018 等: カウンター支払い後に適用する代替ユニット。 */
@@ -339,6 +346,8 @@ export type BeginZordSetupAction = {
   type: "begin_zord_setup";
   playerId: PlayerId;
   zordInstanceId: string;
+  /** RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニット（RushAction と同じ。最後のラッシュに引き継ぐ）。 */
+  godomDiscardInstanceIds?: string[];
 };
 
 export type ResolveZordSetupAction = {

@@ -893,6 +893,7 @@ export function continueAfterMothershipPayment(
       zordMaterialDestination: cont.zordMaterialDestination,
       zordMothershipHoldInstanceIds: commandInstanceIds,
       zordExtraCommandHoldInstanceIds: cont.zordExtraCommandHoldInstanceIds,
+      godomDiscardInstanceIds: cont.godomDiscardInstanceIds,
     },
     false,
   );
@@ -1068,6 +1069,7 @@ export function buildPaymentFromInitiateAction(
       zordMaterialDestination: action.zordMaterialDestination,
       zordMothershipHoldInstanceIds: action.zordMothershipHoldInstanceIds,
       zordExtraCommandHoldInstanceIds: action.zordExtraCommandHoldInstanceIds,
+      godomDiscardInstanceIds: action.godomDiscardInstanceIds,
     };
     return buildCategoryPayment(
       state,

@@ -216,7 +216,8 @@ export function scoreRushAction(
   const lethalBonus = enemy.damage + sp >= WIN_DAMAGE ? 50_000 : 0;
   const deckLeft = player.deck.length;
   const deckPenalty = deckLeft < 10 ? (10 - deckLeft) * 400 : 0;
-  let score = bp + sp * 3_000 + lethalBonus - deckPenalty;
+  // RS-586【魔神に不足する物】: 捨札にする「戦闘員」のユニットの損失。
+  let score = bp + sp * 3_000 + lethalBonus - deckPenalty - godomDiscardPenalty(state, playerId, action.godomDiscardInstanceIds);
 
   if (requiresAllFusionPartners(card.cardId)) {
     if (
@@ -604,10 +605,12 @@ export function pickRushCategoryPayment(
         a.playerId === playerId &&
         a.instanceId === action.sourceInstanceId,
     );
-    const score = rushAction
-      ? scoreRushAction(state, rushAction)
-      : effectiveBp(state, playerId, card) +
-        strikeDamageFor(state.definitions, card, state, playerId) * 3_000;
+    const score =
+      (rushAction
+        ? scoreRushAction(state, rushAction)
+        : effectiveBp(state, playerId, card) +
+          strikeDamageFor(state.definitions, card, state, playerId) * 3_000) -
+      godomDiscardPenalty(state, playerId, action.godomDiscardInstanceIds);
     if (score > bestScore) {
       bestScore = score;
       best = action;
@@ -657,7 +660,21 @@ export function pickHoldBeforeRush(
     zordMaterialInstanceId: rushAction.zordMaterialInstanceId,
     zordMaterialDestination: rushAction.zordMaterialDestination,
     zordMothershipHoldInstanceIds: rushAction.zordMothershipHoldInstanceIds,
+    godomDiscardInstanceIds: rushAction.godomDiscardInstanceIds,
   };
+}
+
+/**
+ * RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニットの損失（BP の低いユニットを捨札にする組を選ぶ）。
+ * 選ぶ組ごとに分かれたラッシュの宣言の比較に使う。
+ */
+export function godomDiscardPenalty(state: GameState, playerId: PlayerId, ids: string[] | undefined): number {
+  if (!ids || ids.length === 0) return 0;
+  const player = state.players[playerId];
+  return ids.reduce((sum, id) => {
+    const card = [...player.rush, ...player.battle].find((c) => c.instanceId === id);
+    return sum + 1_000 + (card ? effectiveBp(state, playerId, card) : 0);
+  }, 0);
 }
 
 export function pickBeginZordSetup(
@@ -682,7 +699,9 @@ export function pickBeginZordSetup(
         type: "rush",
         playerId,
         instanceId: action.zordInstanceId,
-      }) + 25_000;
+      }) +
+      25_000 -
+      godomDiscardPenalty(state, playerId, action.godomDiscardInstanceIds);
     if (score > bestScore) {
       bestScore = score;
       best = action;

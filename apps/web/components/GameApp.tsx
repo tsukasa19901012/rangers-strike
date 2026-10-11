@@ -111,6 +111,8 @@ import { OperationPromptModal } from "./OperationPromptModal";
 import { PermanentOperationModal } from "./PermanentOperationModal";
 import { ShironLightModal } from "./ShironLightModal";
 import { CyberSRiderModal } from "./CyberSRiderModal";
+import { GodomDiscardModal } from "./GodomDiscardModal";
+import { godomChoiceNeeded, listGodomRushVariants, type GodomRushVariant } from "../lib/godomRushUi";
 import { BattleDanceModal } from "./BattleDanceModal";
 import { LightningGravityHoldModal } from "./LightningGravityHoldModal";
 import { ReactionModal } from "./ReactionModal";
@@ -210,6 +212,8 @@ export function GameApp() {
   const [previewCard, setPreviewCard] = useState<CardDefinition | null>(null);
   const [pileView, setPileView] = useState<PileView | null>(null);
   const [pendingOp, setPendingOp] = useState<PendingOperation | null>(null);
+  // RS-586【魔神に不足する物】: 捨札にする「戦闘員」のユニットを選ぶラッシュ（lib/godomRushUi.ts）。
+  const [pendingGodomRush, setPendingGodomRush] = useState<{ cardId: string; variants: GodomRushVariant[] } | null>(null);
   const [pendingCyberSRider, setPendingCyberSRider] = useState<{
     instanceId: string;
     cardId: string;
@@ -336,6 +340,7 @@ export function GameApp() {
       setStartError(null);
       setPendingOp(null);
       setPendingCyberSRider(null);
+      setPendingGodomRush(null);
       setPendingBattleDance(null);
       setPendingHiddenNinja(null);
       setPreviewCard(null);
@@ -364,6 +369,7 @@ export function GameApp() {
     setEditingDeckId(null);
     setPendingOp(null);
     setPendingCyberSRider(null);
+    setPendingGodomRush(null);
     setPendingBattleDance(null);
     setPendingHiddenNinja(null);
     setPreviewCard(null);
@@ -499,6 +505,7 @@ export function GameApp() {
       ) {
         setPendingOp(null);
         setPendingCyberSRider(null);
+        setPendingGodomRush(null);
         setPendingBattleDance(null);
       }
       setPendingHiddenNinja(null);
@@ -771,6 +778,17 @@ export function GameApp() {
             a.type === "begin_zord_setup" && a.zordInstanceId === payload.instanceId,
         );
 
+        // RS-586【魔神に不足する物】: 捨札にする「戦闘員」のユニットはプレイヤーが選ぶ。
+        const godomVariants = listGodomRushVariants(legalActions, payload.instanceId);
+        if (godomVariants.length > 0) {
+          if (godomChoiceNeeded(godomVariants)) {
+            setPendingGodomRush({ cardId: payload.cardId, variants: godomVariants });
+          } else {
+            apply(godomVariants[0]!);
+          }
+          return;
+        }
+
         if (needsZord) {
           const readyRush =
             findDirectZordRushAction(state, HUMAN_PLAYER, payload.instanceId) ??
@@ -1025,6 +1043,7 @@ export function GameApp() {
           zordMaterialInstanceId: cont.zordMaterialInstanceId,
           zordMaterialDestination: cont.zordMaterialDestination,
           zordMothershipHoldInstanceIds: cont.zordMothershipHoldInstanceIds,
+          godomDiscardInstanceIds: cont.godomDiscardInstanceIds,
         };
       } else if (cont.type === "play_operation") {
         initiateAction = {
@@ -1640,6 +1659,7 @@ export function GameApp() {
     !state.pendingBattleEntry &&
     !pendingOp &&
     !pendingCyberSRider &&
+    !pendingGodomRush &&
     !pendingBattleDance &&
     !pendingHiddenNinja &&
     !wingPromptAttackerId &&
@@ -2097,6 +2117,7 @@ export function GameApp() {
       (state.pendingLeave && state.activePlayer === HUMAN_PLAYER) ||
       !!pendingOp ||
       !!pendingCyberSRider ||
+      !!pendingGodomRush ||
       !!pendingBattleDance ||
       !!pendingHiddenNinja);
 
@@ -2725,6 +2746,20 @@ export function GameApp() {
           discardOnlyIds={pendingDiscardTargets ?? null}
           onSelectTarget={handleOperationTarget}
           onCancel={() => setPendingOp(null)}
+        />
+      )}
+      {humanCanAct && pendingGodomRush && (
+        <GodomDiscardModal
+          state={state}
+          playerId={HUMAN_PLAYER}
+          rushCardId={pendingGodomRush.cardId}
+          variants={pendingGodomRush.variants}
+          onConfirm={(action) => {
+            setPendingGodomRush(null);
+            apply(action);
+          }}
+          onCancel={() => setPendingGodomRush(null)}
+          onPreview={(cardId) => setPreviewCard(resolvePlayableCard(cardId) ?? null)}
         />
       )}
       {showCyberSRiderModal && pendingCyberSRider && (
