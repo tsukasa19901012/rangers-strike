@@ -23,6 +23,7 @@ import { grantBpBoostToBattleUnit, grantSp1ToBattleUnit, markBattleNcEffect } fr
 import { addJointComboGrant, jointRGrantActive } from "../jointComboGrants";
 import { wasRushedThisTurn } from "../turnModifiers";
 import { stackOntoLargeCardsOn, stackOntoLargeGrant } from "../stackOntoLargeGrants";
+import { turnPlayerOf } from "./set6NamedEffectsB";
 import { continueBattleToRushEffectQueue } from "../startPhase";
 import type { ComboOutcome } from "../comboTypes";
 
@@ -737,25 +738,57 @@ CHOICE_RESOLVERS[SENSOR_DRAW_EFFECT_ID] = (state, playerId) => {
 // ---------------------------------------------------------------------------
 // RS-660 デカピンクSWAT【SPインカム】（CN：5）
 // 「次の相手ターン、新しくラッシュエリアに出たユニットと、ホールド状態のユニットは、ターンが終わるまでバトルエリアに出られない」（atwiki/page-1527）
-// 「新しくラッシュエリアに出た」はそのターンにラッシュエリアに出た（ラッシュ・効果で出た）ユニット（wasRushedThisTurn）。
+// - 「新しくラッシュエリアに出た」: そのターン中に、場の外（手札・山札・捨札・コマンドゾーン・パワーゾーン等）からラッシュエリアに
+//   出たユニット（ラッシュ・効果で出す・モーフの置き換え等、手段を問わない）。バトルエリアからラッシュエリアに戻ったユニットは含まない。
+//   そのターンの各アクションの前後でラッシュエリアに増えたユニットを記録する（trackSpIncomeEntries）。
+// - 「自軍」「敵軍」の限定がないので、両軍のユニットが対象（相手ターン中に効果で自軍のユニットをバトルエリアに出す場合も）。
 
 function armSpIncome(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const armer = ctx.playerId;
   const restricted = opponent(armer);
   // 「次の相手ターン」— 自分の追加ターン（RS-484【ハリーアップ！】）があれば、その後の相手のターン。
   const extra = (state.extraTurns ?? []).filter((p) => p === armer).length;
-  const entry = { restrictedPlayerId: restricted, turn: state.turn + 1 + extra };
+  const entry = { restrictedPlayerId: restricted, turn: state.turn + 1 + extra, enteredInstanceIds: [] as string[] };
   return {
     state: { ...state, set9cMeta: { ...state.set9cMeta, spIncome: [...(state.set9cMeta?.spIncome ?? []), entry] } },
     detail: "rs660_sp_income",
   };
 }
 
-/** バトルエリアに出られない（rules/restrictions.ts canMoveUnitToBattle から呼ぶ）。 */
-export function set9CBlocksBattleEntry(state: GameState, playerId: PlayerId, unit: CardInstance): boolean {
-  const active = (state.set9cMeta?.spIncome ?? []).some((e) => e.turn === state.turn && state.activePlayer === e.restrictedPlayerId);
-  if (!active) return false;
-  return !!unit.commandHeld || wasRushedThisTurn(state.players[playerId], unit.instanceId);
+/** いま有効な【SPインカム】（そのターンが「次の相手ターン」）。 */
+function activeSpIncome(state: GameState): Array<NonNullable<NonNullable<GameState["set9cMeta"]>["spIncome"]>[number]> {
+  return (state.set9cMeta?.spIncome ?? []).filter((e) => e.turn === state.turn && turnPlayerOf(state) === e.restrictedPlayerId);
+}
+
+/**
+ * applyAction の後処理: 【SPインカム】が有効なターンに、場の外からラッシュエリアに出たユニットを記録する。
+ * 前の状態でどちらかのエリア（ラッシュ・バトル）にあったユニットは「新しく」出たものではない。
+ */
+export function trackSpIncomeEntries(before: GameState, after: GameState): GameState {
+  if (activeSpIncome(after).length === 0) return after;
+  const onField = new Set<string>();
+  for (const pid of ["player1", "player2"] as const) {
+    for (const c of [...before.players[pid].rush, ...before.players[pid].battle]) onField.add(c.instanceId);
+  }
+  const entered = (["player1", "player2"] as const)
+    .flatMap((pid) => after.players[pid].rush)
+    .map((c) => c.instanceId)
+    .filter((id) => !onField.has(id));
+  if (entered.length === 0) return after;
+  const spIncome = (after.set9cMeta?.spIncome ?? []).map((e) =>
+    e.turn === after.turn && turnPlayerOf(after) === e.restrictedPlayerId
+      ? { ...e, enteredInstanceIds: [...new Set([...(e.enteredInstanceIds ?? []), ...entered])] }
+      : e,
+  );
+  return { ...after, set9cMeta: { ...after.set9cMeta, spIncome } };
+}
+
+/** バトルエリアに出られない（rules/restrictions.ts canMoveUnitToBattle から呼ぶ）。両軍のユニットが対象。 */
+export function set9CBlocksBattleEntry(state: GameState, _playerId: PlayerId, unit: CardInstance): boolean {
+  const active = activeSpIncome(state);
+  if (active.length === 0) return false;
+  if (unit.commandHeld) return true;
+  return active.some((e) => (e.enteredInstanceIds ?? []).includes(unit.instanceId));
 }
 
 // ---------------------------------------------------------------------------

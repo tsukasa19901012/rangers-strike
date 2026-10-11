@@ -157,6 +157,7 @@ import { activateSet9AResident, isSet9AResidentCard, settleSet9AAfterAction, set
 import { openCastTransferOnCharge } from "../rules/legend1/set9NamedEffectsD";
 import { openMegaCaptureIfReady, queueMegaCapture } from "../rules/legend1/set9NamedEffectsB";
 import { settleStackOntoLargeCards } from "../rules/stackOntoLargeUnit";
+import { trackSpIncomeEntries } from "../rules/legend1/set9NamedEffectsC";
 import { applyMeeMegaloAfterAction, openTakeTheBlowChoice, resolveTakeTheBlow, skipTakeTheBlow, TAKE_THE_BLOW_EFFECT_ID } from "../rules/legend1/set8NamedEffectsD";
 import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
 import {
@@ -850,6 +851,8 @@ export function applyAction(
   // ルール: R-ZONE-04, R-HOLD-02 — エリアを離れたカードの付加情報はどの経路で移動しても消える。
   let next = clearRegisterHoldOffField(result.state);
   next = settleEffectRushes(state, next);
+  // RS-660【SPインカム】: このターン、場の外からラッシュエリアに出たユニットを記録する（rules/legend1/set9NamedEffectsC.ts）。
+  next = trackSpIncomeEntries(state, next);
   // 第9弾 RS-607 の続き・RS-613 のホールド待ち（rules/legend1/set9NamedEffectsA.ts）。
   if (applyActionDepth === 0) next = settleSet9AAfterAction(state, next);
   next = releaseCounterLockWhenAttackSettled(next);

@@ -1119,8 +1119,11 @@ export type TurnEndProgress = {
 export type Set9CMeta = {
   /** RS-648【イカロスバインド】: そのターン（turn）のスタートフェイズに戻さないことを選んだホールド状態のユニット。 */
   startStay?: { turn: number; instanceIds: string[] };
-  /** RS-660【SPインカム】: turn のターン（restrictedPlayerId のターン）の進入制限。 */
-  spIncome?: Array<{ restrictedPlayerId: PlayerId; turn: number }>;
+  /**
+   * RS-660【SPインカム】: turn のターン（restrictedPlayerId のターン）の進入制限。
+   * enteredInstanceIds はそのターンに場の外からラッシュエリアに出たユニット（両軍）。
+   */
+  spIncome?: Array<{ restrictedPlayerId: PlayerId; turn: number; enteredInstanceIds?: string[] }>;
 };
 
 /** 第8弾 RS-560〜RS-581 のカード固有の効果が使う記録（rules/legend1/set8NamedEffectsC.ts）。 */
