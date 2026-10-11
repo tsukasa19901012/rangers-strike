@@ -140,7 +140,7 @@ export function keywordAllowsAttackIntoRush(
   if (!defender) return false;
 
   if (
-    cardHasGrantKeyword(attackerCardId, "attack_held_rush_units") &&
+    (attackerCard ? grantKeywordActiveOnCard(attackerCard, "attack_held_rush_units") : cardHasGrantKeyword(attackerCardId, "attack_held_rush_units")) &&
     defender.commandHeld
   ) {
     return true;

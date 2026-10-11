@@ -118,6 +118,7 @@ import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/s
 import { giantBombCounterIds, isSet5AConfirmableChoice, operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
 import { isSet6AuditConfirmableChoice } from "../rules/legend1/set6AuditFixes";
 import { isSet7AChoiceEffect, isSet7AConfirmableChoice, set7AStrikeCounterIds } from "../rules/legend1/set7NamedEffectsA";
+import { isSet8AChoiceEffect, isSet8AConfirmableChoice } from "../rules/legend1/set8NamedEffectsA";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { isSet7BConfirmableChoice } from "../rules/legend1/set7NamedEffectsB";
 import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
@@ -1169,6 +1170,17 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isSet8AChoiceEffect(pending.effectId)) {
+    // 第8弾 RS-516〜RS-537 の選択（rules/legend1/set8NamedEffectsA.ts）。候補はモジュール側で絞り込み済み。
+    const selected = pending.selectedInstanceIds ?? [];
+    for (const instanceId of pending.validInstanceIds) {
+      if (selected.includes(instanceId)) continue;
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (isSet8AConfirmableChoice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

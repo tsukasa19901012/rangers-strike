@@ -23,6 +23,14 @@ export function withZordFeatureContext<T>(state: GameState, fn: () => T): T {
   }
 }
 
+/**
+ * applyAction / getLegalActions の入口で置いた、その時点の GameState（無ければ null）。
+ * プレイヤー単位の判定関数（rules/callLead.ts 等）が、場全体の常駐効果（RS-516 アースフォース等）を参照するために使う。
+ */
+export function actionContextState(): GameState | null {
+  return current;
+}
+
 /** 素材の判定に使うユニットの特徴（場にあれば追加された特徴を含む）。 */
 export function zordMaterialFeatures(
   def: CardDefinition | undefined,

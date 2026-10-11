@@ -5,9 +5,9 @@ import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { sameCardName } from "../core/cardNames";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import { markBattleNcEffect } from "./namedUnitEffects";
+import { openBeastRod } from "./legend1/set8NamedEffectsA";
 import {
   openEffectChoice,
-  startBeastRodChoice,
   startClimberBallChoice,
   startFireGeneralChoice,
   startAkaRedSoulChoice,
@@ -19,14 +19,8 @@ export function applyBeastRodOperation(
   operationInstanceId: string,
   phasePlayerId: PlayerId,
 ): GameState {
-  const withChoice = startBeastRodChoice(state, {
-    playerId,
-    effectId: "geki_e78da3",
-    sourceCardId: "RS-518",
-    sourceInstanceId: operationInstanceId,
-    phasePlayerId,
-  });
-  return withChoice ?? state;
+  // 「敵軍Sユニットを1体選ぶ。」— 使用者が場の S ユニットを選ぶ（rules/legend1/set8NamedEffectsA.ts）。
+  return openBeastRod(state, playerId, operationInstanceId, phasePlayerId);
 }
 
 export function applyAkaRedSoulEnterBattle(
@@ -78,36 +72,6 @@ export function applyFireGeneralEnterBattle(
     phasePlayerId,
   });
   return withChoice ?? state;
-}
-
-/** RS-518: 敵コマンドSをホールドなら撃破、リリースならホールド。 */
-export function applyBeastRodToEnemyCommand(
-  state: GameState,
-  enemyId: PlayerId,
-  instanceId: string,
-): GameState | null {
-  const enemy = state.players[enemyId];
-  const found = findInZone(enemy, "command", instanceId);
-  if (!found || !isSmallUnit(state.definitions, found.card.cardId)) return null;
-
-  if (found.card.commandHeld || found.card.mothershipHold) {
-    const [, command] = removeAt(enemy.command, found.index);
-    return {
-      ...state,
-      ...updatePlayer(state, enemyId, {
-        ...enemy,
-        command,
-        discard: [...enemy.discard, found.card],
-      }),
-    };
-  }
-
-  const command = [...enemy.command];
-  command[found.index] = { ...found.card, commandHeld: true, mothershipHold: false };
-  return {
-    ...state,
-    ...updatePlayer(state, enemyId, { ...enemy, command }),
-  };
 }
 
 /** RS-421 ソウル降臨: ホールド後にストライク不可。 */
@@ -195,13 +159,6 @@ export function collectOwnRushByName(
     .filter((c) => cardName(state.definitions, c.cardId) === unitName)
     .map((c) => c.instanceId);
   return valid.length >= count ? valid : [];
-}
-
-export function collectEnemyCommandSmallUnits(state: GameState, enemyId: PlayerId): string[] {
-  const enemy = state.players[enemyId];
-  return enemy.command
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
-    .map((c) => c.instanceId);
 }
 
 export function collectEnemyBattleCategoryM(

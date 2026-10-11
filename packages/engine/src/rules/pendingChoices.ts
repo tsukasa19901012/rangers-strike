@@ -139,6 +139,7 @@ import {
 import { isSet5ChoiceEffect, tryResolveSet5Choice, trySkipSet5Choice } from "./legend1/set5NamedEffects";
 import { isSet6BChoiceEffect, openFlameGlareForSoulDescent, tryResolveSet6BChoice, trySkipSet6BChoice } from "./legend1/set6NamedEffectsB";
 import { isSet7DChoiceEffect, tryResolveSet7DChoice, trySkipSet7DChoice } from "./legend1/set7NamedEffectsD";
+import { isSet8AChoiceEffect, tryConfirmSet8AChoice, tryResolveSet8AChoice, trySkipSet8AChoice } from "./legend1/set8NamedEffectsA";
 import {
   isSet7BChoiceEffect,
   tryConfirmSet7BChoice,
@@ -216,9 +217,7 @@ import {
 } from "./batch04FieldEffects";
 import {
   applyAkaRedSoulHold,
-  applyBeastRodToEnemyCommand,
   collectEnemyBattleCategoryM,
-  collectEnemyCommandSmallUnits,
   collectEnemyCommandsMatchingPower,
   collectNamedUnitsInDiscard,
   collectOwnRedNcCommands,
@@ -626,6 +625,7 @@ export function isValidEffectChoiceTarget(
     isSet7BChoiceEffect(pending.effectId) ||
     isSet7CChoiceEffect(pending.effectId) ||
     isSet7DChoiceEffect(pending.effectId) ||
+    isSet8AChoiceEffect(pending.effectId) ||
     pending.effectId === "rs414_dione_wall" ||
     isSet6LowChoiceEffect(pending.effectId) ||
     isSet6AuditChoiceEffect(pending.effectId)
@@ -1315,29 +1315,6 @@ export function startTimeJetCategoryProtectChoice(
   });
 }
 
-/** RS-518 獣撃棒: 敵コマンドS。 */
-export function startBeastRodChoice(
-  state: GameState,
-  params: {
-    playerId: PlayerId;
-    effectId: string;
-    sourceCardId: string;
-    sourceInstanceId?: string;
-    phasePlayerId: PlayerId;
-  },
-): GameState | null {
-  const enemyId = opponent(params.playerId);
-  const valid = collectEnemyCommandSmallUnits(state, enemyId);
-  if (valid.length === 0) return null;
-  return openEffectChoice(state, {
-    ...params,
-    playerId: enemyId,
-    kind: "select_command",
-    validInstanceIds: valid,
-    optional: false,
-  });
-}
-
 /** RS-421 ソウル降臨。 */
 export function startAkaRedSoulChoice(
   state: GameState,
@@ -1989,6 +1966,8 @@ export function applyConfirmEffectChoice(
   if (set6Audit) return set6Audit;
   const set7a = tryConfirmSet7AChoice(state, playerId);
   if (set7a) return set7a;
+  const set8a = tryConfirmSet8AChoice(state, playerId);
+  if (set8a) return set8a;
   const set7b = tryConfirmSet7BChoice(state, playerId);
   if (set7b) return set7b;
   if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
@@ -2890,6 +2869,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set7c) return set7c;
   const set7d = trySkipSet7DChoice(state, playerId);
   if (set7d) return set7d;
+  const set8a = trySkipSet8AChoice(state, playerId);
+  if (set8a) return set8a;
   const set5 = trySkipSet5Choice(state, playerId);
   if (set5) return set5;
   const set5Audit = trySkipSet5AuditChoice(state, playerId);
@@ -3164,6 +3145,9 @@ export function applyEffectChoiceSelect(
   if (set7c) return set7c;
   const set7d = tryResolveSet7DChoice(state, playerId, instanceId);
   if (set7d) return set7d;
+  // 第8弾 RS-516〜RS-537（rules/legend1/set8NamedEffectsA.ts）。null なら汎用の解決（撃破等）に任せる。
+  const set8a = tryResolveSet8AChoice(state, playerId, instanceId);
+  if (set8a) return set8a;
   const set5 = tryResolveSet5Choice(state, playerId, instanceId);
   if (set5) return set5;
   const set5Audit = tryResolveSet5AuditChoice(state, playerId, instanceId);
@@ -4381,17 +4365,6 @@ export function applyEffectChoiceSelect(
         return { ...finished, state: afterCommandCardsLeft(finished.state, enemyId, 1) };
       }
 
-      if (pending.effectId === "geki_e78da3") {
-        const located = findCommandCard(state, instanceId);
-        if (!located) return { error: "invalid_target" };
-        const moved = applyBeastRodToEnemyCommand(state, located.playerId, instanceId);
-        if (!moved) return { error: "invalid_target" };
-        return finishChoice(
-          moved,
-          pending,
-          cardName(state.definitions, findFieldUnitCardId(moved, instanceId) ?? instanceId),
-        );
-      }
 
       if (pending.effectId === "kami_ken_hikarimaru") {
         const released = releaseWingCommand(state, pending.playerId, instanceId);

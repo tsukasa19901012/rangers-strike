@@ -13,6 +13,7 @@ import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
 import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
 import { openBlueMoonSlash, openChargeInsteadOfBattle } from "../rules/legend1/set7NamedEffectsB";
 import { withZordFeatureContext } from "../rules/zordFeatureContext";
+import { applySet8AAfterAction } from "../rules/legend1/set8NamedEffectsA";
 import { applySet7DStrikeDamageTriggers, RIDE_OFF_RC_MARK, rideOffBlockedBySet7D } from "../rules/legend1/set7NamedEffectsD";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
@@ -878,6 +879,8 @@ export function applyAction(
       next = openBunshinIfReady(next);
     }
   }
+  // RS-533【フェニックスファイヤー】: 敵軍ユニットがダメージにして置かれたら「1枚ドローしてもよい」（rules/legend1/set8NamedEffectsA.ts）。
+  if (applyActionDepth === 0) next = applySet8AAfterAction(state, next, hasBlockingInteraction(next));
   next = syncDamageWithFaceDownPower(state, next);
   // RS-327【フェイタルブレイドの伝授】: 1アクションで撃破された敵軍ユニットを数える（入れ子の applyAction では数えない）。
   if (applyActionDepth === 0) next = applyFatalBladeDraws(state, next, action);

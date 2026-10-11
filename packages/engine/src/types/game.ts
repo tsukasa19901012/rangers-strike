@@ -945,6 +945,8 @@ export type GameState = {
   /** RS-385【特殊消化弾】: ホールド状態で置かれ、リリース状態で置くかをまだ確認していない自軍コマンド。 */
   specialExtinguisherQueue?: Array<{ playerId: PlayerId; instanceId: string }>;
   kibaShotQueue?: Array<{ playerId: PlayerId; powerCost: number; sourceInstanceId?: string }>;
+  /** RS-533【フェニックスファイヤー】: 敵軍ユニットをダメージにして置いた回数分の「1枚ドローしてもよい」（rules/legend1/set8NamedEffectsA.ts）。 */
+  set8aDrawQueue?: Array<{ playerId: PlayerId; sourceInstanceId: string }>;
   /**
    * 効果でラッシュエリアに出たが、先に解決すべき操作待ちがあり「ラッシュしたとき」の誘発と
    * 「ラッシュされたとき」の窓をまだ処理していないユニット（出た順）。
