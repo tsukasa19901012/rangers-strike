@@ -1,5 +1,7 @@
 /** 効果名 id の日本語ラベル（UI・ログ用）。 */
 export const EFFECT_LABELS: Record<string, string> = {
+  // RS-385 グリーンホバー（リリース状態で置くかの確認）
+  rs385_special_extinguisher: "特殊消化弾",
   // ナンバーコンボ（NC）
   grant_sp1: "SP1",
   eagle_diving: "イーグルダイビング",

@@ -92,7 +92,7 @@ import { EffectNoticeModal } from "./EffectNoticeModal";
 import { CommandPaymentBanner } from "./CommandPaymentBanner";
 import {
   buildCommandPaymentView,
-  canConfirmCommandPayment,
+  canConfirmCommandPaymentFor,
   resolveCommandPaymentSelectedCards,
   toggleCommandPaymentSelection,
 } from "@/lib/commandPaymentUi";
@@ -2336,9 +2336,10 @@ export function GameApp() {
 
   const canConfirmCommandPaymentSelection =
     showCommandPaymentModal &&
-    canConfirmCommandPayment(
+    canConfirmCommandPaymentFor(
+      state,
+      state.pendingCommandPayment!,
       commandPaymentSelection,
-      state.pendingCommandPayment!.totalNeeded,
     );
 
   const pendingDamage = state.pendingDamagePayment;

@@ -1,3 +1,5 @@
+import { openKibaShotIfReady, queueKibaShot } from "../rules/legend1/set6AuditFixes";
+import { icyStateForAction, isIcyPhantom, settleIcyPhantoms } from "../rules/legend1/icyLastResort";
 import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw, settleDarkArmor } from "../rules/legend1/set6NamedEffects348";
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
@@ -81,7 +83,7 @@ import {
   rushReactorId,
   updatePlayer,
 } from "./helpers";
-import { isLegalAction } from "./legalActions";
+import { isLegalAction, isLegalActionBase } from "./legalActions";
 import { resolveDamagePaymentSelect, startNextQueuedDamage } from "../rules/damagePayment";
 import {
   battlePositionAfterMove,
@@ -722,7 +724,7 @@ function settleEffectRushes(before: GameState, after: GameState): GameState {
     let changed = false;
     for (const zone of ["rush", "battle"] as const) {
       for (const card of owner[zone]) {
-        if (beforeIds.has(card.instanceId) || handled.has(card.instanceId)) continue;
+        if (beforeIds.has(card.instanceId) || handled.has(card.instanceId) || isIcyPhantom(card)) continue;
         if (wasRushedThisTurn(owner, card.instanceId)) continue;
         owner = markRushedThisTurn(owner, card.instanceId);
         changed = true;
@@ -783,6 +785,10 @@ export function applyAction(
   action: GameAction,
   options?: { trustLegality?: boolean },
 ): ActionResult {
+  // RS-359【最後の手段】: 山札の候補をラッシュエリアに置いた状態で、手札からのラッシュの手続きを始める
+  // （rules/legend1/icyLastResort.ts。手続きが終わったら settleIcyPhantoms で片付ける）。
+  const icyState = applyActionDepth === 0 ? icyStateForAction(state, action, isLegalActionBase) : null;
+  if (icyState) state = icyState;
   applyActionDepth += 1;
   let result: ActionResult;
   try {
@@ -825,6 +831,11 @@ export function applyAction(
     }
     // RS-363【パンサークロー】: 発動したターン、敵軍コマンドゾーンにホールド状態で置かれたユニットカードを捨札にしてもよい。
     next = queuePantherClaw(state, next);
+    // RS-377【キバショット】: このターン、リリース状態の敵軍コマンドがホールドされたとき。
+    next = queueKibaShot(state, next);
+    if (next.kibaShotQueue?.length && !hasKibaShotBlocker(next) && !next.winner) {
+      next = openKibaShotIfReady(next, turnPlayerOf(next));
+    }
     if (next.pantherClawQueue?.length && !hasBlockingInteraction(next) && !next.winner) {
       next = openPantherClawIfReady(next, turnPlayerOf(next));
     }
@@ -833,6 +844,7 @@ export function applyAction(
   // RS-327【フェイタルブレイドの伝授】: 1アクションで撃破された敵軍ユニットを数える（入れ子の applyAction では数えない）。
   if (applyActionDepth === 0) next = applyFatalBladeDraws(state, next, action);
   next = markEnemyTurnFaceDownDamage(state, next);
+  if (applyActionDepth === 0) next = settleIcyPhantoms(next);
   return next === result.state ? result : { ok: true, state: next };
 }
 
@@ -901,6 +913,23 @@ function syncDamageWithFaceDownPower(before: GameState, after: GameState): GameS
     }
   }
   return players === after.players ? after : { ...after, players };
+}
+
+/**
+ * 【キバショット】の撃破の選択を開けないとき（ほかの選択・支払い・離場の応答の途中）。バトルやストライクの途中でも、
+ * コマンドがホールドされた直後に誘発を処理する（カウンターの支払い等）。
+ */
+function hasKibaShotBlocker(state: GameState): boolean {
+  return !!(
+    state.pendingEffectChoice ||
+    state.pendingCommandPayment ||
+    state.pendingZordSetup ||
+    state.pendingLeave ||
+    state.pendingRegister ||
+    state.pendingDamagePayment ||
+    state.pendingScry ||
+    state.pendingMorph
+  );
 }
 
 function hasBlockingInteraction(state: GameState): boolean {

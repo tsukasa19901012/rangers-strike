@@ -114,6 +114,9 @@ export function effectChoiceHint(
         ? `相手のユニットを選んでください`
         : `自分のユニットを選んでください`;
     case "confirm":
+      if (pending.effectId === "rs385_special_extinguisher") {
+        return "特殊消化弾：自軍コマンドゾーンにホールド状態で置くカードを、かわりにリリース状態で置きますか？";
+      }
       if (pending.effectId === "reorder_enemy_battle") {
         return "敵軍バトルエリアのユニットを並び替えますか？（逆順にするか、新しい並びの1番目にするユニットを選ぶ）";
       }
