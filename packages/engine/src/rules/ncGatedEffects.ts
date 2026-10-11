@@ -13,6 +13,7 @@ import {
   listNcColumnNamedEffects,
 } from "@rangers-strike/cards";
 import type { CardInstance, GameState } from "../types/game";
+import { getCardDslDocument } from "../dsl/effectLookup";
 
 function cardCategoriesOf(def: { category?: unknown } | undefined): string[] {
   const c = def?.category;
@@ -144,4 +145,23 @@ export function ncColumnEffectIdsEstablished(
     }
   }
   return ids;
+}
+
+/**
+ * DSL の grant_keyword で付く能力 keyword がこのユニットで有効か。その能力を付ける効果が NC の欄の効果（trigger nc）なら、
+ * バトルエリアに出たときに NC が成立していなければ有効にならない（ルール: R-CN-02。例: RS-456 ニンジャブルー
+ * 【忍法水走り】「CN：2」の attack_rush_if_more_units）。NC の欄の効果でなければ常に有効。
+ */
+export function grantKeywordActiveOnCard(
+  card: Pick<CardInstance, "cardId" | "activatedNcEffects">,
+  keyword: string,
+): boolean {
+  const effects = (getCardDslDocument(card.cardId)?.effects ?? []).filter((effect) =>
+    effect.effects.some((p) => p.type === "grant_keyword" && p.keyword === keyword),
+  );
+  if (effects.length === 0) return false;
+  return effects.some((effect) => {
+    if (effect.trigger.type !== "nc") return true;
+    return card.activatedNcEffects?.includes(effect.id) ?? false;
+  });
 }

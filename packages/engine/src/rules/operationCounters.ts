@@ -1426,6 +1426,7 @@ export function resolveBattlePendingCore(
       !defenderCausesWinnerDestruction &&
       !reflectBarrierAttacker &&
       attackerZone === "battle",
+    battleOpponentInstanceId: defenderInstanceId,
   };
 
   let nextState = battleState;
@@ -1446,6 +1447,7 @@ export function resolveBattlePendingCore(
     // ルール: R-KW-RESIST-03 — 防御側も「勝っても撃破」で倒された場合はレジスト不可（BP で負けたときだけ可）。
     registerEligible:
       destroyDefender && !winButDefenderSelfDestruct && !reflectBarrierDefender && defenderZone === "battle",
+    battleOpponentInstanceId: pending.attackerInstanceId,
   };
 
   if (finalDestroyDefender && finalDestroyAttacker) {
@@ -1841,6 +1843,7 @@ export function finalizeLeavePending(
     phasePlayerId: pending.phasePlayerId,
     // ルール: R-DESTROY-01/02 — 撃破による離場か（置き先が捨札でなくても撃破の事実は残る）
     destroyed: isDestructionLeave(pending),
+    battleOpponentInstanceId: pending.battleOpponentInstanceId,
   });
 
   let resolvedState = leaveFx.state;

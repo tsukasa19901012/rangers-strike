@@ -69,6 +69,12 @@ export type CardInstance = {
   jointComboGrants?: JointComboGrant[];
   /** バトルフェイズ: このターンにこのユニットがバトルまたはストライク済みなら true。 */
   battleActed?: boolean;
+  /**
+   * RS-359 デンジ犬アイシー【最後の手段】: ラッシュの追加条件を満たすために山札から選べるカードを、手続きの間だけ
+   * ラッシュエリアに置いたもの（素材に選ばれて捨札になれば「捨札にしたことにした」、選ばれなければ山札の元の位置に戻る。
+   * rules/legend1/icyLastResort.ts）。値は山札での元の位置。
+   */
+  icyPhantomDeckIndex?: number;
   /** このゾードがラッシュされた際に捨てた融合ユニット（RS-009 回収用）。 */
   zordMaterialCardId?: string;
   /** ラッシュでこのユニットが乗車しているビークル（RCサポート）。 */
@@ -252,6 +258,8 @@ export type PendingLeave = {
   skipRegister?: boolean;
   /** バトル BP 比較による撃破のみ true（効果撃破は false）。 */
   registerEligible?: boolean;
+  /** バトルによる撃破のとき、バトルの相手のユニット（RS-453【激怒斬り】「ユニットサイズの違うユニットとバトルして撃破された時」）。 */
+  battleOpponentInstanceId?: string;
   /** ユニット退場後にストライク解決を再開（five-tech / plasma）。 */
   resumePendingStrike?: { damageCancelled: boolean };
   /** 1回のバトルで両プレイヤーのユニットが退場する場合、守り側の後に攻撃側をキュー。 */
@@ -263,6 +271,8 @@ export type PendingLeave = {
     leavingCardId: string;
     phasePlayerId: PlayerId;
     discardAsDamage?: boolean;
+    registerEligible?: boolean;
+    battleOpponentInstanceId?: string;
   };
   /** RS-052: WB味方が破壊される際の任意代用。 */
   superShieldInstanceId?: string;
@@ -386,6 +396,9 @@ export type AttackHoldSource = {
   scope: "battle" | "turn";
 };
 
+/** 撃破の時点で判定した「撃破された時」の誘発の情報（rules/leaveEffects.ts resolveDestroyedFactEffects）。 */
+export type DestroyedFactInfo = { gekidoSources?: string[]; phasePlayerId?: PlayerId };
+
 /** 撃破に関わる誘発のタイミング（R-TIME-01）。PendingEffectChoice.destroyTriggerTiming を参照。 */
 export type DestroyTriggerTiming = "destroyer" | "destroyed" | "after_discard";
 
@@ -397,7 +410,14 @@ export type DestroyTriggerTiming = "destroyer" | "destroyed" | "after_discard";
  * - resume_multi_destroy: 複数体を撃破する効果の残りの対象の撃破（割り込んだ誘発の解決後）
  */
 export type DeferredDestroyTrigger =
-  | { kind: "destroyed_fact"; step: DestroyTriggerTiming; ownerPlayerId: PlayerId; cardId: string }
+  | {
+      kind: "destroyed_fact";
+      step: DestroyTriggerTiming;
+      ownerPlayerId: PlayerId;
+      cardId: string;
+      /** 撃破の時点で判定した、他のカードの「…ユニットが撃破された時」の発動元（RS-453【激怒斬り】）。 */
+      battleDestroyInfo?: DestroyedFactInfo;
+    }
   | {
       kind: "after_discard";
       step: DestroyTriggerTiming;
@@ -513,6 +533,13 @@ export type PendingEffectChoice = {
   skipShurikenIntercept?: boolean;
   /** RS-381【獅子の装光】: 解決後に続けるバトル進入（ライドオフの選択のかわりに発動した）。 */
   battleEntryResume?: PendingBattleEntry;
+  /**
+   * RS-429【暮らしの中に修行あり】: 「「MA」の自軍コマンドを１つホールドして」の支払いで、MA のコマンド1つのかわりに
+   * WB のコマンド＋追加1つ（先に選んだ WB のコマンドが「ホールドしたコマンド」）をホールドしてもよい。
+   */
+  shifuSubstitute?: boolean;
+  /** RS-418【炎の眼光】: RS-421【ソウル降臨】で発動する NC の効果を無効にするかの選択（見送れば発動する）。 */
+  soulDescentMeta?: { controllerId: PlayerId; akaRedInstanceId: string; heldCardId: string };
   /** RS-322 人身略取: 相手が満たす追加条件の進行。 */
   abductionMeta?: { payerId: PlayerId; cardId: string; remaining: number };
   /** RS-183 黒子ロボの記憶操作の進行（使用者→相手、ドロー→山札に戻す手順）。 */
@@ -694,6 +721,11 @@ export type PendingCommandPayment = {
   prismSubstitute?: boolean;
   /** RS-429【暮らしの中に修行あり】: MA のかわりに WB のコマンド＋追加1つ（計2つ）をホールドする支払い。 */
   shifuSubstitute?: boolean;
+  /**
+   * totalNeeded より少なくても確定できる枚数（effect_hold の RS-429 代用: MA のコマンド1つでも、
+   * WB のコマンド＋追加1つの計2つでもよい）。
+   */
+  minNeeded?: number;
   continuation: CommandPaymentContinuation;
 };
 
@@ -839,6 +871,13 @@ export type GameState = {
   boomerangQueue?: Array<{ ownerId: PlayerId; cost: number; cardId: string }>;
   /** RS-363【パンサークロー】: 敵軍コマンドゾーンにホールド状態で置かれたユニットカード（捨札にするかを選ぶ）の待ち行列。 */
   pantherClawQueue?: Array<{ playerId: PlayerId; instanceId: string }>;
+  /**
+   * RS-377 ギンガグリーン【キバショット】: このターン、リリース状態の敵軍コマンドがホールドされたときの撃破で、まだ処理していないもの
+   * （playerId = 【キバショット】を発動したプレイヤー、powerCost = ホールドされたコマンドの必要パワーの数字）。
+   */
+  /** RS-385【特殊消化弾】: ホールド状態で置かれ、リリース状態で置くかをまだ確認していない自軍コマンド。 */
+  specialExtinguisherQueue?: Array<{ playerId: PlayerId; instanceId: string }>;
+  kibaShotQueue?: Array<{ playerId: PlayerId; powerCost: number; sourceInstanceId?: string }>;
   /**
    * 効果でラッシュエリアに出たが、先に解決すべき操作待ちがあり「ラッシュしたとき」の誘発と
    * 「ラッシュされたとき」の窓をまだ処理していないユニット（出た順）。

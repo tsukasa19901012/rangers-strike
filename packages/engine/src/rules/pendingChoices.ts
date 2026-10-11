@@ -116,7 +116,7 @@ import {
 } from "./murphyChase";
 import { continueDslAfterChoice } from "../dsl/cardInterpreter";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
-import { isHoldActivateChoice, resolveHoldActivateChoice } from "./holdToActivate";
+import { isHoldActivateChoice, resolveHoldActivateChoice, shifuSubstituteCommandId } from "./holdToActivate";
 import { getDslEffectById } from "../dsl/effectLookup";
 import {
   markBattleNcEffect,
@@ -137,7 +137,13 @@ import {
   trySkipSet4Choice,
 } from "./legend1/set4NamedEffects";
 import { isSet5ChoiceEffect, tryResolveSet5Choice, trySkipSet5Choice } from "./legend1/set5NamedEffects";
-import { isSet6BChoiceEffect, tryResolveSet6BChoice, trySkipSet6BChoice } from "./legend1/set6NamedEffectsB";
+import { isSet6BChoiceEffect, openFlameGlareForSoulDescent, tryResolveSet6BChoice, trySkipSet6BChoice } from "./legend1/set6NamedEffectsB";
+import {
+  isSet7BChoiceEffect,
+  tryConfirmSet7BChoice,
+  tryResolveSet7BChoice,
+  trySkipSet7BChoice,
+} from "./legend1/set7NamedEffectsB";
 import { isSet7CChoiceEffect, tryResolveSet7CChoice, trySkipSet7CChoice } from "./legend1/set7NamedEffectsC";
 import {
   isSet5AuditChoiceEffect,
@@ -615,6 +621,7 @@ export function isValidEffectChoiceTarget(
     isSet5AuditChoiceEffect(pending.effectId) ||
     isSet5AChoiceEffect(pending.effectId) ||
     isSet6BChoiceEffect(pending.effectId) ||
+    isSet7BChoiceEffect(pending.effectId) ||
     isSet7CChoiceEffect(pending.effectId) ||
     pending.effectId === "rs414_dione_wall" ||
     isSet6LowChoiceEffect(pending.effectId) ||
@@ -1671,6 +1678,53 @@ function openSiteTransportDeckStep(
   });
 }
 
+/** RS-472 現場への搬送（山札から選ぶ段階）: 選んだカードをホールド状態でコマンドゾーンに置く。上限に達したら終える。 */
+function resolveSiteTransportDeckPick(
+  state: GameState,
+  pending: PendingEffectChoice,
+  instanceId: string,
+): ChoiceOutcome {
+  const selected = pending.selectedInstanceIds ?? [];
+  if (!pending.validInstanceIds.includes(instanceId) || selected.includes(instanceId)) {
+    return { error: "invalid_target" };
+  }
+  const player = state.players[pending.playerId];
+  const found = findInZone(player, "deck", instanceId);
+  if (!found) return { error: "invalid_target" };
+  const [, deck] = removeAt(player.deck, found.index);
+  const placed: GameState = {
+    ...state,
+    ...updatePlayer(state, pending.playerId, {
+      ...player,
+      deck,
+      command: [...player.command, { ...found.card, commandHeld: true }],
+    }),
+  };
+  const nextSelected = [...selected, instanceId];
+  const remaining = pending.validInstanceIds.filter(
+    (id) => !nextSelected.includes(id) && deck.some((c) => c.instanceId === id),
+  );
+  if (nextSelected.length >= (pending.selectCount ?? 1) || remaining.length === 0) {
+    return finishChoice(finishSiteTransportDeck(placed, pending), pending, cardName(state.definitions, found.card.cardId));
+  }
+  return {
+    state: { ...placed, pendingEffectChoice: { ...pending, selectedInstanceIds: nextSelected } },
+    log: buildLogEntry(
+      pending.playerId,
+      "resolve_effect_choice",
+      pending.sourceCardId,
+      state.definitions,
+      cardName(state.definitions, found.card.cardId),
+    ),
+  };
+}
+
+/** RS-472 現場への搬送: 山札をシャッフルして終える（確定・見送り・上限到達）。 */
+export function finishSiteTransportDeck(state: GameState, pending: PendingEffectChoice): GameState {
+  const player = state.players[pending.playerId];
+  return { ...state, ...updatePlayer(state, pending.playerId, { ...player, deck: shuffleDeck(player.deck) }) };
+}
+
 /** RS-411: 山札からDA常駐OPを常駐置き場へ。 */
 export function startOnRushDeckResidentChoice(
   state: GameState,
@@ -1930,6 +1984,12 @@ export function applyConfirmEffectChoice(
   if (set5a) return set5a;
   const set6Audit = tryConfirmSet6AuditChoice(state, playerId);
   if (set6Audit) return set6Audit;
+  const set7b = tryConfirmSet7BChoice(state, playerId);
+  if (set7b) return set7b;
+  if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
+    // RS-472【現場への搬送】: 「…まで好きな数選び」— 選んだところで確定し、山札をシャッフルする。
+    return finishChoice(finishSiteTransportDeck(state, pending), pending, String(pending.selectedInstanceIds?.length ?? 0));
+  }
 
   if (pending.mayConfirm) {
     const log = buildLogEntry(
@@ -2718,6 +2778,16 @@ function applyPostHoldContinuation(
  */
 function finishAkaRedSoul(state: GameState, pending: PendingEffectChoice, heldCardId: string): ChoiceOutcome {
   const cleared = clearChoice(state, pending.phasePlayerId);
+  // RS-418【炎の眼光】: 敵軍のイフリートがこの NC の効果を無効にできる（grnrngr/faq-card-6 RS-421 Q5）。
+  const glare = openFlameGlareForSoulDescent(
+    cleared,
+    pending.playerId,
+    pending.sourceInstanceId!,
+    heldCardId,
+    pending.phasePlayerId,
+    pending.resumeChoice,
+  );
+  if (glare) return { state: glare };
   const fired = fireAkaRedSoulNc(cleared, pending.playerId, pending.sourceInstanceId!, heldCardId);
   if (fired.pendingEffectChoice) {
     const opened = fired.pendingEffectChoice;
@@ -2740,7 +2810,9 @@ export function completeEffectHoldChoice(
   if (pending.playerId !== playerId) return { error: "wrong_player" };
   if (pending.commandAction !== "hold") return { error: "invalid_payment" };
   const selectCount = pending.selectCount ?? 1;
-  if (commandInstanceIds.length !== selectCount) return { error: "wrong_count" };
+  // RS-429【暮らしの中に修行あり】: MA のコマンド1つのかわりに WB のコマンド＋追加1つ（計2つ）をホールドしてもよい。
+  const shifuPair = pending.shifuSubstitute === true && selectCount === 1 && commandInstanceIds.length === 2;
+  if (commandInstanceIds.length !== selectCount && !shifuPair) return { error: "wrong_count" };
   for (const id of commandInstanceIds) {
     if (!pending.validInstanceIds.includes(id)) return { error: "invalid_target" };
   }
@@ -2754,7 +2826,10 @@ export function completeEffectHoldChoice(
   }
   if (isHoldActivateChoice(pending)) {
     // 「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒…」の支払いを終えた（rules/holdToActivate.ts）。
-    const resolved = resolveHoldActivateChoice(state, pending, commandInstanceIds[0]!);
+    // RS-429 の代用（WB＋追加1つ）なら「ホールドしたコマンド」は MA のかわりの WB のコマンド（WB が2つなら先に選んだ方）だけ
+    // （grnrngr/faq-card-6 RS-378 Q）。
+    const heldId = shifuPair ? shifuSubstituteCommandId(state, playerId, commandInstanceIds) : commandInstanceIds[0]!;
+    const resolved = resolveHoldActivateChoice(state, pending, heldId);
     if (!resolved) return { error: "invalid_target" };
     return {
       state: resolved.pendingEffectChoice ? resolved : promoteDeferredBattleEntry(resolved),
@@ -2782,6 +2857,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set5a) return set5a;
   const set6b = trySkipSet6BChoice(state, playerId);
   if (set6b) return set6b;
+  const set7b = trySkipSet7BChoice(state, playerId);
+  if (set7b) return set7b;
   const set7c = trySkipSet7CChoice(state, playerId);
   if (set7c) return set7c;
   const set5 = trySkipSet5Choice(state, playerId);
@@ -2793,6 +2870,10 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   const set6Audit = trySkipSet6AuditChoice(state, playerId);
   if (set6Audit) return set6Audit;
   if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
+  if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
+    // RS-472【現場への搬送】: 選び終えた（または選ばない）— 山札をシャッフルして終える。
+    return finishChoice(finishSiteTransportDeck(state, pending), pending, String(pending.selectedInstanceIds?.length ?? 0));
+  }
   if (pending.effectId === SUPER_BRAIN_KEEP_EFFECT_ID) {
     // 選択を省略したときは先にひいた1枚を手札に残す（どちらか1枚は必ず残る）。
     return resolveSuperBrainKeepChoice(state, playerId, pending.validInstanceIds[0]!);
@@ -3046,6 +3127,8 @@ export function applyEffectChoiceSelect(
   if (set5a) return set5a;
   const set6b = tryResolveSet6BChoice(state, playerId, instanceId);
   if (set6b) return set6b;
+  const set7b = tryResolveSet7BChoice(state, playerId, instanceId);
+  if (set7b) return set7b;
   const set7c = tryResolveSet7CChoice(state, playerId, instanceId);
   if (set7c) return set7c;
   const set5 = tryResolveSet5Choice(state, playerId, instanceId);
@@ -4909,6 +4992,12 @@ export function applyEffectChoiceSelect(
     }
 
     case "scry_keep_one": {
+      if (pending.siteTransportMeta?.step === "deck") {
+        // RS-472【現場への搬送】「捨札にした枚数と同じ枚数まで好きな数選び、自軍コマンドゾーンにホールド状態で置く。
+        // その後、山札をシャッフルする。」（atwiki/page-790）— 1枚ずつ置き、上限まで置くか確定・見送りで終えて山札をシャッフルする。
+        // 選ばなかったカードは山札に残る。
+        return resolveSiteTransportDeckPick(state, pending, instanceId);
+      }
       const player = state.players[pending.playerId];
       const viewed = (pending.viewedInstanceIds ?? [])
         .map((id) => player.deck.find((c) => c.instanceId === id))
@@ -4967,13 +5056,6 @@ export function applyEffectChoiceSelect(
           ...player,
           deck: shuffleDeck([...rest, ...deckTail]),
           rush: [...player.rush, kept],
-        };
-      } else if (pending.siteTransportMeta?.step === "deck") {
-        nextPlayer = {
-          ...player,
-          deck: shuffleDeck(deckTail),
-          command: [...player.command, { ...kept, commandHeld: true }],
-          discard: [...player.discard, ...rest],
         };
       } else if (pending.effectId === "hagada") {
         nextPlayer = {

@@ -713,10 +713,12 @@ export function pickCommandPaymentResolve(
     return { type: "cancel_command_payment", playerId };
   }
 
-  const candidates: string[][] = [
-    valid.slice(0, needed),
-    valid.slice(-needed),
-  ];
+  const candidates: string[][] = [];
+  // RS-429 代用の effect_hold（minNeeded）: 少ない枚数で足りるならそちらを優先する（MA のコマンド1つ）。
+  if (pending.minNeeded !== undefined && pending.minNeeded < needed) {
+    for (const id of valid) candidates.push([id]);
+  }
+  candidates.push(valid.slice(0, needed), valid.slice(-needed));
   for (let i = 0; i <= valid.length - needed; i += 1) {
     candidates.push(valid.slice(i, i + needed));
   }

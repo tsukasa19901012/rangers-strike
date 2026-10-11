@@ -610,8 +610,7 @@ describe("RS-499 ゲキバイオレット", () => {
       "RS-499:v",
     );
 
-  // 既知の不具合: CARD-RS-499 【狼狼蹴】の「SP1」が付かない（NC 成立が記録されるだけ）
-  it.fails("RS-499: 【狼狼蹴】2番目に出て NC が成立すると「SP1」になる（出典: atwiki/page-775「【狼狼蹴】「SP1」」・R-CN-02）", () => {
+  it("RS-499: 【狼狼蹴】2番目に出て NC が成立すると「SP1」になる（出典: atwiki/page-775「【狼狼蹴】「SP1」」・R-CN-02）", () => {
     const s = enterViolet(fill(1), []);
     expect(spOf(s, "player1", "RS-499:v")).toBe(1);
   });

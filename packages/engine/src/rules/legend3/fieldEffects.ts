@@ -18,6 +18,7 @@ import { legend2EffectiveSp } from "../legend2/fieldEffects";
 import { sameCardName } from "../../core/cardNames";
 import { set5AEffectiveSp } from "../legend1/set5NamedEffectsA";
 import { set6BEffectiveSp, turnPlayerOf } from "../legend1/set6NamedEffectsB";
+import { set7BEffectiveSp } from "../legend1/set7NamedEffectsB";
 import {
   sr003DiscardDinoBpBonus,
   sr003SpFloor,
@@ -222,6 +223,7 @@ export function legend3EffectiveSp(
   }
   sp = set5AEffectiveSp(state, playerId, instance, sp);
   sp = set6BEffectiveSp(state, playerId, instance, sp);
+  sp = set7BEffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。
