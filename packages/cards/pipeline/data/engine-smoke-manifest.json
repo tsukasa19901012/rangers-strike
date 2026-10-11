@@ -3,7 +3,7 @@
   "promotedDslReady": 1670,
   "grantKeywordSamples": 40,
   "interpretEffectSamples": 0,
-  "actionPrimitiveSamples": 39,
+  "actionPrimitiveSamples": 38,
   "grantKeyword": [
     "BK-009",
     "BK-010",
@@ -85,7 +85,6 @@
     "RS-231",
     "RS-333",
     "RS-334",
-    "RS-438",
-    "RS-523"
+    "RS-438"
   ]
 }
