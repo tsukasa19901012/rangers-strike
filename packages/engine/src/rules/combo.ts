@@ -1,4 +1,5 @@
 import type { CardDefinition } from "@rangers-strike/cards";
+import { openWarriorSoulNcChoice } from "./legend1/set9NamedEffectsA";
 import { tryResidentRushOnAllyEnterBattle } from "./residentAllyEnterRush";
 import { listNcColumnNamedEffects, getNumberComboEffect } from "@rangers-strike/cards";
 import { registerBattleCommandHooks, tryOpenBattleCommand } from "./battleCommand";
@@ -479,6 +480,9 @@ export function resolveEnterBattleEffectsImpl(
           battlePosition,
           battleBeforeEnter,
         );
+        // RS-609【戦士の魂】: 本来の NC の効果のかわりに、選んだユニットの NC の効果を発動するか（rules/legend1/set9NamedEffectsA.ts）。
+        const warriorSoul = openWarriorSoulNcChoice(nextState, playerId, card, ncEffect);
+        if (warriorSoul) return { state: warriorSoul, logs, enterResumeFrom: "tail" };
         const ncResult = applyNumberComboEffect(nextState, playerId, card, ncEffect);
         nextState = ncResult.state;
         logs.push(...ncResult.logs);

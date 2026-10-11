@@ -153,6 +153,7 @@ import {
   tryStartBattleEntryRushDiscard,
 } from "../rules/legend3/restrictions";
 import { applyGodomSenshoDiscardPay } from "../rules/godomRushPay";
+import { activateSet9AFieldAbility, activateSet9AResident, isSet9AResidentCard, settleSet9AAfterAction, settleSet9ATurnEnd } from "../rules/legend1/set9NamedEffectsA";
 import { openCastTransferOnCharge } from "../rules/legend1/set9NamedEffectsD";
 import { openMegaCaptureIfReady, queueMegaCapture, settleSoulBirdStacks } from "../rules/legend1/set9NamedEffectsB";
 import { applyMeeMegaloAfterAction, openTakeTheBlowChoice, resolveTakeTheBlow, skipTakeTheBlow, TAKE_THE_BLOW_EFFECT_ID } from "../rules/legend1/set8NamedEffectsD";
@@ -523,6 +524,9 @@ function finalizeTurnEnd(state: GameState): GameState {
   if (afterEffects.winner || hasEndPhaseBlockingPending(afterEffects)) {
     return withWinner(afterEffects);
   }
+  // RS-613【ダイヤソード】: ターンを終えるときのホールド（【潜水】等）でも発動する（rules/legend1/set9NamedEffectsA.ts）。
+  const diamondSword = settleSet9ATurnEnd(afterEffects);
+  if (diamondSword.pendingEffectChoice) return withWinner(diamondSword);
 
   let next: GameState = {
     ...afterEffects,
@@ -845,6 +849,8 @@ export function applyAction(
   // ルール: R-ZONE-04, R-HOLD-02 — エリアを離れたカードの付加情報はどの経路で移動しても消える。
   let next = clearRegisterHoldOffField(result.state);
   next = settleEffectRushes(state, next);
+  // 第9弾 RS-607 の続き・RS-613 のホールド待ち・RS-623 の重ねたカード（rules/legend1/set9NamedEffectsA.ts）。
+  if (applyActionDepth === 0) next = settleSet9AAfterAction(state, next);
   next = releaseCounterLockWhenAttackSettled(next);
   next = trackResolvingOperations(state, next);
   next = settleResolvingOperations(next);
@@ -3338,6 +3344,12 @@ function applyActionCore(
       const op = player.operation.find(
         (card) => card.instanceId === action.operationInstanceId,
       );
+      // RS-608 五色の戦士・RS-609 戦士の魂（rules/legend1/set9NamedEffectsA.ts）。
+      if (op && isSet9AResidentCard(op.cardId)) {
+        const activated = activateSet9AResident(state, playerId, op.instanceId);
+        if (!activated) return fail("illegal_action");
+        return ok(activated, buildLogEntry(playerId, "activate_resident_operation", op.cardId, state.definitions));
+      }
       // RS-524 呉越同舟は自軍バトルフェイズ中（rules/legend1/set8NamedEffectsA.ts）。それ以外の常駐はラッシュフェイズ。
       if (state.phase !== "rush" && !(op && isSet8AResident(op.cardId))) return fail("wrong_phase");
       if (!op) return fail("illegal_action");
@@ -3376,6 +3388,11 @@ function applyActionCore(
         const fromHand = handCard ? activateSet8BHandEffect(state, playerId, action.unitInstanceId) : null;
         if (!handCard || !fromHand) return fail("illegal_action");
         return ok(fromHand, buildLogEntry(playerId, "activate_field_unit_ability", handCard.cardId, state.definitions, "from_hand"));
+      }
+      // RS-623【翼合体】（rules/legend1/set9NamedEffectsA.ts）。
+      const wingStack = activateSet9AFieldAbility(state, playerId, action.unitInstanceId);
+      if (wingStack) {
+        return ok(wingStack, buildLogEntry(playerId, "activate_field_unit_ability", unit.cardId, state.definitions));
       }
       const activated = activateFieldAbility(state, playerId, action.unitInstanceId);
       if (activated) {

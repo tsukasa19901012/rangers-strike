@@ -42,11 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_konotannibatoruerianoyunitogahorudoninatatokihorudo",
+          "keyword": "set9a::RS-613::diamond_sword",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

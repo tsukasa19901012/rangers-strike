@@ -36,9 +36,11 @@ import {
 import { rushAdditionalConditionApplies } from "./bkOperationTurnRules";
 import { promoteDeferredBattleEntry } from "./battleEntry";
 import { suppressesDeployedUnitEffects } from "./pendingChoices";
+import { resolveZordFusionPartnerSlots, resolveZordFusionSlotAlternatives } from "../dsl/zordBridge";
 import {
   applyAllZordFusionMaterials,
   collectZordMaterials,
+  fieldCardMatchesPartner,
   hasAllRequiredFusionMaterials,
   isValidZordUpMaterial,
   needsZordMaterial,
@@ -98,6 +100,79 @@ function icyDeckMaterialIds(state: GameState, playerId: PlayerId, card: CardInst
     .filter((c) => c.instanceId !== card.instanceId)
     .filter((c) => isValidZordUpMaterial(state.definitions, card.cardId, card.instanceId, c))
     .map((c) => c.instanceId);
+}
+
+// ---------------------------------------------------------------------------
+// 合体（「合体―A＋B＋…」）の追加条件をデンジ犬アイシーで補う（RS-605 異次元からの翼でセイクウオーを出す。atwiki/page-1489 Q1）。
+// 合体ユニットの枠（resolveZordFusionPartnerSlots）ごとに別々のカードを割り当てられるかで判定する（同じ枠のカードを山札から
+// 選んでも足りない枠は補えない。grnrngr/faq-card-6 RS-359 Q2）。「（または、A＋B）」の枠を持つカードは対象外。
+
+function fusionSlots(cardId: string): string[][] | null {
+  const slots = resolveZordFusionPartnerSlots(cardId);
+  if (slots.length === 0 || resolveZordFusionSlotAlternatives(cardId).size > 0) return null;
+  return slots;
+}
+
+/** cards をそれぞれ別の枠に割り当てられるか（used の枠は使えない）。 */
+function assignFusionSlots(
+  definitions: GameState["definitions"],
+  slots: string[][],
+  cards: CardInstance[],
+  used: Set<number> = new Set(),
+): Set<number> | null {
+  if (cards.length === 0) return used;
+  const [head, ...rest] = cards;
+  for (let i = 0; i < slots.length; i += 1) {
+    if (used.has(i)) continue;
+    if (!slots[i]!.some((id) => fieldCardMatchesPartner(definitions, head!, id))) continue;
+    const done = assignFusionSlots(definitions, slots, rest, new Set([...used, i]));
+    if (done) return done;
+  }
+  return null;
+}
+
+/**
+ * chosen（割り当て済み）に、場の残りの候補 field と、アイシー icyLeft 体ぶんの山札のカード deck を加えて、
+ * すべての枠をそろえられるか。
+ */
+function fusionCompletable(
+  definitions: GameState["definitions"],
+  slots: string[][],
+  chosen: CardInstance[],
+  field: CardInstance[],
+  deck: CardInstance[],
+  icyLeft: number,
+): boolean {
+  if (!assignFusionSlots(definitions, slots, chosen)) return false;
+  if (chosen.length >= slots.length) return true;
+  for (const card of field) {
+    if (fusionCompletable(definitions, slots, [...chosen, card], field.filter((c) => c !== card), deck, icyLeft)) return true;
+  }
+  if (icyLeft > 0) {
+    const seen = new Set<string>();
+    for (const card of deck) {
+      if (seen.has(card.cardId)) continue;
+      seen.add(card.cardId);
+      if (fusionCompletable(definitions, slots, [...chosen, card], field, deck.filter((c) => c !== card), icyLeft - 1)) return true;
+    }
+  }
+  return false;
+}
+
+function fusionFieldCandidates(state: GameState, playerId: PlayerId, card: CardInstance): CardInstance[] {
+  return collectZordMaterials(state.players[playerId], state.definitions, card.cardId, card.instanceId);
+}
+
+function fusionDeckCandidates(state: GameState, playerId: PlayerId, card: CardInstance): CardInstance[] {
+  return state.players[playerId].deck.filter(
+    (c) => c.instanceId !== card.instanceId && isValidZordUpMaterial(state.definitions, card.cardId, card.instanceId, c),
+  );
+}
+
+function findCards(state: GameState, playerId: PlayerId, ids: string[]): CardInstance[] {
+  const p = state.players[playerId];
+  const all = [...p.rush, ...p.battle, ...p.deck, ...p.discard];
+  return ids.map((id) => all.find((c) => c.instanceId === id)).filter((c): c is CardInstance => !!c);
 }
 
 /** デンジ犬アイシーで補える素材の数（アイシーの数と山札の候補の少ない方）。 */
@@ -203,9 +278,14 @@ export function planEffectRush(
   }
 
   if (requiresAllFusionPartners(card.cardId)) {
-    return hasAllRequiredFusionMaterials(player, state.definitions, card.cardId, card.instanceId)
-      ? { kind: "fusion" }
-      : null;
+    if (hasAllRequiredFusionMaterials(player, state.definitions, card.cardId, card.instanceId)) return { kind: "fusion" };
+    // デンジ犬アイシー【最後の手段】で、足りない合体ユニットを山札のカードで補う。
+    const slots = fusionSlots(card.cardId);
+    const icy = icyIds(state, playerId, card).length;
+    if (!slots || icy === 0) return null;
+    const field = fusionFieldCandidates(state, playerId, card);
+    if (!fusionCompletable(state.definitions, slots, [], field, fusionDeckCandidates(state, playerId, card), icy)) return null;
+    return { kind: "up", materials: field.map((c) => c.instanceId), needed: slots.length, destinationChoice: false };
   }
 
   if (needsZordMaterial(state.definitions, card.cardId)) {
@@ -287,6 +367,8 @@ export type StartEffectRushInput = {
   mandatory?: boolean;
   /** 出したユニットは、このターン、バトルエリアに出られない。 */
   blockBattleEntryThisTurn?: boolean;
+  /** 「1枚選び、…出す」（任意でない）: 選択・追加条件の素材の選択を見送れない（RS-605）。 */
+  forced?: boolean;
 };
 
 /**
@@ -314,6 +396,7 @@ export function startEffectRush(state: GameState, input: StartEffectRushInput): 
     requireConditions: input.requireConditions,
     ignorePowerCost: input.ignorePowerCost,
     blockBattleEntryThisTurn: input.blockBattleEntryThisTurn,
+    ...(input.forced ? { forced: true } : {}),
     queue: [],
   };
 
@@ -351,7 +434,7 @@ function openPickChoice(state: GameState): GameState {
     sourceInstanceId: pending.sourceInstanceId,
     kind: "select_unit",
     validInstanceIds: pending.picking!.candidates,
-    optional: true,
+    optional: !pending.forced,
   });
 }
 
@@ -445,7 +528,7 @@ function openMaterialChoice(state: GameState, materials: string[]): GameState {
     sourceInstanceId: pending.current?.instanceId,
     kind: "select_unit",
     validInstanceIds: materials,
-    optional: true,
+    optional: !pending.forced,
   });
 }
 
@@ -459,7 +542,31 @@ function currentMaterials(state: GameState): string[] {
     current.direction === "down"
       ? collectZordDownMaterials(owner, state.definitions, found.card.cardId, found.card.instanceId)
       : collectZordMaterials(owner, state.definitions, found.card.cardId, found.card.instanceId);
-  return all.map((c) => c.instanceId).filter((id) => !current.chosen.includes(id));
+  const rest = all.filter((c) => !current.chosen.includes(c.instanceId));
+  const slots = requiresAllFusionPartners(found.card.cardId) ? fusionSlots(found.card.cardId) : null;
+  if (!slots) return rest.map((c) => c.instanceId);
+  // 合体: 選ぶと残りの枠をそろえられなくなるカードは候補にしない。
+  const chosen = findCards(state, pending.playerId, [...current.chosen, ...(current.icyChosen ?? [])]);
+  const deck = fusionDeckCandidates(state, pending.playerId, found.card);
+  const icyLeft = icyIds(state, pending.playerId, found.card).length;
+  return rest
+    .filter((c) => fusionCompletable(state.definitions, slots, [...chosen, c], rest.filter((x) => x !== c), deck, icyLeft))
+    .map((c) => c.instanceId);
+}
+
+/** 合体: アイシーで山札から選べるカード（足りない枠を補えるものだけ）。 */
+function fusionIcyDeckIds(state: GameState, card: CardInstance): string[] | null {
+  const pending = state.pendingEffectRush!;
+  const current = pending.current!;
+  const slots = requiresAllFusionPartners(card.cardId) ? fusionSlots(card.cardId) : null;
+  if (!slots) return null;
+  const chosen = findCards(state, pending.playerId, [...current.chosen, ...(current.icyChosen ?? [])]);
+  const field = fusionFieldCandidates(state, pending.playerId, card).filter((c) => !current.chosen.includes(c.instanceId));
+  const deck = fusionDeckCandidates(state, pending.playerId, card);
+  const icyLeft = icyIds(state, pending.playerId, card).length;
+  return deck
+    .filter((c) => fusionCompletable(state.definitions, slots, [...chosen, c], field, deck.filter((x) => x !== c), Math.max(0, icyLeft - 1)))
+    .map((c) => c.instanceId);
 }
 
 /** 今のユニットに使えるデンジ犬アイシー（山札に素材の候補があるときだけ）。 */
@@ -469,7 +576,8 @@ function currentIcyIds(state: GameState): string[] {
   const owner = state.players[pending.playerId];
   const found = findInZone(owner, pending.fromZone, current.instanceId);
   if (!found) return [];
-  if (icyDeckMaterialIds(state, pending.playerId, found.card).length === 0) return [];
+  const fusionDeck = fusionIcyDeckIds(state, found.card);
+  if ((fusionDeck ?? icyDeckMaterialIds(state, pending.playerId, found.card)).length === 0) return [];
   return icyIds(state, pending.playerId, found.card);
 }
 
@@ -481,7 +589,7 @@ function activateIcy(state: GameState, icyInstanceId: string): GameState {
   const found = findInZone(owner, pending.fromZone, current.instanceId);
   const icy = findInZone(owner, "rush", icyInstanceId);
   if (!found || !icy) return proceedMaterials(state);
-  const deckIds = icyDeckMaterialIds(state, pending.playerId, found.card);
+  const deckIds = fusionIcyDeckIds(state, found.card) ?? icyDeckMaterialIds(state, pending.playerId, found.card);
   const discarded: GameState = {
     ...state,
     ...updatePlayer(state, pending.playerId, {
@@ -515,6 +623,7 @@ function resolveIcyDeckPick(state: GameState, deckInstanceId: string | undefined
   const owner = state.players[pending.playerId];
   let nextOwner: PlayerState = owner;
   let icyCount = current.icyCount ?? 0;
+  let icyChosen = current.icyChosen ?? [];
   if (deckInstanceId) {
     const found = findInZone(owner, "deck", deckInstanceId);
     if (found) {
@@ -524,12 +633,13 @@ function resolveIcyDeckPick(state: GameState, deckInstanceId: string | undefined
         discard: [...owner.discard, { ...found.card, faceDown: false }],
       };
       icyCount += 1;
+      icyChosen = [...icyChosen, deckInstanceId];
     }
   }
   nextOwner = { ...nextOwner, deck: shuffledDeck(nextOwner.deck) };
   const next = withPending(
     closeChoice({ ...state, ...updatePlayer(state, pending.playerId, nextOwner) }),
-    { ...pending, current: { ...current, icyPending: undefined, icyCount } },
+    { ...pending, current: { ...current, icyPending: undefined, icyCount, icyChosen } },
   );
   return proceedMaterials(next);
 }
@@ -632,7 +742,7 @@ export function continuePendingEffectRush(state: GameState): GameState {
         sourceInstanceId: head,
         kind: "confirm",
         validInstanceIds: plan.mothershipHoldIds ? ["command", "discard", "mothership"] : ["command", "discard"],
-        optional: true,
+        optional: !pending.forced,
       });
     }
     return proceedMaterials(withCurrent);

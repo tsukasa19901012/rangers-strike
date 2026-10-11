@@ -9,6 +9,7 @@ import {
   effectChoiceHint,
   effectChoiceTitle,
   isBlindHandChoice,
+  SET9A_DONE_CHOICE,
   sagasSniperDeckCardMeta,
   SIMULTANEOUS_FRAME_LABELS,
 } from "@/lib/effectChoiceHint";
@@ -259,6 +260,15 @@ export function EffectChoiceModal({
                   </button>
                 ))}
               </div>
+            </div>
+          )}
+
+          {!isGenericFallback && pending.validInstanceIds.includes(SET9A_DONE_CHOICE) && !readOnly && (
+            // 第9弾 RS-612【スカイコンテナ】等「好きな数選び」: 選び終える（rules/legend1/set9NamedEffectsA.ts SET9A_DONE）。
+            <div className="effect-action-modal__actions">
+              <button type="button" className="btn btn--primary" onClick={() => onSelect(SET9A_DONE_CHOICE)}>
+                選び終える
+              </button>
             </div>
           )}
 

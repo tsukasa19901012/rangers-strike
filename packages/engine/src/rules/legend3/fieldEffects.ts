@@ -1,4 +1,5 @@
 import { hasUnnamedRule } from "@rangers-strike/cards";
+import { set9AEffectiveSp } from "../legend1/set9NamedEffectsA";
 import { hellSaturnGrantCount } from "../hellSaturn";
 import { activeNamedEffect, namedEffectActive } from "../ncGatedEffects";
 import { countJointLGrant, jointLGrantSpPlus, jointRGrantActive } from "../jointComboGrants";
@@ -239,6 +240,8 @@ export function legend3EffectiveSp(
   sp = set8DEffectiveSp(state, playerId, instance, sp);
   // 第9弾 RS-655【パトマグナム】（rules/legend1/set9NamedEffectsC.ts）。
   sp = set9CEffectiveSp(state, playerId, instance, sp);
+  // 第9弾 RS-617【バードメーザー】・RS-615【ジャッカーコバック】（rules/legend1/set9NamedEffectsA.ts）。
+  sp = set9AEffectiveSp(state, playerId, instance, sp);
   // 第9弾 RS-645 ビクトリーマーズ ※（rules/legend1/set9NamedEffectsB.ts）。
   sp = set9BEffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;

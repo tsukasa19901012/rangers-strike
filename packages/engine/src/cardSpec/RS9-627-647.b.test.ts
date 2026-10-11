@@ -194,7 +194,7 @@ function nejiTests(spec: NejiSpec) {
     });
   }
 
-  const rushIt = spec.mode === "damage" ? it.fails : it;
+  const rushIt = it;
   it(`${id}: 【${spec.effectName}】NC（${cn}番目）— 特徴「${feature}」を持つ敵軍バトルエリアの S ユニットを選び${verb}（出典: ${page}）`, () => {
     let s = entered();
     expect(s.pendingEffectChoice?.sourceCardId).toBe(id);
@@ -212,7 +212,6 @@ function nejiTests(spec: NejiSpec) {
     expect(choiceIds(s)).not.toContain("TST-UNIT-0:x");
   });
 
-  // 既知の不具合: CARD-RS-639 候補がバトルエリアのユニットだけで、ラッシュエリアの敵軍ユニットを選べない（parseEnemyUnitFilter の既定 zone が battle）→ mode="damage" のとき it.fails
   rushIt(`${id}: 【${spec.effectName}】敵軍ラッシュエリアの特徴「${feature}」の S ユニットも選べる（出典: ${page}「敵軍Sユニット」・R-TGT-01「ユニット」はラッシュエリア・バトルエリアのもの）`, () => {
     let s = entered();
     expect(choiceIds(s)).toEqual([`${sId}:b`, `${sId}:r`].sort());

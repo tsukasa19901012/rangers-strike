@@ -28,11 +28,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_koreworashushitatokipawazonkaradamejinokadowo1bichino",
+          "keyword": "set9a::RS-620::garuda_claw",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

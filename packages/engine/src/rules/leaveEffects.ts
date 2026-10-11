@@ -1,4 +1,5 @@
 import type { GameState, PlayerId } from "../types/game";
+import { openSet9ADestroyedEffects } from "./legend1/set9NamedEffectsA";
 import { applySet7AAfterDiscard } from "./legend1/set7NamedEffectsA";
 import { applySet9DAfterDiscard } from "./legend1/set9NamedEffectsD";
 import { cardName, getDefinition } from "../core/catalog";
@@ -163,8 +164,10 @@ export function resolveDestroyedFactEffects(
   const gekido = info?.gekidoSources?.length
     ? openGekidoZan(legend2.state, ownerPlayerId, info.gekidoSources, info.phasePlayerId ?? ownerPlayerId)
     : legend2.state;
+  // RS-626【メガシールド】「敵軍ターン中、これが撃破されたとき」（rules/legend1/set9NamedEffectsA.ts）。
+  const set9a = openSet9ADestroyedEffects(gekido, ownerPlayerId, cardId);
   // ルール: R-TIME-01 — ここで開いた選択は段階 2（「撃破されたとき」）の誘発。
-  return { state: tagOpenedDestroyTrigger(state, gekido, "destroyed"), logs: [...aba.logs, ...legend2.logs] };
+  return { state: tagOpenedDestroyTrigger(state, set9a, "destroyed"), logs: [...aba.logs, ...legend2.logs] };
 }
 
 /** UnitLeftZone リスナー本体: 捨札離場時の撃破誘発と自ダメージ。 */

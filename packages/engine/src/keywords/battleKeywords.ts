@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { set9ATaxisCategory } from "../rules/legend1/set9NamedEffectsA";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { sameCanonicalCardName, textHasKeywordNotation } from "@rangers-strike/cards";
@@ -110,7 +111,9 @@ export function taxisSpFloor(
   const left = player.battle[index - 1]!;
   const taxisCategory =
     parseTaxisCategory(left.cardId) ??
-    srBigBatonTaxisCategory(state, playerId, left.cardId);
+    srBigBatonTaxisCategory(state, playerId, left.cardId) ??
+    // RS-610 秘伝ディスク: 特徴「侍」を持つユニットはタクスMA を得る（rules/legend1/set9NamedEffectsA.ts）。
+    set9ATaxisCategory(state, playerId, left);
   if (!taxisCategory) return 0;
 
   const holderPosition = index;

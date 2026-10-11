@@ -3,6 +3,7 @@ import { pickSet8BCpuChoice } from "../rules/legend1/set8NamedEffectsB";
 import { cpuAcceptsOptionalEffect } from "../rules/optionalEffects";
 import { pickSet7DCpuChoice } from "../rules/legend1/set7NamedEffectsD";
 import { pickSet8DCpuChoice } from "../rules/legend1/set8NamedEffectsD";
+import { pickSet9ACpuChoice } from "../rules/legend1/set9NamedEffectsA";
 import { pickSet9DCpuChoice } from "../rules/legend1/set9NamedEffectsD";
 import { pickSet9BCpuChoice } from "../rules/legend1/set9NamedEffectsB";
 import { ATTACK_HOLD_BONUS_EFFECT_ID, pickAttackHoldCount } from "../rules/attackHoldBonus";
@@ -1200,6 +1201,9 @@ export function pickEffectChoice(
     const picked = pickSet7CEffectChoice(state, pending, actions);
     if (picked) return picked;
   }
+  // 第9弾 RS-605〜RS-626 の選択（rules/legend1/set9NamedEffectsA.ts）。
+  const set9a = pickSet9ACpuChoice(state, pending, actions);
+  if (set9a) return set9a;
   // 第8弾 RS-560〜RS-581 の選択（rules/legend1/set8NamedEffectsC.ts）。
   if (isSet8CChoiceEffect(pending.effectId)) {
     const picked = pickSet8CEffectChoice(state, pending, actions);

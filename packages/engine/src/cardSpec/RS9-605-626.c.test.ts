@@ -81,8 +81,7 @@ describe("RS-620 ジェットガルーダ", () => {
     expect(canStartRush(board({ rush: [inst("TST-UNIT-0", "x")] }), "player1", "RS-620:jg")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-620 【ガルーダクロー】が候補のない確認（confirm）を開くだけで、敵軍パワーゾーンのカードを選べない
-  it.fails("RS-620: 【ガルーダクロー】敵軍パワーゾーンのダメージ以外のカードを1枚選び、敵軍山札の上に戻す（出典: atwiki/page-1458）", () => {
+  it("RS-620: 【ガルーダクロー】敵軍パワーゾーンのダメージ以外のカードを1枚選び、敵軍山札の上に戻す（出典: atwiki/page-1458）", () => {
     let s = rushIt(board());
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-620");
     expect(choiceIds(s)).toEqual(["TST-OP:ep2", "TST-P:ep1"]);
@@ -158,8 +157,7 @@ describe("RS-621 バードガルーダ", () => {
     expect(canWing(s, "RS-621:bg")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-621 【ダイヤブリザード】の候補が自分自身（バードガルーダ）になっていて、敵軍ユニットを選べない
-  it.fails("RS-621: 【ダイヤブリザード】本来の BP の合計が8000以下になるように敵軍ユニット（BP3000＋本来 BP5000）を選び、持ち主のパワーゾーンに送る（出典: atwiki/page-1459）", () => {
+  it("RS-621: 【ダイヤブリザード】本来の BP の合計が8000以下になるように敵軍ユニット（BP3000＋本来 BP5000）を選び、持ち主のパワーゾーンに送る（出典: atwiki/page-1459）", () => {
     let s = rushIt(board());
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-621");
     expect(choiceIds(s)).toEqual(["SPEC-BP5000:e5", "TST-UNIT-0:er", "TST-UNIT-2:e3"]);
@@ -172,15 +170,13 @@ describe("RS-621 バードガルーダ", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-7:e13")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-621 【ダイヤブリザード】が敵軍ユニットを候補にしない
-  it.fails("RS-621: 【ダイヤブリザード】合計が8000を超える組み合わせは選べない（BP3000＋BP5000 を選んだ後に BP1000 は追加できない）（出典: atwiki/page-1459「本来のBPが8000以下になるように」）", () => {
+  it("RS-621: 【ダイヤブリザード】合計が8000を超える組み合わせは選べない（BP3000＋BP5000 を選んだ後に BP1000 は追加できない）（出典: atwiki/page-1459「本来のBPが8000以下になるように」）", () => {
     let s = rushIt(board());
     s = pick(pick(s, "TST-UNIT-2:e3"), "SPEC-BP5000:e5");
     expect(choiceIds(s)).not.toContain("TST-UNIT-0:er");
   });
 
-  // 既知の不具合: CARD-RS-621 【ダイヤブリザード】の候補が自分自身で、選ぶと自軍のバードガルーダが自軍パワーゾーンに送られる
-  it.fails("RS-621: 【ダイヤブリザード】自軍のユニットは送らない（出典: atwiki/page-1459「敵軍ユニットを」）", () => {
+  it("RS-621: 【ダイヤブリザード】自軍のユニットは送らない（出典: atwiki/page-1459「敵軍ユニットを」）", () => {
     const s = resolveAll(rushIt(board()), ["RS-621:bg"]);
     expect(zoneOf(s, "player1", "RS-621:bg")).toBe("rush");
   });
@@ -217,8 +213,7 @@ describe("RS-622 グリフォーザー", () => {
     expect(canWing(board("rush"), "RS-622:g")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-622 【グリフォカリバー4世】が DSL スタブで NC（trigger: nc）扱いになっており、CN を持たないので常に無効
-  it.fails("RS-622: 【グリフォカリバー4世】バトルエリアから敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-1487）", () => {
+  it("RS-622: 【グリフォカリバー4世】バトルエリアから敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-1487）", () => {
     expect(targetsOf(board("battle"), "RS-622:g")).toEqual(["TST-UNIT-0:e1", "TST-UNIT-0:er"]);
   });
 
@@ -284,8 +279,7 @@ describe("RS-623 ツバサマル", () => {
     expect(bpOf(s, "player1", "RS-618:L")).toBe(6000);
   });
 
-  // 既知の不具合: CARD-RS-623 重ねたユニットが撃破されて捨札になるとき、重ねていたツバサマルがどのゾーンにも残らず消える
-  it.fails("RS-623: 【翼合体】重ねたユニットが撃破されてユニットでなくなるとき、ツバサマルも捨札になる（出典: atwiki/page-1460「重ねたユニットがユニットでなくなるとき捨札になる」）", () => {
+  it("RS-623: 【翼合体】重ねたユニットが撃破されてユニットでなくなるとき、ツバサマルも捨札になる（出典: atwiki/page-1460「重ねたユニットがユニットでなくなるとき捨札になる」）", () => {
     const s = stacked();
     // 敵軍ターン。ラッシュエリアのジェットイカロスはアタックされないので、重ねた状態のままバトルエリアに置いて組み直す
     const host = s.players.player1.rush.find((c) => c.instanceId === "RS-618:L")!;
@@ -295,8 +289,7 @@ describe("RS-623 ツバサマル", () => {
     expect(zoneOf(t, "player1", "RS-623:t")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-623 【翼合体】がツバサマルをラッシュしたときにしか発動せず、自軍ラッシュフェイズ中に後から出た L ユニットには重ねられない
-  it.fails("RS-623: 【翼合体】ラッシュエリアにいるツバサマルは、自軍ラッシュフェイズ中ならいつでも（後からラッシュした L ユニットにも）重ねられる（出典: atwiki/page-1460「自軍ラッシュフェイズ中」）", () => {
+  it("RS-623: 【翼合体】ラッシュエリアにいるツバサマルは、自軍ラッシュフェイズ中ならいつでも（後からラッシュした L ユニットにも）重ねられる（出典: atwiki/page-1460「自軍ラッシュフェイズ中」）", () => {
     const s = st({ phase: "rush", player1: { rush: [inst("RS-623", "t"), inst("RS-618", "L")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
     expect(legal(s).some((a) => "unitInstanceId" in a && a.unitInstanceId === "RS-623:t")).toBe(true);
   });
@@ -328,8 +321,7 @@ describe("RS-624 メガウインガー・ファイターモード", () => {
   const board = (n: number, enemyCommand: ReturnType<typeof inst>[] = []) =>
     st({ player1: { rush: [inst("RS-624", "f")], deck: deckCards(3) }, player2: { battle: enemyBattle(n), command: enemyCommand, deck: deckCards(3, "e") } });
 
-  // 既知の不具合: CARD-RS-624 【ウインガーキャノン】が未実装（grant_effect_generic のターン修飾子を登録するだけ）
-  it.fails("RS-624: 【ウインガーキャノン】敵軍バトルエリアが4体なら、追加条件を持たないユニットをすべて持ち主のコマンドゾーンにホールド状態で置く（追加条件を持つジェットマシンは残る）（出典: atwiki/page-1491）", () => {
+  it("RS-624: 【ウインガーキャノン】敵軍バトルエリアが4体なら、追加条件を持たないユニットをすべて持ち主のコマンドゾーンにホールド状態で置く（追加条件を持つジェットマシンは残る）（出典: atwiki/page-1491）", () => {
     let s = enterSeq(board(4), ["RS-624:f"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-624");
     s = resolveAll(s, ["RS-624:f"]);
@@ -347,16 +339,14 @@ describe("RS-624 メガウインガー・ファイターモード", () => {
     }
   });
 
-  // 既知の不具合: CARD-RS-624 【ウインガーキャノン】が未実装
-  it.fails("RS-624: 【ウインガーキャノン】敵軍コマンドゾーンが置ききれない（4枚あり残り1枚分）なら、置けないユニットは捨札にする（出典: atwiki/page-1491「置けなければ捨札にする」・R-ZONE-08）", () => {
+  it("RS-624: 【ウインガーキャノン】敵軍コマンドゾーンが置ききれない（4枚あり残り1枚分）なら、置けないユニットは捨札にする（出典: atwiki/page-1491「置けなければ捨札にする」・R-ZONE-08）", () => {
     const s = resolveAll(enterSeq(board(4, Array.from({ length: 4 }, (_, i) => inst("TST-OP", `ec${i}`))), ["RS-624:f"]), ["RS-624:f"]);
     const moved = ["TST-UNIT-0:a", "TST-UNIT-2:b", "TST-UNIT-0:d"].map((id) => zoneOf(s, "player2", id));
     expect(moved.filter((z) => z === "command")).toHaveLength(1);
     expect(moved.filter((z) => z === "discard")).toHaveLength(2);
   });
 
-  // 既知の不具合: CARD-RS-624 【ウインガーキャノン】が未実装（任意の選択自体が開かない）
-  it.fails("RS-624: 【ウインガーキャノン】任意 — 発動しないこともできる（出典: atwiki/page-1491「発動できる」）", () => {
+  it("RS-624: 【ウインガーキャノン】任意 — 発動しないこともできる（出典: atwiki/page-1491「発動できる」）", () => {
     let s = enterSeq(board(4), ["RS-624:f"]);
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));
@@ -407,8 +397,7 @@ describe("RS-625 メガウインガー・フライヤーモード", () => {
     expect(canWing(s, "RS-625:fl")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-625 【シルバー専用機】が働かない（追加条件で捨札にしたカードを記録しておらず、SP「！」のメガシルバーでも BP+2000・SP1 にならない）
-  it.fails("RS-625: 【シルバー専用機】捨札にしたカードの SP が空欄でない（メガシルバー SP！）なら、このターン BP+2000・SP1（出典: atwiki/page-1461）", () => {
+  it("RS-625: 【シルバー専用機】捨札にしたカードの SP が空欄でない（メガシルバー SP！）なら、このターン BP+2000・SP1（出典: atwiki/page-1461）", () => {
     const s = rushWith(inst("RS-633", "sv"));
     expect(bpOf(s, "player1", "RS-625:fl")).toBe(6000);
     expect(spOf(s, "player1", "RS-625:fl")).toBe(1);
@@ -450,24 +439,21 @@ describe("RS-626 ギャラクシーメガ", () => {
   const destroyed = (discard: ReturnType<typeof inst>[] = wingS()) =>
     attackedInEnemyTurn({ battle: [inst("RS-626", "gm")], discard }, "RS-626:gm", { battle: [inst("TST-UNIT-7", "atk"), inst("TST-UNIT-0", "x")] });
 
-  // 既知の不具合: CARD-RS-626 【メガシールド】が未実装（撃破されても選択が開かない）
-  it.fails("RS-626: 【メガシールド】敵軍ターン中に撃破されたとき、◎敵軍ユニットを1体選び撃破するを選べる（出典: atwiki/page-1525）", () => {
+  it("RS-626: 【メガシールド】敵軍ターン中に撃破されたとき、◎敵軍ユニットを1体選び撃破するを選べる（出典: atwiki/page-1525）", () => {
     let s = destroyed();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-626");
     s = resolveAll(s, ["TST-UNIT-0:x"]);
     expect(zoneOf(s, "player2", "TST-UNIT-0:x")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-626 【メガシールド】が未実装
-  it.fails("RS-626: 【メガシールド】◎自軍捨札のウイングを持つ S ユニットを5枚まで選び自軍ラッシュエリアに出す（6枚あっても5枚まで）（出典: atwiki/page-1525「5枚まで選び」）", () => {
+  it("RS-626: 【メガシールド】◎自軍捨札のウイングを持つ S ユニットを5枚まで選び自軍ラッシュエリアに出す（6枚あっても5枚まで）（出典: atwiki/page-1525「5枚まで選び」）", () => {
     let s = destroyed();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-626");
     s = resolveAll(s, ["RS-622:w1", "RS-628:w2", "RS-629:w3", "RS-631:w4", "RS-622:w5", "RS-628:w6"]);
     expect(s.players.player1.rush).toHaveLength(5);
   });
 
-  // 既知の不具合: CARD-RS-626 【メガシールド】が未実装
-  it.fails("RS-626: 【メガシールド】ウイングを持たない S ユニット・ウイングを持つ M ユニット（バリブルーン）は出せない（出典: atwiki/page-1525「ウイングを持つSユニットのカード」）", () => {
+  it("RS-626: 【メガシールド】ウイングを持たない S ユニット・ウイングを持つ M ユニット（バリブルーン）は出せない（出典: atwiki/page-1525「ウイングを持つSユニットのカード」）", () => {
     let s = destroyed([inst("TST-UNIT-0", "nw"), inst("RS-611", "m"), inst("RS-622", "w1")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-626");
     s = resolveAll(s, ["RS-622:w1", "TST-UNIT-0:nw", "RS-611:m"]);
@@ -475,8 +461,7 @@ describe("RS-626 ギャラクシーメガ", () => {
     expect(zoneOf(s, "player1", "RS-611:m")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-626 【メガシールド】が未実装（任意の選択自体が開かない）
-  it.fails("RS-626: 【メガシールド】任意 — どちらも発動しないことを選べる（出典: atwiki/page-1525「1つ選び発動できる」）", () => {
+  it("RS-626: 【メガシールド】任意 — どちらも発動しないことを選べる（出典: atwiki/page-1525「1つ選び発動できる」）", () => {
     let s = destroyed();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-626");
     expect(canSkip(s)).toBe(true);

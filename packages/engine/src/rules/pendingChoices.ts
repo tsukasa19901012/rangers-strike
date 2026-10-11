@@ -142,6 +142,7 @@ import { isSet6BChoiceEffect, openFlameGlareForSoulDescent, tryResolveSet6BChoic
 import { isSet7DChoiceEffect, tryResolveSet7DChoice, trySkipSet7DChoice } from "./legend1/set7NamedEffectsD";
 import { isSet8AChoiceEffect, tryConfirmSet8AChoice, tryResolveSet8AChoice, trySkipSet8AChoice } from "./legend1/set8NamedEffectsA";
 import { isSet8DChoiceEffect, tryResolveSet8DChoice, trySkipSet8DChoice } from "./legend1/set8NamedEffectsD";
+import { isSet9AChoiceEffect, tryConfirmSet9AChoice, tryResolveSet9AChoice, trySkipSet9AChoice } from "./legend1/set9NamedEffectsA";
 import { isSet9DChoiceEffect, tryResolveSet9DChoice, trySkipSet9DChoice } from "./legend1/set9NamedEffectsD";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
@@ -636,6 +637,7 @@ export function isValidEffectChoiceTarget(
     isSet7DChoiceEffect(pending.effectId) ||
     isSet8AChoiceEffect(pending.effectId) ||
     isSet8DChoiceEffect(pending.effectId) ||
+    isSet9AChoiceEffect(pending.effectId) ||
     isSet9DChoiceEffect(pending.effectId) ||
     isSet9BChoiceEffect(pending.effectId) ||
     isSet8BChoiceEffect(pending.effectId) ||
@@ -1986,6 +1988,8 @@ export function applyConfirmEffectChoice(
   if (set8c) return set8c;
   const set9c = tryConfirmSet9CChoice(state, playerId);
   if (set9c) return set9c;
+  const set9a = tryConfirmSet9AChoice(state, playerId);
+  if (set9a) return set9a;
   const set9b = tryConfirmSet9BChoice(state, playerId);
   if (set9b) return set9b;
   if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
@@ -2914,6 +2918,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set8a) return set8a;
   const set8d = trySkipSet8DChoice(state, playerId);
   if (set8d) return set8d;
+  const set9a = trySkipSet9AChoice(state, playerId);
+  if (set9a) return set9a;
   const set9d = trySkipSet9DChoice(state, playerId);
   if (set9d) return set9d;
   const set9b = trySkipSet9BChoice(state, playerId);
@@ -3203,6 +3209,8 @@ export function applyEffectChoiceSelect(
   if (set8a) return set8a;
   const set8d = tryResolveSet8DChoice(state, playerId, instanceId);
   if (set8d) return set8d;
+  const set9a = tryResolveSet9AChoice(state, playerId, instanceId);
+  if (set9a) return set9a;
   const set9d = tryResolveSet9DChoice(state, playerId, instanceId);
   if (set9d) return set9d;
   const set9b = tryResolveSet9BChoice(state, playerId, instanceId);

@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { set9AFieldBpBonus } from "./legend1/set9NamedEffectsA";
 import { changePowerBpBonus } from "./legend1/set6NamedEffects348";
 import { hellSaturnGrantCount } from "./hellSaturn";
 import { activeNamedEffect } from "./ncGatedEffects";
@@ -250,6 +251,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += set8DFieldBpBonus(state, playerId, instance);
   // 第9弾 RS-650【強蹴一閃ライノシュート】・RS-661【破天攻】（rules/legend1/set9NamedEffectsC.ts）。
   if (role === "general") bonus += set9CFieldBpBonus(state, playerId, instance);
+  // 第9弾 RS-618【ジェットランサー】（rules/legend1/set9NamedEffectsA.ts）。
+  if (role === "general") bonus += set9AFieldBpBonus(state, playerId, instance);
   // 第9弾 RS-689【バードブラスター】（rules/legend1/set9NamedEffectsD.ts）。
   if (role === "general") bonus += set9DFieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);

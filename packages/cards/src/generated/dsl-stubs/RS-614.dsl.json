@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-614::kurabumegaton",
-          "duration": "permanent"
+          "keyword": "set9a::RS-614::club_megaton",
+          "duration": "turn"
         }
       ],
       "optional": false

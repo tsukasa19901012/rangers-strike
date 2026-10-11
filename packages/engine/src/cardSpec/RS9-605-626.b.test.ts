@@ -90,14 +90,12 @@ describe("RS-613 ダイヤジャック", () => {
       [BP7000, BP7500],
     );
 
-  // 既知の不具合: CARD-RS-613 【ダイヤソード】が NC 成立時にすぐ「敵軍ユニットを1体選び撃破」を開き（BP 制限なし）、ホールドを待たない
-  it.fails("RS-613: 【ダイヤソード】NC 成立時点では何も撃破しない（「次に自軍バトルエリアのユニットがホールド状態になったとき」まで待つ）（出典: atwiki/page-1452）", () => {
+  it("RS-613: 【ダイヤソード】NC 成立時点では何も撃破しない（「次に自軍バトルエリアのユニットがホールド状態になったとき」まで待つ）（出典: atwiki/page-1452）", () => {
     const s = passEntry(enter(swordBoard(), "RS-613:dj"));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-613");
   });
 
-  // 既知の不具合: CARD-RS-613 【ダイヤソード】がホールドを待たずに発動する
-  it.fails("RS-613: 【ダイヤソード】Q&A — 仮面ライダーレイが自分をホールドして BP7000 になった後なら、BP7000 以下の敵軍ユニットを撃破できる（出典: atwiki/page-1452 Q1「ＢＰ７０００以下のユニットまで撃破できます」）", () => {
+  it("RS-613: 【ダイヤソード】Q&A — 仮面ライダーレイが自分をホールドして BP7000 になった後なら、BP7000 以下の敵軍ユニットを撃破できる（出典: atwiki/page-1452 Q1「ＢＰ７０００以下のユニットまで撃破できます」）", () => {
     let s = passEntry(enter(swordBoard(), "RS-613:dj"));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-613");
     s = enter(s, "RK-322:rei");
@@ -108,8 +106,7 @@ describe("RS-613 ダイヤジャック", () => {
     expect(s.players.player2.battle.map((c) => c.instanceId)).not.toContain("SPEC-BP7000:e7");
   });
 
-  // 既知の不具合: CARD-RS-613 【ダイヤソード】の候補に BP 制限がない
-  it.fails("RS-613: 【ダイヤソード】候補はホールドしたユニットの BP 以下の敵軍ユニットだけ（出典: atwiki/page-1452「ホールドしたユニットのBP以下のBPを持つ」）", () => {
+  it("RS-613: 【ダイヤソード】候補はホールドしたユニットの BP 以下の敵軍ユニットだけ（出典: atwiki/page-1452「ホールドしたユニットのBP以下のBPを持つ」）", () => {
     let s = passEntry(enter(swordBoard(), "RS-613:dj"));
     s = enter(s, "RK-322:rei");
     for (let i = 0; i < 3 && s.pendingEffectChoice?.sourceCardId === "RK-322"; i++) s = pick(s, "RK-322:rei");
@@ -122,7 +119,9 @@ describe("RS-613 ダイヤジャック", () => {
     expect(s.players.player2.battle).toHaveLength(3);
   });
 
-  // 既知の不具合: CARD-RS-613 【ダイヤソード】がホールドを待たずに発動する
+  // 出典と矛盾（期待値の誤り）: オロチ（RK-231）は BP6000（atwiki/page-948「BP：6000」）なので、ホールドしたユニットの BP 以下に
+  // BP7000 の SPEC-BP7000 は入らず、【ダイヤソード】の候補がなく選択は開かない。BP6000 以下の敵軍ユニットなら Q2 どおり
+  // ターンを終えるときの【潜水】のホールドで発動し、撃破できる（実装済み）。
   it.fails("RS-613: 【ダイヤソード】Q&A — 【潜水】でホールドされたバトルエリアのオロチでも発動できる（出典: atwiki/page-1452 Q2「はい、できます」）", () => {
     let s = st(
       { player1: { rush: [inst("RS-613", "dj"), inst("RK-231", "oro")], deck: deckCards(3) }, player2: { battle: [inst("SPEC-BP7000", "e7")], deck: deckCards(3, "e") } },
@@ -173,8 +172,7 @@ describe("RS-614 クローバーキング", () => {
       [BP4000, BP4000M],
     );
 
-  // 既知の不具合: CARD-RS-614 【クラブメガトン】が汎用の「敵軍ユニットを1体選ぶ」処理（hold_enemy_unit）で、BP4000 の S ユニットを「すべて」置かない
-  it.fails("RS-614: 【クラブメガトン】NC（3番目）— BP4000 の敵軍 S ユニット（バトル・ラッシュエリア）をすべて持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-1453）", () => {
+  it("RS-614: 【クラブメガトン】NC（3番目）— BP4000 の敵軍 S ユニット（バトル・ラッシュエリア）をすべて持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-1453）", () => {
     let s = enterSeq(board(), ["RS-614:k"]);
     if (s.pendingEffectChoice?.sourceCardId === "RS-614" && s.pendingEffectChoice.kind === "confirm") s = pick(s, s.pendingEffectChoice.validInstanceIds[0]!);
     s = resolveAll(s);
@@ -185,15 +183,13 @@ describe("RS-614 クローバーキング", () => {
     expect(zoneOf(s, "player2", "SPEC-BP4000-M:m")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-614 【クラブメガトン】の対象条件（BP4000 の S ユニット）が落ちている
-  it.fails("RS-614: 【クラブメガトン】BP4000 でない S ユニット・BP4000 の M ユニットは置かない（出典: atwiki/page-1453「BP4000の敵軍Sユニット」）", () => {
+  it("RS-614: 【クラブメガトン】BP4000 でない S ユニット・BP4000 の M ユニットは置かない（出典: atwiki/page-1453「BP4000の敵軍Sユニット」）", () => {
     const s = enterSeq(board(), ["RS-614:k"]);
     for (const id of choiceIds(s)) expect(["SPEC-BP4000:a", "SPEC-BP4000:b"]).toContain(id);
     expect(choiceIds(s).length).toBeGreaterThan(0);
   });
 
-  // 既知の不具合: CARD-RS-614 【クラブメガトン】が「すべて」ではなく1体選択
-  it.fails("RS-614: 【クラブメガトン】敵軍コマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-1453「置けなければ捨札にする」・R-ZONE-08）", () => {
+  it("RS-614: 【クラブメガトン】敵軍コマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-1453「置けなければ捨札にする」・R-ZONE-08）", () => {
     const s = resolveAll(enterSeq(board(3, Array.from({ length: 5 }, (_, i) => inst("TST-OP", `ec${i}`))), ["RS-614:k"]), ["SPEC-BP4000:a", "SPEC-BP4000:b"]);
     expect(zoneOf(s, "player2", "SPEC-BP4000:a")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-BP4000:b")).toBe("discard");
@@ -238,8 +234,7 @@ describe("RS-615 ハートクイン", () => {
       [RED, GREEN, BLUE],
     );
 
-  // 既知の不具合: CARD-RS-615 【ジャッカーコバック】が未実装（grant_effect_generic のターン修飾子を登録するだけ）
-  it.fails("RS-615: 【ジャッカーコバック】NC（4番目）— ブルー・レッド・グリーンの S ユニットを1体ずつホールドすると SP1 になり、ホールド状態の敵軍コマンドをすべて捨札にする（出典: atwiki/page-1454）", () => {
+  it("RS-615: 【ジャッカーコバック】NC（4番目）— ブルー・レッド・グリーンの S ユニットを1体ずつホールドすると SP1 になり、ホールド状態の敵軍コマンドをすべて捨札にする（出典: atwiki/page-1454）", () => {
     let s = enterSeq(board(["SPEC-BLUE", "SPEC-RED", "SPEC-GREEN"]), ["RS-615:q"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-615");
     s = resolveAll(s, ["SPEC-BLUE:u0", "SPEC-RED:u1", "SPEC-GREEN:u2"]);
@@ -258,8 +253,7 @@ describe("RS-615 ハートクイン", () => {
     expect(zoneOf(s, "player2", "TST-OP:eh1")).toBe("command");
   });
 
-  // 既知の不具合: CARD-RS-615 【ジャッカーコバック】が未実装（選択が開かない）
-  it.fails("RS-615: 【ジャッカーコバック】任意 — 発動しなければホールドも SP1 もない（出典: atwiki/page-1454「発動できる」）", () => {
+  it("RS-615: 【ジャッカーコバック】任意 — 発動しなければホールドも SP1 もない（出典: atwiki/page-1454「発動できる」）", () => {
     let s = enterSeq(board(["SPEC-BLUE", "SPEC-RED", "SPEC-GREEN"]), ["RS-615:q"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-615");
     expect(canSkip(s)).toBe(true);
@@ -398,8 +392,7 @@ describe("RS-617 グレートイカロス", () => {
     st({ player1: { battle: [inst("RS-617", "gi")], discard, deck: deckCards(3) }, player2: { discard: enemyDiscard, deck: deckCards(3, "e") } });
   const wings = (n: number, prefix = "w") => Array.from({ length: n }, (_, i) => inst(i % 2 ? "RS-622" : "RS-611", `${prefix}${i}`));
 
-  // 既知の不具合: CARD-RS-617 【バードメーザー】が DSL スタブで NC の grant_keyword（SP2）になっており、常時効果として働かない
-  it.fails("RS-617: 【バードメーザー】自軍捨札にウイングを持つユニットカードが5枚あれば SP2（出典: atwiki/page-1499）", () => {
+  it("RS-617: 【バードメーザー】自軍捨札にウイングを持つユニットカードが5枚あれば SP2（出典: atwiki/page-1499）", () => {
     expect(spOf(spBoard(wings(5)), "player1", "RS-617:gi")).toBe(2);
   });
 
@@ -441,8 +434,7 @@ describe("RS-618 ジェットイカロス", () => {
   const board = (discard: ReturnType<typeof inst>[], enemyDiscard: ReturnType<typeof inst>[] = []) =>
     st({ player1: { battle: [inst("RS-618", "ji")], discard, deck: deckCards(3) }, player2: { discard: enemyDiscard, deck: deckCards(3, "e") } });
 
-  // 既知の不具合: CARD-RS-618 【ジェットランサー】が DSL スタブで NC 扱い（bp_modify の汎用登録だけ）で、BP が上がらない
-  it.fails("RS-618: 【ジェットランサー】自軍捨札のウイング持ちユニットカード3枚で BP+3000（出典: atwiki/page-1456）", () => {
+  it("RS-618: 【ジェットランサー】自軍捨札のウイング持ちユニットカード3枚で BP+3000（出典: atwiki/page-1456）", () => {
     expect(bpOf(board([inst("RS-611", "w1"), inst("RS-622", "w2"), inst("RS-621", "w3")]), "player1", "RS-618:ji")).toBe(9000);
   });
 
@@ -494,8 +486,7 @@ describe("RS-619 ジェットマシン", () => {
       [AIR],
     );
 
-  // 既知の不具合: CARD-RS-619 【航空戦力の奇襲】が効いていない（ジェットマシンがあっても「航空機」を持たないユニットが自軍のウイング持ちにアタックできる）
-  it.fails("RS-619: 【航空戦力の奇襲】ジェットマシンが自軍エリアにあれば、自軍のウイング持ちは「航空機」を持たないユニットにアタックされない（「航空機」持ちにはアタックされる）（出典: atwiki/page-1457）", () => {
+  it("RS-619: 【航空戦力の奇襲】ジェットマシンが自軍エリアにあれば、自軍のウイング持ちは「航空機」を持たないユニットにアタックされない（「航空機」持ちにはアタックされる）（出典: atwiki/page-1457）", () => {
     expect(attackersOf(enemyTurn(true), "RS-622:g")).toEqual(["SPEC-AIR:air"]);
   });
 
@@ -507,8 +498,7 @@ describe("RS-619 ジェットマシン", () => {
     expect(attackersOf(enemyTurn(false), "RS-622:g")).toContain("TST-UNIT-7:atk");
   });
 
-  // 既知の不具合: CARD-RS-619 【航空戦力の奇襲】が、ジェットマシンの持ち主側のウイング持ちしか守らない（rs619WingProtectedFromNonAircraft は防御側にジェットマシンがあるかだけを見る）
-  it.fails("RS-619: 【航空戦力の奇襲】対象は「ウイングを持つユニット」全体なので、敵軍のウイング持ちも「航空機」を持たない自軍ユニットにアタックされない（出典: atwiki/page-1457「ウイングを持つユニットは」）", () => {
+  it("RS-619: 【航空戦力の奇襲】対象は「ウイングを持つユニット」全体なので、敵軍のウイング持ちも「航空機」を持たない自軍ユニットにアタックされない（出典: atwiki/page-1457「ウイングを持つユニットは」）", () => {
     const s = st(
       {
         player1: { battle: [inst("TST-UNIT-7", "mine")], rush: [inst("RS-619", "jm")], deck: deckCards(3) },

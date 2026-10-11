@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-626::megashirudo",
+          "keyword": "set9a::RS-626::mega_shield",
           "duration": "permanent"
         }
       ],

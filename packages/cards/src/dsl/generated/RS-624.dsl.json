@@ -27,11 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokibatoruerianoyunitoga4narano",
+          "keyword": "set9a::RS-624::winger_cannon",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

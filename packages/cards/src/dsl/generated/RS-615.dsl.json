@@ -30,11 +30,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_batorueriakarabururedogurinwotsusyunitowosorezore1zutsu",
+          "keyword": "set9a::RS-615::jakka_koback",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {
