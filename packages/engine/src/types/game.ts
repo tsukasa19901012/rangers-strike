@@ -827,6 +827,11 @@ export type PendingCommandPayment = {
    * WB のコマンド＋追加1つの計2つでもよい）。
    */
   minNeeded?: number;
+  /**
+   * 追加条件「追加で自軍コマンドをNつホールドする」の N を、この支払いの中で一緒に選ぶ（totalNeeded に含む）。
+   * 確定時に、カテゴリの支払い分と追加分に分ける（RS-627 メガシップ。rules/commandPayment.ts splitExtraHoldPayment）。
+   */
+  extraCommandHoldCount?: number;
   continuation: CommandPaymentContinuation;
 };
 

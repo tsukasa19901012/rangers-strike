@@ -63,14 +63,14 @@ export function rs579BlocksAttackStrikeOnRushTurn(
   return effectiveBp(state, playerId, card) <= 8000;
 }
 
-/** RS-627: ラッシュBP1000以下は相手に選ばれない。 */
+/** RS-627【シールドシステム】: これが自軍エリア（ラッシュ・バトル）にある間、自軍ラッシュエリアの BP1000 以下は相手に選ばれない。 */
 export function rs627NotSelectable(
   state: GameState,
   ownerId: PlayerId,
   instanceId: string,
 ): boolean {
   const owner = state.players[ownerId];
-  if (!playerHasFieldCard(state, ownerId, "RS-627", ["rush"])) return false;
+  if (!playerHasFieldCard(state, ownerId, "RS-627")) return false;
   const card = owner.rush.find((c) => c.instanceId === instanceId);
   if (!card) return false;
   return effectiveBp(state, ownerId, card) <= 1000;

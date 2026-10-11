@@ -219,6 +219,7 @@ import {
 } from "../rules/restrictions";
 import {
   applyCommandPaymentResolve,
+  splitExtraHoldPayment,
   buildBattleEntryPayment,
   buildPaymentFromInitiateAction,
   validatePaymentSelection,
@@ -1389,16 +1390,21 @@ function applyActionCore(
     }
 
     case "resolve_command_payment": {
-      const pending = state.pendingCommandPayment;
-      if (!pending || pending.playerId !== playerId) return fail("no_pending_payment");
-      const err = validatePaymentSelection(state, pending, action.commandInstanceIds);
+      const rawPending = state.pendingCommandPayment;
+      if (!rawPending || rawPending.playerId !== playerId) return fail("no_pending_payment");
+      // 「追加で自軍コマンドをNつホールドする」を支払いの中で選んだとき、追加分を分ける（RS-627。rules/commandPayment.ts）。
+      const split = splitExtraHoldPayment(state, rawPending, action.commandInstanceIds);
+      if (!split) return fail("invalid_command");
+      const pending = split.pending;
+      const paidIds = split.ids;
+      const err = validatePaymentSelection(state, pending, paidIds);
       if (err) return fail(err);
 
       const resolved = applyCommandPaymentResolve(
         state,
         playerId,
         pending,
-        action.commandInstanceIds,
+        paidIds,
       );
       if ("error" in resolved) return fail(resolved.error);
 
@@ -1416,7 +1422,7 @@ function applyActionCore(
         const completed = completeEffectHoldChoice(
           nextState,
           playerId,
-          action.commandInstanceIds,
+          paidIds,
         );
         if ("error" in completed) return fail(completed.error);
         return ok(completed.state, completed.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice"));
@@ -1433,7 +1439,7 @@ function applyActionCore(
       if (cont.type === "rush") {
         const holdIds =
           pending.kind === "mothership_hold"
-            ? action.commandInstanceIds
+            ? paidIds
             : cont.zordMothershipHoldInstanceIds;
         return applyAction(
           nextState,
@@ -1468,7 +1474,7 @@ function applyActionCore(
           countered.ok &&
           hasTurnRuleModifier(nextState.players[playerId], TURN_RULE_IDS.DEACE_SNIPER)
         ) {
-          return { ok: true, state: discardCounterHolds(countered.state, playerId, action.commandInstanceIds) };
+          return { ok: true, state: discardCounterHolds(countered.state, playerId, paidIds) };
         }
         return countered;
       }
