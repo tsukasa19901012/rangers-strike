@@ -8,6 +8,7 @@ import {
   effectChoiceHint,
   reorderOptionLabel,
   effectChoiceTitle,
+  isBlindHandChoice,
   sagasSniperDeckCardMeta,
   SIMULTANEOUS_FRAME_LABELS,
 } from "@/lib/effectChoiceHint";
@@ -504,7 +505,33 @@ export function EffectChoiceModal({
             pending.kind !== "optional_deck_draw" &&
             pending.kind !== "denji_machine" &&
             pending.kind !== "select_units_bp_budget" &&
-            pending.kind !== "scry_keep_one" && (
+            pending.kind !== "scry_keep_one" &&
+            isBlindHandChoice(pending) &&
+            !readOnly && (
+              // 相手の手札を見ないで選ぶ（RS-594【ガンパードガン】）: カードの中身は見せない。
+              <div className="effect-action-modal__targets">
+                {targets.map((target) => (
+                  <button
+                    key={target.instanceId}
+                    type="button"
+                    className="btn effect-action-modal__target"
+                    onClick={() => onSelect(target.instanceId)}
+                  >
+                    {`相手の手札（${state.players[target.playerId].hand.findIndex((c) => c.instanceId === target.instanceId) + 1}枚目）`}
+                  </button>
+                ))}
+              </div>
+            )}
+
+          {!isGenericFallback &&
+            targets.length > 0 &&
+            pending.kind !== "deck_top_or_bottom" &&
+            pending.kind !== "seabed_draw" &&
+            pending.kind !== "optional_deck_draw" &&
+            pending.kind !== "denji_machine" &&
+            pending.kind !== "select_units_bp_budget" &&
+            pending.kind !== "scry_keep_one" &&
+            !isBlindHandChoice(pending) && (
               <div className="effect-action-modal__targets">
                 {targets.map((target) => (
                   <TargetButton

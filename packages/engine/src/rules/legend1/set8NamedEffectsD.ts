@@ -1264,9 +1264,51 @@ export function pickSet8DCpuChoice(state: GameState, pending: PendingEffectChoic
   const skip = actions.find((a) => a.type === "skip_effect_choice");
   const picks = actions.filter((a): a is Extract<Action, { type: "resolve_effect_choice" }> => a.type === "resolve_effect_choice");
   if (picks.length === 0) return skip ?? null;
-  void state;
+  const me = pending.playerId;
+  const enemyId = opponent(me);
+  const bpOf = (id: string): number => {
+    for (const pid of ["player1", "player2"] as const) {
+      const card = fieldUnits(state, pid).find((c) => c.instanceId === id);
+      if (card) return effectiveBp(state, pid, card);
+      const other = [...state.players[pid].hand, ...state.players[pid].power].find((c) => c.instanceId === id);
+      if (other) return getDefinition(state.definitions, other.cardId)?.bp ?? 0;
+    }
+    return 0;
+  };
+  const lowest = () => [...picks].sort((a, b) => bpOf(a.instanceId) - bpOf(b.instanceId))[0]!;
+  const highest = () => [...picks].sort((a, b) => bpOf(b.instanceId) - bpOf(a.instanceId))[0]!;
+  const enemyHasUnits = unitIds(state, enemyId).length > 0;
   switch (pending.effectId) {
+    case OPPONENT_SELF_DESTROY_EFFECT_ID:
+      // 自分のユニットを失う側: BP の一番低いユニット。
+      return lowest();
+    case FIERCE_FIGHT_EFFECT_ID:
+    case GRAY_BLASTER_EFFECT_ID:
+      // 自軍の一番弱い S ユニットと引きかえに、相手のユニットを1体減らす（相手にユニットがなければしない）。
+      return enemyHasUnits ? lowest() : (skip ?? null);
+    case G6_GRAND_PRIX_EFFECT_ID: {
+      // 撃破できる敵軍ユニットがあるときだけパワーを捨札にする（発動後は必ず選び切る）。
+      if (pending.optional && !fieldUnits(state, enemyId).some((c) => effectiveBp(state, enemyId, c) <= G6_MAX_BP)) return skip ?? null;
+      return picks[0]!;
+    }
+    case TAKE_THE_BLOW_EFFECT_ID: {
+      // HM がアタックしてくるユニットより BP が高いときだけ代わる。
+      const battle = pending.set8dMeta?.battle;
+      const attacker = battle ? fieldUnits(state, battle.attackerPlayerId).find((c) => c.instanceId === battle.attackerInstanceId) : undefined;
+      const attackerBp = attacker && battle ? effectiveBp(state, battle.attackerPlayerId, attacker) : Number.MAX_SAFE_INTEGER;
+      const strong = picks.find((a) => bpOf(a.instanceId) > attackerBp);
+      return strong ?? skip ?? null;
+    }
+    case FULL_POWER_DESTROY_EFFECT_ID:
+    case G6_GRAND_PRIX_DESTROY_EFFECT_ID:
+    case JUSTICE_SORTIE_DEPLOY_EFFECT_ID:
+    case GUNPARD_GUN_PLACE_EFFECT_ID:
+      // 敵軍ユニットの撃破・相手の手札を減らす・自軍に出す: 一番強いもの。
+      return highest();
+    case SOUL_ART_BRANCH_EFFECT_ID:
+      return picks.find((a) => a.instanceId === "NC") ?? picks[0]!;
     default:
+      // 山札を見る・ダメージを手札に戻す・コマンドをリリースする等、行って損のない効果は行う。
       return picks[0] ?? skip ?? null;
   }
 }

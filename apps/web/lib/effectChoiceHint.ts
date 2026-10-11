@@ -37,10 +37,42 @@ const SET7D_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rs489_box_dimension_order: { label: "宇宙忍法・箱次元", hint: "先に山札の下に戻すユニットを選んでください（見送ると戻しません）" },
 };
 
+/**
+ * 第8弾 RS-582〜RS-604 のカード固有の選択（engine rules/legend1/set8NamedEffectsD.ts）の表示名と案内文。
+ * 「発動する／しない」の選択は、効果のユニット自身を選ぶと発動する。
+ */
+const SET8D_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rs582_mee_megalo: { label: "メー・メガロ", hint: "手札に加える同じカード名のカードを山札から選んでください（加えないなら「スキップ」。その後、山札をシャッフルします）" },
+  rs583_take_the_blow: { label: "災いを受け止める覚悟", hint: "アタックの対象をこのユニットに代えますか？（代えるならこのユニットを選ぶ）" },
+  set8d_opponent_self_destroy: { label: "撃破するユニットの選択", hint: "撃破する自分のユニットを1体選んでください" },
+  rs587_fierce_fight: { label: "激しい闘争心", hint: "撃破する自軍 S ユニットを選んでください（相手も自分のユニットを1体撃破します）" },
+  set8d_borrow_hand_combo: { label: "相手の手札の効果", hint: "相手の手札を見ますか？（見るならこのユニットを選ぶ）" },
+  set8d_borrow_hand_combo_pick: { label: "相手の手札の効果", hint: "効果を発動する S ユニットのカードを相手の手札から選んでください" },
+  set8d_borrow_hand_combo_branch: { label: "相手の手札の効果", hint: "発動する効果（NC／RC）を選んでください" },
+  rs589_gray_blaster: { label: "グレイブラスター", hint: "ホールドする自軍 S ユニットを選んでください（相手は自分のユニットを1体撃破します）" },
+  rs592_g6_grand_prix: { label: "G6グランプリ", hint: "パワーゾーンが6枚になるように捨札にするオモテ向きのカードを選んでください" },
+  rs592_g6_grand_prix_destroy: { label: "G6グランプリ", hint: "撃破する BP6000 以下の敵軍ユニットを1体ずつ選んでください（選び終えたら「スキップ」で確定）" },
+  rs593_balcutter: { label: "バルカッター", hint: "手札に戻すオモテ向きのカードを自分のパワーゾーンから選んでください（戻すと相手のバルカはストライクできません）" },
+  rs594_gunpard_gun: { label: "ガンパードガン", hint: "相手の手札を見ないで3枚まで選んでください（選び終えたら「スキップ」で確定）" },
+  rs594_gunpard_gun_place: { label: "ガンパードガン", hint: "持ち主のパワーゾーンに置く S ユニットのカードを選んでください" },
+  rs594_gunpard_return: { label: "ガンパードガン", hint: "手札に戻すオモテ向きのカードをパワーゾーンから選んでください" },
+  rs596_flame_sword: { label: "炎神剣", hint: "山札の上を1枚オモテにしますか？（するならこのユニットを選ぶ）" },
+  rs598_justice_sortie: { label: "正義の出陣", hint: "リリースするホールド状態の敵軍コマンドを選んでください" },
+  rs598_justice_sortie_deploy: { label: "正義の出陣", hint: "ラッシュエリアに出す「炎神」の M ユニットのカードをパワーゾーンから選んでください" },
+  rs599_reclaim_flame: { label: "取り戻す炎心", hint: "手札に加えるダメージのカードを選んでください" },
+  rs601_full_power: { label: "ミッション6 フルパワー", hint: "リリースする敵軍コマンドを1つずつ選んでください（3つまで。選び終えたら「スキップ」で確定）" },
+  rs601_full_power_destroy: { label: "ミッション6 フルパワー", hint: "撃破する敵軍ユニットを選んでください" },
+};
+
+/** 相手の手札を見ないで選ぶ選択か（カードの中身を見せない）。 */
+export function isBlindHandChoice(pending: NonNullable<GameState["pendingEffectChoice"]>): boolean {
+  return pending.effectId === "rs594_gunpard_gun";
+}
+
 export function effectChoiceHint(
   pending: NonNullable<GameState["pendingEffectChoice"]>,
 ): string {
-  const set7d = SET7D_CHOICE_UI[pending.effectId];
+  const set7d = SET7D_CHOICE_UI[pending.effectId] ?? SET8D_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -230,6 +262,7 @@ export function effectChoiceTitle(
 ): string {
   const label =
     SET7D_CHOICE_UI[pending.effectId]?.label ??
+    SET8D_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;
