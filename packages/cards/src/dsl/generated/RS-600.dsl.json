@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_konotankonoyunitononikonbineshonsurucn4wotsusyunitohasono",
+          "keyword": "set8d::RS-600::mission1_burning",
           "duration": "turn"
         }
       ],

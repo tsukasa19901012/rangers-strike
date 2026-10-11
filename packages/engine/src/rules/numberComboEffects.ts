@@ -21,6 +21,7 @@ import {
 import { crossReducedNumber, crossReductionFor } from "../keywords/battleKeywords";
 import { attackerPodNumber } from "./legend1/set6NamedEffectsB";
 import { gravityComboNumber, set7DBlocksNc } from "./legend1/set7NamedEffectsD";
+import { markMissionBurningNoStrike, missionBurningForcesNc } from "./legend1/set8NamedEffectsD";
 import { applySuperBrainDraw } from "../effects/drawEffects";
 import { buildLogEntry } from "../log/formatLog";
 import { startRuinSurvey } from "./ruinSurvey";
@@ -127,6 +128,8 @@ export function numberComboTriggers(
   if (tankCommandBlocksNc(state, card, definition)) return false;
   // RS-495 でナンバー0になった・RS-497【変身の妨害】で効果名を持つテキストが無効（rules/legend1/set7NamedEffectsD.ts）。
   if (set7DBlocksNc(state, playerId, card, definition)) return false;
+  // RS-600【ミッション1 バーニング】（rules/legend1/set8NamedEffectsD.ts）。
+  if (missionBurningForcesNc(state, playerId, card, definition, battleBeforeEnter)) return true;
   // RS-204 レッドファルコン【ファルコンブレイク】: BP が一番低ければナンバーに関係なく発動する。
   if (falconBreakTriggers(state, playerId, card)) return true;
   const effectiveNumber = ncEffectiveNumber(state, playerId, card, definition);
@@ -238,11 +241,14 @@ export function markNcColumnEffectsOnEnter(
 ): GameState {
   if (tankCommandBlocksNc(state, card, definition)) return state;
   if (set7DBlocksNc(state, playerId, card, definition)) return state;
+  // RS-600【ミッション1 バーニング】: シルバーの次の CN4 の S ユニットは NC を発動し、このターンはストライクできない。
+  const missionBurning = missionBurningForcesNc(state, playerId, card, definition, battleBeforeEnter);
   const numberMatches =
-    typeof definition.comboNumber === "number" &&
-    ncEffectiveNumber(state, playerId, card, definition) === battlePosition;
+    missionBurning ||
+    (typeof definition.comboNumber === "number" &&
+      ncEffectiveNumber(state, playerId, card, definition) === battlePosition);
   const leftNeighbor = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
-  let nextState = state;
+  let nextState = missionBurning ? markMissionBurningNoStrike(state, playerId, card.instanceId) : state;
   for (const effectId of ncColumnEffectIdsEstablished(
     state,
     card.cardId,

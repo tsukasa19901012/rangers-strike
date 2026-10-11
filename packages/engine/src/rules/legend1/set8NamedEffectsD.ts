@@ -20,6 +20,16 @@ import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKey
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice } from "../pendingChoices";
+import {
+  getNumberComboEffect,
+  getRidingComboEffect,
+  getRidingComboNamedEffect,
+  listNcColumnNamedEffects,
+} from "@rangers-strike/cards";
+import { getCardDslDocument } from "../../dsl/effectLookup";
+import { applyNumberComboEffect } from "../numberComboEffects";
+import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
+
 
 import { unitFeatures } from "../addedFeatures";
 import { rs603BlocksVehicle } from "../rs/rsCatchallField";
@@ -767,6 +777,148 @@ CHOICE_RESOLVERS[FULL_POWER_DESTROY_EFFECT_ID] = (state, playerId, instanceId) =
 };
 
 // ---------------------------------------------------------------------------
+// RS-588 大いなる獣　レイ【術魂】・RS-590 クエスター・レイ【グレイボンバー】
+// 「相手の手札を見てもよい。そうしたとき、ＮＣを持つSユニットのカードがあれば1枚選び、そのNCの効果をこのユニットの効果として発動する。」
+// （atwiki/page-1198）／「…ＮＣかＲＣを持つSユニットのカードを1枚選び、そのNCまたはRCの効果を、このユニットの効果として発動する。」
+// （atwiki/page-1200）— 「見る／見ない」は効果のユニット自身を選ぶと見る。NC と RC の両方を持つカードなら、どちらを発動するか選ぶ。
+// 「（この効果は「…」からコンビネーションするときはナンバーに関係なく発動する）」は NC の成立判定（rules/numberComboEffects.ts）。
+
+export const SOUL_ART_EFFECT_ID = "set8d_borrow_hand_combo";
+export const SOUL_ART_PICK_EFFECT_ID = "set8d_borrow_hand_combo_pick";
+export const SOUL_ART_BRANCH_EFFECT_ID = "set8d_borrow_hand_combo_branch";
+
+function cardHasNc(cardId: string): boolean {
+  return getNumberComboEffect(cardId) !== undefined || listNcColumnNamedEffects(cardId).length > 0;
+}
+
+function cardHasRc(cardId: string): boolean {
+  if (getRidingComboEffect(cardId) || getRidingComboNamedEffect(cardId)) return true;
+  return (getCardDslDocument(cardId)?.effects ?? []).some((e) => e.trigger.type === "riding_combo");
+}
+
+function borrowKinds(state: GameState, cardId: string, allowRc: boolean): ("nc" | "rc")[] {
+  if (!isSmallUnit(state.definitions, cardId)) return [];
+  const kinds: ("nc" | "rc")[] = [];
+  if (cardHasNc(cardId)) kinds.push("nc");
+  if (allowRc && cardHasRc(cardId)) kinds.push("rc");
+  return kinds;
+}
+
+function borrowMeta(sourceCardId: string): { allowRc: boolean } {
+  return { allowRc: sourceCardId === "RS-590" };
+}
+
+function applySoulArt(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const self = ctx.triggerSourceInstanceId;
+  if (!self) return { state, detail: `${SOUL_ART_EFFECT_ID}:no_source` };
+  return {
+    state: openEffectChoice(state, {
+      ...choiceBase({ ...ctx, sourceInstanceId: self }),
+      effectId: SOUL_ART_EFFECT_ID,
+      kind: "select_unit",
+      validInstanceIds: [self],
+      optional: true,
+    }),
+    detail: SOUL_ART_EFFECT_ID,
+  };
+}
+
+/** 借りた NC／RC の効果を、このユニット（selfId）の効果として発動する。 */
+function fireBorrowed(state: GameState, playerId: PlayerId, pending: PendingEffectChoice, cardId: string, kind: "nc" | "rc"): ChoiceOutcome {
+  const selfId = pending.sourceInstanceId;
+  const self = selfId ? state.players[playerId].battle.find((c) => c.instanceId === selfId) : undefined;
+  const cleared = close(state, pending);
+  const log = logFor(state, playerId, pending.sourceCardId, `${SOUL_ART_EFFECT_ID}:${kind}:${cardName(state.definitions, cardId)}`);
+  if (!self) return { state: proceed(cleared, pending), log };
+  const borrowed: CardInstance = { ...self, cardId };
+  const outcome =
+    kind === "nc"
+      ? applyNumberComboEffect(cleared, playerId, borrowed, getNumberComboEffect(cardId))
+      : resolveRidingComboOnRideOff(cleared, playerId, borrowed);
+  const next = { ...outcome.state, log: [...outcome.state.log, ...outcome.logs] };
+  return { state: proceed(next, pending), log };
+}
+
+CHOICE_RESOLVERS[SOUL_ART_EFFECT_ID] = (state, playerId) => {
+  const pending = state.pendingEffectChoice!;
+  const enemyHand = state.players[opponent(playerId)].hand;
+  const { allowRc } = borrowMeta(pending.sourceCardId);
+  const ids = enemyHand.filter((c) => borrowKinds(state, c.cardId, allowRc).length > 0).map((c) => c.instanceId);
+  const log = logFor(state, playerId, pending.sourceCardId, `${SOUL_ART_EFFECT_ID}:look`);
+  if (ids.length === 0) return { state: finish(state, pending), log };
+  return {
+    state: openEffectChoice(close(state, pending), {
+      ...pending,
+      effectId: SOUL_ART_PICK_EFFECT_ID,
+      kind: "select_hand",
+      validInstanceIds: ids,
+      viewedInstanceIds: enemyHand.map((c) => c.instanceId),
+      selectedInstanceIds: [],
+      selectCount: 1,
+      optional: false,
+    }),
+    log,
+  };
+};
+CHOICE_SKIPPERS[SOUL_ART_EFFECT_ID] = simpleSkip();
+
+CHOICE_RESOLVERS[SOUL_ART_PICK_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const card = state.players[opponent(playerId)].hand.find((c) => c.instanceId === instanceId);
+  if (!card) return { error: "invalid_target" };
+  const kinds = borrowKinds(state, card.cardId, borrowMeta(pending.sourceCardId).allowRc);
+  if (kinds.length === 1) return fireBorrowed(state, playerId, pending, card.cardId, kinds[0]!);
+  return {
+    state: {
+      ...state,
+      pendingEffectChoice: {
+        ...pending,
+        effectId: SOUL_ART_BRANCH_EFFECT_ID,
+        kind: "declare_number",
+        validInstanceIds: kinds.map((k) => k.toUpperCase()),
+        selectedInstanceIds: [],
+        set8dMeta: { cardId: card.cardId },
+      },
+    },
+  };
+};
+
+CHOICE_RESOLVERS[SOUL_ART_BRANCH_EFFECT_ID] = (state, playerId, value) => {
+  const pending = state.pendingEffectChoice!;
+  const cardId = pending.set8dMeta?.cardId;
+  if (!cardId) return { error: "invalid_choice" };
+  return fireBorrowed(state, playerId, pending, cardId, value === "RC" ? "rc" : "nc");
+};
+
+// ---------------------------------------------------------------------------
+// RS-600 ゴーオンシルバー【ミッション1 バーニング】
+// 「このターン、このユニットの次にコンビネーションするCN4を持つ自軍Sユニットは、そのＮＣの効果を発動する。ただし、ストライクはできない。」
+// （atwiki/page-1143）— NC が成立したシルバーの次（左隣がシルバー）にバトルエリアに出た CN4 の S ユニットは、ナンバーに関係なく
+// NC の効果を発動し、このターンはストライクできない（rules/numberComboEffects.ts から呼ぶ）。
+
+const MISSION1_EFFECT_ID = "mishon1_baningu";
+
+/** 【ミッション1 バーニング】で、このユニットの NC がナンバーに関係なく成立するか。 */
+export function missionBurningForcesNc(
+  state: GameState,
+  playerId: PlayerId,
+  card: CardInstance,
+  definition: CardDefinition,
+  battleBeforeEnter: CardInstance[],
+): boolean {
+  if (definition.comboNumber !== 4 || !isSmallUnit(state.definitions, card.cardId)) return false;
+  const left = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
+  if (!left || left.cardId !== "RS-600") return false;
+  if (!(left.activatedNcEffects ?? []).includes(MISSION1_EFFECT_ID)) return false;
+  return state.players[playerId].battle.some((c) => c.instanceId === left.instanceId);
+}
+
+/** 【ミッション1 バーニング】で NC を発動したユニットに「このターン、ストライクできない」を付ける。 */
+export function markMissionBurningNoStrike(state: GameState, playerId: PlayerId, instanceId: string): GameState {
+  return markBattleNcEffect(state, playerId, instanceId, NO_STRIKE_MARK);
+}
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword からの起点
 
 export const SET8D_KEYWORD_PREFIX = "set8d::";
@@ -783,6 +935,9 @@ const SET8D_KEYWORDS: Record<string, (state: GameState, ctx: GrantKeywordContext
   "RS-598::justice_sortie": applyJusticeSortie,
   "RS-599::reclaim_flame": applyReclaimFlame,
   "RS-601::full_power": applyFullPower,
+  "RS-588::soul_art": applySoulArt,
+  "RS-590::gray_bomber": applySoulArt,
+  "RS-600::mission1_burning": (state) => ({ state, detail: "rs600_mission1_burning" }),
 };
 
 export function trySet8DCardEffect(state: GameState, ctx: GrantKeywordContext, keyword: string): GrantKeywordResult | null {
