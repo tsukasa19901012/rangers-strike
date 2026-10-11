@@ -10861,7 +10861,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "effect_card::RS-628::megakyapucha"
+      "set9b::RS-628::mega_capture"
     ],
     "bp": 1000,
     "sp": null,
@@ -10915,7 +10915,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "effect_card::RS-631::sateraitosachi"
+      "set9b::RS-631::satellite_search"
     ],
     "bp": 3000,
     "sp": null,
@@ -10969,7 +10969,8 @@
       "【ダークサンダー】"
     ],
     "expectedDslKeywords": [
-      "call_DA"
+      "call_DA",
+      "set9b::RS-634::dark_thunder"
     ],
     "bp": 4000,
     "sp": null,
@@ -10986,7 +10987,7 @@
       "【ネジアロー】"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-635::nejiaro"
+      "set9b::RS-635::neji_destroy"
     ],
     "bp": 2000,
     "sp": null,
@@ -11004,7 +11005,8 @@
     ],
     "expectedDslKeywords": [
       "no_strike_with_held_command",
-      "SP1"
+      "SP1",
+      "set9b::RS-636::neji_destroy"
     ],
     "bp": 2000,
     "sp": "special",
@@ -11022,7 +11024,8 @@
     ],
     "expectedDslKeywords": [
       "no_strike_with_held_command",
-      "SP1"
+      "SP1",
+      "set9b::RS-637::neji_destroy"
     ],
     "bp": 3000,
     "sp": "special",
@@ -11040,7 +11043,8 @@
     ],
     "expectedDslKeywords": [
       "no_strike_with_held_command",
-      "SP1"
+      "SP1",
+      "set9b::RS-638::neji_destroy"
     ],
     "bp": 2000,
     "sp": "special",
@@ -11092,7 +11096,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack_non_da",
-      "effect_card::RS-641::sukuranburu"
+      "set9b::RS-641::scramble"
     ],
     "bp": 8000,
     "sp": null,
@@ -11110,7 +11114,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "effect_card::RS-642::giganteisubasuta"
+      "set9b::RS-642::gigantis_buster"
     ],
     "bp": 5000,
     "sp": 1,
@@ -11155,7 +11159,7 @@
     ],
     "expectedDslKeywords": [
       "note_card::RS-645::korehakinokado1n",
-      "effect_card::RS-645::mazufurea"
+      "set9b::RS-645::mars_flare"
     ],
     "bp": 11000,
     "sp": 1,
@@ -11187,8 +11191,7 @@
     ],
     "expectedDslKeywords": [
       "no_enter_battle_own_turn",
-      "stack_da_less_l_on_rush",
-      "register"
+      "set9b::RS-647::soul_bird"
     ],
     "bp": 500,
     "sp": null,

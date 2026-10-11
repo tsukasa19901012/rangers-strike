@@ -123,22 +123,19 @@ describe("RS-641 ギガバイタスSM", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-641 【スクランブル】がオモテにしたカードを山札の上に残すだけ（scry_keep_one）で、SC ユニットでもラッシュエリアに出さない
-  it.fails("RS-641: 【スクランブル】オモテにしたカードが SC ユニット（分身獣ギガホイール。追加条件「母艦」をギガバイタスSM自身が満たす）なら自軍ラッシュエリアに出す（出典: atwiki/page-1465）", () => {
+  it("RS-641: 【スクランブル】オモテにしたカードが SC ユニット（分身獣ギガホイール。追加条件「母艦」をギガバイタスSM自身が満たす）なら自軍ラッシュエリアに出す（出典: atwiki/page-1465）", () => {
     const s = resolveAll(scramble([inst("RS-643", "gw")]), ["RS-643:gw"]);
     expect(zoneOf(s, "player1", "RS-643:gw")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-641 【スクランブル】で出せなかったカードが山札の下ではなく山札の上に残る
-  it.fails("RS-641: 【スクランブル】オモテにしたカードが SC ユニットでなければ山札の下に戻す（出典: atwiki/page-1465「出せなかったなら、オモテにしたカードは山札の下に戻す」）", () => {
+  it("RS-641: 【スクランブル】オモテにしたカードが SC ユニットでなければ山札の下に戻す（出典: atwiki/page-1465「出せなかったなら、オモテにしたカードは山札の下に戻す」）", () => {
     const s = resolveAll(scramble([inst("TST-UNIT-0", "top")]), ["TST-UNIT-0:top"]);
     expect(zoneOf(s, "player1", "TST-UNIT-0:top")).toBe("deck");
     const deck = s.players.player1.deck;
     expect(deck[deck.length - 1]?.instanceId).toBe("TST-UNIT-0:top");
   });
 
-  // 既知の不具合: CARD-RS-641 【スクランブル】が SC ユニットを出す処理も山札の下に戻す処理も持たない（オモテにしたカードは山札の上に残る）
-  it.fails("RS-641: 【スクランブル】追加条件を満たせない SC ユニット（マーズマシン。自軍Sユニット5体が必要）は出さず山札の下に戻す（出典: atwiki/page-1465「ただし追加条件は満たすこと。出せなかったなら…山札の下に戻す」）", () => {
+  it("RS-641: 【スクランブル】追加条件を満たせない SC ユニット（マーズマシン。自軍Sユニット5体が必要）は出さず山札の下に戻す（出典: atwiki/page-1465「ただし追加条件は満たすこと。出せなかったなら…山札の下に戻す」）", () => {
     const s = resolveAll(scramble([inst("RS-646", "mm")]), ["RS-646:mm"]);
     expect(zoneOf(s, "player1", "RS-646:mm")).toBe("deck");
     const deck = s.players.player1.deck;
@@ -197,8 +194,7 @@ describe("RS-642 ギガライノス", () => {
       { type: "move_to_battle", playerId: "player1", instanceId: "RS-642:rh" },
     );
 
-  // 既知の不具合: CARD-RS-642 【ギガンティスバスター】の候補が敵軍バトルエリアの全ユニット（リリース状態も含む）で、ラッシュエリアのホールド状態のユニットを選べない（ホールド状態の条件が落ちている）
-  it.fails("RS-642: 【ギガンティスバスター】自軍ターンにバトルエリアに出たとき、ホールド状態の敵軍ユニット（サイズ・エリアを問わない）を1体選び撃破してもよい（出典: atwiki/page-1493・R-TGT-01）", () => {
+  it("RS-642: 【ギガンティスバスター】自軍ターンにバトルエリアに出たとき、ホールド状態の敵軍ユニット（サイズ・エリアを問わない）を1体選び撃破してもよい（出典: atwiki/page-1493・R-TGT-01）", () => {
     let s = board();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-642");
     expect(choiceIds(s)).toEqual(["SPEC-642-L:hl", "TST-UNIT-0:hb"]);
@@ -314,8 +310,7 @@ describe("RS-645 ビクトリーマーズ", () => {
     expect(canStartRush(none, "player1", "RS-645:vm")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-645 ※ 敵軍常駐置き場の枚数による SP+1 が未実装（常に SP1）
-  it.fails("RS-645: ※ 敵軍常駐置き場のカード1枚につき SP+1（2枚なら SP3）（出典: atwiki/page-1492）", () => {
+  it("RS-645: ※ 敵軍常駐置き場のカード1枚につき SP+1（2枚なら SP3）（出典: atwiki/page-1492）", () => {
     const s = p1Battle({ battle: [inst("RS-645", "vm")] }, { operation: [RES("o1"), RES("o2", true)] });
     expect(spOf(s, "player1", "RS-645:vm")).toBe(3);
   });
@@ -328,8 +323,7 @@ describe("RS-645 ビクトリーマーズ", () => {
   const flare = (p2: Partial<GameState["players"]["player2"]>) =>
     act(p1Battle({ rush: [inst("RS-645", "vm")] }, p2), { type: "move_to_battle", playerId: "player1", instanceId: "RS-645:vm" });
 
-  // 既知の不具合: CARD-RS-645 【マーズフレア】が未実装（相手の選択が開かず、常駐置き場のカードは動かない）
-  it.fails("RS-645: 【マーズフレア】自軍ターンにバトルエリアに出たとき、相手が自分の常駐置き場のカードを1枚選び（強制）、自分のコマンドゾーンにホールド状態で置く（出典: atwiki/page-1492）", () => {
+  it("RS-645: 【マーズフレア】自軍ターンにバトルエリアに出たとき、相手が自分の常駐置き場のカードを1枚選び（強制）、自分のコマンドゾーンにホールド状態で置く（出典: atwiki/page-1492）", () => {
     let s = flare({ operation: [RES("o1"), RES("o2")], command: releasedCat("WB", 1, "ec") });
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toEqual(["RS-253:o1", "RS-253:o2"]);
@@ -340,8 +334,7 @@ describe("RS-645 ビクトリーマーズ", () => {
     expect(zoneOf(s, "player2", "RS-253:o1")).toBe("operation");
   });
 
-  // 既知の不具合: CARD-RS-645 【マーズフレア】が未実装
-  it.fails("RS-645: 【マーズフレア】コマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-1492「置けなければ捨札にする」・R-ZONE-08）", () => {
+  it("RS-645: 【マーズフレア】コマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-1492「置けなければ捨札にする」・R-ZONE-08）", () => {
     const s = resolveAll(flare({ operation: [RES("o1")], command: releasedCat("WB", 5, "ec") }), ["RS-253:o1"]);
     expect(zoneOf(s, "player2", "RS-253:o1")).toBe("discard");
     expect(s.players.player2.command).toHaveLength(5);
@@ -393,8 +386,7 @@ describe("RS-646 マーズマシン", () => {
     expect(canStartRush(rushState(4), "player1", "RS-646:mm")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-646 ※ 撃破されて捨札になったときの回収が未実装（選択が開かない）
-  it.fails("RS-646: ※ 撃破されて捨札になったとき、自軍捨札の S ユニットのカードを選び手札に加えられる（M ユニットのカードは選べない）（出典: atwiki/page-1468）", () => {
+  it("RS-646: ※ 撃破されて捨札になったとき、自軍捨札の S ユニットのカードを選び手札に加えられる（M ユニットのカードは選べない）（出典: atwiki/page-1468）", () => {
     let s = attackedInEnemyTurn(
       { battle: [inst("RS-646", "mm")], discard: [...fill(6, "d"), inst("SPEC-646-M", "m")] },
       "RS-646:mm",
@@ -409,8 +401,7 @@ describe("RS-646 マーズマシン", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-646 ※ 回収が未実装
-  it.fails("RS-646: ※ 選べるのは5枚まで（6枚目は選べない）（出典: atwiki/page-1468「5枚まで」）", () => {
+  it("RS-646: ※ 選べるのは5枚まで（6枚目は選べない）（出典: atwiki/page-1468「5枚まで」）", () => {
     let s = attackedInEnemyTurn({ battle: [inst("RS-646", "mm")], discard: fill(6, "d") }, "RS-646:mm");
     for (let i = 0; i < 5 && s.pendingEffectChoice?.sourceCardId === "RS-646"; i++) {
       const p = s.pendingEffectChoice;
@@ -480,13 +471,11 @@ describe("RS-647 ピヨちゃん", () => {
     );
   const soulActions = (s: GameState) => legal(s).filter((a) => JSON.stringify(a).includes("RS-647:p"));
 
-  // 既知の不具合: CARD-RS-647 【ソウルバード】が未実装（自軍ラッシュフェイズにピヨちゃんを使う合法手がない）
-  it.fails("RS-647: 【ソウルバード】自軍ラッシュフェイズ中、DA を持たない自軍 L ユニットを選んでピヨちゃんに重ねられる（出典: atwiki/page-1469）", () => {
+  it("RS-647: 【ソウルバード】自軍ラッシュフェイズ中、DA を持たない自軍 L ユニットを選んでピヨちゃんに重ねられる（出典: atwiki/page-1469）", () => {
     expect(soulActions(soulBoard()).length).toBeGreaterThan(0);
   });
 
-  // 既知の不具合: CARD-RS-647 【ソウルバード】が未実装
-  it.fails("RS-647: 【ソウルバード】重ねられるのは DA を持たない L ユニットだけ（DA の L・M は候補外）（出典: atwiki/page-1469「DAを持たない自軍Lユニット」）", () => {
+  it("RS-647: 【ソウルバード】重ねられるのは DA を持たない L ユニットだけ（DA の L・M は候補外）（出典: atwiki/page-1469「DAを持たない自軍Lユニット」）", () => {
     let s = soulBoard();
     const a = soulActions(s)[0];
     expect(a).toBeDefined();
@@ -503,7 +492,39 @@ describe("RS-647 ピヨちゃん", () => {
     expect(legal(s).some((a) => a.type !== "move_to_battle" && JSON.stringify(a).includes("RS-647:p") && a.type !== "hold_for_wing")).toBe(false);
   });
 
-  it.todo(
-    "RS-647: 【ソウルバード】重ねたユニットは※レジストを得て、そのユニットがユニットでなくなるときピヨちゃんは捨札になる — 重ねる処理自体が未実装（上記 it.fails）で、重なった状態を公開 API で作れないため検証できない",
-  );
+  it("RS-647: 【ソウルバード】選んだ L ユニットに重ねると、ピヨちゃんはラッシュエリアを離れて L ユニットの下のカードになる（出典: atwiki/page-1469「このユニットに重ねて」「カードとして扱い」）", () => {
+    let s = soulBoard();
+    s = act(s, soulActions(s)[0]!);
+    s = resolveAll(pick(s, "TST-UNIT-7:L"));
+    expect(zoneOf(s, "player1", "RS-647:p")).toBeNull();
+    expect(cardIn(s, "player1", "TST-UNIT-7:L")?.stackedCards?.map((c) => c.instanceId)).toEqual(["RS-647:p"]);
+  });
+
+  const L_WB = sUnit("SPEC-647-L", { size: "L", category: "WB", bp: 5000 });
+  const stackedL = () => ({ ...inst("SPEC-647-L", "L"), stackedCards: [inst("RS-647", "p")] });
+
+  it("RS-647: 【ソウルバード】重ねたユニットは※レジストを得る（敵軍ターンにバトルで撃破されるとき、レジストできる）（出典: atwiki/page-1469「このカードに重ねたユニットは、次の能力を得る⇒※レジスト」・R-KW-RESIST-01）", () => {
+    const s = attackUntilRegister({ battle: [stackedL()] }, "SPEC-647-L:L", {}, "TST-UNIT-7:atk", [L_WB]);
+    expect(registerOffered(s)).toBe(true);
+  });
+
+  it("RS-647: 【ソウルバード】重ねていない L ユニットはレジストを得ない（出典: atwiki/page-1469）", () => {
+    const s = attackUntilRegister({ battle: [inst("SPEC-647-L", "L")] }, "SPEC-647-L:L", {}, "TST-UNIT-7:atk", [L_WB]);
+    expect(registerOffered(s)).toBe(false);
+  });
+
+  it("RS-647: 【ソウルバード】重ねたユニットがユニットでなくなる（撃破されて捨札になる）とき、ピヨちゃんは捨札になる（出典: atwiki/page-1469「重ねたユニットがユニットでなくなるとき捨札になる」）", () => {
+    let s = attackUntilRegister({ battle: [stackedL()] }, "SPEC-647-L:L", {}, "TST-UNIT-7:atk", [L_WB]);
+    s = resolveAll(act(s, legal(s).find((a) => a.type === "pass_register")!));
+    expect(zoneOf(s, "player1", "SPEC-647-L:L")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-647:p")).toBe("discard");
+  });
+
+  it("RS-647: 【ソウルバード】レジストしてユニットが場に残れば、ピヨちゃんは重なったまま（出典: atwiki/page-1469 コメント「レジスト発動後にユニットは残り」・R-KW-RESIST-01）", () => {
+    let s = attackUntilRegister({ battle: [stackedL()] }, "SPEC-647-L:L", {}, "TST-UNIT-7:atk", [L_WB]);
+    s = resolveAll(act(s, legal(s).find((a) => a.type === "use_register")!));
+    expect(zoneOf(s, "player1", "SPEC-647-L:L")).toBe("battle");
+    expect(zoneOf(s, "player1", "RS-647:p")).toBeNull();
+    expect(cardIn(s, "player1", "SPEC-647-L:L")?.stackedCards?.map((c) => c.instanceId)).toEqual(["RS-647:p"]);
+  });
 });

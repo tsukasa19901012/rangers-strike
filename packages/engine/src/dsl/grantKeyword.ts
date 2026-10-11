@@ -106,6 +106,7 @@ import { trySet8CCardEffect } from "../rules/legend1/set8NamedEffectsC";
 import { trySet7DCardEffect } from "../rules/legend1/set7NamedEffectsD";
 import { trySet8ACardEffect } from "../rules/legend1/set8NamedEffectsA";
 import { trySet8DCardEffect } from "../rules/legend1/set8NamedEffectsD";
+import { trySet9BCardEffect } from "../rules/legend1/set9NamedEffectsB";
 import { trySet8BCardEffect } from "../rules/legend1/set8NamedEffectsB";
 import { trySet6LowCardEffect } from "../rules/legend1/set6NamedEffects348";
 import { trySet6AuditCardEffect } from "../rules/legend1/set6AuditFixes";
@@ -414,6 +415,9 @@ export function applyGrantKeyword(
   // 第8弾 RS-582〜RS-604 のカード固有の名前付き効果（`set8d::` キーワード。rules/legend1/set8NamedEffectsD.ts）。
   const set8d = trySet8DCardEffect(state, ctx, keyword);
   if (set8d) return set8d;
+  // 第9弾 RS-627〜RS-647 のカード固有の名前付き効果（`set9b::` キーワード。rules/legend1/set9NamedEffectsB.ts）。
+  const set9b = trySet9BCardEffect(state, ctx, keyword);
+  if (set9b) return set9b;
   // 第8弾 RS-538〜RS-559 のカード固有の名前付き効果（`set8b::` と一部の effect_card キーワード。rules/legend1/set8NamedEffectsB.ts）。
   const set8b = trySet8BCardEffect(state, ctx, keyword);
   if (set8b) return set8b;

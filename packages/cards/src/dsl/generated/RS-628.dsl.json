@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_konotannikomandozonnikadogakaretatokihanokomandowo",
+          "keyword": "set9b::RS-628::mega_capture",
           "duration": "turn"
         }
       ],

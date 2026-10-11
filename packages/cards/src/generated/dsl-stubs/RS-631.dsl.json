@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-631::sateraitosachi",
-          "duration": "permanent"
+          "keyword": "set9b::RS-631::satellite_search",
+          "duration": "turn"
         }
       ],
       "optional": false

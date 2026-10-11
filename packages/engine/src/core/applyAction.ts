@@ -153,6 +153,7 @@ import {
   tryStartBattleEntryRushDiscard,
 } from "../rules/legend3/restrictions";
 import { applyGodomSenshoDiscardPay } from "../rules/godomRushPay";
+import { openMegaCaptureIfReady, queueMegaCapture, settleSoulBirdStacks } from "../rules/legend1/set9NamedEffectsB";
 import { applyMeeMegaloAfterAction, openTakeTheBlowChoice, resolveTakeTheBlow, skipTakeTheBlow, TAKE_THE_BLOW_EFFECT_ID } from "../rules/legend1/set8NamedEffectsD";
 import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
 import {
@@ -858,6 +859,10 @@ export function applyAction(
   next = settleStackedCards(next);
   // RS-350 暗黒の鎧: 重ねたユニットがユニットでなくなったら、鎧を持ち主のパワーゾーンにダメージにして置く。
   if (applyActionDepth === 0) next = settleDarkArmor(state, next);
+  // RS-647 ピヨちゃん: 重ねたユニットがユニットでなくなったら捨札になる（rules/legend1/set9NamedEffectsB.ts）。
+  if (applyActionDepth === 0) next = settleSoulBirdStacks(state, next);
+  // RS-628【メガキャプチャー】: このターン、次に自軍コマンドゾーンにカードが置かれたとき（rules/legend1/set9NamedEffectsB.ts）。
+  if (applyActionDepth === 0) next = openMegaCaptureIfReady(queueMegaCapture(state, next));
   // RS-385【特殊消化弾】: 自軍コマンドゾーンにホールド状態で置くカードは、かわりにリリース状態で置く。
   if (applyActionDepth === 0) next = applySpecialExtinguisher(state, next);
   // RS-265【ラウンドレーダー】: 相手が手札からオペレーションを使用したとき（解決が終わってから開く）。

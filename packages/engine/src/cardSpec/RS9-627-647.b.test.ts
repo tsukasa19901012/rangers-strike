@@ -104,13 +104,11 @@ describe("RS-634 ユガンデ", () => {
     expect(choiceIds(s)).toContain("TST-OP:eh");
   });
 
-  // 既知の不具合: CARD-RS-634 【ダークサンダー】が強制になっている（skip_effect_choice が不可）
-  it.fails("RS-634: 【ダークサンダー】任意 — 敵軍コマンドを選ばない（リリースしない）こともできる（出典: atwiki/page-1463「リリースしてもよい」）", () => {
+  it("RS-634: 【ダークサンダー】任意 — 敵軍コマンドを選ばない（リリースしない）こともできる（出典: atwiki/page-1463「リリースしてもよい」）", () => {
     expect(canSkip(board())).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-634 【ダークサンダー】で敵軍コマンドを選んでもリリースされず（DSL が hold_command のまま）、ホールド状態の敵軍Sユニットの撃破も起きない
-  it.fails("RS-634: 【ダークサンダー】リリースしたとき、ホールド状態の敵軍Sユニットを1体選び撃破する（候補はラッシュ・バトルのホールド状態の S のみ、強制）（出典: atwiki/page-1463「そうしたとき、ホールド状態の敵軍Sユニットを1体選び撃破する」・R-TGT-01）", () => {
+  it("RS-634: 【ダークサンダー】リリースしたとき、ホールド状態の敵軍Sユニットを1体選び撃破する（候補はラッシュ・バトルのホールド状態の S のみ、強制）（出典: atwiki/page-1463「そうしたとき、ホールド状態の敵軍Sユニットを1体選び撃破する」・R-TGT-01）", () => {
     let s = pick(board(), "TST-OP:eh");
     expect(cardIn(s, "player2", "TST-OP:eh")?.commandHeld ?? false).toBe(false);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-634");
@@ -121,8 +119,7 @@ describe("RS-634 ユガンデ", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:hb")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-634 【ダークサンダー】が強制で、リリースしない選択ができない
-  it.fails("RS-634: 【ダークサンダー】リリースしなければ撃破しない（出典: atwiki/page-1463「そうしたとき」）", () => {
+  it("RS-634: 【ダークサンダー】リリースしなければ撃破しない（出典: atwiki/page-1463「そうしたとき」）", () => {
     const s = resolveAll(skip(board()));
     expect(cardIn(s, "player2", "TST-OP:eh")?.commandHeld).toBe(true);
     expect(zoneOf(s, "player2", "TST-UNIT-0:hr")).toBe("rush");
@@ -161,8 +158,6 @@ type NejiSpec = {
   /** "discard"=撃破、"damage"=持ち主のパワーゾーンにダメージ */
   mode: "discard" | "damage";
   effectName: string;
-  /** エンジンの現状: ok=正常、nofilter=特徴・サイズ条件が落ちる、none=選択が未実装 */
-  known: "ok" | "nofilter" | "none";
 };
 
 const skipIf = (s: GameState) => (s.pendingEffectChoice ? skip(s) : s);
@@ -199,10 +194,8 @@ function nejiTests(spec: NejiSpec) {
     });
   }
 
-  const choiceIt = spec.known === "none" ? it.fails : it;
-  const filterIt = spec.known === "ok" ? it : it.fails;
-  // 既知の不具合: CARD-RS-636 / CARD-RS-637 / CARD-RS-638 【ネジロッド】【ネジセイバー】【ネジトマホーク】の選択・撃破が未実装（NC は SP1 だけ付与され、敵軍ユニットを選ぶ選択が開かない）→ known="none" のとき it.fails
-  choiceIt(`${id}: 【${spec.effectName}】NC（${cn}番目）— 特徴「${feature}」を持つ敵軍バトルエリアの S ユニットを選び${verb}（出典: ${page}）`, () => {
+  const rushIt = spec.mode === "damage" ? it.fails : it;
+  it(`${id}: 【${spec.effectName}】NC（${cn}番目）— 特徴「${feature}」を持つ敵軍バトルエリアの S ユニットを選び${verb}（出典: ${page}）`, () => {
     let s = entered();
     expect(s.pendingEffectChoice?.sourceCardId).toBe(id);
     expect(choiceIds(s)).toContain(`${sId}:b`);
@@ -212,23 +205,22 @@ function nejiTests(spec: NejiSpec) {
     expect(zoneOf(s, "player2", `${sId}:r`)).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-635 【ネジアロー】の候補から特徴「ピンク」・Sユニットの条件が落ち、敵軍バトルエリアの全ユニットを選べる（known="nofilter"）。known="none" は上記の未実装
-  filterIt(`${id}: 【${spec.effectName}】特徴「${feature}」を持たないユニット・M ユニットは選べない（出典: ${page}「特徴「${feature}」を持つ敵軍Sユニット」）`, () => {
+  it(`${id}: 【${spec.effectName}】特徴「${feature}」を持たないユニット・M ユニットは選べない（出典: ${page}「特徴「${feature}」を持つ敵軍Sユニット」）`, () => {
     const s = entered();
     expect(s.pendingEffectChoice?.sourceCardId).toBe(id);
     expect(choiceIds(s)).not.toContain(`${mId}:m`);
     expect(choiceIds(s)).not.toContain("TST-UNIT-0:x");
   });
 
-  // 既知の不具合: CARD-${id} 候補がバトルエリアのユニットだけで、ラッシュエリアの敵軍ユニットを選べない（parseEnemyUnitFilter の既定 zone が battle）
-  it.fails(`${id}: 【${spec.effectName}】敵軍ラッシュエリアの特徴「${feature}」の S ユニットも選べる（出典: ${page}「敵軍Sユニット」・R-TGT-01「ユニット」はラッシュエリア・バトルエリアのもの）`, () => {
+  // 既知の不具合: CARD-RS-639 候補がバトルエリアのユニットだけで、ラッシュエリアの敵軍ユニットを選べない（parseEnemyUnitFilter の既定 zone が battle）→ mode="damage" のとき it.fails
+  rushIt(`${id}: 【${spec.effectName}】敵軍ラッシュエリアの特徴「${feature}」の S ユニットも選べる（出典: ${page}「敵軍Sユニット」・R-TGT-01「ユニット」はラッシュエリア・バトルエリアのもの）`, () => {
     let s = entered();
     expect(choiceIds(s)).toEqual([`${sId}:b`, `${sId}:r`].sort());
     s = resolveAll(pick(s, `${sId}:r`));
     expect(zoneOf(s, "player2", `${sId}:r`)).toBe(landing);
   });
 
-  choiceIt(`${id}: 【${spec.effectName}】任意 — 選ばないこともでき、敵軍ユニットはそのまま（出典: ${page}「てもよい」）`, () => {
+  it(`${id}: 【${spec.effectName}】任意 — 選ばないこともでき、敵軍ユニットはそのまま（出典: ${page}「てもよい」）`, () => {
     let s = entered();
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));
@@ -288,7 +280,6 @@ describe("RS-635 ネジピンク", () => {
     rarity: "N",
     mode: "discard",
     effectName: "ネジアロー",
-    known: "nofilter",
   });
 });
 
@@ -307,7 +298,6 @@ describe("RS-636 ネジブラック", () => {
     rarity: "NR",
     mode: "discard",
     effectName: "ネジロッド",
-    known: "none",
   });
 });
 
@@ -326,7 +316,6 @@ describe("RS-637 ネジレッド", () => {
     rarity: "R",
     mode: "discard",
     effectName: "ネジセイバー",
-    known: "none",
   });
 });
 
@@ -345,7 +334,6 @@ describe("RS-638 ネジブルー", () => {
     rarity: "N",
     mode: "discard",
     effectName: "ネジトマホーク",
-    known: "none",
   });
 });
 
@@ -364,6 +352,5 @@ describe("RS-639 ネジイエロー", () => {
     rarity: "N",
     mode: "damage",
     effectName: "ネジスリング",
-    known: "ok",
   });
 });

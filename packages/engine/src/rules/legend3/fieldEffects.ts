@@ -23,6 +23,7 @@ import { set8AEffectiveSp } from "../legend1/set8NamedEffectsA";
 import { set7BEffectiveSp } from "../legend1/set7NamedEffectsB";
 import { set7DEffectiveSp } from "../legend1/set7NamedEffectsD";
 import { set8DEffectiveSp } from "../legend1/set8NamedEffectsD";
+import { set9BEffectiveSp } from "../legend1/set9NamedEffectsB";
 import {
   sr003DiscardDinoBpBonus,
   sr003SpFloor,
@@ -235,6 +236,8 @@ export function legend3EffectiveSp(
   sp = set7DEffectiveSp(state, playerId, instance, sp);
   // 第8弾 RS-584【闇を振り払う心】等（rules/legend1/set8NamedEffectsD.ts）。
   sp = set8DEffectiveSp(state, playerId, instance, sp);
+  // 第9弾 RS-645 ビクトリーマーズ ※（rules/legend1/set9NamedEffectsB.ts）。
+  sp = set9BEffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。
