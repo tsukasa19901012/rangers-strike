@@ -1338,6 +1338,13 @@ export function isResolveCommandPaymentLegal(
   if (resolved.nextPending) return true;
 
   const cont = pending.continuation;
+  // 支払いの後に続く move_to_battle が出せないなら、支払いも確定できない（applyAction の move_to_battle と同じ判定）。
+  if (cont.type === "move_to_battle" && !cont.rideOff) {
+    const unit = resolved.state.players[pending.playerId].rush.find(
+      (c) => c.instanceId === pending.sourceInstanceId,
+    );
+    if (unit && !canMoveUnitToBattle(resolved.state, pending.playerId, unit, "rush")) return false;
+  }
   if (cont.type === "play_operation") {
     return isPlayOperationContinuationLegal(
       resolved.state,

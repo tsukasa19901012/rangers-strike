@@ -3,6 +3,7 @@
  * 期待値はルールブックと引用元 web（公式FAQ・atwiki）に従う（現エンジンの挙動ではない）。
  */
 import { describe, expect, it } from "vitest";
+import { allCardsCatalog } from "@rangers-strike/cards";
 import { effectiveBp, morphOrderChooserPlayerId } from "../index";
 import { rushWithCategoryHold } from "../testing/rushPayment";
 import {
@@ -224,7 +225,8 @@ describe("R-TIME-01 5つのタイミング", () => {
       player2: {
         battle: [inst("TST-UNIT-0", "e")],
         rush: [inst("RS-196", "mob")],
-        command: [cmd("TST-OP-ET", "et1"), cmd("TST-OP-ET", "et2")],
+        // スピンビーは M ユニットなので、迎撃モビルミサイルには ET コマンドが3つ要る（atwiki/page-398「Mユニットなら3つ」）。
+        command: [cmd("TST-OP-ET", "et1"), cmd("TST-OP-ET", "et2"), cmd("TST-OP-ET", "et3")],
         power: powers(3),
         deck: deck(5, "e"),
       },
@@ -468,9 +470,37 @@ describe("R-TIME-03 発動と解決の分離", () => {
     expect(hasUseAction(s, "player2", "RS-016:dc")).toBe(false);
   });
 
-  it.todo(
-    "R-TIME-03: モーフを解決してできたコマンドで、同じ「ラッシュされたとき」に宏のオルゴール時計を発動することはできない（出典: atwiki/page-1828 ディケイド ファイズの例）— ディケイド ファイズのモーフがエンジンのカード定義（legend1〜3）にない",
-  );
+  // 「「モーフを解決してディケイド ファイズをコマンドにしてから、それをホールドしてオルゴール時計を発動する」というプレイングは不可能」(atwiki/page-1828)
+  // 既知の不具合: R-TIME-03 モーフの解決後も同じラッシュへの反応窓が開いたままで、モーフでコマンドになったディケイド ファイズ（ET）をホールドして宏のオルゴール時計を発動できてしまう
+  it.fails("R-TIME-03: モーフを解決してできたコマンドで、同じ「ラッシュされたとき」に宏のオルゴール時計を発動することはできない（出典: atwiki/page-1828 ディケイド ファイズの例）", () => {
+    const real = Object.fromEntries(
+      allCardsCatalog.cards.filter((c) => ["XG1-066", "XG1-065", "RK-012"].includes(c.id)).map((c) => [c.id, c]),
+    );
+    const RUSHED = { id: "SPEC-S-WB-5000", name: "SPEC-S-WB-5000", type: "unit", category: "WB", rarity: "N", expansion: "test", powerCost: 0, bp: 5000, sp: 1, size: "S" } as const;
+    let s = st({
+      definitions: { ...defs, ...real, [RUSHED.id]: RUSHED as never },
+      phase: "rush",
+      player1: { hand: [inst(RUSHED.id, "u")], command: [cmd("TST-OP", "c1")], power: powers(3) },
+      player2: {
+        // ディケイド ファイズ（ET・モーフ）と、特徴が完全一致するディケイド 龍騎（WB）がコマンドゾーンに。ET のリリース状態のコマンドはない
+        rush: [inst("XG1-066", "faiz")],
+        command: [cmd("XG1-065", "ryuki")],
+        hand: [inst("RK-012", "music")],
+        power: powers(4, "p2pw"),
+        deck: deck(3, "p2dk"),
+      },
+    });
+    s = use(s, "player1", `${RUSHED.id}:u`);
+    expect(inZone(s, "player1", "rush", `${RUSHED.id}:u`)).toBe(true);
+    // ラッシュされたとき: モーフは発動できるが、オルゴール時計は（ET のコマンドがないので）発動できない
+    expect(s.pendingEffectChoice?.effectId).toBe("morph_replacement");
+    expect(hasUseAction(s, "player2", "RK-012:music")).toBe(false);
+    s = run(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "XG1-065:ryuki" });
+    // モーフの解決でディケイド ファイズ（ET）がリリース状態のコマンドになっても、同じタイミングには発動できない
+    expect(inZone(s, "player2", "command", "XG1-066:faiz")).toBe(true);
+    expect(card(s, "player2", "command", "XG1-066:faiz")?.commandHeld ?? false).toBe(false);
+    expect(hasUseAction(s, "player2", "RK-012:music")).toBe(false);
+  });
 });
 
 describe("R-TIME-04 入れ子の割り込み", () => {
@@ -501,7 +531,7 @@ describe("R-TIME-04 入れ子の割り込み", () => {
   });
 
   it.todo(
-    "R-TIME-04: ゴセイアルティメットの5回リリース処理の途中で仮面ライダーG4がリリースされたら、割り込んでG4の効果を発動できる（出典: atwiki/page-1974 Q&A）— ゴセイアルティメット（XG7）がエンジンのカード定義（legend1〜3）になく、RK-195 の【再起動と暴走】も未接続",
+    "R-TIME-04: ゴセイアルティメットの5回リリース処理の途中で仮面ライダーG4がリリースされたら、割り込んでG4の効果を発動できる（出典: atwiki/page-1974 Q&A）— ゴセイアルティメット（XG7-028）はカタログにあるが【アルティメットストライク】（1〜5回のリリース）がエンジン未接続（DSL がプレースホルダの grant_keyword のみ）で、途中割り込みを組み立てられない",
   );
 });
 

@@ -13,11 +13,6 @@ export const generatedCorePlayableCatalog = corePlayableGenerated as CardCatalog
 
 export const corePlayableCatalog = generatedCorePlayableCatalog;
 
-/** 拡張パック横断のコアプレイアブルカタログ（RS-001..690 + SR-001..008）。 */
-export const allCardsCatalog: CardCatalog = {
-  expansion: "all",
-  cards: corePlayableCatalog.cards,
-};
 
 /** @deprecated corePlayableCatalog と同義 */
 export const playableCardsCatalog = corePlayableCatalog;
@@ -52,6 +47,17 @@ export const stubPromotedCatalog: CardCatalog = {
 
 export const fullPlayableCatalog = generatedFullPlayableCatalog;
 
+/**
+ * 対戦（createGame）・デッキ構築・スターターで使うカタログ = full-playable（1832 枚）。
+ * コア（RS / SR / RK / BK）に、atwiki にデータのある他シリーズ（XG1〜7・RM・XP・PR・PK・SK・SX・SM・PM）を加えたもの。
+ * コマンダーは含まない（PLAYABLE_EXCLUDED_CARD_TYPES。ユーザー決定でデッキ・ゲームとも対象外）。
+ * ルール: R-FMT-02「旧ナンバーのカードも引き続き使用できる」（XG 期は全シリーズ混合）。
+ */
+export const allCardsCatalog: CardCatalog = {
+  expansion: "all",
+  cards: fullPlayableCatalog.cards,
+};
+
 export const extendedCardsCatalog: CardCatalog = {
   expansion: "extended",
   cards: [...corePlayableCatalog.cards, ...wikiStubsCatalog.cards],
@@ -66,7 +72,8 @@ const FULL_PLAYABLE_BY_ID = new Map(fullPlayableCatalog.cards.map((card) => [car
 const EXTENDED_BY_ID = new Map(extendedCardsCatalog.cards.map((card) => [card.id, card]));
 const WIKI_STUBS_BY_ID = new Map(wikiStubsCatalog.cards.map((card) => [card.id, card]));
 
-export const ALL_CARDS_BY_ID: ReadonlyMap<string, CardDefinition> = CORE_BY_ID;
+/** 対戦用カタログ（allCardsCatalog = full-playable）の索引。 */
+export const ALL_CARDS_BY_ID: ReadonlyMap<string, CardDefinition> = FULL_PLAYABLE_BY_ID;
 
 const TIER_CATALOGS: Record<CatalogTier, CardCatalog> = {
   core: corePlayableCatalog,
@@ -119,8 +126,9 @@ export function getCardDefinition(
 
 // --- Legacy-compatible lookups ---
 
+/** 対戦用カタログ（allCardsCatalog）から引く。 */
 export function getCardById(id: string): CardDefinition | undefined {
-  return CORE_BY_ID.get(id);
+  return FULL_PLAYABLE_BY_ID.get(id);
 }
 
 export function getCatalogByExpansion(expansion: ExpansionId): CardCatalog {

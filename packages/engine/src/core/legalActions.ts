@@ -1,4 +1,5 @@
 import { lionArmorAvailable } from "../rules/legend1/set6NamedEffects348";
+import { runWithStateRng } from "./rng";
 import { listSet8BHandActivations } from "../rules/legend1/set8NamedEffectsB";
 import { hasTurnRuleModifier } from "./scopedModifiers";
 import { isHoldToActivateNc } from "../rules/holdToActivate";
@@ -1601,7 +1602,8 @@ export function getLegalActions(input: GameState): GameAction[] {
   // 「※このカードの追加条件は、…のとき、次のように変更される」を反映した定義で判定する（RS-440 等）。
   const state = withEffectiveRushConditionDefinitions(input);
   // 追加条件の素材の特徴（効果・フェイズで追加された特徴）はこの状態で判定する（rules/zordFeatureContext.ts）。
-  return withZordFeatureContext(state, () => getLegalActionsCore(state));
+  // 合法判定の中で乱数を使っても、状態の rngState から作るので決定的（core/rng.ts）。
+  return runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCore(state))).value;
 }
 
 function getLegalActionsCore(state: GameState): GameAction[] {

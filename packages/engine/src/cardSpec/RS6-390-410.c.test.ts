@@ -28,7 +28,9 @@ import {
   fillers,
   inst,
   legal,
+  nextPhase,
   pick,
+  playOp,
   powerCards,
   released,
   releasedCat,
@@ -213,9 +215,37 @@ describe("RS-405 デカブレイク", () => {
     expect(viaBoxer(false).players.player2.damage).toBe(0);
   });
 
-  // atwiki 転載 Q1（XG-078 コピーベント）
-  it.todo(
-    "RS-405: Q&A — コピーベント（XG-078）で【光速拳ライトニングフィスト】をコピーした JC ユニットは、ライドオフすることで発動できる — XG-078 がカタログに存在しないため保留（出典: atwiki/page-562 Q1）",
+  // atwiki 転載 Q1（XG-078 コピーベント）「…「この効果は、ライドオフしたときナンバーに関係なく発動する」等のように特殊な発動条件が書かれたテキストをコピーした場合、そのテキストに従いライドオフすることで効果を発動することができます。」
+  // JC ユニットは仮面ライダーW・CC（XG4-088、ナンバー L・特徴「仮面ライダー」）、ライドはマシンゼクトロン（RK-058「仮面ライダー」は RC なしでライド可）。
+  // 既知の不具合: CARD-RS-405 コピーベント（XG1-078）は効果が未実装で、使うとユニットを選ばずに解決するため、W・CC の効果は【光速拳ライトニングフィスト】にならず、ライドオフしてもダメージを与えない。
+  it.fails(
+    "RS-405: Q&A — コピーベント（XG-078）で【光速拳ライトニングフィスト】をコピーした JC ユニットは、ライドオフすることで発動できる（出典: atwiki/page-562 Q1）",
+    () => {
+      let s = st({
+        phase: "rush",
+        player1: {
+          hand: [inst("XG1-078", "cv")],
+          rush: [inst("XG4-088", "w"), inst("RS-405", "x"), inst("RK-058", "v")],
+          command: releasedCat("WB", 2),
+          power: powerCards(5),
+          deck: deckCards(5),
+        },
+        player2: { deck: deckCards(5, "e") },
+      });
+      const r = playOp(s, "player1", "XG1-078:cv");
+      expect(r.ok).toBe(true);
+      s = r.state;
+      // 1体目に JC ユニット（W・CC）、2体目にデカブレイクを選ぶ（どちらもナンバーを持つ）。
+      expect(choiceIds(s)).toContain("XG4-088:w");
+      s = pick(s, "XG4-088:w");
+      expect(choiceIds(s)).toContain("RS-405:x");
+      s = resolveAll(pick(s, "RS-405:x"));
+      s = nextPhase(s);
+      expect(s.phase).toBe("battle");
+      s = act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: "XG4-088:w", vehicleInstanceId: "RK-058:v" });
+      s = resolveAll(act(s, { type: "resolve_ride_off_choice", playerId: "player1", rideOff: true }));
+      expect(s.players.player2.damage).toBe(1);
+    },
   );
 });
 

@@ -16,6 +16,7 @@ import {
   act,
   attack,
   attackedInEnemyTurn,
+  bpOf,
   canSkip,
   canStartRush,
   canUseCard,
@@ -583,27 +584,151 @@ describe("RS-437 白熱する実況", () => {
     expect(zoneOf(t, "player1", "RS-226:ko")).toBe("rush");
   });
 
+  // 既知の不具合: CARD-RS-437 エンジンが XG6-018 アバレキラーをキラーオーの合体ユニットとして扱わず、ラッシュ自体が合法手に出ない
+  // （「〜としてつかえる」の別名解釈が「※これは…」で始まる文面だけを見ており、「※自軍Lユニットがなければ、これは…」を読まない）。
+  it.fails("RS-437: 自軍 L ユニットがない状態でアバレキラーを捨札にしてキラーオーをラッシュしても、アバレキラーは重ねられない（出典: atwiki/page-764 Q1・page-2334 Q3「いいえ、それはできません」）", () => {
+    // A:「キラーオー」をラッシュしたことで「自軍Ｌユニットがなければ」の条件を満たせなくなり、合体ユニットとして扱えなくなる
+    const s = stx({
+      phase: "rush",
+      player1: {
+        operation: [inst("RS-437", "jk")],
+        rush: [inst("XG6-018", "ak")],
+        hand: [inst("RS-226", "ko")],
+        command: releasedCat("WB", 1),
+        power: powerCards(6),
+        deck: deckCards(5),
+      },
+      player2: { deck: deckCards(5, "e") },
+    });
+    const r = rushFromHand(s, "player1", "RS-226:ko", { materials: ["XG6-018:ak"] });
+    expect(r.ok).toBe(true);
+    const t = resolveAll(r.state);
+    expect(zoneOf(t, "player1", "RS-226:ko")).toBe("rush");
+    expect(zoneOf(t, "player1", "XG6-018:ak")).toBe("discard");
+    expect(under(t, "RS-226:ko")).toHaveLength(0);
+  });
+
+  /** 特徴「獣」の L ユニット（BP5000）と M ユニット（ユナイトベントのターゲット・重ねるユニット用）。 */
+  const BEAST_L = sUnit("SPEC-BEASTL", { name: "獣L", features: ["獣"], size: "L", bp: 5000 });
+  const BEAST_M = sUnit("SPEC-BEASTM", { name: "獣M", features: ["獣"], size: "M", sp: undefined });
+  const commentaryCards = () => [1, 2, 3, 4, 5].map((i) => ({ ...inst("TST-UNIT-0", `jc${i}`), faceDown: true }));
+
+  /** 白熱する実況でウラ向き5枚を重ねた獣 L ユニットをターゲットにユナイトベントを使い、獣 M ユニット2体をさらに重ねる。 */
+  const unitedVent = (): GameState => {
+    const s = st(
+      {
+        phase: "rush",
+        player1: {
+          operation: [inst("RS-437", "jk")],
+          rush: [
+            { ...inst("SPEC-BEASTL", "tg"), stackedCards: commentaryCards() },
+            inst("SPEC-BEASTM", "b1"),
+            inst("SPEC-BEASTM", "b2"),
+          ],
+          hand: [inst("XG2-052", "uv")],
+          command: releasedCat("WB", 1),
+          power: powerCards(6),
+          deck: deckCards(5),
+        },
+        player2: { deck: deckCards(5, "e") },
+      },
+      [...SPECS, BEAST_L, BEAST_M],
+    );
+    const r = playOp(s, "player1", "XG2-052:uv", "SPEC-BEASTL:tg");
+    expect(r.ok).toBe(true);
+    let t = r.state;
+    for (const id of ["SPEC-BEASTM:b1", "SPEC-BEASTM:b2"]) {
+      if (t.pendingEffectChoice?.validInstanceIds.includes(id)) t = pick(t, id);
+    }
+    if (t.pendingEffectChoice?.sourceCardId === "XG2-052") t = confirm(t);
+    return resolveAll(t);
+  };
+
+  // 既知の不具合: CARD-RS-437 XG2-052 ユナイトベントの効果が未実装（カード定義は注記キーワードのみ）で、使用しても
+  // ターゲットに重ねられず、ほかのユニットもウラ向きに重ねずに、ユナイトベントはそのまま捨札になる。
+  it.fails("RS-437: ユナイトベントで重ねた順番は『ユニット→実況のウラ向き5枚→ユナイトベント→ウラ向き2枚』（出典: atwiki/page-764 Q2・page-1761 Q1）", () => {
+    // A: 上から順に『ユニット→ウラ向きのカード5枚→「XG2-052 ユナイトベント」→ウラ向きのカード2枚』と重ねる
+    const s = unitedVent();
+    expect(zoneOf(s, "player1", "SPEC-BEASTL:tg")).toBe("rush");
+    const stack = under(s, "SPEC-BEASTL:tg");
+    expect(stack.map((c) => c.instanceId)).toEqual([
+      ...commentaryCards().map((c) => c.instanceId),
+      "XG2-052:uv",
+      "SPEC-BEASTM:b1",
+      "SPEC-BEASTM:b2",
+    ]);
+    expect(stack.map((c) => c.faceDown ?? false)).toEqual([true, true, true, true, true, false, true, true]);
+  });
+
   it.todo(
-    "RS-437: 自軍 L ユニットがない状態でアバレキラーを捨札にしてキラーオーをラッシュしても、アバレキラーは重ねられない（出典: atwiki/page-764 Q1・page-2334 Q3「いいえ、それはできません」）— XG6-018 アバレキラーがカタログ未収録のため",
+    "RS-437: ユナイトベントの「ユニットでなくなるとき」を先に解決すれば、実況で重ねたカードもすべて捨札になる（出典: atwiki/page-764 Q3・page-1761 Q2「はい、その通りです」）— 公開 API に、同じユニットの「ユニットでなくなるとき」の効果（ユナイトベントと実況）の解決順を選ぶ手段がなく、エンジンはユナイトベントの効果自体も未実装（使用しても何も重ねずに捨札になる）のため、前提の場面を作れない",
   );
   it.todo(
-    "RS-437: ユナイトベントで重ねた順番は『ユニット→実況のウラ向き5枚→ユナイトベント→ウラ向き2枚』（出典: atwiki/page-764 Q2・page-1761 Q1）— XG2-052 ユナイトベントがカタログ未収録のため",
+    "RS-437: 実況の「ユニットでなくなるとき」を先に解決すれば、ユナイトベントで重ねたカードから捨札にするカードを選べる（出典: atwiki/page-764 Q4・page-1761 Q3「はい、できます」）— 公開 API に、同じユニットの「ユニットでなくなるとき」の効果（ユナイトベントと実況）の解決順を選ぶ手段がなく、エンジンはユナイトベントの効果自体も未実装（使用しても何も重ねずに捨札になる）のため、前提の場面を作れない",
   );
-  it.todo(
-    "RS-437: ユナイトベントの「ユニットでなくなるとき」を先に解決すれば、実況で重ねたカードもすべて捨札になる（出典: atwiki/page-764 Q3・page-1761 Q2「はい、その通りです」）— XG2-052 がカタログ未収録のため",
-  );
-  it.todo(
-    "RS-437: 実況の「ユニットでなくなるとき」を先に解決すれば、ユナイトベントで重ねたカードから捨札にするカードを選べる（出典: atwiki/page-764 Q4・page-1761 Q3「はい、できます」）— XG2-052 がカタログ未収録のため",
-  );
-  it.todo(
-    "RS-437: ユナイトベントの BP 修正が参照するウラ向きのカードには実況で重ねたカードも含まれる（出典: atwiki/page-764 Q5・page-1761 Q4「はい、その通りです」）— XG2-052 がカタログ未収録のため",
-  );
-  it.todo(
-    "RS-437: アバレンオージが実況の効果で留まった場合、【アバレンオーになりかけだから…】のその後の処理は無効（出典: atwiki/page-1665 Q1「はい、「XG-028 アバレンオージ」はその場に留まります」）— XG1-028 がカタログ未収録のため",
-  );
-  it.todo(
-    "RS-437: 大連王【大王剣・疾風怒濤】で撃破した DA の L ユニットが実況で留まった場合、パワーゾーンにダメージとして置く処理は発動しない（出典: atwiki/page-1824 Q1）— XG2-017 大連王がカタログ未収録のため",
-  );
+
+  // 既知の不具合: CARD-RS-437 XG2-052 ユナイトベントの効果が未実装（カード定義は注記キーワードのみ）で、使用しても
+  // 何も重ねず BP も修正されない（ターゲットは BP5000 のまま）。
+  it.fails("RS-437: ユナイトベントの BP 修正が参照するウラ向きのカードには実況で重ねたカードも含まれる（出典: atwiki/page-764 Q5・page-1761 Q4「はい、その通りです」）", () => {
+    // ウラ向き 5（実況）＋2（ユナイトベント）＝7枚 → BP5000＋7×2000＝19000
+    const s = unitedVent();
+    expect(bpOf(s, "player1", "SPEC-BEASTL:tg")).toBe(19000);
+  });
+
+  // 既知の不具合: CARD-RS-437 XG1-028 アバレンオージを【アバレンオーになりかけだから…】で捨札にするとき、実況の
+  // 「その場に留まる」選択が出ずにそのまま捨札になり、手札のアバレンオーがラッシュエリアに出てしまう（下に重ねたカードも消える）。
+  it.fails("RS-437: アバレンオージが実況の効果で留まった場合、【アバレンオーになりかけだから…】のその後の処理は無効（出典: atwiki/page-1665 Q1「はい、「XG-028 アバレンオージ」はその場に留まります」）", () => {
+    // A: その場に留まることにより「捨札にする」という発動条件を満たせなくなるので、その後の処理は無効化され「アバレンオー」をラッシュできない
+    const s0 = stx({
+      phase: "rush",
+      player1: {
+        operation: [inst("RS-437", "jk")],
+        rush: [inst("RS-051", "ty"), inst("RS-052", "tr")],
+        hand: [inst("XG1-028", "oj"), inst("RS-050", "ao")],
+        command: releasedCat("WB", 1),
+        power: powerCards(6),
+        deck: deckCards(5),
+      },
+      player2: { deck: deckCards(5, "e") },
+    });
+    const r = rushFromHand(s0, "player1", "XG1-028:oj");
+    expect(r.ok).toBe(true);
+    const s = resolveAll(r.state);
+    expect(under(s, "XG1-028:oj").map((c) => c.instanceId).sort()).toEqual(["RS-051:ty", "RS-052:tr"]);
+    const t = resolveAll(
+      act(s, { type: "activate_field_unit_ability", playerId: "player1", unitInstanceId: "XG1-028:oj" }),
+      ["RS-051:ty", "RS-050:ao"],
+    );
+    expect(zoneOf(t, "player1", "XG1-028:oj")).toBe("rush");
+    expect(under(t, "XG1-028:oj")).toHaveLength(1);
+    expect(zoneOf(t, "player1", "RS-050:ao")).toBe("hand");
+  });
+
+  it("RS-437: 大連王【大王剣・疾風怒濤】で撃破した DA の L ユニットが実況で留まった場合、パワーゾーンにダメージとして置く処理は発動しない（出典: atwiki/page-1824 Q1）", () => {
+    // A: 撃破したユニットがその場に留まった場合は、捨札になることがないので「捨札にするかわりに…ダメージにして置く」も発動しない
+    const uk: CardInstance = {
+      ...inst("RS-112", "uk"),
+      stackedCards: [
+        { ...inst("TST-UNIT-0", "x1"), faceDown: true },
+        { ...inst("TST-UNIT-0", "x2"), faceDown: true },
+      ],
+    };
+    const s = enter(
+      stx({
+        phase: "battle",
+        player1: { rush: [inst("XG2-017", "dr")], deck: deckCards(5) },
+        player2: { battle: [uk], operation: [inst("RS-437", "jk")], deck: deckCards(5, "e") },
+      }),
+      "XG2-017:dr",
+    );
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("XG2-017");
+    expect(choiceIds(s)).toContain("RS-112:uk");
+    const t = resolveAll(s, ["RS-112:uk"]);
+    expect(zoneOf(t, "player2", "RS-112:uk")).toBe("battle");
+    expect(t.players.player2.battle.find((c) => c.instanceId === "RS-112:uk")?.stackedCards ?? []).toHaveLength(1);
+    expect(t.players.player2.discard).toHaveLength(1);
+    expect(t.players.player2.power).toHaveLength(0);
+  });
 });
 
 // ===========================================================================

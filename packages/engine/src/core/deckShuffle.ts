@@ -6,15 +6,16 @@
  * applyAction の前後で番号を比べ、そのアクションの間に山札がシャッフルされたかを調べる（deckShuffledSince）。
  */
 import type { CardInstance, GameState, PlayerId } from "../types/game";
+import { engineRandomInt } from "./rng";
 
 const shuffleMarks = new WeakMap<object, number>();
 let shuffleEpoch = 0;
 
-/** カードの並びを無作為に並べ替える（山札のシャッフル）。 */
+/** カードの並びを無作為に並べ替える（山札のシャッフル）。乱数はゲーム状態の rngState から作る（core/rng.ts）。 */
 export function shuffleCards<T>(cards: T[]): T[] {
   const copy = [...cards];
   for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = engineRandomInt(i + 1);
     [copy[i], copy[j]] = [copy[j]!, copy[i]!];
   }
   shuffleEpoch += 1;

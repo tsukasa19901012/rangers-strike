@@ -16,6 +16,7 @@ import { getLegalActions as legalActions } from "../core/legalActions";
 import {
   NOSP_ATTACKER,
   passEntry,
+  act,
   attack,
   attackTargets,
   attackedInEnemyTurn,
@@ -654,13 +655,14 @@ describe("RS-459 ニンジャイエロー", () => {
   });
 
   // atwiki/page-804 Q1/A1「パワーゾーンにダメージにして置かれることなく、チェイスによってその場に留まります」
-  // 既知の不具合: CARD-RS-459 「宇宙刑事ギャバン」（RM-018）が試合用カタログ（allCardsCatalog: RS-001..690・SR）に含まれず定義がないため、
-  // 場に置いても候補に出ない（【隠流三段斬り】の「ホールド状態の」条件自体は上の項目で通る）。RM カードの収録は別対応。
-  it.fails("RS-459: atwiki Q&A — ライド中の「宇宙刑事ギャバン」を選んでも、チェイスでライドされていない自軍ビークルに乗り換えてその場に留まる（ダメージにならない）（出典: atwiki/page-804 Q1/A1）", () => {
+  it("RS-459: atwiki Q&A — ライド中の「宇宙刑事ギャバン」を選んでも、チェイスでライドされていない自軍ビークルに乗り換えてその場に留まる（ダメージにならない）（出典: atwiki/page-804 Q1/A1）", () => {
     let s = ncEnter("RS-459", 5, {}, { battle: [{ ...rider("RM-018", "g", "RS-466:v1"), commandHeld: true }, inst("RS-466", "v1")], rush: [inst("RS-467", "v2")] });
     expect(choiceIds(s)).toContain("RM-018:g");
     s = pick(s, "RM-018:g");
     s = resolveAll(s);
+    // チェイス（任意）: ライドされていない自軍ビークル（ラッシュエリアの RS-467）に乗り換える。
+    expect(s.pendingChase?.chaserPlayerId).toBe("player2");
+    s = resolveAll(act(s, { type: "resolve_chase", playerId: "player2", newVehicleInstanceId: "RS-467:v2" }));
     expect(zoneOf(s, "player2", "RM-018:g")).not.toBe("power");
     expect(zoneOf(s, "player2", "RS-466:v1")).toBe("discard");
     expect(s.players.player2.damage ?? 0).toBe(0);

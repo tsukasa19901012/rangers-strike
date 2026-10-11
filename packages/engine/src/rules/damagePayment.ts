@@ -1,5 +1,6 @@
 import type {
   DamagePaymentResume,
+  DeferredPowerFlip,
   GameState,
   PendingDamagePayment,
   PlayerId,
@@ -9,7 +10,7 @@ import { cardCategories, getDefinition } from "../core/catalog";
 import { meditationActive } from "../core/createGame";
 import { applyPlayerDamage, removeAt, updatePlayer } from "../core/helpers";
 import { emitDamageAppliedAndResolve } from "../events/emitDamageApplied";
-import { applyPowerFlipBeforeDamage, applyPowerFlipTriggers } from "./powerFlipEffects";
+import { applyPowerFlipBeforeDamage, openBreakActionBeforeFlip } from "./powerFlipEffects";
 import {
   cardHasMorphKeyword,
   powerZoneHasMorphUnitCard,
@@ -286,7 +287,8 @@ export function startNextQueuedDamage(state: GameState): GameState {
     next.amount,
     next.resume,
     next.choosingPlayerId,
-    { bloodVesselPreferMorph: next.bloodVesselPreferMorph },
+    // 後回しにしたダメージは、ウラ返したあとでストライクの処理を終えない（従来どおり）。
+    { bloodVesselPreferMorph: next.bloodVesselPreferMorph, finishStrike: false },
   );
 }
 
@@ -297,7 +299,7 @@ function applyDamageAmount(
   amount: number,
   resume: DamagePaymentResume,
   choosingPlayerId?: PlayerId,
-  options?: { bloodVesselPreferMorph?: boolean },
+  options?: { bloodVesselPreferMorph?: boolean; finishStrike?: boolean },
 ): GameState {
   const player = state.players[playerId];
   if (
@@ -311,17 +313,83 @@ function applyDamageAmount(
   // （効果の選択中は activePlayer が選ぶプレイヤーに替わるので、ターンのプレイヤーは resume から得る）
   const phasePlayerId =
     resume.kind === "none" ? resume.activePlayer : resume.pending.battlePhasePlayer;
-  const nextPlayer =
-    phasePlayerId !== playerId ? { ...damaged, damagedOnEnemyTurn: true } : damaged;
+  const flipIds = newlyFlippedIds(player, damaged);
+  return flipPowerForDamage(state, {
+    playerId,
+    flipIds,
+    deckDraws: amount - flipIds.length,
+    totalDamage: amount,
+    damagedOnEnemyTurn: phasePlayerId !== playerId,
+    eventAmount: amount,
+    eventPhasePlayerId: phasePlayerId,
+    resume,
+    finishStrike: options?.finishStrike ?? true,
+  });
+}
+
+/** player → damaged で新しくウラ向きになったパワーのカード。 */
+function newlyFlippedIds(player: PlayerState, damaged: PlayerState): string[] {
+  const faceUp = new Set(player.power.filter((c) => !c.faceDown).map((c) => c.instanceId));
+  return damaged.power.filter((c) => c.faceDown && faceUp.has(c.instanceId)).map((c) => c.instanceId);
+}
+
+/**
+ * パワーのカードをウラ返してダメージにする（ウラ返すカードは決まっている）。
+ * ルール: R-TIME-01 — 「ウラ返すとき」（RS-199【ブレイクアクション】）は実際にウラ返す前に解決する。
+ * その選択が開いたら、ウラ返しを deferredPowerFlip に待たせて返す（解決後に completeDeferredPowerFlip）。
+ */
+function flipPowerForDamage(state: GameState, flip: DeferredPowerFlip): GameState {
+  const opened = openBreakActionBeforeFlip(state, flip.playerId, flip.flipIds, flip.resume);
+  if (opened) {
+    // ストライクの反応窓（pendingStrike）は閉じ、ストライクの残りはウラ返したあとで終える（resume.pending に保持）。
+    const strikeClosed = flip.resume.kind === "strike" && flip.finishStrike ? { pendingStrike: undefined } : {};
+    return { ...opened, ...strikeClosed, pendingDamagePayment: undefined, deferredPowerFlip: flip };
+  }
+  return applyPowerFlip(state, flip);
+}
+
+/** 実際にウラ返し、「ウラ返してダメージにするとき」（RS-202）→ ダメージになったときの誘発の順に解決する。 */
+function applyPowerFlip(state: GameState, flip: DeferredPowerFlip): GameState {
+  const player = state.players[flip.playerId];
+  // 「ウラ返すとき」の効果の解決中にウラ返せなくなったカードがあれば、かわりのカードを選ぶ（atwiki/page-407 のコメント）。
+  const stillFaceUp = flip.flipIds.filter((id) => player.power.some((c) => c.instanceId === id && !c.faceDown));
+  const flipIds = autoPickRemainingFlips(player, stillFaceUp, flip.flipIds.length - stillFaceUp.length);
+  const nextPlayer = applyResolvedDamage(
+    player,
+    flipIds,
+    flip.deckDraws + (flip.flipIds.length - flipIds.length),
+    flip.totalDamage,
+    flip.damagedOnEnemyTurn,
+  );
+  const flipped: GameState = {
+    ...state,
+    ...updatePlayer(state, flip.playerId, nextPlayer),
+    pendingDamagePayment: undefined,
+  };
   // ルール: R-TIME-01 — 「ウラ返してダメージにするとき」（RS-202）は、ダメージになったときの誘発より前。
   let nextState = emitDamageAppliedAndResolve(
-    applyPowerFlipBeforeDamage(state, { ...state, ...updatePlayer(state, playerId, nextPlayer) }, playerId, resume),
-    { playerId, amount, source: resume.kind, phasePlayerId },
+    applyPowerFlipBeforeDamage(state, flipped, flip.playerId, flip.resume),
+    {
+      playerId: flip.playerId,
+      amount: flip.eventAmount,
+      source: flip.resume.kind,
+      phasePlayerId: flip.eventPhasePlayerId,
+    },
   );
-  if (resume.kind === "none") {
-    nextState = { ...nextState, activePlayer: resume.activePlayer };
+  if (flip.resume.kind === "none") {
+    nextState = { ...nextState, activePlayer: flip.resume.activePlayer };
   }
-  return applyPowerFlipTriggers(state, nextState, playerId, resume);
+  return nextState;
+}
+
+/**
+ * 待たせていたウラ返し（deferredPowerFlip）を行う。「ウラ返すとき」の選択・その中で開いた選択や反応が
+ * すべて終わってから呼ぶ（core/applyAction.ts continueDeferredPowerFlip）。
+ */
+export function completeDeferredPowerFlip(state: GameState): { state: GameState; flip: DeferredPowerFlip } | null {
+  const flip = state.deferredPowerFlip;
+  if (!flip) return null;
+  return { state: applyPowerFlip({ ...state, deferredPowerFlip: undefined }, flip), flip };
 }
 
 export function resolveDamagePaymentSelect(
@@ -380,40 +448,22 @@ export function resolveDamagePaymentSelect(
   const defenderId = pending.playerId;
   const defender = state.players[defenderId];
   const allFlipIds = autoPickRemainingFlips(defender, selectedFlipIds, remainingFlips);
-  const nextPlayer = applyResolvedDamage(
-    defender,
-    allFlipIds,
-    pending.deckDraws,
-    pending.totalDamage,
-    (pending.resume.kind === "none" ? pending.resume.activePlayer : pending.resume.pending.battlePhasePlayer) !==
-      defenderId,
-  );
-
   const resume = pending.resume;
-  // ルール: R-TIME-01 — 「ウラ返してダメージにするとき」（RS-202）は、ダメージになったときの誘発より前。
-  let nextState: GameState = emitDamageAppliedAndResolve(
-    applyPowerFlipBeforeDamage(
-      state,
-      {
-        ...state,
-        ...updatePlayer(state, defenderId, nextPlayer),
-        pendingDamagePayment: undefined,
-      },
-      defenderId,
-      resume,
-    ),
+  const nextState = flipPowerForDamage(
+    { ...state, pendingDamagePayment: undefined },
     {
       playerId: defenderId,
-      amount: pending.totalDamage + (pending.replacedDamage ?? 0),
-      source: pending.resume.kind,
-      phasePlayerId: state.activePlayer,
+      flipIds: allFlipIds,
+      deckDraws: pending.deckDraws,
+      totalDamage: pending.totalDamage,
+      damagedOnEnemyTurn:
+        (resume.kind === "none" ? resume.activePlayer : resume.pending.battlePhasePlayer) !== defenderId,
+      eventAmount: pending.totalDamage + (pending.replacedDamage ?? 0),
+      eventPhasePlayerId: state.activePlayer,
+      resume,
+      finishStrike: true,
     },
   );
-
-  if (resume.kind === "none") {
-    nextState = { ...nextState, activePlayer: resume.activePlayer };
-  }
-  nextState = applyPowerFlipTriggers(state, nextState, defenderId, resume);
 
   return { state: nextState, resume };
 }

@@ -7,7 +7,7 @@ import type { Rarity } from "../../src/schema";
 export function loadAtwikiRarityIndex(atwikiDir: string): Map<string, Rarity[]> {
   const index = new Map<string, Rarity[]>();
   for (const file of readdirSync(atwikiDir)) {
-    const m = file.match(/^page-\d+-([A-Z]+-\d+[A-Za-z]?)\.md$/);
+    const m = file.match(/^page-\d+-([A-Z]+\d*-\d+[A-Za-z]?)\.md$/);
     if (!m) continue;
     const rarities = parseAtwikiRarities(readFileSync(join(atwikiDir, file), "utf8"));
     if (rarities.length === 0) continue;

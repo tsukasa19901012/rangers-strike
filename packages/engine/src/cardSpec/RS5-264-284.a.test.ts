@@ -341,10 +341,40 @@ describe("RS-265 ジェットシーカー", () => {
   it.todo(
     "RS-265: 公式Q&A — 相手が天空勇者マジシャイン（RS-325）でコマンドゾーンのオペレーションを使っても【ラウンドレーダー】は発動する（出典: grnrngr/faq-card-5 RS-265 Q5・RS-325 Q3）— 【ラウンドレーダー】自体が未実装で、マジチケット経由の使用を区別する観測点がないため",
   );
-  // faq-card-5 RS-265 Q6/Q7（キタネイダス）
+  // atwiki/page-455 Q6「はい、無効になります。」（XG-034 = XG1-034 害気大臣キタネイダス）
   it.todo(
-    "RS-265: 公式Q&A — 害気大臣キタネイダス（XG-034）があるバトルフェイズ中はラッシュ時の捨札効果・【ラウンドレーダー】が無効になる（出典: grnrngr/faq-card-5 RS-265 Q6・Q7）— XG-034 がカタログに存在しないため",
+    "RS-265: Q&A — 害気大臣キタネイダスがあるバトルフェイズ中にジェットシーカーをラッシュしたとき、ラッシュ時の捨札効果は無効になる（出典: atwiki/page-455 Q6）— バトルフェイズ中にジェットシーカーを「ラッシュ」させる手段（それを許す効果）を公開 API で組み立てられない",
   );
+
+  // atwiki/page-455 Q7「はい、無効になりますので、…パワーゾーンからカードを捨てることはできません。」
+  // 既知の不具合: CARD-RS-265 害気大臣キタネイダス（XG1-034）の【汚い大気】がエンジンで未接続（DSL がプレースホルダの grant_keyword のみ）で、バトルフェイズ中も【ラウンドレーダー】の選択が開き敵軍パワーを捨札にできてしまう
+  it.fails("RS-265: Q&A — 害気大臣キタネイダスとジェットシーカーが自軍エリアにある間、バトルフェイズ中は【ラウンドレーダー】が無効になる（出典: atwiki/page-455 Q7）", () => {
+    // 自軍（player1）バトルフェイズ中、相手が手札からカウンター（新体操アクション）を使用する
+    let s = st(
+      {
+        phase: "battle",
+        player1: {
+          rush: [inst("RS-265", "js"), inst("XG1-034", "kita")],
+          battle: [inst("TST-UNIT-0", "atk")],
+          power: powerCards(3),
+          deck: deckCards(3),
+        },
+        player2: {
+          hand: [inst("RS-006", "gym")],
+          battle: [inst("TST-UNIT-0", "def")],
+          command: [released("TST-OP-ET", "pay")],
+          power: powerCards(8, "q"),
+          deck: deckCards(3, "d2"),
+        },
+      },
+      SPECS,
+    );
+    s = act(s, { type: "battle", playerId: "player1", attackerInstanceId: "TST-UNIT-0:atk", defenderInstanceId: "TST-UNIT-0:def" });
+    s = useCard(s, "player2", "RS-006:gym");
+    expect(zoneOf(s, "player2", "RS-006:gym")).toBe("discard");
+    expect(radarOpen(s)).toBe(false);
+    expect(s.players.player2.power).toHaveLength(8);
+  });
 });
 
 // ===========================================================================
