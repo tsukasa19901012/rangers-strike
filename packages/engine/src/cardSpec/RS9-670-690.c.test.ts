@@ -319,8 +319,7 @@ describe("RS-687 ギンガイオー", () => {
     expect(choiceIds(s)).not.toContain("SPEC-E1000:b1000");
   });
 
-  // 既知の不具合: CARD-RS-687 【ガルコンボーガン】の「BP4000以下」の条件が落ちている（BP4500 のユニットも選べる）
-  it.fails("RS-687: 【ガルコンボーガン】BP4000 を超えるユニット（BP4500）は選べない（出典: atwiki/page-1433「BP4000以下」）", () => {
+  it("RS-687: 【ガルコンボーガン】BP4000 を超えるユニット（BP4500）は選べない（出典: atwiki/page-1433「BP4000以下」）", () => {
     const s = enterGingaioh();
     expect(choiceIds(s)).toEqual(["SPEC-E4000:r4000", "SPEC-M3000:rm3000"]);
   });
@@ -398,8 +397,7 @@ describe("RS-688 ギガフェニックス", () => {
     expect(cardIn(s, "player2", "RS-685:wing")?.commandHeld ?? false).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-688 【ギガニックブーメラン】が「すべて」ではなく1体を選ぶ形で、ラッシュエリアのレジスト持ちが候補に入らない
-  it.fails("RS-688: 【ギガニックブーメラン】レジストまたはウイングを持つ敵軍ユニットをすべて（ラッシュエリアを含む）ホールドする。持たないユニット・自軍のユニットはそのまま（出典: atwiki/page-1498・R-TGT-01）", () => {
+  it("RS-688: 【ギガニックブーメラン】レジストまたはウイングを持つ敵軍ユニットをすべて（ラッシュエリアを含む）ホールドする。持たないユニット・自軍のユニットはそのまま（出典: atwiki/page-1498・R-TGT-01）", () => {
     const s = resolveAll(boomerang(), ["RS-674:res", "RS-685:wing", "RS-689:both"]);
     expect(cardIn(s, "player2", "RS-674:res")?.commandHeld).toBe(true);
     expect(cardIn(s, "player2", "RS-685:wing")?.commandHeld).toBe(true);
@@ -442,15 +440,13 @@ describe("RS-689 レッドホーク（2nd）", () => {
       ALL,
     );
 
-  // 既知の不具合: CARD-RS-689 【バードブラスター】が未実装（NC のログだけで BP が変わらない）
-  it.fails("RS-689: 【バードブラスター】NC（1番目）— このターン、ホールド状態の敵軍 S ユニットは BP-2500（ラッシュエリアも含む）（出典: atwiki/page-1531・R-TGT-01）", () => {
+  it("RS-689: 【バードブラスター】NC（1番目）— このターン、ホールド状態の敵軍 S ユニットは BP-2500（ラッシュエリアも含む）（出典: atwiki/page-1531・R-TGT-01）", () => {
     const s = resolveAll(board(0));
     expect(bpOf(s, "player2", "SPEC-E3000:h3000")).toBe(500);
     expect(bpOf(s, "player2", "SPEC-E3000:rh3000")).toBe(500);
   });
 
-  // 既知の不具合: CARD-RS-689 【バードブラスター】が未実装（BP0 以下でも撃破されない）
-  it.fails("RS-689: 【バードブラスター】BP0 以下になったユニット（ホールド中の BP2000）は撃破される（出典: atwiki/page-1531「（BP0以下になったユニットは撃破される）」）", () => {
+  it("RS-689: 【バードブラスター】BP0 以下になったユニット（ホールド中の BP2000）は撃破される（出典: atwiki/page-1531「（BP0以下になったユニットは撃破される）」）", () => {
     const s = resolveAll(board(0));
     expect(zoneOf(s, "player2", "SPEC-E2000:h2000")).toBe("discard");
   });
@@ -541,8 +537,7 @@ describe("RS-690 スペードエース", () => {
     expect(zoneOf(s, "player2", "SPEC-E3000:r3000")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-690 【スペードアーツ】が「同じBP」の組を作らず、バトルエリアからどのSユニットでも1体だけ選ぶ形になっている
-  it.fails("RS-690: 【スペードアーツ】バトルエリアとラッシュエリアの同じ BP の S ユニット（BP3000 同士）を1体ずつ選び、持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-1490）", () => {
+  it("RS-690: 【スペードアーツ】バトルエリアとラッシュエリアの同じ BP の S ユニット（BP3000 同士）を1体ずつ選び、持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-1490）", () => {
     let s = arts(1);
     expect(choiceIds(s)).toContain("SPEC-E3000:b3000");
     s = pick(s, "SPEC-E3000:b3000");
@@ -554,14 +549,12 @@ describe("RS-690 スペードエース", () => {
     expect(cardIn(s, "player2", "SPEC-E3000:r3000")?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-690 【スペードアーツ】が「同じBP」の組を作らない
-  it.fails("RS-690: 【スペードアーツ】ラッシュエリアに同じ BP の S ユニットがいないもの（BP2000）・M ユニットは選べない（出典: atwiki/page-1490「同じBPを持つSユニットを1体ずつ」）", () => {
+  it("RS-690: 【スペードアーツ】ラッシュエリアに同じ BP の S ユニットがいないもの（BP2000）・M ユニットは選べない（出典: atwiki/page-1490「同じBPを持つSユニットを1体ずつ」）", () => {
     const s = arts(1);
     expect(choiceIds(s)).toEqual(["SPEC-E3000:b3000"]);
   });
 
-  // 既知の不具合: CARD-RS-690 【スペードアーツ】が「同じBP」の組を作らず、コマンドゾーンに置く処理もない
-  it.fails("RS-690: 【スペードアーツ】相手のコマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-1490「置けなければ捨札にする」・R-ZONE-08）", () => {
+  it("RS-690: 【スペードアーツ】相手のコマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-1490「置けなければ捨札にする」・R-ZONE-08）", () => {
     let s = arts(1, 5);
     s = pick(s, "SPEC-E3000:b3000");
     s = resolveAll(pick(s, "SPEC-E3000:r3000"));

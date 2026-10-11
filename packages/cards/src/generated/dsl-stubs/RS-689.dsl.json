@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-689::badoburasuta",
-          "duration": "permanent"
+          "keyword": "set9d::RS-689::bird_blaster",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -6,11 +6,18 @@ import { opponent } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import { hasGiantBomb } from "../rules/legend1/set5NamedEffectsA";
+import { zubaanIsLarge } from "../rules/legend1/set6NamedEffectsB";
 
 type FieldZone = keyof Pick<PlayerState, "hand" | "discard" | "power" | "command" | "rush" | "battle">;
 
 function cardsInZone(state: GameState, playerId: PlayerId, zone: FieldZone): CardInstance[] {
   return state.players[playerId][zone] ?? [];
+}
+
+function currentSize(state: GameState, card: CardInstance, printed: string | undefined): string | undefined {
+  if (hasGiantBomb(card)) return "L";
+  if (printed && printed !== "L" && zubaanIsLarge(state, card)) return "L";
+  return printed;
 }
 
 function matchesFilter(
@@ -43,8 +50,9 @@ function matchesFilter(
     if (bp % 1000 !== filter.bpLastThreeDigits) return false;
   }
   if (filter.cardType && filter.cardType !== "any" && def?.type !== filter.cardType) return false;
-  // 効果でサイズが変わったユニット（RS-255 巨大化爆弾を重ねたユニットは「Lユニット」）は変わったサイズで判定する。
-  if (filter.size && (hasGiantBomb(card) ? "L" : def?.size) !== filter.size) return false;
+  // 効果でサイズが変わったユニット（RS-255 巨大化爆弾を重ねたユニットは「Lユニット」、「自分か相手のLユニットがあれば、
+  // これはLユニットになり」RS-420・RS-672 等）は変わったサイズで判定する。
+  if (filter.size && currentSize(state, card, def?.size) !== filter.size) return false;
   if (filter.maxPowerCost !== undefined && parsePowerCost(def?.powerCost ?? 99) > filter.maxPowerCost) {
     return false;
   }

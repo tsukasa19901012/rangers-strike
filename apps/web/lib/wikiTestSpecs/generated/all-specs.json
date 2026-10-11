@@ -19679,7 +19679,7 @@
     ],
     "expectedDslKeywords": [
       "becomes_l_bp_if_any_l_on_field_2000",
-      "effect_card::RS-672::gorodaataku"
+      "set9d::RS-672::goroder_attack"
     ],
     "bp": 2000,
     "sp": null,
@@ -19697,7 +19697,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_enter_battle",
-      "effect_card::RS-673::honooshinkyasuto"
+      "set9d::RS-673::cast_transfer"
     ],
     "bp": 500,
     "sp": null,
@@ -19732,7 +19732,7 @@
       "【ウォーターアロー】"
     ],
     "expectedDslKeywords": [
-      "wing_attack_enemy_rush"
+      "set9d::RS-675::water_arrow"
     ],
     "bp": 2000,
     "sp": null,
@@ -19783,7 +19783,7 @@
       "【ランドスライサー】"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-678::randosuraisa"
+      "set9d::RS-678::land_slicer"
     ],
     "bp": 1000,
     "sp": null,
@@ -19801,7 +19801,7 @@
     ],
     "expectedDslKeywords": [
       "blast",
-      "effect_card::RS-679::daishinken"
+      "set9d::RS-679::daishinken"
     ],
     "bp": 17000,
     "sp": 1,
@@ -19836,7 +19836,7 @@
       "【押し寄せる水流】"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-681::shiserumizu"
+      "set9d::RS-681::surging_water"
     ],
     "bp": 4000,
     "sp": null,
@@ -19855,7 +19855,7 @@
     "expectedDslKeywords": [
       "register",
       "cannot_attack",
-      "effect_card::RS-682::naruko"
+      "set9d::RS-682::sturdy_shell"
     ],
     "bp": 6000,
     "sp": null,
@@ -19889,7 +19889,7 @@
       "【軽業】"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-684::fxunknowne8bbbd"
+      "set9d::RS-684::acrobatics"
     ],
     "bp": 3000,
     "sp": null,
@@ -19943,7 +19943,7 @@
     ],
     "expectedDslKeywords": [
       "blast",
-      "effect_card::RS-687::garukonbogan"
+      "set9d::RS-687::garcon_bowgun"
     ],
     "bp": 12000,
     "sp": 1,
@@ -19961,7 +19961,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "effect_card::RS-688::giganikubumeran"
+      "set9d::RS-688::giganic_boomerang"
     ],
     "bp": 6000,
     "sp": 1,
@@ -19980,7 +19980,7 @@
     "expectedDslKeywords": [
       "register",
       "wing",
-      "effect_card::RS-689::badoburasuta"
+      "set9d::RS-689::bird_blaster"
     ],
     "bp": 2000,
     "sp": null,
@@ -19998,7 +19998,7 @@
     ],
     "expectedDslKeywords": [
       "taxis_ET",
-      "effect_card::RS-690::supedoatsu"
+      "set9d::RS-690::spade_arts"
     ],
     "bp": 4000,
     "sp": null,

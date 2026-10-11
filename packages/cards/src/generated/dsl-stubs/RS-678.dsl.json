@@ -23,16 +23,16 @@
       "name": "ランドスライサー",
       "text": "このターン、次に自軍Sユニットが撃破されて捨札になったとき、そのカードを手札に戻してもよい。",
       "trigger": {
-        "type": "on_destroy"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-678::randosuraisa",
+          "keyword": "set9d::RS-678::land_slicer",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

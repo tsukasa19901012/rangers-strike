@@ -2,6 +2,7 @@ import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
 import { set7DDefenderBlocksAttack } from "../legend1/set7NamedEffectsD";
 import { set8ADefenderBlocksAttack } from "../legend1/set8NamedEffectsA";
 import { set8DDefenderBlocksAttack } from "../legend1/set8NamedEffectsD";
+import { set9DAllowsRushAttack } from "../legend1/set9NamedEffectsD";
 import { set8CAllowsRushAttack, set8CDefenderBlocksAttack } from "../legend1/set8NamedEffectsC";
 import { set8BDefenderBlocksAttack } from "../legend1/set8NamedEffectsB";
 import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
@@ -483,7 +484,9 @@ export function canAttackDefender(
       lionBlastAllowsRushAttack(attacker.card) ||
       magiMergeAllowsRushAttack(state, attackerPlayerId, attackerInstanceId) ||
       // RS-562 ガオソーシャークの※・RS-573【バリランサー】（rules/legend1/set8NamedEffectsC.ts）。
-      set8CAllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, inRush.card)
+      set8CAllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, inRush.card) ||
+      // RS-675【ウォーターアロー】（NC。rules/legend1/set9NamedEffectsD.ts）。
+      set9DAllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId)
     ) {
       return true;
     }

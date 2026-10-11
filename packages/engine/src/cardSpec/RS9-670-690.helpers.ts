@@ -1028,8 +1028,7 @@ export function toPowerOnDestroyTests(id: string, page: string): void {
     expect(zoneOf(s, "player1", self)).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-670/671 ※ の任意パワー送りがバトルエリアからの撃破に限られ、ラッシュエリアで撃破されたときは提示されない
-  it.fails(`${id}: ※ 敵軍ターン中にラッシュエリアで効果により撃破された場合も置ける（出典: ${page}・R-TGT-01（エリアの限定がない））`, () => {
+  it(`${id}: ※ 敵軍ターン中にラッシュエリアで効果により撃破された場合も置ける（出典: ${page}・R-TGT-01（エリアの限定がない））`, () => {
     // 敵軍（player2）がギンガイオー（RS-687【ガルコンボーガン】敵軍ラッシュエリアからBP4000以下のユニットを1体選び撃破する）をバトルエリアに出す。
     let s = st({
       activePlayer: "player2",

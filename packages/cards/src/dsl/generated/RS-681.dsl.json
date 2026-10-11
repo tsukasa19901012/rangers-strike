@@ -28,11 +28,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_to_zone_rashuerianohorudonoyunitowosubetechinonishiteshafuru",
+          "keyword": "set9d::RS-681::surging_water",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

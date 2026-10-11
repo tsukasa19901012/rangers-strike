@@ -104,8 +104,7 @@ describe("RS-672 ゴローダーGT", () => {
     expect(bpOf(s, "player1", "RS-672:g")).toBe(2000);
   });
 
-  // 既知の不具合: CARD-RS-672 ※「これはLユニットになり」が未実装（BP 修正だけで、サイズは S のまま扱われる）
-  it.fails("RS-672: ※ L ユニットがあれば L ユニットになる — 「Sユニット」を選ぶ敵軍の効果に選ばれない（出典: atwiki/page-1521「これはLユニットになり」）", () => {
+  it("RS-672: ※ L ユニットがあれば L ユニットになる — 「Sユニット」を選ぶ敵軍の効果に選ばれない（出典: atwiki/page-1521「これはLユニットになり」）", () => {
     // 敵軍（player2）のシンケンレッド（RS-674）NC【烈火大斬刀】は「DAを持つ敵軍Sユニット」を選ぶ。ゴローダーGT はカテゴリ OT なので
     // 代わりに天空神（RS-481【ホバリング】敵軍ラッシュエリアからSユニットを1体選び、持ち主の手札に戻してもよい）を使う。
     let s = st({
@@ -126,29 +125,25 @@ describe("RS-672 ゴローダーGT", () => {
     return act(t, { type: "move_to_battle", playerId: "player1", instanceId: "RS-672:g" });
   };
 
-  // 既知の不具合: CARD-RS-672 【ゴローダーアタック！】が未実装（ジョイントコンビネーションしても何も起きない）
-  it.fails("RS-672: 【ゴローダーアタック！】「ゴーオン」を含むユニット（ゴーオンレッド BP4000）からコンビネーションすると、BP4000 以下の敵軍ユニットを選べる（ラッシュエリアも含む）（出典: atwiki/page-1521・R-TGT-01）", () => {
+  it("RS-672: 【ゴローダーアタック！】「ゴーオン」を含むユニット（ゴーオンレッド BP4000）からコンビネーションすると、BP4000 以下の敵軍ユニットを選べる（ラッシュエリアも含む）（出典: atwiki/page-1521・R-TGT-01）", () => {
     const s = fromGoOn({ battle: [inst("SPEC-E4000", "b4000"), inst("SPEC-E4500", "b4500")], rush: [inst("SPEC-E3000M", "r3000")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-672");
     expect(choiceIds(s)).toEqual(["SPEC-E3000M:r3000", "SPEC-E4000:b4000"]);
   });
 
-  // 既知の不具合: CARD-RS-672 【ゴローダーアタック！】が未実装（ジョイントコンビネーションしても何も起きない）
-  it.fails("RS-672: 【ゴローダーアタック！】選んだ敵軍ユニットは持ち主のパワーゾーンに置かれる（出典: atwiki/page-1521「持ち主のパワーゾーンに置く」）", () => {
+  it("RS-672: 【ゴローダーアタック！】選んだ敵軍ユニットは持ち主のパワーゾーンに置かれる（出典: atwiki/page-1521「持ち主のパワーゾーンに置く」）", () => {
     const s = resolveAll(pick(fromGoOn({ battle: [inst("SPEC-E4000", "b4000")] }), "SPEC-E4000:b4000"));
     expect(zoneOf(s, "player2", "SPEC-E4000:b4000")).toBe("power");
   });
 
-  // 既知の不具合: CARD-RS-672 【ゴローダーアタック！】が未実装（ジョイントコンビネーションしても何も起きない）
-  it.fails("RS-672: 【ゴローダーアタック！】「発動できる」— 発動しないこともできる（出典: atwiki/page-1521「次の効果を発動できる」）", () => {
+  it("RS-672: 【ゴローダーアタック！】「発動できる」— 発動しないこともできる（出典: atwiki/page-1521「次の効果を発動できる」）", () => {
     let s = fromGoOn({ battle: [inst("SPEC-E4000", "b4000")] });
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));
     expect(zoneOf(s, "player2", "SPEC-E4000:b4000")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-672 【ゴローダーアタック！】が未実装（ジョイントコンビネーションしても何も起きない）
-  it.fails("RS-672: 【ゴローダーアタック！】「エンジンオー」を含むユニット（エンジンオー BP13000）からでも発動し、BP13000 以下を選べる（出典: atwiki/page-1521）", () => {
+  it("RS-672: 【ゴローダーアタック！】「エンジンオー」を含むユニット（エンジンオー BP13000）からでも発動し、BP13000 以下を選べる（出典: atwiki/page-1521）", () => {
     const s = fromGoOn({ battle: [inst("SPEC-E4500", "b4500"), inst("TST-UNIT-7", "big")] }, "RS-515:eo");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-672");
     expect(choiceIds(s)).toEqual(["SPEC-E4500:b4500", "TST-UNIT-7:big"]);
@@ -194,8 +189,7 @@ describe("RS-673 ボンパー", () => {
     return act(s, { type: "charge_power", playerId: "player1", instanceId: handCard.instanceId });
   };
 
-  // 既知の不具合: CARD-RS-673 【炎神キャスト転送】が未実装（チャージフェイズにパワーへ置いても選択が開かない）
-  it.fails("RS-673: 【炎神キャスト転送】チャージフェイズにパワーゾーンへ置いたとき、オモテ向きの自軍パワーの炎神 M ユニットを選んでよい（任意・候補は炎神 M だけ）（出典: atwiki/page-1443）", () => {
+  it("RS-673: 【炎神キャスト転送】チャージフェイズにパワーゾーンへ置いたとき、オモテ向きの自軍パワーの炎神 M ユニットを選んでよい（任意・候補は炎神 M だけ）（出典: atwiki/page-1443）", () => {
     const s = charge({
       rush: [inst("RS-673", "b")],
       power: [inst("RS-670", "ty"), inst("SPEC-ENGINE-S", "es"), inst("TST-UNIT-2", "m"), { ...inst("RS-671", "fd"), faceDown: true }],
@@ -205,15 +199,13 @@ describe("RS-673 ボンパー", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-673 【炎神キャスト転送】が未実装（チャージフェイズにパワーへ置いても選択が開かない）
-  it.fails("RS-673: 【炎神キャスト転送】選んだカードは自軍ラッシュエリアに出る（出典: atwiki/page-1443「自軍ラッシュエリアに出してもよい」）", () => {
+  it("RS-673: 【炎神キャスト転送】選んだカードは自軍ラッシュエリアに出る（出典: atwiki/page-1443「自軍ラッシュエリアに出してもよい」）", () => {
     let s = charge({ rush: [inst("RS-673", "b")], power: [inst("RS-670", "ty")] });
     s = resolveAll(pick(s, "RS-670:ty"));
     expect(zoneOf(s, "player1", "RS-670:ty")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-673 【炎神キャスト転送】が未実装（チャージフェイズにパワーへ置いても選択が開かない）
-  it.fails("RS-673: 【炎神キャスト転送】出さないことも選べる（出典: atwiki/page-1443「出してもよい」）", () => {
+  it("RS-673: 【炎神キャスト転送】出さないことも選べる（出典: atwiki/page-1443「出してもよい」）", () => {
     let s = charge({ rush: [inst("RS-673", "b")], power: [inst("RS-670", "ty")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-673");
     s = resolveAll(skip(s));
@@ -276,15 +268,13 @@ describe("RS-674 シンケンレッド", () => {
       rush: [inst("SPEC-DA-M", "dam"), inst("SPEC-DA-ET", "daet")],
     }, [DA_S, DA_M, MA_S, DA_ET]);
 
-  // 既知の不具合: CARD-RS-674 【烈火大斬刀】の撃破が未実装（NC で SP1 になるだけで DA の敵軍Sユニットを選べない）
-  it.fails("RS-674: 【烈火大斬刀】NC（3番目）— DA を持つ敵軍 S ユニットだけを選べる（ラッシュエリア・マルチカテゴリも含む）（出典: atwiki/page-1421・R-TGT-01）", () => {
+  it("RS-674: 【烈火大斬刀】NC（3番目）— DA を持つ敵軍 S ユニットだけを選べる（ラッシュエリア・マルチカテゴリも含む）（出典: atwiki/page-1421・R-TGT-01）", () => {
     const s = board(2);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-674");
     expect(choiceIds(s)).toEqual(["SPEC-DA-ET:daet", "SPEC-DA-S:das"]);
   });
 
-  // 既知の不具合: CARD-RS-674 【烈火大斬刀】の撃破が未実装（NC で SP1 になるだけで DA の敵軍Sユニットを選べない）
-  it.fails("RS-674: 【烈火大斬刀】強制 — 選ばないことはできず、選んだユニットは撃破される（出典: atwiki/page-1421「1体選び撃破する」）", () => {
+  it("RS-674: 【烈火大斬刀】強制 — 選ばないことはできず、選んだユニットは撃破される（出典: atwiki/page-1421「1体選び撃破する」）", () => {
     let s = board(2);
     expect(canSkip(s)).toBe(false);
     s = resolveAll(pick(s, "SPEC-DA-S:das"));
@@ -331,8 +321,7 @@ describe("RS-675 シンケンブルー", () => {
     expect(zoneOf(s, "player2", "SPEC-E500:r")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-675 【ウォーターアロー】が NC 不成立でも常時有効（敵軍ラッシュエリアにアタックできてしまう）
-  it.fails("RS-675: 【ウォーターアロー】NC が成立しない（3番目）と敵軍ラッシュエリアにはアタックできない（出典: R-CN-02）", () => {
+  it("RS-675: 【ウォーターアロー】NC が成立しない（3番目）と敵軍ラッシュエリアにはアタックできない（出典: R-CN-02）", () => {
     const s = resolveAll(board(2));
     expect(attackTargets(s, "RS-675:b")).not.toContain("SPEC-E500:r");
     expect(attackTargets(s, "RS-675:b")).toContain("SPEC-E500:bt");
@@ -353,8 +342,7 @@ describe("RS-676 シンケンピンク", () => {
   const board = (fillers: number) =>
     ncEnter("RS-676:p", fillers, { deck: [inst("TST-OP", "my0"), ...deckCards(3)] }, { deck: [inst("TST-OP", "en0"), ...deckCards(3, "e")] });
 
-  // 既知の不具合: CARD-RS-676 【ヘブンファン】のドローが未実装（NC で SP1 になるだけで、どちらもドローしない）
-  it.fails("RS-676: 【ヘブンファン】NC（3番目）— 自分も相手も山札から1枚ドローする（出典: atwiki/page-1428「自分も相手も1枚ドローする」）", () => {
+  it("RS-676: 【ヘブンファン】NC（3番目）— 自分も相手も山札から1枚ドローする（出典: atwiki/page-1428「自分も相手も1枚ドローする」）", () => {
     const s = resolveAll(board(2));
     expect(zoneOf(s, "player1", "TST-OP:my0")).toBe("hand");
     expect(zoneOf(s, "player2", "TST-OP:en0")).toBe("hand");

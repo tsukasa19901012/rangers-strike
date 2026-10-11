@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "wing_attack_enemy_rush",
-          "duration": "permanent"
+          "keyword": "set9d::RS-675::water_arrow",
+          "duration": "turn"
         }
       ]
     }

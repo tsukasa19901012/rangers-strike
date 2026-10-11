@@ -153,6 +153,7 @@ import {
   tryStartBattleEntryRushDiscard,
 } from "../rules/legend3/restrictions";
 import { applyGodomSenshoDiscardPay } from "../rules/godomRushPay";
+import { openCastTransferOnCharge } from "../rules/legend1/set9NamedEffectsD";
 import { applyMeeMegaloAfterAction, openTakeTheBlowChoice, resolveTakeTheBlow, skipTakeTheBlow, TAKE_THE_BLOW_EFFECT_ID } from "../rules/legend1/set8NamedEffectsD";
 import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
 import {
@@ -1260,9 +1261,14 @@ function applyActionCore(
       const chargedState = { ...state, ...updatePlayer(state, playerId, nextPlayer) };
       return {
         ok: true,
-        state: advanceFromCharge(
-          chargedState,
-          buildLogEntry(playerId, "charge_power", found.card.cardId, state.definitions),
+        // RS-673【炎神キャスト転送】: 自軍チャージフェイズ中、自軍パワーゾーンにカードを置いたとき（rules/legend1/set9NamedEffectsD.ts）。
+        state: openCastTransferOnCharge(
+          advanceFromCharge(
+            chargedState,
+            buildLogEntry(playerId, "charge_power", found.card.cardId, state.definitions),
+          ),
+          playerId,
+          powerCard.instanceId,
         ),
       };
     }
