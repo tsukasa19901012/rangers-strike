@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "set7c::RS-487::goat_crash",
+          "keyword": "effect_card::RS-487::kazetoshi",
           "duration": "turn"
         }
       ],

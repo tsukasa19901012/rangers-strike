@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "set7c::RS-486::bunshin",
+          "keyword": "effect_card::RS-486::zanri",
           "duration": "turn"
         }
       ],

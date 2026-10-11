@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "set7c::RS-489::box_dimension",
+          "keyword": "effect_card::RS-489::ninpo",
           "duration": "turn"
         }
       ],

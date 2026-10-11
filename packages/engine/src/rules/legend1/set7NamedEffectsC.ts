@@ -1322,9 +1322,31 @@ CHOICE_SKIPPERS[EN_GIRI_EFFECT_ID] = simpleSkip("RS-494");
 
 export const SET7C_KEYWORD_PREFIX = "set7c::";
 
+/**
+ * Wiki スペック（apps/web lib/wikiComplete）が期待する DSL キーワード（effect_card 等）で受ける効果。
+ * RS-396【ガンマトルネード】と同じく、キーワードはそのままにして、ここで名前付き効果に割り当てる。
+ */
+const SET7C_SPEC_KEYWORDS: Record<string, string> = {
+  "effect_card::RS-475::riborubafuantomu": "RS-475::revolver_phantom",
+  "effect_card::RS-476::bisutohariken": "RS-476::beast_hurricane",
+  "effect_card::RS-477::suru": "RS-477::wolf_roar",
+  "copy_nc_from_rush_s": "RS-483::space_ninja",
+  "effect_card::RS-484::hariapu": "RS-484::hurry_up",
+  "effect_card::RS-485::kazenoe796be": "RS-485::strike_draw",
+  "effect_card::RS-486::zanri": "RS-486::bunshin",
+  "effect_card::RS-487::kazetoshi": "RS-487::goat_crash",
+  "effect_card::RS-489::ninpo": "RS-489::box_dimension",
+  "effect_card::RS-490::fxunknowne4ba88": "RS-490::prophecy",
+  "effect_card::RS-491::meta": "RS-491::awakened_ferocity",
+  "effect_card::RS-494::ninpori": "RS-494::en_giri",
+};
+
 export function trySet7CCardEffect(state: GameState, ctx: GrantKeywordContext, keyword: string): GrantKeywordResult | null {
-  if (!keyword.startsWith(SET7C_KEYWORD_PREFIX)) return null;
-  switch (keyword.slice(SET7C_KEYWORD_PREFIX.length)) {
+  const mapped = SET7C_SPEC_KEYWORDS[keyword];
+  // copy_nc_from_rush_s は RS-483 のキーワード（他のカードが持っても割り当てない）。
+  if (mapped && keyword === "copy_nc_from_rush_s" && ctx.sourceCardId !== "RS-483") return null;
+  if (!mapped && !keyword.startsWith(SET7C_KEYWORD_PREFIX)) return null;
+  switch (mapped ?? keyword.slice(SET7C_KEYWORD_PREFIX.length)) {
     case "RS-474::time_shadow_discard":
       return openTimeShadow(state, ctx);
     case "RS-475::revolver_phantom":

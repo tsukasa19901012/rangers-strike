@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "set7c::RS-494::en_giri",
+          "keyword": "effect_card::RS-494::ninpori",
           "duration": "turn"
         }
       ],
