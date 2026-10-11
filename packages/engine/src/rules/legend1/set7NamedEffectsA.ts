@@ -20,8 +20,8 @@ import type {
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
-import { opponent, updatePlayer } from "../../core/helpers";
-import { addTurnRuleModifier, getPlayerModifiers, hasTurnRuleModifier } from "../../core/scopedModifiers";
+import { opponent } from "../../core/helpers";
+import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, requestDrawFromDeck, type ChoiceOutcome } from "../pendingChoices";
@@ -752,10 +752,10 @@ CHOICE_SKIPPERS[TETRA_BUSTER_EFFECT_ID] = simpleSkip("RS-452");
 
 function openTetraBoyReturn(state: GameState, enteringPlayerId: PlayerId, entered: CardInstance): GameState {
   const ownerId = opponent(enteringPlayerId);
-  if (!state.players[enteringPlayerId].battle.some((c) => c.instanceId === entered.instanceId)) return state;
-  if (effectiveBp(state, enteringPlayerId, entered) < 6000) return state;
   const boys = state.players[ownerId].battle.filter((c) => c.cardId === "RS-452");
   if (boys.length === 0) return state;
+  if (!state.players[enteringPlayerId].battle.some((c) => c.instanceId === entered.instanceId)) return state;
+  if (effectiveBp(state, enteringPlayerId, entered) < 6000) return state;
   return openEffectChoice(state, {
     playerId: ownerId,
     effectId: TETRA_BOY_RETURN_EFFECT_ID,
@@ -1571,12 +1571,3 @@ export function trySet7ACardEffect(state: GameState, ctx: GrantKeywordContext, k
       return { state, detail: keyword };
   }
 }
-
-// ---------------------------------------------------------------------------
-// 参照用
-
-export function set7AHasTurnRule(state: GameState, playerId: PlayerId, ruleId: string): boolean {
-  return hasTurnRuleModifier(state.players[playerId], ruleId);
-}
-
-export { updatePlayer as _set7UpdatePlayer };
