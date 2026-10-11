@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-595::moshii",
+          "keyword": "set8d::RS-595::reliable_back",
           "duration": "permanent"
         }
       ]

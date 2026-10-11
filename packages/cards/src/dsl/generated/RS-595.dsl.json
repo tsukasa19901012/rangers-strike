@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ignore_rule_text_koregaerianiaru_honoo_shin_wotsuyunitohakorehatannaraba",
-          "duration": "turn"
+          "keyword": "set8d::RS-595::reliable_back",
+          "duration": "permanent"
         }
       ]
     }

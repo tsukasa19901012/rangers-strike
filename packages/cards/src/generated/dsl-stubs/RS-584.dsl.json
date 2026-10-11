@@ -60,12 +60,12 @@
       "name": "闇を振り払う心",
       "text": "自軍パワーのオモテ向きのカードと自軍コマンドゾーンのカードにDA持つカードが1枚もなければ、これは「SP1」になる。また、DAを持つ敵軍ユニットがあれば、これはBP＋3000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-584::yamiworiu",
+          "keyword": "set8d::RS-584::darkness_dispel",
           "duration": "permanent"
         }
       ],
