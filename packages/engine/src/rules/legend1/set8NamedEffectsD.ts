@@ -10,7 +10,10 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, DeferredDestroyTrigger, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { canAttackDefender } from "../legend3/restrictions";
 import { canAttackRushWithYellowThunder } from "../namedUnitEffects";
-import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, isCounterOperation, isSmallUnit, parsePowerCost } from "../../core/catalog";
+import { sameCardName } from "../../core/cardNames";
+import { shuffleCards } from "../errataCardEffects";
+
 import { addNextTurnRuleModifier, addTurnRuleModifier, getPlayerModifiers, hasTurnRuleModifier } from "../../core/scopedModifiers";
 
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
@@ -1117,6 +1120,78 @@ export function skipTakeTheBlow(
 // 解決は core/applyAction.ts が行う（アタックの処理を続けるため）。ここでは選択として登録だけする。
 CHOICE_RESOLVERS[TAKE_THE_BLOW_EFFECT_ID] = () => ({ error: "handled_by_attack" });
 CHOICE_SKIPPERS[TAKE_THE_BLOW_EFFECT_ID] = () => ({ error: "handled_by_attack" });
+
+// ---------------------------------------------------------------------------
+// RS-582 魔導神官メーミィ【メー・メガロ】
+// 「これが自軍エリアにある間、自分がカウンターを持つオペレーションの効果を発動して、そのカードが捨札になったとき、そのカードと同じ
+//  カード名のカードを、自軍山札を見て1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。」（atwiki/page-1196）
+// core/applyAction.ts の後処理で、カウンターの使用（play_counter とその支払い）によって手札のカウンターが捨札に置かれたことを検出する。
+// 巨大化爆弾のように使用時に捨札にならないカードは対象外（faq-card-8 RS-582 Q1）。
+
+export const MEE_MEGALO_EFFECT_ID = "rs582_mee_megalo";
+const COUNTER_USE_ACTIONS = new Set(["play_counter", "initiate_command_payment", "resolve_command_payment"]);
+
+function openMeeMegalo(state: GameState, playerId: PlayerId, usedCardId: string): GameState {
+  const mee = fieldUnits(state, playerId).find((c) => c.cardId === "RS-582" && namedTextLive(state, playerId, c));
+  if (!mee) return state;
+  const deck = state.players[playerId].deck;
+  const name = cardName(state.definitions, usedCardId);
+  const ids = deck.filter((c) => sameCardName(cardName(state.definitions, c.cardId), name)).map((c) => c.instanceId);
+  const choice: PendingEffectChoice = {
+    playerId,
+    phasePlayerId: turnPlayerOf(state),
+    sourceCardId: "RS-582",
+    sourceInstanceId: mee.instanceId,
+    effectId: MEE_MEGALO_EFFECT_ID,
+    kind: "scry_keep_one",
+    validInstanceIds: ids,
+    viewedInstanceIds: deck.map((c) => c.instanceId),
+    selectedInstanceIds: [],
+    selectCount: 1,
+    optional: true,
+    set8dMeta: { cardId: usedCardId },
+  };
+  if (ids.length === 0) {
+    // 山札を見たが同名のカードがない: その後、山札をシャッフルする。
+    return patchPlayer(state, playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
+  }
+  return openAfter(state, choice);
+}
+
+/** applyAction の後処理: 自分が使ったカウンターが捨札になったら【メー・メガロ】の選択を開く。 */
+export function applyMeeMegaloAfterAction(before: GameState, after: GameState, actionType: string, actorId: PlayerId): GameState {
+  if (!COUNTER_USE_ACTIONS.has(actionType)) return after;
+  const beforeHand = before.players[actorId].hand;
+  if (beforeHand === after.players[actorId].hand) return after;
+  if (!fieldUnits(after, actorId).some((c) => c.cardId === "RS-582")) return after;
+  let next = after;
+  const discardIds = new Set(after.players[actorId].discard.map((c) => c.instanceId));
+  const beforeDiscard = new Set(before.players[actorId].discard.map((c) => c.instanceId));
+  for (const card of beforeHand) {
+    if (!discardIds.has(card.instanceId) || beforeDiscard.has(card.instanceId)) continue;
+    if (!isCounterOperation(getDefinition(after.definitions, card.cardId))) continue;
+    next = openMeeMegalo(next, actorId, card.cardId);
+  }
+  return next;
+}
+
+CHOICE_RESOLVERS[MEE_MEGALO_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const card = state.players[playerId].deck.find((c) => c.instanceId === instanceId);
+  if (!card) return { error: "invalid_target" };
+  const next = patchPlayer(state, playerId, (p) => ({
+    ...p,
+    deck: shuffleCards(p.deck.filter((c) => c.instanceId !== instanceId)),
+    hand: [...p.hand, stripForZone(card)],
+  }));
+  // 相手に見せてから手札に加える（ログに公開する）。
+  return { state: finish(next, pending), log: logFor(state, playerId, "RS-582", `${MEE_MEGALO_EFFECT_ID}:reveal:${cardName(state.definitions, card.cardId)}`) };
+};
+CHOICE_SKIPPERS[MEE_MEGALO_EFFECT_ID] = (state, playerId) => {
+  const pending = state.pendingEffectChoice!;
+  const next = patchPlayer(state, playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
+  return { state: finish(next, pending), log: skipLog(state, playerId, "RS-582", MEE_MEGALO_EFFECT_ID) };
+};
 
 // ---------------------------------------------------------------------------
 // DSL grant_keyword からの起点

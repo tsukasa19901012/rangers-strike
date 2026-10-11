@@ -149,7 +149,7 @@ import {
   tryStartBattleEntryRushDiscard,
 } from "../rules/legend3/restrictions";
 import { applyGodomSenshoDiscardPay } from "../rules/godomRushPay";
-import { openTakeTheBlowChoice, resolveTakeTheBlow, skipTakeTheBlow, TAKE_THE_BLOW_EFFECT_ID } from "../rules/legend1/set8NamedEffectsD";
+import { applyMeeMegaloAfterAction, openTakeTheBlowChoice, resolveTakeTheBlow, skipTakeTheBlow, TAKE_THE_BLOW_EFFECT_ID } from "../rules/legend1/set8NamedEffectsD";
 import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
 import {
   hasEndPhaseBlockingPending,
@@ -837,6 +837,8 @@ export function applyAction(
   next = releaseCounterLockWhenAttackSettled(next);
   next = trackResolvingOperations(state, next);
   next = settleResolvingOperations(next);
+  // RS-582【メー・メガロ】: 自分が使ったカウンターが捨札になったとき（rules/legend1/set8NamedEffectsD.ts）。
+  if (applyActionDepth === 0 && "playerId" in action && action.playerId) next = applyMeeMegaloAfterAction(state, next, action.type, action.playerId);
   next = continueDeferredAttack(next);
   next = continueDeferredStrike(next);
   // ルール: R-TIME-01 — 先の段階の効果（選択）が解決し終えたら、待たせていた撃破の誘発を段階の順に解決する。
