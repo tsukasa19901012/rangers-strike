@@ -41,6 +41,12 @@ export function resetRushPhaseFlags(player: PlayerState): PlayerState {
 }
 
 export function markRushedThisTurn(player: PlayerState, instanceId: string): PlayerState {
+  // 場を離れて再びラッシュしたカードは別のユニット（そのターンのアタック・ストライクの記録は引き継がない。
+  // XG2-041【真・土煙の舞い】で手札に戻して出し直したユニットは再びアタックできる: atwiki/page-1758 Q1）。
+  if (player.unitActionsThisTurn?.[instanceId]) {
+    const { [instanceId]: _dropped, ...restActions } = player.unitActionsThisTurn;
+    player = { ...player, unitActionsThisTurn: restActions };
+  }
   if (wasRushedThisTurn(player, instanceId)) return player;
   return addTurnRestrictionModifier(
     player,

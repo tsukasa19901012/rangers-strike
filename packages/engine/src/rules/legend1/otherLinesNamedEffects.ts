@@ -20,6 +20,9 @@ import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability
 import { countJointLGrant } from "../jointComboGrants";
 import { battleActBlocked } from "../keywordGapRuntime";
 import { gomaPalaceForcesAttack } from "../juuKunDo";
+import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
+import { recordSUnitRecoveredFromDiscardToHand } from "../turnRecoveryTracking";
+import { startEffectRush } from "../effectRush";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -402,6 +405,89 @@ CHOICE_SKIPPERS[ACCEL_RETURN_EFFECT_ID] = (state, playerId) => {
 };
 
 // ---------------------------------------------------------------------------
+// XG2-041 スーパーシンケンイエロー【真・土煙の舞い】（NC。CN：1）
+// 「このターン、次に自軍Sユニットが撃破されて捨札になったとき、そのカードを手札に戻してもよい。そうしたとき、手札に戻したカードと
+//  同名のカードを自分の手札から1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと。」（atwiki/page-1758）
+// 「次に」— 1回だけ（戻さなかった場合もそこで使い終わる。RS-678 シンケンイエローと同じ。page-1758 カード評価）。
+// 手札に戻したカードは「自軍捨札から手札に加えた」として RS-382【人の命は地球の未来】に数える（page-541 Q1）。
+// 段階 4「撃破されて捨札になったとき」（rules/leaveEffects.ts resolveAfterDiscardDestroyEffects から呼ぶ）。
+
+const SHIN_TSUCHIKEMURI_RULE = "xg2041_shin_tsuchikemuri";
+export const SHIN_TSUCHIKEMURI_EFFECT_ID = "xg2041_shin_tsuchikemuri";
+export const SHIN_TSUCHIKEMURI_RUSH_EFFECT_ID = "xg2041_shin_tsuchikemuri_rush";
+
+function applyShinTsuchikemuri(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const next = patchPlayer(state, ctx.playerId, (p) =>
+    addTurnRuleModifier(p, SHIN_TSUCHIKEMURI_RULE, { sourceCardId: "XG2-041", payload: { sourceInstanceId: ctx.triggerSourceInstanceId } }),
+  );
+  return { state: next, detail: SHIN_TSUCHIKEMURI_EFFECT_ID };
+}
+
+export function applyOtherLinesAfterDiscard(
+  state: GameState,
+  ctx: { ownerPlayerId: PlayerId; instanceId: string; cardId: string; phasePlayerId: PlayerId; destroyed?: boolean },
+): GameState {
+  if (ctx.destroyed === false) return state;
+  const owner = state.players[ctx.ownerPlayerId];
+  const isRule = (m: ReturnType<typeof getPlayerModifiers>[number]) =>
+    m.kind === "rule" && m.ruleId === SHIN_TSUCHIKEMURI_RULE && m.scope === "turn";
+  if (!getPlayerModifiers(owner).some(isRule)) return state;
+  if (!owner.discard.some((c) => c.instanceId === ctx.instanceId)) return state;
+  const def = getDefinition(state.definitions, ctx.cardId);
+  if (def?.type !== "unit" || def.size !== "S") return state;
+  const consumed = patchPlayer(state, ctx.ownerPlayerId, (p) => ({
+    ...p,
+    modifiers: getPlayerModifiers(p).filter((m) => !isRule(m)),
+  }));
+  return openOrQueue(consumed, {
+    playerId: ctx.ownerPlayerId,
+    phasePlayerId: ctx.phasePlayerId,
+    sourceCardId: "XG2-041",
+    effectId: SHIN_TSUCHIKEMURI_EFFECT_ID,
+    kind: "select_unit",
+    validInstanceIds: [ctx.instanceId],
+    selectedInstanceIds: [],
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+CHOICE_RESOLVERS[SHIN_TSUCHIKEMURI_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const card = state.players[playerId].discard.find((c) => c.instanceId === instanceId);
+  const cleared = close(state, pending);
+  const log = logFor(state, playerId, "XG2-041", `${SHIN_TSUCHIKEMURI_EFFECT_ID}:${card ? cardName(state.definitions, card.cardId) : instanceId}`);
+  if (!card) return { state: proceed(cleared, pending), log };
+  let next = patchPlayer(cleared, playerId, (p) => ({
+    ...p,
+    discard: p.discard.filter((c) => c.instanceId !== instanceId),
+    hand: [...p.hand, { instanceId: card.instanceId, cardId: card.cardId }],
+  }));
+  next = recordSUnitRecoveredFromDiscardToHand(next, playerId, card.cardId);
+  // 「そうしたとき、同名のカードを手札から1枚選び、ラッシュエリアに出してもよい（必要パワーと追加条件は満たす）」。
+  const name = cardName(state.definitions, card.cardId);
+  const candidates = next.players[playerId].hand
+    .filter((c) => cardName(next.definitions, c.cardId) === name)
+    .map((c) => c.instanceId);
+  const rushed = startEffectRush(next, {
+    playerId,
+    phasePlayerId: pending.phasePlayerId,
+    effectId: SHIN_TSUCHIKEMURI_RUSH_EFFECT_ID,
+    sourceCardId: "XG2-041",
+    fromZone: "hand",
+    candidates,
+    maxCount: 1,
+    requireConditions: true,
+    alwaysAsk: true,
+  });
+  return { state: proceed(rushed, pending), log };
+};
+CHOICE_SKIPPERS[SHIN_TSUCHIKEMURI_EFFECT_ID] = (state, playerId) => {
+  const pending = state.pendingEffectChoice!;
+  return { state: proceed(close(state, pending), pending), log: skipLog(state, playerId, "XG2-041", pending.effectId) };
+};
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword からの起点
 
 export const OTHER_LINES_KEYWORD_PREFIX = "other::";
@@ -413,6 +499,7 @@ const OTHER_LINES_KEYWORDS: Record<string, (state: GameState, ctx: GrantKeywordC
   "XP-026::accel_granzer": (state) => ({ state, detail: ACCEL_GRANZER_EFFECT_ID }),
   // ※（自分がターンを終えるとき）は rules/turnEndingEffects.ts から openOtherLinesTurnEndEntry で扱う。
   "XP-026::accel_return": (state) => ({ state, detail: ACCEL_RETURN_EFFECT_ID }),
+  "XG2-041::shin_tsuchikemuri": applyShinTsuchikemuri,
   "XG1-034::filthy_air": (state) => ({ state, detail: "xg1034_filthy_air" }),
 };
 
