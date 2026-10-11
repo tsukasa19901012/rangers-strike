@@ -87,8 +87,7 @@ describe("RS-627 メガシップ", () => {
     expect(canStartRush(s, "player1", "RS-627:m")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-627 追加条件の変更（捨札にウイングSが5枚以上→コマンド2つホールド）が未実装
-  it.fails("RS-627: ※ 自軍捨札にウイングを持つSユニットが5枚以上あれば、追加で自軍コマンドを2つホールドしてラッシュできる（Sユニットは捨札にしない）（出典: atwiki/page-1462 ※・コメント「コマンドを２枚ホールドすることでのみラッシュが可能」）", () => {
+  it("RS-627: ※ 自軍捨札にウイングを持つSユニットが5枚以上あれば、追加で自軍コマンドを2つホールドしてラッシュできる（Sユニットは捨札にしない）（出典: atwiki/page-1462 ※・コメント「コマンドを２枚ホールドすることでのみラッシュが可能」）", () => {
     const s = st({
       phase: "rush",
       player1: {
@@ -108,8 +107,7 @@ describe("RS-627 メガシップ", () => {
     expect(t.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(3);
   });
 
-  // 既知の不具合: CARD-RS-627 追加条件の変更が未実装
-  it.fails("RS-627: ※ 変更後はSユニットがいなくても、リリース状態のコマンド3つ（カテゴリ1＋追加2）でラッシュできる（出典: atwiki/page-1462 ※「次のように変更される⇒追加で自軍コマンドを2つホールドする」）", () => {
+  it("RS-627: ※ 変更後はSユニットがいなくても、リリース状態のコマンド3つ（カテゴリ1＋追加2）でラッシュできる（出典: atwiki/page-1462 ※「次のように変更される⇒追加で自軍コマンドを2つホールドする」）", () => {
     const s = st({
       phase: "rush",
       player1: { hand: [inst("RS-627", "m")], discard: WINGS.map((w, i) => inst(w, `d${i}`)), command: releasedCat("ET", 3), power: powerCards(4), deck: deckCards(3) },
@@ -161,8 +159,7 @@ describe("RS-627 メガシップ", () => {
     expect(choiceIds(s)).toContain("SPEC-E2000:high");
   });
 
-  // 既知の不具合: CARD-RS-627 【シールドシステム】がメガシップのラッシュエリア在籍時しか働かない（バトルエリアにいると無効）
-  it.fails("RS-627: 【シールドシステム】メガシップがバトルエリアにあっても働く（出典: atwiki/page-1462「これが自軍エリアにある間」）", () => {
+  it("RS-627: 【シールドシステム】メガシップがバトルエリアにあっても働く（出典: atwiki/page-1462「これが自軍エリアにある間」）", () => {
     const s = hoveringAgainst({ battle: [inst("RS-627", "m")], rush: [inst("SPEC-E1000", "low"), inst("SPEC-E2000", "high")] });
     expect(choiceIds(s)).toEqual(["SPEC-E2000:high"]);
   });
@@ -217,16 +214,14 @@ describe("RS-628 メガピンク", () => {
     return pick(t, "TST-OP:h0");
   };
 
-  // 既知の不具合: CARD-RS-628 【メガキャプチャー】が未実装（opponent_must パターンの本文に一致する処理がなく何もしない）
-  it.fails("RS-628: 【メガキャプチャー】NC（1番目）— このターン次に自軍コマンドゾーンにカードが置かれたとき、相手が自分のコマンドを1つ選び手札に戻す（出典: atwiki/page-1432）", () => {
+  it("RS-628: 【メガキャプチャー】NC（1番目）— このターン次に自軍コマンドゾーンにカードが置かれたとき、相手が自分のコマンドを1つ選び手札に戻す（出典: atwiki/page-1432）", () => {
     const s = capture(1);
     expect(zoneOf(s, "player1", "TST-OP:h0")).toBe("command");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toEqual(["TST-OP:e1", "TST-OP:e2"]);
   });
 
-  // 既知の不具合: CARD-RS-628 【メガキャプチャー】が未実装（opponent_must パターンの本文に一致する処理がなく何もしない）
-  it.fails("RS-628: 【メガキャプチャー】強制 — 相手は戻さないことを選べず、選んだコマンドが相手の手札に戻る（出典: atwiki/page-1432「相手は自分自身のコマンドを1つ選び手札に戻す」）", () => {
+  it("RS-628: 【メガキャプチャー】強制 — 相手は戻さないことを選べず、選んだコマンドが相手の手札に戻る（出典: atwiki/page-1432「相手は自分自身のコマンドを1つ選び手札に戻す」）", () => {
     let s = capture(1);
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(canSkip(s)).toBe(false);
@@ -396,8 +391,7 @@ describe("RS-631 メガブラック", () => {
       ["RS-631:k"],
     );
 
-  // 既知の不具合: CARD-RS-631 【サテライトサーチ】で山札の上のカードを選んでも山札に残り、コマンドゾーンに置かれない（scry_self_deck_top の「見て残す」処理になっている）
-  it.fails("RS-631: 【サテライトサーチ】NC（4番目）・コマンド3つ — 山札の上の1枚を自軍コマンドゾーンにホールド状態で置ける（出典: atwiki/page-1431）", () => {
+  it("RS-631: 【サテライトサーチ】NC（4番目）・コマンド3つ — 山札の上の1枚を自軍コマンドゾーンにホールド状態で置ける（出典: atwiki/page-1431）", () => {
     let s = board(3);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-631");
     expect(canSkip(s)).toBe(true);

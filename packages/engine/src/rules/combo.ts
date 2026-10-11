@@ -605,8 +605,9 @@ export function canStrikeUnit(
       return false;
     }
     if (
+      // 「※ホールド状態のコマンドがあるとき」— 自軍・敵軍を問わない（RS-636〜RS-638。atwiki/page-1488・page-1463 カード評価）。
       cardHasGrantKeyword(instance.cardId, "no_strike_with_held_command") &&
-      countHeldCommands(state.players[playerId]) > 0
+      (countHeldCommands(state.players[playerId]) > 0 || countHeldCommands(state.players[opponent(playerId)]) > 0)
     ) {
       return false;
     }

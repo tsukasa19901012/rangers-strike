@@ -27,11 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_pinkuwotsusyunitowo1bi_geki_ha_shitemoyoi",
+          "keyword": "set9b::RS-635::neji_destroy",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {
