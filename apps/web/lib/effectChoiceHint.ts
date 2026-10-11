@@ -310,6 +310,27 @@ export function reorderOptionLabel(state: GameState, value: string): string {
   return value;
 }
 
+/**
+ * 確認（kind "confirm"）の選択肢の表示名。発動元（効果 id・発動元のユニット）は「効果を使う」、場のカードはカード名。
+ * RS-528【バイオ粒子反応アリ！】の相手の選択（engine rules/legend1/set8NamedEffectsA.ts）は「撃破する／1点ダメージを受ける」。
+ */
+export function confirmOptionLabel(
+  state: GameState,
+  pending: NonNullable<GameState["pendingEffectChoice"]>,
+  value: string,
+): string {
+  if (pending.effectId === "reorder_enemy_battle") return reorderOptionLabel(state, value);
+  if (value === pending.effectId || value === pending.sourceInstanceId) return "効果を使う";
+  if (value === "rs528_take_damage") return "1点ダメージを受ける";
+  for (const pid of ["player1", "player2"] as const) {
+    const card = [...state.players[pid].battle, ...state.players[pid].rush].find((c) => c.instanceId === value);
+    if (!card) continue;
+    const name = state.definitions[card.cardId]?.name ?? card.cardId;
+    return pending.effectId === "rs528_bio_particle_answer" ? `「${name}」を撃破する` : name;
+  }
+  return value;
+}
+
 export function attackHoldOptionLabel(
   state: GameState,
   pending: NonNullable<GameState["pendingEffectChoice"]>,

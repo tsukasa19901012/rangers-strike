@@ -62,6 +62,8 @@ export function unitFeatures(
   // 「※このユニットは、自軍ラッシュフェイズ中、特徴に「レッド」「ブルー」「イエロー」を追加される。」（RS-499 ゲキバイオレット。
   // atwiki/page-775）— 文言から読む。
   extra.push(...phaseAddedFeatures(state, _ownerId, instance));
+  // 「※これは自軍バトルエリアにある間、特徴「ドラゴン」が追加される。」（RS-535 チェンジドラゴン。atwiki/page-1222）— 文言から読む。
+  extra.push(...battleAreaAddedFeatures(state, _ownerId, instance));
   if (extra.length === 0) return base;
   return [...new Set([...base, ...extra])];
 }
@@ -87,3 +89,24 @@ export function phaseAddedFeatures(
 }
 
 const phaseFeatureCache = new Map<string, string[]>();
+
+const OWN_BATTLE_AREA_FEATURES_RE = /これは自軍バトルエリアにある間、?特徴((?:[「｢][^」｣]+[」｣])+)が追加される/;
+const battleFeatureCache = new Map<string, string[]>();
+
+/** 自軍バトルエリアにある間だけ追加される特徴（カードの文言による）。 */
+export function battleAreaAddedFeatures(
+  state: Pick<GameState, "players" | "definitions">,
+  ownerId: PlayerId,
+  instance: Pick<CardInstance, "cardId" | "instanceId">,
+): string[] {
+  const text = state.definitions[instance.cardId]?.text;
+  if (!text) return [];
+  let parsed = battleFeatureCache.get(text);
+  if (parsed === undefined) {
+    const m = text.match(OWN_BATTLE_AREA_FEATURES_RE);
+    parsed = m ? [...m[1]!.matchAll(/[「｢]([^」｣]+)[」｣]/g)].map((x) => x[1]!) : [];
+    battleFeatureCache.set(text, parsed);
+  }
+  if (parsed.length === 0) return [];
+  return state.players[ownerId].battle.some((c) => c.instanceId === instance.instanceId) ? parsed : [];
+}

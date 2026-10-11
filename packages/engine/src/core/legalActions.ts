@@ -119,6 +119,7 @@ import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/s
 import { giantBombCounterIds, isSet5AConfirmableChoice, operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
 import { isSet6AuditConfirmableChoice } from "../rules/legend1/set6AuditFixes";
 import { isSet7AChoiceEffect, isSet7AConfirmableChoice, set7AStrikeCounterIds } from "../rules/legend1/set7NamedEffectsA";
+import { isSet8AChoiceEffect, isSet8AConfirmableChoice, isSet8AResident } from "../rules/legend1/set8NamedEffectsA";
 import { canConfirmSet8CChoice, isSet8CChoiceEffect } from "../rules/legend1/set8NamedEffectsC";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { isSet7BConfirmableChoice } from "../rules/legend1/set7NamedEffectsB";
@@ -648,9 +649,16 @@ function appendActivateResidentOperationActions(
   playerId: PlayerId,
   actions: GameAction[],
 ): void {
-  if (state.phase !== "rush") return;
   const player = state.players[playerId];
   for (const card of player.operation) {
+    // 第8弾 RS-519・RS-522・RS-524・RS-525（RS-524 は自軍バトルフェイズ。rules/legend1/set8NamedEffectsA.ts）。
+    if (isSet8AResident(card.cardId)) {
+      if (canActivateResidentOperation(state, playerId, card.instanceId)) {
+        actions.push({ type: "activate_resident_operation", playerId, operationInstanceId: card.instanceId });
+      }
+      continue;
+    }
+    if (state.phase !== "rush") continue;
     const wired = getCardEffect(card.cardId);
     if (wired?.effectId === "shiron_light" || wired?.effectId === "hidora_egg") {
       continue;
@@ -1175,6 +1183,17 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isSet8AChoiceEffect(pending.effectId)) {
+    // 第8弾 RS-516〜RS-537 の選択（rules/legend1/set8NamedEffectsA.ts）。候補はモジュール側で絞り込み済み。
+    const selected = pending.selectedInstanceIds ?? [];
+    for (const instanceId of pending.validInstanceIds) {
+      if (selected.includes(instanceId)) continue;
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (isSet8AConfirmableChoice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 
@@ -1854,6 +1873,8 @@ function getLegalActionsCore(state: GameState): GameAction[] {
         break;
       }
       const enemy = state.players[opponent(playerId)];
+      // RS-524 呉越同舟（自軍バトルフェイズ中に1度だけ。rules/legend1/set8NamedEffectsA.ts）。
+      appendActivateResidentOperationActions(state, playerId, actions);
 
       for (const card of player.rush) {
         if (!canMoveUnitToBattle(state, playerId, card, "rush")) continue;

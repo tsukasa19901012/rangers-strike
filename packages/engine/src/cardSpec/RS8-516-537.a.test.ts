@@ -111,8 +111,7 @@ describe("RS-516 アースフォース", () => {
     expect(canStartRush(rushState(MERMAID, {}), "player1", "SPEC-ET-S:e")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-516 常駐効果（MA・SP 空欄の S ユニットへのコールET付与）が未実装
-  it.fails("RS-516: MA を持つ SP 空欄の S ユニット（チェンジマーメイド）がコールET を得て、それをホールドして ET の S ユニットをラッシュできる（出典: atwiki/page-1149「MAを持つSPが空欄のSユニットは、次の能力を得る⇒コールET」・R-KW-CALL-01）", () => {
+  it("RS-516: MA を持つ SP 空欄の S ユニット（チェンジマーメイド）がコールET を得て、それをホールドして ET の S ユニットをラッシュできる（出典: atwiki/page-1149「MAを持つSPが空欄のSユニットは、次の能力を得る⇒コールET」・R-KW-CALL-01）", () => {
     const s = rushState(MERMAID);
     expect(canStartRush(s, "player1", "SPEC-ET-S:e")).toBe(true);
     const r = rushFromHand(s, "player1", "SPEC-ET-S:e");
@@ -133,8 +132,7 @@ describe("RS-516 アースフォース", () => {
     expect(canStartRush(rushState("SPEC-WB-BLANK"), "player1", "SPEC-ET-S:e")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-516 常駐効果が未実装（敵軍の常駐でも自軍ユニットがコールET を得る）
-  it.fails("RS-516: 「自軍」の指定がない — 敵軍のアースフォースでも自軍のチェンジマーメイドはコールET を得る（出典: atwiki/page-1149 本文・コメント「敵軍にも適用されます」）", () => {
+  it("RS-516: 「自軍」の指定がない — 敵軍のアースフォースでも自軍のチェンジマーメイドはコールET を得る（出典: atwiki/page-1149 本文・コメント「敵軍にも適用されます」）", () => {
     expect(canStartRush(rushState(MERMAID, { p2: true }), "player1", "SPEC-ET-S:e")).toBe(true);
   });
 
@@ -181,8 +179,7 @@ describe("RS-517 バードニック反応炉", () => {
     expect(targetable(s, "SPEC-CN1-2000:t")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-517 常駐効果（スクラムのユニットカードと同じ CN の BP2000 以下の S ユニットはアタックされない）が未実装
-  it.fails("RS-517: 自軍コマンドゾーンにスクラムを持つチェンジフェニックス（CN1）があれば、CN1・BP2000 の自軍 S ユニットはアタックされない（BP2000 ちょうども対象）（出典: atwiki/page-1234「そのカードと同じＣＮを持つBP2000以下の自軍Sユニットは…これはアタックされない」）", () => {
+  it("RS-517: 自軍コマンドゾーンにスクラムを持つチェンジフェニックス（CN1）があれば、CN1・BP2000 の自軍 S ユニットはアタックされない（BP2000 ちょうども対象）（出典: atwiki/page-1234「そのカードと同じＣＮを持つBP2000以下の自軍Sユニットは…これはアタックされない」）", () => {
     expect(targetable(enemyTurn("SPEC-CN1-2000"), "SPEC-CN1-2000:t")).toBe(false);
   });
 
@@ -232,29 +229,25 @@ describe("RS-518 獣撃棒", () => {
     expectOpStats("RS-518", { name: "獣撃棒", category: "WB", powerCost: 3 });
   });
 
-  // 既知の不具合: CARD-RS-518 選ぶ対象が「敵軍コマンドゾーンの S ユニットカード」で、選ぶのも相手になっている
-  it.fails("RS-518: 使用者が敵軍 S ユニット（ラッシュエリア・バトルエリア、ホールド／リリース問わず）から1体選ぶ。M ユニット・コマンドゾーンのカード・自軍ユニットは選べない（出典: atwiki/page-1147「敵軍Sユニットを1体選ぶ」）", () => {
+  it("RS-518: 使用者が敵軍 S ユニット（ラッシュエリア・バトルエリア、ホールド／リリース問わず）から1体選ぶ。M ユニット・コマンドゾーンのカード・自軍ユニットは選べない（出典: atwiki/page-1147「敵軍Sユニットを1体選ぶ」）", () => {
     const r = use();
     expect(r.ok).toBe(true);
     expect(r.state.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(r.state)).toEqual(["TST-UNIT-0:eb", "TST-UNIT-0:eh", "TST-UNIT-0:er"]);
   });
 
-  // 既知の不具合: CARD-RS-518 敵軍のリリース状態の S ユニットを選べない（コマンドゾーンのカードが対象）
-  it.fails("RS-518: 選んだユニットがリリース状態ならホールドする（その場に留まる）（出典: atwiki/page-1147「リリース状態ならホールドする」）", () => {
+  it("RS-518: 選んだユニットがリリース状態ならホールドする（その場に留まる）（出典: atwiki/page-1147「リリース状態ならホールドする」）", () => {
     const s = resolveAll(pick(use().state, "TST-UNIT-0:er"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:er")).toBe("rush");
     expect(cardIn(s, "player2", "TST-UNIT-0:er")?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-518 敵軍のホールド状態の S ユニットを選べない（コマンドゾーンのカードが対象）
-  it.fails("RS-518: 選んだユニットがホールド状態なら撃破する（捨札になる）（出典: atwiki/page-1147「ホールド状態なら撃破し」）", () => {
+  it("RS-518: 選んだユニットがホールド状態なら撃破する（捨札になる）（出典: atwiki/page-1147「ホールド状態なら撃破し」）", () => {
     const s = resolveAll(pick(use().state, "TST-UNIT-0:eh"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:eh")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-518 敵軍コマンドゾーンの S ユニットカードを（相手に選ばせて）ホールド／撃破してしまう
-  it.fails("RS-518: 敵軍コマンドゾーンの S ユニットカードは「ユニット」ではないのでホールド・撃破されない（出典: atwiki/page-1147「敵軍Sユニット」・R-ADD-03）", () => {
+  it("RS-518: 敵軍コマンドゾーンの S ユニットカードは「ユニット」ではないのでホールド・撃破されない（出典: atwiki/page-1147「敵軍Sユニット」・R-ADD-03）", () => {
     let s = use().state;
     if (s.pendingEffectChoice?.validInstanceIds.includes("TST-UNIT-0:ec")) s = pick(s, "TST-UNIT-0:ec");
     s = resolveAll(s, ["TST-UNIT-0:eb"]);
@@ -302,8 +295,7 @@ describe("RS-519 インフェルシアの花嫁", () => {
     expect(zoneOf(r.state, "player1", "RS-179:curry")).toBe("operation");
   });
 
-  // 既知の不具合: CARD-RS-519 太字部分の起動（男女の S ユニットを捨札にして戦闘員を山札から出す）が未実装
-  it.fails("RS-519: 自軍ラッシュフェイズに『男・女の自軍 S ユニットを1体ずつ捨札』を実行すると、山札の「戦闘員」のユニットカードを3枚まで自軍ラッシュエリアに出す（出典: atwiki/page-1155）", () => {
+  it("RS-519: 自軍ラッシュフェイズに『男・女の自軍 S ユニットを1体ずつ捨札』を実行すると、山札の「戦闘員」のユニットカードを3枚まで自軍ラッシュエリアに出す（出典: atwiki/page-1155）", () => {
     let s = rushPhase();
     expect(canActivateResident(s, "player1", "RS-519:hb")).toBe(true);
     s = resolveAll(activateResident(s, "player1", "RS-519:hb"), ["SPEC-MALE:m", "SPEC-FEMALE:f", "SPEC-GRUNT:g0", "SPEC-GRUNT:g1", "SPEC-GRUNT:g2"]);
@@ -314,8 +306,7 @@ describe("RS-519 インフェルシアの花嫁", () => {
     expect(zoneOf(s, "player1", "TST-OP:x0")).toBe("deck");
   });
 
-  // 既知の不具合: CARD-RS-519 太字部分の起動が未実装（1度だけの制限を確認できない）
-  it.fails("RS-519: 「1度だけ」— 同じラッシュフェイズ中に2度目は実行できない（出典: atwiki/page-1155「自軍ラッシュフェイズ中に1度だけ」・R-KW-TAG-01）", () => {
+  it("RS-519: 「1度だけ」— 同じラッシュフェイズ中に2度目は実行できない（出典: atwiki/page-1155「自軍ラッシュフェイズ中に1度だけ」・R-KW-TAG-01）", () => {
     let s = rushPhase([inst("SPEC-MALE", "m"), inst("SPEC-FEMALE", "f"), inst("SPEC-MALE", "m2"), inst("SPEC-FEMALE", "f2")]);
     s = resolveAll(activateResident(s, "player1", "RS-519:hb"), ["SPEC-MALE:m", "SPEC-FEMALE:f"]);
     expect(canActivateResident(s, "player1", "RS-519:hb")).toBe(false);
@@ -349,8 +340,7 @@ describe("RS-520 スコープショット", () => {
     expectOpStats("RS-520", { name: "スコープショット", category: "ET", powerCost: 0 });
   });
 
-  // 既知の不具合: CARD-RS-520 効果が何も起きない（draw_deck_to_command_or_hand が no-op）
-  it.fails("RS-520: 山札の上のカードを自軍コマンドゾーンにリリース状態で置く（手札には加えない）（出典: atwiki/page-1148「自軍山札から1枚ひいて、そのカードを自軍コマンドゾーンに置く」・R-ADD-04 と同じくリリース状態）", () => {
+  it("RS-520: 山札の上のカードを自軍コマンドゾーンにリリース状態で置く（手札には加えない）（出典: atwiki/page-1148「自軍山札から1枚ひいて、そのカードを自軍コマンドゾーンに置く」・R-ADD-04 と同じくリリース状態）", () => {
     const r = useOpInRush({ hand: [inst("RS-520", "o")], command: releasedCat("ET", 1), deck: [inst("TST-UNIT-0", "top"), ...deckCards(3)] }, "RS-520:o");
     expect(r.ok).toBe(true);
     const s = resolveAll(r.state);
@@ -360,8 +350,7 @@ describe("RS-520 スコープショット", () => {
     expect(s.players.player1.command).toHaveLength(2);
   });
 
-  // 既知の不具合: CARD-RS-520 効果が何も起きない（ひいたカードが手札にも加わらない）
-  it.fails("RS-520: コマンドゾーンが5枚で置けなければ、ひいたカードを手札に加える（出典: atwiki/page-1148「置けなければ手札に加える」・02-zones-cards「置けるのは5枚まで」）", () => {
+  it("RS-520: コマンドゾーンが5枚で置けなければ、ひいたカードを手札に加える（出典: atwiki/page-1148「置けなければ手札に加える」・02-zones-cards「置けるのは5枚まで」）", () => {
     const r = useOpInRush({ hand: [inst("RS-520", "o")], command: releasedCat("ET", 5), deck: [inst("TST-UNIT-0", "top"), ...deckCards(3)] }, "RS-520:o");
     expect(r.ok).toBe(true);
     const s = resolveAll(r.state);
@@ -408,8 +397,7 @@ describe("RS-521 スーパー戦隊魂", () => {
     expect(zoneOf(r.state, "player1", "RS-521:tm")).toBe("operation");
   });
 
-  // 既知の不具合: CARD-RS-521 常駐効果（レッドがバトルエリアに出たときの太字部分→手札から S ユニットを出す）が未実装
-  it.fails("RS-521: 自軍バトルフェイズにレッド（CN3）が出たとき、レッドを1体ホールドすれば、手札の CN3 以下の S ユニットを自軍ラッシュエリアに出せる（出典: atwiki/page-1154）", () => {
+  it("RS-521: 自軍バトルフェイズにレッド（CN3）が出たとき、レッドを1体ホールドすれば、手札の CN3 以下の S ユニットを自軍ラッシュエリアに出せる（出典: atwiki/page-1154）", () => {
     let s = enter(battle(), `${RED3}:r0`);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-521");
     expect(choiceIds(s)).toEqual([`${RED3}:r0`]);
@@ -422,8 +410,7 @@ describe("RS-521 スーパー戦隊魂", () => {
     expect(zoneOf(s, "player1", "SPEC-CN4:h4")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RS-521 常駐効果が未実装（任意の確認ができない）
-  it.fails("RS-521: 「実行してもよい」— 太字部分は見送れる（出典: atwiki/page-1154「実行してもよい」）", () => {
+  it("RS-521: 「実行してもよい」— 太字部分は見送れる（出典: atwiki/page-1154「実行してもよい」）", () => {
     const s = enter(battle(), `${RED3}:r0`);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-521");
     expect(canSkip(s)).toBe(true);
@@ -478,8 +465,7 @@ describe("RS-522 ボウケンスピリッツ", () => {
     expect(canUseCard(s, "player1", "RS-522:bs")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-522 太字部分の起動（コマンドを山札の上に戻してナンバー+1）が未実装
-  it.fails("RS-522: 自軍コマンドを1つ山札の上に戻すと、選んだ自軍 S ユニット（ガオブラック CN4）のナンバーがこのターン5になり、5番目で NC が成立する（出典: atwiki/page-1152「このターン、選んだユニットのナンバーの数字は1増える」）", () => {
+  it("RS-522: 自軍コマンドを1つ山札の上に戻すと、選んだ自軍 S ユニット（ガオブラック CN4）のナンバーがこのターン5になり、5番目で NC が成立する（出典: atwiki/page-1152「このターン、選んだユニットのナンバーの数字は1増える」）", () => {
     let s = rushPhase();
     expect(canActivateResident(s, "player1", "RS-522:bs")).toBe(true);
     s = resolveAll(activateResident(s, "player1", "RS-522:bs"), ["TST-OP-ET:cmd", `${GAO}:g`]);
@@ -531,23 +517,20 @@ describe("RS-523 臨気", () => {
     expectOpStats("RS-523", { name: "臨気", category: "DA", powerCost: 4 });
   });
 
-  // 既知の不具合: CARD-RS-523 使った時点で相手に1点ダメージを与えてしまう（「バトルエリアに出たとき」の付与になっていない）
-  it.fails("RS-523: 使っただけでは相手にダメージを与えない（ダメージはバトルエリアに出たとき）（出典: atwiki/page-1150「このターンのバトルフェイズ中、選んだユニットは次の能力を得る⇒バトルエリアに出たとき」）", () => {
+  it("RS-523: 使っただけでは相手にダメージを与えない（ダメージはバトルエリアに出たとき）（出典: atwiki/page-1150「このターンのバトルフェイズ中、選んだユニットは次の能力を得る⇒バトルエリアに出たとき」）", () => {
     const r = use();
     expect(r.ok).toBe(true);
     const s = resolveAll(r.state, ["SPEC-DA-SP1:u"]);
     expect(s.players.player2.damage).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-523 対象の選択がない
-  it.fails("RS-523: 選べるのは本来の SP が1以上の DA の自軍ユニット（サイズ不問）。SP 空欄の DA・SP1 の WB は選べない（出典: atwiki/page-1150「本来のSPが1以上のDAを持つ自軍ユニット」）", () => {
+  it("RS-523: 選べるのは本来の SP が1以上の DA の自軍ユニット（サイズ不問）。SP 空欄の DA・SP1 の WB は選べない（出典: atwiki/page-1150「本来のSPが1以上のDAを持つ自軍ユニット」）", () => {
     const r = use(null);
     expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-523");
     expect(choiceIds(r.state)).toEqual(["SPEC-DA-M2:m", "SPEC-DA-SP1:u"]);
   });
 
-  // 既知の不具合: CARD-RS-523 「バトルエリアに出たとき、相手に1点ダメージ」の付与が未実装
-  it.fails("RS-523: このターンのバトルフェイズに選んだユニットがバトルエリアに出たとき、相手に1点ダメージを与える（出典: atwiki/page-1150）", () => {
+  it("RS-523: このターンのバトルフェイズに選んだユニットがバトルエリアに出たとき、相手に1点ダメージを与える（出典: atwiki/page-1150）", () => {
     let s = resolveAll(use().state, ["SPEC-DA-SP1:u"]);
     const before = s.players.player2.damage;
     s = nextPhase(s);
@@ -556,8 +539,7 @@ describe("RS-523 臨気", () => {
     expect(s.players.player2.damage).toBe(before + 1);
   });
 
-  // 既知の不具合: CARD-RS-523 「ストライクすることはできない」の付与が未実装
-  it.fails("RS-523: 選んだユニットはこのターンのバトルフェイズ中ストライクできない（出典: atwiki/page-1150「ただし、ストライクすることはできない」）", () => {
+  it("RS-523: 選んだユニットはこのターンのバトルフェイズ中ストライクできない（出典: atwiki/page-1150「ただし、ストライクすることはできない」）", () => {
     let s = resolveAll(use().state, ["SPEC-DA-SP1:u"]);
     s = resolveAll(enter(nextPhase(s), "SPEC-DA-SP1:u"));
     expect(zoneOf(s, "player1", "SPEC-DA-SP1:u")).toBe("battle");
@@ -596,8 +578,7 @@ describe("RS-524 呉越同舟", () => {
     expect(zoneOf(r.state, "player1", "RS-524:gd")).toBe("operation");
   });
 
-  // 既知の不具合: CARD-RS-524 太字部分（手札を見せてカテゴリを追加）の起動が未実装（バトルフェイズに起動の合法手がない）
-  it.fails("RS-524: 自軍バトルフェイズ中、手札が1枚以上あれば太字部分を実行できる（出典: atwiki/page-1151「自軍バトルフェイズ中に1度だけ…実行してもよい」）", () => {
+  it("RS-524: 自軍バトルフェイズ中、手札が1枚以上あれば太字部分を実行できる（出典: atwiki/page-1151「自軍バトルフェイズ中に1度だけ…実行してもよい」）", () => {
     expect(anyActivation(field("battle"))).toBe(true);
   });
 
@@ -641,8 +622,7 @@ describe("RS-525 頼もしい相棒", () => {
     expect(zoneOf(r.state, "player1", "RS-525:ta")).toBe("operation");
   });
 
-  // 既知の不具合: CARD-RS-525 太字部分の起動（L ユニットを見せてパワー2枚を捨札→合体に必要な M ユニットを手札へ）が未実装
-  it.fails("RS-525: 手札のチェンジロボを見せてオモテ向きのパワー2枚を捨札にすると、山札から合体に必要な M ユニット（ジェットチェンジャー1）を手札に加えられる（出典: atwiki/page-1153）", () => {
+  it("RS-525: 手札のチェンジロボを見せてオモテ向きのパワー2枚を捨札にすると、山札から合体に必要な M ユニット（ジェットチェンジャー1）を手札に加えられる（出典: atwiki/page-1153）", () => {
     let s = rushPhase();
     expect(canActivateResident(s, "player1", "RS-525:ta")).toBe(true);
     s = resolveAll(activateResident(s, "player1", "RS-525:ta"), ["RS-529:robo", "TST-P:pw0", "TST-P:pw1", "RS-530:jet"]);
@@ -691,15 +671,13 @@ describe("RS-526 スーパーハイウェイバスター", () => {
     expectOpStats("RS-526", { name: "スーパーハイウェイバスター", category: "OT", powerCost: 2 });
   });
 
-  // 既知の不具合: CARD-RS-526 山札から選べるカードが「特徴「炎神」を持つ M ユニット」に限られていない
-  it.fails("RS-526: 山札から選べるのは特徴「炎神」を持つ M ユニットのカードだけ（炎神の S・炎神でない M は不可）（出典: atwiki/page-1142「特徴「炎神」を持つMユニットのカードを1枚選び」）", () => {
+  it("RS-526: 山札から選べるのは特徴「炎神」を持つ M ユニットのカードだけ（炎神の S・炎神でない M は不可）（出典: atwiki/page-1142「特徴「炎神」を持つMユニットのカードを1枚選び」）", () => {
     const r = use();
     expect(r.ok).toBe(true);
     expect(choiceIds(r.state)).toEqual(["SPEC-ENGINE-M:en"]);
   });
 
-  // 既知の不具合: CARD-RS-526 後半（置いたカードの BP 以下の敵軍 S ユニットを持ち主のパワーゾーンに送る）が未実装
-  it.fails("RS-526: 炎神の M ユニットを自軍パワーゾーンに置くと、その BP（3000）以下の敵軍 S ユニット（ラッシュエリアも可）を1体選び持ち主のパワーゾーンに送る（出典: atwiki/page-1142「置いたユニットカードのBP以下の敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る」）", () => {
+  it("RS-526: 炎神の M ユニットを自軍パワーゾーンに置くと、その BP（3000）以下の敵軍 S ユニット（ラッシュエリアも可）を1体選び持ち主のパワーゾーンに送る（出典: atwiki/page-1142「置いたユニットカードのBP以下の敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る」）", () => {
     let s = pick(use().state, "SPEC-ENGINE-M:en");
     expect(zoneOf(s, "player1", "SPEC-ENGINE-M:en")).toBe("power");
     // BP3000 ちょうどの S は可。BP3500 の S・M ユニットは不可。

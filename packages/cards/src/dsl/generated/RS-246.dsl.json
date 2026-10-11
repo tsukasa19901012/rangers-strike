@@ -4,7 +4,7 @@
   "name": "気力",
   "type": "operation",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 2,
   "text": "※常駐（場に配置して、離れるまで効果が有効になる） すべての自軍Sユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP＋1000される。",
