@@ -9,6 +9,7 @@
  * - RS-207 テンマレンジャー【天重星・天馬回転蹴り】（atwiki/page-118、grnrngr/faq-card-4 RS-207 Q1）
  * - RS-208 キリンレンジャー【天時星・時間返し】（atwiki/page-119、grnrngr/faq-card-4 RS-208 Q1/Q5〜Q8）
  */
+import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../types/game";
 import {
   cardCategories,
@@ -47,12 +48,7 @@ export function isRs4NcChoice(pending: PendingEffectChoice | undefined): boolean
 }
 
 function shuffle<T>(cards: T[]): T[] {
-  const copy = [...cards];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
-  }
-  return copy;
+  return shuffleDeckCards(cards);
 }
 
 function fieldUnits(state: GameState, playerId: PlayerId): Array<{ card: CardInstance; zone: "rush" | "battle" }> {

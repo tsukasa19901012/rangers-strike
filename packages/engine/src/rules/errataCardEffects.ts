@@ -4,6 +4,7 @@
  * - `tryErrataCardEffect`: DSL の grant_keyword（`cardId::effectId`）から呼ばれる起点。
  * - `tryResolveErrataChoice`: このモジュールが開いた選択（effectId）の解決。
  */
+import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../dsl/grantKeyword";
 import {
@@ -693,12 +694,7 @@ function resolveCounterStrike(state: GameState, playerId: PlayerId, _instanceId:
 // 山札サーチ共通
 
 export function shuffleCards<T>(cards: T[]): T[] {
-  const copy = [...cards];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
-  }
-  return copy;
+  return shuffleDeckCards(cards);
 }
 
 /** 山札の1枚を手札に加え、山札をシャッフルする。 */

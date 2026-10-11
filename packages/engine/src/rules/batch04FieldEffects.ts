@@ -1,3 +1,4 @@
+import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../types/game";
 import { registerChoiceRefresher } from "./choiceRefreshers";
 import { COMMAND_ZONE_MAX } from "../types/game";
@@ -12,14 +13,7 @@ import {
 } from "./pendingChoices";
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
-  const copy = [...deck];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const tmp = copy[i]!;
-    copy[i] = copy[j]!;
-    copy[j] = tmp;
-  }
-  return copy;
+  return shuffleDeckCards(deck);
 }
 
 function cardHasKeyword(cardId: string, keyword: string): boolean {

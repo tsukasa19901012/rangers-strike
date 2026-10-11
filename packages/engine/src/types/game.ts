@@ -492,6 +492,8 @@ export type Set7AChoiceMeta = {
 export type PendingEffectChoice = {
   /** 第7弾 RS-432〜RS-452 の選択の続き（rules/legend1/set7NamedEffectsA.ts）。 */
   set7aMeta?: Set7AChoiceMeta;
+  /** RS-568 風雷丸【各々方、合体で御座る！】: 相手に見せた手札の L ユニットのカード（rules/legend1/set8NamedEffectsC.ts）。 */
+  set8cRevealedInstanceId?: string;
   playerId: PlayerId;
   effectId: string;
   sourceCardId: string;
@@ -663,6 +665,8 @@ export type PendingEffectChoice = {
     card: CardInstance;
     fromZone: "rush" | "battle";
     pendingLeave: PendingLeave;
+    /** 置き換えの効果を持つ別のカード（RS-567 トライコンドル【消身の術】）。パワーゾーンに送ったら記録する。 */
+    viaCardId?: string;
   };
 };
 
@@ -934,6 +938,8 @@ export type GameState = {
    * 選択待ちで中断したら、解決後にここから再開する（R-END-01）。
    */
   turnEndProgress?: TurnEndProgress;
+  /** 第8弾 RS-560〜RS-581 のカード固有の効果の記録（rules/legend1/set8NamedEffectsC.ts）。 */
+  set8cMeta?: Set8CMeta;
   /** RS-352【ダイデンジンブーメラン】: パワーゾーンを離れたカード（1枚ごとに相手が撃破するユニットを選ぶ）の待ち行列。 */
   boomerangQueue?: Array<{ ownerId: PlayerId; cost: number; cardId: string }>;
   /** RS-363【パンサークロー】: 敵軍コマンドゾーンにホールド状態で置かれたユニットカード（捨札にするかを選ぶ）の待ち行列。 */
@@ -1055,6 +1061,17 @@ export type TurnEndProgress = {
   set7cQueue?: string[];
   /** RS-360【宇宙で一番美しいのは誰？】で、まだ選んで撃破していない回数（未計算なら undefined）。 */
   hedrianLeft?: number;
+  /** 第8弾 RS-567【消身の術】の「相手がそのターンを終えたとき」の選択のうち未処理のもの（rules/legend1/set8NamedEffectsC.ts）。 */
+  set8cQueue?: string[];
+};
+
+/** 第8弾 RS-560〜RS-581 のカード固有の効果が使う記録（rules/legend1/set8NamedEffectsC.ts）。 */
+export type Set8CMeta = {
+  /**
+   * RS-567 トライコンドル【カラクリ忍法・消身の術】で自軍パワーゾーンに送ったユニットカード。
+   * 相手（turnPlayerId）がそのターンを終えたとき、オモテ向きで残っていればラッシュエリアに出せる。
+   */
+  vanishedToPower?: Array<{ ownerId: PlayerId; instanceId: string; turnPlayerId: PlayerId }>;
 };
 
 export const INITIAL_HAND_SIZE = 7;

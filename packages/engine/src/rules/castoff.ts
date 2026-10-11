@@ -1,3 +1,4 @@
+import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { CardDefinition, Category } from "@rangers-strike/cards";
 import {
   canonicalCardName,
@@ -22,12 +23,7 @@ import { openEffectChoice } from "./pendingChoices";
 import { markRushedThisTurn } from "./turnModifiers";
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
-  const copy = [...deck];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
-  }
-  return copy;
+  return shuffleDeckCards(deck);
 }
 
 export function parseCastoffTargetName(text: string): string | null {

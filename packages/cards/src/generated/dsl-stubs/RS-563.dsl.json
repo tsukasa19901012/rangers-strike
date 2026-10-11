@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-563::kigerutsuno",
+          "keyword": "set8c::RS-563::raising_horn",
           "duration": "turn"
         }
       ],

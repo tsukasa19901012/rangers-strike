@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enter_hold_enemy_power_le_opponent_damage",
+          "keyword": "set8c::RS-563::raising_horn",
           "duration": "turn"
         }
       ],

@@ -37,9 +37,26 @@ const SET7D_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rs489_box_dimension_order: { label: "宇宙忍法・箱次元", hint: "先に山札の下に戻すユニットを選んでください（見送ると戻しません）" },
 };
 
+/** 第8弾 RS-560〜RS-581 のカード固有の選択（engine rules/legend1/set8NamedEffectsC.ts）の表示名と案内文。 */
+const SET8C_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rs563_raising_horn: { label: "突き上げる角", hint: "ホールドする敵軍ユニットを1体選んでください（必要パワーの数字が敵軍ダメージ以下。見送ってもよい）" },
+  rs565_rolling_thunder: { label: "ローリングサンダーハリケーン", hint: "敵軍ラッシュエリアの S ユニットをすべて手札に戻しますか？（戻すならこのユニットを選ぶ）" },
+  rs565_rolling_thunder_return: { label: "ローリングサンダーハリケーン", hint: "自分の山札に戻す手札のカードを1枚選んでください" },
+  rs567_vanish_rush: { label: "カラクリ忍法・消身の術", hint: "パワーゾーンのこのユニットカードを自軍ラッシュエリアに出しますか？（出すならカードを選ぶ）" },
+  rs568_fusion_call_reveal: { label: "各々方、合体で御座る！", hint: "相手に見せる特徴「メカ」の L ユニットのカードを手札から選んでください" },
+  rs568_fusion_call_put: { label: "各々方、合体で御座る！", hint: "ラッシュエリアに出す合体ユニットの M ユニットを1枚ずつ選び、組み合わせがそろったら確定してください" },
+  rs569_gatling_punch: { label: "ガトリングパンチ", hint: "捨札にするオモテ向きの自軍パワーを1枚ずつ選び、確定してください（3枚につき SP+1）" },
+  rs572_d_sword_vega: { label: "ディーソードベガ", hint: "撃破する自分のユニットを1体選ぶか、1点ダメージを受けるならデカマスターを選んでください" },
+  rs573_bari_lancer_confirm: { label: "バリランサー", hint: "このユニットをホールドしますか？（ホールドするならこのユニットを選ぶ）" },
+  rs574_saint_horn_finish: { label: "セイントホーンフィニッシュ", hint: "撃破する DA の敵軍ユニットを1体選んでください" },
+  rs576_release_held_s: { label: "マジフェニックス", hint: "ホールド状態の自軍 S ユニットをすべてリリースしますか？（リリースするならこのユニットを選ぶ）" },
+};
+
 export function effectChoiceHint(
   pending: NonNullable<GameState["pendingEffectChoice"]>,
 ): string {
+  const set8c = SET8C_CHOICE_UI[pending.effectId];
+  if (set8c) return set8c.hint;
   const set7d = SET7D_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
@@ -229,6 +246,7 @@ export function effectChoiceTitle(
   pending: NonNullable<GameState["pendingEffectChoice"]>,
 ): string {
   const label =
+    SET8C_CHOICE_UI[pending.effectId]?.label ??
     SET7D_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??

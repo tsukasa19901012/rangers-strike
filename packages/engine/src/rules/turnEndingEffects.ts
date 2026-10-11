@@ -1,7 +1,9 @@
+import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { CardInstance, GameState, PlayerId, TurnEndProgress } from "../types/game";
 import { applySet6TurnEnd } from "./legend1/set6AuditFixes";
 import { collectSet6BTurnEndQueue, openSet6BTurnEndEntry } from "./legend1/set6NamedEffectsB";
 import { collectSet7CTurnEndQueue, openSet7CTurnEndEntry } from "./legend1/set7NamedEffectsC";
+import { collectSet8CTurnEndQueue, openSet8CTurnEndEntry } from "./legend1/set8NamedEffectsC";
 import { applyDarkLawTurnEnd } from "./legend1/set5NamedEffectsA";
 import { applyChangePowerTurnEnd, hedrianBeautyCount, openHedrianBeautyChoice } from "./legend1/set6NamedEffects348";
 import { activeNamedEffect } from "./ncGatedEffects";
@@ -24,12 +26,7 @@ import { applyUnitLeave } from "./pendingChoices";
 import { wingPentactUnitsToDestroy } from "./namedUnitEffects";
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
-  const copy = [...deck];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
-  }
-  return copy;
+  return shuffleDeckCards(deck);
 }
 
 function findUnitInField(
@@ -293,6 +290,14 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.set7cQueue!;
     progress = { ...progress, set7cQueue: rest };
     nextState = openSet7CTurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // RS-567【カラクリ忍法・消身の術】: 相手がそのターンを終えたとき（rules/legend1/set8NamedEffectsC.ts）。
+  if (!progress.set8cQueue) progress = { ...progress, set8cQueue: collectSet8CTurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.set8cQueue ?? []).length > 0) {
+    const [entry, ...rest] = progress.set8cQueue!;
+    progress = { ...progress, set8cQueue: rest };
+    nextState = openSet8CTurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {

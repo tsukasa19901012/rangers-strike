@@ -5,6 +5,7 @@ import { emitUnitLeftZoneAndResolve } from "../events/emitUnitLeftZone";
 import { isDestructionLeave } from "./operationCounters";
 import { buildLogEntry } from "../log/formatLog";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
+import { recordVanishedToPower } from "./legend1/set8NamedEffectsC";
 
 export function shouldOfferToPowerOnDestroy(pending: PendingLeave): boolean {
   if (pending.toZone !== "discard") return false;
@@ -19,6 +20,7 @@ export function startToPowerOnDestroyChoice(
   pending: PendingLeave,
   card: CardInstance,
   fromCards: CardInstance[],
+  via?: { cardId: string; instanceId: string },
 ): GameState {
   const owner = state.players[pending.ownerPlayerId];
   const nextOwner = {
@@ -31,8 +33,8 @@ export function startToPowerOnDestroyChoice(
     pendingEffectChoice: {
       playerId: pending.ownerPlayerId,
       effectId: "to_power_on_destroy",
-      sourceCardId: pending.leavingCardId,
-      sourceInstanceId: pending.instanceId,
+      sourceCardId: via?.cardId ?? pending.leavingCardId,
+      sourceInstanceId: via?.instanceId ?? pending.instanceId,
       kind: "confirm",
       phasePlayerId: pending.phasePlayerId,
       validInstanceIds: ["place_in_power"],
@@ -42,6 +44,7 @@ export function startToPowerOnDestroyChoice(
         card,
         fromZone: pending.fromZone,
         pendingLeave: pending,
+        ...(via ? { viaCardId: via.cardId } : {}),
       },
     },
     activePlayer: pending.ownerPlayerId,
@@ -95,6 +98,10 @@ export function completeToPowerOnDestroyChoice(
   });
 
   let resolvedState = leaveFx.state;
+  // RS-567【消身の術】: 相手がそのターンを終えたとき、オモテ向きで残っていればラッシュエリアに出せる。
+  if (placeInPower && meta.viaCardId === "RS-567") {
+    resolvedState = recordVanishedToPower(resolvedState, leave.ownerPlayerId, leave.instanceId, leave.phasePlayerId);
+  }
   if (
     leave.fusionReturnOnDiscard === "battle" &&
     toZone === "discard" &&

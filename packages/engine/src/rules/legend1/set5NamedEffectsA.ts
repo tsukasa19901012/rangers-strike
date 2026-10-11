@@ -6,6 +6,7 @@
  * - 継続効果・制限の参照関数（BP/SP 補正、バトル進入・アタック・支払いの制限）。
  * 型・構成は rules/legend1/set4NamedEffects.ts と同じ。
  */
+import { shuffleCards as shuffleDeckCards } from "../../core/deckShuffle";
 import type { Category, CardDefinition } from "@rangers-strike/cards";
 import { cardHasCategory } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId, PlayerState } from "../../types/game";
@@ -88,12 +89,7 @@ function fieldUnits(state: GameState, playerId: PlayerId): CardInstance[] {
 }
 
 function shuffled<T>(cards: T[]): T[] {
-  const copy = [...cards];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
-  }
-  return copy;
+  return shuffleDeckCards(cards);
 }
 
 function patchPlayer(state: GameState, playerId: PlayerId, patch: (p: PlayerState) => PlayerState): GameState {

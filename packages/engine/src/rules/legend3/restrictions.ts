@@ -1,5 +1,6 @@
 import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
 import { set7DDefenderBlocksAttack } from "../legend1/set7NamedEffectsD";
+import { set8CAllowsRushAttack, set8CDefenderBlocksAttack } from "../legend1/set8NamedEffectsC";
 import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
 import { set5ADefenderBlocksAttack } from "../legend1/set5NamedEffectsA";
 import { kibaGakureBlocksAttack, magiMergeAllowsRushAttack } from "../legend1/set5NamedEffects";
@@ -438,6 +439,8 @@ export function canAttackDefender(
   if (defenderCard && set6LowDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
   // XG1-096 ビーファイタークワガー ※（NC も RC も発動していない S ユニットにアタックされない。rules/legend1/set7NamedEffectsD.ts）。
   if (defenderCard && set7DDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
+  // RS-578 レジェンドマジグリーンRA【岩の装甲】（rules/legend1/set8NamedEffectsC.ts）。
+  if (defenderCard && set8CDefenderBlocksAttack(state, attackerPlayerId, defenderPlayerId, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;
@@ -469,7 +472,9 @@ export function canAttackDefender(
     if (
       chikaraBatonAllowsAttack(state, attackerPlayerId, attackerInstanceId, defenderInstanceId) ||
       lionBlastAllowsRushAttack(attacker.card) ||
-      magiMergeAllowsRushAttack(state, attackerPlayerId, attackerInstanceId)
+      magiMergeAllowsRushAttack(state, attackerPlayerId, attackerInstanceId) ||
+      // RS-562 ガオソーシャークの※・RS-573【バリランサー】（rules/legend1/set8NamedEffectsC.ts）。
+      set8CAllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, inRush.card)
     ) {
       return true;
     }
