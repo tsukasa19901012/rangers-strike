@@ -23,7 +23,9 @@ export type JointRPartnerSpec =
   | { kind: "l_size_same_category" }
   | { kind: "s_features"; features: string[]; requireAll: boolean }
   | { kind: "named_card"; cardName: string }
-  | { kind: "feature_unit"; features: string[] };
+  | { kind: "feature_unit"; features: string[] }
+  /** 「これがカード名に「X」または「Y」を含むユニットからコンビネーションするとき」（RS-672 ゴローダーGT）。 */
+  | { kind: "name_contains"; names: string[] };
 
 const CATEGORY_TOKEN = /^(DA|WB|ET|OT|MA)$/;
 
@@ -149,6 +151,11 @@ function parseJointRPartnerFromText(text: string): JointRPartnerSpec | null {
     };
   }
 
+  const nameContains = text.match(/これがカード名に((?:「[^」]+」(?:または)?)+)を含むユニットからコンビネーション/);
+  if (nameContains?.[1]) {
+    return { kind: "name_contains", names: [...nameContains[1].matchAll(/「([^」]+)」/g)].map((m) => m[1]!) };
+  }
+
   const featS = text.match(/これが特徴「([^」]+)」を持つ.+ユニットからコンビネーション/);
   if (featS?.[1]) {
     return { kind: "feature_unit", features: [featS[1]] };
@@ -233,6 +240,8 @@ export function matchesJointRPartnerSpec(
       return cardNameMatches(leftPartner, spec.cardName);
     case "feature_unit":
       return cardHasAllFeatures(leftPartner, spec.features);
+    case "name_contains":
+      return leftPartner.type === "unit" && spec.names.some((n) => (leftPartner.name ?? "").includes(n));
     default:
       return false;
   }

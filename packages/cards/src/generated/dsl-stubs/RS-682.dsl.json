@@ -55,11 +55,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-682::naruko",
-          "duration": "permanent"
+          "keyword": "set9d::RS-682::sturdy_shell",
+          "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

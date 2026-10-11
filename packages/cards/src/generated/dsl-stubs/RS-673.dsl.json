@@ -39,11 +39,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-673::honooshinkyasuto",
-          "duration": "permanent"
+          "keyword": "set9d::RS-673::cast_transfer",
+          "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

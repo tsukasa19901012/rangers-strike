@@ -99,29 +99,25 @@ describe("RS-678 シンケンイエロー", () => {
   const suicide = (s: ReturnType<typeof yellowThen>, id: string) =>
     settle(attack(resolveAll(enterKeep(s, [id])), id, "TST-UNIT-7:big"));
 
-  // 既知の不具合: CARD-RS-678 【ランドスライサー】が未実装（NC 後に自軍Sユニットが撃破されて捨札になっても手札に戻す選択が開かない）
-  it.fails("RS-678: 【ランドスライサー】NC（1番目）— このターン次に自軍 S ユニットが撃破されて捨札になったとき、手札に戻すかを選べる（任意）（出典: atwiki/page-1427）", () => {
+  it("RS-678: 【ランドスライサー】NC（1番目）— このターン次に自軍 S ユニットが撃破されて捨札になったとき、手札に戻すかを選べる（任意）（出典: atwiki/page-1427）", () => {
     const s = suicide(yellowThen(), "TST-UNIT-0:a");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-678");
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-678 【ランドスライサー】が未実装（NC 後に自軍Sユニットが撃破されて捨札になっても手札に戻す選択が開かない）
-  it.fails("RS-678: 【ランドスライサー】戻すことを選ぶと、そのカードが手札に戻る（出典: atwiki/page-1427「そのカードを手札に戻してもよい」）", () => {
+  it("RS-678: 【ランドスライサー】戻すことを選ぶと、そのカードが手札に戻る（出典: atwiki/page-1427「そのカードを手札に戻してもよい」）", () => {
     const s = resolveAll(suicide(yellowThen(), "TST-UNIT-0:a"), ["TST-UNIT-0:a"]);
     expect(zoneOf(s, "player1", "TST-UNIT-0:a")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RS-678 【ランドスライサー】が未実装（NC 後に自軍Sユニットが撃破されて捨札になっても手札に戻す選択が開かない）
-  it.fails("RS-678: 【ランドスライサー】戻さないことを選ぶと捨札に残る（出典: atwiki/page-1427「戻してもよい」）", () => {
+  it("RS-678: 【ランドスライサー】戻さないことを選ぶと捨札に残る（出典: atwiki/page-1427「戻してもよい」）", () => {
     let s = suicide(yellowThen(), "TST-UNIT-0:a");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-678");
     s = resolveAll(skip(s));
     expect(zoneOf(s, "player1", "TST-UNIT-0:a")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-678 【ランドスライサー】が未実装（NC 後に自軍Sユニットが撃破されて捨札になっても手札に戻す選択が開かない）
-  it.fails("RS-678: Q1 — 戻せるのは「次に」撃破されて捨札になった1回だけで、2体目は戻せない（出典: atwiki/page-1427 Q&A A1「「このターン、次に自軍Sユニットが撃破されて捨札になったとき」１回だけ」）", () => {
+  it("RS-678: Q1 — 戻せるのは「次に」撃破されて捨札になった1回だけで、2体目は戻せない（出典: atwiki/page-1427 Q&A A1「「このターン、次に自軍Sユニットが撃破されて捨札になったとき」１回だけ」）", () => {
     let s = resolveAll(suicide(yellowThen(), "TST-UNIT-0:a"), ["TST-UNIT-0:a"]);
     expect(zoneOf(s, "player1", "TST-UNIT-0:a")).toBe("hand");
     s = suicide(s, "TST-UNIT-0:b");
@@ -130,8 +126,7 @@ describe("RS-678 シンケンイエロー", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:b")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-678 【ランドスライサー】がシンケンイエロー自身の撃破時の効果として扱われ、NC 不成立でもイエローが撃破されると手札に戻す選択が開く
-  it.fails("RS-678: 【ランドスライサー】NC が成立していなければ、シンケンイエロー自身が撃破されても戻せない（出典: R-CN-02・atwiki/page-1427「【ランドスライサー】」は NC 効果）", () => {
+  it("RS-678: 【ランドスライサー】NC が成立していなければ、シンケンイエロー自身が撃破されても戻せない（出典: R-CN-02・atwiki/page-1427「【ランドスライサー】」は NC 効果）", () => {
     const s = settle(attack(yellowThen(1), "RS-678:y", "TST-UNIT-7:big"));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-678");
     expect(zoneOf(resolveAll(s), "player1", "RS-678:y")).toBe("discard");
@@ -148,8 +143,7 @@ describe("RS-678 シンケンイエロー", () => {
     expect(zoneOf(resolveAll(s), "player1", "TST-UNIT-0:a")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-678 【ランドスライサー】がシンケンイエロー自身の撃破時の効果として扱われ、敵軍ターンにイエローが撃破されても手札に戻す選択が開く
-  it.fails("RS-678: 【ランドスライサー】「このターン」— 次の敵軍ターンに撃破されても戻せない（出典: atwiki/page-1427「このターン、」）", () => {
+  it("RS-678: 【ランドスライサー】「このターン」— 次の敵軍ターンに撃破されても戻せない（出典: atwiki/page-1427「このターン、」）", () => {
     const BIG = sUnit("SPEC-BIG", { bp: 9000 });
     // NC だけ成立させ、自軍ユニットは撃破されないまま敵軍ターンに入る。
     let s = p1Battle({ rush: [inst("RS-678", "y")] }, { rush: [inst("SPEC-BIG", "atk")] }, [BIG]);
@@ -217,16 +211,14 @@ describe("RS-679 シンケンオー", () => {
       { type: "move_to_battle", playerId: "player1", instanceId: "RS-679:o" },
     );
 
-  // 既知の不具合: CARD-RS-679 【ダイシンケン】が未実装（バトルエリアに出ても相手の選択が開かず何も起きない）
-  it.fails("RS-679: 【ダイシンケン】自軍ターン中にバトルエリアに出たとき、相手が自分のバトルエリアのユニットを選ぶ（ラッシュエリアは候補外）（出典: atwiki/page-1485「相手は自分自身のバトルエリアからユニットを1体選び」）", () => {
+  it("RS-679: 【ダイシンケン】自軍ターン中にバトルエリアに出たとき、相手が自分のバトルエリアのユニットを選ぶ（ラッシュエリアは候補外）（出典: atwiki/page-1485「相手は自分自身のバトルエリアからユニットを1体選び」）", () => {
     const s = daishinken([inst("TST-UNIT-0", "e1"), inst("TST-UNIT-2", "e2")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-679");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e1", "TST-UNIT-2:e2"]);
   });
 
-  // 既知の不具合: CARD-RS-679 【ダイシンケン】が未実装（バトルエリアに出ても相手の選択が開かず何も起きない）
-  it.fails("RS-679: 【ダイシンケン】強制 — 相手は選ばないことはできず、選んだユニットは相手のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-1485「自分自身のパワーゾーンにダメージにして置く」）", () => {
+  it("RS-679: 【ダイシンケン】強制 — 相手は選ばないことはできず、選んだユニットは相手のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-1485「自分自身のパワーゾーンにダメージにして置く」）", () => {
     let s = daishinken([inst("TST-UNIT-0", "e1"), inst("TST-UNIT-2", "e2")]);
     expect(canSkip(s)).toBe(false);
     s = resolveAll(pick(s, "TST-UNIT-2:e2"));
@@ -305,8 +297,7 @@ describe("RS-681 龍折神", () => {
     expect(zoneOf(t, "player2", "TST-UNIT-2:h2")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-681 【押し寄せる水流】の対象が誤り（敵軍バトルエリアのホールド状態のユニットを1体だけ選ぶ形になり、ラッシュエリアのユニットは戻らない）
-  it.fails("RS-681: 【押し寄せる水流】敵軍ラッシュエリアのホールド状態のユニットをすべて持ち主の山札に戻す（リリース状態・バトルエリア・自軍のユニットは残る）（出典: atwiki/page-1481）", () => {
+  it("RS-681: 【押し寄せる水流】敵軍ラッシュエリアのホールド状態のユニットをすべて持ち主の山札に戻す（リリース状態・バトルエリア・自軍のユニットは残る）（出典: atwiki/page-1481）", () => {
     const s = resolveAll(board(3), ["TST-UNIT-0:h1", "TST-UNIT-2:h2"]);
     expect(zoneOf(s, "player2", "TST-UNIT-0:h1")).toBe("deck");
     expect(zoneOf(s, "player2", "TST-UNIT-2:h2")).toBe("deck");
@@ -353,8 +344,7 @@ describe("RS-682 亀折神", () => {
       { rush: [heldUnit("RS-680", "elion")] },
     );
 
-  // 既知の不具合: CARD-RS-682 【堅牢なる甲羅】の選択候補が空（レジストを持つ自軍Mユニットを選べず、確認だけで何もリリースしない）
-  it.fails("RS-682: 【堅牢なる甲羅】NC（4番目）— 選べるのはレジストを持つ自軍 M ユニット（ホールド中の獅子折神）で、任意（出典: atwiki/page-1482）", () => {
+  it("RS-682: 【堅牢なる甲羅】NC（4番目）— 選べるのはレジストを持つ自軍 M ユニット（ホールド中の獅子折神）で、任意（出典: atwiki/page-1482）", () => {
     const s = board(3);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-682");
     expect(choiceIds(s)).toContain("RS-680:lion");
@@ -364,8 +354,7 @@ describe("RS-682 亀折神", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-682 【堅牢なる甲羅】の選択候補が空（レジストを持つ自軍Mユニットを選べず、確認だけで何もリリースしない）
-  it.fails("RS-682: 【堅牢なる甲羅】選んだユニットはリリースされる（出典: atwiki/page-1482「リリースしてもよい」）", () => {
+  it("RS-682: 【堅牢なる甲羅】選んだユニットはリリースされる（出典: atwiki/page-1482「リリースしてもよい」）", () => {
     const s = resolveAll(pick(board(3), "RS-680:lion"));
     expect(cardIn(s, "player1", "RS-680:lion")?.commandHeld ?? false).toBe(false);
     expect(cardIn(s, "player1", "RS-674:red")?.commandHeld).toBe(true);
@@ -416,22 +405,19 @@ describe("RS-684 猿折神", () => {
     return ncEnter("RS-684:m", fillers, {}, { battle: ss.slice(1), rush: [ss[0]!, ...extra] }, [E2000, M500]);
   };
 
-  // 既知の不具合: CARD-RS-684 【軽業】の選択候補が空で、敵軍Sユニット6体以上の条件も判定しない（空の確認が開くだけ）
-  it.fails("RS-684: 【軽業】NC（2番目）・敵軍 S ユニット6体（ラッシュエリアを含む）— BP の一番低い敵軍ユニット（M ユニットも含む）だけを選べ、任意（出典: atwiki/page-1484・R-TGT-01）", () => {
+  it("RS-684: 【軽業】NC（2番目）・敵軍 S ユニット6体（ラッシュエリアを含む）— BP の一番低い敵軍ユニット（M ユニットも含む）だけを選べ、任意（出典: atwiki/page-1484・R-TGT-01）", () => {
     const s = board(6, [inst("SPEC-M500", "low")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-684");
     expect(choiceIds(s)).toEqual(["SPEC-M500:low"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-684 【軽業】の選択候補が空で、敵軍Sユニット6体以上の条件も判定しない（空の確認が開くだけ）
-  it.fails("RS-684: 【軽業】選んだユニットは持ち主の山札の上に戻る（出典: atwiki/page-1484「持ち主の山札の上に戻してもよい」）", () => {
+  it("RS-684: 【軽業】選んだユニットは持ち主の山札の上に戻る（出典: atwiki/page-1484「持ち主の山札の上に戻してもよい」）", () => {
     const s = resolveAll(pick(board(6, [inst("SPEC-M500", "low")]), "SPEC-M500:low"));
     expect(s.players.player2.deck[0]?.instanceId).toBe("SPEC-M500:low");
   });
 
-  // 既知の不具合: CARD-RS-684 【軽業】の選択候補が空で、敵軍Sユニット6体以上の条件も判定しない（空の確認が開くだけ）
-  it.fails("RS-684: 【軽業】BP が一番低いユニットが複数あれば、その中から選べる（出典: atwiki/page-1484「BPの一番低い敵軍ユニットを1体選び」）", () => {
+  it("RS-684: 【軽業】BP が一番低いユニットが複数あれば、その中から選べる（出典: atwiki/page-1484「BPの一番低い敵軍ユニットを1体選び」）", () => {
     const s = board(6);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-684");
     expect(choiceIds(s)).toHaveLength(6);
@@ -444,8 +430,7 @@ describe("RS-684 猿折神", () => {
     expect(zoneOf(s, "player2", "SPEC-M500:low")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-684 【軽業】の選択候補が空で、敵軍Sユニット6体以上の条件も判定しない（空の確認が開くだけ）
-  it.fails("RS-684: 【軽業】敵軍 S ユニットが5体（M ユニットは数えない）なら発動しない（出典: atwiki/page-1484「敵軍Sユニットが6体以上あれば」）", () => {
+  it("RS-684: 【軽業】敵軍 S ユニットが5体（M ユニットは数えない）なら発動しない（出典: atwiki/page-1484「敵軍Sユニットが6体以上あれば」）", () => {
     const s = board(5, [inst("SPEC-M500", "low")]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-684");
     expect(zoneOf(resolveAll(s), "player2", "SPEC-M500:low")).toBe("rush");

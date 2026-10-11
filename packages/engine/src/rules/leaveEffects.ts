@@ -1,6 +1,7 @@
 import type { GameState, PlayerId } from "../types/game";
 import { openSet9ADestroyedEffects } from "./legend1/set9NamedEffectsA";
 import { applySet7AAfterDiscard } from "./legend1/set7NamedEffectsA";
+import { applySet9DAfterDiscard } from "./legend1/set9NamedEffectsD";
 import { cardName, getDefinition } from "../core/catalog";
 import { updatePlayer, removeAt } from "../core/helpers";
 import { resolveLegend2OnDestroy } from "./legend2/destroyEffects";
@@ -425,6 +426,8 @@ export function resolveAfterDiscardDestroyEffects(
 
   // RS-435 アレ（※常駐）: 敵軍ターン中、特徴「忍者」の自軍ユニットが撃破されて捨札になったとき（rules/legend1/set7NamedEffectsA.ts）。
   nextState = applySet7AAfterDiscard(nextState, ctx);
+  // RS-678【ランドスライサー】: このターン、次に自軍 S ユニットが撃破されて捨札になったとき（rules/legend1/set9NamedEffectsD.ts）。
+  nextState = applySet9DAfterDiscard(nextState, ctx);
 
   return { state: tagOpenedDestroyTrigger(beforeAfterDiscard, nextState, "after_discard"), logs };
 }

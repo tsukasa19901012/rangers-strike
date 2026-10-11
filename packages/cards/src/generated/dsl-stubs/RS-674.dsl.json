@@ -45,6 +45,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "set9d::RS-674::rekka_daizanto",
+          "duration": "turn"
         }
       ]
     }
