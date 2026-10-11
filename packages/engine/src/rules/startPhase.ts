@@ -14,6 +14,7 @@ import { prepareRegisterUnitReturnedToRush } from "./resist";
 import { tryCyclopsScarletOnReturnToRush } from "./cyclopsScarlet";
 import { isSmallUnit } from "../core/catalog";
 import { opponent } from "../core/helpers";
+import { set9CBeforeStartReturn, set9CStaysInBattleAtStart } from "./legend1/set9NamedEffectsC";
 import {
   applyOpponentHoldOtEtOnCommandRelease,
   applyPlasmaShockwaveShuffleBack,
@@ -133,10 +134,22 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
   if (phasePlayerId && returnQueue.length > 0) {
     const [nextId, ...rest] = returnQueue;
     const base: GameState = { ...state, pendingStartReturnQueue: rest };
+    // RS-652【清輝顕現バブルキャプチャー】で戻せない／RS-648【イカロスバインド】で撃破するか戻さないかを選ぶ
+    // （rules/legend1/set9NamedEffectsC.ts）。選択を開いたら、選んだ後にここから続ける。
+    const members = [...returnGroupMembers(base.players[phasePlayerId], nextId!)];
+    const restriction = members.length > 0 ? set9CBeforeStartReturn(base, phasePlayerId, members) : null;
+    if (restriction === "stay") return continueBattleToRushEffectQueue(base);
+    if (restriction) return restriction;
     const moved = returnBattleGroupToRush(base, phasePlayerId, nextId!);
     return continueBattleToRushEffectQueue(moved ?? base);
   }
 
+  if (phasePlayerId && state.phase === "start" && allRemainingBattleUnitsStay(state, phasePlayerId)) {
+    state = {
+      ...state,
+      ...updatePlayer(state, phasePlayerId, { ...state.players[phasePlayerId], hasReturnedBattleThisStart: true }),
+    };
+  }
   return {
     ...state,
     pendingBattleToRushQueue: undefined,
@@ -193,18 +206,35 @@ export function returnAllBattleUnitsToRush(
   if (player.battle.length === 0) return null;
 
   if (instanceId) {
-    const moved = returnBattleGroupToRush(state, playerId, instanceId);
-    if (!moved) return null;
-    return continueBattleToRushEffectQueue(moved);
+    if (!player.battle.some((c) => c.instanceId === instanceId)) return null;
+    return continueBattleToRushEffectQueue({
+      ...state,
+      pendingStartReturnQueue: [instanceId],
+      pendingBattleToRushPhasePlayerId: playerId,
+    });
   }
 
-  const [first, ...rest] = listStartReturnGroupIds(player);
+  const [first, ...rest] = listReturnableStartGroupIds(state, playerId);
   if (!first) return null;
   return continueBattleToRushEffectQueue({
     ...state,
     pendingStartReturnQueue: [first, ...rest],
     pendingBattleToRushPhasePlayerId: playerId,
   });
+}
+
+/** スタートフェイズに戻せる組の代表（戻せない・戻さないことを選んだユニットを除く。rules/legend1/set9NamedEffectsC.ts）。 */
+export function listReturnableStartGroupIds(state: GameState, playerId: PlayerId): string[] {
+  const player = state.players[playerId];
+  return listStartReturnGroupIds(player).filter(
+    (id) => ![...returnGroupMembers(player, id)].some((m) => set9CStaysInBattleAtStart(state, playerId, m)),
+  );
+}
+
+/** バトルエリアに残っているユニットがすべて戻せない（戻さない）ユニットか。 */
+function allRemainingBattleUnitsStay(state: GameState, playerId: PlayerId): boolean {
+  const player = state.players[playerId];
+  return player.battle.length > 0 && listReturnableStartGroupIds(state, playerId).length === 0;
 }
 
 export function initializeStartPhasePlayer(player: PlayerState): PlayerState {
@@ -240,6 +270,7 @@ export function hasCompletedStartPhaseSteps(
   const returnComplete =
     player.hasReturnedBattleThisStart === true ||
     player.battle.length === 0 ||
+    allRemainingBattleUnitsStay(state, player.id) ||
     plasmaShockwaveActive(state);
   return (
     isReleaseStepComplete(player) &&
@@ -262,7 +293,7 @@ export function canReturnBattleAtStart(state: GameState, playerId: PlayerId): bo
   if (state.pendingEffectChoice?.playerId === playerId) return false;
   const player = state.players[playerId];
   if (player.hasReturnedBattleThisStart) return false;
-  return player.battle.length > 0;
+  return listReturnableStartGroupIds(state, playerId).length > 0;
 }
 
 export function canBonusDraw(state: GameState, playerId: PlayerId): boolean {

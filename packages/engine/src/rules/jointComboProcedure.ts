@@ -25,6 +25,7 @@ import { grantSp1OnPlayer, grantSpOverrideOnPlayer, patchPlayer } from "./player
 import type { ComboOutcome } from "./comboTypes";
 import { addJointComboGrant } from "./jointComboGrants";
 import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEffects";
+import { trySet9CJointR } from "./legend1/set9NamedEffectsC";
 
 /** カードの効果を判定するときのカテゴリ（バトルエリアで追加されるカテゴリを含む。RS-166 ガインガイン）。 */
 export type JointCategoriesOf = (card: CardInstance) => Category[] | undefined;
@@ -323,6 +324,9 @@ function applyJointRTrigger(
   trigger: Extract<JointComboTrigger, { kind: "joint_r" }>,
 ): ComboOutcome {
   const rCard = battle[trigger.rIndex]!;
+  // NC の欄に分類された R ナンバーの効果（RS-651【体当たり】・RS-652【清輝顕現バブルキャプチャー】。rules/legend1/set9NamedEffectsC.ts）。
+  const fallback = trySet9CJointR(state, playerId, rCard);
+  if (fallback) return fallback;
   const logs: string[] = [];
   let nextState = state;
   let nextPlayer = state.players[playerId];

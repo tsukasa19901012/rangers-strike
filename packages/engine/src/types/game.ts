@@ -970,6 +970,8 @@ export type GameState = {
   turnEndProgress?: TurnEndProgress;
   /** 第8弾 RS-560〜RS-581 のカード固有の効果の記録（rules/legend1/set8NamedEffectsC.ts）。 */
   set8cMeta?: Set8CMeta;
+  /** 第9弾 RS-648〜RS-669 のカード固有の効果の記録（rules/legend1/set9NamedEffectsC.ts）。 */
+  set9cMeta?: Set9CMeta;
   /** RS-352【ダイデンジンブーメラン】: パワーゾーンを離れたカード（1枚ごとに相手が撃破するユニットを選ぶ）の待ち行列。 */
   boomerangQueue?: Array<{ ownerId: PlayerId; cost: number; cardId: string }>;
   /** RS-363【パンサークロー】: 敵軍コマンドゾーンにホールド状態で置かれたユニットカード（捨札にするかを選ぶ）の待ち行列。 */
@@ -1097,6 +1099,14 @@ export type TurnEndProgress = {
   hedrianLeft?: number;
   /** 第8弾 RS-567【消身の術】の「相手がそのターンを終えたとき」の選択のうち未処理のもの（rules/legend1/set8NamedEffectsC.ts）。 */
   set8cQueue?: string[];
+};
+
+/** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */
+export type Set9CMeta = {
+  /** RS-648【イカロスバインド】: そのターン（turn）のスタートフェイズに戻さないことを選んだホールド状態のユニット。 */
+  startStay?: { turn: number; instanceIds: string[] };
+  /** RS-660【SPインカム】: turn のターン（restrictedPlayerId のターン）の進入制限。 */
+  spIncome?: Array<{ restrictedPlayerId: PlayerId; turn: number }>;
 };
 
 /** 第8弾 RS-560〜RS-581 のカード固有の効果が使う記録（rules/legend1/set8NamedEffectsC.ts）。 */

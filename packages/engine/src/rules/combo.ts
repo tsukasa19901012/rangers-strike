@@ -77,6 +77,7 @@ import {
   trySet6BOnComboEnter,
 } from "./legend1/set6NamedEffectsB";
 import { trySet7AOnEnterBattle } from "./legend1/set7NamedEffectsA";
+import { set9CBlocksStrike, trySet9COnComboEnter } from "./legend1/set9NamedEffectsC";
 import { set8ABlocksStrike, trySet8AOnEnterBattle } from "./legend1/set8NamedEffectsA";
 import { clearWolfRoarDecision, openWolfRoarBeforeNc } from "./legend1/set7NamedEffectsC";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
@@ -247,6 +248,11 @@ export function resolveEnterBattleEffectsImpl(
     }
     // RS-452 テトラボーイ【テトラバスター】・※（敵軍の BP6000 以上が出たとき）（rules/legend1/set7NamedEffectsA.ts）。
     nextState = trySet7AOnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+    if (nextState.pendingEffectChoice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+    // 第9弾 RS-653【後輩戦士への叱咤】・RS-654【先輩戦士の教え】・RS-669【アイスエイジエクスプレス】（rules/legend1/set9NamedEffectsC.ts）。
+    nextState = trySet9COnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }
@@ -622,6 +628,8 @@ export function canStrikeUnit(
     if (wingTurnBlocksStrike(state.players[playerId], instance.instanceId)) {
       return false;
     }
+    // RS-661 幻獣王リオ ※「これはラッシュしたターン、ストライクできない。」（rules/legend1/set9NamedEffectsC.ts）。
+    if (set9CBlocksStrike(state, playerId, instance)) return false;
     if (rideOffBlocksStrike(state.players[playerId], instance.instanceId)) {
       return false;
     }

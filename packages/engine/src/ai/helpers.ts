@@ -44,6 +44,7 @@ import { COMMAND_ZONE_MAX, WIN_DAMAGE } from "../types/game";
 import { evaluateState } from "./scoring";
 import { isSet7CChoiceEffect, QUIZ_DECLARE_EFFECT_ID, REVOLVER_PICK_EFFECT_ID } from "../rules/legend1/set7NamedEffectsC";
 import { isSet8CChoiceEffect } from "../rules/legend1/set8NamedEffectsC";
+import { isSet9CChoiceEffect } from "../rules/legend1/set9NamedEffectsC";
 import {
   getBattleEntryPaymentNeeds,
   getCategoryPaymentOptions,
@@ -1199,6 +1200,11 @@ export function pickEffectChoice(
   }
   // 第8弾 RS-560〜RS-581 の選択（rules/legend1/set8NamedEffectsC.ts）。
   if (isSet8CChoiceEffect(pending.effectId)) {
+    const picked = pickSet8CEffectChoice(state, pending, actions);
+    if (picked) return picked;
+  }
+  // 第9弾 RS-648〜RS-669 の選択（rules/legend1/set9NamedEffectsC.ts）。行動ごとに局面を評価して選ぶ。
+  if (isSet9CChoiceEffect(pending.effectId)) {
     const picked = pickSet8CEffectChoice(state, pending, actions);
     if (picked) return picked;
   }

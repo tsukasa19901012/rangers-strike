@@ -213,8 +213,7 @@ describe("RS-648 ガオイカロス", () => {
       [E_S],
     );
 
-  // 既知の不具合: CARD-RS-648 【イカロスバインド】後半の制限（ホールド状態のユニットを戻すとき撃破か戻さないかを選ぶ）が未実装（スタートフェイズの戻しに制限がない）
-  it.fails("RS-648: 【イカロスバインド】自軍バトルエリアにある間、相手はホールド状態のユニットをラッシュエリアに戻せない（撃破するか、戻さずバトルエリアに残す）（出典: atwiki/page-1497「それを撃破するか戻さないかを選ぶ」）", () => {
+  it("RS-648: 【イカロスバインド】自軍バトルエリアにある間、相手はホールド状態のユニットをラッシュエリアに戻せない（撃破するか、戻さずバトルエリアに残す）（出典: atwiki/page-1497「それを撃破するか戻さないかを選ぶ」）", () => {
     const s = enemyStartReturn(returnBoard("battle"));
     expect(["discard", "battle"]).toContain(zoneOf(s, "player2", "SPEC-ES:hb"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:rb")).toBe("rush");
@@ -283,8 +282,7 @@ describe("RS-650 ガオライノス", () => {
   const rhinoActions = (s: GameState) =>
     legal(s).filter((a) => JSON.stringify(a).includes("RS-650:r") && a.type !== "end_phase");
 
-  // 既知の不具合: CARD-RS-650 【強蹴一閃ライノシュート】が未実装（自軍ラッシュフェイズに L ユニットを重ねる手段がない）
-  it.fails("RS-650: 【強蹴一閃ライノシュート】自軍ラッシュフェイズ中、DA を持たない自軍 L ユニットを選んでこのユニットに重ねられる（出典: atwiki/page-1471）", () => {
+  it("RS-650: 【強蹴一閃ライノシュート】自軍ラッシュフェイズ中、DA を持たない自軍 L ユニットを選んでこのユニットに重ねられる（出典: atwiki/page-1471）", () => {
     const s = p1Rush({ rush: [inst("RS-650", "r"), inst("RS-151", "gk")] });
     expect(rhinoActions(s).length).toBeGreaterThan(0);
   });
@@ -335,14 +333,12 @@ describe("RS-651 ガオマジロ", () => {
     return t;
   };
 
-  // 既知の不具合: CARD-RS-651 ジョイントコンビネーション（R）の【体当たり】が発動しない（左隣が人型 L・ガオライノスでも選択もログも出ない）
-  it.fails("RS-651: 【体当たり】特徴「人型」を持つ L ユニット（ガオキング）からコンビネーションすると、このターン敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-1472）", () => {
+  it("RS-651: 【体当たり】特徴「人型」を持つ L ユニット（ガオキング）からコンビネーションすると、このターン敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-1472）", () => {
     const s = activate(board("RS-151:gk"));
     expect(attackTargets(s, "RS-651:mj")).toEqual(expect.arrayContaining(["SPEC-EM:er", "SPEC-ES:eb"]));
   });
 
-  // 既知の不具合: CARD-RS-651 ジョイントコンビネーション（R）の【体当たり】が発動しない（左隣が人型 L・ガオライノスでも選択もログも出ない）
-  it.fails("RS-651: 【体当たり】「ガオライノス」からコンビネーションしても発動する（出典: atwiki/page-1472「これが「ガオライノス」か」）", () => {
+  it("RS-651: 【体当たり】「ガオライノス」からコンビネーションしても発動する（出典: atwiki/page-1472「これが「ガオライノス」か」）", () => {
     const s = activate(board("RS-650:ri"));
     expect(attackTargets(s, "RS-651:mj")).toContain("SPEC-EM:er");
   });
@@ -358,8 +354,7 @@ describe("RS-651 ガオマジロ", () => {
     expect(attackTargets(s, "RS-651:mj")).toContain("SPEC-ES:eb");
   });
 
-  // 既知の不具合: CARD-RS-651 ジョイントコンビネーション（R）の【体当たり】が発動しない（左隣が人型 L・ガオライノスでも選択もログも出ない）
-  it.fails("RS-651: 【体当たり】「発動できる」— 発動しないことを選べ、そのときは敵軍ラッシュエリアにアタックできない（出典: atwiki/page-1472「次の効果を発動できる」）", () => {
+  it("RS-651: 【体当たり】「発動できる」— 発動しないことを選べ、そのときは敵軍ラッシュエリアにアタックできない（出典: atwiki/page-1472「次の効果を発動できる」）", () => {
     let s = board("RS-151:gk");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-651");
     expect(canSkip(s)).toBe(true);
@@ -367,8 +362,7 @@ describe("RS-651 ガオマジロ", () => {
     expect(attackTargets(s, "RS-651:mj")).not.toContain("SPEC-EM:er");
   });
 
-  // 既知の不具合: CARD-RS-651 【体当たり】が発動しない
-  it.fails("RS-651: 【体当たり】発動して敵軍ラッシュエリアのユニットにアタックし、撃破できる（出典: atwiki/page-1472「敵軍ラッシュエリアのユニットにアタックできる」）", () => {
+  it("RS-651: 【体当たり】発動して敵軍ラッシュエリアのユニットにアタックし、撃破できる（出典: atwiki/page-1472「敵軍ラッシュエリアのユニットにアタックできる」）", () => {
     const s = settle(attack(activate(board("RS-151:gk")), "RS-651:mj", "SPEC-EM:er"));
     // BP3000 同士なので相打ち（両方撃破）。
     expect(zoneOf(s, "player2", "SPEC-EM:er")).toBe("discard");
@@ -400,15 +394,13 @@ describe("RS-652 ガオディアス", () => {
       ["TST-OP:cWB0"],
     );
 
-  // 既知の不具合: CARD-RS-652 ジョイントコンビネーション（R）の【清輝顕現バブルキャプチャー】が発動しない（選択もログも出ない）
-  it.fails("RS-652: 【清輝顕現バブルキャプチャー】同カテゴリ（WB）の L ユニットからコンビネーションするとき、発動するかを選べる（任意）（出典: atwiki/page-1473「次の効果を発動できる」）", () => {
+  it("RS-652: 【清輝顕現バブルキャプチャー】同カテゴリ（WB）の L ユニットからコンビネーションするとき、発動するかを選べる（任意）（出典: atwiki/page-1473「次の効果を発動できる」）", () => {
     const s = board("RS-151:gk");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-652");
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-652 【清輝顕現バブルキャプチャー】の「敵軍バトルエリアの1番目のユニットはラッシュエリアに戻せない」が未実装（スタートフェイズの戻しに制限がない）
-  it.fails("RS-652: 【清輝顕現バブルキャプチャー】発動すると、敵軍バトルエリアの1番目のユニットは相手のスタートフェイズにラッシュエリアに戻せない（2番目は戻る）（出典: atwiki/page-1473）", () => {
+  it("RS-652: 【清輝顕現バブルキャプチャー】発動すると、敵軍バトルエリアの1番目のユニットは相手のスタートフェイズにラッシュエリアに戻せない（2番目は戻る）（出典: atwiki/page-1473）", () => {
     let s = board("RS-151:gk");
     if (s.pendingEffectChoice?.sourceCardId === "RS-652") s = pick(s, s.pendingEffectChoice.validInstanceIds[0]!);
     s = enemyStartReturn(resolveAll(s));
@@ -466,8 +458,7 @@ describe("RS-653 レッドファルコン（2nd）", () => {
     return resolveAll(enterKeep(s, order));
   };
 
-  // 既知の不具合: CARD-RS-653 【後輩戦士への叱咤】NC は成立する（ログあり）が、次にコンビネーションするイエロー S ユニットに BP+3000・SP1 が付かない
-  it.fails("RS-653: 【後輩戦士への叱咤】NC（1番目）— 次にコンビネーションする特徴「イエロー」の S ユニットは BP+3000・SP1 になりストライクできる（出典: atwiki/page-1518）", () => {
+  it("RS-653: 【後輩戦士への叱咤】NC（1番目）— 次にコンビネーションする特徴「イエロー」の S ユニットは BP+3000・SP1 になりストライクできる（出典: atwiki/page-1518）", () => {
     const s = board("SPEC-YS:y");
     expect(bpOf(s, "player1", "SPEC-YS:y")).toBe(5000);
     expect(spOf(s, "player1", "SPEC-YS:y")).toBe(1);
@@ -527,16 +518,14 @@ describe("RS-654 ガオイエロー（2nd）", () => {
     return enterKeep(s, order);
   };
 
-  // 既知の不具合: CARD-RS-654 【先輩戦士の教え】の「レッドをホールド→敵軍バトルエリアの S を撃破」が未実装（NC で SP1 だけ付く）／「レッドファルコンからならナンバーに関係なく発動」も未実装
-  it.fails("RS-654: 【先輩戦士の教え】NC（2番目）— 特徴「レッド」の自軍 S ユニットを選べ（レッドでないもの・自身は不可）、選ばないこともできる（出典: atwiki/page-1519「特徴「レッド」を持つ自軍Sユニットを1体選びホールドしてもよい」）", () => {
+  it("RS-654: 【先輩戦士の教え】NC（2番目）— 特徴「レッド」の自軍 S ユニットを選べ（レッドでないもの・自身は不可）、選ばないこともできる（出典: atwiki/page-1519「特徴「レッド」を持つ自軍Sユニットを1体選びホールドしてもよい」）", () => {
     const s = board(["TST-UNIT-0:f0", "RS-654:gy"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-654");
     expect(choiceIds(s)).toEqual(["RS-160:red"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-654 【先輩戦士の教え】の「レッドをホールド→敵軍バトルエリアの S を撃破」が未実装（NC で SP1 だけ付く）／「レッドファルコンからならナンバーに関係なく発動」も未実装
-  it.fails("RS-654: 【先輩戦士の教え】レッドをホールドしたとき、敵軍バトルエリアの S ユニットだけを選んで撃破する（強制）（出典: atwiki/page-1519「そうしたとき、敵軍バトルエリアからSユニットを1体選び撃破する」）", () => {
+  it("RS-654: 【先輩戦士の教え】レッドをホールドしたとき、敵軍バトルエリアの S ユニットだけを選んで撃破する（強制）（出典: atwiki/page-1519「そうしたとき、敵軍バトルエリアからSユニットを1体選び撃破する」）", () => {
     let s = pick(board(["TST-UNIT-0:f0", "RS-654:gy"]), "RS-160:red");
     expect(cardIn(s, "player1", "RS-160:red")?.commandHeld).toBe(true);
     expect(choiceIds(s)).toEqual(["SPEC-ES:es"]);
@@ -575,8 +564,7 @@ describe("RS-654 ガオイエロー（2nd）", () => {
     expect(zoneOf(t, "player2", "SPEC-ES:es")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-654 【先輩戦士の教え】の「レッドをホールド→敵軍バトルエリアの S を撃破」が未実装（NC で SP1 だけ付く）／「レッドファルコンからならナンバーに関係なく発動」も未実装
-  it.fails("RS-654: 【先輩戦士の教え】「レッドファルコン（2nd）」からコンビネーションするときは3番目でも発動する（2nd は同名）（出典: atwiki/page-1519「「レッドファルコン｣からコンビネーションするときはナンバーに関係なく発動する」・R-DECK-04）", () => {
+  it("RS-654: 【先輩戦士の教え】「レッドファルコン（2nd）」からコンビネーションするときは3番目でも発動する（2nd は同名）（出典: atwiki/page-1519「「レッドファルコン｣からコンビネーションするときはナンバーに関係なく発動する」・R-DECK-04）", () => {
     let s = board(["TST-UNIT-0:f0", "RS-653:rf", "RS-654:gy"], [inst("RS-160", "red"), ...fill(1)]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-654");
     // レッドファルコン（2nd）自身（バトルエリアのレッド・S）も選べる
@@ -586,8 +574,7 @@ describe("RS-654 ガオイエロー（2nd）", () => {
     expect(spOf(s, "player1", "RS-654:gy")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-654 【先輩戦士の教え】の「レッドをホールド→敵軍バトルエリアの S を撃破」が未実装（NC で SP1 だけ付く）／「レッドファルコンからならナンバーに関係なく発動」も未実装
-  it.fails("RS-654: 【先輩戦士の教え】「レッドファルコン」（RS-204）からコンビネーションするときも3番目で発動する（出典: atwiki/page-1519）", () => {
+  it("RS-654: 【先輩戦士の教え】「レッドファルコン」（RS-204）からコンビネーションするときも3番目で発動する（出典: atwiki/page-1519）", () => {
     const s = board(["TST-UNIT-0:f0", "RS-204:rf", "RS-654:gy"], [inst("RS-160", "red"), ...fill(1)]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-654");
   });
@@ -662,8 +649,7 @@ describe("RS-655 デカウイングロボ", () => {
   const spBoard = (discard: ReturnType<typeof inst>[], enemyDiscard: ReturnType<typeof inst>[] = []) =>
     p1Battle({ battle: [inst("RS-655", "dw")], discard }, { discard: enemyDiscard });
 
-  // 既知の不具合: CARD-RS-655 【パトマグナム】が未実装（自軍捨札にスワットのユニットカードが5枚以上でも SP1 のまま）
-  it.fails("RS-655: 【パトマグナム】自軍捨札に特徴「スワット」を持つユニットカードが5枚あれば SP2（出典: atwiki/page-1528「5枚以上あれば、これは「SP2」になる」）", () => {
+  it("RS-655: 【パトマグナム】自軍捨札に特徴「スワット」を持つユニットカードが5枚あれば SP2（出典: atwiki/page-1528「5枚以上あれば、これは「SP2」になる」）", () => {
     const s = spBoard(SWATS.map((id, i) => inst(id, `d${i}`)));
     expect(spOf(s, "player1", "RS-655:dw")).toBe(2);
   });
@@ -683,8 +669,7 @@ describe("RS-655 デカウイングロボ", () => {
     expect(spOf(s, "player1", "RS-655:dw")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-655 【パトマグナム】が未実装（自軍捨札にスワットのユニットカードが5枚以上でも SP1 のまま）
-  it.fails("RS-655: 【パトマグナム】SP2 でストライクすると2点（出典: atwiki/page-1528「「SP2」になる」）", () => {
+  it("RS-655: 【パトマグナム】SP2 でストライクすると2点（出典: atwiki/page-1528「「SP2」になる」）", () => {
     let s = p1Battle({ rush: [inst("RS-655", "dw")], discard: SWATS.map((id, i) => inst(id, `d${i}`)) });
     s = enterKeep(s, ["RS-655:dw"]);
     expect(canStrike(s, "RS-655:dw")).toBe(true);

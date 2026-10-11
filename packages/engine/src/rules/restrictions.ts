@@ -1,4 +1,5 @@
 import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
+import { set9CBlocksBattleEntry } from "./legend1/set9NamedEffectsC";
 import { ownAutoBattleEntryNegated } from "./legend1/set8NamedEffectsD";
 import { set8BRequiresBattleEntry } from "./legend1/set8NamedEffectsB";
 import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
@@ -384,6 +385,8 @@ export function canMoveUnitToBattle(
 
   // RS-320【スワンイリュージョン】・RS-324 マジマザー: このターン、ラッシュエリアのユニットはバトルエリアに出られない。
   if (rushAreaEntryBlockedThisTurn(state, playerId)) return false;
+  // RS-660【SPインカム】: 新しくラッシュエリアに出たユニットとホールド状態のユニットは出られない（rules/legend1/set9NamedEffectsC.ts）。
+  if (set9CBlocksBattleEntry(state, playerId, unit)) return false;
   // RS-356 デンジイエロー【ハンマーパンチ】: このターン、必要パワーの数字が3以下のユニットは出られない。
   if (hammerPunchBlocksEntry(state, playerId, unit)) return false;
 
@@ -510,6 +513,8 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   // RS-320【スワンイリュージョン】・RS-324 マジマザー: このターン、ラッシュエリアのユニットはバトルエリアに出られない。
   if (rushAreaEntryBlockedThisTurn(state, playerId)) return false;
+  // RS-660【SPインカム】: 新しくラッシュエリアに出たユニットとホールド状態のユニットは出られない（rules/legend1/set9NamedEffectsC.ts）。
+  if (set9CBlocksBattleEntry(state, playerId, unit)) return false;
   // RS-356 デンジイエロー【ハンマーパンチ】: このターン、必要パワーの数字が3以下のユニットは出られない。
   if (hammerPunchBlocksEntry(state, playerId, unit)) return false;
 

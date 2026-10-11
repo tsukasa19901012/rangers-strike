@@ -130,8 +130,7 @@ describe("RS-656 デカウイングキャノン", () => {
     return r.state;
   };
 
-  // 既知の不具合: CARD-RS-656 【オールスターアルティメットバスター】が未実装（人型 BP6000 以上をラッシュしても撃破の選択が開かない）
-  it.fails("RS-656: 【オールスターアルティメットバスター】人型・BP6000 の自軍ユニットをラッシュしたとき、BP6000 以下の敵軍ユニット（エリアを問わない）を1体選び撃破する（強制）（出典: atwiki/page-1474「そのBP以下のBPを持つ敵軍ユニットを1体選び撃破する」）", () => {
+  it("RS-656: 【オールスターアルティメットバスター】人型・BP6000 の自軍ユニットをラッシュしたとき、BP6000 以下の敵軍ユニット（エリアを問わない）を1体選び撃破する（強制）（出典: atwiki/page-1474「そのBP以下のBPを持つ敵軍ユニットを1体選び撃破する」）", () => {
     let s = rushWith("SPEC-H6000");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-656");
     expect(choiceIds(s)).toEqual(["SPEC-E6000:e6", "SPEC-ES:e2"]);
@@ -162,8 +161,7 @@ describe("RS-656 デカウイングキャノン", () => {
     expect(zoneOf(resolveAll(s), "player2", "SPEC-ES:e2")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-656 【オールスターアルティメットバスター】が未実装（撃破も1点ダメージもない）
-  it.fails("RS-656: 【オールスターアルティメットバスター】XL ユニット（人型・BP20000）をラッシュしたなら、撃破に加えて相手に1点ダメージ（出典: atwiki/page-1474「ラッシュしたユニットがXLユニットだったなら、相手に1点ダメージを与える」）", () => {
+  it("RS-656: 【オールスターアルティメットバスター】XL ユニット（人型・BP20000）をラッシュしたなら、撃破に加えて相手に1点ダメージ（出典: atwiki/page-1474「ラッシュしたユニットがXLユニットだったなら、相手に1点ダメージを与える」）", () => {
     const s = resolveAll(rushWith("SPEC-HXL"), ["SPEC-E7000:e7"]);
     expect(zoneOf(s, "player2", "SPEC-E7000:e7")).toBe("discard");
     expect(s.players.player2.damage).toBe(1);
@@ -318,16 +316,14 @@ describe("RS-658 デカグリーンSWAT", () => {
       ["RS-658:g"],
     );
 
-  // 既知の不具合: CARD-RS-658 【突入】が未実装（NC は成立するが選択が開かず、敵軍ユニットは動かない）
-  it.fails("RS-658: 【突入】NC（3番目）— 敵軍ラッシュエリアの S ユニットだけを選べ（M は不可）、選ばないこともできる（出典: atwiki/page-1526「敵軍ラッシュエリアからSユニットを2体まで選びバトルエリアに出してもよい」）", () => {
+  it("RS-658: 【突入】NC（3番目）— 敵軍ラッシュエリアの S ユニットだけを選べ（M は不可）、選ばないこともできる（出典: atwiki/page-1526「敵軍ラッシュエリアからSユニットを2体まで選びバトルエリアに出してもよい」）", () => {
     const s = board();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-658");
     expect(choiceIds(s)).toEqual(["SPEC-ES:b", "TST-UNIT-0:a", "TST-UNIT-0:c"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-658 【突入】が未実装
-  it.fails("RS-658: 【突入】選んだ2体は自分が選んだ順に敵軍バトルエリアに出る（3体目は出せない）（出典: atwiki/page-1526「2体まで」「出す順番は自分が選ぶ」）", () => {
+  it("RS-658: 【突入】選んだ2体は自分が選んだ順に敵軍バトルエリアに出る（3体目は出せない）（出典: atwiki/page-1526「2体まで」「出す順番は自分が選ぶ」）", () => {
     let s = board();
     s = pick(s, "SPEC-ES:b");
     s = pick(s, "TST-UNIT-0:a");
@@ -392,16 +388,14 @@ describe("RS-659 デカイエローSWAT", () => {
     expect(canStrike(s, "RS-659:y")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-659 【感知システム】のパワーゾーンからの回収が未実装（NC で SP1 だけ付き、選択が開かない）
-  it.fails("RS-659: 【感知システム】自軍パワーゾーンのオモテ向きの S ユニットのカードだけを選べ（M・オペレーション・ウラ向きは不可）、選ばないこともできる（出典: atwiki/page-1504）", () => {
+  it("RS-659: 【感知システム】自軍パワーゾーンのオモテ向きの S ユニットのカードだけを選べ（M・オペレーション・ウラ向きは不可）、選ばないこともできる（出典: atwiki/page-1504）", () => {
     const s = board();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-659");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:pu"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-659 【感知システム】が未実装
-  it.fails("RS-659: 【感知システム】選んだカードを手札に加えたとき、自軍山札の上から1枚引いて自軍パワーゾーンに置ける（出典: atwiki/page-1504「そうしたとき、自軍山札の上から1枚引いて自軍パワーゾーンに置いてもよい」）", () => {
+  it("RS-659: 【感知システム】選んだカードを手札に加えたとき、自軍山札の上から1枚引いて自軍パワーゾーンに置ける（出典: atwiki/page-1504「そうしたとき、自軍山札の上から1枚引いて自軍パワーゾーンに置いてもよい」）", () => {
     let s = pick(board(), "TST-UNIT-0:pu");
     expect(zoneOf(s, "player1", "TST-UNIT-0:pu")).toBe("hand");
     expect(canSkip(s)).toBe(true);
@@ -409,8 +403,7 @@ describe("RS-659 デカイエローSWAT", () => {
     expect(zoneOf(s, "player1", "TST-OP:top")).toBe("power");
   });
 
-  // 既知の不具合: CARD-RS-659 【感知システム】が未実装
-  it.fails("RS-659: 【感知システム】手札に加えた後、山札の上を置かないことも選べる（出典: atwiki/page-1504「置いてもよい」）", () => {
+  it("RS-659: 【感知システム】手札に加えた後、山札の上を置かないことも選べる（出典: atwiki/page-1504「置いてもよい」）", () => {
     let s = pick(board(), "TST-UNIT-0:pu");
     s = resolveAll(skip(s));
     expect(zoneOf(s, "player1", "TST-UNIT-0:pu")).toBe("hand");
@@ -481,15 +474,13 @@ describe("RS-660 デカピンクSWAT", () => {
     return toPhase(r.state, "player2", "battle");
   };
 
-  // 既知の不具合: CARD-RS-660 【SPインカム】が未実装（次の相手ターンの進入制限がかからない）
-  it.fails("RS-660: 【SPインカム】NC（5番目）— 次の相手ターン、新しくラッシュエリアに出たユニットはバトルエリアに出られない（出典: atwiki/page-1527）", () => {
+  it("RS-660: 【SPインカム】NC（5番目）— 次の相手ターン、新しくラッシュエリアに出たユニットはバトルエリアに出られない（出典: atwiki/page-1527）", () => {
     const s = toEnemyRush();
     expect(zoneOf(s, "player2", "TST-UNIT-0:new")).toBe("rush");
     expect(canEnter(s, "TST-UNIT-0:new", "player2")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-660 【SPインカム】が未実装
-  it.fails("RS-660: 【SPインカム】次の相手ターン、ホールド状態のユニットはバトルエリアに出られない（出典: atwiki/page-1527「ホールド状態のユニットは」）", () => {
+  it("RS-660: 【SPインカム】次の相手ターン、ホールド状態のユニットはバトルエリアに出られない（出典: atwiki/page-1527「ホールド状態のユニットは」）", () => {
     const s = toEnemyRush();
     expect(cardIn(s, "player2", "TST-UNIT-0:h")?.commandHeld).toBe(true);
     expect(canEnter(s, "TST-UNIT-0:h", "player2")).toBe(false);
@@ -545,8 +536,7 @@ describe("RS-661 幻獣王リオ", () => {
   zordDownTests("RS-661", "RS-431", "黒獅子リオ", PAGE, "DA");
   reanimateTests("RS-661", "RS-431", "黒獅子リオ", PAGE);
 
-  // 既知の不具合: CARD-RS-661 ※「ラッシュしたターン、ストライクできない」が未実装（ゾードダウンでラッシュしたターンにバトルエリアに出るとストライクできる）
-  it.fails("RS-661: ※ ラッシュしたターンはストライクできない（出典: atwiki/page-1500「※これはラッシュしたターン、ストライクできない。」）", () => {
+  it("RS-661: ※ ラッシュしたターンはストライクできない（出典: atwiki/page-1500「※これはラッシュしたターン、ストライクできない。」）", () => {
     const s = p1Rush({ hand: [inst("RS-661", "rio")], rush: [inst("RS-431", "kr")], command: releasedCat("DA", 1) });
     const r = rushVia(s, "player1", "RS-661:rio", (a) => a.zordMaterialInstanceId === "RS-431:kr");
     expect(r.ok).toBe(true);
@@ -563,8 +553,7 @@ describe("RS-661 幻獣王リオ", () => {
 
   const E_S2 = sUnit("SPEC-ES2", { bp: 1000 });
 
-  // 既知の不具合: CARD-RS-661 【破天攻】が未実装（敵軍 S ユニットがいても BP3500 のまま）
-  it.fails("RS-661: 【破天攻】敵軍 S ユニット1体につき BP+1000（バトルエリア・ラッシュエリアの S を数え、M は数えない）（出典: atwiki/page-1500「敵軍Sユニット1体につきBP+1000」）", () => {
+  it("RS-661: 【破天攻】敵軍 S ユニット1体につき BP+1000（バトルエリア・ラッシュエリアの S を数え、M は数えない）（出典: atwiki/page-1500「敵軍Sユニット1体につきBP+1000」）", () => {
     const s = p1Battle(
       { battle: [inst("RS-661", "rio")] },
       { battle: [inst("SPEC-ES", "a"), inst("SPEC-EM", "m")], rush: [inst("SPEC-ES2", "b"), inst("TST-UNIT-0", "c")] },
@@ -578,8 +567,7 @@ describe("RS-661 幻獣王リオ", () => {
     expect(bpOf(s, "player1", "RS-661:rio")).toBe(3500);
   });
 
-  // 既知の不具合: CARD-RS-661 【破天攻】が未実装
-  it.fails("RS-661: 【破天攻】敵軍 S ユニットが撃破されれば BP も下がる（出典: atwiki/page-1500「1体につき」）", () => {
+  it("RS-661: 【破天攻】敵軍 S ユニットが撃破されれば BP も下がる（出典: atwiki/page-1500「1体につき」）", () => {
     let s = p1Battle({ battle: [inst("RS-661", "rio")] }, { battle: [inst("SPEC-ES", "a"), inst("SPEC-ES2", "b")] }, [E_S, E_S2]);
     expect(bpOf(s, "player1", "RS-661:rio")).toBe(5500);
     s = resolveAll(act(s, { type: "battle", playerId: "player1", attackerInstanceId: "RS-661:rio", defenderInstanceId: "SPEC-ES2:b" }));

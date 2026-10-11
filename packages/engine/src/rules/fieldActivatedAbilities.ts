@@ -23,6 +23,7 @@ import { beginAllAboard, canActivateAllAboard } from "./legend1/set6NamedEffects
 import { beginHoldToActivate, canActivateHoldToActivate, isHoldToActivateNc } from "./holdToActivate";
 import { activateHoldReturnSelf, canActivateHoldReturnSelf, holdReturnSelfCount } from "./legend1/set7NamedEffectsA";
 import { beginFusionCall, canActivateFusionCall } from "./legend1/set8NamedEffectsC";
+import { beginRhinoShoot, canActivateRhinoShoot } from "./legend1/set9NamedEffectsC";
 
 type FieldZone = "rush" | "battle";
 
@@ -407,6 +408,19 @@ ABILITIES.push({
   repeatable: true,
   canActivate: (state, playerId, card) => canActivateFusionCall(state, playerId, card),
   resolve: (state, playerId, card) => beginFusionCall(state, playerId, card),
+});
+
+// RS-650 ガオライノス【強蹴一閃ライノシュート】: 自軍ラッシュフェイズ中、DA を持たない自軍 L ユニットに重ねる
+// （rules/legend1/set9NamedEffectsC.ts）。重ねたらカードとして扱われ場を離れるので、くり返しは起きない。
+ABILITIES.push({
+  cardId: "RS-650",
+  effectId: "rs650_rhino_shoot",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  discardSelf: false,
+  repeatable: true,
+  canActivate: (state, playerId, card) => canActivateRhinoShoot(state, playerId, card),
+  resolve: (state, playerId, card) => beginRhinoShoot(state, playerId, card),
 });
 
 function abilityFor(cardId: string): FieldActivatedAbility | undefined {

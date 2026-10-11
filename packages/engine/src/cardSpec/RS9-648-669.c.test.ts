@@ -156,22 +156,19 @@ describe("RS-663 エンジンオーG12", () => {
     return resolveAll(s);
   };
 
-  // 既知の不具合: CARD-RS-663 【G12グランプリ】が敵軍ユニット1体の撃破選択になっていて、本来の BP の合計 12000 以下で複数体を選べない（汎用 destroy_enter_battle）
-  it.fails("RS-663: 【G12グランプリ】本来の BP の合計が 12000 以下になるように複数体（5000＋7000）を選んで撃破できる（出典: atwiki/page-1502「本来のBPの合計が12000以下になるように選び撃破」）", () => {
+  it("RS-663: 【G12グランプリ】本来の BP の合計が 12000 以下になるように複数体（5000＋7000）を選んで撃破できる（出典: atwiki/page-1502「本来のBPの合計が12000以下になるように選び撃破」）", () => {
     const s = pickAll(board(["SPEC-E5000:a", "SPEC-E7000:b", "SPEC-E8000:c"]), ["SPEC-E5000:a", "SPEC-E7000:b"]);
     expect(zoneOf(s, "player2", "SPEC-E5000:a")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E7000:b")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E8000:c")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-663 【G12グランプリ】の候補に本来の BP の合計の上限がない
-  it.fails("RS-663: 【G12グランプリ】本来の BP が 12000 を超える敵軍ユニット（BP13000）は選べない（出典: atwiki/page-1502「合計が12000以下」）", () => {
+  it("RS-663: 【G12グランプリ】本来の BP が 12000 を超える敵軍ユニット（BP13000）は選べない（出典: atwiki/page-1502「合計が12000以下」）", () => {
     const s = board(["SPEC-E13000:big", "SPEC-E5000:a"]);
     expect(choiceIds(s)).not.toContain("SPEC-E13000:big");
   });
 
-  // 既知の不具合: CARD-RS-663 【G12グランプリ】の合計の上限が未実装
-  it.fails("RS-663: 【G12グランプリ】合計が 12000 を超える組み合わせ（5000＋8000）は選べない（5000 を選んだ後は 8000 が候補から外れる）（出典: atwiki/page-1502「合計が12000以下」）", () => {
+  it("RS-663: 【G12グランプリ】合計が 12000 を超える組み合わせ（5000＋8000）は選べない（5000 を選んだ後は 8000 が候補から外れる）（出典: atwiki/page-1502「合計が12000以下」）", () => {
     let s = board(["SPEC-E5000:a", "SPEC-E8000:c", "SPEC-E7000:b"]);
     s = pick(s, "SPEC-E5000:a");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-663");
@@ -185,8 +182,7 @@ describe("RS-663 エンジンオーG12", () => {
     expect(zoneOf(s, "player2", "SPEC-E5000:a")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-663 【G12グランプリ】の候補が敵軍バトルエリアのユニットだけ（ラッシュエリアのユニットを選べない）
-  it.fails("RS-663: 【G12グランプリ】敵軍ラッシュエリアのユニットも選べる（出典: atwiki/page-1502「敵軍ユニット」）", () => {
+  it("RS-663: 【G12グランプリ】敵軍ラッシュエリアのユニットも選べる（出典: atwiki/page-1502「敵軍ユニット」）", () => {
     const s = board([], ["SPEC-E5000:r"]);
     expect(choiceIds(s)).toContain("SPEC-E5000:r");
   });
@@ -290,14 +286,12 @@ describe("RS-664 エンジンオーG9", () => {
     expect(zoneOf(s, "player2", "SPEC-E5000:c")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-664 【G9グランプリ】の候補が敵軍ラッシュエリアのユニットだけ（敵軍バトルエリアのユニットを選べない）
-  it.fails("RS-664: 【G9グランプリ】敵軍バトルエリアのユニットも選べる（出典: atwiki/page-1494「敵軍ユニットを1体選び」）", () => {
+  it("RS-664: 【G9グランプリ】敵軍バトルエリアのユニットも選べる（出典: atwiki/page-1494「敵軍ユニットを1体選び」）", () => {
     const s = rushed({ battle: [inst("SPEC-E9000", "a")], rush: [inst("SPEC-E5000", "c")] });
     expect(choiceIds(s)).toEqual(["SPEC-E5000:c", "SPEC-E9000:a"]);
   });
 
-  // 既知の不具合: CARD-RS-664 【G9グランプリ】の候補に本来の BP9000 以下の上限がない（BP9500・BP13000 も選べる）
-  it.fails("RS-664: 【G9グランプリ】本来の BP が 9000 を超える敵軍ユニット（BP9500）は選べない（出典: atwiki/page-1494「本来のBPが9000以下」）", () => {
+  it("RS-664: 【G9グランプリ】本来の BP が 9000 を超える敵軍ユニット（BP9500）は選べない（出典: atwiki/page-1494「本来のBPが9000以下」）", () => {
     const s = rushed({ rush: [inst("SPEC-E9500", "b"), inst("SPEC-E5000", "c")] });
     expect(choiceIds(s)).toEqual(["SPEC-E5000:c"]);
   });
@@ -357,8 +351,7 @@ describe("RS-665 キョウレツオー", () => {
   const board = (top: string) =>
     enterKeep(p1Battle({ rush: [inst("RS-665", "ky")], deck: [inst(top.split(":")[0]!, top.split(":")[1]!), ...deckCards(3)] }), ["RS-665:ky"]);
 
-  // 既知の不具合: CARD-RS-665 【キョウレツエクスプレス】が未実装（ログは出るが、発動の選択も山札の公開も SP1 もない）
-  it.fails("RS-665: 【キョウレツエクスプレス】山札の上が炎神のカードなら、このターン SP1 になりストライクでき、そのカードは山札の下に戻る（出典: atwiki/page-1476）", () => {
+  it("RS-665: 【キョウレツエクスプレス】山札の上が炎神のカードなら、このターン SP1 になりストライクでき、そのカードは山札の下に戻る（出典: atwiki/page-1476）", () => {
     const s = resolveAll(activateIf(board("RS-505:top"), "RS-665"));
     expect(spOf(s, "player1", "RS-665:ky")).toBe(1);
     expect(canStrike(s, "RS-665:ky")).toBe(true);
@@ -366,23 +359,20 @@ describe("RS-665 キョウレツオー", () => {
     expect(s.players.player1.deck).toHaveLength(4);
   });
 
-  // 既知の不具合: CARD-RS-665 【キョウレツエクスプレス】が未実装
-  it.fails("RS-665: 【キョウレツエクスプレス】山札の上が「恐竜」を持つカード（炎神でない）でも SP1（出典: atwiki/page-1476「特徴「炎神」または「恐竜」」）", () => {
+  it("RS-665: 【キョウレツエクスプレス】山札の上が「恐竜」を持つカード（炎神でない）でも SP1（出典: atwiki/page-1476「特徴「炎神」または「恐竜」」）", () => {
     // RS-052（WB・恐竜）
     const s = resolveAll(activateIf(board("RS-052:top"), "RS-665"));
     expect(spOf(s, "player1", "RS-665:ky")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-665 【キョウレツエクスプレス】が未実装（オモテにしたカードが山札の下に戻らない）
-  it.fails("RS-665: 【キョウレツエクスプレス】炎神・恐竜でないカードなら SP！のままだが、山札の下には戻る（出典: atwiki/page-1476「その後、オモテにしたカードは山札の下に戻す」）", () => {
+  it("RS-665: 【キョウレツエクスプレス】炎神・恐竜でないカードなら SP！のままだが、山札の下には戻る（出典: atwiki/page-1476「その後、オモテにしたカードは山札の下に戻す」）", () => {
     const s = resolveAll(activateIf(board("TST-OP:top"), "RS-665"));
     expect(spOf(s, "player1", "RS-665:ky")).toBe(0);
     expect(canStrike(s, "RS-665:ky")).toBe(false);
     expect(s.players.player1.deck.at(-1)?.instanceId).toBe("TST-OP:top");
   });
 
-  // 既知の不具合: CARD-RS-665 【キョウレツエクスプレス】が未実装（発動するかの選択が開かない）
-  it.fails("RS-665: 【キョウレツエクスプレス】「発動できる」— 発動しなければ山札は動かず SP！のまま（出典: atwiki/page-1476「次の効果を発動できる」）", () => {
+  it("RS-665: 【キョウレツエクスプレス】「発動できる」— 発動しなければ山札は動かず SP！のまま（出典: atwiki/page-1476「次の効果を発動できる」）", () => {
     let s = board("RS-505:top");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-665");
     expect(canSkip(s)).toBe(true);
@@ -512,16 +502,14 @@ describe("RS-669 キシャモス", () => {
       order,
     );
 
-  // 既知の不具合: CARD-RS-669 【アイスエイジエクスプレス】が未実装（ティライン→ケラインの順にコンビネーションしても選択が開かない）
-  it.fails("RS-669: 【アイスエイジエクスプレス】キシャモスからティライン→ケラインの順にコンビネーションしたとき、敵軍バトルエリアの本来の BP5000 以下のユニットだけを選べ、選ばないこともできる（出典: atwiki/page-1446）", () => {
+  it("RS-669: 【アイスエイジエクスプレス】キシャモスからティライン→ケラインの順にコンビネーションしたとき、敵軍バトルエリアの本来の BP5000 以下のユニットだけを選べ、選ばないこともできる（出典: atwiki/page-1446）", () => {
     const s = board(["RS-670:ti", "RS-671:ke"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-669");
     expect(choiceIds(s)).toEqual(["SPEC-E5000:a"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-669 【アイスエイジエクスプレス】が未実装
-  it.fails("RS-669: 【アイスエイジエクスプレス】選んだ敵軍ユニットは持ち主（相手）のパワーゾーンに送られる（出典: atwiki/page-1446「持ち主のパワーゾーンに送ってもよい」）", () => {
+  it("RS-669: 【アイスエイジエクスプレス】選んだ敵軍ユニットは持ち主（相手）のパワーゾーンに送られる（出典: atwiki/page-1446「持ち主のパワーゾーンに送ってもよい」）", () => {
     const s = resolveAll(pick(board(["RS-670:ti", "RS-671:ke"]), "SPEC-E5000:a"));
     expect(zoneOf(s, "player2", "SPEC-E5000:a")).toBe("power");
     expect(zoneOf(s, "player2", "SPEC-E6000:b")).toBe("battle");

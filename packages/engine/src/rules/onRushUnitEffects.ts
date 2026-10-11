@@ -1,4 +1,5 @@
 import { openProphecyOnEnemyRush } from "./legend1/set7NamedEffectsC";
+import { trySet9COnUnitRushed } from "./legend1/set9NamedEffectsC";
 import { applyGuardianApostleProviso } from "./legend1/set8NamedEffectsB";
 import type { GameState, PlayerId } from "../types/game";
 import { applySet7AOnRush } from "./legend1/set7NamedEffectsA";
@@ -308,6 +309,8 @@ export function applyPassiveRushTriggers(
   rushedInstanceId: string,
   phasePlayerId: PlayerId,
 ): { state: GameState; logs: string[] } {
+  // RS-656【オールスターアルティメットバスター】: 自軍ユニットをラッシュしたとき（rules/legend1/set9NamedEffectsC.ts）。
+  state = trySet9COnUnitRushed(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   const rsEnemyRush = tryRsCatchallOnEnemyRush(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   let next = tryDispatchOrderOnEnemyRush(rsEnemyRush.state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // RS-490 三の槍マンマルバ幼体【予言】（rules/legend1/set7NamedEffectsC.ts）。

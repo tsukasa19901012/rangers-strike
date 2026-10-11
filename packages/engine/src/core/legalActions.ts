@@ -74,7 +74,7 @@ import {
   listZordSetupResolveActions,
 } from "../rules/zordSetup";
 import { canToggleBpBudgetTarget, FIRE_DANCE_EFFECT_ID, isValidEffectChoiceTarget } from "../rules/pendingChoices";
-import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart, isReleaseStepComplete, listStartReturnGroupIds } from "../rules/startPhase";
+import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart, isReleaseStepComplete, listReturnableStartGroupIds } from "../rules/startPhase";
 import {
   listZordRushPaymentVariants,
   listZordUpRushPaymentVariants,
@@ -121,6 +121,7 @@ import { isSet6AuditConfirmableChoice } from "../rules/legend1/set6AuditFixes";
 import { isSet7AChoiceEffect, isSet7AConfirmableChoice, set7AStrikeCounterIds } from "../rules/legend1/set7NamedEffectsA";
 import { isSet8AChoiceEffect, isSet8AConfirmableChoice, isSet8AResident } from "../rules/legend1/set8NamedEffectsA";
 import { canConfirmSet8CChoice, isSet8CChoiceEffect } from "../rules/legend1/set8NamedEffectsC";
+import { canConfirmSet9CChoice, isSet9CChoiceEffect } from "../rules/legend1/set9NamedEffectsC";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { isSet7BConfirmableChoice } from "../rules/legend1/set7NamedEffectsB";
 import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
@@ -1206,6 +1207,15 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (isSet9CChoiceEffect(pending.effectId)) {
+    // 第9弾 RS-648〜RS-669 の選択（rules/legend1/set9NamedEffectsC.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmSet9CChoice(state, pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
   if (isSet7AChoiceEffect(pending.effectId)) {
     // 第7弾 RS-432〜RS-452 の選択（rules/legend1/set7NamedEffectsA.ts）。候補はモジュール側で絞り込み済み。
     for (const instanceId of pending.validInstanceIds) {
@@ -1730,7 +1740,7 @@ function getLegalActionsCore(state: GameState): GameAction[] {
       if (canReturnBattleAtStart(state, playerId)) {
         actions.push({ type: "return_all_battle_to_rush", playerId });
         // ルール: R-START-01 — 戻す順は任意。2組以上あれば1体ずつ選んで戻せる。
-        const groups = listStartReturnGroupIds(player);
+        const groups = listReturnableStartGroupIds(state, playerId);
         if (groups.length >= 2) {
           for (const instanceId of groups) {
             actions.push({ type: "return_all_battle_to_rush", playerId, instanceId });
