@@ -31,11 +31,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-592::g6guranpuri",
+          "keyword": "set8d::RS-592::g6_grand_prix",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {
@@ -49,7 +49,13 @@
       "text": "合体―エンジンオー（またはスピードル＋バスオン＋ベアールV）＋ガンバルオー（またはバルカ＋ガンパード＋キャリゲーター）",
       "partnerCardIds": [
         "RS-515",
-        "RS-591"
+        "RS-591",
+        "RS-505",
+        "RS-506",
+        "RS-507",
+        "RS-593",
+        "RS-594",
+        "RS-595"
       ],
       "partnerSlotCardIds": [
         [
@@ -58,6 +64,36 @@
         [
           "RS-591"
         ]
+      ],
+      "partnerSlotAlternatives": [
+        {
+          "slot": 0,
+          "slots": [
+            [
+              "RS-505"
+            ],
+            [
+              "RS-506"
+            ],
+            [
+              "RS-507"
+            ]
+          ]
+        },
+        {
+          "slot": 1,
+          "slots": [
+            [
+              "RS-593"
+            ],
+            [
+              "RS-594"
+            ],
+            [
+              "RS-595"
+            ]
+          ]
+        }
       ]
     }
   ],

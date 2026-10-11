@@ -19,7 +19,8 @@ import { opponent } from "../../core/helpers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
-import { applyUnitLeave, openEffectChoice } from "../pendingChoices";
+import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice } from "../pendingChoices";
+
 import {
   getNumberComboEffect,
   getRidingComboEffect,
@@ -919,6 +920,119 @@ export function markMissionBurningNoStrike(state: GameState, playerId: PlayerId,
 }
 
 // ---------------------------------------------------------------------------
+// RS-592 エンジンオーG6【G6グランプリ】
+// 「自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンのカードの枚数が6枚になるように、自軍パワーゾーンのオモテ向きのカードを
+//  選び捨札にしてもよい。そうしたとき、捨札にした枚数と同じ数まで、BP6000以下の敵軍ユニットを選び撃破する。」（atwiki/page-1223）
+// 捨札にする枚数は「パワーゾーンの枚数 − 6」ちょうど（オモテ向きのカードがそれだけなければ発動できない）。
+// 1枚目を選ぶと発動（以後は必要な枚数を選び切る）。撃破は1体ずつ選び、上限に達するか見送り（skip）でまとめて撃破する。
+
+export const G6_GRAND_PRIX_EFFECT_ID = "rs592_g6_grand_prix";
+export const G6_GRAND_PRIX_DESTROY_EFFECT_ID = "rs592_g6_grand_prix_destroy";
+const G6_POWER_TARGET = 6;
+const G6_MAX_BP = 6000;
+
+function applyG6GrandPrix(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const self = ctx.triggerSourceInstanceId;
+  if (turnPlayerOf(state) !== ctx.playerId || !self) return { state, detail: `${G6_GRAND_PRIX_EFFECT_ID}:not_own_turn` };
+  const power = state.players[ctx.playerId].power;
+  const need = power.length - G6_POWER_TARGET;
+  const faceUp = power.filter((c) => !c.faceDown).map((c) => c.instanceId);
+  if (need <= 0 || faceUp.length < need) return { state, detail: `${G6_GRAND_PRIX_EFFECT_ID}:no_excess` };
+  return {
+    state: openEffectChoice(state, {
+      ...choiceBase({ ...ctx, sourceCardId: "RS-592", sourceInstanceId: self }),
+      effectId: G6_GRAND_PRIX_EFFECT_ID,
+      kind: "select_power",
+      validInstanceIds: faceUp,
+      selectCount: need,
+      optional: true,
+      set8dMeta: { selected: [], maxCount: need },
+    }),
+    detail: G6_GRAND_PRIX_EFFECT_ID,
+  };
+}
+
+function g6DestroyCandidates(state: GameState, pending: PendingEffectChoice): string[] {
+  const enemyId = opponent(pending.playerId);
+  const selected = pending.set8dMeta?.selected ?? [];
+  if (selected.length >= (pending.set8dMeta?.maxCount ?? 0)) return [];
+  return fieldUnits(state, enemyId)
+    .filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit")
+    .filter((c) => !selected.includes(c.instanceId))
+    .filter((c) => effectiveBp(state, enemyId, c) <= G6_MAX_BP)
+    .map((c) => c.instanceId);
+}
+
+CHOICE_RESOLVERS[G6_GRAND_PRIX_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const selected = [...(pending.set8dMeta?.selected ?? []), instanceId];
+  const need = pending.set8dMeta?.maxCount ?? 0;
+  const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+  if (selected.length < need) {
+    // 発動したので、残りは必ず選ぶ（見送れない）。
+    return {
+      state: {
+        ...state,
+        pendingEffectChoice: { ...pending, validInstanceIds: remaining, selectedInstanceIds: selected, optional: false, set8dMeta: { ...pending.set8dMeta, selected } },
+      },
+    };
+  }
+  let next = patchPlayer(close(state, pending), playerId, (p) => ({
+    ...p,
+    power: p.power.filter((c) => !selected.includes(c.instanceId)),
+    discard: [...p.discard, ...p.power.filter((c) => selected.includes(c.instanceId)).map(stripForZone)],
+  }));
+  const log = logFor(state, playerId, "RS-592", `${G6_GRAND_PRIX_EFFECT_ID}:discard:${selected.length}`);
+  const draft: PendingEffectChoice = {
+    ...pending,
+    effectId: G6_GRAND_PRIX_DESTROY_EFFECT_ID,
+    kind: "select_unit",
+    validInstanceIds: [],
+    selectedInstanceIds: [],
+    selectCount: selected.length,
+    optional: true,
+    set8dMeta: { selected: [], maxCount: selected.length },
+  };
+  const ids = g6DestroyCandidates(next, draft);
+  if (ids.length === 0) return { state: proceed(next, pending), log };
+  next = openEffectChoice(next, { ...draft, validInstanceIds: ids });
+  return { state: next, log };
+};
+CHOICE_SKIPPERS[G6_GRAND_PRIX_EFFECT_ID] = simpleSkip();
+
+/** 選んだ敵軍ユニットをまとめて撃破する（複数体の撃破は select_units_bp_budget の確定処理を共用する）。 */
+function destroyTogether(state: GameState, pending: PendingEffectChoice, selected: string[]): ChoiceOutcome {
+  if (selected.length === 0) {
+    return { state: finish(state, pending), log: skipLog(state, pending.playerId, pending.sourceCardId, pending.effectId) };
+  }
+  const confirmPending: PendingEffectChoice = {
+    ...pending,
+    kind: "select_units_bp_budget",
+    validInstanceIds: selected,
+    selectedInstanceIds: selected,
+    bpBudget: Number.MAX_SAFE_INTEGER,
+    optional: false,
+    set8dMeta: undefined,
+  };
+  const confirmed = applyConfirmEffectChoice({ ...state, pendingEffectChoice: confirmPending }, pending.playerId);
+  if ("error" in confirmed) return confirmed;
+  return { state: confirmed.state, log: logFor(state, pending.playerId, pending.sourceCardId, `${pending.effectId}:${selected.length}`) };
+}
+
+CHOICE_RESOLVERS[G6_GRAND_PRIX_DESTROY_EFFECT_ID] = (state, _playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const selected = [...(pending.set8dMeta?.selected ?? []), instanceId];
+  const next: PendingEffectChoice = { ...pending, selectedInstanceIds: selected, set8dMeta: { ...pending.set8dMeta, selected } };
+  const ids = g6DestroyCandidates(state, next);
+  if (ids.length === 0) return destroyTogether(state, next, selected);
+  return { state: { ...state, pendingEffectChoice: { ...next, validInstanceIds: ids } } };
+};
+CHOICE_SKIPPERS[G6_GRAND_PRIX_DESTROY_EFFECT_ID] = (state) => {
+  const pending = state.pendingEffectChoice!;
+  return destroyTogether(state, pending, pending.set8dMeta?.selected ?? []);
+};
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword からの起点
 
 export const SET8D_KEYWORD_PREFIX = "set8d::";
@@ -935,6 +1049,7 @@ const SET8D_KEYWORDS: Record<string, (state: GameState, ctx: GrantKeywordContext
   "RS-598::justice_sortie": applyJusticeSortie,
   "RS-599::reclaim_flame": applyReclaimFlame,
   "RS-601::full_power": applyFullPower,
+  "RS-592::g6_grand_prix": applyG6GrandPrix,
   "RS-588::soul_art": applySoulArt,
   "RS-590::gray_bomber": applySoulArt,
   "RS-600::mission1_burning": (state) => ({ state, detail: "rs600_mission1_burning" }),

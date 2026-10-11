@@ -352,6 +352,13 @@ export function applyAllZordFusionMaterials(
     nextPlayer = { ...nextPlayer, [material.zone]: remaining };
   }
 
+  // 「自軍合体ユニットをパワーゾーンに送る」（RS-592。faq-card-8 RS-569 Q1）なら捨札ではなくパワーゾーンへ。
+  if (fusionMaterialsGoToPower(resolveZordUpCondition(definitions, rushingCardId)?.text)) {
+    return {
+      ...nextPlayer,
+      power: [...nextPlayer.power, ...toDiscard.map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }))],
+    };
+  }
   return {
     ...nextPlayer,
     discard: [...nextPlayer.discard, ...toDiscard],
@@ -515,6 +522,11 @@ export function findZordMaterial(
   return null;
 }
 
+/** 追加条件の文面が合体ユニットを「パワーゾーンに送る」か（捨札ではなく）。 */
+function fusionMaterialsGoToPower(text: string | undefined): boolean {
+  return !!text && /合体ユニットをパワーゾーンに送る/.test(text);
+}
+
 export function applyZordMaterial(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
@@ -539,7 +551,13 @@ export function applyZordMaterial(
   const [, zoneCards] = removeAt(player[material.zone], material.index);
   let nextPlayer: PlayerState = { ...player, [material.zone]: zoneCards };
 
-  if (
+  if (conditionId === "discard_fusion_unit" && fusionMaterialsGoToPower(resolved?.text)) {
+    // 「自軍合体ユニットをパワーゾーンに送る」（RS-592 エンジンオーG6。faq-card-8 RS-569 Q1「合体ユニットをパワー送りにする」）。
+    nextPlayer = {
+      ...nextPlayer,
+      power: [...nextPlayer.power, { instanceId: material.card.instanceId, cardId: material.card.cardId }],
+    };
+  } else if (
     conditionId === "discard_fusion_unit" ||
     conditionId === "discard_named_unit" ||
     conditionId === "discard_feature_unit" ||
