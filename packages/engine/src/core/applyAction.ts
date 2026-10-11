@@ -1918,14 +1918,11 @@ function applyActionCore(
         let shortage = effectiveCost - available;
 
         if (shortage > 0) {
-          const withGodom = applyGodomSenshoDiscardPay(powerState, candidate, shortage);
+          // RS-586【魔神に不足する物】: 足りない数だけ場の「戦闘員」のユニットを捨札にする（rules/godomRushPay.ts）。
+          const withGodom = applyGodomSenshoDiscardPay(powerState, playerId, candidate, definition!, shortage);
           if (withGodom) {
-            candidate = withGodom;
-            available = countAvailablePower(
-              { ...powerState, players: { ...powerState.players, [playerId]: candidate } },
-              playerId,
-            );
-            shortage = effectiveCost - available;
+            candidate = withGodom.player;
+            shortage -= withGodom.covered;
           }
         }
 
