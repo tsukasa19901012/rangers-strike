@@ -5,7 +5,7 @@
 export type Category = "ET" | "WB" | "OT" | "MA" | "DA";
 export type UnitSize = "S" | "M" | "L" | "XL" | "SC";
 export type CardType = "unit" | "operation" | "vehicle" | "commander";
-export type Rarity = "N" | "R" | "SR" | "NR" | "SC" | "PR";
+export type Rarity = "N" | "R" | "SR" | "NR" | "SC" | "PR" | "MR" | "LR";
 export type ZoneName =
   | "deck"
   | "hand"

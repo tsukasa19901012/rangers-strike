@@ -126,6 +126,21 @@ export function parseEnemyUnitFilter(body: string): EnemyUnitFilter {
   return filter;
 }
 
+/**
+ * 敵軍ユニットを選ぶ文の候補エリア（「敵軍バトルエリア」「敵軍ラッシュエリア」「ラッシュエリアかバトルエリア」等の表記どおり）。
+ * 発動条件の「これをラッシュしたとき」「これがバトルエリアに出たとき」「自軍ラッシュフェイズ中」はエリアの指定ではない。
+ * エリアの指定がなければ両方（「ユニット」はバトルエリアかラッシュエリアにあるユニットを指す。R-ZONE-03）。
+ */
+export function parseEnemyTargetZone(body: string): "battle" | "rush" | "both" {
+  const rush =
+    /敵軍の?ラッシュエリア|ラッシュエリアにある|(?:バトルエリア|バトル)(?:か|または|と|・)ラッシュエリア/.test(body);
+  const battle =
+    /敵軍の?バトルエリア|バトルエリアにある|(?:ラッシュエリア|ラッシュ)(?:か|または|と|・)バトルエリア/.test(body);
+  if (rush && !battle) return "rush";
+  if (battle && !rush) return "battle";
+  return "both";
+}
+
 export function startGenericEnemyUnitChoice(
   state: GameState,
   params: BaseChoiceParams & {

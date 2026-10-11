@@ -3,7 +3,7 @@
   "name": "勇気の魔法",
   "type": "operation",
   "category": "MA",
-  "rarity": "R",
+  "rarity": "N",
   "expansion": "legend1",
   "powerCost": 1,
   "effectId": "courage_magic",

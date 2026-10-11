@@ -30,7 +30,7 @@
     },
     "rarity": {
       "type": "string",
-      "enum": ["N", "R", "SR", "NR", "SC", "PR"]
+      "enum": ["N", "R", "SR", "NR", "SC", "PR", "MR", "LR"]
     },
     "expansion": {
       "type": "string",

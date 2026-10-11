@@ -23,6 +23,7 @@ import {
 import {
   collectEnemyUnits,
   countFieldFeatureUnits,
+  parseEnemyTargetZone,
   parseEnemyUnitFilter,
   parseFeatureThreshold,
   playerHasFieldCard,
@@ -120,8 +121,8 @@ const handleEnemyToPowerDamage: PatternHandler = (state, ctx, body) => {
 };
 
 const handleDestroyPatterns: PatternHandler = (state, ctx, body) => {
-  const filter = parseEnemyUnitFilter(body);
-  if (!filter.zone && /ラッシュ/.test(body)) filter.zone = "rush";
+  // 候補エリアは対象の表記どおり（「これをラッシュしたとき」等の「ラッシュ」で敵軍ラッシュエリアに絞らない）。
+  const filter = { ...parseEnemyUnitFilter(body), zone: parseEnemyTargetZone(body) };
   const withChoice = startGenericEnemyUnitChoice(state, {
     playerId: ctx.playerId,
     effectId: ctx.effectId,

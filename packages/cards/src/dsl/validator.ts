@@ -12,7 +12,7 @@ import {
 
 const CATEGORIES = new Set(["ET", "WB", "OT", "MA", "DA"]);
 const CARD_TYPES = new Set(["unit", "operation", "vehicle", "commander"]);
-const RARITIES = new Set(["N", "R", "SR", "NR", "SC", "PR"]);
+const RARITIES = new Set(["N", "R", "SR", "NR", "SC", "PR", "MR", "LR"]);
 const SIZES = new Set(["S", "M", "L", "XL", "SC"]);
 const ZONES = new Set([
   "deck", "hand", "discard", "power", "command",
