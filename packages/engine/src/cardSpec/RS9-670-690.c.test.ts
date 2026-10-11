@@ -71,8 +71,7 @@ describe("RS-685 ブラックコンドル（2nd）", () => {
     expectStats("RS-685", { name: "ブラックコンドル（2nd）", category: "ET", size: "S", bp: 2000, sp: "special", powerCost: 4, comboNumber: 5, features: ["ブラック", "男", "2nd"] });
   });
 
-  // 既知の不具合: CARD-RS-685 カタログのレアリティが N（atwiki はスーパーレア）
-  it.fails("RS-685: レアリティはスーパーレア（出典: atwiki/page-1530「レアリティ：スーパーレア」）", () => {
+  it("RS-685: レアリティはスーパーレア（出典: atwiki/page-1530「レアリティ：スーパーレア」）", () => {
     expect(rarityOf("RS-685")).toBe("SR");
   });
 
@@ -188,8 +187,7 @@ describe("RS-686 セイクウオー", () => {
     expectStats("RS-686", { name: "セイクウオー", category: "OT", size: "L", bp: 9000, sp: 1, powerCost: "6+", features: ["人型", "航空機", "炎神"], rushCondition: "discard_fusion_unit" });
   });
 
-  // 既知の不具合: CARD-RS-686 カタログのレアリティが N（atwiki はレア）
-  it.fails("RS-686: レアリティはレア（出典: atwiki/page-1489「レアリティ：レア」）", () => {
+  it("RS-686: レアリティはレア（出典: atwiki/page-1489「レアリティ：レア」）", () => {
     expect(rarityOf("RS-686")).toBe("R");
   });
 
@@ -274,8 +272,7 @@ describe("RS-687 ギンガイオー", () => {
     expectStats("RS-687", { name: "ギンガイオー", category: "WB", size: "L", bp: 12000, sp: 1, powerCost: "5+", features: ["獣", "人型"], rushCondition: "discard_fusion_vehicle" });
   });
 
-  // 既知の不具合: CARD-RS-687 カタログのレアリティが N（atwiki はスーパーレア）
-  it.fails("RS-687: レアリティはスーパーレア（出典: atwiki/page-1433「レアリティ：スーパーレア」）", () => {
+  it("RS-687: レアリティはスーパーレア（出典: atwiki/page-1433「レアリティ：スーパーレア」）", () => {
     expect(rarityOf("RS-687")).toBe("SR");
   });
 
@@ -357,8 +354,7 @@ describe("RS-688 ギガフェニックス", () => {
     expectStats("RS-688", { name: "ギガフェニックス", category: "WB", size: "L", bp: 6000, sp: 1, powerCost: "5+", features: ["メカ", "獣", "人型"], rushCondition: "discard_named_unit" });
   });
 
-  // 既知の不具合: CARD-RS-688 カタログのレアリティが N（atwiki はレア）
-  it.fails("RS-688: レアリティはレア（出典: atwiki/page-1498「レアリティ：レア」）", () => {
+  it("RS-688: レアリティはレア（出典: atwiki/page-1498「レアリティ：レア」）", () => {
     expect(rarityOf("RS-688")).toBe("R");
   });
 
@@ -423,8 +419,7 @@ describe("RS-689 レッドホーク（2nd）", () => {
     expectStats("RS-689", { name: "レッドホーク（2nd）", category: "ET", size: "S", bp: 2000, sp: undefined, powerCost: 3, comboNumber: 1, features: ["レッド", "男", "2nd"] });
   });
 
-  // 既知の不具合: CARD-RS-689 カタログのレアリティが N（atwiki はスーパーレア）
-  it.fails("RS-689: レアリティはスーパーレア（出典: atwiki/page-1531「レアリティ：スーパーレア」）", () => {
+  it("RS-689: レアリティはスーパーレア（出典: atwiki/page-1531「レアリティ：スーパーレア」）", () => {
     expect(rarityOf("RS-689")).toBe("SR");
   });
 
@@ -491,8 +486,7 @@ describe("RS-690 スペードエース", () => {
     expectStats("RS-690", { name: "スペードエース", category: "ET", size: "S", bp: 4000, sp: undefined, powerCost: 4, comboNumber: 2, features: ["メカ", "レッド", "男"] });
   });
 
-  // 既知の不具合: CARD-RS-690 カタログのレアリティが N（atwiki はレア）
-  it.fails("RS-690: レアリティはレア（出典: atwiki/page-1490「レアリティ：レア」）", () => {
+  it("RS-690: レアリティはレア（出典: atwiki/page-1490「レアリティ：レア」）", () => {
     expect(rarityOf("RS-690")).toBe("R");
   });
 

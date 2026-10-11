@@ -174,8 +174,7 @@ describe("RS-679 シンケンオー", () => {
     expectStats("RS-679", { name: "シンケンオー", category: "MA", size: "L", bp: 17000, sp: 1, powerCost: "5+", features: ["人型", "侍"], rushCondition: "discard_fusion_unit" });
   });
 
-  // 既知の不具合: CARD-RS-679 カタログのレアリティが N（atwiki はスーパーレア）
-  it.fails("RS-679: レアリティはスーパーレア（出典: atwiki/page-1485「レアリティ：スーパーレア」）", () => {
+  it("RS-679: レアリティはスーパーレア（出典: atwiki/page-1485「レアリティ：スーパーレア」）", () => {
     expect(rarityOf("RS-679")).toBe("SR");
   });
 

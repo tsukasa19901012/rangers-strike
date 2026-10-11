@@ -167,8 +167,7 @@ describe("RS-642 ギガライノス", () => {
     expectStats("RS-642", { name: "ギガライノス", category: "WB", size: "L", bp: 5000, sp: 1, powerCost: "5+", features: ["メカ", "獣", "人型"], rushCondition: "discard_named_unit" });
   });
 
-  // 既知の不具合: CARD-RS-642 カタログのレアリティが N（atwiki はレア）
-  it.fails("RS-642: レアリティはレア（出典: atwiki/page-1493「レアリティ：レア」）", () => {
+  it("RS-642: レアリティはレア（出典: atwiki/page-1493「レアリティ：レア」）", () => {
     expect(rarityOf("RS-642")).toBe("R");
   });
 
@@ -295,8 +294,7 @@ describe("RS-645 ビクトリーマーズ", () => {
     expectStats("RS-645", { name: "ビクトリーマーズ", category: "ET", size: "L", bp: 11000, sp: 1, powerCost: "7+", features: ["メカ", "人型"], rushCondition: "discard_named_unit" });
   });
 
-  // 既知の不具合: CARD-RS-645 カタログのレアリティが N（atwiki はレア）
-  it.fails("RS-645: レアリティはレア（出典: atwiki/page-1492「レアリティ：レア」）", () => {
+  it("RS-645: レアリティはレア（出典: atwiki/page-1492「レアリティ：レア」）", () => {
     expect(rarityOf("RS-645")).toBe("R");
   });
 
@@ -460,8 +458,7 @@ describe("RS-647 ピヨちゃん", () => {
     expectStats("RS-647", { name: "ピヨちゃん", category: "WB", size: "S", bp: 500, sp: undefined, powerCost: 3, comboNumber: undefined, features: ["獣"] });
   });
 
-  // 既知の不具合: CARD-RS-647 カタログのレアリティが N（atwiki はノーマルレア）
-  it.fails("RS-647: レアリティはノーマルレア（出典: atwiki/page-1469「レアリティ：ノーマルレア」）", () => {
+  it("RS-647: レアリティはノーマルレア（出典: atwiki/page-1469「レアリティ：ノーマルレア」）", () => {
     expect(rarityOf("RS-647")).toBe("NR");
   });
 

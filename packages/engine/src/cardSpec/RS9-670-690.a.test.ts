@@ -85,8 +85,7 @@ describe("RS-672 ゴローダーGT", () => {
     expectStats("RS-672", { name: "ゴローダーGT", category: "OT", size: "S", bp: 2000, sp: undefined, powerCost: 0, comboNumber: "R", features: ["メカ"] });
   });
 
-  // 既知の不具合: CARD-RS-672 カタログのレアリティが N（atwiki はレア）
-  it.fails("RS-672: レアリティはレア（出典: atwiki/page-1521「レアリティ：レア」）", () => {
+  it("RS-672: レアリティはレア（出典: atwiki/page-1521「レアリティ：レア」）", () => {
     expect(rarityOf("RS-672")).toBe("R");
   });
 
@@ -262,8 +261,7 @@ describe("RS-674 シンケンレッド", () => {
     expectStats("RS-674", { name: "シンケンレッド", category: "MA", size: "S", bp: 2000, sp: "special", powerCost: 3, comboNumber: 3, features: ["レッド", "男", "侍"] });
   });
 
-  // 既知の不具合: CARD-RS-674 カタログのレアリティが N（atwiki はスーパーレア）
-  it.fails("RS-674: レアリティはスーパーレア（出典: atwiki/page-1421「レアリティ：スーパーレア」）", () => {
+  it("RS-674: レアリティはスーパーレア（出典: atwiki/page-1421「レアリティ：スーパーレア」）", () => {
     expect(rarityOf("RS-674")).toBe("SR");
   });
 
@@ -319,8 +317,7 @@ describe("RS-675 シンケンブルー", () => {
     expectStats("RS-675", { name: "シンケンブルー", category: "MA", size: "S", bp: 2000, sp: undefined, powerCost: 0, comboNumber: 4, features: ["ブルー", "男", "侍"] });
   });
 
-  // 既知の不具合: CARD-RS-675 カタログのレアリティが N（atwiki はノーマルレア）
-  it.fails("RS-675: レアリティはノーマルレア（出典: atwiki/page-1425「レアリティ：ノーマルレア」）", () => {
+  it("RS-675: レアリティはノーマルレア（出典: atwiki/page-1425「レアリティ：ノーマルレア」）", () => {
     expect(rarityOf("RS-675")).toBe("NR");
   });
 

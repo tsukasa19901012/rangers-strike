@@ -323,8 +323,7 @@ describe("RS-608 五色の戦士", () => {
     expectOpStats("RS-608", { name: "五色の戦士", category: "WB", powerCost: 4 });
   });
 
-  // 既知の不具合: CARD-RS-608 カタログのレアリティが N（atwiki はレア）
-  it.fails("RS-608: レアリティ — レア（出典: atwiki/page-1495「レアリティ：レア」）", () => {
+  it("RS-608: レアリティ — レア（出典: atwiki/page-1495「レアリティ：レア」）", () => {
     expectRarity("RS-608", "R");
   });
 
@@ -394,8 +393,7 @@ describe("RS-609 戦士の魂", () => {
     expectOpStats("RS-609", { name: "戦士の魂", category: "ET", powerCost: 5 });
   });
 
-  // 既知の不具合: CARD-RS-609 カタログのレアリティが N（atwiki はレア）
-  it.fails("RS-609: レアリティ — レア（出典: atwiki/page-1496「レアリティ：レア」）", () => {
+  it("RS-609: レアリティ — レア（出典: atwiki/page-1496「レアリティ：レア」）", () => {
     expectRarity("RS-609", "R");
   });
 
@@ -462,8 +460,7 @@ describe("RS-610 秘伝ディスク", () => {
     expectOpStats("RS-610", { name: "秘伝ディスク", category: "MA", powerCost: 3 });
   });
 
-  // 既知の不具合: CARD-RS-610 カタログのレアリティが N（atwiki はノーマルレア）
-  it.fails("RS-610: レアリティ — ノーマルレア（出典: atwiki/page-1440「レアリティ：ノーマルレア」）", () => {
+  it("RS-610: レアリティ — ノーマルレア（出典: atwiki/page-1440「レアリティ：ノーマルレア」）", () => {
     expectRarity("RS-610", "NR");
   });
 
@@ -535,8 +532,7 @@ describe("RS-611 バリブルーン", () => {
     });
   });
 
-  // 既知の不具合: CARD-RS-611 カタログのレアリティが N（atwiki はノーマルレア）
-  it.fails("RS-611: レアリティ — ノーマルレア（出典: atwiki/page-1450）", () => {
+  it("RS-611: レアリティ — ノーマルレア（出典: atwiki/page-1450）", () => {
     expectRarity("RS-611", "NR");
   });
 
@@ -630,8 +626,7 @@ describe("RS-612 スカイエース", () => {
     });
   });
 
-  // 既知の不具合: CARD-RS-612 カタログのレアリティが N（atwiki はノーマルレア）
-  it.fails("RS-612: レアリティ — ノーマルレア（出典: atwiki/page-1451）", () => {
+  it("RS-612: レアリティ — ノーマルレア（出典: atwiki/page-1451）", () => {
     expectRarity("RS-612", "NR");
   });
 
