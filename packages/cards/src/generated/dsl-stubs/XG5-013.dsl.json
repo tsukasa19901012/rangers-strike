@@ -4,7 +4,7 @@
   "name": "再生カード",
   "type": "operation",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "自軍捨札から、DAを持つカードを1枚選び手札に加える。",

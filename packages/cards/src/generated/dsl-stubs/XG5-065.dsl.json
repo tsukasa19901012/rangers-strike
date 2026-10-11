@@ -4,7 +4,7 @@
   "name": "タイムベント",
   "type": "operation",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 8,
   "text": "追加条件を持たないユニットをすべて撃破する。",

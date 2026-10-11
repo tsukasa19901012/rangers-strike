@@ -4,7 +4,7 @@
   "name": "オートバジンVM",
   "type": "vehicle",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 2,
   "text": "【自律変形】敵軍バトルフェイズ開始時、このビークルを自軍コマンドゾーンに送ってもよい。そうしたとき、自軍コマンドゾーンから「オートバジンBM」のカードを1枚選び、自軍バトルエリアの最後に出す。",

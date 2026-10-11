@@ -4,7 +4,7 @@
   "name": "魔法剣キングカリバー",
   "type": "operation",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 1,
   "text": "自分は1枚ドローする。（これが自軍コマンドゾーンにある間、MAを持ち合体を必要とする自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する)",
