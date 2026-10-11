@@ -96,9 +96,8 @@ export function collectEnemyUnits(
 }
 
 export function parseEnemyUnitFilter(body: string): EnemyUnitFilter {
-  const filter: EnemyUnitFilter = { zone: "battle" };
-  if (/ラッシュエリア/.test(body)) filter.zone = "rush";
-  if (/バトルエリア/.test(body) && /ラッシュエリア/.test(body)) filter.zone = "both";
+  // ルール: R-TGT-01 / R-ZONE-03 — エリアの指定がない「ユニット」はバトルエリアとラッシュエリアの両方（parseEnemyTargetZone）。
+  const filter: EnemyUnitFilter = { zone: parseEnemyTargetZone(body) };
   const bpLe = body.match(/BP(\d+)以下/);
   if (bpLe) filter.maxBp = Number(bpLe[1]);
   // 「BP4000の敵軍Sユニット」— BP がちょうどその値（RS-368【ゴッドハンド】）。
