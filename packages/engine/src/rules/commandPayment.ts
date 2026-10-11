@@ -414,6 +414,10 @@ export function validatePaymentSelection(
 ): string | null {
   const unique = new Set(commandInstanceIds);
   if (unique.size !== commandInstanceIds.length) return "duplicate_selection";
+  if (pending.extraCommandHoldCount) {
+    // 追加分も選ぶ支払い（RS-627）: カテゴリの支払い分と追加分に分けられるか。
+    return splitExtraHoldPayment(state, pending, commandInstanceIds) ? null : "invalid_command";
+  }
   if (pending.kind === "effect_hold" && pending.shifuSubstitute) {
     return validateShifuEffectHold(state, pending, commandInstanceIds);
   }
@@ -511,6 +515,11 @@ export function applyCommandPaymentResolve(
   pending: PendingCommandPayment,
   commandInstanceIds: string[],
 ): { state: GameState; nextPending?: PendingCommandPayment } | { error: string } {
+  if (pending.extraCommandHoldCount) {
+    const split = splitExtraHoldPayment(state, pending, commandInstanceIds);
+    if (!split) return { error: "invalid_command" };
+    return applyCommandPaymentResolve(state, playerId, split.pending, split.ids);
+  }
   if (pending.kind === "mothership_hold") {
     const afterMothership = applyMothershipPaymentHolds(
       state,
@@ -889,6 +898,115 @@ export function continueAfterMothershipPayment(
   );
 }
 
+// ---------------------------------------------------------------------------
+// 追加条件「追加で自軍コマンドをNつホールドする」を、ラッシュのコマンド支払いの中で選ぶ
+// （RS-627 メガシップ ※「…次のように変更される⇒追加で自軍コマンドを2つホールドする」）。
+// 追加分を先に決めた initiate_command_payment（zordExtraCommandHoldInstanceIds）も従来どおり使える。
+
+function extraHoldCombinations<T>(items: T[], count: number): T[][] {
+  if (count <= 0) return [[]];
+  if (count > items.length) return [];
+  const result: T[][] = [];
+  for (let i = 0; i <= items.length - count; i += 1) {
+    for (const rest of extraHoldCombinations(items.slice(i + 1), count - 1)) {
+      result.push([items[i]!, ...rest]);
+    }
+  }
+  return result;
+}
+
+/** 追加分を決めずに支払いを始めたとき、追加分も選ぶ支払いを作る。対象外なら undefined、支払えなければ null。 */
+function buildExtraHoldInPayment(
+  state: GameState,
+  playerId: PlayerId,
+  action: InitiateCommandPaymentAction,
+  card: CardInstance,
+  def: CardDefinition,
+  categories: Category[],
+): PendingCommandPayment | null | undefined {
+  if ((action.zordExtraCommandHoldInstanceIds?.length ?? 0) > 0 || action.prismSubstitute) return undefined;
+  if (!needsHoldExtraCommand(state.definitions, def.id)) return undefined;
+  const count = resolveRushAdditionalCondition(def.id, def)?.unitCount ?? 1;
+  const player = state.players[playerId];
+  const extras = collectHoldExtraCommandCandidates(player, state.definitions);
+  if (extras.length < count) return null;
+  // 追加分以外（パワー等）の判定。追加分は仮に候補の先頭を使う（実際の追加分は確定時に選ぶ）。
+  if (
+    !canRushUnitExceptCommandHold(
+      player,
+      state.definitions,
+      def,
+      card.instanceId,
+      action.zordMaterialInstanceId,
+      action.zordMothershipHoldInstanceIds,
+      action.zordMaterialDestination,
+      rushPowerBudget(state, playerId, player, def),
+      { ...state, playerId },
+      action.zordMaterialInstanceIds,
+      extras.slice(0, count).map((c) => c.instanceId),
+    )
+  ) {
+    return null;
+  }
+  const base = buildCategoryPayment(
+    state,
+    playerId,
+    card.instanceId,
+    card.cardId,
+    categories,
+    {
+      type: "rush",
+      zordMaterialInstanceId: action.zordMaterialInstanceId,
+      zordMaterialInstanceIds: action.zordMaterialInstanceIds,
+      zordMaterialDestination: action.zordMaterialDestination,
+      zordMothershipHoldInstanceIds: action.zordMothershipHoldInstanceIds,
+    },
+    false,
+    { perRushPayment: true },
+  );
+  if (!base || base.shifuSubstitute) return null;
+  const validInstanceIds = [...new Set([...base.validInstanceIds, ...extras.map((c) => c.instanceId)])];
+  const totalNeeded = base.totalNeeded + count;
+  if (validInstanceIds.length < totalNeeded) return null;
+  return { ...base, validInstanceIds, totalNeeded, extraCommandHoldCount: count };
+}
+
+/**
+ * 追加分も選ぶ支払い（extraCommandHoldCount）の選択を、カテゴリの支払い分と追加分に分ける。
+ * 追加分はリリース状態の自軍コマンド（オペレーション）。分けられなければ null。対象外の支払いはそのまま返す。
+ */
+export function splitExtraHoldPayment(
+  state: GameState,
+  pending: PendingCommandPayment,
+  commandInstanceIds: string[],
+): { pending: PendingCommandPayment; ids: string[] } | null {
+  const count = pending.extraCommandHoldCount;
+  if (!count) return { pending, ids: commandInstanceIds };
+  if (pending.continuation.type !== "rush") return null;
+  if (new Set(commandInstanceIds).size !== commandInstanceIds.length) return null;
+  if (commandInstanceIds.length !== pending.totalNeeded) return null;
+  if (commandInstanceIds.some((id) => !pending.validInstanceIds.includes(id))) return null;
+  const extras = new Set(
+    collectHoldExtraCommandCandidates(state.players[pending.playerId], state.definitions).map((c) => c.instanceId),
+  );
+  const { extraCommandHoldCount: _omit, ...rest } = pending;
+  void _omit;
+  const baseCount = pending.totalNeeded - count;
+  for (const baseIds of extraHoldCombinations(commandInstanceIds, baseCount)) {
+    const extraIds = commandInstanceIds.filter((id) => !baseIds.includes(id));
+    if (!extraIds.every((id) => extras.has(id))) continue;
+    const basePending: PendingCommandPayment = {
+      ...rest,
+      totalNeeded: baseCount,
+      validInstanceIds: pending.validInstanceIds.filter((id) => !extraIds.includes(id)),
+      continuation: { ...pending.continuation, zordExtraCommandHoldInstanceIds: extraIds },
+    };
+    if (validatePaymentSelection(state, basePending, baseIds) !== null) continue;
+    return { pending: basePending, ids: baseIds };
+  }
+  return null;
+}
+
 export function buildPaymentFromInitiateAction(
   state: GameState,
   action: InitiateCommandPaymentAction,
@@ -924,6 +1042,8 @@ export function buildPaymentFromInitiateAction(
   // RS-292【虎の子大秘術】: 手札のオペレーションはどのカテゴリのコマンドをホールドしてもよい。
   const categories = operationPaymentCategories(state, playerId, def);
   if (isRushable(def)) {
+    const extraInPayment = buildExtraHoldInPayment(state, playerId, action, handFound.card, def, categories);
+    if (extraInPayment !== undefined) return extraInPayment;
     if (
       !canRushUnitExceptCommandHold(
         player,
@@ -1114,8 +1234,14 @@ export function isInitiateCommandPaymentLegal(
   if (action.kind === "effect_hold") {
     return state.pendingEffectChoice !== undefined && buildEffectHoldPayment(state) !== null;
   }
-  const pending = buildPaymentFromInitiateAction(state, action);
+  let pending = buildPaymentFromInitiateAction(state, action);
   if (!pending) return false;
+  if (pending.extraCommandHoldCount) {
+    // 追加分も選ぶ支払い（RS-627）: 先頭の選び方で分けて確認する。
+    const split = splitExtraHoldPayment(state, pending, pending.validInstanceIds.slice(0, pending.totalNeeded));
+    if (!split) return false;
+    pending = split.pending;
+  }
 
   const preview = previewPaymentResolve(state, pending);
   if ("error" in preview) return false;
@@ -1187,10 +1313,15 @@ export function isInitiateCommandPaymentLegal(
 
 export function isResolveCommandPaymentLegal(
   state: GameState,
-  action: { playerId: PlayerId; commandInstanceIds: string[] },
+  rawAction: { playerId: PlayerId; commandInstanceIds: string[] },
 ): boolean {
-  const pending = state.pendingCommandPayment;
-  if (!pending || pending.playerId !== action.playerId) return false;
+  const rawPending = state.pendingCommandPayment;
+  if (!rawPending || rawPending.playerId !== rawAction.playerId) return false;
+  // 追加分も選ぶ支払い（RS-627）は、カテゴリの支払い分と追加分に分けて判定する。
+  const split = splitExtraHoldPayment(state, rawPending, rawAction.commandInstanceIds);
+  if (!split) return false;
+  const pending = split.pending;
+  const action = { ...rawAction, commandInstanceIds: split.ids };
   if (validatePaymentSelection(state, pending, action.commandInstanceIds) !== null) {
     return false;
   }

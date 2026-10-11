@@ -154,6 +154,7 @@ import {
 } from "../rules/legend3/restrictions";
 import { applyGodomSenshoDiscardPay } from "../rules/godomRushPay";
 import { activateSet9AFieldAbility, activateSet9AResident, isSet9AResidentCard, settleSet9AAfterAction, settleSet9ATurnEnd } from "../rules/legend1/set9NamedEffectsA";
+import { openMegaCaptureIfReady, queueMegaCapture, settleSoulBirdStacks } from "../rules/legend1/set9NamedEffectsB";
 import { applyMeeMegaloAfterAction, openTakeTheBlowChoice, resolveTakeTheBlow, skipTakeTheBlow, TAKE_THE_BLOW_EFFECT_ID } from "../rules/legend1/set8NamedEffectsD";
 import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
 import {
@@ -221,6 +222,7 @@ import {
 } from "../rules/restrictions";
 import {
   applyCommandPaymentResolve,
+  splitExtraHoldPayment,
   buildBattleEntryPayment,
   buildPaymentFromInitiateAction,
   validatePaymentSelection,
@@ -863,6 +865,10 @@ export function applyAction(
   next = settleStackedCards(next);
   // RS-350 暗黒の鎧: 重ねたユニットがユニットでなくなったら、鎧を持ち主のパワーゾーンにダメージにして置く。
   if (applyActionDepth === 0) next = settleDarkArmor(state, next);
+  // RS-647 ピヨちゃん: 重ねたユニットがユニットでなくなったら捨札になる（rules/legend1/set9NamedEffectsB.ts）。
+  if (applyActionDepth === 0) next = settleSoulBirdStacks(state, next);
+  // RS-628【メガキャプチャー】: このターン、次に自軍コマンドゾーンにカードが置かれたとき（rules/legend1/set9NamedEffectsB.ts）。
+  if (applyActionDepth === 0) next = openMegaCaptureIfReady(queueMegaCapture(state, next));
   // RS-385【特殊消化弾】: 自軍コマンドゾーンにホールド状態で置くカードは、かわりにリリース状態で置く。
   if (applyActionDepth === 0) next = applySpecialExtinguisher(state, next);
   // RS-265【ラウンドレーダー】: 相手が手札からオペレーションを使用したとき（解決が終わってから開く）。
@@ -1400,16 +1406,21 @@ function applyActionCore(
     }
 
     case "resolve_command_payment": {
-      const pending = state.pendingCommandPayment;
-      if (!pending || pending.playerId !== playerId) return fail("no_pending_payment");
-      const err = validatePaymentSelection(state, pending, action.commandInstanceIds);
+      const rawPending = state.pendingCommandPayment;
+      if (!rawPending || rawPending.playerId !== playerId) return fail("no_pending_payment");
+      // 「追加で自軍コマンドをNつホールドする」を支払いの中で選んだとき、追加分を分ける（RS-627。rules/commandPayment.ts）。
+      const split = splitExtraHoldPayment(state, rawPending, action.commandInstanceIds);
+      if (!split) return fail("invalid_command");
+      const pending = split.pending;
+      const paidIds = split.ids;
+      const err = validatePaymentSelection(state, pending, paidIds);
       if (err) return fail(err);
 
       const resolved = applyCommandPaymentResolve(
         state,
         playerId,
         pending,
-        action.commandInstanceIds,
+        paidIds,
       );
       if ("error" in resolved) return fail(resolved.error);
 
@@ -1427,7 +1438,7 @@ function applyActionCore(
         const completed = completeEffectHoldChoice(
           nextState,
           playerId,
-          action.commandInstanceIds,
+          paidIds,
         );
         if ("error" in completed) return fail(completed.error);
         return ok(completed.state, completed.log ?? buildSimpleLogEntry(playerId, "resolve_effect_choice"));
@@ -1444,7 +1455,7 @@ function applyActionCore(
       if (cont.type === "rush") {
         const holdIds =
           pending.kind === "mothership_hold"
-            ? action.commandInstanceIds
+            ? paidIds
             : cont.zordMothershipHoldInstanceIds;
         return applyAction(
           nextState,
@@ -1479,7 +1490,7 @@ function applyActionCore(
           countered.ok &&
           hasTurnRuleModifier(nextState.players[playerId], TURN_RULE_IDS.DEACE_SNIPER)
         ) {
-          return { ok: true, state: discardCounterHolds(countered.state, playerId, action.commandInstanceIds) };
+          return { ok: true, state: discardCounterHolds(countered.state, playerId, paidIds) };
         }
         return countered;
       }

@@ -15,6 +15,7 @@ import { finalizeLeavePending } from "./operationCounters";
 import { resolveDestroyedFactEffects } from "./leaveEffects";
 import { riddenVehicleGrantsResist } from "./legend1/set7NamedEffectsB";
 import { set8BGrantsResist } from "./legend1/set8NamedEffectsB";
+import { soulBirdGrantsResist } from "./legend1/set9NamedEffectsB";
 
 export function canOfferRegister(
   state: GameState,
@@ -39,7 +40,9 @@ export function canOfferRegister(
   if (!pending.ownerPlayerId || !pending.instanceId) return false;
   if (riddenVehicleGrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
   // RS-547【守護獣の使徒】: WB を持つ自軍 M ユニットはレジストを得る（rules/legend1/set8NamedEffectsB.ts）。
-  return set8BGrantsResist(state, pending.ownerPlayerId, pending.instanceId);
+  if (set8BGrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
+  // RS-647 ピヨちゃん【ソウルバード】: 重ねたユニットはレジストを得る（rules/legend1/set9NamedEffectsB.ts）。
+  return soulBirdGrantsResist(state, pending.ownerPlayerId, pending.instanceId);
 }
 
 export function toPendingRegister(intent: LeaveIntent): PendingRegister {

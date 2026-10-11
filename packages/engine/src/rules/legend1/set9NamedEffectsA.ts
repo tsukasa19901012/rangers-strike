@@ -1302,8 +1302,9 @@ CHOICE_CONFIRMERS[DIAMOND_BLIZZARD_EFFECT_ID] = (state, playerId) =>
 
 const WING_STACK_KEYWORD = "stack_da_less_l_on_rush";
 
+/** 【翼合体】のカード（同じ文言の RS-647【ソウルバード】等は set9NamedEffectsB 等で扱う）。 */
 function isWingStackCard(cardId: string): boolean {
-  return listCardGrantKeywords(cardId).includes(WING_STACK_KEYWORD);
+  return cardId === "RS-623" && listCardGrantKeywords(cardId).includes(WING_STACK_KEYWORD);
 }
 
 function wingStackHosts(state: GameState, playerId: PlayerId, selfId: string): string[] {

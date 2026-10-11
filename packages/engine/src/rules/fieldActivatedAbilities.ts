@@ -23,6 +23,7 @@ import { beginAllAboard, canActivateAllAboard } from "./legend1/set6NamedEffects
 import { beginHoldToActivate, canActivateHoldToActivate, isHoldToActivateNc } from "./holdToActivate";
 import { activateHoldReturnSelf, canActivateHoldReturnSelf, holdReturnSelfCount } from "./legend1/set7NamedEffectsA";
 import { beginFusionCall, canActivateFusionCall } from "./legend1/set8NamedEffectsC";
+import { beginSoulBird, canActivateSoulBird } from "./legend1/set9NamedEffectsB";
 
 type FieldZone = "rush" | "battle";
 
@@ -407,6 +408,19 @@ ABILITIES.push({
   repeatable: true,
   canActivate: (state, playerId, card) => canActivateFusionCall(state, playerId, card),
   resolve: (state, playerId, card) => beginFusionCall(state, playerId, card),
+});
+
+// RS-647 ピヨちゃん【ソウルバード】: 自軍ラッシュフェイズ中、DA を持たない自軍 L ユニットを選び、これに重ねる
+// （rules/legend1/set9NamedEffectsB.ts）。重ねるとピヨちゃんは場を離れるので、続けては使えない。
+ABILITIES.push({
+  cardId: "RS-647",
+  effectId: "rs647_soul_bird",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  discardSelf: false,
+  repeatable: true,
+  canActivate: (state, playerId, card) => canActivateSoulBird(state, playerId, card),
+  resolve: (state, playerId, card) => beginSoulBird(state, playerId, card),
 });
 
 function abilityFor(cardId: string): FieldActivatedAbility | undefined {

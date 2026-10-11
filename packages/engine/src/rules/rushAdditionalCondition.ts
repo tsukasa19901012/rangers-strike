@@ -8,7 +8,7 @@ import { cardHasKeyword } from "../keywords/cardKeywords";
 import { playerHasAllyWithLeadOnField } from "./callLead";
 
 const CONDITION_CHANGE =
-  /※このカードの追加条件は、(.+?)のとき、次のように変更される(?:⇒|→)\s*(.+?)(?:。|\s*【)/;
+  /※このカードの追加条件は、(.+?)の?とき、次のように変更される(?:⇒|→)\s*(.+?)(?:。|\s*【)/;
 
 function countDiscardUnitCardsMatching(
   player: GameState["players"][PlayerId],
@@ -70,6 +70,8 @@ function parseAlternateConditionText(text: string): RushAdditionalCondition | un
     return {
       conditionId: "hold_extra_command",
       text: holdMatch[0]!,
+      // 「追加で自軍コマンドを2つホールドする」（RS-627 メガシップ）。
+      unitCount: Number(holdMatch[1]),
     };
   }
 
