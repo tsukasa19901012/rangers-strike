@@ -1,6 +1,7 @@
 import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
 import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
 import { set6BBattleEntryBlocked } from "./legend1/set6NamedEffectsB";
+import { riddenVehicleGrantsEntryHold } from "./legend1/set7NamedEffectsB";
 import { beastSwordIgnoresEntryHold } from "./legend1/set5NamedEffectsA";
 import { rushAreaEntryBlockedThisTurn } from "./legend1/set5NamedEffects";
 import { hellSaturnGrantCount } from "./hellSaturn";
@@ -186,6 +187,9 @@ export function requiredBattleEntryHolds(
   // RS-364【黒き太陽神への忠誠】:「これは自軍コマンドを1つホールドしなければバトルエリアに出られない。」と書かれているかのように扱う
   // （複数あっても 1 つ — faq-card-6 RS-364 Q5。獣奏剣で無効にできる — 同 Q4）。
   if (hellSaturnGrantCount(state, playerId, unit) > 0) unitHold = Math.max(unitHold, 1);
+  // RS-468 ギンガリラ【水の星獣】: 特徴「車両」を持つユニットは「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と
+  // 書かれているかのように扱う（rules/legend1/set7NamedEffectsB.ts）。
+  if (riddenVehicleGrantsEntryHold(state, playerId, unit)) unitHold = Math.max(unitHold, 1);
   if (unitHold > 0 && scorchingRoarBypassesHold(unit.cardId, state, playerId)) {
     unitHold = 0;
   }

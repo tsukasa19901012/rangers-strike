@@ -15,6 +15,8 @@ export function emitUnitLeftZoneAndResolve(
     phasePlayerId: PlayerId;
     /** ルール: R-DESTROY-02 — 撃破による移動か（省略時は捨札への移動を撃破とみなす）。 */
     destroyed?: boolean;
+    /** バトルによる撃破のとき、バトルの相手（RS-453【激怒斬り】）。 */
+    battleOpponentInstanceId?: string;
   },
 ): { state: GameState; logs: string[] } {
   const event = buildUnitLeftZoneEvent({
@@ -26,6 +28,7 @@ export function emitUnitLeftZoneAndResolve(
     fromZone: input.fromZone,
     toZone: input.toZone,
     destroyed: input.destroyed,
+    battleOpponentInstanceId: input.battleOpponentInstanceId,
   });
   const outcome = getEngineEventDispatcher().dispatch(event, state);
   return {

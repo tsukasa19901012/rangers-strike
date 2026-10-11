@@ -227,6 +227,11 @@ export function advancePhase(state: GameState): GameState {
     next = "end";
   }
 
+  // RS-470 ギンガット【花の星獣】: バトルフェイズのかわりに行ったチャージフェイズの次はエンドフェイズ。
+  if (state.phase === "charge" && hasTurnRuleModifier(state.players[state.activePlayer], TURN_RULE_IDS.CHARGE_INSTEAD_OF_BATTLE)) {
+    next = "end";
+  }
+
   let turn = state.turn;
   let activePlayer = state.activePlayer;
   const log = [...state.log, `phase:${state.phase}->${next}`];

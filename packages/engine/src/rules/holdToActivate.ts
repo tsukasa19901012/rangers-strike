@@ -19,6 +19,7 @@ import { buildEffectHoldPayment } from "./commandPayment";
 import type { ComboOutcome } from "./comboTypes";
 import { openEffectChoice } from "./pendingChoices";
 import { applyThunderRoar } from "./legend1/set6NamedEffects348";
+import { enemyCommandHoldSubstitutes } from "./legend1/set7NamedEffectsB";
 
 export const HOLD_ACTIVATE_EFFECT_PREFIX = "hold_activate::";
 
@@ -155,10 +156,13 @@ export function isHoldToActivateNc(cardId: string): boolean {
 
 function holdableCommands(state: GameState, playerId: PlayerId, category: Category): string[] {
   const player = state.players[playerId];
-  return player.command
+  const own = player.command
     .filter((c) => !c.commandHeld)
     .filter((c) => effectiveCommandCategories(player, state.definitions, c.cardId).includes(category))
     .map((c) => c.instanceId);
+  // RS-469 ギンガベリック【雷の星獣】: 自軍バトルフェイズ中、「MA」の自軍コマンドをホールドするかわりに、敵軍コマンドを1つ選び
+  // ホールドしてもよい（R-REPL-03。rules/legend1/set7NamedEffectsB.ts）。
+  return [...own, ...enemyCommandHoldSubstitutes(state, playerId, category)];
 }
 
 /**
@@ -236,14 +240,18 @@ export function resolveHoldActivateChoice(
   if (!pending.validInstanceIds.includes(commandInstanceId)) return null;
   const parsed = parseHoldEffect(pending.sourceCardId);
   if (!parsed?.handler) return null;
-  const player = state.players[pending.playerId];
+  // ホールドするのは自軍コマンド（コスト）か、RS-469【雷の星獣】でかわりに選んだ敵軍コマンド。
+  const holderId = state.players[pending.playerId].command.some((c) => c.instanceId === commandInstanceId)
+    ? pending.playerId
+    : opponent(pending.playerId);
+  const player = state.players[holderId];
   const held = player.command.find((c) => c.instanceId === commandInstanceId);
   if (!held) return null;
   let next: GameState = {
     ...state,
     pendingEffectChoice: undefined,
     activePlayer: pending.phasePlayerId,
-    ...updatePlayer(state, pending.playerId, {
+    ...updatePlayer(state, holderId, {
       ...player,
       command: player.command.map((c) => (c.instanceId === commandInstanceId ? { ...c, commandHeld: true } : c)),
     }),

@@ -10,7 +10,8 @@ import {
 } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
-import type { GameState, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PlayerId } from "../../types/game";
+import { isSmallUnitNow, zubaanIsLarge } from "../legend1/set6NamedEffectsB";
 import { openEffectChoice } from "../pendingChoices";
 
 type BaseChoiceParams = {
@@ -31,17 +32,28 @@ export type EnemyUnitFilter = {
   excludeFeature?: string;
   category?: Category;
   printedBpMax?: number;
+  /** 「ホールド状態の」敵軍ユニットだけ（RS-459【隠流三段斬り】）。 */
+  held?: boolean;
 };
 
 function unitMatchesFilter(
   state: GameState,
   ownerId: PlayerId,
-  cardId: string,
+  card: CardInstance,
   filter: EnemyUnitFilter,
 ): boolean {
+  const cardId = card.cardId;
   const def = getDefinition(state.definitions, cardId);
   if (def?.type !== "unit") return false;
-  if (filter.size && def.size !== filter.size) return false;
+  // サイズは現在のサイズ（「Lユニットになる」RS-454 等を含む。rules/legend1/set6NamedEffectsB.ts isSmallUnitNow）。
+  if (filter.size === "S") {
+    if (!isSmallUnitNow(state, ownerId, card)) return false;
+  } else if (filter.size === "L") {
+    if (def.size !== "L" && !zubaanIsLarge(state, card)) return false;
+  } else if (filter.size && def.size !== filter.size) {
+    return false;
+  }
+  if (filter.held && !card.commandHeld) return false;
   if (filter.category && !cardCategories(def).includes(filter.category)) return false;
   if (filter.requireFeature && !(def.features ?? []).includes(filter.requireFeature)) {
     return false;
@@ -49,10 +61,7 @@ function unitMatchesFilter(
   if (filter.excludeFeature && (def.features ?? []).includes(filter.excludeFeature)) {
     return false;
   }
-  const owner = state.players[ownerId];
-  const instance = [...owner.battle, ...owner.rush].find((c) => c.cardId === cardId);
-  if (!instance) return false;
-  const bp = effectiveBp(state, ownerId, instance);
+  const bp = effectiveBp(state, ownerId, card);
   if (filter.maxBp !== undefined && bp > filter.maxBp) return false;
   if (filter.minBp !== undefined && bp < filter.minBp) return false;
   if (filter.printedBpMax !== undefined) {
@@ -79,7 +88,7 @@ export function collectEnemyUnits(
   for (const zone of zones) {
     for (const card of enemy[zone]) {
       if (!isSelectableByOpponentEffect(state, actorId, card.instanceId)) continue;
-      if (!unitMatchesFilter(state, enemyId, card.cardId, filter)) continue;
+      if (!unitMatchesFilter(state, enemyId, card, filter)) continue;
       ids.push(card.instanceId);
     }
   }
@@ -105,6 +114,7 @@ export function parseEnemyUnitFilter(body: string): EnemyUnitFilter {
   if (/Sユニット/.test(body)) filter.size = "S";
   if (/Mユニット/.test(body)) filter.size = "M";
   if (/Lユニット/.test(body)) filter.size = "L";
+  if (/ホールド状態の(?:敵軍)?[SML]?ユニット/.test(body)) filter.held = true;
   const feature = body.match(/特徴「([^」]+)」を持つ/);
   if (feature) filter.requireFeature = feature[1];
   const exclude = body.match(/特徴「([^」]+)」を持たない/);

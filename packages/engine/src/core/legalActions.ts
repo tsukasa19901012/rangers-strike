@@ -116,6 +116,7 @@ import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
 import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { giantBombCounterIds, isSet5AConfirmableChoice, operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
 import { isSet6AuditConfirmableChoice } from "../rules/legend1/set6AuditFixes";
+import { isSet7BConfirmableChoice } from "../rules/legend1/set7NamedEffectsB";
 import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower } from "./power";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
@@ -907,7 +908,7 @@ function appendRushCategoryPaymentActions(
   };
 
   // rush_from_discard_count_*: コマンド/パワーからの自己ラッシュ
-  for (const zone of ["command", "power"] as const) {
+  for (const zone of ["command", "power", "hand"] as const) {
     for (const card of player[zone]) {
       if (canSelfRushFromZone(state, playerId, zone, card.instanceId)) {
         actions.push({
@@ -1161,6 +1162,29 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  // 第7弾（rules/legend1/set7NamedEffectsB.ts）の「…まで選ぶ」選択: 1つずつ選び、1つ以上選んだら確定できる。
+  if (isSet7BConfirmableChoice(pending)) {
+    const selected = pending.selectedInstanceIds ?? [];
+    for (const instanceId of pending.validInstanceIds) {
+      if (selected.includes(instanceId)) continue;
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (selected.length > 0) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
+    // RS-472【現場への搬送】: 山札から1枚ずつ選んで置き、1枚以上置いたら確定できる（見送りは optional の skip）。
+    const selected = pending.selectedInstanceIds ?? [];
+    const deck = state.players[playerId].deck;
+    for (const instanceId of pending.validInstanceIds) {
+      if (selected.includes(instanceId) || !deck.some((c) => c.instanceId === instanceId)) continue;
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (selected.length > 0) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

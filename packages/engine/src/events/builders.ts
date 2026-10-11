@@ -121,6 +121,7 @@ export function buildUnitLeftZoneEvent(
     fromZone: "rush" | "battle";
     toZone: UnitLeftZoneEvent["toZone"];
     destroyed?: boolean;
+    battleOpponentInstanceId?: string;
   },
 ): UnitLeftZoneEvent {
   return {
@@ -132,6 +133,7 @@ export function buildUnitLeftZoneEvent(
     fromZone: input.fromZone,
     toZone: input.toZone,
     ...(input.destroyed !== undefined ? { destroyed: input.destroyed } : {}),
+    ...(input.battleOpponentInstanceId ? { battleOpponentInstanceId: input.battleOpponentInstanceId } : {}),
   };
 }
 

@@ -252,6 +252,8 @@ export type PendingLeave = {
   skipRegister?: boolean;
   /** バトル BP 比較による撃破のみ true（効果撃破は false）。 */
   registerEligible?: boolean;
+  /** バトルによる撃破のとき、バトルの相手のユニット（RS-453【激怒斬り】「ユニットサイズの違うユニットとバトルして撃破された時」）。 */
+  battleOpponentInstanceId?: string;
   /** ユニット退場後にストライク解決を再開（five-tech / plasma）。 */
   resumePendingStrike?: { damageCancelled: boolean };
   /** 1回のバトルで両プレイヤーのユニットが退場する場合、守り側の後に攻撃側をキュー。 */
@@ -263,6 +265,8 @@ export type PendingLeave = {
     leavingCardId: string;
     phasePlayerId: PlayerId;
     discardAsDamage?: boolean;
+    registerEligible?: boolean;
+    battleOpponentInstanceId?: string;
   };
   /** RS-052: WB味方が破壊される際の任意代用。 */
   superShieldInstanceId?: string;
@@ -386,6 +390,9 @@ export type AttackHoldSource = {
   scope: "battle" | "turn";
 };
 
+/** 撃破の時点で判定した「撃破された時」の誘発の情報（rules/leaveEffects.ts resolveDestroyedFactEffects）。 */
+export type DestroyedFactInfo = { gekidoSources?: string[]; phasePlayerId?: PlayerId };
+
 /** 撃破に関わる誘発のタイミング（R-TIME-01）。PendingEffectChoice.destroyTriggerTiming を参照。 */
 export type DestroyTriggerTiming = "destroyer" | "destroyed" | "after_discard";
 
@@ -397,7 +404,14 @@ export type DestroyTriggerTiming = "destroyer" | "destroyed" | "after_discard";
  * - resume_multi_destroy: 複数体を撃破する効果の残りの対象の撃破（割り込んだ誘発の解決後）
  */
 export type DeferredDestroyTrigger =
-  | { kind: "destroyed_fact"; step: DestroyTriggerTiming; ownerPlayerId: PlayerId; cardId: string }
+  | {
+      kind: "destroyed_fact";
+      step: DestroyTriggerTiming;
+      ownerPlayerId: PlayerId;
+      cardId: string;
+      /** 撃破の時点で判定した、他のカードの「…ユニットが撃破された時」の発動元（RS-453【激怒斬り】）。 */
+      battleDestroyInfo?: DestroyedFactInfo;
+    }
   | {
       kind: "after_discard";
       step: DestroyTriggerTiming;

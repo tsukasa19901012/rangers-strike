@@ -2,6 +2,7 @@ import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaide
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
 import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
+import { openBlueMoonSlash, openChargeInsteadOfBattle } from "../rules/legend1/set7NamedEffectsB";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
   applyGiantBombCounter,
@@ -1198,9 +1199,13 @@ function applyActionCore(
       );
       return {
         ok: true,
-        state: advanceFromCharge(
-          chargedState,
-          buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
+        // RS-473【ブルームーンスラッシュ】: パワーゾーンにカードを置かずにチャージフェイズを終えた（rules/legend1/set7NamedEffectsB.ts）。
+        state: openBlueMoonSlash(
+          advanceFromCharge(
+            chargedState,
+            buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
+          ),
+          playerId,
         ),
       };
     }
@@ -3263,8 +3268,13 @@ function applyActionCore(
         );
       }
 
+      let afterPhase = nextState;
+      // RS-473【ブルームーンスラッシュ】: チャージフェイズにパワーゾーンへカードを置かずに終えた（rules/legend1/set7NamedEffectsB.ts）。
+      if (state.phase === "charge") afterPhase = openBlueMoonSlash(afterPhase, playerId);
+      // RS-470 ギンガット【花の星獣】: バトルフェイズを行うとき、かわりにチャージフェイズを行ってもよい（同上）。
+      if (state.phase === "rush" && afterPhase.phase === "battle") afterPhase = openChargeInsteadOfBattle(afterPhase, playerId);
       return ok(
-        nextState,
+        afterPhase,
         buildSimpleLogEntry(playerId, "end_phase", state.phase),
       );
     }

@@ -66,7 +66,7 @@ function isBlocked(state: GameState): boolean {
 function runFrame(state: GameState, frame: DeferredDestroyTrigger): { state: GameState; logs: string[] } {
   switch (frame.kind) {
     case "destroyed_fact":
-      return resolveDestroyedFactEffects(state, frame.ownerPlayerId, frame.cardId);
+      return resolveDestroyedFactEffects(state, frame.ownerPlayerId, frame.cardId, frame.battleDestroyInfo);
     case "after_discard":
       return resolveAfterDiscardDestroyEffects(state, frame.ctx);
     case "mirage_knuckle":

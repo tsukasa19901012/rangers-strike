@@ -110,7 +110,7 @@ export function tryResolveDslTriggeredEffects(args: {
   triggerType: EffectTrigger["type"];
   logAction?: string;
   /** 解決する効果を絞る（例: 「ストライクしてダメージを与えたとき」だけ／それ以外だけ）。 */
-  effectFilter?: (effect: { id: string; text?: string }) => boolean;
+  effectFilter?: (effect: { id: string; name?: string; text?: string }) => boolean;
 }): DslTriggerOutcome {
   const all = listDslEffectsForTrigger(args.cardId, args.triggerType);
   const effects = args.effectFilter ? all.filter((e) => args.effectFilter!(e)) : all;
@@ -232,6 +232,7 @@ export function tryResolveDslNcEffects(args: {
   instanceId: string;
   playerId: PlayerId;
   phasePlayerId: PlayerId;
+  effectFilter?: (effect: { id: string; name?: string; text?: string }) => boolean;
 }): DslTriggerOutcome {
   return tryResolveDslTriggeredEffects({
     ...args,

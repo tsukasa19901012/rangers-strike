@@ -37,6 +37,8 @@ export const TURN_RULE_IDS = {
   GENERIC_S_COMBO_FINISHER: "generic_s_combo_finisher",
   AURA_POWER: "aura_power",
   BATTLE_DESTROY_TO_POWER: "battle_destroy_to_power",
+  /** RS-470 ギンガット【花の星獣】: このターン、バトルフェイズのかわりにチャージフェイズを行っている。 */
+  CHARGE_INSTEAD_OF_BATTLE: "charge_instead_of_battle",
 } as const;
 
 export type TurnRuleId = (typeof TURN_RULE_IDS)[keyof typeof TURN_RULE_IDS];

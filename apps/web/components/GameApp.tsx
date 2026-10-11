@@ -1833,7 +1833,7 @@ export function GameApp() {
       }
     }
 
-    if (fromZone === "command" || fromZone === "power") {
+    if (fromZone === "command" || fromZone === "power" || fromZone === "hand") {
       const selfRush = legalActions.find(
         (a) =>
           a.type === "self_rush_from_zone" &&
@@ -1844,7 +1844,7 @@ export function GameApp() {
         actions.push({
           id: "self-rush",
           label: "ラッシュエリアに出す",
-          detail: "捨札条件を満たしています",
+          detail: fromZone === "hand" ? "カードの条件を満たしています（ホールド不要）" : "捨札条件を満たしています",
           variant: "primary",
           onSelect: () => apply(selfRush),
         });

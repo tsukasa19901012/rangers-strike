@@ -8,6 +8,7 @@ import {
   cardHasNotSelectableExceptAttack,
 } from "./battleKeywords";
 import { rs627NotSelectable } from "../rules/rs/rsCatchallField";
+import { set7BNotSelectable } from "../rules/legend1/set7NamedEffectsB";
 
 /**
  * 場以外（コマンドゾーン等）にあるカードが「相手に選ばれない」能力（not_selectable／アタックされる以外では
@@ -46,6 +47,8 @@ export function isSelectableByOpponentEffect(
   if (cardHasGrantKeyword(found.card.cardId, "not_selectable")) return false;
   if (cardHasNotSelectableExceptAttack(found.card.cardId)) return false;
   if (rs627NotSelectable(state, found.playerId, targetInstanceId)) return false;
+  // RS-464 花忍者ユリ【斬撃の回避】「次の相手ターン、相手はこのユニットを選べない。」（rules/legend1/set7NamedEffectsB.ts）。
+  if (set7BNotSelectable(state, found.playerId, targetInstanceId)) return false;
   return true;
 }
 

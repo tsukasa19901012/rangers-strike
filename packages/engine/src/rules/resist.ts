@@ -13,6 +13,7 @@ import { findInZone, updatePlayer } from "../core/helpers";
 import type { LeaveIntent } from "./operationCounters";
 import { finalizeLeavePending } from "./operationCounters";
 import { resolveDestroyedFactEffects } from "./leaveEffects";
+import { riddenVehicleGrantsResist } from "./legend1/set7NamedEffectsB";
 
 export function canOfferRegister(
   state: GameState,
@@ -32,7 +33,9 @@ export function canOfferRegister(
     );
     if (card?.commandHeld) return false;
   }
-  return cardHasRegisterKeyword(state, pending.leavingCardId);
+  if (cardHasRegisterKeyword(state, pending.leavingCardId)) return true;
+  // RS-466 ギンガレオン【炎の星獣】: ライドしている S ユニットはレジストを得る（rules/legend1/set7NamedEffectsB.ts）。
+  return !!pending.ownerPlayerId && !!pending.instanceId && riddenVehicleGrantsResist(state, pending.ownerPlayerId, pending.instanceId);
 }
 
 export function toPendingRegister(intent: LeaveIntent): PendingRegister {
