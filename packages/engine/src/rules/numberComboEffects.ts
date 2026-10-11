@@ -21,6 +21,7 @@ import {
 import { crossReducedNumber, crossReductionFor } from "../keywords/battleKeywords";
 import { attackerPodNumber } from "./legend1/set6NamedEffectsB";
 import { gravityComboNumber, set7DBlocksNc } from "./legend1/set7NamedEffectsD";
+import { set8BComboNumberBonus } from "./legend1/set8NamedEffectsB";
 import { applySuperBrainDraw } from "../effects/drawEffects";
 import { buildLogEntry } from "../log/formatLog";
 import { startRuinSurvey } from "./ruinSurvey";
@@ -70,7 +71,9 @@ export function ncEffectiveNumber(
 ): number {
   if (typeof definition.comboNumber !== "number") return -1;
   // RS-495【宇宙忍法・重力無秩序】: SP が空欄のユニットのナンバーは必要パワーの数字になる（rules/legend1/set7NamedEffectsD.ts）。
-  const printedNumber = gravityComboNumber(state, card, definition) ?? definition.comboNumber;
+  // RS-548 ※「このユニットのナンバーの数字は、ホールド状態のユニット1体につき1増える」（rules/legend1/set8NamedEffectsB.ts）。
+  const printedNumber =
+    (gravityComboNumber(state, card, definition) ?? definition.comboNumber) + set8BComboNumberBonus(state, definition);
   return crossReducedNumber(
     // RS-393 コマンドアタッカー【アタッカーポッド】: ライドされたままのコマンドアタッカーからコンビネーションする S ユニットは −3（最低2）。
     attackerPodNumber(

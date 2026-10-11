@@ -1,4 +1,5 @@
 import { lionArmorAvailable } from "../rules/legend1/set6NamedEffects348";
+import { listSet8BHandActivations } from "../rules/legend1/set8NamedEffectsB";
 import { hasTurnRuleModifier } from "./scopedModifiers";
 import { isHoldToActivateNc } from "../rules/holdToActivate";
 import type { GameAction, RushAction } from "../types/actions";
@@ -683,6 +684,10 @@ function appendActivateFieldUnitAbilityActions(
       playerId,
       unitInstanceId,
     });
+  }
+  // RS-559【パワーアロー】等: 手札からこのカードを捨札にして発動する（rules/legend1/set8NamedEffectsB.ts）。
+  for (const unitInstanceId of listSet8BHandActivations(state, playerId)) {
+    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
   }
 }
 

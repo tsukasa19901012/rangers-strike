@@ -34,7 +34,7 @@
       ]
     },
     {
-      "id": "tricera_lance",
+      "id": "tricera_lance_2nd",
       "name": "トリケランス",
       "text": "「SP1」敵軍バトルエリアのSユニットを、必要パワーの数字の合計が敵軍ダメージの点数と同じ数になるまで好きな数選び、ホールドする。",
       "trigger": {
@@ -44,6 +44,11 @@
         {
           "type": "grant_keyword",
           "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "set8b::RS-549::tricera_lance",
           "duration": "turn"
         }
       ]

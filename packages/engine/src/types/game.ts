@@ -653,6 +653,15 @@ export type PendingEffectChoice = {
   kasumoShieldMeta?: { intent: PendingLeave };
   /** 第7弾 RS-495〜RS-515 の選択の続行データ（rules/legend1/set7NamedEffectsD.ts）。 */
   set7dMeta?: Set7DMeta;
+  /** 第8弾 RS-538〜RS-559 の選択の続行データ（rules/legend1/set8NamedEffectsB.ts）。 */
+  set8bMeta?: {
+    /** 1体ずつ選ぶ効果で選び終えたユニット。 */
+    selected?: string[];
+    /** 合計の上限。 */
+    budget?: number;
+    /** 山札の下に戻す順番を選んでいるカードの持ち主。 */
+    orderOwner?: PlayerId;
+  };
   /** RS-196【迎撃モビルミサイル】: 発動を選んでいる間、保留しているストライク。 */
   mobilMissileStrike?: PendingStrike;
   /** RS-215【不滅のマシン帝国】: 手札2枚を選んだあと（または断ったあと）に続けるアタック。 */

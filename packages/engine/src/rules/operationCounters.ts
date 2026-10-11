@@ -111,6 +111,7 @@ function markUnitBattleActed(player: PlayerState, instanceId: string): PlayerSta
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import { magiMotherSubstitutes, openKasumoShieldChoice, openRaigekiZanChoice } from "./legend1/set5NamedEffects";
 import { openBatLeeChoice } from "./legend1/set7NamedEffectsD";
+import { applySet8BAfterUnitLeft } from "./legend1/set8NamedEffectsB";
 import { registerBattlePendingResolver } from "../events/listeners/battleDeclaredListener";
 
 function isEnemyTurn(state: GameState, counterPlayerId: PlayerId): boolean {
@@ -1877,6 +1878,13 @@ export function finalizeLeavePending(
   });
 
   let resolvedState = leaveFx.state;
+  // RS-538【頼れる指揮官】: ホールド状態の自軍ユニットが撃破されて捨札になったとき（rules/legend1/set8NamedEffectsB.ts）。
+  resolvedState = applySet8BAfterUnitLeft(resolvedState, {
+    ownerPlayerId: pending.ownerPlayerId,
+    card: found.card,
+    toZone: effectiveToZone,
+    destroyed: isDestructionLeave(pending),
+  });
   if (
     pending.fusionReturnOnDiscard === "battle" &&
     effectiveToZone === "discard" &&

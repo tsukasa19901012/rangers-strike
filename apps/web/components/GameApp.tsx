@@ -1749,6 +1749,19 @@ export function GameApp() {
             onSelect: () => handleZoneDrop("rush", payload),
           });
         }
+        // RS-559【パワーアロー】等「自分の手札からこのカードを捨札にして発動できる」効果。
+        const handEffect = legalActions.find(
+          (a) => a.type === "activate_field_unit_ability" && a.unitInstanceId === card.instanceId,
+        );
+        if (handEffect) {
+          actions.push({
+            id: "hand-effect",
+            label: "捨札にして効果を発動する",
+            detail: "手札からこのカードを捨札にして発動",
+            variant: "primary",
+            onSelect: () => apply(handEffect),
+          });
+        }
       }
     } else if (fromZone === "battle" && state.phase === "battle") {
       const strikeAction = legalActions.find(
