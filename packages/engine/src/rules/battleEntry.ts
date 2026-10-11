@@ -2,6 +2,7 @@ import { getRidingComboEffect } from "@rangers-strike/cards";
 import type { GameState, PendingBattleEntry, PlayerId } from "../types/game";
 import { continueEnterBattleEffects } from "./combo";
 import { hasScopedRestriction } from "../core/scopedModifiers";
+import { rideOffBlockedBySet7D } from "./legend1/set7NamedEffectsD";
 
 export function riderHasRidingComboOnRideOff(cardId: string): boolean {
   return !!getRidingComboEffect(cardId);
@@ -15,7 +16,9 @@ export function shouldPromptRideOffChoice(
   const unit = state.players[entry.playerId].battle.find(
     (c) => c.instanceId === entry.instanceId,
   );
-  return !!unit?.mountedOnInstanceId;
+  if (!unit?.mountedOnInstanceId) return false;
+  // RS-506【バスオンミサイル】: 次の相手ターン、敵軍ユニットはライドオフできない（ライドしたまま進む）。
+  return !rideOffBlockedBySet7D(state, entry.playerId);
 }
 
 export function createBattleEntryPrompt(

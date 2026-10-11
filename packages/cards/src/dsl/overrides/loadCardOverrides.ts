@@ -42,6 +42,7 @@ import rs075 from "./RS-075.json";
 import rs076 from "./RS-076.json";
 import rs105 from "./RS-105.json";
 import rs185 from "./RS-185.json";
+import rs501 from "./RS-501.json";
 import type { CardDocument } from "../types";
 import { mergeCardDocument } from "../cardDocumentMerge";
 
@@ -131,6 +132,8 @@ const CARD_OVERRIDES: Record<string, Partial<CardDocument>> = {
   "RS-105": rs105 as Partial<CardDocument>,
   // cardSpec 監査（セット4）: RS-185 カーナビックは※カウンターではない（atwiki/page-389。自軍ラッシュフェイズに使う）。
   "RS-185": rs185 as Partial<CardDocument>,
+  // cardSpec 監査（セット7）: RS-501 エレハン・キンポーは BP3000（atwiki/page-742「BP:3000」。取り込みデータは 0）。
+  "RS-501": rs501 as Partial<CardDocument>,
 };
 
 let cachedOverrides: Map<string, Partial<CardDocument>> | null = null;

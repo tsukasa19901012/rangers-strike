@@ -542,7 +542,7 @@ describe("RS-423 ゲキタイガー", () => {
     });
   });
 
-  gekiMConditionTests("RS-423", "レッド", "RS-426", "スーパーゲキレッド", "RS-340", "RS-499", 3, "page-519");
+  gekiMConditionTests("RS-423", "レッド", "RS-426", "スーパーゲキレッド", "RS-340", "RS-500", 3, "page-519");
 
   /** スーパーゲキレッドを捨札にしてゲキタイガーをラッシュする（自軍ラッシュエリアに WB の M ユニットを extraM 体）。 */
   const rushTiger = (extraM: number, p2: Partial<GameState["players"]["player2"]>) => {

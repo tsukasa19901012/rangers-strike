@@ -1,4 +1,5 @@
-import type { CardInstance, GameState, PlayerId } from "../types/game";
+import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../types/game";
+import { registerChoiceRefresher } from "./choiceRefreshers";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { cardName, getDefinition } from "../core/catalog";
 import { sameCardName } from "../core/cardNames";
@@ -56,15 +57,52 @@ export function tryMereChameleonOnAllyEnterBattle(
   const sourceCardId = playerHasMereChameleonOnField(state, playerId);
   if (!sourceCardId) return state;
 
-  const withChoice = startMereChameleonChoice(state, {
+  // ルール: R-CONT-01 — 獣人メレが2体以上あれば、それぞれの【臨獣カメレオン拳】が発動する。2体目からは、前の効果を
+  // 解決したあとで（コマンドゾーンの状態に合わせて）選択を作り直す（refreshOnOpen）。
+  const params = {
     playerId,
     effectId: "kamereon_ken",
     sourceCardId,
     sourceInstanceId: entering.instanceId,
     phasePlayerId,
-  });
-  return withChoice ?? state;
+  };
+  const sources = countMereChameleonSources(state, playerId);
+  const withChoice = startMereChameleonChoice(state, params);
+  if (!withChoice?.pendingEffectChoice || sources < 2) return withChoice ?? state;
+  let resume: PendingEffectChoice | undefined;
+  for (let i = 1; i < sources; i += 1) {
+    resume = {
+      ...params,
+      kind: "select_command",
+      validInstanceIds: [],
+      optional: true,
+      refreshOnOpen: { key: MERE_CHAMELEON_REFRESH_KEY },
+      resumeChoice: resume,
+    };
+  }
+  return { ...withChoice, pendingEffectChoice: { ...withChoice.pendingEffectChoice, resumeChoice: resume } };
 }
+
+const MERE_CHAMELEON_REFRESH_KEY = "mere_chameleon_again";
+
+function countMereChameleonSources(state: GameState, playerId: PlayerId): number {
+  const player = state.players[playerId];
+  return [...player.rush, ...player.battle].filter((card) =>
+    cardHasKeyword(card.cardId, "while_in_field_ally_enter_mere_chameleon"),
+  ).length;
+}
+
+registerChoiceRefresher(MERE_CHAMELEON_REFRESH_KEY, (state, choice) => {
+  const opened = startMereChameleonChoice(state, {
+    playerId: choice.playerId,
+    effectId: "kamereon_ken",
+    sourceCardId: choice.sourceCardId,
+    sourceInstanceId: choice.sourceInstanceId,
+    phasePlayerId: choice.phasePlayerId,
+  });
+  if (!opened?.pendingEffectChoice) return null;
+  return { ...opened.pendingEffectChoice, resumeChoice: choice.resumeChoice };
+});
 
 /**
  * RS-633: ※自軍スタートフェイズを終えるとき、このユニットがリリース状態ならホールドし、ホールド状態なら捨札にする。

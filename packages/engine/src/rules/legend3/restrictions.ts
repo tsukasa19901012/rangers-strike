@@ -1,4 +1,5 @@
 import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
+import { set7DDefenderBlocksAttack } from "../legend1/set7NamedEffectsD";
 import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
 import { set5ADefenderBlocksAttack } from "../legend1/set5NamedEffectsA";
 import { kibaGakureBlocksAttack, magiMergeAllowsRushAttack } from "../legend1/set5NamedEffects";
@@ -435,6 +436,8 @@ export function canAttackDefender(
   if (defenderCard && kibaGakureBlocksAttack(state, attackerPlayerId, attackerInstanceId, defenderCard)) return false;
   // RS-350 暗黒の鎧（「SP1」以上のユニット以外にはアタックされない）・RS-385 グリーンホバーの※（rules/legend1/set6NamedEffects348.ts）。
   if (defenderCard && set6LowDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
+  // XG1-096 ビーファイタークワガー ※（NC も RC も発動していない S ユニットにアタックされない。rules/legend1/set7NamedEffectsD.ts）。
+  if (defenderCard && set7DDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;
@@ -534,7 +537,8 @@ export function canAttackDefender(
 
   if (
     defenderRequiresAircraftAttacker(inBattle.card.cardId) &&
-    !attackerHasAircraftFeature(state.definitions, attacker.card.cardId)
+    // 効果で追加された特徴（RS-505【滑空突撃】の「航空機」等）も含める。
+    !unitFeatures(state, attackerPlayerId, attacker.card).includes("航空機")
   ) {
     return false;
   }

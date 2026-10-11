@@ -6,6 +6,7 @@ import { getDefinition, instanceBp, isSmallUnit, unitEffectiveCategories } from 
 import { findInZone, opponent } from "../core/helpers";
 import { lastBattleProtectsOtherS } from "../rules/promotedNcEffects";
 import { getCardDslDocument } from "./effectLookup";
+import { unitFeatures } from "../rules/addedFeatures";
 import { decodeFeatureKeywordSlug, featuresMatchKeywordSlug } from "./featureKeywords";
 
 /** rematch 不可の D/E 区分キーワード（grant_keyword マーカー）。 */
@@ -512,8 +513,8 @@ export function promotedDefenderBlocksAttack(
     // ※これは、特徴「X」を持たないユニットにアタックされない（RS-385 / RS-481 / RS-482）。
     const noFeature = keyword.match(/^no_attack_without_(.+)$/);
     if (noFeature) {
-      const attackerDef = getDefinition(state.definitions, attacker.card.cardId);
-      if (!unitHasFeatureSlug(attackerDef, noFeature[1]!)) return true;
+      // 効果で追加された特徴（rules/addedFeatures.ts）も含める。
+      if (!featuresMatchKeywordSlug(unitFeatures(state, attackerPlayerId, attacker.card), noFeature[1]!)) return true;
     }
 
     if (

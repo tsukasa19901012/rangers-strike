@@ -11,6 +11,7 @@ import { legend3FieldBpBonus } from "./legend3/fieldEffects";
 import { rkPassiveBpBonus } from "./rkFieldPassives";
 import { set5AFieldBpBonus } from "./legend1/set5NamedEffectsA";
 import { set6BFieldBpBonus } from "./legend1/set6NamedEffectsB";
+import { femaleUnitCountBothSides } from "./legend1/set7NamedEffectsD";
 import { rs560BeastMBpBonus } from "./rs/rsCatchallField";
 import { commandCategoriesNow } from "./legend3/battleEffects";
 
@@ -125,12 +126,10 @@ function noteOtherNcBpBonus(
   // RS-440: BP+1000 per own unit with number containing L or R (e.g. 1L, 2R)
   // Deferred — number parsing needed. Skip for now.
 
-  // RS-501: BP+1000 per own 女 unit in rush or battle
+  // RS-501 エレハン・キンポー ※「これは特徴「女」を持つユニット1体につきBP＋1000される。」— 自軍・敵軍の限定はない
+  // （atwiki/page-742。rules/legend1/set7NamedEffectsD.ts）。
   if (cardId === "RS-501") {
-    bonus += [...own.rush, ...own.battle].filter((c) => {
-      const def = getDefinition(state.definitions, c.cardId);
-      return def?.features?.includes("女");
-    }).length * 1000;
+    bonus += femaleUnitCountBothSides(state) * 1000;
   }
 
   // XG1-020: BP+1000 per own command with 2+ categories

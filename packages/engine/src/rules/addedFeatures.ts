@@ -59,6 +59,25 @@ export function unitFeatures(
   ) {
     extra.push("激気");
   }
+  // 「※このユニットは、自軍ラッシュフェイズ中、特徴に「レッド」「ブルー」「イエロー」を追加される。」（RS-499 ゲキバイオレット。
+  // atwiki/page-775）— 文言から読む。
+  extra.push(...phaseAddedFeatures(state, _ownerId, instance));
   if (extra.length === 0) return base;
   return [...new Set([...base, ...extra])];
+}
+
+const OWN_RUSH_PHASE_FEATURES_RE = /このユニットは、?自軍ラッシュフェイズ中、?特徴に((?:[「｢][^」｣]+[」｣])+)を追加される/;
+
+/** 自軍ラッシュフェイズ中だけ追加される特徴（カードの文言による）。 */
+export function phaseAddedFeatures(
+  state: Pick<GameState, "players" | "definitions"> & Partial<Pick<GameState, "phase" | "activePlayer">>,
+  ownerId: PlayerId,
+  instance: Pick<CardInstance, "cardId">,
+): string[] {
+  if (state.phase !== "rush" || state.activePlayer !== ownerId) return [];
+  const text = state.definitions[instance.cardId]?.text;
+  if (!text) return [];
+  const m = text.match(OWN_RUSH_PHASE_FEATURES_RE);
+  if (!m) return [];
+  return [...m[1]!.matchAll(/[「｢]([^」｣]+)[」｣]/g)].map((x) => x[1]!);
 }

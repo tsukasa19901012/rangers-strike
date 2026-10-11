@@ -2,6 +2,8 @@ import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaide
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
 import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
+import { withZordFeatureContext } from "../rules/zordFeatureContext";
+import { applySet7DStrikeDamageTriggers, RIDE_OFF_RC_MARK, rideOffBlockedBySet7D } from "../rules/legend1/set7NamedEffectsD";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
   applyGiantBombCounter,
@@ -531,6 +533,10 @@ function finishStrikeResolution(
   // ルール: R-TIME-01 — 「ストライクしてダメージを与えたとき」はダメージを与えたあと（DSL: RS-686 等、RS-309【ゴウライキャノン】）。
   resolved = applyStrikeDamageDealtDslTriggers(resolved, pending);
   resolved = applySet5StrikeDamageTriggers(resolved, pending);
+  // RS-514【大狼狼蹴】: 相手が山札の上からひいたカードをダメージにしたとき（rules/legend1/set7NamedEffectsD.ts）。
+  const defenderId = opponent(pending.strikerPlayerId);
+  const deckDraws = state.players[defenderId].deck.length - nextState.players[defenderId].deck.length;
+  resolved = applySet7DStrikeDamageTriggers(resolved, pending, deckDraws);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -785,7 +791,8 @@ export function applyAction(
   applyActionDepth += 1;
   let result: ActionResult;
   try {
-    result = applyActionCore(state, action, options);
+    // 追加条件の素材の特徴（効果・フェイズで追加された特徴）はこの状態で判定する（rules/zordFeatureContext.ts）。
+    result = withZordFeatureContext(state, () => applyActionCore(state, action, options));
   } finally {
     applyActionDepth -= 1;
   }
@@ -2958,6 +2965,8 @@ function applyActionCore(
       if (!pending || playerId !== pending.playerId) return fail("no_pending_ride_off");
       let nextState: GameState = { ...state, pendingRideOffChoice: undefined };
       let nextPlayer = { ...player };
+      // RS-506【バスオンミサイル】: このターン、ライドオフできない（rules/legend1/set7NamedEffectsD.ts）。
+      if (action.rideOff && rideOffBlockedBySet7D(state, playerId)) return fail("ride_off_blocked");
 
       if (action.rideOff) {
         const idx = nextPlayer.battle.findIndex(
@@ -2966,7 +2975,8 @@ function applyActionCore(
         if (idx < 0) return fail("card_not_in_battle");
         const rider = nextPlayer.battle[idx]!;
         const battle = [...nextPlayer.battle];
-        const unmounted = { ...rider, mountedOnInstanceId: undefined };
+        // ライドオフで RC を発動したとみなす（atwiki/page-819 RS-497 Q2。XG1-096 の※等が参照する）。
+        const unmounted = { ...rider, mountedOnInstanceId: undefined, activatedNcEffects: [...(rider.activatedNcEffects ?? []), RIDE_OFF_RC_MARK] };
         battle[idx] = unmounted;
         nextPlayer = { ...nextPlayer, battle };
         if (cardHasGrantKeyword(rider.cardId, "no_strike_after_rideoff")) {

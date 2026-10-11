@@ -108,6 +108,7 @@ function markUnitBattleActed(player: PlayerState, instanceId: string): PlayerSta
 }
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import { magiMotherSubstitutes, openKasumoShieldChoice, openRaigekiZanChoice } from "./legend1/set5NamedEffects";
+import { openBatLeeChoice } from "./legend1/set7NamedEffectsD";
 import { registerBattlePendingResolver } from "../events/listeners/battleDeclaredListener";
 
 function isEnemyTurn(state: GameState, counterPlayerId: PlayerId): boolean {
@@ -1919,6 +1920,10 @@ export function tryLeaveField(
   // RS-303【シティガーディアンズ隊長】: 撃破されたとき、「戦闘員」2体をかわりに捨札にしてもよい。
   const cityGuardians = openCityGuardiansSubstitute(state, intent);
   if (cityGuardians) return { state: cityGuardians, deferred: true };
+  // RS-502【忘我の中に修行あり】: ブルーの S ユニットが撃破されて捨札になるとき、かわりに手札のユニットカードを捨札にするか
+  // （rules/legend1/set7NamedEffectsD.ts）。
+  const batLee = openBatLeeChoice(state, intent);
+  if (batLee) return { state: batLee, deferred: true };
   // RS-317【超シールド進化】: DA の自軍ユニットが撃破されるとき、かわりに恐竜2体を捨札にするかの選択（rules/legend1/set5NamedEffects.ts）。
   const kasumo = openKasumoShieldChoice(state, intent);
   if (kasumo) return { state: kasumo, deferred: true };

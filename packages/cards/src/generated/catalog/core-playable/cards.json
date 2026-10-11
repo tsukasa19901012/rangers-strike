@@ -16477,7 +16477,7 @@
       "powerCost": 2,
       "imageUrl": "/cards/promoted/RS-501.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-501.jpg",
-      "bp": 0,
+      "bp": 3000,
       "size": "S",
       "text": "※これは自軍ターン中バトルエリアに出られない。 ※これは特徴「女」を持つユニット1体につきBP＋1000される。 【遊びの中に修行あり】これが自軍ラッシュエリアにある間、特徴「イエロー」を持つすべてのSユニットは次の能力を得る⇒バトルエリアで2番目に並んだとき「SP1」になる。",
       "features": [

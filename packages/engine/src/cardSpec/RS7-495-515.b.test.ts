@@ -98,10 +98,11 @@ describe("RS-502 バット・リー", () => {
       { battle: [inst(BLUE, "b")], rush: rushBatLee ? [inst("RS-502", "bl")] : [], hand: [inst("TST-UNIT-2", "h"), inst("TST-OP", "op")] },
       `${BLUE}:b`,
       { rush: [inst("SPEC-6000", "t6"), inst("TST-UNIT-2", "t3")] },
+      "TST-UNIT-7:atk",
+      [BP6000],
     );
 
-  // 既知の不具合: CARD-RS-502 【忘我の中に修行あり】が未実装（ブルーの S ユニットが能力を得ない）
-  it.fails("RS-502: 【忘我の中に修行あり】ブルーの S ユニットが撃破されて捨札になるとき、かわりに手札のユニットカードを捨札にでき、BP の合計（3000+3000=6000）と同じ BP の敵軍ユニットを1体撃破する（出典: atwiki/page-777「かわりに自分の手札からユニットカードを1枚選び捨札にしてもよい。そうしたとき、…その合計と同じBPを持つ敵軍ユニットを1体選び撃破する」）", () => {
+  it("RS-502: 【忘我の中に修行あり】ブルーの S ユニットが撃破されて捨札になるとき、かわりに手札のユニットカードを捨札にでき、BP の合計（3000+3000=6000）と同じ BP の敵軍ユニットを1体撃破する（出典: atwiki/page-777「かわりに自分の手札からユニットカードを1枚選び捨札にしてもよい。そうしたとき、…その合計と同じBPを持つ敵軍ユニットを1体選び撃破する」）", () => {
     let s = blueDestroyed();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-502");
     expect(choiceIds(s)).toEqual(["TST-UNIT-2:h"]);
@@ -112,8 +113,7 @@ describe("RS-502 バット・リー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-2:t3")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-502 【忘我の中に修行あり】が未実装（選択が出ず、見送りも確認できない）
-  it.fails("RS-502: 【忘我の中に修行あり】「捨札にしてもよい」— 見送れば撃破されたユニットはそのまま捨札になる（出典: atwiki/page-777）", () => {
+  it("RS-502: 【忘我の中に修行あり】「捨札にしてもよい」— 見送れば撃破されたユニットはそのまま捨札になる（出典: atwiki/page-777）", () => {
     let s = blueDestroyed();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-502");
     expect(canSkip(s)).toBe(true);
@@ -180,8 +180,7 @@ describe("RS-503 シャッキー・チェン", () => {
       ),
     );
 
-  // 既知の不具合: CARD-RS-503 【シャッキーン！の中に修行あり】が未実装（レッドの S ユニットが敵軍の本来の BP でバトルしない）
-  it.fails("RS-503: 【シャッキーン！の中に修行あり】レッドの S ユニット（ゲキレッド BP3000）がアタックするとき、敵軍ユニットは本来の BP1000 でバトルし、ゲキレッドが勝つ（出典: atwiki/page-778「敵軍ユニットのBPをカードに表記された本来の値としてバトルする」）", () => {
+  it("RS-503: 【シャッキーン！の中に修行あり】レッドの S ユニット（ゲキレッド BP3000）がアタックするとき、敵軍ユニットは本来の BP1000 でバトルし、ゲキレッドが勝つ（出典: atwiki/page-778「敵軍ユニットのBPをカードに表記された本来の値としてバトルする」）", () => {
     const s = attackBuffed(RED, "rush");
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
     expect(zoneOf(s, "player1", `${RED}:a`)).toBe("battle");
@@ -198,8 +197,7 @@ describe("RS-503 シャッキー・チェン", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-503 【シャッキーン！の中に修行あり】が未実装（敵軍のレッドも能力を得る）
-  it.fails("RS-503: 【シャッキーン！の中に修行あり】「すべてのSユニット」— 敵軍のレッド（ゲキレッド）も、自軍ユニットに本来の BP でバトルする（出典: atwiki/page-778）", () => {
+  it("RS-503: 【シャッキーン！の中に修行あり】「すべてのSユニット」— 敵軍のレッド（ゲキレッド）も、自軍ユニットに本来の BP でバトルする（出典: atwiki/page-778）", () => {
     const s = resolveAll(
       settle(
         attack(
@@ -309,8 +307,7 @@ describe("RS-504 獣人メレ", () => {
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-504");
   });
 
-  // 既知の不具合: CARD-RS-504 獣人メレが2体あっても【臨獣カメレオン拳】が1回しか発動しない（R-CONT-01 は同じ効果の重複を認める）
-  it.fails("RS-504: 【臨獣カメレオン拳】獣人メレが2体あれば、それぞれの効果が発動し、コマンドを2枚捨札にできる（出典: R-ERR-RS504「これが自軍エリアにある間」・R-CONT-01）", () => {
+  it("RS-504: 【臨獣カメレオン拳】獣人メレが2体あれば、それぞれの効果が発動し、コマンドを2枚捨札にできる（出典: R-ERR-RS504「これが自軍エリアにある間」・R-CONT-01）", () => {
     let s = withMere({ battle: [inst("RS-504", "m")], rush: [inst("RS-504", "m2"), inst("TST-UNIT-0", "u")], command: [released("TST-OP", "c0"), released("TST-OP", "c1")] });
     s = pick(s, "TST-OP:c0");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-504");
@@ -400,8 +397,7 @@ describe("RS-505 スピードル", () => {
     expect(spOf(enterAt("RS-505", 1), "player1", "RS-505:me")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-505 【滑空突撃】の特徴「航空機」追加が未実装（ジェットファルコンにアタックできない）
-  it.fails("RS-505: 【滑空突撃】このターン特徴「航空機」が追加され、「航空機を持たないユニットにアタックされない」ジェットファルコンにアタックできる（出典: atwiki/page-756「このターン、これは特徴「航空機」が追加される」）", () => {
+  it("RS-505: 【滑空突撃】このターン特徴「航空機」が追加され、「航空機を持たないユニットにアタックされない」ジェットファルコンにアタックできる（出典: atwiki/page-756「このターン、これは特徴「航空機」が追加される」）", () => {
     const s = enterAt("RS-505", 4, { battle: [inst("RS-135", "jf")] });
     expect(attackTargets(s, "RS-505:me")).toContain("RS-135:jf");
   });
@@ -447,8 +443,7 @@ describe("RS-506 バスオン", () => {
   const canRideOff = (s: GameState) =>
     legal(s).some((a) => a.type === "resolve_ride_off_choice" && (a as { rideOff?: boolean }).rideOff === true);
 
-  // 既知の不具合: CARD-RS-506 【バスオンミサイル】が未実装（次の相手ターンにライドオフできる）
-  it.fails("RS-506: 【バスオンミサイル】5番目に出て NC が成立すると、次の相手ターン、敵軍ユニットはライドオフできない（出典: atwiki/page-757「次の相手ターン、敵軍ユニットはライドオフできない」）", () => {
+  it("RS-506: 【バスオンミサイル】5番目に出て NC が成立すると、次の相手ターン、敵軍ユニットはライドオフできない（出典: atwiki/page-757「次の相手ターン、敵軍ユニットはライドオフできない」）", () => {
     expect(canRideOff(enemyRideNextTurn(5))).toBe(false);
   });
 
@@ -519,13 +514,11 @@ describe("RS-508 ゴーオンレッド", () => {
     expect(spOf(enterAt("RS-508", 4), "player1", "RS-508:me")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-508 「SP1」になってもストライクできない（※アタック不可がストライクまで禁じている）
-  it.fails("RS-508: 【ロードサーベル】「SP1」になればストライクできる（禁止されているのはアタックだけ）（出典: atwiki/page-740「※これはアタックすることができない」・atwiki/page-740 カード評価「ストライクも同時にすることが可能」）", () => {
+  it("RS-508: 【ロードサーベル】「SP1」になればストライクできる（禁止されているのはアタックだけ）（出典: atwiki/page-740「※これはアタックすることができない」・atwiki/page-740 カード評価「ストライクも同時にすることが可能」）", () => {
     expect(canStrike(enterAt("RS-508", 4), "RS-508:me")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-508 【ロードサーベル】の「敵軍バトルエリアからユニットを1体選んでもよい。そうしたとき…バトルする」が未実装
-  it.fails("RS-508: 【ロードサーベル】敵軍バトルエリアのユニットを1体選び、このユニットとバトルする（BP4000 対 BP1000 で選んだユニットを撃破）（出典: atwiki/page-740「敵軍バトルエリアからユニットを1体選んでもよい。そうしたとき、このユニットと選んだユニットでバトルする」）", () => {
+  it("RS-508: 【ロードサーベル】敵軍バトルエリアのユニットを1体選び、このユニットとバトルする（BP4000 対 BP1000 で選んだユニットを撃破）（出典: atwiki/page-740「敵軍バトルエリアからユニットを1体選んでもよい。そうしたとき、このユニットと選んだユニットでバトルする」）", () => {
     let s = enterAt("RS-508", 4, { battle: [inst("TST-UNIT-0", "e1")], rush: [inst("TST-UNIT-0", "er")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-508");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e1"]);
@@ -534,8 +527,7 @@ describe("RS-508 ゴーオンレッド", () => {
     expect(zoneOf(s, "player1", "RS-508:me")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-508 【ロードサーベル】の選択が出ないため、BP の高いユニットとのバトルで負けることも確認できない
-  it.fails("RS-508: 【ロードサーベル】BP6000 のユニットを選んでバトルすると、ゴーオンレッドが撃破される（出典: atwiki/page-740「このユニットと選んだユニットでバトルする」・R-BTL-01）", () => {
+  it("RS-508: 【ロードサーベル】BP6000 のユニットを選んでバトルすると、ゴーオンレッドが撃破される（出典: atwiki/page-740「このユニットと選んだユニットでバトルする」・R-BTL-01）", () => {
     let s = enterAt("RS-508", 4, { battle: [inst("SPEC-6000", "e6")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-508");
     s = resolveAll(pick(s, "SPEC-6000:e6"));
@@ -543,8 +535,7 @@ describe("RS-508 ゴーオンレッド", () => {
     expect(zoneOf(s, "player2", "SPEC-6000:e6")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-508 【ロードサーベル】の選択が出ないため、見送りを確認できない
-  it.fails("RS-508: 【ロードサーベル】「選んでもよい」— 見送れる（出典: atwiki/page-740）", () => {
+  it("RS-508: 【ロードサーベル】「選んでもよい」— 見送れる（出典: atwiki/page-740）", () => {
     let s = enterAt("RS-508", 4, { battle: [inst("TST-UNIT-0", "e1")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-508");
     expect(canSkip(s)).toBe(true);

@@ -390,17 +390,9 @@ function buildExtendedPrimitives(body: string, pattern: string): EffectPrimitive
       },
     ];
   }
-  if (pattern === "power_zone_action" && /パワーゾーン/.test(body)) {
-    return [
-      {
-        type: "choose",
-        kind: "select_unit",
-        valid: { type: "zone", zone: "battle", owner: "self" },
-        count: 1,
-        then: [{ type: "move", target: { type: "trigger_source" }, to: "power" }],
-      },
-    ];
-  }
+  // 「power_zone_action」（パワーゾーンに触れる文）を「自軍バトルエリアのユニットを1体選びパワーゾーンに送る」に読み替える
+  // 汎用の対応は誤り（RS-509【ガレージランチャー】・RS-511【マンタンガン・ロッドモード】は自軍ユニットを送らない）なので置かない。
+  // それらのカードはカード固有の処理（rules/legend1/set7NamedEffectsD.ts）で解決する。
   return null;
 }
 

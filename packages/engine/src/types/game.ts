@@ -275,6 +275,8 @@ export type PendingLeave = {
   magiMotherInstanceIds?: string[];
   /** RS-317【超シールド進化】の選択を断った（同じ撃破で再び選択を開かない）。 */
   kasumoShieldDeclined?: boolean;
+  /** RS-502 バット・リー【忘我の中に修行あり】の選択を断った（rules/legend1/set7NamedEffectsD.ts）。 */
+  batLeeDeclined?: boolean;
   /**
    * RS-182 ジャイアントローラー: 撃破されて捨札になったとき、持ち主のパワーゾーンにダメージ（ウラ向き）にして置く。
    * 置換・カウンターで捨札にならなければ置かれない（faq-card-4 RS-182 Q1〜Q3）。
@@ -579,6 +581,8 @@ export type PendingEffectChoice = {
   };
   /** RS-317【超シールド進化】: 選択を開いた撃破（場を離れる処理）。 */
   kasumoShieldMeta?: { intent: PendingLeave };
+  /** 第7弾 RS-495〜RS-515 の選択の続行データ（rules/legend1/set7NamedEffectsD.ts）。 */
+  set7dMeta?: Set7DMeta;
   /** RS-196【迎撃モビルミサイル】: 発動を選んでいる間、保留しているストライク。 */
   mobilMissileStrike?: PendingStrike;
   /** RS-215【不滅のマシン帝国】: 手札2枚を選んだあと（または断ったあと）に続けるアタック。 */
@@ -592,6 +596,24 @@ export type PendingEffectChoice = {
     fromZone: "rush" | "battle";
     pendingLeave: PendingLeave;
   };
+};
+
+/** 第7弾 RS-495〜RS-515 の選択の続行データ（rules/legend1/set7NamedEffectsD.ts）。 */
+export type Set7DMeta = {
+  /** 1体ずつ選ぶ撃破で選び終えたユニット。 */
+  selected?: string[];
+  /** 選べる数の上限。 */
+  maxCount?: number;
+  /** 合計の上限（BP または必要パワーの数字）。 */
+  budget?: number;
+  /** 合計に数える値。 */
+  measure?: "bp" | "power_cost";
+  /** 候補を取る敵軍のエリア。 */
+  zones?: ("battle" | "rush")[];
+  /** RS-502: かわりに処理した撃破（場を離れる処理）。 */
+  intent?: PendingLeave;
+  /** RS-502: 撃破されたユニットの BP（手札のユニットカードの BP と合計する）。 */
+  destroyedBp?: number;
 };
 
 /** @deprecated pendingEffectChoice を使用すること（ruin_survey）。 */

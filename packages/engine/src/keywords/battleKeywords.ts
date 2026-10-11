@@ -17,6 +17,8 @@ import { srBigBatonTaxisCategory } from "../rules/srEffects";
 import { isBattleBlocked, markBattleBlocked } from "../rules/turnModifiers";
 import { RESTRICTION_IDS } from "../types/scopedModifiers";
 import { findInZone, updatePlayer } from "../core/helpers";
+import { unitFeatures } from "../rules/addedFeatures";
+import { featuresMatchKeywordSlug } from "../dsl/featureKeywords";
 
 const TAXIS_POSITION: Record<Category, number> = {
   WB: 1,
@@ -121,6 +123,25 @@ export function taxisSpFloor(
   return 1;
 }
 
+const FEATURE_POSITION_SP_RE = /^battle_position_sp_(.+)_pos2_sp1$/;
+
+/** battle_position_sp_<特徴 slug>_pos2_sp1（any 以外）: 特徴を持つ S ユニットがバトルエリアの2番目なら SP1。 */
+function featurePositionSpFloor(state: GameState, playerId: PlayerId, instance: CardInstance): number {
+  const index = state.players[playerId].battle.findIndex((c) => c.instanceId === instance.instanceId);
+  if (index !== 1) return 0;
+  const def = getDefinition(state.definitions, instance.cardId);
+  if (!def || def.type !== "unit" || def.size !== "S") return 0;
+  const features = unitFeatures(state, playerId, instance);
+  for (const source of [...state.players.player1.rush, ...state.players.player2.rush]) {
+    for (const keyword of listCardGrantKeywords(source.cardId)) {
+      const m = keyword.match(FEATURE_POSITION_SP_RE);
+      if (!m || m[1] === "any") continue;
+      if (featuresMatchKeywordSlug(features, m[1]!)) return 1;
+    }
+  }
+  return 0;
+}
+
 /**
  * RS-430（ラッシュエリアにある間）: 追加条件を持たない WB の S ユニットは
  * バトルエリアで2番目に並んだとき SP1 になる。
@@ -131,6 +152,10 @@ export function fieldPositionSpFloor(
   instance: CardInstance,
 ): number {
   const player = state.players[playerId];
+  // RS-501 エレハン・キンポー【遊びの中に修行あり】: 「これが自軍ラッシュエリアにある間、特徴「イエロー」を持つすべての
+  // Sユニットは次の能力を得る⇒バトルエリアで2番目に並んだとき「SP1」になる。」（atwiki/page-742）— 特徴で絞る
+  // battle_position_sp_<特徴>_pos2_sp1。自軍・敵軍の限定はない。
+  if (featurePositionSpFloor(state, playerId, instance) > 0) return 1;
   // 自軍と敵軍のラッシュエリアのロボタフが対象（faq-card-6 RS-430 Q3）。
   const hasSource = [...state.players.player1.rush, ...state.players.player2.rush].some((c) =>
     cardHasGrantKeyword(c.cardId, "battle_position_sp_any_pos2_sp1"),

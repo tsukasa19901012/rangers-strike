@@ -20,6 +20,7 @@ import { COMMAND_ZONE_MAX } from "../types/game";
 import { getDefinition, isSmallUnit } from "../core/catalog";
 import { findInZone, removeAt } from "../core/helpers";
 import { hasTurnRuleModifier } from "../core/scopedModifiers";
+import { zordMaterialFeatures } from "./zordFeatureContext";
 
 /** ゾードアップ素材を取れるゾーン（フィールドのみ、手札不可）。 */
 export type ZordMaterialZone = "rush" | "battle";
@@ -137,6 +138,35 @@ function multiFusionAliasNames(def: CardDefinition | undefined): string[] {
   return [];
 }
 
+const DISCARD_THRESHOLD_CONDITION_RE =
+  /このカードの追加条件は、?自軍捨札が(\d+)枚以上のとき、?次のように変更される⇒自軍[「｢]([^」｣]+)[」｣]1体を捨札にする/;
+
+/**
+ * 「※このカードの追加条件は、自軍捨札がN枚以上のとき、次のように変更される⇒自軍「X」1体を捨札にする。」
+ * （RS-514 ゲキトージャウルフ。atwiki/page-779）— 条件を満たせば、合体ユニットのかわりに「X」1体だけを素材にする。
+ * 条件を満たしていれば undefined 以外（素材が見つからなければ null）を返す。
+ */
+function discardThresholdFusionMaterial(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+  rushingInstanceId: string,
+): FusionMaterialFound[] | null | undefined {
+  const text = getDefinition(definitions, rushingCardId)?.text;
+  const m = text?.match(DISCARD_THRESHOLD_CONDITION_RE);
+  if (!m || player.discard.length < Number(m[1])) return undefined;
+  const name = canonicalCardName(m[2]!);
+  for (const zone of ZORD_MATERIAL_ZONES) {
+    for (let index = 0; index < player[zone].length; index++) {
+      const card = player[zone][index]!;
+      if (card.instanceId === rushingInstanceId) continue;
+      const def = getDefinition(definitions, card.cardId);
+      if (def?.type === "unit" && canonicalCardName(def.name) === name) return [{ zone, index, card }];
+    }
+  }
+  return null;
+}
+
 /** ゾードカードに列挙された全合体パートナー（例: RS-050 → 051/052/053）。 */
 export function collectRequiredFusionMaterials(
   player: PlayerState,
@@ -144,6 +174,8 @@ export function collectRequiredFusionMaterials(
   rushingCardId: string,
   rushingInstanceId: string,
 ): FusionMaterialFound[] | null {
+  const threshold = discardThresholdFusionMaterial(player, definitions, rushingCardId, rushingInstanceId);
+  if (threshold !== undefined) return threshold;
   const plain = collectRequiredFusionMaterialsWith(player, definitions, rushingCardId, rushingInstanceId, null);
   if (plain) return plain;
   // 1枚で複数の合体ユニットとしてつかえるカード（XG3-006「ブルースローワー＋イエローアーマー＋ピンクエイダー」。
@@ -392,14 +424,17 @@ export function isValidZordUpMaterial(
         !!condition.partnerName &&
         matchesPartnerName(def, condition.partnerName)
       );
-    case "discard_feature_unit":
+    case "discard_feature_unit": {
+      // 効果・フェイズで追加された特徴も含める（RS-499 ゲキバイオレット。rules/zordFeatureContext.ts）。
+      const features = zordMaterialFeatures(def, card);
       return (
         def.type === "unit" &&
         !!condition.requiredFeature &&
-        (def.features ?? []).includes(condition.requiredFeature) &&
-        (condition.requiredFeatures ?? []).every((f) => (def.features ?? []).includes(f)) &&
+        features.includes(condition.requiredFeature) &&
+        (condition.requiredFeatures ?? []).every((f) => features.includes(f)) &&
         (!condition.requiredSize || def.size === condition.requiredSize)
       );
+    }
     case "discard_name_contains_unit":
       return (
         def.type === "unit" &&

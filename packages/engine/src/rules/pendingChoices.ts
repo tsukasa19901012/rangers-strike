@@ -138,6 +138,7 @@ import {
 } from "./legend1/set4NamedEffects";
 import { isSet5ChoiceEffect, tryResolveSet5Choice, trySkipSet5Choice } from "./legend1/set5NamedEffects";
 import { isSet6BChoiceEffect, tryResolveSet6BChoice, trySkipSet6BChoice } from "./legend1/set6NamedEffectsB";
+import { isSet7DChoiceEffect, tryResolveSet7DChoice, trySkipSet7DChoice } from "./legend1/set7NamedEffectsD";
 import {
   isSet5AuditChoiceEffect,
   tryResolveSet5AuditChoice,
@@ -614,6 +615,7 @@ export function isValidEffectChoiceTarget(
     isSet5AuditChoiceEffect(pending.effectId) ||
     isSet5AChoiceEffect(pending.effectId) ||
     isSet6BChoiceEffect(pending.effectId) ||
+    isSet7DChoiceEffect(pending.effectId) ||
     pending.effectId === "rs414_dione_wall" ||
     isSet6LowChoiceEffect(pending.effectId) ||
     isSet6AuditChoiceEffect(pending.effectId)
@@ -2779,6 +2781,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set5a) return set5a;
   const set6b = trySkipSet6BChoice(state, playerId);
   if (set6b) return set6b;
+  const set7d = trySkipSet7DChoice(state, playerId);
+  if (set7d) return set7d;
   const set5 = trySkipSet5Choice(state, playerId);
   if (set5) return set5;
   const set5Audit = trySkipSet5AuditChoice(state, playerId);
@@ -3041,6 +3045,8 @@ export function applyEffectChoiceSelect(
   if (set5a) return set5a;
   const set6b = tryResolveSet6BChoice(state, playerId, instanceId);
   if (set6b) return set6b;
+  const set7d = tryResolveSet7DChoice(state, playerId, instanceId);
+  if (set7d) return set7d;
   const set5 = tryResolveSet5Choice(state, playerId, instanceId);
   if (set5) return set5;
   const set5Audit = tryResolveSet5AuditChoice(state, playerId, instanceId);

@@ -22,6 +22,7 @@ import { CHIKARA_BATON_RULE } from "./set4NamedEffects";
 import { buildLogEntry } from "../../log/formatLog";
 import { holdPlacedCommandUnderMaChikara } from "../srEffects";
 import { unitFeatures } from "../addedFeatures";
+import { transformationHindranceNegates } from "./set7NamedEffectsD";
 import { afterEnterBattle, promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
 
@@ -688,6 +689,8 @@ export function applyThunderRoar(state: GameState, playerId: PlayerId): GameStat
  * 判定は「メカ」の特徴（追加された特徴を含む）と、相手が【雷の雄叫び】を発動しているか。
  */
 export function namedTextNegated(state: Pick<GameState, "players" | "definitions">, ownerId: PlayerId, card: Pick<CardInstance, "cardId" | "instanceId">): boolean {
+  // RS-497 冥獣人ニンジャキリカゲ【変身の妨害】（rules/legend1/set7NamedEffectsD.ts）。
+  if (transformationHindranceNegates(state, card)) return true;
   if (!hasTurnRuleModifier(state.players[opponent(ownerId)], THUNDER_ROAR_RULE)) return false;
   if (getDefinition(state.definitions, card.cardId)?.type !== "unit") return false;
   return unitFeatures(state, ownerId, card).includes("メカ");

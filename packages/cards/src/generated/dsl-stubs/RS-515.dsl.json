@@ -31,10 +31,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP3",
+          "keyword": "set7d::RS-515::go_on_sword",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

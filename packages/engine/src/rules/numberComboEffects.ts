@@ -20,6 +20,7 @@ import {
 } from "../core/catalog";
 import { crossReducedNumber, crossReductionFor } from "../keywords/battleKeywords";
 import { attackerPodNumber } from "./legend1/set6NamedEffectsB";
+import { gravityComboNumber, set7DBlocksNc } from "./legend1/set7NamedEffectsD";
 import { applySuperBrainDraw } from "../effects/drawEffects";
 import { buildLogEntry } from "../log/formatLog";
 import { startRuinSurvey } from "./ruinSurvey";
@@ -66,13 +67,15 @@ export function ncEffectiveNumber(
   definition: CardDefinition,
 ): number {
   if (typeof definition.comboNumber !== "number") return -1;
+  // RS-495【宇宙忍法・重力無秩序】: SP が空欄のユニットのナンバーは必要パワーの数字になる（rules/legend1/set7NamedEffectsD.ts）。
+  const printedNumber = gravityComboNumber(state, card, definition) ?? definition.comboNumber;
   return crossReducedNumber(
     // RS-393 コマンドアタッカー【アタッカーポッド】: ライドされたままのコマンドアタッカーからコンビネーションする S ユニットは −3（最低2）。
     attackerPodNumber(
       state,
       playerId,
       card,
-      effectiveComboNumber(state, playerId, definition.comboNumber, card.cardId),
+      effectiveComboNumber(state, playerId, printedNumber, card.cardId),
     ),
     crossReductionFor(state.players[playerId].battle, card.instanceId),
   );
@@ -120,6 +123,8 @@ export function numberComboTriggers(
   battleBeforeEnter: CardInstance[],
 ): boolean {
   if (tankCommandBlocksNc(state, card, definition)) return false;
+  // RS-495 でナンバー0になった・RS-497【変身の妨害】で効果名を持つテキストが無効（rules/legend1/set7NamedEffectsD.ts）。
+  if (set7DBlocksNc(state, playerId, card, definition)) return false;
   // RS-204 レッドファルコン【ファルコンブレイク】: BP が一番低ければナンバーに関係なく発動する。
   if (falconBreakTriggers(state, playerId, card)) return true;
   const effectiveNumber = ncEffectiveNumber(state, playerId, card, definition);
@@ -198,7 +203,12 @@ export function markOnAttackNcEffectOnEnter(
 ): GameState {
   let nextState = state;
   const named = getOnAttackNamedEffect(card.cardId);
-  if (named && isNcGatedOnAttackEffect(named, card.cardId) && !tankCommandBlocksNc(state, card, definition)) {
+  if (
+    named &&
+    isNcGatedOnAttackEffect(named, card.cardId) &&
+    !tankCommandBlocksNc(state, card, definition) &&
+    !set7DBlocksNc(state, playerId, card, definition)
+  ) {
     const fromPosition = ncEffectiveNumber(state, playerId, card, definition) === battlePosition;
     const leftNeighbor = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
     const fromPartner = comboFromNamedPartner(state, named, leftNeighbor?.cardId, neighborCategories(state, playerId, leftNeighbor));
@@ -223,6 +233,7 @@ export function markNcColumnEffectsOnEnter(
   battleBeforeEnter: CardInstance[],
 ): GameState {
   if (tankCommandBlocksNc(state, card, definition)) return state;
+  if (set7DBlocksNc(state, playerId, card, definition)) return state;
   const numberMatches =
     typeof definition.comboNumber === "number" &&
     ncEffectiveNumber(state, playerId, card, definition) === battlePosition;

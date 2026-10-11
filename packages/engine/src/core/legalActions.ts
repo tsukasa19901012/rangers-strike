@@ -79,6 +79,7 @@ import {
   listZordUpRushPaymentVariants,
 } from "../rules/mothership";
 import { collectZordMaterials, requiresAllFusionPartners } from "../rules/zord";
+import { withZordFeatureContext } from "../rules/zordFeatureContext";
 import { isZordUpCost, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
 import { operationFizzles } from "../rules/operationFizzle";
@@ -1290,14 +1291,13 @@ function appendBattleEntryActions(
     actions.push({ type: "pass_battle_entry", playerId });
     return;
   }
-  if (unitCannotInitiateAttack(unit.cardId)) {
-    actions.push({ type: "pass_battle_entry", playerId });
-    return;
-  }
+  // 「※これはアタックすることができない」— 禁止されるのはアタックだけで、ストライクはできる（RS-508 ゴーオンレッド。
+  // atwiki/page-740 カード評価「ストライクも同時にすることが可能」）。
+  const cannotAttack = unitCannotInitiateAttack(unit.cardId);
 
   const requiredDefenderId = pending.requiredDefenderInstanceId;
   // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックできない。
-  const attackBlocked = battleActBlocked(player, unit, "attack");
+  const attackBlocked = cannotAttack || battleActBlocked(player, unit, "attack");
   const battleDefenders = attackBlocked
     ? []
     : requiredDefenderId
@@ -1358,7 +1358,8 @@ function appendBattleEntryActions(
   if (
     (canUseJuuKunDo(state, playerId, pending.instanceId) ||
       canUseLionDance(state, playerId, pending.instanceId)) &&
-    !requiredDefenderId
+    !requiredDefenderId &&
+    !cannotAttack
   ) {
     actions.push({
       type: "use_juu_kun_do",
@@ -1414,6 +1415,11 @@ export function getActionPlayerId(state: GameState): PlayerId {
 
 export function getLegalActions(state: GameState): GameAction[] {
   if (state.winner) return [];
+  // 追加条件の素材の特徴（効果・フェイズで追加された特徴）はこの状態で判定する（rules/zordFeatureContext.ts）。
+  return withZordFeatureContext(state, () => getLegalActionsCore(state));
+}
+
+function getLegalActionsCore(state: GameState): GameAction[] {
 
   const playerId = getActionPlayerId(state);
   const player = state.players[playerId];

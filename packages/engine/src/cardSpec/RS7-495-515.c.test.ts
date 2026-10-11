@@ -82,23 +82,20 @@ describe("RS-509 ゴーオンブルー", () => {
   /** 自軍パワー: オモテのオペレーション op0、ウラ（ダメージ）のオペレーション dm0、オモテのユニットカード pu0。 */
   const ownPower = (): CardInstance[] => [inst("TST-OP", "op0"), { ...inst("TST-OP", "dm0"), faceDown: true }, inst("TST-UNIT-2", "pu0")];
 
-  // 既知の不具合: CARD-RS-509 【ガレージランチャー】の候補が自軍バトルエリアのユニットになっている（汎用の power_zone_action）
-  it.fails("RS-509: 【ガレージランチャー】2番目に出て NC が成立すると、自軍パワーゾーンのオモテ向きのオペレーションカードだけを選べる（出典: atwiki/page-758「自軍パワーゾーンのオモテ向きのカードからオペレーションカードを1枚選び」）", () => {
+  it("RS-509: 【ガレージランチャー】2番目に出て NC が成立すると、自軍パワーゾーンのオモテ向きのオペレーションカードだけを選べる（出典: atwiki/page-758「自軍パワーゾーンのオモテ向きのカードからオペレーションカードを1枚選び」）", () => {
     const s = enterAt("RS-509", 2, { power: ownPower(), damage: 1 });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-509");
     expect(choiceIds(s)).toEqual(["TST-OP:op0"]);
   });
 
-  // 既知の不具合: CARD-RS-509 【ガレージランチャー】でオペレーションカードを手札に加えられず「SP1」にもならない
-  it.fails("RS-509: 【ガレージランチャー】選んだオペレーションカードを手札に加え、そうしたとき「SP1」になる（出典: atwiki/page-758「手札に加えても良い。そうしたとき、このターン、これは「SP1」になる」）", () => {
+  it("RS-509: 【ガレージランチャー】選んだオペレーションカードを手札に加え、そうしたとき「SP1」になる（出典: atwiki/page-758「手札に加えても良い。そうしたとき、このターン、これは「SP1」になる」）", () => {
     const s = resolveAll(pick(enterAt("RS-509", 2, { power: ownPower(), damage: 1 }), "TST-OP:op0"));
     expect(zoneOf(s, "player1", "TST-OP:op0")).toBe("hand");
     expect(spOf(s, "player1", "RS-509:me")).toBe(1);
     expect(zoneOf(s, "player1", "RS-509:me")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-509 【ガレージランチャー】が強制になっている（見送れない）
-  it.fails("RS-509: 【ガレージランチャー】「加えても良い」— 見送れて、そのときは「SP1」にならない（出典: atwiki/page-758）", () => {
+  it("RS-509: 【ガレージランチャー】「加えても良い」— 見送れて、そのときは「SP1」にならない（出典: atwiki/page-758）", () => {
     let s = enterAt("RS-509", 2, { power: ownPower(), damage: 1 });
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));
@@ -106,8 +103,7 @@ describe("RS-509 ゴーオンブルー", () => {
     expect(spOf(s, "player1", "RS-509:me")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-509 オモテ向きのオペレーションがなくても（汎用の選択で）自軍バトルエリアのユニットを選ばされる
-  it.fails("RS-509: 【ガレージランチャー】オモテ向きのオペレーションカードがなければ何も選ばず、「SP1」にもならない（出典: atwiki/page-758「そうしたとき」・R-RES-06）", () => {
+  it("RS-509: 【ガレージランチャー】オモテ向きのオペレーションカードがなければ何も選ばず、「SP1」にもならない（出典: atwiki/page-758「そうしたとき」・R-RES-06）", () => {
     const s = enterAt("RS-509", 2, { power: [inst("TST-UNIT-2", "pu0"), { ...inst("TST-OP", "dm0"), faceDown: true }], damage: 1 });
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(spOf(s, "player1", "RS-509:me")).toBe(0);
@@ -153,15 +149,13 @@ describe("RS-510 ゴーオンイエロー", () => {
       },
     );
 
-  // 既知の不具合: CARD-RS-510 【レーシングバレット】が未実装（選択が出ない）
-  it.fails("RS-510: 【レーシングバレット】3番目に出て NC が成立すると、手札の特徴「車両」を持つユニットカードだけを選べる（出典: atwiki/page-794「自分の手札から、特徴「車両」を持つユニットカードを1枚選び」）", () => {
+  it("RS-510: 【レーシングバレット】3番目に出て NC が成立すると、手札の特徴「車両」を持つユニットカードだけを選べる（出典: atwiki/page-794「自分の手札から、特徴「車両」を持つユニットカードを1枚選び」）", () => {
     const s = enterYellow();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-510");
     expect(choiceIds(s)).toEqual(["RS-505:sp", "RS-506:bo"]);
   });
 
-  // 既知の不具合: CARD-RS-510 【レーシングバレット】が未実装
-  it.fails("RS-510: 【レーシングバレット】バスオン（必要パワー1）を自軍パワーゾーンに置くと、相手は必要パワー1の自分の S ユニット（M は除く）を1体選び、自分のパワーゾーンに送る（出典: atwiki/page-794「相手は置いたカードの必要パワーの数字と同じ必要パワーの数字を持つ自分自身のSユニットを1体選び、自分自身のパワーゾーンに送る」）", () => {
+  it("RS-510: 【レーシングバレット】バスオン（必要パワー1）を自軍パワーゾーンに置くと、相手は必要パワー1の自分の S ユニット（M は除く）を1体選び、自分のパワーゾーンに送る（出典: atwiki/page-794「相手は置いたカードの必要パワーの数字と同じ必要パワーの数字を持つ自分自身のSユニットを1体選び、自分自身のパワーゾーンに送る」）", () => {
     let s = pick(enterYellow(), "RS-506:bo");
     expect(zoneOf(s, "player1", "RS-506:bo")).toBe("power");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
@@ -171,8 +165,7 @@ describe("RS-510 ゴーオンイエロー", () => {
     expect(zoneOf(s, "player2", "RS-341:b1")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-510 【レーシングバレット】が未実装（見送りを確認できない）
-  it.fails("RS-510: 【レーシングバレット】「置いてもよい」— 見送れる（出典: atwiki/page-794）", () => {
+  it("RS-510: 【レーシングバレット】「置いてもよい」— 見送れる（出典: atwiki/page-794）", () => {
     let s = enterYellow();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-510");
     expect(canSkip(s)).toBe(true);
@@ -181,8 +174,7 @@ describe("RS-510 ゴーオンイエロー", () => {
     expect(zoneOf(s, "player2", "RS-341:b1")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-510 【レーシングバレット】が未実装
-  it.fails("RS-510: 【レーシングバレット】相手に同じ必要パワーの S ユニットがいなければ、カードを置くだけで何も送られない（出典: atwiki/page-794）", () => {
+  it("RS-510: 【レーシングバレット】相手に同じ必要パワーの S ユニットがいなければ、カードを置くだけで何も送られない（出典: atwiki/page-794）", () => {
     let s = enterYellow(3, { battle: [inst("SPEC-M1", "m1")], rush: [inst("TST-UNIT-0", "z0")] });
     s = resolveAll(pick(s, "RS-506:bo"));
     expect(zoneOf(s, "player1", "RS-506:bo")).toBe("power");
@@ -226,8 +218,7 @@ describe("RS-511 ゴーオングリーン", () => {
       { power: [...damageCards(1, "ed"), ...powerCards(enemy - 1, "ep")], damage: 1 },
     );
 
-  // 既知の不具合: CARD-RS-511 【マンタンガン・ロッドモード】が自軍バトルエリアのユニットをパワーゾーンに送る選択になっている（汎用の power_zone_action）
-  it.fails("RS-511: 【マンタンガン・ロッドモード】自軍パワー（1枚）が敵軍パワー（ダメージ込み3枚）より少なければ、山札の上から1枚ひいて自軍パワーゾーンに置ける（出典: atwiki/page-795「自軍山札の上から1枚ひいて、自軍パワーゾーンに置いてもよい」）", () => {
+  it("RS-511: 【マンタンガン・ロッドモード】自軍パワー（1枚）が敵軍パワー（ダメージ込み3枚）より少なければ、山札の上から1枚ひいて自軍パワーゾーンに置ける（出典: atwiki/page-795「自軍山札の上から1枚ひいて、自軍パワーゾーンに置いてもよい」）", () => {
     let s = enterGreen(1, 3);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-511");
     s = resolveAll(s, [s.pendingEffectChoice?.validInstanceIds.find((x) => !x.startsWith("TST-UNIT-0") && x !== "RS-511:me") ?? "TST-UNIT-7:top"]);
@@ -245,8 +236,7 @@ describe("RS-511 ゴーオングリーン", () => {
     expect(s.players.player1.power).toHaveLength(1);
   });
 
-  // 既知の不具合: CARD-RS-511 「より少なければ」の条件を見ずに選択を出す
-  it.fails("RS-511: 【マンタンガン・ロッドモード】自軍パワーが敵軍と同じ枚数（3対3）なら何もしない（出典: atwiki/page-795「…より少なければ」）", () => {
+  it("RS-511: 【マンタンガン・ロッドモード】自軍パワーが敵軍と同じ枚数（3対3）なら何もしない（出典: atwiki/page-795「…より少なければ」）", () => {
     const s = enterGreen(3, 3);
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(s.players.player1.power).toHaveLength(3);
@@ -281,23 +271,20 @@ describe("RS-512 ゴーオンブラック", () => {
   const enterBlack = (pos = 4, enemyPower: CardInstance[] = [...damageCards(1, "ed"), ...powerCards(2, "ep")]) =>
     enterAt("RS-512", pos, {}, { power: enemyPower, damage: enemyPower.filter((c) => c.faceDown).length });
 
-  // 既知の不具合: CARD-RS-512 【マンタンガン】が未実装（ルール修飾子を記録するだけで選択が出ない）
-  it.fails("RS-512: 【マンタンガン】4番目に出て NC が成立すると、敵軍パワーゾーンのオモテ向きのカードだけを選べる（出典: atwiki/page-796「敵軍パワーゾーンのオモテ向きのカードから1枚選んでもよい」）", () => {
+  it("RS-512: 【マンタンガン】4番目に出て NC が成立すると、敵軍パワーゾーンのオモテ向きのカードだけを選べる（出典: atwiki/page-796「敵軍パワーゾーンのオモテ向きのカードから1枚選んでもよい」）", () => {
     const s = enterBlack();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-512");
     expect(choiceIds(s)).toEqual(["TST-P:ep0", "TST-P:ep1"]);
   });
 
-  // 既知の不具合: CARD-RS-512 【マンタンガン】が未実装
-  it.fails("RS-512: 【マンタンガン】選んだカードをウラ返してダメージにする（敵軍ダメージ1→2）（出典: atwiki/page-796「選んだカードをウラ返してダメージにする」）", () => {
+  it("RS-512: 【マンタンガン】選んだカードをウラ返してダメージにする（敵軍ダメージ1→2）（出典: atwiki/page-796「選んだカードをウラ返してダメージにする」）", () => {
     const s = resolveAll(pick(enterBlack(), "TST-P:ep1"));
     expect(cardIn(s, "player2", "TST-P:ep1")?.faceDown).toBe(true);
     expect(s.players.player2.power.filter((c) => c.faceDown)).toHaveLength(2);
     expect(s.players.player2.damage).toBe(2);
   });
 
-  // 既知の不具合: CARD-RS-512 【マンタンガン】が未実装（見送りを確認できない）
-  it.fails("RS-512: 【マンタンガン】「選んでもよい」— 見送れる（出典: atwiki/page-796）", () => {
+  it("RS-512: 【マンタンガン】「選んでもよい」— 見送れる（出典: atwiki/page-796）", () => {
     let s = enterBlack();
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));
@@ -373,8 +360,7 @@ describe("RS-513 無敵将軍", () => {
 
   const stacked = (id: string, suffix: string, under: CardInstance[]): CardInstance => ({ ...inst(id, suffix), stackedCards: under });
 
-  // 既知の不具合: CARD-RS-513 【将軍花吹雪】が「敵軍ユニットを1体選んで山札に戻す」汎用処理になっており、下に重ねたカードを戻さない
-  it.fails("RS-513: 【将軍花吹雪】ラッシュしたとき、敵軍ユニットの下に重ねたカード（ビークルを含む）をすべて持ち主の山札に戻す（ユニット自身は残る）（出典: atwiki/page-812「敵軍ユニットの下に重ねたカード（ユニットやビークルとして扱われているものも含む）をすべて持ち主の山札に戻してシャッフルする」）", () => {
+  it("RS-513: 【将軍花吹雪】ラッシュしたとき、敵軍ユニットの下に重ねたカード（ビークルを含む）をすべて持ち主の山札に戻す（ユニット自身は残る）（出典: atwiki/page-812「敵軍ユニットの下に重ねたカード（ユニットやビークルとして扱われているものも含む）をすべて持ち主の山札に戻してシャッフルする」）", () => {
     const { r } = rushShogun(NINJAS, 7, {
       battle: [stacked("TST-UNIT-0", "e1", [inst("RK-058", "u1")])],
       rush: [stacked("TST-UNIT-2", "e2", [inst("TST-OP", "u2")])],
@@ -390,8 +376,7 @@ describe("RS-513 無敵将軍", () => {
     expect(t.players.player2.deck).toHaveLength(5);
   });
 
-  // 既知の不具合: CARD-RS-513 【将軍花吹雪】で敵軍ユニットを選ばされ、そのユニット自身が山札に戻る
-  it.fails("RS-513: 【将軍花吹雪】下に重ねたカードがなければ、敵軍ユニットは場に残る（出典: atwiki/page-812「敵軍ユニットの下に重ねたカード」）", () => {
+  it("RS-513: 【将軍花吹雪】下に重ねたカードがなければ、敵軍ユニットは場に残る（出典: atwiki/page-812「敵軍ユニットの下に重ねたカード」）", () => {
     const { r } = rushShogun(NINJAS, 7, { battle: [inst("TST-UNIT-0", "e1")] });
     expect(r.ok).toBe(true);
     const t = resolveAll(r.state);
@@ -455,16 +440,14 @@ describe("RS-514 ゲキトージャウルフ", () => {
     expect(canStartRush(mk([inst("RS-499", "v")], 6), "player1", "RS-514:w")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-514 ※「自軍捨札が7枚以上のとき追加条件が「自軍「ゲキバイオレット」1体を捨札にする」に変わる」が未実装
-  it.fails("RS-514: ※ 自軍捨札が7枚以上なら、追加条件は「自軍「ゲキバイオレット」1体を捨札にする」に変わり、ゲキバイオレットだけでラッシュできる（出典: atwiki/page-779「次のように変更される⇒自軍「ゲキバイオレット」1体を捨札にする」）", () => {
+  it("RS-514: ※ 自軍捨札が7枚以上なら、追加条件は「自軍「ゲキバイオレット」1体を捨札にする」に変わり、ゲキバイオレットだけでラッシュできる（出典: atwiki/page-779「次のように変更される⇒自軍「ゲキバイオレット」1体を捨札にする」）", () => {
     const r = rushFromHand(mk([inst("RS-499", "v")], 7), "player1", "RS-514:w");
     expect(r.ok).toBe(true);
     expect(zoneOf(r.state, "player1", "RS-514:w")).toBe("rush");
     expect(zoneOf(r.state, "player1", "RS-499:v")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-514 ※の追加条件の変更が未実装（捨札7枚以上でも合体ユニット3体を捨札にする）
-  it.fails("RS-514: ※ 変更後はゲキバイオレット1体だけを捨札にする（合体の他のユニットは捨札にならない）（出典: atwiki/page-779「次のように変更される」）", () => {
+  it("RS-514: ※ 変更後はゲキバイオレット1体だけを捨札にする（合体の他のユニットは捨札にならない）（出典: atwiki/page-779「次のように変更される」）", () => {
     const r = rushFromHand(mk([inst("RS-499", "v"), inst("RS-340", "r"), inst("RS-341", "b")], 7), "player1", "RS-514:w");
     expect(r.ok).toBe(true);
     expect(zoneOf(r.state, "player1", "RS-499:v")).toBe("discard");
@@ -492,8 +475,7 @@ describe("RS-514 ゲキトージャウルフ", () => {
     return t;
   };
 
-  // 既知の不具合: CARD-RS-514 【大狼狼蹴】が未実装（山札の上からダメージにしても相手がユニットを撃破しない）
-  it.fails("RS-514: 【大狼狼蹴】ストライクして、相手が山札の上からひいたカードをダメージにしたとき、相手は自分のユニットを1体選び撃破する（出典: atwiki/page-779「相手は自分自身のユニットを1体選び撃破する」）", () => {
+  it("RS-514: 【大狼狼蹴】ストライクして、相手が山札の上からひいたカードをダメージにしたとき、相手は自分のユニットを1体選び撃破する（出典: atwiki/page-779「相手は自分自身のユニットを1体選び撃破する」）", () => {
     let t = settle(strikeWolf([]));
     expect(zoneOf(t, "player2", "TST-OP:top")).toBe("power");
     expect(t.pendingEffectChoice?.sourceCardId).toBe("RS-514");
@@ -560,14 +542,12 @@ describe("RS-515 エンジンオー", () => {
   /** 【ゴーオンソード】の選択（発動する／順番）があれば先頭で進める。 */
   const go = (s: GameState) => resolveAll(s);
 
-  // 既知の不具合: CARD-RS-515 【ゴーオンソード】の勝負が未実装（無条件に「SP3」のログだけが出て、SP は1のまま）
-  it.fails("RS-515: 【ゴーオンソード】自分が2回連続で勝つ（7 対 0 を2回）と、このターン「SP3」になる（出典: atwiki/page-760「自分が2回連続で勝ったなら、このターン、これは「SP3」になる」）", () => {
+  it("RS-515: 【ゴーオンソード】自分が2回連続で勝つ（7 対 0 を2回）と、このターン「SP3」になる（出典: atwiki/page-760「自分が2回連続で勝ったなら、このターン、これは「SP3」になる」）", () => {
     const s = go(enterEngine(["TST-UNIT-7", "TST-UNIT-7"], ["TST-UNIT-0", "TST-UNIT-0"]));
     expect(spOf(s, "player1", "RS-515:e")).toBe(3);
   });
 
-  // 既知の不具合: CARD-RS-515 【ゴーオンソード】の勝負が未実装（2回連続で負けても撃破されない）
-  it.fails("RS-515: 【ゴーオンソード】2回連続で負ける（0 対 7 を2回）と、これは撃破される（出典: atwiki/page-760「2回連続で負けたなら、これは撃破される」）", () => {
+  it("RS-515: 【ゴーオンソード】2回連続で負ける（0 対 7 を2回）と、これは撃破される（出典: atwiki/page-760「2回連続で負けたなら、これは撃破される」）", () => {
     const s = go(enterEngine(["TST-UNIT-0", "TST-UNIT-0"], ["TST-UNIT-7", "TST-UNIT-7"]));
     expect(zoneOf(s, "player1", "RS-515:e")).toBe("discard");
   });
@@ -584,8 +564,7 @@ describe("RS-515 エンジンオー", () => {
     expect(spOf(s, "player1", "RS-515:e")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-515 【ゴーオンソード】の勝負が未実装（山札をオモテにせず、山札の下にも戻さない）
-  it.fails("RS-515: 【ゴーオンソード】オモテにしたカードは持ち主の山札の下に戻る（出典: atwiki/page-760「その後、オモテにしたカードは、好きな順番で持ち主の山札の下に戻す」）", () => {
+  it("RS-515: 【ゴーオンソード】オモテにしたカードは持ち主の山札の下に戻る（出典: atwiki/page-760「その後、オモテにしたカードは、好きな順番で持ち主の山札の下に戻す」）", () => {
     const s = go(enterEngine(["TST-UNIT-2", "TST-UNIT-0"], ["TST-UNIT-0", "TST-UNIT-2"]));
     const own = s.players.player1.deck.map((c) => c.instanceId);
     const enemy = s.players.player2.deck.map((c) => c.instanceId);
@@ -595,8 +574,7 @@ describe("RS-515 エンジンオー", () => {
     expect(enemy.slice(2).sort()).toEqual(["TST-UNIT-0:x0", "TST-UNIT-2:x1"]);
   });
 
-  // 既知の不具合: CARD-RS-515 【ゴーオンソード】を発動するかの選択がない（「発動できる」）
-  it.fails("RS-515: 【ゴーオンソード】「発動できる」— 発動しないことを選べ、そのとき山札は動かない（出典: atwiki/page-760「次の効果を発動できる」・atwiki コメント「…「次の効果を発動できる」だったので修正しました」）", () => {
+  it("RS-515: 【ゴーオンソード】「発動できる」— 発動しないことを選べ、そのとき山札は動かない（出典: atwiki/page-760「次の効果を発動できる」・atwiki コメント「…「次の効果を発動できる」だったので修正しました」）", () => {
     let s = enterEngine(["TST-UNIT-7", "TST-UNIT-7"], ["TST-UNIT-0", "TST-UNIT-0"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-515");
     expect(canSkip(s)).toBe(true);

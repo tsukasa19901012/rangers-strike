@@ -44,6 +44,7 @@ import {
   reanimateTests,
   zordDownTests,
 } from "./RS7-495-515.helpers";
+import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState } from "../types/game";
 
 /** 自軍バトルフェイズに、ids を順にバトルエリアへ出す（各進入後の行動ウィンドウはパス）。 */
@@ -89,20 +90,17 @@ describe("RS-495 重力忍者オモ・カル", () => {
     expect(bpOf(s, "player1", `${GAO}:g`)).toBe(3000);
   });
 
-  // 既知の不具合: CARD-RS-495 【宇宙忍法・重力無秩序】が未実装（ナンバーが必要パワーの数字にならない）
-  it.fails("RS-495: 【宇宙忍法・重力無秩序】自軍ラッシュエリアにある間、SP 空欄のガオブラック（必要パワー1）はナンバー1になり、1番目に出ると NC（BP+3000）が成立する（出典: atwiki/page-818「そのユニットのナンバーの数字は、そのユニットの必要パワーの数字になる」）", () => {
+  it("RS-495: 【宇宙忍法・重力無秩序】自軍ラッシュエリアにある間、SP 空欄のガオブラック（必要パワー1）はナンバー1になり、1番目に出ると NC（BP+3000）が成立する（出典: atwiki/page-818「そのユニットのナンバーの数字は、そのユニットの必要パワーの数字になる」）", () => {
     const s = enterSeq(st({ player1: { rush: [inst(GAO, "g"), inst("RS-495", "o")], deck: deckCards(3) } }), [`${GAO}:g`]);
     expect(bpOf(s, "player1", `${GAO}:g`)).toBe(6000);
   });
 
-  // 既知の不具合: CARD-RS-495 【宇宙忍法・重力無秩序】が未実装（本来の CN4 のまま4番目で NC が成立する）
-  it.fails("RS-495: 【宇宙忍法・重力無秩序】ナンバーが1になったガオブラックは4番目に出ても NC が成立しない（出典: atwiki/page-818）", () => {
+  it("RS-495: 【宇宙忍法・重力無秩序】ナンバーが1になったガオブラックは4番目に出ても NC が成立しない（出典: atwiki/page-818）", () => {
     const s = enterSeq(st({ player1: { battle: fill(3), rush: [inst(GAO, "g"), inst("RS-495", "o")], deck: deckCards(3) } }), [`${GAO}:g`]);
     expect(bpOf(s, "player1", `${GAO}:g`)).toBe(3000);
   });
 
-  // 既知の不具合: CARD-RS-495 【宇宙忍法・重力無秩序】が未実装（自軍バトルエリアにある場合も効果がない）
-  it.fails("RS-495: 【宇宙忍法・重力無秩序】「自軍エリア」— 自軍バトルエリアにあっても有効で、ナンバー1になったガオブラックは4番目で NC が成立しない（出典: atwiki/page-818「これが自軍エリアにある間」）", () => {
+  it("RS-495: 【宇宙忍法・重力無秩序】「自軍エリア」— 自軍バトルエリアにあっても有効で、ナンバー1になったガオブラックは4番目で NC が成立しない（出典: atwiki/page-818「これが自軍エリアにある間」）", () => {
     // オモ・カルを1番目に置き、ガオブラックを4番目に出す。ナンバーは1になるので NC は成立しない。
     const s = enterSeq(st({ player1: { battle: [inst("RS-495", "o"), ...fill(2)], rush: [inst(GAO, "g")], deck: deckCards(3) } }), [`${GAO}:g`]);
     expect(bpOf(s, "player1", `${GAO}:g`)).toBe(3000);
@@ -122,8 +120,7 @@ describe("RS-495 重力忍者オモ・カル", () => {
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
   });
 
-  // 既知の不具合: CARD-RS-495 【宇宙忍法・重力無秩序】が未実装（必要パワー0のユニットがナンバー0にならず NC が発動する）
-  it.fails("RS-495: 【宇宙忍法・重力無秩序】必要パワー0のデンジピンクはナンバー0になり、NC 効果を発動できない（出典: atwiki/page-818「（ナンバー0になったユニットは、ＮＣ効果を発動できない）」・R-CN-01）", () => {
+  it("RS-495: 【宇宙忍法・重力無秩序】必要パワー0のデンジピンクはナンバー0になり、NC 効果を発動できない（出典: atwiki/page-818「（ナンバー0になったユニットは、ＮＣ効果を発動できない）」・R-CN-01）", () => {
     const s = enterSeq(
       st({ player1: { rush: [inst(DENJI_PINK, "d"), inst("RS-495", "o")], deck: deckCards(3) }, player2: { rush: [inst("TST-UNIT-0", "e")], deck: deckCards(3, "e") } }),
       [`${DENJI_PINK}:d`],
@@ -137,8 +134,7 @@ describe("RS-495 重力忍者オモ・カル", () => {
     expect(spOf(s, "player1", `${CHEETAH}:c`)).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-495 【宇宙忍法・重力無秩序】が未実装（敵軍ユニットのナンバーも変わらない）
-  it.fails("RS-495: 【宇宙忍法・重力無秩序】「すべてのユニット」— 敵軍のガオブラックもナンバー1になり、敵軍バトルフェイズに1番目で NC が成立する（出典: atwiki/page-818「すべてのユニットは、次の効果を受ける」）", () => {
+  it("RS-495: 【宇宙忍法・重力無秩序】「すべてのユニット」— 敵軍のガオブラックもナンバー1になり、敵軍バトルフェイズに1番目で NC が成立する（出典: atwiki/page-818「すべてのユニットは、次の効果を受ける」）", () => {
     const s = enterSeq(
       st({ activePlayer: "player2", player1: { rush: [inst("RS-495", "o")], deck: deckCards(3) }, player2: { rush: [inst(GAO, "g")], deck: deckCards(3, "e") } }),
       [`${GAO}:g`],
@@ -355,14 +351,12 @@ describe("RS-497 冥獣人ニンジャキリカゲ", () => {
     expect(bpOf(s, "player1", `${GAO}:g`)).toBe(6000);
   });
 
-  // 既知の不具合: CARD-RS-497 【変身の妨害】が未実装（DA を持たない男・女の S ユニットの効果名テキストが無効にならない）
-  it.fails("RS-497: 【変身の妨害】キリカゲが自軍バトルエリアにある間、DA を持たず本来の特徴に「男」を持つ S ユニット（ガオブラック）の【アイアンブロークン】は無効（BP3000 のまま）（出典: atwiki/page-819「効果名を持つテキストは無効になり、発動もできない」）", () => {
+  it("RS-497: 【変身の妨害】キリカゲが自軍バトルエリアにある間、DA を持たず本来の特徴に「男」を持つ S ユニット（ガオブラック）の【アイアンブロークン】は無効（BP3000 のまま）（出典: atwiki/page-819「効果名を持つテキストは無効になり、発動もできない」）", () => {
     const s = enterSeq(st({ player1: { battle: [inst("RS-497", "k"), ...fill(2)], rush: [inst(GAO, "g")], deck: deckCards(3) } }), [`${GAO}:g`]);
     expect(bpOf(s, "player1", `${GAO}:g`)).toBe(3000);
   });
 
-  // 既知の不具合: CARD-RS-497 【変身の妨害】が未実装（「女」の S ユニットの NC も発動する）
-  it.fails("RS-497: 【変身の妨害】「女」の S ユニット（マジブルー）の【未来予知】も発動できない（ドローしない）（出典: atwiki/page-819「本来の特徴に｢男｣または「女」を持つSユニット」）", () => {
+  it("RS-497: 【変身の妨害】「女」の S ユニット（マジブルー）の【未来予知】も発動できない（ドローしない）（出典: atwiki/page-819「本来の特徴に｢男｣または「女」を持つSユニット」）", () => {
     const s = enterSeq(st({ player1: { battle: [inst("RS-497", "k")], rush: [inst("RS-059", "mb")], deck: deckCards(5) } }), ["RS-059:mb"]);
     expect(s.players.player1.hand).toHaveLength(0);
   });
@@ -376,7 +370,7 @@ describe("RS-497 冥獣人ニンジャキリカゲ", () => {
   });
 
   it.todo(
-    "RS-497: コピーベントで敵軍ユニット自身が【変身の妨害】の対象になるループは、ターンプレイヤーが優先順を選ぶ（出典: atwiki/page-819 Q1「ターンプレイヤーが効果の優先順を選択して処理してください」）— 【変身の妨害】が未実装で、XG1-078 コピーベントの効果名の入れ替えとループの優先順選択を公開 API で作れないため",
+    "RS-497: コピーベントで敵軍ユニット自身が【変身の妨害】の対象になるループは、ターンプレイヤーが優先順を選ぶ（出典: atwiki/page-819 Q1「ターンプレイヤーが効果の優先順を選択して処理してください」）— XG1-078 コピーベントの効果名の入れ替えとループの優先順選択を公開 API で作れないため",
   );
 
   it("RS-497: キリカゲで効果名テキストが無効でもナンバーは消えないので、RC を持つユニットはライドオフしてビーファイタークワガーにアタックできる（出典: atwiki/page-819 Q2「はい、できます。…ナンバーは消えていないので、RCを持つユニットはライドオフすることでRCを発動しているとみなします」）", () => {
@@ -384,7 +378,7 @@ describe("RS-497 冥獣人ニンジャキリカゲ", () => {
       turn: 3,
       player1: { rush: [inst("RK-031", "r"), inst("RK-058", "z")], deck: deckCards(3) },
       player2: { battle: [inst("RS-497", "k"), inst("XG1-096", "q")], deck: deckCards(3, "e") },
-    });
+    }, [resolvePlayableCard("XG1-096") as CardDefinition]);
     s = settle(act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: "RK-031:r", vehicleInstanceId: "RK-058:z" }));
     s = settle(act(s, { type: "resolve_ride_off_choice", playerId: "player1", rideOff: true }));
     expect(attackTargets(s, "RK-031:r")).toContain("XG1-096:q");
@@ -458,8 +452,7 @@ describe("RS-498 ゲキウルフ", () => {
     return r.state;
   };
 
-  // 既知の不具合: CARD-RS-498 追加条件を満たせずラッシュできないため【狼狼弾】に到達しない
-  it.fails("RS-498: 【狼狼弾】ラッシュしたとき、BP5000 以下の敵軍ユニット（バトルエリア・ラッシュエリア）を選んで撃破できる（WB の M はゲキウルフ自身の1体）（出典: atwiki/page-774「BPの合計が5000以下になるように敵軍ユニットを選び撃破してもよい」）", () => {
+  it("RS-498: 【狼狼弾】ラッシュしたとき、BP5000 以下の敵軍ユニット（バトルエリア・ラッシュエリア）を選んで撃破できる（WB の M はゲキウルフ自身の1体）（出典: atwiki/page-774「BPの合計が5000以下になるように敵軍ユニットを選び撃破してもよい」）", () => {
     let s = rushWolf(0, { battle: [inst("TST-UNIT-2", "e1")], rush: [inst("TST-UNIT-0", "e2"), inst("SPEC-6000", "big")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-498");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e2", "TST-UNIT-2:e1"]);
@@ -468,8 +461,7 @@ describe("RS-498 ゲキウルフ", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-2:e1")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-498 追加条件を満たせずラッシュできないため【狼狼弾】に到達しない
-  it.fails("RS-498: 【狼狼弾】選べる数は WB の自軍 M ユニットの数まで — 2体なら BP2000+3000 の2体を撃破できる（出典: atwiki/page-774「選べるユニットの数は、WBの自軍Mユニットの数までとする」）", () => {
+  it("RS-498: 【狼狼弾】選べる数は WB の自軍 M ユニットの数まで — 2体なら BP2000+3000 の2体を撃破できる（出典: atwiki/page-774「選べるユニットの数は、WBの自軍Mユニットの数までとする」）", () => {
     // ゲキウルフ＋TST-UNIT-2（WB の M）で2体。
     let s = rushWolf(1, { battle: [inst("TST-UNIT-2", "e1"), inst("SPEC-2000", "e2")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-498");
@@ -478,22 +470,19 @@ describe("RS-498 ゲキウルフ", () => {
     expect(zoneOf(s, "player2", "SPEC-2000:e2")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-498 追加条件を満たせずラッシュできないため【狼狼弾】に到達しない
-  it.fails("RS-498: 【狼狼弾】WB の M ユニットがゲキウルフだけなら1体までしか撃破できない（出典: atwiki/page-774）", () => {
+  it("RS-498: 【狼狼弾】WB の M ユニットがゲキウルフだけなら1体までしか撃破できない（出典: atwiki/page-774）", () => {
     const s = resolveAll(rushWolf(0, { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2")] }), ["TST-UNIT-0:e1", "TST-UNIT-0:e2"]);
     const destroyed = ["TST-UNIT-0:e1", "TST-UNIT-0:e2"].filter((x) => zoneOf(s, "player2", x) === "discard");
     expect(destroyed).toHaveLength(1);
   });
 
-  // 既知の不具合: CARD-RS-498 追加条件を満たせずラッシュできないため【狼狼弾】に到達しない
-  it.fails("RS-498: 【狼狼弾】BP の合計は5000以下 — BP3000＋BP3000 の2体は選べない（M が2体でも）（出典: atwiki/page-774「BPの合計が5000以下になるように」）", () => {
+  it("RS-498: 【狼狼弾】BP の合計は5000以下 — BP3000＋BP3000 の2体は選べない（M が2体でも）（出典: atwiki/page-774「BPの合計が5000以下になるように」）", () => {
     const s = resolveAll(rushWolf(1, { battle: [inst("TST-UNIT-2", "e1"), inst("TST-UNIT-2", "e2")] }), ["TST-UNIT-2:e1", "TST-UNIT-2:e2"]);
     const destroyed = ["TST-UNIT-2:e1", "TST-UNIT-2:e2"].filter((x) => zoneOf(s, "player2", x) === "discard");
     expect(destroyed).toHaveLength(1);
   });
 
-  // 既知の不具合: CARD-RS-498 追加条件を満たせずラッシュできないため【狼狼弾】の任意性も確認できない
-  it.fails("RS-498: 【狼狼弾】「撃破してもよい」— 見送れる（出典: atwiki/page-774）", () => {
+  it("RS-498: 【狼狼弾】「撃破してもよい」— 見送れる（出典: atwiki/page-774）", () => {
     let s = rushWolf(0, { battle: [inst("TST-UNIT-0", "e1")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-498");
     expect(canSkip(s)).toBe(true);
@@ -563,24 +552,21 @@ describe("RS-499 ゲキバイオレット", () => {
 
   registerTests("RS-499", "page-775");
 
-  // 既知の不具合: CARD-RS-499 自軍ラッシュフェイズ中の特徴「レッド」追加が未実装（RS-423 の追加条件の判定もカード名「激気」による）
-  it.fails("RS-499: ※ 自軍ラッシュフェイズ中は「レッド」を持つので、ゲキタイガーの追加条件（特徴「激気」と「レッド」を持つ自軍ユニット）の素材にできる（出典: atwiki/page-775「自軍ラッシュフェイズ中、特徴に「レッド」「ブルー」「イエロー」を追加される」）", () => {
+  it("RS-499: ※ 自軍ラッシュフェイズ中は「レッド」を持つので、ゲキタイガーの追加条件（特徴「激気」と「レッド」を持つ自軍ユニット）の素材にできる（出典: atwiki/page-775「自軍ラッシュフェイズ中、特徴に「レッド」「ブルー」「イエロー」を追加される」）", () => {
     const s = st({ phase: "rush", player1: { hand: [inst("RS-423", "tg")], rush: [inst("RS-499", "v")], command: releasedCat("WB", 1), power: powerCards(3), deck: deckCards(3) } });
     const r = rushFromHand(s, "player1", "RS-423:tg");
     expect(r.ok).toBe(true);
     expect(zoneOf(resolveAll(r.state), "player1", "RS-499:v")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-499 自軍ラッシュフェイズ中の特徴「ブルー」追加が未実装
-  it.fails("RS-499: ※ 自軍ラッシュフェイズ中は「ブルー」も持つので、ゲキジャガー（激気＋ブルー）の追加条件の素材にできる（出典: atwiki/page-775）", () => {
+  it("RS-499: ※ 自軍ラッシュフェイズ中は「ブルー」も持つので、ゲキジャガー（激気＋ブルー）の追加条件の素材にできる（出典: atwiki/page-775）", () => {
     const s = st({ phase: "rush", player1: { hand: [inst("RS-425", "jg")], rush: [inst("RS-499", "v")], command: releasedCat("WB", 1), power: powerCards(2), deck: deckCards(3) } });
     const r = rushFromHand(s, "player1", "RS-425:jg");
     expect(r.ok).toBe(true);
     expect(zoneOf(resolveAll(r.state), "player1", "RS-499:v")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-499 自軍ラッシュフェイズ中の特徴「イエロー」追加が未実装
-  it.fails("RS-499: ※ 自軍ラッシュフェイズ中は「イエロー」も持つので、ゲキチーター（激気＋イエロー）の追加条件の素材にできる（出典: atwiki/page-775）", () => {
+  it("RS-499: ※ 自軍ラッシュフェイズ中は「イエロー」も持つので、ゲキチーター（激気＋イエロー）の追加条件の素材にできる（出典: atwiki/page-775）", () => {
     const s = st({ phase: "rush", player1: { hand: [inst("RS-424", "ch")], rush: [inst("RS-499", "v")], command: releasedCat("WB", 1), power: powerCards(0), deck: deckCards(3) } });
     const r = rushFromHand(s, "player1", "RS-424:ch");
     expect(r.ok).toBe(true);
@@ -610,8 +596,7 @@ describe("RS-499 ゲキバイオレット", () => {
       "RS-499:v",
     );
 
-  // 既知の不具合: CARD-RS-499 【狼狼蹴】の「SP1」が付かない（NC 成立が記録されるだけ）
-  it.fails("RS-499: 【狼狼蹴】2番目に出て NC が成立すると「SP1」になる（出典: atwiki/page-775「【狼狼蹴】「SP1」」・R-CN-02）", () => {
+  it("RS-499: 【狼狼蹴】2番目に出て NC が成立すると「SP1」になる（出典: atwiki/page-775「【狼狼蹴】「SP1」」・R-CN-02）", () => {
     const s = enterViolet(fill(1), []);
     expect(spOf(s, "player1", "RS-499:v")).toBe(1);
   });
@@ -621,8 +606,7 @@ describe("RS-499 ゲキバイオレット", () => {
     expect(spOf(s, "player1", "RS-499:v")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-499 【狼狼蹴】の「ホールドしてもよい。そうしたとき…撃破する」が未実装（選択が出ない）
-  it.fails("RS-499: 【狼狼蹴】ホールドすると、敵軍バトルエリアのユニットを必要パワーの合計が2になるまで選んで撃破する（必要パワー3は選べず、ラッシュエリアも対象外）（出典: atwiki/page-775「このユニットをホールドしてもよい。そうしたとき、敵軍バトルエリアのユニットを必要パワーの数字の合計が2になるまで好きな数選び、撃破する」）", () => {
+  it("RS-499: 【狼狼蹴】ホールドすると、敵軍バトルエリアのユニットを必要パワーの合計が2になるまで選んで撃破する（必要パワー3は選べず、ラッシュエリアも対象外）（出典: atwiki/page-775「このユニットをホールドしてもよい。そうしたとき、敵軍バトルエリアのユニットを必要パワーの数字の合計が2になるまで好きな数選び、撃破する」）", () => {
     let s = enterViolet(fill(1), [inst("SPEC-C1", "c1a"), inst("SPEC-C1", "c1b"), inst("TST-UNIT-0", "c0"), inst("SPEC-C3", "c3")], [inst("TST-UNIT-0", "r0")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-499");
     s = resolveAll(s, ["RS-499:v", "SPEC-C1:c1a", "SPEC-C1:c1b", "TST-UNIT-0:c0"]);
@@ -632,8 +616,7 @@ describe("RS-499 ゲキバイオレット", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:r0")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-499 【狼狼蹴】の選択が出ないため、見送り（ホールドしない）を選べない
-  it.fails("RS-499: 【狼狼蹴】「ホールドしてもよい」— 見送れば何も撃破されず、ゲキバイオレットはリリース状態のまま（出典: atwiki/page-775）", () => {
+  it("RS-499: 【狼狼蹴】「ホールドしてもよい」— 見送れば何も撃破されず、ゲキバイオレットはリリース状態のまま（出典: atwiki/page-775）", () => {
     let s = enterViolet(fill(1), [inst("TST-UNIT-0", "c0")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-499");
     expect(canSkip(s)).toBe(true);
@@ -673,8 +656,7 @@ describe("RS-500 ゲキチョッパー", () => {
   const enterChopper = (first = fill(3), hand: CardInstance[] = [inst("RS-498", "w"), inst("RS-499", "v"), inst("TST-UNIT-2", "x")]) =>
     enter(st({ player1: { battle: first, rush: [inst("RS-500", "c")], hand, deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } }), "RS-500:c");
 
-  // 既知の不具合: CARD-RS-500 【サイブレードカッター】の候補に「激気」を持たないユニットカードも入る
-  it.fails("RS-500: 【サイブレードカッター】4番目に出て NC が成立すると、手札の特徴「激気」を持つユニットカードだけを選べる（出典: atwiki/page-776「自分の手札から特徴「激気」を持つユニットカードを1枚選び」）", () => {
+  it("RS-500: 【サイブレードカッター】4番目に出て NC が成立すると、手札の特徴「激気」を持つユニットカードだけを選べる（出典: atwiki/page-776「自分の手札から特徴「激気」を持つユニットカードを1枚選び」）", () => {
     const s = enterChopper();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-500");
     expect(choiceIds(s)).toEqual(["RS-498:w", "RS-499:v"]);
@@ -685,15 +667,13 @@ describe("RS-500 ゲキチョッパー", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-500 【サイブレードカッター】で見せても BP が加算されず「SP1」にならない
-  it.fails("RS-500: 【サイブレードカッター】ゲキウルフ（BP6500）を見せると BP2000+6500=8500 になり、BP5000 以上なので「SP1」になる（出典: atwiki/page-776「見せたカードのBPを「＋」した値になり、BP5000以上のとき「SP1」になる」）", () => {
+  it("RS-500: 【サイブレードカッター】ゲキウルフ（BP6500）を見せると BP2000+6500=8500 になり、BP5000 以上なので「SP1」になる（出典: atwiki/page-776「見せたカードのBPを「＋」した値になり、BP5000以上のとき「SP1」になる」）", () => {
     const s = resolveAll(pick(enterChopper(), "RS-498:w"));
     expect(bpOf(s, "player1", "RS-500:c")).toBe(8500);
     expect(spOf(s, "player1", "RS-500:c")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-500 【サイブレードカッター】で見せても BP が加算されない
-  it.fails("RS-500: 【サイブレードカッター】ゲキバイオレット（BP2000）を見せると BP4000 で、5000 未満なので SP はない（出典: atwiki/page-776「BP5000以上のとき」）", () => {
+  it("RS-500: 【サイブレードカッター】ゲキバイオレット（BP2000）を見せると BP4000 で、5000 未満なので SP はない（出典: atwiki/page-776「BP5000以上のとき」）", () => {
     const s = resolveAll(pick(enterChopper(), "RS-499:v"));
     expect(bpOf(s, "player1", "RS-500:c")).toBe(4000);
     expect(spOf(s, "player1", "RS-500:c")).toBe(0);
@@ -720,8 +700,7 @@ describe("RS-501 エレハン・キンポー", () => {
     expectCatalogText("RS-501", TEXT);
   });
 
-  // 既知の不具合: CARD-RS-501 カタログの BP が 0（atwiki は BP3000）
-  it.fails("RS-501: スペックが出典と一致（BP3000）（出典: atwiki/page-742「BP:3000」「SP:なし」「必要パワー：2」）", () => {
+  it("RS-501: スペックが出典と一致（BP3000）（出典: atwiki/page-742「BP:3000」「SP:なし」「必要パワー：2」）", () => {
     expectStats("RS-501", {
       name: "エレハン・キンポー",
       category: "WB",
@@ -759,14 +738,12 @@ describe("RS-501 エレハン・キンポー", () => {
     expect(bpOf(withUnits([inst("SPEC-FEMALE", "f1"), inst("SPEC-FEMALE", "f2")]), "player1", "RS-501:k")).toBe(base + 2000);
   });
 
-  // 既知の不具合: CARD-RS-501 ※の BP+1000 が自軍の「女」のユニットしか数えない
-  it.fails("RS-501: ※ 敵軍の「女」のユニットも数える（「ユニット1体につき」に自軍・敵軍の限定はない）（出典: atwiki/page-742「特徴「女」を持つユニット1体につき」）", () => {
+  it("RS-501: ※ 敵軍の「女」のユニットも数える（「ユニット1体につき」に自軍・敵軍の限定はない）（出典: atwiki/page-742「特徴「女」を持つユニット1体につき」）", () => {
     const base = bpOf(withUnits([]), "player1", "RS-501:k");
     expect(bpOf(withUnits([], [inst("SPEC-FEMALE", "e1")]), "player1", "RS-501:k")).toBe(base + 1000);
   });
 
-  // 既知の不具合: CARD-RS-501 カタログの BP が 0 のため、「女」が1体のときの BP が 4000 にならない
-  it.fails("RS-501: ※ 「女」1体で BP3000+1000=4000（出典: atwiki/page-742「BP:3000」）", () => {
+  it("RS-501: ※ 「女」1体で BP3000+1000=4000（出典: atwiki/page-742「BP:3000」）", () => {
     expect(bpOf(withUnits([inst("SPEC-FEMALE", "f1")]), "player1", "RS-501:k")).toBe(4000);
   });
 
@@ -783,8 +760,7 @@ describe("RS-501 エレハン・キンポー", () => {
     return enterSeq(s, [`${yellow}:y`]);
   };
 
-  // 既知の不具合: CARD-RS-501 【遊びの中に修行あり】が未実装（2番目のイエローが「SP1」にならない）
-  it.fails("RS-501: 【遊びの中に修行あり】自軍ラッシュエリアにある間、特徴「イエロー」の S ユニット（ゲキイエロー）がバトルエリアで2番目に並ぶと「SP1」（出典: atwiki/page-742「バトルエリアで2番目に並んだとき「SP1」になる」）", () => {
+  it("RS-501: 【遊びの中に修行あり】自軍ラッシュエリアにある間、特徴「イエロー」の S ユニット（ゲキイエロー）がバトルエリアで2番目に並ぶと「SP1」（出典: atwiki/page-742「バトルエリアで2番目に並んだとき「SP1」になる」）", () => {
     expect(spOf(yellowAt(2), "player1", "RS-342:y")).toBe(1);
   });
 
@@ -800,8 +776,7 @@ describe("RS-501 エレハン・キンポー", () => {
     expect(spOf(yellowAt(2, "rush", "RS-163"), "player1", "RS-163:y")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-501 【遊びの中に修行あり】が未実装（敵軍のイエローも対象）
-  it.fails("RS-501: 【遊びの中に修行あり】「すべてのSユニット」— 敵軍のイエロー（ゲキイエロー）も敵軍バトルエリアの2番目で「SP1」になる（出典: atwiki/page-742「特徴「イエロー」を持つすべてのSユニット」）", () => {
+  it("RS-501: 【遊びの中に修行あり】「すべてのSユニット」— 敵軍のイエロー（ゲキイエロー）も敵軍バトルエリアの2番目で「SP1」になる（出典: atwiki/page-742「特徴「イエロー」を持つすべてのSユニット」）", () => {
     const s = enterSeq(
       st({ activePlayer: "player2", player1: { rush: [inst("RS-501", "k")], deck: deckCards(3) }, player2: { battle: fill(1, "e"), rush: [inst("RS-342", "y")], deck: deckCards(3, "e") } }),
       ["RS-342:y"],

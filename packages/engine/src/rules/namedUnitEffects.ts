@@ -14,6 +14,7 @@ import {
   unitBp,
 } from "../core/catalog";
 import { withSpBecomes } from "./fractionalSp";
+import { set7DUsePrintedDefenderBp } from "./legend1/set7NamedEffectsD";
 import {
   attackedBpBoostAmount,
   listCardGrantKeywords,
@@ -216,7 +217,9 @@ export function battleDefenderBp(
       activeOnAttackNamedEffect(attackerCard)?.effectId === "super_cutter" ||
       activeOnAttackNamedEffect(attackerCard)?.effectId === "raidakiku" ||
       legend2UsePrintedDefenderBp(state, pending) ||
-      legend3UsePrintedDefenderBp(state, pending));
+      legend3UsePrintedDefenderBp(state, pending) ||
+      // RS-503【シャッキーン！の中に修行あり】（rules/legend1/set7NamedEffectsD.ts）。
+      set7DUsePrintedDefenderBp(state, pending));
 
   const mirageOverride = pending.substituteInstanceId ? undefined : pending.mirageBeamDefenderBpOverride;
   const base =
