@@ -910,6 +910,11 @@ export type GameState = {
    * （モーフ・カウンター）。選択がすべて終わった時点で開く（R-TIME-01, R-KW-MORPH-01）。
    */
   deferredRushReaction?: { rusherPlayerId: PlayerId; rushedInstanceId: string; phasePlayerId: PlayerId };
+  /**
+   * 直近にラッシュされたユニットの「ラッシュされた時点」の BP（「ラッシュしたとき」の効果を解決する前）。
+   * 「BP8000以下のユニットがラッシュされたとき」は、その後 BP が上がってもこの値で判定する（atwiki/page-424 Q11）。
+   */
+  rushedBpSnapshot?: { instanceId: string; bp: number };
   /** ユニットがフィールドを離れる際の所有者応答。 */
   pendingLeave?: PendingLeave;
   /** チェイス: ライド中ユニット離場時のビークル乗り換え選択。 */

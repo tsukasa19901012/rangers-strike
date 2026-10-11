@@ -96,7 +96,23 @@ describe("R-KW-CALL-01 規定文", () => {
   });
 
   // 「必要カテゴリが揃っていなければ使えない」
-  it.todo("R-KW-CALL-01: マルチカテゴリのカードには、コマンドゾーンに必要カテゴリが揃っていなければコールを使えない（出典: atwiki/page-1559。コールで払えるマルチカテゴリの組み合わせを持つ実装カードがない）");
+  // コールOT のゴーオンシルバー（RS-600）で、ET/OT のマルチカテゴリの仮面ライダーW・CT（XG4-068）をラッシュする。
+  it("R-KW-CALL-01: マルチカテゴリのカードには、コマンドゾーンに必要カテゴリが揃っていなければコールを使えない（出典: atwiki/page-1559）", () => {
+    const WCT = realDef("XG4-068");
+    const payable = (command: ReturnType<typeof inst>[]) =>
+      payableFor(
+        state([CALL_OT, WCT], {
+          phase: "rush",
+          turn: 3,
+          player1: { hand: [inst(WCT.id, "wct")], rush: [call], command, power: powerCards(4) },
+        }),
+        `${WCT.id}:wct`,
+      ) ?? [];
+    // ET と OT が揃っていればコールでホールドできる
+    expect(payable([inst("TST-OP-OT", "ot"), inst("TST-OP-ET", "et")])).toContain(call.instanceId);
+    // OT しかなければ（コールOT とカテゴリが合っていても）使えない
+    expect(payable([inst("TST-OP-OT", "ot")])).not.toContain(call.instanceId);
+  });
 });
 
 describe("R-KW-READ-01 規定文", () => {

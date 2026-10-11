@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-036::basamishi",
+          "keyword": "other::XG3-036::ebi_basami",
           "duration": "turn"
         }
       ]

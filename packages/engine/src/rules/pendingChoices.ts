@@ -144,6 +144,7 @@ import { isSet8AChoiceEffect, tryConfirmSet8AChoice, tryResolveSet8AChoice, tryS
 import { isSet8DChoiceEffect, tryResolveSet8DChoice, trySkipSet8DChoice } from "./legend1/set8NamedEffectsD";
 import { isSet9AChoiceEffect, tryConfirmSet9AChoice, tryResolveSet9AChoice, trySkipSet9AChoice } from "./legend1/set9NamedEffectsA";
 import { isSet9DChoiceEffect, tryResolveSet9DChoice, trySkipSet9DChoice } from "./legend1/set9NamedEffectsD";
+import { isOtherLinesChoiceEffect, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
 import {
@@ -639,6 +640,7 @@ export function isValidEffectChoiceTarget(
     isSet8DChoiceEffect(pending.effectId) ||
     isSet9AChoiceEffect(pending.effectId) ||
     isSet9DChoiceEffect(pending.effectId) ||
+    isOtherLinesChoiceEffect(pending.effectId) ||
     isSet9BChoiceEffect(pending.effectId) ||
     isSet8BChoiceEffect(pending.effectId) ||
     pending.effectId === "rs414_dione_wall" ||
@@ -2922,6 +2924,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set9a) return set9a;
   const set9d = trySkipSet9DChoice(state, playerId);
   if (set9d) return set9d;
+  const otherLines = trySkipOtherLinesChoice(state, playerId);
+  if (otherLines) return otherLines;
   const set9b = trySkipSet9BChoice(state, playerId);
   if (set9b) return set9b;
   const set8b = trySkipSet8BChoice(state, playerId);
@@ -3213,6 +3217,8 @@ export function applyEffectChoiceSelect(
   if (set9a) return set9a;
   const set9d = tryResolveSet9DChoice(state, playerId, instanceId);
   if (set9d) return set9d;
+  const otherLines = tryResolveOtherLinesChoice(state, playerId, instanceId);
+  if (otherLines) return otherLines;
   const set9b = tryResolveSet9BChoice(state, playerId, instanceId);
   if (set9b) return set9b;
   const set8b = tryResolveSet8BChoice(state, playerId, instanceId);

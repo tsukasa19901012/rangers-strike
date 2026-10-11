@@ -631,7 +631,10 @@ function rushCounterConditionMet(
   const bp = rushed.onField
     ? effectiveBp(state, rushed.ownerId, rushed.card)
     : parseInt(String(getDefinition(state.definitions, rushed.card.cardId)?.bp ?? 0), 10);
-  if (isShippuNinjaCard(state, counterCardId)) return bp <= 8000;
+  // 「BP8000以下のユニットがラッシュされたとき」— ラッシュされた時点の BP で判定する。その後の
+  // 「ラッシュしたとき」で BP が上がっても使える（atwiki/page-424 Q11 ダイカイオーヒガシ）。
+  const snapshot = state.rushedBpSnapshot?.instanceId === rushedInstanceId ? state.rushedBpSnapshot.bp : undefined;
+  if (isShippuNinjaCard(state, counterCardId)) return (snapshot ?? bp) <= 8000;
   if (isMusicBoxClockCard(state, counterCardId)) {
     return isSmallUnit(state.definitions, rushed.card.cardId) && bp >= 4000;
   }
