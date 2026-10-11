@@ -116,7 +116,7 @@ import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
 import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { giantBombCounterIds, isSet5AConfirmableChoice, operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
 import { isSet6AuditConfirmableChoice } from "../rules/legend1/set6AuditFixes";
-import { isSet7AChoiceEffect, isSet7AConfirmableChoice } from "../rules/legend1/set7NamedEffectsA";
+import { isSet7AChoiceEffect, isSet7AConfirmableChoice, set7AStrikeCounterIds } from "../rules/legend1/set7NamedEffectsA";
 import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower } from "./power";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
@@ -234,8 +234,11 @@ function appendStrikeReactionActions(
     actions.push({ type: "use_plasma_energy", playerId: defenderId });
   }
 
-  // RS-184 マジパンチ（BP8000以下の敵軍ユニットにストライクされたとき）。
-  for (const counterId of magiPunchCounterIds(state, defenderId, pending)) {
+  // RS-184 マジパンチ（BP8000以下の敵軍ユニットにストライクされたとき）・RS-432 隠流マキビシ（ストライクされたとき）。
+  for (const counterId of [
+    ...magiPunchCounterIds(state, defenderId, pending),
+    ...set7AStrikeCounterIds(state, defenderId, pending, canPlayHandCounter),
+  ]) {
     appendCounterCategoryPaymentActions(state, defenderId, counterId, actions);
     if (canExecuteHandCounter(state, defenderId, counterId)) {
       actions.push({ type: "play_counter", playerId: defenderId, instanceId: counterId });

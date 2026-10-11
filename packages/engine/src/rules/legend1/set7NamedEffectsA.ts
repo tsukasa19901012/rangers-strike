@@ -8,14 +8,14 @@
  * - 選択の解決: `tryResolveSet7AChoice` / `trySkipSet7AChoice` / `tryConfirmSet7AChoice`
  * 構成は rules/legend1/set6NamedEffectsB.ts と同じ。
  */
-import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PendingEffectChoice, PendingStrike, PlayerId, PlayerState } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
 import { opponent, updatePlayer } from "../../core/helpers";
 import { addTurnRuleModifier, getPlayerModifiers, hasTurnRuleModifier } from "../../core/scopedModifiers";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
-import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
+import { applyUnitLeave, openEffectChoice, requestDrawFromDeck, type ChoiceOutcome } from "../pendingChoices";
 import { patchPlayer } from "../playerPatches";
 import { findCardInField } from "../fieldLookup";
 import { unitFeatures } from "../addedFeatures";
@@ -25,6 +25,8 @@ import { shuffleCards } from "../errataCardEffects";
 import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
 import type { ComboOutcome } from "../comboTypes";
+import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
+import { resolvePlayableCard } from "@rangers-strike/cards";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -829,6 +831,459 @@ CHOICE_RESOLVERS[LOYALTY_TO_EMPEROR_EFFECT_ID] = (state, playerId, instanceId) =
   return { state: finish(next, pending), log: logFor(state, playerId, "RS-450", `${LOYALTY_TO_EMPEROR_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
 };
 CHOICE_SKIPPERS[LOYALTY_TO_EMPEROR_EFFECT_ID] = simpleSkip("RS-450");
+
+// ---------------------------------------------------------------------------
+// RS-439 バトルシャーク【万能戦艦】
+// 「これをラッシュしたとき、次の効果を発動できる⇒自軍山札から、Lユニットのカードを1枚か、ナンバーに「L」または「R」を持つ
+//  ユニットカードを2枚まで選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。」（atwiki/page-781）
+// 山札にある間は印刷どおりのサイズで判定する（ガンマジンは S ユニットのカード。atwiki/page-781 Q1）。
+
+export const ALL_PURPOSE_SHIP_EFFECT_ID = "rs439_all_purpose_battleship";
+
+function isLargeUnitCard(state: GameState, cardId: string): boolean {
+  const def = getDefinition(state.definitions, cardId);
+  return def?.type === "unit" && def.size === "L";
+}
+
+function isLrNumberUnitCard(state: GameState, cardId: string): boolean {
+  return getDefinition(state.definitions, cardId)?.type === "unit" && hasLrNumber(state, cardId);
+}
+
+function openAllPurposeShip(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const playerId = ctx.playerId;
+  const ids = state.players[playerId].deck
+    .filter((c) => isLargeUnitCard(state, c.cardId) || isLrNumberUnitCard(state, c.cardId))
+    .map((c) => c.instanceId);
+  if (ids.length === 0) return { state, detail: `${ALL_PURPOSE_SHIP_EFFECT_ID}:no_targets` };
+  return {
+    state: openEffectChoice(state, {
+      playerId,
+      effectId: ALL_PURPOSE_SHIP_EFFECT_ID,
+      sourceCardId: "RS-439",
+      sourceInstanceId: ctx.triggerSourceInstanceId,
+      kind: "select_unit",
+      phasePlayerId: ctx.phasePlayerId,
+      validInstanceIds: ids,
+      viewedInstanceIds: ids,
+      selectCount: 1,
+      optional: true,
+      set7aMeta: { remaining: 2 },
+    }),
+    detail: ALL_PURPOSE_SHIP_EFFECT_ID,
+  };
+}
+
+function shuffleDeck(state: GameState, playerId: PlayerId): GameState {
+  return patchPlayer(state, playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
+}
+
+CHOICE_RESOLVERS[ALL_PURPOSE_SHIP_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const card = state.players[playerId].deck.find((c) => c.instanceId === instanceId);
+  if (!card) return { error: "invalid_target" };
+  const first = (pending.selectedInstanceIds ?? []).length === 0;
+  const takenAsL = first && isLargeUnitCard(state, card.cardId) && !isLrNumberUnitCard(state, card.cardId);
+  const moved = patchPlayer(state, playerId, (p) => ({
+    ...p,
+    deck: p.deck.filter((c) => c.instanceId !== instanceId),
+    hand: [...p.hand, strip(card)],
+  }));
+  const log = logFor(state, playerId, "RS-439", `${ALL_PURPOSE_SHIP_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`);
+  const remaining = (pending.set7aMeta?.remaining ?? 1) - 1;
+  // 「Lユニットのカードを1枚か」— L ユニットのカードを選んだら1枚だけ。L／R ナンバーのカードなら2枚まで。
+  const more = takenAsL
+    ? []
+    : moved.players[playerId].deck.filter((c) => isLrNumberUnitCard(moved, c.cardId)).map((c) => c.instanceId);
+  if (remaining > 0 && more.length > 0) {
+    return {
+      state: {
+        ...moved,
+        pendingEffectChoice: {
+          ...pending,
+          validInstanceIds: more,
+          viewedInstanceIds: more,
+          selectedInstanceIds: [...(pending.selectedInstanceIds ?? []), instanceId],
+          set7aMeta: { remaining },
+        },
+      },
+      log,
+    };
+  }
+  return { state: finish(shuffleDeck(moved, playerId), pending), log };
+};
+CHOICE_SKIPPERS[ALL_PURPOSE_SHIP_EFFECT_ID] = (state, playerId) => {
+  const pending = state.pendingEffectChoice!;
+  // 1枚選んだあとの見送りは「その後、山札をシャッフルする」まで行う。
+  const picked = (pending.selectedInstanceIds ?? []).length > 0;
+  const next = picked ? shuffleDeck(state, playerId) : state;
+  return { state: finish(next, pending), log: skipLog(state, playerId, "RS-439", pending.effectId) };
+};
+
+// ---------------------------------------------------------------------------
+// RS-440 バトルフィーバーロボ（2nd）【武器換装】
+// 「これが自軍バトルエリアにある間、自軍バトルフェイズ中、自軍コマンドを3つホールドしてもよい。そうしたとき、
+//  これをラッシュエリアに戻す。」（atwiki/page-780）— 起動効果（rules/fieldActivatedAbilities.ts）。文言で判定する。
+// 戻した後にコマンドがリリースされれば、再び出して使える（faq-card-7 RS-440 Q）。
+
+const HOLD_RETURN_SELF_RE = /これが自軍バトルエリアにある間、自軍バトルフェイズ中、自軍コマンドを(\d+)つホールドしてもよい。そうしたとき、これをラッシュエリアに戻す/;
+
+/** 「自軍コマンドをNつホールドしてもよい。そうしたとき、これをラッシュエリアに戻す」の N（なければ 0）。 */
+export function holdReturnSelfCount(cardId: string, definitions?: GameState["definitions"]): number {
+  const text = (definitions?.[cardId]?.text ?? getDslCardText(cardId) ?? "").normalize("NFKC");
+  const m = text.match(HOLD_RETURN_SELF_RE);
+  return m ? Number(m[1]) : 0;
+}
+
+export function canActivateHoldReturnSelf(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  const n = holdReturnSelfCount(card.cardId, state.definitions);
+  if (n <= 0) return false;
+  if (!state.players[playerId].battle.some((c) => c.instanceId === card.instanceId)) return false;
+  return state.players[playerId].command.filter((c) => !c.commandHeld).length >= n;
+}
+
+export function activateHoldReturnSelf(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
+  const n = holdReturnSelfCount(card.cardId, state.definitions);
+  let held = 0;
+  let next = patchPlayer(state, playerId, (p) => ({
+    ...p,
+    command: p.command.map((c) => {
+      if (c.commandHeld || held >= n) return c;
+      held += 1;
+      return { ...c, commandHeld: true };
+    }),
+    battle: p.battle.filter((c) => c.instanceId !== card.instanceId),
+    rush: [...p.rush, card],
+  }));
+  if (next.pendingBattleEntry?.instanceId === card.instanceId) next = { ...next, pendingBattleEntry: undefined };
+  next = {
+    ...next,
+    log: [...next.log, buildLogEntry(playerId, "named_effect", card.cardId, state.definitions, "hold_commands_return_self")],
+  };
+  return afterUnitsReturnedToRush(next, playerId, [card.instanceId], playerId);
+}
+
+function getDslCardText(cardId: string): string | undefined {
+  return resolvePlayableCard(cardId)?.text;
+}
+
+// ---------------------------------------------------------------------------
+// RS-438 炎神ソウル
+// 「このカードを自軍パワーゾーンに置く。その後、自軍パワーゾーンのオモテ向きのカードからユニットカードを1枚選び、
+//  手札に加えてもよい。」（atwiki/page-755）
+
+export const ENGINE_SOUL_EFFECT_ID = "rs438_engine_soul";
+
+const POWER_UNIT_TO_HAND_RE = /このカードを自軍パワーゾーンに置く。その後、自軍パワーゾーンのオモテ向きのカードからユニットカードを1枚選び、手札に加えてもよい/;
+
+/**
+ * 「このカードを自軍パワーゾーンに置く。その後、自軍パワーゾーンのオモテ向きのカードからユニットカードを1枚選び、
+ * 手札に加えてもよい。」— パワーゾーンに置いたあとの選択（core/applyAction.ts の place_in_power から呼ぶ）。文言で判定する。
+ */
+export function openPowerUnitToHandAfterPlace(state: GameState, playerId: PlayerId, operation: CardInstance): GameState {
+  const text = (getDefinition(state.definitions, operation.cardId)?.text ?? "").normalize("NFKC").replace(/\s+/g, "");
+  if (!POWER_UNIT_TO_HAND_RE.test(text)) return state;
+  const ids = state.players[playerId].power
+    .filter((c) => !c.faceDown && getDefinition(state.definitions, c.cardId)?.type === "unit")
+    .map((c) => c.instanceId);
+  if (ids.length === 0) return state;
+  return openEffectChoice(state, {
+    playerId,
+    effectId: ENGINE_SOUL_EFFECT_ID,
+    sourceCardId: operation.cardId,
+    sourceInstanceId: operation.instanceId,
+    kind: "select_power",
+    phasePlayerId: state.activePlayer,
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+CHOICE_RESOLVERS[ENGINE_SOUL_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const card = state.players[playerId].power.find((c) => c.instanceId === instanceId && !c.faceDown);
+  if (!card) return { error: "invalid_target" };
+  const next = patchPlayer(state, playerId, (p) => ({
+    ...p,
+    power: p.power.filter((c) => c.instanceId !== instanceId),
+    hand: [...p.hand, strip(card)],
+  }));
+  return { state: finish(next, pending), log: logFor(state, playerId, "RS-438", `${ENGINE_SOUL_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
+};
+CHOICE_SKIPPERS[ENGINE_SOUL_EFFECT_ID] = simpleSkip("RS-438");
+
+// ---------------------------------------------------------------------------
+// RS-432 隠流マキビシ（※カウンター）
+// 「ストライクされたとき発動できる⇒相手がバトルフェイズを終えるとき、そのバトルフェイズ中に自分の受けたダメージが
+//  2点以上なら、敵軍バトルエリアのSユニットをすべて撃破する。」（atwiki/page-736・R-CTR-01）
+// 発動したことをこのターンの間記録し、相手がバトルフェイズを終えるとき（core/createGame.ts advancePhase）に判定する。
+
+const MAKIBISHI_TEXT_RE = /ストライクされたとき発動できる⇒相手がバトルフェイズを終えるとき、そのバトルフェイズ中に自分の受けたダメージが(\d+)点以上なら、敵軍バトルエリアのSユニットをすべて撃破する/;
+export const MAKIBISHI_RULE = "rs432_makibishi";
+
+function cardTextOf(state: GameState, cardId: string): string {
+  return (getDefinition(state.definitions, cardId)?.text ?? resolvePlayableCard(cardId)?.text ?? "")
+    .normalize("NFKC")
+    .replace(/\s+/g, "");
+}
+
+function makibishiThreshold(state: GameState, cardId: string): number | null {
+  const m = cardTextOf(state, cardId).match(MAKIBISHI_TEXT_RE);
+  return m ? Number(m[1]) : null;
+}
+
+function receivedDamage(state: GameState, playerId: PlayerId): number {
+  const p = state.players[playerId];
+  return Math.max(p.damage, p.power.filter((c) => c.faceDown).length);
+}
+
+/** ストライクの反応窓で使える set-7 のカウンター（手札）。 */
+export function set7AStrikeCounterIds(
+  state: GameState,
+  defenderId: PlayerId,
+  pending: PendingStrike,
+  canPlay: (state: GameState, playerId: PlayerId, instanceId: string) => boolean,
+): string[] {
+  // ※カウンター — 敵軍ターン中のみ。
+  if (pending.battlePhasePlayer === defenderId) return [];
+  return state.players[defenderId].hand
+    .filter((c) => makibishiThreshold(state, c.cardId) !== null && canPlay(state, defenderId, c.instanceId))
+    .map((c) => c.instanceId);
+}
+
+/** カウンターを使う（捨札にし、相手がバトルフェイズを終えるときの判定を予約する）。 */
+export function applySet7AStrikeCounter(
+  state: GameState,
+  defenderId: PlayerId,
+  counterInstanceId: string,
+): { state: GameState; log: string } {
+  const card = state.players[defenderId].hand.find((c) => c.instanceId === counterInstanceId);
+  if (!card) return { state, log: buildLogEntry(defenderId, "play_counter", "unknown", state.definitions, "none") };
+  const threshold = makibishiThreshold(state, card.cardId) ?? 2;
+  const base = state.players[defenderId].damageAtBattlePhaseStart ?? receivedDamage(state, defenderId);
+  const next = patchPlayer(state, defenderId, (p) => ({
+    ...addRuleModifierAlways(p, MAKIBISHI_RULE, card.cardId, { threshold, base }),
+    hand: p.hand.filter((c) => c.instanceId !== counterInstanceId),
+    discard: [...p.discard, strip(card)],
+  }));
+  return { state: next, log: buildLogEntry(defenderId, "play_counter", card.cardId, state.definitions, MAKIBISHI_RULE) };
+}
+
+function addRuleModifierAlways(p: PlayerState, ruleId: string, sourceCardId: string, payload: unknown): PlayerState {
+  return {
+    ...p,
+    modifiers: [...getPlayerModifiers(p), { kind: "rule", ruleId, scope: "turn", sourceCardId, payload }],
+  };
+}
+
+/**
+ * 相手（endingPlayerId）がバトルフェイズを終えるとき（core/createGame.ts advancePhase から呼ぶ）。
+ * 隠流マキビシを使っていれば、そのバトルフェイズ中に受けたダメージを判定して敵軍バトルエリアの S ユニットをすべて撃破する。
+ */
+export function applySet7ABattlePhaseEnd(state: GameState, endingPlayerId: PlayerId): GameState {
+  const defenderId = opponent(endingPlayerId);
+  const entries = getPlayerModifiers(state.players[defenderId]).filter(
+    (m) => m.kind === "rule" && m.ruleId === MAKIBISHI_RULE,
+  );
+  if (entries.length === 0) return state;
+  let next = patchPlayer(state, defenderId, (p) => ({
+    ...p,
+    modifiers: getPlayerModifiers(p).filter((m) => !(m.kind === "rule" && m.ruleId === MAKIBISHI_RULE)),
+  }));
+  const received = receivedDamage(next, defenderId);
+  const fires = entries.some((m) => {
+    const payload = (m.kind === "rule" ? m.payload : undefined) as { threshold?: number; base?: number } | undefined;
+    return received - (payload?.base ?? 0) >= (payload?.threshold ?? 2);
+  });
+  if (!fires) return next;
+  const targets = next.players[endingPlayerId].battle
+    .filter((c) => isSmallUnit(next.definitions, c.cardId))
+    .map((c) => c.instanceId);
+  for (const id of targets) {
+    if (!next.players[endingPlayerId].battle.some((c) => c.instanceId === id)) continue;
+    const leave = applyUnitLeave(next, id, "discard", endingPlayerId);
+    if ("error" in leave) continue;
+    next = leave.state;
+  }
+  return {
+    ...next,
+    log: [...next.log, buildLogEntry(defenderId, "named_effect", "RS-432", next.definitions, `${MAKIBISHI_RULE}:${targets.length}`)],
+  };
+}
+
+// ---------------------------------------------------------------------------
+// RS-433 ネコマル（※常駐）
+// 「自軍ラッシュフェイズ中、自分が特徴「忍者」を持つユニットをラッシュしたとき、自分の手札からカードを好きな枚数選び、
+//  自軍山札の下に好きな順で戻してもよい。そうしたとき、戻した枚数と同じ枚数をドローする。」（atwiki/page-737）
+// 選んだ順に山札の下へ置く（1枚ずつ選び、確定で戻した枚数だけドロー）。
+
+const NEKOMARU_RE = /自軍ラッシュフェイズ中、自分が特徴「([^」]+)」を持つユニットをラッシュしたとき、自分の手札からカードを好きな枚数選び、自軍山札の下に好きな順で戻してもよい。そうしたとき、戻した枚数と同じ枚数をドローする/;
+export const NEKOMARU_EFFECT_ID = "rs433_nekomaru";
+
+/** 「ラッシュしたとき」（rules/onRushUnitEffects.ts から呼ぶ）。 */
+export function applySet7AOnRush(
+  state: GameState,
+  ownerPlayerId: PlayerId,
+  instanceId: string,
+  phasePlayerId: PlayerId,
+): GameState {
+  if (state.pendingEffectChoice) return state;
+  return openNekomaru(state, ownerPlayerId, instanceId, phasePlayerId);
+}
+
+function openNekomaru(state: GameState, ownerPlayerId: PlayerId, instanceId: string, phasePlayerId: PlayerId): GameState {
+  if (state.phase !== "rush" || state.activePlayer !== ownerPlayerId) return state;
+  const unit = fieldUnits(state, ownerPlayerId).find((c) => c.instanceId === instanceId);
+  if (!unit) return state;
+  const op = state.players[ownerPlayerId].operation.find((c) => {
+    const m = cardTextOf(state, c.cardId).match(NEKOMARU_RE);
+    return !!m && hasFeature(state, ownerPlayerId, unit, m[1]!);
+  });
+  if (!op) return state;
+  const ids = state.players[ownerPlayerId].hand.map((c) => c.instanceId);
+  if (ids.length === 0) return state;
+  return openEffectChoice(state, {
+    playerId: ownerPlayerId,
+    effectId: NEKOMARU_EFFECT_ID,
+    sourceCardId: op.cardId,
+    sourceInstanceId: op.instanceId,
+    kind: "select_hand",
+    phasePlayerId,
+    validInstanceIds: ids,
+    selectedInstanceIds: [],
+    optional: true,
+  });
+}
+
+function finishNekomaru(state: GameState, playerId: PlayerId): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  const chosen = pending.selectedInstanceIds ?? [];
+  if (chosen.length === 0) {
+    return { state: finish(state, pending), log: skipLog(state, playerId, pending.sourceCardId, pending.effectId) };
+  }
+  let next = patchPlayer(state, playerId, (p) => {
+    const cards = chosen.map((id) => p.hand.find((c) => c.instanceId === id)).filter((c): c is CardInstance => !!c);
+    return { ...p, hand: p.hand.filter((c) => !chosen.includes(c.instanceId)), deck: [...p.deck, ...cards.map(strip)] };
+  });
+  next = { ...next, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+  next = requestDrawFromDeck(next, playerId, pending.phasePlayerId, { count: chosen.length }).state;
+  return {
+    state: finish(next, pending),
+    log: logFor(state, playerId, pending.sourceCardId, `${NEKOMARU_EFFECT_ID}:${chosen.length}`),
+  };
+}
+
+CHOICE_RESOLVERS[NEKOMARU_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+  const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+  const updated: GameState = {
+    ...state,
+    pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: remaining },
+  };
+  if (remaining.length === 0) return finishNekomaru(updated, playerId);
+  return { state: updated };
+};
+CHOICE_CONFIRMERS[NEKOMARU_EFFECT_ID] = finishNekomaru;
+CHOICE_SKIPPERS[NEKOMARU_EFFECT_ID] = (state, playerId) => {
+  // 選び始めたあとの見送りは、選んだ分で確定する。
+  const pending = state.pendingEffectChoice!;
+  if ((pending.selectedInstanceIds ?? []).length > 0) return finishNekomaru(state, playerId);
+  return { state: finish(state, pending), log: skipLog(state, playerId, pending.sourceCardId, pending.effectId) };
+};
+
+// ---------------------------------------------------------------------------
+// RS-434 ライフバード（※常駐）
+// 「カテゴリにETを持つ自軍ユニットがストライクしてダメージを与えたとき、自軍捨札からSユニットのカードを相手に1枚選ばせてもよい。
+//  そうしたとき、相手の選んだユニットカードを自分の手札に加える。」（atwiki/page-746）
+
+const LIFE_BIRD_RE = /カテゴリに(WB|OT|ET|MA|DA)を持つ自軍ユニットがストライクしてダメージを与えたとき、自軍捨札からSユニットのカードを相手に1枚選ばせてもよい。そうしたとき、相手の選んだユニットカードを自分の手札に加える/;
+export const LIFE_BIRD_EFFECT_ID = "rs434_life_bird";
+export const LIFE_BIRD_PICK_EFFECT_ID = "rs434_life_bird_pick";
+
+function discardSUnitIds(state: GameState, playerId: PlayerId): string[] {
+  return state.players[playerId].discard
+    .filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit" && isSmallUnit(state.definitions, c.cardId))
+    .map((c) => c.instanceId);
+}
+
+/** ストライクのダメージを与えたあと（core/applyAction.ts finishStrikeResolution から呼ぶ）。 */
+export function applySet7AStrikeDamageTriggers(state: GameState, pending: PendingStrike): GameState {
+  if (state.winner || pending.damageCancelled || pending.damage <= 0) return state;
+  if (state.pendingEffectChoice || state.pendingDamagePayment) return state;
+  const ownerId = pending.strikerPlayerId;
+  const striker = state.players[ownerId].battle.find((c) => c.instanceId === pending.strikerInstanceId);
+  if (!striker) return state;
+  const cats = categoriesOf(state, striker.cardId);
+  const op = state.players[ownerId].operation.find((c) => {
+    const m = cardTextOf(state, c.cardId).match(LIFE_BIRD_RE);
+    return !!m && cats.includes(m[1]!);
+  });
+  if (!op || discardSUnitIds(state, ownerId).length === 0) return state;
+  return openEffectChoice(state, {
+    playerId: ownerId,
+    effectId: LIFE_BIRD_EFFECT_ID,
+    sourceCardId: op.cardId,
+    sourceInstanceId: op.instanceId,
+    kind: "confirm",
+    mayConfirm: true,
+    phasePlayerId: pending.battlePhasePlayer,
+    validInstanceIds: [],
+    selectedInstanceIds: [],
+    optional: true,
+  });
+}
+
+function openLifeBirdPick(state: GameState, playerId: PlayerId): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  const ids = discardSUnitIds(state, playerId);
+  if (ids.length === 0) return { state: finish(state, pending) };
+  return {
+    state: reopen(state, pending, {
+      playerId: opponent(playerId),
+      effectId: LIFE_BIRD_PICK_EFFECT_ID,
+      sourceCardId: pending.sourceCardId,
+      sourceInstanceId: pending.sourceInstanceId,
+      kind: "select_unit",
+      phasePlayerId: pending.phasePlayerId,
+      validInstanceIds: ids,
+      selectCount: 1,
+      optional: false,
+    }),
+    log: logFor(state, playerId, pending.sourceCardId, `${LIFE_BIRD_EFFECT_ID}:accept`),
+  };
+}
+
+CHOICE_RESOLVERS[LIFE_BIRD_EFFECT_ID] = (state, playerId) => openLifeBirdPick(state, playerId);
+CHOICE_CONFIRMERS[LIFE_BIRD_EFFECT_ID] = (state, playerId) => openLifeBirdPick(state, playerId);
+CHOICE_SKIPPERS[LIFE_BIRD_EFFECT_ID] = simpleSkip("RS-434");
+
+CHOICE_RESOLVERS[LIFE_BIRD_PICK_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const ownerId = opponent(playerId);
+  const card = state.players[ownerId].discard.find((c) => c.instanceId === instanceId);
+  if (!card) return { error: "invalid_target" };
+  const next = moveDiscardToHand(state, ownerId, instanceId);
+  return {
+    state: finish(next, pending),
+    log: logFor(state, playerId, pending.sourceCardId, `${LIFE_BIRD_PICK_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`),
+  };
+};
+
+// ---------------------------------------------------------------------------
+// DSL grant_keyword（`set7a::cardId::name`）からの起点
+
+export const SET7A_KEYWORD_PREFIX = "set7a::";
+
+export function trySet7ACardEffect(state: GameState, ctx: GrantKeywordContext, keyword: string): GrantKeywordResult | null {
+  if (!keyword.startsWith(SET7A_KEYWORD_PREFIX)) return null;
+  switch (keyword) {
+    case "set7a::RS-439::bannou_senkan":
+      return openAllPurposeShip(state, ctx);
+    default:
+      return { state, detail: keyword };
+  }
+}
 
 // ---------------------------------------------------------------------------
 // 参照用

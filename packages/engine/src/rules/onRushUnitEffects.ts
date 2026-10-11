@@ -1,4 +1,5 @@
 import type { GameState, PlayerId } from "../types/game";
+import { applySet7AOnRush } from "./legend1/set7NamedEffectsA";
 import { findInZone } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { requestDrawFromDeck } from "./drawFromDeck";
@@ -262,6 +263,11 @@ export function applyOnRushUnitEffects(
       instanceId,
       phasePlayerId,
     );
+  }
+
+  // 第7弾 RS-433 ネコマル（※常駐）等（rules/legend1/set7NamedEffectsA.ts）。
+  if (!nextState.pendingEffectChoice) {
+    nextState = applySet7AOnRush(nextState, ownerPlayerId, instanceId, phasePlayerId);
   }
 
   // RS-124 超電子レーダー（「ラッシュしたとき」。戻すパワーを持ち主が選ぶ選択を開くことがあるので最後に処理する）。

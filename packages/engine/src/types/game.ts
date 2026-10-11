@@ -114,6 +114,8 @@ export type PlayerState = {
   damage: number;
   /** チャージフェイズ: このターンに1枚をパワーまたはコマンドに置いた後 true。 */
   hasChargedThisTurn?: boolean;
+  /** RS-432 隠流マキビシ: 現在のバトルフェイズが始まったときに受けていたダメージ（「そのバトルフェイズ中に受けたダメージ」）。 */
+  damageAtBattlePhaseStart?: number;
   /** damage_gate_battle_entry: 敵軍ターン中にダメージを受けた（自軍ターン終了で消える）。 */
   damagedOnEnemyTurn?: boolean;
   /** damage_gate_battle_entry: ターン開始時のウラ向きパワー（ダメージ）の枚数（効果で置かれたダメージの検出用）。 */

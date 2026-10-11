@@ -1,3 +1,9 @@
+import {
+  applySet7AStrikeCounter,
+  applySet7AStrikeDamageTriggers,
+  openPowerUnitToHandAfterPlace,
+  set7AStrikeCounterIds,
+} from "../rules/legend1/set7NamedEffectsA";
 import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw, settleDarkArmor } from "../rules/legend1/set6NamedEffects348";
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
@@ -265,6 +271,7 @@ import {
   isShippuNinjaCard,
   applySuperShieldSubstitute,
   canExecuteHandCounter,
+  canPlayHandCounter,
   getCounterEffectId,
   hasBattleCounterReactions,
   finalizeLeaveReaction,
@@ -531,6 +538,8 @@ function finishStrikeResolution(
   // ルール: R-TIME-01 — 「ストライクしてダメージを与えたとき」はダメージを与えたあと（DSL: RS-686 等、RS-309【ゴウライキャノン】）。
   resolved = applyStrikeDamageDealtDslTriggers(resolved, pending);
   resolved = applySet5StrikeDamageTriggers(resolved, pending);
+  // RS-434 ライフバード（※常駐。rules/legend1/set7NamedEffectsA.ts）。
+  resolved = applySet7AStrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -1513,6 +1522,8 @@ function applyActionCore(
             power: [...current.power, { ...found.card, faceDown: false }],
           }),
         };
+        // 「その後、自軍パワーゾーンのオモテ向きのカードからユニットカードを1枚選び、手札に加えてもよい」（RS-438 炎神ソウル）。
+        nextState = openPowerUnitToHandAfterPlace(nextState, playerId, found.card);
         return ok(
           nextState,
           buildLogEntry(
@@ -2448,6 +2459,12 @@ function applyActionCore(
         const pending = state.pendingStrike;
         const defenderId = opponent(pending.strikerPlayerId);
         if (playerId !== defenderId) return fail("wrong_player");
+        // RS-432 隠流マキビシ（rules/legend1/set7NamedEffectsA.ts）。
+        if (set7AStrikeCounterIds(state, defenderId, pending, canPlayHandCounter).includes(action.instanceId)) {
+          const used = applySet7AStrikeCounter(state, defenderId, action.instanceId);
+          const cleared = clearCounterHoldReady(used.state, playerId);
+          return completeStrike({ ...cleared, pendingStrike: pending }, pending, [used.log]);
+        }
         if (!magiPunchCounterIds(state, defenderId, pending).includes(action.instanceId)) {
           return fail("invalid_counter");
         }
