@@ -33,6 +33,7 @@ import {
   passEntry,
   pick,
   powerCards,
+  raw,
   releasedCat,
   resolveAll,
   rushFromHand,
@@ -246,6 +247,27 @@ describe("RS-440 バトルフィーバーロボ（2nd）", () => {
     expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(3);
   });
 
+  it("RS-440: 【武器換装】リリース状態の自軍コマンドが3つより多ければ、ホールドする3つをプレイヤーが選ぶ（出典: atwiki/page-780「自軍コマンドを3つホールドしてもよい」）", () => {
+    let s = weaponState(5);
+    s = raw(s, weaponActions(s)[0]!);
+    expect(s.pendingCommandPayment?.kind).toBe("effect_hold");
+    expect(s.pendingCommandPayment?.totalNeeded).toBe(3);
+    expect(s.pendingCommandPayment?.validInstanceIds).toHaveLength(5);
+    const chosen = ["TST-OP-ET:cET1", "TST-OP-ET:cET3", "TST-OP-ET:cET4"];
+    s = resolveAll(act(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: chosen }));
+    expect(zoneOf(s, "player1", "RS-440:bf")).toBe("rush");
+    expect(s.players.player1.command.filter((c) => c.commandHeld).map((c) => c.instanceId).sort()).toEqual(chosen);
+  });
+
+  it("RS-440: 【武器換装】ホールドするコマンドを選ぶ前なら取りやめられる（コマンドもユニットもそのまま）（出典: atwiki/page-780「ホールドしてもよい」）", () => {
+    let s = weaponState(4);
+    s = raw(s, weaponActions(s)[0]!);
+    s = act(s, { type: "cancel_command_payment", playerId: "player1" });
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(zoneOf(s, "player1", "RS-440:bf")).toBe("battle");
+    expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(0);
+  });
+
   it("RS-440: 【武器換装】リリース状態の自軍コマンドが2つしかなければ使えない（出典: atwiki/page-780「自軍コマンドを3つホールドしてもよい」）", () => {
     expect(weaponActions(weaponState(2))).toHaveLength(0);
   });
@@ -321,9 +343,27 @@ describe("RS-441 バトルコサック", () => {
 
   it("RS-441: 【コサックダンス】手札に戻したユニットカードそのものを選んでラッシュエリアに出せる（出典: grnrngr/faq-card-7 RS-441 Q「はい、できます」）", () => {
     let s = disco(1);
-    s = resolveAll(s, ["RS-445:ma"]);
+    // 手札に戻す（ma）→ 出すカードに戻した ma そのものを選ぶ（ホールドするコマンドの支払いは先頭で済ませる）。
+    s = pick(pick(s, "RS-445:ma"), "RS-445:ma");
+    s = resolveAll(s, ["__none__"]);
     expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(1);
     expect(zoneOf(s, "player1", "RS-445:ma")).toBe("rush");
+  });
+
+  it("RS-441: 【コサックダンス】ホールドする自軍コマンドはプレイヤーが選ぶ（リリース状態のコマンドが2つなら、選んだ方だけがホールドされる）（出典: atwiki/page-782「自軍コマンドを1つホールドして」）", () => {
+    let s = disco(1, [inst("RS-445", "ma2")]);
+    s = pick(s, "RS-445:ma");
+    s = raw(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-445:ma2" });
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-441");
+    expect(s.pendingCommandPayment?.kind).toBe("effect_hold");
+    expect(s.pendingCommandPayment?.totalNeeded).toBe(1);
+    expect([...s.pendingCommandPayment!.validInstanceIds].sort()).toEqual(["TST-OP-ET:cET0", "TST-OP-ET:cET1"]);
+    s = act(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP-ET:cET1"] });
+    s = resolveAll(s, ["__none__"]);
+    expect(zoneOf(s, "player1", "RS-445:ma2")).toBe("rush");
+    const cmd = (id: string) => s.players.player1.command.find((c) => c.instanceId === id);
+    expect(cmd("TST-OP-ET:cET1")?.commandHeld).toBe(true);
+    expect(cmd("TST-OP-ET:cET0")?.commandHeld).toBeFalsy();
   });
 
   it("RS-441: 【コサックダンス】は「してもよい」— 手札に戻さなければユニットはラッシュエリアに残る（出典: atwiki/page-782「手札に戻してもよい」）", () => {

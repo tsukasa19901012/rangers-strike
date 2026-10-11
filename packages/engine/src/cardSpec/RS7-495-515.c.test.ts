@@ -574,6 +574,31 @@ describe("RS-515 エンジンオー", () => {
     expect(enemy.slice(2).sort()).toEqual(["TST-UNIT-0:x0", "TST-UNIT-2:x1"]);
   });
 
+  it("RS-515: 【ゴーオンソード】山札の下に戻す順番を選べる — 自軍・敵軍それぞれ、先に選んだカードから山札の下に置く（出典: atwiki/page-760「好きな順番で持ち主の山札の下に戻す」）", () => {
+    let s = enterEngine(["TST-UNIT-2", "TST-UNIT-0"], ["TST-UNIT-0", "TST-UNIT-2"]);
+    s = pick(s, "RS-515:e");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-515");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    expect([...choiceIds(s)].sort()).toEqual(["TST-UNIT-0:o1", "TST-UNIT-2:o0"]);
+    s = pick(s, "TST-UNIT-0:o1");
+    expect([...choiceIds(s)].sort()).toEqual(["TST-UNIT-0:x0", "TST-UNIT-2:x1"]);
+    s = resolveAll(pick(s, "TST-UNIT-2:x1"));
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(s.players.player1.deck.map((c) => c.instanceId)).toEqual(["TST-OP:od0", "TST-OP:od1", "TST-UNIT-0:o1", "TST-UNIT-2:o0"]);
+    expect(s.players.player2.deck.map((c) => c.instanceId)).toEqual(["TST-OP:xd0", "TST-OP:xd1", "TST-UNIT-2:x1", "TST-UNIT-0:x0"]);
+  });
+
+  it("RS-515: 【ゴーオンソード】2回連続で負けて撃破されたあとで、オモテにしたカードを好きな順番で山札の下に戻す（出典: atwiki/page-760「これは撃破される。その後、オモテにしたカードは、好きな順番で…戻す」）", () => {
+    let s = enterEngine(["TST-UNIT-0", "TST-UNIT-0"], ["TST-UNIT-7", "TST-UNIT-7"]);
+    s = settle(pick(s, "RS-515:e"));
+    expect(zoneOf(s, "player1", "RS-515:e")).toBe("discard");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-515");
+    s = pick(s, "TST-UNIT-0:o1");
+    s = resolveAll(pick(s, "TST-UNIT-7:x1"));
+    expect(s.players.player1.deck.map((c) => c.instanceId).slice(2)).toEqual(["TST-UNIT-0:o1", "TST-UNIT-0:o0"]);
+    expect(s.players.player2.deck.map((c) => c.instanceId).slice(2)).toEqual(["TST-UNIT-7:x1", "TST-UNIT-7:x0"]);
+  });
+
   it("RS-515: 【ゴーオンソード】「発動できる」— 発動しないことを選べ、そのとき山札は動かない（出典: atwiki/page-760「次の効果を発動できる」・atwiki コメント「…「次の効果を発動できる」だったので修正しました」）", () => {
     let s = enterEngine(["TST-UNIT-7", "TST-UNIT-7"], ["TST-UNIT-0", "TST-UNIT-0"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-515");

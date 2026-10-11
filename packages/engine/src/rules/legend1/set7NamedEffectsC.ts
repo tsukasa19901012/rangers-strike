@@ -7,7 +7,8 @@
  * 構成は rules/legend1/set6NamedEffectsB.ts と同じ。
  */
 import { fusionPartnerReturnCount, requiresFusionPartnerReturn } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
+import { tryLeaveField } from "../operationCounters";
 import { cardName, effectiveBp, getDefinition, parsePowerCost, unitEffectiveCategories } from "../../core/catalog";
 import { sameCardName } from "../../core/cardNames";
 import { opponent } from "../../core/helpers";
@@ -140,30 +141,6 @@ function destroyAll(
 /** 合体に必要なユニットの数（「合体―A＋B＋C」の枠の数。合体ユニットでなければ 0）。 */
 export function fusionUnitCount(cardId: string): number {
   return requiresFusionPartnerReturn(cardId) ? fusionPartnerReturnCount(cardId) : 0;
-}
-
-/** 場のユニットを持ち主の山札の下に置く（重ねたカードは捨札。ライドの関係を外す）。 */
-function moveFieldUnitToDeckBottom(state: GameState, ownerId: PlayerId, instanceId: string): GameState {
-  return patchPlayer(state, ownerId, (p) => {
-    const card = [...p.battle, ...p.rush].find((c) => c.instanceId === instanceId);
-    if (!card) return p;
-    const stacked = (card.stackedCards ?? []).map(strip);
-    const unmount = (cards: CardInstance[]) =>
-      cards
-        .filter((c) => c.instanceId !== instanceId)
-        .map((c) => {
-          if (c.mountedOnInstanceId !== instanceId) return c;
-          const { mountedOnInstanceId: _m, ...rest } = c;
-          return rest as CardInstance;
-        });
-    return {
-      ...p,
-      battle: unmount(p.battle),
-      rush: unmount(p.rush),
-      deck: [...p.deck, strip(card)],
-      discard: [...p.discard, ...stacked],
-    };
-  });
 }
 
 function shuffled<T>(cards: T[]): T[] {
@@ -969,10 +946,28 @@ CHOICE_RESOLVERS[BOX_DIMENSION_ORDER_EFFECT_ID] = (state, playerId, instanceId) 
   if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
   const enemyId = opponent(playerId);
   const other = pending.validInstanceIds.find((id) => id !== instanceId)!;
-  let next = moveFieldUnitToDeckBottom(state, enemyId, instanceId);
-  next = moveFieldUnitToDeckBottom(next, enemyId, other);
-  return { state: finish(next, pending), log: logFor(state, playerId, "RS-489", `${BOX_DIMENSION_ORDER_EFFECT_ID}:2`) };
+  // 山札の下に戻すのも「場を離れる」移動（R-MOVE-01）: 離場の処理（「場を離れるとき」の応答・置換、チェイス等）を通す。
+  // 先に選んだユニットから山札の下へ置く。1体目の処理が応答で中断したら、2体目はその解決後に続ける（followUpAttackerLeave）。
+  const intents = [instanceId, other]
+    .map((id) => deckBottomLeaveIntent(state, enemyId, id, pending.phasePlayerId))
+    .filter((i): i is PendingLeave => !!i);
+  let next = close(state, pending);
+  const [first, second] = intents;
+  if (first) {
+    const r1 = tryLeaveField(next, second ? { ...first, followUpAttackerLeave: second } : first);
+    next = r1.state;
+    if (!r1.deferred && second) next = tryLeaveField(next, second).state;
+  }
+  return { state: proceed(next, pending), log: logFor(state, playerId, "RS-489", `${BOX_DIMENSION_ORDER_EFFECT_ID}:${intents.length}`) };
 };
+
+function deckBottomLeaveIntent(state: GameState, ownerId: PlayerId, instanceId: string, phasePlayerId: PlayerId): PendingLeave | undefined {
+  const p = state.players[ownerId];
+  const fromZone = p.battle.some((c) => c.instanceId === instanceId) ? "battle" : p.rush.some((c) => c.instanceId === instanceId) ? "rush" : undefined;
+  const card = fromZone ? p[fromZone].find((c) => c.instanceId === instanceId) : undefined;
+  if (!fromZone || !card) return undefined;
+  return { ownerPlayerId: ownerId, instanceId, fromZone, toZone: "deck_bottom", leavingCardId: card.cardId, phasePlayerId };
+}
 CHOICE_SKIPPERS[BOX_DIMENSION_ORDER_EFFECT_ID] = simpleSkip("RS-489");
 
 // ---------------------------------------------------------------------------

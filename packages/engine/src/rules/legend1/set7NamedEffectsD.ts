@@ -8,7 +8,7 @@
  * 構成は rules/legend1/set6NamedEffectsB.ts と同じ。
  */
 import type { CardDefinition } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
+import type { CardInstance, DeferredDestroyTrigger, GameState, PendingBattle, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp } from "../../core/catalog";
 import { opponent, updatePlayer } from "../../core/helpers";
 import { addNextTurnRuleModifier, hasTurnRuleModifier } from "../../core/scopedModifiers";
@@ -21,7 +21,7 @@ import { addTurnFeatureModifier, KIRIGAKURE_RULE_ID, unitFeatures } from "../add
 import { grantBpBoostToBattleUnit, grantSp1ToBattleUnit, markBattleNcEffect } from "../namedUnitEffects";
 import { spBecomesInZone } from "../fractionalSp";
 import { shuffleCards } from "../errataCardEffects";
-import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
+import { finalizeLeaveReaction, resolveBattlePending, tryLeaveField } from "../operationCounters";
 import { turnPlayerOf } from "./set6NamedEffectsB";
 
 // ---------------------------------------------------------------------------
@@ -548,7 +548,7 @@ export function rideOffBlockedBySet7D(state: GameState, playerId: PlayerId): boo
 // ---------------------------------------------------------------------------
 // RS-508 ゴーオンレッド【ロードサーベル】「SP1」
 // 「敵軍バトルエリアからユニットを1体選んでもよい。そうしたとき、このユニットと選んだユニットでバトルする。」（atwiki/page-740）
-// アタックではないバトル: BP を比べ、低い方（同じなら両方）が撃破される（R-BTL-01・R-BTL-02）。
+// アタックではないバトル: BP を比べ、低い方（同じなら両方）が撃破される（R-BTL-01・R-BTL-02）。バトルの誘発（勝ったとき等）も処理する。
 
 export const ROAD_SABER_EFFECT_ID = "rs508_road_saber";
 
@@ -578,22 +578,22 @@ CHOICE_RESOLVERS[ROAD_SABER_EFFECT_ID] = (state, playerId, instanceId) => {
   if (!self) return { state: finish(state, pending) };
   const ownBp = effectiveBp(state, playerId, self);
   const enemyBp = effectiveBp(state, enemyId, target);
-  const losers: string[] = [];
-  if (enemyBp <= ownBp) losers.push(target.instanceId);
-  if (ownBp <= enemyBp) losers.push(self.instanceId);
   const log = logFor(state, playerId, "RS-508", `${ROAD_SABER_EFFECT_ID}:${cardName(state.definitions, target.cardId)}:${ownBp}vs${enemyBp}`);
-  // 撃破は離場の処理を通す（複数体の撃破・離場反応での中断／再開は select_units_bp_budget の確定処理を共用する）。
-  const confirmPending: PendingEffectChoice = {
-    ...pending,
-    kind: "select_units_bp_budget",
-    validInstanceIds: losers,
-    selectedInstanceIds: losers,
-    bpBudget: Number.MAX_SAFE_INTEGER,
-    optional: false,
+  // アタックではないバトル（effectBattle）としてバトルの処理を通す: BP の比較・撃破（レジスト・場を離れるときの応答）、
+  // バトルに勝ったとき／撃破したとき／バトルして撃破されたとき等の誘発はアタックのバトルと同じ（rules/operationCounters.ts）。
+  const battle: PendingBattle = {
+    attackerPlayerId: playerId,
+    attackerInstanceId: self.instanceId,
+    defenderPlayerId: enemyId,
+    defenderInstanceId: target.instanceId,
+    phasePlayerId: pending.phasePlayerId,
+    onAttackResolved: true,
+    effectBattle: true,
   };
-  const confirmed = applyConfirmEffectChoice({ ...state, pendingEffectChoice: confirmPending }, playerId);
-  if ("error" in confirmed) return confirmed;
-  return { state: confirmed.state, log };
+  const closed: GameState = { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+  const battled = resolveBattlePending(closed, battle).state;
+  if (battled.pendingEffectChoice || battled.pendingLeave || battled.pendingRegister) return { state: battled, log };
+  return { state: finish({ ...battled, pendingEffectChoice: pending }, pending), log };
 };
 CHOICE_SKIPPERS[ROAD_SABER_EFFECT_ID] = simpleSkip();
 
@@ -842,7 +842,7 @@ CHOICE_RESOLVERS[DAI_ROUROU_KICK_EFFECT_ID] = (state, playerId, instanceId) => {
 //  比べる勝負を2回繰り返す。数字の大きい方を勝ちとして、自分が2回連続で勝ったなら、このターン、これは「SP3」になる。
 //  2回連続で負けたなら、これは撃破される。その後、オモテにしたカードは、好きな順番で持ち主の山札の下に戻す。」
 // （atwiki/page-760。コメント欄の修正後「次の効果を発動できる」）
-// 山札の下に戻す順番は、オモテにした順（選択は省略）。
+// 山札の下に戻す順番は、カードが2枚ならどちらを先に山札の下に置くかを選ぶ（持ち主ごと。効果を使ったプレイヤーが選ぶ）。
 
 export const GO_ON_SWORD_EFFECT_ID = "rs515_go_on_sword";
 
@@ -862,14 +862,15 @@ function applyGoOnSword(state: GameState, ctx: GrantKeywordContext): GrantKeywor
 CHOICE_RESOLVERS[GO_ON_SWORD_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
   const enemyId = opponent(playerId);
-  const ownDeck = [...state.players[playerId].deck];
-  const enemyDeck = [...state.players[enemyId].deck];
+  // オモテにしたカードは、戻すまで持ち主の山札の上に置いたままにする（順番を選ぶ選択で山札の上から選ぶ）。
+  const ownDeck = state.players[playerId].deck;
+  const enemyDeck = state.players[enemyId].deck;
   const ownRevealed: CardInstance[] = [];
   const enemyRevealed: CardInstance[] = [];
   const results: ("win" | "lose" | "draw")[] = [];
   for (let round = 0; round < 2; round += 1) {
-    const own = ownDeck.shift();
-    const enemy = enemyDeck.shift();
+    const own = ownDeck[round];
+    const enemy = enemyDeck[round];
     if (own) ownRevealed.push(own);
     if (enemy) enemyRevealed.push(enemy);
     if (!own || !enemy) break;
@@ -877,9 +878,7 @@ CHOICE_RESOLVERS[GO_ON_SWORD_EFFECT_ID] = (state, playerId, instanceId) => {
     const b = parsePowerCost(getDefinition(state.definitions, enemy.cardId)?.powerCost);
     results.push(a > b ? "win" : a < b ? "lose" : "draw");
   }
-  let next = patchPlayer(state, playerId, (p) => ({ ...p, deck: [...ownDeck, ...ownRevealed.map(stripForZone)] }));
-  next = patchPlayer(next, enemyId, (p) => ({ ...p, deck: [...enemyDeck, ...enemyRevealed.map(stripForZone)] }));
-  next = { ...next, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+  let next: GameState = { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
   const detail = `${GO_ON_SWORD_EFFECT_ID}:${results.join(",")}`;
   const log = logFor(state, playerId, "RS-515", detail);
   if (results.length === 2 && results.every((r) => r === "win")) {
@@ -889,11 +888,90 @@ CHOICE_RESOLVERS[GO_ON_SWORD_EFFECT_ID] = (state, playerId, instanceId) => {
   } else if (results.length === 2 && results.every((r) => r === "lose")) {
     const leave = applyUnitLeave(next, instanceId, "discard", pending.phasePlayerId);
     if (!("error" in leave)) next = leave.state;
-    if (next.pendingEffectChoice || next.pendingLeave) return { state: next, log };
   }
+  // その後、オモテにしたカードは、好きな順番で持ち主の山札の下に戻す（2枚あれば順番を選ぶ。効果を使ったプレイヤーが選ぶ）。
+  const groups = [
+    { playerId, instanceIds: ownRevealed.map((c) => c.instanceId) },
+    { playerId: enemyId, instanceIds: enemyRevealed.map((c) => c.instanceId) },
+  ].filter((g) => g.instanceIds.length > 0);
+  const ordered = continueGoOnSwordOrder(next, { ...pending, effectId: GO_ON_SWORD_ORDER_EFFECT_ID }, groups);
+  next = ordered.state;
+  if (ordered.choice) {
+    if (next.pendingEffectChoice || next.pendingLeave || next.pendingRegister || next.pendingDamagePayment) {
+      // 撃破の誘発・応答が割り込んだ: それらの解決後に順番を選ぶ（rules/destroyTriggerQueue.ts）。
+      const frame: DeferredDestroyTrigger = { kind: "open_choice", step: "after_discard", pending: ordered.choice };
+      return { state: { ...next, deferredDestroyTriggers: [...(next.deferredDestroyTriggers ?? []), frame] }, log };
+    }
+    return { state: openEffectChoice(next, ordered.choice), log };
+  }
+  if (next.pendingEffectChoice || next.pendingLeave) return { state: next, log };
   const done = pending.resumeChoice ? openEffectChoice(next, pending.resumeChoice) : promoteDeferredBattleEntry(next);
   return { state: done, log };
 };
+
+export const GO_ON_SWORD_ORDER_EFFECT_ID = "rs515_go_on_sword_order";
+
+/** 持ち主の山札の上にあるオモテにしたカードを、山札の下へ移す。 */
+function revealedToDeckBottom(state: GameState, ownerId: PlayerId, instanceId: string): GameState {
+  return patchPlayer(state, ownerId, (p) => {
+    const card = p.deck.find((c) => c.instanceId === instanceId);
+    if (!card) return p;
+    return { ...p, deck: [...p.deck.filter((c) => c.instanceId !== instanceId), stripForZone(card)] };
+  });
+}
+
+/**
+ * オモテにしたカードを持ち主ごとに山札の下へ戻す。1枚ならそのまま戻し、2枚以上なら先に山札の下に置くカードを選ぶ選択を返す。
+ */
+function continueGoOnSwordOrder(
+  state: GameState,
+  base: PendingEffectChoice,
+  groups: { playerId: PlayerId; instanceIds: string[] }[],
+): { state: GameState; choice?: PendingEffectChoice } {
+  let next = state;
+  const queue = [...groups];
+  while (queue.length > 0) {
+    const group = queue.shift()!;
+    const ids = group.instanceIds.filter((id) => next.players[group.playerId].deck.some((c) => c.instanceId === id));
+    if (ids.length >= 2) {
+      const choice: PendingEffectChoice = {
+        playerId: base.playerId,
+        effectId: GO_ON_SWORD_ORDER_EFFECT_ID,
+        sourceCardId: "RS-515",
+        sourceInstanceId: base.sourceInstanceId,
+        kind: "select_unit",
+        phasePlayerId: base.phasePlayerId,
+        validInstanceIds: ids,
+        selectCount: 1,
+        selectedInstanceIds: [],
+        optional: false,
+        resumeChoice: base.resumeChoice,
+        set7dMeta: { orderOwner: group.playerId, orderGroups: queue },
+      };
+      return { state: next, choice };
+    }
+    for (const id of ids) next = revealedToDeckBottom(next, group.playerId, id);
+  }
+  return { state: next };
+}
+
+CHOICE_RESOLVERS[GO_ON_SWORD_ORDER_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const owner = pending.set7dMeta?.orderOwner;
+  if (!owner) return { error: "invalid_choice" };
+  let next = revealedToDeckBottom(state, owner, instanceId);
+  const rest = pending.validInstanceIds.filter((id) => id !== instanceId);
+  const log = logFor(state, playerId, "RS-515", `${GO_ON_SWORD_ORDER_EFFECT_ID}:${cardName(state.definitions, findDeckCardId(state, owner, instanceId))}`);
+  const groups = [...(rest.length > 0 ? [{ playerId: owner, instanceIds: rest }] : []), ...(pending.set7dMeta?.orderGroups ?? [])];
+  const ordered = continueGoOnSwordOrder({ ...next, pendingEffectChoice: undefined }, pending, groups);
+  next = ordered.state;
+  if (ordered.choice) return { state: { ...next, pendingEffectChoice: ordered.choice }, log };
+  return { state: finish({ ...next, pendingEffectChoice: pending }, pending), log };
+};
+
+function findDeckCardId(state: GameState, ownerId: PlayerId, instanceId: string): string {
+  return state.players[ownerId].deck.find((c) => c.instanceId === instanceId)?.cardId ?? instanceId;
+}
 CHOICE_SKIPPERS[GO_ON_SWORD_EFFECT_ID] = simpleSkip();
 
 // ---------------------------------------------------------------------------

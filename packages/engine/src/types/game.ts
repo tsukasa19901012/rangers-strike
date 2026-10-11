@@ -221,6 +221,12 @@ export type PendingBattle = {
   mirageBeamDefenderBpOverride?: number;
   /** RS-131: 防御側のメッツラーが公開したデッキカード（バトル後に防御側の捨札へ）。 */
   mirageBeamDefenderDiscard?: CardInstance;
+  /**
+   * アタックではなく効果でバトルする（RS-508【ロードサーベル】「このユニットと選んだユニットでバトルする」）。
+   * attacker は効果を使った側のユニット。BP の比較・撃破・バトルに勝ったとき／撃破したとき等の誘発はアタックのバトルと同じで、
+   * アタックしたことにはならない（「アタックするとき」は発動せず、バトル済み（battleActed）にもならない）。
+   */
+  effectBattle?: boolean;
 };
 
 export type PendingRush = {
@@ -253,9 +259,10 @@ export type PendingLeave = {
   fromZone: "rush" | "battle";
   /**
    * deck_top: 持ち主の山札の上（ピンクストーム等。R-MOVE-01）。
+   * deck_bottom: 持ち主の山札の下（RS-489【宇宙忍法・箱次元】等。R-MOVE-01）。
    * battle: 効果でラッシュエリアからバトルエリアへ移される（ピットインダイブ。R-MOVE-01 — 移動も「場を離れる」）。
    */
-  toZone: "discard" | "power" | "command" | "deck_top" | "battle";
+  toZone: "discard" | "power" | "command" | "deck_top" | "deck_bottom" | "battle";
   leavingCardId: string;
   phasePlayerId: PlayerId;
   /** レジスト選択をスキップして捨札へ。 */
@@ -454,6 +461,15 @@ export type DeferredDestroyTrigger =
       kind: "resume_multi_destroy";
       step: DestroyTriggerTiming;
       pending: PendingEffectChoice;
+    }
+  | {
+      /**
+       * 撃破を含む効果の「その後、…」の続きの選択（RS-515【ゴーオンソード】の山札の下に戻す順番）。撃破の誘発・応答が
+       * 割り込んだら、それらをすべて解決したあとに開く。
+       */
+      kind: "open_choice";
+      step: DestroyTriggerTiming;
+      pending: PendingEffectChoice;
     };
 
 /** 第7弾 RS-432〜RS-452 の選択の続き（rules/legend1/set7NamedEffectsA.ts）。 */
@@ -469,6 +485,8 @@ export type Set7AChoiceMeta = {
   amount?: number;
   /** バトルした相手（RS-450）。 */
   enemyInstanceId?: string;
+  /** RS-441【コサックダンス】: ホールドするコマンドを選んだあとで自軍ラッシュエリアに出す手札のカード。 */
+  handInstanceId?: string;
 };
 
 export type PendingEffectChoice = {
@@ -664,6 +682,10 @@ export type Set7DMeta = {
   intent?: PendingLeave;
   /** RS-502: 撃破されたユニットの BP（手札のユニットカードの BP と合計する）。 */
   destroyedBp?: number;
+  /** RS-515: 山札の下に戻す順番を選んでいるカードの持ち主（validInstanceIds はその山札の上にあるオモテにしたカード）。 */
+  orderOwner?: PlayerId;
+  /** RS-515: 続けて山札の下に戻す順番を選ぶ、持ち主ごとのオモテにしたカード。 */
+  orderGroups?: { playerId: PlayerId; instanceIds: string[] }[];
 };
 
 /** @deprecated pendingEffectChoice を使用すること（ruin_survey）。 */

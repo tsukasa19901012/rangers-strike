@@ -32,6 +32,9 @@ const SET7D_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rs512_mantangan: { label: "マンタンガン", hint: "ダメージにする敵軍パワーゾーンのオモテ向きのカードを選んでください" },
   rs514_dai_rourou_kick: { label: "大狼狼蹴", hint: "撃破する自分のユニットを1体選んでください" },
   rs515_go_on_sword: { label: "ゴーオンソード", hint: "必要パワーの勝負をしますか？（するならこのユニットを選ぶ）" },
+  rs515_go_on_sword_order: { label: "ゴーオンソード", hint: "先に山札の下に置くカードを選んでください（あとから置くカードほど下になります）" },
+  // 第7弾 RS-489（engine rules/legend1/set7NamedEffectsC.ts）。
+  rs489_box_dimension_order: { label: "宇宙忍法・箱次元", hint: "先に山札の下に戻すユニットを選んでください（見送ると戻しません）" },
 };
 
 export function effectChoiceHint(

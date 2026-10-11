@@ -25,6 +25,7 @@ import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifi
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, requestDrawFromDeck, type ChoiceOutcome } from "../pendingChoices";
+import { buildEffectHoldPayment } from "../commandPayment";
 import { patchPlayer } from "../playerPatches";
 import { findCardInField } from "../fieldLookup";
 import { unitFeatures } from "../addedFeatures";
@@ -604,18 +605,46 @@ CHOICE_RESOLVERS[COSSACK_DEPLOY_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
   const player = state.players[playerId];
   const card = player.hand.find((c) => c.instanceId === instanceId);
-  const holdIndex = player.command.findIndex((c) => !c.commandHeld);
-  if (!card || holdIndex < 0) return { error: "invalid_target" };
-  // 自軍コマンドを1つホールドして、選んだユニットカードを自軍ラッシュエリアに出す（効果で出す。R-RUSH-22）。
+  const released = player.command.filter((c) => !c.commandHeld).map((c) => c.instanceId);
+  if (!card || released.length === 0) return { error: "invalid_target" };
+  if (released.length === 1) return deployCossack(state, playerId, pending, instanceId, released[0]!);
+  // ホールドする自軍コマンドを選ぶ（コマンドの支払い effect_hold。選び終えたら tryCompleteSet7AHoldChoice）。
+  const opened = reopen(state, pending, {
+    playerId,
+    effectId: COSSACK_HOLD_EFFECT_ID,
+    sourceCardId: "RS-441",
+    sourceInstanceId: pending.sourceInstanceId,
+    kind: "select_command",
+    phasePlayerId: pending.phasePlayerId,
+    validInstanceIds: released,
+    selectCount: 1,
+    selectedInstanceIds: [],
+    optional: false,
+    commandAction: "hold",
+    commandFilter: "released",
+    set7aMeta: { queue: pending.set7aMeta?.queue ?? [], handInstanceId: instanceId },
+  });
+  const payment = buildEffectHoldPayment(opened);
+  return { state: payment ? { ...opened, pendingCommandPayment: payment } : opened };
+};
+
+export const COSSACK_HOLD_EFFECT_ID = "rs441_cossack_hold";
+
+/** 自軍コマンドを1つ（holdId）ホールドして、選んだユニットカード（handId）を自軍ラッシュエリアに出す（効果で出す。R-RUSH-22）。 */
+function deployCossack(state: GameState, playerId: PlayerId, pending: PendingEffectChoice, handId: string, holdId: string): ChoiceOutcome {
+  const player = state.players[playerId];
+  const card = player.hand.find((c) => c.instanceId === handId);
+  const hold = player.command.find((c) => c.instanceId === holdId);
+  if (!card || !hold) return { error: "invalid_target" };
   let next = patchPlayer(state, playerId, (p) => ({
     ...p,
-    command: p.command.map((c, i) => (i === holdIndex ? { ...c, commandHeld: true } : c)),
-    hand: p.hand.filter((c) => c.instanceId !== instanceId),
+    command: p.command.map((c) => (c.instanceId === holdId ? { ...c, commandHeld: true } : c)),
+    hand: p.hand.filter((c) => c.instanceId !== handId),
     rush: [...p.rush, strip(card)],
   }));
   const queue = pending.set7aMeta?.queue ?? [];
   const cleared: GameState = { ...next, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
-  next = finalizeEffectRush(cleared, playerId, [instanceId], pending.phasePlayerId).state;
+  next = finalizeEffectRush(cleared, playerId, [handId], pending.phasePlayerId).state;
   const log = logFor(state, playerId, "RS-441", `${COSSACK_DEPLOY_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`);
   const follow = queue.length > 0 ? cossackReturnChoice(next, playerId, queue, pending.phasePlayerId) : undefined;
   if (follow) {
@@ -626,7 +655,7 @@ CHOICE_RESOLVERS[COSSACK_DEPLOY_EFFECT_ID] = (state, playerId, instanceId) => {
   }
   if (next.pendingEffectChoice) return { state: next, log };
   return { state: finish(next, { ...pending, resumeChoice: pending.resumeChoice }), log };
-};
+}
 CHOICE_SKIPPERS[COSSACK_DEPLOY_EFFECT_ID] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;
   return { state: continueCossackQueue(state, pending), log: skipLog(state, playerId, "RS-441", pending.effectId) };
@@ -950,25 +979,80 @@ export function canActivateHoldReturnSelf(state: GameState, playerId: PlayerId, 
   return state.players[playerId].command.filter((c) => !c.commandHeld).length >= n;
 }
 
+export const WEAPON_CHANGE_HOLD_EFFECT_ID = "rs440_weapon_change_hold";
+
+/**
+ * 【武器換装】を起動する。リリース状態の自軍コマンドが N より多ければ、ホールドする N つをプレイヤーが選ぶ
+ * （コマンドの支払い。rules/commandPayment.ts effect_hold）。ちょうど N つなら選ぶ余地がないのでそれをホールドする。
+ */
 export function activateHoldReturnSelf(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
   const n = holdReturnSelfCount(card.cardId, state.definitions);
-  let held = 0;
+  const released = state.players[playerId].command.filter((c) => !c.commandHeld).map((c) => c.instanceId);
+  if (released.length > n) {
+    const opened = openEffectChoice(state, {
+      playerId,
+      effectId: WEAPON_CHANGE_HOLD_EFFECT_ID,
+      sourceCardId: card.cardId,
+      sourceInstanceId: card.instanceId,
+      kind: "select_commands",
+      phasePlayerId: playerId,
+      validInstanceIds: released,
+      selectCount: n,
+      selectedInstanceIds: [],
+      optional: true,
+      commandAction: "hold",
+      commandFilter: "released",
+    });
+    const payment = buildEffectHoldPayment(opened);
+    return payment ? { ...opened, pendingCommandPayment: payment } : opened;
+  }
+  return completeHoldReturnSelf(state, playerId, card.instanceId, released.slice(0, n));
+}
+
+/** 選んだ自軍コマンドをホールドし（支払いで既にホールドしていればそのまま）、これをラッシュエリアに戻す。 */
+function completeHoldReturnSelf(state: GameState, playerId: PlayerId, instanceId: string, holdIds: string[]): GameState {
+  const card = state.players[playerId].battle.find((c) => c.instanceId === instanceId);
   let next = patchPlayer(state, playerId, (p) => ({
     ...p,
-    command: p.command.map((c) => {
-      if (c.commandHeld || held >= n) return c;
-      held += 1;
-      return { ...c, commandHeld: true };
-    }),
-    battle: p.battle.filter((c) => c.instanceId !== card.instanceId),
-    rush: [...p.rush, card],
+    command: p.command.map((c) => (holdIds.includes(c.instanceId) && !c.commandHeld ? { ...c, commandHeld: true } : c)),
+    ...(card ? { battle: p.battle.filter((c) => c.instanceId !== instanceId), rush: [...p.rush, card] } : {}),
   }));
+  if (!card) return next;
   if (next.pendingBattleEntry?.instanceId === card.instanceId) next = { ...next, pendingBattleEntry: undefined };
   next = {
     ...next,
     log: [...next.log, buildLogEntry(playerId, "named_effect", card.cardId, state.definitions, "hold_commands_return_self")],
   };
   return afterUnitsReturnedToRush(next, playerId, [card.instanceId], playerId);
+}
+
+CHOICE_SKIPPERS[WEAPON_CHANGE_HOLD_EFFECT_ID] = (state, playerId) => {
+  const pending = state.pendingEffectChoice!;
+  return { state: finish(state, pending), log: skipLog(state, playerId, pending.sourceCardId, pending.effectId) };
+};
+
+/**
+ * 自軍コマンドをホールドする選択（コマンドの支払い effect_hold）を終えたあとの続き（rules/pendingChoices.ts
+ * completeEffectHoldChoice から呼ぶ）。このモジュールの選択でなければ null。
+ */
+export function tryCompleteSet7AHoldChoice(
+  state: GameState,
+  playerId: PlayerId,
+  commandInstanceIds: string[],
+): ChoiceOutcome | null {
+  const pending = state.pendingEffectChoice;
+  if (!pending || pending.playerId !== playerId) return null;
+  if (pending.effectId === WEAPON_CHANGE_HOLD_EFFECT_ID) {
+    const closed: GameState = { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+    const next = completeHoldReturnSelf(closed, playerId, pending.sourceInstanceId ?? "", commandInstanceIds);
+    return { state: next.pendingEffectChoice ? next : promoteDeferredBattleEntry(next) };
+  }
+  if (pending.effectId === COSSACK_HOLD_EFFECT_ID) {
+    const handId = pending.set7aMeta?.handInstanceId;
+    if (!handId) return { error: "invalid_choice" };
+    return deployCossack(state, playerId, pending, handId, commandInstanceIds[0]!);
+  }
+  return null;
 }
 
 function getDslCardText(cardId: string): string | undefined {

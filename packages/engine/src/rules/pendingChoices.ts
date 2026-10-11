@@ -159,7 +159,7 @@ import {
   fireAkaRedSoulNc,
   STRING_FIST_SECOND_STEP_REFRESH,
 } from "./legend1/set6AuditFixes";
-import { afterUnitsReturnedToRush, tryConfirmSet7AChoice, tryResolveSet7AChoice, trySkipSet7AChoice } from "./legend1/set7NamedEffectsA";
+import { afterUnitsReturnedToRush, tryCompleteSet7AHoldChoice, tryConfirmSet7AChoice, tryResolveSet7AChoice, trySkipSet7AChoice } from "./legend1/set7NamedEffectsA";
 import {
   applyFlowerBombDeclaredNumber,
   continueMagiBlueAfterSelfDraw,
@@ -2860,6 +2860,9 @@ export function completeEffectHoldChoice(
       log: buildLogEntry(playerId, "resolve_effect_choice", pending.sourceCardId, state.definitions, `${pending.effectId}:${formatInstanceIdsAsNames(state, commandInstanceIds)}`),
     };
   }
+  // 第7弾 RS-440【武器換装】・RS-441【コサックダンス】: ホールドするコマンドを選んだあとの続き（rules/legend1/set7NamedEffectsA.ts）。
+  const set7aHold = tryCompleteSet7AHoldChoice(state, playerId, commandInstanceIds);
+  if (set7aHold) return set7aHold;
   const continued = applyPostHoldContinuation(state, pending);
   if (continued.done) return { state: continued.state };
   return finishChoice(

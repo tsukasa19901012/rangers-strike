@@ -136,7 +136,8 @@ export function resolveLegend3OnBattleWin(
     }
   }
 
-  if (countJointLGrant(attacker.card, "baki_baki_punch") > 0) {
+  // 「アタックしてバトルに勝つたび」— 効果でのバトル（RS-508【ロードサーベル】等）では発動しない。
+  if (!pending.effectBattle && countJointLGrant(attacker.card, "baki_baki_punch") > 0) {
     const player = nextState.players[attackerId];
     const withExtra = addBakiBakiExtraAttack(player, attacker.card.instanceId);
     nextState = {

@@ -22,7 +22,7 @@ import type {
 } from "../types/game";
 import { resolveAfterDiscardDestroyEffects, resolveDestroyedFactEffects } from "./leaveEffects";
 import { openMirageKnuckleChoice } from "./legend1/set4NamedEffects";
-import { applyConfirmEffectChoice } from "./pendingChoices";
+import { applyConfirmEffectChoice, openEffectChoice } from "./pendingChoices";
 
 const STEP: Record<DestroyTriggerTiming, number> = { destroyer: 1, destroyed: 2, after_discard: 4 };
 
@@ -82,6 +82,8 @@ function runFrame(state: GameState, frame: DeferredDestroyTrigger): { state: Gam
       if ("error" in resumed) return { state, logs: [] };
       return { state: resumed.state, logs: resumed.log ? [resumed.log] : [] };
     }
+    case "open_choice":
+      return { state: openEffectChoice(state, frame.pending), logs: [] };
   }
 }
 

@@ -1223,14 +1223,13 @@ export function resolveBattlePendingCore(
         }),
       };
     }
+    const restored = restorePhaseActivePlayerUnlessBlocked(
+      { ...resolved, pendingBattle: undefined },
+      pending.phasePlayerId,
+    );
     return {
-      state: finishBattleEntryIf(
-        restorePhaseActivePlayerUnlessBlocked(
-          { ...resolved, pendingBattle: undefined },
-          pending.phasePlayerId,
-        ),
-        pending.attackerInstanceId,
-      ),
+      // 効果でのバトル（effectBattle）はアタックではないので、バトル進入の手番（アタック／ストライク／パス）は終えない。
+      state: pending.effectBattle ? restored : finishBattleEntryIf(restored, pending.attackerInstanceId),
       log,
     };
   };
@@ -1280,7 +1279,7 @@ export function resolveBattlePendingCore(
   const defenderFound = findInZone(defenderPlayer, defenderZone, defenderInstanceId);
 
   // ルール: R-TIME-01 — 通常のアタックでは「アタックされたとき」の反応より前に解決済み（core/applyAction.ts）。
-  if (attackerFound && !pending.onAttackResolved) {
+  if (attackerFound && !pending.onAttackResolved && !pending.effectBattle) {
     battleState = tryResolveDslTriggeredEffects({
       state: battleState,
       cardId: attackerFound.card.cardId,
@@ -1305,7 +1304,7 @@ export function resolveBattlePendingCore(
 
   if (!refreshedAttackerFound || !refreshedDefenderFound) {
     const markAttackerActedOnFail = (base: GameState): GameState => {
-      if (!refreshedAttackerFound) return base;
+      if (!refreshedAttackerFound || pending.effectBattle) return base;
       const currentAttacker = base.players[attackerId];
       return {
         ...base,
@@ -1399,6 +1398,7 @@ export function resolveBattlePendingCore(
   );
 
   const markAttackerActed = (base: GameState): GameState => {
+    if (pending.effectBattle) return base;
     const currentAttacker = base.players[attackerId];
     return {
       ...base,
@@ -1636,7 +1636,7 @@ export function resolveBattlePendingCore(
       nextState = markAttackerActed(nextState);
     }
     // RS-422【大頑頑拳】: アタックしてバトルに勝つたび、敵軍コマンドをホールドして追加でアタックできる。
-    nextState = openDaiganganKen(nextState, attackerId, pending.attackerInstanceId);
+    if (!pending.effectBattle) nextState = openDaiganganKen(nextState, attackerId, pending.attackerInstanceId);
   } else {
     nextState = markAttackerActed(nextState);
   }
@@ -1749,7 +1749,7 @@ export function finalizeLeavePending(
   const leavingCard = sanitizeUnitLeavingField(
     found.card,
     pending.fromZone,
-    pending.toZone === "deck_top" ? "deck" : pending.toZone,
+    pending.toZone === "deck_top" || pending.toZone === "deck_bottom" ? "deck" : pending.toZone,
   );
   let nextOwner: typeof owner;
   let medicalRescueToPower = false;
@@ -1761,6 +1761,23 @@ export function finalizeLeavePending(
       ...owner,
       [pending.fromZone]: fromCards,
       deck: [{ instanceId: leavingCard.instanceId, cardId: leavingCard.cardId }, ...owner.deck],
+    };
+  } else if (pending.toZone === "deck_bottom") {
+    // ルール: R-MOVE-01 — 山札の下に戻すのも「場を離れる」移動（ウラ向きで山札の下へ）。下に重ねていたカードは捨札になり、
+    // これに乗っていたユニットはライドしていない状態になる。
+    const unmount = (cards: typeof fromCards) =>
+      cards.map((c) => {
+        if (c.mountedOnInstanceId !== leavingCard.instanceId) return c;
+        const { mountedOnInstanceId: _m, ...rest } = c;
+        return rest as typeof c;
+      });
+    const stacked = (found.card.stackedCards ?? []).map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }));
+    nextOwner = {
+      ...owner,
+      rush: unmount(pending.fromZone === "rush" ? fromCards : owner.rush),
+      battle: unmount(pending.fromZone === "battle" ? fromCards : owner.battle),
+      deck: [...owner.deck, { instanceId: leavingCard.instanceId, cardId: leavingCard.cardId }],
+      discard: [...owner.discard, ...stacked],
     };
   } else if (pending.toZone === "command") {
     if (owner.command.length < COMMAND_ZONE_MAX) {
@@ -1834,7 +1851,7 @@ export function finalizeLeavePending(
     ? "power" // ルール: R-REPL-02 — 捨札を経由しないので「撃破されて捨札になったとき」は発動しない
     : pending.toZone === "command" && owner.command.length >= COMMAND_ZONE_MAX
       ? "discard"
-      : pending.toZone === "deck_top"
+      : pending.toZone === "deck_top" || pending.toZone === "deck_bottom"
         ? "deck"
         : pending.toZone;
 
@@ -1892,6 +1909,10 @@ export function finalizeLeaveReaction(
         activePlayer: pending.phasePlayerId,
         pendingStrike: state.pendingStrike,
       };
+    }
+    // 場に留まったのはこのユニットだけ: 同時に場を離れる続きのユニット（相打ちの攻撃側、RS-489 の2体目等）は続けて処理する。
+    if (pending.followUpAttackerLeave) {
+      return tryLeaveField(nextState, { ...pending.followUpAttackerLeave }).state;
     }
     return nextState;
   }

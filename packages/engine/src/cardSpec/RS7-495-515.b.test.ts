@@ -535,6 +535,23 @@ describe("RS-508 ゴーオンレッド", () => {
     expect(zoneOf(s, "player2", "SPEC-6000:e6")).toBe("battle");
   });
 
+  it("RS-508: 【ロードサーベル】のバトルはバトルとして処理する — 勝った敵軍ユニットの「ユニットを撃破したとき、相手に1点ダメージ」が発動する（出典: atwiki/page-740「このユニットと選んだユニットでバトルする」・R-BTL-01・R-TIME-01）", () => {
+    const BREAKER = sUnit("SPEC-BREAKER", { bp: 6000, text: "これがユニットを撃破したとき、相手に1点ダメージを与える。" });
+    let s = enterAt("RS-508", 4, { battle: [inst("SPEC-BREAKER", "br")] }, [BREAKER]);
+    const before = s.players.player1.damage;
+    s = resolveAll(pick(s, "SPEC-BREAKER:br"));
+    expect(zoneOf(s, "player1", "RS-508:me")).toBe("discard");
+    expect(s.players.player1.damage).toBe(before + 1);
+  });
+
+  it("RS-508: 【ロードサーベル】のバトルはアタックではない — 勝ったあともバトル済みにならず、「SP1」でストライクできる（出典: atwiki/page-740「※これはアタックすることができない」・カード評価「ストライクも同時にすることが可能」）", () => {
+    let s = enterAt("RS-508", 4, { battle: [inst("TST-UNIT-0", "e1")] });
+    s = resolveAll(pick(s, "TST-UNIT-0:e1"));
+    expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("discard");
+    expect(cardIn(s, "player1", "RS-508:me")?.battleActed).toBeFalsy();
+    expect(canStrike(s, "RS-508:me")).toBe(true);
+  });
+
   it("RS-508: 【ロードサーベル】「選んでもよい」— 見送れる（出典: atwiki/page-740）", () => {
     let s = enterAt("RS-508", 4, { battle: [inst("TST-UNIT-0", "e1")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-508");

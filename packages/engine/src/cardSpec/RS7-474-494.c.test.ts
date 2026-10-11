@@ -176,6 +176,45 @@ describe("RS-489 二の槍チュウズーボ", () => {
     expect(s.players.player2.deck[0]?.instanceId).toBe("TST-OP:edeck");
   });
 
+  it("RS-489: 【宇宙忍法・箱次元】戻す順番を選べる — 先に選んだユニットから山札の下に置く（出典: atwiki/page-814「好きな順番で戻してもよい」）", () => {
+    let s = zuubo([inst("SPEC-MN-A", "a"), inst("SPEC-MN-B", "b")]);
+    s = pick(pick(s, "SPEC-MN-A:a"), "SPEC-MN-B:b");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-489");
+    expect([...choiceIds(s)].sort()).toEqual(["SPEC-MN-A:a", "SPEC-MN-B:b"]);
+    s = resolveAll(pick(s, "SPEC-MN-B:b"));
+    expect(s.players.player2.deck.map((c) => c.instanceId)).toEqual(["TST-OP:edeck", "SPEC-MN-B:b", "SPEC-MN-A:a"]);
+  });
+
+  it("RS-489: 【宇宙忍法・箱次元】山札の下に戻すのも「場を離れる」移動 — 持ち主は「場を離れるとき」のダイノガッツで留まらせられる（出典: atwiki/page-814・atwiki/page-234「自軍ユニットが場を離れるとき発動できる」・R-MOVE-01）", () => {
+    let s = enter(
+      st(
+        {
+          player1: { battle: fillers(1), rush: [inst("RS-489", "zb")], deck: deckCards(5) },
+          player2: {
+            battle: [inst("SPEC-MN-A", "a"), inst("SPEC-MN-B", "b")],
+            hand: [inst("RS-027", "guts")],
+            command: releasedCat("WB", 1),
+            deck: deckCards(10, "e"),
+          },
+        },
+        [TWO_A, TWO_B],
+      ),
+      "RS-489:zb",
+    );
+    s = pick(pick(pick(s, "SPEC-MN-A:a"), "SPEC-MN-B:b"), "SPEC-MN-A:a");
+    // 1体目（a）が場を離れるときの応答をダイノガッツで行う。
+    expect(s.pendingLeave?.instanceId).toBe("SPEC-MN-A:a");
+    const use = legal(s).find(
+      (a) => a.playerId === "player2" && Object.values(a as Record<string, unknown>).includes("RS-027:guts"),
+    );
+    expect(use).toBeDefined();
+    s = settle(act(s, use!));
+    expect(zoneOf(s, "player2", "SPEC-MN-A:a")).toBe("battle");
+    // 2体目（b）は続けて山札の下へ。
+    expect(zoneOf(s, "player2", "SPEC-MN-B:b")).toBe("deck");
+    expect(s.players.player2.deck.at(-1)?.instanceId).toBe("SPEC-MN-B:b");
+  });
+
   it("RS-489: 【宇宙忍法・箱次元】同じ特徴が1つだけ（男）なら戻らない（出典: atwiki/page-814「特徴が2つ以上同じなら」）", () => {
     const s = resolveAll(zuubo([inst("SPEC-MN-A", "a"), inst("SPEC-M-ONLY", "o")]), ["SPEC-MN-A:a", "SPEC-M-ONLY:o"]);
     expect(zoneOf(s, "player2", "SPEC-MN-A:a")).toBe("battle");
