@@ -10,7 +10,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
-import { fullPlayableCatalog, validateDeckEntries } from "@rangers-strike/cards";
+import { validateDeckEntries } from "@rangers-strike/cards";
 import {
   attack,
   attackedInEnemyTurn,
@@ -470,9 +470,8 @@ describe("RS-347 スーパーフォーメーション", () => {
 
   // atwiki/page-388 Q1「はい、できます。」（コマンドゾーンのビクトリーウォーカー＋自軍エリアのレッドラダー・グリーンホバー）
   it("RS-347: Q&A — リリース状態のビクトリーウォーカー（ブルースローワー＋イエローアーマー＋ピンクエイダーとして使える）をコマンドゾーンから、レッドラダー・グリーンホバーを自軍エリアから捨札にしてビクトリーロボをラッシュできる（出典: atwiki/page-388 Q1）", () => {
-    // XG3-006 はゲームのカード定義（core-playable）の外なので、full-playable カタログの定義を加える（RS5-audit-out-of-range と同じ）。
-    const XG3_006 = fullPlayableCatalog.cards.find((c) => c.id === "XG3-006")!;
-    let s = victoryState(["RS-383", "RS-385"], [released("XG3-006", "vw")], true, [XG3_006]);
+    // XG3-006 はゲームのカード定義（allCardsCatalog）にある実カードを使う。
+    let s = victoryState(["RS-383", "RS-385"], [released("XG3-006", "vw")], true);
     s = useSF(s);
     const r = rushFromHand(s, "player1", "RS-382:vr");
     expect(r.ok).toBe(true);

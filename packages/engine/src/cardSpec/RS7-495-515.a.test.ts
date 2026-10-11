@@ -44,7 +44,6 @@ import {
   reanimateTests,
   zordDownTests,
 } from "./RS7-495-515.helpers";
-import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState } from "../types/game";
 
 /** 自軍バトルフェイズに、ids を順にバトルエリアへ出す（各進入後の行動ウィンドウはパス）。 */
@@ -378,7 +377,7 @@ describe("RS-497 冥獣人ニンジャキリカゲ", () => {
       turn: 3,
       player1: { rush: [inst("RK-031", "r"), inst("RK-058", "z")], deck: deckCards(3) },
       player2: { battle: [inst("RS-497", "k"), inst("XG1-096", "q")], deck: deckCards(3, "e") },
-    }, [resolvePlayableCard("XG1-096") as CardDefinition]);
+    });
     s = settle(act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: "RK-031:r", vehicleInstanceId: "RK-058:z" }));
     s = settle(act(s, { type: "resolve_ride_off_choice", playerId: "player1", rideOff: true }));
     expect(attackTargets(s, "RK-031:r")).toContain("XG1-096:q");
