@@ -68,6 +68,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "set8b::RS-556::salda_claw",
+          "duration": "turn"
         }
       ]
     }

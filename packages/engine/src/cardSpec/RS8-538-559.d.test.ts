@@ -76,8 +76,7 @@ describe("RS-557 ビンボーガミ", () => {
     });
   });
 
-  // 既知の不具合: CARD-RS-557 【札束の誘惑】が未実装（出られるユニットを出さずにバトルフェイズを終えられる）
-  it.fails("RS-557: 【札束の誘惑】相手の手札が2枚なら、CN2 の自軍 S ユニットは可能ならバトルエリアに出なければならない（出さずにフェイズを終えられない）（出典: atwiki/page-1179）", () => {
+  it("RS-557: 【札束の誘惑】相手の手札が2枚なら、CN2 の自軍 S ユニットは可能ならバトルエリアに出なければならない（出さずにフェイズを終えられない）（出典: atwiki/page-1179）", () => {
     const s = board([inst("SPEC-CN2S", "u")], 2);
     expect(canEndPhase(s)).toBe(false);
   });
@@ -103,8 +102,7 @@ describe("RS-557 ビンボーガミ", () => {
     expect(canEndPhase(board([inst("SPEC-CN2S", "u")], 2, "discard"))).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-557 【札束の誘惑】が未実装
-  it.fails("RS-557: 【札束の誘惑】「自分も相手も」— 敵軍のビンボーガミでも、自軍の CN2 S ユニットは（敵軍手札2枚なら）出なければならない（出典: atwiki/page-1179「自分も相手も次の制限を受ける」）", () => {
+  it("RS-557: 【札束の誘惑】「自分も相手も」— 敵軍のビンボーガミでも、自軍の CN2 S ユニットは（敵軍手札2枚なら）出なければならない（出典: atwiki/page-1179「自分も相手も次の制限を受ける」）", () => {
     expect(canEndPhase(board([inst("SPEC-CN2S", "u")], 2, "enemy"))).toBe(false);
   });
 });
@@ -159,8 +157,7 @@ describe("RS-558 ガンマジン", () => {
     expect(bpOf(s, "player1", "RS-558:gm")).toBe(2000);
   });
 
-  // 既知の不具合: CARD-RS-558 ※「これはLユニットになり」が未実装（BP+4000 だけでサイズは S のまま）
-  it.fails("RS-558: ※ L ユニットがあれば L ユニットになる — ホールド状態でも【地割れ】（ホールド状態の S ユニット）の候補にならない（出典: atwiki/page-1186「これはLユニットになり」）", () => {
+  it("RS-558: ※ L ユニットがあれば L ユニットになる — ホールド状態でも【地割れ】（ホールド状態の S ユニット）の候補にならない（出典: atwiki/page-1186「これはLユニットになり」）", () => {
     const s = st({
       player1: { battle: [inst("TST-UNIT-0", "f1"), inst("TST-UNIT-0", "f2"), inst("TST-UNIT-0", "f3"), inst("TST-UNIT-0", "f4")], rush: [inst("RS-555", "ku")], deck: deckCards(3) },
       player2: { battle: [heldUnit("RS-558", "gm"), heldUnit("TST-UNIT-0", "hs"), inst("TST-UNIT-7", "l")], deck: deckCards(3, "e") },
@@ -170,8 +167,7 @@ describe("RS-558 ガンマジン", () => {
     expect(choiceIds(t)).not.toContain("RS-558:gm");
   });
 
-  // 既知の不具合: CARD-RS-558 【鍵の持ち主の願い】が未実装（追加条件を実行してもドローできない）
-  it.fails("RS-558: 【鍵の持ち主の願い】自軍の「＋」ユニット（ガオゴッド 6+）を合体ユニットを捨札にしてラッシュすると、1枚ドローできる（出典: atwiki/page-1186）", () => {
+  it("RS-558: 【鍵の持ち主の願い】自軍の「＋」ユニット（ガオゴッド 6+）を合体ユニットを捨札にしてラッシュすると、1枚ドローできる（出典: atwiki/page-1186）", () => {
     const r = rushFromHand(gaoRush("own"), "player1", "RS-559:u");
     expect(r.ok).toBe(true);
     const handBefore = r.state.players.player1.hand.length;
@@ -179,15 +175,13 @@ describe("RS-558 ガンマジン", () => {
     expect(s.players.player1.hand.length).toBe(handBefore + 1);
   });
 
-  // 既知の不具合: CARD-RS-558 【鍵の持ち主の願い】が未実装
-  it.fails("RS-558: 【鍵の持ち主の願い】ドローは任意（見送れる）（出典: atwiki/page-1186「1枚ドローしてもよい」）", () => {
+  it("RS-558: 【鍵の持ち主の願い】ドローは任意（見送れる）（出典: atwiki/page-1186「1枚ドローしてもよい」）", () => {
     const r = rushFromHand(gaoRush("own"), "player1", "RS-559:u");
     expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-558");
     expect(canSkip(r.state)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-558 【鍵の持ち主の願い】が未実装
-  it.fails("RS-558: 【鍵の持ち主の願い】「自分も相手も」— 敵軍のガンマジンでも、ラッシュしたカードの持ち主（自分）がドローできる（出典: atwiki/page-1186「そのカードの持ち主は1枚ドローしてもよい」）", () => {
+  it("RS-558: 【鍵の持ち主の願い】「自分も相手も」— 敵軍のガンマジンでも、ラッシュしたカードの持ち主（自分）がドローできる（出典: atwiki/page-1186「そのカードの持ち主は1枚ドローしてもよい」）", () => {
     const r = rushFromHand(gaoRush("enemy"), "player1", "RS-559:u");
     const before = r.state.players.player1.hand.length;
     const s = resolveAll(r.state);
@@ -235,9 +229,43 @@ describe("RS-558 ガンマジン", () => {
     "RS-558: 公式Q&A — ジャガーバルカンの効果（S ユニットをコマンドゾーンに送るかわりに ET コマンドをホールド）で ET の M ユニットをラッシュしてもドローできない（出典: grnrngr/faq-card-8 RS-558 Q1）— 該当する ET の「＋」M ユニット（追加条件が S ユニットをコマンドゾーンに送るもの）とジャガーバルカンの代替手順を公開 API で組めない",
   );
 
-  it.todo(
-    "RS-558: 公式Q&A — デンジ犬アイシーの効果で OT の L ユニットをラッシュしてもドローできない（出典: grnrngr/faq-card-8 RS-558 Q2）— 【鍵の持ち主の願い】自体が未実装で、肯定側（通常の追加条件の実行）も it.fails のため、否定側の確認は意味を持たない",
-  );
+  it("RS-558: 公式Q&A — デンジ犬アイシーの効果（山札のデンジファイターを捨札にしたことにする）で OT の L ユニット（ダイデンジン 7+）をラッシュしてもドローできない（出典: grnrngr/faq-card-8 RS-558 Q2「いいえ、できません」）", () => {
+    const s0 = st({
+      phase: "rush",
+      player1: {
+        hand: [inst("RS-352", "dd")],
+        rush: [inst("RS-359", "ic"), inst("RS-558", "gm")],
+        command: releasedCat("OT", 1),
+        power: powerCards(7),
+        deck: [inst("TST-OP", "o"), inst("RS-353", "f"), ...deckCards(3)],
+      },
+    });
+    const r = rushFromHand(s0, "player1", "RS-352:dd", { materials: ["RS-353:f"] });
+    expect(r.ok).toBe(true);
+    expect(r.state.pendingEffectChoice?.sourceCardId).not.toBe("RS-558");
+    const s = resolveAll(r.state, ["RS-353:f"]);
+    expect(zoneOf(s, "player1", "RS-352:dd")).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-359:ic")).toBe("discard");
+    expect(s.players.player1.hand).toHaveLength(0);
+  });
+
+  it("RS-558: 対照 — 同じダイデンジンを場のデンジファイターを捨札にして（追加条件を実行して）ラッシュすればドローできる（出典: atwiki/page-1186・grnrngr/faq-card-8 RS-558 Q2）", () => {
+    const s0 = st({
+      phase: "rush",
+      player1: {
+        hand: [inst("RS-352", "dd")],
+        rush: [inst("RS-353", "ff"), inst("RS-558", "gm")],
+        command: releasedCat("OT", 1),
+        power: powerCards(7),
+        deck: deckCards(3),
+      },
+    });
+    const r = rushFromHand(s0, "player1", "RS-352:dd", { materials: ["RS-353:ff"] });
+    expect(r.ok).toBe(true);
+    expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-558");
+    const s = resolveAll(r.state);
+    expect(s.players.player1.hand).toHaveLength(1);
+  });
 
   it("RS-558: atwiki Q&A — 山札にあるガンマジンは S ユニットのカードで、L ユニットがあってもバトルシャークで L ユニットのカードとして選べない（出典: atwiki/page-1186 Q4「山札にある間はあくまで「Sユニットのカード」」）", () => {
     const s0 = st({
@@ -256,11 +284,11 @@ describe("RS-558 ガンマジン", () => {
   });
 
   it.todo(
-    "RS-558: atwiki Q&A — ギャレンJF の追加条件をピーコックアンデッドを捨札にして満たしても、追加条件を実行したことにならずドローできない（出典: atwiki/page-1186 Q5）— 【鍵の持ち主の願い】が未実装で肯定側も it.fails のため、否定側の確認は意味を持たない",
+    "RS-558: atwiki Q&A — ギャレンJF の追加条件をピーコックアンデッドを捨札にして満たしても、追加条件を実行したことにならずドローできない（出典: atwiki/page-1186 Q5）— ピーコックアンデッドの「「仮面ライダーギャレン」1体を捨札にしたことにできる」置換がギャレンJF の追加条件の手続きに接続されておらず、公開 API で組めない",
   );
 
   it.todo(
-    "RS-558: atwiki Q&A — ガンマジンと仮面ライダーアークの L ユニット化が循環する場合は、ターンプレイヤーが優先順を選んでループを止める（出典: atwiki/page-1186 Q6・R-RES-08）— ガンマジンの L ユニット化が未実装で、ループ停止の選択も公開 API にない",
+    "RS-558: atwiki Q&A — ガンマジンと仮面ライダーアークの L ユニット化が循環する場合は、ターンプレイヤーが優先順を選んでループを止める（出典: atwiki/page-1186 Q6・R-RES-08）— 仮面ライダーアークの「これ以外が S ユニットだけなら L」との循環で、ターンプレイヤーがループを止める選択が公開 API にない（ガンマジンは条件つきで L になったユニットを数えない）",
   );
 });
 
@@ -314,15 +342,13 @@ describe("RS-559 ガオゴッド", () => {
     expect(r.state.players.player1.discard).toHaveLength(5);
   });
 
-  // 既知の不具合: CARD-RS-559 【パワーアロー】の候補が敵軍ラッシュエリアだけ（本文の「ラッシュフェイズ」の語で zone=rush と誤解釈。バトルエリアのユニットを選べない）
-  it.fails("RS-559: 【パワーアロー】自軍ターン中に出たとき、BP8000以下の敵軍ユニット（バトル・ラッシュ）が候補で、8500 は選べない（出典: atwiki/page-1227「BP8000以下の敵軍ユニット」）", () => {
+  it("RS-559: 【パワーアロー】自軍ターン中に出たとき、BP8000以下の敵軍ユニット（バトル・ラッシュ）が候補で、8500 は選べない（出典: atwiki/page-1227「BP8000以下の敵軍ユニット」）", () => {
     const s = enter(board(), "RS-559:u");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-559");
     expect(choiceIds(s)).toEqual(["SPEC-8000:a", "TST-UNIT-0:r"]);
   });
 
-  // 既知の不具合: CARD-RS-559 【パワーアロー】の候補が敵軍ラッシュエリアだけ
-  it.fails("RS-559: 【パワーアロー】BP8500 の敵軍ユニットは候補にならない（境界 8000 は候補）（出典: atwiki/page-1227「BP8000以下」）", () => {
+  it("RS-559: 【パワーアロー】BP8500 の敵軍ユニットは候補にならない（境界 8000 は候補）（出典: atwiki/page-1227「BP8000以下」）", () => {
     const s = enter(board(), "RS-559:u");
     expect(choiceIds(s)).toContain("SPEC-8000:a");
     expect(choiceIds(s)).not.toContain("SPEC-8500:b");
@@ -333,8 +359,7 @@ describe("RS-559 ガオゴッド", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:r")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-559 【パワーアロー】が強制になっている（「発動出来る」なのに見送れない）
-  it.fails("RS-559: 【パワーアロー】任意 — 発動しないことを選べる（出典: atwiki/page-1227「次の効果を発動出来る」）", () => {
+  it("RS-559: 【パワーアロー】任意 — 発動しないことを選べる（出典: atwiki/page-1227「次の効果を発動出来る」）", () => {
     const s0 = enter(board(), "RS-559:u");
     expect(canSkip(s0)).toBe(true);
     const s = resolveAll(skip(s0));
@@ -347,8 +372,7 @@ describe("RS-559 ガオゴッド", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:r")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-559 （）内の「手札からこのカードを捨札にして発動」が未実装
-  it.fails("RS-559: 【パワーアロー】自軍ラッシュフェイズ中、自軍パワー8以上なら手札のガオゴッドを捨札にして発動できる（出典: atwiki/page-1227「自分の手札からこのカードを捨札にして発動できる」）", () => {
+  it("RS-559: 【パワーアロー】自軍ラッシュフェイズ中、自軍パワー8以上なら手札のガオゴッドを捨札にして発動できる（出典: atwiki/page-1227「自分の手札からこのカードを捨札にして発動できる」）", () => {
     expect(handUse(handBoard(8))).toBe(true);
   });
 

@@ -21,6 +21,7 @@ import { applyDamageToPlayer } from "../damagePayment";
 import { addBakiBakiExtraAttack } from "../turnModifierBridge";
 import { cardHasGrantKeyword } from "../../dsl/promotedKeywordBridge";
 import { fireAkaRedSoulNc } from "./set6AuditFixes";
+import { baseLargeNow, hasBecomesLIfAnyLText } from "./set8NamedEffectsB";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -174,11 +175,21 @@ export function set6BBlocksStrike(state: GameState, playerId: PlayerId, instance
  * 印刷サイズ L のユニットがある。同じ能力で L になっているユニットどうしは支え合わない — atwiki/page-799 コメント）。
  */
 export function zubaanIsLarge(state: GameState, instance: CardInstance): boolean {
-  if (instance.cardId !== "RS-420" && !cardHasGrantKeyword(instance.cardId, "becomes_l_if_l_present")) return false;
+  // RS-539【再生巨大化能力】等で L ユニットになっている（rules/legend1/set8NamedEffectsB.ts）。
+  if (getDefinition(state.definitions, instance.cardId)?.size !== "L" && baseLargeNow(state, instance)) return true;
+  // RS-558 ガンマジン「自分か相手のLユニットがあれば、これはLユニットになり、…」も同じ種類の能力（文言で判定）。
+  if (
+    instance.cardId !== "RS-420" &&
+    !cardHasGrantKeyword(instance.cardId, "becomes_l_if_l_present") &&
+    !hasBecomesLIfAnyLText(state, instance.cardId)
+  ) {
+    return false;
+  }
   for (const pid of ["player1", "player2"] as const) {
     for (const c of fieldUnits(state, pid)) {
       if (c.instanceId === instance.instanceId || c.cardId === "RS-420") continue;
-      if (getDefinition(state.definitions, c.cardId)?.size === "L") return true;
+      if (cardHasGrantKeyword(c.cardId, "becomes_l_if_l_present") || hasBecomesLIfAnyLText(state, c.cardId)) continue;
+      if (baseLargeNow(state, c)) return true;
     }
   }
   return false;

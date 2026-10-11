@@ -139,6 +139,7 @@ import {
 import { isSet5ChoiceEffect, tryResolveSet5Choice, trySkipSet5Choice } from "./legend1/set5NamedEffects";
 import { isSet6BChoiceEffect, openFlameGlareForSoulDescent, tryResolveSet6BChoice, trySkipSet6BChoice } from "./legend1/set6NamedEffectsB";
 import { isSet7DChoiceEffect, tryResolveSet7DChoice, trySkipSet7DChoice } from "./legend1/set7NamedEffectsD";
+import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
 import {
   isSet7BChoiceEffect,
   tryConfirmSet7BChoice,
@@ -626,6 +627,7 @@ export function isValidEffectChoiceTarget(
     isSet7BChoiceEffect(pending.effectId) ||
     isSet7CChoiceEffect(pending.effectId) ||
     isSet7DChoiceEffect(pending.effectId) ||
+    isSet8BChoiceEffect(pending.effectId) ||
     pending.effectId === "rs414_dione_wall" ||
     isSet6LowChoiceEffect(pending.effectId) ||
     isSet6AuditChoiceEffect(pending.effectId)
@@ -2673,7 +2675,7 @@ function finishGreenCrush(
 }
 
 /** 選択の再開チェーンの最後に、続けて開く選択を足す。 */
-function appendResumeChoice(
+export function appendResumeChoice(
   choice: PendingEffectChoice,
   next: PendingEffectChoice,
 ): PendingEffectChoice {
@@ -2890,6 +2892,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set7c) return set7c;
   const set7d = trySkipSet7DChoice(state, playerId);
   if (set7d) return set7d;
+  const set8b = trySkipSet8BChoice(state, playerId);
+  if (set8b) return set8b;
   const set5 = trySkipSet5Choice(state, playerId);
   if (set5) return set5;
   const set5Audit = trySkipSet5AuditChoice(state, playerId);
@@ -3164,6 +3168,8 @@ export function applyEffectChoiceSelect(
   if (set7c) return set7c;
   const set7d = tryResolveSet7DChoice(state, playerId, instanceId);
   if (set7d) return set7d;
+  const set8b = tryResolveSet8BChoice(state, playerId, instanceId);
+  if (set8b) return set8b;
   const set5 = tryResolveSet5Choice(state, playerId, instanceId);
   if (set5) return set5;
   const set5Audit = tryResolveSet5AuditChoice(state, playerId, instanceId);

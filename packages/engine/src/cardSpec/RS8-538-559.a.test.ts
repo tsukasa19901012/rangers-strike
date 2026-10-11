@@ -67,8 +67,7 @@ describe("RS-538 ユイ・イブキ", () => {
     expect(zoneOf(s, "player1", "RS-538:y")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-538 【頼れる指揮官】が未実装（DSL スタブがキーワード登録だけで、敵軍の進入を禁止しない）
-  it.fails("RS-538: 【頼れる指揮官】敵軍ターン中、ホールド状態の自軍ユニットが撃破されて捨札になると、敵軍ラッシュエリアのユニットはそのターン出られない（出典: atwiki/page-1213）", () => {
+  it("RS-538: 【頼れる指揮官】敵軍ターン中、ホールド状態の自軍ユニットが撃破されて捨札になると、敵軍ラッシュエリアのユニットはそのターン出られない（出典: atwiki/page-1213）", () => {
     const s = attackedInEnemyTurn(
       { battle: [heldUnit("TST-UNIT-0", "h")], rush: [inst("RS-538", "y")] },
       "TST-UNIT-0:h",
@@ -123,8 +122,7 @@ describe("RS-538 ユイ・イブキ", () => {
     expect(canEnter(s, ER, "player2")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-538 【頼れる指揮官】が未実装
-  it.fails("RS-538: 【頼れる指揮官】効果は「その敵軍ターン中」だけで、次の敵軍ターンには敵軍ユニットはバトルエリアに出られる（出典: atwiki/page-1213「その敵軍ターン中」）", () => {
+  it("RS-538: 【頼れる指揮官】効果は「その敵軍ターン中」だけで、次の敵軍ターンには敵軍ユニットはバトルエリアに出られる（出典: atwiki/page-1213「その敵軍ターン中」）", () => {
     let s = attackedInEnemyTurn(
       { battle: [heldUnit("TST-UNIT-0", "h")], rush: [inst("RS-538", "y")], deck: deckCards(8) },
       "TST-UNIT-0:h",
@@ -136,8 +134,7 @@ describe("RS-538 ユイ・イブキ", () => {
     expect(canEnter(s, ER, "player2")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-538 【頼れる指揮官】が未実装
-  it.fails("RS-538: 公式Q&A — 発動したターン中なら、発動より後に新しく敵軍ラッシュエリアに出たユニットにも効果が及ぶ（出典: grnrngr/faq-card-8 RS-538 Q1「はい、効果が及びます」）", () => {
+  it("RS-538: 公式Q&A — 発動したターン中なら、発動より後に新しく敵軍ラッシュエリアに出たユニットにも効果が及ぶ（出典: grnrngr/faq-card-8 RS-538 Q1「はい、効果が及びます」）", () => {
     // 発動後に敵軍ラッシュエリアへ新しく置かれたユニット（ラッシュされたユニットと同じ扱い）を状態に加えて確認する。
     const s0 = attackedInEnemyTurn(
       { battle: [heldUnit("TST-UNIT-0", "h")], rush: [inst("RS-538", "y")] },
@@ -180,8 +177,7 @@ describe("RS-539 ギョダーイ", () => {
     expect(canEnter(s, "TST-UNIT-0:c")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-539 【再生巨大化能力】が未実装（ユニットのサイズが変わらない）
-  it.fails("RS-539: 【再生巨大化能力】本来の特徴に「怪人」を持つ自軍ユニットは、自軍捨札に同名ユニットカードがあれば L ユニットになる（ガンマジンが BP+4000）（出典: atwiki/page-1164）", () => {
+  it("RS-539: 【再生巨大化能力】本来の特徴に「怪人」を持つ自軍ユニットは、自軍捨札に同名ユニットカードがあれば L ユニットになる（ガンマジンが BP+4000）（出典: atwiki/page-1164）", () => {
     const s = st(
       { player1: { battle: [inst("SPEC-KAIJIN", "k"), inst("RS-558", "gm")], rush: [inst("RS-539", "g")], discard: [inst("SPEC-KAIJIN", "d")] } },
       [KAIJIN],

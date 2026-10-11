@@ -300,7 +300,7 @@ export function rushAreaEntryBlockedThisTurn(state: GameState, playerId: PlayerI
   return hasTurnRuleModifier(state.players[playerId], RUSH_AREA_NO_ENTRY_RULE);
 }
 
-function blockRushAreaEntry(state: GameState, playerId: PlayerId, sourceCardId: string): GameState {
+export function blockRushAreaEntry(state: GameState, playerId: PlayerId, sourceCardId: string): GameState {
   if (rushAreaEntryBlockedThisTurn(state, playerId)) return state;
   const player = addTurnRuleModifier(state.players[playerId], RUSH_AREA_NO_ENTRY_RULE, { sourceCardId });
   return { ...state, ...updatePlayer(state, playerId, player) };
