@@ -256,9 +256,59 @@ describe("RS-322 ベン・G", () => {
     expect(s.players.player2.command.filter((c) => c.commandHeld)).toHaveLength(3);
   });
 
-  it.todo("RS-322: 公式Q&A — ライド中の宇宙刑事ギャバンしか S ユニットがないとき、チェイスを発動しても追加条件は満たせるものとして効果を続行する（出典: atwiki/page-431 Q4）— チェイス（R-KW-CHASE-01）とライド状態を含む場作りが RS-322 の範囲外のカード（RM-018・ビークル）の実装に依存するため");
-  it.todo("RS-322: 公式Q&A — 仮面ライダーディケイドCF の「その場に留まる」効果を発動しても追加条件は満たせるものとして効果を続行する（出典: atwiki/page-431 Q5）— XG2-042 の留まる効果（オモテ向きパワーの捨札）に依存し、このカード範囲で場を作れないため");
-  it.todo("RS-322: 公式Q&A — 仮面ライダークウガUF は【凄まじき戦士】で場に留まり、追加条件は満たせるものとして効果を続行する（出典: atwiki/page-431 Q6）— SK-004 の重ねたカードの状態を公開 API で用意できないため");
+  // atwiki/page-431 Q4/A4「はい、「RM-018 宇宙刑事ギャバン」のチェイスを発動することはできます。ただし、その場合はまだ場に「RM-018 宇宙刑事ギャバン」がいるので、追加条件を満たすことは可能であるとして、「RS-322 ベン・G」の効果を続行して下さい。」
+  // 既知の不具合: CARD-RS-322 【人身略取】で相手が満たす追加条件（自軍Sユニットを捨札）でライド中の宇宙刑事ギャバンを選ぶと、チェイス（pendingChase）が提示されずそのまま捨札になる。
+  it.fails("RS-322: 公式Q&A — ライド中の宇宙刑事ギャバンしか S ユニットがないとき、チェイスを発動しても追加条件は満たせるものとして効果を続行する（出典: atwiki/page-431 Q4）", () => {
+    let s = benEnters([inst("RS-311", "m")], {
+      battle: [{ ...inst("RM-018", "g"), mountedOnInstanceId: "RS-466:v1" }, inst("RS-466", "v1")],
+      rush: [inst("RS-467", "v2")],
+    });
+    s = pick(s, "RS-311:m");
+    expect(choiceIds(s)).toEqual(["RM-018:g"]);
+    s = pick(s, "RM-018:g");
+    // チェイス: ライドしているビークルを捨札にして、ライドされていない自軍ビークルに乗り換える。
+    expect(s.pendingChase?.chaserPlayerId).toBe("player2");
+    s = act(s, { type: "resolve_chase", playerId: "player2", newVehicleInstanceId: "RS-467:v2" });
+    expect(zoneOf(s, "player2", "RS-466:v1")).toBe("discard");
+    expect(zoneOf(s, "player2", "RM-018:g")).not.toBe("discard");
+    // ギャバンはまだ場にいるので追加条件は満たせるものとして続行する（相手は再び S ユニットを選ぶ）。
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(choiceIds(s)).toContain("RM-018:g");
+  });
+
+  // atwiki/page-431 Q5/A5「はい、…「その場に留まる」という効果を発動することは出来ます。ただし、その場合はまだ場に「XG2-042 仮面ライダーディケイドCF」がいるので、追加条件を満たすことは可能であるとして、「RS-322 ベン・G」の効果を続行して下さい。」
+  // 既知の不具合: CARD-RS-322 【人身略取】で相手が満たす追加条件（自軍Sユニットを捨札）で仮面ライダーディケイドCFを選ぶと、※の「その場に留まる」（オモテ向きの「仮面ライダー」のパワーを捨札）が適用されずそのまま捨札になる。
+  it.fails("RS-322: 公式Q&A — 仮面ライダーディケイドCF の「その場に留まる」効果を発動しても追加条件は満たせるものとして効果を続行する（出典: atwiki/page-431 Q5）", () => {
+    let s = benEnters([inst("RS-311", "m")], { battle: [inst("XG2-042", "d")], power: [inst("XG2-042", "pw")] });
+    s = pick(s, "RS-311:m");
+    expect(choiceIds(s)).toEqual(["XG2-042:d"]);
+    s = pick(s, "XG2-042:d");
+    // 留まる効果は任意（「捨札にすれば」）。選択として提示される場合はパワーの「仮面ライダー」を選ぶ。
+    if (s.pendingEffectChoice?.validInstanceIds.includes("XG2-042:pw")) s = pick(s, "XG2-042:pw");
+    expect(zoneOf(s, "player2", "XG2-042:pw")).toBe("discard");
+    expect(zoneOf(s, "player2", "XG2-042:d")).toBe("battle");
+    // ディケイドCF はまだ場にいるので追加条件は満たせるものとして続行する（相手は再び S ユニットを選ぶ）。
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(choiceIds(s)).toContain("XG2-042:d");
+  });
+
+  // atwiki/page-431 Q6/A6「はい、…【凄まじき戦士】の効果は強制なので、その場に留まることができます。ただし、その場合はまだ場に「SK-004 仮面ライダークウガUF」がいるので、追加条件を満たすことは可能であるとして、「RS-322 ベン・G」の効果を続行して下さい。」
+  // 既知の不具合: CARD-RS-322 【人身略取】で相手が満たす追加条件（自軍Sユニットを捨札）でウラ向きのカードを重ねた仮面ライダークウガUFを選ぶと、【凄まじき戦士】の「その場に留める」が適用されずそのまま捨札になる（SK-004 の【凄まじき戦士】はエンジン未接続）。
+  it.fails("RS-322: 公式Q&A — 仮面ライダークウガUF は【凄まじき戦士】で場に留まり、追加条件は満たせるものとして効果を続行する（出典: atwiki/page-431 Q6）", () => {
+    let s = benEnters([inst("RS-311", "m")], {
+      battle: [{ ...inst("SK-004", "k"), stackedCards: [{ ...inst("TST-OP", "u1"), faceDown: true }, { ...inst("TST-OP", "u2"), faceDown: true }] }],
+    });
+    s = pick(s, "RS-311:m");
+    expect(choiceIds(s)).toEqual(["SK-004:k"]);
+    s = pick(s, "SK-004:k");
+    // 重ねたウラ向きのカードを1枚選び捨札にする（選択として提示される場合は1枚目を選ぶ）。
+    if (s.pendingEffectChoice?.validInstanceIds.includes("TST-OP:u1")) s = pick(s, "TST-OP:u1");
+    expect(zoneOf(s, "player2", "SK-004:k")).toBe("battle");
+    expect(s.players.player2.discard.filter((c) => c.cardId === "TST-OP")).toHaveLength(1);
+    // クウガUF はまだ場にいるので追加条件は満たせるものとして続行する（相手は再び S ユニットを選ぶ）。
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(choiceIds(s)).toContain("SK-004:k");
+  });
   // 敵軍ターン中にバトルエリアに出る状況は、効果で出したときと同じ進入処理を行うテスト用の enterBattleByEffect で作る。
   it("RS-322: 敵軍ターン中にバトルエリアに出たときは【人身略取】は発動しない（出典: atwiki/page-431「自軍ターン中」）", () => {
     const board = (activePlayer: "player1" | "player2") =>
@@ -568,10 +618,10 @@ describe("RS-325 天空勇者マジシャイン", () => {
 
   // atwiki/page-485 Q1「いいえ、そのようにはなりません。…実際には手札から使用していないので、…該当しません。」
   it.todo(
-    "RS-325: 公式Q&A — マジチケットで発動したオーズドライバーの「次に手札から使用するカード」の軽減は、続けてマジチケットで発動するカードには適用されない（出典: atwiki/page-485 Q1）— XG7-054 未収録（ゲームのカード定義 allCardsCatalog に XG 系のカードが無く、wiki スタブ／vanilla-promoted カタログにも効果データが無いため、使用の場を作れない）",
+    "RS-325: 公式Q&A — マジチケットで発動したオーズドライバーの「次に手札から使用するカード」の軽減は、続けてマジチケットで発動するカードには適用されない（出典: atwiki/page-485 Q1）— XG7-054 はマジチケットで発動できるが、効果が未実装（DSL は note_card のみで、使うと何も選ばずに解決する）。「次の効果から1つ選び発動する」の◎を選ぶ公開アクションも「次に手札から使用するカード」の必要パワー軽減も無いため、軽減が効かないことを意味のある形で検証できない",
   );
 
-  it.todo("RS-325: 公式Q&A — マジチケットでオーズドライバーを2回発動すると、次に手札から使用するカードの必要パワーは6少なくなる（出典: atwiki/page-485 Q2）— XG7-054 の選択式効果（2つ目の◎）の選び方と「次に手札から使用するカード」の軽減をこのカード範囲で検証する手段が無いため（マジチケット自体も未実装）");
+  it.todo("RS-325: 公式Q&A — マジチケットでオーズドライバーを2回発動すると、次に手札から使用するカードの必要パワーは6少なくなる（出典: atwiki/page-485 Q2）— XG7-054 の効果が未実装（DSL は note_card のみ）で、2つ目の◎（必要パワー3少なくなる）を選ぶ公開アクションが存在しないため");
 
   // faq-card-5 RS-325 Q3「その手順では「RS-255 巨大化爆弾」が捨札になるタイミングがありませんので…ラッシュエリアに留まります。…かわりとして…捨札にするということはできません。」
   it.todo("RS-325: 公式Q&A — マジチケットで巨大化爆弾を使いユニットを重ねてラッシュエリアに出したとき、コマンドを捨札にしなくても巨大化爆弾はラッシュエリアに留まり、かわりに捨札にすることもできない（出典: grnrngr/faq-card-5 RS-325 Q3）— 巨大化爆弾は※カウンター（敵軍ターン中のみ・ユーザー決定）で「怪人」の撃破に応じる手順を要し、マジチケット未実装のため場を作れない");

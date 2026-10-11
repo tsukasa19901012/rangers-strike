@@ -461,11 +461,36 @@ describe("RS-579 ルナジェル", () => {
     expect(attackTargets(s, "TST-UNIT-0:old")).toContain("TST-UNIT-0:eb");
   });
 
-  it.todo(
-    "RS-579: Q&A — ルナジェルがあっても、このターンにラッシュした BP8000 以下の「侍」ユニットは恐竜折神からコンビネーションして【キョウリュウマル】を発動できる（出典: atwiki/page-1194 Q1「はい、できます。」）— XG3-034 恐竜折神がゲームのカード定義（core-playable）の外で、公開 API で再現できないため",
+  // atwiki/page-1194 Q1「はい、できます。」
+  // 「アタックするかわりに」の効果は use_juu_kun_do（R-ATK-05・R-REPL-03）で発動する。
+  // 既知の不具合: CARD-RS-579 恐竜折神（XG3-034）の【キョウリュウマル】が未実装で、恐竜折神からジョイントコンビネーションした「侍」ユニットに「アタックするかわりに」の撃破が与えられない（ルナジェル下では pass_battle_entry しか合法手がない）。
+  it.fails(
+    "RS-579: Q&A — ルナジェルがあっても、このターンにラッシュした BP8000 以下の「侍」ユニットは恐竜折神からコンビネーションして【キョウリュウマル】を発動できる（出典: atwiki/page-1194 Q1「はい、できます。」）",
+    () => {
+      let s = st({
+        turn: 3,
+        phase: "rush",
+        player1: { hand: [inst("RS-677", "sg")], rush: [inst("RS-579", "ln"), inst("XG3-034", "ko")], command: releasedCat("MA", 1), power: powerCards(7), deck: deckCards(3) },
+        player2: { battle: [inst("TST-UNIT-0", "eb")], deck: deckCards(3, "e") },
+      });
+      // シンケングリーン（侍・BP3000）をこのターンにラッシュする。
+      const r = rushFromHand(s, "player1", "RS-677:sg");
+      expect(r.ok).toBe(true);
+      s = nextPhase(resolveAll(r.state));
+      expect(s.phase).toBe("battle");
+      // 恐竜折神（L）を出し、続けてシンケングリーンを出してコンビネーションする。
+      s = passEntry(resolveAll(enter(s, "XG3-034:ko")));
+      s = resolveAll(enter(s, "RS-677:sg"));
+      // ルナジェルの制限でアタックはできない。
+      expect(attackTargets(s, "RS-677:sg")).toEqual([]);
+      // 【キョウリュウマル】: アタックするかわりに、BP の合計がシンケングリーンの BP 以下になるよう敵軍バトルエリアのユニットを選び撃破できる。
+      expect(legal(s).some((a) => a.type === "use_juu_kun_do" && a.attackerInstanceId === "RS-677:sg")).toBe(true);
+      s = resolveAll(act(s, { type: "use_juu_kun_do", playerId: "player1", attackerInstanceId: "RS-677:sg" }), ["TST-UNIT-0:eb"]);
+      expect(zoneOf(s, "player2", "TST-UNIT-0:eb")).toBe("discard");
+    },
   );
   it.todo(
-    "RS-579: Q&A — ラッシュした電子星獣ドルをホールドしてビークルにし、リリースしてユニットに戻しても、そのターンはストライクもアタックもできない（出典: atwiki/page-1194 Q2「いいえ、それはできません。」）— XG2-082 電子星獣ドルがゲームのカード定義（core-playable）の外で、公開 API で再現できないため",
+    "RS-579: Q&A — ラッシュした電子星獣ドルをホールドしてビークルにし、リリースしてユニットに戻しても、そのターンはストライクもアタックもできない（出典: atwiki/page-1194 Q2「いいえ、それはできません。」）— XG2-082 は未実装（DSL は note_card のみ）で、自軍ラッシュフェイズ中にドルをホールドしてビークルにする／リリースしてユニットに戻す公開アクションが存在しない（ラッシュ後の合法手は end_phase のみ）ため、Q&A の手順を再現できない",
   );
 });
 

@@ -156,14 +156,43 @@ describe("RS-382 ビクトリーロボ", () => {
   });
 
   // grnrngr/faq-card-6 / atwiki/page-541 Q1「はい、できます。」（XG2-041 スーパーシンケンイエローで繰り返し）
-  it.todo(
-    "RS-382: Q&A — スーパーシンケンイエロー【真・土煙の舞い】で同じカードを繰り返し捨札から手札に加えれば、その都度 SP+1 を得る（出典: atwiki/page-541 Q1）— XG2-041 がエンジンのカタログにないため駆動できない",
+  // 既知の不具合: CARD-RS-382 スーパーシンケンイエロー（XG2-041）の【真・土煙の舞い】がバトルエリアに出たときに発動せず、撃破されたときに自身の効果として敵軍ユニットを選ぶ選択を開くだけで、撃破されたカードを手札に戻して出し直せない（ビクトリーロボの SP も増えない）。
+  it.fails(
+    "RS-382: Q&A — スーパーシンケンイエロー【真・土煙の舞い】で同じカードを繰り返し捨札から手札に加えれば、その都度 SP+1 を得る（出典: atwiki/page-541 Q1）",
+    () => {
+      let s = st({
+        phase: "battle",
+        player1: { rush: [inst("XG2-041", "y"), inst("RS-382", "vr")], power: powerCards(7), command: releasedCat("MA", 2), deck: deckCards(5) },
+        player2: { battle: [inst("TST-UNIT-2", "eb")], deck: deckCards(8, "e") },
+      });
+      expect(spOf(s, "player1", "RS-382:vr")).toBe(1);
+      /** (1) スーパーシンケンイエローを出して【真・土煙の舞い】、(2) BP3000 の敵軍ユニットにアタックして敗北、(3) 手札に戻して再びラッシュエリアに出す。 */
+      const cycle = (t: GameState) => {
+        t = settle(enter(t, "XG2-041:y"));
+        t = settle(act(t, { type: "battle", playerId: "player1", attackerInstanceId: "XG2-041:y", defenderInstanceId: "TST-UNIT-2:eb" }));
+        // 撃破されて捨札になったカードを手札に戻し、同名のカード（戻したカード自身）を手札からラッシュエリアに出す。
+        for (let i = 0; i < 4 && t.pendingEffectChoice?.sourceCardId === "XG2-041"; i++) {
+          expect(choiceIds(t)).toContain("XG2-041:y");
+          t = settle(pick(t, "XG2-041:y"));
+        }
+        expect(zoneOf(t, "player1", "XG2-041:y")).toBe("rush");
+        return t;
+      };
+      s = cycle(s);
+      expect(spOf(s, "player1", "RS-382:vr")).toBe(2);
+      s = cycle(s);
+      expect(spOf(s, "player1", "RS-382:vr")).toBe(3);
+    },
   );
 
   // atwiki/page-541 Q2「はい、できます。」
-  it.todo(
-    "RS-382: Q&A — レッドラダー・グリーンホバー・ビクトリーウォーカー（XG3-006）の3体を捨札にしてラッシュできる（出典: atwiki/page-541 Q2）— XG3-006 がエンジンのカタログにないため駆動できない",
-  );
+  it("RS-382: Q&A — レッドラダー・グリーンホバー・ビクトリーウォーカー（XG3-006）の3体を捨札にしてラッシュできる（出典: atwiki/page-541 Q2）", () => {
+    const r = rushFromHand(robo([inst("RS-383", "rl"), inst("RS-385", "gh"), inst("XG3-006", "vw")]), "player1", "RS-382:vr");
+    expect(r.ok).toBe(true);
+    const s = resolveAll(r.state);
+    expect(zoneOf(s, "player1", "RS-382:vr")).toBe("rush");
+    for (const id of ["RS-383:rl", "RS-385:gh", "XG3-006:vw"]) expect(zoneOf(s, "player1", id)).toBe("discard");
+  });
 });
 
 // ===========================================================================
