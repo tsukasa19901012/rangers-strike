@@ -7,9 +7,12 @@
  * 構成は rules/legend1/set7NamedEffectsD.ts と同じ。
  */
 import type { CardDefinition } from "@rangers-strike/cards";
-import type { CardInstance, DeferredDestroyTrigger, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import type { CardInstance, DeferredDestroyTrigger, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
+import { canAttackDefender } from "../legend3/restrictions";
+import { canAttackRushWithYellowThunder } from "../namedUnitEffects";
 import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
-import { addNextTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
+import { addNextTurnRuleModifier, addTurnRuleModifier, getPlayerModifiers, hasTurnRuleModifier } from "../../core/scopedModifiers";
+
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
 import { markBattleNcEffect } from "../namedUnitEffects";
 import { spBecomesInZone } from "../fractionalSp";
@@ -1031,6 +1034,89 @@ CHOICE_SKIPPERS[G6_GRAND_PRIX_DESTROY_EFFECT_ID] = (state) => {
   const pending = state.pendingEffectChoice!;
   return destroyTogether(state, pending, pending.set8dMeta?.selected ?? []);
 };
+
+// ---------------------------------------------------------------------------
+// RS-583 ボウケンレッドHM【災いを受け止める覚悟】
+// 「これが自軍エリアにある間、相手によってこれ以外の自軍ユニットが選ばれたとき、このユニットが選ぶ対象として適切なら、このターン中に
+//  一度だけ、選ばれたユニットの代わりに、このユニットが選ばれたことにしてもよい。」（atwiki/page-1211）
+// アタックの対象も「選ぶ」もの（faq-card-1 RS-026 Q1）。アタック宣言の直後（「アタックするとき」の前）に、アタックされた側へ
+// 任意の選択を開く（core/applyAction.ts continueAttackAfterDeclaration）。適切か＝そのアタックでこのユニットにアタックできるか。
+
+export const TAKE_THE_BLOW_EFFECT_ID = "rs583_take_the_blow";
+const TAKE_THE_BLOW_RULE_PREFIX = "rs583_take_the_blow_used:";
+
+/** 【災いを受け止める覚悟】の選択を開く。使えないなら null。 */
+export function openTakeTheBlowChoice(state: GameState, battle: PendingBattle, wingAttackFromRush: boolean): GameState | null {
+  if (battle.substituteTargetOffered || battle.battleCancelled || battle.effectBattle) return null;
+  const ownerId = battle.defenderPlayerId;
+  if (battle.attackerPlayerId === ownerId) return null;
+  const owner = state.players[ownerId];
+  const ids = fieldUnits(state, ownerId)
+    .filter((c) => c.cardId === "RS-583" && c.instanceId !== battle.defenderInstanceId)
+    .filter((c) => namedTextLive(state, ownerId, c))
+    .filter((c) => !hasTurnRuleModifier(owner, `${TAKE_THE_BLOW_RULE_PREFIX}${c.instanceId}`))
+    .filter((c) =>
+      canAttackDefender(state, battle.attackerPlayerId, battle.attackerInstanceId, ownerId, c.instanceId, canAttackRushWithYellowThunder),
+    )
+    .map((c) => c.instanceId);
+  if (ids.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ownerId,
+    phasePlayerId: battle.phasePlayerId,
+    sourceCardId: "RS-583",
+    sourceInstanceId: ids[0],
+    effectId: TAKE_THE_BLOW_EFFECT_ID,
+    kind: "select_unit",
+    validInstanceIds: ids,
+    selectedInstanceIds: [],
+    selectCount: 1,
+    optional: true,
+    set8dMeta: { battle: { ...battle, substituteTargetOffered: true }, wingAttackFromRush },
+  });
+}
+
+/** 選んだ HM を新しいアタックの対象にする（core/applyAction.ts から呼ぶ）。 */
+export function resolveTakeTheBlow(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): { error: string } | { state: GameState; battle: PendingBattle; wingAttackFromRush: boolean; log: string } {
+  const pending = state.pendingEffectChoice;
+  const battle = pending?.set8dMeta?.battle;
+  if (!pending || !battle || pending.effectId !== TAKE_THE_BLOW_EFFECT_ID) return { error: "invalid_choice" };
+  if (pending.playerId !== playerId) return { error: "not_your_choice" };
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const next = patchPlayer({ ...state, pendingEffectChoice: undefined, activePlayer: battle.phasePlayerId }, playerId, (p) =>
+    addTurnRuleModifier(p, `${TAKE_THE_BLOW_RULE_PREFIX}${instanceId}`, { sourceCardId: "RS-583" }),
+  );
+  return {
+    state: next,
+    battle: { ...battle, defenderInstanceId: instanceId },
+    wingAttackFromRush: pending.set8dMeta?.wingAttackFromRush ?? false,
+    log: logFor(state, playerId, "RS-583", `${TAKE_THE_BLOW_EFFECT_ID}:${instanceId}`),
+  };
+}
+
+/** 代わらない（core/applyAction.ts から呼ぶ）。 */
+export function skipTakeTheBlow(
+  state: GameState,
+  playerId: PlayerId,
+): { error: string } | { state: GameState; battle: PendingBattle; wingAttackFromRush: boolean; log: string } {
+  const pending = state.pendingEffectChoice;
+  const battle = pending?.set8dMeta?.battle;
+  if (!pending || !battle || pending.effectId !== TAKE_THE_BLOW_EFFECT_ID) return { error: "invalid_choice" };
+  if (pending.playerId !== playerId) return { error: "not_your_choice" };
+  return {
+    state: { ...state, pendingEffectChoice: undefined, activePlayer: battle.phasePlayerId },
+    battle,
+    wingAttackFromRush: pending.set8dMeta?.wingAttackFromRush ?? false,
+    log: skipLog(state, playerId, "RS-583", TAKE_THE_BLOW_EFFECT_ID),
+  };
+}
+
+// 解決は core/applyAction.ts が行う（アタックの処理を続けるため）。ここでは選択として登録だけする。
+CHOICE_RESOLVERS[TAKE_THE_BLOW_EFFECT_ID] = () => ({ error: "handled_by_attack" });
+CHOICE_SKIPPERS[TAKE_THE_BLOW_EFFECT_ID] = () => ({ error: "handled_by_attack" });
 
 // ---------------------------------------------------------------------------
 // DSL grant_keyword からの起点

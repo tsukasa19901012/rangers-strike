@@ -149,6 +149,7 @@ import {
   tryStartBattleEntryRushDiscard,
 } from "../rules/legend3/restrictions";
 import { applyGodomSenshoDiscardPay } from "../rules/godomRushPay";
+import { openTakeTheBlowChoice, resolveTakeTheBlow, skipTakeTheBlow, TAKE_THE_BLOW_EFFECT_ID } from "../rules/legend1/set8NamedEffectsD";
 import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
 import {
   hasEndPhaseBlockingPending,
@@ -392,6 +393,16 @@ function continueAttackAfterDeclaration(
 ): ActionResult {
   const playerId = pending.attackerPlayerId;
   const enemyId = pending.defenderPlayerId;
+  // RS-583【災いを受け止める覚悟】: アタックの対象に選ばれた他の自軍ユニットの代わりに、このユニットが選ばれたことにしてもよい
+  // （対象を選んだ時点。rules/legend1/set8NamedEffectsD.ts）。
+  const takeTheBlow = openTakeTheBlowChoice(battleState, pending, wingAttackFromRush);
+  if (takeTheBlow) {
+    let pendingState = takeTheBlow;
+    if (battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId) {
+      pendingState = { ...pendingState, pendingBattleEntry: undefined };
+    }
+    return ok(pendingState, buildSimpleLogEntry(playerId, "battle_pending"));
+  }
   if (!pending.onAttackResolved) {
     // ルール: R-TIME-01 — 「アタックするとき／アタックしたとき」（アタックしたユニットの DSL on_attack）は、
     // 「アタックされたとき」（RS-215・カウンター窓）より先に解決する。選択が開けば、それを解決してから続ける。
@@ -2663,6 +2674,11 @@ function applyActionCore(
           playerId,
         );
       }
+      if (pending?.effectId === TAKE_THE_BLOW_EFFECT_ID) {
+        const picked = resolveTakeTheBlow(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return continueAttackAfterDeclaration({ ...picked.state, log: [...picked.state.log, picked.log] }, picked.battle, picked.wingAttackFromRush);
+      }
       if (pending?.effectId === DIONE_WALL_EFFECT_ID && pending.machineEmpireMeta) {
         const picked = resolveDioneWallPick(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
@@ -2758,6 +2774,11 @@ function applyActionCore(
           return ok({ ...base, pendingStrike: strikePending, activePlayer: playerId }, buildSimpleLogEntry(playerId, "skip_effect_choice"));
         }
         return completeStrike(base, strikePending);
+      }
+      if (pending?.effectId === TAKE_THE_BLOW_EFFECT_ID) {
+        const skipped = skipTakeTheBlow(state, playerId);
+        if ("error" in skipped) return fail(skipped.error);
+        return continueAttackAfterDeclaration({ ...skipped.state, log: [...skipped.state.log, skipped.log] }, skipped.battle, skipped.wingAttackFromRush);
       }
       if ((pending?.effectId === MACHINE_EMPIRE_EFFECT_ID || pending?.effectId === DIONE_WALL_EFFECT_ID) && pending.machineEmpireMeta) {
         const skipped = skipMachineEmpireChoice(state, playerId);
