@@ -4,6 +4,7 @@ import {
   openPowerUnitToHandAfterPlace,
   set7AStrikeCounterIds,
 } from "../rules/legend1/set7NamedEffectsA";
+import { activateSet8BHandEffect, openKeyHolderWishDraw, settleGuardianApostleProviso } from "../rules/legend1/set8NamedEffectsB";
 import { openKibaShotIfReady, queueKibaShot } from "../rules/legend1/set6AuditFixes";
 import { icyStateForAction, isIcyPhantom, settleIcyPhantoms } from "../rules/legend1/icyLastResort";
 import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw, settleDarkArmor } from "../rules/legend1/set6NamedEffects348";
@@ -833,6 +834,8 @@ export function applyAction(
   next = continueDeferredStrike(next);
   // ルール: R-TIME-01 — 先の段階の効果（選択）が解決し終えたら、待たせていた撃破の誘発を段階の順に解決する。
   next = drainDeferredDestroyTriggers(next);
+  // RS-547【守護獣の使徒】ただし書き: 任意の「ラッシュしたとき」の効果を発動したらホールドする（rules/legend1/set8NamedEffectsB.ts）。
+  next = settleGuardianApostleProviso(next, action);
   // RS-256 闇の戒律・RS-255 巨大化爆弾: 置き場を離れたら重ねたカードは捨札になる。
   next = settleStackedCards(next);
   // RS-350 暗黒の鎧: 重ねたユニットがユニットでなくなったら、鎧を持ち主のパワーゾーンにダメージにして置く。
@@ -2020,6 +2023,8 @@ function applyActionCore(
         ...rushFinal.state,
         log: [...rushFinal.state.log, ...rushFinal.logs],
       };
+      // RS-558【鍵の持ち主の願い】: 「＋」のユニットカードの追加条件を実行して満たしたとき、持ち主は1枚ドローしてもよい。
+      nextState = openKeyHolderWishDraw(nextState, playerId, handFound.card.instanceId, playerId);
 
       if (found.card.cardId === "RS-397") {
         // RS-397【予期せぬ出現】: 敵軍バトルエリアを好きな順に並び替えてもよい（rules/legend1/set6NamedEffectsB.ts）。
@@ -3319,7 +3324,13 @@ function applyActionCore(
       const unit =
         player.rush.find((c) => c.instanceId === action.unitInstanceId) ??
         player.battle.find((c) => c.instanceId === action.unitInstanceId);
-      if (!unit) return fail("illegal_action");
+      if (!unit) {
+        // RS-559【パワーアロー】等「自分の手札からこのカードを捨札にして発動できる」（rules/legend1/set8NamedEffectsB.ts）。
+        const handCard = player.hand.find((c) => c.instanceId === action.unitInstanceId);
+        const fromHand = handCard ? activateSet8BHandEffect(state, playerId, action.unitInstanceId) : null;
+        if (!handCard || !fromHand) return fail("illegal_action");
+        return ok(fromHand, buildLogEntry(playerId, "activate_field_unit_ability", handCard.cardId, state.definitions, "from_hand"));
+      }
       const activated = activateFieldAbility(state, playerId, action.unitInstanceId);
       if (activated) {
         return ok(

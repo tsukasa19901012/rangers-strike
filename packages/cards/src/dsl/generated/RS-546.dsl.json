@@ -50,7 +50,12 @@
       "partnerCardIds": [
         "RS-288",
         "RS-034",
-        "RS-286"
+        "RS-286",
+        "RS-035",
+        "RS-036",
+        "RS-037",
+        "RS-038",
+        "RS-039"
       ],
       "partnerSlotCardIds": [
         [
@@ -60,6 +65,28 @@
           "RS-034",
           "RS-286"
         ]
+      ],
+      "partnerSlotAlternatives": [
+        {
+          "slot": 1,
+          "slots": [
+            [
+              "RS-035"
+            ],
+            [
+              "RS-036"
+            ],
+            [
+              "RS-037"
+            ],
+            [
+              "RS-038"
+            ],
+            [
+              "RS-039"
+            ]
+          ]
+        }
       ]
     }
   ],

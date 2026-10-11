@@ -109,8 +109,7 @@ describe("RS-550 隠大将軍", () => {
     expect(r.state.players.player1.discard).toHaveLength(5);
   });
 
-  // 既知の不具合: CARD-RS-550 【鉄拳ゴッドフィニッシュ】の候補が敵軍バトルエリアだけで、必要パワー「＋」のユニット（7+）も含まれる
-  it.fails("RS-550: 【鉄拳ゴッドフィニッシュ】候補は必要パワーに「＋」を持たない敵軍ユニット（バトル・ラッシュエリア）（出典: atwiki/page-1217）", () => {
+  it("RS-550: 【鉄拳ゴッドフィニッシュ】候補は必要パワーに「＋」を持たない敵軍ユニット（バトル・ラッシュエリア）（出典: atwiki/page-1217）", () => {
     const s = enter(board(), "RS-550:u");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-550");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:a", "TST-UNIT-2:r"]);
@@ -182,8 +181,7 @@ describe("RS-551 ゴッドガンマー", () => {
     expect(spOf(s, "player1", "SPEC-MA-S:n")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-551 【ガンマーダイナマイト】を選ぶのが自分（相手であるべき）で、候補が敵軍バトルエリアだけ（ラッシュエリアの怪人が落ちる）
-  it.fails("RS-551: 【ガンマーダイナマイト】NC（1番目）で、相手が自分自身の「怪人」ユニット（バトル・ラッシュエリア）から1体選ぶ（強制）（出典: atwiki/page-1173「相手は、特徴「怪人」を持つ自分自身のユニットを1体選び」）", () => {
+  it("RS-551: 【ガンマーダイナマイト】NC（1番目）で、相手が自分自身の「怪人」ユニット（バトル・ラッシュエリア）から1体選ぶ（強制）（出典: atwiki/page-1173「相手は、特徴「怪人」を持つ自分自身のユニットを1体選び」）", () => {
     const s = ncEnter("RS-551", 1, { battle: [inst("SPEC-KAIJIN", "kb"), inst("TST-UNIT-0", "n")], rush: [inst("SPEC-KAIJIN", "kr")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-551");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
@@ -272,8 +270,7 @@ describe("RS-553 ゴッドサルダー", () => {
   zordDownTests("RS-553", "RS-457", "ニンジャレッド", "atwiki/page-1175", "MA");
   reanimateTests("RS-553", "RS-457", "ニンジャレッド", "atwiki/page-1175");
 
-  // 既知の不具合: CARD-RS-553 ※「これ以外の「ゴッドサルダー」があれば、これはアタックされない」が未実装
-  it.fails("RS-553: ※ 自軍バトルエリアに別の「ゴッドサルダー」があれば、どちらもアタックされない（出典: atwiki/page-1175）", () => {
+  it("RS-553: ※ 自軍バトルエリアに別の「ゴッドサルダー」があれば、どちらもアタックされない（出典: atwiki/page-1175）", () => {
     const s = st({ player1: { battle: [inst("TST-UNIT-7", "atk")] }, player2: { battle: [inst("RS-553", "a"), inst("RS-553", "b")] } });
     const t = attackTargets(s, "TST-UNIT-7:atk");
     expect(t).not.toContain("RS-553:a");
@@ -329,8 +326,7 @@ describe("RS-554 ゴッドカーク", () => {
   zordDownTests("RS-554", "RS-458", "ニンジャホワイト", "atwiki/page-1176", "MA");
   reanimateTests("RS-554", "RS-458", "ニンジャホワイト", "atwiki/page-1176");
 
-  // 既知の不具合: CARD-RS-554 【フライングビーム】の候補に「パワーゾーンの枚数より必要パワーが大きい」条件がなく、敵軍ラッシュエリアのユニットが含まれない
-  it.fails("RS-554: 【フライングビーム】NC（4番目）— 敵軍パワーゾーン3枚（ダメージ含む）なら、必要パワーが4以上の敵軍ユニット（バトル・ラッシュ、7+ は7）が候補（出典: atwiki/page-1176「その枚数よりも必要パワーの数字が大きい」）", () => {
+  it("RS-554: 【フライングビーム】NC（4番目）— 敵軍パワーゾーン3枚（ダメージ含む）なら、必要パワーが4以上の敵軍ユニット（バトル・ラッシュ、7+ は7）が候補（出典: atwiki/page-1176「その枚数よりも必要パワーの数字が大きい」）", () => {
     const s = ncEnter("RS-554", 4, p2());
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-554");
     expect(choiceIds(s)).toEqual(["SPEC-P4:four", "SPEC-P4:r4", "TST-UNIT-7:seven"]);
@@ -438,24 +434,21 @@ describe("RS-556 バトルサルダー", () => {
     expect(spOf(s, "player1", "RS-556:g")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-556 【サルダークロー】の山札公開・同名撃破が未実装（SP1 のみ）
-  it.fails("RS-556: 【サルダークロー】敵軍ユニット数（3）と同じ枚数の山札をオモテにし、同名の敵軍ユニットを全て撃破する（出典: atwiki/page-1178「オモテにしたカードと同じカード名の敵軍ユニットを全て撃破する」）", () => {
+  it("RS-556: 【サルダークロー】敵軍ユニット数（3）と同じ枚数の山札をオモテにし、同名の敵軍ユニットを全て撃破する（出典: atwiki/page-1178「オモテにしたカードと同じカード名の敵軍ユニットを全て撃破する」）", () => {
     const s = resolveAll(ncEnter("RS-556", 3, p2()));
     expect(zoneOf(s, "player2", "TST-UNIT-0:a")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-UNIT-0:b")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-UNIT-2:c")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-556 【サルダークロー】が未実装
-  it.fails("RS-556: 【サルダークロー】オモテにした3枚は山札の下に戻り、4枚目以降が上になる（出典: atwiki/page-1178「相手はオモテにしたカードを山札の下に好きな順で戻す」）", () => {
+  it("RS-556: 【サルダークロー】オモテにした3枚は山札の下に戻り、4枚目以降が上になる（出典: atwiki/page-1178「相手はオモテにしたカードを山札の下に好きな順で戻す」）", () => {
     const s = resolveAll(ncEnter("RS-556", 3, p2()));
     const deck = s.players.player2.deck.map((c) => c.instanceId);
     expect(deck.slice(0, 2)).toEqual(["TST-UNIT-2:d3", "TST-OP:d4"]);
     expect(deck.slice(2).sort()).toEqual(["TST-OP:d1", "TST-OP:d2", "TST-UNIT-0:d0"]);
   });
 
-  // 既知の不具合: CARD-RS-556 【サルダークロー】の「オモテにしてもよい」の選択が提示されない
-  it.fails("RS-556: 【サルダークロー】任意 — オモテにしないことを選べる（出典: atwiki/page-1178「オモテにしてもよい」）", () => {
+  it("RS-556: 【サルダークロー】任意 — オモテにしないことを選べる（出典: atwiki/page-1178「オモテにしてもよい」）", () => {
     const s = ncEnter("RS-556", 3, p2());
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-556");
     expect(canSkip(s)).toBe(true);

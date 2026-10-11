@@ -140,6 +140,7 @@ import { isSet5ChoiceEffect, tryResolveSet5Choice, trySkipSet5Choice } from "./l
 import { isSet6BChoiceEffect, openFlameGlareForSoulDescent, tryResolveSet6BChoice, trySkipSet6BChoice } from "./legend1/set6NamedEffectsB";
 import { isSet7DChoiceEffect, tryResolveSet7DChoice, trySkipSet7DChoice } from "./legend1/set7NamedEffectsD";
 import { isSet8AChoiceEffect, tryConfirmSet8AChoice, tryResolveSet8AChoice, trySkipSet8AChoice } from "./legend1/set8NamedEffectsA";
+import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
 import {
   isSet7BChoiceEffect,
   tryConfirmSet7BChoice,
@@ -626,6 +627,7 @@ export function isValidEffectChoiceTarget(
     isSet7CChoiceEffect(pending.effectId) ||
     isSet7DChoiceEffect(pending.effectId) ||
     isSet8AChoiceEffect(pending.effectId) ||
+    isSet8BChoiceEffect(pending.effectId) ||
     pending.effectId === "rs414_dione_wall" ||
     isSet6LowChoiceEffect(pending.effectId) ||
     isSet6AuditChoiceEffect(pending.effectId)
@@ -2652,7 +2654,7 @@ function finishGreenCrush(
 }
 
 /** 選択の再開チェーンの最後に、続けて開く選択を足す。 */
-function appendResumeChoice(
+export function appendResumeChoice(
   choice: PendingEffectChoice,
   next: PendingEffectChoice,
 ): PendingEffectChoice {
@@ -2871,6 +2873,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set7d) return set7d;
   const set8a = trySkipSet8AChoice(state, playerId);
   if (set8a) return set8a;
+  const set8b = trySkipSet8BChoice(state, playerId);
+  if (set8b) return set8b;
   const set5 = trySkipSet5Choice(state, playerId);
   if (set5) return set5;
   const set5Audit = trySkipSet5AuditChoice(state, playerId);
@@ -3148,6 +3152,8 @@ export function applyEffectChoiceSelect(
   // 第8弾 RS-516〜RS-537（rules/legend1/set8NamedEffectsA.ts）。null なら汎用の解決（撃破等）に任せる。
   const set8a = tryResolveSet8AChoice(state, playerId, instanceId);
   if (set8a) return set8a;
+  const set8b = tryResolveSet8BChoice(state, playerId, instanceId);
+  if (set8b) return set8b;
   const set5 = tryResolveSet5Choice(state, playerId, instanceId);
   if (set5) return set5;
   const set5Audit = tryResolveSet5AuditChoice(state, playerId, instanceId);

@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { pickSet8BCpuChoice } from "../rules/legend1/set8NamedEffectsB";
 import { cpuAcceptsOptionalEffect } from "../rules/optionalEffects";
 import { pickSet7DCpuChoice } from "../rules/legend1/set7NamedEffectsD";
 import { ATTACK_HOLD_BONUS_EFFECT_ID, pickAttackHoldCount } from "../rules/attackHoldBonus";
@@ -1197,6 +1198,9 @@ export function pickEffectChoice(
   // 第7弾 RS-495〜RS-515 の選択（rules/legend1/set7NamedEffectsD.ts）。
   const set7d = pickSet7DCpuChoice(state, pending, actions);
   if (set7d) return set7d;
+  // 第8弾 RS-538〜RS-559 の選択（rules/legend1/set8NamedEffectsB.ts）。
+  const set8b = pickSet8BCpuChoice(state, pending, actions);
+  if (set8b) return set8b;
 
   // 「～してもよい」の任意効果の確認（rules/optionalEffects.ts）。
   if (pending.mayConfirm) {
