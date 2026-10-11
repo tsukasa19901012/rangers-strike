@@ -265,8 +265,7 @@ function nejiTests(spec: NejiSpec) {
       expect(canStrike(s, `${id}:n`)).toBe(true);
     });
 
-    // 既知の不具合: CARD-${id} ※のストライク制限が自軍のコマンドしか見ず、敵軍のホールド状態のコマンドがあってもストライクできる
-    it.fails(`${id}: ※ 敵軍にホールド状態のコマンドがあるときもストライクできない（出典: atwiki/page-1488 カード評価「自軍と敵軍両方のコマンドが全てリリースされていないとストライクできない」、atwiki/page-1463 カード評価）`, () => {
+    it(`${id}: ※ 敵軍にホールド状態のコマンドがあるときもストライクできない（出典: atwiki/page-1488 カード評価「自軍と敵軍両方のコマンドが全てリリースされていないとストライクできない」、atwiki/page-1463 カード評価）`, () => {
       const s = skipIf(entered(cn, {}, { command: [held("TST-OP", "eh")] }));
       expect(spOf(s, "player1", `${id}:n`)).toBe(1);
       expect(canStrike(s, `${id}:n`)).toBe(false);
