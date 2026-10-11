@@ -91,7 +91,7 @@ export function defenderCanMorphAgainstRush(
   const defender = state.players[defenderId];
   for (const zone of ["rush", "battle"] as const) {
     for (const morphUnit of defender[zone]) {
-      if (!cardHasKeyword(state.definitions, morphUnit.cardId, "morph")) continue;
+      if (!cardHasKeyword(state.definitions, morphUnit.cardId, "morph", { state, playerId: defenderId })) continue;
       if (listPlaceableMorphReplacementCandidates(state, defenderId, morphUnit).length > 0) {
         return true;
       }

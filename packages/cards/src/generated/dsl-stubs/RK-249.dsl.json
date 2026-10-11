@@ -12,7 +12,7 @@
   "effects": [
     {
       "id": "unnamed_resident",
-      "text": "※常駐 自軍ラッシュフェイズごとに1度だけ、特徴「ミラーライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒",
+      "text": "※常駐 自軍ラッシュフェイズごとに1度だけ、特徴「ミラーライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒※コールWB（このユニットはWBのユニットをラッシュするためのコマンドとしてホールドできる）",
       "trigger": {
         "type": "while_in_field"
       },
@@ -20,20 +20,6 @@
         {
           "type": "grant_keyword",
           "keyword": "resident",
-          "duration": "permanent"
-        }
-      ]
-    },
-    {
-      "id": "unnamed_call_wb",
-      "text": "※コールWB（このユニットはWBのユニットをラッシュするためのコマンドとしてホールドできる）",
-      "trigger": {
-        "type": "while_in_field"
-      },
-      "effects": [
-        {
-          "type": "grant_keyword",
-          "keyword": "call_WB",
           "duration": "permanent"
         }
       ]

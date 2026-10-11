@@ -37,7 +37,7 @@ export function morphUnitCanReact(
   morphUnit: CardInstance,
   rushMethod: RushMethod = "normal",
 ): boolean {
-  if (!cardHasKeyword(state.definitions, morphUnit.cardId, "morph")) return false;
+  if (!cardHasKeyword(state.definitions, morphUnit.cardId, "morph", { state, playerId: defenderId })) return false;
   if (rushMethodBlocksMorphReaction(rushMethod)) return false;
   return (
     listPlaceableMorphReplacementCandidates(state, defenderId, morphUnit).length > 0

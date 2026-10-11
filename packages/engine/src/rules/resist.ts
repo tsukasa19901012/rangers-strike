@@ -15,7 +15,7 @@ import { finalizeLeavePending } from "./operationCounters";
 import { resolveDestroyedFactEffects } from "./leaveEffects";
 import { riddenVehicleGrantsResist } from "./legend1/set7NamedEffectsB";
 import { set8BGrantsResist } from "./legend1/set8NamedEffectsB";
-import { soulBirdGrantsResist } from "./legend1/set9NamedEffectsB";
+import { stackOntoLargeGrantsKeyword } from "./stackOntoLargeGrants";
 
 export function canOfferRegister(
   state: GameState,
@@ -41,8 +41,9 @@ export function canOfferRegister(
   if (riddenVehicleGrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
   // RS-547【守護獣の使徒】: WB を持つ自軍 M ユニットはレジストを得る（rules/legend1/set8NamedEffectsB.ts）。
   if (set8BGrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
-  // RS-647 ピヨちゃん【ソウルバード】: 重ねたユニットはレジストを得る（rules/legend1/set9NamedEffectsB.ts）。
-  return soulBirdGrantsResist(state, pending.ownerPlayerId, pending.instanceId);
+  // RS-647 ピヨちゃん【ソウルバード】「このカードに重ねたユニットは、次の能力を得る⇒※レジスト」（rules/stackOntoLargeUnit.ts）。
+  const host = state.players[pending.ownerPlayerId].battle.find((c) => c.instanceId === pending.instanceId);
+  return !!host && stackOntoLargeGrantsKeyword(host, "register");
 }
 
 export function toPendingRegister(intent: LeaveIntent): PendingRegister {

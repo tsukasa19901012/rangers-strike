@@ -20,6 +20,7 @@ import { isHidoraEggUsed } from "./turnModifiers";
 import { operationCardsToDiscardWithStack } from "./operationProcedure";
 import { afterResidentOperationsLeft } from "./legend1/set7NamedEffectsA";
 import { beginRiderPass, canActivateRiderPass } from "./errataCardEffects";
+import { ADVENT_CARD_ID, beginAdvent, canActivateAdvent } from "./rk/rk249Advent";
 
 const RUSH_ACTIVATION_TEXT =
   /(?:自軍|自分(?:の|自身の)?)ラッシュフェイズ(?:ごとに)?1度|自分のラッシュフェイズごとに1度/;
@@ -135,6 +136,8 @@ export function canActivateResidentOperation(
 
   // RK-022 ライダーパス: 重ねたカードと「DEN-O」の自軍ユニットの置き換え（何度でも。atwiki/page-128 Q6）。
   if (op.cardId === "RK-022") return canActivateRiderPass(state, playerId, op);
+  // RK-249 アドベント: ミラーライダーのユニットに、このターン ※コールWB を与える（rules/rk/rk249Advent.ts）。
+  if (op.cardId === ADVENT_CARD_ID) return canActivateAdvent(state, playerId, op);
 
   const activationEffects = listResidentActivationEffects(op.cardId);
   if (activationEffects.length === 0) return false;
@@ -183,6 +186,10 @@ export function applyActivateResidentOperation(
 
   if (op.cardId === "RK-022") {
     return { ok: true, state: beginRiderPass(state, playerId, op) };
+  }
+  if (op.cardId === ADVENT_CARD_ID) {
+    const opened = beginAdvent(state, playerId, op);
+    return { ok: true, state: { ...opened, ...updatePlayer(opened, playerId, markResidentActivatedThisRush(opened.players[playerId], operationInstanceId)) } };
   }
   if (isSet8AResident(op.cardId)) {
     return { ok: true, state: activateSet8AResident(state, playerId, operationInstanceId) };

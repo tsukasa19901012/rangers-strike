@@ -153,9 +153,10 @@ import {
   tryStartBattleEntryRushDiscard,
 } from "../rules/legend3/restrictions";
 import { applyGodomSenshoDiscardPay } from "../rules/godomRushPay";
-import { activateSet9AFieldAbility, activateSet9AResident, isSet9AResidentCard, settleSet9AAfterAction, settleSet9ATurnEnd } from "../rules/legend1/set9NamedEffectsA";
+import { activateSet9AResident, isSet9AResidentCard, settleSet9AAfterAction, settleSet9ATurnEnd } from "../rules/legend1/set9NamedEffectsA";
 import { openCastTransferOnCharge } from "../rules/legend1/set9NamedEffectsD";
-import { openMegaCaptureIfReady, queueMegaCapture, settleSoulBirdStacks } from "../rules/legend1/set9NamedEffectsB";
+import { openMegaCaptureIfReady, queueMegaCapture } from "../rules/legend1/set9NamedEffectsB";
+import { settleStackOntoLargeCards } from "../rules/stackOntoLargeUnit";
 import { applyMeeMegaloAfterAction, openTakeTheBlowChoice, resolveTakeTheBlow, skipTakeTheBlow, TAKE_THE_BLOW_EFFECT_ID } from "../rules/legend1/set8NamedEffectsD";
 import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
 import {
@@ -849,7 +850,7 @@ export function applyAction(
   // ルール: R-ZONE-04, R-HOLD-02 — エリアを離れたカードの付加情報はどの経路で移動しても消える。
   let next = clearRegisterHoldOffField(result.state);
   next = settleEffectRushes(state, next);
-  // 第9弾 RS-607 の続き・RS-613 のホールド待ち・RS-623 の重ねたカード（rules/legend1/set9NamedEffectsA.ts）。
+  // 第9弾 RS-607 の続き・RS-613 のホールド待ち（rules/legend1/set9NamedEffectsA.ts）。
   if (applyActionDepth === 0) next = settleSet9AAfterAction(state, next);
   next = releaseCounterLockWhenAttackSettled(next);
   next = trackResolvingOperations(state, next);
@@ -866,8 +867,9 @@ export function applyAction(
   next = settleStackedCards(next);
   // RS-350 暗黒の鎧: 重ねたユニットがユニットでなくなったら、鎧を持ち主のパワーゾーンにダメージにして置く。
   if (applyActionDepth === 0) next = settleDarkArmor(state, next);
-  // RS-647 ピヨちゃん: 重ねたユニットがユニットでなくなったら捨札になる（rules/legend1/set9NamedEffectsB.ts）。
-  if (applyActionDepth === 0) next = settleSoulBirdStacks(state, next);
+  // RS-623【翼合体】・RS-647【ソウルバード】・RS-650 等: 重ねたユニットがユニットでなくなったら、重ねたカードは捨札になる
+  // （rules/stackOntoLargeUnit.ts）。
+  if (applyActionDepth === 0) next = settleStackOntoLargeCards(state, next);
   // RS-628【メガキャプチャー】: このターン、次に自軍コマンドゾーンにカードが置かれたとき（rules/legend1/set9NamedEffectsB.ts）。
   if (applyActionDepth === 0) next = openMegaCaptureIfReady(queueMegaCapture(state, next));
   // RS-385【特殊消化弾】: 自軍コマンドゾーンにホールド状態で置くカードは、かわりにリリース状態で置く。
@@ -3388,11 +3390,6 @@ function applyActionCore(
         const fromHand = handCard ? activateSet8BHandEffect(state, playerId, action.unitInstanceId) : null;
         if (!handCard || !fromHand) return fail("illegal_action");
         return ok(fromHand, buildLogEntry(playerId, "activate_field_unit_ability", handCard.cardId, state.definitions, "from_hand"));
-      }
-      // RS-623【翼合体】（rules/legend1/set9NamedEffectsA.ts）。
-      const wingStack = activateSet9AFieldAbility(state, playerId, action.unitInstanceId);
-      if (wingStack) {
-        return ok(wingStack, buildLogEntry(playerId, "activate_field_unit_ability", unit.cardId, state.definitions));
       }
       const activated = activateFieldAbility(state, playerId, action.unitInstanceId);
       if (activated) {

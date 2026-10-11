@@ -1507,6 +1507,81 @@ describe("R-RUSH-21 テキストで条件を課す場合", () => {
     expect(zoneOf(s, "player1", dump.instanceId)).toBe("rush");
     expect(zoneOf(s, "player1", sB.instanceId)).toBe("discard");
   });
+
+  // 「追加条件…があればそれを満たす必要があります」— 素材を捨札にする追加条件以外（状態・相手ドロー・追加のホールド・手札）も同じ。
+  const condUnit = (id: string, condition: NonNullable<CardDefinition["rushAdditionalCondition"]>): CardDefinition => ({
+    id,
+    name: id,
+    type: "unit",
+    category: "WB",
+    rarity: "N",
+    expansion: "test",
+    powerCost: "1+",
+    bp: 1000,
+    sp: 1,
+    size: "S",
+    rushAdditionalCondition: condition,
+  });
+  const GATE = condUnit("T04-GATE", { conditionId: "state_gate", text: "特徴「母艦」を持つ自軍ユニットがある" });
+  const MOTHER: CardDefinition = { ...condUnit("T04-MOTHER", { conditionId: "state_gate", text: "" }), powerCost: 1, rushAdditionalCondition: undefined, features: ["母艦"] };
+  const DRAW = condUnit("T04-ODRAW", { conditionId: "opponent_draw", text: "相手は1枚ドローする" });
+  const EXTRA_HOLD = condUnit("T04-XHOLD", { conditionId: "hold_extra_command", text: "追加で自軍コマンドを1つホールドする", unitCount: 1 });
+  const HAND = condUnit("T04-HAND", { conditionId: "discard_hand_card", text: "自分の手札を1枚捨札にする", unitCount: 1 });
+  const condDefs = { [GATE.id]: GATE, [MOTHER.id]: MOTHER, [DRAW.id]: DRAW, [EXTRA_HOLD.id]: EXTRA_HOLD, [HAND.id]: HAND };
+  const vulcanBoard = (unit: CardDefinition, extra: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
+    mk4({
+      definitions: condDefs,
+      player1: {
+        hand: [inst("RS-005", "lv"), ...(extra.hand ?? [])],
+        rush: extra.rush ?? [],
+        power: powers(4),
+        command: [inst(unit.id, "u"), held("TST-OP-ET", "et"), ...(extra.command ?? [])],
+      },
+      player2: p2,
+    });
+
+  it("R-RUSH-21: 状態の追加条件（特徴「母艦」を持つ自軍ユニットがある）を満たさないユニットは、ランドバルカンで出せない（出典: grnrngr/faq-card-1 RS-005 Q3「追加条件…があればそれを満たす必要があります」）", () => {
+    const s = playLandVulcan(vulcanBoard(GATE));
+    expect(zoneOf(s, "player1", `${GATE.id}:u`)).toBe("command");
+  });
+
+  it("R-RUSH-21: 状態の追加条件を満たしていれば、ランドバルカンで出せる（出典: grnrngr/faq-card-1 RS-005 Q3）", () => {
+    const s = drainChoices(playLandVulcan(vulcanBoard(GATE, { rush: [inst(MOTHER.id, "m")] })), "player1");
+    expect(zoneOf(s, "player1", `${GATE.id}:u`)).toBe("rush");
+  });
+
+  it("R-RUSH-21: 追加条件「相手は1枚ドローする」は、ランドバルカンで出すときも実行する（出典: grnrngr/faq-card-1 RS-005 Q3・grnrngr/faq-card-4 RS-197 Q4「「追加条件を満たす」→「ラッシュエリアに出す」」）", () => {
+    const s0 = vulcanBoard(DRAW, {}, { hand: [], deck: [inst("TST-UNIT-0", "d1"), inst("TST-UNIT-0", "d2")] });
+    const s = drainChoices(playLandVulcan(s0), "player1");
+    expect(zoneOf(s, "player1", `${DRAW.id}:u`)).toBe("rush");
+    expect(s.players.player2.hand.map((c) => c.instanceId)).toEqual(["TST-UNIT-0:d1"]);
+  });
+
+  it("R-RUSH-21: 追加条件「追加で自軍コマンドを1つホールドする」は、ランドバルカンで出すときもホールドを実行する（コマンドがなければ出せない）（出典: grnrngr/faq-card-1 RS-005 Q3・R-RUSH-20 補足「不要になるのはラッシュのための通常のコマンドのホールドだけ」）", () => {
+    const none = playLandVulcan(vulcanBoard(EXTRA_HOLD));
+    expect(zoneOf(none, "player1", `${EXTRA_HOLD.id}:u`)).toBe("command");
+
+    let s = playLandVulcan(vulcanBoard(EXTRA_HOLD, { command: [released("TST-OP", "w1")] }));
+    s = payPendingIfAny(s, "player1");
+    s = drainChoices(s, "player1");
+    expect(zoneOf(s, "player1", `${EXTRA_HOLD.id}:u`)).toBe("rush");
+    expect(cardIn(s, "player1", "command", "TST-OP:w1")?.commandHeld).toBe(true);
+  });
+
+  it("R-RUSH-21: 追加条件「自分の手札を1枚捨札にする」は、ランドバルカンで出すときも手札を選んで捨札にする（手札がなければ出せない）（出典: grnrngr/faq-card-1 RS-005 Q3）", () => {
+    const none = playLandVulcan(vulcanBoard(HAND));
+    expect(zoneOf(none, "player1", `${HAND.id}:u`)).toBe("command");
+
+    let s = playLandVulcan(vulcanBoard(HAND, { hand: [inst("TST-UNIT-0", "h1"), inst("TST-UNIT-0", "h2")] }));
+    expect(s.pendingEffectChoice?.effectId).toBe("effect_rush_material");
+    expect(s.pendingEffectChoice?.kind).toBe("select_hand");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["TST-UNIT-0:h1", "TST-UNIT-0:h2"]);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-UNIT-0:h2" });
+    s = drainChoices(s, "player1");
+    expect(zoneOf(s, "player1", `${HAND.id}:u`)).toBe("rush");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:h2")).toBe("discard");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:h1")).toBe("hand");
+  });
 });
 
 describe("R-RUSH-22 効果ラッシュでも誘発とカウンター窓がある", () => {

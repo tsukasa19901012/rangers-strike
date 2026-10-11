@@ -99,6 +99,52 @@ describe("R-KW-CALL-01 規定文", () => {
   it.todo("R-KW-CALL-01: マルチカテゴリのカードには、コマンドゾーンに必要カテゴリが揃っていなければコールを使えない（出典: atwiki/page-1559。コールで払えるマルチカテゴリの組み合わせを持つ実装カードがない）");
 });
 
+describe("R-KW-CALL-01 効果で得るコール（RK-249 アドベント）", () => {
+  // 「※常駐 自軍ラッシュフェイズごとに1度だけ、特徴「ミラーライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、
+  //  このターン、選んだユニットは次の能力を得る⇒※コールWB（…）」
+  const ADVENT = realDef("RK-249");
+  const MIRROR = unitDef("RSPEC-MIRROR", { category: "MA", features: ["仮面ライダー", "ミラーライダー"], powerCost: 1 });
+  const WB_S = unitDef("RSPEC-WB-S", { category: "WB", powerCost: 1 });
+  const advent = inst(ADVENT.id, "adv");
+  const mirror = inst(MIRROR.id, "mr");
+  const board = () =>
+    state([ADVENT, MIRROR, WB_S], {
+      phase: "rush",
+      player1: { hand: [inst(WB_S.id, "u")], rush: [mirror], operation: [advent], power: powerCards(3) },
+    });
+  const activateAdvent = (s: GameState) => {
+    const a = legal(s).find((x) => x.type === "activate_resident_operation" && x.operationInstanceId === advent.instanceId);
+    expect(a).toBeDefined();
+    return act(s, a!);
+  };
+
+  it("R-KW-CALL-01: アドベントで選んだミラーライダーのユニットは、このターン ※コールWB を得て、WB のユニットをラッシュするためのコマンドとしてホールドできる（出典: atwiki RK-249「選んだユニットは次の能力を得る⇒※コールWB」）", () => {
+    let s = board();
+    expect(payableFor(s, `${WB_S.id}:u`) ?? []).not.toContain(mirror.instanceId);
+    s = activateAdvent(s);
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual([mirror.instanceId]);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: mirror.instanceId });
+    expect(payableFor(s, `${WB_S.id}:u`)).toContain(mirror.instanceId);
+    s = act(s, legal(s).find((a) => a.type === "initiate_command_payment" && a.sourceInstanceId === `${WB_S.id}:u`)!);
+    s = act(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: [mirror.instanceId] });
+    expect(where(s, "player1", `${WB_S.id}:u`)).toBe("rush");
+    expect(card(s, "player1", mirror.instanceId)?.commandHeld).toBe(true);
+  });
+
+  it("R-KW-CALL-01: 「⇒※コールWB」は選んだユニットが得る能力 — アドベント自身はコールを持たず、選ばなければミラーライダーのユニットもコールを得ない（出典: atwiki RK-249「選んでもよい」・R-KW-00）", () => {
+    let s = activateAdvent(board());
+    s = act(s, legal(s).find((a) => a.type === "skip_effect_choice")!);
+    expect(payableFor(s, `${WB_S.id}:u`) ?? []).not.toContain(mirror.instanceId);
+    expect(payableFor(s, `${WB_S.id}:u`) ?? []).not.toContain(advent.instanceId);
+  });
+
+  it("R-KW-CALL-01: アドベントは自軍ラッシュフェイズごとに1度だけ（出典: atwiki RK-249「自軍ラッシュフェイズごとに1度だけ」）", () => {
+    let s = activateAdvent(board());
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: mirror.instanceId });
+    expect(legal(s).some((x) => x.type === "activate_resident_operation" && x.operationInstanceId === advent.instanceId)).toBe(false);
+  });
+});
+
 describe("R-KW-READ-01 規定文", () => {
   const LEAD_ET = realDef("XG5-024"); // ※リードET
   const LEAD_MA = realDef("XG5-037"); // ※リードMA

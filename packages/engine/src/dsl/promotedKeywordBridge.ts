@@ -6,6 +6,7 @@ import { getDefinition, instanceBp, isSmallUnit, unitEffectiveCategories } from 
 import { findInZone, opponent } from "../core/helpers";
 import { lastBattleProtectsOtherS } from "../rules/promotedNcEffects";
 import { getCardDslDocument } from "./effectLookup";
+import { stackOntoLargeBpBonus, stackOntoLargeGrantsKeyword } from "../rules/stackOntoLargeGrants";
 import { unitFeatures } from "../rules/addedFeatures";
 import { decodeFeatureKeywordSlug, featuresMatchKeywordSlug } from "./featureKeywords";
 
@@ -246,22 +247,17 @@ export function promotedKeywordBpBonus(
   return bonus;
 }
 
-/** 翼合体（RS-623 等）: 重ねられた装備カードによる BP ボーナス。 */
+/**
+ * RS-623【翼合体】等「このカードに重ねたユニットは、次の能力を得る⇒※ウイング、BP+2000」: 重ねたカードによる BP 修正。
+ * 得る能力はカードごとの「⇒」の後の文で決まる（同じ重ねる文言の【侍武装】等は BP+2000 を与えない。rules/stackOntoLargeGrants.ts）。
+ */
 export function stackedEquipmentBpBonus(instance: CardInstance): number {
-  let bonus = 0;
-  for (const stacked of instance.stackedCards ?? []) {
-    if (listCardGrantKeywords(stacked.cardId).includes("stack_da_less_l_on_rush")) {
-      bonus += 2000;
-    }
-  }
-  return bonus;
+  return stackOntoLargeBpBonus(instance);
 }
 
-/** 翼合体: 重ねられた装備がウイングを付与しているか。 */
+/** 重ねたカードの「次の能力を得る⇒※ウイング」（RS-623【翼合体】）。 */
 export function stackedEquipmentGrantsWing(instance: CardInstance): boolean {
-  return (instance.stackedCards ?? []).some((stacked) =>
-    listCardGrantKeywords(stacked.cardId).includes("stack_da_less_l_on_rush"),
-  );
+  return stackOntoLargeGrantsKeyword(instance, "wing");
 }
 
 /** 自軍エリアのカードが放つ BP オーラ（RS-289/XP-023 恐竜 +1000 / RS-430 WB S 等）。 */

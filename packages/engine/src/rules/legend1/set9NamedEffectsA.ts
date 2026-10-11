@@ -14,7 +14,7 @@ import { opponent } from "../../core/helpers";
 import { shuffleCards } from "../../core/deckShuffle";
 import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
-import { listCardGrantKeywords, stackedEquipmentGrantsWing } from "../../dsl/promotedKeywordBridge";
+import { stackedEquipmentGrantsWing } from "../../dsl/promotedKeywordBridge";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
@@ -24,7 +24,6 @@ import { applyUnitLeave, openEffectChoice } from "../pendingChoices";
 import { patchPlayer } from "../playerPatches";
 import { findCardInField } from "../fieldLookup";
 import { isResidentActivatedThisRush, markResidentActivatedThisRush } from "../permanentOperation";
-import { beginStackSelfOntoL } from "../keywordChoiceRuntime";
 import { isSmallUnitNow, turnPlayerOf } from "./set6NamedEffectsB";
 import { getNumberComboEffect } from "@rangers-strike/cards";
 import { applyNumberComboEffect } from "../numberComboEffects";
@@ -1294,99 +1293,7 @@ CHOICE_CONFIRMERS[DIAMOND_BLIZZARD_EFFECT_ID] = (state, playerId) =>
   finishBlizzard(state, playerId, state.pendingEffectChoice!.set9aMeta?.selected ?? []);
 
 // ---------------------------------------------------------------------------
-// RS-623 ツバサマル【翼合体】
-// 「自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間
-//  カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。…」（atwiki/page-1460）
-// - 自軍ラッシュフェイズ中ならいつでも起動できる（activate_field_unit_ability）。重ねる処理は rules/keywordChoiceRuntime.ts。
-// - 重ねたユニットが場を離れたら、重ねていたカードは捨札になる（settleSet9AAfterAction）。
-
-const WING_STACK_KEYWORD = "stack_da_less_l_on_rush";
-
-/** 【翼合体】のカード（同じ文言の RS-647【ソウルバード】等は set9NamedEffectsB 等で扱う）。 */
-function isWingStackCard(cardId: string): boolean {
-  return cardId === "RS-623" && listCardGrantKeywords(cardId).includes(WING_STACK_KEYWORD);
-}
-
-function wingStackHosts(state: GameState, playerId: PlayerId, selfId: string): string[] {
-  return fieldUnits(state, playerId)
-    .filter((c) => {
-      if (c.instanceId === selfId) return false;
-      const d = getDefinition(state.definitions, c.cardId);
-      return d?.type === "unit" && d.size === "L" && !cardCategories(d).includes("DA");
-    })
-    .map((c) => c.instanceId);
-}
-
-/** 合法手: 起動できる場のユニット（RS-623【翼合体】）。 */
-export function listSet9AFieldActivations(state: GameState, playerId: PlayerId): string[] {
-  if (state.phase !== "rush" || turnPlayerOf(state) !== playerId || state.activePlayer !== playerId) return [];
-  if (state.pendingEffectChoice || state.pendingCommandPayment || state.pendingZordSetup || state.pendingEffectRush || state.pendingRush) return [];
-  return fieldUnits(state, playerId)
-    // 同じ文言の RS-647【ソウルバード】・RS-650 は第9弾の別範囲（set9NamedEffectsB/C）で扱う。
-    .filter((c) => c.cardId === "RS-623" && wingStackHosts(state, playerId, c.instanceId).length > 0)
-    .map((c) => c.instanceId);
-}
-
-export function activateSet9AFieldAbility(state: GameState, playerId: PlayerId, unitInstanceId: string): GameState | null {
-  if (!listSet9AFieldActivations(state, playerId).includes(unitInstanceId)) return null;
-  const unit = fieldUnits(state, playerId).find((c) => c.instanceId === unitInstanceId)!;
-  return beginStackSelfOntoL(state, {
-    playerId,
-    phasePlayerId: playerId,
-    sourceCardId: unit.cardId,
-    effectId: "tsubasa",
-    triggerSourceInstanceId: unitInstanceId,
-  });
-}
-
-const NON_FIELD_ZONES = ["hand", "deck", "discard", "power", "command", "operation"] as const;
-
-function settleWingStacks(before: GameState, after: GameState): GameState {
-  // 前の状態で、場のユニットに重ねられていた【翼合体】のカード。
-  const stacked: Array<{ ownerId: PlayerId; card: CardInstance }> = [];
-  for (const pid of ["player1", "player2"] as const) {
-    for (const host of fieldUnits(before, pid)) {
-      for (const s of host.stackedCards ?? []) if (isWingStackCard(s.cardId)) stacked.push({ ownerId: pid, card: s });
-    }
-  }
-  let next = after;
-  // 場を離れたユニット（捨札・手札等）に付いたまま残っている重ねたカードは、持ち主の捨札にする。
-  for (const pid of ["player1", "player2"] as const) {
-    const p = next.players[pid];
-    let changed = false;
-    const freed: CardInstance[] = [];
-    const patched: Partial<PlayerState> = {};
-    for (const zone of NON_FIELD_ZONES) {
-      const cards = p[zone] as CardInstance[];
-      if (!cards.some((c) => c.stackedCards?.some((s) => isWingStackCard(s.cardId)))) continue;
-      changed = true;
-      (patched as Record<string, CardInstance[]>)[zone] = cards.map((c) => {
-        const wings = (c.stackedCards ?? []).filter((s) => isWingStackCard(s.cardId));
-        if (wings.length === 0) return c;
-        freed.push(...wings.map(strip));
-        const others = (c.stackedCards ?? []).filter((s) => !isWingStackCard(s.cardId));
-        const { stackedCards: _s, ...rest } = c;
-        return others.length > 0 ? { ...rest, stackedCards: others } : (rest as CardInstance);
-      });
-    }
-    if (changed) next = patchPlayer(next, pid, (pl) => ({ ...pl, ...patched, discard: [...(patched.discard ?? pl.discard), ...freed] }));
-  }
-  // どこにも残っていない重ねたカードは、持ち主の捨札にする。
-  for (const { ownerId, card } of stacked) {
-    if (instanceExists(next, card.instanceId)) continue;
-    next = patchPlayer(next, ownerId, (p) => ({ ...p, discard: [...p.discard, strip(card)] }));
-  }
-  return next;
-}
-
-function instanceExists(state: GameState, instanceId: string): boolean {
-  const contains = (cards: CardInstance[] | undefined): boolean =>
-    !!cards?.some((c) => c.instanceId === instanceId || contains(c.stackedCards));
-  return (["player1", "player2"] as const).some((pid) => {
-    const p = state.players[pid];
-    return [p.battle, p.rush, ...NON_FIELD_ZONES.map((z) => p[z] as CardInstance[])].some((cards) => contains(cards));
-  });
-}
+// RS-623 ツバサマル【翼合体】は同じ文言の RS-647【ソウルバード】・RS-650 等と共通の処理（rules/stackOntoLargeUnit.ts）。
 
 // ---------------------------------------------------------------------------
 // RS-624 メガウインガー・ファイターモード【ウインガーキャノン】
@@ -1642,9 +1549,8 @@ export function set9AAttackerCanAttackRush(_state: GameState, _playerId: PlayerI
 // applyAction の後処理
 
 /** applyAction の後処理（入れ子でない呼び出しのとき）。 */
-export function settleSet9AAfterAction(before: GameState, after: GameState): GameState {
-  let next = settleWingStacks(before, after);
-  next = scanDiamondSword(next);
+export function settleSet9AAfterAction(_before: GameState, after: GameState): GameState {
+  let next = scanDiamondSword(after);
   if (next.winner) return next;
   if (next.set9aState?.falcon && !falconBusy(next) && !blocking(next)) next = continueFalcon(next);
   if (next.set9aState?.diamondSword?.some((w) => w.firedBy) && !blocking(next) && !falconBusy(next)) next = openFiredDiamondSword(next);

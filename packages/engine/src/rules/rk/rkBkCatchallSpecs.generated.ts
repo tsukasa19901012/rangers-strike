@@ -2821,17 +2821,10 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-249",
-    "effectId": "unnamed_call_wb",
-    "keyword": "call_WB",
-    "pattern": "call_category_note",
-    "text": "※コールWB（このユニットはWBのユニットをラッシュするためのコマンドとしてホールドできる）"
-  },
-  {
-    "cardId": "RK-249",
     "effectId": "unnamed_resident",
     "keyword": "resident",
     "pattern": "resident_note",
-    "text": "※常駐 自軍ラッシュフェイズごとに1度だけ、特徴「ミラーライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒"
+    "text": "※常駐 自軍ラッシュフェイズごとに1度だけ、特徴「ミラーライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒※コールWB（このユニットはWBのユニットをラッシュするためのコマンドとしてホールドできる）"
   },
   {
     "cardId": "RK-250",
@@ -3671,14 +3664,7 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
     "effectId": "fuesuru",
     "keyword": "rk_fx::RK-316::fuesuru",
     "pattern": "rk_exact_RK_316_fuesuru",
-    "text": "これが自軍エリアにある間、特徴「魔皇力」を持つ自軍Sユニットは、次の能力を得る⇒"
-  },
-  {
-    "cardId": "RK-316",
-    "effectId": "unnamed_morph",
-    "keyword": "morph",
-    "pattern": "morph_note",
-    "text": "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選びこれと置き換えてもよい）"
+    "text": "これが自軍エリアにある間、特徴「魔皇力」を持つ自軍Sユニットは、次の能力を得る⇒※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選びこれと置き換えてもよい）"
   },
   {
     "cardId": "RK-317",

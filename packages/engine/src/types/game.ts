@@ -1077,7 +1077,8 @@ export type PendingEffectRush = {
   /** 追加条件を実行中のユニット。 */
   current?: {
     instanceId: string;
-    direction: "up" | "down";
+    /** extended: 手札・パワー等のカードを使う追加条件（rules/zordExtended.ts）。 */
+    direction: "up" | "down" | "extended";
     needed: number;
     chosen: string[];
     destination?: "command" | "discard";

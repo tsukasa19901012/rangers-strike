@@ -307,63 +307,6 @@ export function resolveHoldEntryDestroy(
   return nextState;
 }
 
-/** RS-623 等 翼合体: DA なし自軍 L に自身を重ね、L に ※ウイング と BP を付与。 */
-export function beginStackSelfOntoL(
-  state: GameState,
-  ctx: GrantKeywordContext,
-): GameState | null {
-  const selfId = ctx.triggerSourceInstanceId;
-  if (!selfId) return null;
-  const player = state.players[ctx.playerId];
-  const targets = [...player.rush, ...player.battle].filter((c) => {
-    if (c.instanceId === selfId) return false;
-    const d = getDefinition(state.definitions, c.cardId);
-    return d?.type === "unit" && d.size === "L" && !cardCategories(d).includes("DA" as Category);
-  });
-  if (targets.length === 0) return null;
-  return openEffectChoice(state, {
-    playerId: ctx.playerId,
-    effectId: "stack_self_onto_l",
-    sourceCardId: ctx.sourceCardId,
-    sourceInstanceId: selfId,
-    phasePlayerId: ctx.phasePlayerId,
-    kind: "select_unit",
-    validInstanceIds: targets.map((c) => c.instanceId),
-    selectCount: 1,
-    optional: true,
-  });
-}
-
-export function resolveStackSelfOntoL(
-  state: GameState,
-  pending: NonNullable<GameState["pendingEffectChoice"]>,
-  hostInstanceId: string,
-): GameState | null {
-  const selfId = pending.sourceInstanceId;
-  if (!selfId) return null;
-  const player = state.players[pending.playerId];
-  const self =
-    player.rush.find((c) => c.instanceId === selfId) ??
-    player.battle.find((c) => c.instanceId === selfId);
-  if (!self) return null;
-  const { stackedCards: _sc, ...selfClean } = self;
-
-  const attach = (cards: readonly (typeof self)[]) =>
-    cards
-      .filter((c) => c.instanceId !== selfId)
-      .map((c) =>
-        c.instanceId === hostInstanceId
-          ? { ...c, stackedCards: [...(c.stackedCards ?? []), selfClean] }
-          : c,
-      );
-  const cleanPlayer = {
-    ...player,
-    rush: attach(player.rush),
-    battle: attach(player.battle),
-  };
-  return { ...state, ...updatePlayer(state, pending.playerId, cleanPlayer) };
-}
-
 /** XG2-025 等: ライドされていない自軍ビークルを自身の下に重ねる。 */
 export function beginStackVehicleUnderSelf(
   state: GameState,

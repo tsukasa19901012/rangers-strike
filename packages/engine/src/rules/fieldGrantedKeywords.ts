@@ -3,7 +3,8 @@
  *
  * 場（ラッシュエリア・バトルエリア）にある効果の持ち主のカードの DSL 本文（while_in_field）を読み、条件に合うユニットに
  * キーワード（ウイング等）を与える。「自軍」と書かれていなければ、敵軍のユニットも能力を得る（RS-657【航空戦力との連携】
- * atwiki/page-1475「特徴「航空機」を持つユニットは」）。
+ * atwiki/page-1475「特徴「航空機」を持つユニットは」）。RK-316【フエッスル】「特徴「魔皇力」を持つ自軍Sユニットは、
+ * 次の能力を得る⇒※モーフ（…）」は自軍のユニットだけ。
  */
 import type { GameState, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
@@ -25,8 +26,10 @@ const KEYWORD_BY_LABEL: Record<string, GrantedKeyword> = {
   チェイス: "chase",
 };
 
+// 「自軍」は特徴の前（「自軍特徴「X」を持つ…」）にも後（「特徴「魔皇力」を持つ自軍Sユニットは」RK-316【フエッスル】）にも書かれる。
+// 付与するキーワードの後ろの注釈（「※モーフ（敵軍ユニットが…）」）は読み飛ばす。
 const AURA_RE =
-  /^これが自軍エリアにある間、(自軍)?特徴「([^」]+)」を持つ(?:([SML])ユニット|ユニット)は、?次の能力を得る⇒※(ウイング|レジスト|モーフ|チェイス)。?$/;
+  /^これが自軍エリアにある間、(自軍)?特徴「([^」]+)」を持つ(自軍)?(?:([SML])ユニット|ユニット)は、?次の能力を得る⇒※(ウイング|レジスト|モーフ|チェイス)(?:\(.*\))?。?$/;
 
 const AURA_CACHE = new Map<string, FieldKeywordAura[]>();
 
@@ -39,10 +42,10 @@ function aurasOf(cardId: string): FieldKeywordAura[] {
     const m = (effect.text ?? "").normalize("NFKC").replace(/\s+/g, "").match(AURA_RE);
     if (!m) continue;
     auras.push({
-      ownOnly: !!m[1],
+      ownOnly: !!m[1] || !!m[3],
       feature: m[2]!,
-      size: m[3] as FieldKeywordAura["size"],
-      keyword: KEYWORD_BY_LABEL[m[4]!]!,
+      size: m[4] as FieldKeywordAura["size"],
+      keyword: KEYWORD_BY_LABEL[m[5]!]!,
     });
   }
   AURA_CACHE.set(cardId, auras);

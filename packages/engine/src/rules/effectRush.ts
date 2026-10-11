@@ -10,7 +10,7 @@
  */
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { CardDefinition } from "@rangers-strike/cards";
-import { cardHasCategory, getZordCondition, isZordUpCost, MOTHERSHIP_CONFIG } from "@rangers-strike/cards";
+import { cardHasCategory, getZordCondition, isZordUpCost, MOTHERSHIP_CONFIG, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type {
   CardInstance,
   EffectRushSourceZone,
@@ -51,7 +51,17 @@ import {
   collectZordDownMaterials,
   needsZordDownPayment,
 } from "./zordDown";
-import { applyMultipleFieldZordMaterials } from "./zordExtended";
+import {
+  applyExtendedZordPayment,
+  applyMultipleFieldZordMaterials,
+  applyOpponentDrawCost,
+  collectExtendedZordMaterials,
+  collectHoldExtraCommandCandidates,
+  evaluateStateGate,
+  needsHoldExtraCommand,
+  needsOpponentDrawCost,
+  needsZordExtendedMaterial,
+} from "./zordExtended";
 import { canUseMothershipForZordRush } from "./mothership";
 import { buildEffectHoldPayment } from "./commandPayment";
 import { markBattleBlocked } from "./turnModifiers";
@@ -187,8 +197,13 @@ export function isEffectRushChoice(pending: PendingEffectChoice | undefined): bo
 }
 
 type EffectRushPlan =
-  | { kind: "none" }
+  /** opponentDraw: 追加条件「相手は1枚ドローする」を実行してから出す。 */
+  | { kind: "none"; opponentDraw?: boolean }
   | { kind: "fusion" }
+  /** 追加条件「追加で自軍コマンドをNつホールドする」: ホールドするコマンドを選んでから出す。 */
+  | { kind: "hold"; holdIds: string[]; needed: number }
+  /** 追加条件「手札を1枚捨札にする」等（場以外のカードも使う追加条件）: 素材を選んで実行してから出す。 */
+  | { kind: "extended"; materials: string[]; needed: number }
   | {
       kind: "up" | "down";
       materials: string[];
@@ -308,7 +323,25 @@ export function planEffectRush(
     };
   }
 
-  // その他の追加条件（状態条件・相手ドロー等）は効果ラッシュでは条件なしとして扱う。
+  // ルール: R-RUSH-21 — 「追加条件は満たすこと」は、素材を使う追加条件以外も満たす（実行する）。
+  const condition = resolveRushAdditionalCondition(card.cardId, def);
+  if (condition?.conditionId === "state_gate") {
+    // 「特徴「母艦」を持つ自軍ユニットがある」等の状態: 満たしていなければ出せない（RS-641【スクランブル】等）。
+    return evaluateStateGate(state, playerId, condition) ? { kind: "none" } : null;
+  }
+  if (needsOpponentDrawCost(state.definitions, card.cardId)) return { kind: "none", opponentDraw: true };
+  if (needsHoldExtraCommand(state.definitions, card.cardId)) {
+    const needed = condition?.unitCount ?? 1;
+    const holdIds = collectHoldExtraCommandCandidates(player, state.definitions).map((c) => c.instanceId);
+    return holdIds.length >= needed ? { kind: "hold", holdIds, needed } : null;
+  }
+  if (needsZordExtendedMaterial(state.definitions, card.cardId)) {
+    const materials = collectExtendedZordMaterials(player, state.definitions, card.cardId, card.instanceId).map((m) => m.card.instanceId);
+    const all = condition?.conditionId === "discard_all_hand" || condition?.conditionId === "discard_all_face_up_power";
+    const needed = all ? materials.length : (condition?.unitCount ?? 1);
+    if (needed <= 0 || materials.length < needed) return null;
+    return { kind: "extended", materials, needed };
+  }
   return { kind: "none" };
 }
 
@@ -493,7 +526,9 @@ function executeConditionAndPlace(state: GameState): GameState {
     return continueAfterPlacement(placeUnit(next, current.instanceId));
   }
   const applied =
-    current.direction === "down"
+    current.direction === "extended"
+      ? applyExtendedZordPayment(owner, state.definitions, found.card.cardId, found.card.instanceId, current.chosen)
+      : current.direction === "down"
       ? applyMultipleZordDownMaterials(
           owner,
           state.definitions,
@@ -520,13 +555,23 @@ function continueAfterPlacement(state: GameState): GameState {
   return continuePendingEffectRush(state);
 }
 
+/** 素材の選択の種類（手札・パワー・コマンドのカードを使う追加条件では、そのゾーンのカードを選ぶ）。 */
+function materialChoiceKind(state: GameState, materials: string[]): PendingEffectChoice["kind"] {
+  const owner = state.players[state.pendingEffectRush!.playerId];
+  const inZone = (zone: "hand" | "power" | "command") => materials.every((id) => owner[zone].some((c) => c.instanceId === id));
+  if (materials.length > 0 && inZone("hand")) return "select_hand";
+  if (materials.length > 0 && inZone("power")) return "select_power";
+  if (materials.length > 0 && inZone("command")) return "select_command";
+  return "select_unit";
+}
+
 function openMaterialChoice(state: GameState, materials: string[]): GameState {
   const pending = state.pendingEffectRush!;
   return openChoice(state, {
     effectId: EFFECT_RUSH_MATERIAL,
     sourceCardId: pending.sourceCardId,
     sourceInstanceId: pending.current?.instanceId,
-    kind: "select_unit",
+    kind: materialChoiceKind(state, materials),
     validInstanceIds: materials,
     optional: !pending.forced,
   });
@@ -538,6 +583,11 @@ function currentMaterials(state: GameState): string[] {
   const owner = state.players[pending.playerId];
   const found = findInZone(owner, pending.fromZone, current.instanceId);
   if (!found) return [];
+  if (current.direction === "extended") {
+    return collectExtendedZordMaterials(owner, state.definitions, found.card.cardId, found.card.instanceId)
+      .map((m) => m.card.instanceId)
+      .filter((id) => !current.chosen.includes(id));
+  }
   const all =
     current.direction === "down"
       ? collectZordDownMaterials(owner, state.definitions, found.card.cardId, found.card.instanceId)
@@ -697,8 +747,18 @@ export function continuePendingEffectRush(state: GameState): GameState {
     if (!plan) continue;
 
     if (plan.kind === "none") {
+      // 追加条件「相手は1枚ドローする」を実行してから出す。
+      if (plan.opponentDraw) next = applyOpponentDrawCost(next, pending.playerId);
       next = placeUnit(next, head!);
       continue;
+    }
+    if (plan.kind === "hold") {
+      // 追加条件「追加で自軍コマンドをNつホールドする」: ホールドするコマンドを選ぶ（母艦の代替と同じ手続き）。
+      const withHold = withPending(next, {
+        ...next.pendingEffectRush!,
+        current: { instanceId: head!, direction: "up", needed: plan.needed, chosen: [] },
+      });
+      return openMothershipHold(withHold, plan.holdIds, plan.needed);
     }
     if (plan.kind === "fusion") {
       const applied = applyAllZordFusionMaterials(
@@ -721,6 +781,7 @@ export function continuePendingEffectRush(state: GameState): GameState {
         chosen: [],
       },
     });
+    if (plan.kind === "extended") return proceedMaterials(withCurrent);
     const materialsAvailable = plan.materials.length >= plan.needed;
     if (plan.mothershipHoldIds && !materialsAvailable) {
       return openMothershipHold(withCurrent, plan.mothershipHoldIds, plan.needed);

@@ -122,7 +122,7 @@ import { isSet7AChoiceEffect, isSet7AConfirmableChoice, set7AStrikeCounterIds } 
 import { isSet8AChoiceEffect, isSet8AConfirmableChoice, isSet8AResident } from "../rules/legend1/set8NamedEffectsA";
 import { canConfirmSet8CChoice, isSet8CChoiceEffect } from "../rules/legend1/set8NamedEffectsC";
 import { canConfirmSet9CChoice, isSet9CChoiceEffect } from "../rules/legend1/set9NamedEffectsC";
-import { canActivateSet9AResident, canConfirmSet9AChoice, isSet9AChoiceEffect, isSet9AResidentCard, listSet9AFieldActivations } from "../rules/legend1/set9NamedEffectsA";
+import { canActivateSet9AResident, canConfirmSet9AChoice, isSet9AChoiceEffect, isSet9AResidentCard } from "../rules/legend1/set9NamedEffectsA";
 import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { needsHoldExtraCommand } from "../rules/zordExtended";
@@ -674,7 +674,7 @@ function appendActivateResidentOperationActions(
     if (wired?.effectId === "shiron_light" || wired?.effectId === "hidora_egg") {
       continue;
     }
-    if (card.cardId !== "RK-022" && listResidentActivationEffects(card.cardId).length === 0) continue;
+    if (card.cardId !== "RK-022" && card.cardId !== "RK-249" && listResidentActivationEffects(card.cardId).length === 0) continue;
     if (!canActivateResidentOperation(state, playerId, card.instanceId)) continue;
     actions.push({
       type: "activate_resident_operation",
@@ -706,14 +706,6 @@ function appendActivateFieldUnitAbilityActions(
   }
   // RS-559【パワーアロー】等: 手札からこのカードを捨札にして発動する（rules/legend1/set8NamedEffectsB.ts）。
   for (const unitInstanceId of listSet8BHandActivations(state, playerId)) {
-    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
-  }
-  // RS-623【翼合体】（自軍ラッシュフェイズ中。rules/legend1/set9NamedEffectsA.ts）。
-  for (const unitInstanceId of listSet9AFieldActivations(state, playerId)) {
-    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
-  }
-  // RS-623【翼合体】（自軍ラッシュフェイズ中。rules/legend1/set9NamedEffectsA.ts）。
-  for (const unitInstanceId of listSet9AFieldActivations(state, playerId)) {
     actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
   }
 }

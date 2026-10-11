@@ -10,6 +10,8 @@
  */
 import { describe, expect, it } from "vitest";
 import type { CardDefinition } from "@rangers-strike/cards";
+import { cardHasKeyword } from "../keywords/cardKeywords";
+import { getCardDslDocument } from "../dsl/effectLookup";
 import {
   act,
   attack,
@@ -128,6 +130,13 @@ describe("RS-466 ギンガレオン", () => {
     s = settle(s);
     const me = s.players.player1.battle.find((c) => c.instanceId === "SPEC-RED:r");
     expect(me?.commandHeld).toBe(true);
+  });
+
+  it("RS-466: 【炎の星獣】「⇒※レジスト」はライドしている S ユニットが得る能力 — ギンガレオン（ビークル）自身はレジストを持たない（出典: atwiki/page-765・R-KW-00）", () => {
+    const s = st({ player1: { rush: [inst("RS-466", "v")], deck: deckCards(3) } }, EXTRA);
+    expect(cardHasKeyword(s.definitions, "RS-466", "register", { state: s, playerId: "player1" })).toBe(false);
+    const effect = getCardDslDocument("RS-466")?.effects.find((e) => e.name === "炎の星獣");
+    expect(effect?.text).toMatch(/次の能力を得る⇒※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）$/);
   });
 
   it("RS-466: 【炎の星獣】ライドしていなければレジストはなく、バトルで撃破されると捨札になる（出典: atwiki/page-765「これにライドしているSユニットは」）", () => {

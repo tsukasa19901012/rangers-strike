@@ -15,6 +15,7 @@ import type { GameState } from "../types/game";
 import {
   act,
   attack,
+  attackedInEnemyTurn,
   attackTargets,
   bpOf,
   canEnter,
@@ -292,9 +293,76 @@ describe("RS-650 ガオライノス", () => {
     expect(rhinoActions(s).filter((a) => a.type !== "move_to_battle" && a.type !== "initiate_command_payment" && a.type !== "hold_for_wing")).toEqual([]);
   });
 
-  it.todo(
-    "RS-650: 【強蹴一閃ライノシュート】DA を持つ L ユニット（ガオハンターイビル等）は選べない／重ねた L ユニットからコンビネーションする「ガオマジロ」は BP+5000／重ねた L ユニットがユニットでなくなるときガオライノスも捨札になる（出典: atwiki/page-1471）— 重ねる処理自体が未実装（上の it.fails）で、前提の盤面を公開 API で作れないため",
-  );
+  const L_HOST = sUnit("SPEC-650-L", { size: "L", bp: 9000, features: ["獣"] });
+  const L_DA = sUnit("SPEC-650-LDA", { size: "L", category: "DA", bp: 9000 });
+  /** ガオライノスを起動して、host（L ユニット）に重ねる。 */
+  const stackOn = (s: GameState, host: string) => {
+    const a = rhinoActions(s).find((x) => x.type === "activate_field_unit_ability");
+    expect(a).toBeDefined();
+    return resolveAll(pick(act(s, a!), host));
+  };
+  const stackedHost = () => ({ ...inst("SPEC-650-L", "h"), stackedCards: [inst("RS-650", "r")] });
+
+  it("RS-650: 【強蹴一閃ライノシュート】DA を持つ L ユニットは選べない（候補は DA を持たない自軍 L ユニットだけ。M ユニットも候補外）（出典: atwiki/page-1471「DAを持たない自軍Lユニットを1体選び」）", () => {
+    const s = p1Rush({ rush: [inst("RS-650", "r"), inst("SPEC-650-L", "h"), inst("SPEC-650-LDA", "d"), inst("TST-UNIT-2", "m")] }, {}, [L_HOST, L_DA]);
+    const a = rhinoActions(s).find((x) => x.type === "activate_field_unit_ability");
+    expect(a).toBeDefined();
+    expect(choiceIds(act(s, a!))).toEqual(["SPEC-650-L:h"]);
+  });
+
+  it("RS-650: 【強蹴一閃ライノシュート】重ねると、ガオライノスはラッシュエリアを離れて L ユニットの下のカードになる（出典: atwiki/page-1471「このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い」）", () => {
+    const s = stackOn(p1Rush({ rush: [inst("RS-650", "r"), inst("SPEC-650-L", "h")] }, {}, [L_HOST]), "SPEC-650-L:h");
+    expect(zoneOf(s, "player1", "RS-650:r")).toBeNull();
+    expect(cardIn(s, "player1", "SPEC-650-L:h")?.stackedCards?.map((c) => c.instanceId)).toEqual(["RS-650:r"]);
+  });
+
+  /** ガオライノスを重ねた L ユニット host の右に、ガオマジロ（RS-651）を出す。left は host とガオマジロの間のユニット。 */
+  const comboBoard = (battle: ReturnType<typeof inst>[]) =>
+    enterWithHold(
+      p1Battle({ battle, rush: [inst("RS-651", "mj")], command: releasedCat("WB", 1) }, { battle: [inst("SPEC-ES", "eb")] }, [E_S, L_HOST]),
+      "RS-651:mj",
+      ["TST-OP:cWB0"],
+    );
+
+  it("RS-650: 【強蹴一閃ライノシュート】ガオライノスを重ねたユニットからコンビネーションする「ガオマジロ」は BP+5000 される（出典: atwiki/page-1471「このユニットからコンビネーションする「ガオマジロ」はBP+5000される」）", () => {
+    const s = resolveAll(comboBoard([stackedHost()]));
+    expect(zoneOf(s, "player1", "RS-651:mj")).toBe("battle");
+    expect(bpOf(s, "player1", "RS-651:mj")).toBe(8000);
+  });
+
+  it("RS-650: 【強蹴一閃ライノシュート】ガオライノスを重ねていない L ユニットからコンビネーションしたガオマジロは BP+5000 されない（出典: atwiki/page-1471「このカードに重ねたユニットは、次の能力を得る」）", () => {
+    const s = resolveAll(comboBoard([inst("SPEC-650-L", "h")]));
+    expect(bpOf(s, "player1", "RS-651:mj")).toBe(3000);
+  });
+
+  it("RS-650: 【強蹴一閃ライノシュート】BP+5000 は重ねた関係（コンビネーションの相手）で決まる — 別のユニットからコンビネーションした後、間のユニットが離れて重ねたユニットが左隣になっても BP+5000 されない（出典: atwiki/page-1471「このユニットからコンビネーションする」・R-CN-03/R-CN-05）", () => {
+    let s = resolveAll(comboBoard([stackedHost(), inst("TST-UNIT-2", "m")]));
+    expect(bpOf(s, "player1", "RS-651:mj")).toBe(3000);
+    // 間のユニット（コンビネーションの相手）が場を離れ、ガオライノスを重ねたユニットが今の左隣になる。
+    s = { ...s, players: { ...s.players, player1: { ...s.players.player1, battle: s.players.player1.battle.filter((c) => c.instanceId !== "TST-UNIT-2:m") } } };
+    expect(s.players.player1.battle.map((c) => c.instanceId)).toEqual(["SPEC-650-L:h", "RS-651:mj"]);
+    expect(bpOf(s, "player1", "RS-651:mj")).toBe(3000);
+  });
+
+  it("RS-650: 【強蹴一閃ライノシュート】コンビネーションした後に重ねたユニットが左隣でなくなっても、そのターンは BP+5000 のまま（出典: atwiki/page-1471・R-CN-06「期限の記載がなければターン終了時まで。発動元が撃破・並び順変化しても無効にならない」）", () => {
+    let s = resolveAll(comboBoard([stackedHost()]));
+    expect(bpOf(s, "player1", "RS-651:mj")).toBe(8000);
+    s = { ...s, players: { ...s.players, player1: { ...s.players.player1, battle: s.players.player1.battle.filter((c) => c.instanceId !== "SPEC-650-L:h") } } };
+    expect(bpOf(s, "player1", "RS-651:mj")).toBe(8000);
+  });
+
+  it("RS-650: 【強蹴一閃ライノシュート】重ねた L ユニットが撃破されてユニットでなくなるとき、ガオライノスも捨札になる（出典: atwiki/page-1471「重ねたユニットがユニットでなくなるとき捨札になる」）", () => {
+    const s = resolveAll(attackedInEnemyTurn({ battle: [stackedHost()] }, "SPEC-650-L:h", {}, "TST-UNIT-7:atk", [L_HOST]));
+    expect(zoneOf(s, "player1", "SPEC-650-L:h")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-650:r")).toBe("discard");
+  });
+
+  it("RS-650: 【強蹴一閃ライノシュート】重ねた L ユニットが場に残っている間は、ガオライノスは重なったまま（捨札にならない）（出典: atwiki/page-1471「ユニットが重ねられている間カードとして扱い」）", () => {
+    const s = resolveAll(attackedInEnemyTurn({ battle: [stackedHost(), inst("TST-UNIT-0", "x")] }, "TST-UNIT-0:x", {}, "TST-UNIT-7:atk", [L_HOST]));
+    expect(zoneOf(s, "player1", "TST-UNIT-0:x")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-650:r")).toBeNull();
+    expect(cardIn(s, "player1", "SPEC-650-L:h")?.stackedCards?.map((c) => c.instanceId)).toEqual(["RS-650:r"]);
+  });
 });
 
 // ===========================================================================

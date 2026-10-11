@@ -1,5 +1,6 @@
 import type { Category } from "@rangers-strike/cards";
 import { set9AGrantsCallLead } from "./legend1/set9NamedEffectsA";
+import { adventGrantsCall } from "./rk/rk249Advent";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
@@ -51,6 +52,22 @@ function residentGrantsCallLead(cardId: string, kind: CallLeadKind, category: Ca
   return false;
 }
 
+/** 場のユニットがコール／リードを持つか（カード自身の能力・効果で得た能力）。 */
+function fieldUnitHasCallLead(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  card: CardInstance,
+  kind: CallLeadKind,
+  category: Category,
+): boolean {
+  return (
+    unitHasCallLeadKeyword(card.cardId, kind, category) ||
+    set9AGrantsCallLead(player, definitions, card, kind, category) ||
+    // RK-249 アドベント「このターン、選んだユニットは次の能力を得る⇒※コールWB」（rules/rk/rk249Advent.ts）。
+    adventGrantsCall(player, card, kind, category)
+  );
+}
+
 function fieldZonesForCallLead(kind: CallLeadKind): Array<"rush" | "battle"> {
   return kind === "call" ? ["rush", "battle"] : ["rush", "battle"];
 }
@@ -68,7 +85,7 @@ export function collectCallLeadFieldUnits(
       const def = getDefinition(definitions, card.cardId);
       if (def && !isUnit(def)) continue;
       const matches = categories.some(
-        (cat) => unitHasCallLeadKeyword(card.cardId, kind, cat) || set9AGrantsCallLead(player, definitions, card, kind, cat),
+        (cat) => fieldUnitHasCallLead(player, definitions, card, kind, cat),
       );
       if (matches) results.push(card);
     }
@@ -89,7 +106,7 @@ export function heldCallLeadMatchesCategories(
       if (def && !isUnit(def)) continue;
       if (
         categories.some(
-          (cat) => unitHasCallLeadKeyword(card.cardId, kind, cat) || set9AGrantsCallLead(player, definitions, card, kind, cat),
+          (cat) => fieldUnitHasCallLead(player, definitions, card, kind, cat),
         )
       ) {
         return true;
@@ -172,7 +189,7 @@ export function paymentSourceMatchesCategories(
     const card = player[zone].find((c) => c.instanceId === instanceId);
     if (!card) continue;
     return categories.some(
-      (cat) => unitHasCallLeadKeyword(card.cardId, kind, cat) || set9AGrantsCallLead(player, definitions, card, kind, cat),
+      (cat) => fieldUnitHasCallLead(player, definitions, card, kind, cat),
     );
   }
 
