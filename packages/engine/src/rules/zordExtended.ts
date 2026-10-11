@@ -763,7 +763,11 @@ export function validateFieldZordMaterials(
   if (
     condition.conditionId === "send_s_unit_to_command_or_discard" &&
     materialDestination === "command" &&
-    player.command.length >= COMMAND_ZONE_MAX
+    // 「それぞれ」の無い条件（RS-531・RS-532）は同じ行き先に送る素材すべてが入る空きが要る（atwiki/page-1158 Q1）。
+    // 「それぞれ」（RS-075 等）は1体ごとに行き先を選ぶので、空きが1つあればよい（残りは捨札。faq-card-4 RS-196 Q2）。
+    player.command.length +
+      (/それぞれ/.test(condition.text ?? "") ? 1 : materialInstanceIds.length) >
+      COMMAND_ZONE_MAX
   ) {
     return false;
   }
@@ -836,7 +840,10 @@ export function listFieldZordRushVariants(
         ...materialRef,
         zordMaterialDestination: "discard",
       });
-      if (commandZoneHasSpace) {
+      if (
+        commandZoneHasSpace &&
+        (/それぞれ/.test(condition.text ?? "") || player.command.length + ids.length <= COMMAND_ZONE_MAX)
+      ) {
         variants.push({
           ...materialRef,
           zordMaterialDestination: "command",

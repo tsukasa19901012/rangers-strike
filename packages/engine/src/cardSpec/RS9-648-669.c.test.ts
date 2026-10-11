@@ -85,8 +85,7 @@ describe("RS-663 エンジンオーG12", () => {
     expect(st().definitions["RS-663"]?.rushAdditionalCondition?.text).toBe("自軍合体ユニットをパワーゾーンに送る");
   });
 
-  // 既知の不具合: CARD-RS-663 カタログのレアリティが N（atwiki はスーパーレア）
-  it.fails("RS-663: レアリティはスーパーレア（出典: atwiki/page-1502「レアリティ：スーパーレア」）", () => {
+  it("RS-663: レアリティはスーパーレア（出典: atwiki/page-1502「レアリティ：スーパーレア」）", () => {
     expect(rarityOf("RS-663")).toBe("SR");
   });
 
@@ -226,8 +225,7 @@ describe("RS-664 エンジンオーG9", () => {
     expect(st().definitions["RS-664"]?.rushAdditionalCondition?.text).toBe("自軍合体ユニットをパワーゾーンに送る");
   });
 
-  // 既知の不具合: CARD-RS-664 カタログのレアリティが N（atwiki はレア）
-  it.fails("RS-664: レアリティはレア（出典: atwiki/page-1494「レアリティ：レア」）", () => {
+  it("RS-664: レアリティはレア（出典: atwiki/page-1494「レアリティ：レア」）", () => {
     expect(rarityOf("RS-664")).toBe("R");
   });
 
@@ -336,8 +334,7 @@ describe("RS-665 キョウレツオー", () => {
     });
   });
 
-  // 既知の不具合: CARD-RS-665 カタログのレアリティが N（atwiki はノーマルレア）
-  it.fails("RS-665: レアリティはノーマルレア（出典: atwiki/page-1476「レアリティ：ノーマルレア」）", () => {
+  it("RS-665: レアリティはノーマルレア（出典: atwiki/page-1476「レアリティ：ノーマルレア」）", () => {
     expect(rarityOf("RS-665")).toBe("NR");
   });
 

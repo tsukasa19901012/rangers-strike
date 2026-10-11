@@ -85,8 +85,7 @@ describe("RS-527 バルジオン（2nd）", () => {
     expect(canRide(rideState("SPEC-DA-M"), "SPEC-DA-M:s")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-527 【反バイオ粒子砲】の BP+1000（OT の敵軍コマンド1つにつき）が未実装
-  it.fails("RS-527: 【反バイオ粒子砲】ライドしているユニットは OT を持つ敵軍コマンド1つにつき BP+1000（OT 2つ・WB 1つなら +2000）（出典: atwiki/page-1156「OTを持つ敵軍コマンド1つにつき、「BP+1000」される」）", () => {
+  it("RS-527: 【反バイオ粒子砲】ライドしているユニットは OT を持つ敵軍コマンド1つにつき BP+1000（OT 2つ・WB 1つなら +2000）（出典: atwiki/page-1156「OTを持つ敵軍コマンド1つにつき、「BP+1000」される」）", () => {
     const s = ride(rideState("SPEC-DA-S", { command: [...releasedCat("OT", 2), ...releasedCat("WB", 1)] }), "SPEC-DA-S:s");
     expect(bpOf(s, "player1", "SPEC-DA-S:s")).toBe(4000);
   });
@@ -96,8 +95,7 @@ describe("RS-527 バルジオン（2nd）", () => {
     expect(bpOf(s, "player1", "SPEC-DA-S:s")).toBe(2000);
   });
 
-  // 既知の不具合: CARD-RS-527 【反バイオ粒子砲】のシルバ SP1 が未実装
-  it.fails("RS-527: 【反バイオ粒子砲】ライドしているのが「バイオハンター・シルバ」（RS-528）なら SP1 になる（出典: atwiki/page-1156「「バイオハンター・シルバ」なら「SP1」になる」）", () => {
+  it("RS-527: 【反バイオ粒子砲】ライドしているのが「バイオハンター・シルバ」（RS-528）なら SP1 になる（出典: atwiki/page-1156「「バイオハンター・シルバ」なら「SP1」になる」）", () => {
     const s = ride(rideState("RS-528"), "RS-528:s");
     expect(spOf(s, "player1", "RS-528:s")).toBe(1);
   });
@@ -168,14 +166,12 @@ describe("RS-528 バイオハンター・シルバ（2nd）", () => {
 
   registerTests("RS-528", "atwiki/page-1232");
 
-  // 既知の不具合: CARD-RS-528 【バイオ粒子反応アリ！】（OT のラッシュに反応してリリース）が未実装
-  it.fails("RS-528: 【バイオ粒子反応アリ！】ホールド状態のシルバが自軍エリアにあるとき、OT の敵軍ユニットがラッシュされると、これをリリースする選択が出る（出典: atwiki/page-1232「OTを持つ敵軍ユニットがラッシュされたとき、これをリリースしてもよい」）", () => {
+  it("RS-528: 【バイオ粒子反応アリ！】ホールド状態のシルバが自軍エリアにあるとき、OT の敵軍ユニットがラッシュされると、これをリリースする選択が出る（出典: atwiki/page-1232「OTを持つ敵軍ユニットがラッシュされたとき、これをリリースしてもよい」）", () => {
     const s = enemyRushes("SPEC-OT-S");
     expect(silvaPrompted(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-528 【バイオ粒子反応アリ！】が未実装（相手の撃破／ダメージの選択が起きない）
-  it.fails("RS-528: 【バイオ粒子反応アリ！】リリースすると、相手はラッシュしたユニットを撃破するか1点ダメージを受けるかを選ぶ（撃破を選べばラッシュしたユニットは捨札）（出典: atwiki/page-1232「相手はラッシュしたユニットを撃破するか、1点ダメージを受けるかを選ぶ」）", () => {
+  it("RS-528: 【バイオ粒子反応アリ！】リリースすると、相手はラッシュしたユニットを撃破するか1点ダメージを受けるかを選ぶ（撃破を選べばラッシュしたユニットは捨札）（出典: atwiki/page-1232「相手はラッシュしたユニットを撃破するか、1点ダメージを受けるかを選ぶ」）", () => {
     const s = resolveAll(enemyRushes("SPEC-OT-S"), ["RS-528:sv", "SPEC-OT-S:u"]);
     expect(cardIn(s, "player1", "RS-528:sv")?.commandHeld).not.toBe(true);
     const destroyed = zoneOf(s, "player2", "SPEC-OT-S:u") === "discard";
@@ -194,9 +190,18 @@ describe("RS-528 バイオハンター・シルバ（2nd）", () => {
     expect(zoneOf(resolveAll(s), "player2", "SPEC-OT-S:u")).toBe("rush");
   });
 
-  it.todo(
-    "RS-528: 【バイオ粒子反応アリ！】相手がダメージを選んだとき、OT を持つ自軍ユニットがあれば自分も1点ダメージを受ける（出典: atwiki/page-1232「OTを持つ自軍ユニットがあれば、自分も1点ダメージを受ける」）— 相手の選択（撃破／ダメージ）を指定する手段がエンジンに無く（効果自体が未実装。上の it.fails）、ダメージ側を確定させて検証できない",
-  );
+  it("RS-528: 【バイオ粒子反応アリ！】相手がダメージを選んだとき、OT を持つ自軍ユニットがあれば自分も1点ダメージを受ける（なければ相手だけ）（出典: atwiki/page-1232「OTを持つ自軍ユニットがあれば、自分も1点ダメージを受ける」）", () => {
+    for (const withOt of [true, false]) {
+      let s = enemyRushes("SPEC-OT-S", held("RS-528", "sv"), withOt ? [inst("SPEC-OT-MINE", "mine")] : []);
+      s = pick(s, "RS-528:sv");
+      expect(s.pendingEffectChoice?.playerId).toBe("player2");
+      expect(choiceIds(s)).toContain("SPEC-OT-S:u");
+      s = resolveAll(pick(s, "rs528_take_damage"));
+      expect(zoneOf(s, "player2", "SPEC-OT-S:u")).toBe("rush");
+      expect(s.players.player2.damage).toBe(1);
+      expect(s.players.player1.damage).toBe(withOt ? 1 : 0);
+    }
+  });
 
   it("RS-528: Q&A — バルジオン（2nd）にライドしているシルバは、さらにデカバイクにライドできない（出典: grnrngr/faq-card-8 RS-528 Q「いいえ」）", () => {
     let s = st({ player1: { rush: [inst("RS-528", "s"), inst("RS-527", "bj"), inst("RS-570", "bike")], deck: deckCards(3) } });
@@ -258,8 +263,7 @@ describe("RS-529 チェンジロボ", () => {
     expect(canStartRush(rushState(6), "player1", "RS-529:cr")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-529 【電撃剣スーパーサンダーボルト】が未実装（アタックで敵軍コマンドが動かない）
-  it.fails("RS-529: 【電撃剣】アタックしたとき、MA の自軍コマンド（必要パワー1）と同じ必要パワーの敵軍コマンドをホールド・リリース問わずすべて持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-1226「これがアタックまたはストライクしたとき…すべて持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("RS-529: 【電撃剣】アタックしたとき、MA の自軍コマンド（必要パワー1）と同じ必要パワーの敵軍コマンドをホールド・リリース問わずすべて持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-1226「これがアタックまたはストライクしたとき…すべて持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(attack(battle(), "RS-529:cr", "TST-UNIT-0:et"));
     for (const id of ["TST-OP-ET:c1a", "TST-OP-OT:c1b"]) {
       expect(zoneOf(s, "player2", id)).toBe("power");
@@ -268,8 +272,7 @@ describe("RS-529 チェンジロボ", () => {
     expect(zoneOf(s, "player2", "TST-OP:c3")).toBe("command");
   });
 
-  // 既知の不具合: CARD-RS-529 【電撃剣スーパーサンダーボルト】が未実装（ストライクで敵軍コマンドが動かない）
-  it.fails("RS-529: 【電撃剣】ストライクしたときも発動し、MA の自軍コマンドが必要パワー1と3なら両方の数字の敵軍コマンドを置く（出典: atwiki/page-1226「必要パワーの数字を順番に見て」）", () => {
+  it("RS-529: 【電撃剣】ストライクしたときも発動し、MA の自軍コマンドが必要パワー1と3なら両方の数字の敵軍コマンドを置く（出典: atwiki/page-1226「必要パワーの数字を順番に見て」）", () => {
     const s = resolveAll(strike(battle([released("TST-OP-MA", "ma1"), released("SPEC-MA-CMD3", "ma3")]), "RS-529:cr"));
     for (const id of ["TST-OP-ET:c1a", "TST-OP-OT:c1b", "TST-OP:c3"]) expect(zoneOf(s, "player2", id)).toBe("power");
   });
@@ -353,8 +356,7 @@ describe("RS-530 ジェットチェンジャー1", () => {
     expect(scrumProtected("RS-530", "3")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-530 必要パワーに「+」を持つユニット（TST-UNIT-7「7+」）も候補に入る
-  it.fails("RS-530: 【レーザービーム砲】（NC・1番目）候補は敵軍バトルエリアの必要パワーに「+」を持たないユニットだけ（ラッシュエリア・「7+」は不可）。選択は見送れない（出典: atwiki/page-1157「敵軍バトルエリアから、必要パワーに「+」を持たないユニットを1体選び」）", () => {
+  it("RS-530: 【レーザービーム砲】（NC・1番目）候補は敵軍バトルエリアの必要パワーに「+」を持たないユニットだけ（ラッシュエリア・「7+」は不可）。選択は見送れない（出典: atwiki/page-1157「敵軍バトルエリアから、必要パワーに「+」を持たないユニットを1体選び」）", () => {
     const s = ncAt("RS-530", 1, { battle: [inst("TST-UNIT-0", "e0"), inst("TST-UNIT-2", "e2"), inst("TST-UNIT-7", "e7")], rush: [inst("TST-UNIT-0", "er")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-530");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e0", "TST-UNIT-2:e2"]);
@@ -368,8 +370,7 @@ describe("RS-530 ジェットチェンジャー1", () => {
     expect(cardIn(s, "player2", "TST-UNIT-0:e0")?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-530 コマンドゾーンが満杯でも発動し、選んだユニットを捨札にしてしまう
-  it.fails("RS-530: 【レーザービーム砲】敵軍コマンドゾーンが5枚で置けなければ発動しない（ユニットはその場に留まる）（出典: atwiki/page-1157「置けなければこの効果は発動できない」・02-zones-cards 上限5枚）", () => {
+  it("RS-530: 【レーザービーム砲】敵軍コマンドゾーンが5枚で置けなければ発動しない（ユニットはその場に留まる）（出典: atwiki/page-1157「置けなければこの効果は発動できない」・02-zones-cards 上限5枚）", () => {
     const s = resolveAll(ncAt("RS-530", 1, { battle: [inst("TST-UNIT-0", "e0")], command: releasedCat("WB", 5, "ec") }));
     expect(zoneOf(s, "player2", "TST-UNIT-0:e0")).toBe("battle");
     expect(s.players.player2.command).toHaveLength(5);
@@ -404,8 +405,7 @@ describe("RS-531 ヘリチェンジャー2", () => {
 
   sendOrDiscardTests("RS-531", 2, 4, "atwiki/page-1158「追加条件：自軍Sユニットを2体コマンドゾーンに送るか捨札にする」");
 
-  // 既知の不具合: CARD-RS-531 コマンドが4つのとき、1体をコマンドゾーン・1体を捨札に分けて送れてしまう
-  it.fails("RS-531: Q&A — 2体は「両方コマンドゾーン」か「両方捨札」のどちらか。自軍コマンドが4つなら両方捨札にしなければならない（出典: atwiki/page-1158 Q1「はい、その通りです」）", () => {
+  it("RS-531: Q&A — 2体は「両方コマンドゾーン」か「両方捨札」のどちらか。自軍コマンドが4つなら両方捨札にしなければならない（出典: atwiki/page-1158 Q1「はい、その通りです」）", () => {
     const s = st({ phase: "rush", turn: 3, player1: { hand: [inst("RS-531", "h")], rush: fill(2), command: releasedCat("ET", 4), power: powerCards(4), deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
     const r = rushFromHand(s, "player1", "RS-531:h", { destination: "command" });
     const split = r.ok && zoneOf(r.state, "player1", "TST-UNIT-0:f0") !== zoneOf(r.state, "player1", "TST-UNIT-0:f1");
@@ -417,8 +417,7 @@ describe("RS-531 ヘリチェンジャー2", () => {
     expect(scrumProtected("RS-531", null)).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-531 【対地ミサイル】が未実装（NC のログだけで何も起きない）
-  it.fails("RS-531: 【対地ミサイル】（NC・2番目）敵軍捨札のカードを1枚選び、持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-1158）", () => {
+  it("RS-531: 【対地ミサイル】（NC・2番目）敵軍捨札のカードを1枚選び、持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-1158）", () => {
     let s = ncAt("RS-531", 2, { discard: [inst("TST-UNIT-0", "d0"), inst("TST-OP", "d1")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-531");
     expect(choiceIds(s)).toEqual(["TST-OP:d1", "TST-UNIT-0:d0"]);
@@ -427,8 +426,7 @@ describe("RS-531 ヘリチェンジャー2", () => {
     expect(cardIn(s, "player2", "TST-OP:d1")?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-531 【対地ミサイル】が未実装（選択が出ない）
-  it.fails("RS-531: 【対地ミサイル】「置いてもよい」— 見送れる（出典: atwiki/page-1158「置いてもよい」）", () => {
+  it("RS-531: 【対地ミサイル】「置いてもよい」— 見送れる（出典: atwiki/page-1158「置いてもよい」）", () => {
     const s0 = ncAt("RS-531", 2, { discard: [inst("TST-OP", "d1")] });
     expect(canSkip(s0)).toBe(true);
     expect(zoneOf(resolveAll(skip(s0)), "player2", "TST-OP:d1")).toBe("discard");
@@ -467,8 +465,7 @@ describe("RS-532 ランドチェンジャー3", () => {
 
   sendOrDiscardTests("RS-532", 2, 4, "atwiki/page-1159「追加条件：自軍Sユニットを2体コマンドゾーンに送るか捨札にする」");
 
-  // 既知の不具合: CARD-RS-532 コマンドが4つのとき、1体をコマンドゾーン・1体を捨札に分けて送れてしまう
-  it.fails("RS-532: Q&A — 2体は「両方コマンドゾーン」か「両方捨札」のどちらか。自軍コマンドが4つなら両方捨札にしなければならない（出典: atwiki/page-1159 Q2「はい、その通りです」）", () => {
+  it("RS-532: Q&A — 2体は「両方コマンドゾーン」か「両方捨札」のどちらか。自軍コマンドが4つなら両方捨札にしなければならない（出典: atwiki/page-1159 Q2「はい、その通りです」）", () => {
     const s = st({ phase: "rush", turn: 3, player1: { hand: [inst("RS-532", "h")], rush: fill(2), command: releasedCat("ET", 4), power: powerCards(4), deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
     const r = rushFromHand(s, "player1", "RS-532:h", { destination: "command" });
     const split = r.ok && zoneOf(r.state, "player1", "TST-UNIT-0:f0") !== zoneOf(r.state, "player1", "TST-UNIT-0:f1");
@@ -480,8 +477,7 @@ describe("RS-532 ランドチェンジャー3", () => {
     expect(scrumProtected("RS-532", null)).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-532 【ミサイル発射】が未実装（NC のログだけで何も起きない）
-  it.fails("RS-532: 【ミサイル発射】（NC・3番目）合体の必要な敵軍ユニット（チェンジロボ）を選び撃破する。合体の不要なユニットは選べない（出典: atwiki/page-1159「合体の必要な敵軍ユニットを1体選び撃破する」）", () => {
+  it("RS-532: 【ミサイル発射】（NC・3番目）合体の必要な敵軍ユニット（チェンジロボ）を選び撃破する。合体の不要なユニットは選べない（出典: atwiki/page-1159「合体の必要な敵軍ユニットを1体選び撃破する」）", () => {
     let s = ncAt("RS-532", 3, { battle: [inst("RS-529", "robo"), inst("TST-UNIT-7", "big")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-532");
     expect(choiceIds(s)).toEqual(["RS-529:robo"]);
@@ -489,8 +485,7 @@ describe("RS-532 ランドチェンジャー3", () => {
     expect(zoneOf(s, "player2", "RS-529:robo")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-532 【ミサイル発射】が未実装
-  it.fails("RS-532: 【ミサイル発射】敵軍ラッシュエリアの合体ユニットも選べる（出典: atwiki/page-1159「合体の必要な敵軍ユニット」— エリアの指定なし）", () => {
+  it("RS-532: 【ミサイル発射】敵軍ラッシュエリアの合体ユニットも選べる（出典: atwiki/page-1159「合体の必要な敵軍ユニット」— エリアの指定なし）", () => {
     let s = ncAt("RS-532", 3, { rush: [inst("RS-529", "robo")] });
     expect(choiceIds(s)).toEqual(["RS-529:robo"]);
     s = resolveAll(pick(s, "RS-529:robo"));
@@ -502,14 +497,12 @@ describe("RS-532 ランドチェンジャー3", () => {
     expect(zoneOf(s, "player2", "RS-529:robo")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-532 【ミサイル発射】が未実装
-  it.fails("RS-532: 【ミサイル発射】自軍捨札に合体素材があっても、敵軍捨札になければ撃破できる（出典: atwiki/page-1159「敵軍捨札にあれば」）", () => {
+  it("RS-532: 【ミサイル発射】自軍捨札に合体素材があっても、敵軍捨札になければ撃破できる（出典: atwiki/page-1159「敵軍捨札にあれば」）", () => {
     const s = resolveAll(ncAt("RS-532", 3, { battle: [inst("RS-529", "robo")] }, { discard: [inst("RS-530", "mj")] }), ["RS-529:robo"]);
     expect(zoneOf(s, "player2", "RS-529:robo")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-532 【ミサイル発射】が未実装（ファイヤーカイザーが撃破されない）
-  it.fails("RS-532: Q&A — 敵軍捨札にビークルの「魔導馬バリキオン」（RK-581）しかなければ、ファイヤーカイザー（RS-113）は撃破される（出典: grnrngr/faq-card-8 RS-532 Q「はい、「RS-113 ファイヤーカイザー」は撃破されます」）", () => {
+  it("RS-532: Q&A — 敵軍捨札にビークルの「魔導馬バリキオン」（RK-581）しかなければ、ファイヤーカイザー（RS-113）は撃破される（出典: grnrngr/faq-card-8 RS-532 Q「はい、「RS-113 ファイヤーカイザー」は撃破されます」）", () => {
     const s = resolveAll(ncAt("RS-532", 3, { battle: [inst("RS-113", "fk")], discard: [inst("RK-581", "bk")] }), ["RS-113:fk"]);
     expect(zoneOf(s, "player2", "RS-113:fk")).toBe("discard");
   });

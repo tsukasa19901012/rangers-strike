@@ -3,6 +3,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { effectiveCommandCategories, getDefinition, isUnit } from "../core/catalog";
+import { actionContextState } from "./zordFeatureContext";
 
 export type CallLeadKind = "call" | "lead";
 
@@ -21,7 +22,32 @@ export function unitHasCallLeadKeyword(
   kind: CallLeadKind,
   category: Category,
 ): boolean {
-  return cardHasGrantKeyword(cardId, `${kind}_${category}`);
+  return cardHasGrantKeyword(cardId, `${kind}_${category}`) || residentGrantsCallLead(cardId, kind, category);
+}
+
+/**
+ * 「※常駐 MAを持つSPが空欄のSユニットは、次の能力を得る⇒コールET（…）」（RS-516 アースフォース。atwiki/page-1149）。
+ * 「自軍」の指定がないので、どちらのプレイヤーの常駐置き場にあっても両軍の該当ユニットが得る（atwiki/page-1149 コメント）。
+ * 常駐置き場は applyAction / getLegalActions の入口で置いた状態（rules/zordFeatureContext.ts）から読む。
+ */
+const RESIDENT_CALL_LEAD_GRANT_RE =
+  /^※常駐\s*「?(WB|OT|ET|MA|DA)」?を持つSPが空欄のSユニットは、次の能力を得る⇒(コール|リード)「?(WB|OT|ET|MA|DA)」?/;
+
+function residentGrantsCallLead(cardId: string, kind: CallLeadKind, category: Category): boolean {
+  const state = actionContextState();
+  if (!state) return false;
+  const def = getDefinition(state.definitions, cardId);
+  if (!def || def.type !== "unit" || def.size !== "S" || (def.sp !== undefined && def.sp !== null)) return false;
+  const cats: string[] = Array.isArray(def.category) ? def.category : [def.category as string];
+  for (const pid of ["player1", "player2"] as const) {
+    for (const op of state.players[pid].operation) {
+      const m = getDefinition(state.definitions, op.cardId)?.text?.match(RESIDENT_CALL_LEAD_GRANT_RE);
+      if (!m) continue;
+      if ((m[2] === "コール" ? "call" : "lead") !== kind || m[3] !== category) continue;
+      if (cats.includes(m[1]!)) return true;
+    }
+  }
+  return false;
 }
 
 function fieldZonesForCallLead(kind: CallLeadKind): Array<"rush" | "battle"> {

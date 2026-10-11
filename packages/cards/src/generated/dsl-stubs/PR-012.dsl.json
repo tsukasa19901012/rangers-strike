@@ -4,7 +4,7 @@
   "name": "隠流忍術",
   "type": "operation",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "PR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 自軍ユニットがアタックされたとき発動できる⇒アタックしてきたユニット以外のユニットをすべての場からユニットを1体選んで、かわりにバトルさせる。",

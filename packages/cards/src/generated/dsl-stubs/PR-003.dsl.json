@@ -4,7 +4,7 @@
   "name": "アドベンチャー",
   "type": "operation",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "PR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※常駐（場に配置して、離れるまで効果が有効になる） 自分も相手も次の制限を受ける。ターンを終えるときホールド状態のコマンドを1つ選んで手札に戻す。",

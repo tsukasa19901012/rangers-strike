@@ -55,8 +55,7 @@ describe("RS-620 ジェットガルーダ", () => {
     expectStats("RS-620", { name: "ジェットガルーダ", category: "OT", size: "L", bp: 10000, sp: 1, powerCost: "7+", features: ["メカ", "人型", "航空機"], rushCondition: "discard_named_unit" });
   });
 
-  // 既知の不具合: CARD-RS-620 カタログのレアリティが N（atwiki はノーマルレア）
-  it.fails("RS-620: レアリティ — ノーマルレア（出典: atwiki/page-1458）", () => {
+  it("RS-620: レアリティ — ノーマルレア（出典: atwiki/page-1458）", () => {
     expectRarity("RS-620", "NR");
   });
 
@@ -207,8 +206,7 @@ describe("RS-622 グリフォーザー", () => {
     expectStats("RS-622", { name: "グリフォーザー", category: "DA", size: "S", bp: 5000, sp: undefined, powerCost: 5, features: ["男"] });
   });
 
-  // 既知の不具合: CARD-RS-622 カタログのレアリティが N（atwiki はレア）
-  it.fails("RS-622: レアリティ — レア（出典: atwiki/page-1487）", () => {
+  it("RS-622: レアリティ — レア（出典: atwiki/page-1487）", () => {
     expectRarity("RS-622", "R");
   });
 
@@ -314,8 +312,7 @@ describe("RS-624 メガウインガー・ファイターモード", () => {
     expectStats("RS-624", { name: "メガウインガー・ファイターモード", category: "ET", size: "L", bp: 9000, sp: 1, powerCost: "6+", features: ["メカ", "人型"], rushCondition: "discard_named_unit" });
   });
 
-  // 既知の不具合: CARD-RS-624 カタログのレアリティが N（atwiki はレア）
-  it.fails("RS-624: レアリティ — レア（出典: atwiki/page-1491）", () => {
+  it("RS-624: レアリティ — レア（出典: atwiki/page-1491）", () => {
     expectRarity("RS-624", "R");
   });
 
@@ -436,8 +433,7 @@ describe("RS-626 ギャラクシーメガ", () => {
     expectStats("RS-626", { name: "ギャラクシーメガ", category: "ET", size: "L", bp: 9000, sp: 1, powerCost: "7+", features: ["メカ", "人型"], rushCondition: "discard_named_unit" });
   });
 
-  // 既知の不具合: CARD-RS-626 カタログのレアリティが N（atwiki はスーパーレア）
-  it.fails("RS-626: レアリティ — スーパーレア（出典: atwiki/page-1525）", () => {
+  it("RS-626: レアリティ — スーパーレア（出典: atwiki/page-1525）", () => {
     expectRarity("RS-626", "SR");
   });
 

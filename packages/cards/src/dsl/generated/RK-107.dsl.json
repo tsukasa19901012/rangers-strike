@@ -4,7 +4,7 @@
   "name": "マシントルネイダー",
   "type": "vehicle",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 1,
   "text": "【硬化装甲】これにライドしているユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。",

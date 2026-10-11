@@ -6,7 +6,7 @@
       "name": "仮面ライダー龍騎",
       "type": "unit",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 6
     },
@@ -15,7 +15,7 @@
       "name": "ゼクトルーパー",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 1
     },
@@ -24,7 +24,7 @@
       "name": "仮面ライダー龍騎",
       "type": "unit",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 6
     },
@@ -33,7 +33,7 @@
       "name": "仮面ライダー電王SF",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -42,7 +42,7 @@
       "name": "デンライナーゴウカ",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "5+"
     },
@@ -51,7 +51,7 @@
       "name": "シャドームーン",
       "type": "unit",
       "category": "DA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 5
     },
@@ -60,7 +60,7 @@
       "name": "モモタロス",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 1
     },
@@ -69,7 +69,7 @@
       "name": "ライダーマン",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 2
     },
@@ -78,7 +78,7 @@
       "name": "仮面ライダーV3",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 5
     },
@@ -87,7 +87,7 @@
       "name": "ウエイクアップ！",
       "type": "operation",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -96,7 +96,7 @@
       "name": "クライマックス刑事",
       "type": "operation",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 0
     },
@@ -105,7 +105,7 @@
       "name": "仮面ライダー龍騎サバイブ",
       "type": "unit",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "10-"
     },
@@ -114,7 +114,7 @@
       "name": "変身音叉 音角",
       "type": "operation",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 2
     },
@@ -123,7 +123,7 @@
       "name": "仮面ライダーキバEF",
       "type": "unit",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "6+"
     },
@@ -132,7 +132,7 @@
       "name": "ジライヤ",
       "type": "unit",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 5
     },
@@ -141,7 +141,7 @@
       "name": "ボウケンレッド",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -150,7 +150,7 @@
       "name": "ダイボウケン",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "7+"
     },
@@ -159,7 +159,7 @@
       "name": "アドベンチャー",
       "type": "operation",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -168,7 +168,7 @@
       "name": "バルイーグル",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 4
     },
@@ -177,7 +177,7 @@
       "name": "デカレンジャーロボ",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "8+"
     },
@@ -186,7 +186,7 @@
       "name": "デカレッド",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -195,7 +195,7 @@
       "name": "アカレンジャー",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "SR",
       "expansion": "wiki_stub",
       "powerCost": 6
     },
@@ -204,7 +204,7 @@
       "name": "バイオハンター・シルバ",
       "type": "unit",
       "category": "DA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 2
     },
@@ -213,7 +213,7 @@
       "name": "サンバルカンロボ",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "6+"
     },
@@ -222,7 +222,7 @@
       "name": "ゴレンジャーストーム",
       "type": "operation",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 8
     },
@@ -231,7 +231,7 @@
       "name": "ボウケンレッド",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -240,7 +240,7 @@
       "name": "隠流忍術",
       "type": "operation",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 4
     },
@@ -249,7 +249,7 @@
       "name": "スーパーダイボウケン",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "7+"
     },
@@ -258,7 +258,7 @@
       "name": "ダークナイト",
       "type": "unit",
       "category": "DA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 5
     },
@@ -267,7 +267,7 @@
       "name": "バイオロボ",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "6+"
     },
@@ -276,7 +276,7 @@
       "name": "アバレッドAM",
       "type": "unit",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "7-"
     },
@@ -285,7 +285,7 @@
       "name": "ゲキレッド",
       "type": "unit",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -294,7 +294,7 @@
       "name": "ゲキトージャ",
       "type": "unit",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "6+"
     },
@@ -303,7 +303,7 @@
       "name": "レッドファルコン",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -312,7 +312,7 @@
       "name": "タイムレッド",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 4
     },
@@ -321,7 +321,7 @@
       "name": "激気",
       "type": "operation",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 0
     },
@@ -330,7 +330,7 @@
       "name": "ゴーオンレッド",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 1
     },
@@ -339,7 +339,7 @@
       "name": "シュリケンジャー",
       "type": "unit",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "3+"
     },
@@ -348,7 +348,7 @@
       "name": "デカブレイク",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 4
     },
@@ -357,7 +357,7 @@
       "name": "スーパーハイウェイバスター",
       "type": "operation",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 2
     },
@@ -366,7 +366,7 @@
       "name": "デカマスター（2nd）",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "7-"
     },
@@ -375,7 +375,7 @@
       "name": "黒獅子リオ",
       "type": "unit",
       "category": "DA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 1
     },
@@ -384,7 +384,7 @@
       "name": "蒸着",
       "type": "operation",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 4
     },
@@ -393,7 +393,7 @@
       "name": "赤射",
       "type": "operation",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 2
     },
@@ -402,7 +402,7 @@
       "name": "焼結",
       "type": "operation",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 3
     },
@@ -411,7 +411,7 @@
       "name": "巨獣特捜",
       "type": "operation",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 8
     },
@@ -420,7 +420,7 @@
       "name": "ダブルスナイパー",
       "type": "operation",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 6
     },
@@ -429,7 +429,7 @@
       "name": "怒（いか）る！",
       "type": "operation",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 6
     },
@@ -438,7 +438,7 @@
       "name": "世界忍者戦",
       "type": "operation",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 6
     },
@@ -447,7 +447,7 @@
       "name": "対バイオロン法",
       "type": "operation",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 3
     },
@@ -456,7 +456,7 @@
       "name": "マルチパック",
       "type": "operation",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 4
     },
@@ -465,7 +465,7 @@
       "name": "ソルインジケーター",
       "type": "operation",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 2
     },
@@ -474,7 +474,7 @@
       "name": "ターボユニット-W",
       "type": "operation",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 3
     },
@@ -483,7 +483,7 @@
       "name": "JPカード",
       "type": "operation",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 4
     },
@@ -492,7 +492,7 @@
       "name": "BSフォーメーション",
       "type": "operation",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 3
     },
@@ -501,7 +501,7 @@
       "name": "ソニックフラップ",
       "type": "operation",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 5
     },
@@ -510,7 +510,7 @@
       "name": "インプットカードガン",
       "type": "operation",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 3
     },
@@ -519,7 +519,7 @@
       "name": "スターピース",
       "type": "operation",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 13
     },
@@ -528,7 +528,7 @@
       "name": "オメデトロフィー",
       "type": "operation",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "MR",
       "expansion": "legend3",
       "powerCost": 2
     },
@@ -537,7 +537,7 @@
       "name": "宇宙刑事ギャバン",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "SR",
       "expansion": "legend3",
       "powerCost": 5
     },
@@ -555,7 +555,7 @@
       "name": "電子星獣ドル",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "NR",
       "expansion": "legend3",
       "powerCost": "4+"
     },
@@ -600,7 +600,7 @@
       "name": "宇宙刑事シャリバン",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "SR",
       "expansion": "legend3",
       "powerCost": 3
     },
@@ -618,7 +618,7 @@
       "name": "バトルバースフォーメーション",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "NR",
       "expansion": "legend3",
       "powerCost": "5+"
     },
@@ -636,7 +636,7 @@
       "name": "ジャスピオン",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "SR",
       "expansion": "legend3",
       "powerCost": 2
     },
@@ -654,7 +654,7 @@
       "name": "戦闘巨人ダイレオン",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "NR",
       "expansion": "legend3",
       "powerCost": "6+"
     },
@@ -672,7 +672,7 @@
       "name": "メタルダー",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "SR",
       "expansion": "legend3",
       "powerCost": 2
     },
@@ -681,7 +681,7 @@
       "name": "暴魂トップガンダー",
       "type": "unit",
       "category": "DA",
-      "rarity": "N",
+      "rarity": "SR",
       "expansion": "legend3",
       "powerCost": 5
     },
@@ -690,7 +690,7 @@
       "name": "凱聖クールギン",
       "type": "unit",
       "category": "DA",
-      "rarity": "N",
+      "rarity": "NR",
       "expansion": "legend3",
       "powerCost": "3+"
     },
@@ -717,7 +717,7 @@
       "name": "凱聖バルスキー",
       "type": "unit",
       "category": "DA",
-      "rarity": "N",
+      "rarity": "NR",
       "expansion": "legend3",
       "powerCost": "5+"
     },
@@ -726,7 +726,7 @@
       "name": "ジライヤ第二装着",
       "type": "unit",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "SR",
       "expansion": "legend3",
       "powerCost": "7-"
     },
@@ -744,7 +744,7 @@
       "name": "城忍　フクロウ男爵",
       "type": "unit",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "NR",
       "expansion": "legend3",
       "powerCost": 2
     },
@@ -771,7 +771,7 @@
       "name": "ジャンパーソン",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "SR",
       "expansion": "legend3",
       "powerCost": 3
     },
@@ -780,7 +780,7 @@
       "name": "ガンギブソン",
       "type": "unit",
       "category": "DA",
-      "rarity": "N",
+      "rarity": "SR",
       "expansion": "legend3",
       "powerCost": 3
     },
@@ -807,7 +807,7 @@
       "name": "隊員コード153 ショウ",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "SR",
       "expansion": "legend3",
       "powerCost": 2
     },
@@ -834,7 +834,7 @@
       "name": "メガヘラクレス",
       "type": "unit",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "NR",
       "expansion": "legend3",
       "powerCost": 5
     },
@@ -870,7 +870,7 @@
       "name": "ブルービート",
       "type": "unit",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "SR",
       "expansion": "legend3",
       "powerCost": 3
     },
@@ -942,7 +942,7 @@
       "name": "仮面ライダー龍騎ブランク体",
       "type": "unit",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": 4
     },
@@ -951,7 +951,7 @@
       "name": "シャドームーン",
       "type": "unit",
       "category": "DA",
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": 5
     },
@@ -960,7 +960,7 @@
       "name": "仮面ライダーV3",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": 5
     },
@@ -969,7 +969,7 @@
       "name": "仮面ライダーファム（2nd）",
       "type": "unit",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": 4
     },
@@ -978,7 +978,7 @@
       "name": "仮面ライダークウガUF",
       "type": "unit",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": "7+"
     },
@@ -987,7 +987,7 @@
       "name": "3人の宇宙刑事",
       "type": "operation",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": 7
     },
@@ -996,7 +996,7 @@
       "name": "仮面ライダー電王超CF",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": "5+"
     },
@@ -1008,7 +1008,7 @@
         "MA",
         "DA"
       ],
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": "7+"
     },
@@ -1017,7 +1017,7 @@
       "name": "仮面ライダーW・FJ",
       "type": "unit",
       "category": "DA",
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": "4+"
     },
@@ -1029,7 +1029,7 @@
         "MA",
         "OT"
       ],
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": "4+"
     },
@@ -1041,7 +1041,7 @@
         "ET",
         "DA"
       ],
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": "5+"
     },
@@ -1050,7 +1050,7 @@
       "name": "仮面ライダーG電王",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -1059,7 +1059,7 @@
       "name": "スーパーゴセイレッド",
       "type": "unit",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": "7-"
     },
@@ -1072,7 +1072,7 @@
         "OT",
         "MA"
       ],
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": 5
     },
@@ -1084,7 +1084,7 @@
         "MA",
         "OT"
       ],
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": "0+"
     },
@@ -1096,7 +1096,7 @@
         "WB",
         "ET"
       ],
-      "rarity": "N",
+      "rarity": "SC",
       "expansion": "wiki_stub",
       "powerCost": "4+"
     },
@@ -7243,7 +7243,7 @@
       "name": "五色の戦士",
       "type": "operation",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 4
     },
@@ -7252,7 +7252,7 @@
       "name": "戦士の魂",
       "type": "operation",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 5
     },
@@ -7261,7 +7261,7 @@
       "name": "デカレッドバトライザー",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "5+"
     },
@@ -7270,7 +7270,7 @@
       "name": "仮面ライダーディケイド",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 2
     },
@@ -7279,7 +7279,7 @@
       "name": "仮面ライダーディケイドCF",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "6+"
     },
@@ -7288,7 +7288,7 @@
       "name": "侍合体",
       "type": "operation",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 7
     },
@@ -7297,7 +7297,7 @@
       "name": "仮面ライダーNEW電王SF",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 4
     },
@@ -7306,7 +7306,7 @@
       "name": "仮面ライダーNEW電王VF",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "10-"
     },
@@ -7315,7 +7315,7 @@
       "name": "仮面ライダークウガ",
       "type": "unit",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -7324,7 +7324,7 @@
       "name": "デカブルーSWAT",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "7-"
     },
@@ -7333,7 +7333,7 @@
       "name": "デカレッドSWAT",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "7-"
     },
@@ -7342,7 +7342,7 @@
       "name": "シンケンゴールド",
       "type": "unit",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 5
     },
@@ -7351,7 +7351,7 @@
       "name": "ハイパーシンケンレッド",
       "type": "unit",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "7-"
     },
@@ -7360,7 +7360,7 @@
       "name": "仮面ライダーW・CM",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "2+"
     },
@@ -7372,7 +7372,7 @@
         "ET",
         "DA"
       ],
-      "rarity": "N",
+      "rarity": "LR",
       "expansion": "wiki_stub",
       "powerCost": 6
     },
@@ -7381,7 +7381,7 @@
       "name": "仮面ライダークウガRU・レッドアイ",
       "type": "unit",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "7+"
     },
@@ -7393,7 +7393,7 @@
         "OT",
         "DA"
       ],
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 4
     },
@@ -7405,7 +7405,7 @@
         "MA",
         "ET"
       ],
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -7414,7 +7414,7 @@
       "name": "仮面ライダー1号",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 4
     },
@@ -7423,7 +7423,7 @@
       "name": "護星天使",
       "type": "operation",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 2
     },
@@ -7432,7 +7432,7 @@
       "name": "ファイナルカメンアタックフォームライド",
       "type": "operation",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "LR",
       "expansion": "wiki_stub",
       "powerCost": 25
     },
@@ -7444,7 +7444,7 @@
         "WB",
         "MA"
       ],
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -7453,7 +7453,7 @@
       "name": "ドラゴンレンジャー",
       "type": "unit",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -7462,7 +7462,7 @@
       "name": "仮面ライダー2号",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 3
     },
@@ -7471,7 +7471,7 @@
       "name": "ダイカイシンケンオー",
       "type": "unit",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "6+"
     },
@@ -7480,7 +7480,7 @@
       "name": "仮面ライダーアクセル",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 1
     },
@@ -7489,7 +7489,7 @@
       "name": "ダイノミッション",
       "type": "operation",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 5
     },
@@ -7498,7 +7498,7 @@
       "name": "ワンダーゴセイグレート",
       "type": "unit",
       "category": "MA",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "4+"
     },
@@ -7507,7 +7507,7 @@
       "name": "仮面ライダーW・CAX",
       "type": "unit",
       "category": "ET",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "5+"
     },
@@ -7516,7 +7516,7 @@
       "name": "仮面ライダーオーズ・サゴーゾコンボ",
       "type": "unit",
       "category": "WB",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": 5
     },
@@ -7528,7 +7528,7 @@
         "WB",
         "OT"
       ],
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "3+"
     },
@@ -7537,7 +7537,7 @@
       "name": "ゴーカイオー",
       "type": "unit",
       "category": "OT",
-      "rarity": "N",
+      "rarity": "PR",
       "expansion": "wiki_stub",
       "powerCost": "6+"
     }
