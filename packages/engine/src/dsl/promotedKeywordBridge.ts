@@ -99,7 +99,30 @@ export function rideMountedVehicleBpBonus(
     player.battle.find((c) => c.instanceId === vehicleInstanceId) ??
     player.rush.find((c) => c.instanceId === vehicleInstanceId);
   if (!vehicle) return 0;
-  return rideBpBoostAmount(vehicle.cardId);
+  return rideBpBoostAmount(vehicle.cardId) + riddenVehicleEnemyTurnBpBonus(state, playerId, vehicle.cardId);
+}
+
+/** ターンプレイヤー（保留中の処理があればそのフェイズのプレイヤー）。 */
+function currentTurnPlayer(state: GameState): PlayerId {
+  return (
+    state.pendingStrike?.battlePhasePlayer ??
+    state.pendingBattle?.phasePlayerId ??
+    state.pendingRush?.phasePlayerId ??
+    state.pendingLeave?.phasePlayerId ??
+    state.pendingEffectChoice?.phasePlayerId ??
+    state.activePlayer
+  );
+}
+
+/**
+ * 「これにライドしているユニットは、敵軍ターン中、BP+○○される」（RS-581 魔導馬バリキオン（2nd）【1500万馬力】atwiki/page-1195）。
+ * 文言から読み取る（DSL では ride_action の目印だけ）。
+ */
+function riddenVehicleEnemyTurnBpBonus(state: GameState, ownerId: PlayerId, vehicleCardId: string): number {
+  const text = (getDefinition(state.definitions, vehicleCardId)?.text ?? "").normalize("NFKC").replace(/\s+/g, "");
+  const m = text.match(/これにライドしているユニットは、敵軍ターン中、BP\+(\d+)される/);
+  if (!m) return 0;
+  return currentTurnPlayer(state) !== ownerId ? Number(m[1]) : 0;
 }
 
 function unitHasFeatureSlug(def: CardDefinition | undefined, slug: string): boolean {
@@ -400,13 +423,40 @@ export function decodeRideWithoutRcFeature(keyword: string): string | null {
 const RIDE_COMMAND_WITHOUT_RC_TEXT_RE =
   /^※?特徴「([^」]+)」を持つ(?:自軍)?Sユニットは、自軍コマンドを1つホールドすれば、RCを持っていなくてもこのビークルにライドできる/;
 
-type RideWithoutRcEffect = { text: string; feature: string | null; needsHold: boolean };
+/**
+ * 「※（Xを持たない）特徴「○○」を持つ（S|M|L）ユニットは、ＲＣを持っていなくてもこのビークルにライドでき（、それ以外のユニットはライドできない）」
+ * の文言（RS-570 デカバイク atwiki/page-1190・RS-575 一角聖馬ユニゴルオン atwiki/page-1240・RS-581 魔導馬バリキオン（2nd） atwiki/page-1195）。
+ * DSL で note_card 扱いのカードも文言から扱う。サイズ・除外カテゴリを読み取る。
+ */
+const RIDE_WITHOUT_RC_SIZED_TEXT_RE =
+  /^※?(?:(WB|MA|OT|ET|DA)を持たない)?特徴「([^」]+)」を持つ(S|M|L)ユニットは、RCを持っていなくてもこのビークルにライドでき/;
+
+type RideWithoutRcEffect = {
+  text: string;
+  feature: string | null;
+  needsHold: boolean;
+  /** 文言で指定されたライダーのサイズ（「Mユニットは」等）。 */
+  size?: "S" | "M" | "L";
+  /** 「DAを持たない」等、ライダーが持っていてはいけないカテゴリ。 */
+  excludedCategory?: string;
+};
 
 function rideWithoutRcEffects(vehicleCardId: string): RideWithoutRcEffect[] {
   const doc = getCardDslDocument(vehicleCardId);
   const out: RideWithoutRcEffect[] = [];
   for (const effect of doc?.effects ?? []) {
     const text = effect.text ?? "";
+    const sized = text.normalize("NFKC").replace(/\s+/g, "").match(RIDE_WITHOUT_RC_SIZED_TEXT_RE);
+    if (sized) {
+      out.push({
+        text,
+        feature: sized[2]!,
+        needsHold: false,
+        size: sized[3] as "S" | "M" | "L",
+        ...(sized[1] ? { excludedCategory: sized[1] } : {}),
+      });
+      continue;
+    }
     const keyword = effect.effects.find(
       (p): p is Extract<typeof p, { type: "grant_keyword" }> =>
         p.type === "grant_keyword" && /^ride_(?:command_)?without_rc_/.test(p.keyword),
@@ -443,6 +493,17 @@ export function riderMatchesVehicleRideWithoutRc(
   if (allowedFeatures.length === 0) return false;
   const riderDef = definitions[riderCardId];
   if (!riderDef?.features?.length) return false;
+  const sizedEffects = rideWithoutRcEffects(vehicleCardId).filter((e) => e.size);
+  if (sizedEffects.length > 0) {
+    const riderCats = Array.isArray(riderDef.category) ? riderDef.category : riderDef.category ? [riderDef.category] : [];
+    return sizedEffects.some(
+      (e) =>
+        riderDef.size === e.size &&
+        !!e.feature &&
+        riderDef.features!.includes(e.feature) &&
+        !(e.excludedCategory && riderCats.includes(e.excludedCategory as never)),
+    );
+  }
   // 「※特徴「○○」を持つ（自軍）Sユニットは、…ライドできる」— S ユニットに限る
   // （RS-381 atwiki/page-522・RS-406 atwiki/page-563）。
   if (rideWithoutRcTexts(vehicleCardId).every((t) => /Sユニットは/.test(t)) && riderDef.size !== "S") {
@@ -500,6 +561,24 @@ function riddenVehicleGrantsNoAttackFromS(
   return !m[1] || isSmallUnit(state.definitions, rider.cardId);
 }
 
+function riddenVehicleBlocksNonPlusAttacker(
+  state: GameState,
+  ownerId: PlayerId,
+  rider: { cardId: string; mountedOnInstanceId?: string },
+  attackerCardId: string,
+): boolean {
+  if (!rider.mountedOnInstanceId) return false;
+  const owner = state.players[ownerId];
+  const vehicle = [...owner.battle, ...owner.rush].find((c) => c.instanceId === rider.mountedOnInstanceId);
+  if (!vehicle) return false;
+  const text = (getDefinition(state.definitions, vehicle.cardId)?.text ?? "").normalize("NFKC");
+  const m = text.match(/これにライドしている(S|M|L)?ユニットは、必要パワーに「\+」を持たないユニットにアタックされない/);
+  if (!m) return false;
+  if (m[1] && getDefinition(state.definitions, rider.cardId)?.size !== m[1]) return false;
+  const cost = getDefinition(state.definitions, attackerCardId)?.powerCost;
+  return !(typeof cost === "string" && cost.normalize("NFKC").includes("+"));
+}
+
 /** 守備側の昇格キーワードでアタック不可なら true。 */
 export function promotedDefenderBlocksAttack(
   state: GameState,
@@ -534,6 +613,11 @@ export function promotedDefenderBlocksAttack(
     isSmallUnit(state.definitions, attacker.card.cardId) &&
     riddenVehicleGrantsNoAttackFromS(state, defenderPlayerId, defender.card)
   ) {
+    return true;
+  }
+
+  // 「これにライドしているLユニットは、必要パワーに「＋」を持たないユニットにアタックされない」（RS-570【ウィリー走行】atwiki/page-1190）。
+  if (riddenVehicleBlocksNonPlusAttacker(state, defenderPlayerId, defender.card, attacker.card.cardId)) {
     return true;
   }
 

@@ -1,3 +1,5 @@
+import { currentShuffleEpoch } from "./deckShuffle";
+import { applySwordTornadoAfterShuffle } from "../rules/legend1/set8NamedEffectsC";
 import {
   applySet7AStrikeCounter,
   applySet7AStrikeDamageTriggers,
@@ -817,6 +819,8 @@ export function applyAction(
   // RS-359【最後の手段】: 山札の候補をラッシュエリアに置いた状態で、手札からのラッシュの手続きを始める
   // （rules/legend1/icyLastResort.ts。手続きが終わったら settleIcyPhantoms で片付ける）。
   const icyState = applyActionDepth === 0 ? icyStateForAction(state, action, isLegalActionBase) : null;
+  // RS-571【ソードトルネード】: このアクションの間に山札がシャッフルされたか（core/deckShuffle.ts）。
+  const shuffleEpochAtStart = currentShuffleEpoch();
   if (icyState) state = icyState;
   applyActionDepth += 1;
   let result: ActionResult;
@@ -858,6 +862,8 @@ export function applyAction(
   // RS-255 巨大化爆弾: 敵軍ターン中に「怪人」の自軍ユニットが撃破されて捨札になったとき。
   next = openGiantBombWindow(state, next);
   next = applyBpZeroRuleDestruction(next);
+  // RS-571 デカバイクロボ【ソードトルネード】: 自分か相手の山札がシャッフルされたとき、そのターン中「SP1」になる。
+  if (applyActionDepth === 0) next = applySwordTornadoAfterShuffle(next, shuffleEpochAtStart);
   // RS-319 デカマスター ※: 自軍ラッシュフェイズ中、条件を満たせば即座に手札に戻る（進行中の処理がないとき）。
   if (!hasBlockingInteraction(next)) next = applyDekaMasterReturn(next);
   // RS-325【マジチケット】: 発動したカードが捨札になったら「かわりに」の選択を開く。

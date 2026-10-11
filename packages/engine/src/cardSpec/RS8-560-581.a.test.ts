@@ -195,8 +195,7 @@ describe("RS-562 ガオソーシャーク", () => {
     expect(attackTargets(s, "RS-562:sh")).not.toContain("TST-UNIT-0:eb");
   });
 
-  // 既知の不具合: CARD-RS-562 敵軍ラッシュエリアのユニットにアタックできる※が未実装（アタック先がまったくない）
-  it.fails("RS-562: ※ 自軍捨札のユニットカードと同じ必要パワーの数字を持つ敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-1182）", () => {
+  it("RS-562: ※ 自軍捨札のユニットカードと同じ必要パワーの数字を持つ敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-1182）", () => {
     const s = shark([inst("TST-UNIT-2", "d")], { rush: [inst("TST-UNIT-2", "er2"), inst("TST-UNIT-0", "er0")] });
     expect(attackTargets(s, "RS-562:sh").sort()).toEqual(["TST-UNIT-2:er2"]);
   });
@@ -217,8 +216,7 @@ describe("RS-562 ガオソーシャーク", () => {
     expect(attackTargets(s, "RS-562:sh")).toEqual([]);
   });
 
-  // 既知の不具合: CARD-RS-562 敵軍ラッシュエリアのユニットにアタックできる※が未実装（アタック先がまったくない）
-  it.fails("RS-562: ※ 必要パワー「7+」は数字 7 として一致を判定する（出典: atwiki/page-1182「必要パワーの数字」・R-ADD-01）", () => {
+  it("RS-562: ※ 必要パワー「7+」は数字 7 として一致を判定する（出典: atwiki/page-1182「必要パワーの数字」・R-ADD-01）", () => {
     const s = shark([inst("TST-UNIT-7", "d")], { rush: [inst("TST-UNIT-7", "er7")] });
     expect(attackTargets(s, "RS-562:sh")).toEqual(["TST-UNIT-7:er7"]);
   });
@@ -243,8 +241,7 @@ describe("RS-563 ガオバッファロー", () => {
       ["TST-OP:cWB0"],
     );
 
-  // 既知の不具合: CARD-RS-563 敵軍ラッシュエリアのユニットが候補には入るが、合法手として選べない
-  it.fails("RS-563: 【突き上げる角】候補は必要パワーの数字が敵軍ダメージ以下の敵軍ユニット（ラッシュエリアを含む・等しい数字も可）（出典: atwiki/page-1183「必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない」）", () => {
+  it("RS-563: 【突き上げる角】候補は必要パワーの数字が敵軍ダメージ以下の敵軍ユニット（ラッシュエリアを含む・等しい数字も可）（出典: atwiki/page-1183「必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない」）", () => {
     const s = entered({ battle: [inst("TST-UNIT-0", "e0"), inst("TST-UNIT-2", "e2")], rush: [inst("TST-UNIT-0", "r0"), inst("TST-UNIT-7", "e7")], ...dmg(2) });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-563");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e0", "TST-UNIT-0:r0", "TST-UNIT-2:e2"]);
@@ -254,16 +251,14 @@ describe("RS-563 ガオバッファロー", () => {
     }
   });
 
-  // 既知の不具合: CARD-RS-563 選んだユニットをその場でホールドせず、敵軍コマンドゾーンに（ホールド状態で）移してしまう
-  it.fails("RS-563: 【突き上げる角】選んだ敵軍バトルエリアのユニットをホールドする（出典: atwiki/page-1183「敵軍ユニットを1体選びホールドしてもよい」）", () => {
+  it("RS-563: 【突き上げる角】選んだ敵軍バトルエリアのユニットをホールドする（出典: atwiki/page-1183「敵軍ユニットを1体選びホールドしてもよい」）", () => {
     let s = entered({ battle: [inst("TST-UNIT-0", "e0")], ...dmg(2) });
     s = pick(s, "TST-UNIT-0:e0");
     expect(s.players.player2.battle.find((c) => c.instanceId === "TST-UNIT-0:e0")?.commandHeld).toBe(true);
     expect(zoneOf(s, "player2", "TST-UNIT-0:e0")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-563 敵軍ラッシュエリアのユニットを選べない（候補には入るが合法手にならない）
-  it.fails("RS-563: 【突き上げる角】敵軍ラッシュエリアのユニットも選んでホールドできる（出典: atwiki/page-1183「敵軍ユニットを1体選び」— 場所の限定なし）", () => {
+  it("RS-563: 【突き上げる角】敵軍ラッシュエリアのユニットも選んでホールドできる（出典: atwiki/page-1183「敵軍ユニットを1体選び」— 場所の限定なし）", () => {
     let s = entered({ battle: [inst("TST-UNIT-7", "e7")], rush: [inst("TST-UNIT-0", "r0")], ...dmg(1) });
     s = pick(s, "TST-UNIT-0:r0");
     expect(s.players.player2.rush.find((c) => c.instanceId === "TST-UNIT-0:r0")?.commandHeld).toBe(true);
@@ -367,8 +362,7 @@ describe("RS-565 轟雷旋風神", () => {
     expect(zoneOf(t, "player2", "TST-UNIT-0:s1")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-565 【ローリングサンダーハリケーン】が「敵軍バトルエリアのユニット1体を選ぶ」効果になっており、敵軍ラッシュエリアの S ユニットをすべて戻さず、相手の手札→山札もない
-  it.fails("RS-565: 【ローリングサンダーハリケーン】敵軍ラッシュエリアの S ユニットをすべて手札に戻し、相手が手札から1枚選んで山札に戻す（M ユニット・バトルエリアの S ユニットは残る）（出典: atwiki/page-1187）", () => {
+  it("RS-565: 【ローリングサンダーハリケーン】敵軍ラッシュエリアの S ユニットをすべて手札に戻し、相手が手札から1枚選んで山札に戻す（M ユニット・バトルエリアの S ユニットは残る）（出典: atwiki/page-1187）", () => {
     let s = entered();
     // 戻す（任意効果の承認）
     const accept = legal(s).find((a) => a.type === "confirm_effect_choice" || a.type === "resolve_effect_choice");
@@ -481,8 +475,7 @@ describe("RS-566 天雷旋風神", () => {
     expect(canStartRush(rushState(["RS-567", "RS-095", "RS-309", "RS-481"], 7), "player1", "RS-566:tr")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-566 【絶対究極奥義アルティマストーム】が未実装（ログだけ出て、ユニットもコマンドも山札に戻らない）
-  it.fails("RS-566: 【絶対究極奥義アルティマストーム】ラッシュしたとき、これ以外のすべてのユニットとすべてのコマンドゾーンのカードを持ち主の山札に戻す（出典: atwiki/page-1229）", () => {
+  it("RS-566: 【絶対究極奥義アルティマストーム】ラッシュしたとき、これ以外のすべてのユニットとすべてのコマンドゾーンのカードを持ち主の山札に戻す（出典: atwiki/page-1229）", () => {
     const r = rushFromHand(rushState(["RS-567", "RS-095", "RS-309", "RS-481"]), "player1", "RS-566:tr");
     expect(r.ok).toBe(true);
     const t = resolveAll(r.state);

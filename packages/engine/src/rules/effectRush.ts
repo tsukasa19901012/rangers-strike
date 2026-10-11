@@ -8,6 +8,7 @@
  *   1枚出すごとに「ラッシュしたとき」誘発と「ラッシュされたとき」窓を処理し（R-RUSH-22, R-RUSH-30）、
  *   窓が閉じてから次の1枚に進む。
  */
+import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { cardHasCategory, getZordCondition, isZordUpCost, MOTHERSHIP_CONFIG } from "@rangers-strike/cards";
 import type {
@@ -504,12 +505,7 @@ function activateIcy(state: GameState, icyInstanceId: string): GameState {
 }
 
 function shuffledDeck(cards: CardInstance[]): CardInstance[] {
-  const copy = [...cards];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
-  }
-  return copy;
+  return shuffleDeckCards(cards);
 }
 
 /** 山札から選んだ素材のカードを捨札にし（捨札にしたことにする）、山札をシャッフルする。 */

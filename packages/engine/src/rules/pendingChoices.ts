@@ -1,3 +1,4 @@
+import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import { redRacerPowerCostBonus } from "../core/power";
 import { isSet6LowChoiceEffect, tryResolveSet6LowChoice, trySkipSet6LowChoice } from "./legend1/set6NamedEffects348";
 import {
@@ -148,6 +149,7 @@ import {
   trySkipSet7BChoice,
 } from "./legend1/set7NamedEffectsB";
 import { isSet7CChoiceEffect, tryResolveSet7CChoice, trySkipSet7CChoice } from "./legend1/set7NamedEffectsC";
+import { isSet8CChoiceEffect, tryConfirmSet8CChoice, tryResolveSet8CChoice, trySkipSet8CChoice } from "./legend1/set8NamedEffectsC";
 import {
   isSet5AuditChoiceEffect,
   tryResolveSet5AuditChoice,
@@ -627,6 +629,7 @@ export function isValidEffectChoiceTarget(
     isSet6BChoiceEffect(pending.effectId) ||
     isSet7BChoiceEffect(pending.effectId) ||
     isSet7CChoiceEffect(pending.effectId) ||
+    isSet8CChoiceEffect(pending.effectId) ||
     isSet7DChoiceEffect(pending.effectId) ||
     isSet8DChoiceEffect(pending.effectId) ||
     isSet8BChoiceEffect(pending.effectId) ||
@@ -1767,12 +1770,7 @@ export function startOnRushDeckResidentChoice(
 }
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
-  const copy = [...deck];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
-  }
-  return copy;
+  return shuffleDeckCards(deck);
 }
 
 /** RS-178 sagas_sniper: 山札全体を確認；対象ユニット1枚を選択（パワーコスト ≤ 上限）、その後シャッフル。 */
@@ -1995,6 +1993,8 @@ export function applyConfirmEffectChoice(
   if (set7a) return set7a;
   const set7b = tryConfirmSet7BChoice(state, playerId);
   if (set7b) return set7b;
+  const set8c = tryConfirmSet8CChoice(state, playerId);
+  if (set8c) return set8c;
   if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
     // RS-472【現場への搬送】: 「…まで好きな数選び」— 選んだところで確定し、山札をシャッフルする。
     return finishChoice(finishSiteTransportDeck(state, pending), pending, String(pending.selectedInstanceIds?.length ?? 0));
@@ -2892,6 +2892,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set7b) return set7b;
   const set7c = trySkipSet7CChoice(state, playerId);
   if (set7c) return set7c;
+  const set8c = trySkipSet8CChoice(state, playerId);
+  if (set8c) return set8c;
   const set7d = trySkipSet7DChoice(state, playerId);
   if (set7d) return set7d;
   const set8d = trySkipSet8DChoice(state, playerId);
@@ -3170,6 +3172,8 @@ export function applyEffectChoiceSelect(
   if (set7b) return set7b;
   const set7c = tryResolveSet7CChoice(state, playerId, instanceId);
   if (set7c) return set7c;
+  const set8c = tryResolveSet8CChoice(state, playerId, instanceId);
+  if (set8c) return set8c;
   const set7d = tryResolveSet7DChoice(state, playerId, instanceId);
   if (set7d) return set7d;
   const set8d = tryResolveSet8DChoice(state, playerId, instanceId);

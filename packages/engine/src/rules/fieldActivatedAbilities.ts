@@ -22,6 +22,7 @@ import { canActivateMagRepair, openMagRepair } from "./legend1/set5NamedEffectsA
 import { beginAllAboard, canActivateAllAboard } from "./legend1/set6NamedEffects348";
 import { beginHoldToActivate, canActivateHoldToActivate, isHoldToActivateNc } from "./holdToActivate";
 import { activateHoldReturnSelf, canActivateHoldReturnSelf, holdReturnSelfCount } from "./legend1/set7NamedEffectsA";
+import { beginFusionCall, canActivateFusionCall } from "./legend1/set8NamedEffectsC";
 
 type FieldZone = "rush" | "battle";
 
@@ -393,6 +394,19 @@ ABILITIES.push({
   matches: (cardId) => holdReturnSelfCount(cardId) > 0,
   canActivate: (state, playerId, card) => canActivateHoldReturnSelf(state, playerId, card),
   resolve: (state, playerId, card) => activateHoldReturnSelf(state, playerId, card),
+});
+
+// RS-568 風雷丸【各々方、合体で御座る！】: 自軍ラッシュフェイズ中、手札のメカ L を見せ、合体ユニットの M を手札から出す
+// （rules/legend1/set8NamedEffectsC.ts）。回数の制限はない（手札のカードを使うかぎり何度でも）。
+ABILITIES.push({
+  cardId: "RS-568",
+  effectId: "rs568_fusion_call",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  discardSelf: false,
+  repeatable: true,
+  canActivate: (state, playerId, card) => canActivateFusionCall(state, playerId, card),
+  resolve: (state, playerId, card) => beginFusionCall(state, playerId, card),
 });
 
 function abilityFor(cardId: string): FieldActivatedAbility | undefined {

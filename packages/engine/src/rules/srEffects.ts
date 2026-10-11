@@ -1,3 +1,4 @@
+import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { Category } from "@rangers-strike/cards";
 import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
 import { activeNamedEffect } from "./ncGatedEffects";
@@ -17,12 +18,7 @@ import { collectPowerIds, openEffectChoice } from "./pendingChoices";
 const BIG_BATON_FEATURES = ["レッド", "ブルー", "グリーン", "ピンク"] as const;
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
-  const next = [...deck];
-  for (let i = next.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [next[i], next[j]] = [next[j]!, next[i]!];
-  }
-  return next;
+  return shuffleDeckCards(deck);
 }
 
 function playerZones(player: GameState["players"][PlayerId]): CardInstance[] {

@@ -90,8 +90,7 @@ describe("RS-567 トライコンドル", () => {
     return settle(attack(s, "SPEC-BIG:atk", `${target}:t`, "player2"));
   };
 
-  // 既知の不具合: CARD-RS-567 【カラクリ忍法・消身の術】が未実装（撃破された合体 L ユニットはそのまま捨札になり、選択がない）
-  it.fails("RS-567: 【消身の術】敵軍ターン中に撃破された合体を必要とする自軍 L ユニット（旋風神）を、捨札にするかわりに自軍パワーゾーンに送れる（出典: atwiki/page-1188「捨札にするかわりに自軍パワーゾーンに送ってもよい」）", () => {
+  it("RS-567: 【消身の術】敵軍ターン中に撃破された合体を必要とする自軍 L ユニット（旋風神）を、捨札にするかわりに自軍パワーゾーンに送れる（出典: atwiki/page-1188「捨札にするかわりに自軍パワーゾーンに送ってもよい」）", () => {
     let s = destroyed("RS-095");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-567");
     const accept = legal(s).find((a) => a.type === "confirm_effect_choice" || a.type === "resolve_effect_choice");
@@ -100,8 +99,7 @@ describe("RS-567 トライコンドル", () => {
     expect(s.players.player1.power.find((c) => c.instanceId === "RS-095:t")?.faceDown ?? false).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-567 【カラクリ忍法・消身の術】が未実装（パワーゾーンに送る選択がないため、ターン終了時にラッシュエリアに出せない）
-  it.fails("RS-567: 【消身の術】相手がそのターンを終えたとき、パワーゾーンにオモテ向きで残っていれば自軍ラッシュエリアに出せる（出典: atwiki/page-1188「相手がそのターンを終えたとき、…自軍ラッシュエリアに出してもよい」）", () => {
+  it("RS-567: 【消身の術】相手がそのターンを終えたとき、パワーゾーンにオモテ向きで残っていれば自軍ラッシュエリアに出せる（出典: atwiki/page-1188「相手がそのターンを終えたとき、…自軍ラッシュエリアに出してもよい」）", () => {
     let s = destroyed("RS-095");
     const accept = legal(s).find((a) => a.type === "confirm_effect_choice" || a.type === "resolve_effect_choice");
     s = resolveAll(act(s, accept!));
@@ -112,8 +110,7 @@ describe("RS-567 トライコンドル", () => {
     expect(zoneOf(s, "player1", "RS-095:t")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-567 【カラクリ忍法・消身の術】が未実装（任意の選択自体が出ない）
-  it.fails("RS-567: 【消身の術】任意 — パワーゾーンに送らないことを選べ、そのときは捨札になる（出典: atwiki/page-1188「送ってもよい」）", () => {
+  it("RS-567: 【消身の術】任意 — パワーゾーンに送らないことを選べ、そのときは捨札になる（出典: atwiki/page-1188「送ってもよい」）", () => {
     let s = destroyed("RS-095");
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));
@@ -170,21 +167,66 @@ describe("RS-568 風雷丸", () => {
       player2: { deck: deckCards(3, "e") },
     });
 
-  // 既知の不具合: CARD-RS-568 【各々方、合体で御座る！】が未実装（ラッシュフェイズに起動する手段がない）
-  it.fails("RS-568: 【各々方、合体で御座る！】自軍ラッシュフェイズ中、手札のメカ L ユニット（轟雷旋風神）を見せ、表記された合体ユニットと同名の M ユニットを手札から出す行動がある（出典: atwiki/page-1189）", () => {
+  it("RS-568: 【各々方、合体で御座る！】自軍ラッシュフェイズ中、手札のメカ L ユニット（轟雷旋風神）を見せ、表記された合体ユニットと同名の M ユニットを手札から出す行動がある（出典: atwiki/page-1189）", () => {
     const s = rushPhase();
     expect(legal(s).some((a) => JSON.stringify(a).includes("RS-568:fu") || (JSON.stringify(a).includes("RS-565:gs") && a.type !== "initiate_command_payment"))).toBe(true);
   });
 
-  it.todo(
-    "RS-568: 【各々方、合体で御座る！】出したあと、見せた L ユニットのカードを自軍パワーゾーンにダメージにして置く（出典: atwiki/page-1189「そうしたとき、相手に見せたLユニットのカードを、自軍パワーゾーンにダメージにして置く」）— 効果が未実装で公開 API に起動手段がないため",
-  );
-  it.todo(
-    "RS-568: 公式Q&A — 轟雷旋風神を見せる場合、手札に風雷丸・ハリケンホーク・ハリケンレオン・ハリケンドルフィン・ゴウライビートル・ゴウライスタッグがそれぞれ最低1枚ずつ必要（出典: grnrngr/faq-card-8 RS-565 Q2「はい、その通りです。」）— 効果が未実装で公開 API に起動手段がないため",
-  );
-  it.todo(
-    "RS-568: 公式Q&A — ハリケン3体を旋風神として参照し、風雷丸・ゴウライビートル・ゴウライスタッグの3体だけを出すこともできる（出典: grnrngr/faq-card-8 RS-565 Q3「はい、可能です。」）— 効果が未実装で公開 API に起動手段がないため",
-  );
+  /** 【各々方、合体で御座る！】を起動して、手札の L（reveal）を見せる。 */
+  const reveal = (s: GameState, l = "RS-565:gs") => {
+    let t = act(s, { type: "activate_field_unit_ability", playerId: "player1", unitInstanceId: "RS-568:fu" });
+    expect(t.pendingEffectChoice?.sourceCardId).toBe("RS-568");
+    expect(t.pendingEffectChoice?.validInstanceIds).toContain(l);
+    t = pick(t, l);
+    return t;
+  };
+
+  it("RS-568: 【各々方、合体で御座る！】手札の M ユニットを出したあと、見せた L ユニットのカードを自軍パワーゾーンにダメージにして置く（出典: atwiki/page-1189「そうしたとき、相手に見せたLユニットのカードを、自軍パワーゾーンにダメージにして置く」）", () => {
+    let s = reveal(rushPhase());
+    for (const id of ["RS-568:f2", "RS-096:h", "RS-097:l", "RS-098:d", "RS-310:b", "RS-311:s"]) s = pick(s, id);
+    s = resolveAll(confirm(s));
+    for (const id of ["RS-568:f2", "RS-096:h", "RS-097:l", "RS-098:d", "RS-310:b", "RS-311:s"]) expect(zoneOf(s, "player1", id)).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-565:gs")).toBe("power");
+    expect(s.players.player1.power.find((c) => c.instanceId === "RS-565:gs")?.faceDown).toBe(true);
+    expect(s.players.player1.damage).toBe(1);
+  });
+
+  it("RS-568: 【各々方、合体で御座る！】任意 — 見せる L を選ばないこともでき、そのときは何も起きない（出典: atwiki/page-1189「出してもよい」）", () => {
+    let s = act(rushPhase(), { type: "activate_field_unit_ability", playerId: "player1", unitInstanceId: "RS-568:fu" });
+    expect(canSkip(s)).toBe(true);
+    s = skip(s);
+    expect(zoneOf(s, "player1", "RS-565:gs")).toBe("hand");
+    expect(s.players.player1.rush).toHaveLength(1);
+  });
+
+  // grnrngr/faq-card-8 RS-565 Q2「はい、その通りです。」
+  it("RS-568: 公式Q&A — 轟雷旋風神を見せてハリケン3体の組み合わせで出すなら、手札に風雷丸・ハリケンホーク・ハリケンレオン・ハリケンドルフィン・ゴウライビートル・ゴウライスタッグがそれぞれ必要（ドルフィンがなければハリケンは出せない）（出典: grnrngr/faq-card-8 RS-565 Q2）", () => {
+    const base = rushPhase();
+    const s0: GameState = {
+      ...base,
+      players: { ...base.players, player1: { ...base.players.player1, hand: base.players.player1.hand.filter((c) => c.instanceId !== "RS-098:d") } },
+    };
+    const s = reveal(s0);
+    expect(choiceIds(s)).toEqual(["RS-310:b", "RS-311:s", "RS-568:f2"]);
+  });
+
+  // grnrngr/faq-card-8 RS-565 Q3「はい、可能です。」
+  it("RS-568: 公式Q&A — ハリケン3体を「旋風神」として参照し、風雷丸・ゴウライビートル・ゴウライスタッグの3体だけを出すこともできる（出典: grnrngr/faq-card-8 RS-565 Q3）", () => {
+    let s = reveal(rushPhase());
+    for (const id of ["RS-568:f2", "RS-310:b", "RS-311:s"]) s = pick(s, id);
+    expect(legal(s).some((a) => a.type === "confirm_effect_choice")).toBe(true);
+    s = resolveAll(confirm(s));
+    for (const id of ["RS-568:f2", "RS-310:b", "RS-311:s"]) expect(zoneOf(s, "player1", id)).toBe("rush");
+    for (const id of ["RS-096:h", "RS-097:l", "RS-098:d"]) expect(zoneOf(s, "player1", id)).toBe("hand");
+    expect(zoneOf(s, "player1", "RS-565:gs")).toBe("power");
+  });
+
+  it("RS-568: 【各々方、合体で御座る！】組み合わせの M ユニットをそろえるまでは確定できない（出典: atwiki/page-1189「それぞれ1枚ずつ選び」）", () => {
+    let s = reveal(rushPhase());
+    s = pick(s, "RS-568:f2");
+    s = pick(s, "RS-310:b");
+    expect(legal(s).some((a) => a.type === "confirm_effect_choice")).toBe(false);
+  });
 
   it("RS-568: 【各々方、合体で御座る！】自軍ラッシュフェイズ以外（バトルフェイズ）には使えない（出典: atwiki/page-1189「自軍ラッシュフェイズ中、」）", () => {
     const s = st({ player1: { hand: [inst("RS-565", "gs"), inst("RS-568", "f2"), inst("RS-310", "b"), inst("RS-311", "s")], rush: [inst("RS-568", "fu")], deck: deckCards(3) } });
@@ -262,22 +304,19 @@ describe("RS-569 スーパーデカレンジャーロボ", () => {
     expect(spOf(s, "player1", "RS-569:sd")).toBe(2);
   });
 
-  // 既知の不具合: CARD-RS-569 【ガトリングパンチ】が未実装（承認してもパワーを選べず、何も捨札にならない）
-  it.fails("RS-569: 【ガトリングパンチ】オモテ向きのパワーを6枚捨札にすると、このターン SP+2（SP4）になる（出典: atwiki/page-1230「捨札にしたカード3枚につき「SP+1」」）", () => {
+  it("RS-569: 【ガトリングパンチ】オモテ向きのパワーを6枚捨札にすると、このターン SP+2（SP4）になる（出典: atwiki/page-1230「捨札にしたカード3枚につき「SP+1」」）", () => {
     const s = gatling(entered(7), 6);
     expect(s.players.player1.discard).toHaveLength(6);
     expect(spOf(s, "player1", "RS-569:sd")).toBe(4);
   });
 
-  // 既知の不具合: CARD-RS-569 【ガトリングパンチ】が未実装（承認してもパワーを選べず、何も捨札にならない）
-  it.fails("RS-569: 【ガトリングパンチ】5枚なら3枚につき1回だけ数え、SP+1（SP3）（出典: atwiki/page-1230「3枚につき」）", () => {
+  it("RS-569: 【ガトリングパンチ】5枚なら3枚につき1回だけ数え、SP+1（SP3）（出典: atwiki/page-1230「3枚につき」）", () => {
     const s = gatling(entered(7), 5);
     expect(s.players.player1.discard).toHaveLength(5);
     expect(spOf(s, "player1", "RS-569:sd")).toBe(3);
   });
 
-  // 既知の不具合: CARD-RS-569 【ガトリングパンチ】が未実装（パワーを選ぶ選択がない）
-  it.fails("RS-569: 【ガトリングパンチ】選べるのはオモテ向きの自軍パワーだけ（ウラ向きのダメージは選べない）（出典: atwiki/page-1230「オモテ向きの自軍パワー」）", () => {
+  it("RS-569: 【ガトリングパンチ】選べるのはオモテ向きの自軍パワーだけ（ウラ向きのダメージは選べない）（出典: atwiki/page-1230「オモテ向きの自軍パワー」）", () => {
     let s = entered(2, 2);
     if (s.pendingEffectChoice?.kind === "confirm") s = confirm(s);
     expect(choiceIds(s)).toEqual(["TST-P:pw0", "TST-P:pw1"]);
@@ -348,8 +387,7 @@ describe("RS-570 デカバイク", () => {
       [DA_HUMAN_L, HUMAN_M],
     );
 
-  // 既知の不具合: CARD-RS-570 RC なしでライドできる※が未実装（「人型」の L ユニットでもライドできない）
-  it.fails("RS-570: ※ DA を持たない「人型」の L ユニット（旋風神）は RC がなくてもライドできる（出典: atwiki/page-1190「ＲＣを持っていなくてもこのビークルにライドでき」・R-KW-RIDE-02）", () => {
+  it("RS-570: ※ DA を持たない「人型」の L ユニット（旋風神）は RC がなくてもライドできる（出典: atwiki/page-1190「ＲＣを持っていなくてもこのビークルにライドでき」・R-KW-RIDE-02）", () => {
     expect(rideOptions(rideState())).toContain("RS-095:hu>RS-570:v");
   });
 
@@ -375,8 +413,7 @@ describe("RS-570 デカバイク", () => {
       player2: { battle: [inst("TST-UNIT-2", "c2"), inst("TST-UNIT-7", "c7")], deck: deckCards(3, "e") },
     });
 
-  // 既知の不具合: CARD-RS-570 【ウィリー走行】が未実装（ライドしている L ユニットが「＋」なしのユニットにアタックされる）
-  it.fails("RS-570: 【ウィリー走行】ライドしている L ユニットは、必要パワーに「＋」を持たないユニットにアタックされない（出典: atwiki/page-1190「必要パワーに「＋」を持たないユニットにアタックされない」）", () => {
+  it("RS-570: 【ウィリー走行】ライドしている L ユニットは、必要パワーに「＋」を持たないユニットにアタックされない（出典: atwiki/page-1190「必要パワーに「＋」を持たないユニットにアタックされない」）", () => {
     expect(attackTargets(riding(), "TST-UNIT-2:c2", "player2")).not.toContain("RS-095:hu");
   });
 
@@ -407,9 +444,9 @@ describe("RS-571 デカバイクロボ", () => {
   const rushState = (withBike: boolean, power = 6) =>
     st({ phase: "rush", player1: { hand: [inst("RS-571", "br")], rush: withBike ? [inst("RS-570", "v")] : [inst("TST-UNIT-0", "x")], command: releasedCat("OT", 1), power: powerCards(power), deck: deckCards(3) } });
 
-  // 既知の不具合: CARD-RS-571 追加条件の素材にビークルの「デカバイク」を選べず、ラッシュできない
-  it.fails("RS-571: 追加条件 — 自軍「デカバイク」1体を捨札にしてラッシュできる（出典: atwiki/page-1214「追加条件：自軍「デカバイク」1体を捨札にする」）", () => {
-    const r = rushVia(rushState(true), "player1", "RS-571:br");
+  // 素材（「デカバイク」）はゾード手順（begin_zord_setup → 素材の選択）で選ぶ（rushFromHand が手順を進める）。
+  it("RS-571: 追加条件 — 自軍「デカバイク」1体を捨札にしてラッシュできる（出典: atwiki/page-1214「追加条件：自軍「デカバイク」1体を捨札にする」）", () => {
+    const r = rushFromHand(rushState(true), "player1", "RS-571:br", { materials: ["RS-570:v"] });
     expect(r.ok).toBe(true);
     const t = resolveAll(r.state);
     expect(zoneOf(t, "player1", "RS-571:br")).toBe("rush");
@@ -439,8 +476,7 @@ describe("RS-571 デカバイクロボ", () => {
     expect(spOf(s, "player1", "RS-571:br")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-571 【ソードトルネード】が未実装（山札がシャッフルされても SP1 にならない）
-  it.fails("RS-571: 【ソードトルネード】自分の山札がシャッフルされたとき、そのターン中 SP1 になる（出典: atwiki/page-1214「自分か相手の山札がシャッフルされたとき、そのターン中、これは「SP1」になる」）", () => {
+  it("RS-571: 【ソードトルネード】自分の山札がシャッフルされたとき、そのターン中 SP1 になる（出典: atwiki/page-1214「自分か相手の山札がシャッフルされたとき、そのターン中、これは「SP1」になる」）", () => {
     const s = useAddressBook(
       st({ phase: "rush", player1: { battle: [inst("RS-571", "br")], hand: [inst("RS-349", "ab")], command: releasedCat("ET", 1), power: powerCards(3), deck: [inst("TST-UNIT-0", "dk"), ...deckCards(3)] } }),
       "player1",
@@ -449,8 +485,7 @@ describe("RS-571 デカバイクロボ", () => {
     expect(spOf(s, "player1", "RS-571:br")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-571 【ソードトルネード】が未実装（相手の山札がシャッフルされても SP1 にならない）
-  it.fails("RS-571: 【ソードトルネード】相手の山札がシャッフルされたときも SP1 になる（出典: atwiki/page-1214「自分か相手の山札」）", () => {
+  it("RS-571: 【ソードトルネード】相手の山札がシャッフルされたときも SP1 になる（出典: atwiki/page-1214「自分か相手の山札」）", () => {
     const s = useAddressBook(
       st({
         phase: "rush",
@@ -482,15 +517,13 @@ describe("RS-572 デカマスター（2nd）", () => {
   const entered = (enemyBattle = [inst("TST-UNIT-0", "e1")]) =>
     enter(st({ player1: { rush: [inst("RS-572", "dm")], deck: deckCards(3) }, player2: { battle: enemyBattle, deck: deckCards(3, "e") } }), "RS-572:dm");
 
-  // 既知の不具合: CARD-RS-572 【ディーソードベガ】で相手に選択がなく、常に1点ダメージになる
-  it.fails("RS-572: 【ディーソードベガ】選ぶのは相手（1点ダメージか、自分自身のユニット1体の撃破か）（出典: atwiki/page-1215「相手は…を選ぶ」）", () => {
+  it("RS-572: 【ディーソードベガ】選ぶのは相手（1点ダメージか、自分自身のユニット1体の撃破か）（出典: atwiki/page-1215「相手は…を選ぶ」）", () => {
     const s = entered();
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(s.players.player2.damage).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-572 【ディーソードベガ】で相手に選択がなく、常に1点ダメージになる
-  it.fails("RS-572: 【ディーソードベガ】相手が撃破を選べば、自分自身のユニットを1体選んで撃破し、ダメージは受けない（出典: atwiki/page-1215「自分自身のユニットを1体選び撃破する」）", () => {
+  it("RS-572: 【ディーソードベガ】相手が撃破を選べば、自分自身のユニットを1体選んで撃破し、ダメージは受けない（出典: atwiki/page-1215「自分自身のユニットを1体選び撃破する」）", () => {
     let s = entered();
     s = resolveAll(s, ["TST-UNIT-0:e1"]);
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("discard");
@@ -560,26 +593,24 @@ describe("RS-573 ファイヤーカイザー（2nd）", () => {
   const entered = () =>
     enter(st({ player1: { rush: [inst("RS-573", "fk")], deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-0", "eb")], rush: [inst("TST-UNIT-0", "er")], deck: deckCards(3, "e") } }), "RS-573:fk");
 
-  // 既知の不具合: CARD-RS-573 【バリランサー】がホールドの選択なしに自動適用される（ホールドもされない）
-  it.fails("RS-573: 【バリランサー】任意 — ホールドするかどうかを選べる（出典: atwiki/page-1191「これをホールドしてもよい」）", () => {
+  it("RS-573: 【バリランサー】任意 — ホールドするかどうかを選べる（出典: atwiki/page-1191「これをホールドしてもよい」）", () => {
     const s = entered();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-573");
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-573 【バリランサー】でホールドされず、敵軍ラッシュエリアにアタックできず、SP も 2 にならない
-  it.fails("RS-573: 【バリランサー】ホールドしたとき、このターン SP2 になり、敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-1191「そうしたとき、このターン、これは「SP2」になり、敵軍ラッシュエリアのユニットにアタックできる」）", () => {
+  it("RS-573: 【バリランサー】ホールドしたとき、このターン SP2 になり、敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-1191「そうしたとき、このターン、これは「SP2」になり、敵軍ラッシュエリアのユニットにアタックできる」）", () => {
     let s = entered();
     const accept = legal(s).find((a) => a.type === "confirm_effect_choice" || a.type === "resolve_effect_choice");
     if (accept) s = act(s, accept);
+    // アタックできるかは、バトル進入直後の行動ウィンドウ（pendingBattleEntry）で見る（パスするとこのターンは行動できない）。
+    expect(attackTargets(s, "RS-573:fk")).toContain("TST-UNIT-0:er");
     s = passEntry(s);
     expect(s.players.player1.battle.find((c) => c.instanceId === "RS-573:fk")?.commandHeld).toBe(true);
     expect(spOf(s, "player1", "RS-573:fk")).toBe(2);
-    expect(attackTargets(s, "RS-573:fk")).toContain("TST-UNIT-0:er");
   });
 
-  // 既知の不具合: CARD-RS-573 【バリランサー】がホールドの選択なしに自動適用され、断れない
-  it.fails("RS-573: 【バリランサー】ホールドしなければ SP「！」は 0 のまま（NC なし）（出典: atwiki/page-1191「そうしたとき」）", () => {
+  it("RS-573: 【バリランサー】ホールドしなければ SP「！」は 0 のまま（NC なし）（出典: atwiki/page-1191「そうしたとき」）", () => {
     let s = entered();
     if (canSkip(s)) s = skip(s);
     s = passEntry(s);
