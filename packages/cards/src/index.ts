@@ -218,6 +218,7 @@ export {
   getVanillaPromotedCardById,
   resolvePlayableCard,
   isComplexityPromotedCardId,
+  isCorePlayableCardId,
   isFullPlayableCardId,
   isPlayableCardId,
   isVanillaPromotedCardId,

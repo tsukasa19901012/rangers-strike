@@ -44,7 +44,6 @@ import {
   reanimateTests,
   zordDownTests,
 } from "./RS7-495-515.helpers";
-import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState } from "../types/game";
 
 /** 自軍バトルフェイズに、ids を順にバトルエリアへ出す（各進入後の行動ウィンドウはパス）。 */
@@ -370,7 +369,7 @@ describe("RS-497 冥獣人ニンジャキリカゲ", () => {
   });
 
   it.todo(
-    "RS-497: コピーベントで敵軍ユニット自身が【変身の妨害】の対象になるループは、ターンプレイヤーが優先順を選ぶ（出典: atwiki/page-819 Q1「ターンプレイヤーが効果の優先順を選択して処理してください」）— XG1-078 コピーベントの効果名の入れ替えとループの優先順選択を公開 API で作れないため",
+    "RS-497: コピーベントで敵軍ユニット自身が【変身の妨害】の対象になるループは、ターンプレイヤーが優先順を選ぶ（出典: atwiki/page-819 Q1「ターンプレイヤーが効果の優先順を選択して処理してください」）— XG1-078 コピーベントはカタログにあるが、効果名の入れ替え効果がエンジン未接続（DSL がプレースホルダの grant_keyword のみ）で、ループ時の優先順選択も公開 API に無いため",
   );
 
   it("RS-497: キリカゲで効果名テキストが無効でもナンバーは消えないので、RC を持つユニットはライドオフしてビーファイタークワガーにアタックできる（出典: atwiki/page-819 Q2「はい、できます。…ナンバーは消えていないので、RCを持つユニットはライドオフすることでRCを発動しているとみなします」）", () => {
@@ -378,7 +377,7 @@ describe("RS-497 冥獣人ニンジャキリカゲ", () => {
       turn: 3,
       player1: { rush: [inst("RK-031", "r"), inst("RK-058", "z")], deck: deckCards(3) },
       player2: { battle: [inst("RS-497", "k"), inst("XG1-096", "q")], deck: deckCards(3, "e") },
-    }, [resolvePlayableCard("XG1-096") as CardDefinition]);
+    });
     s = settle(act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: "RK-031:r", vehicleInstanceId: "RK-058:z" }));
     s = settle(act(s, { type: "resolve_ride_off_choice", playerId: "player1", rideOff: true }));
     expect(attackTargets(s, "RK-031:r")).toContain("XG1-096:q");

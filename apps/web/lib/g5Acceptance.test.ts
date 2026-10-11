@@ -1,6 +1,7 @@
 import {
   fullPlayableCatalog,
   getCardById,
+  isCorePlayableCardId,
   getFullPlayableCardById,
   getStarterDeck,
   FULL_PLAYABLE_CARD_COUNT,
@@ -102,9 +103,10 @@ describe("AC-04 — resolvePlayableCard vs core getCardById", () => {
     expect(card).toEqual(fromCore);
   });
 
-  it("AC-04: PK-001 remains promoted-only outside core catalog", () => {
-    expect(getCardById("PK-001")).toBeUndefined();
+  it("AC-04: PK-001 is outside the core tier but in the match catalog (getCardById = full-playable)", () => {
+    expect(isCorePlayableCardId("PK-001")).toBe(false);
     expect(resolvePlayableCard("PK-001")).toBeDefined();
+    expect(getCardById("PK-001")).toEqual(resolvePlayableCard("PK-001"));
   });
 });
 

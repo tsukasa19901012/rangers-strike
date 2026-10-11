@@ -585,10 +585,26 @@ describe("RS-118 ゴーゴーダンプ", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:s")).toBe("battle");
   });
 
-  // atwiki/page-292 Q1（XP-026 仮面ライダーアクセル）
-  it.todo(
-    "RS-118: atwiki Q&A — 置きかえでラッシュエリアに移動した仮面ライダーアクセルは「ラッシュエリアに戻った」として【アクセルグランツァー】を発動できる（出典: atwiki/page-292 Q1）— XP-026 がエンジンのカード定義に無い",
-  );
+  // atwiki/page-292 Q1「はい、できます。」
+  // 既知の不具合: CARD-RS-118 仮面ライダーアクセル（XP-026）の【アクセルグランツァー】がエンジンで未接続（DSL がプレースホルダの grant_keyword のみ）で、ゴーゴーダンプとの置きかえでラッシュエリアに戻っても効果の選択が発生しない
+  it.fails("RS-118: atwiki Q&A — 置きかえでラッシュエリアに移動した仮面ライダーアクセルは「ラッシュエリアに戻った」として【アクセルグランツァー】を発動できる（出典: atwiki/page-292 Q1）", () => {
+    let s = st({
+      player1: {
+        rush: [inst("RS-118", "dump")],
+        battle: [inst("XP-026", "accel")],
+        command: [released("TST-OP-ET", "et")],
+      },
+      player2: { battle: [inst("TST-UNIT-0", "e")] },
+    });
+    s = enter(s, "RS-118:dump");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "XP-026:accel" });
+    expect(zoneOf(s, "player1", "XP-026:accel")).toBe("rush");
+    // 【アクセルグランツァー】: 自軍コマンド（ET）を手札に戻し、ET を持たない敵軍 S ユニットを捨札にする
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    s = drain(s, "player1", ["TST-OP-ET:et", "TST-UNIT-0:e"]);
+    expect(zoneOf(s, "player1", "TST-OP-ET:et")).toBe("hand");
+    expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
+  });
 });
 
 // ===========================================================================

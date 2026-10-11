@@ -29,7 +29,6 @@ import {
   sUnit,
   zoneOf,
 } from "./RS5-327-347.helpers";
-import { fullPlayableCatalog } from "@rangers-strike/cards";
 import { requiredBattleEntryHolds } from "../rules/restrictions";
 
 const DA_S = sUnit("SPEC-OOR-DA-S", { category: "DA", bp: 3000 });
@@ -193,8 +192,7 @@ describe("RS-565 轟雷旋風神／RS-569 スーパーデカレンジャーロ�
 
 // ===========================================================================
 describe("XG3-006 ビクトリーウォーカー", () => {
-  // XG3-006 は core-playable カタログ外なので、full-playable の定義をテスト用に加える。
-  const XG3_006 = fullPlayableCatalog.cards.find((c) => c.id === "XG3-006")!;
+  // XG3-006 はゲームのカード定義（allCardsCatalog）にある実カードを使う。
   it("XG3-006: 「ブルースローワー＋イエローアーマー＋ピンクエイダー」としてつかえる — レッドラダー・グリーンホバーと捨札にしてビクトリーロボをラッシュできる（出典: カード本文・atwiki/page-388 Q1）", () => {
     const s = st({
       phase: "rush",
@@ -205,7 +203,7 @@ describe("XG3-006 ビクトリーウォーカー", () => {
         power: powerCards(8),
         deck: deckCards(3),
       },
-    }, [XG3_006]);
+    });
     expect(canStartRush(s, "player1", "RS-382:vr")).toBe(true);
     const r = rushFromHand(s, "player1", "RS-382:vr");
     expect(r.ok).toBe(true);

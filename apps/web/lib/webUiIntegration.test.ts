@@ -5,6 +5,7 @@ import {
   FULL_PLAYABLE_CARD_COUNT,
   getBattleEntryHoldCount,
   getCardById,
+  isCorePlayableCardId,
   getCardEffect,
   getFullPlayableCardById,
   getStarterDeck,
@@ -298,7 +299,9 @@ describe("Web UI integration — full playable catalog samples", () => {
       const fromCatalog = getFullPlayableCardById(cardId);
       expect(fromResolver).toEqual(fromCatalog);
       expect(fromResolver?.name.length).toBeGreaterThan(0);
-      expect(getCardById(cardId)).toBeUndefined();
+      // 対戦カタログ（getCardById = full-playable）にも入っている。コア tier ではない。
+      expect(getCardById(cardId)).toEqual(fromCatalog);
+      expect(isCorePlayableCardId(cardId)).toBe(false);
     },
   );
 
