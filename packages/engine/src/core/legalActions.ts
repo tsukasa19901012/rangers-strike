@@ -2426,3 +2426,28 @@ export function getStrikeableInstanceIds(state: GameState, playerId: PlayerId): 
     .filter((a): a is Extract<typeof a, { type: "strike" }> => a.type === "strike")
     .map((a) => a.instanceId);
 }
+
+/**
+ * 手札からのラッシュの宣言（initiate_command_payment / rush）で、追加条件「追加で自軍コマンドをNつホールドする」の
+ * コマンド（zordExtraCommandHoldInstanceIds）が省かれていて、合法な組が1通りだけならそれを補う。
+ */
+export function withUniqueExtraCommandHolds(state: GameState, action: GameAction): GameAction {
+  if (action.type !== "initiate_command_payment" && action.type !== "rush") return action;
+  if (action.type === "initiate_command_payment" && action.kind !== "category_use") return action;
+  if (action.zordExtraCommandHoldInstanceIds?.length) return action;
+  const source = action.type === "rush" ? action.instanceId : action.sourceInstanceId;
+  if (!state.players[action.playerId]?.hand.some((c) => c.instanceId === source)) return action;
+  const sets = new Set<string>();
+  let unique: string[] | undefined;
+  for (const candidate of getLegalActions(state)) {
+    if (candidate.type !== action.type || candidate.playerId !== action.playerId) continue;
+    const candidateSource = candidate.type === "rush" ? candidate.instanceId : (candidate as { sourceInstanceId?: string }).sourceInstanceId;
+    if (candidateSource !== source) continue;
+    const extra = (candidate as { zordExtraCommandHoldInstanceIds?: string[] }).zordExtraCommandHoldInstanceIds;
+    if (!extra?.length) return action;
+    sets.add([...extra].sort().join(","));
+    unique = extra;
+  }
+  if (sets.size !== 1 || !unique) return action;
+  return { ...action, zordExtraCommandHoldInstanceIds: [...unique] } as GameAction;
+}

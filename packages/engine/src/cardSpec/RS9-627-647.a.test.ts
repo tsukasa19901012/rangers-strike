@@ -87,8 +87,7 @@ describe("RS-627 メガシップ", () => {
     expect(canStartRush(s, "player1", "RS-627:m")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-627 追加条件の変更（捨札にウイングSが5枚以上→コマンド2つホールド）が未実装
-  it.fails("RS-627: ※ 自軍捨札にウイングを持つSユニットが5枚以上あれば、追加で自軍コマンドを2つホールドしてラッシュできる（Sユニットは捨札にしない）（出典: atwiki/page-1462 ※・コメント「コマンドを２枚ホールドすることでのみラッシュが可能」）", () => {
+  it("RS-627: ※ 自軍捨札にウイングを持つSユニットが5枚以上あれば、追加で自軍コマンドを2つホールドしてラッシュできる（Sユニットは捨札にしない）（出典: atwiki/page-1462 ※・コメント「コマンドを２枚ホールドすることでのみラッシュが可能」）", () => {
     const s = st({
       phase: "rush",
       player1: {
@@ -108,8 +107,7 @@ describe("RS-627 メガシップ", () => {
     expect(t.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(3);
   });
 
-  // 既知の不具合: CARD-RS-627 追加条件の変更が未実装
-  it.fails("RS-627: ※ 変更後はSユニットがいなくても、リリース状態のコマンド3つ（カテゴリ1＋追加2）でラッシュできる（出典: atwiki/page-1462 ※「次のように変更される⇒追加で自軍コマンドを2つホールドする」）", () => {
+  it("RS-627: ※ 変更後はSユニットがいなくても、リリース状態のコマンド3つ（カテゴリ1＋追加2）でラッシュできる（出典: atwiki/page-1462 ※「次のように変更される⇒追加で自軍コマンドを2つホールドする」）", () => {
     const s = st({
       phase: "rush",
       player1: { hand: [inst("RS-627", "m")], discard: WINGS.map((w, i) => inst(w, `d${i}`)), command: releasedCat("ET", 3), power: powerCards(4), deck: deckCards(3) },

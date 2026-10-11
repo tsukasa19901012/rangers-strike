@@ -94,8 +94,7 @@ describe("RS-656 デカウイングキャノン", () => {
     expect(zoneOf(t, "player1", "RS-655:dw")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-656 追加条件の「自軍「パトウイング」」側が素材として登録されていない（partnerName がデカウイングロボだけ）
-  it.fails("RS-656: 追加条件 — 自軍「パトウイング」1体を捨札にしてもラッシュできる（出典: atwiki/page-1474「自軍「パトウイング」、または」）", () => {
+  it("RS-656: 追加条件 — 自軍「パトウイング」1体を捨札にしてもラッシュできる（出典: atwiki/page-1474「自軍「パトウイング」、または」）", () => {
     const s = rushBoard([inst("RS-657", "pw")]);
     expect(canStartRush(s, "player1", "RS-656:can")).toBe(true);
     const r = rushFromHand(s, "player1", "RS-656:can", { materials: ["RS-657:pw"] });
@@ -230,8 +229,7 @@ describe("RS-657 パトウイング", () => {
       power: powerCards(4),
     });
 
-  // 既知の不具合: CARD-RS-657 追加条件の変更（捨札にスワットの S ユニットが5枚以上→コマンド2つ追加ホールド）が未実装
-  it.fails("RS-657: ※ 自軍捨札にスワットの S ユニットのカードが5枚以上あれば、S ユニットを捨札にせず、追加で自軍コマンドを2つホールドしてラッシュできる（出典: atwiki/page-1475 ※）", () => {
+  it("RS-657: ※ 自軍捨札にスワットの S ユニットのカードが5枚以上あれば、S ユニットを捨札にせず、追加で自軍コマンドを2つホールドしてラッシュできる（出典: atwiki/page-1475 ※）", () => {
     const s = swatBoard(5, 3);
     expect(canStartRush(s, "player1", "RS-657:pw")).toBe(true);
     const r = rushFromHand(s, "player1", "RS-657:pw");

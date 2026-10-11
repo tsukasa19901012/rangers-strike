@@ -96,7 +96,7 @@ import {
   rushReactorId,
   updatePlayer,
 } from "./helpers";
-import { isLegalAction, isLegalActionBase } from "./legalActions";
+import { isLegalAction, isLegalActionBase, withUniqueExtraCommandHolds } from "./legalActions";
 import { resolveDamagePaymentSelect, startNextQueuedDamage } from "../rules/damagePayment";
 import {
   battlePositionAfterMove,
@@ -1131,6 +1131,9 @@ function applyActionCore(
   ) {
     return fail("pending_damage_payment");
   }
+  // 「追加で自軍コマンドをNつホールドする」（hold_extra_command）で、ホールドするコマンドの組が1通りしかなければ
+  // 指定を省いたラッシュの宣言もその組で行う（選べる組が複数あるときは指定が必要。RS-657 パトウイング）。
+  action = withUniqueExtraCommandHolds(state, action);
   if (!options?.trustLegality && !isLegalAction(state, action)) return fail("illegal_action");
 
   const playerId = action.playerId;

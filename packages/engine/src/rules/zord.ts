@@ -20,7 +20,7 @@ import { COMMAND_ZONE_MAX } from "../types/game";
 import { getDefinition, isSmallUnit } from "../core/catalog";
 import { findInZone, removeAt } from "../core/helpers";
 import { hasTurnRuleModifier } from "../core/scopedModifiers";
-import { zordMaterialAlteredName, zordMaterialFeatures } from "./zordFeatureContext";
+import { actionContextState, zordMaterialAlteredName, zordMaterialFeatures } from "./zordFeatureContext";
 
 /** ゾードアップ素材を取れるゾーン（フィールドのみ、手札不可）。 */
 export type ZordMaterialZone = "rush" | "battle";
@@ -49,6 +49,12 @@ export function needsZordMaterial(
 
 /** 合体―行があるゾードは、列挙された全パートナーがフィールド上に必要。 */
 export function requiresAllFusionPartners(rushingCardId: string): boolean {
+  // 「※このカードの追加条件は、…のとき、次のように変更される」で合体以外の追加条件に変わっていれば、合体の素材は要らない
+  // （RS-663・RS-664「本来の特徴に「炎神」を持つ自軍Lユニット1体を捨札にする」。rules/rushAdditionalCondition.ts）。
+  const override = (
+    actionContextState()?.definitions[rushingCardId] as { rushAdditionalConditionOverride?: { conditionId: string } } | undefined
+  )?.rushAdditionalConditionOverride;
+  if (override && override.conditionId !== "discard_fusion_unit") return false;
   return resolveZordFusionPartnerIds(rushingCardId).length > 0;
 }
 
@@ -406,6 +412,19 @@ function resolveZordUpCondition(
   return resolveRushAdditionalCondition(rushingCardId, def);
 }
 
+/**
+ * 「自軍「X」1体を捨札にする」の X。「自軍「A」、または自軍「B」1体を捨札にする」のように本文に複数あれば全部
+ * （取り込みデータの partnerName は最後の1つだけのことがある）。
+ */
+function namedUnitPartnerNames(condition: { text?: string; partnerName?: string }): string[] {
+  const text = (condition.text ?? "").normalize("NFKC");
+  const names = /、または/.test(text)
+    ? [...text.matchAll(/自軍[「｢]([^」｣]+)[」｣]/g)].map((m) => m[1]!)
+    : [];
+  if (condition.partnerName && !names.includes(condition.partnerName)) names.push(condition.partnerName);
+  return names;
+}
+
 export function isValidZordUpMaterial(
   definitions: Record<string, CardDefinition>,
   rushingCardId: string,
@@ -442,9 +461,11 @@ export function isValidZordUpMaterial(
       // 「自軍「X」1体」はカード名で指定するので、その名前のビークルも満たす（RK-046 の「オートバジンVM」）。
       return (
         (def.type === "unit" || def.type === "vehicle") &&
-        !!condition.partnerName &&
-        // RS-602【汚染された水】で変わったカード名で判定する。
-        normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(condition.partnerName))
+        // 「自軍「A」、または自軍「B」1体を捨札にする」はどちらの名前でもよい（RS-655・RS-656 atwiki/page-1528・1474）。
+        namedUnitPartnerNames(condition).some((name) =>
+          // RS-602【汚染された水】で変わったカード名で判定する。
+          normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(name)),
+        )
       );
     case "discard_feature_unit": {
       // 効果・フェイズで追加された特徴も含める（RS-499 ゲキバイオレット。rules/zordFeatureContext.ts）。

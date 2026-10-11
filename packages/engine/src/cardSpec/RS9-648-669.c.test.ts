@@ -108,8 +108,7 @@ describe("RS-663 エンジンオーG12", () => {
     expect(canStartRush(rushBoard({ rush: parts(), power: powerCards(11) }), "player1", "RS-663:g12")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-663 追加条件の変更（炎神のオモテ向きパワー12枚以上→炎神 L 1体を捨札）が未実装
-  it.fails("RS-663: ※ 炎神のオモテ向きの自軍パワーが12枚以上なら、本来の特徴に「炎神」を持つ自軍 L ユニット1体を捨札にしてラッシュできる（出典: atwiki/page-1502 ※）", () => {
+  it("RS-663: ※ 炎神のオモテ向きの自軍パワーが12枚以上なら、本来の特徴に「炎神」を持つ自軍 L ユニット1体を捨札にしてラッシュできる（出典: atwiki/page-1502 ※）", () => {
     const s = rushBoard({ rush: [inst("RS-515", "eo")], power: enjinPower(12) });
     expect(canStartRush(s, "player1", "RS-663:g12")).toBe(true);
     const r = rushFromHand(s, "player1", "RS-663:g12", { materials: ["RS-515:eo"] });
@@ -240,8 +239,7 @@ describe("RS-664 エンジンオーG9", () => {
     for (const p of PARTS) expect(zoneOf(t, "player1", p)).toBe("power");
   });
 
-  // 既知の不具合: CARD-RS-664 合体の「または」側（M ユニット3体の組）が素材として登録されていない
-  it.fails("RS-664: 追加条件 — セイクウオーのかわりにトリプター＋ジェットラス＋ジャン・ボエールでもよい（出典: atwiki/page-1494「セイクウオー（またはトリプター＋ジェットラス＋ジャン・ボエール）」）", () => {
+  it("RS-664: 追加条件 — セイクウオーのかわりにトリプター＋ジェットラス＋ジャン・ボエールでもよい（出典: atwiki/page-1494「セイクウオー（またはトリプター＋ジェットラス＋ジャン・ボエール）」）", () => {
     const alt = ["RS-515:eo", "RS-591:gb", "RS-668:tr", "RS-666:jt", "RS-667:jb"];
     const r = rushFromHand(rushBoard({ rush: parts(alt) }), "player1", "RS-664:g9", { materials: alt });
     expect(r.ok).toBe(true);
@@ -258,8 +256,7 @@ describe("RS-664 エンジンオーG9", () => {
     expect(canStartRush(rushBoard({ rush: parts(), power: powerCards(8) }), "player1", "RS-664:g9")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-664 追加条件の変更（炎神のオモテ向きパワー9枚以上→炎神 L 1体を捨札）が未実装
-  it.fails("RS-664: ※ 炎神のオモテ向きの自軍パワーが9枚以上なら、本来の特徴に「炎神」を持つ自軍 L ユニット1体を捨札にしてラッシュできる（出典: atwiki/page-1494 ※）", () => {
+  it("RS-664: ※ 炎神のオモテ向きの自軍パワーが9枚以上なら、本来の特徴に「炎神」を持つ自軍 L ユニット1体を捨札にしてラッシュできる（出典: atwiki/page-1494 ※）", () => {
     const s = rushBoard({ rush: [inst("RS-591", "gb")], power: enjinPower(9) });
     expect(canStartRush(s, "player1", "RS-664:g9")).toBe(true);
     const r = rushFromHand(s, "player1", "RS-664:g9", { materials: ["RS-591:gb"] });

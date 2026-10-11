@@ -639,8 +639,7 @@ describe("RS-655 デカウイングロボ", () => {
     expect(zoneOf(t, "player1", "RS-656:can")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-655 追加条件の「自軍「パトウイング」」側が素材として登録されていない（partnerName がデカウイングキャノンだけ）
-  it.fails("RS-655: 追加条件 — 自軍「パトウイング」1体を捨札にしてもラッシュできる（出典: atwiki/page-1528「自軍「パトウイング」、または」）", () => {
+  it("RS-655: 追加条件 — 自軍「パトウイング」1体を捨札にしてもラッシュできる（出典: atwiki/page-1528「自軍「パトウイング」、または」）", () => {
     const s = rushBoard([inst("RS-657", "pw")]);
     expect(canStartRush(s, "player1", "RS-655:dw")).toBe(true);
     const r = rushFromHand(s, "player1", "RS-655:dw", { materials: ["RS-657:pw"] });

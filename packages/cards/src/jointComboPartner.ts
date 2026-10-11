@@ -23,7 +23,9 @@ export type JointRPartnerSpec =
   | { kind: "l_size_same_category" }
   | { kind: "s_features"; features: string[]; requireAll: boolean }
   | { kind: "named_card"; cardName: string }
-  | { kind: "feature_unit"; features: string[] };
+  | { kind: "feature_unit"; features: string[]; size?: "S" | "M" | "L" }
+  /** 「これが「X」か、特徴「Y」を持つLユニットからコンビネーションするとき」— どれか1つを満たせばよい（RS-651）。 */
+  | { kind: "any_of"; specs: JointRPartnerSpec[] };
 
 const CATEGORY_TOKEN = /^(DA|WB|ET|OT|MA)$/;
 
@@ -135,7 +137,26 @@ function parseJointLPartnerFromText(text: string): JointLPartnerSpec | null {
   return null;
 }
 
+/** R ナンバー側の条件の1項目（「「X」」「特徴「Y」を持つLユニット」「同カテゴリのLユニット」）。 */
+function parseJointRPartnerTerm(term: string): JointRPartnerSpec | null {
+  if (term === "同カテゴリのLユニット") return { kind: "l_size_same_category" };
+  const named = term.match(/^「([^」]+)」$/);
+  if (named?.[1]) return { kind: "named_card", cardName: named[1] };
+  const feature = term.match(/^特徴「([^」]+)」を持つ([SML])?ユニット$/);
+  if (feature?.[1]) {
+    return { kind: "feature_unit", features: [feature[1]], ...(feature[2] ? { size: feature[2] as "S" | "M" | "L" } : {}) };
+  }
+  return null;
+}
+
 function parseJointRPartnerFromText(text: string): JointRPartnerSpec | null {
+  // 「これがAか、Bからコンビネーションするとき」— 選択肢のどれかから（RS-651 ガオマジロ【体当たり】atwiki/page-1472）。
+  const alternatives = text.match(/^これが(.+?)からコンビネーションする/)?.[1];
+  if (alternatives && /か、/.test(alternatives)) {
+    const specs = alternatives.split(/か、/).map(parseJointRPartnerTerm);
+    if (specs.every((spec): spec is JointRPartnerSpec => spec !== null)) return { kind: "any_of", specs };
+  }
+
   if (/これが同カテゴリのLユニットからコンビネーション/.test(text)) {
     return { kind: "l_size_same_category" };
   }
@@ -232,7 +253,9 @@ export function matchesJointRPartnerSpec(
     case "named_card":
       return cardNameMatches(leftPartner, spec.cardName);
     case "feature_unit":
-      return cardHasAllFeatures(leftPartner, spec.features);
+      return (!spec.size || leftPartner.size === spec.size) && cardHasAllFeatures(leftPartner, spec.features);
+    case "any_of":
+      return spec.specs.some((inner) => matchesJointRPartnerSpec(inner, rUnit, leftPartner));
     default:
       return false;
   }

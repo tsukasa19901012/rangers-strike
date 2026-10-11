@@ -8,7 +8,7 @@ import { cardHasKeyword } from "../keywords/cardKeywords";
 import { playerHasAllyWithLeadOnField } from "./callLead";
 
 const CONDITION_CHANGE =
-  /※このカードの追加条件は、(.+?)のとき、次のように変更される(?:⇒|→)\s*(.+?)(?:。|\s*【)/;
+  /※このカードの追加条件は、(.+?)の?とき、次のように変更される(?:⇒|→)\s*(.+?)(?:。|\s*【|$)/;
 
 function countDiscardUnitCardsMatching(
   player: GameState["players"][PlayerId],
@@ -61,6 +61,30 @@ function rushConditionGateMet(
     return count >= Number(wingSDiscardMatch[1]);
   }
 
+  // 「自軍捨札に特徴「スワット」を持つSユニットのカードが5枚以上ある」（RS-657 パトウイング atwiki/page-1475）。
+  const featureDiscardCount = gateText.match(
+    /^自軍捨札に特徴「([^」]+)」を持つ(S|M|L)?ユニットのカードが(\d+)枚以上(?:ある)?$/,
+  );
+  if (featureDiscardCount) {
+    const [, feature, size, min] = featureDiscardCount;
+    const count = countDiscardUnitCardsMatching(player, state.definitions, (cardId) => {
+      const def = state.definitions[cardId];
+      if (size && def?.size !== size) return false;
+      return (def?.features ?? []).includes(feature!);
+    });
+    return count >= Number(min);
+  }
+
+  // 「特徴「炎神」を持つオモテ向きの自軍パワーが12枚以上ある」（RS-663・RS-664 atwiki/page-1502・1494）。
+  const faceUpPowerFeature = gateText.match(/^特徴「([^」]+)」を持つオモテ向きの自軍パワーが(\d+)枚以上(?:ある)?$/);
+  if (faceUpPowerFeature) {
+    const [, feature, min] = faceUpPowerFeature;
+    const count = player.power.filter(
+      (c) => !c.faceDown && (state.definitions[c.cardId]?.features ?? []).includes(feature!),
+    ).length;
+    return count >= Number(min);
+  }
+
   return false;
 }
 
@@ -70,6 +94,8 @@ function parseAlternateConditionText(text: string): RushAdditionalCondition | un
     return {
       conditionId: "hold_extra_command",
       text: holdMatch[0]!,
+      // 「追加で自軍コマンドを2つホールドする」— 2つ（RS-657 atwiki/page-1475）。
+      unitCount: Number(holdMatch[1]),
     };
   }
 
@@ -82,6 +108,18 @@ function parseAlternateConditionText(text: string): RushAdditionalCondition | un
       requiredFeature: featureDiscard[1],
       ...(featureDiscard[2] ? { requiredSize: featureDiscard[2] as "S" | "M" | "L" } : {}),
       unitCount: Number(featureDiscard[3]),
+    };
+  }
+
+  // 「本来の特徴に「炎神」を持つ自軍Lユニット1体を捨札にする」（RS-663・RS-664）。
+  const originalFeatureDiscard = text.match(/^本来の特徴に「([^」]+)」を持つ自軍(S|M|L)?ユニット(\d+)体を捨札にする$/);
+  if (originalFeatureDiscard) {
+    return {
+      conditionId: "discard_feature_unit",
+      text,
+      requiredFeature: originalFeatureDiscard[1],
+      ...(originalFeatureDiscard[2] ? { requiredSize: originalFeatureDiscard[2] as "S" | "M" | "L" } : {}),
+      unitCount: Number(originalFeatureDiscard[3]),
     };
   }
 
