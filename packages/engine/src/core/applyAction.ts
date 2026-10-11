@@ -1822,6 +1822,20 @@ function applyActionCore(
         }
       }
 
+      {
+        // 追加条件で捨札にしたカードを記録する（RS-437 白熱する実況。rules/legend1/set7NamedEffectsA.ts）。
+        const discardBefore = new Set(state.players[playerId].discard.map((c) => c.instanceId));
+        const zordDiscarded = nextPlayer.discard
+          .filter((c) => !discardBefore.has(c.instanceId))
+          .map((c) => c.instanceId);
+        if (zordDiscarded.length > 0) {
+          nextPlayer = { ...nextPlayer, lastZordDiscard: { rushedInstanceId: found.card.instanceId, instanceIds: zordDiscarded } };
+        } else if (nextPlayer.lastZordDiscard) {
+          const { lastZordDiscard: _stale, ...rest } = nextPlayer;
+          nextPlayer = rest as PlayerState;
+        }
+      }
+
       let nextStateAfterRush = state;
       if (needsOpponentDrawCost(state.definitions, found.card.cardId)) {
         nextStateAfterRush = applyOpponentDrawCost(state, playerId);

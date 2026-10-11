@@ -8,7 +8,16 @@
  * - 選択の解決: `tryResolveSet7AChoice` / `trySkipSet7AChoice` / `tryConfirmSet7AChoice`
  * 構成は rules/legend1/set6NamedEffectsB.ts と同じ。
  */
-import type { CardInstance, GameState, PendingEffectChoice, PendingStrike, PlayerId, PlayerState } from "../../types/game";
+import type {
+  CardInstance,
+  GameState,
+  PendingEffectChoice,
+  PendingLeave,
+  PendingStrike,
+  PlayerId,
+  PlayerState,
+} from "../../types/game";
+import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
 import { opponent, updatePlayer } from "../../core/helpers";
@@ -26,7 +35,7 @@ import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
 import type { ComboOutcome } from "../comboTypes";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
-import { resolvePlayableCard } from "@rangers-strike/cards";
+import { resolvePlayableCard, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -1128,7 +1137,9 @@ export function applySet7AOnRush(
   phasePlayerId: PlayerId,
 ): GameState {
   if (state.pendingEffectChoice) return state;
-  return openNekomaru(state, ownerPlayerId, instanceId, phasePlayerId);
+  // RS-437 白熱する実況（自動処理）→ RS-433 ネコマル（任意の選択）。
+  const stacked = applyLiveCommentaryOnRush(state, ownerPlayerId, instanceId);
+  return openNekomaru(stacked, ownerPlayerId, instanceId, phasePlayerId);
 }
 
 function openNekomaru(state: GameState, ownerPlayerId: PlayerId, instanceId: string, phasePlayerId: PlayerId): GameState {
@@ -1268,6 +1279,282 @@ CHOICE_RESOLVERS[LIFE_BIRD_PICK_EFFECT_ID] = (state, playerId, instanceId) => {
     state: finish(next, pending),
     log: logFor(state, playerId, pending.sourceCardId, `${LIFE_BIRD_PICK_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`),
   };
+};
+
+// ---------------------------------------------------------------------------
+// RS-435 アレ（※常駐）
+// 「敵軍ターン中、特徴「忍者」を持つ自軍ユニットが撃破されて捨札になったとき、そのユニットカードをこれに重ねてもよい。
+//  自軍ラッシュフェイズ中、自分のユニットカードの必要パワーの数字は、これに重ねたカード1枚につき1少なくなる。
+//  これが常駐置き場を離れるとき、重ねたカードはすべて捨札になり、重ねた枚数と同じ数だけ自軍ユニットを選び撃破する。」
+// （atwiki/page-753）必要パワーの軽減は core/power.ts（residentStackPowerCostReduction）。
+
+const ARE_STACK_RE = /敵軍ターン中、特徴「([^」]+)」を持つ自軍ユニットが撃破されて捨札になったとき、そのユニットカードをこれに重ねてもよい/;
+const ARE_LEAVE_RE = /これが常駐置き場を離れるとき、重ねたカードはすべて捨札になり、重ねた枚数と同じ数だけ自軍ユニットを選び撃破する/;
+export const ARE_STACK_EFFECT_ID = "rs435_are_stack";
+export const ARE_LEAVE_EFFECT_ID = "rs435_are_leave_destroy";
+
+/** 「撃破されて捨札になったとき」（rules/leaveEffects.ts resolveAfterDiscardDestroyEffects から呼ぶ）。 */
+export function applySet7AAfterDiscard(
+  state: GameState,
+  ctx: { ownerPlayerId: PlayerId; instanceId: string; cardId: string; phasePlayerId: PlayerId; destroyed?: boolean },
+): GameState {
+  if (ctx.destroyed === false) return state;
+  if (ctx.phasePlayerId === ctx.ownerPlayerId) return state;
+  const owner = state.players[ctx.ownerPlayerId];
+  if (!owner.discard.some((c) => c.instanceId === ctx.instanceId)) return state;
+  const features = getDefinition(state.definitions, ctx.cardId)?.features ?? [];
+  const op = owner.operation.find((c) => {
+    const m = cardTextOf(state, c.cardId).match(ARE_STACK_RE);
+    return !!m && features.includes(m[1]!);
+  });
+  if (!op) return state;
+  const choice: PendingEffectChoice = {
+    playerId: ctx.ownerPlayerId,
+    effectId: ARE_STACK_EFFECT_ID,
+    sourceCardId: op.cardId,
+    sourceInstanceId: op.instanceId,
+    kind: "select_unit",
+    phasePlayerId: ctx.phasePlayerId,
+    validInstanceIds: [ctx.instanceId],
+    selectCount: 1,
+    optional: true,
+  };
+  if (state.pendingEffectChoice) {
+    return { ...state, pendingEffectChoice: appendResume(state.pendingEffectChoice, choice) };
+  }
+  return openEffectChoice(state, choice);
+}
+
+function appendResume(choice: PendingEffectChoice, next: PendingEffectChoice): PendingEffectChoice {
+  return choice.resumeChoice
+    ? { ...choice, resumeChoice: appendResume(choice.resumeChoice, next) }
+    : { ...choice, resumeChoice: next };
+}
+
+CHOICE_RESOLVERS[ARE_STACK_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const card = state.players[playerId].discard.find((c) => c.instanceId === instanceId);
+  const op = state.players[playerId].operation.find((c) => c.instanceId === pending.sourceInstanceId);
+  if (!card || !op) return { state: finish(state, pending) };
+  const next = patchPlayer(state, playerId, (p) => ({
+    ...p,
+    discard: p.discard.filter((c) => c.instanceId !== instanceId),
+    operation: p.operation.map((c) =>
+      c.instanceId === op.instanceId ? { ...c, stackedCards: [...(c.stackedCards ?? []), strip(card)] } : c,
+    ),
+  }));
+  return { state: finish(next, pending), log: logFor(state, playerId, op.cardId, `${ARE_STACK_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
+};
+CHOICE_SKIPPERS[ARE_STACK_EFFECT_ID] = simpleSkip("RS-435");
+
+/**
+ * 常駐置き場を離れたオペレーション（rules/permanentOperation.ts placePermanentOperation から呼ぶ）。
+ * 重ねたカードはすでに捨札になっている（operationCardsToDiscardWithStack）。
+ * - RS-435 アレ: 重ねた枚数と同じ数だけ自軍ユニットを選び撃破する。
+ * - RS-437 白熱する実況: 自軍 L ユニットの下にウラ向きに重ねたカードをすべて捨札にする。
+ */
+export function afterResidentOperationsLeft(state: GameState, playerId: PlayerId, removed: CardInstance[]): GameState {
+  let next = state;
+  for (const op of removed) {
+    const text = cardTextOf(next, op.cardId);
+    if (LIVE_COMMENTARY_LEAVE_RE.test(text)) next = discardFaceDownUnderLargeUnits(next, playerId);
+    const count = (op.stackedCards ?? []).length;
+    if (count > 0 && ARE_LEAVE_RE.test(text)) next = openAreLeaveDestroy(next, playerId, op, count);
+  }
+  return next;
+}
+
+function openAreLeaveDestroy(state: GameState, playerId: PlayerId, op: CardInstance, count: number): GameState {
+  const ids = fieldUnits(state, playerId).map((c) => c.instanceId);
+  if (ids.length === 0) return state;
+  const choice: PendingEffectChoice = {
+    playerId,
+    effectId: ARE_LEAVE_EFFECT_ID,
+    sourceCardId: op.cardId,
+    sourceInstanceId: op.instanceId,
+    kind: "select_unit",
+    phasePlayerId: state.pendingEffectChoice?.phasePlayerId ?? state.activePlayer,
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: false,
+    set7aMeta: { remaining: count },
+  };
+  if (state.pendingEffectChoice) {
+    return { ...state, pendingEffectChoice: appendResume(state.pendingEffectChoice, choice) };
+  }
+  return openEffectChoice(state, choice);
+}
+
+CHOICE_RESOLVERS[ARE_LEAVE_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const found = findCardInField(state, instanceId);
+  if (!found || found.playerId !== playerId) return { error: "invalid_target" };
+  const remaining = (pending.set7aMeta?.remaining ?? 1) - 1;
+  const cleared: GameState = { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+  const leave = applyUnitLeave(cleared, instanceId, "discard", pending.phasePlayerId);
+  if ("error" in leave) return leave;
+  let next = leave.state;
+  const log = logFor(state, playerId, pending.sourceCardId, `${ARE_LEAVE_EFFECT_ID}:${cardName(state.definitions, found.card.cardId)}`);
+  const ids = fieldUnits(next, playerId).map((c) => c.instanceId);
+  if (remaining > 0 && ids.length > 0) {
+    const follow: PendingEffectChoice = { ...pending, validInstanceIds: ids, set7aMeta: { remaining } };
+    if (next.pendingEffectChoice) {
+      next = { ...next, pendingEffectChoice: appendResume(next.pendingEffectChoice, follow) };
+      return { state: next, log };
+    }
+    return { state: openEffectChoice(next, follow), log };
+  }
+  return { state: finish(next, { ...pending, resumeChoice: pending.resumeChoice }), log };
+};
+
+// ---------------------------------------------------------------------------
+// RS-437 白熱する実況（※常駐）
+// 「自分がLユニットをラッシュしたとき、その追加条件で捨札にした合体ユニットのカードがあれば、すべてウラ向きにして
+//  そのLユニットの下に重ねる。そのLユニットは、ユニットでなくなるとき下に重ねたウラ向きのカードを1枚捨札にすれば、
+//  その場に留まる。 これが常駐置き場を離れるとき、自軍Lユニットの下にウラ向きに重ねたカードがあれば、すべて捨札にする。」
+// （atwiki/page-764）
+
+const LIVE_COMMENTARY_RUSH_RE = /自分がLユニットをラッシュしたとき、その追加条件で捨札にした合体ユニットのカードがあれば、すべてウラ向きにしてそのLユニットの下に重ねる/;
+const LIVE_COMMENTARY_STAY_RE = /そのLユニットは、ユニットでなくなるとき下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる/;
+const LIVE_COMMENTARY_LEAVE_RE = /これが常駐置き場を離れるとき、自軍Lユニットの下にウラ向きに重ねたカードがあれば、すべて捨札にする/;
+export const LIVE_COMMENTARY_STAY_EFFECT_ID = "rs437_live_commentary_stay";
+
+function hasResidentText(state: GameState, playerId: PlayerId, re: RegExp): CardInstance | undefined {
+  return state.players[playerId].operation.find((c) => re.test(cardTextOf(state, c.cardId)));
+}
+
+function isLargeFieldUnit(state: GameState, card: CardInstance): boolean {
+  const def = getDefinition(state.definitions, card.cardId);
+  return def?.type === "unit" && def.size === "L";
+}
+
+/** L ユニットをラッシュしたとき: 追加条件で捨札にした合体ユニットのカードをウラ向きで下に重ねる。 */
+export function applyLiveCommentaryOnRush(state: GameState, ownerPlayerId: PlayerId, instanceId: string): GameState {
+  if (!hasResidentText(state, ownerPlayerId, LIVE_COMMENTARY_RUSH_RE)) return state;
+  const owner = state.players[ownerPlayerId];
+  const unit = owner.rush.find((c) => c.instanceId === instanceId);
+  if (!unit || !isLargeFieldUnit(state, unit)) return state;
+  const record = owner.lastZordDiscard;
+  if (!record || record.rushedInstanceId !== instanceId) return state;
+  const def = getDefinition(state.definitions, unit.cardId);
+  if (resolveRushAdditionalCondition(unit.cardId, def)?.conditionId !== "discard_fusion_unit") return state;
+  const cards = owner.discard.filter(
+    (c) => record.instanceIds.includes(c.instanceId) && getDefinition(state.definitions, c.cardId)?.type === "unit",
+  );
+  if (cards.length === 0) return state;
+  const ids = new Set(cards.map((c) => c.instanceId));
+  return patchPlayer(state, ownerPlayerId, (p) => ({
+    ...p,
+    discard: p.discard.filter((c) => !ids.has(c.instanceId)),
+    rush: p.rush.map((c) =>
+      c.instanceId === instanceId
+        ? { ...c, stackedCards: [...(c.stackedCards ?? []), ...cards.map((x) => ({ ...strip(x), faceDown: true }))] }
+        : c,
+    ),
+    lastZordDiscard: undefined,
+  }));
+}
+
+function discardFaceDownUnderLargeUnits(state: GameState, playerId: PlayerId): GameState {
+  return patchPlayer(state, playerId, (p) => {
+    const moved: CardInstance[] = [];
+    const strip2 = (cards: CardInstance[]) =>
+      cards.map((c) => {
+        if (!isLargeFieldUnit(state, c) || !(c.stackedCards ?? []).some((s) => s.faceDown)) return c;
+        moved.push(...(c.stackedCards ?? []).filter((s) => s.faceDown).map(strip));
+        const rest = (c.stackedCards ?? []).filter((s) => !s.faceDown);
+        if (rest.length > 0) return { ...c, stackedCards: rest };
+        const { stackedCards: _s, ...without } = c;
+        return without as CardInstance;
+      });
+    const battle = strip2(p.battle);
+    const rush = strip2(p.rush);
+    if (moved.length === 0) return p;
+    return { ...p, battle, rush, discard: [...p.discard, ...moved] };
+  });
+}
+
+/**
+ * 「ユニットでなくなるとき下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる」（rules/operationCounters.ts
+ * tryLeaveField から呼ぶ）。選択を開いたら、その state。
+ */
+export function openLiveCommentaryStay(state: GameState, intent: PendingLeave): GameState | null {
+  if (intent.liveCommentaryDeclined || intent.toZone === "battle") return null;
+  if (state.pendingEffectChoice) return null;
+  const owner = state.players[intent.ownerPlayerId];
+  const unit = owner[intent.fromZone].find((c) => c.instanceId === intent.instanceId);
+  if (!unit || !isLargeFieldUnit(state, unit)) return null;
+  const op = hasResidentText(state, intent.ownerPlayerId, LIVE_COMMENTARY_STAY_RE);
+  if (!op) return null;
+  const faceDown = (unit.stackedCards ?? []).filter((c) => c.faceDown).map((c) => c.instanceId);
+  if (faceDown.length === 0) return null;
+  return {
+    ...state,
+    pendingEffectChoice: {
+      playerId: intent.ownerPlayerId,
+      effectId: LIVE_COMMENTARY_STAY_EFFECT_ID,
+      sourceCardId: op.cardId,
+      sourceInstanceId: op.instanceId,
+      kind: "select_unit",
+      phasePlayerId: intent.phasePlayerId,
+      validInstanceIds: faceDown,
+      selectCount: 1,
+      optional: true,
+      set7aMeta: { leave: intent },
+    },
+    activePlayer: intent.ownerPlayerId,
+  };
+}
+
+CHOICE_RESOLVERS[LIVE_COMMENTARY_STAY_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const intent = pending.set7aMeta?.leave;
+  if (!intent) return { error: "invalid_choice" };
+  let next: GameState = patchPlayer(
+    { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId },
+    playerId,
+    (p) => {
+      const take = (cards: CardInstance[]) =>
+        cards.map((c) => {
+          if (c.instanceId !== intent.instanceId) return c;
+          const rest = (c.stackedCards ?? []).filter((s) => s.instanceId !== instanceId);
+          if (rest.length > 0) return { ...c, stackedCards: rest };
+          const { stackedCards: _s, ...without } = c;
+          return without as CardInstance;
+        });
+      const stacked = [...p.battle, ...p.rush]
+        .find((c) => c.instanceId === intent.instanceId)
+        ?.stackedCards?.find((s) => s.instanceId === instanceId);
+      return {
+        ...p,
+        battle: take(p.battle),
+        rush: take(p.rush),
+        discard: stacked ? [...p.discard, strip(stacked)] : p.discard,
+      };
+    },
+  );
+  // その場に留まる（「ユニットでなくなる」ことは起きない。撃破された事実は残る。R-DESTROY-02）。
+  next = finalizeLeaveReaction({ ...next, pendingLeave: intent }, intent, true);
+  const follow = intent.followUpAttackerLeave;
+  if (follow && !next.pendingLeave && !next.pendingEffectChoice && !next.pendingRegister) {
+    next = tryLeaveField(next, { ...follow }).state;
+  }
+  const settled = next.pendingEffectChoice || next.pendingLeave ? next : promoteDeferredBattleEntry(next);
+  return { state: settled, log: logFor(state, playerId, pending.sourceCardId, `${LIVE_COMMENTARY_STAY_EFFECT_ID}:stay`) };
+};
+CHOICE_SKIPPERS[LIVE_COMMENTARY_STAY_EFFECT_ID] = (state, playerId) => {
+  const pending = state.pendingEffectChoice!;
+  const intent = pending.set7aMeta?.leave;
+  if (!intent) return { error: "invalid_choice" };
+  const cleared: GameState = { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+  const leave = tryLeaveField(cleared, { ...intent, liveCommentaryDeclined: true });
+  let next = leave.state;
+  const follow = intent.followUpAttackerLeave;
+  if (!leave.deferred && follow && !next.pendingLeave && !next.pendingEffectChoice && !next.pendingRegister) {
+    next = tryLeaveField(next, { ...follow }).state;
+  }
+  const settled = next.pendingEffectChoice || next.pendingLeave ? next : promoteDeferredBattleEntry(next);
+  return { state: settled, log: skipLog(state, playerId, pending.sourceCardId, pending.effectId) };
 };
 
 // ---------------------------------------------------------------------------

@@ -17,6 +17,7 @@ import { evaluateDslCondition } from "../dsl/dslCatalog";
 import { canInitiateShironLight } from "./shironLight";
 import { isHidoraEggUsed } from "./turnModifiers";
 import { operationCardsToDiscardWithStack } from "./operationProcedure";
+import { afterResidentOperationsLeft } from "./legend1/set7NamedEffectsA";
 import { beginRiderPass, canActivateRiderPass } from "./errataCardEffects";
 
 const RUSH_ACTIVATION_TEXT =
@@ -245,20 +246,24 @@ export function placePermanentOperation(
   const limit = permanentOperationSlotLimit(state.definitions, player, card.cardId);
   let operation = [...player.operation];
   let discard = [...player.discard];
+  const left: CardInstance[] = [];
 
   while (operation.length >= limit) {
     const [removed, ...rest] = operation;
     if (!removed) break;
     discard = [...discard, ...operationCardsToDiscardWithStack(removed)];
+    left.push(removed);
     operation = rest;
   }
 
   operation.push(card);
 
-  return {
+  const placed: GameState = {
     ...state,
     ...updatePlayer(state, playerId, { ...player, operation, discard }),
   };
+  // 「これが常駐置き場を離れるとき」（RS-435 アレ・RS-437 白熱する実況。rules/legend1/set7NamedEffectsA.ts）。
+  return left.length > 0 ? afterResidentOperationsLeft(placed, playerId, left) : placed;
 }
 
 export function isPermanentOperationCard(

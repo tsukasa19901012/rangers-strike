@@ -1,4 +1,5 @@
 import type { GameState, PlayerId } from "../types/game";
+import { applySet7AAfterDiscard } from "./legend1/set7NamedEffectsA";
 import { cardName, getDefinition } from "../core/catalog";
 import { updatePlayer, removeAt } from "../core/helpers";
 import { resolveLegend2OnDestroy } from "./legend2/destroyEffects";
@@ -418,6 +419,9 @@ export function resolveAfterDiscardDestroyEffects(
       }
     }
   }
+
+  // RS-435 アレ（※常駐）: 敵軍ターン中、特徴「忍者」の自軍ユニットが撃破されて捨札になったとき（rules/legend1/set7NamedEffectsA.ts）。
+  nextState = applySet7AAfterDiscard(nextState, ctx);
 
   return { state: tagOpenedDestroyTrigger(beforeAfterDiscard, nextState, "after_discard"), logs };
 }

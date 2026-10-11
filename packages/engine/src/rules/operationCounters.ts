@@ -1,4 +1,4 @@
-import { openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
+import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import {
   openDeathStingerChoice,
   reflectBarrierDestroysWinner,
@@ -1925,6 +1925,9 @@ export function tryLeaveField(
   // RS-317【超シールド進化】: DA の自軍ユニットが撃破されるとき、かわりに恐竜2体を捨札にするかの選択（rules/legend1/set5NamedEffects.ts）。
   const kasumo = openKasumoShieldChoice(state, intent);
   if (kasumo) return { state: kasumo, deferred: true };
+  // RS-437 白熱する実況: 下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる（rules/legend1/set7NamedEffectsA.ts）。
+  const liveCommentary = openLiveCommentaryStay(state, intent);
+  if (liveCommentary) return { state: liveCommentary, deferred: true };
   const superShieldInstanceId = findSuperShieldSubstitute(state, intent);
   const dinoChronicle = hasDinoChronicleLeaveReaction(
     state,
