@@ -1,4 +1,4 @@
-import { filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
+import { applyKyouryuumaru, canUseKyouryuumaru, filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import { currentShuffleEpoch } from "./deckShuffle";
 import { applySwordTornadoAfterShuffle } from "../rules/legend1/set8NamedEffectsC";
 import {
@@ -2935,6 +2935,15 @@ function applyActionCore(
 
     case "use_juu_kun_do": {
       if (state.phase !== "battle") return fail("wrong_phase");
+      // XG3-034【キョウリュウマル】で得た能力（rules/legend1/otherLinesNamedEffects.ts）。
+      if (canUseKyouryuumaru(state, playerId, action.attackerInstanceId)) {
+        const used = applyKyouryuumaru(state, playerId, action.attackerInstanceId);
+        if (!used) return fail("illegal_action");
+        return ok(
+          finishBattleEntryIf(used, action.attackerInstanceId),
+          buildSimpleLogEntry(playerId, "use_juu_kun_do", action.attackerInstanceId),
+        );
+      }
       const lionDanceUnit = findInZone(player, "battle", action.attackerInstanceId);
       if (lionDanceUnit && isLionDanceCard(lionDanceUnit.card.cardId)) {
         // ルール: R-ATK-05 — 【超忍法・舞獅子】はアタックするかわりに発動する。

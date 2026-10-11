@@ -1879,7 +1879,10 @@ export function budgetBpForInstance(
   instanceId: string,
   pending?: PendingEffectChoice,
 ): number | null {
-  if (pending?.effectId !== "animal_heart") return printedBpForInstance(state, instanceId);
+  // XG3-034【キョウリュウマル】は「BPの合計」— 修正後の BP で数える（本来の BP の指定がない）。
+  if (pending?.effectId !== "animal_heart" && pending?.effectId !== "xg3034_kyouryuumaru") {
+    return printedBpForInstance(state, instanceId);
+  }
   const located = findCardOwner(state, instanceId);
   if (!located) return null;
   const found = findInZone(state.players[located.playerId], located.zone, instanceId);

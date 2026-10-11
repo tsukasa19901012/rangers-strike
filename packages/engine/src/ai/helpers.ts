@@ -1306,7 +1306,8 @@ export function pickEffectChoice(
     const selected = pending.selectedInstanceIds ?? [];
     const budget = pending.bpBudget ?? 3000;
     const enemyId = opponent(pending.playerId);
-    const candidates = state.players[enemyId].rush
+    const candidates = [...state.players[enemyId].rush, ...state.players[enemyId].battle]
+      .filter((c) => pending.validInstanceIds.includes(c.instanceId))
       .map((c) => ({
         instanceId: c.instanceId,
         bp: budgetBpForInstance(state, c.instanceId, pending) ?? 0,

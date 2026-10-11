@@ -10,9 +10,15 @@ import type { CardInstance, DeferredDestroyTrigger, GameState, PendingEffectChoi
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
-import { openEffectChoice } from "../pendingChoices";
+import { applyConfirmEffectChoice, openEffectChoice } from "../pendingChoices";
 import { patchPlayer } from "../playerPatches";
 import { namedTextNegated } from "./set6NamedEffects348";
+import { effectiveBp } from "../../core/catalog";
+import { opponent } from "../../core/helpers";
+import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
+import { countJointLGrant } from "../jointComboGrants";
+import { battleActBlocked } from "../keywordGapRuntime";
+import { gomaPalaceForcesAttack } from "../juuKunDo";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -141,6 +147,105 @@ export function dslEffectSelectsPowerCards(node: unknown): boolean {
   const rec = node as Record<string, unknown>;
   if (rec.type === "zone" && rec.zone === "power") return true;
   return Object.values(rec).some(dslEffectSelectsPowerCards);
+}
+
+// ---------------------------------------------------------------------------
+// XG3-034 恐竜折神【キョウリュウマル】（ジョイントコンビネーション L）
+// 「このユニットからコンビネーションする特徴「侍」を持つユニットは、次の能力を得る⇒アタックするかわりに、敵軍バトルエリアの
+//  ユニットを、BPの合計がこのユニットのBP以下になるように好きな数選び、撃破してもよい。」（atwiki/page-1907）
+// 得た能力は rules/jointComboGrants.ts（kind "l"・effectId "kyouryuumaru"）。「アタックするかわりに」は use_juu_kun_do
+// （R-ATK-05・R-REPL-03）で発動する。ルナジェル（RS-579）の制限下でも発動できる（page-1907 Q2・page-1194 Q1）。
+// 「このユニットのBP」は能力を得た「侍」ユニットのいまの BP（修正後）。
+
+export const KYOURYUUMARU_GRANT_ID = "kyouryuumaru";
+export const KYOURYUUMARU_EFFECT_ID = "xg3034_kyouryuumaru";
+
+export const KYOURYUUMARU_PICK_EFFECT_ID = "xg3034_kyouryuumaru_pick";
+
+function fieldBp(state: GameState, instanceId: string): number {
+  for (const pid of ["player1", "player2"] as const) {
+    const card = state.players[pid].battle.find((c) => c.instanceId === instanceId);
+    if (card) return effectiveBp(state, pid, card);
+  }
+  return Number.MAX_SAFE_INTEGER;
+}
+
+/** まだ選べる敵軍バトルエリアのユニット（選んだユニットとの BP の合計が budget 以下になるもの）。 */
+function kyouryuumaruTargets(state: GameState, playerId: PlayerId, selected: string[], budget: number): string[] {
+  const used = selected.reduce((sum, id) => sum + fieldBp(state, id), 0);
+  return state.players[opponent(playerId)].battle
+    .filter((c) => !selected.includes(c.instanceId))
+    .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId, "XG3-034", playerId))
+    .filter((c) => used + fieldBp(state, c.instanceId) <= budget)
+    .map((c) => c.instanceId);
+}
+
+/** 選び終えた: 選んだユニットを撃破する（汎用の BP 合計選択の確定処理で、1体ずつ撃破と誘発を解決する）。 */
+function finishKyouryuumaru(state: GameState, playerId: PlayerId, pending: PendingEffectChoice): ChoiceOutcome {
+  const selected = pending.selectedInstanceIds ?? [];
+  if (selected.length === 0) {
+    return { state: proceed(close(state, pending), pending), log: skipLog(state, playerId, pending.sourceCardId, KYOURYUUMARU_EFFECT_ID) };
+  }
+  const confirming: PendingEffectChoice = {
+    ...pending,
+    effectId: KYOURYUUMARU_EFFECT_ID,
+    kind: "select_units_bp_budget",
+    validInstanceIds: selected,
+  };
+  return applyConfirmEffectChoice({ ...state, pendingEffectChoice: confirming }, playerId);
+}
+
+CHOICE_RESOLVERS[KYOURYUUMARU_PICK_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+  const remaining = kyouryuumaruTargets(state, playerId, selected, pending.bpBudget ?? 0);
+  const updated: PendingEffectChoice = { ...pending, selectedInstanceIds: selected, validInstanceIds: remaining };
+  if (remaining.length === 0) return finishKyouryuumaru(state, playerId, updated);
+  return { state: { ...state, pendingEffectChoice: updated } };
+};
+// 「好きな数選び」— 選ぶのをやめる（それまでに選んだユニットを撃破する。1体も選んでいなければ何もしない）。
+CHOICE_SKIPPERS[KYOURYUUMARU_PICK_EFFECT_ID] = (state, playerId) => finishKyouryuumaru(state, playerId, state.pendingEffectChoice!);
+
+/** 【キョウリュウマル】で得た能力を「アタックするかわりに」いま発動できるか。 */
+export function canUseKyouryuumaru(state: GameState, playerId: PlayerId, unitInstanceId: string): boolean {
+  if (state.phase !== "battle" || state.activePlayer !== playerId) return false;
+  if (state.pendingEffectChoice) return false;
+  const player = state.players[playerId];
+  const unit = player.battle.find((c) => c.instanceId === unitInstanceId);
+  if (!unit || countJointLGrant(unit, KYOURYUUMARU_GRANT_ID) === 0) return false;
+  if (!(unit.jointComboGrants ?? []).some((g) => g.kind === "l" && g.effectId === KYOURYUUMARU_GRANT_ID && g.sourceCardId === "XG3-034")) {
+    return false;
+  }
+  // アタックする権利を失っていれば「かわりに」発動できない（R-REPL-03）。
+  if (unit.battleActed || battleActBlocked(player, unit, "attack")) return false;
+  // ゴーマ宮でアタックを強制されていれば使えない（R-ATK-05）。
+  return !gomaPalaceForcesAttack(state, playerId, unitInstanceId);
+}
+
+/** 発動: アタックする権利を失い、BP の合計がこのユニットの BP 以下になるよう敵軍バトルエリアのユニットを選ぶ（任意）。 */
+export function applyKyouryuumaru(state: GameState, playerId: PlayerId, unitInstanceId: string): GameState | null {
+  if (!canUseKyouryuumaru(state, playerId, unitInstanceId)) return null;
+  const unit = state.players[playerId].battle.find((c) => c.instanceId === unitInstanceId)!;
+  const budget = effectiveBp(state, playerId, unit);
+  const acted = patchPlayer(state, playerId, (p) => ({
+    ...p,
+    battle: p.battle.map((c) => (c.instanceId === unitInstanceId ? { ...c, battleActed: true } : c)),
+  }));
+  const targets = kyouryuumaruTargets(acted, playerId, [], budget);
+  if (targets.length === 0) return acted;
+  // 1体ずつ選ぶ（選べるユニットがなくなるか、選ぶのをやめたら撃破する）。
+  return openEffectChoice(acted, {
+    playerId,
+    effectId: KYOURYUUMARU_PICK_EFFECT_ID,
+    sourceCardId: "XG3-034",
+    sourceInstanceId: unitInstanceId,
+    phasePlayerId: playerId,
+    kind: "select_unit",
+    validInstanceIds: targets,
+    bpBudget: budget,
+    selectedInstanceIds: [],
+    optional: true,
+  });
 }
 
 // ---------------------------------------------------------------------------

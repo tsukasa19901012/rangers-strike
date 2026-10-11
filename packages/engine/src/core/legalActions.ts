@@ -1,3 +1,4 @@
+import { canUseKyouryuumaru } from "../rules/legend1/otherLinesNamedEffects";
 import { lionArmorAvailable } from "../rules/legend1/set6NamedEffects348";
 import { listSet8BHandActivations } from "../rules/legend1/set8NamedEffectsB";
 import { hasTurnRuleModifier } from "./scopedModifiers";
@@ -1417,6 +1418,10 @@ function appendBattleEntryActions(
     return;
   }
 
+  // XG3-034【キョウリュウマル】で得た「アタックするかわりに」はルナジェル等の制限下でも発動できる（atwiki/page-1907 Q2）。
+  if (canUseKyouryuumaru(state, playerId, unit.instanceId)) {
+    actions.push({ type: "use_juu_kun_do", playerId, attackerInstanceId: unit.instanceId });
+  }
   if (cannotAttackOrStrikeThisTurn(player, unit, state, playerId)) {
     actions.push({ type: "pass_battle_entry", playerId });
     return;
@@ -1488,6 +1493,7 @@ function appendBattleEntryActions(
   if (
     (canUseJuuKunDo(state, playerId, pending.instanceId) ||
       canUseLionDance(state, playerId, pending.instanceId)) &&
+    !canUseKyouryuumaru(state, playerId, pending.instanceId) &&
     !requiredDefenderId &&
     !cannotAttack
   ) {
@@ -2034,6 +2040,12 @@ function getLegalActionsCore(state: GameState): GameAction[] {
         }
       }
 
+      // XG3-034【キョウリュウマル】で得た「アタックするかわりに」（ルナジェル等の制限下でも発動できる。atwiki/page-1907 Q2）。
+      for (const unit of player.battle) {
+        if (canUseKyouryuumaru(state, playerId, unit.instanceId)) {
+          actions.push({ type: "use_juu_kun_do", playerId, attackerInstanceId: unit.instanceId });
+        }
+      }
       for (const attacker of player.battle) {
         if (battleActBlocked(player, attacker, "attack")) continue;
         if (cannotAttackOrStrikeThisTurn(player, attacker, state, playerId)) continue;
@@ -2079,8 +2091,9 @@ function getLegalActionsCore(state: GameState): GameAction[] {
         });
         }
         if (
-          canUseJuuKunDo(state, playerId, attacker.instanceId) ||
-          canUseLionDance(state, playerId, attacker.instanceId)
+          (canUseJuuKunDo(state, playerId, attacker.instanceId) ||
+            canUseLionDance(state, playerId, attacker.instanceId)) &&
+          !canUseKyouryuumaru(state, playerId, attacker.instanceId)
         ) {
           // 「アタックするかわりに」の効果（ジュウクンドー・超忍法・舞獅子）。ルール: R-ATK-05
           actions.push({
