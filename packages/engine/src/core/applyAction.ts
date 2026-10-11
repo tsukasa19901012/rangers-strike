@@ -1,3 +1,5 @@
+import { currentShuffleEpoch } from "./deckShuffle";
+import { applySwordTornadoAfterShuffle } from "../rules/legend1/set8NamedEffectsC";
 import {
   applySet7AStrikeCounter,
   applySet7AStrikeDamageTriggers,
@@ -151,6 +153,7 @@ import {
   tryStartBattleEntryRushDiscard,
 } from "../rules/legend3/restrictions";
 import { applyGodomSenshoDiscardPay } from "../rules/godomRushPay";
+import { applyMeeMegaloAfterAction, openTakeTheBlowChoice, resolveTakeTheBlow, skipTakeTheBlow, TAKE_THE_BLOW_EFFECT_ID } from "../rules/legend1/set8NamedEffectsD";
 import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
 import {
   hasEndPhaseBlockingPending,
@@ -394,6 +397,16 @@ function continueAttackAfterDeclaration(
 ): ActionResult {
   const playerId = pending.attackerPlayerId;
   const enemyId = pending.defenderPlayerId;
+  // RS-583【災いを受け止める覚悟】: アタックの対象に選ばれた他の自軍ユニットの代わりに、このユニットが選ばれたことにしてもよい
+  // （対象を選んだ時点。rules/legend1/set8NamedEffectsD.ts）。
+  const takeTheBlow = openTakeTheBlowChoice(battleState, pending, wingAttackFromRush);
+  if (takeTheBlow) {
+    let pendingState = takeTheBlow;
+    if (battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId) {
+      pendingState = { ...pendingState, pendingBattleEntry: undefined };
+    }
+    return ok(pendingState, buildSimpleLogEntry(playerId, "battle_pending"));
+  }
   if (!pending.onAttackResolved) {
     // ルール: R-TIME-01 — 「アタックするとき／アタックしたとき」（アタックしたユニットの DSL on_attack）は、
     // 「アタックされたとき」（RS-215・カウンター窓）より先に解決する。選択が開けば、それを解決してから続ける。
@@ -809,6 +822,8 @@ export function applyAction(
   // RS-359【最後の手段】: 山札の候補をラッシュエリアに置いた状態で、手札からのラッシュの手続きを始める
   // （rules/legend1/icyLastResort.ts。手続きが終わったら settleIcyPhantoms で片付ける）。
   const icyState = applyActionDepth === 0 ? icyStateForAction(state, action, isLegalActionBase) : null;
+  // RS-571【ソードトルネード】: このアクションの間に山札がシャッフルされたか（core/deckShuffle.ts）。
+  const shuffleEpochAtStart = currentShuffleEpoch();
   if (icyState) state = icyState;
   applyActionDepth += 1;
   let result: ActionResult;
@@ -830,6 +845,8 @@ export function applyAction(
   next = releaseCounterLockWhenAttackSettled(next);
   next = trackResolvingOperations(state, next);
   next = settleResolvingOperations(next);
+  // RS-582【メー・メガロ】: 自分が使ったカウンターが捨札になったとき（rules/legend1/set8NamedEffectsD.ts）。
+  if (applyActionDepth === 0 && "playerId" in action && action.playerId) next = applyMeeMegaloAfterAction(state, next, action.type, action.playerId);
   next = continueDeferredAttack(next);
   next = continueDeferredStrike(next);
   // ルール: R-TIME-01 — 先の段階の効果（選択）が解決し終えたら、待たせていた撃破の誘発を段階の順に解決する。
@@ -848,6 +865,8 @@ export function applyAction(
   // RS-255 巨大化爆弾: 敵軍ターン中に「怪人」の自軍ユニットが撃破されて捨札になったとき。
   next = openGiantBombWindow(state, next);
   next = applyBpZeroRuleDestruction(next);
+  // RS-571 デカバイクロボ【ソードトルネード】: 自分か相手の山札がシャッフルされたとき、そのターン中「SP1」になる。
+  if (applyActionDepth === 0) next = applySwordTornadoAfterShuffle(next, shuffleEpochAtStart);
   // RS-319 デカマスター ※: 自軍ラッシュフェイズ中、条件を満たせば即座に手札に戻る（進行中の処理がないとき）。
   if (!hasBlockingInteraction(next)) next = applyDekaMasterReturn(next);
   // RS-325【マジチケット】: 発動したカードが捨札になったら「かわりに」の選択を開く。
@@ -1926,14 +1945,11 @@ function applyActionCore(
         let shortage = effectiveCost - available;
 
         if (shortage > 0) {
-          const withGodom = applyGodomSenshoDiscardPay(powerState, candidate, shortage);
+          // RS-586【魔神に不足する物】: 足りない数だけ場の「戦闘員」のユニットを捨札にする（rules/godomRushPay.ts）。
+          const withGodom = applyGodomSenshoDiscardPay(powerState, playerId, candidate, definition!, shortage);
           if (withGodom) {
-            candidate = withGodom;
-            available = countAvailablePower(
-              { ...powerState, players: { ...powerState.players, [playerId]: candidate } },
-              playerId,
-            );
-            shortage = effectiveCost - available;
+            candidate = withGodom.player;
+            shortage -= withGodom.covered;
           }
         }
 
@@ -2676,6 +2692,11 @@ function applyActionCore(
           playerId,
         );
       }
+      if (pending?.effectId === TAKE_THE_BLOW_EFFECT_ID) {
+        const picked = resolveTakeTheBlow(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return continueAttackAfterDeclaration({ ...picked.state, log: [...picked.state.log, picked.log] }, picked.battle, picked.wingAttackFromRush);
+      }
       if (pending?.effectId === DIONE_WALL_EFFECT_ID && pending.machineEmpireMeta) {
         const picked = resolveDioneWallPick(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
@@ -2771,6 +2792,11 @@ function applyActionCore(
           return ok({ ...base, pendingStrike: strikePending, activePlayer: playerId }, buildSimpleLogEntry(playerId, "skip_effect_choice"));
         }
         return completeStrike(base, strikePending);
+      }
+      if (pending?.effectId === TAKE_THE_BLOW_EFFECT_ID) {
+        const skipped = skipTakeTheBlow(state, playerId);
+        if ("error" in skipped) return fail(skipped.error);
+        return continueAttackAfterDeclaration({ ...skipped.state, log: [...skipped.state.log, skipped.log] }, skipped.battle, skipped.wingAttackFromRush);
       }
       if ((pending?.effectId === MACHINE_EMPIRE_EFFECT_ID || pending?.effectId === DIONE_WALL_EFFECT_ID) && pending.machineEmpireMeta) {
         const skipped = skipMachineEmpireChoice(state, playerId);

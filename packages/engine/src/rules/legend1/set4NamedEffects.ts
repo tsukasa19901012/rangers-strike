@@ -5,6 +5,7 @@
  * - `tryResolveSet4Choice` / `trySkipSet4Choice` / `tryConfirmSet4Choice`: このモジュールが開いた選択の解決。
  * - バトル解決・アタック対象の判定から呼ばれる参照関数（RS-212 / RS-213 / RS-220 / RS-225 / RS-226）。
  */
+import { shuffleCards as shuffleDeckCards } from "../../core/deckShuffle";
 import type { CardInstance, GameState, PendingEffectChoice, PendingStrike, PlayerId } from "../../types/game";
 import { bounceToHand } from "../bounce";
 import { startEffectRush } from "../effectRush";
@@ -608,12 +609,7 @@ function beginProviderBase(state: GameState, ctx: GrantKeywordContext): GameStat
 }
 
 function shuffled<T>(cards: T[]): T[] {
-  const copy = [...cards];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
-  }
-  return copy;
+  return shuffleDeckCards(cards);
 }
 
 /** 山札をシャッフルし、選んだカードを（選んだ順に）山札の上に置く。 */

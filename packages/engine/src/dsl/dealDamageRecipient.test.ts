@@ -81,7 +81,8 @@ describe("cardInterpreter — PlayerRef の解決（回帰）", () => {
 describe("DSL データの受け手（カード本文と一致）", () => {
   // 本文の受け手はすべて相手（「相手にN点ダメージを与える」「相手は1点ダメージを受けるか…選ぶ」）。
   // 旧データは逆転バグの補償で "controller" になっていた（PR-026/RS-084/RS-462/RS-528/RS-572/XG5-019）。
-  it.each(["PR-024", "PR-026", "RS-084", "RS-405", "RS-462", "RS-528", "RS-572", "XG5-019", "XP-008"])(
+  // RS-572【ディーソードベガ】は相手が選ぶ効果（rules/legend1/set8NamedEffectsC.ts）になり、deal_damage を使わない（下の describe で確認）。
+  it.each(["PR-024", "PR-026", "RS-084", "RS-405", "RS-462", "RS-528", "XG5-019", "XP-008"])(
     "%s の deal_damage は opponent",
     (cardId) => {
       const doc = getCardDslDocument(cardId);

@@ -93,8 +93,7 @@ describe("RS-598 シシノシン", () => {
       player2: { command: o.enemyCmd ?? [held("TST-OP", "eh")], deck: deckCards(3, "e") },
     });
 
-  // 既知の不具合: CARD-RS-598 【正義の出陣】が未実装（確認を受けても敵軍コマンドはリリースされず、パワーのカードもラッシュエリアに出ない）
-  it.fails("RS-598: 【正義の出陣】NC（3番目）— 敵軍のホールド状態のコマンドを1つリリースすると、自軍パワーのオモテ向きの炎神 M ユニットのカードをラッシュエリアに出す（出典: atwiki/page-1206）", () => {
+  it("RS-598: 【正義の出陣】NC（3番目）— 敵軍のホールド状態のコマンドを1つリリースすると、自軍パワーのオモテ向きの炎神 M ユニットのカードをラッシュエリアに出す（出典: atwiki/page-1206）", () => {
     let s = enter(ncBoard(), "RS-598:s");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-598");
     s = resolveAll(s.pendingEffectChoice?.kind === "confirm" ? confirm(s) : s, ["TST-OP:eh", "RS-597:fm"]);
@@ -102,8 +101,7 @@ describe("RS-598 シシノシン", () => {
     expect(zoneOf(s, "player1", "RS-597:fm")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-598 【正義の出陣】が未実装
-  it.fails("RS-598: 【正義の出陣】出せるのはオモテ向きの「炎神」の M ユニットだけ（L の炎神・ウラ向き・炎神でない M は選べない）（出典: atwiki/page-1206「特徴「炎神」を持つMユニットのカードを、自軍パワーのオモテ向きのカードから」）", () => {
+  it("RS-598: 【正義の出陣】出せるのはオモテ向きの「炎神」の M ユニットだけ（L の炎神・ウラ向き・炎神でない M は選べない）（出典: atwiki/page-1206「特徴「炎神」を持つMユニットのカードを、自軍パワーのオモテ向きのカードから」）", () => {
     let s = enter(ncBoard(), "RS-598:s");
     s = s.pendingEffectChoice?.kind === "confirm" ? confirm(s) : s;
     s = resolveAll(s, ["TST-OP:eh"]);
@@ -164,8 +162,7 @@ describe("RS-599 ツキノワ", () => {
   const ncBoard = (power: ReturnType<typeof inst>[], nth = 2) =>
     st({ player1: { battle: fill(nth - 1), rush: [inst("RS-599", "t")], power, deck: [inst("TST-OP", "top"), inst("TST-OP", "next")] } });
 
-  // 既知の不具合: CARD-RS-599 【取り戻す炎心】が未実装（damage_action のパッシブ登録だけで選択が開かない）
-  it.fails("RS-599: 【取り戻す炎心】NC（2番目）— ダメージのカードを1枚手札に加え、山札の上から1枚をパワーゾーンにウラ向きで置く（出典: atwiki/page-1207）", () => {
+  it("RS-599: 【取り戻す炎心】NC（2番目）— ダメージのカードを1枚手札に加え、山札の上から1枚をパワーゾーンにウラ向きで置く（出典: atwiki/page-1207）", () => {
     let s = enter(ncBoard([...damageCards(2), inst("TST-P", "up")]), "RS-599:t");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-599");
     expect(choiceIds(s)).toEqual(["TST-P:dmg0", "TST-P:dmg1"]);
@@ -175,8 +172,7 @@ describe("RS-599 ツキノワ", () => {
     expect(s.players.player1.power).toHaveLength(3);
   });
 
-  // 既知の不具合: CARD-RS-599 【取り戻す炎心】が未実装
-  it.fails("RS-599: Q&A — 山札からパワーゾーンに置くカードはウラ向き（オモテを見ない）（出典: atwiki/page-1207 Q1「いいえ、それはできません」）", () => {
+  it("RS-599: Q&A — 山札からパワーゾーンに置くカードはウラ向き（オモテを見ない）（出典: atwiki/page-1207 Q1「いいえ、それはできません」）", () => {
     const s = resolveAll(enter(ncBoard(damageCards(1)), "RS-599:t"), ["TST-P:dmg0"]);
     const placed = s.players.player1.power.find((c) => c.instanceId === "TST-OP:top");
     expect(placed?.faceDown).toBe(true);
@@ -267,14 +263,12 @@ describe("RS-600 ゴーオンシルバー", () => {
   /** シルバーを出して行動ウィンドウをパスし、続けてゴールドを出す（ゴールドの行動ウィンドウは残す）。 */
   const enterBoth = (s: GameState) => resolveAll(enter(applyPass(resolveAll(enter(s, "RS-600:sv"))), "RS-601:gd"));
 
-  // 既知の不具合: CARD-RS-600 【ミッション1 バーニング】が未実装（combo_action のパッシブ登録だけ）
-  it.fails("RS-600: 【ミッション1 バーニング】NC（1番目）— 次にコンビネーションする CN4 の S ユニット（2番目のゴーオンゴールド）は NC の効果を発動する（出典: atwiki/page-1143）", () => {
+  it("RS-600: 【ミッション1 バーニング】NC（1番目）— 次にコンビネーションする CN4 の S ユニット（2番目のゴーオンゴールド）は NC の効果を発動する（出典: atwiki/page-1143）", () => {
     const s = enterBoth(ncBoard(true));
     expect(ncLogged(s, "RS-601")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-600 【ミッション1 バーニング】が未実装（NC が発動しないので、ストライク制限も確かめられない）
-  it.fails("RS-600: 【ミッション1 バーニング】発動した CN4 の S ユニットはストライクできない（出典: atwiki/page-1143「ただし、ストライクはできない」）", () => {
+  it("RS-600: 【ミッション1 バーニング】発動した CN4 の S ユニットはストライクできない（出典: atwiki/page-1143「ただし、ストライクはできない」）", () => {
     const s = enterBoth(ncBoard(true));
     expect(ncLogged(s, "RS-601")).toBe(true);
     expect(canStrike(s, "RS-601:gd")).toBe(false);
@@ -337,8 +331,7 @@ describe("RS-601 ゴーオンゴールド", () => {
     expect(spOf(resolveAll(enter(ncBoard([], 3), "RS-601:gd")), "player1", "RS-601:gd")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-601 【ミッション6 フルパワー】のコマンドのリリースと撃破が未実装（「SP1」だけ）
-  it.fails("RS-601: 【ミッション6 フルパワー】敵軍コマンドを2つリリースすると、必要パワー2以下の敵軍ユニットを1体選び撃破する（出典: atwiki/page-1144）", () => {
+  it("RS-601: 【ミッション6 フルパワー】敵軍コマンドを2つリリースすると、必要パワー2以下の敵軍ユニットを1体選び撃破する（出典: atwiki/page-1144）", () => {
     let s = enter(ncBoard(heldCmds(2)), "RS-601:gd");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-601");
     s = resolveAll(s, ["TST-OP:eh0", "TST-OP:eh1", "SPEC-BP2000:p2"]);
@@ -346,8 +339,7 @@ describe("RS-601 ゴーオンゴールド", () => {
     expect(zoneOf(s, "player2", "SPEC-BP2000:p2")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-601 【ミッション6 フルパワー】が未実装
-  it.fails("RS-601: 【ミッション6 フルパワー】リリースした数より必要パワーが大きい敵軍ユニットは撃破できない（2つなら必要パワー3・4は候補外）（出典: atwiki/page-1144「リリースしたコマンドの数以下の必要パワー」）", () => {
+  it("RS-601: 【ミッション6 フルパワー】リリースした数より必要パワーが大きい敵軍ユニットは撃破できない（2つなら必要パワー3・4は候補外）（出典: atwiki/page-1144「リリースしたコマンドの数以下の必要パワー」）", () => {
     let s = enter(ncBoard(heldCmds(2)), "RS-601:gd");
     s = resolveAll(s, ["TST-OP:eh0", "TST-OP:eh1", "SPEC-BP2500:p3", "SPEC-P4:p4"]);
     expect(zoneOf(s, "player2", "SPEC-BP2500:p3")).toBe("battle");
@@ -355,8 +347,7 @@ describe("RS-601 ゴーオンゴールド", () => {
     expect([zoneOf(s, "player2", "TST-UNIT-0:p0"), zoneOf(s, "player2", "SPEC-BP2000:p2")]).toContain("discard");
   });
 
-  // 既知の不具合: CARD-RS-601 【ミッション6 フルパワー】が未実装
-  it.fails("RS-601: 【ミッション6 フルパワー】リリースできるのは3つまで — 4つあっても3つで、必要パワー4のユニットは撃破できない（出典: atwiki/page-1144「3つまで」）", () => {
+  it("RS-601: 【ミッション6 フルパワー】リリースできるのは3つまで — 4つあっても3つで、必要パワー4のユニットは撃破できない（出典: atwiki/page-1144「3つまで」）", () => {
     let s = enter(ncBoard(heldCmds(4)), "RS-601:gd");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-601");
     s = resolveAll(s, ["TST-OP:eh0", "TST-OP:eh1", "TST-OP:eh2", "TST-OP:eh3", "SPEC-P4:p4", "SPEC-BP2500:p3"]);
@@ -409,8 +400,7 @@ describe("RS-602 害水大臣ケガレシア", () => {
       },
     });
 
-  // 既知の不具合: CARD-RS-602 【汚染された水】が未実装（カード名が変わらず、合体の名前の参照に影響しない）
-  it.fails("RS-602: 【汚染された水】敵軍の「メカ」を持たないユニットはカード名に濁点が付き、元の名前を参照する合体（ガンバルオー）の素材にならない（出典: atwiki/page-1231・grnrngr/faq-card-8 RS-602 Q2）", () => {
+  it("RS-602: 【汚染された水】敵軍の「メカ」を持たないユニットはカード名に濁点が付き、元の名前を参照する合体（ガンバルオー）の素材にならない（出典: atwiki/page-1231・grnrngr/faq-card-8 RS-602 Q2）", () => {
     expect(canStartRush(fusionBoard("enemy"), "player2", "RS-591:gb")).toBe(false);
   });
 
@@ -440,9 +430,26 @@ describe("RS-602 害水大臣ケガレシア", () => {
     expect(canStartRush(s, "player2", "RS-073:sv")).toBe(true);
   });
 
-  it.todo(
-    "RS-602: 公式Q&A — カード名が「ニンジャボワイド」になっても、テキストの『「ホワイトカーク」としてつかえる』は変わらず合体に使える（出典: grnrngr/faq-card-8 RS-602 Q2「はい、それで間違いありません」）— 【汚染された水】のカード名変更自体が未実装で、テキスト側が変わらないことを区別して観測できないため",
-  );
+  // 無敵将軍（RS-513。合体―レッドサルダー＋ホワイトカーク＋ブルーロウガン＋イエロークマード＋ブラックガンマー）を、
+  // 「…としてつかえる」を持つニンジャ5体（RS-455〜RS-459。いずれも「メカ」なし）でラッシュする。
+  const shogunBoard = (keg: boolean) =>
+    st({
+      activePlayer: "player2",
+      phase: "rush",
+      player1: { rush: keg ? [inst("RS-602", "k")] : [], deck: deckCards(3) },
+      player2: {
+        hand: [inst("RS-513", "shogun")],
+        rush: [inst("RS-455", "bk"), inst("RS-456", "bl"), inst("RS-457", "rd"), inst("RS-458", "wh"), inst("RS-459", "ye")],
+        command: releasedCat("MA", 1, "em"),
+        power: powerCards(7, "ep"),
+        deck: deckCards(3, "e"),
+      },
+    });
+
+  it("RS-602: 公式Q&A — カード名が「ニンジャボワイド」になっても、テキストの『「ホワイトカーク」としてつかえる』は変わらず合体に使える（出典: grnrngr/faq-card-8 RS-602 Q2「はい、それで間違いありません」）", () => {
+    expect(canStartRush(shogunBoard(false), "player2", "RS-513:shogun")).toBe(true);
+    expect(canStartRush(shogunBoard(true), "player2", "RS-513:shogun")).toBe(true);
+  });
 });
 
 // ===========================================================================
@@ -500,8 +507,7 @@ describe("RS-603 蛮機獣ボンベバンキ", () => {
     expect(canStrike(s, "SPEC-VEH:et", "player2")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-603 「効果名を持つテキストは無効」が未実装（レツタカの【心の力】「SP1」が有効なまま）
-  it.fails("RS-603: 【超有毒液化ガス】「車両」のユニットの効果名を持つテキストは無効 — レツタカの NC【心の力】で SP1 にならない（出典: atwiki/page-1208「効果名を持つテキストは無効になり、発動もできない」）", () => {
+  it("RS-603: 【超有毒液化ガス】「車両」のユニットの効果名を持つテキストは無効 — レツタカの NC【心の力】で SP1 にならない（出典: atwiki/page-1208「効果名を持つテキストは無効になり、発動もできない」）", () => {
     const s = resolveAll(enter(st({ player1: { battle: fill(3), rush: [inst("RS-597", "t"), inst("RS-603", "bb")], deck: deckCards(3) } }), "RS-597:t"));
     expect(spOf(s, "player1", "RS-597:t")).toBe(0);
   });

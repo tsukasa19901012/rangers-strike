@@ -20,7 +20,7 @@ import { COMMAND_ZONE_MAX } from "../types/game";
 import { getDefinition, isSmallUnit } from "../core/catalog";
 import { findInZone, removeAt } from "../core/helpers";
 import { hasTurnRuleModifier } from "../core/scopedModifiers";
-import { zordMaterialFeatures } from "./zordFeatureContext";
+import { zordMaterialAlteredName, zordMaterialFeatures } from "./zordFeatureContext";
 
 /** ゾードアップ素材を取れるゾーン（フィールドのみ、手札不可）。 */
 export type ZordMaterialZone = "rush" | "battle";
@@ -71,11 +71,14 @@ function fieldCardMatchesPartner(
   fieldCard: CardInstance,
   partnerCardId: string,
 ): boolean {
-  if (fieldCard.cardId === partnerCardId) return true;
+  // RS-602【汚染された水】でカード名が変わったユニットは、名前では合体の素材にならない（テキストの「…としてつかえる」は変わらない。
+  // faq-card-8 RS-602 Q2）。
+  const alteredName = zordMaterialAlteredName(fieldCard);
+  if (!alteredName && fieldCard.cardId === partnerCardId) return true;
   const fieldDef = getDefinition(definitions, fieldCard.cardId);
   if (!fieldDef) return false;
   const partnerNames = partnerNamesForId(definitions, partnerCardId);
-  const fieldNames = new Set<string>([canonicalCardName(fieldDef.name)]);
+  const fieldNames = new Set<string>([canonicalCardName(alteredName ?? fieldDef.name)]);
   for (const alias of fusionMaterialAliasNames(fieldDef.text)) {
     fieldNames.add(alias);
   }
@@ -340,6 +343,7 @@ export function applyAllZordFusionMaterials(
 
   let nextPlayer = player;
   const toDiscard: CardInstance[] = [];
+  const toPower = fusionMaterialsGoToPower(definitions, rushingCardId);
 
   for (const material of materials) {
     const zoneCards = [...nextPlayer[material.zone]];
@@ -352,10 +356,27 @@ export function applyAllZordFusionMaterials(
     nextPlayer = { ...nextPlayer, [material.zone]: remaining };
   }
 
+  if (toPower) {
+    // 「追加条件：自軍合体ユニットをパワーゾーンに送る」— 素材はパワーゾーンにオモテ向きで置く。
+    const cleaned = toDiscard.map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }));
+    return { ...nextPlayer, power: [...nextPlayer.power, ...cleaned] };
+  }
   return {
     ...nextPlayer,
     discard: [...nextPlayer.discard, ...toDiscard],
   };
+}
+
+/**
+ * 追加条件の文言が「自軍合体ユニットをパワーゾーンに送る」なら true（RS-569 スーパーデカレンジャーロボ atwiki/page-1230・
+ * RS-592 エンジンオーG6。grnrngr/faq-card-8 RS-569 Q1「合体ユニットをパワー送りにする」）。文言で判定する。
+ */
+export function fusionMaterialsGoToPower(
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+): boolean {
+  const text = getDefinition(definitions, rushingCardId)?.rushAdditionalCondition?.text ?? "";
+  return /合体ユニットを(?:自軍)?パワーゾーンに送る/.test(text.normalize("NFKC"));
 }
 
 export function isValidFusionMaterial(
@@ -422,7 +443,8 @@ export function isValidZordUpMaterial(
       return (
         (def.type === "unit" || def.type === "vehicle") &&
         !!condition.partnerName &&
-        matchesPartnerName(def, condition.partnerName)
+        // RS-602【汚染された水】で変わったカード名で判定する。
+        normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(condition.partnerName))
       );
     case "discard_feature_unit": {
       // 効果・フェイズで追加された特徴も含める（RS-499 ゲキバイオレット。rules/zordFeatureContext.ts）。
@@ -539,7 +561,13 @@ export function applyZordMaterial(
   const [, zoneCards] = removeAt(player[material.zone], material.index);
   let nextPlayer: PlayerState = { ...player, [material.zone]: zoneCards };
 
-  if (
+  if (conditionId === "discard_fusion_unit" && fusionMaterialsGoToPower(definitions, rushingCardId)) {
+    // 「自軍合体ユニットをパワーゾーンに送る」（RS-592 エンジンオーG6。faq-card-8 RS-569 Q1「合体ユニットをパワー送りにする」）。
+    nextPlayer = {
+      ...nextPlayer,
+      power: [...nextPlayer.power, { instanceId: material.card.instanceId, cardId: material.card.cardId }],
+    };
+  } else if (
     conditionId === "discard_fusion_unit" ||
     conditionId === "discard_named_unit" ||
     conditionId === "discard_feature_unit" ||

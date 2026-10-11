@@ -6,6 +6,7 @@
  * - 継続効果・制限の参照関数（BP 補正、ターン終了時の撃破など）。
  * 型・構成は rules/legend1/set5NamedEffectsA.ts と同じ。
  */
+import { set8DNamedTextNegated } from "./set8NamedEffectsD";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { cardName, effectiveBp, getDefinition, parsePowerCost } from "../../core/catalog";
@@ -692,6 +693,8 @@ export function applyThunderRoar(state: GameState, playerId: PlayerId): GameStat
 export function namedTextNegated(state: Pick<GameState, "players" | "definitions">, ownerId: PlayerId, card: Pick<CardInstance, "cardId" | "instanceId">): boolean {
   // RS-497 冥獣人ニンジャキリカゲ【変身の妨害】（rules/legend1/set7NamedEffectsD.ts）。
   if (transformationHindranceNegates(state, card)) return true;
+  // RS-603 蛮機獣ボンベバンキ【超有毒液化ガス】（本来の特徴に「車両」を持つユニット。rules/legend1/set8NamedEffectsD.ts）。
+  if (set8DNamedTextNegated(state, card)) return true;
   if (!hasTurnRuleModifier(state.players[opponent(ownerId)], THUNDER_ROAR_RULE)) return false;
   if (getDefinition(state.definitions, card.cardId)?.type !== "unit") return false;
   return unitFeatures(state, ownerId, card).includes("メカ");

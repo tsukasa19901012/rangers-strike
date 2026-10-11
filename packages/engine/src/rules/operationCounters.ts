@@ -1,3 +1,4 @@
+import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
 import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import {
   openDeathStingerChoice,
@@ -1754,6 +1755,7 @@ export function finalizeLeavePending(
   );
   let nextOwner: typeof owner;
   let medicalRescueToPower = false;
+  let triConcordId: string | null = null;
   let discardAsDamage = false;
 
   if (pending.toZone === "deck_top") {
@@ -1810,6 +1812,13 @@ export function finalizeLeavePending(
     shouldOfferToPowerOnDestroy(pending)
   ) {
     return startToPowerOnDestroyChoice(state, pending, leavingCard, fromCards);
+  } else if (
+    pending.toZone === "discard" &&
+    !pending.notDestruction &&
+    (triConcordId = triConcordVanishSource(state, pending))
+  ) {
+    // RS-567 トライコンドル【カラクリ忍法・消身の術】（rules/legend1/set8NamedEffectsC.ts）。
+    return startToPowerOnDestroyChoice(state, pending, leavingCard, fromCards, { cardId: "RS-567", instanceId: triConcordId });
   } else if (pending.toZone === "discard" && pending.discardAsDamage && !pending.notDestruction) {
     // RS-182 ジャイアントローラー: 撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く。
     discardAsDamage = true;

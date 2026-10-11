@@ -9,6 +9,23 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState } from "../types/game";
 import { unitFeatures } from "./addedFeatures";
+import { pollutedWaterName } from "./legend1/set8NamedEffectsD";
+
+/**
+ * 素材の判定に使うユニットのカード名（場にあれば、効果で変わった名前。RS-602【汚染された水】。rules/legend1/set8NamedEffectsD.ts）。
+ * 変わっていなければ undefined。
+ */
+export function zordMaterialAlteredName(card: CardInstance): string | undefined {
+  const state = current;
+  if (!state) return undefined;
+  for (const pid of ["player1", "player2"] as const) {
+    const p = state.players[pid];
+    if (p.rush.some((c) => c.instanceId === card.instanceId) || p.battle.some((c) => c.instanceId === card.instanceId)) {
+      return pollutedWaterName(state, pid, card);
+    }
+  }
+  return undefined;
+}
 
 let current: GameState | null = null;
 

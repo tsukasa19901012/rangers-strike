@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-600::mishon1baningu",
-          "duration": "permanent"
+          "keyword": "set8d::RS-600::mission1_burning",
+          "duration": "turn"
         }
       ],
       "optional": false

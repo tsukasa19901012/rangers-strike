@@ -310,9 +310,18 @@ function isValidCategoryLUnit(
   const def = getDefinition(definitions, card.cardId);
   if (!def || !isLargeUnit(definitions, card.cardId)) return false;
   if (!requiredCategory) return true;
-  if (cardHasCategory(def, requiredCategory as never)) return true;
-  return normalizeName(requiredCategory).length > 0;
+  // 「ダークアライアンスを持つ自軍Lユニット」（RS-580 絶対神ン・マ atwiki/page-1219）— 正式名・略号のどちらでも照合する。
+  const category = CATEGORY_FULL_NAMES[normalizeName(requiredCategory)] ?? requiredCategory;
+  return cardHasCategory(def, category as never);
 }
+
+const CATEGORY_FULL_NAMES: Record<string, string> = {
+  ワイルドビースト: "WB",
+  ミスティックアームズ: "MA",
+  オーバーテクノロジー: "OT",
+  アーステクノロジー: "ET",
+  ダークアライアンス: "DA",
+};
 
 export function isValidExtendedZordMaterial(
   definitions: Record<string, CardDefinition>,

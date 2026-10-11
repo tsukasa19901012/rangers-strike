@@ -17926,7 +17926,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "SP2"
+      "set8c::RS-573::bari_lancer"
     ],
     "bp": 6000,
     "sp": "special",
@@ -18122,7 +18122,7 @@
       "【闇を振り払う心】"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-584::yamiworiu"
+      "set8d::RS-584::darkness_dispel"
     ],
     "bp": 3500,
     "sp": "special",
@@ -18175,7 +18175,7 @@
     ],
     "expectedDslKeywords": [
       "no_attack_from_bp3000_or_less",
-      "effect_card::RS-587::shii"
+      "set8d::RS-587::fierce_fight"
     ],
     "bp": 2000,
     "sp": null,
@@ -18193,7 +18193,7 @@
     ],
     "expectedDslKeywords": [
       "no_attack_from_bp3000_or_less",
-      "effect_card::RS-588::fxunknowne8a193"
+      "set8d::RS-588::soul_art"
     ],
     "bp": 2000,
     "sp": null,
@@ -18211,7 +18211,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
-      "effect_card::RS-589::gureiburasuta"
+      "set8d::RS-589::gray_blaster"
     ],
     "bp": 6000,
     "sp": 1,
@@ -18228,7 +18228,7 @@
       "【グレイボンバー】"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-590::gureibonba"
+      "set8d::RS-590::gray_bomber"
     ],
     "bp": 7000,
     "sp": null,
@@ -18259,7 +18259,7 @@
       "【G6グランプリ】"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-592::g6guranpuri"
+      "set8d::RS-592::g6_grand_prix"
     ],
     "bp": 18000,
     "sp": 2,
@@ -18297,7 +18297,7 @@
     "expectedDslKeywords": [
       "auto_battle_entry_each_turn",
       "to_power_on_destroy",
-      "effect_card::RS-594::ganpadogan"
+      "set8d::RS-594::gunpard_gun"
     ],
     "bp": 2000,
     "sp": null,
@@ -18315,7 +18315,7 @@
     ],
     "expectedDslKeywords": [
       "to_power_on_destroy",
-      "effect_card::RS-595::moshii"
+      "set8d::RS-595::reliable_back"
     ],
     "bp": 3000,
     "sp": null,
@@ -18332,7 +18332,7 @@
       "【炎神剣】"
     ],
     "expectedDslKeywords": [
-      "SP2"
+      "set8d::RS-596::flame_sword"
     ],
     "bp": 13000,
     "sp": 1,
@@ -18370,7 +18370,7 @@
     "expectedDslKeywords": [
       "auto_battle_entry_each_turn",
       "to_power_on_destroy",
-      "effect_card::RS-598::noe6ada3"
+      "set8d::RS-598::justice_sortie"
     ],
     "bp": 3000,
     "sp": null,
@@ -18389,7 +18389,7 @@
     "expectedDslKeywords": [
       "auto_battle_entry_each_turn",
       "to_power_on_destroy",
-      "effect_card::RS-599::risuhonoo"
+      "set8d::RS-599::reclaim_flame"
     ],
     "bp": 2000,
     "sp": null,
@@ -18407,7 +18407,7 @@
     ],
     "expectedDslKeywords": [
       "call_OT",
-      "effect_card::RS-600::mishon1baningu"
+      "set8d::RS-600::mission1_burning"
     ],
     "bp": 2000,
     "sp": null,

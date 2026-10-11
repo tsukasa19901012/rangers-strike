@@ -38,6 +38,8 @@ import {
   st,
   sUnit,
   zoneOf,
+  legal,
+  toPhase,
 } from "./RS8-582-604.helpers";
 
 const NOSP = sUnit("SPEC-NOSP", { sp: undefined, bp: 1000 });
@@ -112,8 +114,7 @@ describe("RS-590 クエスター・レイ", () => {
       player2: { hand: [inst("RS-059", "blue"), inst("TST-OP", "eo")], deck: deckCards(3, "e") },
     });
 
-  // 既知の不具合: CARD-RS-590 【グレイボンバー】が未実装（combo_action のパッシブ登録だけ）
-  it.fails("RS-590: 【グレイボンバー】NC（5番目）— 相手の手札の NC を持つ S ユニットを選び、その NC（1枚ドロー）をこのユニットの効果として発動する（出典: atwiki/page-1200）", () => {
+  it("RS-590: 【グレイボンバー】NC（5番目）— 相手の手札の NC を持つ S ユニットを選び、その NC（1枚ドロー）をこのユニットの効果として発動する（出典: atwiki/page-1200）", () => {
     let s = enterSeq(board(fill(4)), ["RS-590:q"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-590");
     s = resolveAll(s, ["RS-059:blue"]);
@@ -121,8 +122,7 @@ describe("RS-590 クエスター・レイ", () => {
     expect(zoneOf(s, "player2", "RS-059:blue")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RS-590 【グレイボンバー】が未実装
-  it.fails("RS-590: 【グレイボンバー】「クエスター・ガイ」の次（2番目）ならナンバーに関係なく発動する（出典: atwiki/page-1200「ナンバーに関係なく発動する」）", () => {
+  it("RS-590: 【グレイボンバー】「クエスター・ガイ」の次（2番目）ならナンバーに関係なく発動する（出典: atwiki/page-1200「ナンバーに関係なく発動する」）", () => {
     const s = resolveAll(enterSeq(board([inst("RS-589", "qg")]), ["RS-590:q"]), ["RS-059:blue"]);
     expect(s.players.player1.hand).toHaveLength(1);
   });
@@ -132,8 +132,7 @@ describe("RS-590 クエスター・レイ", () => {
     expect(s.players.player1.hand).toHaveLength(0);
   });
 
-  // 既知の不具合: CARD-RS-590 【グレイボンバー】が未実装（任意の選択自体が開かない）
-  it.fails("RS-590: 【グレイボンバー】任意 — 相手の手札を見ないこともできる（出典: atwiki/page-1200「見てもよい」）", () => {
+  it("RS-590: 【グレイボンバー】任意 — 相手の手札を見ないこともできる（出典: atwiki/page-1200「見てもよい」）", () => {
     let s = enterSeq(board(fill(4)), ["RS-590:q"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-590");
     expect(canSkip(s)).toBe(true);
@@ -247,8 +246,7 @@ describe("RS-592 エンジンオーG6", () => {
   const rushBoard = (rush: ReturnType<typeof inst>[]) =>
     st({ phase: "rush", player1: { hand: [inst("RS-592", "g6")], rush, command: releasedCat("OT", 1), power: powerCards(6), deck: deckCards(3) } });
 
-  // 既知の不具合: CARD-RS-592 追加条件の合体ユニットがパワーゾーンではなく捨札に送られる（conditionId が discard_fusion_unit）
-  it.fails("RS-592: 追加条件 — エンジンオー＋ガンバルオーをパワーゾーンに送ってラッシュする（捨札にはしない）（出典: atwiki/page-1223・grnrngr/faq-card-8 RS-569 Q1「合体ユニットをパワー送りにする」）", () => {
+  it("RS-592: 追加条件 — エンジンオー＋ガンバルオーをパワーゾーンに送ってラッシュする（捨札にはしない）（出典: atwiki/page-1223・grnrngr/faq-card-8 RS-569 Q1「合体ユニットをパワー送りにする」）", () => {
     const r = rushFromHand(rushBoard([inst("RS-515", "eo"), inst("RS-591", "gb")]), "player1", "RS-592:g6");
     expect(r.ok).toBe(true);
     expect(zoneOf(r.state, "player1", "RS-592:g6")).toBe("rush");
@@ -256,8 +254,7 @@ describe("RS-592 エンジンオーG6", () => {
     expect(zoneOf(r.state, "player1", "RS-591:gb")).toBe("power");
   });
 
-  // 既知の不具合: CARD-RS-592 合体の「または」側（M ユニット6体）が素材として登録されていない（partnerCardIds が RS-515・RS-591 だけ）
-  it.fails("RS-592: 追加条件 — エンジンオーのかわりにスピードル＋バスオン＋ベアールV、ガンバルオーのかわりにバルカ＋ガンパード＋キャリゲーターでもよい（出典: atwiki/page-1223「（または…）」）", () => {
+  it("RS-592: 追加条件 — エンジンオーのかわりにスピードル＋バスオン＋ベアールV、ガンバルオーのかわりにバルカ＋ガンパード＋キャリゲーターでもよい（出典: atwiki/page-1223「（または…）」）", () => {
     const six = [inst("RS-505", "a"), inst("RS-506", "b"), inst("RS-507", "c"), inst("RS-593", "d"), inst("RS-594", "e"), inst("RS-595", "f")];
     const r = rushFromHand(rushBoard(six), "player1", "RS-592:g6", { destination: "discard" });
     expect(r.ok).toBe(true);
@@ -284,8 +281,7 @@ describe("RS-592 エンジンオーG6", () => {
       [BP6000, BP7000],
     );
 
-  // 既知の不具合: CARD-RS-592 【G6グランプリ】がパワーゾーンのカードを捨札にせず、BP 上限のない敵軍ユニット1体の撃破選択になっている（汎用 destroy_enter_battle）
-  it.fails("RS-592: 【G6グランプリ】パワー8枚なら2枚を捨札にして6枚にし、BP6000 以下の敵軍ユニットを2体まで撃破する（出典: atwiki/page-1223）", () => {
+  it("RS-592: 【G6グランプリ】パワー8枚なら2枚を捨札にして6枚にし、BP6000 以下の敵軍ユニットを2体まで撃破する（出典: atwiki/page-1223）", () => {
     let s = enterSeq(board(powerCards(8)), ["RS-592:g"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-592");
     s = resolveAll(s, ["TST-P:pw0", "TST-P:pw1", "SPEC-BP6000:a", "TST-UNIT-0:r"]);
@@ -297,21 +293,18 @@ describe("RS-592 エンジンオーG6", () => {
     expect(zoneOf(s, "player2", "SPEC-BP7000:big")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-592 【G6グランプリ】の撃破候補に BP の上限がない
-  it.fails("RS-592: 【G6グランプリ】撃破できるのは BP6000 以下の敵軍ユニットだけ（BP7000 は選べない）（出典: atwiki/page-1223「BP6000以下の敵軍ユニット」）", () => {
+  it("RS-592: 【G6グランプリ】撃破できるのは BP6000 以下の敵軍ユニットだけ（BP7000 は選べない）（出典: atwiki/page-1223「BP6000以下の敵軍ユニット」）", () => {
     const s = resolveAll(enterSeq(board(powerCards(8)), ["RS-592:g"]), ["TST-P:pw0", "TST-P:pw1", "SPEC-BP7000:big"]);
     expect(zoneOf(s, "player2", "SPEC-BP7000:big")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-592 【G6グランプリ】がパワーゾーンの枚数を見ずに撃破選択を開く
-  it.fails("RS-592: 【G6グランプリ】パワーが6枚ちょうどなら捨札にするカードがなく、敵軍ユニットを撃破しない（出典: atwiki/page-1223「6枚になるように」「捨札にした枚数と同じ数まで」）", () => {
+  it("RS-592: 【G6グランプリ】パワーが6枚ちょうどなら捨札にするカードがなく、敵軍ユニットを撃破しない（出典: atwiki/page-1223「6枚になるように」「捨札にした枚数と同じ数まで」）", () => {
     const s = enterSeq(board(powerCards(6)), ["RS-592:g"]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-592");
     expect(zoneOf(resolveAll(s), "player2", "SPEC-BP6000:a")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-592 【G6グランプリ】のパワー捨札が未実装
-  it.fails("RS-592: 【G6グランプリ】ダメージ（ウラ向き）のカードは捨札にできない — オモテ6枚＋ウラ1枚なら、オモテ1枚を捨札にして6枚にし、1体だけ撃破（出典: atwiki/page-1223「オモテ向きのカードを選び」）", () => {
+  it("RS-592: 【G6グランプリ】ダメージ（ウラ向き）のカードは捨札にできない — オモテ6枚＋ウラ1枚なら、オモテ1枚を捨札にして6枚にし、1体だけ撃破（出典: atwiki/page-1223「オモテ向きのカードを選び」）", () => {
     const power = [...powerCards(6), { ...inst("TST-P", "dmg"), faceDown: true }];
     const s = resolveAll(enterSeq(board(power), ["RS-592:g"]), ["TST-P:dmg", "TST-P:pw0", "SPEC-BP6000:a", "TST-UNIT-0:r"]);
     expect(zoneOf(s, "player1", "TST-P:dmg")).toBe("power");
@@ -366,8 +359,7 @@ describe("RS-593 バルカ", () => {
   const ncBoard = (enemyPower: ReturnType<typeof inst>[], nth = 4) =>
     st({ player1: { battle: fill(nth - 1), rush: [inst("RS-593", "v")], deck: deckCards(3) }, player2: { power: enemyPower, deck: deckCards(3, "e") } });
 
-  // 既知の不具合: CARD-RS-593 【バルカッター】の「相手はパワーゾーンのオモテ向きのカードを手札に戻してもよい」が未実装（相手に選択が開かない）
-  it.fails("RS-593: 【バルカッター】NC（4番目）— 相手がパワーゾーンのオモテ向きのカードを1枚手札に戻すと、このターンこれはストライクできない（出典: atwiki/page-1202）", () => {
+  it("RS-593: 【バルカッター】NC（4番目）— 相手がパワーゾーンのオモテ向きのカードを1枚手札に戻すと、このターンこれはストライクできない（出典: atwiki/page-1202）", () => {
     let s = enter(ncBoard(powerCards(2, "ep")), "RS-593:v");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     s = resolveAll(pick(s, "TST-P:ep0"));
@@ -429,8 +421,7 @@ describe("RS-594 ガンパード", () => {
       player2: { hand: [inst("TST-UNIT-0", "es"), inst("TST-OP", "eo"), inst("TST-UNIT-2", "em"), inst("TST-OP", "eo2")], deck: deckCards(5, "e") },
     });
 
-  // 既知の不具合: CARD-RS-594 【ガンパードガン】が未実装（NC は成立するが手札を選ぶ選択が開かない）
-  it.fails("RS-594: 【ガンパードガン】NC（5番目）— 相手の手札を3枚まで選び、その中の S ユニットのカードを持ち主（相手）のパワーゾーンに置く（出典: atwiki/page-1203）", () => {
+  it("RS-594: 【ガンパードガン】NC（5番目）— 相手の手札を3枚まで選び、その中の S ユニットのカードを持ち主（相手）のパワーゾーンに置く（出典: atwiki/page-1203）", () => {
     let s = enterSeq(ncBoard(), ["RS-594:gp"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-594");
     s = resolveAll(s, ["TST-UNIT-0:es", "TST-OP:eo", "TST-UNIT-2:em"]);
@@ -439,8 +430,7 @@ describe("RS-594 ガンパード", () => {
     expect(zoneOf(s, "player2", "TST-OP:eo")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RS-594 【ガンパードガン】が未実装（任意の選択自体が開かない）
-  it.fails("RS-594: 【ガンパードガン】任意 — 選ばなければ相手の手札は変わらない（出典: atwiki/page-1203「選んでもよい」）", () => {
+  it("RS-594: 【ガンパードガン】任意 — 選ばなければ相手の手札は変わらない（出典: atwiki/page-1203「選んでもよい」）", () => {
     let s = enterSeq(ncBoard(), ["RS-594:gp"]);
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));
@@ -453,9 +443,34 @@ describe("RS-594 ガンパード", () => {
     expect(s.players.player2.power).toHaveLength(0);
   });
 
-  it.todo(
-    "RS-594: 【ガンパードガン】次の相手ターン、相手はターンを終えるときパワーゾーンのオモテ向きのカードを1枚手札に戻してもよい（出典: atwiki/page-1203）— 本体の手札選択が未実装で、そこから続く後半の処理を確かめる前提が作れないため",
-  );
+  it("RS-594: 【ガンパードガン】次の相手ターン、相手はターンを終えるときパワーゾーンのオモテ向きのカードを1枚手札に戻してもよい（出典: atwiki/page-1203）", () => {
+    let s = resolveAll(enterSeq(ncBoard(), ["RS-594:gp"]), ["TST-UNIT-0:es", "TST-OP:eo", "TST-UNIT-2:em"]);
+    expect(zoneOf(s, "player2", "TST-UNIT-0:es")).toBe("power");
+    s = toPhase(s, "player2", "end");
+    for (let i = 0; i < 4 && s.pendingEffectChoice?.sourceCardId !== "RS-594"; i += 1) {
+      const end = legal(s).find((a) => a.type === "end_phase");
+      if (!end) break;
+      s = act(s, end);
+    }
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-594");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(canSkip(s)).toBe(true);
+    s = pick(s, "TST-UNIT-0:es");
+    expect(zoneOf(s, "player2", "TST-UNIT-0:es")).toBe("hand");
+  });
+
+  it("RS-594: 【ガンパードガン】後半は「次の相手ターン」だけ — 自分のターンを終えるときには戻す選択は開かない（出典: atwiki/page-1203「次の相手ターン」）", () => {
+    let s = resolveAll(enterSeq(ncBoard(), ["RS-594:gp"]), ["TST-UNIT-0:es", "TST-OP:eo", "TST-UNIT-2:em"]);
+    for (let i = 0; i < 6 && s.activePlayer === "player1"; i += 1) {
+      expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-594");
+      const next = legal(s).find((a) => a.type === "end_phase" || a.type === "pass_battle_entry");
+      if (!next) break;
+      s = act(s, next);
+    }
+    expect(s.activePlayer).toBe("player2");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-594");
+    expect(zoneOf(s, "player2", "TST-UNIT-0:es")).toBe("power");
+  });
 });
 
 // ===========================================================================
@@ -483,14 +498,12 @@ describe("RS-595 キャリゲーター", () => {
     expect(canEndPhase(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-595 【頼もしい背中】が未実装（バルカの「可能ならバトルエリアに出る」が無効にならない）
-  it.fails("RS-595: 【頼もしい背中】自軍エリアにある間、炎神（バルカ）の「可能ならバトルエリアに出る」は無効で、出さずにバトルフェイズを終えられる（出典: atwiki/page-1204）", () => {
+  it("RS-595: 【頼もしい背中】自軍エリアにある間、炎神（バルカ）の「可能ならバトルエリアに出る」は無効で、出さずにバトルフェイズを終えられる（出典: atwiki/page-1204）", () => {
     const s = st({ player1: { rush: [inst("RS-593", "v"), inst("RS-595", "c")], deck: deckCards(3) } });
     expect(canEndPhase(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-595 【頼もしい背中】が未実装
-  it.fails("RS-595: 【頼もしい背中】キャリゲーターがバトルエリアにあっても有効（出典: atwiki/page-1204「これが自軍エリアにある間」）", () => {
+  it("RS-595: 【頼もしい背中】キャリゲーターがバトルエリアにあっても有効（出典: atwiki/page-1204「これが自軍エリアにある間」）", () => {
     const s = st({ player1: { battle: [inst("RS-595", "c")], rush: [inst("RS-597", "t")], deck: deckCards(3) } });
     expect(canEndPhase(s)).toBe(true);
   });
@@ -546,29 +559,25 @@ describe("RS-596 炎神大将軍", () => {
 
   const board = (deck: ReturnType<typeof inst>[]) => st({ player1: { rush: [inst("RS-596", "d")], deck } });
 
-  // 既知の不具合: CARD-RS-596 【炎神剣】が「SP2」を無条件に付与するだけ（オモテにする任意の選択・炎神の判定・山札の下に戻す処理がない。付与された SP2 も SP に反映されない）
-  it.fails("RS-596: 【炎神剣】山札の上が特徴「炎神」のユニットカードなら、このターン SP2（出典: atwiki/page-1216）", () => {
+  it("RS-596: 【炎神剣】山札の上が特徴「炎神」のユニットカードなら、このターン SP2（出典: atwiki/page-1216）", () => {
     let s = enterSeq(board([inst("RS-597", "top"), inst("TST-OP", "b")]), ["RS-596:d"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-596");
     s = resolveAll(s, ["RS-597:top"]);
     expect(spOf(s, "player1", "RS-596:d")).toBe(2);
   });
 
-  // 既知の不具合: CARD-RS-596 【炎神剣】のオモテにしたカードを山札の下に戻す処理がない
-  it.fails("RS-596: 【炎神剣】オモテにしたカードは山札の下に戻す（出典: atwiki/page-1216「その後、オモテにしたカードは山札の下に戻す」）", () => {
+  it("RS-596: 【炎神剣】オモテにしたカードは山札の下に戻す（出典: atwiki/page-1216「その後、オモテにしたカードは山札の下に戻す」）", () => {
     const s = resolveAll(enterSeq(board([inst("RS-597", "top"), inst("TST-OP", "b")]), ["RS-596:d"]), ["RS-597:top"]);
     expect(s.players.player1.deck.map((c) => c.instanceId)).toEqual(["TST-OP:b", "RS-597:top"]);
   });
 
-  // 既知の不具合: CARD-RS-596 【炎神剣】の山札の下に戻す処理がない
-  it.fails("RS-596: 【炎神剣】炎神でないカードなら SP1 のまま、そのカードも山札の下に戻す（出典: atwiki/page-1216「炎神」を持つユニットカードなら）", () => {
+  it("RS-596: 【炎神剣】炎神でないカードなら SP1 のまま、そのカードも山札の下に戻す（出典: atwiki/page-1216「炎神」を持つユニットカードなら）", () => {
     const s = resolveAll(enterSeq(board([inst("TST-UNIT-0", "top"), inst("TST-OP", "b")]), ["RS-596:d"]), ["TST-UNIT-0:top"]);
     expect(spOf(s, "player1", "RS-596:d")).toBe(1);
     expect(s.players.player1.deck.map((c) => c.instanceId)).toEqual(["TST-OP:b", "TST-UNIT-0:top"]);
   });
 
-  // 既知の不具合: CARD-RS-596 【炎神剣】の任意選択がない
-  it.fails("RS-596: 【炎神剣】任意 — オモテにしなければ山札はそのまま（出典: atwiki/page-1216「オモテにしてもよい」）", () => {
+  it("RS-596: 【炎神剣】任意 — オモテにしなければ山札はそのまま（出典: atwiki/page-1216「オモテにしてもよい」）", () => {
     let s = enterSeq(board([inst("RS-597", "top"), inst("TST-OP", "b")]), ["RS-596:d"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-596");
     s = resolveAll(skip(s));

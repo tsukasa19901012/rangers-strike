@@ -23,6 +23,7 @@ import { spBecomesInZone } from "../fractionalSp";
 import { shuffleCards } from "../errataCardEffects";
 import { finalizeLeaveReaction, resolveBattlePending, tryLeaveField } from "../operationCounters";
 import { turnPlayerOf } from "./set6NamedEffectsB";
+import { set8DNamedTextNegated } from "./set8NamedEffectsD";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -147,6 +148,8 @@ export function gravityComboNumber(
  */
 export function set7DBlocksNc(state: GameState, playerId: PlayerId, card: CardInstance, definition: CardDefinition): boolean {
   if (gravityComboNumber(state, card, definition) === 0) return true;
+  // RS-603【超有毒液化ガス】: 本来の特徴に「車両」を持つユニットの効果名を持つテキスト（rules/legend1/set8NamedEffectsD.ts）。
+  if (set8DNamedTextNegated(state, card)) return true;
   return transformationHindranceNegates(state, card);
 }
 

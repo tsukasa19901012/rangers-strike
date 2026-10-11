@@ -44,8 +44,14 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "set8d::RS-601::full_power",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

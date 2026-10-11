@@ -9,6 +9,7 @@ import {
 import { playerHasFieldCard } from "./rsCatchallChoices";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { sameCardName } from "../../core/cardNames";
+import { wasRushedThisTurn } from "../turnModifiers";
 
 /**
  * RS-210: ナンバーSユニットのBP加算を減算に反転。
@@ -43,19 +44,23 @@ export function rs482BlocksAttackStrike(
   return !(def?.features ?? []).includes("航空機");
 }
 
-/** RS-579: BP8000以下はラッシュターンにアタック/ストライク不可。 */
+/**
+ * RS-579 ルナジェル【ルジュナ】「これが自軍エリアにある間、BP8000以下のユニットは次の制限を受ける⇒ラッシュしたターンに
+ * ストライクもアタックもできない。」（atwiki/page-1194）— 自軍・敵軍の限定はない（R-TGT-04）。ラッシュしたターンは
+ * そのユニットがラッシュされたターン（wasRushedThisTurn）。
+ */
 export function rs579BlocksAttackStrikeOnRushTurn(
   state: GameState,
   playerId: PlayerId,
   instanceId: string,
 ): boolean {
-  if (!playerHasFieldCard(state, playerId, "RS-579")) return false;
+  const enemyId: PlayerId = playerId === "player1" ? "player2" : "player1";
+  if (!playerHasFieldCard(state, playerId, "RS-579") && !playerHasFieldCard(state, enemyId, "RS-579")) return false;
   const player = state.players[playerId];
   const card = [...player.rush, ...player.battle].find((c) => c.instanceId === instanceId);
   if (!card) return false;
-  const bp = effectiveBp(state, playerId, card);
-  if (bp > 8000) return false;
-  return player.rush.some((c) => c.instanceId === instanceId);
+  if (!wasRushedThisTurn(player, instanceId)) return false;
+  return effectiveBp(state, playerId, card) <= 8000;
 }
 
 /** RS-627: ラッシュBP1000以下は相手に選ばれない。 */

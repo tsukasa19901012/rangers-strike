@@ -117,8 +117,7 @@ describe("RS-574 セイントカイザー", () => {
   const entered = (enemy: Partial<GameState["players"]["player2"]>, myDamage = 3) =>
     enter(st({ player1: { rush: [inst("RS-574", "sk")], ...dmg(myDamage), deck: deckCards(3) }, player2: { deck: deckCards(3, "e"), ...enemy } }), "RS-574:sk");
 
-  // 既知の不具合: CARD-RS-574 【セイントホーンフィニッシュ】の「必要パワーの数字が自軍ダメージの点数以下」の制限が落ちている（必要パワー6の DA も選べる）
-  it.fails("RS-574: 【セイントホーンフィニッシュ】候補は DA を持ち、必要パワーの数字が自軍ダメージ以下の敵軍ユニットだけ（出典: atwiki/page-1218「ただし、必要パワーの数字が自軍ダメージの点数以下のユニットしか選べない」）", () => {
+  it("RS-574: 【セイントホーンフィニッシュ】候補は DA を持ち、必要パワーの数字が自軍ダメージ以下の敵軍ユニットだけ（出典: atwiki/page-1218「ただし、必要パワーの数字が自軍ダメージの点数以下のユニットしか選べない」）", () => {
     // 自軍ダメージ3: 魔導馬バリキオン（DA・3）は可、暴走皇帝エグゾス（DA・6）は不可、TST-UNIT-0（WB・0）は DA でないので不可。
     const s = entered({ battle: [inst("RS-114", "bk"), inst("RS-216", "ex"), inst("TST-UNIT-0", "wb")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-574");
@@ -133,29 +132,25 @@ describe("RS-574 セイントカイザー", () => {
     expect(zoneOf(s, "player2", "RS-114:bk")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-574 【セイントホーンフィニッシュ】の「DAを持つ」条件が落ちている（WB のユニットも選べる）
-  it.fails("RS-574: 【セイントホーンフィニッシュ】DA を持たない敵軍ユニット（TST-UNIT-0・WB）は選べない（出典: atwiki/page-1218「DAを持つ敵軍ユニット」）", () => {
+  it("RS-574: 【セイントホーンフィニッシュ】DA を持たない敵軍ユニット（TST-UNIT-0・WB）は選べない（出典: atwiki/page-1218「DAを持つ敵軍ユニット」）", () => {
     const s = entered({ battle: [inst("RS-114", "bk"), inst("TST-UNIT-0", "wb")] });
     expect(choiceIds(s)).not.toContain("TST-UNIT-0:wb");
   });
 
-  // 既知の不具合: CARD-RS-574 【セイントホーンフィニッシュ】の候補に敵軍ラッシュエリアのユニットが入らない
-  it.fails("RS-574: 【セイントホーンフィニッシュ】敵軍ラッシュエリアの DA ユニットも選べる（出典: atwiki/page-1218「敵軍ユニット」— 場所の限定なし）", () => {
+  it("RS-574: 【セイントホーンフィニッシュ】敵軍ラッシュエリアの DA ユニットも選べる（出典: atwiki/page-1218「敵軍ユニット」— 場所の限定なし）", () => {
     let s = entered({ rush: [inst("RS-114", "bk")] });
     expect(choiceIds(s)).toEqual(["RS-114:bk"]);
     s = resolveAll(pick(s, "RS-114:bk"));
     expect(zoneOf(s, "player2", "RS-114:bk")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-574 【セイントホーンフィニッシュ】の自軍ダメージの制限が落ちている（ダメージ0でも必要パワー3の DA を撃破できる）
-  it.fails("RS-574: 【セイントホーンフィニッシュ】自軍ダメージ0なら必要パワー3の DA ユニットは選べない（出典: atwiki/page-1218「…以下のユニットしか選べない」）", () => {
+  it("RS-574: 【セイントホーンフィニッシュ】自軍ダメージ0なら必要パワー3の DA ユニットは選べない（出典: atwiki/page-1218「…以下のユニットしか選べない」）", () => {
     const s = entered({ battle: [inst("RS-114", "bk")] }, 0);
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(zoneOf(s, "player2", "RS-114:bk")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-574 【セイントホーンフィニッシュ】の制限が落ちており、敵軍ダメージが多くても関係なく選べてしまう
-  it.fails("RS-574: 【セイントホーンフィニッシュ】参照するのは自軍ダメージで、敵軍ダメージではない（出典: atwiki/page-1218「自軍ダメージの点数」）", () => {
+  it("RS-574: 【セイントホーンフィニッシュ】参照するのは自軍ダメージで、敵軍ダメージではない（出典: atwiki/page-1218「自軍ダメージの点数」）", () => {
     const s = entered({ battle: [inst("RS-114", "bk")], ...dmg(5, "ed") }, 0);
     expect(s.pendingEffectChoice).toBeUndefined();
   });
@@ -196,8 +191,7 @@ describe("RS-575 一角聖馬ユニゴルオン", () => {
       [DA_HUMAN_M, HUMAN_S, BEAST_M],
     );
 
-  // 既知の不具合: CARD-RS-575 RC なしでライドできる※が未実装（「人型」の M ユニットでもライドできない）
-  it.fails("RS-575: ※ DA を持たない「人型」の M ユニット（マジフェニックス・風雷丸）は RC がなくてもライドできる（出典: atwiki/page-1240「ＲＣを持っていなくてもこのビークルにライドでき」・R-KW-RIDE-02）", () => {
+  it("RS-575: ※ DA を持たない「人型」の M ユニット（マジフェニックス・風雷丸）は RC がなくてもライドできる（出典: atwiki/page-1240「ＲＣを持っていなくてもこのビークルにライドでき」・R-KW-RIDE-02）", () => {
     const opts = rideOptions(rideState());
     expect(opts).toContain("RS-576:mp>RS-575:u");
     expect(opts).toContain("RS-568:fu>RS-575:u");
@@ -264,8 +258,7 @@ describe("RS-576 マジフェニックス", () => {
   };
   const isHeld = (s: GameState, p: "player1" | "player2", id: string) => s.players[p].battle.find((c) => c.instanceId === id)?.commandHeld ?? false;
 
-  // 既知の不具合: CARD-RS-576 ラッシュ時の※がログだけで、ホールド状態の自軍 S ユニットがリリースされない（選択もない）
-  it.fails("RS-576: ※ ラッシュしたとき、ホールド状態の自軍 S ユニットをすべてリリースできる（M ユニット・敵軍ユニットはそのまま）（出典: atwiki/page-1193「ホールド状態の自軍Sユニットをすべてリリースしてもよい」）", () => {
+  it("RS-576: ※ ラッシュしたとき、ホールド状態の自軍 S ユニットをすべてリリースできる（M ユニット・敵軍ユニットはそのまま）（出典: atwiki/page-1193「ホールド状態の自軍Sユニットをすべてリリースしてもよい」）", () => {
     let s = rushed();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-576");
     const accept = legal(s).find((a) => a.type === "confirm_effect_choice" || a.type === "resolve_effect_choice");
@@ -275,8 +268,7 @@ describe("RS-576 マジフェニックス", () => {
     expect(isHeld(s, "player2", "TST-UNIT-0:es")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-576 ラッシュ時の※に「リリースするかどうか」の選択がない
-  it.fails("RS-576: ※ 任意 — リリースしないことを選べる（出典: atwiki/page-1193「リリースしてもよい」）", () => {
+  it("RS-576: ※ 任意 — リリースしないことを選べる（出典: atwiki/page-1193「リリースしてもよい」）", () => {
     let s = rushed();
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));
@@ -285,8 +277,7 @@ describe("RS-576 マジフェニックス", () => {
 
   const atThird = () => enter(st({ turn: 3, player1: { battle: fill(2), rush: [inst("RS-576", "mp")], deck: deckCards(5) }, player2: { deck: deckCards(3, "e") } }), "RS-576:mp");
 
-  // 既知の不具合: CARD-RS-576 CN3 の3番目に出ても NC が成立せず、「SP1」にならない（ストライクもできない）
-  it.fails("RS-576: 【フェニックススピンキック】3番目に出ると NC が成立して SP1（出典: atwiki/page-1193「CN：3」「「SP1」」・R-CN-02）", () => {
+  it("RS-576: 【フェニックススピンキック】3番目に出ると NC が成立して SP1（出典: atwiki/page-1193「CN：3」「「SP1」」・R-CN-02）", () => {
     expect(spOf(atThird(), "player1", "RS-576:mp")).toBe(1);
   });
 
@@ -295,8 +286,7 @@ describe("RS-576 マジフェニックス", () => {
     expect(spOf(s, "player1", "RS-576:mp")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-576 NC が成立しないためストライクできず、ドローも起きない
-  it.fails("RS-576: 【フェニックススピンキック】ストライクしたとき、自分は1枚ドローする（出典: atwiki/page-1193「これがストライクしたとき、自分は1枚ドローする」）", () => {
+  it("RS-576: 【フェニックススピンキック】ストライクしたとき、自分は1枚ドローする（出典: atwiki/page-1193「これがストライクしたとき、自分は1枚ドローする」）", () => {
     const s = atThird();
     expect(canStrike(s, "RS-576:mp")).toBe(true);
     const t = resolveAll(strike(s, "RS-576:mp"));
@@ -332,8 +322,7 @@ describe("RS-577 マジレッド（2nd）", () => {
 
   const atThird = () => enter(st({ turn: 3, player1: { battle: fill(2), rush: [inst("RS-577", "mr")], deck: deckCards(5) }, player2: { deck: deckCards(3, "e") } }), "RS-577:mr");
 
-  // 既知の不具合: CARD-RS-577 CN3 の3番目に出ても NC が成立せず、「SP1」にならない（ストライクもできない）
-  it.fails("RS-577: 【フェイタル・ブレイド】3番目に出ると NC が成立して SP1（出典: atwiki/page-1228「CN：3」「「SP1」」・R-CN-02）", () => {
+  it("RS-577: 【フェイタル・ブレイド】3番目に出ると NC が成立して SP1（出典: atwiki/page-1228「CN：3」「「SP1」」・R-CN-02）", () => {
     expect(spOf(atThird(), "player1", "RS-577:mr")).toBe(1);
   });
 
@@ -342,8 +331,7 @@ describe("RS-577 マジレッド（2nd）", () => {
     expect(spOf(s, "player1", "RS-577:mr")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-577 NC が成立しないためストライクできず、ドローも起きない
-  it.fails("RS-577: 【フェイタル・ブレイド】ストライクしたとき、自分は1枚ドローする（出典: atwiki/page-1228「これがストライクしたとき、自分は1枚ドローする」）", () => {
+  it("RS-577: 【フェイタル・ブレイド】ストライクしたとき、自分は1枚ドローする（出典: atwiki/page-1228「これがストライクしたとき、自分は1枚ドローする」）", () => {
     const s = atThird();
     const t = resolveAll(strike(s, "RS-577:mr"));
     expect(t.players.player1.hand).toHaveLength(1);
@@ -385,8 +373,7 @@ describe("RS-578 レジェンドマジグリーンRA", () => {
       player2: { battle: [inst("TST-UNIT-7", "atk")], deck: deckCards(3, "e") },
     });
 
-  // 既知の不具合: CARD-RS-578 【岩の装甲】が未実装（「魔法」の自軍 S ユニットがアタックされる）
-  it.fails("RS-578: 【岩の装甲】敵軍ターン中、特徴「魔法」を持つ自軍 S ユニット（マジレッド）はアタックされない（出典: atwiki/page-1220「特徴「魔法」を持つ自軍Sユニットはアタックされない」）", () => {
+  it("RS-578: 【岩の装甲】敵軍ターン中、特徴「魔法」を持つ自軍 S ユニット（マジレッド）はアタックされない（出典: atwiki/page-1220「特徴「魔法」を持つ自軍Sユニットはアタックされない」）", () => {
     expect(attackTargets(enemyTurn("battle"), "TST-UNIT-7:atk", "player2")).not.toContain("RS-057:red");
   });
 
@@ -445,8 +432,7 @@ describe("RS-579 ルナジェル", () => {
     return enter(s, `${unit}:u`);
   };
 
-  // 既知の不具合: CARD-RS-579 【ルジュナ】が働かない（ラッシュしたターンの BP8000 以下のユニットがストライク・アタックできる）
-  it.fails("RS-579: 【ルジュナ】ラッシュしたターン、BP8000 以下のユニット（BP8000）はストライクもアタックもできない（出典: atwiki/page-1194「BP8000以下のユニットは…ラッシュしたターンにストライクもアタックもできない」）", () => {
+  it("RS-579: 【ルジュナ】ラッシュしたターン、BP8000 以下のユニット（BP8000）はストライクもアタックもできない（出典: atwiki/page-1194「BP8000以下のユニットは…ラッシュしたターンにストライクもアタックもできない」）", () => {
     const s = rushThenEnter("SPEC-BP8000", "player1");
     expect(canStrike(s, "SPEC-BP8000:u")).toBe(false);
     expect(attackTargets(s, "SPEC-BP8000:u")).toEqual([]);
@@ -458,8 +444,7 @@ describe("RS-579 ルナジェル", () => {
     expect(attackTargets(s, "SPEC-BP8500:u")).toContain("TST-UNIT-0:eb");
   });
 
-  // 既知の不具合: CARD-RS-579 【ルジュナ】が働かない（敵軍のルナジェルでも制限されない）
-  it.fails("RS-579: 【ルジュナ】敵軍のルナジェルでも、すべてのユニットが制限を受ける（出典: atwiki/page-1194「BP8000以下のユニットは」— 自軍・敵軍の限定なし）", () => {
+  it("RS-579: 【ルジュナ】敵軍のルナジェルでも、すべてのユニットが制限を受ける（出典: atwiki/page-1194「BP8000以下のユニットは」— 自軍・敵軍の限定なし）", () => {
     const s = rushThenEnter("SPEC-BP8000", "player2");
     expect(canStrike(s, "SPEC-BP8000:u")).toBe(false);
     expect(attackTargets(s, "SPEC-BP8000:u")).toEqual([]);
@@ -510,8 +495,7 @@ describe("RS-580 絶対神ン・マ", () => {
     expect(zoneOf(t, "player1", `${EXOS}:m`)).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-580 追加条件のカテゴリ（ダークアライアンス）が見られず、WB の L ユニットでもラッシュできる
-  it.fails("RS-580: 追加条件 — DA を持たない L ユニット（TST-UNIT-7・WB）では満たせない（出典: atwiki/page-1219「ダークアライアンスを持つ自軍Lユニット」）", () => {
+  it("RS-580: 追加条件 — DA を持たない L ユニット（TST-UNIT-7・WB）では満たせない（出典: atwiki/page-1219「ダークアライアンスを持つ自軍Lユニット」）", () => {
     expect(canStartRush(rushState("TST-UNIT-7"), "player1", "RS-580:nm")).toBe(false);
   });
 
@@ -599,8 +583,7 @@ describe("RS-581 魔導馬バリキオン（2nd）", () => {
       [DA_HUMAN_M, HUMAN_S, BEAST_M],
     );
 
-  // 既知の不具合: CARD-RS-581 RC なしでライドできる※が未実装（「人型」の M ユニットでもライドできない）
-  it.fails("RS-581: ※ 「人型」の M ユニットは（DA でも）RC がなくてもライドできる（出典: atwiki/page-1195「特徴「人型」を持つMユニットは、ＲＣを持っていなくてもこのビークルにライドでき」）", () => {
+  it("RS-581: ※ 「人型」の M ユニットは（DA でも）RC がなくてもライドできる（出典: atwiki/page-1195「特徴「人型」を持つMユニットは、ＲＣを持っていなくてもこのビークルにライドでき」）", () => {
     const opts = rideOptions(rideState());
     expect(opts).toContain("RS-576:mp>RS-581:bk");
     expect(opts).toContain("SPEC-DA-HUMAN-M:da>RS-581:bk");
@@ -618,8 +601,7 @@ describe("RS-581 魔導馬バリキオン（2nd）", () => {
       player2: { deck: deckCards(3, "e") },
     });
 
-  // 既知の不具合: CARD-RS-581 【1500万馬力】が BP に反映されない（敵軍ターン中もライドしているユニットの BP が上がらない）
-  it.fails("RS-581: 【1500万馬力】ライドしているユニットは敵軍ターン中 BP+1500（マジフェニックス 4500→6000）（出典: atwiki/page-1195「敵軍ターン中、BP+1500される」）", () => {
+  it("RS-581: 【1500万馬力】ライドしているユニットは敵軍ターン中 BP+1500（マジフェニックス 4500→6000）（出典: atwiki/page-1195「敵軍ターン中、BP+1500される」）", () => {
     expect(bpOf(riding("player2"), "player1", "RS-576:mp")).toBe(6000);
   });
 

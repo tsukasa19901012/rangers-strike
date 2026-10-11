@@ -2,6 +2,7 @@ import type { Category } from "@rangers-strike/cards";
 import { pickSet8BCpuChoice } from "../rules/legend1/set8NamedEffectsB";
 import { cpuAcceptsOptionalEffect } from "../rules/optionalEffects";
 import { pickSet7DCpuChoice } from "../rules/legend1/set7NamedEffectsD";
+import { pickSet8DCpuChoice } from "../rules/legend1/set8NamedEffectsD";
 import { ATTACK_HOLD_BONUS_EFFECT_ID, pickAttackHoldCount } from "../rules/attackHoldBonus";
 import { getCardEffect, listZordFusionPartnerIds } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
@@ -42,6 +43,7 @@ import {
 import { COMMAND_ZONE_MAX, WIN_DAMAGE } from "../types/game";
 import { evaluateState } from "./scoring";
 import { isSet7CChoiceEffect, QUIZ_DECLARE_EFFECT_ID, REVOLVER_PICK_EFFECT_ID } from "../rules/legend1/set7NamedEffectsC";
+import { isSet8CChoiceEffect } from "../rules/legend1/set8NamedEffectsC";
 import {
   getBattleEntryPaymentNeeds,
   getCategoryPaymentOptions,
@@ -1195,9 +1197,17 @@ export function pickEffectChoice(
     const picked = pickSet7CEffectChoice(state, pending, actions);
     if (picked) return picked;
   }
+  // 第8弾 RS-560〜RS-581 の選択（rules/legend1/set8NamedEffectsC.ts）。
+  if (isSet8CChoiceEffect(pending.effectId)) {
+    const picked = pickSet8CEffectChoice(state, pending, actions);
+    if (picked) return picked;
+  }
   // 第7弾 RS-495〜RS-515 の選択（rules/legend1/set7NamedEffectsD.ts）。
   const set7d = pickSet7DCpuChoice(state, pending, actions);
   if (set7d) return set7d;
+  // 第8弾 RS-582〜RS-604 の選択（rules/legend1/set8NamedEffectsD.ts）。
+  const set8d = pickSet8DCpuChoice(state, pending, actions);
+  if (set8d) return set8d;
   // 第8弾 RS-538〜RS-559 の選択（rules/legend1/set8NamedEffectsB.ts）。
   const set8b = pickSet8BCpuChoice(state, pending, actions);
   if (set8b) return set8b;
@@ -1493,6 +1503,33 @@ function pickSet7CEffectChoice(
   if (pending.effectId === QUIZ_DECLARE_EFFECT_ID) {
     return candidates.find((a) => a.type === "resolve_effect_choice" && a.instanceId === "3") ?? candidates[0] ?? null;
   }
+  let best: GameAction | null = null;
+  let bestScore = -Infinity;
+  for (const action of candidates) {
+    const result = applyAction(state, action);
+    if (!result.ok) continue;
+    const score = evaluateState(result.state, pending.playerId);
+    if (score > bestScore) {
+      bestScore = score;
+      best = action;
+    }
+  }
+  return best ?? candidates[0] ?? null;
+}
+
+/**
+ * 第8弾 RS-560〜RS-581 の選択: 候補の行動（解決・確定・見送り）をそれぞれ適用して局面を評価し、最も良いものを選ぶ。
+ * 1枚ずつ選んで確定する選択（RS-568・RS-569）は、確定できるならその局面も比べる（選び続けるより悪くなければ確定する）。
+ */
+function pickSet8CEffectChoice(
+  state: GameState,
+  pending: PendingEffectChoice,
+  actions: GameAction[],
+): GameAction | null {
+  const candidates = actions.filter(
+    (a) => a.type === "resolve_effect_choice" || a.type === "skip_effect_choice" || a.type === "confirm_effect_choice",
+  );
+  if (candidates.length === 0) return null;
   let best: GameAction | null = null;
   let bestScore = -Infinity;
   for (const action of candidates) {

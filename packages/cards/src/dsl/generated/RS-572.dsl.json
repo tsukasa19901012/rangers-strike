@@ -63,9 +63,9 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "set8c::RS-572::d_sword_vega",
+          "duration": "turn"
         }
       ]
     }

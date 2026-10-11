@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-588::fxunknowne8a193",
-          "duration": "permanent"
+          "keyword": "set8d::RS-588::soul_art",
+          "duration": "turn"
         }
       ],
       "optional": false

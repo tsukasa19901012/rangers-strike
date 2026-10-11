@@ -1,6 +1,8 @@
 import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
 import { set7DDefenderBlocksAttack } from "../legend1/set7NamedEffectsD";
 import { set8ADefenderBlocksAttack } from "../legend1/set8NamedEffectsA";
+import { set8DDefenderBlocksAttack } from "../legend1/set8NamedEffectsD";
+import { set8CAllowsRushAttack, set8CDefenderBlocksAttack } from "../legend1/set8NamedEffectsC";
 import { set8BDefenderBlocksAttack } from "../legend1/set8NamedEffectsB";
 import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
 import { set5ADefenderBlocksAttack } from "../legend1/set5NamedEffectsA";
@@ -442,6 +444,10 @@ export function canAttackDefender(
   if (defenderCard && set7DDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
   // RS-517 バードニック反応炉（スクラムのユニットカードと同じ CN の BP2000 以下の S ユニット。rules/legend1/set8NamedEffectsA.ts）。
   if (defenderCard && set8ADefenderBlocksAttack(state, defenderPlayerId, defenderCard)) return false;
+  // ※「これはBP3000以下のユニットにアタックされない。」（RS-587・RS-588 等。rules/legend1/set8NamedEffectsD.ts）。
+  if (defenderCard && set8DDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
+  // RS-578 レジェンドマジグリーンRA【岩の装甲】（rules/legend1/set8NamedEffectsC.ts）。
+  if (defenderCard && set8CDefenderBlocksAttack(state, attackerPlayerId, defenderPlayerId, defenderCard)) return false;
   // RS-553 ゴッドサルダー ※（自軍バトルエリアにこれ以外の同名ユニットがあればアタックされない。rules/legend1/set8NamedEffectsB.ts）。
   if (defenderCard && set8BDefenderBlocksAttack(state, defenderPlayerId, defenderCard)) return false;
 
@@ -475,7 +481,9 @@ export function canAttackDefender(
     if (
       chikaraBatonAllowsAttack(state, attackerPlayerId, attackerInstanceId, defenderInstanceId) ||
       lionBlastAllowsRushAttack(attacker.card) ||
-      magiMergeAllowsRushAttack(state, attackerPlayerId, attackerInstanceId)
+      magiMergeAllowsRushAttack(state, attackerPlayerId, attackerInstanceId) ||
+      // RS-562 ガオソーシャークの※・RS-573【バリランサー】（rules/legend1/set8NamedEffectsC.ts）。
+      set8CAllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, inRush.card)
     ) {
       return true;
     }

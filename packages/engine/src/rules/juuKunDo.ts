@@ -1,3 +1,4 @@
+import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { canPayBattleCommandReleaseCost, payBattleCommandReleaseCost } from "./battleCommand";
 import { getDefinition, isSmallUnit } from "../core/catalog";
@@ -80,12 +81,7 @@ export function canUseLionDance(
 }
 
 function shuffleCards(deck: CardInstance[]): CardInstance[] {
-  const copy = [...deck];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
-  }
-  return copy;
+  return shuffleDeckCards(deck);
 }
 
 export const LION_DANCE_EFFECT_ID = "super_ninpo_lion_dance";

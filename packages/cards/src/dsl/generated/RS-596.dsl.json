@@ -31,10 +31,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP2",
+          "keyword": "set8d::RS-596::flame_sword",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

@@ -46,10 +46,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP2",
+          "keyword": "set8c::RS-573::bari_lancer",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

@@ -1,4 +1,5 @@
 import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
+import { ownAutoBattleEntryNegated } from "./legend1/set8NamedEffectsD";
 import { set8BRequiresBattleEntry } from "./legend1/set8NamedEffectsB";
 import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
 import { set6BBattleEntryBlocked } from "./legend1/set6NamedEffectsB";
@@ -904,7 +905,8 @@ export function findMandatoryBattleEntries(
     // ルール: R-BA-04 — ホールドが必要なユニットも、ホールドできるなら「可能なら出る」に含む。
     if (!canMoveUnitToBattleWithHolds(state, playerId, card)) continue;
     if (
-      hasAutoBattleEntryEachTurnNote(card.cardId) ||
+      // RS-595【頼もしい背中】: 「炎神」の自軍ユニット自身の「可能ならバトルエリアに出る」は無効（rules/legend1/set8NamedEffectsD.ts）。
+      (hasAutoBattleEntryEachTurnNote(card.cardId) && !ownAutoBattleEntryNegated(state, playerId, card)) ||
       earthForceRequiresBattleEntry(state) ||
       (emperorCurse && isSmallUnit(state.definitions, card.cardId)) ||
       highwayPlanRequiresBattleEntry(state, card.cardId) ||
