@@ -241,6 +241,11 @@ export type PendingRush = {
    * 持ち主が応答する。省略時はラッシュしたプレイヤーの相手（rushReactorId）。
    */
   reactorPlayerId?: PlayerId;
+  /**
+   * ルール: R-TIME-03 — 同じ「ラッシュされたとき」の効果の解決（モーフ）に入った後は、新たに発動できない。
+   * 解決に入る前（窓が開いた時点）に発動できたカウンターの instanceId だけを残す。未設定なら制限なし。
+   */
+  allowedCounterInstanceIds?: string[];
 };
 
 /** 敵ラッシュへのモーフ反応窓。 */
@@ -251,6 +256,10 @@ export type PendingMorph = {
   phasePlayerId: PlayerId;
   morphUnitInstanceIds: string[];
   activeMorphUnitInstanceId?: string;
+  /** 窓が開いた時点で発動できた「ラッシュされたとき」のカウンター（R-TIME-03）。 */
+  counterInstanceIdsAtOpen?: string[];
+  /** モーフを1つ以上解決した（効果の解決に入った。R-TIME-03）。 */
+  morphResolved?: boolean;
 };
 
 export type PendingLeave = {

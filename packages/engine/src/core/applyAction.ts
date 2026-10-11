@@ -1,3 +1,4 @@
+import { filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import { currentShuffleEpoch } from "./deckShuffle";
 import { applySwordTornadoAfterShuffle } from "../rules/legend1/set8NamedEffectsC";
 import {
@@ -2136,6 +2137,8 @@ function applyActionCore(
 
       if (
         needsBattleEntryPowerDiscard(found.card.cardId) &&
+        // XG1-034【汚い大気】で※は無効（atwiki/page-1582 Q5・page-500 Q1）。
+        !filthyAirActive(state) &&
         !battleEntryPowerDiscardSatisfied(player, found.card.cardId)
       ) {
         const discardChoice = tryStartBattleEntryPowerDiscard(state, playerId, found.card);

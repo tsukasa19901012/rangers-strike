@@ -1,3 +1,4 @@
+import { filthyAirActive } from "./legend1/otherLinesNamedEffects";
 import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
 import { set9CBlocksBattleEntry } from "./legend1/set9NamedEffectsC";
 import { ownAutoBattleEntryNegated } from "./legend1/set8NamedEffectsD";
@@ -425,6 +426,8 @@ export function canMoveUnitToBattle(
 
   if (
     needsBattleEntryPowerDiscard(unit.cardId) &&
+    // XG1-034【汚い大気】で※（パワーゾーンのカードを捨札にしなければ出られない）は無効（atwiki/page-1582 Q5）。
+    !filthyAirActive(state) &&
     !battleEntryPowerDiscardSatisfied(player, unit.cardId) &&
     !canPayBattleEntryPowerDiscard(player, unit.cardId)
   ) {
@@ -541,6 +544,8 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   if (
     needsBattleEntryPowerDiscard(unit.cardId) &&
+    // XG1-034【汚い大気】で※（パワーゾーンのカードを捨札にしなければ出られない）は無効（atwiki/page-1582 Q5）。
+    !filthyAirActive(state) &&
     !battleEntryPowerDiscardSatisfied(player, unit.cardId) &&
     !canPayBattleEntryPowerDiscard(player, unit.cardId)
   ) {
@@ -821,12 +826,12 @@ export function explainCannotEnterBattle(
   if (!battleEntryHandDiscardSatisfied(player, unit.cardId)) {
     return `「${unitName}」をバトルエリアに出すには、手札から2枚選んで捨札してください。`;
   }
-  if (!canPayBattleEntryPowerDiscard(player, unit.cardId)) {
+  if (!filthyAirActive(state) && !canPayBattleEntryPowerDiscard(player, unit.cardId)) {
     const need = getBattleEntryPowerDiscardCount(unit.cardId);
     const have = player.power.filter((c) => !c.faceDown).length;
     return `「${unitName}」をバトルエリアに出すには、パワーからダメージ以外を${need}枚捨札する必要があります（対象${have}枚）。`;
   }
-  if (!battleEntryPowerDiscardSatisfied(player, unit.cardId)) {
+  if (!filthyAirActive(state) && !battleEntryPowerDiscardSatisfied(player, unit.cardId)) {
     return `「${unitName}」をバトルエリアに出すには、パワーからダメージ以外を選んで捨札してください。`;
   }
 

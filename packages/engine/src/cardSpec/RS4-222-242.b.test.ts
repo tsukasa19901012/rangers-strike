@@ -644,8 +644,7 @@ describe("RS-235 デカベースロボ", () => {
   });
 
   // atwiki/page-500 Q1「はい、その通りです。」（XG-034 = XG1-034 害気大臣キタネイダス【汚い大気】）
-  // 既知の不具合: CARD-RS-235 害気大臣キタネイダス（XG1-034）の【汚い大気】がエンジンで未接続（DSL がプレースホルダの grant_keyword のみ）で、自軍エリアにあってもバトルフェイズ中のデカベースロボはパワーゾーンのカード2枚の捨札を要求される
-  it.fails("RS-235: 公式Q&A — 害気大臣キタネイダスが自軍エリアにある間、バトルフェイズ中はパワーゾーンのカードを捨札にしなくてもバトルエリアに出られる（出典: atwiki/page-500 Q1）", () => {
+  it("RS-235: 公式Q&A — 害気大臣キタネイダスが自軍エリアにある間、バトルフェイズ中はパワーゾーンのカードを捨札にしなくてもバトルエリアに出られる（出典: atwiki/page-500 Q1）", () => {
     let s = st({ player1: { rush: [inst("RS-235", "robo"), inst("XG1-034", "kita")], power: powerCards(3, "pw") } });
     expect(canEnter(s, "RS-235:robo")).toBe(true);
     s = raw(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-235:robo" });

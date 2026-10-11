@@ -113,12 +113,45 @@ function applyEbiBasami(state: GameState, ctx: GrantKeywordContext): GrantKeywor
 }
 
 // ---------------------------------------------------------------------------
+// XG1-034 害気大臣キタネイダス【汚い大気】
+// 「これが自軍エリアにある間、自分も相手も次の制限を受ける⇒バトルフェイズ中、パワーゾーンからカードが離れる処理を含む効果は
+//  すべて無効になる。」（atwiki/page-1582）
+// 他の選択肢を含む効果も（パワーゾーンのカードが動く可能性があれば）無効（Q6 Vレックスロボ・カード評価）。
+// 適用箇所: RS-265【ラウンドレーダー】と※（Q3/Q4）、RS-235 ※（Q5）、RS-301【リボルバーミサイル】（Q6）、モーフ（Q2）、
+// XG2-042 ※「その場に留まる」（Q1）、DSL の誘発効果でパワーゾーンのカードを選ぶもの。
+
+export const FILTHY_AIR_CARD_ID = "XG1-034";
+
+/** 【汚い大気】がいま有効か（バトルフェイズ中で、どちらかの自軍エリアにキタネイダスがあり、効果名のテキストが無効でない）。 */
+export function filthyAirActive(state: Pick<GameState, "phase" | "players" | "definitions">): boolean {
+  if (state.phase !== "battle") return false;
+  for (const pid of ["player1", "player2"] as const) {
+    for (const card of fieldUnits(state, pid)) {
+      if (card.cardId !== FILTHY_AIR_CARD_ID) continue;
+      if (!namedTextNegated(state, pid, card)) return true;
+    }
+  }
+  return false;
+}
+
+/** DSL の効果がパワーゾーンのカードを選ぶ（＝パワーゾーンからカードが離れる処理を含む）か。 */
+export function dslEffectSelectsPowerCards(node: unknown): boolean {
+  if (!node || typeof node !== "object") return false;
+  if (Array.isArray(node)) return node.some(dslEffectSelectsPowerCards);
+  const rec = node as Record<string, unknown>;
+  if (rec.type === "zone" && rec.zone === "power") return true;
+  return Object.values(rec).some(dslEffectSelectsPowerCards);
+}
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword からの起点
 
 export const OTHER_LINES_KEYWORD_PREFIX = "other::";
 
 const OTHER_LINES_KEYWORDS: Record<string, (state: GameState, ctx: GrantKeywordContext) => GrantKeywordResult> = {
   "XG3-036::ebi_basami": applyEbiBasami,
+  // 継続効果（filthyAirActive を各効果の側で参照する。ここでは何もしない）。
+  "XG1-034::filthy_air": (state) => ({ state, detail: "xg1034_filthy_air" }),
 };
 
 export function tryOtherLinesCardEffect(state: GameState, ctx: GrantKeywordContext, keyword: string): GrantKeywordResult | null {
@@ -145,5 +178,4 @@ void proceed;
 void fieldUnits;
 void logFor;
 void skipLog;
-void namedTextNegated;
 void CHOICE_SKIPPERS;

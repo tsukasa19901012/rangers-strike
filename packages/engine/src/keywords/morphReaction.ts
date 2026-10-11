@@ -1,3 +1,4 @@
+import { filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingMorph, PlayerId, PlayerState } from "../types/game";
 import { getDefinition } from "../core/catalog";
@@ -6,6 +7,7 @@ import { buildLogEntry } from "../log/formatLog";
 import { markFieldEntryHandled } from "../events/emitUnitRushed";
 import { openEffectChoice } from "../rules/pendingChoices";
 import { openRushCounterWindow } from "../rules/rushEffects";
+import { listUsableRushCounters } from "../rules/operationCounters";
 import { cardHasKeyword } from "./cardKeywords";
 import {
   featuresExactlyMatch,
@@ -58,6 +60,8 @@ export function listMorphReactors(
   rushMethod: RushMethod = "normal",
 ): Array<{ instanceId: string; cardId: string; candidateCount: number }> {
   if (rushMethodBlocksMorphReaction(rushMethod)) return [];
+  // XG1-034【汚い大気】: モーフはパワーゾーンからカードが離れる処理を含むため、バトルフェイズ中は発動できない（atwiki/page-1582 Q2）。
+  if (filthyAirActive(state)) return [];
 
   const defender = state.players[defenderId];
   const results: Array<{ instanceId: string; cardId: string; candidateCount: number }> = [];
@@ -216,6 +220,13 @@ export function openMorphReactionWindow(
     rushedInstanceId,
     phasePlayerId,
     morphUnitInstanceIds: reactors.map((r) => r.instanceId),
+    // ルール: R-TIME-03 — モーフの解決に入った後は、この時点で発動できたカウンターしか使えない（atwiki/page-1828）。
+    counterInstanceIdsAtOpen: listUsableRushCounters(
+      { ...state, activePlayer: phasePlayerId },
+      defenderId,
+      rushedInstanceId,
+      rusherPlayerId,
+    ),
   };
 
   if (reactors.length === 1) {
@@ -267,6 +278,7 @@ export function finalizeMorphAndContinue(
     pending.rusherPlayerId,
     pending.rushedInstanceId,
     pending.phasePlayerId,
+    pending.morphResolved ? (pending.counterInstanceIdsAtOpen ?? []) : undefined,
   );
 }
 
@@ -356,6 +368,7 @@ export function resolveMorphReplacementChoice(
     replacementInstanceId,
   );
   if ("error" in swap) return swap;
+  const resolvedPending: PendingMorph = { ...morphPending, morphResolved: true };
 
   const morphFound = findMorphUnit(
     swap.state.players[defenderId],
@@ -378,8 +391,8 @@ export function resolveMorphReplacementChoice(
 
   const next = continueMorphAfterReplacement(
     { ...nextState, pendingEffectChoice: undefined },
-    morphPending,
-    morphPending.activeMorphUnitInstanceId,
+    resolvedPending,
+    morphPending.activeMorphUnitInstanceId!,
   );
 
   return { state: next, log: swap.log, extraLogs: extraLogs.length > 0 ? extraLogs : undefined };

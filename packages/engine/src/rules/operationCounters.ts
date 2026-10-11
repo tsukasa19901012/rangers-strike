@@ -565,18 +565,31 @@ export function hasRushCounterReactions(
   defenderId: PlayerId,
   rushedInstanceId: string,
   rusherId: PlayerId,
+  allowedCounterInstanceIds?: string[],
 ): boolean {
-  if (!isEnemyTurn(state, defenderId)) return false;
-  if (opponentInfiniteChainBlocks(state, defenderId)) return false;
+  return listUsableRushCounters(state, defenderId, rushedInstanceId, rusherId, allowedCounterInstanceIds).length > 0;
+}
+
+/** 「ラッシュされたとき」にいま発動できるカウンター（手札の instanceId）。 */
+export function listUsableRushCounters(
+  state: GameState,
+  defenderId: PlayerId,
+  rushedInstanceId: string,
+  rusherId: PlayerId,
+  allowedCounterInstanceIds?: string[],
+): string[] {
+  if (!isEnemyTurn(state, defenderId)) return [];
+  if (opponentInfiniteChainBlocks(state, defenderId)) return [];
 
   const defender = state.players[defenderId];
+  const ids: string[] = [];
   for (const card of defender.hand) {
+    if (allowedCounterInstanceIds && !allowedCounterInstanceIds.includes(card.instanceId)) continue;
     if (!isRushReactionCounterCard(state, card.cardId)) continue;
     if (!rushCounterConditionMet(state, card.cardId, rushedInstanceId, rusherId)) continue;
-    if (canPlayHandCounter(state, defenderId, card.instanceId)) return true;
+    if (canPlayHandCounter(state, defenderId, card.instanceId)) ids.push(card.instanceId);
   }
-
-  return false;
+  return ids;
 }
 
 /** 疾風流超忍法（RS-026 と再録 RS-247 等、同名カード）。 */
@@ -651,6 +664,8 @@ export function canUseRushReactionCounter(
   // 反応窓では手番が使う側に移っているので、ターンプレイヤー（ラッシュした側のフェイズ）で判定する。
   if (pending.phasePlayerId === defenderId) return false;
   if (opponentInfiniteChainBlocks(state, defenderId)) return false;
+  // ルール: R-TIME-03 — モーフの解決に入る前に発動できたカウンターだけ（atwiki/page-1828）。
+  if (pending.allowedCounterInstanceIds && !pending.allowedCounterInstanceIds.includes(counterInstanceId)) return false;
   const card = findInZone(state.players[defenderId], "hand", counterInstanceId)?.card;
   if (!card || !isRushReactionCounterCard(state, card.cardId)) return false;
   return rushCounterConditionMet(state, card.cardId, pending.rushedInstanceId, pending.rusherPlayerId);

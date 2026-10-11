@@ -144,7 +144,7 @@ import { isSet8AChoiceEffect, tryConfirmSet8AChoice, tryResolveSet8AChoice, tryS
 import { isSet8DChoiceEffect, tryResolveSet8DChoice, trySkipSet8DChoice } from "./legend1/set8NamedEffectsD";
 import { isSet9AChoiceEffect, tryConfirmSet9AChoice, tryResolveSet9AChoice, trySkipSet9AChoice } from "./legend1/set9NamedEffectsA";
 import { isSet9DChoiceEffect, tryResolveSet9DChoice, trySkipSet9DChoice } from "./legend1/set9NamedEffectsD";
-import { isOtherLinesChoiceEffect, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
+import { filthyAirActive, isOtherLinesChoiceEffect, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
 import {
@@ -2448,6 +2448,8 @@ function tryRegisterStayOnLeave(
       const card = player[zone].find((c) => c.instanceId === instanceId);
       if (!card) continue;
       if (!cardHasGrantKeyword(card.cardId, FEATURE_KEYWORDS.registerStayKamenRider)) return null;
+      // XG1-034【汚い大気】: バトルフェイズ中は発動できない（atwiki/page-1582 Q1）。
+      if (filthyAirActive(state)) return null;
       const idx = player.power.findIndex((c) => {
         if (c.faceDown) return false;
         const def = getDefinition(state.definitions, c.cardId);

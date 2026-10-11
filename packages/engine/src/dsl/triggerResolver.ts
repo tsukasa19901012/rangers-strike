@@ -1,3 +1,4 @@
+import { dslEffectSelectsPowerCards, filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import { namedTextNegated } from "../rules/legend1/set6NamedEffects348";
 import type { EffectTrigger } from "@rangers-strike/cards/dsl/types";
 import type { GameState, PlayerId } from "../types/game";
@@ -135,6 +136,10 @@ export function tryResolveDslTriggeredEffects(args: {
       args.triggerType !== "riding_combo" &&
       !dslNcGateAllows(current, args.playerId, args.instanceId, args.cardId, effect.id)
     ) {
+      continue;
+    }
+    // XG1-034【汚い大気】: バトルフェイズ中、パワーゾーンのカードを選ぶ（離れる処理を含む）効果は無効（atwiki/page-1582 Q3）。
+    if (filthyAirActive(current) && (dslEffectSelectsPowerCards(effect.effects) || dslEffectSelectsPowerCards(effect.condition))) {
       continue;
     }
     if (!evaluateDslCondition(current, args.playerId, effect.condition, args.instanceId, effect.effects)) {
