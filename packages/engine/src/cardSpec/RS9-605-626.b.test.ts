@@ -119,13 +119,11 @@ describe("RS-613 ダイヤジャック", () => {
     expect(s.players.player2.battle).toHaveLength(3);
   });
 
-  // 出典と矛盾（期待値の誤り）: オロチ（RK-231）は BP6000（atwiki/page-948「BP：6000」）なので、ホールドしたユニットの BP 以下に
-  // BP7000 の SPEC-BP7000 は入らず、【ダイヤソード】の候補がなく選択は開かない。BP6000 以下の敵軍ユニットなら Q2 どおり
-  // ターンを終えるときの【潜水】のホールドで発動し、撃破できる（実装済み）。
-  it.fails("RS-613: 【ダイヤソード】Q&A — 【潜水】でホールドされたバトルエリアのオロチでも発動できる（出典: atwiki/page-1452 Q2「はい、できます」）", () => {
+  // 敵はオロチ（RK-231、BP6000: atwiki/page-948）の BP 以下にする必要があるため BP4000 を使う。
+  it("RS-613: 【ダイヤソード】Q&A — 【潜水】でホールドされたバトルエリアのオロチでも発動できる（出典: atwiki/page-1452 Q2「はい、できます」）", () => {
     let s = st(
-      { player1: { rush: [inst("RS-613", "dj"), inst("RK-231", "oro")], deck: deckCards(3) }, player2: { battle: [inst("SPEC-BP7000", "e7")], deck: deckCards(3, "e") } },
-      [BP7000],
+      { player1: { rush: [inst("RS-613", "dj"), inst("RK-231", "oro")], deck: deckCards(3) }, player2: { battle: [inst("SPEC-BP4000", "e7")], deck: deckCards(3, "e") } },
+      [BP4000],
     );
     s = passEntry(enter(s, "RS-613:dj"));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-613");
@@ -138,8 +136,8 @@ describe("RS-613 ダイヤジャック", () => {
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-231");
     s = pick(s, "RK-231:oro");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-613");
-    s = resolveAll(pick(s, "SPEC-BP7000:e7"));
-    expect(zoneOf(s, "player2", "SPEC-BP7000:e7")).toBe("discard");
+    s = resolveAll(pick(s, "SPEC-BP4000:e7"));
+    expect(zoneOf(s, "player2", "SPEC-BP4000:e7")).toBe("discard");
   });
 
   it.todo("RS-613: 【ダイヤソード】任意（撃破しなくてもよい）・「このターン」の次の1回だけ（出典: atwiki/page-1452「撃破してもよい」「次に」）— 発動タイミング自体が誤っており（NC 成立時に即発動）、正しい状況を公開 API で観測できないため");
