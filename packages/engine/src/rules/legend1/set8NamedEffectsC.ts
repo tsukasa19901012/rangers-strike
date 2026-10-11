@@ -896,6 +896,13 @@ export const SET8C_KEYWORD_PREFIX = "set8c::";
  * キーワードはカードを特定しないことがあるので、カード ID と組で照合する。
  */
 const SET8C_SPEC_KEYWORDS: Record<string, string> = {
+  // カード定義（core-playable）の DSL（Wiki スペックが期待するキーワード）。
+  "RS-563|effect_card::RS-563::kigerutsuno": "RS-563::raising_horn",
+  "RS-565|effect_card::RS-565::roringusandahariken": "RS-565::rolling_thunder",
+  "RS-566|effect_card::RS-566::aruteimasutomu": "RS-566::ultima_storm",
+  "RS-569|effect_card::RS-569::gatoringupanchi": "RS-569::gatling_punch",
+  "RS-574|effect_card::RS-574::seintohonfuinishu": "RS-574::saint_horn_finish",
+  // 生成 DSL（overlays）のキーワード。
   "RS-563|enter_hold_enemy_power_le_opponent_damage": "RS-563::raising_horn",
   "RS-565|return_to_zone_tankoregabatoruerianitatokirashuerianosyunitowosubete": "RS-565::rolling_thunder",
   "RS-566|return_to_zone_koreworashushitatokikorenosubetenoyunitotosubetenokomando": "RS-566::ultima_storm",

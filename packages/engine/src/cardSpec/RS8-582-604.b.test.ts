@@ -247,8 +247,7 @@ describe("RS-592 エンジンオーG6", () => {
   const rushBoard = (rush: ReturnType<typeof inst>[]) =>
     st({ phase: "rush", player1: { hand: [inst("RS-592", "g6")], rush, command: releasedCat("OT", 1), power: powerCards(6), deck: deckCards(3) } });
 
-  // 既知の不具合: CARD-RS-592 追加条件の合体ユニットがパワーゾーンではなく捨札に送られる（conditionId が discard_fusion_unit）
-  it.fails("RS-592: 追加条件 — エンジンオー＋ガンバルオーをパワーゾーンに送ってラッシュする（捨札にはしない）（出典: atwiki/page-1223・grnrngr/faq-card-8 RS-569 Q1「合体ユニットをパワー送りにする」）", () => {
+  it("RS-592: 追加条件 — エンジンオー＋ガンバルオーをパワーゾーンに送ってラッシュする（捨札にはしない）（出典: atwiki/page-1223・grnrngr/faq-card-8 RS-569 Q1「合体ユニットをパワー送りにする」）", () => {
     const r = rushFromHand(rushBoard([inst("RS-515", "eo"), inst("RS-591", "gb")]), "player1", "RS-592:g6");
     expect(r.ok).toBe(true);
     expect(zoneOf(r.state, "player1", "RS-592:g6")).toBe("rush");

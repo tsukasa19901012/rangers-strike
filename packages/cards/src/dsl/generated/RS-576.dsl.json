@@ -64,7 +64,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "set8c::RS-576::release_held_s",
+          "keyword": "on_rush_release_held_s_units",
           "duration": "turn"
         }
       ],

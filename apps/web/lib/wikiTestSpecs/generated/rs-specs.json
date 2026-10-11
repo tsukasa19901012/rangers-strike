@@ -9881,7 +9881,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "SP2"
+      "set8c::RS-573::bari_lancer"
     ],
     "bp": 6000,
     "sp": "special",

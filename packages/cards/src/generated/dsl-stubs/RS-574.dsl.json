@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "set8c::RS-574::saint_horn_finish",
+          "keyword": "effect_card::RS-574::seintohonfuinishu",
           "duration": "turn"
         }
       ],
