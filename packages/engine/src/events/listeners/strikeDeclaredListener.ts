@@ -2,6 +2,7 @@ import type { EventListener, StrikeDeclaredEvent } from "../types";
 import { tryResolveDslTriggeredEffects } from "../../dsl/triggerResolver";
 import { isStrikeDamageDealtTriggerText } from "../../rules/strikeDamageTriggers";
 import { openHamsterStrikeDraw } from "../../rules/legend1/set7NamedEffectsC";
+import { applyThunderboltSword } from "../../rules/legend1/set8NamedEffectsA";
 
 /**
  * StrikeDeclared: on_strike DSL 効果（RS-067 等）。
@@ -26,7 +27,9 @@ export const strikeDeclaredListener: EventListener = (event, state) => {
   });
 
   // RS-485 ハムスター館長【疾風流の継承】: 特徴「忍者」を持つユニットがストライクしたとき、その持ち主は1枚ドローしてもよい。
-  const hamster = openHamsterStrikeDraw(result.state, strikeEvent.strikerPlayerId, card);
+  let hamster = openHamsterStrikeDraw(result.state, strikeEvent.strikerPlayerId, card);
+  // RS-529 チェンジロボ【電撃剣スーパーサンダーボルト】「これがアタックまたはストライクしたとき」（rules/legend1/set8NamedEffectsA.ts）。
+  hamster = applyThunderboltSword(hamster, strikeEvent.strikerPlayerId, card.cardId);
 
   return {
     state: hamster,

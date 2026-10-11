@@ -1,4 +1,5 @@
 import { isCostWindowSatisfied } from "./costWindow";
+import { set8AddedCategories } from "../rules/legend1/set8TurnGrants";
 import { operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
 import type { CardDefinition, UnitSize } from "@rangers-strike/cards";
 import {
@@ -395,6 +396,18 @@ export { cardCategories };
 
 /** RS-166: 戦闘中にMAカテゴリ。 */
 export function unitEffectiveCategories(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+  zone: "battle" | "rush",
+): Category[] {
+  const base = unitEffectiveCategoriesBase(state, playerId, instance, zone);
+  // RS-524 呉越同舟「このターン、宣言したカテゴリを選んだユニットに追加する。」（rules/legend1/set8TurnGrants.ts）。
+  const declared = set8AddedCategories(state.players[playerId], instance).filter((c) => !base.includes(c));
+  return declared.length > 0 ? [...base, ...declared] : base;
+}
+
+function unitEffectiveCategoriesBase(
   state: GameState,
   playerId: PlayerId,
   instance: CardInstance,

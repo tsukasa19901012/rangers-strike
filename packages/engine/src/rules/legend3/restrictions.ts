@@ -1,5 +1,6 @@
 import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
 import { set7DDefenderBlocksAttack } from "../legend1/set7NamedEffectsD";
+import { set8ADefenderBlocksAttack } from "../legend1/set8NamedEffectsA";
 import { set8DDefenderBlocksAttack } from "../legend1/set8NamedEffectsD";
 import { set8CAllowsRushAttack, set8CDefenderBlocksAttack } from "../legend1/set8NamedEffectsC";
 import { set8BDefenderBlocksAttack } from "../legend1/set8NamedEffectsB";
@@ -441,6 +442,8 @@ export function canAttackDefender(
   if (defenderCard && set6LowDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
   // XG1-096 ビーファイタークワガー ※（NC も RC も発動していない S ユニットにアタックされない。rules/legend1/set7NamedEffectsD.ts）。
   if (defenderCard && set7DDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
+  // RS-517 バードニック反応炉（スクラムのユニットカードと同じ CN の BP2000 以下の S ユニット。rules/legend1/set8NamedEffectsA.ts）。
+  if (defenderCard && set8ADefenderBlocksAttack(state, defenderPlayerId, defenderCard)) return false;
   // ※「これはBP3000以下のユニットにアタックされない。」（RS-587・RS-588 等。rules/legend1/set8NamedEffectsD.ts）。
   if (defenderCard && set8DDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
   // RS-578 レジェンドマジグリーンRA【岩の装甲】（rules/legend1/set8NamedEffectsC.ts）。

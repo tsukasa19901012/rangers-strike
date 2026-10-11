@@ -98,8 +98,7 @@ describe("RS-648 ガオイカロス", () => {
     });
   });
 
-  // 既知の不具合: CARD-RS-648 カタログのレアリティが N（atwiki はスーパーレア）
-  it.fails("RS-648: レアリティはスーパーレア（出典: atwiki/page-1497「レアリティ：スーパーレア」）", () => {
+  it("RS-648: レアリティはスーパーレア（出典: atwiki/page-1497「レアリティ：スーパーレア」）", () => {
     expect(rarityOf("RS-648")).toBe("SR");
   });
 
@@ -458,8 +457,7 @@ describe("RS-653 レッドファルコン（2nd）", () => {
     expectStats("RS-653", { name: "レッドファルコン（2nd）", category: "ET", size: "S", bp: 3000, sp: undefined, powerCost: 4, comboNumber: 1, features: ["レッド", "男", "2nd"] });
   });
 
-  // 既知の不具合: CARD-RS-653 カタログのレアリティが N（atwiki はスーパーレア）
-  it.fails("RS-653: レアリティはスーパーレア（出典: atwiki/page-1518「レアリティ：スーパーレア」）", () => {
+  it("RS-653: レアリティはスーパーレア（出典: atwiki/page-1518「レアリティ：スーパーレア」）", () => {
     expect(rarityOf("RS-653")).toBe("SR");
   });
 
@@ -515,8 +513,7 @@ describe("RS-654 ガオイエロー（2nd）", () => {
     expectStats("RS-654", { name: "ガオイエロー（2nd）", category: "WB", size: "S", bp: 2000, sp: "special", powerCost: 3, comboNumber: 2, features: ["イエロー", "男", "2nd"] });
   });
 
-  // 既知の不具合: CARD-RS-654 カタログのレアリティが N（atwiki はスーパーレア）
-  it.fails("RS-654: レアリティはスーパーレア（出典: atwiki/page-1519「レアリティ：スーパーレア」）", () => {
+  it("RS-654: レアリティはスーパーレア（出典: atwiki/page-1519「レアリティ：スーパーレア」）", () => {
     expect(rarityOf("RS-654")).toBe("SR");
   });
 
@@ -630,8 +627,7 @@ describe("RS-655 デカウイングロボ", () => {
     });
   });
 
-  // 既知の不具合: CARD-RS-655 カタログのレアリティが N（atwiki はスーパーレア）
-  it.fails("RS-655: レアリティはスーパーレア（出典: atwiki/page-1528「レアリティ：スーパーレア」）", () => {
+  it("RS-655: レアリティはスーパーレア（出典: atwiki/page-1528「レアリティ：スーパーレア」）", () => {
     expect(rarityOf("RS-655")).toBe("SR");
   });
 

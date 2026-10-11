@@ -16,6 +16,7 @@ import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
 import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
 import { openBlueMoonSlash, openChargeInsteadOfBattle } from "../rules/legend1/set7NamedEffectsB";
 import { withZordFeatureContext } from "../rules/zordFeatureContext";
+import { applySet8AAfterAction, applyThunderboltSword, isSet8AResident } from "../rules/legend1/set8NamedEffectsA";
 import { applySet7DStrikeDamageTriggers, RIDE_OFF_RC_MARK, rideOffBlockedBySet7D } from "../rules/legend1/set7NamedEffectsD";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
@@ -426,6 +427,8 @@ function continueAttackAfterDeclaration(
         triggerType: "on_attack",
       });
       afterOnAttack = fx.logs.length > 0 ? { ...fx.state, log: [...fx.state.log, ...fx.logs] } : fx.state;
+      // RS-529【電撃剣スーパーサンダーボルト】「これがアタックまたはストライクしたとき」（DSL は on_strike だけ）。
+      afterOnAttack = applyThunderboltSword(afterOnAttack, playerId, found.card.cardId);
     }
     if (afterOnAttack.pendingEffectChoice && afterOnAttack.pendingEffectChoice !== battleState.pendingEffectChoice) {
       let parked: GameState = { ...afterOnAttack, deferredAttack: { battle: marked, wingAttackFromRush } };
@@ -901,6 +904,8 @@ export function applyAction(
       next = openBunshinIfReady(next);
     }
   }
+  // RS-533【フェニックスファイヤー】: 敵軍ユニットがダメージにして置かれたら「1枚ドローしてもよい」（rules/legend1/set8NamedEffectsA.ts）。
+  if (applyActionDepth === 0) next = applySet8AAfterAction(state, next, hasBlockingInteraction(next));
   next = syncDamageWithFaceDownPower(state, next);
   // RS-327【フェイタルブレイドの伝授】: 1アクションで撃破された敵軍ユニットを数える（入れ子の applyAction では数えない）。
   if (applyActionDepth === 0) next = applyFatalBladeDraws(state, next, action);
@@ -3316,10 +3321,11 @@ function applyActionCore(
     }
 
     case "activate_resident_operation": {
-      if (state.phase !== "rush") return fail("wrong_phase");
       const op = player.operation.find(
         (card) => card.instanceId === action.operationInstanceId,
       );
+      // RS-524 呉越同舟は自軍バトルフェイズ中（rules/legend1/set8NamedEffectsA.ts）。それ以外の常駐はラッシュフェイズ。
+      if (state.phase !== "rush" && !(op && isSet8AResident(op.cardId))) return fail("wrong_phase");
       if (!op) return fail("illegal_action");
       const result = applyActivateResidentOperation(
         state,

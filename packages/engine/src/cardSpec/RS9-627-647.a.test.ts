@@ -381,8 +381,7 @@ describe("RS-631 メガブラック", () => {
     expectStats("RS-631", { name: "メガブラック", category: "ET", size: "S", bp: 3000, sp: undefined, powerCost: 2, comboNumber: 4, features: ["ブラック", "男"] });
   });
 
-  // 既知の不具合: CARD-RS-631 カタログのレアリティが N（atwiki はノーマルレア）
-  it.fails("RS-631: レアリティはノーマルレア（出典: atwiki/page-1431「レアリティ：ノーマルレア」）", () => {
+  it("RS-631: レアリティはノーマルレア（出典: atwiki/page-1431「レアリティ：ノーマルレア」）", () => {
     expect(rarityOf("RS-631")).toBe("NR");
   });
 
@@ -433,8 +432,7 @@ describe("RS-632 メガレッド", () => {
     expectStats("RS-632", { name: "メガレッド", category: "ET", size: "S", bp: 4000, sp: "special", powerCost: 4, comboNumber: 5, features: ["レッド", "男"] });
   });
 
-  // 既知の不具合: CARD-RS-632 カタログのレアリティが N（atwiki はレア）
-  it.fails("RS-632: レアリティはレア（出典: atwiki/page-1418「レアリティ：レア」）", () => {
+  it("RS-632: レアリティはレア（出典: atwiki/page-1418「レアリティ：レア」）", () => {
     expect(rarityOf("RS-632")).toBe("R");
   });
 
@@ -474,8 +472,7 @@ describe("RS-633 メガシルバー", () => {
     expectStats("RS-633", { name: "メガシルバー", category: "ET", size: "S", bp: 5000, sp: "special", powerCost: 5, comboNumber: undefined, features: ["シルバー", "男"] });
   });
 
-  // 既知の不具合: CARD-RS-633 カタログのレアリティが N（atwiki はスーパーレア）
-  it.fails("RS-633: レアリティはスーパーレア（出典: atwiki/page-1529「レアリティ：スーパーレア」）", () => {
+  it("RS-633: レアリティはスーパーレア（出典: atwiki/page-1529「レアリティ：スーパーレア」）", () => {
     expect(rarityOf("RS-633")).toBe("SR");
   });
 

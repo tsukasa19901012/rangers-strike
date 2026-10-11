@@ -65,8 +65,7 @@ describe("RS-613 ダイヤジャック", () => {
     expectStats("RS-613", { name: "ダイヤジャック", category: "ET", size: "S", bp: 2000, sp: undefined, powerCost: 2, comboNumber: 1, features: ["メカ", "ブルー", "男"] });
   });
 
-  // 既知の不具合: CARD-RS-613 カタログのレアリティが N（atwiki はノーマルレア）
-  it.fails("RS-613: レアリティ — ノーマルレア（出典: atwiki/page-1452）", () => {
+  it("RS-613: レアリティ — ノーマルレア（出典: atwiki/page-1452）", () => {
     expectRarity("RS-613", "NR");
   });
 
@@ -349,8 +348,7 @@ describe("RS-617 グレートイカロス", () => {
     expectStats("RS-617", { name: "グレートイカロス", category: "ET", size: "L", bp: 15000, sp: 1, powerCost: "6+", features: ["メカ", "人型", "航空機"], rushCondition: "discard_fusion_unit" });
   });
 
-  // 既知の不具合: CARD-RS-617 カタログのレアリティが N（atwiki はレア）
-  it.fails("RS-617: レアリティ — レア（出典: atwiki/page-1499）", () => {
+  it("RS-617: レアリティ — レア（出典: atwiki/page-1499）", () => {
     expectRarity("RS-617", "R");
   });
 
@@ -423,8 +421,7 @@ describe("RS-618 ジェットイカロス", () => {
     expectStats("RS-618", { name: "ジェットイカロス", category: "ET", size: "L", bp: 6000, sp: 1, powerCost: "6+", features: ["メカ", "人型"], rushCondition: "discard_named_unit" });
   });
 
-  // 既知の不具合: CARD-RS-618 カタログのレアリティが N（atwiki はノーマルレア）
-  it.fails("RS-618: レアリティ — ノーマルレア（出典: atwiki/page-1456）", () => {
+  it("RS-618: レアリティ — ノーマルレア（出典: atwiki/page-1456）", () => {
     expectRarity("RS-618", "NR");
   });
 

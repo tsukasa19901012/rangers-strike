@@ -59,8 +59,7 @@ describe("RS-634 ユガンデ", () => {
     expectStats("RS-634", { name: "ユガンデ", category: "DA", size: "S", bp: 4000, sp: undefined, powerCost: 3, comboNumber: undefined, features: ["メカ", "人型"] });
   });
 
-  // 既知の不具合: CARD-RS-634 カタログのレアリティが N（atwiki はノーマルレア）
-  it.fails("RS-634: レアリティはノーマルレア（出典: atwiki/page-1463「レアリティ：ノーマルレア」）", () => {
+  it("RS-634: レアリティはノーマルレア（出典: atwiki/page-1463「レアリティ：ノーマルレア」）", () => {
     expect(rarityOf("RS-634")).toBe("NR");
   });
 
@@ -195,8 +194,7 @@ function nejiTests(spec: NejiSpec) {
       expect(rarityOf(id)).toBe("N");
     });
   } else {
-    // 既知の不具合: CARD-${id} カタログのレアリティが N
-    it.fails(`${id}: レアリティは ${spec.rarity}（出典: ${page}「レアリティ」）`, () => {
+    it(`${id}: レアリティは ${spec.rarity}（出典: ${page}「レアリティ」）`, () => {
       expect(rarityOf(id)).toBe(spec.rarity);
     });
   }
