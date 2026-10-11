@@ -252,8 +252,7 @@ describe("RS-657 パトウイング", () => {
   const PATJ = "RS-044"; // パトジャイラー（OT・M・メカ／航空機。ウイングを持たない）
   const E = sUnit("SPEC-WE", { bp: 500, sp: undefined });
 
-  // 既知の不具合: CARD-RS-657 【航空戦力との連携】が未実装（DSL 側の本文が「次の能力を得る⇒」で切れ、付与する「※ウイング」が落ちている）
-  it.fails("RS-657: 【航空戦力との連携】パトウイングが自軍エリアにある間、特徴「航空機」を持つ自軍ユニットはウイングを得る（出典: atwiki/page-1475）", () => {
+  it("RS-657: 【航空戦力との連携】パトウイングが自軍エリアにある間、特徴「航空機」を持つ自軍ユニットはウイングを得る（出典: atwiki/page-1475）", () => {
     let s = p1Battle({ rush: [inst("RS-657", "pw"), inst(PATJ, "pj")] }, { battle: [inst("SPEC-WE", "e")] }, [E]);
     expect(canWing(s, `${PATJ}:pj`)).toBe(true);
     s = act(s, { type: "hold_for_wing", playerId: "player1", instanceId: `${PATJ}:pj` });
@@ -270,8 +269,7 @@ describe("RS-657 パトウイング", () => {
     expect(canWing(s, "TST-UNIT-0:s")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-657 【航空戦力との連携】が未実装
-  it.fails("RS-657: 【航空戦力との連携】「自軍」の限定がないため、敵軍の航空機のユニットもウイングを得る（出典: atwiki/page-1475「特徴「航空機」を持つユニットは」。RS-595 等の「自軍ユニット」と異なる）", () => {
+  it("RS-657: 【航空戦力との連携】「自軍」の限定がないため、敵軍の航空機のユニットもウイングを得る（出典: atwiki/page-1475「特徴「航空機」を持つユニットは」。RS-595 等の「自軍ユニット」と異なる）", () => {
     const s = st(
       {
         activePlayer: "player2",

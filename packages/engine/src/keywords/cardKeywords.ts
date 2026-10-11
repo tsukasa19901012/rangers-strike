@@ -3,6 +3,7 @@ import { textHasKeywordNotation } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
 import { cardHasDslGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { rocketBoosterMatchesCard } from "../rules/rocketBooster";
+import { fieldAuraGrantsKeyword } from "../rules/fieldGrantedKeywords";
 
 export type CardKeyword = "wing" | "chase" | "commander" | "register" | "morph" | "resident";
 
@@ -45,6 +46,8 @@ export function cardHasKeyword(
     return true;
   }
   if (cardHasDslGrantKeyword(cardId, keyword)) return true;
+  // 「これが自軍エリアにある間、特徴「X」を持つユニットは次の能力を得る⇒※ウイング」等（RS-657。rules/fieldGrantedKeywords.ts）。
+  if (context && fieldAuraGrantsKeyword(context.state, context.playerId, cardId, keyword)) return true;
   const def = definitions[cardId];
   if (!def) return false;
   if (def.type === "commander" && keyword === "commander") return true;

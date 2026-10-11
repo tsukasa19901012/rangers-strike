@@ -39,7 +39,7 @@
     {
       "id": "chikara_tono",
       "name": "航空戦力との連携",
-      "text": "これが自軍エリアにある間、特徴「航空機」を持つユニットは次の能力を得る⇒",
+      "text": "これが自軍エリアにある間、特徴「航空機」を持つユニットは次の能力を得る⇒※ウイング",
       "trigger": {
         "type": "while_in_field"
       },
@@ -47,20 +47,6 @@
         {
           "type": "grant_keyword",
           "keyword": "effect_card::RS-657::chikaratono",
-          "duration": "permanent"
-        }
-      ]
-    },
-    {
-      "id": "unnamed_wing",
-      "text": "※ウイング",
-      "trigger": {
-        "type": "while_in_field"
-      },
-      "effects": [
-        {
-          "type": "grant_keyword",
-          "keyword": "wing",
           "duration": "permanent"
         }
       ]

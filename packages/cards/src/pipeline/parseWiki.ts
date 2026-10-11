@@ -82,10 +82,15 @@ export function splitEffectSegments(text: string): WikiEffectSegment[] {
     | { index: number; kind: "note"; body: string };
 
   const tagged: Tagged[] = [];
+  // 「次の能力を得る⇒※ウイング」の「※」は付与する能力の一部で、新しい注記の始まりではない。
+  // 分割の前に退避し、各セグメントの本文で元に戻す（RS-657【航空戦力との連携】、RS-466【炎の星獣】等）。
+  const GRANTED_NOTE = "\u0000";
+  const restore = (s: string) => s.split(GRANTED_NOTE).join("※");
+  text = text.replace(/⇒\s*※/g, `⇒${GRANTED_NOTE}`);
 
   for (const m of text.matchAll(/【([^】]+)】([^【※]*)/g)) {
     const name = m[1]?.trim();
-    const body = m[2]?.trim();
+    const body = m[2] === undefined ? undefined : restore(m[2]).trim();
     if (!name) continue;
     tagged.push({
       index: m.index ?? 0,
@@ -95,7 +100,7 @@ export function splitEffectSegments(text: string): WikiEffectSegment[] {
     });
   }
   for (const m of text.matchAll(/※([^【※]+)/g)) {
-    const noteBody = m[1]?.trim();
+    const noteBody = m[1] === undefined ? undefined : restore(m[1]).trim();
     if (!noteBody) continue;
     tagged.push({
       index: m.index ?? 0,
@@ -105,14 +110,14 @@ export function splitEffectSegments(text: string): WikiEffectSegment[] {
   }
 
   if (tagged.length === 0) {
-    return text.trim() ? [{ kind: "body", body: text.trim() }] : [];
+    return text.trim() ? [{ kind: "body", body: restore(text.trim()) }] : [];
   }
 
   tagged.sort((a, b) => a.index - b.index);
 
   // E7: atwiki では「※」が落ちた注記が先頭に来ることがある（XG1-030「これが撃破されて…」）。
   // 「。」で終わる文で、合体行（unnamedRules.zord が別途処理）でなければ注記として扱う。
-  const lead = text.slice(0, tagged[0]!.index).trim();
+  const lead = restore(text.slice(0, tagged[0]!.index).trim());
   if (lead && lead.endsWith("。") && !/^合体[―-]/.test(lead)) {
     tagged.unshift({ index: 0, kind: "note", body: `※${lead}` });
   }
