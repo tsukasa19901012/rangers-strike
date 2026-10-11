@@ -273,7 +273,8 @@ export function applyCoreGapNcEffect(
         sourceCardId: card.cardId,
         kind: "declare_number",
         phasePlayerId: playerId,
-        validInstanceIds: Array.from({ length: 13 }, (_, n) => String(n)),
+        // 2桁以上の数字も宣言できる（atwiki/page-823 Q1/A1「「10」や「100」等を…2桁以上であっても宣言できます」）。
+        validInstanceIds: Array.from({ length: 101 }, (_, n) => String(n)),
         optional: true,
       });
       if (withChoice) nextState = withChoice;

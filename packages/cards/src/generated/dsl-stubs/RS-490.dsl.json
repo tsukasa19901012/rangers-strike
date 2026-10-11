@@ -28,7 +28,7 @@
         {
           "type": "grant_keyword",
           "keyword": "effect_card::RS-490::fxunknowne4ba88",
-          "duration": "permanent"
+          "duration": "turn"
         }
       ],
       "optional": true

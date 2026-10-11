@@ -4,11 +4,14 @@ import {
   openPowerUnitToHandAfterPlace,
   set7AStrikeCounterIds,
 } from "../rules/legend1/set7NamedEffectsA";
+import { openKibaShotIfReady, queueKibaShot } from "../rules/legend1/set6AuditFixes";
+import { icyStateForAction, isIcyPhantom, settleIcyPhantoms } from "../rules/legend1/icyLastResort";
 import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw, settleDarkArmor } from "../rules/legend1/set6NamedEffects348";
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
 import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
+import { openBlueMoonSlash, openChargeInsteadOfBattle } from "../rules/legend1/set7NamedEffectsB";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
   applyGiantBombCounter,
@@ -87,7 +90,7 @@ import {
   rushReactorId,
   updatePlayer,
 } from "./helpers";
-import { isLegalAction } from "./legalActions";
+import { isLegalAction, isLegalActionBase } from "./legalActions";
 import { resolveDamagePaymentSelect, startNextQueuedDamage } from "../rules/damagePayment";
 import {
   battlePositionAfterMove,
@@ -115,6 +118,7 @@ import { applyResidentOpOnPlace } from "../rules/residentOps";
 import { applySelfRushFromZone, battleActBlocked, markUnitBattleAction } from "../rules/keywordGapRuntime";
 import { applyStartPhaseBeginEffects } from "../rules/startPhaseBegin";
 import { emitStrikeDeclared } from "../events/emitStrikeDeclared";
+import { openBunshinIfReady, queueBunshinOnAction } from "../rules/legend1/set7NamedEffectsC";
 import { emitTurnEndingAndResolve } from "../events/emitTurnEnding";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import {
@@ -515,7 +519,7 @@ function finalizeTurnEnd(state: GameState): GameState {
   };
   next = advancePhase(next);
 
-  if (next.phase === "start" && next.activePlayer !== prevPlayer) {
+  if (next.phase === "start" && (next.activePlayer !== prevPlayer || next.turn !== afterEffects.turn)) {
     // ルール: R-START-06, R-TIME-06 — 「スタートフェイズ開始時」「ターン開始時」の効果は
     // 3行程（リリース・戻す・ドロー）より前に発動・解決する。ホールド中のコマンドの有無に依存しない。
     next = applyStartPhaseBeginEffects(next, next.activePlayer);
@@ -731,7 +735,7 @@ function settleEffectRushes(before: GameState, after: GameState): GameState {
     let changed = false;
     for (const zone of ["rush", "battle"] as const) {
       for (const card of owner[zone]) {
-        if (beforeIds.has(card.instanceId) || handled.has(card.instanceId)) continue;
+        if (beforeIds.has(card.instanceId) || handled.has(card.instanceId) || isIcyPhantom(card)) continue;
         if (wasRushedThisTurn(owner, card.instanceId)) continue;
         owner = markRushedThisTurn(owner, card.instanceId);
         changed = true;
@@ -792,6 +796,10 @@ export function applyAction(
   action: GameAction,
   options?: { trustLegality?: boolean },
 ): ActionResult {
+  // RS-359【最後の手段】: 山札の候補をラッシュエリアに置いた状態で、手札からのラッシュの手続きを始める
+  // （rules/legend1/icyLastResort.ts。手続きが終わったら settleIcyPhantoms で片付ける）。
+  const icyState = applyActionDepth === 0 ? icyStateForAction(state, action, isLegalActionBase) : null;
+  if (icyState) state = icyState;
   applyActionDepth += 1;
   let result: ActionResult;
   // 「※このカードの追加条件は、…のとき、次のように変更される」を反映した定義で処理し、結果には元の定義を戻す（RS-440 等）。
@@ -839,14 +847,35 @@ export function applyAction(
     }
     // RS-363【パンサークロー】: 発動したターン、敵軍コマンドゾーンにホールド状態で置かれたユニットカードを捨札にしてもよい。
     next = queuePantherClaw(state, next);
+    // RS-377【キバショット】: このターン、リリース状態の敵軍コマンドがホールドされたとき。
+    next = queueKibaShot(state, next);
+    if (next.kibaShotQueue?.length && !hasKibaShotBlocker(next) && !next.winner) {
+      next = openKibaShotIfReady(next, turnPlayerOf(next));
+    }
     if (next.pantherClawQueue?.length && !hasBlockingInteraction(next) && !next.winner) {
       next = openPantherClawIfReady(next, turnPlayerOf(next));
+    }
+  }
+  // RS-486【分身幻斬り】: アタック・ストライクの処理をすべて終えてから選択を開く（rules/legend1/set7NamedEffectsC.ts）。
+  if (applyActionDepth === 0) {
+    next = queueBunshinOnAction(state, next, action as Parameters<typeof queueBunshinOnAction>[2]);
+    if (
+      next.bunshinQueue?.length &&
+      !next.winner &&
+      !hasBlockingInteraction(next) &&
+      !next.deferredAttack &&
+      !next.deferredStrike &&
+      !next.pendingEffectRush &&
+      !(next.deferredDestroyTriggers?.length)
+    ) {
+      next = openBunshinIfReady(next);
     }
   }
   next = syncDamageWithFaceDownPower(state, next);
   // RS-327【フェイタルブレイドの伝授】: 1アクションで撃破された敵軍ユニットを数える（入れ子の applyAction では数えない）。
   if (applyActionDepth === 0) next = applyFatalBladeDraws(state, next, action);
   next = markEnemyTurnFaceDownDamage(state, next);
+  if (applyActionDepth === 0) next = settleIcyPhantoms(next);
   return next === result.state ? result : { ok: true, state: next };
 }
 
@@ -915,6 +944,23 @@ function syncDamageWithFaceDownPower(before: GameState, after: GameState): GameS
     }
   }
   return players === after.players ? after : { ...after, players };
+}
+
+/**
+ * 【キバショット】の撃破の選択を開けないとき（ほかの選択・支払い・離場の応答の途中）。バトルやストライクの途中でも、
+ * コマンドがホールドされた直後に誘発を処理する（カウンターの支払い等）。
+ */
+function hasKibaShotBlocker(state: GameState): boolean {
+  return !!(
+    state.pendingEffectChoice ||
+    state.pendingCommandPayment ||
+    state.pendingZordSetup ||
+    state.pendingLeave ||
+    state.pendingRegister ||
+    state.pendingDamagePayment ||
+    state.pendingScry ||
+    state.pendingMorph
+  );
 }
 
 function hasBlockingInteraction(state: GameState): boolean {
@@ -1213,9 +1259,13 @@ function applyActionCore(
       );
       return {
         ok: true,
-        state: advanceFromCharge(
-          chargedState,
-          buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
+        // RS-473【ブルームーンスラッシュ】: パワーゾーンにカードを置かずにチャージフェイズを終えた（rules/legend1/set7NamedEffectsB.ts）。
+        state: openBlueMoonSlash(
+          advanceFromCharge(
+            chargedState,
+            buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
+          ),
+          playerId,
         ),
       };
     }
@@ -3300,8 +3350,13 @@ function applyActionCore(
         );
       }
 
+      let afterPhase = nextState;
+      // RS-473【ブルームーンスラッシュ】: チャージフェイズにパワーゾーンへカードを置かずに終えた（rules/legend1/set7NamedEffectsB.ts）。
+      if (state.phase === "charge") afterPhase = openBlueMoonSlash(afterPhase, playerId);
+      // RS-470 ギンガット【花の星獣】: バトルフェイズを行うとき、かわりにチャージフェイズを行ってもよい（同上）。
+      if (state.phase === "rush" && afterPhase.phase === "battle") afterPhase = openChargeInsteadOfBattle(afterPhase, playerId);
       return ok(
-        nextState,
+        afterPhase,
         buildSimpleLogEntry(playerId, "end_phase", state.phase),
       );
     }

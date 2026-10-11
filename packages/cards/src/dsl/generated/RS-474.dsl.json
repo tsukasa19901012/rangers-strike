@@ -39,25 +39,9 @@
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "power",
-            "owner": "self",
-            "filter": {
-              "faceDown": false
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "set7c::RS-474::time_shadow_discard",
+          "duration": "turn"
         }
       ],
       "optional": false

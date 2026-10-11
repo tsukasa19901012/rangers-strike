@@ -12,7 +12,8 @@ import { resolveZordFusionPartnerIds } from "../dsl/zordBridge";
 import { applyHungerGodCeaseShuffle } from "./batch04FieldEffects";
 import { resolveAbaRedDestroyDamage } from "./namedUnitEffects";
 import { tagOpenedDestroyTrigger } from "./destroyTriggerTiming";
-import type { DeferredDestroyTrigger } from "../types/game";
+import type { DeferredDestroyTrigger, DestroyedFactInfo } from "../types/game";
+import { GRAND_LINER_RUSH, gekidoSourcesForDestroyed, openGekidoZan, openGrandLinerRush } from "./legend1/set7NamedEffectsB";
 
 
 /** Finds a named unit in the player's command OR discard zone and rushes it. */
@@ -135,6 +136,8 @@ export type UnitLeftZoneContext = {
   phasePlayerId: PlayerId;
   /** ルール: R-DESTROY-02 — 撃破による移動か。省略時は捨札への移動を撃破とみなす。 */
   destroyed?: boolean;
+  /** バトルによる撃破のとき、バトルの相手のユニット（RS-453【激怒斬り】）。 */
+  battleOpponentInstanceId?: string;
 };
 
 /**
@@ -149,13 +152,18 @@ export function resolveDestroyedFactEffects(
   state: GameState,
   ownerPlayerId: PlayerId,
   cardId: string,
+  info?: DestroyedFactInfo,
 ): { state: GameState; logs: string[] } {
   // RS-054 アバレッド等「※これが撃破されたとき、1点ダメージを受ける。」
   const aba = resolveAbaRedDestroyDamage(state, ownerPlayerId, cardId);
   // RS-093【かんしゃく】・RS-116【鳴き声】「これが撃破されたとき、…」
   const legend2 = resolveLegend2OnDestroy(aba.state, ownerPlayerId, cardId);
+  // RS-453 サムライマン【激怒斬り】「…自軍ユニットがユニットサイズの違うユニットとバトルして撃破された時」（rules/legend1/set7NamedEffectsB.ts）。
+  const gekido = info?.gekidoSources?.length
+    ? openGekidoZan(legend2.state, ownerPlayerId, info.gekidoSources, info.phasePlayerId ?? ownerPlayerId)
+    : legend2.state;
   // ルール: R-TIME-01 — ここで開いた選択は段階 2（「撃破されたとき」）の誘発。
-  return { state: tagOpenedDestroyTrigger(state, legend2.state, "destroyed"), logs: [...aba.logs, ...legend2.logs] };
+  return { state: tagOpenedDestroyTrigger(state, gekido, "destroyed"), logs: [...aba.logs, ...legend2.logs] };
 }
 
 /** UnitLeftZone リスナー本体: 捨札離場時の撃破誘発と自ダメージ。 */
@@ -181,19 +189,28 @@ export function resolveUnitLeftZoneEffectsImpl(
     return { state: nextState, logs };
   }
   nextState = applyDarkLawDrawOnEnemyDestroyed(nextState, ctx);
+  const gekidoSources = gekidoSourcesForDestroyed(nextState, ctx);
+  const factInfo: DestroyedFactInfo | undefined =
+    gekidoSources.length > 0 ? { gekidoSources, phasePlayerId: ctx.phasePlayerId } : undefined;
   if (nextState.destroyTriggerHold) {
     // ルール: R-TIME-01 — 撃破した側の段階 1「撃破したとき」を先に解決するあいだ、撃破された側の誘発
     // （段階 2・段階 4。自動処理も選択も）は解決せずに待たせる（rules/destroyTriggerQueue.ts）。
     const queued: DeferredDestroyTrigger[] = [
       ...(nextState.deferredDestroyTriggers ?? []),
-      { kind: "destroyed_fact", step: "destroyed", ownerPlayerId: ctx.ownerPlayerId, cardId: ctx.cardId },
+      {
+        kind: "destroyed_fact",
+        step: "destroyed",
+        ownerPlayerId: ctx.ownerPlayerId,
+        cardId: ctx.cardId,
+        ...(factInfo ? { battleDestroyInfo: factInfo } : {}),
+      },
     ];
     if (wentToDiscard) queued.push({ kind: "after_discard", step: "after_discard", ctx: { ...ctx } });
     return { state: { ...nextState, deferredDestroyTriggers: queued }, logs };
   }
   // ルール: R-TIME-01, R-DESTROY-02 — 段階 2「撃破されたとき」→ 3 捨札へ移動 → 4「撃破されて捨札になったとき」。
   // 段階 2 は捨札以外に置かれても発動し、段階 4 より先に解決する（ユーザー決定 2026-10-11）。
-  const fact = resolveDestroyedFactEffects(nextState, ctx.ownerPlayerId, ctx.cardId);
+  const fact = resolveDestroyedFactEffects(nextState, ctx.ownerPlayerId, ctx.cardId, factInfo);
   nextState = fact.state;
   logs.push(...fact.logs);
   if (!wentToDiscard) {
@@ -393,30 +410,13 @@ export function resolveAfterDiscardDestroyEffects(
     }
   }
 
-  // RS-471: destroyed during enemy turn → optionally bring メカ M-units from command to rush
+  // RS-471 グランドライナー ※: 敵軍ターン中に撃破されて捨札になったとき、自軍コマンドゾーンの「メカ」の M ユニットのカードを
+  // 好きな枚数選び、自軍ラッシュエリアに出してもよい（rules/legend1/set7NamedEffectsB.ts）。
   if (ctx.cardId === "RS-471" && ctx.phasePlayerId !== ctx.ownerPlayerId) {
-    const player = nextState.players[ctx.ownerPlayerId];
-    const mechaInCommand = player.command
-      .filter((c) => {
-        const def = getDefinition(nextState.definitions, c.cardId);
-        return def?.type === "unit" && def.size === "M" && def.features?.includes("メカ");
-      })
-      .map((c) => c.instanceId);
-    if (mechaInCommand.length > 0) {
-      const withChoice = startSelectCommandChoice(nextState, {
-        playerId: ctx.ownerPlayerId,
-        effectId: "grand_liner_mecha_rush",
-        sourceCardId: ctx.cardId,
-        phasePlayerId: ctx.phasePlayerId,
-        commandFilter: "any",
-        commandAction: "rush",
-        validInstanceIds: mechaInCommand,
-        optional: true,
-      });
-      if (withChoice) {
-        nextState = withChoice;
-        logs.push(buildLogEntry(ctx.ownerPlayerId, "destroy_effect", ctx.cardId, nextState.definitions, "grand_liner_mecha_rush"));
-      }
+    const withChoice = openGrandLinerRush(nextState, ctx.ownerPlayerId, ctx.cardId, ctx.phasePlayerId);
+    if (withChoice) {
+      nextState = withChoice;
+      logs.push(buildLogEntry(ctx.ownerPlayerId, "destroy_effect", ctx.cardId, nextState.definitions, GRAND_LINER_RUSH));
     }
   }
 

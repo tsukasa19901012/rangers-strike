@@ -48,6 +48,7 @@ import { tryResolveDslNcEffects } from "../dsl/triggerResolver";
 import { applyPromotedNcEffect, getPromotedNcEffectId } from "./promotedNcEffects";
 import { tryApplyHoldToActivateNc } from "./holdToActivate";
 import { isSet7ANcCard, trySet7ANumberCombo } from "./legend1/set7NamedEffectsA";
+import { trySet7BNcEffect } from "./legend1/set7NamedEffectsB";
 import type { ComboOutcome } from "./comboTypes";
 
 function ncLog(
@@ -243,8 +244,16 @@ export function markNcColumnEffectsOnEnter(
   return nextState;
 }
 
+/**
+ * NC の欄の効果か（※ で始まる名前のない常時の能力は、DSL で trigger が nc と付いていても NC の効果ではない。
+ * 例: RS-454 ニンジャマン「※…オモテ向きのカード1枚につきBP+1000」と【ニンジャソード】「SP1」）。
+ */
+function isNcColumnDslEffect(effect: { name?: string; text?: string }): boolean {
+  return !(effect.name === undefined && (effect.text ?? "").trimStart().startsWith("※"));
+}
+
 function ncEffectUsesDsl(cardId: string): boolean {
-  const effects = listDslEffectsForTrigger(cardId, "nc");
+  const effects = listDslEffectsForTrigger(cardId, "nc").filter(isNcColumnDslEffect);
   if (effects.length !== 1) return false;
   const effect = effects[0]!;
   return shouldUseDslTriggeredEffect(cardId, effect, "nc");
@@ -262,6 +271,10 @@ export function applyNumberComboEffect(
   // 第7弾 RS-441〜RS-449 の NC（rules/legend1/set7NamedEffectsA.ts）。
   const set7 = trySet7ANumberCombo(state, playerId, card);
   if (set7) return set7;
+  // 第7弾 RS-453〜RS-473 のカード固有の NC 効果（rules/legend1/set7NamedEffectsB.ts）。
+  const set7b = trySet7BNcEffect(state, playerId, card);
+  if (set7b) return set7b;
+
   if (getPromotedNcEffectId(card.cardId)) {
     return applyPromotedNcEffect(state, playerId, card);
   }
@@ -277,6 +290,7 @@ export function applyNumberComboEffect(
       instanceId: card.instanceId,
       playerId,
       phasePlayerId: playerId,
+      effectFilter: isNcColumnDslEffect,
     });
     if (dslNc.handled) {
       return { state: dslNc.state, logs: dslNc.logs };

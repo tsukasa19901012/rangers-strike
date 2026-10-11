@@ -17,6 +17,7 @@ import { srBigBatonTaxisCategory } from "../rules/srEffects";
 import { isBattleBlocked, markBattleBlocked } from "../rules/turnModifiers";
 import { RESTRICTION_IDS } from "../types/scopedModifiers";
 import { findInZone, updatePlayer } from "../core/helpers";
+import { riddenVehicleGrantsScrum } from "../rules/legend1/set7NamedEffectsB";
 
 const TAXIS_POSITION: Record<Category, number> = {
   WB: 1,
@@ -167,7 +168,11 @@ export function scrumBlocksAttack(
   if (defenderIndex < 0) return false;
 
   const defender = player.battle[defenderIndex]!;
-  if (!cardHasBattleKeyword(state.definitions, defender.cardId, "scrum")) {
+  if (
+    !cardHasBattleKeyword(state.definitions, defender.cardId, "scrum") &&
+    // RS-467 ギンガルコン【風の星獣】: ライドしたユニットがある間、WB の自軍 S ユニットはスクラムを得る（rules/legend1/set7NamedEffectsB.ts）。
+    !riddenVehicleGrantsScrum(state, defenderPlayerId, defender)
+  ) {
     return false;
   }
 

@@ -39,6 +39,7 @@ import {
 } from "../rules/pendingChoices";
 import { COMMAND_ZONE_MAX, WIN_DAMAGE } from "../types/game";
 import { evaluateState } from "./scoring";
+import { isSet7CChoiceEffect, QUIZ_DECLARE_EFFECT_ID, REVOLVER_PICK_EFFECT_ID } from "../rules/legend1/set7NamedEffectsC";
 import {
   getBattleEntryPaymentNeeds,
   getCategoryPaymentOptions,
@@ -712,10 +713,12 @@ export function pickCommandPaymentResolve(
     return { type: "cancel_command_payment", playerId };
   }
 
-  const candidates: string[][] = [
-    valid.slice(0, needed),
-    valid.slice(-needed),
-  ];
+  const candidates: string[][] = [];
+  // RS-429 代用の effect_hold（minNeeded）: 少ない枚数で足りるならそちらを優先する（MA のコマンド1つ）。
+  if (pending.minNeeded !== undefined && pending.minNeeded < needed) {
+    for (const id of valid) candidates.push([id]);
+  }
+  candidates.push(valid.slice(0, needed), valid.slice(-needed));
   for (let i = 0; i <= valid.length - needed; i += 1) {
     candidates.push(valid.slice(i, i + needed));
   }
@@ -1185,6 +1188,12 @@ export function pickEffectChoice(
   const playerId = pending.playerId;
   const skip = actions.find((a) => a.type === "skip_effect_choice");
 
+  // 第7弾 RS-474〜RS-494 の選択（rules/legend1/set7NamedEffectsC.ts）。
+  if (isSet7CChoiceEffect(pending.effectId)) {
+    const picked = pickSet7CEffectChoice(state, pending, actions);
+    if (picked) return picked;
+  }
+
   // 「～してもよい」の任意効果の確認（rules/optionalEffects.ts）。
   if (pending.mayConfirm) {
     const confirm = actions.find((a) => a.type === "confirm_effect_choice");
@@ -1457,6 +1466,37 @@ export function pickEffectChoice(
   }
 
   return skip ?? actions.find((a) => a.type === "resolve_effect_choice") ?? null;
+}
+
+/**
+ * 第7弾 RS-474〜RS-494 の選択: 候補の行動（解決・見送り）をそれぞれ適用して局面を評価し、最も良いものを選ぶ。
+ * 隠れた情報を当てる選択（RS-475 ウラ向きの捨札から選ぶ・RS-493 必要パワーの数字の宣言）は結果を先読みしない。
+ */
+function pickSet7CEffectChoice(
+  state: GameState,
+  pending: PendingEffectChoice,
+  actions: GameAction[],
+): GameAction | null {
+  const candidates = actions.filter((a) => a.type === "resolve_effect_choice" || a.type === "skip_effect_choice");
+  if (candidates.length === 0) return null;
+  if (pending.effectId === REVOLVER_PICK_EFFECT_ID) {
+    return candidates.find((a) => a.type === "resolve_effect_choice") ?? null;
+  }
+  if (pending.effectId === QUIZ_DECLARE_EFFECT_ID) {
+    return candidates.find((a) => a.type === "resolve_effect_choice" && a.instanceId === "3") ?? candidates[0] ?? null;
+  }
+  let best: GameAction | null = null;
+  let bestScore = -Infinity;
+  for (const action of candidates) {
+    const result = applyAction(state, action);
+    if (!result.ok) continue;
+    const score = evaluateState(result.state, pending.playerId);
+    if (score > bestScore) {
+      bestScore = score;
+      best = action;
+    }
+  }
+  return best ?? candidates[0] ?? null;
 }
 
 function maxSelfStrikeThreat(state: GameState, playerId: PlayerId): number {

@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_batorueriakarasyunitowo2binda2noyunitonoga2tsuji",
+          "keyword": "effect_card::RS-489::ninpo",
           "duration": "turn"
         }
       ],

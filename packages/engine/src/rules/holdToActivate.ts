@@ -19,6 +19,9 @@ import { buildEffectHoldPayment } from "./commandPayment";
 import type { ComboOutcome } from "./comboTypes";
 import { openEffectChoice } from "./pendingChoices";
 import { applyThunderRoar } from "./legend1/set6NamedEffects348";
+import { enemyCommandHoldSubstitutes } from "./legend1/set7NamedEffectsB";
+import { shifuSubstituteAvailable } from "./legend1/set6NamedEffectsB";
+import { registerKibaShot } from "./legend1/set6AuditFixes";
 
 export const HOLD_ACTIVATE_EFFECT_PREFIX = "hold_activate::";
 
@@ -102,6 +105,12 @@ const HOLD_BODY_HANDLERS: BodyHandler[] = [
     },
   },
   {
+    // RS-377【キバショット】「このターン、リリース状態の敵軍コマンドがホールドされたとき、ホールドされたコマンドの必要パワーの数字と
+    // 同じ必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。」（誘発の処理は rules/legend1/set6AuditFixes.ts）
+    match: /^このターン、?リリース状態の敵軍コマンドがホールドされたとき、?ホールドされたコマンドの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び、?撃破する。?$/,
+    resolve: (state, ctx) => registerKibaShot(state, ctx.playerId, ctx.sourceInstanceId),
+  },
+  {
     // RS-380【花弁の爪】「敵軍コマンドをすべてホールドする。」
     match: /^敵軍コマンドをすべてホールドする。?$/,
     resolve: (state, ctx) => {
@@ -153,12 +162,33 @@ export function isHoldToActivateNc(cardId: string): boolean {
   return parseHoldEffect(cardId) !== null;
 }
 
-function holdableCommands(state: GameState, playerId: PlayerId, category: Category): string[] {
+function ownHoldableCommands(state: GameState, playerId: PlayerId, category: Category): string[] {
   const player = state.players[playerId];
   return player.command
     .filter((c) => !c.commandHeld)
     .filter((c) => effectiveCommandCategories(player, state.definitions, c.cardId).includes(category))
     .map((c) => c.instanceId);
+}
+
+function holdableCommands(state: GameState, playerId: PlayerId, category: Category): string[] {
+  const own = ownHoldableCommands(state, playerId, category);
+  // RS-469 ギンガベリック【雷の星獣】: 自軍バトルフェイズ中、「MA」の自軍コマンドをホールドするかわりに、敵軍コマンドを1つ選び
+  // ホールドしてもよい（R-REPL-03。rules/legend1/set7NamedEffectsB.ts）。
+  return [...own, ...enemyCommandHoldSubstitutes(state, playerId, category)];
+}
+
+/**
+ * RS-429【暮らしの中に修行あり】: 自軍ターン中、「MA」の自軍コマンドをホールドする代わりに「WB」の自軍コマンド＋追加1つを
+ * ホールドしてもよい。使えるなら、支払いの候補（MA のコマンドを先に、その後ほかのリリース状態の自軍コマンド）。
+ * 「ホールドしたコマンド」は MA のかわりにホールドした WB のコマンド1つだけ（grnrngr/faq-card-6 RS-378 Q）。
+ */
+function shifuHoldCandidates(state: GameState, playerId: PlayerId, category: Category): string[] | null {
+  if (category !== "MA" || !shifuSubstituteAvailable(state, playerId, [category])) return null;
+  const primary = ownHoldableCommands(state, playerId, category);
+  const rest = state.players[playerId].command
+    .filter((c) => !c.commandHeld && !primary.includes(c.instanceId))
+    .map((c) => c.instanceId);
+  return [...primary, ...rest];
 }
 
 /**
@@ -191,7 +221,7 @@ export function canActivateHoldToActivate(state: GameState, playerId: PlayerId, 
   if (!entry || entry.playerId !== playerId || entry.instanceId !== card.instanceId) return false;
   if (card.battleActed) return false;
   if (!card.activatedNcEffects?.includes(parsed.effectId)) return false;
-  return holdableCommands(state, playerId, parsed.category).length > 0;
+  return holdableCommands(state, playerId, parsed.category).length > 0 || shifuHoldCandidates(state, playerId, parsed.category) !== null;
 }
 
 /**
@@ -201,7 +231,8 @@ export function canActivateHoldToActivate(state: GameState, playerId: PlayerId, 
 export function beginHoldToActivate(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
   const parsed = parseHoldEffect(card.cardId);
   if (!parsed) return state;
-  const valid = holdableCommands(state, playerId, parsed.category);
+  const shifu = shifuHoldCandidates(state, playerId, parsed.category);
+  const valid = shifu ?? holdableCommands(state, playerId, parsed.category);
   if (valid.length === 0) return state;
   const opened = openEffectChoice(state, {
     playerId,
@@ -215,9 +246,21 @@ export function beginHoldToActivate(state: GameState, playerId: PlayerId, card: 
     validInstanceIds: valid,
     selectCount: 1,
     optional: true,
+    ...(shifu ? { shifuSubstitute: true } : {}),
   });
   const payment = buildEffectHoldPayment(opened);
   return payment ? { ...opened, pendingCommandPayment: payment } : opened;
+}
+
+/** RS-429 の代用でホールドした2つのうち、MA のかわりの WB のコマンド（WB が2つなら先に選んだ方）。 */
+export function shifuSubstituteCommandId(state: GameState, playerId: PlayerId, commandInstanceIds: string[]): string {
+  const player = state.players[playerId];
+  return (
+    commandInstanceIds.find((id) => {
+      const cmd = player.command.find((c) => c.instanceId === id);
+      return !!cmd && effectiveCommandCategories(player, state.definitions, cmd.cardId).includes("WB");
+    }) ?? commandInstanceIds[0]!
+  );
 }
 
 export function isHoldActivateChoice(pending: PendingEffectChoice | undefined): boolean {
@@ -236,14 +279,18 @@ export function resolveHoldActivateChoice(
   if (!pending.validInstanceIds.includes(commandInstanceId)) return null;
   const parsed = parseHoldEffect(pending.sourceCardId);
   if (!parsed?.handler) return null;
-  const player = state.players[pending.playerId];
+  // ホールドするのは自軍コマンド（コスト）か、RS-469【雷の星獣】でかわりに選んだ敵軍コマンド。
+  const holderId = state.players[pending.playerId].command.some((c) => c.instanceId === commandInstanceId)
+    ? pending.playerId
+    : opponent(pending.playerId);
+  const player = state.players[holderId];
   const held = player.command.find((c) => c.instanceId === commandInstanceId);
   if (!held) return null;
   let next: GameState = {
     ...state,
     pendingEffectChoice: undefined,
     activePlayer: pending.phasePlayerId,
-    ...updatePlayer(state, pending.playerId, {
+    ...updatePlayer(state, holderId, {
       ...player,
       command: player.command.map((c) => (c.instanceId === commandInstanceId ? { ...c, commandHeld: true } : c)),
     }),

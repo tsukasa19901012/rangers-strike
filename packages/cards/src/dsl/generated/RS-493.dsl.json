@@ -27,9 +27,9 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "set7c::RS-493::quiz",
+          "duration": "turn"
         }
       ]
     }

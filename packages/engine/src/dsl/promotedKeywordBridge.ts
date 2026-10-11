@@ -391,25 +391,43 @@ export function decodeRideWithoutRcFeature(keyword: string): string | null {
   return slug;
 }
 
-export function listRideWithoutRcFeatures(vehicleCardId: string): string[] {
+/**
+ * 「※特徴「○○」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。」の
+ * 文言（全角・半角の揺れは NFKC で吸収）。DSL で note_card 扱いになっているカード（RS-469 ギンガベリック・RS-470 ギンガット）も
+ * 文言から ride_command_without_rc と同じに扱う。
+ */
+const RIDE_COMMAND_WITHOUT_RC_TEXT_RE =
+  /^※?特徴「([^」]+)」を持つ(?:自軍)?Sユニットは、自軍コマンドを1つホールドすれば、RCを持っていなくてもこのビークルにライドできる/;
+
+type RideWithoutRcEffect = { text: string; feature: string | null; needsHold: boolean };
+
+function rideWithoutRcEffects(vehicleCardId: string): RideWithoutRcEffect[] {
   const doc = getCardDslDocument(vehicleCardId);
-  if (!doc?.effects) return [];
-
-  const features = new Set<string>();
-  for (const effect of doc.effects) {
-    for (const primitive of effect.effects) {
-      if (primitive.type !== "grant_keyword") continue;
-      const keyword = primitive.keyword;
-      if (!/^ride_(?:command_)?without_rc_/.test(keyword)) continue;
-
-      const fromText = effect.text?.match(/特徴「([^」]+)」/)?.[1];
-      if (fromText) {
-        features.add(fromText);
-        continue;
-      }
-      const decoded = decodeRideWithoutRcFeature(keyword);
-      if (decoded) features.add(decoded);
+  const out: RideWithoutRcEffect[] = [];
+  for (const effect of doc?.effects ?? []) {
+    const text = effect.text ?? "";
+    const keyword = effect.effects.find(
+      (p): p is Extract<typeof p, { type: "grant_keyword" }> =>
+        p.type === "grant_keyword" && /^ride_(?:command_)?without_rc_/.test(p.keyword),
+    )?.keyword;
+    if (keyword) {
+      out.push({
+        text,
+        feature: text.match(/特徴「([^」]+)」/)?.[1] ?? decodeRideWithoutRcFeature(keyword),
+        needsHold: keyword.startsWith("ride_command_without_rc_"),
+      });
+      continue;
     }
+    const byText = text.normalize("NFKC").replace(/\s+/g, "").match(RIDE_COMMAND_WITHOUT_RC_TEXT_RE);
+    if (byText) out.push({ text, feature: byText[1]!, needsHold: true });
+  }
+  return out;
+}
+
+export function listRideWithoutRcFeatures(vehicleCardId: string): string[] {
+  const features = new Set<string>();
+  for (const effect of rideWithoutRcEffects(vehicleCardId)) {
+    if (effect.feature) features.add(effect.feature);
   }
   return [...features];
 }
@@ -433,12 +451,7 @@ export function riderMatchesVehicleRideWithoutRc(
 }
 
 function rideWithoutRcTexts(vehicleCardId: string): string[] {
-  const doc = getCardDslDocument(vehicleCardId);
-  return (doc?.effects ?? [])
-    .filter((e) =>
-      e.effects.some((p) => p.type === "grant_keyword" && /^ride_(?:command_)?without_rc_/.test(p.keyword)),
-    )
-    .map((e) => e.text ?? "");
+  return rideWithoutRcEffects(vehicleCardId).map((e) => e.text);
 }
 
 /**
@@ -446,10 +459,7 @@ function rideWithoutRcTexts(vehicleCardId: string): string[] {
  * （ride_command_without_rc_*。RS-381 ガレオパルサー atwiki/page-522）— RC なしでライドするときコマンドを1つホールドする。
  */
 export function vehicleRideWithoutRcNeedsHold(vehicleCardId: string): boolean {
-  const doc = getCardDslDocument(vehicleCardId);
-  return (doc?.effects ?? []).some((e) =>
-    e.effects.some((p) => p.type === "grant_keyword" && p.keyword.startsWith("ride_command_without_rc_")),
-  );
+  return rideWithoutRcEffects(vehicleCardId).some((e) => e.needsHold);
 }
 
 export function cardHasEngineNativeKeyword(cardId: string, keyword: string): boolean {
@@ -468,6 +478,25 @@ function playerHasAllyWithFeatureInBattle(
     const def = getDefinition(state.definitions, card.cardId);
     return def?.type === "unit" && unitHasFeatureSlug(def, featureSlugValue);
   });
+}
+
+/**
+ * ライドしているビークルの「これにライドしている(S)ユニットは次の能力を得る⇒これはSユニットにアタックされない」。
+ * ライドオフしたユニット（mountedOnInstanceId なし）は得ない。
+ */
+function riddenVehicleGrantsNoAttackFromS(
+  state: GameState,
+  ownerId: PlayerId,
+  rider: { cardId: string; mountedOnInstanceId?: string },
+): boolean {
+  if (!rider.mountedOnInstanceId) return false;
+  const owner = state.players[ownerId];
+  const vehicle = [...owner.battle, ...owner.rush].find((c) => c.instanceId === rider.mountedOnInstanceId);
+  if (!vehicle) return false;
+  const text = (getDefinition(state.definitions, vehicle.cardId)?.text ?? "").normalize("NFKC");
+  const m = text.match(/これにライドしている(S)?ユニットは次の能力を得る⇒これはSユニットにアタックされない/);
+  if (!m) return false;
+  return !m[1] || isSmallUnit(state.definitions, rider.cardId);
 }
 
 /** 守備側の昇格キーワードでアタック不可なら true。 */
@@ -495,6 +524,14 @@ export function promotedDefenderBlocksAttack(
   if (
     isSmallUnit(state.definitions, attacker.card.cardId) &&
     lastBattleProtectsOtherS(state, defenderPlayerId, defender.card.instanceId)
+  ) {
+    return true;
+  }
+
+  // 「これにライドしているSユニットは次の能力を得る⇒これはSユニットにアタックされない」（RS-488【滑空】atwiki/page-810）。
+  if (
+    isSmallUnit(state.definitions, attacker.card.cardId) &&
+    riddenVehicleGrantsNoAttackFromS(state, defenderPlayerId, defender.card)
   ) {
     return true;
   }

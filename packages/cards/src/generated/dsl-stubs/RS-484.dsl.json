@@ -65,7 +65,7 @@
         {
           "type": "grant_keyword",
           "keyword": "effect_card::RS-484::hariapu",
-          "duration": "permanent"
+          "duration": "turn"
         }
       ],
       "optional": true

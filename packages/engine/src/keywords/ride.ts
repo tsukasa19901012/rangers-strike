@@ -62,6 +62,15 @@ function vehicleCategoryRideWithoutRc(
   return text.match(/本来のカテゴリに([A-Z]+)を持つSユニットは、[ＲR][ＣC]を持っていなくてもこのビークルにライドでき/)?.[1];
 }
 
+/** 「※○○のSユニットは、ＲＣを持っていなくてもこのビークルにライドできる」（○○はカテゴリ略号）の○○。 */
+function vehiclePlainCategoryRideWithoutRc(
+  definitions: Record<string, CardDefinition>,
+  vehicleCardId: string,
+): string | undefined {
+  const text = getDefinition(definitions, vehicleCardId)?.text ?? "";
+  return text.match(/(?:^|※|\s)(WB|MA|OT|ET|DA)のSユニットは、[ＲR][ＣC]を持っていなくてもこのビークルにライドでき/)?.[1];
+}
+
 function riderHasRc(definition: CardDefinition | undefined): boolean {
   if (!definition) return false;
   if (definition.comboNumber === "RC") return true;
@@ -219,10 +228,12 @@ export function canRiderMountVehicle(
 
   if (riderHasRc(riderDef)) return true;
 
-  // RS-393 コマンドアタッカー「※ETのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。」（atwiki/page-539）
-  if (vehicle.card.cardId === "RS-393" && riderDef.size === "S") {
+  // 「※ETのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。」（RS-393 コマンドアタッカー、atwiki/page-539）
+  // 「※DAのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。」（RS-492 炎の騎馬、atwiki/page-815）
+  const plainCategoryRide = vehiclePlainCategoryRideWithoutRc(state.definitions, vehicle.card.cardId);
+  if (plainCategoryRide && riderDef.size === "S") {
     const cats = Array.isArray(riderDef.category) ? riderDef.category : riderDef.category ? [riderDef.category] : [];
-    if (cats.includes("ET" as never)) return true;
+    if (cats.includes(plainCategoryRide as never)) return true;
   }
   // RS-381 ガレオパルサーの※「特徴「レッド」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくても
   // このビークルにライドできる。」（atwiki/page-522）— ホールドできるリリース状態のコマンドが必要（ホールドは mount_ride で行う）。

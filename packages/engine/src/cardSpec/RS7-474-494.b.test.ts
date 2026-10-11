@@ -129,15 +129,13 @@ describe("RS-481 天空神", () => {
     return activePlayer === "player1" ? enter(s0, "RS-481:tk") : enterBattleByEffect(s0, "player1", "RS-481:tk");
   };
 
-  // 既知の不具合: CARD-RS-481 【ホバリング】の候補が敵軍ラッシュエリアの S ユニットではなく、敵軍バトルエリアのユニット（サイズ制限なし）になっている
-  it.fails("RS-481: 【ホバリング】自軍ターン中に出たとき、敵軍ラッシュエリアの S ユニットだけを選べる（バトルエリア・M は不可）（出典: atwiki/page-805「敵軍ラッシュエリアからSユニットを1体選び」）", () => {
+  it("RS-481: 【ホバリング】自軍ターン中に出たとき、敵軍ラッシュエリアの S ユニットだけを選べる（バトルエリア・M は不可）（出典: atwiki/page-805「敵軍ラッシュエリアからSユニットを1体選び」）", () => {
     const s = hover();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-481");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:rs"]);
   });
 
-  // 既知の不具合: CARD-RS-481 【ホバリング】で敵軍ラッシュエリアの S ユニットを手札に戻せない（候補がバトルエリア）
-  it.fails("RS-481: 【ホバリング】選んだユニットは持ち主（敵軍）の手札に戻る（出典: atwiki/page-805「持ち主の手札に戻してもよい」）", () => {
+  it("RS-481: 【ホバリング】選んだユニットは持ち主（敵軍）の手札に戻る（出典: atwiki/page-805「持ち主の手札に戻してもよい」）", () => {
     const s = resolveAll(pick(hover(), "TST-UNIT-0:rs"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:rs")).toBe("hand");
   });
@@ -224,8 +222,7 @@ describe("RS-482 天空神・飛行モード", () => {
     expect(canStrike(s, "TST-UNIT-2:m")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-482 【天空裂破】が持ち主の M ユニットだけを制限し、敵軍の M ユニットはアタック・ストライクできてしまう
-  it.fails("RS-482: 【天空裂破】敵軍の「航空機」を持たない M ユニットもアタック・ストライクできない（自軍・敵軍の指定がない）（出典: atwiki/page-806「特徴「航空機」を持たないMユニットは次の制限を受ける」・R-TGT-04）", () => {
+  it("RS-482: 【天空裂破】敵軍の「航空機」を持たない M ユニットもアタック・ストライクできない（自軍・敵軍の指定がない）（出典: atwiki/page-806「特徴「航空機」を持たないMユニットは次の制限を受ける」・R-TGT-04）", () => {
     const s = st({
       activePlayer: "player2",
       player1: { rush: [inst("RS-482", "fm")], battle: [inst("TST-UNIT-0", "f")], deck: deckCards(3) },
@@ -283,15 +280,13 @@ describe("RS-483 シュリケンジャー", () => {
     return activePlayer === "player1" ? enter(s0, "RS-483:sj") : enterBattleByEffect(s0, "player1", "RS-483:sj");
   };
 
-  // 既知の不具合: CARD-RS-483 【宇宙統一忍者流】が実装されておらず（copy_nc_from_rush_s のキーワード付与のみ）、敵軍ラッシュエリアのユニットを選ぶ選択が出ない
-  it.fails("RS-483: 【宇宙統一忍者流】敵軍ラッシュエリアの、ナンバーに数字を持つ S ユニットだけを選べる（出典: atwiki/page-745「敵軍ラッシュエリアから、ナンバーに数字を持つSユニットを1体選んでも良い」）", () => {
+  it("RS-483: 【宇宙統一忍者流】敵軍ラッシュエリアの、ナンバーに数字を持つ S ユニットだけを選べる（出典: atwiki/page-745「敵軍ラッシュエリアから、ナンバーに数字を持つSユニットを1体選んでも良い」）", () => {
     const s = shuri();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-483");
     expect(choiceIds(s)).toEqual(["RS-059:blue", "RS-099:red"]);
   });
 
-  // 既知の不具合: CARD-RS-483 【宇宙統一忍者流】で選んだユニットの NC 効果（マジブルー【未来予知】の1枚ドロー）が自分の効果として発動しない
-  it.fails("RS-483: 【宇宙統一忍者流】選んだユニットの NC 効果をこのユニットの効果として発動する（マジブルー → 自分が1枚ドロー）（出典: atwiki/page-745「選んだユニットのＮＣの効果を、このユニットの効果として発動する」）", () => {
+  it("RS-483: 【宇宙統一忍者流】選んだユニットの NC 効果をこのユニットの効果として発動する（マジブルー → 自分が1枚ドロー）（出典: atwiki/page-745「選んだユニットのＮＣの効果を、このユニットの効果として発動する」）", () => {
     const s = resolveAll(pick(shuri(), "RS-059:blue"));
     expect(s.players.player1.hand).toHaveLength(1);
     expect(s.players.player2.hand).toHaveLength(0);
@@ -429,8 +424,7 @@ describe("RS-484 旋風神ハリアー", () => {
     return s.activePlayer;
   };
 
-  // 既知の不具合: CARD-RS-484 【ハリーアップ！】が実装されておらず、ターンを終えるときに手札のハリアーを捨札にする選択が出ない
-  it.fails("RS-484: 【ハリーアップ！】ターンを終えるとき手札の「旋風神ハリアー」を捨札にすると、このターンの後に自分がもう一度ターンを行う（出典: atwiki/page-752「このターンの後、自分は追加でもう一度ターンを行う」）", () => {
+  it("RS-484: 【ハリーアップ！】ターンを終えるとき手札の「旋風神ハリアー」を捨札にすると、このターンの後に自分がもう一度ターンを行う（出典: atwiki/page-752「このターンの後、自分は追加でもう一度ターンを行う」）", () => {
     let s = endOnce(hurry("rush", ["RS-484", "TST-OP"]));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-484");
     expect(choiceIds(s)).toEqual(["RS-484:h0"]);
@@ -511,14 +505,12 @@ describe("RS-485 ハムスター館長", () => {
 
   const handOf = (s: GameState, p: "player1" | "player2") => s.players[p].hand.length;
 
-  // 既知の不具合: CARD-RS-485 【疾風流の継承】が実装されておらず、忍者ユニットがストライクしてもドローできない
-  it.fails("RS-485: 【疾風流の継承】自軍ラッシュエリアにある間、自軍の特徴「忍者」を持つユニットがストライクしたとき、持ち主（自分）は1枚ドローできる（出典: atwiki/page-807「そのユニットの持ち主は1枚ドローしてもよい」）", () => {
+  it("RS-485: 【疾風流の継承】自軍ラッシュエリアにある間、自軍の特徴「忍者」を持つユニットがストライクしたとき、持ち主（自分）は1枚ドローできる（出典: atwiki/page-807「そのユニットの持ち主は1枚ドローしてもよい」）", () => {
     const s = resolveAll(strikeWith("SPEC-NINJA:n"));
     expect(handOf(s, "player1")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-485 【疾風流の継承】が実装されておらず、ドローの選択（見送り可）が出ない
-  it.fails("RS-485: 【疾風流の継承】「ドローしてもよい」— ドローしないことを選べる（出典: atwiki/page-807「1枚ドローしてもよい」）", () => {
+  it("RS-485: 【疾風流の継承】「ドローしてもよい」— ドローしないことを選べる（出典: atwiki/page-807「1枚ドローしてもよい」）", () => {
     const s = strikeWith("SPEC-NINJA:n");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-485");
     expect(canSkip(s)).toBe(true);
@@ -535,8 +527,7 @@ describe("RS-485 ハムスター館長", () => {
     expect(handOf(s, "player1")).toBe(1); // ハムスター館長自身の1枚のみ
   });
 
-  // 既知の不具合: CARD-RS-485 【疾風流の継承】が敵軍の忍者ユニットのストライクで発動せず、その持ち主（相手）がドローできない
-  it.fails("RS-485: 【疾風流の継承】敵軍の「忍者」を持つユニットがストライクしたときも、その持ち主（相手）が1枚ドローできる（出典: atwiki/page-807「特徴「忍者」を持つユニットがストライクしたとき、そのユニットの持ち主は」）", () => {
+  it("RS-485: 【疾風流の継承】敵軍の「忍者」を持つユニットがストライクしたときも、その持ち主（相手）が1枚ドローできる（出典: atwiki/page-807「特徴「忍者」を持つユニットがストライクしたとき、そのユニットの持ち主は」）", () => {
     const s = resolveAll(strikeWith("SPEC-NINJA:en", { owner: "player2" }));
     expect(handOf(s, "player2")).toBe(1);
     expect(handOf(s, "player1")).toBe(0);
@@ -558,8 +549,7 @@ describe("RS-485 ハムスター館長", () => {
     return r.state;
   };
 
-  // 既知の不具合: CARD-RS-485 【疾風流の継承】の「撃破されて捨札になったとき」のドローが実装されていない
-  it.fails("RS-485: 【疾風流の継承】撃破されて捨札になったとき、特徴「忍者」を持つ自軍ユニットの数（2）までドローできる（出典: atwiki/page-807「特徴「忍者」を持つ自軍ユニットの数と同じ枚数までドローしてもよい」）", () => {
+  it("RS-485: 【疾風流の継承】撃破されて捨札になったとき、特徴「忍者」を持つ自軍ユニットの数（2）までドローできる（出典: atwiki/page-807「特徴「忍者」を持つ自軍ユニットの数と同じ枚数までドローしてもよい」）", () => {
     const s = resolveAll(destroyHamster(2));
     expect(zoneOf(s, "player1", "RS-485:hm")).toBe("discard");
     expect(handOf(s, "player1")).toBe(2);
@@ -571,9 +561,16 @@ describe("RS-485 ハムスター館長", () => {
     expect(handOf(s, "player1")).toBe(0);
   });
 
-  it.todo(
-    "RS-485: 【疾風流の継承】撃破時のドローは「まで」— 0〜上限の任意の枚数を選べる（出典: atwiki/page-807「同じ枚数までドローしてもよい」）— 撃破時のドロー自体が未実装で、枚数を選ぶ合法手が存在せず観測できない",
-  );
+  it("RS-485: 【疾風流の継承】撃破時のドローは「まで」— 0〜上限の任意の枚数を選べる（出典: atwiki/page-807「同じ枚数までドローしてもよい」）", () => {
+    let s = destroyHamster(2);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-485");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    expect(choiceIds(s)).toEqual(["draw:1", "draw:2"]);
+    expect(canSkip(s)).toBe(true);
+    expect(handOf(resolveAll(skip(s)), "player1")).toBe(0);
+    s = resolveAll(pick(s, "draw:1"));
+    expect(handOf(s, "player1")).toBe(1);
+  });
 });
 
 // ===========================================================================
@@ -616,8 +613,7 @@ describe("RS-486 ソードスラッシャー", () => {
       command: [inst("RS-095", "cmd")],
     });
 
-  // 既知の不具合: CARD-RS-486 【分身幻斬り】がジョイントコンビネーションとして実装されておらず、L ユニットのストライク後に手札の同名カードを出す選択が出ない
-  it.fails("RS-486: 【分身幻斬り】同カテゴリ（MA）の L ユニットがストライクしたとき、その処理を終えてから、手札の同名カード（旋風神）だけを選び、合体に必要な数（3）まで自軍ラッシュエリアに出せる（出典: grnrngr/faq-card-7 RS-486 Q「手札から選びます」・atwiki/page-808）", () => {
+  it("RS-486: 【分身幻斬り】同カテゴリ（MA）の L ユニットがストライクしたとき、その処理を終えてから、手札の同名カード（旋風神）だけを選び、合体に必要な数（3）まで自軍ラッシュエリアに出せる（出典: grnrngr/faq-card-7 RS-486 Q「手札から選びます」・atwiki/page-808）", () => {
     let s = resolveAll(slash(), []);
     s = strike(s, "RS-095:l");
     s = settle(s);
@@ -629,8 +625,7 @@ describe("RS-486 ソードスラッシャー", () => {
     expect(zoneOf(s, "player1", "RS-095:cmd")).toBe("command");
   });
 
-  // 既知の不具合: CARD-RS-486 【分身幻斬り】が実装されておらず、L ユニットがアタックしたときも同名カードを出せない
-  it.fails("RS-486: 【分身幻斬り】L ユニットがアタックしたときも、そのバトルの処理を終えてから手札の同名カードを出せる（出典: atwiki/page-808「アタックまたはストライクしたとき、その処理をすべて終えてから」）", () => {
+  it("RS-486: 【分身幻斬り】L ユニットがアタックしたときも、そのバトルの処理を終えてから手札の同名カードを出せる（出典: atwiki/page-808「アタックまたはストライクしたとき、その処理をすべて終えてから」）", () => {
     let s = resolveAll(slash(), []);
     s = { ...s, players: { ...s.players, player2: { ...s.players.player2, battle: [inst("TST-UNIT-0", "e")] } } };
     s = act(s, { type: "battle", playerId: "player1", attackerInstanceId: "RS-095:l", defenderInstanceId: "TST-UNIT-0:e" });
@@ -678,25 +673,28 @@ describe("RS-487 ゴートクラッシャー", () => {
 
   noAttackFromSTests("RS-487", "page-809");
 
-  /** 敵軍: 追加条件なしのユニット4体（バトル2・ラッシュ2）と、追加条件ありの旋風神（ラッシュ）。 */
+  /**
+   * 敵軍: 追加条件なしのユニット4体（バトル2・ラッシュ2）と、追加条件ありの旋風神（ラッシュ）。
+   * ラッシュエリアの2体は M ユニットにする — 旋風神【タテガミハリケーン】（「これがバトルエリアに出たとき、敵軍ラッシュエリアにある
+   * Sユニットをすべて持ち主の手札に戻す」）は、並び順が確定してからのコンビネーション（R-CN-04）より先に解決するため、
+   * S ユニットだと【疾風豪快落とし】の選択の前に手札に戻ってしまう。
+   */
   const ENEMY = {
     battle: [inst("TST-UNIT-0", "b1"), inst("TST-UNIT-2", "b2")],
-    rush: [inst("TST-UNIT-0", "r1"), inst("TST-UNIT-0", "r2"), inst("RS-095", "cond")],
+    rush: [inst("TST-UNIT-2", "r1"), inst("TST-UNIT-2", "r2"), inst("RS-095", "cond")],
   };
 
-  // 既知の不具合: CARD-RS-487 【疾風豪快落とし】がジョイントコンビネーションとして発動せず、敵軍ユニットを選ぶ選択が出ない
-  it.fails("RS-487: 【疾風豪快落とし】同カテゴリ（MA）の L ユニット（旋風神・合体3体）がコンビネーションするとき、追加条件を持たない敵軍ユニットだけを選べる（出典: atwiki/page-809「追加条件を持たない敵軍ユニットを」）", () => {
+  it("RS-487: 【疾風豪快落とし】同カテゴリ（MA）の L ユニット（旋風神・合体3体）がコンビネーションするとき、追加条件を持たない敵軍ユニットだけを選べる（出典: atwiki/page-809「追加条件を持たない敵軍ユニットを」）", () => {
     const s = jcEnter("RS-487", "RS-095", {}, ENEMY);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-487");
-    expect(choiceIds(s)).toEqual(["TST-UNIT-0:b1", "TST-UNIT-0:r1", "TST-UNIT-0:r2", "TST-UNIT-2:b2"]);
+    expect(choiceIds(s)).toEqual(["TST-UNIT-0:b1", "TST-UNIT-2:b2", "TST-UNIT-2:r1", "TST-UNIT-2:r2"]);
   });
 
-  // 既知の不具合: CARD-RS-487 【疾風豪快落とし】が発動せず、敵軍ユニットがダメージにならない
-  it.fails("RS-487: 【疾風豪快落とし】合体に必要なユニットの数（3）まで選び、持ち主のパワーゾーンにダメージ（ウラ向き）にして置く（出典: atwiki/page-809「合体に必要なユニットの数まで好きな数選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
-    const s = resolveAll(jcEnter("RS-487", "RS-095", {}, ENEMY), ["TST-UNIT-0:b1", "TST-UNIT-2:b2", "TST-UNIT-0:r1", "TST-UNIT-0:r2"]);
+  it("RS-487: 【疾風豪快落とし】合体に必要なユニットの数（3）まで選び、持ち主のパワーゾーンにダメージ（ウラ向き）にして置く（出典: atwiki/page-809「合体に必要なユニットの数まで好きな数選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
+    const s = resolveAll(jcEnter("RS-487", "RS-095", {}, ENEMY), ["TST-UNIT-0:b1", "TST-UNIT-2:b2", "TST-UNIT-2:r1", "TST-UNIT-2:r2"]);
     const dmg = s.players.player2.power.filter((c) => c.faceDown);
     expect(dmg).toHaveLength(3);
-    expect(zoneOf(s, "player2", "TST-UNIT-0:r2")).toBe("rush");
+    expect(zoneOf(s, "player2", "TST-UNIT-2:r2")).toBe("rush");
   });
 
   it("RS-487: 【疾風豪快落とし】「発動できる」— 発動しないことを選べ、そのとき敵軍ユニットは残る（出典: atwiki/page-809「次の効果を発動できる」）", () => {
@@ -717,14 +715,13 @@ describe("RS-487 ゴートクラッシャー", () => {
   });
 
   // faq-card-8 RS-574 Q「いいえ、2体になります。…「マジフェニックス」も「一角聖馬ユニゴルオン」も、ユニット名として表記されているからです。」
-  // 既知の不具合: CARD-RS-487 【疾風豪快落とし】が発動しないため、セイントカイザーからのコンビネーションでも選択が出ない
-  it.fails("RS-487: 公式Q&A — セイントカイザー（合体―マジフェニックス＋一角聖馬ユニゴルオン）がコンビネーションしたときの「合体に必要なユニットの数」はビークルも数えて2体（出典: grnrngr/faq-card-8 RS-574 Q）", () => {
+  it("RS-487: 公式Q&A — セイントカイザー（合体―マジフェニックス＋一角聖馬ユニゴルオン）がコンビネーションしたときの「合体に必要なユニットの数」はビークルも数えて2体（出典: grnrngr/faq-card-8 RS-574 Q）", () => {
     let s = jcEnter("RS-487", "RS-574", {}, ENEMY);
     for (let i = 0; i < 4 && s.pendingEffectChoice && s.pendingEffectChoice.sourceCardId !== "RS-487"; i++) {
       s = canSkip(s) ? skip(s) : pick(s, s.pendingEffectChoice.validInstanceIds[0]!);
     }
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-487");
-    s = resolveAll(s, ["TST-UNIT-0:b1", "TST-UNIT-2:b2", "TST-UNIT-0:r1", "TST-UNIT-0:r2"]);
+    s = resolveAll(s, ["TST-UNIT-0:b1", "TST-UNIT-2:b2", "TST-UNIT-2:r1", "TST-UNIT-2:r2"]);
     expect(s.players.player2.power.filter((c) => c.faceDown)).toHaveLength(2);
   });
 });

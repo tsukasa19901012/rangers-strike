@@ -19,6 +19,8 @@ import { findCardInField } from "../fieldLookup";
 import { unitFeatures } from "../addedFeatures";
 import { applyDamageToPlayer } from "../damagePayment";
 import { addBakiBakiExtraAttack } from "../turnModifierBridge";
+import { cardHasGrantKeyword } from "../../dsl/promotedKeywordBridge";
+import { fireAkaRedSoulNc } from "./set6AuditFixes";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -166,9 +168,13 @@ export function set6BBlocksStrike(state: GameState, playerId: PlayerId, instance
 // ---------------------------------------------------------------------------
 // RS-420 大剣人ズバーン ※「自分か相手のLユニットがあれば、これはLユニットになる。」
 
-/** RS-420 が L ユニットとして扱われるか（自軍か敵軍のバトル・ラッシュエリアに、これ以外の L ユニットがある）。 */
+/**
+ * 「※自分か相手のLユニットがあれば、これはLユニットになる。」（DSL の becomes_l_if_l_present。RS-420 大剣人ズバーン・
+ * RS-454 ニンジャマン）を持つユニットが L ユニットとして扱われるか（自軍か敵軍のバトル・ラッシュエリアに、これ以外の
+ * 印刷サイズ L のユニットがある。同じ能力で L になっているユニットどうしは支え合わない — atwiki/page-799 コメント）。
+ */
 export function zubaanIsLarge(state: GameState, instance: CardInstance): boolean {
-  if (instance.cardId !== "RS-420") return false;
+  if (instance.cardId !== "RS-420" && !cardHasGrantKeyword(instance.cardId, "becomes_l_if_l_present")) return false;
   for (const pid of ["player1", "player2"] as const) {
     for (const c of fieldUnits(state, pid)) {
       if (c.instanceId === instance.instanceId || c.cardId === "RS-420") continue;
@@ -1052,6 +1058,39 @@ export function checkFlameGlare(
   return { decision: "open", state: opened };
 }
 
+/**
+ * RS-421【ソウル降臨】で、ホールドしたカードの NC の効果をアカレッドの効果として発動するとき。
+ * 敵軍のイフリートが無効にできれば選択を開く（grnrngr/faq-card-6 RS-421 Q5「はい、できます」）。開かなければ null。
+ * 見送れば NC の効果を発動し（fireAkaRedSoulNc）、無効にすれば発動しない。
+ */
+export function openFlameGlareForSoulDescent(
+  state: GameState,
+  playerId: PlayerId,
+  akaRedInstanceId: string,
+  heldCardId: string,
+  phasePlayerId: PlayerId,
+  resumeChoice: PendingEffectChoice | undefined,
+): GameState | null {
+  const ownerId = opponent(playerId);
+  const ifrit = state.players[ownerId].battle.find((c) => c.cardId === "RS-418");
+  const ops = state.players[ownerId].operation.map((c) => c.instanceId);
+  if (!ifrit || ops.length === 0 || state.pendingEffectChoice) return null;
+  return openEffectChoice(state, {
+    playerId: ownerId,
+    effectId: FLAME_GLARE_EFFECT_ID,
+    sourceCardId: "RS-418",
+    sourceInstanceId: ifrit.instanceId,
+    kind: "select_unit",
+    phasePlayerId,
+    validInstanceIds: ops,
+    selectedInstanceIds: [akaRedInstanceId],
+    selectCount: 1,
+    optional: true,
+    soulDescentMeta: { controllerId: playerId, akaRedInstanceId, heldCardId },
+    resumeChoice,
+  });
+}
+
 /** NC の段階を終えたら記録を消す。 */
 export function clearFlameGlareDecision(state: GameState): GameState {
   return state.ncNegationDecision ? { ...state, ncNegationDecision: undefined } : state;
@@ -1078,7 +1117,8 @@ function resolveFlameGlare(state: GameState, playerId: PlayerId, instanceId: str
     if (!op) return p;
     return { ...p, operation: p.operation.filter((c) => c.instanceId !== instanceId), discard: [...p.discard, stripForZone(op)] };
   });
-  next = { ...next, ncNegationDecision: { instanceId: target, negate: true } };
+  // 【ソウル降臨】の NC は、無効にすれば発動しない（進入処理の NC の段階の記録は使わない）。
+  if (!pending.soulDescentMeta) next = { ...next, ncNegationDecision: { instanceId: target, negate: true } };
   return { state: finish(next, pending), log: logFor(state, playerId, "RS-418", `${FLAME_GLARE_EFFECT_ID}:negate`) };
 }
 
@@ -1086,6 +1126,16 @@ CHOICE_RESOLVERS[FLAME_GLARE_EFFECT_ID] = resolveFlameGlare;
 CHOICE_SKIPPERS[FLAME_GLARE_EFFECT_ID] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;
   const target = pending.selectedInstanceIds?.[0] ?? "";
+  const soul = pending.soulDescentMeta;
+  if (soul) {
+    // 【ソウル降臨】: 無効にしなかった — ホールドしたカードの NC の効果をアカレッドの効果として発動する。
+    const cleared: GameState = { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+    const fired = fireAkaRedSoulNc(cleared, soul.controllerId, soul.akaRedInstanceId, soul.heldCardId);
+    const opened = fired.pendingEffectChoice;
+    const next =
+      opened && pending.resumeChoice ? { ...fired, pendingEffectChoice: { ...opened, resumeChoice: opened.resumeChoice ?? pending.resumeChoice } } : fired;
+    return { state: opened ? next : finish({ ...next, pendingEffectChoice: pending }, pending), log: skipLog(state, playerId, "RS-418", FLAME_GLARE_EFFECT_ID) };
+  }
   const next = { ...state, ncNegationDecision: { instanceId: target, negate: false } };
   return { state: finish(next, pending), log: skipLog(state, playerId, "RS-418", FLAME_GLARE_EFFECT_ID) };
 };

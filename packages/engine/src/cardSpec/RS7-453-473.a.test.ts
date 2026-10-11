@@ -116,8 +116,7 @@ describe("RS-453 サムライマン", () => {
     );
   };
 
-  // 既知の不具合: CARD-RS-453 【激怒斬り】が未実装（サイズ違いのバトルで自軍ユニットが撃破されても何も起きない）
-  it.fails("RS-453: 【激怒斬り】ラッシュエリアにある間、敵軍ターン中に自軍 S ユニットが L ユニットとバトルして撃破されたとき、敵軍ユニットを1体選び撃破できる（出典: atwiki/page-798「ユニットサイズの違うユニットとバトルして撃破された時、敵軍ユニットを1体選び撃破してもよい」）", () => {
+  it("RS-453: 【激怒斬り】ラッシュエリアにある間、敵軍ターン中に自軍 S ユニットが L ユニットとバトルして撃破されたとき、敵軍ユニットを1体選び撃破できる（出典: atwiki/page-798「ユニットサイズの違うユニットとバトルして撃破された時、敵軍ユニットを1体選び撃破してもよい」）", () => {
     const s = gekido(inst("TST-UNIT-0", "v"), "TST-UNIT-7:atk", { p2battle: [inst("TST-UNIT-2", "e2")] });
     expect(zoneOf(s, "player1", "TST-UNIT-0:v")).toBe("discard");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-453");
@@ -127,8 +126,7 @@ describe("RS-453 サムライマン", () => {
     expect(zoneOf(t, "player2", "TST-UNIT-2:e2")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-453 【激怒斬り】が未実装（任意の選択が開かない）
-  it.fails("RS-453: 【激怒斬り】「撃破してもよい」— 見送ることができ、そのとき敵軍ユニットは撃破されない（出典: atwiki/page-798「撃破してもよい」）", () => {
+  it("RS-453: 【激怒斬り】「撃破してもよい」— 見送ることができ、そのとき敵軍ユニットは撃破されない（出典: atwiki/page-798「撃破してもよい」）", () => {
     const s = gekido(inst("TST-UNIT-0", "v"), "TST-UNIT-7:atk", { p2battle: [inst("TST-UNIT-2", "e2")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-453");
     expect(canSkip(s)).toBe(true);
@@ -208,14 +206,12 @@ describe("RS-454 ニンジャマン", () => {
   const yellowVs = (p2battle: CardInstance[], p1rush: CardInstance[] = []) =>
     ncEnter("RS-459", 5, { rush: p1rush }, { battle: p2battle });
 
-  // 既知の不具合: CARD-RS-454 「Lユニットがあれば、これはLユニットになる」が未実装（サイズが S のまま）
-  it.fails("RS-454: ※ 自分（ニンジャマンの持ち主）の L ユニットがあれば L ユニットになる — S ユニットだけを選ぶ効果（ニンジャイエロー）で選べない（出典: atwiki/page-799「自分か相手のLユニットがあれば、これはLユニットになる」）", () => {
+  it("RS-454: ※ 自分（ニンジャマンの持ち主）の L ユニットがあれば L ユニットになる — S ユニットだけを選ぶ効果（ニンジャイエロー）で選べない（出典: atwiki/page-799「自分か相手のLユニットがあれば、これはLユニットになる」）", () => {
     const s = yellowVs([heldUnit("RS-454", "nm"), inst("TST-UNIT-7", "L")]);
     expect(choiceIds(s)).not.toContain("RS-454:nm");
   });
 
-  // 既知の不具合: CARD-RS-454 「Lユニットがあれば、これはLユニットになる」が未実装（相手の L ユニットでもサイズが変わらない）
-  it.fails("RS-454: ※ 相手の L ユニット（ラッシュエリアにあっても）があっても L ユニットになる（出典: atwiki/page-799「自分か相手のLユニットがあれば」）", () => {
+  it("RS-454: ※ 相手の L ユニット（ラッシュエリアにあっても）があっても L ユニットになる（出典: atwiki/page-799「自分か相手のLユニットがあれば」）", () => {
     const s = yellowVs([heldUnit("RS-454", "nm"), heldUnit("TST-UNIT-0", "s")], [inst("TST-UNIT-7", "myL")]);
     expect(choiceIds(s)).toContain("TST-UNIT-0:s");
     expect(choiceIds(s)).not.toContain("RS-454:nm");
@@ -232,8 +228,7 @@ describe("RS-454 ニンジャマン", () => {
     expect(choiceIds(s)).toEqual(["RS-454:nm", "RS-454:nm2"]);
   });
 
-  // 既知の不具合: CARD-RS-454 【ニンジャソード】（NC3 の「SP1」）が発動しない（3番目に出ても SP が 0 のまま）
-  it.fails("RS-454: 【ニンジャソード】3番目に出て NC が成立すると「SP1」になる（出典: atwiki/page-799「CN：3」「【ニンジャソード】「SP1」」）", () => {
+  it("RS-454: 【ニンジャソード】3番目に出て NC が成立すると「SP1」になる（出典: atwiki/page-799「CN：3」「【ニンジャソード】「SP1」」）", () => {
     const s = ncEnter("RS-454", 3);
     expect(spOf(s, "player1", "RS-454:x")).toBe(1);
   });
@@ -273,8 +268,7 @@ describe("RS-455 ニンジャブラック", () => {
   const selfRushState = (damage: number, command: CardInstance[] = []) =>
     st({ phase: "rush", player1: { hand: [inst("RS-455", "nb")], power: damageCards(damage), damage, command, deck: deckCards(3) } });
 
-  // 既知の不具合: CARD-RS-455 手札から自軍ダメージを条件にラッシュエリアに出す ※ が未実装（MA コマンドがないと出せない）
-  it.fails("RS-455: ※ 自軍ラッシュフェイズ中、自軍ダメージが必要パワー（4）以上なら、コマンドをホールドせずに手札から自軍ラッシュエリアに出せる（出典: atwiki/page-800「自軍ダメージの数がこれの必要パワーの数字以上あれば、これを自軍ラッシュエリアに出してもよい」）", () => {
+  it("RS-455: ※ 自軍ラッシュフェイズ中、自軍ダメージが必要パワー（4）以上なら、コマンドをホールドせずに手札から自軍ラッシュエリアに出せる（出典: atwiki/page-800「自軍ダメージの数がこれの必要パワーの数字以上あれば、これを自軍ラッシュエリアに出してもよい」）", () => {
     const s = selfRushState(4);
     const offered = H_legalMentions(s, "RS-455:nb");
     expect(offered).toBe(true);
@@ -298,15 +292,13 @@ describe("RS-455 ニンジャブラック", () => {
       },
     );
 
-  // 既知の不具合: CARD-RS-455 【岩地獄の術】が未実装（確認だけで何も選べない）
-  it.fails("RS-455: 【岩地獄の術】候補は SP が空欄でない敵軍 S ユニット（バトル・ラッシュ両方。M ユニット・SP 空欄は不可）（出典: atwiki/page-800「SPが空欄ではない敵軍Sユニット」）", () => {
+  it("RS-455: 【岩地獄の術】候補は SP が空欄でない敵軍 S ユニット（バトル・ラッシュ両方。M ユニット・SP 空欄は不可）（出典: atwiki/page-800「SPが空欄ではない敵軍Sユニット」）", () => {
     const s = iwaJigoku();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-455");
     expect(choiceIds(s)).toEqual(["RS-457:bang", "TST-UNIT-0:e1", "TST-UNIT-0:e3"].sort());
   });
 
-  // 既知の不具合: CARD-RS-455 【岩地獄の術】が未実装（選んだユニットが山札の下に戻らない）
-  it.fails("RS-455: 【岩地獄の術】選んだユニットは持ち主の山札の下に戻る（出典: atwiki/page-800「持ち主の山札の下に好きな順で戻してもよい」）", () => {
+  it("RS-455: 【岩地獄の術】選んだユニットは持ち主の山札の下に戻る（出典: atwiki/page-800「持ち主の山札の下に好きな順で戻してもよい」）", () => {
     let s = iwaJigoku();
     s = pick(s, "TST-UNIT-0:e1");
     s = pick(s, "TST-UNIT-0:e3");
@@ -317,8 +309,7 @@ describe("RS-455 ニンジャブラック", () => {
     expect(deck.slice(3).sort()).toEqual(["TST-UNIT-0:e1", "TST-UNIT-0:e3"]);
   });
 
-  // 既知の不具合: CARD-RS-455 【岩地獄の術】が未実装（手札の枚数による上限がない）
-  it.fails("RS-455: 【岩地獄の術】選べる数の上限は自分の手札の枚数（手札1枚なら1体まで）（出典: atwiki/page-800「自分の手札の枚数と同じ数まで選び」）", () => {
+  it("RS-455: 【岩地獄の術】選べる数の上限は自分の手札の枚数（手札1枚なら1体まで）（出典: atwiki/page-800「自分の手札の枚数と同じ数まで選び」）", () => {
     const s = iwaJigoku([inst("TST-OP", "h1")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-455");
     expect(s.pendingEffectChoice?.selectCount).toBe(1);
@@ -340,16 +331,14 @@ describe("RS-455 ニンジャブラック", () => {
   });
 
   // atwiki/page-800 コメント「SPが空欄というのは…ヘルサターンなどの効果でSPを得ているものも含まれますか？」→「含まれます。」
-  // 既知の不具合: CARD-RS-455 【岩地獄の術】が未実装
-  it.fails("RS-455: atwiki Q — 本来 SP 空欄でも効果（タクスMA）で SP を得ている敵軍 S ユニットは選べる（出典: atwiki/page-800 コメント「含まれます。」）", () => {
+  it("RS-455: atwiki Q — 本来 SP 空欄でも効果（タクスMA）で SP を得ている敵軍 S ユニットは選べる（出典: atwiki/page-800 コメント「含まれます。」）", () => {
     // 敵軍バトル: [TST-UNIT-0, ニンジャホワイト(2番目・タクスMA), ニンジャブラック(MA・SP空欄)] → 3番目のニンジャブラックは SP1。
     const s = ncEnter("RS-455", 1, { hand: [inst("TST-OP", "h1"), inst("TST-OP", "h2")] }, { battle: [inst("TST-UNIT-2", "m"), inst("RS-458", "tx"), inst("RS-455", "eb")] });
     expect(choiceIds(s)).toContain("RS-455:eb");
   });
 
   // atwiki/page-800 コメント「SPが空欄ではない敵軍ユニットが1体のとき、自分の手札が2枚以上あればこの効果は発動できないのでしょうか？」→「いいえ…発動することができます。」
-  // 既知の不具合: CARD-RS-455 【岩地獄の術】が未実装
-  it.fails("RS-455: atwiki Q — 候補が1体で手札が2枚以上でも発動でき、その1体を戻せる（出典: atwiki/page-800 コメント「効果に選べる上限が手札と同じ数までなので…発動することができます」）", () => {
+  it("RS-455: atwiki Q — 候補が1体で手札が2枚以上でも発動でき、その1体を戻せる（出典: atwiki/page-800 コメント「効果に選べる上限が手札と同じ数までなので…発動することができます」）", () => {
     let s = ncEnter("RS-455", 1, { hand: [inst("TST-OP", "h1"), inst("TST-OP", "h2"), inst("TST-OP", "h3")] }, { battle: [inst("TST-UNIT-0", "e1")], deck: deckCards(2, "e") });
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e1"]);
     s = pick(s, "TST-UNIT-0:e1");
@@ -400,8 +389,7 @@ describe("RS-456 ニンジャブルー", () => {
     expect(attackTargets(s, "RS-456:x").sort()).toEqual(["TST-UNIT-0:e1", "TST-UNIT-0:e2"]);
   });
 
-  // 既知の不具合: CARD-RS-456 【忍法水走り】が NC の成立に関係なく常に有効（1番目に出てもラッシュエリアにアタックできる）
-  it.fails("RS-456: 【忍法水走り】NC 不成立（1番目）なら条件を満たしてもラッシュエリアにはアタックできない（出典: atwiki/page-801「CN：2」・R-CN-02）", () => {
+  it("RS-456: 【忍法水走り】NC 不成立（1番目）なら条件を満たしてもラッシュエリアにはアタックできない（出典: atwiki/page-801「CN：2」・R-CN-02）", () => {
     const s = ncEnter("RS-456", 1, {}, { battle: [inst("TST-UNIT-0", "e1")], rush: [inst("TST-UNIT-0", "r1"), inst("TST-UNIT-0", "r2")] });
     expect(attackTargets(s, "RS-456:x")).toEqual(["TST-UNIT-0:e1"]);
   });
@@ -452,15 +440,13 @@ describe("RS-457 ニンジャレッド", () => {
       },
     );
 
-  // 既知の不具合: CARD-RS-457 【火炎つむじの術】の山札公開以降が未実装（「SP1」だけ）
-  it.fails("RS-457: 【火炎つむじの術】「オモテにしてもよい」— NC 成立時、山札をオモテにするかを選べる（出典: atwiki/page-802「敵軍山札の上からオモテにしてもよい」）", () => {
+  it("RS-457: 【火炎つむじの術】「オモテにしてもよい」— NC 成立時、山札をオモテにするかを選べる（出典: atwiki/page-802「敵軍山札の上からオモテにしてもよい」）", () => {
     const s = kaen();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-457");
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-457 【火炎つむじの術】の山札公開以降が未実装
-  it.fails("RS-457: 【火炎つむじの術】敵軍ユニット数（3）枚をオモテにし、同じカード名の敵軍ユニット（バトル・ラッシュの TST-UNIT-0 ×2）をすべて撃破する。相手はオモテにしたカードから撃破数（2）まで手札に加え、残りは山札の下（出典: atwiki/page-802）", () => {
+  it("RS-457: 【火炎つむじの術】敵軍ユニット数（3）枚をオモテにし、同じカード名の敵軍ユニット（バトル・ラッシュの TST-UNIT-0 ×2）をすべて撃破する。相手はオモテにしたカードから撃破数（2）まで手札に加え、残りは山札の下（出典: atwiki/page-802）", () => {
     let s = kaen();
     if (s.pendingEffectChoice?.sourceCardId === "RS-457" && s.pendingEffectChoice.kind === "confirm") s = confirm(s);
     s = resolveAll(s, ["TST-UNIT-0:d1", "TST-OP:d2"]);
@@ -490,7 +476,22 @@ describe("RS-457 ニンジャレッド", () => {
     expect(s.players.player2.hand).toHaveLength(0);
   });
 
-  it.todo("RS-457: atwiki Q — 【火炎つむじの術】はブレイカーを持つユニットにも有効（出典: atwiki/page-802 コメント「有効です。」）— 【火炎つむじの術】の撃破処理自体が未実装（上の it.fails）で検証できない");
+  // atwiki/page-802 コメント「ブレイカーを持つユニットにも有効ですか？」→「有効です。」（ユニットを選ばずに撃破するため）
+  it("RS-457: atwiki Q — 【火炎つむじの術】はブレイカーを持つユニットにも有効（出典: atwiki/page-802 コメント「有効です。」）", () => {
+    const BREAKER = sUnit("SPEC-BREAKER", {
+      text: "※ブレイカー（これが自軍エリアにある間、ブレイカーを持たない敵軍ユニットや敵軍ビークルの効果に選ばれない）",
+    });
+    let s = ncEnter(
+      "RS-457",
+      3,
+      {},
+      { battle: [inst("SPEC-BREAKER", "b")], hand: [], deck: [inst("SPEC-BREAKER", "d1"), inst("TST-OP", "d2")] },
+      [BREAKER],
+    );
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-457");
+    s = resolveAll(confirm(s));
+    expect(zoneOf(s, "player2", "SPEC-BREAKER:b")).toBe("discard");
+  });
 });
 
 /** タクスMA の共通テスト（2番目に出したとき、次に並ぶ MA の S ユニットが「SP1」になる）。 */
@@ -555,8 +556,7 @@ describe("RS-458 ニンジャホワイト", () => {
   const orizuru = () =>
     ncEnter("RS-458", 4, {}, { power: powerCards(2, "ep"), battle: [inst("TST-UNIT-0", "c0"), inst("TST-UNIT-2", "c2")], rush: [inst("TST-UNIT-7", "c7")], hand: [] });
 
-  // 既知の不具合: CARD-RS-458 【忍法折鶴之舞】の「パワーゾーンの枚数より必要パワーの数字が大きい」条件が落ちている（全敵軍ユニットが候補）
-  it.fails("RS-458: 【忍法折鶴之舞】候補は必要パワーの数字が敵軍パワーゾーンの枚数（2）より大きい敵軍ユニットだけ（ラッシュエリアも含む。0・2 は不可）（出典: atwiki/page-803「その枚数よりも必要パワーの数字が大きい敵軍ユニット」）", () => {
+  it("RS-458: 【忍法折鶴之舞】候補は必要パワーの数字が敵軍パワーゾーンの枚数（2）より大きい敵軍ユニットだけ（ラッシュエリアも含む。0・2 は不可）（出典: atwiki/page-803「その枚数よりも必要パワーの数字が大きい敵軍ユニット」）", () => {
     const s = orizuru();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-458");
     expect(choiceIds(s)).toEqual(["TST-UNIT-7:c7"]);
@@ -615,8 +615,7 @@ describe("RS-459 ニンジャイエロー", () => {
       },
     );
 
-  // 既知の不具合: CARD-RS-459 【隠流三段斬り】の「ホールド状態の」条件が落ちている（リリース状態の S ユニットも候補になる）
-  it.fails("RS-459: 【隠流三段斬り】候補は敵軍バトルエリアのホールド状態の S ユニットだけ（リリース状態・M ユニット・ラッシュエリアは不可）（出典: atwiki/page-804「敵軍バトルエリアからホールド状態の敵軍Sユニットを1体選び」）", () => {
+  it("RS-459: 【隠流三段斬り】候補は敵軍バトルエリアのホールド状態の S ユニットだけ（リリース状態・M ユニット・ラッシュエリアは不可）（出典: atwiki/page-804「敵軍バトルエリアからホールド状態の敵軍Sユニットを1体選び」）", () => {
     const s = sandan();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-459");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:hs"]);
@@ -655,7 +654,8 @@ describe("RS-459 ニンジャイエロー", () => {
   });
 
   // atwiki/page-804 Q1/A1「パワーゾーンにダメージにして置かれることなく、チェイスによってその場に留まります」
-  // 既知の不具合: CARD-RS-459 ライド中のホールド状態の「宇宙刑事ギャバン」（RM-018）が【隠流三段斬り】の候補に出ない（単独でも出ない）
+  // 既知の不具合: CARD-RS-459 「宇宙刑事ギャバン」（RM-018）が試合用カタログ（allCardsCatalog: RS-001..690・SR）に含まれず定義がないため、
+  // 場に置いても候補に出ない（【隠流三段斬り】の「ホールド状態の」条件自体は上の項目で通る）。RM カードの収録は別対応。
   it.fails("RS-459: atwiki Q&A — ライド中の「宇宙刑事ギャバン」を選んでも、チェイスでライドされていない自軍ビークルに乗り換えてその場に留まる（ダメージにならない）（出典: atwiki/page-804 Q1/A1）", () => {
     let s = ncEnter("RS-459", 5, {}, { battle: [{ ...rider("RM-018", "g", "RS-466:v1"), commandHeld: true }, inst("RS-466", "v1")], rush: [inst("RS-467", "v2")] });
     expect(choiceIds(s)).toContain("RM-018:g");

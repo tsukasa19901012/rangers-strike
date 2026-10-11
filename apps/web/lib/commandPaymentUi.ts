@@ -1,4 +1,5 @@
 import {
+  validatePaymentSelection,
   getCommandPaymentView,
   type CommandPaymentView,
   type GameState,
@@ -144,6 +145,20 @@ export function canConfirmCommandPayment(
   required: number,
 ): boolean {
   return selected.length === required;
+}
+
+/**
+ * 支払いの確定ボタンを押せるか。RS-429【暮らしの中に修行あり】の代用ができる effect_hold（minNeeded）は、
+ * MA のコマンド1つでも（WB＋追加1つの2つでも）確定できる。
+ */
+export function canConfirmCommandPaymentFor(
+  state: GameState,
+  pending: PendingCommandPayment,
+  selected: readonly string[],
+): boolean {
+  if (canConfirmCommandPayment(selected, pending.totalNeeded)) return true;
+  if (pending.minNeeded === undefined || selected.length < pending.minNeeded) return false;
+  return validatePaymentSelection(state, pending, [...selected]) === null;
 }
 
 export type CommandPaymentSelectedCard = {

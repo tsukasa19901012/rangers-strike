@@ -77,6 +77,7 @@ import {
   trySet6BOnComboEnter,
 } from "./legend1/set6NamedEffectsB";
 import { trySet7AOnEnterBattle } from "./legend1/set7NamedEffectsA";
+import { clearWolfRoarDecision, openWolfRoarBeforeNc } from "./legend1/set7NamedEffectsC";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredBattleListener";
 
@@ -450,10 +451,14 @@ export function resolveEnterBattleEffectsImpl(
       if (glare.decision === "open") {
         return { state: glare.state, logs, enterResumeFrom: "nc" };
       }
-      nextState = clearFlameGlareDecision(nextState);
       if (glare.decision === "negate") {
+        nextState = clearFlameGlareDecision(nextState);
         nextState = negateNcOnUnit(nextState, playerId, card.instanceId);
       } else {
+        // RS-477 ガオウルフ【威圧する咆哮】: 敵軍の NC の効果を発動する前に発動できる（rules/legend1/set7NamedEffectsC.ts）。
+        const wolfRoar = openWolfRoarBeforeNc(nextState, playerId, card);
+        if (wolfRoar) return { state: wolfRoar, logs, enterResumeFrom: "nc" };
+        nextState = clearWolfRoarDecision(clearFlameGlareDecision(nextState));
         const ncEffect = resolveNamedNcEffectId(
           nextState,
           playerId,
