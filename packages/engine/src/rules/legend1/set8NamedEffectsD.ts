@@ -7,13 +7,20 @@
  * 構成は rules/legend1/set7NamedEffectsD.ts と同じ。
  */
 import type { CardDefinition } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
-import { effectiveBp, getDefinition } from "../../core/catalog";
+import type { CardInstance, DeferredDestroyTrigger, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
+import { addNextTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
+import { finalizeEffectRush } from "../../events/emitUnitRushed";
+import { markBattleNcEffect } from "../namedUnitEffects";
+import { spBecomesInZone } from "../fractionalSp";
+import { patchPlayer } from "../playerPatches";
+import { turnPlayerOf } from "./set6NamedEffectsB";
 import { opponent } from "../../core/helpers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
-import { openEffectChoice } from "../pendingChoices";
+import { applyUnitLeave, openEffectChoice } from "../pendingChoices";
+
 import { unitFeatures } from "../addedFeatures";
 import { rs603BlocksVehicle } from "../rs/rsCatchallField";
 import { namedTextNegated } from "./set6NamedEffects348";
@@ -185,6 +192,581 @@ export function ownAutoBattleEntryNegated(state: GameState, playerId: PlayerId, 
 }
 
 // ---------------------------------------------------------------------------
+// 共通: 「〜してもよい。そうしたとき、…」の続きの選択を開く。
+// 先の処理（撃破など）で選択・離場の応答が開いていれば、それらの解決後に開く（R-TIME-04。rules/destroyTriggerQueue.ts）。
+
+function appendResume(choice: PendingEffectChoice, next: PendingEffectChoice): PendingEffectChoice {
+  return { ...choice, resumeChoice: choice.resumeChoice ? appendResume(choice.resumeChoice, next) : next };
+}
+
+function openAfter(state: GameState, choice: PendingEffectChoice): GameState {
+  if (state.pendingEffectChoice) return { ...state, pendingEffectChoice: appendResume(state.pendingEffectChoice, choice) };
+  if (state.pendingLeave || state.pendingRegister || state.pendingDamagePayment) {
+    const frame: DeferredDestroyTrigger = { kind: "open_choice", step: "after_discard", pending: choice };
+    return { ...state, deferredDestroyTriggers: [...(state.deferredDestroyTriggers ?? []), frame] };
+  }
+  return openEffectChoice(state, choice);
+}
+
+/** 選択を閉じた state（resumeChoice はまだ開かない）。 */
+function close(state: GameState, pending: PendingEffectChoice): GameState {
+  return state.pendingEffectChoice === pending
+    ? { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId }
+    : state;
+}
+
+/** 効果の処理を終える（割り込みがなければ resumeChoice を開くかバトル進入を続ける）。 */
+function proceed(state: GameState, pending: PendingEffectChoice): GameState {
+  if (state.pendingEffectChoice) {
+    return pending.resumeChoice ? { ...state, pendingEffectChoice: appendResume(state.pendingEffectChoice, pending.resumeChoice) } : state;
+  }
+  if (state.pendingLeave || state.pendingRegister || state.pendingDamagePayment) {
+    if (!pending.resumeChoice) return state;
+    const frame: DeferredDestroyTrigger = { kind: "open_choice", step: "after_discard", pending: pending.resumeChoice };
+    return { ...state, deferredDestroyTriggers: [...(state.deferredDestroyTriggers ?? []), frame] };
+  }
+  if (pending.resumeChoice) return openEffectChoice(state, pending.resumeChoice);
+  return promoteDeferredBattleEntry(state);
+}
+
+function choiceBase(ctx: { playerId: PlayerId; phasePlayerId: PlayerId; sourceCardId: string; sourceInstanceId?: string }) {
+  return {
+    playerId: ctx.playerId,
+    phasePlayerId: ctx.phasePlayerId,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.sourceInstanceId,
+    selectedInstanceIds: [] as string[],
+  };
+}
+
+function unitIds(state: GameState, playerId: PlayerId): string[] {
+  return fieldUnits(state, playerId)
+    .filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit")
+    .map((c) => c.instanceId);
+}
+
+function findField(state: GameState, playerId: PlayerId, instanceId: string): { zone: "battle" | "rush"; card: CardInstance } | undefined {
+  for (const zone of ["battle", "rush"] as const) {
+    const card = state.players[playerId][zone].find((c) => c.instanceId === instanceId);
+    if (card) return { zone, card };
+  }
+  return undefined;
+}
+
+function stripForZone(card: Pick<CardInstance, "instanceId" | "cardId">): CardInstance {
+  return { instanceId: card.instanceId, cardId: card.cardId };
+}
+
+// ---------------------------------------------------------------------------
+// 「相手は自分自身のユニットを1体選び撃破する」（RS-587【激しい闘争心】・RS-589【グレイブラスター】の後半）
+
+export const OPPONENT_SELF_DESTROY_EFFECT_ID = "set8d_opponent_self_destroy";
+
+function opponentSelfDestroyChoice(state: GameState, pending: PendingEffectChoice): PendingEffectChoice | undefined {
+  const enemyId = opponent(pending.playerId);
+  const ids = unitIds(state, enemyId);
+  if (ids.length === 0) return undefined;
+  return {
+    playerId: enemyId,
+    phasePlayerId: pending.phasePlayerId,
+    sourceCardId: pending.sourceCardId,
+    sourceInstanceId: pending.sourceInstanceId,
+    effectId: OPPONENT_SELF_DESTROY_EFFECT_ID,
+    kind: "select_unit",
+    validInstanceIds: ids,
+    selectedInstanceIds: [],
+    selectCount: 1,
+    optional: false,
+    resumeChoice: pending.resumeChoice,
+  };
+}
+
+CHOICE_RESOLVERS[OPPONENT_SELF_DESTROY_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const cleared = close(state, pending);
+  const log = logFor(state, playerId, pending.sourceCardId, `${OPPONENT_SELF_DESTROY_EFFECT_ID}:${instanceId}`);
+  if (!findField(cleared, playerId, instanceId)) return { state: proceed(cleared, pending), log };
+  const leave = applyUnitLeave(cleared, instanceId, "discard", pending.phasePlayerId);
+  if ("error" in leave) return leave;
+  return { state: proceed(leave.state, pending), log };
+};
+
+/** 自軍の「これ以外の S ユニット」の候補（RS-587・RS-589）。 */
+function otherOwnSUnits(state: GameState, playerId: PlayerId, selfId: string | undefined, requireReleased: boolean): string[] {
+  return fieldUnits(state, playerId)
+    .filter((c) => c.instanceId !== selfId)
+    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => !requireReleased || !c.commandHeld)
+    .map((c) => c.instanceId);
+}
+
+// ---------------------------------------------------------------------------
+// RS-587 怒りの鬼神　ガイ【激しい闘争心】
+// 「これ以外の自軍Sユニットを1体選び撃破してもよい。そうしたとき、相手は自分自身のユニットを1体選び撃破する。」（atwiki/page-1197）
+
+export const FIERCE_FIGHT_EFFECT_ID = "rs587_fierce_fight";
+
+function applyFierceFight(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const ids = otherOwnSUnits(state, ctx.playerId, ctx.triggerSourceInstanceId, false);
+  if (ids.length === 0) return { state, detail: `${FIERCE_FIGHT_EFFECT_ID}:no_targets` };
+  return {
+    state: openEffectChoice(state, {
+      ...choiceBase({ ...ctx, sourceCardId: "RS-587", sourceInstanceId: ctx.triggerSourceInstanceId }),
+      effectId: FIERCE_FIGHT_EFFECT_ID,
+      kind: "select_unit",
+      validInstanceIds: ids,
+      selectCount: 1,
+      optional: true,
+    }),
+    detail: FIERCE_FIGHT_EFFECT_ID,
+  };
+}
+
+CHOICE_RESOLVERS[FIERCE_FIGHT_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const leave = applyUnitLeave(close(state, pending), instanceId, "discard", pending.phasePlayerId);
+  if ("error" in leave) return leave;
+  const log = logFor(state, playerId, "RS-587", `${FIERCE_FIGHT_EFFECT_ID}:${instanceId}`);
+  const follow = opponentSelfDestroyChoice(leave.state, pending);
+  if (!follow) return { state: proceed(leave.state, pending), log };
+  return { state: openAfter(leave.state, follow), log };
+};
+CHOICE_SKIPPERS[FIERCE_FIGHT_EFFECT_ID] = simpleSkip();
+
+// ---------------------------------------------------------------------------
+// RS-589 クエスター・ガイ【グレイブラスター】
+// 「これ以外の自軍Sユニットを1体選びホールドしてもよい。そうしたとき、相手は自分自身のユニットを1体選び撃破する。」（atwiki/page-1199）
+
+export const GRAY_BLASTER_EFFECT_ID = "rs589_gray_blaster";
+
+function applyGrayBlaster(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const ids = otherOwnSUnits(state, ctx.playerId, ctx.triggerSourceInstanceId, true);
+  if (ids.length === 0) return { state, detail: `${GRAY_BLASTER_EFFECT_ID}:no_targets` };
+  return {
+    state: openEffectChoice(state, {
+      ...choiceBase({ ...ctx, sourceCardId: "RS-589", sourceInstanceId: ctx.triggerSourceInstanceId }),
+      effectId: GRAY_BLASTER_EFFECT_ID,
+      kind: "select_unit",
+      validInstanceIds: ids,
+      selectCount: 1,
+      optional: true,
+    }),
+    detail: GRAY_BLASTER_EFFECT_ID,
+  };
+}
+
+CHOICE_RESOLVERS[GRAY_BLASTER_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const found = findField(state, playerId, instanceId);
+  if (!found) return { error: "invalid_target" };
+  const held = patchPlayer(close(state, pending), playerId, (p) => ({
+    ...p,
+    [found.zone]: p[found.zone].map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: true } : c)),
+  }));
+  const log = logFor(state, playerId, "RS-589", `${GRAY_BLASTER_EFFECT_ID}:hold:${cardName(state.definitions, found.card.cardId)}`);
+  const follow = opponentSelfDestroyChoice(held, pending);
+  if (!follow) return { state: proceed(held, pending), log };
+  return { state: openAfter(held, follow), log };
+};
+CHOICE_SKIPPERS[GRAY_BLASTER_EFFECT_ID] = simpleSkip();
+
+// ---------------------------------------------------------------------------
+// RS-593 バルカ【バルカッター】「SP1」
+// 「相手は自分自身のパワーゾーンからオモテ向きのカードを1枚選び手札に戻してもよい。そうしたとき、このターン、これはストライクできない。」
+// （atwiki/page-1202）— 「SP1」は DSL の SP1。戻すかは相手が選ぶ。
+
+export const BALCUTTER_EFFECT_ID = "rs593_balcutter";
+/** このターン、ストライクできない（rules/combo.ts canStrikeUnit が見る印）。 */
+const NO_STRIKE_MARK = "souru_no_strike";
+
+function applyBalcutter(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const enemyId = opponent(ctx.playerId);
+  const ids = state.players[enemyId].power.filter((c) => !c.faceDown).map((c) => c.instanceId);
+  if (ids.length === 0 || !ctx.triggerSourceInstanceId) return { state, detail: `${BALCUTTER_EFFECT_ID}:no_targets` };
+  return {
+    state: openEffectChoice(state, {
+      ...choiceBase({ ...ctx, sourceCardId: "RS-593", sourceInstanceId: ctx.triggerSourceInstanceId }),
+      playerId: enemyId,
+      effectId: BALCUTTER_EFFECT_ID,
+      kind: "select_power",
+      validInstanceIds: ids,
+      selectCount: 1,
+      optional: true,
+    }),
+    detail: BALCUTTER_EFFECT_ID,
+  };
+}
+
+CHOICE_RESOLVERS[BALCUTTER_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const card = state.players[playerId].power.find((c) => c.instanceId === instanceId && !c.faceDown);
+  if (!card) return { error: "invalid_target" };
+  let next = patchPlayer(state, playerId, (p) => ({
+    ...p,
+    power: p.power.filter((c) => c.instanceId !== instanceId),
+    hand: [...p.hand, stripForZone(card)],
+  }));
+  if (pending.sourceInstanceId) next = markBattleNcEffect(next, opponent(playerId), pending.sourceInstanceId, NO_STRIKE_MARK);
+  return { state: finish(next, pending), log: logFor(state, playerId, "RS-593", `${BALCUTTER_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
+};
+CHOICE_SKIPPERS[BALCUTTER_EFFECT_ID] = simpleSkip();
+
+// ---------------------------------------------------------------------------
+// RS-594 ガンパード【ガンパードガン】
+// 「相手の手札を見ないで3枚まで選んでもよい。そうしたとき、選んだカードをお互いで見る。選んだカードの中からSユニットのカードを1枚選び、
+//  持ち主のパワーゾーンに置く。次の相手ターン、相手はターンを終えるとき、自分自身のパワーゾーンからオモテ向きのカードを1枚選び、
+//  手札に戻してもよい。」（atwiki/page-1203）
+// 手札は見ないで選ぶ（UI はウラ向きで示す）。1枚ずつ選び、3枚選ぶか見送り（skip）で確定する。
+
+export const GUNPARD_GUN_EFFECT_ID = "rs594_gunpard_gun";
+export const GUNPARD_GUN_PLACE_EFFECT_ID = "rs594_gunpard_gun_place";
+export const GUNPARD_RETURN_EFFECT_ID = "rs594_gunpard_return";
+const GUNPARD_RETURN_RULE_PREFIX = "rs594_gunpard_return:";
+
+function applyGunpardGun(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const enemyId = opponent(ctx.playerId);
+  const ids = state.players[enemyId].hand.map((c) => c.instanceId);
+  if (ids.length === 0) return { state, detail: `${GUNPARD_GUN_EFFECT_ID}:no_targets` };
+  return {
+    state: openEffectChoice(state, {
+      ...choiceBase({ ...ctx, sourceCardId: "RS-594", sourceInstanceId: ctx.triggerSourceInstanceId }),
+      effectId: GUNPARD_GUN_EFFECT_ID,
+      kind: "select_hand",
+      validInstanceIds: ids,
+      selectCount: 3,
+      optional: true,
+      set8dMeta: { selected: [], maxCount: 3, ownerId: enemyId },
+    }),
+    detail: GUNPARD_GUN_EFFECT_ID,
+  };
+}
+
+function finishGunpardPick(state: GameState, pending: PendingEffectChoice, selected: string[]): ChoiceOutcome {
+  const enemyId = opponent(pending.playerId);
+  if (selected.length === 0) {
+    return { state: finish(state, pending), log: skipLog(state, pending.playerId, "RS-594", GUNPARD_GUN_EFFECT_ID) };
+  }
+  const shown = state.players[enemyId].hand.filter((c) => selected.includes(c.instanceId));
+  const names = shown.map((c) => cardName(state.definitions, c.cardId)).join("、");
+  const log = logFor(state, pending.playerId, "RS-594", `${GUNPARD_GUN_EFFECT_ID}:reveal:${names}`);
+  // 次の相手ターン、相手はターンを終えるとき、パワーゾーンのオモテ向きのカードを1枚手札に戻してもよい。
+  let next = patchPlayer(close(state, pending), enemyId, (p) =>
+    addNextTurnRuleModifier(p, `${GUNPARD_RETURN_RULE_PREFIX}${pending.sourceInstanceId ?? "rs594"}:${state.turn}`, { sourceCardId: "RS-594" }),
+  );
+  const sUnits = shown.filter((c) => isSmallUnit(state.definitions, c.cardId)).map((c) => c.instanceId);
+  if (sUnits.length === 0) return { state: proceed(next, pending), log };
+  next = openEffectChoice(next, {
+    ...pending,
+    effectId: GUNPARD_GUN_PLACE_EFFECT_ID,
+    kind: "select_hand",
+    validInstanceIds: sUnits,
+    viewedInstanceIds: selected,
+    selectedInstanceIds: [],
+    selectCount: 1,
+    optional: false,
+    set8dMeta: { ownerId: enemyId },
+  });
+  return { state: next, log };
+}
+
+CHOICE_RESOLVERS[GUNPARD_GUN_EFFECT_ID] = (state, _playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const selected = [...(pending.set8dMeta?.selected ?? []), instanceId];
+  const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+  if (selected.length < (pending.set8dMeta?.maxCount ?? 3) && remaining.length > 0) {
+    return {
+      state: {
+        ...state,
+        pendingEffectChoice: { ...pending, validInstanceIds: remaining, selectedInstanceIds: selected, set8dMeta: { ...pending.set8dMeta, selected } },
+      },
+    };
+  }
+  return finishGunpardPick(state, pending, selected);
+};
+CHOICE_SKIPPERS[GUNPARD_GUN_EFFECT_ID] = (state) => {
+  const pending = state.pendingEffectChoice!;
+  return finishGunpardPick(state, pending, pending.set8dMeta?.selected ?? []);
+};
+
+CHOICE_RESOLVERS[GUNPARD_GUN_PLACE_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const ownerId = pending.set8dMeta?.ownerId ?? opponent(playerId);
+  const card = state.players[ownerId].hand.find((c) => c.instanceId === instanceId);
+  if (!card) return { error: "invalid_target" };
+  const next = patchPlayer(close(state, pending), ownerId, (p) => ({
+    ...p,
+    hand: p.hand.filter((c) => c.instanceId !== instanceId),
+    power: [...p.power, stripForZone(card)],
+  }));
+  return { state: proceed(next, pending), log: logFor(state, playerId, "RS-594", `${GUNPARD_GUN_PLACE_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
+};
+
+/** 「ターンを終えるとき」に尋ねる【ガンパードガン】の後半（rules/turnEndingEffects.ts から呼ぶ）。 */
+export function collectSet8DTurnEndQueue(state: GameState, endingPlayerId: PlayerId): string[] {
+  return getPlayerModifiers(state.players[endingPlayerId])
+    .filter((m) => m.kind === "rule" && m.scope === "turn" && m.ruleId.startsWith(GUNPARD_RETURN_RULE_PREFIX))
+    .map((m) => (m as { ruleId: string }).ruleId);
+}
+
+export function openSet8DTurnEndEntry(state: GameState, endingPlayerId: PlayerId, _entry: string): GameState {
+  const ids = state.players[endingPlayerId].power.filter((c) => !c.faceDown).map((c) => c.instanceId);
+  if (ids.length === 0) return state;
+  return openEffectChoice(state, {
+    playerId: endingPlayerId,
+    phasePlayerId: endingPlayerId,
+    sourceCardId: "RS-594",
+    effectId: GUNPARD_RETURN_EFFECT_ID,
+    kind: "select_power",
+    validInstanceIds: ids,
+    selectedInstanceIds: [],
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+CHOICE_RESOLVERS[GUNPARD_RETURN_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const card = state.players[playerId].power.find((c) => c.instanceId === instanceId && !c.faceDown);
+  if (!card) return { error: "invalid_target" };
+  const next = patchPlayer(close(state, pending), playerId, (p) => ({
+    ...p,
+    power: p.power.filter((c) => c.instanceId !== instanceId),
+    hand: [...p.hand, stripForZone(card)],
+  }));
+  return { state: next, log: logFor(state, playerId, "RS-594", `${GUNPARD_RETURN_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
+};
+CHOICE_SKIPPERS[GUNPARD_RETURN_EFFECT_ID] = (state, playerId) => {
+  const pending = state.pendingEffectChoice!;
+  return { state: close(state, pending), log: skipLog(state, playerId, "RS-594", GUNPARD_RETURN_EFFECT_ID) };
+};
+
+// ---------------------------------------------------------------------------
+// RS-596 炎神大将軍【炎神剣】
+// 「自軍ターン中、これがバトルエリアに出たとき、自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードが
+//  特徴「炎神」を持つユニットカードなら、このターン、これは「SP2」になる。その後、オモテにしたカードは山札の下に戻す。」（atwiki/page-1216）
+// 「オモテにする／しない」の選択は、効果のユニット自身を選ぶとオモテにする（第7弾 RS-515 と同じ）。
+
+export const FLAME_SWORD_EFFECT_ID = "rs596_flame_sword";
+
+function applyFlameSword(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const self = ctx.triggerSourceInstanceId;
+  if (turnPlayerOf(state) !== ctx.playerId || !self) return { state, detail: `${FLAME_SWORD_EFFECT_ID}:not_own_turn` };
+  if (state.players[ctx.playerId].deck.length === 0) return { state, detail: `${FLAME_SWORD_EFFECT_ID}:empty_deck` };
+  return {
+    state: openEffectChoice(state, {
+      ...choiceBase({ ...ctx, sourceCardId: "RS-596", sourceInstanceId: self }),
+      effectId: FLAME_SWORD_EFFECT_ID,
+      kind: "select_unit",
+      validInstanceIds: [self],
+      optional: true,
+    }),
+    detail: FLAME_SWORD_EFFECT_ID,
+  };
+}
+
+CHOICE_RESOLVERS[FLAME_SWORD_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const top = state.players[playerId].deck[0];
+  if (!top) return { state: finish(state, pending) };
+  const def = getDefinition(state.definitions, top.cardId);
+  const hit = def?.type === "unit" && (def.features ?? []).includes("炎神");
+  let next = state;
+  if (hit && state.players[playerId].battle.some((c) => c.instanceId === instanceId)) {
+    next = spBecomesInZone(next, playerId, "battle", instanceId, 2);
+  }
+  next = patchPlayer(next, playerId, (p) => ({ ...p, deck: [...p.deck.slice(1), stripForZone(top)] }));
+  return {
+    state: finish(next, pending),
+    log: logFor(state, playerId, "RS-596", `${FLAME_SWORD_EFFECT_ID}:${cardName(state.definitions, top.cardId)}:${hit ? "sp2" : "miss"}`),
+  };
+};
+CHOICE_SKIPPERS[FLAME_SWORD_EFFECT_ID] = simpleSkip();
+
+// ---------------------------------------------------------------------------
+// RS-598 シシノシン【正義の出陣】
+// 「敵軍コマンドを1つ選びリリースしてもよい。そうしたとき、特徴「炎神」を持つMユニットのカードを、自軍パワーのオモテ向きのカードから
+//  1枚選び、ラッシュエリアに出す。」（atwiki/page-1206）— リリースできるのはホールド状態のコマンドだけ。出すのは効果で出す（R-RUSH-20）。
+
+export const JUSTICE_SORTIE_EFFECT_ID = "rs598_justice_sortie";
+export const JUSTICE_SORTIE_DEPLOY_EFFECT_ID = "rs598_justice_sortie_deploy";
+
+function applyJusticeSortie(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const ids = state.players[opponent(ctx.playerId)].command.filter((c) => c.commandHeld).map((c) => c.instanceId);
+  if (ids.length === 0) return { state, detail: `${JUSTICE_SORTIE_EFFECT_ID}:no_held_command` };
+  return {
+    state: openEffectChoice(state, {
+      ...choiceBase({ ...ctx, sourceCardId: "RS-598", sourceInstanceId: ctx.triggerSourceInstanceId }),
+      effectId: JUSTICE_SORTIE_EFFECT_ID,
+      kind: "select_command",
+      validInstanceIds: ids,
+      selectCount: 1,
+      optional: true,
+    }),
+    detail: JUSTICE_SORTIE_EFFECT_ID,
+  };
+}
+
+CHOICE_RESOLVERS[JUSTICE_SORTIE_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const enemyId = opponent(playerId);
+  let next = patchPlayer(close(state, pending), enemyId, (p) => ({
+    ...p,
+    command: p.command.map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: false, mothershipHold: false } : c)),
+  }));
+  const log = logFor(state, playerId, "RS-598", `${JUSTICE_SORTIE_EFFECT_ID}:release`);
+  const ids = next.players[playerId].power
+    .filter((c) => !c.faceDown)
+    .filter((c) => {
+      const def = getDefinition(next.definitions, c.cardId);
+      return def?.type === "unit" && def.size === "M" && (def.features ?? []).includes("炎神");
+    })
+    .map((c) => c.instanceId);
+  if (ids.length === 0) return { state: proceed(next, pending), log };
+  next = openEffectChoice(next, {
+    ...pending,
+    effectId: JUSTICE_SORTIE_DEPLOY_EFFECT_ID,
+    kind: "select_power",
+    validInstanceIds: ids,
+    selectedInstanceIds: [],
+    selectCount: 1,
+    optional: false,
+  });
+  return { state: next, log };
+};
+CHOICE_SKIPPERS[JUSTICE_SORTIE_EFFECT_ID] = simpleSkip();
+
+CHOICE_RESOLVERS[JUSTICE_SORTIE_DEPLOY_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const card = state.players[playerId].power.find((c) => c.instanceId === instanceId && !c.faceDown);
+  if (!card) return { error: "invalid_target" };
+  const moved = patchPlayer(close(state, pending), playerId, (p) => ({
+    ...p,
+    power: p.power.filter((c) => c.instanceId !== instanceId),
+    rush: [...p.rush, stripForZone(card)],
+  }));
+  const rushed = finalizeEffectRush(moved, playerId, [instanceId], pending.phasePlayerId);
+  const next = { ...rushed.state, log: [...rushed.state.log, ...rushed.logs] };
+  return { state: proceed(next, pending), log: logFor(state, playerId, "RS-598", `${JUSTICE_SORTIE_DEPLOY_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
+};
+
+// ---------------------------------------------------------------------------
+// RS-599 ツキノワ【取り戻す炎心】
+// 「自軍パワーのダメージになっているカードをウラ向きのまま1枚選び、手札に加えてもよい。そうしたとき、自軍山札の上から1枚ひいて
+//  自軍パワーゾーンにウラ向きに置く。」（atwiki/page-1207。Q1: 置くカードのオモテは見られない）
+
+export const RECLAIM_FLAME_EFFECT_ID = "rs599_reclaim_flame";
+
+function applyReclaimFlame(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const ids = state.players[ctx.playerId].power.filter((c) => c.faceDown).map((c) => c.instanceId);
+  if (ids.length === 0) return { state, detail: `${RECLAIM_FLAME_EFFECT_ID}:no_damage` };
+  return {
+    state: openEffectChoice(state, {
+      ...choiceBase({ ...ctx, sourceCardId: "RS-599", sourceInstanceId: ctx.triggerSourceInstanceId }),
+      effectId: RECLAIM_FLAME_EFFECT_ID,
+      kind: "select_power",
+      validInstanceIds: ids,
+      selectCount: 1,
+      optional: true,
+    }),
+    detail: RECLAIM_FLAME_EFFECT_ID,
+  };
+}
+
+CHOICE_RESOLVERS[RECLAIM_FLAME_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const card = state.players[playerId].power.find((c) => c.instanceId === instanceId && c.faceDown);
+  if (!card) return { error: "invalid_target" };
+  const next = patchPlayer(state, playerId, (p) => {
+    const top = p.deck[0];
+    const power = p.power.filter((c) => c.instanceId !== instanceId);
+    const placed = top ? [...power, { ...stripForZone(top), faceDown: true }] : power;
+    const damage = placed.filter((c) => c.faceDown).length;
+    return { ...p, hand: [...p.hand, stripForZone(card)], power: placed, deck: top ? p.deck.slice(1) : p.deck, damage };
+  });
+  return { state: finish(next, pending), log: logFor(state, playerId, "RS-599", `${RECLAIM_FLAME_EFFECT_ID}:take`) };
+};
+CHOICE_SKIPPERS[RECLAIM_FLAME_EFFECT_ID] = simpleSkip();
+
+// ---------------------------------------------------------------------------
+// RS-601 ゴーオンゴールド【ミッション6 フルパワー】「SP1」
+// 「敵軍コマンドを3つまで選びリリースしてもよい。そうしたとき、リリースしたコマンドの数以下の必要パワーの数字を持つ敵軍ユニットを
+//  1体選び撃破する。」（atwiki/page-1144）— リリースできるのはホールド状態のコマンド。1つずつ選び、3つ選ぶか見送り（skip）で確定する。
+
+export const FULL_POWER_EFFECT_ID = "rs601_full_power";
+export const FULL_POWER_DESTROY_EFFECT_ID = "rs601_full_power_destroy";
+const FULL_POWER_MAX = 3;
+
+function applyFullPower(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const ids = state.players[opponent(ctx.playerId)].command.filter((c) => c.commandHeld).map((c) => c.instanceId);
+  if (ids.length === 0) return { state, detail: `${FULL_POWER_EFFECT_ID}:no_held_command` };
+  return {
+    state: openEffectChoice(state, {
+      ...choiceBase({ ...ctx, sourceCardId: "RS-601", sourceInstanceId: ctx.triggerSourceInstanceId }),
+      effectId: FULL_POWER_EFFECT_ID,
+      kind: "select_command",
+      validInstanceIds: ids,
+      selectCount: FULL_POWER_MAX,
+      optional: true,
+      set8dMeta: { selected: [], maxCount: FULL_POWER_MAX },
+    }),
+    detail: FULL_POWER_EFFECT_ID,
+  };
+}
+
+function finishFullPower(state: GameState, pending: PendingEffectChoice, selected: string[]): ChoiceOutcome {
+  if (selected.length === 0) {
+    return { state: finish(state, pending), log: skipLog(state, pending.playerId, "RS-601", FULL_POWER_EFFECT_ID) };
+  }
+  const enemyId = opponent(pending.playerId);
+  let next = patchPlayer(close(state, pending), enemyId, (p) => ({
+    ...p,
+    command: p.command.map((c) => (selected.includes(c.instanceId) ? { ...c, commandHeld: false, mothershipHold: false } : c)),
+  }));
+  const log = logFor(state, pending.playerId, "RS-601", `${FULL_POWER_EFFECT_ID}:release:${selected.length}`);
+  const ids = fieldUnits(next, enemyId)
+    .filter((c) => getDefinition(next.definitions, c.cardId)?.type === "unit")
+    .filter((c) => parsePowerCost(getDefinition(next.definitions, c.cardId)?.powerCost) <= selected.length)
+    .map((c) => c.instanceId);
+  if (ids.length === 0) return { state: proceed(next, pending), log };
+  next = openEffectChoice(next, {
+    ...pending,
+    effectId: FULL_POWER_DESTROY_EFFECT_ID,
+    kind: "select_unit",
+    validInstanceIds: ids,
+    selectedInstanceIds: [],
+    selectCount: 1,
+    optional: false,
+    set8dMeta: undefined,
+  });
+  return { state: next, log };
+}
+
+CHOICE_RESOLVERS[FULL_POWER_EFFECT_ID] = (state, _playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const selected = [...(pending.set8dMeta?.selected ?? []), instanceId];
+  const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+  if (selected.length < FULL_POWER_MAX && remaining.length > 0) {
+    return {
+      state: {
+        ...state,
+        pendingEffectChoice: { ...pending, validInstanceIds: remaining, selectedInstanceIds: selected, set8dMeta: { ...pending.set8dMeta, selected } },
+      },
+    };
+  }
+  return finishFullPower(state, pending, selected);
+};
+CHOICE_SKIPPERS[FULL_POWER_EFFECT_ID] = (state) => {
+  const pending = state.pendingEffectChoice!;
+  return finishFullPower(state, pending, pending.set8dMeta?.selected ?? []);
+};
+CHOICE_RESOLVERS[FULL_POWER_DESTROY_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const leave = applyUnitLeave(close(state, pending), instanceId, "discard", pending.phasePlayerId);
+  if ("error" in leave) return leave;
+  return { state: proceed(leave.state, pending), log: logFor(state, playerId, "RS-601", `${FULL_POWER_DESTROY_EFFECT_ID}:${instanceId}`) };
+};
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword からの起点
 
 export const SET8D_KEYWORD_PREFIX = "set8d::";
@@ -193,6 +775,14 @@ const SET8D_KEYWORDS: Record<string, (state: GameState, ctx: GrantKeywordContext
   // 継続効果はそれぞれの参照箇所で扱う（ここでは何もしない）。
   "RS-584::darkness_dispel": (state) => ({ state, detail: "rs584_darkness_dispel" }),
   "RS-595::reliable_back": (state) => ({ state, detail: "rs595_reliable_back" }),
+  "RS-587::fierce_fight": applyFierceFight,
+  "RS-589::gray_blaster": applyGrayBlaster,
+  "RS-593::balcutter": applyBalcutter,
+  "RS-594::gunpard_gun": applyGunpardGun,
+  "RS-596::flame_sword": applyFlameSword,
+  "RS-598::justice_sortie": applyJusticeSortie,
+  "RS-599::reclaim_flame": applyReclaimFlame,
+  "RS-601::full_power": applyFullPower,
 };
 
 export function trySet8DCardEffect(state: GameState, ctx: GrantKeywordContext, keyword: string): GrantKeywordResult | null {

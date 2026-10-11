@@ -2,6 +2,7 @@ import type { CardInstance, GameState, PlayerId, TurnEndProgress } from "../type
 import { applySet6TurnEnd } from "./legend1/set6AuditFixes";
 import { collectSet6BTurnEndQueue, openSet6BTurnEndEntry } from "./legend1/set6NamedEffectsB";
 import { collectSet7CTurnEndQueue, openSet7CTurnEndEntry } from "./legend1/set7NamedEffectsC";
+import { collectSet8DTurnEndQueue, openSet8DTurnEndEntry } from "./legend1/set8NamedEffectsD";
 import { applyDarkLawTurnEnd } from "./legend1/set5NamedEffectsA";
 import { applyChangePowerTurnEnd, hedrianBeautyCount, openHedrianBeautyChoice } from "./legend1/set6NamedEffects348";
 import { activeNamedEffect } from "./ncGatedEffects";
@@ -293,6 +294,14 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.set7cQueue!;
     progress = { ...progress, set7cQueue: rest };
     nextState = openSet7CTurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // RS-594【ガンパードガン】の後半（次の相手ターン、ターンを終えるとき。rules/legend1/set8NamedEffectsD.ts）。
+  if (!progress.set8dQueue) progress = { ...progress, set8dQueue: collectSet8DTurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.set8dQueue ?? []).length > 0) {
+    const [entry, ...rest] = progress.set8dQueue!;
+    progress = { ...progress, set8dQueue: rest };
+    nextState = openSet8DTurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {

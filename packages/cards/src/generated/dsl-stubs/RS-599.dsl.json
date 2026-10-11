@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-599::risuhonoo",
-          "duration": "permanent"
+          "keyword": "set8d::RS-599::reclaim_flame",
+          "duration": "turn"
         }
       ],
       "optional": false

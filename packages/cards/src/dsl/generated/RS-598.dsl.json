@@ -56,11 +56,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_action_komandowo1tsubiririsushitemoyoisoushitatoki_honoo",
+          "keyword": "set8d::RS-598::justice_sortie",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

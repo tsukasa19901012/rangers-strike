@@ -651,6 +651,8 @@ export type PendingEffectChoice = {
   kasumoShieldMeta?: { intent: PendingLeave };
   /** 第7弾 RS-495〜RS-515 の選択の続行データ（rules/legend1/set7NamedEffectsD.ts）。 */
   set7dMeta?: Set7DMeta;
+  /** 第8弾 RS-582〜RS-604 の選択の続行データ（rules/legend1/set8NamedEffectsD.ts）。 */
+  set8dMeta?: Set8DMeta;
   /** RS-196【迎撃モビルミサイル】: 発動を選んでいる間、保留しているストライク。 */
   mobilMissileStrike?: PendingStrike;
   /** RS-215【不滅のマシン帝国】: 手札2枚を選んだあと（または断ったあと）に続けるアタック。 */
@@ -664,6 +666,23 @@ export type PendingEffectChoice = {
     fromZone: "rush" | "battle";
     pendingLeave: PendingLeave;
   };
+};
+
+/** 第8弾 RS-582〜RS-604 の選択の続行データ（rules/legend1/set8NamedEffectsD.ts）。 */
+export type Set8DMeta = {
+  /** 1つずつ選ぶ選択で選び終えたもの。 */
+  selected?: string[];
+  /** 選べる数の上限。 */
+  maxCount?: number;
+  /** 選んだあとで続ける処理の持ち主（相手の手札・コマンド等）。 */
+  ownerId?: PlayerId;
+  /** 任意の追加データ（数値）。 */
+  amount?: number;
+  /** カウンターの使用で捨札になったカード（RS-582【メー・メガロ】）。 */
+  cardId?: string;
+  /** アタックの対象の付け替え（RS-583【災いを受け止める覚悟】）で保留しているバトル。 */
+  battle?: PendingBattle;
+  wingAttackFromRush?: boolean;
 };
 
 /** 第7弾 RS-495〜RS-515 の選択の続行データ（rules/legend1/set7NamedEffectsD.ts）。 */
@@ -1053,6 +1072,8 @@ export type TurnEndProgress = {
   set6bQueue?: string[];
   /** 第7弾 RS-484【ハリーアップ！】の「ターンを終えるとき」の選択のうち未処理のもの（rules/legend1/set7NamedEffectsC.ts）。 */
   set7cQueue?: string[];
+  /** 第8弾 RS-594【ガンパードガン】の「次の相手ターン、ターンを終えるとき」の選択のうち未処理のもの（rules/legend1/set8NamedEffectsD.ts）。 */
+  set8dQueue?: string[];
   /** RS-360【宇宙で一番美しいのは誰？】で、まだ選んで撃破していない回数（未計算なら undefined）。 */
   hedrianLeft?: number;
 };

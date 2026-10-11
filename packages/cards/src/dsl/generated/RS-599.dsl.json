@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_pawanodamejininateirukadowoura_ko_kinomama1binietemoyoi",
+          "keyword": "set8d::RS-599::reclaim_flame",
           "duration": "turn"
         }
       ],
