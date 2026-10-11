@@ -123,6 +123,7 @@ import { isSet8AChoiceEffect, isSet8AConfirmableChoice, isSet8AResident } from "
 import { canConfirmSet8CChoice, isSet8CChoiceEffect } from "../rules/legend1/set8NamedEffectsC";
 import { canConfirmSet9CChoice, isSet9CChoiceEffect } from "../rules/legend1/set9NamedEffectsC";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
+import { needsHoldExtraCommand } from "../rules/zordExtended";
 import { isSet7BConfirmableChoice } from "../rules/legend1/set7NamedEffectsB";
 import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower } from "./power";
@@ -2446,7 +2447,8 @@ export function withUniqueExtraCommandHolds(state: GameState, action: GameAction
   if (action.type === "initiate_command_payment" && action.kind !== "category_use") return action;
   if (action.zordExtraCommandHoldInstanceIds?.length) return action;
   const source = action.type === "rush" ? action.instanceId : action.sourceInstanceId;
-  if (!state.players[action.playerId]?.hand.some((c) => c.instanceId === source)) return action;
+  const handCard = state.players[action.playerId]?.hand.find((c) => c.instanceId === source);
+  if (!handCard || !needsHoldExtraCommand(state.definitions, handCard.cardId)) return action;
   const sets = new Set<string>();
   let unique: string[] | undefined;
   for (const candidate of getLegalActions(state)) {

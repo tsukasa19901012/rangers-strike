@@ -415,11 +415,11 @@ CHOICE_RESOLVERS[RHINO_SHOOT_EFFECT_ID] = (state, playerId, hostId) => {
 
 /** ライノシュートで重ねた L ユニット（左隣）からコンビネーションした「ガオマジロ」の BP+5000。 */
 function rhinoShootBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
-  if (!sameName(state, instance.cardId, "ガオマジロ")) return 0;
   const battle = state.players[playerId].battle;
   const index = battle.findIndex((c) => c.instanceId === instance.instanceId);
   if (index <= 0) return 0;
   const host = battle[index - 1]!;
+  if (!host.stackedCards?.length || !sameName(state, instance.cardId, "ガオマジロ")) return 0;
   const rhinos = (host.stackedCards ?? []).filter((c) => sameName(state, c.cardId, "ガオライノス")).length;
   return 5000 * rhinos;
 }
