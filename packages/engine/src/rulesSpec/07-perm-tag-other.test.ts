@@ -105,11 +105,81 @@ describe("R-KW-TAG-01 タッグ", () => {
     expect(where(s, "player1", `${G4.id}:g`)).toBe("operation");
   });
 
+  // RS-522 ボウケンスピリッツ『自軍コマンドを1つ選び山札の上に戻す』／RS-524 呉越同舟『自分の手札を1枚選び相手に見せる』（どちらも ※タッグ）。
+  const BOUKEN = realDef("RS-522");
+  const GOETSU = realDef("RS-524");
+  const NUMBERED = unitDef("RSPEC-CN2", { comboNumber: 2 });
+  const tagBoard = (operation: CardInstance[], extra: Partial<GameState["players"]["player1"]> = {}) =>
+    state([BOUKEN, GOETSU, CURRY, CLIMAX, NUMBERED], {
+      phase: "rush",
+      turn: 3,
+      player1: {
+        operation,
+        rush: [inst(NUMBERED.id, "u")],
+        command: [inst("TST-OP", "c1"), inst("TST-OP", "c2")],
+        hand: [inst("TST-UNIT-0", "h")],
+        deck: [inst("TST-UNIT-0", "d0")],
+        ...extra,
+      },
+    });
+  const canActivate = (s: GameState, opId: string) =>
+    hasLegal(s, (a) => a.type === "activate_resident_operation" && a.operationInstanceId === opId);
+  const activate = (s: GameState, opId: string) => act(s, { type: "activate_resident_operation", playerId: "player1", operationInstanceId: opId });
+  const choose = (s: GameState, id: string) => act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: id });
+
   // 「２枚常駐させていても…太字部分の効果は１度だけ」
-  it.todo("R-KW-TAG-01: 同名のタッグを2枚常駐させても、1度のラッシュフェイズに太字部分の効果は1度だけ（出典: grnrngr/faq-rider_3 RK-240。RK-242/PK-011 の太字部分を起動するアクションが合法手に出ず検証できない）");
+  it("R-KW-TAG-01: 同名のタッグ（ボウケンスピリッツ2枚）を常駐させても、1度のラッシュフェイズに太字部分の効果は1度だけ（出典: grnrngr/faq-rider_3 RK-240「１度のラッシュフェイズの間に太字部分の効果は１度だけしか発動することはできません」）", () => {
+    let s = tagBoard([inst(BOUKEN.id, "a"), inst(BOUKEN.id, "b")]);
+    expect(canActivate(s, `${BOUKEN.id}:a`)).toBe(true);
+    expect(canActivate(s, `${BOUKEN.id}:b`)).toBe(true);
+    s = activate(s, `${BOUKEN.id}:a`);
+    // 同名どうしでも、入れ替えて実行する太字部分は選べる（どちらを選んでも太字部分は同じ）。
+    if (s.pendingEffectChoice?.effectId === "tag_bold_pick") s = choose(s, `${BOUKEN.id}:a`);
+    s = choose(s, "TST-OP:c1");
+    s = choose(s, `${NUMBERED.id}:u`);
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(canActivate(s, `${BOUKEN.id}:a`)).toBe(false);
+    expect(canActivate(s, `${BOUKEN.id}:b`)).toBe(false);
+  });
 
   // 「これは2つのオペレーションがどちらもタッグを持っていなければ有効にならない」
-  it.todo("R-KW-TAG-01: 太字部分の入れ替えは2枚ともタッグを持つときだけ有効（出典: atwiki/page-1297 本文。入れ替え自体が未実装 04-#31 で API がない）");
+  it("R-KW-TAG-01: 太字部分の入れ替えは2枚ともタッグを持つときだけ有効 — タッグでない常駐（恐竜やのカレー）とは入れ替えず、自分の太字部分を実行する（出典: atwiki/page-1297 本文）", () => {
+    let s = tagBoard([inst(BOUKEN.id, "a"), inst(CURRY.id, "curry")]);
+    s = activate(s, `${BOUKEN.id}:a`);
+    expect(s.pendingEffectChoice?.effectId).toBe("rs522_bouken_command");
+  });
+
+  it("R-KW-TAG-01: 2枚ともタッグなら、太字部分を実行するかわりに他の自軍常駐の太字部分を実行できる（どちらを実行するか選ぶ）（出典: atwiki/page-1297 規定文「太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる」）", () => {
+    let s = tagBoard([inst(BOUKEN.id, "a"), inst(GOETSU.id, "g")]);
+    s = activate(s, `${BOUKEN.id}:a`);
+    expect(s.pendingEffectChoice?.effectId).toBe("tag_bold_pick");
+    expect([...(s.pendingEffectChoice?.validInstanceIds ?? [])].sort()).toEqual([`${BOUKEN.id}:a`, `${GOETSU.id}:g`].sort());
+    // 呉越同舟の太字部分『自分の手札を1枚選び相手に見せる』を実行して、ボウケンスピリッツの「そうしたとき」以降を実行する。
+    s = choose(s, `${GOETSU.id}:g`);
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["TST-UNIT-0:h"]);
+    s = choose(s, "TST-UNIT-0:h");
+    expect(s.pendingEffectChoice?.effectId).toBe("rs522_bouken_unit");
+    s = choose(s, `${NUMBERED.id}:u`);
+    // コマンドは山札に戻っていない（ボウケンスピリッツ自身の太字部分は実行していない）。
+    expect(where(s, "player1", "TST-OP:c1")).toBe("command");
+    expect(where(s, "player1", "TST-UNIT-0:h")).toBe("hand");
+  });
+
+  it("R-KW-TAG-01: 自分の太字部分を実行できなくても、他の自軍のタッグの常駐の太字部分を代わりに実行できる（クライマックス刑事『オモテ向きの自軍パワーを1枚選び、自軍山札の上に戻す』）（出典: atwiki/page-1297 規定文）", () => {
+    let s = tagBoard([inst(BOUKEN.id, "a"), inst(CLIMAX.id, "cl")], { command: [], power: [inst("TST-UNIT-0", "pw")] });
+    expect(canActivate(s, `${BOUKEN.id}:a`)).toBe(true);
+    s = activate(s, `${BOUKEN.id}:a`);
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual([`${CLIMAX.id}:cl`]);
+    s = choose(s, `${CLIMAX.id}:cl`);
+    s = choose(s, "TST-UNIT-0:pw");
+    expect(s.players.player1.deck[0]?.instanceId).toBe("TST-UNIT-0:pw");
+    expect(s.pendingEffectChoice?.effectId).toBe("rs522_bouken_unit");
+  });
+
+  it("R-KW-TAG-01: タッグでない常駐しかなく、自分の太字部分も実行できなければ使えない（出典: atwiki/page-1297 本文）", () => {
+    const s = tagBoard([inst(BOUKEN.id, "a"), inst(CURRY.id, "curry")], { command: [] });
+    expect(canActivate(s, `${BOUKEN.id}:a`)).toBe(false);
+  });
   // 入れ替えの手順は公式 Q&A なし
   it.todo("R-KW-TAG-01: [未確定] 太字部分の入れ替えの詳細手順（公式 Q&A なし）");
 });

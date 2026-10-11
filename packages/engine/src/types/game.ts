@@ -491,7 +491,26 @@ export type Set7AChoiceMeta = {
   handInstanceId?: string;
 };
 
+/**
+ * ※タッグ「太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる」（R-KW-TAG-01。rules/legend1/set8NamedEffectsA.ts）。
+ * hostCardId/hostOpId は効果を使っている常駐、boldCardId/boldOpId は実行する太字部分の常駐。
+ */
+export type TagChoiceMeta = {
+  hostCardId: string;
+  hostOpId: string;
+  boldCardId?: string;
+  boldOpId?: string;
+  /** RS-521: バトルエリアに出たユニットのナンバー（数字でなければ -1）。 */
+  number?: number;
+  /** RS-525: 相手に見せた、合体を必要とする L ユニットのカード。 */
+  revealedLId?: string;
+  /** 太字部分の途中で選んだもの（RS-519 の「男」のユニット、RS-525 の1枚目のパワー、RS-609 の S ユニット）。 */
+  picked?: string[];
+};
+
 export type PendingEffectChoice = {
+  /** ※タッグの太字部分の入れ替え（rules/legend1/set8NamedEffectsA.ts）。 */
+  tagMeta?: TagChoiceMeta;
   /** 第7弾 RS-432〜RS-452 の選択の続き（rules/legend1/set7NamedEffectsA.ts）。 */
   set7aMeta?: Set7AChoiceMeta;
   /** 第9弾 RS-605〜RS-626 の選択の続き（rules/legend1/set9NamedEffectsA.ts）。 */

@@ -352,8 +352,38 @@ describe("RS-608 五色の戦士", () => {
     expect(canActivateResident(s, "RS-608:op")).toBe(false);
   });
 
-  it.todo("RS-608: 自軍ラッシュフェイズごとに1度だけ（2回目は起動できない）（出典: atwiki/page-1495）— 1回目の起動自体が未実装で、公開 API で2回目を確かめる状況を作れないため");
-  it.todo("RS-608: 宣言できる特徴は「レッド」「イエロー」「ブルー」「ブラック」「ホワイト」の5つだけ（出典: atwiki/page-1495）— 特徴を宣言する入力（アクション）がエンジンにないため");
+  const activateGoshoku = (s: GameState) => act(s, { type: "activate_resident_operation", playerId: "player1", operationInstanceId: "RS-608:op" });
+
+  it("RS-608: 自軍ラッシュフェイズごとに1度だけ（2回目は起動できない）（出典: atwiki/page-1495「自軍ラッシュフェイズごとに1度だけ」）", () => {
+    let s = activateGoshoku(placed());
+    s = resolveAll(s, ["TST-UNIT-0:s"]);
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(canActivateResident(s, "RS-608:op")).toBe(false);
+  });
+
+  it("RS-608: 宣言できる特徴は「レッド」「イエロー」「ブルー」「ブラック」「ホワイト」の5つだけ（出典: atwiki/page-1495）", () => {
+    let s = activateGoshoku(placed());
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: s.pendingEffectChoice!.validInstanceIds[0]! });
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-UNIT-0:s" });
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["レッド", "イエロー", "ブルー", "ブラック", "ホワイト"]);
+  });
+
+  it("RS-608: ※タッグ — WB のコマンドがなくても、他の自軍のタッグの常駐（ボウケンスピリッツ）の太字部分『自軍コマンドを1つ選び山札の上に戻す』を代わりに実行して効果を使える（出典: atwiki/page-1495「※タッグ」・R-KW-TAG-01）", () => {
+    let s = placed({ operation: [inst("RS-608", "op"), inst("RS-522", "bk")], command: releasedCat("ET", 1) });
+    expect(canActivateResident(s, "RS-608:op")).toBe(true);
+    s = activateGoshoku(s);
+    expect(s.pendingEffectChoice?.effectId).toBe("tag_bold_pick");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["RS-522:bk"]);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-522:bk" });
+    const cmd = s.pendingEffectChoice!.validInstanceIds[0]!;
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: cmd });
+    expect(s.players.player1.deck[0]?.instanceId).toBe(cmd);
+    // 五色の戦士の「そうしたとき」以降（S ユニットを選び、特徴を宣言する）。
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["TST-UNIT-0:s"]);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "TST-UNIT-0:s" });
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "ブルー" });
+    expect(s.pendingEffectChoice).toBeUndefined();
+  });
 });
 
 // ===========================================================================

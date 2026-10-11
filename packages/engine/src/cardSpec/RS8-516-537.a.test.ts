@@ -10,6 +10,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { getFullPlayableCardById } from "@rangers-strike/cards";
 import {
   activateResident,
   attackTargets,
@@ -326,9 +327,52 @@ describe("RS-519 インフェルシアの花嫁", () => {
     expect(s.players.player1.rush.filter((c) => c.cardId === "SPEC-GRUNT")).toHaveLength(0);
   });
 
-  it.todo(
-    "RS-519: 呉越同舟等と太字部分を読み替えて仮面ライダーキバ（XG5-074）をホールドした場合、出した戦闘員は【ファンガイアの王】の対象にならない（出典: atwiki/page-1155 Q1）— タッグの太字部分の入れ替えがエンジンに無く（R-KW-TAG-01 / rulesSpec 07 todo）、RK-239 との組み合わせを公開 API で組み立てられない",
-  );
+  /** RS-519 と、太字部分『自軍Sユニットを1体選びホールドする』を持つタッグの RK-239 ウエイクアップ！を常駐させる。キバ（XG5-074）は場に。 */
+  const KIBA = getFullPlayableCardById("XG5-074")!;
+  const WAKE_UP = getFullPlayableCardById("RK-239")!;
+  const kibaBoard = () =>
+    st(
+      {
+        phase: "rush",
+        turn: 3,
+        player1: {
+          operation: [inst("RS-519", "hb"), inst("RK-239", "wu")],
+          rush: [inst("XG5-074", "kiba")],
+          deck: [inst("SPEC-GRUNT", "g0"), inst("TST-OP", "x0"), inst("SPEC-GRUNT", "g1")],
+        },
+        player2: { deck: deckCards(3, "e") },
+      },
+      [...EXTRA, KIBA, WAKE_UP],
+    );
+
+  it("RS-519: ※タッグ — 男・女の S ユニットがいなくても、他の自軍のタッグの常駐（ウエイクアップ！）の太字部分『自軍Sユニットを1体選びホールドする』を代わりに実行して効果を使える（出典: atwiki/page-1155「太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる」・R-KW-TAG-01）", () => {
+    let s = kibaBoard();
+    expect(canActivateResident(s, "player1", "RS-519:hb")).toBe(true);
+    s = activateResident(s, "player1", "RS-519:hb");
+    expect(s.pendingEffectChoice?.effectId).toBe("tag_bold_pick");
+    // RS-519 自身の太字部分（男・女の捨札）は実行できないので、選べるのはウエイクアップ！の太字部分だけ。
+    expect(choiceIds(s)).toEqual(["RK-239:wu"]);
+    s = pick(s, "RK-239:wu");
+    expect(choiceIds(s)).toEqual(["XG5-074:kiba"]);
+    s = resolveAll(pick(s, "XG5-074:kiba"), ["SPEC-GRUNT:g0", "SPEC-GRUNT:g1"]);
+    expect(cardIn(s, "player1", "XG5-074:kiba")?.commandHeld).toBe(true);
+    expect(s.players.player1.rush.filter((c) => c.cardId === "SPEC-GRUNT")).toHaveLength(2);
+  });
+
+  it("RS-519: 呉越同舟等と太字部分を読み替えて仮面ライダーキバ（XG5-074）をホールドした場合、出した戦闘員は【ファンガイアの王】の対象にならない（BP+3000 されない）（出典: atwiki/page-1155 Q1）", () => {
+    let s = activateResident(kibaBoard(), "player1", "RS-519:hb");
+    s = pick(s, "RK-239:wu");
+    s = resolveAll(pick(s, "XG5-074:kiba"), ["SPEC-GRUNT:g0", "SPEC-GRUNT:g1"]);
+    const grunts = s.players.player1.rush.filter((c) => c.cardId === "SPEC-GRUNT");
+    expect(grunts).toHaveLength(2);
+    for (const g of grunts) expect(bpOf(s, "player1", g.instanceId)).toBe(GRUNT.bp);
+  });
+
+  it("RS-519: ※タッグ — 他の常駐の太字部分を代わりに実行しても、その常駐を使ったことにはならず、RS-519 を使ったことになる（「1度だけ」）（出典: atwiki/page-1155・R-KW-TAG-01）", () => {
+    let s = activateResident(kibaBoard(), "player1", "RS-519:hb");
+    s = resolveAll(pick(pick(s, "RK-239:wu"), "XG5-074:kiba"), ["SPEC-GRUNT:g0"]);
+    expect(canActivateResident(s, "player1", "RS-519:hb")).toBe(false);
+  });
 });
 
 // ===========================================================================
@@ -593,9 +637,33 @@ describe("RS-524 呉越同舟", () => {
   it.todo(
     "RS-524: 呉越同舟で ET を追加した L ユニットからゴーゴーショベルがコンビネーションした場合、追加カテゴリが失われてもコンビネーションは成立したまま（出典: grnrngr/faq-card-8 RS-524 Q1「はい」）— カテゴリ追加の起動が未実装（上の it.fails）",
   );
-  it.todo(
-    "RS-524: 頼もしい相棒の太字部分を呉越同舟の太字部分に読み替えるとき、頼もしい相棒で見せた L ユニットのカードを見せるカードに選べる（出典: grnrngr/faq-card-8 RS-524 Q2「はい、できます」）— タッグの太字部分の入れ替えが未実装（R-KW-TAG-01）",
-  );
+  it("RS-524: 頼もしい相棒の太字部分を呉越同舟の太字部分に読み替えるとき、頼もしい相棒で見せた L ユニットのカードを見せるカードに選べる（出典: grnrngr/faq-card-8 RS-524 Q2「はい、できます」）", () => {
+    let s = st({
+      phase: "rush",
+      turn: 3,
+      player1: {
+        operation: [inst("RS-525", "ta"), inst("RS-524", "go")],
+        hand: [inst("RS-529", "robo")],
+        // オモテ向きのパワーは1枚だけ（頼もしい相棒自身の太字部分『オモテ向きの自軍パワーを2枚選び捨札にする』は実行できない）。
+        power: [inst("TST-P", "pw0")],
+        deck: [inst("TST-OP", "d0"), inst("RS-530", "jet"), inst("RS-533", "s")],
+      },
+      player2: { deck: deckCards(3, "e") },
+    });
+    expect(canActivateResident(s, "player1", "RS-525:ta")).toBe(true);
+    s = activateResident(s, "player1", "RS-525:ta");
+    s = pick(s, "RS-529:robo");
+    expect(s.pendingEffectChoice?.effectId).toBe("tag_bold_pick");
+    expect(choiceIds(s)).toEqual(["RS-524:go"]);
+    s = pick(s, "RS-524:go");
+    // 呉越同舟の太字部分『自分の手札を1枚選び相手に見せる』— 頼もしい相棒で見せたチェンジロボを選べる。
+    expect(choiceIds(s)).toContain("RS-529:robo");
+    s = pick(s, "RS-529:robo");
+    s = resolveAll(s, ["RS-530:jet"]);
+    expect(zoneOf(s, "player1", "RS-530:jet")).toBe("hand");
+    expect(zoneOf(s, "player1", "TST-P:pw0")).toBe("power");
+    expect(zoneOf(s, "player1", "RS-529:robo")).toBe("hand");
+  });
 });
 
 // ===========================================================================

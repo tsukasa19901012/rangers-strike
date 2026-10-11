@@ -10,6 +10,7 @@
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardCategories, cardName, effectiveBp, effectiveCommandCategories, getDefinition } from "../../core/catalog";
+import { beginTagBold, registerTagResident, tagBoldExecutable } from "./set8NamedEffectsA";
 import { opponent } from "../../core/helpers";
 import { shuffleCards } from "../../core/deckShuffle";
 import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
@@ -556,19 +557,28 @@ function releasedWbCommands(state: GameState, playerId: PlayerId): string[] {
     .map((c) => c.instanceId);
 }
 
+/** 【五色の戦士】そうしたとき: 自軍 S ユニットを1体選び、特徴を宣言する。state の pendingEffectChoice は pending。 */
+function afterGoshokuBold(state: GameState, playerId: PlayerId, pending: PendingEffectChoice): GameState {
+  const units = fieldUnits(state, playerId).filter((c) => isSmallUnitNow(state, playerId, c)).map((c) => c.instanceId);
+  if (units.length === 0) return proceed(close(state, pending), pending);
+  return openEffectChoice(close(state, pending), {
+    ...pending,
+    effectId: GOSHOKU_UNIT_EFFECT_ID,
+    sourceCardId: GOSHOKU_CARD_ID,
+    kind: "select_unit",
+    validInstanceIds: units,
+    selectCount: 1,
+    optional: false,
+  });
+}
+
 CHOICE_RESOLVERS[GOSHOKU_HOLD_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
-  const held = patchPlayer(close(state, pending), playerId, (p) => ({
+  const held = patchPlayer(state, playerId, (p) => ({
     ...p,
     command: p.command.map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: true } : c)),
   }));
-  const units = fieldUnits(held, playerId).filter((c) => isSmallUnitNow(held, playerId, c)).map((c) => c.instanceId);
-  const log = logFor(state, playerId, GOSHOKU_CARD_ID, `${GOSHOKU_HOLD_EFFECT_ID}:hold`);
-  if (units.length === 0) return { state: proceed(held, pending), log };
-  return {
-    state: openEffectChoice(held, { ...pending, effectId: GOSHOKU_UNIT_EFFECT_ID, kind: "select_unit", validInstanceIds: units, optional: false }),
-    log,
-  };
+  return { state: afterGoshokuBold(held, playerId, pending), log: logFor(state, playerId, GOSHOKU_CARD_ID, `${GOSHOKU_HOLD_EFFECT_ID}:hold`) };
 };
 
 CHOICE_RESOLVERS[GOSHOKU_UNIT_EFFECT_ID] = (state, _playerId, instanceId) => {
@@ -765,47 +775,70 @@ export function isSet9AResidentCard(cardId: string): boolean {
   return cardId === GOSHOKU_CARD_ID || cardId === SOUL_CARD_ID;
 }
 
+/** この常駐（または同名の常駐。同名のタッグは2枚でも太字部分の効果は1度だけ。grnrngr/faq-rider_3 RK-240）を使ったか。 */
+function sameNameResidentUsed(state: GameState, playerId: PlayerId, op: CardInstance): boolean {
+  const player = state.players[playerId];
+  const sameName = player.operation.filter((c) => sameName9A(state, c.cardId, op.cardId));
+  if (op.cardId === GOSHOKU_CARD_ID) return sameName.some((c) => isResidentActivatedThisRush(c));
+  return sameName.some((c) => soulUsedThisTurn(player, c.instanceId));
+}
+
+function sameName9A(state: GameState, a: string, b: string): boolean {
+  return a === b || cardName(state.definitions, a) === cardName(state.definitions, b);
+}
+
 export function canActivateSet9AResident(state: GameState, playerId: PlayerId, operationInstanceId: string): boolean {
   if (state.pendingEffectChoice || state.pendingCommandPayment || state.pendingZordSetup || state.pendingEffectRush) return false;
   if (state.activePlayer !== playerId || turnPlayerOf(state) !== playerId) return false;
   const player = state.players[playerId];
   const op = player.operation.find((c) => c.instanceId === operationInstanceId);
-  if (!op) return false;
-  if (op.cardId === GOSHOKU_CARD_ID) {
-    if (state.phase !== "rush" || isResidentActivatedThisRush(op)) return false;
-    return releasedWbCommands(state, playerId).length > 0;
-  }
-  if (op.cardId === SOUL_CARD_ID) {
-    if (state.phase !== "battle" || soulUsedThisTurn(player, operationInstanceId)) return false;
-    return soulCostIds(state, playerId).length > 0;
-  }
-  return false;
+  if (!op || !isSet9AResidentCard(op.cardId)) return false;
+  if (state.phase !== (op.cardId === GOSHOKU_CARD_ID ? "rush" : "battle")) return false;
+  if (sameNameResidentUsed(state, playerId, op)) return false;
+  // ※タッグ: 自分の太字部分か、入れ替えられる他の自軍常駐の太字部分を実行できること（rules/legend1/set8NamedEffectsA.ts）。
+  return tagBoldExecutable(state, playerId, op);
 }
 
 export function activateSet9AResident(state: GameState, playerId: PlayerId, operationInstanceId: string): GameState | null {
   if (!canActivateSet9AResident(state, playerId, operationInstanceId)) return null;
   const op = state.players[playerId].operation.find((c) => c.instanceId === operationInstanceId)!;
-  const ctx = { playerId, phasePlayerId: playerId, sourceCardId: op.cardId, sourceInstanceId: operationInstanceId };
-  if (op.cardId === GOSHOKU_CARD_ID) {
-    const marked = patchPlayer(state, playerId, (p) => markResidentActivatedThisRush(p, operationInstanceId));
-    return openEffectChoice(marked, {
-      ...base(ctx),
+  const marked =
+    op.cardId === GOSHOKU_CARD_ID
+      ? patchPlayer(state, playerId, (p) => markResidentActivatedThisRush(p, operationInstanceId))
+      : patchPlayer(state, playerId, (p) => addTurnRuleModifier(p, SOUL_USED_RULE_ID, { sourceCardId: SOUL_CARD_ID, payload: operationInstanceId }));
+  return beginTagBold(marked, playerId, op, { hostCardId: op.cardId, hostOpId: op.instanceId });
+}
+
+// ※タッグの太字部分（rules/legend1/set8NamedEffectsA.ts registerTagResident）。
+registerTagResident(GOSHOKU_CARD_ID, {
+  boldAvailable: (state, playerId) => releasedWbCommands(state, playerId).length > 0,
+  ownBold: (state, playerId, frame) =>
+    openEffectChoice({ ...state, pendingEffectChoice: undefined }, {
+      ...frame,
       effectId: GOSHOKU_HOLD_EFFECT_ID,
+      sourceCardId: GOSHOKU_CARD_ID,
       // ホールドはこの選択の解決で行う（effect_hold の支払いにしない）。
       kind: "select_command",
       validInstanceIds: releasedWbCommands(state, playerId),
+      selectCount: 1,
       optional: false,
-    });
-  }
-  const marked = patchPlayer(state, playerId, (p) => addTurnRuleModifier(p, SOUL_USED_RULE_ID, { sourceCardId: SOUL_CARD_ID, payload: operationInstanceId }));
-  return openEffectChoice(marked, {
-    ...base(ctx),
-    effectId: SOUL_COST_EFFECT_ID,
-    kind: "select_unit",
-    validInstanceIds: soulCostIds(state, playerId),
-    optional: false,
-  });
-}
+    }),
+  after: (state, playerId, frame) => ({ state: afterGoshokuBold(state, playerId, frame) }),
+});
+registerTagResident(SOUL_CARD_ID, {
+  boldAvailable: (state, playerId) => soulCostIds(state, playerId).length > 0,
+  ownBold: (state, playerId, frame) =>
+    openEffectChoice({ ...state, pendingEffectChoice: undefined }, {
+      ...frame,
+      effectId: SOUL_COST_EFFECT_ID,
+      sourceCardId: SOUL_CARD_ID,
+      kind: "select_unit",
+      validInstanceIds: soulCostIds(state, playerId),
+      selectCount: 1,
+      optional: false,
+    }),
+  after: (state, _playerId, frame) => ({ state: continueSoulAfterCost(close(state, frame), frame) }),
+});
 
 /** 合法手: 起動できる常駐オペレーション（RS-609 は自軍バトルフェイズ）。 */
 export function listSet9AResidentActivations(state: GameState, playerId: PlayerId): string[] {

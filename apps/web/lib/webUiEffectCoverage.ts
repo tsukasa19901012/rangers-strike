@@ -123,6 +123,26 @@ const KNOWN_EFFECT_IDS = new Set<string>([
   "rs493_quiz_declare",
   // 第8弾 RS-588/RS-590（engine: rules/legend1/set8NamedEffectsD.ts）の NC／RC の選択（EffectChoiceModal の数字ボタン）。
   "set8d_borrow_hand_combo_branch",
+  // ※タッグ（R-KW-TAG-01）: どの常駐の太字部分を実行するか（engine: rules/legend1/set8NamedEffectsA.ts）と、入れ替えた太字部分の選択。
+  "tag_bold_pick",
+  "tag_bold_rs519_male",
+  "tag_bold_rs519_female",
+  "tag_bold_rs521",
+  "tag_bold_rs522",
+  "tag_bold_rs524",
+  "tag_bold_rs525",
+  "tag_bold_rs608",
+  "tag_bold_rs609",
+  "tag_bold_rs609_destination",
+  "tag_bold_rk170",
+  "tag_bold_rk239",
+  "tag_bold_rk242",
+  "tag_bold_rk244",
+  "tag_bold_rk248",
+  // RS-623【翼合体】等「DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい」（engine: rules/stackOntoLargeUnit.ts）。
+  "stack_self_onto_l",
+  // RK-249 アドベント（engine: rules/rk/rk249Advent.ts）。
+  "rk249_advent",
 ]);
 
 export function isKnownEffectChoice(pending: PendingEffectChoice): boolean {
