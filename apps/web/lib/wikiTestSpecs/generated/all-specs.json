@@ -17471,8 +17471,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "effect_card::RS-547::mamorugono",
-      "register"
+      "effect_card::RS-547::mamorugono"
     ],
     "bp": 6000,
     "sp": null,
