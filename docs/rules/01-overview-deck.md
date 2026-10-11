@@ -16,6 +16,7 @@
 戦隊（英雄の再誕〜蒼九の翼）、ライダーEXP vol.1〜4、メタルエディション、リバイヴァ、ベルトコレクション、プロモを経て、2009年6月からクロスギャザー（XG1〜XG7）に統一。旧ナンバーのカードも引き続き使用できる。「クロスギャザー」はシリーズ名で、キーワード「クロス」（R-KW-CROSS）とは別物。
 - 出典: `atwiki/page-1535`「09年6月から始まる」「旧ナンバーのカードも続けてゲームに使用できる」、`atwiki/page-174`（エクスパンション一覧）、wikiwiki メニュー（XG1〜XG7、英雄の再誕〜蒼九の翼、ライダーEXP vol.1〜4、メタルエディション、リバイヴァ、ベルトコレクション、プロモーションカード）
 - Web: https://w.atwiki.jp/renst/pages/1535.html , https://w.atwiki.jp/renst/pages/174.html , https://wikiwiki.jp/renst/
+- 実装: ✅ 対戦・デッキ構築のカタログ（`allCardsCatalog`）は full-playable（RS・SR・RK・BK に XG1〜7・RM・XP・PR・PK・SK・SX・SM・PM を加えた 1,832 枚。コマンダーは R-DECK-07 により除外）
 
 #### R-FMT-03 スタックは存在しない [wiki] `web照合済(2026-10-10)`
 効果を積み重ねて逆順に解決する「スタック」の概念はない（カウンターは存在する）。解決順は R-TIME 系に従う。
