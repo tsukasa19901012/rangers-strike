@@ -73,6 +73,18 @@ function parseAlternateConditionText(text: string): RushAdditionalCondition | un
     };
   }
 
+  // 「特徴「母艦」を持つ自軍ユニットを1体捨札にする」（RS-440 バトルフィーバーロボ（2nd）atwiki/page-780）。
+  const featureDiscard = text.match(/^特徴「([^」]+)」を持つ自軍(S|M|L)?ユニットを(\d+)体捨札にする$/);
+  if (featureDiscard) {
+    return {
+      conditionId: "discard_feature_unit",
+      text,
+      requiredFeature: featureDiscard[1],
+      ...(featureDiscard[2] ? { requiredSize: featureDiscard[2] as "S" | "M" | "L" } : {}),
+      unitCount: Number(featureDiscard[3]),
+    };
+  }
+
   const namedDiscard = text.match(/自軍「([^」]+)」1体を捨札に/);
   if (namedDiscard) {
     return {
@@ -102,6 +114,41 @@ export function effectiveRushAdditionalCondition(
   if (!rushConditionGateMet(state as GameState, playerId, gateText)) return base;
 
   return parseAlternateConditionText(overrideText) ?? base;
+}
+
+type OverridableDefinition = CardDefinition & { rushAdditionalConditionOverride?: RushAdditionalCondition };
+
+function hasConditionChangeText(text: string): boolean {
+  return text.includes("このカードの追加条件は") && CONDITION_CHANGE.test(text);
+}
+
+/**
+ * 「※このカードの追加条件は、…のとき、次のように変更される⇒…」を、評価中の定義に反映した state を返す
+ * （core/legalActions.ts getLegalActions・core/applyAction.ts applyAction の入口で使い、結果の state には元の定義を戻す）。
+ * 追加条件の判定・支払い（rules/zord.ts 等）は定義から追加条件を読むので、定義に変更後の追加条件
+ * （rushAdditionalConditionOverride。@rangers-strike/cards resolveRushAdditionalCondition が優先する）を付ける。
+ * 変更が必要なカードが手札になければ、同じ state をそのまま返す。
+ */
+export function withEffectiveRushConditionDefinitions(state: GameState): GameState {
+  let patched: Record<string, CardDefinition> | null = null;
+  // ターンプレイヤーの判定を優先する（同じカードを両プレイヤーが持つとき）。
+  const order: PlayerId[] = state.activePlayer === "player1" ? ["player2", "player1"] : ["player1", "player2"];
+  for (const pid of order) {
+    for (const card of state.players[pid].hand) {
+      const current = state.definitions[card.cardId] as OverridableDefinition | undefined;
+      if (!current?.text || !hasConditionChangeText(current.text)) continue;
+      const { rushAdditionalConditionOverride: previous, ...original } = current;
+      const base = resolveRushAdditionalCondition(card.cardId, original as CardDefinition);
+      const effective = effectiveRushAdditionalCondition(state, pid, card.cardId, original as CardDefinition);
+      const desired = effective && JSON.stringify(effective) !== JSON.stringify(base) ? effective : undefined;
+      if (JSON.stringify(desired) === JSON.stringify(previous)) continue;
+      patched ??= { ...state.definitions };
+      patched[card.cardId] = (desired
+        ? { ...original, rushAdditionalConditionOverride: desired }
+        : original) as CardDefinition;
+    }
+  }
+  return patched ? { ...state, definitions: patched } : state;
 }
 
 export function effectiveBattleEntryHoldCount(

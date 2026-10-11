@@ -380,6 +380,13 @@ export function collectExtendedZordMaterials(
 
   const zones: ExtendedZordZone[] = ["hand", "command", "operation", "power", "rush", "battle"];
   const found: Array<{ zone: ExtendedZordZone; card: CardInstance }> = [];
+  if (condition.conditionId === "discard_operation_cards") {
+    // 「常駐置き場のカード」には常駐オペレーションに重ねたカードも含む（ウラ向きのカードはウラ向きのまま。
+    // RK-277 ン・ダグバ・ゼバ — atwiki/page-1254 Q1・page-753 Q1）。重ねたカードを先に並べる。
+    for (const op of player.operation) {
+      for (const stacked of op.stackedCards ?? []) found.push({ zone: "operation", card: stacked });
+    }
+  }
   for (const zone of zones) {
     for (const card of player[zone]) {
       if (
@@ -477,7 +484,28 @@ function findExtendedMaterial(
     }
     return { zone, index: found.index, card: found.card };
   }
+  // 常駐オペレーションに重ねたカード（index -1 で表す。RK-277）。
+  if (resolveCondition(definitions, rushingCardId)?.conditionId === "discard_operation_cards") {
+    for (const op of player.operation) {
+      const stacked = op.stackedCards?.find((c) => c.instanceId === materialInstanceId);
+      if (stacked) return { zone: "operation", index: -1, card: stacked };
+    }
+  }
   return null;
+}
+
+/** 常駐オペレーションに重ねたカードを取り除く（RK-277 の追加条件の素材）。 */
+function removeStackedOperationCard(player: PlayerState, instanceId: string): PlayerState {
+  return {
+    ...player,
+    operation: player.operation.map((op) => {
+      if (!op.stackedCards?.some((c) => c.instanceId === instanceId)) return op;
+      const rest = op.stackedCards.filter((c) => c.instanceId !== instanceId);
+      if (rest.length > 0) return { ...op, stackedCards: rest };
+      const { stackedCards: _s, ...without } = op;
+      return without as CardInstance;
+    }),
+  };
 }
 
 export function validateExtendedZordPayment(
@@ -545,7 +573,10 @@ export function applyExtendedZordPayment(
   if (!condition) return null;
 
   let nextPlayer = player;
-  for (const materialId of materialInstanceIds) {
+  // 重ねたカードを先に取り除く（重ねていたオペレーションも素材なら、その後で捨札にする）。
+  const isStacked = (id: string) => player.operation.some((op) => op.stackedCards?.some((c) => c.instanceId === id));
+  const ordered = [...materialInstanceIds.filter(isStacked), ...materialInstanceIds.filter((id) => !isStacked(id))];
+  for (const materialId of ordered) {
     const material = findExtendedMaterial(
       nextPlayer,
       definitions,
@@ -555,8 +586,16 @@ export function applyExtendedZordPayment(
     );
     if (!material) return null;
 
-    const [, zoneCards] = removeAt(nextPlayer[material.zone], material.index);
-    nextPlayer = { ...nextPlayer, [material.zone]: zoneCards };
+    if (material.index < 0) {
+      nextPlayer = removeStackedOperationCard(nextPlayer, materialId);
+    } else {
+      const [, zoneCards] = removeAt(nextPlayer[material.zone], material.index);
+      nextPlayer = { ...nextPlayer, [material.zone]: zoneCards };
+      if (material.zone === "operation" && material.card.stackedCards?.length) {
+        // 常駐置き場を離れたオペレーションに重ねていたカードは捨札になる。
+        nextPlayer = { ...nextPlayer, discard: [...nextPlayer.discard, ...material.card.stackedCards] };
+      }
+    }
 
     if (condition.conditionId === "return_named_to_hand") {
       nextPlayer = {
@@ -564,9 +603,10 @@ export function applyExtendedZordPayment(
         hand: [...nextPlayer.hand, material.card],
       };
     } else {
+      const { stackedCards: _stack, ...discarded } = material.card;
       nextPlayer = {
         ...nextPlayer,
-        discard: [...nextPlayer.discard, material.card],
+        discard: [...nextPlayer.discard, discarded as CardInstance],
       };
     }
   }

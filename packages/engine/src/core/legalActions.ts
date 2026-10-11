@@ -117,6 +117,7 @@ import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/s
 import { giantBombCounterIds, isSet5AConfirmableChoice, operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
 import { isSet6AuditConfirmableChoice } from "../rules/legend1/set6AuditFixes";
 import { isSet7AChoiceEffect, isSet7AConfirmableChoice, set7AStrikeCounterIds } from "../rules/legend1/set7NamedEffectsA";
+import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower } from "./power";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
@@ -1436,8 +1437,10 @@ export function getActionPlayerId(state: GameState): PlayerId {
   );
 }
 
-export function getLegalActions(state: GameState): GameAction[] {
-  if (state.winner) return [];
+export function getLegalActions(input: GameState): GameAction[] {
+  if (input.winner) return [];
+  // 「※このカードの追加条件は、…のとき、次のように変更される」を反映した定義で判定する（RS-440 等）。
+  const state = withEffectiveRushConditionDefinitions(input);
 
   const playerId = getActionPlayerId(state);
   const player = state.players[playerId];

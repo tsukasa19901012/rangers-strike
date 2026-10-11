@@ -100,14 +100,12 @@ describe("RS-439 バトルシャーク", () => {
     inst("TST-UNIT-2", "m"),
   ];
 
-  // 既知の不具合: CARD-RS-439 ラッシュしても【万能戦艦】が発動しない（選択が出ない）。DSL も「山札から1枚を手札に」だけで L ユニット／L・R ナンバーの条件が落ちている
   it("RS-439: 【万能戦艦】ラッシュしたとき、選べるのは山札の L ユニットのカードか、ナンバーに L／R を持つユニットカードだけ（出典: atwiki/page-781）", () => {
     const s = rushShark(deck());
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-439");
     expect(choiceIds(s)).toEqual(["RS-171:ln", "RS-172:rn", "RS-173:rn2", "TST-UNIT-7:l"]);
   });
 
-  // 既知の不具合: CARD-RS-439 ラッシュしても【万能戦艦】が発動しない（DSL も1枚だけで「2枚まで」が落ちている）
   it("RS-439: 【万能戦艦】ナンバーに L／R を持つユニットカードなら2枚まで手札に加えられる（出典: atwiki/page-781「2枚まで選び」）", () => {
     let s = rushShark(deck());
     s = pick(s, "RS-171:ln");
@@ -117,7 +115,6 @@ describe("RS-439 バトルシャーク", () => {
     expect(zoneOf(s, "player1", "RS-172:rn")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RS-439 ラッシュしても【万能戦艦】が発動しない
   it("RS-439: 【万能戦艦】L ユニットのカードを選んだら、それ1枚だけ手札に加わる（出典: atwiki/page-781「Lユニットのカードを1枚か」）", () => {
     let s = rushShark(deck());
     s = pick(s, "TST-UNIT-7:l");
@@ -128,7 +125,6 @@ describe("RS-439 バトルシャーク", () => {
     expect(s.players.player1.deck).toHaveLength(6);
   });
 
-  // 既知の不具合: CARD-RS-439 ラッシュしても【万能戦艦】が発動しない（見送りの選択も出ない）
   it("RS-439: 【万能戦艦】「発動できる／加えてもよい」— 見送ることができ、山札の枚数は変わらない（出典: atwiki/page-781）", () => {
     const s = rushShark(deck());
     expect(canSkip(s)).toBe(true);
@@ -142,7 +138,6 @@ describe("RS-439 バトルシャーク", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-439");
   });
 
-  // 既知の不具合: CARD-RS-439 ラッシュしても【万能戦艦】が発動しない（DSL でも条件が落ちていてガンマジンが候補に入る）
   it("RS-439: 山札のガンマジンは（L ユニットが場にあっても）S ユニットのカードなので選べない（出典: atwiki/page-781 Q1「いいえ、それはできません。山札にある間はあくまで「Sユニットのカード」であり」）", () => {
     const s = rushShark([inst("RS-558", "gm"), inst("TST-UNIT-7", "l")], { battle: [inst("TST-UNIT-7", "fieldL")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-439");
@@ -200,7 +195,6 @@ describe("RS-440 バトルフィーバーロボ（2nd）", () => {
     expect(canStartRush(rushState(6, [inst("RS-439", "bs")]), "player1", "RS-440:bf")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-440 自軍捨札7枚以上で追加条件が「特徴「母艦」の自軍ユニット1体を捨札にする」に変わる処理が実装されていない
   it("RS-440: 自軍捨札が7枚以上なら、追加条件は特徴「母艦」の自軍ユニット（バトルシャーク）1体を捨札にすることに変わる（出典: atwiki/page-780「次のように変更される⇒特徴「母艦」を持つ自軍ユニットを1体捨札にする」）", () => {
     const s = rushState(7, [inst("RS-439", "bs")]);
     expect(canStartRush(s, "player1", "RS-440:bf")).toBe(true);
@@ -211,12 +205,10 @@ describe("RS-440 バトルフィーバーロボ（2nd）", () => {
     expect(zoneOf(t, "player1", "RS-439:bs")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-440 自軍捨札7枚以上でも元の追加条件（S ユニット5体）のままラッシュできる
   it("RS-440: 自軍捨札が7枚以上のときは追加条件が変更されるので、母艦がいなければ S ユニット5体を捨札にしてもラッシュできない（出典: atwiki/page-780「次のように変更される」）", () => {
     expect(canStartRush(rushState(7, fillers(5)), "player1", "RS-440:bf")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-440 「ナンバーに L／R を持つ自軍ユニット1体につき BP+1000」が未実装（rules/fieldAuras.ts で Deferred のまま）
   it("RS-440: ※ナンバーに L／R を持つ自軍ユニット1体につき BP+1000（バトルエリアの L・ラッシュエリアの R で +2000、敵軍の L／R は数えない）（出典: atwiki/page-780）", () => {
     const s = stx({
       player1: { battle: [inst("RS-440", "bf"), inst("RS-171", "l")], rush: [inst("RS-172", "r")], deck: deckCards(3) },
@@ -245,7 +237,6 @@ describe("RS-440 バトルフィーバーロボ（2nd）", () => {
       player2: { deck: deckCards(3, "e") },
     });
 
-  // 既知の不具合: CARD-RS-440 【武器換装】が実装されていない（自軍コマンドを3つホールドしてラッシュエリアに戻す手段がない）
   it("RS-440: 【武器換装】自軍バトルフェイズ中、自軍コマンドを3つホールドして、これをラッシュエリアに戻せる（出典: atwiki/page-780）", () => {
     let s = weaponState(3);
     const a = weaponActions(s);
@@ -263,7 +254,6 @@ describe("RS-440 バトルフィーバーロボ（2nd）", () => {
     expect(weaponActions(weaponState(3, "player2"))).toHaveLength(0);
   });
 
-  // 既知の不具合: CARD-RS-440 【武器換装】が実装されていない
   it("RS-440: 【武器換装】で戻した後、ダッシュレオン【超文明の守護】でコマンドがリリースされれば、再び出して【武器換装】を使える（出典: grnrngr/faq-card-7 RS-440 Q「はい、できます」）", () => {
     let s = stx({
       player1: { battle: [inst("TST-UNIT-0", "f")], rush: [inst("RS-440", "bf"), inst("RS-145", "dl")], command: releasedCat("ET", 3), deck: deckCards(3) },
@@ -308,7 +298,6 @@ describe("RS-441 バトルコサック", () => {
     return pick(s, "return");
   };
 
-  // 既知の不具合: CARD-RS-441 【コサックダンス】がスタブ（grant_keyword のみ）で、ユニットがラッシュエリアに戻っても手札に戻す選択が出ない
   it("RS-441: 【コサックダンス】このターン、自軍ユニットがバトルエリアからラッシュエリアに戻ったとき、そのユニットを手札に戻せる（出典: atwiki/page-782）", () => {
     const s = disco(1);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-441");
@@ -317,7 +306,6 @@ describe("RS-441 バトルコサック", () => {
     expect(zoneOf(t, "player1", "RS-445:ma")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RS-441 【コサックダンス】が実装されていない
   it("RS-441: 【コサックダンス】手札に戻したとき、自軍コマンドを1つホールドして同じカード名のユニットカードを手札から自軍ラッシュエリアに出せる（出典: atwiki/page-782）", () => {
     let s = disco(1, [inst("RS-445", "ma2"), inst("RS-442", "other")]);
     // 手札に戻す（ma）→ 同じカード名のユニットカードを手札から選ぶ（ma2）。
@@ -331,7 +319,6 @@ describe("RS-441 バトルコサック", () => {
     expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(1);
   });
 
-  // 既知の不具合: CARD-RS-441 【コサックダンス】が実装されていない
   it("RS-441: 【コサックダンス】手札に戻したユニットカードそのものを選んでラッシュエリアに出せる（出典: grnrngr/faq-card-7 RS-441 Q「はい、できます」）", () => {
     let s = disco(1);
     s = resolveAll(s, ["RS-445:ma"]);
@@ -434,12 +421,10 @@ describe("RS-442 バトルフランス", () => {
     return at("RS-442", pos, {}, { battle: enemyGirls });
   };
 
-  // 既知の不具合: CARD-RS-442 【スパニッシュダンス】がスタブ（ターン修正の登録だけ）で BP が上がらない
   it("RS-442: 【スパニッシュダンス】特徴「女」を持つユニット（敵軍のユニットも含む）1体につき BP+1000（出典: atwiki/page-751「特徴「女」を持つユニット1体につき」）", () => {
     expect(bpOf(france(2), "player1", "RS-442:x")).toBe(4000);
   });
 
-  // 既知の不具合: CARD-RS-442 【スパニッシュダンス】で BP が上がらない
   it("RS-442: 【スパニッシュダンス】自軍の「女」のユニットも数える（出典: atwiki/page-751）", () => {
     const s = at("RS-442", 2, { hand: [] }, { battle: [inst("SPEC-GIRL", "e0")] }, [inst("SPEC-GIRL", "own")]);
     expect(bpOf(s, "player1", "RS-442:x")).toBe(4000);
@@ -449,7 +434,6 @@ describe("RS-442 バトルフランス", () => {
     expect(bpOf(france(2, 1), "player1", "RS-442:x")).toBe(2000);
   });
 
-  // 既知の不具合: CARD-RS-442 【スパニッシュダンス】で BP が上がらず、次に並ぶ「女」の S ユニットも SP1 にならない
   it("RS-442: 【スパニッシュダンス】BP5000 以上のとき、次に並ぶ「女」の自軍 S ユニットは SP1 になる（出典: atwiki/page-751「これがBP5000以上のとき…SP1になる」）", () => {
     let s = france(3);
     s = passEntry(s);
@@ -458,7 +442,6 @@ describe("RS-442 バトルフランス", () => {
     expect(spOf(s, "player1", "SPEC-GIRL:nx")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-442 【スパニッシュダンス】で BP が上がらない（BP4000 の確認ができない）
   it("RS-442: 【スパニッシュダンス】BP4000（5000 未満）なら次に並ぶ「女」の S ユニットに SP は付かない（出典: atwiki/page-751「BP5000以上のとき」）", () => {
     let s = passEntry(france(1));
     s = act({ ...s, players: { ...s.players, player1: { ...s.players.player1, rush: [inst("SPEC-GIRL", "nx")] } } }, { type: "move_to_battle", playerId: "player1", instanceId: "SPEC-GIRL:nx" });
@@ -489,14 +472,12 @@ describe("RS-443 バトルジャパン", () => {
   const japan = (command: CardInstance[] = [], pos = 3) =>
     at("RS-443", pos, { rush: [inst("RS-443", "x"), inst("TST-UNIT-0", "a"), inst("TST-UNIT-0", "b"), inst("TST-UNIT-0", "c"), inst("TST-UNIT-2", "m")], command });
 
-  // 既知の不具合: CARD-RS-443 【カンフーダンス】がスタブ（grant_keyword のみ）で、選択が出ない
   it("RS-443: 【カンフーダンス】自軍ラッシュエリアの S ユニット（M は不可）から選べる（出典: atwiki/page-754「自軍ラッシュエリアのSユニットを2体まで選び」）", () => {
     const s = japan();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-443");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:a", "TST-UNIT-0:b", "TST-UNIT-0:c"]);
   });
 
-  // 既知の不具合: CARD-RS-443 【カンフーダンス】が実装されていない
   it("RS-443: 【カンフーダンス】選んだ2体は自軍コマンドゾーンにリリース状態で置かれる（出典: atwiki/page-754「リリース状態で置いてもよい」）", () => {
     let s = pick(japan(), "TST-UNIT-0:a");
     if (s.pendingEffectChoice?.sourceCardId === "RS-443") s = pick(s, "TST-UNIT-0:b");
@@ -508,7 +489,6 @@ describe("RS-443 バトルジャパン", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:c")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-443 【カンフーダンス】が実装されていない
   it("RS-443: 【カンフーダンス】コマンドゾーンが4枚なら置けるのは1体だけ（5枚まで）（出典: atwiki/page-754「(コマンドゾーンに置けるカードは通常5枚まで)」）", () => {
     let s = japan(releasedCat("ET", 4));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-443");
@@ -550,14 +530,12 @@ describe("RS-444 バトルケニア", () => {
   const kenya = (pos = 4) =>
     at("RS-444", pos, {}, {}, [inst("SPEC-BEAST", "b1"), inst("SPEC-BEAST", "b2"), inst("TST-UNIT-0", "p")].slice(0, pos - 1));
 
-  // 既知の不具合: CARD-RS-444 【トロピカルダンス】が汎用の「ラッシュエリアに出す」処理に回されていて、獣の自軍ユニットを選ぶ選択が出ない
   it("RS-444: 【トロピカルダンス】特徴「獣」の自軍ユニットだけを選べる（出典: atwiki/page-783「特徴「獣」を持つ自軍ユニットを3体まで選び」）", () => {
     const s = kenya();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-444");
     expect(choiceIds(s)).toEqual(["SPEC-BEAST:b1", "SPEC-BEAST:b2"]);
   });
 
-  // 既知の不具合: CARD-RS-444 【トロピカルダンス】が実装されていない
   it("RS-444: 【トロピカルダンス】選んだユニットはラッシュエリアに戻り、このターン再びバトルエリアに出られない（出典: atwiki/page-783「ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない」）", () => {
     let s = pick(kenya(), "SPEC-BEAST:b1");
     if (s.pendingEffectChoice?.sourceCardId === "RS-444") s = pick(s, "SPEC-BEAST:b2");
@@ -636,7 +614,6 @@ describe("RS-445 ミスアメリカ", () => {
     expect(zoneOf(s, "player2", "SPEC-GIRL:eg")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-445 【ディスコダンス】がバトルエリアのミスアメリカ自身の NC 記録を見ており、ミスアメリカが撃破されていると発動しない（NC の効果はターン終了まで有効・R-CN-06）
   it("RS-445: 【ディスコダンス】発動元のミスアメリカがターン中に撃破されていても、ターンを終えるとき「女」の S ユニットを戻せる（出典: atwiki/page-784・R-CN-06「発動元が撃破・並び順変化しても無効にならない」）", () => {
     // ミスアメリカ（BP1000）で BP13000 の敵軍ユニットにアタックして撃破される
     let s = at("RS-445", 5, {}, { battle: [inst("TST-UNIT-7", "big")] }, [inst("SPEC-GIRL", "g"), ...fillers(3)]);

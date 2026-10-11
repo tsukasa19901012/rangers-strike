@@ -94,7 +94,6 @@ describe("RS-432 隠流マキビシ", () => {
     });
   const enemyStrike = (s: GameState, id: string) => act(s, { type: "strike", playerId: "player2", instanceId: id });
 
-  // 既知の不具合: CARD-RS-432 ストライクされてもカウンターを使う窓が開かず（ダメージ支払いだけが合法手）、隠流マキビシを使えない
   it("RS-432: ※カウンター — 敵軍ターン中、ストライクされたときに使用できる（出典: atwiki/page-736「ストライクされたとき発動できる」・R-CTR-01）", () => {
     const s = enemyStrike(enemyBattle(), "TST-UNIT-0:s1");
     expect(canUseCard(s, "player1", "RS-432:mk")).toBe(true);
@@ -121,7 +120,6 @@ describe("RS-432 隠流マキビシ", () => {
     expect(canUseCard(strike(s, "TST-UNIT-0:mine"), "player1", "RS-432:mk")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-432 ストライクされても隠流マキビシを使えず（本文もスタブ）、相手のバトルフェイズ終了時に何も撃破しない
   it("RS-432: 相手がバトルフェイズを終えるとき、そのバトルフェイズに受けたダメージが2点以上なら敵軍バトルエリアの S ユニットをすべて撃破する（M・ラッシュエリアは残る）（出典: atwiki/page-736）", () => {
     let s = enemyStrike(enemyBattle(), "TST-UNIT-0:s1");
     s = settle(useCard(s, "player1", "RS-432:mk"));
@@ -134,7 +132,6 @@ describe("RS-432 隠流マキビシ", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:r")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-432 ストライクされても隠流マキビシを使えない（使ったうえでの「2点以上なら」の条件を確かめられない）
   it("RS-432: 受けたダメージが1点だけなら、バトルフェイズを終えても何も撃破しない（出典: atwiki/page-736「2点以上なら」）", () => {
     let s = enemyStrike(enemyBattle(), "TST-UNIT-0:s1");
     s = settle(useCard(s, "player1", "RS-432:mk"));
@@ -143,7 +140,6 @@ describe("RS-432 隠流マキビシ", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:s2")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-432 ストライクされても隠流マキビシを使えない
   it("RS-432: 使ったカウンターは捨札になる（出典: atwiki/page-736「※カウンター」・R-CARD-02）", () => {
     let s = enemyStrike(enemyBattle(), "TST-UNIT-0:s1");
     s = settle(useCard(s, "player1", "RS-432:mk"));
@@ -178,7 +174,6 @@ describe("RS-433 ネコマル", () => {
       player2: { deck: deckCards(5, "e") },
     });
 
-  // 既知の不具合: CARD-RS-433 常駐の本文がスタブ（grant_keyword resident のみ）で、忍者をラッシュしても手札を戻す選択が出ない
   it("RS-433: 自軍ラッシュフェイズに特徴「忍者」のユニットをラッシュしたとき、手札から選んだカードを山札の下に戻し、同じ枚数ドローする（出典: atwiki/page-737）", () => {
     const r = rushFromHand(rushPhase([inst("SPEC-NIN", "n"), inst("TST-OP", "h1"), inst("TST-OP", "h2")]), "player1", "SPEC-NIN:n");
     expect(r.ok).toBe(true);
@@ -191,7 +186,6 @@ describe("RS-433 ネコマル", () => {
     expect(s.players.player1.hand.map((c) => c.instanceId).sort()).toEqual(["TST-OP:dk0", "TST-OP:h2"]);
   });
 
-  // 既知の不具合: CARD-RS-433 常駐の本文がスタブで、「戻してもよい」の選択自体が出ない
   it("RS-433: 「戻してもよい」— 見送ることができ、手札・山札は変わらない（出典: atwiki/page-737「戻してもよい」）", () => {
     const r = rushFromHand(rushPhase([inst("SPEC-NIN", "n"), inst("TST-OP", "h1")]), "player1", "SPEC-NIN:n");
     expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-433");
@@ -237,7 +231,6 @@ describe("RS-434 ライフバード", () => {
     return settle(strike(s, `${striker}:x`));
   };
 
-  // 既知の不具合: CARD-RS-434 常駐の本文がスタブで、ET ユニットがストライクしてダメージを与えても何も起きない
   it("RS-434: ET の自軍ユニットがストライクしてダメージを与えたとき、相手が自軍捨札の S ユニットのカードから1枚選び、それを自分の手札に加える（出典: atwiki/page-746）", () => {
     let s = struck("SPEC-ETS");
     expect(s.players.player2.power.filter((c) => c.faceDown)).toHaveLength(1);
@@ -260,7 +253,6 @@ describe("RS-434 ライフバード", () => {
     expect(zoneOf(s, "player1", "RS-441:d2")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-434 常駐の本文がスタブで、「選ばせてもよい」の選択自体が出ない
   it("RS-434: 「選ばせてもよい」— 自分は見送ることができ、捨札は変わらない（出典: atwiki/page-746「相手に1枚選ばせてもよい」）", () => {
     const s = struck("SPEC-ETS");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
@@ -287,7 +279,6 @@ describe("RS-435 アレ", () => {
   const destroyed = (unit: string) =>
     attackedInEnemyTurn({ battle: [inst(unit, "u")], operation: [inst("RS-435", "are")] }, `${unit}:u`, {}, "TST-UNIT-7:atk", SPECS);
 
-  // 既知の不具合: CARD-RS-435 常駐の本文がスタブで、敵軍ターン中に忍者が撃破されて捨札になっても重ねる選択が出ない
   it("RS-435: 敵軍ターン中、特徴「忍者」の自軍ユニットが撃破されて捨札になったとき、そのカードをこれに重ねられる（出典: atwiki/page-753）", () => {
     let s = destroyed("SPEC-NIN");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-435");
@@ -296,7 +287,6 @@ describe("RS-435 アレ", () => {
     expect(zoneOf(s, "player1", "SPEC-NIN:u")).toBeNull();
   });
 
-  // 既知の不具合: CARD-RS-435 常駐の本文がスタブで、「重ねてもよい」の選択自体が出ない
   it("RS-435: 「重ねてもよい」— 見送れば捨札のまま（出典: atwiki/page-753「重ねてもよい」）", () => {
     const s = destroyed("SPEC-NIN");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-435");
@@ -327,7 +317,6 @@ describe("RS-435 アレ", () => {
     stackedCards: Array.from({ length: n }, (_, i) => inst("SPEC-NIN", `st${i}`)),
   });
 
-  // 既知の不具合: CARD-RS-435 重ねたカードによる必要パワーの軽減が実装されていない
   it("RS-435: 自軍ラッシュフェイズ中、重ねたカード1枚につき自分のユニットカードの必要パワーが1少なくなる（2枚重ね: 必要パワー4 をパワー2でラッシュできる）（出典: atwiki/page-753）", () => {
     const s = stx({
       phase: "rush",
@@ -375,7 +364,6 @@ describe("RS-435 アレ", () => {
     expect(zoneOf(s, "player1", "SPEC-NIN:st1")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-435 常駐置き場を離れるときに、重ねた枚数と同じ数の自軍ユニットを撃破しない
   it("RS-435: 常駐置き場を離れるとき、重ねた枚数と同じ数（2体）だけ自軍ユニットを選び撃破する（出典: atwiki/page-753「重ねた枚数と同じ数だけ自軍ユニットを選び撃破する」）", () => {
     let s = replaceAre(2, [inst("TST-UNIT-0", "a"), inst("TST-UNIT-0", "b"), inst("TST-UNIT-0", "c")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-435");
@@ -387,14 +375,11 @@ describe("RS-435 アレ", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:c")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-435 常駐置き場を離れるときに自軍ユニットを撃破しない
   it("RS-435: 自軍ユニットが重ねた枚数より少なければ、いるユニットをすべて撃破する（出典: atwiki/page-753「重ねた枚数と同じ数だけ…撃破する」）", () => {
     const s = resolveAll(replaceAre(3, [inst("TST-UNIT-0", "a")]));
     expect(zoneOf(s, "player1", "TST-UNIT-0:a")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-435 必要パワーの軽減が実装されていない（ン・ダグバ・ゼバ 9+ をパワー5ではラッシュできない）。
-  // あわせて RK-277 側も、常駐置き場に重ねたカードを追加条件「常駐置き場のカードを4枚選び捨札にする」に数えない（パワー9でも不可）
   it("RS-435: 4枚重ねたアレがあれば「ン・ダグバ・ゼバ」の必要パワーは4少なくなり、パワー5でもラッシュを始められる（出典: atwiki/page-753 Q1・page-1254 Q1「はい、その通りです。「必要パワーを満たしているかの確認」→「追加条件を実行」の順で処理します」）", () => {
     const s = stx({
       phase: "rush",
@@ -528,7 +513,6 @@ describe("RS-437 白熱する実況", () => {
     expect(zoneOf(s, "player1", "RS-226:ko")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-437 常駐の本文がスタブで、追加条件で捨札にした合体ユニットのカードが L ユニットの下に重ならない
   it("RS-437: L ユニットをラッシュしたとき、追加条件で捨札にした合体ユニットのカードをすべてウラ向きにしてその L ユニットの下に重ねる（出典: atwiki/page-764）", () => {
     const s = rushKiller();
     expect(zoneOf(s, "player1", "RS-227:tg")).toBeNull();
@@ -567,7 +551,6 @@ describe("RS-437 白熱する実況", () => {
     ],
   });
 
-  // 既知の不具合: CARD-RS-437 下に重ねたウラ向きのカードを捨札にしてその場に留まる処理が実装されていない
   it("RS-437: 下にウラ向きのカードを重ねた L ユニットは、ユニットでなくなるとき（バトルで撃破されるとき）そのカードを1枚捨札にすればその場に留まる（出典: atwiki/page-764「その場に留まる」）", () => {
     const s = resolveAll(
       attackedInEnemyTurn({ battle: [stackedKiller()], operation: [inst("RS-437", "jk")] }, "RS-226:ko", {}, "TST-UNIT-7:atk", SPECS),
@@ -584,7 +567,6 @@ describe("RS-437 白熱する実況", () => {
     expect(zoneOf(s, "player1", "RS-226:ko")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-437 常駐置き場を離れても、L ユニットの下のウラ向きのカードが捨札にならない
   it("RS-437: これが常駐置き場を離れるとき、自軍 L ユニットの下にウラ向きに重ねたカードをすべて捨札にする（出典: atwiki/page-764「すべて捨札にする」・R-ZONE-12）", () => {
     const s = stx({
       phase: "rush",
@@ -659,14 +641,12 @@ describe("RS-438 炎神ソウル", () => {
     expect(s.players.player1.power.find((c) => c.instanceId === "RS-438:es")?.faceDown ?? false).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-438 「その後、…ユニットカードを1枚選び、手札に加えてもよい」が DSL から落ちている
   it("RS-438: その後、自軍パワーゾーンのオモテ向きのユニットカードだけを選べる（ウラ向き・オペレーションは選べない）（出典: atwiki/page-755「オモテ向きのカードからユニットカードを1枚選び」）", () => {
     const s = played();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-438");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:pu"]);
   });
 
-  // 既知の不具合: CARD-RS-438 パワーゾーンのユニットカードを手札に加える処理が実装されていない
   it("RS-438: 選んだユニットカードは手札に加わる（出典: atwiki/page-755「手札に加えてもよい」）", () => {
     const s = resolveAll(pick(played(), "TST-UNIT-0:pu"));
     expect(zoneOf(s, "player1", "TST-UNIT-0:pu")).toBe("hand");

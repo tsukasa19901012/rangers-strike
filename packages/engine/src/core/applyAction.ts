@@ -6,6 +6,7 @@ import {
 } from "../rules/legend1/set7NamedEffectsA";
 import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw, settleDarkArmor } from "../rules/legend1/set6NamedEffects348";
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
+import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
 import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
@@ -793,12 +794,17 @@ export function applyAction(
 ): ActionResult {
   applyActionDepth += 1;
   let result: ActionResult;
+  // 「※このカードの追加条件は、…のとき、次のように変更される」を反映した定義で処理し、結果には元の定義を戻す（RS-440 等）。
+  const view = withEffectiveRushConditionDefinitions(state);
   try {
-    result = applyActionCore(state, action, options);
+    result = applyActionCore(view, action, options);
   } finally {
     applyActionDepth -= 1;
   }
   if (!result.ok) return result;
+  if (view !== state && result.state.definitions !== state.definitions) {
+    result = { ...result, state: { ...result.state, definitions: state.definitions } };
+  }
   // ルール: R-ZONE-04, R-HOLD-02 — エリアを離れたカードの付加情報はどの経路で移動しても消える。
   let next = clearRegisterHoldOffField(result.state);
   next = settleEffectRushes(state, next);

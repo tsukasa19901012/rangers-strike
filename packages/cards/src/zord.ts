@@ -149,8 +149,16 @@ export function getRushAdditionalCondition(
 /** registry / CardDocument を優先し、なければ ZORD_CONDITIONS のデフォルト。 */
 export function resolveRushAdditionalCondition(
   cardId: string,
-  card?: { rushAdditionalCondition?: RushAdditionalCondition },
+  card?: {
+    rushAdditionalCondition?: RushAdditionalCondition;
+    /**
+     * ゲームの状態で変わった追加条件（「※このカードの追加条件は、…のとき、次のように変更される」。RS-440 等）。
+     * エンジンが評価中の定義に付ける（packages/engine rules/rushAdditionalCondition.ts）。
+     */
+    rushAdditionalConditionOverride?: RushAdditionalCondition;
+  },
 ): RushAdditionalCondition | undefined {
+  if (card?.rushAdditionalConditionOverride) return card.rushAdditionalConditionOverride;
   const fromBlock = getUnitEffectBlock(cardId)?.rushAdditionalCondition;
   const resolved = fromBlock ?? card?.rushAdditionalCondition ?? getRushAdditionalCondition(cardId);
   return resolved ? normalizeDiscardPresenceCondition(resolved) : undefined;
