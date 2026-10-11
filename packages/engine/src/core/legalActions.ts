@@ -121,6 +121,7 @@ import { isSet6AuditConfirmableChoice } from "../rules/legend1/set6AuditFixes";
 import { isSet7AChoiceEffect, isSet7AConfirmableChoice, set7AStrikeCounterIds } from "../rules/legend1/set7NamedEffectsA";
 import { isSet8AChoiceEffect, isSet8AConfirmableChoice, isSet8AResident } from "../rules/legend1/set8NamedEffectsA";
 import { canConfirmSet8CChoice, isSet8CChoiceEffect } from "../rules/legend1/set8NamedEffectsC";
+import { canActivateSet9AResident, canConfirmSet9AChoice, isSet9AChoiceEffect, isSet9AResidentCard, listSet9AFieldActivations } from "../rules/legend1/set9NamedEffectsA";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { isSet7BConfirmableChoice } from "../rules/legend1/set7NamedEffectsB";
 import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
@@ -651,6 +652,13 @@ function appendActivateResidentOperationActions(
 ): void {
   const player = state.players[playerId];
   for (const card of player.operation) {
+    // 第9弾 RS-608（自軍ラッシュフェイズ）・RS-609（自軍バトルフェイズ）（rules/legend1/set9NamedEffectsA.ts）。
+    if (isSet9AResidentCard(card.cardId)) {
+      if (canActivateSet9AResident(state, playerId, card.instanceId)) {
+        actions.push({ type: "activate_resident_operation", playerId, operationInstanceId: card.instanceId });
+      }
+      continue;
+    }
     // 第8弾 RS-519・RS-522・RS-524・RS-525（RS-524 は自軍バトルフェイズ。rules/legend1/set8NamedEffectsA.ts）。
     if (isSet8AResident(card.cardId)) {
       if (canActivateResidentOperation(state, playerId, card.instanceId)) {
@@ -695,6 +703,14 @@ function appendActivateFieldUnitAbilityActions(
   }
   // RS-559【パワーアロー】等: 手札からこのカードを捨札にして発動する（rules/legend1/set8NamedEffectsB.ts）。
   for (const unitInstanceId of listSet8BHandActivations(state, playerId)) {
+    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+  }
+  // RS-623【翼合体】（自軍ラッシュフェイズ中。rules/legend1/set9NamedEffectsA.ts）。
+  for (const unitInstanceId of listSet9AFieldActivations(state, playerId)) {
+    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+  }
+  // RS-623【翼合体】（自軍ラッシュフェイズ中。rules/legend1/set9NamedEffectsA.ts）。
+  for (const unitInstanceId of listSet9AFieldActivations(state, playerId)) {
     actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
   }
 }
@@ -1194,6 +1210,15 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (isSet8AConfirmableChoice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isSet9AChoiceEffect(pending.effectId)) {
+    // 第9弾 RS-605〜RS-626 の選択（rules/legend1/set9NamedEffectsA.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmSet9AChoice(state, pending)) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

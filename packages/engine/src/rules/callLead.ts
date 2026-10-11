@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { set9AGrantsCallLead } from "./legend1/set9NamedEffectsA";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
@@ -66,7 +67,9 @@ export function collectCallLeadFieldUnits(
       if (card.commandHeld || card.mothershipHold) continue;
       const def = getDefinition(definitions, card.cardId);
       if (def && !isUnit(def)) continue;
-      const matches = categories.some((cat) => unitHasCallLeadKeyword(card.cardId, kind, cat));
+      const matches = categories.some(
+        (cat) => unitHasCallLeadKeyword(card.cardId, kind, cat) || set9AGrantsCallLead(player, definitions, card, kind, cat),
+      );
       if (matches) results.push(card);
     }
   }
@@ -84,7 +87,11 @@ export function heldCallLeadMatchesCategories(
       if (!card.commandHeld || card.mothershipHold) continue;
       const def = getDefinition(definitions, card.cardId);
       if (def && !isUnit(def)) continue;
-      if (categories.some((cat) => unitHasCallLeadKeyword(card.cardId, kind, cat))) {
+      if (
+        categories.some(
+          (cat) => unitHasCallLeadKeyword(card.cardId, kind, cat) || set9AGrantsCallLead(player, definitions, card, kind, cat),
+        )
+      ) {
         return true;
       }
     }
@@ -164,7 +171,9 @@ export function paymentSourceMatchesCategories(
   for (const zone of fieldZonesForCallLead(kind)) {
     const card = player[zone].find((c) => c.instanceId === instanceId);
     if (!card) continue;
-    return categories.some((cat) => unitHasCallLeadKeyword(card.cardId, kind, cat));
+    return categories.some(
+      (cat) => unitHasCallLeadKeyword(card.cardId, kind, cat) || set9AGrantsCallLead(player, definitions, card, kind, cat),
+    );
   }
 
   return false;

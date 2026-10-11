@@ -1,4 +1,5 @@
 import { hasUnnamedRule } from "@rangers-strike/cards";
+import { set9AEffectiveSp } from "../legend1/set9NamedEffectsA";
 import { hellSaturnGrantCount } from "../hellSaturn";
 import { activeNamedEffect, namedEffectActive } from "../ncGatedEffects";
 import { countJointLGrant, jointLGrantSpPlus, jointRGrantActive } from "../jointComboGrants";
@@ -235,6 +236,8 @@ export function legend3EffectiveSp(
   sp = set7DEffectiveSp(state, playerId, instance, sp);
   // 第8弾 RS-584【闇を振り払う心】等（rules/legend1/set8NamedEffectsD.ts）。
   sp = set8DEffectiveSp(state, playerId, instance, sp);
+  // 第9弾 RS-617【バードメーザー】・RS-615【ジャッカーコバック】（rules/legend1/set9NamedEffectsA.ts）。
+  sp = set9AEffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

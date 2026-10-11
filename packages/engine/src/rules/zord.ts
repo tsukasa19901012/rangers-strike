@@ -66,7 +66,7 @@ function partnerNamesForId(
   return names;
 }
 
-function fieldCardMatchesPartner(
+export function fieldCardMatchesPartner(
   definitions: Record<string, CardDefinition>,
   fieldCard: CardInstance,
   partnerCardId: string,

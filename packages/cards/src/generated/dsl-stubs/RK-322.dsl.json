@@ -40,14 +40,12 @@
       },
       "effects": [
         {
-          "type": "modify_bp",
-          "target": {
-            "type": "trigger_source"
-          },
-          "amount": 4000,
+          "type": "grant_keyword",
+          "keyword": "set9a::RK-322::blizzard_claw",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

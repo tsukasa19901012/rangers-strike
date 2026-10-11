@@ -1,4 +1,5 @@
 import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
+import { set9AAttackerCanAttackRush, set9ADefenderBlocksAttack } from "../legend1/set9NamedEffectsA";
 import { set7DDefenderBlocksAttack } from "../legend1/set7NamedEffectsD";
 import { set8ADefenderBlocksAttack } from "../legend1/set8NamedEffectsA";
 import { set8DDefenderBlocksAttack } from "../legend1/set8NamedEffectsD";
@@ -422,6 +423,8 @@ export function canAttackDefender(
   // RS-401 タイムジェット5【最後尾からの警戒】: これが自軍バトルエリアの最後に並んでいる間、自軍バトルエリアの
   // 特徴「航空機」を持つユニットは敵軍ユニットにアタックされない（atwiki/page-559）。
   if (timeJetRearGuardBlocksAttack(state, defenderPlayerId, defenderInstanceId)) return false;
+  // RS-619 ジェットマシン【航空戦力の奇襲】（rules/legend1/set9NamedEffectsA.ts）。
+  if (set9ADefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
 
   const attackerInRush = findInZone(attackerPlayer, "rush", attackerInstanceId);
   if (
@@ -477,6 +480,8 @@ export function canAttackDefender(
     if (cardHasGrantKeyword(attacker.card.cardId, "wing_attack_enemy_rush")) {
       return true;
     }
+    // RS-622 グリフォーザー【グリフォカリバー4世】（rules/legend1/set9NamedEffectsA.ts）。
+    if (set9AAttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
     // RS-213【炸裂超力バトン】（相手が選んだユニット）・RS-225【大回転獅子爆裂弾】で得た能力。
     if (
       chikaraBatonAllowsAttack(state, attackerPlayerId, attackerInstanceId, defenderInstanceId) ||

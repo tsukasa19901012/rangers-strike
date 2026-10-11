@@ -74,6 +74,38 @@ const SET8D_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rs601_full_power_destroy: { label: "ミッション6 フルパワー", hint: "撃破する敵軍ユニットを選んでください" },
 };
 
+/** 第9弾 RS-605〜RS-626 の選択（engine rules/legend1/set9NamedEffectsA.ts）の表示名と案内文。 */
+const SET9A_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rs9a_command_overflow: { label: "コマンドゾーンに置けないユニット", hint: "コマンドゾーンに置ききれないので、かわりに捨札にするユニットを選んでください" },
+  rs605_wing_from_deck: { label: "異次元からの翼", hint: "ラッシュエリアに出すウイングを持つユニットのカードを山札から選んでください（その後、山札をシャッフルします）" },
+  rs606_hikarimaru_release: { label: "雷鳴剣ヒカリマル", hint: "リリースするホールド状態のウイングを持つ自軍ユニットを選んでください（しないなら「スキップ」）" },
+  rs606_hikarimaru_target: { label: "雷鳴剣ヒカリマル", hint: "ダメージにして置く敵軍バトルエリアのユニットを選んでください" },
+  rs607_falcon_continue: { label: "ファルコンサモナー", hint: "もう1回、山札の上をオモテにしますか？（やめるなら「スキップ」）" },
+  rs607_falcon_discard: { label: "ファルコンサモナー", hint: "捨札にするカードを手札から1枚選んでください" },
+  rs608_goshoku_hold: { label: "五色の戦士", hint: "ホールドする WB の自軍コマンドを選んでください" },
+  rs608_goshoku_unit: { label: "五色の戦士", hint: "特徴を追加する自軍 S ユニットを選んでください" },
+  rs608_goshoku_feature: { label: "五色の戦士", hint: "追加する特徴を宣言してください" },
+  rs609_soul_cost: { label: "戦士の魂", hint: "コマンドゾーンに送るか捨札にする自軍ラッシュエリアの S ユニットを選んでください" },
+  rs609_soul_cost_destination: { label: "戦士の魂", hint: "送り先を選んでください" },
+  rs609_soul_battle: { label: "戦士の魂", hint: "NC の効果を貸すバトルエリアの S ユニットを選んでください" },
+  rs609_soul_rush: { label: "戦士の魂", hint: "NC の効果を置き換えるラッシュエリアの S ユニットを選んでください" },
+  rs609_soul_nc: { label: "戦士の魂", hint: "発動する NC の効果のユニットを選んでください（本来の効果ならこのユニット）" },
+  rs612_sky_container_command: { label: "スカイコンテナ", hint: "捨札にする自軍コマンドを1つずつ選んでください（選び終えたら「選び終える」）" },
+  rs612_sky_container_deck: { label: "スカイコンテナ", hint: "コマンドゾーンにホールド状態で置く「メカ」の S ユニットのカードを山札から選んでください" },
+  rs613_diamond_sword: { label: "ダイヤソード", hint: "撃破する敵軍ユニットを選んでください（しないなら「スキップ」）" },
+  rs614_club_megaton: { label: "クラブメガトン", hint: "BP4000 の敵軍 S ユニットをすべてコマンドゾーンに置きますか？（置くならいずれかを選ぶ）" },
+  rs615_jakka_koback: { label: "ジャッカーコバック", hint: "ホールドするブルー・レッド・グリーンの S ユニットを1体ずつ選んでください" },
+  rs620_garuda_claw: { label: "ガルーダクロー", hint: "山札の上に戻す敵軍パワーゾーンのカードを選んでください" },
+  rs621_diamond_blizzard: { label: "ダイヤブリザード", hint: "パワーゾーンに送る敵軍ユニットを1体ずつ選んでください（本来の BP の合計8000まで。選び終えたら「スキップ」で送る）" },
+  rs624_winger_cannon: { label: "ウインガーキャノン", hint: "効果を発動しますか？（するならこのユニットを選ぶ）" },
+  rs626_mega_shield: { label: "メガシールド", hint: "撃破する敵軍ユニット、またはラッシュエリアに出す捨札のウイングを持つ S ユニットのカードを選んでください" },
+  rs626_mega_shield_deploy: { label: "メガシールド", hint: "ラッシュエリアに出すカードを選んでください（5枚まで。選び終えたら「スキップ」で出す）" },
+  rk322_blizzard_claw_execution: { label: "ブリザードクロー・エクスキュージョン", hint: "このユニットをホールドして BP+4000 しますか？（するならこのユニットを選ぶ）" },
+};
+
+/** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
+export const SET9A_DONE_CHOICE = "__set9a_done__";
+
 /** 相手の手札を見ないで選ぶ選択か（カードの中身を見せない）。 */
 export function isBlindHandChoice(pending: NonNullable<GameState["pendingEffectChoice"]>): boolean {
   return pending.effectId === "rs594_gunpard_gun";
@@ -99,7 +131,7 @@ export function effectChoiceHint(
 ): string {
   const set8c = SET8C_CHOICE_UI[pending.effectId];
   if (set8c) return set8c.hint;
-  const set7d = SET7D_CHOICE_UI[pending.effectId] ?? SET8D_CHOICE_UI[pending.effectId];
+  const set7d = SET7D_CHOICE_UI[pending.effectId] ?? SET8D_CHOICE_UI[pending.effectId] ?? SET9A_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -291,6 +323,7 @@ export function effectChoiceTitle(
     SET8C_CHOICE_UI[pending.effectId]?.label ??
     SET7D_CHOICE_UI[pending.effectId]?.label ??
     SET8D_CHOICE_UI[pending.effectId]?.label ??
+    SET9A_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

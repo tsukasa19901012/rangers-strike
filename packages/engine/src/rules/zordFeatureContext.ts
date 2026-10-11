@@ -29,6 +29,11 @@ export function zordMaterialAlteredName(card: CardInstance): string | undefined 
 
 let current: GameState | null = null;
 
+/** applyAction / getLegalActions の入口の状態（無ければ null）。常駐の継続効果の判定に使う（RS-610 秘伝ディスク）。 */
+export function zordRuleContextState(): GameState | null {
+  return current;
+}
+
 /** state を素材の特徴の判定に使う状態として fn を実行する。 */
 export function withZordFeatureContext<T>(state: GameState, fn: () => T): T {
   const previous = current;

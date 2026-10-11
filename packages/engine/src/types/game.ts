@@ -494,6 +494,8 @@ export type Set7AChoiceMeta = {
 export type PendingEffectChoice = {
   /** 第7弾 RS-432〜RS-452 の選択の続き（rules/legend1/set7NamedEffectsA.ts）。 */
   set7aMeta?: Set7AChoiceMeta;
+  /** 第9弾 RS-605〜RS-626 の選択の続き（rules/legend1/set9NamedEffectsA.ts）。 */
+  set9aMeta?: Set9AChoiceMeta;
   /** RS-568 風雷丸【各々方、合体で御座る！】: 相手に見せた手札の L ユニットのカード（rules/legend1/set8NamedEffectsC.ts）。 */
   set8cRevealedInstanceId?: string;
   playerId: PlayerId;
@@ -970,6 +972,8 @@ export type GameState = {
   turnEndProgress?: TurnEndProgress;
   /** 第8弾 RS-560〜RS-581 のカード固有の効果の記録（rules/legend1/set8NamedEffectsC.ts）。 */
   set8cMeta?: Set8CMeta;
+  /** 第9弾 RS-605〜RS-626 のカード固有の効果の記録（rules/legend1/set9NamedEffectsA.ts）。 */
+  set9aState?: Set9AState;
   /** RS-352【ダイデンジンブーメラン】: パワーゾーンを離れたカード（1枚ごとに相手が撃破するユニットを選ぶ）の待ち行列。 */
   boomerangQueue?: Array<{ ownerId: PlayerId; cost: number; cardId: string }>;
   /** RS-363【パンサークロー】: 敵軍コマンドゾーンにホールド状態で置かれたユニットカード（捨札にするかを選ぶ）の待ち行列。 */
@@ -1057,6 +1061,8 @@ export type PendingEffectRush = {
   ignorePowerCost?: boolean;
   /** 「この効果でラッシュしたユニットは、このターン、バトルエリアに出られない」（RS-180 ライドラプター）。 */
   blockBattleEntryThisTurn?: boolean;
+  /** 「1枚選び、…出す」（任意でない）: 選択・追加条件の素材の選択を見送れない（RS-605 異次元からの翼）。 */
+  forced?: boolean;
   /** 選び終えて、まだ出していないユニット（1体ずつ出す）。 */
   queue: string[];
   /** 選ぶ段階: 候補とあと何枚選べるか。 */
@@ -1072,6 +1078,8 @@ export type PendingEffectRush = {
     icyCount?: number;
     /** デンジ犬アイシーを捨札にして、山札から素材のカードを選んでいる途中のアイシー。 */
     icyPending?: string;
+    /** デンジ犬アイシーで山札から捨札にした素材のカード（合体の枠の割り当てに使う）。 */
+    icyChosen?: string[];
   };
 };
 
@@ -1134,3 +1142,27 @@ export function hasWonByDamage(player: PlayerState): boolean {
 export function hasLostByDeckOut(player: PlayerState): boolean {
   return player.deckedOut === true;
 }
+
+/** 第9弾 RS-605〜RS-626 の選択の続き（rules/legend1/set9NamedEffectsA.ts）。 */
+export type Set9AChoiceMeta = {
+  /** 選び終えたもの。 */
+  selected?: string[];
+  /** 選べる数の上限・残りの回数。 */
+  remaining?: number;
+  /** 数値（BP 等）。 */
+  amount?: number;
+  /** 対象の持ち主。 */
+  ownerId?: PlayerId;
+  /** 段階。 */
+  stage?: string;
+  /** 先に選んだユニット等。 */
+  first?: string;
+};
+
+/** 第9弾 RS-605〜RS-626 のカード固有の効果の記録（rules/legend1/set9NamedEffectsA.ts）。 */
+export type Set9AState = {
+  /** RS-607【ファルコンサモナー】: 残りの実行回数（効果ラッシュ等の解決後に続ける）。 */
+  falcon?: { playerId: PlayerId; phasePlayerId: PlayerId; remaining: number; sourceInstanceId?: string; revealedInstanceId?: string };
+  /** RS-613【ダイヤソード】: ホールドを待っている発動（turn は発動したターン）。 */
+  diamondSword?: Array<{ playerId: PlayerId; sourceInstanceId: string; turn: number; known?: string[]; firedBy?: string; firedBp?: number }>;
+};

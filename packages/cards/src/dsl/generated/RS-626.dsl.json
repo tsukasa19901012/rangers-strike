@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deploy_rush_area_tankorega_geki_ha_saretatokinokara1tsubidekiruyunitowo1",
-          "duration": "turn"
+          "keyword": "set9a::RS-626::mega_shield",
+          "duration": "permanent"
         }
       ],
       "optional": false

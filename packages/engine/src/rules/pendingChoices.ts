@@ -142,6 +142,7 @@ import { isSet6BChoiceEffect, openFlameGlareForSoulDescent, tryResolveSet6BChoic
 import { isSet7DChoiceEffect, tryResolveSet7DChoice, trySkipSet7DChoice } from "./legend1/set7NamedEffectsD";
 import { isSet8AChoiceEffect, tryConfirmSet8AChoice, tryResolveSet8AChoice, trySkipSet8AChoice } from "./legend1/set8NamedEffectsA";
 import { isSet8DChoiceEffect, tryResolveSet8DChoice, trySkipSet8DChoice } from "./legend1/set8NamedEffectsD";
+import { isSet9AChoiceEffect, tryConfirmSet9AChoice, tryResolveSet9AChoice, trySkipSet9AChoice } from "./legend1/set9NamedEffectsA";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
 import {
   isSet7BChoiceEffect,
@@ -632,6 +633,7 @@ export function isValidEffectChoiceTarget(
     isSet7DChoiceEffect(pending.effectId) ||
     isSet8AChoiceEffect(pending.effectId) ||
     isSet8DChoiceEffect(pending.effectId) ||
+    isSet9AChoiceEffect(pending.effectId) ||
     isSet8BChoiceEffect(pending.effectId) ||
     pending.effectId === "rs414_dione_wall" ||
     isSet6LowChoiceEffect(pending.effectId) ||
@@ -1974,6 +1976,8 @@ export function applyConfirmEffectChoice(
   if (set7b) return set7b;
   const set8c = tryConfirmSet8CChoice(state, playerId);
   if (set8c) return set8c;
+  const set9a = tryConfirmSet9AChoice(state, playerId);
+  if (set9a) return set9a;
   if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
     // RS-472【現場への搬送】: 「…まで好きな数選び」— 選んだところで確定し、山札をシャッフルする。
     return finishChoice(finishSiteTransportDeck(state, pending), pending, String(pending.selectedInstanceIds?.length ?? 0));
@@ -2879,6 +2883,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set8a) return set8a;
   const set8d = trySkipSet8DChoice(state, playerId);
   if (set8d) return set8d;
+  const set9a = trySkipSet9AChoice(state, playerId);
+  if (set9a) return set9a;
   const set8b = trySkipSet8BChoice(state, playerId);
   if (set8b) return set8b;
   const set5 = trySkipSet5Choice(state, playerId);
@@ -3162,6 +3168,8 @@ export function applyEffectChoiceSelect(
   if (set8a) return set8a;
   const set8d = tryResolveSet8DChoice(state, playerId, instanceId);
   if (set8d) return set8d;
+  const set9a = tryResolveSet9AChoice(state, playerId, instanceId);
+  if (set9a) return set9a;
   const set8b = tryResolveSet8BChoice(state, playerId, instanceId);
   if (set8b) return set8b;
   const set5 = tryResolveSet5Choice(state, playerId, instanceId);

@@ -27,11 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-624::uingakyanon",
+          "keyword": "set9a::RS-624::winger_cannon",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

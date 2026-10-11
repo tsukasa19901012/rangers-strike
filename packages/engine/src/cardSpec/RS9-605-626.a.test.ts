@@ -78,8 +78,7 @@ describe("RS-605 異次元からの翼", () => {
     expectRarity("RS-605", "N");
   });
 
-  // 既知の不具合: CARD-RS-605 効果が未実装（使っても山札を見る選択が開かず、何も起きない）
-  it.fails("RS-605: 自軍山札からウイングを持つユニットカードを1枚選び、自軍ラッシュエリアに出す（出典: atwiki/page-1448）", () => {
+  it("RS-605: 自軍山札からウイングを持つユニットカードを1枚選び、自軍ラッシュエリアに出す（出典: atwiki/page-1448）", () => {
     let s = play(board([inst("TST-UNIT-0", "x"), inst("RS-622", "g"), inst("TST-OP", "o")]));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-605");
     expect(choiceIds(s)).toEqual(["RS-622:g"]);
@@ -88,14 +87,12 @@ describe("RS-605 異次元からの翼", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:x")).toBe("deck");
   });
 
-  // 既知の不具合: CARD-RS-605 効果が未実装
-  it.fails("RS-605: 必要パワーは満たさなくてよい（パワー4でも必要パワー5のグリフォーザーを出せる）（出典: atwiki/page-1448 Q2「「追加条件は満たすこと」と書かれていたとしても」・本文「ただし、追加条件は満たすこと」）", () => {
+  it("RS-605: 必要パワーは満たさなくてよい（パワー4でも必要パワー5のグリフォーザーを出せる）（出典: atwiki/page-1448 Q2「「追加条件は満たすこと」と書かれていたとしても」・本文「ただし、追加条件は満たすこと」）", () => {
     const s = resolveAll(play(board([inst("RS-622", "g")])), ["RS-622:g"]);
     expect(zoneOf(s, "player1", "RS-622:g")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-605 効果が未実装
-  it.fails("RS-605: 追加条件は満たすこと — 自軍 S ユニットがあればバリブルーンを選べ、追加条件（S ユニットをコマンドゾーンに送るか捨札）を実行して出す（出典: atwiki/page-1448「ただし、追加条件は満たすこと」）", () => {
+  it("RS-605: 追加条件は満たすこと — 自軍 S ユニットがあればバリブルーンを選べ、追加条件（S ユニットをコマンドゾーンに送るか捨札）を実行して出す（出典: atwiki/page-1448「ただし、追加条件は満たすこと」）", () => {
     let s = play(board([inst("RS-611", "b")], { rush: [inst("TST-UNIT-0", "s")] }));
     expect(choiceIds(s)).toEqual(["RS-611:b"]);
     s = resolveAll(pick(s, "RS-611:b"), ["TST-UNIT-0:s"]);
@@ -103,13 +100,13 @@ describe("RS-605 異次元からの翼", () => {
     expect(["command", "discard"]).toContain(zoneOf(s, "player1", "TST-UNIT-0:s"));
   });
 
-  // 既知の不具合: CARD-RS-605 効果が未実装（選択が開かない）
-  it.fails("RS-605: 追加条件を満たせないウイング持ち（自軍 S ユニットがない状況のバリブルーン）は選べない（出典: atwiki/page-1448「ただし、追加条件は満たすこと」）", () => {
+  it("RS-605: 追加条件を満たせないウイング持ち（自軍 S ユニットがない状況のバリブルーン）は選べない（出典: atwiki/page-1448「ただし、追加条件は満たすこと」）", () => {
     const s = play(board([inst("RS-611", "b"), inst("RS-622", "g")]));
     expect(choiceIds(s)).toEqual(["RS-622:g"]);
   });
 
-  // 既知の不具合: CARD-RS-605 効果が未実装
+  // 既知の不具合（テスト環境）: CARD-RS-605 アバレキラーAM（XG1-030）がゲームのカタログ（allCardsCatalog）に未収録で、山札に置いても
+  // 定義がなく候補にならない（resolvePlayableCard の定義を追加すれば、選んで「－」の追加条件を実行せずに出せることを確認済み）
   it.fails("RS-605: Q&A — 必要パワーに「−」を持つウイング持ち（アバレキラーAM）は「−」の追加条件を実行せずに出せる（出典: atwiki/page-1448 Q2「必ずしも実行する必要はありません」）", () => {
     // アバレキラーAM（XG1-030。必要パワー7-、追加条件は「アバレキラー」1体を捨札）。自軍に素材がいても実行しない。
     let s = play(board([inst("XG1-030", "am")]));
@@ -119,8 +116,7 @@ describe("RS-605 異次元からの翼", () => {
     expect(s.players.player1.discard.map((c) => c.instanceId)).toEqual(["RS-605:op"]);
   });
 
-  // 既知の不具合: CARD-RS-605 効果が未実装（選択が開かない）
-  it.fails("RS-605: 強制 — ウイング持ちが山札にあれば出さないことは選べない（出典: atwiki/page-1448「1枚選び、自軍ラッシュエリアに出す」）", () => {
+  it("RS-605: 強制 — ウイング持ちが山札にあれば出さないことは選べない（出典: atwiki/page-1448「1枚選び、自軍ラッシュエリアに出す」）", () => {
     const s = play(board([inst("RS-622", "g")]));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-605");
     expect(canSkip(s)).toBe(false);
@@ -173,8 +169,7 @@ describe("RS-606 雷鳴剣ヒカリマル", () => {
     expectRarity("RS-606", "N");
   });
 
-  // 既知の不具合: CARD-RS-606 リリースするのは「ウイングを持つ自軍ユニット」（ラッシュエリアでウイングによりホールドしたユニット）のはずが、エンジンは自軍コマンドゾーンのウイング持ちカードだけを候補にする（collectOwnWingCommands）
-  it.fails("RS-606: ホールド状態のウイング持ち自軍ユニットをリリースし、その BP 以下の敵軍バトルエリアのユニットを1体ダメージにする（出典: atwiki/page-1447）", () => {
+  it("RS-606: ホールド状態のウイング持ち自軍ユニットをリリースし、その BP 以下の敵軍バトルエリアのユニットを1体ダメージにする（出典: atwiki/page-1447）", () => {
     let s = play(board());
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-606");
     expect(choiceIds(s)).toEqual(["RS-622:g"]);
@@ -185,20 +180,17 @@ describe("RS-606 雷鳴剣ヒカリマル", () => {
     expect(cardIn(s, "player2", "TST-UNIT-0:e1")?.faceDown).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-606 リリース対象がコマンドゾーン基準（ラッシュエリアのウイング持ちユニットを選べない）
-  it.fails("RS-606: 候補は「リリースしたユニットの BP 以下」— BP5000 のユニットは選べ、BP13000 のユニット・敵軍ラッシュエリアのユニットは選べない（出典: atwiki/page-1447「そのBP以下のBPを持つユニットを敵軍バトルエリアから」）", () => {
+  it("RS-606: 候補は「リリースしたユニットの BP 以下」— BP5000 のユニットは選べ、BP13000 のユニット・敵軍ラッシュエリアのユニットは選べない（出典: atwiki/page-1447「そのBP以下のBPを持つユニットを敵軍バトルエリアから」）", () => {
     const s = pick(play(board()), "RS-622:g");
     expect(choiceIds(s)).toEqual(["SPEC-BP5000:e5", "TST-UNIT-0:e1"]);
   });
 
-  // 既知の不具合: CARD-RS-606 コマンドゾーンのウイング持ちカード（ユニットではない）を候補にする
-  it.fails("RS-606: コマンドゾーンにあるウイング持ちのカードはユニットではないので選べない（出典: atwiki/page-1447「ウイングを持つ自軍ユニット」）", () => {
+  it("RS-606: コマンドゾーンにあるウイング持ちのカードはユニットではないので選べない（出典: atwiki/page-1447「ウイングを持つ自軍ユニット」）", () => {
     const s = play(board({ command: [...releasedCat("MA", 1), held("RS-611", "cw")] }));
     expect(choiceIds(s)).not.toContain("RS-611:cw");
   });
 
-  // 既知の不具合: CARD-RS-606 ラッシュエリアのウイング持ちユニットを候補にしない（任意の選択自体が開かない）
-  it.fails("RS-606: 任意 — リリースしなければ敵軍ユニットはダメージにならない（出典: atwiki/page-1447「リリースしてもよい。そうしたとき」）", () => {
+  it("RS-606: 任意 — リリースしなければ敵軍ユニットはダメージにならない（出典: atwiki/page-1447「リリースしてもよい。そうしたとき」）", () => {
     let s = play(board());
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-606");
     expect(canSkip(s)).toBe(true);
@@ -252,14 +244,12 @@ describe("RS-607 ファルコンサモナー", () => {
     expect(zoneOf(s, "player1", "RS-570:v")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-607 必要パワーを満たさない「獣」ユニットを出さずに手札に加える（falconSummoner.ts が canAffordAvailablePower を要求する）
-  it.fails("RS-607: 必要パワーは満たさなくてよい — パワー4でも必要パワー5のガオファルコン（獣）を出す（出典: atwiki/page-1449「ただし、追加条件は満たすこと」・カード評価「必要パワーとカテゴリを無視できる」）", () => {
+  it("RS-607: 必要パワーは満たさなくてよい — パワー4でも必要パワー5のガオファルコン（獣）を出す（出典: atwiki/page-1449「ただし、追加条件は満たすこと」・カード評価「必要パワーとカテゴリを無視できる」）", () => {
     const s = resolveAll(play(board([inst("RS-649", "falcon"), inst("TST-OP", "x")], 1)));
     expect(zoneOf(s, "player1", "RS-649:falcon")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-607 追加条件を持つ「獣」ユニットは満たせても出さない（resolveRushAdditionalCondition があれば一律に不可）
-  it.fails("RS-607: 追加条件を満たせる「獣」ユニット（ギガフェニックス＋自軍の分身獣ギガウイング）は追加条件を実行して出す（出典: atwiki/page-1449「ただし、追加条件は満たすこと」）", () => {
+  it("RS-607: 追加条件を満たせる「獣」ユニット（ギガフェニックス＋自軍の分身獣ギガウイング）は追加条件を実行して出す（出典: atwiki/page-1449「ただし、追加条件は満たすこと」）", () => {
     const s = resolveAll(play(board([inst("RS-688", "gp"), inst("TST-OP", "x")], 1, { rush: [inst("RS-644", "gw")], power: powerCards(5) })), ["RS-644:gw"]);
     expect(zoneOf(s, "player1", "RS-688:gp")).toBe("rush");
     expect(zoneOf(s, "player1", "RS-644:gw")).toBe("discard");
@@ -272,8 +262,7 @@ describe("RS-607 ファルコンサモナー", () => {
     expect(s.players.player1.discard.length).toBe(2);
   });
 
-  // 既知の不具合: CARD-RS-607 捨札にするカードを選べない（手札の先頭を自動で捨札にする）
-  it.fails("RS-607: 出せなかったときは手札に加えた後、手札から捨札にするカードを自分で選ぶ（加えたカードを残して元の手札を捨てることも、その逆もできる）（出典: atwiki/page-1449「自分の手札からカードを1枚選び捨札にする」）", () => {
+  it("RS-607: 出せなかったときは手札に加えた後、手札から捨札にするカードを自分で選ぶ（加えたカードを残して元の手札を捨てることも、その逆もできる）（出典: atwiki/page-1449「自分の手札からカードを1枚選び捨札にする」）", () => {
     let s = play(board([inst("TST-OP", "x"), inst("TST-OP", "y")], 1));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-607");
     expect(choiceIds(s)).toEqual(["TST-OP:h1", "TST-OP:x"]);
@@ -282,8 +271,7 @@ describe("RS-607 ファルコンサモナー", () => {
     expect(zoneOf(s, "player1", "TST-OP:x")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-607 実行回数を選べない（敵軍ダメージの点数ぶん必ず実行する）
-  it.fails("RS-607: 「好きな回数」— 敵軍ダメージ3点でも1回でやめられる（出典: atwiki/page-1449「同じ数まで好きな回数実行する」）", () => {
+  it("RS-607: 「好きな回数」— 敵軍ダメージ3点でも1回でやめられる（出典: atwiki/page-1449「同じ数まで好きな回数実行する」）", () => {
     let s = play(board([inst("RS-623", "b1"), inst("RS-623", "b2"), inst("RS-623", "b3")], 3, { power: powerCards(4) }));
     // 1回目を実行した後、続けるかを選べる（見送れる）
     for (let i = 0; i < 4 && s.pendingEffectChoice?.sourceCardId === "RS-623"; i++) s = skip(s);
@@ -343,13 +331,11 @@ describe("RS-608 五色の戦士", () => {
     expect(zoneOf(t, "player1", "RS-609:soul")).toBe("operation");
   });
 
-  // 既知の不具合: CARD-RS-608 太字部分の効果が未実装（常駐として置かれるだけで、起動の合法手がない）
-  it.fails("RS-608: 自軍ラッシュフェイズに WB の自軍コマンドを1つホールドして起動できる（出典: atwiki/page-1495「『WBを持つ自軍コマンドを1つホールドする』を実行してもよい」）", () => {
+  it("RS-608: 自軍ラッシュフェイズに WB の自軍コマンドを1つホールドして起動できる（出典: atwiki/page-1495「『WBを持つ自軍コマンドを1つホールドする』を実行してもよい」）", () => {
     expect(canActivateResident(placed(), "RS-608:op")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-608 太字部分の効果が未実装
-  it.fails("RS-608: 起動すると自軍 S ユニットを選び、宣言した特徴（レッド）がこのターン追加される（出典: atwiki/page-1495「宣言した特徴を選んだユニットに追加する」）", () => {
+  it("RS-608: 起動すると自軍 S ユニットを選び、宣言した特徴（レッド）がこのターン追加される（出典: atwiki/page-1495「宣言した特徴を選んだユニットに追加する」）", () => {
     let s = act(placed(), { type: "activate_resident_operation", playerId: "player1", operationInstanceId: "RS-608:op" });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-608");
     s = resolveAll(s, ["TST-UNIT-0:s"]);
@@ -404,13 +390,11 @@ describe("RS-609 戦士の魂", () => {
     expect(zoneOf(resolveAll(r.state), "player1", "RS-609:op")).toBe("operation");
   });
 
-  // 既知の不具合: CARD-RS-609 太字部分の効果が未実装（起動の合法手がない）
-  it.fails("RS-609: 自軍バトルフェイズに、自軍ラッシュエリアの S ユニットをコマンドゾーンに送るか捨札にして起動できる（出典: atwiki/page-1496）", () => {
+  it("RS-609: 自軍バトルフェイズに、自軍ラッシュエリアの S ユニットをコマンドゾーンに送るか捨札にして起動できる（出典: atwiki/page-1496）", () => {
     expect(canActivateResident(placed(), "RS-609:op")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-609 太字部分の効果が未実装
-  it.fails("RS-609: ラッシュエリアから選んだユニット（クローバーキング）が NC を発動するとき、バトルエリアから選んだユニット（マジブルー）の NC（1枚ドロー）を代わりに発動できる（出典: atwiki/page-1496）", () => {
+  it("RS-609: ラッシュエリアから選んだユニット（クローバーキング）が NC を発動するとき、バトルエリアから選んだユニット（マジブルー）の NC（1枚ドロー）を代わりに発動できる（出典: atwiki/page-1496）", () => {
     let s = act(placed(), { type: "activate_resident_operation", playerId: "player1", operationInstanceId: "RS-609:op" });
     s = resolveAll(s, ["TST-UNIT-0:cost", "RS-059:blue", "RS-614:king"]);
     const hand = s.players.player1.hand.length;
@@ -471,8 +455,7 @@ describe("RS-610 秘伝ディスク", () => {
     expect(zoneOf(resolveAll(r.state), "player1", "RS-610:op")).toBe("operation");
   });
 
-  // 既知の不具合: CARD-RS-610 「侍」へのタクスMA 付与が未実装（DSL スタブは常駐の grant_keyword だけ）
-  it.fails("RS-610: タクスMA — 2番目にいる「侍」の次に並ぶ MA の S ユニットは SP1 を得る（出典: atwiki/page-1440・R-KW-TAXIS）", () => {
+  it("RS-610: タクスMA — 2番目にいる「侍」の次に並ぶ MA の S ユニットは SP1 を得る（出典: atwiki/page-1440・R-KW-TAXIS）", () => {
     expect(spOf(taxis(true), "player1", "SPEC-MA-NOSP:n")).toBe(1);
   });
 
@@ -484,8 +467,7 @@ describe("RS-610 秘伝ディスク", () => {
     expect(spOf(taxis(true, "SPEC-MA-NOSP"), "player1", "SPEC-MA-NOSP:n")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-610 「侍」へのコールMA 付与が未実装（callLead.ts はカード自身の grant_keyword だけを見る）
-  it.fails("RS-610: コールMA — MA のコマンドがなくても、リリース状態の「侍」ユニットをホールドして MA ユニットをラッシュできる（出典: atwiki/page-1440・R-KW-CALL-01）", () => {
+  it("RS-610: コールMA — MA のコマンドがなくても、リリース状態の「侍」ユニットをホールドして MA ユニットをラッシュできる（出典: atwiki/page-1440・R-KW-CALL-01）", () => {
     const s = st(
       {
         phase: "rush",
@@ -671,8 +653,7 @@ describe("RS-612 スカイエース", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:s")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-612 【スカイコンテナ】が DSL スタブで「コマンドを1つ選びホールド」になっており、捨札にしたコマンドの数まで山札の「メカ」S ユニットをコマンドゾーンに置けない
-  it.fails("RS-612: 【スカイコンテナ】自軍コマンド2つを捨札にし、山札から「メカ」の S ユニット2枚をコマンドゾーンにホールド状態で置く（出典: atwiki/page-1451）", () => {
+  it("RS-612: 【スカイコンテナ】自軍コマンド2つを捨札にし、山札から「メカ」の S ユニット2枚をコマンドゾーンにホールド状態で置く（出典: atwiki/page-1451）", () => {
     let s = rushAce(rushBoard());
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-612");
     s = resolveAll(s, ["TST-OP:c1", "TST-OP:c2", "RS-613:d1", "RS-614:d2"]);
@@ -683,8 +664,7 @@ describe("RS-612 スカイエース", () => {
     expect(cardIn(s, "player1", "RS-613:d1")?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-612 【スカイコンテナ】の山札サーチが未実装
-  it.fails("RS-612: 【スカイコンテナ】山札から選べるのは「メカ」を持つ S ユニットだけ（メカでない S ユニット・オペレーションは選べない）（出典: atwiki/page-1451「特徴「メカ」を持つSユニットのカード」）", () => {
+  it("RS-612: 【スカイコンテナ】山札から選べるのは「メカ」を持つ S ユニットだけ（メカでない S ユニット・オペレーションは選べない）（出典: atwiki/page-1451「特徴「メカ」を持つSユニットのカード」）", () => {
     let s = rushAce(rushBoard());
     s = resolveAll(s, ["TST-OP:c1"]);
     expect(zoneOf(s, "player1", "TST-UNIT-0:nm")).toBe("deck");

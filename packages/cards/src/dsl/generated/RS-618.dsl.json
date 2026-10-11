@@ -22,13 +22,13 @@
       "name": "ジェットランサー",
       "text": "これは、自軍捨札にあるウイングを持つユニットカード1体につきBP+1000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_korehaniaruuinguwotsuyunitokado1nitsukibp1000sareru",
-          "duration": "turn"
+          "keyword": "set9a::RS-618::jet_lancer",
+          "duration": "permanent"
         }
       ],
       "optional": false
