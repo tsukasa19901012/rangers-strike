@@ -697,6 +697,10 @@ export function isValidEffectChoiceTarget(
     if (dest === "rush" || dest === "enemy_command") {
       return located.zone === "battle";
     }
+    if (dest === "hold") {
+      // 「ユニットを1体選びホールドする」— 場（バトル・ラッシュエリア）のリリース状態のユニットをその場でホールドする。
+      return (located.zone === "battle" || located.zone === "rush") && !located.card.commandHeld;
+    }
     if (dest === "enemy_battle") {
       return located.zone === "rush";
     }
@@ -3903,6 +3907,23 @@ export function applyEffectChoiceSelect(
           pending,
           cardName(state.definitions, found.card.cardId),
         );
+      }
+      if (dest === "hold") {
+        // 「ユニットを1体選びホールドする」（RS-648【イカロスバインド】等）— その場（バトル・ラッシュエリア）でホールド状態にする。
+        const located = findCardOwner(state, instanceId);
+        if (!located || (located.zone !== "battle" && located.zone !== "rush")) return { error: "invalid_target" };
+        const zone = located.zone;
+        const owner = state.players[located.playerId];
+        const target = owner[zone].find((c) => c.instanceId === instanceId);
+        if (!target || target.commandHeld) return { error: "invalid_target" };
+        const nextState: GameState = {
+          ...state,
+          ...updatePlayer(state, located.playerId, {
+            ...owner,
+            [zone]: owner[zone].map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: true } : c)),
+          }),
+        };
+        return finishChoice(nextState, pending, cardName(state.definitions, target.cardId));
       }
       if (dest === "enemy_command") {
         const located = findCardOwner(state, instanceId);

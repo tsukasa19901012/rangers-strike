@@ -160,20 +160,17 @@ describe("RS-648 ガオイカロス", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-648 【イカロスバインド】で選んだ敵軍ユニットがホールド状態でバトルエリアに残らず、相手のコマンドゾーンに移される
-  it.fails("RS-648: 【イカロスバインド】選んだ敵軍バトルエリアのユニットがホールド状態になる（出典: atwiki/page-1497）", () => {
+  it("RS-648: 【イカロスバインド】選んだ敵軍バトルエリアのユニットがホールド状態になる（出典: atwiki/page-1497）", () => {
     const s = resolveAll(pick(bindBoard(), "SPEC-ES:eb"));
     expect(zoneOf(s, "player2", "SPEC-ES:eb")).toBe("battle");
     expect(cardIn(s, "player2", "SPEC-ES:eb")?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-648 【イカロスバインド】の候補が敵軍バトルエリアのユニットだけ（ラッシュエリアのユニットを選べない）
-  it.fails("RS-648: 【イカロスバインド】敵軍ラッシュエリアのユニット（L を含む）も選べる（出典: atwiki/page-1497「敵軍ユニットを1体選び」・カード評価「サイズとエリアを問わないホールド能力」）", () => {
+  it("RS-648: 【イカロスバインド】敵軍ラッシュエリアのユニット（L を含む）も選べる（出典: atwiki/page-1497「敵軍ユニットを1体選び」・カード評価「サイズとエリアを問わないホールド能力」）", () => {
     expect(choiceIds(bindBoard())).toEqual(expect.arrayContaining(["SPEC-ES:eb", "SPEC-EL:erl"]));
   });
 
-  // 既知の不具合: CARD-RS-648 【イカロスバインド】の候補が敵軍バトルエリアのユニットだけ
-  it.fails("RS-648: 【イカロスバインド】選んだ敵軍 L ユニット（ラッシュエリア）がホールド状態になる（出典: atwiki/page-1497・カード評価「サイズとエリアを問わないホールド能力」）", () => {
+  it("RS-648: 【イカロスバインド】選んだ敵軍 L ユニット（ラッシュエリア）がホールド状態になる（出典: atwiki/page-1497・カード評価「サイズとエリアを問わないホールド能力」）", () => {
     const s = resolveAll(pick(bindBoard(), "SPEC-EL:erl"));
     expect(zoneOf(s, "player2", "SPEC-EL:erl")).toBe("rush");
     expect(cardIn(s, "player2", "SPEC-EL:erl")?.commandHeld).toBe(true);

@@ -227,7 +227,13 @@ const handleDeployRush: PatternHandler = (state, ctx, body) => {
 };
 
 const handleHoldEnemyUnit: PatternHandler = (state, ctx, body) => {
-  const withChoice = startEnterHoldEnemyPowerLeDamageChoice(state, {
+  // 「敵軍ユニットを1体選びホールドする（してもよい）」— コマンドゾーンに置くのではなく、その場でホールド状態にする
+  // （RS-648【イカロスバインド】）。「持ち主のコマンドゾーンにホールド状態で置く」はコマンドゾーンへ移す。
+  if (!/コマンドゾーン/.test(body) && /ユニットを\d体選びホールド/.test(body.normalize("NFKC"))) {
+    return holdEnemyUnitInPlace(state, ctx, body);
+  }
+  // RS-563【ライジングホーン】型（必要パワーが相手のダメージ以下の敵軍ユニット）は、その条件を持つ本文だけ。
+  const withChoice = !/必要パワー/.test(body) || !/ダメージ/.test(body) ? null : startEnterHoldEnemyPowerLeDamageChoice(state, {
     playerId: ctx.playerId,
     effectId: ctx.effectId,
     sourceCardId: ctx.sourceCardId,
@@ -249,6 +255,38 @@ const handleHoldEnemyUnit: PatternHandler = (state, ctx, body) => {
   if (!choice) return { state, detail: `${ctx.effectId}:no_targets` };
   return { state: choice, detail: ctx.effectId };
 };
+
+/**
+ * 「（…とき、）敵軍ユニットを1体選びホールドしてもよい。」— 選んだユニットをその場でホールド状態にする（unitDestination "hold"）。
+ * 候補は選ぶ文（最初の文の「…とき、」より後）の条件で絞る。エリアの指定がなければバトル・ラッシュエリアの両方
+ * （「敵軍ユニット」はエリアを問わない）。すでにホールド状態のユニットはホールドできないので候補にしない。
+ */
+function holdEnemyUnitInPlace(state: GameState, ctx: GrantKeywordContext, body: string): { state: GameState; detail: string } {
+  const sentence = body.split("。")[0] ?? body;
+  const clause = sentence.includes("とき、") ? sentence.slice(sentence.lastIndexOf("とき、") + 3) : sentence;
+  const filter = parseEnemyUnitFilter(clause);
+  if (!/バトルエリア|ラッシュエリア/.test(clause)) filter.zone = "both";
+  const valid = collectEnemyUnits(state, ctx.playerId, filter).filter((id) => {
+    const enemy = state.players[opponent(ctx.playerId)];
+    return ![...enemy.battle, ...enemy.rush].some((c) => c.instanceId === id && c.commandHeld);
+  });
+  if (valid.length === 0) return { state, detail: `${ctx.effectId}:no_targets` };
+  return {
+    state: openEffectChoice(state, {
+      playerId: ctx.playerId,
+      effectId: ctx.effectId,
+      sourceCardId: ctx.sourceCardId,
+      sourceInstanceId: ctx.triggerSourceInstanceId,
+      phasePlayerId: ctx.phasePlayerId,
+      kind: "select_unit",
+      validInstanceIds: valid,
+      unitDestination: "hold",
+      selectCount: 1,
+      optional: /してもよい/.test(clause),
+    }),
+    detail: ctx.effectId,
+  };
+}
 
 const handleDamageAction: PatternHandler = (state, ctx, body) =>
   /次の相手ターン、自軍パワーゾーンのカードをウラ返してダメージにするとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットをすべて撃破する/.test(body)

@@ -253,6 +253,10 @@ export function buildCatchallStructuredPrimitives(
         ? selectEnemyAreaUnit(body, [{ type: "hold_command", target: { type: "trigger_source" } }])
         : null;
       if (enemyArea) return [enemyArea];
+      // 「敵軍ユニットを1体選びホールドする（してもよい）」はコマンドゾーンに移さず、その場でホールド状態にする
+      // （RS-648【イカロスバインド】）。hold_command（コマンドゾーンへ置く）ではないので、パターン別ハンドラ
+      // （rules/rs/rsCatchallRuntime.ts holdEnemyUnitInPlace）に任せる。
+      if (!/コマンドゾーン/.test(body) && /ユニットを\d体選びホールド/.test(body.normalize("NFKC"))) return null;
       if (/ホールド/.test(body)) {
         return [
           selectEnemyUnit([{ type: "hold_command", target: { type: "trigger_source" } }]),
