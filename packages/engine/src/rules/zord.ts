@@ -20,7 +20,7 @@ import { COMMAND_ZONE_MAX } from "../types/game";
 import { getDefinition, isSmallUnit } from "../core/catalog";
 import { findInZone, removeAt } from "../core/helpers";
 import { hasTurnRuleModifier } from "../core/scopedModifiers";
-import { zordMaterialFeatures } from "./zordFeatureContext";
+import { zordMaterialAlteredName, zordMaterialFeatures } from "./zordFeatureContext";
 
 /** ゾードアップ素材を取れるゾーン（フィールドのみ、手札不可）。 */
 export type ZordMaterialZone = "rush" | "battle";
@@ -71,11 +71,14 @@ function fieldCardMatchesPartner(
   fieldCard: CardInstance,
   partnerCardId: string,
 ): boolean {
-  if (fieldCard.cardId === partnerCardId) return true;
+  // RS-602【汚染された水】でカード名が変わったユニットは、名前では合体の素材にならない（テキストの「…としてつかえる」は変わらない。
+  // faq-card-8 RS-602 Q2）。
+  const alteredName = zordMaterialAlteredName(fieldCard);
+  if (!alteredName && fieldCard.cardId === partnerCardId) return true;
   const fieldDef = getDefinition(definitions, fieldCard.cardId);
   if (!fieldDef) return false;
   const partnerNames = partnerNamesForId(definitions, partnerCardId);
-  const fieldNames = new Set<string>([canonicalCardName(fieldDef.name)]);
+  const fieldNames = new Set<string>([canonicalCardName(alteredName ?? fieldDef.name)]);
   for (const alias of fusionMaterialAliasNames(fieldDef.text)) {
     fieldNames.add(alias);
   }
@@ -429,7 +432,8 @@ export function isValidZordUpMaterial(
       return (
         (def.type === "unit" || def.type === "vehicle") &&
         !!condition.partnerName &&
-        matchesPartnerName(def, condition.partnerName)
+        // RS-602【汚染された水】で変わったカード名で判定する。
+        normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(condition.partnerName))
       );
     case "discard_feature_unit": {
       // 効果・フェイズで追加された特徴も含める（RS-499 ゲキバイオレット。rules/zordFeatureContext.ts）。

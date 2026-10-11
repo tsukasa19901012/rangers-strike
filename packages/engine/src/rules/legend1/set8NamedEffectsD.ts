@@ -1194,6 +1194,37 @@ CHOICE_SKIPPERS[MEE_MEGALO_EFFECT_ID] = (state, playerId) => {
 };
 
 // ---------------------------------------------------------------------------
+// RS-602 害水大臣ケガレシア【汚染された水】
+// 「これが自軍エリアにある間、特徴「メカ」を持たない敵軍ユニットは次の効果を受ける⇒そのカード名の平仮名と片仮名のうち、カ行、サ行、
+//  タ行、ハ行の文字に濁点を追加する。ただし、促音（小さい“ッ”）とルビには追加されない。（例：ズピードル、蛮機兵ウガッヅ）」
+// （atwiki/page-1231）— 濁点はカード名だけに付き、テキスト中の名前（「…としてつかえる」）は変わらない（faq-card-8 RS-602 Q2）。
+// 名前を参照する処理（合体の素材の判定。rules/zordFeatureContext.ts zordMaterialName）が、変わった名前で判定する。
+
+const DAKUTEN_MAP: Record<string, string> = (() => {
+  const plain = "かきくけこさしすせそたちつてとはひふへほカキクケコサシスセソタチツテトハヒフヘホ";
+  const voiced = "がぎぐげござじずぜぞだぢづでどばびぶべぼガギグゲゴザジズゼゾダヂヅデドバビブベボ";
+  const map: Record<string, string> = {};
+  for (let i = 0; i < plain.length; i += 1) map[plain[i]!] = voiced[i]!;
+  return map;
+})();
+
+/** カ行・サ行・タ行・ハ行の平仮名・片仮名に濁点を付ける（促音の「っ」「ッ」は対象外）。 */
+export function addDakuten(name: string): string {
+  return [...name].map((ch) => DAKUTEN_MAP[ch] ?? ch).join("");
+}
+
+/** 【汚染された水】で変わったカード名（変わらなければ undefined）。ownerId はカードの持ち主（場のユニット）。 */
+export function pollutedWaterName(state: GameState, ownerId: PlayerId, card: CardInstance): string | undefined {
+  const def = getDefinition(state.definitions, card.cardId);
+  if (def?.type !== "unit") return undefined;
+  const enemyId = opponent(ownerId);
+  if (!fieldUnits(state, enemyId).some((c) => c.cardId === "RS-602" && namedTextLive(state, enemyId, c))) return undefined;
+  if (unitFeatures(state, ownerId, card).includes("メカ")) return undefined;
+  const changed = addDakuten(def.name);
+  return changed === def.name ? undefined : changed;
+}
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword からの起点
 
 export const SET8D_KEYWORD_PREFIX = "set8d::";

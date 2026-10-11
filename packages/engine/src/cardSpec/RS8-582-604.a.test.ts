@@ -99,8 +99,7 @@ describe("RS-582 魔導神官メーミィ", () => {
     });
   });
 
-  // 既知の不具合: CARD-RS-582 【メー・メガロ】が未実装（DSL スタブが NC の grant_keyword だけで、カウンターが捨札になっても山札を見られない）
-  it.fails("RS-582: 【メー・メガロ】自分がカウンター（疾風流超忍法）を発動して捨札になったとき、山札から同名カードを1枚選び手札に加えられる（出典: atwiki/page-1196）", () => {
+  it("RS-582: 【メー・メガロ】自分がカウンター（疾風流超忍法）を発動して捨札になったとき、山札から同名カードを1枚選び手札に加えられる（出典: atwiki/page-1196）", () => {
     let s = useCard(enemyRush(), "player1", "RS-247:c");
     expect(zoneOf(s, "player1", "RS-247:c")).toBe("discard");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-582");
@@ -109,14 +108,12 @@ describe("RS-582 魔導神官メーミィ", () => {
     expect(zoneOf(s, "player1", "RS-247:k1")).toBe("deck");
   });
 
-  // 既知の不具合: CARD-RS-582 【メー・メガロ】が未実装
-  it.fails("RS-582: 【メー・メガロ】選べるのは同じカード名のカードだけ（出典: atwiki/page-1196「そのカードと同じカード名のカードを」）", () => {
+  it("RS-582: 【メー・メガロ】選べるのは同じカード名のカードだけ（出典: atwiki/page-1196「そのカードと同じカード名のカードを」）", () => {
     const s = useCard(enemyRush(), "player1", "RS-247:c");
     expect(choiceIds(s)).toEqual(["RS-247:k1", "RS-247:k2"]);
   });
 
-  // 既知の不具合: CARD-RS-582 【メー・メガロ】が未実装（任意の選択自体が開かない）
-  it.fails("RS-582: 【メー・メガロ】任意 — 加えないこともでき、そのとき山札のカードは手札に来ない（出典: atwiki/page-1196「手札に加えてもよい」）", () => {
+  it("RS-582: 【メー・メガロ】任意 — 加えないこともでき、そのとき山札のカードは手札に来ない（出典: atwiki/page-1196「手札に加えてもよい」）", () => {
     let s = useCard(enemyRush(), "player1", "RS-247:c");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-582");
     expect(canSkip(s)).toBe(true);
@@ -125,8 +122,7 @@ describe("RS-582 魔導神官メーミィ", () => {
     expect(s.players.player1.deck).toHaveLength(3);
   });
 
-  // 既知の不具合: CARD-RS-582 【メー・メガロ】が未実装
-  it.fails("RS-582: 【メー・メガロ】メーミィがバトルエリアにあっても発動する（出典: atwiki/page-1196「これが自軍エリアにある間」）", () => {
+  it("RS-582: 【メー・メガロ】メーミィがバトルエリアにあっても発動する（出典: atwiki/page-1196「これが自軍エリアにある間」）", () => {
     let s = useCard(enemyRush({ rush: [], battle: [inst("RS-582", "m")] }), "player1", "RS-247:c");
     s = resolveAll(s, ["RS-247:k1"]);
     expect(zoneOf(s, "player1", "RS-247:k1")).toBe("hand");
@@ -232,8 +228,7 @@ describe("RS-583 ボウケンレッドHM（ハッピーモード）", () => {
   });
 
   // アタックの対象も「選ぶ」もの（grnrngr/faq-card-1 RS-026 Q1「アタックされる以外では相手に選ばれない」の裏返し）。
-  // 既知の不具合: CARD-RS-583 【災いを受け止める覚悟】が未実装（while_in_field_body のパッシブ登録だけ）
-  it.fails("RS-583: 【災いを受け止める覚悟】相手が他の自軍ユニットをアタック対象に選んだとき、代わりにこのユニットが選ばれたことにできる（出典: atwiki/page-1211）", () => {
+  it("RS-583: 【災いを受け止める覚悟】相手が他の自軍ユニットをアタック対象に選んだとき、代わりにこのユニットが選ばれたことにできる（出典: atwiki/page-1211）", () => {
     let s = st({
       activePlayer: "player2",
       player1: { battle: [inst("RS-583", "hm"), inst("TST-UNIT-0", "ally")], deck: deckCards(3) },
@@ -257,8 +252,7 @@ describe("RS-583 ボウケンレッドHM（ハッピーモード）", () => {
     expect(zoneOf(s, "player1", "RS-583:hm")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-583 【災いを受け止める覚悟】が未実装
-  it.fails("RS-583: 【災いを受け止める覚悟】このターン中に一度だけ — 2回目のアタックでは代わりにならない（出典: atwiki/page-1211「このターン中に一度だけ」）", () => {
+  it("RS-583: 【災いを受け止める覚悟】このターン中に一度だけ — 2回目のアタックでは代わりにならない（出典: atwiki/page-1211「このターン中に一度だけ」）", () => {
     // 1回目: BP 負けしない攻撃役（SP－・BP1000 → HM の BP500 を撃破）ではなく、HM が生き残るよう SP－ BP100 で殴る
     const WEAK = sUnit("SPEC-WEAK", { sp: undefined, bp: 100 });
     let s = st(
@@ -319,8 +313,7 @@ describe("RS-584 ボウケンブラックAT（アクセルテクター）", () =
       player2: { deck: deckCards(3, "e"), ...p2 },
     });
 
-  // 既知の不具合: CARD-RS-584 【闇を振り払う心】が未実装（DSL スタブが NC の bp_modify キーワードで、常時効果として働かない）
-  it.fails("RS-584: 【闇を振り払う心】自軍パワーのオモテ向きと自軍コマンドゾーンに DA のカードがなければ SP1（出典: atwiki/page-1212）", () => {
+  it("RS-584: 【闇を振り払う心】自軍パワーのオモテ向きと自軍コマンドゾーンに DA のカードがなければ SP1（出典: atwiki/page-1212）", () => {
     expect(spOf(board(), "player1", "RS-584:at")).toBe(1);
   });
 
@@ -332,13 +325,11 @@ describe("RS-584 ボウケンブラックAT（アクセルテクター）", () =
     expect(spOf(board({ power: [inst("TST-OP-DA", "pda")] }), "player1", "RS-584:at")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-584 【闇を振り払う心】が未実装
-  it.fails("RS-584: 【闇を振り払う心】DA のカードがダメージ（ウラ向き）なら数えず SP1 になる（出典: atwiki/page-1212「オモテ向きのカード」）", () => {
+  it("RS-584: 【闇を振り払う心】DA のカードがダメージ（ウラ向き）なら数えず SP1 になる（出典: atwiki/page-1212「オモテ向きのカード」）", () => {
     expect(spOf(board({ power: [{ ...inst("TST-OP-DA", "pda"), faceDown: true }] }), "player1", "RS-584:at")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-584 【闇を振り払う心】が未実装
-  it.fails("RS-584: 【闇を振り払う心】DA を持つ敵軍ユニット（ラッシュエリアでも）があれば BP+3000（出典: atwiki/page-1212「DAを持つ敵軍ユニットがあれば、これはBP＋3000される」）", () => {
+  it("RS-584: 【闇を振り払う心】DA を持つ敵軍ユニット（ラッシュエリアでも）があれば BP+3000（出典: atwiki/page-1212「DAを持つ敵軍ユニットがあれば、これはBP＋3000される」）", () => {
     expect(bpOf(board({}, { rush: [inst("RS-604", "da")] }), "player1", "RS-584:at")).toBe(6500);
   });
 
@@ -459,8 +450,7 @@ describe("RS-586 巨神ゴードム", () => {
   const rushBoard = (p1: Partial<GameState["players"]["player1"]>) =>
     st({ phase: "rush", player1: { hand: [inst("RS-602", "k")], command: releasedCat("DA", 1), power: powerCards(1), deck: deckCards(3), ...p1 } });
 
-  // 既知の不具合: CARD-RS-586 【魔神に不足する物】で捨札にするのは場の「戦闘員」ユニットのはずが、エンジンは自軍捨札の「戦闘員」カードを数えて取り除く（godomRushPay.ts）
-  it.fails("RS-586: 【魔神に不足する物】足りない必要パワー2の分、場の「戦闘員」ユニット2体を捨札にして DA ユニットをラッシュできる（出典: atwiki/page-1221）", () => {
+  it("RS-586: 【魔神に不足する物】足りない必要パワー2の分、場の「戦闘員」ユニット2体を捨札にして DA ユニットをラッシュできる（出典: atwiki/page-1221）", () => {
     const s = rushBoard({ rush: [inst("RS-586", "gd"), ...grunts(2)] });
     const r = rushFromHand(s, "player1", "RS-602:k");
     expect(r.ok).toBe(true);
@@ -469,14 +459,12 @@ describe("RS-586 巨神ゴードム", () => {
     expect(zoneOf(r.state, "player1", "RS-604:g1")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-586 自軍捨札の「戦闘員」カードでパワー不足を補えてしまう
-  it.fails("RS-586: 【魔神に不足する物】捨札の「戦闘員」カードは「ユニット」ではないので、場に「戦闘員」がいなければパワー不足のままラッシュできない（出典: atwiki/page-1221「特徴「戦闘員」を持つユニットを捨札にする」）", () => {
+  it("RS-586: 【魔神に不足する物】捨札の「戦闘員」カードは「ユニット」ではないので、場に「戦闘員」がいなければパワー不足のままラッシュできない（出典: atwiki/page-1221「特徴「戦闘員」を持つユニットを捨札にする」）", () => {
     const s = rushBoard({ rush: [inst("RS-586", "gd")], discard: grunts(5) });
     expect(canStartRush(s, "player1", "RS-602:k")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-586 ゴードムがあると自軍ラッシュフェイズ中は捨札の「戦闘員」の枚数がパワーに加算され（godomDiscardPowerBonus）、DA を持たないユニットもパワー不足のままラッシュできてしまう
-  it.fails("RS-586: 【魔神に不足する物】DA を持たないユニットのラッシュには使えない（出典: atwiki/page-1221「DAを持つユニットカード」）", () => {
+  it("RS-586: 【魔神に不足する物】DA を持たないユニットのラッシュには使えない（出典: atwiki/page-1221「DAを持つユニットカード」）", () => {
     const s = st({
       phase: "rush",
       player1: { hand: [inst("RS-583", "red")], rush: [inst("RS-586", "gd"), ...grunts(2)], discard: grunts(5, "dg"), command: releasedCat("ET", 1), power: powerCards(1), deck: deckCards(3) },
@@ -527,8 +515,7 @@ describe("RS-587 怒りの鬼神　ガイ", () => {
       [BP3000, BP3500],
     );
 
-  // 既知の不具合: CARD-RS-587 ※「BP3000以下のユニットにアタックされない」が未実装（no_attack_from_bp3000_or_less を参照する処理がない）
-  it.fails("RS-587: ※ BP3000 のユニットにはアタックされない（出典: atwiki/page-1197）", () => {
+  it("RS-587: ※ BP3000 のユニットにはアタックされない（出典: atwiki/page-1197）", () => {
     expect(attackersOf(enemyTurn(), "RS-587:g")).toEqual(["SPEC-BP3500:b"]);
   });
 
@@ -545,8 +532,7 @@ describe("RS-587 怒りの鬼神　ガイ", () => {
       [M_UNIT],
     );
 
-  // 既知の不具合: CARD-RS-587 【激しい闘争心】が未実装（NC は成立するが選択が開かない）
-  it.fails("RS-587: 【激しい闘争心】NC（1番目）— 他の自軍 S ユニットを撃破すると、相手は自分自身のユニットを1体選び撃破する（出典: atwiki/page-1197）", () => {
+  it("RS-587: 【激しい闘争心】NC（1番目）— 他の自軍 S ユニットを撃破すると、相手は自分自身のユニットを1体選び撃破する（出典: atwiki/page-1197）", () => {
     let s = enterSeq(ncBoard(), ["RS-587:g"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-587");
     s = pick(s, "TST-UNIT-0:ally");
@@ -557,14 +543,12 @@ describe("RS-587 怒りの鬼神　ガイ", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-587 【激しい闘争心】が未実装
-  it.fails("RS-587: 【激しい闘争心】選べるのはこれ以外の自軍 S ユニット（M ユニット・ガイ自身は選べない）（出典: atwiki/page-1197「これ以外の自軍Sユニット」）", () => {
+  it("RS-587: 【激しい闘争心】選べるのはこれ以外の自軍 S ユニット（M ユニット・ガイ自身は選べない）（出典: atwiki/page-1197「これ以外の自軍Sユニット」）", () => {
     const s = enterSeq(ncBoard(), ["RS-587:g"]);
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:ally"]);
   });
 
-  // 既知の不具合: CARD-RS-587 【激しい闘争心】が未実装
-  it.fails("RS-587: 【激しい闘争心】任意 — 撃破しなければ相手もユニットを撃破しない（出典: atwiki/page-1197「撃破してもよい。そうしたとき」）", () => {
+  it("RS-587: 【激しい闘争心】任意 — 撃破しなければ相手もユニットを撃破しない（出典: atwiki/page-1197「撃破してもよい。そうしたとき」）", () => {
     let s = enterSeq(ncBoard(), ["RS-587:g"]);
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));
@@ -600,8 +584,7 @@ describe("RS-588 大いなる獣　レイ", () => {
     });
   });
 
-  // 既知の不具合: CARD-RS-588 ※「BP3000以下のユニットにアタックされない」が未実装
-  it.fails("RS-588: ※ BP3000 のユニットにはアタックされない（BP3500 にはアタックされる）（出典: atwiki/page-1198）", () => {
+  it("RS-588: ※ BP3000 のユニットにはアタックされない（BP3500 にはアタックされる）（出典: atwiki/page-1198）", () => {
     const s = st(
       {
         activePlayer: "player2",
@@ -620,8 +603,7 @@ describe("RS-588 大いなる獣　レイ", () => {
       player2: { hand: [inst("RS-059", "blue"), inst("TST-OP", "eo")], deck: deckCards(3, "e") },
     });
 
-  // 既知の不具合: CARD-RS-588 【術魂】が未実装（combo_action のパッシブ登録だけ）
-  it.fails("RS-588: 【術魂】NC（5番目）— 相手の手札の NC を持つ S ユニット（マジブルー）を選び、その NC（1枚ドロー）をこのユニットの効果として発動する（出典: atwiki/page-1198）", () => {
+  it("RS-588: 【術魂】NC（5番目）— 相手の手札の NC を持つ S ユニット（マジブルー）を選び、その NC（1枚ドロー）をこのユニットの効果として発動する（出典: atwiki/page-1198）", () => {
     let s = enterSeq(board(fill(4)), ["RS-588:r"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-588");
     s = resolveAll(s, ["RS-059:blue"]);
@@ -629,8 +611,7 @@ describe("RS-588 大いなる獣　レイ", () => {
     expect(zoneOf(s, "player2", "RS-059:blue")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RS-588 【術魂】が未実装
-  it.fails("RS-588: 【術魂】「怒りの鬼神　ガイ」の次（2番目）ならナンバーに関係なく発動する（出典: atwiki/page-1198「ナンバーに関係なく発動する」）", () => {
+  it("RS-588: 【術魂】「怒りの鬼神　ガイ」の次（2番目）ならナンバーに関係なく発動する（出典: atwiki/page-1198「ナンバーに関係なく発動する」）", () => {
     const s = resolveAll(enterSeq(board([inst("RS-587", "gai")]), ["RS-588:r"]), ["RS-059:blue"]);
     expect(s.players.player1.hand).toHaveLength(1);
   });
@@ -640,8 +621,7 @@ describe("RS-588 大いなる獣　レイ", () => {
     expect(s.players.player1.hand).toHaveLength(0);
   });
 
-  // 既知の不具合: CARD-RS-588 【術魂】が未実装（任意の選択自体が開かない）
-  it.fails("RS-588: 【術魂】任意 — 相手の手札を見ないこともできる（出典: atwiki/page-1198「見てもよい」）", () => {
+  it("RS-588: 【術魂】任意 — 相手の手札を見ないこともできる（出典: atwiki/page-1198「見てもよい」）", () => {
     let s = enterSeq(board(fill(4)), ["RS-588:r"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-588");
     expect(canSkip(s)).toBe(true);
@@ -727,8 +707,7 @@ describe("RS-589 クエスター・ガイ", () => {
       [M_UNIT],
     );
 
-  // 既知の不具合: CARD-RS-589 【グレイブラスター】が未実装（NC は成立するが選択が開かない）
-  it.fails("RS-589: 【グレイブラスター】NC（1番目）— 他の自軍 S ユニットをホールドすると、相手は自分自身のユニットを1体選び撃破する（出典: atwiki/page-1199）", () => {
+  it("RS-589: 【グレイブラスター】NC（1番目）— 他の自軍 S ユニットをホールドすると、相手は自分自身のユニットを1体選び撃破する（出典: atwiki/page-1199）", () => {
     let s = enterSeq(ncBoard(), ["RS-589:q"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-589");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:ally"]);
@@ -738,8 +717,7 @@ describe("RS-589 クエスター・ガイ", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-589 【グレイブラスター】が未実装
-  it.fails("RS-589: 【グレイブラスター】任意 — ホールドしなければ相手もユニットを撃破しない（出典: atwiki/page-1199「ホールドしてもよい。そうしたとき」）", () => {
+  it("RS-589: 【グレイブラスター】任意 — ホールドしなければ相手もユニットを撃破しない（出典: atwiki/page-1199「ホールドしてもよい。そうしたとき」）", () => {
     let s = enterSeq(ncBoard(), ["RS-589:q"]);
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));
