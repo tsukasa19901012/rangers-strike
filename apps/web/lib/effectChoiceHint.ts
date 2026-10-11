@@ -35,6 +35,16 @@ const SET7D_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rs515_go_on_sword_order: { label: "ゴーオンソード", hint: "先に山札の下に置くカードを選んでください（あとから置くカードほど下になります）" },
   // 第7弾 RS-489（engine rules/legend1/set7NamedEffectsC.ts）。
   rs489_box_dimension_order: { label: "宇宙忍法・箱次元", hint: "先に山札の下に戻すユニットを選んでください（見送ると戻しません）" },
+  // 第8弾 RS-538〜RS-559（engine rules/legend1/set8NamedEffectsB.ts）。
+  rs546_empire_attack: { label: "エンパイアアタック", hint: "WB を持たないバトルエリアのユニットをすべて撃破します" },
+  rs549_tricera_lance: { label: "トリケランス", hint: "ホールドする敵軍 S ユニットを1体ずつ選んでください（必要パワーの合計が敵軍ダメージまで。やめるなら「スキップ」）" },
+  rs550_god_finish: { label: "鉄拳ゴッドフィニッシュ", hint: "パワーゾーンにダメージにして置く敵軍ユニットを選んでください（見送れます）" },
+  rs551_gamma_dynamite: { label: "ガンマーダイナマイト", hint: "パワーゾーンにダメージにして置く、自分の「怪人」ユニットを1体選んでください" },
+  rs554_flying_beam: { label: "フライングビーム", hint: "パワーゾーンにダメージにして置く敵軍ユニットを選んでください（見送れます）" },
+  rs556_salda_claw: { label: "サルダークロー", hint: "敵軍山札の上からオモテにしますか？（するならこのユニットを選ぶ）" },
+  rs556_salda_claw_order: { label: "サルダークロー", hint: "先に山札の下に戻すカードを選んでください（あとから戻すカードほど下になります）" },
+  rs558_key_holder_wish: { label: "鍵の持ち主の願い", hint: "1枚ドローしますか？" },
+  rs559_power_arrow: { label: "パワーアロー", hint: "撃破する BP8000 以下の敵軍ユニットを選んでください（見送れます）" },
 };
 
 /**

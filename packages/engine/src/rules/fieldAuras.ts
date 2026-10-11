@@ -4,7 +4,7 @@ import { hellSaturnGrantCount } from "./hellSaturn";
 import { activeNamedEffect } from "./ncGatedEffects";
 import { countActiveFieldKeyword } from "../dsl/fieldKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { getDefinition, cardName, isLargeUnit } from "../core/catalog";
+import { getDefinition, cardName } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
@@ -13,6 +13,7 @@ import { set5AFieldBpBonus } from "./legend1/set5NamedEffectsA";
 import { set6BFieldBpBonus } from "./legend1/set6NamedEffectsB";
 import { femaleUnitCountBothSides } from "./legend1/set7NamedEffectsD";
 import { set8DFieldBpBonus } from "./legend1/set8NamedEffectsD";
+import { anyOtherBaseLargeUnit } from "./legend1/set8NamedEffectsB";
 import { set7AFieldBpBonus } from "./legend1/set7NamedEffectsA";
 import { rs560BeastMBpBonus } from "./rs/rsCatchallField";
 import { commandCategoriesNow } from "./legend3/battleEffects";
@@ -145,25 +146,22 @@ function noteOtherNcBpBonus(
 
   // RS-558 (ガンマジン): BP+4000 if any L-unit on field (own or enemy)
   if (cardId === "RS-558") {
-    const anyL = [...own.rush, ...own.battle, ...enemy.rush, ...enemy.battle].some(
-      (c) => c.instanceId !== instance.instanceId && isLargeUnit(state.definitions, c.cardId),
-    );
+    // L ユニットには【再生巨大化能力】（RS-539）等で L になったユニットも含む（rules/legend1/set8NamedEffectsB.ts）。
+    const anyL = anyOtherBaseLargeUnit(state, instance);
     if (anyL) bonus += 4000;
   }
 
   // RS-672 (ゴローダーGT): BP+2000 if any L-unit on field (own or enemy)
   if (cardId === "RS-672") {
-    const anyL = [...own.rush, ...own.battle, ...enemy.rush, ...enemy.battle].some(
-      (c) => c.instanceId !== instance.instanceId && isLargeUnit(state.definitions, c.cardId),
-    );
+    // L ユニットには【再生巨大化能力】（RS-539）等で L になったユニットも含む（rules/legend1/set8NamedEffectsB.ts）。
+    const anyL = anyOtherBaseLargeUnit(state, instance);
     if (anyL) bonus += 2000;
   }
 
   // XG3-003 (ラジエッカーロボ): BP+3000 if any L-unit on field (own or enemy)
   if (cardId === "XG3-003") {
-    const anyL = [...own.rush, ...own.battle, ...enemy.rush, ...enemy.battle].some(
-      (c) => c.instanceId !== instance.instanceId && isLargeUnit(state.definitions, c.cardId),
-    );
+    // L ユニットには【再生巨大化能力】（RS-539）等で L になったユニットも含む（rules/legend1/set8NamedEffectsB.ts）。
+    const anyL = anyOtherBaseLargeUnit(state, instance);
     if (anyL) bonus += 3000;
   }
 

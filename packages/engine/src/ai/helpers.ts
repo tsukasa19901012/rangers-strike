@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { pickSet8BCpuChoice } from "../rules/legend1/set8NamedEffectsB";
 import { cpuAcceptsOptionalEffect } from "../rules/optionalEffects";
 import { pickSet7DCpuChoice } from "../rules/legend1/set7NamedEffectsD";
 import { pickSet8DCpuChoice } from "../rules/legend1/set8NamedEffectsD";
@@ -1201,6 +1202,9 @@ export function pickEffectChoice(
   // 第8弾 RS-582〜RS-604 の選択（rules/legend1/set8NamedEffectsD.ts）。
   const set8d = pickSet8DCpuChoice(state, pending, actions);
   if (set8d) return set8d;
+  // 第8弾 RS-538〜RS-559 の選択（rules/legend1/set8NamedEffectsB.ts）。
+  const set8b = pickSet8BCpuChoice(state, pending, actions);
+  if (set8b) return set8b;
 
   // 「～してもよい」の任意効果の確認（rules/optionalEffects.ts）。
   if (pending.mayConfirm) {

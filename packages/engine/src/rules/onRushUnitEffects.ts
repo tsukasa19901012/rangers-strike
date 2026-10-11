@@ -1,4 +1,5 @@
 import { openProphecyOnEnemyRush } from "./legend1/set7NamedEffectsC";
+import { applyGuardianApostleProviso } from "./legend1/set8NamedEffectsB";
 import type { GameState, PlayerId } from "../types/game";
 import { applySet7AOnRush } from "./legend1/set7NamedEffectsA";
 import { findInZone } from "../core/helpers";
@@ -184,6 +185,11 @@ export function applyOnRushUnitEffects(
       });
   nextState = dslRush.state;
   logs.push(...dslRush.logs);
+  // RS-547【守護獣の使徒】ただし書き: 「ラッシュしたとき」の効果を発動したら、そのユニットをホールドする
+  // （rules/legend1/set8NamedEffectsB.ts）。
+  if (!suppressSelf && zone === "rush") {
+    nextState = applyGuardianApostleProviso(nextState, ownerPlayerId, instanceId, dslRush.handled && dslRush.logs.length > 0);
+  }
 
   if (found.card.cardId === "RK-154" && !nextState.pendingEffectChoice) {
     const withChoice = startHeadHeldHighChoice(nextState, ownerPlayerId, instanceId, phasePlayerId);

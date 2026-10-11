@@ -83,8 +83,7 @@ describe("RS-545 究極大獣神", () => {
     expect(r.state.players.player1.discard.map((c) => c.cardId).sort()).toEqual(["RS-034", "RS-288", "RS-547"]);
   });
 
-  // 既知の不具合: CARD-RS-545 合体の別の組み合わせ（大獣神のかわりに守護獣5体）でラッシュできない
-  it.fails("RS-545: 追加条件 — 大獣神のかわりに守護獣5体（ティラノザウルス〜プテラノドン）でもラッシュできる（出典: atwiki/page-1210「（または…）」）", () => {
+  it("RS-545: 追加条件 — 大獣神のかわりに守護獣5体（ティラノザウルス〜プテラノドン）でもラッシュできる（出典: atwiki/page-1210「（または…）」）", () => {
     const r = rushFromHand(mk([inst("RS-547", "kb"), inst("RS-288", "dc"), ...FIVE_BEASTS()]), "player1", "RS-545:u");
     expect(r.ok).toBe(true);
     expect(zoneOf(r.state, "player1", "RS-545:u")).toBe("rush");
@@ -95,8 +94,7 @@ describe("RS-545 究極大獣神", () => {
     expect(canStartRush(mk(KING_SET(), 7), "player1", "RS-545:u")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-545 【グランバニッシャー】の候補が敵軍ラッシュエリアだけに絞られる（「ラッシュしたとき」の語で zone=rush と誤解釈）
-  it.fails("RS-545: 【グランバニッシャー】ラッシュしたとき、敵軍バトルエリア・ラッシュエリアのユニットを選べる（出典: atwiki/page-1210「敵軍ユニットを…選び撃破してもよい」）", () => {
+  it("RS-545: 【グランバニッシャー】ラッシュしたとき、敵軍バトルエリア・ラッシュエリアのユニットを選べる（出典: atwiki/page-1210「敵軍ユニットを…選び撃破してもよい」）", () => {
     const r = rushFromHand(
       mk(KING_SET(), 8, { battle: [inst("TST-UNIT-7", "eb")], rush: [inst("TST-UNIT-0", "er")] }),
       "player1",
@@ -114,8 +112,7 @@ describe("RS-545 究極大獣神", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:er")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-545 【グランバニッシャー】が1体しか選べない（BP合計20000以下の複数選択が未実装）
-  it.fails("RS-545: 【グランバニッシャー】BP の合計が20000以下なら複数体（13000＋7000）選んで撃破できる（出典: atwiki/page-1210「BPの合計が20000以下になるように選び」）", () => {
+  it("RS-545: 【グランバニッシャー】BP の合計が20000以下なら複数体（13000＋7000）選んで撃破できる（出典: atwiki/page-1210「BPの合計が20000以下になるように選び」）", () => {
     let s = rushFromHand(
       mk(KING_SET(), 8, { rush: [inst("TST-UNIT-7", "a"), inst("SPEC-7000", "b")] }),
       "player1",
@@ -197,15 +194,13 @@ describe("RS-546 獣帝大獣神", () => {
     expect(canStartRush(s, "player1", "RS-546:u")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-546 合体の別の組み合わせ（ドラゴンシーザー＋守護獣5体）でラッシュできない
-  it.fails("RS-546: 追加条件 — ドラゴンシーザー＋守護獣5体（大獣神のかわり）でもラッシュできる（出典: atwiki/page-1170「（または…）」）", () => {
+  it("RS-546: 追加条件 — ドラゴンシーザー＋守護獣5体（大獣神のかわり）でもラッシュできる（出典: atwiki/page-1170「（または…）」）", () => {
     const b = rushFromHand(mk546([inst("RS-288", "dc"), ...FIVE_BEASTS()]), "player1", "RS-546:u");
     expect(b.ok).toBe(true);
     expect(b.state.players.player1.discard).toHaveLength(6);
   });
 
-  // 既知の不具合: CARD-RS-546 【エンパイアアタック】が「敵軍バトルエリアのユニットを1体選んで撃破」になっている（全体撃破・自軍側・WB 除外が誤り）
-  it.fails("RS-546: 【エンパイアアタック】自軍ターン中にバトルエリアに出たとき、両軍バトルエリアの WB を持たないユニットをすべて撃破する（強制）（出典: atwiki/page-1170）", () => {
+  it("RS-546: 【エンパイアアタック】自軍ターン中にバトルエリアに出たとき、両軍バトルエリアの WB を持たないユニットをすべて撃破する（強制）（出典: atwiki/page-1170）", () => {
     const s = resolveAll(enter(board("player1"), "RS-546:u"));
     expect(zoneOf(s, "player1", "SPEC-ET-S:own")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-ET-M:en")).toBe("discard");
@@ -256,8 +251,7 @@ describe("RS-547 獣騎神キングブラキオン", () => {
     expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(2);
   });
 
-  // 既知の不具合: CARD-RS-547 【守護獣の使徒】のレジスト付与が未実装
-  it.fails("RS-547: 【守護獣の使徒】自軍エリアにある間、WB の自軍 M ユニット（ドラゴンシーザー）はレジストを得る（出典: atwiki/page-1171）", () => {
+  it("RS-547: 【守護獣の使徒】自軍エリアにある間、WB の自軍 M ユニット（ドラゴンシーザー）はレジストを得る（出典: atwiki/page-1171）", () => {
     let s = attackUntilRegister({ battle: [inst("RS-288", "dc")], rush: [inst("RS-547", "kb")] }, "RS-288:dc");
     expect(registerOffered(s)).toBe(true);
     s = resolveAll(act(s, { type: "use_register", playerId: "player1" }));
@@ -284,14 +278,12 @@ describe("RS-547 獣騎神キングブラキオン", () => {
     expect(registerOffered(s)).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-547 DSL スタブが「※レジスト」をキングブラキオン自身に付与している（付与先は WB の自軍 M ユニット）
-  it.fails("RS-547: キングブラキオン自身（XL）はレジストを持たない（出典: atwiki/page-1171 — 『※レジスト』は WB の自軍 M ユニットが得る能力）", () => {
+  it("RS-547: キングブラキオン自身（XL）はレジストを持たない（出典: atwiki/page-1171 — 『※レジスト』は WB の自軍 M ユニットが得る能力）", () => {
     const s = attackUntilRegister({ battle: [inst("RS-547", "kb")] }, "RS-547:kb");
     expect(registerOffered(s)).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-547 【守護獣の使徒】の「ただし…ラッシュしたときの効果を発動したときは、そのユニットをホールドする」が未実装
-  it.fails("RS-547: 【守護獣の使徒】ただし書き — WB の M ユニット（ガオパンダ）が「ラッシュしたとき」の効果を発動したら、そのユニットをホールドする（出典: atwiki/page-1171「そのユニットをホールドする」）", () => {
+  it("RS-547: 【守護獣の使徒】ただし書き — WB の M ユニット（ガオパンダ）が「ラッシュしたとき」の効果を発動したら、そのユニットをホールドする（出典: atwiki/page-1171「そのユニットをホールドする」）", () => {
     const s0 = st({
       phase: "rush",
       player1: { hand: [inst("RS-305", "pd")], rush: [inst("RS-547", "kb")], command: releasedN(2), power: powerCards(5), deck: deckCards(3) },
@@ -346,14 +338,12 @@ describe("RS-548 ティラノレンジャー（2nd）", () => {
     expect(ncLogged(s, "RS-548")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-548 NC は成立する（ログあり）が【龍撃剣】の「SP1」が付与されない
-  it.fails("RS-548: 【龍撃剣】NC が成立すると SP1（出典: atwiki/page-1225「【龍撃剣】「SP1」」）", () => {
+  it("RS-548: 【龍撃剣】NC が成立すると SP1（出典: atwiki/page-1225「【龍撃剣】「SP1」」）", () => {
     const s = enterSeq(st({ player1: { battle: fill(1), rush: [inst("RS-548", "t")], deck: deckCards(3) } }), ["RS-548:t"]);
     expect(spOf(s, "player1", "RS-548:t")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-548 ※「ナンバーの数字は、ホールド状態のユニット1体につき1増える」が未実装
-  it.fails("RS-548: ※ ホールド状態のユニットが1体（敵軍）あればナンバー3になり、2番目では NC が成立しない（出典: atwiki/page-1225「ホールド状態のユニット1体につき1増える」）", () => {
+  it("RS-548: ※ ホールド状態のユニットが1体（敵軍）あればナンバー3になり、2番目では NC が成立しない（出典: atwiki/page-1225「ホールド状態のユニット1体につき1増える」）", () => {
     const s = enterSeq(
       st({ player1: { battle: fill(1), rush: [inst("RS-548", "t")], deck: deckCards(3) }, player2: { battle: [heldUnit("TST-UNIT-0", "h")] } }),
       ["RS-548:t"],
@@ -361,8 +351,7 @@ describe("RS-548 ティラノレンジャー（2nd）", () => {
     expect(ncLogged(s, "RS-548")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-548 ※ナンバー増加が未実装
-  it.fails("RS-548: ※ ホールド状態のユニットが2体（自軍・敵軍）あればナンバー4になり、4番目で NC が成立する（出典: atwiki/page-1225）", () => {
+  it("RS-548: ※ ホールド状態のユニットが2体（自軍・敵軍）あればナンバー4になり、4番目で NC が成立する（出典: atwiki/page-1225）", () => {
     const s = enterSeq(
       st({
         player1: { battle: [heldUnit("TST-UNIT-0", "h1"), ...fill(2)], rush: [inst("RS-548", "t")], deck: deckCards(3) },
@@ -414,14 +403,12 @@ describe("RS-549 トリケラレンジャー（2nd）", () => {
     expect(registerOffered(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-549 【トリケランス】の NC は成立する（ログあり）が「SP1」が付与されない
-  it.fails("RS-549: 【トリケランス】NC が成立すると SP1（出典: atwiki/page-1172「【トリケランス】「SP1」」）", () => {
+  it("RS-549: 【トリケランス】NC が成立すると SP1（出典: atwiki/page-1172「【トリケランス】「SP1」」）", () => {
     const s = resolveAll(enterSeq(board(3), ["RS-549:t"]));
     expect(spOf(s, "player1", "RS-549:t")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-549 【トリケランス】の「必要パワーの合計が敵軍ダメージと同じになるまで S ユニットを選びホールドする」が未実装（SP1 のみ）
-  it.fails("RS-549: 【トリケランス】敵軍ダメージ3なら、必要パワー1と2の S ユニットを選んでホールドする（出典: atwiki/page-1172「必要パワーの数字の合計が敵軍ダメージの点数と同じ数になるまで好きな数選び、ホールドする」）", () => {
+  it("RS-549: 【トリケランス】敵軍ダメージ3なら、必要パワー1と2の S ユニットを選んでホールドする（出典: atwiki/page-1172「必要パワーの数字の合計が敵軍ダメージの点数と同じ数になるまで好きな数選び、ホールドする」）", () => {
     let s = enterSeq(board(3), ["RS-549:t"]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-549");
     s = pick(s, "SPEC-P1:a");
@@ -430,8 +417,7 @@ describe("RS-549 トリケラレンジャー（2nd）", () => {
     expect(unitIn(s, "player2", "SPEC-P2:b")?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-549 【トリケランス】の選択が未実装
-  it.fails("RS-549: 【トリケランス】候補は敵軍バトルエリアの S ユニットで、必要パワーが敵軍ダメージを超えるもの・M ユニット・ラッシュエリアのユニットは選べない（出典: atwiki/page-1172）", () => {
+  it("RS-549: 【トリケランス】候補は敵軍バトルエリアの S ユニットで、必要パワーが敵軍ダメージを超えるもの・M ユニット・ラッシュエリアのユニットは選べない（出典: atwiki/page-1172）", () => {
     const s = enterSeq(board(3), ["RS-549:t"]);
     expect(choiceIds(s)).toEqual(["SPEC-P1:a", "SPEC-P2:b"]);
   });

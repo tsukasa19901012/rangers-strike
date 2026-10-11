@@ -204,7 +204,7 @@ function multiDestroyCandidates(state: GameState, pending: PendingEffectChoice):
     .map((c) => c.instanceId);
 }
 
-function openMultiDestroy(
+export function openMultiDestroy(
   state: GameState,
   ctx: { playerId: PlayerId; phasePlayerId: PlayerId; sourceCardId: string; sourceInstanceId?: string },
   meta: NonNullable<PendingEffectChoice["set7dMeta"]>,

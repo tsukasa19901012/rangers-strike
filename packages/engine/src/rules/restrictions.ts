@@ -1,5 +1,6 @@
 import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
 import { ownAutoBattleEntryNegated } from "./legend1/set8NamedEffectsD";
+import { set8BRequiresBattleEntry } from "./legend1/set8NamedEffectsB";
 import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
 import { set6BBattleEntryBlocked } from "./legend1/set6NamedEffectsB";
 import { riddenVehicleGrantsEntryHold } from "./legend1/set7NamedEffectsB";
@@ -908,7 +909,9 @@ export function findMandatoryBattleEntries(
       (hasAutoBattleEntryEachTurnNote(card.cardId) && !ownAutoBattleEntryNegated(state, playerId, card)) ||
       earthForceRequiresBattleEntry(state) ||
       (emperorCurse && isSmallUnit(state.definitions, card.cardId)) ||
-      highwayPlanRequiresBattleEntry(state, card.cardId)
+      highwayPlanRequiresBattleEntry(state, card.cardId) ||
+      // RS-557 ビンボーガミ【札束の誘惑】（rules/legend1/set8NamedEffectsB.ts）。
+      set8BRequiresBattleEntry(state, playerId, card)
     ) {
       mandatory.push(card);
     }

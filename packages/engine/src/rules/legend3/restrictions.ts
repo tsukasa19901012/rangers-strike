@@ -1,6 +1,7 @@
 import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
 import { set7DDefenderBlocksAttack } from "../legend1/set7NamedEffectsD";
 import { set8DDefenderBlocksAttack } from "../legend1/set8NamedEffectsD";
+import { set8BDefenderBlocksAttack } from "../legend1/set8NamedEffectsB";
 import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
 import { set5ADefenderBlocksAttack } from "../legend1/set5NamedEffectsA";
 import { kibaGakureBlocksAttack, magiMergeAllowsRushAttack } from "../legend1/set5NamedEffects";
@@ -441,6 +442,8 @@ export function canAttackDefender(
   if (defenderCard && set7DDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
   // ※「これはBP3000以下のユニットにアタックされない。」（RS-587・RS-588 等。rules/legend1/set8NamedEffectsD.ts）。
   if (defenderCard && set8DDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
+  // RS-553 ゴッドサルダー ※（自軍バトルエリアにこれ以外の同名ユニットがあればアタックされない。rules/legend1/set8NamedEffectsB.ts）。
+  if (defenderCard && set8BDefenderBlocksAttack(state, defenderPlayerId, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;
