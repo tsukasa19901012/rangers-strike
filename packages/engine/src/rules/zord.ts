@@ -340,6 +340,7 @@ export function applyAllZordFusionMaterials(
 
   let nextPlayer = player;
   const toDiscard: CardInstance[] = [];
+  const toPower = fusionMaterialsGoToPower(definitions, rushingCardId);
 
   for (const material of materials) {
     const zoneCards = [...nextPlayer[material.zone]];
@@ -352,10 +353,27 @@ export function applyAllZordFusionMaterials(
     nextPlayer = { ...nextPlayer, [material.zone]: remaining };
   }
 
+  if (toPower) {
+    // 「追加条件：自軍合体ユニットをパワーゾーンに送る」— 素材はパワーゾーンにオモテ向きで置く。
+    const cleaned = toDiscard.map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }));
+    return { ...nextPlayer, power: [...nextPlayer.power, ...cleaned] };
+  }
   return {
     ...nextPlayer,
     discard: [...nextPlayer.discard, ...toDiscard],
   };
+}
+
+/**
+ * 追加条件の文言が「自軍合体ユニットをパワーゾーンに送る」なら true（RS-569 スーパーデカレンジャーロボ atwiki/page-1230・
+ * RS-592 エンジンオーG6。grnrngr/faq-card-8 RS-569 Q1「合体ユニットをパワー送りにする」）。文言で判定する。
+ */
+export function fusionMaterialsGoToPower(
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+): boolean {
+  const text = getDefinition(definitions, rushingCardId)?.rushAdditionalCondition?.text ?? "";
+  return /合体ユニットを(?:自軍)?パワーゾーンに送る/.test(text.normalize("NFKC"));
 }
 
 export function isValidFusionMaterial(
