@@ -979,6 +979,11 @@ export type GameState = {
   set8cMeta?: Set8CMeta;
   /** 第9弾 RS-648〜RS-669 のカード固有の効果の記録（rules/legend1/set9NamedEffectsC.ts）。 */
   set9cMeta?: Set9CMeta;
+  /**
+   * チャージフェイズの「自軍パワーゾーンにカードを置いたとき」の効果（RS-673【炎神キャスト転送】）の解決を待って、
+   * まだラッシュフェイズに進んでいない（効果をすべて解決したらラッシュフェイズに進む。core/applyAction.ts）。
+   */
+  chargeAdvanceDeferred?: { playerId: PlayerId; log: string };
   /** 第9弾 RS-605〜RS-626 のカード固有の効果の記録（rules/legend1/set9NamedEffectsA.ts）。 */
   set9aState?: Set9AState;
   /** RS-352【ダイデンジンブーメラン】: パワーゾーンを離れたカード（1枚ごとに相手が撃破するユニットを選ぶ）の待ち行列。 */

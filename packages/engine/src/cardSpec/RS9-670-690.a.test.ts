@@ -10,6 +10,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import type { GameState } from "../types/game";
 import {
   act,
   attackTargets,
@@ -205,6 +206,37 @@ describe("RS-673 ボンパー", () => {
     expect(zoneOf(s, "player1", "RS-670:ty")).toBe("rush");
   });
 
+  it("RS-673: 【炎神キャスト転送】チャージのタイミングで解決する — 選択はチャージフェイズのうちに開き、解決し終えてからラッシュフェイズに進む（出典: atwiki/page-1443「自軍チャージフェイズ中、自軍パワーゾーンにカードを置いたとき」）", () => {
+    let s = charge({ rush: [inst("RS-673", "b")], power: [inst("RS-670", "ty")] });
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-673");
+    expect(s.phase).toBe("charge");
+    s = pick(s, "RS-670:ty");
+    s = resolveAll(s);
+    expect(zoneOf(s, "player1", "RS-670:ty")).toBe("rush");
+    expect(s.phase).toBe("rush");
+    expect(s.activePlayer).toBe("player1");
+  });
+
+  it("RS-673: 【炎神キャスト転送】出さなかったときも、選択を終えてからラッシュフェイズに進む（出典: atwiki/page-1443）", () => {
+    let s = charge({ rush: [inst("RS-673", "b")], power: [inst("RS-670", "ty")] });
+    expect(s.phase).toBe("charge");
+    s = skip(s);
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(s.phase).toBe("rush");
+  });
+
+  it("RS-673: 【炎神キャスト転送】ボンパーが2体あれば、それぞれチャージフェイズのうちに発動できる（出典: atwiki/page-1443）", () => {
+    let s = charge({ rush: [inst("RS-673", "b1"), inst("RS-673", "b2")], power: [inst("RS-670", "ty"), inst("RS-670", "ty2")] });
+    expect(s.phase).toBe("charge");
+    s = pick(s, "RS-670:ty");
+    // 1体目の解決中（2体目のボンパーの選択が残っている間）はチャージフェイズのまま。
+    expect(s.phase).toBe("charge");
+    s = resolveAll(s, ["RS-670:ty2"]);
+    expect(zoneOf(s, "player1", "RS-670:ty")).toBe("rush");
+    expect(zoneOf(s, "player1", "RS-670:ty2")).toBe("rush");
+    expect(s.phase).toBe("rush");
+  });
+
   it("RS-673: 【炎神キャスト転送】出さないことも選べる（出典: atwiki/page-1443「出してもよい」）", () => {
     let s = charge({ rush: [inst("RS-673", "b")], power: [inst("RS-670", "ty")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-673");
@@ -354,6 +386,41 @@ describe("RS-676 シンケンピンク", () => {
     const s = resolveAll(board(2));
     expect(spOf(s, "player1", "RS-676:p")).toBe(1);
     expect(canStrike(s, "RS-676:p")).toBe(true);
+  });
+
+  /** 両者とも RS-122 海底探査（ラッシュエリアにある間、ドローするとき山札の上か下かを選べる）を持つ。 */
+  const seabedBoth = () =>
+    ncEnter(
+      "RS-676:p",
+      2,
+      { rush: [inst("RS-122", "sb1")], deck: [inst("TST-OP", "myTop"), ...deckCards(3), inst("TST-OP", "myBottom")] },
+      { rush: [inst("RS-122", "sb2")], deck: [inst("TST-OP", "enTop"), ...deckCards(3, "e"), inst("TST-OP", "enBottom")] },
+    );
+  const seabed = (s: GameState, playerId: "player1" | "player2", placement: "top" | "bottom") => {
+    expect(s.pendingEffectChoice?.kind).toBe("seabed_draw");
+    expect(s.pendingEffectChoice?.playerId).toBe(playerId);
+    return act(s, { type: "resolve_seabed_draw", playerId, placement });
+  };
+
+  it("RS-676: 【ヘブンファン】自分も相手も RS-122 海底探査を持つなら、相手も自分のドローで山札の上か下かを選べる（自分の選択の後）（出典: atwiki/page-1428「自分も相手も1枚ドローする」・RS-122【海底探査】）", () => {
+    let s = seabedBoth();
+    s = seabed(s, "player1", "bottom");
+    s = seabed(s, "player2", "bottom");
+    s = resolveAll(s);
+    expect(zoneOf(s, "player1", "TST-OP:myBottom")).toBe("hand");
+    expect(zoneOf(s, "player1", "TST-OP:myTop")).toBe("deck");
+    expect(zoneOf(s, "player2", "TST-OP:enBottom")).toBe("hand");
+    expect(zoneOf(s, "player2", "TST-OP:enTop")).toBe("deck");
+  });
+
+  it("RS-676: 【ヘブンファン】両者が海底探査を持つとき、相手は山札の上からのドローも選べる（出典: RS-122【海底探査】）", () => {
+    let s = seabedBoth();
+    s = seabed(s, "player1", "top");
+    s = seabed(s, "player2", "top");
+    s = resolveAll(s);
+    expect(zoneOf(s, "player1", "TST-OP:myTop")).toBe("hand");
+    expect(zoneOf(s, "player2", "TST-OP:enTop")).toBe("hand");
+    expect(s.players.player2.hand).toHaveLength(1);
   });
 
   it("RS-676: 【ヘブンファン】NC が成立しない（4番目）とドローも SP1 もない（出典: R-CN-02）", () => {

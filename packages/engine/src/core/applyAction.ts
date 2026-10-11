@@ -513,6 +513,19 @@ function advanceFromCharge(state: GameState, chargeLog: string): GameState {
 }
 
 /**
+ * チャージフェイズでパワーゾーンにカードを置いたときの効果（RS-673）をすべて解決したら、ラッシュフェイズに進む。
+ * 効果でラッシュエリアに出したユニットの「ラッシュしたとき」・「ラッシュされたとき」の窓もチャージフェイズのうちに処理する。
+ */
+function settleChargeAdvance(state: GameState): GameState {
+  const deferred = state.chargeAdvanceDeferred;
+  if (!deferred || state.winner) return state;
+  if (state.phase !== "charge") return { ...state, chargeAdvanceDeferred: undefined };
+  if (hasBlockingInteraction(state) || state.pendingEffectRush || state.effectRushTriggerQueue?.length || state.deferredRushReaction) return state;
+  const { chargeAdvanceDeferred: _d, ...rest } = state;
+  return withWinner(advancePhase({ ...(rest as GameState), activePlayer: deferred.playerId }));
+}
+
+/**
  * エンドフェイズの「ターンを終えるとき」を処理し、終わっていればターンを渡す。
  * ルール: R-END-01 — 効果の処理中はまだ終えるプレイヤーのターン（選択もそのプレイヤーの手番で行う）。
  * 選択待ちで止まったら phase "end" のまま返し、解決後に再度呼ばれて続きから処理する。
@@ -928,6 +941,8 @@ export function applyAction(
   if (applyActionDepth === 0) next = applyFatalBladeDraws(state, next, action);
   next = markEnemyTurnFaceDownDamage(state, next);
   if (applyActionDepth === 0) next = settleIcyPhantoms(next);
+  // RS-673【炎神キャスト転送】の解決を待っていたチャージフェイズを終える（効果をすべて解決してから）。
+  if (applyActionDepth === 0) next = settleChargeAdvance(next);
   return next === result.state ? result : { ok: true, state: next };
 }
 
@@ -1279,18 +1294,17 @@ function applyActionCore(
         hasChargedThisTurn: true,
       };
       const chargedState = { ...state, ...updatePlayer(state, playerId, nextPlayer) };
-      return {
-        ok: true,
-        // RS-673【炎神キャスト転送】: 自軍チャージフェイズ中、自軍パワーゾーンにカードを置いたとき（rules/legend1/set9NamedEffectsD.ts）。
-        state: openCastTransferOnCharge(
-          advanceFromCharge(
-            chargedState,
-            buildLogEntry(playerId, "charge_power", found.card.cardId, state.definitions),
-          ),
-          playerId,
-          powerCard.instanceId,
-        ),
-      };
+      const chargeLog = buildLogEntry(playerId, "charge_power", found.card.cardId, state.definitions);
+      // RS-673【炎神キャスト転送】: 自軍チャージフェイズ中、自軍パワーゾーンにカードを置いたとき（rules/legend1/set9NamedEffectsD.ts）。
+      // チャージフェイズのうちに解決し、解決し終えてからラッシュフェイズに進む（settleChargeAdvance）。
+      const withCast = openCastTransferOnCharge(chargedState, playerId, powerCard.instanceId);
+      if (withCast.pendingEffectChoice) {
+        return {
+          ok: true,
+          state: { ...withCast, log: [...withCast.log, chargeLog], chargeAdvanceDeferred: { playerId, log: chargeLog } },
+        };
+      }
+      return { ok: true, state: advanceFromCharge(withCast, chargeLog) };
     }
 
     case "charge_command": {

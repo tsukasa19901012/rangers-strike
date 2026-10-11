@@ -20,6 +20,7 @@ import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { cardHasRegisterKeyword } from "../../keywords/registerReaction";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { openEffectChoice, requestDrawFromDeck } from "../pendingChoices";
+import { hasSeabedSurvey } from "../legend2/fieldEffects";
 import { patchPlayer } from "../playerPatches";
 import { shuffleCards } from "../errataCardEffects";
 import { startGenericEnemyUnitChoice } from "../rs/rsCatchallChoices";
@@ -331,10 +332,30 @@ export function set9DAllowsRushAttack(state: GameState, attackerPlayerId: Player
 // ---------------------------------------------------------------------------
 // RS-676 シンケンピンク【ヘブンファン】「SP1」「自分も相手も1枚ドローする。」（atwiki/page-1428）
 
+// 自分・相手それぞれのドローに RS-122【海底探査】（山札の上か下からドロー）が使える。両者が海底探査を持つなら、
+// 自分の選択の後に相手の選択を開く（相手の分を山札の上から自動で引かない）。
+
+/** ドローする（海底探査があれば山札の上か下かを選ぶ。既に別の選択が開いていれば、その後に選ぶ）。 */
+function drawWithSeabed(state: GameState, playerId: PlayerId, phasePlayerId: PlayerId): GameState {
+  if (state.pendingEffectChoice && hasSeabedSurvey(state, playerId) && state.players[playerId].deck.length > 0) {
+    return openOrQueue(state, {
+      playerId,
+      effectId: "seabed_survey",
+      sourceCardId: "RS-676",
+      kind: "seabed_draw",
+      phasePlayerId,
+      optional: true,
+      validInstanceIds: [],
+      seabedDrawMeta: { drawCount: 1 },
+    });
+  }
+  return requestDrawFromDeck(state, playerId, phasePlayerId, { sourceCardId: "RS-676" }).state;
+}
+
 function applyHeavenFan(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
-  const own = requestDrawFromDeck(state, ctx.playerId, ctx.phasePlayerId, { sourceCardId: "RS-676" });
-  const enemy = requestDrawFromDeck(own.state, opponent(ctx.playerId), ctx.phasePlayerId, { sourceCardId: "RS-676" });
-  return { state: enemy.state, detail: "rs676_heaven_fan" };
+  const own = drawWithSeabed(state, ctx.playerId, ctx.phasePlayerId);
+  const enemy = drawWithSeabed(own, opponent(ctx.playerId), ctx.phasePlayerId);
+  return { state: enemy, detail: "rs676_heaven_fan" };
 }
 
 // ---------------------------------------------------------------------------
