@@ -52,7 +52,7 @@ import {
   resolveKurokoMemoryChoice,
   skipKurokoMemoryChoice,
 } from "./kurokoMemory";
-import { isAbductionChoice, resolveAbductionChoice, startAbductionCondition } from "./abduction";
+import { isAbductionChoice, resolveAbductionChoice, skipAbductionChoice, startAbductionCondition } from "./abduction";
 import {
   continueEffectRushAfterMothershipHold,
   EFFECT_RUSH_MOTHERSHIP,
@@ -2940,6 +2940,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set9d) return set9d;
   const otherLines = trySkipOtherLinesChoice(state, playerId);
   if (otherLines) return otherLines;
+  const abduction = skipAbductionChoice(state, playerId);
+  if (abduction) return abduction;
   const set9b = trySkipSet9BChoice(state, playerId);
   if (set9b) return set9b;
   const set8b = trySkipSet8BChoice(state, playerId);

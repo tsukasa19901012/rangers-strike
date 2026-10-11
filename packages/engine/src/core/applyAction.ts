@@ -1,3 +1,4 @@
+import { resumeAbductionAfterChase } from "../rules/abduction";
 import { applyKyouryuumaru, canUseKyouryuumaru, filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import { currentShuffleEpoch } from "./deckShuffle";
 import { applySwordTornadoAfterShuffle } from "../rules/legend1/set8NamedEffectsC";
@@ -3086,6 +3087,9 @@ function applyActionCore(
       }
       const result = applyResolveChase(state, pending, action.newVehicleInstanceId);
       if (!result.log) return fail("invalid_chase_vehicle");
+      if (pending.abductionResume) {
+        return ok(resumeAbductionAfterChase(result.state, pending, false), result.log);
+      }
       return ok(result.state, result.log);
     }
 
@@ -3093,6 +3097,9 @@ function applyActionCore(
       const pending = state.pendingChase;
       if (!pending) return fail("no_pending_chase");
       if (playerId !== pending.chaserPlayerId) return fail("wrong_player");
+      if (pending.abductionResume) {
+        return ok(resumeAbductionAfterChase(state, pending, true), buildSimpleLogEntry(playerId, "pass_chase"));
+      }
       let nextState = applyPassChase(state, pending);
       if (pending.leaveIntent.resumePendingStrike && state.pendingStrike) {
         return completeStrike(nextState, {

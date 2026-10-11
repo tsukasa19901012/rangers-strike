@@ -503,6 +503,8 @@ export type Set7AChoiceMeta = {
 export type PendingEffectChoice = {
   /** 第7弾 RS-432〜RS-452 の選択の続き（rules/legend1/set7NamedEffectsA.ts）。 */
   set7aMeta?: Set7AChoiceMeta;
+  /** RS 以外のラインの効果の選択が使う記録（rules/legend1/otherLinesNamedEffects.ts）。 */
+  otherLinesMeta?: { leave?: PendingLeave };
   /** 第9弾 RS-605〜RS-626 の選択の続き（rules/legend1/set9NamedEffectsA.ts）。 */
   set9aMeta?: Set9AChoiceMeta;
   /** RS-568 風雷丸【各々方、合体で御座る！】: 相手に見せた手札の L ユニットのカード（rules/legend1/set8NamedEffectsC.ts）。 */

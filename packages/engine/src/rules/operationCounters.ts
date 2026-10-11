@@ -1,5 +1,6 @@
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
 import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
+import { openKuugaStayOnLeave } from "./legend1/otherLinesNamedEffects";
 import {
   openDeathStingerChoice,
   reflectBarrierDestroysWinner,
@@ -1989,6 +1990,9 @@ export function tryLeaveField(
   // RS-317【超シールド進化】: DA の自軍ユニットが撃破されるとき、かわりに恐竜2体を捨札にするかの選択（rules/legend1/set5NamedEffects.ts）。
   const kasumo = openKasumoShieldChoice(state, intent);
   if (kasumo) return { state: kasumo, deferred: true };
+  // SK-004 仮面ライダークウガUF【凄まじき戦士】: 重ねたウラ向きのカードを1枚捨札にして留める（強制。rules/legend1/otherLinesNamedEffects.ts）。
+  const kuugaStay = openKuugaStayOnLeave(state, intent);
+  if (kuugaStay) return { state: kuugaStay, deferred: true };
   // RS-437 白熱する実況: 下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる（rules/legend1/set7NamedEffectsA.ts）。
   const liveCommentary = openLiveCommentaryStay(state, intent);
   if (liveCommentary) return { state: liveCommentary, deferred: true };

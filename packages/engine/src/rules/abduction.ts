@@ -6,7 +6,12 @@
  *   母艦の置き換えは足りないSユニットの分だけに使える（RS-076 Q1・RS-105 Q1）。
  */
 import { getZordCondition, MOTHERSHIP_CONFIG } from "@rangers-strike/cards";
-import type { GameState, PlayerId, PlayerState } from "../types/game";
+import type { CardInstance, GameState, PendingChase, PlayerId, PlayerState } from "../types/game";
+import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
+import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
+import { cardHasKeyword } from "../keywords/cardKeywords";
+import { buildPendingChaseFromIntent, listValidChaseVehicleIds } from "../keywords/chase";
+import { applyKuugaStay, filthyAirActive, kuugaStayCandidates } from "./legend1/otherLinesNamedEffects";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { cardName, getDefinition } from "../core/catalog";
 import { opponent, updatePlayer } from "../core/helpers";
@@ -20,10 +25,19 @@ import {
 
 export const ABDUCTION_MATERIAL_EFFECT_ID = "abduction_material";
 export const ABDUCTION_DESTINATION_EFFECT_ID = "abduction_destination";
+/** XG2-042 仮面ライダーディケイドCF の※「その場に留まる」（捨札にするパワーの選択。任意）。 */
+export const ABDUCTION_DECADE_STAY_EFFECT_ID = "abduction_decade_stay";
+/** SK-004 仮面ライダークウガUF【凄まじき戦士】「その場に留める」（捨札にする重ねたカードの選択。強制）。 */
+export const ABDUCTION_KUUGA_STAY_EFFECT_ID = "abduction_kuuga_stay";
 const MOTHERSHIP_OPTION = "mothership";
 
 export function isAbductionChoice(effectId: string | undefined): boolean {
-  return effectId === ABDUCTION_MATERIAL_EFFECT_ID || effectId === ABDUCTION_DESTINATION_EFFECT_ID;
+  return (
+    effectId === ABDUCTION_MATERIAL_EFFECT_ID ||
+    effectId === ABDUCTION_DESTINATION_EFFECT_ID ||
+    effectId === ABDUCTION_DECADE_STAY_EFFECT_ID ||
+    effectId === ABDUCTION_KUUGA_STAY_EFFECT_ID
+  );
 }
 
 type AbductionContext = {
@@ -97,11 +111,16 @@ function openChoice(
       effectId,
       sourceCardId: "RS-322",
       sourceInstanceId,
-      kind: effectId === ABDUCTION_DESTINATION_EFFECT_ID ? "confirm" : "select_unit",
+      kind:
+        effectId === ABDUCTION_DESTINATION_EFFECT_ID
+          ? "confirm"
+          : effectId === ABDUCTION_DECADE_STAY_EFFECT_ID
+            ? "select_power"
+            : "select_unit",
       phasePlayerId: ctx.phasePlayerId,
       validInstanceIds,
       selectedInstanceIds: [],
-      optional: false,
+      optional: effectId === ABDUCTION_DECADE_STAY_EFFECT_ID,
       abductionMeta: { payerId: ctx.payerId, cardId: ctx.cardId, remaining: ctx.remaining },
     },
     activePlayer: ctx.payerId,
@@ -173,6 +192,89 @@ function applyMaterial(
   return { ...state, ...updatePlayer(state, ctx.payerId, applied) };
 }
 
+/** 自軍エリアの S ユニット（追加条件の素材）の位置。 */
+function locateMaterial(state: GameState, ctx: AbductionContext, materialId: string): { zone: "battle" | "rush"; card: CardInstance } | null {
+  const payer = state.players[ctx.payerId];
+  for (const zone of ["battle", "rush"] as const) {
+    const card = payer[zone].find((c) => c.instanceId === materialId);
+    if (card) return { zone, card };
+  }
+  return null;
+}
+
+/** XG2-042 の※で捨札にできるパワー（オモテ向きの「仮面ライダー」）。【汚い大気】の下では発動できない。 */
+function decadeStayPowers(state: GameState, ctx: AbductionContext, card: CardInstance): string[] {
+  if (!cardHasGrantKeyword(card.cardId, FEATURE_KEYWORDS.registerStayKamenRider)) return [];
+  if (filthyAirActive(state)) return [];
+  return state.players[ctx.payerId].power
+    .filter((c) => !c.faceDown && (getDefinition(state.definitions, c.cardId)?.features ?? []).includes("仮面ライダー"))
+    .map((c) => c.instanceId);
+}
+
+/**
+ * 追加条件で S ユニットを捨札にするとき（「ユニットでなくなるとき」）の応答。その場に留まった・乗り換えたなら、まだ場にいるので
+ * 追加条件は満たせるものとして続行する（atwiki/page-431 Q4〜Q6）。応答がなければ null。
+ * - RM-018 等のチェイス（ライド中にユニットでなくなるとき、ビークルを捨札にして乗り換えてもよい）。
+ * - XG2-042 仮面ライダーディケイドCF の※（オモテ向きの「仮面ライダー」のパワーを捨札にすれば留まる）。
+ * - SK-004 仮面ライダークウガUF【凄まじき戦士】（重ねたウラ向きのカードを1枚捨札にして留める。強制）。
+ */
+function tryMaterialLeaveResponse(state: GameState, ctx: AbductionContext, materialId: string): GameState | null {
+  const found = locateMaterial(state, ctx, materialId);
+  if (!found) return null;
+  const { zone, card } = found;
+  if (card.mountedOnInstanceId && cardHasKeyword(state.definitions, card.cardId, "chase", { state, playerId: ctx.payerId })) {
+    const chase = buildPendingChaseFromIntent(state, {
+      ownerPlayerId: ctx.payerId,
+      instanceId: materialId,
+      fromZone: zone,
+      toZone: "discard",
+      leavingCardId: card.cardId,
+      phasePlayerId: ctx.phasePlayerId,
+      notDestruction: true,
+    });
+    if (chase && listValidChaseVehicleIds(state, chase).length > 0) {
+      return {
+        ...state,
+        pendingEffectChoice: undefined,
+        pendingChase: { ...chase, abductionResume: { payerId: ctx.payerId, cardId: ctx.cardId, remaining: ctx.remaining } },
+        activePlayer: ctx.payerId,
+      };
+    }
+  }
+  const powers = decadeStayPowers(state, ctx, card);
+  if (powers.length > 0) return openChoice(state, ctx, ABDUCTION_DECADE_STAY_EFFECT_ID, powers, materialId);
+  const kuuga = kuugaStayCandidates(state, ctx.payerId, card);
+  if (kuuga.length === 1) {
+    return proceed(applyKuugaStay(state, ctx.payerId, materialId, kuuga[0]!), ctx);
+  }
+  if (kuuga.length > 1) return openChoice(state, ctx, ABDUCTION_KUUGA_STAY_EFFECT_ID, kuuga, materialId);
+  return null;
+}
+
+/** チェイスの応答の後: 乗り換えたなら（まだ場にいる）同じ残り数で、見送ったなら捨札にして続行する。 */
+export function resumeAbductionAfterChase(state: GameState, chase: PendingChase, passed: boolean): GameState {
+  const resume = chase.abductionResume!;
+  const ctx: AbductionContext = { ...resume, phasePlayerId: chase.phasePlayerId };
+  const cleared: GameState = { ...state, pendingChase: undefined };
+  if (!passed) return finishIfIdle(proceed(cleared, ctx), ctx);
+  const next = applyMaterial(cleared, ctx, chase.chaserInstanceId, "discard");
+  return finishIfIdle(proceed(next, { ...ctx, remaining: ctx.remaining - 1 }), ctx);
+}
+
+function finishIfIdle(state: GameState, ctx: AbductionContext): GameState {
+  return state.pendingEffectChoice || state.pendingChase ? state : finish(state, ctx);
+}
+
+/** 任意の選択（ディケイドCF の※）を見送る: そのまま捨札にして続行する。 */
+export function skipAbductionChoice(state: GameState, playerId: PlayerId): { state: GameState; log?: string } | { error: string } | null {
+  const pending = state.pendingEffectChoice;
+  const ctx = decode(state);
+  if (!pending || !ctx || pending.effectId !== ABDUCTION_DECADE_STAY_EFFECT_ID) return null;
+  if (pending.playerId !== playerId) return { error: "wrong_player" };
+  const next = applyMaterial(state, ctx, pending.sourceInstanceId!, "discard");
+  return { state: proceed(next, { ...ctx, remaining: ctx.remaining - 1 }) };
+}
+
 export function resolveAbductionChoice(
   state: GameState,
   playerId: PlayerId,
@@ -185,6 +287,25 @@ export function resolveAbductionChoice(
   if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
 
   const condition = getZordCondition(ctx.cardId);
+  if (pending.effectId === ABDUCTION_DECADE_STAY_EFFECT_ID) {
+    // パワーを捨札にして留まる（まだ場にいるので、追加条件は満たせるものとして続行する。atwiki/page-431 Q5）。
+    const payer = state.players[ctx.payerId];
+    const paid = payer.power.find((c) => c.instanceId === instanceId);
+    if (!paid) return { error: "invalid_target" };
+    const next = {
+      ...state,
+      ...updatePlayer(state, ctx.payerId, {
+        ...payer,
+        power: payer.power.filter((c) => c.instanceId !== instanceId),
+        discard: [...payer.discard, { instanceId: paid.instanceId, cardId: paid.cardId }],
+      }),
+    };
+    return { state: proceed(next, ctx) };
+  }
+  if (pending.effectId === ABDUCTION_KUUGA_STAY_EFFECT_ID) {
+    // 【凄まじき戦士】でその場に留める（atwiki/page-431 Q6）。
+    return { state: proceed(applyKuugaStay(state, ctx.payerId, pending.sourceInstanceId!, instanceId), ctx) };
+  }
   if (pending.effectId === ABDUCTION_DESTINATION_EFFECT_ID) {
     const materialId = pending.sourceInstanceId!;
     const next = applyMaterial(state, ctx, materialId, instanceId as "command" | "discard");
@@ -210,6 +331,9 @@ export function resolveAbductionChoice(
       state: openChoice(state, ctx, ABDUCTION_DESTINATION_EFFECT_ID, ["command", "discard"], instanceId),
     };
   }
+  // 「ユニットでなくなるとき」の応答（チェイス・その場に留まる）があれば先に処理する。
+  const responded = tryMaterialLeaveResponse({ ...state, pendingEffectChoice: undefined }, ctx, instanceId);
+  if (responded) return { state: finishIfIdle(responded, ctx) };
   const next = applyMaterial(state, ctx, instanceId, "discard");
   return {
     state: proceed(next, { ...ctx, remaining: ctx.remaining - 1 }),

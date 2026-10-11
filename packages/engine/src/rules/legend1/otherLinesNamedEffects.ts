@@ -6,7 +6,8 @@
  * - `tryResolveOtherLinesChoice` / `trySkipOtherLinesChoice`: このモジュールが開いた選択の解決。
  * 構成は rules/legend1/set9NamedEffectsD.ts と同じ。
  */
-import type { CardInstance, DeferredDestroyTrigger, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import type { CardInstance, DeferredDestroyTrigger, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
+import { finalizeLeaveReaction } from "../operationCounters";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
@@ -488,6 +489,165 @@ CHOICE_SKIPPERS[SHIN_TSUCHIKEMURI_EFFECT_ID] = (state, playerId) => {
 };
 
 // ---------------------------------------------------------------------------
+// SK-004 仮面ライダークウガUF【凄まじき戦士】（後半）
+// 「また、これがユニットでなくなるとき、これにウラ向きで重ねたカードをウラ向きのまま1枚選び捨札にして、これをその場に留める。」
+// （atwiki/page-1411）— 強制。ウラ向きで重ねたカードがなければ留まらない。
+
+export const KUUGA_UF_CARD_ID = "SK-004";
+
+/** 【凄まじき戦士】で捨札にできる、重ねたウラ向きのカード（効果が有効でなければ空）。 */
+export function kuugaStayCandidates(state: GameState, ownerId: PlayerId, unit: CardInstance): string[] {
+  if (unit.cardId !== KUUGA_UF_CARD_ID) return [];
+  if (namedTextNegated(state, ownerId, unit)) return [];
+  return (unit.stackedCards ?? []).filter((c) => c.faceDown).map((c) => c.instanceId);
+}
+
+/** 重ねたウラ向きのカード stackedId をウラ向きのまま捨札にする（ユニットはその場に留まる）。 */
+export function applyKuugaStay(state: GameState, ownerId: PlayerId, unitId: string, stackedId: string): GameState {
+  return patchPlayer(state, ownerId, (p) => {
+    let removed: CardInstance | undefined;
+    const take = (cards: CardInstance[]) =>
+      cards.map((c) => {
+        if (c.instanceId !== unitId) return c;
+        removed = (c.stackedCards ?? []).find((s) => s.instanceId === stackedId);
+        const rest = (c.stackedCards ?? []).filter((s) => s.instanceId !== stackedId);
+        if (rest.length > 0) return { ...c, stackedCards: rest };
+        const { stackedCards: _s, ...without } = c;
+        return without as CardInstance;
+      });
+    const battle = take(p.battle);
+    const rush = take(p.rush);
+    if (!removed) return p;
+    return { ...p, battle, rush, discard: [...p.discard, { instanceId: removed.instanceId, cardId: removed.cardId, faceDown: true }] };
+  });
+}
+
+export const KUUGA_STAY_EFFECT_ID = "sk004_majiki_stay";
+export const KUUGA_STACK_EFFECT_ID = "sk004_majiki_stack";
+
+/**
+ * 「ユニットでなくなるとき」（rules/operationCounters.ts tryLeaveField から呼ぶ）: 重ねたウラ向きのカードを1枚捨札にして留める。
+ * 1枚ならそのまま、2枚以上なら選ぶ（強制）。処理したら state、対象外なら null。
+ */
+export function openKuugaStayOnLeave(state: GameState, intent: PendingLeave): GameState | null {
+  if (intent.toZone === "battle" || state.pendingEffectChoice) return null;
+  const unit = state.players[intent.ownerPlayerId][intent.fromZone].find((c) => c.instanceId === intent.instanceId);
+  if (!unit) return null;
+  const ids = kuugaStayCandidates(state, intent.ownerPlayerId, unit);
+  if (ids.length === 0) return null;
+  if (ids.length === 1) return finishKuugaStay(state, intent, ids[0]!);
+  return {
+    ...state,
+    pendingEffectChoice: {
+      playerId: intent.ownerPlayerId,
+      effectId: KUUGA_STAY_EFFECT_ID,
+      sourceCardId: KUUGA_UF_CARD_ID,
+      sourceInstanceId: intent.instanceId,
+      kind: "select_unit",
+      phasePlayerId: intent.phasePlayerId,
+      validInstanceIds: ids,
+      selectedInstanceIds: [],
+      selectCount: 1,
+      optional: false,
+      otherLinesMeta: { leave: intent },
+    },
+    activePlayer: intent.ownerPlayerId,
+  };
+}
+
+function finishKuugaStay(state: GameState, intent: PendingLeave, stackedId: string): GameState {
+  let next = applyKuugaStay(state, intent.ownerPlayerId, intent.instanceId, stackedId);
+  // その場に留まる（「ユニットでなくなる」ことは起きない）。同時に場を離れる続きのユニットは続けて処理する。
+  next = finalizeLeaveReaction({ ...next, pendingLeave: intent }, intent, true);
+  return next.pendingEffectChoice || next.pendingLeave ? next : promoteDeferredBattleEntry(next);
+}
+
+CHOICE_RESOLVERS[KUUGA_STAY_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const intent = pending.otherLinesMeta?.leave;
+  if (!intent) return { error: "invalid_choice" };
+  const cleared: GameState = { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+  return { state: finishKuugaStay(cleared, intent, instanceId), log: logFor(state, playerId, KUUGA_UF_CARD_ID, `${KUUGA_STAY_EFFECT_ID}:stay`) };
+};
+
+// 前半「これをラッシュしたとき、この追加条件で捨札にしたカードを見て、DAを持たないカードをすべてこれの下に好きな順でウラ向きに
+// 重ねる。このとき、ウラ向きに4枚重ねなかったなら、「仮面ライダークウガUF」以外の自軍ユニットをすべて捨札にする。」
+// 追加条件を満たさずに出たときは「追加条件で捨札にしたカード」を0枚として続行する（page-1411 Q1）。重ねる順はプレイヤーが選ぶ
+// （1枚ずつ選び、選んだ順に下へ重ねる）。
+
+function stackUnderKuuga(state: GameState, playerId: PlayerId, selfId: string, cardIds: string[]): GameState {
+  return patchPlayer(state, playerId, (p) => {
+    const cards = cardIds
+      .map((id) => p.discard.find((c) => c.instanceId === id))
+      .filter((c): c is CardInstance => !!c)
+      .map((c) => ({ instanceId: c.instanceId, cardId: c.cardId, faceDown: true }));
+    const add = (zone: CardInstance[]) =>
+      zone.map((c) => (c.instanceId === selfId ? { ...c, stackedCards: [...(c.stackedCards ?? []), ...cards] } : c));
+    return { ...p, discard: p.discard.filter((c) => !cardIds.includes(c.instanceId)), rush: add(p.rush), battle: add(p.battle) };
+  });
+}
+
+/** 重ねた枚数が4枚未満なら、「仮面ライダークウガUF」以外の自軍ユニットをすべて捨札にする。 */
+function finishKuugaStack(state: GameState, playerId: PlayerId, stackedCount: number, phasePlayerId: PlayerId): GameState {
+  if (stackedCount >= 4) return state;
+  let next = state;
+  const victims = fieldUnits(next, playerId)
+    .filter((c) => getDefinition(next.definitions, c.cardId)?.type === "unit")
+    .filter((c) => cardName(next.definitions, c.cardId) !== "仮面ライダークウガUF")
+    .map((c) => c.instanceId);
+  for (const id of victims) {
+    if (!findField(next, playerId, id)) continue;
+    const left = applyUnitLeave(next, id, "discard", phasePlayerId);
+    if (!("error" in left)) next = left.state;
+  }
+  return next;
+}
+
+function applyKuugaMajiki(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const selfId = ctx.triggerSourceInstanceId;
+  const self = selfId ? findField(state, ctx.playerId, selfId) : undefined;
+  if (!self) return { state, detail: `${KUUGA_STACK_EFFECT_ID}:not_in_field` };
+  const owner = state.players[ctx.playerId];
+  const record = owner.lastZordDiscard?.rushedInstanceId === selfId ? owner.lastZordDiscard?.instanceIds ?? [] : [];
+  const candidates = owner.discard
+    .filter((c) => record.includes(c.instanceId))
+    .filter((c) => !cardCategories(getDefinition(state.definitions, c.cardId)).includes("DA"))
+    .map((c) => c.instanceId);
+  if (candidates.length <= 1) {
+    const stacked = stackUnderKuuga(state, ctx.playerId, selfId!, candidates);
+    return { state: finishKuugaStack(stacked, ctx.playerId, candidates.length, ctx.phasePlayerId), detail: KUUGA_STACK_EFFECT_ID };
+  }
+  return {
+    state: openOrQueue(state, {
+      playerId: ctx.playerId,
+      phasePlayerId: ctx.phasePlayerId,
+      sourceCardId: KUUGA_UF_CARD_ID,
+      sourceInstanceId: selfId,
+      effectId: KUUGA_STACK_EFFECT_ID,
+      kind: "select_unit",
+      validInstanceIds: candidates,
+      selectedInstanceIds: [],
+      selectCount: 1,
+      optional: false,
+    }),
+    detail: KUUGA_STACK_EFFECT_ID,
+  };
+}
+
+CHOICE_RESOLVERS[KUUGA_STACK_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+  const remaining = pending.validInstanceIds.filter((id) => id !== instanceId);
+  if (remaining.length > 1) {
+    return { state: { ...state, pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: remaining } } };
+  }
+  const order = [...selected, ...remaining];
+  let next = stackUnderKuuga(close(state, pending), playerId, pending.sourceInstanceId!, order);
+  next = finishKuugaStack(next, playerId, order.length, pending.phasePlayerId);
+  return { state: proceed(next, pending), log: logFor(state, playerId, KUUGA_UF_CARD_ID, `${KUUGA_STACK_EFFECT_ID}:${order.length}`) };
+};
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword からの起点
 
 export const OTHER_LINES_KEYWORD_PREFIX = "other::";
@@ -500,6 +660,7 @@ const OTHER_LINES_KEYWORDS: Record<string, (state: GameState, ctx: GrantKeywordC
   // ※（自分がターンを終えるとき）は rules/turnEndingEffects.ts から openOtherLinesTurnEndEntry で扱う。
   "XP-026::accel_return": (state) => ({ state, detail: ACCEL_RETURN_EFFECT_ID }),
   "XG2-041::shin_tsuchikemuri": applyShinTsuchikemuri,
+  "SK-004::majiki": applyKuugaMajiki,
   "XG1-034::filthy_air": (state) => ({ state, detail: "xg1034_filthy_air" }),
 };
 

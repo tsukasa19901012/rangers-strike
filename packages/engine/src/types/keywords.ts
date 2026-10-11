@@ -20,4 +20,6 @@ export type PendingChase = {
   validVehicleInstanceIds: string[];
   /** rider_leave: ライダー離場時 / vehicle_destroyed: ビークル破壊時 */
   mode?: "rider_leave" | "vehicle_destroyed";
+  /** RS-322【人身略取】の追加条件で捨札にするときのチェイス: 応答の後に追加条件の続きを行う（rules/abduction.ts）。 */
+  abductionResume?: { payerId: PlayerId; cardId: string; remaining: number };
 };
