@@ -31,6 +31,7 @@ import {
   passEntry,
   pick,
   powerCards,
+  raw,
   reanimateTests,
   released,
   releasedCat,
@@ -259,8 +260,7 @@ describe("RS-428 スーパーゲキブルー", () => {
     expect(choiceIds(s)).toEqual(["RS-425:jg"]);
   });
 
-  // 既知の不具合: CARD-RS-428 発動したゲキジャガー【転転弾】に「必要パワーの数字が敵軍ダメージの点数以下」の制限がなく（CARD-RS-425）、必要パワー3 のユニットも選べる
-  it.fails("RS-428: 【ファンタスティック・テクニック】選んだゲキジャガーの【転転弾】を発動し、必要パワーが敵軍ダメージ（2点）以下の敵軍ユニットを撃破できる。ゲキジャガーはラッシュエリアに残る（出典: atwiki/page-511「そのラッシュしたときの効果を発動する」）", () => {
+  it("RS-428: 【ファンタスティック・テクニック】選んだゲキジャガーの【転転弾】を発動し、必要パワーが敵軍ダメージ（2点）以下の敵軍ユニットを撃破できる。ゲキジャガーはラッシュエリアに残る（出典: atwiki/page-511「そのラッシュしたときの効果を発動する」）", () => {
     let s = pick(fantastic(), "RS-425:jg");
     expect(zoneOf(s, "player1", "RS-425:jg")).toBe("rush");
     expect(choiceIds(s)).toEqual(["TST-UNIT-2:c2"]);
@@ -365,10 +365,9 @@ describe("RS-429 マスター・シャーフー", () => {
     expect(canStartRush(maRush(false, 2), "player1", "RS-420:dz")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RS-429 RS-378 ギンガブルー【流水の鼓動】（MA のコマンドをホールドして発動）自体が未実装のため、WB＋追加1つでの代用を確かめられない（ラッシュの支払いの代用は上のテストで実装済み）
-  it.fails("RS-429: ギンガブルー【流水の鼓動】を WB＋追加1つのホールドで発動したとき、「ホールドしたコマンド」は MA のかわりにホールドした WB のコマンド1つだけ（追加分のナンバーは参照しない）（出典: grnrngr/faq-card-6 RS-378 Q「「ミスティックアームズ」のコマンドの代わりとしてホールドした「ワイルドビースト」のコマンド１つ」）", () => {
-    let s = enterSeq(
-      st({
+  it("RS-429: ギンガブルー【流水の鼓動】を WB＋追加1つのホールドで発動したとき、「ホールドしたコマンド」は MA のかわりにホールドした WB のコマンド1つだけ（追加分のナンバーは参照しない）（出典: grnrngr/faq-card-6 RS-378 Q「「ミスティックアームズ」のコマンドの代わりとしてホールドした「ワイルドビースト」のコマンド１つ」）", () => {
+    let s = enter(
+      passEntry(st({
         player1: {
           battle: fillers(1),
           rush: [inst("RS-378", "gb"), inst("RS-429", "sf")],
@@ -376,13 +375,18 @@ describe("RS-429 マスター・シャーフー", () => {
           deck: deckCards(3),
         },
         player2: { battle: [inst("RS-341", "e2"), inst("RS-099", "e3")], deck: deckCards(3, "e") },
-      }),
-      ["RS-378:gb"],
+      })),
+      "RS-378:gb",
     );
-    // WB「ゲキイエロー」（ナンバー3）をかわりにホールドし、追加で「ゲキレッド」（ナンバー2）をホールドする。
-    const pay = legal(s).find((a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RS-378:gb");
-    expect(pay).toBeDefined();
-    s = resolveAll(s, ["RS-342:n3", "RS-340:n2", "RS-099:e3"]);
+    // NC 成立直後の行動ウィンドウで【流水の鼓動】を起動し、WB「ゲキイエロー」（ナンバー3）をかわりにホールドし、
+    // 追加で「ゲキレッド」（ナンバー2）をホールドする。
+    const activate = legal(s).find((a) => a.type === "activate_field_unit_ability" && a.unitInstanceId === "RS-378:gb");
+    expect(activate).toBeDefined();
+    s = raw(s, activate!);
+    expect(s.pendingCommandPayment?.sourceInstanceId).toBe("RS-378:gb");
+    s = raw(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["RS-342:n3", "RS-340:n2"] });
+    expect(s.players.player1.command.every((c) => c.commandHeld)).toBe(true);
+    s = resolveAll(s, ["RS-099:e3"]);
     expect(zoneOf(s, "player2", "RS-099:e3")).toBe("discard");
     expect(zoneOf(s, "player2", "RS-341:e2")).toBe("battle");
   });

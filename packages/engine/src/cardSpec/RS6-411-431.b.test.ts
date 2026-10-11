@@ -386,8 +386,7 @@ describe("RS-421 アカレッド", () => {
     "RS-421: 勇気の魔法でリリースしたレッドのユニットカードを【ソウル降臨】でホールドして NC を発動できる（出典: grnrngr/faq-card-6 RS-421 Q4「はい、できます」）— 勇気の魔法（RS-029）と【ソウル降臨】の誘発順をプレイヤーが選ぶ手段（同時誘発の順序選択）が公開 API にないため",
   );
 
-  // 既知の不具合: CARD-RS-418 イフリートの【炎の眼光】が実装されていない（【ソウル降臨】で NC の効果は発動する）
-  it.fails("RS-421: 【ソウル降臨】で発動した NC の効果は、敵軍の冥府神イフリートの【炎の眼光】で無効にできる（出典: grnrngr/faq-card-6 RS-421 Q5「はい、できます」）", () => {
+  it("RS-421: 【ソウル降臨】で発動した NC の効果は、敵軍の冥府神イフリートの【炎の眼光】で無効にできる（出典: grnrngr/faq-card-6 RS-421 Q5「はい、できます」）", () => {
     let s = st({
       player1: { rush: [inst("RS-421", "ak")], command: [released("RS-099", "hr")], deck: deckCards(3) },
       player2: { battle: [inst("RS-418", "if")], operation: [inst("RS-256", "op")], deck: deckCards(3, "e") },
@@ -397,6 +396,18 @@ describe("RS-421 アカレッド", () => {
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-418");
     s = resolveAll(pick(s, "RS-256:op"));
     expect(spOf(s, "player1", "RS-421:ak")).toBe(0);
+  });
+
+  it("RS-421: 【ソウル降臨】の NC を冥府神イフリートの持ち主が無効にしなければ（見送れば）、NC の効果は発動する（出典: grnrngr/faq-card-6 RS-421 Q5・atwiki/page-613「捨札にしてもよい」）", () => {
+    let s = st({
+      player1: { rush: [inst("RS-421", "ak")], command: [released("RS-099", "hr")], deck: deckCards(3) },
+      player2: { battle: [inst("RS-418", "if")], operation: [inst("RS-256", "op")], deck: deckCards(3, "e") },
+    });
+    s = soul(enter(s, "RS-421:ak"), "RS-099:hr");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-418");
+    s = resolveAll(skip(s));
+    expect(spOf(s, "player1", "RS-421:ak")).toBe(1);
+    expect(zoneOf(s, "player2", "RS-256:op")).toBe("operation");
   });
 });
 
@@ -563,8 +574,7 @@ describe("RS-423 ゲキタイガー", () => {
   };
   const foes = { battle: [inst("TST-UNIT-0", "e1"), inst("RS-430", "mecha")], rush: [inst("TST-UNIT-2", "e3"), inst("RS-340", "e3b"), inst("RS-422", "big")] };
 
-  // 既知の不具合: CARD-RS-423 【咆咆弾】が実装されていない（ラッシュしても撃破の選択が出ない）
-  it.fails("RS-423: 【咆咆弾】メカを持たない BP の合計5000以下の敵軍ユニットを、WB の自軍 M ユニットの数（ゲキタイガー＋1体＝2体）まで選んで撃破できる（出典: atwiki/page-519）", () => {
+  it("RS-423: 【咆咆弾】メカを持たない BP の合計5000以下の敵軍ユニットを、WB の自軍 M ユニットの数（ゲキタイガー＋1体＝2体）まで選んで撃破できる（出典: atwiki/page-519）", () => {
     let s = rushTiger(1, foes);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-423");
     expect(choiceIds(s)).not.toContain("RS-430:mecha");
@@ -574,8 +584,7 @@ describe("RS-423 ゲキタイガー", () => {
     expect(zoneOf(s, "player2", "RS-340:e3b")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-423 【咆咆弾】が実装されていない（ラッシュしても撃破の選択が出ない）
-  it.fails("RS-423: 【咆咆弾】WB の自軍 M ユニットがゲキタイガー1体だけなら1体までしか撃破できない（出典: atwiki/page-519「選べるユニットの数は、WBの自軍Mユニットの数までとする」）", () => {
+  it("RS-423: 【咆咆弾】WB の自軍 M ユニットがゲキタイガー1体だけなら1体までしか撃破できない（出典: atwiki/page-519「選べるユニットの数は、WBの自軍Mユニットの数までとする」）", () => {
     let s = rushTiger(0, foes);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-423");
     s = resolveAll(s, ["TST-UNIT-0:e1", "RS-340:e3b"]);
@@ -583,8 +592,7 @@ describe("RS-423 ゲキタイガー", () => {
     expect(destroyed).toHaveLength(1);
   });
 
-  // 既知の不具合: CARD-RS-423 【咆咆弾】が実装されていない（ラッシュしても撃破の選択が出ない）
-  it.fails("RS-423: 【咆咆弾】BP の合計は5000以下 — BP3000＋BP3000 の2体は選べない（出典: atwiki/page-519「BPの合計が5000以下になるように」）", () => {
+  it("RS-423: 【咆咆弾】BP の合計は5000以下 — BP3000＋BP3000 の2体は選べない（出典: atwiki/page-519「BPの合計が5000以下になるように」）", () => {
     let s = rushTiger(1, { battle: [inst("RS-340", "a")], rush: [inst("RS-340", "b")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-423");
     s = resolveAll(s, ["RS-340:a", "RS-340:b"]);
@@ -592,8 +600,7 @@ describe("RS-423 ゲキタイガー", () => {
     expect(destroyed).toHaveLength(1);
   });
 
-  // 既知の不具合: CARD-RS-423 【咆咆弾】が実装されていない（任意性も確認できない）
-  it.fails("RS-423: 【咆咆弾】「撃破してもよい」— 見送れる（出典: atwiki/page-519）", () => {
+  it("RS-423: 【咆咆弾】「撃破してもよい」— 見送れる（出典: atwiki/page-519）", () => {
     let s = rushTiger(1, foes);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-423");
     expect(canSkip(s)).toBe(true);
@@ -683,8 +690,7 @@ describe("RS-425 ゲキジャガー", () => {
     return r.state;
   };
 
-  // 既知の不具合: CARD-RS-425 【転転弾】の「必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない」が実装されておらず、必要パワー3 のユニットも選べる
-  it.fails("RS-425: 【転転弾】必要パワーの数字が敵軍ダメージ（2点）以下の敵軍ユニットだけを選んで撃破できる（必要パワー3・「7-」は選べない）（出典: atwiki/page-521「必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない」）", () => {
+  it("RS-425: 【転転弾】必要パワーの数字が敵軍ダメージ（2点）以下の敵軍ユニットだけを選んで撃破できる（必要パワー3・「7-」は選べない）（出典: atwiki/page-521「必要パワーの数字が敵軍ダメージの点数以下のユニットしか選べない」）", () => {
     let s = rushJaguar(2);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-425");
     expect(choiceIds(s)).toEqual(["TST-UNIT-2:c2"]);

@@ -116,7 +116,7 @@ import {
 } from "./murphyChase";
 import { continueDslAfterChoice } from "../dsl/cardInterpreter";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
-import { isHoldActivateChoice, resolveHoldActivateChoice } from "./holdToActivate";
+import { isHoldActivateChoice, resolveHoldActivateChoice, shifuSubstituteCommandId } from "./holdToActivate";
 import { getDslEffectById } from "../dsl/effectLookup";
 import {
   markBattleNcEffect,
@@ -137,7 +137,7 @@ import {
   trySkipSet4Choice,
 } from "./legend1/set4NamedEffects";
 import { isSet5ChoiceEffect, tryResolveSet5Choice, trySkipSet5Choice } from "./legend1/set5NamedEffects";
-import { isSet6BChoiceEffect, tryResolveSet6BChoice, trySkipSet6BChoice } from "./legend1/set6NamedEffectsB";
+import { isSet6BChoiceEffect, openFlameGlareForSoulDescent, tryResolveSet6BChoice, trySkipSet6BChoice } from "./legend1/set6NamedEffectsB";
 import { isSet7DChoiceEffect, tryResolveSet7DChoice, trySkipSet7DChoice } from "./legend1/set7NamedEffectsD";
 import {
   isSet5AuditChoiceEffect,
@@ -2717,6 +2717,16 @@ function applyPostHoldContinuation(
  */
 function finishAkaRedSoul(state: GameState, pending: PendingEffectChoice, heldCardId: string): ChoiceOutcome {
   const cleared = clearChoice(state, pending.phasePlayerId);
+  // RS-418【炎の眼光】: 敵軍のイフリートがこの NC の効果を無効にできる（grnrngr/faq-card-6 RS-421 Q5）。
+  const glare = openFlameGlareForSoulDescent(
+    cleared,
+    pending.playerId,
+    pending.sourceInstanceId!,
+    heldCardId,
+    pending.phasePlayerId,
+    pending.resumeChoice,
+  );
+  if (glare) return { state: glare };
   const fired = fireAkaRedSoulNc(cleared, pending.playerId, pending.sourceInstanceId!, heldCardId);
   if (fired.pendingEffectChoice) {
     const opened = fired.pendingEffectChoice;
@@ -2739,7 +2749,9 @@ export function completeEffectHoldChoice(
   if (pending.playerId !== playerId) return { error: "wrong_player" };
   if (pending.commandAction !== "hold") return { error: "invalid_payment" };
   const selectCount = pending.selectCount ?? 1;
-  if (commandInstanceIds.length !== selectCount) return { error: "wrong_count" };
+  // RS-429【暮らしの中に修行あり】: MA のコマンド1つのかわりに WB のコマンド＋追加1つ（計2つ）をホールドしてもよい。
+  const shifuPair = pending.shifuSubstitute === true && selectCount === 1 && commandInstanceIds.length === 2;
+  if (commandInstanceIds.length !== selectCount && !shifuPair) return { error: "wrong_count" };
   for (const id of commandInstanceIds) {
     if (!pending.validInstanceIds.includes(id)) return { error: "invalid_target" };
   }
@@ -2753,7 +2765,10 @@ export function completeEffectHoldChoice(
   }
   if (isHoldActivateChoice(pending)) {
     // 「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒…」の支払いを終えた（rules/holdToActivate.ts）。
-    const resolved = resolveHoldActivateChoice(state, pending, commandInstanceIds[0]!);
+    // RS-429 の代用（WB＋追加1つ）なら「ホールドしたコマンド」は MA のかわりの WB のコマンド（WB が2つなら先に選んだ方）だけ
+    // （grnrngr/faq-card-6 RS-378 Q）。
+    const heldId = shifuPair ? shifuSubstituteCommandId(state, playerId, commandInstanceIds) : commandInstanceIds[0]!;
+    const resolved = resolveHoldActivateChoice(state, pending, heldId);
     if (!resolved) return { error: "invalid_target" };
     return {
       state: resolved.pendingEffectChoice ? resolved : promoteDeferredBattleEntry(resolved),

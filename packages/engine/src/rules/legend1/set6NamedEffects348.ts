@@ -25,6 +25,7 @@ import { unitFeatures } from "../addedFeatures";
 import { transformationHindranceNegates } from "./set7NamedEffectsD";
 import { afterEnterBattle, promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
+import { registerOptionalEffect } from "../optionalEffects";
 
 type ChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
 type ChoiceSkipper = (state: GameState, playerId: PlayerId) => ChoiceOutcome;
@@ -780,32 +781,84 @@ CHOICE_RESOLVERS[LION_ARMOR_EFFECT_ID] = (state, playerId, instanceId) => {
 // ---------------------------------------------------------------------------
 // RS-385 グリーンホバー【特殊消化弾】
 // 「これが自軍ラッシュエリアにある間、自軍コマンドゾーンにホールド状態でカードを置くとき、かわりにリリース状態で置いてもよい。」
-// （atwiki/page-530）applyAction の後処理で、新たにホールド状態で置かれた自軍コマンドをリリース状態にする
-// （リリース状態で置くほうが常に有利なので、選択は省いて「置く」を選んだものとして扱う）。
+// （atwiki/page-530）applyAction の後処理で、新たにホールド状態で置かれた自軍コマンドを1枚ずつ積み、
+// 「リリース状態で置くか」の確認（任意。mayConfirm）を持ち主に開く。行えばそのカードをリリース状態にする。
 // 置いた後にホールド状態にする効果（SR-004【妖魔力】）はその後で適用される（faq-card-6 SR-004 Q）。
 
+export const SPECIAL_EXTINGUISHER_EFFECT_ID = "rs385_special_extinguisher";
+
+/** applyAction の後処理: 新たにホールド状態で置かれた自軍コマンドを積み、確認を開けるなら開く。 */
 export function applySpecialExtinguisher(before: GameState, after: GameState): GameState {
-  let next = after;
+  let queue = after.specialExtinguisherQueue ?? [];
   for (const pid of ["player1", "player2"] as const) {
     if (!after.players[pid].rush.some((c) => c.cardId === "RS-385")) continue;
     const prev = new Set(before.players[pid].command.map((c) => c.instanceId));
-    const p = next.players[pid];
-    const placed = (c: CardInstance) => !prev.has(c.instanceId) && c.commandHeld && !c.instanceId.includes("#");
-    const releasedIds = p.command.filter(placed).map((c) => c.instanceId);
-    if (releasedIds.length === 0) continue;
-    next = {
+    for (const c of after.players[pid].command) {
+      if (prev.has(c.instanceId) || !c.commandHeld || c.instanceId.includes("#")) continue;
+      if (queue.some((q) => q.instanceId === c.instanceId)) continue;
+      queue = [...queue, { playerId: pid, instanceId: c.instanceId }];
+    }
+  }
+  const next = queue === (after.specialExtinguisherQueue ?? []) ? after : { ...after, specialExtinguisherQueue: queue };
+  return openSpecialExtinguisherIfReady(next);
+}
+
+function openSpecialExtinguisherIfReady(state: GameState): GameState {
+  let next = state;
+  for (let guard = 0; guard < 20; guard += 1) {
+    const queue = next.specialExtinguisherQueue ?? [];
+    const head = queue[0];
+    if (!head) return next;
+    if (next.pendingEffectChoice || next.pendingCommandPayment || next.pendingZordSetup || next.pendingLeave || next.winner) return next;
+    const rest = queue.slice(1);
+    next = { ...next, specialExtinguisherQueue: rest.length > 0 ? rest : undefined };
+    const owner = next.players[head.playerId];
+    const placed = owner.command.find((c) => c.instanceId === head.instanceId);
+    const hover = owner.rush.find((c) => c.cardId === "RS-385");
+    // 置いたカードがもうホールド状態でない・グリーンホバーがラッシュエリアにいなければ何もしない。
+    if (!placed?.commandHeld || !hover) continue;
+    return {
       ...next,
-      ...updatePlayer(next, pid, {
-        ...p,
-        command: p.command.map((c) => (placed(c) ? { ...c, commandHeld: false } : c)),
-      }),
+      pendingEffectChoice: {
+        playerId: head.playerId,
+        effectId: SPECIAL_EXTINGUISHER_EFFECT_ID,
+        sourceCardId: "RS-385",
+        sourceInstanceId: hover.instanceId,
+        kind: "confirm",
+        phasePlayerId: next.activePlayer,
+        validInstanceIds: [],
+        selectedInstanceIds: [head.instanceId],
+        optional: true,
+        mayConfirm: true,
+      },
+      activePlayer: head.playerId,
     };
-    // リリース状態で置いた後に、置いたカードをホールドする効果（SR-004【妖魔力】: OT / ET）を適用し直す
-    // （faq-card-6 SR-004 Q「リリース状態で置いた後、…ホールド状態になります」）。
-    for (const id of releasedIds) next = holdPlacedCommandUnderMaChikara(next, pid, id);
   }
   return next;
 }
+
+registerOptionalEffect(SPECIAL_EXTINGUISHER_EFFECT_ID, {
+  apply: (state, pending) => {
+    const playerId = pending.playerId;
+    const placedId = pending.selectedInstanceIds?.[0];
+    const player = state.players[playerId];
+    if (!placedId || !player.command.some((c) => c.instanceId === placedId)) return state;
+    let next: GameState = {
+      ...state,
+      ...updatePlayer(state, playerId, {
+        ...player,
+        command: player.command.map((c) => (c.instanceId === placedId ? { ...c, commandHeld: false } : c)),
+      }),
+      log: [...state.log, logFor(state, playerId, "RS-385", `${SPECIAL_EXTINGUISHER_EFFECT_ID}:${cardName(state.definitions, player.command.find((c) => c.instanceId === placedId)!.cardId)}`)],
+    };
+    // リリース状態で置いた後に、置いたカードをホールドする効果（SR-004【妖魔力】: OT / ET）を適用し直す
+    // （faq-card-6 SR-004 Q「リリース状態で置いた後、…ホールド状態になります」）。
+    next = holdPlacedCommandUnderMaChikara(next, playerId, placedId);
+    return openSpecialExtinguisherIfReady(next);
+  },
+  // CPU: リリース状態で置くほうが常に有利なので行う。
+  cpuAccepts: () => true,
+});
 
 // ---------------------------------------------------------------------------
 // DSL の grant_keyword からの起点

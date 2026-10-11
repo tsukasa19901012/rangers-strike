@@ -385,6 +385,28 @@ export function getCommandPaymentView(
   };
 }
 
+/**
+ * RS-429【暮らしの中に修行あり】の代用ができる「「MA」の自軍コマンドを１つホールドして」の支払い:
+ * MA のコマンド1つか、WB のコマンド＋追加1つ（カテゴリを問わない）の計2つ。
+ */
+function validateShifuEffectHold(
+  state: GameState,
+  pending: PendingCommandPayment,
+  commandInstanceIds: string[],
+): string | null {
+  for (const id of commandInstanceIds) {
+    if (!pending.validInstanceIds.includes(id)) return "invalid_command";
+  }
+  const player = state.players[pending.playerId];
+  const hasCategory = (id: string | undefined, category: Category) => {
+    const cmd = player.command.find((c) => c.instanceId === id);
+    return !!cmd && !cmd.commandHeld && effectiveCommandCategories(player, state.definitions, cmd.cardId).includes(category);
+  };
+  if (commandInstanceIds.length === 1) return hasCategory(commandInstanceIds[0], "MA") ? null : "invalid_command";
+  if (commandInstanceIds.length === 2) return commandInstanceIds.some((id) => hasCategory(id, "WB")) ? null : "invalid_command";
+  return "wrong_count";
+}
+
 export function validatePaymentSelection(
   state: GameState,
   pending: PendingCommandPayment,
@@ -392,6 +414,9 @@ export function validatePaymentSelection(
 ): string | null {
   const unique = new Set(commandInstanceIds);
   if (unique.size !== commandInstanceIds.length) return "duplicate_selection";
+  if (pending.kind === "effect_hold" && pending.shifuSubstitute) {
+    return validateShifuEffectHold(state, pending, commandInstanceIds);
+  }
   if (commandInstanceIds.length !== pending.totalNeeded) return "wrong_count";
 
   for (const id of commandInstanceIds) {
@@ -612,6 +637,22 @@ export function buildEffectHoldPayment(state: GameState): PendingCommandPayment 
   const selectCount = pending.selectCount ?? 1;
   const validInstanceIds = pending.validInstanceIds;
   if (validInstanceIds.length < selectCount) return null;
+
+  if (pending.shifuSubstitute && selectCount === 1) {
+    // RS-429【暮らしの中に修行あり】: MA のコマンド1つ、または WB のコマンド＋追加1つ（計2つ）。
+    return {
+      playerId: pending.playerId,
+      kind: "effect_hold",
+      sourceInstanceId: pending.sourceInstanceId ?? validInstanceIds[0]!,
+      sourceCardId: pending.sourceCardId,
+      eligibleNeeded: 0,
+      totalNeeded: 2,
+      minNeeded: 1,
+      shifuSubstitute: true,
+      validInstanceIds,
+      continuation: { type: "effect_choice" },
+    };
+  }
 
   return {
     playerId: pending.playerId,

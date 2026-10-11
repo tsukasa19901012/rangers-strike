@@ -9,8 +9,10 @@
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
-import { cardName, getDefinition, rushPowerCost } from "../../core/catalog";
+import { cardCategories, cardName, effectiveBp, getDefinition, isMediumUnit, parsePowerCost, rushPowerCost } from "../../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
+import { redRacerPowerCostBonus } from "../../core/power";
+import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { bounceToHand } from "../bounce";
@@ -19,7 +21,7 @@ import { shuffleCards } from "../errataCardEffects";
 import { applyReanimate } from "../reanimate";
 import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
 import { startGenericEnemyUnitChoice } from "../rs/rsCatchallChoices";
-import { openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
+import { applyConfirmEffectChoice, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
 import { registerChoiceRefresher } from "../choiceRefreshers";
 import { applyNumberComboEffect } from "../numberComboEffects";
 import { getNumberComboEffect } from "@rangers-strike/cards";
@@ -737,6 +739,222 @@ function confirmDynamicChop(state: GameState, _playerId: PlayerId): ChoiceOutcom
 }
 
 // ---------------------------------------------------------------------------
+// RS-423 ゲキタイガー【咆咆弾】
+// 「これをラッシュしたとき、特徴「メカ」を持たない敵軍ユニットを、BPの合計が5000以下になるように選んで撃破してもよい。
+//  ただし選べるユニットの数は、WBの自軍Mユニットの数までとする。」（atwiki/page-519）
+// - エリアを問わない。1体ずつ選び（合計が5000を超えるユニットは候補から外れる）、少なくても確定できる。
+// - BP は補正後の BP で数える（RS-125【天地轟鳴アニマルハート】と同じ「BPの合計」。faq-card-3 RS-125 Q1）。
+// - 選び終えたら、選んだユニットを1体ずつ撃破する（select_units_bp_budget の確定処理を共用）。
+
+export const HOUHOU_DAN_EFFECT_ID = "rs423_houhou_dan";
+const HOUHOU_DAN_DESTROY_EFFECT_ID = "rs423_houhou_dan_destroy";
+const HOUHOU_DAN_BP_BUDGET = 5000;
+
+function fieldBp(state: GameState, instanceId: string): number {
+  for (const pid of ["player1", "player2"] as const) {
+    const card = [...state.players[pid].battle, ...state.players[pid].rush].find((c) => c.instanceId === instanceId);
+    if (card) return effectiveBp(state, pid, card);
+  }
+  return 0;
+}
+
+function houhouDanCandidates(state: GameState, playerId: PlayerId, selected: string[]): string[] {
+  const enemy = state.players[opponent(playerId)];
+  const used = selected.reduce((sum, id) => sum + fieldBp(state, id), 0);
+  return [...enemy.battle, ...enemy.rush]
+    .filter((c) => {
+      if (selected.includes(c.instanceId)) return false;
+      const def = getDefinition(state.definitions, c.cardId);
+      if (def?.type !== "unit" || (def.features ?? []).includes("メカ")) return false;
+      if (!isSelectableByOpponentEffect(state, playerId, c.instanceId, "RS-423")) return false;
+      return used + effectiveBp(state, opponent(playerId), c) <= HOUHOU_DAN_BP_BUDGET;
+    })
+    .map((c) => c.instanceId);
+}
+
+function ownWbMediumCount(state: GameState, playerId: PlayerId): number {
+  const own = state.players[playerId];
+  return [...own.battle, ...own.rush].filter((c) => {
+    const def = getDefinition(state.definitions, c.cardId);
+    return !!def && cardCategories(def).includes("WB") && isMediumUnit(state.definitions, c.cardId);
+  }).length;
+}
+
+function beginHouhouDan(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  const limit = ownWbMediumCount(state, ctx.playerId);
+  const valid = houhouDanCandidates(state, ctx.playerId, []);
+  if (limit <= 0 || valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: HOUHOU_DAN_EFFECT_ID,
+    sourceCardId: "RS-423",
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    kind: "select_unit",
+    phasePlayerId: ctx.phasePlayerId,
+    validInstanceIds: valid,
+    selectCount: limit,
+    selectedInstanceIds: [],
+    bpBudget: HOUHOU_DAN_BP_BUDGET,
+    optional: true,
+  });
+}
+
+function finishHouhouDan(state: GameState, pending: PendingEffectChoice, selected: string[]): ChoiceOutcome {
+  if (selected.length === 0) {
+    return { state: finish(state, pending), log: log(pending.playerId, "RS-423", state, "houhou_dan:none") };
+  }
+  return applyConfirmEffectChoice(
+    {
+      ...state,
+      pendingEffectChoice: {
+        ...pending,
+        effectId: HOUHOU_DAN_DESTROY_EFFECT_ID,
+        kind: "select_units_bp_budget",
+        selectedInstanceIds: selected,
+        processedInstanceIds: [],
+        optional: false,
+      },
+    },
+    pending.playerId,
+  );
+}
+
+function resolveHouhouDan(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+  const remaining = houhouDanCandidates(state, playerId, selected);
+  if (selected.length < (pending.selectCount ?? 1) && remaining.length > 0) {
+    return { state: { ...state, pendingEffectChoice: { ...pending, validInstanceIds: remaining, selectedInstanceIds: selected } } };
+  }
+  return finishHouhouDan(state, pending, selected);
+}
+
+function confirmHouhouDan(state: GameState, _playerId: PlayerId): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  return finishHouhouDan(state, pending, pending.selectedInstanceIds ?? []);
+}
+
+// ---------------------------------------------------------------------------
+// RS-425 ゲキジャガー【転転弾】
+// 「これをラッシュしたとき、敵軍ユニットを1体選んで撃破してもよい。ただし、必要パワーの数字が敵軍ダメージの点数以下の
+//  ユニットしか選べない。」（atwiki/page-521）
+// - エリアを問わない。場のユニットの必要パワーは印刷の数字（「7-」は7）で、RS-375 の※は場のユニットに及ばない
+//   （faq-card-6 RS-375 Q2/Q4）。RS-428【ファンタスティック・テクニック】で発動したときも同じ。
+
+function beginTentenDan(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  const enemyId = opponent(ctx.playerId);
+  const enemy = state.players[enemyId];
+  const damage = damageCount(enemy);
+  const valid = [...enemy.battle, ...enemy.rush]
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      if (def?.type !== "unit") return false;
+      if (!isSelectableByOpponentEffect(state, ctx.playerId, c.instanceId, "RS-425")) return false;
+      return parsePowerCost(def.powerCost) <= damage;
+    })
+    .map((c) => c.instanceId);
+  if (valid.length === 0) return null;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: ctx.effectId,
+    sourceCardId: "RS-425",
+    sourceInstanceId: ctx.triggerSourceInstanceId,
+    kind: "select_unit",
+    phasePlayerId: ctx.phasePlayerId,
+    validInstanceIds: valid,
+    unitDestination: "discard",
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// RS-377 ギンガグリーン【キバショット】（NC。「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒」は rules/holdToActivate.ts）
+// 「このターン、リリース状態の敵軍コマンドがホールドされたとき、ホールドされたコマンドの必要パワーの数字と同じ必要パワーの数字を持つ
+//  敵軍Sユニットを1体選び撃破する。」（atwiki/page-502）
+// - applyAction の後処理で、リリース状態からホールド状態になった敵軍コマンドを積み、進行中の選択・支払いがなければ開く。
+// - コマンドゾーンのユニットカードの必要パワーには RS-375 レッドレーサー（2nd）の※が及ぶ（faq-card-6 RS-375 Q3）。
+//   場の S ユニットの必要パワーは印刷の数字（場のユニットには※が及ばない。同 Q2/Q4）。
+// - 発動したら何回でも（このターン中にホールドされるたび）誘発する。2回発動していればそれぞれ誘発する。
+
+const KIBA_SHOT_RULE = "rs377_kiba_shot";
+export const KIBA_SHOT_EFFECT_ID = "rs377_kiba_shot_destroy";
+
+export function registerKibaShot(state: GameState, playerId: PlayerId, sourceInstanceId: string): GameState {
+  // 発動するたびに1つずつ（重複して誘発する）。addTurnRuleModifier は同じルールをまとめるので直接積む。
+  const player = state.players[playerId];
+  const modifiers = [
+    ...getPlayerModifiers(player),
+    { kind: "rule" as const, ruleId: KIBA_SHOT_RULE, scope: "turn" as const, sourceCardId: "RS-377", payload: { sourceInstanceId } },
+  ];
+  return { ...state, ...updatePlayer(state, playerId, { ...player, modifiers }) };
+}
+
+function kibaShotSources(state: GameState, playerId: PlayerId): Array<string | undefined> {
+  return getPlayerModifiers(state.players[playerId])
+    .filter((m) => m.kind === "rule" && m.ruleId === KIBA_SHOT_RULE && m.scope === "turn")
+    .map((m) => (m.kind === "rule" ? (m.payload as { sourceInstanceId?: string } | undefined)?.sourceInstanceId : undefined));
+}
+
+/** applyAction の後処理: 【キバショット】の発動中に、リリース状態からホールド状態になった敵軍コマンドを積む。 */
+export function queueKibaShot(before: GameState, after: GameState): GameState {
+  let queue = after.kibaShotQueue ?? [];
+  for (const pid of ["player1", "player2"] as const) {
+    const sources = kibaShotSources(after, pid);
+    if (sources.length === 0) continue;
+    const enemyId = opponent(pid);
+    const wasReleased = new Set(before.players[enemyId].command.filter((c) => !c.commandHeld).map((c) => c.instanceId));
+    for (const c of after.players[enemyId].command) {
+      if (!c.commandHeld || !wasReleased.has(c.instanceId)) continue;
+      const def = getDefinition(after.definitions, c.cardId);
+      const powerCost = parsePowerCost(def?.powerCost) + redRacerPowerCostBonus(after, enemyId, c.cardId);
+      queue = [...queue, ...sources.map((sourceInstanceId) => ({ playerId: pid, powerCost, sourceInstanceId }))];
+    }
+  }
+  return queue === (after.kibaShotQueue ?? []) ? after : { ...after, kibaShotQueue: queue };
+}
+
+function kibaShotTargets(state: GameState, playerId: PlayerId, powerCost: number): string[] {
+  const enemy = state.players[opponent(playerId)];
+  return [...enemy.battle, ...enemy.rush]
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      if (def?.type !== "unit" || def.size !== "S") return false;
+      if (parsePowerCost(def.powerCost) !== powerCost) return false;
+      return isSelectableByOpponentEffect(state, playerId, c.instanceId, "RS-377");
+    })
+    .map((c) => c.instanceId);
+}
+
+/** 待ち行列の先頭から、撃破する敵軍 S ユニットの選択を開く（候補がなければ飛ばす）。 */
+export function openKibaShotIfReady(state: GameState, phasePlayerId: PlayerId): GameState {
+  let next = state;
+  for (let guard = 0; guard < 20; guard += 1) {
+    const queue = next.kibaShotQueue ?? [];
+    const head = queue[0];
+    if (!head) return next;
+    const rest = queue.slice(1);
+    next = { ...next, kibaShotQueue: rest.length > 0 ? rest : undefined };
+    const valid = kibaShotTargets(next, head.playerId, head.powerCost);
+    if (valid.length === 0) continue;
+    return openEffectChoice(next, {
+      playerId: head.playerId,
+      effectId: KIBA_SHOT_EFFECT_ID,
+      sourceCardId: "RS-377",
+      sourceInstanceId: head.sourceInstanceId,
+      kind: "select_unit",
+      phasePlayerId,
+      validInstanceIds: valid,
+      unitDestination: "discard",
+      selectCount: 1,
+      optional: false,
+    });
+  }
+  return next;
+}
+
+// ---------------------------------------------------------------------------
 // RS-141 紐男爵【紐拳】の後半「敵軍ラッシュエリアのユニットを1体選んで、可能ならバトルエリアに出す」:
 // 前半で戻したユニットの誘発（RS-417【消滅の緋色】等）を先に解決したあとで開くので、
 // その間に撃破されて場を離れたユニットを候補から外す（atwiki/page-336・grnrngr/faq-card-6 RS-417 Q4）。
@@ -765,6 +983,7 @@ const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [SOUL_COLLECTION_EFFECT_ID]: resolveSoulCollection,
   [SUPER_GEKI_RED_EFFECT_ID]: resolveSuperGekiRed,
   [DYNAMIC_CHOP_EFFECT_ID]: resolveDynamicChop,
+  [HOUHOU_DAN_EFFECT_ID]: resolveHouhouDan,
 };
 
 function skipSimple(cardId: string): ChoiceSkipper {
@@ -786,6 +1005,7 @@ const CHOICE_SKIPPERS: Record<string, ChoiceSkipper> = {
   [LIFE_SEARCH_EFFECT_ID]: skipSimple("RS-389"),
   [SOUL_COLLECTION_EFFECT_ID]: skipSimple("RS-416"),
   [DYNAMIC_CHOP_EFFECT_ID]: (s, p) => confirmDynamicChop(s, p),
+  [HOUHOU_DAN_EFFECT_ID]: (s, p) => confirmHouhouDan(s, p),
 };
 
 /** confirm_effect_choice で確定できる選択（「まで」「好きな枚数」・行うかの確認）。 */
@@ -796,6 +1016,7 @@ const CHOICE_CONFIRMERS: Record<string, ChoiceConfirmer> = {
   [EMERGENCY_GUIDE_EFFECT_ID]: applyEmergencyGuide,
   [LIFE_SEARCH_EFFECT_ID]: applyLifeSearch,
   [DYNAMIC_CHOP_EFFECT_ID]: confirmDynamicChop,
+  [HOUHOU_DAN_EFFECT_ID]: confirmHouhouDan,
 };
 
 export function isSet6AuditChoiceEffect(effectId: string): boolean {
@@ -853,6 +1074,10 @@ export function trySet6AuditCardEffect(
       return open(beginLifeSearch(state, ctx), LIFE_SEARCH_EFFECT_ID);
     case "RK-062::dainamikuchopu":
       return open(beginDynamicChop(state, ctx), DYNAMIC_CHOP_EFFECT_ID);
+    case "RS-423::dan_e59286":
+      return open(beginHouhouDan(state, ctx), HOUHOU_DAN_EFFECT_ID);
+    case "RS-425::dan_e8bba2":
+      return open(beginTentenDan(state, ctx), ctx.effectId);
     case "RS-416::nokorekushon":
       return open(beginSoulCollection(state, ctx), SOUL_COLLECTION_EFFECT_ID);
     default:
