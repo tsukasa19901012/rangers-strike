@@ -26,6 +26,7 @@ import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability
 import { isSmallUnitNow } from "./set6NamedEffectsB";
 import { bounceAllFromZone } from "../bounce";
 import { shuffleCards } from "../errataCardEffects";
+import { addSet8Category, addSet8NumberDelta } from "./set8TurnGrants";
 import type { ComboOutcome } from "../comboTypes";
 import { listZordFusionPartnerIds } from "@rangers-strike/cards";
 
@@ -1062,6 +1063,416 @@ register(BIO_PARTICLE_ANSWER_EFFECT_ID, (state, playerId, instanceId) => {
   }
   return { state: finish(next, pending), log: logFor(state, playerId, "RS-528", `${BIO_PARTICLE_ANSWER_EFFECT_ID}:damage`) };
 });
+
+// ---------------------------------------------------------------------------
+// 常駐の太字部分の起動（activate_resident_operation。rules/permanentOperation.ts・core/legalActions.ts から）
+// - RS-519 インフェルシアの花嫁（自軍ラッシュフェイズ中に1度だけ。atwiki/page-1155）
+// - RS-522 ボウケンスピリッツ（自軍ラッシュフェイズ中に1度だけ。atwiki/page-1152）
+// - RS-524 呉越同舟（自軍バトルフェイズ中に1度だけ。atwiki/page-1151）
+// - RS-525 頼もしい相棒（自軍ラッシュフェイズ中に1度だけ。atwiki/page-1153）
+// 「実行してもよい」は起動するかどうかの選択（起動しなければ何も起きない）。「1度だけ」はその常駐ごとにターンの記録で数える。
+// ※タッグの「太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる」（R-KW-TAG-01）の読み替えは未対応。
+
+const SET8A_RESIDENT_PHASE: Record<string, "rush" | "battle"> = {
+  "RS-519": "rush",
+  "RS-522": "rush",
+  "RS-524": "battle",
+  "RS-525": "rush",
+};
+const RESIDENT_USED_RULE = "set8a_resident_bold_used";
+
+export function isSet8AResident(cardId: string): boolean {
+  return cardId in SET8A_RESIDENT_PHASE;
+}
+
+function residentUsedThisTurn(state: GameState, playerId: PlayerId, instanceId: string): boolean {
+  return getPlayerModifiers(state.players[playerId]).some(
+    (m) =>
+      m.kind === "rule" &&
+      m.ruleId === RESIDENT_USED_RULE &&
+      m.scope === "turn" &&
+      (m.payload as { instanceId?: string } | undefined)?.instanceId === instanceId,
+  );
+}
+
+function ownSmallWithFeature(state: GameState, playerId: PlayerId, feature: string, exclude?: string): string[] {
+  const p = state.players[playerId];
+  return [...p.battle, ...p.rush]
+    .filter(
+      (c) =>
+        c.instanceId !== exclude &&
+        isUnitCard(state, c.cardId) &&
+        isSmallUnitNow(state, playerId, c) &&
+        unitFeatures(state, playerId, c).includes(feature),
+    )
+    .map((c) => c.instanceId);
+}
+
+/** 男・女の S ユニットを1体ずつ（別のユニットとして）選べるか。 */
+function canPickMaleAndFemale(state: GameState, playerId: PlayerId): boolean {
+  const males = ownSmallWithFeature(state, playerId, "男");
+  return males.some((m) => ownSmallWithFeature(state, playerId, "女", m).length > 0);
+}
+
+function fusionLCardsInHand(state: GameState, playerId: PlayerId): string[] {
+  return state.players[playerId].hand
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return def?.type === "unit" && def.size === "L" && requiresFusion(state, c.cardId);
+    })
+    .map((c) => c.instanceId);
+}
+
+function faceUpPower(state: GameState, playerId: PlayerId): string[] {
+  return state.players[playerId].power.filter((c) => !c.faceDown).map((c) => c.instanceId);
+}
+
+/**
+ * このモジュールの常駐なら起動できるか（それ以外は null）。
+ */
+export function canActivateSet8AResident(state: GameState, playerId: PlayerId, operationInstanceId: string): boolean | null {
+  const op = state.players[playerId].operation.find((c) => c.instanceId === operationInstanceId);
+  if (!op || !isSet8AResident(op.cardId)) return null;
+  if (state.phase !== SET8A_RESIDENT_PHASE[op.cardId] || state.activePlayer !== playerId) return false;
+  if (state.pendingEffectChoice || state.pendingCommandPayment || state.pendingZordSetup || state.pendingBattle || state.pendingStrike) {
+    return false;
+  }
+  if (residentUsedThisTurn(state, playerId, op.instanceId)) return false;
+  const player = state.players[playerId];
+  switch (op.cardId) {
+    case "RS-519":
+      return canPickMaleAndFemale(state, playerId);
+    case "RS-522":
+      return player.command.length > 0;
+    case "RS-524":
+      return player.hand.length > 0;
+    case "RS-525":
+      return fusionLCardsInHand(state, playerId).length > 0 && faceUpPower(state, playerId).length >= 2;
+    default:
+      return false;
+  }
+}
+
+export function activateSet8AResident(state: GameState, playerId: PlayerId, operationInstanceId: string): GameState {
+  const op = state.players[playerId].operation.find((c) => c.instanceId === operationInstanceId)!;
+  const used = patchPlayer(state, playerId, (p) =>
+    addTurnRuleModifier(p, RESIDENT_USED_RULE, { sourceCardId: op.cardId, payload: { instanceId: op.instanceId } }),
+  );
+  const base = {
+    playerId,
+    sourceCardId: op.cardId,
+    sourceInstanceId: op.instanceId,
+    phasePlayerId: playerId,
+    selectCount: 1,
+    optional: false,
+  };
+  switch (op.cardId) {
+    case "RS-519":
+      return openEffectChoice(used, {
+        ...base,
+        effectId: BRIDE_MALE_EFFECT_ID,
+        kind: "select_unit",
+        validInstanceIds: ownSmallWithFeature(used, playerId, "男").filter(
+          (m) => ownSmallWithFeature(used, playerId, "女", m).length > 0,
+        ),
+      });
+    case "RS-522":
+      return openEffectChoice(used, {
+        ...base,
+        effectId: BOUKEN_COMMAND_EFFECT_ID,
+        kind: "select_command",
+        validInstanceIds: used.players[playerId].command.map((c) => c.instanceId),
+      });
+    case "RS-524":
+      return openEffectChoice(used, {
+        ...base,
+        effectId: GOETSU_HAND_EFFECT_ID,
+        kind: "select_hand",
+        validInstanceIds: used.players[playerId].hand.map((c) => c.instanceId),
+      });
+    case "RS-525":
+      return openEffectChoice(used, {
+        ...base,
+        effectId: PARTNER_L_EFFECT_ID,
+        kind: "select_hand",
+        validInstanceIds: fusionLCardsInHand(used, playerId),
+      });
+    default:
+      return state;
+  }
+}
+
+/** 場のユニットを（撃破ではなく）コストとして捨札にする。 */
+function discardFieldUnit(state: GameState, instanceId: string): GameState {
+  const found = findCardInField(state, instanceId);
+  if (!found) return state;
+  return patchPlayer(state, found.playerId, (p) => ({
+    ...p,
+    [found.zone]: p[found.zone].filter((c) => c.instanceId !== instanceId),
+    discard: [...p.discard, { instanceId: found.card.instanceId, cardId: found.card.cardId }],
+  }));
+}
+
+// RS-519 インフェルシアの花嫁
+// 「『特徴「男」を持つ自軍Sユニットと特徴「女」を持つ自軍Sユニットをそれぞれ1体ずつ選び捨札にする』を実行してもよい。
+//  そうしたとき、自軍山札を見て、特徴「戦闘員」を持つユニットカードを3枚まで選び、自軍ラッシュエリアに出す。その後、山札をシャッフルする。」
+
+export const BRIDE_MALE_EFFECT_ID = "rs519_bride_male";
+export const BRIDE_FEMALE_EFFECT_ID = "rs519_bride_female";
+export const BRIDE_GRUNTS_EFFECT_ID = "rs519_bride_grunts";
+
+register(BRIDE_MALE_EFFECT_ID, (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  return {
+    state: reopen(state, pending, {
+      ...pending,
+      effectId: BRIDE_FEMALE_EFFECT_ID,
+      validInstanceIds: ownSmallWithFeature(state, playerId, "女", instanceId),
+      selectedInstanceIds: [instanceId],
+    }),
+    log: logFor(state, playerId, "RS-519", `${BRIDE_MALE_EFFECT_ID}:${cardName(state.definitions, findCardInField(state, instanceId)?.card.cardId ?? instanceId)}`),
+  };
+});
+
+register(BRIDE_FEMALE_EFFECT_ID, (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const male = pending.selectedInstanceIds?.[0];
+  if (!male) return { error: "invalid_target" };
+  let next = discardFieldUnit(state, male);
+  next = discardFieldUnit(next, instanceId);
+  const grunts = next.players[playerId].deck
+    .filter((c) => isUnitCard(next, c.cardId) && (getDefinition(next.definitions, c.cardId)?.features ?? []).includes("戦闘員"))
+    .map((c) => c.instanceId);
+  const log = logFor(state, playerId, "RS-519", `${BRIDE_FEMALE_EFFECT_ID}:discarded`);
+  if (grunts.length === 0) {
+    next = patchPlayer(next, playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
+    return { state: finish(next, pending), log };
+  }
+  return {
+    state: reopen(next, pending, {
+      ...pending,
+      effectId: BRIDE_GRUNTS_EFFECT_ID,
+      kind: "select_unit",
+      validInstanceIds: grunts,
+      selectedInstanceIds: [],
+      selectCount: 3,
+      // 「3枚まで」— 0〜3枚（見送り・確定で少なくてもよい）。
+      optional: true,
+    }),
+    log,
+  };
+});
+
+function finishBrideGrunts(state: GameState, playerId: PlayerId, selected: string[]): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  const ids = new Set(selected);
+  const picked = state.players[playerId].deck.filter((c) => ids.has(c.instanceId));
+  const moved = patchPlayer(state, playerId, (p) => ({
+    ...p,
+    deck: shuffleCards(p.deck.filter((c) => !ids.has(c.instanceId))),
+    rush: [...p.rush, ...picked.map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }))],
+  }));
+  const closed = finish(moved, pending);
+  const rushed = picked.length > 0 ? finalizeEffectRush(closed, playerId, picked.map((c) => c.instanceId), pending.phasePlayerId) : { state: closed, logs: [] };
+  return {
+    state: rushed.logs.length > 0 ? { ...rushed.state, log: [...rushed.state.log, ...rushed.logs] } : rushed.state,
+    log: logFor(state, playerId, "RS-519", `${BRIDE_GRUNTS_EFFECT_ID}:${picked.length}`),
+  };
+}
+
+register(
+  BRIDE_GRUNTS_EFFECT_ID,
+  (state, playerId, instanceId) => {
+    const pending = state.pendingEffectChoice!;
+    const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+    const remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
+    if (selected.length < (pending.selectCount ?? 3) && remaining.length > 0) {
+      return { state: { ...state, pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: remaining } } };
+    }
+    return finishBrideGrunts(state, playerId, selected);
+  },
+  (state, playerId) => finishBrideGrunts(state, playerId, state.pendingEffectChoice?.selectedInstanceIds ?? []),
+);
+CHOICE_CONFIRMERS[BRIDE_GRUNTS_EFFECT_ID] = (state, playerId) =>
+  finishBrideGrunts(state, playerId, state.pendingEffectChoice?.selectedInstanceIds ?? []);
+
+// RS-522 ボウケンスピリッツ
+// 「『自軍コマンドを1つ選び山札の上に戻す』を実行してもよい。そうしたとき、ナンバーに数字を持つ自軍Sユニットを1体選ぶ。
+//  このターン、選んだユニットのナンバーの数字は1増える。」
+
+export const BOUKEN_COMMAND_EFFECT_ID = "rs522_bouken_command";
+export const BOUKEN_UNIT_EFFECT_ID = "rs522_bouken_unit";
+
+register(BOUKEN_COMMAND_EFFECT_ID, (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const cmd = state.players[playerId].command.find((c) => c.instanceId === instanceId);
+  if (!cmd) return { error: "invalid_target" };
+  const next = patchPlayer(state, playerId, (p) => ({
+    ...p,
+    command: p.command.filter((c) => c.instanceId !== instanceId),
+    deck: [{ instanceId: cmd.instanceId, cardId: cmd.cardId }, ...p.deck],
+  }));
+  const p = next.players[playerId];
+  const units = [...p.battle, ...p.rush]
+    .filter((c) => {
+      const def = getDefinition(next.definitions, c.cardId);
+      return def?.type === "unit" && typeof def.comboNumber === "number" && isSmallUnitNow(next, playerId, c);
+    })
+    .map((c) => c.instanceId);
+  const log = logFor(state, playerId, "RS-522", `${BOUKEN_COMMAND_EFFECT_ID}:${cardName(state.definitions, cmd.cardId)}`);
+  if (units.length === 0) return { state: finish(next, pending), log };
+  return {
+    state: reopen(next, pending, { ...pending, effectId: BOUKEN_UNIT_EFFECT_ID, kind: "select_unit", validInstanceIds: units }),
+    log,
+  };
+});
+
+register(BOUKEN_UNIT_EFFECT_ID, (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const next = patchPlayer(state, playerId, (p) => addSet8NumberDelta(p, instanceId, 1, "RS-522"));
+  return {
+    state: finish(next, pending),
+    log: logFor(state, playerId, "RS-522", `${BOUKEN_UNIT_EFFECT_ID}:${cardName(state.definitions, findCardInField(state, instanceId)?.card.cardId ?? instanceId)}`),
+  };
+});
+
+// RS-524 呉越同舟
+// 「『自分の手札を1枚選び相手に見せる』を実行してもよい。そうしたとき、自軍ユニットを1体選び、カテゴリを1つ宣言する。
+//  このターン、宣言したカテゴリを選んだユニットに追加する。」
+
+export const GOETSU_HAND_EFFECT_ID = "rs524_goetsu_reveal";
+export const GOETSU_UNIT_EFFECT_ID = "rs524_goetsu_unit";
+export const GOETSU_CATEGORY_EFFECT_ID = "rs524_goetsu_category";
+const CATEGORIES = ["WB", "OT", "ET", "MA", "DA"] as const;
+
+register(GOETSU_HAND_EFFECT_ID, (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const card = state.players[playerId].hand.find((c) => c.instanceId === instanceId);
+  if (!card) return { error: "invalid_target" };
+  const p = state.players[playerId];
+  const units = [...p.battle, ...p.rush].filter((c) => isUnitCard(state, c.cardId)).map((c) => c.instanceId);
+  // 見せたカードは公開情報としてログに残す。
+  const log = logFor(state, playerId, "RS-524", `${GOETSU_HAND_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`);
+  if (units.length === 0) return { state: finish(state, pending), log };
+  return { state: reopen(state, pending, { ...pending, effectId: GOETSU_UNIT_EFFECT_ID, kind: "select_unit", validInstanceIds: units }), log };
+});
+
+register(GOETSU_UNIT_EFFECT_ID, (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  return {
+    state: reopen(state, pending, {
+      ...pending,
+      effectId: GOETSU_CATEGORY_EFFECT_ID,
+      // カテゴリの宣言（数字・名前のボタンで選ぶ）。
+      kind: "declare_number",
+      validInstanceIds: [...CATEGORIES],
+      selectedInstanceIds: [instanceId],
+    }),
+    log: logFor(state, playerId, "RS-524", `${GOETSU_UNIT_EFFECT_ID}:${cardName(state.definitions, findCardInField(state, instanceId)?.card.cardId ?? instanceId)}`),
+  };
+});
+
+register(GOETSU_CATEGORY_EFFECT_ID, (state, playerId, category) => {
+  const pending = state.pendingEffectChoice!;
+  const target = pending.selectedInstanceIds?.[0];
+  if (!target || !findCardInField(state, target)) return { state: finish(state, pending) };
+  const next = patchPlayer(state, playerId, (p) => addSet8Category(p, target, category as (typeof CATEGORIES)[number], "RS-524"));
+  return { state: finish(next, pending), log: logFor(state, playerId, "RS-524", `${GOETSU_CATEGORY_EFFECT_ID}:${category}`) };
+});
+
+// RS-525 頼もしい相棒
+// 「自分の手札から合体を必要とするLユニットのカードを1枚選び、相手に見せてから『オモテ向きの自軍パワーを2枚選び捨札にする』を
+//  実行してもよい。そうしたとき、自軍山札を見て、その合体に必要なMユニットのカードを1枚選び、相手に見せてから自分の手札に
+//  加えてもよい。その後、山札をシャッフルする。」
+
+export const PARTNER_L_EFFECT_ID = "rs525_partner_reveal_l";
+export const PARTNER_POWER_EFFECT_ID = "rs525_partner_power";
+export const PARTNER_SEARCH_EFFECT_ID = "rs525_partner_search";
+
+register(PARTNER_L_EFFECT_ID, (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const card = state.players[playerId].hand.find((c) => c.instanceId === instanceId);
+  if (!card) return { error: "invalid_target" };
+  return {
+    state: reopen(state, pending, {
+      ...pending,
+      effectId: PARTNER_POWER_EFFECT_ID,
+      kind: "select_power",
+      validInstanceIds: faceUpPower(state, playerId),
+      selectCount: 2,
+      // 1枚目に見せた L ユニットのカード（その合体に必要な M ユニットを探す）。
+      viewedInstanceIds: [instanceId],
+      selectedInstanceIds: [],
+    }),
+    log: logFor(state, playerId, "RS-525", `${PARTNER_L_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`),
+  };
+});
+
+register(PARTNER_POWER_EFFECT_ID, (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
+  if (selected.length < 2) {
+    return {
+      state: {
+        ...state,
+        pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: pending.validInstanceIds.filter((id) => id !== instanceId) },
+      },
+    };
+  }
+  const ids = new Set(selected);
+  const next = patchPlayer(state, playerId, (p) => ({
+    ...p,
+    power: p.power.filter((c) => !ids.has(c.instanceId)),
+    discard: [...p.discard, ...p.power.filter((c) => ids.has(c.instanceId)).map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }))],
+  }));
+  const lInstanceId = pending.viewedInstanceIds?.[0];
+  const lCardId = next.players[playerId].hand.find((c) => c.instanceId === lInstanceId)?.cardId;
+  const partners = lCardId ? listZordFusionPartnerIds(lCardId) : [];
+  const partnerNames = new Set(partners.map((id) => getDefinition(next.definitions, id)?.name).filter((n): n is string => !!n));
+  const materials = next.players[playerId].deck
+    .filter((c) => {
+      const def = getDefinition(next.definitions, c.cardId);
+      if (def?.type !== "unit" || def.size !== "M") return false;
+      return partners.includes(c.cardId) || partnerNames.has(def.name);
+    })
+    .map((c) => c.instanceId);
+  const log = logFor(state, playerId, "RS-525", `${PARTNER_POWER_EFFECT_ID}:discarded`);
+  if (materials.length === 0) {
+    return { state: finish(patchPlayer(next, playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) })), pending), log };
+  }
+  return {
+    state: reopen(next, pending, {
+      ...pending,
+      effectId: PARTNER_SEARCH_EFFECT_ID,
+      kind: "select_unit",
+      validInstanceIds: materials,
+      selectedInstanceIds: [],
+      selectCount: 1,
+      optional: true,
+    }),
+    log,
+  };
+});
+
+register(
+  PARTNER_SEARCH_EFFECT_ID,
+  (state, playerId, instanceId) => {
+    const pending = state.pendingEffectChoice!;
+    const card = state.players[playerId].deck.find((c) => c.instanceId === instanceId);
+    if (!card) return { error: "invalid_target" };
+    const next = patchPlayer(state, playerId, (p) => ({
+      ...p,
+      deck: shuffleCards(p.deck.filter((c) => c.instanceId !== instanceId)),
+      hand: [...p.hand, { instanceId: card.instanceId, cardId: card.cardId }],
+    }));
+    return { state: finish(next, pending), log: logFor(state, playerId, "RS-525", `${PARTNER_SEARCH_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`) };
+  },
+  (state, playerId) => {
+    const pending = state.pendingEffectChoice!;
+    const next = patchPlayer(state, playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
+    return { state: finish(next, pending), log: skipLog(state, playerId, "RS-525", pending.effectId) };
+  },
+);
 
 // ---------------------------------------------------------------------------
 // applyAction の後処理

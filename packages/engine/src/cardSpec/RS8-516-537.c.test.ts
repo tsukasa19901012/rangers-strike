@@ -95,8 +95,7 @@ describe("RS-533 チェンジフェニックス", () => {
       EXTRA,
     );
     s = enter(s, rush[0]!.instanceId);
-    // エンジンは NC で敵軍ユニットをダメージにする選択を誤って出す（下の it.fails 参照）。ここでは見送って先へ進む。
-    if (s.pendingEffectChoice?.sourceCardId === "RS-533") s = skip(s);
+    // 【フェニックスファイヤー】自体は選択を出さない（下のテスト参照）。
     s = enterSeq(s, rush.slice(1, 3).map((c) => c.instanceId));
     s = resolveAll(s);
     s = enter(passEntry(s), "RS-536:gr");

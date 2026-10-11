@@ -1,4 +1,5 @@
 import { getCardEffect, type CardDefinition } from "@rangers-strike/cards";
+import { activateSet8AResident, canActivateSet8AResident, isSet8AResident } from "./legend1/set8NamedEffectsA";
 import type { EffectDefinition } from "@rangers-strike/cards/dsl/types";
 import { rematchExtractedEffect } from "@rangers-strike/cards/pipeline/extractEffects";
 import {
@@ -107,6 +108,9 @@ export function canActivateResidentOperation(
   playerId: PlayerId,
   operationInstanceId: string,
 ): boolean {
+  // 第8弾 RS-519・RS-522・RS-524・RS-525 の太字部分（RS-524 は自軍バトルフェイズ。rules/legend1/set8NamedEffectsA.ts）。
+  const set8a = canActivateSet8AResident(state, playerId, operationInstanceId);
+  if (set8a !== null) return set8a;
   if (state.phase !== "rush") return false;
   if (state.pendingEffectChoice || state.pendingCommandPayment || state.pendingZordSetup) {
     return false;
@@ -179,6 +183,9 @@ export function applyActivateResidentOperation(
 
   if (op.cardId === "RK-022") {
     return { ok: true, state: beginRiderPass(state, playerId, op) };
+  }
+  if (isSet8AResident(op.cardId)) {
+    return { ok: true, state: activateSet8AResident(state, playerId, operationInstanceId) };
   }
 
   const activationEffects = listResidentActivationEffects(op.cardId);

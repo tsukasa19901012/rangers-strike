@@ -13,7 +13,7 @@ import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
 import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
 import { openBlueMoonSlash, openChargeInsteadOfBattle } from "../rules/legend1/set7NamedEffectsB";
 import { withZordFeatureContext } from "../rules/zordFeatureContext";
-import { applySet8AAfterAction, applyThunderboltSword } from "../rules/legend1/set8NamedEffectsA";
+import { applySet8AAfterAction, applyThunderboltSword, isSet8AResident } from "../rules/legend1/set8NamedEffectsA";
 import { applySet7DStrikeDamageTriggers, RIDE_OFF_RC_MARK, rideOffBlockedBySet7D } from "../rules/legend1/set7NamedEffectsD";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
@@ -3284,10 +3284,11 @@ function applyActionCore(
     }
 
     case "activate_resident_operation": {
-      if (state.phase !== "rush") return fail("wrong_phase");
       const op = player.operation.find(
         (card) => card.instanceId === action.operationInstanceId,
       );
+      // RS-524 呉越同舟は自軍バトルフェイズ中（rules/legend1/set8NamedEffectsA.ts）。それ以外の常駐はラッシュフェイズ。
+      if (state.phase !== "rush" && !(op && isSet8AResident(op.cardId))) return fail("wrong_phase");
       if (!op) return fail("illegal_action");
       const result = applyActivateResidentOperation(
         state,
