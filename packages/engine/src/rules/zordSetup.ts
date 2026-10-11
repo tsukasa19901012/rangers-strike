@@ -263,7 +263,7 @@ export function createZordSetup(
 
   if (materials.length > 0) {
     const materialIds = materials.map((c) => c.instanceId);
-    const commandZoneHasSpace = player.command.length < COMMAND_ZONE_MAX;
+    const commandZoneHasSpace = commandZoneFitsMaterials(state, player.command.length, found.card.cardId);
     const mothershipAvailable = canPayZordWithMothership(
       player,
       state.definitions,
@@ -315,6 +315,21 @@ function collectMothershipTargetIds(
   return collectMothershipEligibleCommands(player, state.definitions, category).map(
     (e) => e.card.instanceId,
   );
+}
+
+/**
+ * 「自軍Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする」（RS-196 等）は1体ごとに行き先を選ぶ（grnrngr/faq-card-4 RS-196 Q2）。
+ * 「それぞれ」の無い「自軍Sユニットを2体コマンドゾーンに送るか捨札にする」（RS-531・RS-532）は、2体とも同じ行き先
+ * （atwiki/page-1158 Q1・page-1159 Q2「両方コマンドゾーン」か「両方捨札」）。
+ */
+function destinationPerUnit(state: GameState, zordCardId: string): boolean {
+  return /それぞれ/.test(getDefinition(state.definitions, zordCardId)?.rushAdditionalCondition?.text ?? "");
+}
+
+/** コマンドゾーンを行き先に選べるか（同じ行き先なら素材すべてが入る空きが要る）。 */
+function commandZoneFitsMaterials(state: GameState, commandCount: number, zordCardId: string): boolean {
+  if (destinationPerUnit(state, zordCardId)) return commandCount < COMMAND_ZONE_MAX;
+  return commandCount + Math.max(1, zordMaterialUnitCount(state, zordCardId)) <= COMMAND_ZONE_MAX;
 }
 
 function needsDestinationChoice(
@@ -386,6 +401,14 @@ export function advanceZordSetup(
     }
     const dest = input.destination;
     if (dest !== "command" && dest !== "discard") {
+      return { kind: "error", error: "invalid_destination" };
+    }
+    if (
+      dest === "command" &&
+      setup.direction !== "down" &&
+      (setup.chosenMaterialIds?.length ?? 0) === 0 &&
+      !commandZoneFitsMaterials(state, player.command.length, setup.zordCardId)
+    ) {
       return { kind: "error", error: "invalid_destination" };
     }
 
@@ -476,7 +499,7 @@ export function advanceZordSetup(
       return { kind: "error", error: "invalid_material" };
     }
 
-    const commandZoneHasSpace = player.command.length < COMMAND_ZONE_MAX;
+    const commandZoneHasSpace = commandZoneFitsMaterials(state, player.command.length, setup.zordCardId);
     const condition = getZordCondition(setup.zordCardId);
     const destination =
       setup.materialDestination ??
@@ -501,10 +524,12 @@ export function advanceZordSetup(
     if (needed > 1) {
       const chosen = [...(setup.chosenMaterialIds ?? []), materialId];
       // 「それぞれ」— 行き先は1体ごとに選ぶ（grnrngr/faq-card-4 RS-196 Q2）。
-      const perUnitDestination = needsDestinationChoice(setup.zordCardId, commandZoneHasSpace);
-      const chosenDestinations = destination
-        ? [...(setup.chosenMaterialDestinations ?? []), destination]
-        : setup.chosenMaterialDestinations;
+      const perUnitDestination =
+        needsDestinationChoice(setup.zordCardId, commandZoneHasSpace) && destinationPerUnit(state, setup.zordCardId);
+      const chosenDestinations =
+        destination && (perUnitDestination || (setup.chosenMaterialDestinations?.length ?? 0) > 0)
+          ? [...(setup.chosenMaterialDestinations ?? []), destination]
+          : setup.chosenMaterialDestinations;
       if (chosen.length < needed) {
         const remaining = setup.validInstanceIds.filter((id) => !chosen.includes(id));
         if (

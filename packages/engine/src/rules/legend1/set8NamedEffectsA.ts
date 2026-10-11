@@ -11,10 +11,12 @@ import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, parsePowerCost } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
+import { sameCardName } from "../../core/cardNames";
 import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
-import { openEffectChoice, requestDrawFromDeck, type ChoiceOutcome } from "../pendingChoices";
+import { applyUnitLeave, openEffectChoice, requestDrawFromDeck, type ChoiceOutcome } from "../pendingChoices";
+import { applyDamageToPlayer } from "../damagePayment";
 import { patchPlayer } from "../playerPatches";
 import { findCardInField } from "../fieldLookup";
 import { unitFeatures } from "../addedFeatures";
@@ -579,6 +581,211 @@ register(
 );
 
 // ---------------------------------------------------------------------------
+// RS-527 バルジオン（2nd）【反バイオ粒子砲】
+// 「これにライドしているユニットは「Lユニット」になり、OTを持つ敵軍コマンド1つにつき、「BP+1000」される。
+//  また、これにライドしているユニットは、「バイオハンター・シルバ」なら「SP1」になる。」（atwiki/page-1156）
+
+function ridingVehicleCardId(state: GameState, playerId: PlayerId, instance: CardInstance): string | undefined {
+  const p = state.players[playerId];
+  const self = [...p.battle, ...p.rush].find((c) => c.instanceId === instance.instanceId);
+  const vehicleId = self?.mountedOnInstanceId;
+  if (!vehicleId) return undefined;
+  return [...p.battle, ...p.rush].find((c) => c.instanceId === vehicleId)?.cardId;
+}
+
+/** BP の継続効果（rules/fieldAuras.ts から呼ぶ）。 */
+export function set8AFieldBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
+  if (ridingVehicleCardId(state, playerId, instance) !== "RS-527") return 0;
+  const otCommands = state.players[opponent(playerId)].command.filter((c) => categoriesOf(state, c.cardId).includes("OT")).length;
+  return 1000 * otCommands;
+}
+
+/** 「SP1」になる継続効果（rules/legend3/fieldEffects.ts から呼ぶ）。 */
+export function set8AEffectiveSp(state: GameState, playerId: PlayerId, instance: CardInstance, sp: number): number {
+  if (sp >= 1) return sp;
+  if (ridingVehicleCardId(state, playerId, instance) !== "RS-527") return sp;
+  return sameCardName(getDefinition(state.definitions, instance.cardId)?.name, "バイオハンター・シルバ") ? 1 : sp;
+}
+
+// ---------------------------------------------------------------------------
+// RS-529 チェンジロボ【電撃剣スーパーサンダーボルト】
+// 「これがアタックまたはストライクしたとき、MAを持つ自軍コマンドの必要パワーの数字を順番に見て、その数字と同じ必要パワーの
+//  数字を持つ敵軍コマンドがあれば、すべて持ち主のパワーゾーンにダメージにして置く。」（atwiki/page-1226）
+// アタックしたとき: core/applyAction.ts（アタック宣言後の「アタックしたとき」）。ストライクしたとき:
+// events/listeners/strikeDeclaredListener.ts。DSL の on_strike（grant_keyword）からは二重に処理しない。
+
+export function applyThunderboltSword(state: GameState, playerId: PlayerId, sourceCardId: string): GameState {
+  if (sourceCardId !== "RS-529") return state;
+  const numbers: number[] = [];
+  for (const c of state.players[playerId].command) {
+    if (!categoriesOf(state, c.cardId).includes("MA")) continue;
+    const n = powerCostNumber(state, c.cardId);
+    if (!numbers.includes(n)) numbers.push(n);
+  }
+  if (numbers.length === 0) return state;
+  const enemyId = opponent(playerId);
+  let next = state;
+  let moved = 0;
+  for (const n of numbers) {
+    const targets = next.players[enemyId].command.filter((c) => powerCostNumber(next, c.cardId) === n);
+    if (targets.length === 0) continue;
+    const ids = new Set(targets.map((c) => c.instanceId));
+    moved += targets.length;
+    next = patchPlayer(next, enemyId, (p) => ({
+      ...p,
+      command: p.command.filter((c) => !ids.has(c.instanceId)),
+      power: [...p.power, ...targets.map((c) => ({ instanceId: c.instanceId, cardId: c.cardId, faceDown: true }))],
+      damage: p.damage + targets.length,
+    }));
+  }
+  if (moved === 0) return state;
+  return {
+    ...next,
+    log: [...next.log, buildLogEntry(playerId, "strike_effect", "RS-529", next.definitions, `rs529_thunderbolt_sword:${moved}`)],
+  };
+}
+
+function drawToCommandOrHand(state: GameState, playerId: PlayerId): GameState {
+  const player = state.players[playerId];
+  const top = player.deck[0];
+  // 引くべきときに引けなければ敗北（公式FAQ RS-027 Q4。rules/pendingChoices.ts requestDrawFromDeck と同じ）。
+  if (!top) return patchPlayer(state, playerId, (p) => ({ ...p, deckedOut: true }));
+  const toCommand = player.command.length < COMMAND_ZONE_MAX;
+  return patchPlayer(state, playerId, (p) => ({
+    ...p,
+    deck: p.deck.slice(1),
+    ...(toCommand
+      ? { command: [...p.command, { instanceId: top.instanceId, cardId: top.cardId, commandHeld: false }] }
+      : { hand: [...p.hand, { instanceId: top.instanceId, cardId: top.cardId }] }),
+  }));
+}
+
+/** DSL grant_keyword からの起点（RS-529 の on_strike は上の起点で処理済みなので何もしない）。 */
+export function trySet8ACardEffect(
+  state: GameState,
+  ctx: { playerId: PlayerId; sourceCardId: string },
+  keyword: string,
+): { state: GameState; detail?: string } | null {
+  // RS-520 スコープショット「自軍山札から1枚ひいて、そのカードを自軍コマンドゾーンに置く。置けなければ手札に加える。」
+  // （atwiki/page-1148）— コマンドゾーンへはリリース状態（02-zones-cards「特に指定がなければリリース状態」）。
+  if (keyword === "draw_deck_to_command_or_hand") {
+    return { state: drawToCommandOrHand(state, ctx.playerId), detail: keyword };
+  }
+  if (ctx.sourceCardId === "RS-529" && keyword.startsWith("enemy_power_damage_koregaatakumatahasutoraiku")) {
+    return { state, detail: "rs529_thunderbolt_sword:handled_on_declare" };
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// RS-528 バイオハンター・シルバ（2nd）【バイオ粒子反応アリ！】
+// 「これが自軍エリアにある間、OTを持つ敵軍ユニットがラッシュされたとき、これをリリースしてもよい。そうしたとき、相手は
+//  ラッシュしたユニットを撃破するか、1点ダメージを受けるかを選ぶ。ダメージを受けることを選んだ場合、OTを持つ自軍ユニットが
+//  あれば、自分も1点ダメージを受ける。」（atwiki/page-1232）
+// 「ラッシュされたとき」の誘発（rules/onRushUnitEffects.ts applyPassiveRushTriggers から）。リリースできる（ホールド状態の）
+// シルバごとに確認を開く。相手の選択は「ラッシュしたユニット（撃破）」か「1点ダメージ」。
+
+export const BIO_PARTICLE_EFFECT_ID = "rs528_bio_particle";
+export const BIO_PARTICLE_ANSWER_EFFECT_ID = "rs528_bio_particle_answer";
+/** 相手の選択で「1点ダメージを受ける」を表す候補。 */
+export const BIO_PARTICLE_TAKE_DAMAGE = "rs528_take_damage";
+
+function appendResume(choice: PendingEffectChoice, next: PendingEffectChoice): PendingEffectChoice {
+  return choice.resumeChoice ? { ...choice, resumeChoice: appendResume(choice.resumeChoice, next) } : { ...choice, resumeChoice: next };
+}
+
+export function openBioParticleOnEnemyRush(
+  state: GameState,
+  rusherPlayerId: PlayerId,
+  rushedInstanceId: string,
+  phasePlayerId: PlayerId,
+): GameState {
+  const ownerId = opponent(rusherPlayerId);
+  const rushed = state.players[rusherPlayerId].rush.find((c) => c.instanceId === rushedInstanceId);
+  if (!rushed || !categoriesOf(state, rushed.cardId).includes("OT")) return state;
+  const owner = state.players[ownerId];
+  const silvas = [...owner.battle, ...owner.rush].filter((c) => c.cardId === "RS-528" && c.commandHeld);
+  if (silvas.length === 0) return state;
+  let choice: PendingEffectChoice | undefined;
+  for (const silva of [...silvas].reverse()) {
+    choice = {
+      playerId: ownerId,
+      effectId: BIO_PARTICLE_EFFECT_ID,
+      sourceCardId: "RS-528",
+      sourceInstanceId: silva.instanceId,
+      kind: "confirm",
+      phasePlayerId,
+      validInstanceIds: [silva.instanceId],
+      selectedInstanceIds: [rushedInstanceId],
+      optional: true,
+      ...(choice ? { resumeChoice: choice } : {}),
+    };
+  }
+  if (state.pendingEffectChoice) {
+    return { ...state, pendingEffectChoice: appendResume(state.pendingEffectChoice, choice!) };
+  }
+  return { ...state, pendingEffectChoice: choice, activePlayer: ownerId };
+}
+
+register(
+  BIO_PARTICLE_EFFECT_ID,
+  (state, playerId, instanceId) => {
+    const pending = state.pendingEffectChoice!;
+    const silva = findCardInField(state, instanceId);
+    if (!silva || silva.playerId !== playerId || !silva.card.commandHeld) return { error: "invalid_target" };
+    const released = patchPlayer(state, playerId, (p) => ({
+      ...p,
+      [silva.zone]: p[silva.zone].map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: false } : c)),
+    }));
+    const rusherId = opponent(playerId);
+    const rushedId = pending.selectedInstanceIds?.[0];
+    const rushedOnField = rushedId ? findCardInField(released, rushedId) : null;
+    const options = [
+      ...(rushedOnField && rushedOnField.playerId === rusherId ? [rushedId!] : []),
+      BIO_PARTICLE_TAKE_DAMAGE,
+    ];
+    return {
+      state: reopen(released, pending, {
+        playerId: rusherId,
+        effectId: BIO_PARTICLE_ANSWER_EFFECT_ID,
+        sourceCardId: "RS-528",
+        sourceInstanceId: instanceId,
+        // 「ラッシュしたユニット（撃破）」か「1点ダメージ」の二択（apps/web confirmOptionLabel で表示）。
+        kind: "confirm",
+        phasePlayerId: pending.phasePlayerId,
+        validInstanceIds: options,
+        selectCount: 1,
+        optional: false,
+      }),
+      log: logFor(state, playerId, "RS-528", `${BIO_PARTICLE_EFFECT_ID}:release`),
+    };
+  },
+  simpleSkip("RS-528"),
+);
+
+register(BIO_PARTICLE_ANSWER_EFFECT_ID, (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const silvaOwnerId = opponent(playerId);
+  const cleared: GameState = { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+  if (instanceId !== BIO_PARTICLE_TAKE_DAMAGE) {
+    const destroyed = applyUnitLeave(cleared, instanceId, "discard", pending.phasePlayerId);
+    if ("error" in destroyed) return destroyed;
+    return {
+      state: finish({ ...destroyed.state, pendingEffectChoice: destroyed.state.pendingEffectChoice }, pending),
+      log: logFor(state, playerId, "RS-528", `${BIO_PARTICLE_ANSWER_EFFECT_ID}:destroy`),
+    };
+  }
+  // 相手が1点。OT を持つ自軍ユニット（シルバの持ち主側）があれば、シルバの持ち主も1点。
+  const resume = { kind: "none" as const, activePlayer: pending.phasePlayerId };
+  let next = applyDamageToPlayer(cleared, playerId, 1, resume);
+  const silvaOwner = next.players[silvaOwnerId];
+  if ([...silvaOwner.battle, ...silvaOwner.rush].some((c) => categoriesOf(next, c.cardId).includes("OT"))) {
+    next = applyDamageToPlayer(next, silvaOwnerId, 1, resume);
+  }
+  return { state: finish(next, pending), log: logFor(state, playerId, "RS-528", `${BIO_PARTICLE_ANSWER_EFFECT_ID}:damage`) };
+});
+
+// ---------------------------------------------------------------------------
 // applyAction の後処理
 
 export function applySet8AAfterAction(before: GameState, after: GameState, blocked: boolean): GameState {
@@ -587,4 +794,3 @@ export function applySet8AAfterAction(before: GameState, after: GameState, block
   return next;
 }
 
-export { reopen as reopenSet8AChoice, categoriesOf as set8ACategoriesOf };

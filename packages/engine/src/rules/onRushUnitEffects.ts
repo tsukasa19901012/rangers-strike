@@ -1,6 +1,7 @@
 import { openProphecyOnEnemyRush } from "./legend1/set7NamedEffectsC";
 import type { GameState, PlayerId } from "../types/game";
 import { applySet7AOnRush } from "./legend1/set7NamedEffectsA";
+import { openBioParticleOnEnemyRush } from "./legend1/set8NamedEffectsA";
 import { findInZone } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { requestDrawFromDeck } from "./drawFromDeck";
@@ -305,5 +306,7 @@ export function applyPassiveRushTriggers(
   let next = tryDispatchOrderOnEnemyRush(rsEnemyRush.state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // RS-490 三の槍マンマルバ幼体【予言】（rules/legend1/set7NamedEffectsC.ts）。
   next = openProphecyOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // RS-528 バイオハンター・シルバ（2nd）【バイオ粒子反応アリ！】（rules/legend1/set8NamedEffectsA.ts）。
+  next = openBioParticleOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   return { state: next, logs: rsEnemyRush.logs };
 }

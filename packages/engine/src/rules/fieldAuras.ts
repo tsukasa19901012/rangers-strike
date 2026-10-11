@@ -13,6 +13,7 @@ import { set5AFieldBpBonus } from "./legend1/set5NamedEffectsA";
 import { set6BFieldBpBonus } from "./legend1/set6NamedEffectsB";
 import { femaleUnitCountBothSides } from "./legend1/set7NamedEffectsD";
 import { set7AFieldBpBonus } from "./legend1/set7NamedEffectsA";
+import { set8AFieldBpBonus } from "./legend1/set8NamedEffectsA";
 import { rs560BeastMBpBonus } from "./rs/rsCatchallField";
 import { commandCategoriesNow } from "./legend3/battleEffects";
 
@@ -242,6 +243,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += set6BFieldBpBonus(state, playerId, instance);
   // 第7弾 RS-440 ※（L／R ナンバー1体につき）・RS-442【スパニッシュダンス】（rules/legend1/set7NamedEffectsA.ts）。
   if (role === "general") bonus += set7AFieldBpBonus(state, playerId, instance);
+  // 第8弾 RS-527【反バイオ粒子砲】（rules/legend1/set8NamedEffectsA.ts）。
+  if (role === "general") bonus += set8AFieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

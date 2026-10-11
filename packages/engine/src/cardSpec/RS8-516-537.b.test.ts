@@ -190,9 +190,18 @@ describe("RS-528 バイオハンター・シルバ（2nd）", () => {
     expect(zoneOf(resolveAll(s), "player2", "SPEC-OT-S:u")).toBe("rush");
   });
 
-  it.todo(
-    "RS-528: 【バイオ粒子反応アリ！】相手がダメージを選んだとき、OT を持つ自軍ユニットがあれば自分も1点ダメージを受ける（出典: atwiki/page-1232「OTを持つ自軍ユニットがあれば、自分も1点ダメージを受ける」）— 相手の選択（撃破／ダメージ）を指定する手段がエンジンに無く（効果自体が未実装。上の it.fails）、ダメージ側を確定させて検証できない",
-  );
+  it("RS-528: 【バイオ粒子反応アリ！】相手がダメージを選んだとき、OT を持つ自軍ユニットがあれば自分も1点ダメージを受ける（なければ相手だけ）（出典: atwiki/page-1232「OTを持つ自軍ユニットがあれば、自分も1点ダメージを受ける」）", () => {
+    for (const withOt of [true, false]) {
+      let s = enemyRushes("SPEC-OT-S", held("RS-528", "sv"), withOt ? [inst("SPEC-OT-MINE", "mine")] : []);
+      s = pick(s, "RS-528:sv");
+      expect(s.pendingEffectChoice?.playerId).toBe("player2");
+      expect(choiceIds(s)).toContain("SPEC-OT-S:u");
+      s = resolveAll(pick(s, "rs528_take_damage"));
+      expect(zoneOf(s, "player2", "SPEC-OT-S:u")).toBe("rush");
+      expect(s.players.player2.damage).toBe(1);
+      expect(s.players.player1.damage).toBe(withOt ? 1 : 0);
+    }
+  });
 
   it("RS-528: Q&A — バルジオン（2nd）にライドしているシルバは、さらにデカバイクにライドできない（出典: grnrngr/faq-card-8 RS-528 Q「いいえ」）", () => {
     let s = st({ player1: { rush: [inst("RS-528", "s"), inst("RS-527", "bj"), inst("RS-570", "bike")], deck: deckCards(3) } });

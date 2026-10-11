@@ -103,6 +103,7 @@ import { trySet6BCardEffect } from "../rules/legend1/set6NamedEffectsB";
 import { trySet7ACardEffect } from "../rules/legend1/set7NamedEffectsA";
 import { trySet7CCardEffect } from "../rules/legend1/set7NamedEffectsC";
 import { trySet7DCardEffect } from "../rules/legend1/set7NamedEffectsD";
+import { trySet8ACardEffect } from "../rules/legend1/set8NamedEffectsA";
 import { trySet6LowCardEffect } from "../rules/legend1/set6NamedEffects348";
 import { trySet6AuditCardEffect } from "../rules/legend1/set6AuditFixes";
 import { tryGenericTextFallback } from "./genericTextFallback";
@@ -401,6 +402,9 @@ export function applyGrantKeyword(
   // 第7弾 RS-495〜RS-515 のカード固有の名前付き効果（`set7d::` と一部の effect_card キーワード。rules/legend1/set7NamedEffectsD.ts）。
   const set7d = trySet7DCardEffect(state, ctx, keyword);
   if (set7d) return set7d;
+  // 第8弾 RS-516〜RS-537 のカード固有の効果（rules/legend1/set8NamedEffectsA.ts）。
+  const set8a = trySet8ACardEffect(state, ctx, keyword);
+  if (set8a) return set8a;
   // 第6弾監査のカード固有の修正（rules/legend1/set6AuditFixes.ts）。
   const set6Audit = trySet6AuditCardEffect(state, ctx, keyword);
   if (set6Audit) return set6Audit;

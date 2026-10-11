@@ -13,7 +13,7 @@ import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
 import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
 import { openBlueMoonSlash, openChargeInsteadOfBattle } from "../rules/legend1/set7NamedEffectsB";
 import { withZordFeatureContext } from "../rules/zordFeatureContext";
-import { applySet8AAfterAction } from "../rules/legend1/set8NamedEffectsA";
+import { applySet8AAfterAction, applyThunderboltSword } from "../rules/legend1/set8NamedEffectsA";
 import { applySet7DStrikeDamageTriggers, RIDE_OFF_RC_MARK, rideOffBlockedBySet7D } from "../rules/legend1/set7NamedEffectsD";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
@@ -412,6 +412,8 @@ function continueAttackAfterDeclaration(
         triggerType: "on_attack",
       });
       afterOnAttack = fx.logs.length > 0 ? { ...fx.state, log: [...fx.state.log, ...fx.logs] } : fx.state;
+      // RS-529【電撃剣スーパーサンダーボルト】「これがアタックまたはストライクしたとき」（DSL は on_strike だけ）。
+      afterOnAttack = applyThunderboltSword(afterOnAttack, playerId, found.card.cardId);
     }
     if (afterOnAttack.pendingEffectChoice && afterOnAttack.pendingEffectChoice !== battleState.pendingEffectChoice) {
       let parked: GameState = { ...afterOnAttack, deferredAttack: { battle: marked, wingAttackFromRush } };

@@ -754,7 +754,8 @@ export function validateFieldZordMaterials(
   if (
     condition.conditionId === "send_s_unit_to_command_or_discard" &&
     materialDestination === "command" &&
-    player.command.length >= COMMAND_ZONE_MAX
+    // 同じ行き先に送る素材すべてが入る空きが要る（RS-531・RS-532。atwiki/page-1158 Q1）。
+    player.command.length + materialInstanceIds.length > COMMAND_ZONE_MAX
   ) {
     return false;
   }
@@ -827,7 +828,7 @@ export function listFieldZordRushVariants(
         ...materialRef,
         zordMaterialDestination: "discard",
       });
-      if (commandZoneHasSpace) {
+      if (commandZoneHasSpace && player.command.length + ids.length <= COMMAND_ZONE_MAX) {
         variants.push({
           ...materialRef,
           zordMaterialDestination: "command",
