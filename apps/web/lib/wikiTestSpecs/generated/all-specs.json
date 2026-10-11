@@ -16647,7 +16647,7 @@
       "note_card::RS-501::korehawotsuyunit",
       "battle_position_sp_iero_pos2_sp1"
     ],
-    "bp": 0,
+    "bp": 3000,
     "sp": null,
     "size": "S"
   },
@@ -16894,7 +16894,7 @@
       "【ゴーオンソード】"
     ],
     "expectedDslKeywords": [
-      "SP3"
+      "set7d::RS-515::go_on_sword"
     ],
     "bp": 13000,
     "sp": 1,

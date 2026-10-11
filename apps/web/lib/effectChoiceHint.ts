@@ -14,9 +14,31 @@ export function sagasSniperDeckCardMeta(
   return `必要パワー${costLabel}（上限${maxPowerCost}超過）`;
 }
 
+/**
+ * 第7弾 RS-495〜RS-515 のカード固有の選択（engine rules/legend1/set7NamedEffectsD.ts）の表示名と案内文。
+ * 「発動する／しない」の選択は、効果のユニット自身を選ぶと発動する。
+ */
+const SET7D_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  set7d_multi_destroy: { label: "撃破するユニットの選択", hint: "撃破する敵軍ユニットを1体ずつ選んでください（選び終えたら「スキップ」で確定）" },
+  rs499_rourou_kick: { label: "狼狼蹴", hint: "このユニットをホールドして効果を発動しますか？（発動するならこのユニットを選ぶ）" },
+  rs500_cyblade_cutter: { label: "サイブレードカッター", hint: "相手に見せる「激気」のユニットカードを手札から選んでください" },
+  rs502_bat_lee: { label: "忘我の中に修行あり", hint: "かわりに捨札にするユニットカードを手札から選んでください" },
+  rs502_bat_lee_destroy: { label: "忘我の中に修行あり", hint: "BP の合計と同じ BP の敵軍ユニットを1体選び撃破してください" },
+  rs508_road_saber: { label: "ロードサーベル", hint: "このユニットとバトルさせる敵軍ユニットを選んでください" },
+  rs509_garage_launcher: { label: "ガレージランチャー", hint: "手札に加えるオペレーションカードを自軍パワーゾーンから選んでください" },
+  rs510_racing_bullet: { label: "レーシングバレット", hint: "自軍パワーゾーンに置く「車両」のユニットカードを手札から選んでください" },
+  rs510_racing_bullet_send: { label: "レーシングバレット", hint: "自分のパワーゾーンに送る S ユニットを選んでください" },
+  rs511_rod_mode: { label: "マンタンガン・ロッドモード", hint: "山札の上から1枚ひいてパワーゾーンに置きますか？（置くならこのユニットを選ぶ）" },
+  rs512_mantangan: { label: "マンタンガン", hint: "ダメージにする敵軍パワーゾーンのオモテ向きのカードを選んでください" },
+  rs514_dai_rourou_kick: { label: "大狼狼蹴", hint: "撃破する自分のユニットを1体選んでください" },
+  rs515_go_on_sword: { label: "ゴーオンソード", hint: "必要パワーの勝負をしますか？（するならこのユニットを選ぶ）" },
+};
+
 export function effectChoiceHint(
   pending: NonNullable<GameState["pendingEffectChoice"]>,
 ): string {
+  const set7d = SET7D_CHOICE_UI[pending.effectId];
+  if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
     case "end_turn_menu":
@@ -201,6 +223,7 @@ export function effectChoiceTitle(
   pending: NonNullable<GameState["pendingEffectChoice"]>,
 ): string {
   const label =
+    SET7D_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

@@ -301,7 +301,7 @@ function applyRourouKick(state: GameState, ctx: GrantKeywordContext): GrantKeywo
   return {
     state: openChoice(state, { ...ctx, sourceCardId: "RS-499", sourceInstanceId: self.instanceId }, {
       effectId: ROUROU_KICK_EFFECT_ID,
-      kind: "confirm",
+      kind: "select_unit",
       validInstanceIds: [self.instanceId],
       optional: true,
     }),
@@ -724,7 +724,7 @@ function applyRodMode(state: GameState, ctx: GrantKeywordContext): GrantKeywordR
   return {
     state: openChoice(state, { ...ctx, sourceCardId: "RS-511", sourceInstanceId: ctx.triggerSourceInstanceId }, {
       effectId: ROD_MODE_EFFECT_ID,
-      kind: "confirm",
+      kind: "select_unit",
       validInstanceIds: [ctx.triggerSourceInstanceId],
       optional: true,
     }),
@@ -851,7 +851,7 @@ function applyGoOnSword(state: GameState, ctx: GrantKeywordContext): GrantKeywor
   return {
     state: openChoice(state, { ...ctx, sourceCardId: "RS-515", sourceInstanceId: ctx.triggerSourceInstanceId }, {
       effectId: GO_ON_SWORD_EFFECT_ID,
-      kind: "confirm",
+      kind: "select_unit",
       validInstanceIds: [ctx.triggerSourceInstanceId],
       optional: true,
     }),
