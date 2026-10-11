@@ -224,7 +224,8 @@ describe("R-TIME-01 5つのタイミング", () => {
       player2: {
         battle: [inst("TST-UNIT-0", "e")],
         rush: [inst("RS-196", "mob")],
-        command: [cmd("TST-OP-ET", "et1"), cmd("TST-OP-ET", "et2")],
+        // スピンビーは M ユニットなので、迎撃モビルミサイルには ET コマンドが3つ要る（atwiki/page-398「Mユニットなら3つ」）。
+        command: [cmd("TST-OP-ET", "et1"), cmd("TST-OP-ET", "et2"), cmd("TST-OP-ET", "et3")],
         power: powers(3),
         deck: deck(5, "e"),
       },
