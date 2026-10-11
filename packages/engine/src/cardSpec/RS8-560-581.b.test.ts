@@ -215,8 +215,7 @@ describe("RS-569 スーパーデカレンジャーロボ", () => {
     expect(zoneOf(t, "player1", "RS-042:m")).not.toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-569 追加条件「自軍合体ユニットをパワーゾーンに送る」が「捨札にする」として処理される（合体ユニットが捨札に行く）
-  it.fails("RS-569: 追加条件 — 合体ユニットは捨札ではなくパワーゾーンに送られる（出典: atwiki/page-1230「追加条件：自軍合体ユニットをパワーゾーンに送る」）", () => {
+  it("RS-569: 追加条件 — 合体ユニットは捨札ではなくパワーゾーンに送られる（出典: atwiki/page-1230「追加条件：自軍合体ユニットをパワーゾーンに送る」）", () => {
     const r = rushFromHand(rushState(["RS-571", "RS-042"]), "player1", "RS-569:sd");
     expect(r.ok).toBe(true);
     const t = resolveAll(r.state);
