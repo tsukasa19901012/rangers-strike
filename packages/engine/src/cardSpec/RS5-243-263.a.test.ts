@@ -605,10 +605,33 @@ describe("RS-247 疾風流超忍法", () => {
     expect(canUse(s, "player2", "RS-247:ctr")).toBe(true);
   });
 
-  // atwiki/page-424 Q11（ダイカイオーヒガシ）
-  it.todo(
-    "RS-247: Q&A — ラッシュ時に BP8000 以下ならその後 BP が上がったダイカイオーヒガシも山札の上に戻る（出典: atwiki/page-424 Q11）— XG3-036 がカタログ未収録で再現できない",
-  );
+  // atwiki/page-424 Q11「ラッシュされた時点ではBP8000以下であり…山札の上に戻ります。」
+  // 既知の不具合: CARD-RS-247 ダイカイオーヒガシ（XG3-036）の【海老ばさみ本手返し】（ラッシュしたときBP+3000）がエンジンで適用されず、ラッシュ後もBP7000のまま（BPが上がった状態からの山札戻しを再現できない）
+  it.fails("RS-247: Q&A — ラッシュ時に BP8000 以下ならその後 BP が上がったダイカイオーヒガシも山札の上に戻る（出典: atwiki/page-424 Q11）", () => {
+    let s = setup("XG3-036", {
+      rush: [inst("XG3-035", "ebi")],
+      command: [released(CMD.MA, "c1"), released(CMD.MA, "c2"), released(CMD.OT, "co")],
+    });
+    let r = tryAct(s, { type: "begin_zord_setup", playerId: "player1", zordInstanceId: "XG3-036:u" });
+    for (let i = 0; i < 12 && r.ok && r.state.pendingZordSetup; i += 1) {
+      const setupState = r.state.pendingZordSetup;
+      if (setupState.step === "destination") r = tryAct(r.state, { type: "resolve_zord_setup", playerId: "player1", destination: "discard" });
+      else if (setupState.step === "material") r = tryAct(r.state, { type: "resolve_zord_setup", playerId: "player1", materialInstanceId: "XG3-035:ebi" });
+      else r = tryAct(r.state, { type: "resolve_zord_setup", playerId: "player1" });
+    }
+    for (let i = 0; i < 4 && r.ok && r.state.pendingCommandPayment?.playerId === "player1"; i += 1) {
+      const p = r.state.pendingCommandPayment;
+      r = tryAct(r.state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: p.validInstanceIds.slice(0, p.totalNeeded) });
+    }
+    expect(r.ok).toBe(true);
+    s = r.state;
+    expect(zoneOf(s, "player1", "XG3-036:u")).toBe("rush");
+    // 【海老ばさみ本手返し】で BP7000→10000
+    expect(bpOf(s, "player1", "XG3-036:u")).toBe(10000);
+    expect(canUse(s, "player2", "RS-247:ctr")).toBe(true);
+    s = payAndUse(s, "player2", "RS-247:ctr");
+    expect(s.players.player1.deck[0]?.instanceId).toBe("XG3-036:u");
+  });
 
   // faq-card-5 RS-247 Q1（atwiki Q12）「はい、できます。」
   it("RS-247: 公式Q&A — 1体のラッシュに対し、1枚目の解決後に2枚目の疾風流超忍法を続けて使用できる（出典: grnrngr/faq-card-5 RS-247 Q1・atwiki/page-424 Q12）", () => {

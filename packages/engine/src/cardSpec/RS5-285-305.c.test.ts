@@ -261,9 +261,19 @@ describe("RS-301 Vレックスロボ", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("battle");
   });
 
-  it.todo(
-    "RS-301: Q&A — 害気大臣キタネイダスが自軍エリアにある間（バトルフェイズ中）は、パワーゾーンからカードが離れる処理を含むため発動できない（出典: atwiki/page-445 Q3）— XG-034 害気大臣キタネイダスがエンジンのカタログにない",
-  );
+  // atwiki/page-445 Q3「いいえ、パワーゾーンからカードが離れる処理を含むため、発動できません。」（XG-034 = XG1-034 害気大臣キタネイダス）
+  // 既知の不具合: CARD-RS-301 害気大臣キタネイダス（XG1-034）の【汚い大気】がエンジンで未接続（DSL がプレースホルダの grant_keyword のみ）で、バトルフェイズ中でも【リボルバーミサイル】の選択が開く
+  it.fails("RS-301: Q&A — 害気大臣キタネイダスが自軍エリアにある間（バトルフェイズ中）は、パワーゾーンからカードが離れる処理を含むため発動できない（出典: atwiki/page-445 Q3）", () => {
+    let s = st(
+      { player1: { rush: [inst("RS-301", "r"), inst("RS-303", "tf"), inst("XG1-034", "kita")] }, player2: { battle: [inst("TST-UNIT-0", "e")], power: powerCards(2, "ep"), deck: deckCards(3, "e") } },
+      SPECS,
+    );
+    s = settle(enter(s, "RS-301:r"));
+    expect(zoneOf(s, "player1", "RS-301:r")).toBe("battle");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-301");
+    expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("battle");
+    expect(s.players.player2.power).toHaveLength(2);
+  });
 
   // faq-card-6 RS-359 Q「はい、できます。」（Vコマンダーで山札から出す Vレックスロボの追加条件を、デンジ犬アイシーで山札の Vレックスを捨札にして満たす）
   it("RS-301: 公式Q&A — Vコマンダーで山札から出すとき、デンジ犬アイシーで山札の「Vレックス」を捨札にして追加条件を満たせる（出典: grnrngr/faq-card-6 RS-359 Q）", () => {

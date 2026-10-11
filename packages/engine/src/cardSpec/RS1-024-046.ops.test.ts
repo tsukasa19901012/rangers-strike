@@ -427,9 +427,22 @@ describe("RS-026 疾風流超忍法", () => {
     expect(canUse(next, "player2", ctr.instanceId)).toBe(true);
   });
 
-  it.todo(
-    "RS-026: ラッシュ時BP8000以下なら、その後BPが上がったダイカイオーヒガシも山札の上に戻る（出典: atwiki/page-424 Q11）— XG3-036 がカタログ未収録（fullPlayable にない）ため再現できない",
-  );
+  // 既知の不具合: CARD-RS-026 ダイカイオーヒガシ（XG3-036）の【海老ばさみ本手返し】（ラッシュしたときBP+3000）がエンジンで適用されず、ラッシュ後もBP7000のまま（BPが上がった状態からの山札戻しを再現できない）
+  it.fails("RS-026: ラッシュ時BP8000以下なら、その後BPが上がったダイカイオーヒガシも山札の上に戻る（出典: atwiki/page-424 Q11）", () => {
+    // 「ラッシュされた時点ではBP8000以下であり…山札の上に戻ります」
+    const ebi = inst("XG3-035", "ebi");
+    const { unit, ctr, state } = setup("XG3-036", {
+      rush: [ebi],
+      command: [released(CMD.MA, "c1"), released(CMD.MA, "c2"), released(CMD.OT, "co")],
+    });
+    let next = rush(state, "player1", unit.instanceId, ebi.instanceId);
+    expect(zoneOf(next, "player1", unit.instanceId)).toBe("rush");
+    // 【海老ばさみ本手返し】でBP7000→10000
+    expect(effectiveBp(next, "player1", findCard(next, "player1", unit.instanceId)!)).toBe(10000);
+    expect(canUse(next, "player2", ctr.instanceId)).toBe(true);
+    next = payAndUse(next, "player2", ctr.instanceId);
+    expect(next.players.player1.deck[0]?.instanceId).toBe(unit.instanceId);
+  });
 
   it(
     "RS-026: 1体のラッシュに対し、1枚目の解決後に2枚目の疾風流超忍法（RS-247）を続けて使用できる（出典: atwiki/page-424 Q12）",

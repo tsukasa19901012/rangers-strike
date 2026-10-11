@@ -518,9 +518,27 @@ describe("RS-234 アバレキラー", () => {
     expect(canStrike(s, "SPEC-WB-M3:m")).toBe(true);
   });
 
-  it.todo(
-    "RS-234: 公式Q&A — 守護獣トリケラトプスの「アタックするとき」の BP 上昇で BP8000 以上になって SP1 になってもストライクはできない（出典: grnrngr/faq-card-4 RS-234 Q1 後段）— 現行カタログの RS-023 は「スーパーレスキュー」で、Q&A が指す「守護獣トリケラトプス」の定義がない",
-  );
+  // faq-card-4 RS-234 Q1 後段「「RS-023 守護獣トリケラトプス」の効果は「アタックするとき」に限定されますので、この効果でＳＰ１になってもストライクはできません。」
+  // （Q&A の「RS-023 守護獣トリケラトプス」は現行カタログでは RS-037 守護獣トリケラトプス【トリケラカノン】）
+  it("RS-234: 公式Q&A — 守護獣トリケラトプスの「アタックするとき」の BP 上昇で BP8000 以上になって SP1 になってもストライクはできない（出典: grnrngr/faq-card-4 RS-234 Q1 後段）", () => {
+    let s = st(
+      {
+        player1: { rush: [inst("RS-234", "kl"), inst("RS-037", "tri"), inst("SPEC-WB-M4", "m")], deck: deckCards(5) },
+        player2: { battle: [inst("SPEC-E75", "e")], deck: deckCards(5, "e") },
+      },
+      [...SPECS, sUnit("SPEC-E75", { bp: 7500 })],
+    );
+    s = passEntry(enter(s, "RS-234:kl"));
+    s = enter(s, "SPEC-WB-M4:m");
+    // アバレキラーで BP4000→7000。BP+1000 は「アタックするとき」だけなので、ストライクの選択時点では BP8000 未満でストライクできない
+    expect(bpOf(s, "player1", "SPEC-WB-M4:m")).toBe(7000);
+    expect(spOf(s, "player1", "SPEC-WB-M4:m")).not.toBe(1);
+    expect(canStrike(s, "SPEC-WB-M4:m")).toBe(false);
+    // アタックするときは【トリケラカノン】で BP+1000 → BP8000 となり、BP7500 の敵軍ユニットに勝つ
+    s = settle(attack(s, "SPEC-WB-M4:m", "SPEC-E75:e"));
+    expect(zoneOf(s, "player2", "SPEC-E75:e")).toBe("discard");
+    expect(zoneOf(s, "player1", "SPEC-WB-M4:m")).toBe("battle");
+  });
 
   // faq-card-4 RS-234 Q2「「ＳＰ１に『なる』」という効果は、ＳＰに１を加算するという意味ではなく…その値に置き換わる」
   it("RS-234: 公式Q&A — もともと「SP1」の WB の M ユニットも SP2 にはならず「SP1」のまま（出典: grnrngr/faq-card-4 RS-234 Q2）", () => {
@@ -625,8 +643,16 @@ describe("RS-235 デカベースロボ", () => {
     expect(canEnter(s, "RS-235:robo")).toBe(false);
   });
 
-  it.todo(
-    "RS-235: 公式Q&A — 害気大臣キタネイダスが自軍エリアにある間、バトルフェイズ中はパワーゾーンのカードを捨札にしなくてもバトルエリアに出られる（出典: atwiki/page-500 Q1）— XG-034 害気大臣キタネイダスがカタログに未収録",
-  );
+  // atwiki/page-500 Q1「はい、その通りです。」（XG-034 = XG1-034 害気大臣キタネイダス【汚い大気】）
+  // 既知の不具合: CARD-RS-235 害気大臣キタネイダス（XG1-034）の【汚い大気】がエンジンで未接続（DSL がプレースホルダの grant_keyword のみ）で、自軍エリアにあってもバトルフェイズ中のデカベースロボはパワーゾーンのカード2枚の捨札を要求される
+  it.fails("RS-235: 公式Q&A — 害気大臣キタネイダスが自軍エリアにある間、バトルフェイズ中はパワーゾーンのカードを捨札にしなくてもバトルエリアに出られる（出典: atwiki/page-500 Q1）", () => {
+    let s = st({ player1: { rush: [inst("RS-235", "robo"), inst("XG1-034", "kita")], power: powerCards(3, "pw") } });
+    expect(canEnter(s, "RS-235:robo")).toBe(true);
+    s = raw(s, { type: "move_to_battle", playerId: "player1", instanceId: "RS-235:robo" });
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(zoneOf(s, "player1", "RS-235:robo")).toBe("battle");
+    expect(s.players.player1.power).toHaveLength(3);
+    expect(s.players.player1.discard.filter((c) => c.cardId === "TST-P")).toHaveLength(0);
+  });
 });
 

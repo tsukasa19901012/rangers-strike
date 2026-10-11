@@ -372,9 +372,15 @@ describe("R-CAT-01 カテゴリ", () => {
   });
 
   // 「基本は1枚1カテゴリ」
+  // マルチカテゴリ（レインボーカード）は SX・XG1〜XG7・XP の時代のカードにだけ存在する（atwiki 各カードページで確認）。
+  // それ以外（RS/RK/BK/SR/RM/PR 等）は全カードがちょうど1カテゴリで、全体でも単一カテゴリが大多数を占める。
   it("R-CAT-01: 基本は1枚1カテゴリ（マルチカテゴリを除き全カードがちょうど1つ）（出典: atwiki/page-70, page-137）", () => {
+    const xgEra = (id: string) => /^(SX|XG[1-7]|XP)-/.test(id);
     const single = realCards.filter((d) => cardCategories(d).length === 1);
-    expect(single.length).toBeGreaterThan(realCards.length * 0.95);
+    const multi = realCards.filter((d) => cardCategories(d).length > 1);
+    expect(realCards.filter((d) => !xgEra(d.id)).every((d) => cardCategories(d).length === 1)).toBe(true);
+    expect(multi.every((d) => xgEra(d.id))).toBe(true);
+    expect(single.length).toBeGreaterThan(realCards.length * 0.9);
     expect(realCards.every((d) => cardCategories(d).length >= 1)).toBe(true);
   });
 });
@@ -453,11 +459,87 @@ describe("R-CAT-02 マルチカテゴリ", () => {
     "R-CAT-02: 効果でカテゴリが追加されたコマンドもマルチカテゴリとして扱い敵軍パワーに数える（出典: atwiki/page-1559 本文）— コマンドにカテゴリを追加する状態をエンジンが表現しない",
   );
 
-  it.todo(
-    "R-CAT-02: マルチカテゴリのカードは常に全カテゴリを参照し単一カテゴリとして扱えない（マジエル下のSユニット等）（出典: atwiki/page-1559 本文）— 該当カード（天空大聖者マジエル・スーパー戦隊アドレスブック）がカタログに未収録",
-  );
+  // 「天空大聖者マジエルが出ている場合、マルチカテゴリのSユニットはどちらのカテゴリの並び順でもストライクできなくなる。」
+  it("R-CAT-02: マルチカテゴリのカードは常に全カテゴリを参照し単一カテゴリとして扱えない — 天空大聖者マジエル下の WB/ET の S ユニットは2番目でも5番目でもストライクできない（出典: atwiki/page-1559 本文）", () => {
+    const strikeAt = (unitId: string, pos: number) => {
+      const fill = Array.from({ length: pos - 1 }, (_, i) => inst("TST-UNIT-2", `f${i}`));
+      const s = st({
+        phase: "battle",
+        turn: 3,
+        player1: { battle: [...fill, inst(unitId, "u")], rush: [inst("RS-407", "majiel")], deck: deckCards(3) },
+        player2: { deck: deckCards(3, "e") },
+      });
+      return hasLegal(s, (a) => a.type === "strike" && a.playerId === "player1" && a.instanceId === `${unitId}:u`);
+    };
+    // 対照: 単一カテゴリ（WB）の S ユニットは2番目ならストライクできる
+    expect(strikeAt("TST-UNIT-0", 2)).toBe(true);
+    // WB と ET を持つ S ユニットは WB の2番目でも ET の5番目でもストライクできない
+    expect(strikeAt("TST-UNIT-WB-ET", 2)).toBe(false);
+    expect(strikeAt("TST-UNIT-WB-ET", 5)).toBe(false);
+  });
 
-  it.todo(
-    "R-CAT-02: 通常のラッシュを補助する効果（ライドシューター）やコール・リードでは、コマンドゾーンに必要なカテゴリが揃っていなければ使用できない（出典: atwiki/page-1559 本文）— カタログに実在するマルチカテゴリのカードがなく、コール・リードとの組み合わせを公開アクションで構成できない",
-  );
+  // 「仮面ライダーW・CJはカテゴリにETの他にDAを持つため、スーパー戦隊アドレスブックでサーチできない。」
+  it("R-CAT-02: マルチカテゴリのカードは常に全カテゴリを参照する — ET と DA を持つ仮面ライダーW・CJ（XG2-043）はスーパー戦隊アドレスブックで選べない（出典: atwiki/page-1559 本文）", () => {
+    const s = st({
+      phase: "rush",
+      turn: 3,
+      player1: {
+        hand: [inst("RS-349", "ab")],
+        command: [inst("TST-OP-ET", "c")],
+        power: powerCards(3),
+        deck: [inst("XG2-043", "wcj"), inst("TST-UNIT-0", "ok"), inst("TST-OP", "o1")],
+      },
+      player2: { deck: deckCards(3, "e") },
+    });
+    const r = unwrap(payAndPlayOperation(s, "player1", "RS-349:ab", ["TST-OP-ET:c"]));
+    expect(r.pendingEffectChoice?.sourceCardId).toBe("RS-349");
+    expect(r.pendingEffectChoice?.validInstanceIds).toContain("TST-UNIT-0:ok");
+    expect(r.pendingEffectChoice?.validInstanceIds).not.toContain("XG2-043:wcj");
+  });
+
+  // 「コールやリードでマルチカテゴリのカードを使う場合、カテゴリが合っていても、コマンドゾーンに必要なカテゴリが揃っていないときはラッシュやオペレーションの使用はできない。」
+  it("R-CAT-02: コールでマルチカテゴリのカード（仮面ライダーW・CT: ET/OT）をラッシュするとき、コマンドゾーンに ET と OT が揃っていなければコールを使えない（出典: atwiki/page-1559 本文）", () => {
+    // ゴーオンシルバー（RS-600）は「※コールOT」
+    const callPayable = (command: ReturnType<typeof inst>[]) => {
+      const s = st({
+        phase: "rush",
+        turn: 3,
+        player1: { hand: [inst("XG4-068", "wct")], rush: [inst("RS-600", "call")], command, power: powerCards(4) },
+        player2: { deck: deckCards(3, "e") },
+      });
+      const start = legal(s).find((a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "XG4-068:wct");
+      if (!start) return false;
+      const r = applyAction(s, start);
+      return r.ok && (r.state.pendingCommandPayment?.validInstanceIds ?? []).includes("RS-600:call");
+    };
+    // ET と OT が揃っていればコールでホールドできる
+    expect(callPayable([inst("TST-OP-OT", "ot"), inst("TST-OP-ET", "et")])).toBe(true);
+    // OT しかなければ（カテゴリはコールOT と合っていても）使えない
+    expect(callPayable([inst("TST-OP-OT", "ot")])).toBe(false);
+  });
+
+  // 「ライドシューターのような通常のラッシュを補助する効果ではこの制限がかかる」
+  // 既知の不具合: R-CAT-02 ライドシューター【突入】によるラッシュではコマンドゾーンのカテゴリを確認せず、WB しかなくても WB/DA の仮面ライダーアビスをラッシュできてしまう
+  it.fails("R-CAT-02: ライドシューター（RK-043）【突入】でマルチカテゴリのミラーライダー（仮面ライダーアビス: WB/DA）をラッシュするとき、コマンドゾーンに WB と DA が揃っていなければラッシュできない（出典: atwiki/page-1559 本文）", () => {
+    const canRushAbyss = (command: ReturnType<typeof inst>[]) => {
+      let s = st({
+        phase: "rush",
+        turn: 3,
+        player1: { rush: [inst("RK-043", "rs")], hand: [inst("XG1-080", "abyss")], command },
+        player2: { deck: deckCards(3, "e") },
+      });
+      const shooter = legal(s).find((a) => a.type !== "end_phase" && JSON.stringify(a).includes("RK-043:rs"));
+      expect(shooter).toBeDefined();
+      s = unwrap(applyAction(s, shooter!));
+      expect(zoneOf(s, "player1", "RK-043:rs")).toBe("discard");
+      return hasLegal(
+        s,
+        (a) =>
+          (a.type === "rush" && a.instanceId === "XG1-080:abyss") ||
+          (a.type === "initiate_command_payment" && a.sourceInstanceId === "XG1-080:abyss"),
+      );
+    };
+    expect(canRushAbyss([inst("TST-OP", "wb"), inst("TST-OP-DA", "da")])).toBe(true);
+    expect(canRushAbyss([inst("TST-OP", "wb")])).toBe(false);
+  });
 });
