@@ -3,6 +3,8 @@ import { pickSet8BCpuChoice } from "../rules/legend1/set8NamedEffectsB";
 import { cpuAcceptsOptionalEffect } from "../rules/optionalEffects";
 import { pickSet7DCpuChoice } from "../rules/legend1/set7NamedEffectsD";
 import { pickSet8DCpuChoice } from "../rules/legend1/set8NamedEffectsD";
+import { pickSet9DCpuChoice } from "../rules/legend1/set9NamedEffectsD";
+import { pickSet9BCpuChoice } from "../rules/legend1/set9NamedEffectsB";
 import { ATTACK_HOLD_BONUS_EFFECT_ID, pickAttackHoldCount } from "../rules/attackHoldBonus";
 import { getCardEffect, listZordFusionPartnerIds } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
@@ -1214,6 +1216,12 @@ export function pickEffectChoice(
   // 第8弾 RS-582〜RS-604 の選択（rules/legend1/set8NamedEffectsD.ts）。
   const set8d = pickSet8DCpuChoice(state, pending, actions);
   if (set8d) return set8d;
+  // 第9弾 RS-670〜RS-690 の選択（rules/legend1/set9NamedEffectsD.ts）。
+  const set9d = pickSet9DCpuChoice(state, pending, actions);
+  if (set9d) return set9d;
+  // 第9弾 RS-627〜RS-647 の選択（rules/legend1/set9NamedEffectsB.ts）。
+  const set9b = pickSet9BCpuChoice(state, pending, actions);
+  if (set9b) return set9b;
   // 第8弾 RS-538〜RS-559 の選択（rules/legend1/set8NamedEffectsB.ts）。
   const set8b = pickSet8BCpuChoice(state, pending, actions);
   if (set8b) return set8b;

@@ -122,6 +122,7 @@ import { isSet7AChoiceEffect, isSet7AConfirmableChoice, set7AStrikeCounterIds } 
 import { isSet8AChoiceEffect, isSet8AConfirmableChoice, isSet8AResident } from "../rules/legend1/set8NamedEffectsA";
 import { canConfirmSet8CChoice, isSet8CChoiceEffect } from "../rules/legend1/set8NamedEffectsC";
 import { canConfirmSet9CChoice, isSet9CChoiceEffect } from "../rules/legend1/set9NamedEffectsC";
+import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { needsHoldExtraCommand } from "../rules/zordExtended";
 import { isSet7BConfirmableChoice } from "../rules/legend1/set7NamedEffectsB";
@@ -1196,6 +1197,15 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (isSet8AConfirmableChoice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isSet9BChoiceEffect(pending.effectId)) {
+    // 第9弾 RS-627〜RS-647 の選択（rules/legend1/set9NamedEffectsB.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmSet9BChoice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

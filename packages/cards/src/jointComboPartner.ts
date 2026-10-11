@@ -24,6 +24,8 @@ export type JointRPartnerSpec =
   | { kind: "s_features"; features: string[]; requireAll: boolean }
   | { kind: "named_card"; cardName: string }
   | { kind: "feature_unit"; features: string[]; size?: "S" | "M" | "L" }
+  /** 「これがカード名に「X」または「Y」を含むユニットからコンビネーションするとき」（RS-672 ゴローダーGT）。 */
+  | { kind: "name_contains"; names: string[] }
   /** 「これが「X」か、特徴「Y」を持つLユニットからコンビネーションするとき」— どれか1つを満たせばよい（RS-651）。 */
   | { kind: "any_of"; specs: JointRPartnerSpec[] };
 
@@ -170,6 +172,11 @@ function parseJointRPartnerFromText(text: string): JointRPartnerSpec | null {
     };
   }
 
+  const nameContains = text.match(/これがカード名に((?:「[^」]+」(?:または)?)+)を含むユニットからコンビネーション/);
+  if (nameContains?.[1]) {
+    return { kind: "name_contains", names: [...nameContains[1].matchAll(/「([^」]+)」/g)].map((m) => m[1]!) };
+  }
+
   const featS = text.match(/これが特徴「([^」]+)」を持つ.+ユニットからコンビネーション/);
   if (featS?.[1]) {
     return { kind: "feature_unit", features: [featS[1]] };
@@ -254,6 +261,8 @@ export function matchesJointRPartnerSpec(
       return cardNameMatches(leftPartner, spec.cardName);
     case "feature_unit":
       return (!spec.size || leftPartner.size === spec.size) && cardHasAllFeatures(leftPartner, spec.features);
+    case "name_contains":
+      return leftPartner.type === "unit" && spec.names.some((n) => (leftPartner.name ?? "").includes(n));
     case "any_of":
       return spec.specs.some((inner) => matchesJointRPartnerSpec(inner, rUnit, leftPartner));
     default:

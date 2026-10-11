@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-687::garukonbogan",
+          "keyword": "set9d::RS-687::garcon_bowgun",
           "duration": "turn"
         }
       ],

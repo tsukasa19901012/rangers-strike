@@ -9,7 +9,7 @@ import { recordVanishedToPower } from "./legend1/set8NamedEffectsC";
 
 export function shouldOfferToPowerOnDestroy(pending: PendingLeave): boolean {
   if (pending.toZone !== "discard") return false;
-  if (pending.fromZone !== "battle") return false;
+  // 「これが撃破されて捨札になったとき」にエリアの限定はない（ラッシュエリアで撃破されても置ける。R-TGT-01・RS-670/671 cardSpec）。
   if (pending.phasePlayerId === pending.ownerPlayerId) return false;
   return hasToPowerOnDestroyNote(pending.leavingCardId);
 }

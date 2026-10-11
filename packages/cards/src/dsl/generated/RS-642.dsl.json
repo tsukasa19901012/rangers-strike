@@ -42,11 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokihorudonoyunitowo1bi_geki",
+          "keyword": "set9b::RS-642::gigantis_buster",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

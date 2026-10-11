@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokirashueriakarabp4000no",
+          "keyword": "set9d::RS-687::garcon_bowgun",
           "duration": "turn"
         }
       ],

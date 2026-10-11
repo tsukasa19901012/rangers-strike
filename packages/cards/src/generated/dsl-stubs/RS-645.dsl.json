@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-645::mazufurea",
+          "keyword": "set9b::RS-645::mars_flare",
           "duration": "turn"
         }
       ],

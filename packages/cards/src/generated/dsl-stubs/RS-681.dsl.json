@@ -28,11 +28,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-681::shiserumizu",
-          "duration": "permanent"
+          "keyword": "set9d::RS-681::surging_water",
+          "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

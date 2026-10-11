@@ -36,16 +36,16 @@
       "name": "ゴローダーアタック！",
       "text": "これがカード名に「ゴーオン」または「エンジンオー」を含むユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたユニットのBP以下のBPを持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに置く。",
       "trigger": {
-        "type": "nc"
+        "type": "joint_combo_r"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-672::gorodaataku",
-          "duration": "permanent"
+          "keyword": "set9d::RS-672::goroder_attack",
+          "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

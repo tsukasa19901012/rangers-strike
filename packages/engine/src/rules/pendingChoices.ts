@@ -142,6 +142,8 @@ import { isSet6BChoiceEffect, openFlameGlareForSoulDescent, tryResolveSet6BChoic
 import { isSet7DChoiceEffect, tryResolveSet7DChoice, trySkipSet7DChoice } from "./legend1/set7NamedEffectsD";
 import { isSet8AChoiceEffect, tryConfirmSet8AChoice, tryResolveSet8AChoice, trySkipSet8AChoice } from "./legend1/set8NamedEffectsA";
 import { isSet8DChoiceEffect, tryResolveSet8DChoice, trySkipSet8DChoice } from "./legend1/set8NamedEffectsD";
+import { isSet9DChoiceEffect, tryResolveSet9DChoice, trySkipSet9DChoice } from "./legend1/set9NamedEffectsD";
+import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
 import {
   isSet7BChoiceEffect,
@@ -634,6 +636,8 @@ export function isValidEffectChoiceTarget(
     isSet7DChoiceEffect(pending.effectId) ||
     isSet8AChoiceEffect(pending.effectId) ||
     isSet8DChoiceEffect(pending.effectId) ||
+    isSet9DChoiceEffect(pending.effectId) ||
+    isSet9BChoiceEffect(pending.effectId) ||
     isSet8BChoiceEffect(pending.effectId) ||
     pending.effectId === "rs414_dione_wall" ||
     isSet6LowChoiceEffect(pending.effectId) ||
@@ -1982,6 +1986,8 @@ export function applyConfirmEffectChoice(
   if (set8c) return set8c;
   const set9c = tryConfirmSet9CChoice(state, playerId);
   if (set9c) return set9c;
+  const set9b = tryConfirmSet9BChoice(state, playerId);
+  if (set9b) return set9b;
   if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
     // RS-472【現場への搬送】: 「…まで好きな数選び」— 選んだところで確定し、山札をシャッフルする。
     return finishChoice(finishSiteTransportDeck(state, pending), pending, String(pending.selectedInstanceIds?.length ?? 0));
@@ -2674,6 +2680,16 @@ export function appendResumeChoice(
   };
 }
 
+/**
+ * 効果の処理中に開いた「撃破されて捨札になったとき、パワーゾーンに置いてもよい」（RS-670 等）を解決したあと、
+ * 中断していた選択（resumeChoice）を再開し、無ければ保留中のバトル進入（ギンガイオー等の進入時の効果の続き）を進める。
+ */
+function continueAfterToPowerOnDestroy(state: GameState, pending: PendingEffectChoice): GameState {
+  if (state.pendingEffectChoice || state.pendingLeave || state.pendingRegister || state.pendingDamagePayment) return state;
+  if (pending.resumeChoice) return openEffectChoice(state, pending.resumeChoice);
+  return promoteDeferredBattleEntry(state);
+}
+
 function finishChoice(
   state: GameState,
   pending: PendingEffectChoice,
@@ -2686,6 +2702,15 @@ function finishChoice(
     state.definitions,
     `${pending.effectId}:${detail}`,
   );
+  // 効果の処理中（撃破・離場）に別の選択が開いた（「撃破されて捨札になったとき、パワーゾーンに置いてもよい」RS-670 等）:
+  // その選択を消さずに残し、中断していた元の効果の選択はその後に再開する。
+  const opened = state.pendingEffectChoice;
+  if (opened && opened !== pending && (opened.effectId !== pending.effectId || opened.sourceInstanceId !== pending.sourceInstanceId)) {
+    return {
+      state: pending.resumeChoice ? { ...state, pendingEffectChoice: appendResumeChoice(opened, pending.resumeChoice) } : state,
+      log,
+    };
+  }
   if (pending.resumeChoice) {
     // 割り込んだ効果の解決後、中断していた元の効果の選択を再開する。
     let base = clearChoice(state, pending.phasePlayerId);
@@ -2889,6 +2914,10 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set8a) return set8a;
   const set8d = trySkipSet8DChoice(state, playerId);
   if (set8d) return set8d;
+  const set9d = trySkipSet9DChoice(state, playerId);
+  if (set9d) return set9d;
+  const set9b = trySkipSet9BChoice(state, playerId);
+  if (set9b) return set9b;
   const set8b = trySkipSet8BChoice(state, playerId);
   if (set8b) return set8b;
   const set5 = trySkipSet5Choice(state, playerId);
@@ -3025,7 +3054,7 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
       });
       return { state: next.state, log };
     }
-    return { state: discarded, log };
+    return { state: continueAfterToPowerOnDestroy(discarded, pending), log };
   }
   return finishChoice(state, pending, "skipped");
 }
@@ -3174,6 +3203,10 @@ export function applyEffectChoiceSelect(
   if (set8a) return set8a;
   const set8d = tryResolveSet8DChoice(state, playerId, instanceId);
   if (set8d) return set8d;
+  const set9d = tryResolveSet9DChoice(state, playerId, instanceId);
+  if (set9d) return set9d;
+  const set9b = tryResolveSet9BChoice(state, playerId, instanceId);
+  if (set9b) return set9b;
   const set8b = tryResolveSet8BChoice(state, playerId, instanceId);
   if (set8b) return set8b;
   const set5 = tryResolveSet5Choice(state, playerId, instanceId);
@@ -5334,7 +5367,7 @@ export function applyEffectChoiceSelect(
           });
           return { state: next.state, log };
         }
-        return { state: placed, log };
+        return { state: continueAfterToPowerOnDestroy(placed, pending), log };
       }
       return { error: "unsupported_confirm" };
     }

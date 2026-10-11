@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_modify_konotanhorudonosyunitohabp2500sarerubp0ninatayuni",
+          "keyword": "set9d::RS-689::bird_blaster",
           "duration": "turn"
         }
       ],
