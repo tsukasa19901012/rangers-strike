@@ -29,7 +29,7 @@
         {
           "type": "grant_keyword",
           "keyword": "effect_card::RS-489::ninpo",
-          "duration": "permanent"
+          "duration": "turn"
         }
       ],
       "optional": true

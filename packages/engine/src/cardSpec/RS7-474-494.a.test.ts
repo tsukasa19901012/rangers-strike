@@ -117,8 +117,7 @@ describe("RS-474 タイムシャドウSM", () => {
   const enterOwnTurn = (power = [inst("TST-P", "up1"), inst("TST-P", "up2"), ...damageCards(2)]) =>
     enter(st({ player1: { rush: [inst("RS-474", "ts")], power, deck: deckCards(3) } }), "RS-474:ts");
 
-  // 既知の不具合: CARD-RS-474 ※2 が自軍ターン中にバトルエリアに出ても選択を出さず、オモテ向きのパワーカードが捨札にならない
-  it.fails("RS-474: ※2 自軍ターン中にバトルエリアに出たとき、自軍パワーゾーンのオモテ向きのカード（ダメージ以外）から1枚選び捨札にする（出典: atwiki/page-792「自軍パワーゾーンからオモテ向きのカードを1枚選び捨札にする」）", () => {
+  it("RS-474: ※2 自軍ターン中にバトルエリアに出たとき、自軍パワーゾーンのオモテ向きのカード（ダメージ以外）から1枚選び捨札にする（出典: atwiki/page-792「自軍パワーゾーンからオモテ向きのカードを1枚選び捨札にする」）", () => {
     let s = enterOwnTurn();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-474");
     expect(choiceIds(s)).toEqual(["TST-P:up1", "TST-P:up2"]);
@@ -128,8 +127,7 @@ describe("RS-474 タイムシャドウSM", () => {
     expect(s.players.player1.power.filter((c) => c.faceDown)).toHaveLength(2);
   });
 
-  // 既知の不具合: CARD-RS-474 ※2 の選択が出ない（強制の選択として確認できない）
-  it.fails("RS-474: ※2 強制 — 見送ることはできない（出典: atwiki/page-792「選び捨札にする」）", () => {
+  it("RS-474: ※2 強制 — 見送ることはできない（出典: atwiki/page-792「選び捨札にする」）", () => {
     const s = enterOwnTurn();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-474");
     expect(canSkip(s)).toBe(false);
@@ -266,8 +264,7 @@ describe("RS-475 ガオハンタージャスティス", () => {
   /** 保留中の選択を、相手（player2）の選択は先頭で、自分（player1）の選択は prefer で解決する。 */
   const runJustice = (s: GameState, prefer: string[]) => resolveAll(s, prefer);
 
-  // 既知の不具合: CARD-RS-475 【悪鬼突貫リボルバーファントム】が自軍捨札ではなく自軍山札の上を見る選択（scry_keep_one）になり、敵軍ユニットを撃破しない
-  it.fails("RS-475: 【悪鬼突貫リボルバーファントム】相手が選んだ捨札のカードの必要パワー（3）以下の必要パワーを持つ敵軍ユニット（ラッシュエリアを含む）から1体選び撃破する（出典: atwiki/page-769「相手の選んだカードの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する」）", () => {
+  it("RS-475: 【悪鬼突貫リボルバーファントム】相手が選んだ捨札のカードの必要パワー（3）以下の必要パワーを持つ敵軍ユニット（ラッシュエリアを含む）から1体選び撃破する（出典: atwiki/page-769「相手の選んだカードの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する」）", () => {
     const s = runJustice(enterJustice(), ["TST-UNIT-2:e2"]);
     expect(zoneOf(s, "player2", "TST-UNIT-2:e2")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-UNIT-0:e0")).toBe("battle");
@@ -276,9 +273,12 @@ describe("RS-475 ガオハンタージャスティス", () => {
     expect(s.players.player1.discard.every((c) => !c.faceDown)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-475 【悪鬼突貫リボルバーファントム】が自軍山札の上を見る選択になり、相手の選択・撃破候補の選択が出ない
-  it.fails("RS-475: 【悪鬼突貫リボルバーファントム】必要パワーが選ばれたカードより大きい敵軍ユニット（7+）は選べない（出典: atwiki/page-769「…以下の必要パワーの数字を持つ敵軍ユニット」）", () => {
+  it("RS-475: 【悪鬼突貫リボルバーファントム】必要パワーが選ばれたカードより大きい敵軍ユニット（7+）は選べない（出典: atwiki/page-769「…以下の必要パワーの数字を持つ敵軍ユニット」）", () => {
     let s = enterJustice();
+    // 「シャッフルしてもよい」の発動の確認（自分）が先に開くなら、発動する。
+    if (s.pendingEffectChoice?.playerId === "player1" && s.pendingEffectChoice.kind === "confirm") {
+      s = pick(s, s.pendingEffectChoice.validInstanceIds[0]!);
+    }
     for (let i = 0; i < 6 && s.pendingEffectChoice && s.pendingEffectChoice.playerId === "player2"; i++) {
       s = pick(s, s.pendingEffectChoice.validInstanceIds[0]!);
     }
@@ -302,8 +302,7 @@ describe("RS-475 ガオハンタージャスティス", () => {
     expect(s.players.player2.battle).toHaveLength(2);
   });
 
-  // 既知の不具合: CARD-RS-475 【悪鬼突貫リボルバーファントム】が自軍山札の上を見る選択になり、敵軍ターン中に出ても撃破できない
-  it.fails("RS-475: 【悪鬼突貫リボルバーファントム】「自軍ターン中」の限定はなく、敵軍ターン中にバトルエリアに出たときも発動できる（出典: atwiki/page-769「これがバトルエリアに出たとき」）", () => {
+  it("RS-475: 【悪鬼突貫リボルバーファントム】「自軍ターン中」の限定はなく、敵軍ターン中にバトルエリアに出たときも発動できる（出典: atwiki/page-769「これがバトルエリアに出たとき」）", () => {
     const s = runJustice(enterJustice({ activePlayer: "player2" }), ["TST-UNIT-2:e2"]);
     expect(zoneOf(s, "player2", "TST-UNIT-2:e2")).toBe("discard");
   });
@@ -361,15 +360,13 @@ describe("RS-476 ガオハンターイビル", () => {
     return opts.activePlayer === "player2" ? enterBattleByEffect(s0, "player1", "RS-476:ev") : enter(s0, "RS-476:ev");
   };
 
-  // 既知の不具合: CARD-RS-476 【天地震撼ビーストハリケーン】が汎用の「敵軍ユニット撃破」として扱われ（no_targets）、手札の獣ユニットを選ぶ選択が出ない
-  it.fails("RS-476: 【天地震撼ビーストハリケーン】手札から特徴「獣」を持つユニットカードだけを選べる（出典: atwiki/page-828「自分の手札から特徴「獣」を持つユニットカードを1枚選び捨札にしてもよい」）", () => {
+  it("RS-476: 【天地震撼ビーストハリケーン】手札から特徴「獣」を持つユニットカードだけを選べる（出典: atwiki/page-828「自分の手札から特徴「獣」を持つユニットカードを1枚選び捨札にしてもよい」）", () => {
     const s = enterEvil();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-476");
     expect(choiceIds(s)).toEqual(["RS-477:hw", "RS-478:ha"]);
   });
 
-  // 既知の不具合: CARD-RS-476 【天地震撼ビーストハリケーン】が実装されておらず、同じ BP のユニットが撃破されない
-  it.fails("RS-476: 【天地震撼ビーストハリケーン】捨札にしたカードの BP（4000）と同じ BP のユニットを敵味方・エリアを問わずすべて撃破する（出典: atwiki/page-828「捨札にしたユニットカードのBPと同じBPのユニットをすべて撃破する」・R-TGT-04）", () => {
+  it("RS-476: 【天地震撼ビーストハリケーン】捨札にしたカードの BP（4000）と同じ BP のユニットを敵味方・エリアを問わずすべて撃破する（出典: atwiki/page-828「捨札にしたユニットカードのBPと同じBPのユニットをすべて撃破する」・R-TGT-04）", () => {
     const s = resolveAll(enterEvil(), ["RS-478:ha"]);
     expect(zoneOf(s, "player1", "RS-478:ha")).toBe("discard");
     expect(zoneOf(s, "player2", "RS-478:e4000")).toBe("discard");
@@ -451,8 +448,7 @@ describe("RS-477 ガオウルフ", () => {
     return enter(s, "RS-059:blue", "player2");
   };
 
-  // 既知の不具合: CARD-RS-477 【威圧する咆哮】が実装されておらず、敵軍の NC 発動時に効果が発動しない
-  it.fails("RS-477: 【威圧する咆哮】敵軍ターン中、敵軍ユニットが NC を発動するとき、同名カードが敵軍捨札にあれば、そのユニットと同じカテゴリ（MA）の敵軍コマンドをすべて捨札にできる（出典: atwiki/page-770「そのユニットが持つカテゴリと同じカテゴリを持つ敵軍コマンドをすべて捨札にする」）", () => {
+  it("RS-477: 【威圧する咆哮】敵軍ターン中、敵軍ユニットが NC を発動するとき、同名カードが敵軍捨札にあれば、そのユニットと同じカテゴリ（MA）の敵軍コマンドをすべて捨札にできる（出典: atwiki/page-770「そのユニットが持つカテゴリと同じカテゴリを持つ敵軍コマンドをすべて捨札にする」）", () => {
     const s = resolveAll(blueEnters(), ["RS-477:wf"]);
     expect(zoneOf(s, "player2", "TST-OP-MA:ma1")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-OP-MA:ma2")).toBe("discard");
@@ -470,22 +466,23 @@ describe("RS-477 ガオウルフ", () => {
   });
 
   it("RS-477: 【威圧する咆哮】自軍ターン中に自軍ユニットが NC を発動しても自軍コマンドは捨札にならない（出典: atwiki/page-770「敵軍ターン中、敵軍ユニットが」）", () => {
+    // ガオウルフは NC を発動するユニットと同じ軍（自軍）にある。敵軍（player2）のガオウルフなら、player1 のターンは
+    // その持ち主にとって「敵軍ターン中」なので発動できてしまう（上のテストと同じ状況）。
     const s0 = st({
       player1: {
         battle: fillers(1),
-        rush: [inst("RS-059", "blue")],
+        rush: [inst("RS-059", "blue"), inst("RS-477", "wf")],
         discard: [inst("RS-059", "d")],
         command: [released("TST-OP-MA", "ma1")],
         deck: deckCards(5),
       },
-      player2: { rush: [inst("RS-477", "wf")], deck: deckCards(3, "e") },
+      player2: { deck: deckCards(3, "e") },
     });
     const s = resolveAll(enter(s0, "RS-059:blue"));
     expect(zoneOf(s, "player1", "TST-OP-MA:ma1")).toBe("command");
   });
 
-  // 既知の不具合: CARD-RS-477 【威圧する咆哮】が実装されておらず、発動しない選択（見送り）の窓も出ない
-  it.fails("RS-477: 【威圧する咆哮】「発動できる」— 発動しないことを選べる（出典: atwiki/page-770「次の効果を発動できる」）", () => {
+  it("RS-477: 【威圧する咆哮】「発動できる」— 発動しないことを選べる（出典: atwiki/page-770「次の効果を発動できる」）", () => {
     const s = blueEnters();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-477");
     expect(canSkip(s)).toBe(true);
@@ -542,9 +539,10 @@ describe("RS-478 ガオリゲーター", () => {
     expect(choiceIds(r.state)).toEqual(["SPEC-MULTI9000:m9000", "TST-UNIT-WB-ET:m1000"]);
   });
 
-  // 既知の不具合: CARD-RS-478 【粉砕する大顎】が印刷カテゴリだけを数え、効果で追加されたカテゴリ（ガオハンターイビルのバトルエリアでの WB）を数えない
-  it.fails("RS-478: 【粉砕する大顎】効果でカテゴリが追加されて2つ以上になったユニット（バトルエリアのガオハンターイビル: DA＋WB）も選べる（出典: atwiki/page-771「カテゴリを2つ以上持つ」・atwiki/page-828「これはバトルエリアにあるとき、カテゴリにWBが追加される」）", () => {
-    const r = rushGator({ battle: [inst("RS-476", "ev")] });
+  it("RS-478: 【粉砕する大顎】効果でカテゴリが追加されて2つ以上になったユニット（バトルエリアのガオハンターイビル: DA＋WB）も選べる（出典: atwiki/page-771「カテゴリを2つ以上持つ」・atwiki/page-828「これはバトルエリアにあるとき、カテゴリにWBが追加される」）", () => {
+    // イビルの印刷 BP は 11000 なので「BP9000以下」を満たすよう効果で BP-2000 された状態（BP9000）にする
+    // （カテゴリの数え方だけを確かめる。BP の上限そのものは上のテストで確認済み）。
+    const r = rushGator({ battle: [{ ...inst("RS-476", "ev"), bpModifier: -2000 }] });
     expect(r.ok).toBe(true);
     expect(choiceIds(r.state)).toEqual(["RS-476:ev"]);
   });
@@ -665,8 +663,7 @@ describe("RS-480 ガオシルバー", () => {
     expect(s.players.player2.battle).toHaveLength(3);
   });
 
-  // 既知の不具合: CARD-RS-480 【邪気玉砕】の撃破部分が実装されておらず、SP1 しか得られない
-  it.fails("RS-480: 【邪気玉砕】昇順に連続して並ぶ1組（1・2・3）を選ぶと、小さいナンバーから順に手札の枚数（2）まで撃破する（出典: atwiki/page-773「一番小さいナンバーの数字を持つユニットから順に、自分の手札の枚数と同じ数まで選び撃破する」）", () => {
+  it("RS-480: 【邪気玉砕】昇順に連続して並ぶ1組（1・2・3）を選ぶと、小さいナンバーから順に手札の枚数（2）まで撃破する（出典: atwiki/page-773「一番小さいナンバーの数字を持つユニットから順に、自分の手札の枚数と同じ数まで選び撃破する」）", () => {
     const s = resolveAll(silver({ hand: 2 }), ["SPEC-N1:n1", "SPEC-N2:n2"]);
     expect(zoneOf(s, "player2", "SPEC-N1:n1")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-N2:n2")).toBe("discard");
@@ -688,8 +685,29 @@ describe("RS-480 ガオシルバー", () => {
     expect(s.players.player2.battle).toHaveLength(3);
   });
 
-  it.todo(
-    "RS-480: 【邪気玉砕】連続していない並び（1・3 など）は「組み合わせ」として選べない（出典: atwiki/page-773「ナンバーの数字が昇順で連続して並んでいる」）— 撃破部分が未実装で「組み合わせ」を選ぶ手段（合法手）がエンジンに存在せず、候補の制限を観測できない",
-  );
+  it("RS-480: 【邪気玉砕】連続していない並び（1・3、3・2 など）は「組み合わせ」として選べない（出典: atwiki/page-773「ナンバーの数字が昇順で連続して並んでいる」）", () => {
+    // 敵軍バトルエリアの並び: CN1・CN3・CN2（隣り合って昇順に1ずつ増える組がない）。
+    const s = enter(
+      st(
+        {
+          player1: { battle: fillers(1), rush: [inst("RS-480", "sv")], hand: [inst("TST-OP", "h0"), inst("TST-OP", "h1")], deck: deckCards(5) },
+          player2: { battle: [inst("SPEC-N1", "n1"), inst("SPEC-N3", "n3"), inst("SPEC-N2", "n2")], deck: deckCards(5, "e") },
+        },
+        [N1, N2, N3],
+      ),
+      "RS-480:sv",
+    );
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RS-480");
+    expect(resolveAll(s, ["SPEC-N1:n1", "SPEC-N2:n2"]).players.player2.battle).toHaveLength(3);
+  });
+
+  it("RS-480: 【邪気玉砕】組の途中（CN2）を一番小さいナンバーとして選ぶと、そこから順に撃破する（出典: atwiki/page-773「選んだ1組の中で一番小さいナンバーの数字を持つユニットから順に」）", () => {
+    let s = silver({ hand: 1 });
+    expect(choiceIds(s)).toEqual(["SPEC-N1:n1", "SPEC-N2:n2"]);
+    s = resolveAll(pick(s, "SPEC-N2:n2"));
+    expect(zoneOf(s, "player2", "SPEC-N2:n2")).toBe("discard");
+    expect(zoneOf(s, "player2", "SPEC-N1:n1")).toBe("battle");
+    expect(zoneOf(s, "player2", "SPEC-N3:n3")).toBe("battle");
+  });
 });
 

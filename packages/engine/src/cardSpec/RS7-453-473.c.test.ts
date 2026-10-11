@@ -26,6 +26,7 @@ import {
   heldCommandIds,
   inst,
   legal,
+  ncEnter,
   nextPhase,
   pick,
   powerCards,
@@ -61,27 +62,21 @@ const rideState = (vehicle: string, riderId: string, command: CardInstance[] = r
   st({ player1: { rush: [inst(vehicle, "v"), inst(riderId, "r")], command, deck: deckCards(3) } }, EXTRA);
 
 /** 「特徴○○を持つSユニットは、自軍コマンドを1つホールドすれば、RCを持っていなくてもライドできる」の共通テスト。 */
-function featureRideTests(vehicle: string, feature: string, okRider: string, page: string, works: boolean) {
-  // works=false: 既知の不具合（RS-469・RS-470）— 特徴「イエロー」「ピンク」の RC なしライド許可（※）が DSL で note 扱いになり、ライドできない
-  const okTest = works ? it : it.fails;
-  // works=false のカードはそもそもライドできないので、この項目は満たされる。
-  const noCommandTest = it;
-  // works=false: ライドできないので、ホールドの確認もできない（上の既知の不具合）。
-  const holdTest = works ? it : it.fails;
-  okTest(`${vehicle}: ※ 特徴「${feature}」を持つ S ユニットは RC がなくてもこのビークルにライドしてバトルエリアに出られる（出典: atwiki/${page}「ＲＣを持っていなくてもこのビークルにライドできる」・R-KW-RIDE-02）`, () => {
+function featureRideTests(vehicle: string, feature: string, okRider: string, page: string) {
+  it(`${vehicle}: ※ 特徴「${feature}」を持つ S ユニットは RC がなくてもこのビークルにライドしてバトルエリアに出られる（出典: atwiki/${page}「ＲＣを持っていなくてもこのビークルにライドできる」・R-KW-RIDE-02）`, () => {
     const s = rideState(vehicle, okRider);
     expect(rideOptions(s)).toEqual([`${okRider}:r>${vehicle}:v`]);
     const t = act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: `${okRider}:r`, vehicleInstanceId: `${vehicle}:v` });
     expect(t.players.player1.battle.find((c) => c.instanceId === `${okRider}:r`)?.mountedOnInstanceId).toBe(`${vehicle}:v`);
   });
 
-  holdTest(`${vehicle}: ※ ライドするとき自軍コマンドを1つホールドする（出典: atwiki/${page}「自軍コマンドを1つホールドすれば」）`, () => {
+  it(`${vehicle}: ※ ライドするとき自軍コマンドを1つホールドする（出典: atwiki/${page}「自軍コマンドを1つホールドすれば」）`, () => {
     const s = rideState(vehicle, okRider);
     const t = act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: `${okRider}:r`, vehicleInstanceId: `${vehicle}:v` });
     expect(heldCommandIds(t)).toHaveLength(1);
   });
 
-  noCommandTest(`${vehicle}: ※ リリース状態の自軍コマンドがなければ RC を持たない「${feature}」の S ユニットはライドできない（出典: atwiki/${page}「自軍コマンドを1つホールドすれば」）`, () => {
+  it(`${vehicle}: ※ リリース状態の自軍コマンドがなければ RC を持たない「${feature}」の S ユニットはライドできない（出典: atwiki/${page}「自軍コマンドを1つホールドすれば」）`, () => {
     const s = rideState(vehicle, okRider, []);
     expect(rideOptions(s)).toEqual([]);
   });
@@ -101,7 +96,7 @@ describe("RS-466 ギンガレオン", () => {
     expectVehicleStats("RS-466", { name: "ギンガレオン", category: "WB", size: "M", powerCost: 3, features: ["獣"] });
   });
 
-  featureRideTests("RS-466", "レッド", "SPEC-RED", "page-765", true);
+  featureRideTests("RS-466", "レッド", "SPEC-RED", "page-765");
 
   it("RS-466: ※ 特徴「レッド」でも S ユニットでない（M ユニット）なら RC なしではライドできない（出典: atwiki/page-765「特徴「レッド」を持つSユニットは」）", () => {
     expect(rideOptions(rideState("RS-466", "SPEC-RED-M"))).toEqual([]);
@@ -120,8 +115,7 @@ describe("RS-466 ギンガレオン", () => {
     return attack(s, "TST-UNIT-7:atk", `${riderId}:r`, "player2");
   };
 
-  // 既知の不具合: CARD-RS-466 【炎の星獣】が未実装（ライドしている S ユニットがレジストを得ない）
-  it.fails("RS-466: 【炎の星獣】ライドしている S ユニットはレジストを得る — バトルで撃破されたとき、捨札にするかわりにホールドしてその場に留められる（出典: atwiki/page-765「これにライドしているSユニットは次の能力を得る⇒※レジスト」・R-KW-RESIST-01）", () => {
+  it("RS-466: 【炎の星獣】ライドしている S ユニットはレジストを得る — バトルで撃破されたとき、捨札にするかわりにホールドしてその場に留められる（出典: atwiki/page-765「これにライドしているSユニットは次の能力を得る⇒※レジスト」・R-KW-RESIST-01）", () => {
     let s = attackedRider("SPEC-RED");
     for (let i = 0; i < 6 && !legal(s).some((a) => a.type === "use_register"); i++) {
       const pass = legal(s).find((a) => a.type === "pass_battle_reaction" || a.type === "pass_leave_reaction");
@@ -161,7 +155,7 @@ describe("RS-467 ギンガルコン", () => {
     expectVehicleStats("RS-467", { name: "ギンガルコン", category: "WB", size: "M", powerCost: 1, features: ["獣"] });
   });
 
-  featureRideTests("RS-467", "グリーン", "SPEC-GREEN", "page-766", true);
+  featureRideTests("RS-467", "グリーン", "SPEC-GREEN", "page-766");
 
   const W1 = sUnit("SPEC-W1", { sp: undefined, bp: 2000, comboNumber: 1 });
   const W2 = sUnit("SPEC-W2", { sp: undefined, bp: 2000, comboNumber: 2 });
@@ -181,8 +175,7 @@ describe("RS-467 ギンガルコン", () => {
     return attackTargets(s, "TST-UNIT-7:atk", "player2").sort();
   };
 
-  // 既知の不具合: CARD-RS-467 【風の星獣】が未実装（WB の自軍 S ユニットがスクラムを得ない）
-  it.fails("RS-467: 【風の星獣】ライドしたユニットがある間、WB の自軍 S ユニットはスクラムを得る — CN2 が次に並ぶ CN1 はアタックされない（出典: atwiki/page-766「WBの自軍Sユニットは次の能力を得る⇒スクラム」・R-KW-SCRUM-01）", () => {
+  it("RS-467: 【風の星獣】ライドしたユニットがある間、WB の自軍 S ユニットはスクラムを得る — CN2 が次に並ぶ CN1 はアタックされない（出典: atwiki/page-766「WBの自軍Sユニットは次の能力を得る⇒スクラム」・R-KW-SCRUM-01）", () => {
     expect(windTargets(true)).toEqual(["SPEC-W2:b"]);
   });
 
@@ -201,7 +194,7 @@ describe("RS-468 ギンガリラ", () => {
     expectVehicleStats("RS-468", { name: "ギンガリラ", category: "WB", size: "M", powerCost: 4, features: ["獣"] });
   });
 
-  featureRideTests("RS-468", "ブルー", "SPEC-BLUE", "page-767", true);
+  featureRideTests("RS-468", "ブルー", "SPEC-BLUE", "page-767");
 
   /** 敵軍（player2）のバトルフェイズ。player1 のバトルエリアにギンガリラ（riding=true ならブルーがライド中）。敵軍ラッシュに「車両」。 */
   const carState = (riding: boolean) =>
@@ -217,8 +210,7 @@ describe("RS-468 ギンガリラ", () => {
   const holdEntry = (s: GameState) =>
     legal(s).some((a) => a.type === "initiate_command_payment" && a.kind === "battle_entry" && a.sourceInstanceId === "SPEC-CAR:c");
 
-  // 既知の不具合: CARD-RS-468 【水の星獣】が未実装（「車両」のユニットがホールドなしでバトルエリアに出られる）
-  it.fails("RS-468: 【水の星獣】ライドしたユニットがある間、特徴「車両」を持つ（敵軍）ユニットはコマンドを1つホールドしなければバトルエリアに出られない（出典: atwiki/page-767「「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれているかのように扱う」・R-ADD-07）", () => {
+  it("RS-468: 【水の星獣】ライドしたユニットがある間、特徴「車両」を持つ（敵軍）ユニットはコマンドを1つホールドしなければバトルエリアに出られない（出典: atwiki/page-767「「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれているかのように扱う」・R-ADD-07）", () => {
     const s = carState(true);
     expect(freeEntry(s)).toBe(false);
     expect(holdEntry(s)).toBe(true);
@@ -239,10 +231,36 @@ describe("RS-469 ギンガベリック", () => {
     expectVehicleStats("RS-469", { name: "ギンガベリック", category: "WB", size: "M", powerCost: 2, features: ["獣"] });
   });
 
-  // 既知の不具合: CARD-RS-469 特徴「イエロー」の RC なしライド許可（※）が note 扱いで、ライドできない
-  featureRideTests("RS-469", "イエロー", "SPEC-YELLOW", "page-741", false);
+  featureRideTests("RS-469", "イエロー", "SPEC-YELLOW", "page-741");
 
-  it.todo("RS-469: 【雷の星獣】ライドしたユニットがある間、自軍バトルフェイズ中に「MA の自軍コマンドを1つホールド」するかわりに敵軍コマンドを1つ選んでホールドできる（MA コマンドがなくても可・R-REPL-03）（出典: atwiki/page-741）— MA コマンドのホールドを要求する効果（RS-376〜RS-380 のギンガマン各種）の発動自体がエンジンで正しく動かず（RS6-369-389 で it.fails）、置き換えを観測できない。上のライド許可も未実装");
+  /** 2番目にギンガレッド（RS-376【炎一閃】「MA」の自軍コマンドを１つホールドして発動できる）を出す。MA の自軍コマンドはない。 */
+  const thunderState = (riding: boolean) =>
+    ncEnter(
+      "RS-376",
+      2,
+      { rush: riding ? [rider("SPEC-YELLOW", "y", "RS-469:v"), inst("RS-469", "v")] : [inst("SPEC-YELLOW", "y"), inst("RS-469", "v")] },
+      { battle: [inst("SPEC-PLAIN", "t")], command: releasedCat("WB", 1, "ec"), deck: deckCards(3, "e") },
+      EXTRA,
+    );
+  const activateFlash = (s: GameState) =>
+    legal(s).find((a) => a.type === "activate_field_unit_ability" && a.unitInstanceId === "RS-376:x");
+
+  it("RS-469: 【雷の星獣】ライドしたユニットがある間、自軍バトルフェイズ中に「MA の自軍コマンドを1つホールド」するかわりに敵軍コマンドを1つ選んでホールドできる（MA コマンドがなくても可・R-REPL-03）（出典: atwiki/page-741）", () => {
+    let s = thunderState(true);
+    const activate = activateFlash(s);
+    expect(activate).toBeDefined();
+    s = act(s, activate!);
+    expect(choiceIds(s)).toEqual(["TST-OP:ec0"]);
+    s = pick(s, "TST-OP:ec0");
+    expect(s.players.player2.command.find((c) => c.instanceId === "TST-OP:ec0")?.commandHeld).toBe(true);
+    // 【炎一閃】の本文（ナンバーを持たない敵軍 S ユニットを1体撃破）が続く。
+    s = resolveAll(s, ["SPEC-PLAIN:t"]);
+    expect(zoneOf(s, "player2", "SPEC-PLAIN:t")).toBe("discard");
+  });
+
+  it("RS-469: 【雷の星獣】ライドしたユニットがなければ、MA の自軍コマンドがないとき「MA の自軍コマンドを1つホールドして」の効果は発動できない（出典: atwiki/page-741「これにライドしたユニットがある間」）", () => {
+    expect(activateFlash(thunderState(false))).toBeUndefined();
+  });
   it.todo("RS-469: atwiki Q — エンペラー（XG5）の「怪人を持つ」コマンドのホールドは肩代わりできない／「アタックするかわりに」と同様、MA コマンドをホールドすべきタイミングでなければ使えない（出典: atwiki/page-741 コメント）— 【雷の星獣】が未実装");
 });
 
@@ -256,8 +274,7 @@ describe("RS-470 ギンガット", () => {
     expectVehicleStats("RS-470", { name: "ギンガット", category: "WB", size: "M", powerCost: 0, features: ["獣"] });
   });
 
-  // 既知の不具合: CARD-RS-470 特徴「ピンク」の RC なしライド許可（※）が note 扱いで、ライドできない
-  featureRideTests("RS-470", "ピンク", "SPEC-PINK", "page-768", false);
+  featureRideTests("RS-470", "ピンク", "SPEC-PINK", "page-768");
 
   /** 自軍ラッシュフェイズ。ラッシュエリアにギンガット（riding=true ならピンクがライド中）。手札1枚。 */
   const catState = (riding: boolean) =>
@@ -287,8 +304,7 @@ describe("RS-470 ギンガット", () => {
     });
   };
 
-  // 既知の不具合: CARD-RS-470 【花の星獣】が未実装（バトルフェイズのかわりにチャージフェイズを行えない）
-  it.fails("RS-470: 【花の星獣】ライドしたユニットがある間、バトルフェイズを行うとき、かわりにチャージフェイズを行える（出典: atwiki/page-768「自分がバトルフェイズを行うとき、かわりにチャージフェイズを行ってもよい」）", () => {
+  it("RS-470: 【花の星獣】ライドしたユニットがある間、バトルフェイズを行うとき、かわりにチャージフェイズを行える（出典: atwiki/page-768「自分がバトルフェイズを行うとき、かわりにチャージフェイズを行ってもよい」）", () => {
     expect(canChargeInstead(catState(true))).toBe(true);
   });
 
@@ -380,8 +396,7 @@ describe("RS-471 グランドライナー", () => {
     expect(zoneOf(s, "player1", "SPEC-MECHA:m0")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-471 ※ の「好きな枚数選び」が1枚しか選べない
-  it.fails("RS-471: ※ 「好きな枚数選び」— 複数枚（3枚すべて）を選んでラッシュエリアに出せる（出典: atwiki/page-789「その中から好きな枚数選び、自軍ラッシュエリアに出してもよい」）", () => {
+  it("RS-471: ※ 「好きな枚数選び」— 複数枚（3枚すべて）を選んでラッシュエリアに出せる（出典: atwiki/page-789「その中から好きな枚数選び、自軍ラッシュエリアに出してもよい」）", () => {
     let s = destroyedGL();
     for (const id of ["SPEC-MECHA:m0", "SPEC-MECHA:m1", "SPEC-MECHA:m2"]) {
       if (s.pendingEffectChoice?.validInstanceIds.includes(id)) s = pick(s, id);
@@ -424,8 +439,7 @@ describe("RS-471 グランドライナー", () => {
     expect(t.players.player1.rush).toHaveLength(0);
   });
 
-  // 既知の不具合: CARD-RS-471 【グランドストーム】がコマンドゾーンの「メカ」M ユニットのカードを数えない（5枚あっても SP が 0）
-  it.fails("RS-471: 【グランドストーム】自軍コマンドゾーンに「メカ」の M ユニットのカードが5枚あれば「SP1」になる（出典: atwiki/page-789「…が5枚あれば「SP1」になる」）", () => {
+  it("RS-471: 【グランドストーム】自軍コマンドゾーンに「メカ」の M ユニットのカードが5枚あれば「SP1」になる（出典: atwiki/page-789「…が5枚あれば「SP1」になる」）", () => {
     const s = st({ player1: { rush: [inst("RS-471", "gl")], command: mechaCmds(5) } }, MECHA_DEFS);
     expect(spOf(s, "player1", "RS-471:gl")).toBe(1);
     expect(spOf(enter(s, "RS-471:gl"), "player1", "RS-471:gl")).toBe(1);
@@ -488,16 +502,14 @@ describe("RS-472 ゴーライナー", () => {
     expect(placed?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-472 「捨札にした枚数と同じ枚数まで」選べず1枚で終わり、選ばなかった候補が山札でなく捨札に置かれる
-  it.fails("RS-472: 【現場への搬送】捨札にした枚数（2）まで選べる — 2枚をコマンドゾーンに置ける（出典: atwiki/page-790「捨札にした枚数と同じ枚数まで好きな数選び」）", () => {
+  it("RS-472: 【現場への搬送】捨札にした枚数（2）まで選べる — 2枚をコマンドゾーンに置ける（出典: atwiki/page-790「捨札にした枚数と同じ枚数まで好きな数選び」）", () => {
     let s = pick(discardTwo(), "SPEC-MECHA:d1");
     expect(s.pendingEffectChoice?.validInstanceIds).toContain("SPEC-MECHA:d3");
     s = resolveAll(pick(s, "SPEC-MECHA:d3"));
     expect(zoneOf(s, "player1", "SPEC-MECHA:d3")).toBe("command");
   });
 
-  // 既知の不具合: CARD-RS-472 選ばなかった「メカ」M ユニットのカードが捨札に置かれる（山札に残ってシャッフルされるはず）
-  it.fails("RS-472: 【現場への搬送】その後、山札をシャッフルする — 選ばなかったカードは山札に残る（出典: atwiki/page-790「その後、山札をシャッフルする」）", () => {
+  it("RS-472: 【現場への搬送】その後、山札をシャッフルする — 選ばなかったカードは山札に残る（出典: atwiki/page-790「その後、山札をシャッフルする」）", () => {
     let s = pick(discardTwo(), "SPEC-MECHA:d1");
     s = resolveAll(s);
     expect(s.players.player1.deck.map((c) => c.instanceId).sort()).toEqual(["SPEC-MECHA-L:d4", "SPEC-MECHA:d3", "SPEC-MECHA:d5", "TST-OP:d2"]);
@@ -558,8 +570,7 @@ describe("RS-473 タイムシャドウ", () => {
       player2: { hand: [inst("TST-OP", "h")], power: [inst("TST-OP-MA", "p1"), inst("TST-UNIT-2", "p2"), inst("TST-OP", "p3")], deck: deckCards(5, "e") },
     });
 
-  // 既知の不具合: CARD-RS-473 【ブルームーンスラッシュ】が未実装（相手がパワーを置かずにチャージフェイズを終えても何も起きない）
-  it.fails("RS-473: 【ブルームーンスラッシュ】敵軍ターン中、相手がパワーゾーンにカードを置かずにチャージフェイズを終えたとき、敵軍パワーゾーンのオモテ向きの必要パワー2以下のカードを1枚選びダメージにできる（任意）（出典: atwiki/page-791）", () => {
+  it("RS-473: 【ブルームーンスラッシュ】敵軍ターン中、相手がパワーゾーンにカードを置かずにチャージフェイズを終えたとき、敵軍パワーゾーンのオモテ向きの必要パワー2以下のカードを1枚選びダメージにできる（任意）（出典: atwiki/page-791）", () => {
     let s = nextPhase(chargeState());
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-473");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");

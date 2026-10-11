@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregaerianiarutanyunitoganowosurutokisonoyuni",
+          "keyword": "effect_card::RS-477::suru",
           "duration": "turn"
         }
       ],

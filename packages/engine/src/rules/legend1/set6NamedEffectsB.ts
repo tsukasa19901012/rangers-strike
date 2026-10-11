@@ -19,6 +19,7 @@ import { findCardInField } from "../fieldLookup";
 import { unitFeatures } from "../addedFeatures";
 import { applyDamageToPlayer } from "../damagePayment";
 import { addBakiBakiExtraAttack } from "../turnModifierBridge";
+import { cardHasGrantKeyword } from "../../dsl/promotedKeywordBridge";
 import { fireAkaRedSoulNc } from "./set6AuditFixes";
 
 // ---------------------------------------------------------------------------
@@ -167,9 +168,13 @@ export function set6BBlocksStrike(state: GameState, playerId: PlayerId, instance
 // ---------------------------------------------------------------------------
 // RS-420 大剣人ズバーン ※「自分か相手のLユニットがあれば、これはLユニットになる。」
 
-/** RS-420 が L ユニットとして扱われるか（自軍か敵軍のバトル・ラッシュエリアに、これ以外の L ユニットがある）。 */
+/**
+ * 「※自分か相手のLユニットがあれば、これはLユニットになる。」（DSL の becomes_l_if_l_present。RS-420 大剣人ズバーン・
+ * RS-454 ニンジャマン）を持つユニットが L ユニットとして扱われるか（自軍か敵軍のバトル・ラッシュエリアに、これ以外の
+ * 印刷サイズ L のユニットがある。同じ能力で L になっているユニットどうしは支え合わない — atwiki/page-799 コメント）。
+ */
 export function zubaanIsLarge(state: GameState, instance: CardInstance): boolean {
-  if (instance.cardId !== "RS-420") return false;
+  if (instance.cardId !== "RS-420" && !cardHasGrantKeyword(instance.cardId, "becomes_l_if_l_present")) return false;
   for (const pid of ["player1", "player2"] as const) {
     for (const c of fieldUnits(state, pid)) {
       if (c.instanceId === instance.instanceId || c.cardId === "RS-420") continue;

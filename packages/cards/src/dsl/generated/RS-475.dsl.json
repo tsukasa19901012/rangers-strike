@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_koregabatoruerianitatokiwosubeteura_ko_kinishiteshafurushi",
+          "keyword": "effect_card::RS-475::riborubafuantomu",
           "duration": "turn"
         }
       ],

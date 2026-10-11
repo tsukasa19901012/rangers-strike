@@ -4,7 +4,8 @@ import { hasScopedRestriction } from "../core/scopedModifiers";
  *
  * 各キーワードの意味は wiki カードテキスト準拠（docs/wiki/cards/*.md）。
  */
-import type { GameState, PlayerId } from "../types/game";
+import type { CardInstance, GameState, PlayerId } from "../types/game";
+import { grantKeywordActiveOnCard } from "./ncGatedEffects";
 import { getDefinition, isSmallUnit } from "../core/catalog";
 import { updatePlayer } from "../core/helpers";
 import { cardHasGrantKeyword, listCardGrantKeywords } from "../dsl/promotedKeywordBridge";
@@ -131,6 +132,8 @@ export function keywordAllowsAttackIntoRush(
   attackerCardId: string,
   defenderPlayerId: PlayerId,
   defenderInstanceId: string,
+  /** アタックするユニット（NC の欄の能力は NC 成立時だけ有効。ncGatedEffects.grantKeywordActiveOnCard）。 */
+  attackerCard?: Pick<CardInstance, "cardId" | "activatedNcEffects">,
 ): boolean {
   const enemy = state.players[defenderPlayerId];
   const defender = enemy.rush.find((c) => c.instanceId === defenderInstanceId);
@@ -143,7 +146,7 @@ export function keywordAllowsAttackIntoRush(
     return true;
   }
   if (
-    cardHasGrantKeyword(attackerCardId, "attack_rush_if_more_units") &&
+    (attackerCard ? grantKeywordActiveOnCard(attackerCard, "attack_rush_if_more_units") : cardHasGrantKeyword(attackerCardId, "attack_rush_if_more_units")) &&
     enemy.rush.length > enemy.battle.length
   ) {
     return true;
@@ -160,13 +163,14 @@ export function attackerSuppressesAttackedCounters(attackerCardId: string): bool
 export function canSelfRushFromZone(
   state: GameState,
   playerId: PlayerId,
-  zone: "command" | "power",
+  zone: "command" | "power" | "hand",
   instanceId: string,
 ): boolean {
   if (state.phase !== "rush" || state.activePlayer !== playerId) return false;
   const player = state.players[playerId];
   const card = player[zone].find((c) => c.instanceId === instanceId);
   if (!card) return false;
+  if (zone === "hand") return handDeployConditionMet(state, playerId, card.cardId);
   if (zone === "power" && card.faceDown) return false;
   if (zone === "command" && card.commandHeld) return false;
   const keyword =
@@ -178,11 +182,29 @@ export function canSelfRushFromZone(
   return player.discard.length >= cost;
 }
 
+/**
+ * 「※これが自分の手札にある間、自軍ラッシュフェイズ中、＜条件＞あれば、これを自軍ラッシュエリアに出してもよい。」
+ * （DSL の while_in_hand_rush_deploy::*）の条件。本文の文言から判定する（対応している文言だけ）:
+ * - 「自軍ダメージの数がこれの必要パワーの数字以上あれば」（RS-455 ニンジャブラック。atwiki/page-800）
+ * コマンドのホールドも必要パワーの支払いもない（ラッシュではなく「出す」）。
+ */
+function handDeployConditionMet(state: GameState, playerId: PlayerId, cardId: string): boolean {
+  if (!listCardGrantKeywords(cardId).some((k) => k.startsWith("while_in_hand_rush_deploy::"))) return false;
+  const def = getDefinition(state.definitions, cardId);
+  const text = def?.text ?? "";
+  if (/自軍ダメージの数がこれの必要パワーの数字以上あれば/.test(text)) {
+    const cost = typeof def?.powerCost === "number" ? def.powerCost : parseInt(String(def?.powerCost), 10);
+    if (!Number.isFinite(cost)) return false;
+    return state.players[playerId].damage >= cost;
+  }
+  return false;
+}
+
 /** 上記条件を満たす自己ラッシュの実行。 */
 export function applySelfRushFromZone(
   state: GameState,
   playerId: PlayerId,
-  zone: "command" | "power",
+  zone: "command" | "power" | "hand",
   instanceId: string,
 ): GameState | null {
   if (!canSelfRushFromZone(state, playerId, zone, instanceId)) return null;

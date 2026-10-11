@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "adjacent_units_batorueriakaranoga12ya34nadoderiteiru2nosyunito",
+          "keyword": "effect_card::RS-494::ninpori",
           "duration": "turn"
         }
       ],

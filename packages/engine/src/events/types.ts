@@ -83,6 +83,8 @@ export type UnitLeftZoneEvent = GameEventBase & {
    * 撃破されて捨札以外（パワーゾーン等）へ置かれた場合は true を渡す。
    */
   destroyed?: boolean;
+  /** バトルによる撃破のとき、バトルの相手のユニット（RS-453【激怒斬り】）。 */
+  battleOpponentInstanceId?: string;
 };
 
 export type DamageAppliedEvent = GameEventBase & {

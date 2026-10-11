@@ -43,8 +43,11 @@
         "type": "has_target",
         "target": {
           "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
+          "zone": "rush",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
         }
       },
       "optional": true,
@@ -54,8 +57,11 @@
           "kind": "select_unit",
           "valid": {
             "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
+            "zone": "rush",
+            "owner": "opponent",
+            "filter": {
+              "size": "S"
+            }
           },
           "count": 1,
           "then": [

@@ -4,6 +4,7 @@ import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaide
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
 import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
 import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
+import { openBlueMoonSlash, openChargeInsteadOfBattle } from "../rules/legend1/set7NamedEffectsB";
 import { withZordFeatureContext } from "../rules/zordFeatureContext";
 import { applySet7DStrikeDamageTriggers, RIDE_OFF_RC_MARK, rideOffBlockedBySet7D } from "../rules/legend1/set7NamedEffectsD";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
@@ -112,6 +113,7 @@ import { applyResidentOpOnPlace } from "../rules/residentOps";
 import { applySelfRushFromZone, battleActBlocked, markUnitBattleAction } from "../rules/keywordGapRuntime";
 import { applyStartPhaseBeginEffects } from "../rules/startPhaseBegin";
 import { emitStrikeDeclared } from "../events/emitStrikeDeclared";
+import { openBunshinIfReady, queueBunshinOnAction } from "../rules/legend1/set7NamedEffectsC";
 import { emitTurnEndingAndResolve } from "../events/emitTurnEnding";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import {
@@ -511,7 +513,7 @@ function finalizeTurnEnd(state: GameState): GameState {
   };
   next = advancePhase(next);
 
-  if (next.phase === "start" && next.activePlayer !== prevPlayer) {
+  if (next.phase === "start" && (next.activePlayer !== prevPlayer || next.turn !== afterEffects.turn)) {
     // ルール: R-START-06, R-TIME-06 — 「スタートフェイズ開始時」「ターン開始時」の効果は
     // 3行程（リリース・戻す・ドロー）より前に発動・解決する。ホールド中のコマンドの有無に依存しない。
     next = applyStartPhaseBeginEffects(next, next.activePlayer);
@@ -844,6 +846,21 @@ export function applyAction(
     }
     if (next.pantherClawQueue?.length && !hasBlockingInteraction(next) && !next.winner) {
       next = openPantherClawIfReady(next, turnPlayerOf(next));
+    }
+  }
+  // RS-486【分身幻斬り】: アタック・ストライクの処理をすべて終えてから選択を開く（rules/legend1/set7NamedEffectsC.ts）。
+  if (applyActionDepth === 0) {
+    next = queueBunshinOnAction(state, next, action as Parameters<typeof queueBunshinOnAction>[2]);
+    if (
+      next.bunshinQueue?.length &&
+      !next.winner &&
+      !hasBlockingInteraction(next) &&
+      !next.deferredAttack &&
+      !next.deferredStrike &&
+      !next.pendingEffectRush &&
+      !(next.deferredDestroyTriggers?.length)
+    ) {
+      next = openBunshinIfReady(next);
     }
   }
   next = syncDamageWithFaceDownPower(state, next);
@@ -1234,9 +1251,13 @@ function applyActionCore(
       );
       return {
         ok: true,
-        state: advanceFromCharge(
-          chargedState,
-          buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
+        // RS-473【ブルームーンスラッシュ】: パワーゾーンにカードを置かずにチャージフェイズを終えた（rules/legend1/set7NamedEffectsB.ts）。
+        state: openBlueMoonSlash(
+          advanceFromCharge(
+            chargedState,
+            buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
+          ),
+          playerId,
         ),
       };
     }
@@ -3302,8 +3323,13 @@ function applyActionCore(
         );
       }
 
+      let afterPhase = nextState;
+      // RS-473【ブルームーンスラッシュ】: チャージフェイズにパワーゾーンへカードを置かずに終えた（rules/legend1/set7NamedEffectsB.ts）。
+      if (state.phase === "charge") afterPhase = openBlueMoonSlash(afterPhase, playerId);
+      // RS-470 ギンガット【花の星獣】: バトルフェイズを行うとき、かわりにチャージフェイズを行ってもよい（同上）。
+      if (state.phase === "rush" && afterPhase.phase === "battle") afterPhase = openChargeInsteadOfBattle(afterPhase, playerId);
       return ok(
-        nextState,
+        afterPhase,
         buildSimpleLogEntry(playerId, "end_phase", state.phase),
       );
     }

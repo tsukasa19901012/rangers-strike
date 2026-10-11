@@ -479,6 +479,7 @@ export function canAttackDefender(
         attacker.card.cardId,
         defenderPlayerId,
         defenderInstanceId,
+        attacker.card,
       )
     ) {
       return true;

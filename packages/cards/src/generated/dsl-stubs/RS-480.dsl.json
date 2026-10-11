@@ -30,6 +30,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "set7c::RS-480::jaki_gyokusai",
+          "duration": "turn"
         }
       ]
     }

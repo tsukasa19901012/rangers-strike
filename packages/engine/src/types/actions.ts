@@ -17,7 +17,8 @@ export type ZordMaterialDestination = "command" | "discard";
 export type SelfRushFromZoneAction = {
   type: "self_rush_from_zone";
   playerId: PlayerId;
-  zone: "command" | "power";
+  /** hand: 「※これが自分の手札にある間、自軍ラッシュフェイズ中、…あれば、これを自軍ラッシュエリアに出してもよい」（RS-455 等）。 */
+  zone: "command" | "power" | "hand";
   instanceId: string;
 };
 

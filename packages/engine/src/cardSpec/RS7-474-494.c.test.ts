@@ -109,8 +109,7 @@ describe("RS-488 ハリケンウィンガー", () => {
       SPECS,
     );
 
-  // 既知の不具合: CARD-RS-488 【滑空】が実装されておらず（キーワード付与のみ）、ライドしている S ユニットが S ユニットにアタックされる
-  it.fails("RS-488: 【滑空】ライドしている S ユニットは S ユニットにアタックされない（出典: atwiki/page-810「これはSユニットにアタックされない」）", () => {
+  it("RS-488: 【滑空】ライドしている S ユニットは S ユニットにアタックされない（出典: atwiki/page-810「これはSユニットにアタックされない」）", () => {
     const s = winger(ridden("RS-488", "SPEC-NINJA"));
     expect(attackTargets(s, "TST-UNIT-0:es", "player2")).not.toContain("SPEC-NINJA:r");
   });
@@ -164,15 +163,13 @@ describe("RS-489 二の槍チュウズーボ", () => {
       "RS-489:zb",
     );
 
-  // 既知の不具合: CARD-RS-489 【宇宙忍法・箱次元】が実装されておらず（キーワード付与のみ）、ユニットを選ぶ選択が出ない
-  it.fails("RS-489: 【宇宙忍法・箱次元】NC 成立時、敵軍バトルエリアの S ユニットだけを選べる（ラッシュエリア・M は不可）（出典: atwiki/page-814「敵軍バトルエリアからSユニットを2体選び」）", () => {
+  it("RS-489: 【宇宙忍法・箱次元】NC 成立時、敵軍バトルエリアの S ユニットだけを選べる（ラッシュエリア・M は不可）（出典: atwiki/page-814「敵軍バトルエリアからSユニットを2体選び」）", () => {
     const s = zuubo([inst("SPEC-MN-A", "a"), inst("SPEC-MN-B", "b"), inst("SPEC-MN-M", "m")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-489");
     expect(choiceIds(s)).toEqual(["SPEC-MN-A:a", "SPEC-MN-B:b"]);
   });
 
-  // 既知の不具合: CARD-RS-489 【宇宙忍法・箱次元】が実装されておらず、特徴が2つ以上同じ2体が山札の下に戻らない
-  it.fails("RS-489: 【宇宙忍法・箱次元】選んだ2体の特徴が2つ以上同じ（男・忍者）なら、2体を敵軍の山札の下に戻せる（出典: atwiki/page-814「選んだ2体を敵軍の山札の下に好きな順番で戻してもよい」）", () => {
+  it("RS-489: 【宇宙忍法・箱次元】選んだ2体の特徴が2つ以上同じ（男・忍者）なら、2体を敵軍の山札の下に戻せる（出典: atwiki/page-814「選んだ2体を敵軍の山札の下に好きな順番で戻してもよい」）", () => {
     const s = resolveAll(zuubo([inst("SPEC-MN-A", "a"), inst("SPEC-MN-B", "b")]), ["SPEC-MN-A:a", "SPEC-MN-B:b"]);
     expect(zoneOf(s, "player2", "SPEC-MN-A:a")).toBe("deck");
     expect(zoneOf(s, "player2", "SPEC-MN-B:b")).toBe("deck");
@@ -246,14 +243,12 @@ describe("RS-490 三の槍マンマルバ幼体", () => {
     return r.state;
   };
 
-  // 既知の不具合: CARD-RS-490 【予言】が実装されておらず、敵軍ユニットがラッシュされても山札の上をオモテにしない
-  it.fails("RS-490: 【予言】敵軍ターン中に敵軍ユニットがラッシュされ、自軍ユニットの数が少なければ、山札の上が同じ特徴（男）を持つユニットカードなら自軍ラッシュエリアに出す（出典: atwiki/page-813「自軍ラッシュエリアに出す」）", () => {
+  it("RS-490: 【予言】敵軍ターン中に敵軍ユニットがラッシュされ、自軍ユニットの数が少なければ、山札の上が同じ特徴（男）を持つユニットカードなら自軍ラッシュエリアに出す（出典: atwiki/page-813「自軍ラッシュエリアに出す」）", () => {
     const s = resolveAll(enemyRush("SPEC-DA"), ["RS-490:mm"]);
     expect(zoneOf(s, "player1", "SPEC-DA:top")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-490 【予言】が実装されておらず、特徴が合わないカードが捨札にならない
-  it.fails("RS-490: 【予言】オモテにしたカードが同じ特徴を持たない（またはユニットでない）なら捨札にする（出典: atwiki/page-813「出せなかった場合は、捨札にする」）", () => {
+  it("RS-490: 【予言】オモテにしたカードが同じ特徴を持たない（またはユニットでない）なら捨札にする（出典: atwiki/page-813「出せなかった場合は、捨札にする」）", () => {
     const s = resolveAll(enemyRush("TST-OP"), ["RS-490:mm"]);
     expect(zoneOf(s, "player1", "TST-OP:top")).toBe("discard");
   });
@@ -280,9 +275,28 @@ describe("RS-490 三の槍マンマルバ幼体", () => {
     expect(zoneOf(resolveAll(r.state), "player1", "SPEC-DA:top")).toBe("deck");
   });
 
-  it.todo(
-    "RS-490: 【予言】「（ただし追加条件は満たすこと）」— オモテにしたユニットカードの追加条件を満たせなければ出せず捨札になる（出典: atwiki/page-813）— 【予言】自体が未実装で、追加条件の充足を問う手順（素材の選択）が存在せず観測できない",
-  );
+  it("RS-490: 【予言】「（ただし追加条件は満たすこと）」— 追加条件を満たせなければ出せず捨札、満たせれば素材を捨札にして出す（出典: atwiki/page-813・R-RUSH-21）", () => {
+    // RS-473 タイムシャドウ（メカ／人型／忍者。追加条件：自軍「タイムシャドウSM」1体を捨札にする）。ハリケンレッドと「忍者」が同じ。
+    const run = (withSm: boolean) => {
+      const s = st(
+        {
+          activePlayer: "player2",
+          phase: "rush",
+          player1: { rush: [inst("RS-490", "mm"), ...(withSm ? [inst("RS-474", "sm")] : [])], deck: [inst("RS-473", "top"), ...deckCards(3)] },
+          player2: { hand: [inst("RS-099", "red")], rush: fillers(2, "en"), command: releasedCat("MA", 2), power: powerCards(2), deck: deckCards(5, "e") },
+        },
+        SPECS,
+      );
+      const r = rushFromHand(s, "player2", "RS-099:red");
+      expect(r.ok).toBe(true);
+      return resolveAll(r.state, ["RS-490:mm", "RS-474:sm"]);
+    };
+    const without = run(false);
+    expect(zoneOf(without, "player1", "RS-473:top")).toBe("discard");
+    const withSm = run(true);
+    expect(zoneOf(withSm, "player1", "RS-473:top")).toBe("rush");
+    expect(zoneOf(withSm, "player1", "RS-474:sm")).toBe("discard");
+  });
 });
 
 // ===========================================================================
@@ -334,8 +348,7 @@ describe("RS-491 三の槍マンマルバ成体", () => {
       "RS-491:ad",
     );
 
-  // 既知の不具合: CARD-RS-491 【目覚めた凶暴性】が実装されておらず（キーワード付与のみ）、相手が自分の S ユニットを選ぶ選択が出ない
-  it.fails("RS-491: 【目覚めた凶暴性】NC 成立時（3番目）、自軍 S（3）が敵軍 S（4）より少なければ、相手が自分自身の S ユニットを1体選び撃破する（出典: atwiki/page-748「相手は自分自身のSユニットを1体選び撃破する」）", () => {
+  it("RS-491: 【目覚めた凶暴性】NC 成立時（3番目）、自軍 S（3）が敵軍 S（4）より少なければ、相手が自分自身の S ユニットを1体選び撃破する（出典: atwiki/page-748「相手は自分自身のSユニットを1体選び撃破する」）", () => {
     let s = adult(2, 4);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-491");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
@@ -356,8 +369,7 @@ describe("RS-491 三の槍マンマルバ成体", () => {
     expect(s.players.player2.battle).toHaveLength(6);
   });
 
-  // 既知の不具合: CARD-RS-491 【目覚めた凶暴性】が実装されておらず、ライドオフしたときも発動しない
-  it.fails("RS-491: 【目覚めた凶暴性】ビークル（ハリケンウィンガー）からライドオフしたときは、ナンバーに関係なく発動する（出典: atwiki/page-748「（この効果は、ライドオフしたときナンバーに関係なく発動する）」・R-KW-RIDE-05）", () => {
+  it("RS-491: 【目覚めた凶暴性】ビークル（ハリケンウィンガー）からライドオフしたときは、ナンバーに関係なく発動する（出典: atwiki/page-748「（この効果は、ライドオフしたときナンバーに関係なく発動する）」・R-KW-RIDE-05）", () => {
     let s = st({
       player1: { rush: [inst("RS-488", "v"), inst("RS-491", "ad")], deck: deckCards(5) },
       player2: { battle: fillers(3, "es"), deck: deckCards(5, "e") },
@@ -378,8 +390,7 @@ describe("RS-492 炎の騎馬", () => {
     expectVehicle("RS-492", { name: "炎の騎馬", category: "DA", powerCost: 4, features: ["メカ", "車両"] });
   });
 
-  // 既知の不具合: CARD-RS-492 ※「DA の S ユニットは RC なしでライドできる」が未実装（mount_ride が出ない）
-  it.fails("RS-492: ※ RC を持たない DA の S ユニットはライドできる（出典: atwiki/page-815「DAのSユニットは、ＲＣを持っていなくても」）", () => {
+  it("RS-492: ※ RC を持たない DA の S ユニットはライドできる（出典: atwiki/page-815「DAのSユニットは、ＲＣを持っていなくても」）", () => {
     expect(canMount(mountState("RS-492", "SPEC-DA"), "SPEC-DA:r", "RS-492:v")).toBe(true);
   });
 
@@ -442,22 +453,19 @@ describe("RS-493 六の槍サタラクラ", () => {
 
   const enemyDamage = (s: GameState) => s.players.player2.power.filter((c) => c.faceDown).length;
 
-  // 既知の不具合: CARD-RS-493 【正解の無いクイズ】が「相手に1点ダメージ」だけに簡略化され、自軍ダメージがなくても相手にダメージを与える
-  it.fails("RS-493: 【正解の無いクイズ】自軍のダメージが0点なら、クイズは行えず相手にダメージも撃破もない（出典: atwiki/page-816「自軍パワーのダメージになっているカードを…置きなおしてもよい。そうしたとき」・R-RES-06）", () => {
+  it("RS-493: 【正解の無いクイズ】自軍のダメージが0点なら、クイズは行えず相手にダメージも撃破もない（出典: atwiki/page-816「自軍パワーのダメージになっているカードを…置きなおしてもよい。そうしたとき」・R-RES-06）", () => {
     const s = resolveAll(quiz(0));
     expect(enemyDamage(s)).toBe(0);
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-493 【正解の無いクイズ】でオモテにした自軍のダメージのカードが捨札にならない
-  it.fails("RS-493: 【正解の無いクイズ】正誤にかかわらず、オモテにした自軍のダメージのカード1枚を捨札にする（自軍ダメージが1点減る）（出典: atwiki/page-816「その後オモテにしたカードを捨札にする」）", () => {
+  it("RS-493: 【正解の無いクイズ】正誤にかかわらず、オモテにした自軍のダメージのカード1枚を捨札にする（自軍ダメージが1点減る）（出典: atwiki/page-816「その後オモテにしたカードを捨札にする」）", () => {
     const s = resolveAll(quiz(2));
     expect(s.players.player1.power.filter((c) => c.faceDown)).toHaveLength(1);
     expect(s.players.player1.discard).toHaveLength(1);
   });
 
-  // 既知の不具合: CARD-RS-493 【正解の無いクイズ】が任意の確認なしに強制で処理される（「置きなおしてもよい」を見送れない）
-  it.fails("RS-493: 【正解の無いクイズ】「置きなおしてもよい」— 発動しないことを選べ、そのとき相手にダメージは与えない（出典: atwiki/page-816「置きなおしてもよい」）", () => {
+  it("RS-493: 【正解の無いクイズ】「置きなおしてもよい」— 発動しないことを選べ、そのとき相手にダメージは与えない（出典: atwiki/page-816「置きなおしてもよい」）", () => {
     let s = quiz(2);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-493");
     expect(canSkip(s)).toBe(true);
@@ -471,9 +479,41 @@ describe("RS-493 六の槍サタラクラ", () => {
     expect(s.players.player1.power.filter((c) => c.faceDown)).toHaveLength(2);
   });
 
-  it.todo(
-    "RS-493: 【正解の無いクイズ】相手の解答が不正解なら相手に1点ダメージ、正解なら相手は自分自身のユニットを1体選び撃破する（出典: atwiki/page-816「相手の解答が不正解なら…正解なら…」）— 相手に必要パワーの数字を宣言させる手段（合法手）がエンジンに存在せず、正解・不正解の分岐を公開 API で再現できない",
-  );
+  /** 自軍ダメージ1点（必要パワー3の TST-OP）でクイズを行い、相手が declared を宣言する。 */
+  const declare = (declared: string) => {
+    let s = enter(
+      st({
+        player1: { battle: fillers(5), rush: [inst("RS-493", "st")], power: [...powerCards(2, "up"), { ...inst("TST-OP", "dm"), faceDown: true }], deck: deckCards(5) },
+        player2: { battle: [inst("TST-UNIT-0", "e")], power: [], deck: deckCards(5, "e") },
+      }),
+      "RS-493:st",
+    );
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-493");
+    s = pick(s, s.pendingEffectChoice!.validInstanceIds[0]!);
+    expect(choiceIds(s)).toEqual(["TST-OP:dm"]);
+    s = pick(s, "TST-OP:dm");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(s.pendingEffectChoice?.kind).toBe("declare_number");
+    return pick(s, declared);
+  };
+
+  it("RS-493: 【正解の無いクイズ】相手の解答（必要パワーの数字）が不正解なら相手に1点ダメージを与え、オモテにしたカードを捨札にする（出典: atwiki/page-816「相手の解答が不正解なら、相手に1点ダメージを与える」）", () => {
+    const s = resolveAll(declare("2"));
+    expect(enemyDamage(s)).toBe(1);
+    expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("battle");
+    expect(zoneOf(s, "player1", "TST-OP:dm")).toBe("discard");
+  });
+
+  it("RS-493: 【正解の無いクイズ】正解なら相手は自分自身のユニットを1体選び撃破する（強制）。相手にダメージはない（出典: atwiki/page-816「正解なら相手は自分自身のユニットを1体選び撃破する」）", () => {
+    let s = declare("3");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(choiceIds(s)).toEqual(["TST-UNIT-0:e"]);
+    expect(canSkip(s)).toBe(false);
+    s = resolveAll(pick(s, "TST-UNIT-0:e"));
+    expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
+    expect(enemyDamage(s)).toBe(0);
+    expect(zoneOf(s, "player1", "TST-OP:dm")).toBe("discard");
+  });
 });
 
 // ===========================================================================
@@ -513,8 +553,7 @@ describe("RS-494 縁切り忍者シラーンス", () => {
       "RS-494:sl",
     );
 
-  // 既知の不具合: CARD-RS-494 【宇宙忍法・縁切り】が実装されておらず（キーワード付与のみ）、2体を選ぶ選択が出ずバトルも起きない
-  it.fails("RS-494: 【宇宙忍法・縁切り】CN が昇順で隣り合う2体（CN1 BP1000・CN2 BP3000）を選ぶとその2体でバトルし、BP の低い方が撃破される（出典: atwiki/page-817「選んだ2体でバトルさせる」・R-BTL-01）", () => {
+  it("RS-494: 【宇宙忍法・縁切り】CN が昇順で隣り合う2体（CN1 BP1000・CN2 BP3000）を選ぶとその2体でバトルし、BP の低い方が撃破される（出典: atwiki/page-817「選んだ2体でバトルさせる」・R-BTL-01）", () => {
     const s = resolveAll(silence([inst("SPEC-N1", "n1"), inst("SPEC-N2", "n2")]), ["SPEC-N1:n1", "SPEC-N2:n2"]);
     expect(zoneOf(s, "player2", "SPEC-N1:n1")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-N2:n2")).toBe("battle");

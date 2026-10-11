@@ -30,7 +30,7 @@
         {
           "type": "grant_keyword",
           "keyword": "effect_card::RS-491::meta",
-          "duration": "permanent"
+          "duration": "turn"
         }
       ],
       "optional": false

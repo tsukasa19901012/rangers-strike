@@ -100,6 +100,7 @@ import { trySet5ACardEffect } from "../rules/legend1/set5NamedEffectsA";
 import { applySet5GrantSideEffects, trySet5CardEffect } from "../rules/legend1/set5NamedEffects";
 import { trySet5AuditCardEffect } from "../rules/legend1/set5AuditFixes";
 import { trySet6BCardEffect } from "../rules/legend1/set6NamedEffectsB";
+import { trySet7CCardEffect } from "../rules/legend1/set7NamedEffectsC";
 import { trySet7DCardEffect } from "../rules/legend1/set7NamedEffectsD";
 import { trySet6LowCardEffect } from "../rules/legend1/set6NamedEffects348";
 import { trySet6AuditCardEffect } from "../rules/legend1/set6AuditFixes";
@@ -410,6 +411,9 @@ export function applyGrantKeyword(
   // 第6弾 RS-390〜RS-431 のカード固有の名前付き効果（`set6b::` キーワード。rules/legend1/set6NamedEffectsB.ts）。
   const set6b = trySet6BCardEffect(state, ctx, keyword);
   if (set6b) return set6b;
+  // 第7弾 RS-474〜RS-494 のカード固有の名前付き効果（`set7c::` キーワード。rules/legend1/set7NamedEffectsC.ts）。
+  const set7c = trySet7CCardEffect(state, ctx, keyword);
+  if (set7c) return set7c;
   const errata = tryErrataCardEffect(state, ctx, keyword);
   if (errata) return errata;
   // RS-340/343【ゲキヌンチャク】の BP+2000 の記録など、通常処理に付随する第5弾の処理。

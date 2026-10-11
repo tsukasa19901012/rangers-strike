@@ -40,11 +40,27 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregarashuerianiaruwotsuyunitogasutoraikushitatokis",
-          "duration": "permanent"
+          "keyword": "effect_card::RS-485::kazenoe796be",
+          "duration": "turn"
         }
       ],
       "optional": true
+    },
+    {
+      "id": "kaze_no_e796be_destroy",
+      "name": "疾風流の継承",
+      "text": "また、これが撃破されて捨札になったとき、このカードの持ち主は、特徴「忍者」を持つ自軍ユニットの数と同じ枚数までドローしてもよい。",
+      "trigger": {
+        "type": "on_destroy"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "set7c::RS-485::destroy_draw",
+          "duration": "turn"
+        }
+      ]
     }
   ],
   "unnamedRules": [

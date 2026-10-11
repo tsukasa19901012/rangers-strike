@@ -86,8 +86,7 @@ describe("RS-460 花忍者ラン", () => {
     expect(s.pendingEffectChoice?.validInstanceIds).toContain("10");
   });
 
-  // 既知の不具合: CARD-RS-460 宣言できる数字が 0〜12 に限られている（100 などを宣言できない）
-  it.fails("RS-460: atwiki Q&A — 3桁の数字（100）も宣言できる（出典: atwiki/page-823 Q1/A1「「10」や「100」等を…2桁以上であっても宣言できます」）", () => {
+  it("RS-460: atwiki Q&A — 3桁の数字（100）も宣言できる（出典: atwiki/page-823 Q1/A1「「10」や「100」等を…2桁以上であっても宣言できます」）", () => {
     const s = ncEnter("RS-460", 1);
     expect(s.pendingEffectChoice?.validInstanceIds).toContain("100");
   });
@@ -108,14 +107,12 @@ describe("RS-460 花忍者ラン", () => {
     return enter(s, "RS-458:nw");
   };
 
-  // 既知の不具合: CARD-RS-460 宣言した必要パワーが他の効果（ニンジャホワイトの「必要パワーの数字」参照）に反映されない（RS-458 の条件落ちも重なる）
-  it.fails("RS-460: 【忍法花爆弾】このターン、敵軍 S ユニットの必要パワーは宣言した数字になる — 0 を宣言すると必要パワー0扱いの S ユニットはホワイトで選べず、L ユニット（7+）は元のまま選べる（出典: atwiki/page-823「すべての敵軍Sユニットの必要パワーは宣言した数字になる」）", () => {
+  it("RS-460: 【忍法花爆弾】このターン、敵軍 S ユニットの必要パワーは宣言した数字になる — 0 を宣言すると必要パワー0扱いの S ユニットはホワイトで選べず、L ユニット（7+）は元のまま選べる（出典: atwiki/page-823「すべての敵軍Sユニットの必要パワーは宣言した数字になる」）", () => {
     const s = bombThenWhite("0");
     expect(choiceIds(s)).toEqual(["TST-UNIT-7:l7"]);
   });
 
-  // 既知の不具合: CARD-RS-460 宣言した必要パワーが他の効果に反映されない
-  it.fails("RS-460: 【忍法花爆弾】9 を宣言すると本来の必要パワー0の敵軍 S ユニットも「必要パワー9」としてホワイトで選べる（S ユニット以外は変わらない）（出典: atwiki/page-823）", () => {
+  it("RS-460: 【忍法花爆弾】9 を宣言すると本来の必要パワー0の敵軍 S ユニットも「必要パワー9」としてホワイトで選べる（S ユニット以外は変わらない）（出典: atwiki/page-823）", () => {
     const s = bombThenWhite("9");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:s0", "TST-UNIT-7:l7"]);
     // 宣言 0 のときと結果が違うこと（宣言が効いていること）も合わせて確認する。
@@ -135,8 +132,7 @@ describe("RS-461 花忍者スイレン", () => {
 
   scrumTests("RS-461", 2, "RS-462", "RS-460", "page-824");
 
-  // 既知の不具合: CARD-RS-461 【忍法花夢幻】が未実装（確認だけで敵軍 S ユニットを選べない）
-  it.fails("RS-461: 【忍法花夢幻】2番目に出て NC が成立すると、敵軍 S ユニット（バトル・ラッシュ。M ユニットは不可）を1体選べる（出典: atwiki/page-824「敵軍Sユニットを1体選び」）", () => {
+  it("RS-461: 【忍法花夢幻】2番目に出て NC が成立すると、敵軍 S ユニット（バトル・ラッシュ。M ユニットは不可）を1体選べる（出典: atwiki/page-824「敵軍Sユニットを1体選び」）", () => {
     const s = ncEnter("RS-461", 2, {}, { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-2", "m")], rush: [inst("TST-UNIT-0", "e3")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-461");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e1", "TST-UNIT-0:e3"]);
@@ -175,16 +171,14 @@ describe("RS-462 花忍者サクラ", () => {
   const missile = (hand: CardInstance[] = [inst("RS-463", "h1")], p2battle: CardInstance[] = [inst("RS-461", "w"), inst("TST-UNIT-0", "e2")]) =>
     ncEnter("RS-462", 3, { hand }, { battle: p2battle, deck: deckCards(5, "e") });
 
-  // 既知の不具合: CARD-RS-462 【くノ一ミサイル】が見せる手順・条件・相手の選択なしに無条件で相手に1点ダメージを与える
-  it.fails("RS-462: 【くノ一ミサイル】「見せてもよい」— 手札のカードを選ぶ（見せない選択もできる）（出典: atwiki/page-825「自分の手札からカードを1枚選び、相手に見せてもよい」）", () => {
+  it("RS-462: 【くノ一ミサイル】「見せてもよい」— 手札のカードを選ぶ（見せない選択もできる）（出典: atwiki/page-825「自分の手札からカードを1枚選び、相手に見せてもよい」）", () => {
     const s = missile();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-462");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-462 見せなかったのに相手が1点ダメージを受ける
-  it.fails("RS-462: 【くノ一ミサイル】見せなければ何も起きない（相手はダメージを受けない）（出典: atwiki/page-825「見せてもよい。そうしたとき」）", () => {
+  it("RS-462: 【くノ一ミサイル】見せなければ何も起きない（相手はダメージを受けない）（出典: atwiki/page-825「見せてもよい。そうしたとき」）", () => {
     let s = missile();
     if (s.pendingEffectChoice?.sourceCardId === "RS-462") s = skip(s);
     s = resolveAll(s);
@@ -192,8 +186,7 @@ describe("RS-462 花忍者サクラ", () => {
     expect(zoneOf(s, "player2", "RS-461:w")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-462 条件（同じ特徴を2つ以上持つ敵軍ユニット）を満たしても相手が「撃破かダメージか」を選べない
-  it.fails("RS-462: 【くノ一ミサイル】見せたカードと同じ特徴を2つ以上持つ敵軍ユニットがあれば、相手がその中から撃破する1体か1点ダメージかを選ぶ（出典: atwiki/page-825「相手はその中から1体選び撃破するか、1点ダメージを受けるかを選ぶ」）", () => {
+  it("RS-462: 【くノ一ミサイル】見せたカードと同じ特徴を2つ以上持つ敵軍ユニットがあれば、相手がその中から撃破する1体か1点ダメージかを選ぶ（出典: atwiki/page-825「相手はその中から1体選び撃破するか、1点ダメージを受けるかを選ぶ」）", () => {
     let s = missile();
     s = pick(s, "RS-463:h1");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
@@ -204,16 +197,14 @@ describe("RS-462 花忍者サクラ", () => {
     expect(s.players.player2.damage ?? 0).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-462 条件を満たす敵軍ユニットがいなくても相手が1点ダメージを受ける
-  it.fails("RS-462: 【くノ一ミサイル】同じ特徴を2つ以上持つ敵軍ユニットがなければ何も起きない（出典: atwiki/page-825「…敵軍ユニットがあれば」）", () => {
+  it("RS-462: 【くノ一ミサイル】同じ特徴を2つ以上持つ敵軍ユニットがなければ何も起きない（出典: atwiki/page-825「…敵軍ユニットがあれば」）", () => {
     let s = missile([inst("RS-463", "h1")], [inst("TST-UNIT-0", "e2")]);
     if (s.pendingEffectChoice?.sourceCardId === "RS-462") s = pick(s, "RS-463:h1");
     s = resolveAll(s);
     expect(s.players.player2.damage ?? 0).toBe(0);
   });
 
-  // 既知の不具合: CARD-RS-462 手札がなく見せられなくても相手が1点ダメージを受ける
-  it.fails("RS-462: 【くノ一ミサイル】自分の手札がなければ見せられず、何も起きない（出典: atwiki/page-825「自分の手札からカードを1枚選び」）", () => {
+  it("RS-462: 【くノ一ミサイル】自分の手札がなければ見せられず、何も起きない（出典: atwiki/page-825「自分の手札からカードを1枚選び」）", () => {
     const s = resolveAll(missile([]));
     expect(s.players.player2.damage ?? 0).toBe(0);
   });
@@ -241,16 +232,14 @@ describe("RS-463 花忍者アヤメ", () => {
   const nawa = (p2battle: CardInstance[] = [inst("TST-UNIT-2", "c2"), inst("TST-UNIT-0", "c0")]) =>
     ncEnter("RS-463", 4, { hand: [inst("TST-UNIT-2", "h2")] }, { battle: p2battle, hand: [inst("TST-OP", "eh")], deck: deckCards(5, "e") });
 
-  // 既知の不具合: CARD-RS-463 【絡め取る縄】が未実装（何も選べない）
-  it.fails("RS-463: 【絡め取る縄】「見せてもよい」— 手札のカードを選ぶ（見せない選択もできる）（出典: atwiki/page-747「自分の手札からカードを1枚選び、相手に見せてもよい」）", () => {
+  it("RS-463: 【絡め取る縄】「見せてもよい」— 手札のカードを選ぶ（見せない選択もできる）（出典: atwiki/page-747「自分の手札からカードを1枚選び、相手に見せてもよい」）", () => {
     const s = nawa();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-463");
     expect(choiceIds(s)).toEqual(["TST-UNIT-2:h2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-463 【絡め取る縄】が未実装（相手の「撃破か手札を捨てるか」の選択がない）
-  it.fails("RS-463: 【絡め取る縄】見せたカードと同じ必要パワーの数字の敵軍ユニットがあれば、相手がその中から撃破する1体か、手札1枚を捨札にするかを選ぶ（出典: atwiki/page-747「相手はその中から1体選び撃破するか、自分自身の手札を1枚選び捨札にするかを選ぶ」）", () => {
+  it("RS-463: 【絡め取る縄】見せたカードと同じ必要パワーの数字の敵軍ユニットがあれば、相手がその中から撃破する1体か、手札1枚を捨札にするかを選ぶ（出典: atwiki/page-747「相手はその中から1体選び撃破するか、自分自身の手札を1枚選び捨札にするかを選ぶ」）", () => {
     let s = pick(nawa(), "TST-UNIT-2:h2");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toContain("TST-UNIT-2:c2");
@@ -288,9 +277,13 @@ describe("RS-464 花忍者ユリ", () => {
    * player1 のバトルフェイズにユリを position 番目に出してターンを終え、次の相手（player2）のバトルフェイズで
    * 敵軍ニンジャホワイト（NC4: 必要パワーの数字が player1 のパワーゾーン枚数 0 より大きいユニットを選ぶ）を出す。
    */
-  const nextEnemyWhite = (position: number) => {
+  const nextEnemyWhite = (position: number, otherCandidates: CardInstance[] = []) => {
     let s = st({
-      player1: { battle: [], rush: [inst("RS-464", "yu"), ...Array.from({ length: position - 1 }, (_, i) => inst("TST-UNIT-0", `f${i}`))], deck: deckCards(8) },
+      player1: {
+        battle: [],
+        rush: [inst("RS-464", "yu"), ...Array.from({ length: position - 1 }, (_, i) => inst("TST-UNIT-0", `f${i}`)), ...otherCandidates],
+        deck: deckCards(8),
+      },
       player2: { rush: [inst("TST-UNIT-0", "a1"), inst("TST-UNIT-0", "a2"), inst("TST-UNIT-0", "a3"), inst("RS-458", "w")], deck: deckCards(8, "e") },
     });
     for (let i = 0; i < position - 1; i++) s = passEntry(enter(s, `TST-UNIT-0:f${i}`));
@@ -300,10 +293,11 @@ describe("RS-464 花忍者ユリ", () => {
     return enter(s, "RS-458:w", "player2");
   };
 
-  // 既知の不具合: CARD-RS-464 【斬撃の回避】が未実装（次の相手ターンに相手の効果で選べてしまう）
-  it.fails("RS-464: 【斬撃の回避】5番目に出て NC が成立すると、次の相手ターン、相手の効果（ニンジャホワイト）でこのユニットを選べない（出典: atwiki/page-826「次の相手ターン、相手はこのユニットを選べない」）", () => {
-    const s = nextEnemyWhite(5);
+  // 【忍法折鶴之舞】の候補が開くように、ユリ以外にも候補（必要パワー2の TST-UNIT-2）を置く（ユリだけだと候補がなく選択自体が開かない）。
+  it("RS-464: 【斬撃の回避】5番目に出て NC が成立すると、次の相手ターン、相手の効果（ニンジャホワイト）でこのユニットを選べない（出典: atwiki/page-826「次の相手ターン、相手はこのユニットを選べない」）", () => {
+    const s = nextEnemyWhite(5, [inst("TST-UNIT-2", "m2")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-458");
+    expect(choiceIds(s)).toContain("TST-UNIT-2:m2");
     expect(choiceIds(s)).not.toContain("RS-464:yu");
   });
 

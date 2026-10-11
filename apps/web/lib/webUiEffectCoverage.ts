@@ -118,6 +118,9 @@ const KNOWN_EFFECT_IDS = new Set<string>([
   "purobaidabesu_deck_top",
   "suraida_ignore_entry_hold",
   "toripururikidobonba_take",
+  // 第7弾 RS-474〜RS-494（engine: rules/legend1/set7NamedEffectsC.ts）の数字の選択（EffectChoiceModal の数字ボタン）。
+  "rs485_hamster_destroy_draw",
+  "rs493_quiz_declare",
 ]);
 
 export function isKnownEffectChoice(pending: PendingEffectChoice): boolean {

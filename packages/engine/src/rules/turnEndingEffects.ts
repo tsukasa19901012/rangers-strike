@@ -1,6 +1,7 @@
 import type { CardInstance, GameState, PlayerId, TurnEndProgress } from "../types/game";
 import { applySet6TurnEnd } from "./legend1/set6AuditFixes";
 import { collectSet6BTurnEndQueue, openSet6BTurnEndEntry } from "./legend1/set6NamedEffectsB";
+import { collectSet7CTurnEndQueue, openSet7CTurnEndEntry } from "./legend1/set7NamedEffectsC";
 import { applyDarkLawTurnEnd } from "./legend1/set5NamedEffectsA";
 import { applyChangePowerTurnEnd, hedrianBeautyCount, openHedrianBeautyChoice } from "./legend1/set6NamedEffects348";
 import { activeNamedEffect } from "./ncGatedEffects";
@@ -284,6 +285,14 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.set6bQueue!;
     progress = { ...progress, set6bQueue: rest };
     nextState = openSet6BTurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // RS-484【ハリーアップ！】（rules/legend1/set7NamedEffectsC.ts）。
+  if (!progress.set7cQueue) progress = { ...progress, set7cQueue: collectSet7CTurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.set7cQueue ?? []).length > 0) {
+    const [entry, ...rest] = progress.set7cQueue!;
+    progress = { ...progress, set7cQueue: rest };
+    nextState = openSet7CTurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {
