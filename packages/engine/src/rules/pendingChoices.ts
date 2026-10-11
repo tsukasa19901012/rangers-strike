@@ -159,6 +159,7 @@ import {
   fireAkaRedSoulNc,
   STRING_FIST_SECOND_STEP_REFRESH,
 } from "./legend1/set6AuditFixes";
+import { afterUnitsReturnedToRush, tryConfirmSet7AChoice, tryResolveSet7AChoice, trySkipSet7AChoice } from "./legend1/set7NamedEffectsA";
 import {
   applyFlowerBombDeclaredNumber,
   continueMagiBlueAfterSelfDraw,
@@ -1986,6 +1987,8 @@ export function applyConfirmEffectChoice(
   if (set5a) return set5a;
   const set6Audit = tryConfirmSet6AuditChoice(state, playerId);
   if (set6Audit) return set6Audit;
+  const set7a = tryConfirmSet7AChoice(state, playerId);
+  if (set7a) return set7a;
   const set7b = tryConfirmSet7BChoice(state, playerId);
   if (set7b) return set7b;
   if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
@@ -2007,6 +2010,25 @@ export function applyConfirmEffectChoice(
 
   if (pending.effectId === HAJA_BLADE_EFFECT_ID) {
     return finishAssaultVectorDestroy(state, pending);
+  }
+  if (pending.effectId === SCRAMBLE_EFFECT_ID && pending.kind === "select_commands") {
+    // RS-446【スクランブル】「3枚まで選び」— 選んだ枚数で確定する（最後に選んだカードで選択を完了させる）。
+    const selected = pending.selectedInstanceIds ?? [];
+    const last = selected[selected.length - 1];
+    if (!last) return { error: "no_selection" };
+    return applyEffectChoiceSelect(
+      {
+        ...state,
+        pendingEffectChoice: {
+          ...pending,
+          selectedInstanceIds: selected.slice(0, -1),
+          selectCount: selected.length,
+          validInstanceIds: [...pending.validInstanceIds.filter((id) => id !== last), last],
+        },
+      },
+      playerId,
+      last,
+    );
   }
   if (isRs4NcChoice(pending)) {
     const next = confirmRs4NcChoice(state, pending);
@@ -2871,6 +2893,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set5Audit) return set5Audit;
   const set6Low = trySkipSet6LowChoice(state, playerId);
   if (set6Low) return set6Low;
+  const set7a = trySkipSet7AChoice(state, playerId);
+  if (set7a) return set7a;
   const set6Audit = trySkipSet6AuditChoice(state, playerId);
   if (set6Audit) return set6Audit;
   if (isEffectRushChoice(pending)) return skipEffectRushChoice(state, playerId);
@@ -3145,6 +3169,8 @@ export function applyEffectChoiceSelect(
   if (set6Low) return set6Low;
   const set6Audit = tryResolveSet6AuditChoice(state, playerId, instanceId);
   if (set6Audit) return set6Audit;
+  const set7a = tryResolveSet7AChoice(state, playerId, instanceId);
+  if (set7a) return set7a;
   if (isEffectRushChoice(pending)) return resolveEffectRushChoice(state, playerId, instanceId);
   if (isHoldActivateChoice(pending)) {
     // 「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒…」（rules/holdToActivate.ts）。
@@ -4550,6 +4576,21 @@ export function applyEffectChoiceSelect(
         let remaining = pending.validInstanceIds.filter((id) => !selected.includes(id));
         if (pending.effectId === SCRAMBLE_EFFECT_ID) {
           remaining = filterScrambleRemaining(state, pending.playerId, selected, remaining);
+          // RS-446「3枚まで」: 選べるカードが残っていなければ、選んだ分で確定する。
+          if (remaining.length === 0) {
+            return applyEffectChoiceSelect(
+              {
+                ...state,
+                pendingEffectChoice: {
+                  ...pending,
+                  selectedInstanceIds: selected.slice(0, -1),
+                  selectCount: selected.length,
+                },
+              },
+              playerId,
+              instanceId,
+            );
+          }
         }
         return {
           state: {
@@ -5218,8 +5259,18 @@ export function applyEffectChoiceSelect(
       }
       if (pending.effectId === "disco_dance") {
         if (instanceId !== "return") return { error: "invalid_target" };
+        const before = new Set(state.players[playerId].battle.map((c) => c.instanceId));
         const nextState = applyDiscoDanceReturnFemaleSToRush(state, playerId);
-        return finishChoice(nextState, pending, "return");
+        const returned = nextState.players[playerId].rush
+          .map((c) => c.instanceId)
+          .filter((id) => before.has(id));
+        const finished = finishChoice(nextState, pending, "return");
+        if ("error" in finished) return finished;
+        // RS-441【コサックダンス】: バトルエリアからラッシュエリアに戻るたび（rules/legend1/set7NamedEffectsA.ts）。
+        return {
+          ...finished,
+          state: afterUnitsReturnedToRush(finished.state, playerId, returned, pending.phasePlayerId),
+        };
       }
       if (pending.effectId === "sagasupia") {
         const deckOwnerId =

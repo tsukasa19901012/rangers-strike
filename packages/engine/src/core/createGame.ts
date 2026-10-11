@@ -2,6 +2,7 @@ import { countLogicalBattleSlots } from "../rules/battleLine";
 import { allCardsCatalog, type CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { resetRushPhaseFlags } from "../rules/turnModifiers";
+import { applySet7ABattlePhaseEnd } from "../rules/legend1/set7NamedEffectsA";
 import { initializeStartPhasePlayer } from "../rules/startPhase";
 import {
   INITIAL_HAND_SIZE,
@@ -283,6 +284,22 @@ export function advancePhase(state: GameState): GameState {
         ...nextState.players,
         [activePlayer]: { ...ender, battlePositionsAtBattleEnd: positions },
       },
+    };
+  }
+
+  if (state.phase === "battle" && next === "end") {
+    // RS-432 隠流マキビシ: 相手がバトルフェイズを終えるとき（rules/legend1/set7NamedEffectsA.ts）。
+    nextState = applySet7ABattlePhaseEnd(nextState, activePlayer);
+  }
+  if (next === "battle") {
+    // 「そのバトルフェイズ中に受けたダメージ」（RS-432）の基準。
+    const mark = (p: PlayerState): PlayerState => ({
+      ...p,
+      damageAtBattlePhaseStart: Math.max(p.damage, p.power.filter((c) => c.faceDown).length),
+    });
+    nextState = {
+      ...nextState,
+      players: { player1: mark(nextState.players.player1), player2: mark(nextState.players.player2) },
     };
   }
 

@@ -172,7 +172,7 @@ export function canSelfRushFromZone(
   if (!card) return false;
   if (zone === "hand") return handDeployConditionMet(state, playerId, card.cardId);
   if (zone === "power" && card.faceDown) return false;
-  if (zone === "command" && card.commandHeld) return false;
+  // 「これが自軍コマンドゾーンにある間」— リリース／ホールドの状態は問わない（RS-447・XG4-077。atwiki/page-786）。
   const keyword =
     zone === "command" ? "rush_from_discard_count_command" : "rush_from_discard_count_power";
   if (!cardHasGrantKeyword(card.cardId, keyword)) return false;

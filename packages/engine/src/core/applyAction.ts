@@ -1,7 +1,14 @@
+import {
+  applySet7AStrikeCounter,
+  applySet7AStrikeDamageTriggers,
+  openPowerUnitToHandAfterPlace,
+  set7AStrikeCounterIds,
+} from "../rules/legend1/set7NamedEffectsA";
 import { openKibaShotIfReady, queueKibaShot } from "../rules/legend1/set6AuditFixes";
 import { icyStateForAction, isIcyPhantom, settleIcyPhantoms } from "../rules/legend1/icyLastResort";
 import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw, settleDarkArmor } from "../rules/legend1/set6NamedEffects348";
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
+import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
 import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
 import { openBlueMoonSlash, openChargeInsteadOfBattle } from "../rules/legend1/set7NamedEffectsB";
@@ -271,6 +278,7 @@ import {
   isShippuNinjaCard,
   applySuperShieldSubstitute,
   canExecuteHandCounter,
+  canPlayHandCounter,
   getCounterEffectId,
   hasBattleCounterReactions,
   finalizeLeaveReaction,
@@ -541,6 +549,8 @@ function finishStrikeResolution(
   const defenderId = opponent(pending.strikerPlayerId);
   const deckDraws = state.players[defenderId].deck.length - nextState.players[defenderId].deck.length;
   resolved = applySet7DStrikeDamageTriggers(resolved, pending, deckDraws);
+  // RS-434 ライフバード（※常駐。rules/legend1/set7NamedEffectsA.ts）。
+  resolved = applySet7AStrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -798,13 +808,18 @@ export function applyAction(
   if (icyState) state = icyState;
   applyActionDepth += 1;
   let result: ActionResult;
+  // 「※このカードの追加条件は、…のとき、次のように変更される」を反映した定義で処理し、結果には元の定義を戻す（RS-440 等）。
+  const view = withEffectiveRushConditionDefinitions(state);
   try {
     // 追加条件の素材の特徴（効果・フェイズで追加された特徴）はこの状態で判定する（rules/zordFeatureContext.ts）。
-    result = withZordFeatureContext(state, () => applyActionCore(state, action, options));
+    result = withZordFeatureContext(view, () => applyActionCore(view, action, options));
   } finally {
     applyActionDepth -= 1;
   }
   if (!result.ok) return result;
+  if (view !== state && result.state.definitions !== state.definitions) {
+    result = { ...result, state: { ...result.state, definitions: state.definitions } };
+  }
   // ルール: R-ZONE-04, R-HOLD-02 — エリアを離れたカードの付加情報はどの経路で移動しても消える。
   let next = clearRegisterHoldOffField(result.state);
   next = settleEffectRushes(state, next);
@@ -1570,6 +1585,8 @@ function applyActionCore(
             power: [...current.power, { ...found.card, faceDown: false }],
           }),
         };
+        // 「その後、自軍パワーゾーンのオモテ向きのカードからユニットカードを1枚選び、手札に加えてもよい」（RS-438 炎神ソウル）。
+        nextState = openPowerUnitToHandAfterPlace(nextState, playerId, found.card);
         return ok(
           nextState,
           buildLogEntry(
@@ -1865,6 +1882,20 @@ function applyActionCore(
             if (!afterHolds) return fail("invalid_zord_material");
             nextPlayer = afterHolds;
           }
+        }
+      }
+
+      {
+        // 追加条件で捨札にしたカードを記録する（RS-437 白熱する実況。rules/legend1/set7NamedEffectsA.ts）。
+        const discardBefore = new Set(state.players[playerId].discard.map((c) => c.instanceId));
+        const zordDiscarded = nextPlayer.discard
+          .filter((c) => !discardBefore.has(c.instanceId))
+          .map((c) => c.instanceId);
+        if (zordDiscarded.length > 0) {
+          nextPlayer = { ...nextPlayer, lastZordDiscard: { rushedInstanceId: found.card.instanceId, instanceIds: zordDiscarded } };
+        } else if (nextPlayer.lastZordDiscard) {
+          const { lastZordDiscard: _stale, ...rest } = nextPlayer;
+          nextPlayer = rest as PlayerState;
         }
       }
 
@@ -2505,6 +2536,12 @@ function applyActionCore(
         const pending = state.pendingStrike;
         const defenderId = opponent(pending.strikerPlayerId);
         if (playerId !== defenderId) return fail("wrong_player");
+        // RS-432 隠流マキビシ（rules/legend1/set7NamedEffectsA.ts）。
+        if (set7AStrikeCounterIds(state, defenderId, pending, canPlayHandCounter).includes(action.instanceId)) {
+          const used = applySet7AStrikeCounter(state, defenderId, action.instanceId);
+          const cleared = clearCounterHoldReady(used.state, playerId);
+          return completeStrike({ ...cleared, pendingStrike: pending }, pending, [used.log]);
+        }
         if (!magiPunchCounterIds(state, defenderId, pending).includes(action.instanceId)) {
           return fail("invalid_counter");
         }

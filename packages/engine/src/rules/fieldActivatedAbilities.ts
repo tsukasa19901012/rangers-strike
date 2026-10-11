@@ -21,6 +21,7 @@ import { beginAbarenohFromHand } from "./errataCardEffects";
 import { canActivateMagRepair, openMagRepair } from "./legend1/set5NamedEffectsA";
 import { beginAllAboard, canActivateAllAboard } from "./legend1/set6NamedEffects348";
 import { beginHoldToActivate, canActivateHoldToActivate, isHoldToActivateNc } from "./holdToActivate";
+import { activateHoldReturnSelf, canActivateHoldReturnSelf, holdReturnSelfCount } from "./legend1/set7NamedEffectsA";
 
 type FieldZone = "rush" | "battle";
 
@@ -33,6 +34,8 @@ type FieldActivatedAbility = {
   phase?: "start" | "rush" | "battle";
   /** コストとしてこのカードを捨札にするか（省略時 true）。 */
   discardSelf?: boolean;
+  /** 同じターンに同じカードで何度でも起動できる（コストを払えるかぎり。RS-440【武器換装】faq-card-7 RS-440 Q）。 */
+  repeatable?: boolean;
   /** カードを特定する述語（省略時は cardId 一致）。同効果の再録カードにも適用するため。 */
   matches?: (cardId: string) => boolean;
   canActivate?: (state: GameState, playerId: PlayerId, card: CardInstance) => boolean;
@@ -378,6 +381,20 @@ ABILITIES.push({
   resolve: (state, playerId, card) => beginHoldToActivate(state, playerId, card),
 });
 
+// 「これが自軍バトルエリアにある間、自軍バトルフェイズ中、自軍コマンドをNつホールドしてもよい。そうしたとき、
+// これをラッシュエリアに戻す。」（RS-440【武器換装】。rules/legend1/set7NamedEffectsA.ts）。文言で判定する。
+ABILITIES.push({
+  cardId: "",
+  effectId: "hold_commands_return_self",
+  zones: ["battle"],
+  phase: "battle",
+  discardSelf: false,
+  repeatable: true,
+  matches: (cardId) => holdReturnSelfCount(cardId) > 0,
+  canActivate: (state, playerId, card) => canActivateHoldReturnSelf(state, playerId, card),
+  resolve: (state, playerId, card) => activateHoldReturnSelf(state, playerId, card),
+});
+
 function abilityFor(cardId: string): FieldActivatedAbility | undefined {
   return ABILITIES.find((a) => (a.matches ? a.matches(cardId) : isSameCardIdentity(a.cardId, cardId)));
 }
@@ -419,6 +436,7 @@ export function activateFieldAbility(
   const ability = abilityFor(found.card.cardId);
   if (!ability) return null;
   if (ability.discardSelf === false) {
+    if (ability.repeatable) return ability.resolve(state, playerId, found.card);
     return ability.resolve(markFieldAbilityUsed(state, playerId, found.card), playerId, found.card);
   }
 

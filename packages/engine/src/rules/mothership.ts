@@ -294,6 +294,16 @@ export function validateZordAdditionalPayment(
   mothershipHoldInstanceIds?: string[],
   materialInstanceIds?: string[],
 ): boolean {
+  // 状態で変わった追加条件（「※このカードの追加条件は、…のとき、次のように変更される」。RS-440。
+  // rules/rushAdditionalCondition.ts withEffectiveRushConditionDefinitions）は、変更後の条件の素材だけで判定する（母艦ホールドでは代えられない）。
+  const override = (getDefinition(definitions, rushingCardId) as { rushAdditionalConditionOverride?: unknown } | undefined)
+    ?.rushAdditionalConditionOverride;
+  if (override) {
+    if ((mothershipHoldInstanceIds ?? []).length > 0) return false;
+    const ids = materialInstanceIds ?? (materialInstanceId ? [materialInstanceId] : []);
+    if (ids.length === 0) return false;
+    return validateFieldZordMaterials(player, definitions, rushingCardId, rushingInstanceId, ids, materialDestination);
+  }
   const condition = getZordCondition(rushingCardId);
   if (!condition) return true;
   if (

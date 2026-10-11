@@ -18,6 +18,7 @@ import { legend2EffectiveSp } from "../legend2/fieldEffects";
 import { sameCardName } from "../../core/cardNames";
 import { set5AEffectiveSp } from "../legend1/set5NamedEffectsA";
 import { set6BEffectiveSp, turnPlayerOf } from "../legend1/set6NamedEffectsB";
+import { set7AEffectiveSp } from "../legend1/set7NamedEffectsA";
 import { set7BEffectiveSp } from "../legend1/set7NamedEffectsB";
 import { set7DEffectiveSp } from "../legend1/set7NamedEffectsD";
 import {
@@ -224,6 +225,7 @@ export function legend3EffectiveSp(
   }
   sp = set5AEffectiveSp(state, playerId, instance, sp);
   sp = set6BEffectiveSp(state, playerId, instance, sp);
+  sp = set7AEffectiveSp(state, playerId, instance, sp);
   sp = set7BEffectiveSp(state, playerId, instance, sp);
   // 第7弾 RS-500【サイブレードカッター】等（rules/legend1/set7NamedEffectsD.ts）。
   sp = set7DEffectiveSp(state, playerId, instance, sp);

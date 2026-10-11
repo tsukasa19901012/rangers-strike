@@ -12,6 +12,7 @@ import { rkPassiveBpBonus } from "./rkFieldPassives";
 import { set5AFieldBpBonus } from "./legend1/set5NamedEffectsA";
 import { set6BFieldBpBonus } from "./legend1/set6NamedEffectsB";
 import { femaleUnitCountBothSides } from "./legend1/set7NamedEffectsD";
+import { set7AFieldBpBonus } from "./legend1/set7NamedEffectsA";
 import { rs560BeastMBpBonus } from "./rs/rsCatchallField";
 import { commandCategoriesNow } from "./legend3/battleEffects";
 
@@ -123,8 +124,7 @@ function noteOtherNcBpBonus(
     }).length * 1000;
   }
 
-  // RS-440: BP+1000 per own unit with number containing L or R (e.g. 1L, 2R)
-  // Deferred — number parsing needed. Skip for now.
+  // RS-440: ナンバーに L／R を持つ自軍ユニット1体につき BP+1000 は rules/legend1/set7NamedEffectsA.ts（set7AFieldBpBonus）。
 
   // RS-501 エレハン・キンポー ※「これは特徴「女」を持つユニット1体につきBP＋1000される。」— 自軍・敵軍の限定はない
   // （atwiki/page-742。rules/legend1/set7NamedEffectsD.ts）。
@@ -240,6 +240,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += set5AFieldBpBonus(state, playerId, instance);
   // 第6弾 RS-409【フレンジー・スピア・クラッシュ】・RS-415【飛竜剣法・散弾月】・RS-431【剛勇吼波】。
   if (role === "general") bonus += set6BFieldBpBonus(state, playerId, instance);
+  // 第7弾 RS-440 ※（L／R ナンバー1体につき）・RS-442【スパニッシュダンス】（rules/legend1/set7NamedEffectsA.ts）。
+  if (role === "general") bonus += set7AFieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

@@ -24,8 +24,9 @@ import {
   canMoveUnitToBattleWithHolds,
   clearEffectBattleEntryWindows,
 } from "./restrictions";
-import { tryDestroyStrikerForStrike, tryLeaveField } from "./operationCounters";
+import { canPlayHandCounter, tryDestroyStrikerForStrike, tryLeaveField } from "./operationCounters";
 import { magiPunchCounterIds } from "./legend1/set4NamedEffects";
+import { set7AStrikeCounterIds } from "./legend1/set7NamedEffectsA";
 
 export function earthForceActive(state: GameState): boolean {
   return (
@@ -145,6 +146,8 @@ export function hasStrikeReactions(
   if (canPlayPlasmaEnergyCounter(state, defenderId)) return true;
   // RS-184 マジパンチ（BP8000以下の敵軍ユニットにストライクされたとき）。
   if (pending && magiPunchCounterIds(state, defenderId, pending).length > 0) return true;
+  // RS-432 隠流マキビシ（ストライクされたとき。rules/legend1/set7NamedEffectsA.ts）。
+  if (pending && set7AStrikeCounterIds(state, defenderId, pending, canPlayHandCounter).length > 0) return true;
 
   return false;
 }

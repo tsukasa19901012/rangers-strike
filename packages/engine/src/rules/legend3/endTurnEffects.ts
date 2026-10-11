@@ -1,3 +1,4 @@
+import { ncEstablishedThisTurn } from "../legend1/set7NamedEffectsA";
 import { namedEffectActive } from "../ncGatedEffects";
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit } from "../../core/catalog";
@@ -126,8 +127,10 @@ export function startEndTurnBattleToRushChoiceForUnit(
 }
 
 function battleHasDiscoDanceActive(state: GameState, playerId: PlayerId): boolean {
-  return state.players[playerId].battle.some((c) =>
-    c.activatedNcEffects?.includes("disco_dance"),
+  // ルール: R-CN-06 — NC の効果はターン終了まで有効（発動元が撃破されても無効にならない）。
+  return (
+    state.players[playerId].battle.some((c) => c.activatedNcEffects?.includes("disco_dance")) ||
+    ncEstablishedThisTurn(state, playerId, "disco_dance")
   );
 }
 

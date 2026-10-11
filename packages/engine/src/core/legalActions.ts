@@ -112,11 +112,13 @@ import { listValidChaseVehicleIds } from "../keywords/chase";
 import { canDeclareRush } from "../rules/rushDeclaration";
 import { jaryuInvasionAllowsRushWithoutHold } from "../rules/jaryuInvasion";
 import { listKamenRideAbilityUnits } from "../rules/riderKickEffects";
-import { listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities";
+import { SCRAMBLE_EFFECT_ID, listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities";
 import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
 import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
 import { giantBombCounterIds, isSet5AConfirmableChoice, operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
 import { isSet6AuditConfirmableChoice } from "../rules/legend1/set6AuditFixes";
+import { isSet7AChoiceEffect, isSet7AConfirmableChoice, set7AStrikeCounterIds } from "../rules/legend1/set7NamedEffectsA";
+import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { isSet7BConfirmableChoice } from "../rules/legend1/set7NamedEffectsB";
 import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower } from "./power";
@@ -236,8 +238,11 @@ function appendStrikeReactionActions(
     actions.push({ type: "use_plasma_energy", playerId: defenderId });
   }
 
-  // RS-184 マジパンチ（BP8000以下の敵軍ユニットにストライクされたとき）。
-  for (const counterId of magiPunchCounterIds(state, defenderId, pending)) {
+  // RS-184 マジパンチ（BP8000以下の敵軍ユニットにストライクされたとき）・RS-432 隠流マキビシ（ストライクされたとき）。
+  for (const counterId of [
+    ...magiPunchCounterIds(state, defenderId, pending),
+    ...set7AStrikeCounterIds(state, defenderId, pending, canPlayHandCounter),
+  ]) {
     appendCounterCategoryPaymentActions(state, defenderId, counterId, actions);
     if (canExecuteHandCounter(state, defenderId, counterId)) {
       actions.push({ type: "play_counter", playerId: defenderId, instanceId: counterId });
@@ -1167,6 +1172,26 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (isSet7AChoiceEffect(pending.effectId)) {
+    // 第7弾 RS-432〜RS-452 の選択（rules/legend1/set7NamedEffectsA.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (isSet7AConfirmableChoice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (pending.kind === "select_commands" && pending.effectId === SCRAMBLE_EFFECT_ID) {
+    // RS-446【スクランブル】「3枚まで」— 1枚以上選べば、少なくても確定できる。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if ((pending.selectedInstanceIds ?? []).length > 0) {
+      actions.push({ type: "confirm_effect_choice", playerId });
+    }
+    return;
+  }
+
   // 第7弾（rules/legend1/set7NamedEffectsB.ts）の「…まで選ぶ」選択: 1つずつ選び、1つ以上選んだら確定できる。
   if (isSet7BConfirmableChoice(pending)) {
     const selected = pending.selectedInstanceIds ?? [];
@@ -1438,8 +1463,10 @@ export function getActionPlayerId(state: GameState): PlayerId {
   );
 }
 
-export function getLegalActions(state: GameState): GameAction[] {
-  if (state.winner) return [];
+export function getLegalActions(input: GameState): GameAction[] {
+  if (input.winner) return [];
+  // 「※このカードの追加条件は、…のとき、次のように変更される」を反映した定義で判定する（RS-440 等）。
+  const state = withEffectiveRushConditionDefinitions(input);
   // 追加条件の素材の特徴（効果・フェイズで追加された特徴）はこの状態で判定する（rules/zordFeatureContext.ts）。
   return withZordFeatureContext(state, () => getLegalActionsCore(state));
 }

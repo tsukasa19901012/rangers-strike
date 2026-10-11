@@ -1,3 +1,4 @@
+import { recordNcEstablishedThisTurn } from "./set7NamedEffectsA";
 import type { CardInstance, GameState, PlayerId, ScopedModifier } from "../../types/game";
 import {
   cardName,
@@ -283,6 +284,8 @@ export function applyCoreGapNcEffect(
     case "disco_dance": {
       nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
       nextState = markBattleNcEffect(nextState, playerId, card.instanceId, effectId);
+      // 発動元が撃破されても、ターンを終えるときの処理は行う（R-CN-06。rules/legend1/set7NamedEffectsA.ts）。
+      nextState = recordNcEstablishedThisTurn(nextState, playerId, card, effectId);
       logs.push(ncLog(playerId, card.cardId, state.definitions, effectId));
       break;
     }

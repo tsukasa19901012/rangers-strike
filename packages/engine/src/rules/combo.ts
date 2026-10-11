@@ -76,6 +76,7 @@ import {
   set6BBlocksStrike,
   trySet6BOnComboEnter,
 } from "./legend1/set6NamedEffectsB";
+import { trySet7AOnEnterBattle } from "./legend1/set7NamedEffectsA";
 import { clearWolfRoarDecision, openWolfRoarBeforeNc } from "./legend1/set7NamedEffectsC";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredBattleListener";
@@ -240,6 +241,11 @@ export function resolveEnterBattleEffectsImpl(
     }
     // RS-419【ゴールデンクラッシュ】: DA 以外のユニットからコンビネーションするとき（rules/legend1/set6NamedEffectsB.ts）。
     nextState = trySet6BOnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
+    if (nextState.pendingEffectChoice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+    // RS-452 テトラボーイ【テトラバスター】・※（敵軍の BP6000 以上が出たとき）（rules/legend1/set7NamedEffectsA.ts）。
+    nextState = trySet7AOnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }

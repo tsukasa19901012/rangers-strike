@@ -115,8 +115,7 @@ describe("RS-446 ダイジュピター", () => {
     expect(zoneOf(s, "player1", "RS-121:doz2")).toBe("command");
   });
 
-  // 既知の不具合: CARD-RS-446 選ぶ枚数が「候補のカード名の種類数（最大3）」ちょうどに固定され、1枚だけ選んで終えることができない（「3枚まで」）
-  it.fails("RS-446: 【スクランブル】「3枚まで」— 1枚だけ選んで終えられる（出典: atwiki/page-785「3枚まで選び」）", () => {
+  it("RS-446: 【スクランブル】「3枚まで」— 1枚だけ選んで終えられる（出典: atwiki/page-785「3枚まで選び」）", () => {
     const base = rushPhase({ rush: [inst("RS-446", "dj")], command: cmds() });
     let s = pick(act(base, scrambleActions(base)[0]!), "RS-118:dump");
     if (s.pendingEffectChoice) s = confirm(s);
@@ -194,8 +193,7 @@ describe("RS-447 ダイナブラック", () => {
     expect(selfRush(cmdState(6, released("RS-447", "db"), "battle"))).toHaveLength(0);
   });
 
-  // 既知の不具合: CARD-RS-447 ホールド状態のコマンドだと出せない（本文はコマンドゾーンにある間としか書いていない）
-  it.fails("RS-447: ※ホールド状態でも自軍コマンドゾーンにあれば出せる（出典: atwiki/page-786「これが自軍コマンドゾーンにある間」— リリース状態の条件はない）", () => {
+  it("RS-447: ※ホールド状態でも自軍コマンドゾーンにあれば出せる（出典: atwiki/page-786「これが自軍コマンドゾーンにある間」— リリース状態の条件はない）", () => {
     expect(selfRush(cmdState(5, { ...inst("RS-447", "db"), commandHeld: true }))).toHaveLength(1);
   });
 
@@ -206,15 +204,13 @@ describe("RS-447 ダイナブラック", () => {
     expect(spOf(ninja(), "player1", "RS-447:x")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-447 【忍術の備え】の DSL が「SP1」だけで、捨札の MA オペレーションを手札に加える部分が落ちている
-  it.fails("RS-447: 【忍術の備え】自軍捨札から MA のオペレーションカードだけを選べる（WB のオペ・MA のユニットは不可）（出典: atwiki/page-786「カテゴリにMAを持つオペレーションカードを1枚選び」）", () => {
+  it("RS-447: 【忍術の備え】自軍捨札から MA のオペレーションカードだけを選べる（WB のオペ・MA のユニットは不可）（出典: atwiki/page-786「カテゴリにMAを持つオペレーションカードを1枚選び」）", () => {
     const s = ninja();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-447");
     expect(choiceIds(s)).toEqual(["RS-432:maop", "TST-OP-MA:maop2"]);
   });
 
-  // 既知の不具合: CARD-RS-447 【忍術の備え】で捨札のカードを手札に加えられない
-  it.fails("RS-447: 【忍術の備え】選んだ MA のオペレーションカードは手札に加わる（出典: atwiki/page-786「手札に加えてもよい」）", () => {
+  it("RS-447: 【忍術の備え】選んだ MA のオペレーションカードは手札に加わる（出典: atwiki/page-786「手札に加えてもよい」）", () => {
     const s = resolveAll(pick(ninja(), "RS-432:maop"));
     expect(zoneOf(s, "player1", "RS-432:maop")).toBe("hand");
   });
@@ -266,16 +262,14 @@ describe("RS-448 ダイナイエロー", () => {
     return t;
   };
 
-  // 既知の不具合: CARD-RS-448 4番目に出て NC が成立しても【イエロービッグボール】が発動しない（選択も山札の移動も起きない）
-  it.fails("RS-448: 【イエロービッグボール】山札の上から1枚ひいて、自軍コマンドゾーンにホールド状態で置ける（出典: atwiki/page-787）", () => {
+  it("RS-448: 【イエロービッグボール】山札の上から1枚ひいて、自軍コマンドゾーンにホールド状態で置ける（出典: atwiki/page-787）", () => {
     const s = accept(yellow());
     const c = s.players.player1.command.find((x) => x.instanceId === "TST-UNIT-2:top");
     expect(c).toBeDefined();
     expect(c?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: CARD-RS-448 【イエロービッグボール】が発動しない（DSL も「山札から1枚をホールドする」だけで、同じ数字の敵軍ユニットを撃破する部分が落ちている）
-  it.fails("RS-448: 【イエロービッグボール】置いたカードの必要パワーの数字（2）と同じ数字を持つ敵軍ユニット（ラッシュエリアを含む）だけを選び撃破する（出典: atwiki/page-787「同じ数字を持つ敵軍ユニットを1体選び撃破する」）", () => {
+  it("RS-448: 【イエロービッグボール】置いたカードの必要パワーの数字（2）と同じ数字を持つ敵軍ユニット（ラッシュエリアを含む）だけを選び撃破する（出典: atwiki/page-787「同じ数字を持つ敵軍ユニットを1体選び撃破する」）", () => {
     let s = accept(yellow());
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-448");
     expect(choiceIds(s)).toEqual(["TST-UNIT-2:e2", "TST-UNIT-2:e2r"]);
@@ -354,8 +348,7 @@ describe("RS-449 イエローマスク", () => {
     expect(spOf(mask(), "player1", "RS-449:x")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RS-449 【マスキーローター】の DSL が「SP1」だけで、常駐オペレーションを選んで重ねたカードを山札に戻す部分が落ちている
-  it.fails("RS-449: 【マスキーローター】常駐しているオペレーション（敵軍のものも）を選べ、重ねたカードはすべて持ち主の山札に戻る（出典: atwiki/page-797「重ねたカードをすべて持ち主の山札に戻してシャッフルする」）", () => {
+  it("RS-449: 【マスキーローター】常駐しているオペレーション（敵軍のものも）を選べ、重ねたカードはすべて持ち主の山札に戻る（出典: atwiki/page-797「重ねたカードをすべて持ち主の山札に戻してシャッフルする」）", () => {
     let s = mask();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-449");
     expect(choiceIds(s)).toEqual(["RS-256:en", "RS-256:own"]);
@@ -421,8 +414,7 @@ describe("RS-450 地帝忍オヨブー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RS-450 【皇帝への忠義】がスタブ（ターン修正の登録だけ）で、お互いに撃破されて捨札になっても選択が出ない
-  it.fails("RS-450: 【皇帝への忠義】お互いに撃破されて捨札になったとき、自軍エリアに「皇帝」がいれば、バトルした敵軍ユニットのカードを持ち主のパワーゾーンにダメージ（ウラ向き）で置ける（出典: atwiki/page-821）", () => {
+  it("RS-450: 【皇帝への忠義】お互いに撃破されて捨札になったとき、自軍エリアに「皇帝」がいれば、バトルした敵軍ユニットのカードを持ち主のパワーゾーンにダメージ（ウラ向き）で置ける（出典: atwiki/page-821）", () => {
     let s = attacked({ rush: [inst("RS-210", "emp")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-450");
     s = resolveAll(s, ["TST-UNIT-0:atk"]);
@@ -453,8 +445,7 @@ describe("RS-450 地帝忍オヨブー", () => {
     expect(s.players.player2.power).toHaveLength(0);
   });
 
-  // 既知の不具合: CARD-RS-450 【皇帝への忠義】が実装されていない（自軍ターンの相打ちでも選択が出ない）
-  it.fails("RS-450: 【皇帝への忠義】自軍ターンの相打ち（BP4000 同士）でも発動する（出典: atwiki/page-821「これが敵軍ユニットとバトルして、お互いに撃破されて」・R-BTL-02）", () => {
+  it("RS-450: 【皇帝への忠義】自軍ターンの相打ち（BP4000 同士）でも発動する（出典: atwiki/page-821「これが敵軍ユニットとバトルして、お互いに撃破されて」・R-BTL-02）", () => {
     let s = stx({
       player1: { battle: [inst("RS-450", "oy")], rush: [inst("RS-210", "emp")], deck: deckCards(3) },
       player2: { battle: [inst("SPEC-BP4000", "e")], deck: deckCards(3, "e") },
@@ -525,8 +516,7 @@ describe("RS-452 テトラボーイ", () => {
     return act(s, { type: "move_to_battle", playerId: "player2", instanceId: `${unit}:e` });
   };
 
-  // 既知の不具合: CARD-RS-452 ※（BP6000以上の敵軍ユニットが出たときラッシュエリアに戻る）がスタブで、選択が出ない
-  it.fails("RS-452: ※自軍バトルエリアにある間、BP6000 の敵軍ユニットがバトルエリアに出たとき、これをラッシュエリアに戻せる（出典: atwiki/page-788）", () => {
+  it("RS-452: ※自軍バトルエリアにある間、BP6000 の敵軍ユニットがバトルエリアに出たとき、これをラッシュエリアに戻せる（出典: atwiki/page-788）", () => {
     let s = enemyEnters("SPEC-BP6000");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-452");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
@@ -534,8 +524,7 @@ describe("RS-452 テトラボーイ", () => {
     expect(zoneOf(s, "player1", "RS-452:tb")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RS-452 ※がスタブで、「戻してもよい」の選択自体が出ない
-  it.fails("RS-452: ※は「戻してもよい」— 戻さないことを選べる（出典: atwiki/page-788「戻してもよい」）", () => {
+  it("RS-452: ※は「戻してもよい」— 戻さないことを選べる（出典: atwiki/page-788「戻してもよい」）", () => {
     const s = enemyEnters("TST-UNIT-7");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-452");
     expect(canSkip(s)).toBe(true);
@@ -563,22 +552,19 @@ describe("RS-452 テトラボーイ", () => {
       [inst(leftL, "left")],
     );
 
-  // 既知の不具合: CARD-RS-452 【テトラバスター】がスタブ（grant_keyword のみ）で、同カテゴリの L ユニットからコンビネーションしても選択が出ない
-  it.fails("RS-452: 【テトラバスター】同カテゴリ（ET）の L ユニットからコンビネーションするとき、追加条件に「自軍合体ユニットを捨札にする」のない敵軍 L ユニット（ラッシュエリアを含む）だけを選べる（出典: atwiki/page-788）", () => {
+  it("RS-452: 【テトラバスター】同カテゴリ（ET）の L ユニットからコンビネーションするとき、追加条件に「自軍合体ユニットを捨札にする」のない敵軍 L ユニット（ラッシュエリアを含む）だけを選べる（出典: atwiki/page-788）", () => {
     const s = buster("SPEC-ETL");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-452");
     expect(choiceIds(s)).toEqual(["RS-216:ex", "TST-UNIT-7:l7"]);
   });
 
-  // 既知の不具合: CARD-RS-452 【テトラバスター】が実装されていない
-  it.fails("RS-452: 【テトラバスター】選んだ敵軍 L ユニットを撃破する（出典: atwiki/page-788「1体選び、撃破する」）", () => {
+  it("RS-452: 【テトラバスター】選んだ敵軍 L ユニットを撃破する（出典: atwiki/page-788「1体選び、撃破する」）", () => {
     const s = resolveAll(pick(buster("SPEC-ETL"), "TST-UNIT-7:l7"));
     expect(zoneOf(s, "player2", "TST-UNIT-7:l7")).toBe("discard");
     expect(zoneOf(s, "player2", "RS-226:ko")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RS-452 【テトラバスター】が実装されていない（「発動できる」の選択も出ない）
-  it.fails("RS-452: 【テトラバスター】は「発動できる」— 発動しないことを選べる（出典: atwiki/page-788「次の効果を発動できる」）", () => {
+  it("RS-452: 【テトラバスター】は「発動できる」— 発動しないことを選べる（出典: atwiki/page-788「次の効果を発動できる」）", () => {
     const s = buster("SPEC-ETL");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-452");
     expect(canSkip(s)).toBe(true);

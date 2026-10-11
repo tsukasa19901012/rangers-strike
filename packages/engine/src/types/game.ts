@@ -120,6 +120,10 @@ export type PlayerState = {
   damage: number;
   /** チャージフェイズ: このターンに1枚をパワーまたはコマンドに置いた後 true。 */
   hasChargedThisTurn?: boolean;
+  /** 直近のラッシュの追加条件で捨札にしたカード（RS-437 白熱する実況「その追加条件で捨札にした合体ユニットのカード」）。 */
+  lastZordDiscard?: { rushedInstanceId: string; instanceIds: string[] };
+  /** RS-432 隠流マキビシ: 現在のバトルフェイズが始まったときに受けていたダメージ（「そのバトルフェイズ中に受けたダメージ」）。 */
+  damageAtBattlePhaseStart?: number;
   /** damage_gate_battle_entry: 敵軍ターン中にダメージを受けた（自軍ターン終了で消える）。 */
   damagedOnEnemyTurn?: boolean;
   /** damage_gate_battle_entry: ターン開始時のウラ向きパワー（ダメージ）の枚数（効果で置かれたダメージの検出用）。 */
@@ -287,6 +291,8 @@ export type PendingLeave = {
   kasumoShieldDeclined?: boolean;
   /** RS-502 バット・リー【忘我の中に修行あり】の選択を断った（rules/legend1/set7NamedEffectsD.ts）。 */
   batLeeDeclined?: boolean;
+  /** RS-437 白熱する実況「下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる」を見送った。 */
+  liveCommentaryDeclined?: boolean;
   /**
    * RS-182 ジャイアントローラー: 撃破されて捨札になったとき、持ち主のパワーゾーンにダメージ（ウラ向き）にして置く。
    * 置換・カウンターで捨札にならなければ置かれない（faq-card-4 RS-182 Q1〜Q3）。
@@ -450,7 +456,24 @@ export type DeferredDestroyTrigger =
       pending: PendingEffectChoice;
     };
 
+/** 第7弾 RS-432〜RS-452 の選択の続き（rules/legend1/set7NamedEffectsA.ts）。 */
+export type Set7AChoiceMeta = {
+  /** 続けて処理する対象（同時に戻ったユニット等）。 */
+  queue?: string[];
+  /** 残りの選択回数（「N体まで」）。 */
+  remaining?: number;
+  /** 置き換えを見送ったら続ける「場を離れる」処理。 */
+  leave?: PendingLeave;
+  /** 対象のカード名・数値などの補足。 */
+  cardId?: string;
+  amount?: number;
+  /** バトルした相手（RS-450）。 */
+  enemyInstanceId?: string;
+};
+
 export type PendingEffectChoice = {
+  /** 第7弾 RS-432〜RS-452 の選択の続き（rules/legend1/set7NamedEffectsA.ts）。 */
+  set7aMeta?: Set7AChoiceMeta;
   playerId: PlayerId;
   effectId: string;
   sourceCardId: string;

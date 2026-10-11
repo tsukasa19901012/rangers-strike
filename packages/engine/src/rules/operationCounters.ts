@@ -1,3 +1,4 @@
+import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import {
   openDeathStingerChoice,
   reflectBarrierDestroysWinner,
@@ -1106,7 +1107,9 @@ export function processMutualDestruction(
   const r2 = tryLeaveField(r1.state, second);
   if (r2.deferred) return r2;
   const afterBoth = restoreHungerGodMutualPartner(r2.state, first, second);
-  return { state: applySagasSniperOnMutualDestruction(afterBoth, ctx), deferred: false };
+  const afterSniper = applySagasSniperOnMutualDestruction(afterBoth, ctx);
+  // RS-450 地帝忍オヨブー【皇帝への忠義】（お互いに撃破されて捨札になったとき。rules/legend1/set7NamedEffectsA.ts）。
+  return { state: openLoyaltyToEmperor(afterSniper, ctx), deferred: false };
 }
 
 /**
@@ -1930,6 +1933,9 @@ export function tryLeaveField(
   // RS-317【超シールド進化】: DA の自軍ユニットが撃破されるとき、かわりに恐竜2体を捨札にするかの選択（rules/legend1/set5NamedEffects.ts）。
   const kasumo = openKasumoShieldChoice(state, intent);
   if (kasumo) return { state: kasumo, deferred: true };
+  // RS-437 白熱する実況: 下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる（rules/legend1/set7NamedEffectsA.ts）。
+  const liveCommentary = openLiveCommentaryStay(state, intent);
+  if (liveCommentary) return { state: liveCommentary, deferred: true };
   const superShieldInstanceId = findSuperShieldSubstitute(state, intent);
   const dinoChronicle = hasDinoChronicleLeaveReaction(
     state,
