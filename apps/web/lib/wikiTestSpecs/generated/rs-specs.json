@@ -10448,7 +10448,7 @@
       "自軍山札を見て、ウイングを持つユニットカードを1"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-605::karanotsubasa"
+      "set9a::RS-605::wing_from_deck"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -10467,7 +10467,7 @@
       "ウイングを持つ自軍ユニットを1枚選びリリースして"
     ],
     "expectedDslKeywords": [
-      "operation_release_wing_then_enemy_battle_bp_le_to_power"
+      "set9a::RS-606::hikarimaru"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -10486,7 +10486,7 @@
       "次の効果を、敵軍ダメージの点数と同じ数まで好きな"
     ],
     "expectedDslKeywords": [
-      "operation_enemy_damage_reveal_beast_rush"
+      "set9a::RS-607::falcon_summoner"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -10597,7 +10597,7 @@
     ],
     "expectedDslKeywords": [
       "taxis_ET",
-      "effect_card::RS-613::daiyasodo"
+      "set9a::RS-613::diamond_sword"
     ],
     "bp": 2000,
     "sp": null,
@@ -10614,7 +10614,7 @@
       "【クラブメガトン】"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-614::kurabumegaton"
+      "set9a::RS-614::club_megaton"
     ],
     "bp": 3000,
     "sp": null,
@@ -10631,7 +10631,7 @@
       "【ジャッカーコバック】"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-615::jakakobaku"
+      "set9a::RS-615::jakka_koback"
     ],
     "bp": 1000,
     "sp": "special",
@@ -10667,7 +10667,7 @@
     ],
     "expectedDslKeywords": [
       "blast",
-      "SP2"
+      "set9a::RS-617::bird_maser"
     ],
     "bp": 15000,
     "sp": 1,
@@ -10684,7 +10684,7 @@
       "【ジェットランサー】"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-618::jietoransa"
+      "set9a::RS-618::jet_lancer"
     ],
     "bp": 6000,
     "sp": 1,
@@ -10719,7 +10719,7 @@
       "【ガルーダクロー】"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-620::garudakuro"
+      "set9a::RS-620::garuda_claw"
     ],
     "bp": 10000,
     "sp": 1,
@@ -10737,7 +10737,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "effect_card::RS-621::daiyaburizado"
+      "set9a::RS-621::diamond_blizzard"
     ],
     "bp": 5000,
     "sp": null,
@@ -10755,7 +10755,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "attack_rush_zone"
+      "set9a::RS-622::griffo_calibur"
     ],
     "bp": 5000,
     "sp": null,
@@ -10790,7 +10790,7 @@
       "【ウインガーキャノン】"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-624::uingakyanon"
+      "set9a::RS-624::winger_cannon"
     ],
     "bp": 9000,
     "sp": 1,
@@ -10808,7 +10808,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "runtime_shiruba"
+      "set9a::RS-625::silver_custom"
     ],
     "bp": 4000,
     "sp": "special",
@@ -10825,7 +10825,7 @@
       "【メガシールド】"
     ],
     "expectedDslKeywords": [
-      "effect_card::RS-626::megashirudo"
+      "set9a::RS-626::mega_shield"
     ],
     "bp": 9000,
     "sp": 1,
