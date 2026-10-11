@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XP-026::korehagatanwoeru",
+          "keyword": "other::XP-026::accel_return",
           "duration": "permanent"
         }
       ]
@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-026::akuserugurantsua",
+          "keyword": "other::XP-026::accel_granzer",
           "duration": "permanent"
         }
       ]

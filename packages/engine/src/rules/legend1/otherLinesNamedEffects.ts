@@ -10,10 +10,11 @@ import type { CardInstance, DeferredDestroyTrigger, GameState, PendingEffectChoi
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
-import { applyConfirmEffectChoice, openEffectChoice } from "../pendingChoices";
+import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice } from "../pendingChoices";
+import { isSmallUnitNow } from "./set6NamedEffectsB";
 import { patchPlayer } from "../playerPatches";
 import { namedTextNegated } from "./set6NamedEffects348";
-import { effectiveBp } from "../../core/catalog";
+import { cardCategories, cardName, effectiveBp, getDefinition } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
 import { countJointLGrant } from "../jointComboGrants";
@@ -85,6 +86,12 @@ function proceed(state: GameState, pending: PendingEffectChoice): GameState {
   }
   if (pending.resumeChoice) return openEffectChoice(state, pending.resumeChoice);
   return promoteDeferredBattleEntry(state);
+}
+
+/** 選択を開く。既に別の選択が開いていればその後に開く。 */
+function openOrQueue(state: GameState, choice: PendingEffectChoice): GameState {
+  if (state.pendingEffectChoice) return { ...state, pendingEffectChoice: appendResume(state.pendingEffectChoice, choice) };
+  return openEffectChoice(state, choice);
 }
 
 function fieldUnits(state: Pick<GameState, "players">, playerId: PlayerId): CardInstance[] {
@@ -249,6 +256,152 @@ export function applyKyouryuumaru(state: GameState, playerId: PlayerId, unitInst
 }
 
 // ---------------------------------------------------------------------------
+// XP-026 仮面ライダーアクセル【アクセルグランツァー】
+// 「これが自軍バトルエリアからラッシュエリアに戻るとき、自軍コマンドを1つ選び手札に戻してもよい。そうしたとき、戻したコマンドと
+//  同じカテゴリを持たない、敵軍Sユニットまたはライドされていない敵軍Sビークルがあれば1体選び捨札にする。」（atwiki/page-2257）
+// RS-118 ゴーゴーダンプの置きかえでラッシュエリアに移ったときも「戻った」として発動できる（atwiki/page-292 Q1）。
+// 呼び出し元: スタートフェイズの「戻す」（rules/startPhase.ts）、RS-118 の置きかえ（rules/pendingChoices.ts swap_battle）。
+
+export const ACCEL_GRANZER_EFFECT_ID = "xp026_accel_granzer";
+export const ACCEL_GRANZER_DISCARD_EFFECT_ID = "xp026_accel_granzer_discard";
+
+export function isOtherLinesBattleToRushTrigger(card: CardInstance): boolean {
+  return card.cardId === "XP-026";
+}
+
+/** 自軍バトルエリアからラッシュエリアに戻ったユニットの誘発（戻った後に呼ぶ）。 */
+export function tryOtherLinesBattleToRush(state: GameState, playerId: PlayerId, card: CardInstance, phasePlayerId: PlayerId): GameState {
+  if (!isOtherLinesBattleToRushTrigger(card)) return state;
+  const self = state.players[playerId].rush.find((c) => c.instanceId === card.instanceId);
+  if (!self || namedTextNegated(state, playerId, self)) return state;
+  const commands = state.players[playerId].command.map((c) => c.instanceId);
+  if (commands.length === 0) return state;
+  return openOrQueue(state, {
+    playerId,
+    effectId: ACCEL_GRANZER_EFFECT_ID,
+    sourceCardId: card.cardId,
+    sourceInstanceId: card.instanceId,
+    phasePlayerId,
+    kind: "select_commands",
+    validInstanceIds: commands,
+    selectedInstanceIds: [],
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+function accelGranzerTargets(state: GameState, playerId: PlayerId, categories: string[]): string[] {
+  const enemyId = opponent(playerId);
+  const enemy = state.players[enemyId];
+  const ridden = new Set(enemy.battle.map((c) => c.mountedOnInstanceId).filter((id): id is string => !!id));
+  return [...enemy.battle, ...enemy.rush]
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      if (!def) return false;
+      if (cardCategories(def).some((cat) => categories.includes(cat))) return false;
+      if (def.type === "unit") return isSmallUnitNow(state, enemyId, c);
+      return def.type === "vehicle" && def.size === "S" && !ridden.has(c.instanceId);
+    })
+    .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId, "XP-026", playerId))
+    .map((c) => c.instanceId);
+}
+
+CHOICE_RESOLVERS[ACCEL_GRANZER_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const command = state.players[playerId].command.find((c) => c.instanceId === instanceId);
+  if (!command) return { error: "invalid_target" };
+  const categories = cardCategories(getDefinition(state.definitions, command.cardId));
+  let next = close(state, pending);
+  next = patchPlayer(next, playerId, (p) => ({
+    ...p,
+    command: p.command.filter((c) => c.instanceId !== instanceId),
+    hand: [...p.hand, { instanceId: command.instanceId, cardId: command.cardId }],
+  }));
+  const log = logFor(state, playerId, pending.sourceCardId, `${ACCEL_GRANZER_EFFECT_ID}:${cardName(state.definitions, command.cardId)}`);
+  // 「そうしたとき…あれば1体選び捨札にする」（強制）。
+  const targets = accelGranzerTargets(next, playerId, categories);
+  if (targets.length === 0) return { state: proceed(next, pending), log };
+  return {
+    state: openEffectChoice(next, {
+      ...pending,
+      effectId: ACCEL_GRANZER_DISCARD_EFFECT_ID,
+      kind: "select_unit",
+      validInstanceIds: targets,
+      selectedInstanceIds: [],
+      selectCount: 1,
+      optional: false,
+    }),
+    log,
+  };
+};
+CHOICE_SKIPPERS[ACCEL_GRANZER_EFFECT_ID] = (state, playerId) => {
+  const pending = state.pendingEffectChoice!;
+  return { state: proceed(close(state, pending), pending), log: skipLog(state, playerId, pending.sourceCardId, pending.effectId) };
+};
+CHOICE_RESOLVERS[ACCEL_GRANZER_DISCARD_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const closed = close(state, pending);
+  const left = applyUnitLeave(closed, instanceId, "discard", pending.phasePlayerId);
+  if ("error" in left) return left;
+  const name = cardName(state.definitions, findField(state, opponent(playerId), instanceId)?.card.cardId ?? "");
+  return { state: proceed(left.state, pending), log: logFor(state, playerId, pending.sourceCardId, `${ACCEL_GRANZER_DISCARD_EFFECT_ID}:${name}`) };
+};
+
+// XP-026 の※「これは、自分がターンを終えるときバトルエリアにあれば、特徴「加速」を持つ自軍コマンドをホールドしてラッシュエリアに
+// 戻してよい。」— ホールドするコマンドを選ぶ（選ばなければ戻さない）。戻したら【アクセルグランツァー】が誘発する。
+
+export const ACCEL_RETURN_EFFECT_ID = "xp026_accel_return";
+
+function accelCommands(state: GameState, playerId: PlayerId): string[] {
+  return state.players[playerId].command
+    .filter((c) => !c.commandHeld && (getDefinition(state.definitions, c.cardId)?.features ?? []).includes("加速"))
+    .map((c) => c.instanceId);
+}
+
+export function collectOtherLinesTurnEndQueue(state: GameState, endingPlayerId: PlayerId): string[] {
+  return state.players[endingPlayerId].battle.filter((c) => c.cardId === "XP-026").map((c) => c.instanceId);
+}
+
+export function openOtherLinesTurnEndEntry(state: GameState, endingPlayerId: PlayerId, entry: string): GameState {
+  if (!state.players[endingPlayerId].battle.some((c) => c.instanceId === entry)) return state;
+  const ids = accelCommands(state, endingPlayerId);
+  if (ids.length === 0) return state;
+  return openEffectChoice(state, {
+    playerId: endingPlayerId,
+    phasePlayerId: endingPlayerId,
+    sourceCardId: "XP-026",
+    sourceInstanceId: entry,
+    effectId: ACCEL_RETURN_EFFECT_ID,
+    kind: "select_commands",
+    validInstanceIds: ids,
+    selectedInstanceIds: [],
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+CHOICE_RESOLVERS[ACCEL_RETURN_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const selfId = pending.sourceInstanceId;
+  const self = state.players[playerId].battle.find((c) => c.instanceId === selfId);
+  if (!self || !accelCommands(state, playerId).includes(instanceId)) return { error: "invalid_target" };
+  // 乗っているビークルがあれば一緒に戻す（ライドした組はまとめて動く）。
+  const groupIds = new Set([self.instanceId, ...(self.mountedOnInstanceId ? [self.mountedOnInstanceId] : [])]);
+  const next = patchPlayer(close(state, pending), playerId, (p) => ({
+    ...p,
+    command: p.command.map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: true } : c)),
+    battle: p.battle.filter((c) => !groupIds.has(c.instanceId)),
+    rush: [...p.rush, ...p.battle.filter((c) => groupIds.has(c.instanceId))],
+  }));
+  const log = logFor(state, playerId, "XP-026", `${ACCEL_RETURN_EFFECT_ID}:${cardName(state.definitions, state.players[playerId].command.find((c) => c.instanceId === instanceId)!.cardId)}`);
+  return { state: tryOtherLinesBattleToRush(next, playerId, self, pending.phasePlayerId), log };
+};
+CHOICE_SKIPPERS[ACCEL_RETURN_EFFECT_ID] = (state, playerId) => {
+  const pending = state.pendingEffectChoice!;
+  return { state: close(state, pending), log: skipLog(state, playerId, "XP-026", ACCEL_RETURN_EFFECT_ID) };
+};
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword からの起点
 
 export const OTHER_LINES_KEYWORD_PREFIX = "other::";
@@ -256,6 +409,10 @@ export const OTHER_LINES_KEYWORD_PREFIX = "other::";
 const OTHER_LINES_KEYWORDS: Record<string, (state: GameState, ctx: GrantKeywordContext) => GrantKeywordResult> = {
   "XG3-036::ebi_basami": applyEbiBasami,
   // 継続効果（filthyAirActive を各効果の側で参照する。ここでは何もしない）。
+  // 誘発（バトルエリアからラッシュエリアに戻ったとき）は tryOtherLinesBattleToRush で扱う（ここでは何もしない）。
+  "XP-026::accel_granzer": (state) => ({ state, detail: ACCEL_GRANZER_EFFECT_ID }),
+  // ※（自分がターンを終えるとき）は rules/turnEndingEffects.ts から openOtherLinesTurnEndEntry で扱う。
+  "XP-026::accel_return": (state) => ({ state, detail: ACCEL_RETURN_EFFECT_ID }),
   "XG1-034::filthy_air": (state) => ({ state, detail: "xg1034_filthy_air" }),
 };
 
@@ -277,10 +434,3 @@ export function pickOtherLinesCpuChoice(state: GameState, pending: PendingEffect
   return picks[0] ?? actions.find((a) => a.type === "skip_effect_choice") ?? null;
 }
 
-// 未使用警告を避けるための参照（後続の効果で使う）。
-void close;
-void proceed;
-void fieldUnits;
-void logFor;
-void skipLog;
-void CHOICE_SKIPPERS;

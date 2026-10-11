@@ -1126,6 +1126,8 @@ export type TurnEndProgress = {
   hedrianLeft?: number;
   /** 第8弾 RS-567【消身の術】の「相手がそのターンを終えたとき」の選択のうち未処理のもの（rules/legend1/set8NamedEffectsC.ts）。 */
   set8cQueue?: string[];
+  /** RS 以外のラインの「自分がターンを終えるとき」の選択（XP-026 の※）のうち未処理のもの（rules/legend1/otherLinesNamedEffects.ts）。 */
+  otherLinesQueue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

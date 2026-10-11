@@ -1,3 +1,4 @@
+import { isOtherLinesBattleToRushTrigger, tryOtherLinesBattleToRush } from "./legend1/otherLinesNamedEffects";
 import { getCardEffect } from "@rangers-strike/cards";
 import { gorgonBlocksRelease, isSet6BBattleToRushTrigger, trySet6BBattleToRush } from "./legend1/set6NamedEffectsB";
 import { darkLawStackPending, openDarkLawStackIfNeeded } from "./legend1/set5NamedEffectsA";
@@ -38,7 +39,10 @@ export function releaseAllCommands(state: GameState, playerId: PlayerId): GameSt
 
 function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
   return cards
-    .filter((card) => activeNamedEffect(card, "falcon_claw") || isSet6BBattleToRushTrigger(card))
+    .filter(
+      (card) =>
+        activeNamedEffect(card, "falcon_claw") || isSet6BBattleToRushTrigger(card) || isOtherLinesBattleToRushTrigger(card),
+    )
     .map((card) => card.instanceId);
 }
 
@@ -127,6 +131,8 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
     let withChoice = tryLegend3BattleToRush(state, phasePlayerId, card, phasePlayerId);
     // RS-394/RS-395【チェンジフォーメーション】（rules/legend1/set6NamedEffectsB.ts）。
     if (!withChoice.pendingEffectChoice) withChoice = trySet6BBattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
+    // XP-026【アクセルグランツァー】（rules/legend1/otherLinesNamedEffects.ts）。
+    if (!withChoice.pendingEffectChoice) withChoice = tryOtherLinesBattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     return continueBattleToRushEffectQueue({ ...withChoice, pendingBattleToRushQueue: rest });
   }
 

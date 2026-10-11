@@ -144,7 +144,7 @@ import { isSet8AChoiceEffect, tryConfirmSet8AChoice, tryResolveSet8AChoice, tryS
 import { isSet8DChoiceEffect, tryResolveSet8DChoice, trySkipSet8DChoice } from "./legend1/set8NamedEffectsD";
 import { isSet9AChoiceEffect, tryConfirmSet9AChoice, tryResolveSet9AChoice, trySkipSet9AChoice } from "./legend1/set9NamedEffectsA";
 import { isSet9DChoiceEffect, tryResolveSet9DChoice, trySkipSet9DChoice } from "./legend1/set9NamedEffectsD";
-import { filthyAirActive, isOtherLinesChoiceEffect, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
+import { filthyAirActive, isOtherLinesChoiceEffect, tryOtherLinesBattleToRush, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
 import {
@@ -2473,6 +2473,15 @@ function tryRegisterStayOnLeave(
   return null;
 }
 
+/**
+ * ルール: R-ERR-RS118 — 置きかえでラッシュエリアに移った S ユニットは「バトルエリアからラッシュエリアに戻った」として扱う
+ * （XP-026【アクセルグランツァー】。atwiki/page-292 Q1。rules/legend1/otherLinesNamedEffects.ts）。
+ */
+function withAccelGranzer(outcome: ChoiceOutcome, playerId: PlayerId, returned: CardInstance, phasePlayerId: PlayerId): ChoiceOutcome {
+  if ("error" in outcome) return outcome;
+  return { ...outcome, state: tryOtherLinesBattleToRush(outcome.state, playerId, returned, phasePlayerId) };
+}
+
 export function applyUnitLeave(
   state: GameState,
   instanceId: string,
@@ -4122,10 +4131,15 @@ export function applyEffectChoiceSelect(
             { ...player, battle, rush: [...player.rush, swapTarget.card] },
             swapTarget.card.instanceId,
           );
-          return finishChoice(
-            { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
-            pending,
-            cardName(state.definitions, swapTarget.card.cardId),
+          return withAccelGranzer(
+            finishChoice(
+              { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+              pending,
+              cardName(state.definitions, swapTarget.card.cardId),
+            ),
+            pending.playerId,
+            swapTarget.card,
+            pending.phasePlayerId,
           );
         }
         const entering = findInZone(player, "rush", pending.sourceInstanceId);
@@ -4155,10 +4169,15 @@ export function applyEffectChoiceSelect(
             swapTarget.card.instanceId,
           ),
         );
-        return finishChoice(
+        return withAccelGranzer(
+          finishChoice(
           { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
           pending,
           cardName(state.definitions, swapTarget.card.cardId),
+        ),
+          pending.playerId,
+          swapTarget.card,
+          pending.phasePlayerId,
         );
       }
       const located = findCardOwner(state, instanceId);

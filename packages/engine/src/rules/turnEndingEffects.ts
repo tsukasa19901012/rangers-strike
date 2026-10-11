@@ -1,3 +1,4 @@
+import { collectOtherLinesTurnEndQueue, openOtherLinesTurnEndEntry } from "./legend1/otherLinesNamedEffects";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { CardInstance, GameState, PlayerId, TurnEndProgress } from "../types/game";
 import { applySet6TurnEnd } from "./legend1/set6AuditFixes";
@@ -307,6 +308,14 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.set8cQueue!;
     progress = { ...progress, set8cQueue: rest };
     nextState = openSet8CTurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // XP-026 仮面ライダーアクセルの※（加速のコマンドをホールドしてラッシュエリアに戻す。rules/legend1/otherLinesNamedEffects.ts）。
+  if (!progress.otherLinesQueue) progress = { ...progress, otherLinesQueue: collectOtherLinesTurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.otherLinesQueue ?? []).length > 0) {
+    const [entry, ...rest] = progress.otherLinesQueue!;
+    progress = { ...progress, otherLinesQueue: rest };
+    nextState = openOtherLinesTurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {
