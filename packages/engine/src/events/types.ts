@@ -155,7 +155,7 @@ export function nextEventSeqNumber(): number {
 }
 
 export function createEventId(prefix = "evt"): string {
-  return `${prefix}_${nextEventSeqNumber()}_${Date.now().toString(36)}`;
+  return `${prefix}_${nextEventSeqNumber()}`;
 }
 
 export function normalizeListenerResult(

@@ -9,6 +9,7 @@
  * ルール: R-START-04 — 効果の「ドロー」には超電子頭脳が適用される。
  */
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
+import { engineRandomInt } from "../core/rng";
 import { opponent, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { applySuperBrainDraw } from "../effects/drawEffects";
@@ -42,7 +43,7 @@ export function startKurokoMemory(
 function returnBlindPickedHandCard(state: GameState, actorId: PlayerId): GameState {
   const actor = state.players[actorId];
   if (actor.hand.length === 0) return state;
-  const index = Math.floor(Math.random() * actor.hand.length);
+  const index = engineRandomInt(actor.hand.length);
   const picked = actor.hand[index]!;
   const hand = actor.hand.filter((_, i) => i !== index);
   const next: GameState = {

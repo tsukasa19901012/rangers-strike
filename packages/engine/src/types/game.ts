@@ -172,6 +172,23 @@ export type DamagePaymentResume =
   | { kind: "none"; activePlayer: PlayerId }
   | { kind: "strike"; pending: PendingStrike };
 
+/** 「ウラ返すとき」の効果の解決後に行う、パワーのウラ返し（ダメージ）。 */
+export type DeferredPowerFlip = {
+  playerId: PlayerId;
+  /** ウラ返すパワーのカード。 */
+  flipIds: string[];
+  /** 山札の上からダメージにする枚数。 */
+  deckDraws: number;
+  totalDamage: number;
+  damagedOnEnemyTurn: boolean;
+  /** ダメージを受けたときの誘発に渡す点数とフェイズのプレイヤー。 */
+  eventAmount: number;
+  eventPhasePlayerId: PlayerId;
+  resume: DamagePaymentResume;
+  /** ストライクのダメージなら、ウラ返したあとでストライクの処理を終える。 */
+  finishStrike: boolean;
+};
+
 /** ダメージ時に表向きパワーの裏返し対象を選ぶ支払い待ち。 */
 export type PendingDamagePayment = {
   /** パワーゾーンのカードが裏返されるプレイヤー。 */
@@ -897,6 +914,11 @@ export type GameState = {
   definitions: Record<string, CardDefinition>;
   log: string[];
   winner: PlayerId | null;
+  /**
+   * エンジンの乱数の状態（mulberry32 の 32bit 状態。core/rng.ts）。
+   * 山札のシャッフルや無作為な選択はこれから作る乱数で行い、同じ状態・同じアクションなら同じ結果になる。
+   */
+  rngState?: number;
   /** ストライク宣言後の守り側応答ウィンドウ。 */
   pendingStrike?: PendingStrike;
   /** 攻撃宣言後の守り側応答ウィンドウ。 */
@@ -953,6 +975,12 @@ export type GameState = {
    * 解決後に「ストライクされたとき」（RS-196・カウンター窓）→ ダメージへ進む（core/applyAction.ts continueDeferredStrike）。
    */
   deferredStrike?: PendingStrike;
+  /**
+   * 「ウラ返すとき」（RS-199【ブレイクアクション】）の選択を解決し終えるまで待たせている、パワーのウラ返し（ダメージ）。
+   * ルール: R-TIME-01 — 現在形は行動の前。解決後にウラ返し、ダメージの誘発へ進む
+   * （rules/damagePayment.ts completeDeferredPowerFlip、core/applyAction.ts continueDeferredPowerFlip）。
+   */
+  deferredPowerFlip?: DeferredPowerFlip;
   /**
    * アタックしたユニットの「アタックしたとき」の選択を解決し終えるまで待たせているアタック（R-TIME-01）。
    * 解決後に「アタックされたとき」（RS-215・カウンター窓）→ バトルへ進む（core/applyAction.ts continueDeferredAttack）。

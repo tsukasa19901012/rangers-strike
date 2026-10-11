@@ -1,4 +1,5 @@
 import { currentShuffleEpoch } from "./deckShuffle";
+import { runWithStateRng } from "./rng";
 import { applySwordTornadoAfterShuffle } from "../rules/legend1/set8NamedEffectsC";
 import {
   applySet7AStrikeCounter,
@@ -97,7 +98,7 @@ import {
   updatePlayer,
 } from "./helpers";
 import { isLegalAction, isLegalActionBase, withUniqueExtraCommandHolds } from "./legalActions";
-import { resolveDamagePaymentSelect, startNextQueuedDamage } from "../rules/damagePayment";
+import { completeDeferredPowerFlip, resolveDamagePaymentSelect, startNextQueuedDamage } from "../rules/damagePayment";
 import {
   battlePositionAfterMove,
   canStrikeUnit,
@@ -659,9 +660,37 @@ function continueDeferredStrike(state: GameState): GameState {
   return result.ok ? result.state : cleared;
 }
 
+/**
+ * 「ウラ返すとき」（RS-199【ブレイクアクション】）の選択とその中で開いた選択・反応が終わったら、待たせていた
+ * パワーのウラ返し（ダメージ）を行い、ストライクのダメージならストライクの処理を終える（R-TIME-01）。
+ */
+function continueDeferredPowerFlip(state: GameState): GameState {
+  if (!state.deferredPowerFlip || state.winner) return state;
+  if (state.pendingEffectChoice || state.pendingDamagePayment || state.pendingLeave || state.pendingRegister) {
+    return state;
+  }
+  const completed = completeDeferredPowerFlip(state);
+  if (!completed) return state;
+  const { flip } = completed;
+  let next = completed.state;
+  if (flip.resume.kind === "strike" && flip.finishStrike) {
+    const finished = finishStrikeResolution(
+      { ...state, deferredPowerFlip: undefined },
+      { ...flip.resume.pending, damageApplied: true },
+      next,
+    );
+    if (finished.ok) next = finished.state;
+  }
+  // 同時に発生して後回しにしたダメージがあれば続けて処理する。
+  if ((next.queuedDamagePayments?.length ?? 0) > 0 && !next.pendingDamagePayment) {
+    next = startNextQueuedDamage({ ...next, winner: null });
+  }
+  return { ...next, winner: checkWinner(next) };
+}
+
 function completeStrike(state: GameState, pending: PendingStrike, extraLogs: string[] = []): ActionResult {
   const nextState = finalizeStrike(state, pending);
-  if (nextState.pendingDamagePayment) {
+  if (nextState.pendingDamagePayment || nextState.deferredPowerFlip) {
     return ok(nextState, buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending_damage"));
   }
   return finishStrikeResolution(state, pending, nextState, extraLogs);
@@ -826,6 +855,19 @@ export function applyAction(
   action: GameAction,
   options?: { trustLegality?: boolean },
 ): ActionResult {
+  // 乱数はゲーム状態の rngState から作り、進めた状態を結果に書き戻す（core/rng.ts）。
+  const { value: result, rngState } = runWithStateRng(state, () =>
+    applyActionWithRng(state, action, options),
+  );
+  if (!result.ok || rngState === undefined) return result;
+  return { ...result, state: { ...result.state, rngState } };
+}
+
+function applyActionWithRng(
+  state: GameState,
+  action: GameAction,
+  options?: { trustLegality?: boolean },
+): ActionResult {
   // RS-359【最後の手段】: 山札の候補をラッシュエリアに置いた状態で、手札からのラッシュの手続きを始める
   // （rules/legend1/icyLastResort.ts。手続きが終わったら settleIcyPhantoms で片付ける）。
   const icyState = applyActionDepth === 0 ? icyStateForAction(state, action, isLegalActionBase) : null;
@@ -856,6 +898,7 @@ export function applyAction(
   next = settleResolvingOperations(next);
   // RS-582【メー・メガロ】: 自分が使ったカウンターが捨札になったとき（rules/legend1/set8NamedEffectsD.ts）。
   if (applyActionDepth === 0 && "playerId" in action && action.playerId) next = applyMeeMegaloAfterAction(state, next, action.type, action.playerId);
+  next = continueDeferredPowerFlip(next);
   next = continueDeferredAttack(next);
   next = continueDeferredStrike(next);
   // ルール: R-TIME-01 — 先の段階の効果（選択）が解決し終えたら、待たせていた撃破の誘発を段階の順に解決する。
@@ -1392,7 +1435,8 @@ function applyActionCore(
     case "resolve_damage_payment": {
       const result = resolveDamagePaymentSelect(state, playerId, action.instanceId);
       if ("error" in result) return fail(result.error);
-      if (result.state.pendingDamagePayment) {
+      // 「ウラ返すとき」（RS-199）の選択が開いた: ウラ返しは選択の解決後（continueDeferredPowerFlip）。
+      if (result.state.pendingDamagePayment || result.state.deferredPowerFlip) {
         return ok(
           result.state,
           buildSimpleLogEntry(playerId, "damage_payment", action.instanceId),

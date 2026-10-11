@@ -767,6 +767,62 @@ describe("RS-199 グリーンツー", () => {
     expect(zoneOf(s, "player1", "RS-199:g")).toBe("battle");
   });
 
+  // R-TIME-01（atwiki/page-1828）「～するとき」→「～されるとき」→ 実際の行動 →「～したとき」→「～されたとき」。
+  // atwiki/page-407 のコメント「ウラ返すとき＝ウラ返す前」— 効果の解決中、ウラ返すカードはまだオモテ向きでパワーゾーンにある。
+  it("RS-199: 「ウラ返すとき」はウラ返す前に解決する — 選択中はウラ返すカードがまだオモテでダメージも増えていない（出典: atwiki/page-407・atwiki/page-1828 R-TIME-01）", () => {
+    let s = brokeWith("TST-OP:pw3", enemyField);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-199");
+    const before = s.players.player2;
+    expect(before.power.find((c) => c.instanceId === "TST-OP:pw3")?.faceDown ?? false).toBe(false);
+    expect(before.damage).toBe(0);
+    s = settle(pickEffect(s, "player1"));
+    // 撃破 → そのあとでウラ返してダメージになる。
+    expect(zoneOf(s, "player2", "RS-189:cost3")).toBe("discard");
+    expect(s.players.player2.power.find((c) => c.instanceId === "TST-OP:pw3")?.faceDown).toBe(true);
+    expect(s.players.player2.damage).toBe(1);
+    expect(s.pendingStrike).toBeUndefined();
+  });
+
+  // 「撃破してもよい」— 断ってもウラ返し（ダメージ）は行う。
+  it("RS-199: 断ったときも、そのあとでカードをウラ返してダメージになる（出典: atwiki/page-407）", () => {
+    let s = brokeWith("TST-OP:pw3", enemyField);
+    s = settle(declineEffect(s, "player1"));
+    expect(s.players.player2.power.find((c) => c.instanceId === "TST-OP:pw3")?.faceDown).toBe(true);
+    expect(s.players.player2.damage).toBe(1);
+    expect(s.pendingStrike).toBeUndefined();
+  });
+
+  // R-TIME-01: 「ウラ返すとき」は、ウラ返した結果で起きる誘発（RS-112「敵軍ダメージが6点になったとき」）より前。
+  it("RS-199: 「ウラ返すとき」の選択は、ウラ返して6点目になったときの誘発（RS-112 ウルカイザー）より先に開く（出典: atwiki/page-407・atwiki/page-1828 R-TIME-01）", () => {
+    let s = st({
+      turn: 3,
+      player1: {
+        battle: [inst("RS-112", "urz")],
+        rush: [...fillers(2), inst("RS-199", "g")],
+        deck: deckCards(5),
+      },
+      player2: {
+        deck: deckCards(5, "e"),
+        damage: 5,
+        power: [...damagedPower(5, "d"), inst("TST-OP", "pw3"), inst("RS-179", "pw2")],
+        battle: [inst("RS-189", "cost3")],
+      },
+    });
+    s = lineUp(s, fillIds(2));
+    s = enter(s, "RS-199:g");
+    s = strike(s, "RS-199:g");
+    s = act(s, { type: "resolve_damage_payment", playerId: "player2", instanceId: "TST-OP:pw3" });
+    // ウラ返す前: 6点目はまだ。ウルカイザーはバトルエリアに残っている。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-199");
+    expect(s.players.player2.damage).toBe(5);
+    expect(zoneOf(s, "player1", "RS-112:urz")).toBe("battle");
+    s = settle(pickEffect(s, "player1"));
+    expect(zoneOf(s, "player2", "RS-189:cost3")).toBe("discard");
+    // ウラ返したあとで6点 → ウルカイザーは手札に戻る。
+    expect(s.players.player2.damage).toBe(6);
+    expect(zoneOf(s, "player1", "RS-112:urz")).toBe("hand");
+  });
+
   // grnrngr/faq-card-6「はい、対象になります。」（メディテーションで2枚ウラ返したとき）
   it("RS-199: 相手がメディテーションで2枚ウラ返したとき、その2枚とも対象になる（出典: grnrngr/faq-card-6 RS-199 の Q）", () => {
     let s = atPosition(inst("RS-199", "g"), 3, {
