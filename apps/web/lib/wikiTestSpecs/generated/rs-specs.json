@@ -11246,7 +11246,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "stack_da_less_l_on_rush"
+      "set9c::RS-650::rhino_shoot"
     ],
     "bp": 4000,
     "sp": null,
@@ -11371,8 +11371,7 @@
     ],
     "expectedDslKeywords": [
       "note_card::RS-657::konokadonohanisu",
-      "effect_card::RS-657::chikaratono",
-      "wing"
+      "effect_card::RS-657::chikaratono"
     ],
     "bp": 4000,
     "sp": null,
