@@ -77,7 +77,13 @@ export function phaseAddedFeatures(
   if (state.phase !== "rush" || state.activePlayer !== ownerId) return [];
   const text = state.definitions[instance.cardId]?.text;
   if (!text) return [];
-  const m = text.match(OWN_RUSH_PHASE_FEATURES_RE);
-  if (!m) return [];
-  return [...m[1]!.matchAll(/[「｢]([^」｣]+)[」｣]/g)].map((x) => x[1]!);
+  let parsed = phaseFeatureCache.get(text);
+  if (parsed === undefined) {
+    const m = text.match(OWN_RUSH_PHASE_FEATURES_RE);
+    parsed = m ? [...m[1]!.matchAll(/[「｢]([^」｣]+)[」｣]/g)].map((x) => x[1]!) : [];
+    phaseFeatureCache.set(text, parsed);
+  }
+  return parsed;
 }
+
+const phaseFeatureCache = new Map<string, string[]>();
