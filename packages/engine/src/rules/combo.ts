@@ -77,6 +77,7 @@ import {
   trySet6BOnComboEnter,
 } from "./legend1/set6NamedEffectsB";
 import { trySet7AOnEnterBattle } from "./legend1/set7NamedEffectsA";
+import { set8ABlocksStrike, trySet8AOnEnterBattle } from "./legend1/set8NamedEffectsA";
 import { clearWolfRoarDecision, openWolfRoarBeforeNc } from "./legend1/set7NamedEffectsC";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredBattleListener";
@@ -246,6 +247,11 @@ export function resolveEnterBattleEffectsImpl(
     }
     // RS-452 テトラボーイ【テトラバスター】・※（敵軍の BP6000 以上が出たとき）（rules/legend1/set7NamedEffectsA.ts）。
     nextState = trySet7AOnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+    if (nextState.pendingEffectChoice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+    // RS-523 臨気で得た能力・RS-521 スーパー戦隊魂（レッドが出たとき）（rules/legend1/set8NamedEffectsA.ts）。
+    nextState = trySet8AOnEnterBattle(nextState, playerId, battleCard, isOwnBattlePhase(nextState, playerId));
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }
@@ -621,6 +627,10 @@ export function canStrikeUnit(
     }
     // 第6弾 RS-431 ※「自軍コマンドが１つ以上あるときストライクできない」等（rules/legend1/set6NamedEffectsB.ts）。
     if (set6BBlocksStrike(state, playerId, instance)) {
+      return false;
+    }
+    // RS-523 臨気「ただし、ストライクすることはできない。」（rules/legend1/set8NamedEffectsA.ts）。
+    if (set8ABlocksStrike(state, playerId, instance)) {
       return false;
     }
     if (instance.activatedNcEffects?.includes("souru_no_strike")) {

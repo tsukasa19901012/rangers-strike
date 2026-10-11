@@ -9,7 +9,8 @@
  */
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, parsePowerCost } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, parsePowerCost, unitEffectiveCategories } from "../../core/catalog";
+import { finalizeEffectRush } from "../../events/emitUnitRushed";
 import { opponent } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
@@ -24,6 +25,7 @@ import { markBattleNcEffect } from "../namedUnitEffects";
 import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
 import { isSmallUnitNow } from "./set6NamedEffectsB";
 import { bounceAllFromZone } from "../bounce";
+import { shuffleCards } from "../errataCardEffects";
 import type { ComboOutcome } from "../comboTypes";
 import { listZordFusionPartnerIds } from "@rangers-strike/cards";
 
@@ -660,16 +662,292 @@ function drawToCommandOrHand(state: GameState, playerId: PlayerId): GameState {
   }));
 }
 
+type Set8ACardEffectContext = {
+  playerId: PlayerId;
+  phasePlayerId: PlayerId;
+  sourceCardId: string;
+  operationInstanceId?: string;
+  triggerSourceInstanceId?: string;
+};
+
+// ---------------------------------------------------------------------------
+// RS-526 スーパーハイウェイバスター
+// 「自軍山札を見て、特徴「炎神」を持つMユニットのカードを1枚選び、自軍パワーゾーンに置いてもよい。そうしたとき、山札を
+//  シャッフルした後で、置いたユニットカードのBP以下の敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。」（atwiki/page-1142）
+// DSL は grant_keyword `set8a::RS-526::super_highway_buster`。送るのはオモテ向き（「ダメージにして」ではない）。
+
+export const SUPER_HIGHWAY_BUSTER_EFFECT_ID = "rs526_super_highway_buster";
+export const SUPER_HIGHWAY_BUSTER_SEND_EFFECT_ID = "rs526_super_highway_buster_send";
+
+function openSuperHighwayBuster(state: GameState, ctx: Set8ACardEffectContext): GameState {
+  const ids = state.players[ctx.playerId].deck
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return def?.type === "unit" && def.size === "M" && (def.features ?? []).includes("炎神");
+    })
+    .map((c) => c.instanceId);
+  if (ids.length === 0) {
+    // 見たうえで選ばなかった扱い（山札は見ただけ。シャッフルは「そうしたとき」の後半なので行わない）。
+    return state;
+  }
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: SUPER_HIGHWAY_BUSTER_EFFECT_ID,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.operationInstanceId ?? ctx.triggerSourceInstanceId,
+    kind: "select_unit",
+    phasePlayerId: ctx.phasePlayerId,
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: true,
+  });
+}
+
+register(
+  SUPER_HIGHWAY_BUSTER_EFFECT_ID,
+  (state, playerId, instanceId) => {
+    const pending = state.pendingEffectChoice!;
+    const picked = state.players[playerId].deck.find((c) => c.instanceId === instanceId);
+    if (!picked) return { error: "invalid_target" };
+    const placed = patchPlayer(state, playerId, (p) => ({
+      ...p,
+      deck: shuffleCards(p.deck.filter((c) => c.instanceId !== instanceId)),
+      power: [...p.power, { instanceId: picked.instanceId, cardId: picked.cardId }],
+    }));
+    const maxBp = getDefinition(state.definitions, picked.cardId)?.bp ?? 0;
+    const enemyId = opponent(playerId);
+    const targets = [...placed.players[enemyId].battle, ...placed.players[enemyId].rush]
+      .filter(
+        (c) =>
+          isUnitCard(placed, c.cardId) &&
+          isSmallUnitNow(placed, enemyId, c) &&
+          effectiveBp(placed, enemyId, c) <= maxBp &&
+          selectableEnemy(placed, playerId, c, "RS-526"),
+      )
+      .map((c) => c.instanceId);
+    const log = logFor(state, playerId, "RS-526", `${SUPER_HIGHWAY_BUSTER_EFFECT_ID}:${cardName(state.definitions, picked.cardId)}`);
+    if (targets.length === 0) return { state: finish(placed, pending), log };
+    return {
+      state: reopen(placed, pending, {
+        playerId,
+        effectId: SUPER_HIGHWAY_BUSTER_SEND_EFFECT_ID,
+        sourceCardId: "RS-526",
+        sourceInstanceId: pending.sourceInstanceId,
+        kind: "select_unit",
+        phasePlayerId: pending.phasePlayerId,
+        validInstanceIds: targets,
+        unitDestination: "power",
+        selectCount: 1,
+        optional: false,
+      }),
+      log,
+    };
+  },
+  simpleSkip("RS-526"),
+);
+// 後半（持ち主のパワーゾーンに送る）は汎用の unitDestination "power"（オモテ向き）で処理する。
+
+// ---------------------------------------------------------------------------
+// RS-523 臨気
+// 「本来のSPが1以上のDAを持つ自軍ユニットを1体選ぶ。このターンのバトルフェイズ中、選んだユニットは次の能力を得る⇒
+//  バトルエリアに出たとき、相手に1点ダメージを与える。ただし、ストライクすることはできない。」（atwiki/page-1150）
+// 「本来の」は SP だけにかかる（grnrngr/faq-card-8 RS-523 Q）— DA は効果で追加されたカテゴリでもよい。サイズは問わない。
+// 使っただけではダメージを与えない。能力はこのターンのバトルフェイズ中だけ（turn の規則として記録し、バトルフェイズで判定）。
+
+export const RINKI_EFFECT_ID = "rs523_rinki";
+export const RINKI_RULE = "rs523_rinki_granted";
+
+function rinkiCandidates(state: GameState, playerId: PlayerId): string[] {
+  const p = state.players[playerId];
+  const out: string[] = [];
+  for (const zone of ["battle", "rush"] as const) {
+    for (const c of p[zone]) {
+      const def = getDefinition(state.definitions, c.cardId);
+      if (def?.type !== "unit" || typeof def.sp !== "number" || def.sp < 1) continue;
+      if (!unitEffectiveCategories(state, playerId, c, zone).includes("DA")) continue;
+      out.push(c.instanceId);
+    }
+  }
+  return out;
+}
+
+function openRinki(state: GameState, ctx: Set8ACardEffectContext): GameState {
+  const ids = rinkiCandidates(state, ctx.playerId);
+  if (ids.length === 0) return state;
+  return openEffectChoice(state, {
+    playerId: ctx.playerId,
+    effectId: RINKI_EFFECT_ID,
+    sourceCardId: ctx.sourceCardId,
+    sourceInstanceId: ctx.operationInstanceId ?? ctx.triggerSourceInstanceId,
+    kind: "select_unit",
+    phasePlayerId: ctx.phasePlayerId,
+    validInstanceIds: ids,
+    selectCount: 1,
+    optional: false,
+  });
+}
+
+register(RINKI_EFFECT_ID, (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const found = findCardInField(state, instanceId);
+  if (!found || found.playerId !== playerId) return { error: "invalid_target" };
+  const next = patchPlayer(state, playerId, (p) =>
+    addTurnRuleModifier(p, RINKI_RULE, { sourceCardId: "RS-523", payload: { instanceId } }),
+  );
+  return { state: finish(next, pending), log: logFor(state, playerId, "RS-523", `${RINKI_EFFECT_ID}:${cardName(state.definitions, found.card.cardId)}`) };
+});
+
+function rinkiGranted(state: GameState, playerId: PlayerId, instanceId: string): boolean {
+  if (state.phase !== "battle") return false;
+  return getPlayerModifiers(state.players[playerId]).some(
+    (m) =>
+      m.kind === "rule" &&
+      m.ruleId === RINKI_RULE &&
+      m.scope === "turn" &&
+      (m.payload as { instanceId?: string } | undefined)?.instanceId === instanceId,
+  );
+}
+
+/** ストライクの制限（rules/combo.ts canStrikeUnit から呼ぶ）。RS-523 臨気で能力を得たユニット。 */
+export function set8ABlocksStrike(state: GameState, playerId: PlayerId, instance: CardInstance): boolean {
+  return rinkiGranted(state, playerId, instance.instanceId);
+}
+
+// ---------------------------------------------------------------------------
+// RS-521 スーパー戦隊魂
+// 「※常駐 ※タッグ 自軍バトルフェイズ中、特徴「レッド」を持つ自軍ユニットがバトルエリアに出たとき、『特徴｢レッド｣を持つ
+//  自軍ユニットを1体選びホールドする』を実行してもよい。そうしたとき、バトルエリアに出たユニットのナンバーの数字を見て、
+//  その数字以下のナンバーの数字を持つSユニットを自分の手札から1枚選び、自軍ラッシュエリアに出してもよい。」（atwiki/page-1154）
+// ナンバーは並び順確定前（出たときのナンバー。atwiki/page-1154 Q1）。
+
+export const SENTAI_SOUL_HOLD_EFFECT_ID = "rs521_sentai_soul_hold";
+export const SENTAI_SOUL_DEPLOY_EFFECT_ID = "rs521_sentai_soul_deploy";
+
+function redHoldCandidates(state: GameState, playerId: PlayerId): string[] {
+  const p = state.players[playerId];
+  return [...p.battle, ...p.rush]
+    .filter((c) => !c.commandHeld && isUnitCard(state, c.cardId) && unitFeatures(state, playerId, c).includes("レッド"))
+    .map((c) => c.instanceId);
+}
+
+function openSentaiSoul(state: GameState, playerId: PlayerId, entered: CardInstance): GameState {
+  const residents = state.players[playerId].operation.filter((c) => c.cardId === "RS-521");
+  if (residents.length === 0) return state;
+  if (!unitFeatures(state, playerId, entered).includes("レッド")) return state;
+  const candidates = redHoldCandidates(state, playerId);
+  if (candidates.length === 0) return state;
+  const number = getDefinition(state.definitions, entered.cardId)?.comboNumber;
+  let choice: PendingEffectChoice | undefined;
+  for (const op of [...residents].reverse()) {
+    choice = {
+      playerId,
+      effectId: SENTAI_SOUL_HOLD_EFFECT_ID,
+      sourceCardId: "RS-521",
+      sourceInstanceId: op.instanceId,
+      kind: "select_unit",
+      phasePlayerId: playerId,
+      validInstanceIds: candidates,
+      selectCount: 1,
+      optional: true,
+      // 出たユニットのナンバー（数字でなければ手札から出せるユニットはない）。
+      maxPowerCost: typeof number === "number" ? number : -1,
+      ...(choice ? { resumeChoice: choice } : {}),
+    };
+  }
+  return openEffectChoice(state, choice!);
+}
+
+register(
+  SENTAI_SOUL_HOLD_EFFECT_ID,
+  (state, playerId, instanceId) => {
+    const pending = state.pendingEffectChoice!;
+    const found = findCardInField(state, instanceId);
+    if (!found || found.playerId !== playerId || found.card.commandHeld) return { error: "invalid_target" };
+    const held = patchPlayer(state, playerId, (p) => ({
+      ...p,
+      [found.zone]: p[found.zone].map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: true } : c)),
+    }));
+    const limit = pending.maxPowerCost ?? -1;
+    const ids = held.players[playerId].hand
+      .filter((c) => {
+        const def = getDefinition(held.definitions, c.cardId);
+        return def?.type === "unit" && def.size === "S" && typeof def.comboNumber === "number" && def.comboNumber <= limit;
+      })
+      .map((c) => c.instanceId);
+    const log = logFor(state, playerId, "RS-521", `${SENTAI_SOUL_HOLD_EFFECT_ID}:${cardName(state.definitions, found.card.cardId)}`);
+    if (ids.length === 0) return { state: finish(held, pending), log };
+    return {
+      state: reopen(held, pending, {
+        playerId,
+        effectId: SENTAI_SOUL_DEPLOY_EFFECT_ID,
+        sourceCardId: "RS-521",
+        sourceInstanceId: pending.sourceInstanceId,
+        kind: "select_hand",
+        phasePlayerId: pending.phasePlayerId,
+        validInstanceIds: ids,
+        selectCount: 1,
+        optional: true,
+      }),
+      log,
+    };
+  },
+  simpleSkip("RS-521"),
+);
+
+register(
+  SENTAI_SOUL_DEPLOY_EFFECT_ID,
+  (state, playerId, instanceId) => {
+    const pending = state.pendingEffectChoice!;
+    const card = state.players[playerId].hand.find((c) => c.instanceId === instanceId);
+    if (!card) return { error: "invalid_target" };
+    const moved = patchPlayer(state, playerId, (p) => ({
+      ...p,
+      hand: p.hand.filter((c) => c.instanceId !== instanceId),
+      rush: [...p.rush, { instanceId: card.instanceId, cardId: card.cardId }],
+    }));
+    const closed = finish(moved, pending);
+    // 効果でラッシュエリアに出したユニットの「ラッシュしたとき」「ラッシュされたとき」（R-RUSH-22）。
+    const rushed = finalizeEffectRush(closed, playerId, [instanceId], pending.phasePlayerId);
+    return {
+      state: rushed.logs.length > 0 ? { ...rushed.state, log: [...rushed.state.log, ...rushed.logs] } : rushed.state,
+      log: logFor(state, playerId, "RS-521", `${SENTAI_SOUL_DEPLOY_EFFECT_ID}:${cardName(state.definitions, card.cardId)}`),
+    };
+  },
+  simpleSkip("RS-521"),
+);
+
+// ---------------------------------------------------------------------------
+// バトルエリアに出たとき（rules/combo.ts の進入処理から）
+
+export function trySet8AOnEnterBattle(state: GameState, playerId: PlayerId, entered: CardInstance, ownBattlePhase: boolean): GameState {
+  let next = state;
+  // RS-523 臨気で得た能力「バトルエリアに出たとき、相手に1点ダメージを与える。」
+  if (rinkiGranted(next, playerId, entered.instanceId)) {
+    next = applyDamageToPlayer(next, opponent(playerId), 1, { kind: "none", activePlayer: next.activePlayer });
+    next = { ...next, log: [...next.log, buildLogEntry(playerId, "enter_battle", "RS-523", next.definitions, "rs523_rinki_damage")] };
+  }
+  if (ownBattlePhase && !next.pendingEffectChoice && !next.pendingDamagePayment) {
+    next = openSentaiSoul(next, playerId, entered);
+  }
+  return next;
+}
+
 /** DSL grant_keyword からの起点（RS-529 の on_strike は上の起点で処理済みなので何もしない）。 */
 export function trySet8ACardEffect(
   state: GameState,
-  ctx: { playerId: PlayerId; sourceCardId: string },
+  ctx: Set8ACardEffectContext,
   keyword: string,
 ): { state: GameState; detail?: string } | null {
   // RS-520 スコープショット「自軍山札から1枚ひいて、そのカードを自軍コマンドゾーンに置く。置けなければ手札に加える。」
   // （atwiki/page-1148）— コマンドゾーンへはリリース状態（02-zones-cards「特に指定がなければリリース状態」）。
   if (keyword === "draw_deck_to_command_or_hand") {
     return { state: drawToCommandOrHand(state, ctx.playerId), detail: keyword };
+  }
+  if (keyword === "set8a::RS-523::rinki") {
+    return { state: openRinki(state, ctx), detail: keyword };
+  }
+  if (keyword === "set8a::RS-526::super_highway_buster") {
+    return { state: openSuperHighwayBuster(state, ctx), detail: keyword };
   }
   if (ctx.sourceCardId === "RS-529" && keyword.startsWith("enemy_power_damage_koregaatakumatahasutoraiku")) {
     return { state, detail: "rs529_thunderbolt_sword:handled_on_declare" };
