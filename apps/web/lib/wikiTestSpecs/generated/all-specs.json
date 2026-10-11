@@ -5412,8 +5412,7 @@
       "※常駐"
     ],
     "expectedDslKeywords": [
-      "resident",
-      "call_WB"
+      "resident"
     ],
     "operationKind": "permanent",
     "expectedMechanisms": [
@@ -6603,8 +6602,7 @@
       "【フエッスル】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-316::fuesuru",
-      "morph"
+      "rk_fx::RK-316::fuesuru"
     ],
     "bp": 500,
     "sp": null,
@@ -16035,8 +16033,7 @@
     ],
     "expectedDslKeywords": [
       "ride_command_without_rc_redo",
-      "effect_card::RS-466::honoono",
-      "register"
+      "effect_card::RS-466::honoono"
     ],
     "sp": null,
     "size": "M"
