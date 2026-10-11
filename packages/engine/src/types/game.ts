@@ -856,6 +856,15 @@ export type GameState = {
   magiTicketPending?: { playerId: PlayerId; instanceId: string };
   /** RS-418【炎の眼光】: 進入中のユニットの NC の効果を無効にするかの決定（進入処理の NC の段階で使い、消す）。 */
   ncNegationDecision?: { instanceId: string; negate: boolean };
+  /** RS-477 ガオウルフ【威圧する咆哮】: NC の効果を発動する前の発動確認を済ませた進入中ユニット（進入処理の NC の段階で使い、消す）。 */
+  gaoWolfNcDecision?: { instanceId: string };
+  /**
+   * 第7弾 RS-474〜RS-494 のカード固有の待ち行列（rules/legend1/set7NamedEffectsC.ts）。
+   * - extraTurns: RS-484【ハリーアップ！】で「このターンの後、追加でもう一度ターンを行う」プレイヤー（ターンごとに1件）。
+   * - bunshin: RS-486【分身幻斬り】でアタック・ストライクの処理をすべて終えてから開く選択。
+   */
+  extraTurns?: PlayerId[];
+  bunshinQueue?: Array<{ playerId: PlayerId; instanceId: string; cardId: string }>;
   /**
    * 使用して手札を離れたが、効果の解決が選択待ち等で中断していてまだどのゾーンにも置かれていない
    * オペレーション（カウンターを含む）。解決が終わった時点で（効果が別のゾーンへ移していなければ）
@@ -936,6 +945,8 @@ export type TurnEndProgress = {
   exodusFirst?: boolean;
   /** 第6弾の「ターンを終えるとき」の選択（RS-398【時間漂流者の送還】・RS-413 のコマンド捨札）のうち未処理のもの。 */
   set6bQueue?: string[];
+  /** 第7弾 RS-484【ハリーアップ！】の「ターンを終えるとき」の選択のうち未処理のもの（rules/legend1/set7NamedEffectsC.ts）。 */
+  set7cQueue?: string[];
   /** RS-360【宇宙で一番美しいのは誰？】で、まだ選んで撃破していない回数（未計算なら undefined）。 */
   hedrianLeft?: number;
 };

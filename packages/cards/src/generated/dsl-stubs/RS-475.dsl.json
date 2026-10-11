@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-475::riborubafuantomu",
+          "keyword": "set7c::RS-475::revolver_phantom",
           "duration": "turn"
         }
       ],

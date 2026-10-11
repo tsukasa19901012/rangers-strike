@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-476::bisutohariken",
+          "keyword": "set7c::RS-476::beast_hurricane",
           "duration": "turn"
         }
       ],

@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-494::ninpori",
-          "duration": "permanent"
+          "keyword": "set7c::RS-494::en_giri",
+          "duration": "turn"
         }
       ],
       "optional": true

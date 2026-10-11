@@ -108,6 +108,7 @@ import { applyResidentOpOnPlace } from "../rules/residentOps";
 import { applySelfRushFromZone, battleActBlocked, markUnitBattleAction } from "../rules/keywordGapRuntime";
 import { applyStartPhaseBeginEffects } from "../rules/startPhaseBegin";
 import { emitStrikeDeclared } from "../events/emitStrikeDeclared";
+import { openBunshinIfReady, queueBunshinOnAction } from "../rules/legend1/set7NamedEffectsC";
 import { emitTurnEndingAndResolve } from "../events/emitTurnEnding";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import {
@@ -507,7 +508,7 @@ function finalizeTurnEnd(state: GameState): GameState {
   };
   next = advancePhase(next);
 
-  if (next.phase === "start" && next.activePlayer !== prevPlayer) {
+  if (next.phase === "start" && (next.activePlayer !== prevPlayer || next.turn !== afterEffects.turn)) {
     // ルール: R-START-06, R-TIME-06 — 「スタートフェイズ開始時」「ターン開始時」の効果は
     // 3行程（リリース・戻す・ドロー）より前に発動・解決する。ホールド中のコマンドの有無に依存しない。
     next = applyStartPhaseBeginEffects(next, next.activePlayer);
@@ -826,6 +827,21 @@ export function applyAction(
     next = queuePantherClaw(state, next);
     if (next.pantherClawQueue?.length && !hasBlockingInteraction(next) && !next.winner) {
       next = openPantherClawIfReady(next, turnPlayerOf(next));
+    }
+  }
+  // RS-486【分身幻斬り】: アタック・ストライクの処理をすべて終えてから選択を開く（rules/legend1/set7NamedEffectsC.ts）。
+  if (applyActionDepth === 0) {
+    next = queueBunshinOnAction(state, next, action as Parameters<typeof queueBunshinOnAction>[2]);
+    if (
+      next.bunshinQueue?.length &&
+      !next.winner &&
+      !hasBlockingInteraction(next) &&
+      !next.deferredAttack &&
+      !next.deferredStrike &&
+      !next.pendingEffectRush &&
+      !(next.deferredDestroyTriggers?.length)
+    ) {
+      next = openBunshinIfReady(next);
     }
   }
   next = syncDamageWithFaceDownPower(state, next);

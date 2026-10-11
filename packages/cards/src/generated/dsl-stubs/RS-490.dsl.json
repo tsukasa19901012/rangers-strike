@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-490::fxunknowne4ba88",
-          "duration": "permanent"
+          "keyword": "set7c::RS-490::prophecy",
+          "duration": "turn"
         }
       ],
       "optional": true

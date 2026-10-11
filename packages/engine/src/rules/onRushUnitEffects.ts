@@ -1,3 +1,4 @@
+import { openProphecyOnEnemyRush } from "./legend1/set7NamedEffectsC";
 import type { GameState, PlayerId } from "../types/game";
 import { findInZone } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
@@ -295,6 +296,8 @@ export function applyPassiveRushTriggers(
   phasePlayerId: PlayerId,
 ): { state: GameState; logs: string[] } {
   const rsEnemyRush = tryRsCatchallOnEnemyRush(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
-  const next = tryDispatchOrderOnEnemyRush(rsEnemyRush.state, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  let next = tryDispatchOrderOnEnemyRush(rsEnemyRush.state, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // RS-490 三の槍マンマルバ幼体【予言】（rules/legend1/set7NamedEffectsC.ts）。
+  next = openProphecyOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   return { state: next, logs: rsEnemyRush.logs };
 }

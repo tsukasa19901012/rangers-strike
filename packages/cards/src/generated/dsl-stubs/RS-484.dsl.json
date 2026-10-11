@@ -64,8 +64,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-484::hariapu",
-          "duration": "permanent"
+          "keyword": "set7c::RS-484::hurry_up",
+          "duration": "turn"
         }
       ],
       "optional": true

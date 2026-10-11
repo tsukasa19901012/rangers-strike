@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokinokarawotsuyunitokado",
+          "keyword": "set7c::RS-476::beast_hurricane",
           "duration": "turn"
         }
       ],

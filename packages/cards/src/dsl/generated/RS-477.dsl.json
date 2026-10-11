@@ -39,7 +39,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_koregaerianiarutanyunitoganowosurutokisonoyuni",
+          "keyword": "set7c::RS-477::wolf_roar",
           "duration": "turn"
         }
       ],

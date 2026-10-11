@@ -64,8 +64,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_field_body_koregaerianiarugatanwoerutokinokara_kaze_shin_harian",
-          "duration": "permanent"
+          "keyword": "set7c::RS-484::hurry_up",
+          "duration": "turn"
         }
       ],
       "optional": true

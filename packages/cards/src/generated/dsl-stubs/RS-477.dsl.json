@@ -39,8 +39,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-477::suru",
-          "duration": "permanent"
+          "keyword": "set7c::RS-477::wolf_roar",
+          "duration": "turn"
         }
       ],
       "optional": true

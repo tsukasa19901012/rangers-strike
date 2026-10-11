@@ -24,22 +24,11 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "rush",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      },
       "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "copy_nc_from_rush_s",
+          "keyword": "set7c::RS-483::space_ninja",
           "duration": "turn"
         }
       ]

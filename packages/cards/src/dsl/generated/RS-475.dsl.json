@@ -31,7 +31,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_faceup_koregabatoruerianitatokiwosubeteura_ko_kinishiteshafurushi",
+          "keyword": "set7c::RS-475::revolver_phantom",
           "duration": "turn"
         }
       ],

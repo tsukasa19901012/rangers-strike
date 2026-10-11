@@ -252,7 +252,9 @@ export function EffectChoiceModal({
                   >
                     {pending.effectId === "attack_hold_bonus"
                       ? attackHoldOptionLabel(state, pending, value)
-                      : value}
+                      : value.startsWith("draw:")
+                        ? `${value.slice("draw:".length)}枚ドロー`
+                        : value}
                   </button>
                 ))}
               </div>
@@ -277,7 +279,11 @@ export function EffectChoiceModal({
                     className="btn effect-action-modal__target"
                     onClick={() => onSelect(name)}
                   >
-                    {pending.effectId === "reorder_enemy_battle" ? reorderOptionLabel(state, name) : name}
+                    {pending.effectId === "reorder_enemy_battle"
+                      ? reorderOptionLabel(state, name)
+                      : name === pending.effectId || name === pending.sourceInstanceId
+                        ? "効果を使う"
+                        : name}
                   </button>
                 ))}
               </div>

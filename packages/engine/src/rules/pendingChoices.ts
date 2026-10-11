@@ -77,7 +77,7 @@ import type {
   SeabedDrawMeta,
 } from "../types/game";
 import { clearCostWindow, satisfyCostWindow } from "../core/costWindow";
-import { cardName, cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp } from "../core/catalog";
+import { cardName, cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp, unitEffectiveCategories } from "../core/catalog";
 import { withSpBecomes } from "./fractionalSp";
 import {
   applyDiscoDanceReturnFemaleSToRush,
@@ -138,6 +138,7 @@ import {
 } from "./legend1/set4NamedEffects";
 import { isSet5ChoiceEffect, tryResolveSet5Choice, trySkipSet5Choice } from "./legend1/set5NamedEffects";
 import { isSet6BChoiceEffect, tryResolveSet6BChoice, trySkipSet6BChoice } from "./legend1/set6NamedEffectsB";
+import { isSet7CChoiceEffect, tryResolveSet7CChoice, trySkipSet7CChoice } from "./legend1/set7NamedEffectsC";
 import {
   isSet5AuditChoiceEffect,
   tryResolveSet5AuditChoice,
@@ -614,6 +615,7 @@ export function isValidEffectChoiceTarget(
     isSet5AuditChoiceEffect(pending.effectId) ||
     isSet5AChoiceEffect(pending.effectId) ||
     isSet6BChoiceEffect(pending.effectId) ||
+    isSet7CChoiceEffect(pending.effectId) ||
     pending.effectId === "rs414_dione_wall" ||
     isSet6LowChoiceEffect(pending.effectId) ||
     isSet6AuditChoiceEffect(pending.effectId)
@@ -1102,7 +1104,8 @@ function collectGaoriJawTargets(state: GameState, enemyId: PlayerId): string[] {
   for (const card of player.battle) {
     const def = getDefinition(state.definitions, card.cardId);
     if (def?.type !== "unit") continue;
-    if (cardCategories(def).length < 2) continue;
+    // 効果で追加されたカテゴリも数える（RS-476 ガオハンターイビルのバトルエリアでの WB 等）。
+    if (unitEffectiveCategories(state, enemyId, card, "battle").length < 2) continue;
     if (effectiveBp(state, enemyId, card) > 9000) continue;
     ids.push(card.instanceId);
   }
@@ -2779,6 +2782,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set5a) return set5a;
   const set6b = trySkipSet6BChoice(state, playerId);
   if (set6b) return set6b;
+  const set7c = trySkipSet7CChoice(state, playerId);
+  if (set7c) return set7c;
   const set5 = trySkipSet5Choice(state, playerId);
   if (set5) return set5;
   const set5Audit = trySkipSet5AuditChoice(state, playerId);
@@ -3041,6 +3046,8 @@ export function applyEffectChoiceSelect(
   if (set5a) return set5a;
   const set6b = tryResolveSet6BChoice(state, playerId, instanceId);
   if (set6b) return set6b;
+  const set7c = tryResolveSet7CChoice(state, playerId, instanceId);
+  if (set7c) return set7c;
   const set5 = tryResolveSet5Choice(state, playerId, instanceId);
   if (set5) return set5;
   const set5Audit = tryResolveSet5AuditChoice(state, playerId, instanceId);

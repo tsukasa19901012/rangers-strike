@@ -29,8 +29,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-491::meta",
-          "duration": "permanent"
+          "keyword": "set7c::RS-491::awakened_ferocity",
+          "duration": "turn"
         }
       ],
       "optional": false

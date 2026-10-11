@@ -230,9 +230,17 @@ export function advancePhase(state: GameState): GameState {
   let turn = state.turn;
   let activePlayer = state.activePlayer;
   const log = [...state.log, `phase:${state.phase}->${next}`];
+  // RS-484【ハリーアップ！】「このターンの後、自分は追加でもう一度ターンを行う」（rules/legend1/set7NamedEffectsC.ts）。
+  let extraTurns = state.extraTurns;
 
   if (state.phase === "end") {
-    activePlayer = activePlayer === "player1" ? "player2" : "player1";
+    const extraIndex = (extraTurns ?? []).indexOf(activePlayer);
+    if (extraIndex >= 0) {
+      const rest = extraTurns!.filter((_, i) => i !== extraIndex);
+      extraTurns = rest.length > 0 ? rest : undefined;
+    } else {
+      activePlayer = activePlayer === "player1" ? "player2" : "player1";
+    }
     turn += 1;
   }
 
@@ -243,7 +251,9 @@ export function advancePhase(state: GameState): GameState {
     phase: next,
     log,
     winner: checkWinner(state),
+    extraTurns,
   };
+  if (!nextState.extraTurns) delete nextState.extraTurns;
 
   if (next === "rush") {
     nextState = {
@@ -271,8 +281,18 @@ export function advancePhase(state: GameState): GameState {
     };
   }
 
-  if (state.phase === "end") {
+  if (state.phase === "end" && activePlayer !== state.activePlayer) {
     nextState = recordEnemyTurnDamage(nextState, state.activePlayer, activePlayer);
+  } else if (state.phase === "end") {
+    // 追加のターン: 敵軍ターンを挟まないので、終えたターンの記録だけを新しくする。
+    const same = nextState.players[activePlayer];
+    nextState = {
+      ...nextState,
+      players: {
+        ...nextState.players,
+        [activePlayer]: { ...same, damagedOnEnemyTurn: undefined, faceDownPowerAtTurnStart: faceDownPowerCount(same) },
+      } as GameState["players"],
+    };
   }
 
   if (next === "start") {
