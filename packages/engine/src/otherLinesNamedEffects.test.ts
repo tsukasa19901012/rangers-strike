@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from "vitest";
 import type { CardInstance } from "./types/game";
-import { act, attackedInEnemyTurn, choiceIds, deckCards, inst, pick, skip, st, zoneOf } from "./cardSpec/RS8-560-581.helpers";
+import { act, attackedInEnemyTurn, canStartRush, choiceIds, deckCards, inst, pick, powerCards, releasedCat, skip, st, zoneOf } from "./cardSpec/RS8-560-581.helpers";
 
 const faceDown = (id: string, tag: string): CardInstance => ({ ...inst(id, tag), faceDown: true });
 
@@ -74,5 +74,22 @@ describe("XP-026 仮面ライダーアクセル ※（自分がターンを終�
     s = skip(s);
     expect(zoneOf(s, "player1", "XP-026:accel")).toBe("battle");
     expect(s.players.player1.command.find((c) => c.instanceId === "RK-054:kasoku")?.commandHeld ?? false).toBe(false);
+  });
+});
+
+describe("XG6-018 アバレキラー ※（自軍Lユニットがなければ「爆竜トップゲイラー＋爆竜ステゴスライドン」としてつかえる）", () => {
+  const board = (rush: CardInstance[]) =>
+    st({
+      phase: "rush",
+      player1: { rush, hand: [inst("RS-226", "ko")], command: releasedCat("WB", 1), power: powerCards(6), deck: deckCards(5) },
+      player2: { deck: deckCards(5, "e") },
+    });
+
+  it("自軍 L ユニットがなければ、キラーオー（RS-226）の合体ユニットとして捨札にしてラッシュできる（出典: atwiki/page-2334）", () => {
+    expect(canStartRush(board([inst("XG6-018", "ak")]), "player1", "RS-226:ko")).toBe(true);
+  });
+
+  it("自軍 L ユニットがあれば、合体ユニットとしてつかえない（出典: atwiki/page-2334「自軍Lユニットがなければ」）", () => {
+    expect(canStartRush(board([inst("XG6-018", "ak"), inst("RS-226", "other")]), "player1", "RS-226:ko")).toBe(false);
   });
 });
