@@ -43,9 +43,9 @@ apps/vita              PocketJS シェル（このディレクトリ）
 
 | バンドル | サイズ |
 |---|---|
-| エンジン（全カード、minify） | 7.29 MiB |
-| エンジン（スターター 405 枚に刈り込み、minify） | 2.77 MiB |
-| Vita 用 JS（エンジン＋client-core＋PocketJS＋Solid） | 3.43 MiB |
+| エンジン（全カード、minify） | 7.32 MiB |
+| エンジン（スターター 405 枚に刈り込み、minify） | 2.79 MiB |
+| Vita 用 JS（エンジン＋client-core＋PocketJS＋Solid） | 3.46 MiB |
 | Vita 用 pak（12px/12px 太字/16px 既定スロットの文字アトラス、各 1,264 字） | 3.38 MiB |
 
 日本語の文字は `src/generated/chars.txt`（ビルド時に、刈り込み後エンジンと UI ソースに現れる非 ASCII 文字 約 1,170 字を収集）を
@@ -177,8 +177,8 @@ Title ID は `pocket.json` の `id`（`dev.rangers-strike.vita`）から決ま�
 - 保存: Vita プロファイルに `data.fs`／`data.sqlite` がないので、設定と対戦記録はメモリのみ（終了で消えます）。ブラウザ host では localStorage に残ります。
 
 参考値（M1 Max、QuickJS 2026-06-04、`npm run smoke:qjs`。実機の値ではありません）:
-エンジン読み込み 0.19 秒（全カード版 0.37 秒）、QuickJS ヒープ使用 9.5 MB（全カード版のエンジン読み込みだけで 15.8 MB）、
-プロセス最大 RSS 32 MB、CPU（Lv2）1 手の思考 平均 3.7〜8.8 ms・最大 104 ms。
+エンジン読み込み 0.19 秒（全カード版 0.37 秒）、QuickJS ヒープ使用 9.6 MB（全カード版のエンジン読み込みだけで 15.8 MB）、
+プロセス最大 RSS 32 MB、CPU（Lv2）1 手の思考 平均 4.0〜8.8 ms・最大 110 ms。
 
 ## 10. Web アプリ・スマホ／タブレットへの展開
 
