@@ -610,7 +610,7 @@
       "【汚い大気】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG1-034::effecte6b19ae38184"
+      "other::XG1-034::filthy_air"
     ],
     "bp": 3000,
     "sp": null,
@@ -1406,7 +1406,7 @@
       "Sユニットを2体選ぶ。このターン、1体目に選んだ"
     ],
     "expectedDslKeywords": [
-      "note_card::XG1-078::syunitowo2bukono"
+      "other::XG1-078::copy_vent"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
