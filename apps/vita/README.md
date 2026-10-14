@@ -94,8 +94,11 @@ PocketJS 0.14 の Vita ホストは Rust（`hosts/vita`）で、VitaSDK・`cargo
    git clone https://github.com/vitasdk/vdpm
    cd vdpm
    ./bootstrap-vitasdk.sh
-   ./install-all.sh          # vita2d などのライブラリも入る
+   vdpm install libvita2d taihen libpng zlib libjpeg-turbo freetype   # Vita ホストが使うライブラリ（確認を求められたら Y）
    ```
+
+   `./install-all.sh` は vdpm 0.1.3（2026.08）では「package client is not executable: …/bin/pacman」で止まるため、
+   必要なライブラリだけを `vdpm install` で入れます（2026-10-14 に macOS arm64 で確認）。
 
    macOS では事前に Xcode Command Line Tools（`xcode-select --install`）が必要です。
    `~/.zshrc` に上の 2 行の `export` を追記しておくと便利です。
