@@ -727,7 +727,7 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_reanimate_named_from_discard",
-      "effect_card::XG2-041::shintsuchinoi"
+      "other::XG2-041::shin_tsuchikemuri"
     ],
     "bp": 1500,
     "sp": null,
@@ -932,9 +932,7 @@
     "textSnippets": [
       "ライドしていない特徴「獣」を持つ自軍ユニットを1"
     ],
-    "expectedDslKeywords": [
-      "note_card::XG2-052::raidoshiteinaiwo"
-    ],
+    "expectedDslKeywords": [],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"

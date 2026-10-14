@@ -243,6 +243,16 @@ export function effectiveComboNumber(
 }
 
 /** 場の常駐オペレーションによるパッシブBPボーナス。 */
+/**
+ * XG2-052 ユナイトベント「ターゲットは、ウラ向きに重ねたカード1枚につきBP+2000され…」— ユナイトベント（オモテ向き）を下に重ねた
+ * ターゲット。ウラ向きのカードには白熱する実況（RS-437）で重ねたカードも含む（atwiki/page-1761 Q4）。
+ */
+export function uniteVentBpBonus(instance: Pick<CardInstance, "stackedCards">): number {
+  const stacked = instance.stackedCards ?? [];
+  if (!stacked.some((c) => c.cardId === "XG2-052" && !c.faceDown)) return 0;
+  return 2000 * stacked.filter((c) => c.faceDown).length;
+}
+
 export function passiveBpBonus(
   state: GameState,
   playerId: PlayerId,
@@ -273,6 +283,8 @@ export function passiveBpBonus(
       }
     }
   }
+
+  bonus += uniteVentBpBonus(instance);
 
   const auraTarget = getAuraPowerInstanceId(player);
   if (

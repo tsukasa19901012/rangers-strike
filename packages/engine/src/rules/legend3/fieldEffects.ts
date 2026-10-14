@@ -262,6 +262,10 @@ export function legend3EffectiveSp(
   sp = Math.max(sp, sr003SpFloor(state, playerId, instance));
   sp = Math.max(sp, srBigBatonSpFloor(state, playerId, instance));
 
+  // XG2-052 ユナイトベント「…BP10000ごとにSP+1される」（ユナイトベントを下に重ねたターゲット）。
+  if ((instance.stackedCards ?? []).some((c) => c.cardId === "XG2-052" && !c.faceDown)) {
+    sp += Math.floor(effectiveBp(state, playerId, instance) / 10000);
+  }
   // RS-382 ビクトリーロボ【人の命は地球の未来】: このターン自軍捨札から手札に加えた S ユニットのカード1枚につき SP+1。
   // ナンバーを持たないカードの効果で、NC の成立とは関係しない（atwiki/page-541）。
   if (instance.cardId === "RS-382") {

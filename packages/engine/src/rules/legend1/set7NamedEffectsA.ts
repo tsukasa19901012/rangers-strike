@@ -8,6 +8,8 @@
  * - 選択の解決: `tryResolveSet7AChoice` / `trySkipSet7AChoice` / `tryConfirmSet7AChoice`
  * 構成は rules/legend1/set6NamedEffectsB.ts と同じ。
  */
+import { fieldCardMatchesPartner } from "../zord";
+import { resolveZordFusionPartnerSlots } from "../../dsl/zordBridge";
 import type {
   CardInstance,
   GameState,
@@ -1522,8 +1524,14 @@ export function applyLiveCommentaryOnRush(state: GameState, ownerPlayerId: Playe
   if (!record || record.rushedInstanceId !== instanceId) return state;
   const def = getDefinition(state.definitions, unit.cardId);
   if (resolveRushAdditionalCondition(unit.cardId, def)?.conditionId !== "discard_fusion_unit") return state;
+  // 「その追加条件で捨札にした合体ユニットのカード」— 条件つきの別名（XG6-018「※自軍Lユニットがなければ…としてつかえる」）は、
+  // L ユニットをラッシュした後は満たせないので合体ユニットとして扱わない（atwiki/page-764 Q1・page-2334 Q3）。
+  const partnerIds = resolveZordFusionPartnerSlots(unit.cardId).flat();
   const cards = owner.discard.filter(
-    (c) => record.instanceIds.includes(c.instanceId) && getDefinition(state.definitions, c.cardId)?.type === "unit",
+    (c) =>
+      record.instanceIds.includes(c.instanceId) &&
+      getDefinition(state.definitions, c.cardId)?.type === "unit" &&
+      (partnerIds.length === 0 || partnerIds.some((id) => fieldCardMatchesPartner(state.definitions, c, id, owner))),
   );
   if (cards.length === 0) return state;
   const ids = new Set(cards.map((c) => c.instanceId));
@@ -1556,6 +1564,13 @@ function discardFaceDownUnderLargeUnits(state: GameState, playerId: PlayerId): G
     if (moved.length === 0) return p;
     return { ...p, battle, rush, discard: [...p.discard, ...moved] };
   });
+}
+
+/** 白熱する実況の「その場に留まる」をいま使えるユニットか（自軍 L ユニットで、下にウラ向きのカードがある）。 */
+export function liveCommentaryStayAvailable(state: GameState, ownerId: PlayerId, unit: CardInstance): boolean {
+  if (!isLargeFieldUnit(state, unit)) return false;
+  if (!hasResidentText(state, ownerId, LIVE_COMMENTARY_STAY_RE)) return false;
+  return (unit.stackedCards ?? []).some((c) => c.faceDown);
 }
 
 /**

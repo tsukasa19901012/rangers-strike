@@ -52,7 +52,7 @@ import {
   resolveKurokoMemoryChoice,
   skipKurokoMemoryChoice,
 } from "./kurokoMemory";
-import { isAbductionChoice, resolveAbductionChoice, startAbductionCondition } from "./abduction";
+import { isAbductionChoice, resolveAbductionChoice, skipAbductionChoice, startAbductionCondition } from "./abduction";
 import {
   continueEffectRushAfterMothershipHold,
   EFFECT_RUSH_MOTHERSHIP,
@@ -144,6 +144,7 @@ import { isSet8AChoiceEffect, tryConfirmSet8AChoice, tryResolveSet8AChoice, tryS
 import { isSet8DChoiceEffect, tryResolveSet8DChoice, trySkipSet8DChoice } from "./legend1/set8NamedEffectsD";
 import { isSet9AChoiceEffect, tryConfirmSet9AChoice, tryResolveSet9AChoice, trySkipSet9AChoice } from "./legend1/set9NamedEffectsA";
 import { isSet9DChoiceEffect, tryResolveSet9DChoice, trySkipSet9DChoice } from "./legend1/set9NamedEffectsD";
+import { filthyAirActive, isOtherLinesChoiceEffect, tryOtherLinesBattleToRush, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
 import {
@@ -640,6 +641,7 @@ export function isValidEffectChoiceTarget(
     isSet8DChoiceEffect(pending.effectId) ||
     isSet9AChoiceEffect(pending.effectId) ||
     isSet9DChoiceEffect(pending.effectId) ||
+    isOtherLinesChoiceEffect(pending.effectId) ||
     isSet9BChoiceEffect(pending.effectId) ||
     isSet8BChoiceEffect(pending.effectId) ||
     pending.effectId === "rs414_dione_wall" ||
@@ -1878,7 +1880,10 @@ export function budgetBpForInstance(
   instanceId: string,
   pending?: PendingEffectChoice,
 ): number | null {
-  if (pending?.effectId !== "animal_heart") return printedBpForInstance(state, instanceId);
+  // XG3-034【キョウリュウマル】は「BPの合計」— 修正後の BP で数える（本来の BP の指定がない）。
+  if (pending?.effectId !== "animal_heart" && pending?.effectId !== "xg3034_kyouryuumaru") {
+    return printedBpForInstance(state, instanceId);
+  }
   const located = findCardOwner(state, instanceId);
   if (!located) return null;
   const found = findInZone(state.players[located.playerId], located.zone, instanceId);
@@ -2447,6 +2452,8 @@ function tryRegisterStayOnLeave(
       const card = player[zone].find((c) => c.instanceId === instanceId);
       if (!card) continue;
       if (!cardHasGrantKeyword(card.cardId, FEATURE_KEYWORDS.registerStayKamenRider)) return null;
+      // XG1-034【汚い大気】: バトルフェイズ中は発動できない（atwiki/page-1582 Q1）。
+      if (filthyAirActive(state)) return null;
       const idx = player.power.findIndex((c) => {
         if (c.faceDown) return false;
         const def = getDefinition(state.definitions, c.cardId);
@@ -2465,6 +2472,15 @@ function tryRegisterStayOnLeave(
     }
   }
   return null;
+}
+
+/**
+ * ルール: R-ERR-RS118 — 置きかえでラッシュエリアに移った S ユニットは「バトルエリアからラッシュエリアに戻った」として扱う
+ * （XP-026【アクセルグランツァー】。atwiki/page-292 Q1。rules/legend1/otherLinesNamedEffects.ts）。
+ */
+function withAccelGranzer(outcome: ChoiceOutcome, playerId: PlayerId, returned: CardInstance, phasePlayerId: PlayerId): ChoiceOutcome {
+  if ("error" in outcome) return outcome;
+  return { ...outcome, state: tryOtherLinesBattleToRush(outcome.state, playerId, returned, phasePlayerId) };
 }
 
 export function applyUnitLeave(
@@ -2923,6 +2939,10 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set9a) return set9a;
   const set9d = trySkipSet9DChoice(state, playerId);
   if (set9d) return set9d;
+  const otherLines = trySkipOtherLinesChoice(state, playerId);
+  if (otherLines) return otherLines;
+  const abduction = skipAbductionChoice(state, playerId);
+  if (abduction) return abduction;
   const set9b = trySkipSet9BChoice(state, playerId);
   if (set9b) return set9b;
   const set8b = trySkipSet8BChoice(state, playerId);
@@ -3214,6 +3234,8 @@ export function applyEffectChoiceSelect(
   if (set9a) return set9a;
   const set9d = tryResolveSet9DChoice(state, playerId, instanceId);
   if (set9d) return set9d;
+  const otherLines = tryResolveOtherLinesChoice(state, playerId, instanceId);
+  if (otherLines) return otherLines;
   const set9b = tryResolveSet9BChoice(state, playerId, instanceId);
   if (set9b) return set9b;
   const set8b = tryResolveSet8BChoice(state, playerId, instanceId);
@@ -4117,10 +4139,15 @@ export function applyEffectChoiceSelect(
             { ...player, battle, rush: [...player.rush, swapTarget.card] },
             swapTarget.card.instanceId,
           );
-          return finishChoice(
-            { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
-            pending,
-            cardName(state.definitions, swapTarget.card.cardId),
+          return withAccelGranzer(
+            finishChoice(
+              { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
+              pending,
+              cardName(state.definitions, swapTarget.card.cardId),
+            ),
+            pending.playerId,
+            swapTarget.card,
+            pending.phasePlayerId,
           );
         }
         const entering = findInZone(player, "rush", pending.sourceInstanceId);
@@ -4150,10 +4177,15 @@ export function applyEffectChoiceSelect(
             swapTarget.card.instanceId,
           ),
         );
-        return finishChoice(
+        return withAccelGranzer(
+          finishChoice(
           { ...state, ...updatePlayer(state, pending.playerId, nextPlayer) },
           pending,
           cardName(state.definitions, swapTarget.card.cardId),
+        ),
+          pending.playerId,
+          swapTarget.card,
+          pending.phasePlayerId,
         );
       }
       const located = findCardOwner(state, instanceId);

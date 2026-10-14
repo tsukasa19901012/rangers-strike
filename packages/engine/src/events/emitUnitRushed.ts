@@ -1,5 +1,6 @@
 import type { EffectRushTrigger, GameState, PlayerId } from "../types/game";
 import { findInZone, updatePlayer } from "../core/helpers";
+import { effectiveBp } from "../core/catalog";
 import type { RushEffectOutcome } from "../rules/rushEffects";
 import { openMorphReactionWindow } from "../keywords/morphReaction";
 import { openRushCounterWindow } from "../rules/rushEffects";
@@ -27,6 +28,11 @@ export function emitUnitRushedAndFinalize(
     return { state, logs: [], counterPending: false };
   }
 
+  // ルール: 「ラッシュされた時点」の BP を記録する（「ラッシュしたとき」の BP 修正より前。atwiki/page-424 Q11）。
+  state = {
+    ...state,
+    rushedBpSnapshot: { instanceId: rushedInstanceId, bp: effectiveBp(state, rusherPlayerId, found.card) },
+  };
   const queue = new EventQueue();
   queue.enqueue(
     buildUnitRushedEvent({

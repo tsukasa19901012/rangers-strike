@@ -85,6 +85,8 @@ export type TargetSelector =
         excludeFeature?: string;
         /** 「BPの下三桁が500」— そのときの BP を1000で割った余り。 */
         bpLastThreeDigits?: number;
+        /** 「ライドしていない」ユニット。 */
+        notRiding?: boolean;
       };
     }
   | {
@@ -101,6 +103,8 @@ export type TargetSelector =
           maxBp?: number;
           minBp?: number;
           maxPowerCost?: number;
+          requireFeature?: string;
+          notRiding?: boolean;
         };
       }>;
     };

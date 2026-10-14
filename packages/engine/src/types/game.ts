@@ -258,6 +258,11 @@ export type PendingRush = {
    * 持ち主が応答する。省略時はラッシュしたプレイヤーの相手（rushReactorId）。
    */
   reactorPlayerId?: PlayerId;
+  /**
+   * ルール: R-TIME-03 — 同じ「ラッシュされたとき」の効果の解決（モーフ）に入った後は、新たに発動できない。
+   * 解決に入る前（窓が開いた時点）に発動できたカウンターの instanceId だけを残す。未設定なら制限なし。
+   */
+  allowedCounterInstanceIds?: string[];
 };
 
 /** 敵ラッシュへのモーフ反応窓。 */
@@ -268,6 +273,10 @@ export type PendingMorph = {
   phasePlayerId: PlayerId;
   morphUnitInstanceIds: string[];
   activeMorphUnitInstanceId?: string;
+  /** 窓が開いた時点で発動できた「ラッシュされたとき」のカウンター（R-TIME-03）。 */
+  counterInstanceIdsAtOpen?: string[];
+  /** モーフを1つ以上解決した（効果の解決に入った。R-TIME-03）。 */
+  morphResolved?: boolean;
 };
 
 export type PendingLeave = {
@@ -530,6 +539,8 @@ export type PendingEffectChoice = {
   tagMeta?: TagChoiceMeta;
   /** 第7弾 RS-432〜RS-452 の選択の続き（rules/legend1/set7NamedEffectsA.ts）。 */
   set7aMeta?: Set7AChoiceMeta;
+  /** RS 以外のラインの効果の選択が使う記録（rules/legend1/otherLinesNamedEffects.ts）。 */
+  otherLinesMeta?: { leave?: PendingLeave };
   /** 第9弾 RS-605〜RS-626 の選択の続き（rules/legend1/set9NamedEffectsA.ts）。 */
   set9aMeta?: Set9AChoiceMeta;
   /** RS-568 風雷丸【各々方、合体で御座る！】: 相手に見せた手札の L ユニットのカード（rules/legend1/set8NamedEffectsC.ts）。 */
@@ -955,6 +966,17 @@ export type GameState = {
    * （モーフ・カウンター）。選択がすべて終わった時点で開く（R-TIME-01, R-KW-MORPH-01）。
    */
   deferredRushReaction?: { rusherPlayerId: PlayerId; rushedInstanceId: string; phasePlayerId: PlayerId };
+  /**
+   * 直近にラッシュされたユニットの「ラッシュされた時点」の BP（「ラッシュしたとき」の効果を解決する前）。
+   * 「BP8000以下のユニットがラッシュされたとき」は、その後 BP が上がってもこの値で判定する（atwiki/page-424 Q11）。
+   */
+  rushedBpSnapshot?: { instanceId: string; bp: number };
+  /**
+   * 「このユニットを捨札にしてもよい。そうしたとき、…」の起動効果で、捨札にする（コスト）ときの「ユニットでなくなるとき」の応答
+   * （白熱する実況・【凄まじき戦士】で留まる等）を待っている。応答の後、捨札になっていれば続きを解決し、留まっていれば
+   * 続きは無効（atwiki/page-1665 Q1。rules/fieldActivatedAbilities.ts）。
+   */
+  pendingFieldAbilityAfterLeave?: { playerId: PlayerId; instanceId: string; cardId: string };
   /** ユニットがフィールドを離れる際の所有者応答。 */
   pendingLeave?: PendingLeave;
   /** チェイス: ライド中ユニット離場時のビークル乗り換え選択。 */
@@ -1169,6 +1191,8 @@ export type TurnEndProgress = {
   hedrianLeft?: number;
   /** 第8弾 RS-567【消身の術】の「相手がそのターンを終えたとき」の選択のうち未処理のもの（rules/legend1/set8NamedEffectsC.ts）。 */
   set8cQueue?: string[];
+  /** RS 以外のラインの「自分がターンを終えるとき」の選択（XP-026 の※）のうち未処理のもの（rules/legend1/otherLinesNamedEffects.ts）。 */
+  otherLinesQueue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

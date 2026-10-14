@@ -19,6 +19,7 @@ import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { cardHasRegisterKeyword } from "../../keywords/registerReaction";
 import { promoteDeferredBattleEntry } from "../battleEntry";
+import { recordSUnitRecoveredFromDiscardToHand } from "../turnRecoveryTracking";
 import { openEffectChoice, requestDrawFromDeck } from "../pendingChoices";
 import { hasSeabedSurvey } from "../legend2/fieldEffects";
 import { patchPlayer } from "../playerPatches";
@@ -415,7 +416,8 @@ CHOICE_RESOLVERS[LAND_SLICER_EFFECT_ID] = (state, playerId, instanceId) => {
     discard: p.discard.filter((c) => c.instanceId !== instanceId),
     hand: [...p.hand, stripForZone(card)],
   }));
-  return { state: proceed(moved, pending), log };
+  // 「自軍捨札から手札に加えた」S ユニットとして RS-382【人の命は地球の未来】に数える。
+  return { state: proceed(recordSUnitRecoveredFromDiscardToHand(moved, playerId, card.cardId), pending), log };
 };
 CHOICE_SKIPPERS[LAND_SLICER_EFFECT_ID] = simpleSkip();
 

@@ -2,6 +2,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import { isZordUpCost } from "@rangers-strike/cards";
 import { isCostWindowSatisfied } from "../core/costWindow";
 import {
+  allCategoriesExistInCommandZone,
   canRushUnitExceptCommandHold,
   cardCategories,
   getDefinition,
@@ -75,7 +76,14 @@ export function canDeclareRush(
   if (categories.length === 0) return true;
   if (isShironLightRushTarget(player, instanceId)) return true;
   // ルール: R-ERR-RK043 — 【突入】の後、次にラッシュするミラーライダーはコマンドをホールドせずにラッシュできる。
-  if (isRideShooterRushTarget(state, playerId, definition.id)) return true;
+  // ルール: R-CAT-02 — 通常のラッシュを補助する効果なので、マルチカテゴリのカードはコマンドゾーンに必要カテゴリが
+  // 揃っていなければラッシュできない（atwiki/page-1559「ライドシューターのような…この制限がかかる」）。
+  if (
+    isRideShooterRushTarget(state, playerId, definition.id) &&
+    (categories.length <= 1 || allCategoriesExistInCommandZone(player, definitions, categories))
+  ) {
+    return true;
+  }
   // RS-242【ジャリュウ一族の侵攻】: 特徴「戦闘員」のユニットはコマンドをホールドせずにラッシュしてもよい。
   if (jaryuInvasionAllowsRushWithoutHold(state, playerId, definition)) return true;
   if (isCostWindowSatisfied(player, "rush_category")) return true;

@@ -6,6 +6,7 @@
  * - 継続効果・制限の参照関数（BP/SP 補正、バトル進入・アタック・支払いの制限）。
  * 型・構成は rules/legend1/set4NamedEffects.ts と同じ。
  */
+import { filthyAirActive } from "./otherLinesNamedEffects";
 import { shuffleCards as shuffleDeckCards } from "../../core/deckShuffle";
 import type { Category, CardDefinition } from "@rangers-strike/cards";
 import { cardHasCategory } from "@rangers-strike/cards";
@@ -674,6 +675,8 @@ export const REVOLVER_POWER_EFFECT_ID = "revolver_missile_power";
 export const REVOLVER_OPPONENT_EFFECT_ID = "revolver_missile_opponent";
 
 function beginRevolver(state: GameState, ctx: GrantKeywordContext): GameState | null {
+  // XG1-034【汚い大気】: パワーゾーンからカードが離れる処理を含むため、バトルフェイズ中は発動できない（atwiki/page-1582 Q6）。
+  if (filthyAirActive(state)) return null;
   const enemyId = opponent(ctx.playerId);
   const units = fieldUnits(state, enemyId).map((c) => c.instanceId);
   if (units.length === 0 || state.players[enemyId].power.length === 0) return null;
@@ -1018,6 +1021,8 @@ export function queueRoundRadar(before: GameState, after: GameState, action: Loo
   if (!before.players[user].hand.some((c) => c.instanceId === action.instanceId)) return after;
   if (after.players[user].hand.some((c) => c.instanceId === action.instanceId)) return after;
   const ownerId = opponent(user);
+  // XG1-034【汚い大気】: バトルフェイズ中は無効（atwiki/page-1582 Q4・page-455 Q7）。
+  if (filthyAirActive(before) || filthyAirActive(after)) return after;
   const jets = before.players[ownerId].rush.filter((c) => c.cardId === "RS-265").length;
   if (jets === 0) return after;
   const phasePlayerId = action.type === "play_counter" ? ownerId : user;
@@ -1049,6 +1054,7 @@ export function openRoundRadarIfReady(state: GameState): GameState {
   while (queue.length > 0) {
     const [head, ...rest] = queue;
     queue = rest;
+    if (filthyAirActive(next)) continue;
     const enemyId = opponent(head!.ownerId);
     const ids = next.players[enemyId].power.map((c) => c.instanceId);
     if (ids.length === 0) continue;

@@ -1,3 +1,4 @@
+import { dslEffectSelectsPowerCards, filthyAirActive, namedEffectCopySource } from "../rules/legend1/otherLinesNamedEffects";
 import { namedTextNegated } from "../rules/legend1/set6NamedEffects348";
 import type { EffectTrigger } from "@rangers-strike/cards/dsl/types";
 import type { GameState, PlayerId } from "../types/game";
@@ -111,7 +112,24 @@ export function tryResolveDslTriggeredEffects(args: {
   logAction?: string;
   /** 解決する効果を絞る（例: 「ストライクしてダメージを与えたとき」だけ／それ以外だけ）。 */
   effectFilter?: (effect: { id: string; name?: string; text?: string }) => boolean;
+  /** XG1-078 コピーベントの置きかえを適用済み（内部用）。 */
+  copyResolved?: boolean;
 }): DslTriggerOutcome {
+  // XG1-078 コピーベント: このターン、このユニットの効果名を持つ効果は、選んだユニットの効果名を持つ効果になる。
+  const copySource = args.copyResolved ? undefined : namedEffectCopySource(args.state, args.instanceId);
+  if (copySource) {
+    const base = args.effectFilter ?? (() => true);
+    const own = tryResolveDslTriggeredEffects({ ...args, copyResolved: true, effectFilter: (e) => !e.name && base(e) });
+    if (own.state.pendingEffectChoice || own.state.pendingDamagePayment) return own;
+    const copied = tryResolveDslTriggeredEffects({
+      ...args,
+      state: own.state,
+      cardId: copySource,
+      copyResolved: true,
+      effectFilter: (e) => !!e.name && base(e),
+    });
+    return { state: copied.state, logs: [...own.logs, ...copied.logs], handled: own.handled || copied.handled };
+  }
   const all = listDslEffectsForTrigger(args.cardId, args.triggerType);
   const effects = args.effectFilter ? all.filter((e) => args.effectFilter!(e)) : all;
   if (effects.length === 0) {
@@ -135,6 +153,10 @@ export function tryResolveDslTriggeredEffects(args: {
       args.triggerType !== "riding_combo" &&
       !dslNcGateAllows(current, args.playerId, args.instanceId, args.cardId, effect.id)
     ) {
+      continue;
+    }
+    // XG1-034【汚い大気】: バトルフェイズ中、パワーゾーンのカードを選ぶ（離れる処理を含む）効果は無効（atwiki/page-1582 Q3）。
+    if (filthyAirActive(current) && (dslEffectSelectsPowerCards(effect.effects) || dslEffectSelectsPowerCards(effect.condition))) {
       continue;
     }
     if (!evaluateDslCondition(current, args.playerId, effect.condition, args.instanceId, effect.effects)) {

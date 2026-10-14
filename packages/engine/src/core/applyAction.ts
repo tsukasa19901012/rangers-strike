@@ -1,3 +1,7 @@
+import { isInstancePlacedAnywhere } from "./helpers";
+import { continueFieldAbilityAfterLeave } from "../rules/fieldActivatedAbilities";
+import { resumeAbductionAfterChase } from "../rules/abduction";
+import { applyKyouryuumaru, canUseKyouryuumaru, filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import { currentShuffleEpoch } from "./deckShuffle";
 import { runWithStateRng } from "./rng";
 import { applySwordTornadoAfterShuffle } from "../rules/legend1/set8NamedEffectsC";
@@ -915,6 +919,8 @@ function applyActionWithRng(
   next = settleResolvingOperations(next);
   // RS-582【メー・メガロ】: 自分が使ったカウンターが捨札になったとき（rules/legend1/set8NamedEffectsD.ts）。
   if (applyActionDepth === 0 && "playerId" in action && action.playerId) next = applyMeeMegaloAfterAction(state, next, action.type, action.playerId);
+  // 起動効果の「このユニットを捨札にしてもよい。そうしたとき、…」の続き（rules/fieldActivatedAbilities.ts）。
+  if (next.pendingFieldAbilityAfterLeave) next = continueFieldAbilityAfterLeave(next);
   next = continueDeferredPowerFlip(next);
   next = continueDeferredAttack(next);
   next = continueDeferredStrike(next);
@@ -1769,6 +1775,8 @@ function applyActionCore(
         if (
           (dslOutcome.discardOperation !== false || !!nextState.pendingEffectChoice?.kurokoMeta) &&
           !isPermanent &&
+          // 効果でカード自身を別の場所に置いた（XG2-052 ユナイトベントはターゲットの下に重ねる）なら捨札にしない。
+          !isInstancePlacedAnywhere(nextState, found.card.instanceId) &&
           (!nextState.pendingEffectChoice || !!nextState.pendingEffectChoice.kurokoMeta)
         ) {
           const current = nextState.players[playerId];
@@ -2232,6 +2240,8 @@ function applyActionCore(
 
       if (
         needsBattleEntryPowerDiscard(found.card.cardId) &&
+        // XG1-034【汚い大気】で※は無効（atwiki/page-1582 Q5・page-500 Q1）。
+        !filthyAirActive(state) &&
         !battleEntryPowerDiscardSatisfied(player, found.card.cardId)
       ) {
         const discardChoice = tryStartBattleEntryPowerDiscard(state, playerId, found.card);
@@ -3028,6 +3038,15 @@ function applyActionCore(
 
     case "use_juu_kun_do": {
       if (state.phase !== "battle") return fail("wrong_phase");
+      // XG3-034【キョウリュウマル】で得た能力（rules/legend1/otherLinesNamedEffects.ts）。
+      if (canUseKyouryuumaru(state, playerId, action.attackerInstanceId)) {
+        const used = applyKyouryuumaru(state, playerId, action.attackerInstanceId);
+        if (!used) return fail("illegal_action");
+        return ok(
+          finishBattleEntryIf(used, action.attackerInstanceId),
+          buildSimpleLogEntry(playerId, "use_juu_kun_do", action.attackerInstanceId),
+        );
+      }
       const lionDanceUnit = findInZone(player, "battle", action.attackerInstanceId);
       if (lionDanceUnit && isLionDanceCard(lionDanceUnit.card.cardId)) {
         // ルール: R-ATK-05 — 【超忍法・舞獅子】はアタックするかわりに発動する。
@@ -3170,6 +3189,9 @@ function applyActionCore(
       }
       const result = applyResolveChase(state, pending, action.newVehicleInstanceId);
       if (!result.log) return fail("invalid_chase_vehicle");
+      if (pending.abductionResume) {
+        return ok(resumeAbductionAfterChase(result.state, pending, false), result.log);
+      }
       return ok(result.state, result.log);
     }
 
@@ -3177,6 +3199,9 @@ function applyActionCore(
       const pending = state.pendingChase;
       if (!pending) return fail("no_pending_chase");
       if (playerId !== pending.chaserPlayerId) return fail("wrong_player");
+      if (pending.abductionResume) {
+        return ok(resumeAbductionAfterChase(state, pending, true), buildSimpleLogEntry(playerId, "pass_chase"));
+      }
       let nextState = applyPassChase(state, pending);
       if (pending.leaveIntent.resumePendingStrike && state.pendingStrike) {
         return completeStrike(nextState, {

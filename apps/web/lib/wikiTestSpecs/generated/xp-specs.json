@@ -474,8 +474,8 @@
       "【アクセルグランツァー】"
     ],
     "expectedDslKeywords": [
-      "note_card::XP-026::korehagatanwoeru",
-      "effect_card::XP-026::akuserugurantsua"
+      "other::XP-026::accel_return",
+      "other::XP-026::accel_granzer"
     ],
     "bp": 1000,
     "sp": "1/5",

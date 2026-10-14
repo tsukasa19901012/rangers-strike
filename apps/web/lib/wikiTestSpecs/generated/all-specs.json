@@ -20079,7 +20079,7 @@
       "【凄まじき戦士】"
     ],
     "expectedDslKeywords": [
-      "effect_card::SK-004::majiki"
+      "other::SK-004::majiki"
     ],
     "bp": 5000,
     "sp": 1,
@@ -21059,7 +21059,7 @@
       "【汚い大気】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG1-034::effecte6b19ae38184"
+      "other::XG1-034::filthy_air"
     ],
     "bp": 3000,
     "sp": null,
@@ -21855,7 +21855,7 @@
       "Sユニットを2体選ぶ。このターン、1体目に選んだ"
     ],
     "expectedDslKeywords": [
-      "note_card::XG1-078::syunitowo2bukono"
+      "other::XG1-078::copy_vent"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -22988,7 +22988,7 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_reanimate_named_from_discard",
-      "effect_card::XG2-041::shintsuchinoi"
+      "other::XG2-041::shin_tsuchikemuri"
     ],
     "bp": 1500,
     "sp": null,
@@ -23193,9 +23193,7 @@
     "textSnippets": [
       "ライドしていない特徴「獣」を持つ自軍ユニットを1"
     ],
-    "expectedDslKeywords": [
-      "note_card::XG2-052::raidoshiteinaiwo"
-    ],
+    "expectedDslKeywords": [],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -24708,7 +24706,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "effect_card::XG3-036::basamishi"
+      "other::XG3-036::ebi_basami"
     ],
     "bp": 7000,
     "sp": 1,
@@ -32447,8 +32445,8 @@
       "【アクセルグランツァー】"
     ],
     "expectedDslKeywords": [
-      "note_card::XP-026::korehagatanwoeru",
-      "effect_card::XP-026::akuserugurantsua"
+      "other::XP-026::accel_return",
+      "other::XP-026::accel_granzer"
     ],
     "bp": 1000,
     "sp": "1/5",

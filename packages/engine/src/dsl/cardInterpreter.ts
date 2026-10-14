@@ -2,7 +2,7 @@ import type { EffectDefinition, EffectPrimitive, PlayerRef } from "@rangers-stri
 import type { CardInstance, DslChoiceResume, GameState, PlayerId } from "../types/game";
 import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
 import { COMMAND_ZONE_MAX } from "../types/game";
-import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { findInZone, isInstancePlacedAnywhere, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { applyDamageToPlayer } from "../rules/damagePayment";
 import { requestDrawFromDeck } from "../rules/drawFromDeck";
@@ -585,7 +585,12 @@ export function continueDslAfterChoice(
   const outcome = interpretEffectPrimitives(withoutPending, ctx, resume.remaining);
   let nextState = outcome.state;
 
-  if (resume.operationCard && outcome.discardOperation !== false && !nextState.pendingEffectChoice) {
+  if (
+    resume.operationCard &&
+    outcome.discardOperation !== false &&
+    !nextState.pendingEffectChoice &&
+    !isInstancePlacedAnywhere(nextState, resume.operationCard.instanceId)
+  ) {
     const player = nextState.players[playerId];
     nextState = {
       ...nextState,

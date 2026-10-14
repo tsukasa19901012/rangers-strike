@@ -2,6 +2,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import {
   canonicalCardName,
   fusionMaterialAliasNames,
+  fusionMaterialAliasRequiresNoOwnL,
   getZordCondition,
   isExtendedZordMaterialCondition,
   isSendSUnitZordCondition,
@@ -72,10 +73,28 @@ function partnerNamesForId(
   return names;
 }
 
+/**
+ * 「※自軍Lユニットがなければ、これは…としてつかえる」（XG6-018 アバレキラー）の別名が、いま使えるか。
+ * player を渡さないときは（場の状態を見ない呼び出し）使えるものとする。
+ */
+export function fusionAliasUsable(
+  definitions: Record<string, CardDefinition>,
+  fieldCardId: string,
+  player?: Pick<PlayerState, "battle" | "rush">,
+): boolean {
+  if (!player) return true;
+  if (!fusionMaterialAliasRequiresNoOwnL(getDefinition(definitions, fieldCardId)?.text)) return true;
+  return ![...player.battle, ...player.rush].some((c) => {
+    const def = getDefinition(definitions, c.cardId);
+    return def?.type === "unit" && def.size === "L";
+  });
+}
+
 export function fieldCardMatchesPartner(
   definitions: Record<string, CardDefinition>,
   fieldCard: CardInstance,
   partnerCardId: string,
+  player?: Pick<PlayerState, "battle" | "rush">,
 ): boolean {
   // RS-602【汚染された水】でカード名が変わったユニットは、名前では合体の素材にならない（テキストの「…としてつかえる」は変わらない。
   // faq-card-8 RS-602 Q2）。
@@ -85,8 +104,10 @@ export function fieldCardMatchesPartner(
   if (!fieldDef) return false;
   const partnerNames = partnerNamesForId(definitions, partnerCardId);
   const fieldNames = new Set<string>([canonicalCardName(alteredName ?? fieldDef.name)]);
-  for (const alias of fusionMaterialAliasNames(fieldDef.text)) {
-    fieldNames.add(alias);
+  if (fusionAliasUsable(definitions, fieldCard.cardId, player)) {
+    for (const alias of fusionMaterialAliasNames(fieldDef.text)) {
+      fieldNames.add(alias);
+    }
   }
   for (const fieldName of fieldNames) {
     if (partnerNames.has(fieldName)) return true;
@@ -128,7 +149,7 @@ function findPartnerInstance(
       const card = player[zone][index]!;
       if (card.instanceId === rushingInstanceId || usedInstanceIds.has(card.instanceId)) continue;
       if (zone === "command" && card.commandHeld) continue;
-      if (fieldCardMatchesPartner(definitions, card, partnerCardId)) {
+      if (fieldCardMatchesPartner(definitions, card, partnerCardId, player)) {
         return { zone, index, card };
       }
     }
@@ -201,6 +222,7 @@ export function collectRequiredFusionMaterials(
       if (zone === "command" && card.commandHeld) continue;
       const names = multiFusionAliasNames(getDefinition(definitions, card.cardId));
       if (names.length === 0) continue;
+      if (!fusionAliasUsable(definitions, card.cardId, player)) continue;
       const covered = new Set<number>();
       for (const name of names) {
         const slotIndex = slots.findIndex(

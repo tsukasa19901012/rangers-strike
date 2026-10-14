@@ -37,10 +37,12 @@ function matchesFilter(
     requireFeature?: string;
     excludeFeature?: string;
     bpLastThreeDigits?: number;
+    notRiding?: boolean;
   },
   ownerId?: PlayerId,
 ): boolean {
   if (!filter) return true;
+  if (filter.notRiding && card.mountedOnInstanceId) return false;
   const def = getDefinition(state.definitions, card.cardId);
   const features = def?.features ?? [];
   if (filter.requireFeature && !features.includes(filter.requireFeature)) return false;
