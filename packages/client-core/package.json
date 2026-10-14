@@ -1,0 +1,27 @@
+{
+  "name": "@rangers-strike/client-core",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Platform-independent game client core (session, view model, input, layout, text) shared by the Vita/web/mobile shells. No DOM, Node or PocketJS dependencies.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@rangers-strike/engine": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}

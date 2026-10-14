@@ -1,0 +1,27 @@
+{
+  "name": "@rangers-strike/vita",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "PS Vita text prototype (PocketJS shell over @rangers-strike/client-core). The PocketJS toolchain is installed separately in ./toolchain.",
+  "scripts": {
+    "setup": "npm ci --prefix toolchain --no-audit --no-fund && node scripts/fetch-font.mjs",
+    "build:engine": "tsx scripts/build-engine.ts",
+    "build:engine:full": "tsx scripts/build-engine.ts --full",
+    "verify:prune": "tsx scripts/build-engine.ts && tsx scripts/build-engine.ts --full && node scripts/verify-engine-prune.mjs",
+    "smoke:qjs": "tsx scripts/build-engine.ts && node scripts/smoke-qjs.mjs",
+    "pocket:check": "tsx scripts/build-engine.ts && node scripts/pocket.mjs check",
+    "pocket:compile": "tsx scripts/build-engine.ts && node scripts/pocket.mjs compile",
+    "build:vpk": "tsx scripts/build-engine.ts && node scripts/pocket.mjs build -- --release",
+    "web:preview": "tsx scripts/build-engine.ts && node scripts/web-preview.mjs",
+    "typecheck": "tsc -p tsconfig.core.json --noEmit"
+  },
+  "dependencies": {
+    "@rangers-strike/client-core": "*"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.7",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "fallback": ["../.cache/fonts/NotoSansJP-Regular.ttf"],
+  "characterFiles": ["generated/chars.txt"]
+}

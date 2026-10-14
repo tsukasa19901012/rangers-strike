@@ -1,0 +1,12 @@
+{
+  // Root `npm run typecheck` coverage for the Node-side build script.
+  // The PocketJS UI (src/) is type-checked by `npm run pocket:check`, which
+  // needs the optional toolchain in ./toolchain.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "lib": ["ES2022"],
+    "types": ["node"]
+  },
+  "include": ["scripts/build-engine.ts"]
+}
