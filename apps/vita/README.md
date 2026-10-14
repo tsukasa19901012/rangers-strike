@@ -135,7 +135,7 @@ npm run build:vpk
 Title ID は `pocket.json` の `id`（`dev.rangers-strike.vita`）から決まり **`P295CF96C`** です。
 
 `build:vpk` は先に `scripts/patch-pocketjs-vita.mjs` を実行します。PocketJS 0.14 の USB デバッグ版ホストは
-JS の評価を 5 秒、1 フレームを 250 ms で打ち切りますが、実機（PCH-1000）ではエンジンの読み込みがこれを超え、
+JS の評価を 5 秒、1 フレームを 250 ms で打ち切りますが、実機ではエンジンの読み込みがこれを超え、
 「InternalError: interrupted」で止まるためです（2026-10-14 に実機で確認）。上限は評価 120 秒・フレーム 30 秒に広げてあり、
 `POCKET_VITA_EVAL_MS`・`POCKET_VITA_FRAME_MS` で変えられます。`--no-usb-debug` のビルドにはこの打ち切り自体がありません。
 
