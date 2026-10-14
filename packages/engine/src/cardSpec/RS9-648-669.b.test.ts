@@ -267,8 +267,8 @@ describe("RS-657 パトウイング", () => {
     expect(canWing(s, "TST-UNIT-0:s")).toBe(false);
   });
 
-  it("RS-657: 【航空戦力との連携】「自軍」の限定がないため、敵軍の航空機のユニットもウイングを得る（出典: atwiki/page-1475「特徴「航空機」を持つユニットは」。RS-595 等の「自軍ユニット」と異なる）", () => {
-    const s = st(
+  it("RS-657: 【航空戦力との連携】ウイングを得るのは自軍の航空機のユニットだけで、敵軍の航空機のユニットは得ない（出典: atwiki/page-1475・ユーザー判断 2026-10-14「ウイング付与は自軍のみ」）", () => {
+    const enemy = st(
       {
         activePlayer: "player2",
         player1: { rush: [inst("RS-657", "pw")], battle: [inst("SPEC-WE", "e")], deck: deckCards(3) },
@@ -276,7 +276,18 @@ describe("RS-657 パトウイング", () => {
       },
       [E],
     );
-    expect(canWing(s, `${PATJ}:pj`, "player2")).toBe(true);
+    // パトウイングの持ち主（player1）から見て敵軍の航空機のユニットは得ない
+    expect(canWing(enemy, `${PATJ}:pj`, "player2")).toBe(false);
+    // 同じ場面で、パトウイングを持つ側（player2）の航空機のユニットなら得る
+    const own = st(
+      {
+        activePlayer: "player2",
+        player1: { battle: [inst("SPEC-WE", "e")], deck: deckCards(3) },
+        player2: { rush: [inst("RS-657", "pw"), inst(PATJ, "pj")], deck: deckCards(3, "e") },
+      },
+      [E],
+    );
+    expect(canWing(own, `${PATJ}:pj`, "player2")).toBe(true);
   });
 });
 
