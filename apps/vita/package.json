@@ -12,7 +12,7 @@
     "smoke:qjs": "tsx scripts/build-engine.ts && node scripts/smoke-qjs.mjs",
     "pocket:check": "tsx scripts/build-engine.ts && node scripts/pocket.mjs check",
     "pocket:compile": "tsx scripts/build-engine.ts && node scripts/pocket.mjs compile",
-    "build:vpk": "tsx scripts/build-engine.ts && node scripts/pocket.mjs build -- --release",
+    "build:vpk": "tsx scripts/build-engine.ts && node scripts/patch-pocketjs-vita.mjs && node scripts/pocket.mjs build -- --release",
     "web:preview": "tsx scripts/build-engine.ts && node scripts/web-preview.mjs",
     "typecheck": "tsc -p tsconfig.core.json --noEmit"
   },
