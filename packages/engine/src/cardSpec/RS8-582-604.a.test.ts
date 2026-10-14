@@ -11,6 +11,7 @@
 import { describe, expect, it } from "vitest";
 import type { GameAction } from "../types/actions";
 import type { GameState, PlayerId } from "../types/game";
+import { pickRushCategoryPayment } from "../ai/helpers";
 import {
   act,
   attack,
@@ -28,6 +29,7 @@ import {
   fill,
   inst,
   legal,
+  tryAct,
   pick,
   powerCards,
   reanimateTests,
@@ -475,6 +477,69 @@ describe("RS-586 巨神ゴードム", () => {
   it("RS-586: 【魔神に不足する物】ゴードムが自軍エリアになければ使えない（出典: atwiki/page-1221「これが自軍エリアにある間」）", () => {
     const s = rushBoard({ rush: grunts(2), discard: [inst("RS-586", "gd"), ...grunts(5, "dg")] });
     expect(canStartRush(s, "player1", "RS-602:k")).toBe(false);
+  });
+
+  /** ケガレシアのラッシュの宣言（コマンドの支払いの開始）のうち、捨札にする「戦闘員」を godom で選んだもの。 */
+  const godomInits = (s: GameState) =>
+    legal(s).filter(
+      (a): a is Extract<ReturnType<typeof legal>[number], { type: "initiate_command_payment" }> =>
+        a.type === "initiate_command_payment" && a.sourceInstanceId === "RS-602:k",
+    );
+  const payAndRush = (s: GameState, init: ReturnType<typeof godomInits>[number]) => {
+    let r = tryAct(s, init);
+    expect(r.ok).toBe(true);
+    const p = r.state.pendingCommandPayment!;
+    r = tryAct(r.state, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: p.validInstanceIds.slice(0, p.totalNeeded) });
+    return r;
+  };
+
+  it("RS-586: 【魔神に不足する物】「戦闘員」のユニットが足りない数より多ければ、どれを捨札にするかプレイヤーが選べる（選んだユニットだけが捨札になる）（出典: atwiki/page-1221「必要パワーに足りない数だけ、特徴「戦闘員」を持つユニットを捨札にする」）", () => {
+    const s = rushBoard({ rush: [inst("RS-586", "gd"), ...grunts(3)] });
+    const inits = godomInits(s);
+    const choices = inits.map((a) => [...(a.godomDiscardInstanceIds ?? [])].sort().join(","));
+    expect(choices.sort()).toEqual(["RS-604:g0,RS-604:g1", "RS-604:g0,RS-604:g2", "RS-604:g1,RS-604:g2"]);
+    const pick = inits.find((a) => a.godomDiscardInstanceIds?.includes("RS-604:g0") && a.godomDiscardInstanceIds.includes("RS-604:g2"))!;
+    const r = payAndRush(s, pick);
+    expect(r.ok).toBe(true);
+    expect(zoneOf(r.state, "player1", "RS-602:k")).toBe("rush");
+    expect(zoneOf(r.state, "player1", "RS-604:g0")).toBe("discard");
+    expect(zoneOf(r.state, "player1", "RS-604:g2")).toBe("discard");
+    expect(zoneOf(r.state, "player1", "RS-604:g1")).toBe("rush");
+  });
+
+  it("RS-586: 【魔神に不足する物】候補が多いのに捨札にするユニットを選ばずにラッシュを宣言することはできない（自動では選ばない）（出典: atwiki/page-1221）", () => {
+    const s = rushBoard({ rush: [inst("RS-586", "gd"), ...grunts(3)] });
+    const r = tryAct(s, { type: "initiate_command_payment", playerId: "player1", kind: "category_use", sourceInstanceId: "RS-602:k" });
+    expect(r.ok).toBe(false);
+  });
+
+  it("RS-586: 【魔神に不足する物】足りない数と違う数の「戦闘員」や、「戦闘員」でないユニットは選べない（出典: atwiki/page-1221「必要パワーに足りない数だけ」）", () => {
+    const s = rushBoard({ rush: [inst("RS-586", "gd"), ...grunts(3), inst("TST-UNIT-0", "x")] });
+    const base = { type: "initiate_command_payment", playerId: "player1", kind: "category_use", sourceInstanceId: "RS-602:k" } as const;
+    expect(tryAct(s, { ...base, godomDiscardInstanceIds: ["RS-604:g0"] }).ok).toBe(false);
+    expect(tryAct(s, { ...base, godomDiscardInstanceIds: ["RS-604:g0", "RS-604:g1", "RS-604:g2"] }).ok).toBe(false);
+    expect(tryAct(s, { ...base, godomDiscardInstanceIds: ["RS-604:g0", "TST-UNIT-0:x"] }).ok).toBe(false);
+    expect(tryAct(s, { ...base, godomDiscardInstanceIds: ["RS-604:g0", "RS-604:g1"] }).ok).toBe(true);
+  });
+
+  it("RS-586: 【魔神に不足する物】CPU は BP の低い「戦闘員」のユニットを捨札にする組を選ぶ（出典: atwiki/page-1221）", () => {
+    const SMALL = sUnit("SPEC-GRUNT-S", { category: "DA", bp: 500, features: ["戦闘員"] });
+    const BIG = sUnit("SPEC-GRUNT-L", { category: "DA", bp: 6000, features: ["戦闘員"] });
+    const s = st(
+      { phase: "rush", player1: { hand: [inst("RS-602", "k")], command: releasedCat("DA", 1), power: powerCards(2), deck: deckCards(3), rush: [inst("RS-586", "gd"), inst(BIG.id, "big"), inst(SMALL.id, "small")] } },
+      [SMALL, BIG],
+    );
+    const choice = pickRushCategoryPayment(s, "player1", legal(s));
+    expect(choice?.type === "initiate_command_payment" && choice.godomDiscardInstanceIds).toEqual(["SPEC-GRUNT-S:small"]);
+  });
+
+  it("RS-586: 【魔神に不足する物】CPU は合法手から捨札にする「戦闘員」の組を選んでラッシュする（出典: atwiki/page-1221）", () => {
+    const s = rushBoard({ rush: [inst("RS-586", "gd"), ...grunts(3)] });
+    const init = godomInits(s)[0]!;
+    expect(init.godomDiscardInstanceIds).toHaveLength(2);
+    const r = payAndRush(s, init);
+    expect(zoneOf(r.state, "player1", "RS-602:k")).toBe("rush");
+    expect(r.state.players.player1.discard.filter((c) => c.cardId === "RS-604")).toHaveLength(2);
   });
 
   it("RS-586: 【魔神に不足する物】パワーが足りていれば戦闘員を捨札にしなくてもラッシュできる（任意）（出典: atwiki/page-1221「してもよい」）", () => {

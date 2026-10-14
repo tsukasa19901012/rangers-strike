@@ -22,6 +22,8 @@ import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability
 import { grantBpBoostToBattleUnit, grantSp1ToBattleUnit, markBattleNcEffect } from "../namedUnitEffects";
 import { addJointComboGrant, jointRGrantActive } from "../jointComboGrants";
 import { wasRushedThisTurn } from "../turnModifiers";
+import { stackOntoLargeCardsOn, stackOntoLargeGrant } from "../stackOntoLargeGrants";
+import { turnPlayerOf } from "./set6NamedEffectsB";
 import { continueBattleToRushEffectQueue } from "../startPhase";
 import type { ComboOutcome } from "../comboTypes";
 
@@ -361,67 +363,17 @@ CHOICE_RESOLVERS[ICARUS_BIND_RETURN_EFFECT_ID] = (state, playerId, option) => {
 // 「自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間
 //  カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒
 //  このユニットからコンビネーションする「ガオマジロ」はBP+5000される。」（atwiki/page-1471）
-// 起動は rules/fieldActivatedAbilities.ts（自軍ラッシュフェイズ中）。
+// 重ねる処理・捨札は RS-623 等と共通（rules/stackOntoLargeUnit.ts）。得た能力は、重ねたユニット（重ねた関係）から
+// コンビネーションしたときに働く（trySet9COnComboEnter。並び順が後で変わっても、そのターンは BP+5000 のまま。R-CN-06）。
 
-export const RHINO_SHOOT_EFFECT_ID = "rs650_rhino_shoot";
-
-function rhinoShootTargets(state: GameState, playerId: PlayerId, rhino: CardInstance): string[] {
-  return fieldUnits(state, playerId)
-    .filter((c) => {
-      if (c.instanceId === rhino.instanceId) return false;
-      const def = defOf(state, c.cardId);
-      return def?.size === "L" && !cardCategories(def).includes("DA");
-    })
-    .map((c) => c.instanceId);
-}
-
-export function canActivateRhinoShoot(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
-  return rhinoShootTargets(state, playerId, card).length > 0;
-}
-
-export function beginRhinoShoot(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
-  const targets = rhinoShootTargets(state, playerId, card);
-  if (targets.length === 0) return state;
-  return openEffectChoice(state, {
-    playerId,
-    effectId: RHINO_SHOOT_EFFECT_ID,
-    sourceCardId: card.cardId,
-    sourceInstanceId: card.instanceId,
-    kind: "select_unit",
-    phasePlayerId: playerId,
-    validInstanceIds: targets,
-    selectCount: 1,
-    optional: true,
-  });
-}
-
-CHOICE_RESOLVERS[RHINO_SHOOT_EFFECT_ID] = (state, playerId, hostId) => {
-  const pending = state.pendingEffectChoice!;
-  const rhinoId = pending.sourceInstanceId!;
-  const player = state.players[playerId];
-  const rhino = [...player.rush, ...player.battle].find((c) => c.instanceId === rhinoId);
-  if (!rhino) return { state: finish(state, pending), log: logFor(state, playerId, "RS-650", `${pending.effectId}:gone`) };
-  const stacked: CardInstance = { instanceId: rhino.instanceId, cardId: rhino.cardId };
-  const attach = (cards: CardInstance[]) =>
-    cards
-      .filter((c) => c.instanceId !== rhinoId)
-      .map((c) => (c.instanceId === hostId ? { ...c, stackedCards: [...(c.stackedCards ?? []), stacked] } : c));
-  const next = patchPlayer(close(state, pending), playerId, (p) => ({ ...p, rush: attach(p.rush), battle: attach(p.battle) }));
-  return {
-    state: proceed(next, pending),
-    log: logFor(state, playerId, "RS-650", `${pending.effectId}:${cardName(state.definitions, findCardInField(state, hostId)?.card.cardId ?? hostId)}`),
-  };
-};
-
-/** ライノシュートで重ねた L ユニット（左隣）からコンビネーションした「ガオマジロ」の BP+5000。 */
-function rhinoShootBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
-  const battle = state.players[playerId].battle;
-  const index = battle.findIndex((c) => c.instanceId === instance.instanceId);
-  if (index <= 0) return 0;
-  const host = battle[index - 1]!;
-  if (!host.stackedCards?.length || !sameName(state, instance.cardId, "ガオマジロ")) return 0;
-  const rhinos = (host.stackedCards ?? []).filter((c) => sameName(state, c.cardId, "ガオライノス")).length;
-  return 5000 * rhinos;
+/** 左隣（コンビネーションの相手）に重ねたカードが与える「このユニットからコンビネーションする「X」はBP+Nされる」。 */
+function stackedComboBoost(state: GameState, left: CardInstance, card: CardInstance): number {
+  let bonus = 0;
+  for (const stacked of stackOntoLargeCardsOn(left)) {
+    const boost = stackOntoLargeGrant(stacked.cardId)?.comboBoost;
+    if (boost && sameName(state, card.cardId, boost.name)) bonus += boost.bp;
+  }
+  return bonus;
 }
 
 // ---------------------------------------------------------------------------
@@ -453,6 +405,9 @@ export function trySet9COnComboEnter(
   const left = before.at(-1);
   if (!left) return state;
   let next = state;
+  // RS-650【強蹴一閃ライノシュート】: ガオライノスを重ねたユニットからコンビネーションした「ガオマジロ」は BP+5000。
+  const rhino = stackedComboBoost(state, left, card);
+  if (rhino > 0) next = grantBpBoostToBattleUnit(next, playerId, card.instanceId, rhino);
   // RS-653: 左隣のレッドファルコン（2nd）が NC で【後輩戦士への叱咤】を発動していれば、イエローの S ユニットが能力を得る。
   if ((left.activatedNcEffects ?? []).includes(SCOLDING_MARK) && isSmallUnit(state.definitions, card.cardId) && featuresOf(state, card.cardId).includes("イエロー")) {
     next = grantBpBoostToBattleUnit(next, playerId, card.instanceId, 3000);
@@ -584,7 +539,7 @@ export function set9CEffectiveSp(state: GameState, playerId: PlayerId, instance:
 
 /** BP の継続効果（rules/fieldAuras.ts passiveNamedFieldBpBonus から呼ぶ）。 */
 export function set9CFieldBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
-  let bonus = rhinoShootBpBonus(state, playerId, instance);
+  let bonus = 0;
   if (instance.cardId === "RS-661" && fieldUnits(state, playerId).some((c) => c.instanceId === instance.instanceId)) {
     const enemyS = fieldUnits(state, opponent(playerId)).filter((c) => isSmallUnit(state.definitions, c.cardId)).length;
     bonus += 1000 * enemyS;
@@ -783,25 +738,57 @@ CHOICE_RESOLVERS[SENSOR_DRAW_EFFECT_ID] = (state, playerId) => {
 // ---------------------------------------------------------------------------
 // RS-660 デカピンクSWAT【SPインカム】（CN：5）
 // 「次の相手ターン、新しくラッシュエリアに出たユニットと、ホールド状態のユニットは、ターンが終わるまでバトルエリアに出られない」（atwiki/page-1527）
-// 「新しくラッシュエリアに出た」はそのターンにラッシュエリアに出た（ラッシュ・効果で出た）ユニット（wasRushedThisTurn）。
+// - 「新しくラッシュエリアに出た」: そのターン中に、場の外（手札・山札・捨札・コマンドゾーン・パワーゾーン等）からラッシュエリアに
+//   出たユニット（ラッシュ・効果で出す・モーフの置き換え等、手段を問わない）。バトルエリアからラッシュエリアに戻ったユニットは含まない。
+//   そのターンの各アクションの前後でラッシュエリアに増えたユニットを記録する（trackSpIncomeEntries）。
+// - 「自軍」「敵軍」の限定がないので、両軍のユニットが対象（相手ターン中に効果で自軍のユニットをバトルエリアに出す場合も）。
 
 function armSpIncome(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const armer = ctx.playerId;
   const restricted = opponent(armer);
   // 「次の相手ターン」— 自分の追加ターン（RS-484【ハリーアップ！】）があれば、その後の相手のターン。
   const extra = (state.extraTurns ?? []).filter((p) => p === armer).length;
-  const entry = { restrictedPlayerId: restricted, turn: state.turn + 1 + extra };
+  const entry = { restrictedPlayerId: restricted, turn: state.turn + 1 + extra, enteredInstanceIds: [] as string[] };
   return {
     state: { ...state, set9cMeta: { ...state.set9cMeta, spIncome: [...(state.set9cMeta?.spIncome ?? []), entry] } },
     detail: "rs660_sp_income",
   };
 }
 
-/** バトルエリアに出られない（rules/restrictions.ts canMoveUnitToBattle から呼ぶ）。 */
-export function set9CBlocksBattleEntry(state: GameState, playerId: PlayerId, unit: CardInstance): boolean {
-  const active = (state.set9cMeta?.spIncome ?? []).some((e) => e.turn === state.turn && state.activePlayer === e.restrictedPlayerId);
-  if (!active) return false;
-  return !!unit.commandHeld || wasRushedThisTurn(state.players[playerId], unit.instanceId);
+/** いま有効な【SPインカム】（そのターンが「次の相手ターン」）。 */
+function activeSpIncome(state: GameState): Array<NonNullable<NonNullable<GameState["set9cMeta"]>["spIncome"]>[number]> {
+  return (state.set9cMeta?.spIncome ?? []).filter((e) => e.turn === state.turn && turnPlayerOf(state) === e.restrictedPlayerId);
+}
+
+/**
+ * applyAction の後処理: 【SPインカム】が有効なターンに、場の外からラッシュエリアに出たユニットを記録する。
+ * 前の状態でどちらかのエリア（ラッシュ・バトル）にあったユニットは「新しく」出たものではない。
+ */
+export function trackSpIncomeEntries(before: GameState, after: GameState): GameState {
+  if (activeSpIncome(after).length === 0) return after;
+  const onField = new Set<string>();
+  for (const pid of ["player1", "player2"] as const) {
+    for (const c of [...before.players[pid].rush, ...before.players[pid].battle]) onField.add(c.instanceId);
+  }
+  const entered = (["player1", "player2"] as const)
+    .flatMap((pid) => after.players[pid].rush)
+    .map((c) => c.instanceId)
+    .filter((id) => !onField.has(id));
+  if (entered.length === 0) return after;
+  const spIncome = (after.set9cMeta?.spIncome ?? []).map((e) =>
+    e.turn === after.turn && turnPlayerOf(after) === e.restrictedPlayerId
+      ? { ...e, enteredInstanceIds: [...new Set([...(e.enteredInstanceIds ?? []), ...entered])] }
+      : e,
+  );
+  return { ...after, set9cMeta: { ...after.set9cMeta, spIncome } };
+}
+
+/** バトルエリアに出られない（rules/restrictions.ts canMoveUnitToBattle から呼ぶ）。両軍のユニットが対象。 */
+export function set9CBlocksBattleEntry(state: GameState, _playerId: PlayerId, unit: CardInstance): boolean {
+  const active = activeSpIncome(state);
+  if (active.length === 0) return false;
+  if (unit.commandHeld) return true;
+  return active.some((e) => (e.enteredInstanceIds ?? []).includes(unit.instanceId));
 }
 
 // ---------------------------------------------------------------------------

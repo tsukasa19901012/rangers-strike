@@ -4357,8 +4357,7 @@
       "※常駐"
     ],
     "expectedDslKeywords": [
-      "resident",
-      "call_WB"
+      "resident"
     ],
     "operationKind": "permanent",
     "expectedMechanisms": [
@@ -5548,8 +5547,7 @@
       "【フエッスル】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-316::fuesuru",
-      "morph"
+      "rk_fx::RK-316::fuesuru"
     ],
     "bp": 500,
     "sp": null,

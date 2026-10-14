@@ -268,3 +268,44 @@ describe("R-KW-MORPH-03 完全一致", () => {
   // 「本来の特徴の後ろに追加されていく」
   it.todo("R-KW-MORPH-03: 効果で追加された特徴も数え、本来の特徴の後ろに付く（出典: atwiki/page-1294 本文。特徴を追加する効果を状況に組み込む公開 API がない。04-#24）");
 });
+
+describe("R-KW-MORPH-01 効果で得るモーフ（RK-316 キバットバットⅢ世【フエッスル】）", () => {
+  // 「これが自軍エリアにある間、特徴「魔皇力」を持つ自軍Sユニットは、次の能力を得る⇒※モーフ（…）」（atwiki RK-316）
+  const KIBAT = realDef("RK-316");
+  const KIBA_FEATURES = ["仮面ライダー", "男", "魔皇力"];
+  const KIBA = unitDef("RSPEC-KIBA", { features: KIBA_FEATURES, bp: 2000, size: "S" });
+  const KIBA_TARGET = unitDef("RSPEC-KIBA-T", { features: KIBA_FEATURES, bp: 6000, powerCost: 5 });
+  const BAT_TARGET = unitDef("RSPEC-BAT-T", { features: ["キバット族"], bp: 6000, powerCost: 5 });
+  const kiba = inst(KIBA.id, "k");
+  const kibaTarget = inst(KIBA_TARGET.id, "t");
+  const bat = inst(KIBAT.id, "b");
+
+  it("R-KW-MORPH-01: キバットバットⅢ世が自軍エリアにある間、特徴「魔皇力」を持つ自軍 S ユニットはモーフを得て、敵軍のラッシュに置き換えられる（出典: atwiki RK-316【フエッスル】「次の能力を得る⇒※モーフ」）", () => {
+    let s = enemyRushes({ rush: [kiba, bat], command: [kibaTarget] }, [KIBAT, KIBA, KIBA_TARGET]);
+    expect(morphCandidates(s)).toContain(kibaTarget.instanceId);
+    s = swap(s, kibaTarget.instanceId);
+    expect(where(s, "player2", kibaTarget.instanceId)).toBe("rush");
+    expect(where(s, "player2", kiba.instanceId)).toBe("command");
+  });
+
+  it("R-KW-MORPH-01: キバットバットⅢ世が自軍エリアになければ、特徴「魔皇力」の S ユニットはモーフを持たない（出典: atwiki RK-316「これが自軍エリアにある間」）", () => {
+    const s = enemyRushes({ rush: [kiba], command: [kibaTarget] }, [KIBAT, KIBA, KIBA_TARGET]);
+    expect(morphOffered(s)).toBe(false);
+  });
+
+  it("R-KW-MORPH-01: 「⇒※モーフ」は付与する能力 — キバットバットⅢ世自身（特徴「キバット族」）はモーフを持たない（出典: atwiki RK-316・R-KW-00）", () => {
+    const s = enemyRushes({ rush: [bat], command: [inst(BAT_TARGET.id, "t")] }, [KIBAT, BAT_TARGET]);
+    expect(morphOffered(s)).toBe(false);
+  });
+
+  it("R-KW-MORPH-01: 「自軍Sユニット」— 相手のキバットバットⅢ世では、特徴「魔皇力」の S ユニットはモーフを得ない（出典: atwiki RK-316「特徴「魔皇力」を持つ自軍Sユニットは」）", () => {
+    let s = state([MORPH, TARGET, ENEMY, KIBAT, KIBA, KIBA_TARGET], {
+      phase: "rush",
+      player1: { hand: [inst(ENEMY.id, "e")], rush: [bat], command: [inst("TST-OP", "c")], power: powerCards(3) },
+      player2: { rush: [kiba], command: [kibaTarget] },
+    });
+    s = act(s, { type: "initiate_command_payment", playerId: "player1", kind: "category_use", sourceInstanceId: `${ENEMY.id}:e` });
+    s = act(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP:c"] });
+    expect(morphOffered(s)).toBe(false);
+  });
+});

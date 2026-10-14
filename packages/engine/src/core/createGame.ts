@@ -1,4 +1,5 @@
 import { countLogicalBattleSlots } from "../rules/battleLine";
+import { rngFromSeed, seedFromRng } from "./rng";
 import { allCardsCatalog, type CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { resetRushPhaseFlags } from "../rules/turnModifiers";
@@ -74,6 +75,8 @@ export type CreateGameOptions = {
   player2Deck: CardDefinition[];
   firstPlayer?: PlayerId;
   rng?: () => number;
+  /** エンジンの乱数（ゲーム中のシャッフル等）の種。省略時は rng から作る（core/rng.ts）。 */
+  seed?: number;
 };
 
 export function createGameForDecks(
@@ -90,7 +93,7 @@ export function createGameForDecks(
 
 export function createGame(options: CreateGameOptions): GameState {
   instanceCounter = 0;
-  const rng = options.rng ?? Math.random;
+  const rng = options.rng ?? (options.seed !== undefined ? rngFromSeed(options.seed) : Math.random);
   const firstPlayer = options.firstPlayer ?? "player1";
 
   const player1 = drawCards(
@@ -121,6 +124,7 @@ export function createGame(options: CreateGameOptions): GameState {
     },
     log: ["game_created"],
     winner: null,
+    rngState: (options.seed ?? seedFromRng(rng)) >>> 0,
   };
 }
 

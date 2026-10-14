@@ -10,11 +10,12 @@
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardCategories, cardName, effectiveBp, effectiveCommandCategories, getDefinition } from "../../core/catalog";
+import { beginTagBold, registerTagResident, tagBoldExecutable } from "./set8NamedEffectsA";
 import { opponent } from "../../core/helpers";
 import { shuffleCards } from "../../core/deckShuffle";
 import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
-import { listCardGrantKeywords, stackedEquipmentGrantsWing } from "../../dsl/promotedKeywordBridge";
+import { stackedEquipmentGrantsWing } from "../../dsl/promotedKeywordBridge";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
@@ -24,7 +25,6 @@ import { applyUnitLeave, openEffectChoice } from "../pendingChoices";
 import { patchPlayer } from "../playerPatches";
 import { findCardInField } from "../fieldLookup";
 import { isResidentActivatedThisRush, markResidentActivatedThisRush } from "../permanentOperation";
-import { beginStackSelfOntoL } from "../keywordChoiceRuntime";
 import { isSmallUnitNow, turnPlayerOf } from "./set6NamedEffectsB";
 import { getNumberComboEffect } from "@rangers-strike/cards";
 import { applyNumberComboEffect } from "../numberComboEffects";
@@ -557,19 +557,28 @@ function releasedWbCommands(state: GameState, playerId: PlayerId): string[] {
     .map((c) => c.instanceId);
 }
 
+/** 【五色の戦士】そうしたとき: 自軍 S ユニットを1体選び、特徴を宣言する。state の pendingEffectChoice は pending。 */
+function afterGoshokuBold(state: GameState, playerId: PlayerId, pending: PendingEffectChoice): GameState {
+  const units = fieldUnits(state, playerId).filter((c) => isSmallUnitNow(state, playerId, c)).map((c) => c.instanceId);
+  if (units.length === 0) return proceed(close(state, pending), pending);
+  return openEffectChoice(close(state, pending), {
+    ...pending,
+    effectId: GOSHOKU_UNIT_EFFECT_ID,
+    sourceCardId: GOSHOKU_CARD_ID,
+    kind: "select_unit",
+    validInstanceIds: units,
+    selectCount: 1,
+    optional: false,
+  });
+}
+
 CHOICE_RESOLVERS[GOSHOKU_HOLD_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
-  const held = patchPlayer(close(state, pending), playerId, (p) => ({
+  const held = patchPlayer(state, playerId, (p) => ({
     ...p,
     command: p.command.map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: true } : c)),
   }));
-  const units = fieldUnits(held, playerId).filter((c) => isSmallUnitNow(held, playerId, c)).map((c) => c.instanceId);
-  const log = logFor(state, playerId, GOSHOKU_CARD_ID, `${GOSHOKU_HOLD_EFFECT_ID}:hold`);
-  if (units.length === 0) return { state: proceed(held, pending), log };
-  return {
-    state: openEffectChoice(held, { ...pending, effectId: GOSHOKU_UNIT_EFFECT_ID, kind: "select_unit", validInstanceIds: units, optional: false }),
-    log,
-  };
+  return { state: afterGoshokuBold(held, playerId, pending), log: logFor(state, playerId, GOSHOKU_CARD_ID, `${GOSHOKU_HOLD_EFFECT_ID}:hold`) };
 };
 
 CHOICE_RESOLVERS[GOSHOKU_UNIT_EFFECT_ID] = (state, _playerId, instanceId) => {
@@ -766,47 +775,70 @@ export function isSet9AResidentCard(cardId: string): boolean {
   return cardId === GOSHOKU_CARD_ID || cardId === SOUL_CARD_ID;
 }
 
+/** この常駐（または同名の常駐。同名のタッグは2枚でも太字部分の効果は1度だけ。grnrngr/faq-rider_3 RK-240）を使ったか。 */
+function sameNameResidentUsed(state: GameState, playerId: PlayerId, op: CardInstance): boolean {
+  const player = state.players[playerId];
+  const sameName = player.operation.filter((c) => sameName9A(state, c.cardId, op.cardId));
+  if (op.cardId === GOSHOKU_CARD_ID) return sameName.some((c) => isResidentActivatedThisRush(c));
+  return sameName.some((c) => soulUsedThisTurn(player, c.instanceId));
+}
+
+function sameName9A(state: GameState, a: string, b: string): boolean {
+  return a === b || cardName(state.definitions, a) === cardName(state.definitions, b);
+}
+
 export function canActivateSet9AResident(state: GameState, playerId: PlayerId, operationInstanceId: string): boolean {
   if (state.pendingEffectChoice || state.pendingCommandPayment || state.pendingZordSetup || state.pendingEffectRush) return false;
   if (state.activePlayer !== playerId || turnPlayerOf(state) !== playerId) return false;
   const player = state.players[playerId];
   const op = player.operation.find((c) => c.instanceId === operationInstanceId);
-  if (!op) return false;
-  if (op.cardId === GOSHOKU_CARD_ID) {
-    if (state.phase !== "rush" || isResidentActivatedThisRush(op)) return false;
-    return releasedWbCommands(state, playerId).length > 0;
-  }
-  if (op.cardId === SOUL_CARD_ID) {
-    if (state.phase !== "battle" || soulUsedThisTurn(player, operationInstanceId)) return false;
-    return soulCostIds(state, playerId).length > 0;
-  }
-  return false;
+  if (!op || !isSet9AResidentCard(op.cardId)) return false;
+  if (state.phase !== (op.cardId === GOSHOKU_CARD_ID ? "rush" : "battle")) return false;
+  if (sameNameResidentUsed(state, playerId, op)) return false;
+  // ※タッグ: 自分の太字部分か、入れ替えられる他の自軍常駐の太字部分を実行できること（rules/legend1/set8NamedEffectsA.ts）。
+  return tagBoldExecutable(state, playerId, op);
 }
 
 export function activateSet9AResident(state: GameState, playerId: PlayerId, operationInstanceId: string): GameState | null {
   if (!canActivateSet9AResident(state, playerId, operationInstanceId)) return null;
   const op = state.players[playerId].operation.find((c) => c.instanceId === operationInstanceId)!;
-  const ctx = { playerId, phasePlayerId: playerId, sourceCardId: op.cardId, sourceInstanceId: operationInstanceId };
-  if (op.cardId === GOSHOKU_CARD_ID) {
-    const marked = patchPlayer(state, playerId, (p) => markResidentActivatedThisRush(p, operationInstanceId));
-    return openEffectChoice(marked, {
-      ...base(ctx),
+  const marked =
+    op.cardId === GOSHOKU_CARD_ID
+      ? patchPlayer(state, playerId, (p) => markResidentActivatedThisRush(p, operationInstanceId))
+      : patchPlayer(state, playerId, (p) => addTurnRuleModifier(p, SOUL_USED_RULE_ID, { sourceCardId: SOUL_CARD_ID, payload: operationInstanceId }));
+  return beginTagBold(marked, playerId, op, { hostCardId: op.cardId, hostOpId: op.instanceId });
+}
+
+// ※タッグの太字部分（rules/legend1/set8NamedEffectsA.ts registerTagResident）。
+registerTagResident(GOSHOKU_CARD_ID, {
+  boldAvailable: (state, playerId) => releasedWbCommands(state, playerId).length > 0,
+  ownBold: (state, playerId, frame) =>
+    openEffectChoice({ ...state, pendingEffectChoice: undefined }, {
+      ...frame,
       effectId: GOSHOKU_HOLD_EFFECT_ID,
+      sourceCardId: GOSHOKU_CARD_ID,
       // ホールドはこの選択の解決で行う（effect_hold の支払いにしない）。
       kind: "select_command",
       validInstanceIds: releasedWbCommands(state, playerId),
+      selectCount: 1,
       optional: false,
-    });
-  }
-  const marked = patchPlayer(state, playerId, (p) => addTurnRuleModifier(p, SOUL_USED_RULE_ID, { sourceCardId: SOUL_CARD_ID, payload: operationInstanceId }));
-  return openEffectChoice(marked, {
-    ...base(ctx),
-    effectId: SOUL_COST_EFFECT_ID,
-    kind: "select_unit",
-    validInstanceIds: soulCostIds(state, playerId),
-    optional: false,
-  });
-}
+    }),
+  after: (state, playerId, frame) => ({ state: afterGoshokuBold(state, playerId, frame) }),
+});
+registerTagResident(SOUL_CARD_ID, {
+  boldAvailable: (state, playerId) => soulCostIds(state, playerId).length > 0,
+  ownBold: (state, playerId, frame) =>
+    openEffectChoice({ ...state, pendingEffectChoice: undefined }, {
+      ...frame,
+      effectId: SOUL_COST_EFFECT_ID,
+      sourceCardId: SOUL_CARD_ID,
+      kind: "select_unit",
+      validInstanceIds: soulCostIds(state, playerId),
+      selectCount: 1,
+      optional: false,
+    }),
+  after: (state, _playerId, frame) => ({ state: continueSoulAfterCost(close(state, frame), frame) }),
+});
 
 /** 合法手: 起動できる常駐オペレーション（RS-609 は自軍バトルフェイズ）。 */
 export function listSet9AResidentActivations(state: GameState, playerId: PlayerId): string[] {
@@ -1294,99 +1326,7 @@ CHOICE_CONFIRMERS[DIAMOND_BLIZZARD_EFFECT_ID] = (state, playerId) =>
   finishBlizzard(state, playerId, state.pendingEffectChoice!.set9aMeta?.selected ?? []);
 
 // ---------------------------------------------------------------------------
-// RS-623 ツバサマル【翼合体】
-// 「自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間
-//  カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。…」（atwiki/page-1460）
-// - 自軍ラッシュフェイズ中ならいつでも起動できる（activate_field_unit_ability）。重ねる処理は rules/keywordChoiceRuntime.ts。
-// - 重ねたユニットが場を離れたら、重ねていたカードは捨札になる（settleSet9AAfterAction）。
-
-const WING_STACK_KEYWORD = "stack_da_less_l_on_rush";
-
-/** 【翼合体】のカード（同じ文言の RS-647【ソウルバード】等は set9NamedEffectsB 等で扱う）。 */
-function isWingStackCard(cardId: string): boolean {
-  return cardId === "RS-623" && listCardGrantKeywords(cardId).includes(WING_STACK_KEYWORD);
-}
-
-function wingStackHosts(state: GameState, playerId: PlayerId, selfId: string): string[] {
-  return fieldUnits(state, playerId)
-    .filter((c) => {
-      if (c.instanceId === selfId) return false;
-      const d = getDefinition(state.definitions, c.cardId);
-      return d?.type === "unit" && d.size === "L" && !cardCategories(d).includes("DA");
-    })
-    .map((c) => c.instanceId);
-}
-
-/** 合法手: 起動できる場のユニット（RS-623【翼合体】）。 */
-export function listSet9AFieldActivations(state: GameState, playerId: PlayerId): string[] {
-  if (state.phase !== "rush" || turnPlayerOf(state) !== playerId || state.activePlayer !== playerId) return [];
-  if (state.pendingEffectChoice || state.pendingCommandPayment || state.pendingZordSetup || state.pendingEffectRush || state.pendingRush) return [];
-  return fieldUnits(state, playerId)
-    // 同じ文言の RS-647【ソウルバード】・RS-650 は第9弾の別範囲（set9NamedEffectsB/C）で扱う。
-    .filter((c) => c.cardId === "RS-623" && wingStackHosts(state, playerId, c.instanceId).length > 0)
-    .map((c) => c.instanceId);
-}
-
-export function activateSet9AFieldAbility(state: GameState, playerId: PlayerId, unitInstanceId: string): GameState | null {
-  if (!listSet9AFieldActivations(state, playerId).includes(unitInstanceId)) return null;
-  const unit = fieldUnits(state, playerId).find((c) => c.instanceId === unitInstanceId)!;
-  return beginStackSelfOntoL(state, {
-    playerId,
-    phasePlayerId: playerId,
-    sourceCardId: unit.cardId,
-    effectId: "tsubasa",
-    triggerSourceInstanceId: unitInstanceId,
-  });
-}
-
-const NON_FIELD_ZONES = ["hand", "deck", "discard", "power", "command", "operation"] as const;
-
-function settleWingStacks(before: GameState, after: GameState): GameState {
-  // 前の状態で、場のユニットに重ねられていた【翼合体】のカード。
-  const stacked: Array<{ ownerId: PlayerId; card: CardInstance }> = [];
-  for (const pid of ["player1", "player2"] as const) {
-    for (const host of fieldUnits(before, pid)) {
-      for (const s of host.stackedCards ?? []) if (isWingStackCard(s.cardId)) stacked.push({ ownerId: pid, card: s });
-    }
-  }
-  let next = after;
-  // 場を離れたユニット（捨札・手札等）に付いたまま残っている重ねたカードは、持ち主の捨札にする。
-  for (const pid of ["player1", "player2"] as const) {
-    const p = next.players[pid];
-    let changed = false;
-    const freed: CardInstance[] = [];
-    const patched: Partial<PlayerState> = {};
-    for (const zone of NON_FIELD_ZONES) {
-      const cards = p[zone] as CardInstance[];
-      if (!cards.some((c) => c.stackedCards?.some((s) => isWingStackCard(s.cardId)))) continue;
-      changed = true;
-      (patched as Record<string, CardInstance[]>)[zone] = cards.map((c) => {
-        const wings = (c.stackedCards ?? []).filter((s) => isWingStackCard(s.cardId));
-        if (wings.length === 0) return c;
-        freed.push(...wings.map(strip));
-        const others = (c.stackedCards ?? []).filter((s) => !isWingStackCard(s.cardId));
-        const { stackedCards: _s, ...rest } = c;
-        return others.length > 0 ? { ...rest, stackedCards: others } : (rest as CardInstance);
-      });
-    }
-    if (changed) next = patchPlayer(next, pid, (pl) => ({ ...pl, ...patched, discard: [...(patched.discard ?? pl.discard), ...freed] }));
-  }
-  // どこにも残っていない重ねたカードは、持ち主の捨札にする。
-  for (const { ownerId, card } of stacked) {
-    if (instanceExists(next, card.instanceId)) continue;
-    next = patchPlayer(next, ownerId, (p) => ({ ...p, discard: [...p.discard, strip(card)] }));
-  }
-  return next;
-}
-
-function instanceExists(state: GameState, instanceId: string): boolean {
-  const contains = (cards: CardInstance[] | undefined): boolean =>
-    !!cards?.some((c) => c.instanceId === instanceId || contains(c.stackedCards));
-  return (["player1", "player2"] as const).some((pid) => {
-    const p = state.players[pid];
-    return [p.battle, p.rush, ...NON_FIELD_ZONES.map((z) => p[z] as CardInstance[])].some((cards) => contains(cards));
-  });
-}
+// RS-623 ツバサマル【翼合体】は同じ文言の RS-647【ソウルバード】・RS-650 等と共通の処理（rules/stackOntoLargeUnit.ts）。
 
 // ---------------------------------------------------------------------------
 // RS-624 メガウインガー・ファイターモード【ウインガーキャノン】
@@ -1642,9 +1582,8 @@ export function set9AAttackerCanAttackRush(_state: GameState, _playerId: PlayerI
 // applyAction の後処理
 
 /** applyAction の後処理（入れ子でない呼び出しのとき）。 */
-export function settleSet9AAfterAction(before: GameState, after: GameState): GameState {
-  let next = settleWingStacks(before, after);
-  next = scanDiamondSword(next);
+export function settleSet9AAfterAction(_before: GameState, after: GameState): GameState {
+  let next = scanDiamondSword(after);
   if (next.winner) return next;
   if (next.set9aState?.falcon && !falconBusy(next) && !blocking(next)) next = continueFalcon(next);
   if (next.set9aState?.diamondSword?.some((w) => w.firedBy) && !blocking(next) && !falconBusy(next)) next = openFiredDiamondSword(next);

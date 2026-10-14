@@ -190,9 +190,10 @@ import {
   resolveFlipEnemyPowerDamageDamage,
   resolveFlipEnemyPowerDamagePick,
   resolveHoldEntryDestroy,
-  resolveStackSelfOntoL,
   resolveStackVehicleUnderSelf,
 } from "./keywordChoiceRuntime";
+import { STACK_ONTO_LARGE_EFFECT_ID, resolveStackOntoLarge } from "./stackOntoLargeUnit";
+import { ADVENT_EFFECT_ID, resolveAdvent } from "./rk/rk249Advent";
 import {
   beginAssaultVectorDestroy,
   beginDinoSlasherDiscard,
@@ -3752,8 +3753,13 @@ export function applyEffectChoiceSelect(
         if (!next) return { error: "invalid_target" };
         return finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
       }
-      if (pending.effectId === "stack_self_onto_l") {
-        const next = resolveStackSelfOntoL(state, pending, instanceId);
+      if (pending.effectId === ADVENT_EFFECT_ID) {
+        const next = resolveAdvent(state, pending, instanceId);
+        if (!next) return { error: "invalid_target" };
+        return finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
+      }
+      if (pending.effectId === STACK_ONTO_LARGE_EFFECT_ID) {
+        const next = resolveStackOntoLarge(state, pending, instanceId);
         if (!next) return { error: "invalid_target" };
         return finishChoice(next, pending, cardName(state.definitions, pending.sourceCardId));
       }

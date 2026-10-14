@@ -353,8 +353,15 @@ export function confirmOptionLabel(
   value: string,
 ): string {
   if (pending.effectId === "reorder_enemy_battle") return reorderOptionLabel(state, value);
+  if (pending.effectId === "tag_bold_pick") {
+    // ※タッグ: どの常駐の太字部分を実行するか（value は自軍常駐置き場のカード）。
+    const op = state.players[pending.playerId].operation.find((c) => c.instanceId === value);
+    if (op) return `「${state.definitions[op.cardId]?.name ?? op.cardId}」の太字部分を実行する`;
+  }
   if (value === pending.effectId || value === pending.sourceInstanceId) return "効果を使う";
   if (value === "rs528_take_damage") return "1点ダメージを受ける";
+  if (value === "command") return "コマンドゾーンに送る";
+  if (value === "discard") return "捨札にする";
   for (const pid of ["player1", "player2"] as const) {
     const card = [...state.players[pid].battle, ...state.players[pid].rush].find((c) => c.instanceId === value);
     if (!card) continue;

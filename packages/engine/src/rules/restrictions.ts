@@ -531,6 +531,12 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   if (cannotEnterBattleOwnTurn(state, playerId, unit.cardId)) return false;
 
+  // canMoveUnitToBattle と同じ、ホールドでは解けない進入禁止（RK-140 / RK-334 のロック、RS-419 等）。
+  // ここで弾かないと battle_entry 支払いが開けるのに、支払い後の move_to_battle が illegal_action になる。
+  if (noteOtherNcBattleEntryBlock(state, playerId, player, unit)) return false;
+  if (set6BBattleEntryBlocked(state, playerId, unit)) return false;
+  if (errataBattleEntryBlocked(state, playerId, unit)) return false;
+
   if (needsBattleEntryRushDiscard(unit.cardId)) {
     if (!canPayBattleEntryRushDiscard(player, state.definitions)) return false;
     if (!battleEntryRushDiscardSatisfied(player, unit.cardId)) {

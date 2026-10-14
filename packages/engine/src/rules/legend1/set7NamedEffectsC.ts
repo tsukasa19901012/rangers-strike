@@ -7,6 +7,7 @@
  * 構成は rules/legend1/set6NamedEffectsB.ts と同じ。
  */
 import { fusionPartnerReturnCount, requiresFusionPartnerReturn } from "@rangers-strike/cards";
+import { engineRandomInt } from "../../core/rng";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { tryLeaveField } from "../operationCounters";
 import { cardName, effectiveBp, getDefinition, parsePowerCost, unitEffectiveCategories } from "../../core/catalog";
@@ -146,7 +147,7 @@ export function fusionUnitCount(cardId: string): number {
 function shuffled<T>(cards: T[]): T[] {
   const copy = [...cards];
   for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = engineRandomInt(i + 1);
     [copy[i], copy[j]] = [copy[j]!, copy[i]!];
   }
   return copy;

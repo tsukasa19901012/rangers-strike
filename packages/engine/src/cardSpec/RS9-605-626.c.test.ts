@@ -9,6 +9,7 @@
  */
 import { describe, expect, it } from "vitest";
 import type { GameState } from "../types/game";
+import { getCardDslDocument } from "../dsl/effectLookup";
 import {
   act,
   attackedInEnemyTurn,
@@ -249,8 +250,18 @@ describe("RS-623 ツバサマル", () => {
     expect(r.ok).toBe(true);
     return r.state;
   };
+  /** 【翼合体】を起動する（自軍ラッシュフェイズ中の起動効果。ラッシュしたときに自動で開くものではない）。 */
+  const wingAction = (s: GameState) =>
+    legal(s).find((a) => a.type === "activate_field_unit_ability" && a.unitInstanceId === "RS-623:t");
+  const activate = (s: GameState) => {
+    const a = wingAction(s);
+    expect(a).toBeDefined();
+    return act(s, a!);
+  };
+  /** ツバサマルをラッシュしてから【翼合体】を起動する。 */
+  const rushAndActivate = (rush: ReturnType<typeof inst>[]) => activate(rushIt(rushBoard(rush)));
   /** 翼合体でジェットイカロス（L・ET）に重ねる。 */
-  const stacked = () => resolveAll(pick(rushIt(rushBoard([inst("RS-618", "L")])), "RS-618:L"));
+  const stacked = () => resolveAll(pick(rushAndActivate([inst("RS-618", "L")]), "RS-618:L"));
 
   it("RS-623: 【翼合体】DA を持たない自軍 L ユニット（ジェットイカロス）に重ねると、そのユニットは BP+2000 される（出典: atwiki/page-1460）", () => {
     const s = stacked();
@@ -266,13 +277,13 @@ describe("RS-623 ツバサマル", () => {
   });
 
   it("RS-623: 【翼合体】候補は DA を持たない自軍 L ユニットだけ（DA の L・M ユニットは選べない）（出典: atwiki/page-1460「DAを持たない自軍Lユニット」）", () => {
-    const s = rushIt(rushBoard([inst("RS-618", "L"), inst("RS-586", "da"), inst("TST-UNIT-2", "m")]));
+    const s = rushAndActivate([inst("RS-618", "L"), inst("RS-586", "da"), inst("TST-UNIT-2", "m")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-623");
     expect(choiceIds(s)).toEqual(["RS-618:L"]);
   });
 
   it("RS-623: 【翼合体】任意 — 重ねなければツバサマルはユニットのまま（出典: atwiki/page-1460「重ねてもよい」）", () => {
-    let s = rushIt(rushBoard([inst("RS-618", "L")]));
+    let s = rushAndActivate([inst("RS-618", "L")]);
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));
     expect(zoneOf(s, "player1", "RS-623:t")).toBe("rush");
@@ -292,6 +303,41 @@ describe("RS-623 ツバサマル", () => {
   it("RS-623: 【翼合体】ラッシュエリアにいるツバサマルは、自軍ラッシュフェイズ中ならいつでも（後からラッシュした L ユニットにも）重ねられる（出典: atwiki/page-1460「自軍ラッシュフェイズ中」）", () => {
     const s = st({ phase: "rush", player1: { rush: [inst("RS-623", "t"), inst("RS-618", "L")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
     expect(legal(s).some((a) => "unitInstanceId" in a && a.unitInstanceId === "RS-623:t")).toBe(true);
+  });
+
+  it("RS-623: 【翼合体】ラッシュしたときに自動で選択が開くのではなく、自軍ラッシュフェイズ中に起動する効果（出典: atwiki/page-1460「自軍ラッシュフェイズ中、…重ねてもよい」）", () => {
+    const s = rushIt(rushBoard([inst("RS-618", "L")]));
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(wingAction(s)).toBeDefined();
+  });
+
+  it("RS-623: 【翼合体】ホールド状態のツバサマルでも起動できる（出典: atwiki/page-1460 コメント「翼合体はこのユニットがホールド状態のときも使えますか？」「どちらもＯＫ」）", () => {
+    const s = st({ phase: "rush", player1: { rush: [{ ...inst("RS-623", "t"), commandHeld: true }, inst("RS-618", "L")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
+    const t = resolveAll(pick(activate(s), "RS-618:L"));
+    expect(cardIn(t, "player1", "RS-618:L")?.stackedCards?.map((c) => c.instanceId)).toEqual(["RS-623:t"]);
+    expect(bpOf(t, "player1", "RS-618:L")).toBe(8000);
+  });
+
+  it("RS-623: 【翼合体】自軍ラッシュフェイズ以外（自軍バトルフェイズ）には起動できない（出典: atwiki/page-1460「自軍ラッシュフェイズ中」）", () => {
+    const s = st({ phase: "battle", player1: { rush: [inst("RS-623", "t"), inst("RS-618", "L")], deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
+    expect(wingAction(s)).toBeUndefined();
+  });
+
+  // 同じ「DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい」の文言でも、重ねたユニットが得る能力はカードごとに違う。
+  // 【侍武装】（XG1-035 兜折神・XG1-036 舵木折神・XG1-040 虎折神）や【ジークの命】（XG3-010）は ※ウイング も BP+2000 も与えない。
+  for (const other of ["XG1-035", "XG1-036", "XG1-040", "XG3-010"]) {
+    it(`RS-623: 【翼合体】の ※ウイング・BP+2000 はツバサマルの「⇒」の後の能力 — 同じ重ねる文言の ${other} を重ねたユニットは得ない（出典: atwiki/page-1460「このカードに重ねたユニットは、次の能力を得る⇒※ウイング、BP+2000」）`, () => {
+      const host = { ...inst("RS-618", "L"), stackedCards: [inst(other, "x")] };
+      const s = st({ player1: { rush: [host], deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-0", "e")], deck: deckCards(3, "e") } });
+      expect(bpOf(s, "player1", "RS-618:L")).toBe(6000);
+      expect(canWing(s, "RS-618:L")).toBe(false);
+    });
+  }
+
+  it("RS-623: 【翼合体】のカードに書かれた付与能力は「⇒」の後ろまで（DSL の効果文が「⇒」で切れていない）、ツバサマル自身の ※ウイング は1つだけ（出典: atwiki/page-1460）", () => {
+    const effects = getCardDslDocument("RS-623")?.effects ?? [];
+    expect(effects.find((e) => e.name === "翼合体")?.text).toMatch(/⇒※ウイング、BP\+2000$/);
+    expect(effects.filter((e) => e.text === "※ウイング、BP+2000")).toEqual([]);
   });
 });
 

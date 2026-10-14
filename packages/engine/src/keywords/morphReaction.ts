@@ -68,7 +68,7 @@ export function listMorphReactors(
 
   for (const zone of ["rush", "battle"] as const) {
     for (const unit of defender[zone]) {
-      if (!cardHasKeyword(state.definitions, unit.cardId, "morph")) continue;
+      if (!cardHasKeyword(state.definitions, unit.cardId, "morph", { state, playerId: defenderId })) continue;
       const candidates = listPlaceableMorphReplacementCandidates(state, defenderId, unit);
       if (candidates.length > 0) {
         results.push({

@@ -9,6 +9,7 @@
  */
 import { describe, expect, it } from "vitest";
 import type { GameState } from "../types/game";
+import { getCardDslDocument } from "../dsl/effectLookup";
 import {
   act,
   attackTargets,
@@ -506,6 +507,22 @@ describe("RS-647 ピヨちゃん", () => {
   it("RS-647: 【ソウルバード】重ねたユニットは※レジストを得る（敵軍ターンにバトルで撃破されるとき、レジストできる）（出典: atwiki/page-1469「このカードに重ねたユニットは、次の能力を得る⇒※レジスト」・R-KW-RESIST-01）", () => {
     const s = attackUntilRegister({ battle: [stackedL()] }, "SPEC-647-L:L", {}, "TST-UNIT-7:atk", [L_WB]);
     expect(registerOffered(s)).toBe(true);
+  });
+
+  it("RS-647: 【ソウルバード】「⇒※レジスト」は重ねたユニットが得る能力で、ピヨちゃん自身はレジストを持たない（敵軍ターンにバトルで撃破されてもレジストできない）（出典: atwiki/page-1469・R-KW-00）", () => {
+    const s = attackUntilRegister({ battle: [inst("RS-647", "p")] }, "RS-647:p", {}, "TST-UNIT-7:atk");
+    expect(registerOffered(s)).toBe(false);
+    expect(getCardDslDocument("RS-647")?.effects.find((e) => e.name === "ソウルバード")?.text).toMatch(/⇒※レジスト$/);
+  });
+
+  it("RS-647: 【ソウルバード】RS-623【翼合体】・RS-650 と同じ起動 — 選ぶと、重ねた L ユニットがレジストを得る（出典: atwiki/page-1469）", () => {
+    let s = soulBoard();
+    const a = soulActions(s).find((x) => x.type === "activate_field_unit_ability");
+    expect(a).toBeDefined();
+    s = resolveAll(pick(act(s, a!), "TST-UNIT-7:L"));
+    const host = cardIn(s, "player1", "TST-UNIT-7:L")!;
+    const t = attackUntilRegister({ battle: [{ ...host, instanceId: "SPEC-647-L:L", cardId: "SPEC-647-L" }] }, "SPEC-647-L:L", {}, "TST-UNIT-7:atk", [L_WB]);
+    expect(registerOffered(t)).toBe(true);
   });
 
   it("RS-647: 【ソウルバード】重ねていない L ユニットはレジストを得ない（出典: atwiki/page-1469）", () => {

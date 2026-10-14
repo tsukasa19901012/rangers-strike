@@ -172,6 +172,23 @@ export type DamagePaymentResume =
   | { kind: "none"; activePlayer: PlayerId }
   | { kind: "strike"; pending: PendingStrike };
 
+/** 「ウラ返すとき」の効果の解決後に行う、パワーのウラ返し（ダメージ）。 */
+export type DeferredPowerFlip = {
+  playerId: PlayerId;
+  /** ウラ返すパワーのカード。 */
+  flipIds: string[];
+  /** 山札の上からダメージにする枚数。 */
+  deckDraws: number;
+  totalDamage: number;
+  damagedOnEnemyTurn: boolean;
+  /** ダメージを受けたときの誘発に渡す点数とフェイズのプレイヤー。 */
+  eventAmount: number;
+  eventPhasePlayerId: PlayerId;
+  resume: DamagePaymentResume;
+  /** ストライクのダメージなら、ウラ返したあとでストライクの処理を終える。 */
+  finishStrike: boolean;
+};
+
 /** ダメージ時に表向きパワーの裏返し対象を選ぶ支払い待ち。 */
 export type PendingDamagePayment = {
   /** パワーゾーンのカードが裏返されるプレイヤー。 */
@@ -500,7 +517,26 @@ export type Set7AChoiceMeta = {
   handInstanceId?: string;
 };
 
+/**
+ * ※タッグ「太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる」（R-KW-TAG-01。rules/legend1/set8NamedEffectsA.ts）。
+ * hostCardId/hostOpId は効果を使っている常駐、boldCardId/boldOpId は実行する太字部分の常駐。
+ */
+export type TagChoiceMeta = {
+  hostCardId: string;
+  hostOpId: string;
+  boldCardId?: string;
+  boldOpId?: string;
+  /** RS-521: バトルエリアに出たユニットのナンバー（数字でなければ -1）。 */
+  number?: number;
+  /** RS-525: 相手に見せた、合体を必要とする L ユニットのカード。 */
+  revealedLId?: string;
+  /** 太字部分の途中で選んだもの（RS-519 の「男」のユニット、RS-525 の1枚目のパワー、RS-609 の S ユニット）。 */
+  picked?: string[];
+};
+
 export type PendingEffectChoice = {
+  /** ※タッグの太字部分の入れ替え（rules/legend1/set8NamedEffectsA.ts）。 */
+  tagMeta?: TagChoiceMeta;
   /** 第7弾 RS-432〜RS-452 の選択の続き（rules/legend1/set7NamedEffectsA.ts）。 */
   set7aMeta?: Set7AChoiceMeta;
   /** RS 以外のラインの効果の選択が使う記録（rules/legend1/otherLinesNamedEffects.ts）。 */
@@ -781,6 +817,8 @@ export type CommandPaymentContinuation =
       zordMaterialDestinations?: Array<"command" | "discard">;
       zordMothershipHoldInstanceIds?: string[];
       zordExtraCommandHoldInstanceIds?: string[];
+      /** RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニット（RushAction と同じ）。 */
+      godomDiscardInstanceIds?: string[];
       /**
        * 「Sユニット2体をそれぞれ…」の一部を素材で満たし、残りを【母艦】ホールドで代える（RS-076 Q7・RS-075 Q2）。
        * カテゴリのホールドの後に、この数の母艦ホールドを選ぶ。
@@ -818,6 +856,8 @@ export type PendingZordSetup = {
   chosenMaterialDestinations?: ZordMaterialDestination[];
   /** このゾードでは母艦ホールドがSユニット素材の代用になる場合がある。 */
   mothershipAvailable?: boolean;
+  /** RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニット（begin_zord_setup で選び、最後のラッシュに引き継ぐ）。 */
+  godomDiscardInstanceIds?: string[];
 };
 
 /** プレイヤーアクションの一部としてコマンドホールドを支払う（単独ホールド不可）。 */
@@ -908,6 +948,11 @@ export type GameState = {
   definitions: Record<string, CardDefinition>;
   log: string[];
   winner: PlayerId | null;
+  /**
+   * エンジンの乱数の状態（mulberry32 の 32bit 状態。core/rng.ts）。
+   * 山札のシャッフルや無作為な選択はこれから作る乱数で行い、同じ状態・同じアクションなら同じ結果になる。
+   */
+  rngState?: number;
   /** ストライク宣言後の守り側応答ウィンドウ。 */
   pendingStrike?: PendingStrike;
   /** 攻撃宣言後の守り側応答ウィンドウ。 */
@@ -976,6 +1021,12 @@ export type GameState = {
    */
   deferredStrike?: PendingStrike;
   /**
+   * 「ウラ返すとき」（RS-199【ブレイクアクション】）の選択を解決し終えるまで待たせている、パワーのウラ返し（ダメージ）。
+   * ルール: R-TIME-01 — 現在形は行動の前。解決後にウラ返し、ダメージの誘発へ進む
+   * （rules/damagePayment.ts completeDeferredPowerFlip、core/applyAction.ts continueDeferredPowerFlip）。
+   */
+  deferredPowerFlip?: DeferredPowerFlip;
+  /**
    * アタックしたユニットの「アタックしたとき」の選択を解決し終えるまで待たせているアタック（R-TIME-01）。
    * 解決後に「アタックされたとき」（RS-215・カウンター窓）→ バトルへ進む（core/applyAction.ts continueDeferredAttack）。
    */
@@ -1001,6 +1052,11 @@ export type GameState = {
   set8cMeta?: Set8CMeta;
   /** 第9弾 RS-648〜RS-669 のカード固有の効果の記録（rules/legend1/set9NamedEffectsC.ts）。 */
   set9cMeta?: Set9CMeta;
+  /**
+   * チャージフェイズの「自軍パワーゾーンにカードを置いたとき」の効果（RS-673【炎神キャスト転送】）の解決を待って、
+   * まだラッシュフェイズに進んでいない（効果をすべて解決したらラッシュフェイズに進む。core/applyAction.ts）。
+   */
+  chargeAdvanceDeferred?: { playerId: PlayerId; log: string };
   /** 第9弾 RS-605〜RS-626 のカード固有の効果の記録（rules/legend1/set9NamedEffectsA.ts）。 */
   set9aState?: Set9AState;
   /** RS-352【ダイデンジンブーメラン】: パワーゾーンを離れたカード（1枚ごとに相手が撃破するユニットを選ぶ）の待ち行列。 */
@@ -1099,7 +1155,8 @@ export type PendingEffectRush = {
   /** 追加条件を実行中のユニット。 */
   current?: {
     instanceId: string;
-    direction: "up" | "down";
+    /** extended: 手札・パワー等のカードを使う追加条件（rules/zordExtended.ts）。 */
+    direction: "up" | "down" | "extended";
     needed: number;
     chosen: string[];
     destination?: "command" | "discard";
@@ -1142,8 +1199,11 @@ export type TurnEndProgress = {
 export type Set9CMeta = {
   /** RS-648【イカロスバインド】: そのターン（turn）のスタートフェイズに戻さないことを選んだホールド状態のユニット。 */
   startStay?: { turn: number; instanceIds: string[] };
-  /** RS-660【SPインカム】: turn のターン（restrictedPlayerId のターン）の進入制限。 */
-  spIncome?: Array<{ restrictedPlayerId: PlayerId; turn: number }>;
+  /**
+   * RS-660【SPインカム】: turn のターン（restrictedPlayerId のターン）の進入制限。
+   * enteredInstanceIds はそのターンに場の外からラッシュエリアに出たユニット（両軍）。
+   */
+  spIncome?: Array<{ restrictedPlayerId: PlayerId; turn: number; enteredInstanceIds?: string[] }>;
 };
 
 /** 第8弾 RS-560〜RS-581 のカード固有の効果が使う記録（rules/legend1/set8NamedEffectsC.ts）。 */

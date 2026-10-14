@@ -7989,8 +7989,7 @@
     ],
     "expectedDslKeywords": [
       "ride_command_without_rc_redo",
-      "effect_card::RS-466::honoono",
-      "register"
+      "effect_card::RS-466::honoono"
     ],
     "sp": null,
     "size": "M"

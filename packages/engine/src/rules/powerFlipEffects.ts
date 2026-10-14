@@ -94,38 +94,33 @@ export function applyPowerFlipBeforeDamage(
 }
 
 /**
- * ダメージの適用（パワーのウラ返し）後の誘発。before はウラ返す前、after はウラ返した後の状態。
+ * RS-199【ブレイクアクション】「これがストライクして相手がパワーゾーンのカードをウラ返すとき」（任意）。
+ * ルール: R-TIME-01 — 現在形「ウラ返すとき」は、実際にウラ返す前（ダメージの誘発より前）に解決する
+ * （atwiki/page-407 のコメント「ウラ返すとき＝ウラ返す前」、atwiki/page-1828）。
+ * state はウラ返す前、flipIds はこれからウラ返すパワーのカード。発動できれば確認を開いた状態、できなければ null。
+ * メディテーションで2枚ウラ返すときは2枚とも対象（grnrngr/faq-card-6）。
  */
-export function applyPowerFlipTriggers(
-  before: GameState,
-  after: GameState,
+export function openBreakActionBeforeFlip(
+  state: GameState,
   damagedPlayerId: PlayerId,
+  flipIds: string[],
   resume: DamagePaymentResume,
-): GameState {
-  const flipped = flippedPowerIds(before, after, damagedPlayerId);
-  if (flipped.length === 0) return after;
-  let next = after;
+): GameState | null {
+  if (flipIds.length === 0 || resume.kind !== "strike" || state.pendingEffectChoice) return null;
   const enemyId = opponent(damagedPlayerId);
-  const phasePlayerId = resume.kind === "strike" ? resume.pending.battlePhasePlayer : next.activePlayer;
-
-  // RS-199【ブレイクアクション】（任意）。
-  if (resume.kind === "strike" && resume.pending.strikerPlayerId === enemyId && !next.pendingEffectChoice) {
-    const striker = next.players[enemyId].battle.find((c) => c.instanceId === resume.pending.strikerInstanceId);
-    if (striker?.cardId === "RS-199" && striker.activatedNcEffects?.includes(BREAK_ACTION_EFFECT_ID)) {
-      const targets = unitsMatchingFlippedCost(next, damagedPlayerId, flipped, damagedPlayerId);
-      if (targets.length > 0) {
-        const opened = openOptionalEffectConfirm(next, {
-          playerId: enemyId,
-          effectId: BREAK_ACTION_EFFECT_ID,
-          sourceCardId: "RS-199",
-          sourceInstanceId: striker.instanceId,
-          phasePlayerId,
-        });
-        next = { ...opened, pendingEffectChoice: { ...opened.pendingEffectChoice!, selectedInstanceIds: targets } };
-      }
-    }
-  }
-  return next;
+  if (resume.pending.strikerPlayerId !== enemyId) return null;
+  const striker = state.players[enemyId].battle.find((c) => c.instanceId === resume.pending.strikerInstanceId);
+  if (striker?.cardId !== "RS-199" || !striker.activatedNcEffects?.includes(BREAK_ACTION_EFFECT_ID)) return null;
+  const targets = unitsMatchingFlippedCost(state, damagedPlayerId, flipIds, damagedPlayerId);
+  if (targets.length === 0) return null;
+  const opened = openOptionalEffectConfirm(state, {
+    playerId: enemyId,
+    effectId: BREAK_ACTION_EFFECT_ID,
+    sourceCardId: "RS-199",
+    sourceInstanceId: striker.instanceId,
+    phasePlayerId: resume.pending.battlePhasePlayer,
+  });
+  return { ...opened, pendingEffectChoice: { ...opened.pendingEffectChoice!, selectedInstanceIds: targets } };
 }
 
 registerOptionalEffect(BREAK_ACTION_EFFECT_ID, {

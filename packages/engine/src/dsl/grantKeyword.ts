@@ -121,7 +121,6 @@ import {
   beginEnemyResidentPick,
   beginFlipEnemyPowerDamage,
   beginHoldEntryDestroy,
-  beginStackSelfOntoL,
   beginStackVehicleUnderSelf,
 } from "../rules/keywordChoiceRuntime";
 import {
@@ -1195,11 +1194,11 @@ export function applyGrantKeyword(
       if (!withChoice) return { state, detail: `${keyword}:no_targets` };
       return { state: withChoice, detail: keyword };
     }
-    case "stack_da_less_l_on_rush": {
-      const withChoice = beginStackSelfOntoL(state, ctx);
-      if (!withChoice) return { state, detail: `${keyword}:no_targets` };
-      return { state: withChoice, detail: keyword };
-    }
+    case "stack_da_less_l_on_rush":
+      // 「自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい」は起動効果
+      // （自軍ラッシュフェイズ中ならいつでも。rules/stackOntoLargeUnit.ts・rules/fieldActivatedAbilities.ts）。
+      // 「ラッシュしたとき」等の誘発としては何もしない。
+      return { state, detail: `${keyword}:activated_ability` };
     case "stack_vehicle_on_rush": {
       const withChoice = beginStackVehicleUnderSelf(state, ctx);
       if (!withChoice) return { state, detail: `${keyword}:no_targets` };

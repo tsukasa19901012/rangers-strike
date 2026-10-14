@@ -10,8 +10,10 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RS-NNN …」）で残す。
  */
 import { describe, expect, it } from "vitest";
+import { canMoveUnitToBattle } from "../rules/restrictions";
 import {
   act,
+  attack,
   bpOf,
   canEnter,
   canSkip,
@@ -505,6 +507,40 @@ describe("RS-660 デカピンクSWAT", () => {
     expect(r.ok).toBe(true);
     const t = toPhase(r.state, "player1", "battle");
     expect(canEnter(t, "TST-UNIT-0:mine")).toBe(true);
+  });
+
+  it("RS-660: 【SPインカム】「新しくラッシュエリアに出た」はバトルエリアから戻ったユニットを含まない — 前のターンにバトルエリアにいて、スタートフェイズにラッシュエリアに戻ったユニットは出られる（出典: atwiki/page-1527「新しくラッシュエリアに出たユニット」）", () => {
+    let s = enterSeq(
+      st({
+        player1: { rush: [inst("RS-660", "pk")], battle: fill(4), deck: deckCards(8) },
+        player2: { battle: [inst("TST-UNIT-0", "back")], deck: deckCards(8, "e") },
+      }),
+      ["RS-660:pk"],
+    );
+    s = resolveAll(s);
+    s = toPhase(s, "player2", "battle");
+    expect(zoneOf(s, "player2", "TST-UNIT-0:back")).toBe("rush");
+    expect(cardIn(s, "player2", "TST-UNIT-0:back")?.commandHeld).toBeFalsy();
+    expect(canEnter(s, "TST-UNIT-0:back", "player2")).toBe(true);
+  });
+
+  it("RS-660: 【SPインカム】「自軍」「敵軍」の限定はない — 次の相手ターン中に効果で自軍ラッシュエリアに出た自軍ユニット（※で出したデカピンク）もバトルエリアに出られない（前からいたリリース状態の自軍ユニットは出られる）（出典: atwiki/page-1527「新しくラッシュエリアに出たユニットと、ホールド状態のユニットは」）", () => {
+    let s = enterSeq(
+      st({
+        player1: { rush: [inst("RS-660", "pk"), inst("TST-UNIT-0", "old")], battle: fill(4), discard: [inst("RS-110", "dp")], deck: deckCards(8) },
+        player2: { rush: [inst("TST-UNIT-7", "big")], deck: deckCards(8, "e") },
+      }),
+      ["RS-660:pk"],
+    );
+    s = resolveAll(s);
+    s = toPhase(s, "player2", "battle");
+    expect(canEnter(s, "TST-UNIT-7:big", "player2")).toBe(true);
+    s = enterKeep(s, ["TST-UNIT-7:big"], "player2");
+    s = resolveAll(attack(s, "TST-UNIT-7:big", "RS-660:pk", "player2"), ["RS-110:dp"]);
+    expect(zoneOf(s, "player1", "RS-660:pk")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-110:dp")).toBe("rush");
+    expect(canMoveUnitToBattle(s, "player1", cardIn(s, "player1", "RS-110:dp")!, "rush")).toBe(false);
+    expect(canMoveUnitToBattle(s, "player1", cardIn(s, "player1", "TST-UNIT-0:old")!, "rush")).toBe(true);
   });
 });
 

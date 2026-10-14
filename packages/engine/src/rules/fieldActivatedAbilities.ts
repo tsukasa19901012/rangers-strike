@@ -26,8 +26,8 @@ import { beginAllAboard, canActivateAllAboard } from "./legend1/set6NamedEffects
 import { beginHoldToActivate, canActivateHoldToActivate, isHoldToActivateNc } from "./holdToActivate";
 import { activateHoldReturnSelf, canActivateHoldReturnSelf, holdReturnSelfCount } from "./legend1/set7NamedEffectsA";
 import { beginFusionCall, canActivateFusionCall } from "./legend1/set8NamedEffectsC";
-import { beginRhinoShoot, canActivateRhinoShoot } from "./legend1/set9NamedEffectsC";
-import { beginSoulBird, canActivateSoulBird } from "./legend1/set9NamedEffectsB";
+import { STACK_ONTO_LARGE_EFFECT_ID, beginStackOntoLarge, canActivateStackOntoLarge } from "./stackOntoLargeUnit";
+import { isStackOntoLargeCard } from "./stackOntoLargeGrants";
 
 type FieldZone = "rush" | "battle";
 
@@ -414,30 +414,19 @@ ABILITIES.push({
   resolve: (state, playerId, card) => beginFusionCall(state, playerId, card),
 });
 
-// RS-650 ガオライノス【強蹴一閃ライノシュート】: 自軍ラッシュフェイズ中、DA を持たない自軍 L ユニットに重ねる
-// （rules/legend1/set9NamedEffectsC.ts）。重ねたらカードとして扱われ場を離れるので、くり返しは起きない。
+// 「自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。…」（RS-623【翼合体】・
+// RS-647【ソウルバード】・RS-650【強蹴一閃ライノシュート】・XG1-035 等【侍武装】。rules/stackOntoLargeUnit.ts）。
+// 重ねたらカードとして扱われ場を離れるので、くり返しは起きない。文言で判定する。
 ABILITIES.push({
-  cardId: "RS-650",
-  effectId: "rs650_rhino_shoot",
+  cardId: "",
+  effectId: STACK_ONTO_LARGE_EFFECT_ID,
   zones: ["rush", "battle"],
   phase: "rush",
   discardSelf: false,
   repeatable: true,
-  canActivate: (state, playerId, card) => canActivateRhinoShoot(state, playerId, card),
-  resolve: (state, playerId, card) => beginRhinoShoot(state, playerId, card),
-});
-
-// RS-647 ピヨちゃん【ソウルバード】: 自軍ラッシュフェイズ中、DA を持たない自軍 L ユニットを選び、これに重ねる
-// （rules/legend1/set9NamedEffectsB.ts）。重ねるとピヨちゃんは場を離れるので、続けては使えない。
-ABILITIES.push({
-  cardId: "RS-647",
-  effectId: "rs647_soul_bird",
-  zones: ["rush", "battle"],
-  phase: "rush",
-  discardSelf: false,
-  repeatable: true,
-  canActivate: (state, playerId, card) => canActivateSoulBird(state, playerId, card),
-  resolve: (state, playerId, card) => beginSoulBird(state, playerId, card),
+  matches: (cardId) => isStackOntoLargeCard(cardId),
+  canActivate: (state, playerId, card) => canActivateStackOntoLarge(state, playerId, card),
+  resolve: (state, playerId, card) => beginStackOntoLarge(state, playerId, card),
 });
 
 function abilityFor(cardId: string): FieldActivatedAbility | undefined {

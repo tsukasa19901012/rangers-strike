@@ -3,6 +3,7 @@ import { continueFieldAbilityAfterLeave } from "../rules/fieldActivatedAbilities
 import { resumeAbductionAfterChase } from "../rules/abduction";
 import { applyKyouryuumaru, canUseKyouryuumaru, filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import { currentShuffleEpoch } from "./deckShuffle";
+import { runWithStateRng } from "./rng";
 import { applySwordTornadoAfterShuffle } from "../rules/legend1/set8NamedEffectsC";
 import {
   applySet7AStrikeCounter,
@@ -101,7 +102,7 @@ import {
   updatePlayer,
 } from "./helpers";
 import { isLegalAction, isLegalActionBase, withUniqueExtraCommandHolds } from "./legalActions";
-import { resolveDamagePaymentSelect, startNextQueuedDamage } from "../rules/damagePayment";
+import { completeDeferredPowerFlip, resolveDamagePaymentSelect, startNextQueuedDamage } from "../rules/damagePayment";
 import {
   battlePositionAfterMove,
   canStrikeUnit,
@@ -156,10 +157,12 @@ import {
   tryStartBattleEntryPowerDiscard,
   tryStartBattleEntryRushDiscard,
 } from "../rules/legend3/restrictions";
-import { applyGodomSenshoDiscardPay } from "../rules/godomRushPay";
-import { activateSet9AFieldAbility, activateSet9AResident, isSet9AResidentCard, settleSet9AAfterAction, settleSet9ATurnEnd } from "../rules/legend1/set9NamedEffectsA";
+import { applyGodomSenshoDiscardPay, godomDeclarationError } from "../rules/godomRushPay";
+import { activateSet9AResident, isSet9AResidentCard, settleSet9AAfterAction, settleSet9ATurnEnd } from "../rules/legend1/set9NamedEffectsA";
 import { openCastTransferOnCharge } from "../rules/legend1/set9NamedEffectsD";
-import { openMegaCaptureIfReady, queueMegaCapture, settleSoulBirdStacks } from "../rules/legend1/set9NamedEffectsB";
+import { openMegaCaptureIfReady, queueMegaCapture } from "../rules/legend1/set9NamedEffectsB";
+import { settleStackOntoLargeCards } from "../rules/stackOntoLargeUnit";
+import { trackSpIncomeEntries } from "../rules/legend1/set9NamedEffectsC";
 import { applyMeeMegaloAfterAction, openTakeTheBlowChoice, resolveTakeTheBlow, skipTakeTheBlow, TAKE_THE_BLOW_EFFECT_ID } from "../rules/legend1/set8NamedEffectsD";
 import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
 import {
@@ -515,6 +518,19 @@ function advanceFromCharge(state: GameState, chargeLog: string): GameState {
 }
 
 /**
+ * チャージフェイズでパワーゾーンにカードを置いたときの効果（RS-673）をすべて解決したら、ラッシュフェイズに進む。
+ * 効果でラッシュエリアに出したユニットの「ラッシュしたとき」・「ラッシュされたとき」の窓もチャージフェイズのうちに処理する。
+ */
+function settleChargeAdvance(state: GameState): GameState {
+  const deferred = state.chargeAdvanceDeferred;
+  if (!deferred || state.winner) return state;
+  if (state.phase !== "charge") return { ...state, chargeAdvanceDeferred: undefined };
+  if (hasBlockingInteraction(state) || state.pendingEffectRush || state.effectRushTriggerQueue?.length || state.deferredRushReaction) return state;
+  const { chargeAdvanceDeferred: _d, ...rest } = state;
+  return withWinner(advancePhase({ ...(rest as GameState), activePlayer: deferred.playerId }));
+}
+
+/**
  * エンドフェイズの「ターンを終えるとき」を処理し、終わっていればターンを渡す。
  * ルール: R-END-01 — 効果の処理中はまだ終えるプレイヤーのターン（選択もそのプレイヤーの手番で行う）。
  * 選択待ちで止まったら phase "end" のまま返し、解決後に再度呼ばれて続きから処理する。
@@ -663,9 +679,37 @@ function continueDeferredStrike(state: GameState): GameState {
   return result.ok ? result.state : cleared;
 }
 
+/**
+ * 「ウラ返すとき」（RS-199【ブレイクアクション】）の選択とその中で開いた選択・反応が終わったら、待たせていた
+ * パワーのウラ返し（ダメージ）を行い、ストライクのダメージならストライクの処理を終える（R-TIME-01）。
+ */
+function continueDeferredPowerFlip(state: GameState): GameState {
+  if (!state.deferredPowerFlip || state.winner) return state;
+  if (state.pendingEffectChoice || state.pendingDamagePayment || state.pendingLeave || state.pendingRegister) {
+    return state;
+  }
+  const completed = completeDeferredPowerFlip(state);
+  if (!completed) return state;
+  const { flip } = completed;
+  let next = completed.state;
+  if (flip.resume.kind === "strike" && flip.finishStrike) {
+    const finished = finishStrikeResolution(
+      { ...state, deferredPowerFlip: undefined },
+      { ...flip.resume.pending, damageApplied: true },
+      next,
+    );
+    if (finished.ok) next = finished.state;
+  }
+  // 同時に発生して後回しにしたダメージがあれば続けて処理する。
+  if ((next.queuedDamagePayments?.length ?? 0) > 0 && !next.pendingDamagePayment) {
+    next = startNextQueuedDamage({ ...next, winner: null });
+  }
+  return { ...next, winner: checkWinner(next) };
+}
+
 function completeStrike(state: GameState, pending: PendingStrike, extraLogs: string[] = []): ActionResult {
   const nextState = finalizeStrike(state, pending);
-  if (nextState.pendingDamagePayment) {
+  if (nextState.pendingDamagePayment || nextState.deferredPowerFlip) {
     return ok(nextState, buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending_damage"));
   }
   return finishStrikeResolution(state, pending, nextState, extraLogs);
@@ -830,6 +874,19 @@ export function applyAction(
   action: GameAction,
   options?: { trustLegality?: boolean },
 ): ActionResult {
+  // 乱数はゲーム状態の rngState から作り、進めた状態を結果に書き戻す（core/rng.ts）。
+  const { value: result, rngState } = runWithStateRng(state, () =>
+    applyActionWithRng(state, action, options),
+  );
+  if (!result.ok || rngState === undefined) return result;
+  return { ...result, state: { ...result.state, rngState } };
+}
+
+function applyActionWithRng(
+  state: GameState,
+  action: GameAction,
+  options?: { trustLegality?: boolean },
+): ActionResult {
   // RS-359【最後の手段】: 山札の候補をラッシュエリアに置いた状態で、手札からのラッシュの手続きを始める
   // （rules/legend1/icyLastResort.ts。手続きが終わったら settleIcyPhantoms で片付ける）。
   const icyState = applyActionDepth === 0 ? icyStateForAction(state, action, isLegalActionBase) : null;
@@ -853,7 +910,9 @@ export function applyAction(
   // ルール: R-ZONE-04, R-HOLD-02 — エリアを離れたカードの付加情報はどの経路で移動しても消える。
   let next = clearRegisterHoldOffField(result.state);
   next = settleEffectRushes(state, next);
-  // 第9弾 RS-607 の続き・RS-613 のホールド待ち・RS-623 の重ねたカード（rules/legend1/set9NamedEffectsA.ts）。
+  // RS-660【SPインカム】: このターン、場の外からラッシュエリアに出たユニットを記録する（rules/legend1/set9NamedEffectsC.ts）。
+  next = trackSpIncomeEntries(state, next);
+  // 第9弾 RS-607 の続き・RS-613 のホールド待ち（rules/legend1/set9NamedEffectsA.ts）。
   if (applyActionDepth === 0) next = settleSet9AAfterAction(state, next);
   next = releaseCounterLockWhenAttackSettled(next);
   next = trackResolvingOperations(state, next);
@@ -862,6 +921,7 @@ export function applyAction(
   if (applyActionDepth === 0 && "playerId" in action && action.playerId) next = applyMeeMegaloAfterAction(state, next, action.type, action.playerId);
   // 起動効果の「このユニットを捨札にしてもよい。そうしたとき、…」の続き（rules/fieldActivatedAbilities.ts）。
   if (next.pendingFieldAbilityAfterLeave) next = continueFieldAbilityAfterLeave(next);
+  next = continueDeferredPowerFlip(next);
   next = continueDeferredAttack(next);
   next = continueDeferredStrike(next);
   // ルール: R-TIME-01 — 先の段階の効果（選択）が解決し終えたら、待たせていた撃破の誘発を段階の順に解決する。
@@ -872,8 +932,9 @@ export function applyAction(
   next = settleStackedCards(next);
   // RS-350 暗黒の鎧: 重ねたユニットがユニットでなくなったら、鎧を持ち主のパワーゾーンにダメージにして置く。
   if (applyActionDepth === 0) next = settleDarkArmor(state, next);
-  // RS-647 ピヨちゃん: 重ねたユニットがユニットでなくなったら捨札になる（rules/legend1/set9NamedEffectsB.ts）。
-  if (applyActionDepth === 0) next = settleSoulBirdStacks(state, next);
+  // RS-623【翼合体】・RS-647【ソウルバード】・RS-650 等: 重ねたユニットがユニットでなくなったら、重ねたカードは捨札になる
+  // （rules/stackOntoLargeUnit.ts）。
+  if (applyActionDepth === 0) next = settleStackOntoLargeCards(state, next);
   // RS-628【メガキャプチャー】: このターン、次に自軍コマンドゾーンにカードが置かれたとき（rules/legend1/set9NamedEffectsB.ts）。
   if (applyActionDepth === 0) next = openMegaCaptureIfReady(queueMegaCapture(state, next));
   // RS-385【特殊消化弾】: 自軍コマンドゾーンにホールド状態で置くカードは、かわりにリリース状態で置く。
@@ -929,6 +990,8 @@ export function applyAction(
   if (applyActionDepth === 0) next = applyFatalBladeDraws(state, next, action);
   next = markEnemyTurnFaceDownDamage(state, next);
   if (applyActionDepth === 0) next = settleIcyPhantoms(next);
+  // RS-673【炎神キャスト転送】の解決を待っていたチャージフェイズを終える（効果をすべて解決してから）。
+  if (applyActionDepth === 0) next = settleChargeAdvance(next);
   return next === result.state ? result : { ok: true, state: next };
 }
 
@@ -1280,18 +1343,17 @@ function applyActionCore(
         hasChargedThisTurn: true,
       };
       const chargedState = { ...state, ...updatePlayer(state, playerId, nextPlayer) };
-      return {
-        ok: true,
-        // RS-673【炎神キャスト転送】: 自軍チャージフェイズ中、自軍パワーゾーンにカードを置いたとき（rules/legend1/set9NamedEffectsD.ts）。
-        state: openCastTransferOnCharge(
-          advanceFromCharge(
-            chargedState,
-            buildLogEntry(playerId, "charge_power", found.card.cardId, state.definitions),
-          ),
-          playerId,
-          powerCard.instanceId,
-        ),
-      };
+      const chargeLog = buildLogEntry(playerId, "charge_power", found.card.cardId, state.definitions);
+      // RS-673【炎神キャスト転送】: 自軍チャージフェイズ中、自軍パワーゾーンにカードを置いたとき（rules/legend1/set9NamedEffectsD.ts）。
+      // チャージフェイズのうちに解決し、解決し終えてからラッシュフェイズに進む（settleChargeAdvance）。
+      const withCast = openCastTransferOnCharge(chargedState, playerId, powerCard.instanceId);
+      if (withCast.pendingEffectChoice) {
+        return {
+          ok: true,
+          state: { ...withCast, log: [...withCast.log, chargeLog], chargeAdvanceDeferred: { playerId, log: chargeLog } },
+        };
+      }
+      return { ok: true, state: advanceFromCharge(withCast, chargeLog) };
     }
 
     case "charge_command": {
@@ -1332,6 +1394,14 @@ function applyActionCore(
     }
 
     case "initiate_command_payment": {
+      if (action.kind === "category_use") {
+        // RS-586【魔神に不足する物】: 捨札にする「戦闘員」のユニットの選び方（rules/godomRushPay.ts）。
+        const godomError = godomDeclarationError(state, playerId, action.sourceInstanceId, action.godomDiscardInstanceIds, [
+          ...(action.zordMaterialInstanceIds ?? []),
+          ...(action.zordMaterialInstanceId ? [action.zordMaterialInstanceId] : []),
+        ]);
+        if (godomError) return fail(godomError);
+      }
       const pending = buildPaymentFromInitiateAction(state, action);
       if (!pending) return fail("cannot_pay");
       return ok(
@@ -1342,11 +1412,17 @@ function applyActionCore(
 
     case "begin_zord_setup": {
       if (state.phase !== "rush") return fail("wrong_phase");
+      if (action.godomDiscardInstanceIds) {
+        const godomError = godomDeclarationError(state, playerId, action.zordInstanceId, action.godomDiscardInstanceIds);
+        if (godomError) return fail(godomError);
+      }
       if (!canBeginZordSetup(state, playerId, action.zordInstanceId)) {
         return fail("cannot_begin_zord_setup");
       }
-      const setup = createZordSetup(state, playerId, action.zordInstanceId);
-      if (!setup) return fail("cannot_begin_zord_setup");
+      const created = createZordSetup(state, playerId, action.zordInstanceId);
+      if (!created) return fail("cannot_begin_zord_setup");
+      // RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニットは、最後のラッシュに引き継ぐ。
+      const setup = action.godomDiscardInstanceIds ? { ...created, godomDiscardInstanceIds: action.godomDiscardInstanceIds } : created;
       return ok(
         { ...state, pendingZordSetup: setup },
         buildSimpleLogEntry(playerId, "zord_setup_pending"),
@@ -1362,23 +1438,28 @@ function applyActionCore(
         paymentPath: action.paymentPath,
       });
       if (advanced.kind === "error") return fail(advanced.error);
+      const godom = setup.godomDiscardInstanceIds;
       if (advanced.kind === "continue") {
         return ok(
-          { ...state, pendingZordSetup: advanced.setup },
+          { ...state, pendingZordSetup: godom ? { ...advanced.setup, godomDiscardInstanceIds: godom } : advanced.setup },
           buildSimpleLogEntry(playerId, "zord_setup_step"),
         );
       }
       if (advanced.kind === "rush") {
         return applyAction(
           { ...state, pendingZordSetup: undefined },
-          advanced.action,
+          godom ? { ...advanced.action, godomDiscardInstanceIds: godom } : advanced.action,
         );
       }
+      const payment =
+        godom && advanced.payment.continuation.type === "rush"
+          ? { ...advanced.payment, continuation: { ...advanced.payment.continuation, godomDiscardInstanceIds: godom } }
+          : advanced.payment;
       return ok(
         {
           ...state,
           pendingZordSetup: undefined,
-          pendingCommandPayment: advanced.payment,
+          pendingCommandPayment: payment,
         },
         buildSimpleLogEntry(playerId, "command_payment_pending"),
       );
@@ -1398,7 +1479,8 @@ function applyActionCore(
     case "resolve_damage_payment": {
       const result = resolveDamagePaymentSelect(state, playerId, action.instanceId);
       if ("error" in result) return fail(result.error);
-      if (result.state.pendingDamagePayment) {
+      // 「ウラ返すとき」（RS-199）の選択が開いた: ウラ返しは選択の解決後（continueDeferredPowerFlip）。
+      if (result.state.pendingDamagePayment || result.state.deferredPowerFlip) {
         return ok(
           result.state,
           buildSimpleLogEntry(playerId, "damage_payment", action.instanceId),
@@ -1484,6 +1566,7 @@ function applyActionCore(
             zordMaterialDestinations: cont.zordMaterialDestinations,
             zordMothershipHoldInstanceIds: holdIds,
             zordExtraCommandHoldInstanceIds: cont.zordExtraCommandHoldInstanceIds,
+            godomDiscardInstanceIds: cont.godomDiscardInstanceIds,
           },
           { trustLegality: true },
         );
@@ -1980,8 +2063,21 @@ function applyActionCore(
 
         if (shortage > 0) {
           // RS-586【魔神に不足する物】: 足りない数だけ場の「戦闘員」のユニットを捨札にする（rules/godomRushPay.ts）。
-          const withGodom = applyGodomSenshoDiscardPay(powerState, playerId, candidate, definition!, shortage);
-          if (withGodom) {
+          const withGodom = applyGodomSenshoDiscardPay(
+            powerState,
+            playerId,
+            candidate,
+            definition!,
+            shortage,
+            action.godomDiscardInstanceIds,
+          );
+          if (withGodom && "error" in withGodom) {
+            // 選び方が不正なら失敗。候補が多いのに選んでいないときは、アブレラ【闇の取引】等の別の手段で満たせればそちらで払う
+            // （ゴードムは「してもよい」）。満たせなければ、捨札にするユニットを選ぶ必要がある。
+            if (action.godomDiscardInstanceIds || darkDealRushPowerBudget(state, playerId, candidate, definition!) < effectiveCost) {
+              return fail(withGodom.error);
+            }
+          } else if (withGodom) {
             candidate = withGodom.player;
             shortage -= withGodom.covered;
           }
@@ -3413,11 +3509,6 @@ function applyActionCore(
         const fromHand = handCard ? activateSet8BHandEffect(state, playerId, action.unitInstanceId) : null;
         if (!handCard || !fromHand) return fail("illegal_action");
         return ok(fromHand, buildLogEntry(playerId, "activate_field_unit_ability", handCard.cardId, state.definitions, "from_hand"));
-      }
-      // RS-623【翼合体】（rules/legend1/set9NamedEffectsA.ts）。
-      const wingStack = activateSet9AFieldAbility(state, playerId, action.unitInstanceId);
-      if (wingStack) {
-        return ok(wingStack, buildLogEntry(playerId, "activate_field_unit_ability", unit.cardId, state.definitions));
       }
       const activated = activateFieldAbility(state, playerId, action.unitInstanceId);
       if (activated) {

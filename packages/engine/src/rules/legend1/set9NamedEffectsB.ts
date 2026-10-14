@@ -7,7 +7,6 @@
  *   （RS-628【メガキャプチャー】の誘発、RS-647 ピヨちゃんの後始末）。
  * 構成は rules/legend1/set8NamedEffectsD.ts と同じ。
  */
-import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, DeferredDestroyTrigger, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardCategories, cardName, effectiveBp, getDefinition, isLargeUnit } from "../../core/catalog";
@@ -22,7 +21,6 @@ import { startEffectRush } from "../effectRush";
 import { applyUnitLeave, openEffectChoice } from "../pendingChoices";
 import { patchPlayer } from "../playerPatches";
 import { parseEnemyTargetZone, parseEnemyUnitFilter, startGenericEnemyUnitChoice } from "../rs/rsCatchallChoices";
-import { evaluateStateGate } from "../zordExtended";
 import { isSmallUnitNow, turnPlayerOf } from "./set6NamedEffectsB";
 
 // ---------------------------------------------------------------------------
@@ -422,13 +420,6 @@ function applyScramble(state: GameState, ctx: GrantKeywordContext): GrantKeyword
   };
 }
 
-/** 状態の追加条件（「特徴「母艦」を持つ自軍ユニットがある」等）を満たすか。それ以外の追加条件は効果ラッシュ側で判定・実行する。 */
-function stateGateAllows(state: GameState, playerId: PlayerId, cardId: string): boolean {
-  const condition = resolveRushAdditionalCondition(cardId, getDefinition(state.definitions, cardId));
-  if (!condition || condition.conditionId !== "state_gate") return true;
-  return evaluateStateGate(state, playerId, condition);
-}
-
 CHOICE_RESOLVERS[SCRAMBLE_EFFECT_ID] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;
   let next = close(state, pending);
@@ -437,7 +428,9 @@ CHOICE_RESOLVERS[SCRAMBLE_EFFECT_ID] = (state, playerId) => {
   const def = getDefinition(next.definitions, top.cardId);
   const isSc = def?.type === "unit" && def.size === "SC";
   let placed = false;
-  if (isSc && stateGateAllows(next, playerId, top.cardId)) {
+  // 追加条件（「特徴「母艦」を持つ自軍ユニットがある」等の状態も含む）は効果ラッシュの側で満たすか判定・実行する（R-RUSH-21。
+  // rules/effectRush.ts planEffectRush）。出せなければ startEffectRush は state をそのまま返す。
+  if (isSc) {
     const started = startEffectRush(next, {
       playerId,
       phasePlayerId: pending.phasePlayerId,
@@ -594,124 +587,8 @@ CHOICE_CAN_CONFIRM[MARS_RECOVER_EFFECT_ID] = (pending) => (pending.selectedInsta
 CHOICE_CONFIRMERS[MARS_RECOVER_EFFECT_ID] = (state, playerId) => finishMarsRecover(state, playerId, state.pendingEffectChoice!);
 
 // ---------------------------------------------------------------------------
-// RS-647 ピヨちゃん【ソウルバード】
-// 「自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間
-//  カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒※レジスト」
-//  （atwiki/page-1469）
-// 起動効果（rules/fieldActivatedAbilities.ts）。重ねた状態は、L ユニットの stackedCards にピヨちゃんを持つ形で表す
-// （RS-255 巨大化爆弾・RS-350 暗黒の鎧と同じ）。L ユニットはその場に残り、ピヨちゃんは場を離れて「カード」になる。
-
-export const SOUL_BIRD_EFFECT_ID = "rs647_soul_bird";
-const PIYO_CARD_ID = "RS-647";
-
-function soulBirdTargets(state: GameState, playerId: PlayerId): string[] {
-  return fieldUnits(state, playerId)
-    .filter((c) => isUnitCard(state, c.cardId) && isLargeUnit(state.definitions, c.cardId))
-    .filter((c) => {
-      const def = getDefinition(state.definitions, c.cardId);
-      return !!def && !cardCategories(def).includes("DA");
-    })
-    .map((c) => c.instanceId);
-}
-
-export function canActivateSoulBird(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
-  if (card.cardId !== PIYO_CARD_ID) return false;
-  return soulBirdTargets(state, playerId).length > 0;
-}
-
-export function beginSoulBird(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
-  const ids = soulBirdTargets(state, playerId);
-  if (ids.length === 0) return state;
-  return openEffectChoice(state, {
-    ...choiceBase({ playerId, phasePlayerId: playerId }, PIYO_CARD_ID, card.instanceId),
-    effectId: SOUL_BIRD_EFFECT_ID,
-    kind: "select_unit",
-    validInstanceIds: ids,
-    selectCount: 1,
-    optional: false,
-  });
-}
-
-CHOICE_RESOLVERS[SOUL_BIRD_EFFECT_ID] = (state, playerId, instanceId) => {
-  const pending = state.pendingEffectChoice!;
-  const piyoId = pending.sourceInstanceId;
-  const player = state.players[playerId];
-  const piyo = piyoId ? fieldUnits(state, playerId).find((c) => c.instanceId === piyoId) : undefined;
-  if (!piyo || !fieldUnits(state, playerId).some((c) => c.instanceId === instanceId)) return { state: proceed(close(state, pending), pending) };
-  const stack = (c: CardInstance): CardInstance =>
-    c.instanceId === instanceId ? { ...c, stackedCards: [...(c.stackedCards ?? []), stripForZone(piyo)] } : c;
-  const next = {
-    ...close(state, pending),
-    ...updatePlayer(state, playerId, {
-      ...player,
-      rush: player.rush.filter((c) => c.instanceId !== piyo.instanceId).map(stack),
-      battle: player.battle.filter((c) => c.instanceId !== piyo.instanceId).map(stack),
-    }),
-  };
-  return { state: proceed(next, pending), log: logFor(state, playerId, PIYO_CARD_ID, `${SOUL_BIRD_EFFECT_ID}:${cardName(state.definitions, fieldUnits(state, playerId).find((c) => c.instanceId === instanceId)!.cardId)}`) };
-};
-
-function hasPiyo(card: CardInstance): boolean {
-  return (card.stackedCards ?? []).some((s) => s.cardId === PIYO_CARD_ID);
-}
-
-/** ピヨちゃんを重ねた自軍ユニットは※レジストを得る（rules/resist.ts canOfferRegister から呼ぶ）。 */
-export function soulBirdGrantsResist(state: GameState, ownerId: PlayerId, instanceId: string): boolean {
-  const card = fieldUnits(state, ownerId).find((c) => c.instanceId === instanceId);
-  return !!card && hasPiyo(card);
-}
-
-const NON_FIELD_ZONES = ["power", "discard", "hand", "deck", "command", "operation"] as const;
-
-function piyoAnywhere(state: GameState, piyoId: string): boolean {
-  for (const pid of ["player1", "player2"] as const) {
-    const p = state.players[pid];
-    for (const zone of [...NON_FIELD_ZONES, "rush", "battle"] as const) {
-      for (const c of p[zone]) {
-        if (c.instanceId === piyoId) return true;
-        if ((c.stackedCards ?? []).some((s) => s.instanceId === piyoId)) return true;
-      }
-    }
-  }
-  return false;
-}
-
-/**
- * applyAction の後処理: 重ねたユニットがユニットでなくなった（場を離れた）ら、ピヨちゃんは捨札になる。
- * 場を離れたユニットのカードに残っている重なり（stackedCards）からピヨちゃんを外して持ち主の捨札に置く。
- */
-export function settleSoulBirdStacks(before: GameState, after: GameState): GameState {
-  let next = after;
-  for (const pid of ["player1", "player2"] as const) {
-    const player = next.players[pid];
-    const freed: CardInstance[] = [];
-    const patched: Partial<PlayerState> = {};
-    for (const zone of NON_FIELD_ZONES) {
-      const cards = player[zone];
-      if (!cards.some((c) => c.cardId !== PIYO_CARD_ID && hasPiyo(c))) continue;
-      patched[zone] = cards.map((c) => {
-        if (c.cardId === PIYO_CARD_ID || !hasPiyo(c)) return c;
-        const stacked = c.stackedCards ?? [];
-        freed.push(...stacked.filter((s) => s.cardId === PIYO_CARD_ID).map(stripForZone));
-        const rest = stacked.filter((s) => s.cardId !== PIYO_CARD_ID);
-        const { stackedCards: _s, ...base } = c;
-        return rest.length > 0 ? { ...base, stackedCards: rest } : (base as CardInstance);
-      });
-    }
-    // 移動でカードの重なりの情報が消えた場合も、ピヨちゃんは捨札になる（どこにも残っていなければ）。
-    for (const unit of fieldUnits(before, pid).filter(hasPiyo)) {
-      if (fieldUnits(next, pid).some((c) => c.instanceId === unit.instanceId)) continue;
-      for (const piyo of (unit.stackedCards ?? []).filter((s) => s.cardId === PIYO_CARD_ID)) {
-        if (freed.some((f) => f.instanceId === piyo.instanceId)) continue;
-        if (piyoAnywhere(next, piyo.instanceId)) continue;
-        freed.push(stripForZone(piyo));
-      }
-    }
-    if (freed.length === 0) continue;
-    next = { ...next, ...updatePlayer(next, pid, { ...player, ...patched, discard: [...(patched.discard ?? player.discard), ...freed] }) };
-  }
-  return next;
-}
+// RS-647 ピヨちゃん【ソウルバード】は同じ文言の RS-623【翼合体】・RS-650 等と共通の処理（rules/stackOntoLargeUnit.ts）。
+// 重ねたユニットのレジストは rules/resist.ts、重ねたユニットが場を離れたときの捨札は settleStackOntoLargeCards。
 
 // ---------------------------------------------------------------------------
 // DSL の grant_keyword から呼ばれる起点
@@ -730,7 +607,7 @@ const SET9B_KEYWORDS: Record<string, (state: GameState, ctx: GrantKeywordContext
   "RS-642::gigantis_buster": applyGigantisBuster,
   "RS-645::mars_flare": applyMarsFlare,
   "RS-646::mars_recover": applyMarsRecover,
-  // 起動効果は rules/fieldActivatedAbilities.ts から使う（ここでは何もしない）。
+  // 起動効果は rules/stackOntoLargeUnit.ts（rules/fieldActivatedAbilities.ts）から使う（ここでは何もしない）。
   "RS-647::soul_bird": (state) => ({ state, detail: "rs647_soul_bird" }),
 };
 
@@ -771,7 +648,6 @@ export function pickSet9BCpuChoice(state: GameState, pending: PendingEffectChoic
       // ホールド状態の敵軍 S ユニットを撃破できるときだけリリースする。
       return heldEnemySUnits(state, me).length > 0 ? picks[0]! : (skip ?? picks[0]!);
     case DARK_THUNDER_DESTROY_EFFECT_ID:
-    case SOUL_BIRD_EFFECT_ID:
       return highest();
     default:
       // 山札の上を置く・オモテにする・捨札から回収する等、行って損のない効果は行う。
