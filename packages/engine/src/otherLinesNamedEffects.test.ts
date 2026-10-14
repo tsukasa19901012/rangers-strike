@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from "vitest";
 import type { CardInstance } from "./types/game";
-import { act, attackedInEnemyTurn, canStartRush, choiceIds, deckCards, inst, pick, powerCards, releasedCat, skip, st, zoneOf } from "./cardSpec/RS8-560-581.helpers";
+import { act, attackedInEnemyTurn, canStartRush, choiceIds, deckCards, inst, pick, playOp, powerCards, releasedCat, skip, st, zoneOf } from "./cardSpec/RS8-560-581.helpers";
 
 const faceDown = (id: string, tag: string): CardInstance => ({ ...inst(id, tag), faceDown: true });
 
@@ -91,5 +91,30 @@ describe("XG6-018 アバレキラー ※（自軍Lユニットがなければ「
 
   it("自軍 L ユニットがあれば、合体ユニットとしてつかえない（出典: atwiki/page-2334「自軍Lユニットがなければ」）", () => {
     expect(canStartRush(board([inst("XG6-018", "ak"), inst("RS-226", "other")]), "player1", "RS-226:ko")).toBe(false);
+  });
+});
+
+describe("XG1-078 コピーベント", () => {
+  it("2体目はナンバーの有無が1体目と同じ S ユニットだけ選べ、使ったカードは1枚だけ捨札になる（出典: atwiki/page-1608）", () => {
+    let s = st({
+      phase: "rush",
+      player1: {
+        hand: [inst("XG1-078", "cv")],
+        // XG4-088（ナンバー L）・RS-405（ナンバーあり）・TST-UNIT-0（ナンバーなし）
+        rush: [inst("XG4-088", "w"), inst("RS-405", "x"), inst("TST-UNIT-0", "plain")],
+        command: releasedCat("WB", 2),
+        power: powerCards(5),
+        deck: deckCards(5),
+      },
+      player2: { deck: deckCards(5, "e") },
+    });
+    const r = playOp(s, "player1", "XG1-078:cv");
+    expect(r.ok).toBe(true);
+    s = pick(r.state, "XG4-088:w");
+    expect(choiceIds(s)).toContain("RS-405:x");
+    expect(choiceIds(s)).not.toContain("TST-UNIT-0:plain");
+    s = pick(s, "RS-405:x");
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(s.players.player1.discard.filter((c) => c.instanceId === "XG1-078:cv")).toHaveLength(1);
   });
 });

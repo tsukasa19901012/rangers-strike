@@ -738,6 +738,105 @@ CHOICE_SKIPPERS[UNITE_VENT_EFFECT_ID] = (state, playerId) => {
 };
 
 // ---------------------------------------------------------------------------
+// XG1-078 コピーベント（オペレーション）
+// 「Sユニットを2体選ぶ。このターン、1体目に選んだユニットの効果名を持つ効果は、2体目に選んだユニットの効果名を持つ効果になる。
+//  ただし、1体目がナンバーを持たないなら2体目もナンバーを持たないユニットしか選べず、1体目がナンバーを持つなら、2体目もナンバーを
+//  持つユニットしか選べない。」（atwiki/page-1608）
+// 1体目の持ち主にターンのルール修飾子（`xg1078_copy::<instanceId>`、payload に2体目のカード ID）を付ける。DSL の誘発効果の解決
+// （dsl/triggerResolver.ts）は、1体目の効果名を持つ効果のかわりに2体目の効果名を持つ効果を使う。
+// 「この効果はライドオフしたとき、ナンバーに関係なく発動する」等の特殊な発動条件はそのテキストに従う（page-1608 Q2・page-562 Q1）。
+
+export const COPY_VENT_EFFECT_ID = "xg1078_copy_vent";
+const COPY_VENT_RULE_PREFIX = "xg1078_copy::";
+
+function hasNumber(state: GameState, cardId: string): boolean {
+  return getDefinition(state.definitions, cardId)?.comboNumber != null;
+}
+
+function sUnitsInField(state: GameState): Array<{ ownerId: PlayerId; card: CardInstance }> {
+  const out: Array<{ ownerId: PlayerId; card: CardInstance }> = [];
+  for (const pid of ["player1", "player2"] as const) {
+    for (const card of fieldUnits(state, pid)) {
+      if (getDefinition(state.definitions, card.cardId)?.type === "unit" && isSmallUnitNow(state, pid, card)) out.push({ ownerId: pid, card });
+    }
+  }
+  return out;
+}
+
+function copyVentTargets(state: GameState, playerId: PlayerId, first?: CardInstance): string[] {
+  return sUnitsInField(state)
+    .filter(({ card }) => !first || card.instanceId !== first.instanceId)
+    .filter(({ card }) => !first || hasNumber(state, card.cardId) === hasNumber(state, first.cardId))
+    .filter(({ ownerId, card }) => ownerId === playerId || isSelectableByOpponentEffect(state, playerId, card.instanceId, "XG1-078", playerId))
+    .map(({ card }) => card.instanceId);
+}
+
+/** 1体目に選んだユニットの「効果名を持つ効果」をこのターン置きかえているカード ID（なければ undefined）。 */
+export function namedEffectCopySource(state: Pick<GameState, "players">, instanceId: string): string | undefined {
+  for (const pid of ["player1", "player2"] as const) {
+    for (const m of getPlayerModifiers(state.players[pid])) {
+      if (m.kind === "rule" && m.scope === "turn" && m.ruleId === `${COPY_VENT_RULE_PREFIX}${instanceId}`) {
+        return (m.payload as { sourceCardId?: string } | undefined)?.sourceCardId;
+      }
+    }
+  }
+  return undefined;
+}
+
+function applyCopyVent(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  // 使ったオペレーションは解決後に捨札になる（選択の間も手札・場には戻らない）。
+  let next = state;
+  if (ctx.operationInstanceId) {
+    const opId = ctx.operationInstanceId;
+    next = patchPlayer(next, ctx.playerId, (p) =>
+      p.discard.some((c) => c.instanceId === opId) ? p : { ...p, discard: [...p.discard, { instanceId: opId, cardId: ctx.sourceCardId }] },
+    );
+  }
+  const first = copyVentTargets(next, ctx.playerId);
+  if (first.length < 2) return { state: next, detail: `${COPY_VENT_EFFECT_ID}:no_targets` };
+  return {
+    state: openOrQueue(next, {
+      playerId: ctx.playerId,
+      phasePlayerId: ctx.phasePlayerId,
+      sourceCardId: "XG1-078",
+      effectId: COPY_VENT_EFFECT_ID,
+      kind: "select_unit",
+      validInstanceIds: first.filter((id) => copyVentTargets(next, ctx.playerId, sUnitsInField(next).find((u) => u.card.instanceId === id)!.card).length > 0),
+      selectedInstanceIds: [],
+      selectCount: 1,
+      optional: false,
+    }),
+    detail: COPY_VENT_EFFECT_ID,
+  };
+}
+
+CHOICE_RESOLVERS[COPY_VENT_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const selected = pending.selectedInstanceIds ?? [];
+  const units = sUnitsInField(state);
+  if (selected.length === 0) {
+    const first = units.find((u) => u.card.instanceId === instanceId);
+    if (!first) return { error: "invalid_target" };
+    return {
+      state: {
+        ...state,
+        pendingEffectChoice: { ...pending, selectedInstanceIds: [instanceId], validInstanceIds: copyVentTargets(state, playerId, first.card) },
+      },
+    };
+  }
+  const first = units.find((u) => u.card.instanceId === selected[0]);
+  const second = units.find((u) => u.card.instanceId === instanceId);
+  if (!first || !second) return { error: "invalid_target" };
+  const next = patchPlayer(close(state, pending), first.ownerId, (p) =>
+    addTurnRuleModifier(p, `${COPY_VENT_RULE_PREFIX}${first.card.instanceId}`, { sourceCardId: "XG1-078", payload: { sourceCardId: second.card.cardId } }),
+  );
+  return {
+    state: proceed(next, pending),
+    log: logFor(state, playerId, "XG1-078", `${COPY_VENT_EFFECT_ID}:${cardName(state.definitions, first.card.cardId)}→${cardName(state.definitions, second.card.cardId)}`),
+  };
+};
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword からの起点
 
 export const OTHER_LINES_KEYWORD_PREFIX = "other::";
@@ -752,6 +851,7 @@ const OTHER_LINES_KEYWORDS: Record<string, (state: GameState, ctx: GrantKeywordC
   "XG2-041::shin_tsuchikemuri": applyShinTsuchikemuri,
   "SK-004::majiki": applyKuugaMajiki,
   "XG2-052::unite_vent": applyUniteVent,
+  "XG1-078::copy_vent": applyCopyVent,
   "XG1-034::filthy_air": (state) => ({ state, detail: "xg1034_filthy_air" }),
 };
 
