@@ -1,3 +1,5 @@
+import { isInstancePlacedAnywhere } from "./helpers";
+import { continueFieldAbilityAfterLeave } from "../rules/fieldActivatedAbilities";
 import { resumeAbductionAfterChase } from "../rules/abduction";
 import { applyKyouryuumaru, canUseKyouryuumaru, filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import { currentShuffleEpoch } from "./deckShuffle";
@@ -858,6 +860,8 @@ export function applyAction(
   next = settleResolvingOperations(next);
   // RS-582【メー・メガロ】: 自分が使ったカウンターが捨札になったとき（rules/legend1/set8NamedEffectsD.ts）。
   if (applyActionDepth === 0 && "playerId" in action && action.playerId) next = applyMeeMegaloAfterAction(state, next, action.type, action.playerId);
+  // 起動効果の「このユニットを捨札にしてもよい。そうしたとき、…」の続き（rules/fieldActivatedAbilities.ts）。
+  if (next.pendingFieldAbilityAfterLeave) next = continueFieldAbilityAfterLeave(next);
   next = continueDeferredAttack(next);
   next = continueDeferredStrike(next);
   // ルール: R-TIME-01 — 先の段階の効果（選択）が解決し終えたら、待たせていた撃破の誘発を段階の順に解決する。
@@ -1688,6 +1692,8 @@ function applyActionCore(
         if (
           (dslOutcome.discardOperation !== false || !!nextState.pendingEffectChoice?.kurokoMeta) &&
           !isPermanent &&
+          // 効果でカード自身を別の場所に置いた（XG2-052 ユナイトベントはターゲットの下に重ねる）なら捨札にしない。
+          !isInstancePlacedAnywhere(nextState, found.card.instanceId) &&
           (!nextState.pendingEffectChoice || !!nextState.pendingEffectChoice.kurokoMeta)
         ) {
           const current = nextState.players[playerId];

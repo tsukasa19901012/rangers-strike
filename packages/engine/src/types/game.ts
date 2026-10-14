@@ -926,6 +926,12 @@ export type GameState = {
    * 「BP8000以下のユニットがラッシュされたとき」は、その後 BP が上がってもこの値で判定する（atwiki/page-424 Q11）。
    */
   rushedBpSnapshot?: { instanceId: string; bp: number };
+  /**
+   * 「このユニットを捨札にしてもよい。そうしたとき、…」の起動効果で、捨札にする（コスト）ときの「ユニットでなくなるとき」の応答
+   * （白熱する実況・【凄まじき戦士】で留まる等）を待っている。応答の後、捨札になっていれば続きを解決し、留まっていれば
+   * 続きは無効（atwiki/page-1665 Q1。rules/fieldActivatedAbilities.ts）。
+   */
+  pendingFieldAbilityAfterLeave?: { playerId: PlayerId; instanceId: string; cardId: string };
   /** ユニットがフィールドを離れる際の所有者応答。 */
   pendingLeave?: PendingLeave;
   /** チェイス: ライド中ユニット離場時のビークル乗り換え選択。 */

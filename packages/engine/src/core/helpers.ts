@@ -1,4 +1,4 @@
-import type { CardInstance, PendingRush, PlayerId, PlayerState } from "../types/game";
+import type { CardInstance, GameState, PendingRush, PlayerId, PlayerState } from "../types/game";
 
 export function opponent(playerId: PlayerId): PlayerId {
   return playerId === "player1" ? "player2" : "player1";
@@ -142,4 +142,18 @@ export function applyPlayerDamage(
     // ルール: R-DMG-01 ダメージはパワーゾーンのウラ向き枚数（独立カウンタとの乖離を防ぐ）
     damage: Math.max(player.damage + amount, power.filter((c) => c.faceDown).length),
   };
+}
+
+/** instanceId のカードが、いずれかのゾーン（場のユニットの下に重ねたカードを含む）に置かれているか。 */
+export function isInstancePlacedAnywhere(state: Pick<GameState, "players">, instanceId: string): boolean {
+  for (const player of Object.values(state.players)) {
+    for (const zone of ["hand", "deck", "discard", "power", "command", "rush", "battle", "operation", "exile"] as const) {
+      const cards = (player as unknown as Record<string, CardInstance[] | undefined>)[zone] ?? [];
+      if (cards.some((c) => c.instanceId === instanceId)) return true;
+    }
+    for (const unit of [...player.rush, ...player.battle]) {
+      if ((unit.stackedCards ?? []).some((c) => c.instanceId === instanceId)) return true;
+    }
+  }
+  return false;
 }

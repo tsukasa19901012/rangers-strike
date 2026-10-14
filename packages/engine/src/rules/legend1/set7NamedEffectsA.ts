@@ -1566,6 +1566,13 @@ function discardFaceDownUnderLargeUnits(state: GameState, playerId: PlayerId): G
   });
 }
 
+/** 白熱する実況の「その場に留まる」をいま使えるユニットか（自軍 L ユニットで、下にウラ向きのカードがある）。 */
+export function liveCommentaryStayAvailable(state: GameState, ownerId: PlayerId, unit: CardInstance): boolean {
+  if (!isLargeFieldUnit(state, unit)) return false;
+  if (!hasResidentText(state, ownerId, LIVE_COMMENTARY_STAY_RE)) return false;
+  return (unit.stackedCards ?? []).some((c) => c.faceDown);
+}
+
 /**
  * 「ユニットでなくなるとき下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる」（rules/operationCounters.ts
  * tryLeaveField から呼ぶ）。選択を開いたら、その state。

@@ -1,3 +1,6 @@
+import { tryLeaveField } from "./operationCounters";
+import { liveCommentaryStayAvailable } from "./legend1/set7NamedEffectsA";
+import { kuugaStayCandidates } from "./legend1/otherLinesNamedEffects";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 /**
  * 「自軍ラッシュフェイズ中、この〇〇を捨札にして（捨札にしてもよい）…」型の起動効果。
@@ -482,6 +485,25 @@ export function activateFieldAbility(
     return ability.resolve(markFieldAbilityUsed(state, playerId, found.card), playerId, found.card);
   }
 
+  // 場のユニットを捨札にするコストで「ユニットでなくなるとき」の応答（その場に留まる）があるときは、離場の処理に任せる。
+  // 留まったなら「捨札にする」を満たせないので、その後の処理は無効（atwiki/page-1665 Q1 アバレンオージと白熱する実況）。
+  if (unitHasStayResponse(state, playerId, found.card)) {
+    const leave = tryLeaveField(state, {
+      ownerPlayerId: playerId,
+      instanceId,
+      fromZone: zone,
+      toZone: "discard",
+      leavingCardId: found.card.cardId,
+      phasePlayerId: playerId,
+      notDestruction: true,
+    });
+    const marker = { playerId, instanceId, cardId: found.card.cardId };
+    if (leave.deferred || hasBlockingAfterLeave(leave.state)) {
+      return { ...leave.state, pendingFieldAbilityAfterLeave: marker };
+    }
+    return continueFieldAbilityAfterLeave({ ...leave.state, pendingFieldAbilityAfterLeave: marker });
+  }
+
   const [, rest] = removeAt(player[zone], found.index);
   const unmount = (c: CardInstance) => {
     if (c.mountedOnInstanceId !== instanceId) return c;
@@ -497,6 +519,30 @@ export function activateFieldAbility(
   };
   const afterCost = { ...state, ...updatePlayer(state, playerId, nextPlayer) };
   return ability.resolve(afterCost, playerId, found.card);
+}
+
+function unitHasStayResponse(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  if (getDefinition(state.definitions, card.cardId)?.type !== "unit") return false;
+  return liveCommentaryStayAvailable(state, playerId, card) || kuugaStayCandidates(state, playerId, card).length > 0;
+}
+
+function hasBlockingAfterLeave(state: GameState): boolean {
+  return !!(state.pendingEffectChoice || state.pendingLeave || state.pendingRegister || state.pendingChase);
+}
+
+/**
+ * 捨札にするコストの応答が終わった後の続き（core/applyAction.ts の後処理から呼ぶ）。捨札になっていれば効果の続きを解決し、
+ * その場に留まっていれば続きは無効。
+ */
+export function continueFieldAbilityAfterLeave(state: GameState): GameState {
+  const marker = state.pendingFieldAbilityAfterLeave;
+  if (!marker || hasBlockingAfterLeave(state)) return state;
+  const cleared: GameState = { ...state, pendingFieldAbilityAfterLeave: undefined };
+  const discarded = cleared.players[marker.playerId].discard.find((c) => c.instanceId === marker.instanceId);
+  if (!discarded) return cleared;
+  const ability = abilityFor(marker.cardId);
+  if (!ability) return cleared;
+  return ability.resolve(cleared, marker.playerId, { instanceId: marker.instanceId, cardId: marker.cardId });
 }
 
 export function isFieldActivatedAbilityCard(cardId: string): boolean {

@@ -648,6 +648,96 @@ CHOICE_RESOLVERS[KUUGA_STACK_EFFECT_ID] = (state, playerId, instanceId) => {
 };
 
 // ---------------------------------------------------------------------------
+// XG2-052 ユナイトベント（オペレーション）
+// 「ライドしていない特徴「獣」を持つ自軍ユニットを1体選びターゲットとする。そして、このカードを自軍ラッシュエリアに置き、ターゲットを
+//  このカードに重ねる。さらにターゲット以外のライドしていない特徴「獣」を持つ自軍ユニットを好きな数選び、このカードより下にウラ向き
+//  にして重ねる。ターゲットは、ウラ向きに重ねたカード1枚につきBP+2000され、BP10000ごとにSP+1される。ターゲットがユニットで
+//  なくなるとき、ターゲットの下に重ねていたカードはすべて捨札になる。」（atwiki/page-1761）
+// ターゲットの選択は DSL の choose（play_operation の targetInstanceId）。重ねる順は上から「ターゲット→既に重ねていたカード
+// （白熱する実況のウラ向き等）→ユナイトベント→ウラ向きに重ねたユニット」（page-1761 Q1・page-764 Q2）。
+// BP・SP の修正は core/catalog.ts uniteVentBpBonus と rules/legend3/fieldEffects.ts。
+
+export const UNITE_VENT_EFFECT_ID = "xg2052_unite_vent";
+
+function uniteVentCandidates(state: GameState, playerId: PlayerId, targetId: string): string[] {
+  return fieldUnits(state, playerId)
+    .filter((c) => c.instanceId !== targetId && !c.mountedOnInstanceId)
+    .filter((c) => {
+      const def = getDefinition(state.definitions, c.cardId);
+      return def?.type === "unit" && (def.features ?? []).includes("獣");
+    })
+    .map((c) => c.instanceId);
+}
+
+function applyUniteVent(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+  const targetId = ctx.triggerSourceInstanceId;
+  const ventId = ctx.operationInstanceId;
+  const target = targetId ? findField(state, ctx.playerId, targetId) : undefined;
+  if (!target || !ventId) return { state, detail: `${UNITE_VENT_EFFECT_ID}:no_target` };
+  const vent: CardInstance = { instanceId: ventId, cardId: ctx.sourceCardId };
+  // ターゲットはラッシュエリアに置いたこのカードに重ねる（バトルエリアにいたならラッシュエリアへ移る）。
+  const placed = patchPlayer(state, ctx.playerId, (p) => {
+    const moved = { ...target.card, stackedCards: [...(target.card.stackedCards ?? []), vent] };
+    if (target.zone === "rush") return { ...p, rush: p.rush.map((c) => (c.instanceId === targetId ? moved : c)) };
+    return { ...p, battle: p.battle.filter((c) => c.instanceId !== targetId), rush: [...p.rush, moved] };
+  });
+  const candidates = uniteVentCandidates(placed, ctx.playerId, targetId!);
+  if (candidates.length === 0) return { state: placed, detail: UNITE_VENT_EFFECT_ID };
+  return {
+    state: openOrQueue(placed, {
+      playerId: ctx.playerId,
+      phasePlayerId: ctx.phasePlayerId,
+      sourceCardId: ctx.sourceCardId,
+      sourceInstanceId: targetId,
+      effectId: UNITE_VENT_EFFECT_ID,
+      kind: "select_unit",
+      validInstanceIds: candidates,
+      selectedInstanceIds: [],
+      selectCount: 1,
+      optional: true,
+    }),
+    detail: UNITE_VENT_EFFECT_ID,
+  };
+}
+
+/** 選んだユニットをターゲットの下（ユナイトベントより下）にウラ向きで重ねる（そのユニットに重ねていたカードは捨札）。 */
+function stackUnderTarget(state: GameState, playerId: PlayerId, targetId: string, unitId: string): GameState {
+  return patchPlayer(state, playerId, (p) => {
+    const unit = [...p.battle, ...p.rush].find((c) => c.instanceId === unitId);
+    if (!unit) return p;
+    const under = unit.stackedCards ?? [];
+    const remove = (zone: CardInstance[]) => zone.filter((c) => c.instanceId !== unitId);
+    const add = (zone: CardInstance[]) =>
+      zone.map((c) =>
+        c.instanceId === targetId
+          ? { ...c, stackedCards: [...(c.stackedCards ?? []), { instanceId: unit.instanceId, cardId: unit.cardId, faceDown: true }] }
+          : c,
+      );
+    return {
+      ...p,
+      battle: add(remove(p.battle)),
+      rush: add(remove(p.rush)),
+      discard: [...p.discard, ...under.map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }))],
+    };
+  });
+}
+
+CHOICE_RESOLVERS[UNITE_VENT_EFFECT_ID] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const targetId = pending.sourceInstanceId!;
+  const next = stackUnderTarget(state, playerId, targetId, instanceId);
+  const remaining = uniteVentCandidates(next, playerId, targetId);
+  const log = logFor(state, playerId, pending.sourceCardId, `${UNITE_VENT_EFFECT_ID}:${cardName(state.definitions, findField(state, playerId, instanceId)?.card.cardId ?? "")}`);
+  if (remaining.length === 0) return { state: proceed(close(next, pending), pending), log };
+  return { state: { ...next, pendingEffectChoice: { ...pending, validInstanceIds: remaining } }, log };
+};
+// 「好きな数」— 重ねるのをやめる。
+CHOICE_SKIPPERS[UNITE_VENT_EFFECT_ID] = (state, playerId) => {
+  const pending = state.pendingEffectChoice!;
+  return { state: proceed(close(state, pending), pending), log: skipLog(state, playerId, pending.sourceCardId, pending.effectId) };
+};
+
+// ---------------------------------------------------------------------------
 // DSL grant_keyword からの起点
 
 export const OTHER_LINES_KEYWORD_PREFIX = "other::";
@@ -661,6 +751,7 @@ const OTHER_LINES_KEYWORDS: Record<string, (state: GameState, ctx: GrantKeywordC
   "XP-026::accel_return": (state) => ({ state, detail: ACCEL_RETURN_EFFECT_ID }),
   "XG2-041::shin_tsuchikemuri": applyShinTsuchikemuri,
   "SK-004::majiki": applyKuugaMajiki,
+  "XG2-052::unite_vent": applyUniteVent,
   "XG1-034::filthy_air": (state) => ({ state, detail: "xg1034_filthy_air" }),
 };
 

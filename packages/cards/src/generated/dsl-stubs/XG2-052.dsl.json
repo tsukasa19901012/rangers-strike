@@ -20,9 +20,39 @@
       "optional": false,
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "note_card::XG2-052::raidoshiteinaiwo",
-          "duration": "permanent"
+          "type": "choose",
+          "kind": "select_unit",
+          "valid": {
+            "type": "zones",
+            "zones": [
+              {
+                "type": "zone", "zone": "battle",
+                "owner": "self",
+                "filter": {
+                  "cardType": "unit",
+                  "requireFeature": "獣",
+                  "notRiding": true
+                }
+              },
+              {
+                "type": "zone", "zone": "rush",
+                "owner": "self",
+                "filter": {
+                  "cardType": "unit",
+                  "requireFeature": "獣",
+                  "notRiding": true
+                }
+              }
+            ]
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "grant_keyword",
+              "keyword": "other::XG2-052::unite_vent",
+              "duration": "turn"
+            }
+          ]
         }
       ]
     }
