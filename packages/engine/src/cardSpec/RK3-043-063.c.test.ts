@@ -129,12 +129,12 @@ describe("RK-057 仮面ライダーザビーRF", () => {
     expect(zoneOf(r.state, "player1", "RK-056:mf")).toBe("power");
   });
 
-  it.fails("RK-057: 追加条件 — ザビーMF 以外の S ユニットでは満たせない（出典: atwiki/page-161）", () => {
+  it("RK-057: 追加条件 — ザビーMF 以外の S ユニットでは満たせない（出典: atwiki/page-161）", () => {
     const s = rushPhase({ hand: [inst("RK-057", "rf")], rush: [inst("SPEC-KAMEN", "k")], power: powerCards(3), command: releasedCat("OT", 1) });
     expect(rushOffered(s, "RK-057:rf")).toBe(false);
   });
 
-  it.fails("RK-057: 【ライダースティング】ラッシュしたとき、敵軍バトルエリアの BP4000 以上の S ユニットを1体選び、持ち主のパワーゾーンに置く（出典: atwiki/page-161）", () => {
+  it("RK-057: 【ライダースティング】ラッシュしたとき、敵軍バトルエリアの BP4000 以上の S ユニットを1体選び、持ち主のパワーゾーンに置く（出典: atwiki/page-161）", () => {
     const r = rushRf([inst("RK-056", "mf")], { battle: [inst("SPEC-E4000", "a"), inst("SPEC-E3500", "b"), inst("SPEC-EM5000", "m")] });
     expect(r.ok, r.error).toBe(true);
     let s = r.state;
@@ -230,13 +230,13 @@ describe("RK-059 ゼクトルーパー", () => {
     expectRarityIn("RK-059", ["N"]);
   });
 
-  it.fails("RK-059: 【フォーメーションα】自軍バトルエリアに1体なら、敵軍ターン中、ナンバー1の敵軍 S ユニットはバトルエリアに出られない（ナンバー2は出られる）（出典: atwiki/page-159）", () => {
+  it("RK-059: 【フォーメーションα】自軍バトルエリアに1体なら、敵軍ターン中、ナンバー1の敵軍 S ユニットはバトルエリアに出られない（ナンバー2は出られる）（出典: atwiki/page-159）", () => {
     const s = enemyTurn({ battle: [inst("RK-059", "z1")] }, { rush: [inst("SPEC-CN1", "a"), inst("SPEC-CN2", "b")] });
     expect(canEnter(s, "SPEC-CN1:a", "player2")).toBe(false);
     expect(canEnter(s, "SPEC-CN2:b", "player2")).toBe(true);
   });
 
-  it.fails("RK-059: 【フォーメーションα】2体なら、ナンバー2の敵軍 S ユニットが出られなくなり、ナンバー1は出られる（出典: atwiki/page-159「自軍バトルエリアの「ゼクトルーパー」の数と同じ」）", () => {
+  it("RK-059: 【フォーメーションα】2体なら、ナンバー2の敵軍 S ユニットが出られなくなり、ナンバー1は出られる（出典: atwiki/page-159「自軍バトルエリアの「ゼクトルーパー」の数と同じ」）", () => {
     const s = enemyTurn({ battle: [inst("RK-059", "z1"), inst("RK-059", "z2")] }, { rush: [inst("SPEC-CN1", "a"), inst("SPEC-CN2", "b")] });
     expect(canEnter(s, "SPEC-CN1:a", "player2")).toBe(true);
     expect(canEnter(s, "SPEC-CN2:b", "player2")).toBe(false);
@@ -285,7 +285,7 @@ describe("RK-060 デンライナーゴウカ", () => {
     expect(zoneOf(r.state, "player1", "TST-UNIT-0:u")).toBe("power");
   });
 
-  it.fails("RK-060: 【戦闘モード】必要パワーの数字に「－」のあるユニットにアタックするとき BP+5000（11000対10000で勝つ）（出典: atwiki/page-135）", () => {
+  it("RK-060: 【戦闘モード】必要パワーの数字に「－」のあるユニットにアタックするとき BP+5000（11000対10000で勝つ）（出典: atwiki/page-135）", () => {
     let s = board({ battle: [inst("RK-060", "g")] }, { battle: [inst("SPEC-MINUS", "x")] });
     s = resolveAll(attack(s, "RK-060:g", "SPEC-MINUS:x"));
     expect(lastBattleBps(s)?.attacker).toBe(11000);
@@ -293,7 +293,7 @@ describe("RK-060 デンライナーゴウカ", () => {
     expect(zoneOf(s, "player1", "RK-060:g")).toBe("battle");
   });
 
-  it.fails("RK-060: 【戦闘モード】必要パワーに「－」のないユニットにアタックするときは BP+5000 されない（6000対7000で負ける）（出典: atwiki/page-135「必要パワーの数字に「－」のあるユニットに」）", () => {
+  it("RK-060: 【戦闘モード】必要パワーに「－」のないユニットにアタックするときは BP+5000 されない（6000対7000で負ける）（出典: atwiki/page-135「必要パワーの数字に「－」のあるユニットに」）", () => {
     let s = board({ battle: [inst("RK-060", "g")] }, { battle: [inst("SPEC-E7000", "x")] });
     s = resolveAll(attack(s, "RK-060:g", "SPEC-E7000:x"));
     expect(lastBattleBps(s)?.attacker).toBe(6000);
@@ -321,14 +321,14 @@ describe("RK-061 仮面ライダー電王RF", () => {
   const fishing = (p2: Partial<GameState["players"]["player2"]>, p1: Partial<GameState["players"]["player1"]> = {}) =>
     rideOff(mount(board({ rush: [inst("RK-061", "rf"), inst("RK-058", "v")], ...p1 }, p2), "RK-061:rf", "RK-058:v"), true);
 
-  it.fails("RK-061: RC — 敵軍パワーゾーンのダメージ以外の S ユニットのカードを1枚選べる（M ユニット・オペレーション・ダメージは選べない。任意）（出典: atwiki/page-166）", () => {
+  it("RK-061: RC — 敵軍パワーゾーンのダメージ以外の S ユニットのカードを1枚選べる（M ユニット・オペレーション・ダメージは選べない。任意）（出典: atwiki/page-166）", () => {
     const s = fishing({ power: [inst("SPEC-E2000", "p"), inst("SPEC-EM5000", "m"), inst("TST-OP", "op"), { ...inst("SPEC-E4000", "d"), faceDown: true }] });
     expectChoiceFrom(s, "player1", "RK-061");
     expect(choiceIds(s)).toEqual(["SPEC-E2000:p"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-061: 選んだカードは敵軍バトルエリアに出る（出典: atwiki/page-166「敵軍バトルエリアに出してもよい」）", () => {
+  it("RK-061: 選んだカードは敵軍バトルエリアに出る（出典: atwiki/page-166「敵軍バトルエリアに出してもよい」）", () => {
     const s = resolveAll(pick(fishing({ power: [inst("SPEC-E2000", "p"), ...powerCards(2, "ep")] }), "SPEC-E2000:p"));
     expect(zoneOf(s, "player2", "SPEC-E2000:p")).toBe("battle");
     expect(s.players.player2.power).toHaveLength(2);
@@ -339,7 +339,7 @@ describe("RK-061 仮面ライダー電王RF", () => {
     expect(zoneOf(s, "player2", "SPEC-E2000:p")).toBe("power");
   });
 
-  it.fails("RK-061: 出したユニットの効果は発動しない（CN1 のパンチホッパーを1番目に出しても NC は発動しない）（出典: atwiki/page-166「このとき出したユニットの効果は発動しない」）", () => {
+  it("RK-061: 出したユニットの効果は発動しない（CN1 のパンチホッパーを1番目に出しても NC は発動しない）（出典: atwiki/page-166「このとき出したユニットの効果は発動しない」）", () => {
     const s = resolveAll(pick(fishing({ power: [inst("RK-055", "ph")] }, { battle: [inst("SPEC-E2000", "own")] }), "RK-055:ph"));
     expect(zoneOf(s, "player2", "RK-055:ph")).toBe("battle");
     expect(zoneOf(s, "player1", "SPEC-E2000:own")).toBe("battle");
@@ -351,18 +351,18 @@ describe("RK-061 仮面ライダー電王RF", () => {
   });
 
   // 公式 Q1「いいえ、できません。正しく処理を実行できないものを対象に選ぶことはできません。」
-  it.fails("RK-061: 公式Q&A — 「ラッシュしたターンにバトルエリアに出られない」カード（オートバジンBM）は選べない（出典: grnrngr/faq-rider-1 RK-061 Q1・atwiki/page-166 Q1）", () => {
+  it("RK-061: 公式Q&A — 「ラッシュしたターンにバトルエリアに出られない」カード（オートバジンBM）は選べない（出典: grnrngr/faq-rider-1 RK-061 Q1・atwiki/page-166 Q1）", () => {
     const s = fishing({ power: [inst("RK-046", "bm"), inst("SPEC-E2000", "p")] });
     expect(choiceIds(s)).toEqual(["SPEC-E2000:p"]);
   });
 
   // 公式 Q2「はい、その通りです。ただし、敵軍ラッシュエリアに特徴「仮面ライダー」を持つユニットが1体もなければ…バトルエリアに出すことはできません。」
-  it.fails("RK-061: 公式Q&A — アナザーアギトは、敵軍ラッシュエリアに特徴「仮面ライダー」のユニットがなければ選べない（出典: grnrngr/faq-rider-1 RK-061 Q2・atwiki/page-166 Q2）", () => {
+  it("RK-061: 公式Q&A — アナザーアギトは、敵軍ラッシュエリアに特徴「仮面ライダー」のユニットがなければ選べない（出典: grnrngr/faq-rider-1 RK-061 Q2・atwiki/page-166 Q2）", () => {
     const s = fishing({ power: [inst("RK-032", "aa"), inst("SPEC-E2000", "p")], rush: [inst("SPEC-MALE", "m")] });
     expect(choiceIds(s)).toEqual(["SPEC-E2000:p"]);
   });
 
-  it.fails("RK-061: 公式Q&A — 敵軍ラッシュエリアに「仮面ライダー」がいればアナザーアギトを選べ、相手はそのユニットを1体捨札にする（出典: grnrngr/faq-rider-1 RK-061 Q2・atwiki/page-166 Q2）", () => {
+  it("RK-061: 公式Q&A — 敵軍ラッシュエリアに「仮面ライダー」がいればアナザーアギトを選べ、相手はそのユニットを1体捨札にする（出典: grnrngr/faq-rider-1 RK-061 Q2・atwiki/page-166 Q2）", () => {
     let s = fishing({ power: [inst("RK-032", "aa")], rush: [inst("SPEC-KAMEN", "k")] });
     expect(choiceIds(s)).toEqual(["RK-032:aa"]);
     s = resolveAll(pick(s, "RK-032:aa"), ["SPEC-KAMEN:k"]);
@@ -406,19 +406,19 @@ describe("RK-063 仮面ライダー龍騎", () => {
     expectRarityIn("RK-063", ["SR"]);
   });
 
-  it.fails("RK-063: 特徴「ドラゴン」を持つユニットの次に出ると「SP1」を得て、ストライクで1点与える（出典: atwiki/page-178・R-CN-05）", () => {
+  it("RK-063: 特徴「ドラゴン」を持つユニットの次に出ると「SP1」を得て、ストライクで1点与える（出典: atwiki/page-178・R-CN-05）", () => {
     let s = enter(board({ battle: [inst("SPEC-DRAGON", "d")], rush: [inst("RK-063", "r")] }), "RK-063:r");
     expect(canStrike(s, "RK-063:r")).toBe(true);
     s = settle(strike(s, "RK-063:r"));
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RK-063: ドラグレッダー（特徴「ドラゴン」）からのコンビネーションでも「SP1」を得る（出典: atwiki/page-178・page-179）", () => {
+  it("RK-063: ドラグレッダー（特徴「ドラゴン」）からのコンビネーションでも「SP1」を得る（出典: atwiki/page-178・page-179）", () => {
     const s = enter(board({ battle: [inst("RK-034", "d")], rush: [inst("RK-063", "r")] }), "RK-063:r");
     expect(spOf(s, "player1", "RK-063:r")).toBe(1);
   });
 
-  it.fails("RK-063: 直前がビークルにライドした「ドラゴン」のユニットでも、ビークルを飛ばしてコンビネーションする（出典: atwiki/page-178・R-CN-04/05）", () => {
+  it("RK-063: 直前がビークルにライドした「ドラゴン」のユニットでも、ビークルを飛ばしてコンビネーションする（出典: atwiki/page-178・R-CN-04/05）", () => {
     const s = enter(board({ battle: ridingPair("SPEC-DRAGON-RC", "d", "RK-058", "v"), rush: [inst("RK-063", "r")] }), "RK-063:r");
     expect(spOf(s, "player1", "RK-063:r")).toBe(1);
   });

@@ -4,6 +4,7 @@ import {
   hasDestroySelfDamageNote,
 } from "@rangers-strike/cards";
 import { rk2BlocksDefenderCounters, rk2UsePrintedDefenderBp } from "./rk/rk2UnitEffects";
+import { rk3AttackerBattleBonus, rk3DefenderBattleBonus } from "./rk/rk3UnitEffects";
 import { activeOnAttackNamedEffect, namedEffectActive } from "./ncGatedEffects";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../types/game";
 import {
@@ -117,6 +118,8 @@ export function battleAttackerBpBonus(
   );
   total += legend2AttackerBpBonus(state, pending);
   total += legend3AttackerBpBonus(state, pending);
+  // RK-052【音撃打・破砕細石】（rules/rk/rk3UnitEffects.ts）。
+  total += rk3AttackerBattleBonus(state, pending);
 
   // RS-062【ボウケンジャベリン】・RS-241【デュアルクラッシャー・ドリルヘッド】（CN5）:
   // 特徴「メカ」を持つユニットにアタックするとき BP+4000（NC の効果は成立しているときだけ。R-CN-02）。
@@ -242,7 +245,9 @@ export function battleDefenderBp(
     attackedBpBoostAmount(defenderFound.card.cardId) +
     allyAttackedAuraBpBonus(state, defenderOwner, defenderFound.card) +
     // RK-004 ギギの腕輪・RK-009 二人の世紀王: 「このバトルの間、アタックされたユニットは BP+…」（かわりにバトルするユニットには付かない）。
-    (pending.substituteInstanceId ? 0 : (pending.defenderBpBonus ?? 0))
+    (pending.substituteInstanceId ? 0 : (pending.defenderBpBonus ?? 0)) +
+    // RK-052【音撃打・破砕細石】（rules/rk/rk3UnitEffects.ts）。
+    rk3DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card)
   );
 }
 

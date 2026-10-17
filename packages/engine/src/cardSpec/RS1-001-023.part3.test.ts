@@ -243,9 +243,25 @@ describe("RS-018 隠流忍術", () => {
     expect(hasLegal(s, (a) => a.type === "use_register" && a.playerId === "player2")).toBe(true);
   });
 
-  it.todo(
-    "RS-018: atwiki Q&A（公式）— 仮面ライダー裁鬼「音撃斬・閻魔裁き」はアタック宣言→隠流忍術の可否→バトルする数字の宣言の順（出典: atwiki/page-242 Q3、grnrngr/faq-card-1 RS-018）— RK-050 の「バトルする数字の宣言」を公開APIで行う手段が見つからず未検証",
-  );
+  // 「相手が「RS-018 隠流忍術」…を発動するかしないかを選んだ後で、バトルを行うときにバトルする数字を宣言するようにしてください。」
+  it("RS-018: atwiki Q&A（公式）— 仮面ライダー裁鬼「音撃斬・閻魔裁き」はアタック宣言→隠流忍術の可否→バトルする数字の宣言の順（出典: atwiki/page-242 Q3、grnrngr/faq-card-1 RS-018）", () => {
+    // CN3 の裁鬼を3番目に出して NC を成立させ、ナンバーのない CS-S1 にアタックする。隠流忍術でナンバー3のオーブルーとバトルさせる。
+    let s = ninjaState({
+      ids: ["RK-050"],
+      p1Battle: [inst("CS-S1", "f1"), inst("CS-S1", "f2")],
+      p1Rush: [inst("RK-050", "sb")],
+      p2Battle: [inst("CS-S1", "def"), inst("RS-211", "sub")],
+    });
+    s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "RK-050:sb" });
+    s = attack(s, "RK-050:sb", "CS-S1:def");
+    // アタックの宣言の時点ではまだ数字を選ばない（隠流忍術の可否が先）。
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-050");
+    s = useNinja(s, "RS-211:sub");
+    s = settle(s);
+    // バトルを行うときに数字を選ぶ。相手（かわりにバトルするオーブルー）はナンバーに数字を持つので「ナンバーの数字」も選べる。
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-050");
+    expect([...(s.pendingEffectChoice?.validInstanceIds ?? [])].sort()).toEqual(["bp", "number", "power_cost"]);
+  });
 
   it("RS-018: atwiki Q&A（公式）— オーブルーが隠流忍術で選ばれたユニットを撃破したら、隠流忍術を使った相手が自分のコマンドをダメージにする（出典: atwiki/page-242 Q4、grnrngr/faq-card-1 RS-018）", () => {
     // 「「RS-018 隠流忍術」を発動した相手が、自分自身のコマンドゾーンからカードを１枚選び…ダメージにして置きます」

@@ -1193,6 +1193,11 @@ CHOICE_RESOLVERS[ONGEKI_EFFECT_ID] = (state, playerId, instanceId) => {
 };
 
 /** 「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれているかのように扱うユニットか。 */
+/** RK-019 音撃で、このターン userId が「…バトルに勝っても撃破される」と書かれているかのように扱わせた敵軍ユニットか（RK-051 の対象）。 */
+export function rk1OngekiMarked(state: GameState, userId: PlayerId, instanceId: string): boolean {
+  return turnPayloads<{ instanceId: string }>(state.players[userId], ONGEKI_RULE).some((p) => p.instanceId === instanceId);
+}
+
 export function rk1WinButDestroyed(state: GameState, ownerId: PlayerId, instanceId: string): boolean {
   const enemyId = opponent(ownerId);
   if (state.activePlayer !== enemyId) return false;

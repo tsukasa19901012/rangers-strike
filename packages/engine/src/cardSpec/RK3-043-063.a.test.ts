@@ -221,7 +221,7 @@ describe("RK-044 ライオトルーパー", () => {
   const destroyed = (inDiscard: number, extraDiscard: ReturnType<typeof inst>[] = []) =>
     resolveAll(attackedInEnemyTurn({ battle: [inst("RK-044", "lt")], discard: [...copies("RK-044", inDiscard, "d"), ...extraDiscard] }, "RK-044:lt"));
 
-  it.fails("RK-044: 【1万人ライダー部隊】敵軍ターン中に撃破されて捨札になったとき、自軍捨札の「ライオトルーパー」が（これを含めて）10枚以上なら、それをすべて手札に加える（出典: atwiki/page-204）", () => {
+  it("RK-044: 【1万人ライダー部隊】敵軍ターン中に撃破されて捨札になったとき、自軍捨札の「ライオトルーパー」が（これを含めて）10枚以上なら、それをすべて手札に加える（出典: atwiki/page-204）", () => {
     const s = destroyed(9, [inst("TST-OP", "other")]);
     const hand = zoneIds(s, "player1", "hand");
     expect(hand.filter((id) => id.startsWith("RK-044:"))).toHaveLength(10);
@@ -243,7 +243,7 @@ describe("RK-044 ライオトルーパー", () => {
   });
 
   // 公式 Q2「はい、発動します。…「撃破されて捨札になったとき」ですので、「RS-319 デカマスター」の効果で…撃破して捨札にしたのであれば…発動することができます。」
-  it.fails("RK-044: 公式Q&A — 敵軍の効果で撃破されて捨札になったときも発動する（出典: grnrngr/faq-rider-1 RK-044 Q2・atwiki/page-204 Q2）", () => {
+  it("RK-044: 公式Q&A — 敵軍の効果で撃破されて捨札になったときも発動する（出典: grnrngr/faq-rider-1 RK-044 Q2・atwiki/page-204 Q2）", () => {
     // 敵軍（player2）がギンガイオー（RS-687【ガルコンボーガン】敵軍ラッシュエリアからBP4000以下のユニットを1体選び撃破する）をバトルエリアに出す。
     let s = st(
       {
@@ -304,7 +304,7 @@ describe("RK-046 オートバジンBM", () => {
   const rushBoard = (rush: ReturnType<typeof inst>[]) =>
     rushPhase({ hand: [inst("RK-046", "bm")], rush, power: powerCards(4), command: releasedCat("ET", 1) });
 
-  it.fails("RK-046: 追加条件 — 自軍「オートバジンVM」1体をコマンドゾーンに送ってラッシュできる（出典: atwiki/page-206「自軍「オートバジンVM」1体をコマンドゾーンに送るか捨札にする」）", () => {
+  it("RK-046: 追加条件 — 自軍「オートバジンVM」1体をコマンドゾーンに送ってラッシュできる（出典: atwiki/page-206「自軍「オートバジンVM」1体をコマンドゾーンに送るか捨札にする」）", () => {
     const r = rushFromHand(rushBoard([inst("RK-045", "vm")]), "player1", "RK-046:bm", { destination: "command" });
     expect(r.ok, r.error).toBe(true);
     expect(zoneOf(r.state, "player1", "RK-046:bm")).toBe("rush");
@@ -391,7 +391,7 @@ describe("RK-047 仮面ライダー轟鬼", () => {
     expect(choiceIds(s)).toEqual(["SPEC-COST2:e", "TST-UNIT-0:e0"]);
   });
 
-  it.fails("RK-047: 選んだユニットの必要パワー＋1（必要パワー2なら3つ）の自軍コマンドをホールドすると撃破し、轟鬼はアタックできない（出典: atwiki/page-219）", () => {
+  it("RK-047: 選んだユニットの必要パワー＋1（必要パワー2なら3つ）の自軍コマンドをホールドすると撃破し、轟鬼はアタックできない（出典: atwiki/page-219）", () => {
     let s = pick(todoroki(releasedN(4, "TST-OP-MA")), "SPEC-COST2:e");
     expectChoiceFrom(s, "player1", "RK-047");
     expect(choiceIds(s)).toEqual(["TST-OP-MA:rc0", "TST-OP-MA:rc1", "TST-OP-MA:rc2", "TST-OP-MA:rc3"]);
@@ -403,7 +403,7 @@ describe("RK-047 仮面ライダー轟鬼", () => {
     expect(attackTargets(s, "RK-047:t")).toEqual([]);
   });
 
-  it.fails("RK-047: 「ホールドしてもよい」— ホールドしなければ撃破せず、轟鬼はアタックできる（出典: atwiki/page-219「してもよい。そうしたとき」）", () => {
+  it("RK-047: 「ホールドしてもよい」— ホールドしなければ撃破せず、轟鬼はアタックできる（出典: atwiki/page-219「してもよい。そうしたとき」）", () => {
     let s = pick(todoroki(releasedN(4, "TST-OP-MA")), "SPEC-COST2:e");
     expect(canSkip(s)).toBe(true);
     s = settle(skip(s));
@@ -412,7 +412,7 @@ describe("RK-047 仮面ライダー轟鬼", () => {
     expect(attackTargets(s, "RK-047:t").length).toBeGreaterThan(0);
   });
 
-  it.fails("RK-047: ホールドできるリリース状態の自軍コマンドが足りなければ撃破しない（出典: atwiki/page-219）", () => {
+  it("RK-047: ホールドできるリリース状態の自軍コマンドが足りなければ撃破しない（出典: atwiki/page-219）", () => {
     const s = settle(pick(todoroki(releasedN(2, "TST-OP-MA")), "SPEC-COST2:e"));
     expect(zoneOf(s, "player2", "SPEC-COST2:e")).toBe("battle");
     expect(heldCount(s)).toBe(0);
@@ -466,7 +466,7 @@ describe("RK-049 仮面ライダー勝鬼", () => {
   const shoki = (p2: Partial<GameState["players"]["player2"]> = { rush: [inst("SPEC-E2000", "r1"), inst("SPEC-E3000", "r2")], battle: [inst("TST-UNIT-0", "b")] }) =>
     ncEnter("RK-049:s", 2, {}, p2, EXTRA);
 
-  it.fails("RK-049: NC —「SP1」になり、相手が自分自身のラッシュエリアからユニットを1体選ぶ（出典: atwiki/page-221「「SP1」相手は自分自身のラッシュエリアからユニットを1体選ぶ」）", () => {
+  it("RK-049: NC —「SP1」になり、相手が自分自身のラッシュエリアからユニットを1体選ぶ（出典: atwiki/page-221「「SP1」相手は自分自身のラッシュエリアからユニットを1体選ぶ」）", () => {
     const s = shoki();
     expectChoiceFrom(s, "player2", "RK-049");
     expect(choiceIds(s)).toEqual(["SPEC-E2000:r1", "SPEC-E3000:r2"]);
@@ -474,7 +474,7 @@ describe("RK-049 仮面ライダー勝鬼", () => {
     expect(spOf(settle(pick(s, "SPEC-E2000:r1")), "player1", "RK-049:s")).toBe(1);
   });
 
-  it.fails("RK-049: このターン、相手の選んだラッシュエリアのユニットにアタックでき、ほかのラッシュエリアのユニットにはアタックできない（出典: atwiki/page-221「このターン、このユニットは、相手の選んだユニットにアタックできる」）", () => {
+  it("RK-049: このターン、相手の選んだラッシュエリアのユニットにアタックでき、ほかのラッシュエリアのユニットにはアタックできない（出典: atwiki/page-221「このターン、このユニットは、相手の選んだユニットにアタックできる」）", () => {
     const s = settle(pick(shoki(), "SPEC-E2000:r1"));
     const targets = attackTargets(s, "RK-049:s");
     expect(targets).toContain("SPEC-E2000:r1");
@@ -482,13 +482,13 @@ describe("RK-049 仮面ライダー勝鬼", () => {
     expect(targets).not.toContain("SPEC-E3000:r2");
   });
 
-  it.fails("RK-049: 選ばれたラッシュエリアのユニットとバトルして撃破できる（出典: atwiki/page-221）", () => {
+  it("RK-049: 選ばれたラッシュエリアのユニットとバトルして撃破できる（出典: atwiki/page-221）", () => {
     let s = settle(pick(shoki(), "SPEC-E2000:r1"));
     s = resolveAll(attack(s, "RK-049:s", "SPEC-E2000:r1"));
     expect(zoneOf(s, "player2", "SPEC-E2000:r1")).toBe("discard");
   });
 
-  it.fails("RK-049: 能力の発動後にストライクしてもよい（出典: atwiki/page-221 カード評価「能力発動後、ストライクすることも可能」）", () => {
+  it("RK-049: 能力の発動後にストライクしてもよい（出典: atwiki/page-221 カード評価「能力発動後、ストライクすることも可能」）", () => {
     const s = settle(pick(shoki(), "SPEC-E3000:r2"));
     expect(canStrike(s, "RK-049:s")).toBe(true);
   });
@@ -505,7 +505,7 @@ describe("RK-049 仮面ライダー勝鬼", () => {
   });
 
   // 公式 Q（RK-057 欄）「はい、選ぶことができます。」（相手が自分自身のユニットを選ぶので「相手に選ばれない」は妨げない）
-  it.fails("RK-049: 公式Q&A — 相手は自分自身のラッシュエリアの仮面ライダーザビーRF（「相手に選ばれない」）を選べる（出典: grnrngr/faq-rider-1 RK-057 Q・atwiki/page-161 Q1）", () => {
+  it("RK-049: 公式Q&A — 相手は自分自身のラッシュエリアの仮面ライダーザビーRF（「相手に選ばれない」）を選べる（出典: grnrngr/faq-rider-1 RK-057 Q・atwiki/page-161 Q1）", () => {
     const s = shoki({ rush: [inst("RK-057", "zb")] });
     expectChoiceFrom(s, "player2", "RK-049");
     expect(choiceIds(s)).toEqual(["RK-057:zb"]);

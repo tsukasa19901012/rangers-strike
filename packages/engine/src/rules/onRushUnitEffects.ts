@@ -1,4 +1,5 @@
 import { openProphecyOnEnemyRush } from "./legend1/set7NamedEffectsC";
+import { openRk3OnEnemyRush } from "./rk/rk3UnitEffects";
 import { trySet9COnUnitRushed } from "./legend1/set9NamedEffectsC";
 import { applyGuardianApostleProviso } from "./legend1/set8NamedEffectsB";
 import type { GameState, PlayerId } from "../types/game";
@@ -317,5 +318,7 @@ export function applyPassiveRushTriggers(
   next = openProphecyOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // RS-528 バイオハンター・シルバ（2nd）【バイオ粒子反応アリ！】（rules/legend1/set8NamedEffectsA.ts）。
   next = openBioParticleOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // RK-053 仮面ライダーガタックMF【ガタックバルカン】（rules/rk/rk3UnitEffects.ts）。
+  next = openRk3OnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   return { state: next, logs: rsEnemyRush.logs };
 }

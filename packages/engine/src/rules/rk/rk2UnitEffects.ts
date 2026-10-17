@@ -730,7 +730,8 @@ export function tryRk2OnEnterBattle(
   const ownBattlePhase = next.phase === "battle" && next.activePlayer === playerId;
   if (!ownBattlePhase) return next;
   const partner = comboPartner(next, battleBeforeEnter);
-  if (card.cardId === "RK-033" && partner && featuresOf(next, playerId, partner).includes("ドラゴン")) {
+  // RK-063（スターター版）も同じテキスト（atwiki/page-178）。
+  if ((card.cardId === "RK-033" || card.cardId === "RK-063") && partner && featuresOf(next, playerId, partner).includes("ドラゴン")) {
     next = patchPlayer(next, playerId, (p) => grantSp1OnPlayer(p, card.instanceId, next.definitions));
   }
   if (card.cardId === "RK-038" && partner && cardName(next.definitions, partner.cardId) === "メタルゲラス") {

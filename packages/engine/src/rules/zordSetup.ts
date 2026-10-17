@@ -46,6 +46,7 @@ import {
   hasAllRequiredFusionMaterials,
   needsZordMaterial,
   requiresAllFusionPartners,
+  zordOffersCommandOrDiscard,
 } from "./zord";
 
 export type ZordSetupResolveInput = {
@@ -336,10 +337,7 @@ function needsDestinationChoice(
   zordCardId: string,
   commandZoneHasSpace: boolean,
 ): boolean {
-  return (
-    getZordCondition(zordCardId) === "send_s_unit_to_command_or_discard" &&
-    commandZoneHasSpace
-  );
+  return zordOffersCommandOrDiscard(zordCardId, getZordCondition(zordCardId)) && commandZoneHasSpace;
 }
 
 function createZordDownSetup(

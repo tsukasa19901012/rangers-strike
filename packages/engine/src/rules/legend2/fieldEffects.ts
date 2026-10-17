@@ -1,6 +1,7 @@
 import {
   playerHasNamedEffectInZones,
 } from "@rangers-strike/cards";
+import { rk3SpFloor } from "../rk/rk3UnitEffects";
 import { activeNamedEffect } from "../ncGatedEffects";
 import type { Category } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
@@ -96,6 +97,8 @@ export function legend2EffectiveSp(
     : printedSpBase(printed, battlePosition, crossReductionFor(battle, instance.instanceId)) + modifier;
   sp = Math.max(sp, taxisSpFloor(state, playerId, instance));
   sp = Math.max(sp, fieldPositionSpFloor(state, playerId, instance));
+  // RK-056 仮面ライダーザビーMF【ZECT隊長】（rules/rk/rk3UnitEffects.ts）。
+  sp = Math.max(sp, rk3SpFloor(state, playerId, instance));
   // RK-081 ゲゲル: 発動ターン中は自軍 S ユニットすべて SP1
   if (
     instance.activatedNcEffects?.includes("gegeru_sp1") &&

@@ -110,42 +110,42 @@ describe("RK-050 仮面ライダー裁鬼", () => {
     return s;
   };
 
-  it.fails("RK-050: NC —「SP1」になる（出典: atwiki/page-222「「SP1」」）", () => {
+  it("RK-050: NC —「SP1」になる（出典: atwiki/page-222「「SP1」」）", () => {
     const s = settle(ncEnter("RK-050:sb", 2, {}, { battle: [inst("SPEC-BIG", "e")] }, EXTRA));
     expect(spOf(s, "player1", "RK-050:sb")).toBe(1);
   });
 
-  it.fails("RK-050: アタックするとき、「BP」「必要パワーの数字」「ナンバーの数字」から1つ選ぶ（出典: atwiki/page-222「…のうちどれか1つを選び」）", () => {
+  it("RK-050: アタックするとき、「BP」「必要パワーの数字」「ナンバーの数字」から1つ選ぶ（出典: atwiki/page-222「…のうちどれか1つを選び」）", () => {
     const s = sabaki("SPEC-BIG:e");
     expectChoiceFrom(s, "player1", "RK-050");
     expect(choiceIds(s)).toEqual(["bp", "number", "power_cost"]);
   });
 
-  it.fails("RK-050: 「必要パワーの数字」を選ぶと、お互いに必要パワーの数字でバトルする（3対2で勝ち、相手を撃破）（出典: atwiki/page-222「お互いにその数字でバトルする」）", () => {
+  it("RK-050: 「必要パワーの数字」を選ぶと、お互いに必要パワーの数字でバトルする（3対2で勝ち、相手を撃破）（出典: atwiki/page-222「お互いにその数字でバトルする」）", () => {
     const s = resolveAll(pick(sabaki("SPEC-BIG:e"), "power_cost"));
     expect(zoneOf(s, "player2", "SPEC-BIG:e")).toBe("discard");
     expect(zoneOf(s, "player1", "RK-050:sb")).toBe("battle");
   });
 
-  it.fails("RK-050: 「ナンバーの数字」を選ぶと、お互いにナンバーの数字でバトルする（3対1で勝ち）（出典: atwiki/page-222）", () => {
+  it("RK-050: 「ナンバーの数字」を選ぶと、お互いにナンバーの数字でバトルする（3対1で勝ち）（出典: atwiki/page-222）", () => {
     const s = resolveAll(pick(sabaki("SPEC-BIG:e"), "number"));
     expect(zoneOf(s, "player2", "SPEC-BIG:e")).toBe("discard");
     expect(zoneOf(s, "player1", "RK-050:sb")).toBe("battle");
   });
 
-  it.fails("RK-050: 選んだ数字が同じなら、通常のバトルと同じく両方撃破される（3対3）（出典: atwiki/page-222・R-BTL-01「同じなら両方」）", () => {
+  it("RK-050: 選んだ数字が同じなら、通常のバトルと同じく両方撃破される（3対3）（出典: atwiki/page-222・R-BTL-01「同じなら両方」）", () => {
     const s = resolveAll(pick(sabaki("SPEC-BIG3:e"), "number"));
     expect(zoneOf(s, "player2", "SPEC-BIG3:e")).toBe("discard");
     expect(zoneOf(s, "player1", "RK-050:sb")).toBe("discard");
   });
 
-  it.fails("RK-050: 「BP」を選ぶと通常どおり BP でバトルする（2000対9000で負ける）（出典: atwiki/page-222）", () => {
+  it("RK-050: 「BP」を選ぶと通常どおり BP でバトルする（2000対9000で負ける）（出典: atwiki/page-222）", () => {
     const s = resolveAll(pick(sabaki("SPEC-BIG:e"), "bp"));
     expect(zoneOf(s, "player2", "SPEC-BIG:e")).toBe("battle");
     expect(zoneOf(s, "player1", "RK-050:sb")).toBe("discard");
   });
 
-  it.fails("RK-050: 相手のユニットがナンバーに数字を持っていなければ（ナンバーなし・RC）「ナンバーの数字」は選べない（出典: atwiki/page-222「ただし、ナンバーの数字は相手のユニットがナンバーに数字を持っていなければ選べない」）", () => {
+  it("RK-050: 相手のユニットがナンバーに数字を持っていなければ（ナンバーなし・RC）「ナンバーの数字」は選べない（出典: atwiki/page-222「ただし、ナンバーの数字は相手のユニットがナンバーに数字を持っていなければ選べない」）", () => {
     expect(choiceIds(sabaki("SPEC-BIG-NONUM:e"))).toEqual(["bp", "power_cost"]);
     expect(choiceIds(sabaki("SPEC-BIG-RC:e"))).toEqual(["bp", "power_cost"]);
   });
@@ -178,7 +178,7 @@ describe("RK-051 仮面ライダー鋭鬼", () => {
 
   const eiki = (p2: Partial<GameState["players"]["player2"]>) => enter(board({ rush: [inst("RK-051", "ek")] }, p2), "RK-051:ek");
 
-  it.fails("RK-051: 出たとき、敵軍バトルエリアの「…バトルに勝っても撃破される」と書かれたユニットだけを選べ、選んだユニットを撃破する（出典: atwiki/page-223）", () => {
+  it("RK-051: 出たとき、敵軍バトルエリアの「…バトルに勝っても撃破される」と書かれたユニットだけを選べ、選んだユニットを撃破する（出典: atwiki/page-223）", () => {
     let s = eiki({ battle: [inst("RS-102", "sg"), inst("TST-UNIT-0", "n")] });
     expectChoiceFrom(s, "player1", "RK-051");
     expect(choiceIds(s)).toEqual(["RS-102:sg"]);
@@ -188,20 +188,20 @@ describe("RK-051 仮面ライダー鋭鬼", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:n")).toBe("battle");
   });
 
-  it.fails("RK-051: そう書かれた敵軍ユニットがいなければ何もしない（出典: atwiki/page-223）", () => {
+  it("RK-051: そう書かれた敵軍ユニットがいなければ何もしない（出典: atwiki/page-223）", () => {
     const s = settle(eiki({ battle: [inst("TST-UNIT-0", "n")] }));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-051");
     expect(zoneOf(s, "player2", "TST-UNIT-0:n")).toBe("battle");
   });
 
-  it.fails("RK-051: 敵軍ラッシュエリアのユニットは選べない（出典: atwiki/page-223「敵軍バトルエリアから」）", () => {
+  it("RK-051: 敵軍ラッシュエリアのユニットは選べない（出典: atwiki/page-223「敵軍バトルエリアから」）", () => {
     const s = settle(eiki({ rush: [inst("RS-102", "sg")], battle: [inst("TST-UNIT-0", "n")] }));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-051");
     expect(zoneOf(s, "player2", "RS-102:sg")).toBe("rush");
   });
 
   // 公式 Q1「はい、可能です。」（敵軍バトルエリアの「RK-051 仮面ライダー鋭鬼」や「RS-408 天空聖者サンジェル」を撃破できる）
-  it.fails("RK-051: 公式Q&A — 文中にその文言を含む敵軍の鋭鬼・天空聖者サンジェルも選んで撃破できる（出典: grnrngr/faq-rider-1 RK-051 Q1・atwiki/page-223 Q1）", () => {
+  it("RK-051: 公式Q&A — 文中にその文言を含む敵軍の鋭鬼・天空聖者サンジェルも選んで撃破できる（出典: grnrngr/faq-rider-1 RK-051 Q1・atwiki/page-223 Q1）", () => {
     let s = eiki({ battle: [inst("RK-051", "e"), inst("RS-408", "sj"), inst("TST-UNIT-0", "n")] });
     expect(choiceIds(s)).toEqual(["RK-051:e", "RS-408:sj"]);
     s = resolveAll(pick(s, "RS-408:sj"));
@@ -213,13 +213,13 @@ describe("RK-051 仮面ライダー鋭鬼", () => {
 describe("RK-052 仮面ライダー弾鬼", () => {
   const TEXT = "【音撃打・破砕細石】敵軍バトルエリアに特徴「メカ」を持つユニットがなければ、これはBP4000以上のSユニットとバトルするとき、BP+5000される";
 
-  it.fails("RK-052: カタログ本文・スペックが出典と一致（フレーバーテキストを含まない）（出典: atwiki/page-224）", () => {
+  it("RK-052: カタログ本文・スペックが出典と一致（フレーバーテキストを含まない）（出典: atwiki/page-224）", () => {
     expectCatalogText("RK-052", TEXT);
     expectStats("RK-052", { name: "仮面ライダー弾鬼", category: "MA", size: "S", bp: 500, sp: undefined, powerCost: 0, features: ["仮面ライダー", "男", "猛士"] });
     expectRarityIn("RK-052", ["N"]);
   });
 
-  it.fails("RK-052: BP4000 以上の S ユニットとバトルするとき BP+5000（5500対4000で勝つ）（出典: atwiki/page-224）", () => {
+  it("RK-052: BP4000 以上の S ユニットとバトルするとき BP+5000（5500対4000で勝つ）（出典: atwiki/page-224）", () => {
     let s = board({ battle: [inst("RK-052", "d")] }, { battle: [inst("SPEC-E4000", "a")] });
     s = resolveAll(attack(s, "RK-052:d", "SPEC-E4000:a"));
     expect(lastBattleBps(s)?.attacker).toBe(5500);
@@ -245,7 +245,7 @@ describe("RK-052 仮面ライダー弾鬼", () => {
     expect(zoneOf(s, "player1", "RK-052:d")).toBe("discard");
   });
 
-  it.fails("RK-052: 敵軍ターン中に BP4000 以上の S ユニットにアタックされたときも BP+5000（アタックした側が撃破される）（出典: atwiki/page-224「バトルするとき」）", () => {
+  it("RK-052: 敵軍ターン中に BP4000 以上の S ユニットにアタックされたときも BP+5000（アタックした側が撃破される）（出典: atwiki/page-224「バトルするとき」）", () => {
     let s = enemyTurn({ battle: [inst("RK-052", "d")] }, { battle: [inst("SPEC-E4000", "a")] });
     s = resolveAll(attack(s, "SPEC-E4000:a", "RK-052:d", "player2"));
     expect(zoneOf(s, "player2", "SPEC-E4000:a")).toBe("discard");
@@ -253,7 +253,7 @@ describe("RK-052 仮面ライダー弾鬼", () => {
   });
 
   // 公式 Q1「はい、発動します。」（本来の BP は 4000 未満でも、ライドして BP4000 以上になっている敵軍 S ユニット）
-  it.fails("RK-052: 公式Q&A — 本来の BP は 4000 未満でも、ライドして BP4000 以上になっている敵軍 S ユニットとのバトルで発動する（ビークルの特徴「メカ」は数えない）（出典: grnrngr/faq-rider-1 RK-052 Q1・atwiki/page-224 Q1）", () => {
+  it("RK-052: 公式Q&A — 本来の BP は 4000 未満でも、ライドして BP4000 以上になっている敵軍 S ユニットとのバトルで発動する（ビークルの特徴「メカ」は数えない）（出典: grnrngr/faq-rider-1 RK-052 Q1・atwiki/page-224 Q1）", () => {
     let s = board({ battle: [inst("RK-052", "d")] }, { battle: ridingPair("SPEC-RC3000", "r", "RK-045", "v") });
     expect(bpOf(s, "player2", "SPEC-RC3000:r")).toBe(4000);
     s = resolveAll(attack(s, "RK-052:d", "SPEC-RC3000:r"));
@@ -303,14 +303,14 @@ describe("RK-053 仮面ライダーガタックMF", () => {
     return r.state;
   };
 
-  it.fails("RK-053: 【ガタックバルカン】敵軍 S ユニットがラッシュされたとき、自軍パワーゾーンのダメージ以外のカードを1枚選び捨札にしてもよい（出典: atwiki/page-170）", () => {
+  it("RK-053: 【ガタックバルカン】敵軍 S ユニットがラッシュされたとき、自軍パワーゾーンのダメージ以外のカードを1枚選び捨札にしてもよい（出典: atwiki/page-170）", () => {
     const s = vulcan({});
     expectChoiceFrom(s, "player1", "RK-053");
     expect(choiceIds(s)).toEqual(["TST-P:pw0", "TST-P:pw1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-053: 捨札にしたら、そのユニットはターンが終わるまでバトルエリアに出られない（出典: atwiki/page-170「そのユニットは、ターンが終わるまでバトルエリアに出られない」）", () => {
+  it("RK-053: 捨札にしたら、そのユニットはターンが終わるまでバトルエリアに出られない（出典: atwiki/page-170「そのユニットは、ターンが終わるまでバトルエリアに出られない」）", () => {
     let s = resolveAll(pick(vulcan({}), "TST-P:pw0"));
     expect(zoneOf(s, "player1", "TST-P:pw0")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E2000:x")).toBe("rush");
@@ -318,7 +318,7 @@ describe("RK-053 仮面ライダーガタックMF", () => {
     expect(canEnter(s, "SPEC-E2000:x", "player2")).toBe(false);
   });
 
-  it.fails("RK-053: 捨札にしなければ、そのユニットはバトルエリアに出られる（出典: atwiki/page-170「捨札にしてもよい。そうしたとき」）", () => {
+  it("RK-053: 捨札にしなければ、そのユニットはバトルエリアに出られる（出典: atwiki/page-170「捨札にしてもよい。そうしたとき」）", () => {
     let s = resolveAll(skip(vulcan({})));
     expect(zoneIds(s, "player1", "power")).toHaveLength(3);
     s = toPhase(s, "player2", "battle");
@@ -341,7 +341,7 @@ describe("RK-053 仮面ライダーガタックMF", () => {
   });
 
   // 公式 Q1「いいえ、バトルエリアに置かれます。…この時点で「RS-090 レッドレーサー」はすでにバトルエリアに置かれていることになります。」
-  it.fails("RK-053: 公式Q&A — 「可能ならバトルエリアに置く」レッドレーサーのラッシュに発動しても、レッドレーサーはバトルエリアに置かれたまま（出典: grnrngr/faq-rider-1 RK-053 Q1・atwiki/page-170 Q1）", () => {
+  it("RK-053: 公式Q&A — 「可能ならバトルエリアに置く」レッドレーサーのラッシュに発動しても、レッドレーサーはバトルエリアに置かれたまま（出典: grnrngr/faq-rider-1 RK-053 Q1・atwiki/page-170 Q1）", () => {
     let s = vulcan({}, "RS-090:rr", { command: releasedCat("OT", 2) });
     expectChoiceFrom(s, "player1", "RK-053");
     s = resolveAll(pick(s, "TST-P:pw0"));
@@ -350,12 +350,14 @@ describe("RK-053 仮面ライダーガタックMF", () => {
   });
 
   // 公式 Q2「いいえ、持続しません。「ガタックバルカン」の効果を受けたユニットと、その後「RK-022 ライダーパス」で置き換わったユニットは別のユニットですので…」
-  it.fails("RK-053: 公式Q&A — ガタックバルカンを受けたユニットをライダーパスで置き換えると、置き換わったユニットはバトルエリアに出られる（出典: grnrngr/faq-rider-1 RK-053 Q2・atwiki/page-170 Q2）", () => {
+  it("RK-053: 公式Q&A — ガタックバルカンを受けたユニットをライダーパスで置き換えると、置き換わったユニットはバトルエリアに出られる（出典: grnrngr/faq-rider-1 RK-053 Q2・atwiki/page-170 Q2）", () => {
     let s = vulcan({}, "SPEC-DENO:d", { command: releasedCat("OT", 2), operation: [{ ...inst("RK-022", "pass"), stackedCards: [inst("SPEC-DENO2", "s")] }] });
     s = resolveAll(pick(s, "TST-P:pw0"));
     s = act(s, { type: "activate_resident_operation", playerId: "player2", operationInstanceId: "RK-022:pass" });
     s = pick(pick(s, "SPEC-DENO2:s"), "SPEC-DENO:d");
     expect(zoneOf(s, "player2", "SPEC-DENO2:s")).toBe("rush");
+    // 置き換えで出たユニットは新しくラッシュされたユニット（R-REPL-04）なので、ガタックバルカンをもう一度使える。ここでは使わない。
+    if (s.pendingEffectChoice?.sourceCardId === "RK-053") s = skip(s);
     s = toPhase(s, "player2", "battle");
     expect(canEnter(s, "SPEC-DENO2:s", "player2")).toBe(true);
   });
@@ -398,11 +400,11 @@ describe("RK-054 仮面ライダーガタックRF", () => {
     expect(zoneOf(r.state, "player1", "RK-053:mf")).toBe("power");
   });
 
-  it.fails("RK-054: 追加条件 — ガタックMF 以外の S ユニットでは満たせない（出典: atwiki/page-171）", () => {
+  it("RK-054: 追加条件 — ガタックMF 以外の S ユニットでは満たせない（出典: atwiki/page-171）", () => {
     expect(rushOffered(rushBoard([inst("SPEC-KAMEN", "k")]), "RK-054:rf")).toBe(false);
   });
 
-  it.fails("RK-054: 【ライダーカッティング】ラッシュしたとき、敵軍バトルエリアから BP の合計が 6000 になる隣り合う2体の S ユニットを選んで撃破する（出典: atwiki/page-171）", () => {
+  it("RK-054: 【ライダーカッティング】ラッシュしたとき、敵軍バトルエリアから BP の合計が 6000 になる隣り合う2体の S ユニットを選んで撃破する（出典: atwiki/page-171）", () => {
     const r = rushRf([inst("RK-053", "mf")], { battle: [inst("SPEC-E2000", "a"), inst("SPEC-E4000", "b"), inst("SPEC-E3000", "c")] });
     expect(r.ok, r.error).toBe(true);
     let s = r.state;
@@ -473,7 +475,7 @@ describe("RK-055 仮面ライダーパンチホッパー", () => {
 
   const punch = (enemy: ReturnType<typeof inst>[]) => ncEnter("RK-055:ph", 0, {}, { battle: enemy }, EXTRA);
 
-  it.fails("RK-055: NC — 敵軍バトルエリアの S ユニットを好きな数選び、ラッシュエリアに戻す（M ユニットは選べない）（出典: atwiki/page-172）", () => {
+  it("RK-055: NC — 敵軍バトルエリアの S ユニットを好きな数選び、ラッシュエリアに戻す（M ユニットは選べない）（出典: atwiki/page-172）", () => {
     let s = punch([inst("SPEC-E2000", "a"), inst("SPEC-E3000", "b"), inst("SPEC-EM4000", "m"), inst("SPEC-E4000", "c")]);
     expectChoiceFrom(s, "player1", "RK-055");
     expect(choiceIds(s)).toEqual(["SPEC-E2000:a", "SPEC-E3000:b", "SPEC-E4000:c"]);
@@ -484,18 +486,18 @@ describe("RK-055 仮面ライダーパンチホッパー", () => {
     expect(zoneOf(s, "player2", "SPEC-EM4000:m")).toBe("battle");
   });
 
-  it.fails("RK-055: 選べる S ユニットをすべて戻してもよい（出典: atwiki/page-172「好きな数」）", () => {
+  it("RK-055: 選べる S ユニットをすべて戻してもよい（出典: atwiki/page-172「好きな数」）", () => {
     let s = punch([inst("SPEC-E2000", "a"), inst("SPEC-E3000", "b")]);
     s = resolveAll(confirm(pick(pick(s, "SPEC-E2000:a"), "SPEC-E3000:b")));
     expect(s.players.player2.battle).toHaveLength(0);
   });
 
-  it.fails("RK-055: 戻さなくてもよい（出典: atwiki/page-172「戻してもよい」）", () => {
+  it("RK-055: 戻さなくてもよい（出典: atwiki/page-172「戻してもよい」）", () => {
     const s = resolveAll(skip(punch([inst("SPEC-E2000", "a")])));
     expect(zoneOf(s, "player2", "SPEC-E2000:a")).toBe("battle");
   });
 
-  it.fails("RK-055: 「相手に選ばれない」敵軍ユニット（仮面ライダーザビーRF）は選べない（出典: atwiki/page-172・atwiki/page-161「※これはアタックされる以外では相手に選ばれない」）", () => {
+  it("RK-055: 「相手に選ばれない」敵軍ユニット（仮面ライダーザビーRF）は選べない（出典: atwiki/page-172・atwiki/page-161「※これはアタックされる以外では相手に選ばれない」）", () => {
     const s = punch([inst("SPEC-E2000", "a"), inst("RK-057", "zb")]);
     expect(choiceIds(s)).toEqual(["SPEC-E2000:a"]);
   });
@@ -524,7 +526,7 @@ describe("RK-056 仮面ライダーザビーMF", () => {
     expect(zoneOf(s, "player2", "SPEC-E4000:a")).toBe("discard");
   });
 
-  it.fails("RK-056: 【ZECT隊長】特徴「戦闘員」を持つ自軍ユニットがバトルエリアで4番目に並んだとき「SP1」になる（出典: atwiki/page-160）", () => {
+  it("RK-056: 【ZECT隊長】特徴「戦闘員」を持つ自軍ユニットがバトルエリアで4番目に並んだとき「SP1」になる（出典: atwiki/page-160）", () => {
     const s = settle(enter(board({ battle: [inst("RK-056", "z"), ...fill(2)], rush: [inst("RK-059", "zt")] }), "RK-059:zt"));
     expect(spOf(s, "player1", "RK-059:zt")).toBe(1);
   });

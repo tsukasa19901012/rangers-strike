@@ -1,4 +1,5 @@
 import { isInstancePlacedAnywhere } from "./helpers";
+import { openRk3OnEnemyRush } from "../rules/rk/rk3UnitEffects";
 import { applyRk2StrikeDamageTriggers, rk2RecordStartRelease } from "../rules/rk/rk2UnitEffects";
 import { continueFieldAbilityAfterLeave } from "../rules/fieldActivatedAbilities";
 import { resumeAbductionAfterChase } from "../rules/abduction";
@@ -764,10 +765,13 @@ function applyAutoBattleEntryOnRush(
       addTurnRestrictionModifier(state.players[playerId], instanceId, DIRECT_BATTLE_RUSH_RESTRICTION),
     ),
   };
+  // RK-053【ガタックバルカン】は、バトルエリアに置いた（置けなかった）あとに発動する（rules/rk/rk3UnitEffects.ts）。
+  const vulcan = (s: GameState): GameState =>
+    s.pendingCommandPayment || s.pendingEffectChoice ? s : openRk3OnEnemyRush(s, playerId, instanceId, s.activePlayer, true);
   const direct = applyAction(state, { type: "move_to_battle", playerId, instanceId });
-  if (direct.ok) return direct.state;
+  if (direct.ok) return vulcan(direct.state);
   const payment = buildBattleEntryPayment(state, playerId, found.card);
-  if (!payment) return original;
+  if (!payment) return vulcan(original);
   if (payment.validInstanceIds.length <= payment.totalNeeded) {
     const paid = applyAction(
       { ...state, pendingCommandPayment: payment },
@@ -777,7 +781,7 @@ function applyAutoBattleEntryOnRush(
         commandInstanceIds: payment.validInstanceIds.slice(0, payment.totalNeeded),
       },
     );
-    return paid.ok ? paid.state : original;
+    return vulcan(paid.ok ? paid.state : original);
   }
   return { ...state, pendingCommandPayment: payment };
 }
@@ -852,6 +856,8 @@ function settleEffectRushes(before: GameState, after: GameState): GameState {
     if (enemyRush.state !== next) {
       next = { ...enemyRush.state, log: [...enemyRush.state.log, ...enemyRush.logs] };
     }
+    // RK-053【ガタックバルカン】も、直接バトルエリアに出された敵軍 S ユニットに発動する（rules/rk/rk3UnitEffects.ts）。
+    next = openRk3OnEnemyRush(next, entry.pid, entry.instanceId, turnPlayer);
   }
   if (triggers.length > 0) {
     next = {

@@ -140,6 +140,21 @@ const RK2_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk042_flash_wing_hold: { label: "閃光の翼", hint: "ホールドする自分自身のコマンドを選んでください" },
 };
 
+/** ライダーEXP vol.1 RK-043〜RK-063 のカード固有の選択（engine rules/rk/rk3UnitEffects.ts）の表示名と案内文。 */
+const RK3_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk047_raiden_target: { label: "音撃斬・雷電激震", hint: "敵軍バトルエリアのユニットを1体選んでください" },
+  rk047_raiden_hold: { label: "音撃斬・雷電激震", hint: "ホールドする自軍コマンドを選んでください（選んだユニットの必要パワーの数字＋1つ。撃破しないなら「スキップ」）" },
+  rk050_enma_sabaki: { label: "音撃斬・閻魔裁き", hint: "お互いにバトルする数字（BP・必要パワーの数字・ナンバーの数字）を選んでください" },
+  rk051_hissatsu_hicchu: { label: "音撃打・必殺必中", hint: "撃破する「…バトルに勝っても撃破される」と書かれた敵軍ユニットを選んでください" },
+  rk053_gatack_vulcan: { label: "ガタックバルカン", hint: "捨札にする自軍パワーゾーンのダメージ以外のカードを選んでください（ラッシュされたユニットはこのターンバトルエリアに出られない。使わないなら「スキップ」）" },
+  rk054_rider_cutting_first: { label: "ライダーカッティング", hint: "撃破する、BP の合計が 6000 になる隣り合う2体の敵軍 S ユニットの1体目を選んでください" },
+  rk054_rider_cutting_second: { label: "ライダーカッティング", hint: "撃破するもう1体（1体目と隣り合い、BP の合計が 6000）を選んでください" },
+  rk055_rider_punch: { label: "ライダーパンチ", hint: "ラッシュエリアに戻す敵軍バトルエリアの S ユニットを選び、選び終えたら「決定」（戻さないなら「スキップ」）" },
+  rk057_rider_sting: { label: "ライダースティング", hint: "持ち主のパワーゾーンに置く敵軍バトルエリアの BP4000 以上の S ユニットを選んでください" },
+  rk061_ippon_zuri: { label: "一本釣り", hint: "敵軍バトルエリアに出す、敵軍パワーゾーンのダメージ以外の S ユニットのカードを選んでください（出さないなら「スキップ」）" },
+  rk061_ippon_zuri_discard: { label: "一本釣り", hint: "アナザーアギトを出すために捨札にする、自軍ラッシュエリアの特徴「仮面ライダー」のユニットを選んでください" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -173,7 +188,8 @@ export function effectChoiceHint(
     SET8D_CHOICE_UI[pending.effectId] ??
     SET9A_CHOICE_UI[pending.effectId] ??
     RK1_CHOICE_UI[pending.effectId] ??
-    RK2_CHOICE_UI[pending.effectId];
+    RK2_CHOICE_UI[pending.effectId] ??
+    RK3_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -368,6 +384,7 @@ export function effectChoiceTitle(
     SET9A_CHOICE_UI[pending.effectId]?.label ??
     RK1_CHOICE_UI[pending.effectId]?.label ??
     RK2_CHOICE_UI[pending.effectId]?.label ??
+    RK3_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

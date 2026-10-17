@@ -40,10 +40,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "block_enemy_number_match_entry",
-          "duration": "permanent"
+          "keyword": "rk3::RK-059::formation_alpha",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

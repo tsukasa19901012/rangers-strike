@@ -250,6 +250,8 @@ export type PendingBattle = {
    * アタックしたことにはならない（「アタックするとき」は発動せず、バトル済み（battleActed）にもならない）。
    */
   effectBattle?: boolean;
+  /** RK-050 仮面ライダー裁鬼【音撃斬・閻魔裁き】: お互いにバトルする数字（rules/rk/rk3UnitEffects.ts）。 */
+  rk050Mode?: "bp" | "power_cost" | "number";
 };
 
 export type PendingRush = {
@@ -559,7 +561,19 @@ export type Rk2ChoiceMeta = {
   remaining?: number;
 };
 
+/** ライダーEXP vol.1 RK-043〜RK-063 の選択の続き（rules/rk/rk3UnitEffects.ts）。 */
+export type Rk3ChoiceMeta = {
+  /** RK-047 轟鬼: 選んだ敵軍ユニット。RK-054 ガタックRF: 1体目に選んだユニット。RK-061 電王RF: 出すカード。 */
+  target?: string;
+  /** RK-047 轟鬼: ホールドするコマンドの数。 */
+  need?: number;
+  /** RK-050 裁鬼: 数字を選んでから解決するバトル。 */
+  battle?: PendingBattle;
+};
+
 export type PendingEffectChoice = {
+  /** ライダーEXP vol.1 RK-043〜RK-063 の選択の続き（rules/rk/rk3UnitEffects.ts）。 */
+  rk3Meta?: Rk3ChoiceMeta;
   /** ライダーEXP vol.1 RK-001〜RK-021 の選択の続き（rules/rk/rk1NamedEffects.ts）。 */
   rk1Meta?: Rk1ChoiceMeta;
   /** ライダーEXP vol.1 RK-022〜RK-042 の選択の続き（rules/rk/rk2UnitEffects.ts）。 */

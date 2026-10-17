@@ -801,7 +801,7 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
     "effectId": "bp_if_no_named_e383a1e382ab_5000",
     "keyword": "bp_if_no_enemy_named_e383a1e382ab_5000",
     "pattern": "bp_boost_if_no_enemy_feature",
-    "text": "敵軍バトルエリアに特徴「メカ」を持つユニットがなければ、これはBP4000以上のSユニットとバトルするとき、BP+5000される フレーバテキスト 相手が強いほど弾け甲斐があるもんだ。…もっとも、ハジかれるのは貴様の方だがな！"
+    "text": "敵軍バトルエリアに特徴「メカ」を持つユニットがなければ、これはBP4000以上のSユニットとバトルするとき、BP+5000される"
   },
   {
     "cardId": "RK-053",

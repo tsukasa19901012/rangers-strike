@@ -47,10 +47,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_adjacent_s_bp_6000",
+          "keyword": "rk3::RK-054::rider_cutting",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

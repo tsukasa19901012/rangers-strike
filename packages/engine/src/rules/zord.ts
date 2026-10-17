@@ -447,6 +447,12 @@ function namedUnitPartnerNames(condition: { text?: string; partnerName?: string 
   return names;
 }
 
+/** 「自軍「X」1体をパワーゾーンに送る」の X（名前が1つだけのとき）。 */
+function singleNamedPowerPartner(text: string | undefined): string | undefined {
+  const m = /^自軍[「｢]([^」｣]+)[」｣]1体をパワーゾーンに送る。?$/.exec((text ?? "").normalize("NFKC").trim());
+  return m?.[1];
+}
+
 export function isValidZordUpMaterial(
   definitions: Record<string, CardDefinition>,
   rushingCardId: string,
@@ -512,10 +518,29 @@ export function isValidZordUpMaterial(
       return isValidPowerMaterial(definitions, card, rushingInstanceId);
     default:
       if (isSendSUnitZordCondition(condition.conditionId)) {
+        // 「自軍「X」1体をパワーゾーンに送る」はその名前の S ユニットだけ（RK-054「仮面ライダーガタックMF」・RK-057「仮面ライダーザビーMF」
+        // atwiki/page-171・161）。
+        const named = condition.conditionId === "send_s_unit_to_power" ? singleNamedPowerPartner(condition.text) : undefined;
+        if (named) {
+          return (
+            isValidPowerMaterial(definitions, card, rushingInstanceId) &&
+            normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(named))
+          );
+        }
         return isValidPowerMaterial(definitions, card, rushingInstanceId);
       }
       return false;
   }
+}
+
+/**
+ * 「自軍「X」1体をコマンドゾーンに送るか捨札にする」のように、捨札にする型の追加条件で行き先（コマンドゾーンか捨札）を選べるか
+ * （RK-046 オートバジンBM「自軍「オートバジンVM」1体をコマンドゾーンに送るか捨札にする」atwiki/page-206 等）。
+ */
+export function zordOffersCommandOrDiscard(zordCardId: string, conditionId: string | undefined): boolean {
+  if (conditionId === "send_s_unit_to_command_or_discard") return true;
+  if (conditionId !== "discard_named_unit" && conditionId !== "discard_feature_unit" && conditionId !== "discard_vehicle_unit") return false;
+  return /コマンドゾーンに送るか捨札にする/.test((resolveRushAdditionalCondition(zordCardId)?.text ?? "").normalize("NFKC"));
 }
 
 export function isValidPowerMaterial(
@@ -609,6 +634,13 @@ export function applyZordMaterial(
     nextPlayer = {
       ...nextPlayer,
       power: [...nextPlayer.power, { instanceId: material.card.instanceId, cardId: material.card.cardId }],
+    };
+  } else if (destination === "command" && conditionId !== "send_s_unit_to_command_or_discard" && zordOffersCommandOrDiscard(rushingCardId, conditionId)) {
+    // 「…をコマンドゾーンに送るか捨札にする」でコマンドゾーンを選んだ（RK-046 等）。
+    if (nextPlayer.command.length >= COMMAND_ZONE_MAX) return null;
+    nextPlayer = {
+      ...nextPlayer,
+      command: [...nextPlayer.command, { instanceId: material.card.instanceId, cardId: material.card.cardId, commandHeld: false }],
     };
   } else if (
     conditionId === "discard_fusion_unit" ||

@@ -1,5 +1,6 @@
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
 import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects";
+import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
 import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import { openKuugaStayOnLeave } from "./legend1/otherLinesNamedEffects";
 import {
@@ -1313,6 +1314,10 @@ export function resolveBattlePendingCore(
     );
   }
 
+  // RK-050【音撃斬・閻魔裁き】: 裁鬼のアタックなら、解決の直前に数字を選ぶ（選んだあとこのバトルを解決し直す）。
+  const sabaki = tryOpenRk3BattleChoice(state, pending);
+  if (sabaki) return { state: sabaki, log: buildLogEntry(pending.attackerPlayerId, "battle", pending.attackerInstanceId, state.definitions, "rk050_choose_number") };
+
   const attackerId = pending.attackerPlayerId;
   const defenderId = pending.defenderPlayerId;
   let battleState = state;
@@ -1382,8 +1387,10 @@ export function resolveBattlePendingCore(
     );
   }
 
-  const attackerBp = battleAttackerBpBonus(battleState, pending);
-  const defenderBp = battleDefenderBp(battleState, pending);
+  // RK-050【音撃斬・閻魔裁き】: 選んだ数字（必要パワー・ナンバー）でバトルする（rules/rk/rk3UnitEffects.ts）。
+  const rk3Values = rk3BattleValues(battleState, pending);
+  const attackerBp = rk3Values ? rk3Values.attacker : battleAttackerBpBonus(battleState, pending);
+  const defenderBp = rk3Values ? rk3Values.defender : battleDefenderBp(battleState, pending);
 
   const destroyAttacker = attackerBp <= defenderBp;
   const destroyDefender = defenderBp <= attackerBp;

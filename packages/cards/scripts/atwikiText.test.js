@@ -59,6 +59,11 @@ describe("extractEffectTextFromAtwikiSource（E7）", () => {
     expect(extractEffectTextFromAtwikiSource("フレーバーテキスト\n\nなにか")).toBe("");
   });
 
+  it("表記ゆれの「フレーバテキスト」でも効果文を終える（atwiki/page-224 RK-052）", () => {
+    const text = "テキスト：\n\n【音撃打・破砕細石】…BP+5000される\n\nフレーバテキスト\n\n相手が強いほど弾け甲斐があるもんだ。";
+    expect(extractEffectTextFromAtwikiSource(text)).toBe("【音撃打・破砕細石】…BP+5000される");
+  });
+
   // E7: 以下 13 枚は「テキスト:」（半角）または「テキスト」（コロンなし）で、旧抽出（「テキスト：」のみ）では空だった。
   const E7_CARDS = {
     "PR-015": "【バイオ粒子斬り】",

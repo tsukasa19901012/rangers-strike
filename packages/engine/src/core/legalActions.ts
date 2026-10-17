@@ -129,6 +129,7 @@ import { canConfirmSet8CChoice, isSet8CChoiceEffect } from "../rules/legend1/set
 import { canConfirmSet9CChoice, isSet9CChoiceEffect } from "../rules/legend1/set9NamedEffectsC";
 import { canActivateSet9AResident, canConfirmSet9AChoice, isSet9AChoiceEffect, isSet9AResidentCard } from "../rules/legend1/set9NamedEffectsA";
 import { isRk2ChoiceEffect, rk2RaiaDiscardCandidates } from "../rules/rk/rk2UnitEffects";
+import { canConfirmRk3Choice, isRk3ChoiceEffect } from "../rules/rk/rk3UnitEffects";
 import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
 import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
@@ -1237,6 +1238,15 @@ function appendEffectChoiceActions(
     for (const instanceId of pending.validInstanceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
+    return;
+  }
+
+  if (isRk3ChoiceEffect(pending.effectId)) {
+    // ライダーEXP vol.1 RK-043〜RK-063 の選択（rules/rk/rk3UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk3Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

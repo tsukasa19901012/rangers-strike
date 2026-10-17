@@ -1,4 +1,5 @@
 import { filthyAirActive } from "./legend1/otherLinesNamedEffects";
+import { rk3BattleEntryBlocked } from "./rk/rk3UnitEffects";
 import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
 import { set9CBlocksBattleEntry } from "./legend1/set9NamedEffectsC";
 import { ownAutoBattleEntryNegated } from "./legend1/set8NamedEffectsD";
@@ -320,7 +321,7 @@ function noteOtherNcBattleEntryBlock(
 /**
  * 「※これはラッシュしたターンにバトルエリアに出られない」（RS-106 等の unnamed rule、RS-208・RS-295 の DSL キーワード）。
  */
-function noEntryOnRushTurn(cardId: string): boolean {
+export function noEntryOnRushTurn(cardId: string): boolean {
   return noBattleEntryTurnRushed(cardId) || cardHasGrantKeyword(cardId, "no_battle_rush_turn");
 }
 
@@ -406,6 +407,8 @@ export function canMoveUnitToBattle(
   if (set6BBattleEntryBlocked(state, playerId, unit)) return false;
   // RK-140 / RK-334 のロック、RS-288 の「獣奏剣」ホールド要件（rules/errataCardEffects.ts）。
   if (errataBattleEntryBlocked(state, playerId, unit)) return false;
+  // RK-059 ゼクトルーパー【フォーメーションα】（rules/rk/rk3UnitEffects.ts）。
+  if (rk3BattleEntryBlocked(state, playerId, unit)) return false;
 
   // RS-242 / RS-416 等「自軍ラッシュエリアのSユニットを1体捨札にしなければ出られない」— 自身は数えない。
   if (
@@ -536,6 +539,8 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   if (noteOtherNcBattleEntryBlock(state, playerId, player, unit)) return false;
   if (set6BBattleEntryBlocked(state, playerId, unit)) return false;
   if (errataBattleEntryBlocked(state, playerId, unit)) return false;
+  // RK-059 ゼクトルーパー【フォーメーションα】（rules/rk/rk3UnitEffects.ts）。
+  if (rk3BattleEntryBlocked(state, playerId, unit)) return false;
 
   if (needsBattleEntryRushDiscard(unit.cardId)) {
     if (!canPayBattleEntryRushDiscard(player, state.definitions, unit.cardId)) return false;

@@ -152,7 +152,8 @@ export const CHIKARA_BATON_RULE = "rs213_chikara_baton";
 
 type BatonPayload = { attackerInstanceId: string; targetInstanceId: string };
 
-function beginChikaraBaton(state: GameState, ctx: GrantKeywordContext): GameState | null {
+/** RK-049【風牙】も同じ処理（rules/rk/rk3UnitEffects.ts）。 */
+export function beginChikaraBaton(state: GameState, ctx: GrantKeywordContext): GameState | null {
   const attackerInstanceId = ctx.triggerSourceInstanceId;
   if (!attackerInstanceId) return null;
   const enemyId = opponent(ctx.playerId);

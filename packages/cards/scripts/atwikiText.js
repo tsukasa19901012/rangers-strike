@@ -101,6 +101,8 @@ export async function fetchAtwikiEffectText(page) {
 /** atwiki スナップショット（docs/wiki/sources/atwiki/page-N-*.md）の本文で効果文の終わりを示す見出し。 */
 const SOURCE_EFFECT_END_LABELS = [
   "フレーバーテキスト",
+  // 表記ゆれ（atwiki/page-224 RK-052「フレーバテキスト」）。
+  "フレーバテキスト",
   "イラストレーター",
   "レアリティ",
   "Q&A",

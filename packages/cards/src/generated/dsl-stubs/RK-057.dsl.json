@@ -47,10 +47,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_enemy_s_to_power_bp4000",
+          "keyword": "rk3::RK-057::rider_sting",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
