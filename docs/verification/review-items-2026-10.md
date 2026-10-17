@@ -299,6 +299,8 @@
 - `packages/engine/src/rulesSpec/05-battle-strike-damage.test.ts:603`（609 行）
 - `packages/engine/src/rulesSpec/05-bp-strike-damage.test.ts:81`（87 行）
 
+**【2026-10-17 ユーザー確認】** 超力は発動するときに新しくホールドした数だけ数える（ユーザーの回答）。今の実装とテストのままでよい。
+
 ## A-12. RS-613 ダイヤジャック Q2
 
 **カード本文**
