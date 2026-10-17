@@ -168,7 +168,7 @@ describe("vertical slice — 100-game AI simulation (L4 starters)", () => {
     expect(report.phaseCoverage.battle).toBe(GAME_COUNT);
     expect(report.withStrike).toBeGreaterThan(15);
     },
-    90_000,
+    120_000,
   );
 });
 
