@@ -8,6 +8,7 @@
 import { describe, expect, it } from "vitest";
 import { cardCategories } from "@rangers-strike/cards";
 import { effectiveBp } from "../index";
+import { toPhase } from "../cardSpec/RK1-001-021.helpers";
 import type { GameAction } from "../types/actions";
 import type { GameState } from "../types/game";
 import {
@@ -249,13 +250,40 @@ describe("R-ERR-RK043 ライドシューター", () => {
   });
 
   // rider_1.html Q1:「効果の対象は、『「RK-043 ライドシューター」を捨札にしたそのターン中に、最初にラッシュする…ユニットカード』」
-  it.todo(
-    "R-ERR-RK043: 公式Q&A — 捨札にしたターン中にミラーライダーをラッシュしなければ、次のターンには軽減されない（出典: grnrngr/faq-rider-1 RK-043 Q1）— 【突入】自体がエンジン未実装のため起点の状態を作れない",
-  );
+  it("R-ERR-RK043: 公式Q&A — 捨札にしたターン中にミラーライダーをラッシュしなければ、次のターンには軽減されない（出典: grnrngr/faq-rider-1 RK-043 Q1）", () => {
+    const rs = inst("RK-043", "rs");
+    const raia = inst("RK-036", "raia");
+    let s = specState(["RK-043", "RK-036"], {
+      phase: "rush",
+      player1: { rush: [rs], hand: [raia], deck: powerCards(5, "d1") },
+      player2: { deck: powerCards(5, "d2") },
+    });
+    const discardShooter = legal(s).find((a) => a.type === "activate_field_unit_ability" && a.unitInstanceId === rs.instanceId);
+    expect(discardShooter).toBeDefined();
+    s = act(s, discardShooter!);
+    s = toPhase(toPhase(s, "player2", "rush"), "player1", "rush");
+    expect(
+      legal(s).some(
+        (a) =>
+          (a.type === "rush" && a.instanceId === raia.instanceId) ||
+          (a.type === "initiate_command_payment" && a.sourceInstanceId === raia.instanceId),
+      ),
+    ).toBe(false);
+  });
   // rider_1.html Q2:「効果の対象は「ユニットカード」になりますので、敵軍バトルエリアに「RK-035 ダークウィング」があっても…ラッシュできる」
-  it.todo(
-    "R-ERR-RK043: 公式Q&A — RK-035 ダークウィングで特徴を失う場合でも対象は「ユニットカード」なので適用できる（出典: grnrngr/faq-rider-1 RK-043 Q2）— 【突入】がエンジン未実装",
-  );
+  it("R-ERR-RK043: 公式Q&A — RK-035 ダークウィングで特徴を失う場合でも対象は「ユニットカード」なので適用できる（出典: grnrngr/faq-rider-1 RK-043 Q2）", () => {
+    const rs = inst("RK-043", "rs");
+    const raia = inst("RK-036", "raia");
+    let s = specState(["RK-043", "RK-036", "RK-035"], {
+      phase: "rush",
+      player1: { rush: [rs], hand: [raia] },
+      player2: { battle: [inst("RK-035", "dw")] },
+    });
+    const discardShooter = legal(s).find((a) => a.type === "activate_field_unit_ability" && a.unitInstanceId === rs.instanceId);
+    expect(discardShooter).toBeDefined();
+    s = act(s, discardShooter!);
+    expect(legal(s).some((a) => a.type === "rush" && a.instanceId === raia.instanceId)).toBe(true);
+  });
 });
 
 // ---------------------------------------------------------------------------

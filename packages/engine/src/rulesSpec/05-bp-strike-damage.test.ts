@@ -132,9 +132,25 @@ describe("R-BP-02 BP0 はルールによる撃破", () => {
     expect(zoneOf(s, "player1", "RK-031:g3")).toBe("discard");
   });
 
-  it.todo(
-    "R-BP-02: BP0 の撃破と RC（バッテリー交換）は同時とみなしターンプレイヤーが RC を先に解決できる（出典: grnrngr/faq-rider-1 RK-031 Q2）— RK-031 の RC がエンジンで山札→コマンドの処理を行わず観測できないため",
-  );
+  // 「タイミングが同時とみなしてRCの発動と撃破の順序をターンプレイヤーである自分が選ぶ（RCを発動させてから撃破される）ことはできますか？」「はい、できます。」
+  it("R-BP-02: BP0 の撃破と RC（バッテリー交換）は同時とみなしターンプレイヤーが RC を先に解決できる（出典: grnrngr/faq-rider-1 RK-031 Q2）", () => {
+    let s = battleState({
+      player1: { rush: [inst("RK-031", "g3"), inst("RK-058", "zect")], deck: [inst("TST-OP", "top"), ...deckCards(2)] },
+      player2: { battle: [inst("RK-046", "bm")] },
+    });
+    s = act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: "RK-031:g3", vehicleInstanceId: "RK-058:zect" });
+    s = act(s, { type: "resolve_ride_off_choice", playerId: "player1", rideOff: true });
+    // RC（任意）を発動する: 山札の上の1枚を自軍コマンドゾーンにホールド状態で置く
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-031");
+    for (let i = 0; i < 4 && s.pendingEffectChoice?.playerId === "player1"; i++) {
+      const p = s.pendingEffectChoice!;
+      s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: p.validInstanceIds[0]! });
+    }
+    s = settle(s);
+    expect(zoneOf(s, "player1", "TST-OP:top")).toBe("command");
+    expect(s.players.player1.command.find((c) => c.instanceId === "TST-OP:top")?.commandHeld).toBe(true);
+    expect(zoneOf(s, "player1", "RK-031:g3")).toBe("discard");
+  });
 
   // 「撃破されて捨札になるより先に）バトルになり…ストライクは無効」
   it("R-BP-02: ファイブテクターで出した BP500 のユニットは BP0 でも先にバトルになり、オートバジンBM のストライクは無効になる（出典: grnrngr/faq-rider-1 RK-046 Q5）", () => {

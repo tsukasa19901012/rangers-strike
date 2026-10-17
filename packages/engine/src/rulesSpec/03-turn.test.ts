@@ -844,13 +844,37 @@ describe("R-START-06 「フェイズ開始時」の効果", () => {
     "R-START-06: 「スタートフェイズを終えるとき、一度だけ」（超変身）は毎ターン1回ずつ発動できる（出典: grnrngr/faq-rider-2 RK-080）— RK-080 超変身の効果がエンジン未実装",
   );
 
-  it.todo(
-    "R-START-06: ブランウイング2体なら、相手がスタートフェイズに2つ以上リリースしたとき、スタートフェイズを終えるときにコマンドを2つホールドする（出典: grnrngr/faq-rider-1 RK-042 Q1）— RK-042【閃光の翼】がエンジン未実装",
-  );
+  /** 敵軍（player1）バトルエリアにブランウイングを置き、player2 のスタートフェイズを heldCount 個のホールド状態のコマンドで始めてチャージフェイズまで進める（ホールドの選択は先頭で解決）。 */
+  const brandWingStart = (wings: number, heldCount: number): GameState => {
+    let state = startOfPlayer2Turn(
+      { deck: cards("d", 5), command: Array.from({ length: heldCount }, (_, i) => held("TST-OP", `h${i}`)) },
+      { player1: { deck: cards("p1d", 5), battle: Array.from({ length: wings }, (_, i) => inst("RK-042", `w${i}`)) } },
+    );
+    state = doStartSteps(state, ["release", "return", "draw"]);
+    for (let i = 0; i < 10 && !(state.phase === "charge" && !state.pendingEffectChoice); i++) {
+      const p = state.pendingEffectChoice;
+      if (p) {
+        state = settle(act(state, { type: "resolve_effect_choice", playerId: p.playerId, instanceId: p.validInstanceIds[0]! }));
+        continue;
+      }
+      const a = legal(state).find((x) => x.type === "skip_bonus_draw") ?? legal(state).find((x) => x.type === "end_phase");
+      if (!a) break;
+      state = settle(act(state, a));
+    }
+    expect(state.phase).toBe("charge");
+    return state;
+  };
+  const heldNow = (state: GameState) => state.players.player2.command.filter((c) => c.commandHeld).length;
 
-  it.todo(
-    "R-START-06: ブランウイング1体なら、相手が4つリリースしてもホールドするのは1つ（出典: grnrngr/faq-rider-1 RK-042 Q2）— RK-042【閃光の翼】がエンジン未実装",
-  );
+  // 「はい、その通りです。「RK-042　ブランウィング」の効果は重複します。」(faq-rider-1 RK-042 Q1)
+  it("R-START-06: ブランウイング2体なら、相手がスタートフェイズに2つ以上リリースしたとき、スタートフェイズを終えるときにコマンドを2つホールドする（出典: grnrngr/faq-rider-1 RK-042 Q1）", () => {
+    expect(heldNow(brandWingStart(2, 2))).toBe(2);
+  });
+
+  // 「いいえ、ホールドするコマンドは1つです。…「RK-042 ブランウイング」1体につき1つになります。」(faq-rider-1 RK-042 Q2)
+  it("R-START-06: ブランウイング1体なら、相手が4つリリースしてもホールドするのは1つ（出典: grnrngr/faq-rider-1 RK-042 Q2）", () => {
+    expect(heldNow(brandWingStart(1, 4))).toBe(1);
+  });
 
   // 「ターン開始時」の効果はホールド中のコマンドの有無に関係なく発動する
   it("R-START-06: ゲゲル（重ね10枚以上）のターン開始時の効果は、ホールド中の自軍コマンドがなくても発動する（出典: atwiki/page-1828）", () => {

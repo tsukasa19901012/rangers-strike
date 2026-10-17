@@ -34,6 +34,7 @@ import { battleFillers, moveToBattle } from "../testing/battleEntry";
 import { heldWbCommand } from "../testing/fixtures";
 import { addTurnRuleModifier } from "../core/scopedModifiers";
 import { PINK_BARRIER_RULE_ID } from "../rules/powerFlipEffects";
+import { wasRushedThisTurn } from "../rules/turnModifiers";
 
 /** 撃破の誘発で開いた選択（タイミングだけを持つ最小の選択）。 */
 function destroyChoice(
@@ -1589,9 +1590,27 @@ describe("R-REPL-04 置き換え（用語）", () => {
   it.todo(
     "R-REPL-04: ユニット同士の置き換え（ゴーゴーダンプ）は場所だけが入れ替わり状態はそのまま、ラッシュには含まれない（出典: atwiki/page-1413）— RS-118 プレシャスの護り手の置き換えを公開APIで選ぶ合法手が未確認",
   );
-  it.todo(
-    "R-REPL-04: ユニットカードとユニットの置き換え（ライダーパス・モーフ）は状態・位置を引き継ぎ、エリアに出る方はラッシュに含まれる（出典: atwiki/page-1413）— RK-022 ライダーパスの置き換えがエンジン未接続",
-  );
+  // 「2枚のカードの配置を、ホールドやリリースの状態はそのままに置き換えること。」「置き換えでエリアに出ることはラッシュに含まれる」(atwiki/page-1413)
+  it("R-REPL-04: ユニットカードとユニットの置き換え（ライダーパス）は状態・位置を引き継ぎ、エリアに出る方はラッシュに含まれる（出典: atwiki/page-1413・grnrngr/faq-rider-1 RK-022）", () => {
+    const s0 = st({
+      phase: "rush",
+      player1: {
+        rush: [inst("TST-UNIT-0", "a"), { ...inst("RK-062", "af"), commandHeld: true }, inst("TST-UNIT-0", "b")],
+        operation: [{ ...inst("RK-022", "pass"), stackedCards: [inst("RK-061", "sf")] }],
+        power: powers(6),
+        deck: deck(5),
+      },
+    });
+    const activate = legal(s0).find((a) => a.type === "activate_resident_operation" && a.operationInstanceId === "RK-022:pass");
+    expect(activate).toBeDefined();
+    let s = run(s0, activate!);
+    s = run(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RK-061:sf" });
+    s = run(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RK-062:af" });
+    expect(ids(s, "player1", "rush")).toEqual(["TST-UNIT-0:a", "RK-061:sf", "TST-UNIT-0:b"]);
+    expect(s.players.player1.rush[1]?.commandHeld).toBe(true);
+    expect(s.players.player1.operation[0]?.stackedCards?.map((c) => c.instanceId)).toEqual(["RK-062:af"]);
+    expect(wasRushedThisTurn(s.players.player1, "RK-061:sf")).toBe(true);
+  });
 });
 
 // ---------------------------------------------------------------------------
