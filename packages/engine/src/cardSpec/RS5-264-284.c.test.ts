@@ -36,6 +36,7 @@ import {
   sUnit,
   zoneOf,
 } from "./RS5-264-284.helpers";
+import { nextPhase, playOp, resolveAll as resolveChoices } from "./RK1-001-021.helpers";
 import type { GameState } from "../types/game";
 
 const MINUS_S = sUnit("SPEC-MINUS", { powerCost: "3-", bp: 3000 });
@@ -281,9 +282,18 @@ describe("RS-280 レッドホーク", () => {
     "RS-280: 公式Q&A — キリンレンジャー【天時星・時間返し】でラッシュフェイズからやり直すときも『バトルフェイズを終えるとき』の効果は発動する（出典: grnrngr/faq-card-4 RS-208）— 時間返しのやり直し中のバトルフェイズ終了時点を公開状態から区別して観測できないため",
   );
   // faq-rider_2 RK-079 Q「…「カードに表記された本来のナンバー」を参照しますので、ナンバーがRCになっていたとしても適用されることになります。」
-  it.todo(
-    "RS-280: 公式Q&A — 仮面ライダーの称号（RK-079）でナンバーが RC になっていても、本来のナンバーと並び順が違えば手札に戻る（出典: grnrngr/faq-rider_2 RK-079）— RK-079 に重ねた状態をこの範囲のテストで構築する手順が確立していないため",
-  );
+  it.fails("RS-280: 公式Q&A — 仮面ライダーの称号（RK-079）でナンバーが RC になっていても、本来のナンバーと並び順が違えば手札に戻る（出典: grnrngr/faq-rider_2 RK-079）", () => {
+    let s = st({ phase: "rush", player1: { hand: [inst("RK-079", "tt")], rush: [inst("RS-280", "x")], command: [released("TST-OP-ET", "c")], power: powerCards(5), deck: deckCards(5) }, player2: { deck: deckCards(5, "e") } });
+    const r = playOp(s, "player1", "RK-079:tt");
+    expect(r.ok, r.error).toBe(true);
+    s = resolveChoices(r.state, ["RS-280:x"]);
+    // RK-079 がレッドホークの下に重なっている（ナンバーが RC になっている）状態で出す。
+    expect((s.players.player1.rush.find((c) => c.instanceId === "RS-280:x")?.stackedCards ?? []).map((c) => c.instanceId)).toEqual(["RK-079:tt"]);
+    s = enter(nextPhase(s), "RS-280:x");
+    s = endTurn(passEntry(s));
+    expect(zoneOf(s, "player1", "RS-280:x")).toBe("hand");
+    expect(zoneOf(s, "player1", "RK-079:tt")).toBe("discard");
+  });
   // faq-card-6 RS-393 Q「はい、その通りです。」
   it.todo(
     "RS-280: 公式Q&A — コマンドアタッカー（RS-393）にライドしたレッドホークが1番目に並んだときは手札に戻り、ビークルはバトルエリアに残る（出典: grnrngr/faq-card-6 RS-393）— ビークルへのライド手順をこの範囲のテストで構築していないため",

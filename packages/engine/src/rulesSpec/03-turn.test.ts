@@ -840,9 +840,22 @@ describe("R-START-06 「フェイズ開始時」の効果", () => {
     "R-START-06: 闇の戒律の「自軍スタートフェイズごとに」の選択はドロー後に行ってよい（出典: grnrngr/faq-card-5 RS-256）— RS-256 闇の戒律の効果がエンジン未実装（unnamed_resident）",
   );
 
-  it.todo(
-    "R-START-06: 「スタートフェイズを終えるとき、一度だけ」（超変身）は毎ターン1回ずつ発動できる（出典: grnrngr/faq-rider-2 RK-080）— RK-080 超変身の効果がエンジン未実装",
-  );
+  // 「「毎ターン1回ずつ発動できる」と考えてください。」(faq-rider-2 RK-080)
+  it.fails("R-START-06: 「スタートフェイズを終えるとき、一度だけ」（超変身）は毎ターン1回ずつ発動できる — 前のターンに重ねていても、次のスタートフェイズを終えるときにまた手札から重ねられる（出典: grnrngr/faq-rider-2 RK-080）", () => {
+    let state = startOfPlayer2Turn({
+      deck: cards("d", 5),
+      hand: [inst("RK-029", "h")],
+      operation: [{ ...inst("RK-080", "op"), stackedCards: [inst("RK-102", "old")] }],
+    });
+    state = doStartSteps(state, ["release", "return", "draw"]);
+    for (let i = 0; i < 5 && !state.pendingEffectChoice && state.phase === "start"; i++) {
+      const a = legal(state).find((x) => x.type === "skip_bonus_draw") ?? legal(state).find((x) => x.type === "end_phase");
+      if (!a) break;
+      state = act(state, a);
+    }
+    expect(state.pendingEffectChoice?.sourceCardId).toBe("RK-080");
+    expect(state.pendingEffectChoice?.validInstanceIds).toEqual(["RK-029:h"]);
+  });
 
   /** 敵軍（player1）バトルエリアにブランウイングを置き、player2 のスタートフェイズを heldCount 個のホールド状態のコマンドで始めてチャージフェイズまで進める（ホールドの選択は先頭で解決）。 */
   const brandWingStart = (wings: number, heldCount: number): GameState => {
