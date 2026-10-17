@@ -32,6 +32,7 @@ import { filterEffectRushCandidates, startEffectRush } from "../effectRush";
 import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
 import { RIDE_OFF_RC_MARK } from "../legend1/set7NamedEffectsD";
 import { J_POWER_CARD_ID, hasJPower, rk1AddedUnitFeatures, rk1IsSmallNow, rk1ZoneCardFeatures } from "./rk1Features";
+import { rk2FeaturesStripped } from "./rk2Features";
 
 export { J_POWER_CARD_ID, hasJPower, rk1AddedUnitFeatures, rk1IsSmallNow, rk1ZoneCardFeatures };
 
@@ -177,6 +178,8 @@ function addTurnPayload(state: GameState, playerId: PlayerId, ruleId: string, so
 // RK-001 改造人間（※常駐）・RK-013 Jパワー の特徴の追加と、J パワーによるサイズの変更
 
 function unitFeaturesOf(state: GameState, ownerId: PlayerId, card: CardInstance): string[] {
+  // RK-035 ダークウイング【ソニックブレイカー】（rules/rk/rk2Features.ts）。
+  if (rk2FeaturesStripped(state, ownerId, card)) return [];
   const base = getDefinition(state.definitions, card.cardId)?.features ?? [];
   const extra = rk1AddedUnitFeatures(state, ownerId, card, base).filter((f) => !base.includes(f));
   return [...base, ...extra];

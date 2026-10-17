@@ -4,6 +4,7 @@ import { set7DDefenderBlocksAttack } from "../legend1/set7NamedEffectsD";
 import { set8ADefenderBlocksAttack } from "../legend1/set8NamedEffectsA";
 import { set8DDefenderBlocksAttack } from "../legend1/set8NamedEffectsD";
 import { rk1DefenderBlocksAttack } from "../rk/rk1NamedEffects";
+import { rk2DefenderBlocksAttack, rk2KamenRiderRushDiscardable, rk2NeedsKamenRiderRushDiscard } from "../rk/rk2UnitEffects";
 import { set9DAllowsRushAttack } from "../legend1/set9NamedEffectsD";
 import { set8CAllowsRushAttack, set8CDefenderBlocksAttack } from "../legend1/set8NamedEffectsC";
 import { set8BDefenderBlocksAttack } from "../legend1/set8NamedEffectsB";
@@ -90,12 +91,31 @@ export function needsBattleEntryRushDiscard(cardId: string): boolean {
   return (
     hasUnnamedRule(cardId, "battle_entry_discard_s_from_rush") ||
     // RS-242 / RS-416: ※自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない
-    cardHasGrantKeyword(cardId, "require_discard_rush_s_entry")
+    cardHasGrantKeyword(cardId, "require_discard_rush_s_entry") ||
+    // RK-032 アナザーアギト: ※自軍ラッシュエリアの特徴「仮面ライダー」を持つユニットを1体捨札にしなければバトルエリアに出られない
+    rk2NeedsKamenRiderRushDiscard(cardId)
   );
 }
 
-export function canPayBattleEntryRushDiscard(player: PlayerState, definitions: GameState["definitions"]): boolean {
-  return player.rush.some((c) => isSmallUnit(definitions, c.cardId));
+/** 進入するユニット（enteringCardId）の※で捨札にできる自軍ラッシュエリアのユニットか。 */
+function isBattleEntryRushDiscardable(
+  definitions: GameState["definitions"],
+  cardId: string,
+  enteringCardId: string | undefined,
+): boolean {
+  // RK-032: 「特徴「仮面ライダー」を持つユニット」（サイズを問わない。rules/rk/rk2UnitEffects.ts）。
+  if (enteringCardId && rk2NeedsKamenRiderRushDiscard(enteringCardId)) {
+    return rk2KamenRiderRushDiscardable(definitions, cardId);
+  }
+  return isSmallUnit(definitions, cardId);
+}
+
+export function canPayBattleEntryRushDiscard(
+  player: PlayerState,
+  definitions: GameState["definitions"],
+  enteringCardId?: string,
+): boolean {
+  return player.rush.some((c) => isBattleEntryRushDiscardable(definitions, c.cardId, enteringCardId));
 }
 
 /** 戦闘進入時に捨てる別の自軍S（進入ユニット自身は不可）。 */
@@ -104,8 +124,9 @@ export function hasBattleEntryRushDiscardTarget(
   definitions: GameState["definitions"],
   enteringInstanceId: string,
 ): boolean {
+  const enteringCardId = player.rush.find((c) => c.instanceId === enteringInstanceId)?.cardId;
   return player.rush.some(
-    (c) => isSmallUnit(definitions, c.cardId) && c.instanceId !== enteringInstanceId,
+    (c) => isBattleEntryRushDiscardable(definitions, c.cardId, enteringCardId) && c.instanceId !== enteringInstanceId,
   );
 }
 
@@ -216,7 +237,7 @@ export function tryStartBattleEntryRushDiscard(
   const player = state.players[playerId];
   // 捨札にするのは出るユニット以外の自軍 S ユニット（RS-242 ※「自軍ラッシュエリアのSユニットを1体」）。
   const targets = player.rush
-    .filter((c) => isSmallUnit(state.definitions, c.cardId) && c.instanceId !== entering.instanceId)
+    .filter((c) => isBattleEntryRushDiscardable(state.definitions, c.cardId, entering.cardId) && c.instanceId !== entering.instanceId)
     .map((c) => c.instanceId);
   if (targets.length === 0) return null;
 
@@ -457,6 +478,8 @@ export function canAttackDefender(
   if (defenderCard && set8BDefenderBlocksAttack(state, defenderPlayerId, defenderCard)) return false;
   // RK-006 セイリングジャンプ・RK-014 共同戦線・RK-016 ミラーワールド（rules/rk/rk1NamedEffects.ts）。
   if (defenderCard && rk1DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
+  // RK-029 ※・RK-037【グライディング】（rules/rk/rk2UnitEffects.ts）。
+  if (defenderCard && rk2DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;

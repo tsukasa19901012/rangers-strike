@@ -1,4 +1,5 @@
 import { isOtherLinesBattleToRushTrigger, tryOtherLinesBattleToRush } from "./legend1/otherLinesNamedEffects";
+import { applyRk2StartPhaseEnd } from "./rk/rk2UnitEffects";
 import { getCardEffect } from "@rangers-strike/cards";
 import { gorgonBlocksRelease, isSet6BBattleToRushTrigger, trySet6BBattleToRush } from "./legend1/set6NamedEffectsB";
 import { darkLawStackPending, openDarkLawStackIfNeeded } from "./legend1/set5NamedEffectsA";
@@ -381,6 +382,8 @@ export function transitionStartToChargePhase(
     phase: "charge",
   };
   logEntries.push(buildSimpleLogEntry(playerId, "end_phase", "start"));
+  // RK-042 ブランウイング【閃光の翼】: スタートフェイズを終えるとき、自分自身のコマンドを選んでホールドする（rules/rk/rk2UnitEffects.ts）。
+  nextState = applyRk2StartPhaseEnd(nextState, playerId);
 
   return {
     ...nextState,

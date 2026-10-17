@@ -3,6 +3,7 @@ import {
   getOnRushNamedEffect,
   hasDestroySelfDamageNote,
 } from "@rangers-strike/cards";
+import { rk2BlocksDefenderCounters, rk2UsePrintedDefenderBp } from "./rk/rk2UnitEffects";
 import { activeOnAttackNamedEffect, namedEffectActive } from "./ncGatedEffects";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../types/game";
 import {
@@ -219,7 +220,9 @@ export function battleDefenderBp(
       legend2UsePrintedDefenderBp(state, pending) ||
       legend3UsePrintedDefenderBp(state, pending) ||
       // RS-503【シャッキーン！の中に修行あり】（rules/legend1/set7NamedEffectsD.ts）。
-      set7DUsePrintedDefenderBp(state, pending));
+      set7DUsePrintedDefenderBp(state, pending) ||
+      // RK-023【技の1号】（rules/rk/rk2UnitEffects.ts）。
+      rk2UsePrintedDefenderBp(state, pending));
 
   const mirageOverride = pending.substituteInstanceId ? undefined : pending.mirageBeamDefenderBpOverride;
   const base =
@@ -280,6 +283,8 @@ export function attackerBlocksDefenderCounters(
   );
   if (!attacker) return legend2BlocksDefenderCounters(state, attackerPlayerId, attackerInstanceId);
   return (
+    // RK-023【技の1号】（rules/rk/rk2UnitEffects.ts）。
+    rk2BlocksDefenderCounters(state, attackerPlayerId, attackerInstanceId) ||
     hasBattleNcEffect(attacker.card, "panther_claw") ||
     hasBattleNcEffect(attacker.card, "cannot_counter_on_attack") ||
     activeOnAttackNamedEffect(attacker.card)?.effectId === "panther_claw" ||

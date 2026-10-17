@@ -9,6 +9,7 @@
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { getPlayerModifiers } from "../core/scopedModifiers";
 import { rk1AddedUnitFeatures } from "./rk/rk1Features";
+import { rk2FeaturesStripped } from "./rk/rk2Features";
 
 export const DEUS_GENE_RULE_ID = "deus_gene_features";
 export const KIRIGAKURE_RULE_ID = "kirigakure_features";
@@ -42,6 +43,8 @@ export function unitFeatures(
   _ownerId: PlayerId,
   instance: Pick<CardInstance, "cardId" | "instanceId">,
 ): string[] {
+  // RK-035 ダークウイング【ソニックブレイカー】: 敵軍ユニットは特徴を持たず、特徴を追加されない（rules/rk/rk2Features.ts）。
+  if (rk2FeaturesStripped(state, _ownerId, instance)) return [];
   const base = state.definitions[instance.cardId]?.features ?? [];
   const extra: string[] = [];
   for (const pid of ["player1", "player2"] as const) {

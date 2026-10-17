@@ -423,7 +423,7 @@
       "【技の1号】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "rk2::RK-023::waza_no_ichigo"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -456,7 +456,7 @@
       "【電波投げ】"
     ],
     "expectedDslKeywords": [
-      "reveal_enemy_deck_hold_2"
+      "rk2::RK-025::denpa_nage"
     ],
     "bp": 1000,
     "sp": "1/5",
@@ -474,7 +474,7 @@
     ],
     "expectedDslKeywords": [
       "no_attack_from_enemy_s_bp2000",
-      "return_kamen_to_rush"
+      "rk2::RK-026::seigi_no_mikata"
     ],
     "bp": 500,
     "sp": null,
@@ -543,7 +543,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_1000",
-      "deck_scry_one"
+      "rk2::RK-030::musen_tsushin"
     ],
     "sp": null,
     "size": "S"
@@ -679,7 +679,7 @@
       "【ヘビープレッシャー】"
     ],
     "expectedDslKeywords": [
-      "combo_destroy_damage_gate"
+      "rk2::RK-038::heavy_pressure"
     ],
     "bp": 2000,
     "sp": "1/2",
@@ -697,7 +697,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rideoff_enemy_s_on_enter"
+      "rk2::RK-039::tosshin"
     ],
     "bp": 4000,
     "sp": null,

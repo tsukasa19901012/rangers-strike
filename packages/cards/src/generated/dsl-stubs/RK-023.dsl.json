@@ -26,12 +26,12 @@
       "name": "技の1号",
       "text": "「SP1」これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルし、自分が次の行動の宣言をするまで相手はカウンターを発動できない。",
       "trigger": {
-        "type": "on_attack"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "rk2::RK-023::waza_no_ichigo",
           "duration": "turn"
         }
       ]

@@ -4,6 +4,7 @@
  * DSL スタブが「resident」マーカーのみのカード（wiki テキストに実処理があるもの）を
  * ここで実装する。配置時 / 自軍ユニット被アタック時などのフックを提供する。
  */
+import { applyRk2ResidentPlaced } from "./rk/rk2UnitEffects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
@@ -210,6 +211,8 @@ export function applyResidentOpOnPlace(
   opInstanceId: string,
   cardId: string,
 ): GameState {
+  // RK-022 ライダーパス: 配置するとき山札の「DEN-O」を4枚まで重ねる（rules/rk/rk2UnitEffects.ts）。
+  if (cardId === "RK-022") return applyRk2ResidentPlaced(state, ownerId, opInstanceId, cardId);
   const runtime = runtimeForCard(cardId);
   if (!runtime?.onPlace) return state;
   return runtime.onPlace(state, ownerId, opInstanceId);

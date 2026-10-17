@@ -211,7 +211,7 @@ export function applyCourageMagicRelease(
   };
 }
 
-function destroyStriker(
+export function destroyStriker(
   state: GameState,
   strikerPlayerId: PlayerId,
   strikerInstanceId: string,

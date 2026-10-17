@@ -1,4 +1,5 @@
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
+import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects";
 import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import { openKuugaStayOnLeave } from "./legend1/otherLinesNamedEffects";
 import {
@@ -48,7 +49,7 @@ import {
   endDestroyTriggerHold,
   queueMirageKnuckle,
 } from "./destroyTriggerQueue";
-import { isCostWindowSatisfied } from "../core/costWindow";
+import { getCostWindowMetadata, isCostWindowSatisfied } from "../core/costWindow";
 import { buildLogEntry } from "../log/formatLog";
 import { resolveDestroyerDamageByText } from "./destroyerTextEffects";
 import {
@@ -285,6 +286,8 @@ export function canPayCounterCategoryHold(
   categories: Category[],
 ): boolean {
   if (categories.length === 0) return true;
+  // RK-036 仮面ライダーライア【運命への反抗】: 同じカテゴリのカードを自軍コマンドゾーンから捨札にして使える（rules/rk/rk2UnitEffects.ts）。
+  if (rk2RaiaDiscardCandidates(player, definitions, categories).length > 0) return true;
   if (!allCategoriesExistInCommandZone(player, definitions, categories)) return false;
   if (hasReleasedCommandForCategories(player, definitions, categories)) return true;
   return (
@@ -334,7 +337,9 @@ export function canExecuteHandCounter(
 
   return (
     isCostWindowSatisfied(ctx.player, "counter_category") &&
-    hasHeldCommandForCategories(ctx.player, state.definitions, categories)
+    (hasHeldCommandForCategories(ctx.player, state.definitions, categories) ||
+      // RK-036: ホールドのかわりに捨札にして支払った（rules/rk/rk2UnitEffects.ts）。
+      getCostWindowMetadata(ctx.player, "counter_category")?.raiaDiscard === true)
   );
 }
 
@@ -1430,7 +1435,13 @@ export function resolveBattlePendingCore(
       refreshedDefenderFound.card.cardId,
     );
 
-  const finalDestroyDefender = destroyDefender || winButDefenderSelfDestruct || reflectBarrierDefender;
+  // RK-040 ベノスネーカー【毒液】: 敵軍ターン中、これとバトルした「男」「女」のユニットはバトルに勝っても撃破される（rules/rk/rk2UnitEffects.ts）。
+  const venomDefender =
+    !destroyDefender && rk2VenomDestroys(battleState, defenderOwner, refreshedDefenderFound.card, refreshedAttackerFound.card);
+  const venomAttacker =
+    !destroyAttacker && rk2VenomDestroys(battleState, attackerId, refreshedAttackerFound.card, refreshedDefenderFound.card);
+
+  const finalDestroyDefender = destroyDefender || winButDefenderSelfDestruct || reflectBarrierDefender || venomDefender;
 
   // XG2-086: during enemy turn (attacker's turn), units that win are also destroyed
   // XG3-087: same but only for S-units
@@ -1446,7 +1457,7 @@ export function resolveBattlePendingCore(
     })();
 
   const finalDestroyAttacker =
-    destroyAttacker || winButSelfDestruct || defenderCausesWinnerDestruction || reflectBarrierAttacker;
+    destroyAttacker || winButSelfDestruct || defenderCausesWinnerDestruction || reflectBarrierAttacker || venomAttacker;
   const detail = `${cardName(battleState.definitions, refreshedDefenderFound.card.cardId)}:${attackerBp}vs${defenderBp}`;
   const log = buildLogEntry(
     attackerId,
@@ -1488,6 +1499,7 @@ export function resolveBattlePendingCore(
       !winButSelfDestruct &&
       !defenderCausesWinnerDestruction &&
       !reflectBarrierAttacker &&
+      !venomAttacker &&
       attackerZone === "battle",
     battleOpponentInstanceId: defenderInstanceId,
   };
@@ -1509,7 +1521,7 @@ export function resolveBattlePendingCore(
     discardAsDamage: defenderAsDamage || undefined,
     // ルール: R-KW-RESIST-03 — 防御側も「勝っても撃破」で倒された場合はレジスト不可（BP で負けたときだけ可）。
     registerEligible:
-      destroyDefender && !winButDefenderSelfDestruct && !reflectBarrierDefender && defenderZone === "battle",
+      destroyDefender && !winButDefenderSelfDestruct && !reflectBarrierDefender && !venomDefender && defenderZone === "battle",
     battleOpponentInstanceId: pending.attackerInstanceId,
   };
 

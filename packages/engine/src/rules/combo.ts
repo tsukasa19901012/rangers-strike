@@ -80,6 +80,7 @@ import {
 import { trySet7AOnEnterBattle } from "./legend1/set7NamedEffectsA";
 import { set9CBlocksStrike, trySet9COnComboEnter } from "./legend1/set9NamedEffectsC";
 import { tryRk1OnEnterBattle } from "./rk/rk1NamedEffects";
+import { tryRk2OnEnterBattle } from "./rk/rk2UnitEffects";
 import { set8ABlocksStrike, trySet8AOnEnterBattle } from "./legend1/set8NamedEffectsA";
 import { clearWolfRoarDecision, openWolfRoarBeforeNc } from "./legend1/set7NamedEffectsC";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
@@ -260,6 +261,11 @@ export function resolveEnterBattleEffectsImpl(
     }
     // RK-020 ダブルライダーキック: 選んだ2体が自軍バトルエリアで隣り合ったとき（rules/rk/rk1NamedEffects.ts）。
     nextState = tryRk1OnEnterBattle(nextState, playerId, battleCard);
+    if (nextState.pendingEffectChoice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+    // RK-024/RK-028/RK-030 ライドして一緒に出たビークルの進入効果・RK-033/RK-038 のコンビネーション（rules/rk/rk2UnitEffects.ts）。
+    nextState = tryRk2OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }

@@ -1614,13 +1614,15 @@ function resolveRiderPass(state: GameState, playerId: PlayerId, instanceId: stri
   const battle = swap(player.battle);
   if (!replaced) return { error: "invalid_target" };
   const replacedCard = { instanceId: replaced.instanceId, cardId: replaced.cardId } as CardInstance;
+  // 置き換えたユニットはユニットでなくなるので、その下に重ねていたカード（RK-013 Jパワー等）は捨札になる（grnrngr/faq-rider-1 RK-022 Q1）。
+  const freed = (replaced.stackedCards ?? []).map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }) as CardInstance);
   const operation = player.operation.map((c) =>
     c.instanceId === op.instanceId
       ? { ...c, stackedCards: [...(c.stackedCards ?? []).filter((x) => x.instanceId !== passCard.instanceId), replacedCard] }
       : c,
   );
   const next = clearPending(
-    { ...state, ...updatePlayer(state, playerId, { ...player, rush, battle, operation }) },
+    { ...state, ...updatePlayer(state, playerId, { ...player, rush, battle, operation, discard: [...player.discard, ...freed] }) },
     pending.phasePlayerId,
   );
   return {

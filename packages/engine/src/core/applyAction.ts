@@ -1,4 +1,5 @@
 import { isInstancePlacedAnywhere } from "./helpers";
+import { applyRk2StrikeDamageTriggers, rk2RecordStartRelease } from "../rules/rk/rk2UnitEffects";
 import { continueFieldAbilityAfterLeave } from "../rules/fieldActivatedAbilities";
 import { resumeAbductionAfterChase } from "../rules/abduction";
 import { applyKyouryuumaru, canUseKyouryuumaru, filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
@@ -605,6 +606,8 @@ function finishStrikeResolution(
   resolved = applySet7DStrikeDamageTriggers(resolved, pending, deckDraws);
   // RS-434 ライフバード（※常駐。rules/legend1/set7NamedEffectsA.ts）。
   resolved = applySet7AStrikeDamageTriggers(resolved, pending);
+  // RK-041 ジェノサイダー【ドゥームズデイ】（rules/rk/rk2UnitEffects.ts）。
+  resolved = applyRk2StrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -1322,7 +1325,12 @@ function applyActionCore(
       if (!player.command.some((c) => c.commandHeld)) {
         return fail("no_held_commands");
       }
-      const nextState = releaseAllCommands(state, playerId);
+      // RK-042 ブランウイング【閃光の翼】: スタートフェイズにリリースするコマンドの数を記録する（rules/rk/rk2UnitEffects.ts）。
+      const nextState = rk2RecordStartRelease(
+        releaseAllCommands(state, playerId),
+        playerId,
+        player.command.filter((c) => c.commandHeld).length,
+      );
       const nextPlayer = {
         ...nextState.players[playerId],
         hasReleasedCommandsThisStart: true,

@@ -145,6 +145,7 @@ import { isSet8DChoiceEffect, tryResolveSet8DChoice, trySkipSet8DChoice } from "
 import { isSet9AChoiceEffect, tryConfirmSet9AChoice, tryResolveSet9AChoice, trySkipSet9AChoice } from "./legend1/set9NamedEffectsA";
 import { isSet9DChoiceEffect, tryResolveSet9DChoice, trySkipSet9DChoice } from "./legend1/set9NamedEffectsD";
 import { isRk1ChoiceEffect, tryResolveRk1Choice, trySkipRk1Choice } from "./rk/rk1NamedEffects";
+import { isRk2ChoiceEffect, tryResolveRk2Choice, trySkipRk2Choice } from "./rk/rk2UnitEffects";
 import { filthyAirActive, isOtherLinesChoiceEffect, tryOtherLinesBattleToRush, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
@@ -643,6 +644,7 @@ export function isValidEffectChoiceTarget(
     isSet9AChoiceEffect(pending.effectId) ||
     isSet9DChoiceEffect(pending.effectId) ||
     isRk1ChoiceEffect(pending.effectId) ||
+    isRk2ChoiceEffect(pending.effectId) ||
     isOtherLinesChoiceEffect(pending.effectId) ||
     isSet9BChoiceEffect(pending.effectId) ||
     isSet8BChoiceEffect(pending.effectId) ||
@@ -2943,6 +2945,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (set9d) return set9d;
   const rk1 = trySkipRk1Choice(state, playerId);
   if (rk1) return rk1;
+  const rk2 = trySkipRk2Choice(state, playerId);
+  if (rk2) return rk2;
   const otherLines = trySkipOtherLinesChoice(state, playerId);
   if (otherLines) return otherLines;
   const abduction = skipAbductionChoice(state, playerId);
@@ -3240,6 +3244,8 @@ export function applyEffectChoiceSelect(
   if (set9d) return set9d;
   const rk1 = tryResolveRk1Choice(state, playerId, instanceId);
   if (rk1) return rk1;
+  const rk2 = tryResolveRk2Choice(state, playerId, instanceId);
+  if (rk2) return rk2;
   const otherLines = tryResolveOtherLinesChoice(state, playerId, instanceId);
   if (otherLines) return otherLines;
   const set9b = tryResolveSet9BChoice(state, playerId, instanceId);

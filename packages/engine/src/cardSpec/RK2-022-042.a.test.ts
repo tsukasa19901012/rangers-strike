@@ -108,13 +108,13 @@ describe("RK-022 ライダーパス", () => {
     expectRarityIn("RK-022", ["MR", "N"]);
   });
 
-  it.fails("RK-022: 配置するとき、自軍山札の特徴「DEN-O」を持つユニットカードだけを選べる（出典: atwiki/page-128「自軍山札から特徴「DEN-O」を持つユニットカードを4枚まで選び」）", () => {
+  it("RK-022: 配置するとき、自軍山札の特徴「DEN-O」を持つユニットカードだけを選べる（出典: atwiki/page-128「自軍山札から特徴「DEN-O」を持つユニットカードを4枚まで選び」）", () => {
     const s = placed();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-022");
     expect(choiceIds(s)).toEqual(["SPEC-DENO2:d2", "SPEC-DENO:d1"]);
   });
 
-  it.fails("RK-022: 選んだカードはこれに重ねて置かれ、選ばなかったカードは山札に残る（出典: atwiki/page-128「これに重ねて置いた後、山札をシャッフルする」）", () => {
+  it("RK-022: 選んだカードはこれに重ねて置かれ、選ばなかったカードは山札に残る（出典: atwiki/page-128「これに重ねて置いた後、山札をシャッフルする」）", () => {
     let s = placed();
     s = pick(s, "SPEC-DENO:d1");
     s = pick(s, "SPEC-DENO2:d2");
@@ -124,7 +124,7 @@ describe("RK-022 ライダーパス", () => {
     expect(zoneIds(s, "player1", "deck").sort()).toEqual(["SPEC-MALE:m", "TST-OP:x"]);
   });
 
-  it.fails("RK-022: 選ぶのは4枚まで（5枚あっても4枚で終わる）（出典: atwiki/page-128「4枚まで」）", () => {
+  it("RK-022: 選ぶのは4枚まで（5枚あっても4枚で終わる）（出典: atwiki/page-128「4枚まで」）", () => {
     const deck = ["a", "b", "c", "d", "e"].map((x) => inst("SPEC-DENO", x));
     let s = placed(deck);
     for (const x of ["a", "b", "c", "d"]) s = pick(s, `SPEC-DENO:${x}`);
@@ -133,7 +133,7 @@ describe("RK-022 ライダーパス", () => {
     expect(zoneIds(s, "player1", "deck")).toEqual(["SPEC-DENO:e"]);
   });
 
-  it.fails("RK-022: 4枚より少なく選んで終えてもよい（0枚も可）（出典: atwiki/page-128「4枚まで選び」）", () => {
+  it("RK-022: 4枚より少なく選んで終えてもよい（0枚も可）（出典: atwiki/page-128「4枚まで選び」）", () => {
     let s = placed();
     expect(canSkip(s)).toBe(true);
     s = resolveAll(skip(s));
@@ -143,7 +143,7 @@ describe("RK-022 ライダーパス", () => {
   });
 
   // 公式 Q7「オモテ向きに重ねてください。選んだカードは相手に見せてから重ねますので、その時点で公開情報となっています。」
-  it.fails("RK-022: 公式Q&A — 重ねたカードはオモテ向き（出典: grnrngr/faq-rider-1 RK-022 Q7・atwiki/page-128 Q7）", () => {
+  it("RK-022: 公式Q&A — 重ねたカードはオモテ向き（出典: grnrngr/faq-rider-1 RK-022 Q7・atwiki/page-128 Q7）", () => {
     let s = placed();
     s = resolveAll(pick(s, "SPEC-DENO:d1"), []);
     expect(stacked(s).length).toBeGreaterThan(0);
@@ -204,7 +204,7 @@ describe("RK-022 ライダーパス", () => {
   });
 
   // 公式 Q1「重ねたユニットがユニットでなくなっていますので、「RK-013 Jパワー」は捨札になります。」
-  it.fails("RK-022: 公式Q&A — J パワーに重ねられていたユニットを置き換えると、J パワーは捨札になる（出典: grnrngr/faq-rider-1 RK-022 Q1・atwiki/page-128 Q1）", () => {
+  it("RK-022: 公式Q&A — J パワーに重ねられていたユニットを置き換えると、J パワーは捨札になる（出典: grnrngr/faq-rider-1 RK-022 Q1・atwiki/page-128 Q1）", () => {
     const jp = { ...inst("SPEC-DENO", "u"), stackedCards: [inst("RK-013", "jp")] };
     const s = swap(passBoard([jp], [inst("SPEC-DENO2", "s")]), "SPEC-DENO2:s", "SPEC-DENO:u");
     expect(zoneOf(s, "player1", "SPEC-DENO2:s")).toBe("rush");
@@ -260,7 +260,7 @@ describe("RK-023 仮面ライダー1号", () => {
   const rcBoard = (p2: Partial<GameState["players"]["player2"]> = {}, p1: Partial<GameState["players"]["player1"]> = {}) =>
     rideOff(mount(board({ rush: [inst("RK-023", "one"), inst("RK-058", "v")], ...p1 }, p2), "RK-023:one", "RK-058:v"), true);
 
-  it.fails("RK-023: RC — ライドオフすると「SP1」を得て、2番目に並んでもストライクで1点与える（出典: atwiki/page-106「【技の1号】「SP1」」・R-KW-RC-01）", () => {
+  it("RK-023: RC — ライドオフすると「SP1」を得て、2番目に並んでもストライクで1点与える（出典: atwiki/page-106「【技の1号】「SP1」」・R-KW-RC-01）", () => {
     let s = settle(rcBoard());
     expect(zoneIds(s, "player1", "battle")).toEqual(["RK-058:v", "RK-023:one"]);
     expect(canStrike(s, "RK-023:one")).toBe(true);
@@ -273,7 +273,7 @@ describe("RK-023 仮面ライダー1号", () => {
     expect(canStrike(s, "RK-023:one")).toBe(false);
   });
 
-  it.fails("RK-023: RC — アタックするとき、敵軍ユニットの BP を本来の値としてバトルする（ライドで BP4500 の相手〈本来 3500〉に BP4000 で勝つ）（出典: atwiki/page-106「敵軍ユニットのBPをカードに表記された本来の値としてバトルし」）", () => {
+  it("RK-023: RC — アタックするとき、敵軍ユニットの BP を本来の値としてバトルする（ライドで BP4500 の相手〈本来 3500〉に BP4000 で勝つ）（出典: atwiki/page-106「敵軍ユニットのBPをカードに表記された本来の値としてバトルし」）", () => {
     let s = settle(rcBoard({ battle: ridingPair("SPEC-RC3500", "e", "RK-024", "ev") }));
     expect(bpOf(s, "player2", "SPEC-RC3500:e")).toBe(4500);
     s = resolveAll(attack(s, "RK-023:one", "SPEC-RC3500:e"));
@@ -296,7 +296,7 @@ describe("RK-023 仮面ライダー1号", () => {
         (a.type === "initiate_command_payment" && a.sourceInstanceId === "RK-004:g") || (a.type === "play_counter" && a.instanceId === "RK-004:g"),
     );
 
-  it.fails("RK-023: RC — これがアタックするとき、相手はカウンターを発動できない（出典: atwiki/page-106「自分が次の行動の宣言をするまで相手はカウンターを発動できない」）", () => {
+  it("RK-023: RC — これがアタックするとき、相手はカウンターを発動できない（出典: atwiki/page-106「自分が次の行動の宣言をするまで相手はカウンターを発動できない」）", () => {
     const s = attack(settle(rcBoard({ battle: [inst("SPEC-E1500", "e")], ...gigi })), "RK-023:one", "SPEC-E1500:e");
     expect(canCounter(s)).toBe(false);
   });
@@ -341,13 +341,13 @@ describe("RK-024 サイクロン号", () => {
   const crash = (p2: Partial<GameState["players"]["player2"]>) =>
     mount(board({ rush: [inst("SPEC-RC3000", "u"), inst("RK-024", "v")] }, p2), "SPEC-RC3000:u", "RK-024:v");
 
-  it.fails("RK-024: 【サイクロンクラッシャー】選べるのは BP4000 以上の敵軍 S ユニット（バトルエリア・ラッシュエリアとも）で、BP3500・M ユニットは選べない（出典: atwiki/page-50「BP4000以上の敵軍Sユニット」・カード評価「エリアを問わずに除去できる」）", () => {
+  it("RK-024: 【サイクロンクラッシャー】選べるのは BP4000 以上の敵軍 S ユニット（バトルエリア・ラッシュエリアとも）で、BP3500・M ユニットは選べない（出典: atwiki/page-50「BP4000以上の敵軍Sユニット」・カード評価「エリアを問わずに除去できる」）", () => {
     const s = crash({ battle: [inst("SPEC-E4000", "b"), inst("SPEC-E3500", "c"), inst("SPEC-EM5000", "m")], rush: [inst("SPEC-E5000", "r")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-024");
     expect(choiceIds(s)).toEqual(["SPEC-E4000:b", "SPEC-E5000:r"]);
   });
 
-  it.fails("RK-024: 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-50「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("RK-024: 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-50「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = settle(pick(crash({ battle: [inst("SPEC-E4000", "b")] }), "SPEC-E4000:b"));
     expect(zoneOf(s, "player2", "SPEC-E4000:b")).toBe("command");
     expect(cardIn(s, "player2", "SPEC-E4000:b")?.commandHeld).toBe(true);
@@ -357,7 +357,7 @@ describe("RK-024 サイクロン号", () => {
     expect(canSkip(crash({ battle: [inst("SPEC-E4000", "b")] }))).toBe(false);
   });
 
-  it.fails("RK-024: 持ち主のコマンドゾーンに置けなければ（5枚）捨札にする（出典: atwiki/page-50「置けなければ捨札にする」）", () => {
+  it("RK-024: 持ち主のコマンドゾーンに置けなければ（5枚）捨札にする（出典: atwiki/page-50「置けなければ捨札にする」）", () => {
     const s = settle(pick(crash({ battle: [inst("SPEC-E4000", "b")], command: releasedN(5, "TST-OP", "ec") }), "SPEC-E4000:b"));
     expect(zoneOf(s, "player2", "SPEC-E4000:b")).toBe("discard");
     expect(s.players.player2.command).toHaveLength(5);
@@ -368,7 +368,7 @@ describe("RK-024 サイクロン号", () => {
     expect(choiceIds(s)).not.toContain("RK-041:g");
   });
 
-  it.fails("RK-024: 参照するのは今の BP（ライドで BP4000 になっている本来 BP3000 のユニットも選べる）（出典: atwiki/page-50「BP4000以上」・カード評価「参照するBPは本来の値ではない」）", () => {
+  it("RK-024: 参照するのは今の BP（ライドで BP4000 になっている本来 BP3000 のユニットも選べる）（出典: atwiki/page-50「BP4000以上」・カード評価「参照するBPは本来の値ではない」）", () => {
     const s = crash({ battle: ridingPair("SPEC-RC3000", "e", "RK-024", "ev") });
     expect(choiceIds(s)).toContain("SPEC-RC3000:e");
   });
@@ -404,21 +404,21 @@ describe("RK-025 電波人間タックル", () => {
   const rc = (deck: ReturnType<typeof inst>[], p2: Partial<GameState["players"]["player2"]> = {}) =>
     rideOff(mount(board({ rush: [inst("RK-025", "t"), inst("RK-058", "v")] }, { deck, ...p2 }), "RK-025:t", "RK-058:v"), true);
 
-  it.fails("RK-025: RC — 敵軍山札の上から2枚のうち、特徴「男」を持つユニットカードを持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-200）", () => {
+  it("RK-025: RC — 敵軍山札の上から2枚のうち、特徴「男」を持つユニットカードを持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-200）", () => {
     const s = settle(rc([inst("SPEC-MALE", "m"), inst("TST-OP", "a"), inst("TST-OP", "b")]));
     expect(zoneOf(s, "player2", "SPEC-MALE:m")).toBe("command");
     expect(cardIn(s, "player2", "SPEC-MALE:m")?.commandHeld).toBe(true);
     expect(zoneIds(s, "player2", "deck")).toEqual(["TST-OP:a", "TST-OP:b"]);
   });
 
-  it.fails("RK-025: RC — 2枚とも「男」のユニットカードなら2枚とも置く（出典: atwiki/page-200「特徴「男」を持つユニットカードを」）", () => {
+  it("RK-025: RC — 2枚とも「男」のユニットカードなら2枚とも置く（出典: atwiki/page-200「特徴「男」を持つユニットカードを」）", () => {
     const s = settle(rc([inst("SPEC-MALE", "m"), inst("SPEC-KAMEN", "k"), inst("TST-OP", "b")]));
     expect(zoneOf(s, "player2", "SPEC-MALE:m")).toBe("command");
     expect(zoneOf(s, "player2", "SPEC-KAMEN:k")).toBe("command");
     expect(zoneIds(s, "player2", "deck")).toEqual(["TST-OP:b"]);
   });
 
-  it.fails("RK-025: RC — 「男」以外のカードは、相手（持ち主）が順番を選んで山札の上に戻す（出典: atwiki/page-200「それ以外のカードは、相手が好きな順で山札の上に戻す」）", () => {
+  it("RK-025: RC — 「男」以外のカードは、相手（持ち主）が順番を選んで山札の上に戻す（出典: atwiki/page-200「それ以外のカードは、相手が好きな順で山札の上に戻す」）", () => {
     let s = rc([inst("TST-OP", "a"), inst("SPEC-E2000", "b"), inst("TST-OP", "c")]);
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toEqual(["SPEC-E2000:b", "TST-OP:a"]);
@@ -432,7 +432,7 @@ describe("RK-025 電波人間タックル", () => {
     expect(s.players.player2.command).toHaveLength(5);
   });
 
-  it.fails("RK-025: RC は強制（ライドオフすれば必ずオモテにする。見送れない）（出典: atwiki/page-200（「してもよい」がない）・カード評価「RC能力は任意発動ではなく強制発動」）", () => {
+  it("RK-025: RC は強制（ライドオフすれば必ずオモテにする。見送れない）（出典: atwiki/page-200（「してもよい」がない）・カード評価「RC能力は任意発動ではなく強制発動」）", () => {
     const s = rc([inst("SPEC-MALE", "m"), inst("TST-OP", "a")]);
     expect(s.pendingEffectChoice?.playerId === "player1" && canSkip(s)).toBe(false);
     expect(zoneOf(settle(s), "player2", "SPEC-MALE:m")).toBe("command");
@@ -466,14 +466,14 @@ describe("RK-026 がんがんじい", () => {
   const gan = (battle: ReturnType<typeof inst>[], rush: ReturnType<typeof inst>[] = []) =>
     enter(board({ battle, rush: [inst("RK-026", "g"), ...rush] }), "RK-026:g");
 
-  it.fails("RK-026: 【日本一の正義の味方】自軍ターン中に出たとき、自軍バトルエリアの特徴「仮面ライダー」を持つユニットを選べる（任意）（出典: atwiki/page-201「特徴「仮面ライダー」を持つ自軍ユニットを1体選び、ラッシュエリアに戻してもよい」）", () => {
+  it("RK-026: 【日本一の正義の味方】自軍ターン中に出たとき、自軍バトルエリアの特徴「仮面ライダー」を持つユニットを選べる（任意）（出典: atwiki/page-201「特徴「仮面ライダー」を持つ自軍ユニットを1体選び、ラッシュエリアに戻してもよい」）", () => {
     const s = gan([inst("SPEC-KAMEN", "k"), inst("SPEC-MALE", "m")], [inst("SPEC-KAMEN", "r")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-026");
     expect(choiceIds(s)).toEqual(["SPEC-KAMEN:k"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-026: 選んだユニットは自軍ラッシュエリアに戻り、このターン再びバトルエリアに出られない（出典: atwiki/page-201「戻したユニットはこのターン、再びバトルエリアに出ることはできない」）", () => {
+  it("RK-026: 選んだユニットは自軍ラッシュエリアに戻り、このターン再びバトルエリアに出られない（出典: atwiki/page-201「戻したユニットはこのターン、再びバトルエリアに出ることはできない」）", () => {
     let s = settle(pick(gan([inst("SPEC-KAMEN", "k")]), "SPEC-KAMEN:k"));
     expect(zoneOf(s, "player1", "SPEC-KAMEN:k")).toBe("rush");
     s = passEntry(s);
@@ -486,7 +486,7 @@ describe("RK-026 がんがんじい", () => {
   });
 
   // 公式 Q1「ライド状態のまま自軍ラッシュエリアに戻ることになります。」
-  it.fails("RK-026: 公式Q&A — ビークルにライドしているユニットを戻すと、ライドした状態のままラッシュエリアに戻る（出典: grnrngr/faq-rider-1 RK-026 Q1・atwiki/page-201 Q1）", () => {
+  it("RK-026: 公式Q&A — ビークルにライドしているユニットを戻すと、ライドした状態のままラッシュエリアに戻る（出典: grnrngr/faq-rider-1 RK-026 Q1・atwiki/page-201 Q1）", () => {
     const pair = ridingPair("RK-023", "one", "RK-058", "v");
     const s = settle(pick(gan(pair), "RK-023:one"));
     expect(zoneOf(s, "player1", "RK-023:one")).toBe("rush");
@@ -522,7 +522,7 @@ describe("RK-027 仮面ライダーBLACK", () => {
     expectRarityIn("RK-027", ["SR"]);
   });
 
-  it.fails("RK-027: ※ ライド中は BP+1000（バトルホッパーにライドして BP4000、マシンゼクトロン〈+500〉なら BP4500）、ライドしていなければ BP3000（出典: atwiki/page-215「これはライド中、BP+1000される」）", () => {
+  it("RK-027: ※ ライド中は BP+1000（バトルホッパーにライドして BP4000、マシンゼクトロン〈+500〉なら BP4500）、ライドしていなければ BP3000（出典: atwiki/page-215「これはライド中、BP+1000される」）", () => {
     const s = board({ battle: [...ridingPair("RK-027", "a", "RK-028", "h"), ...ridingPair("RK-027", "b", "RK-058", "z"), inst("RK-027", "c")] });
     expect(bpOf(s, "player1", "RK-027:a")).toBe(4000);
     expect(bpOf(s, "player1", "RK-027:b")).toBe(4500);
@@ -532,7 +532,7 @@ describe("RK-027 仮面ライダーBLACK", () => {
   const kick = (p2: Partial<GameState["players"]["player2"]>, extraRush: ReturnType<typeof inst>[] = []) =>
     rideOff(mount(board({ rush: [inst("RK-027", "bk"), inst("RK-058", "v"), ...extraRush] }, p2), "RK-027:bk", "RK-058:v"), true);
 
-  it.fails("RK-027: RC — 自軍も敵軍も S ユニットが1体だけなら、敵軍 S ユニットを持ち主のパワーゾーンにダメージ（ウラ向き）として置く（出典: atwiki/page-215「持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("RK-027: RC — 自軍も敵軍も S ユニットが1体だけなら、敵軍 S ユニットを持ち主のパワーゾーンにダメージ（ウラ向き）として置く（出典: atwiki/page-215「持ち主のパワーゾーンにダメージにして置く」）", () => {
     let s = kick({ battle: [inst("SPEC-E5000", "e")] });
     if (s.pendingEffectChoice?.sourceCardId === "RK-027") {
       expect(choiceIds(s)).toEqual(["SPEC-E5000:e"]);
@@ -550,13 +550,13 @@ describe("RK-027 仮面ライダーBLACK", () => {
     expect(zoneOf(s, "player2", "SPEC-E5000:e")).toBe("power");
   });
 
-  it.fails("RK-027: RC — 敵軍の S ユニットが2体なら発動しない（出典: atwiki/page-215「自軍も敵軍もSユニットが1体しかいなければ」）", () => {
+  it("RK-027: RC — 敵軍の S ユニットが2体なら発動しない（出典: atwiki/page-215「自軍も敵軍もSユニットが1体しかいなければ」）", () => {
     const s = resolveAll(kick({ battle: [inst("SPEC-E5000", "e")], rush: [inst("SPEC-E1500", "e2")] }));
     expect(zoneOf(s, "player2", "SPEC-E5000:e")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-E1500:e2")).toBe("rush");
   });
 
-  it.fails("RK-027: RC — 自軍に BLACK 以外の S ユニットがいれば（ラッシュエリアでも）発動しない（出典: atwiki/page-215「自軍も…Sユニットが1体しかいなければ」）", () => {
+  it("RK-027: RC — 自軍に BLACK 以外の S ユニットがいれば（ラッシュエリアでも）発動しない（出典: atwiki/page-215「自軍も…Sユニットが1体しかいなければ」）", () => {
     const s = resolveAll(kick({ battle: [inst("SPEC-E5000", "e")] }, [inst("TST-UNIT-0", "mine")]));
     expect(zoneOf(s, "player2", "SPEC-E5000:e")).toBe("battle");
   });
@@ -604,13 +604,13 @@ describe("RK-028 バトルホッパー", () => {
   const smash = (p2: Partial<GameState["players"]["player2"]>) =>
     mount(board({ rush: [inst("RK-027", "bk"), inst("RK-028", "h")] }, p2), "RK-027:bk", "RK-028:h");
 
-  it.fails("RK-028: 【ダイナミックスマッシュ】選べるのは、ライドしているユニットの本来の BP（3000）以下の敵軍バトルエリアの S ユニット（ライド中の BP4000 ではない）（出典: atwiki/page-216「これにライドしているユニットの本来のBP以下」・page-215 カード評価「乗り手の本来のBPを参照する」）", () => {
+  it("RK-028: 【ダイナミックスマッシュ】選べるのは、ライドしているユニットの本来の BP（3000）以下の敵軍バトルエリアの S ユニット（ライド中の BP4000 ではない）（出典: atwiki/page-216「これにライドしているユニットの本来のBP以下」・page-215 カード評価「乗り手の本来のBPを参照する」）", () => {
     const s = smash({ battle: [inst("SPEC-E3000", "a"), inst("SPEC-E3500", "b"), inst("SPEC-E1500", "c")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-028");
     expect(choiceIds(s)).toEqual(["SPEC-E1500:c", "SPEC-E3000:a"]);
   });
 
-  it.fails("RK-028: 選んだユニットは持ち主の手札に戻る（出典: atwiki/page-216「持ち主の手札に戻す」）", () => {
+  it("RK-028: 選んだユニットは持ち主の手札に戻る（出典: atwiki/page-216「持ち主の手札に戻す」）", () => {
     const s = settle(pick(smash({ battle: [inst("SPEC-E3000", "a")] }), "SPEC-E3000:a"));
     expect(zoneOf(s, "player2", "SPEC-E3000:a")).toBe("hand");
   });

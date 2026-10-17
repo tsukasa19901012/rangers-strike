@@ -123,6 +123,23 @@ const RK1_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk020_double_kick_destroy: { label: "ダブルライダーキック", hint: "撃破する敵軍バトルエリアの BP8000 以下のユニットを選んでください" },
 };
 
+/** ライダーEXP vol.1 RK-022〜RK-042 のカード固有の選択（engine rules/rk/rk2UnitEffects.ts）の表示名と案内文。 */
+const RK2_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk022_pass_search: { label: "ライダーパス", hint: "ライダーパスに重ねる特徴「DEN-O」のユニットカードを自軍山札から選んでください（4枚まで。やめるなら「スキップ」）" },
+  rk024_cyclone_crusher: { label: "サイクロンクラッシャー", hint: "持ち主のコマンドゾーンにホールド状態で置く、追加条件を持たない BP4000 以上の敵軍 S ユニットを選んでください" },
+  rk025_denpa_order: { label: "電波投げ", hint: "山札の上に戻すカードを、上に置くものから1枚ずつ選んでください" },
+  rk026_seigi_no_mikata: { label: "日本一の正義の味方", hint: "ラッシュエリアに戻す特徴「仮面ライダー」の自軍ユニットを選んでください（戻さないなら「スキップ」）" },
+  rk027_rider_kick: { label: "ライダーキック", hint: "持ち主のパワーゾーンにダメージにして置く敵軍 S ユニットを選んでください" },
+  rk028_dynamic_smash: { label: "ダイナミックスマッシュ", hint: "持ち主の手札に戻す敵軍バトルエリアの S ユニットを選んでください" },
+  rk030_radio_look: { label: "無線通信", hint: "自軍山札の上から1枚を見ますか？（見るならカードを選ぶ）" },
+  rk030_radio_place: { label: "無線通信", hint: "見たカードを山札の上と下のどちらに戻すか選んでください" },
+  rk031_battery: { label: "バッテリー交換", hint: "自軍山札の上から1枚を自軍コマンドゾーンにホールド状態で置きますか？" },
+  rk032_another_punch: { label: "アナザーパンチ", hint: "持ち主のパワーゾーンにダメージにして置く敵軍バトルエリアの「仮面ライダー」の S ユニットを選んでください" },
+  rk038_heavy_pressure: { label: "ヘビープレッシャー", hint: "撃破する敵軍ユニットを選んでください（必要パワーの数字が敵軍ダメージの点数以下。撃破しないなら「スキップ」）" },
+  rk039_charge: { label: "突進", hint: "ライドオフさせるライド中の敵軍 S ユニットを選んでください" },
+  rk042_flash_wing_hold: { label: "閃光の翼", hint: "ホールドする自分自身のコマンドを選んでください" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -155,7 +172,8 @@ export function effectChoiceHint(
     SET7D_CHOICE_UI[pending.effectId] ??
     SET8D_CHOICE_UI[pending.effectId] ??
     SET9A_CHOICE_UI[pending.effectId] ??
-    RK1_CHOICE_UI[pending.effectId];
+    RK1_CHOICE_UI[pending.effectId] ??
+    RK2_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -349,6 +367,7 @@ export function effectChoiceTitle(
     SET8D_CHOICE_UI[pending.effectId]?.label ??
     SET9A_CHOICE_UI[pending.effectId]?.label ??
     RK1_CHOICE_UI[pending.effectId]?.label ??
+    RK2_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;
@@ -389,6 +408,8 @@ export function confirmOptionLabel(
   // RK-002 V3ホッパー（engine rules/rk/rk1NamedEffects.ts）。
   if (value === "deck_top") return "山札の上に戻す";
   if (value === "deck_bottom") return "山札の下に戻す";
+  // RK-031 バッテリー交換（engine rules/rk/rk2UnitEffects.ts）。
+  if (value === "use" && pending.effectId === "rk031_battery") return "コマンドゾーンに置く";
   if (value === "discard") return "捨札にする";
   for (const pid of ["player1", "player2"] as const) {
     const card = [...state.players[pid].battle, ...state.players[pid].rush].find((c) => c.instanceId === value);

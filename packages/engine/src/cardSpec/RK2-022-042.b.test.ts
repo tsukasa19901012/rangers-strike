@@ -76,6 +76,18 @@ const board = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<Ga
 const enemyTurn = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
   st({ activePlayer: "player2", player1: { deck: deckCards(5), ...p1 }, player2: { deck: deckCards(5, "e"), ...p2 } }, EXTRA);
 
+/**
+ * アナザーアギト（RK-032:a）を出す。※で捨札にするユニット（discard）を選び、選んだあとラッシュエリアに残っていれば
+ * もう一度出す（「〜を捨札にしなければ出られない」の支払いのあとに出る手順。RS-242 の照合〈cardSpec/RS4-222-242.c.test.ts〉と同じ）。
+ * vehicle を渡すとそのビークルにライドして出る（ライドオフの選択は残す）。
+ */
+function agitoIn(s: GameState, discard: string, vehicle?: string): GameState {
+  const go = (t: GameState) => (vehicle ? mount(t, "RK-032:a", vehicle) : enter(t, "RK-032:a"));
+  let t = resolveAll(go(s), [discard]);
+  if (zoneOf(t, "player1", "RK-032:a") === "rush") t = go(t);
+  return t;
+}
+
 // ===========================================================================
 describe("RK-029 仮面ライダークウガMF", () => {
   const TEXT =
@@ -96,7 +108,7 @@ describe("RK-029 仮面ライダークウガMF", () => {
     expectRarityIn("RK-029", ["SR"]);
   });
 
-  it.fails("RK-029: ※ ライド中は、ライドしていない敵軍 S ユニットにアタックされない（ライド中の S ユニット・M ユニットにはアタックされる）（出典: atwiki/page-217）", () => {
+  it("RK-029: ※ ライド中は、ライドしていない敵軍 S ユニットにアタックされない（ライド中の S ユニット・M ユニットにはアタックされる）（出典: atwiki/page-217）", () => {
     const s = enemyTurn(
       { battle: ridingPair("RK-029", "k", "RK-058", "v") },
       { battle: [inst("SPEC-E1500", "a"), inst("SPEC-EM", "m"), ...ridingPair("SPEC-RC", "r", "RK-030", "ev")] },
@@ -112,12 +124,12 @@ describe("RK-029 仮面ライダークウガMF", () => {
   const kick = (battle: ReturnType<typeof inst>[]) =>
     settle(rideOff(mount(board({ battle, rush: [inst("RK-029", "k"), inst("RK-058", "v")] }), "RK-029:k", "RK-058:v"), true));
 
-  it.fails("RK-029: RC — ライドオフすると、自軍バトルエリアの特徴「警察」を持つユニット1体につき BP+1000（2体で BP5000）（出典: atwiki/page-217「【マイティキック】…特徴「警察」を持つユニット1体につきBP+1000される」）", () => {
+  it("RK-029: RC — ライドオフすると、自軍バトルエリアの特徴「警察」を持つユニット1体につき BP+1000（2体で BP5000）（出典: atwiki/page-217「【マイティキック】…特徴「警察」を持つユニット1体につきBP+1000される」）", () => {
     const s = kick([inst("SPEC-POLICE", "p1"), inst("SPEC-POLICE", "p2")]);
     expect(bpOf(s, "player1", "RK-029:k")).toBe(5000);
   });
 
-  it.fails("RK-029: RC — 自軍ラッシュエリアの「警察」は数えない（出典: atwiki/page-217「自軍バトルエリアにある」）", () => {
+  it("RK-029: RC — 自軍ラッシュエリアの「警察」は数えない（出典: atwiki/page-217「自軍バトルエリアにある」）", () => {
     let s = board({ battle: [inst("SPEC-POLICE", "p1")], rush: [inst("RK-029", "k"), inst("RK-058", "v"), inst("SPEC-POLICE", "r")] });
     s = settle(rideOff(mount(s, "RK-029:k", "RK-058:v"), true));
     expect(bpOf(s, "player1", "RK-029:k")).toBe(4000);
@@ -155,24 +167,24 @@ describe("RK-030 トライチェイサー", () => {
   const radio = () =>
     mount(board({ rush: [inst("SPEC-RC", "u"), inst("RK-030", "v")], deck: deckCards(4) }), "SPEC-RC:u", "RK-030:v");
 
-  it.fails("RK-030: 【無線通信】出たとき、自軍山札の上から1枚を見るかを選べる（任意）（出典: atwiki/page-202「自軍山札の上から1枚を見てもよい」）", () => {
+  it("RK-030: 【無線通信】出たとき、自軍山札の上から1枚を見るかを選べる（任意）（出典: atwiki/page-202「自軍山札の上から1枚を見てもよい」）", () => {
     const s = radio();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-030");
     expect(choiceIds(s)).toEqual(["TST-OP:dk0"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-030: 見たカードを山札の下に戻せる（出典: atwiki/page-202「山札の下に戻すかを選択する」）", () => {
+  it("RK-030: 見たカードを山札の下に戻せる（出典: atwiki/page-202「山札の下に戻すかを選択する」）", () => {
     const s = settle(pick(pick(radio(), "TST-OP:dk0"), "deck_bottom"));
     expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:dk1", "TST-OP:dk2", "TST-OP:dk3", "TST-OP:dk0"]);
   });
 
-  it.fails("RK-030: 見たカードを元に（山札の上に）戻せる（出典: atwiki/page-202「それを元に戻すか」）", () => {
+  it("RK-030: 見たカードを元に（山札の上に）戻せる（出典: atwiki/page-202「それを元に戻すか」）", () => {
     const s = settle(pick(pick(radio(), "TST-OP:dk0"), "deck_top"));
     expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:dk0", "TST-OP:dk1", "TST-OP:dk2", "TST-OP:dk3"]);
   });
 
-  it.fails("RK-030: 見ないことを選べば山札はそのまま（出典: atwiki/page-202「見てもよい」）", () => {
+  it("RK-030: 見ないことを選べば山札はそのまま（出典: atwiki/page-202「見てもよい」）", () => {
     const s = settle(skip(radio()));
     expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:dk0", "TST-OP:dk1", "TST-OP:dk2", "TST-OP:dk3"]);
   });
@@ -201,7 +213,7 @@ describe("RK-031 仮面ライダーG3MILD", () => {
   const rc = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
     rideOff(mount(board({ rush: [inst("RK-031", "g"), inst("RK-058", "v")], deck: deckCards(4), ...p1 }, p2), "RK-031:g", "RK-058:v"), true);
 
-  it.fails("RK-031: RC — 発動するかを選べ（任意）、発動すると自軍山札の上の1枚を自軍コマンドゾーンにホールド状態で置く（出典: atwiki/page-203「…ホールド状態で置いてもよい」）", () => {
+  it("RK-031: RC — 発動するかを選べ（任意）、発動すると自軍山札の上の1枚を自軍コマンドゾーンにホールド状態で置く（出典: atwiki/page-203「…ホールド状態で置いてもよい」）", () => {
     let s = rc();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-031");
     expect(canSkip(s)).toBe(true);
@@ -210,7 +222,7 @@ describe("RK-031 仮面ライダーG3MILD", () => {
     expect(cardIn(s, "player1", "TST-OP:dk0")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-031: RC — 発動しないことを選べば山札はそのまま（出典: atwiki/page-203「置いてもよい」）", () => {
+  it("RK-031: RC — 発動しないことを選べば山札はそのまま（出典: atwiki/page-203「置いてもよい」）", () => {
     const s = settle(skip(rc()));
     expect(zoneIds(s, "player1", "deck")[0]).toBe("TST-OP:dk0");
     expect(s.players.player1.command).toHaveLength(0);
@@ -232,7 +244,7 @@ describe("RK-031 仮面ライダーG3MILD", () => {
   });
 
   // 公式 Q2「はい、できます。」（RC を発動させてから撃破される）
-  it.fails("RK-031: 公式Q&A — オートバジンBM 下でライドオフして BP0 になっても、RC を先に発動してから撃破される（出典: grnrngr/faq-rider-1 RK-031 Q2・Q3・atwiki/page-203 Q2・Q3）", () => {
+  it("RK-031: 公式Q&A — オートバジンBM 下でライドオフして BP0 になっても、RC を先に発動してから撃破される（出典: grnrngr/faq-rider-1 RK-031 Q2・Q3・atwiki/page-203 Q2・Q3）", () => {
     let s = rc({}, { battle: [inst("RK-046", "bm")] });
     s = resolveAll(s);
     expect(zoneOf(s, "player1", "TST-OP:dk0")).toBe("command");
@@ -266,43 +278,43 @@ describe("RK-032 アナザーアギト", () => {
     expectRarityIn("RK-032", ["SR"]);
   });
 
-  it.fails("RK-032: ※ 自軍ラッシュエリアに特徴「仮面ライダー」を持つユニットがいなければバトルエリアに出られない（出典: atwiki/page-218）", () => {
+  it("RK-032: ※ 自軍ラッシュエリアに特徴「仮面ライダー」を持つユニットがいなければバトルエリアに出られない（出典: atwiki/page-218）", () => {
     expect(canEnter(board({ rush: [inst("RK-032", "a"), inst("SPEC-MALE", "m")] }), "RK-032:a")).toBe(false);
   });
 
-  it.fails("RK-032: ※ 自軍ラッシュエリアの「仮面ライダー」を1体捨札にしてバトルエリアに出る（出典: atwiki/page-218「1体捨札にしなければバトルエリアに出られない」）", () => {
+  it("RK-032: ※ 自軍ラッシュエリアの「仮面ライダー」を1体捨札にしてバトルエリアに出る（出典: atwiki/page-218「1体捨札にしなければバトルエリアに出られない」）", () => {
     let s = board({ rush: [inst("RK-032", "a"), inst("SPEC-KAMEN", "k")] });
     expect(canEnter(s, "RK-032:a")).toBe(true);
-    s = resolveAll(enter(s, "RK-032:a"), ["SPEC-KAMEN:k"]);
+    s = agitoIn(s, "SPEC-KAMEN:k");
     expect(zoneOf(s, "player1", "RK-032:a")).toBe("battle");
     expect(zoneOf(s, "player1", "SPEC-KAMEN:k")).toBe("discard");
   });
 
-  it.fails("RK-032: ※ 自軍バトルエリアの「仮面ライダー」は捨札にできない（ラッシュエリアのものだけ）（出典: atwiki/page-218「自軍ラッシュエリアの」）", () => {
+  it("RK-032: ※ 自軍バトルエリアの「仮面ライダー」は捨札にできない（ラッシュエリアのものだけ）（出典: atwiki/page-218「自軍ラッシュエリアの」）", () => {
     expect(canEnter(board({ battle: [inst("SPEC-KAMEN", "b")], rush: [inst("RK-032", "a")] }), "RK-032:a")).toBe(false);
   });
 
   const punch = (p2: Partial<GameState["players"]["player2"]>) => {
     let s = board({ rush: [inst("RK-032", "a"), inst("RK-058", "v"), inst("SPEC-KAMEN", "k")] }, p2);
-    s = resolveAll(mount(s, "RK-032:a", "RK-058:v"), ["SPEC-KAMEN:k"]);
+    s = agitoIn(s, "SPEC-KAMEN:k", "RK-058:v");
     return rideOff(s, true);
   };
 
-  it.fails("RK-032: ※ ビークルにライドして出るときも「仮面ライダー」を1体捨札にする（出典: atwiki/page-218「捨札にしなければバトルエリアに出られない」）", () => {
+  it("RK-032: ※ ビークルにライドして出るときも「仮面ライダー」を1体捨札にする（出典: atwiki/page-218「捨札にしなければバトルエリアに出られない」）", () => {
     let s = board({ rush: [inst("RK-032", "a"), inst("RK-058", "v"), inst("SPEC-KAMEN", "k")] });
-    s = resolveAll(mount(s, "RK-032:a", "RK-058:v"), ["SPEC-KAMEN:k"]);
+    s = agitoIn(s, "SPEC-KAMEN:k", "RK-058:v");
     expect(zoneOf(s, "player1", "RK-032:a")).toBe("battle");
     expect(zoneOf(s, "player1", "SPEC-KAMEN:k")).toBe("discard");
   });
 
-  it.fails("RK-032: RC — 敵軍バトルエリアの特徴「仮面ライダー」を持つ S ユニットを選ぶ（ラッシュエリア・M ユニット・「仮面ライダー」以外は選べない）（出典: atwiki/page-218「敵軍バトルエリアから、特徴「仮面ライダー」を持つSユニットを1体選び」）", () => {
+  it("RK-032: RC — 敵軍バトルエリアの特徴「仮面ライダー」を持つ S ユニットを選ぶ（ラッシュエリア・M ユニット・「仮面ライダー」以外は選べない）（出典: atwiki/page-218「敵軍バトルエリアから、特徴「仮面ライダー」を持つSユニットを1体選び」）", () => {
     const s = punch({ battle: [inst("SPEC-KAMEN", "e"), inst("SPEC-KAMEN-M", "m"), inst("SPEC-MALE", "x")], rush: [inst("SPEC-KAMEN", "r")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-032");
     expect(choiceIds(s)).toEqual(["SPEC-KAMEN:e"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-032: RC — 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-218「持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("RK-032: RC — 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-218「持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = settle(pick(punch({ battle: [inst("SPEC-KAMEN", "e")] }), "SPEC-KAMEN:e"));
     expect(zoneOf(s, "player2", "SPEC-KAMEN:e")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-KAMEN:e")?.faceDown).toBe(true);
@@ -332,14 +344,14 @@ describe("RK-033 仮面ライダー龍騎", () => {
     expectRarityIn("RK-033", ["SR"]);
   });
 
-  it.fails("RK-033: 特徴「ドラゴン」を持つユニットの次に出ると「SP1」を得て、ストライクで1点与える（出典: atwiki/page-178・R-CN-05（コンビネーションは直前に出たユニットとの間に成立））", () => {
+  it("RK-033: 特徴「ドラゴン」を持つユニットの次に出ると「SP1」を得て、ストライクで1点与える（出典: atwiki/page-178・R-CN-05（コンビネーションは直前に出たユニットとの間に成立））", () => {
     let s = enter(board({ battle: [inst("SPEC-DRAGON", "d")], rush: [inst("RK-033", "r")] }), "RK-033:r");
     expect(canStrike(s, "RK-033:r")).toBe(true);
     s = settle(strike(s, "RK-033:r"));
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RK-033: ドラグレッダー（特徴「ドラゴン」）からのコンビネーションでも「SP1」を得る（出典: atwiki/page-178・page-179「特徴：ミラーモンスター／獣／ドラゴン」）", () => {
+  it("RK-033: ドラグレッダー（特徴「ドラゴン」）からのコンビネーションでも「SP1」を得る（出典: atwiki/page-178・page-179「特徴：ミラーモンスター／獣／ドラゴン」）", () => {
     const s = enter(board({ battle: [inst("RK-034", "d")], rush: [inst("RK-033", "r")] }), "RK-033:r");
     expect(canStrike(s, "RK-033:r")).toBe(true);
   });
@@ -381,7 +393,7 @@ describe("RK-034 ドラグレッダー", () => {
     expect(cardIn(s, "player1", "TST-OP:cWB0")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-034: 【ドラグブレス】隣り合う「ミラーライダー」の S ユニットは、バトルするとき BP+2000（BP2000 で BP3500 の相手に勝つ）（出典: atwiki/page-179）", () => {
+  it("RK-034: 【ドラグブレス】隣り合う「ミラーライダー」の S ユニットは、バトルするとき BP+2000（BP2000 で BP3500 の相手に勝つ）（出典: atwiki/page-179）", () => {
     const s0 = board({ battle: [inst("RK-034", "d")], rush: [inst("SPEC-MIRROR", "m")] }, { battle: [inst("SPEC-E3500", "e")] });
     let s = enter(s0, "SPEC-MIRROR:m");
     s = resolveAll(attack(s, "SPEC-MIRROR:m", "SPEC-E3500:e"));
@@ -389,13 +401,13 @@ describe("RK-034 ドラグレッダー", () => {
     expect(zoneOf(s, "player2", "SPEC-E3500:e")).toBe("discard");
   });
 
-  it.fails("RK-034: 【ドラグブレス】左隣の「ミラーライダー」にも効く（隣り合うのは左右どちらでも）（出典: atwiki/page-179「隣り合う」・カード評価「両隣のミラーライダーどちらともに与えられる」）", () => {
+  it("RK-034: 【ドラグブレス】左隣の「ミラーライダー」にも効く（隣り合うのは左右どちらでも）（出典: atwiki/page-179「隣り合う」・カード評価「両隣のミラーライダーどちらともに与えられる」）", () => {
     let s = board({ battle: [inst("SPEC-MIRROR", "m"), inst("RK-034", "d")] }, { battle: [inst("SPEC-E3500", "e")] });
     s = resolveAll(attack(s, "SPEC-MIRROR:m", "SPEC-E3500:e"));
     expect(lastBattleBps(s)?.attacker).toBe(4000);
   });
 
-  it.fails("RK-034: 【ドラグブレス】敵軍ターンにアタックされてバトルするときも BP+2000（出典: atwiki/page-179「バトルするとき」）", () => {
+  it("RK-034: 【ドラグブレス】敵軍ターンにアタックされてバトルするときも BP+2000（出典: atwiki/page-179「バトルするとき」）", () => {
     let s = enemyTurn({ battle: [inst("SPEC-MIRROR", "m"), inst("RK-034", "d")] }, { battle: [inst("SPEC-E3500", "e")] });
     s = resolveAll(attack(s, "SPEC-E3500:e", "SPEC-MIRROR:m", "player2"));
     expect(zoneOf(s, "player1", "SPEC-MIRROR:m")).toBe("battle");
@@ -420,7 +432,7 @@ describe("RK-034 ドラグレッダー", () => {
     expect(lastBattleBps(s)?.attacker).toBe(2000);
   });
 
-  it.fails("RK-034: ドラグレッダー2体に挟まれた「ミラーライダー」は BP+4000（出典: atwiki/page-179 カード評価「ドラグレッダー2匹で挟めばBP+4000となる」・R-CTR-02 相当の重複）", () => {
+  it("RK-034: ドラグレッダー2体に挟まれた「ミラーライダー」は BP+4000（出典: atwiki/page-179 カード評価「ドラグレッダー2匹で挟めばBP+4000となる」・R-CTR-02 相当の重複）", () => {
     let s = board({ battle: [inst("RK-034", "d1"), inst("SPEC-MIRROR", "m"), inst("RK-034", "d2")] }, { battle: [inst("SPEC-E5500", "e")] });
     s = resolveAll(attack(s, "SPEC-MIRROR:m", "SPEC-E5500:e"));
     expect(lastBattleBps(s)?.attacker).toBe(6000);
@@ -455,11 +467,11 @@ describe("RK-035 ダークウイング", () => {
   /** アナザーアギト（RK-032）の RC の候補（敵軍バトルエリアの「仮面ライダー」S ユニット）で、敵軍ユニットの特徴を確かめる。 */
   const punchTargets = (p1: Partial<GameState["players"]["player1"]>, p2: Partial<GameState["players"]["player2"]>) => {
     let s = board({ ...p1, rush: [inst("RK-032", "a"), inst("RK-058", "v"), inst("SPEC-KAMEN", "k"), ...(p1.rush ?? [])] }, p2);
-    s = resolveAll(mount(s, "RK-032:a", "RK-058:v"), ["SPEC-KAMEN:k"]);
+    s = agitoIn(s, "SPEC-KAMEN:k", "RK-058:v");
     return choiceIds(rideOff(s, true));
   };
 
-  it.fails("RK-035: 【ソニックブレイカー】自軍バトルエリアにある間、敵軍ユニットは特徴を持たない（「仮面ライダー」を選ぶ効果の対象にならない）（出典: atwiki/page-180）", () => {
+  it("RK-035: 【ソニックブレイカー】自軍バトルエリアにある間、敵軍ユニットは特徴を持たない（「仮面ライダー」を選ぶ効果の対象にならない）（出典: atwiki/page-180）", () => {
     expect(punchTargets({ battle: [inst("RK-035", "w")] }, { battle: [inst("SPEC-KAMEN", "e")] })).toEqual([]);
   });
 
@@ -471,11 +483,11 @@ describe("RK-035 ダークウイング", () => {
     // 自軍ラッシュエリアの「仮面ライダー」を捨札にしてアナザーアギトを出せる（自軍の特徴は残る）。
     let s = board({ battle: [inst("RK-035", "w")], rush: [inst("RK-032", "a"), inst("SPEC-KAMEN", "k")] });
     expect(canEnter(s, "RK-032:a")).toBe(true);
-    s = resolveAll(enter(s, "RK-032:a"), ["SPEC-KAMEN:k"]);
+    s = agitoIn(s, "SPEC-KAMEN:k");
     expect(zoneOf(s, "player1", "RK-032:a")).toBe("battle");
   });
 
-  it.fails("RK-035: 【ソニックブレイカー】敵軍ユニットは特徴を追加されない（改造人間 RK-001 があっても「改造人間」にならない）（出典: atwiki/page-180「特徴を追加されない」）", () => {
+  it("RK-035: 【ソニックブレイカー】敵軍ユニットは特徴を追加されない（改造人間 RK-001 があっても「改造人間」にならない）（出典: atwiki/page-180「特徴を追加されない」）", () => {
     // 敵軍（player2）が自分のターンに超電子ダイナモ（RK-005「特徴「改造人間」を持つ自軍Sユニットを1体選ぶ」）を使う。
     let s = st(
       {

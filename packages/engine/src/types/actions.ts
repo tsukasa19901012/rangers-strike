@@ -317,6 +317,8 @@ export type InitiateCommandPaymentAction = {
   kind: "battle_entry" | "category_use" | "effect_hold";
   sourceInstanceId: string;
   prismSubstitute?: boolean;
+  /** RK-036 仮面ライダーライア【運命への反抗】: コマンドをホールドせず、同じカテゴリのカードを自軍コマンドゾーンから捨札にしてカウンターを使う。 */
+  raiaDiscard?: boolean;
   rideOff?: boolean;
   zordMaterialInstanceId?: string;
   zordMaterialInstanceIds?: string[];

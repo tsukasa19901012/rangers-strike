@@ -74,6 +74,8 @@ describe("XG1-096 ビーファイタークワガー ※（NC も RC も発動し
     }, [KUWAGA]);
     s = settle(act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: "RK-031:r", vehicleInstanceId: "RK-058:z" }));
     s = settle(act(s, { type: "resolve_ride_off_choice", playerId: "player1", rideOff: true }));
+    // RK-031 の RC【バッテリー交換】（任意）の選択が開くので、発動しないことを選ぶ（cardSpec/RK2-022-042.b.test.ts）。
+    if (s.pendingEffectChoice?.sourceCardId === "RK-031") s = settle(act(s, { type: "skip_effect_choice", playerId: "player1" }));
     expect(attackTargets(s, "RK-031:r")).toContain("XG1-096:q");
   });
 

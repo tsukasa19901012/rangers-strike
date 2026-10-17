@@ -551,9 +551,19 @@ export type Rk1ChoiceMeta = {
   stashed?: Pick<GameState, "pendingBattle" | "pendingRush" | "pendingLeave" | "pendingStrike" | "pendingGiantBomb">;
 };
 
+/** ライダーEXP vol.1 RK-022〜RK-042 の選択の続き（rules/rk/rk2UnitEffects.ts）。 */
+export type Rk2ChoiceMeta = {
+  /** RK-030 トライチェイサー: 見たカード。 */
+  picked?: string;
+  /** RK-042 ブランウイング: まだホールドするコマンドの数。 */
+  remaining?: number;
+};
+
 export type PendingEffectChoice = {
   /** ライダーEXP vol.1 RK-001〜RK-021 の選択の続き（rules/rk/rk1NamedEffects.ts）。 */
   rk1Meta?: Rk1ChoiceMeta;
+  /** ライダーEXP vol.1 RK-022〜RK-042 の選択の続き（rules/rk/rk2UnitEffects.ts）。 */
+  rk2Meta?: Rk2ChoiceMeta;
   /** ※タッグの太字部分の入れ替え（rules/legend1/set8NamedEffectsA.ts）。 */
   tagMeta?: TagChoiceMeta;
   /** 第7弾 RS-432〜RS-452 の選択の続き（rules/legend1/set7NamedEffectsA.ts）。 */
@@ -904,6 +914,8 @@ export type PendingCommandPayment = {
    * 確定時に、カテゴリの支払い分と追加分に分ける（RS-627 メガシップ。rules/commandPayment.ts splitExtraHoldPayment）。
    */
   extraCommandHoldCount?: number;
+  /** RK-036 仮面ライダーライア: 選んだカードをホールドせずに捨札にする支払い（rules/rk/rk2UnitEffects.ts）。 */
+  discardInsteadOfHold?: boolean;
   continuation: CommandPaymentContinuation;
 };
 

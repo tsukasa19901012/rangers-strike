@@ -2,6 +2,7 @@ import {
   emergencyRequestEnemyCommandIds,
   releaseEmergencyRequestCommands,
 } from "./legend1/set4NamedEffects";
+import { rk2RaiaDiscardCandidates } from "./rk/rk2UnitEffects";
 import { shifuSubstituteAvailable } from "./legend1/set6NamedEffectsB";
 import { operationPaymentCategories } from "./legend1/set5NamedEffectsA";
 import type { Category } from "@rangers-strike/cards";
@@ -422,6 +423,10 @@ export function validatePaymentSelection(
     return validateShifuEffectHold(state, pending, commandInstanceIds);
   }
   if (commandInstanceIds.length !== pending.totalNeeded) return "wrong_count";
+  if (pending.discardInsteadOfHold) {
+    // RK-036: 候補（同じカテゴリの自軍コマンドゾーンのカード。ホールド状態でもよい）から選ぶ。
+    return commandInstanceIds.every((id) => pending.validInstanceIds.includes(id)) ? null : "invalid_command";
+  }
 
   for (const id of commandInstanceIds) {
     if (!pending.validInstanceIds.includes(id)) return "invalid_command";
@@ -549,6 +554,23 @@ export function applyCommandPaymentResolve(
   if (pending.kind === "effect_hold") {
     let nextState = applyPaymentHolds(state, playerId, commandInstanceIds);
     return { state: { ...nextState, pendingCommandPayment: undefined } };
+  }
+
+  if (pending.discardInsteadOfHold) {
+    // RK-036 仮面ライダーライア: 選んだカードを自軍コマンドゾーンから捨札にして、カウンターの支払いを済ませる。
+    const player = state.players[playerId];
+    const paid = player.command.filter((c) => commandInstanceIds.includes(c.instanceId));
+    if (paid.length !== commandInstanceIds.length) return { error: "invalid_command" };
+    const nextPlayer = satisfyCostWindow(
+      {
+        ...player,
+        command: player.command.filter((c) => !commandInstanceIds.includes(c.instanceId)),
+        discard: [...player.discard, ...paid.map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }))],
+      },
+      "counter_category",
+      { raiaDiscard: true },
+    );
+    return { state: { ...state, players: { ...state.players, [playerId]: nextPlayer }, pendingCommandPayment: undefined } };
   }
 
   const emergencyIds =
@@ -1099,6 +1121,23 @@ export function buildPaymentFromInitiateAction(
         type: "play_counter",
         substituteInstanceId: action.substituteInstanceId,
       };
+      if (action.raiaDiscard) {
+        // RK-036 仮面ライダーライア【運命への反抗】: 同じカテゴリのカードを1枚選び、ホールドせずに捨札にする（rules/rk/rk2UnitEffects.ts）。
+        const candidates = rk2RaiaDiscardCandidates(player, state.definitions, cardCategories(def));
+        if (candidates.length === 0) return null;
+        return {
+          playerId,
+          kind: "category_use",
+          sourceInstanceId: handFound.card.instanceId,
+          sourceCardId: handFound.card.cardId,
+          eligibleNeeded: 0,
+          totalNeeded: 1,
+          validInstanceIds: candidates,
+          categories: cardCategories(def),
+          discardInsteadOfHold: true,
+          continuation,
+        };
+      }
       return buildCategoryPayment(
         state,
         playerId,

@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_enemy_deck_hold_2",
+          "keyword": "rk2::RK-025::denpa_nage",
           "duration": "turn"
         }
       ]

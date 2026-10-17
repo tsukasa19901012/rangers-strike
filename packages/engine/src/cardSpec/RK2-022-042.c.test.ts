@@ -115,11 +115,11 @@ describe("RK-036 仮面ライダーライア", () => {
     return next;
   };
 
-  it.fails("RK-036: 【運命への反抗】自軍バトルエリアにある間、自軍コマンドがすべてホールド状態でもカウンターを使える（出典: atwiki/page-181「自軍コマンドをホールドせずにカウンターのオペレーションを使用できる」・grnrngr/faq-card-5 RS-305 Q「「RK-036 仮面ライダーライア」などの効果により、自軍コマンドがすべてホールドされていてもカウンターを発動できる」）", () => {
+  it("RK-036: 【運命への反抗】自軍バトルエリアにある間、自軍コマンドがすべてホールド状態でもカウンターを使える（出典: atwiki/page-181「自軍コマンドをホールドせずにカウンターのオペレーションを使用できる」・grnrngr/faq-card-5 RS-305 Q「「RK-036 仮面ライダーライア」などの効果により、自軍コマンドがすべてホールドされていてもカウンターを発動できる」）", () => {
     expect(canCounter(attacked({ battle: [inst("RK-036", "l")], command: [held("TST-OP", "h0")] }))).toBe(true);
   });
 
-  it.fails("RK-036: 【運命への反抗】使うときは、同じカテゴリ（WB）のカードを自軍コマンドゾーンから1枚捨札にする（ホールドはしない）（出典: atwiki/page-181「使用するオペレーションと同じカテゴリのカードを自軍コマンドゾーンから1枚選び、捨札にしなければ使用できない」）", () => {
+  it("RK-036: 【運命への反抗】使うときは、同じカテゴリ（WB）のカードを自軍コマンドゾーンから1枚捨札にする（ホールドはしない）（出典: atwiki/page-181「使用するオペレーションと同じカテゴリのカードを自軍コマンドゾーンから1枚選び、捨札にしなければ使用できない」）", () => {
     let s = attacked({ battle: [inst("RK-036", "l")], command: [held("TST-OP", "h0")] });
     s = resolveAll(useCounter(s), ["TST-OP:h0"]);
     expect(zoneOf(s, "player1", "TST-OP:h0")).toBe("discard");
@@ -174,7 +174,7 @@ describe("RK-037 エビルダイバー", () => {
     expect(zoneOf(s, "player1", "RK-037:e")).toBe("battle");
   });
 
-  it.fails("RK-037: 【グライディング】隣り合う「ミラーライダー」の S ユニットは敵軍ユニット（S・M とも）にアタックされない（出典: atwiki/page-182）", () => {
+  it("RK-037: 【グライディング】隣り合う「ミラーライダー」の S ユニットは敵軍ユニット（S・M とも）にアタックされない（出典: atwiki/page-182）", () => {
     const s = enemyTurn(
       { battle: [inst("SPEC-MIRROR", "m"), inst("RK-037", "e")] },
       { battle: [inst("SPEC-E2000", "a"), inst("SPEC-EM-SP", "b")] },
@@ -223,24 +223,24 @@ describe("RK-038 仮面ライダーガイ", () => {
   const pressure = (p2: Partial<GameState["players"]["player2"]>, dmg = 2, before = [inst("RK-039", "mg")]) =>
     enter(board({ battle: before, rush: [inst("RK-038", "g")] }, { damage: dmg, power: damageCards(dmg, "ed"), ...p2 }), "RK-038:g");
 
-  it.fails("RK-038: 【ヘビープレッシャー】「メタルゲラス」の次に出たとき、必要パワーの数字が敵軍ダメージ（2点）以下の敵軍ユニットを選べる（サイズ・エリアを問わない。任意）（出典: atwiki/page-51・カード評価「サイズ無視、エリア制限なし」）", () => {
+  it("RK-038: 【ヘビープレッシャー】「メタルゲラス」の次に出たとき、必要パワーの数字が敵軍ダメージ（2点）以下の敵軍ユニットを選べる（サイズ・エリアを問わない。任意）（出典: atwiki/page-51・カード評価「サイズ無視、エリア制限なし」）", () => {
     const s = pressure({ battle: [inst("TST-UNIT-0", "c0"), inst("SPEC-COST3", "c3")], rush: [inst("SPEC-COST2M", "c2")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-038");
     expect(choiceIds(s)).toEqual(["SPEC-COST2M:c2", "TST-UNIT-0:c0"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-038: 選んだユニットを撃破する（出典: atwiki/page-51「敵軍ユニットを1体選び撃破してもよい」）", () => {
+  it("RK-038: 選んだユニットを撃破する（出典: atwiki/page-51「敵軍ユニットを1体選び撃破してもよい」）", () => {
     const s = resolveAll(pick(pressure({ rush: [inst("SPEC-COST2M", "c2")] }), "SPEC-COST2M:c2"));
     expect(zoneOf(s, "player2", "SPEC-COST2M:c2")).toBe("discard");
   });
 
-  it.fails("RK-038: 撃破しないことを選べる（出典: atwiki/page-51「撃破してもよい」）", () => {
+  it("RK-038: 撃破しないことを選べる（出典: atwiki/page-51「撃破してもよい」）", () => {
     const s = settle(skip(pressure({ rush: [inst("SPEC-COST2M", "c2")] })));
     expect(zoneOf(s, "player2", "SPEC-COST2M:c2")).toBe("rush");
   });
 
-  it.fails("RK-038: 必要パワー「5+」は数字 5 で比べる（敵軍ダメージ5点なら選べ、4点なら選べない）（出典: atwiki/page-51「必要パワーの数字が」）", () => {
+  it("RK-038: 必要パワー「5+」は数字 5 で比べる（敵軍ダメージ5点なら選べ、4点なら選べない）（出典: atwiki/page-51「必要パワーの数字が」）", () => {
     expect(choiceIds(pressure({ battle: [inst("SPEC-COST5P", "c")] }, 5))).toEqual(["SPEC-COST5P:c"]);
     const s = settle(pressure({ battle: [inst("SPEC-COST5P", "c")] }, 4));
     expect(choiceIds(s)).not.toContain("SPEC-COST5P:c");
@@ -279,14 +279,14 @@ describe("RK-039 メタルゲラス", () => {
   const charge = (p2: Partial<GameState["players"]["player2"]>) =>
     enterHold(board({ rush: [inst("RK-039", "mg")], command: releasedCat("WB", 1) }, p2), "RK-039:mg");
 
-  it.fails("RK-039: 【突進】出たとき、ライド中の敵軍 S ユニットを選ぶ（ライドしていないユニットは選べない・見送れない）（出典: atwiki/page-183「ライド中の敵軍Sユニットを１体選び」）", () => {
+  it("RK-039: 【突進】出たとき、ライド中の敵軍 S ユニットを選ぶ（ライドしていないユニットは選べない・見送れない）（出典: atwiki/page-183「ライド中の敵軍Sユニットを１体選び」）", () => {
     const s = charge({ battle: [...ridingPair("SPEC-RC", "r", "RK-058", "v"), inst("SPEC-E2000", "x")], rush: ridingPair("SPEC-RC", "r2", "RK-030", "v2") });
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-039");
     expect(choiceIds(s)).toEqual(["SPEC-RC:r", "SPEC-RC:r2"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-039: 【突進】選んだユニットはライドオフし、ビークルはそのエリアに残る（出典: atwiki/page-183「ライドオフさせる」）", () => {
+  it("RK-039: 【突進】選んだユニットはライドオフし、ビークルはそのエリアに残る（出典: atwiki/page-183「ライドオフさせる」）", () => {
     const s = settle(pick(charge({ battle: ridingPair("SPEC-RC", "r", "RK-058", "v") }), "SPEC-RC:r"));
     expect(cardIn(s, "player2", "SPEC-RC:r")?.mountedOnInstanceId).toBeUndefined();
     expect(zoneOf(s, "player2", "SPEC-RC:r")).toBe("battle");
@@ -326,13 +326,13 @@ describe("RK-040 ベノスネーカー", () => {
   const bitten = (attacker: string) =>
     resolveAll(attack(enemyTurn({ battle: [inst("RK-040", "v")] }, { battle: [inst(attacker.split(":")[0]!, attacker.split(":")[1]!)] }), attacker, "RK-040:v", "player2"));
 
-  it.fails("RK-040: 【毒液】敵軍ターン中、これとバトルした特徴「男」のユニットは、バトルに勝っても撃破される（出典: atwiki/page-184）", () => {
+  it("RK-040: 【毒液】敵軍ターン中、これとバトルした特徴「男」のユニットは、バトルに勝っても撃破される（出典: atwiki/page-184）", () => {
     const s = bitten("SPEC-MALE:a");
     expect(zoneOf(s, "player1", "RK-040:v")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-MALE:a")).toBe("discard");
   });
 
-  it.fails("RK-040: 【毒液】特徴「女」のユニットも撃破される（出典: atwiki/page-184「特徴「男」または「女」を持つとき」）", () => {
+  it("RK-040: 【毒液】特徴「女」のユニットも撃破される（出典: atwiki/page-184「特徴「男」または「女」を持つとき」）", () => {
     expect(zoneOf(bitten("SPEC-FEMALE:a"), "player2", "SPEC-FEMALE:a")).toBe("discard");
   });
 
@@ -399,7 +399,7 @@ describe("RK-041 ジェノサイダー", () => {
     return resolveAll(strike(s, striker, "player2"));
   };
 
-  it.fails("RK-041: 【ドゥームズデイ】自軍バトルエリアにある間、敵軍 S ユニットはストライクしてダメージを与えたとき撃破される（出典: atwiki/page-185）", () => {
+  it("RK-041: 【ドゥームズデイ】自軍バトルエリアにある間、敵軍 S ユニットはストライクしてダメージを与えたとき撃破される（出典: atwiki/page-185）", () => {
     const s = struck({ battle: [inst("RK-041", "g")] }, "TST-UNIT-0:s");
     expect(damageOf(s, "player1")).toBe(1);
     expect(zoneOf(s, "player2", "TST-UNIT-0:s")).toBe("discard");
@@ -473,13 +473,13 @@ describe("RK-042 ブランウイング", () => {
   };
   const heldCount = (s: GameState, who: PlayerId = "player2") => s.players[who].command.filter((c) => c.commandHeld).length;
 
-  it.fails("RK-042: 【閃光の翼】相手がスタートフェイズにコマンドを2つリリースしたら、スタートフェイズを終えるときに自分のコマンドを1つホールドする（出典: atwiki/page-186）", () => {
+  it("RK-042: 【閃光の翼】相手がスタートフェイズにコマンドを2つリリースしたら、スタートフェイズを終えるときに自分のコマンドを1つホールドする（出典: atwiki/page-186）", () => {
     const s = startPhase({ battle: [inst("RK-042", "w")] }, 2);
     expect(s.phase).toBe("charge");
     expect(heldCount(s)).toBe(1);
   });
 
-  it.fails("RK-042: 【閃光の翼】ホールドするコマンドは相手が選ぶ（出典: atwiki/page-186「自分自身のコマンドを1つ選びホールドする」）", () => {
+  it("RK-042: 【閃光の翼】ホールドするコマンドは相手が選ぶ（出典: atwiki/page-186「自分自身のコマンドを1つ選びホールドする」）", () => {
     let s = st(
       { phase: "start", activePlayer: "player2", player1: { battle: [inst("RK-042", "w")], deck: deckCards(5) }, player2: { command: [held("TST-OP", "h0"), held("TST-OP", "h1")], deck: deckCards(5, "e") } },
       EXTRA,
@@ -503,13 +503,13 @@ describe("RK-042 ブランウイング", () => {
   });
 
   // 公式 Q1「はい、その通りです。「RK-042 ブランウィング」の効果は重複します。」
-  it.fails("RK-042: 公式Q&A — ブランウイング2体なら、2つリリースした相手は2つホールドする（重複する）（出典: grnrngr/faq-rider-1 RK-042 Q1・atwiki/page-186 Q1）", () => {
+  it("RK-042: 公式Q&A — ブランウイング2体なら、2つリリースした相手は2つホールドする（重複する）（出典: grnrngr/faq-rider-1 RK-042 Q1・atwiki/page-186 Q1）", () => {
     const s = startPhase({ battle: [inst("RK-042", "w1"), inst("RK-042", "w2")] }, 2);
     expect(heldCount(s)).toBe(2);
   });
 
   // 公式 Q2「いいえ、ホールドするコマンドは1つです。…「RK-042 ブランウイング」1体につき1つになります。」
-  it.fails("RK-042: 公式Q&A — ブランウイング1体なら、4つリリースしてもホールドするのは1つ（出典: grnrngr/faq-rider-1 RK-042 Q2・atwiki/page-186 Q2）", () => {
+  it("RK-042: 公式Q&A — ブランウイング1体なら、4つリリースしてもホールドするのは1つ（出典: grnrngr/faq-rider-1 RK-042 Q2・atwiki/page-186 Q2）", () => {
     const s = startPhase({ battle: [inst("RK-042", "w")] }, 4);
     expect(heldCount(s)).toBe(1);
   });

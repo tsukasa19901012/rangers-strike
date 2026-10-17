@@ -128,6 +128,7 @@ import { isSet8AChoiceEffect, isSet8AConfirmableChoice, isSet8AResident } from "
 import { canConfirmSet8CChoice, isSet8CChoiceEffect } from "../rules/legend1/set8NamedEffectsC";
 import { canConfirmSet9CChoice, isSet9CChoiceEffect } from "../rules/legend1/set9NamedEffectsC";
 import { canActivateSet9AResident, canConfirmSet9AChoice, isSet9AChoiceEffect, isSet9AResidentCard } from "../rules/legend1/set9NamedEffectsA";
+import { isRk2ChoiceEffect, rk2RaiaDiscardCandidates } from "../rules/rk/rk2UnitEffects";
 import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
 import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
@@ -190,6 +191,19 @@ function appendCounterCategoryPaymentActions(
       actions.push(action);
     }
   };
+
+  // RK-036 仮面ライダーライア【運命への反抗】: ホールドせず、同じカテゴリのカードを自軍コマンドゾーンから捨札にして使う（rules/rk/rk2UnitEffects.ts）。
+  if (rk2RaiaDiscardCandidates(state.players[playerId], state.definitions, categories).length > 0) {
+    const raia: GameAction = {
+      type: "initiate_command_payment",
+      playerId,
+      kind: "category_use",
+      sourceInstanceId: counterInstanceId,
+      raiaDiscard: true,
+      substituteInstanceId: options?.substituteInstanceId,
+    };
+    if (isInitiateCommandPaymentLegal(state, raia)) actions.push(raia);
+  }
 
   const paymentOptions = getCategoryPaymentOptions(state, playerId, categories, {
     perRushPayment: true,
@@ -1226,7 +1240,7 @@ function appendEffectChoiceActions(
     return;
   }
 
-  if (isRk1ChoiceEffect(pending.effectId)) {
+  if (isRk1ChoiceEffect(pending.effectId) || isRk2ChoiceEffect(pending.effectId)) {
     // ライダーEXP vol.1 RK-001〜RK-021 の選択（rules/rk/rk1NamedEffects.ts）。候補はモジュール側で絞り込み済み。
     for (const instanceId of pending.validInstanceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });

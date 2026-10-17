@@ -538,7 +538,7 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   if (errataBattleEntryBlocked(state, playerId, unit)) return false;
 
   if (needsBattleEntryRushDiscard(unit.cardId)) {
-    if (!canPayBattleEntryRushDiscard(player, state.definitions)) return false;
+    if (!canPayBattleEntryRushDiscard(player, state.definitions, unit.cardId)) return false;
     if (!battleEntryRushDiscardSatisfied(player, unit.cardId)) {
       if (!hasBattleEntryRushDiscardTarget(player, state.definitions, unit.instanceId)) {
         return false;
