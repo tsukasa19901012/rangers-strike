@@ -10,11 +10,9 @@
  * レアリティは atwiki の「メモリアルレア／ノーマル」を MR／N として照合する。
  *
  * RK-078 クロックアップは RK-021 と同名・同文の再録（スターター版）。RK-021 の照合（cardSpec/RK1-001-021.c.test.ts）の主な項目を ID を替えて確かめる。
- * RK-083・RK-084 の「特徴：アドベントカード」は、カタログがオペレーションの特徴を持たない（全オペレーションで未収録）ため照合しない。
  *
  * 既存の照合で済んでいるもの（重複させない）:
  *  - RK-081 の重ねたカードが10枚以上のターン開始時の SP1（ホールド中のコマンドの有無によらない）— rulesSpec/03-turn.test.ts R-START-06・startPhaseBegin.test.ts
- *  - RK-078 / RK-021 Q1（無限連鎖カード）・Q2（隠流忍術）— RK1-001-021.c.test.ts の it.todo と同じ理由で未照合
  */
 import { describe, expect, it } from "vitest";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
@@ -76,11 +74,12 @@ const KAMEN = sUnit("SPEC-KAMEN", { category: "MA", bp: 2000, features: ["仮面
 const MIRROR2 = sUnit("SPEC-MIRROR2", { category: "WB", bp: 2000, powerCost: 2, features: ["仮面ライダー", "ミラーライダー"] });
 const MIRROR4P = sUnit("SPEC-MIRROR4P", { category: "WB", bp: 3000, powerCost: "4+", features: ["仮面ライダー", "ミラーライダー"] });
 const MIRROR7 = sUnit("SPEC-MIRROR7", { category: "WB", bp: 8000, powerCost: 7, features: ["仮面ライダー", "ミラーライダー"] });
+const E_COST1 = sUnit("SPEC-E1", { bp: 1000, powerCost: 1 });
 const E_COST3 = sUnit("SPEC-E3", { bp: 3000, powerCost: 3 });
 const E_COST4 = sUnit("SPEC-E4", { bp: 4000, powerCost: 4 });
 const E_COST5 = sUnit("SPEC-E5", { bp: 5000, powerCost: 5 });
 const E_COST2_M = sUnit("SPEC-E2M", { bp: 3000, powerCost: 2, size: "M" });
-const EXTRA = [NOSP, ACCEL, CN2, CN2_M, NONUM, RC_S, AMADAM, AMADAM2, AMADAM5, KENJA, KENJA2, KAMEN, MIRROR2, MIRROR4P, MIRROR7, E_COST3, E_COST4, E_COST5, E_COST2_M, PLAIN_VEHICLE];
+const EXTRA = [E_COST1, NOSP, ACCEL, CN2, CN2_M, NONUM, RC_S, AMADAM, AMADAM2, AMADAM5, KENJA, KENJA2, KAMEN, MIRROR2, MIRROR4P, MIRROR7, E_COST3, E_COST4, E_COST5, E_COST2_M, PLAIN_VEHICLE];
 
 const board = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
   p1Battle(p1, p2, EXTRA);
@@ -155,6 +154,13 @@ describe("RK-078 クロックアップ（RK-021 の再録）", () => {
     expect(zoneOf(s, "player1", "RK-078:cu")).toBe("discard");
     expect(zoneOf(s, "player1", "TST-OP:stk0")).toBe("discard");
   });
+
+  it.todo(
+    "RK-078: 公式Q&A — 無限連鎖カードは常駐の効果を無効にするだけで、クロックアップと重ねたカードは常駐置き場に留まる（出典: atwiki/page-173 Q1・grnrngr/faq-rider-1 RK-021 Q1）— RK-021 の照合（RK1-001-021.c.test.ts）と同じく、RS-072 の常駐の無効化の手順を公開 API で組み立てられないため",
+  );
+  it.todo(
+    "RK-078: 公式Q&A — 「加速」のユニットがアタックされたとき隠流忍術も使えるが、否定文優先でバトルは行われない（出典: atwiki/page-173 Q2・grnrngr/faq-rider-1 RK-021 Q2）— RK-021 の照合と同じく、強制の常駐の処理と隠流忍術の反応ウィンドウの順序を公開 API で観測できないため",
+  );
 });
 
 // ===========================================================================
@@ -171,7 +177,7 @@ describe("RK-079 仮面ライダーの称号", () => {
     expectRarityIn("RK-079", ["N"]);
   });
 
-  it.fails("RK-079: 選べるのはナンバーに数字を持つ自軍 S ユニットだけ（RC・ナンバーなし・M ユニットは選べない）（出典: atwiki/page-661「ナンバーに数字を持つ自軍Sユニットを1体選ぶ」）", () => {
+  it("RK-079: 選べるのはナンバーに数字を持つ自軍 S ユニットだけ（RC・ナンバーなし・M ユニットは選べない）（出典: atwiki/page-661「ナンバーに数字を持つ自軍Sユニットを1体選ぶ」）", () => {
     const s = played(
       rushPhase({ hand: [inst("RK-079", "tt")], rush: [inst("SPEC-CN2", "u"), inst("SPEC-RC", "rc"), inst("SPEC-NONUM", "nn"), inst("SPEC-CN2-M", "m")], command: releasedCat("ET", 1), power: powerCards(5) }),
       "RK-079:tt",
@@ -180,31 +186,31 @@ describe("RK-079 仮面ライダーの称号", () => {
     expect(choiceIds(s)).toEqual(["SPEC-CN2:u"]);
   });
 
-  it.fails("RK-079: 選んだユニットはラッシュエリアに残り、このカードがその下に重なる（出典: atwiki/page-661「このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる」）", () => {
+  it("RK-079: 選んだユニットはラッシュエリアに残り、このカードがその下に重なる（出典: atwiki/page-661「このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる」）", () => {
     const s = titled();
     expect(zoneOf(s, "player1", "SPEC-CN2:u")).toBe("rush");
     expect(zoneOf(s, "player1", "RK-079:tt")).toBeNull();
     expect((cardIn(s, "player1", "SPEC-CN2:u")?.stackedCards ?? []).map((c) => c.instanceId)).toEqual(["RK-079:tt"]);
   });
 
-  it.fails("RK-079: 重ねたユニットのナンバーは RC になる — RC のユニットだけがライドできるビークルにライドできる（出典: atwiki/page-661「ナンバーはＲＣになり」）", () => {
+  it("RK-079: 重ねたユニットのナンバーは RC になる — RC のユニットだけがライドできるビークルにライドできる（出典: atwiki/page-661「ナンバーはＲＣになり」）", () => {
     const s = nextPhase(titled({ rush: [inst("SPEC-CN2", "u"), inst("SPEC-VEHICLE", "v")] }));
     expect(legal(s).some((a) => a.type === "mount_ride" && a.riderInstanceId === "SPEC-CN2:u" && a.vehicleInstanceId === "SPEC-VEHICLE:v")).toBe(true);
   });
 
-  it.fails("RK-079: ナンバーが RC になったユニットの効果は、ライドオフで発動する（2番目でなくても、キックホッパーの NC【ライダーキック】が発動）（出典: atwiki/page-661・R-KW-RC-01）", () => {
-    let s = titled({ rush: [inst("RK-071", "kh"), inst("SPEC-VEHICLE", "v")] }, { rush: [inst("SPEC-E3", "r1")], battle: [inst("TST-UNIT-0", "b")] }, "RK-071:kh");
+  it("RK-079: ナンバーが RC になったユニットの効果は、ライドオフで発動する（2番目でなくても、キックホッパーの NC【ライダーキック】が発動）（出典: atwiki/page-661・R-KW-RC-01）", () => {
+    let s = titled({ rush: [inst("RK-071", "kh"), inst("SPEC-VEHICLE", "v")] }, { rush: [inst("SPEC-E3", "r1")], battle: [inst("SPEC-E1", "b")] }, "RK-071:kh");
     s = rcRideOff(nextPhase(s), "RK-071:kh", "SPEC-VEHICLE:v");
     expectChoiceFrom(s, "player1", "RK-071");
   });
 
   it("RK-079: ナンバーが RC になったユニットは、ナンバーの数字の位置に出ても NC は成立しない（キックホッパーを2番目に出しても発動しない）（出典: atwiki/page-661「ナンバーはＲＣになり」・R-KW-RC-01「RC はナンバーを持つものとして扱うが数字ではない」）", () => {
-    let s = titled({ rush: [inst("RK-071", "kh")], battle: fill(1) }, { rush: [inst("SPEC-E3", "r1")], battle: [inst("TST-UNIT-0", "b")] }, "RK-071:kh");
+    let s = titled({ rush: [inst("RK-071", "kh")], battle: fill(1) }, { rush: [inst("SPEC-E3", "r1")], battle: [inst("SPEC-E1", "b")] }, "RK-071:kh");
     s = enter(nextPhase(s), "RK-071:kh");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-071");
   });
 
-  it.fails("RK-079: 重ねたユニットに特徴「仮面ライダー」が追加される（ライダーマンの「これ以外の仮面ライダーがいれば敵軍 S ユニットにアタックされない」を満たす）（出典: atwiki/page-661「特徴「仮面ライダー」が追加される」・atwiki/page-131）", () => {
+  it("RK-079: 重ねたユニットに特徴「仮面ライダー」が追加される（ライダーマンの「これ以外の仮面ライダーがいれば敵軍 S ユニットにアタックされない」を満たす）（出典: atwiki/page-661「特徴「仮面ライダー」が追加される」・atwiki/page-131）", () => {
     let s = titled();
     s = { ...s, phase: "battle" as const, activePlayer: "player2" as const };
     s = {
@@ -212,7 +218,7 @@ describe("RK-079 仮面ライダーの称号", () => {
       players: {
         ...s.players,
         player1: { ...s.players.player1, battle: [...s.players.player1.rush, inst("RK-074", "rm")], rush: [] },
-        player2: { ...s.players.player2, battle: [inst("TST-UNIT-7", "atk")] },
+        player2: { ...s.players.player2, battle: [inst("SPEC-E3", "atk")] },
       },
     };
     expect(attackersOf(s, "RK-074:rm")).toEqual([]);
@@ -246,14 +252,14 @@ function stackSwapTests(id: string, name: string, feature: string, page: string,
       id,
     );
 
-  it.fails(`${id}: 自軍スタートフェイズを終えるとき、手札の特徴「${feature}」を持つユニットカードだけを選べる（任意）（出典: ${page}）`, () => {
+  it(`${id}: 自軍スタートフェイズを終えるとき、手札の特徴「${feature}」を持つユニットカードだけを選べる（任意）（出典: ${page}）`, () => {
     const s = start([inst(unit, "h1"), inst("SPEC-KAMEN", "k"), inst(unit2, "h2")]);
     expectChoiceFrom(s, "player1", id);
     expect(choiceIds(s)).toEqual([`${unit2}:h2`, `${unit}:h1`].sort());
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails(`${id}: 選んだカード（好きな枚数）はこれにオモテ向きに重ねて置き、置いた枚数（2枚）をドローする（出典: ${page}「手札から置いた枚数をドローする」）`, () => {
+  it(`${id}: 選んだカード（好きな枚数）はこれにオモテ向きに重ねて置き、置いた枚数（2枚）をドローする（出典: ${page}「手札から置いた枚数をドローする」）`, () => {
     let s = start([inst(unit, "h1"), inst("SPEC-KAMEN", "k"), inst(unit2, "h2")]);
     const handBefore = s.players.player1.hand.length;
     s = pick(s, `${unit}:h1`);
@@ -266,7 +272,7 @@ function stackSwapTests(id: string, name: string, feature: string, page: string,
     expect(zoneOf(s, "player1", "SPEC-KAMEN:k")).toBe("hand");
   });
 
-  it.fails(`${id}: 置かなくてもよい（そのときはドローしない）（出典: ${page}「置いてもよい。そうしたとき」）`, () => {
+  it(`${id}: 置かなくてもよい（そのときはドローしない）（出典: ${page}「置いてもよい。そうしたとき」）`, () => {
     let s = start([inst(unit, "h1")]);
     const deckBefore = s.players.player1.deck.length;
     s = settle(skip(s));
@@ -276,7 +282,7 @@ function stackSwapTests(id: string, name: string, feature: string, page: string,
   });
 
   // faq-rider-2 RK-080 Q「「毎ターン1回ずつ発動できる」と考えてください。」
-  it.fails(`${id}: 公式Q&A — 「一度だけ」は毎ターン1回ずつ — 前のターンに使っていても、次の自軍スタートフェイズにまた置ける（出典: ${faq}）`, () => {
+  it(`${id}: 公式Q&A — 「一度だけ」は毎ターン1回ずつ — 前のターンに使っていても、次の自軍スタートフェイズにまた置ける（出典: ${faq}）`, () => {
     const s = start([inst(unit, "h1")], [inst(unit2, "old")]);
     expectChoiceFrom(s, "player1", id);
   });
@@ -285,7 +291,7 @@ function stackSwapTests(id: string, name: string, feature: string, page: string,
   const swapBoard = (rush: CardInstance[], stacked: CardInstance[] = [inst(unit2, "s")], p1: Partial<GameState["players"]["player1"]> = {}) =>
     rushPhase({ rush, operation: [resident(id, "op", stacked)], power: powerCards(2), ...p1 });
 
-  it.fails(`${id}: 自軍ラッシュフェイズに、重ねたカードから1枚選び、本来の特徴に「${feature}」を持つ自軍ユニットと置き換えられる（出典: ${page}「本来の特徴に「${feature}」を持つ自軍ユニットと置き換えてもよい」）`, () => {
+  it(`${id}: 自軍ラッシュフェイズに、重ねたカードから1枚選び、本来の特徴に「${feature}」を持つ自軍ユニットと置き換えられる（出典: ${page}「本来の特徴に「${feature}」を持つ自軍ユニットと置き換えてもよい」）`, () => {
     let s = swapBoard([inst(unit, "u"), inst("SPEC-KAMEN", "k")]);
     expect(canActivateResident(s, `${id}:op`)).toBe(true);
     s = activateResident(s, `${id}:op`);
@@ -364,7 +370,7 @@ describe("RK-081 ゲゲル", () => {
     return settle(attack(s, "TST-UNIT-7:atk", "TST-UNIT-0:e"));
   };
 
-  it.fails("RK-081: 自軍バトルフェイズに敵軍ユニットを撃破したとき、山札の上から1枚ひいて重ねるかを選べる（任意）（出典: atwiki/page-709）", () => {
+  it("RK-081: 自軍バトルフェイズに敵軍ユニットを撃破したとき、山札の上から1枚ひいて重ねるかを選べる（任意）（出典: atwiki/page-709）", () => {
     const s = killed();
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
     expectChoiceFrom(s, "player1", "RK-081");
@@ -372,14 +378,14 @@ describe("RK-081 ゲゲル", () => {
   });
 
   // faq-rider-2 RK-081 Q「いいえ、できません。「ウラ向きのまま」とありますので、カードのオモテは見ずに、ウラ向きのまま…重ねてください。」
-  it.fails("RK-081: 重ねると、山札の一番上のカードがウラ向きのまま重なる（出典: atwiki/page-709・grnrngr/faq-rider-2 RK-081 Q）", () => {
+  it("RK-081: 重ねると、山札の一番上のカードがウラ向きのまま重なる（出典: atwiki/page-709・grnrngr/faq-rider-2 RK-081 Q）", () => {
     const s = settle(confirm(killed()));
     expect(stackedOn(s, "player1", "RK-081:gg")).toEqual(["TST-OP:dk0"]);
     expect(s.players.player1.operation[0]?.stackedCards?.[0]?.faceDown).toBe(true);
     expect(s.players.player1.deck).toHaveLength(4);
   });
 
-  it.fails("RK-081: 重ねなくてもよい（出典: atwiki/page-709「重ねてもよい」）", () => {
+  it("RK-081: 重ねなくてもよい（出典: atwiki/page-709「重ねてもよい」）", () => {
     const s = settle(skip(killed()));
     expect(stackedOn(s, "player1", "RK-081:gg")).toEqual([]);
     expect(s.players.player1.deck).toHaveLength(5);
@@ -446,7 +452,7 @@ describe("RK-083 ストライクベント", () => {
     expect(choiceIds(s)).toEqual(["SPEC-MIRROR2:b", "SPEC-MIRROR4P:a"]);
   });
 
-  it.fails("RK-083: 選んだユニットの必要パワーの数字（「4+」は 4）以下の、敵軍バトルエリアの S ユニットを選んで撃破する（ラッシュエリア・M は対象外）（出典: atwiki/page-624「その数字以下の必要パワーの数字を持つSユニットを1体選び、撃破する」）", () => {
+  it("RK-083: 選んだユニットの必要パワーの数字（「4+」は 4）以下の、敵軍バトルエリアの S ユニットを選んで撃破する（ラッシュエリア・M は対象外）（出典: atwiki/page-624「その数字以下の必要パワーの数字を持つSユニットを1体選び、撃破する」）", () => {
     let s = pick(vent([inst("SPEC-MIRROR4P", "a"), inst("SPEC-MIRROR2", "b")], enemy), "SPEC-MIRROR4P:a");
     expectChoiceFrom(s, "player1", "RK-083");
     expect(choiceIds(s)).toEqual(["SPEC-E3:c3", "SPEC-E4:c4"]);
@@ -471,6 +477,10 @@ describe("RK-083 ストライクベント", () => {
     const s = pick(vent([inst("SPEC-MIRROR7", "a")], enemy), "SPEC-MIRROR7:a");
     expect(choiceIds(s)).toEqual(["SPEC-E3:c3", "SPEC-E4:c4", "SPEC-E5:c5"]);
   });
+
+  it.todo(
+    "RK-083: 特徴「アドベントカード」を持つ（出典: atwiki/page-624「特徴：アドベントカード」）— カタログがオペレーションの特徴を持たない（全オペレーションで未収録）ため照合できない",
+  );
 });
 
 // ===========================================================================
@@ -487,26 +497,26 @@ describe("RK-084 トリックベント", () => {
     expectRarityIn("RK-084", ["N"]);
   });
 
-  it.fails("RK-084: 山札の上から3枚のうち、ミラーライダーのユニットカードはすべて自軍ラッシュエリアに出る（必要パワー7でもよい）（出典: atwiki/page-642「必要パワーは満たさなくてもよい」）", () => {
+  it("RK-084: 山札の上から3枚のうち、ミラーライダーのユニットカードはすべて自軍ラッシュエリアに出る（必要パワー7でもよい）（出典: atwiki/page-642「必要パワーは満たさなくてもよい」）", () => {
     const s = trick([inst("SPEC-MIRROR7", "a"), inst("SPEC-KAMEN", "k"), inst("SPEC-MIRROR2", "b"), inst("SPEC-MIRROR2", "c")]);
     expect(zoneOf(s, "player1", "SPEC-MIRROR7:a")).toBe("rush");
     expect(zoneOf(s, "player1", "SPEC-MIRROR2:b")).toBe("rush");
   });
 
-  it.fails("RK-084: その後、それ以外のオモテにしたカードはすべて捨札になり、4枚目は山札に残る（出典: atwiki/page-642「その後、それ以外のオモテにしたカードはすべて捨札になる」）", () => {
+  it("RK-084: その後、それ以外のオモテにしたカードはすべて捨札になり、4枚目は山札に残る（出典: atwiki/page-642「その後、それ以外のオモテにしたカードはすべて捨札になる」）", () => {
     const s = trick([inst("SPEC-MIRROR7", "a"), inst("SPEC-KAMEN", "k"), inst("TST-OP", "op"), inst("SPEC-MIRROR2", "c")]);
     expect(zoneOf(s, "player1", "SPEC-KAMEN:k")).toBe("discard");
     expect(zoneOf(s, "player1", "TST-OP:op")).toBe("discard");
     expect(zoneIds(s, "player1", "deck")).toEqual(["SPEC-MIRROR2:c"]);
   });
 
-  it.fails("RK-084: ミラーライダーがなければ、3枚とも捨札になる（出典: atwiki/page-642）", () => {
+  it("RK-084: ミラーライダーがなければ、3枚とも捨札になる（出典: atwiki/page-642）", () => {
     const s = trick([inst("SPEC-KAMEN", "k"), inst("TST-OP", "op"), inst("TST-UNIT-0", "u"), inst("SPEC-MIRROR2", "c")]);
     expect(s.players.player1.discard.map((c) => c.instanceId).sort()).toEqual(["RK-084:tv", "SPEC-KAMEN:k", "TST-OP:op", "TST-UNIT-0:u"].sort());
     expect(s.players.player1.rush).toHaveLength(0);
   });
 
-  it.fails("RK-084: 追加条件は満たすこと — 満たせないミラーライダー（仮面ライダーオーディン: 捨札の合計11枚以上）は出ずに捨札になる（出典: atwiki/page-642「ただし、追加条件は満たすこと」・カード評価「オーディンの追加条件が満たせなかった場合、そのまま捨札になってしまう」）", () => {
+  it("RK-084: 追加条件は満たすこと — 満たせないミラーライダー（仮面ライダーオーディン: 捨札の合計11枚以上）は出ずに捨札になる（出典: atwiki/page-642「ただし、追加条件は満たすこと」・カード評価「オーディンの追加条件が満たせなかった場合、そのまま捨札になってしまう」）", () => {
     const s = trick([inst("RK-286", "od"), inst("SPEC-MIRROR2", "b"), inst("TST-OP", "op")]);
     expect(zoneOf(s, "player1", "RK-286:od")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-MIRROR2:b")).toBe("rush");
@@ -516,6 +526,10 @@ describe("RK-084 トリックベント", () => {
     const s = trick([inst("RK-286", "od"), inst("TST-OP", "op"), inst("TST-OP", "op2")], { discard: deckCards(6, "d1") }, { discard: deckCards(5, "d2") });
     expect(zoneOf(s, "player1", "RK-286:od")).toBe("rush");
   });
+
+  it.todo(
+    "RK-084: 特徴「アドベントカード」を持つ（出典: atwiki/page-642「特徴：アドベントカード」）— カタログがオペレーションの特徴を持たない（全オペレーションで未収録）ため照合できない",
+  );
 });
 
 // 未使用の import を避けるための参照。

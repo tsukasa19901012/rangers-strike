@@ -1126,7 +1126,10 @@
     ],
     "bp": 3000,
     "sp": "1/5",
-    "size": "S"
+    "size": "S",
+    "expectedDslKeywords": [
+      "rk4::RK-064::faiz_edge"
+    ]
   },
   {
     "cardId": "RK-065",
@@ -1157,7 +1160,8 @@
       "【俺の必殺技！】"
     ],
     "expectedDslKeywords": [
-      "no_strike_if_enemy_battle"
+      "no_strike_if_enemy_battle",
+      "rk4::RK-066::ore_no_hissatsu"
     ],
     "bp": 3000,
     "sp": 1,
@@ -1175,7 +1179,7 @@
     ],
     "expectedDslKeywords": [
       "note_attack_require_discard_feature::女",
-      "combo_from_partner_original_bp"
+      "rk4::RK-067::hishouzan"
     ],
     "bp": 5000,
     "sp": "1/2",
@@ -1193,7 +1197,7 @@
     ],
     "expectedDslKeywords": [
       "no_strike_if_enemy_battle",
-      "combo_named_discard_enemy_command::ベノスネーカー"
+      "rk4::RK-068::veno_crash"
     ],
     "bp": 3000,
     "sp": 1,
@@ -1210,7 +1214,7 @@
       "【ミスティースラッシュ】"
     ],
     "expectedDslKeywords": [
-      "combo_extra_attack_no_strike"
+      "rk4::RK-069::misty_slash"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -1228,7 +1232,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_4000",
-      "enemy_s_count_balance"
+      "rk4::RK-070::avalanche_break"
     ],
     "bp": 1000,
     "sp": null,
@@ -1245,7 +1249,7 @@
       "【ライダーキック】"
     ],
     "expectedDslKeywords": [
-      "enemy_rush_s_count_power_match_to_power"
+      "rk4::RK-071::rider_kick"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -1294,7 +1298,7 @@
     ],
     "expectedDslKeywords": [
       "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
-      "return_rush_deploy_enemy_s"
+      "rk4::RK-074::kagizume_arm"
     ],
     "bp": 1000,
     "sp": "1/5",
@@ -1330,7 +1334,7 @@
       "ＲＣを持つ自軍Sユニットを1体選ぶ。選んだユニッ"
     ],
     "expectedDslKeywords": [
-      "rc_hold_skip_rideoff"
+      "rk1::RK-017::mission_memory"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1349,7 +1353,7 @@
       "自軍ラッシュエリアからSユニットを1体選ぶ。そし"
     ],
     "expectedDslKeywords": [
-      "dual_bp_rush_discard_combine"
+      "rk1::RK-018::rouse_card"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1387,7 +1391,7 @@
       "ナンバーに数字を持つ自軍Sユニットを1体選ぶ。そ"
     ],
     "expectedDslKeywords": [
-      "stack_s_on_self_rush"
+      "rk4::RK-079::kamen_rider_title"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1482,7 +1486,7 @@
       "自軍山札の上から3枚をオモテにする。その中から特"
     ],
     "expectedDslKeywords": [
-      "reveal_top3_all_feature_to_rush::ミラーライダー"
+      "rk4::RK-084::trick_vent"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [

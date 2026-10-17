@@ -55,6 +55,7 @@ import { isSet8ANcCard, trySet8ANumberCombo } from "./legend1/set8NamedEffectsA"
 import { set8NumberDelta } from "./legend1/set8TurnGrants";
 import { trySet7BNcEffect } from "./legend1/set7NamedEffectsB";
 import type { ComboOutcome } from "./comboTypes";
+import { hasKamenRiderTitle } from "./rk/rk1Features";
 
 function ncLog(
   playerId: PlayerId,
@@ -73,6 +74,8 @@ export function ncEffectiveNumber(
   definition: CardDefinition,
 ): number {
   if (typeof definition.comboNumber !== "number") return -1;
+  // RK-079 仮面ライダーの称号を重ねたユニットのナンバーは RC（数字ではない。R-KW-RC-01・atwiki/page-661）。
+  if (hasKamenRiderTitle(card)) return -1;
   // RS-495【宇宙忍法・重力無秩序】: SP が空欄のユニットのナンバーは必要パワーの数字になる（rules/legend1/set7NamedEffectsD.ts）。
   // RS-522 ボウケンスピリッツ「このターン、選んだユニットのナンバーの数字は1増える。」（rules/legend1/set8TurnGrants.ts）。
   // RS-548 ※「このユニットのナンバーの数字は、ホールド状態のユニット1体につき1増える」（rules/legend1/set8NamedEffectsB.ts）。

@@ -2,10 +2,23 @@
  * RK-001 改造人間（※常駐）・RK-013 Jパワー による特徴とサイズの変更（rules/addedFeatures.ts 等の低い層から使う小さなモジュール）。
  * カードの効果そのものは rules/rk/rk1NamedEffects.ts。
  */
+import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { getDefinition } from "../../core/catalog";
 
 export const J_POWER_CARD_ID = "RK-013";
+/** RK-079 仮面ライダーの称号（J パワーと同じくユニットの下に重ねる。rules/rk/rk4UnitEffects.ts）。 */
+export const KAMEN_TITLE_CARD_ID = "RK-079";
+
+/** 仮面ライダーの称号を重ねたユニットか（ナンバーが RC になり、特徴「仮面ライダー」が追加される）。 */
+export function hasKamenRiderTitle(instance: Pick<CardInstance, "stackedCards"> | undefined): boolean {
+  return (instance?.stackedCards ?? []).some((c) => isSameCardIdentity(c.cardId, KAMEN_TITLE_CARD_ID));
+}
+
+/** ユニットでなくなったら捨札になる、ユニットの下に重ねたオペレーション（J パワー・仮面ライダーの称号）。 */
+export function isStackedUnderUnitOperation(cardId: string): boolean {
+  return cardId === J_POWER_CARD_ID || isSameCardIdentity(cardId, KAMEN_TITLE_CARD_ID);
+}
 const GIANT_BOMB_CARD_ID = "RS-255";
 
 function isUnitCard(state: Pick<GameState, "definitions">, cardId: string): boolean {
@@ -46,6 +59,8 @@ export function rk1AddedUnitFeatures(
   if (kaizoNingenAdds(state, ownerId, instance.cardId, base)) extra.push("改造人間");
   // J パワーは場のユニットの下にだけある（場を離れたら捨札になる）。渡されたカードの重ねたカードを見る。
   if (hasJPower(instance as CardInstance)) extra.push("人型");
+  // RK-079 仮面ライダーの称号「特徴「仮面ライダー」が追加される」（atwiki/page-661）。
+  if (hasKamenRiderTitle(instance as CardInstance)) extra.push("仮面ライダー");
   return extra;
 }
 

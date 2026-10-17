@@ -1,5 +1,6 @@
 import { isOtherLinesBattleToRushTrigger, tryOtherLinesBattleToRush } from "./legend1/otherLinesNamedEffects";
 import { applyRk2StartPhaseEnd } from "./rk/rk2UnitEffects";
+import { applyRk4StartPhaseEnd, isRk4BattleToRushTrigger, tryRk4BattleToRush } from "./rk/rk4UnitEffects";
 import { getCardEffect } from "@rangers-strike/cards";
 import { gorgonBlocksRelease, isSet6BBattleToRushTrigger, trySet6BBattleToRush } from "./legend1/set6NamedEffectsB";
 import { darkLawStackPending, openDarkLawStackIfNeeded } from "./legend1/set5NamedEffectsA";
@@ -42,7 +43,11 @@ function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
   return cards
     .filter(
       (card) =>
-        activeNamedEffect(card, "falcon_claw") || isSet6BBattleToRushTrigger(card) || isOtherLinesBattleToRushTrigger(card),
+        activeNamedEffect(card, "falcon_claw") ||
+        isSet6BBattleToRushTrigger(card) ||
+        isOtherLinesBattleToRushTrigger(card) ||
+        // RK-074 ライダーマン【カギ爪アーム】（rules/rk/rk4UnitEffects.ts）。
+        isRk4BattleToRushTrigger(card),
     )
     .map((card) => card.instanceId);
 }
@@ -134,6 +139,8 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
     if (!withChoice.pendingEffectChoice) withChoice = trySet6BBattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     // XP-026【アクセルグランツァー】（rules/legend1/otherLinesNamedEffects.ts）。
     if (!withChoice.pendingEffectChoice) withChoice = tryOtherLinesBattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
+    // RK-074【カギ爪アーム】（rules/rk/rk4UnitEffects.ts）。
+    if (!withChoice.pendingEffectChoice) withChoice = tryRk4BattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     return continueBattleToRushEffectQueue({ ...withChoice, pendingBattleToRushQueue: rest });
   }
 
@@ -384,6 +391,8 @@ export function transitionStartToChargePhase(
   logEntries.push(buildSimpleLogEntry(playerId, "end_phase", "start"));
   // RK-042 ブランウイング【閃光の翼】: スタートフェイズを終えるとき、自分自身のコマンドを選んでホールドする（rules/rk/rk2UnitEffects.ts）。
   nextState = applyRk2StartPhaseEnd(nextState, playerId);
+  // RK-080 超変身・RK-082 オルタフォース「自軍スタートフェイズを終えるとき、一度だけ…」（rules/rk/rk4UnitEffects.ts）。
+  nextState = applyRk4StartPhaseEnd(nextState, playerId);
 
   return {
     ...nextState,

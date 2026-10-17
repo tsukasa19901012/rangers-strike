@@ -147,6 +147,7 @@ import { isSet9DChoiceEffect, tryResolveSet9DChoice, trySkipSet9DChoice } from "
 import { isRk1ChoiceEffect, tryResolveRk1Choice, trySkipRk1Choice } from "./rk/rk1NamedEffects";
 import { isRk2ChoiceEffect, tryResolveRk2Choice, trySkipRk2Choice } from "./rk/rk2UnitEffects";
 import { isRk3ChoiceEffect, tryConfirmRk3Choice, tryResolveRk3Choice, trySkipRk3Choice } from "./rk/rk3UnitEffects";
+import { isRk4ChoiceEffect, tryConfirmRk4Choice, tryResolveRk4Choice, trySkipRk4Choice } from "./rk/rk4UnitEffects";
 import { filthyAirActive, isOtherLinesChoiceEffect, tryOtherLinesBattleToRush, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
@@ -647,6 +648,7 @@ export function isValidEffectChoiceTarget(
     isRk1ChoiceEffect(pending.effectId) ||
     isRk2ChoiceEffect(pending.effectId) ||
     isRk3ChoiceEffect(pending.effectId) ||
+    isRk4ChoiceEffect(pending.effectId) ||
     isOtherLinesChoiceEffect(pending.effectId) ||
     isSet9BChoiceEffect(pending.effectId) ||
     isSet8BChoiceEffect(pending.effectId) ||
@@ -2006,6 +2008,8 @@ export function applyConfirmEffectChoice(
   if (set9b) return set9b;
   const rk3 = tryConfirmRk3Choice(state, playerId);
   if (rk3) return rk3;
+  const rk4 = tryConfirmRk4Choice(state, playerId);
+  if (rk4) return rk4;
   if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
     // RS-472【現場への搬送】: 「…まで好きな数選び」— 選んだところで確定し、山札をシャッフルする。
     return finishChoice(finishSiteTransportDeck(state, pending), pending, String(pending.selectedInstanceIds?.length ?? 0));
@@ -2953,6 +2957,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (rk2) return rk2;
   const rk3 = trySkipRk3Choice(state, playerId);
   if (rk3) return rk3;
+  const rk4 = trySkipRk4Choice(state, playerId);
+  if (rk4) return rk4;
   const otherLines = trySkipOtherLinesChoice(state, playerId);
   if (otherLines) return otherLines;
   const abduction = skipAbductionChoice(state, playerId);
@@ -3254,6 +3260,8 @@ export function applyEffectChoiceSelect(
   if (rk2) return rk2;
   const rk3 = tryResolveRk3Choice(state, playerId, instanceId);
   if (rk3) return rk3;
+  const rk4 = tryResolveRk4Choice(state, playerId, instanceId);
+  if (rk4) return rk4;
   const otherLines = tryResolveOtherLinesChoice(state, playerId, instanceId);
   if (otherLines) return otherLines;
   const set9b = tryResolveSet9BChoice(state, playerId, instanceId);
@@ -4438,16 +4446,19 @@ export function applyEffectChoiceSelect(
           const enemyTargets = state.players[enemyId].battle
             .filter((c) => isSmallUnit(state.definitions, c.cardId))
             .filter((c) => parsePowerCost(getDefinition(state.definitions, c.cardId)?.powerCost ?? 99) <= maxPowerCost)
+            .filter((c) => isSelectableByOpponentEffect(state, pending.playerId, c.instanceId, pending.sourceCardId, pending.playerId))
             .map((c) => c.instanceId);
           if (enemyTargets.length === 0) {
             return finishChoice(state, pending, "mirror_rider:no_enemy");
           }
+          // RK-083「…Sユニットを1体選び、撃破する」— 撃破は強制（atwiki/page-624）。
           return {
             state: openEffectChoice(clearChoice(state, pending.playerId), {
               ...pending,
               step: "enemy",
               validInstanceIds: enemyTargets,
               maxPowerCost,
+              optional: false,
             }),
           };
         }

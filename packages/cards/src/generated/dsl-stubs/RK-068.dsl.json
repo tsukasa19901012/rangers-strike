@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_named_discard_enemy_command::ベノスネーカー",
+          "keyword": "rk4::RK-068::veno_crash",
           "duration": "turn"
         }
       ],

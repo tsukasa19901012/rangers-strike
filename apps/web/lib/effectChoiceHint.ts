@@ -155,6 +155,20 @@ const RK3_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk061_ippon_zuri_discard: { label: "一本釣り", hint: "アナザーアギトを出すために捨札にする、自軍ラッシュエリアの特徴「仮面ライダー」のユニットを選んでください" },
 };
 
+/** ライダーEXP RK-064〜RK-084 のカード固有の選択（engine rules/rk/rk4UnitEffects.ts・rules/residentOps.ts）の表示名と案内文。 */
+const RK4_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk064_faiz_edge: { label: "ファイズエッジ", hint: "撃破する、敵軍バトルエリアの BP の下三桁が 500 の S ユニットを選んでください" },
+  rk066_ore_no_hissatsu: { label: "俺の必殺技！", hint: "撃破する、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを選んでください" },
+  rk067_hishouzan: { label: "飛翔斬", hint: "このターン、敵軍ユニットの BP を本来の値としてバトルしますか？" },
+  rk068_veno_crash: { label: "ベノクラッシュ", hint: "捨札にする敵軍コマンドゾーンのユニットカードを選んでください（必要パワーの数字が敵軍ダメージ以下。使わないなら「スキップ」）" },
+  rk070_avalanche_break: { label: "アバランチブレイク", hint: "持ち主のパワーゾーンに送る敵軍 S ユニットを、自軍 S ユニットと同じ数になるまで選んでください" },
+  rk071_rider_kick: { label: "ライダーキック", hint: "持ち主のパワーゾーンに送る敵軍 S ユニットを選んでください" },
+  rk074_kagizume_arm: { label: "カギ爪アーム", hint: "敵軍バトルエリアに出す、敵軍ラッシュエリアの S ユニットを選んでください（出さないなら「スキップ」）" },
+  rk079_kamen_rider_title: { label: "仮面ライダーの称号", hint: "このカードを重ねる、ナンバーに数字を持つ自軍 S ユニットを選んでください" },
+  rk080_stack_from_hand: { label: "重ねて置く", hint: "これに重ねる手札のユニットカードを選び、選び終えたら「決定」（置いた枚数をドロー。置かないなら「スキップ」）" },
+  rk081_gegeru_stack: { label: "ゲゲル", hint: "自軍山札の上から1枚ひいて、ウラ向きのままゲゲルに重ねますか？" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -189,7 +203,8 @@ export function effectChoiceHint(
     SET9A_CHOICE_UI[pending.effectId] ??
     RK1_CHOICE_UI[pending.effectId] ??
     RK2_CHOICE_UI[pending.effectId] ??
-    RK3_CHOICE_UI[pending.effectId];
+    RK3_CHOICE_UI[pending.effectId] ??
+    RK4_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -385,6 +400,7 @@ export function effectChoiceTitle(
     RK1_CHOICE_UI[pending.effectId]?.label ??
     RK2_CHOICE_UI[pending.effectId]?.label ??
     RK3_CHOICE_UI[pending.effectId]?.label ??
+    RK4_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

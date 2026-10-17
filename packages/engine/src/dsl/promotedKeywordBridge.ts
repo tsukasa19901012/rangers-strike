@@ -534,7 +534,8 @@ function playerHasAllyWithFeatureInBattle(
   return player.battle.some((card) => {
     if (card.instanceId === excludeInstanceId) return false;
     const def = getDefinition(state.definitions, card.cardId);
-    return def?.type === "unit" && unitHasFeatureSlug(def, featureSlugValue);
+    // 今の特徴で見る（RK-079 仮面ライダーの称号で追加された「仮面ライダー」等。rules/addedFeatures.ts）。
+    return def?.type === "unit" && featuresMatchKeywordSlug(unitFeatures(state, playerId, card), featureSlugValue);
   });
 }
 

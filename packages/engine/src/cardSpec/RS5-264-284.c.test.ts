@@ -282,7 +282,7 @@ describe("RS-280 レッドホーク", () => {
     "RS-280: 公式Q&A — キリンレンジャー【天時星・時間返し】でラッシュフェイズからやり直すときも『バトルフェイズを終えるとき』の効果は発動する（出典: grnrngr/faq-card-4 RS-208）— 時間返しのやり直し中のバトルフェイズ終了時点を公開状態から区別して観測できないため",
   );
   // faq-rider_2 RK-079 Q「…「カードに表記された本来のナンバー」を参照しますので、ナンバーがRCになっていたとしても適用されることになります。」
-  it.fails("RS-280: 公式Q&A — 仮面ライダーの称号（RK-079）でナンバーが RC になっていても、本来のナンバーと並び順が違えば手札に戻る（出典: grnrngr/faq-rider_2 RK-079）", () => {
+  it("RS-280: 公式Q&A — 仮面ライダーの称号（RK-079）でナンバーが RC になっていても、本来のナンバーと並び順が違えば手札に戻る（出典: grnrngr/faq-rider_2 RK-079）", () => {
     let s = st({ phase: "rush", player1: { hand: [inst("RK-079", "tt")], rush: [inst("RS-280", "x")], command: [released("TST-OP-ET", "c")], power: powerCards(5), deck: deckCards(5) }, player2: { deck: deckCards(5, "e") } });
     const r = playOp(s, "player1", "RK-079:tt");
     expect(r.ok, r.error).toBe(true);

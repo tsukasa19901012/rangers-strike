@@ -81,6 +81,7 @@ import { trySet7AOnEnterBattle } from "./legend1/set7NamedEffectsA";
 import { set9CBlocksStrike, trySet9COnComboEnter } from "./legend1/set9NamedEffectsC";
 import { tryRk1OnEnterBattle } from "./rk/rk1NamedEffects";
 import { tryRk2OnEnterBattle } from "./rk/rk2UnitEffects";
+import { tryRk4OnEnterBattle } from "./rk/rk4UnitEffects";
 import { set8ABlocksStrike, trySet8AOnEnterBattle } from "./legend1/set8NamedEffectsA";
 import { clearWolfRoarDecision, openWolfRoarBeforeNc } from "./legend1/set7NamedEffectsC";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
@@ -266,6 +267,11 @@ export function resolveEnterBattleEffectsImpl(
     }
     // RK-024/RK-028/RK-030 ライドして一緒に出たビークルの進入効果・RK-033/RK-038 のコンビネーション（rules/rk/rk2UnitEffects.ts）。
     nextState = tryRk2OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+    if (nextState.pendingEffectChoice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+    // RK-064/RK-067/RK-068/RK-069 のコンビネーション（rules/rk/rk4UnitEffects.ts）。
+    nextState = tryRk4OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }

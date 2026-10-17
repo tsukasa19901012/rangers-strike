@@ -130,6 +130,7 @@ import { canConfirmSet9CChoice, isSet9CChoiceEffect } from "../rules/legend1/set
 import { canActivateSet9AResident, canConfirmSet9AChoice, isSet9AChoiceEffect, isSet9AResidentCard } from "../rules/legend1/set9NamedEffectsA";
 import { isRk2ChoiceEffect, rk2RaiaDiscardCandidates } from "../rules/rk/rk2UnitEffects";
 import { canConfirmRk3Choice, isRk3ChoiceEffect } from "../rules/rk/rk3UnitEffects";
+import { canConfirmRk4Choice, isRk4ChoiceEffect, swapResidentFeature } from "../rules/rk/rk4UnitEffects";
 import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
 import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
@@ -764,7 +765,7 @@ function appendActivateResidentOperationActions(
       continue;
     }
     if (
-      card.cardId !== "RK-022" &&
+      !swapResidentFeature(card.cardId) &&
       card.cardId !== "RK-249" &&
       !isRk1ActivatableResident(card.cardId) &&
       listResidentActivationEffects(card.cardId).length === 0
@@ -1247,6 +1248,15 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk3Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk4ChoiceEffect(pending.effectId)) {
+    // ライダーEXP RK-064〜RK-084 の選択（rules/rk/rk4UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk4Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

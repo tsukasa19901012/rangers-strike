@@ -4,6 +4,7 @@ import {
   hasDestroySelfDamageNote,
 } from "@rangers-strike/cards";
 import { rk2BlocksDefenderCounters, rk2UsePrintedDefenderBp } from "./rk/rk2UnitEffects";
+import { rk4UsePrintedDefenderBp } from "./rk/rk4UnitEffects";
 import { rk3AttackerBattleBonus, rk3DefenderBattleBonus } from "./rk/rk3UnitEffects";
 import { activeOnAttackNamedEffect, namedEffectActive } from "./ncGatedEffects";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../types/game";
@@ -225,7 +226,9 @@ export function battleDefenderBp(
       // RS-503【シャッキーン！の中に修行あり】（rules/legend1/set7NamedEffectsD.ts）。
       set7DUsePrintedDefenderBp(state, pending) ||
       // RK-023【技の1号】（rules/rk/rk2UnitEffects.ts）。
-      rk2UsePrintedDefenderBp(state, pending));
+      rk2UsePrintedDefenderBp(state, pending) ||
+      // RK-067【飛翔斬】（rules/rk/rk4UnitEffects.ts）。
+      rk4UsePrintedDefenderBp(state, pending));
 
   const mirageOverride = pending.substituteInstanceId ? undefined : pending.mirageBeamDefenderBpOverride;
   const base =

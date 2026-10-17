@@ -24,40 +24,14 @@
       "trigger": {
         "type": "nc"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk4::RK-064::faiz_edge",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

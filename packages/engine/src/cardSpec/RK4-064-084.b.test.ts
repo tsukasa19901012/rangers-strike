@@ -16,7 +16,6 @@
  * 既存の照合で済んでいるもの（重複させない）:
  *  - RK-072【ワイルドショット】がビークルを選ばない — dsl/targetSelectors.test.ts
  *  - RK-073 の RC がミッションメモリーでライドしないでも発動する（BP7000）— cardSpec/RK1-001-021.c.test.ts RK-017
- *  - RK-076 / RK-017 Q1（コマンドゾーンに置くタイミング）・RK-075 / RK-016 Q5（ギンガベリック）— RK1-001-021.c.test.ts の it.todo と同じ理由で未照合
  */
 import { describe, expect, it } from "vitest";
 import type { CardInstance, GameState } from "../types/game";
@@ -111,14 +110,14 @@ describe("RK-071 仮面ライダーキックホッパー", () => {
       "RK-071:kh",
     );
 
-  it.fails("RK-071: NC（2番目）— 敵軍ラッシュエリアの S ユニットの数（2）と同じ必要パワーの数字を持つ敵軍 S ユニットを1体選ぶ（バトルエリアも対象・M は対象外。選ばないことはできない）（出典: atwiki/page-165）", () => {
+  it("RK-071: NC（2番目）— 敵軍ラッシュエリアの S ユニットの数（2）と同じ必要パワーの数字を持つ敵軍 S ユニットを1体選ぶ（バトルエリアも対象・M は対象外。選ばないことはできない）（出典: atwiki/page-165）", () => {
     const s = kicked(2);
     expectChoiceFrom(s, "player1", "RK-071");
     expect(choiceIds(s)).toEqual(["SPEC-COST2:b2"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-071: 選んだユニットは持ち主のパワーゾーンに（オモテ向きで）送られる（出典: atwiki/page-165「持ち主のパワーゾーンに送る」）", () => {
+  it("RK-071: 選んだユニットは持ち主のパワーゾーンに（オモテ向きで）送られる（出典: atwiki/page-165「持ち主のパワーゾーンに送る」）", () => {
     const s = resolveAll(pick(kicked(2), "SPEC-COST2:b2"));
     expect(zoneOf(s, "player2", "SPEC-COST2:b2")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-COST2:b2")?.faceDown ?? false).toBe(false);
@@ -246,7 +245,7 @@ describe("RK-074 ライダーマン", () => {
     return act(s, ret!);
   };
 
-  it.fails("RK-074: 【カギ爪アーム】自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアの S ユニットを1体選べる（M は対象外。任意）（出典: atwiki/page-131）", () => {
+  it("RK-074: 【カギ爪アーム】自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアの S ユニットを1体選べる（M は対象外。任意）（出典: atwiki/page-131）", () => {
     const s = returned({ rush: [inst("SPEC-E2000", "a"), inst("SPEC-EM3000", "m")] });
     expect(zoneOf(s, "player1", "RK-074:rm")).toBe("rush");
     expectChoiceFrom(s, "player1", "RK-074");
@@ -254,12 +253,12 @@ describe("RK-074 ライダーマン", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-074: 【カギ爪アーム】選んだユニットは敵軍バトルエリアに出る（出典: atwiki/page-131「可能ならバトルエリアに出してもよい」）", () => {
+  it("RK-074: 【カギ爪アーム】選んだユニットは敵軍バトルエリアに出る（出典: atwiki/page-131「可能ならバトルエリアに出してもよい」）", () => {
     const s = settle(pick(returned({ rush: [inst("SPEC-E2000", "a")] }), "SPEC-E2000:a"));
     expect(zoneOf(s, "player2", "SPEC-E2000:a")).toBe("battle");
   });
 
-  it.fails("RK-074: 【カギ爪アーム】出さなくてもよい（出典: atwiki/page-131「出してもよい」）", () => {
+  it("RK-074: 【カギ爪アーム】出さなくてもよい（出典: atwiki/page-131「出してもよい」）", () => {
     const s = settle(skip(returned({ rush: [inst("SPEC-E2000", "a")] })));
     expect(zoneOf(s, "player2", "SPEC-E2000:a")).toBe("rush");
   });
@@ -293,7 +292,7 @@ describe("RK-075 ミラーワールド（RK-016 の再録）", () => {
     expect(zoneOf(resolveAll(s), "player1", "RK-075:mw")).toBe("operation");
   });
 
-  it.fails("RK-075: 自軍ラッシュフェイズに、自軍 S ユニットをこれにオモテ向きに重ねられる（出典: atwiki/page-176）", () => {
+  it("RK-075: 自軍ラッシュフェイズに、自軍 S ユニットをこれにオモテ向きに重ねられる（出典: atwiki/page-176）", () => {
     let s = rushPhase({ operation: [mirror([])], rush: [inst("SPEC-MIRROR", "a"), inst("SPEC-MALE-M", "m")] });
     expect(canActivateResident(s, "RK-075:mw")).toBe(true);
     s = activateResident(s, "RK-075:mw");
@@ -302,17 +301,17 @@ describe("RK-075 ミラーワールド（RK-016 の再録）", () => {
     expect(stackedOn(s, "player1", "RK-075:mw")).toEqual(["SPEC-MIRROR:a"]);
   });
 
-  it.fails("RK-075: 重ねたカードと同名の自軍ユニットにアタックするには、相手はコマンドを3つ（1つ＋さらに2つ）ホールドしなければならない（出典: atwiki/page-176）", () => {
+  it("RK-075: 重ねたカードと同名の自軍ユニットにアタックするには、相手はコマンドを3つ（1つ＋さらに2つ）ホールドしなければならない（出典: atwiki/page-176）", () => {
     expect(attackersOf(defended([inst("SPEC-MIRROR", "stk")], 2), "SPEC-MIRROR:u")).toEqual([]);
     expect(attackersOf(defended([inst("SPEC-MIRROR", "stk")], 3), "SPEC-MIRROR:u")).toEqual(["TST-UNIT-7:atk"]);
     expect(attackersOf(defended([inst("SPEC-MIRROR", "stk")], 0), "TST-UNIT-0:x")).toEqual(["TST-UNIT-7:atk"]);
   });
 
-  it.fails("RK-075: 公式Q&A — 同名のカードを2枚重ねると重複し、アタックには6つのホールドが必要なのでアタックできない（出典: atwiki/page-176 Q3・Q5・grnrngr/faq-rider-1 RK-016 Q3）", () => {
+  it("RK-075: 公式Q&A — 同名のカードを2枚重ねると重複し、アタックには6つのホールドが必要なのでアタックできない（出典: atwiki/page-176 Q3・Q5・grnrngr/faq-rider-1 RK-016 Q3）", () => {
     expect(attackersOf(defended([inst("SPEC-MIRROR", "stk"), inst("SPEC-MIRROR", "stk2")], 5), "SPEC-MIRROR:u")).toEqual([]);
   });
 
-  it.fails("RK-075: 公式Q&A — 相手の効果で選ぶには、相手は自分自身のコマンドを1つホールドしなければならない（音撃で選ぶとき）（出典: atwiki/page-176 Q1・grnrngr/faq-rider-1 RS-288 Q）", () => {
+  it("RK-075: 公式Q&A — 相手の効果で選ぶには、相手は自分自身のコマンドを1つホールドしなければならない（音撃で選ぶとき）（出典: atwiki/page-176 Q1・grnrngr/faq-rider-1 RS-288 Q）", () => {
     const base = (cmd: number) =>
       played(
         st(
@@ -329,20 +328,24 @@ describe("RK-075 ミラーワールド（RK-016 の再録）", () => {
     expect(choiceIds(base(1))).toEqual(["SPEC-MIRROR:u", "TST-UNIT-0:x"]);
   });
 
-  it.fails("RK-075: 常駐置き場を離れるとき、重ねたカードはすべて手札に加える（出典: atwiki/page-176・R-KW-PERM-01）", () => {
+  it("RK-075: 常駐置き場を離れるとき、重ねたカードはすべて手札に加える（出典: atwiki/page-176・R-KW-PERM-01）", () => {
     let s = rushPhase({ operation: [mirror([inst("SPEC-MIRROR", "stk")])], hand: [inst("RK-014", "kd")], command: releasedCat("MA", 1), power: powerCards(2) });
     s = resolveAll(played(s, "RK-014:kd"));
     expect(zoneOf(s, "player1", "RK-075:mw")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-MIRROR:stk")).toBe("hand");
   });
 
-  it.fails("RK-075: 公式Q&A — 同名の S ユニットが J パワーで L ユニットになっても、能力は続く（出典: atwiki/page-176 Q2・grnrngr/faq-rider-1 RK-016 Q2）", () => {
+  it("RK-075: 公式Q&A — 同名の S ユニットが J パワーで L ユニットになっても、能力は続く（出典: atwiki/page-176 Q2・grnrngr/faq-rider-1 RK-016 Q2）", () => {
     const s = enemyTurn(
       { operation: [mirror([inst("SPEC-MIRROR", "stk")])], battle: [{ ...inst("SPEC-MIRROR", "u"), stackedCards: [inst("RK-013", "jp")] }] },
       { battle: [inst("TST-UNIT-7", "atk")], command: releasedCat("WB", 2, "e") },
     );
     expect(attackersOf(s, "SPEC-MIRROR:u")).toEqual([]);
   });
+
+  it.todo(
+    "RK-075: 公式Q&A — ギンガベリック等でコマンドのホールドを代替できればアタックできる（出典: atwiki/page-176 Q5）— RK-016 の照合（RK1-001-021.c.test.ts）と同じく、RS-469 ギンガベリックの代替手順が本範囲外のため",
+  );
 });
 
 // ===========================================================================
@@ -360,13 +363,13 @@ describe("RK-076 ミッションメモリー（RK-017 の再録）", () => {
     expectRarityIn("RK-076", ["MR", "N"]);
   });
 
-  it.fails("RK-076: 選べるのは RC を持つ自軍 S ユニットだけ（出典: atwiki/page-197）", () => {
+  it("RK-076: 選べるのは RC を持つ自軍 S ユニットだけ（出典: atwiki/page-197）", () => {
     const s = played(mmBoard({ rush: [inst("RK-073", "n2"), inst("SPEC-MALE", "x"), inst("SPEC-MALE-M", "m")] }), "RK-076:mm");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-076");
     expect(choiceIds(s)).toEqual(["RK-073:n2"]);
   });
 
-  it.fails("RK-076: その後、このカードは自軍コマンドゾーンにホールド状態で置かれ、置けなければ捨札にする（出典: atwiki/page-197）", () => {
+  it("RK-076: その後、このカードは自軍コマンドゾーンにホールド状態で置かれ、置けなければ捨札にする（出典: atwiki/page-197）", () => {
     const s = memorized();
     expect(zoneOf(s, "player1", "RK-076:mm")).toBe("command");
     expect(cardIn(s, "player1", "RK-076:mm")?.commandHeld).toBe(true);
@@ -374,18 +377,18 @@ describe("RK-076 ミッションメモリー（RK-017 の再録）", () => {
     expect(zoneOf(full, "player1", "RK-076:mm")).toBe("discard");
   });
 
-  it.fails("RK-076: 公式Q&A — RC を持つユニットを選べなくても使え、コマンドゾーンに置く（出典: atwiki/page-197 Q2・Q6・grnrngr/faq-rider-1 RK-017 Q2・Q6）", () => {
+  it("RK-076: 公式Q&A — RC を持つユニットを選べなくても使え、コマンドゾーンに置く（出典: atwiki/page-197 Q2・Q6・grnrngr/faq-rider-1 RK-017 Q2・Q6）", () => {
     const s = resolveAll(played(mmBoard({ rush: [inst("SPEC-MALE", "x")] }), "RK-076:mm"));
     expect(zoneOf(s, "player1", "RK-076:mm")).toBe("command");
   });
 
   // faq-rider-1 RK-017 欄の Q「「RK-076　ミッションメモリー」の効果は、選んだ自軍ユニットがビークルにライドしなくても発動しますか？」「はい、発動します。」
-  it.fails("RK-076: 公式Q&A — 選んだユニットはライドしないでバトルエリアに出ても RC の効果を発動する（仮面ライダー2号 BP7000）（出典: grnrngr/faq-rider-1 RK-017 Q5（RK-076 の Q）・atwiki/page-197 Q5）", () => {
+  it("RK-076: 公式Q&A — 選んだユニットはライドしないでバトルエリアに出ても RC の効果を発動する（仮面ライダー2号 BP7000）（出典: grnrngr/faq-rider-1 RK-017 Q5（RK-076 の Q）・atwiki/page-197 Q5）", () => {
     const s = enter(nextPhase(memorized()), "RK-073:n2");
     expect(bpOf(s, "player1", "RK-073:n2")).toBe(7000);
   });
 
-  it.fails("RK-076: 公式Q&A — ライドしたまま RC の効果を発動したら、その後ライドオフして2重に発動できない（BP9000 にはならない）（出典: atwiki/page-197 Q3・Q4・grnrngr/faq-rider-1 RK-017 Q3・Q4）", () => {
+  it("RK-076: 公式Q&A — ライドしたまま RC の効果を発動したら、その後ライドオフして2重に発動できない（BP9000 にはならない）（出典: atwiki/page-197 Q3・Q4・grnrngr/faq-rider-1 RK-017 Q3・Q4）", () => {
     let s = nextPhase(memorized({ rush: [inst("RK-073", "n2"), inst("SPEC-VEHICLE", "v")] }));
     s = act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: "RK-073:n2", vehicleInstanceId: "SPEC-VEHICLE:v" });
     const stay = legal(s).find((a) => a.type === "resolve_ride_off_choice" && a.rideOff === false);
@@ -399,6 +402,10 @@ describe("RK-076 ミッションメモリー（RK-017 の再録）", () => {
     const s = enter(nextPhase(memorized({ rush: [inst("RK-073", "n2"), inst("RK-073", "other")] })), "RK-073:other");
     expect(bpOf(s, "player1", "RK-073:other")).toBe(5000);
   });
+
+  it.todo(
+    "RK-076: 公式Q&A — コマンドゾーンに置くタイミングは「予約」の解決直後で、RC の効果の発動後ではない（出典: grnrngr/faq-rider-1 RK-017 Q1（RK-076 の Q）・atwiki/page-197 Q1）— RK-017 の照合と同じく、置いたタイミングの違いを公開 API で観測できる状況が本範囲にないため",
+  );
 });
 
 // ===========================================================================
@@ -423,7 +430,7 @@ describe("RK-077 ラウズカード（RK-018 の再録）", () => {
     expectRarityIn("RK-077", ["MR", "N"]);
   });
 
-  it.fails("RK-077: 自軍ラッシュエリアの S ユニット → 自軍捨札の S ユニットのカードの順に選ぶ（バトルエリア・M は選べない）（出典: atwiki/page-177）", () => {
+  it("RK-077: 自軍ラッシュエリアの S ユニット → 自軍捨札の S ユニットのカードの順に選ぶ（バトルエリア・M は選べない）（出典: atwiki/page-177）", () => {
     let s = played(rcBoard(), "RK-077:rc");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-077");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:u"]);
@@ -432,7 +439,7 @@ describe("RK-077 ラウズカード（RK-018 の再録）", () => {
     expect(choiceIds(s)).toEqual(["SPEC-S5000:d5"]);
   });
 
-  it.fails("RK-077: このターン、ラッシュエリアから選んだユニットの BP に、捨札から選んだカードの BP を＋する（1000＋5000＝6000）（出典: atwiki/page-177）", () => {
+  it("RK-077: このターン、ラッシュエリアから選んだユニットの BP に、捨札から選んだカードの BP を＋する（1000＋5000＝6000）（出典: atwiki/page-177）", () => {
     const s = resolveAll(pick(pick(played(rcBoard(), "RK-077:rc"), "TST-UNIT-0:u"), "SPEC-S5000:d5"));
     expect(bpOf(s, "player1", "TST-UNIT-0:u")).toBe(6000);
     expect(zoneOf(s, "player1", "SPEC-S5000:d5")).toBe("discard");

@@ -11,6 +11,7 @@ import { meditationActive } from "../core/createGame";
 import { applyPlayerDamage, removeAt, updatePlayer } from "../core/helpers";
 import { emitDamageAppliedAndResolve } from "../events/emitDamageApplied";
 import { applyPowerFlipBeforeDamage, openBreakActionBeforeFlip } from "./powerFlipEffects";
+import { openRk4BeforeFlip } from "./rk/rk4UnitEffects";
 import {
   cardHasMorphKeyword,
   powerZoneHasMorphUnitCard,
@@ -339,7 +340,10 @@ function newlyFlippedIds(player: PlayerState, damaged: PlayerState): string[] {
  * その選択が開いたら、ウラ返しを deferredPowerFlip に待たせて返す（解決後に completeDeferredPowerFlip）。
  */
 function flipPowerForDamage(state: GameState, flip: DeferredPowerFlip): GameState {
-  const opened = openBreakActionBeforeFlip(state, flip.playerId, flip.flipIds, flip.resume);
+  // RK-066【俺の必殺技！】も RS-199 と同じ「ストライクして相手がパワーゾーンのカードをウラ返すとき」（rules/rk/rk4UnitEffects.ts）。
+  const opened =
+    openBreakActionBeforeFlip(state, flip.playerId, flip.flipIds, flip.resume) ??
+    openRk4BeforeFlip(state, flip.playerId, flip.flipIds, flip.resume);
   if (opened) {
     // ストライクの反応窓（pendingStrike）は閉じ、ストライクの残りはウラ返したあとで終える（resume.pending に保持）。
     const strikeClosed = flip.resume.kind === "strike" && flip.finishStrike ? { pendingStrike: undefined } : {};

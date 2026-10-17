@@ -43,10 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_s_count_balance",
+          "keyword": "rk4::RK-070::avalanche_break",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

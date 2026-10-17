@@ -6,7 +6,9 @@
  */
 import { applyRk2ResidentPlaced } from "./rk/rk2UnitEffects";
 import type { CardDefinition } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PendingBattle, PlayerId } from "../types/game";
+import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../types/game";
+import { isSameCardIdentity } from "@rangers-strike/cards";
+import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEffects";
 import { getDefinition } from "../core/catalog";
 import { takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
@@ -110,25 +112,54 @@ const GEGERU: ResidentOpRuntime = {
 
 const RESIDENT_OP_RUNTIMES: readonly ResidentOpRuntime[] = [CLOCK_UP, GEGERU];
 
-/** RK-081 ゲゲル: 自軍バトルフェイズに敵軍ユニットを撃破したとき山札の上を1枚重ねる。 */
+/**
+ * RK-081 ゲゲル「自軍バトルフェイズに敵軍ユニットを1体撃破するたび、自軍山札の上から1枚ひいて、ウラ向きのままこれに重ねてもよい。」
+ * （atwiki/page-709）。重ねるかを確認する（任意）。オモテは見ない（grnrngr/faq-rider-2 RK-081 Q）。
+ * 別の選択が開いていれば、その後に確認する。
+ */
+export const GEGERU_STACK_EFFECT_ID = "rk081_gegeru_stack";
+
 export function applyGegeruOnEnemyDestroyed(
   state: GameState,
   destroyerPlayerId: PlayerId,
 ): GameState {
   if (state.phase !== "battle" || state.activePlayer !== destroyerPlayerId) return state;
   const player = state.players[destroyerPlayerId];
-  const op = player.operation.find((c) => c.cardId === "RK-081");
+  const op = player.operation.find((c) => isSameCardIdentity(c.cardId, "RK-081"));
   if (!op || player.deck.length === 0) return state;
-  const [top, ...deck] = player.deck;
-  const withDeck = {
-    ...state,
-    ...updatePlayer(state, destroyerPlayerId, { ...player, deck }),
+  const confirm: PendingEffectChoice = {
+    playerId: destroyerPlayerId,
+    phasePlayerId: destroyerPlayerId,
+    effectId: GEGERU_STACK_EFFECT_ID,
+    sourceCardId: op.cardId,
+    sourceInstanceId: op.instanceId,
+    kind: "confirm",
+    validInstanceIds: [],
+    selectedInstanceIds: [],
+    optional: true,
+    mayConfirm: true,
   };
-  return updateOperationCard(withDeck, destroyerPlayerId, op.instanceId, (card) => ({
-    ...card,
-    stackedCards: [...(card.stackedCards ?? []), { ...top!, faceDown: true }],
-  }));
+  if (state.pendingEffectChoice) {
+    const append = (c: PendingEffectChoice): PendingEffectChoice => ({ ...c, resumeChoice: c.resumeChoice ? append(c.resumeChoice) : confirm });
+    return { ...state, pendingEffectChoice: append(state.pendingEffectChoice) };
+  }
+  return openOptionalEffectConfirm(state, confirm);
 }
+
+registerOptionalEffect(GEGERU_STACK_EFFECT_ID, {
+  apply: (state, pending) => {
+    const playerId = pending.playerId;
+    const player = state.players[playerId];
+    const op = player.operation.find((c) => c.instanceId === pending.sourceInstanceId);
+    if (!op || player.deck.length === 0) return state;
+    const [top, ...deck] = player.deck;
+    const withDeck = { ...state, ...updatePlayer(state, playerId, { ...player, deck }) };
+    return updateOperationCard(withDeck, playerId, op.instanceId, (card) => ({
+      ...card,
+      stackedCards: [...(card.stackedCards ?? []), { instanceId: top!.instanceId, cardId: top!.cardId, faceDown: true }],
+    }));
+  },
+});
 
 /** RK-081 ゲゲル: スタート時に重ね10枚以上→このターン自軍S全員SP1、ターン終了時に捨札。 */
 export function applyGegeruStartPhase(

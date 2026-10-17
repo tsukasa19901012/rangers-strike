@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_from_partner_original_bp",
+          "keyword": "rk4::RK-067::hishouzan",
           "duration": "turn"
         }
       ],

@@ -18,6 +18,8 @@ import {
 import { applyDamageToPlayer } from "./damagePayment";
 import { sameCardName } from "../core/cardNames";
 import { isZordUpCost, resolveRushAdditionalCondition } from "@rangers-strike/cards";
+import { isMirrorWorld } from "./rk/rk1NamedEffects";
+import { swapResidentFeature } from "./rk/rk4UnitEffects";
 import { countAvailablePower, rushEffectivePowerCost } from "../core/power";
 import { opponent, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
@@ -1376,7 +1378,7 @@ export function mirrorWorldProtected(state: GameState, ownerId: PlayerId, unit: 
   if (!name) return false;
   return (state.players[ownerId].operation ?? []).some(
     (op) =>
-      op.cardId === "RK-016" &&
+      isMirrorWorld(op.cardId) &&
       (op.stackedCards ?? []).some((st) => sameCardName(getDefinition(state.definitions, st.cardId)?.name, name)),
   );
 }
@@ -1543,20 +1545,26 @@ function riderPassCardIds(state: GameState, playerId: PlayerId, op: CardInstance
     .map((c) => c.instanceId);
 }
 
-function riderPassUnitIds(state: GameState, playerId: PlayerId): string[] {
+/**
+ * 本来の特徴に feature を持つ自軍ユニット。RK-080 超変身（「アマダム」）・RK-082 オルタフォース（「賢者の石」）も
+ * 同じ置き換えの文言（rules/rk/rk4UnitEffects.ts swapResidentFeature）。
+ */
+function riderPassUnitIds(state: GameState, playerId: PlayerId, feature: string): string[] {
   return fieldUnits(state.players[playerId])
-    .filter((c) => (getDefinition(state.definitions, c.cardId)?.features ?? []).includes("DEN-O"))
+    .filter((c) => (getDefinition(state.definitions, c.cardId)?.features ?? []).includes(feature))
     .map((c) => c.instanceId);
 }
 
 export function canActivateRiderPass(state: GameState, playerId: PlayerId, op: CardInstance): boolean {
-  if (op.cardId !== "RK-022" || state.phase !== "rush" || state.activePlayer !== playerId) return false;
-  return riderPassCardIds(state, playerId, op).length > 0 && riderPassUnitIds(state, playerId).length > 0;
+  const feature = swapResidentFeature(op.cardId);
+  if (!feature || state.phase !== "rush" || state.activePlayer !== playerId) return false;
+  return riderPassCardIds(state, playerId, op).length > 0 && riderPassUnitIds(state, playerId, feature).length > 0;
 }
 
 export function beginRiderPass(state: GameState, playerId: PlayerId, op: CardInstance): GameState {
+  const feature = swapResidentFeature(op.cardId);
   const ids = riderPassCardIds(state, playerId, op);
-  if (ids.length === 0 || riderPassUnitIds(state, playerId).length === 0) return state;
+  if (!feature || ids.length === 0 || riderPassUnitIds(state, playerId, feature).length === 0) return state;
   return openEffectChoice(state, {
     playerId,
     effectId: RIDER_PASS_CARD,
@@ -1583,7 +1591,7 @@ function resolveRiderPass(state: GameState, playerId: PlayerId, instanceId: stri
         sourceInstanceId: pending.sourceInstanceId,
         kind: "select_unit",
         phasePlayerId: pending.phasePlayerId,
-        validInstanceIds: riderPassUnitIds(state, playerId),
+        validInstanceIds: riderPassUnitIds(state, playerId, swapResidentFeature(pending.sourceCardId) ?? "DEN-O"),
         selectCount: 1,
         optional: false,
         selectedInstanceIds: [instanceId],

@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_s_on_self_rush",
+          "keyword": "rk4::RK-079::kamen_rider_title",
           "duration": "permanent"
         }
       ],

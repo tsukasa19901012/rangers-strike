@@ -19,6 +19,7 @@ export const unitLeftZoneListener: EventListener = (event, state) => {
   // RK-081 ゲゲル: 敵軍ユニットが（撃破されて）捨札になったとき、撃破側で発火
   if (
     leaveEvent.toZone === "discard" &&
+    leaveEvent.destroyed !== false &&
     (leaveEvent.fromZone === "battle" || leaveEvent.fromZone === "rush")
   ) {
     nextState = applyGegeruOnEnemyDestroyed(nextState, opponent(leaveEvent.ownerPlayerId));

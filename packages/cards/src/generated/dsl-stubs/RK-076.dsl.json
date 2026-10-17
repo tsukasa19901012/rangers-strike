@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rc_hold_skip_rideoff",
+          "keyword": "rk1::RK-017::mission_memory",
           "duration": "turn"
         }
       ],

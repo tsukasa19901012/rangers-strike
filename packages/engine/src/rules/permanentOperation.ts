@@ -21,6 +21,7 @@ import { operationCardsToDiscardWithStack } from "./operationProcedure";
 import { activateRk1Resident, canActivateRk1Resident, isRk1ActivatableResident, rk1ResidentLeaving } from "./rk/rk1NamedEffects";
 import { afterResidentOperationsLeft } from "./legend1/set7NamedEffectsA";
 import { beginRiderPass, canActivateRiderPass } from "./errataCardEffects";
+import { swapResidentFeature } from "./rk/rk4UnitEffects";
 import { ADVENT_CARD_ID, beginAdvent, canActivateAdvent } from "./rk/rk249Advent";
 
 const RUSH_ACTIVATION_TEXT =
@@ -139,7 +140,8 @@ export function canActivateResidentOperation(
   }
 
   // RK-022 ライダーパス: 重ねたカードと「DEN-O」の自軍ユニットの置き換え（何度でも。atwiki/page-128 Q6）。
-  if (op.cardId === "RK-022") return canActivateRiderPass(state, playerId, op);
+  // RK-080 超変身・RK-082 オルタフォースも同じ置き換え（rules/rk/rk4UnitEffects.ts swapResidentFeature）。
+  if (swapResidentFeature(op.cardId)) return canActivateRiderPass(state, playerId, op);
   // RK-249 アドベント: ミラーライダーのユニットに、このターン ※コールWB を与える（rules/rk/rk249Advent.ts）。
   if (op.cardId === ADVENT_CARD_ID) return canActivateAdvent(state, playerId, op);
 
@@ -188,7 +190,7 @@ export function applyActivateResidentOperation(
     return { ok: false, error: "use_dedicated_action" };
   }
 
-  if (op.cardId === "RK-022") {
+  if (swapResidentFeature(op.cardId)) {
     return { ok: true, state: beginRiderPass(state, playerId, op) };
   }
   if (isRk1ActivatableResident(op.cardId)) {

@@ -11,6 +11,8 @@ import { resolveP0Alias } from "../effects/p0EffectBridge";
 import { applyLegacyNumberComboEffect } from "./numberComboEffects";
 import { grantBpBoostOnPlayer, grantSp1OnPlayer, patchPlayer } from "./playerPatches";
 import type { ComboOutcome } from "./comboTypes";
+import { getDefinition } from "../core/catalog";
+import { hasKamenRiderTitle } from "./rk/rk1Features";
 
 function ridingComboLog(
   playerId: PlayerId,
@@ -80,6 +82,19 @@ export function resolveRidingComboOnRideOff(
   playerId: PlayerId,
   card: CardInstance,
 ): ComboOutcome {
+  // RK-079 仮面ライダーの称号: ナンバーが RC になったユニットは、ライドオフでナンバーの欄の効果（DSL の nc）を発動する（atwiki/page-661）。
+  if (hasKamenRiderTitle(card) && getDefinition(state.definitions, card.cardId)?.comboNumber !== "RC") {
+    const nc = tryResolveDslTriggeredEffects({
+      state,
+      cardId: card.cardId,
+      instanceId: card.instanceId,
+      playerId,
+      phasePlayerId: playerId,
+      triggerType: "nc",
+      logAction: "riding_combo",
+    });
+    return { state: nc.state, logs: nc.logs };
+  }
   const effectId = resolveRidingEffectId(card.cardId);
   if (effectId) {
     const p0 = applyP0RidingEffect(state, playerId, card, effectId);

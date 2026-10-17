@@ -1,6 +1,7 @@
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
 import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects";
 import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
+import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
 import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import { openKuugaStayOnLeave } from "./legend1/otherLinesNamedEffects";
 import {
@@ -1611,6 +1612,10 @@ export function resolveBattlePendingCore(
           refreshedDefenderFound.card,
           pending.phasePlayerId,
         );
+        // RK-069【ミスティースラッシュ】（rules/rk/rk4UnitEffects.ts）。
+        if (!finalDestroyAttacker && !pending.effectBattle) {
+          withAttacker = rk4OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, refreshedDefenderFound.card, defenderOwner);
+        }
         withAttacker = drainDeferredDestroyTriggers(withAttacker);
       }
       return finish(withAttacker, log);
@@ -1719,6 +1724,8 @@ export function resolveBattlePendingCore(
     }
     // RS-422【大頑頑拳】: アタックしてバトルに勝つたび、敵軍コマンドをホールドして追加でアタックできる。
     if (!pending.effectBattle) nextState = openDaiganganKen(nextState, attackerId, pending.attackerInstanceId);
+    // RK-069【ミスティースラッシュ】: 「ミラーモンスター」にアタックしてバトルに勝つたび、追加でアタックできる（rules/rk/rk4UnitEffects.ts）。
+    if (!pending.effectBattle) nextState = rk4OnAttackWin(nextState, attackerId, pending.attackerInstanceId, refreshedDefenderFound.card, defenderOwner);
   } else {
     nextState = markAttackerActed(nextState);
   }

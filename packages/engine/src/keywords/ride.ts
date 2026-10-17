@@ -6,6 +6,7 @@ import { findInZone } from "../core/helpers";
 import { updatePlayer } from "../core/helpers";
 import { canMoveUnitToBattle } from "../rules/restrictions";
 import { getCardDslDocument } from "../dsl/effectLookup";
+import { hasKamenRiderTitle } from "../rules/rk/rk1Features";
 import {
   cardHasGrantKeyword,
   listCardGrantKeywords,
@@ -71,8 +72,10 @@ function vehiclePlainCategoryRideWithoutRc(
   return text.match(/(?:^|※|\s)(WB|MA|OT|ET|DA)のSユニットは、[ＲR][ＣC]を持っていなくてもこのビークルにライドでき/)?.[1];
 }
 
-function riderHasRc(definition: CardDefinition | undefined): boolean {
+function riderHasRc(definition: CardDefinition | undefined, rider?: Pick<CardInstance, "stackedCards">): boolean {
   if (!definition) return false;
+  // RK-079 仮面ライダーの称号「このカードに重ねたユニットのナンバーはＲＣになり」（atwiki/page-661）。
+  if (hasKamenRiderTitle(rider)) return true;
   if (definition.comboNumber === "RC") return true;
   const doc = getCardDslDocument(definition.id);
   if (doc?.comboNumber === "RC") return true;
@@ -117,7 +120,7 @@ export function holdCommandForGaleoPulsarRide(
   const rider = player.battle.find((c) => c.instanceId === riderInstanceId);
   const vehicle = [...player.battle, ...player.rush].find((c) => c.instanceId === vehicleInstanceId);
   if (!rider || !vehicle || vehicle.cardId !== "RS-381" || rider.mountedOnInstanceId !== vehicleInstanceId) return state;
-  if (riderHasRc(getDefinition(state.definitions, rider.cardId))) return state;
+  if (riderHasRc(getDefinition(state.definitions, rider.cardId), rider)) return state;
   const index = player.command.findIndex((c) => !c.commandHeld);
   if (index < 0) return state;
   const command = player.command.map((c, i) => (i === index ? { ...c, commandHeld: true } : c));
@@ -143,7 +146,7 @@ export function findRideVehicleForRider(
   });
 
   for (const vehicle of candidates) {
-    if (riderHasRc(riderDef)) return vehicle;
+    if (riderHasRc(riderDef, rider)) return vehicle;
     // RS-381 ガレオパルサーは、RC を持たない「レッド」の S ユニットが自軍コマンドを1つホールドしてライドする（mount_ride でホールド）。
     if (vehicle.cardId === "RS-381") {
       if (galeoPulsarHoldRideAllowed(state, playerId, riderDef)) return vehicle;
@@ -180,7 +183,7 @@ export function findRideVehicleForRider(
     if (allowed.length > 0) continue;
   }
 
-  if (riderHasRc(riderDef)) {
+  if (riderHasRc(riderDef, rider)) {
     return candidates[0] ?? null;
   }
 
@@ -226,7 +229,7 @@ export function canRiderMountVehicle(
     return riderMatchesVehicleRideWithoutRc(state.definitions, vehicle.card.cardId, rider.cardId);
   }
 
-  if (riderHasRc(riderDef)) return true;
+  if (riderHasRc(riderDef, rider)) return true;
 
   // 「※ETのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。」（RS-393 コマンドアタッカー、atwiki/page-539）
   // 「※DAのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。」（RS-492 炎の騎馬、atwiki/page-815）
@@ -288,7 +291,7 @@ export function rideNeedsCommandHold(
   vehicleCardId: string,
 ): boolean {
   const riderDef = getDefinition(state.definitions, rider.cardId);
-  if (!riderDef || riderHasRc(riderDef)) return false;
+  if (!riderDef || riderHasRc(riderDef, rider)) return false;
   if (riderKeywordAllowsRide(rider.cardId, getDefinition(state.definitions, vehicleCardId))) return false;
   return vehicleRideWithoutRcNeedsHold(vehicleCardId);
 }

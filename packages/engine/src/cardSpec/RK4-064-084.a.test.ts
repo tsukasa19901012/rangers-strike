@@ -77,13 +77,15 @@ const MALE4500 = rcUnit("SPEC-MALE4500", { bp: 4500, features: ["男"] });
 const FEMALE = sUnit("SPEC-FEMALE", { bp: 2000, features: ["女"] });
 const FEMALE_M = sUnit("SPEC-FEMALE-M", { bp: 2000, size: "M", features: ["女"] });
 const RC4500 = rcUnit("SPEC-RC4500", { bp: 4500 });
+/** 特徴「ミラーモンスター」の S ユニット（ベノスネーカーの【毒液】のような効果を持たない相手役）。 */
+const MM = sUnit("SPEC-MM", { bp: 1000, features: ["ミラーモンスター", "獣"] });
 const COST1 = sUnit("SPEC-COST1", { bp: 1000, powerCost: 1 });
 const COST3 = sUnit("SPEC-COST3", { bp: 1000, powerCost: 3 });
 const COST4 = sUnit("SPEC-COST4", { bp: 1000, powerCost: 4 });
 const COST5 = sUnit("SPEC-COST5", { bp: 1000, powerCost: 5 });
 const COST3_M = sUnit("SPEC-COST3-M", { bp: 1000, powerCost: 3, size: "M" });
 const OT_OP = { id: "SPEC-OP-OT", name: "SPEC-OP-OT", type: "operation", category: "OT", rarity: "N", expansion: "card-spec", powerCost: 0 } as const;
-const EXTRA = [E4000, E2000, E2500, E3000, E3500, E4500, E5000, EM3500, MALE, MALE4500, FEMALE, FEMALE_M, RC4500, COST1, COST3, COST4, COST5, COST3_M, PLAIN_VEHICLE];
+const EXTRA = [MM, E4000, E2000, E2500, E3000, E3500, E4500, E5000, EM3500, MALE, MALE4500, FEMALE, FEMALE_M, RC4500, COST1, COST3, COST4, COST5, COST3_M, PLAIN_VEHICLE];
 void OT_OP;
 
 const board = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
@@ -110,7 +112,7 @@ describe("RK-064 仮面ライダーファイズ", () => {
   const edge = (p2: Partial<GameState["players"]["player2"]>, p1: Partial<GameState["players"]["player1"]> = {}) =>
     rcRideOff(board({ rush: [inst("RK-064", "fz"), inst("SPEC-VEHICLE", "v")], ...p1 }, p2), "RK-064:fz", "SPEC-VEHICLE:v");
 
-  it.fails("RK-064: RC — 敵軍バトルエリアの、BP の下三桁が 500 の S ユニットだけを選べる（M ユニット・ラッシュエリアは選べない。選ばないことはできない）（出典: atwiki/page-207）", () => {
+  it("RK-064: RC — 敵軍バトルエリアの、BP の下三桁が 500 の S ユニットだけを選べる（M ユニット・ラッシュエリアは選べない。選ばないことはできない）（出典: atwiki/page-207）", () => {
     const s = edge({ battle: [inst("SPEC-E2500", "a"), inst("SPEC-E3000", "b"), inst("SPEC-EM3500", "m")], rush: [inst("SPEC-E3500", "r")] });
     expectChoiceFrom(s, "player1", "RK-064");
     expect(choiceIds(s)).toEqual(["SPEC-E2500:a"]);
@@ -123,14 +125,14 @@ describe("RK-064 仮面ライダーファイズ", () => {
     expect(zoneOf(s, "player2", "SPEC-E2500:a")).toBe("battle");
   });
 
-  it.fails("RK-064: RC — 下三桁が 500 のユニットがいなければ何もしない（出典: atwiki/page-207）", () => {
+  it("RK-064: RC — 下三桁が 500 のユニットがいなければ何もしない（出典: atwiki/page-207）", () => {
     const s = edge({ battle: [inst("SPEC-E3000", "b")] });
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-064");
     expect(zoneOf(settle(s), "player2", "SPEC-E3000:b")).toBe("battle");
   });
 
   // 公式 Q（RK-046 欄）「はい、できます。」— バスターホイールで BP3000 → 2500 になった敵軍 S ユニットを撃破できる。
-  it.fails("RK-064: 「オートバジンBM」からコンビネーションするときは、ライドオフしなくても（ナンバーに関係なく）発動し、BM【バスターホイール】で下三桁が 500 になった敵軍 S ユニットを選べる（出典: atwiki/page-207「「オートバジンBM」からコンビネーションするときはナンバーに関係なく発動する」・grnrngr/faq-rider-1 RK-046 Q3）", () => {
+  it("RK-064: 「オートバジンBM」からコンビネーションするときは、ライドオフしなくても（ナンバーに関係なく）発動し、BM【バスターホイール】で下三桁が 500 になった敵軍 S ユニットを選べる（出典: atwiki/page-207「「オートバジンBM」からコンビネーションするときはナンバーに関係なく発動する」・grnrngr/faq-rider-1 RK-046 Q3）", () => {
     let s = enter(board({ battle: [inst("RK-046", "bm")], rush: [inst("RK-064", "fz")] }, { battle: [inst("SPEC-E3000", "b"), inst("SPEC-E2500", "a")] }), "RK-064:fz");
     expectChoiceFrom(s, "player1", "RK-064");
     expect(choiceIds(s)).toEqual(["SPEC-E3000:b"]);
@@ -150,14 +152,14 @@ describe("RK-064 仮面ライダーファイズ", () => {
   });
 
   // 公式 Q（RK-046 欄）「はい、できます。」
-  it.fails("RK-064: 公式Q&A — ライドオフ（RC）で発動したときも、自軍オートバジンBM【バスターホイール】で下三桁が 500 になった敵軍 S ユニットを撃破できる（出典: grnrngr/faq-rider-1 RK-046 Q3）", () => {
+  it("RK-064: 公式Q&A — ライドオフ（RC）で発動したときも、自軍オートバジンBM【バスターホイール】で下三桁が 500 になった敵軍 S ユニットを撃破できる（出典: grnrngr/faq-rider-1 RK-046 Q3）", () => {
     let s = edge({ battle: [inst("SPEC-E3000", "b"), inst("SPEC-E2500", "a")] }, { battle: [inst("RK-046", "bm"), inst("TST-UNIT-0", "x")] });
     expect(choiceIds(s)).toEqual(["SPEC-E3000:b"]);
     s = resolveAll(pick(s, "SPEC-E3000:b"));
     expect(zoneOf(s, "player2", "SPEC-E3000:b")).toBe("discard");
   });
 
-  it.fails("RK-064: オートバジンBM からのコンビネーションで発動したあと、ライドオフしても2回目は発動しない（出典: grnrngr/faq-rider-1 RK-017 Q3「RCやNCを発動した時点で、ライドオフするかしないかを選択できるタイミングは終了」）", () => {
+  it("RK-064: オートバジンBM からのコンビネーションで発動したあと、ライドオフしても2回目は発動しない（出典: grnrngr/faq-rider-1 RK-017 Q3「RCやNCを発動した時点で、ライドオフするかしないかを選択できるタイミングは終了」）", () => {
     let s = mount(board({ battle: [inst("RK-046", "bm")], rush: [inst("RK-064", "fz"), inst("SPEC-VEHICLE", "v")] }, { battle: [inst("SPEC-E3000", "b"), inst("SPEC-E4000", "c")] }), "RK-064:fz", "SPEC-VEHICLE:v");
     for (let i = 0; i < 4 && s.pendingEffectChoice?.sourceCardId === "RK-064"; i++) s = settle(pick(s, s.pendingEffectChoice.validInstanceIds[0]!));
     if (rideOffOffered(s)) s = rideOff(s, true);
@@ -232,7 +234,7 @@ describe("RK-065 仮面ライダーカブトRF", () => {
     expect(spOf(s, "player1", "RK-065:rf")).toBe(0);
   });
 
-  it.fails("RK-065: 【ライダーキック】OT 以外のコマンドは数えない（OT 2つ＋WB 2つでは発動しない）（出典: atwiki/page-163「OTの自軍コマンドを3つ」）", () => {
+  it("RK-065: 【ライダーキック】OT 以外のコマンドは数えない（OT 2つ＋WB 2つでは発動しない）（出典: atwiki/page-163「OTの自軍コマンドを3つ」）", () => {
     const s = kick([...releasedCat("OT", 2), ...releasedCat("WB", 2)]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-065");
   });
@@ -313,14 +315,14 @@ describe("RK-066 仮面ライダー電王SF", () => {
     power: [inst("TST-OP", "pw3"), inst("SPEC-COST5", "pw5")],
   };
 
-  it.fails("RK-066: 【俺の必殺技！】（RC）ストライクして相手がウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選ぶ（ラッシュエリア・M ユニットも対象。選ばないことはできない）（出典: atwiki/page-169）", () => {
+  it("RK-066: 【俺の必殺技！】（RC）ストライクして相手がウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選ぶ（ラッシュエリア・M ユニットも対象。選ばないことはできない）（出典: atwiki/page-169）", () => {
     const s = swung("TST-OP:pw3", enemyField);
     expectChoiceFrom(s, "player1", "RK-066");
     expect(choiceIds(s)).toEqual(["SPEC-COST3-M:c3m", "SPEC-COST3:c3"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-066: 【俺の必殺技！】選んだユニットを撃破し、カードはウラ返る（出典: atwiki/page-169「1体選び撃破する」）", () => {
+  it("RK-066: 【俺の必殺技！】選んだユニットを撃破し、カードはウラ返る（出典: atwiki/page-169「1体選び撃破する」）", () => {
     const s = resolveAll(pick(swung("TST-OP:pw3", enemyField), "SPEC-COST3:c3"));
     expect(zoneOf(s, "player2", "SPEC-COST3:c3")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-COST3-M:c3m")).toBe("rush");
@@ -373,13 +375,13 @@ describe("RK-067 仮面ライダーナイト", () => {
       "RK-067:kn",
     );
 
-  it.fails("RK-067: 【飛翔斬】「ダークウイング」からコンビネーションしたとき、発動するかを選べる（出典: atwiki/page-188「発動できる」）", () => {
+  it("RK-067: 【飛翔斬】「ダークウイング」からコンビネーションしたとき、発動するかを選べる（出典: atwiki/page-188「発動できる」）", () => {
     const s = slash();
     expectChoiceFrom(s, "player1", "RK-067");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-067: 【飛翔斬】発動すると、敵軍ユニットの BP を本来の値（4500）としてバトルする（5000対4500で勝つ）（出典: atwiki/page-188「これは敵軍ユニットのBPをカードに表記された本来の値としてバトルする」）", () => {
+  it("RK-067: 【飛翔斬】発動すると、敵軍ユニットの BP を本来の値（4500）としてバトルする（5000対4500で勝つ）（出典: atwiki/page-188「これは敵軍ユニットのBPをカードに表記された本来の値としてバトルする」）", () => {
     let s = settle(confirm(slash()));
     expect(bpOf(s, "player2", "SPEC-RC4500:e")).toBe(5000);
     s = resolveAll(attack(s, "RK-067:kn", "SPEC-RC4500:e"));
@@ -388,7 +390,7 @@ describe("RK-067 仮面ライダーナイト", () => {
     expect(zoneOf(s, "player1", "RK-067:kn")).toBe("battle");
   });
 
-  it.fails("RK-067: 【飛翔斬】発動しなければ、今の BP（5000）でバトルし両方撃破される（出典: atwiki/page-188「発動できる」・R-BTL-01）", () => {
+  it("RK-067: 【飛翔斬】発動しなければ、今の BP（5000）でバトルし両方撃破される（出典: atwiki/page-188「発動できる」・R-BTL-01）", () => {
     let s = settle(skip(slash()));
     s = resolveAll(attack(s, "RK-067:kn", "SPEC-RC4500:e"));
     expect(lastBattleBps(s)).toEqual({ attacker: 5000, defender: 5000 });
@@ -430,14 +432,14 @@ describe("RK-068 仮面ライダー王蛇", () => {
     inst("TST-OP", "op"),
   ];
 
-  it.fails("RK-068: 【ベノクラッシュ】「ベノスネーカー」からコンビネーションしたとき、敵軍コマンドゾーンの、必要パワーの数字が敵軍ダメージ（3点）以下のユニットカードを選べる（ホールド状態も可。任意）（出典: atwiki/page-189）", () => {
+  it("RK-068: 【ベノクラッシュ】「ベノスネーカー」からコンビネーションしたとき、敵軍コマンドゾーンの、必要パワーの数字が敵軍ダメージ（3点）以下のユニットカードを選べる（ホールド状態も可。任意）（出典: atwiki/page-189）", () => {
     const s = crash(enemyCommand());
     expectChoiceFrom(s, "player1", "RK-068");
     expect(choiceIds(s)).toEqual(["SPEC-COST1:c1", "SPEC-COST3:c3"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-068: 【ベノクラッシュ】選んだカードは捨札になる（出典: atwiki/page-189「1枚選び捨札にしてもよい」）", () => {
+  it("RK-068: 【ベノクラッシュ】選んだカードは捨札になる（出典: atwiki/page-189「1枚選び捨札にしてもよい」）", () => {
     const s = resolveAll(pick(crash(enemyCommand()), "SPEC-COST3:c3"));
     expect(zoneOf(s, "player2", "SPEC-COST3:c3")).toBe("discard");
     expect(s.players.player2.command).toHaveLength(3);
@@ -460,32 +462,32 @@ describe("RK-069 仮面ライダーファム", () => {
     expectRarityIn("RK-069", ["R"]);
   });
 
-  /** ブランウイングの次にファムを出し、敵軍のベノスネーカー（ミラーモンスター・BP1000）にアタックする。 */
-  const slashed = (partner = "RK-042", p2Battle = [inst("RK-040", "vs"), inst("SPEC-E2000", "x"), inst("RK-040", "vs2")]) => {
+  /** ブランウイングの次にファムを出し、敵軍の「ミラーモンスター」の S ユニット（BP1000）にアタックする。 */
+  const slashed = (partner = "RK-042", p2Battle = [inst("SPEC-MM", "vs"), inst("SPEC-E2000", "x"), inst("SPEC-MM", "vs2")]) => {
     let s = enter(board({ battle: [inst(partner, "bw")], rush: [inst("RK-069", "fm")] }, { battle: p2Battle }), "RK-069:fm");
     s = settle(s);
     if (s.pendingEffectChoice?.sourceCardId === "RK-069") s = settle(confirm(s));
-    return resolveAll(attack(s, "RK-069:fm", "RK-040:vs"));
+    return resolveAll(attack(s, "RK-069:fm", "SPEC-MM:vs"));
   };
 
-  it.fails("RK-069: 【ミスティースラッシュ】「ブランウイング」からコンビネーションしたとき、ミラーモンスターにアタックして勝てば、追加でアタックできる（出典: atwiki/page-53）", () => {
+  it("RK-069: 【ミスティースラッシュ】「ブランウイング」からコンビネーションしたとき、ミラーモンスターにアタックして勝てば、追加でアタックできる（出典: atwiki/page-53）", () => {
     const s = slashed();
-    expect(zoneOf(s, "player2", "RK-040:vs")).toBe("discard");
-    expect(attackTargets(s, "RK-069:fm").sort()).toEqual(["RK-040:vs2", "SPEC-E2000:x"]);
+    expect(zoneOf(s, "player2", "SPEC-MM:vs")).toBe("discard");
+    expect(attackTargets(s, "RK-069:fm").sort()).toEqual(["SPEC-E2000:x", "SPEC-MM:vs2"]);
   });
 
   it("RK-069: 【ミスティースラッシュ】追加のアタックのとき、ストライクはできない（出典: atwiki/page-53「（ストライクはできない）」）", () => {
-    const s = slashed("RK-042", [inst("RK-040", "vs")]);
+    const s = slashed("RK-042", [inst("SPEC-MM", "vs")]);
     expect(canStrike(s, "RK-069:fm")).toBe(false);
   });
 
-  it.fails("RK-069: 【ミスティースラッシュ】勝つ「たび」— 追加のアタックでもう一度ミラーモンスターに勝てば、さらにアタックできる（出典: atwiki/page-53「バトルに勝つたび」）", () => {
+  it("RK-069: 【ミスティースラッシュ】勝つ「たび」— 追加のアタックでもう一度ミラーモンスターに勝てば、さらにアタックできる（出典: atwiki/page-53「バトルに勝つたび」）", () => {
     let s = slashed();
-    s = resolveAll(attack(s, "RK-069:fm", "RK-040:vs2"));
+    s = resolveAll(attack(s, "RK-069:fm", "SPEC-MM:vs2"));
     expect(attackTargets(s, "RK-069:fm")).toEqual(["SPEC-E2000:x"]);
   });
 
-  it.fails("RK-069: 【ミスティースラッシュ】ミラーモンスター以外に勝っても追加でアタックできない（出典: atwiki/page-53「特徴「ミラーモンスター」を持つユニットにアタックして」）", () => {
+  it("RK-069: 【ミスティースラッシュ】ミラーモンスター以外に勝っても追加でアタックできない（出典: atwiki/page-53「特徴「ミラーモンスター」を持つユニットにアタックして」）", () => {
     let s = slashed();
     s = resolveAll(attack(s, "RK-069:fm", "SPEC-E2000:x"));
     expect(attackTargets(s, "RK-069:fm")).toEqual([]);
@@ -544,7 +546,7 @@ describe("RK-070 仮面ライダーカブトMF", () => {
   const countS = (s: GameState, pid: "player1" | "player2") =>
     [...s.players[pid].battle, ...s.players[pid].rush].filter((c) => c.cardId === "SPEC-E2000" || c.cardId === "TST-UNIT-0" || c.cardId === "RK-070").length;
 
-  it.fails("RK-070: 【アバランチブレイク】（RC）敵軍 S が5体以上多い（7対2）とき、自軍 S と同じ2体になるまで敵軍 S を選び、持ち主のパワーゾーンに送る（M は対象外）（出典: atwiki/page-164）", () => {
+  it("RK-070: 【アバランチブレイク】（RC）敵軍 S が5体以上多い（7対2）とき、自軍 S と同じ2体になるまで敵軍 S を選び、持ち主のパワーゾーンに送る（M は対象外）（出典: atwiki/page-164）", () => {
     let s = avalanche(2, 7);
     expectChoiceFrom(s, "player1", "RK-070");
     expect(choiceIds(s)).not.toContain("SPEC-EM3500:em");

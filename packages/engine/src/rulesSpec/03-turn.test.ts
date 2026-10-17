@@ -841,15 +841,18 @@ describe("R-START-06 「フェイズ開始時」の効果", () => {
   );
 
   // 「「毎ターン1回ずつ発動できる」と考えてください。」(faq-rider-2 RK-080)
-  it.fails("R-START-06: 「スタートフェイズを終えるとき、一度だけ」（超変身）は毎ターン1回ずつ発動できる — 前のターンに重ねていても、次のスタートフェイズを終えるときにまた手札から重ねられる（出典: grnrngr/faq-rider-2 RK-080）", () => {
+  it("R-START-06: 「スタートフェイズを終えるとき、一度だけ」（超変身）は毎ターン1回ずつ発動できる — 前のターンに重ねていても、次のスタートフェイズを終えるときにまた手札から重ねられる（出典: grnrngr/faq-rider-2 RK-080）", () => {
     let state = startOfPlayer2Turn({
       deck: cards("d", 5),
       hand: [inst("RK-029", "h")],
       operation: [{ ...inst("RK-080", "op"), stackedCards: [inst("RK-102", "old")] }],
     });
-    state = doStartSteps(state, ["release", "return", "draw"]);
-    for (let i = 0; i < 5 && !state.pendingEffectChoice && state.phase === "start"; i++) {
-      const a = legal(state).find((x) => x.type === "skip_bonus_draw") ?? legal(state).find((x) => x.type === "end_phase");
+    // 任意の選択を見送らないよう、settle を使わずにスタートフェイズを進める（settle は任意の選択を skip する）。
+    for (let i = 0; i < 8 && !state.pendingEffectChoice && state.phase === "start"; i++) {
+      const acts = legal(state);
+      const a = ["release_start_commands", "return_all_battle_to_rush", "draw", "skip_bonus_draw", "end_phase"]
+        .map((t) => acts.find((x) => x.type === t))
+        .find(Boolean);
       if (!a) break;
       state = act(state, a);
     }

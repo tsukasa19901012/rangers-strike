@@ -8,6 +8,7 @@
  * 構成は rules/legend1/set9NamedEffectsD.ts と同じ。
  */
 import type { Category } from "@rangers-strike/cards";
+import { isSameCardIdentity } from "@rangers-strike/cards";
 import type {
   CardInstance,
   DeferredDestroyTrigger,
@@ -31,7 +32,7 @@ import { applyDamageToPlayer } from "../damagePayment";
 import { filterEffectRushCandidates, startEffectRush } from "../effectRush";
 import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
 import { RIDE_OFF_RC_MARK } from "../legend1/set7NamedEffectsD";
-import { J_POWER_CARD_ID, hasJPower, rk1AddedUnitFeatures, rk1IsSmallNow, rk1ZoneCardFeatures } from "./rk1Features";
+import { J_POWER_CARD_ID, hasJPower, isStackedUnderUnitOperation, rk1AddedUnitFeatures, rk1IsSmallNow, rk1ZoneCardFeatures } from "./rk1Features";
 import { rk2FeaturesStripped } from "./rk2Features";
 
 export { J_POWER_CARD_ID, hasJPower, rk1AddedUnitFeatures, rk1IsSmallNow, rk1ZoneCardFeatures };
@@ -203,12 +204,14 @@ function settleJPowerStacks(state: GameState): GameState {
     const patched: Partial<PlayerState> = {};
     for (const zone of zones) {
       const cards = player[zone];
-      if (!cards.some((c) => hasJPower(c))) continue;
+      // RK-079 仮面ライダーの称号も「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」（atwiki/page-661）。
+      const under = (c: CardInstance) => (c.stackedCards ?? []).some((s) => isStackedUnderUnitOperation(s.cardId));
+      if (!cards.some(under)) continue;
       patched[zone] = cards.map((c) => {
-        if (!hasJPower(c)) return c;
+        if (!under(c)) return c;
         const stacked = c.stackedCards ?? [];
-        freed.push(...stacked.filter((s) => s.cardId === J_POWER_CARD_ID).map((s) => stripForZone(s)));
-        const rest = stacked.filter((s) => s.cardId !== J_POWER_CARD_ID);
+        freed.push(...stacked.filter((s) => isStackedUnderUnitOperation(s.cardId)).map((s) => stripForZone(s)));
+        const rest = stacked.filter((s) => !isStackedUnderUnitOperation(s.cardId));
         if (rest.length > 0) return { ...c, stackedCards: rest };
         const { stackedCards: _s, ...without } = c;
         return without;
@@ -490,7 +493,7 @@ export function mirrorWorldCopies(state: Pick<GameState, "players" | "definition
   if (!name) return 0;
   let copies = 0;
   for (const op of state.players[ownerId].operation) {
-    if (op.cardId !== "RK-016") continue;
+    if (!isMirrorWorld(op.cardId)) continue;
     for (const st of op.stackedCards ?? []) {
       if (getDefinition(state.definitions, st.cardId)?.name === name) copies += 1;
     }
@@ -954,6 +957,11 @@ CHOICE_SKIPPERS[HUMAN_EVOLUTION_EFFECT_ID] = simpleSkip();
 export const MIRROR_WORLD_CARD_ID = "RK-016";
 export const MIRROR_WORLD_STACK_EFFECT_ID = "rk016_mirror_world_stack";
 
+/** ミラーワールドか（RK-075 は同名・同文の再録。cards/src/reprints.ts）。 */
+export function isMirrorWorld(cardId: string): boolean {
+  return isSameCardIdentity(cardId, MIRROR_WORLD_CARD_ID);
+}
+
 function mirrorStackIds(state: GameState, pid: PlayerId): string[] {
   return fieldUnits(state, pid)
     .filter((c) => isUnitCard(state, c.cardId) && rk1IsSmallNow(state, c))
@@ -962,7 +970,7 @@ function mirrorStackIds(state: GameState, pid: PlayerId): string[] {
 
 /** 常駐の起動ができるか（RK-016 以外は null）。 */
 export function canActivateRk1Resident(state: GameState, playerId: PlayerId, op: CardInstance): boolean | null {
-  if (op.cardId !== MIRROR_WORLD_CARD_ID) return null;
+  if (!isMirrorWorld(op.cardId)) return null;
   if (state.phase !== "rush" || state.activePlayer !== playerId) return false;
   if (state.pendingEffectChoice || state.pendingCommandPayment || state.pendingZordSetup || state.pendingEffectRush || state.pendingRush) {
     return false;
@@ -971,14 +979,14 @@ export function canActivateRk1Resident(state: GameState, playerId: PlayerId, op:
 }
 
 export function isRk1ActivatableResident(cardId: string): boolean {
-  return cardId === MIRROR_WORLD_CARD_ID;
+  return isMirrorWorld(cardId);
 }
 
 export function activateRk1Resident(state: GameState, playerId: PlayerId, op: CardInstance): GameState {
   return openEffectChoice(state, {
     playerId,
     phasePlayerId: playerId,
-    sourceCardId: MIRROR_WORLD_CARD_ID,
+    sourceCardId: op.cardId,
     sourceInstanceId: op.instanceId,
     effectId: MIRROR_WORLD_STACK_EFFECT_ID,
     kind: "select_unit",
@@ -1002,13 +1010,13 @@ CHOICE_RESOLVERS[MIRROR_WORLD_STACK_EFFECT_ID] = (state, playerId, instanceId) =
       c.instanceId === opId ? { ...c, stackedCards: [...(c.stackedCards ?? []), stripForZone(found.card)] } : c,
     ),
   }));
-  return { state: proceed(next, pending), log: logFor(state, playerId, MIRROR_WORLD_CARD_ID, `${MIRROR_WORLD_STACK_EFFECT_ID}:${cardName(state.definitions, found.card.cardId)}`) };
+  return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${MIRROR_WORLD_STACK_EFFECT_ID}:${cardName(state.definitions, found.card.cardId)}`) };
 };
 CHOICE_SKIPPERS[MIRROR_WORLD_STACK_EFFECT_ID] = simpleSkip();
 
 /** 常駐置き場を離れる常駐の行き先（ミラーワールドの重ねたカードは手札、それ以外は捨札）。 */
 export function rk1ResidentLeaving(card: CardInstance): { toDiscard: CardInstance[]; toHand: CardInstance[] } | null {
-  if (card.cardId !== MIRROR_WORLD_CARD_ID) return null;
+  if (!isMirrorWorld(card.cardId)) return null;
   const { stackedCards: stacked = [], ...base } = card;
   return { toDiscard: [base], toHand: stacked.map((s) => stripForZone(s)) };
 }
@@ -1024,8 +1032,9 @@ export const MISSION_MEMORY_CARD_ID = "RK-017";
 export const MISSION_MEMORY_EFFECT_ID = "rk017_mission_memory";
 const MISSION_MEMORY_RULE = "rk017_mission_memory_grant";
 
-function placeMissionMemory(state: GameState, playerId: PlayerId, opInstanceId: string | undefined): GameState {
-  const opCard: CardInstance = { instanceId: opInstanceId ?? `${MISSION_MEMORY_CARD_ID}:op`, cardId: MISSION_MEMORY_CARD_ID };
+function placeMissionMemory(state: GameState, playerId: PlayerId, opInstanceId: string | undefined, cardId: string): GameState {
+  // RK-076 は同名・同文の再録（使ったカード自身を置く）。
+  const opCard: CardInstance = { instanceId: opInstanceId ?? `${cardId}:op`, cardId };
   return patchPlayer(state, playerId, (p) =>
     p.command.length < COMMAND_ZONE_MAX
       ? { ...p, command: [...p.command, { ...opCard, commandHeld: true }] }
@@ -1039,11 +1048,11 @@ function applyMissionMemory(state: GameState, ctx: GrantKeywordContext): GrantKe
     .filter((c) => isUnitCard(state, c.cardId) && rk1IsSmallNow(state, c) && getDefinition(state.definitions, c.cardId)?.comboNumber === "RC")
     .map((c) => c.instanceId);
   if (ids.length === 0) {
-    return { state: placeMissionMemory(state, pid, ctx.operationInstanceId), detail: `${MISSION_MEMORY_EFFECT_ID}:no_targets` };
+    return { state: placeMissionMemory(state, pid, ctx.operationInstanceId, ctx.sourceCardId), detail: `${MISSION_MEMORY_EFFECT_ID}:no_targets` };
   }
   return {
     state: openEffectChoice(state, {
-      ...choiceBase(ctx, MISSION_MEMORY_CARD_ID),
+      ...choiceBase(ctx, ctx.sourceCardId),
       effectId: MISSION_MEMORY_EFFECT_ID,
       kind: "select_unit",
       validInstanceIds: ids,
@@ -1056,9 +1065,9 @@ function applyMissionMemory(state: GameState, ctx: GrantKeywordContext): GrantKe
 
 CHOICE_RESOLVERS[MISSION_MEMORY_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
-  let next = addTurnPayload(close(state, pending), playerId, MISSION_MEMORY_RULE, MISSION_MEMORY_CARD_ID, { instanceId });
-  next = placeMissionMemory(next, playerId, pending.sourceInstanceId);
-  return { state: proceed(next, pending), log: logFor(state, playerId, MISSION_MEMORY_CARD_ID, `${MISSION_MEMORY_EFFECT_ID}:${instanceId}`) };
+  let next = addTurnPayload(close(state, pending), playerId, MISSION_MEMORY_RULE, pending.sourceCardId, { instanceId });
+  next = placeMissionMemory(next, playerId, pending.sourceInstanceId, pending.sourceCardId);
+  return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${MISSION_MEMORY_EFFECT_ID}:${instanceId}`) };
 };
 
 /** このターン、ライドオフしなくても RC の効果を発動できるユニットか。 */
@@ -1107,7 +1116,7 @@ function applyRouseCard(state: GameState, ctx: GrantKeywordContext): GrantKeywor
   if (ids.length === 0) return { state, detail: `${ROUSE_RUSH_EFFECT_ID}:no_targets` };
   return {
     state: openEffectChoice(state, {
-      ...choiceBase(ctx, "RK-018"),
+      ...choiceBase(ctx, ctx.sourceCardId),
       effectId: ROUSE_RUSH_EFFECT_ID,
       kind: "select_unit",
       validInstanceIds: ids,
@@ -1121,7 +1130,7 @@ function applyRouseCard(state: GameState, ctx: GrantKeywordContext): GrantKeywor
 CHOICE_RESOLVERS[ROUSE_RUSH_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
   const ids = rouseDiscardIds(state, playerId);
-  const log = logFor(state, playerId, "RK-018", `${ROUSE_RUSH_EFFECT_ID}:${instanceId}`);
+  const log = logFor(state, playerId, pending.sourceCardId, `${ROUSE_RUSH_EFFECT_ID}:${instanceId}`);
   // 「そうしたとき」— 捨札から選べなければ BP は変わらない。
   if (ids.length === 0) return { state: proceed(close(state, pending), pending), log };
   return {
@@ -1141,7 +1150,7 @@ CHOICE_RESOLVERS[ROUSE_DISCARD_EFFECT_ID] = (state, playerId, instanceId) => {
       cards.map((c) => (c.instanceId === targetId ? { ...c, bpModifier: (c.bpModifier ?? 0) + bp } : c));
     return { ...p, rush: add(p.rush), battle: add(p.battle) };
   });
-  return { state: proceed(next, pending), log: logFor(state, playerId, "RK-018", `${ROUSE_DISCARD_EFFECT_ID}:+${bp}`) };
+  return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${ROUSE_DISCARD_EFFECT_ID}:+${bp}`) };
 };
 
 // ---------------------------------------------------------------------------

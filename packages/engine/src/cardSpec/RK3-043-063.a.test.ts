@@ -366,7 +366,7 @@ describe("RK-046 オートバジンBM", () => {
     "RK-046: 公式Q&A — 改造人間・超電子ダイナモとの組み合わせで【バスターホイール】の BP0 撃破にダメージを与えるか（出典: grnrngr/faq-rider-1 RK-046 Q1・atwiki/page-206 Q1）— 公式FAQ の中で回答が食い違う（RK-046 欄「はい」、RK-005 欄「いいえ…状況が成立しない」。atwiki 注釈はルールの補足なので撃破とは扱わない）ため保留",
   );
   // 公式 Q3「はい、できます。」
-  it.fails("RK-046: 公式Q&A（相互参照）— 下三桁が 500 になった敵軍 S ユニットを RK-064 仮面ライダーファイズ【ファイズエッジ】で撃破できる（出典: grnrngr/faq-rider-1 RK-046 Q3）", () => {
+  it("RK-046: 公式Q&A（相互参照）— 下三桁が 500 になった敵軍 S ユニットを RK-064 仮面ライダーファイズ【ファイズエッジ】で撃破できる（出典: grnrngr/faq-rider-1 RK-046 Q3）", () => {
     let s = enter(board({ battle: [inst("RK-046", "bm")], rush: [inst("RK-064", "fz")] }, { battle: [inst("SPEC-E3000", "b")] }), "RK-064:fz");
     expect(choiceIds(s)).toEqual(["SPEC-E3000:b"]);
     s = resolveAll(pick(s, "SPEC-E3000:b"));

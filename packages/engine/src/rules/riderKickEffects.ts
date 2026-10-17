@@ -14,7 +14,7 @@ import { openImaginPowerChoice } from "./errataCardEffects";
 import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../dsl/grantKeyword";
-import { cardName, getDefinition, parsePowerCost } from "../core/catalog";
+import { cardCategories, cardName, getDefinition, parsePowerCost } from "../core/catalog";
 import { opponent, updatePlayer } from "../core/helpers";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import { openEffectChoice } from "./pendingChoices";
@@ -46,6 +46,11 @@ function hasPowerOneTwoThree(state: GameState, playerId: PlayerId): boolean {
 
 // ---- RK-065 系: OT コマンドを N ホールド → SP 付与 ----
 
+function commandIsOt(state: GameState, cardId: string): boolean {
+  const def = getDefinition(state.definitions, cardId);
+  return !!def && cardCategories(def).includes("OT");
+}
+
 const HOLD_SP_RE = /^hold_(\d+)_ot_commands_then_sp(\d+)$/;
 
 function beginHoldOtCommandsThenSp(
@@ -55,8 +60,12 @@ function beginHoldOtCommandsThenSp(
 ): GameState | null {
   const selfId = ctx.triggerSourceInstanceId;
   if (!selfId) return null;
+  // 「自軍ターン中、…OTの自軍コマンドを3つホールドしてもよい」（RK-065 atwiki/page-163）— OT のリリース状態のコマンドだけ。
+  if (state.activePlayer !== ctx.playerId) return null;
   const player = state.players[ctx.playerId];
-  const released = player.command.filter((c) => !c.commandHeld).map((c) => c.instanceId);
+  const released = player.command
+    .filter((c) => !c.commandHeld && commandIsOt(state, c.cardId))
+    .map((c) => c.instanceId);
   if (released.length < holdCount) return null;
   return openEffectChoice(state, {
     playerId: ctx.playerId,

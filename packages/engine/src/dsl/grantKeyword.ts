@@ -111,6 +111,7 @@ import { trySet9DCardEffect } from "../rules/legend1/set9NamedEffectsD";
 import { tryRk1CardEffect } from "../rules/rk/rk1NamedEffects";
 import { tryRk2CardEffect } from "../rules/rk/rk2UnitEffects";
 import { tryRk3CardEffect } from "../rules/rk/rk3UnitEffects";
+import { tryRk4CardEffect } from "../rules/rk/rk4UnitEffects";
 import { tryOtherLinesCardEffect } from "../rules/legend1/otherLinesNamedEffects";
 import { trySet9BCardEffect } from "../rules/legend1/set9NamedEffectsB";
 import { trySet8BCardEffect } from "../rules/legend1/set8NamedEffectsB";
@@ -418,6 +419,9 @@ export function applyGrantKeyword(
   // ライダーEXP vol.1 RK-043〜RK-063 のカード固有の効果（`rk3::` キーワード。rules/rk/rk3UnitEffects.ts）。
   const rk3 = tryRk3CardEffect(state, ctx, keyword);
   if (rk3) return rk3;
+  // ライダーEXP vol.1・vol.2 RK-064〜RK-084 のカード固有の効果（`rk4::` キーワード。rules/rk/rk4UnitEffects.ts）。
+  const rk4 = tryRk4CardEffect(state, ctx, keyword);
+  if (rk4) return rk4;
   // 第8弾 RS-560〜RS-581 のカード固有の名前付き効果（`set8c::` と一部の既存キーワード。rules/legend1/set8NamedEffectsC.ts）。
   const set8c = trySet8CCardEffect(state, ctx, keyword);
   if (set8c) return set8c;
