@@ -3,6 +3,7 @@ import { set9AAttackerCanAttackRush, set9ADefenderBlocksAttack } from "../legend
 import { set7DDefenderBlocksAttack } from "../legend1/set7NamedEffectsD";
 import { set8ADefenderBlocksAttack } from "../legend1/set8NamedEffectsA";
 import { set8DDefenderBlocksAttack } from "../legend1/set8NamedEffectsD";
+import { rk1DefenderBlocksAttack } from "../rk/rk1NamedEffects";
 import { set9DAllowsRushAttack } from "../legend1/set9NamedEffectsD";
 import { set8CAllowsRushAttack, set8CDefenderBlocksAttack } from "../legend1/set8NamedEffectsC";
 import { set8BDefenderBlocksAttack } from "../legend1/set8NamedEffectsB";
@@ -454,6 +455,8 @@ export function canAttackDefender(
   if (defenderCard && set8CDefenderBlocksAttack(state, attackerPlayerId, defenderPlayerId, defenderCard)) return false;
   // RS-553 ゴッドサルダー ※（自軍バトルエリアにこれ以外の同名ユニットがあればアタックされない。rules/legend1/set8NamedEffectsB.ts）。
   if (defenderCard && set8BDefenderBlocksAttack(state, defenderPlayerId, defenderCard)) return false;
+  // RK-006 セイリングジャンプ・RK-014 共同戦線・RK-016 ミラーワールド（rules/rk/rk1NamedEffects.ts）。
+  if (defenderCard && rk1DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;

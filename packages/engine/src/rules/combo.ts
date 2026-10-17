@@ -79,6 +79,7 @@ import {
 } from "./legend1/set6NamedEffectsB";
 import { trySet7AOnEnterBattle } from "./legend1/set7NamedEffectsA";
 import { set9CBlocksStrike, trySet9COnComboEnter } from "./legend1/set9NamedEffectsC";
+import { tryRk1OnEnterBattle } from "./rk/rk1NamedEffects";
 import { set8ABlocksStrike, trySet8AOnEnterBattle } from "./legend1/set8NamedEffectsA";
 import { clearWolfRoarDecision, openWolfRoarBeforeNc } from "./legend1/set7NamedEffectsC";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
@@ -254,6 +255,11 @@ export function resolveEnterBattleEffectsImpl(
     }
     // 第9弾 RS-653【後輩戦士への叱咤】・RS-654【先輩戦士の教え】・RS-669【アイスエイジエクスプレス】（rules/legend1/set9NamedEffectsC.ts）。
     nextState = trySet9COnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
+    if (nextState.pendingEffectChoice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+    // RK-020 ダブルライダーキック: 選んだ2体が自軍バトルエリアで隣り合ったとき（rules/rk/rk1NamedEffects.ts）。
+    nextState = tryRk1OnEnterBattle(nextState, playerId, battleCard);
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }

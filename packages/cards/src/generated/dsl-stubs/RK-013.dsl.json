@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_s_on_self_rush",
-          "duration": "permanent"
+          "keyword": "rk1::RK-013::j_power",
+          "duration": "turn"
         }
       ],
       "optional": false

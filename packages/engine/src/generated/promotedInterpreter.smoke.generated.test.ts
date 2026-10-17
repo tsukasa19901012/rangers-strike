@@ -1,6 +1,6 @@
 /**
  * Auto-generated promoted interpreter smoke (M14/M15)
- * grant_keyword: 40 | interpret_effect: 0 | action_primitive: 37
+ * grant_keyword: 40 | interpret_effect: 0 | action_primitive: 35
  */
 import { describe, it, expect } from "vitest";
 import * as cardDsl from "@rangers-strike/cards/dsl";
@@ -64,8 +64,6 @@ const ACTION_PRIMITIVE_IDS = [
   "BK-016",
   "PK-013",
   "PR-025",
-  "RK-005",
-  "RK-020",
   "RK-096",
   "RK-097",
   "RK-102",

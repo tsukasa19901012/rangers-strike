@@ -237,7 +237,9 @@ export function battleDefenderBp(
     base +
     passiveNamedFieldBpBonus(state, defenderOwner, defenderFound.card, "defending") +
     attackedBpBoostAmount(defenderFound.card.cardId) +
-    allyAttackedAuraBpBonus(state, defenderOwner, defenderFound.card)
+    allyAttackedAuraBpBonus(state, defenderOwner, defenderFound.card) +
+    // RK-004 ギギの腕輪・RK-009 二人の世紀王: 「このバトルの間、アタックされたユニットは BP+…」（かわりにバトルするユニットには付かない）。
+    (pending.substituteInstanceId ? 0 : (pending.defenderBpBonus ?? 0))
   );
 }
 

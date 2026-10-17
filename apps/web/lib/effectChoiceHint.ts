@@ -103,6 +103,26 @@ const SET9A_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk322_blizzard_claw_execution: { label: "ブリザードクロー・エクスキュージョン", hint: "このユニットをホールドして BP+4000 しますか？（するならこのユニットを選ぶ）" },
 };
 
+/** ライダーEXP vol.1 RK-001〜RK-021 のカード固有の選択（engine rules/rk/rk1NamedEffects.ts）の表示名と案内文。 */
+const RK1_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk002_v3_pick: { label: "V3ホッパー", hint: "山札の上か下に戻すカードを1枚選んでください（上に戻したカードは後から戻したものほど上、下に戻したカードは後から戻したものほど下になります）" },
+  rk002_v3_place: { label: "V3ホッパー", hint: "選んだカードを山札の上と下のどちらに戻すか選んでください" },
+  rk003_kaizorg: { label: "カイゾーグ", hint: "自軍コマンドを1つホールドして、このユニットカードを自軍山札の下に戻しますか？（戻すならカードを選ぶ）" },
+  rk005_dynamo: { label: "超電子ダイナモ", hint: "能力を与える特徴「改造人間」の自軍 S ユニットを選んでください" },
+  rk007_maintenance_return: { label: "メンテナンス", hint: "手札に戻すリリース状態の S ユニットのカードを自軍コマンドゾーンから選んでください" },
+  rk007_maintenance_place: { label: "メンテナンス", hint: "自軍コマンドゾーンにホールド状態で置く「改造人間」の S ユニットのカードを捨札から選んでください" },
+  rk011_third_eye: { label: "第三の眼", hint: "相手のカウンターを無効にするために捨札にするカードを手札から選んでください（無効にしないなら「スキップ」）" },
+  rk013_j_power: { label: "Jパワー", hint: "Jパワーを重ねて L ユニットにする自軍 S ユニットを選んでください" },
+  rk015_human_evolution: { label: "人類の進化", hint: "ひいたカードを自軍ラッシュエリアに出しますか？（出すならカードを選ぶ。出さなければ手札に加えます）" },
+  rk016_mirror_world_stack: { label: "ミラーワールド", hint: "ミラーワールドに重ねる自軍 S ユニットを選んでください" },
+  rk017_mission_memory: { label: "ミッションメモリー", hint: "RC を持つ自軍 S ユニットを選んでください" },
+  rk018_rouse_rush: { label: "ラウズカード", hint: "BP を上げる自軍ラッシュエリアの S ユニットを選んでください" },
+  rk018_rouse_discard: { label: "ラウズカード", hint: "BP を加える S ユニットのカードを自軍捨札から選んでください" },
+  rk019_ongeki: { label: "音撃", hint: "特徴「メカ」を持たない敵軍ユニットを選んでください" },
+  rk020_double_kick_pick: { label: "ダブルライダーキック", hint: "自軍ラッシュエリアの「仮面ライダー」のユニットを2体選んでください" },
+  rk020_double_kick_destroy: { label: "ダブルライダーキック", hint: "撃破する敵軍バトルエリアの BP8000 以下のユニットを選んでください" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -131,7 +151,11 @@ export function effectChoiceHint(
 ): string {
   const set8c = SET8C_CHOICE_UI[pending.effectId];
   if (set8c) return set8c.hint;
-  const set7d = SET7D_CHOICE_UI[pending.effectId] ?? SET8D_CHOICE_UI[pending.effectId] ?? SET9A_CHOICE_UI[pending.effectId];
+  const set7d =
+    SET7D_CHOICE_UI[pending.effectId] ??
+    SET8D_CHOICE_UI[pending.effectId] ??
+    SET9A_CHOICE_UI[pending.effectId] ??
+    RK1_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -324,6 +348,7 @@ export function effectChoiceTitle(
     SET7D_CHOICE_UI[pending.effectId]?.label ??
     SET8D_CHOICE_UI[pending.effectId]?.label ??
     SET9A_CHOICE_UI[pending.effectId]?.label ??
+    RK1_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;
@@ -361,6 +386,9 @@ export function confirmOptionLabel(
   if (value === pending.effectId || value === pending.sourceInstanceId) return "効果を使う";
   if (value === "rs528_take_damage") return "1点ダメージを受ける";
   if (value === "command") return "コマンドゾーンに送る";
+  // RK-002 V3ホッパー（engine rules/rk/rk1NamedEffects.ts）。
+  if (value === "deck_top") return "山札の上に戻す";
+  if (value === "deck_bottom") return "山札の下に戻す";
   if (value === "discard") return "捨札にする";
   for (const pid of ["player1", "player2"] as const) {
     const card = [...state.players[pid].battle, ...state.players[pid].rush].find((c) => c.instanceId === value);

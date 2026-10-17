@@ -93,18 +93,15 @@ describe("RK-001 改造人間", () => {
       ),
     );
 
-  // 既知の不具合: CARD-RK-001 「改造人間」の特徴の追加が未実装（自軍のユニット・ゾーンのユニットカードに追加されない）
-  it.fails("RK-001: 特徴「男」を持つ自軍ユニットに「改造人間」が追加される（超電子ダイナモの対象になる）（出典: atwiki/page-190・grnrngr/faq-rider-1 RK-005 Q「「RK-001 改造人間」の効果を得るための特徴「男」も特徴「女」も持たない」）", () => {
+  it("RK-001: 特徴「男」を持つ自軍ユニットに「改造人間」が追加される（超電子ダイナモの対象になる）（出典: atwiki/page-190・grnrngr/faq-rider-1 RK-005 Q「「RK-001 改造人間」の効果を得るための特徴「男」も特徴「女」も持たない」）", () => {
     expect(dynamoTargets(true, [inst("SPEC-MALE", "m"), inst("SPEC-MECHA", "x")])).toEqual(["SPEC-MALE:m"]);
   });
 
-  // 既知の不具合: CARD-RK-001 「改造人間」の特徴の追加が未実装（自軍のユニット・ゾーンのユニットカードに追加されない）
-  it.fails("RK-001: 特徴「女」を持つ自軍ユニットにも追加される（出典: atwiki/page-190「「男」または「女」を持っていれば」）", () => {
+  it("RK-001: 特徴「女」を持つ自軍ユニットにも追加される（出典: atwiki/page-190「「男」または「女」を持っていれば」）", () => {
     expect(dynamoTargets(true, [inst("SPEC-FEMALE", "f")])).toEqual(["SPEC-FEMALE:f"]);
   });
 
-  // 既知の不具合: CARD-RK-001 「改造人間」の特徴の追加が未実装（自軍のユニット・ゾーンのユニットカードに追加されない）
-  it.fails("RK-001: 配置していなければ「男」だけのユニットは「改造人間」を持たない（出典: atwiki/page-190 カード評価「このカード単品では意味を成さない」）", () => {
+  it("RK-001: 配置していなければ「男」だけのユニットは「改造人間」を持たない（出典: atwiki/page-190 カード評価「このカード単品では意味を成さない」）", () => {
     expect(dynamoTargets(false, [inst("SPEC-MALE", "m"), inst("SPEC-KAIZO", "k")])).toEqual(["SPEC-KAIZO:k"]);
   });
 
@@ -127,8 +124,7 @@ describe("RK-001 改造人間", () => {
     expect(choiceIds(s)).toEqual([]);
   });
 
-  // 既知の不具合: CARD-RK-001 「改造人間」の特徴の追加が未実装（自軍のユニット・ゾーンのユニットカードに追加されない）
-  it.fails("RK-001: 自軍コマンドゾーンのユニットカードにも追加される（メカニック忍者で「改造人間」のカードとして出せる）（出典: atwiki/page-190「自軍コマンドゾーン…にあるユニットカード」・atwiki/page-196 カード評価「改造人間を使用して対象を増やす」）", () => {
+  it("RK-001: 自軍コマンドゾーンのユニットカードにも追加される（メカニック忍者で「改造人間」のカードとして出せる）（出典: atwiki/page-190「自軍コマンドゾーン…にあるユニットカード」・atwiki/page-196 カード評価「改造人間を使用して対象を増やす」）", () => {
     // 敵軍ターン、自軍 S ユニットがアタックされたときのメカニック忍者（RK-008）。
     const s = st(
       {
@@ -152,8 +148,7 @@ describe("RK-001 改造人間", () => {
     expect(subs).toContain("SPEC-MALE:cm");
   });
 
-  // 既知の不具合: CARD-RK-001 「改造人間」の特徴の追加が未実装（自軍のユニット・ゾーンのユニットカードに追加されない）
-  it.fails("RK-001: 自軍捨札のユニットカードにも追加される（メンテナンスで「改造人間」のカードとして選べる）（出典: atwiki/page-190「自軍捨札にあるユニットカード」・atwiki/page-195）", () => {
+  it("RK-001: 自軍捨札のユニットカードにも追加される（メンテナンスで「改造人間」のカードとして選べる）（出典: atwiki/page-190「自軍捨札にあるユニットカード」・atwiki/page-195）", () => {
     let s = played(
       rushBoard({
         hand: [inst("RK-007", "mt")],
@@ -199,8 +194,7 @@ describe("RK-002 V3ホッパー", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  // 既知の不具合: CARD-RK-002 3枚を1枚ずつ山札の上か下に戻す選択が未実装（見るだけで山札が変わらない）
-  it.fails("RK-002: 1枚ずつ、山札の上か下を選んで戻す（上に戻したカードは後から戻したものほど上になる）（出典: atwiki/page-191「山札の上か下にそれぞれ好きな順で戻す」）", () => {
+  it("RK-002: 1枚ずつ、山札の上か下を選んで戻す（上に戻したカードは後から戻したものほど上になる）（出典: atwiki/page-191「山札の上か下にそれぞれ好きな順で戻す」）", () => {
     let s = played(board(), "RK-002:op");
     s = place(s, "TST-OP:dk0", "deck_top");
     s = place(s, "TST-OP:dk1", "deck_bottom");
@@ -209,8 +203,7 @@ describe("RK-002 V3ホッパー", () => {
     expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:dk2", "TST-OP:dk0", "TST-OP:dk3", "TST-OP:dk4", "TST-OP:dk1"]);
   });
 
-  // 既知の不具合: CARD-RK-002 3枚を1枚ずつ山札の上か下に戻す選択が未実装（見るだけで山札が変わらない）
-  it.fails("RK-002: 3枚とも山札の下に戻してもよい（出典: atwiki/page-191「それぞれ」）", () => {
+  it("RK-002: 3枚とも山札の下に戻してもよい（出典: atwiki/page-191「それぞれ」）", () => {
     let s = played(board(), "RK-002:op");
     s = place(s, "TST-OP:dk2", "deck_bottom");
     s = place(s, "TST-OP:dk0", "deck_bottom");
@@ -223,8 +216,7 @@ describe("RK-002 V3ホッパー", () => {
     expect(choiceIds(s)).toEqual(["TST-OP:dk0", "TST-OP:dk1"]);
   });
 
-  // 既知の不具合: CARD-RK-002 3枚を1枚ずつ山札の上か下に戻す選択が未実装（見るだけで山札が変わらない）
-  it.fails("RK-002: 使ったカードは捨札になる（出典: atwiki/page-191（常駐ではない））", () => {
+  it("RK-002: 使ったカードは捨札になる（出典: atwiki/page-191（常駐ではない））", () => {
     let s = played(board(), "RK-002:op");
     for (const id of ["TST-OP:dk0", "TST-OP:dk1", "TST-OP:dk2"]) s = place(s, id, "deck_top");
     expect(zoneOf(s, "player1", "RK-002:op")).toBe("discard");
@@ -255,16 +247,14 @@ describe("RK-003 カイゾーグ", () => {
     expectRarityIn("RK-003", ["MR"]);
   });
 
-  // 既知の不具合: CARD-RK-003 敵軍ターン中の撃破時の発動（コマンドをホールドして山札の下に戻す）が未実装
-  it.fails("RK-003: 敵軍ターン中に自軍 S ユニットが撃破されて捨札になったとき、発動するかを選べる（任意）（出典: atwiki/page-192「発動できる」）", () => {
+  it("RK-003: 敵軍ターン中に自軍 S ユニットが撃破されて捨札になったとき、発動するかを選べる（任意）（出典: atwiki/page-192「発動できる」）", () => {
     const s = destroyed({ battle: [inst("TST-UNIT-0", "u")] }, "TST-UNIT-0:u");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-003");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RK-003 敵軍ターン中の撃破時の発動（コマンドをホールドして山札の下に戻す）が未実装
-  it.fails("RK-003: 発動すると自軍コマンドを1つホールドし、そのユニットカードを自軍山札の下に戻す（出典: atwiki/page-192「自軍コマンドを1つホールドして…自軍山札の下に戻す」）", () => {
+  it("RK-003: 発動すると自軍コマンドを1つホールドし、そのユニットカードを自軍山札の下に戻す（出典: atwiki/page-192「自軍コマンドを1つホールドして…自軍山札の下に戻す」）", () => {
     const s = resolveAll(destroyed({ battle: [inst("TST-UNIT-0", "u")] }, "TST-UNIT-0:u"), ["TST-UNIT-0:u"]);
     const deck = zoneIds(s, "player1", "deck");
     expect(deck[deck.length - 1]).toBe("TST-UNIT-0:u");
@@ -272,8 +262,7 @@ describe("RK-003 カイゾーグ", () => {
     expect(s.players.player1.command.every((c) => c.commandHeld)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RK-003 敵軍ターン中の撃破時の発動（コマンドをホールドして山札の下に戻す）が未実装
-  it.fails("RK-003: 発動しなければ捨札に残る（出典: atwiki/page-192「発動できる」）", () => {
+  it("RK-003: 発動しなければ捨札に残る（出典: atwiki/page-192「発動できる」）", () => {
     const s = settle(skip(destroyed({ battle: [inst("TST-UNIT-0", "u")] }, "TST-UNIT-0:u")));
     expect(zoneOf(s, "player1", "TST-UNIT-0:u")).toBe("discard");
     expect(s.players.player1.command.some((c) => !c.commandHeld)).toBe(true);
@@ -321,8 +310,7 @@ describe("RK-003 カイゾーグ", () => {
   });
 
   // faq-rider-1 RK-003「はい、戻します。」
-  // 既知の不具合: CARD-RK-003 敵軍ターン中の撃破時の発動（コマンドをホールドして山札の下に戻す）が未実装
-  it.fails("RK-003: 公式Q&A — ボウケンレッドAT を山札の下に戻しても、捨札のボウケンレッドはラッシュエリアに戻す（出典: grnrngr/faq-rider-1 RK-003・atwiki/page-192 Q1）", () => {
+  it("RK-003: 公式Q&A — ボウケンレッドAT を山札の下に戻しても、捨札のボウケンレッドはラッシュエリアに戻す（出典: grnrngr/faq-rider-1 RK-003・atwiki/page-192 Q1）", () => {
     const s = resolveAll(
       destroyed({ battle: [inst("RS-241", "at")], discard: [inst("RS-062", "red")] }, "RS-241:at"),
       ["RS-241:at", "RS-062:red"],
@@ -372,13 +360,11 @@ describe("RK-004 ギギの腕輪", () => {
     expectRarityIn("RK-004", ["MR", "N"]);
   });
 
-  // 既知の不具合: CARD-RK-004 アタックされたときのカウンターとして使えない（バトルの反応ウィンドウに出ない）
-  it.fails("RK-004: 自軍 S ユニットが敵軍 S ユニットにアタックされたとき使える（出典: atwiki/page-175）", () => {
+  it("RK-004: 自軍 S ユニットが敵軍 S ユニットにアタックされたとき使える（出典: atwiki/page-175）", () => {
     expect(canCounter(attacked("TST-UNIT-0:d"))).toBe(true);
   });
 
-  // 既知の不具合: CARD-RK-004 アタックされたときのカウンターとして使えない（バトルの反応ウィンドウに出ない）
-  it.fails("RK-004: そのバトルの間、アタックされたユニットは BP+2000 され、BP2500 の S ユニットに勝つ（出典: atwiki/page-175「そのバトルの間、アタックされたユニットはBP+2000される」）", () => {
+  it("RK-004: そのバトルの間、アタックされたユニットは BP+2000 され、BP2500 の S ユニットに勝つ（出典: atwiki/page-175「そのバトルの間、アタックされたユニットはBP+2000される」）", () => {
     const s = settle(useCounter(attacked("TST-UNIT-0:d")));
     expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-ATK-S:a")).toBe("discard");
@@ -391,8 +377,7 @@ describe("RK-004 ギギの腕輪", () => {
   });
 
   // atwiki/page-175 Q1「はい、できます。」
-  // 既知の不具合: CARD-RK-004 アタックされたときのカウンターとして使えない（バトルの反応ウィンドウに出ない）
-  it.fails("RK-004: Q&A — 1回のアタックに2枚使えば BP+4000 になり、BP4500 の S ユニットに勝つ（出典: grnrngr/faq-rider-1 RK-004・atwiki/page-175 Q1・R-CTR-02）", () => {
+  it("RK-004: Q&A — 1回のアタックに2枚使えば BP+4000 になり、BP4500 の S ユニットに勝つ（出典: grnrngr/faq-rider-1 RK-004・atwiki/page-175 Q1・R-CTR-02）", () => {
     let s = attacked("TST-UNIT-0:d", "SPEC-ATK-S4:a", [inst("RK-004", "g"), inst("RK-004", "g2")]);
     s = useCounter(s, "RK-004:g");
     expect(canCounter(s, "RK-004:g2")).toBe(true);
@@ -449,8 +434,7 @@ describe("RK-005 超電子ダイナモ", () => {
     expectRarityIn("RK-005", ["MR"]);
   });
 
-  // 既知の不具合: CARD-RK-005 対象を選ばず、使った時点で相手に1点ダメージを与えてしまう（撃破したときの能力の付与が未実装）
-  it.fails("RK-005: 選べるのは特徴「改造人間」を持つ自軍 S ユニットだけ（M ユニット・改造人間でないユニットは選べない）（出典: atwiki/page-193「特徴「改造人間」を持つ自軍Sユニットを1体選ぶ」）", () => {
+  it("RK-005: 選べるのは特徴「改造人間」を持つ自軍 S ユニットだけ（M ユニット・改造人間でないユニットは選べない）（出典: atwiki/page-193「特徴「改造人間」を持つ自軍Sユニットを1体選ぶ」）", () => {
     const s = played(
       rushBoard({ hand: [inst("RK-005", "dy")], rush: [inst("SPEC-KAIZO", "k"), inst("SPEC-KAIZO-M", "km"), inst("SPEC-MALE", "m")], command: releasedCat("ET", 1) }, { rush: [inst("SPEC-KAIZO", "ek")] }),
       "RK-005:dy",
@@ -458,8 +442,7 @@ describe("RK-005 超電子ダイナモ", () => {
     expect(choiceIds(s)).toEqual(["SPEC-KAIZO:k"]);
   });
 
-  // 既知の不具合: CARD-RK-005 対象を選ばず、使った時点で相手に1点ダメージを与えてしまう（撃破したときの能力の付与が未実装）
-  it.fails("RK-005: 使っただけではダメージを与えない（出典: atwiki/page-193「…撃破したとき、相手に1点ダメージを与える」）", () => {
+  it("RK-005: 使っただけではダメージを与えない（出典: atwiki/page-193「…撃破したとき、相手に1点ダメージを与える」）", () => {
     const s = resolveAll(
       played(rushBoard({ hand: [inst("RK-005", "dy")], rush: [inst("SPEC-KAIZO", "k")], command: releasedCat("ET", 1) }, { power: powerCards(3, "epw") }), "RK-005:dy"),
       ["SPEC-KAIZO:k"],
@@ -473,8 +456,7 @@ describe("RK-005 超電子ダイナモ", () => {
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RK-005 対象を選ばず、使った時点で相手に1点ダメージを与えてしまう（撃破したときの能力の付与が未実装）
-  it.fails("RK-005: SP が空欄のユニットを撃破してもダメージは与えない（出典: atwiki/page-193「SPが空欄ではないユニットを撃破したとき」）", () => {
+  it("RK-005: SP が空欄のユニットを撃破してもダメージは与えない（出典: atwiki/page-193「SPが空欄ではないユニットを撃破したとき」）", () => {
     const s = battleWith(dynamo([inst("SPEC-NOSP-E", "e")]), "SPEC-NOSP-E:e");
     expect(zoneOf(s, "player2", "SPEC-NOSP-E:e")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(0);
@@ -486,15 +468,13 @@ describe("RK-005 超電子ダイナモ", () => {
     expect(damageOf(s, "player2")).toBe(2);
   });
 
-  // 既知の不具合: CARD-RK-005 対象を選ばず、使った時点で相手に1点ダメージを与えてしまう（撃破したときの能力の付与が未実装）
-  it.fails("RK-005: 撃破できなかったときはダメージを与えない（出典: atwiki/page-193「撃破したとき」）", () => {
+  it("RK-005: 撃破できなかったときはダメージを与えない（出典: atwiki/page-193「撃破したとき」）", () => {
     const s = battleWith(dynamo([inst("TST-UNIT-7", "big")]), "TST-UNIT-7:big");
     expect(zoneOf(s, "player2", "TST-UNIT-7:big")).toBe("battle");
     expect(damageOf(s, "player2")).toBe(0);
   });
 
-  // 既知の不具合: CARD-RK-005 対象を選ばず、使った時点で相手に1点ダメージを与えてしまう（撃破したときの能力の付与が未実装）
-  it.fails("RK-005: 次のターンには能力は残らない（出典: atwiki/page-193「このターン、」）", () => {
+  it("RK-005: 次のターンには能力は残らない（出典: atwiki/page-193「このターン、」）", () => {
     // 自軍ターンに使い、次の敵軍ターンに敵軍 SP1 のユニットにアタックされてバトルで撃破しても、ダメージは与えない。
     let s = resolveAll(
       played(rushBoard({ hand: [inst("RK-005", "dy")], battle: [inst("SPEC-KAIZO", "k")], command: releasedCat("ET", 1) }, { rush: [inst("TST-UNIT-0", "e")], power: powerCards(3, "epw") }), "RK-005:dy"),
@@ -541,8 +521,7 @@ describe("RK-006 セイリングジャンプ", () => {
     expectRarityIn("RK-006", ["MR"]);
   });
 
-  // 既知の不具合: CARD-RK-006 ライド中のユニットからライドしていない自軍 S ユニットへのアタック制限が未実装
-  it.fails("RK-006: ライドしていない自軍 S ユニットは、ライド中のユニットにアタックされない（出典: atwiki/page-194）", () => {
+  it("RK-006: ライドしていない自軍 S ユニットは、ライド中のユニットにアタックされない（出典: atwiki/page-194）", () => {
     const s = board({ battle: [inst("TST-UNIT-0", "s")] });
     expect(attackersOf(s, "TST-UNIT-0:s")).not.toContain("SPEC-RIDER:rd");
   });
@@ -580,8 +559,7 @@ describe("RK-007 メンテナンス", () => {
     expectRarityIn("RK-007", ["MR", "N"]);
   });
 
-  // 既知の不具合: CARD-RK-007 候補がリリース状態の S ユニットのカードに絞られず、手札に戻す・捨札の改造人間をコマンドゾーンに置く処理が未実装
-  it.fails("RK-007: 選べるのはリリース状態の S ユニットのカードだけ（ホールド状態・M ユニット・オペレーションは選べない）（出典: atwiki/page-195「リリース状態のSユニットのカードを1枚選び」）", () => {
+  it("RK-007: 選べるのはリリース状態の S ユニットのカードだけ（ホールド状態・M ユニット・オペレーションは選べない）（出典: atwiki/page-195「リリース状態のSユニットのカードを1枚選び」）", () => {
     const s = played(
       board({
         command: [released("TST-UNIT-0", "cu"), held("SPEC-MALE", "hm"), released("SPEC-MALE-M", "cm"), ...releasedCat("ET", 1)],
@@ -592,14 +570,12 @@ describe("RK-007 メンテナンス", () => {
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:cu"]);
   });
 
-  // 既知の不具合: CARD-RK-007 候補がリリース状態の S ユニットのカードに絞られず、手札に戻す・捨札の改造人間をコマンドゾーンに置く処理が未実装
-  it.fails("RK-007: 選んだカードを手札に戻す（出典: atwiki/page-195「手札に戻す」）", () => {
+  it("RK-007: 選んだカードを手札に戻す（出典: atwiki/page-195「手札に戻す」）", () => {
     const s = resolveAll(played(board({ command: [released("TST-UNIT-0", "cu"), ...releasedCat("ET", 1)] }), "RK-007:mt"), ["TST-UNIT-0:cu"]);
     expect(zoneOf(s, "player1", "TST-UNIT-0:cu")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RK-007 候補がリリース状態の S ユニットのカードに絞られず、手札に戻す・捨札の改造人間をコマンドゾーンに置く処理が未実装
-  it.fails("RK-007: その後、自軍捨札の「改造人間」の S ユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く（出典: atwiki/page-195「その後、…自軍コマンドゾーンにホールド状態で置く」）", () => {
+  it("RK-007: その後、自軍捨札の「改造人間」の S ユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く（出典: atwiki/page-195「その後、…自軍コマンドゾーンにホールド状態で置く」）", () => {
     let s = played(
       board({ command: [released("TST-UNIT-0", "cu"), ...releasedCat("ET", 1)], discard: [inst("SPEC-KAIZO", "dk"), inst("SPEC-KAIZO-M", "dkm"), inst("SPEC-MALE", "dm")] }),
       "RK-007:mt",
@@ -612,8 +588,7 @@ describe("RK-007 メンテナンス", () => {
     expect(cardIn(s, "player1", "SPEC-KAIZO:dk")?.commandHeld).toBe(true);
   });
 
-  // 既知の不具合: CARD-RK-007 候補がリリース状態の S ユニットのカードに絞られず、手札に戻す・捨札の改造人間をコマンドゾーンに置く処理が未実装
-  it.fails("RK-007: 自軍捨札に「改造人間」の S ユニットのカードがなければ、手札に戻すだけ（出典: atwiki/page-195「…があれば」）", () => {
+  it("RK-007: 自軍捨札に「改造人間」の S ユニットのカードがなければ、手札に戻すだけ（出典: atwiki/page-195「…があれば」）", () => {
     const s = resolveAll(
       played(board({ command: [released("TST-UNIT-0", "cu"), ...releasedCat("ET", 1)], discard: [inst("SPEC-MALE", "dm")] }), "RK-007:mt"),
       ["TST-UNIT-0:cu"],
@@ -623,8 +598,7 @@ describe("RK-007 メンテナンス", () => {
     expect(s.pendingEffectChoice).toBeUndefined();
   });
 
-  // 既知の不具合: CARD-RK-007 候補がリリース状態の S ユニットのカードに絞られず、手札に戻す・捨札の改造人間をコマンドゾーンに置く処理が未実装
-  it.fails("RK-007: 「その後」— 手札に戻せるカードがなくても、捨札の「改造人間」のカードをコマンドゾーンに置く（出典: atwiki/page-195「その後、」・grnrngr/faq-rider-1 RK-017 Q2「「その後」というテキストで続けられている処理は、その直前の操作が実行できたかどうかに関わらず、実行する」）", () => {
+  it("RK-007: 「その後」— 手札に戻せるカードがなくても、捨札の「改造人間」のカードをコマンドゾーンに置く（出典: atwiki/page-195「その後、」・grnrngr/faq-rider-1 RK-017 Q2「「その後」というテキストで続けられている処理は、その直前の操作が実行できたかどうかに関わらず、実行する」）", () => {
     const s = resolveAll(played(board({ command: releasedCat("ET", 1), discard: [inst("SPEC-KAIZO", "dk")] }), "RK-007:mt"), ["SPEC-KAIZO:dk"]);
     expect(zoneOf(s, "player1", "SPEC-KAIZO:dk")).toBe("command");
   });

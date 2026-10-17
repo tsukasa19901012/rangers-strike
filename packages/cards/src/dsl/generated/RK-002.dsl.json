@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_scry_three_reorder",
+          "keyword": "rk1::RK-002::v3_hopper",
           "duration": "turn"
         }
       ]

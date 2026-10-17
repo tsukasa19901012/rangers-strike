@@ -98,6 +98,8 @@ export type CardInstance = {
   bpSetValue?: number;
   /** XG1-048【エレキ光線】で選ばれたターン番号（そのターンを終えるとき隣のユニットが撃破される）。 */
   electroBeamTurn?: number;
+  /** RK-010 ハイブリッドエネルギー: 自分がターンを終えるときにオモテにした山札の上のカード（rules/rk/rk1NamedEffects.ts）。 */
+  hybridRevealed?: boolean;
 };
 
 export type PlayerState = {
@@ -217,6 +219,8 @@ export type PendingBattle = {
   defenderInstanceId: string;
   phasePlayerId: PlayerId;
   attackerBpBonus?: number;
+  /** このバトルの間だけ、アタックされたユニットの BP に加える値（RK-004 ギギの腕輪・RK-009 二人の世紀王）。 */
+  defenderBpBonus?: number;
   /** RS-006: バトルキャンセル、守り側はラッシュに戻る */
   battleCancelled?: boolean;
   /** RS-215【不滅のマシン帝国】の選択をこのアタックで既に出したか。 */
@@ -534,7 +538,22 @@ export type TagChoiceMeta = {
   picked?: string[];
 };
 
+/** RK-001〜RK-021 の選択の続き（rules/rk/rk1NamedEffects.ts）。 */
+export type Rk1ChoiceMeta = {
+  /** RK-002 V3ホッパー: まだ戻していない見たカード。picked は戻す場所を選んでいるカード。 */
+  remainingIds?: string[];
+  picked?: string;
+  /** RK-018 ラウズカード: ラッシュエリアから選んだユニット。RK-020: 1体目に選んだユニット。 */
+  first?: string;
+  /** RK-011 第三の眼: 無効にするかを選んでいるカウンターの使用（使った側・アクション）と、退避した反応ウィンドウ。 */
+  counterUserId?: PlayerId;
+  counterAction?: unknown;
+  stashed?: Pick<GameState, "pendingBattle" | "pendingRush" | "pendingLeave" | "pendingStrike" | "pendingGiantBomb">;
+};
+
 export type PendingEffectChoice = {
+  /** ライダーEXP vol.1 RK-001〜RK-021 の選択の続き（rules/rk/rk1NamedEffects.ts）。 */
+  rk1Meta?: Rk1ChoiceMeta;
   /** ※タッグの太字部分の入れ替え（rules/legend1/set8NamedEffectsA.ts）。 */
   tagMeta?: TagChoiceMeta;
   /** 第7弾 RS-432〜RS-452 の選択の続き（rules/legend1/set7NamedEffectsA.ts）。 */
@@ -1104,6 +1123,10 @@ export type GameState = {
    * 捨札（常駐なら常駐置き場）に置く（applyAction の後処理 settleResolvingOperations）。
    */
   resolvingOperations?: Array<{ playerId: PlayerId; card: CardInstance }>;
+  /** RK-011 第三の眼: 無効にしなかったカウンターの使用をもう一度処理する（core/applyAction.ts の後処理）。 */
+  rk1CounterReplay?: unknown;
+  /** RK-011 第三の眼: 無効にするかを選び終えたカウンターの instanceId（再処理で再び選ばせない）。 */
+  rk1ThirdEyeChecked?: string;
   /**
    * RS-265 ジェットシーカー【ラウンドレーダー】: 相手が手札からオペレーションを使用したときの「2枚まで選び捨札にしてもよい」で、
    * まだ処理していないもの（使用したオペレーションの解決が終わってから開く。ジェットシーカー1体につき1回）。

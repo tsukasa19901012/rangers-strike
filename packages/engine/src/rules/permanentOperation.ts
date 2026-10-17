@@ -18,6 +18,7 @@ import { evaluateDslCondition } from "../dsl/dslCatalog";
 import { canInitiateShironLight } from "./shironLight";
 import { isHidoraEggUsed } from "./turnModifiers";
 import { operationCardsToDiscardWithStack } from "./operationProcedure";
+import { activateRk1Resident, canActivateRk1Resident, isRk1ActivatableResident, rk1ResidentLeaving } from "./rk/rk1NamedEffects";
 import { afterResidentOperationsLeft } from "./legend1/set7NamedEffectsA";
 import { beginRiderPass, canActivateRiderPass } from "./errataCardEffects";
 import { ADVENT_CARD_ID, beginAdvent, canActivateAdvent } from "./rk/rk249Advent";
@@ -120,6 +121,9 @@ export function canActivateResidentOperation(
   const player = state.players[playerId];
   const op = player.operation.find((card) => card.instanceId === operationInstanceId);
   if (!op) return false;
+  // RK-016 ミラーワールド: 自軍ラッシュフェイズに何度でも重ねられる（rules/rk/rk1NamedEffects.ts）。
+  const rk1 = canActivateRk1Resident(state, playerId, op);
+  if (rk1 !== null) return rk1;
   if (isResidentActivatedThisRush(op)) return false;
 
   const wired = getCardEffect(op.cardId);
@@ -186,6 +190,9 @@ export function applyActivateResidentOperation(
 
   if (op.cardId === "RK-022") {
     return { ok: true, state: beginRiderPass(state, playerId, op) };
+  }
+  if (isRk1ActivatableResident(op.cardId)) {
+    return { ok: true, state: activateRk1Resident(state, playerId, op) };
   }
   if (op.cardId === ADVENT_CARD_ID) {
     const opened = beginAdvent(state, playerId, op);
@@ -262,9 +269,19 @@ export function placePermanentOperation(
   let discard = [...player.discard];
   const left: CardInstance[] = [];
 
+  let hand = [...player.hand];
   while (operation.length >= limit) {
     const [removed, ...rest] = operation;
     if (!removed) break;
+    // RK-016 ミラーワールド「これが常駐置き場を離れるとき、重ねたカードはすべて手札に加える。」（rules/rk/rk1NamedEffects.ts）。
+    const mirror = rk1ResidentLeaving(removed);
+    if (mirror) {
+      discard = [...discard, ...mirror.toDiscard];
+      hand = [...hand, ...mirror.toHand];
+      left.push(removed);
+      operation = rest;
+      continue;
+    }
     discard = [...discard, ...operationCardsToDiscardWithStack(removed)];
     left.push(removed);
     operation = rest;
@@ -274,7 +291,7 @@ export function placePermanentOperation(
 
   const placed: GameState = {
     ...state,
-    ...updatePlayer(state, playerId, { ...player, operation, discard }),
+    ...updatePlayer(state, playerId, { ...player, operation, discard, hand }),
   };
   // 「これが常駐置き場を離れるとき」（RS-435 アレ・RS-437 白熱する実況。rules/legend1/set7NamedEffectsA.ts）。
   return left.length > 0 ? afterResidentOperationsLeft(placed, playerId, left) : placed;

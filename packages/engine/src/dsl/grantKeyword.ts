@@ -108,6 +108,7 @@ import { trySet7DCardEffect } from "../rules/legend1/set7NamedEffectsD";
 import { trySet8ACardEffect } from "../rules/legend1/set8NamedEffectsA";
 import { trySet8DCardEffect } from "../rules/legend1/set8NamedEffectsD";
 import { trySet9DCardEffect } from "../rules/legend1/set9NamedEffectsD";
+import { tryRk1CardEffect } from "../rules/rk/rk1NamedEffects";
 import { tryOtherLinesCardEffect } from "../rules/legend1/otherLinesNamedEffects";
 import { trySet9BCardEffect } from "../rules/legend1/set9NamedEffectsB";
 import { trySet8BCardEffect } from "../rules/legend1/set8NamedEffectsB";
@@ -406,6 +407,9 @@ export function applyGrantKeyword(
   ctx: GrantKeywordContext,
   keyword: string,
 ): GrantKeywordResult {
+  // ライダーEXP vol.1 RK-001〜RK-021 のカード固有の効果（`rk1::` キーワード。rules/rk/rk1NamedEffects.ts）。
+  const rk1 = tryRk1CardEffect(state, ctx, keyword);
+  if (rk1) return rk1;
   // 第8弾 RS-560〜RS-581 のカード固有の名前付き効果（`set8c::` と一部の既存キーワード。rules/legend1/set8NamedEffectsC.ts）。
   const set8c = trySet8CCardEffect(state, ctx, keyword);
   if (set8c) return set8c;

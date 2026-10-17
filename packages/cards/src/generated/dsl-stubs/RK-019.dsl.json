@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "impose_destroy_rule_on_enemy",
+          "keyword": "rk1::RK-019::ongeki",
           "duration": "turn"
         }
       ]

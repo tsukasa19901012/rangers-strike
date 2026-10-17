@@ -19,9 +19,9 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "rk1::RK-005::dynamo",
+          "duration": "turn"
         }
       ]
     }

@@ -1,4 +1,5 @@
 import { getCardEffect } from "@rangers-strike/cards";
+import { applyRk1TurnEndResident } from "./rk/rk1NamedEffects";
 import type { GameState, PlayerId } from "../types/game";
 import { isPermanentOperation } from "../core/catalog";
 import { opponent } from "../core/helpers";
@@ -44,6 +45,9 @@ export function resolveTurnEndResident(
     (c) => c.instanceId === entry.instanceId,
   );
   if (!card) return state;
+  // RK-010 ハイブリッドエネルギー: 自分がターンを終えるとき、自軍山札の上から1枚をオモテにする（rules/rk/rk1NamedEffects.ts）。
+  const rk1 = applyRk1TurnEndResident(state, entry.ownerId, card.cardId, endingPlayerId);
+  if (rk1) return rk1;
   // ルール: R-END-02 — 相手のアドベンチャーも「ターンを終えたプレイヤー」自身が処理する。
   return tryResolveDslTriggeredEffects({
     state,

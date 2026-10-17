@@ -8,6 +8,7 @@
  */
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { getPlayerModifiers } from "../core/scopedModifiers";
+import { rk1AddedUnitFeatures } from "./rk/rk1Features";
 
 export const DEUS_GENE_RULE_ID = "deus_gene_features";
 export const KIRIGAKURE_RULE_ID = "kirigakure_features";
@@ -64,6 +65,8 @@ export function unitFeatures(
   extra.push(...phaseAddedFeatures(state, _ownerId, instance));
   // 「※これは自軍バトルエリアにある間、特徴「ドラゴン」が追加される。」（RS-535 チェンジドラゴン。atwiki/page-1222）— 文言から読む。
   extra.push(...battleAreaAddedFeatures(state, _ownerId, instance));
+  // RK-001 改造人間（「男」「女」に「改造人間」を追加）・RK-013 Jパワー（「人型」を追加）（rules/rk/rk1Features.ts）。
+  extra.push(...rk1AddedUnitFeatures(state, _ownerId, instance, base));
   if (extra.length === 0) return base;
   return [...new Set([...base, ...extra])];
 }

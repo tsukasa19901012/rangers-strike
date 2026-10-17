@@ -1084,7 +1084,7 @@
       "自軍山札の上から3枚を見て、そのカードを山札の上"
     ],
     "expectedDslKeywords": [
-      "deck_scry_three_reorder"
+      "rk1::RK-002::v3_hopper"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1139,6 +1139,9 @@
     "textSnippets": [
       "特徴「改造人間」を持つ自軍Sユニットを1体選ぶ。"
     ],
+    "expectedDslKeywords": [
+      "rk1::RK-005::dynamo"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -1175,7 +1178,7 @@
       "自軍コマンドゾーンからリリース状態のSユニットの"
     ],
     "expectedDslKeywords": [
-      "command_return_then_recruit_discard"
+      "rk1::RK-007::maintenance"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1286,7 +1289,7 @@
       "自軍Sユニットを1体選ぶ。そして、このカードを自"
     ],
     "expectedDslKeywords": [
-      "stack_s_on_self_rush"
+      "rk1::RK-013::j_power"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1361,7 +1364,7 @@
       "ＲＣを持つ自軍Sユニットを1体選ぶ。選んだユニッ"
     ],
     "expectedDslKeywords": [
-      "rc_hold_skip_rideoff"
+      "rk1::RK-017::mission_memory"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1380,7 +1383,7 @@
       "自軍ラッシュエリアからSユニットを1体選ぶ。そし"
     ],
     "expectedDslKeywords": [
-      "dual_bp_rush_discard_combine"
+      "rk1::RK-018::rouse_card"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1399,7 +1402,7 @@
       "特徴「メカ」を持たない敵軍ユニットを1体選ぶ。そ"
     ],
     "expectedDslKeywords": [
-      "impose_destroy_rule_on_enemy"
+      "rk1::RK-019::ongeki"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1416,6 +1419,9 @@
     "category": "ET",
     "textSnippets": [
       "自軍ラッシュエリアから特徴「仮面ライダー」を持つ"
+    ],
+    "expectedDslKeywords": [
+      "rk1::RK-020::double_rider_kick"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [

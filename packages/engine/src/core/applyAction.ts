@@ -16,6 +16,16 @@ import { openKibaShotIfReady, queueKibaShot } from "../rules/legend1/set6AuditFi
 import { icyStateForAction, isIcyPhantom, settleIcyPhantoms } from "../rules/legend1/icyLastResort";
 import { applySpecialExtinguisher, beginLionArmor, lionArmorAvailable, openDaidenjinBoomerangIfReady, openPantherClawIfReady, queueDaidenjinBoomerang, queuePantherClaw, settleDarkArmor } from "../rules/legend1/set6NamedEffects348";
 import { settleResolvingOperations, trackResolvingOperations } from "../rules/resolvingOperations";
+import {
+  applyRk1BattleCounterEffect,
+  applyRk1HumanEvolution,
+  isRk1BattleCounterCard,
+  isRk1LeaveCounterCard,
+  rk1MissionMemoryOnEntry,
+  rk1PayAttackCommandCost,
+  rk1ThirdEyeIntercept,
+  settleRk1AfterAction,
+} from "../rules/rk/rk1NamedEffects";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { holdPlacedCommandUnderMaChikara } from "../rules/srEffects";
 import { openReorderEnemyBattle } from "../rules/legend1/set6NamedEffectsB";
@@ -930,6 +940,8 @@ function applyActionWithRng(
   next = settleGuardianApostleProviso(next, action);
   // RS-256 闇の戒律・RS-255 巨大化爆弾: 置き場を離れたら重ねたカードは捨札になる。
   next = settleStackedCards(next);
+  // RK-013 Jパワー・RK-010 ハイブリッドエネルギー（rules/rk/rk1NamedEffects.ts）。
+  next = settleRk1AfterAction(next);
   // RS-350 暗黒の鎧: 重ねたユニットがユニットでなくなったら、鎧を持ち主のパワーゾーンにダメージにして置く。
   if (applyActionDepth === 0) next = settleDarkArmor(state, next);
   // RS-623【翼合体】・RS-647【ソウルバード】・RS-650 等: 重ねたユニットがユニットでなくなったら、重ねたカードは捨札になる
@@ -992,6 +1004,13 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = settleIcyPhantoms(next);
   // RS-673【炎神キャスト転送】の解決を待っていたチャージフェイズを終える（効果をすべて解決してから）。
   if (applyActionDepth === 0) next = settleChargeAdvance(next);
+  // RK-011 第三の眼で無効にしなかったカウンターの使用を、そのまま処理し直す（rules/rk/rk1NamedEffects.ts）。
+  if (next.rk1CounterReplay) {
+    const replay = next.rk1CounterReplay as GameAction;
+    const replayed = applyActionWithRng({ ...next, rk1CounterReplay: undefined }, replay, { trustLegality: true });
+    if (replayed.ok) return replayed;
+    next = { ...next, rk1CounterReplay: undefined, rk1ThirdEyeChecked: undefined };
+  }
   return next === result.state ? result : { ok: true, state: next };
 }
 
@@ -2492,6 +2511,12 @@ function applyActionCore(
       if (!canExecuteHandCounter(state, playerId, action.instanceId)) {
         return fail("command_not_held");
       }
+      // RK-011 第三の眼: 相手がカウンターを発動したとき、効果を解決する前に無効にするかを選ぶ（rules/rk/rk1NamedEffects.ts）。
+      {
+        const thirdEye = rk1ThirdEyeIntercept(state, playerId, action);
+        if (thirdEye) return ok(thirdEye, buildSimpleLogEntry(playerId, "third_eye_window", action.instanceId));
+        if (state.rk1ThirdEyeChecked === action.instanceId) state = { ...state, rk1ThirdEyeChecked: undefined };
+      }
 
       if (state.pendingGiantBomb) {
         if (playerId !== state.pendingGiantBomb.ownerId) return fail("wrong_player");
@@ -2577,6 +2602,23 @@ function applyActionCore(
           const nextState = finalizeLeaveReaction(result.state, pending, result.prevented);
           return ok(clearCounterHoldReady(nextState, playerId), result.log);
         }
+        // RK-015 人類の進化: 撃破されて捨札になったあとで、山札の上から1枚ひく（rules/rk/rk1NamedEffects.ts）。
+        {
+          const counter = findInZone(state.players[playerId], "hand", action.instanceId)?.card;
+          if (counter && isRk1LeaveCounterCard(counter.cardId)) {
+            const used = updatePlayer(state, playerId, {
+              ...state.players[playerId],
+              hand: state.players[playerId].hand.filter((c) => c.instanceId !== action.instanceId),
+              discard: [...state.players[playerId].discard, { instanceId: counter.instanceId, cardId: counter.cardId }],
+            });
+            let nextState = finalizeLeaveReaction({ ...state, ...used }, pending, false);
+            nextState = applyRk1HumanEvolution(nextState, playerId, pending.phasePlayerId);
+            return ok(
+              clearCounterHoldReady(nextState, playerId),
+              buildLogEntry(playerId, "play_counter", counter.cardId, state.definitions, "human_evolution"),
+            );
+          }
+        }
         return fail("invalid_counter");
       }
 
@@ -2658,6 +2700,43 @@ function applyActionCore(
             state: {
               ...clearCounterHoldReady(resolved.state, playerId),
               log: [...resolved.state.log, result.log, resolved.log],
+              winner: checkWinner(resolved.state),
+            },
+          };
+        }
+        // RK-004 ギギの腕輪・RK-009 二人の世紀王（rules/rk/rk1NamedEffects.ts）。
+        if (counterCardId && isRk1BattleCounterCard(counterCardId)) {
+          const used: GameState = {
+            ...state,
+            ...updatePlayer(state, playerId, {
+              ...player,
+              hand: player.hand.filter((c) => c.instanceId !== action.instanceId),
+              discard: [...player.discard, { instanceId: action.instanceId, cardId: counterCardId }],
+            }),
+          };
+          const result = applyRk1BattleCounterEffect(used, playerId, counterCardId, pending);
+          const log = buildLogEntry(playerId, "play_counter", counterCardId, state.definitions, result.detail);
+          // ルール: R-CTR-02 — 同じ「アタックされたとき」に続けて別のカウンターを使える。使えるものが残っていれば窓を開いたままにする。
+          if (
+            hasBattleCounterReactions(
+              { ...result.state, activePlayer: pending.attackerPlayerId },
+              playerId,
+              pending.defenderInstanceId,
+              pending.attackerPlayerId,
+              pending.attackerInstanceId,
+            )
+          ) {
+            return ok(
+              clearCounterHoldReady({ ...result.state, pendingBattle: result.pending, activePlayer: playerId }, playerId),
+              log,
+            );
+          }
+          const resolved = emitBattleDeclaredAndResolve(clearCounterHoldReady(result.state, playerId), result.pending);
+          return {
+            ok: true,
+            state: {
+              ...resolved.state,
+              log: [...resolved.state.log, log, resolved.log],
               winner: checkWinner(resolved.state),
             },
           };
@@ -3260,6 +3339,8 @@ function applyActionCore(
         };
       }
 
+      // RK-017 ミッションメモリー: ライドしたまま進むことを選んでも、RC の効果を発動する（rules/rk/rk1NamedEffects.ts）。
+      if (!action.rideOff) nextState = rk1MissionMemoryOnEntry(nextState, playerId, pending.instanceId) ?? nextState;
       const opened = action.rideOff
         ? openBattleEntryOrRideOffChoice(nextState, pending.battleEntry)
         : afterEnterBattle(nextState, pending.battleEntry);
@@ -3351,6 +3432,8 @@ function applyActionCore(
           markUnitBattleAction(battleState.players[playerId], action.attackerInstanceId, "attack"),
         ),
       };
+      // RK-016 ミラーワールド: 「アタックするには、さらに2つホールドしなければならない」（選ぶ1つと合わせてホールドする）。
+      battleState = rk1PayAttackCommandCost(battleState, playerId, enemyId, action.defenderInstanceId);
       // ルール: R-CTR-03 — 「アタックするとき、相手はカウンターを発動できない」はアタック処理の終わりまで続く。
       if (attackerBlocksDefenderCounters(battleState, playerId, action.attackerInstanceId)) {
         battleState = { ...battleState, counterLockedPlayerId: enemyId };

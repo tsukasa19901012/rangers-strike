@@ -23,7 +23,7 @@ export const RK_BATCH_01: RkUiTestSpec[] = [
     textSnippets: ["山札の上から3枚", "好きな順で戻す"],
     expectedMechanisms: ["operation_drag_direct", "effect_choice_modal"],
     expectedDropRoute: "direct_play",
-    expectedDslKeywords: ["deck_scry_three_reorder"],
+    expectedDslKeywords: ["rk1::RK-002::v3_hopper"],
   },
   {
     cardId: "RK-003",
@@ -57,9 +57,7 @@ export const RK_BATCH_01: RkUiTestSpec[] = [
     textSnippets: ["改造人間", "SPが空欄ではない", "1点ダメージ"],
     expectedMechanisms: ["operation_drag_direct"],
     expectedDropRoute: "direct_play",
-    engineGaps: [
-      "DSL primitive が deal_damage になっており、ユニット選択＋撃破時ダメージ能力の grant が未実装",
-    ],
+    expectedDslKeywords: ["rk1::RK-005::dynamo"],
   },
   {
     cardId: "RK-006",
@@ -82,7 +80,7 @@ export const RK_BATCH_01: RkUiTestSpec[] = [
     textSnippets: ["リリース状態のSユニット", "改造人間", "ホールド状態"],
     expectedMechanisms: ["operation_drag_direct", "effect_choice_modal"],
     expectedDropRoute: "direct_play",
-    expectedDslKeywords: ["command_return_then_recruit_discard"],
+    expectedDslKeywords: ["rk1::RK-007::maintenance"],
   },
   {
     cardId: "RK-008",

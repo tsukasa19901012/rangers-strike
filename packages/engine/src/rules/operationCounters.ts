@@ -51,6 +51,15 @@ import {
 import { isCostWindowSatisfied } from "../core/costWindow";
 import { buildLogEntry } from "../log/formatLog";
 import { resolveDestroyerDamageByText } from "./destroyerTextEffects";
+import {
+  applyRk1DestroyerDamage,
+  isRk1BattleCounterCard,
+  isRk1LeaveCounterCard,
+  rk1BattleCounterConditionMet,
+  rk1LeaveCounterConditionMet,
+  rk1WinButDestroyed,
+  rk1ZoneCardFeatures,
+} from "./rk/rk1NamedEffects";
 import { finishBattleEntryIf, restorePhaseActivePlayerUnlessBlocked } from "./battleEntry";
 import {
   attackerBlocksDefenderCounters,
@@ -404,6 +413,21 @@ export function hasBattleCounterReactions(
     if (isMechanicNinjaCounter(card.cardId) && isSmallUnit(state.definitions, defenderCard.cardId)) {
       return true;
     }
+    // RK-004 ギギの腕輪・RK-009 二人の世紀王（自軍Sユニットが敵軍Sユニットにアタックされたとき）。
+    if (
+      isRk1BattleCounterCard(card.cardId) &&
+      attackerPlayerId &&
+      attackerInstanceId &&
+      rk1BattleCounterConditionMet(state, defenderId, card.cardId, {
+        attackerPlayerId,
+        attackerInstanceId,
+        defenderPlayerId: defenderId,
+        defenderInstanceId,
+        phasePlayerId: attackerPlayerId,
+      })
+    ) {
+      return true;
+    }
   }
 
   return false;
@@ -499,7 +523,8 @@ export function collectMechanicNinjaRecruits(state: GameState, playerId: PlayerI
       const def = state.definitions[c.cardId];
       if (!def || def.type !== "unit") return false;
       if (!isSmallUnit(state.definitions, c.cardId)) return false;
-      if (!(def.features ?? []).includes("改造人間")) return false;
+      // RK-001 改造人間で追加された「改造人間」も含む（コマンドゾーンのユニットカード。atwiki/page-190）。
+      if (!rk1ZoneCardFeatures(state, playerId, c.cardId).includes("改造人間")) return false;
       return !effectiveRushAdditionalCondition(state, playerId, c.cardId, def);
     })
     .map((c) => c.instanceId);
@@ -745,6 +770,11 @@ export function hasDinoChronicleLeaveReaction(
   leavingCardId: string,
 ): boolean {
   return hasPlayableDinoChronicleCounter(state, ownerId, leavingCardId);
+}
+
+/** R-CTR-03 — カウンターを発動できない間か（パンサークロー等のアタック処理中）。 */
+function counterLockedFor(state: GameState, playerId: PlayerId): boolean {
+  return state.counterLockedPlayerId === playerId || opponentInfiniteChainBlocks(state, playerId);
 }
 
 export function hasDinoGutsLeaveReaction(
@@ -1107,6 +1137,11 @@ export function processMutualDestruction(
       );
       next = { ...fb.state, log: [...fb.state.log, ...fb.logs] };
     }
+    {
+      // RK-005 超電子ダイナモの能力（相打ちでも撃破した事実は残る。R-BTL-02）。
+      const dynamo = applyRk1DestroyerDamage(next, ctx.attackerPlayerId, ctx.attackerInstanceId, ctx.defenderCard.cardId);
+      next = { ...dynamo.state, log: [...dynamo.state.log, ...dynamo.logs] };
+    }
     if (ctx.attackerCardId === "RS-685") {
       const bc = resolveBlackCondorDestroyDamage(
         next,
@@ -1352,7 +1387,8 @@ export function resolveBattlePendingCore(
     !destroyAttacker &&
     destroyDefender &&
     battleState.activePlayer !== attackerId &&
-    winButDestroyedVsSp1(refreshedAttackerFound.card.cardId) &&
+    (winButDestroyedVsSp1(refreshedAttackerFound.card.cardId) ||
+      rk1WinButDestroyed(battleState, attackerId, pending.attackerInstanceId)) &&
     winDestroyOpponentQualifies(
       battleState,
       refreshedAttackerFound.card.cardId,
@@ -1364,7 +1400,9 @@ export function resolveBattlePendingCore(
     destroyAttacker &&
     !destroyDefender &&
     battleState.activePlayer !== defenderOwner &&
-    winButDestroyedVsSp1(refreshedDefenderFound.card.cardId) &&
+    (winButDestroyedVsSp1(refreshedDefenderFound.card.cardId) ||
+      // RK-019 音撃で「…バトルに勝っても撃破される」と書かれているかのように扱うユニット（rules/rk/rk1NamedEffects.ts）。
+      rk1WinButDestroyed(battleState, defenderOwner, defenderInstanceId)) &&
     winDestroyOpponentQualifies(
       battleState,
       refreshedDefenderFound.card.cardId,
@@ -1603,6 +1641,10 @@ export function resolveBattlePendingCore(
       );
       nextState = dd.state;
       extraLogs = [...extraLogs, ...dd.logs];
+      // RK-005 超電子ダイナモの能力（SP が空欄ではないユニットを撃破したとき、相手に1点ダメージ。rules/rk/rk1NamedEffects.ts）。
+      const dynamo = applyRk1DestroyerDamage(nextState, attackerId, pending.attackerInstanceId, refreshedDefenderFound.card.cardId);
+      nextState = dynamo.state;
+      extraLogs = [...extraLogs, ...dynamo.logs];
     }
     if (refreshedAttackerFound.card.cardId === "RS-685") {
       const bc = resolveBlackCondorDestroyDamage(
@@ -2021,8 +2063,15 @@ export function tryLeaveField(
   );
 
   const magiMotherInstanceIds = magiMotherSubstitutes(state, intent);
+  // RK-015 人類の進化（「男」「女」の自軍ユニットが撃破されて捨札になったとき。rules/rk/rk1NamedEffects.ts）。
+  const humanEvolution =
+    !counterLockedFor(state, intent.ownerPlayerId) &&
+    rk1LeaveCounterConditionMet(state, intent.ownerPlayerId, intent) &&
+    state.players[intent.ownerPlayerId].hand.some(
+      (c) => isRk1LeaveCounterCard(c.cardId) && canPlayHandCounter(state, intent.ownerPlayerId, c.instanceId),
+    );
 
-  if (!dinoChronicle && !dinoGuts && !superShieldInstanceId && !sageAel && !magLoad && magiMotherInstanceIds.length === 0) {
+  if (!dinoChronicle && !dinoGuts && !humanEvolution && !superShieldInstanceId && !sageAel && !magLoad && magiMotherInstanceIds.length === 0) {
     const owner = state.players[intent.ownerPlayerId];
     const found = findInZone(owner, intent.fromZone, intent.instanceId);
 

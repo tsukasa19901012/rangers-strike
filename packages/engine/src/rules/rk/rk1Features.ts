@@ -1,0 +1,63 @@
+/**
+ * RK-001 改造人間（※常駐）・RK-013 Jパワー による特徴とサイズの変更（rules/addedFeatures.ts 等の低い層から使う小さなモジュール）。
+ * カードの効果そのものは rules/rk/rk1NamedEffects.ts。
+ */
+import type { CardInstance, GameState, PlayerId } from "../../types/game";
+import { getDefinition } from "../../core/catalog";
+
+export const J_POWER_CARD_ID = "RK-013";
+const GIANT_BOMB_CARD_ID = "RS-255";
+
+function isUnitCard(state: Pick<GameState, "definitions">, cardId: string): boolean {
+  return getDefinition(state.definitions, cardId)?.type === "unit";
+}
+
+function hasResident(state: Pick<GameState, "players">, playerId: PlayerId, cardId: string): boolean {
+  return state.players[playerId].operation.some((c) => c.cardId === cardId);
+}
+
+function hasGiantBomb(instance: Pick<CardInstance, "stackedCards">): boolean {
+  return (instance.stackedCards ?? []).some((c) => c.cardId === GIANT_BOMB_CARD_ID);
+}
+
+/** J パワーを重ねたユニットか（J パワーはユニットの下に重ねる。grnrngr/faq-rider-2 RK-088 Q）。 */
+export function hasJPower(instance: Pick<CardInstance, "stackedCards">): boolean {
+  return (instance.stackedCards ?? []).some((c) => c.cardId === J_POWER_CARD_ID);
+}
+
+/** 「その特徴に「改造人間」を追加する」（RK-001）— 持ち主が改造人間を常駐させていて、「男」か「女」を持つユニットカード。 */
+function kaizoNingenAdds(state: Pick<GameState, "players" | "definitions">, ownerId: PlayerId, cardId: string, features: string[]): boolean {
+  if (!hasResident(state, ownerId, "RK-001")) return false;
+  if (!isUnitCard(state, cardId)) return false;
+  return features.includes("男") || features.includes("女");
+}
+
+/**
+ * 場のユニットに追加される特徴（rules/addedFeatures.ts の unitFeatures から呼ぶ）。追加は既存の特徴の後ろ
+ * （grnrngr/faq-rider-1 RK-013 Q7「追加される特徴は、既存の特徴の後ろに順番に追加されていきます」）。
+ */
+export function rk1AddedUnitFeatures(
+  state: Pick<GameState, "players" | "definitions">,
+  ownerId: PlayerId,
+  instance: Pick<CardInstance, "cardId" | "instanceId">,
+  base: string[],
+): string[] {
+  const extra: string[] = [];
+  if (kaizoNingenAdds(state, ownerId, instance.cardId, base)) extra.push("改造人間");
+  // J パワーは場のユニットの下にだけある（場を離れたら捨札になる）。渡されたカードの重ねたカードを見る。
+  if (hasJPower(instance as CardInstance)) extra.push("人型");
+  return extra;
+}
+
+/** 場以外（山札・手札・パワー・コマンド・捨札）のユニットカードの特徴（RK-001 の追加を含む）。 */
+export function rk1ZoneCardFeatures(state: Pick<GameState, "players" | "definitions">, ownerId: PlayerId, cardId: string): string[] {
+  const base = getDefinition(state.definitions, cardId)?.features ?? [];
+  return kaizoNingenAdds(state, ownerId, cardId, base) && !base.includes("改造人間") ? [...base, "改造人間"] : base;
+}
+
+/** いまのサイズが S か（J パワー・RS-255 巨大化爆弾を重ねたユニットは L）。 */
+export function rk1IsSmallNow(state: Pick<GameState, "definitions">, instance: CardInstance): boolean {
+  if (getDefinition(state.definitions, instance.cardId)?.size !== "S") return false;
+  return !hasJPower(instance) && !hasGiantBomb(instance);
+}
+

@@ -7,6 +7,7 @@ import { findOwnUnit } from "../core/modifiers";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import { hasGiantBomb } from "../rules/legend1/set5NamedEffectsA";
 import { zubaanIsLarge } from "../rules/legend1/set6NamedEffectsB";
+import { hasJPower } from "../rules/rk/rk1Features";
 
 type FieldZone = keyof Pick<PlayerState, "hand" | "discard" | "power" | "command" | "rush" | "battle">;
 
@@ -16,6 +17,8 @@ function cardsInZone(state: GameState, playerId: PlayerId, zone: FieldZone): Car
 
 function currentSize(state: GameState, card: CardInstance, printed: string | undefined): string | undefined {
   if (hasGiantBomb(card)) return "L";
+  // RK-013 Jパワーを重ねたユニットは「Lユニット」（atwiki/page-211）。
+  if (hasJPower(card)) return "L";
   if (printed && printed !== "L" && zubaanIsLarge(state, card)) return "L";
   return printed;
 }

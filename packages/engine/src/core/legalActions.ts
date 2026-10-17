@@ -128,6 +128,7 @@ import { isSet8AChoiceEffect, isSet8AConfirmableChoice, isSet8AResident } from "
 import { canConfirmSet8CChoice, isSet8CChoiceEffect } from "../rules/legend1/set8NamedEffectsC";
 import { canConfirmSet9CChoice, isSet9CChoiceEffect } from "../rules/legend1/set9NamedEffectsC";
 import { canActivateSet9AResident, canConfirmSet9AChoice, isSet9AChoiceEffect, isSet9AResidentCard } from "../rules/legend1/set9NamedEffectsA";
+import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
 import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
 import { needsHoldExtraCommand } from "../rules/zordExtended";
@@ -303,6 +304,16 @@ function appendBattleReactionActions(
       }
       continue;
     }
+    // RK-004 ギギの腕輪・RK-009 二人の世紀王（自軍Sユニットが敵軍Sユニットにアタックされたとき。rules/rk/rk1NamedEffects.ts）。
+    if (isRk1BattleCounterCard(card.cardId)) {
+      if (!rk1BattleCounterConditionMet(state, playerId, card.cardId, pending)) continue;
+      if (!canPlayHandCounter(state, playerId, card.instanceId)) continue;
+      appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
+      if (canExecuteHandCounter(state, playerId, card.instanceId)) {
+        actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
+      }
+      continue;
+    }
     if (effectId === "hidden_ninja") {
       for (const sub of collectHiddenNinjaSubstitutes(state, [
         pending.defenderInstanceId,
@@ -391,7 +402,11 @@ function appendLeaveReactionActions(
   const owner = state.players[pending.ownerPlayerId];
   for (const card of owner.hand) {
     const effectId = getCounterEffectId(state, pending.ownerPlayerId, card.instanceId);
-    if (effectId === "dino_chronicle") {
+    if (isRk1LeaveCounterCard(card.cardId)) {
+      // RK-015 人類の進化（「男」「女」の自軍ユニットが撃破されて捨札になったとき。rules/rk/rk1NamedEffects.ts）。
+      if (!rk1LeaveCounterConditionMet(state, pending.ownerPlayerId, pending)) continue;
+      if (!canPlayHandCounter(state, pending.ownerPlayerId, card.instanceId)) continue;
+    } else if (effectId === "dino_chronicle") {
       if (
         !hasPlayableDinoChronicleCounter(state, pending.ownerPlayerId, pending.leavingCardId, {
           requireEnemyTurn: false,
@@ -733,7 +748,14 @@ function appendActivateResidentOperationActions(
     if (wired?.effectId === "shiron_light" || wired?.effectId === "hidora_egg") {
       continue;
     }
-    if (card.cardId !== "RK-022" && card.cardId !== "RK-249" && listResidentActivationEffects(card.cardId).length === 0) continue;
+    if (
+      card.cardId !== "RK-022" &&
+      card.cardId !== "RK-249" &&
+      !isRk1ActivatableResident(card.cardId) &&
+      listResidentActivationEffects(card.cardId).length === 0
+    ) {
+      continue;
+    }
     if (!canActivateResidentOperation(state, playerId, card.instanceId)) continue;
     actions.push({
       type: "activate_resident_operation",
@@ -1198,6 +1220,14 @@ function appendEffectChoiceActions(
   if (pending.mayConfirm) {
     actions.push({ type: "confirm_effect_choice", playerId });
     // 「行う」を選択肢（validInstanceIds）として選んでもよい（confirm と同じ）。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    return;
+  }
+
+  if (isRk1ChoiceEffect(pending.effectId)) {
+    // ライダーEXP vol.1 RK-001〜RK-021 の選択（rules/rk/rk1NamedEffects.ts）。候補はモジュール側で絞り込み済み。
     for (const instanceId of pending.validInstanceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }

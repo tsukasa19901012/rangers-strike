@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "command_return_then_recruit_discard",
+          "keyword": "rk1::RK-007::maintenance",
           "duration": "turn"
         }
       ]

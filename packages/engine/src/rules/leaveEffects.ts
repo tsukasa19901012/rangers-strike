@@ -2,6 +2,7 @@ import type { GameState, PlayerId } from "../types/game";
 import { openSet9ADestroyedEffects } from "./legend1/set9NamedEffectsA";
 import { applySet7AAfterDiscard } from "./legend1/set7NamedEffectsA";
 import { applySet9DAfterDiscard } from "./legend1/set9NamedEffectsD";
+import { applyRk1AfterDiscard } from "./rk/rk1NamedEffects";
 import { applyOtherLinesAfterDiscard } from "./legend1/otherLinesNamedEffects";
 import { cardName, getDefinition } from "../core/catalog";
 import { updatePlayer, removeAt } from "../core/helpers";
@@ -431,6 +432,8 @@ export function resolveAfterDiscardDestroyEffects(
   nextState = applySet9DAfterDiscard(nextState, ctx);
   // XG2-041【真・土煙の舞い】: このターン、次に自軍 S ユニットが撃破されて捨札になったとき（rules/legend1/otherLinesNamedEffects.ts）。
   nextState = applyOtherLinesAfterDiscard(nextState, ctx);
+  // RK-003 カイゾーグ（※常駐）: 敵軍ターン中、自軍 S ユニットが撃破されて捨札になったとき（rules/rk/rk1NamedEffects.ts）。
+  nextState = applyRk1AfterDiscard(nextState, ctx);
 
   return { state: tagOpenedDestroyTrigger(beforeAfterDiscard, nextState, "after_discard"), logs };
 }

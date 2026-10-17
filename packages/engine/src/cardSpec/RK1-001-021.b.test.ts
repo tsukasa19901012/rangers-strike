@@ -250,13 +250,11 @@ describe("RK-009 二人の世紀王", () => {
     expectRarityIn("RK-009", ["MR", "N"]);
   });
 
-  // 既知の不具合: CARD-RK-009 アタックされたときのカウンターとして使えない（バトルの反応ウィンドウに出ない）
-  it.fails("RK-009: 自軍 S ユニットが敵軍 S ユニットにアタックされたとき使える（出典: atwiki/page-209）", () => {
+  it("RK-009: 自軍 S ユニットが敵軍 S ユニットにアタックされたとき使える（出典: atwiki/page-209）", () => {
     expect(canCounter(board(), "RK-009:kk")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RK-009 アタックされたときのカウンターとして使えない（バトルの反応ウィンドウに出ない）
-  it.fails("RK-009: 自分も相手も、バトルを行うユニット以外の S ユニットをすべて手札に戻す（M ユニットは残る）（出典: atwiki/page-209「バトルを行うユニット以外のSユニットをすべて手札に戻す」）", () => {
+  it("RK-009: 自分も相手も、バトルを行うユニット以外の S ユニットをすべて手札に戻す（M ユニットは残る）（出典: atwiki/page-209「バトルを行うユニット以外のSユニットをすべて手札に戻す」）", () => {
     const s = settle(useCounter(board(), "RK-009:kk"));
     for (const id of ["TST-UNIT-0:b1", "TST-UNIT-0:r1", "TST-UNIT-0:r2"]) expect(zoneOf(s, "player1", id)).toBe("hand");
     for (const id of ["TST-UNIT-0:eb1", "TST-UNIT-0:er1"]) expect(zoneOf(s, "player2", id)).toBe("hand");
@@ -264,8 +262,7 @@ describe("RK-009 二人の世紀王", () => {
     expect(zoneOf(s, "player2", "SPEC-ATK-M:erm")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RK-009 アタックされたときのカウンターとして使えない（バトルの反応ウィンドウに出ない）
-  it.fails("RK-009: バトルを行うユニットは、このバトルの間、戻した自分自身のユニット1体につき BP+1000 される（自軍3体戻し BP4000、敵軍2体戻し BP4500）（出典: atwiki/page-209「戻した自分自身のユニット1体につきそれぞれBP+1000される」）", () => {
+  it("RK-009: バトルを行うユニットは、このバトルの間、戻した自分自身のユニット1体につき BP+1000 される（自軍3体戻し BP4000、敵軍2体戻し BP4500）（出典: atwiki/page-209「戻した自分自身のユニット1体につきそれぞれBP+1000される」）", () => {
     const s = settle(useCounter(board(), "RK-009:kk"));
     expect(lastBattleBps(s)).toEqual({ attacker: 4500, defender: 4000 });
   });
@@ -312,8 +309,7 @@ describe("RK-010 ハイブリッドエネルギー", () => {
     expectRarityIn("RK-010", ["R"]);
   });
 
-  // 既知の不具合: CARD-RK-010 ターン終了時のオモテ向き・同カテゴリの BP+1000・山札を操作する前の手札加えが未実装
-  it.fails("RK-010: 自分がターンを終えるとき山札の上をオモテにし、それが山札の上にある間、同じカテゴリの自軍 S ユニットは BP+1000（出典: atwiki/page-210）", () => {
+  it("RK-010: 自分がターンを終えるとき山札の上をオモテにし、それが山札の上にある間、同じカテゴリの自軍 S ユニットは BP+1000（出典: atwiki/page-210）", () => {
     const s = endTurn(board());
     expect(s.activePlayer).toBe("player2");
     expect(bpOf(s, "player1", "TST-UNIT-0:wb")).toBe(2000);
@@ -343,8 +339,7 @@ describe("RK-010 ハイブリッドエネルギー", () => {
   });
 
   // faq-rider-1 RK-010 Q1「いいえ、含まれません。…山札の一番上でオモテになっているカードを手札に加えてから、「RK-015 人類の進化」の効果の続きを実行する」
-  // 既知の不具合: CARD-RK-010 ターン終了時のオモテ向き・同カテゴリの BP+1000・山札を操作する前の手札加えが未実装
-  it.fails("RK-010: 公式Q&A — 人類の進化の「山札の上からカードを1枚ひく」はドローに含まれず、オモテのカードを手札に加えてから次の1枚をひく（出典: grnrngr/faq-rider-1 RK-010 Q1・atwiki/page-210 Q1）", () => {
+  it("RK-010: 公式Q&A — 人類の進化の「山札の上からカードを1枚ひく」はドローに含まれず、オモテのカードを手札に加えてから次の1枚をひく（出典: grnrngr/faq-rider-1 RK-010 Q1・atwiki/page-210 Q1）", () => {
     let s = endTurn(
       board({
         battle: [inst("SPEC-MALE", "def")],
@@ -398,8 +393,7 @@ describe("RK-011 第三の眼", () => {
     expectRarityIn("RK-011", ["MR"]);
   });
 
-  // 既知の不具合: CARD-RK-011 相手のカウンターを無効にする選択が未実装
-  it.fails("RK-011: 相手がカウンターを発動したとき、その必要パワー以上の必要パワーを持つ手札のカードを選んで捨札にしてもよい（任意・候補は必要パワー3以上のカード）（出典: atwiki/page-44）", () => {
+  it("RK-011: 相手がカウンターを発動したとき、その必要パワー以上の必要パワーを持つ手札のカードを選んで捨札にしてもよい（任意・候補は必要パワー3以上のカード）（出典: atwiki/page-44）", () => {
     const s = board([inst("TST-OP", "c3"), inst("RK-001", "c0"), inst("RK-021", "c4")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-011");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
@@ -407,16 +401,14 @@ describe("RK-011 第三の眼", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RK-011 相手のカウンターを無効にする選択が未実装
-  it.fails("RK-011: 捨札にすると、そのカウンターの効果は無効になる（ラッシュしたユニットはそのまま）（出典: atwiki/page-44「そうしたとき、そのカウンターの効果は無効になる」）", () => {
+  it("RK-011: 捨札にすると、そのカウンターの効果は無効になる（ラッシュしたユニットはそのまま）（出典: atwiki/page-44「そうしたとき、そのカウンターの効果は無効になる」）", () => {
     const s = settle(pick(board([inst("TST-OP", "c3")]), "TST-OP:c3"));
     expect(zoneOf(s, "player1", "TST-OP:c3")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-S5000:u")).toBe("rush");
     expect(zoneOf(s, "player2", "RS-026:sp")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RK-011 相手のカウンターを無効にする選択が未実装
-  it.fails("RK-011: 捨札にしなければカウンターの効果は通常どおり（出典: atwiki/page-44「捨札にしてもよい」）", () => {
+  it("RK-011: 捨札にしなければカウンターの効果は通常どおり（出典: atwiki/page-44「捨札にしてもよい」）", () => {
     const s = settle(skip(board([inst("TST-OP", "c3")])));
     expect(zoneOf(s, "player1", "TST-OP:c3")).toBe("hand");
     expect(zoneOf(s, "player1", "SPEC-S5000:u")).not.toBe("rush");
@@ -429,8 +421,7 @@ describe("RK-011 第三の眼", () => {
   });
 
   // faq-rider-1 RK-011「はい、できます。」
-  // 既知の不具合: CARD-RK-011 相手のカウンターを無効にする選択が未実装
-  it.fails("RK-011: 公式Q&A — 第三の眼で無効にされた後、2枚目の疾風流超忍法を改めて使える（出典: grnrngr/faq-rider-1 RK-011・atwiki/page-44 Q1・grnrngr/faq-card-5 RS-247 Q3）", () => {
+  it("RK-011: 公式Q&A — 第三の眼で無効にされた後、2枚目の疾風流超忍法を改めて使える（出典: grnrngr/faq-rider-1 RK-011・atwiki/page-44 Q1・grnrngr/faq-card-5 RS-247 Q3）", () => {
     let s = board([inst("TST-OP", "c3")], [inst("RS-026", "sp"), inst("RS-247", "sp2")]);
     s = pick(s, "TST-OP:c3");
     expect(zoneOf(s, "player1", "SPEC-S5000:u")).toBe("rush");
@@ -495,8 +486,7 @@ describe("RK-012 宏のオルゴール時計", () => {
   });
 
   // faq-rider-1 RK-012 Q2「はい、できます。」・Q4「はい、できます。」
-  // 既知の不具合: CARD-RK-012 メカニック忍者で出した自軍ユニットに使っても、敵軍のバトルフェイズが終わらない
-  it.fails("RK-012: 公式Q&A — メカニック忍者で BP4000 以上の S ユニットを自軍ラッシュエリアに出したとき、さらに使え、敵軍バトルフェイズを終了させる（出典: grnrngr/faq-rider-1 RK-012 Q2・Q4・atwiki/page-198 Q2・Q4）", () => {
+  it("RK-012: 公式Q&A — メカニック忍者で BP4000 以上の S ユニットを自軍ラッシュエリアに出したとき、さらに使え、敵軍バトルフェイズを終了させる（出典: grnrngr/faq-rider-1 RK-012 Q2・Q4・atwiki/page-198 Q2・Q4）", () => {
     let s = enemyAttack(
       { battle: [inst("TST-UNIT-0", "d")], hand: [inst("RK-008", "nin"), inst("RK-012", "mb")], command: [released("SPEC-KAIZO4", "k"), ...releasedCat("ET", 2)], power: powerCards(4) },
       "TST-UNIT-0:d",
@@ -506,7 +496,8 @@ describe("RK-012 宏のオルゴール時計", () => {
     s = useCounter(s, "RK-008:nin", "player1", "SPEC-KAIZO4:k");
     expect(canCounter(s, "RK-012:mb")).toBe(true);
     s = settle(useCounter(s, "RK-012:mb"));
-    expect(s.phase).not.toBe("battle");
+    // バトルフェイズを終了させた: 敵軍はもうアタック・ストライク・バトルエリアへの進入ができず、フェイズを終えることだけができる。
+    expect(legal(s).map((a) => a.type)).toEqual(["end_phase"]);
   });
 
   // faq-rider-1 RK-012 Q3「はい、できます。」
@@ -564,8 +555,7 @@ describe("RK-013 Jパワー", () => {
     expect(choiceIds(s)).toEqual(["SPEC-KAIZO:k"]);
   });
 
-  // 既知の不具合: CARD-RK-013 Jパワーがユニットの下に重ならず捨札になり、特徴「人型」も追加されない
-  it.fails("RK-013: 選んだユニットはラッシュエリアに残り、このカードがその下に重なる（捨札にならない）（出典: atwiki/page-211「このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる」・grnrngr/faq-rider-2 RK-088 Q「そのユニットの下には…重ねられる」）", () => {
+  it("RK-013: 選んだユニットはラッシュエリアに残り、このカードがその下に重なる（捨札にならない）（出典: atwiki/page-211「このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる」・grnrngr/faq-rider-2 RK-088 Q「そのユニットの下には…重ねられる」）", () => {
     const s = powered();
     expect(zoneOf(s, "player1", "SPEC-KAIZO:k")).toBe("rush");
     expect(zoneOf(s, "player1", "RK-013:jp")).toBeNull();
@@ -578,8 +568,7 @@ describe("RK-013 Jパワー", () => {
     expect(choiceIds(s)).toEqual([]);
   });
 
-  // 既知の不具合: CARD-RK-013 Jパワーがユニットの下に重ならず捨札になり、特徴「人型」も追加されない
-  it.fails("RK-013: 重ねたユニットは特徴「人型」が追加され、既存の特徴の後ろに並ぶ（出典: atwiki/page-211「特徴「人型」を追加されて」・grnrngr/faq-rider-1 RK-013 Q7「追加される特徴は、既存の特徴の後ろに順番に追加されていきます」）", () => {
+  it("RK-013: 重ねたユニットは特徴「人型」が追加され、既存の特徴の後ろに並ぶ（出典: atwiki/page-211「特徴「人型」を追加されて」・grnrngr/faq-rider-1 RK-013 Q7「追加される特徴は、既存の特徴の後ろに順番に追加されていきます」）", () => {
     const s = powered();
     const k = cardIn(s, "player1", "SPEC-KAIZO:k")!;
     expect(unitFeatures(s, "player1", k)).toEqual(["男", "改造人間", "人型"]);
@@ -614,8 +603,7 @@ describe("RK-013 Jパワー", () => {
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  // 既知の不具合: CARD-RK-013 Jパワーがユニットの下に重ならず捨札になり、特徴「人型」も追加されない
-  it.fails("RK-013: 使ったターンが終わっても L ユニットのまま（期間の指定がない）（出典: atwiki/page-211「このカードに重ねたユニットは…「Lユニット」になる」）", () => {
+  it("RK-013: 使ったターンが終わっても L ユニットのまま（期間の指定がない）（出典: atwiki/page-211「このカードに重ねたユニットは…「Lユニット」になる」）", () => {
     const s = endTurn(powered());
     const k = cardIn(s, "player1", "SPEC-KAIZO:k")!;
     expect(unitFeatures(s, "player1", k)).toContain("人型");
@@ -666,8 +654,7 @@ describe("RK-014 共同戦線", () => {
     expectRarityIn("RK-014", ["MR"]);
   });
 
-  // 既知の不具合: CARD-RK-014 自軍バトルエリアに「警察」がいる間の「仮面ライダー」へのアタック制限が未実装
-  it.fails("RK-014: 自軍バトルエリアに「警察」があれば、「仮面ライダー」の自軍ユニットは敵軍 S ユニットにアタックされない（出典: atwiki/page-212）", () => {
+  it("RK-014: 自軍バトルエリアに「警察」があれば、「仮面ライダー」の自軍ユニットは敵軍 S ユニットにアタックされない（出典: atwiki/page-212）", () => {
     const s = board({ battle: [inst("SPEC-POLICE", "p"), inst("SPEC-RIDER", "r")] });
     expect(attackersOf(s, "SPEC-RIDER:r")).toEqual(["TST-UNIT-2:em"]);
   });
@@ -687,8 +674,7 @@ describe("RK-014 共同戦線", () => {
     expect(attackersOf(s, "SPEC-RIDER:r")).toContain("TST-UNIT-0:es");
   });
 
-  // 既知の不具合: CARD-RK-014 自軍バトルエリアに「警察」がいる間の「仮面ライダー」へのアタック制限が未実装
-  it.fails("RK-014: 「警察」と「仮面ライダー」を両方持つユニット自身も守られる（出典: atwiki/page-212 カード評価「特徴「警察」に「仮面ライダー」を持つているので敵からアタックされず」）", () => {
+  it("RK-014: 「警察」と「仮面ライダー」を両方持つユニット自身も守られる（出典: atwiki/page-212 カード評価「特徴「警察」に「仮面ライダー」を持つているので敵からアタックされず」）", () => {
     const s = board({ battle: [inst("SPEC-POLICE-RIDER", "pr")] });
     expect(attackersOf(s, "SPEC-POLICE-RIDER:pr")).toEqual(["TST-UNIT-2:em"]);
   });

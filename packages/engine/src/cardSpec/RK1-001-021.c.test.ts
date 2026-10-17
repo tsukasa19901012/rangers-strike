@@ -48,6 +48,7 @@ const FEMALE = sUnit("SPEC-FEMALE", { category: "MA", bp: 2000, features: ["女"
 const MALE_M = sUnit("SPEC-MALE-M", { category: "MA", size: "M", bp: 3000, features: ["男"] });
 const MECHA = sUnit("SPEC-MECHA", { category: "MA", bp: 2000, features: ["メカ"] });
 const RIDER = sUnit("SPEC-RIDER", { category: "ET", bp: 2000, powerCost: 3, features: ["仮面ライダー", "男"] });
+const RIDER4 = sUnit("SPEC-RIDER4", { category: "ET", bp: 2000, powerCost: 4, features: ["仮面ライダー", "男"] });
 const RIDER_B = sUnit("SPEC-RIDER-B", { category: "ET", bp: 2000, features: ["仮面ライダー", "男"] });
 const RIDER_M = sUnit("SPEC-RIDER-M", { category: "ET", size: "M", bp: 3000, features: ["仮面ライダー"] });
 const MIRROR = sUnit("SPEC-MIRROR", { category: "WB", bp: 1000 });
@@ -59,7 +60,7 @@ const ACCEL = sUnit("SPEC-ACCEL", { category: "OT", bp: 1000, features: ["加速
 const NOSP = sUnit("SPEC-NOSP", { bp: 1000, sp: undefined });
 const RC_S = sUnit("SPEC-RC", { category: "ET", bp: 1000, comboNumber: "RC" });
 const VEHICLE = { id: "SPEC-VEHICLE", name: "SPEC-VEHICLE", type: "vehicle", category: "ET", rarity: "N", expansion: "card-spec", powerCost: 0, size: "S", features: ["メカ"] } as unknown as CardDefinition;
-const EXTRA = [MALE, FEMALE, MALE_M, MECHA, RIDER, RIDER_B, RIDER_M, MIRROR, S5000, M5000, E8000, E8500, ACCEL, NOSP, RC_S, VEHICLE];
+const EXTRA = [MALE, FEMALE, MALE_M, MECHA, RIDER, RIDER4, RIDER_B, RIDER_M, MIRROR, S5000, M5000, E8000, E8500, ACCEL, NOSP, RC_S, VEHICLE];
 
 const rushBoard = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
   st({ phase: "rush", player1: { deck: deckCards(5), ...p1 }, player2: { deck: deckCards(5, "e"), ...p2 } }, EXTRA);
@@ -129,13 +130,11 @@ describe("RK-015 人類の進化", () => {
     expectRarityIn("RK-015", ["MR", "N"]);
   });
 
-  // 既知の不具合: CARD-RK-015 撃破されて捨札になったときのカウンターとして使えない（離場の反応ウィンドウに出ない）
-  it.fails("RK-015: 特徴「男」を持つ自軍ユニットが撃破されて捨札になったとき使える（出典: atwiki/page-213）", () => {
+  it("RK-015: 特徴「男」を持つ自軍ユニットが撃破されて捨札になったとき使える（出典: atwiki/page-213）", () => {
     expect(canCounter(destroyed("SPEC-MALE:v", deckCards(3)), "RK-015:jk")).toBe(true);
   });
 
-  // 既知の不具合: CARD-RK-015 撃破されて捨札になったときのカウンターとして使えない（離場の反応ウィンドウに出ない）
-  it.fails("RK-015: 特徴「女」を持つユニット・M ユニットでも使える（出典: atwiki/page-213「特徴「男」または「女」を持つ自軍ユニット」（サイズの限定がない））", () => {
+  it("RK-015: 特徴「女」を持つユニット・M ユニットでも使える（出典: atwiki/page-213「特徴「男」または「女」を持つ自軍ユニット」（サイズの限定がない））", () => {
     expect(canCounter(destroyed("SPEC-FEMALE:v", deckCards(3)), "RK-015:jk")).toBe(true);
     expect(canCounter(destroyed("SPEC-MALE-M:v", deckCards(3)), "RK-015:jk")).toBe(true);
   });
@@ -144,38 +143,33 @@ describe("RK-015 人類の進化", () => {
     expect(canCounter(destroyed("SPEC-MECHA:v", deckCards(3)), "RK-015:jk")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RK-015 撃破されて捨札になったときのカウンターとして使えない（離場の反応ウィンドウに出ない）
-  it.fails("RK-015: ひいたカードが特徴「仮面ライダー」のユニットカードなら、自軍ラッシュエリアに出すかを選べる（任意）（出典: atwiki/page-213「自軍ラッシュエリアに出してもよい」）", () => {
+  it("RK-015: ひいたカードが特徴「仮面ライダー」のユニットカードなら、自軍ラッシュエリアに出すかを選べる（任意）（出典: atwiki/page-213「自軍ラッシュエリアに出してもよい」）", () => {
     const s = useCounter(destroyed("SPEC-MALE:v", [inst("SPEC-RIDER", "rd"), ...deckCards(3)]), "RK-015:jk");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-015");
     expect(choiceIds(s)).toEqual(["SPEC-RIDER:rd"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  // 既知の不具合: CARD-RK-015 撃破されて捨札になったときのカウンターとして使えない（離場の反応ウィンドウに出ない）
-  it.fails("RK-015: 出すと自軍ラッシュエリアに出る（出典: atwiki/page-213）", () => {
+  it("RK-015: 出すと自軍ラッシュエリアに出る（出典: atwiki/page-213）", () => {
     const s = resolveAll(pick(useCounter(destroyed("SPEC-MALE:v", [inst("SPEC-RIDER", "rd"), ...deckCards(3)]), "RK-015:jk"), "SPEC-RIDER:rd"));
     expect(zoneOf(s, "player1", "SPEC-RIDER:rd")).toBe("rush");
   });
 
-  // 既知の不具合: CARD-RK-015 撃破されて捨札になったときのカウンターとして使えない（離場の反応ウィンドウに出ない）
-  it.fails("RK-015: 出さなければ、ひいたカードは手札に加える（出典: atwiki/page-213「そうしないとき、ひいたカードは手札に加える」）", () => {
+  it("RK-015: 出さなければ、ひいたカードは手札に加える（出典: atwiki/page-213「そうしないとき、ひいたカードは手札に加える」）", () => {
     const s = resolveAll(skip(useCounter(destroyed("SPEC-MALE:v", [inst("SPEC-RIDER", "rd"), ...deckCards(3)]), "RK-015:jk")));
     expect(zoneOf(s, "player1", "SPEC-RIDER:rd")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RK-015 撃破されて捨札になったときのカウンターとして使えない（離場の反応ウィンドウに出ない）
-  it.fails("RK-015: 「仮面ライダー」のユニットカードでなければ手札に加える（出典: atwiki/page-213）", () => {
+  it("RK-015: 「仮面ライダー」のユニットカードでなければ手札に加える（出典: atwiki/page-213）", () => {
     const s = resolveAll(useCounter(destroyed("SPEC-MALE:v", [inst("SPEC-MALE", "top"), ...deckCards(3)]), "RK-015:jk"));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-015");
     expect(zoneOf(s, "player1", "SPEC-MALE:top")).toBe("hand");
   });
 
-  // 既知の不具合: CARD-RK-015 撃破されて捨札になったときのカウンターとして使えない（離場の反応ウィンドウに出ない）
-  it.fails("RK-015: 必要パワーを満たさない「仮面ライダー」のカードは出せず手札に加える（出典: atwiki/page-213「ただし必要パワーと追加条件は満たすこと」）", () => {
-    // SPEC-RIDER は必要パワー3。パワーゾーンは2枚。
-    const s = resolveAll(useCounter(destroyed("SPEC-MALE:v", [inst("SPEC-RIDER", "rd"), ...deckCards(3)], 2), "RK-015:jk"));
-    expect(zoneOf(s, "player1", "SPEC-RIDER:rd")).toBe("hand");
+  it("RK-015: 必要パワーを満たさない「仮面ライダー」のカードは出せず手札に加える（出典: atwiki/page-213「ただし必要パワーと追加条件は満たすこと」）", () => {
+    // SPEC-RIDER4 は必要パワー4。パワーゾーンは3枚（人類の進化の必要パワー3は満たす）。
+    const s = resolveAll(useCounter(destroyed("SPEC-MALE:v", [inst("SPEC-RIDER4", "rd"), ...deckCards(3)]), "RK-015:jk"));
+    expect(zoneOf(s, "player1", "SPEC-RIDER4:rd")).toBe("hand");
   });
 
   it("RK-015: ※カウンター — 自軍ターン中は使えない（出典: atwiki/page-213「これは敵軍ターン中にのみ使用できる」・R-CTR-01）", () => {
@@ -221,8 +215,7 @@ describe("RK-016 ミラーワールド", () => {
     expect(zoneOf(resolveAll(s), "player1", "RK-016:mw")).toBe("operation");
   });
 
-  // 既知の不具合: CARD-RK-016 ラッシュフェイズの重ね・アタックに必要なホールド・効果で選ぶときのホールド・離れるときの手札加えが未実装
-  it.fails("RK-016: 自軍ラッシュフェイズに、自軍 S ユニットをこれにオモテ向きに重ねられる（候補は場の自軍 S ユニット）（出典: atwiki/page-176「自軍ラッシュフェイズに自軍Sユニットをこれにオモテ向きに重ねてもよい」）", () => {
+  it("RK-016: 自軍ラッシュフェイズに、自軍 S ユニットをこれにオモテ向きに重ねられる（候補は場の自軍 S ユニット）（出典: atwiki/page-176「自軍ラッシュフェイズに自軍Sユニットをこれにオモテ向きに重ねてもよい」）", () => {
     let s = rushBoard({ operation: [mirror([])], rush: [inst("SPEC-MIRROR", "a"), inst("SPEC-MALE-M", "m")], hand: [inst("SPEC-MIRROR", "h")] });
     expect(canActivateResident(s, "RK-016:mw")).toBe(true);
     s = act(s, { type: "activate_resident_operation", playerId: "player1", operationInstanceId: "RK-016:mw" });
@@ -239,14 +232,12 @@ describe("RK-016 ミラーワールド", () => {
     expect(canActivateResident(s, "RK-016:mw")).toBe(false);
   });
 
-  // 既知の不具合: CARD-RK-016 ラッシュフェイズの重ね・アタックに必要なホールド・効果で選ぶときのホールド・離れるときの手札加えが未実装
-  it.fails("RK-016: 重ねたカードと同名の自軍ユニットにアタックするには、相手は自分自身のコマンドを3つ（選ぶ1つ＋さらに2つ）ホールドしなければならない（出典: atwiki/page-176「アタックするには、さらに2つホールドしなければならない」）", () => {
+  it("RK-016: 重ねたカードと同名の自軍ユニットにアタックするには、相手は自分自身のコマンドを3つ（選ぶ1つ＋さらに2つ）ホールドしなければならない（出典: atwiki/page-176「アタックするには、さらに2つホールドしなければならない」）", () => {
     expect(attackersOf(defended([inst("SPEC-MIRROR", "stk")], 2), "SPEC-MIRROR:u")).toEqual([]);
     expect(attackersOf(defended([inst("SPEC-MIRROR", "stk")], 3), "SPEC-MIRROR:u")).toEqual(["TST-UNIT-7:atk"]);
   });
 
-  // 既知の不具合: CARD-RK-016 ラッシュフェイズの重ね・アタックに必要なホールド・効果で選ぶときのホールド・離れるときの手札加えが未実装
-  it.fails("RK-016: アタックすると、相手のコマンドが3つホールドされる（出典: atwiki/page-176）", () => {
+  it("RK-016: アタックすると、相手のコマンドが3つホールドされる（出典: atwiki/page-176）", () => {
     let s = defended([inst("SPEC-MIRROR", "stk")], 4);
     s = settle(attack(s, "TST-UNIT-7:atk", "SPEC-MIRROR:u", "player2"));
     expect(s.players.player2.command.filter((c) => c.commandHeld)).toHaveLength(3);
@@ -257,13 +248,11 @@ describe("RK-016 ミラーワールド", () => {
   });
 
   // faq-rider-1 RK-016 Q3「はい、重複します。」・Q5「アタックを選択すること自体ができません」
-  // 既知の不具合: CARD-RK-016 ラッシュフェイズの重ね・アタックに必要なホールド・効果で選ぶときのホールド・離れるときの手札加えが未実装
-  it.fails("RK-016: 公式Q&A — 同名のカードを2枚重ねると重複し、アタックには6つのホールドが必要なのでアタックできない（出典: grnrngr/faq-rider-1 RK-016 Q3・atwiki/page-176 Q3・Q5）", () => {
+  it("RK-016: 公式Q&A — 同名のカードを2枚重ねると重複し、アタックには6つのホールドが必要なのでアタックできない（出典: grnrngr/faq-rider-1 RK-016 Q3・atwiki/page-176 Q3・Q5）", () => {
     expect(attackersOf(defended([inst("SPEC-MIRROR", "stk"), inst("SPEC-MIRROR", "stk2")], 5), "SPEC-MIRROR:u")).toEqual([]);
   });
 
-  // 既知の不具合: CARD-RK-016 ラッシュフェイズの重ね・アタックに必要なホールド・効果で選ぶときのホールド・離れるときの手札加えが未実装
-  it.fails("RK-016: 相手の効果で選ぶには、相手は自分自身のコマンドを1つホールドしなければならない — 音撃で選ぶとき（出典: atwiki/page-176「相手は自分自身のコマンドを1つホールドしなければ、このユニットを選べない」・grnrngr/faq-rider-1 RS-288 Q）", () => {
+  it("RK-016: 相手の効果で選ぶには、相手は自分自身のコマンドを1つホールドしなければならない — 音撃で選ぶとき（出典: atwiki/page-176「相手は自分自身のコマンドを1つホールドしなければ、このユニットを選べない」・grnrngr/faq-rider-1 RS-288 Q）", () => {
     // 自軍（player1）が音撃（RK-019）を使う。敵軍（player2）のミラーワールドに SPEC-MIRROR を重ねている。
     const base = (cmd: number) =>
       played(
@@ -284,8 +273,7 @@ describe("RK-016 ミラーワールド", () => {
     expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(2);
   });
 
-  // 既知の不具合: CARD-RK-016 ラッシュフェイズの重ね・アタックに必要なホールド・効果で選ぶときのホールド・離れるときの手札加えが未実装
-  it.fails("RK-016: 常駐置き場を離れるとき、重ねたカードはすべて手札に加える（新しい常駐の配置で捨札になるとき）（出典: atwiki/page-176「これが常駐置き場を離れるとき、重ねたカードはすべて手札に加える」・R-KW-PERM-01）", () => {
+  it("RK-016: 常駐置き場を離れるとき、重ねたカードはすべて手札に加える（新しい常駐の配置で捨札になるとき）（出典: atwiki/page-176「これが常駐置き場を離れるとき、重ねたカードはすべて手札に加える」・R-KW-PERM-01）", () => {
     let s = rushBoard({ operation: [mirror([inst("SPEC-MIRROR", "stk")])], hand: [inst("RK-014", "kd")], command: releasedCat("MA", 1), power: powerCards(2) });
     s = resolveAll(played(s, "RK-014:kd"));
     expect(zoneOf(s, "player1", "RK-016:mw")).toBe("discard");
@@ -306,8 +294,7 @@ describe("RK-016 ミラーワールド", () => {
   });
 
   // faq-rider-1 RK-016 Q2・RK-013 Q3「はい、有効なまま継続します。」
-  // 既知の不具合: CARD-RK-016 ラッシュフェイズの重ね・アタックに必要なホールド・効果で選ぶときのホールド・離れるときの手札加えが未実装
-  it.fails("RK-016: 公式Q&A — 同名の S ユニットが J パワーで L ユニットになっても、能力は続く（出典: grnrngr/faq-rider-1 RK-016 Q2・RK-013 Q3）", () => {
+  it("RK-016: 公式Q&A — 同名の S ユニットが J パワーで L ユニットになっても、能力は続く（出典: grnrngr/faq-rider-1 RK-016 Q2・RK-013 Q3）", () => {
     const s = st(
       {
         activePlayer: "player2",
@@ -340,15 +327,13 @@ describe("RK-017 ミッションメモリー", () => {
     expectRarityIn("RK-017", ["MR", "N"]);
   });
 
-  // 既知の不具合: CARD-RK-017 RC を持つユニットの選択・コマンドゾーンへの配置・ライドオフしない RC の発動が未実装
-  it.fails("RK-017: 選べるのは RC を持つ自軍 S ユニットだけ（出典: atwiki/page-197「ＲＣを持つ自軍Sユニットを1体選ぶ」）", () => {
+  it("RK-017: 選べるのは RC を持つ自軍 S ユニットだけ（出典: atwiki/page-197「ＲＣを持つ自軍Sユニットを1体選ぶ」）", () => {
     const s = played(board({ rush: [inst("RK-073", "n2"), inst("SPEC-MALE", "x"), inst("SPEC-MALE-M", "m")] }), "RK-017:mm");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-017");
     expect(choiceIds(s)).toEqual(["RK-073:n2"]);
   });
 
-  // 既知の不具合: CARD-RK-017 RC を持つユニットの選択・コマンドゾーンへの配置・ライドオフしない RC の発動が未実装
-  it.fails("RK-017: その後、このカードは自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-197「その後、このカードを自軍コマンドゾーンにホールド状態で置く」）", () => {
+  it("RK-017: その後、このカードは自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-197「その後、このカードを自軍コマンドゾーンにホールド状態で置く」）", () => {
     const s = memorized();
     expect(zoneOf(s, "player1", "RK-017:mm")).toBe("command");
     expect(cardIn(s, "player1", "RK-017:mm")?.commandHeld).toBe(true);
@@ -360,15 +345,13 @@ describe("RK-017 ミッションメモリー", () => {
   });
 
   // faq-rider-1 RK-017 Q6「はい、できます。」・Q2（「その後」は直前の操作が実行できたかどうかに関わらず実行する）
-  // 既知の不具合: CARD-RK-017 RC を持つユニットの選択・コマンドゾーンへの配置・ライドオフしない RC の発動が未実装
-  it.fails("RK-017: 公式Q&A — RC を持つユニットを選べなくても使え、コマンドゾーンに置く（出典: grnrngr/faq-rider-1 RK-017 Q2・Q6・atwiki/page-197 Q2・Q6）", () => {
+  it("RK-017: 公式Q&A — RC を持つユニットを選べなくても使え、コマンドゾーンに置く（出典: grnrngr/faq-rider-1 RK-017 Q2・Q6・atwiki/page-197 Q2・Q6）", () => {
     const s = resolveAll(played(board({ rush: [inst("SPEC-MALE", "x")] }), "RK-017:mm"));
     expect(zoneOf(s, "player1", "RK-017:mm")).toBe("command");
   });
 
   // faq-rider-1 RK-017 Q5「はい、発動します。」
-  // 既知の不具合: CARD-RK-017 RC を持つユニットの選択・コマンドゾーンへの配置・ライドオフしない RC の発動が未実装
-  it.fails("RK-017: 公式Q&A — 選んだユニットはビークルにライドしないでバトルエリアに出ても RC の効果を発動する（仮面ライダー2号 BP7000）（出典: grnrngr/faq-rider-1 RK-017 Q5・atwiki/page-197 Q5）", () => {
+  it("RK-017: 公式Q&A — 選んだユニットはビークルにライドしないでバトルエリアに出ても RC の効果を発動する（仮面ライダー2号 BP7000）（出典: grnrngr/faq-rider-1 RK-017 Q5・atwiki/page-197 Q5）", () => {
     let s = nextPhase(memorized());
     s = enter(s, "RK-073:n2");
     expect(bpOf(s, "player1", "RK-073:n2")).toBe(7000);
@@ -381,8 +364,7 @@ describe("RK-017 ミッションメモリー", () => {
   });
 
   // faq-rider-1 RK-017 Q3・Q4「いいえ、できません。」
-  // 既知の不具合: CARD-RK-017 RC を持つユニットの選択・コマンドゾーンへの配置・ライドオフしない RC の発動が未実装
-  it.fails("RK-017: 公式Q&A — ライドしたまま RC の効果を発動したら、その後ライドオフして2重に発動できない（BP9000 にはならない）（出典: grnrngr/faq-rider-1 RK-017 Q3・Q4・atwiki/page-197 Q3・Q4）", () => {
+  it("RK-017: 公式Q&A — ライドしたまま RC の効果を発動したら、その後ライドオフして2重に発動できない（BP9000 にはならない）（出典: grnrngr/faq-rider-1 RK-017 Q3・Q4・atwiki/page-197 Q3・Q4）", () => {
     let s = nextPhase(memorized({ rush: [inst("RK-073", "n2"), inst("SPEC-VEHICLE", "v")] }));
     s = act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: "RK-073:n2", vehicleInstanceId: "SPEC-VEHICLE:v" });
     const stay = legal(s).find((a) => a.type === "resolve_ride_off_choice" && a.rideOff === false);
@@ -431,22 +413,19 @@ describe("RK-018 ラウズカード", () => {
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:u"]);
   });
 
-  // 既知の不具合: CARD-RK-018 捨札の S ユニットのカードの選択と BP の加算が未実装
-  it.fails("RK-018: 続けて自軍捨札の S ユニットのカードを選ぶ（M ユニットのカードは選べない）（出典: atwiki/page-177「自軍捨札からSユニットのカードを1枚選ぶ」）", () => {
+  it("RK-018: 続けて自軍捨札の S ユニットのカードを選ぶ（M ユニットのカードは選べない）（出典: atwiki/page-177「自軍捨札からSユニットのカードを1枚選ぶ」）", () => {
     const s = pick(played(board(), "RK-018:rc"), "TST-UNIT-0:u");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-018");
     expect(choiceIds(s)).toEqual(["SPEC-S5000:d5"]);
   });
 
-  // 既知の不具合: CARD-RK-018 捨札の S ユニットのカードの選択と BP の加算が未実装
-  it.fails("RK-018: このターン、ラッシュエリアから選んだユニットの BP に、捨札から選んだカードの BP を＋する（1000＋5000＝6000）（出典: atwiki/page-177）", () => {
+  it("RK-018: このターン、ラッシュエリアから選んだユニットの BP に、捨札から選んだカードの BP を＋する（1000＋5000＝6000）（出典: atwiki/page-177）", () => {
     const s = resolveAll(pick(pick(played(board(), "RK-018:rc"), "TST-UNIT-0:u"), "SPEC-S5000:d5"));
     expect(bpOf(s, "player1", "TST-UNIT-0:u")).toBe(6000);
     expect(zoneOf(s, "player1", "SPEC-S5000:d5")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RK-018 捨札の S ユニットのカードの選択と BP の加算が未実装
-  it.fails("RK-018: バトルエリアに出ても、このターンは BP が上がったまま（出典: atwiki/page-177「このターン、」）", () => {
+  it("RK-018: バトルエリアに出ても、このターンは BP が上がったまま（出典: atwiki/page-177「このターン、」）", () => {
     let s = resolveAll(pick(pick(played(board({ battle: [] }), "RK-018:rc"), "TST-UNIT-0:u"), "SPEC-S5000:d5"));
     s = enter(nextPhase(s), "TST-UNIT-0:u");
     expect(bpOf(s, "player1", "TST-UNIT-0:u")).toBe(6000);
@@ -483,15 +462,13 @@ describe("RK-019 音撃", () => {
     expectRarityIn("RK-019", ["MR", "N"]);
   });
 
-  // 既知の不具合: CARD-RK-019 敵軍ユニットの選択と「バトルに勝っても撃破される」の付与が未実装
-  it.fails("RK-019: 選べるのは特徴「メカ」を持たない敵軍ユニット（ラッシュエリアも含む）（出典: atwiki/page-214「特徴「メカ」を持たない敵軍ユニットを1体選ぶ」・R-TGT-01）", () => {
+  it("RK-019: 選べるのは特徴「メカ」を持たない敵軍ユニット（ラッシュエリアも含む）（出典: atwiki/page-214「特徴「メカ」を持たない敵軍ユニットを1体選ぶ」・R-TGT-01）", () => {
     const s = played(board({ rush: [inst("TST-UNIT-0", "own")] }), "RK-019:og");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-019");
     expect(choiceIds(s)).toEqual(["TST-UNIT-2:er", "TST-UNIT-7:big"]);
   });
 
-  // 既知の不具合: CARD-RK-019 敵軍ユニットの選択と「バトルに勝っても撃破される」の付与が未実装
-  it.fails("RK-019: このターン、選んだユニットは SP1 以上のユニットとバトルするとバトルに勝っても撃破される（出典: atwiki/page-214）", () => {
+  it("RK-019: このターン、選んだユニットは SP1 以上のユニットとバトルするとバトルに勝っても撃破される（出典: atwiki/page-214）", () => {
     const s = battleAfter("TST-UNIT-0:a");
     expect(zoneOf(s, "player2", "TST-UNIT-7:big")).toBe("discard");
     expect(zoneOf(s, "player1", "TST-UNIT-0:a")).toBe("discard");
@@ -546,22 +523,19 @@ describe("RK-020 ダブルライダーキック", () => {
     expectRarityIn("RK-020", ["MR"]);
   });
 
-  // 既知の不具合: CARD-RK-020 自軍ラッシュエリアの「仮面ライダー」2体を選ばず、使った時点で敵軍ユニットの撃破の選択が開く
-  it.fails("RK-020: 選べるのは自軍ラッシュエリアの特徴「仮面ライダー」の自軍ユニット（サイズは問わない・バトルエリアは選べない）（出典: atwiki/page-199「自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを2体選ぶ」）", () => {
+  it("RK-020: 選べるのは自軍ラッシュエリアの特徴「仮面ライダー」の自軍ユニット（サイズは問わない・バトルエリアは選べない）（出典: atwiki/page-199「自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを2体選ぶ」）", () => {
     const s = played(board(), "RK-020:wk");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-020");
     expect(choiceIds(s)).toEqual(["SPEC-RIDER-B:a", "SPEC-RIDER-M:b"]);
   });
 
-  // 既知の不具合: CARD-RK-020 自軍ラッシュエリアの「仮面ライダー」2体を選ばず、使った時点で敵軍ユニットの撃破の選択が開く
-  it.fails("RK-020: 使っただけでは何も撃破しない（出典: atwiki/page-199「選んだ2体のユニットが自軍バトルエリアで隣り合ったとき」）", () => {
+  it("RK-020: 使っただけでは何も撃破しない（出典: atwiki/page-199「選んだ2体のユニットが自軍バトルエリアで隣り合ったとき」）", () => {
     const s = kicked();
     expect(zoneOf(s, "player2", "SPEC-E8000:e8")).toBe("battle");
     expect(s.pendingEffectChoice).toBeUndefined();
   });
 
-  // 既知の不具合: CARD-RK-020 自軍ラッシュエリアの「仮面ライダー」2体を選ばず、使った時点で敵軍ユニットの撃破の選択が開く
-  it.fails("RK-020: 選んだ2体が自軍バトルエリアで隣り合ったとき、敵軍バトルエリアの BP8000 以下の敵軍ユニットを1体選ぶ（ラッシュエリア・BP8500 は選べない。見送れない）（出典: atwiki/page-199）", () => {
+  it("RK-020: 選んだ2体が自軍バトルエリアで隣り合ったとき、敵軍バトルエリアの BP8000 以下の敵軍ユニットを1体選ぶ（ラッシュエリア・BP8500 は選べない。見送れない）（出典: atwiki/page-199）", () => {
     let s = kicked();
     s = enter(passEntry(enter(s, "SPEC-RIDER-B:a")), "SPEC-RIDER-M:b");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-020");
@@ -569,24 +543,21 @@ describe("RK-020 ダブルライダーキック", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  // 既知の不具合: CARD-RK-020 自軍ラッシュエリアの「仮面ライダー」2体を選ばず、使った時点で敵軍ユニットの撃破の選択が開く
-  it.fails("RK-020: 選んだユニットを撃破する（出典: atwiki/page-199「1体選び撃破する」）", () => {
+  it("RK-020: 選んだユニットを撃破する（出典: atwiki/page-199「1体選び撃破する」）", () => {
     let s = kicked();
     s = enter(passEntry(enter(s, "SPEC-RIDER-B:a")), "SPEC-RIDER-M:b");
     s = resolveAll(pick(s, "SPEC-E8000:e8"));
     expect(zoneOf(s, "player2", "SPEC-E8000:e8")).toBe("discard");
   });
 
-  // 既知の不具合: CARD-RK-020 自軍ラッシュエリアの「仮面ライダー」2体を選ばず、使った時点で敵軍ユニットの撃破の選択が開く
-  it.fails("RK-020: 間に別のユニットがあって隣り合わなければ発動しない（出典: atwiki/page-199「隣り合ったとき」）", () => {
+  it("RK-020: 間に別のユニットがあって隣り合わなければ発動しない（出典: atwiki/page-199「隣り合ったとき」）", () => {
     let s = kicked();
     s = enter(passEntry(enter(passEntry(enter(s, "SPEC-RIDER-B:a")), "TST-UNIT-0:f")), "SPEC-RIDER-M:b");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-020");
     expect(zoneOf(resolveAll(s), "player2", "SPEC-E8000:e8")).toBe("battle");
   });
 
-  // 既知の不具合: CARD-RK-020 自軍ラッシュエリアの「仮面ライダー」2体を選ばず、使った時点で敵軍ユニットの撃破の選択が開く
-  it.fails("RK-020: 選んでいない「仮面ライダー」のユニットと隣り合っても発動しない（出典: atwiki/page-199「選んだ2体のユニットが」）", () => {
+  it("RK-020: 選んでいない「仮面ライダー」のユニットと隣り合っても発動しない（出典: atwiki/page-199「選んだ2体のユニットが」）", () => {
     let s = kicked({ rush: [inst("SPEC-RIDER-B", "a"), inst("SPEC-RIDER-M", "b"), inst("SPEC-RIDER-B", "c")] });
     s = enter(passEntry(enter(s, "SPEC-RIDER-B:a")), "SPEC-RIDER-B:c");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-020");

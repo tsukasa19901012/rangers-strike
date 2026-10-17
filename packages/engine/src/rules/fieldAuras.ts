@@ -16,6 +16,7 @@ import { femaleUnitCountBothSides } from "./legend1/set7NamedEffectsD";
 import { set8DFieldBpBonus } from "./legend1/set8NamedEffectsD";
 import { set9CFieldBpBonus } from "./legend1/set9NamedEffectsC";
 import { set9DFieldBpBonus } from "./legend1/set9NamedEffectsD";
+import { rk1FieldBpBonus } from "./rk/rk1NamedEffects";
 import { anyOtherBaseLargeUnit } from "./legend1/set8NamedEffectsB";
 import { set7AFieldBpBonus } from "./legend1/set7NamedEffectsA";
 import { set8AFieldBpBonus } from "./legend1/set8NamedEffectsA";
@@ -255,6 +256,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += set9AFieldBpBonus(state, playerId, instance);
   // 第9弾 RS-689【バードブラスター】（rules/legend1/set9NamedEffectsD.ts）。
   if (role === "general") bonus += set9DFieldBpBonus(state, playerId, instance);
+  // RK-010 ハイブリッドエネルギー（rules/rk/rk1NamedEffects.ts）。
+  if (role === "general") bonus += rk1FieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 
