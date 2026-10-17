@@ -343,9 +343,27 @@ describe("RS-203 大帝ラー・デウス", () => {
   it.todo(
     "RS-203: 公式Q&A — 特徴「航空機」を捨札にしたターン、航空機を持たないユニットのラッシュでもバラクティカ【編隊出撃】を発動できる（出典: grnrngr/faq-card-4 RS-203 Q2・faq-card-5）— デウス遺伝子が未実装で、XL の RS-296 の起動型効果の手順をこの範囲で組み立てられない",
   );
-  it.todo(
-    "RS-203: 公式Q&A — ゾル大佐の効果で SP1 になった戦闘員ダイナレッドは NC 不成立ならストライク後にアタックできない（出典: grnrngr/faq-card-4 RS-203 Q6・rider_2）— RK-091 の BP 再計算と RS-191 の NC 判定は範囲外カードの実装に依存する",
-  );
+  // faq-rider-2 RK-091 Q「いいえ、できません。…ナンバーコンビネーションは発動していないため、ストライクの後にアタックすることは出来ない」
+  it.fails("RS-203: 公式Q&A — ショッカー戦闘員を捨札にしてラッシュしたターン、「戦闘員」を追加されたダイナレッドはゾル大佐の効果で「SP1」になりストライクできるが、NC が成立していなければストライクの後にアタックできない（出典: grnrngr/faq-card-4 RS-203 Q6・grnrngr/faq-rider-2 RK-091 Q）", () => {
+    let s = st({
+      phase: "rush",
+      player1: {
+        hand: [inst("RS-203", "d")],
+        rush: [inst("RK-090", "mat"), inst("RS-191", "dr"), inst("RK-091", "zol")],
+        power: powerCards(5),
+        command: releasedN(1, "TST-OP-DA"),
+        deck: deckCards(5),
+      },
+      player2: { battle: [inst("TST-UNIT-0", "e")], deck: deckCards(5, "e") },
+    });
+    s = rushWithMaterial(s, "player1", "RS-203:d", "RK-090:mat");
+    s = advanceToBattle(s, "player1");
+    s = enter(s, "RS-191:dr");
+    expect(bpOf(s, "player1", "RS-191:dr")).toBe(3000);
+    expect(canStrike(s, "RS-191:dr")).toBe(true);
+    s = settle(strike(s, "RS-191:dr"));
+    expect(attackTargets(s, "RS-191:dr")).toEqual([]);
+  });
 });
 
 // ===========================================================================

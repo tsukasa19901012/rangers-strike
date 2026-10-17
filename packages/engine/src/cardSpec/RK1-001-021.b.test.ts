@@ -627,9 +627,15 @@ describe("RK-013 Jパワー", () => {
   it.todo(
     "RK-013: 公式Q&A — ライド中のユニットに使うと、下から「ビークル」「J パワー」「ユニット」の順に重ねる（出典: grnrngr/faq-rider-1 RK-058 Q）— ライド中のユニットへの使用でビークルの扱いを公開 API で観測できないため",
   );
-  it.todo(
-    "RK-013: 公式Q&A — イマジンとの契約を使ったユニットに続けて使うと、2枚ともそのユニットの下に重ねる（出典: grnrngr/faq-rider-2 RK-088 Q）— RK-088 が本範囲外のため",
-  );
+  // faq-rider-2 RK-088 Q「その場合、「RK-088 イマジンとの契約」と「RK-013 Ｊパワー」の2枚を選んだ自軍Sユニットの下に重ねることになります。」
+  it.fails("RK-013: 公式Q&A — イマジンとの契約を使ったユニットに続けて使うと、2枚ともそのユニットの下に重ねる（出典: grnrngr/faq-rider-2 RK-088 Q）", () => {
+    let s = board({ hand: [inst("RK-088", "ct"), inst("RK-013", "jp")], command: [...releasedCat("DA", 1), ...releasedCat("MA", 1)] });
+    s = resolveAll(played(s, "RK-088:ct"), ["SPEC-KAIZO:k"]);
+    s = resolveAll(played(s, "RK-013:jp"), ["SPEC-KAIZO:k"]);
+    expect((cardIn(s, "player1", "SPEC-KAIZO:k")?.stackedCards ?? []).map((c) => c.cardId).sort()).toEqual(["RK-013", "RK-088"]);
+    expect(zoneOf(s, "player1", "RK-088:ct")).toBeNull();
+    expect(zoneOf(s, "player1", "RK-013:jp")).toBeNull();
+  });
 });
 
 // ===========================================================================
