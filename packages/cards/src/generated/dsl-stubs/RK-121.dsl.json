@@ -28,12 +28,12 @@
       "name": "エクザップバスター",
       "text": "これをラッシュしたターン、敵軍SユニットはBP-500される。（BP0以下になったユニットは撃破される）",
       "trigger": {
-        "type": "nc"
+        "type": "on_rush"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_turn_enemy_s_bp_minus::500",
+          "keyword": "rk6::RK-121::exa_buster",
           "duration": "turn"
         }
       ],

@@ -90,6 +90,7 @@ import {
 } from "./legend3/restrictions";
 import { getBattleEntryPowerDiscardCount } from "./batch07FieldEffects";
 import { damageGateBlocksEntry } from "./keywordGapRuntime";
+import { rk6BlocksBattleEntry } from "./rk/rk6Fields";
 import {
   rs482BlocksAttackStrike,
   rs579BlocksAttackStrikeOnRushTurn,
@@ -354,6 +355,8 @@ export function canMoveUnitToBattle(
   if (def.type === "unit" && ryuseioBlocksMove(state, playerId, unit)) return false;
 
   if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
+  // RK-122 ホースオルフェノク格闘態 ※（自軍パワーゾーンに6枚以上カードが無ければ出られない。rules/rk/rk6Fields.ts）。
+  if (def.type === "unit" && rk6BlocksBattleEntry(state, playerId, unit)) return false;
   // RS-289 / XP-023「※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない」（atwiki/page-416）。
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
@@ -487,6 +490,8 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
   if (def.type === "unit" && ryuseioBlocksMove(state, playerId, unit)) return false;
   if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
+  // RK-122 ホースオルフェノク格闘態 ※（自軍パワーゾーンに6枚以上カードが無ければ出られない。rules/rk/rk6Fields.ts）。
+  if (def.type === "unit" && rk6BlocksBattleEntry(state, playerId, unit)) return false;
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {

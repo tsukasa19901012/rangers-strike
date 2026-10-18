@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-124::wo_mamoru_ru",
+          "keyword": "rk6::RK-124::resolve_to_protect",
           "duration": "permanent"
         }
       ],

@@ -1,5 +1,6 @@
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
 import { isRk5BattleCounterCard, rk5BattleCounterConditionMet } from "./rk/rk5UnitEffects";
+import { applyRk6AfterUnitLeft, rk6IsNonCraneOrphnoch } from "./rk/rk6UnitEffects";
 import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects";
 import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
 import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
@@ -1986,6 +1987,15 @@ export function finalizeLeavePending(
     card: found.card,
     toZone: effectiveToZone,
     destroyed: isDestructionLeave(pending),
+  });
+  // RK-123 クレインオルフェノク【制裁する光の翼】（「オルフェノク」かは場にあったときの特徴で見る。rules/rk/rk6UnitEffects.ts）。
+  resolvedState = applyRk6AfterUnitLeft(resolvedState, {
+    ownerPlayerId: pending.ownerPlayerId,
+    card: found.card,
+    toZone: effectiveToZone,
+    destroyed: isDestructionLeave(pending),
+    phasePlayerId: pending.phasePlayerId,
+    wasNonCraneOrphnoch: rk6IsNonCraneOrphnoch(state, pending.ownerPlayerId, found.card),
   });
   if (
     pending.fusionReturnOnDiscard === "battle" &&

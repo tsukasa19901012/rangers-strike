@@ -29,13 +29,13 @@
       "name": "ニーラーシャトル",
       "text": "これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒ナンバーにＲＣを持っていれば、ライドオフしなくてもその効果を発動できる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-120::nirashatoru",
-          "duration": "turn"
+          "keyword": "rk6::RK-120::kneeler_shuttle",
+          "duration": "permanent"
         }
       ],
       "optional": false

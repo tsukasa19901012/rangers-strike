@@ -9,6 +9,8 @@ import {
 } from "./battleKeywords";
 import { rs627NotSelectable } from "../rules/rs/rsCatchallField";
 import { set7BNotSelectable } from "../rules/legend1/set7NamedEffectsB";
+import { rk6SnakeBlocksSelection } from "../rules/rk/rk6Fields";
+import { unitFeatures } from "../rules/addedFeatures";
 
 /**
  * 場以外（コマンドゾーン等）にあるカードが「相手に選ばれない」能力（not_selectable／アタックされる以外では
@@ -49,6 +51,8 @@ export function isSelectableByOpponentEffect(
   if (rs627NotSelectable(state, found.playerId, targetInstanceId)) return false;
   // RS-464 花忍者ユリ【斬撃の回避】「次の相手ターン、相手はこのユニットを選べない。」（rules/legend1/set7NamedEffectsB.ts）。
   if (set7BNotSelectable(state, found.playerId, targetInstanceId)) return false;
+  // RK-124 スネークオルフェノク【人を守る決意】（rules/rk/rk6Fields.ts）。
+  if (rk6SnakeBlocksSelection(state, selectorPlayerId, found.playerId, found.card, unitFeatures)) return false;
   return true;
 }
 

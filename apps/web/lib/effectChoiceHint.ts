@@ -189,6 +189,26 @@ const RK5_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk103_stack_on_chouhenshin: { label: "クウガPF", hint: "このユニットを常駐の「超変身」に重ねて置きますか？" },
 };
 
+/** ライダーEXP vol.2 RK-106〜RK-126 のカード固有の選択（engine rules/rk/rk6UnitEffects.ts）の表示名と案内文。 */
+const RK6_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk106_saber_slash: { label: "セイバースラッシュ", hint: "持ち主のパワーゾーンにダメージにして置く、敵軍バトルエリアのホールド状態の S ユニットを選んでください（しないなら「スキップ」）" },
+  rk108_gills_heel_claw: { label: "ギルスヒールクロウ", hint: "このユニットをホールドしますか？（ホールドすると敵軍バトルエリアの S ユニットを1体ダメージにします）" },
+  rk108_gills_heel_claw_target: { label: "ギルスヒールクロウ", hint: "持ち主のパワーゾーンにダメージにして置く、敵軍バトルエリアの S ユニットを選んでください" },
+  rk109_self_repair: { label: "自己修復能力", hint: "ライドしたホールド状態のユニットをリリースしますか？" },
+  rk110_performance_limit: { label: "性能の限界", hint: "このユニットカードを自軍コマンドゾーンにホールド状態で置きますか？" },
+  rk112_slash_dagger: { label: "スラッシュダガー", hint: "撃破する、BP が本来の BP ではない敵軍バトルエリアの S ユニットを選んでください（しないなら「スキップ」）" },
+  rk113_scatter_shot: { label: "散弾", hint: "ライドオフさせる、ライド中の敵軍 S ユニットを選んでください（しないなら「スキップ」）" },
+  rk114_dead_end: { label: "デッドエンド", hint: "捨札にする、ライドされていない敵軍 S ビークルを選んでください（しないなら「スキップ」）" },
+  rk115_end_of_world: { label: "エンドオブワールド", hint: "ホールド状態の S ユニットをすべて撃破し、その後 S ユニットをすべてホールドしますか？" },
+  rk115_end_of_world_hold: { label: "エンドオブワールド", hint: "S ユニットをすべてホールドします" },
+  rk117_crystal_break: { label: "クリスタルブレイク", hint: "撃破する、敵軍バトルエリアのホールド状態の S ユニットを選んでください（しないなら「スキップ」）" },
+  rk118_claw: { label: "クロー", hint: "ホールドする、レジストを持たない敵軍 S ユニットを選んでください（しないなら「スキップ」）" },
+  rk123_punishing_wings: { label: "制裁する光の翼", hint: "撃破する敵軍 S ユニットを選んでください（しないなら「スキップ」）" },
+  rk126_garren_rouzer_show: { label: "ギャレンラウザー", hint: "相手に見せる自分の手札を3枚選んでください（しないなら「スキップ」）" },
+  rk126_garren_rouzer_hold: { label: "ギャレンラウザー", hint: "ホールドする敵軍 S ユニットを選んでください" },
+  rk126_garren_rouzer_destroy: { label: "ギャレンラウザー", hint: "撃破する敵軍 S ユニットを選んでください" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -225,7 +245,8 @@ export function effectChoiceHint(
     RK2_CHOICE_UI[pending.effectId] ??
     RK3_CHOICE_UI[pending.effectId] ??
     RK4_CHOICE_UI[pending.effectId] ??
-    RK5_CHOICE_UI[pending.effectId];
+    RK5_CHOICE_UI[pending.effectId] ??
+    RK6_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -423,6 +444,7 @@ export function effectChoiceTitle(
     RK3_CHOICE_UI[pending.effectId]?.label ??
     RK4_CHOICE_UI[pending.effectId]?.label ??
     RK5_CHOICE_UI[pending.effectId]?.label ??
+    RK6_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

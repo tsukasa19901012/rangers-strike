@@ -83,6 +83,7 @@ import { tryRk1OnEnterBattle } from "./rk/rk1NamedEffects";
 import { tryRk2OnEnterBattle } from "./rk/rk2UnitEffects";
 import { tryRk4OnEnterBattle } from "./rk/rk4UnitEffects";
 import { tryRk5OnEnterBattle } from "./rk/rk5UnitEffects";
+import { tryRk6OnEnterBattle } from "./rk/rk6UnitEffects";
 import { set8ABlocksStrike, trySet8AOnEnterBattle } from "./legend1/set8NamedEffectsA";
 import { clearWolfRoarDecision, openWolfRoarBeforeNc } from "./legend1/set7NamedEffectsC";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
@@ -278,6 +279,12 @@ export function resolveEnterBattleEffectsImpl(
     }
     // RK-103【ブラストペガサス】のコンビネーション（rules/rk/rk5UnitEffects.ts）。
     nextState = tryRk5OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+    // RK-109【自己修復能力】・RK-114【デッドエンド】・RK-115/RK-117 のコンビネーション（rules/rk/rk6UnitEffects.ts）。
+    const beforeRk6Choice = nextState.pendingEffectChoice;
+    nextState = tryRk6OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk6Choice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
     // RS-523 臨気で得た能力・RS-521 スーパー戦隊魂（レッドが出たとき）（rules/legend1/set8NamedEffectsA.ts）。
     nextState = trySet8AOnEnterBattle(nextState, playerId, battleCard, isOwnBattlePhase(nextState, playerId));
     if (nextState.pendingEffectChoice) {

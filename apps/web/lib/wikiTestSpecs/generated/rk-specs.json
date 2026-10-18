@@ -1873,8 +1873,8 @@
       "【セイバースラッシュ】"
     ],
     "expectedDslKeywords": [
-      "SP1",
-      "enemy_battle_held_s_to_power"
+      "rk6::RK-106::riding_sp",
+      "rk6::RK-106::saber_slash"
     ],
     "bp": 4000,
     "sp": "special",
@@ -1891,7 +1891,7 @@
       "【硬化装甲】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-107::ko"
+      "rk6::RK-107::hardened_armor"
     ],
     "sp": null,
     "size": "S"
@@ -1908,7 +1908,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hold_self_enemy_battle_s_to_power"
+      "rk6::RK-108::gills_heel_claw"
     ],
     "bp": 3000,
     "sp": null,
@@ -1926,7 +1926,7 @@
     ],
     "expectedDslKeywords": [
       "can_enter_battle_without_ride",
-      "ride_release_on_mount"
+      "rk6::RK-109::self_repair"
     ],
     "sp": null,
     "size": "S"
@@ -1942,7 +1942,7 @@
       "【性能の限界】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-110::no_e680a7"
+      "rk6::RK-110::performance_limit"
     ],
     "bp": 500,
     "sp": "1/5",
@@ -1960,7 +1960,7 @@
     ],
     "expectedDslKeywords": [
       "ride_without_rc_feat_e8ada6e5af9f",
-      "rk_fx::RK-111::fx_unknown_e99d9e"
+      "rk6::RK-111::emergency_alert"
     ],
     "sp": null,
     "size": "S"
@@ -1976,7 +1976,8 @@
       "【スラッシュダガー】"
     ],
     "expectedDslKeywords": [
-      "no_strike_after_rideoff"
+      "no_strike_after_rideoff",
+      "rk6::RK-112::slash_dagger"
     ],
     "bp": 1000,
     "sp": "1/2",
@@ -1994,7 +1995,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "on_rush_enemy_s_ride_off"
+      "rk6::RK-113::scatter_shot"
     ],
     "bp": 500,
     "sp": "1/2",
@@ -2011,7 +2012,7 @@
       "【デッドエンド】"
     ],
     "expectedDslKeywords": [
-      "enter_battle_destroy_enemy_unridden_s_vehicle"
+      "rk6::RK-114::dead_end"
     ],
     "sp": null,
     "size": "S"
@@ -2027,7 +2028,7 @@
       "【エンドオブワールド】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-115::endoobuwarudo"
+      "rk6::RK-115::end_of_world"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -2046,7 +2047,7 @@
     "expectedDslKeywords": [
       "cannot_attack",
       "require_command_hold_entry",
-      "while_command_hold_immune"
+      "rk6::RK-116::towering_body"
     ],
     "bp": 6000,
     "sp": null,
@@ -2063,7 +2064,8 @@
       "【クリスタルブレイク】"
     ],
     "expectedDslKeywords": [
-      "bp_plus_per_held_enemy_unit_1000"
+      "rk6::RK-117::held_enemy_bp",
+      "rk6::RK-117::crystal_break"
     ],
     "bp": 1000,
     "sp": "1/2",
@@ -2081,7 +2083,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "hold_on_enter_enemy_s_no_resist"
+      "rk6::RK-118::claw"
     ],
     "bp": 4000,
     "sp": null,
@@ -2117,7 +2119,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_1000",
-      "rk_fx::RK-120::nirashatoru"
+      "rk6::RK-120::kneeler_shuttle"
     ],
     "sp": null,
     "size": "S"
@@ -2133,7 +2135,7 @@
       "【エクザップバスター】"
     ],
     "expectedDslKeywords": [
-      "rush_turn_enemy_s_bp_minus::500"
+      "rk6::RK-121::exa_buster"
     ],
     "bp": 5000,
     "sp": "1/5",
@@ -2150,8 +2152,8 @@
       "【使途再生】"
     ],
     "expectedDslKeywords": [
-      "power_min_6_entry",
-      "while_hold_s_add_feature::オルフェノク"
+      "rk6::RK-122::power_six_entry",
+      "rk6::RK-122::apostle_regeneration"
     ],
     "bp": 4000,
     "sp": 1,
@@ -2168,7 +2170,7 @@
       "【制裁する光の翼】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-123::suru_hikari_no_tsubasa"
+      "rk6::RK-123::punishing_wings"
     ],
     "bp": 2000,
     "sp": null,
@@ -2185,7 +2187,7 @@
       "【人を守る決意】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-124::wo_mamoru_ru"
+      "rk6::RK-124::resolve_to_protect"
     ],
     "bp": 4000,
     "sp": null,
@@ -2221,7 +2223,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-126::gyarenrauza"
+      "rk6::RK-126::garren_rouzer"
     ],
     "bp": 3000,
     "sp": null,

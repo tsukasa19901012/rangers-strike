@@ -4,6 +4,7 @@ import { continueEnterBattleEffects } from "./combo";
 import { hasScopedRestriction } from "../core/scopedModifiers";
 import { rideOffBlockedBySet7D } from "./legend1/set7NamedEffectsD";
 import { rk1MissionMemoryOnEntry } from "./rk/rk1NamedEffects";
+import { rk6SideBasherOnEntry } from "./rk/rk6UnitEffects";
 
 export function riderHasRidingComboOnRideOff(cardId: string): boolean {
   return !!getRidingComboEffect(cardId);
@@ -73,7 +74,8 @@ export function openBattleEntryOrRideOffChoice(
   // RK-017 ミッションメモリー: ライドしないで出ても、RC の効果を発動する（rules/rk/rk1NamedEffects.ts）。
   const entered = state.players[entry.playerId].battle.find((c) => c.instanceId === entry.instanceId);
   if (entered && !entered.mountedOnInstanceId) {
-    const rc = rk1MissionMemoryOnEntry(state, entry.playerId, entry.instanceId);
+    // RK-120 サイドバッシャーVM【ニーラーシャトル】: ライドされたままのこれからコンビネーションした RC のユニット（rules/rk/rk6UnitEffects.ts）。
+    const rc = rk1MissionMemoryOnEntry(state, entry.playerId, entry.instanceId) ?? rk6SideBasherOnEntry(state, entry.playerId, entry.instanceId);
     if (rc) return afterEnterBattle(rc, entry);
   }
   if (shouldPromptRideOffChoice(state, entry)) {

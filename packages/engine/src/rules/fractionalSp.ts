@@ -1,6 +1,7 @@
 import { isSpFraction, type SpFraction, type SpValue, type CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
+import { rk6RidingSpValue } from "./rk/rk6Fields";
 import { logicalBattlePosition } from "../rules/battleLine";
 import { crossReducedNumber, crossReductionFor } from "../keywords/battleKeywords";
 
@@ -39,6 +40,9 @@ export function resolveInstanceSpValue(
   instance: CardInstance,
 ): SpValue | undefined {
   if (instance.spOverride !== undefined) return instance.spOverride;
+  // RK-106 仮面ライダーアギトFF「※これはライド中、「SP1/3」になる。」（rules/rk/rk6Fields.ts）。
+  const riding = rk6RidingSpValue(instance);
+  if (riding !== undefined) return riding;
   return definition?.sp;
 }
 

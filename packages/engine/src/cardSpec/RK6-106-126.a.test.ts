@@ -88,7 +88,7 @@ describe("RK-106 仮面ライダーアギトFF", () => {
     expectRarityIn("RK-106", ["NR"]);
   });
 
-  it.fails("RK-106: ※ ライド中は「SP1/3」になる — 3番目に並んでいれば SP1（出典: atwiki/page-691「※これはライド中、「SP1/3」になる」・R-STK-03）", () => {
+  it("RK-106: ※ ライド中は「SP1/3」になる — 3番目に並んでいれば SP1（出典: atwiki/page-691「※これはライド中、「SP1/3」になる」・R-STK-03）", () => {
     const s = board({ battle: [...fill(2), ...riding(inst("SPEC-VEHICLE", "v"), inst("RK-106", "ff"))] });
     expect(spOf(s, "player1", "RK-106:ff")).toBe(1);
   });
@@ -103,7 +103,7 @@ describe("RK-106 仮面ライダーアギトFF", () => {
     expect(spOf(s, "player1", "RK-106:ff")).toBe(0);
   });
 
-  it.fails("RK-106: ※ ライドしたまま進めば、3番目のこのユニットは SP1 でストライクできる（出典: atwiki/page-691「ライド中、「SP1/3」になる」）", () => {
+  it("RK-106: ※ ライドしたまま進めば、3番目のこのユニットは SP1 でストライクできる（出典: atwiki/page-691「ライド中、「SP1/3」になる」）", () => {
     let s = board({ battle: fill(2), rush: [inst("RK-106", "ff"), inst("SPEC-VEHICLE", "v")] });
     s = rideOff(mount(s, "RK-106:ff", "SPEC-VEHICLE:v"), false);
     expect(mountedOn(s, "player1", "RK-106:ff")).toBe("SPEC-VEHICLE:v");
@@ -117,21 +117,21 @@ describe("RK-106 仮面ライダーアギトFF", () => {
     rush: [heldUnit("SPEC-E1", "rh")],
   };
 
-  it.fails("RK-106: RC — 敵軍バトルエリアのホールド状態の S ユニットだけを選べる（リリース状態・ラッシュエリア・M ユニットは選べない）（任意）（出典: atwiki/page-691「敵軍バトルエリアから、ホールド状態のSユニットを1体選び」「置いてもよい」）", () => {
+  it("RK-106: RC — 敵軍バトルエリアのホールド状態の S ユニットだけを選べる（リリース状態・ラッシュエリア・M ユニットは選べない）（任意）（出典: atwiki/page-691「敵軍バトルエリアから、ホールド状態のSユニットを1体選び」「置いてもよい」）", () => {
     const s = slash(enemy);
     expectChoiceFrom(s, "player1", "RK-106");
     expect(choiceIds(s)).toEqual(["SPEC-E1:h"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-106: RC — 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-691「持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
+  it("RK-106: RC — 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-691「持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
     const s = settle(pick(slash(enemy), "SPEC-E1:h"));
     expect(zoneOf(s, "player2", "SPEC-E1:h")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-E1:h")?.faceDown).toBe(true);
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RK-106: RC — 選ばなければ何も起きない（出典: atwiki/page-691「置いてもよい」）", () => {
+  it("RK-106: RC — 選ばなければ何も起きない（出典: atwiki/page-691「置いてもよい」）", () => {
     const s = settle(skip(slash(enemy)));
     expect(zoneOf(s, "player2", "SPEC-E1:h")).toBe("battle");
     expect(damageOf(s, "player2")).toBe(0);
@@ -150,7 +150,7 @@ describe("RK-107 マシントルネイダー", () => {
 
   const commands = [...releasedCat("MA", 2), heldUnit("TST-OP", "held")];
 
-  it.fails("RK-107: 敵軍ターン中、これにライドしているユニットはリリース状態の自軍コマンド1つにつき BP+1000（ホールド状態のコマンドは数えない）（出典: atwiki/page-694「リリース状態の自軍コマンド1つにつきBP+1000される」）", () => {
+  it("RK-107: 敵軍ターン中、これにライドしているユニットはリリース状態の自軍コマンド1つにつき BP+1000（ホールド状態のコマンドは数えない）（出典: atwiki/page-694「リリース状態の自軍コマンド1つにつきBP+1000される」）", () => {
     const s = enemyTurn({ battle: riding(inst("RK-107", "mt"), inst("SPEC-RC2000", "r")), command: commands });
     expect(bpOf(s, "player1", "SPEC-RC2000:r")).toBe(4000);
   });
@@ -165,7 +165,7 @@ describe("RK-107 マシントルネイダー", () => {
     expect(bpOf(s, "player1", "SPEC-RC2000:r")).toBe(2000);
   });
 
-  it.fails("RK-107: ラッシュエリアでライドしたままのユニットも、敵軍ターン中は BP が上がる（出典: atwiki/page-694（エリアの限定がない）・R-TGT-01）", () => {
+  it("RK-107: ラッシュエリアでライドしたままのユニットも、敵軍ターン中は BP が上がる（出典: atwiki/page-694（エリアの限定がない）・R-TGT-01）", () => {
     const s = enemyTurn({ rush: riding(inst("RK-107", "mt"), inst("SPEC-RC2000", "r")), command: commands });
     expect(bpOf(s, "player1", "SPEC-RC2000:r")).toBe(4000);
   });
@@ -199,7 +199,7 @@ describe("RK-108 仮面ライダーギルス", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-108: RC — ホールドすると、敵軍バトルエリアの S ユニット（ホールド・リリースを問わない。ラッシュエリア・M ユニットは選べない）を1体選ぶ（選ばないことはできない）（出典: atwiki/page-693「そうしたとき、敵軍バトルエリアからSユニットを1体選び」）", () => {
+  it("RK-108: RC — ホールドすると、敵軍バトルエリアの S ユニット（ホールド・リリースを問わない。ラッシュエリア・M ユニットは選べない）を1体選ぶ（選ばないことはできない）（出典: atwiki/page-693「そうしたとき、敵軍バトルエリアからSユニットを1体選び」）", () => {
     const s = confirm(claw(enemy));
     expect(cardIn(s, "player1", "RK-108:gl")?.commandHeld).toBe(true);
     expectChoiceFrom(s, "player1", "RK-108");
@@ -207,14 +207,14 @@ describe("RK-108 仮面ライダーギルス", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-108: RC — 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-693「持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("RK-108: RC — 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-693「持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = settle(pick(confirm(claw(enemy)), "SPEC-E1:r"));
     expect(zoneOf(s, "player2", "SPEC-E1:r")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-E1:r")?.faceDown).toBe(true);
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RK-108: RC — ホールドしなければ、このユニットはリリース状態のままで、敵軍ユニットも選ばない（出典: atwiki/page-693「ホールドしてもよい。そうしたとき、」）", () => {
+  it("RK-108: RC — ホールドしなければ、このユニットはリリース状態のままで、敵軍ユニットも選ばない（出典: atwiki/page-693「ホールドしてもよい。そうしたとき、」）", () => {
     const s = settle(skip(claw(enemy)));
     expect(cardIn(s, "player1", "RK-108:gl")?.commandHeld ?? false).toBe(false);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-108");
@@ -244,19 +244,19 @@ describe("RK-109 ギルスレイダー", () => {
     expect(canEnter(board({ rush: [inst("RK-109", "gr")] }), "RK-109:gr")).toBe(false);
   });
 
-  it.fails("RK-109: ホールド状態のユニットがこれにライドするとき、そのユニットをリリースするかを選べる（任意）（出典: atwiki/page-695「ホールド状態のユニットがこれにライドするとき、そのユニットをリリースしてもよい」）", () => {
+  it("RK-109: ホールド状態のユニットがこれにライドするとき、そのユニットをリリースするかを選べる（任意）（出典: atwiki/page-695「ホールド状態のユニットがこれにライドするとき、そのユニットをリリースしてもよい」）", () => {
     const s = mount(board({ rush: [heldUnit("SPEC-RC2000", "h"), inst("RK-109", "gr")] }), "SPEC-RC2000:h", "RK-109:gr");
     expectChoiceFrom(s, "player1", "RK-109");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-109: リリースを選ぶと、ライドしたユニットはリリース状態になる（出典: atwiki/page-695）", () => {
+  it("RK-109: リリースを選ぶと、ライドしたユニットはリリース状態になる（出典: atwiki/page-695）", () => {
     const s = confirm(mount(board({ rush: [heldUnit("SPEC-RC2000", "h"), inst("RK-109", "gr")] }), "SPEC-RC2000:h", "RK-109:gr"));
     expect(cardIn(s, "player1", "SPEC-RC2000:h")?.commandHeld ?? false).toBe(false);
     expect(mountedOn(s, "player1", "SPEC-RC2000:h")).toBe("RK-109:gr");
   });
 
-  it.fails("RK-109: リリースしなければホールド状態のまま（出典: atwiki/page-695「リリースしてもよい」）", () => {
+  it("RK-109: リリースしなければホールド状態のまま（出典: atwiki/page-695「リリースしてもよい」）", () => {
     const s = skip(mount(board({ rush: [heldUnit("SPEC-RC2000", "h"), inst("RK-109", "gr")] }), "SPEC-RC2000:h", "RK-109:gr"));
     expect(cardIn(s, "player1", "SPEC-RC2000:h")?.commandHeld).toBe(true);
   });
@@ -267,7 +267,7 @@ describe("RK-109 ギルスレイダー", () => {
     expect(rideOffOffered(s)).toBe(true);
   });
 
-  it.fails("RK-109: ホールド状態のギルスが乗ってリリースし、ライドオフすれば【ギルスヒールクロウ】をもう一度使える（出典: atwiki/page-693 カード評価「愛車のギルスレイダーに乗ればホールドも解除され、…もう一度能力を使うことが出来る」）", () => {
+  it("RK-109: ホールド状態のギルスが乗ってリリースし、ライドオフすれば【ギルスヒールクロウ】をもう一度使える（出典: atwiki/page-693 カード評価「愛車のギルスレイダーに乗ればホールドも解除され、…もう一度能力を使うことが出来る」）", () => {
     let s = mount(board({ rush: [heldUnit("RK-108", "gl"), inst("RK-109", "gr")] }, { battle: [inst("SPEC-E1", "e")] }), "RK-108:gl", "RK-109:gr");
     s = confirm(s);
     s = rideOff(s, true);
@@ -286,24 +286,24 @@ describe("RK-110 V-1システム", () => {
     expectRarityIn("RK-110", ["N"]);
   });
 
-  it.fails("RK-110: 敵軍ターン中にバトルで撃破されて捨札になったとき、自軍コマンドゾーンにホールド状態で置くかを選べる（任意）（出典: atwiki/page-631「このユニットカードを自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
+  it("RK-110: 敵軍ターン中にバトルで撃破されて捨札になったとき、自軍コマンドゾーンにホールド状態で置くかを選べる（任意）（出典: atwiki/page-631「このユニットカードを自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
     const s = attackedInEnemyTurn({ battle: [inst("RK-110", "v1")] }, "RK-110:v1");
     expectChoiceFrom(s, "player1", "RK-110");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-110: 置くことを選ぶと、自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-631）", () => {
+  it("RK-110: 置くことを選ぶと、自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-631）", () => {
     const s = settle(confirm(attackedInEnemyTurn({ battle: [inst("RK-110", "v1")] }, "RK-110:v1")));
     expect(zoneOf(s, "player1", "RK-110:v1")).toBe("command");
     expect(cardIn(s, "player1", "RK-110:v1")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-110: 置かなければ捨札に残る（出典: atwiki/page-631「置いてもよい」）", () => {
+  it("RK-110: 置かなければ捨札に残る（出典: atwiki/page-631「置いてもよい」）", () => {
     const s = settle(skip(attackedInEnemyTurn({ battle: [inst("RK-110", "v1")] }, "RK-110:v1")));
     expect(zoneOf(s, "player1", "RK-110:v1")).toBe("discard");
   });
 
-  it.fails("RK-110: 自軍ターン中に撃破されたときは発動しない（出典: atwiki/page-631「敵軍ターン中、」）", () => {
+  it("RK-110: 自軍ターン中に撃破されたときは発動しない（出典: atwiki/page-631「敵軍ターン中、」）", () => {
     const s = settle(attack(board({ battle: [inst("RK-110", "v1")] }, { battle: [inst("SPEC-BIG", "big")] }), "RK-110:v1", "SPEC-BIG:big"));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-110");
     expect(zoneOf(s, "player1", "RK-110:v1")).toBe("discard");
@@ -315,7 +315,7 @@ describe("RK-110 V-1システム", () => {
     expect(zoneOf(s, "player1", "RK-110:v1")).toBe("discard");
   });
 
-  it.fails("RK-110: 敵軍ターン中にラッシュエリアで効果により撃破されたときも置ける（出典: atwiki/page-631（エリアの限定がない）・R-TGT-01）", () => {
+  it("RK-110: 敵軍ターン中にラッシュエリアで効果により撃破されたときも置ける（出典: atwiki/page-631（エリアの限定がない）・R-TGT-01）", () => {
     // 敵軍（player2）がギンガイオー（RS-687【ガルコンボーガン】敵軍ラッシュエリアからBP4000以下のユニットを1体選び撃破する）をバトルエリアに出す。
     let s = st({ activePlayer: "player2", player1: { rush: [inst("RK-110", "v1")], deck: deckCards(3) }, player2: { rush: [inst("RS-687", "gg")], deck: deckCards(3, "e") } }, EXTRA);
     s = enter(s, "RS-687:gg", "player2");
@@ -354,12 +354,12 @@ describe("RK-111 ガードチェイサー", () => {
   const struck = (p1: Partial<GameState["players"]["player1"]>) =>
     strike(enemyTurn(p1, { battle: [inst("TST-UNIT-0", "st")] }), "TST-UNIT-0:st", "player2");
 
-  it.fails("RK-111: 自軍ラッシュエリアでこれにライドしている S ユニットは、ストライクされたとき、バトルエリアに出てストライクしてきたユニットとバトルできる（出典: atwiki/page-660「相手にストライクされたとき、これをバトルエリアに出し、ストライクしてきた敵軍ユニットとバトルしてもよい」）", () => {
+  it("RK-111: 自軍ラッシュエリアでこれにライドしている S ユニットは、ストライクされたとき、バトルエリアに出てストライクしてきたユニットとバトルできる（出典: atwiki/page-660「相手にストライクされたとき、これをバトルエリアに出し、ストライクしてきた敵軍ユニットとバトルしてもよい」）", () => {
     const s = struck({ rush: riding(inst("RK-111", "gc"), inst("SPEC-POLICE", "po")) });
     expect(interceptOffered(s, "SPEC-POLICE:po")).toBe(true);
   });
 
-  it.fails("RK-111: バトルすると、そのストライクは無効になり（ダメージを受けない）、BP の低いストライクしてきたユニットは撃破される。出たユニットはライドしたままバトルエリアにいる（出典: atwiki/page-660「そうしたとき、そのストライクは無効になる」・R-STK-05）", () => {
+  it("RK-111: バトルすると、そのストライクは無効になり（ダメージを受けない）、BP の低いストライクしてきたユニットは撃破される。出たユニットはライドしたままバトルエリアにいる（出典: atwiki/page-660「そうしたとき、そのストライクは無効になる」・R-STK-05）", () => {
     const s = settle(intercept(struck({ rush: riding(inst("RK-111", "gc"), inst("SPEC-POLICE", "po")) }), "SPEC-POLICE:po"));
     expect(damageOf(s, "player1")).toBe(0);
     expect(zoneOf(s, "player2", "TST-UNIT-0:st")).toBe("discard");
@@ -410,7 +410,7 @@ describe("RK-112 オルタナティブ", () => {
     expect(canStrike(s, "RK-112:al")).toBe(false);
   });
 
-  it.fails("RK-112: RC — 敵軍バトルエリアの、BP が本来の BP ではない S ユニットだけを選べる（本来の BP のまま・ラッシュエリアのユニットは選べない）（任意）（出典: atwiki/page-644「敵軍バトルエリアからBPが本来のBPではないSユニットを1体選び」・カード評価「ライドやオペレーションで強化されているSユニットは全て対象」）", () => {
+  it("RK-112: RC — 敵軍バトルエリアの、BP が本来の BP ではない S ユニットだけを選べる（本来の BP のまま・ラッシュエリアのユニットは選べない）（任意）（出典: atwiki/page-644「敵軍バトルエリアからBPが本来のBPではないSユニットを1体選び」・カード評価「ライドやオペレーションで強化されているSユニットは全て対象」）", () => {
     const s = dagger(enemy);
     expectChoiceFrom(s, "player1", "RK-112");
     expect(choiceIds(s)).toEqual(["SPEC-RC2000:up"]);
@@ -422,7 +422,7 @@ describe("RK-112 オルタナティブ", () => {
     expect(zoneOf(s, "player2", "SPEC-RC2000:up")).toBe("discard");
   });
 
-  it.fails("RK-112: RC — 選ばなければ何も撃破しない（出典: atwiki/page-644「撃破してもよい」）", () => {
+  it("RK-112: RC — 選ばなければ何も撃破しない（出典: atwiki/page-644「撃破してもよい」）", () => {
     const s = settle(skip(dagger(enemy)));
     expect(zoneOf(s, "player2", "SPEC-RC2000:up")).toBe("battle");
   });

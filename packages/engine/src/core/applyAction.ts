@@ -1,4 +1,6 @@
 import { isInstancePlacedAnywhere } from "./helpers";
+import { rk6RecordSnakeSelected } from "../rules/rk/rk6Fields";
+import { rk6SideBasherOnEntry } from "../rules/rk/rk6UnitEffects";
 import { isRk5BattleCounterCard, openRk5GuardVent, rk5GuardVentCost, rk5TigerBomberDestroy, rk5TigerBomberDestroys, rk5TigerBomberPenalty } from "../rules/rk/rk5UnitEffects";
 import { openRk3OnEnemyRush } from "../rules/rk/rk3UnitEffects";
 import { applyRk2StrikeDamageTriggers, rk2RecordStartRelease } from "../rules/rk/rk2UnitEffects";
@@ -2934,6 +2936,8 @@ function applyActionCore(
     }
 
     case "resolve_effect_choice": {
+      // RK-124【人を守る決意】: 効果の対象として「スネークオルフェノク」を選んだことを記録する（rules/rk/rk6Fields.ts）。
+      state = rk6RecordSnakeSelected(state, playerId, action.instanceId);
       const pending = state.pendingEffectChoice;
       if (pending?.effectId === MOBIL_MISSILE_EFFECT_ID && pending.mobilMissileStrike) {
         const picked = selectMobilMissileCommand(state, playerId, action.instanceId);
@@ -3391,6 +3395,8 @@ function applyActionCore(
 
       // RK-017 ミッションメモリー: ライドしたまま進むことを選んでも、RC の効果を発動する（rules/rk/rk1NamedEffects.ts）。
       if (!action.rideOff) nextState = rk1MissionMemoryOnEntry(nextState, playerId, pending.instanceId) ?? nextState;
+      // RK-120 サイドバッシャーVM【ニーラーシャトル】: ライドしたまま進んでも RC の効果を発動する（rules/rk/rk6UnitEffects.ts）。
+      if (!action.rideOff) nextState = rk6SideBasherOnEntry(nextState, playerId, pending.instanceId) ?? nextState;
       const opened = action.rideOff
         ? openBattleEntryOrRideOffChoice(nextState, pending.battleEntry)
         : afterEnterBattle(nextState, pending.battleEntry);
@@ -3484,6 +3490,8 @@ function applyActionCore(
       };
       // RK-016 ミラーワールド: 「アタックするには、さらに2つホールドしなければならない」（選ぶ1つと合わせてホールドする）。
       battleState = rk1PayAttackCommandCost(battleState, playerId, enemyId, action.defenderInstanceId);
+      // RK-124【人を守る決意】: アタックの対象として「スネークオルフェノク」を選んだことを記録する（rules/rk/rk6Fields.ts）。
+      battleState = rk6RecordSnakeSelected(battleState, playerId, action.defenderInstanceId);
       // ルール: R-CTR-03 — 「アタックするとき、相手はカウンターを発動できない」はアタック処理の終わりまで続く。
       if (attackerBlocksDefenderCounters(battleState, playerId, action.attackerInstanceId)) {
         battleState = { ...battleState, counterLockedPlayerId: enemyId };

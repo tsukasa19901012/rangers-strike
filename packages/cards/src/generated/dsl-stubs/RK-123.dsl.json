@@ -27,11 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-123::suru_hikari_no_tsubasa",
+          "keyword": "rk6::RK-123::punishing_wings",
           "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

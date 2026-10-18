@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_plus_per_held_enemy_unit_1000",
+          "keyword": "rk6::RK-117::held_enemy_bp",
           "duration": "permanent"
         }
       ],
@@ -38,36 +38,16 @@
       "name": "クリスタルブレイク",
       "text": "｢デストワイルダー｣からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、ホールド状態のSユニットを1体選び撃破してもよい。",
       "trigger": {
-        "type": "nc"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk6::RK-117::crystal_break",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

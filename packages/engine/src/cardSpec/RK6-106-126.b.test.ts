@@ -97,14 +97,14 @@ describe("RK-113 サイコローグ", () => {
     rush: riding(inst("SPEC-VEHICLE", "v2"), inst("SPEC-RC2000", "rr")),
   };
 
-  it.fails("RK-113: ラッシュしたとき、ライド中の敵軍 S ユニット（バトルエリア・ラッシュエリアを問わない）を1体選べる（任意）（出典: atwiki/page-629「ライド中の敵軍Sユニットを1体選び、ライドオフさせてもよい」・atwiki/page-616 カード評価「エリアを問わず、サイコローグの能力でライドオフさせられる」）", () => {
+  it("RK-113: ラッシュしたとき、ライド中の敵軍 S ユニット（バトルエリア・ラッシュエリアを問わない）を1体選べる（任意）（出典: atwiki/page-629「ライド中の敵軍Sユニットを1体選び、ライドオフさせてもよい」・atwiki/page-616 カード評価「エリアを問わず、サイコローグの能力でライドオフさせられる」）", () => {
     const s = rushed(enemy);
     expectChoiceFrom(s, "player1", "RK-113");
     expect(choiceIds(s)).toEqual(["SPEC-RC2000:rb", "SPEC-RC2000:rr"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-113: 選んだユニットはライドオフする（ユニットもビークルもその場に残る）（出典: atwiki/page-629「ライドオフさせてもよい」）", () => {
+  it("RK-113: 選んだユニットはライドオフする（ユニットもビークルもその場に残る）（出典: atwiki/page-629「ライドオフさせてもよい」）", () => {
     const s = settle(pick(rushed(enemy), "SPEC-RC2000:rb"));
     expect(mountedOn(s, "player2", "SPEC-RC2000:rb")).toBeUndefined();
     expect(zoneOf(s, "player2", "SPEC-RC2000:rb")).toBe("battle");
@@ -112,7 +112,7 @@ describe("RK-113 サイコローグ", () => {
     expect(mountedOn(s, "player2", "SPEC-RC2000:rr")).toBe("SPEC-VEHICLE:v2");
   });
 
-  it.fails("RK-113: 選ばなければライドしたまま（出典: atwiki/page-629「ライドオフさせてもよい」）", () => {
+  it("RK-113: 選ばなければライドしたまま（出典: atwiki/page-629「ライドオフさせてもよい」）", () => {
     const s = settle(skip(rushed(enemy)));
     expect(mountedOn(s, "player2", "SPEC-RC2000:rb")).toBe("SPEC-VEHICLE:v1");
   });
@@ -129,7 +129,7 @@ describe("RK-114 サイコローダー", () => {
     expectRarityIn("RK-114", ["N"]);
   });
 
-  it.fails("RK-114: 追加条件 — 自軍「サイコローグ」1体を捨札にして、必要パワー3でラッシュできる（出典: atwiki/page-616「必要パワー：3+」「追加条件：自軍「サイコローグ」1体を捨札にする。」・R-ADD-02）", () => {
+  it("RK-114: 追加条件 — 自軍「サイコローグ」1体を捨札にして、必要パワー3でラッシュできる（出典: atwiki/page-616「必要パワー：3+」「追加条件：自軍「サイコローグ」1体を捨札にする。」・R-ADD-02）", () => {
     const s = st({ phase: "rush", player1: { hand: [inst("RK-114", "pd")], rush: [inst("RK-113", "pr")], command: releasedCat("WB", 1), power: powerCards(3), deck: deckCards(3) } }, EXTRA);
     const r = rushFromHand(s, "player1", "RK-114:pd", { materials: ["RK-113:pr"] });
     expect(r.ok, r.error).toBe(true);
@@ -151,20 +151,20 @@ describe("RK-114 サイコローダー", () => {
     rush: [inst("SPEC-VEHICLE", "v2")],
   };
 
-  it.fails("RK-114: 自軍ターン中にバトルエリアに出たとき、ライドされていない敵軍 S ビークル（エリアを問わない）を1体選べる（ライドされているもの・M ビークルは選べない）（任意）（出典: atwiki/page-616「ライドされていない敵軍Sビークルを1体選び、捨札にしてもよい」）", () => {
+  it("RK-114: 自軍ターン中にバトルエリアに出たとき、ライドされていない敵軍 S ビークル（エリアを問わない）を1体選べる（ライドされているもの・M ビークルは選べない）（任意）（出典: atwiki/page-616「ライドされていない敵軍Sビークルを1体選び、捨札にしてもよい」）", () => {
     const s = deadEnd(enemy);
     expectChoiceFrom(s, "player1", "RK-114");
     expect(choiceIds(s)).toEqual(["SPEC-VEHICLE:v1", "SPEC-VEHICLE:v2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-114: 選んだビークルは捨札になる（出典: atwiki/page-616「捨札にしてもよい」）", () => {
+  it("RK-114: 選んだビークルは捨札になる（出典: atwiki/page-616「捨札にしてもよい」）", () => {
     const s = settle(pick(deadEnd(enemy), "SPEC-VEHICLE:v2"));
     expect(zoneOf(s, "player2", "SPEC-VEHICLE:v2")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-VEHICLE:v1")).toBe("battle");
   });
 
-  it.fails("RK-114: 選ばなければ何も捨札にしない（出典: atwiki/page-616「捨札にしてもよい」）", () => {
+  it("RK-114: 選ばなければ何も捨札にしない（出典: atwiki/page-616「捨札にしてもよい」）", () => {
     const s = settle(skip(deadEnd(enemy)));
     expect(zoneOf(s, "player2", "SPEC-VEHICLE:v1")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-VEHICLE:v2")).toBe("rush");
@@ -190,13 +190,13 @@ describe("RK-115 仮面ライダーゾルダ", () => {
   const fromMagnagiga = () =>
     enter(board({ battle: [inst("RK-116", "mg")], rush: [inst("RK-115", "zo"), heldUnit("SPEC-OWN", "oh")] }, enemy), "RK-115:zo");
 
-  it.fails("RK-115: 「マグナギガ」からコンビネーションしたとき、発動するかを選べる（任意）（出典: atwiki/page-627「｢マグナギガ｣からコンビネーションしたとき発動できる」）", () => {
+  it("RK-115: 「マグナギガ」からコンビネーションしたとき、発動するかを選べる（任意）（出典: atwiki/page-627「｢マグナギガ｣からコンビネーションしたとき発動できる」）", () => {
     const s = fromMagnagiga();
     expectChoiceFrom(s, "player1", "RK-115");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-115: 発動すると、ホールド状態の S ユニットを敵味方・エリアを問わずすべて撃破する（M ユニットは撃破しない）（出典: atwiki/page-627「ホールド状態のSユニットをすべて撃破する」・カード評価「効果は敵味方構わず」）", () => {
+  it("RK-115: 発動すると、ホールド状態の S ユニットを敵味方・エリアを問わずすべて撃破する（M ユニットは撃破しない）（出典: atwiki/page-627「ホールド状態のSユニットをすべて撃破する」・カード評価「効果は敵味方構わず」）", () => {
     const s = settle(confirm(fromMagnagiga()));
     expect(zoneOf(s, "player2", "SPEC-E1:eh")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E1:erh")).toBe("discard");
@@ -204,14 +204,14 @@ describe("RK-115 仮面ライダーゾルダ", () => {
     expect(zoneOf(s, "player2", "SPEC-EM:ehm")).toBe("battle");
   });
 
-  it.fails("RK-115: その後、残った S ユニットをゾルダ自身を含めて敵味方・エリアを問わずすべてホールドする（出典: atwiki/page-627「その後、Sユニットをすべてホールドする」・カード評価「自身も対象に入っている」）", () => {
+  it("RK-115: その後、残った S ユニットをゾルダ自身を含めて敵味方・エリアを問わずすべてホールドする（出典: atwiki/page-627「その後、Sユニットをすべてホールドする」・カード評価「自身も対象に入っている」）", () => {
     const s = settle(confirm(fromMagnagiga()));
     for (const [pid, id] of [["player1", "RK-115:zo"], ["player1", "RK-116:mg"], ["player2", "SPEC-E1:er"], ["player2", "SPEC-E1:err"]] as const) {
       expect(cardIn(s, pid, id)?.commandHeld, id).toBe(true);
     }
   });
 
-  it.fails("RK-115: 発動しなければ何も起きない（出典: atwiki/page-627「発動できる」）", () => {
+  it("RK-115: 発動しなければ何も起きない（出典: atwiki/page-627「発動できる」）", () => {
     const s = settle(skip(fromMagnagiga()));
     expect(zoneOf(s, "player2", "SPEC-E1:eh")).toBe("battle");
     expect(cardIn(s, "player2", "SPEC-E1:er")?.commandHeld ?? false).toBe(false);
@@ -266,7 +266,7 @@ describe("RK-116 マグナギガ", () => {
     return settle(r.state);
   };
 
-  it.fails("RK-116: 自軍バトルエリアにある間、自軍コマンドは敵軍ユニットの効果（ガオパンダ【バンブーハリケーン】）でホールドされない（出典: atwiki/page-645「自軍コマンドゾーンのカードは敵軍ユニットの効果によってホールドされない」・カード評価「ガオパンダ…たちの能力の防止」）", () => {
+  it("RK-116: 自軍バトルエリアにある間、自軍コマンドは敵軍ユニットの効果（ガオパンダ【バンブーハリケーン】）でホールドされない（出典: atwiki/page-645「自軍コマンドゾーンのカードは敵軍ユニットの効果によってホールドされない」・カード評価「ガオパンダ…たちの能力の防止」）", () => {
     expect(heldCount(panda({ battle: [inst("RK-116", "mg")] }))).toBe(0);
   });
 
@@ -300,7 +300,7 @@ describe("RK-117 仮面ライダータイガ", () => {
     expectRarityIn("RK-117", ["R"]);
   });
 
-  it.fails("RK-117: ※ ホールド状態の敵軍ユニット（エリア・サイズを問わない）1体につき BP+1000。ホールド状態の敵軍コマンド・自軍ユニットは数えない（出典: atwiki/page-635「ホールド状態の敵軍ユニット1体につきBP+1000される」・コメント欄「ホールド状態のユニットならエリア関係無い」）", () => {
+  it("RK-117: ※ ホールド状態の敵軍ユニット（エリア・サイズを問わない）1体につき BP+1000。ホールド状態の敵軍コマンド・自軍ユニットは数えない（出典: atwiki/page-635「ホールド状態の敵軍ユニット1体につきBP+1000される」・コメント欄「ホールド状態のユニットならエリア関係無い」）", () => {
     const s = board(
       { battle: [inst("RK-117", "tg")], rush: [heldUnit("SPEC-OWN", "own")] },
       {
@@ -315,19 +315,19 @@ describe("RK-117 仮面ライダータイガ", () => {
   const enemy = { battle: [heldUnit("SPEC-E1", "h"), inst("SPEC-E1", "r"), heldUnit("SPEC-EM", "hm")], rush: [heldUnit("SPEC-E1", "rh")] };
   const fromDest = () => enter(board({ battle: [inst("RK-118", "dw")], rush: [inst("RK-117", "tg")] }, enemy), "RK-117:tg");
 
-  it.fails("RK-117: 「デストワイルダー」からコンビネーションしたとき、敵軍バトルエリアのホールド状態の S ユニットだけを選べる（任意）（出典: atwiki/page-635「敵軍バトルエリアから、ホールド状態のSユニットを1体選び撃破してもよい」）", () => {
+  it("RK-117: 「デストワイルダー」からコンビネーションしたとき、敵軍バトルエリアのホールド状態の S ユニットだけを選べる（任意）（出典: atwiki/page-635「敵軍バトルエリアから、ホールド状態のSユニットを1体選び撃破してもよい」）", () => {
     const s = fromDest();
     expectChoiceFrom(s, "player1", "RK-117");
     expect(choiceIds(s)).toEqual(["SPEC-E1:h"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-117: 選んだユニットを撃破する（出典: atwiki/page-635）", () => {
+  it("RK-117: 選んだユニットを撃破する（出典: atwiki/page-635）", () => {
     const s = resolveAll(pick(fromDest(), "SPEC-E1:h"));
     expect(zoneOf(s, "player2", "SPEC-E1:h")).toBe("discard");
   });
 
-  it.fails("RK-117: 選ばなければ何も撃破しない（出典: atwiki/page-635「撃破してもよい」）", () => {
+  it("RK-117: 選ばなければ何も撃破しない（出典: atwiki/page-635「撃破してもよい」）", () => {
     const s = settle(skip(fromDest()));
     expect(zoneOf(s, "player2", "SPEC-E1:h")).toBe("battle");
   });
@@ -337,7 +337,7 @@ describe("RK-117 仮面ライダータイガ", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-117");
   });
 
-  it.fails("RK-117: デストワイルダー【クロー】でホールドした敵軍ユニットを、続けて出たタイガで撃破できる（出典: atwiki/page-630 カード評価「契約主である仮面ライダータイガ…とのコンボが強力」）", () => {
+  it("RK-117: デストワイルダー【クロー】でホールドした敵軍ユニットを、続けて出たタイガで撃破できる（出典: atwiki/page-630 カード評価「契約主である仮面ライダータイガ…とのコンボが強力」）", () => {
     let s = enterWithHold(board({ rush: [inst("RK-118", "dw"), inst("RK-117", "tg")], command: releasedCat("WB", 1) }, { battle: [inst("SPEC-E1", "e")] }), "RK-118:dw", ["TST-OP:cWB0"]);
     s = settle(pick(s, "SPEC-E1:e"));
     s = enter(passEntry(s), "RK-117:tg");
@@ -368,19 +368,19 @@ describe("RK-118 デストワイルダー", () => {
     enterWithHold(board({ rush: [inst("RK-118", "dw")], command: releasedCat("WB", 1) }, p2), "RK-118:dw", ["TST-OP:cWB0"]);
   const enemy = { battle: [inst("SPEC-E1", "b"), heldUnit("SPEC-E1", "h"), inst("SPEC-EM", "m"), inst("RK-108", "reg")], rush: [inst("SPEC-E1", "r")] };
 
-  it.fails("RK-118: 自軍ターン中にバトルエリアに出たとき、レジストを持たない敵軍 S ユニット（エリアを問わない）を1体選べる（レジストを持つもの・M ユニット・既にホールド状態のものは選べない）（任意）（出典: atwiki/page-630「レジストを持たない敵軍Sユニットを1体選びホールドしてもよい」）", () => {
+  it("RK-118: 自軍ターン中にバトルエリアに出たとき、レジストを持たない敵軍 S ユニット（エリアを問わない）を1体選べる（レジストを持つもの・M ユニット・既にホールド状態のものは選べない）（任意）（出典: atwiki/page-630「レジストを持たない敵軍Sユニットを1体選びホールドしてもよい」）", () => {
     const s = claw(enemy);
     expectChoiceFrom(s, "player1", "RK-118");
     expect(choiceIds(s)).toEqual(["SPEC-E1:b", "SPEC-E1:r"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-118: 選んだユニットはホールド状態になる（出典: atwiki/page-630）", () => {
+  it("RK-118: 選んだユニットはホールド状態になる（出典: atwiki/page-630）", () => {
     const s = settle(pick(claw(enemy), "SPEC-E1:r"));
     expect(cardIn(s, "player2", "SPEC-E1:r")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-118: 選ばなければ何もホールドしない（出典: atwiki/page-630「ホールドしてもよい」）", () => {
+  it("RK-118: 選ばなければ何もホールドしない（出典: atwiki/page-630「ホールドしてもよい」）", () => {
     const s = settle(skip(claw(enemy)));
     expect(cardIn(s, "player2", "SPEC-E1:r")?.commandHeld ?? false).toBe(false);
   });

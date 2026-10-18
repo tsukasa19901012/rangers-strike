@@ -20,8 +20,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-107::ko",
-          "duration": "turn"
+          "keyword": "rk6::RK-107::hardened_armor",
+          "duration": "permanent"
         }
       ],
       "optional": false

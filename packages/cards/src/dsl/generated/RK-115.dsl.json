@@ -23,13 +23,13 @@
       "name": "エンドオブワールド",
       "text": "｢マグナギガ｣からコンビネーションしたとき発動できる⇒ホールド状態のSユニットをすべて撃破する。その後、Sユニットをすべてホールドする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-115::endoobuwarudo",
-          "duration": "turn"
+          "keyword": "rk6::RK-115::end_of_world",
+          "duration": "permanent"
         }
       ],
       "optional": false

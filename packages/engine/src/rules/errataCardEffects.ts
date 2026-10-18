@@ -59,11 +59,6 @@ export function holdFieldUnit(state: GameState, ownerId: PlayerId, instanceId: s
   };
 }
 
-function categoryKey(state: GameState, cardId: string): string {
-  const def = getDefinition(state.definitions, cardId);
-  return def ? [...cardCategories(def)].sort().join("+") : "";
-}
-
 // ---------------------------------------------------------------------------
 // RK-125 仮面ライダーブレイド【ブレイラウザー】
 
@@ -127,11 +122,15 @@ function resolveBlayRouzer(
       };
     }
     const hand = state.players[playerId].hand;
-    const keys = selected.map((id) => {
+    // 「見せたカードの持つカテゴリがすべて同じなら」— マルチカテゴリのカードは、持つカテゴリのどれかが他のカードと共通なら同じとして扱う
+    // （「赤青マルチ、赤、赤」はすべて同じ。atwiki/page-646 カード評価）。3枚に共通するカテゴリがあるかで判定する。
+    const categorySets = selected.map((id) => {
       const card = hand.find((c) => c.instanceId === id);
-      return card ? categoryKey(state, card.cardId) : "";
+      return card ? cardCategories(getDefinition(state.definitions, card.cardId)) : [];
     });
-    const sameCategories = keys.every((k) => k !== "" && k === keys[0]);
+    const sameCategories =
+      categorySets.every((cats) => cats.length > 0) &&
+      categorySets[0]!.some((cat) => categorySets.every((cats) => cats.includes(cat)));
     const holdTargets = enemySUnitsToHold(state, playerId);
     const shownLog = logFor(
       state,

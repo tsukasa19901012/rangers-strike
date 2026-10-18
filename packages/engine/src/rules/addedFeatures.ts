@@ -10,6 +10,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 import { getPlayerModifiers } from "../core/scopedModifiers";
 import { rk1AddedUnitFeatures } from "./rk/rk1Features";
 import { rk2FeaturesStripped } from "./rk/rk2Features";
+import { rk6AddedFeatures } from "./rk/rk6Fields";
 
 export const DEUS_GENE_RULE_ID = "deus_gene_features";
 export const KIRIGAKURE_RULE_ID = "kirigakure_features";
@@ -70,6 +71,8 @@ export function unitFeatures(
   extra.push(...battleAreaAddedFeatures(state, _ownerId, instance));
   // RK-001 改造人間（「男」「女」に「改造人間」を追加）・RK-013 Jパワー（「人型」を追加）（rules/rk/rk1Features.ts）。
   extra.push(...rk1AddedUnitFeatures(state, _ownerId, instance, base));
+  // RK-122 ホースオルフェノク格闘態【使途再生】（ホールド状態の自軍 S ユニットに「オルフェノク」。rules/rk/rk6Fields.ts）。
+  extra.push(...rk6AddedFeatures(state, _ownerId, instance));
   if (extra.length === 0) return base;
   return [...new Set([...base, ...extra])];
 }

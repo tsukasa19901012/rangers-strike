@@ -29,16 +29,16 @@
       "name": "自己修復能力",
       "text": "ホールド状態のユニットがこれにライドするとき、そのユニットをリリースしてもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_release_on_mount",
-          "duration": "turn"
+          "keyword": "rk6::RK-109::self_repair",
+          "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

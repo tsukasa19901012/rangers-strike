@@ -2,6 +2,7 @@ import type { EffectDefinition, EffectPrimitive, PlayerRef } from "@rangers-stri
 import type { CardInstance, DslChoiceResume, GameState, PlayerId } from "../types/game";
 import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
 import { COMMAND_ZONE_MAX } from "../types/game";
+import { rk6CommandHoldBlocked } from "../rules/rk/rk6Fields";
 import { findInZone, isInstancePlacedAnywhere, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { applyDamageToPlayer } from "../rules/damagePayment";
@@ -309,6 +310,11 @@ function applyPrimitive(
         ctx.triggerSourceInstanceId,
       );
       if (!instanceId) return { state };
+      // RK-116 マグナギガ【そびえる巨体】: 敵軍ユニットの効果では、そのコマンドをホールドしない（rules/rk/rk6Fields.ts）。
+      const commandOwner = (["player1", "player2"] as const).find((pid) => state.players[pid].command.some((c) => c.instanceId === instanceId));
+      if (commandOwner && commandOwner !== ctx.playerId && rk6CommandHoldBlocked(state, commandOwner, ctx.sourceCardId)) {
+        return { state, detail: "rk116:blocked" };
+      }
       const next = moveCardToZone(state, instanceId, "command", {
         commandHeld: true,
       });

@@ -46,6 +46,7 @@ import {
   mount,
   mountedOn,
   p1Battle,
+  passEntry,
   pick,
   powerCards,
   rcRideOff,
@@ -104,14 +105,14 @@ describe("RK-120 サイドバッシャーVM", () => {
   const enemy = { battle: [inst("SPEC-E1", "e")] };
   const vmPair = riding(inst("RK-120", "vm"), inst("SPEC-RC2000", "a"));
 
-  it.fails("RK-120: ライドされたままのこれからコンビネーションする RC のユニットは、ライドしたまま進んでも RC の効果を発動できる（出典: atwiki/page-657「ナンバーにＲＣを持っていれば、ライドオフしなくてもその効果を発動できる」）", () => {
+  it("RK-120: ライドされたままのこれからコンビネーションする RC のユニットは、ライドしたまま進んでも RC の効果を発動できる（出典: atwiki/page-657「ナンバーにＲＣを持っていれば、ライドオフしなくてもその効果を発動できる」）", () => {
     let s = mount(board({ battle: vmPair, rush: [inst("RK-105", "sf"), inst("SPEC-VEHICLE", "v")] }, enemy), "RK-105:sf", "SPEC-VEHICLE:v");
     s = rideOff(s, false);
     expectChoiceFrom(s, "player1", "RK-105");
     expect(mountedOn(s, "player1", "RK-105:sf")).toBe("SPEC-VEHICLE:v");
   });
 
-  it.fails("RK-120: ビークルにライドせずに出た RC のユニットも、RC の効果を発動できる（出典: atwiki/page-657 コメント欄「RCを持っていればビークルが無くてもｏｋです」）", () => {
+  it("RK-120: ビークルにライドせずに出た RC のユニットも、RC の効果を発動できる（出典: atwiki/page-657 コメント欄「RCを持っていればビークルが無くてもｏｋです」）", () => {
     const s = enter(board({ battle: vmPair, rush: [inst("RK-105", "sf")] }, enemy), "RK-105:sf");
     expectChoiceFrom(s, "player1", "RK-105");
   });
@@ -172,14 +173,14 @@ describe("RK-121 サイドバッシャーBM", () => {
     return settle(r.state);
   };
 
-  it.fails("RK-121: ラッシュしたターン、敵軍 S ユニット（エリアを問わない）は BP-500 される。M ユニットは変わらない（出典: atwiki/page-656「これをラッシュしたターン、敵軍SユニットはBP-500される」・カード評価「敵軍ラッシュエリアまで効果は届く」）", () => {
+  it("RK-121: ラッシュしたターン、敵軍 S ユニット（エリアを問わない）は BP-500 される。M ユニットは変わらない（出典: atwiki/page-656「これをラッシュしたターン、敵軍SユニットはBP-500される」・カード評価「敵軍ラッシュエリアまで効果は届く」）", () => {
     const s = rushedBm();
     expect(bpOf(s, "player2", "SPEC-E1:b")).toBe(500);
     expect(bpOf(s, "player2", "SPEC-E1:r")).toBe(500);
     expect(bpOf(s, "player2", "SPEC-EM:m")).toBe(5000);
   });
 
-  it.fails("RK-121: BP0 以下になった敵軍ユニットは撃破される（出典: atwiki/page-656「（BP0以下になったユニットは撃破される）」・R-BP-02）", () => {
+  it("RK-121: BP0 以下になった敵軍ユニットは撃破される（出典: atwiki/page-656「（BP0以下になったユニットは撃破される）」・R-BP-02）", () => {
     expect(zoneOf(rushedBm(), "player2", "SPEC-E500:w")).toBe("discard");
   });
 
@@ -201,7 +202,7 @@ describe("RK-122 ホースオルフェノク格闘態", () => {
     expectRarityIn("RK-122", ["R"]);
   });
 
-  it.fails("RK-122: ※ 自軍パワーゾーンが5枚ならバトルエリアに出られない（出典: atwiki/page-706「これは自軍パワーゾーンに6枚以上カードが無ければバトルエリアに出られない」）", () => {
+  it("RK-122: ※ 自軍パワーゾーンが5枚ならバトルエリアに出られない（出典: atwiki/page-706「これは自軍パワーゾーンに6枚以上カードが無ければバトルエリアに出られない」）", () => {
     expect(canEnter(board({ rush: [inst("RK-122", "ho")], power: powerCards(5) }), "RK-122:ho")).toBe(false);
   });
 
@@ -210,7 +211,7 @@ describe("RK-122 ホースオルフェノク格闘態", () => {
     expect(canEnter(board({ rush: [inst("RK-122", "ho")], power: [...powerCards(3), ...damageCards(3)] }), "RK-122:ho")).toBe(true);
   });
 
-  it.fails("RK-122: 【使途再生】これが自軍エリアにある間、ホールド状態の自軍 S ユニット（エリアを問わない）は特徴「オルフェノク」が追加される（出典: atwiki/page-706「ホールド状態の自軍Sユニットは特徴「オルフェノク」が追加される」）", () => {
+  it("RK-122: 【使途再生】これが自軍エリアにある間、ホールド状態の自軍 S ユニット（エリアを問わない）は特徴「オルフェノク」が追加される（出典: atwiki/page-706「ホールド状態の自軍Sユニットは特徴「オルフェノク」が追加される」）", () => {
     const s = board({ battle: [inst("RK-122", "ho"), heldUnit("SPEC-OWN", "hb")], rush: [heldUnit("SPEC-OWN", "hr")] });
     expect(featuresOf(s, "player1", "SPEC-OWN:hb")).toContain("オルフェノク");
     expect(featuresOf(s, "player1", "SPEC-OWN:hr")).toContain("オルフェノク");
@@ -223,7 +224,7 @@ describe("RK-122 ホースオルフェノク格闘態", () => {
     expect(featuresOf(s, "player2", "SPEC-E1:eh")).not.toContain("オルフェノク");
   });
 
-  it.fails("RK-122: 【使途再生】これが自軍ラッシュエリアにあっても追加される（出典: atwiki/page-706「これが自軍エリアにある間」）", () => {
+  it("RK-122: 【使途再生】これが自軍ラッシュエリアにあっても追加される（出典: atwiki/page-706「これが自軍エリアにある間」）", () => {
     const s = board({ rush: [inst("RK-122", "ho"), heldUnit("SPEC-OWN", "hr")] });
     expect(featuresOf(s, "player1", "SPEC-OWN:hr")).toContain("オルフェノク");
   });
@@ -240,32 +241,35 @@ describe("RK-123 クレインオルフェノク", () => {
     expectRarityIn("RK-123", ["NR"]);
   });
 
-  const enemyRush = { rush: [inst("SPEC-E1", "er"), inst("SPEC-EM", "em")] };
+  const enemyRush = { rush: [inst("SPEC-E1", "er"), inst("SPEC-E1", "er2"), inst("SPEC-EM", "em")] };
+  /** 敵軍（player2）の BP13000 の L ユニット（TST-UNIT-7）が、自軍の target にアタックする。 */
+  const attacked = (p1: Partial<GameState["players"]["player1"]>, target: string, p2: Partial<GameState["players"]["player2"]> = enemyRush) =>
+    attackedInEnemyTurn(p1, target, p2, "TST-UNIT-7:atk", EXTRA);
 
-  it.fails("RK-123: 自軍ラッシュエリアにある間、敵軍ターン中に「オルフェノク」の自軍ユニットが撃破されて捨札になると、敵軍 S ユニット（エリアを問わない）を1体選べる（任意）（出典: atwiki/page-707「敵軍Sユニットを1体選び撃破してもよい」）", () => {
-    const s = attackedInEnemyTurn({ battle: [inst("SPEC-ORPH", "o")], rush: [inst("RK-123", "cr")] }, "SPEC-ORPH:o", enemyRush);
+  it("RK-123: 自軍ラッシュエリアにある間、敵軍ターン中に「オルフェノク」の自軍ユニットが撃破されて捨札になると、敵軍 S ユニット（エリアを問わない。M・L ユニットは選べない）を1体選べる（任意）（出典: atwiki/page-707「敵軍Sユニットを1体選び撃破してもよい」）", () => {
+    const s = attacked({ battle: [inst("SPEC-ORPH", "o")], rush: [inst("RK-123", "cr")] }, "SPEC-ORPH:o");
     expectChoiceFrom(s, "player1", "RK-123");
-    expect(choiceIds(s)).toEqual(["SPEC-E1:er", "TST-UNIT-7:atk"]);
+    expect(choiceIds(s)).toEqual(["SPEC-E1:er", "SPEC-E1:er2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-123: 選んだ敵軍ユニットを撃破する（出典: atwiki/page-707）", () => {
-    const s = resolveAll(pick(attackedInEnemyTurn({ battle: [inst("SPEC-ORPH", "o")], rush: [inst("RK-123", "cr")] }, "SPEC-ORPH:o", enemyRush), "SPEC-E1:er"));
+  it("RK-123: 選んだ敵軍ユニットを撃破する（出典: atwiki/page-707）", () => {
+    const s = resolveAll(pick(attacked({ battle: [inst("SPEC-ORPH", "o")], rush: [inst("RK-123", "cr")] }, "SPEC-ORPH:o"), "SPEC-E1:er"));
     expect(zoneOf(s, "player2", "SPEC-E1:er")).toBe("discard");
   });
 
   it("RK-123: これが自軍バトルエリアにあるときは発動しない（出典: atwiki/page-707「これが自軍ラッシュエリアにある間」）", () => {
-    const s = attackedInEnemyTurn({ battle: [inst("RK-123", "cr"), inst("SPEC-ORPH", "o")] }, "SPEC-ORPH:o", enemyRush);
+    const s = attacked({ battle: [inst("RK-123", "cr"), inst("SPEC-ORPH", "o")] }, "SPEC-ORPH:o");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-123");
   });
 
   it("RK-123: 撃破されたのが「クレインオルフェノク」なら発動しない（出典: atwiki/page-707「「クレインオルフェノク」以外の」）", () => {
-    const s = attackedInEnemyTurn({ battle: [inst("RK-123", "b")], rush: [inst("RK-123", "cr")] }, "RK-123:b", enemyRush);
+    const s = attacked({ battle: [inst("RK-123", "b")], rush: [inst("RK-123", "cr")] }, "RK-123:b");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-123");
   });
 
   it("RK-123: 「オルフェノク」を持たない自軍ユニットが撃破されたときは発動しない（出典: atwiki/page-707「特徴「オルフェノク」を持つ自軍ユニット」）", () => {
-    const s = attackedInEnemyTurn({ battle: [inst("SPEC-OWN", "x")], rush: [inst("RK-123", "cr")] }, "SPEC-OWN:x", enemyRush);
+    const s = attacked({ battle: [inst("SPEC-OWN", "x")], rush: [inst("RK-123", "cr")] }, "SPEC-OWN:x");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-123");
   });
 
@@ -275,16 +279,16 @@ describe("RK-123 クレインオルフェノク", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-123");
   });
 
-  it.fails("RK-123: 2体あれば、1体の撃破につき2回選べる（重複する）（出典: atwiki/page-707 コメント欄「重複します」）", () => {
-    let s = attackedInEnemyTurn({ battle: [inst("SPEC-ORPH", "o")], rush: [inst("RK-123", "c1"), inst("RK-123", "c2")] }, "SPEC-ORPH:o", enemyRush);
+  it("RK-123: 2体あれば、1体の撃破につき2回選べる（重複する）（出典: atwiki/page-707 コメント欄「重複します」）", () => {
+    let s = attacked({ battle: [inst("SPEC-ORPH", "o")], rush: [inst("RK-123", "c1"), inst("RK-123", "c2")] }, "SPEC-ORPH:o");
     expectChoiceFrom(s, "player1", "RK-123");
     s = settle(pick(s, "SPEC-E1:er"));
     expectChoiceFrom(s, "player1", "RK-123");
-    expect(choiceIds(s)).toEqual(["TST-UNIT-7:atk"]);
+    expect(choiceIds(s)).toEqual(["SPEC-E1:er2"]);
   });
 
-  it.fails("RK-123: ホースオルフェノク格闘態で「オルフェノク」が追加されたホールド状態の自軍ユニットが撃破されたときも発動する（出典: atwiki/page-707 カード評価「ホースオルフェノク格闘態と特に相性が良く」）", () => {
-    const s = attackedInEnemyTurn({ battle: [heldUnit("SPEC-OWN", "h")], rush: [inst("RK-122", "ho"), inst("RK-123", "cr")] }, "SPEC-OWN:h", enemyRush);
+  it("RK-123: ホースオルフェノク格闘態で「オルフェノク」が追加されたホールド状態の自軍ユニットが撃破されたときも発動する（出典: atwiki/page-707 カード評価「ホースオルフェノク格闘態と特に相性が良く」）", () => {
+    const s = attacked({ battle: [heldUnit("SPEC-OWN", "h")], rush: [inst("RK-122", "ho"), inst("RK-123", "cr")] }, "SPEC-OWN:h");
     expectChoiceFrom(s, "player1", "RK-123");
   });
 });
@@ -303,7 +307,7 @@ describe("RK-124 スネークオルフェノク", () => {
   const guarded = [inst("RK-124", "sn"), inst("SPEC-KAMEN", "k"), inst("SPEC-ORPH", "o"), inst("SPEC-PLAIN", "p")];
   const attackers = { battle: [inst("TST-UNIT-7", "a1"), inst("SPEC-NOSP", "a2")] };
 
-  it.fails("RK-124: これが自軍バトルエリアにある間、相手はそのターンにスネークオルフェノクを選んでいなければ、「仮面ライダー」と（スネーク以外の）「オルフェノク」の自軍ユニットにアタックできない（出典: atwiki/page-708「…一度も選んでいなければ、特徴「仮面ライダー」を持つ対戦相手のユニットと…選べない」）", () => {
+  it("RK-124: これが自軍バトルエリアにある間、相手はそのターンにスネークオルフェノクを選んでいなければ、「仮面ライダー」と（スネーク以外の）「オルフェノク」の自軍ユニットにアタックできない（出典: atwiki/page-708「…一度も選んでいなければ、特徴「仮面ライダー」を持つ対戦相手のユニットと…選べない」）", () => {
     const s = enemyTurn({ battle: guarded }, attackers);
     expect(attackTargets(s, "TST-UNIT-7:a1", "player2").sort()).toEqual(["RK-124:sn", "SPEC-PLAIN:p"]);
   });
@@ -315,20 +319,20 @@ describe("RK-124 スネークオルフェノク", () => {
     expect(attackTargets(s, "TST-UNIT-7:a1", "player2").sort()).toEqual(["RK-124:sn", "SPEC-KAMEN:k", "SPEC-ORPH:o", "SPEC-PLAIN:p"]);
   });
 
-  it.fails("RK-124: 効果の対象にも選べない（デストワイルダー【クロー】で選べるのはスネークと他のユニットだけ）（出典: atwiki/page-708「アタックや効果の対象として」）", () => {
+  it("RK-124: 効果の対象にも選べない（デストワイルダー【クロー】で選べるのはスネークと他のユニットだけ）（出典: atwiki/page-708「アタックや効果の対象として」）", () => {
     const s = enterWithHold(enemyTurn({ battle: guarded }, { rush: [inst("RK-118", "dw")], command: releasedCat("WB", 1) }), "RK-118:dw", ["TST-OP:cWB0"], "player2");
     expectChoiceFrom(s, "player2", "RK-118");
     expect(choiceIds(s)).toEqual(["RK-124:sn", "SPEC-PLAIN:p"]);
   });
 
-  it.fails("RK-124: 効果の対象としてスネークオルフェノクを選んだ後は、そのターン、「仮面ライダー」のユニットにアタックできる（出典: atwiki/page-708「アタックや効果の対象として…一度も選んでいなければ」）", () => {
+  it("RK-124: 効果の対象としてスネークオルフェノクを選んだ後は、そのターン、「仮面ライダー」のユニットにアタックできる（出典: atwiki/page-708「アタックや効果の対象として…一度も選んでいなければ」）", () => {
     let s = enterWithHold(
       enemyTurn({ battle: guarded }, { battle: [inst("TST-UNIT-7", "a1")], rush: [inst("RK-118", "dw")], command: releasedCat("WB", 1) }),
       "RK-118:dw",
       ["TST-OP:cWB0"],
       "player2",
     );
-    s = settle(pick(s, "RK-124:sn"));
+    s = passEntry(settle(pick(s, "RK-124:sn")), "player2");
     expect(attackTargets(s, "TST-UNIT-7:a1", "player2")).toContain("SPEC-KAMEN:k");
   });
 
@@ -337,7 +341,7 @@ describe("RK-124 スネークオルフェノク", () => {
     expect(attackTargets(s, "TST-UNIT-7:a1", "player2")).toEqual(expect.arrayContaining(["SPEC-KAMEN:k", "SPEC-ORPH:o"]));
   });
 
-  it.fails("RK-124: 他の「スネークオルフェノク」は選べる（出典: atwiki/page-708「「スネークオルフェノク」以外の特徴「オルフェノク」を持つ」）", () => {
+  it("RK-124: 他の「スネークオルフェノク」は選べる（出典: atwiki/page-708「「スネークオルフェノク」以外の特徴「オルフェノク」を持つ」）", () => {
     const s = enemyTurn({ battle: [inst("RK-124", "s1"), inst("RK-124", "s2"), inst("SPEC-KAMEN", "k")] }, attackers);
     expect(attackTargets(s, "TST-UNIT-7:a1", "player2").sort()).toEqual(["RK-124:s1", "RK-124:s2"]);
   });
@@ -371,7 +375,7 @@ describe("RK-125 仮面ライダーブレイド", () => {
     return pick(s, "SPEC-E1:r");
   };
 
-  it.fails("RK-125: マルチカテゴリのカードを含む手札（WB/MA・WB・WB）は「カテゴリがすべて同じ」として扱い、撃破に進む（出典: atwiki/page-646 カード評価「「赤青マルチ、赤、赤」と言う手札を公開した場合カテゴリが全て同じである、として扱う」）", () => {
+  it("RK-125: マルチカテゴリのカードを含む手札（WB/MA・WB・WB）は「カテゴリがすべて同じ」として扱い、撃破に進む（出典: atwiki/page-646 カード評価「「赤青マルチ、赤、赤」と言う手札を公開した場合カテゴリが全て同じである、として扱う」）", () => {
     const s = shown([inst("SPEC-MULTI", "m"), inst("SPEC-WB", "w1"), inst("SPEC-WB", "w2")]);
     expectChoiceFrom(s, "player1", "RK-125");
     expect(choiceIds(s)).toEqual(["SPEC-E1:b"]);
@@ -410,7 +414,7 @@ describe("RK-126 仮面ライダーギャレン", () => {
     return s;
   };
 
-  it.fails("RK-126: RC — 自分の手札を3枚選んで見せるかを選べる（任意）（出典: atwiki/page-647「自分の手札を3枚選び、相手に見せてもよい」）", () => {
+  it("RK-126: RC — 自分の手札を3枚選んで見せるかを選べる（任意）（出典: atwiki/page-647「自分の手札を3枚選び、相手に見せてもよい」）", () => {
     const hand = [c(1), c(2), c(3), c(5)];
     const s = garren(hand);
     expectChoiceFrom(s, "player1", "RK-126");
@@ -418,12 +422,12 @@ describe("RK-126 仮面ライダーギャレン", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-126: RC — 手札が3枚未満なら選べない（出典: atwiki/page-647「自分の手札を3枚選び」・カード評価「効果の発動には手札が３枚以上必要」）", () => {
+  it("RK-126: RC — 手札が3枚未満なら選べない（出典: atwiki/page-647「自分の手札を3枚選び」・カード評価「効果の発動には手札が３枚以上必要」）", () => {
     const s = garren([c(1), c(2)]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-126");
   });
 
-  it.fails("RK-126: RC — 見せたら、敵軍 S ユニット（エリアを問わない）を1体選びホールドする（選ばないことはできない）（出典: atwiki/page-647「そうしたとき、敵軍Sユニットを1体選びホールドする」）", () => {
+  it("RK-126: RC — 見せたら、敵軍 S ユニット（エリアを問わない）を1体選びホールドする（選ばないことはできない）（出典: atwiki/page-647「そうしたとき、敵軍Sユニットを1体選びホールドする」）", () => {
     const hand = [c(1), c(2), c(3), c(5)];
     let s = show(hand, hand.slice(0, 3));
     expectChoiceFrom(s, "player1", "RK-126");
@@ -433,7 +437,7 @@ describe("RK-126 仮面ライダーギャレン", () => {
     expect(cardIn(s, "player2", "SPEC-E1:r")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-126: RC — 見せたカードの必要パワーが番号順（1・2・3）に揃えば、続けて敵軍 S ユニット（エリアを問わない。ホールドしたものとは別でもよい）を1体選び撃破する（出典: atwiki/page-647「番号順…に揃うなら、敵軍Sユニットを1体選び撃破する」・カード評価「ホールドと撃破で選ぶ敵ユニットは別々でよく…撃破するユニットはラッシュエリアから選んでもよい」）", () => {
+  it("RK-126: RC — 見せたカードの必要パワーが番号順（1・2・3）に揃えば、続けて敵軍 S ユニット（エリアを問わない。ホールドしたものとは別でもよい）を1体選び撃破する（出典: atwiki/page-647「番号順…に揃うなら、敵軍Sユニットを1体選び撃破する」・カード評価「ホールドと撃破で選ぶ敵ユニットは別々でよく…撃破するユニットはラッシュエリアから選んでもよい」）", () => {
     const hand = [c(1), c(2), c(3), c(5)];
     let s = pick(show(hand, hand.slice(0, 3)), "SPEC-E1:b");
     expectChoiceFrom(s, "player1", "RK-126");
@@ -444,13 +448,13 @@ describe("RK-126 仮面ライダーギャレン", () => {
     expect(cardIn(s, "player2", "SPEC-E1:b")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-126: RC — 見せる順番は問わない（3・1・2 の順に選んでも揃う）（出典: atwiki/page-647「番号順（例：0、1、2や3、4、5など）に揃うなら」）", () => {
+  it("RK-126: RC — 見せる順番は問わない（3・1・2 の順に選んでも揃う）（出典: atwiki/page-647「番号順（例：0、1、2や3、4、5など）に揃うなら」）", () => {
     const hand = [c(1), c(2), c(3)];
     const s = pick(show(hand, [hand[2]!, hand[0]!, hand[1]!]), "SPEC-E1:b");
     expectChoiceFrom(s, "player1", "RK-126");
   });
 
-  it.fails("RK-126: RC — 番号順に揃わない（1・2・5、1・1・2）ならホールドだけで終わる（出典: atwiki/page-647）", () => {
+  it("RK-126: RC — 番号順に揃わない（1・2・5、1・1・2）ならホールドだけで終わる（出典: atwiki/page-647）", () => {
     for (const hand of [[c(1), c(2), c(5)], [c(1), c(1, "dup"), c(2)]]) {
       const s = pick(show(hand, hand), "SPEC-E1:b");
       expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-126");
@@ -458,7 +462,7 @@ describe("RK-126 仮面ライダーギャレン", () => {
     }
   });
 
-  it.fails("RK-126: RC — 見せなければ何も起きない（出典: atwiki/page-647「相手に見せてもよい」）", () => {
+  it("RK-126: RC — 見せなければ何も起きない（出典: atwiki/page-647「相手に見せてもよい」）", () => {
     const s = settle(skip(garren([c(1), c(2), c(3)])));
     expect(cardIn(s, "player2", "SPEC-E1:b")?.commandHeld ?? false).toBe(false);
   });

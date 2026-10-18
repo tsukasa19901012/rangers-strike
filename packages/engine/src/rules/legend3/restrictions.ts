@@ -1,5 +1,6 @@
 import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
 import { rk5AttackerCanAttackRush } from "../rk/rk5Fields";
+import { rk6SnakeBlocksSelection } from "../rk/rk6Fields";
 import { set9AAttackerCanAttackRush, set9ADefenderBlocksAttack } from "../legend1/set9NamedEffectsA";
 import { set7DDefenderBlocksAttack } from "../legend1/set7NamedEffectsD";
 import { set8ADefenderBlocksAttack } from "../legend1/set8NamedEffectsA";
@@ -481,6 +482,8 @@ export function canAttackDefender(
   if (defenderCard && rk1DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
   // RK-029 ※・RK-037【グライディング】（rules/rk/rk2UnitEffects.ts）。
   if (defenderCard && rk2DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
+  // RK-124 スネークオルフェノク【人を守る決意】（rules/rk/rk6Fields.ts）。
+  if (defenderCard && rk6SnakeBlocksSelection(state, attackerPlayerId, defenderPlayerId, defenderCard, unitFeatures)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;

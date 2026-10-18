@@ -578,6 +578,8 @@ export type PendingEffectChoice = {
   rk3Meta?: Rk3ChoiceMeta;
   /** ライダーEXP vol.2 RK-085〜RK-105 の選択の続き（rules/rk/rk5UnitEffects.ts）。 */
   rk5Meta?: { owners?: PlayerId[] };
+  /** ライダーEXP vol.2 RK-106〜RK-126 の選択の続き（rules/rk/rk6UnitEffects.ts）。 */
+  rk6Meta?: { riderInstanceId?: string; lined?: boolean; remaining?: number };
   /** ライダーEXP vol.1 RK-001〜RK-021 の選択の続き（rules/rk/rk1NamedEffects.ts）。 */
   rk1Meta?: Rk1ChoiceMeta;
   /** ライダーEXP vol.1 RK-022〜RK-042 の選択の続き（rules/rk/rk2UnitEffects.ts）。 */

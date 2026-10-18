@@ -27,6 +27,7 @@ import {
 import { canPlayHandCounter, tryDestroyStrikerForStrike, tryLeaveField } from "./operationCounters";
 import { magiPunchCounterIds } from "./legend1/set4NamedEffects";
 import { set7AStrikeCounterIds } from "./legend1/set7NamedEffectsA";
+import { rk6RidesGuardChaserInRush } from "./rk/rk6Fields";
 
 export function earthForceActive(state: GameState): boolean {
   return (
@@ -46,8 +47,9 @@ export function collectFiveTechInterceptors(
   ) {
     // RS-373 ファイブレッドFT【ファイブテクター】: これが自軍ラッシュエリアにある間、ストライクされたとき、これをバトルエリアに出して
     // ストライクしてきた敵軍ユニットとバトルしてもよい（そのストライクは無効）。出せるのはこのユニット自身だけ（atwiki/page-540）。
+    // RK-111 ガードチェイサー【非常警戒態勢】: これにライドしている S ユニットも同じ能力を得る（rules/rk/rk6Fields.ts）。
     return defender.rush
-      .filter((card) => card.cardId === "RS-373")
+      .filter((card) => card.cardId === "RS-373" || rk6RidesGuardChaserInRush(state, defenderId, card))
       .filter((card) => canMoveUnitToBattleWithHolds(state, defenderId, card))
       .map((card) => card.instanceId);
   }
@@ -276,12 +278,17 @@ export function applyFiveTechIntercept(
   if (!held) {
     return { state, pending, log: buildSimpleFiveTechLog(defenderId, interceptFound.card.cardId, state, "failed") };
   }
-  const [, rush] = removeAt(held.rush, interceptFound.index);
+  // ライドしているユニット（RK-111 ガードチェイサー等）は、ライドしたままビークルと一緒にバトルエリアに出る。
+  const vehicle = interceptFound.card.mountedOnInstanceId
+    ? held.rush.find((c) => c.instanceId === interceptFound.card.mountedOnInstanceId)
+    : undefined;
+  const moving = new Set([interceptFound.card.instanceId, ...(vehicle ? [vehicle.instanceId] : [])]);
+  const rush = held.rush.filter((c) => !moving.has(c.instanceId));
   let nextDefender = clearEffectBattleEntryWindows(
     {
       ...held,
       rush,
-      battle: [...held.battle, interceptFound.card],
+      battle: [...held.battle, ...(vehicle ? [vehicle] : []), interceptFound.card],
     },
   );
 

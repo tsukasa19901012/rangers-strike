@@ -14,6 +14,7 @@ import {
   cardCategories,
   getDefinition,
   isUnit,
+  isVehicle,
   parsePowerCost,
 } from "../core/catalog";
 import { isShironLightRushTarget } from "./shironLight";
@@ -71,7 +72,7 @@ export function hasLegalZordRush(
   const found = findInZone(player, "hand", zordInstanceId);
   if (!found) return false;
   const def = getDefinition(state.definitions, found.card.cardId);
-  if (!isUnit(def)) return false;
+  if (!def || (!isUnit(def) && !isVehicle(def))) return false;
 
   if (requiresAllFusionPartners(found.card.cardId)) {
     return canRushUnit(
@@ -225,7 +226,7 @@ export function createZordSetup(
   const found = findInZone(player, "hand", zordInstanceId);
   if (!found) return null;
   const def = getDefinition(state.definitions, found.card.cardId);
-  if (!isUnit(def)) return null;
+  if (!def || (!isUnit(def) && !isVehicle(def))) return null;
 
   if (needsZordDownPayment(found.card.cardId, def.powerCost, def)) {
     return createZordDownSetup(state, playerId, found.card);

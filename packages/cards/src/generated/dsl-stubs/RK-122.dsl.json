@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_min_6_entry",
+          "keyword": "rk6::RK-122::power_six_entry",
           "duration": "permanent"
         }
       ]
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_hold_s_add_feature::オルフェノク",
+          "keyword": "rk6::RK-122::apostle_regeneration",
           "duration": "permanent"
         }
       ],

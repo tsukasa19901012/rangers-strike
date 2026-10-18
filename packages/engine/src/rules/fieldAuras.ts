@@ -19,6 +19,7 @@ import { set9DFieldBpBonus } from "./legend1/set9NamedEffectsD";
 import { rk1FieldBpBonus } from "./rk/rk1NamedEffects";
 import { rk2FieldBpBonus } from "./rk/rk2UnitEffects";
 import { rk5FieldBpBonus } from "./rk/rk5Fields";
+import { rk6FieldBpBonus } from "./rk/rk6Fields";
 import { anyOtherBaseLargeUnit } from "./legend1/set8NamedEffectsB";
 import { set7AFieldBpBonus } from "./legend1/set7NamedEffectsA";
 import { set8AFieldBpBonus } from "./legend1/set8NamedEffectsA";
@@ -100,11 +101,6 @@ function noteOtherNcBpBonus(
   const own = state.players[playerId];
   const enemy = state.players[enemyId];
   let bonus = 0;
-
-  // RK-117: BP+1000 per held enemy unit (command zone, commandHeld=true)
-  if (cardId === "RK-117") {
-    bonus += enemy.command.filter((c) => c.commandHeld).length * 1000;
-  }
 
   // RK-127: BP+2000 per enemy hand card
   if (cardId === "RK-127") {
@@ -264,6 +260,8 @@ export function passiveNamedFieldBpBonus(
   bonus += rk2FieldBpBonus(state, playerId, instance, role);
   // RK-099【怪人の監視権限】・RK-103【ブラストペガサス】・RK-105 ※（ライド中）（rules/rk/rk5Fields.ts）。
   if (role === "general") bonus += rk5FieldBpBonus(state, playerId, instance);
+  // RK-107【硬化装甲】・RK-117 ※（ホールド状態の敵軍ユニット1体につき）・RK-121【エクザップバスター】（rules/rk/rk6Fields.ts）。
+  if (role === "general") bonus += rk6FieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

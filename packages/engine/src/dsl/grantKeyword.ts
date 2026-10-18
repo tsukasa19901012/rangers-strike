@@ -112,7 +112,9 @@ import { tryRk1CardEffect } from "../rules/rk/rk1NamedEffects";
 import { tryRk2CardEffect } from "../rules/rk/rk2UnitEffects";
 import { tryRk3CardEffect } from "../rules/rk/rk3UnitEffects";
 import { tryRk4CardEffect } from "../rules/rk/rk4UnitEffects";
+import { rk6CommandHoldBlocked } from "../rules/rk/rk6Fields";
 import { tryRk5CardEffect } from "../rules/rk/rk5UnitEffects";
+import { tryRk6CardEffect } from "../rules/rk/rk6UnitEffects";
 import { tryOtherLinesCardEffect } from "../rules/legend1/otherLinesNamedEffects";
 import { trySet9BCardEffect } from "../rules/legend1/set9NamedEffectsB";
 import { trySet8BCardEffect } from "../rules/legend1/set8NamedEffectsB";
@@ -426,6 +428,9 @@ export function applyGrantKeyword(
   // ライダーEXP vol.2 RK-085〜RK-105 のカード固有の効果（`rk5::` キーワード。rules/rk/rk5UnitEffects.ts）。
   const rk5 = tryRk5CardEffect(state, ctx, keyword);
   if (rk5) return rk5;
+  // ライダーEXP vol.2 RK-106〜RK-126 のカード固有の効果（`rk6::` キーワード。rules/rk/rk6UnitEffects.ts）。
+  const rk6 = tryRk6CardEffect(state, ctx, keyword);
+  if (rk6) return rk6;
   // 第8弾 RS-560〜RS-581 のカード固有の名前付き効果（`set8c::` と一部の既存キーワード。rules/legend1/set8NamedEffectsC.ts）。
   const set8c = trySet8CCardEffect(state, ctx, keyword);
   if (set8c) return set8c;
@@ -1165,6 +1170,8 @@ export function applyGrantKeyword(
     }
     case "hold_all_enemy_commands": {
       const enemyId = opponent(ctx.playerId);
+      // RK-116 マグナギガ【そびえる巨体】（rules/rk/rk6Fields.ts）。
+      if (rk6CommandHoldBlocked(state, enemyId, ctx.sourceCardId)) return { state, detail: "rk116:blocked" };
       const enemy = state.players[enemyId];
       const command = enemy.command.map((c) => ({ ...c, commandHeld: true }));
       return {
