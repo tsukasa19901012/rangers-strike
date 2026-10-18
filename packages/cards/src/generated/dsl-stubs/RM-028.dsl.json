@@ -33,14 +33,13 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが自軍パワーゾーンでオモテ向きになっている間、特徴「宇宙刑事」を持つ自軍ユニットをラッシュしたとき、これを自軍ラッシュエリアに出してもよい。",
       "trigger": {
-        "type": "on_rush"
+        "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-028::note_e280bbe38193e3828ce3818c",
-          "duration": "turn"
+          "keyword": "rm2::RM-028::moto_sharian",
+          "duration": "permanent"
         }
       ]
     }

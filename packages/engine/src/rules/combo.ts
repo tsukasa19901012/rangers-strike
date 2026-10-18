@@ -1,3 +1,4 @@
+import { tryRm2OnEnterBattle } from "./rm/rm2Effects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { tryRk9OnEnterBattle } from "./rk/rk9UnitEffects";
 import { tryRk10OnEnterBattle } from "./rk/rk10UnitEffects";
@@ -253,6 +254,8 @@ export function resolveEnterBattleEffectsImpl(
     logs.push(...dslEnter.logs);
     // RS-291【大火炎】: 「レッド」を持つユニットからコンビネーションするとき。
     nextState = trySet5AOnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
+    // RM-022 サイバリアン（ライドして一緒に出たビークルの【サイバリアンレーザースピード】。ほかの選択があればその後に開く。rules/rm/rm2Effects.ts）。
+    nextState = tryRm2OnEnterBattle(nextState, playerId, battleCard);
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }

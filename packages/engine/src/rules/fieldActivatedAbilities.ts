@@ -1,3 +1,4 @@
+import { activateRm2FieldAbility, canActivateRm2FieldAbility, isRm2FieldAbilityCard } from "./rm/rm2Effects";
 import { tryLeaveField } from "./operationCounters";
 import { liveCommentaryStayAvailable } from "./legend1/set7NamedEffectsA";
 import { kuugaStayCandidates } from "./legend1/otherLinesNamedEffects";
@@ -455,6 +456,20 @@ ABILITIES.push({
   matches: (cardId) => isRk16FuessleCard(cardId),
   canActivate: (state, playerId, card) => canActivateRk16Fuessle(state, playerId, card),
   resolve: (state, playerId, card) => openRk16Fuessle(state, playerId, card),
+});
+
+// RM-038 凱聖バルスキー【部下の修理と改造】「これが自軍エリアにある間、自軍ラッシュフェイズ中、DAを持つ自軍コマンドを3つホールドしてもよい。…」
+// （atwiki/page-849。rules/rm/rm2Effects.ts）。回数の制限はない（コマンドを払えるかぎり何度でも）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "rm038_bulsky",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  discardSelf: false,
+  repeatable: true,
+  matches: (cardId) => isRm2FieldAbilityCard(cardId),
+  canActivate: (state, playerId, card) => canActivateRm2FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateRm2FieldAbility(state, playerId, card),
 });
 
 function abilityFor(cardId: string): FieldActivatedAbility | undefined {

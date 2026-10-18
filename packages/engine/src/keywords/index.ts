@@ -1,3 +1,4 @@
+import { rmChaseVehicleCandidate } from "../rules/rm/rm2Fields";
 import { hasUnnamedRule } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingChase, PlayerId } from "../types/game";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
@@ -100,9 +101,10 @@ export function canInitiateChase(
   );
   if (!vehicle) return false;
 
+  // RM-020 電子星獣ドル・RM-023 スクーパー（ビークルとして扱うユニットカード）も乗り換え先にできる（rules/rm/rm2Fields.ts）。
   const unmounted = state.players[ownerPlayerId].rush.filter(
     (c) =>
-      getDefinition(state.definitions, c.cardId)?.type === "vehicle" &&
+      rmChaseVehicleCandidate(state, ownerPlayerId, c, (id) => cardHasKeyword(state.definitions, id, "chase")) &&
       c.instanceId !== leavingCard.mountedOnInstanceId,
   );
   return unmounted.length > 0;

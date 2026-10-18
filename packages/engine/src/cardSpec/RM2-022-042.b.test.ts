@@ -103,13 +103,13 @@ describe("RM-029 ジャスピオン", () => {
     expectRarityIn("RM-029", ["SR"]);
   });
 
-  it.fails("RM-029: ※ — SP が空欄ではない自軍 S ユニット（SP1・ラッシュエリア）があればバトルエリアに出られない（ライドしても出られない）（出典: atwiki/page-896「SPが空欄ではない自軍Sユニットがあれば、これはバトルエリアに出られない」）", () => {
+  it("RM-029: ※ — SP が空欄ではない自軍 S ユニット（SP1・ラッシュエリア）があればバトルエリアに出られない（ライドしても出られない）（出典: atwiki/page-896「SPが空欄ではない自軍Sユニットがあれば、これはバトルエリアに出られない」）", () => {
     const s = battleBoard({ rush: [inst("RM-029", "j"), inst("TST-UNIT-0", "sp1"), inst("SPEC-VEHICLE", "v")] });
     expect(canEnter(s, "RM-029:j")).toBe(false);
     expect(canMount(s, "RM-029:j", "SPEC-VEHICLE:v")).toBe(false);
   });
 
-  it.fails("RM-029: ※ — SP が「！」の自軍 S ユニットも「空欄ではない」（出典: atwiki/page-896「SPが空欄ではない」）", () => {
+  it("RM-029: ※ — SP が「！」の自軍 S ユニットも「空欄ではない」（出典: atwiki/page-896「SPが空欄ではない」）", () => {
     expect(canEnter(battleBoard({ rush: [inst("RM-029", "j"), inst("SPEC-SPX", "x")] }), "RM-029:j")).toBe(false);
   });
 
@@ -122,7 +122,7 @@ describe("RM-029 ジャスピオン", () => {
   const rc = (deck: CardInstance[]) =>
     settle(rideOff(mount(battleBoard({ rush: [inst("RM-029", "j"), inst("SPEC-VEHICLE", "v")] }, { deck }), "RM-029:j", "SPEC-VEHICLE:v"), true));
 
-  it.fails("RM-029: RC【コズミックハーレー】— 敵軍山札の上のカードが WB のユニットカードなら、持ち主（敵軍）のラッシュエリアに出る（ダメージはない）（出典: atwiki/page-896「WBを持つユニットカードなら、それを持ち主のラッシュエリアに出す」）", () => {
+  it("RM-029: RC【コズミックハーレー】— 敵軍山札の上のカードが WB のユニットカードなら、持ち主（敵軍）のラッシュエリアに出る（ダメージはない）（出典: atwiki/page-896「WBを持つユニットカードなら、それを持ち主のラッシュエリアに出す」）", () => {
     const s = resolveAll(rc([inst("TST-UNIT-0", "top"), ...deckCards(3, "e")]));
     expect(zoneOf(s, "player2", "TST-UNIT-0:top")).toBe("rush");
     expect(damageOf(s, "player2")).toBe(0);
@@ -160,7 +160,7 @@ describe("RM-030 超惑星戦闘母艦ダイレオン", () => {
   const defended = (target: CardInstance, rush: CardInstance[], battle: CardInstance[] = []) =>
     lastBattleBps(attackedInEnemyTurn({ battle: [target, ...battle], rush }, target.instanceId, {}, "TST-UNIT-7:atk", EXTRA))?.defender;
 
-  it.fails("RM-030:【ダイレオンレーザー】— 自軍ラッシュエリアにある間、OT の自軍 L ユニットはアタックされるとき BP+2000（出典: atwiki/page-843「OTを持つ自軍Lユニットは、アタックされるときBP+2000される」）", () => {
+  it("RM-030:【ダイレオンレーザー】— 自軍ラッシュエリアにある間、OT の自軍 L ユニットはアタックされるとき BP+2000（出典: atwiki/page-843「OTを持つ自軍Lユニットは、アタックされるときBP+2000される」）", () => {
     expect(defended(inst("SPEC-OT-L", "l"), [inst("RM-030", "dl")])).toBe(10000);
   });
 
@@ -206,7 +206,7 @@ describe("RM-031 戦闘巨人ダイレオン", () => {
   const ENEMY_BATTLE = [inst("SPEC-BEAST", "b"), inst("SPEC-DINO-M", "d"), inst("SPEC-BEAST-BIG", "big"), { ...inst("SPEC-BEAST", "mod"), bpModifier: 8000 }, inst("SPEC-ES", "p")];
   const entered = () => enter(battleBoard({ rush: [inst("RM-031", "gt")] }, { battle: ENEMY_BATTLE, rush: [inst("SPEC-BEAST", "r")] }), "RM-031:gt");
 
-  it.fails("RM-031:【コズミッククラッシュ】— 自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアの「獣」「恐竜」を持つ BP8000 以下のユニット（サイズを問わない。いまの BP で見る）から1体選べる（ラッシュエリアのユニットは選べない。任意）（出典: atwiki/page-844「敵軍バトルエリアから、特徴「獣」または「恐竜」を持つBP8000以下のユニットを1体選び、持ち主のパワーゾーンに送ってもよい」）", () => {
+  it("RM-031:【コズミッククラッシュ】— 自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアの「獣」「恐竜」を持つ BP8000 以下のユニット（サイズを問わない。いまの BP で見る）から1体選べる（ラッシュエリアのユニットは選べない。任意）（出典: atwiki/page-844「敵軍バトルエリアから、特徴「獣」または「恐竜」を持つBP8000以下のユニットを1体選び、持ち主のパワーゾーンに送ってもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RM-031");
     expect(choiceIds(s)).toEqual(["SPEC-BEAST:b", "SPEC-DINO-M:d"]);
@@ -251,15 +251,15 @@ describe("RM-033 メタルダー", () => {
     return lastBattleBps(settle(attack(s, "RM-033:md", enemy.instanceId)))?.attacker;
   };
 
-  it.fails("RM-033: ※ — アタックしてバトルするとき、相手の必要パワー（3）と同じ必要パワーの数字の自軍コマンド1つにつき BP+2000（ホールド状態のコマンドも数える。ほかの数字は数えない）（出典: atwiki/page-870「これとバトルするユニットの必要パワーの数字と同じ必要パワーの数字を持つ自軍コマンド1つにつきBP+2000される」・カード評価「最大でBP13000まで上昇する」）", () => {
+  it("RM-033: ※ — アタックしてバトルするとき、相手の必要パワー（3）と同じ必要パワーの数字の自軍コマンド1つにつき BP+2000（ホールド状態のコマンドも数える。ほかの数字は数えない）（出典: atwiki/page-870「これとバトルするユニットの必要パワーの数字と同じ必要パワーの数字を持つ自軍コマンド1つにつきBP+2000される」・カード評価「最大でBP13000まで上昇する」）", () => {
     expect(attacking([released("TST-OP", "a"), held("TST-OP", "b"), released("TST-OP-OT", "c")], inst("SPEC-C3", "e"))).toBe(7000);
   });
 
-  it.fails("RM-033: ※ — 相手の必要パワーが「4+」なら数字の4を見る（出典: atwiki/page-870「必要パワーの数字」）", () => {
+  it("RM-033: ※ — 相手の必要パワーが「4+」なら数字の4を見る（出典: atwiki/page-870「必要パワーの数字」）", () => {
     expect(attacking([released("SPEC-CMD4", "a"), released("TST-OP", "b")], inst("SPEC-C4P", "e"))).toBe(5000);
   });
 
-  it.fails("RM-033: ※ — アタックされてバトルするときも上がる（必要パワー7+ の相手に、必要パワー7の自軍コマンド2つで BP7000）（出典: atwiki/page-870「これはバトルするとき」・カード評価「相手のアタックで撃破されづらくなる」）", () => {
+  it("RM-033: ※ — アタックされてバトルするときも上がる（必要パワー7+ の相手に、必要パワー7の自軍コマンド2つで BP7000）（出典: atwiki/page-870「これはバトルするとき」・カード評価「相手のアタックで撃破されづらくなる」）", () => {
     const s = attackedInEnemyTurn({ battle: [inst("RM-033", "md")], command: [released("SPEC-CMD7", "a"), released("SPEC-CMD7", "b")] }, "RM-033:md", {}, "TST-UNIT-7:atk", EXTRA);
     expect(lastBattleBps(s)?.defender).toBe(7000);
   });
@@ -271,14 +271,14 @@ describe("RM-033 メタルダー", () => {
   const entered = (command: CardInstance[] = []) =>
     enter(battleBoard({ rush: [inst("RM-033", "md"), inst("SPEC-ES", "u"), inst("SPEC-EM", "m"), inst("SPEC-VEHICLE", "v")], command }), "RM-033:md");
 
-  it.fails("RM-033:【戦闘技術の習得】— 自軍ターン中にバトルエリアに出たとき、自軍ラッシュエリアのユニット（サイズを問わない。ビークルは選べない）から1体選べる（任意）（出典: atwiki/page-870「自軍ラッシュエリアからユニットを1体選び、自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
+  it("RM-033:【戦闘技術の習得】— 自軍ターン中にバトルエリアに出たとき、自軍ラッシュエリアのユニット（サイズを問わない。ビークルは選べない）から1体選べる（任意）（出典: atwiki/page-870「自軍ラッシュエリアからユニットを1体選び、自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RM-033");
     expect(choiceIds(s)).toEqual(["SPEC-EM:m", "SPEC-ES:u"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-033:【戦闘技術の習得】— 選んだユニットは自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-870）", () => {
+  it("RM-033:【戦闘技術の習得】— 選んだユニットは自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-870）", () => {
     const s = settle(pick(entered(), "SPEC-ES:u"));
     expect(zoneOf(s, "player1", "SPEC-ES:u")).toBe("command");
     expect(cardIn(s, "player1", "SPEC-ES:u")?.commandHeld).toBe(true);
@@ -302,14 +302,14 @@ describe("RM-034 暴魂トップガンダー", () => {
     expectRarityIn("RM-034", ["SR"]);
   });
 
-  it.fails("RM-034: ※ — バトルエリアに出たとき、相手がドローするかを選ぶ（任意）（出典: atwiki/page-877「相手は1枚ドローしてもよい」）", () => {
+  it("RM-034: ※ — バトルエリアに出たとき、相手がドローするかを選ぶ（任意）（出典: atwiki/page-877「相手は1枚ドローしてもよい」）", () => {
     const s = enter(battleBoard({ rush: [inst("RM-034", "tg")] }), "RM-034:tg");
     expect(choicePlayer(s)).toBe("player2");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RM-034");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-034: ※ — 相手がドローを選ぶと相手の手札が1枚増え、選ばなければ増えない（出典: atwiki/page-877）", () => {
+  it("RM-034: ※ — 相手がドローを選ぶと相手の手札が1枚増え、選ばなければ増えない（出典: atwiki/page-877）", () => {
     const drew = settle(accept(enter(battleBoard({ rush: [inst("RM-034", "tg")] }), "RM-034:tg")));
     expect(drew.players.player2.hand).toHaveLength(1);
     const declined = settle(skip(enter(battleBoard({ rush: [inst("RM-034", "tg")] }), "RM-034:tg")));
@@ -324,27 +324,27 @@ describe("RM-034 暴魂トップガンダー", () => {
     return rideOff(s, true);
   };
 
-  it.fails("RM-034: RC【正確な射撃】— 自軍コマンドゾーンのリリース状態のカードから1枚選んでホールドできる（任意）（出典: atwiki/page-877「自軍コマンドゾーンからカードを1枚選びホールドしてもよい」）", () => {
+  it("RM-034: RC【正確な射撃】— 自軍コマンドゾーンのリリース状態のカードから1枚選んでホールドできる（任意）（出典: atwiki/page-877「自軍コマンドゾーンからカードを1枚選びホールドしてもよい」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "RM-034");
     expect(choiceIds(s)).toEqual(["TST-OP-OT:c1", "TST-OP:c3"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-034: RC【正確な射撃】— ホールドしたカードの必要パワー（3）と同じパワーの数字の、敵軍パワーゾーンのオモテ向きのカードから1枚選ぶ（出典: atwiki/page-877「その数字と同じパワーの数字を持つカードを、敵軍パワーゾーンのオモテ向きのカードの中から1枚選び」）", () => {
+  it("RM-034: RC【正確な射撃】— ホールドしたカードの必要パワー（3）と同じパワーの数字の、敵軍パワーゾーンのオモテ向きのカードから1枚選ぶ（出典: atwiki/page-877「その数字と同じパワーの数字を持つカードを、敵軍パワーゾーンのオモテ向きのカードの中から1枚選び」）", () => {
     const s = pick(rc(), "TST-OP:c3");
     expect(cardIn(s, "player1", "TST-OP:c3")?.commandHeld).toBe(true);
     expectChoiceFrom(s, "player1", "RM-034");
     expect(choiceIds(s)).toEqual(["SPEC-POW3:p3"]);
   });
 
-  it.fails("RM-034: RC【正確な射撃】— 選んだカードはウラ返されてダメージになる（出典: atwiki/page-877「ウラ返してダメージにする」）", () => {
+  it("RM-034: RC【正確な射撃】— 選んだカードはウラ返されてダメージになる（出典: atwiki/page-877「ウラ返してダメージにする」）", () => {
     const s = resolveAll(pick(pick(rc(), "TST-OP:c3"), "SPEC-POW3:p3"));
     expect(cardIn(s, "player2", "SPEC-POW3:p3")?.faceDown).toBe(true);
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RM-034: RC【正確な射撃】— ホールドしなければ何も起きない（出典: atwiki/page-877「ホールドしてもよい。そうしたとき」）", () => {
+  it("RM-034: RC【正確な射撃】— ホールドしなければ何も起きない（出典: atwiki/page-877「ホールドしてもよい。そうしたとき」）", () => {
     const s = resolveAll(skip(rc()));
     expect(damageOf(s, "player2")).toBe(0);
     expect(cardIn(s, "player1", "TST-OP:c3")?.commandHeld).toBeFalsy();
@@ -380,7 +380,7 @@ describe("RM-035 凱聖クールギン", () => {
     return enemyEnter(enemyBoard({ battle, rush }, { rush: [inst(cid, suf)] }, EXTRA), unit);
   };
 
-  it.fails("RM-035:【ヨロイ軍団の統率】— 敵軍バトルフェイズにバトルエリアに出た「メカ」の敵軍 S ユニットは、「ヨロイ軍団」のユニットにしかアタックできず、ストライクもパスもできない（出典: atwiki/page-846「可能なら特徴「ヨロイ軍団」を持つユニットにアタックする」・atwiki/page-999 Q1「「RM-035 凱聖クールギン」の効果により、特徴「ヨロイ軍団」を持つ敵軍ユニットにアタックしなければならない」）", () => {
+  it("RM-035:【ヨロイ軍団の統率】— 敵軍バトルフェイズにバトルエリアに出た「メカ」の敵軍 S ユニットは、「ヨロイ軍団」のユニットにしかアタックできず、ストライクもパスもできない（出典: atwiki/page-846「可能なら特徴「ヨロイ軍団」を持つユニットにアタックする」・atwiki/page-999 Q1「「RM-035 凱聖クールギン」の効果により、特徴「ヨロイ軍団」を持つ敵軍ユニットにアタックしなければならない」）", () => {
     const s = enemyEntered("SPEC-MECHA:m");
     expect(entryOptions(s, "SPEC-MECHA:m", "player2")).toEqual({ targets: ["RM-035:cg", "RM-036:cb"], strike: false, pass: false });
   });

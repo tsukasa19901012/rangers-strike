@@ -41,11 +41,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-035::yoroino",
+          "keyword": "rm2::RM-035::yoroi_tousotsu",
           "duration": "permanent"
         }
       ]

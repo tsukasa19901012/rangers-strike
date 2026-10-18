@@ -177,6 +177,8 @@ export function shouldUseDslOperation(
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rk9::"))) return true;
   // スペシャルメタルエディション RM-001〜RM-021（rm1:: のカード固有の効果。本文の再録から読む既存の効果より優先。rules/rm/rm1Effects.ts）。
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rm1::"))) return true;
+  // RM-022〜RM-042（rm2::。rules/rm/rm2Effects.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rm2::"))) return true;
   const wiredId = getCardEffect(cardId)?.effectId;
   if (wiredId && isOperationImplemented(wiredId)) return false;
   return true;

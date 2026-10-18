@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-037::wobanu",
+          "keyword": "rm2::RM-037::shudan",
           "duration": "turn"
         }
       ]

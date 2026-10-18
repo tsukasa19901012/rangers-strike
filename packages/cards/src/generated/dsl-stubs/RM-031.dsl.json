@@ -45,11 +45,11 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": false,
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-031::kozumikukurashu",
+          "keyword": "rm2::RM-031::cosmic_crash",
           "duration": "turn"
         }
       ]

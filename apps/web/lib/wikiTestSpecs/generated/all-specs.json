@@ -7400,7 +7400,7 @@
       "【サイバリアンレーザースピード】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-022::saibarianrezasupido"
+      "rm2::RM-022::cyberian"
     ],
     "sp": null,
     "size": "S"
@@ -7417,7 +7417,7 @@
     ],
     "expectedDslKeywords": [
       "chase_or_ridden_s_vehicle_alias",
-      "rm_fx::RM-023::fx_unknown_e59cb0"
+      "rm2::RM-023::chichu_senko"
     ],
     "bp": 4000,
     "sp": null,
@@ -7434,7 +7434,7 @@
       "【搭載】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-024::fx_unknown_e690ad"
+      "rm2::RM-024::tousai"
     ],
     "sp": null,
     "size": "M"
@@ -7451,7 +7451,7 @@
     ],
     "expectedDslKeywords": [
       "chase",
-      "rm_fx::RM-025::sharibankurashu"
+      "rm2::RM-025::sharivan_crash"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -7469,7 +7469,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack_s",
-      "rm_fx::RM-026::fx_unknown_e58f8e"
+      "rm2::RM-026::shuyou"
     ],
     "bp": 4000,
     "sp": null,
@@ -7487,7 +7487,7 @@
     ],
     "expectedDslKeywords": [
       "on_ally_rush_named_return_self_to_hand",
-      "SP1"
+      "rm2::RM-027::plasma_cannon"
     ],
     "bp": 7000,
     "sp": "special",
@@ -7505,7 +7505,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_500",
-      "rm_fx::RM-028::note_e280bbe38193e3828ce3818c"
+      "rm2::RM-028::moto_sharian"
     ],
     "sp": null,
     "size": "S"
@@ -7521,7 +7521,8 @@
       "【コズミックハーレー】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-029::note_e280bb5350e3818ce7a9bae6"
+      "rm2::RM-029::no_entry",
+      "rm2::RM-029::cosmic_harley"
     ],
     "bp": 4000,
     "sp": null,
@@ -7539,7 +7540,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack_s",
-      "rm_fx::RM-030::daireonreza"
+      "rm2::RM-030::daileon_laser"
     ],
     "bp": 4000,
     "sp": null,
@@ -7557,7 +7558,7 @@
     ],
     "expectedDslKeywords": [
       "on_ally_rush_named_return_self_to_hand",
-      "rm_fx::RM-031::kozumikukurashu"
+      "rm2::RM-031::cosmic_crash"
     ],
     "bp": 5000,
     "sp": 1,
@@ -7590,8 +7591,8 @@
       "【戦闘技術の習得】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-033::note_e280bbe38193e3828ce381af",
-      "rm_fx::RM-033::no_6"
+      "rm2::RM-033::battle_bp",
+      "rm2::RM-033::sentou_gijutsu"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -7608,7 +7609,8 @@
       "【正確な射撃】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-034::na_geki"
+      "rm2::RM-034::opponent_draw",
+      "rm2::RM-034::seikaku_shageki"
     ],
     "bp": 6000,
     "sp": null,
@@ -7626,7 +7628,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_5000",
-      "rm_fx::RM-035::yoroino"
+      "rm2::RM-035::yoroi_tousotsu"
     ],
     "bp": 2000,
     "sp": null,
@@ -7643,7 +7645,8 @@
       "【剣の使い手】"
     ],
     "expectedDslKeywords": [
-      "attacked_bp_boost_3000"
+      "attacked_bp_boost_3000",
+      "rm2::RM-036::ken_no_tsukaite"
     ],
     "bp": 3000,
     "sp": null,
@@ -7660,7 +7663,7 @@
       "【手段を選ばぬ策略】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-037::wobanu"
+      "rm2::RM-037::shudan"
     ],
     "bp": 3000,
     "sp": null,
@@ -7677,7 +7680,7 @@
       "【部下の修理と改造】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-038::noto"
+      "rm2::RM-038::bulsky"
     ],
     "bp": 4000,
     "sp": null,
@@ -7695,7 +7698,7 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_reanimate_named_from_discard",
-      "rm_fx::RM-039::zan_ri_e58d81"
+      "rm2::RM-039::jumonji"
     ],
     "bp": 4500,
     "sp": "1/3",
@@ -7712,7 +7715,8 @@
       "【忍法花吹雪】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "SP1",
+      "rm2::RM-040::hanafubuki"
     ],
     "bp": 500,
     "sp": "special",
@@ -7730,7 +7734,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rm_fx::RM-041::aiamunadonosankyu"
+      "rm2::RM-041::fake_no_thank_you"
     ],
     "bp": 2000,
     "sp": null,
@@ -7745,6 +7749,9 @@
     "category": "DA",
     "textSnippets": [
       "【妖魔忍法乱れ蝶】"
+    ],
+    "expectedDslKeywords": [
+      "rm2::RM-042::midare_cho"
     ],
     "bp": 2000,
     "sp": null,

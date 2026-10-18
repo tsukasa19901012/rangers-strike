@@ -12,7 +12,7 @@
  *   自軍ユニットを数える）。
  * - `applyRm1DolFire`: RM-020【ドルファイヤー】（ライドオフ。core/applyAction.ts resolve_ride_off_choice）。
  * 継続効果の判定（RM-011・RM-013・RM-014・RM-019・RM-020 の※）は rules/rm/rm1Fields.ts。
- * 選択の組み立ては rules/rk/rk16UnitEffects.ts と同じ。
+ * 選択の組み立ては rules/rk/rk16UnitEffects.ts と同じ。共通の部品（openAfter・proceed・moveFieldUnit 等）は rules/rm/rm2Effects.ts（RM-022〜RM-042）からも使う。
  */
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
@@ -39,7 +39,7 @@ import { MULTI_PACK_CARD_ID, TURBO_UNIT_CARD_ID, hasRm1MultiPack, rm1CostNumber,
 // ---------------------------------------------------------------------------
 // 共通
 
-type ChoiceOutcome = { state: GameState; log?: string } | { error: string };
+export type ChoiceOutcome = { state: GameState; log?: string } | { error: string };
 type ChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
 type ChoiceSkipper = (state: GameState, playerId: PlayerId) => ChoiceOutcome;
 
@@ -89,24 +89,24 @@ export function tryConfirmRm1Choice(state: GameState, playerId: PlayerId): Choic
   return confirmer(state, playerId);
 }
 
-function logFor(state: GameState, playerId: PlayerId, cardId: string, detail: string): string {
+export function logFor(state: GameState, playerId: PlayerId, cardId: string, detail: string): string {
   return buildLogEntry(playerId, "resolve_effect_choice", cardId, state.definitions, detail);
 }
 
-function skipLog(state: GameState, playerId: PlayerId, cardId: string, effectId: string): string {
+export function skipLog(state: GameState, playerId: PlayerId, cardId: string, effectId: string): string {
   return buildLogEntry(playerId, "skip_effect_choice", cardId, state.definitions, `${effectId}:skipped`);
 }
 
-function appendResume(choice: PendingEffectChoice, next: PendingEffectChoice): PendingEffectChoice {
+export function appendResume(choice: PendingEffectChoice, next: PendingEffectChoice): PendingEffectChoice {
   return { ...choice, resumeChoice: choice.resumeChoice ? appendResume(choice.resumeChoice, next) : next };
 }
 
-function blockedByOtherPrompt(state: GameState): boolean {
+export function blockedByOtherPrompt(state: GameState): boolean {
   return !!(state.pendingLeave || state.pendingRegister || state.pendingDamagePayment || state.pendingEffectRush || state.pendingChase);
 }
 
 /** 選択を開く。ほかの選択・処理の途中なら、その後に開く。 */
-function openAfter(state: GameState, choice: PendingEffectChoice): GameState {
+export function openAfter(state: GameState, choice: PendingEffectChoice): GameState {
   if (state.pendingEffectChoice) return { ...state, pendingEffectChoice: appendResume(state.pendingEffectChoice, choice) };
   if (blockedByOtherPrompt(state)) {
     return { ...state, deferredDestroyTriggers: [...(state.deferredDestroyTriggers ?? []), { kind: "open_choice", step: "after_discard", pending: choice }] };
@@ -115,14 +115,14 @@ function openAfter(state: GameState, choice: PendingEffectChoice): GameState {
 }
 
 /** 選択を閉じた state（resumeChoice はまだ開かない）。 */
-function close(state: GameState, pending: PendingEffectChoice): GameState {
+export function close(state: GameState, pending: PendingEffectChoice): GameState {
   return state.pendingEffectChoice === pending
     ? { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId }
     : state;
 }
 
 /** 効果の処理を終える（割り込みがなければ resumeChoice を開くかバトル進入を続ける）。 */
-function proceed(state: GameState, pending: PendingEffectChoice): GameState {
+export function proceed(state: GameState, pending: PendingEffectChoice): GameState {
   if (state.pendingEffectChoice) {
     return pending.resumeChoice ? { ...state, pendingEffectChoice: appendResume(state.pendingEffectChoice, pending.resumeChoice) } : state;
   }
@@ -135,11 +135,11 @@ function proceed(state: GameState, pending: PendingEffectChoice): GameState {
 }
 
 /** 続き（resumeChoice）を引き継いで次の選択を開く。 */
-function openNext(state: GameState, pending: PendingEffectChoice, next: PendingEffectChoice): GameState {
+export function openNext(state: GameState, pending: PendingEffectChoice, next: PendingEffectChoice): GameState {
   return openEffectChoice(state, { ...next, resumeChoice: pending.resumeChoice });
 }
 
-function simpleSkip(after?: (state: GameState, pending: PendingEffectChoice) => GameState): ChoiceSkipper {
+export function simpleSkip(after?: (state: GameState, pending: PendingEffectChoice) => GameState): ChoiceSkipper {
   return (state, playerId) => {
     const pending = state.pendingEffectChoice!;
     let next = close(state, pending);
@@ -148,9 +148,9 @@ function simpleSkip(after?: (state: GameState, pending: PendingEffectChoice) => 
   };
 }
 
-type BaseCtx = { playerId: PlayerId; phasePlayerId: PlayerId; sourceInstanceId?: string };
+export type BaseCtx = { playerId: PlayerId; phasePlayerId: PlayerId; sourceInstanceId?: string };
 
-function base(ctx: BaseCtx, sourceCardId: string) {
+export function base(ctx: BaseCtx, sourceCardId: string) {
   return {
     playerId: ctx.playerId,
     phasePlayerId: ctx.phasePlayerId,
@@ -160,37 +160,37 @@ function base(ctx: BaseCtx, sourceCardId: string) {
   };
 }
 
-function ctxBase(ctx: GrantKeywordContext): BaseCtx {
+export function ctxBase(ctx: GrantKeywordContext): BaseCtx {
   return { playerId: ctx.playerId, phasePlayerId: ctx.phasePlayerId, sourceInstanceId: ctx.triggerSourceInstanceId ?? ctx.operationInstanceId };
 }
 
-function pendingBase(pending: PendingEffectChoice): BaseCtx {
+export function pendingBase(pending: PendingEffectChoice): BaseCtx {
   return { playerId: pending.playerId, phasePlayerId: pending.phasePlayerId, sourceInstanceId: pending.sourceInstanceId };
 }
 
-function confirmChoice(ctx: BaseCtx, sourceCardId: string, effectId: string): PendingEffectChoice {
+export function confirmChoice(ctx: BaseCtx, sourceCardId: string, effectId: string): PendingEffectChoice {
   return { ...base(ctx, sourceCardId), effectId, kind: "confirm", validInstanceIds: [], optional: true, mayConfirm: true };
 }
 
-function isUnitCard(state: Pick<GameState, "definitions">, cardId: string): boolean {
+export function isUnitCard(state: Pick<GameState, "definitions">, cardId: string): boolean {
   return getDefinition(state.definitions, cardId)?.type === "unit";
 }
 
-function fieldCards(state: Pick<GameState, "players">, playerId: PlayerId): CardInstance[] {
+export function fieldCards(state: Pick<GameState, "players">, playerId: PlayerId): CardInstance[] {
   const p = state.players[playerId];
   return [...p.battle, ...p.rush];
 }
 
 /** 場のユニット（RK-280・RK-281 のビークルとして扱っているものを除く）。 */
-function fieldUnits(state: Pick<GameState, "players" | "definitions">, playerId: PlayerId): CardInstance[] {
+export function fieldUnits(state: Pick<GameState, "players" | "definitions">, playerId: PlayerId): CardInstance[] {
   return fieldCards(state, playerId).filter((c) => isUnitCard(state, c.cardId) && !rk14ActsAsVehicle(state.players[playerId], c));
 }
 
-function findField(state: Pick<GameState, "players">, playerId: PlayerId, instanceId: string): CardInstance | undefined {
+export function findField(state: Pick<GameState, "players">, playerId: PlayerId, instanceId: string): CardInstance | undefined {
   return fieldCards(state, playerId).find((c) => c.instanceId === instanceId);
 }
 
-function zoneOfField(state: Pick<GameState, "players">, playerId: PlayerId, instanceId: string): "battle" | "rush" | null {
+export function zoneOfField(state: Pick<GameState, "players">, playerId: PlayerId, instanceId: string): "battle" | "rush" | null {
   const p = state.players[playerId];
   if (p.battle.some((c) => c.instanceId === instanceId)) return "battle";
   if (p.rush.some((c) => c.instanceId === instanceId)) return "rush";
@@ -198,26 +198,26 @@ function zoneOfField(state: Pick<GameState, "players">, playerId: PlayerId, inst
 }
 
 /** 敵軍の効果で選べる敵軍のカード（「相手に選ばれない」等を除く）。 */
-function selectableEnemy(state: GameState, playerId: PlayerId, sourceCardId: string, card: CardInstance): boolean {
+export function selectableEnemy(state: GameState, playerId: PlayerId, sourceCardId: string, card: CardInstance): boolean {
   return isSelectableByOpponentEffect(state, playerId, card.instanceId, sourceCardId, playerId);
 }
 
-function stripForZone(card: Pick<CardInstance, "instanceId" | "cardId">): CardInstance {
+export function stripForZone(card: Pick<CardInstance, "instanceId" | "cardId">): CardInstance {
   return { instanceId: card.instanceId, cardId: card.cardId };
 }
 
-function printedBp(state: Pick<GameState, "definitions">, cardId: string): number {
+export function printedBp(state: Pick<GameState, "definitions">, cardId: string): number {
   const bp = getDefinition(state.definitions, cardId)?.bp;
   return typeof bp === "number" ? bp : Number.NaN;
 }
 
-function categoriesOf(state: Pick<GameState, "definitions">, cardId: string): string[] {
+export function categoriesOf(state: Pick<GameState, "definitions">, cardId: string): string[] {
   const d = getDefinition(state.definitions, cardId);
   return d ? (cardCategories(d) as string[]) : [];
 }
 
 /** 汎用の1体選択（撃破・パワーゾーンへ送る。rules/pendingChoices.ts の select_unit と unitDestination で処理する）。 */
-function genericPick(ctx: BaseCtx, sourceCardId: string, effectId: string, ids: string[], optional: boolean, unitDestination: "discard" | "power"): PendingEffectChoice {
+export function genericPick(ctx: BaseCtx, sourceCardId: string, effectId: string, ids: string[], optional: boolean, unitDestination: "discard" | "power"): PendingEffectChoice {
   return { ...base(ctx, sourceCardId), effectId, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional, unitDestination };
 }
 
@@ -240,18 +240,19 @@ function destroyAll(state: GameState, ctx: BaseCtx, sourceCardId: string, effect
 }
 
 /** 場のユニットを持ち主の指定のゾーンに移す（撃破ではない。ライドしているビークル・下に重ねたカードは捨札）。 */
-function moveFieldUnit(
+export function moveFieldUnit(
   state: GameState,
   ownerId: PlayerId,
   instanceId: string,
   phasePlayerId: PlayerId,
-  to: "command_held" | "hand" | "power_damage",
+  to: "command_held" | "hand" | "power_damage" | "power" | "discard" | "deck_bottom",
 ): GameState {
   const zone = zoneOfField(state, ownerId, instanceId);
   const found = findField(state, ownerId, instanceId);
   if (!zone || !found) return state;
   const toCommand = to === "command_held" && state.players[ownerId].command.length < COMMAND_ZONE_MAX;
-  const toZone = to === "hand" ? "hand" : to === "power_damage" ? "power" : toCommand ? "command" : "discard";
+  const toPower = to === "power_damage" || to === "power";
+  const toZone = to === "hand" ? "hand" : toPower ? "power" : to === "deck_bottom" ? "deck" : toCommand ? "command" : "discard";
   const moved = patchPlayer(state, ownerId, (p) => {
     const strip = (cards: CardInstance[]) =>
       cards.filter((c) => c.instanceId !== instanceId).map((c) => (c.mountedOnInstanceId === instanceId ? { ...c, mountedOnInstanceId: undefined } : c));
@@ -260,9 +261,10 @@ function moveFieldUnit(
       ...p,
       [zone]: strip(p[zone]),
       hand: to === "hand" ? [...p.hand, card] : p.hand,
-      power: to === "power_damage" ? [...p.power, { ...card, faceDown: true }] : p.power,
+      power: toPower ? [...p.power, to === "power_damage" ? { ...card, faceDown: true } : card] : p.power,
       damage: to === "power_damage" ? p.damage + 1 : p.damage,
       command: toCommand ? [...p.command, { ...card, commandHeld: true }] : p.command,
+      deck: to === "deck_bottom" ? [...p.deck, card] : p.deck,
       discard: [...p.discard, ...(toZone === "discard" ? [card] : []), ...(found.stackedCards ?? []).map(stripForZone)],
     };
   });
@@ -279,12 +281,12 @@ function moveFieldUnit(
 }
 
 /** 山札（等）のカードを効果のラッシュで出す（選んだ1枚。必要パワー・追加条件は問わない）。 */
-function effectRushPicked(
+export function effectRushPicked(
   state: GameState,
   pending: PendingEffectChoice,
   ownerId: PlayerId,
   instanceId: string,
-  fromZone: "deck" | "power",
+  fromZone: "deck" | "power" | "discard",
   after?: (state: GameState) => GameState,
 ): GameState {
   let next = startEffectRush(close(state, pending), {
@@ -304,7 +306,7 @@ function effectRushPicked(
   return proceed(next, pending);
 }
 
-function shuffleDeck(state: GameState, playerId: PlayerId): GameState {
+export function shuffleDeck(state: GameState, playerId: PlayerId): GameState {
   return patchPlayer(state, playerId, (p) => ({ ...p, deck: shuffleCards(p.deck) }));
 }
 

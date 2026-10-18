@@ -98,7 +98,7 @@ describe("RM-036 暴魂チューボ", () => {
   /** 自軍バトルフェイズ、チューボを出して enemy にアタックする。 */
   const attacked = (enemy: CardInstance) => resolveAll(attack(enter(battleBoard({ rush: [inst("RM-036", "cb")] }, { battle: [enemy] }), "RM-036:cb"), "RM-036:cb", enemy.instanceId));
 
-  it.fails("RM-036:【剣の使い手】— バトルする敵軍ユニットの BP が本来の BP でなく（BP-500 されている）、そのバトルで撃破したとき、相手に1点ダメージ（出典: atwiki/page-847「これとバトルする敵軍ユニットのBPが本来のBPでなかったなら、そのバトルで敵軍ユニットを撃破したとき、相手に1点ダメージを与える」）", () => {
+  it("RM-036:【剣の使い手】— バトルする敵軍ユニットの BP が本来の BP でなく（BP-500 されている）、そのバトルで撃破したとき、相手に1点ダメージ（出典: atwiki/page-847「これとバトルする敵軍ユニットのBPが本来のBPでなかったなら、そのバトルで敵軍ユニットを撃破したとき、相手に1点ダメージを与える」）", () => {
     const s = attacked({ ...inst("SPEC-E2000", "e"), bpModifier: -500 });
     expect(zoneOf(s, "player2", "SPEC-E2000:e")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(1);
@@ -110,7 +110,7 @@ describe("RM-036 暴魂チューボ", () => {
     expect(damageOf(s, "player2")).toBe(0);
   });
 
-  it.fails("RM-036:【剣の使い手】— 敵軍ターンにアタックされたバトルでも、BP が本来の BP でない（BP+1000 されている）アタック側を撃破すれば相手に1点ダメージ（出典: atwiki/page-847「これとバトルする」・カード評価「アタックされた時にBPが上がるため」）", () => {
+  it("RM-036:【剣の使い手】— 敵軍ターンにアタックされたバトルでも、BP が本来の BP でない（BP+1000 されている）アタック側を撃破すれば相手に1点ダメージ（出典: atwiki/page-847「これとバトルする」・カード評価「アタックされた時にBPが上がるため」）", () => {
     const s = resolveAll(attackedInEnemyTurn({ battle: [inst("RM-036", "cb")] }, "RM-036:cb", { battle: [{ ...inst("SPEC-E4000", "atk"), bpModifier: 1000 }] }, "SPEC-E4000:atk", EXTRA));
     expect(zoneOf(s, "player2", "SPEC-E4000:atk")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(1);
@@ -141,27 +141,27 @@ describe("RM-037 凱聖ゲルドリング", () => {
       "RM-037:gd",
     );
 
-  it.fails("RM-037:【手段を選ばぬ策略】— 自軍ターン中にバトルエリアに出たとき、自軍ラッシュエリアの「怪人」を持つユニット（サイズを問わない）から1体選べる（任意）（出典: atwiki/page-848「自軍ラッシュエリアから特徴「怪人」を持つユニットを1体選び、捨札にしてもよい」）", () => {
+  it("RM-037:【手段を選ばぬ策略】— 自軍ターン中にバトルエリアに出たとき、自軍ラッシュエリアの「怪人」を持つユニット（サイズを問わない）から1体選べる（任意）（出典: atwiki/page-848「自軍ラッシュエリアから特徴「怪人」を持つユニットを1体選び、捨札にしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RM-037");
     expect(choiceIds(s)).toEqual(["SPEC-KAIJIN-M:km", "SPEC-KAIJIN:k"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-037:【手段を選ばぬ策略】— 選んだ「怪人」を捨札にすると、相手の手札から1枚選ぶ（出典: atwiki/page-848「そうしたとき、相手の手札を見ないで1枚選ぶ」）", () => {
+  it("RM-037:【手段を選ばぬ策略】— 選んだ「怪人」を捨札にすると、相手の手札から1枚選ぶ（出典: atwiki/page-848「そうしたとき、相手の手札を見ないで1枚選ぶ」）", () => {
     const s = pick(entered(), "SPEC-KAIJIN:k");
     expect(zoneOf(s, "player1", "SPEC-KAIJIN:k")).toBe("discard");
     expectChoiceFrom(s, "player1", "RM-037");
     expect(choiceIds(s)).toEqual(["TST-OP:h1", "TST-UNIT-0:h2"]);
   });
 
-  it.fails("RM-037:【手段を選ばぬ策略】— 相手が、選ばれたカードを山札の上・パワーゾーン・コマンドゾーン（ホールド状態）のどこに置くかを選ぶ（出典: atwiki/page-848「相手は選ばれたカードを自分自身の山札の上に戻すか、自分自身のパワーゾーンに置くか、自分自身のコマンドゾーンにホールド状態で置くかを選ぶ」）", () => {
+  it("RM-037:【手段を選ばぬ策略】— 相手が、選ばれたカードを山札の上・パワーゾーン・コマンドゾーン（ホールド状態）のどこに置くかを選ぶ（出典: atwiki/page-848「相手は選ばれたカードを自分自身の山札の上に戻すか、自分自身のパワーゾーンに置くか、自分自身のコマンドゾーンにホールド状態で置くかを選ぶ」）", () => {
     const s = pick(pick(entered(), "SPEC-KAIJIN:k"), "TST-UNIT-0:h2");
     expect(choicePlayer(s)).toBe("player2");
     expect(choiceIds(s)).toEqual(["deck_top", "to_command", "to_power"]);
   });
 
-  it.fails("RM-037:【手段を選ばぬ策略】— 山札の上・パワーゾーン・コマンドゾーンのどれを選んでも、そのとおりに置かれる（出典: atwiki/page-848）", () => {
+  it("RM-037:【手段を選ばぬ策略】— 山札の上・パワーゾーン・コマンドゾーンのどれを選んでも、そのとおりに置かれる（出典: atwiki/page-848）", () => {
     const chosen = () => pick(pick(entered(), "SPEC-KAIJIN:k"), "TST-UNIT-0:h2");
     const top = settle(pickAs(chosen(), "player2", "deck_top"));
     expect(top.players.player2.deck[0]?.instanceId).toBe("TST-UNIT-0:h2");
@@ -173,7 +173,7 @@ describe("RM-037 凱聖ゲルドリング", () => {
     expect(cardIn(command, "player2", "TST-UNIT-0:h2")?.commandHeld).toBe(true);
   });
 
-  it.fails("RM-037:【手段を選ばぬ策略】— 相手のコマンドゾーンが5枚ならコマンドゾーンは選べない（出典: atwiki/page-848・R-ZONE-08（コマンドゾーンは5枚まで））", () => {
+  it("RM-037:【手段を選ばぬ策略】— 相手のコマンドゾーンが5枚ならコマンドゾーンは選べない（出典: atwiki/page-848・R-ZONE-08（コマンドゾーンは5枚まで））", () => {
     const s = pick(pick(entered({ command: heldN(5, "TST-OP", "ec") }), "SPEC-KAIJIN:k"), "TST-UNIT-0:h2");
     expect(choiceIds(s)).toEqual(["deck_top", "to_power"]);
   });
@@ -182,7 +182,7 @@ describe("RM-037 凱聖ゲルドリング", () => {
     "RM-037:【手段を選ばぬ策略】—「相手の手札を見ないで1枚選ぶ」（手札の中身を見せずに選ばせる）— エンジンの公開 API は相手の手札のカードを instanceId で選ぶだけで、選ぶ側に中身を見せないことは web の表示の照合でしか確かめられない",
   );
 
-  it.fails("RM-037:【手段を選ばぬ策略】— 見送れば「怪人」は捨札にならず、相手の手札も変わらない（出典: atwiki/page-848「捨札にしてもよい」）", () => {
+  it("RM-037:【手段を選ばぬ策略】— 見送れば「怪人」は捨札にならず、相手の手札も変わらない（出典: atwiki/page-848「捨札にしてもよい」）", () => {
     const s = resolveAll(skip(entered()));
     expect(zoneOf(s, "player1", "SPEC-KAIJIN:k")).toBe("rush");
     expect(s.players.player2.hand).toHaveLength(ENEMY_HAND.length);
@@ -203,20 +203,20 @@ describe("RM-038 凱聖バルスキー", () => {
   const DISCARD = [inst("SPEC-DA-MECHA", "dm"), inst("SPEC-DA-PLAIN", "dp"), inst("SPEC-ET-MECHA", "em"), inst("SPEC-DA-MECHA-M", "mm")];
   const rushPhase = (command = releasedCat("DA", 3), p1: Partial<GameState["players"]["player1"]> = {}) => board({ rush: [inst("RM-038", "bs")], command, discard: DISCARD, ...p1 });
 
-  it.fails("RM-038:【部下の修理と改造】— 自軍ラッシュフェイズ中、DA の自軍コマンドを3つホールドして発動できる（出典: atwiki/page-849「自軍ラッシュフェイズ中、DAを持つ自軍コマンドを3つホールドしてもよい」・カード評価「自分はラッシュエリアに引きこもっていても効果を発動できる」）", () => {
+  it("RM-038:【部下の修理と改造】— 自軍ラッシュフェイズ中、DA の自軍コマンドを3つホールドして発動できる（出典: atwiki/page-849「自軍ラッシュフェイズ中、DAを持つ自軍コマンドを3つホールドしてもよい」・カード評価「自分はラッシュエリアに引きこもっていても効果を発動できる」）", () => {
     const s = rushPhase();
     expect(canActivate(s, "RM-038:bs")).toBe(true);
     const t = activate(s, "RM-038:bs");
     expect(t.players.player1.command.every((c) => c.commandHeld)).toBe(true);
   });
 
-  it.fails("RM-038:【部下の修理と改造】— 自軍捨札の、DA で「メカ」を持つ S ユニットのカードから1枚選ぶ（DA でないもの・「メカ」でないもの・M ユニットは選べない）（出典: atwiki/page-849「自軍捨札からDAを持ち特徴「メカ」を持つSユニットのカードを1枚選び」）", () => {
+  it("RM-038:【部下の修理と改造】— 自軍捨札の、DA で「メカ」を持つ S ユニットのカードから1枚選ぶ（DA でないもの・「メカ」でないもの・M ユニットは選べない）（出典: atwiki/page-849「自軍捨札からDAを持ち特徴「メカ」を持つSユニットのカードを1枚選び」）", () => {
     const s = activate(rushPhase(), "RM-038:bs");
     expectChoiceFrom(s, "player1", "RM-038");
     expect(choiceIds(s)).toEqual(["SPEC-DA-MECHA:dm"]);
   });
 
-  it.fails("RM-038:【部下の修理と改造】— 選んだカードは自軍ラッシュエリアに出る（出典: atwiki/page-849「自軍ラッシュエリアに出す」・カード評価「厄介な効果をもつユニットを再利用できる」）", () => {
+  it("RM-038:【部下の修理と改造】— 選んだカードは自軍ラッシュエリアに出る（出典: atwiki/page-849「自軍ラッシュエリアに出す」・カード評価「厄介な効果をもつユニットを再利用できる」）", () => {
     const s = resolveAll(pick(activate(rushPhase(), "RM-038:bs"), "SPEC-DA-MECHA:dm"));
     expect(zoneOf(s, "player1", "SPEC-DA-MECHA:dm")).toBe("rush");
   });
@@ -229,7 +229,7 @@ describe("RM-038 凱聖バルスキー", () => {
     expect(canActivate(battleBoard({ rush: [inst("RM-038", "bs")], command: releasedCat("DA", 3), discard: DISCARD }), "RM-038:bs")).toBe(false);
   });
 
-  it.fails("RM-038:【部下の修理と改造】— 回数の制限はなく、DA のコマンドがあれば同じラッシュフェイズにもう一度発動できる（出典: atwiki/page-849 本文（「1度だけ」の限定がない）・カード評価「コマンドを3つも使用する都合上」）", () => {
+  it("RM-038:【部下の修理と改造】— 回数の制限はなく、DA のコマンドがあれば同じラッシュフェイズにもう一度発動できる（出典: atwiki/page-849 本文（「1度だけ」の限定がない）・カード評価「コマンドを3つも使用する都合上」）", () => {
     const s = resolveAll(pick(activate(rushPhase(releasedCat("DA", 6), { discard: [...DISCARD, inst("SPEC-DA-MECHA", "dm2")] }), "RM-038:bs"), "SPEC-DA-MECHA:dm"));
     expect(canActivate(s, "RM-038:bs")).toBe(true);
   });
@@ -258,20 +258,20 @@ describe("RM-039 ジライヤ第二装着", () => {
       "RM-039:jr",
     );
 
-  it.fails("RM-039:【十文字斬り】— 自軍ターン中にバトルエリアに出たとき、敵軍捨札のユニットカードから1枚選べる（オペレーションは選べない。任意）（出典: atwiki/page-872「敵軍捨札からユニットカードを1枚選んでもよい」）", () => {
+  it("RM-039:【十文字斬り】— 自軍ターン中にバトルエリアに出たとき、敵軍捨札のユニットカードから1枚選べる（オペレーションは選べない。任意）（出典: atwiki/page-872「敵軍捨札からユニットカードを1枚選んでもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RM-039");
     expect(choiceIds(s)).toEqual(["SPEC-NAMED-A:da", "SPEC-NAMED-B:db"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-039:【十文字斬り】— 選んだユニットカードと同じカード名の敵軍ユニット（エリア・サイズを問わない）から1体選ぶ（出典: atwiki/page-872「選んだユニットカードと同じカード名の敵軍ユニットを1体選び」・カード評価「サイズに影響されないのでＬユニットであっても問答無用。さらにラッシュエリアにも届く」）", () => {
+  it("RM-039:【十文字斬り】— 選んだユニットカードと同じカード名の敵軍ユニット（エリア・サイズを問わない）から1体選ぶ（出典: atwiki/page-872「選んだユニットカードと同じカード名の敵軍ユニットを1体選び」・カード評価「サイズに影響されないのでＬユニットであっても問答無用。さらにラッシュエリアにも届く」）", () => {
     const s = pick(entered(), "SPEC-NAMED-A:da");
     expectChoiceFrom(s, "player1", "RM-039");
     expect(choiceIds(s)).toEqual(["SPEC-NAMED-A2:ba", "SPEC-NAMED-A:ra"]);
   });
 
-  it.fails("RM-039:【十文字斬り】— 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる。捨札のカードは捨札に残る（出典: atwiki/page-872「持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("RM-039:【十文字斬り】— 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる。捨札のカードは捨札に残る（出典: atwiki/page-872「持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(pick(pick(entered(), "SPEC-NAMED-A:da"), "SPEC-NAMED-A:ra"));
     expect(zoneOf(s, "player2", "SPEC-NAMED-A:ra")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-NAMED-A:ra")?.faceDown).toBe(true);
@@ -279,7 +279,7 @@ describe("RM-039 ジライヤ第二装着", () => {
     expect(zoneOf(s, "player2", "SPEC-NAMED-A:da")).toBe("discard");
   });
 
-  it.fails("RM-039:【十文字斬り】— 同じカード名の敵軍ユニットがいなければ何も起きない（出典: atwiki/page-872「そうしたとき、選んだユニットカードと同じカード名の敵軍ユニットを」）", () => {
+  it("RM-039:【十文字斬り】— 同じカード名の敵軍ユニットがいなければ何も起きない（出典: atwiki/page-872「そうしたとき、選んだユニットカードと同じカード名の敵軍ユニットを」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-NAMED-B:db"));
     expect(damageOf(s, "player2")).toBe(0);
     expect(s.players.player2.battle).toHaveLength(2);
@@ -318,14 +318,14 @@ describe("RM-040 姫忍　恵美破", () => {
     expect(spOf(settle(s), "player1", "RM-040:e")).toBe(1);
   });
 
-  it.fails("RM-040: NC【忍法花吹雪】— カテゴリか特徴が追加されている敵軍 S ユニット（エリアを問わない）から1体選べる（M ユニット・何も追加されていない S ユニットは選べない。任意）（出典: atwiki/page-852「カテゴリまたは特徴の追加されている敵軍Sユニットを1体選び、持ち主の山札の下に戻してもよい」・カード評価「エリアに左右されない除去能力」）", () => {
+  it("RM-040: NC【忍法花吹雪】— カテゴリか特徴が追加されている敵軍 S ユニット（エリアを問わない）から1体選べる（M ユニット・何も追加されていない S ユニットは選べない。任意）（出典: atwiki/page-852「カテゴリまたは特徴の追加されている敵軍Sユニットを1体選び、持ち主の山札の下に戻してもよい」・カード評価「エリアに左右されない除去能力」）", () => {
     const s = ncEntered();
     expectChoiceFrom(s, "player1", "RM-040");
     expect(choiceIds(s)).toEqual(["RS-535:cd", "SPEC-ES:c", "SPEC-ES:f"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-040: NC【忍法花吹雪】— 選んだユニットは持ち主の山札の一番下に戻る（出典: atwiki/page-852「持ち主の山札の下に戻してもよい」）", () => {
+  it("RM-040: NC【忍法花吹雪】— 選んだユニットは持ち主の山札の一番下に戻る（出典: atwiki/page-852「持ち主の山札の下に戻してもよい」）", () => {
     const s = resolveAll(pick(ncEntered(), "SPEC-ES:f"));
     expect(s.players.player2.deck.at(-1)?.instanceId).toBe("SPEC-ES:f");
   });
@@ -363,14 +363,14 @@ describe("RM-041 城忍　フクロウ男爵", () => {
       true,
     );
 
-  it.fails("RM-041: RC【アイアム偽者などノーサンキュー】— 敵軍ユニット（エリア・サイズを問わない）から1体選べる（任意）（出典: atwiki/page-853「敵軍ユニットを1体選んでもよい」・カード評価「エリア・サイズを問わずダメージに送る強力な除去」）", () => {
+  it("RM-041: RC【アイアム偽者などノーサンキュー】— 敵軍ユニット（エリア・サイズを問わない）から1体選べる（任意）（出典: atwiki/page-853「敵軍ユニットを1体選んでもよい」・カード評価「エリア・サイズを問わずダメージに送る強力な除去」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "RM-041");
     expect(choiceIds(s)).toEqual(["SPEC-NAMED-A2:ba", "SPEC-NAMED-A:ra", "SPEC-NAMED-B:rb"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-041: RC — 選んだユニットと同じカード名の敵軍ユニットがほかにあれば、選んだユニットを持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-853「選んだユニット以外にあれば、選んだユニットを持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("RM-041: RC — 選んだユニットと同じカード名の敵軍ユニットがほかにあれば、選んだユニットを持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-853「選んだユニット以外にあれば、選んだユニットを持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(pick(rc(), "SPEC-NAMED-A2:ba"));
     expect(zoneOf(s, "player2", "SPEC-NAMED-A2:ba")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-NAMED-A2:ba")?.faceDown).toBe(true);
@@ -378,7 +378,7 @@ describe("RM-041 城忍　フクロウ男爵", () => {
     expect(zoneOf(s, "player2", "SPEC-NAMED-A:ra")).toBe("rush");
   });
 
-  it.fails("RM-041: RC — 同じカード名の敵軍ユニットがほかになければ何も起きない（出典: atwiki/page-853「選んだユニット以外にあれば」）", () => {
+  it("RM-041: RC — 同じカード名の敵軍ユニットがほかになければ何も起きない（出典: atwiki/page-853「選んだユニット以外にあれば」）", () => {
     const s = resolveAll(pick(rc(), "SPEC-NAMED-B:rb"));
     expect(zoneOf(s, "player2", "SPEC-NAMED-B:rb")).toBe("rush");
     expect(damageOf(s, "player2")).toBe(0);
@@ -400,28 +400,28 @@ describe("RM-042 蝶忍　紅牙", () => {
   const ncEntered = (hand: CardInstance[] = HAND, fillerCount = 3) =>
     ncEnter("RM-042:k", fillerCount, { hand }, { rush: [inst("SPEC-C4", "c4"), inst("SPEC-C4M", "m4"), inst("SPEC-C3", "c3")], battle: [inst("SPEC-C4P", "c4p")] }, EXTRA);
 
-  it.fails("RM-042: NC【妖魔忍法乱れ蝶】— 自分の手札から2枚選べる（任意）（出典: atwiki/page-850「自分の手札からカードを2枚選び相手に見せてもよい」）", () => {
+  it("RM-042: NC【妖魔忍法乱れ蝶】— 自分の手札から2枚選べる（任意）（出典: atwiki/page-850「自分の手札からカードを2枚選び相手に見せてもよい」）", () => {
     const s = ncEntered();
     expectChoiceFrom(s, "player1", "RM-042");
     expect(choiceIds(s)).toEqual(["SPEC-OP1:h1", "SPEC-OP3:h3", "TST-P:h0"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-042: NC — 2枚の必要パワーの数字の合計（3+1=4）と同じ必要パワーの数字の敵軍 S ユニット（エリアを問わない。「4+」も4）から1体選ぶ。見せたカードは手札に残る（出典: atwiki/page-850「見せた2枚のカードの必要パワーの数字を合計して、その合計と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び」・カード評価「エリアを問わず、追加条件を持つユニットも除去出来る」）", () => {
+  it("RM-042: NC — 2枚の必要パワーの数字の合計（3+1=4）と同じ必要パワーの数字の敵軍 S ユニット（エリアを問わない。「4+」も4）から1体選ぶ。見せたカードは手札に残る（出典: atwiki/page-850「見せた2枚のカードの必要パワーの数字を合計して、その合計と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び」・カード評価「エリアを問わず、追加条件を持つユニットも除去出来る」）", () => {
     const s = pick(pick(ncEntered(), "SPEC-OP3:h3"), "SPEC-OP1:h1");
     expectChoiceFrom(s, "player1", "RM-042");
     expect(choiceIds(s)).toEqual(["SPEC-C4:c4", "SPEC-C4P:c4p"]);
     expect(s.players.player1.hand).toHaveLength(HAND.length);
   });
 
-  it.fails("RM-042: NC — 選んだユニットは持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-850「持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("RM-042: NC — 選んだユニットは持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-850「持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(pick(pick(pick(ncEntered(), "SPEC-OP3:h3"), "SPEC-OP1:h1"), "SPEC-C4:c4"));
     expect(zoneOf(s, "player2", "SPEC-C4:c4")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-C4:c4")?.faceDown).toBe(true);
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RM-042: NC — 手札が1枚しかなければ発動しない（出典: atwiki/page-850「カードを2枚選び」）", () => {
+  it("RM-042: NC — 手札が1枚しかなければ発動しない（出典: atwiki/page-850「カードを2枚選び」）", () => {
     const s = ncEntered([inst("SPEC-OP3", "h3")]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-042");
   });

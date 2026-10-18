@@ -94,20 +94,20 @@ describe("RM-022 サイバリアン", () => {
     expectRarityIn("RM-022", ["N"]);
   });
 
-  it.fails("RM-022: 自軍ターン中、ライドされてバトルエリアに出たとき、OT の自軍コマンドを2つホールドするかを選べる（任意）（出典: atwiki/page-837「自軍ターン中、これがバトルエリアに出たとき、OTを持つ自軍コマンドを2つホールドしてもよい」）", () => {
+  it("RM-022: 自軍ターン中、ライドされてバトルエリアに出たとき、OT の自軍コマンドを2つホールドするかを選べる（任意）（出典: atwiki/page-837「自軍ターン中、これがバトルエリアに出たとき、OTを持つ自軍コマンドを2つホールドしてもよい」）", () => {
     const s = mounted();
     expectChoiceFrom(s, "player1", "RM-022");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-022: ホールドすると OT の自軍コマンドが2つホールド状態になる（ほかのカテゴリのコマンドはそのまま）（出典: atwiki/page-837）", () => {
+  it("RM-022: ホールドすると OT の自軍コマンドが2つホールド状態になる（ほかのカテゴリのコマンドはそのまま）（出典: atwiki/page-837）", () => {
     const s = accept(mounted());
     const command = s.players.player1.command;
     expect(command.filter((c) => c.cardId === "TST-OP-OT").every((c) => c.commandHeld)).toBe(true);
     expect(command.filter((c) => c.cardId === "TST-OP").every((c) => !c.commandHeld)).toBe(true);
   });
 
-  it.fails("RM-022: ホールドしたら、ライドしているユニットはライドオフしないで進んでも RC の効果を発動する（出典: atwiki/page-837「これにライドしているユニットは、このターン、ライドオフしなくてもＲＣの効果を発動できる」・カード評価「ライドオフせずとも能力が使える」）", () => {
+  it("RM-022: ホールドしたら、ライドしているユニットはライドオフしないで進んでも RC の効果を発動する（出典: atwiki/page-837「これにライドしているユニットは、このターン、ライドオフしなくてもＲＣの効果を発動できる」・カード評価「ライドオフせずとも能力が使える」）", () => {
     let s = accept(mounted());
     expect(rideOffOffered(s)).toBe(true);
     s = rideOff(s, false);
@@ -116,7 +116,7 @@ describe("RM-022 サイバリアン", () => {
     expect(cardIn(s, "player1", "RM-018:g")?.mountedOnInstanceId).toBe("RM-022:v");
   });
 
-  it.fails("RM-022: ホールドしなければ、ライドオフしないで進んでも RC の効果は発動しない（出典: atwiki/page-837「そうしたとき」・R-KW-RC-01）", () => {
+  it("RM-022: ホールドしなければ、ライドオフしないで進んでも RC の効果は発動しない（出典: atwiki/page-837「そうしたとき」・R-KW-RC-01）", () => {
     const s = rideOff(skip(mounted()), false);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-018");
   });
@@ -166,14 +166,14 @@ describe("RM-023 スクーパー", () => {
     expect(s.players.player1.hand).toHaveLength(0);
   });
 
-  it.fails("RM-023:【地中潜行】— ラッシュしたとき、敵軍パワーゾーンのオモテ向きのカードから1枚選べる（ウラ向きのダメージは選べない。任意）（出典: atwiki/page-838「敵軍パワーゾーンのオモテ向きのカードから1枚選び、捨札にしてもよい」）", () => {
+  it("RM-023:【地中潜行】— ラッシュしたとき、敵軍パワーゾーンのオモテ向きのカードから1枚選べる（ウラ向きのダメージは選べない。任意）（出典: atwiki/page-838「敵軍パワーゾーンのオモテ向きのカードから1枚選び、捨札にしてもよい」）", () => {
     const s = rushScooper().state;
     expectChoiceFrom(s, "player1", "RM-023");
     expect(choiceIds(s)).toEqual(["TST-OP-OT:up2", "TST-OP:up1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-023:【地中潜行】— 選んだカードは敵軍捨札になり、続けて敵軍捨札からカードを1枚選ぶ（見送れない）（出典: atwiki/page-838「そうしたとき、敵軍捨札からカードを1枚選び」）", () => {
+  it("RM-023:【地中潜行】— 選んだカードは敵軍捨札になり、続けて敵軍捨札からカードを1枚選ぶ（見送れない）（出典: atwiki/page-838「そうしたとき、敵軍捨札からカードを1枚選び」）", () => {
     const s = pick(rushScooper().state, "TST-OP:up1");
     expect(zoneOf(s, "player2", "TST-OP:up1")).toBe("discard");
     expectChoiceFrom(s, "player1", "RM-023");
@@ -181,20 +181,20 @@ describe("RM-023 スクーパー", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RM-023:【地中潜行】— 敵軍捨札から選んだカードは敵軍パワーゾーンにオモテ向きで置かれる（パワーの枚数は変わらない）（出典: atwiki/page-838「敵軍パワーゾーンにオモテ向きで置く」）", () => {
+  it("RM-023:【地中潜行】— 敵軍捨札から選んだカードは敵軍パワーゾーンにオモテ向きで置かれる（パワーの枚数は変わらない）（出典: atwiki/page-838「敵軍パワーゾーンにオモテ向きで置く」）", () => {
     const s = resolveAll(pick(pick(rushScooper().state, "TST-OP:up1"), "SPEC-ES:d1"));
     expect(zoneOf(s, "player2", "SPEC-ES:d1")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-ES:d1")?.faceDown ?? false).toBe(false);
     expect(s.players.player2.power).toHaveLength(ENEMY_POWER.length);
   });
 
-  it.fails("RM-023:【地中潜行】— 見送れば敵軍のパワーゾーン・捨札は変わらない（出典: atwiki/page-838「捨札にしてもよい」）", () => {
+  it("RM-023:【地中潜行】— 見送れば敵軍のパワーゾーン・捨札は変わらない（出典: atwiki/page-838「捨札にしてもよい」）", () => {
     const s = resolveAll(skip(rushScooper().state));
     expect(zoneOf(s, "player2", "TST-OP:up1")).toBe("power");
     expect(zoneOf(s, "player2", "SPEC-ES:d1")).toBe("discard");
   });
 
-  it.fails("RM-023: ※ — チェイスを持つ自軍ユニット（宇宙刑事ギャバン）があれば S ビークルとして扱い、RC のユニットがライドできる（出典: atwiki/page-838「チェイスを持つ自軍ユニットがあるか…Sビークルとして扱う」）", () => {
+  it("RM-023: ※ — チェイスを持つ自軍ユニット（宇宙刑事ギャバン）があれば S ビークルとして扱い、RC のユニットがライドできる（出典: atwiki/page-838「チェイスを持つ自軍ユニットがあるか…Sビークルとして扱う」）", () => {
     const s = battleBoard({ rush: [inst("RM-018", "g"), inst("SPEC-RC", "r"), inst("RM-023", "sc")] });
     expect(canMount(s, "SPEC-RC:r", "RM-023:sc")).toBe(true);
   });
@@ -204,7 +204,7 @@ describe("RM-023 スクーパー", () => {
     expect(canMount(s, "SPEC-RC:r", "RM-023:sc")).toBe(false);
   });
 
-  it.fails("RM-023: ※ — チェイスの乗り換え先に選べる（ライドしているビークルを捨札にして、ライドされていないスクーパーにライドする）（出典: atwiki/page-838・カード評価「チェイス持ちが出ればビークルとなってチェイスを発動しやすくする」・R-KW-CHASE-01）", () => {
+  it("RM-023: ※ — チェイスの乗り換え先に選べる（ライドしているビークルを捨札にして、ライドされていないスクーパーにライドする）（出典: atwiki/page-838・カード評価「チェイス持ちが出ればビークルとなってチェイスを発動しやすくする」・R-KW-CHASE-01）", () => {
     // 自軍バトルフェイズ、player2 の宇宙刑事ギャバン（SPEC-VEHICLE にライド中）を BP13000 でアタックして撃破する。
     let s = st(
       {
@@ -236,14 +236,14 @@ describe("RM-024 高次元戦闘車ギャビオン", () => {
     expectRarityIn("RM-024", ["N"]);
   });
 
-  it.fails("RM-024:【搭載】— ラッシュしたとき、自軍山札の、特徴「車両」を持つ S ユニットのカードから1枚選べる（M ユニット・ビークルのカード・「車両」を持たないカードは選べない。任意）（出典: atwiki/page-839「特徴「車両」を持つSユニットのカードを1枚選び」「次の効果を発動できる」・カード評価「サーチ出来るユニットは今のところスクーパー、バイクル、サブマシーン」）", () => {
+  it("RM-024:【搭載】— ラッシュしたとき、自軍山札の、特徴「車両」を持つ S ユニットのカードから1枚選べる（M ユニット・ビークルのカード・「車両」を持たないカードは選べない。任意）（出典: atwiki/page-839「特徴「車両」を持つSユニットのカードを1枚選び」「次の効果を発動できる」・カード評価「サーチ出来るユニットは今のところスクーパー、バイクル、サブマシーン」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "RM-024");
     expect(choiceIds(s)).toEqual(["RM-023:sc", "SPEC-CAR-S:cs"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-024:【搭載】— 選んだカードは山札をシャッフルした後で山札の上に戻る（山札の枚数は変わらない）（出典: atwiki/page-839「その後、山札をシャッフルし、選んだカードを山札の上に戻す」）", () => {
+  it("RM-024:【搭載】— 選んだカードは山札をシャッフルした後で山札の上に戻る（山札の枚数は変わらない）（出典: atwiki/page-839「その後、山札をシャッフルし、選んだカードを山札の上に戻す」）", () => {
     const s = resolveAll(pick(rushed(), "RM-023:sc"));
     expect(s.players.player1.deck[0]?.instanceId).toBe("RM-023:sc");
     expect(s.players.player1.deck).toHaveLength(DECK.length);
@@ -291,14 +291,14 @@ describe("RM-025 宇宙刑事シャリバン", () => {
       true,
     );
 
-  it.fails("RM-025: RC【シャリバンクラッシュ】— 本来の BP が3000の敵軍ユニット（エリア・サイズを問わない。いまの BP ではなく本来の BP で見る）から1体選べる（任意）（出典: atwiki/page-894「本来のBPが3000の敵軍ユニットを1体選び、持ち主のパワーゾーンに送ってもよい」）", () => {
+  it("RM-025: RC【シャリバンクラッシュ】— 本来の BP が3000の敵軍ユニット（エリア・サイズを問わない。いまの BP ではなく本来の BP で見る）から1体選べる（任意）（出典: atwiki/page-894「本来のBPが3000の敵軍ユニットを1体選び、持ち主のパワーゾーンに送ってもよい」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "RM-025");
     expect(choiceIds(s)).toEqual(["SPEC-E3000:a", "SPEC-E3000B:b", "SPEC-EM3000:m"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-025: RC【シャリバンクラッシュ】— 選んだユニットは持ち主のパワーゾーンにオモテ向きで送られる（ダメージではない）（出典: atwiki/page-894）", () => {
+  it("RM-025: RC【シャリバンクラッシュ】— 選んだユニットは持ち主のパワーゾーンにオモテ向きで送られる（ダメージではない）（出典: atwiki/page-894）", () => {
     const s = resolveAll(pick(rc(), "SPEC-EM3000:m"));
     expect(zoneOf(s, "player2", "SPEC-EM3000:m")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-EM3000:m")?.faceDown ?? false).toBe(false);
@@ -317,7 +317,7 @@ describe("RM-026 超次元戦闘母艦グランドバース", () => {
     expectRarityIn("RM-026", ["N"]);
   });
 
-  it.fails("RM-026: ※ — S ユニットにはアタックできない（M ユニットにはアタックできる）（出典: atwiki/page-840「これはSユニットにアタックすることができない」）", () => {
+  it("RM-026: ※ — S ユニットにはアタックできない（M ユニットにはアタックできる）（出典: atwiki/page-840「これはSユニットにアタックすることができない」）", () => {
     const s = enter(battleBoard({ rush: [inst("RM-026", "gb")] }, { battle: [inst("SPEC-ES", "s"), inst("SPEC-EM", "m")] }), "RM-026:gb");
     expect(targetsOf(s, "RM-026:gb")).toEqual(["SPEC-EM:m"]);
   });
@@ -326,14 +326,14 @@ describe("RM-026 超次元戦闘母艦グランドバース", () => {
   const entered = () =>
     enter(battleBoard({ battle: ridingPair("SPEC-RC", "r", "SPEC-VEHICLE", "v"), rush: [inst("RM-026", "gb"), inst("SPEC-VEHICLE2", "v2")] }), "RM-026:gb");
 
-  it.fails("RM-026:【収容】— 自軍ターン中にバトルエリアに出たとき、自軍バトルエリアのビークルから1体選べる（ラッシュエリアのビークルは選べない。任意）（出典: atwiki/page-840「自軍バトルエリアからビークルを1体選んでもよい」）", () => {
+  it("RM-026:【収容】— 自軍ターン中にバトルエリアに出たとき、自軍バトルエリアのビークルから1体選べる（ラッシュエリアのビークルは選べない。任意）（出典: atwiki/page-840「自軍バトルエリアからビークルを1体選んでもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RM-026");
     expect(choiceIds(s)).toEqual(["SPEC-VEHICLE:v"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-026:【収容】— 選んだビークルにライドしているユニットと、そのビークルが自軍パワーゾーンに送られる（出典: atwiki/page-840「そのユニットをパワーゾーンに送る。その後、選んだビークルをパワーゾーンに送る」・カード評価「【収容】はパワー加速に使える」）", () => {
+  it("RM-026:【収容】— 選んだビークルにライドしているユニットと、そのビークルが自軍パワーゾーンに送られる（出典: atwiki/page-840「そのユニットをパワーゾーンに送る。その後、選んだビークルをパワーゾーンに送る」・カード評価「【収容】はパワー加速に使える」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-VEHICLE:v"));
     expect(zoneOf(s, "player1", "SPEC-RC:r")).toBe("power");
     expect(zoneOf(s, "player1", "SPEC-VEHICLE:v")).toBe("power");
@@ -341,13 +341,13 @@ describe("RM-026 超次元戦闘母艦グランドバース", () => {
     expect(s.players.player1.power).toHaveLength(2);
   });
 
-  it.fails("RM-026:【収容】— 見送れば何も起きない（出典: atwiki/page-840「選んでもよい」）", () => {
+  it("RM-026:【収容】— 見送れば何も起きない（出典: atwiki/page-840「選んでもよい」）", () => {
     const s = resolveAll(skip(entered()));
     expect(zoneOf(s, "player1", "SPEC-RC:r")).toBe("battle");
     expect(zoneOf(s, "player1", "SPEC-VEHICLE:v")).toBe("battle");
   });
 
-  it.fails("RM-026:【収容】— チェイスを持つユニット（宇宙刑事ギャバン）がライドしているビークルを選ぶと、チェイスでラッシュエリアのビークルに乗り換えられる（出典: atwiki/page-840 カード評価「ギャバンがライドしているビークルを選べばチェイスが発動できる。ラッシュエリアのビークルに乗れば再度バトルエリアに出られる」・R-KW-CHASE-01）", () => {
+  it("RM-026:【収容】— チェイスを持つユニット（宇宙刑事ギャバン）がライドしているビークルを選ぶと、チェイスでラッシュエリアのビークルに乗り換えられる（出典: atwiki/page-840 カード評価「ギャバンがライドしているビークルを選べばチェイスが発動できる。ラッシュエリアのビークルに乗れば再度バトルエリアに出られる」・R-KW-CHASE-01）", () => {
     let s = enter(battleBoard({ battle: ridingPair("RM-018", "g", "SPEC-VEHICLE", "v"), rush: [inst("RM-026", "gb"), inst("SPEC-VEHICLE2", "v2")] }), "RM-026:gb");
     s = settle(pick(s, "SPEC-VEHICLE:v"));
     expect(chaseTargets(s, "player1")).toEqual(["SPEC-VEHICLE2:v2"]);
@@ -386,21 +386,21 @@ describe("RM-027 バトルバースフォーメーション", () => {
   const POWER = [faceUp("TST-P", "u1"), faceUp("TST-OP", "u2"), faceDown("TST-P", "d1")];
   const entered = () => enter(battleBoard({ rush: [inst("RM-027", "bb")], power: POWER }), "RM-027:bb");
 
-  it.fails("RM-027:【プラズマカノン】— 自軍ターン中にバトルエリアに出たとき、自軍パワーゾーンのオモテ向きのカードから1枚選べる（ウラ向きは選べない。任意）（出典: atwiki/page-841「自軍パワーゾーンからオモテ向きのカードから1枚選び捨札にしてもよい」）", () => {
+  it("RM-027:【プラズマカノン】— 自軍ターン中にバトルエリアに出たとき、自軍パワーゾーンのオモテ向きのカードから1枚選べる（ウラ向きは選べない。任意）（出典: atwiki/page-841「自軍パワーゾーンからオモテ向きのカードから1枚選び捨札にしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RM-027");
     expect(choiceIds(s)).toEqual(["TST-OP:u2", "TST-P:u1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-027:【プラズマカノン】— 選んだカードを捨札にすると、このターン「SP1」「BP+3000」を得る（BP10000）（出典: atwiki/page-841「このターン、これは次の能力を得る⇒「SP1」「BP+3000」」）", () => {
+  it("RM-027:【プラズマカノン】— 選んだカードを捨札にすると、このターン「SP1」「BP+3000」を得る（BP10000）（出典: atwiki/page-841「このターン、これは次の能力を得る⇒「SP1」「BP+3000」」）", () => {
     const s = settle(pick(entered(), "TST-P:u1"));
     expect(zoneOf(s, "player1", "TST-P:u1")).toBe("discard");
     expect(bpOf(s, "player1", "RM-027:bb")).toBe(10000);
     expect(spOf(s, "player1", "RM-027:bb")).toBe(1);
   });
 
-  it.fails("RM-027:【プラズマカノン】— 見送れば能力を得ない（BP7000 のまま）（出典: atwiki/page-841「そうしたとき」）", () => {
+  it("RM-027:【プラズマカノン】— 見送れば能力を得ない（BP7000 のまま）（出典: atwiki/page-841「そうしたとき」）", () => {
     const s = settle(skip(entered()));
     expect(bpOf(s, "player1", "RM-027:bb")).toBe(7000);
     expect(s.players.player1.power).toHaveLength(POWER.length);
@@ -442,7 +442,7 @@ describe("RM-028 モトシャリアン", () => {
     expect(zoneOf(s, "player1", "RM-025:h")).toBe("rush");
   });
 
-  it.fails("RM-028: ※ — 出さなければパワーゾーンに残る（出典: atwiki/page-842「出してもよい」）", () => {
+  it("RM-028: ※ — 出さなければパワーゾーンに残る（出典: atwiki/page-842「出してもよい」）", () => {
     const s = resolveAll(skip(rushWith("RM-025")));
     expect(zoneOf(s, "player1", "RM-028:ms")).toBe("power");
   });

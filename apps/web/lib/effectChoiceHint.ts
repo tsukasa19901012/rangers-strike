@@ -487,6 +487,35 @@ const RM1_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rm021_vehicle_launch: { label: "ビークル射出", hint: "自軍ラッシュエリアに出す、パワーゾーンの M ユニットか S ビークルのカードを選んでください（しないなら「スキップ」）" },
 };
 
+/** スペシャルメタルエディション RM-022〜RM-042 のカード固有の選択（engine rules/rm/rm2Effects.ts）の表示名と案内文。 */
+const RM2_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rm022_cyberian: { label: "サイバリアンレーザースピード", hint: "OT の自軍コマンドを2つホールドして、ライドしているユニットがライドオフしなくても RC を発動できるようにしますか？" },
+  rm022_cyberian_hold: { label: "サイバリアンレーザースピード", hint: "ホールドする OT の自軍コマンドを2つ選んでください" },
+  rm023_chichu_senko_power: { label: "地中潜行", hint: "捨札にする、敵軍パワーゾーンのオモテ向きのカードを選んでください（しないなら「スキップ」）" },
+  rm023_chichu_senko_discard: { label: "地中潜行", hint: "敵軍パワーゾーンにオモテ向きで置く、敵軍捨札のカードを選んでください" },
+  rm024_tousai: { label: "搭載", hint: "山札の上に置く、特徴「車両」を持つ S ユニットのカードを選んでください（しないなら「スキップ」）" },
+  rm025_sharivan_crash: { label: "シャリバンクラッシュ", hint: "持ち主のパワーゾーンに送る、本来の BP が3000の敵軍ユニットを選んでください（しないなら「スキップ」）" },
+  rm026_shuyou: { label: "収容", hint: "ライドしているユニットと一緒にパワーゾーンに送る、自軍バトルエリアのビークルを選んでください（しないなら「スキップ」）" },
+  rm027_plasma_cannon: { label: "プラズマカノン", hint: "捨札にする、自軍パワーゾーンのオモテ向きのカードを選んでください（しないなら「スキップ」）" },
+  rm028_moto_sharian: { label: "モトシャリアン", hint: "パワーゾーンのモトシャリアンを自軍ラッシュエリアに出しますか？" },
+  rm031_cosmic_crash: { label: "コズミッククラッシュ", hint: "持ち主のパワーゾーンに送る、「獣」「恐竜」を持つ BP8000 以下の敵軍ユニットを選んでください（しないなら「スキップ」）" },
+  rm033_sentou_gijutsu: { label: "戦闘技術の習得", hint: "自軍コマンドゾーンにホールド状態で置く、自軍ラッシュエリアのユニットを選んでください（しないなら「スキップ」）" },
+  rm034_opponent_draw: { label: "暴魂トップガンダー", hint: "1枚ドローしますか？" },
+  rm034_seikaku_shageki_hold: { label: "正確な射撃", hint: "ホールドする自軍コマンドゾーンのカードを選んでください（しないなら「スキップ」）" },
+  rm034_seikaku_shageki_flip: { label: "正確な射撃", hint: "ウラ返してダメージにする、敵軍パワーゾーンのオモテ向きのカードを選んでください" },
+  rm037_shudan_kaijin: { label: "手段を選ばぬ策略", hint: "捨札にする、自軍ラッシュエリアの「怪人」のユニットを選んでください（しないなら「スキップ」）" },
+  rm037_shudan_hand: { label: "手段を選ばぬ策略", hint: "相手の手札から1枚選んでください（中身は見えません）" },
+  rm037_shudan_place: { label: "手段を選ばぬ策略", hint: "選ばれたカードを置く場所を選んでください（山札の上 deck_top・パワーゾーン to_power・コマンドゾーン to_command）" },
+  rm038_bulsky_hold: { label: "部下の修理と改造", hint: "ホールドする DA の自軍コマンドを3つ選んでください" },
+  rm038_bulsky_pick: { label: "部下の修理と改造", hint: "自軍ラッシュエリアに出す、自軍捨札の DA で「メカ」を持つ S ユニットのカードを選んでください" },
+  rm039_jumonji_discard: { label: "十文字斬り", hint: "敵軍捨札のユニットカードを選んでください（しないなら「スキップ」）" },
+  rm039_jumonji_unit: { label: "十文字斬り", hint: "ダメージにする、選んだカードと同じカード名の敵軍ユニットを選んでください" },
+  rm040_hanafubuki: { label: "忍法花吹雪", hint: "持ち主の山札の下に戻す、カテゴリか特徴が追加されている敵軍 S ユニットを選んでください（しないなら「スキップ」）" },
+  rm041_fake_no_thank_you: { label: "アイアム偽者などノーサンキュー", hint: "敵軍ユニットを選んでください。同じカード名の敵軍ユニットがほかにあればダメージにします（しないなら「スキップ」）" },
+  rm042_midare_cho_hand: { label: "妖魔忍法乱れ蝶", hint: "相手に見せる手札のカードを2枚選んでください（しないなら「スキップ」）" },
+  rm042_midare_cho_unit: { label: "妖魔忍法乱れ蝶", hint: "ダメージにする、2枚の必要パワーの合計と同じ必要パワーの敵軍 S ユニットを選んでください" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -535,7 +564,8 @@ export function effectChoiceHint(
     RK14_CHOICE_UI[pending.effectId] ??
     RK15_CHOICE_UI[pending.effectId] ??
     RK16_CHOICE_UI[pending.effectId] ??
-    RM1_CHOICE_UI[pending.effectId];
+    RM1_CHOICE_UI[pending.effectId] ??
+    RM2_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {

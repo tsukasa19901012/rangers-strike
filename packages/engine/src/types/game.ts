@@ -696,6 +696,11 @@ export type PendingEffectChoice = {
     /** RK-324: 撃破したカードの持ち主。 */
     owner?: PlayerId;
   };
+  /** スペシャルメタルエディション RM-022〜RM-042 の選択の続き（rules/rm/rm2Effects.ts）。 */
+  rm2Meta?: {
+    /** RM-037: 相手の手札から選んだカード。 */
+    handInstanceId?: string;
+  };
   /** スペシャルメタルエディション RM-001〜RM-021 の選択の続き（rules/rm/rm1Effects.ts）。 */
   rm1Meta?: {
     /** RM-006: 選べる数（「メカ」「人型」の自軍ユニットの数）。 */
@@ -1326,6 +1331,8 @@ export type GameState = {
   resolvingOperations?: Array<{ playerId: PlayerId; card: CardInstance }>;
   /** RK-129【サンダースペイダー】・RK-132【妻子のバックアップ】の、まだ開いていない発動（rules/rk/rk7UnitEffects.ts）。 */
   rk7PendingTriggers?: Array<{ kind: "rk129" | "rk132"; playerId: PlayerId; sourceInstanceId: string }>;
+  /** RM-026 グランドバース【収容】の、チェイス等の選択を待っている「その後、選んだビークルをパワーゾーンに送る」（rules/rm/rm2Effects.ts applyRm2AfterAction）。 */
+  rm2PendingTriggers?: Array<{ kind: "rm026_vehicle"; playerId: PlayerId; instanceId: string; phasePlayerId: PlayerId }>;
   /** RM-017 オメデトロフィーの、まだ開いていない発動（rules/rm/rm1Effects.ts applyRm1AfterAction）。 */
   rm1PendingTriggers?: Array<{ kind: "rm017"; playerId: PlayerId; sourceInstanceId: string; unitCardId: string }>;
   /** RK-153【車両強奪】で選ばれたユニット（次の相手のスタートフェイズに戻せない。rules/rk/rk8UnitEffects.ts）。 */

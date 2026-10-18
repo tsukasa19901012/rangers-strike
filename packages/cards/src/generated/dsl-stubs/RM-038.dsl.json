@@ -28,11 +28,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-038::noto",
+          "keyword": "rm2::RM-038::bulsky",
           "duration": "permanent"
         }
       ]

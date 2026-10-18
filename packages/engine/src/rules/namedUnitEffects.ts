@@ -1,3 +1,4 @@
+import { rm2AttackerBattleBonus, rm2DefenderBattleBonus } from "./rm/rm2Effects";
 import { rk9UsePrintedDefenderBp } from "./rk/rk9Fields";
 import { rk11UsePrintedDefenderBp } from "./rk/rk11Fields";
 import {
@@ -125,6 +126,8 @@ export function battleAttackerBpBonus(
   total += legend3AttackerBpBonus(state, pending);
   // RK-052【音撃打・破砕細石】（rules/rk/rk3UnitEffects.ts）。
   total += rk3AttackerBattleBonus(state, pending);
+  // RM-033 メタルダー ※（rules/rm/rm2Effects.ts）。
+  total += rm2AttackerBattleBonus(state, pending);
 
   // RS-062【ボウケンジャベリン】・RS-241【デュアルクラッシャー・ドリルヘッド】（CN5）:
   // 特徴「メカ」を持つユニットにアタックするとき BP+4000（NC の効果は成立しているときだけ。R-CN-02）。
@@ -259,7 +262,9 @@ export function battleDefenderBp(
     // RK-004 ギギの腕輪・RK-009 二人の世紀王: 「このバトルの間、アタックされたユニットは BP+…」（かわりにバトルするユニットには付かない）。
     (pending.substituteInstanceId ? 0 : (pending.defenderBpBonus ?? 0)) +
     // RK-052【音撃打・破砕細石】（rules/rk/rk3UnitEffects.ts）。
-    rk3DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card)
+    rk3DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card) +
+    // RM-030【ダイレオンレーザー】・RM-033 メタルダー ※（rules/rm/rm2Effects.ts）。
+    rm2DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card)
   );
 }
 

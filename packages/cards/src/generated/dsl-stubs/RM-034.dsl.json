@@ -24,12 +24,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
-          "type": "draw",
-          "amount": 1,
-          "player": "opponent"
+          "type": "grant_keyword",
+          "keyword": "rm2::RM-034::opponent_draw",
+          "duration": "turn"
         }
       ]
     },
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-034::na_geki",
+          "keyword": "rm2::RM-034::seikaku_shageki",
           "duration": "turn"
         }
       ]

@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-041::aiamunadonosankyu",
+          "keyword": "rm2::RM-041::fake_no_thank_you",
           "duration": "turn"
         }
       ]

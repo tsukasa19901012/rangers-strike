@@ -51,7 +51,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-039::zan_ri_e58d81",
+          "keyword": "rm2::RM-039::jumonji",
           "duration": "turn"
         }
       ]

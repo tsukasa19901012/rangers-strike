@@ -96,6 +96,7 @@ import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
 import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
+import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import {
@@ -1053,6 +1054,8 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRk13AfterAction(state, next);
   // RM-017 オメデトロフィー（自軍ユニットがバトルエリアに出たとき。rules/rm/rm1Effects.ts）。
   if (applyActionDepth === 0) next = applyRm1AfterAction(state, next);
+  // RM-026 グランドバース【収容】: チェイス等の選択の後で、選んだビークルをパワーゾーンに送る（rules/rm/rm2Effects.ts）。
+  if (applyActionDepth === 0) next = applyRm2AfterAction(next);
   // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
   if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
     const endingPlayer = next.rk9RushEndAdvance;
@@ -3576,6 +3579,8 @@ function applyActionCore(
       if (!action.rideOff) nextState = rk1MissionMemoryOnEntry(nextState, playerId, pending.instanceId) ?? nextState;
       // RK-120 サイドバッシャーVM【ニーラーシャトル】: ライドしたまま進んでも RC の効果を発動する（rules/rk/rk6UnitEffects.ts）。
       if (!action.rideOff) nextState = rk6SideBasherOnEntry(nextState, playerId, pending.instanceId) ?? nextState;
+      // RM-022 サイバリアン【サイバリアンレーザースピード】: このターン、ライドしたまま進んでも RC の効果を発動する（rules/rm/rm2Effects.ts）。
+      if (!action.rideOff) nextState = rm2CyberianOnEntry(nextState, playerId, pending.instanceId) ?? nextState;
       const opened = action.rideOff
         ? openBattleEntryOrRideOffChoice(nextState, pending.battleEntry)
         : afterEnterBattle(nextState, pending.battleEntry);

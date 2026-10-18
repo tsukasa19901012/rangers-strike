@@ -1,3 +1,4 @@
+import { rm2AfterBattle } from "./rm/rm2Effects";
 import { isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "./rm/rm1Effects";
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
 import { isRk5BattleCounterCard, rk5BattleCounterConditionMet } from "./rk/rk5UnitEffects";
@@ -1304,8 +1305,11 @@ export function resolveBattlePendingCore(
   state: GameState,
   pending: PendingBattle,
 ): { state: GameState; log: string } {
+  // RM-036 暴魂チューボ【剣の使い手】: バトルの解決の後で相手にダメージ（rules/rm/rm2Effects.ts rm2AfterBattle）。
+  let rm2Post: ((s: GameState) => GameState) | undefined;
   const finish = (nextState: GameState, log: string) => {
     let resolved = nextState;
+    if (rm2Post) resolved = rm2Post(resolved);
     if (pending.mirageBeamDiscard) {
       const player = resolved.players[pending.attackerPlayerId];
       resolved = {
@@ -1523,6 +1527,15 @@ export function resolveBattlePendingCore(
 
   const finalDestroyAttacker =
     destroyAttacker || winButSelfDestruct || defenderCausesWinnerDestruction || reflectBarrierAttacker || venomAttacker;
+  rm2Post = rm2AfterBattle(battleState, pending, {
+    attacker: refreshedAttackerFound.card,
+    defender: refreshedDefenderFound.card,
+    defenderOwner,
+    attackerBp,
+    defenderBp,
+    attackerDestroyed: finalDestroyAttacker,
+    defenderDestroyed: finalDestroyDefender,
+  });
   const detail = `${cardName(battleState.definitions, refreshedDefenderFound.card.cardId)}:${compareAttackerBp}vs${compareDefenderBp}`;
   const log = buildLogEntry(
     attackerId,

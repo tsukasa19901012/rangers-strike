@@ -146,6 +146,8 @@ import { canConfirmRk15Choice, isRk15ChoiceEffect } from "../rules/rk/rk15UnitEf
 import { canConfirmRk16Choice, isRk16ChoiceEffect } from "../rules/rk/rk16UnitEffects";
 import { canConfirmRm1Choice, isRm1ActivatableResident, isRm1ChoiceEffect, isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "../rules/rm/rm1Effects";
 import { rm1ActsAsVehicle } from "../rules/rm/rm1Fields";
+import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "../rules/rm/rm2Effects";
+import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
@@ -1295,6 +1297,15 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (isRm2ChoiceEffect(pending.effectId)) {
+    // スペシャルメタルエディション RM-022〜RM-042 の選択（rules/rm/rm2Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRm2Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
   if (isRm1ChoiceEffect(pending.effectId)) {
     // スペシャルメタルエディション RM-001〜RM-021 の選択（rules/rm/rm1Effects.ts）。候補はモジュール側で絞り込み済み。
     for (const instanceId of pending.validInstanceIds) {
@@ -1709,13 +1720,22 @@ function appendBattleEntryActions(
   // atwiki/page-740 カード評価「ストライクも同時にすることが可能」）。
   const cannotAttack = unitCannotInitiateAttack(unit.cardId);
 
-  const requiredDefenderId = pending.requiredDefenderInstanceId;
   // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックできない。
   const attackBlocked = cannotAttack || battleActBlocked(player, unit, "attack") || rk10WolfBlocks(state, playerId, "attack");
+  // RM-035 凱聖クールギン【ヨロイ軍団の統率】: アタックできる「ヨロイ軍団」のユニットがあれば、それにアタックしなければならない
+  // （atwiki/page-999 Q1。rules/rm/rm2Effects.ts）。
+  const rm2Required =
+    pending.requiredDefenderInstanceId || attackBlocked
+      ? []
+      : rm2RequiredDefenderIds(state, playerId, unit, (defenderId) =>
+          canAttackDefender(state, playerId, pending.instanceId, opponent(playerId), defenderId, canAttackRushWithYellowThunder),
+        );
+  const requiredDefenderId = pending.requiredDefenderInstanceId ?? (rm2Required.length > 0 ? rm2Required[0] : undefined);
+  const requiredSet = pending.requiredDefenderInstanceId ? [pending.requiredDefenderInstanceId] : rm2Required;
   const battleDefenders = attackBlocked
     ? []
     : requiredDefenderId
-      ? enemy.battle.filter((c) => c.instanceId === requiredDefenderId)
+      ? [...enemy.battle, ...enemy.rush].filter((c) => requiredSet.includes(c.instanceId) && (pending.requiredDefenderInstanceId ? enemy.battle.includes(c) : true))
       : enemy.battle;
   const rushDefenders = requiredDefenderId || attackBlocked ? [] : enemy.rush;
 
@@ -2246,7 +2266,9 @@ function getLegalActionsCore(state: GameState): GameAction[] {
           if (
             vehicleDef?.type !== "vehicle" &&
             !rk14ActsAsVehicle(player, vehicle) &&
-            !rm1ActsAsVehicle(state, playerId, vehicle, (id) => cardHasKeyword(state.definitions, id, "chase"))
+            !rm1ActsAsVehicle(state, playerId, vehicle, (id) => cardHasKeyword(state.definitions, id, "chase")) &&
+            // RM-023 スクーパー: チェイスを持つ自軍ユニットがあれば S ビークルとして扱う（rules/rm/rm2Fields.ts）。
+            !rm2ActsAsVehicle(state, playerId, vehicle, (id) => cardHasKeyword(state.definitions, id, "chase"))
           ) {
             continue;
           }

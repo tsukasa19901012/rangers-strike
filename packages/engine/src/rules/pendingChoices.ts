@@ -163,6 +163,7 @@ import { isRk14ChoiceEffect, tryConfirmRk14Choice, tryResolveRk14Choice, trySkip
 import { isRk15ChoiceEffect, tryConfirmRk15Choice, tryResolveRk15Choice, trySkipRk15Choice } from "./rk/rk15UnitEffects";
 import { isRk16ChoiceEffect, tryConfirmRk16Choice, tryResolveRk16Choice, trySkipRk16Choice } from "./rk/rk16UnitEffects";
 import { isRm1ChoiceEffect, tryConfirmRm1Choice, tryResolveRm1Choice, trySkipRm1Choice } from "./rm/rm1Effects";
+import { isRm2ChoiceEffect, tryCompleteRm2HoldChoice, tryConfirmRm2Choice, tryResolveRm2Choice, trySkipRm2Choice } from "./rm/rm2Effects";
 import { filthyAirActive, isOtherLinesChoiceEffect, tryOtherLinesBattleToRush, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
@@ -677,6 +678,7 @@ export function isValidEffectChoiceTarget(
     isRk15ChoiceEffect(pending.effectId) ||
     isRk16ChoiceEffect(pending.effectId) ||
     isRm1ChoiceEffect(pending.effectId) ||
+    isRm2ChoiceEffect(pending.effectId) ||
     isOtherLinesChoiceEffect(pending.effectId) ||
     isSet9BChoiceEffect(pending.effectId) ||
     isSet8BChoiceEffect(pending.effectId) ||
@@ -2064,6 +2066,8 @@ export function applyConfirmEffectChoice(
   if (rk16) return rk16;
   const rm1 = tryConfirmRm1Choice(state, playerId);
   if (rm1) return rm1;
+  const rm2 = tryConfirmRm2Choice(state, playerId);
+  if (rm2) return rm2;
   if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
     // RS-472【現場への搬送】: 「…まで好きな数選び」— 選んだところで確定し、山札をシャッフルする。
     return finishChoice(finishSiteTransportDeck(state, pending), pending, String(pending.selectedInstanceIds?.length ?? 0));
@@ -2990,6 +2994,9 @@ export function completeEffectHoldChoice(
   // 第7弾 RS-440【武器換装】・RS-441【コサックダンス】: ホールドするコマンドを選んだあとの続き（rules/legend1/set7NamedEffectsA.ts）。
   const set7aHold = tryCompleteSet7AHoldChoice(state, playerId, commandInstanceIds);
   if (set7aHold) return set7aHold;
+  // RM-022 サイバリアン・RM-038 凱聖バルスキー: ホールドするコマンドを選んだあとの続き（rules/rm/rm2Effects.ts）。
+  const rm2Hold = tryCompleteRm2HoldChoice(state, playerId, commandInstanceIds);
+  if (rm2Hold) return rm2Hold;
   const continued = applyPostHoldContinuation(state, pending);
   if (continued.done) return { state: continued.state };
   return finishChoice(
@@ -3063,6 +3070,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (rk16) return rk16;
   const rm1 = trySkipRm1Choice(state, playerId);
   if (rm1) return rm1;
+  const rm2 = trySkipRm2Choice(state, playerId);
+  if (rm2) return rm2;
   const otherLines = trySkipOtherLinesChoice(state, playerId);
   if (otherLines) return otherLines;
   const abduction = skipAbductionChoice(state, playerId);
@@ -3392,6 +3401,8 @@ export function applyEffectChoiceSelect(
   if (rk16) return rk16;
   const rm1 = tryResolveRm1Choice(state, playerId, instanceId);
   if (rm1) return rm1;
+  const rm2 = tryResolveRm2Choice(state, playerId, instanceId);
+  if (rm2) return rm2;
   const otherLines = tryResolveOtherLinesChoice(state, playerId, instanceId);
   if (otherLines) return otherLines;
   const set9b = tryResolveSet9BChoice(state, playerId, instanceId);

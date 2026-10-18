@@ -21,14 +21,13 @@
       "id": "note_e280bbe38193e3828ce381af",
       "text": "※これはバトルするとき、これとバトルするユニットの必要パワーの数字と同じ必要パワーの数字を持つ自軍コマンド1つにつきBP+2000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-033::note_e280bbe38193e3828ce381af",
-          "duration": "turn"
+          "keyword": "rm2::RM-033::battle_bp",
+          "duration": "permanent"
         }
       ]
     },
@@ -39,11 +38,11 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": false,
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-033::no_6",
+          "keyword": "rm2::RM-033::sentou_gijutsu",
           "duration": "turn"
         }
       ]

@@ -10,6 +10,11 @@ import {
 import { cardHasKeyword, playerHasChaseUnitInField } from "./cardKeywords";
 import { prepareWingUnitReturnedToRush } from "./battleKeywords";
 import { canRiderMountVehicle, findRiddenVehicleInField } from "./ride";
+import { rmChaseVehicleCandidate } from "../rules/rm/rm2Fields";
+
+function chaseVehicleCandidate(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  return rmChaseVehicleCandidate(state, playerId, card, (id) => cardHasKeyword(state.definitions, id, "chase"));
+}
 
 export function listValidChaseVehicleIds(
   state: GameState,
@@ -157,7 +162,7 @@ export function buildPendingChaseOnVehicleDestroyed(
   const validVehicleInstanceIds = player.rush
     .filter(
       (c) =>
-        getDefinition(state.definitions, c.cardId)?.type === "vehicle" &&
+        chaseVehicleCandidate(state, intent.ownerPlayerId, c) &&
         c.instanceId !== intent.instanceId,
     )
     .map((c) => c.instanceId);
@@ -274,7 +279,7 @@ export function buildPendingChaseFromIntent(
   const validVehicleInstanceIds = owner.rush
     .filter(
       (c) =>
-        state.definitions[c.cardId]?.type === "vehicle" &&
+        chaseVehicleCandidate(state, intent.ownerPlayerId, c) &&
         c.instanceId !== found.card.mountedOnInstanceId,
     )
     .map((c) => c.instanceId);

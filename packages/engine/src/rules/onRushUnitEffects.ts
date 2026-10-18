@@ -1,3 +1,4 @@
+import { openRm2MotoSharian } from "./rm/rm2Effects";
 import { openRm1OnUnitRushed } from "./rm/rm1Effects";
 import { openRk8JaguarOnEnemyRush } from "./rk/rk8UnitEffects";
 import { openRk11UndeadMasterOnRush } from "./rk/rk11UnitEffects";
@@ -27,7 +28,6 @@ import {
 import { ON_RUSH_EFFECTS } from "./rushEffects";
 import {
   resolveNoteOtherOnRushEffects,
-  applyMotoSharianPowerTrigger,
 } from "./noteOtherRushEffects";
 import { tryFormationDeployOnRush } from "./formationDeploy";
 import { tryDispatchOrderOnEnemyRush } from "./dispatchOrder";
@@ -274,13 +274,8 @@ export function applyOnRushUnitEffects(
   nextState = noteOther.state;
   logs.push(...noteOther.logs);
 
-  const motoSharian = applyMotoSharianPowerTrigger(
-    nextState,
-    ownerPlayerId,
-    found.card.cardId,
-  );
-  nextState = motoSharian.state;
-  logs.push(...motoSharian.logs);
+  // RM-028 モトシャリアン ※（パワーゾーンでオモテ向きの間、「宇宙刑事」の自軍ユニットをラッシュしたとき、出してもよい。rules/rm/rm2Effects.ts）。
+  nextState = openRm2MotoSharian(nextState, ownerPlayerId, instanceId);
 
   if (!nextState.pendingEffectChoice) {
     nextState = applyBandoraHeldCommandDiscard(
