@@ -574,9 +574,29 @@ describe("R-ERR-RK146 デネブ", () => {
   });
 
   // atwiki/page-672 Q2:「オペレーションカードは1枚もありませんでした…シャッフルを実行しなくてもかまいませんか？ いいえ」
-  it.todo(
-    "R-ERR-RK146: 公式Q&A — 山札を見てオペレーションカードがなくても山札はシャッフルする（出典: atwiki/page-672 Q2）— シャッフルの有無は決定的に観測できない",
-  );
+  it.fails("R-ERR-RK146: 公式Q&A — 山札を見てオペレーションカードがなくても山札はシャッフルする（相手の山札のシャッフルで、自軍 RK-132 仮面ライダー闘鬼【妻子のバックアップ】が発動する）（出典: atwiki/page-672 Q2・atwiki/page-685）", () => {
+    const d = inst("RK-146", "d");
+    let s = specState(["RK-146", "RK-132"], {
+      phase: "rush",
+      player1: {
+        hand: [d],
+        rush: [{ ...inst("RK-132", "tk"), commandHeld: true }],
+        command: [released("TST-OP-OT", "c")],
+        power: powerCards(2),
+        deck: [inst("TST-UNIT-0", "u1"), inst("TST-OP", "op1")],
+      },
+      player2: { deck: [inst("TST-UNIT-0", "u2"), inst("TST-UNIT-0", "u3")] },
+    });
+    s = act(s, legal(s).find((a) => J(a).includes(d.instanceId))!);
+    // 相手（player2）は山札を見る。オペレーションカードはないので手札には加えない。
+    for (let i = 0; i < 4 && s.pendingEffectChoice?.playerId === "player2"; i++) {
+      const a = legal(s).find((x) => x.type === "confirm_effect_choice" || x.type === "resolve_effect_choice");
+      if (!a) break;
+      s = act(s, a);
+    }
+    expect(s.players.player2.hand).toHaveLength(0);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-132");
+  });
 });
 
 // ---------------------------------------------------------------------------

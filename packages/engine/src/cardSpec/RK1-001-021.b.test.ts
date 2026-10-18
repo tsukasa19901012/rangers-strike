@@ -360,9 +360,24 @@ describe("RK-010 ハイブリッドエネルギー", () => {
   it.todo(
     "RK-010: 公式Q&A — ゴーゴーマリン【海底調査】で山札の下からドローするときは、オモテのカードを手札に加えてから下のカードをドローする（出典: grnrngr/faq-rider-1 RK-010 Q3・atwiki/page-210 Q3）— 【海底調査】（RS-122）の処理は RS 系の担当範囲で、ハイブリッドエネルギーとの割り込み手順を公開 API で確認できなかったため",
   );
-  it.todo(
-    "RK-010: 公式Q&A — 敵軍ターン中にデネブ【デネブキャンディー】が解決するときも、オモテのカードを手札に加えてから解決する（出典: atwiki/page-210 Q4）— RK-146 デネブは本範囲外のため",
-  );
+  // atwiki/page-210 Q4・page-672 Q1「いいえ、オモテにしたカードを手札に加えてから、「RK-146 デネブ」の効果を解決してください。」
+  it.fails("RK-010: 公式Q&A — 敵軍ターン中に相手がデネブをラッシュし、自分が【デネブキャンディー】で山札を見るときは、オモテのカードを手札に加えてから解決する（出典: atwiki/page-210 Q4・atwiki/page-672 Q1）", () => {
+    let s = endTurn(board({ deck: [inst("TST-UNIT-0", "top"), inst("TST-OP", "o1"), ...deckCards(4)] }));
+    s = toPhase(s, "player2", "rush");
+    s = {
+      ...s,
+      players: { ...s.players, player2: { ...s.players.player2, hand: [inst("RK-146", "dn")], command: releasedCat("OT", 1, "e"), power: powerCards(2, "ep") } },
+    };
+    s = settle(rushOpen(s, "player2", "RK-146:dn"));
+    for (let i = 0; i < 6 && s.pendingEffectChoice?.playerId === "player1"; i++) {
+      const p = s.pendingEffectChoice;
+      if (p.validInstanceIds.includes("TST-OP:o1")) s = settle(pick(s, "TST-OP:o1"));
+      else if (legal(s).some((a) => a.type === "confirm_effect_choice")) s = settle(act(s, { type: "confirm_effect_choice", playerId: "player1" }));
+      else s = settle(pick(s, p.validInstanceIds[0]!));
+    }
+    expect(zoneOf(s, "player1", "TST-OP:o1")).toBe("hand");
+    expect(zoneOf(s, "player1", "TST-UNIT-0:top")).toBe("hand");
+  });
 });
 
 // ===========================================================================
@@ -528,9 +543,25 @@ describe("RK-012 宏のオルゴール時計", () => {
   it.todo(
     "RK-012: 公式Q&A — スカイライダーがあるとき、ウイングを持たない本来の BP が4000の S ユニットのラッシュには使えない（出典: atwiki/page-198 Q7）— XG4-087 スカイライダー【スカイキック】が本範囲外のため",
   );
-  it.todo(
-    "RK-012: 公式Q&A — 手札から使って手札が1枚になり仮面ライダーカリスが BP3000 になっても、相手のバトルフェイズを飛ばせる（出典: grnrngr/faq-rider-2 RK-127 Q）— RK-127 仮面ライダーカリスが本範囲外のため",
-  );
+  // faq-rider-2 RK-127 Q「はい、できます。」
+  it.fails("RK-012: 公式Q&A — 自分の手札が2枚のとき相手が仮面ライダーカリス（BP5000）をラッシュし、手札から使って手札が1枚になりカリスが BP3000 になっても、相手のバトルフェイズを飛ばせる（出典: grnrngr/faq-rider-2 RK-127 Q・atwiki/page-648 Q1）", () => {
+    let s = st(
+      {
+        phase: "rush",
+        activePlayer: "player2",
+        player1: { hand: [inst("RK-012", "mb"), inst("TST-OP", "other")], command: releasedCat("ET", 1), power: powerCards(4), deck: deckCards(5) },
+        player2: { hand: [inst("RK-127", "ch")], command: releasedCat("WB", 1, "e"), power: powerCards(2, "ep"), deck: deckCards(5, "e") },
+      },
+      EXTRA,
+    );
+    s = rushOpen(s, "player2", "RK-127:ch");
+    expect(bpOf(s, "player2", "RK-127:ch")).toBe(5000);
+    expect(canCounter(s, "RK-012:mb")).toBe(true);
+    s = settle(useCounter(s, "RK-012:mb"));
+    expect(bpOf(s, "player2", "RK-127:ch")).toBe(3000);
+    s = nextPhase(s);
+    expect(s.phase).not.toBe("battle");
+  });
 });
 
 // ===========================================================================

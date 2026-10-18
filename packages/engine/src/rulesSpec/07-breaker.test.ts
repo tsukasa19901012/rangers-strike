@@ -120,7 +120,19 @@ describe("R-KW-BREAKER-03 選ばれない範囲", () => {
   });
 
   // 「パワーゾーンにあるカードの効果は、ユニットの効果ではない」
-  it.todo("R-KW-BREAKER-03: 自軍パワーゾーンの RK-143 ウラタロスの効果ではブレイカー持ちを選べる（出典: atwiki/page-2355 Q3。パワーゾーン起動の効果をエンジン API で起動できない）");
+  it("R-KW-BREAKER-03: 自軍パワーゾーンの RK-143 ウラタロスの効果ではブレイカー持ちを選べる（出典: atwiki/page-2355 Q3）", () => {
+    // 自軍バトルフェイズに特徴「仮面ライダー」の自軍ユニットが出たとき、パワーゾーンのウラタロスを捨札にして、特徴「女」の敵軍ユニットを選ぶ。
+    const BRK_W = unitDef("RSPEC-BRK-W", { name: "仮面ライダーキバーラX", bp: 3000, text: KW.breaker, features: ["女"] });
+    const RIDER = unitDef("RSPEC-RIDER", { name: "ライダー", bp: 1000, features: ["仮面ライダー"] });
+    let s = state([BRK_W, RIDER, realDef("RK-143")], {
+      phase: "battle",
+      player1: { power: [{ ...inst("RK-143", "ura"), faceDown: false }], rush: [inst(RIDER.id, "r")] },
+      player2: { battle: [inst(BRK_W.id, "w")] },
+    });
+    s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: `${RIDER.id}:r` });
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RK-143:ura" });
+    expect(s.pendingEffectChoice?.validInstanceIds ?? []).toContain(`${BRK_W.id}:w`);
+  });
 
   // 「【俺達の必殺技】の効果は敵軍ユニットを選んではいない」
   it.todo("R-KW-BREAKER-03: XG5-052 電王CF【俺達の必殺技】でバトルで撃破したブレイカー持ちをパワーゾーンに送れる（出典: atwiki/page-2355 Q4。【俺達の必殺技】が DSL 未実装）");
