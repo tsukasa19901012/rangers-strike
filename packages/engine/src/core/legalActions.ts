@@ -141,6 +141,8 @@ import { canConfirmRk10Choice, isRk10ChoiceEffect } from "../rules/rk/rk10UnitEf
 import { canConfirmRk11Choice, isRk11ChoiceEffect } from "../rules/rk/rk11UnitEffects";
 import { canConfirmRk12Choice, isRk12ChoiceEffect } from "../rules/rk/rk12UnitEffects";
 import { canConfirmRk13Choice, isRk13ChoiceEffect } from "../rules/rk/rk13UnitEffects";
+import { canConfirmRk14Choice, isRk14ChoiceEffect } from "../rules/rk/rk14UnitEffects";
+import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
 import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
 import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
@@ -1283,6 +1285,15 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (isRk14ChoiceEffect(pending.effectId)) {
+    // ザ・マスクドライダーEXP vol.4 RK-274〜RK-294 の選択（rules/rk/rk14UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk14Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
   if (isRk13ChoiceEffect(pending.effectId)) {
     // ザ・マスクドライダーEXP vol.4 RK-253〜RK-273 の選択（rules/rk/rk13UnitEffects.ts）。候補はモジュール側で絞り込み済み。
     for (const instanceId of pending.validInstanceIds) {
@@ -2193,7 +2204,8 @@ function getLegalActionsCore(state: GameState): GameAction[] {
         for (const vehicle of player.rush) {
           if (vehicle.instanceId === rider.instanceId) continue;
           const vehicleDef = getDefinition(state.definitions, vehicle.cardId);
-          if (vehicleDef?.type !== "vehicle") continue;
+          // RK-280・RK-281: ホールド状態の間は S ビークルとして扱う（rules/rk/rk14Fields.ts）。
+          if (vehicleDef?.type !== "vehicle" && !rk14ActsAsVehicle(player, vehicle)) continue;
           if (
             canMountRideIntoBattle(
               state,

@@ -4847,7 +4847,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_500",
-      "rk_fx::RK-274::nyumashinno"
+      "rk14::RK-274::new_machine"
     ],
     "sp": null,
     "size": "S"
@@ -4863,7 +4863,7 @@
       "【ザバギンバシグラ】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-275::zabaginbashigura"
+      "rk14::RK-275::zabaginbashigura"
     ],
     "bp": 5000,
     "sp": null,
@@ -4880,7 +4880,7 @@
       "【キョクギンジャンママ】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-276::kyokuginjanmama"
+      "rk14::RK-276::kyokuginjanmama"
     ],
     "bp": 500,
     "sp": null,
@@ -4897,7 +4897,7 @@
       "【究極の闇をもたらす者】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-277::no_yami_womotarasu"
+      "rk14::RK-277::ultimate_darkness"
     ],
     "bp": 5000,
     "sp": 1,
@@ -4914,7 +4914,8 @@
       "【飛翔斬】"
     ],
     "expectedDslKeywords": [
-      "register_if_discard_has_feature_feat_e5a5b3"
+      "register_if_discard_has_feature_feat_e5a5b3",
+      "rk14::RK-278::hishouzan"
     ],
     "bp": 4000,
     "sp": "1/2",
@@ -4931,8 +4932,7 @@
       "【ダークバイザーツバイ】"
     ],
     "expectedDslKeywords": [
-      "on_destroy_reanimate_named_from_discard",
-      "rk_fx::RK-279::dakubaizatsubai"
+      "rk14::RK-279::dark_visor_zwei"
     ],
     "bp": 5500,
     "sp": "1/2",
@@ -4951,7 +4951,7 @@
     "expectedDslKeywords": [
       "treat_as_s_vehicle_while_held",
       "hold_entry_and_rush_hold",
-      "rk_fx::RK-280::kaze_dan"
+      "rk14::RK-280::shippuu_dan"
     ],
     "bp": 4000,
     "sp": null,
@@ -4970,7 +4970,7 @@
     "expectedDslKeywords": [
       "treat_as_s_vehicle_while_held",
       "hold_entry_and_rush_hold",
-      "rk_fx::RK-281::doragonfuaiyasutomu"
+      "rk14::RK-281::dragon_fire_storm"
     ],
     "bp": 5000,
     "sp": "1/2",
@@ -4988,7 +4988,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "scissors_attack"
+      "rk14::RK-282::scissors_attack"
     ],
     "bp": 500,
     "sp": "special",
@@ -5006,7 +5006,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rk_fx::RK-283::no_e5a591"
+      "rk14::RK-283::contract_prey"
     ],
     "bp": 500,
     "sp": null,
@@ -5023,7 +5023,7 @@
       "【デスバニッシュ】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-284::desubanishu"
+      "rk14::RK-284::death_vanish"
     ],
     "bp": 2000,
     "sp": "1/2",
@@ -5058,8 +5058,8 @@
       "【戦いのリセット】"
     ],
     "expectedDslKeywords": [
-      "note_substitute_on_destroy_rush_feature::男",
-      "rk_fx::RK-286::inoriseto"
+      "rk14::RK-286::substitute_male",
+      "rk14::RK-286::battle_reset"
     ],
     "bp": 5000,
     "sp": 1,
@@ -5078,7 +5078,7 @@
     "expectedDslKeywords": [
       "require_command_hold_entry",
       "cannot_attack_except_feature_仮面ライダー",
-      "rk_fx::RK-287::no_e79eac"
+      "rk14::RK-287::instant_nightmare"
     ],
     "bp": 8000,
     "sp": null,
@@ -5096,7 +5096,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-288::derutamuba"
+      "rk14::RK-288::delta_mover"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -5113,7 +5113,7 @@
       "【ジェットエンジン噴射】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-289::jietoenjin"
+      "rk14::RK-289::jet_engine"
     ],
     "sp": null,
     "size": "S"
@@ -5129,7 +5129,7 @@
       "【末期の酒】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-290::no_e69cab"
+      "rk14::RK-290::last_champagne"
     ],
     "bp": 1000,
     "sp": null,
@@ -5148,7 +5148,7 @@
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
       "no_battle_rush_turn",
-      "rk_fx::RK-291::ma_no_chikara"
+      "rk14::RK-291::majin_power"
     ],
     "bp": 4000,
     "sp": null,
@@ -5167,7 +5167,7 @@
     "expectedDslKeywords": [
       "bp_plus_per_discard_named_kurokodairuorufuenoku_3000",
       "sp_at_bp5000_sp1",
-      "rk_fx::RK-292::tsuno"
+      "rk14::RK-292::three_souls"
     ],
     "bp": 500,
     "sp": "special",
@@ -5184,7 +5184,7 @@
       "【捕縛する鞭】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-293::suru_e68d95"
+      "rk14::RK-293::binding_whip"
     ],
     "bp": 2000,
     "sp": null,
@@ -5202,7 +5202,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_4000",
-      "blood_vessel_on_strike"
+      "rk14::RK-294::blood_vessel"
     ],
     "bp": 2000,
     "sp": null,

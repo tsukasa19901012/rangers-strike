@@ -119,7 +119,7 @@ describe("RK-288 仮面ライダーデルタ", () => {
     return resolveAll(rc ? rcRideOff(s, "RK-288:dl", "SPEC-VEHICLE:v") : mount(s, "RK-288:dl", "SPEC-VEHICLE:v"));
   };
 
-  it.fails("RK-288: 【デルタムーバー】RC — このターン、敵軍バトルエリアのすべての S ユニットは BP-500 される（M・ラッシュエリア・自軍のユニットは変わらない）（出典: atwiki/page-1381）", () => {
+  it("RK-288: 【デルタムーバー】RC — このターン、敵軍バトルエリアのすべての S ユニットは BP-500 される（M・ラッシュエリア・自軍のユニットは変わらない）（出典: atwiki/page-1381）", () => {
     const s = mover();
     expect(bpOf(s, "player2", "SPEC-E2000:a")).toBe(1500);
     expect(bpOf(s, "player2", "SPEC-EM2000:m")).toBe(2000);
@@ -127,7 +127,7 @@ describe("RK-288 仮面ライダーデルタ", () => {
     expect(bpOf(s, "player1", "SPEC-E2000:own")).toBe(2000);
   });
 
-  it.fails("RK-288: BP0 以下になったユニットは撃破される（出典: atwiki/page-1381「（BP0以下になったユニットは撃破される）」・R-BP-02）", () => {
+  it("RK-288: BP0 以下になったユニットは撃破される（出典: atwiki/page-1381「（BP0以下になったユニットは撃破される）」・R-BP-02）", () => {
     expect(zoneOf(mover(), "player2", "SPEC-E500:b")).toBe("discard");
   });
 
@@ -155,20 +155,20 @@ describe("RK-289 ジェットスライガー", () => {
   };
   const jet = (p2: Partial<GameState["players"]["player2"]> = enemyVehicles) => mount(board({ rush: [inst("SPEC-RCU", "r"), inst("RK-289", "js")] }, p2), "SPEC-RCU:r", "RK-289:js");
 
-  it.fails("RK-289: 【ジェットエンジン噴射】自軍ターン中にライドされてバトルエリアに出たとき、敵軍ビークルが2体以上あれば、ライドされていない敵軍の S・M ビークル（エリアを問わない）から1体選ぶ（見送れない）（出典: atwiki/page-1384・カード評価「ラッシュエリアやＭビークルにも効果がとどく」）", () => {
+  it("RK-289: 【ジェットエンジン噴射】自軍ターン中にライドされてバトルエリアに出たとき、敵軍ビークルが2体以上あれば、ライドされていない敵軍の S・M ビークル（エリアを問わない）から1体選ぶ（見送れない）（出典: atwiki/page-1384・カード評価「ラッシュエリアやＭビークルにも効果がとどく」）", () => {
     const s = jet();
     expectChoiceFrom(s, "player1", "RK-289");
     expect(choiceIds(s)).toEqual(["SPEC-MVEHICLE:mv", "SPEC-VEHICLE:bv"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-289: 選んだビークルは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-1384「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("RK-289: 選んだビークルは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-1384「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = settle(pick(jet(), "SPEC-MVEHICLE:mv"));
     expect(zoneOf(s, "player2", "SPEC-MVEHICLE:mv")).toBe("command");
     expect(cardIn(s, "player2", "SPEC-MVEHICLE:mv")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-289: 2体以上には、ライドされている敵軍ビークルも数える（ライドされていないビークルが1体でも発動する）（出典: atwiki/page-1384「敵軍ビークルが2体以上あれば」・カード評価「「ライドされていないビークル」が２枚である必要はない」）", () => {
+  it("RK-289: 2体以上には、ライドされている敵軍ビークルも数える（ライドされていないビークルが1体でも発動する）（出典: atwiki/page-1384「敵軍ビークルが2体以上あれば」・カード評価「「ライドされていないビークル」が２枚である必要はない」）", () => {
     const s = jet({ battle: [...riding(inst("SPEC-VEHICLE", "rv"), inst("SPEC-RCU", "er")), inst("SPEC-VEHICLE", "bv")] });
     expect(choiceIds(s)).toEqual(["SPEC-VEHICLE:bv"]);
   });
@@ -198,7 +198,7 @@ describe("RK-290 ロブスターオルフェノク", () => {
   const champagne = (p2: Partial<GameState["players"]["player2"]> = { battle: [inst("SPEC-C1", "a")], rush: [inst("SPEC-C0", "b"), inst("SPEC-M2", "m"), inst("SPEC-COND", "c")] }) =>
     enter(board({ rush: [inst("RK-290", "lb")] }, p2), "RK-290:lb");
 
-  it.fails("RK-290: 【末期の酒】自軍ターン中にバトルエリアに出たとき、相手に1枚ドローさせ、その後、相手は追加条件を持たない自分の S ユニット（エリアを問わない）から1体選ぶ（M・追加条件を持つユニットは対象外。見送れない）（出典: atwiki/page-1361・カード評価「エリア・BPに関係なく敵軍Sユニットを撃破できる」）", () => {
+  it("RK-290: 【末期の酒】自軍ターン中にバトルエリアに出たとき、相手に1枚ドローさせ、その後、相手は追加条件を持たない自分の S ユニット（エリアを問わない）から1体選ぶ（M・追加条件を持つユニットは対象外。見送れない）（出典: atwiki/page-1361・カード評価「エリア・BPに関係なく敵軍Sユニットを撃破できる」）", () => {
     const s = champagne();
     expect(zoneOf(s, "player2", "TST-OP:e0")).toBe("hand");
     expectChoiceFrom(s, "player2", "RK-290");
@@ -206,13 +206,13 @@ describe("RK-290 ロブスターオルフェノク", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-290: 相手が選んだユニットは撃破される（出典: atwiki/page-1361「1体選び撃破する」）", () => {
+  it("RK-290: 相手が選んだユニットは撃破される（出典: atwiki/page-1361「1体選び撃破する」）", () => {
     const s = resolveAll(pickAs(champagne(), "player2", "SPEC-C0:b"));
     expect(zoneOf(s, "player2", "SPEC-C0:b")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-C1:a")).toBe("battle");
   });
 
-  it.fails("RK-290: 相手に当てはまるユニットがいなくても、ドローはさせる（出典: atwiki/page-1361「相手に1枚ドローさせる。その後」）", () => {
+  it("RK-290: 相手に当てはまるユニットがいなくても、ドローはさせる（出典: atwiki/page-1361「相手に1枚ドローさせる。その後」）", () => {
     const s = champagne({ rush: [inst("SPEC-M2", "m")] });
     expect(zoneOf(s, "player2", "TST-OP:e0")).toBe("hand");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-290");
@@ -258,21 +258,21 @@ describe("RK-291 ドラゴンオルフェノク魔人態", () => {
 
   const majin = () => enter(board({ rush: [inst("RK-291", "do")] }, { battle: [inst("SPEC-E2000", "a"), inst("SPEC-EM2000", "m")], rush: [inst("SPEC-E2000", "r")] }), "RK-291:do");
 
-  it.fails("RK-291: 【魔人の力】自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアの S ユニットから1体選べる（任意。M・ラッシュエリアは対象外）（出典: atwiki/page-1366）", () => {
+  it("RK-291: 【魔人の力】自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアの S ユニットから1体選べる（任意。M・ラッシュエリアは対象外）（出典: atwiki/page-1366）", () => {
     const s = majin();
     expectChoiceFrom(s, "player1", "RK-291");
     expect(choiceIds(s)).toEqual(["SPEC-E2000:a"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-291: 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-1366「持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
+  it("RK-291: 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-1366「持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
     const s = resolveAll(pick(majin(), "SPEC-E2000:a"));
     expect(zoneOf(s, "player2", "SPEC-E2000:a")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-E2000:a")?.faceDown).toBe(true);
     expect(s.players.player2.damage).toBe(1);
   });
 
-  it.fails("RK-291: 選ばなければ何も起きない（出典: atwiki/page-1366「置いてもよい」）", () => {
+  it("RK-291: 選ばなければ何も起きない（出典: atwiki/page-1366「置いてもよい」）", () => {
     const s = resolveAll(skip(majin()));
     expect(zoneOf(s, "player2", "SPEC-E2000:a")).toBe("battle");
     expect(s.players.player2.damage).toBe(0);
@@ -296,7 +296,7 @@ describe("RK-292 クロコダイルオルフェノク格闘態", () => {
     expect(bpOf(board({ battle: [inst("RK-292", "cr")] }, { discard: [inst("RK-292", "e1")] }), "player1", "RK-292:cr")).toBe(500);
   });
 
-  it.fails("RK-292: ※ BP5000 以上のとき「SP1」になる（捨札2枚の6500で SP1、1枚の3500では SP！のまま）（出典: atwiki/page-1360「これはBP5000以上のとき「SP1」になる」）", () => {
+  it("RK-292: ※ BP5000 以上のとき「SP1」になる（捨札2枚の6500で SP1、1枚の3500では SP！のまま）（出典: atwiki/page-1360「これはBP5000以上のとき「SP1」になる」）", () => {
     expect(spOf(board({ battle: [inst("RK-292", "cr")], discard: [inst("RK-292", "d1"), inst("RK-292", "d2")] }), "player1", "RK-292:cr")).toBe(1);
     expect(spOf(board({ battle: [inst("RK-292", "cr")], discard: [inst("RK-292", "d1")] }), "player1", "RK-292:cr")).toBe(0);
   });
@@ -308,7 +308,7 @@ describe("RK-292 クロコダイルオルフェノク格闘態", () => {
   const crocDeck = [inst("TST-OP", "x0"), inst("RK-292", "k1"), inst("RK-292", "k2"), inst("TST-OP", "x3")];
   const souls = () => attackedInEnemyTurn({ battle: [inst("RK-292", "cr")], deck: crocDeck }, "RK-292:cr");
 
-  it.fails("RK-292: 【三つの魂】敵軍ターン中に撃破されて捨札になったとき、自軍山札の「クロコダイルオルフェノク格闘態」から1枚選んで手札に加えられる（任意）（出典: atwiki/page-1360）", () => {
+  it("RK-292: 【三つの魂】敵軍ターン中に撃破されて捨札になったとき、自軍山札の「クロコダイルオルフェノク格闘態」から1枚選んで手札に加えられる（任意）（出典: atwiki/page-1360）", () => {
     const s = souls();
     expect(zoneOf(s, "player1", "RK-292:cr")).toBe("discard");
     expectChoiceFrom(s, "player1", "RK-292");
@@ -316,13 +316,13 @@ describe("RK-292 クロコダイルオルフェノク格闘態", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-292: 選んだカードは手札に加わり、自軍山札はシャッフルされる（出典: atwiki/page-1360「自分の手札に加えてもよい。その後、自軍山札をシャッフルする」）", () => {
+  it("RK-292: 選んだカードは手札に加わり、自軍山札はシャッフルされる（出典: atwiki/page-1360「自分の手札に加えてもよい。その後、自軍山札をシャッフルする」）", () => {
     const s = resolveAll(pick(souls(), "RK-292:k2"));
     expect(zoneOf(s, "player1", "RK-292:k2")).toBe("hand");
     expect(s.players.player1.deck).toHaveLength(3);
   });
 
-  it.fails("RK-292: 加えないことも選べる（出典: atwiki/page-1360「加えてもよい」）", () => {
+  it("RK-292: 加えないことも選べる（出典: atwiki/page-1360「加えてもよい」）", () => {
     const s = resolveAll(skip(souls()));
     expect(s.players.player1.hand).toHaveLength(0);
     expect(s.players.player1.deck).toHaveLength(4);
@@ -358,14 +358,14 @@ describe("RK-293 センチピードオルフェノク", () => {
     return r.state;
   };
 
-  it.fails("RK-293: 【捕縛する鞭】敵軍ターン中に敵軍ユニットがラッシュされたとき、リリース状態の自軍コマンドを1つ選んでホールドできる（任意）（出典: atwiki/page-1362「自軍コマンドを1つホールドしてもよい」）", () => {
+  it("RK-293: 【捕縛する鞭】敵軍ターン中に敵軍ユニットがラッシュされたとき、リリース状態の自軍コマンドを1つ選んでホールドできる（任意）（出典: atwiki/page-1362「自軍コマンドを1つホールドしてもよい」）", () => {
     const s = whip();
     expectChoiceFrom(s, "player1", "RK-293");
     expect(choiceIds(s)).toEqual(["TST-OP:mc0", "TST-OP:mc1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-293: ホールドすると、相手は自分のコマンドを1つホールドするかしないかを選ぶ（出典: atwiki/page-1362「そうしたとき、相手は自分自身のコマンドを1つホールドするかしないかを選ぶ」）", () => {
+  it("RK-293: ホールドすると、相手は自分のコマンドを1つホールドするかしないかを選ぶ（出典: atwiki/page-1362「そうしたとき、相手は自分自身のコマンドを1つホールドするかしないかを選ぶ」）", () => {
     const s = pick(whip(), "TST-OP:mc0");
     expect(cardIn(s, "player1", "TST-OP:mc0")?.commandHeld).toBe(true);
     expectChoiceFrom(s, "player2", "RK-293");
@@ -373,14 +373,14 @@ describe("RK-293 センチピードオルフェノク", () => {
     expect(choiceIds(s).length).toBeGreaterThan(0);
   });
 
-  it.fails("RK-293: 相手がホールドしないことを選べば、そのユニットはそのターン中バトルエリアに出られない（出典: atwiki/page-1362「ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない」）", () => {
+  it("RK-293: 相手がホールドしないことを選べば、そのユニットはそのターン中バトルエリアに出られない（出典: atwiki/page-1362「ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない」）", () => {
     let s = resolveAll(skip(pick(whip(), "TST-OP:mc0")));
     s = nextPhase(s);
     expect(s.phase).toBe("battle");
     expect(canEnter(s, "SPEC-C0:eu", "player2")).toBe(false);
   });
 
-  it.fails("RK-293: 相手がコマンドを1つホールドすれば、そのユニットはバトルエリアに出られる（出典: atwiki/page-1362）", () => {
+  it("RK-293: 相手がコマンドを1つホールドすれば、そのユニットはバトルエリアに出られる（出典: atwiki/page-1362）", () => {
     let s = pick(whip(), "TST-OP:mc0");
     const before = s.players.player2.command.filter((c) => c.commandHeld).length;
     s = resolveAll(pickAs(s, "player2", s.pendingEffectChoice!.validInstanceIds[0]!));
@@ -389,7 +389,7 @@ describe("RK-293 センチピードオルフェノク", () => {
     expect(canEnter(s, "SPEC-C0:eu", "player2")).toBe(true);
   });
 
-  it.fails("RK-293: 自分がホールドしなければ、相手は何も選ばない（出典: atwiki/page-1362「そうしたとき」）", () => {
+  it("RK-293: 自分がホールドしなければ、相手は何も選ばない（出典: atwiki/page-1362「そうしたとき」）", () => {
     let s = resolveAll(skip(whip()));
     expect(s.pendingEffectChoice).toBeUndefined();
     s = nextPhase(s);
@@ -451,7 +451,7 @@ describe("RK-294 仮面ライダーサソードMF（マスクドフォーム）"
     expect(damageChoices(s, "player2")).toEqual(["SPEC-MORPH:pm"]);
   });
 
-  it.fails("RK-294: NC が成立していなければ（2番目に出た）、相手はパワーゾーンのどのカードでも選べる（出典: atwiki/page-1340「CN：1」・R-CN-02）", () => {
+  it("RK-294: NC が成立していなければ（2番目に出た）、相手はパワーゾーンのどのカードでも選べる（出典: atwiki/page-1340「CN：1」・R-CN-02）", () => {
     const s = struck(2);
     expect(damageChoices(s, "player2")).toEqual(["SPEC-MORPH:pm", "TST-OP:po"]);
   });

@@ -1,6 +1,7 @@
 import { openRk8JaguarOnEnemyRush } from "./rk/rk8UnitEffects";
 import { openRk11UndeadMasterOnRush } from "./rk/rk11UnitEffects";
 import { openRk12NegatarosOnRush } from "./rk/rk12UnitEffects";
+import { openRk14WhipOnEnemyRush } from "./rk/rk14UnitEffects";
 import { rk10CraneBeforeOnRush, rk10CraneWatch, setRk10OnRushRunner } from "./rk/rk10UnitEffects";
 import { rk1IsSmallNow } from "./rk/rk1Features";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
@@ -348,6 +349,8 @@ export function applyPassiveRushTriggers(
   next = openRk11UndeadMasterOnRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // RK-236 ネガタロス（敵軍ラッシュフェイズ中、特徴「警察」を持つ敵軍ユニットがラッシュされたとき。rules/rk/rk12UnitEffects.ts）。
   next = openRk12NegatarosOnRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // RK-293 センチピードオルフェノク【捕縛する鞭】（敵軍ターン中、敵軍ユニットがラッシュされたとき。rules/rk/rk14UnitEffects.ts）。
+  next = openRk14WhipOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   return { state: next, logs: rsEnemyRush.logs };
 }
 

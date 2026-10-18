@@ -28,6 +28,7 @@ import { activateHoldReturnSelf, canActivateHoldReturnSelf, holdReturnSelfCount 
 import { beginFusionCall, canActivateFusionCall } from "./legend1/set8NamedEffectsC";
 import { STACK_ONTO_LARGE_EFFECT_ID, beginStackOntoLarge, canActivateStackOntoLarge } from "./stackOntoLargeUnit";
 import { isStackOntoLargeCard } from "./stackOntoLargeGrants";
+import { rk14CanHoldSelf, rk14HoldSelf, rk14IsVehicleUnitCard } from "./rk/rk14Fields";
 
 type FieldZone = "rush" | "battle";
 
@@ -427,6 +428,20 @@ ABILITIES.push({
   matches: (cardId) => isStackOntoLargeCard(cardId),
   canActivate: (state, playerId, card) => canActivateStackOntoLarge(state, playerId, card),
   resolve: (state, playerId, card) => beginStackOntoLarge(state, playerId, card),
+});
+
+// RK-280 ダークレイダー・RK-281 ドラグランザー ※「これはユニットの間、次のテキストを得る⇒…また、自軍ラッシュフェイズ中、これをホールドしてもよい。」
+// （atwiki/page-1375・page-1367）。ホールドしたらビークルとして扱う（rules/rk/rk14Fields.ts）。ホールド状態の間はもう使えない。
+ABILITIES.push({
+  cardId: "",
+  effectId: "rk280_hold_self",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  discardSelf: false,
+  repeatable: true,
+  matches: (cardId) => rk14IsVehicleUnitCard(cardId),
+  canActivate: (state, playerId, card) => rk14CanHoldSelf(state, playerId, card),
+  resolve: (state, playerId, card) => rk14HoldSelf(state, playerId, card.instanceId),
 });
 
 function abilityFor(cardId: string): FieldActivatedAbility | undefined {

@@ -1,3 +1,4 @@
+import { isSameCardIdentity } from "@rangers-strike/cards";
 /**
  * RS 以外のライン（XG1〜7・XP・RM・SK …）のカード固有の名前付き効果と継続効果。
  * 対戦カタログ（full-playable）に入った実カードで RS の Q&A を再現したときに見つかった未接続の効果をここで扱う。
@@ -494,10 +495,18 @@ CHOICE_SKIPPERS[SHIN_TSUCHIKEMURI_EFFECT_ID] = (state, playerId) => {
 // （atwiki/page-1411）— 強制。ウラ向きで重ねたカードがなければ留まらない。
 
 export const KUUGA_UF_CARD_ID = "SK-004";
+/** RK-277 ン・ダグバ・ゼバ（【究極の闇をもたらす者】は【凄まじき戦士】の DA を持つカードを重ねる版。atwiki/page-1254 カード評価）。 */
+export const DAGBA_CARD_ID = "RK-277";
+
+/** 【凄まじき戦士】（SK-004）・【究極の闇をもたらす者】（RK-277）の違い: 重ねるカード（DA を持つか）と、捨札にしない自軍ユニットの名前。 */
+function majikiSpec(cardId: string): { wantDa: boolean; name: string } {
+  return isSameCardIdentity(cardId, DAGBA_CARD_ID) ? { wantDa: true, name: "ン・ダグバ・ゼバ" } : { wantDa: false, name: "仮面ライダークウガUF" };
+}
 
 /** 【凄まじき戦士】で捨札にできる、重ねたウラ向きのカード（効果が有効でなければ空）。 */
 export function kuugaStayCandidates(state: GameState, ownerId: PlayerId, unit: CardInstance): string[] {
-  if (unit.cardId !== KUUGA_UF_CARD_ID) return [];
+  // RK-277 ン・ダグバ・ゼバ【究極の闇をもたらす者】の後半も同じ文（atwiki/page-1254）。
+  if (unit.cardId !== KUUGA_UF_CARD_ID && !isSameCardIdentity(unit.cardId, DAGBA_CARD_ID)) return [];
   if (namedTextNegated(state, ownerId, unit)) return [];
   return (unit.stackedCards ?? []).filter((c) => c.faceDown).map((c) => c.instanceId);
 }
@@ -541,7 +550,7 @@ export function openKuugaStayOnLeave(state: GameState, intent: PendingLeave): Ga
     pendingEffectChoice: {
       playerId: intent.ownerPlayerId,
       effectId: KUUGA_STAY_EFFECT_ID,
-      sourceCardId: KUUGA_UF_CARD_ID,
+      sourceCardId: unit.cardId,
       sourceInstanceId: intent.instanceId,
       kind: "select_unit",
       phasePlayerId: intent.phasePlayerId,
@@ -567,7 +576,7 @@ CHOICE_RESOLVERS[KUUGA_STAY_EFFECT_ID] = (state, playerId, instanceId) => {
   const intent = pending.otherLinesMeta?.leave;
   if (!intent) return { error: "invalid_choice" };
   const cleared: GameState = { ...state, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
-  return { state: finishKuugaStay(cleared, intent, instanceId), log: logFor(state, playerId, KUUGA_UF_CARD_ID, `${KUUGA_STAY_EFFECT_ID}:stay`) };
+  return { state: finishKuugaStay(cleared, intent, instanceId), log: logFor(state, playerId, pending.sourceCardId, `${KUUGA_STAY_EFFECT_ID}:stay`) };
 };
 
 // 前半「これをラッシュしたとき、この追加条件で捨札にしたカードを見て、DAを持たないカードをすべてこれの下に好きな順でウラ向きに
@@ -587,13 +596,13 @@ function stackUnderKuuga(state: GameState, playerId: PlayerId, selfId: string, c
   });
 }
 
-/** 重ねた枚数が4枚未満なら、「仮面ライダークウガUF」以外の自軍ユニットをすべて捨札にする。 */
-function finishKuugaStack(state: GameState, playerId: PlayerId, stackedCount: number, phasePlayerId: PlayerId): GameState {
+/** 重ねた枚数が4枚未満なら、「仮面ライダークウガUF」（RK-277 は「ン・ダグバ・ゼバ」）以外の自軍ユニットをすべて捨札にする。 */
+function finishKuugaStack(state: GameState, playerId: PlayerId, stackedCount: number, phasePlayerId: PlayerId, keepName = "仮面ライダークウガUF"): GameState {
   if (stackedCount >= 4) return state;
   let next = state;
   const victims = fieldUnits(next, playerId)
     .filter((c) => getDefinition(next.definitions, c.cardId)?.type === "unit")
-    .filter((c) => cardName(next.definitions, c.cardId) !== "仮面ライダークウガUF")
+    .filter((c) => cardName(next.definitions, c.cardId) !== keepName)
     .map((c) => c.instanceId);
   for (const id of victims) {
     if (!findField(next, playerId, id)) continue;
@@ -603,25 +612,27 @@ function finishKuugaStack(state: GameState, playerId: PlayerId, stackedCount: nu
   return next;
 }
 
-function applyKuugaMajiki(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
+/** 【凄まじき戦士】（SK-004）・【究極の闇をもたらす者】（RK-277。rules/rk/rk14UnitEffects.ts から呼ぶ）の前半。 */
+export function applyMajikiStack(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const selfId = ctx.triggerSourceInstanceId;
   const self = selfId ? findField(state, ctx.playerId, selfId) : undefined;
   if (!self) return { state, detail: `${KUUGA_STACK_EFFECT_ID}:not_in_field` };
+  const spec = majikiSpec(self.card.cardId);
   const owner = state.players[ctx.playerId];
   const record = owner.lastZordDiscard?.rushedInstanceId === selfId ? owner.lastZordDiscard?.instanceIds ?? [] : [];
   const candidates = owner.discard
     .filter((c) => record.includes(c.instanceId))
-    .filter((c) => !cardCategories(getDefinition(state.definitions, c.cardId)).includes("DA"))
+    .filter((c) => cardCategories(getDefinition(state.definitions, c.cardId)).includes("DA") === spec.wantDa)
     .map((c) => c.instanceId);
   if (candidates.length <= 1) {
     const stacked = stackUnderKuuga(state, ctx.playerId, selfId!, candidates);
-    return { state: finishKuugaStack(stacked, ctx.playerId, candidates.length, ctx.phasePlayerId), detail: KUUGA_STACK_EFFECT_ID };
+    return { state: finishKuugaStack(stacked, ctx.playerId, candidates.length, ctx.phasePlayerId, spec.name), detail: KUUGA_STACK_EFFECT_ID };
   }
   return {
     state: openOrQueue(state, {
       playerId: ctx.playerId,
       phasePlayerId: ctx.phasePlayerId,
-      sourceCardId: KUUGA_UF_CARD_ID,
+      sourceCardId: self.card.cardId,
       sourceInstanceId: selfId,
       effectId: KUUGA_STACK_EFFECT_ID,
       kind: "select_unit",
@@ -643,8 +654,8 @@ CHOICE_RESOLVERS[KUUGA_STACK_EFFECT_ID] = (state, playerId, instanceId) => {
   }
   const order = [...selected, ...remaining];
   let next = stackUnderKuuga(close(state, pending), playerId, pending.sourceInstanceId!, order);
-  next = finishKuugaStack(next, playerId, order.length, pending.phasePlayerId);
-  return { state: proceed(next, pending), log: logFor(state, playerId, KUUGA_UF_CARD_ID, `${KUUGA_STACK_EFFECT_ID}:${order.length}`) };
+  next = finishKuugaStack(next, playerId, order.length, pending.phasePlayerId, majikiSpec(pending.sourceCardId).name);
+  return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${KUUGA_STACK_EFFECT_ID}:${order.length}`) };
 };
 
 // ---------------------------------------------------------------------------
@@ -849,7 +860,7 @@ const OTHER_LINES_KEYWORDS: Record<string, (state: GameState, ctx: GrantKeywordC
   // ※（自分がターンを終えるとき）は rules/turnEndingEffects.ts から openOtherLinesTurnEndEntry で扱う。
   "XP-026::accel_return": (state) => ({ state, detail: ACCEL_RETURN_EFFECT_ID }),
   "XG2-041::shin_tsuchikemuri": applyShinTsuchikemuri,
-  "SK-004::majiki": applyKuugaMajiki,
+  "SK-004::majiki": applyMajikiStack,
   "XG2-052::unite_vent": applyUniteVent,
   "XG1-078::copy_vent": applyCopyVent,
   "XG1-034::filthy_air": (state) => ({ state, detail: "xg1034_filthy_air" }),

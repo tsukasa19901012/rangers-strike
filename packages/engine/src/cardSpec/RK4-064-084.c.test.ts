@@ -523,7 +523,8 @@ describe("RK-084 トリックベント", () => {
   });
 
   it("RK-084: 追加条件を満たしていれば（捨札の合計11枚以上）仮面ライダーオーディンも出る（出典: atwiki/page-642・atwiki の RK-286「自分と相手の捨札の合計が11枚以上ある」）", () => {
-    const s = trick([inst("RK-286", "od"), inst("TST-OP", "op"), inst("TST-OP", "op2")], { discard: deckCards(6, "d1") }, { discard: deckCards(5, "d2") });
+    // 自軍パワーを6枚にする（4枚だと、出たオーディン自身が【戦いのリセット】で撃破される。RK14-274-294.b の RK-286）。
+    const s = trick([inst("RK-286", "od"), inst("TST-OP", "op"), inst("TST-OP", "op2")], { discard: deckCards(6, "d1"), power: powerCards(6) }, { discard: deckCards(5, "d2") });
     expect(zoneOf(s, "player1", "RK-286:od")).toBe("rush");
   });
 

@@ -389,6 +389,29 @@ const RK13_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk273_pegasus_damage: { label: "ライジングブラストペガサス", hint: "ダメージにする自分のユニットを選んでください" },
 };
 
+/** ザ・マスクドライダーEXP vol.4 RK-274〜RK-294 のカード固有の選択（engine rules/rk/rk14UnitEffects.ts ほか）の表示名と案内文。 */
+const RK14_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk274_beat_pick: { label: "ニューマシンの性能", hint: "山札の上か下に戻す、見ているカードを選んでください（発動しないなら「スキップ」）" },
+  rk274_beat_place: { label: "ニューマシンの性能", hint: "選んだカードを戻す先を選んでください（deck_top: 山札の上／deck_bottom: 山札の下）" },
+  rk275_gadoru_pick: { label: "ザバギンバシグラ", hint: "敵軍ラッシュエリアに出す、敵軍パワーゾーンのオモテ向きの S ユニットのカードを選んでください（しないなら「スキップ」）" },
+  rk275_gadoru_power: { label: "ザバギンバシグラ", hint: "自分の山札の上から1枚ひいて、自分のパワーゾーンに置きますか？" },
+  rk276_bazu_jumper: { label: "キョクギンジャンママ", hint: "相手の手札から1枚選んでください（見ないで選びます。しないなら「スキップ」）" },
+  rk278_hishouzan: { label: "飛翔斬", hint: "撃破する、特徴の数が一番少ない敵軍バトルエリアの S ユニットを選んでください（しないなら「スキップ」）" },
+  rk279_dark_visor_cards: { label: "ダークバイザーツバイ", hint: "自軍捨札の「アドベントカード」を2枚まで選んでください（1枚以上選んだら確定できます。しないなら「スキップ」）" },
+  rk279_dark_visor_units: { label: "ダークバイザーツバイ", hint: "撃破する敵軍バトルエリアの S ユニットを選んでください（特徴の数の合計が、選んだカードの必要パワーの合計以下。途中で確定してもよい）" },
+  rk283_volcancer_prey: { label: "契約解除者の捕食", hint: "捨札にする、自分のコマンドゾーンの同じ必要パワーの S ユニットのカードを選んでください" },
+  rk284_death_vanish: { label: "デスバニッシュ", hint: "撃破する、BP4000 以下の敵軍バトルエリアの S ユニットを選んでください（しないなら「スキップ」）" },
+  rk284_death_vanish_command: { label: "デスバニッシュ", hint: "捨札にする自分のコマンドを選んでください" },
+  rk286_odin_substitute: { label: "仮面ライダーオーディン", hint: "かわりに捨札にする、自軍ラッシュエリアの「男」のユニットを選んでください（しないなら「スキップ」）" },
+  rk287_instant_nightmare: { label: "瞬間の悪夢", hint: "捨札にする、敵軍コマンドゾーンのモーフを持つユニットカードを選んでください（しないなら「スキップ」）" },
+  rk289_jet_engine: { label: "ジェットエンジン噴射", hint: "持ち主のコマンドゾーンにホールド状態で置く、ライドされていない敵軍ビークルを選んでください" },
+  rk290_last_champagne: { label: "末期の酒", hint: "撃破する、追加条件を持たない自分の S ユニットを選んでください" },
+  rk291_majin_power: { label: "魔人の力", hint: "持ち主のパワーゾーンにダメージにして置く、敵軍バトルエリアの S ユニットを選んでください（しないなら「スキップ」）" },
+  rk292_three_souls: { label: "三つの魂", hint: "手札に加える、自軍山札の「クロコダイルオルフェノク格闘態」を選んでください（しないなら「スキップ」）" },
+  rk293_binding_whip: { label: "捕縛する鞭", hint: "ホールドする自軍コマンドを選んでください（しないなら「スキップ」）" },
+  rk293_binding_whip_enemy: { label: "捕縛する鞭", hint: "ホールドする自分のコマンドを選んでください（ホールドしないとラッシュしたユニットはこのターンバトルエリアに出られません。しないなら「スキップ」）" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -433,7 +456,8 @@ export function effectChoiceHint(
     RK10_CHOICE_UI[pending.effectId] ??
     RK11_CHOICE_UI[pending.effectId] ??
     RK12_CHOICE_UI[pending.effectId] ??
-    RK13_CHOICE_UI[pending.effectId];
+    RK13_CHOICE_UI[pending.effectId] ??
+    RK14_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -639,6 +663,7 @@ export function effectChoiceTitle(
     RK11_CHOICE_UI[pending.effectId]?.label ??
     RK12_CHOICE_UI[pending.effectId]?.label ??
     RK13_CHOICE_UI[pending.effectId]?.label ??
+    RK14_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

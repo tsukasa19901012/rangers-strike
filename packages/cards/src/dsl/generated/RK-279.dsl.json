@@ -61,16 +61,16 @@
       "name": "ダークバイザーツバイ",
       "text": "自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい。そうしたとき、敵軍バトルエリアからSユニットを好きな数選び撃破してもよい。ただし、選んだユニットの特徴の数の合計が、捨札から選んだカードの必要パワーの数字の合計以下になるように選ぶこと。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-279::dakubaizatsubai",
+          "keyword": "rk14::RK-279::dark_visor_zwei",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

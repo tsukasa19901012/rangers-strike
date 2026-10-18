@@ -284,8 +284,23 @@ CHOICE_RESOLVERS[CHALICE_ARROW_TARGET_EFFECT_ID] = (state, playerId, instanceId)
 
 export const RENGEL_SUBSTITUTE_EFFECT_ID = "rk128_rengel_substitute";
 export const RENGEL_ROUZER_EFFECT_ID = "rk128_rengel_rouzer";
+/** RK-286 仮面ライダーオーディンの※（RK-128 と同じ手続き。選択の案内を分けるため別の ID）。 */
+export const ODIN_SUBSTITUTE_EFFECT_ID = "rk286_odin_substitute";
 
-function rengelSubstituteIds(state: GameState, ownerId: PlayerId, selfId: string): string[] {
+// RK-286 仮面ライダーオーディンの※「これが撃破されて捨札になるとき、かわりに自軍ラッシュエリアにある特徴「男」を持つユニット1体を捨札にすれば、
+// これはその場に留まる。」（atwiki/page-1276）も同じ手続き（選ぶのは自軍ラッシュエリアの「男」のユニット。サイズを問わない）。
+const SUBSTITUTE_CARD_IDS = ["RK-128", "RK-286"];
+
+function substituteCardOf(cardId: string): string | undefined {
+  return SUBSTITUTE_CARD_IDS.find((id) => isSameCardIdentity(cardId, id));
+}
+
+function rengelSubstituteIds(state: GameState, ownerId: PlayerId, selfId: string, sourceCardId = "RK-128"): string[] {
+  if (sourceCardId === "RK-286") {
+    return state.players[ownerId].rush
+      .filter((c) => c.instanceId !== selfId && isUnitCard(state, c.cardId) && unitFeatures(state, ownerId, c).includes("男"))
+      .map((c) => c.instanceId);
+  }
   return fieldUnits(state, ownerId)
     .filter((c) => {
       if (c.instanceId === selfId || !rk1IsSmallNow(state, c)) return false;
@@ -296,14 +311,15 @@ function rengelSubstituteIds(state: GameState, ownerId: PlayerId, selfId: string
 }
 
 export function openRk7RengelSubstitute(state: GameState, intent: PendingLeave): GameState | null {
-  if (intent.rk7SubstituteDeclined || !isSameCardIdentity(intent.leavingCardId, "RK-128")) return null;
+  const sourceCardId = substituteCardOf(intent.leavingCardId);
+  if (intent.rk7SubstituteDeclined || !sourceCardId) return null;
   if (intent.toZone !== "discard" || intent.notDestruction) return null;
   if (state.pendingEffectChoice) return null;
-  const ids = rengelSubstituteIds(state, intent.ownerPlayerId, intent.instanceId);
+  const ids = rengelSubstituteIds(state, intent.ownerPlayerId, intent.instanceId, sourceCardId);
   if (ids.length === 0) return null;
   return openEffectChoice(state, {
-    ...base({ playerId: intent.ownerPlayerId, phasePlayerId: intent.phasePlayerId, sourceInstanceId: intent.instanceId }, "RK-128"),
-    effectId: RENGEL_SUBSTITUTE_EFFECT_ID,
+    ...base({ playerId: intent.ownerPlayerId, phasePlayerId: intent.phasePlayerId, sourceInstanceId: intent.instanceId }, sourceCardId),
+    effectId: sourceCardId === "RK-286" ? ODIN_SUBSTITUTE_EFFECT_ID : RENGEL_SUBSTITUTE_EFFECT_ID,
     kind: "select_unit",
     validInstanceIds: ids,
     selectCount: 1,
@@ -325,7 +341,7 @@ CHOICE_RESOLVERS[RENGEL_SUBSTITUTE_EFFECT_ID] = (state, playerId, instanceId) =>
     rush: p.rush.filter((c) => c.instanceId !== instanceId),
     discard: moved ? [...p.discard, stripForZone(moved), ...(moved.stackedCards ?? []).map(stripForZone)] : p.discard,
   }));
-  return { state: proceed(next, pending), log: logFor(state, playerId, "RK-128", `${RENGEL_SUBSTITUTE_EFFECT_ID}:${cardName(state.definitions, moved?.cardId ?? "")}`) };
+  return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${RENGEL_SUBSTITUTE_EFFECT_ID}:${cardName(state.definitions, moved?.cardId ?? "")}`) };
 };
 CHOICE_SKIPPERS[RENGEL_SUBSTITUTE_EFFECT_ID] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;
@@ -333,8 +349,11 @@ CHOICE_SKIPPERS[RENGEL_SUBSTITUTE_EFFECT_ID] = (state, playerId) => {
   const cleared = close(state, pending);
   if (!intent) return { state: cleared };
   const left = tryLeaveField(cleared, { ...intent, rk7SubstituteDeclined: true });
-  return { state: left.deferred ? left.state : proceed(left.state, pending), log: skipLog(state, playerId, "RK-128", RENGEL_SUBSTITUTE_EFFECT_ID) };
+  return { state: left.deferred ? left.state : proceed(left.state, pending), log: skipLog(state, playerId, pending.sourceCardId, RENGEL_SUBSTITUTE_EFFECT_ID) };
 };
+
+CHOICE_RESOLVERS[ODIN_SUBSTITUTE_EFFECT_ID] = CHOICE_RESOLVERS[RENGEL_SUBSTITUTE_EFFECT_ID]!;
+CHOICE_SKIPPERS[ODIN_SUBSTITUTE_EFFECT_ID] = CHOICE_SKIPPERS[RENGEL_SUBSTITUTE_EFFECT_ID]!;
 
 function isRengelRouzerCard(state: GameState, card: CardInstance): boolean {
   const def = getDefinition(state.definitions, card.cardId);

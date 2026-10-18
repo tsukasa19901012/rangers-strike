@@ -23,16 +23,16 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが撃破されて捨札になるとき、かわりに自軍ラッシュエリアにある特徴「男」を持つユニット1体を捨札にすれば、これはその場に留まる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_substitute_on_destroy_rush_feature::男",
-          "duration": "turn"
+          "keyword": "rk14::RK-286::substitute_male",
+          "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     },
     {
       "id": "inoriseto",
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-286::inoriseto",
+          "keyword": "rk14::RK-286::battle_reset",
           "duration": "turn"
         }
       ],

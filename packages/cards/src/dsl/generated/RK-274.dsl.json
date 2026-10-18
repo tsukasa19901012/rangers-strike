@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-274::nyumashinno",
+          "keyword": "rk14::RK-274::new_machine",
           "duration": "turn"
         }
       ],

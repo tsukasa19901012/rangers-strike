@@ -50,11 +50,11 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-279::dakubaizatsubai",
+          "keyword": "rk14::RK-279::dark_visor_zwei",
           "duration": "turn"
         }
       ]

@@ -322,19 +322,21 @@ export function powerZoneHasMorphUnitCard(
   });
 }
 
+/** RK-294【ブラッドベセル】を NC で発動したプレイヤーの記録（このターン。rules/rk/rk14UnitEffects.ts が書く）。 */
+export const RK14_BLOOD_VESSEL_RULE = "rk294_blood_vessel";
+
+/**
+ * RK-294 仮面ライダーサソードMF【ブラッドベセル】（CN1 の NC）「このターン、自軍ユニットがストライクして、相手が自分自身のパワーゾーンのカードを
+ * ウラ向きにしてダメージにするとき、相手は自分自身のパワーゾーンにモーフを持つユニットカードがあれば、それを選びダメージにする。」（atwiki/page-1340）
+ * NC を発動したターンだけ（場にあるだけでは発動しない）。
+ */
 export function isBloodVesselStrikeActive(
   state: GameState,
   strikerOwnerId: PlayerId,
 ): boolean {
-  const player = state.players[strikerOwnerId];
-  for (const zone of ["rush", "battle"] as const) {
-    for (const card of player[zone]) {
-      if (cardHasGrantKeyword(card.cardId, "blood_vessel_on_strike")) {
-        return true;
-      }
-    }
-  }
-  return false;
+  return (state.players[strikerOwnerId].modifiers ?? []).some(
+    (m) => m.kind === "rule" && m.ruleId === RK14_BLOOD_VESSEL_RULE && m.scope === "turn",
+  );
 }
 
 export function canWingAttackFromRush(

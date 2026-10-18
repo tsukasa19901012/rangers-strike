@@ -5,6 +5,7 @@ import { opponent } from "../../core/helpers";
 import { openRk10OmegaDraw } from "../../rules/rk/rk10UnitEffects";
 import { openRk12CastleDoranDraw } from "../../rules/rk/rk12UnitEffects";
 import { applyRk13OnUnitLeft } from "../../rules/rk/rk13UnitEffects";
+import { applyRk14OnUnitLeft } from "../../rules/rk/rk14UnitEffects";
 
 export const unitLeftZoneListener: EventListener = (event, state) => {
   const leaveEvent = event as UnitLeftZoneEvent;
@@ -32,6 +33,8 @@ export const unitLeftZoneListener: EventListener = (event, state) => {
     nextState = openRk12CastleDoranDraw(nextState, leaveEvent);
     // RK-258【猛毒腐食液】の記録・RK-268 デスガロンの※（rules/rk/rk13UnitEffects.ts）。
     nextState = applyRk13OnUnitLeft(nextState, leaveEvent);
+    // RK-283【契約解除者の捕食】・RK-292【三つの魂】（rules/rk/rk14UnitEffects.ts）。
+    nextState = applyRk14OnUnitLeft(nextState, leaveEvent);
   }
   return {
     state: nextState,

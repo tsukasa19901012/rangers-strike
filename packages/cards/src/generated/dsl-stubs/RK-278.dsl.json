@@ -38,36 +38,16 @@
       "name": "飛翔斬",
       "text": "「ダークウイング」からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、特徴の数が1番少ないSユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
+        "type": "enter_battle"
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk14::RK-278::hishouzan",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

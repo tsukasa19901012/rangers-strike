@@ -881,7 +881,7 @@ function applyShotgun(state: GameState, ctx: GrantKeywordContext): GrantKeywordR
       validInstanceIds: ids,
       selectCount: mecha,
       optional: true,
-      mayConfirm: true,
+      // 1体選ぶまでは確定できない（0体での確定は合法手に出さない）。
       rk13Meta: { budget: SHOTGUN_BUDGET, remaining: mecha },
     }),
     detail: SHOTGUN_EFFECT_ID,
@@ -905,7 +905,7 @@ CHOICE_RESOLVERS[SHOTGUN_EFFECT_ID] = (state, playerId, instanceId) => {
   const rest = remaining > 0 ? shotgunCandidates(state, playerId, budget, selected) : [];
   if (rest.length === 0) return finishShotgun(state, playerId, pending, selected);
   return {
-    state: { ...state, pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: rest, optional: false, rk13Meta: { budget, remaining } } },
+    state: { ...state, pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: rest, optional: false, mayConfirm: true, rk13Meta: { budget, remaining } } },
   };
 };
 CHOICE_SKIPPERS[SHOTGUN_EFFECT_ID] = simpleSkip();
@@ -1130,7 +1130,7 @@ function applyPegasus(state: GameState, ctx: GrantKeywordContext): GrantKeywordR
   const ids = state.players[ctx.playerId].rush.filter((c) => isUnitCard(state, c.cardId) && rk1IsSmallNow(state, c)).map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "rk273:no_unit" };
   return {
-    state: openOrQueue(state, { ...base(ctxBase(ctx), "RK-273"), effectId: PEGASUS_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: ids.length, optional: true, mayConfirm: true }),
+    state: openOrQueue(state, { ...base(ctxBase(ctx), "RK-273"), effectId: PEGASUS_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: ids.length, optional: true }),
     detail: PEGASUS_EFFECT_ID,
   };
 }
@@ -1171,7 +1171,8 @@ CHOICE_RESOLVERS[PEGASUS_EFFECT_ID] = (state, playerId, instanceId) => {
   const selected = [...(pending.selectedInstanceIds ?? []), instanceId];
   const rest = pending.validInstanceIds.filter((id) => !selected.includes(id));
   if (rest.length === 0) return finishPegasusReturn(state, playerId, pending, selected);
-  return { state: { ...state, pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: rest, optional: false } } };
+  // 1体選んだら確定できる（0体での確定は合法手に出さない）。
+  return { state: { ...state, pendingEffectChoice: { ...pending, selectedInstanceIds: selected, validInstanceIds: rest, optional: false, mayConfirm: true } } };
 };
 CHOICE_SKIPPERS[PEGASUS_EFFECT_ID] = simpleSkip();
 CHOICE_CONFIRMERS[PEGASUS_EFFECT_ID] = (state, playerId) => {

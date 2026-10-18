@@ -666,6 +666,20 @@ export type PendingEffectChoice = {
     /** RK-273: 手札に戻したユニットの数。 */
     count?: number;
   };
+  /** ザ・マスクドライダーEXP vol.4 RK-274〜RK-294 の選択の続き（rules/rk/rk14UnitEffects.ts）。 */
+  rk14Meta?: {
+    /** 効果の持ち主（相手が選ぶ選択のとき）。 */
+    owner?: PlayerId;
+    /** RK-274: まだ戻していない見たカード。RK-283: これから選ぶプレイヤーの順。 */
+    remainingIds?: string[];
+    /** RK-274: 上か下を選んでいるカード。RK-275・RK-276: 敵軍ラッシュエリアに出したユニット。RK-293: ラッシュされたユニット。 */
+    picked?: string;
+    /** RK-279: 撃破に使える特徴の数の残り。RK-283: 撃破されたユニットの必要パワーの数字。 */
+    budget?: number;
+    /** RK-284: 撃破したユニットの BP と、このユニットの BP。 */
+    targetBp?: number;
+    selfBp?: number;
+  };
   /** RK-208【迎撃の毒矢】: この選択に答えたら（発動を宣言したら）クレインの窓を開く（rules/rk/rk10UnitEffects.ts）。 */
   rk10CraneWatch?: { craneOwner: PlayerId; rushedOwner: PlayerId; rushedInstanceId: string };
   /** ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 の選択の続き（rules/rk/rk9UnitEffects.ts）。 */

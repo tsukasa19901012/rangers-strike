@@ -3,6 +3,7 @@ import { tryRk9OnEnterBattle } from "./rk/rk9UnitEffects";
 import { tryRk10OnEnterBattle } from "./rk/rk10UnitEffects";
 import { rk12MarkHeldEntry, tryRk12OnEnterBattle } from "./rk/rk12UnitEffects";
 import { checkRk13SplashBeforeNc, clearRk13NcNegation, tryRk13OnEnterBattle } from "./rk/rk13UnitEffects";
+import { tryRk14OnEnterBattle } from "./rk/rk14UnitEffects";
 import { openWarriorSoulNcChoice } from "./legend1/set9NamedEffectsA";
 import { tryResidentRushOnAllyEnterBattle } from "./residentAllyEnterRush";
 import { listNcColumnNamedEffects, getNumberComboEffect } from "@rangers-strike/cards";
@@ -313,6 +314,13 @@ export function resolveEnterBattleEffectsImpl(
     const beforeRk13Choice = nextState.pendingEffectChoice;
     nextState = tryRk13OnEnterBattle(nextState, playerId, battleCard);
     if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk13Choice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+    // RK-274・RK-289（ライドして一緒に出たビークル）・RK-275/276/290/291（出たとき）・RK-278/284（コンビネーション）・RK-294（NC）
+    // （rules/rk/rk14UnitEffects.ts）。
+    const beforeRk14Choice = nextState.pendingEffectChoice;
+    nextState = tryRk14OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter, battlePosition);
+    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk14Choice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }
     // RS-523 臨気で得た能力・RS-521 スーパー戦隊魂（レッドが出たとき）（rules/legend1/set8NamedEffectsA.ts）。

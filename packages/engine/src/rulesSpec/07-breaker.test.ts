@@ -141,7 +141,7 @@ describe("R-KW-BREAKER-03 選ばれない範囲", () => {
   it.todo("R-KW-BREAKER-03: XG6-003 で手札から見せた RS-168【爆竜必殺クロスサンダー】ではブレイカー持ちを選べる（出典: atwiki/page-2355 Q5。手札公開効果の起動経路がない）");
 
   // 「【戦いのリセット】の効果はユニットを選んではいない」
-  it.fails("R-KW-BREAKER-03: RK-286 オーディン【戦いのリセット】で必要パワーを満たしていないブレイカー持ちも撃破される（出典: atwiki/page-2355 Q6）", () => {
+  it("R-KW-BREAKER-03: RK-286 オーディン【戦いのリセット】で必要パワーを満たしていないブレイカー持ちも撃破される（出典: atwiki/page-2355 Q6）", () => {
     // 敵軍パワー3・必要パワー4 のブレイカー持ち。自軍はパワー6・捨札の合計11枚でオーディンをラッシュする。
     const BRK4 = unitDef("RSPEC-BRK4", { name: "仮面ライダーW・CJX", bp: 3000, powerCost: 4, text: KW.breaker });
     const discard = (n: number, p: string) => Array.from({ length: n }, (_, i) => inst("TST-OP", `${p}${i}`));

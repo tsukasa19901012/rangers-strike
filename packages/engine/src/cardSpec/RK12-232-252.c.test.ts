@@ -197,7 +197,7 @@ describe("RK-247 仮面ライダーネガ電王", () => {
 
   // atwiki/page-1011 Q1「はい、できます。」
   for (const id of ["RK-280", "RK-281"]) {
-    it.fails(`RK-247: 公式Q&A — ${id} を自軍ラッシュフェイズ中に自身の効果でホールドしたターンも、ネガ電王はバトルエリアに出られる（出典: atwiki/page-1011 Q1）`, () => {
+    it(`RK-247: 公式Q&A — ${id} を自軍ラッシュフェイズ中に自身の効果でホールドしたターンも、ネガ電王はバトルエリアに出られる（出典: atwiki/page-1011 Q1）`, () => {
       const s = nextPhase(act(rushPhase({ rush: [inst("RK-247", "ng"), inst(id, "v")] }), { type: "activate_field_unit_ability", playerId: "player1", unitInstanceId: `${id}:v` }));
       expect(s.phase).toBe("battle");
       expect(canEnter(s, "RK-247:ng")).toBe(true);
@@ -391,7 +391,7 @@ describe("RK-250 サバイブ", () => {
 
   // atwiki/page-1350 Q2「はい、そのとおりです。ユニットでなくなるので「RK-250 サバイブ」は捨札になります。」
   for (const id of ["RK-280", "RK-281"]) {
-    it.fails(`RK-250: 公式Q&A — サバイブを重ねた ${id} をホールドしてビークルにすると、ユニットでなくなるのでサバイブは捨札になる（出典: atwiki/page-1350 Q2）`, () => {
+    it(`RK-250: 公式Q&A — サバイブを重ねた ${id} をホールドしてビークルにすると、ユニットでなくなるのでサバイブは捨札になる（出典: atwiki/page-1350 Q2）`, () => {
       const s = settle(act(rushPhase({ rush: [{ ...inst(id, "v"), stackedCards: [inst("RK-250", "sv")] }] }), { type: "activate_field_unit_ability", playerId: "player1", unitInstanceId: `${id}:v` }));
       expect(zoneOf(s, "player1", "RK-250:sv")).toBe("discard");
       expect(zoneOf(s, "player1", `${id}:v`)).toBe("rush");

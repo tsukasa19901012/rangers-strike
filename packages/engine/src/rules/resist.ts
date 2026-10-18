@@ -1,3 +1,4 @@
+import { rk14GrantsRegister } from "./rk/rk14Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { hasResist } from "@rangers-strike/cards";
 import { cardHasKeyword } from "../keywords/cardKeywords";
@@ -40,6 +41,8 @@ export function canOfferRegister(
     if (card?.commandHeld) return false;
   }
   if (cardHasRegisterKeyword(state, pending.leavingCardId)) return true;
+  // RK-278 仮面ライダーナイト（2nd）の※（自軍捨札に「女」のユニットカードがあればレジスト。rules/rk/rk14Fields.ts）。
+  if (pending.ownerPlayerId && rk14GrantsRegister(state, pending.ownerPlayerId, pending.leavingCardId)) return true;
   // RS-466 ギンガレオン【炎の星獣】: ライドしている S ユニットはレジストを得る（rules/legend1/set7NamedEffectsB.ts）。
   if (!pending.ownerPlayerId || !pending.instanceId) return false;
   if (riddenVehicleGrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;

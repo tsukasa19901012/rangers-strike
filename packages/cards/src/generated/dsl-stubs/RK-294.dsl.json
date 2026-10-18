@@ -36,12 +36,12 @@
       "name": "ブラッドベセル",
       "text": "このターン、自軍ユニットがストライクして、相手が自分自身のパワーゾーンのカードをウラ向きにしてダメージにするとき、相手は自分自身のパワーゾーンにモーフを持つユニットカードがあれば、それを選びダメージにする。",
       "trigger": {
-        "type": "on_strike"
+        "type": "enter_battle"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "blood_vessel_on_strike",
+          "keyword": "rk14::RK-294::blood_vessel",
           "duration": "turn"
         }
       ],

@@ -44,6 +44,7 @@ import {
   nextPhase,
   p1Battle,
   pick,
+  played,
   powerCards,
   registerOffered,
   releasedCat,
@@ -106,13 +107,13 @@ describe("RK-281 ドラグランザー", () => {
     expectRarityIn("RK-281", ["NR"]);
   });
 
-  it.fails("RK-281: ※ ユニットの間は、自軍コマンドを1つホールドしなければバトルエリアに出られない（出典: atwiki/page-1367・R-ADD-07）", () => {
+  it("RK-281: ※ ユニットの間は、自軍コマンドを1つホールドしなければバトルエリアに出られない（出典: atwiki/page-1367・R-ADD-07）", () => {
     expect(canEnter(board({ rush: [inst("RK-281", "dg")], command: [held("TST-OP", "h")] }), "RK-281:dg")).toBe(false);
     const s = settle(enterHold(board({ rush: [inst("RK-281", "dg")], command: releasedCat("WB", 1) }), "RK-281:dg"));
     expect(zoneOf(s, "player1", "RK-281:dg")).toBe("battle");
   });
 
-  it.fails("RK-281: ※ 自軍ラッシュフェイズ中にこれをホールドでき、ホールド状態のこれは S ビークルとして RC を持つユニットがライドできる（出典: atwiki/page-1367「自軍エリアでホールド状態かライドされている間、Sビークルとして扱う」「自軍ラッシュフェイズ中、これをホールドしてもよい」）", () => {
+  it("RK-281: ※ 自軍ラッシュフェイズ中にこれをホールドでき、ホールド状態のこれは S ビークルとして RC を持つユニットがライドできる（出典: atwiki/page-1367「自軍エリアでホールド状態かライドされている間、Sビークルとして扱う」「自軍ラッシュフェイズ中、これをホールドしてもよい」）", () => {
     const s0 = rushPhase({ rush: [inst("RK-281", "dg"), inst("SPEC-RCU", "r")] });
     expect(canActivateField(s0, "RK-281:dg")).toBe(true);
     const s = nextPhase(activateField(s0, "RK-281:dg"));
@@ -120,7 +121,7 @@ describe("RK-281 ドラグランザー", () => {
     expect(canMount(s, "SPEC-RCU:r", "RK-281:dg")).toBe(true);
   });
 
-  it.fails("RK-281: 【ドラゴンファイヤーストーム】これにライドしている特徴「サバイブ」を持つユニットは「SP1」になる（出典: atwiki/page-1367）", () => {
+  it("RK-281: 【ドラゴンファイヤーストーム】これにライドしている特徴「サバイブ」を持つユニットは「SP1」になる（出典: atwiki/page-1367）", () => {
     const s = board({ battle: riding({ ...inst("RK-281", "dg"), commandHeld: true }, inst("SPEC-SURVIVE-RC", "sv")) });
     expect(spOf(s, "player1", "SPEC-SURVIVE-RC:sv")).toBe(1);
   });
@@ -131,7 +132,7 @@ describe("RK-281 ドラグランザー", () => {
   });
 
   // atwiki/page-1367 Q1「ユニットでなくなるので「RK-250 サバイブ」は捨札になります。」
-  it.fails("RK-281: 公式Q&A — RK-250 サバイブを重ねたこれをホールドしてビークルにすると、サバイブは捨札になる（出典: atwiki/page-1367 Q1・atwiki/page-1350 Q2）", () => {
+  it("RK-281: 公式Q&A — RK-250 サバイブを重ねたこれをホールドしてビークルにすると、サバイブは捨札になる（出典: atwiki/page-1367 Q1・atwiki/page-1350 Q2）", () => {
     const s = settle(activateField(rushPhase({ rush: [withStacked(inst("RK-281", "dg"), [inst("RK-250", "sv")])] }), "RK-281:dg"));
     expect(zoneOf(s, "player1", "RK-250:sv")).toBe("discard");
     expect(zoneOf(s, "player1", "RK-281:dg")).toBe("rush");
@@ -160,7 +161,7 @@ describe("RK-282 仮面ライダーシザース", () => {
   const scissors = (p1Rush: ReturnType<typeof inst>[], p1Battle = [inst("TST-UNIT-0", "f"), inst("RK-282", "sc")], p2: Partial<GameState["players"]["player2"]> = {}) =>
     board({ battle: p1Battle, rush: p1Rush }, p2);
 
-  it.fails("RK-282: 【シザースアタック】自軍ラッシュエリアに「ボルキャンサー」があれば「SP1/2」になる — バトルエリアの2番目にいれば SP1（出典: atwiki/page-1244・docs/rules/05「「1/2」等は、分母と同じ並び順にある間は常に SP1」）", () => {
+  it("RK-282: 【シザースアタック】自軍ラッシュエリアに「ボルキャンサー」があれば「SP1/2」になる — バトルエリアの2番目にいれば SP1（出典: atwiki/page-1244・docs/rules/05「「1/2」等は、分母と同じ並び順にある間は常に SP1」）", () => {
     expect(spOf(scissors([inst("RK-283", "bc")]), "player1", "RK-282:sc")).toBe(1);
   });
 
@@ -204,7 +205,7 @@ describe("RK-283 ボルキャンサー", () => {
     return attackedInEnemyTurn({ battle: [inst(cid, suf)], rush: [inst("RK-283", "bc")], command: myCommand, ...p1 }, victim, { command: enemyCommand, ...p2 }, "TST-UNIT-7:atk", EXTRA);
   };
 
-  it.fails("RK-283: 【契約解除者の捕食】敵軍ターン中に自軍の「ミラーライダー」が撃破されて捨札になったとき、自分は必要パワーの数字が同じ（3）S ユニットのカードを自分のコマンドゾーンから1枚選ぶ（M ユニット・違う数字は対象外。見送れない）（出典: atwiki/page-1380）", () => {
+  it("RK-283: 【契約解除者の捕食】敵軍ターン中に自軍の「ミラーライダー」が撃破されて捨札になったとき、自分は必要パワーの数字が同じ（3）S ユニットのカードを自分のコマンドゾーンから1枚選ぶ（M ユニット・違う数字は対象外。見送れない）（出典: atwiki/page-1380）", () => {
     const s = preyed();
     expect(zoneOf(s, "player1", "SPEC-MIRROR3:mr")).toBe("discard");
     expectChoiceFrom(s, "player1", "RK-283");
@@ -212,7 +213,7 @@ describe("RK-283 ボルキャンサー", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-283: 自分も相手も、選んだカードを捨札にする（相手も必要パワーの数字が3の S ユニットのカードを自分のコマンドゾーンから捨札にする）（出典: atwiki/page-1380「自分も相手も次のようにする⇒…自分自身のコマンドゾーンから1枚選び捨札にする」）", () => {
+  it("RK-283: 自分も相手も、選んだカードを捨札にする（相手も必要パワーの数字が3の S ユニットのカードを自分のコマンドゾーンから捨札にする）（出典: atwiki/page-1380「自分も相手も次のようにする⇒…自分自身のコマンドゾーンから1枚選び捨札にする」）", () => {
     const s = resolveAll(preyed());
     expect(zoneOf(s, "player1", "SPEC-C3:c3")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-C3:e3")).toBe("discard");
@@ -220,7 +221,7 @@ describe("RK-283 ボルキャンサー", () => {
     expect(zoneOf(s, "player2", "SPEC-C2:e2")).toBe("command");
   });
 
-  it.fails("RK-283: 自分のコマンドゾーンに当てはまるカードがなくても、相手は捨札にする（出典: atwiki/page-1380「自分も相手も」）", () => {
+  it("RK-283: 自分のコマンドゾーンに当てはまるカードがなくても、相手は捨札にする（出典: atwiki/page-1380「自分も相手も」）", () => {
     let s = preyed(undefined, { command: [inst("SPEC-C2", "c2")] });
     expectChoiceFrom(s, "player2", "RK-283");
     expect(choiceIds(s)).toEqual(["SPEC-C3:e3"]);
@@ -269,14 +270,14 @@ describe("RK-284 仮面ライダーベルデ", () => {
   };
   const vanish = (prev = [inst("RK-285", "bg")]) => enter(board({ battle: prev, rush: [inst("RK-284", "vd")] }, enemy), "RK-284:vd");
 
-  it.fails("RK-284: 【デスバニッシュ】「バイオグリーザ」からコンビネーションしたとき発動でき、敵軍バトルエリアの BP4000 以下の S ユニットから1体選ぶ（M・ラッシュエリア・BP4500 は対象外）（出典: atwiki/page-1251）", () => {
+  it("RK-284: 【デスバニッシュ】「バイオグリーザ」からコンビネーションしたとき発動でき、敵軍バトルエリアの BP4000 以下の S ユニットから1体選ぶ（M・ラッシュエリア・BP4500 は対象外）（出典: atwiki/page-1251）", () => {
     const s = vanish();
     expectChoiceFrom(s, "player1", "RK-284");
     expect(choiceIds(s)).toEqual(["SPEC-E1000:a", "SPEC-E2000:eq", "SPEC-E4000:b"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-284: 撃破したユニットの BP（1000）がこのユニットの BP（2000）より低ければ、相手は自分のコマンドゾーンのカード（ホールド・リリースを問わない）から1枚選んで捨札にする（出典: atwiki/page-1251「撃破したユニットのBPがこのユニットのBPよりも低ければ、相手は自分自身のコマンドゾーンからカードを1枚選び捨札にする」）", () => {
+  it("RK-284: 撃破したユニットの BP（1000）がこのユニットの BP（2000）より低ければ、相手は自分のコマンドゾーンのカード（ホールド・リリースを問わない）から1枚選んで捨札にする（出典: atwiki/page-1251「撃破したユニットのBPがこのユニットのBPよりも低ければ、相手は自分自身のコマンドゾーンからカードを1枚選び捨札にする」）", () => {
     let s = pick(vanish(), "SPEC-E1000:a");
     expect(zoneOf(s, "player2", "SPEC-E1000:a")).toBe("discard");
     expectChoiceFrom(s, "player2", "RK-284");
@@ -287,7 +288,7 @@ describe("RK-284 仮面ライダーベルデ", () => {
     expect(zoneOf(s, "player2", "TST-OP:ec0")).toBe("command");
   });
 
-  it.fails("RK-284: 撃破したユニットの BP がこのユニットの BP 以上（4000・同じ2000）なら、相手はコマンドを捨札にしない（出典: atwiki/page-1251「このユニットのBPよりも低ければ」）", () => {
+  it("RK-284: 撃破したユニットの BP がこのユニットの BP 以上（4000・同じ2000）なら、相手はコマンドを捨札にしない（出典: atwiki/page-1251「このユニットのBPよりも低ければ」）", () => {
     for (const id of ["SPEC-E4000:b", "SPEC-E2000:eq"]) {
       const s = resolveAll(pick(vanish(), id));
       expect(zoneOf(s, "player2", id)).toBe("discard");
@@ -295,7 +296,7 @@ describe("RK-284 仮面ライダーベルデ", () => {
     }
   });
 
-  it.fails("RK-284: 発動しなければ何も起きない（出典: atwiki/page-1251「発動できる」）", () => {
+  it("RK-284: 発動しなければ何も起きない（出典: atwiki/page-1251「発動できる」）", () => {
     const s = resolveAll(skip(vanish()));
     expect(zoneOf(s, "player2", "SPEC-E1000:a")).toBe("battle");
     expect(s.players.player2.command).toHaveLength(2);
@@ -375,7 +376,7 @@ describe("RK-286 仮面ライダーオーディン", () => {
     return resolveAll(r.state);
   };
 
-  it.fails("RK-286: 【戦いのリセット】ラッシュしたとき、自分はパワーゾーンの枚数（6）より必要パワーの数字が大きい自分のユニットをすべて撃破する（7・「7-」は撃破、6 とオーディン自身は残る）（出典: atwiki/page-1276）", () => {
+  it("RK-286: 【戦いのリセット】ラッシュしたとき、自分はパワーゾーンの枚数（6）より必要パワーの数字が大きい自分のユニットをすべて撃破する（7・「7-」は撃破、6 とオーディン自身は残る）（出典: atwiki/page-1276）", () => {
     const s = reset();
     expect(zoneOf(s, "player1", "SPEC-C7:m7")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-C7MINUS:m7m")).toBe("discard");
@@ -383,7 +384,7 @@ describe("RK-286 仮面ライダーオーディン", () => {
     expect(zoneOf(s, "player1", "RK-286:od")).toBe("rush");
   });
 
-  it.fails("RK-286: 【戦いのリセット】相手も、相手のパワーゾーンの枚数（3）より必要パワーの数字が大きい相手のユニットをすべて撃破する（エリア・サイズを問わない）（出典: atwiki/page-1276「次の効果を自分、相手の順に行う」・コメント欄「サイズ・エリア問わず除去できる」）", () => {
+  it("RK-286: 【戦いのリセット】相手も、相手のパワーゾーンの枚数（3）より必要パワーの数字が大きい相手のユニットをすべて撃破する（エリア・サイズを問わない）（出典: atwiki/page-1276「次の効果を自分、相手の順に行う」・コメント欄「サイズ・エリア問わず除去できる」）", () => {
     const s = reset();
     expect(zoneOf(s, "player2", "SPEC-C4:e4")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-CM4:em4")).toBe("discard");
@@ -391,7 +392,7 @@ describe("RK-286 仮面ライダーオーディン", () => {
   });
 
   // atwiki/page-2355 Q6「はい、できます。【戦いのリセット】の効果はユニットを選んではいないからです。」
-  it.fails("RK-286: 公式Q&A — 必要パワーを満たしていないブレイカー持ちのユニットも【戦いのリセット】で撃破される（出典: atwiki/page-2355 Q6）", () => {
+  it("RK-286: 公式Q&A — 必要パワーを満たしていないブレイカー持ちのユニットも【戦いのリセット】で撃破される（出典: atwiki/page-2355 Q6）", () => {
     const BRK = sUnit("SPEC-BRK4", { bp: 3000, powerCost: 4, text: "※ブレイカー（本来のカード名がこれと同名の自軍ユニットまたは自軍ビークルがあるとき、これはラッシュすることができない。また、ブレイカーを持たない、敵軍ユニットか敵軍常駐の効果に選ばれない）" } as never);
     const s0 = st(
       {
@@ -406,20 +407,31 @@ describe("RK-286 仮面ライダーオーディン", () => {
     expect(zoneOf(resolveAll(r.state), "player2", "SPEC-BRK4:b")).toBe("discard");
   });
 
-  it.fails("RK-286: ※ 撃破されて捨札になるとき、かわりに自軍ラッシュエリアの「男」を持つユニット1体を捨札にするかを選べる（任意。「男」を持たないユニットは選べない）（出典: atwiki/page-1276「かわりに自軍ラッシュエリアにある特徴「男」を持つユニット1体を捨札にすれば」）", () => {
+  it("RK-286: 【戦いのリセット】自軍パワーゾーンの枚数が必要パワーの数字（6）より少ないときに効果でラッシュしたら、これ自身も撃破される（出典: atwiki/page-1276「その枚数よりも必要パワーの数字が大きい自分自身のユニットをすべて撃破する」・コメント欄「男がいればラッシュ時の効果で自壊するのも防げる」）", () => {
+    // RK-084 トリックベント（必要パワーを満たさなくてよい効果のラッシュ）で、自軍パワー4枚のときに出す。
+    const s = resolveAll(
+      played(
+        rushPhase({ hand: [inst("RK-084", "tv")], command: releasedCat("WB", 1), power: powerCards(4), deck: [inst("RK-286", "od"), inst("TST-OP", "x1"), inst("TST-OP", "x2")], discard: deckCards(6, "d1") }, { discard: deckCards(5, "d2") }),
+        "RK-084:tv",
+      ),
+    );
+    expect(zoneOf(s, "player1", "RK-286:od")).toBe("discard");
+  });
+
+  it("RK-286: ※ 撃破されて捨札になるとき、かわりに自軍ラッシュエリアの「男」を持つユニット1体を捨札にするかを選べる（任意。「男」を持たないユニットは選べない）（出典: atwiki/page-1276「かわりに自軍ラッシュエリアにある特徴「男」を持つユニット1体を捨札にすれば」）", () => {
     const s = attackedInEnemyTurn({ battle: [inst("RK-286", "od")], rush: [inst("SPEC-MALE", "m"), inst("SPEC-FEMALE", "f")] }, "RK-286:od", {}, "TST-UNIT-7:atk", EXTRA);
     expectChoiceFrom(s, "player1", "RK-286");
     expect(choiceIds(s)).toEqual(["SPEC-MALE:m"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-286: ※ 「男」のユニットを捨札にすれば、これはその場に留まる（出典: atwiki/page-1276「これはその場に留まる」）", () => {
+  it("RK-286: ※ 「男」のユニットを捨札にすれば、これはその場に留まる（出典: atwiki/page-1276「これはその場に留まる」）", () => {
     const s = resolveAll(pick(attackedInEnemyTurn({ battle: [inst("RK-286", "od")], rush: [inst("SPEC-MALE", "m")] }, "RK-286:od", {}, "TST-UNIT-7:atk", EXTRA), "SPEC-MALE:m"));
     expect(zoneOf(s, "player1", "SPEC-MALE:m")).toBe("discard");
     expect(zoneOf(s, "player1", "RK-286:od")).toBe("battle");
   });
 
-  it.fails("RK-286: ※ 捨札にしないことを選べば、これは捨札になる（出典: atwiki/page-1276「捨札にすれば」）", () => {
+  it("RK-286: ※ 捨札にしないことを選べば、これは捨札になる（出典: atwiki/page-1276「捨札にすれば」）", () => {
     const s = resolveAll(skip(attackedInEnemyTurn({ battle: [inst("RK-286", "od")], rush: [inst("SPEC-MALE", "m")] }, "RK-286:od", {}, "TST-UNIT-7:atk", EXTRA)));
     expect(zoneOf(s, "player1", "RK-286:od")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-MALE:m")).toBe("rush");
@@ -456,14 +468,14 @@ describe("RK-287 ゴルトフェニックス", () => {
     return r.state;
   };
 
-  it.fails("RK-287: 【瞬間の悪夢】ラッシュしたとき、敵軍コマンドゾーンのモーフを持つユニットカード（ホールド・リリースを問わない）から1枚選べる（任意）（出典: atwiki/page-1355）", () => {
+  it("RK-287: 【瞬間の悪夢】ラッシュしたとき、敵軍コマンドゾーンのモーフを持つユニットカード（ホールド・リリースを問わない）から1枚選べる（任意）（出典: atwiki/page-1355）", () => {
     const s = nightmare();
     expectChoiceFrom(s, "player1", "RK-287");
     expect(choiceIds(s)).toEqual(["SPEC-MORPH:mh", "SPEC-MORPH:mu"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-287: 選んだカードは捨札になる（出典: atwiki/page-1355「1枚選び捨札にしてもよい」）", () => {
+  it("RK-287: 選んだカードは捨札になる（出典: atwiki/page-1355「1枚選び捨札にしてもよい」）", () => {
     const s = resolveAll(pick(nightmare(), "SPEC-MORPH:mu"));
     expect(zoneOf(s, "player2", "SPEC-MORPH:mu")).toBe("discard");
   });
@@ -473,8 +485,12 @@ describe("RK-287 ゴルトフェニックス", () => {
     expect(zoneOf(s, "player2", "SPEC-MORPH:mu")).toBe("command");
   });
 
-  it.fails("RK-287: 敵軍コマンドゾーンにモーフを持つユニットカードがなければ何も起きない（出典: atwiki/page-1355「モーフを持つユニットカードを」）", () => {
+  it("RK-287: 敵軍コマンドゾーンにモーフを持つユニットカードがなければ何も起きない（出典: atwiki/page-1355「モーフを持つユニットカードを」）", () => {
     const s = nightmare([inst("SPEC-E2000", "pu"), inst("TST-OP", "op")]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-287");
   });
+
+  it.todo(
+    "RK-287: 敵軍コマンドゾーンのモーフを持つユニットカードが「相手に選ばれない」を持つとき選べるか（出典: atwiki/page-1355）— ゾーンのカードにも「相手に選ばれない」が効くかは公式の出典が食い違い、ユーザー確認待ち（grnrngr/faq-rider-1 は効かない、atwiki・grnrngr/faq-card-3 RS-149 Q1 は効く。エンジンは今の扱いのまま「選べない」）",
+  );
 });

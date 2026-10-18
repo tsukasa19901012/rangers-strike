@@ -91,6 +91,7 @@ import {
 import { getBattleEntryPowerDiscardCount } from "./batch07FieldEffects";
 import { damageGateBlocksEntry } from "./keywordGapRuntime";
 import { rk6BlocksBattleEntry } from "./rk/rk6Fields";
+import { rk14NeedsEntryHold } from "./rk/rk14Fields";
 import { rk8BlocksBattleEntry } from "./rk/rk8UnitEffects";
 import { rk9BlocksBattleEntry } from "./rk/rk9Fields";
 import { rk10BlocksBattleEntry, rk10ElasmoHoldReduction, rk10OmegaIgnoresEntryHold } from "./rk/rk10Fields";
@@ -200,6 +201,9 @@ export function requiredBattleEntryHolds(
   // RS-364【黒き太陽神への忠誠】:「これは自軍コマンドを1つホールドしなければバトルエリアに出られない。」と書かれているかのように扱う
   // （複数あっても 1 つ — faq-card-6 RS-364 Q5。獣奏剣で無効にできる — 同 Q4）。
   if (hellSaturnGrantCount(state, playerId, unit) > 0) unitHold = Math.max(unitHold, 1);
+  // RK-280 ダークレイダー・RK-281 ドラグランザー: ユニットの間は「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」
+  // （rules/rk/rk14Fields.ts）。
+  if (rk14NeedsEntryHold(state, playerId, unit)) unitHold = Math.max(unitHold, 1);
   // RS-468 ギンガリラ【水の星獣】: 特徴「車両」を持つユニットは「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と
   // 書かれているかのように扱う（rules/legend1/set7NamedEffectsB.ts）。
   if (riddenVehicleGrantsEntryHold(state, playerId, unit)) unitHold = Math.max(unitHold, 1);

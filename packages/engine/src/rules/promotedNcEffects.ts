@@ -15,7 +15,6 @@ import { startGrapFighter } from "./grapFighter";
 import { startDenjiThunderThrow } from "./denjiThunderThrow";
 
 const PROMOTED_NC_BY_CARD: Record<string, string> = {
-  "RK-282": "scissors_attack",
   "RS-333": "magi_red_bolt",
   "RS-335": "magi_blue_bolt",
   "RS-336": "magi_pink_bolt",
@@ -102,24 +101,6 @@ export function applyPromotedNcEffect(
       // RS-313【イカヅチブレイカー】: グラップファイターからダメージの一文を除いたもの（rules/grapFighter.ts）。
       nextState = startGrapFighter(nextState, playerId, card.instanceId, "RS-313");
       logs.push(buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, effectId));
-      break;
-    }
-    case "scissors_attack": {
-      const player = state.players[playerId];
-      const hasVolcancer = player.rush.some(
-        (u) => cardName(state.definitions, u.cardId) === "ボルキャンサー",
-      );
-      if (hasVolcancer) {
-        // 「このユニットは「SP1/2」になる」— 指定値に置き換える（加算しない）。
-        {
-          const owner = nextState.players[playerId];
-          const battle = owner.battle.map((c) => (c.instanceId === card.instanceId ? { ...c, spOverride: "1/2" as const } : c));
-          nextState = { ...nextState, ...updatePlayer(nextState, playerId, { ...owner, battle }) };
-        }
-        logs.push(
-          buildLogEntry(playerId, "number_combo", card.cardId, state.definitions, "scissors_attack:sp12"),
-        );
-      }
       break;
     }
     case "enemy_power_cost_minus": {

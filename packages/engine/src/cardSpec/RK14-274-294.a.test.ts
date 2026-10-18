@@ -117,14 +117,14 @@ describe("RK-274 ビートチェイサー", () => {
   const chase = (deck = deckCards(5)) => mount(board({ rush: [inst("SPEC-RCU", "r"), inst("RK-274", "bc")], deck }), "SPEC-RCU:r", "RK-274:bc");
   const place = (s: GameState, id: string, where: "deck_top" | "deck_bottom") => pick(pick(s, id), where);
 
-  it.fails("RK-274: 【ニューマシンの性能】自軍ターン中にライドされてバトルエリアに出たとき、発動するかを選べ（任意）、自軍山札の上から2枚を見る（出典: atwiki/page-1371「次の効果を発動できる⇒自軍山札の上から2枚を見て」）", () => {
+  it("RK-274: 【ニューマシンの性能】自軍ターン中にライドされてバトルエリアに出たとき、発動するかを選べ（任意）、自軍山札の上から2枚を見る（出典: atwiki/page-1371「次の効果を発動できる⇒自軍山札の上から2枚を見て」）", () => {
     const s = chase();
     expectChoiceFrom(s, "player1", "RK-274");
     expect(choiceIds(s)).toEqual(["TST-OP:dk0", "TST-OP:dk1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-274: 見た2枚は1枚ずつ山札の上か下を選んで戻せる（1枚は上、1枚は下でもよい）（出典: atwiki/page-1371「そのカードを山札の上か下にそれぞれ好きな順で戻す」・コメント欄「それぞれとあるので一枚ずつ決めることが可能」）", () => {
+  it("RK-274: 見た2枚は1枚ずつ山札の上か下を選んで戻せる（1枚は上、1枚は下でもよい）（出典: atwiki/page-1371「そのカードを山札の上か下にそれぞれ好きな順で戻す」・コメント欄「それぞれとあるので一枚ずつ決めることが可能」）", () => {
     let s = chase();
     s = place(s, "TST-OP:dk0", "deck_bottom");
     s = place(s, "TST-OP:dk1", "deck_top");
@@ -132,19 +132,19 @@ describe("RK-274 ビートチェイサー", () => {
     expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:dk1", "TST-OP:dk2", "TST-OP:dk3", "TST-OP:dk4", "TST-OP:dk0"]);
   });
 
-  it.fails("RK-274: 2枚とも山札の上に好きな順で戻せる（後から戻したものが上）（出典: atwiki/page-1371「好きな順で戻す」）", () => {
+  it("RK-274: 2枚とも山札の上に好きな順で戻せる（後から戻したものが上）（出典: atwiki/page-1371「好きな順で戻す」）", () => {
     let s = chase();
     s = place(s, "TST-OP:dk0", "deck_top");
     s = place(s, "TST-OP:dk1", "deck_top");
     expect(zoneIds(s, "player1", "deck").slice(0, 2)).toEqual(["TST-OP:dk1", "TST-OP:dk0"]);
   });
 
-  it.fails("RK-274: 発動しなければ山札はそのまま（出典: atwiki/page-1371「発動できる」）", () => {
+  it("RK-274: 発動しなければ山札はそのまま（出典: atwiki/page-1371「発動できる」）", () => {
     const s = skip(chase());
     expect(zoneIds(s, "player1", "deck")).toEqual(deckCards(5).map((c) => c.instanceId));
   });
 
-  it.fails("RK-274: 自軍山札が1枚なら、その1枚だけを見る（出典: atwiki/page-1371・R-TGT-01（できる限り実行する））", () => {
+  it("RK-274: 自軍山札が1枚なら、その1枚だけを見る（出典: atwiki/page-1371・R-TGT-01（できる限り実行する））", () => {
     expect(choiceIds(chase(deckCards(1)))).toEqual(["TST-OP:dk0"]);
   });
 });
@@ -164,39 +164,39 @@ describe("RK-275 ゴ・ガドル・バ", () => {
   const charisma = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     enter(board({ rush: [inst("RK-275", "gd")], ...p1 }, { power: enemyPower, damage: 1 }), "RK-275:gd");
 
-  it.fails("RK-275: 【ザバギンバシグラ】自軍ターン中にバトルエリアに出たとき、敵軍パワーゾーンのダメージ以外（オモテ向き）の S ユニットのカードから1枚選べる（任意。M ユニット・オペレーション・ダメージは対象外）（出典: atwiki/page-1255）", () => {
+  it("RK-275: 【ザバギンバシグラ】自軍ターン中にバトルエリアに出たとき、敵軍パワーゾーンのダメージ以外（オモテ向き）の S ユニットのカードから1枚選べる（任意。M ユニット・オペレーション・ダメージは対象外）（出典: atwiki/page-1255）", () => {
     const s = charisma();
     expectChoiceFrom(s, "player1", "RK-275");
     expect(choiceIds(s)).toEqual(["SPEC-C3:pu"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-275: 選んだカードは敵軍ラッシュエリアに出て、相手は山札の上から1枚ひいて自分のパワーゾーンに置くかを選べる（相手の任意）（出典: atwiki/page-1255「敵軍ラッシュエリアに出してもよい。そうしたとき、相手は自分自身の山札の上から1枚ひいて、自分自身のパワーゾーンに置いてもよい」）", () => {
+  it("RK-275: 選んだカードは敵軍ラッシュエリアに出て、相手は山札の上から1枚ひいて自分のパワーゾーンに置くかを選べる（相手の任意）（出典: atwiki/page-1255「敵軍ラッシュエリアに出してもよい。そうしたとき、相手は自分自身の山札の上から1枚ひいて、自分自身のパワーゾーンに置いてもよい」）", () => {
     const s = pick(charisma(), "SPEC-C3:pu");
     expect(zoneOf(s, "player2", "SPEC-C3:pu")).toBe("rush");
     expectChoiceFrom(s, "player2", "RK-275");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-275: 相手が置くことを選べば、相手の山札の上のカードが相手のパワーゾーンに置かれる（出典: atwiki/page-1255「自分自身のパワーゾーンに置いてもよい」）", () => {
+  it("RK-275: 相手が置くことを選べば、相手の山札の上のカードが相手のパワーゾーンに置かれる（出典: atwiki/page-1255「自分自身のパワーゾーンに置いてもよい」）", () => {
     const s = settle(confirm(pick(charisma(), "SPEC-C3:pu")));
     expect(zoneOf(s, "player2", "TST-OP:e0")).toBe("power");
     expect(cardIn(s, "player2", "TST-OP:e0")?.faceDown).not.toBe(true);
   });
 
-  it.fails("RK-275: 相手が置かないことを選べば、相手の山札はそのまま（出典: atwiki/page-1255「置いてもよい」）", () => {
+  it("RK-275: 相手が置かないことを選べば、相手の山札はそのまま（出典: atwiki/page-1255「置いてもよい」）", () => {
     const s = settle(skip(pick(charisma(), "SPEC-C3:pu")));
     expect(zoneOf(s, "player2", "TST-OP:e0")).toBe("deck");
   });
 
-  it.fails("RK-275: 出さなければ相手は何もしない（出典: atwiki/page-1255「そうしたとき」）", () => {
+  it("RK-275: 出さなければ相手は何もしない（出典: atwiki/page-1255「そうしたとき」）", () => {
     const s = settle(skip(charisma()));
     expect(zoneOf(s, "player2", "SPEC-C3:pu")).toBe("power");
     expect(s.pendingEffectChoice).toBeUndefined();
   });
 
   // grnrngr/faq-rider-2 RK-160 Q3「はい、できます。」・atwiki/page-1255 Q1「はい、できます。」
-  it.fails("RK-275: 公式Q&A — 【ザバギンバシグラ】で敵軍ラッシュエリアに出た追加条件を持たない S ユニットに対して、自軍 RK-160 シザーズジャガー【ナノロボット散布実験】を発動できる（出典: grnrngr/faq-rider-2 RK-160 Q3・atwiki/page-1255 Q1）", () => {
+  it("RK-275: 公式Q&A — 【ザバギンバシグラ】で敵軍ラッシュエリアに出た追加条件を持たない S ユニットに対して、自軍 RK-160 シザーズジャガー【ナノロボット散布実験】を発動できる（出典: grnrngr/faq-rider-2 RK-160 Q3・atwiki/page-1255 Q1）", () => {
     let s = pick(charisma({ rush: [inst("RK-275", "gd"), inst("RK-160", "sj")], hand: [inst("SPEC-DA3", "d3")], command: releasedCat("DA", 1) }), "SPEC-C3:pu");
     s = untilChoiceFrom(s, "RK-160");
     expectChoiceFrom(s, "player1", "RK-160");
@@ -205,6 +205,10 @@ describe("RK-275 ゴ・ガドル・バ", () => {
     expect(zoneOf(s, "player1", "SPEC-DA3:d3")).toBe("rush");
     expect(zoneOf(s, "player2", "SPEC-C3:pu")).toBe("discard");
   });
+
+  it.todo(
+    "RK-275: 敵軍パワーゾーンのオモテ向きのカードが「相手に選ばれない」を持つとき選べるか（出典: atwiki/page-1255）— ゾーンのカードにも「相手に選ばれない」が効くかは公式の出典が食い違い、ユーザー確認待ち（grnrngr/faq-rider-1 は効かない、atwiki・grnrngr/faq-card-3 RS-149 Q1 は効く。エンジンは今の扱いのまま「選べない」）",
+  );
 });
 
 // ===========================================================================
@@ -221,40 +225,40 @@ describe("RK-276 ズ・バヅー・バ", () => {
   const enemyHand = [inst("SPEC-C3", "hs"), inst("SPEC-M2", "hm"), inst("TST-OP", "ho")];
   const jumper = (p1: Partial<GameState["players"]["player1"]> = {}) => enter(board({ rush: [inst("RK-276", "bz")], ...p1 }, { hand: enemyHand }), "RK-276:bz");
 
-  it.fails("RK-276: 【キョクギンジャンママ】自軍ターン中にバトルエリアに出たとき、相手の手札から1枚選ぶかを選べる（任意。手札のどのカードでも選べる）（出典: atwiki/page-1391「相手の手札を見ないで1枚選んでもよい」）", () => {
+  it("RK-276: 【キョクギンジャンママ】自軍ターン中にバトルエリアに出たとき、相手の手札から1枚選ぶかを選べる（任意。手札のどのカードでも選べる）（出典: atwiki/page-1391「相手の手札を見ないで1枚選んでもよい」）", () => {
     const s = jumper();
     expectChoiceFrom(s, "player1", "RK-276");
     expect(choiceIds(s)).toEqual(["SPEC-C3:hs", "SPEC-M2:hm", "TST-OP:ho"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-276: 選んだカードが S ユニットのカードなら敵軍ラッシュエリアにホールド状態で出て、その後、相手は1枚ドローする（出典: atwiki/page-1391「Sユニットのカードだったなら、敵軍ラッシュエリアに出す。このとき、可能ならそのユニットをホールドする。その後、相手は1枚ドローする」）", () => {
+  it("RK-276: 選んだカードが S ユニットのカードなら敵軍ラッシュエリアにホールド状態で出て、その後、相手は1枚ドローする（出典: atwiki/page-1391「Sユニットのカードだったなら、敵軍ラッシュエリアに出す。このとき、可能ならそのユニットをホールドする。その後、相手は1枚ドローする」）", () => {
     const s = settle(pick(jumper(), "SPEC-C3:hs"));
     expect(zoneOf(s, "player2", "SPEC-C3:hs")).toBe("rush");
     expect(cardIn(s, "player2", "SPEC-C3:hs")?.commandHeld).toBe(true);
     expect(zoneOf(s, "player2", "TST-OP:e0")).toBe("hand");
   });
 
-  it.fails("RK-276: 選んだカードが S ユニットのカードでなければ（オペレーション）相手の手札に残り、その後、相手は1枚ドローする（出典: atwiki/page-1391「その後、相手は1枚ドローする」・コメント欄「ドローしないのは最初でカードを選ばなかった場合」）", () => {
+  it("RK-276: 選んだカードが S ユニットのカードでなければ（オペレーション）相手の手札に残り、その後、相手は1枚ドローする（出典: atwiki/page-1391「その後、相手は1枚ドローする」・コメント欄「ドローしないのは最初でカードを選ばなかった場合」）", () => {
     const s = settle(pick(jumper(), "TST-OP:ho"));
     expect(zoneOf(s, "player2", "TST-OP:ho")).toBe("hand");
     expect(zoneOf(s, "player2", "TST-OP:e0")).toBe("hand");
   });
 
-  it.fails("RK-276: M ユニットのカードは敵軍ラッシュエリアに出ない（出典: atwiki/page-1391「それがSユニットのカードだったなら」）", () => {
+  it("RK-276: M ユニットのカードは敵軍ラッシュエリアに出ない（出典: atwiki/page-1391「それがSユニットのカードだったなら」）", () => {
     const s = settle(pick(jumper(), "SPEC-M2:hm"));
     expect(zoneOf(s, "player2", "SPEC-M2:hm")).toBe("hand");
     expect(zoneOf(s, "player2", "TST-OP:e0")).toBe("hand");
   });
 
-  it.fails("RK-276: 選ばなければ相手はドローしない（出典: atwiki/page-1391「選んでもよい。そうしたとき」・コメント欄）", () => {
+  it("RK-276: 選ばなければ相手はドローしない（出典: atwiki/page-1391「選んでもよい。そうしたとき」・コメント欄）", () => {
     const s = settle(skip(jumper()));
     expect(zoneOf(s, "player2", "TST-OP:e0")).toBe("deck");
     expect(s.players.player2.hand).toHaveLength(3);
   });
 
   // grnrngr/faq-rider-2 RK-160 Q4「はい、可能です。」・atwiki/page-1391 Q1「はい、可能です。」
-  it.fails("RK-276: 公式Q&A — 【キョクギンジャンママ】で敵軍ラッシュエリアに出た追加条件を持たない S ユニットに対して、自軍 RK-160 シザーズジャガー【ナノロボット散布実験】を発動できる（出典: grnrngr/faq-rider-2 RK-160 Q4・atwiki/page-1391 Q1）", () => {
+  it("RK-276: 公式Q&A — 【キョクギンジャンママ】で敵軍ラッシュエリアに出た追加条件を持たない S ユニットに対して、自軍 RK-160 シザーズジャガー【ナノロボット散布実験】を発動できる（出典: grnrngr/faq-rider-2 RK-160 Q4・atwiki/page-1391 Q1）", () => {
     let s = pick(jumper({ rush: [inst("RK-276", "bz"), inst("RK-160", "sj")], hand: [inst("SPEC-DA3", "d3")], command: releasedCat("DA", 1) }), "SPEC-C3:hs");
     s = untilChoiceFrom(s, "RK-160");
     expectChoiceFrom(s, "player1", "RK-160");
@@ -297,7 +301,7 @@ describe("RK-277 ン・ダグバ・ゼバ", () => {
   };
   const daOps = (n: number) => Array.from({ length: n }, (_, i) => inst("SPEC-OPDA", `o${i}`));
 
-  it.fails("RK-277: 【究極の闇をもたらす者】ラッシュしたとき、追加条件で捨札にした DA のカードをすべて、これの下にウラ向きで重ねる（4枚なら他の自軍ユニットは残る）（出典: atwiki/page-1254）", () => {
+  it("RK-277: 【究極の闇をもたらす者】ラッシュしたとき、追加条件で捨札にした DA のカードをすべて、これの下にウラ向きで重ねる（4枚なら他の自軍ユニットは残る）（出典: atwiki/page-1254）", () => {
     const s = darkness(daOps(4), { battle: [inst("SPEC-C1", "b")] });
     const dg = cardIn(s, "player1", "RK-277:dg");
     expect(zoneOf(s, "player1", "RK-277:dg")).toBe("rush");
@@ -306,7 +310,7 @@ describe("RK-277 ン・ダグバ・ゼバ", () => {
     expect(zoneOf(s, "player1", "SPEC-C1:b")).toBe("battle");
   });
 
-  it.fails("RK-277: 捨札にしたカードのうち DA を持たないカードは重ねず、ウラ向きに4枚重ねなかったなら「ン・ダグバ・ゼバ」以外の自軍ユニットをすべて捨札にする（出典: atwiki/page-1254「ウラ向きに4枚重ねなかったなら、「ン・ダグバ・ゼバ」以外の自軍ユニットをすべて捨札にする」）", () => {
+  it("RK-277: 捨札にしたカードのうち DA を持たないカードは重ねず、ウラ向きに4枚重ねなかったなら「ン・ダグバ・ゼバ」以外の自軍ユニットをすべて捨札にする（出典: atwiki/page-1254「ウラ向きに4枚重ねなかったなら、「ン・ダグバ・ゼバ」以外の自軍ユニットをすべて捨札にする」）", () => {
     const s = darkness([...daOps(3), inst("TST-OP", "w")], { battle: [inst("SPEC-C1", "b")], rush: [inst("SPEC-C3", "r")] });
     expect((cardIn(s, "player1", "RK-277:dg")?.stackedCards ?? []).map((c) => c.instanceId).sort()).toEqual(daOps(3).map((c) => c.instanceId).sort());
     expect(zoneOf(s, "player1", "TST-OP:w")).toBe("discard");
@@ -317,7 +321,7 @@ describe("RK-277 ン・ダグバ・ゼバ", () => {
 
   const stackedDagba = () => withStacked(inst("RK-277", "dg"), daOps(3).map((c) => ({ ...c, faceDown: true })));
 
-  it.fails("RK-277: これがユニットでなくなるとき（バトルで撃破される）、ウラ向きで重ねたカードを1枚選んで捨札にし、これはその場に留まる（見送れない）（出典: atwiki/page-1254「これにウラ向きで重ねたカードをウラ向きのまま1枚選び捨札にして、これをその場に留める」）", () => {
+  it("RK-277: これがユニットでなくなるとき（バトルで撃破される）、ウラ向きで重ねたカードを1枚選んで捨札にし、これはその場に留まる（見送れない）（出典: atwiki/page-1254「これにウラ向きで重ねたカードをウラ向きのまま1枚選び捨札にして、これをその場に留める」）", () => {
     let s = attackedInEnemyTurn({ battle: [stackedDagba()] }, "RK-277:dg");
     expectChoiceFrom(s, "player1", "RK-277");
     expect(choiceIds(s)).toEqual(["SPEC-OPDA:o0", "SPEC-OPDA:o1", "SPEC-OPDA:o2"]);
@@ -333,9 +337,18 @@ describe("RK-277 ン・ダグバ・ゼバ", () => {
     expect(zoneOf(s, "player1", "RK-277:dg")).toBe("discard");
   });
 
-  it.todo(
-    "RK-277: 重ねる順番（「好きな順で」）を選ぶ（出典: atwiki/page-1254「DAを持つカードをすべてこれの下に好きな順でウラ向きに重ねる」）— ウラ向きのカードの並びを参照するカードが本範囲になく、エンジンは捨札にした順に重ねる",
-  );
+  it("RK-277: 重ねる順番は自分が選ぶ（1枚ずつ選び、選んだ順に下へ重ねる。見送れない）（出典: atwiki/page-1254「DAを持つカードをすべてこれの下に好きな順でウラ向きに重ねる」）", () => {
+    const s0 = rushPhase({ operation: daOps(4), hand: [inst("RK-277", "dg")], command: releasedCat("DA", 1), power: powerCards(9) });
+    const r = rushVia(s0, "player1", "RK-277:dg");
+    expect(r.ok, r.error).toBe(true);
+    let s = r.state;
+    for (let i = 0; i < 4 && s.pendingEffectChoice?.sourceCardId !== "RK-277"; i++) s = settle(s);
+    expectChoiceFrom(s, "player1", "RK-277");
+    expect(choiceIds(s)).toEqual(daOps(4).map((c) => c.instanceId).sort());
+    expect(canSkip(s)).toBe(false);
+    s = resolveAll(pick(pick(pick(s, "SPEC-OPDA:o3"), "SPEC-OPDA:o1"), "SPEC-OPDA:o0"));
+    expect((cardIn(s, "player1", "RK-277:dg")?.stackedCards ?? []).map((c) => c.instanceId)).toEqual(["SPEC-OPDA:o3", "SPEC-OPDA:o1", "SPEC-OPDA:o0", "SPEC-OPDA:o2"]);
+  });
   it.todo(
     "RK-277: 手札・山札に戻るときも「ユニットでなくなるとき」としてその場に留まるか（出典: atwiki/page-1254）— エンジンの手札・山札に戻す処理が「ユニットでなくなるとき」の置換を通らない（RK12 RK-250 の it.todo と同じ）",
   );
@@ -352,7 +365,7 @@ describe("RK-278 仮面ライダーナイト（2nd）", () => {
     expectRarityIn("RK-278", ["R"]);
   });
 
-  it.fails("RK-278: ※ 自軍捨札に「女」を持つユニットカードがあれば、レジスト（バトルで撃破されたときホールドして留まる）を得る（出典: atwiki/page-1382・R-KW-RESIST）", () => {
+  it("RK-278: ※ 自軍捨札に「女」を持つユニットカードがあれば、レジスト（バトルで撃破されたときホールドして留まる）を得る（出典: atwiki/page-1382・R-KW-RESIST）", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("RK-278", "kn")], discard: [inst("SPEC-FEMALE", "f")] }, "RK-278:kn", {}, "TST-UNIT-7:atk", EXTRA))).toBe(true);
   });
 
@@ -367,7 +380,7 @@ describe("RK-278 仮面ライダーナイト（2nd）", () => {
       "RK-278:kn",
     );
 
-  it.fails("RK-278: 【飛翔斬】「ダークウイング」からコンビネーションしたとき発動でき、敵軍バトルエリアの特徴の数が1番少ない S ユニットから選ぶ — ダークウイング【ソニックブレイカー】で敵軍ユニットはすべて特徴を持たないので、敵軍バトルエリアの S ユニットすべてから選べる（M・ラッシュエリアは対象外）（出典: atwiki/page-1382・カード評価「ダークウイングの効果が発動すれば完全に無視できる」・atwiki/page-180（RK-035）「すべての敵軍ユニットは特徴を持たないユニットとして扱い」）", () => {
+  it("RK-278: 【飛翔斬】「ダークウイング」からコンビネーションしたとき発動でき、敵軍バトルエリアの特徴の数が1番少ない S ユニットから選ぶ — ダークウイング【ソニックブレイカー】で敵軍ユニットはすべて特徴を持たないので、敵軍バトルエリアの S ユニットすべてから選べる（M・ラッシュエリアは対象外）（出典: atwiki/page-1382・カード評価「ダークウイングの効果が発動すれば完全に無視できる」・atwiki/page-180（RK-035）「すべての敵軍ユニットは特徴を持たないユニットとして扱い」）", () => {
     const s = slash();
     expectChoiceFrom(s, "player1", "RK-278");
     expect(choiceIds(s)).toEqual(["SPEC-F1:a", "SPEC-F3:c"]);
@@ -380,7 +393,7 @@ describe("RK-278 仮面ライダーナイト（2nd）", () => {
     expect(zoneOf(s, "player2", "SPEC-F1:a")).toBe("battle");
   });
 
-  it.fails("RK-278: 【飛翔斬】発動しなければ何も撃破しない（出典: atwiki/page-1382「発動できる」）", () => {
+  it("RK-278: 【飛翔斬】発動しなければ何も撃破しない（出典: atwiki/page-1382「発動できる」）", () => {
     const s = resolveAll(skip(slash()));
     expect(zoneOf(s, "player2", "SPEC-F1:a")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-F3:c")).toBe("battle");
@@ -446,7 +459,7 @@ describe("RK-279 仮面ライダーナイトサバイブ", () => {
   const visor = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     rcRideOff(board({ rush: [inst("RK-279", "ks"), inst("SPEC-VEHICLE", "v")], discard: visorDiscard, ...p1 }, visorEnemy), "RK-279:ks", "SPEC-VEHICLE:v");
 
-  it.fails("RK-279: 【ダークバイザーツバイ】RC — 自軍捨札の特徴「アドベントカード」を持つカードから2枚まで選べる（任意）（出典: atwiki/page-1284「自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい」）", () => {
+  it("RK-279: 【ダークバイザーツバイ】RC — 自軍捨札の特徴「アドベントカード」を持つカードから2枚まで選べる（任意）（出典: atwiki/page-1284「自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい」）", () => {
     const s = visor();
     expectChoiceFrom(s, "player1", "RK-279");
     expect(choiceIds(s)).toEqual(["SPEC-ADV1:a1", "SPEC-ADV2:a2", "SPEC-ADV3:a3"]);
@@ -457,7 +470,7 @@ describe("RK-279 仮面ライダーナイトサバイブ", () => {
     expect(canConfirm(visor())).toBe(false);
   });
 
-  it.fails("RK-279: 選んだカードの必要パワーの数字の合計（2+3=5）まで、敵軍バトルエリアの S ユニットを特徴の数の合計で選んで撃破できる（特徴2つと3つ）（出典: atwiki/page-1284「選んだユニットの特徴の数の合計が、捨札から選んだカードの必要パワーの数字の合計以下になるように選ぶこと」）", () => {
+  it("RK-279: 選んだカードの必要パワーの数字の合計（2+3=5）まで、敵軍バトルエリアの S ユニットを特徴の数の合計で選んで撃破できる（特徴2つと3つ）（出典: atwiki/page-1284「選んだユニットの特徴の数の合計が、捨札から選んだカードの必要パワーの数字の合計以下になるように選ぶこと」）", () => {
     let s = visor();
     s = confirm(pick(pick(s, "SPEC-ADV2:a2"), "SPEC-ADV3:a3"));
     expectChoiceFrom(s, "player1", "RK-279");
@@ -474,7 +487,7 @@ describe("RK-279 仮面ライダーナイトサバイブ", () => {
     expect(zoneOf(s, "player2", "SPEC-F1:r")).toBe("rush");
   });
 
-  it.fails("RK-279: 選んだカードの合計が 1 なら、特徴の数が 1 以下の S ユニットだけを選べる（選んだ捨札のカードは捨札に残る）（出典: atwiki/page-1284）", () => {
+  it("RK-279: 選んだカードの合計が 1 なら、特徴の数が 1 以下の S ユニットだけを選べる（選んだ捨札のカードは捨札に残る）（出典: atwiki/page-1284）", () => {
     let s = confirm(pick(visor(), "SPEC-ADV1:a1"));
     expect(choiceIds(s)).toEqual(["SPEC-F1:f1"]);
     s = resolveAll(confirm(pick(s, "SPEC-F1:f1")));
@@ -482,12 +495,12 @@ describe("RK-279 仮面ライダーナイトサバイブ", () => {
     expect(zoneOf(s, "player1", "SPEC-ADV1:a1")).toBe("discard");
   });
 
-  it.fails("RK-279: 撃破しないことも選べる（出典: atwiki/page-1284「撃破してもよい」）", () => {
+  it("RK-279: 撃破しないことも選べる（出典: atwiki/page-1284「撃破してもよい」）", () => {
     const s = resolveAll(skip(confirm(pick(visor(), "SPEC-ADV3:a3"))));
     expect(zoneOf(s, "player2", "SPEC-F3:f3")).toBe("battle");
   });
 
-  it.fails("RK-279: 自軍バトルエリアのダークレイダー（RK-280）【疾風断】で敵軍バトルエリアの S ユニットが特徴を持たなければ、合計 1 でもすべて選べる（出典: atwiki/page-1284 カード評価「ダークレイダーを使えば問題ない」・コメント欄・atwiki/page-1375（RK-280）【疾風断】）", () => {
+  it("RK-279: 自軍バトルエリアのダークレイダー（RK-280）【疾風断】で敵軍バトルエリアの S ユニットが特徴を持たなければ、合計 1 でもすべて選べる（出典: atwiki/page-1284 カード評価「ダークレイダーを使えば問題ない」・コメント欄・atwiki/page-1375（RK-280）【疾風断】）", () => {
     const s = confirm(pick(visor({ battle: [inst("RK-280", "dr")] }), "SPEC-ADV1:a1"));
     expect(choiceIds(s)).toEqual(["SPEC-F1:f1", "SPEC-F2:f2", "SPEC-F3:f3"]);
   });
@@ -504,14 +517,14 @@ describe("RK-280 ダークレイダー", () => {
     expectRarityIn("RK-280", ["NR"]);
   });
 
-  it.fails("RK-280: ※ ユニットの間は、自軍コマンドを1つホールドしなければバトルエリアに出られない（出典: atwiki/page-1375「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」・R-ADD-07）", () => {
+  it("RK-280: ※ ユニットの間は、自軍コマンドを1つホールドしなければバトルエリアに出られない（出典: atwiki/page-1375「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」・R-ADD-07）", () => {
     expect(canEnter(board({ rush: [inst("RK-280", "dr")], command: [held("TST-OP", "h")] }), "RK-280:dr")).toBe(false);
     const s = settle(enterHold(board({ rush: [inst("RK-280", "dr")], command: releasedCat("WB", 1) }), "RK-280:dr"));
     expect(zoneOf(s, "player1", "RK-280:dr")).toBe("battle");
     expect(s.players.player1.command.every((c) => c.commandHeld)).toBe(true);
   });
 
-  it.fails("RK-280: ※ 自軍ラッシュフェイズ中、自軍ラッシュエリアのこれをホールドできる（出典: atwiki/page-1375「また、自軍ラッシュフェイズ中、これをホールドしてもよい」・コメント欄「自軍ラッシュフェイズなら任意にホールドしてもいい」）", () => {
+  it("RK-280: ※ 自軍ラッシュフェイズ中、自軍ラッシュエリアのこれをホールドできる（出典: atwiki/page-1375「また、自軍ラッシュフェイズ中、これをホールドしてもよい」・コメント欄「自軍ラッシュフェイズなら任意にホールドしてもいい」）", () => {
     const s0 = rushPhase({ rush: [inst("RK-280", "dr")] });
     expect(canActivateField(s0, "RK-280:dr")).toBe(true);
     const s = activateField(s0, "RK-280:dr");
@@ -522,7 +535,7 @@ describe("RK-280 ダークレイダー", () => {
     expect(canActivateField(board({ rush: [inst("RK-280", "dr")] }), "RK-280:dr")).toBe(false);
   });
 
-  it.fails("RK-280: ※ ホールド状態のこれは S ビークルとして扱い、RC を持つユニットがライドできる（出典: atwiki/page-1375「自軍エリアでホールド状態かライドされている間、Sビークルとして扱う」・カード評価「スクーパーのようにビークルになれるユニット」）", () => {
+  it("RK-280: ※ ホールド状態のこれは S ビークルとして扱い、RC を持つユニットがライドできる（出典: atwiki/page-1375「自軍エリアでホールド状態かライドされている間、Sビークルとして扱う」・カード評価「スクーパーのようにビークルになれるユニット」）", () => {
     const s = nextPhase(activateField(rushPhase({ rush: [inst("RK-280", "dr"), inst("SPEC-RCU", "r")] }), "RK-280:dr"));
     expect(s.phase).toBe("battle");
     expect(canMount(s, "SPEC-RCU:r", "RK-280:dr")).toBe(true);
@@ -537,31 +550,31 @@ describe("RK-280 ダークレイダー", () => {
 
   const enemyUnits = { battle: [inst("SPEC-F2", "s"), inst("SPEC-FM1", "m")], rush: [inst("SPEC-F2", "r")] };
 
-  it.fails("RK-280: 【疾風断】ユニットとして自軍バトルエリアにある間、敵軍バトルエリアの S ユニットは特徴を持たない（M・ラッシュエリアのユニットは特徴を持つ）（出典: atwiki/page-1375・Q1「ユニットである間、バトルエリアにある」）", () => {
+  it("RK-280: 【疾風断】ユニットとして自軍バトルエリアにある間、敵軍バトルエリアの S ユニットは特徴を持たない（M・ラッシュエリアのユニットは特徴を持つ）（出典: atwiki/page-1375・Q1「ユニットである間、バトルエリアにある」）", () => {
     const s = board({ battle: [inst("RK-280", "dr")] }, enemyUnits);
     expect(featuresOf(s, "player2", "SPEC-F2:s")).toEqual([]);
     expect(featuresOf(s, "player2", "SPEC-FM1:m")).toEqual(["男"]);
-    expect(featuresOf(s, "player2", "SPEC-F2:r")).toEqual(["男", "怪人"]);
+    expect(featuresOf(s, "player2", "SPEC-F2:r")).toEqual(["怪人", "男"]);
   });
 
   // atwiki/page-1375 Q1「ビークル・ユニットの状態を問わず、【疾風断】のテキストは有効です。具体的には「ビークルである間、ライドされている状態で自軍エリアにある」「ビークルである間、ライドされていない状態で自軍バトルエリアにある」「ユニットである間、バトルエリアにある」の3つの状況において、【疾風断】の効果を発揮します。」
-  it.fails("RK-280: 公式Q&A — ビークル（ホールド状態）でライドされずに自軍バトルエリアにある間も【疾風断】は有効（出典: atwiki/page-1375 Q1）", () => {
+  it("RK-280: 公式Q&A — ビークル（ホールド状態）でライドされずに自軍バトルエリアにある間も【疾風断】は有効（出典: atwiki/page-1375 Q1）", () => {
     const s = board({ battle: [{ ...inst("RK-280", "dr"), commandHeld: true }] }, enemyUnits);
     expect(featuresOf(s, "player2", "SPEC-F2:s")).toEqual([]);
   });
 
-  it.fails("RK-280: 公式Q&A — ビークルでライドされている間は、自軍ラッシュエリアにあっても【疾風断】は有効（出典: atwiki/page-1375 Q1「ライドされている状態で自軍エリアにある」）", () => {
+  it("RK-280: 公式Q&A — ビークルでライドされている間は、自軍ラッシュエリアにあっても【疾風断】は有効（出典: atwiki/page-1375 Q1「ライドされている状態で自軍エリアにある」）", () => {
     const s = board({ rush: riding({ ...inst("RK-280", "dr"), commandHeld: true }, inst("SPEC-RCU", "r")) }, enemyUnits);
     expect(featuresOf(s, "player2", "SPEC-F2:s")).toEqual([]);
   });
 
-  it.fails("RK-280: ユニット（リリース状態）として自軍ラッシュエリアにあるだけなら【疾風断】は働かない（出典: atwiki/page-1375 Q1（3つの状況に当たらない））", () => {
+  it("RK-280: ユニット（リリース状態）として自軍ラッシュエリアにあるだけなら【疾風断】は働かない（出典: atwiki/page-1375 Q1（3つの状況に当たらない））", () => {
     const s = board({ rush: [inst("RK-280", "dr")] }, enemyUnits);
-    expect(featuresOf(s, "player2", "SPEC-F2:s")).toEqual(["男", "怪人"]);
+    expect(featuresOf(s, "player2", "SPEC-F2:s")).toEqual(["怪人", "男"]);
   });
 
   // atwiki/page-1375 Q2「ユニットでなくなるので「RK-250 サバイブ」は捨札になります。」（= atwiki/page-1350 RK-250 Q2）
-  it.fails("RK-280: 公式Q&A — RK-250 サバイブを重ねたこれをホールドしてビークルにすると、ユニットでなくなるのでサバイブは捨札になる（出典: atwiki/page-1375 Q2・atwiki/page-1350 Q2）", () => {
+  it("RK-280: 公式Q&A — RK-250 サバイブを重ねたこれをホールドしてビークルにすると、ユニットでなくなるのでサバイブは捨札になる（出典: atwiki/page-1375 Q2・atwiki/page-1350 Q2）", () => {
     const s = settle(activateField(rushPhase({ rush: [withStacked(inst("RK-280", "dr"), [inst("RK-250", "sv")])] }), "RK-280:dr"));
     expect(zoneOf(s, "player1", "RK-250:sv")).toBe("discard");
     expect(zoneOf(s, "player1", "RK-280:dr")).toBe("rush");
@@ -570,6 +583,9 @@ describe("RK-280 ダークレイダー", () => {
 
   it.todo(
     "RK-280: 【疾風断】の「特徴を追加されない」— 敵軍バトルエリアの S ユニットに効果で特徴を追加できない（出典: atwiki/page-1375）— 敵軍が自分のユニットに特徴を追加する効果を自軍ターンに使う状況を本範囲のカードで組めない（エンジンは特徴の判定で、追加分も含めて特徴を持たないものとして扱う）",
+  );
+  it.todo(
+    "RK-280: ビークルとして扱う間は、ユニットを対象にする効果・アタックの対象・ユニットの数にも含めない（出典: atwiki/page-1375「Sビークルとして扱う」）— エンジンがビークルとして扱うのはライド・バトルエリアに出るときのホールド・本範囲のカードの効果の対象だけで、ほかの効果やアタックの判定はカードの種類（ユニット）のまま",
   );
   it.todo(
     "RK-280: ビークルになった後、リリース状態に戻ったらユニットに戻るか（出典: atwiki/page-1011 Q1「リリース状態ならユニット」・コメント欄「ビークルからユニットに戻る事ができない」）— 公式回答とコメント欄の記述が食い違い、ユニットのホールドを解除する手段も本範囲にない（エンジンはホールド状態の間だけビークルとして扱う）",

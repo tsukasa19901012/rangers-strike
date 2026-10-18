@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-289::jietoenjin",
+          "keyword": "rk14::RK-289::jet_engine",
           "duration": "turn"
         }
       ],
