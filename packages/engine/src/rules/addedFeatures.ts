@@ -21,10 +21,14 @@ type DeusPayload = { features: string[] };
 type KirigakurePayload = { instanceId: string; features: string[] };
 
 function turnRulePayloads<T>(player: PlayerState, ruleId: string): T[] {
-  return getPlayerModifiers(player)
-    .filter((m) => m.kind === "rule" && m.ruleId === ruleId && m.scope === "turn")
-    .map((m) => (m as { payload?: unknown }).payload as T)
-    .filter((p): p is T => !!p);
+  // 特徴の計算のたびに呼ばれるので、中間の配列を作らずに1回で拾う（順序は記録順のまま）。
+  const out: T[] = [];
+  for (const m of getPlayerModifiers(player)) {
+    if (m.kind !== "rule" || m.ruleId !== ruleId || m.scope !== "turn") continue;
+    const payload = (m as { payload?: unknown }).payload as T;
+    if (payload) out.push(payload);
+  }
+  return out;
 }
 
 /** このターンだけの特徴追加を記録する（同じ規則 ID でも重ねて記録する）。 */

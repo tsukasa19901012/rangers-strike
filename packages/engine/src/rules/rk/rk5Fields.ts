@@ -18,11 +18,17 @@ function fieldCards(state: FieldState, playerId: PlayerId): CardInstance[] {
 }
 
 function hasFieldCard(state: FieldState, playerId: PlayerId, cardId: string): boolean {
-  return fieldCards(state, playerId).some((c) => isSameCardIdentity(c.cardId, cardId));
+  // BP・特徴の計算のたびに呼ばれるので、場の配列を作らずに見る。
+  const p = state.players[playerId];
+  return p.battle.some((c) => isSameCardIdentity(c.cardId, cardId)) || p.rush.some((c) => isSameCardIdentity(c.cardId, cardId));
 }
 
 function countFieldCard(state: FieldState, playerId: PlayerId, cardId: string): number {
-  return fieldCards(state, playerId).filter((c) => isSameCardIdentity(c.cardId, cardId)).length;
+  const p = state.players[playerId];
+  let n = 0;
+  for (const c of p.battle) if (isSameCardIdentity(c.cardId, cardId)) n += 1;
+  for (const c of p.rush) if (isSameCardIdentity(c.cardId, cardId)) n += 1;
+  return n;
 }
 
 function isUnitCard(state: FieldState, cardId: string): boolean {

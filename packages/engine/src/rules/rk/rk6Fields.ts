@@ -18,7 +18,9 @@ function fieldCards(state: Pick<GameState, "players">, playerId: PlayerId): Card
 }
 
 function hasFieldCard(state: Pick<GameState, "players">, playerId: PlayerId, cardId: string): boolean {
-  return fieldCards(state, playerId).some((c) => isSameCardIdentity(c.cardId, cardId));
+  // BP・特徴の計算のたびに呼ばれるので、場の配列を作らずに見る。
+  const p = state.players[playerId];
+  return p.battle.some((c) => isSameCardIdentity(c.cardId, cardId)) || p.rush.some((c) => isSameCardIdentity(c.cardId, cardId));
 }
 
 function isUnitCard(state: Pick<GameState, "definitions">, cardId: string): boolean {
