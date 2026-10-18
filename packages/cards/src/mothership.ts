@@ -107,9 +107,20 @@ export type MothershipTextAbility = {
 const MOTHERSHIP_TEXT_RE =
   /【母艦】これが自軍ラッシュエリアにある(?:とき|間)、自分が(?:特徴「([^」]+)」を持つ)?(?:「([^」]+)」の)?Mユニットをラッシュする(?:とき)?、追加条件を満たすために次のようにしてもよい⇒自軍Sユニットを1体(コマンドゾーン|パワーゾーン)に送るかわりに、「([^」]+)」の自軍コマンドを1つホールド(?:する|し)(、自軍山札の上から1枚を自軍パワーゾーンに置く)?/;
 
-/** カード本文の【母艦】を読み取る（なければ null）。 */
+const mothershipTextCache = new Map<string, MothershipTextAbility | null>();
+
+/** カード本文の【母艦】を読み取る（なければ null）。対局中に同じ本文を何度も読むので本文ごとに結果を覚える。 */
 export function parseMothershipText(text: string | undefined): MothershipTextAbility | null {
   if (!text) return null;
+  let parsed = mothershipTextCache.get(text);
+  if (parsed === undefined) {
+    parsed = parseMothershipTextUncached(text);
+    mothershipTextCache.set(text, parsed);
+  }
+  return parsed ? { ...parsed } : null;
+}
+
+function parseMothershipTextUncached(text: string): MothershipTextAbility | null {
   const m = MOTHERSHIP_TEXT_RE.exec(text.normalize("NFKC").replace(/\s+/g, ""));
   if (!m) return null;
   const commandCategory = CATEGORY_NAMES[m[4]!];

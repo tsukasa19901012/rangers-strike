@@ -196,7 +196,22 @@ function staticEffectForText(text: string | undefined): CardEffectMeta | undefin
  * 再録・プロモ（例: RS-253 ファイブテクター = RS-014）は、カード ID ではなく効果文の同一性で
  * 実装済みの効果（effectId・kind・target）に結び付ける。
  */
+const cardEffectCache = new Map<string, CardEffectMeta | undefined>();
+
 export function getCardEffect(cardId: string): CardEffectMeta | undefined {
+  // カードの文書（カタログ・DSL・人手修正）は対局中に変わらないので、ID ごとに結果を覚える（loadCardById は重い）。
+  // 呼び出し側が書き換えても表が汚れないよう、浅いコピーを返す。
+  let meta: CardEffectMeta | undefined;
+  if (cardEffectCache.has(cardId)) {
+    meta = cardEffectCache.get(cardId);
+  } else {
+    meta = getCardEffectUncached(cardId);
+    cardEffectCache.set(cardId, meta);
+  }
+  return meta ? { ...meta } : undefined;
+}
+
+function getCardEffectUncached(cardId: string): CardEffectMeta | undefined {
   const own = getCardEffectByDocument(cardId);
   if (ALL_EFFECTS[cardId]) return own;
   const reprint = staticEffectForText(own?.text ?? ERRATA_EFFECT_TEXT[cardId]);
