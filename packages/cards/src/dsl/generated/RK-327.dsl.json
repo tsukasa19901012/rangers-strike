@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "not_attacked_while_held",
+          "keyword": "rk16::RK-327::not_attacked_while_held",
           "duration": "permanent"
         }
       ],
@@ -42,11 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_discard_search_rashufueizukonoyunitowonishitenowodekiruwote",
-          "duration": "turn"
+          "keyword": "rk16::RK-327::fuessle",
+          "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-318::buroukunfuangu",
-          "duration": "turn"
+          "keyword": "rk16::RK-318::broken_fang",
+          "duration": "permanent"
         }
       ],
       "optional": false

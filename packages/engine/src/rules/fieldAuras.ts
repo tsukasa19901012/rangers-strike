@@ -22,6 +22,9 @@ import { rk9FieldBpBonus } from "./rk/rk9Fields";
 import { rk12FieldBpBonus } from "./rk/rk12Fields";
 import { rk14FieldBpBonus } from "./rk/rk14Fields";
 import { rk15FieldBpBonus } from "./rk/rk15Fields";
+import { rk16FieldBpBonus } from "./rk/rk16Fields";
+import { rk14ActsAsVehicle } from "./rk/rk14Fields";
+import { unitFeatures } from "./addedFeatures";
 import { rk5FieldBpBonus } from "./rk/rk5Fields";
 import { rk6FieldBpBonus } from "./rk/rk6Fields";
 import { anyOtherBaseLargeUnit } from "./legend1/set8NamedEffectsB";
@@ -113,14 +116,8 @@ function noteOtherNcBpBonus(
     bonus += own.discard.filter((c) => c.cardId === "RK-292").length * 3000;
   }
 
-  // RK-332: BP+1000 per own ドラゴン unit in rush or battle
-  if (cardId === "RK-332") {
-    const dragonCount = [...own.rush, ...own.battle].filter((c) => {
-      const def = getDefinition(state.definitions, c.cardId);
-      return def?.features?.includes("ドラゴン");
-    }).length;
-    bonus += dragonCount * 1000;
-  }
+  // RK-332 の※（特徴「ドラゴン」を持つ自軍ユニット1体につき BP+1000。ゾーンでもオモテ向きなら有効。rules/rk/rk16Fields.ts）。
+  bonus += rk16FieldBpBonus(state, playerId, instance, unitFeatures, rk14ActsAsVehicle);
 
   // RS-421: BP+1000 per own command with feature レッド
   if (cardId === "RS-421") {

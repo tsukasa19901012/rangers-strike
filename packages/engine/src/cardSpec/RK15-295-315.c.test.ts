@@ -290,7 +290,7 @@ describe("RK-312 仮面ライダーキバDF", () => {
     expect(zoneOf(s, "player2", "SPEC-C2:a")).toBe("battle");
   });
 
-  it.fails("RK-312: 公式Q&A — 【ドッガ・サンダースラップ】で敵軍 RK-203 ファイズAF を撃破し、捨札からラッシュされたファイズに対して、RK-316【フエッスル】で得たモーフで出たばかりのキバDF を置き換えると、置き換えたユニットはアタック・ストライクできる（出典: atwiki/page-1365 Q1・atwiki/page-873 Q1「置き換える元のユニットが、まだアタックやストライクを行っていないのであれば、置き換えた後のユニットもアタックやストライクを行うことができます」）", () => {
+  it("RK-312: 公式Q&A — 【ドッガ・サンダースラップ】で敵軍 RK-203 ファイズAF を撃破し、捨札からラッシュされたファイズに対して、RK-316【フエッスル】で得たモーフで出たばかりのキバDF を置き換えると、置き換えたユニットはアタック・ストライクできる（出典: atwiki/page-1365 Q1・atwiki/page-873 Q1「置き換える元のユニットが、まだアタックやストライクを行っていないのであれば、置き換えた後のユニットもアタックやストライクを行うことができます」）", () => {
     let s = board(
       { rush: [inst("RK-312", "df"), inst("RK-316", "kb")], command: [...releasedCat("WB", 2), inst("SPEC-KIBA-LIKE", "k2")], hand: deckCards(7, "h") },
       { battle: [inst("RK-203", "af")], discard: [inst("RK-064", "fz")] },
@@ -319,7 +319,7 @@ describe("RK-312 仮面ライダーキバDF", () => {
   const morphIntoBattle = (command = releasedCat("WB", 2)) =>
     enemyRushes({ rush: [inst("RK-316", "kb")], battle: [inst("SPEC-KIBA-LIKE", "k")], command: [inst("RK-312", "df"), ...command] }, "SPEC-ENEMY0:e", EXTRA);
 
-  it.fails("RK-312: 公式Q&A — RK-316【フエッスル】で得たモーフでバトルエリアに出るときも、自軍コマンドを2つホールドする（出典: atwiki/page-1365 Q2・atwiki/page-1346 Q1「はい、コマンドをホールドしてください」）", () => {
+  it("RK-312: 公式Q&A — RK-316【フエッスル】で得たモーフでバトルエリアに出るときも、自軍コマンドを2つホールドする（出典: atwiki/page-1365 Q2・atwiki/page-1346 Q1「はい、コマンドをホールドしてください」）", () => {
     const s0 = morphIntoBattle();
     expect(morphCandidates(s0)).toEqual(["RK-312:df"]);
     const s = pickAs(s0, "player1", "RK-312:df");
@@ -328,7 +328,7 @@ describe("RK-312 仮面ライダーキバDF", () => {
     expect(cardIn(s, "player1", "TST-OP:cWB1")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-312: リリース状態の自軍コマンドが1つしかなければ、モーフでバトルエリアに出ることはできない（置き換え先の候補にならない）（出典: atwiki/page-1365「※これは自軍コマンドを2つホールドしなければバトルエリアに出られない」・Q2）", () => {
+  it("RK-312: リリース状態の自軍コマンドが1つしかなければ、モーフでバトルエリアに出ることはできない（置き換え先の候補にならない）（出典: atwiki/page-1365「※これは自軍コマンドを2つホールドしなければバトルエリアに出られない」・Q2）", () => {
     expect(morphCandidates(morphIntoBattle(releasedCat("WB", 1)))).toEqual([]);
   });
 });

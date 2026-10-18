@@ -33,11 +33,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_command_rush_deploy::koregakomandozonniar",
+          "keyword": "rk16::RK-320::command_deploy",
           "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     },
     {
       "id": "fuainaruraijinguburasuto",
@@ -48,39 +48,12 @@
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "hold_command",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk16::RK-320::final_rising_blast",
+          "duration": "permanent"
         }
       ],
-      "optional": true,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      }
+      "optional": false
     }
   ],
   "implementation": {

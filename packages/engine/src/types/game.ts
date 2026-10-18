@@ -689,6 +689,13 @@ export type PendingEffectChoice = {
     /** RK-305: 1つ目にリリースしたコマンドの本来のカテゴリ。 */
     categories?: string[];
   };
+  /** ザ・マスクドライダーEXP vol.4 RK-316〜RK-335 の選択の続き（rules/rk/rk16UnitEffects.ts）。 */
+  rk16Meta?: {
+    /** RK-324: ダメージにする撃破したカード。RK-325: 山札に戻すコマンドのカード。 */
+    picked?: string;
+    /** RK-324: 撃破したカードの持ち主。 */
+    owner?: PlayerId;
+  };
   /** RK-208【迎撃の毒矢】: この選択に答えたら（発動を宣言したら）クレインの窓を開く（rules/rk/rk10UnitEffects.ts）。 */
   rk10CraneWatch?: { craneOwner: PlayerId; rushedOwner: PlayerId; rushedInstanceId: string };
   /** ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 の選択の続き（rules/rk/rk9UnitEffects.ts）。 */
@@ -1414,6 +1421,8 @@ export type TurnEndProgress = {
   rk11Queue?: string[];
   /** RK-258・RK-260 の「自分がターンを終えるとき」（rules/rk/rk13UnitEffects.ts）。 */
   rk13Queue?: string[];
+  /** RK-323【シャドウベール】（rules/rk/rk16UnitEffects.ts）。 */
+  rk16Queue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

@@ -34,8 +34,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-324::inogaruze",
-          "duration": "turn"
+          "keyword": "rk16::RK-324::bron_boost",
+          "duration": "permanent"
         }
       ],
       "optional": false

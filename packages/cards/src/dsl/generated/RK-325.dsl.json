@@ -19,7 +19,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_named_becomes::仮面ライダーイクサBM::SP1",
+          "keyword": "rk16::RK-325::ixa_bm_sp1",
           "duration": "permanent"
         }
       ],
@@ -35,11 +35,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-325::ikusapodo",
-          "duration": "turn"
+          "keyword": "rk16::RK-325::ixa_pod",
+          "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

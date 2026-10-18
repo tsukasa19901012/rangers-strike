@@ -28,11 +28,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::RK-319::koreworashushita",
+          "keyword": "rk16::RK-319::command_swap",
           "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     },
     {
       "id": "ikusajajimento",
@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-319::ikusajajimento",
-          "duration": "turn"
+          "keyword": "rk16::RK-319::ixa_judgment",
+          "duration": "permanent"
         }
       ],
       "optional": false

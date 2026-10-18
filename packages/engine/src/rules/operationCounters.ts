@@ -7,6 +7,7 @@ import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
 import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
 import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
 import { rk15WinButDestroyed } from "./rk/rk15UnitEffects";
+import { rk16OnBattleDestroy } from "./rk/rk16UnitEffects";
 import { rk13OnAttackWin, rk13OnBattleDestroy } from "./rk/rk13UnitEffects";
 import { rk13BattleUsesPrintedBp, rk13BlocksResist, rk13PrintedBp } from "./rk/rk13Fields";
 import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
@@ -1661,6 +1662,8 @@ export function resolveBattlePendingCore(
       // RK-271【ライジングマイティキック】: バトルで撃破したとき（レジストの選択中でも撃破は済んでいる。rules/rk/rk13UnitEffects.ts）。
       if (!withAttacker.pendingLeave && !finalDestroyAttacker) {
         withAttacker = rk13OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
+        // RK-324【凄いのが来るぜ！】（rules/rk/rk16UnitEffects.ts）。
+        withAttacker = rk16OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
       }
       if (!withAttacker.pendingLeave && !withAttacker.pendingRegister) {
         // 撃破は済み、別の選択が開いている — RS-226（段階 1）を先に、RS-212（段階 4）は段階の順に処理する。
@@ -1696,6 +1699,8 @@ export function resolveBattlePendingCore(
     nextState = endDestroyTriggerHold(leaveResult.state);
     // RK-271【ライジングマイティキック】（rules/rk/rk13UnitEffects.ts）。
     if (!finalDestroyAttacker) nextState = rk13OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
+    // RK-324【凄いのが来るぜ！】: ライドしているユニットが BP4000 以上の敵軍 S ユニットをバトルで撃破して捨札にしたとき（rules/rk/rk16UnitEffects.ts）。
+    if (!finalDestroyAttacker) nextState = rk16OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
 
     if (refreshedAttackerFound.card.cardId === "RS-065") {
       const fb = resolveFocusedBreakthroughDamage(
@@ -1765,6 +1770,8 @@ export function resolveBattlePendingCore(
     }
     nextState = leaveResult.state;
     if (!finalDestroyDefender) {
+      // RK-324【凄いのが来るぜ！】（アタックしてきたユニットを、ライドしているユニットがバトルで撃破したとき）。
+      nextState = rk16OnBattleDestroy(nextState, defenderOwner, defenderInstanceId, attackerId, pending.attackerInstanceId, attackerBp);
       nextState = openRaigekiZanChoice(
         nextState,
         defenderOwner,

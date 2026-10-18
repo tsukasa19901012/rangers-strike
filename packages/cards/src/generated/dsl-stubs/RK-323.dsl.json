@@ -34,11 +34,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-323::shadouberu",
-          "duration": "turn"
+          "keyword": "rk16::RK-323::shadow_veil",
+          "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

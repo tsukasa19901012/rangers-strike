@@ -94,6 +94,8 @@ import { COMMAND_ZONE_MAX } from "../types/game";
 import { checkWinner, advancePhase } from "./createGame";
 import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
 import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
+import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
+import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import {
   canPlayOperation,
@@ -657,6 +659,8 @@ function finishStrikeResolution(
   resolved = applySet7AStrikeDamageTriggers(resolved, pending);
   // RK-041 ジェノサイダー【ドゥームズデイ】（rules/rk/rk2UnitEffects.ts）。
   resolved = applyRk2StrikeDamageTriggers(resolved, pending);
+  // RK-320【ファイナルライジングブラスト】（敵軍ターン中、ストライクを2回以上されてダメージを受けたとき。rules/rk/rk16UnitEffects.ts）。
+  resolved = applyRk16StrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -2580,6 +2584,8 @@ function applyActionCore(
         ...state,
         ...updatePlayer(state, playerId, nextPlayer),
       };
+      // RK-320【ファイナルライジングブラスト】: ストライクされた回数を数える（ダメージの有無を問わない。rules/rk/rk16Fields.ts）。
+      nextState = rk16NoteStrike(nextState, opponent(playerId));
 
       const pending: PendingStrike = {
         strikerPlayerId: playerId,

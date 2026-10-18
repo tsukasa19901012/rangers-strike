@@ -66,12 +66,13 @@ const MAOU = sUnit("SPEC-MAOU", { category: "MA", bp: 1000, powerCost: 1, featur
 const MAOU5 = sUnit("SPEC-MAOU5", { category: "MA", bp: 5000, powerCost: 1, sp: 1, features: ["仮面ライダー", "男", "魔皇力"] });
 const PLAIN = sUnit("SPEC-PLAIN", { bp: 1000, powerCost: 1, features: ["男"] });
 const E4000 = sUnit("SPEC-E4000", { bp: 4000, sp: undefined, powerCost: 1 });
+const E4000A = sUnit("SPEC-E4000A", { bp: 4000, sp: 1, powerCost: 1 });
 const E3000 = sUnit("SPEC-E3000", { bp: 3000, sp: undefined, powerCost: 1 });
 const E4000M = sUnit("SPEC-E4000M", { bp: 4000, sp: undefined, powerCost: 1, size: "M" });
 const B500 = sUnit("SPEC-B500", { bp: 500, sp: undefined, powerCost: 1 });
 const B7000 = sUnit("SPEC-B7000", { bp: 7000, sp: undefined, powerCost: 1 });
 const EM = sUnit("SPEC-EM", { bp: 1000, sp: undefined, powerCost: 1, size: "M" });
-const EXTRA: CardDefinition[] = [PLAIN_VEHICLE, NOSP_ATTACKER, C1, C3, C3P, M3, RCU, MAOU, MAOU5, PLAIN, E4000, E3000, E4000M, B500, B7000, EM];
+const EXTRA: CardDefinition[] = [PLAIN_VEHICLE, NOSP_ATTACKER, C1, C3, C3P, M3, RCU, MAOU, MAOU5, PLAIN, E4000, E4000A, E3000, E4000M, B500, B7000, EM];
 
 const board = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) => p1Battle(p1, p2, EXTRA);
 const rushPhase = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
@@ -104,18 +105,18 @@ describe("RK-323 マシンキバー", () => {
 
   const veil = (rider = heldUnit("SPEC-MAOU", "k")) => toTurnEnd(board({ battle: riding(inst("RK-323", "v"), rider) }), "RK-323");
 
-  it.fails("RK-323: 【シャドウベール】自分がターンを終えるとき、ライドしているユニットがホールド状態ならリリースするかを選べる（任意）（出典: atwiki/page-1348「自分がターンを終えるとき、これにライドしているユニットがホールド状態ならば、そのユニットをリリースしてもよい」）", () => {
+  it("RK-323: 【シャドウベール】自分がターンを終えるとき、ライドしているユニットがホールド状態ならリリースするかを選べる（任意）（出典: atwiki/page-1348「自分がターンを終えるとき、これにライドしているユニットがホールド状態ならば、そのユニットをリリースしてもよい」）", () => {
     const s = veil();
     expectChoiceFrom(s, "player1", "RK-323");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-323: リリースを選ぶと、ライドしているユニットはリリース状態になる（出典: atwiki/page-1348・カード評価「乗りっぱなしにすることで毎ターン能力の発動が可能になる」）", () => {
+  it("RK-323: リリースを選ぶと、ライドしているユニットはリリース状態になる（出典: atwiki/page-1348・カード評価「乗りっぱなしにすることで毎ターン能力の発動が可能になる」）", () => {
     const s = resolveAll(accept(veil()));
     expect(cardIn(s, "player1", "SPEC-MAOU:k")?.commandHeld ?? false).toBe(false);
   });
 
-  it.fails("RK-323: リリースしなければホールド状態のまま（出典: atwiki/page-1348「リリースしてもよい」）", () => {
+  it("RK-323: リリースしなければホールド状態のまま（出典: atwiki/page-1348「リリースしてもよい」）", () => {
     const s = resolveAll(skip(veil()));
     expect(cardIn(s, "player1", "SPEC-MAOU:k")?.commandHeld).toBe(true);
   });
@@ -157,20 +158,20 @@ describe("RK-324 ブロンブースター", () => {
     return resolveAll(attack(board({ battle: riding(inst("RK-324", "v"), inst("SPEC-MAOU5", "k")) }, { battle: [inst(cid, suf)] }), "SPEC-MAOU5:k", enemy), [], 0);
   };
 
-  it.fails("RK-324: 【凄いのが来るぜ！】ライドしているユニットが BP4000 以上の敵軍 S ユニットを撃破して捨札にしたとき、そのカードをダメージにするかを選べる（任意）（出典: atwiki/page-1356「捨札にしたそのユニットカードを持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
+  it("RK-324: 【凄いのが来るぜ！】ライドしているユニットが BP4000 以上の敵軍 S ユニットを撃破して捨札にしたとき、そのカードをダメージにするかを選べる（任意）（出典: atwiki/page-1356「捨札にしたそのユニットカードを持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
     const s = boost();
     expectChoiceFrom(s, "player1", "RK-324");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-324: 置くと、撃破したカードは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-1356）", () => {
+  it("RK-324: 置くと、撃破したカードは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-1356）", () => {
     const s = resolveAll(accept(boost()));
     expect(zoneOf(s, "player2", "SPEC-E4000:e")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-E4000:e")?.faceDown).toBe(true);
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RK-324: 置かなければ捨札のまま（出典: atwiki/page-1356「置いてもよい」）", () => {
+  it("RK-324: 置かなければ捨札のまま（出典: atwiki/page-1356「置いてもよい」）", () => {
     const s = resolveAll(skip(boost()));
     expect(zoneOf(s, "player2", "SPEC-E4000:e")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(0);
@@ -181,6 +182,20 @@ describe("RK-324 ブロンブースター", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-324");
     expect(zoneOf(s, "player2", "SPEC-E3000:e")).toBe("discard");
   });
+
+  it("RK-324: 敵軍ターン中にアタックしてきた BP4000 の敵軍 S ユニットを、ライドしているユニットがバトルで撃破したときも発動する（出典: atwiki/page-1356「これにライドしているユニットがBP4000以上の敵軍Sユニットを撃破して捨札にしたとき」）", () => {
+    const s = resolveAll(
+      attack(enemyTurn({ battle: riding(inst("RK-324", "v"), inst("SPEC-MAOU5", "k")) }, { battle: [inst("SPEC-E4000A", "a")] }), "SPEC-E4000A:a", "SPEC-MAOU5:k", "player2"),
+      [],
+      0,
+    );
+    expect(zoneOf(s, "player2", "SPEC-E4000A:a")).toBe("discard");
+    expectChoiceFrom(s, "player1", "RK-324");
+  });
+
+  it.todo(
+    "RK-324: ライドしているユニットの効果で撃破したとき・相打ちで撃破したときも発動する（出典: atwiki/page-1356 カード評価「能力で撃破したり相打ちで撃破した場合にも効果を発動する事が出来る」）— エンジンは効果による撃破で「どのユニットが撃破したか」を記録しておらず、相打ちではライドしていたユニットが先に場を離れてライドの関係が残らないため、バトルで勝って撃破したときだけ実装した",
+  );
 
   it("RK-324: M ユニットを撃破したときは発動しない（出典: atwiki/page-1356「敵軍Sユニット」）", () => {
     const s = boost("SPEC-E4000M:e");
@@ -199,7 +214,7 @@ describe("RK-325 パワードイクサー", () => {
     expectRarityIn("RK-325", ["N"]);
   });
 
-  it.fails("RK-325: ※ ライドしている「仮面ライダーイクサBM」は「SP1」になる（1番目に並んで分数 SP「1/5」が働かなくても）（出典: atwiki/page-1347「「仮面ライダーイクサBM」なら「SP1」になる」・R-STK-03）", () => {
+  it("RK-325: ※ ライドしている「仮面ライダーイクサBM」は「SP1」になる（1番目に並んで分数 SP「1/5」が働かなくても）（出典: atwiki/page-1347「「仮面ライダーイクサBM」なら「SP1」になる」・R-STK-03）", () => {
     const s = board({ battle: riding(inst("RK-325", "v"), inst("RK-319", "bm")) });
     expect(spOf(s, "player1", "RK-319:bm")).toBe(1);
     expect(canStrike(s, "RK-319:bm")).toBe(true);
@@ -219,14 +234,14 @@ describe("RK-325 パワードイクサー", () => {
   const pod = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     mount(board({ rush: [inst("SPEC-RCU", "r"), inst("RK-325", "v")], command: [inst("SPEC-C3", "c3"), inst("SPEC-C1", "c1")], deck: deckCards(3), ...p1 }, enemy), "SPEC-RCU:r", "RK-325:v");
 
-  it.fails("RK-325: 【イクサポッド】自軍ターン中にライドされてバトルエリアに出たとき、自軍コマンドゾーンのカードを1枚選べる（任意）（出典: atwiki/page-1347「自軍コマンドゾーンからカードを1枚選び、自軍山札の上か下に戻してもよい」）", () => {
+  it("RK-325: 【イクサポッド】自軍ターン中にライドされてバトルエリアに出たとき、自軍コマンドゾーンのカードを1枚選べる（任意）（出典: atwiki/page-1347「自軍コマンドゾーンからカードを1枚選び、自軍山札の上か下に戻してもよい」）", () => {
     const s = pod();
     expectChoiceFrom(s, "player1", "RK-325");
     expect(choiceIds(s)).toEqual(["SPEC-C1:c1", "SPEC-C3:c3"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-325: 選んだカードは山札の上か下を選んで戻す（下を選ぶと山札の一番下）（出典: atwiki/page-1347「自軍山札の上か下に戻して」）", () => {
+  it("RK-325: 選んだカードは山札の上か下を選んで戻す（下を選ぶと山札の一番下）（出典: atwiki/page-1347「自軍山札の上か下に戻して」）", () => {
     let s = pick(pod(), "SPEC-C3:c3");
     expect(choiceIds(s)).toEqual(["deck_bottom", "deck_top"]);
     s = pick(s, "deck_bottom");
@@ -234,7 +249,7 @@ describe("RK-325 パワードイクサー", () => {
     expect(s.players.player1.deck.at(-1)?.instanceId).toBe("SPEC-C3:c3");
   });
 
-  it.fails("RK-325: 戻すと、戻したカードと同じ必要パワーの数字（3。「3+」も含む）の敵軍バトルエリアの S ユニットから1体選ぶ（強制。M・ラッシュエリアは対象外）（出典: atwiki/page-1347「戻したカードの必要パワーの数字と同じ必要パワーの数字を持つSユニットを敵軍バトルエリアから1体選び」）", () => {
+  it("RK-325: 戻すと、戻したカードと同じ必要パワーの数字（3。「3+」も含む）の敵軍バトルエリアの S ユニットから1体選ぶ（強制。M・ラッシュエリアは対象外）（出典: atwiki/page-1347「戻したカードの必要パワーの数字と同じ必要パワーの数字を持つSユニットを敵軍バトルエリアから1体選び」）", () => {
     const s = pick(pick(pod(), "SPEC-C3:c3"), "deck_top");
     expect(s.players.player1.deck[0]?.instanceId).toBe("SPEC-C3:c3");
     expectChoiceFrom(s, "player1", "RK-325");
@@ -242,19 +257,19 @@ describe("RK-325 パワードイクサー", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-325: 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-1347「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("RK-325: 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-1347「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(pick(pick(pick(pod(), "SPEC-C3:c3"), "deck_top"), "SPEC-C3P:e3p"));
     expect(zoneOf(s, "player2", "SPEC-C3P:e3p")).toBe("command");
     expect(cardIn(s, "player2", "SPEC-C3P:e3p")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-325: 戻さなければ何も起きない（出典: atwiki/page-1347「戻してもよい。そうしたとき」）", () => {
+  it("RK-325: 戻さなければ何も起きない（出典: atwiki/page-1347「戻してもよい。そうしたとき」）", () => {
     const s = resolveAll(skip(pod()));
     expect(zoneOf(s, "player1", "SPEC-C3:c3")).toBe("command");
     expect(zoneOf(s, "player2", "SPEC-C3:e3")).toBe("battle");
   });
 
-  it.fails("RK-325: ライドオフの選択はイクサポッドの後に行う（ライドしたまま残れる）（出典: atwiki/page-1347・R-RIDE）", () => {
+  it("RK-325: ライドオフの選択はイクサポッドの後に行う（ライドしたまま残れる）（出典: atwiki/page-1347・R-RIDE）", () => {
     const s = rideOff(resolveAll(skip(pod())), false);
     expect(cardIn(s, "player1", "SPEC-RCU:r")?.mountedOnInstanceId).toBe("RK-325:v");
   });
@@ -267,7 +282,7 @@ function fuessleTests(id: string, kibaId: string, kibaName: string, otherA: stri
   const deck = () => [inst(kibaId, "k1"), inst("RK-313", "dg"), inst("SPEC-C1", "x")];
   const base = (p1: Partial<GameState["players"]["player1"]> = {}) => rushPhase({ rush: [inst(id, "g")], deck: deck(), ...p1 });
 
-  it.fails(`${id}: 自軍ラッシュフェイズ中、このユニットを捨札にして発動でき、自軍山札の「${kibaName}」を選べる（任意）（出典: ${page}「このユニットを捨札にして次の効果を発動できる⇒自軍山札を見て「${kibaName}」のカードを1枚か…選び」）`, () => {
+  it(`${id}: 自軍ラッシュフェイズ中、このユニットを捨札にして発動でき、自軍山札の「${kibaName}」を選べる（任意）（出典: ${page}「このユニットを捨札にして次の効果を発動できる⇒自軍山札を見て「${kibaName}」のカードを1枚か…選び」）`, () => {
     const s0 = base();
     expect(canActivate(s0, self)).toBe(true);
     const s = activate(s0, self);
@@ -277,13 +292,13 @@ function fuessleTests(id: string, kibaId: string, kibaName: string, otherA: stri
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails(`${id}: 選んだカードは必要パワーを満たさなくても自軍ラッシュエリアに出る（出典: ${page}「自軍ラッシュエリアに出してもよい」・カード評価「パワーを無視して」）`, () => {
+  it(`${id}: 選んだカードは必要パワーを満たさなくても自軍ラッシュエリアに出る（出典: ${page}「自軍ラッシュエリアに出してもよい」・カード評価「パワーを無視して」）`, () => {
     const s = resolveAll(pick(activate(base(), self), `${kibaId}:k1`));
     expect(zoneOf(s, "player1", `${kibaId}:k1`)).toBe("rush");
     expect(s.players.player1.deck).toHaveLength(2);
   });
 
-  it.fails(`${id}: 自軍捨札に「${otherA}」と「${otherB}」があれば「仮面ライダーキバDGBKF」も選べる（出典: ${page}「自軍捨札に「${otherA}」と「${otherB}」があれば「仮面ライダーキバDGBKF」のカードを1枚」）`, () => {
+  it(`${id}: 自軍捨札に「${otherA}」と「${otherB}」があれば「仮面ライダーキバDGBKF」も選べる（出典: ${page}「自軍捨札に「${otherA}」と「${otherB}」があれば「仮面ライダーキバDGBKF」のカードを1枚」）`, () => {
     const others = ["RK-326", "RK-327", "RK-328"].filter((c) => c !== id).map((c) => inst(c, "d"));
     const s = activate(base({ discard: others }), self);
     expect(choiceIds(s)).toEqual(["RK-313:dg", `${kibaId}:k1`].sort());
@@ -291,7 +306,7 @@ function fuessleTests(id: string, kibaId: string, kibaName: string, otherA: stri
     expect(zoneOf(t, "player1", "RK-313:dg")).toBe("rush");
   });
 
-  it.fails(`${id}: 出さなければ山札のまま（このユニットは捨札）（出典: ${page}「出してもよい」）`, () => {
+  it(`${id}: 出さなければ山札のまま（このユニットは捨札）（出典: ${page}「出してもよい」）`, () => {
     const s = resolveAll(skip(activate(base(), self)));
     expect(zoneOf(s, "player1", `${kibaId}:k1`)).toBe("deck");
     expect(zoneOf(s, "player1", self)).toBe("discard");
@@ -325,7 +340,7 @@ describe("RK-327 バッシャー獣人態", () => {
     expectRarityIn("RK-327", ["N"]);
   });
 
-  it.fails("RK-327: ※ ホールド状態のとき敵軍ユニットにアタックされない（リリース状態ならアタックされる）（出典: atwiki/page-1352「※このユニットはホールド状態のとき、敵軍ユニットにアタックされない」）", () => {
+  it("RK-327: ※ ホールド状態のとき敵軍ユニットにアタックされない（リリース状態ならアタックされる）（出典: atwiki/page-1352「※このユニットはホールド状態のとき、敵軍ユニットにアタックされない」）", () => {
     const heldS = enemyTurn({ battle: [heldUnit("RK-327", "bs")] }, { battle: [inst("TST-UNIT-0", "a")] });
     expect(targetsOf(heldS, "TST-UNIT-0:a", "player2")).toEqual([]);
     const rel = enemyTurn({ battle: [inst("RK-327", "bs")] }, { battle: [inst("TST-UNIT-0", "a")] });
@@ -389,25 +404,25 @@ describe("RK-329 仮面ライダーアーク", () => {
   const press = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
     enter(board({ rush: [inst("RK-329", "ak")], ...p1 }, { battle: [inst("SPEC-B500", "b1"), inst("TST-UNIT-0", "u")], rush: [inst("SPEC-B500", "b2")], ...p2 }), "RK-329:ak");
 
-  it.fails("RK-329: 【巨体の威圧】自軍ターン中に出たとき、BP の一番低いユニット（エリア・サイズを問わない）から1体選ぶ（強制）（出典: atwiki/page-1410「BPの一番低いユニットを１体選び撃破する」・カード評価「ラッシュエリアのユニットをサイズを問わずに撃破できる」）", () => {
+  it("RK-329: 【巨体の威圧】自軍ターン中に出たとき、BP の一番低いユニット（エリア・サイズを問わない）から1体選ぶ（強制）（出典: atwiki/page-1410「BPの一番低いユニットを１体選び撃破する」・カード評価「ラッシュエリアのユニットをサイズを問わずに撃破できる」）", () => {
     const s = press();
     expectChoiceFrom(s, "player1", "RK-329");
     expect(choiceIds(s)).toEqual(["SPEC-B500:b1", "SPEC-B500:b2"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-329: 選んだユニットは撃破される（出典: atwiki/page-1410「撃破する」）", () => {
+  it("RK-329: 選んだユニットは撃破される（出典: atwiki/page-1410「撃破する」）", () => {
     const s = resolveAll(pick(press(), "SPEC-B500:b2"));
     expect(zoneOf(s, "player2", "SPEC-B500:b2")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-B500:b1")).toBe("battle");
   });
 
-  it.fails("RK-329: BP の一番低いユニットが自軍と敵軍の両方にあれば、自軍ユニットから選ぶ（出典: atwiki/page-1410「BPの一番低いユニットが自軍と敵軍にある場合は、自軍ユニットの中から選ぶこと」）", () => {
+  it("RK-329: BP の一番低いユニットが自軍と敵軍の両方にあれば、自軍ユニットから選ぶ（出典: atwiki/page-1410「BPの一番低いユニットが自軍と敵軍にある場合は、自軍ユニットの中から選ぶこと」）", () => {
     const s = press({ battle: [inst("SPEC-B500", "own")] });
     expect(choiceIds(s)).toEqual(["SPEC-B500:own"]);
   });
 
-  it.fails("RK-329: ほかのユニットの BP がすべて高ければ、これ自身が一番低いユニットとして撃破される（出典: atwiki/page-1410「BPの一番低いユニットを１体選び」（このユニットを除くとは書かれていない））", () => {
+  it("RK-329: ほかのユニットの BP がすべて高ければ、これ自身が一番低いユニットとして撃破される（出典: atwiki/page-1410「BPの一番低いユニットを１体選び」（このユニットを除くとは書かれていない））", () => {
     const s = resolveAll(press({}, { battle: [inst("SPEC-B7000", "h")], rush: [] }));
     expect(zoneOf(s, "player1", "RK-329:ak")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-B7000:h")).toBe("battle");

@@ -174,6 +174,8 @@ export function canSelfRushFromZone(
   if (!card) return false;
   if (zone === "hand") return handDeployConditionMet(state, playerId, card.cardId);
   if (zone === "power" && card.faceDown) return false;
+  // RK-320 仮面ライダーライジングイクサの※（必要パワー1・9・3の自軍コマンドがそれぞれあれば。rules/rk/rk16Fields.ts）。
+  if (zone === "command" && rk16CanDeployFromCommand(state, playerId, card)) return true;
   // 「これが自軍コマンドゾーンにある間」— リリース／ホールドの状態は問わない（RS-447・XG4-077。atwiki/page-786）。
   const keyword =
     zone === "command" ? "rush_from_discard_count_command" : "rush_from_discard_count_power";
@@ -252,6 +254,7 @@ export function applySelfRushFromZone(
 import type { PlayerState } from "../types/game";
 import { hasBakiBakiExtraAttack } from "./turnModifierBridge";
 import { markTurnBattleAct } from "./rk/rk10Fields";
+import { rk16CanDeployFromCommand } from "./rk/rk16Fields";
 
 /**
  * battleActed 済みでも「アタックとストライクを1度ずつ」持ちなら

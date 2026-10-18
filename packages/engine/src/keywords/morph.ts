@@ -3,6 +3,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 import { getDefinition } from "../core/catalog";
 import { cardHasKeyword } from "./cardKeywords";
 import { ryuseioBlocksMove } from "../rules/restrictions";
+import { rk16CanMorphFromDiscard, rk16MorphDiscardCost, rk16MorphEntryHolds, rk16ReleasedCommands } from "../rules/rk/rk16Fields";
 
 /**
  * モーフの置き換え先を探すゾーン。「自軍ゾーン」はコマンドゾーンとパワーゾーンだけ
@@ -11,7 +12,7 @@ import { ryuseioBlocksMove } from "../rules/restrictions";
 export const MORPH_REPLACEMENT_ZONES = ["power", "command"] as const;
 
 /** 置き換え元ゾーン（モーフ以外の置き換え効果は手札・ラッシュも使う）。 */
-export type ReplacementSourceZone = "hand" | "rush" | "power" | "command";
+export type ReplacementSourceZone = "hand" | "rush" | "power" | "command" | "discard";
 
 export type MorphReplacementCandidate = {
   zone: ReplacementSourceZone;
@@ -71,10 +72,25 @@ export function listPlaceableMorphReplacementCandidates(
   morphUnit: CardInstance,
 ): MorphReplacementCandidate[] {
   const defender = state.players[defenderId];
-  const candidates = listMorphReplacementCandidates(defender, state.definitions, morphUnit.cardId);
+  let candidates = listMorphReplacementCandidates(defender, state.definitions, morphUnit.cardId);
+  // RK-317 シュードラン【ポッドバッティング】: DA のコマンドをホールドすれば、かわりに自軍捨札から選べる（rules/rk/rk16Fields.ts）。
+  if (rk16CanMorphFromDiscard(state, defenderId)) {
+    candidates = [...candidates, ...listMorphReplacementCandidates(defender, state.definitions, morphUnit.cardId, ["discard"])];
+  }
   const inBattle = defender.battle.some((c) => c.instanceId === morphUnit.instanceId);
   if (!inBattle) return candidates;
-  return candidates.filter((c) => !ryuseioBlocksMove(state, defenderId, c.card));
+  return candidates.filter((c) => !ryuseioBlocksMove(state, defenderId, c.card) && morphEntryHoldsPayable(state, defenderId, c));
+}
+
+/**
+ * 「※これは自軍コマンドをNつホールドしなければバトルエリアに出られない」ユニットは、モーフでバトルエリアに出るときもホールドする
+ * （atwiki/page-1365 Q2・page-1346 Q1）。リリース状態のコマンドが足りなければ選べない。「（モーフで出るときは除く）」（RK-330）は要らない。
+ */
+function morphEntryHoldsPayable(state: GameState, defenderId: PlayerId, candidate: MorphReplacementCandidate): boolean {
+  const holds = rk16MorphEntryHolds(state, candidate.card.cardId);
+  if (holds <= 0) return true;
+  const extra = candidate.zone === "discard" ? (rk16MorphDiscardCost(state, defenderId) ?? 0) : 0;
+  return rk16ReleasedCommands(state, defenderId, [candidate.instanceId]).length >= holds + extra;
 }
 
 /**

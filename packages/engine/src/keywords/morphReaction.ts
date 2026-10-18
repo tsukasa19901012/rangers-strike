@@ -23,6 +23,7 @@ import {
   type RushMethod,
 } from "../rules/morphProcedure";
 import { applyOnRushUnitEffects, applyPassiveRushTriggers } from "../rules/onRushUnitEffects";
+import { rk16MorphDiscardCost, rk16MorphEntryHolds } from "../rules/rk/rk16Fields";
 
 type FieldZone = "rush" | "battle";
 
@@ -41,8 +42,9 @@ function findMorphUnit(
 function findReplacement(
   player: PlayerState,
   instanceId: string,
-): { zone: MorphReplacementZone; index: number; card: CardInstance } | null {
-  for (const zone of MORPH_REPLACEMENT_ZONES) {
+): { zone: MorphReplacementZone | "discard"; index: number; card: CardInstance } | null {
+  // RK-317【ポッドバッティング】のときは自軍捨札からも選べる（候補は keywords/morph.ts で絞り込み済み）。
+  for (const zone of [...MORPH_REPLACEMENT_ZONES, "discard"] as const) {
     const index = player[zone].findIndex((c) => c.instanceId === instanceId);
     if (index >= 0) return { zone, index, card: player[zone][index]! };
   }
@@ -146,11 +148,24 @@ export function applyMorphSwap(
   fieldCards[morphFound.index] = entering;
   const zoneCards = [...player[replacementFound.zone]];
   zoneCards[replacementFound.index] = leaving;
-  const nextPlayer = {
+  let nextPlayer: PlayerState = {
     ...player,
     [morphFound.zone]: fieldCards,
     [replacementFound.zone]: zoneCards,
   };
+  // RK-317【ポッドバッティング】: 捨札から選んだら DA のコマンドをホールドする。バトルエリアに出るユニットの
+  // 「自軍コマンドをNつホールドしなければバトルエリアに出られない」もホールドする（rules/rk/rk16Fields.ts）。
+  const exclude = [entering.instanceId, leaving.instanceId];
+  if (replacementFound.zone === "discard") {
+    nextPlayer = holdCommands(state, nextPlayer, rk16MorphDiscardCost(state, defenderId) ?? 0, exclude, true);
+  }
+  if (morphFound.zone === "battle") {
+    nextPlayer = holdCommands(state, nextPlayer, rk16MorphEntryHolds(state, replacementFound.card.cardId), exclude, false);
+  }
+  // 出たばかりのモーフ持ちユニットの進入の行動（アタック・ストライク）は、置き換えたユニットが引き継ぐ（atwiki/page-1365 Q1）。
+  const swapEntry = <T extends { instanceId: string } | undefined>(entry: T): T =>
+    entry && entry.instanceId === morphUnitInstanceId ? ({ ...entry, instanceId: replacementInstanceId } as T) : entry;
+  state = { ...state, pendingBattleEntry: swapEntry(state.pendingBattleEntry), deferredBattleEntry: swapEntry(state.deferredBattleEntry) };
 
   const log = buildLogEntry(
     defenderId,
@@ -166,6 +181,24 @@ export function applyMorphSwap(
       [replacementFound.card.instanceId],
     ),
     log,
+  };
+}
+
+/** リリース状態の自軍コマンドを先頭から count 枚ホールドする（daOnly なら DA を持つものだけ）。 */
+function holdCommands(state: GameState, player: PlayerState, count: number, exclude: string[], daOnly: boolean): PlayerState {
+  if (count <= 0) return player;
+  let left = count;
+  return {
+    ...player,
+    command: player.command.map((c) => {
+      if (left <= 0 || c.commandHeld || exclude.includes(c.instanceId)) return c;
+      if (daOnly) {
+        const cat = getDefinition(state.definitions, c.cardId)?.category as string | string[] | undefined;
+        if (!(Array.isArray(cat) ? cat.includes("DA") : cat === "DA")) return c;
+      }
+      left -= 1;
+      return { ...c, commandHeld: true };
+    }),
   };
 }
 

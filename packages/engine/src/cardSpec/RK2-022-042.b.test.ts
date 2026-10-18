@@ -529,8 +529,7 @@ describe("RK-035 ダークウイング", () => {
     expect(cardIn(s, "player2", "SPEC-KAMEN:e")?.mountedOnInstanceId).toBe("RK-058:ez");
   });
 
-  it.todo(
-    "RK-035: 公式Q&A（相互参照）— ライドシューター（RK-043）の対象は「ユニットカード」なので、ダークウイングがあってもミラーライダーをラッシュできる（出典: grnrngr/faq-rider-1 RK-043 Q2）— RK-043【突入】側の未実装（rulesSpec/08-errata.s1a-faq.test.ts R-ERR-RK043 に it.todo）",
-  );
+  // 公式Q&A（grnrngr/faq-rider-1 RK-043 Q2: ライドシューターの対象は「ユニットカード」なので、ダークウイングがあってもミラーライダーをラッシュできる）は、
+  // RK-043 の照合の後 RK3-043-063.a の RK-043 で実テストにした（以前はここの it.todo）。
 });
 

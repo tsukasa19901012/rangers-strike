@@ -6650,7 +6650,7 @@
       "【フエッスル】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-316::fuesuru"
+      "rk16::RK-316::fuessle"
     ],
     "bp": 500,
     "sp": null,
@@ -6668,7 +6668,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rk_fx::RK-317::podobateingu"
+      "rk16::RK-317::pod_batting"
     ],
     "bp": 3000,
     "sp": null,
@@ -6685,7 +6685,7 @@
       "【ブロウクン・ファング】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-318::buroukunfuangu"
+      "rk16::RK-318::broken_fang"
     ],
     "bp": 500,
     "sp": "1/5",
@@ -6702,8 +6702,8 @@
       "【イクサ・ジャッジメント】"
     ],
     "expectedDslKeywords": [
-      "note_card::RK-319::koreworashushita",
-      "rk_fx::RK-319::ikusajajimento"
+      "rk16::RK-319::command_swap",
+      "rk16::RK-319::ixa_judgment"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -6720,7 +6720,8 @@
       "【ファイナルライジングブラスト】"
     ],
     "expectedDslKeywords": [
-      "while_in_command_rush_deploy::koregakomandozonniar"
+      "rk16::RK-320::command_deploy",
+      "rk16::RK-320::final_rising_blast"
     ],
     "bp": 6000,
     "sp": 1,
@@ -6738,7 +6739,7 @@
     ],
     "expectedDslKeywords": [
       "rush_prefer_hold",
-      "rk_fx::RK-321::sunekingudesubureiku"
+      "rk16::RK-321::snaking_death_break"
     ],
     "bp": 4000,
     "sp": "1/3",
@@ -6773,7 +6774,7 @@
     ],
     "expectedDslKeywords": [
       "ride_without_rc_feat_e9ad94e79a87e58a9b",
-      "rk_fx::RK-323::shadouberu"
+      "rk16::RK-323::shadow_veil"
     ],
     "sp": null,
     "size": "S"
@@ -6790,7 +6791,7 @@
     ],
     "expectedDslKeywords": [
       "ride_without_rc_feat_e9ad94e79a87e58a9b",
-      "rk_fx::RK-324::inogaruze"
+      "rk16::RK-324::bron_boost"
     ],
     "sp": null,
     "size": "S"
@@ -6806,8 +6807,8 @@
       "【イクサポッド】"
     ],
     "expectedDslKeywords": [
-      "ride_named_becomes::仮面ライダーイクサBM::SP1",
-      "rk_fx::RK-325::ikusapodo"
+      "rk16::RK-325::ixa_bm_sp1",
+      "rk16::RK-325::ixa_pod"
     ],
     "sp": null,
     "size": "S"
@@ -6823,7 +6824,7 @@
       "【ガルルフエッスル】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-326::garurufuesuru"
+      "rk16::RK-326::fuessle"
     ],
     "bp": 3000,
     "sp": null,
@@ -6840,8 +6841,8 @@
       "【バッシャーフエッスル】"
     ],
     "expectedDslKeywords": [
-      "not_attacked_while_held",
-      "rk_fx::RK-327::bashafuesuru"
+      "rk16::RK-327::not_attacked_while_held",
+      "rk16::RK-327::fuessle"
     ],
     "bp": 3000,
     "sp": null,
@@ -6858,7 +6859,7 @@
       "【ドッガフエッスル】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-328::dogafuesuru"
+      "rk16::RK-328::fuessle"
     ],
     "bp": 4000,
     "sp": null,
@@ -6877,7 +6878,7 @@
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
       "sp1_if_enemy_units_all_s",
-      "rk_fx::RK-329::no_e5b7a8"
+      "rk16::RK-329::giant_press"
     ],
     "bp": 6000,
     "sp": "special",
@@ -6914,7 +6915,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-331::ameijingumaiteikiku"
+      "rk16::RK-331::amazing_mighty_kick"
     ],
     "bp": 5500,
     "sp": "1/3",
@@ -6931,7 +6932,8 @@
       "【叶えたい願いを胸に】"
     ],
     "expectedDslKeywords": [
-      "bp_plus_per_ally_feature_doragon_1000"
+      "rk16::RK-332::dragon_bp",
+      "rk16::RK-332::wish"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -6949,7 +6951,7 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_reanimate_named_from_discard",
-      "destroy_advent_power_sum"
+      "rk16::RK-333::drag_visor_zwei"
     ],
     "bp": 6500,
     "sp": "1/2",
@@ -6966,7 +6968,7 @@
       "【電車斬り】"
     ],
     "expectedDslKeywords": [
-      "note_card::RK-334::koregaerianiarup",
+      "rk16::RK-334::lock",
       "effect_card::RK-334::zan_ri"
     ],
     "bp": 4500,

@@ -5,6 +5,7 @@ import { rk11EffectiveSp } from "../rk/rk11Fields";
 import { rk12EffectiveSp } from "../rk/rk12Fields";
 import { rk14EffectiveSp } from "../rk/rk14Fields";
 import { rk15EffectiveSp } from "../rk/rk15Fields";
+import { rk16EffectiveSp } from "../rk/rk16Fields";
 import { unitFeatures } from "../addedFeatures";
 import { hasUnnamedRule } from "@rangers-strike/cards";
 import { rk5EffectiveSp } from "../rk/rk5Fields";
@@ -269,6 +270,8 @@ export function legend3EffectiveSp(
   sp = rk14EffectiveSp(state, playerId, instance, sp, effectiveBp, unitFeatures);
   // RK-295【頂点に立つ男】・RK-299【ダークライダーキック】の「SP1」（rules/rk/rk15Fields.ts）。
   sp = rk15EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // RK-325 の※（ライドしている「仮面ライダーイクサBM」は「SP1」。rules/rk/rk16Fields.ts）。
+  sp = rk16EffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

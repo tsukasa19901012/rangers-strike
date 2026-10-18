@@ -145,11 +145,11 @@ describe("RK-317 シュードラン", () => {
       EXTRA,
     );
 
-  it.fails("RK-317: 【ポッドバッティング】DA を持つリリース状態の自軍コマンドが2つあれば、モーフの置き換え先を自軍捨札からも選べる（出典: atwiki/page-1389「DAを持つ自軍コマンドを2つ…ホールドしてもよい。そうしたとき、かわりに自軍捨札から選んでもよい」・カード評価「捨札のカードもモーフで置き換えることができる」）", () => {
+  it("RK-317: 【ポッドバッティング】DA を持つリリース状態の自軍コマンドが2つあれば、モーフの置き換え先を自軍捨札からも選べる（出典: atwiki/page-1389「DAを持つ自軍コマンドを2つ…ホールドしてもよい。そうしたとき、かわりに自軍捨札から選んでもよい」・カード評価「捨札のカードもモーフで置き換えることができる」）", () => {
     expect(morphCandidates(pod())).toEqual(["SPEC-TGT:dt"]);
   });
 
-  it.fails("RK-317: 捨札のカードを選ぶと DA のコマンドを2つホールドし、選んだカードと置き換える（置き換えられたユニットは捨札に行く）（出典: atwiki/page-1389・R-KW-MORPH-01）", () => {
+  it("RK-317: 捨札のカードを選ぶと DA のコマンドを2つホールドし、選んだカードと置き換える（置き換えられたユニットは捨札に行く）（出典: atwiki/page-1389・R-KW-MORPH-01）", () => {
     const s = pickAs(pod(), "player1", "SPEC-TGT:dt");
     expect(zoneOf(s, "player1", "SPEC-TGT:dt")).toBe("rush");
     expect(zoneOf(s, "player1", "SPEC-MORPH:m")).toBe("discard");
@@ -157,7 +157,7 @@ describe("RK-317 シュードラン", () => {
     expect(cardIn(s, "player1", "TST-OP-DA:cDA1")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-317: コマンドゾーンの置き換え先を選んだときはホールドしない（捨札から選ぶときだけ）（出典: atwiki/page-1389「ホールドしてもよい。そうしたとき、かわりに」）", () => {
+  it("RK-317: コマンドゾーンの置き換え先を選んだときはホールドしない（捨札から選ぶときだけ）（出典: atwiki/page-1389「ホールドしてもよい。そうしたとき、かわりに」）", () => {
     const s0 = pod({ command: [...releasedCat("DA", 2), inst("SPEC-TGT", "ct")] });
     expect(morphCandidates(s0)).toEqual(["SPEC-TGT:ct", "SPEC-TGT:dt"]);
     const s = pickAs(s0, "player1", "SPEC-TGT:ct");
@@ -169,7 +169,7 @@ describe("RK-317 シュードラン", () => {
     expect(morphCandidates(pod({ command: [...releasedCat("DA", 1), ...releasedCat("WB", 1)] }))).toEqual([]);
   });
 
-  it.fails("RK-317: 自軍エリアに「キャッスルドラン」があれば、DA のコマンド1つで捨札から選べる（出典: atwiki/page-1389「自軍エリアに｢キャッスルドラン｣があれば1つ」）", () => {
+  it("RK-317: 自軍エリアに「キャッスルドラン」があれば、DA のコマンド1つで捨札から選べる（出典: atwiki/page-1389「自軍エリアに｢キャッスルドラン｣があれば1つ」）", () => {
     const s0 = pod({ rush: [inst("RK-317", "sd"), inst("SPEC-MORPH", "m"), inst("RK-238", "cd")], command: releasedCat("DA", 1) });
     expect(morphCandidates(s0)).toEqual(["SPEC-TGT:dt"]);
     const s = pickAs(s0, "player1", "SPEC-TGT:dt");
@@ -202,14 +202,14 @@ describe("RK-318 仮面ライダーイクサSM", () => {
   });
   const fang = (self = inst("RK-318", "sm"), p2: Partial<GameState["players"]["player2"]> = {}) => enter(board({ rush: [self] }, enemy(p2)), self.instanceId);
 
-  it.fails("RK-318: 【ブロウクン・ファング】自軍ターン中に出たとき、敵軍バトルエリアの、敵軍ダメージ（2）以下の必要パワーの S ユニットから1体選ぶ（強制。M・ラッシュエリアは対象外）（出典: atwiki/page-1385「敵軍バトルエリアから敵軍ダメージの点数以下の必要パワーの数字を持つSユニットを1体選び」・カード評価「効果が強制的に発動する」）", () => {
+  it("RK-318: 【ブロウクン・ファング】自軍ターン中に出たとき、敵軍バトルエリアの、敵軍ダメージ（2）以下の必要パワーの S ユニットから1体選ぶ（強制。M・ラッシュエリアは対象外）（出典: atwiki/page-1385「敵軍バトルエリアから敵軍ダメージの点数以下の必要パワーの数字を持つSユニットを1体選び」・カード評価「効果が強制的に発動する」）", () => {
     const s = fang();
     expectChoiceFrom(s, "player1", "RK-318");
     expect(choiceIds(s)).toEqual(["SPEC-C1:a", "SPEC-C2:b"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-318: 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれ、リリース状態のこのユニットはホールドされる（出典: atwiki/page-1385「持ち主のコマンドゾーンにホールド状態で置く」「このユニットがリリース状態ならホールドし」）", () => {
+  it("RK-318: 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれ、リリース状態のこのユニットはホールドされる（出典: atwiki/page-1385「持ち主のコマンドゾーンにホールド状態で置く」「このユニットがリリース状態ならホールドし」）", () => {
     const s = resolveAll(pick(fang(), "SPEC-C2:b"));
     expect(zoneOf(s, "player2", "SPEC-C2:b")).toBe("command");
     expect(cardIn(s, "player2", "SPEC-C2:b")?.commandHeld).toBe(true);
@@ -217,19 +217,19 @@ describe("RK-318 仮面ライダーイクサSM", () => {
     expect(zoneOf(s, "player1", "RK-318:sm")).toBe("battle");
   });
 
-  it.fails("RK-318: ホールド状態で出たときは、置いた後にこのユニットが撃破される（出典: atwiki/page-1385「ホールド状態なら撃破する」）", () => {
+  it("RK-318: ホールド状態で出たときは、置いた後にこのユニットが撃破される（出典: atwiki/page-1385「ホールド状態なら撃破する」）", () => {
     const s = resolveAll(pick(fang(heldUnit("RK-318", "sm")), "SPEC-C1:a"));
     expect(zoneOf(s, "player2", "SPEC-C1:a")).toBe("command");
     expect(zoneOf(s, "player1", "RK-318:sm")).toBe("discard");
   });
 
-  it.fails("RK-318: 敵軍コマンドゾーンが5枚なら選んだユニットは捨札になり、このユニットはホールドされる（出典: atwiki/page-1385「置けなければ捨札にする。そうしたとき」）", () => {
+  it("RK-318: 敵軍コマンドゾーンが5枚なら選んだユニットは捨札になり、このユニットはホールドされる（出典: atwiki/page-1385「置けなければ捨札にする。そうしたとき」）", () => {
     const s = resolveAll(pick(fang(undefined, { command: releasedCat("WB", 5, "ec") }), "SPEC-C1:a"));
     expect(zoneOf(s, "player2", "SPEC-C1:a")).toBe("discard");
     expect(cardIn(s, "player1", "RK-318:sm")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-318: 敵軍ダメージが0なら必要パワー0の S ユニットだけを選べる（出典: atwiki/page-1385「敵軍ダメージの点数以下」）", () => {
+  it("RK-318: 敵軍ダメージが0なら必要パワー0の S ユニットだけを選べる（出典: atwiki/page-1385「敵軍ダメージの点数以下」）", () => {
     const s = fang(undefined, { battle: [inst("SPEC-C0", "z"), inst("SPEC-C1", "a")], power: [], damage: 0 });
     expect(choiceIds(s)).toEqual(["SPEC-C0:z"]);
   });
@@ -261,14 +261,14 @@ describe("RK-319 仮面ライダーイクサBM", () => {
   const deck = () => [inst("SPEC-C2", "d2"), inst("SPEC-C1", "d1"), inst("SPEC-C9", "d9"), inst("SPEC-C3P", "d3p"), inst("SPEC-C4", "d4")];
   const rushedBm = () => rushed(rushPhase({ hand: [inst("RK-319", "bm")], command: [...releasedCat("ET", 1), released("SPEC-C4", "cmd")], power: powerCards(4), deck: deck() }), "RK-319:bm");
 
-  it.fails("RK-319: ※ ラッシュしたとき、自軍コマンドゾーンのカードを1枚選んで捨札にできる（任意）（出典: atwiki/page-1408「自軍コマンドゾーンのカードを１枚選び捨札にしてもよい」）", () => {
+  it("RK-319: ※ ラッシュしたとき、自軍コマンドゾーンのカードを1枚選んで捨札にできる（任意）（出典: atwiki/page-1408「自軍コマンドゾーンのカードを１枚選び捨札にしてもよい」）", () => {
     const s = rushedBm();
     expectChoiceFrom(s, "player1", "RK-319");
     expect(choiceIds(s)).toEqual(["SPEC-C4:cmd", "TST-OP-ET:cET0"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-319: 捨札にすると、自軍山札から必要パワーの数字が1・9・3のカードを選べる（「3+」も数字は3。任意）（出典: atwiki/page-1408「必要パワーの数字が「1」か「9」か「3」のカードを1枚選び…置いてもよい」）", () => {
+  it("RK-319: 捨札にすると、自軍山札から必要パワーの数字が1・9・3のカードを選べる（「3+」も数字は3。任意）（出典: atwiki/page-1408「必要パワーの数字が「1」か「9」か「3」のカードを1枚選び…置いてもよい」）", () => {
     const s = pick(rushedBm(), "SPEC-C4:cmd");
     expect(zoneOf(s, "player1", "SPEC-C4:cmd")).toBe("discard");
     expectChoiceFrom(s, "player1", "RK-319");
@@ -276,14 +276,14 @@ describe("RK-319 仮面ライダーイクサBM", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-319: 選んだカードは自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-1408「自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
+  it("RK-319: 選んだカードは自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-1408「自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
     const s = resolveAll(pick(pick(rushedBm(), "SPEC-C4:cmd"), "SPEC-C9:d9"));
     expect(zoneOf(s, "player1", "SPEC-C9:d9")).toBe("command");
     expect(cardIn(s, "player1", "SPEC-C9:d9")?.commandHeld).toBe(true);
     expect(s.players.player1.deck).toHaveLength(4);
   });
 
-  it.fails("RK-319: 捨札にしなければ何も起きない（出典: atwiki/page-1408「捨札にしてもよい。そうしたとき」）", () => {
+  it("RK-319: 捨札にしなければ何も起きない（出典: atwiki/page-1408「捨札にしてもよい。そうしたとき」）", () => {
     const s = resolveAll(skip(rushedBm()));
     expect(zoneOf(s, "player1", "SPEC-C4:cmd")).toBe("command");
     expect(s.players.player1.deck).toHaveLength(5);
@@ -300,7 +300,7 @@ describe("RK-319 仮面ライダーイクサBM", () => {
       "SPEC-VEHICLE:v",
     );
 
-  it.fails("RK-319: 【イクサ・ジャッジメント】RC — 敵軍バトルエリアの、BP が本来の BP でないユニットから1体選ぶ（強制。ラッシュエリア・本来の BP のユニットは対象外）（出典: atwiki/page-1408「敵軍バトルエリアから、BPが本来のBPでないユニットを１体選び」）", () => {
+  it("RK-319: 【イクサ・ジャッジメント】RC — 敵軍バトルエリアの、BP が本来の BP でないユニットから1体選ぶ（強制。ラッシュエリア・本来の BP のユニットは対象外）（出典: atwiki/page-1408「敵軍バトルエリアから、BPが本来のBPでないユニットを１体選び」）", () => {
     const s = judge();
     expect(bpOf(s, "player2", "RK-332:r1")).toBe(4000);
     expectChoiceFrom(s, "player1", "RK-319");
@@ -349,7 +349,7 @@ describe("RK-320 仮面ライダーライジングイクサ", () => {
 
   const cmd = (...ids: string[]) => ids.map((id, i) => released(id, `k${i}`));
 
-  it.fails("RK-320: ※ 自軍コマンドゾーンにある間、自軍ラッシュフェイズ中に必要パワー1・9・3の自軍コマンドがそれぞれあれば、自軍ラッシュエリアに出せる（必要パワー・ホールド・追加条件は要らない）（出典: atwiki/page-1250「これを自軍ラッシュエリアに出してもよい」・カード評価「必要パワーを無視かつコマンドのホールドや追加条件を満たす必要もない」）", () => {
+  it("RK-320: ※ 自軍コマンドゾーンにある間、自軍ラッシュフェイズ中に必要パワー1・9・3の自軍コマンドがそれぞれあれば、自軍ラッシュエリアに出せる（必要パワー・ホールド・追加条件は要らない）（出典: atwiki/page-1250「これを自軍ラッシュエリアに出してもよい」・カード評価「必要パワーを無視かつコマンドのホールドや追加条件を満たす必要もない」）", () => {
     const s0 = rushPhase({ command: [inst("RK-320", "ri"), ...cmd("SPEC-C1", "SPEC-C9", "SPEC-C3")] });
     expect(canSelfRush(s0, "command", "RK-320:ri")).toBe(true);
     const s = selfRush(s0, "command", "RK-320:ri");
@@ -379,14 +379,14 @@ describe("RK-320 仮面ライダーライジングイクサ", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-320");
   });
 
-  it.fails("RK-320: 2回目のストライクでダメージを受けたとき、これをラッシュエリアに戻すかを選べる（任意）（出典: atwiki/page-1250「これをラッシュエリアに戻してもよい」）", () => {
+  it("RK-320: 2回目のストライクでダメージを受けたとき、これをラッシュエリアに戻すかを選べる（任意）（出典: atwiki/page-1250「これをラッシュエリアに戻してもよい」）", () => {
     const s = struck(struck(blastBoard(), "TST-UNIT-0:s1"), "TST-UNIT-0:s2");
     expect(damageOf(s, "player1")).toBe(2);
     expectChoiceFrom(s, "player1", "RK-320");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-320: 戻すと、敵軍 S ユニット（エリアを問わない。M は対象外）を1体選び、持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-1250「そうしたとき、敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("RK-320: 戻すと、敵軍 S ユニット（エリアを問わない。M は対象外）を1体選び、持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-1250「そうしたとき、敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     let s = accept(struck(struck(blastBoard(), "TST-UNIT-0:s1"), "TST-UNIT-0:s2"));
     expect(zoneOf(s, "player1", "RK-320:ri")).toBe("rush");
     expectChoiceFrom(s, "player1", "RK-320");
@@ -397,7 +397,7 @@ describe("RK-320 仮面ライダーライジングイクサ", () => {
     expect(cardIn(s, "player2", "SPEC-C1:t")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-320: 戻さなければバトルエリアに残り、何も起きない（出典: atwiki/page-1250「戻してもよい。そうしたとき」）", () => {
+  it("RK-320: 戻さなければバトルエリアに残り、何も起きない（出典: atwiki/page-1250「戻してもよい。そうしたとき」）", () => {
     const s = resolveAll(skip(struck(struck(blastBoard(), "TST-UNIT-0:s1"), "TST-UNIT-0:s2")));
     expect(zoneOf(s, "player1", "RK-320:ri")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-C1:t")).toBe("rush");
@@ -446,7 +446,7 @@ describe("RK-321 仮面ライダーサガ", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-321: ホールドすると、敵軍 S ユニットの下のカード（ライドされているビークル・重ねたカード。エリアを問わない。M の下は対象外）から1枚選ぶ（強制）（出典: atwiki/page-1253「敵軍Sユニットの下に重ねたカード（ユニットやビークルとして扱われているものも含む…）を1枚選び」・RK-323 カード評価「ライド中のユニットの天敵である…仮面ライダーサガ」）", () => {
+  it("RK-321: ホールドすると、敵軍 S ユニットの下のカード（ライドされているビークル・重ねたカード。エリアを問わない。M の下は対象外）から1枚選ぶ（強制）（出典: atwiki/page-1253「敵軍Sユニットの下に重ねたカード（ユニットやビークルとして扱われているものも含む…）を1枚選び」・RK-323 カード評価「ライド中のユニットの天敵である…仮面ライダーサガ」）", () => {
     const s = accept(snake());
     expect(cardIn(s, "player1", "RK-321:sg")?.commandHeld).toBe(true);
     expectChoiceFrom(s, "player1", "RK-321");
@@ -454,7 +454,7 @@ describe("RK-321 仮面ライダーサガ", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-321: ライドされているビークルを選ぶと、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれ、ライドしていたユニットは場に残る（出典: atwiki/page-1253「持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("RK-321: ライドされているビークルを選ぶと、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれ、ライドしていたユニットは場に残る（出典: atwiki/page-1253「持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(pick(accept(snake()), "SPEC-VEHICLE:v"));
     expect(zoneOf(s, "player2", "SPEC-VEHICLE:v")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-VEHICLE:v")?.faceDown).toBe(true);
@@ -463,14 +463,14 @@ describe("RK-321 仮面ライダーサガ", () => {
     expect(cardIn(s, "player2", "SPEC-C1:rider")?.mountedOnInstanceId).toBeUndefined();
   });
 
-  it.fails("RK-321: ウラ向きに重ねたカードはウラ向きのまま選べ、ダメージになる（出典: atwiki/page-1253「ウラ向きのカードはウラ向きのまま選ぶ」）", () => {
+  it("RK-321: ウラ向きに重ねたカードはウラ向きのまま選べ、ダメージになる（出典: atwiki/page-1253「ウラ向きのカードはウラ向きのまま選ぶ」）", () => {
     const s = resolveAll(pick(accept(snake()), "TST-OP:fd"));
     expect(zoneOf(s, "player2", "TST-OP:fd")).toBe("power");
     expect(damageOf(s, "player2")).toBe(1);
     expect(cardIn(s, "player2", "SPEC-C2:st")?.stackedCards ?? []).toEqual([]);
   });
 
-  it.fails("RK-321: ホールドしなければ何もしない（出典: atwiki/page-1253「ホールドしてもよい。そうしたとき」）", () => {
+  it("RK-321: ホールドしなければ何もしない（出典: atwiki/page-1253「ホールドしてもよい。そうしたとき」）", () => {
     const s = resolveAll(skip(snake()));
     expect(cardIn(s, "player1", "RK-321:sg")?.commandHeld ?? false).toBe(false);
     expect(damageOf(s, "player2")).toBe(0);

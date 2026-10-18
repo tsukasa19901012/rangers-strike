@@ -29,6 +29,7 @@ import { beginFusionCall, canActivateFusionCall } from "./legend1/set8NamedEffec
 import { STACK_ONTO_LARGE_EFFECT_ID, beginStackOntoLarge, canActivateStackOntoLarge } from "./stackOntoLargeUnit";
 import { isStackOntoLargeCard } from "./stackOntoLargeGrants";
 import { rk14CanHoldSelf, rk14HoldSelf, rk14IsVehicleUnitCard } from "./rk/rk14Fields";
+import { canActivateRk16Fuessle, isRk16FuessleCard, openRk16Fuessle } from "./rk/rk16UnitEffects";
 
 type FieldZone = "rush" | "battle";
 
@@ -442,6 +443,18 @@ ABILITIES.push({
   matches: (cardId) => rk14IsVehicleUnitCard(cardId),
   canActivate: (state, playerId, card) => rk14CanHoldSelf(state, playerId, card),
   resolve: (state, playerId, card) => rk14HoldSelf(state, playerId, card.instanceId),
+});
+
+// RK-326 ガルル獣人態・RK-327 バッシャー獣人態・RK-328 ドッガ怪人態の【フエッスル】「自軍ラッシュフェイズ中、このユニットを捨札にして次の効果を
+// 発動できる⇒…」（atwiki/page-1351・page-1352・page-1353。rules/rk/rk16UnitEffects.ts）。RK-334 があれば効果名を持つテキストなので発動できない。
+ABILITIES.push({
+  cardId: "",
+  effectId: "rk326_fuessle",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  matches: (cardId) => isRk16FuessleCard(cardId),
+  canActivate: (state, playerId, card) => canActivateRk16Fuessle(state, playerId, card),
+  resolve: (state, playerId, card) => openRk16Fuessle(state, playerId, card),
 });
 
 function abilityFor(cardId: string): FieldActivatedAbility | undefined {

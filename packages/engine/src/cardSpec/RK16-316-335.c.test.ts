@@ -179,21 +179,21 @@ describe("RK-331 仮面ライダークウガAM", () => {
   const enemy = { battle: [inst("SPEC-KAIJIN", "a"), inst("SPEC-KAIJIN-M", "m"), inst("SPEC-C1", "p")], rush: [inst("SPEC-KAIJIN", "r")] };
   const kick = () => enter(board({ rush: [inst("RK-331", "am")] }, enemy), "RK-331:am");
 
-  it.fails("RK-331: 【アメイジングマイティキック】自軍ターン中に出たとき、本来の特徴に「怪人」を持つ敵軍ユニット（エリア・サイズを問わない）から1体選べる（任意）（出典: atwiki/page-1245「本来の特徴に「怪人」を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい」・カード評価「怪人をサイズ問わず除去できる」）", () => {
+  it("RK-331: 【アメイジングマイティキック】自軍ターン中に出たとき、本来の特徴に「怪人」を持つ敵軍ユニット（エリア・サイズを問わない）から1体選べる（任意）（出典: atwiki/page-1245「本来の特徴に「怪人」を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい」・カード評価「怪人をサイズ問わず除去できる」）", () => {
     const s = kick();
     expectChoiceFrom(s, "player1", "RK-331");
     expect(choiceIds(s)).toEqual(["SPEC-KAIJIN-M:m", "SPEC-KAIJIN:a", "SPEC-KAIJIN:r"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-331: 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-1245「持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
+  it("RK-331: 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-1245「持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
     const s = resolveAll(pick(kick(), "SPEC-KAIJIN-M:m"));
     expect(zoneOf(s, "player2", "SPEC-KAIJIN-M:m")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-KAIJIN-M:m")?.faceDown).toBe(true);
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RK-331: 選ばなければ何も起きない（出典: atwiki/page-1245「置いてもよい」）", () => {
+  it("RK-331: 選ばなければ何も起きない（出典: atwiki/page-1245「置いてもよい」）", () => {
     const s = resolveAll(skip(kick()));
     expect(damageOf(s, "player2")).toBe(0);
     expect(zoneOf(s, "player2", "SPEC-KAIJIN:a")).toBe("battle");
@@ -217,22 +217,22 @@ describe("RK-332 仮面ライダー龍騎（2nd）", () => {
     expectRarityIn("RK-332", ["R"]);
   });
 
-  it.fails("RK-332: ※ 特徴「ドラゴン」を持つ自軍ユニット（両エリア）1体につき BP+1000（敵軍の「ドラゴン」は数えない）（出典: atwiki/page-1252「これは特徴「ドラゴン」を持つ自軍ユニット1体につきBP+1000される」）", () => {
+  it("RK-332: ※ 特徴「ドラゴン」を持つ自軍ユニット（両エリア）1体につき BP+1000（敵軍の「ドラゴン」は数えない）（出典: atwiki/page-1252「これは特徴「ドラゴン」を持つ自軍ユニット1体につきBP+1000される」）", () => {
     const s = board({ rush: [inst("RK-332", "ry"), inst("SPEC-DRAGON", "d1")], battle: [inst("SPEC-DRAGON", "d2")] }, { battle: [inst("SPEC-DRAGON", "e")] });
     expect(bpOf(s, "player1", "RK-332:ry")).toBe(5000);
   });
 
-  it.fails("RK-332: ※ 「ドラゴン」を持つビークル（RK-325 パワードイクサー）はユニットではないので数えない（出典: atwiki/page-1252「自軍ユニット」・RK-325 カード評価「特徴｢ドラゴン｣を持つが、ビークルなので参照する機会は少ない」）", () => {
+  it("RK-332: ※ 「ドラゴン」を持つビークル（RK-325 パワードイクサー）はユニットではないので数えない（出典: atwiki/page-1252「自軍ユニット」・RK-325 カード評価「特徴｢ドラゴン｣を持つが、ビークルなので参照する機会は少ない」）", () => {
     const s = board({ rush: [inst("RK-332", "ry"), inst("RK-325", "v"), inst("SPEC-DRAGON", "d1")] });
     expect(bpOf(s, "player1", "RK-332:ry")).toBe(4000);
   });
 
-  it.fails("RK-332: 公式Q&A — コマンドゾーンにオモテ向きであるときも BP+1000 は有効（出典: atwiki/page-1252 Q1「公開情報である「ゾーン」及び「捨札」にオモテ向きであるときは常に有効」）", () => {
+  it("RK-332: 公式Q&A — コマンドゾーンにオモテ向きであるときも BP+1000 は有効（出典: atwiki/page-1252 Q1「公開情報である「ゾーン」及び「捨札」にオモテ向きであるときは常に有効」）", () => {
     const s = board({ command: [inst("RK-332", "ry")], rush: [inst("SPEC-DRAGON", "d1")] });
     expect(bpOf(s, "player1", "RK-332:ry")).toBe(4000);
   });
 
-  it.fails("RK-332: 公式Q&A — ウラ向きのとき（ダメージ）はテキストが無効で BP は増えない（出典: atwiki/page-1252 Q1「このカードが「ウラ向き」であるとき…このテキストは無効になり、BPは＋されません」）", () => {
+  it("RK-332: 公式Q&A — ウラ向きのとき（ダメージ）はテキストが無効で BP は増えない（出典: atwiki/page-1252 Q1「このカードが「ウラ向き」であるとき…このテキストは無効になり、BPは＋されません」）", () => {
     const s = board({ power: [faceDown("RK-332", "ry")], rush: [inst("SPEC-DRAGON", "d1")] });
     expect(bpOf(s, "player1", "RK-332:ry")).toBe(3000);
   });
@@ -248,14 +248,14 @@ describe("RK-332 仮面ライダー龍騎（2nd）", () => {
     );
   };
 
-  it.fails("RK-332: 【叶えたい願いを胸に】「ドラゴン」のユニット（必要パワー4）からコンビネーションしたとき、敵軍バトルエリアの必要パワー4以下のユニット（サイズを問わない）から1体選べる（任意）（出典: atwiki/page-1252「これがコンビネーションしているユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する」「発動できる」・コメント欄「こいつの除去サイズ無視か」）", () => {
+  it("RK-332: 【叶えたい願いを胸に】「ドラゴン」のユニット（必要パワー4）からコンビネーションしたとき、敵軍バトルエリアの必要パワー4以下のユニット（サイズを問わない）から1体選べる（任意）（出典: atwiki/page-1252「これがコンビネーションしているユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する」「発動できる」・コメント欄「こいつの除去サイズ無視か」）", () => {
     const s = wish();
     expectChoiceFrom(s, "player1", "RK-332");
     expect(choiceIds(s)).toEqual(["SPEC-C3:c3", "SPEC-C4:c4", "SPEC-M4:m4"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-332: 選んだユニットは撃破される（出典: atwiki/page-1252「撃破する」）", () => {
+  it("RK-332: 選んだユニットは撃破される（出典: atwiki/page-1252「撃破する」）", () => {
     const s = resolveAll(pick(wish(), "SPEC-M4:m4"));
     expect(zoneOf(s, "player2", "SPEC-M4:m4")).toBe("discard");
   });
@@ -290,14 +290,14 @@ describe("RK-333 仮面ライダー龍騎サバイブ", () => {
   const visor = (discard = [inst("SPEC-ADV2", "a2"), inst("SPEC-ADV3", "a3"), inst("SPEC-OP4", "o4")]) =>
     rcRideOff(board({ rush: [inst("RK-333", "sv"), inst("SPEC-VEHICLE", "v")], discard }, enemy), "RK-333:sv", "SPEC-VEHICLE:v");
 
-  it.fails("RK-333: 【ドラグバイザーツバイ】RC — 自軍捨札の特徴「アドベントカード」を持つカードを選べる（任意）（出典: atwiki/page-1243「自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい」）", () => {
+  it("RK-333: 【ドラグバイザーツバイ】RC — 自軍捨札の特徴「アドベントカード」を持つカードを選べる（任意）（出典: atwiki/page-1243「自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい」）", () => {
     const s = visor();
     expectChoiceFrom(s, "player1", "RK-333");
     expect(choiceIds(s)).toEqual(["SPEC-ADV2:a2", "SPEC-ADV3:a3"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-333: 2枚選ぶと必要パワーの合計（5）以下の敵軍ユニット（エリア・サイズを問わない）から1体選び撃破する（強制）。選んだカードは捨札に残る（出典: atwiki/page-1243「その合計以下の必要パワーの数字を持つ敵軍ユニットを1体撃破する」・カード評価「エリア・サイズを問わない」）", () => {
+  it("RK-333: 2枚選ぶと必要パワーの合計（5）以下の敵軍ユニット（エリア・サイズを問わない）から1体選び撃破する（強制）。選んだカードは捨札に残る（出典: atwiki/page-1243「その合計以下の必要パワーの数字を持つ敵軍ユニットを1体撃破する」・カード評価「エリア・サイズを問わない」）", () => {
     let s = pick(pick(visor(), "SPEC-ADV2:a2"), "SPEC-ADV3:a3");
     expectChoiceFrom(s, "player1", "RK-333");
     expect(choiceIds(s)).toEqual(["SPEC-C2:r2", "SPEC-C4:c4", "SPEC-C5:c5", "SPEC-M5:m5"]);
@@ -308,7 +308,7 @@ describe("RK-333 仮面ライダー龍騎サバイブ", () => {
     expect(zoneOf(s, "player1", "SPEC-ADV3:a3")).toBe("discard");
   });
 
-  it.fails("RK-333: 1枚だけ選んで確定してもよい（合計2）（出典: atwiki/page-1243「2枚まで」・コメント欄「「2枚まで」だから1枚でも発動可能」）", () => {
+  it("RK-333: 1枚だけ選んで確定してもよい（合計2）（出典: atwiki/page-1243「2枚まで」・コメント欄「「2枚まで」だから1枚でも発動可能」）", () => {
     const s = confirm(pick(visor(), "SPEC-ADV2:a2"));
     expect(choiceIds(s)).toEqual(["SPEC-C2:r2"]);
   });
@@ -318,7 +318,7 @@ describe("RK-333 仮面ライダー龍騎サバイブ", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-333");
   });
 
-  it.fails("RK-333: 選ばなければ何も起きない（出典: atwiki/page-1243「選んでもよい。そうしたとき」）", () => {
+  it("RK-333: 選ばなければ何も起きない（出典: atwiki/page-1243「選んでもよい。そうしたとき」）", () => {
     const s = resolveAll(skip(visor()));
     expect(zoneOf(s, "player2", "SPEC-C2:r2")).toBe("rush");
   });
@@ -365,7 +365,7 @@ describe("RK-334 仮面ライダー電王LF（2nd）", () => {
     expect(canActivate(s, "RK-326:g", "player2")).toBe(false);
   });
 
-  it.fails("RK-334: ※ 必要パワー3以上のユニットの効果名を持つテキストは発動できる（RK-328 ドッガ怪人態【ドッガフエッスル】）（出典: atwiki/page-1369「必要パワーの数字が2以下のユニットは」）", () => {
+  it("RK-334: ※ 必要パワー3以上のユニットの効果名を持つテキストは発動できる（RK-328 ドッガ怪人態【ドッガフエッスル】）（出典: atwiki/page-1369「必要パワーの数字が2以下のユニットは」）", () => {
     const s = rushPhase({ rush: [inst("RK-334", "lf"), inst("RK-328", "d")], deck: [inst("RK-312", "k")] });
     expect(canActivate(s, "RK-328:d")).toBe(true);
     expect(zoneOf(activate(s, "RK-328:d"), "player1", "RK-328:d")).toBe("discard");

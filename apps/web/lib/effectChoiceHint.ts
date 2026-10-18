@@ -436,6 +436,29 @@ const RK15_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk314_monster_fever: { label: "モンスターフィーバー", hint: "相手に見せる、手札の特徴「魔皇力」を持つ S ユニットのカードを選んでください（その効果をこのユニットの効果として発動します。しないなら「スキップ」）" },
 };
 
+/** ザ・マスクドライダーEXP vol.4 RK-316〜RK-335 のカード固有の選択（engine rules/rk/rk16UnitEffects.ts）の表示名と案内文。 */
+const RK16_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk318_broken_fang: { label: "ブロウクン・ファング", hint: "持ち主のコマンドゾーンにホールド状態で置く、敵軍ダメージの点数以下の必要パワーの敵軍 S ユニットを選んでください" },
+  rk319_command_swap: { label: "イクサBM", hint: "捨札にする自軍コマンドゾーンのカードを選んでください（山札から必要パワー1・9・3のカードを探します。しないなら「スキップ」）" },
+  rk319_deck_search: { label: "イクサBM", hint: "自軍コマンドゾーンにホールド状態で置く、必要パワーの数字が1・9・3のカードを選んでください（しないなら「スキップ」）" },
+  rk319_ixa_judgment: { label: "イクサ・ジャッジメント", hint: "持ち主のコマンドゾーンにホールド状態で置く、BP が本来の BP でない敵軍バトルエリアのユニットを選んでください" },
+  rk320_final_rising_blast: { label: "ファイナルライジングブラスト", hint: "このユニットをラッシュエリアに戻しますか？（敵軍 S ユニットを1体コマンドゾーンに置きます）" },
+  rk320_final_rising_blast_target: { label: "ファイナルライジングブラスト", hint: "持ち主のコマンドゾーンにホールド状態で置く敵軍 S ユニットを選んでください" },
+  rk321_snaking_death_break: { label: "スネーキングデスブレイク", hint: "このユニットをホールドしますか？（敵軍 S ユニットの下のカードを1枚ダメージにします）" },
+  rk321_snaking_death_break_target: { label: "スネーキングデスブレイク", hint: "持ち主のパワーゾーンにダメージにして置く、敵軍 S ユニットの下のカード（ライドされているビークルを含む）を選んでください" },
+  rk323_shadow_veil: { label: "シャドウベール", hint: "ライドしているホールド状態のユニットをリリースしますか？" },
+  rk324_bron_boost: { label: "凄いのが来るぜ！", hint: "撃破したカードを持ち主のパワーゾーンにダメージにして置きますか？" },
+  rk325_ixa_pod_pick: { label: "イクサポッド", hint: "山札の上か下に戻す自軍コマンドゾーンのカードを選んでください（しないなら「スキップ」）" },
+  rk325_ixa_pod_place: { label: "イクサポッド", hint: "選んだカードを山札の上（deck_top）と下（deck_bottom）のどちらに戻すか選んでください" },
+  rk325_ixa_pod_target: { label: "イクサポッド", hint: "持ち主のコマンドゾーンにホールド状態で置く、戻したカードと同じ必要パワーの敵軍 S ユニットを選んでください" },
+  rk326_fuessle: { label: "フエッスル", hint: "自軍ラッシュエリアに出す、山札のキバのカードを選んでください（しないなら「スキップ」）" },
+  rk329_giant_press: { label: "巨体の威圧", hint: "撃破する BP の一番低いユニットを選んでください" },
+  rk331_amazing_mighty_kick: { label: "アメイジングマイティキック", hint: "持ち主のパワーゾーンにダメージにして置く、本来の特徴に「怪人」を持つ敵軍ユニットを選んでください（しないなら「スキップ」）" },
+  rk332_wish: { label: "叶えたい願いを胸に", hint: "撃破する、コンビネーションしたユニットの必要パワー以下の敵軍バトルエリアのユニットを選んでください（しないなら「スキップ」）" },
+  rk333_drag_visor_zwei: { label: "ドラグバイザーツバイ", hint: "自軍捨札の特徴「アドベントカード」を持つカードを2枚まで選んでください（1枚なら確定。しないなら「スキップ」）" },
+  rk333_drag_visor_zwei_target: { label: "ドラグバイザーツバイ", hint: "撃破する、選んだカードの必要パワーの合計以下の敵軍ユニットを選んでください" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -482,7 +505,8 @@ export function effectChoiceHint(
     RK12_CHOICE_UI[pending.effectId] ??
     RK13_CHOICE_UI[pending.effectId] ??
     RK14_CHOICE_UI[pending.effectId] ??
-    RK15_CHOICE_UI[pending.effectId];
+    RK15_CHOICE_UI[pending.effectId] ??
+    RK16_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -690,6 +714,7 @@ export function effectChoiceTitle(
     RK13_CHOICE_UI[pending.effectId]?.label ??
     RK14_CHOICE_UI[pending.effectId]?.label ??
     RK15_CHOICE_UI[pending.effectId]?.label ??
+    RK16_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

@@ -42,11 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-321::sunekingudesubureiku",
-          "duration": "turn"
+          "keyword": "rk16::RK-321::snaking_death_break",
+          "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

@@ -80,8 +80,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-331::ameijingumaiteikiku",
-          "duration": "turn"
+          "keyword": "rk16::RK-331::amazing_mighty_kick",
+          "duration": "permanent"
         }
       ],
       "optional": false

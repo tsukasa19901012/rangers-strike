@@ -27,6 +27,7 @@ import { transformationHindranceNegates } from "./set7NamedEffectsD";
 import { afterEnterBattle, promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
 import { registerOptionalEffect } from "../optionalEffects";
+import { rk16NamedTextNegated } from "../rk/rk16Fields";
 
 type ChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
 type ChoiceSkipper = (state: GameState, playerId: PlayerId) => ChoiceOutcome;
@@ -695,6 +696,8 @@ export function namedTextNegated(state: Pick<GameState, "players" | "definitions
   if (transformationHindranceNegates(state, card)) return true;
   // RS-603 蛮機獣ボンベバンキ【超有毒液化ガス】（本来の特徴に「車両」を持つユニット。rules/legend1/set8NamedEffectsD.ts）。
   if (set8DNamedTextNegated(state, card)) return true;
+  // RK-334 仮面ライダー電王LF（2nd）の※（必要パワーの数字が2以下のユニット。rules/rk/rk16Fields.ts）。
+  if (rk16NamedTextNegated(state, ownerId, card)) return true;
   if (!hasTurnRuleModifier(state.players[opponent(ownerId)], THUNDER_ROAR_RULE)) return false;
   if (getDefinition(state.definitions, card.cardId)?.type !== "unit") return false;
   return unitFeatures(state, ownerId, card).includes("メカ");

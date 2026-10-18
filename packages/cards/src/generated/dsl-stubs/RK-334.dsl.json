@@ -37,10 +37,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::RK-334::koregaerianiarup",
+          "keyword": "rk16::RK-334::lock",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "zan_ri",
