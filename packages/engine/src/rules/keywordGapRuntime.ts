@@ -7,7 +7,8 @@ import { sameCardName } from "../core/cardNames";
  */
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { grantKeywordActiveOnCard } from "./ncGatedEffects";
-import { getDefinition, isSmallUnit } from "../core/catalog";
+import { getDefinition, isSmallUnit, unitEffectiveCategories } from "../core/catalog";
+import { rk1IsSmallNow } from "./rk/rk1Features";
 import { updatePlayer } from "../core/helpers";
 import { cardHasGrantKeyword, listCardGrantKeywords } from "../dsl/promotedKeywordBridge";
 import { applyUnitLeave, openEffectChoice } from "./pendingChoices";
@@ -198,6 +199,17 @@ function handDeployConditionMet(state: GameState, playerId: PlayerId, cardId: st
     if (!Number.isFinite(cost)) return false;
     return state.players[playerId].damage >= cost;
   }
+  // 「MAを持つ敵軍Sユニットがあれば」（RK-197 アントロード。atwiki/page-921）— 敵軍エリアに MA を持つ S ユニットがあるとき。
+  const catEnemy = text.match(/(WB|MA|ET|DA|OT)を持つ敵軍Sユニットがあれば、これを自軍ラッシュエリアに出してもよい/);
+  if (catEnemy?.[1]) {
+    const enemyId: PlayerId = playerId === "player1" ? "player2" : "player1";
+    const enemy = state.players[enemyId];
+    return [...enemy.battle, ...enemy.rush].some((c) => {
+      const d = getDefinition(state.definitions, c.cardId);
+      if (d?.type !== "unit" || !rk1IsSmallNow(state, c)) return false;
+      return unitEffectiveCategories(state, enemyId, c, enemy.battle.some((b) => b.instanceId === c.instanceId) ? "battle" : "rush").includes(catEnemy[1] as never);
+    });
+  }
   // 「自軍「X」があれば」（RK-180 モグラ獣人「自軍「仮面ライダーアマゾン」があれば」。atwiki/page-910）— 自軍エリアにそのカード名のユニット
   // （「これは「X」として使える」を含む）があるとき。
   const named = text.match(/自軍「([^」]+)」があれば/);
@@ -239,6 +251,7 @@ export function applySelfRushFromZone(
 
 import type { PlayerState } from "../types/game";
 import { hasBakiBakiExtraAttack } from "./turnModifierBridge";
+import { markTurnBattleAct } from "./rk/rk10Fields";
 
 /**
  * battleActed 済みでも「アタックとストライクを1度ずつ」持ちなら
@@ -278,7 +291,8 @@ export function markUnitBattleAction(
 ): PlayerState {
   const prev = player.unitActionsThisTurn ?? {};
   return {
-    ...player,
+    // RK-206【望まない争い】のため、そのプレイヤーがこのターンにアタック／ストライクを行ったことも記録する（rules/rk/rk10Fields.ts）。
+    ...markTurnBattleAct(player, action),
     unitActionsThisTurn: {
       ...prev,
       [instanceId]: { ...prev[instanceId], [action === "attack" ? "attacked" : "struck"]: true },

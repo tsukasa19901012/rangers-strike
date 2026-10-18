@@ -191,6 +191,8 @@ export type DeferredPowerFlip = {
   resume: DamagePaymentResume;
   /** ストライクのダメージなら、ウラ返したあとでストライクの処理を終える。 */
   finishStrike: boolean;
+  /** ストライクのダメージのうち、アカネタカ（RK-086）のカード自体をダメージにした点数（ストライク以外の方法のダメージ。RK-204）。 */
+  replacedAmount?: number;
 };
 
 /** ダメージ時に表向きパワーの裏返し対象を選ぶ支払い待ち。 */
@@ -607,6 +609,22 @@ export type PendingEffectChoice = {
   rk7Meta?: Rk7ChoiceMeta;
   /** ライダーEXP vol.2 RK-148〜RK-168 の選択の続き（rules/rk/rk8UnitEffects.ts）。 */
   rk8Meta?: { remaining?: number; picked?: string };
+  /** ザ・マスクドライダーEXP vol.3 RK-190〜RK-210 の選択の続き（rules/rk/rk10UnitEffects.ts）。 */
+  rk10Meta?: {
+    /** RK-201: 効果の持ち主。 */
+    owner?: PlayerId;
+    /** RK-207: 与えるダメージ。 */
+    remaining?: number;
+    /** RK-208: クレインの窓（クレインの持ち主・ラッシュされたユニット）。 */
+    crane?: { craneOwner: PlayerId; rushedOwner: PlayerId; rushedInstanceId: string };
+    /** RK-208: 強制の「ラッシュしたとき」を実行する前に開いた窓。 */
+    preRush?: boolean;
+    /** RK-208: 発動を宣言した（答えた）元の選択と、その答え。 */
+    held?: PendingEffectChoice;
+    heldAction?: unknown;
+  };
+  /** RK-208【迎撃の毒矢】: この選択に答えたら（発動を宣言したら）クレインの窓を開く（rules/rk/rk10UnitEffects.ts）。 */
+  rk10CraneWatch?: { craneOwner: PlayerId; rushedOwner: PlayerId; rushedInstanceId: string };
   /** ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 の選択の続き（rules/rk/rk9UnitEffects.ts）。 */
   rk9Meta?: {
     /** RK-174: 戻した RF のあとに置くプットオン本体。RK-180: 選んだビークル。RK-189: 残りの数。 */
@@ -1052,6 +1070,10 @@ export type GameState = {
   pendingMorph?: PendingMorph;
   /** RK-169・RK-184 の選択を、操作待ちがなくなってから開く（rules/rk/rk9UnitEffects.ts applyRk9AfterAction）。 */
   rk9DeferredChoices?: PendingEffectChoice[];
+  /** RK-195 の選択を、操作待ちがなくなってから開く（rules/rk/rk10UnitEffects.ts applyRk10AfterAction）。 */
+  rk10DeferredChoices?: PendingEffectChoice[];
+  /** 直近のラッシュでホールドしたコマンド（RK-205【フライングアタッカー】。core/applyAction.ts resolve_command_payment が記録）。 */
+  rk10RushPaid?: { instanceId: string; commandIds: string[] };
   /** RK-177【催眠音波】の選択を終えたら、このプレイヤーのラッシュフェイズを終える（core/applyAction.ts）。 */
   rk9RushEndAdvance?: PlayerId;
   /**
@@ -1221,6 +1243,11 @@ export type GameState = {
    * 持ち主は巨大化爆弾を使う（play_counter）か見送る（pass_leave_reaction）。
    */
   pendingGiantBomb?: { ownerId: PlayerId; unitInstanceIds: string[]; phasePlayerId: PlayerId };
+  /**
+   * RS-255 巨大化爆弾: 「怪人」の自軍ユニットが撃破されて捨札になったとき、同時に誘発した効果の選択（例: RK-206 ウルフオルフェノク ※）が
+   * 開いていて窓を開けなかった。選択などが終わったら窓を開く（rules/legend1/set5NamedEffectsA.ts openGiantBombWindow。atwiki/page-207 Q1）。
+   */
+  deferredGiantBomb?: { ownerId: PlayerId; unitInstanceIds: string[]; phasePlayerId: PlayerId };
 };
 
 export type EffectRushTrigger = {
@@ -1304,6 +1331,7 @@ export type TurnEndProgress = {
   rk5Queue?: string[];
   /** ライダーEXP vol.2 RK-148〜RK-168 の「自分がターンを終えるとき」の選択（RK-153）のうち未処理のもの（rules/rk/rk8UnitEffects.ts）。 */
   rk8Queue?: string[];
+  rk10Queue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

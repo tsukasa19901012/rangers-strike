@@ -6,6 +6,7 @@ import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects"
 import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
 import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
 import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
+import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
 import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import { openKuugaStayOnLeave } from "./legend1/otherLinesNamedEffects";
 import {
@@ -1656,6 +1657,8 @@ export function resolveBattlePendingCore(
           withAttacker = rk4OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, refreshedDefenderFound.card, defenderOwner);
           // RK-183【ZOキック】（rules/rk/rk9UnitEffects.ts）。
           withAttacker = rk9OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId);
+          // RK-203【アクセルモード】（rules/rk/rk10UnitEffects.ts）。
+          withAttacker = rk10OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
         }
         withAttacker = drainDeferredDestroyTriggers(withAttacker);
       }
@@ -1769,6 +1772,8 @@ export function resolveBattlePendingCore(
     if (!pending.effectBattle) nextState = rk4OnAttackWin(nextState, attackerId, pending.attackerInstanceId, refreshedDefenderFound.card, defenderOwner);
     // RK-183【ZOキック】: アタックしてバトルに勝つたび、追加でアタックできる（rules/rk/rk9UnitEffects.ts）。
     if (!pending.effectBattle) nextState = rk9OnAttackWin(nextState, attackerId, pending.attackerInstanceId);
+    // RK-203【アクセルモード】: 自軍ターン中、アタックしてバトルに勝ったとき（rules/rk/rk10UnitEffects.ts）。
+    if (!pending.effectBattle) nextState = rk10OnAttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
   } else {
     nextState = markAttackerActed(nextState);
   }

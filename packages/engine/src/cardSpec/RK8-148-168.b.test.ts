@@ -441,7 +441,7 @@ describe("RK-160 シザーズジャガー", () => {
   });
 
   // grnrngr/faq-rider-2 RK-160 Q1「いいえ、できません。…ラッシュに関するすべての処理が終わった時点で、自軍エリアに「RK-160 シザーズジャガー」がユニットとして場に無くてはいけないからです。」（Q の「RK-204 仮面ライダーサイガ」は RK-205 の誤記）
-  it.fails("RK-160: 公式Q&A — 敵軍の仮面ライダーサイガ（RK-205）【フライングアタッカー】でシザーズジャガーがコマンドゾーンに送られたときは発動できない（出典: grnrngr/faq-rider-2 RK-160 Q1・atwiki/page-703 Q1）", () => {
+  it("RK-160: 公式Q&A — 敵軍の仮面ライダーサイガ（RK-205）【フライングアタッカー】でシザーズジャガーがコマンドゾーンに送られたときは発動できない（出典: grnrngr/faq-rider-2 RK-160 Q1・atwiki/page-703 Q1）", () => {
     const OPET5 = { id: "SPEC-OPET5", name: "SPEC-OPET5", type: "operation", category: "ET", rarity: "N", expansion: "card-spec", powerCost: 5 } as never;
     const DA4 = sUnit("SPEC-DA4X", { category: "DA", bp: 1000, powerCost: 4 });
     let s = st(

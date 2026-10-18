@@ -274,6 +274,37 @@ const RK9_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk189_spirit_power: { label: "地空人の精霊パワー", hint: "リリースする自軍コマンドを選んでください（2つまで。やめるなら「スキップ」）" },
 };
 
+/** ザ・マスクドライダーEXP vol.3 RK-190〜RK-210 のカード固有の選択（engine rules/rk/rk10UnitEffects.ts）の表示名と案内文。 */
+const RK10_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk190_fog_mother: { label: "孵化を迎える厄災", hint: "山札をシャッフルして上から2枚をオモテにしますか？" },
+  rk190_fog_mother_pick: { label: "孵化を迎える厄災", hint: "ラッシュエリアに出す、山札のユニットカードを選んでください（カテゴリは1枚目、必要パワーの数字は2枚目と同じ。しないなら「スキップ」）" },
+  rk191_garai_sword: { label: "ガライソード", hint: "これをホールドして、このターン SP1 にしますか？" },
+  rk192_agito_fang: { label: "アギトファング", hint: "バトルする、レジストを持つ敵軍 S ユニットを選んでください（しないなら「スキップ」）" },
+  rk193_balm_needle: { label: "バームニードル", hint: "撃破する、相手の手札1枚につき BP1000 以下の敵軍ユニットを選んでください（しないなら「スキップ」）" },
+  rk194_gx05: { label: "GX-05", hint: "持ち主のコマンドゾーンにホールド状態で置く、敵軍バトルエリアの S ユニットを選んでください" },
+  rk195_g4_hold: { label: "再起動と暴走", hint: "ホールドする、これ以外の自軍 S ユニットを選んでください（敵軍 S ユニットを1体撃破します。しないなら「スキップ」）" },
+  rk195_g4_destroy: { label: "再起動と暴走", hint: "撃破する敵軍 S ユニットを選んでください" },
+  rk196_yomi_pick: { label: "黄泉の鐙", hint: "レジストを持つユニットを選んでください（相手が撃破か1点ダメージかを選びます。しないなら「スキップ」）" },
+  rk196_yomi_answer: { label: "黄泉の鐙", hint: "選ばれたユニットを撃破するか、1点ダメージ（damage）を受けるかを選んでください" },
+  rk198_opponent_draw: { label: "仮面ライダーインペラー", hint: "1枚ドローしますか？" },
+  rk198_drive_divider: { label: "ドライブディバイダー", hint: "発動しますか？（レジストを持たない敵軍 S ユニットを、「レイヨウ型」のユニットの数までホールドします）" },
+  rk198_drive_divider_pick: { label: "ドライブディバイダー", hint: "ホールドする敵軍 S ユニットを選んでください（選び終えたら「確定」）" },
+  rk199_opponent_draw: { label: "ゼール種の統率", hint: "1枚ドローしますか？" },
+  rk200_herd_raid: { label: "群れの襲撃", hint: "ライドオフさせる、ライド中の敵軍 S ユニットを選んでください（選び終えたら「確定」。しないなら「スキップ」）" },
+  rk201_drag_breath_pick: { label: "ドラグブレス", hint: "自分のユニットを1体選んでください（そのユニットの持たないカテゴリを持つ自分の S ユニットを撃破します）" },
+  rk201_drag_breath_destroy: { label: "ドラグブレス", hint: "撃破する自分の S ユニットを選んでください" },
+  rk203_accel_mode: { label: "アクセルモード", hint: "山札の下に戻す、常駐オペレーションに重ねたカードを選んでください（このユニットをラッシュエリアに戻します。しないなら「スキップ」）" },
+  rk204_ogre_strash: { label: "オーガ・ストラッシュ", hint: "ホールドする DA の自軍コマンドを選んでください（相手に1点ダメージを与えます。しないなら「スキップ」）" },
+  rk205_flying_attacker: { label: "フライングアタッカー", hint: "バトルエリアに出しますか？（このターン、アタックもストライクもできません）" },
+  rk205_flying_attacker_pick: { label: "フライングアタッカー", hint: "持ち主のコマンドゾーンにホールド状態で置く、敵軍 S ユニットを選んでください" },
+  rk205_return_hand: { label: "仮面ライダーサイガ", hint: "ラッシュエリアのこれを手札に戻しますか？" },
+  rk207_sorrow_damage: { label: "悲哀と絶望", hint: "相手にダメージを与えます" },
+  rk208_crane_window: { label: "迎撃の毒矢", hint: "これをバトルエリアに出して、相手の「ラッシュしたとき」の効果を無効にしますか？（その後、そのユニットとバトルします）" },
+  rk209_unleashed: { label: "檻から放たれた脅威", hint: "自軍バトルエリアの S ユニットをすべてホールドしますか？（ホールドした数以下の必要パワーの敵軍ユニットをすべて撃破します）" },
+  rk210_burning_shot: { label: "バーニングショット", hint: "相手に見せる手札を3枚選んでください（必要パワーが番号順なら敵軍 S ユニットを1体撃破します。しないなら「スキップ」）" },
+  rk210_burning_shot_destroy: { label: "バーニングショット", hint: "撃破する敵軍 S ユニットを選んでください" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -314,7 +345,8 @@ export function effectChoiceHint(
     RK6_CHOICE_UI[pending.effectId] ??
     RK7_CHOICE_UI[pending.effectId] ??
     RK8_CHOICE_UI[pending.effectId] ??
-    RK9_CHOICE_UI[pending.effectId];
+    RK9_CHOICE_UI[pending.effectId] ??
+    RK10_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -516,6 +548,7 @@ export function effectChoiceTitle(
     RK7_CHOICE_UI[pending.effectId]?.label ??
     RK8_CHOICE_UI[pending.effectId]?.label ??
     RK9_CHOICE_UI[pending.effectId]?.label ??
+    RK10_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

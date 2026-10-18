@@ -118,6 +118,7 @@ import { tryRk6CardEffect } from "../rules/rk/rk6UnitEffects";
 import { tryRk7CardEffect } from "../rules/rk/rk7UnitEffects";
 import { tryRk8CardEffect } from "../rules/rk/rk8UnitEffects";
 import { tryRk9CardEffect } from "../rules/rk/rk9UnitEffects";
+import { tryRk10CardEffect } from "../rules/rk/rk10UnitEffects";
 import { tryOtherLinesCardEffect } from "../rules/legend1/otherLinesNamedEffects";
 import { trySet9BCardEffect } from "../rules/legend1/set9NamedEffectsB";
 import { trySet8BCardEffect } from "../rules/legend1/set8NamedEffectsB";
@@ -443,6 +444,9 @@ export function applyGrantKeyword(
   // ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 のカード固有の効果（`rk9::` キーワード。rules/rk/rk9UnitEffects.ts）。
   const rk9 = tryRk9CardEffect(state, ctx, keyword);
   if (rk9) return rk9;
+  // ザ・マスクドライダーEXP vol.3 RK-190〜RK-210 のカード固有の効果（`rk10::` キーワード。rules/rk/rk10UnitEffects.ts）。
+  const rk10 = tryRk10CardEffect(state, ctx, keyword);
+  if (rk10) return rk10;
   // 第8弾 RS-560〜RS-581 のカード固有の名前付き効果（`set8c::` と一部の既存キーワード。rules/legend1/set8NamedEffectsC.ts）。
   const set8c = trySet8CCardEffect(state, ctx, keyword);
   if (set8c) return set8c;

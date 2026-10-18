@@ -4401,7 +4401,7 @@
       "【孵化を迎える厄災】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-190::woeru"
+      "rk10::RK-190::fog_mother"
     ],
     "bp": 7000,
     "sp": 1,
@@ -4419,7 +4419,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-191::garaisodo"
+      "rk10::RK-191::garai_sword"
     ],
     "bp": 5000,
     "sp": "special",
@@ -4436,7 +4436,7 @@
       "【アギトファング】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-192::agitofuangu"
+      "rk10::RK-192::agito_fang"
     ],
     "bp": 4000,
     "sp": null,
@@ -4453,7 +4453,7 @@
       "【バームニードル】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-193::bamunidoru"
+      "rk10::RK-193::balm_needle"
     ],
     "bp": 2000,
     "sp": null,
@@ -4471,8 +4471,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "not_selectable_ally_rush_sp_blank",
-      "rk_fx::RK-194::gx05"
+      "rk10::RK-194::g3x_protect",
+      "rk10::RK-194::gx05"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -4490,7 +4490,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-195::to_e5868d"
+      "rk10::RK-195::reboot"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -4507,8 +4507,8 @@
       "【黄泉の鐙】"
     ],
     "expectedDslKeywords": [
-      "register",
-      "rk_fx::RK-196::no_e9bb84"
+      "rk10::RK-196::entry_gate",
+      "rk10::RK-196::yomi_no_abumi"
     ],
     "bp": 4000,
     "sp": null,
@@ -4527,7 +4527,7 @@
     "expectedDslKeywords": [
       "deck_unlimited",
       "while_in_hand_rush_deploy::mawotsusyunitogaareba",
-      "rk_fx::RK-197::ou_no"
+      "rk10::RK-197::queen_servant"
     ],
     "bp": 500,
     "sp": null,
@@ -4544,8 +4544,9 @@
       "【ドライブディバイダー】"
     ],
     "expectedDslKeywords": [
+      "rk10::RK-198::opponent_draw",
       "ally_feat_e383ace382a4e383a8e382a6e59e8b_protects_from_enemy_s",
-      "rk_fx::RK-198::doraibudeibaida"
+      "rk10::RK-198::drive_divider"
     ],
     "bp": 1000,
     "sp": "1/2",
@@ -4563,7 +4564,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rk_fx::RK-199::zeruno"
+      "rk10::RK-199::zeru_command"
     ],
     "bp": 3000,
     "sp": null,
@@ -4582,7 +4583,7 @@
     "expectedDslKeywords": [
       "require_command_hold_entry",
       "deck_unlimited",
-      "rk_fx::RK-200::reno_geki"
+      "rk10::RK-200::herd_raid"
     ],
     "bp": 500,
     "sp": "1/2",
@@ -4600,7 +4601,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rk_fx::RK-201::doraguburesu"
+      "rk10::RK-201::drag_breath"
     ],
     "bp": 3000,
     "sp": null,
@@ -4629,7 +4630,7 @@
       "【アクセルモード】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-203::akuserumodo"
+      "rk10::RK-203::accel_mode"
     ],
     "bp": 4500,
     "sp": 1,
@@ -4647,7 +4648,10 @@
     ],
     "bp": 4000,
     "sp": "1/5",
-    "size": "S"
+    "size": "S",
+    "expectedDslKeywords": [
+      "rk10::RK-204::ogre_strash"
+    ]
   },
   {
     "cardId": "RK-205",
@@ -4660,8 +4664,8 @@
       "【フライングアタッカー】"
     ],
     "expectedDslKeywords": [
-      "end_turn_return_hand_from_rush",
-      "rk_fx::RK-205::furainguataka"
+      "rk10::RK-205::return_hand",
+      "rk10::RK-205::flying_attacker"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -4679,7 +4683,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack",
-      "rk_fx::RK-206::manaii"
+      "rk10::RK-206::unwanted_fight"
     ],
     "bp": 6500,
     "sp": "1/3",
@@ -4697,7 +4701,10 @@
     ],
     "bp": 5500,
     "sp": null,
-    "size": "S"
+    "size": "S",
+    "expectedDslKeywords": [
+      "rk10::RK-207::sorrow_despair"
+    ]
   },
   {
     "cardId": "RK-208",
@@ -4710,7 +4717,7 @@
       "【迎撃の毒矢】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-208::geki_no"
+      "rk10::RK-208::crane_arrow"
     ],
     "bp": 4500,
     "sp": null,
@@ -4728,7 +4735,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rk_fx::RK-209::karatareta"
+      "rk10::RK-209::unleashed"
     ],
     "bp": 7500,
     "sp": 1,
@@ -4745,7 +4752,7 @@
       "【バーニングショット】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-210::baningushoto"
+      "rk10::RK-210::burning_shot"
     ],
     "bp": 4500,
     "sp": "1/2",

@@ -17,6 +17,7 @@ import { riddenVehicleGrantsResist } from "./legend1/set7NamedEffectsB";
 import { set8BGrantsResist } from "./legend1/set8NamedEffectsB";
 import { stackOntoLargeGrantsKeyword } from "./stackOntoLargeGrants";
 import { rk9EnemyKeywordsNullified } from "./rk/rk9Fields";
+import { rk10AntlordGrantsResist } from "./rk/rk10Fields";
 
 export function canOfferRegister(
   state: GameState,
@@ -44,6 +45,8 @@ export function canOfferRegister(
   if (riddenVehicleGrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
   // RS-547【守護獣の使徒】: WB を持つ自軍 M ユニットはレジストを得る（rules/legend1/set8NamedEffectsB.ts）。
   if (set8BGrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
+  // RK-197 アントロード【女王の僕】: 特徴「女」を持つユニットはレジストを得る（rules/rk/rk10Fields.ts）。
+  if (rk10AntlordGrantsResist(state, { cardId: pending.leavingCardId })) return true;
   // RS-647 ピヨちゃん【ソウルバード】「このカードに重ねたユニットは、次の能力を得る⇒※レジスト」（rules/stackOntoLargeUnit.ts）。
   const host = state.players[pending.ownerPlayerId].battle.find((c) => c.instanceId === pending.instanceId);
   return !!host && stackOntoLargeGrantsKeyword(host, "register");

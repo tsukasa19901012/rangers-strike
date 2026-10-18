@@ -137,6 +137,8 @@ import { canConfirmRk6Choice, isRk6ChoiceEffect } from "../rules/rk/rk6UnitEffec
 import { canConfirmRk7Choice, isRk7ChoiceEffect } from "../rules/rk/rk7UnitEffects";
 import { canConfirmRk8Choice, isRk8ChoiceEffect } from "../rules/rk/rk8UnitEffects";
 import { canConfirmRk9Choice, isRk9BattleCounterCard, isRk9ChoiceEffect, rk9BattleCounterConditionMet } from "../rules/rk/rk9UnitEffects";
+import { canConfirmRk10Choice, isRk10ChoiceEffect } from "../rules/rk/rk10UnitEffects";
+import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
 import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
 import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
@@ -1278,6 +1280,15 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (isRk10ChoiceEffect(pending.effectId)) {
+    // ザ・マスクドライダーEXP vol.3 RK-190〜RK-210 の選択（rules/rk/rk10UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk10Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
   if (isRk9ChoiceEffect(pending.effectId)) {
     // ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 の選択（rules/rk/rk9UnitEffects.ts）。候補はモジュール側で絞り込み済み。
     for (const instanceId of pending.validInstanceIds) {
@@ -1622,7 +1633,7 @@ function appendBattleEntryActions(
 
   const requiredDefenderId = pending.requiredDefenderInstanceId;
   // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックできない。
-  const attackBlocked = cannotAttack || battleActBlocked(player, unit, "attack");
+  const attackBlocked = cannotAttack || battleActBlocked(player, unit, "attack") || rk10WolfBlocks(state, playerId, "attack");
   const battleDefenders = attackBlocked
     ? []
     : requiredDefenderId
@@ -1676,7 +1687,8 @@ function appendBattleEntryActions(
   if (
     canStrikeUnit(state.definitions, unit, state, playerId) &&
     !requiredDefenderId &&
-    !battleActBlocked(player, unit, "strike")
+    !battleActBlocked(player, unit, "strike") &&
+    !rk10WolfBlocks(state, playerId, "strike")
   ) {
     actions.push({ type: "strike", playerId, instanceId: pending.instanceId });
   }
@@ -2240,6 +2252,7 @@ function getLegalActionsCore(state: GameState): GameAction[] {
       }
       for (const attacker of player.battle) {
         if (battleActBlocked(player, attacker, "attack")) continue;
+        if (rk10WolfBlocks(state, playerId, "attack")) continue;
         if (cannotAttackOrStrikeThisTurn(player, attacker, state, playerId)) continue;
         if (unitCannotInitiateAttack(attacker.cardId)) continue;
         for (const defender of enemy.battle) {
@@ -2298,6 +2311,7 @@ function getLegalActionsCore(state: GameState): GameAction[] {
 
       for (const card of player.battle) {
         if (battleActBlocked(player, card, "strike")) continue;
+        if (rk10WolfBlocks(state, playerId, "strike")) continue;
         if (cannotAttackOrStrikeThisTurn(player, card, state, playerId)) continue;
         if (!canStrikeUnit(state.definitions, card, state, playerId)) continue;
         actions.push({

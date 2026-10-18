@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-195::to_e5868d",
+          "keyword": "rk10::RK-195::reboot",
           "duration": "permanent"
         }
       ],

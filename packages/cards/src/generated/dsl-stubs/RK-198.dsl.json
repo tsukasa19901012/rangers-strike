@@ -27,9 +27,9 @@
       "optional": true,
       "effects": [
         {
-          "type": "draw",
-          "amount": 1,
-          "player": "opponent"
+          "type": "grant_keyword",
+          "keyword": "rk10::RK-198::opponent_draw",
+          "duration": "turn"
         }
       ]
     },
@@ -53,12 +53,12 @@
       "name": "ドライブディバイダー",
       "text": "特徴「レイヨウ型」を持つユニットからコンビネーションしたとき発動できる⇒レジストを持たない敵軍Sユニットを、特徴「レイヨウ型」を持つユニットの数まで選びホールドする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-198::doraibudeibaida",
+          "keyword": "rk10::RK-198::drive_divider",
           "duration": "turn"
         }
       ],

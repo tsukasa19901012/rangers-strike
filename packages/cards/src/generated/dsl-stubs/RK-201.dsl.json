@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-201::doraguburesu",
+          "keyword": "rk10::RK-201::drag_breath",
           "duration": "turn"
         }
       ],

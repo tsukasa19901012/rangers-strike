@@ -1,4 +1,5 @@
 import { openRk8JaguarOnEnemyRush } from "./rk/rk8UnitEffects";
+import { rk10CraneBeforeOnRush, rk10CraneWatch, setRk10OnRushRunner } from "./rk/rk10UnitEffects";
 import { rk1IsSmallNow } from "./rk/rk1Features";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import { openProphecyOnEnemyRush } from "./legend1/set7NamedEffectsC";
@@ -109,6 +110,10 @@ export function applyOnRushUnitEffects(
     rushTriggerOrder?: "super_radar_first" | "self_first";
     /** 「ラッシュされたとき」の誘発（RS-318）もここで処理する（「ラッシュされたとき」の窓を開かない置き換え用）。 */
     includePassiveRushTriggers?: boolean;
+    /** 手札からラッシュされた（RK-208【迎撃の毒矢】の「手札からラッシュされたとき」）。 */
+    fromHandRush?: boolean;
+    /** RK-208 の窓をすでに開いた（見送った後の続き）。 */
+    craneChecked?: boolean;
   } = {},
 ): { state: GameState; logs: string[] } {
   // ルール: R-RUSH-24 — 「このとき出したユニットの効果は発動しない」は、そのユニット自身の
@@ -180,6 +185,14 @@ export function applyOnRushUnitEffects(
   // RS-124 超電子レーダーは applySuperRadarOnRush（下）で1回だけ処理する
   // （residentOps.applyRadarOnRush と二重に適用されてパワーが2枚戻っていた）。
 
+  // RK-208【迎撃の毒矢】: 手札からラッシュされた敵軍ユニットの強制の「ラッシュしたとき」は、実行する前にクレインの窓を開く
+  // （rules/rk/rk10UnitEffects.ts。窓の解決後に、見送ればこの処理をやり直し、出せば自身の効果を止めてやり直す）。
+  const craneOn = !suppressSelf && options.fromHandRush === true && options.craneChecked !== true && zone === "rush";
+  if (craneOn && !nextState.pendingEffectChoice) {
+    const window = rk10CraneBeforeOnRush(nextState, ownerPlayerId, instanceId, found.card.cardId, phasePlayerId);
+    if (window) return { state: window, logs };
+  }
+  const beforeDslRush = nextState;
   const dslRush = suppressSelf
     ? { state: nextState, logs: [] as string[], handled: true }
     : tryResolveDslTriggeredEffects({
@@ -193,6 +206,8 @@ export function applyOnRushUnitEffects(
       });
   nextState = dslRush.state;
   logs.push(...dslRush.logs);
+  // RK-208: 任意の「ラッシュしたとき」の最初の選択に、答えたら（発動を宣言したら）クレインの窓を開く印を付ける。
+  if (craneOn) nextState = rk10CraneWatch(beforeDslRush, nextState, ownerPlayerId, instanceId, found.card.cardId);
   // RS-547【守護獣の使徒】ただし書き: 「ラッシュしたとき」の効果を発動したら、そのユニットをホールドする
   // （rules/legend1/set8NamedEffectsB.ts）。
   if (!suppressSelf && zone === "rush") {
@@ -329,3 +344,9 @@ export function applyPassiveRushTriggers(
   next = openRk8JaguarOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   return { state: next, logs: rsEnemyRush.logs };
 }
+
+// RK-208【迎撃の毒矢】の窓を見送った後に、ラッシュしたときの効果を続ける（rules/rk/rk10UnitEffects.ts runRk10OnRush）。
+setRk10OnRushRunner((state, ownerId, instanceId, phasePlayerId, suppressSelf) => {
+  const result = applyOnRushUnitEffects(state, ownerId, instanceId, phasePlayerId, "rush", { fromHandRush: true, craneChecked: true, suppressSelfEffects: suppressSelf });
+  return { ...result.state, log: [...result.state.log, ...result.logs] };
+});

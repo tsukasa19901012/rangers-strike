@@ -1235,18 +1235,36 @@ function giantBombWindowBlocked(state: GameState): boolean {
 
 /** applyAction の後処理: 敵軍ターン中に「怪人」の自軍ユニットが捨札になり、手札に巨大化爆弾があれば窓を開く。 */
 export function openGiantBombWindow(before: GameState, after: GameState): GameState {
-  if (giantBombWindowBlocked(after) || after.winner) return after;
-  const turnPlayer = after.activePlayer;
+  if (after.winner) return after;
+  // 同時に誘発した効果の選択（例: RK-206 ウルフオルフェノク ※の「仮面ライダーファイズ」を選ぶ）が開いていると activePlayer は選ぶプレイヤー
+  // なので、ターンのプレイヤーはその選択の phasePlayerId から得る（atwiki/page-207 Q1「発動タイミングは同じ」）。
+  const turnPlayer = after.pendingEffectChoice?.phasePlayerId ?? after.activePlayer;
   const ownerId = opponent(turnPlayer);
   const owner = after.players[ownerId];
-  if (!owner.hand.some((c) => c.cardId === GIANT_BOMB_CARD_ID)) return after;
   const prevField = fieldUnits(before, ownerId);
-  const unitIds = owner.discard
-    .filter((c) => hasFeature(after, c.cardId, "怪人"))
-    .filter((c) => prevField.some((p) => p.instanceId === c.instanceId))
-    .map((c) => c.instanceId);
-  if (unitIds.length === 0) return after;
-  return { ...after, pendingGiantBomb: { ownerId, unitInstanceIds: unitIds, phasePlayerId: turnPlayer }, activePlayer: ownerId };
+  const fresh = owner.hand.some((c) => c.cardId === GIANT_BOMB_CARD_ID) && turnPlayer !== ownerId
+    ? owner.discard
+        .filter((c) => hasFeature(after, c.cardId, "怪人"))
+        .filter((c) => prevField.some((p) => p.instanceId === c.instanceId))
+        .map((c) => c.instanceId)
+    : [];
+  const deferred = after.deferredGiantBomb;
+  const deferredIds = deferred
+    ? deferred.unitInstanceIds.filter((id) => after.players[deferred.ownerId].discard.some((c) => c.instanceId === id))
+    : [];
+  if (giantBombWindowBlocked(after)) {
+    // 選択などが開いていて窓を開けない — 終わってから開く（atwiki/page-207 Q1: 巨大化爆弾とウルフオルフェノクの※は同じタイミング）。
+    if (fresh.length === 0 || after.pendingGiantBomb) return after;
+    const ids = deferred?.ownerId === ownerId ? [...new Set([...deferredIds, ...fresh])] : fresh;
+    return { ...after, deferredGiantBomb: { ownerId, unitInstanceIds: ids, phasePlayerId: turnPlayer } };
+  }
+  const cleared: GameState = deferred ? { ...after, deferredGiantBomb: undefined } : after;
+  if (deferred && deferredIds.length > 0 && cleared.players[deferred.ownerId].hand.some((c) => c.cardId === GIANT_BOMB_CARD_ID)) {
+    const ids = deferred.ownerId === ownerId ? [...new Set([...deferredIds, ...fresh])] : deferredIds;
+    return { ...cleared, pendingGiantBomb: { ownerId: deferred.ownerId, unitInstanceIds: ids, phasePlayerId: deferred.phasePlayerId }, activePlayer: deferred.ownerId };
+  }
+  if (fresh.length === 0) return cleared;
+  return { ...cleared, pendingGiantBomb: { ownerId, unitInstanceIds: fresh, phasePlayerId: turnPlayer }, activePlayer: ownerId };
 }
 
 /** 窓を閉じる（使わない）。 */

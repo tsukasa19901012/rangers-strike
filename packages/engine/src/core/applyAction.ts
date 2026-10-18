@@ -3,6 +3,8 @@ import { rk6RecordSnakeSelected } from "../rules/rk/rk6Fields";
 import { rk6SideBasherOnEntry } from "../rules/rk/rk6UnitEffects";
 import { applyRk7AfterAction, openRk7LocustReplace } from "../rules/rk/rk7UnitEffects";
 import { applyRk8AfterAction } from "../rules/rk/rk8UnitEffects";
+import { applyRk10AfterAction, rk10CraneDeclined, rk10CraneIntercept, runRk10OnRush } from "../rules/rk/rk10UnitEffects";
+import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
 import {
   applyRk9AfterAction,
   applyRk9RuriOokami,
@@ -1019,6 +1021,8 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRk8AfterAction(state, next, turnPlayerOf(state));
   // RK-169【グランドストライク】・RK-184【生命維持プール】（rules/rk/rk9UnitEffects.ts）。
   if (applyActionDepth === 0) next = applyRk9AfterAction(state, next, turnPlayerOf(state));
+  // RK-195【再起動と暴走】（rules/rk/rk10UnitEffects.ts）。
+  if (applyActionDepth === 0) next = applyRk10AfterAction(state, next, turnPlayerOf(state));
   // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
   if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
     const endingPlayer = next.rk9RushEndAdvance;
@@ -1646,6 +1650,8 @@ function applyActionCore(
         });
       }
       if (cont.type === "rush") {
+        // RK-205【フライングアタッカー】: 「これをラッシュするためにホールドしたコマンド」を記録する（rules/rk/rk10UnitEffects.ts）。
+        nextState = { ...nextState, rk10RushPaid: { instanceId: pending.sourceInstanceId, commandIds: paidIds } };
         const holdIds =
           pending.kind === "mothership_hold"
             ? paidIds
@@ -2539,6 +2545,7 @@ function applyActionCore(
       const found = findInZone(player, "battle", action.instanceId);
       if (!found) return fail("card_not_in_battle");
       if (battleActBlocked(player, found.card, "strike")) return fail("already_acted");
+      if (rk10WolfBlocks(state, playerId, "strike")) return fail("already_acted");
       if (!canStrikeUnit(state.definitions, found.card, state, playerId)) return fail("insufficient_sp");
 
       const damage = strikeDamageFor(state.definitions, found.card, state, playerId);
@@ -2999,6 +3006,11 @@ function applyActionCore(
     }
 
     case "confirm_effect_choice": {
+      // RK-208【迎撃の毒矢】: 相手が「ラッシュしたとき」の発動を宣言したら、実行する前にクレインの窓を開く（rules/rk/rk10UnitEffects.ts）。
+      {
+        const crane = rk10CraneIntercept(state, playerId, action);
+        if (crane) return ok(crane, buildSimpleLogEntry(playerId, "confirm_effect_choice"));
+      }
       const confirming = state.pendingEffectChoice;
       const result = applyConfirmEffectChoice(state, playerId);
       if ("error" in result) return fail(result.error);
@@ -3021,6 +3033,10 @@ function applyActionCore(
     }
 
     case "resolve_effect_choice": {
+      {
+        const crane = rk10CraneIntercept(state, playerId, action);
+        if (crane) return ok(crane, buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId));
+      }
       // RK-124【人を守る決意】: 効果の対象として「スネークオルフェノク」を選んだことを記録する（rules/rk/rk6Fields.ts）。
       state = rk6RecordSnakeSelected(state, playerId, action.instanceId);
       const pending = state.pendingEffectChoice;
@@ -3138,6 +3154,18 @@ function applyActionCore(
     }
 
     case "skip_effect_choice": {
+      // RK-208【迎撃の毒矢】の窓を見送った: 保留していた答えをそのまま行う／強制の「ラッシュしたとき」を実行する。
+      {
+        const declined = rk10CraneDeclined(state, playerId);
+        if (declined) {
+          if (declined.replay) return applyAction(declined.state, declined.replay);
+          if (declined.runOnRush) {
+            const ran = runRk10OnRush(declined.state, declined.runOnRush.ownerId, declined.runOnRush.instanceId, declined.runOnRush.phasePlayerId);
+            return ok(ran, buildSimpleLogEntry(playerId, "skip_effect_choice"));
+          }
+          return ok(declined.state, buildSimpleLogEntry(playerId, "skip_effect_choice"));
+        }
+      }
       const pending = state.pendingEffectChoice;
       if (pending?.effectId === MOBIL_MISSILE_EFFECT_ID && pending.mobilMissileStrike && pending.playerId === playerId) {
         // 発動しない — ストライクは通常どおり（ほかのストライクへの応答があれば開く）。
@@ -3541,6 +3569,8 @@ function applyActionCore(
         return fail("wing_attack_not_allowed");
       }
       if (!bakiBakiExtra && battleActBlocked(actor, attackerFound.card, "attack")) return fail("already_acted");
+      // RK-206【望まない争い】: このターンにアタックを1度でも行ったら、アタックできない（rules/rk/rk10Fields.ts）。
+      if (rk10WolfBlocks(state, playerId, "attack")) return fail("already_acted");
       if (cannotAttackOrStrikeThisTurn(actor, attackerFound.card)) {
         return fail("cannot_attack_turn_rushed");
       }

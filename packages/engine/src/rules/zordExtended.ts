@@ -45,6 +45,16 @@ function matchesPartnerName(def: CardDefinition | undefined, partnerName: string
   return normalizeName(def.name).includes(normalizeName(partnerName));
 }
 
+/**
+ * 「自軍「A」「B」「C」をそれぞれ1体ずつ自分の手札に戻す」（RK-190 フォッグマザー。atwiki/page-911）— 名前ごとに1体ずつ要る。
+ * 「それぞれ」がなければ undefined（従来どおり partnerName の1体）。
+ */
+function eachNamedPartners(condition: RushAdditionalCondition): string[] | undefined {
+  if (condition.conditionId !== "return_named_to_hand" || !condition.text?.includes("それぞれ")) return undefined;
+  const names = [...condition.text.matchAll(/「([^」]+)」/g)].map((m) => m[1]!).filter(Boolean);
+  return names.length > 1 ? names : undefined;
+}
+
 function resolveCondition(
   definitions: Record<string, CardDefinition>,
   rushingCardId: string,
@@ -355,12 +365,12 @@ export function isValidExtendedZordMaterial(
         (zone === "rush" || zone === "battle") &&
         isValidCategoryLUnit(definitions, card, condition.requiredCategory)
       );
-    case "return_named_to_hand":
-      return (
-        (zone === "rush" || zone === "battle") &&
-        !!condition.partnerName &&
-        matchesPartnerName(def, condition.partnerName)
-      );
+    case "return_named_to_hand": {
+      if (zone !== "rush" && zone !== "battle") return false;
+      const each = eachNamedPartners(condition);
+      if (each) return each.some((name) => normalizeName(def.name) === normalizeName(name));
+      return !!condition.partnerName && matchesPartnerName(def, condition.partnerName);
+    }
     default:
       return false;
   }
@@ -457,6 +467,17 @@ export function listExtendedZordRushVariants(
     return [{ zordMaterialInstanceIds: materials.map((m) => m.card.instanceId) }];
   }
 
+  const each = eachNamedPartners(condition);
+  if (each) {
+    // 名前ごとに1体ずつ選ぶ組み合わせ（同じカードを2つの名前に使わない）。
+    let sets: string[][] = [[]];
+    for (const name of each) {
+      const options = materials.filter((m) => normalizeName(getDefinition(definitions, m.card.cardId)?.name ?? "") === normalizeName(name));
+      sets = sets.flatMap((set) => options.filter((m) => !set.includes(m.card.instanceId)).map((m) => [...set, m.card.instanceId]));
+    }
+    return sets.map((ids) => ({ zordMaterialInstanceIds: ids }));
+  }
+
   const needed = condition.unitCount ?? 1;
   if (needed === 1) {
     return materials.map((material) => ({
@@ -539,6 +560,17 @@ export function validateExtendedZordPayment(
     if (faceUp.length === 0) return false;
     const ids = new Set(materialInstanceIds);
     return faceUp.every((card) => ids.has(card.instanceId)) && ids.size === faceUp.length;
+  }
+
+  const each = eachNamedPartners(condition);
+  if (each) {
+    // 名前ごとにちょうど1体ずつ（RK-190）。
+    if (materialInstanceIds.length !== each.length || new Set(materialInstanceIds).size !== each.length) return false;
+    const names = materialInstanceIds.map((id) => {
+      const m = findExtendedMaterial(player, definitions, rushingCardId, rushingInstanceId, id);
+      return m ? normalizeName(getDefinition(definitions, m.card.cardId)?.name ?? "") : null;
+    });
+    return each.every((name) => names.includes(normalizeName(name)));
   }
 
   const needed = condition.unitCount ?? 1;

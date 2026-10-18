@@ -46,7 +46,7 @@ import {
   released,
   releasedCat,
   resolveAll,
-  rushFromHand,
+  rushVia,
   rushed,
   settle,
   skip,
@@ -89,11 +89,16 @@ describe("RK-190 フォッグマザー", () => {
   });
 
   const MATS = [inst("RK-191", "ga"), inst("RK-192", "ag"), inst("RK-193", "zu")];
+  /** 追加条件の支払い（3体を手札に戻す）の合法手。 */
+  const allThree = (a: Record<string, unknown>) => {
+    const ids = (a.zordMaterialInstanceIds as string[] | undefined) ?? [];
+    return ["RK-191:ga", "RK-192:ag", "RK-193:zu"].every((id) => ids.includes(id));
+  };
   const rushBoard = (rush = MATS, deck = deckCards(5), power = 5) =>
     rushPhase({ hand: [inst("RK-190", "fm")], rush, command: releasedCat("DA", 1), power: powerCards(power), deck });
 
-  it.fails("RK-190: 追加条件 — 自軍「ガライ」「アギト」「ズー」をそれぞれ1体ずつ手札に戻し、パワー5でラッシュできる（出典: atwiki/page-911「追加条件：自軍「ガライ」「アギト」「ズー」をそれぞれ1体ずつ自分の手札に戻す」「必要パワー：5+」）", () => {
-    const r = rushFromHand(rushBoard(), "player1", "RK-190:fm", { materials: ["RK-191:ga", "RK-192:ag", "RK-193:zu"] });
+  it("RK-190: 追加条件 — 自軍「ガライ」「アギト」「ズー」をそれぞれ1体ずつ手札に戻し、パワー5でラッシュできる（出典: atwiki/page-911「追加条件：自軍「ガライ」「アギト」「ズー」をそれぞれ1体ずつ自分の手札に戻す」「必要パワー：5+」）", () => {
+    const r = rushVia(rushBoard(), "player1", "RK-190:fm", allThree);
     expect(r.ok, r.error).toBe(true);
     const s = r.state;
     expect(zoneOf(s, "player1", "RK-190:fm")).toBe("rush");
@@ -102,7 +107,7 @@ describe("RK-190 フォッグマザー", () => {
     expect(zoneOf(s, "player1", "RK-193:zu")).toBe("hand");
   });
 
-  it.fails("RK-190: 3体のうち1体でも欠けていればラッシュできない（出典: atwiki/page-911「それぞれ1体ずつ」）", () => {
+  it("RK-190: 3体のうち1体でも欠けていればラッシュできない（出典: atwiki/page-911「それぞれ1体ずつ」）", () => {
     expect(canStartRush(rushBoard([inst("RK-191", "ga"), inst("RK-192", "ag")]), "player1", "RK-190:fm")).toBe(false);
   });
 
@@ -111,18 +116,22 @@ describe("RK-190 フォッグマザー", () => {
   });
 
   /** 追加条件を満たしてラッシュした直後（【孵化を迎える厄災】の確認が開いている）。 */
-  const afterRush = (deck: ReturnType<typeof inst>[]) => rushed(rushBoard(MATS, deck), "RK-190:fm", "player1", ["RK-191:ga", "RK-192:ag", "RK-193:zu"]);
+  const afterRush = (deck: ReturnType<typeof inst>[]) => {
+    const r = rushVia(rushBoard(MATS, deck), "player1", "RK-190:fm", allThree);
+    expect(r.ok, r.error).toBe(true);
+    return r.state;
+  };
   const revealed = (s: GameState) => s.pendingEffectChoice?.viewedInstanceIds ?? [];
   const catOf = (s: GameState, id: string) => [s.definitions[id.split(":")[0]!]?.category].flat().join("+");
   const costNum = (s: GameState, id: string) => String(s.definitions[id.split(":")[0]!]?.powerCost ?? "").replace(/[+-]/g, "");
 
-  it.fails("RK-190: 【孵化を迎える厄災】ラッシュしたとき、発動するかを選べる（任意）（出典: atwiki/page-911「次の効果を発動できる」）", () => {
+  it("RK-190: 【孵化を迎える厄災】ラッシュしたとき、発動するかを選べる（任意）（出典: atwiki/page-911「次の効果を発動できる」）", () => {
     const s = afterRush([inst("SPEC-DA3", "d0"), inst("SPEC-DA3", "d1"), inst("SPEC-DA3", "d2")]);
     expectChoiceFrom(s, "player1", "RK-190");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-190: 山札の上から2枚をオモテにし、山札から「カテゴリが1枚目と同じ・必要パワーの数字が2枚目と同じ」ユニットカードを選べる（オモテにした2枚は選べない。任意）（出典: atwiki/page-911・カード評価「効果でオモテにしたカードは効果でラッシュするユニットに選択できない」・コメント欄「山札に戻すのはラッシュ後だから不可」）", () => {
+  it("RK-190: 山札の上から2枚をオモテにし、山札から「カテゴリが1枚目と同じ・必要パワーの数字が2枚目と同じ」ユニットカードを選べる（オモテにした2枚は選べない。任意）（出典: atwiki/page-911・カード評価「効果でオモテにしたカードは効果でラッシュするユニットに選択できない」・コメント欄「山札に戻すのはラッシュ後だから不可」）", () => {
     const deck = [inst("SPEC-DA3", "a0"), inst("SPEC-DA3", "a1"), inst("SPEC-WB3", "w0"), inst("SPEC-WB3", "w1"), inst("SPEC-DA2", "b0"), inst("SPEC-DA2", "b1")];
     const s = accept(afterRush(deck));
     const shown = revealed(s);
@@ -140,7 +149,7 @@ describe("RK-190 フォッグマザー", () => {
     }
   });
 
-  it.fails("RK-190: 選んだユニットカードはラッシュエリアに出て、オモテにしたカードは山札に戻る（出典: atwiki/page-911「ラッシュエリアに出してもよい」「その後、オモテにしたカードは山札に戻してシャッフルする」）", () => {
+  it("RK-190: 選んだユニットカードはラッシュエリアに出て、オモテにしたカードは山札に戻る（出典: atwiki/page-911「ラッシュエリアに出してもよい」「その後、オモテにしたカードは山札に戻してシャッフルする」）", () => {
     const deck = [inst("SPEC-DA3", "d0"), inst("SPEC-DA3", "d1"), inst("SPEC-DA3", "d2"), inst("SPEC-DA3", "d3")];
     let s = accept(afterRush(deck));
     const shown = revealed(s);
@@ -152,7 +161,7 @@ describe("RK-190 フォッグマザー", () => {
     for (const id of shown) expect(zoneOf(s, "player1", id)).toBe("deck");
   });
 
-  it.fails("RK-190: オペレーションのカードは選べない（出典: atwiki/page-911「ユニットカードを1枚選び」）", () => {
+  it("RK-190: オペレーションのカードは選べない（出典: atwiki/page-911「ユニットカードを1枚選び」）", () => {
     const deck = [inst("SPEC-OPDA3", "o0"), inst("SPEC-OPDA3", "o1"), inst("SPEC-OPDA3", "o2"), inst("SPEC-OPDA3", "o3")];
     const s = settle(accept(afterRush(deck)));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-190");
@@ -160,7 +169,7 @@ describe("RK-190 フォッグマザー", () => {
     expect(s.players.player1.rush.map((c) => c.instanceId)).toEqual(["RK-190:fm"]);
   });
 
-  it.fails("RK-190: 発動しなければ山札は変わらない（出典: atwiki/page-911「発動できる」）", () => {
+  it("RK-190: 発動しなければ山札は変わらない（出典: atwiki/page-911「発動できる」）", () => {
     const deck = [inst("SPEC-DA3", "d0"), inst("SPEC-DA3", "d1"), inst("SPEC-DA3", "d2")];
     let s = afterRush(deck);
     if (s.pendingEffectChoice?.sourceCardId === "RK-190") s = skip(s);
@@ -170,7 +179,7 @@ describe("RK-190 フォッグマザー", () => {
   });
 
   // atwiki/page-911 Q1「はい、発動できます。効果によってユニットカードがラッシュエリア（またはバトルエリア）に出る場合も、ラッシュしたときの効果を発動することができます。」
-  it.fails("RK-190: 公式Q&A — 効果で山札から出した2体目のフォッグマザーも【孵化を迎える厄災】を発動できる（出典: atwiki/page-911 Q1）", () => {
+  it("RK-190: 公式Q&A — 効果で山札から出した2体目のフォッグマザーも【孵化を迎える厄災】を発動できる（出典: atwiki/page-911 Q1）", () => {
     const deck = [inst("RK-190", "d0"), inst("RK-190", "d1"), inst("RK-190", "d2"), inst("RK-190", "d3")];
     let s = accept(afterRush(deck));
     expect(choiceIds(s)).toHaveLength(2);
@@ -209,7 +218,7 @@ describe("RK-191 ガライ", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-191: ホールドすると、このターン SP1 になり、ホールド状態のままバトルエリアに出てストライクできる（出典: atwiki/page-917「そうしたとき、このターン、これはSP1になる」・カード評価「ラッシュしたターンのみだがSP1になれる」・R-HOLD-03）", () => {
+  it("RK-191: ホールドすると、このターン SP1 になり、ホールド状態のままバトルエリアに出てストライクできる（出典: atwiki/page-917「そうしたとき、このターン、これはSP1になる」・カード評価「ラッシュしたターンのみだがSP1になれる」・R-HOLD-03）", () => {
     let s = settle(accept(afterRush()));
     expect(cardIn(s, "player1", "RK-191:ga")?.commandHeld).toBe(true);
     s = toPhase(s, "player1", "battle");
@@ -252,7 +261,7 @@ describe("RK-192 アギト", () => {
   const afterRush = (p2: Partial<GameState["players"]["player2"]>, p1: Partial<GameState["players"]["player1"]> = {}) =>
     rushed(rushPhase({ hand: [inst("RK-192", "ag")], command: releasedCat("DA", 1), power: powerCards(3), ...p1 }, p2), "RK-192:ag");
 
-  it.fails("RK-192: 【アギトファング】レジストを持つ敵軍 S ユニットだけから1体選べる（ラッシュエリアも含む。レジストを持たない・M・自軍のユニットは対象外。任意）（出典: atwiki/page-918「レジストを持つ敵軍Sユニットを1体選んでもよい」）", () => {
+  it("RK-192: 【アギトファング】レジストを持つ敵軍 S ユニットだけから1体選べる（ラッシュエリアも含む。レジストを持たない・M・自軍のユニットは対象外。任意）（出典: atwiki/page-918「レジストを持つ敵軍Sユニットを1体選んでもよい」）", () => {
     const s = afterRush(
       { battle: [inst("RK-194", "g3"), inst("TST-UNIT-0", "plain"), inst("SPEC-RESIST-M", "m")], rush: [inst("RK-191", "ga")] },
       { rush: [inst("SPEC-RESIST1", "mine")] },
@@ -262,13 +271,13 @@ describe("RK-192 アギト", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-192: 選んだユニットとバトルする — BP の高い相手（ガライ BP5000）に負ければアギトが撃破される（出典: atwiki/page-918「そのユニットとこのユニットでバトルする」）", () => {
+  it("RK-192: 選んだユニットとバトルする — BP の高い相手（ガライ BP5000）に負ければアギトが撃破される（出典: atwiki/page-918「そのユニットとこのユニットでバトルする」）", () => {
     const s = resolveAll(pick(afterRush({ rush: [inst("RK-191", "ga")] }), "RK-191:ga"));
     expect(zoneOf(s, "player1", "RK-192:ag")).toBe("discard");
     expect(zoneOf(s, "player2", "RK-191:ga")).toBe("rush");
   });
 
-  it.fails("RK-192: BP の低い相手（G3-X BP2000）とのバトルに勝てば、相手は撃破される（出典: atwiki/page-918・カード評価「ラッシュ時にレジスト持ちとバトルする」）", () => {
+  it("RK-192: BP の低い相手（G3-X BP2000）とのバトルに勝てば、相手は撃破される（出典: atwiki/page-918・カード評価「ラッシュ時にレジスト持ちとバトルする」）", () => {
     const s = resolveAll(pick(afterRush({ battle: [inst("RK-194", "g3")] }), "RK-194:g3"));
     expect(zoneOf(s, "player1", "RK-192:ag")).toBe("rush");
     expect(cardIn(s, "player2", "RK-194:g3")?.commandHeld || zoneOf(s, "player2", "RK-194:g3") === "discard").toBe(true);
@@ -298,19 +307,19 @@ describe("RK-193 ズー", () => {
   const afterRush = (p2: Partial<GameState["players"]["player2"]>) =>
     rushed(rushPhase({ hand: [inst("RK-193", "zu")], command: releasedCat("DA", 1), power: powerCards(4) }, p2), "RK-193:zu");
 
-  it.fails("RK-193: 【バームニードル】相手の手札3枚なら BP3000 以下の敵軍ユニットから1体選べる（サイズ・エリアを問わない。任意）（出典: atwiki/page-919「相手の手札の枚数分のBPを計算し、そのBP以下の敵軍ユニットを1体選び撃破してもよい」・コメント欄「サイズもエリアも関係なしに」）", () => {
+  it("RK-193: 【バームニードル】相手の手札3枚なら BP3000 以下の敵軍ユニットから1体選べる（サイズ・エリアを問わない。任意）（出典: atwiki/page-919「相手の手札の枚数分のBPを計算し、そのBP以下の敵軍ユニットを1体選び撃破してもよい」・コメント欄「サイズもエリアも関係なしに」）", () => {
     const s = afterRush({ hand: enemyHand(3), battle: [inst("SPEC-E3000", "a"), inst("SPEC-E3500", "b"), inst("SPEC-L3000", "l")], rush: [inst("SPEC-E2000", "r")] });
     expectChoiceFrom(s, "player1", "RK-193");
     expect(choiceIds(s)).toEqual(["SPEC-E2000:r", "SPEC-E3000:a", "SPEC-L3000:l"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-193: 選んだユニットを撃破する（出典: atwiki/page-919「撃破してもよい」）", () => {
+  it("RK-193: 選んだユニットを撃破する（出典: atwiki/page-919「撃破してもよい」）", () => {
     const s = resolveAll(pick(afterRush({ hand: enemyHand(3), battle: [inst("SPEC-L3000", "l")] }), "SPEC-L3000:l"));
     expect(zoneOf(s, "player2", "SPEC-L3000:l")).toBe("discard");
   });
 
-  it.fails("RK-193: 相手の手札が0枚なら選べるユニットはない（出典: atwiki/page-919「相手の手札の枚数分のBP」）", () => {
+  it("RK-193: 相手の手札が0枚なら選べるユニットはない（出典: atwiki/page-919「相手の手札の枚数分のBP」）", () => {
     const s = settle(afterRush({ hand: [], battle: [inst("SPEC-E2000", "a")] }));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-193");
     expect(zoneOf(s, "player2", "SPEC-E2000:a")).toBe("battle");
@@ -347,7 +356,7 @@ describe("RK-194 仮面ライダーG3-X", () => {
     return act(s, { type: "move_to_battle", playerId: "player2", instanceId: "RS-687:gg" });
   };
 
-  it.fails("RK-194: ※ 自軍エリアにある間、自軍ラッシュエリアの SP が空欄のユニットは相手の効果で選ばれない（SP のあるユニットは選ばれる）（出典: atwiki/page-999「自軍ラッシュエリアのSPが空欄のユニットは相手に選ばれない」・カード評価「あくまで「選ばれない」だけ」）", () => {
+  it("RK-194: ※ 自軍エリアにある間、自軍ラッシュエリアの SP が空欄のユニットは相手の効果で選ばれない（SP のあるユニットは選ばれる）（出典: atwiki/page-999「自軍ラッシュエリアのSPが空欄のユニットは相手に選ばれない」・カード評価「あくまで「選ばれない」だけ」）", () => {
     const s = gingaioh({ battle: [inst("RK-194", "g3")], rush: [inst("SPEC-NOSP", "n"), inst("TST-UNIT-0", "u")] });
     expectChoiceFrom(s, "player2", "RS-687");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:u"]);
@@ -362,7 +371,7 @@ describe("RK-194 仮面ライダーG3-X", () => {
   const rc = (held: number, p2: Partial<GameState["players"]["player2"]> = enemy) =>
     rcRideOff(battlePhase({ rush: [inst("RK-194", "g3"), inst("SPEC-VEHICLE", "v"), ...Array.from({ length: held }, (_, i) => heldUnit("TST-UNIT-0", `h${i}`))] }, p2), "RK-194:g3", "SPEC-VEHICLE:v");
 
-  it.fails("RK-194: RC【GX-05】ホールド状態の自軍ユニットの数（2）以下の必要パワーを持つ、敵軍バトルエリアの S ユニットから1体選ぶ（ラッシュエリア・M は対象外）（出典: atwiki/page-999「その数以下の必要パワーの数字を持つSユニットを敵軍バトルエリアから1体選び」）", () => {
+  it("RK-194: RC【GX-05】ホールド状態の自軍ユニットの数（2）以下の必要パワーを持つ、敵軍バトルエリアの S ユニットから1体選ぶ（ラッシュエリア・M は対象外）（出典: atwiki/page-999「その数以下の必要パワーの数字を持つSユニットを敵軍バトルエリアから1体選び」）", () => {
     const s = rc(2, { battle: [inst("SPEC-C1", "a"), inst("SPEC-E2000", "two"), inst("SPEC-C3", "b"), inst("SPEC-M1", "m")], rush: [inst("SPEC-C1", "r")] });
     expectChoiceFrom(s, "player1", "RK-194");
     expect(choiceIds(s)).toEqual(["SPEC-C1:a", "SPEC-E2000:two"]);
@@ -374,13 +383,13 @@ describe("RK-194 仮面ライダーG3-X", () => {
     expect(cardIn(s, "player2", "SPEC-C1:a")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-194: RC【GX-05】ホールド状態の自軍ユニットがなければ選べるユニットはない（出典: atwiki/page-999「ホールド状態の自軍ユニットの数を数えて」）", () => {
+  it("RK-194: RC【GX-05】ホールド状態の自軍ユニットがなければ選べるユニットはない（出典: atwiki/page-999「ホールド状態の自軍ユニットの数を数えて」）", () => {
     const s = settle(rc(0));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-194");
     expect(zoneOf(s, "player2", "SPEC-C1:a")).toBe("battle");
   });
 
-  it.fails("RK-194: RC【GX-05】敵軍コマンドゾーンが満杯で置けなければ発動できない（出典: atwiki/page-999「置けなければこの効果は発動できない」）", () => {
+  it("RK-194: RC【GX-05】敵軍コマンドゾーンが満杯で置けなければ発動できない（出典: atwiki/page-999「置けなければこの効果は発動できない」）", () => {
     const full = Array.from({ length: COMMAND_ZONE_MAX }, (_, i) => released("TST-OP", `ec${i}`));
     const s = settle(rc(2, { ...enemy, command: full }));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-194");
@@ -415,7 +424,7 @@ describe("RK-195 仮面ライダーG4", () => {
     return settle(s);
   };
 
-  it.fails("RK-195: 【再起動と暴走】ホールド状態からリリース状態になったとき、これ以外の自軍 S ユニットを1体選びホールドするかを選べる（M・G4 自身は対象外。任意）（出典: atwiki/page-957「これ以外の自軍Sユニットを1体選びホールドしても良い」）", () => {
+  it("RK-195: 【再起動と暴走】ホールド状態からリリース状態になったとき、これ以外の自軍 S ユニットを1体選びホールドするかを選べる（M・G4 自身は対象外。任意）（出典: atwiki/page-957「これ以外の自軍Sユニットを1体選びホールドしても良い」）", () => {
     const s = released4();
     expect(cardIn(s, "player1", "RK-195:g4")?.commandHeld ?? false).toBe(false);
     expectChoiceFrom(s, "player1", "RK-195");
@@ -423,7 +432,7 @@ describe("RK-195 仮面ライダーG4", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-195: ホールドしたとき、敵軍 S ユニットを1体選び撃破する（エリアを問わない。M・L は対象外）（出典: atwiki/page-957「そうしたとき、敵軍Sユニットを1体選び撃破する」・カード評価「エリアを選ばずSユニットならば特に条件もなく除去できる」）", () => {
+  it("RK-195: ホールドしたとき、敵軍 S ユニットを1体選び撃破する（エリアを問わない。M・L は対象外）（出典: atwiki/page-957「そうしたとき、敵軍Sユニットを1体選び撃破する」・カード評価「エリアを選ばずSユニットならば特に条件もなく除去できる」）", () => {
     let s = pick(released4(), "TST-UNIT-0:mine");
     expect(cardIn(s, "player1", "TST-UNIT-0:mine")?.commandHeld).toBe(true);
     expectChoiceFrom(s, "player1", "RK-195");
@@ -452,7 +461,11 @@ describe("RK-196 クイーンアントロード", () => {
     expectRarityIn("RK-196", ["NR"]);
   });
 
-  it.fails("RK-196: ※ レジストを持つ敵軍ユニットがなければバトルエリアに出られない（自軍のレジスト持ちは数えない）（出典: atwiki/page-920「レジストを持つ敵軍ユニットがなければ、これはバトルエリアに出られない」）", () => {
+  it("RK-196: レジストは持たない（「※レジストを持つ敵軍ユニットがなければ…」はレジストの表記ではない）（出典: atwiki/page-920 本文・docs/rules/07-keywords.md R-KW-00）", () => {
+    expect(registerOffered(attackUntilRegister({ battle: [inst("RK-196", "q")] }, "RK-196:q"))).toBe(false);
+  });
+
+  it("RK-196: ※ レジストを持つ敵軍ユニットがなければバトルエリアに出られない（自軍のレジスト持ちは数えない）（出典: atwiki/page-920「レジストを持つ敵軍ユニットがなければ、これはバトルエリアに出られない」）", () => {
     expect(canEnter(battlePhase({ rush: [inst("RK-196", "q"), inst("SPEC-RESIST1", "mine")] }, { battle: [inst("TST-UNIT-0", "e")] }), "RK-196:q")).toBe(false);
   });
 
@@ -463,27 +476,27 @@ describe("RK-196 クイーンアントロード", () => {
   const entered = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = { battle: [inst("SPEC-RESIST1", "e"), inst("TST-UNIT-0", "plain")] }) =>
     enter(battlePhase({ rush: [inst("RK-196", "q")], ...p1 }, p2), "RK-196:q");
 
-  it.fails("RK-196: 【黄泉の鐙】自軍ターン中、バトルエリアに出たとき、レジストを持つユニット（自軍・敵軍とも）を1体選べる（任意）（出典: atwiki/page-920「レジストを持つユニットを1体選んでもよい」）", () => {
+  it("RK-196: 【黄泉の鐙】自軍ターン中、バトルエリアに出たとき、レジストを持つユニット（自軍・敵軍とも）を1体選べる（任意）（出典: atwiki/page-920「レジストを持つユニットを1体選んでもよい」）", () => {
     const s = entered({ rush: [inst("RK-196", "q"), inst("SPEC-RESIST1", "mine")] });
     expectChoiceFrom(s, "player1", "RK-196");
     expect(choiceIds(s)).toEqual(["SPEC-RESIST1:e", "SPEC-RESIST1:mine"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-196: 選ぶと、相手が「選ばれたユニットを撃破する」か「1点ダメージを受ける」かを選ぶ（出典: atwiki/page-920「相手は選ばれたユニットを撃破するか、1点ダメージを受けるか選ぶ」）", () => {
+  it("RK-196: 選ぶと、相手が「選ばれたユニットを撃破する」か「1点ダメージを受ける」かを選ぶ（出典: atwiki/page-920「相手は選ばれたユニットを撃破するか、1点ダメージを受けるか選ぶ」）", () => {
     const s = pick(entered(), "SPEC-RESIST1:e");
     expectChoiceFrom(s, "player2", "RK-196");
     expect(choiceIds(s)).toEqual(["SPEC-RESIST1:e", "damage"].sort());
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-196: 相手が撃破を選べば、選ばれたユニットは撃破される（出典: atwiki/page-920）", () => {
+  it("RK-196: 相手が撃破を選べば、選ばれたユニットは撃破される（出典: atwiki/page-920）", () => {
     const s = resolveAll(pick(pick(entered(), "SPEC-RESIST1:e"), "SPEC-RESIST1:e"));
     expect(zoneOf(s, "player2", "SPEC-RESIST1:e")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(0);
   });
 
-  it.fails("RK-196: 相手がダメージを選べば、相手は1点ダメージを受け、ユニットは残る（出典: atwiki/page-920）", () => {
+  it("RK-196: 相手がダメージを選べば、相手は1点ダメージを受け、ユニットは残る（出典: atwiki/page-920）", () => {
     const s = resolveAll(pick(pick(entered(), "SPEC-RESIST1:e"), "damage"));
     expect(zoneOf(s, "player2", "SPEC-RESIST1:e")).toBe("battle");
     expect(damageOf(s, "player2")).toBe(1);

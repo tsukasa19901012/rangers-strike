@@ -28,11 +28,10 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "end_turn_return_hand_from_rush",
+          "keyword": "rk10::RK-205::return_hand",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "furainguataka",
@@ -44,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-205::furainguataka",
+          "keyword": "rk10::RK-205::flying_attacker",
           "duration": "turn"
         }
       ],

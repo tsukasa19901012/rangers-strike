@@ -195,7 +195,7 @@ describe("RK-086 アカネタカ", () => {
   });
 
   // grnrngr/faq-rider-2 RK-086「はい、可能です。…「RK-086アカネタカ」のカード自体をダメージにする効果ですので、ストライク以外の方法でダメージを受けたことになります。」
-  it.fails("RK-086: 公式Q&A — アカネタカをダメージにしたことは「ストライク以外の方法でダメージを受けた」ことになり、仮面ライダーオーガ（RK-204）【オーガ・ストラッシュ】を発動できる（出典: grnrngr/faq-rider-2 RK-086 Q2・atwiki/page-1077 Q1）", () => {
+  it("RK-086: 公式Q&A — アカネタカをダメージにしたことは「ストライク以外の方法でダメージを受けた」ことになり、仮面ライダーオーガ（RK-204）【オーガ・ストラッシュ】を発動できる（出典: grnrngr/faq-rider-2 RK-086 Q2・atwiki/page-1077 Q1）", () => {
     let s = struck({ power: [], battle: [inst("RK-204", "og")], command: [...releasedCat("MA", 1), ...releasedCat("DA", 1)] });
     s = act(s, legal(s).find((a) => a.playerId === "player2" && JSON.stringify(a).includes("RK-086:a1"))!);
     s = settle(s);

@@ -104,7 +104,7 @@ describe("RK-197 アントロード", () => {
 
   const selfRush = (s: GameState) => legal(s).some((a) => a.type === "self_rush_from_zone" && a.instanceId === "RK-197:al");
 
-  it.fails("RK-197: ※ 手札にある間、自軍ラッシュフェイズ中、MA を持つ敵軍 S ユニットがあれば自軍ラッシュエリアに出せる（出典: atwiki/page-921「MAを持つ敵軍Sユニットがあれば、これを自軍ラッシュエリアに出してもよい」・カード評価「パワーもコマンドも無視してラッシュできる」）", () => {
+  it("RK-197: ※ 手札にある間、自軍ラッシュフェイズ中、MA を持つ敵軍 S ユニットがあれば自軍ラッシュエリアに出せる（出典: atwiki/page-921「MAを持つ敵軍Sユニットがあれば、これを自軍ラッシュエリアに出してもよい」・カード評価「パワーもコマンドも無視してラッシュできる」）", () => {
     let s = rushPhase({ hand: [inst("RK-197", "al")] }, { rush: [inst("SPEC-MA-S", "ma")] });
     expect(selfRush(s)).toBe(true);
     s = act(s, legal(s).find((a) => a.type === "self_rush_from_zone" && a.instanceId === "RK-197:al")!);
@@ -120,12 +120,12 @@ describe("RK-197 アントロード", () => {
     expect(selfRush(battlePhase({ hand: [inst("RK-197", "al")] }, { rush: [inst("SPEC-MA-S", "ma")] }))).toBe(false);
   });
 
-  it.fails("RK-197: 【女王の僕】自軍バトルエリアにある間、特徴「女」を持つ自軍ユニットはレジストを得る（出典: atwiki/page-921「特徴「女」を持つユニットは次の能力を得る⇒レジスト」）", () => {
+  it("RK-197: 【女王の僕】自軍バトルエリアにある間、特徴「女」を持つ自軍ユニットはレジストを得る（出典: atwiki/page-921「特徴「女」を持つユニットは次の能力を得る⇒レジスト」）", () => {
     const s = untilRegister(attack(enemyBattle({ battle: [inst("RK-197", "al"), inst("SPEC-FEMALE", "f")] }, { battle: [inst("TST-UNIT-7", "atk")] }), "TST-UNIT-7:atk", "SPEC-FEMALE:f", "player2"));
     expect(registerOffered(s)).toBe(true);
   });
 
-  it.fails("RK-197: 【女王の僕】敵軍の特徴「女」のユニットもレジストを得る（出典: atwiki/page-921 カード評価「女性ユニットにレジストを付加する効果は敵軍も受けてしまう」・コメント欄）", () => {
+  it("RK-197: 【女王の僕】敵軍の特徴「女」のユニットもレジストを得る（出典: atwiki/page-921 カード評価「女性ユニットにレジストを付加する効果は敵軍も受けてしまう」・コメント欄）", () => {
     const s = attack(battlePhase({ battle: [inst("RK-197", "al"), inst("TST-UNIT-7", "atk")] }, { battle: [inst("SPEC-FEMALE", "ef")] }), "TST-UNIT-7:atk", "SPEC-FEMALE:ef");
     expect(registerOffered(untilRegister(s), "player2")).toBe(true);
   });
@@ -149,19 +149,19 @@ describe("RK-198 仮面ライダーインペラー", () => {
 
   const afterRush = () => rushed(rushPhase({ hand: [inst("RK-198", "im")], command: releasedCat("WB", 1), power: powerCards(2) }, { deck: deckCards(5, "e") }), "RK-198:im");
 
-  it.fails("RK-198: ※ ラッシュしたとき、相手は1枚ドローするかを選べる（出典: atwiki/page-903「相手は1枚ドローしてもよい」）", () => {
+  it("RK-198: ※ ラッシュしたとき、相手は1枚ドローするかを選べる（出典: atwiki/page-903「相手は1枚ドローしてもよい」）", () => {
     const s = afterRush();
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-198");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-198: ※ 相手がドローを選べば相手の手札が1枚増える（出典: atwiki/page-903）", () => {
+  it("RK-198: ※ 相手がドローを選べば相手の手札が1枚増える（出典: atwiki/page-903）", () => {
     const s = settle(accept(afterRush()));
     expect(s.players.player2.hand).toHaveLength(1);
   });
 
-  it.fails("RK-198: ※ 相手が見送れば手札は増えない（出典: atwiki/page-903「ドローしてもよい」）", () => {
+  it("RK-198: ※ 相手が見送れば手札は増えない（出典: atwiki/page-903「ドローしてもよい」）", () => {
     const s = settle(skip(afterRush()));
     expect(s.players.player2.hand).toHaveLength(0);
   });
@@ -183,7 +183,7 @@ describe("RK-198 仮面ライダーインペラー", () => {
     return enter(s, "RK-198:im");
   };
 
-  it.fails("RK-198: 【ドライブディバイダー】「レイヨウ型」からコンビネーションしたとき発動でき、レジストを持たない敵軍 S ユニットから選ぶ（M は対象外）（出典: atwiki/page-903「レジストを持たない敵軍Sユニットを…選びホールドする」）", () => {
+  it("RK-198: 【ドライブディバイダー】「レイヨウ型」からコンビネーションしたとき発動でき、レジストを持たない敵軍 S ユニットから選ぶ（M は対象外）（出典: atwiki/page-903「レジストを持たない敵軍Sユニットを…選びホールドする」）", () => {
     const s = combo();
     expectChoiceFrom(s, "player1", "RK-198");
     expect(canSkip(s)).toBe(true);
@@ -191,7 +191,7 @@ describe("RK-198 仮面ライダーインペラー", () => {
     expect(choiceIds(t)).toEqual(["TST-UNIT-0:a", "TST-UNIT-0:b", "TST-UNIT-0:c"]);
   });
 
-  it.fails("RK-198: 【ドライブディバイダー】「レイヨウ型」のユニットの数（2）までホールドできる（出典: atwiki/page-903「特徴「レイヨウ型」を持つユニットの数まで選び」）", () => {
+  it("RK-198: 【ドライブディバイダー】「レイヨウ型」のユニットの数（2）までホールドできる（出典: atwiki/page-903「特徴「レイヨウ型」を持つユニットの数まで選び」）", () => {
     let s = combo();
     if (s.pendingEffectChoice?.kind === "confirm") s = confirm(s);
     s = pick(s, "TST-UNIT-0:a");
@@ -232,7 +232,7 @@ describe("RK-199 オメガゼール", () => {
     expect(s.players.player1.command.every((c) => c.commandHeld)).toBe(true);
   });
 
-  it.fails("RK-199: 【ゼール種の統率】自軍エリアにある間、「レイヨウ型」の自軍ユニット（マガゼール）はコマンドをホールドせずにバトルエリアに出られる（出典: atwiki/page-922「そのテキストは無効になる」）", () => {
+  it("RK-199: 【ゼール種の統率】自軍エリアにある間、「レイヨウ型」の自軍ユニット（マガゼール）はコマンドをホールドせずにバトルエリアに出られる（出典: atwiki/page-922「そのテキストは無効になる」）", () => {
     const s = battlePhase({ rush: [inst("RK-199", "om"), inst("RK-200", "mg")] });
     expect(canEnter(s, "RK-200:mg")).toBe(true);
     expect(zoneOf(enter(s, "RK-200:mg"), "player1", "RK-200:mg")).toBe("battle");
@@ -246,7 +246,7 @@ describe("RK-199 オメガゼール", () => {
     expect(canEnter(battlePhase({ rush: [inst("RK-200", "mg")] }, { rush: [inst("RK-199", "eom")] }), "RK-200:mg")).toBe(false);
   });
 
-  it.fails("RK-199: 【ゼール種の統率】相手が「レイヨウ型」のユニットを撃破したとき、相手は1枚ドローするかを選べる（出典: atwiki/page-922「相手は特徴「レイヨウ型」を持つユニットを撃破したとき、1枚ドローしてもよい」）", () => {
+  it("RK-199: 【ゼール種の統率】相手が「レイヨウ型」のユニットを撃破したとき、相手は1枚ドローするかを選べる（出典: atwiki/page-922「相手は特徴「レイヨウ型」を持つユニットを撃破したとき、1枚ドローしてもよい」）", () => {
     let s = attackedInEnemyTurn({ rush: [inst("RK-199", "om")], battle: [inst("RK-200", "mg")] }, "RK-200:mg");
     for (let i = 0; i < 3 && s.pendingEffectChoice && s.pendingEffectChoice.sourceCardId !== "RK-199"; i++) s = settle(skip(s));
     expect(zoneOf(s, "player1", "RK-200:mg")).toBe("discard");
@@ -290,14 +290,14 @@ describe("RK-200 マガゼール", () => {
   const entered = (reiyou: number, p2: Partial<GameState["players"]["player2"]> = riders) =>
     enterHold(battlePhase({ rush: [inst("RK-200", "mg"), ...Array.from({ length: reiyou }, (_, i) => inst("SPEC-REIYOU", `r${i}`))], command: releasedCat("WB", 1) }, p2), "RK-200:mg");
 
-  it.fails("RK-200: 【群れの襲撃】自軍ターン中、バトルエリアに出たとき、ライド中の敵軍 S ユニットから選べる（任意）（出典: atwiki/page-923「ライド中の敵軍Sユニットを…選んでもよい」）", () => {
+  it("RK-200: 【群れの襲撃】自軍ターン中、バトルエリアに出たとき、ライド中の敵軍 S ユニットから選べる（任意）（出典: atwiki/page-923「ライド中の敵軍Sユニットを…選んでもよい」）", () => {
     const s = entered(1);
     expectChoiceFrom(s, "player1", "RK-200");
     expect(choiceIds(s)).toEqual(["SPEC-RIDER:r1", "SPEC-RIDER:r2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-200: 【群れの襲撃】「レイヨウ型」の自軍ユニットの数（マガゼール自身を含めて2）まで選び、ライドオフさせる（出典: atwiki/page-923「特徴「レイヨウ型」を持つ自軍ユニットの数まで選んでもよい。そうしたとき、選んだユニットをライドオフさせる」）", () => {
+  it("RK-200: 【群れの襲撃】「レイヨウ型」の自軍ユニットの数（マガゼール自身を含めて2）まで選び、ライドオフさせる（出典: atwiki/page-923「特徴「レイヨウ型」を持つ自軍ユニットの数まで選んでもよい。そうしたとき、選んだユニットをライドオフさせる」）", () => {
     let s = pick(entered(1), "SPEC-RIDER:r1");
     if (s.pendingEffectChoice?.sourceCardId === "RK-200") s = pick(s, "SPEC-RIDER:r2");
     s = settle(s);
@@ -306,7 +306,7 @@ describe("RK-200 マガゼール", () => {
     expect(zoneOf(s, "player2", "SPEC-VEH:v1")).toBe("battle");
   });
 
-  it.fails("RK-200: 【群れの襲撃】「レイヨウ型」がマガゼールだけなら1体まで（出典: atwiki/page-923）", () => {
+  it("RK-200: 【群れの襲撃】「レイヨウ型」がマガゼールだけなら1体まで（出典: atwiki/page-923）", () => {
     let s = pick(entered(0), "SPEC-RIDER:r1");
     if (s.pendingEffectChoice?.sourceCardId === "RK-200" && legal(s).some((a) => a.type === "confirm_effect_choice")) s = confirm(s);
     s = settle(s);
@@ -334,14 +334,14 @@ describe("RK-201 ドラグブラッカー", () => {
   const afterRush = (p2: Partial<GameState["players"]["player2"]> = { battle: [inst("SPEC-WB-S", "ew"), inst("SPEC-DA-S", "ed")] }, p1: Partial<GameState["players"]["player1"]> = {}) =>
     rushed(rushPhase({ hand: [inst("RK-201", "db")], command: releasedCat("WB", 1), power: powerCards(2), ...p1 }, p2), "RK-201:db");
 
-  it.fails("RK-201: 【ドラグブレス】ラッシュしたとき、まず相手が自分のユニットを1体選ぶ（出典: atwiki/page-924「相手、自分の順に行う⇒自分自身のユニットを1体選ぶ」）", () => {
+  it("RK-201: 【ドラグブレス】ラッシュしたとき、まず相手が自分のユニットを1体選ぶ（出典: atwiki/page-924「相手、自分の順に行う⇒自分自身のユニットを1体選ぶ」）", () => {
     const s = afterRush();
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-201");
     expect(choiceIds(s)).toEqual(["SPEC-DA-S:ed", "SPEC-WB-S:ew"]);
   });
 
-  it.fails("RK-201: 相手は選んだユニットの持っていないカテゴリを持つ自分の S ユニットを1体選び撃破する（出典: atwiki/page-924「自分自身の選んだユニットの持っていないカテゴリを持つ自分自身のSユニットを1体選び撃破する」）", () => {
+  it("RK-201: 相手は選んだユニットの持っていないカテゴリを持つ自分の S ユニットを1体選び撃破する（出典: atwiki/page-924「自分自身の選んだユニットの持っていないカテゴリを持つ自分自身のSユニットを1体選び撃破する」）", () => {
     let s = pick(afterRush(), "SPEC-WB-S:ew");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toEqual(["SPEC-DA-S:ed"]);
@@ -350,7 +350,7 @@ describe("RK-201 ドラグブラッカー", () => {
     expect(zoneOf(s, "player2", "SPEC-DA-S:ed")).toBe("discard");
   });
 
-  it.fails("RK-201: 相手の後に自分も同じように行う（単色なら撃破するユニットはない）（出典: atwiki/page-924「相手、自分の順に」・カード評価「単色ならこちらはなにも撃破せずに」）", () => {
+  it("RK-201: 相手の後に自分も同じように行う（単色なら撃破するユニットはない）（出典: atwiki/page-924「相手、自分の順に」・カード評価「単色ならこちらはなにも撃破せずに」）", () => {
     let s = pick(pick(afterRush(), "SPEC-WB-S:ew"), "SPEC-DA-S:ed");
     expectChoiceFrom(s, "player1", "RK-201");
     expect(choiceIds(s)).toEqual(["RK-201:db"]);
@@ -358,12 +358,16 @@ describe("RK-201 ドラグブラッカー", () => {
     expect(zoneOf(s, "player1", "RK-201:db")).toBe("rush");
   });
 
-  it.fails("RK-201: マルチカテゴリのユニットを選べば、そのどのカテゴリも持たないユニットだけを撃破する（出典: atwiki/page-924 コメント欄「MA+DAのユニットを選べばMAもDAも持た無いユニットのみ撃破」「↑ＯＫ」）", () => {
+  it("RK-201: マルチカテゴリのユニットを選べば、そのどのカテゴリも持たないユニットだけを撃破する（出典: atwiki/page-924 コメント欄「MA+DAのユニットを選べばMAもDAも持た無いユニットのみ撃破」「↑ＯＫ」）", () => {
     const s = pick(afterRush({ battle: [inst("SPEC-MADA", "md"), inst("SPEC-MA-S2", "ma"), inst("SPEC-DA-S", "da"), inst("SPEC-WB-S", "wb")] }), "SPEC-MADA:md");
     expect(choiceIds(s)).toEqual(["SPEC-WB-S:wb"]);
   });
 
-  it.fails("RK-201: 撃破できるユニットがなければ撃破しない（単色の相手）（出典: atwiki/page-924）", () => {
+  it.todo(
+    "RK-201: 選んだユニットが MA+DA のとき、WB+MA のユニット（MA を持つが、選んだユニットの持たない WB も持つ）を撃破できるか（出典: atwiki/page-924 コメント欄「MAもDAも持た無いユニットのみ撃破」）— コメント欄の回答は本文「持っていないカテゴリを持つ」と食い違って読め、公式の回答がない（エンジンは本文どおり撃破できる）",
+  );
+
+  it("RK-201: 撃破できるユニットがなければ撃破しない（単色の相手）（出典: atwiki/page-924）", () => {
     let s = pick(afterRush({ battle: [inst("SPEC-WB-S", "a"), inst("SPEC-WB-S", "b")] }), "SPEC-WB-S:a");
     expect(s.pendingEffectChoice?.playerId).not.toBe("player2");
     s = resolveAll(s, ["RK-201:db"]);
@@ -404,7 +408,7 @@ describe("RK-203 仮面ライダーファイズAF", () => {
     return settle(attack(s, "RK-203:af", defender));
   };
 
-  it.fails("RK-203: 【アクセルモード】自軍ターン中、アタックしてバトルに勝ったとき、常駐オペレーションに重ねたカード（ウラ向きのまま）から1枚選べる（任意）（出典: atwiki/page-873「常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、山札の下に戻してもよい（ウラ向きのカードはウラ向きのまま選ぶ）」）", () => {
+  it("RK-203: 【アクセルモード】自軍ターン中、アタックしてバトルに勝ったとき、常駐オペレーションに重ねたカード（ウラ向きのまま）から1枚選べる（任意）（出典: atwiki/page-873「常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、山札の下に戻してもよい（ウラ向きのカードはウラ向きのまま選ぶ）」）", () => {
     const s = won();
     expect(zoneOf(s, "player2", "SPEC-WEAK:d")).toBe("discard");
     expectChoiceFrom(s, "player1", "RK-203");
@@ -412,7 +416,7 @@ describe("RK-203 仮面ライダーファイズAF", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-203: 【アクセルモード】選んだカードは山札の下に戻り、ファイズAF はラッシュエリアに戻る（出典: atwiki/page-873「そうしたとき、これをラッシュエリアに戻す」）", () => {
+  it("RK-203: 【アクセルモード】選んだカードは山札の下に戻り、ファイズAF はラッシュエリアに戻る（出典: atwiki/page-873「そうしたとき、これをラッシュエリアに戻す」）", () => {
     const s = settle(pick(won(), "TST-OP:s1"));
     expect(stackedOn(s, "player1", "RK-021:cu")).toEqual(["TST-OP:s0"]);
     expect(s.players.player1.deck.at(-1)?.instanceId).toBe("TST-OP:s1");

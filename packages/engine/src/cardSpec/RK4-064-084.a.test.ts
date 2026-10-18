@@ -170,20 +170,31 @@ describe("RK-064 仮面ライダーファイズ", () => {
   });
 
   // atwiki/page-207 Q1「はい、できます。「RS-255 巨大化爆弾」と「RK-206 ウルフオルフェノク」の効果の発動タイミングは同じになりますので、ターンプレイヤーがどちらを先に解決するか決めることができます。」
-  it.fails("RK-064: 公式Q&A — ウルフオルフェノク（RK-206）が撃破されて捨札になったとき巨大化爆弾を使い、ウルフを重ねてラッシュエリアに出したあと、捨札のファイズもラッシュエリアに出せる（出典: atwiki/page-207 Q1・atwiki/page-37 Q）", () => {
+  it("RK-064: 公式Q&A — ウルフオルフェノク（RK-206）が撃破されて捨札になったとき巨大化爆弾を使い、ウルフを重ねてラッシュエリアに出したあと、捨札のファイズもラッシュエリアに出せる（出典: atwiki/page-207 Q1・atwiki/page-37 Q）", () => {
     let s = st({
       activePlayer: "player2",
       player1: { battle: [inst("RK-206", "wo")], discard: [inst("RK-064", "fz")], hand: [inst("RS-255", "bomb")], command: releasedCat("DA", 1), power: powerCards(4), deck: deckCards(3) },
       player2: { battle: [inst("TST-UNIT-7", "atk")], deck: deckCards(3, "e") },
     });
     s = attack(s, "TST-UNIT-7:atk", "RK-206:wo", "player2");
-    for (let i = 0; i < 4 && !canUseCard(s, "player1", "RS-255:bomb"); i++) {
-      const p = legal(s).find((a) => a.type === "pass_battle_reaction" || a.type === "pass_leave_reaction");
+    // 解決の順はターンプレイヤーが決める（Q1）。巨大化爆弾が使えるようになれば使い、ウルフの ※ の選択が開いていればファイズを選ぶ。
+    let bombUsed = false;
+    for (let i = 0; i < 10; i++) {
+      if (!bombUsed && canUseCard(s, "player1", "RS-255:bomb")) {
+        s = useCard(s, "player1", "RS-255:bomb");
+        bombUsed = true;
+        continue;
+      }
+      if (s.pendingEffectChoice?.validInstanceIds.includes("RK-064:fz")) {
+        s = act(s, { type: "resolve_effect_choice", playerId: s.pendingEffectChoice.playerId, instanceId: "RK-064:fz" });
+        continue;
+      }
+      const p = legal(s).find((a) => a.type === "pass_battle_reaction" || (a.type === "pass_leave_reaction" && !canUseCard(s, "player1", "RS-255:bomb")));
       if (!p) break;
       s = act(s, p);
     }
-    expect(canUseCard(s, "player1", "RS-255:bomb")).toBe(true);
-    s = resolveAll(useCard(s, "player1", "RS-255:bomb"), ["RK-064:fz"]);
+    expect(bombUsed).toBe(true);
+    s = resolveAll(s, ["RK-064:fz"]);
     expect(zoneOf(s, "player1", "RK-206:wo")).toBe("rush");
     expect(zoneOf(s, "player1", "RK-064:fz")).toBe("rush");
   });

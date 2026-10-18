@@ -25,6 +25,7 @@ export const unitRushedListener: EventListener = (event, state) => {
     {
       suppressSelfEffects: rushEvent.selfEffectsSuppressed === true,
       viaEffect: rushEvent.viaEffect === true,
+      fromHandRush: rushEvent.viaEffect !== true,
     },
   );
 

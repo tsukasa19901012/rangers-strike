@@ -1,3 +1,4 @@
+import { openRk10OgreAfterDamage } from "./rk/rk10UnitEffects";
 import type {
   DamagePaymentResume,
   DeferredPowerFlip,
@@ -383,6 +384,11 @@ function applyPowerFlip(state: GameState, flip: DeferredPowerFlip): GameState {
   if (flip.resume.kind === "none") {
     nextState = { ...nextState, activePlayer: flip.resume.activePlayer };
   }
+  // RK-204【オーガ・ストラッシュ】: 敵軍ターン中、ストライク以外の方法でダメージを受けた後（アカネタカのカードをダメージにした分を含む。
+  // grnrngr/faq-rider-2 RK-086）。rules/rk/rk10UnitEffects.ts。
+  const phasePlayerId = flip.resume.kind === "none" ? flip.resume.activePlayer : flip.resume.pending.battlePhasePlayer;
+  const nonStrike = flip.resume.kind === "strike" ? (flip.replacedAmount ?? 0) : flip.eventAmount;
+  nextState = openRk10OgreAfterDamage(nextState, flip.playerId, nonStrike, phasePlayerId);
   return nextState;
 }
 
@@ -466,6 +472,7 @@ export function resolveDamagePaymentSelect(
       eventPhasePlayerId: state.activePlayer,
       resume,
       finishStrike: true,
+      replacedAmount: pending.replacedDamage,
     },
   );
 

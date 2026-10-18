@@ -10,6 +10,7 @@ import {
 import { rs627NotSelectable } from "../rules/rs/rsCatchallField";
 import { set7BNotSelectable } from "../rules/legend1/set7NamedEffectsB";
 import { rk6SnakeBlocksSelection } from "../rules/rk/rk6Fields";
+import { rk10G3xProtects } from "../rules/rk/rk10Fields";
 import { unitFeatures } from "../rules/addedFeatures";
 
 /**
@@ -53,6 +54,8 @@ export function isSelectableByOpponentEffect(
   if (set7BNotSelectable(state, found.playerId, targetInstanceId)) return false;
   // RK-124 スネークオルフェノク【人を守る決意】（rules/rk/rk6Fields.ts）。
   if (rk6SnakeBlocksSelection(state, selectorPlayerId, found.playerId, found.card, unitFeatures)) return false;
+  // RK-194 仮面ライダーG3-X ※（自軍ラッシュエリアの SP が空欄のユニットは相手に選ばれない。rules/rk/rk10Fields.ts）。
+  if (rk10G3xProtects(state, found.playerId, found.card)) return false;
   return true;
 }
 

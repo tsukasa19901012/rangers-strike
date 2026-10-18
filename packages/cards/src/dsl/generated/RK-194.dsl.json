@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "not_selectable_ally_rush_sp_blank",
+          "keyword": "rk10::RK-194::g3x_protect",
           "duration": "permanent"
         }
       ]
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-194::gx05",
+          "keyword": "rk10::RK-194::gx05",
           "duration": "turn"
         }
       ],

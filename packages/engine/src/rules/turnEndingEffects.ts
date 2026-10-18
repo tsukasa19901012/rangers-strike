@@ -1,4 +1,5 @@
 import { clearRk8SeizedFor, collectRk8TurnEndQueue, openRk8TurnEndEntry } from "./rk/rk8UnitEffects";
+import { collectRk10TurnEndQueue, openRk10TurnEndEntry } from "./rk/rk10UnitEffects";
 import { collectOtherLinesTurnEndQueue, openOtherLinesTurnEndEntry } from "./legend1/otherLinesNamedEffects";
 import { applyRk5TurnEndDestroy, collectRk5TurnEndQueue, openRk5TurnEndEntry } from "./rk/rk5UnitEffects";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
@@ -337,6 +338,14 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.rk8Queue!;
     progress = { ...progress, rk8Queue: rest };
     nextState = openRk8TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // RK-205 仮面ライダーサイガの※（ラッシュエリアにあれば手札に戻してもよい。rules/rk/rk10UnitEffects.ts）。
+  if (!progress.rk10Queue) progress = { ...progress, rk10Queue: collectRk10TurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.rk10Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.rk10Queue!;
+    progress = { ...progress, rk10Queue: rest };
+    nextState = openRk10TurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {

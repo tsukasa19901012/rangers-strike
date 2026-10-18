@@ -65,7 +65,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-210::baningushoto",
+          "keyword": "rk10::RK-210::burning_shot",
           "duration": "turn"
         }
       ],

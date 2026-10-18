@@ -1,5 +1,6 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import { tryRk9OnEnterBattle } from "./rk/rk9UnitEffects";
+import { tryRk10OnEnterBattle } from "./rk/rk10UnitEffects";
 import { openWarriorSoulNcChoice } from "./legend1/set9NamedEffectsA";
 import { tryResidentRushOnAllyEnterBattle } from "./residentAllyEnterRush";
 import { listNcColumnNamedEffects, getNumberComboEffect } from "@rangers-strike/cards";
@@ -290,6 +291,12 @@ export function resolveEnterBattleEffectsImpl(
     const beforeRk9Choice = nextState.pendingEffectChoice;
     nextState = tryRk9OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
     if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk9Choice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+    // RK-198【ドライブディバイダー】（「レイヨウ型」からのコンビネーション。rules/rk/rk10UnitEffects.ts）。
+    const beforeRk10Choice = nextState.pendingEffectChoice;
+    nextState = tryRk10OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk10Choice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }
     // RS-523 臨気で得た能力・RS-521 スーパー戦隊魂（レッドが出たとき）（rules/legend1/set8NamedEffectsA.ts）。

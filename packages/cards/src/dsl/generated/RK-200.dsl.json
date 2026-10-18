@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-200::reno_geki",
+          "keyword": "rk10::RK-200::herd_raid",
           "duration": "turn"
         }
       ],

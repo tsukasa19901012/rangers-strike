@@ -94,14 +94,14 @@ describe("RK-204 仮面ライダーオーガ", () => {
     return settle(accept(s));
   };
 
-  it.fails("RK-204: 【オーガ・ストラッシュ】敵軍ターン中、ストライク以外の方法（効果）でダメージを受けた後、DA の自軍コマンドを1つホールドするかを選べる（任意）（出典: atwiki/page-1077「ストライク以外の方法でダメージを受けたなら、ダメージを受けた後、DAを持つ自軍コマンドを1つホールドしてもよい」）", () => {
+  it("RK-204: 【オーガ・ストラッシュ】敵軍ターン中、ストライク以外の方法（効果）でダメージを受けた後、DA の自軍コマンドを1つホールドするかを選べる（任意）（出典: atwiki/page-1077「ストライク以外の方法でダメージを受けたなら、ダメージを受けた後、DAを持つ自軍コマンドを1つホールドしてもよい」）", () => {
     const s = grandStrike({ command: [...releasedCat("DA", 1), released("TST-OP", "wb")] });
     expect(damageOf(s, "player1")).toBe(1);
     expectChoiceFrom(s, "player1", "RK-204");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-204: ホールドすると相手に1点ダメージを与える（出典: atwiki/page-1077「そうしたとき、相手に1点ダメージを与える」）", () => {
+  it("RK-204: ホールドすると相手に1点ダメージを与える（出典: atwiki/page-1077「そうしたとき、相手に1点ダメージを与える」）", () => {
     const s = settle(accept(grandStrike({ command: releasedCat("DA", 1) })));
     expect(s.players.player1.command.every((c) => c.commandHeld)).toBe(true);
     expect(damageOf(s, "player2")).toBe(1);
@@ -120,13 +120,13 @@ describe("RK-204 仮面ライダーオーガ", () => {
   });
 
   // atwiki/page-1077 Q2「いいえ、そのようにはなりません。複数の「RK-204 仮面ライダーオーガ」の効果を発動する場合は、1体につきコマンドを1つホールドする必要があります。」
-  it.fails("RK-204: 公式Q&A — 2体あっても1回のホールドで与えるダメージは1点（2体目を発動するにはもう1つホールドが要る）（出典: atwiki/page-1077 Q2）", () => {
+  it("RK-204: 公式Q&A — 2体あっても1回のホールドで与えるダメージは1点（2体目を発動するにはもう1つホールドが要る）（出典: atwiki/page-1077 Q2）", () => {
     let s = grandStrike({ battle: [inst("RK-204", "og"), inst("RK-204", "og2")], command: releasedCat("DA", 1) });
     s = resolveAll(accept(s));
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RK-204: 公式Q&A — 2体あり DA のコマンドが2つあれば、それぞれホールドして2点与えられる（出典: atwiki/page-1077 Q2「1体につきコマンドを1つホールドする」）", () => {
+  it("RK-204: 公式Q&A — 2体あり DA のコマンドが2つあれば、それぞれホールドして2点与えられる（出典: atwiki/page-1077 Q2「1体につきコマンドを1つホールドする」）", () => {
     let s = grandStrike({ battle: [inst("RK-204", "og"), inst("RK-204", "og2")], command: releasedCat("DA", 2) });
     s = settle(accept(s));
     expectChoiceFrom(s, "player1", "RK-204");
@@ -135,7 +135,7 @@ describe("RK-204 仮面ライダーオーガ", () => {
   });
 
   // atwiki/page-1077 Q3「はい、できます。一度に複数点のダメージを受けた場合も、ダメージ1点ごとにつき「RK-204 仮面ライダーオーガ」の効果を発動することができます。」
-  it.fails("RK-204: 公式Q&A — 一度に2点のダメージ（RS-084 VRVロボ【必勝合体】）を受けたら、1点ごとに発動できる（出典: atwiki/page-1077 Q3）", () => {
+  it("RK-204: 公式Q&A — 一度に2点のダメージ（RS-084 VRVロボ【必勝合体】）を受けたら、1点ごとに発動できる（出典: atwiki/page-1077 Q3）", () => {
     const PARTS = ["RS-085", "RS-086", "RS-087", "RS-088", "RS-089"];
     let s = enemyPhase(
       "rush",
@@ -174,26 +174,26 @@ describe("RK-205 仮面ライダーサイガ", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-205: 出すと、ホールドしたコマンドの必要パワーの数字（1）と同じ必要パワーの敵軍 S ユニットから1体選ぶ（エリアを問わない。M は対象外）（出典: atwiki/page-956「その数字と同じ必要パワーの数字を持つ敵軍Sユニット1体選び」）", () => {
+  it("RK-205: 出すと、ホールドしたコマンドの必要パワーの数字（1）と同じ必要パワーの敵軍 S ユニットから1体選ぶ（エリアを問わない。M は対象外）（出典: atwiki/page-956「その数字と同じ必要パワーの数字を持つ敵軍Sユニット1体選び」）", () => {
     const s = accept(afterRush());
     expect(zoneOf(s, "player1", "RK-205:sg")).toBe("battle");
     expectChoiceFrom(s, "player1", "RK-205");
     expect(choiceIds(s)).toEqual(["SPEC-C1:a", "SPEC-C1:r"]);
   });
 
-  it.fails("RK-205: 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-956「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("RK-205: 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-956「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(pick(accept(afterRush()), "SPEC-C1:a"));
     expect(zoneOf(s, "player2", "SPEC-C1:a")).toBe("command");
     expect(cardIn(s, "player2", "SPEC-C1:a")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-205: コマンドゾーンが満杯で置けなければ捨札にする（出典: atwiki/page-956「置けなければ捨札にする」）", () => {
+  it("RK-205: コマンドゾーンが満杯で置けなければ捨札にする（出典: atwiki/page-956「置けなければ捨札にする」）", () => {
     const full = Array.from({ length: COMMAND_ZONE_MAX }, (_, i) => released("TST-OP", `ec${i}`));
     const s = resolveAll(pick(accept(afterRush({ ...enemy, command: full })), "SPEC-C1:a"));
     expect(zoneOf(s, "player2", "SPEC-C1:a")).toBe("discard");
   });
 
-  it.fails("RK-205: バトルエリアに出したターンはアタックもストライクもできない（出典: atwiki/page-956「このとき、これはアタックもストライクもできない」）", () => {
+  it("RK-205: バトルエリアに出したターンはアタックもストライクもできない（出典: atwiki/page-956「このとき、これはアタックもストライクもできない」）", () => {
     let s = resolveAll(pick(accept(afterRush()), "SPEC-C1:a"));
     s = passEntry(toPhase(s, "player1", "battle"));
     expect(canStrike(s, "RK-205:sg")).toBe(false);
@@ -206,7 +206,7 @@ describe("RK-205 仮面ライダーサイガ", () => {
     expect(zoneOf(s, "player2", "SPEC-C1:a")).toBe("battle");
   });
 
-  it.fails("RK-205: ※ 自分がターンを終えるときラッシュエリアにあれば、手札に戻すかを選べる（出典: atwiki/page-956「※これは、自分がターンを終えるときラッシュエリアにあれば手札に戻してもよい」）", () => {
+  it("RK-205: ※ 自分がターンを終えるときラッシュエリアにあれば、手札に戻すかを選べる（出典: atwiki/page-956「※これは、自分がターンを終えるときラッシュエリアにあれば手札に戻してもよい」）", () => {
     let s = toTurnEnd(battlePhase({ rush: [inst("RK-205", "sg")] }), "RK-205");
     expectChoiceFrom(s, "player1", "RK-205");
     s = settle(accept(s));
@@ -233,21 +233,21 @@ describe("RK-206 ウルフオルフェノク", () => {
     expect(canAttackAny(s, "RK-206:wo")).toBe(false);
   });
 
-  it.fails("RK-206: 【望まない争い】自分は、アタックを1度行ったら、そのターン中ほかのユニットもアタックできない（出典: atwiki/page-926「アタックを1度でも行った場合、そのターン中はアタックすることができない」）", () => {
+  it("RK-206: 【望まない争い】自分は、アタックを1度行ったら、そのターン中ほかのユニットもアタックできない（出典: atwiki/page-926「アタックを1度でも行った場合、そのターン中はアタックすることができない」）", () => {
     let s = battlePhase({ rush: [inst("RK-206", "wo")], battle: [inst("TST-UNIT-7", "a1"), inst("TST-UNIT-7", "a2")] }, { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2")] });
     expect(targetsOf(s, "TST-UNIT-7:a2")).toEqual(["TST-UNIT-0:e1", "TST-UNIT-0:e2"]);
     s = settle(attack(s, "TST-UNIT-7:a1", "TST-UNIT-0:e1"));
     expect(targetsOf(s, "TST-UNIT-7:a2")).toEqual([]);
   });
 
-  it.fails("RK-206: 【望まない争い】ストライクを1度行ったら、そのターン中ほかのユニットもストライクできない（出典: atwiki/page-926「ストライクを1度でも行った場合、そのターン中はストライクすることができない」）", () => {
+  it("RK-206: 【望まない争い】ストライクを1度行ったら、そのターン中ほかのユニットもストライクできない（出典: atwiki/page-926「ストライクを1度でも行った場合、そのターン中はストライクすることができない」）", () => {
     let s = battlePhase({ rush: [inst("RK-206", "wo")], battle: [inst("TST-UNIT-0", "s1"), inst("TST-UNIT-0", "s2")] });
     expect(canStrike(s, "TST-UNIT-0:s2")).toBe(true);
     s = settle(strike(s, "TST-UNIT-0:s1"));
     expect(canStrike(s, "TST-UNIT-0:s2")).toBe(false);
   });
 
-  it.fails("RK-206: 【望まない争い】相手も同じ制限を受ける（敵軍ターンのアタック）（出典: atwiki/page-926「自分も相手も次の制限を受ける」）", () => {
+  it("RK-206: 【望まない争い】相手も同じ制限を受ける（敵軍ターンのアタック）（出典: atwiki/page-926「自分も相手も次の制限を受ける」）", () => {
     let s = enemyPhase("battle", { rush: [inst("RK-206", "wo")], battle: [inst("TST-UNIT-0", "d1"), inst("TST-UNIT-0", "d2")] }, { battle: [inst("TST-UNIT-7", "a1"), inst("TST-UNIT-7", "a2")] });
     s = settle(attack(s, "TST-UNIT-7:a1", "TST-UNIT-0:d1", "player2"));
     expect(targetsOf(s, "TST-UNIT-7:a2", "player2")).toEqual([]);
@@ -285,7 +285,7 @@ describe("RK-207 ホースオルフェノク激情態", () => {
       ),
     );
 
-  it.fails("RK-207: 【悲哀と絶望】ラッシュしたとき、自軍・敵軍のホールド状態のユニットをすべて撃破する（リリース状態のユニットは残る）（出典: atwiki/page-927「ホールド状態のユニットをすべて撃破する」・カード評価「自軍、敵軍問わず」）", () => {
+  it("RK-207: 【悲哀と絶望】ラッシュしたとき、自軍・敵軍のホールド状態のユニットをすべて撃破する（リリース状態のユニットは残る）（出典: atwiki/page-927「ホールド状態のユニットをすべて撃破する」・カード評価「自軍、敵軍問わず」）", () => {
     const s = afterRush(1, 2);
     expect(zoneOf(s, "player1", "TST-UNIT-0:h0")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-UNIT-2:eh0")).toBe("discard");
@@ -298,7 +298,7 @@ describe("RK-207 ホースオルフェノク激情態", () => {
     expect(damageOf(afterRush(1, 2), "player2")).toBe(1);
   });
 
-  it.fails("RK-207: 6体撃破すれば2点、2体なら0点（出典: atwiki/page-927「3体撃破するたび」）", () => {
+  it("RK-207: 6体撃破すれば2点、2体なら0点（出典: atwiki/page-927「3体撃破するたび」）", () => {
     expect(damageOf(afterRush(3, 3), "player2")).toBe(2);
     expect(damageOf(afterRush(1, 1), "player2")).toBe(0);
   });
@@ -323,7 +323,7 @@ describe("RK-208 クレインオルフェノク激情態", () => {
     rushed(enemyPhase("rush", { hand: fill(3, "ph"), ...p1 }, { hand: [inst(cardId, "er")], command: releasedCat(cat, 1), power: powerCards(power, "ep"), ...p2 }), `${cardId}:er`, "player2");
 
   // atwiki/page-928 Q1・grnrngr/faq-rider-3 RK-205/RK-208「相手が効果の発動を宣言した後であれば、発動できます。その場合、「RK-205 仮面ライダーサイガ」はラッシュエリアに留まります。」
-  it.fails("RK-208: 公式Q&A — 相手がサイガ【フライングアタッカー】の発動を宣言した後に、クレインをバトルエリアに出せる（任意）（出典: grnrngr/faq-rider-3 RK-205・RK-208 Q1・atwiki/page-928 Q1）", () => {
+  it("RK-208: 公式Q&A — 相手がサイガ【フライングアタッカー】の発動を宣言した後に、クレインをバトルエリアに出せる（任意）（出典: grnrngr/faq-rider-3 RK-205・RK-208 Q1・atwiki/page-928 Q1）", () => {
     let s = enemyRush("RK-205", "ET", 4);
     expectChoiceFrom(s, "player2", "RK-205");
     s = accept(s);
@@ -331,7 +331,7 @@ describe("RK-208 クレインオルフェノク激情態", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-208: 公式Q&A — クレインを出すと【フライングアタッカー】は無効になり（サイガはラッシュエリアに留まる）、サイガとクレインでバトルする（出典: grnrngr/faq-rider-3 RK-205 Q1・atwiki/page-956 Q1・atwiki/page-928「その効果は無効になる。その後、そのユニットとこのユニットでバトルする」）", () => {
+  it("RK-208: 公式Q&A — クレインを出すと【フライングアタッカー】は無効になり（サイガはラッシュエリアに留まる）、サイガとクレインでバトルする（出典: grnrngr/faq-rider-3 RK-205 Q1・atwiki/page-956 Q1・atwiki/page-928「その効果は無効になる。その後、そのユニットとこのユニットでバトルする」）", () => {
     let s = accept(enemyRush("RK-205", "ET", 4, { rush: [inst("RK-208", "cr")], battle: [inst("SPEC-C1", "a")] }));
     s = resolveAll(accept(s));
     expect(zoneOf(s, "player1", "RK-208:cr")).toBe("battle");
@@ -339,7 +339,7 @@ describe("RK-208 クレインオルフェノク激情態", () => {
     expect(zoneOf(s, "player1", "SPEC-C1:a")).toBe("battle");
   });
 
-  it.fails("RK-208: クレインを出さなければ、相手の効果はそのまま実行される（出典: atwiki/page-928「出してもよい」）", () => {
+  it("RK-208: クレインを出さなければ、相手の効果はそのまま実行される（出典: atwiki/page-928「出してもよい」）", () => {
     let s = accept(enemyRush("RK-205", "ET", 4, { rush: [inst("RK-208", "cr")], battle: [inst("SPEC-C1", "a")] }));
     s = skip(s);
     expect(zoneOf(s, "player2", "RK-205:er")).toBe("battle");
@@ -350,6 +350,23 @@ describe("RK-208 クレインオルフェノク激情態", () => {
   it("RK-208: 公式Q&A — 相手が効果を発動しなければ（見送れば）クレインは出せない（出典: grnrngr/faq-rider-3 RK-208 Q2・atwiki/page-928 Q2）", () => {
     const s = settle(skip(enemyRush("RK-205", "ET", 4)));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-208");
+    expect(zoneOf(s, "player1", "RK-208:cr")).toBe("rush");
+  });
+
+  it("RK-208: 強制の「ラッシュしたとき」（ホースオルフェノク激情態【悲哀と絶望】）は、実行する前にクレインを出せ、出せば無効になってバトルする（出典: atwiki/page-928「その効果を実行する前に…その効果は無効になる。その後、そのユニットとこのユニットでバトルする」・grnrngr/faq-rider-3 RK-208 Q2「「発動」の宣言がなければ、その効果は実行されません」— 強制の効果は宣言を待たず発動する）", () => {
+    let s = enemyRush("RK-207", "DA", 7, { rush: [inst("RK-208", "cr"), heldUnit("TST-UNIT-0", "h")] });
+    expectChoiceFrom(s, "player1", "RK-208");
+    s = resolveAll(accept(s));
+    expect(zoneOf(s, "player1", "TST-UNIT-0:h")).toBe("rush");
+    expect(zoneOf(s, "player1", "RK-208:cr")).toBe("discard");
+    expect(zoneOf(s, "player2", "RK-207:er")).toBe("rush");
+  });
+
+  it("RK-208: 強制の効果の前の窓で出さなければ、その効果はそのまま実行される（出典: atwiki/page-928「出してもよい」）", () => {
+    let s = enemyRush("RK-207", "DA", 7, { rush: [inst("RK-208", "cr"), heldUnit("TST-UNIT-0", "h")] });
+    expectChoiceFrom(s, "player1", "RK-208");
+    s = resolveAll(skip(s));
+    expect(zoneOf(s, "player1", "TST-UNIT-0:h")).toBe("discard");
     expect(zoneOf(s, "player1", "RK-208:cr")).toBe("rush");
   });
 
@@ -364,7 +381,7 @@ describe("RK-208 クレインオルフェノク激情態", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-208");
   });
 
-  it.fails("RK-208: 相手のクレインオルフェノク激情態（効果の文中に「ラッシュしたとき」があるが発動のタイミングではない）のラッシュには出せない（出典: atwiki/page-928 カード評価「発動タイミングは「ラッシュしたとき」ではないため…対象にできない」・コメント欄）", () => {
+  it("RK-208: 相手のクレインオルフェノク激情態（効果の文中に「ラッシュしたとき」があるが発動のタイミングではない）のラッシュには出せない（出典: atwiki/page-928 カード評価「発動タイミングは「ラッシュしたとき」ではないため…対象にできない」・コメント欄）", () => {
     const s = settle(enemyRush("RK-208", "DA", 7));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-208");
   });
@@ -381,7 +398,7 @@ describe("RK-209 エラスモテリウムオルフェノク", () => {
     expectRarityIn("RK-209", ["N"]);
   });
 
-  it.fails("RK-209: ※ 相手の手札3枚なら、自軍コマンドを2つホールドしてバトルエリアに出られる（出典: atwiki/page-929「5つホールドしなければ…ホールドする数は相手の手札1枚につき1少なくなる」）", () => {
+  it("RK-209: ※ 相手の手札3枚なら、自軍コマンドを2つホールドしてバトルエリアに出られる（出典: atwiki/page-929「5つホールドしなければ…ホールドする数は相手の手札1枚につき1少なくなる」）", () => {
     let s = battlePhase({ rush: [inst("RK-209", "el")], command: releasedCat("DA", 2) }, { hand: fill(3, "eh") });
     expect(canEnter(s, "RK-209:el")).toBe(true);
     s = act(s, { type: "initiate_command_payment", playerId: "player1", kind: "battle_entry", sourceInstanceId: "RK-209:el" });
@@ -393,7 +410,7 @@ describe("RK-209 エラスモテリウムオルフェノク", () => {
     expect(canEnter(battlePhase({ rush: [inst("RK-209", "el")], command: releasedCat("DA", 1) }, { hand: fill(3, "eh") }), "RK-209:el")).toBe(false);
   });
 
-  it.fails("RK-209: ※ 相手の手札が5枚以上ならホールドせずに出られる（出典: atwiki/page-929 カード評価「相手の手札が多ければ軽減可能なので、状況によってはノーリスクで前に出せる」）", () => {
+  it("RK-209: ※ 相手の手札が5枚以上ならホールドせずに出られる（出典: atwiki/page-929 カード評価「相手の手札が多ければ軽減可能なので、状況によってはノーリスクで前に出せる」）", () => {
     const s = battlePhase({ rush: [inst("RK-209", "el")] }, { hand: fill(5, "eh") });
     expect(canEnter(s, "RK-209:el")).toBe(true);
     expect(zoneOf(enter(s, "RK-209:el"), "player1", "RK-209:el")).toBe("battle");
@@ -409,13 +426,13 @@ describe("RK-209 エラスモテリウムオルフェノク", () => {
       "RK-209:el",
     );
 
-  it.fails("RK-209: 【檻から放たれた脅威】自軍ターン中、バトルエリアに出たとき、自軍バトルエリアの S ユニットをすべてホールドするかを選べる（任意）（出典: atwiki/page-929「自軍バトルエリアのSユニットをすべてホールドしてもよい」）", () => {
+  it("RK-209: 【檻から放たれた脅威】自軍ターン中、バトルエリアに出たとき、自軍バトルエリアの S ユニットをすべてホールドするかを選べる（任意）（出典: atwiki/page-929「自軍バトルエリアのSユニットをすべてホールドしてもよい」）", () => {
     const s = entered(2);
     expectChoiceFrom(s, "player1", "RK-209");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-209: ホールドすると、ホールドした数（2）以下の必要パワーを持つ敵軍ユニットをすべて撃破する（サイズ・エリアを問わない）（出典: atwiki/page-929「ホールドしたユニットの数以下の必要パワーの数字を持つ敵軍ユニットをすべて撃破する」・カード評価「サイズもエリアも問わない除去」）", () => {
+  it("RK-209: ホールドすると、ホールドした数（2）以下の必要パワーを持つ敵軍ユニットをすべて撃破する（サイズ・エリアを問わない）（出典: atwiki/page-929「ホールドしたユニットの数以下の必要パワーの数字を持つ敵軍ユニットをすべて撃破する」・カード評価「サイズもエリアも問わない除去」）", () => {
     const s = resolveAll(accept(entered(2)));
     expect(s.players.player1.battle.filter((c) => c.instanceId.startsWith("TST-UNIT-0:mine")).every((c) => c.commandHeld)).toBe(true);
     expect(zoneOf(s, "player2", "SPEC-C1:a")).toBe("discard");
@@ -425,12 +442,12 @@ describe("RK-209 エラスモテリウムオルフェノク", () => {
     expect(zoneOf(s, "player2", "SPEC-C7:l")).toBe("rush");
   });
 
-  it.fails("RK-209: ホールドしなければ何も撃破しない（出典: atwiki/page-929「ホールドしてもよい。そうしたとき」）", () => {
+  it("RK-209: ホールドしなければ何も撃破しない（出典: atwiki/page-929「ホールドしてもよい。そうしたとき」）", () => {
     const s = settle(skip(entered(2)));
     expect(zoneOf(s, "player2", "SPEC-C1:a")).toBe("battle");
   });
 
-  it.fails("RK-209: 自軍バトルエリアに S ユニットがなければ（0体はホールドできない）発動しない（出典: atwiki/page-929 コメント欄「０枚ホールドなんて行動はありません。最低１枚はホールドしないと効果は発動しません」）", () => {
+  it("RK-209: 自軍バトルエリアに S ユニットがなければ（0体はホールドできない）発動しない（出典: atwiki/page-929 コメント欄「０枚ホールドなんて行動はありません。最低１枚はホールドしないと効果は発動しません」）", () => {
     const s = settle(entered(0));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-209");
     expect(zoneOf(s, "player2", "SPEC-C1:a")).toBe("battle");
@@ -465,14 +482,14 @@ describe("RK-210 仮面ライダーギャレンJF", () => {
     return s;
   };
 
-  it.fails("RK-210: 【バーニングショット】自軍ターン中、バトルエリアに出たとき、手札を3枚選んで見せるかを選べる（任意）（出典: atwiki/page-1079「自分の手札を3枚選び、相手に見せてもよい」）", () => {
+  it("RK-210: 【バーニングショット】自軍ターン中、バトルエリアに出たとき、手札を3枚選んで見せるかを選べる（任意）（出典: atwiki/page-1079「自分の手札を3枚選び、相手に見せてもよい」）", () => {
     const s = entered(HAND);
     expectChoiceFrom(s, "player1", "RK-210");
     expect(choiceIds(s)).toEqual(HAND.map((c) => c.instanceId).sort());
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-210: 見せた3枚の必要パワーの数字が番号順（1・2・3。並びは問わない）に揃えば、敵軍 S ユニットを1体選び撃破する（M は対象外）（出典: atwiki/page-1079「見せたカードの必要パワーの数字が番号順…に揃うなら、敵軍Sユニットを1体選び撃破する」）", () => {
+  it("RK-210: 見せた3枚の必要パワーの数字が番号順（1・2・3。並びは問わない）に揃えば、敵軍 S ユニットを1体選び撃破する（M は対象外）（出典: atwiki/page-1079「見せたカードの必要パワーの数字が番号順…に揃うなら、敵軍Sユニットを1体選び撃破する」）", () => {
     let s = show(entered(HAND), ["SPEC-C3:h3", "SPEC-C1:h1", "SPEC-C2:h2"]);
     expectChoiceFrom(s, "player1", "RK-210");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:a", "TST-UNIT-0:r"]);
@@ -482,13 +499,13 @@ describe("RK-210 仮面ライダーギャレンJF", () => {
     expect(s.players.player1.hand).toHaveLength(4);
   });
 
-  it.fails("RK-210: 番号順に揃わなければ（1・2・7）撃破しない（出典: atwiki/page-1079「番号順に揃うなら」）", () => {
+  it("RK-210: 番号順に揃わなければ（1・2・7）撃破しない（出典: atwiki/page-1079「番号順に揃うなら」）", () => {
     const s = settle(show(entered(HAND), ["SPEC-C1:h1", "SPEC-C2:h2", "SPEC-C7:h7"]));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-210");
     expect(zoneOf(s, "player2", "TST-UNIT-0:a")).toBe("battle");
   });
 
-  it.fails("RK-210: 手札が3枚未満なら見せられない（出典: atwiki/page-1079「自分の手札を3枚選び」）", () => {
+  it("RK-210: 手札が3枚未満なら見せられない（出典: atwiki/page-1079「自分の手札を3枚選び」）", () => {
     const s = settle(entered([inst("SPEC-C1", "h1"), inst("SPEC-C2", "h2")]));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-210");
   });

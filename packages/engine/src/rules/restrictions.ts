@@ -93,6 +93,7 @@ import { damageGateBlocksEntry } from "./keywordGapRuntime";
 import { rk6BlocksBattleEntry } from "./rk/rk6Fields";
 import { rk8BlocksBattleEntry } from "./rk/rk8UnitEffects";
 import { rk9BlocksBattleEntry } from "./rk/rk9Fields";
+import { rk10BlocksBattleEntry, rk10ElasmoHoldReduction, rk10OmegaIgnoresEntryHold } from "./rk/rk10Fields";
 import {
   rs482BlocksAttackStrike,
   rs579BlocksAttackStrikeOnRushTurn,
@@ -209,6 +210,10 @@ export function requiredBattleEntryHolds(
   if (unitHold > 0 && beastSwordIgnoresEntryHold(state, playerId)) {
     unitHold = 0;
   }
+  // RK-199 オメガゼール【ゼール種の統率】: 「オメガゼール」以外の「レイヨウ型」の自軍ユニットの「1つホールドしなければ出られない」は無効。
+  if (unitHold > 0 && rk10OmegaIgnoresEntryHold(state, playerId, unit)) unitHold = 0;
+  // RK-209 エラスモテリウムオルフェノク ※: ホールドする数は相手の手札1枚につき1少なくなる（rules/rk/rk10Fields.ts）。
+  if (unitHold > 0) unitHold = Math.max(0, unitHold - rk10ElasmoHoldReduction(state, playerId, unit));
   const lgHold = isMediumUnit(state.definitions, unit.cardId)
     ? countActiveLightningGravity(state)
     : 0;
@@ -363,6 +368,7 @@ export function canMoveUnitToBattle(
   if (def.type === "unit" && rk8BlocksBattleEntry(state, playerId, unit)) return false;
   // RK-177 蜂女【催眠音波】でホールドしなかったユニット（rules/rk/rk9Fields.ts）。
   if (def.type === "unit" && rk9BlocksBattleEntry(state, playerId, unit)) return false;
+  if (def.type === "unit" && rk10BlocksBattleEntry(state, playerId, unit)) return false;
   // RS-289 / XP-023「※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない」（atwiki/page-416）。
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
@@ -502,6 +508,7 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   if (def.type === "unit" && rk8BlocksBattleEntry(state, playerId, unit)) return false;
   // RK-177 蜂女【催眠音波】でホールドしなかったユニット（rules/rk/rk9Fields.ts）。
   if (def.type === "unit" && rk9BlocksBattleEntry(state, playerId, unit)) return false;
+  if (def.type === "unit" && rk10BlocksBattleEntry(state, playerId, unit)) return false;
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {
