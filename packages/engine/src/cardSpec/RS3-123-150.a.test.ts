@@ -969,9 +969,15 @@ describe("RS-130 レッドワン", () => {
   });
 
   // faq-card-3 RS-130 Q1「いいえ、できません。」
-  it.todo(
-    "RS-130: 公式Q&A — J パワー・巨大化爆弾などユニットの下に重ねたオペレーションは選べない（出典: grnrngr/faq-card-3 RS-130 Q1）— ユニットの下に重ねたオペレーションの状態（RK-013 / RS-255 の重ね）を公開 API で組めない",
-  );
+  it("RS-130: 公式Q&A — J パワー（RK-013）のようにユニットの下に重ねたオペレーションは選べない（出典: grnrngr/faq-card-3 RS-130 Q1「いいえ、できません」。以前の it.todo は RK-013 の重ねを組めなかったため。RK-013 の照合で重ねた状態を確かめたので実テストにした）", () => {
+    const jp = { ...inst("TST-UNIT-0", "ju"), stackedCards: [inst("RK-013", "jp")] };
+    const t = enter(
+      st({ player1: { battle: fillers(3), rush: [inst("RS-130", "r1"), jp], operation: [inst("RS-124", "myop")] }, player2: { operation: [inst("RS-124", "enop")] } }),
+      "RS-130:r1",
+    );
+    expect(choiceIds(t)).toEqual(["RS-124:enop", "RS-124:myop"]);
+    expect(choiceIds(t)).not.toContain("RK-013:jp");
+  });
 
   // faq-card-3 RS-130 Q2「ターンプレイヤーの勝利となります。」
   it("RS-130: 公式Q&A — 互いにダメージ7点以上で命の泉をパワーゾーンに送ると、ターンプレイヤーの勝利（出典: grnrngr/faq-card-3 RS-130 Q2）", () => {

@@ -10,13 +10,18 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RK-NNN …」）で残す。
  *
  * 既存の照合と重なるもの: なし（RK-310 は RK12-232-252.b の RK-240 の照合で候補のカードとして使われるだけ）。
- * RK-312 Q1 は RK10-190-210.b の RK-203 の it.todo だったものをここ（RK-312）の it.todo に移した（RK-316 が必要なため、まだ照合できない）。
+ * RK-312 Q1 は RK10-190-210.b の RK-203 の it.todo だったものをここ（RK-312）に移した。RK-316 キバットバットⅢ世の照合（RK16-316-335）が済んだので、
+ * RK-312 Q1・Q2 は実テストにした（RK-316 Q1 は RK-312 Q2 と同じ問い）。
  */
 import { describe, expect, it } from "vitest";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState } from "../types/game";
 import {
   PLAIN_VEHICLE,
+  act,
+  enemyRushes,
+  legal,
+  pickAs,
   accept,
   attack,
   attackTargets,
@@ -84,8 +89,11 @@ const M2 = sUnit("SPEC-M2", { bp: 1000, powerCost: 2, size: "M" });
 const MAOU = sUnit("SPEC-MAOU", { category: "MA", bp: 1000, powerCost: 1, features: ["魔皇力"] });
 const MORPH = sUnit("SPEC-MORPH", { category: "WB", bp: 2000, powerCost: 1, features: ["仮面ライダー", "男"], text: KW_MORPH } as never);
 const MORPH2 = sUnit("SPEC-MORPH2", { category: "WB", bp: 3000, powerCost: 1, features: ["仮面ライダー", "男"], text: KW_MORPH } as never);
+/** 特徴が RK-312 仮面ライダーキバDF と完全一致する S ユニット（モーフを持たない。RK-316 があればモーフを得る）。 */
+const KIBA_LIKE = sUnit("SPEC-KIBA-LIKE", { category: "MA", bp: 2000, powerCost: 1, sp: 1, features: ["仮面ライダー", "男", "魔皇力"] });
+const ENEMY0 = sUnit("SPEC-ENEMY0", { category: "WB", bp: 1000, powerCost: 0 });
 const OP_RESIDENT = { id: "SPEC-RES", name: "SPEC-RES", type: "operation", category: "WB", rarity: "N", expansion: "card-spec", powerCost: 1 } as unknown as CardDefinition;
-const EXTRA = [PLAIN_VEHICLE, FEMALE3, FEMALE4, FEMALE3M, FEMALE_COND, MALE3, FEMALE_ATK, C1, C2, C3, M2, MAOU, MORPH, MORPH2, OP_RESIDENT];
+const EXTRA = [PLAIN_VEHICLE, FEMALE3, FEMALE4, FEMALE3M, FEMALE_COND, MALE3, FEMALE_ATK, C1, C2, C3, M2, MAOU, MORPH, MORPH2, OP_RESIDENT, KIBA_LIKE, ENEMY0];
 
 const board = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) => p1Battle(p1, p2, EXTRA);
 const rushPhase = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
@@ -282,13 +290,47 @@ describe("RK-312 仮面ライダーキバDF", () => {
     expect(zoneOf(s, "player2", "SPEC-C2:a")).toBe("battle");
   });
 
-  it.todo(
-    "RK-312: 公式Q&A — 【ドッガ・サンダースラップ】で敵軍 RK-203 ファイズAF を撃破し、捨札からラッシュされたファイズに対して自軍のモーフで置き換えたユニットは、元のユニットがアタック・ストライクしていなければアタック・ストライクできる（出典: atwiki/page-1365 Q1・atwiki/page-873 Q1）— 置き換え元がまだアタック・ストライクを選べる状況は、置き換え元が出たばかりの RK-312 自身（RK-316 キバットバットIII世【フエッスル】で得たモーフ）のときだけ組めるが、RK-316 は本範囲外で【フエッスル】が未実装",
-  );
+  it.fails("RK-312: 公式Q&A — 【ドッガ・サンダースラップ】で敵軍 RK-203 ファイズAF を撃破し、捨札からラッシュされたファイズに対して、RK-316【フエッスル】で得たモーフで出たばかりのキバDF を置き換えると、置き換えたユニットはアタック・ストライクできる（出典: atwiki/page-1365 Q1・atwiki/page-873 Q1「置き換える元のユニットが、まだアタックやストライクを行っていないのであれば、置き換えた後のユニットもアタックやストライクを行うことができます」）", () => {
+    let s = board(
+      { rush: [inst("RK-312", "df"), inst("RK-316", "kb")], command: [...releasedCat("WB", 2), inst("SPEC-KIBA-LIKE", "k2")], hand: deckCards(7, "h") },
+      { battle: [inst("RK-203", "af")], discard: [inst("RK-064", "fz")] },
+    );
+    s = enterWithHold(s, "RK-312:df", ["TST-OP:cWB0", "TST-OP:cWB1"]);
+    s = pick(accept(s), "RK-203:af");
+    for (let i = 0; i < 8 && morphCandidates(s).length === 0; i++) {
+      const p = s.pendingEffectChoice;
+      if (p && p.playerId === "player2" && p.validInstanceIds[0]) {
+        s = pickAs(s, "player2", p.validInstanceIds[0]);
+        continue;
+      }
+      const pass = legal(s).find((a) => a.type === "pass_leave_reaction" || a.type === "pass_rush_reaction");
+      if (!pass) break;
+      s = act(s, pass);
+    }
+    expect(zoneOf(s, "player2", "RK-064:fz")).toBe("rush");
+    expect(morphCandidates(s)).toEqual(["SPEC-KIBA-LIKE:k2"]);
+    s = pickAs(s, "player1", "SPEC-KIBA-LIKE:k2");
+    expect(zoneOf(s, "player1", "SPEC-KIBA-LIKE:k2")).toBe("battle");
+    expect(zoneOf(s, "player1", "RK-312:df")).toBe("command");
+    expect(canStrike(s, "SPEC-KIBA-LIKE:k2")).toBe(true);
+  });
 
-  it.todo(
-    "RK-312: 公式Q&A — RK-316 キバットバットIII世【フエッスル】で得たモーフでバトルエリアに出るときも、コマンドを2つホールドする（出典: atwiki/page-1365 Q2）— RK-316 は本範囲外のカード（照合がまだ。【フエッスル】のモーフ付与が未実装）",
-  );
+  /** 敵軍のラッシュに対し、自軍バトルエリアの「魔皇力」の S ユニット（RK-316 でモーフを得る）をコマンドゾーンの RK-312 と置き換える場面。 */
+  const morphIntoBattle = (command = releasedCat("WB", 2)) =>
+    enemyRushes({ rush: [inst("RK-316", "kb")], battle: [inst("SPEC-KIBA-LIKE", "k")], command: [inst("RK-312", "df"), ...command] }, "SPEC-ENEMY0:e", EXTRA);
+
+  it.fails("RK-312: 公式Q&A — RK-316【フエッスル】で得たモーフでバトルエリアに出るときも、自軍コマンドを2つホールドする（出典: atwiki/page-1365 Q2・atwiki/page-1346 Q1「はい、コマンドをホールドしてください」）", () => {
+    const s0 = morphIntoBattle();
+    expect(morphCandidates(s0)).toEqual(["RK-312:df"]);
+    const s = pickAs(s0, "player1", "RK-312:df");
+    expect(zoneOf(s, "player1", "RK-312:df")).toBe("battle");
+    expect(cardIn(s, "player1", "TST-OP:cWB0")?.commandHeld).toBe(true);
+    expect(cardIn(s, "player1", "TST-OP:cWB1")?.commandHeld).toBe(true);
+  });
+
+  it.fails("RK-312: リリース状態の自軍コマンドが1つしかなければ、モーフでバトルエリアに出ることはできない（置き換え先の候補にならない）（出典: atwiki/page-1365「※これは自軍コマンドを2つホールドしなければバトルエリアに出られない」・Q2）", () => {
+    expect(morphCandidates(morphIntoBattle(releasedCat("WB", 1)))).toEqual([]);
+  });
 });
 
 // ===========================================================================
