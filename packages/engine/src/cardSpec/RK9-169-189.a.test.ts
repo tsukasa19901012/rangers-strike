@@ -420,9 +420,17 @@ describe("RK-173 鬼の鎧", () => {
     expect(zoneOf(s, "player1", "RK-173:oy")).toBe("discard");
   });
 
-  it.todo(
-    "RK-173: 公式Q&A — 鬼の鎧と RK-250 サバイブを重ねたユニットがユニットでなくなるとき、ターンプレイヤーが処理順を選び、サバイブを先に解決すると留まるので鬼の鎧は捨札にならない（出典: atwiki/page-907 Q1）— RK-250 は本範囲外のカード",
-  );
+  // atwiki/page-907 Q1（= atwiki/page-1350 Q1）「…ターンプレイヤーの任意の順番で解決して下さい。なお、「RK-250 サバイブ」の効果を先に解決した場合、
+  // そのユニットは場に留まることになり…「RK-173 鬼の鎧」の「ユニットでなくなるとき」の効果は解決できなくなります。」
+  it.fails("RK-173: 公式Q&A — 鬼の鎧と RK-250 サバイブを重ねたユニットがユニットでなくなるとき、ターンプレイヤーが処理順を選び、サバイブを先に解決すると留まるので鬼の鎧は捨札にならない（出典: atwiki/page-907 Q1）", () => {
+    let s = st({ activePlayer: "player2", player1: { battle: [{ ...inst("TST-UNIT-0", "u"), stackedCards: [inst("RK-173", "oy"), inst("RK-250", "sv")] }], deck: deckCards(3) }, player2: { battle: [inst("SPEC-BIG", "atk")], deck: deckCards(3, "e") } }, EXTRA);
+    s = settle(attack(s, "SPEC-BIG:atk", "TST-UNIT-0:u", "player2"));
+    expectChoiceFrom(s, "player2", "RK-250");
+    s = resolveAll(pick(s, "RK-250:sv"));
+    expect(zoneOf(s, "player1", "TST-UNIT-0:u")).toBe("battle");
+    expect((cardIn(s, "player1", "TST-UNIT-0:u")?.stackedCards ?? []).map((c) => c.instanceId)).toEqual(["RK-173:oy"]);
+    expect(zoneOf(s, "player1", "RK-250:sv")).toBe("discard");
+  });
 });
 
 // ===========================================================================
