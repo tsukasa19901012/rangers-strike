@@ -462,8 +462,13 @@ function namedUnitPartnerNames(condition: { text?: string; partnerName?: string 
 }
 
 /** 「自軍「X」1体をパワーゾーンに送る」の X（名前が1つだけのとき）。 */
+const singleNamedPowerPartnerCache = new Map<string, string | undefined>();
+
 function singleNamedPowerPartner(text: string | undefined): string | undefined {
-  const m = /^自軍[「｢]([^」｣]+)[」｣]1体をパワーゾーンに送る。?$/.exec((text ?? "").normalize("NFKC").trim());
+  const key = text ?? "";
+  if (singleNamedPowerPartnerCache.has(key)) return singleNamedPowerPartnerCache.get(key);
+  const m = /^自軍[「｢]([^」｣]+)[」｣]1体をパワーゾーンに送る。?$/.exec(key.normalize("NFKC").trim());
+  singleNamedPowerPartnerCache.set(key, m?.[1]);
   return m?.[1];
 }
 

@@ -50,6 +50,16 @@ const CATEGORY_ABBR: Record<string, Category> = {
 const PER_NON_CATEGORY_COMMAND_RE =
   /このユニットは、自分と相手のコマンドゾーンにある「([^」]+)」以外のコマンド1つにつき「?BP[-－ー](\d+)」?され/;
 
+const perNonCategoryCommandCache = new Map<string, RegExpExecArray | null>();
+
+/** 本文ごとに PER_NON_CATEGORY_COMMAND_RE の結果を覚える（BP の計算のたびに本文を正規化しない）。 */
+function perNonCategoryCommandMatch(text: string): RegExpExecArray | null {
+  if (perNonCategoryCommandCache.has(text)) return perNonCategoryCommandCache.get(text)!;
+  const m = PER_NON_CATEGORY_COMMAND_RE.exec(text.normalize("NFKC"));
+  perNonCategoryCommandCache.set(text, m);
+  return m;
+}
+
 /**
  * 「※このユニットは、自分と相手のコマンドゾーンにある「X」以外のコマンド1つにつき「BP-N」され、BP0以下のとき撃破される。」
  * （RS-266〜270 フラッシュマン）。本文の文言から計算する。
@@ -63,7 +73,7 @@ export function perNonCategoryCommandBpPenalty(
   instance: CardInstance,
 ): number {
   const def = getDefinition(state.definitions, instance.cardId);
-  const m = def?.text ? PER_NON_CATEGORY_COMMAND_RE.exec(def.text.normalize("NFKC")) : null;
+  const m = def?.text ? perNonCategoryCommandMatch(def.text) : null;
   if (!m) return 0;
   const player = state.players[playerId];
   const inField =

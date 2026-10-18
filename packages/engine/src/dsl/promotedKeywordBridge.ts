@@ -63,7 +63,7 @@ export function isEngineNativeGrantKeyword(keyword: string): boolean {
 }
 
 export function attackedBpBoostAmount(cardId: string): number {
-  for (const keyword of listCardGrantKeywords(cardId)) {
+  for (const keyword of cachedCardGrantKeywords(cardId)) {
     const match = keyword.match(/^attacked_bp_boost_(\d+)$/);
     if (match) return Number(match[1]);
   }
@@ -72,7 +72,7 @@ export function attackedBpBoostAmount(cardId: string): number {
 
 export function rideBpBoostAmount(vehicleCardId: string): number {
   let total = 0;
-  for (const keyword of listCardGrantKeywords(vehicleCardId)) {
+  for (const keyword of cachedCardGrantKeywords(vehicleCardId)) {
     const match = keyword.match(/^ride_bp_boost_(\d+)$/);
     if (match) total += Number(match[1]);
   }
@@ -81,7 +81,7 @@ export function rideBpBoostAmount(vehicleCardId: string): number {
 
 export function rideAttackBpBoostAmount(vehicleCardId: string): number {
   let total = 0;
-  for (const keyword of listCardGrantKeywords(vehicleCardId)) {
+  for (const keyword of cachedCardGrantKeywords(vehicleCardId)) {
     const match = keyword.match(/^ride_attack_bp_boost_(\d+)$/);
     if (match) total += Number(match[1]);
   }
@@ -120,33 +120,50 @@ function currentTurnPlayer(state: GameState): PlayerId {
  * 「これにライドしているユニットは、敵軍ターン中、BP+○○される」（RS-581 魔導馬バリキオン（2nd）【1500万馬力】atwiki/page-1195）。
  * 文言から読み取る（DSL では ride_action の目印だけ）。
  */
+const riddenEnemyTurnBpCache = new Map<string, number>();
+
 function riddenVehicleEnemyTurnBpBonus(state: GameState, ownerId: PlayerId, vehicleCardId: string): number {
-  const text = (getDefinition(state.definitions, vehicleCardId)?.text ?? "").normalize("NFKC").replace(/\s+/g, "");
-  const m = text.match(/これにライドしているユニットは、敵軍ターン中、BP\+(\d+)される/);
-  if (!m) return 0;
-  return currentTurnPlayer(state) !== ownerId ? Number(m[1]) : 0;
+  const raw = getDefinition(state.definitions, vehicleCardId)?.text ?? "";
+  let amount = riddenEnemyTurnBpCache.get(raw);
+  if (amount === undefined) {
+    const m = raw.normalize("NFKC").replace(/\s+/g, "").match(/これにライドしているユニットは、敵軍ターン中、BP\+(\d+)される/);
+    amount = m ? Number(m[1]) : -1;
+    riddenEnemyTurnBpCache.set(raw, amount);
+  }
+  if (amount < 0) return 0;
+  return currentTurnPlayer(state) !== ownerId ? amount : 0;
 }
 
 function unitHasFeatureSlug(def: CardDefinition | undefined, slug: string): boolean {
   return featuresMatchKeywordSlug(def?.features, slug);
 }
 
-export function listCardGrantKeywords(cardId: string): string[] {
+const grantKeywordCache = new Map<string, readonly string[]>();
+
+/** カードの DSL 文書は対局中に変わらないので、ID ごとに grant_keyword の一覧を覚える。 */
+function cachedCardGrantKeywords(cardId: string): readonly string[] {
+  const hit = grantKeywordCache.get(cardId);
+  if (hit) return hit;
   const doc = getCardDslDocument(cardId);
-  if (!doc?.effects) return [];
   const keywords = new Set<string>();
-  for (const effect of doc.effects) {
+  for (const effect of doc?.effects ?? []) {
     for (const primitive of effect.effects) {
       if (primitive.type === "grant_keyword") {
         keywords.add(primitive.keyword);
       }
     }
   }
-  return [...keywords];
+  const list = Object.freeze([...keywords]);
+  grantKeywordCache.set(cardId, list);
+  return list;
+}
+
+export function listCardGrantKeywords(cardId: string): string[] {
+  return [...cachedCardGrantKeywords(cardId)];
 }
 
 export function cardHasGrantKeyword(cardId: string, keyword: string): boolean {
-  return listCardGrantKeywords(cardId).includes(keyword);
+  return cachedCardGrantKeywords(cardId).includes(keyword);
 }
 
 function quickBpForAttackCheck(
@@ -183,7 +200,7 @@ export function promotedKeywordBpBonus(
   playerId: PlayerId,
   instance: CardInstance,
 ): number {
-  const keywords = listCardGrantKeywords(instance.cardId);
+  const keywords = cachedCardGrantKeywords(instance.cardId);
   // 自軍エリアのオーラ（RS-289【獣奏剣】等）はキーワードを持たないユニットにもかかる。
   if (keywords.length === 0) return fieldAuraBpBonus(state, playerId, instance);
 
@@ -209,7 +226,7 @@ export function promotedKeywordBpBonus(
     if (keyword === "lead_ma_bp_boost_1000") {
       const own = state.players[playerId];
       const hasLeadMa = [...own.rush, ...own.battle].some((c) =>
-        listCardGrantKeywords(c.cardId).includes("lead_MA"),
+        cachedCardGrantKeywords(c.cardId).includes("lead_MA"),
       );
       if (hasLeadMa) bonus += 1000;
       continue;
@@ -276,7 +293,7 @@ function fieldAuraBpBonus(
     if (source.instanceId === instance.instanceId) {
       // 自分自身にもかかるオーラ（「すべての自軍ユニット」）は除外しない
     }
-    for (const keyword of listCardGrantKeywords(source.cardId)) {
+    for (const keyword of cachedCardGrantKeywords(source.cardId)) {
       // RS-289 / XP-023: 特徴「恐竜」を持つすべての自軍ユニットは BP+1000
       const allyFeatureBoost = keyword.match(/^ally_(.+)_bp_boost_(\d+)$/);
       if (allyFeatureBoost && unitHasFeatureSlug(def, allyFeatureBoost[1]!)) {
@@ -295,7 +312,7 @@ function fieldAuraBpBonus(
   // RS-430【獣拳トレーナー】は自軍と敵軍のすべての WB の S ユニットが対象（faq-card-6 RS-430 Q3）。
   // 自軍と敵軍のラッシュエリアに合わせて複数体あれば重複する（同 Q1）。
   for (const source of state.players[opponent(playerId)].rush) {
-    if (listCardGrantKeywords(source.cardId).includes("battle_position_sp_any_pos2_sp1")) {
+    if (cachedCardGrantKeywords(source.cardId).includes("battle_position_sp_any_pos2_sp1")) {
       bonus += robotoughBpBonus(def);
     }
   }
@@ -328,7 +345,7 @@ export function allyAttackedAuraBpBonus(
   const own = state.players[playerId];
   let bonus = 0;
   for (const source of [...own.rush, ...own.battle]) {
-    for (const keyword of listCardGrantKeywords(source.cardId)) {
+    for (const keyword of cachedCardGrantKeywords(source.cardId)) {
       if (
         keyword === "ally_suwato_attacked_bp_3000" &&
         (def.features ?? []).includes("スワット")
@@ -346,7 +363,7 @@ export function promotedKeywordSpFloor(
   playerId: PlayerId,
   instance: CardInstance,
 ): number {
-  const keywords = listCardGrantKeywords(instance.cardId);
+  const keywords = cachedCardGrantKeywords(instance.cardId);
   if (keywords.length === 0) return 0;
 
   const bp =
@@ -621,7 +638,7 @@ export function promotedDefenderBlocksAttack(
   }
 
   const attackerBp = quickBpForAttackCheck(state, attackerPlayerId, attacker.card);
-  const keywords = listCardGrantKeywords(defender.card.cardId);
+  const keywords = cachedCardGrantKeywords(defender.card.cardId);
 
   for (const keyword of keywords) {
     if (keyword === "enemy_cannot_attack") return true;
@@ -687,7 +704,7 @@ export function promotedAttackerCannotTarget(
   if (!attacker || !defender) return false;
 
   const defenderBp = quickBpForAttackCheck(state, defenderPlayerId, defender.card);
-  const keywords = listCardGrantKeywords(attacker.card.cardId);
+  const keywords = cachedCardGrantKeywords(attacker.card.cardId);
 
   const defenderZone = findInZone(state.players[defenderPlayerId], "battle", defenderInstanceId)
     ? "battle"

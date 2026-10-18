@@ -472,8 +472,19 @@ ABILITIES.push({
   resolve: (state, playerId, card) => activateRm2FieldAbility(state, playerId, card),
 });
 
+// 能力の当てはめはカード ID（とカードの文言）だけで決まるので、ID ごとに覚える。表に能力が足されたら捨てる。
+const abilityForCache = new Map<string, FieldActivatedAbility | undefined>();
+let abilityForCacheSize = -1;
+
 function abilityFor(cardId: string): FieldActivatedAbility | undefined {
-  return ABILITIES.find((a) => (a.matches ? a.matches(cardId) : isSameCardIdentity(a.cardId, cardId)));
+  if (abilityForCacheSize !== ABILITIES.length) {
+    abilityForCache.clear();
+    abilityForCacheSize = ABILITIES.length;
+  }
+  if (abilityForCache.has(cardId)) return abilityForCache.get(cardId);
+  const found = ABILITIES.find((a) => (a.matches ? a.matches(cardId) : isSameCardIdentity(a.cardId, cardId)));
+  abilityForCache.set(cardId, found);
+  return found;
 }
 
 /** 起動できる場のカード（instanceId）。自軍ターンの、能力ごとに決まったフェイズ中のみ。 */

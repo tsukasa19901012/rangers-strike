@@ -97,8 +97,16 @@ function fieldUnits(state: Pick<GameState, "players">, playerId: PlayerId): Card
   return [...p.battle, ...p.rush];
 }
 
+const normalizedTextCache = new Map<string, string>();
+
 function textOf(state: Pick<GameState, "definitions">, cardId: string): string {
-  return (getDefinition(state.definitions, cardId)?.text ?? "").normalize("NFKC").replace(/\s+/g, "");
+  const raw = getDefinition(state.definitions, cardId)?.text ?? "";
+  let text = normalizedTextCache.get(raw);
+  if (text === undefined) {
+    text = raw.normalize("NFKC").replace(/\s+/g, "");
+    normalizedTextCache.set(raw, text);
+  }
+  return text;
 }
 
 function isUnitCard(state: Pick<GameState, "definitions">, cardId: string): boolean {
