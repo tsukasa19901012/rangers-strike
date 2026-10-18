@@ -552,9 +552,18 @@ describe("RK-175 仮面ライダー新1号", () => {
     expect(bpOf(boosted, "player1", "TST-UNIT-0:next")).toBe(5000);
   });
 
-  it.todo(
-    "RK-175: 公式Q&A — BK-001 タイフーン（1号）で、山札から新1号を「仮面ライダー1号」として選んで手札に加えられる（出典: atwiki/page-1084 Q1）— BK-001 は本範囲外のカード（「仮面ライダー1号」として使えることは RK-176 の（）書きで確かめる）",
-  );
+  it("RK-175: 公式Q&A — BK-001 タイフーン（1号）で、山札から新1号を「仮面ライダー1号」として選んで手札に加えられる（出典: atwiki/page-1084 Q1・atwiki/page-715 Q1。BK-001 の照合は cardSpec BK1-001-019）", () => {
+    const r = playOp(
+      st({ phase: "rush", player1: { hand: [inst("BK-001", "op")], command: releasedCat("ET", 1), power: powerCards(2), deck: [inst("RK-175", "new1"), ...deckCards(3)] }, player2: { deck: deckCards(3, "e") } }),
+      "player1",
+      "BK-001:op",
+    );
+    expect(r.ok, r.error).toBe(true);
+    let s = pick(r.state, "search");
+    expect(choiceIds(s)).toEqual(["RK-175:new1"]);
+    s = resolveAll(pick(s, "RK-175:new1"));
+    expect(zoneOf(s, "player1", "RK-175:new1")).toBe("hand");
+  });
   it("RK-175: RC — このターン、敵軍ユニットのチェイスは無効になる（ライド中に撃破されても乗り換えられない）（出典: atwiki/page-1084「チェイスの効果は無効になる」・R-KW-CHASE-01）", () => {
     const chaser = { ...inst("SPEC-CHASER", "c"), mountedOnInstanceId: "SPEC-VEHICLE:ev1" };
     const enemy = { battle: [inst("SPEC-VEHICLE", "ev1"), chaser], rush: [inst("SPEC-VEHICLE", "ev2")] };
