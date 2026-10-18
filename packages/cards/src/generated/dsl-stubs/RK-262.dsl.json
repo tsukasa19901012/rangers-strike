@@ -57,8 +57,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "wing_attack_enemy_rush",
-          "duration": "permanent"
+          "keyword": "rk13::RK-262::voltic_shooter",
+          "duration": "turn"
         }
       ]
     }

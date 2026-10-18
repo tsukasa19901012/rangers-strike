@@ -43,13 +43,13 @@
       "name": "高性能レーダー",
       "text": "ライドされている「カブトロー」からこのビークルがコンビネーションしている間、これにライドしているユニットは次の能力を得る⇒敵軍ユニットにアタックされない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-257::reda",
-          "duration": "turn"
+          "keyword": "rk13::RK-257::radar",
+          "duration": "permanent"
         }
       ],
       "optional": false

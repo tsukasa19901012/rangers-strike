@@ -6,6 +6,8 @@ import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects"
 import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
 import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
 import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
+import { rk13OnAttackWin, rk13OnBattleDestroy } from "./rk/rk13UnitEffects";
+import { rk13BattleUsesPrintedBp, rk13BlocksResist, rk13PrintedBp } from "./rk/rk13Fields";
 import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
 import { rk11KyosukeWinButDestroyed } from "./rk/rk11Fields";
 import { openRk12SurviveStay } from "./rk/rk12UnitEffects";
@@ -1430,8 +1432,12 @@ export function resolveBattlePendingCore(
   const attackerBp = rk3Values ? rk3Values.attacker : battleAttackerBpBonus(battleState, pending);
   const defenderBp = rk3Values ? rk3Values.defender : battleDefenderBp(battleState, pending);
 
-  const destroyAttacker = attackerBp <= defenderBp;
-  const destroyDefender = defenderBp <= attackerBp;
+  // RK-268 デスガロン【分析能力】: バトルの勝ち負けは本来の BP で決める（BP の変動そのものは無効にしない。atwiki/page-1349 Q2。rules/rk/rk13Fields.ts）。
+  const printedBattle = !rk3Values && rk13BattleUsesPrintedBp(battleState);
+  const compareAttackerBp = printedBattle ? rk13PrintedBp(battleState, refreshedAttackerFound.card.cardId) : attackerBp;
+  const compareDefenderBp = printedBattle ? rk13PrintedBp(battleState, refreshedDefenderFound.card.cardId) : defenderBp;
+  const destroyAttacker = compareAttackerBp <= compareDefenderBp;
+  const destroyDefender = compareDefenderBp <= compareAttackerBp;
 
   const winButSelfDestruct =
     !destroyAttacker &&
@@ -1511,7 +1517,7 @@ export function resolveBattlePendingCore(
 
   const finalDestroyAttacker =
     destroyAttacker || winButSelfDestruct || defenderCausesWinnerDestruction || reflectBarrierAttacker || venomAttacker;
-  const detail = `${cardName(battleState.definitions, refreshedDefenderFound.card.cardId)}:${attackerBp}vs${defenderBp}`;
+  const detail = `${cardName(battleState.definitions, refreshedDefenderFound.card.cardId)}:${compareAttackerBp}vs${compareDefenderBp}`;
   const log = buildLogEntry(
     attackerId,
     "battle",
@@ -1553,7 +1559,9 @@ export function resolveBattlePendingCore(
       !defenderCausesWinnerDestruction &&
       !reflectBarrierAttacker &&
       !venomAttacker &&
-      attackerZone === "battle",
+      attackerZone === "battle" &&
+      // RK-267【怪魔稲妻剣】: これとバトルして撃破された敵軍ユニットはレジストを発動できない（rules/rk/rk13Fields.ts）。
+      !rk13BlocksResist(refreshedDefenderFound.card.cardId),
     battleOpponentInstanceId: defenderInstanceId,
   };
 
@@ -1574,7 +1582,13 @@ export function resolveBattlePendingCore(
     discardAsDamage: defenderAsDamage || undefined,
     // ルール: R-KW-RESIST-03 — 防御側も「勝っても撃破」で倒された場合はレジスト不可（BP で負けたときだけ可）。
     registerEligible:
-      destroyDefender && !winButDefenderSelfDestruct && !reflectBarrierDefender && !venomDefender && defenderZone === "battle",
+      destroyDefender &&
+      !winButDefenderSelfDestruct &&
+      !reflectBarrierDefender &&
+      !venomDefender &&
+      defenderZone === "battle" &&
+      // RK-267【怪魔稲妻剣】（rules/rk/rk13Fields.ts）。
+      !rk13BlocksResist(refreshedAttackerFound.card.cardId),
     battleOpponentInstanceId: pending.attackerInstanceId,
   };
 
@@ -1640,6 +1654,10 @@ export function resolveBattlePendingCore(
           },
         };
       }
+      // RK-271【ライジングマイティキック】: バトルで撃破したとき（レジストの選択中でも撃破は済んでいる。rules/rk/rk13UnitEffects.ts）。
+      if (!withAttacker.pendingLeave && !finalDestroyAttacker) {
+        withAttacker = rk13OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
+      }
       if (!withAttacker.pendingLeave && !withAttacker.pendingRegister) {
         // 撃破は済み、別の選択が開いている — RS-226（段階 1）を先に、RS-212（段階 4）は段階の順に処理する。
         withAttacker = queueMirageKnuckle(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
@@ -1664,12 +1682,16 @@ export function resolveBattlePendingCore(
           withAttacker = rk9OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId);
           // RK-203【アクセルモード】（rules/rk/rk10UnitEffects.ts）。
           withAttacker = rk10OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+          // RK-269【シャドーセイバー】（rules/rk/rk13UnitEffects.ts）。
+          withAttacker = rk13OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
         }
         withAttacker = drainDeferredDestroyTriggers(withAttacker);
       }
       return finish(withAttacker, log);
     }
     nextState = endDestroyTriggerHold(leaveResult.state);
+    // RK-271【ライジングマイティキック】（rules/rk/rk13UnitEffects.ts）。
+    if (!finalDestroyAttacker) nextState = rk13OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
 
     if (refreshedAttackerFound.card.cardId === "RS-065") {
       const fb = resolveFocusedBreakthroughDamage(
@@ -1779,6 +1801,8 @@ export function resolveBattlePendingCore(
     if (!pending.effectBattle) nextState = rk9OnAttackWin(nextState, attackerId, pending.attackerInstanceId);
     // RK-203【アクセルモード】: 自軍ターン中、アタックしてバトルに勝ったとき（rules/rk/rk10UnitEffects.ts）。
     if (!pending.effectBattle) nextState = rk10OnAttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+    // RK-269【シャドーセイバー】: 自軍ターン中、アタックしてバトルに勝ったとき（rules/rk/rk13UnitEffects.ts）。
+    if (!pending.effectBattle) nextState = rk13OnAttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
   } else {
     nextState = markAttackerActed(nextState);
   }

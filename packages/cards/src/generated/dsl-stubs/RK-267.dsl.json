@@ -35,13 +35,13 @@
       "name": "怪魔稲妻剣",
       "text": "このユニットとバトルして撃破された敵軍ユニットは、レジストを発動する事ができない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-267::ma_ken",
-          "duration": "turn"
+          "keyword": "rk13::RK-267::kaima_inazuma",
+          "duration": "permanent"
         }
       ],
       "optional": false

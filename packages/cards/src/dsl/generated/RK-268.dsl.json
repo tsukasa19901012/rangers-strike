@@ -21,12 +21,12 @@
       "id": "unnamed_e280bbe695b5e8bb8de382bf",
       "text": "※敵軍ターン中、これがバトルで撃破されて捨札になったとき、これとバトルしたユニットを持ち主のコマンドゾーンかパワーゾーンに置いてもよい。（コマンドゾーンに置けるカードは通常5枚まで）",
       "trigger": {
-        "type": "on_destroy"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::RK-268::tankoregabatorud",
+          "keyword": "rk13::RK-268::battled_to_zone",
           "duration": "permanent"
         }
       ],
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-268::chikara_e58886",
+          "keyword": "rk13::RK-268::analysis",
           "duration": "permanent"
         }
       ],

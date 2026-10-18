@@ -6,6 +6,7 @@ import { openRk11UndeadReplace } from "../rules/rk/rk11UnitEffects";
 import { rk11IsHandSubstitute } from "../rules/rk/rk11Fields";
 import { rk12PlacesHeldOnRush } from "../rules/rk/rk12Fields";
 import { openRk12GorgomWindow, trackRk12UnitHolds } from "../rules/rk/rk12UnitEffects";
+import { applyRk13AfterAction } from "../rules/rk/rk13UnitEffects";
 import { applyRk8AfterAction } from "../rules/rk/rk8UnitEffects";
 import { applyRk10AfterAction, rk10CraneDeclined, rk10CraneIntercept, runRk10OnRush } from "../rules/rk/rk10UnitEffects";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
@@ -1037,6 +1038,8 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRk9AfterAction(state, next, turnPlayerOf(state));
   // RK-195【再起動と暴走】（rules/rk/rk10UnitEffects.ts）。
   if (applyActionDepth === 0) next = applyRk10AfterAction(state, next, turnPlayerOf(state));
+  // RK-260【体内マグマ】の「ユニットでなくなるとき」・RK-271【ライジングマイティキック】の撃破（rules/rk/rk13UnitEffects.ts）。
+  if (applyActionDepth === 0) next = applyRk13AfterAction(state, next);
   // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
   if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
     const endingPlayer = next.rk9RushEndAdvance;

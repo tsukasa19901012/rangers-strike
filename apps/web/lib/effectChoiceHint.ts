@@ -363,6 +363,32 @@ const RK12_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk252_onkaku_hibiki: { label: "変身音叉 音角", hint: "自軍ラッシュエリアに出す、手札の「仮面ライダー響鬼」を選んでください（出さないなら「スキップ」）" },
 };
 
+/** ザ・マスクドライダーEXP vol.4 RK-253〜RK-273 のカード固有の選択（engine rules/rk/rk13UnitEffects.ts）の表示名と案内文。 */
+const RK13_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk253_oyako_opponent: { label: "親子の絆", hint: "自分の山札の下に戻す、自分の手札のカードを選んでください" },
+  rk253_oyako_self: { label: "親子の絆", hint: "自分の山札の下に戻す、自分の手札のカードを選んでください" },
+  rk255_ultra_cyclone: { label: "ウルトラサイクロン", hint: "持ち主のコマンドゾーンにホールド状態で置く、必要パワー3以下の敵軍バトルエリアのユニットを選んでください（このユニットは捨札になります。しないなら「スキップ」）" },
+  rk255_ultra_cyclone_command: { label: "ウルトラサイクロン", hint: "捨札にする敵軍コマンドを選んでください（コマンドが5つあるため）" },
+  rk256_kabutoro_thunder: { label: "カブトローサンダー", hint: "このターン BP－1000 する、SP が空欄でない敵軍バトルエリアの S ユニットを選んでください（しないなら「スキップ」）" },
+  rk258_poison: { label: "猛毒腐食液", hint: "相手に1点ダメージを与えますか？" },
+  rk259_tarot_draw: { label: "トランプ占い", hint: "1枚ドローしますか？" },
+  rk260_magma_stack: { label: "体内マグマ", hint: "このユニットの下にウラ向きで重ねる、自軍捨札のカードを選んでください（しないなら「スキップ」）" },
+  rk260_magma_destroy: { label: "体内マグマ", hint: "撃破する、捨札にしたカードと同じ必要パワーの敵軍 S ユニットを選んでください（しないなら「スキップ」）" },
+  rk261_revolcane: { label: "リボルケイン", hint: "持ち主のパワーゾーンにダメージにして置く、敵軍捨札のオペレーションカードを選んでください（しないなら「スキップ」）" },
+  rk264_acrobat_burn: { label: "アクロバットバーン", hint: "自分の山札の下に戻す、自分の S ユニットを選んでください（ライドしているユニットの BP 以下）" },
+  rk265_riding_arrow: { label: "ライディングアロー", hint: "持ち主の山札の下に戻す、敵軍常駐に重ねたカード（一番上）を選んでください（しないなら「スキップ」）" },
+  rk266_shotgun: { label: "ショットガン", hint: "撃破する敵軍ラッシュエリアのユニットを選んでください（BP の合計3000以下、「メカ」の自軍ユニットの数まで。途中で確定してもよい）" },
+  rk268_deathgaron: { label: "デスガロン", hint: "バトルしたユニットを置く先を選んでください（command: コマンドゾーン／power: パワーゾーン。置かないなら「スキップ」）" },
+  rk270_scout: { label: "偵察", hint: "敵軍山札の上から1枚をオモテにしますか？" },
+  rk270_scout_place: { label: "偵察", hint: "オモテにしたカードを戻す先を選んでください（deck_top: 山札の上／deck_bottom: 山札の下）" },
+  rk272_splash_rc: { label: "ライジングスプラッシュドラゴン", hint: "自軍山札の上に戻す手札のカードを選んでください（その RC の効果を無効にします。しないなら「スキップ」）" },
+  rk272_splash_nc: { label: "ライジングスプラッシュドラゴン", hint: "自軍山札の上に戻す手札のカードを選んでください（その NC の効果を無効にします。しないなら「スキップ」）" },
+  rk273_pegasus: { label: "ライジングブラストペガサス", hint: "手札に戻す自軍ラッシュエリアの S ユニットを選んでください（1体以上。途中で確定してもよい。しないなら「スキップ」）" },
+  rk273_pegasus_mode: { label: "ライジングブラストペガサス", hint: "行う方を選んでください（destroy: 戻した数まで自分のユニットを撃破／damage: 自分のユニットを1体ダメージにする）" },
+  rk273_pegasus_destroy: { label: "ライジングブラストペガサス", hint: "撃破する自分のユニットを選んでください（手札に戻された数まで、可能な限り）" },
+  rk273_pegasus_damage: { label: "ライジングブラストペガサス", hint: "ダメージにする自分のユニットを選んでください" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -406,7 +432,8 @@ export function effectChoiceHint(
     RK9_CHOICE_UI[pending.effectId] ??
     RK10_CHOICE_UI[pending.effectId] ??
     RK11_CHOICE_UI[pending.effectId] ??
-    RK12_CHOICE_UI[pending.effectId];
+    RK12_CHOICE_UI[pending.effectId] ??
+    RK13_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -611,6 +638,7 @@ export function effectChoiceTitle(
     RK10_CHOICE_UI[pending.effectId]?.label ??
     RK11_CHOICE_UI[pending.effectId]?.label ??
     RK12_CHOICE_UI[pending.effectId]?.label ??
+    RK13_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

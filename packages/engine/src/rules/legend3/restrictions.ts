@@ -52,6 +52,7 @@ import {
   startSelectUnitChoice,
 } from "../pendingChoices";
 import { keywordAllowsAttackIntoRush } from "../keywordGapRuntime";
+import { rk13AttackerCanAttackRush, rk13DefenderBlocksAttack } from "../rk/rk13Fields";
 
 export function hasDarkDealInRush(state: GameState, playerId: PlayerId): boolean {
   return state.players[playerId].rush.some(
@@ -492,6 +493,8 @@ export function canAttackDefender(
   if (defenderCard && rk1DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
   // RK-029 ※・RK-037【グライディング】（rules/rk/rk2UnitEffects.ts）。
   if (defenderCard && rk2DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
+  // RK-257 テントロー【高性能レーダー】・RK-263 バイオライダー【液化】（rules/rk/rk13Fields.ts）。
+  if (defenderCard && rk13DefenderBlocksAttack(state, attackerPlayerId, defenderPlayerId, defenderCard)) return false;
   // RK-124 スネークオルフェノク【人を守る決意】（rules/rk/rk6Fields.ts）。
   if (defenderCard && rk6SnakeBlocksSelection(state, attackerPlayerId, defenderPlayerId, defenderCard, unitFeatures)) return false;
 
@@ -523,6 +526,8 @@ export function canAttackDefender(
     }
     // RS-622 グリフォーザー【グリフォカリバー4世】（rules/legend1/set9NamedEffectsA.ts）。
     if (set9AAttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
+    // RK-262 ロボライダー【ボルティックシューター】（RC を発動したターン。rules/rk/rk13Fields.ts）。
+    if (rk13AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
     // RK-103 仮面ライダークウガPF【ブラストペガサス】（rules/rk/rk5Fields.ts）。
     if (rk5AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
     // RK-217 イーグルアンデッド【滑空攻撃】（敵軍ラッシュエリアのレジストを持つユニット。rules/rk/rk11Fields.ts）。

@@ -51,6 +51,7 @@ import {
   releasedN,
   resident,
   resolveAll,
+  rideOff,
   riding,
   settle,
   skip,
@@ -109,7 +110,7 @@ describe("RK-253 親子の絆", () => {
   const okBoard = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
     rushPhase({ operation: [resident("RK-253", "ok")], hand: [inst("SPEC-C1", "h1")], ...p1 }, { hand: [inst("SPEC-C2", "eh")], ...p2 });
 
-  it.fails("RK-253: 自軍ラッシュフェイズに、太字部分『相手は1枚ドローしてから自分自身の手札を1枚選び、自分自身の山札の下に戻す』を実行できる — 相手は1枚ドローしてから、手札（ドローしたカードを含む）から1枚選ぶ（出典: atwiki/page-1376）", () => {
+  it("RK-253: 自軍ラッシュフェイズに、太字部分『相手は1枚ドローしてから自分自身の手札を1枚選び、自分自身の山札の下に戻す』を実行できる — 相手は1枚ドローしてから、手札（ドローしたカードを含む）から1枚選ぶ（出典: atwiki/page-1376）", () => {
     const s0 = okBoard();
     expect(canActivateResident(s0, "RK-253:ok")).toBe(true);
     const s = activateResident(s0, "RK-253:ok");
@@ -119,19 +120,19 @@ describe("RK-253 親子の絆", () => {
   });
 
   // atwiki/page-1376 Q1「いいえ、できません。」
-  it.fails("RK-253: 公式Q&A — 相手は太字部分の実行を拒否できない（相手の選択は見送れない）（出典: atwiki/page-1376 Q1）", () => {
+  it("RK-253: 公式Q&A — 相手は太字部分の実行を拒否できない（相手の選択は見送れない）（出典: atwiki/page-1376 Q1）", () => {
     const s = activateResident(okBoard(), "RK-253:ok");
     expect(choicePlayer(s)).toBe("player2");
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-253: 相手が選んだカードは相手の山札の下に戻る（出典: atwiki/page-1376「自分自身の山札の下に戻す」）", () => {
+  it("RK-253: 相手が選んだカードは相手の山札の下に戻る（出典: atwiki/page-1376「自分自身の山札の下に戻す」）", () => {
     const s = pickAs(activateResident(okBoard(), "RK-253:ok"), "player2", "SPEC-C2:eh");
     expect(s.players.player2.deck.at(-1)?.instanceId).toBe("SPEC-C2:eh");
     expect(zoneOf(s, "player2", "TST-OP:e0")).toBe("hand");
   });
 
-  it.fails("RK-253: そうしたとき、自分は1枚ドローしてから、自分の手札（ドローしたカードを含む）から1枚選ぶ（見送れない）（出典: atwiki/page-1376「そうしたとき、自分は1枚ドローしてから自分自身の手札を1枚選び」）", () => {
+  it("RK-253: そうしたとき、自分は1枚ドローしてから、自分の手札（ドローしたカードを含む）から1枚選ぶ（見送れない）（出典: atwiki/page-1376「そうしたとき、自分は1枚ドローしてから自分自身の手札を1枚選び」）", () => {
     const s = pickAs(activateResident(okBoard(), "RK-253:ok"), "player2", "SPEC-C2:eh");
     expect(zoneOf(s, "player1", "TST-OP:dk0")).toBe("hand");
     expectChoiceFrom(s, "player1", "RK-253");
@@ -139,14 +140,14 @@ describe("RK-253 親子の絆", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-253: 自分が選んだカードは自分の山札の下に戻る（出典: atwiki/page-1376「自分自身の山札の下に戻す」）", () => {
+  it("RK-253: 自分が選んだカードは自分の山札の下に戻る（出典: atwiki/page-1376「自分自身の山札の下に戻す」）", () => {
     let s = pickAs(activateResident(okBoard(), "RK-253:ok"), "player2", "SPEC-C2:eh");
     s = resolveAll(pick(s, "SPEC-C1:h1"));
     expect(s.players.player1.deck.at(-1)?.instanceId).toBe("SPEC-C1:h1");
     expect(zoneOf(s, "player1", "TST-OP:dk0")).toBe("hand");
   });
 
-  it.fails("RK-253: 自軍ラッシュフェイズごとに1度だけ（同じラッシュフェイズに2回目は実行できない）（出典: atwiki/page-1376「自軍ラッシュフェイズごとに1度だけ」）", () => {
+  it("RK-253: 自軍ラッシュフェイズごとに1度だけ（同じラッシュフェイズに2回目は実行できない）（出典: atwiki/page-1376「自軍ラッシュフェイズごとに1度だけ」）", () => {
     let s = pickAs(activateResident(okBoard(), "RK-253:ok"), "player2", "SPEC-C2:eh");
     s = resolveAll(pick(s, "SPEC-C1:h1"));
     expect(canActivateResident(s, "RK-253:ok")).toBe(false);
@@ -156,7 +157,7 @@ describe("RK-253 親子の絆", () => {
     expect(canActivateResident(nextPhase(okBoard()), "RK-253:ok")).toBe(false);
   });
 
-  it.fails("RK-253: ※タッグ — 太字部分のかわりに、他の自軍のタッグの常駐（RK-242 クライマックス刑事）の太字部分『オモテ向きの自軍パワーを1枚選び、自軍山札の上に戻す』を実行して、そうしたときの「自分は1枚ドローしてから…山札の下に戻す」を行える（出典: atwiki/page-1376 本文・カード評価「クライマックス刑事のテキストと置き換えると、手札1枚でパワーゾーンのカード1枚を確実に回収できる」・R-KW-TAG-01）", () => {
+  it("RK-253: ※タッグ — 太字部分のかわりに、他の自軍のタッグの常駐（RK-242 クライマックス刑事）の太字部分『オモテ向きの自軍パワーを1枚選び、自軍山札の上に戻す』を実行して、そうしたときの「自分は1枚ドローしてから…山札の下に戻す」を行える（出典: atwiki/page-1376 本文・カード評価「クライマックス刑事のテキストと置き換えると、手札1枚でパワーゾーンのカード1枚を確実に回収できる」・R-KW-TAG-01）", () => {
     let s = activateResident(okBoard({ operation: [resident("RK-253", "ok"), resident("RK-242", "cx")], power: [faceUp("TST-P", "up")] }), "RK-253:ok");
     expectChoiceFrom(s, "player1", "RK-253");
     expect(choiceIds(s)).toEqual(["RK-242:cx", "RK-253:ok"]);
@@ -169,7 +170,7 @@ describe("RK-253 親子の絆", () => {
     expect(s.players.player1.deck.at(-1)?.instanceId).toBe("SPEC-C1:h1");
   });
 
-  it.fails("RK-253: ※タッグ — 他の自軍のタッグの常駐（RK-242 クライマックス刑事）が、太字部分のかわりにこれの太字部分（相手のドローと山札の下に戻す）を実行して、その常駐の「そうしたとき」以降を行える（出典: atwiki/page-1376 カード評価「タッグのテキスト置き換えとしても非常に優秀。相手は手札を入れ替えるのみだが、こちらは強力なタッグオペレーションの効果を使える」・R-KW-TAG-01）", () => {
+  it("RK-253: ※タッグ — 他の自軍のタッグの常駐（RK-242 クライマックス刑事）が、太字部分のかわりにこれの太字部分（相手のドローと山札の下に戻す）を実行して、その常駐の「そうしたとき」以降を行える（出典: atwiki/page-1376 カード評価「タッグのテキスト置き換えとしても非常に優秀。相手は手札を入れ替えるのみだが、こちらは強力なタッグオペレーションの効果を使える」・R-KW-TAG-01）", () => {
     let s = activateResident(okBoard({ operation: [resident("RK-242", "cx"), resident("RK-253", "ok")], rush: [inst("SPEC-IMAGIN", "im")] }), "RK-242:cx");
     expect(choiceIds(s)).toContain("RK-253:ok");
     s = pick(s, "RK-253:ok");
@@ -203,7 +204,7 @@ describe("RK-254 仮面ライダーストロンガー", () => {
   /** 印刷 SP「！」のままの SP（比較用。RC を発動していないストロンガー）。 */
   const baseSp = () => spOf(board({ battle: [inst("RK-254", "st")] }), "player1", "RK-254:st");
 
-  it.fails("RK-254: 【ストロンガー電キック】RC — このターン、BP+2000（6000）され、BP がすべてのユニットの中で一番高ければ「SP1」になる（出典: atwiki/page-1398）", () => {
+  it("RK-254: 【ストロンガー電キック】RC — このターン、BP+2000（6000）され、BP がすべてのユニットの中で一番高ければ「SP1」になる（出典: atwiki/page-1398）", () => {
     const s = kick({ battle: [inst("SPEC-E5000", "e")] });
     expect(bpOf(s, "player1", "RK-254:st")).toBe(6000);
     expect(spOf(s, "player1", "RK-254:st")).toBe(1);
@@ -220,7 +221,7 @@ describe("RK-254 仮面ライダーストロンガー", () => {
     expect(spOf(s, "player1", "RK-254:st")).toBe(baseSp());
   });
 
-  it.fails("RK-254: BP が同じユニットがいるだけなら「一番高い」として「SP1」になる（出典: atwiki/page-1398 カード評価「BPが同値のユニットがいる場合もSP1になる」）", () => {
+  it("RK-254: BP が同じユニットがいるだけなら「一番高い」として「SP1」になる（出典: atwiki/page-1398 カード評価「BPが同値のユニットがいる場合もSP1になる」）", () => {
     const s = kick({ battle: [inst("SPEC-E6000", "e")] });
     expect(spOf(s, "player1", "RK-254:st")).toBe(1);
   });
@@ -259,14 +260,14 @@ describe("RK-255 電波人間タックル（2nd）", () => {
   const cyclone = (p2: Partial<GameState["players"]["player2"]> = cycloneEnemy) =>
     rcRideOff(board({ rush: [inst("RK-255", "tk"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-255:tk", "SPEC-VEHICLE:v");
 
-  it.fails("RK-255: 【ウルトラサイクロン】RC — 発動するかを選べ（任意）、選べるのは必要パワーの数字が3以下の敵軍バトルエリアのユニット（サイズを問わない。ラッシュエリアは対象外）（出典: atwiki/page-1345「発動してもよい⇒敵軍バトルエリアから必要パワーの数字が3以下のユニットを1体選び」）", () => {
+  it("RK-255: 【ウルトラサイクロン】RC — 発動するかを選べ（任意）、選べるのは必要パワーの数字が3以下の敵軍バトルエリアのユニット（サイズを問わない。ラッシュエリアは対象外）（出典: atwiki/page-1345「発動してもよい⇒敵軍バトルエリアから必要パワーの数字が3以下のユニットを1体選び」）", () => {
     const s = cyclone();
     expectChoiceFrom(s, "player1", "RK-255");
     expect(choiceIds(s)).toEqual(["SPEC-C3:c3", "SPEC-M2:m2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-255: 発動すると、このユニットは捨札になり、選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-1345「このユニットを捨札にして」「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("RK-255: 発動すると、このユニットは捨札になり、選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-1345「このユニットを捨札にして」「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(pick(cyclone(), "SPEC-M2:m2"));
     expect(zoneOf(s, "player1", "RK-255:tk")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-M2:m2")).toBe("command");
@@ -279,7 +280,7 @@ describe("RK-255 電波人間タックル（2nd）", () => {
     expect(zoneOf(s, "player2", "SPEC-C3:c3")).toBe("battle");
   });
 
-  it.fails("RK-255: 敵軍のコマンドが5つで置けなければ、敵軍コマンドを1つ選んで捨札にしてから置く（出典: atwiki/page-1345「置けなければ敵軍コマンドを1つ選び、捨札にしてから置く」）", () => {
+  it("RK-255: 敵軍のコマンドが5つで置けなければ、敵軍コマンドを1つ選んで捨札にしてから置く（出典: atwiki/page-1345「置けなければ敵軍コマンドを1つ選び、捨札にしてから置く」）", () => {
     let s = pick(cyclone({ ...cycloneEnemy, command: releasedN(5, "TST-OP", "ec") }), "SPEC-C3:c3");
     expectChoiceFrom(s, "player1", "RK-255");
     expect(choiceIds(s)).toEqual(releasedN(5, "TST-OP", "ec").map((c) => c.instanceId).sort());
@@ -290,6 +291,10 @@ describe("RK-255 電波人間タックル（2nd）", () => {
     expect(cardIn(s, "player2", "SPEC-C3:c3")?.commandHeld).toBe(true);
     expect(s.players.player2.command).toHaveLength(5);
   });
+
+  it.todo(
+    "RK-255: 必要パワーの数字が3以下の敵軍バトルエリアのユニットがいないときに、このユニットを捨札にして発動だけできるか（出典: atwiki/page-1345「このユニットを捨札にして、次の効果を発動してもよい」）— 対象のない発動を認める出典がない（エンジンは対象がなければ尋ねない）",
+  );
 });
 
 // ===========================================================================
@@ -306,24 +311,25 @@ describe("RK-256 カブトロー", () => {
   const enemy = { battle: [inst("SPEC-E2000", "a"), inst("SPEC-NOSP2000", "n"), inst("SPEC-SPX2000", "x"), inst("SPEC-EM2000", "m"), inst("SPEC-E1000", "low")], rush: [inst("SPEC-E2000", "r")] };
   const thunder = (p2: Partial<GameState["players"]["player2"]> = enemy) => mount(board({ rush: [inst("SPEC-RCU", "r"), inst("RK-256", "kb")] }, p2), "SPEC-RCU:r", "RK-256:kb");
 
-  it.fails("RK-256: 【カブトローサンダー】自軍ターン中にバトルエリアに出たとき、SP が空欄でない敵軍バトルエリアの S ユニットから1体選べる（任意。SP「－」・M・ラッシュエリアは対象外。SP「！」は空欄ではない）（出典: atwiki/page-1357「敵軍バトルエリアからSPが空欄でないSユニットを1体選んでもよい」・カード評価「SPが空欄でないSユニットという制約」）", () => {
+  it("RK-256: 【カブトローサンダー】自軍ターン中にバトルエリアに出たとき、SP が空欄でない敵軍バトルエリアの S ユニットから1体選べる（任意。SP「－」・M・ラッシュエリアは対象外。SP「！」は空欄ではない）（出典: atwiki/page-1357「敵軍バトルエリアからSPが空欄でないSユニットを1体選んでもよい」・カード評価「SPが空欄でないSユニットという制約」）", () => {
     const s = thunder();
     expectChoiceFrom(s, "player1", "RK-256");
     expect(choiceIds(s)).toEqual(["SPEC-E1000:low", "SPEC-E2000:a", "SPEC-SPX2000:x"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-256: 選んだユニットは、このターン、BP－1000される（出典: atwiki/page-1357「このターン、選んだユニットはBP－1000される」）", () => {
+  it("RK-256: 選んだユニットは、このターン、BP－1000される（出典: atwiki/page-1357「このターン、選んだユニットはBP－1000される」）", () => {
     const s = settle(pick(thunder(), "SPEC-E2000:a"));
     expect(bpOf(s, "player2", "SPEC-E2000:a")).toBe(1000);
   });
 
-  it.fails("RK-256: BP0 以下になったユニットは撃破される（出典: atwiki/page-1357「（BP0以下になったユニットは撃破される）」・カード評価「BP1000までならバトルを挟まずに撃破できる」）", () => {
-    const s = settle(pick(thunder(), "SPEC-E1000:low"));
+  it("RK-256: BP0 以下になったユニットは撃破される（出典: atwiki/page-1357「（BP0以下になったユニットは撃破される）」・カード評価「BP1000までならバトルを挟まずに撃破できる」）", () => {
+    // ライドオフの選択（進行中の処理）を終えてから、ルールで撃破される（R-BP-02）。
+    const s = settle(rideOff(pick(thunder(), "SPEC-E1000:low"), false));
     expect(zoneOf(s, "player2", "SPEC-E1000:low")).toBe("discard");
   });
 
-  it.fails("RK-256: 選ばなければ何も起きない（出典: atwiki/page-1357「選んでもよい」）", () => {
+  it("RK-256: 選ばなければ何も起きない（出典: atwiki/page-1357「選んでもよい」）", () => {
     const s = settle(skip(thunder()));
     expect(bpOf(s, "player2", "SPEC-E2000:a")).toBe(2000);
     expect(zoneOf(s, "player2", "SPEC-E1000:low")).toBe("battle");
@@ -357,7 +363,7 @@ describe("RK-257 テントロー", () => {
   const radar = (kabutoro = riding(inst("RK-256", "kb"), inst("SPEC-RCU", "r"))) =>
     enemyTurn({ battle: [...kabutoro, ...riding(inst("RK-257", "tt"), inst("SPEC-FEMALE", "f"))] }, { battle: [inst("SPEC-E5000", "s"), inst("SPEC-EM2000", "m")] });
 
-  it.fails("RK-257: 【高性能レーダー】ライドされているカブトローからこれがコンビネーションしている間、これにライドしているユニットは敵軍ユニット（S・M とも）にアタックされない（出典: atwiki/page-1358）", () => {
+  it("RK-257: 【高性能レーダー】ライドされているカブトローからこれがコンビネーションしている間、これにライドしているユニットは敵軍ユニット（S・M とも）にアタックされない（出典: atwiki/page-1358）", () => {
     expect(attackersOf(radar(), "SPEC-FEMALE:f")).toEqual([]);
   });
 
@@ -387,19 +393,19 @@ describe("RK-258 ドクターケイト", () => {
     return settle(attack(board({ rush: [inst("RK-258", "kt")], battle: [inst("TST-UNIT-7", "big")], ...p1 }, { battle: [inst(cid, suf)] }), "TST-UNIT-7:big", target));
   };
 
-  it.fails("RK-258: 【猛毒腐食液】このターン、特徴「女」を持つ敵軍ユニットを撃破して捨札にしたなら、自分がターンを終えるとき、相手に1点ダメージを与えるかを選べる（任意）（出典: atwiki/page-1256）", () => {
+  it("RK-258: 【猛毒腐食液】このターン、特徴「女」を持つ敵軍ユニットを撃破して捨札にしたなら、自分がターンを終えるとき、相手に1点ダメージを与えるかを選べる（任意）（出典: atwiki/page-1256）", () => {
     const s = toTurnEnd(killed("SPEC-FEMALE:ef"), "RK-258");
     expect(zoneOf(s, "player2", "SPEC-FEMALE:ef")).toBe("discard");
     expectChoiceFrom(s, "player1", "RK-258");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-258: 与えると、相手は1点ダメージを受ける（出典: atwiki/page-1256「相手に1点ダメージを与えてもよい」）", () => {
+  it("RK-258: 与えると、相手は1点ダメージを受ける（出典: atwiki/page-1256「相手に1点ダメージを与えてもよい」）", () => {
     const s = settle(accept(toTurnEnd(killed("SPEC-FEMALE:ef"), "RK-258")));
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RK-258: 与えないことも選べる（出典: atwiki/page-1256「与えてもよい」）", () => {
+  it("RK-258: 与えないことも選べる（出典: atwiki/page-1256「与えてもよい」）", () => {
     const s = settle(skip(toTurnEnd(killed("SPEC-FEMALE:ef"), "RK-258")));
     expect(damageOf(s, "player2")).toBe(0);
   });
@@ -415,6 +421,13 @@ describe("RK-258 ドクターケイト", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-258");
     expect(damageOf(s, "player2")).toBe(0);
   });
+
+  it.todo(
+    "RK-258: 相手が自分の効果で撃破した自分の「女」のユニット（例: RK-244 ミッシングエースで相手が選んで撃破する）も「撃破して捨札にした」に数えるか（出典: atwiki/page-1256）— 撃破した主体の出典がない（エンジンは自分のターンに撃破されて捨札になった敵軍の「女」をすべて数える）",
+  );
+  it.todo(
+    "RK-258: 効果で追加された特徴「女」（RS 花忍者スイレン等）を持っていた敵軍ユニットも数えるか（出典: atwiki/page-1256 カード評価「花忍者スイレンで特徴を追加してやると使いやすくなる」）— 場を離れた後の特徴しか記録していない（エンジンは印刷の特徴と RK-001 の追加だけを見る）",
+  );
 });
 
 // ===========================================================================
@@ -436,7 +449,7 @@ describe("RK-259 ジェネラルシャドウ", () => {
   const baseSp = () => spOf(board({ battle: [inst("RK-259", "gs")] }), "player1", "RK-259:gs");
 
   for (const [n, id] of [[1, "SPEC-C1:t"], [3, "SPEC-C3:t"], [5, "SPEC-C5:t"]] as const) {
-    it.fails(`RK-259: 【トランプ占い】オモテにしたカードの必要パワーの数字が「${n}」なら、このターン、BP+4000（8000）され、そのカードは山札の下に戻る（出典: atwiki/page-1258）`, () => {
+    it(`RK-259: 【トランプ占い】オモテにしたカードの必要パワーの数字が「${n}」なら、このターン、BP+4000（8000）され、そのカードは山札の下に戻る（出典: atwiki/page-1258）`, () => {
       const s = resolveAll(tarot(id));
       expect(bpOf(s, "player1", "RK-259:gs")).toBe(8000);
       expect(s.players.player1.deck.at(-1)?.instanceId).toBe(id);
@@ -445,7 +458,7 @@ describe("RK-259 ジェネラルシャドウ", () => {
   }
 
   for (const [n, id] of [[2, "SPEC-C2:t"], [4, "SPEC-C4:t"], [6, "SPEC-C6:t"]] as const) {
-    it.fails(`RK-259: 必要パワーの数字が「${n}」なら、相手は1枚ドローするかを選べる（相手の任意。BP は変わらない）（出典: atwiki/page-1258「相手は1枚ドローしてもよい」）`, () => {
+    it(`RK-259: 必要パワーの数字が「${n}」なら、相手は1枚ドローするかを選べる（相手の任意。BP は変わらない）（出典: atwiki/page-1258「相手は1枚ドローしてもよい」）`, () => {
       const s = tarot(id);
       expectChoiceFrom(s, "player2", "RK-259");
       expect(canSkip(s)).toBe(true);
@@ -456,12 +469,12 @@ describe("RK-259 ジェネラルシャドウ", () => {
     });
   }
 
-  it.fails("RK-259: 相手がドローしないことを選べば、相手の手札は増えない（出典: atwiki/page-1258「ドローしてもよい」）", () => {
+  it("RK-259: 相手がドローしないことを選べば、相手の手札は増えない（出典: atwiki/page-1258「ドローしてもよい」）", () => {
     const s = settle(skip(tarot("SPEC-C2:t")));
     expect(s.players.player2.hand).toHaveLength(0);
   });
 
-  it.fails("RK-259: 必要パワーの数字が「7」以上なら、このターン「SP1」になる（「7-」の数字は7）（出典: atwiki/page-1258「「7」以上なら、このターン、これは「SP1」になる」・R-ADD-02）", () => {
+  it("RK-259: 必要パワーの数字が「7」以上なら、このターン「SP1」になる（「7-」の数字は7）（出典: atwiki/page-1258「「7」以上なら、このターン、これは「SP1」になる」・R-ADD-02）", () => {
     const s = resolveAll(tarot("SPEC-C7:t"));
     expect(spOf(s, "player1", "RK-259:gs")).toBe(1);
     expect(bpOf(s, "player1", "RK-259:gs")).toBe(4000);
@@ -469,7 +482,7 @@ describe("RK-259 ジェネラルシャドウ", () => {
     expect(spOf(t, "player1", "RK-259:gs")).toBe(1);
   });
 
-  it.fails("RK-259: 必要パワーの数字が「0」なら何も起きず、そのカードは山札の下に戻る（出典: atwiki/page-1258（0 は挙げられていない））", () => {
+  it("RK-259: 必要パワーの数字が「0」なら何も起きず、そのカードは山札の下に戻る（出典: atwiki/page-1258（0 は挙げられていない））", () => {
     const s = resolveAll(tarot("SPEC-C0:t"));
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(bpOf(s, "player1", "RK-259:gs")).toBe(4000);

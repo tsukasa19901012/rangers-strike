@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-271::raijingumaiteikiku",
+          "keyword": "rk13::RK-271::rising_mighty_kick",
           "duration": "turn"
         }
       ],

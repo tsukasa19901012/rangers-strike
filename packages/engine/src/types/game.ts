@@ -649,6 +649,23 @@ export type PendingEffectChoice = {
     /** RK-252: このカードを使用するためにホールドしたコマンド。 */
     paid?: string[];
   };
+  /** ザ・マスクドライダーEXP vol.4 RK-253〜RK-273 の選択の続き（rules/rk/rk13UnitEffects.ts）。 */
+  rk13Meta?: {
+    /** 効果の持ち主（相手が選ぶ選択のとき）。 */
+    owner?: PlayerId;
+    /** RK-266: 残りの BP の合計・選べる残りの数。RK-273: 撃破する残りの数。 */
+    budget?: number;
+    remaining?: number;
+    /** RK-255: 置く敵軍ユニット。RK-268: バトルしたユニット。RK-270: オモテにしたカード。 */
+    target?: string;
+    /** RK-260: まだ選んでいない、捨札にした重ねたカードの必要パワーの数字。 */
+    costs?: number[];
+    /** RK-272: 無効にするかを尋ねている RC（使ったプレイヤーとユニット）・NC（ユニット）。 */
+    rc?: { playerId: PlayerId; card: CardInstance };
+    nc?: string;
+    /** RK-273: 手札に戻したユニットの数。 */
+    count?: number;
+  };
   /** RK-208【迎撃の毒矢】: この選択に答えたら（発動を宣言したら）クレインの窓を開く（rules/rk/rk10UnitEffects.ts）。 */
   rk10CraneWatch?: { craneOwner: PlayerId; rushedOwner: PlayerId; rushedInstanceId: string };
   /** ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 の選択の続き（rules/rk/rk9UnitEffects.ts）。 */
@@ -1106,6 +1123,12 @@ export type GameState = {
   rk12ResumeOperation?: { playerId: PlayerId; instanceId: string; targetInstanceId?: string; extraInstanceId?: string };
   /** RK-251 の選択を済ませたオペレーション（同じ使用で2度は尋ねない）。 */
   rk12GorgomPassedOp?: string;
+  /** RK-272【ライジングスプラッシュドラゴン】: NC の効果を無効にするかの答え（rules/rk/rk13UnitEffects.ts）。 */
+  rk13NcNegation?: { instanceId: string; negate: boolean };
+  /** RK-272: 無効にしなかった RC の効果を実行している（同じ RC で2度は尋ねない）。 */
+  rk13RcBypass?: string;
+  /** RK-271【ライジングマイティキック】: 操作待ちがなくなってから撃破するユニット（rules/rk/rk13UnitEffects.ts applyRk13AfterAction）。 */
+  rk13PendingKick?: { playerId: PlayerId; ids: string[] };
   /** RK-177【催眠音波】の選択を終えたら、このプレイヤーのラッシュフェイズを終える（core/applyAction.ts）。 */
   rk9RushEndAdvance?: PlayerId;
   /**
@@ -1366,6 +1389,8 @@ export type TurnEndProgress = {
   rk10Queue?: string[];
   /** RK-216・RK-218・RK-221・RK-222 で得た「ターンを終えるとき」（rules/rk/rk11UnitEffects.ts）。 */
   rk11Queue?: string[];
+  /** RK-258・RK-260 の「自分がターンを終えるとき」（rules/rk/rk13UnitEffects.ts）。 */
+  rk13Queue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

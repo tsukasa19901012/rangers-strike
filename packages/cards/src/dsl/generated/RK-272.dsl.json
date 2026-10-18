@@ -43,11 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-272::raijingusupurashudoragon",
+          "keyword": "rk13::RK-272::rising_splash_dragon",
           "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

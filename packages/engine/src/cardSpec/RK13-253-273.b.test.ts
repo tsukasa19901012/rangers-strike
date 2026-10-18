@@ -88,14 +88,14 @@ describe("RK-260 一ツ目タイタン", () => {
   const ending = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     toTurnEnd(board({ battle: [inst("RK-260", "ti")], discard: [inst("SPEC-C3", "d3"), inst("TST-OP", "dop")], ...p1 }), "RK-260");
 
-  it.fails("RK-260: 【体内マグマ】自分がターンを終えるとき、自軍捨札からカードを1枚選ぶか（任意。ユニットカードに限らない）を選べる（出典: atwiki/page-1257「自軍捨札からカードを1枚選び、これの下にウラ向きで重ねてもよい」）", () => {
+  it("RK-260: 【体内マグマ】自分がターンを終えるとき、自軍捨札からカードを1枚選ぶか（任意。ユニットカードに限らない）を選べる（出典: atwiki/page-1257「自軍捨札からカードを1枚選び、これの下にウラ向きで重ねてもよい」）", () => {
     const s = ending();
     expectChoiceFrom(s, "player1", "RK-260");
     expect(choiceIds(s)).toEqual(["SPEC-C3:d3", "TST-OP:dop"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-260: 選んだカードはこれの下にウラ向きで重なる（捨札から離れる）（出典: atwiki/page-1257「これの下にウラ向きで重ねて」）", () => {
+  it("RK-260: 選んだカードはこれの下にウラ向きで重なる（捨札から離れる）（出典: atwiki/page-1257「これの下にウラ向きで重ねて」）", () => {
     const s = settle(pick(ending(), "SPEC-C3:d3"));
     const under = cardIn(s, "player1", "RK-260:ti")?.stackedCards ?? [];
     expect(under.map((c) => c.instanceId)).toEqual(["SPEC-C3:d3"]);
@@ -103,13 +103,13 @@ describe("RK-260 一ツ目タイタン", () => {
     expect(zoneOf(s, "player1", "SPEC-C3:d3")).toBeNull();
   });
 
-  it.fails("RK-260: 重ねないことも選べる（出典: atwiki/page-1257「重ねてもよい」）", () => {
+  it("RK-260: 重ねないことも選べる（出典: atwiki/page-1257「重ねてもよい」）", () => {
     const s = settle(skip(ending()));
     expect(cardIn(s, "player1", "RK-260:ti")?.stackedCards ?? []).toEqual([]);
     expect(zoneOf(s, "player1", "SPEC-C3:d3")).toBe("discard");
   });
 
-  it.fails("RK-260: ラッシュエリアにあっても発動する（出典: atwiki/page-1257「これが自軍エリアにある間」）", () => {
+  it("RK-260: ラッシュエリアにあっても発動する（出典: atwiki/page-1257「これが自軍エリアにある間」）", () => {
     const s = ending({ battle: [], rush: [inst("RK-260", "ti")] });
     expectChoiceFrom(s, "player1", "RK-260");
   });
@@ -125,14 +125,14 @@ describe("RK-260 一ツ目タイタン", () => {
       ),
     );
 
-  it.fails("RK-260: これがユニットでなくなるとき、下に重ねたウラ向きのカードはすべて捨札になる（出典: atwiki/page-1257「この下に重ねたウラ向きのカードをすべて捨札にする」）", () => {
+  it("RK-260: これがユニットでなくなるとき、下に重ねたウラ向きのカードはすべて捨札になる（出典: atwiki/page-1257「この下に重ねたウラ向きのカードをすべて捨札にする」）", () => {
     const s = resolveAll(titanDestroyed([faceDown("SPEC-C3", "u3"), faceDown("SPEC-C2", "u2")]));
     expect(zoneOf(s, "player1", "RK-260:ti")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-C3:u3")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-C2:u2")).toBe("discard");
   });
 
-  it.fails("RK-260: 敵軍ターン中なら、捨札にしたカードと同じ必要パワーの数字を持つ敵軍 S ユニット（エリアを問わない。M は対象外）から1体選んで撃破できる（任意）（出典: atwiki/page-1257「それが敵軍ターン中なら、…同じ必要パワーの数字を持つ敵軍Sユニットを1体選び撃破してもよい」）", () => {
+  it("RK-260: 敵軍ターン中なら、捨札にしたカードと同じ必要パワーの数字を持つ敵軍 S ユニット（エリアを問わない。M は対象外）から1体選んで撃破できる（任意）（出典: atwiki/page-1257「それが敵軍ターン中なら、…同じ必要パワーの数字を持つ敵軍Sユニットを1体選び撃破してもよい」）", () => {
     const s = titanDestroyed();
     expectChoiceFrom(s, "player1", "RK-260");
     expect(choiceIds(s)).toEqual(["SPEC-C3:e3", "SPEC-C3:r3"]);
@@ -142,7 +142,7 @@ describe("RK-260 一ツ目タイタン", () => {
     expect(zoneOf(t, "player2", "SPEC-C3:e3")).toBe("battle");
   });
 
-  it.fails("RK-260: 捨札にするカード1枚につき1体ずつ選べる（2枚なら2回）（出典: atwiki/page-1257「捨札にするカード1枚につき」）", () => {
+  it("RK-260: 捨札にするカード1枚につき1体ずつ選べる（2枚なら2回）（出典: atwiki/page-1257「捨札にするカード1枚につき」）", () => {
     let s = titanDestroyed([faceDown("SPEC-C3", "u3"), faceDown("SPEC-C2", "u2")]);
     const picked: string[] = [];
     for (let i = 0; i < 2; i++) {
@@ -157,7 +157,7 @@ describe("RK-260 一ツ目タイタン", () => {
     expect(zoneOf(s, "player2", "SPEC-C3:e3")).toBe("discard");
   });
 
-  it.fails("RK-260: 自軍ターン中にユニットでなくなったときは、重ねたカードを捨札にするだけで撃破はしない（出典: atwiki/page-1257「それが敵軍ターン中なら」）", () => {
+  it("RK-260: 自軍ターン中にユニットでなくなったときは、重ねたカードを捨札にするだけで撃破はしない（出典: atwiki/page-1257「それが敵軍ターン中なら」）", () => {
     let s = board({ battle: [withStacked(inst("RK-260", "ti"), [faceDown("SPEC-C3", "u3")])] }, { battle: [inst("TST-UNIT-7", "big"), inst("SPEC-C3", "e3")] });
     s = settle(attack(s, "RK-260:ti", "TST-UNIT-7:big"));
     expect(zoneOf(s, "player1", "RK-260:ti")).toBe("discard");
@@ -189,21 +189,21 @@ describe("RK-261 仮面ライダーBLACK RX", () => {
   const revolcane = (p2: Partial<GameState["players"]["player2"]> = { discard: [inst("TST-OP", "eop"), inst("SPEC-C3", "eu")] }) =>
     rcRideOff(board({ rush: [inst("RK-261", "rx"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-261:rx", "SPEC-VEHICLE:v");
 
-  it.fails("RK-261: 【リボルケイン】RC — 敵軍捨札のオペレーションカードから1枚選べる（任意。ユニットカードは選べない）（出典: atwiki/page-1242「敵軍捨て札からオペレーションカードを1枚選び、…置いてもよい」）", () => {
+  it("RK-261: 【リボルケイン】RC — 敵軍捨札のオペレーションカードから1枚選べる（任意。ユニットカードは選べない）（出典: atwiki/page-1242「敵軍捨て札からオペレーションカードを1枚選び、…置いてもよい」）", () => {
     const s = revolcane();
     expectChoiceFrom(s, "player1", "RK-261");
     expect(choiceIds(s)).toEqual(["TST-OP:eop"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-261: 選んだカードは持ち主（相手）のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-1242「持ち主のパワーゾーンにダメージにして置いて」）", () => {
+  it("RK-261: 選んだカードは持ち主（相手）のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-1242「持ち主のパワーゾーンにダメージにして置いて」）", () => {
     const s = settle(pick(revolcane(), "TST-OP:eop"));
     expect(zoneOf(s, "player2", "TST-OP:eop")).toBe("power");
     expect(cardIn(s, "player2", "TST-OP:eop")?.faceDown).toBe(true);
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RK-261: 置かないことも選べる（出典: atwiki/page-1242「置いてもよい」）", () => {
+  it("RK-261: 置かないことも選べる（出典: atwiki/page-1242「置いてもよい」）", () => {
     const s = settle(skip(revolcane()));
     expect(zoneOf(s, "player2", "TST-OP:eop")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(0);
@@ -241,7 +241,7 @@ describe("RK-262 ロボライダー", () => {
     expect(targetsOf(s, "RK-262:rb")).toEqual(["SPEC-E1000:b", "SPEC-E2000:r"]);
   });
 
-  it.fails("RK-262: ライドオフせずに（RC が発動せずに）出たときは、敵軍ラッシュエリアのユニットにアタックできない（出典: atwiki/page-1393「CN：RC」）", () => {
+  it("RK-262: ライドオフせずに（RC が発動せずに）出たときは、敵軍ラッシュエリアのユニットにアタックできない（出典: atwiki/page-1393「CN：RC」）", () => {
     const s = settle(enter(board({ rush: [inst("RK-262", "rb")] }, { rush: [inst("SPEC-E2000", "r")], battle: [inst("SPEC-E1000", "b")] }), "RK-262:rb"));
     expect(targetsOf(s, "RK-262:rb")).toEqual(["SPEC-E1000:b"]);
   });
@@ -270,7 +270,7 @@ describe("RK-263 バイオライダー", () => {
   const attackers = (bio: GameState["players"]["player1"]["battle"][number]) =>
     attackersOf(enemyTurn({ battle: [bio] }, { battle: [inst("SPEC-E2000", "s"), inst("SPEC-EM2000", "m")] }), "RK-263:bio");
 
-  it.fails("RK-263: 【液化】ホールド状態のとき、敵軍ユニット（S・M とも）にアタックされない（出典: atwiki/page-1359「ホールド状態のとき敵軍ユニットにアタックされない」）", () => {
+  it("RK-263: 【液化】ホールド状態のとき、敵軍ユニット（S・M とも）にアタックされない（出典: atwiki/page-1359「ホールド状態のとき敵軍ユニットにアタックされない」）", () => {
     expect(attackers(heldUnit("RK-263", "bio"))).toEqual([]);
   });
 
@@ -299,19 +299,19 @@ describe("RK-264 アクロバッター", () => {
   const burn = (rider = inst("SPEC-RC3000", "r"), p2: Partial<GameState["players"]["player2"]> = enemy) =>
     mount(board({ rush: [rider, inst("RK-264", "ab")] }, p2), rider.instanceId, "RK-264:ab");
 
-  it.fails("RK-264: 【アクロバットバーン】自軍ターン中にバトルエリアに出たとき、相手は自分の S ユニット（エリアを問わない）のうち、ライドしているユニットの BP（3000）以下の BP を持つものから1体選ぶ（見送れない。M は対象外）（出典: atwiki/page-1373「これにライドしているユニットのBP以下のBPを持つユニットを、相手は自分自身のSユニットの中から1体選び」）", () => {
+  it("RK-264: 【アクロバットバーン】自軍ターン中にバトルエリアに出たとき、相手は自分の S ユニット（エリアを問わない）のうち、ライドしているユニットの BP（3000）以下の BP を持つものから1体選ぶ（見送れない。M は対象外）（出典: atwiki/page-1373「これにライドしているユニットのBP以下のBPを持つユニットを、相手は自分自身のSユニットの中から1体選び」）", () => {
     const s = burn();
     expectChoiceFrom(s, "player2", "RK-264");
     expect(choiceIds(s)).toEqual(["SPEC-E1000:r", "SPEC-E2000:a"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-264: 相手が選んだユニットは相手の山札の下に戻る（出典: atwiki/page-1373「自分自身の山札の下に戻す」）", () => {
+  it("RK-264: 相手が選んだユニットは相手の山札の下に戻る（出典: atwiki/page-1373「自分自身の山札の下に戻す」）", () => {
     const s = settle(pickAs(burn(), "player2", "SPEC-E2000:a"));
     expect(s.players.player2.deck.at(-1)?.instanceId).toBe("SPEC-E2000:a");
   });
 
-  it.fails("RK-264: 比べるのはライドしているユニットの今の BP（本来の BP ではない）（出典: atwiki/page-1373「これにライドしているユニットのBP以下」。RK-028 の「本来のBP」とは書き方が違う）", () => {
+  it("RK-264: 比べるのはライドしているユニットの今の BP（本来の BP ではない）（出典: atwiki/page-1373「これにライドしているユニットのBP以下」。RK-028 の「本来のBP」とは書き方が違う）", () => {
     const s = burn({ ...inst("SPEC-RC3000", "r"), bpModifier: 500 });
     expect(choiceIds(s)).toEqual(["SPEC-E1000:r", "SPEC-E2000:a", "SPEC-E3500:c"]);
   });
@@ -343,25 +343,25 @@ describe("RK-265 ライドロン", () => {
   const arrow = (p2: Partial<GameState["players"]["player2"]> = enemy) =>
     mount(board({ rush: [inst("SPEC-RC3000", "r"), inst("RK-265", "rd")] }, p2), "SPEC-RC3000:r", "RK-265:rd");
 
-  it.fails("RK-265: 【ライディングアロー】自軍ターン中、ライドされてバトルエリアに出たとき、敵軍常駐に重ねたカードの一番上の1枚を選べる（任意）（出典: atwiki/page-1374「敵軍常駐の上に重ねたカードの上から1枚選び、…戻してもよい」）", () => {
+  it("RK-265: 【ライディングアロー】自軍ターン中、ライドされてバトルエリアに出たとき、敵軍常駐に重ねたカードの一番上の1枚を選べる（任意）（出典: atwiki/page-1374「敵軍常駐の上に重ねたカードの上から1枚選び、…戻してもよい」）", () => {
     const s = arrow();
     expectChoiceFrom(s, "player1", "RK-265");
     expect(choiceIds(s)).toEqual(["TST-OP:s1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-265: 選んだカードは持ち主の山札の下に戻り、その下のカードは常駐に重なったまま（出典: atwiki/page-1374「持ち主の山札の下に戻して」）", () => {
+  it("RK-265: 選んだカードは持ち主の山札の下に戻り、その下のカードは常駐に重なったまま（出典: atwiki/page-1374「持ち主の山札の下に戻して」）", () => {
     const s = settle(pick(arrow(), "TST-OP:s1"));
     expect(s.players.player2.deck.at(-1)?.instanceId).toBe("TST-OP:s1");
     expect((s.players.player2.operation[0]?.stackedCards ?? []).map((c) => c.instanceId)).toEqual(["TST-OP:s0"]);
   });
 
-  it.fails("RK-265: 戻さないことも選べる（出典: atwiki/page-1374「戻してもよい」）", () => {
+  it("RK-265: 戻さないことも選べる（出典: atwiki/page-1374「戻してもよい」）", () => {
     const s = settle(skip(arrow()));
     expect((s.players.player2.operation[0]?.stackedCards ?? []).map((c) => c.instanceId)).toEqual(["TST-OP:s0", "TST-OP:s1"]);
   });
 
-  it.fails("RK-265: ライドされずに出たときは発動しない（出典: atwiki/page-1374「これがライドされていれば」）", () => {
+  it("RK-265: ライドされずに出たときは発動しない（出典: atwiki/page-1374「これがライドされていれば」）", () => {
     const s = settle(enter(board({ battle: fill(1), rush: [inst("RK-265", "rd")] }, enemy), "RK-265:rd"));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-265");
     expect((s.players.player2.operation[0]?.stackedCards ?? []).length).toBe(2);
@@ -383,19 +383,19 @@ describe("RK-266 機甲隊長ガテゾーン", () => {
   const shotgun = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     rcRideOff(board({ rush: [inst("RK-266", "gz"), inst("SPEC-VEHICLE", "v"), inst("SPEC-MECHA", "me")], ...p1 }, enemy), "RK-266:gz", "SPEC-VEHICLE:v");
 
-  it.fails("RK-266: 【ショットガン】RC — 敵軍ラッシュエリアのユニットから選べる（任意。敵軍バトルエリアのユニット・BP3000 を超えるユニットは選べない）（出典: atwiki/page-1259「敵軍ラッシュエリアのユニットを、BPの合計が3000以下になるように選び撃破してもよい」）", () => {
+  it("RK-266: 【ショットガン】RC — 敵軍ラッシュエリアのユニットから選べる（任意。敵軍バトルエリアのユニット・BP3000 を超えるユニットは選べない）（出典: atwiki/page-1259「敵軍ラッシュエリアのユニットを、BPの合計が3000以下になるように選び撃破してもよい」）", () => {
     const s = shotgun();
     expectChoiceFrom(s, "player1", "RK-266");
     expect(choiceIds(s)).toEqual(["SPEC-E1000:a", "SPEC-E1000:c", "SPEC-E2000:b"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-266: BP の合計が3000以下になるように選ぶ（2000 を選んだら、残りは BP1000 以下だけ）（出典: atwiki/page-1259「BPの合計が3000以下になるように」）", () => {
+  it("RK-266: BP の合計が3000以下になるように選ぶ（2000 を選んだら、残りは BP1000 以下だけ）（出典: atwiki/page-1259「BPの合計が3000以下になるように」）", () => {
     const s = pick(shotgun(), "SPEC-E2000:b");
     expect(choiceIds(s)).toEqual(["SPEC-E1000:a", "SPEC-E1000:c"]);
   });
 
-  it.fails("RK-266: 「メカ」を持つ自軍ユニットが2体（これ自身を含む）なら2体まで選んで撃破できる（出典: atwiki/page-1259「選べるユニットの数は、特徴「メカ」を持つ自軍ユニットの数までとする」）", () => {
+  it("RK-266: 「メカ」を持つ自軍ユニットが2体（これ自身を含む）なら2体まで選んで撃破できる（出典: atwiki/page-1259「選べるユニットの数は、特徴「メカ」を持つ自軍ユニットの数までとする」）", () => {
     let s = pick(pick(shotgun(), "SPEC-E1000:a"), "SPEC-E2000:b");
     if (s.pendingEffectChoice?.sourceCardId === "RK-266") s = confirm(s);
     s = resolveAll(s);

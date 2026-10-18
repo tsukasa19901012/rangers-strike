@@ -2,6 +2,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import { tryRk9OnEnterBattle } from "./rk/rk9UnitEffects";
 import { tryRk10OnEnterBattle } from "./rk/rk10UnitEffects";
 import { rk12MarkHeldEntry, tryRk12OnEnterBattle } from "./rk/rk12UnitEffects";
+import { checkRk13SplashBeforeNc, clearRk13NcNegation, tryRk13OnEnterBattle } from "./rk/rk13UnitEffects";
 import { openWarriorSoulNcChoice } from "./legend1/set9NamedEffectsA";
 import { tryResidentRushOnAllyEnterBattle } from "./residentAllyEnterRush";
 import { listNcColumnNamedEffects, getNumberComboEffect } from "@rangers-strike/cards";
@@ -308,6 +309,12 @@ export function resolveEnterBattleEffectsImpl(
     if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk12Choice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }
+    // RK-256・RK-264・RK-265（ライドして一緒に出たビークル）（rules/rk/rk13UnitEffects.ts）。
+    const beforeRk13Choice = nextState.pendingEffectChoice;
+    nextState = tryRk13OnEnterBattle(nextState, playerId, battleCard);
+    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk13Choice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
     // RS-523 臨気で得た能力・RS-521 スーパー戦隊魂（レッドが出たとき）（rules/legend1/set8NamedEffectsA.ts）。
     nextState = trySet8AOnEnterBattle(nextState, playerId, battleCard, isOwnBattlePhase(nextState, playerId));
     if (nextState.pendingEffectChoice) {
@@ -510,11 +517,17 @@ export function resolveEnterBattleEffectsImpl(
         battleBeforeEnter,
       )
     ) {
+      // RK-272【ライジングスプラッシュドラゴン】: 敵軍のクウガRD の持ち主が NC の効果を無効にするか（rules/rk/rk13UnitEffects.ts）。
+      const splash = checkRk13SplashBeforeNc(nextState, playerId, card);
+      if (splash.decision === "open") {
+        return { state: splash.state, logs, enterResumeFrom: "nc" };
+      }
       // RS-418【炎の眼光】: 敵軍のイフリートが NC の効果を無効にするか（rules/legend1/set6NamedEffectsB.ts）。
-      const glare = checkFlameGlare(nextState, playerId, card);
+      const glare: ReturnType<typeof checkFlameGlare> = splash.decision === "negate" ? { decision: "negate" } : checkFlameGlare(nextState, playerId, card);
       if (glare.decision === "open") {
         return { state: glare.state, logs, enterResumeFrom: "nc" };
       }
+      nextState = clearRk13NcNegation(nextState);
       if (glare.decision === "negate") {
         nextState = clearFlameGlareDecision(nextState);
         nextState = negateNcOnUnit(nextState, playerId, card.instanceId);

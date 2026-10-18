@@ -1080,6 +1080,7 @@ const SET8A_RESIDENT_PHASE: Record<string, "rush" | "battle"> = {
   "RK-242": "rush",
   "RK-244": "rush",
   "RK-248": "rush",
+  "RK-253": "rush",
 };
 const RESIDENT_USED_RULE = "set8a_resident_bold_used";
 
@@ -1157,6 +1158,11 @@ export type TagResident = {
   ownBold: (state: GameState, playerId: PlayerId, frame: PendingEffectChoice) => GameState;
   /** 太字部分を実行した後（「そうしたとき」以降）。state の pendingEffectChoice は frame。 */
   after: (state: GameState, playerId: PlayerId, frame: PendingEffectChoice) => ChoiceOutcome;
+  /**
+   * 自分の太字部分が選択を開くだけでは済まない（RK-253 の「相手は1枚ドローしてから」）とき true。入れ替えの選択が要らなければ、
+   * 選択だけを取り出さずに ownBold を実際の状態で呼ぶ。
+   */
+  directBegin?: boolean;
 };
 
 /**
@@ -1195,7 +1201,7 @@ const TAG_BOLD_RK248 = "tag_bold_rk248";
  * - RK-242 クライマックス刑事『オモテ向きの自軍パワーを1枚選び、自軍山札の上に戻す』
  * - RK-244 ミッシングエース『自分の手札から1枚選び捨札にする』
  * - RK-248 パラダイス・ロスト『敵軍捨札から1枚選び、持ち主の手札に加える』
- * （RK-253 親子の絆『相手は1枚ドローしてから…』は相手が選ぶ太字部分で、まだ貸せない。）
+ * （RK-253 親子の絆『相手は1枚ドローしてから…』は相手が選ぶ太字部分なので、下の registerForeignTagBold で貸す。）
  */
 const LENDING_BOLDS: Record<string, { effectId: string; kind: PendingEffectChoice["kind"]; candidates: (state: GameState, playerId: PlayerId) => string[] }> = {
   "RK-170": {
@@ -1225,13 +1231,40 @@ const LENDING_BOLDS: Record<string, { effectId: string; kind: PendingEffectChoic
   },
 };
 
+/**
+ * 太字部分を貸す常駐のうち、太字部分が1回の選択で済まないもの（相手が選ぶ等）。begin は太字部分の最初の選択を開き
+ * （pending は使っている常駐の選択。tagMeta の boldCardId・boldOpId は設定済み）、太字部分を終えたら finishForeignTagBold を呼ぶ。
+ * - RK-253 親子の絆『相手は1枚ドローしてから自分自身の手札を1枚選び、自分自身の山札の下に戻す』（rules/rk/rk13UnitEffects.ts）
+ */
+export type ForeignTagBold = {
+  available: (state: GameState, playerId: PlayerId) => boolean;
+  begin: (state: GameState, playerId: PlayerId, pending: PendingEffectChoice) => GameState;
+};
+
+function foreignTagBolds(): Record<string, ForeignTagBold> {
+  const holder = foreignTagBolds as unknown as { store?: Record<string, ForeignTagBold> };
+  return (holder.store ??= {});
+}
+
+export function registerForeignTagBold(cardId: string, bold: ForeignTagBold): void {
+  foreignTagBolds()[cardId] = bold;
+}
+
+/** 他の常駐の太字部分（registerForeignTagBold）を終えた: 使っている常駐の「そうしたとき」以降へ（hostPlayerId は使っている常駐の持ち主）。 */
+export function finishForeignTagBold(state: GameState, hostPlayerId: PlayerId, pending: PendingEffectChoice, log?: string): ChoiceOutcome {
+  const asHost: PendingEffectChoice = { ...pending, playerId: hostPlayerId };
+  return afterForeignBold({ ...state, pendingEffectChoice: asHost }, hostPlayerId, asHost, log);
+}
+
 /** 太字部分を入れ替えられる他の自軍のタッグの常駐（太字部分を実行できるもの）。 */
 function tagSwapOptions(state: GameState, playerId: PlayerId, hostOpId: string): string[] {
   return state.players[playerId].operation
     .filter(
       (op) =>
         op.instanceId !== hostOpId &&
-        (tagResidents()[op.cardId]?.boldAvailable(state, playerId) || (LENDING_BOLDS[op.cardId]?.candidates(state, playerId).length ?? 0) > 0),
+        (tagResidents()[op.cardId]?.boldAvailable(state, playerId) ||
+          foreignTagBolds()[op.cardId]?.available(state, playerId) ||
+          (LENDING_BOLDS[op.cardId]?.candidates(state, playerId).length ?? 0) > 0),
     )
     .map((op) => op.instanceId);
 }
@@ -1278,6 +1311,10 @@ export function tagEntryChoice(state: GameState, playerId: PlayerId, op: CardIns
 
 /** 太字部分の実行を始める（選択を開く）。 */
 export function beginTagBold(state: GameState, playerId: PlayerId, op: CardInstance, meta: TagChoiceMeta, resume?: PendingEffectChoice): GameState {
+  const own = tagResidents()[op.cardId];
+  if (own?.directBegin && tagSwapOptions(state, playerId, op.instanceId).length === 0 && own.boldAvailable(state, playerId)) {
+    return own.ownBold({ ...state, pendingEffectChoice: undefined }, playerId, { ...frameFor(state, playerId, op, meta), resumeChoice: resume });
+  }
   const entry = tagEntryChoice(state, playerId, op, meta);
   if (!entry) return state;
   return openEffectChoice({ ...state, pendingEffectChoice: undefined }, { ...entry, resumeChoice: resume });
@@ -1334,6 +1371,8 @@ register(
       case "RS-609":
         return { state: reopen(state, pending, { ...base, effectId: TAG_BOLD_RS609, kind: "select_unit", validInstanceIds: rushAreaSmallUnits(state, playerId) }), log };
       default: {
+        const foreign = foreignTagBolds()[op.cardId];
+        if (foreign) return { state: foreign.begin(state, playerId, base), log };
         const lending = LENDING_BOLDS[op.cardId];
         if (!lending) return { error: "invalid_target" };
         return { state: reopen(state, pending, { ...base, effectId: lending.effectId, kind: lending.kind, validInstanceIds: lending.candidates(state, playerId) }), log };

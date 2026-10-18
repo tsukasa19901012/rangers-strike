@@ -115,14 +115,14 @@ describe("RK-267 海兵隊長ボスガン", () => {
     expect(targetsOf(s, "RK-267:bg")).toEqual(["SPEC-E3500:b"]);
   });
 
-  it.fails("RK-267: 【怪魔稲妻剣】これがアタックしてバトルで撃破した敵軍ユニット（RK-262 ロボライダー）は、レジストを発動できない（出典: atwiki/page-1363・カード評価「レジスト持ちを一回のバトルで撃破できる」）", () => {
+  it("RK-267: 【怪魔稲妻剣】これがアタックしてバトルで撃破した敵軍ユニット（RK-262 ロボライダー）は、レジストを発動できない（出典: atwiki/page-1363・カード評価「レジスト持ちを一回のバトルで撃破できる」）", () => {
     let s = untilRegister(attack(board({ battle: [boosted("RK-267", "bg", 1000)] }, { battle: [inst("RK-262", "rb")] }), "RK-267:bg", "RK-262:rb"));
     expect(registerFor(s, "player2")).toBe(false);
     s = resolveAll(s);
     expect(zoneOf(s, "player2", "RK-262:rb")).toBe("discard");
   });
 
-  it.fails("RK-267: 敵軍ターンにこれにアタックしてバトルで撃破された敵軍ユニットも、レジストを発動できない（出典: atwiki/page-1363「このユニットとバトルして撃破された敵軍ユニットは」）", () => {
+  it("RK-267: 敵軍ターンにこれにアタックしてバトルで撃破された敵軍ユニットも、レジストを発動できない（出典: atwiki/page-1363「このユニットとバトルして撃破された敵軍ユニットは」）", () => {
     let s = untilRegister(attack(enemyTurn({ battle: [boosted("RK-267", "bg", 1000)] }, { battle: [inst("RK-262", "rb")] }), "RK-262:rb", "RK-267:bg", "player2"));
     expect(registerFor(s, "player2")).toBe(false);
     s = resolveAll(s);
@@ -151,7 +151,7 @@ describe("RK-268 デスガロン", () => {
     settle(attack(enemyTurn({ battle: [inst("RK-268", "dg")] }, { battle: [inst("TST-UNIT-7", "atk")], command: releasedN(2, "TST-OP", "ec"), ...p2 }), "TST-UNIT-7:atk", "RK-268:dg", "player2"));
 
   // atwiki/page-1349 Q1「その効果を発動した場合は、コマンドゾーンかパワーゾーン、好きな方を選んで置いてください。」
-  it.fails("RK-268: ※ 敵軍ターン中にバトルで撃破されて捨札になったとき、これとバトルしたユニットを持ち主のコマンドゾーンかパワーゾーンに置くかを選べる（任意。置き先は好きな方）（出典: atwiki/page-1349・Q1）", () => {
+  it("RK-268: ※ 敵軍ターン中にバトルで撃破されて捨札になったとき、これとバトルしたユニットを持ち主のコマンドゾーンかパワーゾーンに置くかを選べる（任意。置き先は好きな方）（出典: atwiki/page-1349・Q1）", () => {
     const s = destroyed();
     expect(zoneOf(s, "player1", "RK-268:dg")).toBe("discard");
     expectChoiceFrom(s, "player1", "RK-268");
@@ -159,27 +159,31 @@ describe("RK-268 デスガロン", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-268: コマンドゾーンを選ぶと、バトルしたユニットは持ち主のコマンドゾーンに置かれる（出典: atwiki/page-1349「持ち主のコマンドゾーンかパワーゾーンに置いてもよい」）", () => {
+  it("RK-268: コマンドゾーンを選ぶと、バトルしたユニットは持ち主のコマンドゾーンに置かれる（出典: atwiki/page-1349「持ち主のコマンドゾーンかパワーゾーンに置いてもよい」）", () => {
     const s = resolveAll(pick(destroyed(), "command"));
     expect(zoneOf(s, "player2", "TST-UNIT-7:atk")).toBe("command");
   });
 
-  it.fails("RK-268: パワーゾーンを選ぶと、バトルしたユニットは持ち主のパワーゾーンに置かれる（出典: atwiki/page-1349・Q1）", () => {
+  it("RK-268: パワーゾーンを選ぶと、バトルしたユニットは持ち主のパワーゾーンに置かれる（出典: atwiki/page-1349・Q1）", () => {
     const s = resolveAll(pick(destroyed(), "power"));
     expect(zoneOf(s, "player2", "TST-UNIT-7:atk")).toBe("power");
   });
 
   // atwiki/page-1349 Q1「ただし、コマンドがすでに5つある場合は、それ以上置くこと出来ないため、強制的にパワーゾーンを選んだことになります。」
-  it.fails("RK-268: 公式Q&A — 持ち主のコマンドがすでに5つなら、パワーゾーンしか選べない（出典: atwiki/page-1349 Q1）", () => {
+  it("RK-268: 公式Q&A — 持ち主のコマンドがすでに5つなら、パワーゾーンしか選べない（出典: atwiki/page-1349 Q1）", () => {
     const s = destroyed({ command: releasedN(5, "TST-OP", "ec") });
     expectChoiceFrom(s, "player1", "RK-268");
     expect(choiceIds(s)).toEqual(["power"]);
   });
 
-  it.fails("RK-268: 置かないことも選べる（バトルしたユニットは場に残る）（出典: atwiki/page-1349「置いてもよい」）", () => {
+  it("RK-268: 置かないことも選べる（バトルしたユニットは場に残る）（出典: atwiki/page-1349「置いてもよい」）", () => {
     const s = resolveAll(skip(destroyed()));
     expect(zoneOf(s, "player2", "TST-UNIT-7:atk")).toBe("battle");
   });
+
+  it.todo(
+    "RK-268: コマンドゾーンに置いたカードがホールド状態かリリース状態か（出典: atwiki/page-1349「持ち主のコマンドゾーンかパワーゾーンに置いてもよい」）— 状態の指定がなく、決める出典がない（エンジンは効果でコマンドゾーンに置くときの既定どおりホールド状態で置く）",
+  );
 
   it("RK-268: 自軍ターン中にバトルで撃破されたときは発動しない（出典: atwiki/page-1349「敵軍ターン中、」）", () => {
     const s = resolveAll(attack(board({ battle: [inst("RK-268", "dg")] }, { battle: [inst("TST-UNIT-7", "big")] }), "RK-268:dg", "TST-UNIT-7:big"));
@@ -187,13 +191,13 @@ describe("RK-268 デスガロン", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-7:big")).toBe("battle");
   });
 
-  it.fails("RK-268: 【分析能力】これが自軍バトルエリアにある間、バトルは本来の BP で行う（BP+3000 された自軍の BP1000 のユニットは、BP2000 の敵軍ユニットに負ける）（出典: atwiki/page-1349「すべてのバトルは本来のBPで行う」）", () => {
+  it("RK-268: 【分析能力】これが自軍バトルエリアにある間、バトルは本来の BP で行う（BP+3000 された自軍の BP1000 のユニットは、BP2000 の敵軍ユニットに負ける）（出典: atwiki/page-1349「すべてのバトルは本来のBPで行う」）", () => {
     const s = resolveAll(attack(board({ battle: [inst("RK-268", "dg"), boosted("SPEC-OWN2000", "o", 3000)] }, { battle: [inst("SPEC-E3500", "e")] }), "SPEC-OWN2000:o", "SPEC-E3500:e"));
     expect(zoneOf(s, "player1", "SPEC-OWN2000:o")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E3500:e")).toBe("battle");
   });
 
-  it.fails("RK-268: 【分析能力】敵軍ユニットの BP の増加もバトルでは使われない（敵軍ターンのバトルにも及ぶ）（出典: atwiki/page-1349「すべてのバトル」・カード評価「BP増強カードのメタカード」）", () => {
+  it("RK-268: 【分析能力】敵軍ユニットの BP の増加もバトルでは使われない（敵軍ターンのバトルにも及ぶ）（出典: atwiki/page-1349「すべてのバトル」・カード評価「BP増強カードのメタカード」）", () => {
     const s = resolveAll(attack(enemyTurn({ battle: [inst("RK-268", "dg"), inst("SPEC-OWN2000", "o")] }, { battle: [boosted("SPEC-E1000", "e", 5000)] }), "SPEC-E1000:e", "SPEC-OWN2000:o", "player2"));
     expect(zoneOf(s, "player2", "SPEC-E1000:e")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-OWN2000:o")).toBe("battle");
@@ -232,25 +236,29 @@ describe("RK-269 シャドームーン（2nd）", () => {
     expect(zoneOf(s, "player1", "RK-269:sm")).toBe("battle");
   });
 
+  it.todo(
+    "RK-269: SP「！」のユニット（印刷の SP が「！」）が「SP1以上のユニット」に当たるか（出典: atwiki/page-1283「SP1以上のユニットとバトルしたとき」）— 決める出典がない（エンジンの判定は従来どおり）",
+  );
+
   it("RK-269: ※ 敵軍バトルエリアにユニットがあるときはストライクできない（なければできる）（出典: atwiki/page-1283「敵軍バトルエリアにユニットがあるとき、これはストライクできない」）", () => {
     expect(canStrike(board({ battle: [inst("RK-269", "sm")] }, { battle: [inst("SPEC-E5000", "e")] }), "RK-269:sm")).toBe(false);
     expect(canStrike(board({ battle: [inst("RK-269", "sm")] }, { rush: [inst("SPEC-E5000", "e")] }), "RK-269:sm")).toBe(true);
   });
 
-  it.fails("RK-269: 【シャドーセイバー】自軍ターン中、アタックしてバトルに勝ったとき、追加でアタックできる（出典: atwiki/page-1283「追加でアタックかストライクを行ってもよい」）", () => {
+  it("RK-269: 【シャドーセイバー】自軍ターン中、アタックしてバトルに勝ったとき、追加でアタックできる（出典: atwiki/page-1283「追加でアタックかストライクを行ってもよい」）", () => {
     const s = resolveAll(attack(board({ battle: [inst("RK-269", "sm")] }, { battle: [inst("SPEC-E1000", "a"), inst("SPEC-E2000", "b")] }), "RK-269:sm", "SPEC-E1000:a"));
     expect(zoneOf(s, "player2", "SPEC-E1000:a")).toBe("discard");
     expect(canAttack(s, "RK-269:sm", "SPEC-E2000:b")).toBe(true);
   });
 
-  it.fails("RK-269: 勝って敵軍バトルエリアのユニットがいなくなれば、追加でストライクできる（出典: atwiki/page-1283「追加でアタックかストライクを」）", () => {
+  it("RK-269: 勝って敵軍バトルエリアのユニットがいなくなれば、追加でストライクできる（出典: atwiki/page-1283「追加でアタックかストライクを」）", () => {
     let s = resolveAll(attack(board({ battle: [inst("RK-269", "sm")] }, { battle: [inst("SPEC-E1000", "a")] }), "RK-269:sm", "SPEC-E1000:a"));
     expect(canStrike(s, "RK-269:sm")).toBe(true);
     s = settle(strike(s, "RK-269:sm"));
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RK-269: 追加のアタック・ストライクは1ターンに1度だけ（追加のアタックで勝っても、さらにアタック・ストライクはできない）（出典: atwiki/page-1283「このユニットの追加のアタックまたはストライクは、1ターンに1度だけとする」）", () => {
+  it("RK-269: 追加のアタック・ストライクは1ターンに1度だけ（追加のアタックで勝っても、さらにアタック・ストライクはできない）（出典: atwiki/page-1283「このユニットの追加のアタックまたはストライクは、1ターンに1度だけとする」）", () => {
     let s = resolveAll(attack(board({ battle: [inst("RK-269", "sm")] }, { battle: [inst("SPEC-E1000", "a"), inst("SPEC-E2000", "b"), inst("SPEC-E1000", "c")] }), "RK-269:sm", "SPEC-E1000:a"));
     s = resolveAll(attack(s, "RK-269:sm", "SPEC-E2000:b"));
     expect(zoneOf(s, "player2", "SPEC-E2000:b")).toBe("discard");
@@ -284,7 +292,7 @@ describe("RK-270 チャップ", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-270: オモテにしたら、そのカードを敵軍山札の上に戻すか下に戻すかを選ぶ — 下を選ぶと山札の下へ（出典: atwiki/page-1390「そのカードを山札の上に戻すか、下に戻すか選択する」）", () => {
+  it("RK-270: オモテにしたら、そのカードを敵軍山札の上に戻すか下に戻すかを選ぶ — 下を選ぶと山札の下へ（出典: atwiki/page-1390「そのカードを山札の上に戻すか、下に戻すか選択する」）", () => {
     let s = accept(scout());
     expectChoiceFrom(s, "player1", "RK-270");
     expect(choiceIds(s)).toEqual(["deck_bottom", "deck_top"]);
@@ -294,13 +302,13 @@ describe("RK-270 チャップ", () => {
     expect(s.players.player2.deck[0]?.instanceId).toBe("TST-OP:e1");
   });
 
-  it.fails("RK-270: 上を選ぶと、そのカードは山札の上に戻る（出典: atwiki/page-1390）", () => {
+  it("RK-270: 上を選ぶと、そのカードは山札の上に戻る（出典: atwiki/page-1390）", () => {
     const s = settle(pick(accept(scout()), "deck_top"));
     expect(s.players.player2.deck[0]?.instanceId).toBe("TST-OP:e0");
     expect(s.players.player2.deck).toHaveLength(5);
   });
 
-  it.fails("RK-270: 自軍バトルエリアの「チャップ」が2体なら発動しない（出典: atwiki/page-1390「自軍バトルエリアの「チャップ」が3体なら」）", () => {
+  it("RK-270: 自軍バトルエリアの「チャップ」が2体なら発動しない（出典: atwiki/page-1390「自軍バトルエリアの「チャップ」が3体なら」）", () => {
     const s = scout(1);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-270");
   });
@@ -352,7 +360,7 @@ describe("RK-271 仮面ライダークウガRM", () => {
   };
   const field = { battle: [inst("SPEC-E3500", "t"), inst("SPEC-E2000", "a"), inst("SPEC-E5000", "b"), inst("SPEC-EM2000", "m")], rush: [inst("SPEC-E1000", "r")] };
 
-  it.fails("RK-271: 【ライジングマイティキック】RC — これがバトルで敵軍ユニット（BP3500）を撃破したとき、自分と相手のバトルエリアの、BP3500 以下の S ユニットをすべて撃破する（自軍のユニットも。M・ラッシュエリア・BP の高いユニットは残る）（出典: atwiki/page-1399）", () => {
+  it("RK-271: 【ライジングマイティキック】RC — これがバトルで敵軍ユニット（BP3500）を撃破したとき、自分と相手のバトルエリアの、BP3500 以下の S ユニットをすべて撃破する（自軍のユニットも。M・ラッシュエリア・BP の高いユニットは残る）（出典: atwiki/page-1399）", () => {
     const s = kick("SPEC-E3500:t", { battle: [inst("SPEC-OWN2000", "o"), inst("SPEC-OWN5000", "o5")] }, field);
     expect(zoneOf(s, "player2", "SPEC-E3500:t")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E2000:a")).toBe("discard");
@@ -370,6 +378,10 @@ describe("RK-271 仮面ライダークウガRM", () => {
     expect(zoneOf(s, "player2", "SPEC-E3500:t")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E2000:a")).toBe("battle");
   });
+
+  it.todo(
+    "RK-271: 同じ BP のユニットとのバトルで相打ちになったとき（これも撃破される）にも【ライジングマイティキック】が発動するか（出典: atwiki/page-1399「これがバトルで敵軍ユニットを撃破したとき」）— 出典がない（エンジンはこれが場に残ったときだけ発動する）",
+  );
 });
 
 // ===========================================================================
@@ -392,21 +404,21 @@ describe("RK-272 仮面ライダークウガRD", () => {
   const enemyRc = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     enemyRcRideOff(enemyTurn({ rush: [inst("RK-272", "rd"), inst("SPEC-E1000", "u")], hand: [inst("TST-OP", "h")], ...p1 }, { rush: [inst("RK-139", "af"), inst("SPEC-VEHICLE", "v")] }), "RK-139:af", "SPEC-VEHICLE:v");
 
-  it.fails("RK-272: 【ライジングスプラッシュドラゴン】敵軍ユニットが RC の効果を発動したとき、その効果を実行する前に、自分の手札から1枚選ぶか（任意）を選べる（出典: atwiki/page-1370「その効果を実行する前に、自分の手札からカードを1枚選び自軍山札の上に戻してもよい」）", () => {
+  it("RK-272: 【ライジングスプラッシュドラゴン】敵軍ユニットが RC の効果を発動したとき、その効果を実行する前に、自分の手札から1枚選ぶか（任意）を選べる（出典: atwiki/page-1370「その効果を実行する前に、自分の手札からカードを1枚選び自軍山札の上に戻してもよい」）", () => {
     const s = enemyRc();
     expectChoiceFrom(s, "player1", "RK-272");
     expect(choiceIds(s)).toEqual(["TST-OP:h"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-272: 選んだカードは自軍山札の上に戻り、その RC の効果は無効になる（ゼロノスAF の効果で自軍ラッシュエリアのユニットを出さない）（出典: atwiki/page-1370「そうしたとき、そのNCまたはRCの効果を無効にする」）", () => {
+  it("RK-272: 選んだカードは自軍山札の上に戻り、その RC の効果は無効になる（ゼロノスAF の効果で自軍ラッシュエリアのユニットを出さない）（出典: atwiki/page-1370「そうしたとき、そのNCまたはRCの効果を無効にする」）", () => {
     const s = resolveAll(pick(enemyRc(), "TST-OP:h"));
     expect(s.players.player1.deck[0]?.instanceId).toBe("TST-OP:h");
     expect(zoneOf(s, "player1", "SPEC-E1000:u")).toBe("rush");
     expect(zoneOf(s, "player1", "RK-272:rd")).toBe("rush");
   });
 
-  it.fails("RK-272: 戻さなければ、RC の効果はそのまま実行される（出典: atwiki/page-1370「戻してもよい」）", () => {
+  it("RK-272: 戻さなければ、RC の効果はそのまま実行される（出典: atwiki/page-1370「戻してもよい」）", () => {
     const s = skip(enemyRc());
     expectChoiceFrom(s, "player1", "RK-139");
     expect(choiceIds(s)).toEqual(["RK-272:rd", "SPEC-E1000:u"]);
@@ -417,7 +429,7 @@ describe("RK-272 仮面ライダークウガRD", () => {
     expectChoiceFrom(s, "player1", "RK-139");
   });
 
-  it.fails("RK-272: 敵軍ユニットが NC の効果を発動したときも、手札を1枚山札の上に戻して無効にできる（RS-059 マジブルー【未来予知】のドローが起きない）（出典: atwiki/page-1370「敵軍ユニットがＮＣまたはＲＣの効果を発動させたとき」）", () => {
+  it("RK-272: 敵軍ユニットが NC の効果を発動したときも、手札を1枚山札の上に戻して無効にできる（RS-059 マジブルー【未来予知】のドローが起きない）（出典: atwiki/page-1370「敵軍ユニットがＮＣまたはＲＣの効果を発動させたとき」）", () => {
     let s = enemyTurn({ rush: [inst("RK-272", "rd")], hand: [inst("TST-OP", "h")] }, { battle: [inst("SPEC-CN1", "c1")], rush: [inst("RS-059", "mb")] });
     s = enter(s, "RS-059:mb", "player2");
     expectChoiceFrom(s, "player1", "RK-272");
@@ -426,7 +438,7 @@ describe("RK-272 仮面ライダークウガRD", () => {
     expect(s.players.player1.deck[0]?.instanceId).toBe("TST-OP:h");
   });
 
-  it.fails("RK-272: NC の効果を無効にしなければ、そのまま実行される（マジブルーはドローする）（出典: atwiki/page-1370「戻してもよい」）", () => {
+  it("RK-272: NC の効果を無効にしなければ、そのまま実行される（マジブルーはドローする）（出典: atwiki/page-1370「戻してもよい」）", () => {
     let s = enemyTurn({ rush: [inst("RK-272", "rd")], hand: [inst("TST-OP", "h")] }, { battle: [inst("SPEC-CN1", "c1")], rush: [inst("RS-059", "mb")] });
     s = resolveAll(skip(enter(s, "RS-059:mb", "player2")));
     expect(s.players.player2.hand).toHaveLength(1);
@@ -465,14 +477,14 @@ describe("RK-273 仮面ライダークウガRP", () => {
     return s;
   };
 
-  it.fails("RK-273: 【ライジングブラストペガサス】RC — 自軍ラッシュエリアの S ユニットを1体以上選べる（任意。M は対象外）（出典: atwiki/page-1277「自軍ラッシュエリアのSユニットを1体以上選び手札に戻してもよい」）", () => {
+  it("RK-273: 【ライジングブラストペガサス】RC — 自軍ラッシュエリアの S ユニットを1体以上選べる（任意。M は対象外）（出典: atwiki/page-1277「自軍ラッシュエリアのSユニットを1体以上選び手札に戻してもよい」）", () => {
     const s = pegasus();
     expectChoiceFrom(s, "player1", "RK-273");
     expect(choiceIds(s)).toEqual(["SPEC-OWN2000:x", "SPEC-OWN2000:y"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-273: 選んだユニットは手札に戻り、相手は「撃破する」か「ダメージにする」かを選ぶ（出典: atwiki/page-1277「そうしたとき、相手は次のどちらかを選び行う」）", () => {
+  it("RK-273: 選んだユニットは手札に戻り、相手は「撃破する」か「ダメージにする」かを選ぶ（出典: atwiki/page-1277「そうしたとき、相手は次のどちらかを選び行う」）", () => {
     const s = returned(["SPEC-OWN2000:x"]);
     expect(zoneOf(s, "player1", "SPEC-OWN2000:x")).toBe("hand");
     expect(zoneOf(s, "player1", "SPEC-OWN2000:y")).toBe("rush");
@@ -481,7 +493,7 @@ describe("RK-273 仮面ライダークウガRP", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-273: ◎撃破 — 相手は手札に戻したユニットの数（2）まで自分のユニット（サイズ・エリアを問わない）を選び撃破する（出典: atwiki/page-1277「手札に戻したユニットの数まで自分自身のユニットを可能な限り選び撃破する」）", () => {
+  it("RK-273: ◎撃破 — 相手は手札に戻したユニットの数（2）まで自分のユニット（サイズ・エリアを問わない）を選び撃破する（出典: atwiki/page-1277「手札に戻したユニットの数まで自分自身のユニットを可能な限り選び撃破する」）", () => {
     let s = pickAs(returned(["SPEC-OWN2000:x", "SPEC-OWN2000:y"]), "player2", "destroy");
     expectChoiceFrom(s, "player2", "RK-273");
     expect(choiceIds(s)).toEqual(["SPEC-E1000:a", "SPEC-E5000:b", "SPEC-EM2000:m"]);
@@ -494,14 +506,14 @@ describe("RK-273 仮面ライダークウガRP", () => {
     expect(zoneOf(s, "player2", "SPEC-E1000:a")).toBe("battle");
   });
 
-  it.fails("RK-273: ◎撃破 —「可能な限り」: 手札に戻した数より相手のユニットが少なければ、すべて撃破する（出典: atwiki/page-1277「可能な限り選び撃破する」）", () => {
+  it("RK-273: ◎撃破 —「可能な限り」: 手札に戻した数より相手のユニットが少なければ、すべて撃破する（出典: atwiki/page-1277「可能な限り選び撃破する」）", () => {
     let s = pickAs(returned(["SPEC-OWN2000:x", "SPEC-OWN2000:y"], { battle: [inst("SPEC-E1000", "a")] }), "player2", "destroy");
     if (s.pendingEffectChoice?.sourceCardId === "RK-273" && s.pendingEffectChoice.playerId === "player2") s = pickAs(s, "player2", "SPEC-E1000:a");
     s = resolveAll(s);
     expect(zoneOf(s, "player2", "SPEC-E1000:a")).toBe("discard");
   });
 
-  it.fails("RK-273: ◎ダメージ — 相手は自分のユニットを1体選び、ダメージにする（パワーゾーンにウラ向き）（出典: atwiki/page-1277「自分自身のユニットを1体選びダメージにする」）", () => {
+  it("RK-273: ◎ダメージ — 相手は自分のユニットを1体選び、ダメージにする（パワーゾーンにウラ向き）（出典: atwiki/page-1277「自分自身のユニットを1体選びダメージにする」）", () => {
     let s = pickAs(returned(["SPEC-OWN2000:x", "SPEC-OWN2000:y"]), "player2", "damage");
     expectChoiceFrom(s, "player2", "RK-273");
     expect(choiceIds(s)).toEqual(["SPEC-E1000:a", "SPEC-E5000:b", "SPEC-EM2000:m"]);

@@ -44,11 +44,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-255::urutorasaikuron",
+          "keyword": "rk13::RK-255::ultra_cyclone",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

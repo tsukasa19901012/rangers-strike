@@ -48,11 +48,11 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-273::raijinguburasutopegasasu",
+          "keyword": "rk13::RK-273::rising_blast_pegasus",
           "duration": "turn"
         }
       ]

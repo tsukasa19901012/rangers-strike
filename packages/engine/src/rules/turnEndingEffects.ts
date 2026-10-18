@@ -1,6 +1,7 @@
 import { clearRk8SeizedFor, collectRk8TurnEndQueue, openRk8TurnEndEntry } from "./rk/rk8UnitEffects";
 import { collectRk10TurnEndQueue, openRk10TurnEndEntry } from "./rk/rk10UnitEffects";
 import { collectRk11TurnEndQueue, openRk11TurnEndEntry } from "./rk/rk11UnitEffects";
+import { collectRk13TurnEndQueue, openRk13TurnEndEntry } from "./rk/rk13UnitEffects";
 import { collectOtherLinesTurnEndQueue, openOtherLinesTurnEndEntry } from "./legend1/otherLinesNamedEffects";
 import { applyRk5TurnEndDestroy, collectRk5TurnEndQueue, openRk5TurnEndEntry } from "./rk/rk5UnitEffects";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
@@ -355,6 +356,14 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.rk11Queue!;
     progress = { ...progress, rk11Queue: rest };
     nextState = openRk11TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // RK-258【猛毒腐食液】・RK-260【体内マグマ】の「自分がターンを終えるとき」（rules/rk/rk13UnitEffects.ts）。
+  if (!progress.rk13Queue) progress = { ...progress, rk13Queue: collectRk13TurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.rk13Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.rk13Queue!;
+    progress = { ...progress, rk13Queue: rest };
+    nextState = openRk13TurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {

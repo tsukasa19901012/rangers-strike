@@ -13,6 +13,7 @@ import { grantBpBoostOnPlayer, grantSp1OnPlayer, patchPlayer } from "./playerPat
 import type { ComboOutcome } from "./comboTypes";
 import { getDefinition } from "../core/catalog";
 import { hasKamenRiderTitle } from "./rk/rk1Features";
+import { openRk13SplashBeforeRc } from "./rk/rk13UnitEffects";
 
 function ridingComboLog(
   playerId: PlayerId,
@@ -82,6 +83,9 @@ export function resolveRidingComboOnRideOff(
   playerId: PlayerId,
   card: CardInstance,
 ): ComboOutcome {
+  // RK-272【ライジングスプラッシュドラゴン】: 敵軍のクウガRD の持ち主が、この RC の効果を実行する前に無効にするかを選ぶ（rules/rk/rk13UnitEffects.ts）。
+  const splash = openRk13SplashBeforeRc(state, playerId, card);
+  if (splash) return { state: splash, logs: [ridingComboLog(playerId, card.cardId, state.definitions, "rk272_splash_window")] };
   // RK-079 仮面ライダーの称号: ナンバーが RC になったユニットは、ライドオフでナンバーの欄の効果（DSL の nc）を発動する（atwiki/page-661）。
   if (hasKamenRiderTitle(card) && getDefinition(state.definitions, card.cardId)?.comboNumber !== "RC") {
     const nc = tryResolveDslTriggeredEffects({

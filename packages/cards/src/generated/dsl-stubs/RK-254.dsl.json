@@ -42,11 +42,8 @@
       },
       "effects": [
         {
-          "type": "modify_bp",
-          "target": {
-            "type": "trigger_source"
-          },
-          "amount": 2000,
+          "type": "grant_keyword",
+          "keyword": "rk13::RK-254::stronger_kick",
           "duration": "turn"
         }
       ]

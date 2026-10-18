@@ -4,6 +4,7 @@ import { applyGegeruOnEnemyDestroyed } from "../../rules/residentOps";
 import { opponent } from "../../core/helpers";
 import { openRk10OmegaDraw } from "../../rules/rk/rk10UnitEffects";
 import { openRk12CastleDoranDraw } from "../../rules/rk/rk12UnitEffects";
+import { applyRk13OnUnitLeft } from "../../rules/rk/rk13UnitEffects";
 
 export const unitLeftZoneListener: EventListener = (event, state) => {
   const leaveEvent = event as UnitLeftZoneEvent;
@@ -29,6 +30,8 @@ export const unitLeftZoneListener: EventListener = (event, state) => {
     nextState = openRk10OmegaDraw(nextState, leaveEvent.ownerPlayerId, leaveEvent.cardId, leaveEvent.phasePlayerId ?? nextState.activePlayer);
     // RK-238 キャッスルドラン【魂の捕獲】: 「仮面ライダー」のユニットがバトルで撃破して捨札にしたとき（rules/rk/rk12UnitEffects.ts）。
     nextState = openRk12CastleDoranDraw(nextState, leaveEvent);
+    // RK-258【猛毒腐食液】の記録・RK-268 デスガロンの※（rules/rk/rk13UnitEffects.ts）。
+    nextState = applyRk13OnUnitLeft(nextState, leaveEvent);
   }
   return {
     state: nextState,

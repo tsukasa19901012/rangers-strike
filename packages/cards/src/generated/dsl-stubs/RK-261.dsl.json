@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-261::riborukein",
+          "keyword": "rk13::RK-261::revolcane",
           "duration": "turn"
         }
       ],

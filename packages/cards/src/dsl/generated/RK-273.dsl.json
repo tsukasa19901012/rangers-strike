@@ -37,16 +37,16 @@
       "name": "ライジングブラストペガサス",
       "text": "自軍ラッシュエリアのSユニットを1体以上選び手札に戻してもよい。そうしたとき、相手は次のどちらかを選び行う⇒◎手札に戻したユニットの数まで自分自身のユニットを可能な限り選び撃破する。◎自分自身のユニットを1体選びダメージにする。",
       "trigger": {
-        "type": "nc"
+        "type": "riding_combo"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-273::raijinguburasutopegasasu",
+          "keyword": "rk13::RK-273::rising_blast_pegasus",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [
