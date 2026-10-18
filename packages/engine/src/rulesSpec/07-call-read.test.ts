@@ -206,5 +206,22 @@ describe("R-KW-READ-01 規定文", () => {
   });
 
   // 「使用するためにホールドしたコマンドであると扱われ」
-  it.todo("R-KW-READ-01: リードでホールドしたユニットは「使用するためにホールドしたコマンド」として RM-015 インプットカードガン等に参照される（出典: atwiki/page-2250 Q3。参照効果の解決をエンジン API で観測できない）");
+  // atwiki/page-2250 Q3/A3「はい、できます。…リードを持つユニットはオペレーションカードを使用するためにホールドしたコマンドであると扱われ効果によって参照される対象となります。」
+  // RM-015 インプットカードガンの照合（cardSpec RM1-001-021.c）で参照の解決を実装したので実テストにした。
+  it("R-KW-READ-01: リードでホールドしたユニットは「使用するためにホールドしたコマンド」として RM-015 インプットカードガンに参照される（必要パワー4のリードWB なら必要パワー4の敵軍 S ユニットを撃破する）（出典: atwiki/page-2250 Q3）", () => {
+    const LEAD_WB = realDef("XG5-066"); // ※リードWB・必要パワー4
+    const E4 = unitDef("RSPEC-E4", { powerCost: 4 });
+    const E3 = unitDef("RSPEC-E3", { powerCost: 3 });
+    const l = inst(LEAD_WB.id, "lead");
+    let s = state([LEAD_WB, E4, E3, realDef("RM-015")], {
+      phase: "rush",
+      player1: { hand: [inst("RM-015", "gun")], rush: [l], command: [inst("TST-OP", "rel")], power: powerCards(3) },
+      player2: { rush: [inst(E4.id, "e4"), inst(E3.id, "e3")] },
+    });
+    const start = legal(s).find((a) => a.type === "initiate_command_payment" && a.sourceInstanceId === "RM-015:gun")!;
+    s = act(s, start);
+    s = act(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: [l.instanceId] });
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RM-015");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual([`${E4.id}:e4`]);
+  });
 });

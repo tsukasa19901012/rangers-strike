@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-016::note_e887aae8bb8de38391e383af",
+          "keyword": "rm1::RM-016::star_piece",
           "duration": "turn"
         }
       ]

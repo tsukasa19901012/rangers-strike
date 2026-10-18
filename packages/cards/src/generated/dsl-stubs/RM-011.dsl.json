@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_s_on_self_rush",
-          "duration": "permanent"
+          "keyword": "rm1::RM-011::turbo_unit",
+          "duration": "turn"
         }
       ]
     }

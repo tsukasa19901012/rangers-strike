@@ -175,6 +175,8 @@ export function shouldUseDslOperation(
   // RK-174 プットオン（rk9:: のカード固有の効果。本文の「その後、このカードを自軍パワーゾーンに置く」から読む place_in_power より優先。
   // rules/rk/rk9UnitEffects.ts）。
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rk9::"))) return true;
+  // スペシャルメタルエディション RM-001〜RM-021（rm1:: のカード固有の効果。本文の再録から読む既存の効果より優先。rules/rm/rm1Effects.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rm1::"))) return true;
   const wiredId = getCardEffect(cardId)?.effectId;
   if (wiredId && isOperationImplemented(wiredId)) return false;
   return true;

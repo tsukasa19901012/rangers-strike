@@ -1,3 +1,4 @@
+import { isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "./rm/rm1Effects";
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
 import { isRk5BattleCounterCard, rk5BattleCounterConditionMet } from "./rk/rk5UnitEffects";
 import { applyRk6AfterUnitLeft, rk6IsNonCraneOrphnoch } from "./rk/rk6UnitEffects";
@@ -2200,7 +2201,15 @@ export function tryLeaveField(
       (c) => isRk1LeaveCounterCard(c.cardId) && canPlayHandCounter(state, intent.ownerPlayerId, c.instanceId),
     );
 
-  if (!dinoChronicle && !dinoGuts && !humanEvolution && !superShieldInstanceId && !sageAel && !magLoad && magiMotherInstanceIds.length === 0) {
+  // RM-006 怒（いか）る！（RK-015 と同じ発動の条件。rules/rm/rm1Effects.ts）。
+  const ikaru =
+    !counterLockedFor(state, intent.ownerPlayerId) &&
+    rm1LeaveCounterConditionMet(state, intent.ownerPlayerId, intent) &&
+    state.players[intent.ownerPlayerId].hand.some(
+      (c) => isRm1LeaveCounterCard(c.cardId) && canPlayHandCounter(state, intent.ownerPlayerId, c.instanceId),
+    );
+
+  if (!dinoChronicle && !dinoGuts && !humanEvolution && !ikaru && !superShieldInstanceId && !sageAel && !magLoad && magiMotherInstanceIds.length === 0) {
     const owner = state.players[intent.ownerPlayerId];
     const found = findInZone(owner, intent.fromZone, intent.instanceId);
 

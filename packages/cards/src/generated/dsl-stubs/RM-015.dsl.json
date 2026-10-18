@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-015::note_e38193e381aee382aae3839a",
+          "keyword": "rm1::RM-015::input_card_gun",
           "duration": "turn"
         }
       ]

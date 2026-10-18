@@ -1,3 +1,4 @@
+import { rm1SonicFlapExtraHolds } from "./rm/rm1Fields";
 import {
   emergencyRequestEnemyCommandIds,
   releaseEmergencyRequestCommands,
@@ -341,6 +342,28 @@ export function buildCategoryPayment(
 
   if (validInstanceIds.length < selectCount) return null;
 
+  // RM-014 ソニックフラップ: 自分の捨札に同じカード名のユニットカードがあれば、コマンドを追加で2つホールドしなければラッシュできない
+  // （追加分はカテゴリを問わないリリース状態の自軍コマンド。rules/rm/rm1Fields.ts）。
+  const sonicExtra = continuation.type === "rush" && !usePrism && !useShifu ? rm1SonicFlapExtraHolds(state, playerId, sourceCardId) : 0;
+  if (sonicExtra > 0) {
+    const extras = player.command.filter((c) => !c.commandHeld).map((c) => c.instanceId);
+    const all = [...new Set([...validInstanceIds, ...extras])];
+    if (all.length < selectCount + sonicExtra) return null;
+    return {
+      playerId,
+      kind: "category_use",
+      sourceInstanceId,
+      sourceCardId,
+      categories,
+      prismSubstitute: false,
+      eligibleNeeded: 0,
+      totalNeeded: selectCount + sonicExtra,
+      validInstanceIds: all,
+      continuation,
+      rm1ExtraHolds: sonicExtra,
+    };
+  }
+
   return {
     playerId,
     kind: "category_use",
@@ -421,6 +444,16 @@ export function validatePaymentSelection(
   }
   if (pending.kind === "effect_hold" && pending.shifuSubstitute) {
     return validateShifuEffectHold(state, pending, commandInstanceIds);
+  }
+  if (pending.kind === "category_use" && pending.rm1ExtraHolds) {
+    // RM-014 ソニックフラップ: カテゴリの支払い分（選んだうちの残り）がカテゴリに合い、全部がリリース状態のコマンドか。
+    if (commandInstanceIds.length !== pending.totalNeeded) return "wrong_count";
+    if (commandInstanceIds.some((id) => !pending.validInstanceIds.includes(id))) return "invalid_command";
+    const player = state.players[pending.playerId];
+    const matching = commandInstanceIds.filter((id) =>
+      paymentSourceMatchesCategories(player, state.definitions, id, pending.categories ?? [], callLeadKindForContinuation(pending.continuation)),
+    ).length;
+    return matching >= pending.totalNeeded - pending.rm1ExtraHolds ? null : "invalid_command";
   }
   if (commandInstanceIds.length !== pending.totalNeeded) return "wrong_count";
   if (pending.discardInsteadOfHold) {

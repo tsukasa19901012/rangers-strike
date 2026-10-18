@@ -1,3 +1,4 @@
+import { rm1DorugiranWaivesCondition } from "./rm/rm1Fields";
 import { blastBypassesRushAdditionalCondition } from "../keywords/battleKeywords";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
@@ -102,6 +103,8 @@ export function rushAdditionalConditionApplies(
   if (!definition || !resolveRushAdditionalCondition(cardId, definition)) return false;
   // ブラスト: 負けるまで残り1点で自軍 L ユニットがなければ追加条件を満たさなくてよい。ルール: R-KW-BLAST-01
   if (blastBypassesRushAdditionalCondition(state, playerId, cardId)) return false;
+  // RM-019 超次元高速機ドルギラン: 自軍捨札にあれば、電子星獣ドル・ギラン円盤は追加条件を満たさなくてよい（rules/rm/rm1Fields.ts）。
+  if (rm1DorugiranWaivesCondition(state, playerId, cardId)) return false;
   return !isAccelerateRushWaived(state, playerId, cardId);
 }
 

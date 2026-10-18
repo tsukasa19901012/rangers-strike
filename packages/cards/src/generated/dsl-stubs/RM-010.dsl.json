@@ -20,23 +20,9 @@
       "optional": false,
       "effects": [
         {
-          "type": "choose",
-          "kind": "optional_deck_draw",
-          "valid": {
-            "type": "zone",
-            "zone": "deck",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "hand"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rm1::RM-010::sol_indicator",
+          "duration": "turn"
         }
       ]
     }

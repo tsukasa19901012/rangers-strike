@@ -125,6 +125,7 @@ import { tryRk13CardEffect } from "../rules/rk/rk13UnitEffects";
 import { tryRk14CardEffect } from "../rules/rk/rk14UnitEffects";
 import { tryRk15CardEffect } from "../rules/rk/rk15UnitEffects";
 import { tryRk16CardEffect } from "../rules/rk/rk16UnitEffects";
+import { tryRm1CardEffect } from "../rules/rm/rm1Effects";
 import { tryOtherLinesCardEffect } from "../rules/legend1/otherLinesNamedEffects";
 import { trySet9BCardEffect } from "../rules/legend1/set9NamedEffectsB";
 import { trySet8BCardEffect } from "../rules/legend1/set8NamedEffectsB";
@@ -470,6 +471,9 @@ export function applyGrantKeyword(
   if (rk15) return rk15;
   const rk16 = tryRk16CardEffect(state, ctx, keyword);
   if (rk16) return rk16;
+  // スペシャルメタルエディション RM-001〜RM-021 のカード固有の効果（`rm1::` キーワード。rules/rm/rm1Effects.ts）。
+  const rm1 = tryRm1CardEffect(state, ctx, keyword);
+  if (rm1) return rm1;
   // 第8弾 RS-560〜RS-581 のカード固有の名前付き効果（`set8c::` と一部の既存キーワード。rules/legend1/set8NamedEffectsC.ts）。
   const set8c = trySet8CCardEffect(state, ctx, keyword);
   if (set8c) return set8c;

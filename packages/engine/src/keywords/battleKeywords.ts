@@ -1,3 +1,4 @@
+import { rm1GrantsScrum } from "../rules/rm/rm1Fields";
 import type { Category } from "@rangers-strike/cards";
 import { rk9EnemyKeywordsNullified } from "../rules/rk/rk9Fields";
 import { set9ATaxisCategory } from "../rules/legend1/set9NamedEffectsA";
@@ -202,7 +203,9 @@ export function scrumBlocksAttack(
   if (
     !cardHasBattleKeyword(state.definitions, defender.cardId, "scrum") &&
     // RS-467 ギンガルコン【風の星獣】: ライドしたユニットがある間、WB の自軍 S ユニットはスクラムを得る（rules/legend1/set7NamedEffectsB.ts）。
-    !riddenVehicleGrantsScrum(state, defenderPlayerId, defender)
+    !riddenVehicleGrantsScrum(state, defenderPlayerId, defender) &&
+    // RM-013 BSフォーメーション: 特徴「ブルー」「スワット」を持つ自軍ユニットはスクラムを得る（rules/rm/rm1Fields.ts）。
+    !rm1GrantsScrum(state, defenderPlayerId, unitFeatures(state, defenderPlayerId, defender))
   ) {
     return false;
   }

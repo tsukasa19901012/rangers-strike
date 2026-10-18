@@ -7005,7 +7005,7 @@
       "次の効果から１つ選び発動する⇒◎自軍山札から「宇"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-001::note_e6aca1e381aee58ab9e69e9c"
+      "rm1::RM-001::jouchaku"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -7024,7 +7024,7 @@
       "次の効果から1つ選び発動する⇒◎自軍山札から「宇"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-002::note_e6aca1e381aee58ab9e69e9c"
+      "rm1::RM-002::sekisha"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -7043,7 +7043,7 @@
       "次の効果から1つ選び発動する⇒◎自軍山札から「宇"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-003::note_e6aca1e381aee58ab9e69e9c"
+      "rm1::RM-003::shoketsu"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -7062,7 +7062,7 @@
       "敵軍山札の上から、自軍ダメージの点数と同じ数まで"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-004::note_e695b5e8bb8de5b1b1e69cad"
+      "rm1::RM-004::kyoju_tokuso"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -7081,7 +7081,7 @@
       "特徴「男」を持つ自軍ユニットを1体と、特徴「女」"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-005::note_e789b9e5beb4e3808ce794b7"
+      "rm1::RM-005::double_sniper"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -7137,7 +7137,7 @@
       "敵軍バトルエリアから「これは敵軍ターン中、「SP"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-008::note_e695b5e8bb8de38390e38388"
+      "rm1::RM-008::tai_bioron"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -7155,6 +7155,9 @@
     "textSnippets": [
       "自軍Sユニットを1体選ぶ。そして、このカードを自"
     ],
+    "expectedDslKeywords": [
+      "rm1::RM-009::multi_pack"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_target_modal"
@@ -7170,6 +7173,9 @@
     "category": "ET",
     "textSnippets": [
       "自軍山札からビークルカードを1枚選び、相手に見せ"
+    ],
+    "expectedDslKeywords": [
+      "rm1::RM-010::sol_indicator"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -7188,7 +7194,7 @@
       "ナンバーに数字を持ち、ETを持つ自軍Sユニットを"
     ],
     "expectedDslKeywords": [
-      "stack_s_on_self_rush"
+      "rm1::RM-011::turbo_unit"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -7264,7 +7270,7 @@
       "このオペレーションカードを使用するためにホールド"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-015::note_e38193e381aee382aae3839a"
+      "rm1::RM-015::input_card_gun"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -7283,7 +7289,7 @@
       "自軍パワーゾーンのダメージになってるカードをすべ"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-016::note_e887aae8bb8de38391e383af"
+      "rm1::RM-016::star_piece"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -7323,7 +7329,7 @@
     "expectedDslKeywords": [
       "chase",
       "no_strike_if_other_own_s_in_field",
-      "rm_fx::RM-018::gyabandainamiku"
+      "rm1::RM-018::gavan_dynamic"
     ],
     "bp": 4000,
     "sp": 1,
@@ -7341,7 +7347,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_5000",
-      "rm_fx::RM-019::note_e280bbe38193e3828ce3818c"
+      "rm1::RM-019::dorugiran"
     ],
     "bp": 2000,
     "sp": null,
@@ -7358,7 +7364,8 @@
       "【ドルファイヤー】"
     ],
     "expectedDslKeywords": [
-      "chase_or_ridden_l_vehicle_alias"
+      "chase_or_ridden_l_vehicle_alias",
+      "rm1::RM-020::dol_fire"
     ],
     "bp": 5000,
     "sp": null,
@@ -7376,7 +7383,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_5000",
-      "rm_fx::RM-021::bikuru"
+      "rm1::RM-021::vehicle_launch"
     ],
     "bp": 1000,
     "sp": null,

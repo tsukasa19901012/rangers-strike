@@ -1,3 +1,4 @@
+import { openRm1OnUnitRushed } from "./rm/rm1Effects";
 import { openRk8JaguarOnEnemyRush } from "./rk/rk8UnitEffects";
 import { openRk11UndeadMasterOnRush } from "./rk/rk11UnitEffects";
 import { openRk12NegatarosOnRush } from "./rk/rk12UnitEffects";
@@ -335,6 +336,8 @@ export function applyPassiveRushTriggers(
 ): { state: GameState; logs: string[] } {
   // RS-656【オールスターアルティメットバスター】: 自軍ユニットをラッシュしたとき（rules/legend1/set9NamedEffectsC.ts）。
   state = trySet9COnUnitRushed(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // RM-007 世界忍者戦（自軍ラッシュフェイズ中、自軍ユニットをラッシュしたとき。rules/rm/rm1Effects.ts）。
+  state = openRm1OnUnitRushed(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   const rsEnemyRush = tryRsCatchallOnEnemyRush(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   let next = tryDispatchOrderOnEnemyRush(rsEnemyRush.state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // RS-490 三の槍マンマルバ幼体【予言】（rules/legend1/set7NamedEffectsC.ts）。

@@ -98,20 +98,20 @@ function metalBeltTests(opts: {
     expectRarityIn(id, ["MR"]);
   });
 
-  it.fails(`${id}: 使うと、2つの効果のどちらを発動するかを選ぶ（出典: ${page}「次の効果から1つ選び発動する」）`, () => {
+  it(`${id}: 使うと、2つの効果のどちらを発動するかを選ぶ（出典: ${page}「次の効果から1つ選び発動する」）`, () => {
     const s = used();
     expectChoiceFrom(s, "player1", id);
     expect(choiceIds(s)).toEqual([rushMode, otherMode].sort());
   });
 
-  it.fails(`${id}: ◎1つ目 — 自軍山札の「${opts.heroName}」のカードから1枚選べる（ほかのカードは選べない・任意）（出典: ${page}「自軍山札から「${opts.heroName}」のカードを1枚選び、自軍ラッシュエリアに出してもよい」）`, () => {
+  it(`${id}: ◎1つ目 — 自軍山札の「${opts.heroName}」のカードから1枚選べる（ほかのカードは選べない・任意）（出典: ${page}「自軍山札から「${opts.heroName}」のカードを1枚選び、自軍ラッシュエリアに出してもよい」）`, () => {
     const s = pick(used({ deck: heroDeck() }), rushMode);
     expectChoiceFrom(s, "player1", id);
     expect(choiceIds(s)).toEqual(opts.heroes.map((h, i) => `${h}:h${i}`).sort());
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails(`${id}: ◎1つ目 — 選んだカードは自軍ラッシュエリアに出る（必要パワーを満たさなくてよい）。山札から離れる（出典: ${page}）`, () => {
+  it(`${id}: ◎1つ目 — 選んだカードは自軍ラッシュエリアに出る（必要パワーを満たさなくてよい）。山札から離れる（出典: ${page}）`, () => {
     // パワーゾーンはこのカードの必要パワーの枚数だけ（ヒーローの必要パワーより少なくても出せる。本文に「ただし必要パワー…は満たすこと」がない）。
     const hero = `${opts.heroes[0]}:h0`;
     const s = resolveAll(pick(pick(used({ deck: heroDeck() }), rushMode), hero));
@@ -120,13 +120,13 @@ function metalBeltTests(opts: {
     expect(zoneOf(s, "player1", `${id}:op`)).toBe("discard");
   });
 
-  it.fails(`${id}: ◎1つ目 — 出さなくてもよい（ラッシュエリアは変わらない）（出典: ${page}「出してもよい」）`, () => {
+  it(`${id}: ◎1つ目 — 出さなくてもよい（ラッシュエリアは変わらない）（出典: ${page}「出してもよい」）`, () => {
     const s = resolveAll(skip(pick(used({ deck: heroDeck() }), rushMode)));
     expect(s.players.player1.rush).toHaveLength(0);
     expect(s.players.player1.deck).toHaveLength(heroDeck().length);
   });
 
-  it.fails(`${id}: ◎2つ目 — 選べるのは自軍の S ユニット（ラッシュエリア・バトルエリア）だけ。M ユニット・敵軍のユニット・コマンドゾーンのユニットカードは選べない（出典: ${page}「自軍Sユニットを1体選ぶ」・カード評価「コマンドゾーンにあるユニットカードには使用できない」）`, () => {
+  it(`${id}: ◎2つ目 — 選べるのは自軍の S ユニット（ラッシュエリア・バトルエリア）だけ。M ユニット・敵軍のユニット・コマンドゾーンのユニットカードは選べない（出典: ${page}「自軍Sユニットを1体選ぶ」・カード評価「コマンドゾーンにあるユニットカードには使用できない」）`, () => {
     const s = pick(
       used({ rush: [inst("SPEC-OT-S", "a"), inst("SPEC-OT-M", "m")], battle: [inst("SPEC-NOSP", "b")], command: [...releasedCat("OT", 1), inst("SPEC-OT-S", "cmd")] }),
       otherMode,
@@ -164,15 +164,15 @@ describe("RM-001 蒸着", () => {
     return enterSeq(s, [...fill(fillers).map((c) => c.instanceId), "SPEC-NOSP:u"]);
   };
 
-  it.fails("RM-001: ◎2つ目 — 選んだユニットは SP1/4 になる（バトルエリアの4番目に並べば「SP1」）（出典: atwiki/page-888「このターン、選んだユニットはSP1/4になる」）", () => {
+  it("RM-001: ◎2つ目 — 選んだユニットは SP1/4 になる（バトルエリアの4番目に並べば「SP1」）（出典: atwiki/page-888「このターン、選んだユニットはSP1/4になる」）", () => {
     expect(spOf(sp14(3), "player1", "SPEC-NOSP:u")).toBe(1);
   });
 
-  it.fails("RM-001: ◎2つ目 — SP1/4 のユニットは4番目以外では SP を持たない（出典: atwiki/page-888・R-STK-03（分数 SP は分母の位置で SP1））", () => {
+  it("RM-001: ◎2つ目 — SP1/4 のユニットは4番目以外では SP を持たない（出典: atwiki/page-888・R-STK-03（分数 SP は分母の位置で SP1））", () => {
     expect(spOf(sp14(2), "player1", "SPEC-NOSP:u")).toBe(0);
   });
 
-  it.fails("RM-001: 「宇宙刑事シャリバン×ギャバン×シャイダー」（XG7-068）は「宇宙刑事ギャバン」のカードではない（出典: atwiki/page-888「「宇宙刑事ギャバン」のカード」・atwiki/page-2433）", () => {
+  it("RM-001: 「宇宙刑事シャリバン×ギャバン×シャイダー」（XG7-068）は「宇宙刑事ギャバン」のカードではない（出典: atwiki/page-888「「宇宙刑事ギャバン」のカード」・atwiki/page-2433）", () => {
     const s = pick(
       played(board({ hand: [inst("RM-001", "op")], command: releasedCat("OT", 1), power: powerCards(4), deck: [inst("XG7-068", "x"), ...deckCards(3)] }), "RM-001:op"),
       "gavan_rush",
@@ -198,7 +198,7 @@ describe("RM-002 赤射", () => {
     heroes: ["RM-025"],
   });
 
-  it.fails("RM-002: ◎2つ目 — 選んだユニットの特徴に「レッド」が追加される（ほかの自軍ユニットには追加されない）（出典: atwiki/page-889「このターン、選んだユニットの特徴に「レッド」を追加する」）", () => {
+  it("RM-002: ◎2つ目 — 選んだユニットの特徴に「レッド」が追加される（ほかの自軍ユニットには追加されない）（出典: atwiki/page-889「このターン、選んだユニットの特徴に「レッド」を追加する」）", () => {
     let s = played(board({ hand: [inst("RM-002", "op")], command: releasedCat("OT", 1), power: powerCards(2), rush: [inst("SPEC-MALE", "u"), inst("SPEC-OT-S", "o")] }), "RM-002:op");
     s = resolveAll(pick(pick(s, "add_red"), "SPEC-MALE:u"));
     expect(featuresOf(s, "player1", "SPEC-MALE:u")).toEqual(["レッド", "男"].sort());
@@ -223,7 +223,7 @@ describe("RM-003 焼結", () => {
     heroes: ["XG1-083", "XG4-094"],
   });
 
-  it.fails("RM-003: ◎2つ目 — 選んだユニットの特徴に「ブルー」が追加される（出典: atwiki/page-890「このターン、選んだユニットの特徴に「ブルー」を追加する」）", () => {
+  it("RM-003: ◎2つ目 — 選んだユニットの特徴に「ブルー」が追加される（出典: atwiki/page-890「このターン、選んだユニットの特徴に「ブルー」を追加する」）", () => {
     let s = played(board({ hand: [inst("RM-003", "op")], command: releasedCat("OT", 1), power: powerCards(3), rush: [inst("SPEC-MALE", "u")] }), "RM-003:op");
     s = resolveAll(pick(pick(s, "add_blue"), "SPEC-MALE:u"));
     expect(featuresOf(s, "player1", "SPEC-MALE:u")).toEqual(["ブルー", "男"].sort());
@@ -252,7 +252,7 @@ describe("RM-004 巨獣特捜", () => {
     expectRarityIn("RM-004", ["MR"]);
   });
 
-  it.fails("RM-004: 敵軍山札の上から自軍ダメージの数だけオモテにし、特徴「獣」「恐竜」のユニットカードは持ち主（敵軍）のラッシュエリアに出る。それ以外は敵軍山札に戻る（出典: atwiki/page-891）", () => {
+  it("RM-004: 敵軍山札の上から自軍ダメージの数だけオモテにし、特徴「獣」「恐竜」のユニットカードは持ち主（敵軍）のラッシュエリアに出る。それ以外は敵軍山札に戻る（出典: atwiki/page-891）", () => {
     const enemyDeck = [inst("SPEC-BEAST", "b1"), inst("SPEC-PLAIN", "p1"), inst("SPEC-DINO", "d1"), ...deckCards(3, "e")];
     const s = resolveAll(used(3, enemyDeck));
     expect(zoneOf(s, "player2", "SPEC-BEAST:b1")).toBe("rush");
@@ -261,14 +261,14 @@ describe("RM-004 巨獣特捜", () => {
     expect(s.players.player2.deck).toHaveLength(4);
   });
 
-  it.fails("RM-004: オモテにするのは自軍ダメージの数まで（4枚目より下の「獣」は出ない）（出典: atwiki/page-891「自軍ダメージの点数と同じ数まで」）", () => {
+  it("RM-004: オモテにするのは自軍ダメージの数まで（4枚目より下の「獣」は出ない）（出典: atwiki/page-891「自軍ダメージの点数と同じ数まで」）", () => {
     const enemyDeck = [inst("SPEC-PLAIN", "p1"), inst("SPEC-BEAST", "b1"), inst("SPEC-BEAST", "b2"), ...deckCards(3, "e")];
     const s = resolveAll(used(2, enemyDeck));
     expect(zoneOf(s, "player2", "SPEC-BEAST:b1")).toBe("rush");
     expect(zoneOf(s, "player2", "SPEC-BEAST:b2")).toBe("deck");
   });
 
-  it.fails("RM-004: 1体以上出したら、自軍山札の OT の L ユニットのカードから1枚選べる（任意）（出典: atwiki/page-891「そうして出したユニットが1体以上あれば、自軍山札を見て、OTのLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
+  it("RM-004: 1体以上出したら、自軍山札の OT の L ユニットのカードから1枚選べる（任意）（出典: atwiki/page-891「そうして出したユニットが1体以上あれば、自軍山札を見て、OTのLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
     const t = used(1, [inst("SPEC-BEAST", "b1"), ...deckCards(3, "e")], OWN_DECK);
     expectChoiceFrom(t, "player1", "RM-004");
     expect(choiceIds(t)).toEqual(["RM-020:dol", "SPEC-OT-L:l"]);
@@ -276,7 +276,7 @@ describe("RM-004 巨獣特捜", () => {
   });
 
   // atwiki/page-891 Q1/A1「いいえ。テキストに追加条件についての項目はありませんので、追加条件を満たす必要はありません。」
-  it.fails("RM-004: 公式Q&A — 自軍山札から出す L ユニットは追加条件を満たさなくてよい（電子星獣ドルを、ドルギランを捨札にせずに出せる）（出典: atwiki/page-891 Q1）", () => {
+  it("RM-004: 公式Q&A — 自軍山札から出す L ユニットは追加条件を満たさなくてよい（電子星獣ドルを、ドルギランを捨札にせずに出せる）（出典: atwiki/page-891 Q1）", () => {
     const s = resolveAll(pick(used(1, [inst("SPEC-BEAST", "b1"), ...deckCards(3, "e")], OWN_DECK), "RM-020:dol"));
     expect(zoneOf(s, "player1", "RM-020:dol")).toBe("rush");
     expect(s.players.player1.deck).toHaveLength(OWN_DECK.length - 1);
@@ -315,30 +315,30 @@ describe("RM-005 ダブルスナイパー", () => {
     expectRarityIn("RM-005", ["MR", "N"]);
   });
 
-  it.fails("RM-005: まず特徴「男」を持つ自軍ユニット（サイズ・エリアを問わない）を選ぶ（出典: atwiki/page-892「特徴「男」を持つ自軍ユニットを1体」・カード評価「サイズ・カテゴリを問わない」）", () => {
+  it("RM-005: まず特徴「男」を持つ自軍ユニット（サイズ・エリアを問わない）を選ぶ（出典: atwiki/page-892「特徴「男」を持つ自軍ユニットを1体」・カード評価「サイズ・カテゴリを問わない」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "RM-005");
     expect(choiceIds(s)).toEqual(["SPEC-MALE-M:mm", "SPEC-MALE:m"].sort());
   });
 
-  it.fails("RM-005: 次に特徴「女」を持つ自軍ユニットを選ぶ（出典: atwiki/page-892「特徴「女」を持つ自軍ユニットを1体選び」）", () => {
+  it("RM-005: 次に特徴「女」を持つ自軍ユニットを選ぶ（出典: atwiki/page-892「特徴「女」を持つ自軍ユニットを1体選び」）", () => {
     const s = pick(used(), "SPEC-MALE:m");
     expectChoiceFrom(s, "player1", "RM-005");
     expect(choiceIds(s)).toEqual(["SPEC-FEMALE:f"]);
   });
 
-  it.fails("RM-005: 2体の本来の BP の合計（2000＋2000）以下の敵軍ユニット（サイズ・エリアを問わない）を選ぶ（出典: atwiki/page-892「合計したBP以下の敵軍ユニットを1体選び」）", () => {
+  it("RM-005: 2体の本来の BP の合計（2000＋2000）以下の敵軍ユニット（サイズ・エリアを問わない）を選ぶ（出典: atwiki/page-892「合計したBP以下の敵軍ユニットを1体選び」）", () => {
     const s = pick(pick(used(), "SPEC-MALE:m"), "SPEC-FEMALE:f");
     expectChoiceFrom(s, "player1", "RM-005");
     expect(choiceIds(s)).toEqual(["SPEC-E4000:e4", "SPEC-EM4000:em4"].sort());
   });
 
-  it.fails("RM-005: 合計するのは本来の BP（選んだユニットが BP+3000 されていても合計は 4000）（出典: atwiki/page-892「選んだ2体の本来のBPを合計する」）", () => {
+  it("RM-005: 合計するのは本来の BP（選んだユニットが BP+3000 されていても合計は 4000）（出典: atwiki/page-892「選んだ2体の本来のBPを合計する」）", () => {
     const s = pick(pick(used({ rush: [{ ...inst("SPEC-MALE", "m"), bpModifier: 3000 }, inst("SPEC-FEMALE", "f")] }), "SPEC-MALE:m"), "SPEC-FEMALE:f");
     expect(choiceIds(s)).not.toContain("SPEC-E4500:e45");
   });
 
-  it.fails("RM-005: 選んだ敵軍ユニットは持ち主のパワーゾーンに送られる（ダメージではない）（出典: atwiki/page-892「持ち主のパワーゾーンに送る」）", () => {
+  it("RM-005: 選んだ敵軍ユニットは持ち主のパワーゾーンに送られる（ダメージではない）（出典: atwiki/page-892「持ち主のパワーゾーンに送る」）", () => {
     const s = resolveAll(pick(pick(pick(used(), "SPEC-MALE:m"), "SPEC-FEMALE:f"), "SPEC-EM4000:em4"));
     expect(zoneOf(s, "player2", "SPEC-EM4000:em4")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-EM4000:em4")?.faceDown).toBeFalsy();
@@ -372,7 +372,7 @@ describe("RM-006 怒（いか）る！", () => {
     expectRarityIn("RM-006", ["MR"]);
   });
 
-  it.fails("RM-006: 特徴「男」「女」を持つ自軍ユニットが撃破されて捨札になったとき使える。「男」「女」を持たないユニットのときは使えない（出典: atwiki/page-879）", () => {
+  it("RM-006: 特徴「男」「女」を持つ自軍ユニットが撃破されて捨札になったとき使える。「男」「女」を持たないユニットのときは使えない（出典: atwiki/page-879）", () => {
     expect(canCounter(destroyed("SPEC-MALE"), "RM-006:op")).toBe(true);
     expect(canCounter(destroyed("SPEC-FEMALE"), "RM-006:op")).toBe(true);
     expect(canCounter(destroyed("SPEC-MECHA"), "RM-006:op")).toBe(false);
@@ -391,20 +391,20 @@ describe("RM-006 怒（いか）る！", () => {
     expect(canCounter(s, "RM-006:op")).toBe(false);
   });
 
-  it.fails("RM-006: 選べるのは敵軍の S ユニット（ラッシュエリア・バトルエリア）。M・L ユニットは選べない（出典: atwiki/page-879「敵軍Sユニットを選び」・カード評価「エリアを問わずに除去できる」）", () => {
+  it("RM-006: 選べるのは敵軍の S ユニット（ラッシュエリア・バトルエリア）。M・L ユニットは選べない（出典: atwiki/page-879「敵軍Sユニットを選び」・カード評価「エリアを問わずに除去できる」）", () => {
     const s = useCounter(destroyed(), "RM-006:op");
     expectChoiceFrom(s, "player1", "RM-006");
     expect(choiceIds(s)).toEqual(["SPEC-E4000:s1", "SPEC-E4500:s2"]);
   });
 
-  it.fails("RM-006: 選べる数は「メカ」と「人型」を両方持つ自軍ユニットの数まで（1体なら1体でおしまい）。選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-879「特徴「メカ」と「人型」を持つ自軍ユニットの数と同じ数まで…ホールド状態で置く」）", () => {
+  it("RM-006: 選べる数は「メカ」と「人型」を両方持つ自軍ユニットの数まで（1体なら1体でおしまい）。選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-879「特徴「メカ」と「人型」を持つ自軍ユニットの数と同じ数まで…ホールド状態で置く」）", () => {
     const s = resolveAll(pick(useCounter(destroyed("SPEC-MALE", 1), "RM-006:op"), "SPEC-E4000:s1"));
     expect(zoneOf(s, "player2", "SPEC-E4000:s1")).toBe("command");
     expect(cardIn(s, "player2", "SPEC-E4000:s1")?.commandHeld).toBe(true);
     expect(zoneOf(s, "player2", "SPEC-E4500:s2")).toBe("rush");
   });
 
-  it.fails("RM-006: 「メカ」「人型」のユニットが2体なら2体まで選べる（出典: atwiki/page-879）", () => {
+  it("RM-006: 「メカ」「人型」のユニットが2体なら2体まで選べる（出典: atwiki/page-879）", () => {
     let s = pick(useCounter(destroyed("SPEC-MALE", 2), "RM-006:op"), "SPEC-E4000:s1");
     expect(choiceIds(s)).toEqual(["SPEC-E4500:s2"]);
     s = pick(s, "SPEC-E4500:s2");
@@ -414,7 +414,7 @@ describe("RM-006 怒（いか）る！", () => {
     expect(zoneOf(s, "player2", "SPEC-E4500:s2")).toBe("command");
   });
 
-  it.fails("RM-006: 持ち主のコマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-879「置けなければ捨札にする」）", () => {
+  it("RM-006: 持ち主のコマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-879「置けなければ捨札にする」）", () => {
     const s = resolveAll(pick(useCounter(destroyed("SPEC-MALE", 1, { command: heldN(5, "TST-OP", "ec") }), "RM-006:op"), "SPEC-E4000:s1"));
     expect(zoneOf(s, "player2", "SPEC-E4000:s1")).toBe("discard");
   });
@@ -448,13 +448,13 @@ describe("RM-007 世界忍者戦", () => {
     expect(zoneOf(s, "player1", "RM-007:op")).toBe("operation");
   });
 
-  it.fails("RM-007: 「忍者」のユニットのカテゴリに WB・MA・OT・ET・DA がそろっていれば、自軍ユニットをラッシュしたとき発動できる（任意）（出典: atwiki/page-831「次の効果を発動できる」）", () => {
+  it("RM-007: 「忍者」のユニットのカテゴリに WB・MA・OT・ET・DA がそろっていれば、自軍ユニットをラッシュしたとき発動できる（任意）（出典: atwiki/page-831「次の効果を発動できる」）", () => {
     const s = rushWith(ALL_NINJAS);
     expectChoiceFrom(s, "player1", "RM-007");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-007: 発動すると「忍者」を持たない敵軍 S ユニットがすべてダメージになる（「忍者」の S ユニット・M ユニットは残る）（出典: atwiki/page-831「特徴「忍者」を持たない敵軍Sユニットをすべて持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("RM-007: 発動すると「忍者」を持たない敵軍 S ユニットがすべてダメージになる（「忍者」の S ユニット・M ユニットは残る）（出典: atwiki/page-831「特徴「忍者」を持たない敵軍Sユニットをすべて持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(accept(rushWith(ALL_NINJAS)));
     expect(zoneOf(s, "player2", "SPEC-E4000:s1")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-E4000:s1")?.faceDown).toBe(true);
@@ -469,7 +469,7 @@ describe("RM-007 世界忍者戦", () => {
     expect(zoneOf(resolveAll(s), "player2", "SPEC-E4000:s1")).toBe("rush");
   });
 
-  it.fails("RM-007: 敵軍の「忍者」のユニットのカテゴリも数える（出典: atwiki/page-831「本来の特徴に「忍者」を持つすべてのユニット」）", () => {
+  it("RM-007: 敵軍の「忍者」のユニットのカテゴリも数える（出典: atwiki/page-831「本来の特徴に「忍者」を持つすべてのユニット」）", () => {
     // 自軍は WB 以外の4体。敵軍の SPEC-NIN-WB（WB の「忍者」）で5つそろう。
     const s = rushWith(ALL_NINJAS.slice(1), ENEMY);
     expectChoiceFrom(s, "player1", "RM-007");

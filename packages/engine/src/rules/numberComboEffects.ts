@@ -1,3 +1,4 @@
+import { rm1ComboNumber } from "./rm/rm1Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { falconBreakTriggers } from "./rs4NcEffects";
 import {
@@ -79,10 +80,13 @@ export function ncEffectiveNumber(
   // RS-495【宇宙忍法・重力無秩序】: SP が空欄のユニットのナンバーは必要パワーの数字になる（rules/legend1/set7NamedEffectsD.ts）。
   // RS-522 ボウケンスピリッツ「このターン、選んだユニットのナンバーの数字は1増える。」（rules/legend1/set8TurnGrants.ts）。
   // RS-548 ※「このユニットのナンバーの数字は、ホールド状態のユニット1体につき1増える」（rules/legend1/set8NamedEffectsB.ts）。
-  const printedNumber =
+  // RM-011 ターボユニット-W を重ねたユニットのナンバーの数字は1少なくなる（2より少なくならない。rules/rm/rm1Fields.ts）。
+  const printedNumber = rm1ComboNumber(
+    card,
     (gravityComboNumber(state, card, definition) ?? definition.comboNumber) +
-    set8NumberDelta(state.players[playerId], card) +
-    set8BComboNumberBonus(state, definition);
+      set8NumberDelta(state.players[playerId], card) +
+      set8BComboNumberBonus(state, definition),
+  );
   return crossReducedNumber(
     // RS-393 コマンドアタッカー【アタッカーポッド】: ライドされたままのコマンドアタッカーからコンビネーションする S ユニットは −3（最低2）。
     attackerPodNumber(

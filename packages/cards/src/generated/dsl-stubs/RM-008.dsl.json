@@ -14,13 +14,14 @@
       "id": "note_e695b5e8bb8de38390e38388",
       "text": "敵軍バトルエリアから「これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれた敵軍ユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
       "trigger": {
-        "type": "while_in_field"
+        "type": "operation",
+        "timing": "rush"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-008::note_e695b5e8bb8de38390e38388",
+          "keyword": "rm1::RM-008::tai_bioron",
           "duration": "turn"
         }
       ]

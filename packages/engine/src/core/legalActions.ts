@@ -144,6 +144,9 @@ import { canConfirmRk13Choice, isRk13ChoiceEffect } from "../rules/rk/rk13UnitEf
 import { canConfirmRk14Choice, isRk14ChoiceEffect } from "../rules/rk/rk14UnitEffects";
 import { canConfirmRk15Choice, isRk15ChoiceEffect } from "../rules/rk/rk15UnitEffects";
 import { canConfirmRk16Choice, isRk16ChoiceEffect } from "../rules/rk/rk16UnitEffects";
+import { canConfirmRm1Choice, isRm1ActivatableResident, isRm1ChoiceEffect, isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "../rules/rm/rm1Effects";
+import { rm1ActsAsVehicle } from "../rules/rm/rm1Fields";
+import { cardHasKeyword } from "../keywords/cardKeywords";
 import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
 import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
@@ -456,6 +459,10 @@ function appendLeaveReactionActions(
     if (isRk1LeaveCounterCard(card.cardId)) {
       // RK-015 人類の進化（「男」「女」の自軍ユニットが撃破されて捨札になったとき。rules/rk/rk1NamedEffects.ts）。
       if (!rk1LeaveCounterConditionMet(state, pending.ownerPlayerId, pending)) continue;
+      if (!canPlayHandCounter(state, pending.ownerPlayerId, card.instanceId)) continue;
+    } else if (isRm1LeaveCounterCard(card.cardId)) {
+      // RM-006 怒（いか）る！（RK-015 と同じ発動の条件。rules/rm/rm1Effects.ts）。
+      if (!rm1LeaveCounterConditionMet(state, pending.ownerPlayerId, pending)) continue;
       if (!canPlayHandCounter(state, pending.ownerPlayerId, card.instanceId)) continue;
     } else if (effectId === "dino_chronicle") {
       if (
@@ -804,6 +811,7 @@ function appendActivateResidentOperationActions(
       !swapResidentFeature(card.cardId) &&
       card.cardId !== "RK-249" &&
       !isRk1ActivatableResident(card.cardId) &&
+      !isRm1ActivatableResident(card.cardId) &&
       listResidentActivationEffects(card.cardId).length === 0
     ) {
       continue;
@@ -1284,6 +1292,15 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk3Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRm1ChoiceEffect(pending.effectId)) {
+    // スペシャルメタルエディション RM-001〜RM-021 の選択（rules/rm/rm1Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRm1Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 
@@ -2225,7 +2242,14 @@ function getLegalActionsCore(state: GameState): GameAction[] {
           if (vehicle.instanceId === rider.instanceId) continue;
           const vehicleDef = getDefinition(state.definitions, vehicle.cardId);
           // RK-280・RK-281: ホールド状態の間は S ビークルとして扱う（rules/rk/rk14Fields.ts）。
-          if (vehicleDef?.type !== "vehicle" && !rk14ActsAsVehicle(player, vehicle)) continue;
+          // RM-020 電子星獣ドル: チェイスを持つ自軍ユニットがあれば L ビークルとして扱う（rules/rm/rm1Fields.ts）。
+          if (
+            vehicleDef?.type !== "vehicle" &&
+            !rk14ActsAsVehicle(player, vehicle) &&
+            !rm1ActsAsVehicle(state, playerId, vehicle, (id) => cardHasKeyword(state.definitions, id, "chase"))
+          ) {
+            continue;
+          }
           if (
             canMountRideIntoBattle(
               state,

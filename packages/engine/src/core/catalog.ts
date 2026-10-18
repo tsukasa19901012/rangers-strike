@@ -1,3 +1,4 @@
+import { rm1DorugiranWaivesCondition } from "../rules/rm/rm1Fields";
 import { isCostWindowSatisfied } from "./costWindow";
 import { set8AddedCategories } from "../rules/legend1/set8TurnGrants";
 import { operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
@@ -663,6 +664,9 @@ function evaluateRushPowerAndZord(
         unitDefinition,
       )
     : resolveRushAdditionalCondition(unitDefinition.id, unitDefinition);
+
+  // RM-019 超次元高速機ドルギラン: 自軍捨札にあれば、電子星獣ドル・ギラン円盤は追加条件を満たさなくてよい（rules/rm/rm1Fields.ts）。
+  if (powerContext && rm1DorugiranWaivesCondition(powerContext, powerContext.playerId, unitDefinition.id)) return true;
 
   if (needsZordStateGate(definitions, unitDefinition.id)) {
     if (!powerContext || !resolved) return false;

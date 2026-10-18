@@ -17,39 +17,11 @@
         "type": "operation",
         "timing": "rush"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "discard",
-          "owner": "self",
-          "filter": {
-            "size": "S"
-          }
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "discard",
-            "owner": "self",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "hand"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rm1::RM-009::multi_pack",
+          "duration": "turn"
         }
       ]
     }

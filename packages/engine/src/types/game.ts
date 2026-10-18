@@ -696,6 +696,15 @@ export type PendingEffectChoice = {
     /** RK-324: 撃破したカードの持ち主。 */
     owner?: PlayerId;
   };
+  /** スペシャルメタルエディション RM-001〜RM-021 の選択の続き（rules/rm/rm1Effects.ts）。 */
+  rm1Meta?: {
+    /** RM-006: 選べる数（「メカ」「人型」の自軍ユニットの数）。 */
+    limit?: number;
+    /** RM-012: まだ発動していないカテゴリの効果。 */
+    steps?: string[];
+    /** RM-017: 見ている山札の上のカード。 */
+    topInstanceId?: string;
+  };
   /** RK-208【迎撃の毒矢】: この選択に答えたら（発動を宣言したら）クレインの窓を開く（rules/rk/rk10UnitEffects.ts）。 */
   rk10CraneWatch?: { craneOwner: PlayerId; rushedOwner: PlayerId; rushedInstanceId: string };
   /** ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 の選択の続き（rules/rk/rk9UnitEffects.ts）。 */
@@ -1063,6 +1072,11 @@ export type PendingCommandPayment = {
    * 確定時に、カテゴリの支払い分と追加分に分ける（RS-627 メガシップ。rules/commandPayment.ts splitExtraHoldPayment）。
    */
   extraCommandHoldCount?: number;
+  /**
+   * RM-014 ソニックフラップ: ラッシュのコマンドの支払いで、カテゴリの支払いのほかに追加でホールドするコマンドの数
+   * （追加分はカテゴリを問わないリリース状態の自軍コマンド。rules/rm/rm1Fields.ts）。
+   */
+  rm1ExtraHolds?: number;
   /** RK-036 仮面ライダーライア: 選んだカードをホールドせずに捨札にする支払い（rules/rk/rk2UnitEffects.ts）。 */
   discardInsteadOfHold?: boolean;
   continuation: CommandPaymentContinuation;
@@ -1312,6 +1326,8 @@ export type GameState = {
   resolvingOperations?: Array<{ playerId: PlayerId; card: CardInstance }>;
   /** RK-129【サンダースペイダー】・RK-132【妻子のバックアップ】の、まだ開いていない発動（rules/rk/rk7UnitEffects.ts）。 */
   rk7PendingTriggers?: Array<{ kind: "rk129" | "rk132"; playerId: PlayerId; sourceInstanceId: string }>;
+  /** RM-017 オメデトロフィーの、まだ開いていない発動（rules/rm/rm1Effects.ts applyRm1AfterAction）。 */
+  rm1PendingTriggers?: Array<{ kind: "rm017"; playerId: PlayerId; sourceInstanceId: string; unitCardId: string }>;
   /** RK-153【車両強奪】で選ばれたユニット（次の相手のスタートフェイズに戻せない。rules/rk/rk8UnitEffects.ts）。 */
   rk8Seized?: Array<{ playerId: PlayerId; instanceId: string }>;
   /** RK-011 第三の眼: 無効にしなかったカウンターの使用をもう一度処理する（core/applyAction.ts の後処理）。 */

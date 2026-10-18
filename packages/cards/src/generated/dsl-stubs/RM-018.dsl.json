@@ -59,7 +59,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-018::gyabandainamiku",
+          "keyword": "rm1::RM-018::gavan_dynamic",
           "duration": "turn"
         }
       ]

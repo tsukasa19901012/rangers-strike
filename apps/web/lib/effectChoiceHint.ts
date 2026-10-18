@@ -459,6 +459,34 @@ const RK16_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk333_drag_visor_zwei_target: { label: "ドラグバイザーツバイ", hint: "撃破する、選んだカードの必要パワーの合計以下の敵軍ユニットを選んでください" },
 };
 
+/** スペシャルメタルエディション RM-001〜RM-021 のカード固有の選択（engine rules/rm/rm1Effects.ts）の表示名と案内文。 */
+const RM1_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rm001_metal_belt: { label: "宇宙刑事の変身", hint: "発動する効果を選んでください（山札から宇宙刑事を出す／自軍 S ユニットを強化する）" },
+  rm001_metal_belt_hero: { label: "宇宙刑事の変身", hint: "自軍ラッシュエリアに出す、山札の宇宙刑事のカードを選んでください（しないなら「スキップ」）" },
+  rm001_metal_belt_unit: { label: "宇宙刑事の変身", hint: "このターン強化する自軍 S ユニットを選んでください" },
+  rm004_kyoju_tokuso: { label: "巨獣特捜", hint: "自軍ラッシュエリアに出す、山札の OT の L ユニットのカードを選んでください（しないなら「スキップ」）" },
+  rm005_double_sniper_male: { label: "ダブルスナイパー", hint: "特徴「男」を持つ自軍ユニットを選んでください" },
+  rm005_double_sniper_female: { label: "ダブルスナイパー", hint: "特徴「女」を持つ自軍ユニットを選んでください" },
+  rm005_double_sniper_target: { label: "ダブルスナイパー", hint: "持ち主のパワーゾーンに送る、2体の本来の BP の合計以下の敵軍ユニットを選んでください" },
+  rm006_ikaru: { label: "怒る！", hint: "持ち主のコマンドゾーンにホールド状態で置く敵軍 S ユニットを選んでください（選び終えたら確定）" },
+  rm007_sekai_ninja_sen: { label: "世界忍者戦", hint: "「忍者」を持たない敵軍 S ユニットをすべてダメージにしますか？" },
+  rm008_tai_bioron: { label: "対バイオロン法", hint: "持ち主のコマンドゾーンにホールド状態で置く敵軍ユニットを選んでください" },
+  rm009_stack_under_unit: { label: "ユニットに重ねる", hint: "このカードを下に重ねる自軍 S ユニットを選んでください" },
+  rm009_multi_pack_recover: { label: "マルチパック", hint: "自軍コマンドゾーンにホールド状態で置く、自軍捨札の S ユニットのカードを選んでください" },
+  rm010_sol_indicator: { label: "ソルインジケーター", hint: "手札に加える、山札のビークルカードを選んでください（しないなら「スキップ」）" },
+  rm012_jp_discard: { label: "JPカード", hint: "捨札にする手札のカードを選んでください（しないなら「スキップ」）" },
+  rm012_jp_wb: { label: "JPカード", hint: "撃破する敵軍バトルエリアの S ユニットを選んでください" },
+  rm012_jp_ma: { label: "JPカード", hint: "持ち主の手札に戻す敵軍ラッシュエリアの S ユニットを2体まで選んでください" },
+  rm012_jp_ot: { label: "JPカード", hint: "バトルエリアに出す敵軍ラッシュエリアの S ユニットを選んでください" },
+  rm012_jp_other: { label: "JPカード", hint: "山札の上に戻す、自軍捨札の S ユニットのカードを選んでください" },
+  rm015_input_card_gun: { label: "インプットカードガン", hint: "撃破する、ホールドしたコマンドと同じ必要パワーの敵軍 S ユニットを選んでください" },
+  rm015_input_card_gun_return: { label: "インプットカードガン", hint: "このカードを捨札にするかわりに手札に戻しますか？" },
+  rm016_star_piece: { label: "スターピース", hint: "自分のラッシュエリアに出す、山札のユニットカードを選んでください（しないなら「スキップ」）" },
+  rm017_omedetrophy: { label: "オメデトロフィー", hint: "山札の上のカードを、コマンドゾーンに置く（to_command）・山札の上に戻す（deck_top）・下に戻す（deck_bottom）から選んでください" },
+  rm018_gavan_dynamic: { label: "ギャバンダイナミック", hint: "持ち主のパワーゾーンに送る、本来の BP が4000以上の敵軍 S ユニットを選んでください（しないなら「スキップ」）" },
+  rm021_vehicle_launch: { label: "ビークル射出", hint: "自軍ラッシュエリアに出す、パワーゾーンの M ユニットか S ビークルのカードを選んでください（しないなら「スキップ」）" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -506,7 +534,8 @@ export function effectChoiceHint(
     RK13_CHOICE_UI[pending.effectId] ??
     RK14_CHOICE_UI[pending.effectId] ??
     RK15_CHOICE_UI[pending.effectId] ??
-    RK16_CHOICE_UI[pending.effectId];
+    RK16_CHOICE_UI[pending.effectId] ??
+    RM1_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -715,6 +744,7 @@ export function effectChoiceTitle(
     RK14_CHOICE_UI[pending.effectId]?.label ??
     RK15_CHOICE_UI[pending.effectId]?.label ??
     RK16_CHOICE_UI[pending.effectId]?.label ??
+    RM1_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

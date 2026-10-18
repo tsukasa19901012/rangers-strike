@@ -95,6 +95,7 @@ import { checkWinner, advancePhase } from "./createGame";
 import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
 import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
+import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import {
@@ -661,6 +662,8 @@ function finishStrikeResolution(
   resolved = applyRk2StrikeDamageTriggers(resolved, pending);
   // RK-320【ファイナルライジングブラスト】（敵軍ターン中、ストライクを2回以上されてダメージを受けたとき。rules/rk/rk16UnitEffects.ts）。
   resolved = applyRk16StrikeDamageTriggers(resolved, pending);
+  // RM-009 マルチパック（重ねたユニットがストライクしてダメージを与えたとき。rules/rm/rm1Effects.ts）。
+  resolved = applyRm1StrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -784,6 +787,10 @@ function completeStrike(state: GameState, pending: PendingStrike, extraLogs: str
 function operationNeedsUpfrontTarget(cardId: string): boolean {
   const dslEffect = getDslOperationEffect(cardId, "rush");
   if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslOperationOpensChoose(dslEffect)) {
+    return false;
+  }
+  // スペシャルメタルエディションのカード固有の効果（`rm1::`）は、使ったあとで対象を選ぶ（rules/rm/rm1Effects.ts）。
+  if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslEffect.effects.some((p) => p.type === "grant_keyword" && p.keyword.startsWith("rm1::"))) {
     return false;
   }
   return needsOperationTarget(cardId);
@@ -1044,6 +1051,8 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRk10AfterAction(state, next, turnPlayerOf(state));
   // RK-260【体内マグマ】の「ユニットでなくなるとき」・RK-271【ライジングマイティキック】の撃破（rules/rk/rk13UnitEffects.ts）。
   if (applyActionDepth === 0) next = applyRk13AfterAction(state, next);
+  // RM-017 オメデトロフィー（自軍ユニットがバトルエリアに出たとき。rules/rm/rm1Effects.ts）。
+  if (applyActionDepth === 0) next = applyRm1AfterAction(state, next);
   // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
   if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
     const endingPlayer = next.rk9RushEndAdvance;
@@ -2740,6 +2749,23 @@ function applyActionCore(
             );
           }
         }
+        // RM-006 怒（いか）る！: 撃破されて捨札になったあとで、敵軍 S ユニットを選ぶ（rules/rm/rm1Effects.ts）。
+        {
+          const counter = findInZone(state.players[playerId], "hand", action.instanceId)?.card;
+          if (counter && isRm1LeaveCounterCard(counter.cardId)) {
+            const used = updatePlayer(state, playerId, {
+              ...state.players[playerId],
+              hand: state.players[playerId].hand.filter((c) => c.instanceId !== action.instanceId),
+              discard: [...state.players[playerId].discard, { instanceId: counter.instanceId, cardId: counter.cardId }],
+            });
+            let nextState = finalizeLeaveReaction({ ...state, ...used }, pending, false);
+            nextState = applyRm1LeaveCounter(nextState, playerId, pending.phasePlayerId, counter);
+            return ok(
+              clearCounterHoldReady(nextState, playerId),
+              buildLogEntry(playerId, "play_counter", counter.cardId, state.definitions, "ikaru"),
+            );
+          }
+        }
         return fail("invalid_counter");
       }
 
@@ -3542,6 +3568,8 @@ function applyActionCore(
           ...rc.state,
           log: [...nextState.log, ...rc.logs],
         };
+        // RM-020【ドルファイヤー】: 自軍ターン中、「宇宙刑事」のユニットが電子星獣ドルからライドオフしたとき（rules/rm/rm1Effects.ts）。
+        nextState = applyRm1DolFire(nextState, playerId, rider);
       }
 
       // RK-017 ミッションメモリー: ライドしたまま進むことを選んでも、RC の効果を発動する（rules/rk/rk1NamedEffects.ts）。

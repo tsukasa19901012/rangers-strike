@@ -2,6 +2,7 @@
  * RK-001 改造人間（※常駐）・RK-013 Jパワー による特徴とサイズの変更（rules/addedFeatures.ts 等の低い層から使う小さなモジュール）。
  * カードの効果そのものは rules/rk/rk1NamedEffects.ts。
  */
+import { isRm1StackedUnderUnitOperation } from "../rm/rm1Fields";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { getDefinition } from "../../core/catalog";
@@ -26,7 +27,9 @@ export function isStackedUnderUnitOperation(cardId: string): boolean {
     isSameCardIdentity(cardId, KAMEN_TITLE_CARD_ID) ||
     isSameCardIdentity(cardId, "RK-088") ||
     isSameCardIdentity(cardId, "RK-173") ||
-    isSameCardIdentity(cardId, "RK-250")
+    isSameCardIdentity(cardId, "RK-250") ||
+    // RM-009 マルチパック・RM-011 ターボユニット-W も同じ（atwiki/page-830・page-882。rules/rm/rm1Fields.ts）。
+    isRm1StackedUnderUnitOperation(cardId)
   );
 }
 const GIANT_BOMB_CARD_ID = "RS-255";

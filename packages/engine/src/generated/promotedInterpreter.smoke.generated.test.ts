@@ -67,8 +67,6 @@ const ACTION_PRIMITIVE_IDS = [
   "RK-222",
   "RK-313",
   "RK-331",
-  "RM-009",
-  "RM-010",
   "RS-438"
 ] as const;
 

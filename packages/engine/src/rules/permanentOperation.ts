@@ -1,3 +1,4 @@
+import { activateRm1Resident, canActivateRm1Resident, isRm1ActivatableResident } from "./rm/rm1Effects";
 import { getCardEffect, type CardDefinition } from "@rangers-strike/cards";
 import { activateSet8AResident, canActivateSet8AResident, isSet8AResident } from "./legend1/set8NamedEffectsA";
 import type { EffectDefinition } from "@rangers-strike/cards/dsl/types";
@@ -125,6 +126,9 @@ export function canActivateResidentOperation(
   // RK-016 ミラーワールド: 自軍ラッシュフェイズに何度でも重ねられる（rules/rk/rk1NamedEffects.ts）。
   const rk1 = canActivateRk1Resident(state, playerId, op);
   if (rk1 !== null) return rk1;
+  // RM-012 JPカード（自軍ラッシュフェイズごとに1度だけ。rules/rm/rm1Effects.ts）。
+  const rm1 = canActivateRm1Resident(state, playerId, op);
+  if (rm1 !== null) return rm1;
   if (isResidentActivatedThisRush(op)) return false;
 
   const wired = getCardEffect(op.cardId);
@@ -195,6 +199,9 @@ export function applyActivateResidentOperation(
   }
   if (isRk1ActivatableResident(op.cardId)) {
     return { ok: true, state: activateRk1Resident(state, playerId, op) };
+  }
+  if (isRm1ActivatableResident(op.cardId)) {
+    return { ok: true, state: activateRm1Resident(state, playerId, op) };
   }
   if (op.cardId === ADVENT_CARD_ID) {
     const opened = beginAdvent(state, playerId, op);
