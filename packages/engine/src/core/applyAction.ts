@@ -65,7 +65,7 @@ import type { GameState, PendingBattle, PendingStrike, PlayerId, PlayerState, Ca
 import { hasTurnRuleModifier, TURN_RULE_IDS } from "./scopedModifiers";
 import { clearRegisterHoldOffField } from "../rules/resist";
 import { operationFizzles } from "../rules/operationFizzle";
-import { openDeferredRushReaction } from "../events/emitUnitRushed";
+import { hasPendingPromptBlockingEffectRush, openDeferredRushReaction } from "../events/emitUnitRushed";
 import {
   getBattleEntryHoldCount,
   getCardEffect,
@@ -280,6 +280,7 @@ import {
 import {
   beginMorphUnitSelection,
   passMorphReaction,
+  resumeMorphAfterEntry,
 } from "../keywords/morphReaction";
 import { canWingAttackFromRush, applyHoldForWing, applyCancelWingHold, applyNoStrikeAfterRideOff } from "../keywords/battleKeywords";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
@@ -950,6 +951,10 @@ function applyActionWithRng(
   // ルール: R-ZONE-04, R-HOLD-02 — エリアを離れたカードの付加情報はどの経路で移動しても消える。
   let next = clearRegisterHoldOffField(result.state);
   next = settleEffectRushes(state, next);
+  // R-REPL-04: モーフで出たユニットの「ラッシュしたとき」等の選択が終わったら、モーフの続き（「ラッシュされたとき」・残りのモーフ・カウンター窓）へ。
+  if (next.deferredMorphContinuation && !hasPendingPromptBlockingEffectRush(next)) {
+    next = resumeMorphAfterEntry(next, next.deferredMorphContinuation);
+  }
   // RS-660【SPインカム】: このターン、場の外からラッシュエリアに出たユニットを記録する（rules/legend1/set9NamedEffectsC.ts）。
   next = trackSpIncomeEntries(state, next);
   // 第9弾 RS-607 の続き・RS-613 のホールド待ち（rules/legend1/set9NamedEffectsA.ts）。

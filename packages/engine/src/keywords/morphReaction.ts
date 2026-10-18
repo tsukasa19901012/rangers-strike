@@ -1,11 +1,10 @@
-import { openRk8JaguarOnEnemyRush } from "../rules/rk/rk8UnitEffects";
 import { filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingMorph, PlayerId, PlayerState } from "../types/game";
 import { getDefinition } from "../core/catalog";
 import { findInZone, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
-import { markFieldEntryHandled } from "../events/emitUnitRushed";
+import { hasPendingPromptBlockingEffectRush, markFieldEntryHandled } from "../events/emitUnitRushed";
 import { openEffectChoice } from "../rules/pendingChoices";
 import { openRushCounterWindow } from "../rules/rushEffects";
 import { listUsableRushCounters } from "../rules/operationCounters";
@@ -23,7 +22,7 @@ import {
   type MorphReplacementZone,
   type RushMethod,
 } from "../rules/morphProcedure";
-import { applyOnRushUnitEffects } from "../rules/onRushUnitEffects";
+import { applyOnRushUnitEffects, applyPassiveRushTriggers } from "../rules/onRushUnitEffects";
 
 type FieldZone = "rush" | "battle";
 
@@ -371,33 +370,53 @@ export function resolveMorphReplacementChoice(
   if ("error" in swap) return swap;
   const resolvedPending: PendingMorph = { ...morphPending, morphResolved: true };
 
-  const morphFound = findMorphUnit(
-    swap.state.players[defenderId],
-    morphPending.activeMorphUnitInstanceId,
-  );
-  let nextState = swap.state;
+  // ルール: R-REPL-04 — 置き換えでエリアに出る方はラッシュに含まれる（atwiki/page-1413「置き換えでエリアに出ることはラッシュに含まれる。
+  // ラッシュしたときに発動する効果は当然発生する」、atwiki/page-1294 A2「コマンドゾーンからラッシュされるカード」）。
+  // 出たユニットは置き換えたモーフ持ちユニットのいた場所（ラッシュエリアかバトルエリア）にいる。
+  // 「ラッシュしたとき」→ 他のカードの「ラッシュされたとき」（RK-160 シザーズジャガー等。faq-rider-2 RK-160 Q2）→ 残りのモーフ・カウンター窓の順。
+  let nextState: GameState = { ...swap.state, pendingEffectChoice: undefined, pendingMorph: undefined };
   const extraLogs: string[] = [];
-  if (morphFound) {
+  const entered = findMorphUnit(nextState.players[defenderId], replacementInstanceId);
+  if (entered) {
     const rushEffects = applyOnRushUnitEffects(
       nextState,
       defenderId,
       replacementInstanceId,
       morphPending.phasePlayerId,
-      morphFound.zone,
-      { includePassiveRushTriggers: true },
+      entered.zone,
     );
     nextState = rushEffects.state;
     extraLogs.push(...rushEffects.logs);
   }
+  const continuation = {
+    pending: resolvedPending,
+    usedMorphUnitInstanceId: morphPending.activeMorphUnitInstanceId,
+    enteredInstanceId: replacementInstanceId,
+    passiveDone: !entered,
+  };
+  const next = hasPendingPromptBlockingEffectRush(nextState)
+    ? { ...nextState, deferredMorphContinuation: continuation }
+    : resumeMorphAfterEntry(nextState, continuation);
 
-  const next = continueMorphAfterReplacement(
-    { ...nextState, pendingEffectChoice: undefined },
-    resolvedPending,
-    morphPending.activeMorphUnitInstanceId!,
-  );
+  return { state: next, log: swap.log, extraLogs: extraLogs.length > 0 ? extraLogs : undefined };
+}
 
-  // RK-160 シザーズジャガー【ナノロボット散布実験】: モーフで入れ替わって出た敵軍ユニットにも発動する（faq-rider-2 RK-160 Q2。rules/rk/rk8UnitEffects.ts）。
-  const withJaguar = openRk8JaguarOnEnemyRush(next, defenderId, replacementInstanceId, morphPending.phasePlayerId);
-
-  return { state: withJaguar, log: swap.log, extraLogs: extraLogs.length > 0 ? extraLogs : undefined };
+/**
+ * モーフで出たユニットの「ラッシュしたとき」を終えたあとの続き: 他のカードの「ラッシュされたとき」の誘発 → 残りのモーフ・カウンター窓。
+ * 選択待ちになったら deferredMorphContinuation に残し、操作待ちがなくなった時点で core/applyAction.ts の後処理から再び呼ばれる。
+ */
+export function resumeMorphAfterEntry(
+  state: GameState,
+  continuation: NonNullable<GameState["deferredMorphContinuation"]>,
+): GameState {
+  let next: GameState = { ...state, deferredMorphContinuation: undefined };
+  const { pending } = continuation;
+  if (!continuation.passiveDone) {
+    const passive = applyPassiveRushTriggers(next, pending.defenderPlayerId, continuation.enteredInstanceId, pending.phasePlayerId);
+    next = passive.logs.length > 0 ? { ...passive.state, log: [...passive.state.log, ...passive.logs] } : passive.state;
+    if (hasPendingPromptBlockingEffectRush(next)) {
+      return { ...next, deferredMorphContinuation: { ...continuation, passiveDone: true } };
+    }
+  }
+  return continueMorphAfterReplacement(next, pending, continuation.usedMorphUnitInstanceId);
 }

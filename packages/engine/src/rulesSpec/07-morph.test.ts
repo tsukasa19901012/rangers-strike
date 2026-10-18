@@ -309,3 +309,73 @@ describe("R-KW-MORPH-01 効果で得るモーフ（RK-316 キバットバット�
     expect(morphOffered(s)).toBe(false);
   });
 });
+
+// ===========================================================================
+// R-REPL-04「ユニットカード⇔ユニット: …エリアに出る方はラッシュに含まれる」
+// 出典: atwiki/page-1413（置き換え）「置き換えでエリアに出ることはラッシュに含まれる。ラッシュしたときに発動する効果は当然発生する」、
+//       atwiki/page-1294 A2「コマンドゾーンからラッシュされるカードはリリース状態になります」、grnrngr/faq-rider-2 RK-160 Q2
+//       （モーフで入れ替わったユニットにもシザーズジャガーの「ラッシュされたとき」が発動する「はい、可能です。」）。
+describe("R-REPL-04 モーフで出たユニットはラッシュされた扱い", () => {
+  const KASOKU = ["仮面ライダー", "男", "加速"];
+  /** 特徴が RK-057 仮面ライダーザビーRF と完全一致するモーフ持ち。 */
+  const MORPH_K = unitDef("RSPEC-MORPH-K", { features: KASOKU, text: KW.morph, bp: 2000 });
+  const BIG = unitDef("RSPEC-BIG", { category: "WB", powerCost: 4, bp: 5000 });
+  const SMALL = unitDef("RSPEC-SMALL", { category: "WB", powerCost: 1, bp: 1000 });
+
+  /** player1（ラッシュフェイズ）が ENEMY を手札からラッシュし、player2 のモーフの選択が開いた状態。 */
+  function rushInto(p1: Partial<GameState["players"]["player1"]>, p2: Partial<GameState["players"]["player2"]>): GameState {
+    let s = state([MORPH, TARGET, ENEMY, MORPH_K, BIG, SMALL, realDef("RK-057"), realDef("RK-053")], {
+      phase: "rush",
+      player1: { hand: [inst(ENEMY.id, "e")], command: [inst("TST-OP", "c")], power: powerCards(3), ...p1 },
+      player2: p2,
+    });
+    s = act(s, { type: "initiate_command_payment", playerId: "player1", kind: "category_use", sourceInstanceId: `${ENEMY.id}:e` });
+    s = act(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP:c"] });
+    return s;
+  }
+
+  // RK-057【ライダースティング】「これをラッシュしたとき、敵軍バトルエリアからBP4000以上のSユニットを1体選び持ち主のパワーゾーンに置く。」
+  it("R-REPL-04: モーフで出たユニット自身の「ラッシュしたとき」（RK-057 仮面ライダーザビーRF【ライダースティング】）が発動する（出典: atwiki/page-1413「ラッシュしたときに発動する効果は当然発生する」）", () => {
+    const zabee = inst("RK-057", "z");
+    let s = rushInto({ battle: [inst(BIG.id, "big"), inst(SMALL.id, "sm")] }, { rush: [inst(MORPH_K.id, "mk")], power: [zabee] });
+    expect(morphCandidates(s)).toContain(zabee.instanceId);
+    s = swap(s, zabee.instanceId);
+    expect(where(s, "player2", zabee.instanceId)).toBe("rush");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-057");
+    expect(s.pendingEffectChoice?.playerId).toBe("player2");
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual([`${BIG.id}:big`]);
+    s = act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: `${BIG.id}:big` });
+    expect(where(s, "player1", `${BIG.id}:big`)).toBe("power");
+    // モーフの処理を終えると、ラッシュしたプレイヤーのラッシュフェイズに戻る（R-KW-MORPH-01）
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(s.pendingMorph).toBeUndefined();
+    expect(s.activePlayer).toBe("player1");
+  });
+
+  // RK-053【ガタックバルカン】「これが自軍バトルエリアにある間、敵軍Sユニットがラッシュされたとき、…」
+  it("R-REPL-04: モーフで出た敵軍ユニットに、他のカードの「ラッシュされたとき」（RK-053 仮面ライダーガタックMF【ガタックバルカン】）が発動する（出典: atwiki/page-1413、grnrngr/faq-rider-2 RK-160 Q2 と同じ扱い）", () => {
+    let s = rushInto({ battle: [inst("RK-053", "g")], power: [...powerCards(3)] }, { rush: [m], command: [t] });
+    s = swap(s, t.instanceId);
+    expect(where(s, "player2", t.instanceId)).toBe("rush");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-053");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+  });
+
+  it("R-REPL-04: モーフで出たユニットの「ラッシュしたとき」の選択を解決してから、残りのモーフ持ちのモーフが続く（出典: atwiki/page-1413・atwiki/page-1294 Q6）", () => {
+    const zabee = inst("RK-057", "z");
+    const mk2 = inst(MORPH_K.id, "mk2");
+    const z2 = inst("RK-057", "z2");
+    let s = rushInto({ battle: [inst(BIG.id, "big"), inst(BIG.id, "big2")] }, { rush: [inst(MORPH_K.id, "mk"), mk2], power: [zabee, z2] });
+    // 2体のモーフ持ち: 順番を選ぶ（ターンプレイヤー）→ 1体目
+    const first = legal(s).find((a) => a.type === "select_morph_unit" && a.morphUnitInstanceId === `${MORPH_K.id}:mk`);
+    expect(first).toBeDefined();
+    s = act(s, first!);
+    s = swap(s, zabee.instanceId);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-057");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: `${BIG.id}:big` });
+    // 続いて 2 体目のモーフ
+    expect(morphCandidates(s)).toContain(z2.instanceId);
+    s = swap(s, z2.instanceId);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-057");
+  });
+});

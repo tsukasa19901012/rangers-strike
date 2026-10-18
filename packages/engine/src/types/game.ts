@@ -1038,6 +1038,12 @@ export type GameState = {
   /** 敵ラッシュへのモーフ反応窓。 */
   pendingMorph?: PendingMorph;
   /**
+   * モーフで出たユニットの「ラッシュしたとき」（または他のカードの「ラッシュされたとき」）の選択待ちのため、まだ続けていない
+   * モーフの処理（残りのモーフ・「ラッシュされたとき」の誘発・カウンター窓）。選択がすべて終わった時点で続ける
+   * （R-REPL-04「エリアに出る方はラッシュに含まれる」。keywords/morphReaction.ts resumeMorphAfterEntry）。
+   */
+  deferredMorphContinuation?: { pending: PendingMorph; usedMorphUnitInstanceId: string; enteredInstanceId: string; passiveDone: boolean };
+  /**
    * 「ラッシュしたとき」の効果の解決（選択）待ちのため、まだ開いていない「ラッシュされたとき」の反応
    * （モーフ・カウンター）。選択がすべて終わった時点で開く（R-TIME-01, R-KW-MORPH-01）。
    */
