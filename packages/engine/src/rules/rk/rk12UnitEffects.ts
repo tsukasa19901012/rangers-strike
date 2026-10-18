@@ -1369,6 +1369,10 @@ CHOICE_SKIPPERS[ONKAKU_HIBIKI_EFFECT_ID] = simpleSkip();
 export function trackRk12UnitHolds(before: GameState, after: GameState): GameState {
   let next = after;
   for (const pid of ["player1", "player2"] as const) {
+    // 毎アクションの後に呼ばれるので、場が変わっていない・ホールド状態のカードがないときは何も作らずに抜ける。
+    const afterPlayer = after.players[pid];
+    if (before.players[pid] === afterPlayer) continue;
+    if (!afterPlayer.battle.some((c) => c.commandHeld) && !afterPlayer.rush.some((c) => c.commandHeld)) continue;
     const prev = new Map(fieldCards(before, pid).map((c) => [c.instanceId, c] as const));
     const already = new Set(rk12TurnPayloads<{ instanceId?: string }>(next, pid, RK12_UNIT_HELD_RULE).map((p) => p.instanceId));
     for (const card of fieldCards(after, pid)) {

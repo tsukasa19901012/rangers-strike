@@ -40,10 +40,14 @@ function opponentOf(playerId: PlayerId): PlayerId {
 
 /** このターンの記録（kind "rule"・scope "turn"）の payload。 */
 export function rk12TurnPayloads<T>(state: Pick<GameState, "players">, playerId: PlayerId, ruleId: string): T[] {
-  return getPlayerModifiers(state.players[playerId])
-    .filter((m) => m.kind === "rule" && m.ruleId === ruleId && m.scope === "turn")
-    .map((m) => (m as { payload?: unknown }).payload as T)
-    .filter((p): p is T => p !== undefined && p !== null);
+  // BP・SP の計算のたびに呼ばれるので、中間の配列を作らずに1回で拾う（順序は記録順のまま）。
+  const out: T[] = [];
+  for (const m of getPlayerModifiers(state.players[playerId])) {
+    if (m.kind !== "rule" || m.ruleId !== ruleId || m.scope !== "turn") continue;
+    const payload = (m as { payload?: unknown }).payload as T;
+    if (payload !== undefined && payload !== null) out.push(payload);
+  }
+  return out;
 }
 
 function hasRule(state: Pick<GameState, "players">, playerId: PlayerId, ruleId: string): boolean {
