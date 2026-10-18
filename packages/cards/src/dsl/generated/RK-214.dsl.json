@@ -41,18 +41,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-214::inpakutosutabu",
+          "keyword": "rk11::RK-214::impact_stab",
           "duration": "turn"
         }
       ],
       "optional": true
-    }
-  ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト （これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
-      "rule": "register"
     }
   ],
   "implementation": {

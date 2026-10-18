@@ -43,18 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-221::ongekida_hi_honoo",
+          "keyword": "rk11::RK-221::kaen_renda",
           "duration": "turn"
         }
       ],
       "optional": true
-    }
-  ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト（これがバトルで撃破されたとき、捨て札にするかわりにこれをホールドしてその場に留めてもよい）",
-      "rule": "register"
     }
   ],
   "implementation": {

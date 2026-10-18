@@ -39,11 +39,12 @@
       },
       "effects": [
         {
-          "type": "draw",
-          "amount": 1,
-          "player": "controller"
+          "type": "grant_keyword",
+          "keyword": "rk11::RK-226::goka_kenran",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

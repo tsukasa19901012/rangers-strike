@@ -4769,7 +4769,7 @@
       "【ライトニングスラッシュ】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-211::raitoningusurashu"
+      "rk11::RK-211::lightning_slash"
     ],
     "bp": 5500,
     "sp": "1/2",
@@ -4787,7 +4787,7 @@
     ],
     "expectedDslKeywords": [
       "scrum",
-      "rk_fx::RK-212::reibareto"
+      "rk11::RK-212::ray_bullet"
     ],
     "bp": 500,
     "sp": "1/2",
@@ -4805,7 +4805,8 @@
     ],
     "expectedDslKeywords": [
       "scrum",
-      "SP1"
+      "SP1",
+      "rk11::RK-213::gravity_slash"
     ],
     "bp": 2000,
     "sp": "special",
@@ -4823,7 +4824,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-214::inpakutosutabu"
+      "rk11::RK-214::impact_stab"
     ],
     "bp": 1000,
     "sp": null,
@@ -4840,7 +4841,7 @@
       "【スペード2―スラッシュ】"
     ],
     "expectedDslKeywords": [
-      "replace_rush_kamen_rider"
+      "rk11::RK-215::spade2_slash"
     ],
     "bp": 3500,
     "sp": null,
@@ -4857,7 +4858,7 @@
       "【ハート4―フロート】"
     ],
     "expectedDslKeywords": [
-      "replace_rush_kamen_rider"
+      "rk11::RK-216::heart4_float"
     ],
     "bp": 1500,
     "sp": null,
@@ -4874,8 +4875,8 @@
       "【滑空攻撃】"
     ],
     "expectedDslKeywords": [
-      "rush_discard_substitute_for_named::仮面ライダーブレイドJF",
-      "rk_fx::RK-217::geki_e6bb91"
+      "rk11::RK-217::substitute",
+      "rk11::RK-217::glide"
     ],
     "bp": 4500,
     "sp": null,
@@ -4892,8 +4893,8 @@
       "【下級アンデッドを操る者】"
     ],
     "expectedDslKeywords": [
-      "rush_discard_substitute_for_named::仮面ライダーギャレンJF",
-      "rk_fx::RK-218::andedoworu"
+      "rk11::RK-218::substitute",
+      "rk11::RK-218::peacock"
     ],
     "bp": 3500,
     "sp": null,
@@ -4928,7 +4929,7 @@
     ],
     "expectedDslKeywords": [
       "require_discard_rush_feature_to_battle",
-      "rk_fx::RK-220::andedowoeru"
+      "rk11::RK-220::undead_master"
     ],
     "bp": 6500,
     "sp": 1,
@@ -4946,7 +4947,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-221::ongekida_hi_honoo"
+      "rk11::RK-221::kaen_renda"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -4964,7 +4965,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-222::sound_strike_scorching_form"
+      "rk11::RK-222::shakunetsu"
     ],
     "bp": 4500,
     "sp": "1/3",
@@ -4981,7 +4982,7 @@
       "【音撃射・疾風一閃】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-223::geki_kaze_e99fb3"
+      "rk11::RK-223::shippu_issen"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -4998,7 +4999,7 @@
       "【サポート】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-224::sapoto"
+      "rk11::RK-224::support"
     ],
     "bp": 500,
     "sp": null,
@@ -5016,7 +5017,7 @@
     ],
     "expectedDslKeywords": [
       "no_battle_rush_turn",
-      "counter_cost_reduce_3"
+      "rk11::RK-225::onmyojutsu"
     ],
     "bp": 500,
     "sp": "1/3",
@@ -5033,7 +5034,8 @@
       "【音撃打・業火絢爛】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk11::RK-226::goka_kenran"
     ],
     "bp": 1000,
     "sp": null,
@@ -5051,7 +5053,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-227::geki_geki"
+      "rk11::RK-227::ichigeki_doto"
     ],
     "bp": 4000,
     "sp": null,
@@ -5069,7 +5071,7 @@
     ],
     "expectedDslKeywords": [
       "scrum",
-      "rk_fx::RK-228::geki_kaze"
+      "rk11::RK-228::senpu_issen"
     ],
     "bp": 500,
     "sp": "1/3",
@@ -5087,7 +5089,7 @@
     ],
     "expectedDslKeywords": [
       "scrum",
-      "rk_fx::RK-229::geki_baku"
+      "rk11::RK-229::keicho_fubaku"
     ],
     "bp": 3000,
     "sp": null,
@@ -5105,7 +5107,7 @@
     ],
     "expectedDslKeywords": [
       "scrum",
-      "rk_fx::RK-230::geki_3"
+      "rk11::RK-230::irasshai"
     ],
     "bp": 2000,
     "sp": "1/3",

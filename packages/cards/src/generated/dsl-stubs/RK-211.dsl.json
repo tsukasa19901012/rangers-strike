@@ -65,11 +65,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-211::raitoningusurashu",
+          "keyword": "rk11::RK-211::lightning_slash",
           "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

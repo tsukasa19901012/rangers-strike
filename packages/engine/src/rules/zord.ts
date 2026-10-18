@@ -22,11 +22,25 @@ import { getDefinition, isSmallUnit } from "../core/catalog";
 import { findInZone, removeAt } from "../core/helpers";
 import { hasTurnRuleModifier } from "../core/scopedModifiers";
 import { actionContextState, zordMaterialAlteredName, zordMaterialFeatures } from "./zordFeatureContext";
+import { rk11IsHandSubstitute } from "./rk/rk11Fields";
 
 /** ゾードアップ素材を取れるゾーン（フィールドのみ、手札不可）。 */
-export type ZordMaterialZone = "rush" | "battle";
+export type ZordMaterialZone = "rush" | "battle" | "hand";
 
 const ZORD_MATERIAL_ZONES: ZordMaterialZone[] = ["rush", "battle"];
+
+/**
+ * RK-217 イーグルアンデッド・RK-218 ピーコックアンデッドの※「これが自分の手札にある間、自分が「X JF」をラッシュするとき、これを捨札にすれば、
+ * 自軍「X」1体を捨札にしたことにできる。」— 「自軍「X」1体を捨札にする」の追加条件の素材として、手札のこれを選べる（rules/rk/rk11Fields.ts）。
+ */
+function isHandSubstituteMaterial(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+  card: CardInstance,
+): boolean {
+  return resolveZordUpCondition(definitions, rushingCardId)?.conditionId === "discard_named_unit" && rk11IsHandSubstitute({ definitions }, player.hand, card, rushingCardId);
+}
 
 const NON_FIELD_ZORD_UP_CONDITIONS = new Set([
   "state_gate",
@@ -571,6 +585,9 @@ export function collectZordMaterials(
       }
     }
   }
+  for (const card of player.hand) {
+    if (card.instanceId !== rushingInstanceId && isHandSubstituteMaterial(player, definitions, rushingCardId, card)) candidates.push(card);
+  }
 
   return candidates;
 }
@@ -600,6 +617,10 @@ export function findZordMaterial(
       continue;
     }
     return { zone, index: found.index, card: found.card };
+  }
+  const inHand = findInZone(player, "hand", materialInstanceId);
+  if (inHand && materialInstanceId !== rushingInstanceId && isHandSubstituteMaterial(player, definitions, rushingCardId, inHand.card)) {
+    return { zone: "hand", index: inHand.index, card: inHand.card };
   }
 
   return null;

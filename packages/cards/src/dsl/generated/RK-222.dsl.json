@@ -80,18 +80,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-222::sound_strike_scorching_form",
+          "keyword": "rk11::RK-222::shakunetsu",
           "duration": "turn"
         }
       ],
       "optional": true
-    }
-  ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト（これがバトルで撃破されたとき、捨て札にするかわりにこれをホールドしてその場に留めてもよい）",
-      "rule": "register"
     }
   ],
   "implementation": {

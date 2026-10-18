@@ -623,6 +623,15 @@ export type PendingEffectChoice = {
     held?: PendingEffectChoice;
     heldAction?: unknown;
   };
+  /** ザ・マスクドライダーEXP vol.3 RK-211〜RK-231 の選択の続き（rules/rk/rk11UnitEffects.ts）。 */
+  rk11Meta?: {
+    /** RK-212・RK-214: 効果の持ち主（相手が選ぶ選択のとき）。 */
+    owner?: PlayerId;
+    /** RK-211: 与えるダメージ（撃破したユニットの本来の SP）。 */
+    remaining?: number;
+    /** RK-211: 撃破したユニット。RK-214: ホールドするもう1体。 */
+    target?: string;
+  };
   /** RK-208【迎撃の毒矢】: この選択に答えたら（発動を宣言したら）クレインの窓を開く（rules/rk/rk10UnitEffects.ts）。 */
   rk10CraneWatch?: { craneOwner: PlayerId; rushedOwner: PlayerId; rushedInstanceId: string };
   /** ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 の選択の続き（rules/rk/rk9UnitEffects.ts）。 */
@@ -1332,6 +1341,8 @@ export type TurnEndProgress = {
   /** ライダーEXP vol.2 RK-148〜RK-168 の「自分がターンを終えるとき」の選択（RK-153）のうち未処理のもの（rules/rk/rk8UnitEffects.ts）。 */
   rk8Queue?: string[];
   rk10Queue?: string[];
+  /** RK-216・RK-218・RK-221・RK-222 で得た「ターンを終えるとき」（rules/rk/rk11UnitEffects.ts）。 */
+  rk11Queue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

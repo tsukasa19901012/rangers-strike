@@ -96,7 +96,7 @@ describe("RK-218 ピーコックアンデッド", () => {
     expectRarityIn("RK-218", ["N"]);
   });
 
-  it.fails("RK-218: ※ 手札にあるこれを捨札にすれば、「仮面ライダーギャレン」を捨札にしたことにして、RK-210 仮面ライダーギャレンJF を必要パワー0でラッシュできる（出典: atwiki/page-945「これを捨札にすれば、自軍「仮面ライダーギャレン」1体を捨札にしたことにできる」）", () => {
+  it("RK-218: ※ 手札にあるこれを捨札にすれば、「仮面ライダーギャレン」を捨札にしたことにして、RK-210 仮面ライダーギャレンJF を必要パワー0でラッシュできる（出典: atwiki/page-945「これを捨札にすれば、自軍「仮面ライダーギャレン」1体を捨札にしたことにできる」）", () => {
     const s0 = rushPhase({ hand: [inst("RK-210", "gj"), inst("RK-218", "pc")], command: releasedCat("WB", 1), power: [] });
     const r = rushVia(s0, "player1", "RK-210:gj", (a) => a.zordMaterialInstanceId === "RK-218:pc");
     expect(r.ok, r.error).toBe(true);
@@ -109,7 +109,7 @@ describe("RK-218 ピーコックアンデッド", () => {
   const xg5Rush = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     rushFromHand(rushPhase({ hand: [inst("XG5-056", "gj"), inst("RK-218", "pc")], command: releasedCat("WB", 1), power: powerCards(3), ...p1 }), "player1", "XG5-056:gj", { materials: ["RK-218:pc"] });
 
-  it.fails("RK-218: ※ XG5-056 仮面ライダーギャレンJF（追加条件「自軍「仮面ライダーギャレン」1体を捨札にする」）も、手札のこれを捨札にしてラッシュできる（出典: atwiki/page-945 Q1「「XG5-056 仮面ライダーギャレンJF」の追加条件を満たすときに「RK-218 ピーコックアンデッド」を捨札にすることでラッシュしました」）", () => {
+  it("RK-218: ※ XG5-056 仮面ライダーギャレンJF（追加条件「自軍「仮面ライダーギャレン」1体を捨札にする」）も、手札のこれを捨札にしてラッシュできる（出典: atwiki/page-945 Q1「「XG5-056 仮面ライダーギャレンJF」の追加条件を満たすときに「RK-218 ピーコックアンデッド」を捨札にすることでラッシュしました」）", () => {
     const r = xg5Rush();
     expect(r.ok, r.error).toBe(true);
     const s = resolveAll(r.state);
@@ -122,20 +122,20 @@ describe("RK-218 ピーコックアンデッド", () => {
   const entered = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     enter(board({ rush: [inst("RK-218", "pc"), inst("RK-219", "ar"), inst("SPEC-UNDEAD", "un"), inst("SPEC-C1", "c")], battle: [inst("SPEC-UNDEAD", "ub")], ...p1 }, enemy), "RK-218:pc");
 
-  it.fails("RK-218: 【下級アンデッドを操る者】自軍ターン中、バトルエリアに出たとき、自軍ラッシュエリアの特徴「アンデッド」を持つ自軍ユニットから1体選べる（任意。バトルエリアのユニットは対象外）（出典: atwiki/page-945「自軍ラッシュエリアから、特徴｢アンデッド｣を持つ自軍ユニットを1体選んでも良い」）", () => {
+  it("RK-218: 【下級アンデッドを操る者】自軍ターン中、バトルエリアに出たとき、自軍ラッシュエリアの特徴「アンデッド」を持つ自軍ユニットから1体選べる（任意。バトルエリアのユニットは対象外）（出典: atwiki/page-945「自軍ラッシュエリアから、特徴｢アンデッド｣を持つ自軍ユニットを1体選んでも良い」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RK-218");
     expect(choiceIds(s)).toEqual(["RK-219:ar", "SPEC-UNDEAD:un"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-218: 選んだユニット（SP「－」のアルビローチ）は、このターン「SP1」になる（出典: atwiki/page-945「選んだユニットは、このターン「SP1」になり」）", () => {
+  it("RK-218: 選んだユニット（SP「－」のアルビローチ）は、このターン「SP1」になる（出典: atwiki/page-945「選んだユニットは、このターン「SP1」になり」）", () => {
     const s = resolveAll(pick(entered(), "RK-219:ar"));
     expect(spOf(s, "player1", "RK-219:ar")).toBe(1);
   });
 
-  it.fails("RK-218: 選んだユニットは、ターンを終えるとき撃破される（出典: atwiki/page-945「ターンを終えるとき撃破される」）", () => {
-    let s = resolveAll(pick(entered(), "RK-219:ar"));
+  it("RK-218: 選んだユニットは、ターンを終えるとき撃破される（出典: atwiki/page-945「ターンを終えるとき撃破される」）", () => {
+    let s = passEntry(resolveAll(pick(entered(), "RK-219:ar")));
     s = resolveAll(toTurnEnd(s));
     expect(zoneOf(s, "player1", "RK-219:ar")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-UNDEAD:un")).toBe("rush");
@@ -185,14 +185,16 @@ describe("RK-220 アルビノジョーカー", () => {
     expect(canStartRush(rushPhase({ hand: [inst("RK-220", "aj")], command: releasedCat("DA", 1), power: powerCards(4) }), "player1", "RK-220:aj")).toBe(false);
   });
 
-  it.fails("RK-220: ※ 自軍ラッシュエリアに特徴「アンデッド」を持つほかのユニットがなければバトルエリアに出られない（出典: atwiki/page-947「捨札にしなければバトルエリアに出られない」）", () => {
+  it("RK-220: ※ 自軍ラッシュエリアに特徴「アンデッド」を持つほかのユニットがなければバトルエリアに出られない（出典: atwiki/page-947「捨札にしなければバトルエリアに出られない」）", () => {
     expect(canEnter(board({ rush: [inst("RK-220", "aj"), inst("SPEC-C1", "c")], battle: [inst("SPEC-UNDEAD", "ub")] }), "RK-220:aj")).toBe(false);
   });
 
-  it.fails("RK-220: ※ 自軍ラッシュエリアの「アンデッド」を1体捨札にしてバトルエリアに出られる（出典: atwiki/page-947）", () => {
+  it("RK-220: ※ 自軍ラッシュエリアの「アンデッド」を1体捨札にしてバトルエリアに出られる（出典: atwiki/page-947）", () => {
     let s = board({ rush: [inst("RK-220", "aj"), inst("SPEC-UNDEAD", "un")] });
     expect(canEnter(s, "RK-220:aj")).toBe(true);
     s = resolveAll(enter(s, "RK-220:aj"), ["SPEC-UNDEAD:un"]);
+    // 捨札にしたあと、あらためてバトルエリアに出す（RK-032 アナザーアギトの※と同じ手続き。cardSpec/RK2-022-042.b.test.ts）。
+    if (zoneOf(s, "player1", "RK-220:aj") === "rush") s = enter(s, "RK-220:aj");
     expect(zoneOf(s, "player1", "RK-220:aj")).toBe("battle");
     expect(zoneOf(s, "player1", "SPEC-UNDEAD:un")).toBe("discard");
   });
@@ -202,14 +204,14 @@ describe("RK-220 アルビノジョーカー", () => {
   const roach = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = enemy) =>
     rushed(rushPhase({ hand: [inst("RK-219", "h")], rush: [inst("RK-220", "aj"), inst("RK-219", "r1")], command: releasedCat("DA", 1), power: powerCards(3), ...p1 }, p2), "RK-219:h");
 
-  it.fails("RK-220: 【アンデッドを従える者】自軍ラッシュフェイズ中、自軍「アルビローチ」をラッシュしたとき、発動するかを選べ、自軍「アルビローチ」の数（2）と同じ必要パワーの数字を持つ敵軍ユニット（サイズ・エリアを問わない）から1体選ぶ（出典: atwiki/page-947「その数と同じ必要パワーの数字を持つ敵軍ユニットを1体選び撃破する」）", () => {
+  it("RK-220: 【アンデッドを従える者】自軍ラッシュフェイズ中、自軍「アルビローチ」をラッシュしたとき、発動するかを選べ、自軍「アルビローチ」の数（2）と同じ必要パワーの数字を持つ敵軍ユニット（サイズ・エリアを問わない）から1体選ぶ（出典: atwiki/page-947「その数と同じ必要パワーの数字を持つ敵軍ユニットを1体選び撃破する」）", () => {
     const s = roach();
     expectChoiceFrom(s, "player1", "RK-220");
     expect(choiceIds(s)).toEqual(["SPEC-C2:b", "SPEC-C2:r", "SPEC-M2:m"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-220: 選んだユニットを撃破する（出典: atwiki/page-947「1体選び撃破する」）", () => {
+  it("RK-220: 選んだユニットを撃破する（出典: atwiki/page-947「1体選び撃破する」）", () => {
     const s = resolveAll(pick(roach(), "SPEC-M2:m"));
     expect(zoneOf(s, "player2", "SPEC-M2:m")).toBe("discard");
   });
@@ -228,20 +230,20 @@ describe("RK-220 アルビノジョーカー", () => {
 // ===========================================================================
 /** 「「SP1」になり、このターンを終えるときホールド状態なら、リリースしてもよい」の共通テスト。after は能力を得た直後の state。 */
 function sp1ReleaseTests(id: string, page: string, after: () => GameState) {
-  it.fails(`${id}: このターン「SP1」になる（出典: ${page}「このターン、これは次の能力を得る⇒「SP1」になり」）`, () => {
+  it(`${id}: このターン「SP1」になる（出典: ${page}「このターン、これは次の能力を得る⇒「SP1」になり」）`, () => {
     expect(spOf(after(), "player1", `${id}:me`)).toBe(1);
   });
 
-  it.fails(`${id}: このターンを終えるときホールド状態なら、リリースするかを選べ（任意）、選ぶとリリース状態になる（出典: ${page}「このターンを終えるときホールド状態なら、リリースしてもよい」）`, () => {
-    let s = toTurnEnd(holdOnField(after(), "player1", `${id}:me`), id);
+  it(`${id}: このターンを終えるときホールド状態なら、リリースするかを選べ（任意）、選ぶとリリース状態になる（出典: ${page}「このターンを終えるときホールド状態なら、リリースしてもよい」）`, () => {
+    let s = toTurnEnd(holdOnField(passEntry(after()), "player1", `${id}:me`), id);
     expectChoiceFrom(s, "player1", id);
     expect(canSkip(s)).toBe(true);
     s = resolveAll(confirm(s));
     expect(cardIn(s, "player1", `${id}:me`)?.commandHeld ?? false).toBe(false);
   });
 
-  it.fails(`${id}: ターンを終えるときリリース状態なら何もしない（出典: ${page}「ホールド状態なら」）`, () => {
-    const s = toTurnEnd(after(), id);
+  it(`${id}: ターンを終えるときリリース状態なら何もしない（出典: ${page}「ホールド状態なら」）`, () => {
+    const s = toTurnEnd(passEntry(after()), id);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe(id);
   });
 }
@@ -262,19 +264,19 @@ describe("RK-221 仮面ライダー響鬼", () => {
 
   const nc = (hand = [inst("TST-OP", "op"), inst("SPEC-C1", "u")]) => ncEnter("RK-221:me", 0, { hand }, {}, EXTRA);
 
-  it.fails("RK-221: 【音撃打・火炎連打】NC — 手札のオペレーションカード（ユニットカードは対象外）から1枚選んで捨札にできる（任意）（出典: atwiki/page-955「自分の手札からオペレーションカードを1枚選び、捨札にしてもよい」）", () => {
+  it("RK-221: 【音撃打・火炎連打】NC — 手札のオペレーションカード（ユニットカードは対象外）から1枚選んで捨札にできる（任意）（出典: atwiki/page-955「自分の手札からオペレーションカードを1枚選び、捨札にしてもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "RK-221");
     expect(choiceIds(s)).toEqual(["TST-OP:op"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-221: 選んだオペレーションカードは捨札になる（出典: atwiki/page-955）", () => {
+  it("RK-221: 選んだオペレーションカードは捨札になる（出典: atwiki/page-955）", () => {
     const s = resolveAll(pick(nc(), "TST-OP:op"));
     expect(zoneOf(s, "player1", "TST-OP:op")).toBe("discard");
   });
 
-  it.fails("RK-221: 手札にオペレーションカードがなければ発動しない（出典: atwiki/page-955）", () => {
+  it("RK-221: 手札にオペレーションカードがなければ発動しない（出典: atwiki/page-955）", () => {
     const s = nc([inst("SPEC-C1", "u")]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-221");
   });
@@ -306,19 +308,19 @@ describe("RK-222 仮面ライダー響鬼紅", () => {
 
   const nc = (command = [...releasedCat("MA", 2, "ma"), ...releasedCat("WB", 1)]) => ncEnter("RK-222:me", 0, { command }, {}, EXTRA);
 
-  it.fails("RK-222: 【音撃打・灼熱真紅の型】NC — MA を持つリリース状態のコマンドを2つホールドできる（任意。MA 以外は対象外）（出典: atwiki/page-874「MAを持つコマンドを2つホールドしてもよい」）", () => {
+  it("RK-222: 【音撃打・灼熱真紅の型】NC — MA を持つリリース状態のコマンドを2つホールドできる（任意。MA 以外は対象外）（出典: atwiki/page-874「MAを持つコマンドを2つホールドしてもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "RK-222");
     expect(choiceIds(s)).toEqual(["TST-OP-MA:ma0", "TST-OP-MA:ma1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-222: 2つ選ぶと、選んだ MA のコマンドがホールド状態になる（出典: atwiki/page-874）", () => {
+  it("RK-222: 2つ選ぶと、選んだ MA のコマンドがホールド状態になる（出典: atwiki/page-874）", () => {
     const s = resolveAll(pick(pick(nc(), "TST-OP-MA:ma0"), "TST-OP-MA:ma1"));
     expect(s.players.player1.command.filter((c) => c.commandHeld).map((c) => c.instanceId).sort()).toEqual(["TST-OP-MA:ma0", "TST-OP-MA:ma1"]);
   });
 
-  it.fails("RK-222: MA のリリース状態のコマンドが1つしかなければ発動しない（出典: atwiki/page-874「2つホールドしてもよい」）", () => {
+  it("RK-222: MA のリリース状態のコマンドが1つしかなければ発動しない（出典: atwiki/page-874「2つホールドしてもよい」）", () => {
     const s = nc([...releasedCat("MA", 1, "ma"), ...releasedCat("WB", 2)]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-222");
   });
@@ -345,13 +347,13 @@ describe("RK-223 仮面ライダー威吹鬼", () => {
   const rc = () =>
     rcRideOff(board({ rush: [inst("RK-223", "ib"), inst("SPEC-VEHICLE", "v")], deck: decks.p1 }, { deck: decks.p2 }), "RK-223:ib", "SPEC-VEHICLE:v");
 
-  it.fails("RK-223: 【音撃射・疾風一閃】RC — 自軍山札の上から3枚をオモテにするかを選べる（任意）（出典: atwiki/page-1087「自軍山札の上から3枚をオモテにしてもよい」・R-KW-RC-01）", () => {
+  it("RK-223: 【音撃射・疾風一閃】RC — 自軍山札の上から3枚をオモテにするかを選べる（任意）（出典: atwiki/page-1087「自軍山札の上から3枚をオモテにしてもよい」・R-KW-RC-01）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "RK-223");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-223: オモテにすると、自軍・敵軍の山札の上から3枚のうち「SP1」を持つ S ユニットのカードをすべて捨札にし、それ以外（L ユニット・SP なし・オペレーション）は持ち主の山札に戻す（出典: atwiki/page-1087「「SP1」を持つSユニットのカードをすべて捨札にし、それ以外を持ち主の山札に戻してシャッフルする」）", () => {
+  it("RK-223: オモテにすると、自軍・敵軍の山札の上から3枚のうち「SP1」を持つ S ユニットのカードをすべて捨札にし、それ以外（L ユニット・SP なし・オペレーション）は持ち主の山札に戻す（出典: atwiki/page-1087「「SP1」を持つSユニットのカードをすべて捨札にし、それ以外を持ち主の山札に戻してシャッフルする」）", () => {
     const s = resolveAll(confirm(rc()));
     expect(zoneOf(s, "player1", "TST-UNIT-0:s1")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-UNIT-0:es")).toBe("discard");
@@ -364,13 +366,13 @@ describe("RK-223 仮面ライダー威吹鬼", () => {
     expect(s.players.player2.deck).toHaveLength(3);
   });
 
-  it.fails("RK-223: オモテにしなければ何も起きない（出典: atwiki/page-1087「オモテにしてもよい。そうしたとき」）", () => {
+  it("RK-223: オモテにしなければ何も起きない（出典: atwiki/page-1087「オモテにしてもよい。そうしたとき」）", () => {
     const s = resolveAll(skip(rc()));
     expect(s.players.player1.deck).toHaveLength(4);
     expect(s.players.player2.deck).toHaveLength(4);
   });
 
-  it.fails("RK-223: （）書き — 特徴「猛士」を持つユニットの次にライドせずに出ても発動する（出典: atwiki/page-1087「（この効果は、特徴「猛士」を持つユニットからコンビネーションする時、ナンバーに関係なく発動する）」・R-CN-05）", () => {
+  it("RK-223: （）書き — 特徴「猛士」を持つユニットの次にライドせずに出ても発動する（出典: atwiki/page-1087「（この効果は、特徴「猛士」を持つユニットからコンビネーションする時、ナンバーに関係なく発動する）」・R-CN-05）", () => {
     let s = board({ rush: [inst("SPEC-TAKESHI", "tk"), inst("RK-223", "ib")], deck: decks.p1 }, { deck: decks.p2 });
     s = passEntry(enter(s, "SPEC-TAKESHI:tk"));
     s = enter(s, "RK-223:ib");
@@ -408,7 +410,7 @@ describe("RK-224 京介変身体", () => {
     return resolveAll(attack(s, attacker, defender));
   };
 
-  it.fails("RK-224: 【サポート】自軍ターン中、SP1 の自軍ユニットとバトルした敵軍バトルエリアの S ユニットは、バトルに勝っても撃破される（出典: atwiki/page-900「敵軍バトルエリアのSユニットは、「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれているかのように扱う」）", () => {
+  it("RK-224: 【サポート】自軍ターン中、SP1 の自軍ユニットとバトルした敵軍バトルエリアの S ユニットは、バトルに勝っても撃破される（出典: atwiki/page-900「敵軍バトルエリアのSユニットは、「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれているかのように扱う」）", () => {
     const s = fight("TST-UNIT-0:a", "SPEC-E5000:e");
     expect(zoneOf(s, "player1", "TST-UNIT-0:a")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E5000:e")).toBe("discard");

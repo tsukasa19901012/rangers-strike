@@ -105,46 +105,46 @@ describe("RK-211 仮面ライダーブレイドJF", () => {
   /** 手札の2枚を選んで見せる。 */
   const shown = (s: GameState, a: string, b: string) => pick(pick(s, a), b);
 
-  it.fails("RK-211: 【ライトニングスラッシュ】自軍ターン中、バトルエリアに出たとき、自分の手札を2枚選んで見せるかを選べる（任意）（出典: atwiki/page-1078「自分の手札を2枚選び、相手に見せてもよい」）", () => {
+  it("RK-211: 【ライトニングスラッシュ】自軍ターン中、バトルエリアに出たとき、自分の手札を2枚選んで見せるかを選べる（任意）（出典: atwiki/page-1078「自分の手札を2枚選び、相手に見せてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RK-211");
     expect(choiceIds(s)).toEqual(["TST-OP-MA:h3", "TST-OP:h1", "TST-OP:h2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-211: 見せた2枚のカテゴリがすべて同じなら、必要パワーを満たしていない敵軍ユニット（敵軍のパワー2枚に対して必要パワー3以上。サイズ・エリアを問わない）から1体選ぶ（選ばないことはできない）（出典: atwiki/page-1078「必要パワーを満たしていない敵軍ユニットを1体選び撃破する」・カード評価「サイズやエリアに囚われない」）", () => {
+  it("RK-211: 見せた2枚のカテゴリがすべて同じなら、必要パワーを満たしていない敵軍ユニット（敵軍のパワー2枚に対して必要パワー3以上。サイズ・エリアを問わない）から1体選ぶ（選ばないことはできない）（出典: atwiki/page-1078「必要パワーを満たしていない敵軍ユニットを1体選び撃破する」・カード評価「サイズやエリアに囚われない」）", () => {
     const s = shown(entered(), "TST-OP:h1", "TST-OP:h2");
     expectChoiceFrom(s, "player1", "RK-211");
     expect(choiceIds(s)).toEqual(["SPEC-C3NOSP:r", "SPEC-C3SP2:a", "TST-UNIT-7:l"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-211: 選んだユニットを撃破し、その本来の SP（2）と同じ数だけ相手にダメージを与える（出典: atwiki/page-1078「そうして撃破したユニットの本来のSPが1以上なら、そのSPと同じ数だけ、相手にダメージを与える」）", () => {
+  it("RK-211: 選んだユニットを撃破し、その本来の SP（2）と同じ数だけ相手にダメージを与える（出典: atwiki/page-1078「そうして撃破したユニットの本来のSPが1以上なら、そのSPと同じ数だけ、相手にダメージを与える」）", () => {
     const s = resolveAll(pick(shown(entered(), "TST-OP:h1", "TST-OP:h2"), "SPEC-C3SP2:a"));
     expect(zoneOf(s, "player2", "SPEC-C3SP2:a")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(2);
   });
 
-  it.fails("RK-211: 撃破したユニットの本来の SP が「－」ならダメージを与えない（出典: atwiki/page-1078「本来のSPが1以上なら」）", () => {
+  it("RK-211: 撃破したユニットの本来の SP が「－」ならダメージを与えない（出典: atwiki/page-1078「本来のSPが1以上なら」）", () => {
     const s = resolveAll(pick(shown(entered(), "TST-OP:h1", "TST-OP:h2"), "SPEC-C3NOSP:r"));
     expect(zoneOf(s, "player2", "SPEC-C3NOSP:r")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(0);
   });
 
-  it.fails("RK-211: 見せた2枚のカテゴリが違えば撃破しない（出典: atwiki/page-1078「見せたカードの持つカテゴリがすべて同じなら」）", () => {
+  it("RK-211: 見せた2枚のカテゴリが違えば撃破しない（出典: atwiki/page-1078「見せたカードの持つカテゴリがすべて同じなら」）", () => {
     const s = resolveAll(shown(entered(), "TST-OP:h1", "TST-OP-MA:h3"));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-211");
     expect(zoneOf(s, "player2", "SPEC-C3SP2:a")).toBe("battle");
     expect(damageOf(s, "player2")).toBe(0);
   });
 
-  it.fails("RK-211: 「必要パワーを満たしているか」は、相手のパワーに自軍コマンドゾーンのマルチカテゴリのカードを数えて判定する（パワー2枚＋マルチ1枚＝3なら必要パワー3は満たしている）（出典: カード評価「判定には、マルチカテゴリの自軍コマンドも含まれる」・R-CAT-02「自軍パワー＝自軍パワーゾーンのカード枚数＋敵軍コマンドゾーンのマルチカテゴリカードの枚数」）", () => {
+  it("RK-211: 「必要パワーを満たしているか」は、相手のパワーに自軍コマンドゾーンのマルチカテゴリのカードを数えて判定する（パワー2枚＋マルチ1枚＝3なら必要パワー3は満たしている）（出典: カード評価「判定には、マルチカテゴリの自軍コマンドも含まれる」・R-CAT-02「自軍パワー＝自軍パワーゾーンのカード枚数＋敵軍コマンドゾーンのマルチカテゴリカードの枚数」）", () => {
     const s = shown(entered({ command: [...releasedCat("WB", 1), { ...inst("TST-OP-WB-ET", "mc"), commandHeld: false }] }), "TST-OP:h1", "TST-OP:h2");
     expectChoiceFrom(s, "player1", "RK-211");
     expect(choiceIds(s)).toEqual(["TST-UNIT-7:l"]);
   });
 
-  it.fails("RK-211: 手札が1枚以下なら発動しない（出典: atwiki/page-1078「自分の手札を2枚選び」）", () => {
+  it("RK-211: 手札が1枚以下なら発動しない（出典: atwiki/page-1078「自分の手札を2枚選び」）", () => {
     const s = entered({ hand: [inst("TST-OP", "h1")] });
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-211");
   });
@@ -179,27 +179,27 @@ describe("RK-212 仮面ライダーラルク", () => {
   const enemy = { battle: [heldUnit("SPEC-WB1", "w"), heldUnit("SPEC-WB1M", "m"), inst("SPEC-MA1", "rel")], rush: [heldUnit("SPEC-MA1", "r"), heldUnit("SPEC-WB1", "w2")] };
   const nc = (p2: Partial<GameState["players"]["player2"]> = enemy) => ncEnter("RK-212:lk", 0, {}, p2, EXTRA);
 
-  it.fails("RK-212: 【レイバレット】NC — ホールド状態の敵軍 S ユニット（エリアを問わない。リリース状態・M は対象外）を2体選べる（任意）（出典: atwiki/page-930「ホールド状態の敵軍Sユニットを2体選んでもよい」・カード評価「ラッシュエリアのユニットも除去できる」）", () => {
+  it("RK-212: 【レイバレット】NC — ホールド状態の敵軍 S ユニット（エリアを問わない。リリース状態・M は対象外）を2体選べる（任意）（出典: atwiki/page-930「ホールド状態の敵軍Sユニットを2体選んでもよい」・カード評価「ラッシュエリアのユニットも除去できる」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "RK-212");
     expect(choiceIds(s)).toEqual(["SPEC-MA1:r", "SPEC-WB1:w", "SPEC-WB1:w2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-212: 選んだ2体のカテゴリが違えば、相手がそのどちらか1体を選ぶ（出典: atwiki/page-930「相手はそのどちらか1体を選び撃破する」）", () => {
+  it("RK-212: 選んだ2体のカテゴリが違えば、相手がそのどちらか1体を選ぶ（出典: atwiki/page-930「相手はそのどちらか1体を選び撃破する」）", () => {
     const s = pick(pick(nc(), "SPEC-WB1:w"), "SPEC-MA1:r");
     expectChoiceFrom(s, "player2", "RK-212");
     expect(choiceIds(s)).toEqual(["SPEC-MA1:r", "SPEC-WB1:w"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-212: 相手が選んだ1体が撃破され、もう1体は残る（出典: atwiki/page-930）", () => {
+  it("RK-212: 相手が選んだ1体が撃破され、もう1体は残る（出典: atwiki/page-930）", () => {
     const s = resolveAll(pick(pick(pick(nc(), "SPEC-WB1:w"), "SPEC-MA1:r"), "SPEC-MA1:r"));
     expect(zoneOf(s, "player2", "SPEC-MA1:r")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-WB1:w")).toBe("battle");
   });
 
-  it.fails("RK-212: 選んだ2体のカテゴリが同じなら撃破しない（出典: atwiki/page-930「選んだ2体の持つカテゴリが違うなら」）", () => {
+  it("RK-212: 選んだ2体のカテゴリが同じなら撃破しない（出典: atwiki/page-930「選んだ2体の持つカテゴリが違うなら」）", () => {
     const s = resolveAll(pick(pick(nc(), "SPEC-WB1:w"), "SPEC-WB1:w2"));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-212");
     expect(zoneOf(s, "player2", "SPEC-WB1:w")).toBe("battle");
@@ -238,29 +238,29 @@ describe("RK-213 仮面ライダーグレイブ", () => {
     expect(spOf(nc(), "player1", "RK-213:gr")).toBe(1);
   });
 
-  it.fails("RK-213: 【グラビティスラッシュ】NC — 敵軍コマンドのカテゴリの数（WB・MA の2）以下の必要パワーの数字を持つ、敵軍バトルエリアのユニット（サイズを問わない）から1体選べる（任意）（出典: atwiki/page-899「その数以下の必要パワーの数字を持つユニットを敵軍バトルエリアから1体選び撃破する」）", () => {
+  it("RK-213: 【グラビティスラッシュ】NC — 敵軍コマンドのカテゴリの数（WB・MA の2）以下の必要パワーの数字を持つ、敵軍バトルエリアのユニット（サイズを問わない）から1体選べる（任意）（出典: atwiki/page-899「その数以下の必要パワーの数字を持つユニットを敵軍バトルエリアから1体選び撃破する」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "RK-213");
     expect(choiceIds(s)).toEqual(["SPEC-C1:a", "SPEC-C2:b", "SPEC-M2:m", "TST-UNIT-0:z"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-213: 選んだユニットを撃破する（出典: atwiki/page-899「1体選び撃破する」）", () => {
+  it("RK-213: 選んだユニットを撃破する（出典: atwiki/page-899「1体選び撃破する」）", () => {
     const s = resolveAll(pick(nc(), "SPEC-C2:b"));
     expect(zoneOf(s, "player2", "SPEC-C2:b")).toBe("discard");
   });
 
-  it.fails("RK-213: 数えるのはカテゴリの種類の数（同じカテゴリのコマンドが3枚でも1）（出典: atwiki/page-899「敵軍コマンドのカテゴリの数」・コメント欄「そのカテゴリの数は赤、黄、黒の3つ」）", () => {
+  it("RK-213: 数えるのはカテゴリの種類の数（同じカテゴリのコマンドが3枚でも1）（出典: atwiki/page-899「敵軍コマンドのカテゴリの数」・コメント欄「そのカテゴリの数は赤、黄、黒の3つ」）", () => {
     const s = nc(enemy(releasedCat("WB", 3)));
     expect(choiceIds(s)).toEqual(["SPEC-C1:a", "TST-UNIT-0:z"]);
   });
 
-  it.fails("RK-213: マルチカテゴリのコマンドは持つカテゴリをそれぞれ数える（WB／ET のコマンドと WB のコマンドで2）（出典: atwiki/page-899 コメント欄「そのカテゴリの数は赤、黄、黒の3つ」）", () => {
+  it("RK-213: マルチカテゴリのコマンドは持つカテゴリをそれぞれ数える（WB／ET のコマンドと WB のコマンドで2）（出典: atwiki/page-899 コメント欄「そのカテゴリの数は赤、黄、黒の3つ」）", () => {
     const s = nc(enemy([{ ...inst("TST-OP-WB-ET", "mc"), commandHeld: false }, ...releasedCat("WB", 1)]));
     expect(choiceIds(s)).toEqual(["SPEC-C1:a", "SPEC-C2:b", "SPEC-M2:m", "TST-UNIT-0:z"]);
   });
 
-  it.fails("RK-213: 敵軍コマンドがなければ0と数え、必要パワー0のユニットだけが候補（出典: atwiki/page-899「（コマンドがなければ0と数える）」）", () => {
+  it("RK-213: 敵軍コマンドがなければ0と数え、必要パワー0のユニットだけが候補（出典: atwiki/page-899「（コマンドがなければ0と数える）」）", () => {
     const s = nc(enemy([]));
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:z"]);
   });
@@ -284,14 +284,14 @@ describe("RK-214 仮面ライダーランス", () => {
   const enemy = { battle: [inst("SPEC-C1", "a"), heldUnit("SPEC-C2", "b"), inst("SPEC-M2", "m")], rush: [inst("SPEC-C1", "r")] };
   const nc = (p2: Partial<GameState["players"]["player2"]> = enemy) => ncEnter("RK-214:ln", 2, {}, p2, EXTRA);
 
-  it.fails("RK-214: 【インパクトスタッブ】NC — 敵軍バトルエリアの S ユニット（ホールド状態も含む。ラッシュエリア・M は対象外）を2体選べる（任意）（出典: atwiki/page-931「敵軍バトルエリアのSユニットを2体選んでもよい」）", () => {
+  it("RK-214: 【インパクトスタッブ】NC — 敵軍バトルエリアの S ユニット（ホールド状態も含む。ラッシュエリア・M は対象外）を2体選べる（任意）（出典: atwiki/page-931「敵軍バトルエリアのSユニットを2体選んでもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "RK-214");
     expect(choiceIds(s)).toEqual(["SPEC-C1:a", "SPEC-C2:b"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-214: 2体選ぶと、相手が撃破する1体を選ぶ（出典: atwiki/page-931「相手は次のようにする⇒選ばれたユニットのうち1体を撃破する」）", () => {
+  it("RK-214: 2体選ぶと、相手が撃破する1体を選ぶ（出典: atwiki/page-931「相手は次のようにする⇒選ばれたユニットのうち1体を撃破する」）", () => {
     const s = pick(pick(nc(), "SPEC-C1:a"), "SPEC-C2:b");
     expectChoiceFrom(s, "player2", "RK-214");
     expect(choiceIds(s)).toEqual(["SPEC-C1:a", "SPEC-C2:b"]);
@@ -299,14 +299,14 @@ describe("RK-214 仮面ライダーランス", () => {
   });
 
   // grnrngr/faq-rider-3 RK-214「いいえ。撃破するのはどちらでもいいので、撃破することができます。その後、残ったもう１体の状態が、リリース状態ならホールド、ホールド状態ならホールド状態のままにする」
-  it.fails("RK-214: 公式Q&A — 相手はホールド状態のユニットを撃破することを選べ、残ったリリース状態のユニットはホールドされる（出典: grnrngr/faq-rider-3 RK-214・atwiki/page-931 Q1）", () => {
+  it("RK-214: 公式Q&A — 相手はホールド状態のユニットを撃破することを選べ、残ったリリース状態のユニットはホールドされる（出典: grnrngr/faq-rider-3 RK-214・atwiki/page-931 Q1）", () => {
     const s = resolveAll(pick(pick(pick(nc(), "SPEC-C1:a"), "SPEC-C2:b"), "SPEC-C2:b"));
     expect(zoneOf(s, "player2", "SPEC-C2:b")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-C1:a")).toBe("battle");
     expect(cardIn(s, "player2", "SPEC-C1:a")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-214: 公式Q&A — リリース状態のユニットを撃破したとき、残ったホールド状態のユニットはホールド状態のまま（出典: grnrngr/faq-rider-3 RK-214「ホールド状態ならホールド状態のままにする」）", () => {
+  it("RK-214: 公式Q&A — リリース状態のユニットを撃破したとき、残ったホールド状態のユニットはホールド状態のまま（出典: grnrngr/faq-rider-3 RK-214「ホールド状態ならホールド状態のままにする」）", () => {
     const s = resolveAll(pick(pick(pick(nc(), "SPEC-C1:a"), "SPEC-C2:b"), "SPEC-C1:a"));
     expect(zoneOf(s, "player2", "SPEC-C1:a")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-C2:b")).toBe("battle");
@@ -325,7 +325,7 @@ function replaceRushTests(id: string, page: string, cost: number) {
   const declare = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
     rushOpen(rushPhase({ hand: [inst(id, "ud")], command: releasedCat("DA", 1), power: powerCards(cost), rush: [inst("SPEC-KAMEN", "k1")], battle: [inst("SPEC-KAMEN", "k2"), inst("TST-UNIT-0", "u")], ...p1 }, p2), "player1", `${id}:ud`);
 
-  it.fails(`${id}: ラッシュのための手続き（コマンドのホールド）を行ってから、ラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニット（エリアを問わない）を選べる（任意）（出典: ${page}・grnrngr/faq-rider-2 RK-130「ラッシュのための手続きを行ってから、捨札にしてください」・コメント欄「コマンドのホールドは必要です」）`, () => {
+  it(`${id}: ラッシュのための手続き（コマンドのホールド）を行ってから、ラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニット（エリアを問わない）を選べる（任意）（出典: ${page}・grnrngr/faq-rider-2 RK-130「ラッシュのための手続きを行ってから、捨札にしてください」・コメント欄「コマンドのホールドは必要です」）`, () => {
     const s = declare();
     expect(s.players.player1.command[0]?.commandHeld).toBe(true);
     expectChoiceFrom(s, "player1", id);
@@ -333,12 +333,12 @@ function replaceRushTests(id: string, page: string, cost: number) {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails(`${id}: 選ぶと、これはラッシュされずに捨札になる（出典: ${page}「これをラッシュするかわりに捨札にして」）`, () => {
+  it(`${id}: 選ぶと、これはラッシュされずに捨札になる（出典: ${page}「これをラッシュするかわりに捨札にして」）`, () => {
     const s = settle(pick(declare(), "SPEC-KAMEN:k1"));
     expect(zoneOf(s, "player1", `${id}:ud`)).toBe("discard");
   });
 
-  it.fails(`${id}: 選ばなければ、ふつうにラッシュエリアに出る（出典: ${page}「選んでもよい」）`, () => {
+  it(`${id}: 選ばなければ、ふつうにラッシュエリアに出る（出典: ${page}「選んでもよい」）`, () => {
     const s = settle(skip(declare()));
     expect(zoneOf(s, "player1", `${id}:ud`)).toBe("rush");
   });
@@ -373,13 +373,13 @@ describe("RK-215 リザードアンデッド", () => {
     return resolveAll(attack(s, attacker, "RK-127:ch"));
   };
 
-  it.fails("RK-215: このターン、選んだユニットがアタックするとき、敵軍ユニットの BP を本来の値（1000）としてバトルし、BP5000 になっているユニットに勝つ（出典: atwiki/page-943「これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする」）", () => {
+  it("RK-215: このターン、選んだユニットがアタックするとき、敵軍ユニットの BP を本来の値（1000）としてバトルし、BP5000 になっているユニットに勝つ（出典: atwiki/page-943「これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする」）", () => {
     const s = slash("SPEC-KAMEN:k2", "SPEC-KAMEN:k2");
     expect(zoneOf(s, "player2", "RK-127:ch")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-KAMEN:k2")).toBe("battle");
   });
 
-  it.fails("RK-215: 選ばなかったユニットがアタックしても、敵軍ユニットの BP は今の値（5000）のまま（出典: atwiki/page-943「選んだユニットは次の能力を得る」）", () => {
+  it("RK-215: 選ばなかったユニットがアタックしても、敵軍ユニットの BP は今の値（5000）のまま（出典: atwiki/page-943「選んだユニットは次の能力を得る」）", () => {
     const s = slash("SPEC-KAMEN:k1", "SPEC-KAMEN:k2");
     expect(zoneOf(s, "player2", "RK-127:ch")).toBe("battle");
     expect(zoneOf(s, "player1", "SPEC-KAMEN:k2")).toBe("discard");
@@ -398,20 +398,20 @@ describe("RK-216 ドラゴンフライアンデッド", () => {
 
   const declare = replaceRushTests("RK-216", "atwiki/page-944", 2);
 
-  it.fails("RK-216: このターンを終えるとき、選んだユニットが自軍バトルエリアにあれば手札に戻す（出典: atwiki/page-944「このターンを終えるとき、これが自軍バトルエリアにあれば、これを手札に戻す」）", () => {
+  it("RK-216: このターンを終えるとき、選んだユニットが自軍バトルエリアにあれば手札に戻す（出典: atwiki/page-944「このターンを終えるとき、これが自軍バトルエリアにあれば、これを手札に戻す」）", () => {
     let s = settle(pick(declare(), "SPEC-KAMEN:k2"));
     s = toTurnEnd(s);
     expect(s.activePlayer).toBe("player2");
     expect(zoneOf(s, "player1", "SPEC-KAMEN:k2")).toBe("hand");
   });
 
-  it.fails("RK-216: 選んだユニットがラッシュエリアにあれば戻さない（出典: atwiki/page-944「自軍バトルエリアにあれば」）", () => {
+  it("RK-216: 選んだユニットがラッシュエリアにあれば戻さない（出典: atwiki/page-944「自軍バトルエリアにあれば」）", () => {
     let s = settle(pick(declare(), "SPEC-KAMEN:k1"));
     s = toTurnEnd(s);
     expect(zoneOf(s, "player1", "SPEC-KAMEN:k1")).toBe("rush");
   });
 
-  it.fails("RK-216: 選ばなかったバトルエリアのユニットは戻さない（出典: atwiki/page-944「選んだユニットは次の能力を得る」）", () => {
+  it("RK-216: 選ばなかったバトルエリアのユニットは戻さない（出典: atwiki/page-944「選んだユニットは次の能力を得る」）", () => {
     let s = settle(pick(declare(), "SPEC-KAMEN:k1"));
     s = toTurnEnd(s);
     expect(zoneOf(s, "player1", "SPEC-KAMEN:k2")).toBe("battle");
@@ -432,7 +432,7 @@ describe("RK-217 イーグルアンデッド", () => {
   const jfRush = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     st({ phase: "rush", player1: { hand: [inst("RK-211", "jf"), inst("RK-217", "eg")], command: releasedCat("WB", 1), power: [], deck: deckCards(3), ...p1 } }, EXTRA);
 
-  it.fails("RK-217: ※ 手札にあるこれを捨札にすれば、「仮面ライダーブレイド」を捨札にしたことにして、ブレイドJF を必要パワー0でラッシュできる（出典: atwiki/page-904「これを捨札にすれば、自軍「仮面ライダーブレイド」を1体捨札にしたことにできる」・カード評価「ブレイドJFとこれが揃えばすぐにでもラッシュが可能」）", () => {
+  it("RK-217: ※ 手札にあるこれを捨札にすれば、「仮面ライダーブレイド」を捨札にしたことにして、ブレイドJF を必要パワー0でラッシュできる（出典: atwiki/page-904「これを捨札にすれば、自軍「仮面ライダーブレイド」を1体捨札にしたことにできる」・カード評価「ブレイドJFとこれが揃えばすぐにでもラッシュが可能」）", () => {
     const r = rushVia(jfRush(), "player1", "RK-211:jf", (a) => a.zordMaterialInstanceId === "RK-217:eg");
     expect(r.ok, r.error).toBe(true);
     const s = resolveAll(r.state);
@@ -452,12 +452,12 @@ describe("RK-217 イーグルアンデッド", () => {
 
   const glide = (p2: Partial<GameState["players"]["player2"]>) => board({ battle: [inst("RK-217", "eg")] }, p2);
 
-  it.fails("RK-217: 【滑空攻撃】敵軍ラッシュエリアのレジストを持つユニットにアタックできる（出典: atwiki/page-904「これは敵軍ラッシュエリアのレジストを持つユニットにアタックできる」）", () => {
+  it("RK-217: 【滑空攻撃】敵軍ラッシュエリアのレジストを持つユニットにアタックできる（出典: atwiki/page-904「これは敵軍ラッシュエリアのレジストを持つユニットにアタックできる」）", () => {
     const s = glide({ rush: [inst("RK-214", "ln"), inst("SPEC-C1", "c")], battle: [inst("SPEC-C2", "b")] });
     expect(targetsOf(s, "RK-217:eg")).toEqual(["RK-214:ln", "SPEC-C2:b"]);
   });
 
-  it.fails("RK-217: 【滑空攻撃】アタックしたレジストを持つユニットとふつうにバトルする（BP4500 対 BP1000 で勝つ）（出典: atwiki/page-904）", () => {
+  it("RK-217: 【滑空攻撃】アタックしたレジストを持つユニットとふつうにバトルする（BP4500 対 BP1000 で勝つ）（出典: atwiki/page-904）", () => {
     let s = glide({ rush: [inst("RK-214", "ln")] });
     s = resolveAll(attack(s, "RK-217:eg", "RK-214:ln"));
     expect(zoneOf(s, "player1", "RK-217:eg")).toBe("battle");

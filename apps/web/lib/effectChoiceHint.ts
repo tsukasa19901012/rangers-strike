@@ -305,12 +305,37 @@ const RK10_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk210_burning_shot_destroy: { label: "バーニングショット", hint: "撃破する敵軍 S ユニットを選んでください" },
 };
 
+/** ザ・マスクドライダーEXP vol.3 RK-211〜RK-231 のカード固有の選択（engine rules/rk/rk11UnitEffects.ts）の表示名と案内文。 */
+const RK11_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk211_lightning_slash: { label: "ライトニングスラッシュ", hint: "相手に見せる手札を2枚選んでください（カテゴリがすべて同じなら、必要パワーを満たしていない敵軍ユニットを1体撃破します。しないなら「スキップ」）" },
+  rk211_lightning_slash_destroy: { label: "ライトニングスラッシュ", hint: "撃破する、必要パワーを満たしていない敵軍ユニットを選んでください（本来の SP と同じ数だけ相手にダメージを与えます）" },
+  rk212_ray_bullet: { label: "レイバレット", hint: "ホールド状態の敵軍 S ユニットを2体選んでください（カテゴリが違えば相手がどちらかを撃破します。しないなら「スキップ」）" },
+  rk212_ray_bullet_answer: { label: "レイバレット", hint: "撃破する自分のユニットを、選ばれた2体から1体選んでください" },
+  rk213_gravity_slash: { label: "グラビティスラッシュ", hint: "撃破する、敵軍コマンドのカテゴリの数以下の必要パワーの敵軍バトルエリアのユニットを選んでください（しないなら「スキップ」）" },
+  rk214_impact_stab: { label: "インパクトスタッブ", hint: "敵軍バトルエリアの S ユニットを2体選んでください（相手が1体を撃破し、もう1体をホールドします。しないなら「スキップ」）" },
+  rk214_impact_stab_answer: { label: "インパクトスタッブ", hint: "撃破する自分のユニットを、選ばれた2体から1体選んでください（もう1体はホールドします）" },
+  rk215_spade2_slash: { label: "スペード2―スラッシュ", hint: "ラッシュするかわりに捨札にして能力を与える、特徴「仮面ライダー」を持つ自軍ユニットを選んでください（ふつうにラッシュするなら「スキップ」）" },
+  rk216_heart4_float: { label: "ハート4―フロート", hint: "ラッシュするかわりに捨札にして能力を与える、特徴「仮面ライダー」を持つ自軍ユニットを選んでください（ふつうにラッシュするなら「スキップ」）" },
+  rk218_lower_undead: { label: "下級アンデッドを操る者", hint: "このターン SP1 にする、自軍ラッシュエリアの特徴「アンデッド」を持つユニットを選んでください（ターンを終えるとき撃破されます。しないなら「スキップ」）" },
+  rk220_undead_master: { label: "アンデッドを従える者", hint: "撃破する、自軍「アルビローチ」の数と同じ必要パワーの敵軍ユニットを選んでください（しないなら「スキップ」）" },
+  rk221_kaen_renda: { label: "音撃打・火炎連打", hint: "捨札にする手札のオペレーションカードを選んでください（このターン SP1 になります。しないなら「スキップ」）" },
+  rk222_shakunetsu: { label: "音撃打・灼熱真紅の型", hint: "ホールドする MA の自軍コマンドを2つ選んでください（このターン SP1 になります。しないなら「スキップ」）" },
+  rk223_shippu_issen: { label: "音撃射・疾風一閃", hint: "自軍と敵軍の山札の上から3枚ずつオモテにしますか？（「SP1」の S ユニットのカードを捨札にします）" },
+  rk226_goka_kenran: { label: "音撃打・業火絢爛", hint: "捨札にする、自軍ラッシュエリアの DA のユニットを選んでください（1枚ドローします。しないなら「スキップ」）" },
+  rk227_ichigeki_doto: { label: "音撃殴・一撃怒涛", hint: "持ち主のパワーゾーンにダメージにして置く、常駐置き場のカード枚数以下の必要パワーの敵軍ユニットを選んでください（しないなら「スキップ」）" },
+  rk228_senpu_issen: { label: "音撃奏・旋風一閃", hint: "持ち主の山札の上に戻す、相手の手札のカードを見ないで1枚選んでください（しないなら「スキップ」）" },
+  rk229_keicho_fubaku: { label: "音撃拍・軽佻訃爆", hint: "敵軍バトルエリアのユニットを選んでください（その特徴をすべて持つ敵軍パワーのユニットカードを1枚ダメージにします。しないなら「スキップ」）" },
+  rk229_keicho_fubaku_flip: { label: "音撃拍・軽佻訃爆", hint: "ウラ向きにしてダメージにする、敵軍パワーゾーンのユニットカードを選んでください" },
+  rk230_irasshai: { label: "音撃響・偉羅射威", hint: "持ち主の山札に戻す、敵軍ユニットに重ねたオペレーションカードを選んでください（しないなら「スキップ」）" },
+  rk11_release_at_end: { label: "リリース", hint: "ホールド状態のこのユニットをリリースしますか？" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
 /** 相手の手札を見ないで選ぶ選択か（カードの中身を見せない）。 */
 export function isBlindHandChoice(pending: NonNullable<GameState["pendingEffectChoice"]>): boolean {
-  return pending.effectId === "rs594_gunpard_gun";
+  return pending.effectId === "rs594_gunpard_gun" || pending.effectId === "rk228_senpu_issen";
 }
 
 /** 第8弾 RS-560〜RS-581 のカード固有の選択（engine rules/legend1/set8NamedEffectsC.ts）の表示名と案内文。 */
@@ -346,7 +371,8 @@ export function effectChoiceHint(
     RK7_CHOICE_UI[pending.effectId] ??
     RK8_CHOICE_UI[pending.effectId] ??
     RK9_CHOICE_UI[pending.effectId] ??
-    RK10_CHOICE_UI[pending.effectId];
+    RK10_CHOICE_UI[pending.effectId] ??
+    RK11_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -549,6 +575,7 @@ export function effectChoiceTitle(
     RK8_CHOICE_UI[pending.effectId]?.label ??
     RK9_CHOICE_UI[pending.effectId]?.label ??
     RK10_CHOICE_UI[pending.effectId]?.label ??
+    RK11_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

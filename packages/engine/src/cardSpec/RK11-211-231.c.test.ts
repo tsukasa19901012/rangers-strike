@@ -100,7 +100,7 @@ describe("RK-225 仮面ライダー朱鬼", () => {
   const canCounter = (s: GameState, id: string) =>
     legal(s).some((a) => (a.type === "initiate_command_payment" && a.sourceInstanceId === id) || (a.type === "play_counter" && a.instanceId === id));
 
-  it.fails("RK-225: 【陰陽術】自軍エリアにある間、自分がカウンターを持つオペレーション（RK-004 ギギの腕輪・必要パワー3）を使うとき必要パワーが3少なくなり、パワー0でも使える（出典: atwiki/page-901「その必要パワーの数字は3少なくなる」）", () => {
+  it("RK-225: 【陰陽術】自軍エリアにある間、自分がカウンターを持つオペレーション（RK-004 ギギの腕輪・必要パワー3）を使うとき必要パワーが3少なくなり、パワー0でも使える（出典: atwiki/page-901「その必要パワーの数字は3少なくなる」）", () => {
     expect(canCounter(attacked({ hand: [inst("RK-004", "g")], power: [], rush: [inst("RK-225", "sk")] }), "RK-004:g")).toBe(true);
   });
 
@@ -108,11 +108,11 @@ describe("RK-225 仮面ライダー朱鬼", () => {
     expect(canCounter(attacked({ hand: [inst("RK-004", "g")], power: [] }), "RK-004:g")).toBe(false);
   });
 
-  it.fails("RK-225: 「自分も相手も」— 敵軍の朱鬼でも、自分のカウンターの必要パワーが3少なくなる（出典: atwiki/page-901「自分も相手もカウンターを持つオペレーションカードを使用するとき」）", () => {
+  it("RK-225: 「自分も相手も」— 敵軍の朱鬼でも、自分のカウンターの必要パワーが3少なくなる（出典: atwiki/page-901「自分も相手もカウンターを持つオペレーションカードを使用するとき」）", () => {
     expect(canCounter(attacked({ hand: [inst("RK-004", "g")], power: [] }, { rush: [inst("RK-225", "sk")] }), "RK-004:g")).toBe(true);
   });
 
-  it.fails("RK-225: 重複しない — 朱鬼が2体あっても3少なくなるだけ（RK-009 Kの石・必要パワー5は、パワー1では使えず、パワー2なら使える）（出典: atwiki/page-901「（この効果は重複しない）」）", () => {
+  it("RK-225: 重複しない — 朱鬼が2体あっても3少なくなるだけ（RK-009 Kの石・必要パワー5は、パワー1では使えず、パワー2なら使える）（出典: atwiki/page-901「（この効果は重複しない）」）", () => {
     const two = [inst("RK-225", "sk"), inst("RK-225", "sk2")];
     expect(canCounter(attacked({ hand: [inst("RK-009", "k")], power: powerCards(1), rush: two }), "RK-009:k")).toBe(false);
     expect(canCounter(attacked({ hand: [inst("RK-009", "k")], power: powerCards(2), rush: two }), "RK-009:k")).toBe(true);
@@ -141,14 +141,14 @@ describe("RK-226 仮面ライダー歌舞鬼", () => {
   const entered = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     enter(board({ rush: [inst("RK-226", "kb"), inst("SPEC-DA1", "d1"), inst("SPEC-C1", "c")], battle: [inst("SPEC-DA1", "db")], hand: [], deck: deckCards(3), ...p1 }), "RK-226:kb");
 
-  it.fails("RK-226: 【音撃打・業火絢爛】自軍ターン中、バトルエリアに出たとき、自軍ラッシュエリアの DA を持つ自軍ユニットから1体選んで捨札にできる（任意。バトルエリア・DA 以外は対象外）（出典: atwiki/page-935「自軍ラッシュエリアからDAを持つ自軍ユニットを1体選び捨札にしてもよい」）", () => {
+  it("RK-226: 【音撃打・業火絢爛】自軍ターン中、バトルエリアに出たとき、自軍ラッシュエリアの DA を持つ自軍ユニットから1体選んで捨札にできる（任意。バトルエリア・DA 以外は対象外）（出典: atwiki/page-935「自軍ラッシュエリアからDAを持つ自軍ユニットを1体選び捨札にしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RK-226");
     expect(choiceIds(s)).toEqual(["SPEC-DA1:d1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-226: 捨札にすると、自分は1枚ドローする（出典: atwiki/page-935「そうしたとき、自分は1枚ドローする」）", () => {
+  it("RK-226: 捨札にすると、自分は1枚ドローする（出典: atwiki/page-935「そうしたとき、自分は1枚ドローする」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-DA1:d1"));
     expect(zoneOf(s, "player1", "SPEC-DA1:d1")).toBe("discard");
     expect(s.players.player1.hand).toHaveLength(1);
@@ -194,20 +194,20 @@ describe("RK-227 仮面ライダー凍鬼", () => {
   const nc = (own: CardInstance[] = OWN_RESIDENT, p2: Partial<GameState["players"]["player2"]> = enemy()) =>
     ncEnter("RK-227:tk", 6, { operation: own }, p2, EXTRA);
 
-  it.fails("RK-227: 【音撃殴・一撃怒涛】NC — 自軍と敵軍の常駐置き場のカードの枚数（重ねたカードを含めて4）以下の必要パワーの数字を持つ敵軍ユニット（サイズ・エリアを問わない）から1体選べる（任意）（出典: atwiki/page-936「その枚数以下の必要パワーの数字を持つ敵軍ユニットを1体選び」・コメント欄「ライドブッカーで４枚+相手の常駐以下」「場所・サイズも問わない」）", () => {
+  it("RK-227: 【音撃殴・一撃怒涛】NC — 自軍と敵軍の常駐置き場のカードの枚数（重ねたカードを含めて4）以下の必要パワーの数字を持つ敵軍ユニット（サイズ・エリアを問わない）から1体選べる（任意）（出典: atwiki/page-936「その枚数以下の必要パワーの数字を持つ敵軍ユニットを1体選び」・コメント欄「ライドブッカーで４枚+相手の常駐以下」「場所・サイズも問わない」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "RK-227");
     expect(choiceIds(s)).toEqual(["SPEC-C1:a", "SPEC-C3:r", "SPEC-M2:m", "TST-UNIT-0:z"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-227: 選んだユニットを持ち主のパワーゾーンにダメージ（ウラ向き）にして置く（出典: atwiki/page-936「持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
+  it("RK-227: 選んだユニットを持ち主のパワーゾーンにダメージ（ウラ向き）にして置く（出典: atwiki/page-936「持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
     const s = resolveAll(pick(nc(), "SPEC-C3:r"));
     expect(zoneOf(s, "player2", "SPEC-C3:r")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-C3:r")?.faceDown).toBe(true);
   });
 
-  it.fails("RK-227: 常駐置き場が空なら0と数え、必要パワー0のユニットだけが候補（出典: atwiki/page-936「その枚数以下」）", () => {
+  it("RK-227: 常駐置き場が空なら0と数え、必要パワー0のユニットだけが候補（出典: atwiki/page-936「その枚数以下」）", () => {
     const s = nc([], enemy([]));
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:z"]);
   });
@@ -229,14 +229,14 @@ describe("RK-228 仮面ライダー羽撃鬼", () => {
   const nc = (myHand: CardInstance[], oppHand: CardInstance[]) => ncEnter("RK-228:hb", 3, { hand: myHand }, { hand: oppHand, deck: deckCards(3, "e") }, EXTRA);
   const OPP = [inst("TST-OP", "o1"), inst("SPEC-C1", "o2")];
 
-  it.fails("RK-228: 【音撃奏・旋風一閃】NC — 自分の手札（0枚）より相手の手札（2枚）が多ければ、相手の手札から1枚選べる（任意）（出典: atwiki/page-937「自分の手札より相手の手札の枚数が多ければ、相手の手札を見ないで1枚選んでもよい」）", () => {
+  it("RK-228: 【音撃奏・旋風一閃】NC — 自分の手札（0枚）より相手の手札（2枚）が多ければ、相手の手札から1枚選べる（任意）（出典: atwiki/page-937「自分の手札より相手の手札の枚数が多ければ、相手の手札を見ないで1枚選んでもよい」）", () => {
     const s = nc([], OPP);
     expectChoiceFrom(s, "player1", "RK-228");
     expect(choiceIds(s)).toEqual(["SPEC-C1:o2", "TST-OP:o1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-228: 選んだカードを持ち主の山札の上に戻す（出典: atwiki/page-937「選んだカードを持ち主の山札の上に戻す」）", () => {
+  it("RK-228: 選んだカードを持ち主の山札の上に戻す（出典: atwiki/page-937「選んだカードを持ち主の山札の上に戻す」）", () => {
     const s = resolveAll(pick(nc([], OPP), "SPEC-C1:o2"));
     expect(s.players.player2.deck[0]?.instanceId).toBe("SPEC-C1:o2");
     expect(s.players.player2.hand.map((c) => c.instanceId)).toEqual(["TST-OP:o1"]);
@@ -268,24 +268,23 @@ describe("RK-229 仮面ライダー煌鬼", () => {
   };
   const nc = () => ncEnter("RK-229:kr", 5, {}, enemy, EXTRA);
 
-  it.fails("RK-229: 【音撃拍・軽佻訃爆】NC — 敵軍バトルエリアのユニット（サイズを問わない。ラッシュエリアは対象外）から1体選べる（任意）（出典: atwiki/page-938「敵軍バトルエリアからユニットを1体選んでもよい」）", () => {
+  it("RK-229: 【音撃拍・軽佻訃爆】NC — 敵軍バトルエリアのユニット（サイズを問わない。ラッシュエリアは対象外）から1体選べる（任意）（出典: atwiki/page-938「敵軍バトルエリアからユニットを1体選んでもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "RK-229");
     expect(choiceIds(s)).toEqual(["SPEC-KAMEN-MAN:k", "SPEC-M2:m"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-229: 選ぶと、敵軍パワーゾーンのオモテ向きのカードから、選んだユニットの特徴（仮面ライダー・男）をすべて持つユニットカードを1枚選ぶ（ウラ向き・特徴が足りないもの・オペレーションは対象外）（出典: atwiki/page-938「敵軍パワーゾーンのオモテ向きのカードから、選んだユニットの持つ特徴をすべて持つユニットカードを1枚選び」）", () => {
+  it("RK-229: 選ぶと、敵軍パワーゾーンのオモテ向きのカードから、選んだユニットの特徴（仮面ライダー・男）をすべて持つユニットカードを1枚選ぶ（ウラ向き・特徴が足りないもの・オペレーションは対象外）（出典: atwiki/page-938「敵軍パワーゾーンのオモテ向きのカードから、選んだユニットの持つ特徴をすべて持つユニットカードを1枚選び」）", () => {
     const s = pick(nc(), "SPEC-KAMEN-MAN:k");
     expectChoiceFrom(s, "player1", "RK-229");
     expect(choiceIds(s)).toEqual(["SPEC-KAMEN-MAN-T:p1"]);
   });
 
-  it.fails("RK-229: 選んだカードをウラ向きにしてダメージにする。選んだユニットは場に残る（出典: atwiki/page-938「ウラ向きにしてダメージにする」・コメント欄「ユニットは除去しない」）", () => {
-    const before = damageOf(nc(), "player2");
+  it("RK-229: 選んだカードをウラ向きにしてダメージにする（もとのウラ向き1枚と合わせて2点）。選んだユニットは場に残る（出典: atwiki/page-938「ウラ向きにしてダメージにする」・コメント欄「ユニットは除去しない」・R-DMG-01）", () => {
     const s = resolveAll(pick(pick(nc(), "SPEC-KAMEN-MAN:k"), "SPEC-KAMEN-MAN-T:p1"));
     expect(cardIn(s, "player2", "SPEC-KAMEN-MAN-T:p1")?.faceDown).toBe(true);
-    expect(damageOf(s, "player2")).toBe(before + 1);
+    expect(damageOf(s, "player2")).toBe(2);
     expect(zoneOf(s, "player2", "SPEC-KAMEN-MAN:k")).toBe("battle");
   });
 });
@@ -313,14 +312,14 @@ describe("RK-230 仮面ライダー西鬼", () => {
   };
   const nc = () => ncEnter("RK-230:ns", 4, { rush: [{ ...inst("SPEC-C1", "own"), stackedCards: [faceUp("TST-OP", "mine")] }] }, enemy, EXTRA);
 
-  it.fails("RK-230: 【音撃響・偉羅射威】NC — 敵軍ユニット（サイズ・エリアを問わない）の下にオモテ向きで重ねたオペレーションカードから1枚選べる（任意。ウラ向き・自軍ユニットのものは対象外）（出典: atwiki/page-939「敵軍ユニットの下にオモテ向きで重ねたオペレーションカードを1体選んでもよい」・カード評価「サイズを問わない」）", () => {
+  it("RK-230: 【音撃響・偉羅射威】NC — 敵軍ユニット（サイズ・エリアを問わない）の下にオモテ向きで重ねたオペレーションカードから1枚選べる（任意。ウラ向き・自軍ユニットのものは対象外）（出典: atwiki/page-939「敵軍ユニットの下にオモテ向きで重ねたオペレーションカードを1体選んでもよい」・カード評価「サイズを問わない」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "RK-230");
     expect(choiceIds(s)).toEqual(["TST-OP-MA:s3", "TST-OP:s1", "TST-OP:s4"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-230: 選んだカードを持ち主の山札に戻す（重ねていたユニットは場に残る）（出典: atwiki/page-939「選んだカードを持ち主の山札に戻してシャッフルする」）", () => {
+  it("RK-230: 選んだカードを持ち主の山札に戻す（重ねていたユニットは場に残る）（出典: atwiki/page-939「選んだカードを持ち主の山札に戻してシャッフルする」）", () => {
     const s = resolveAll(pick(nc(), "TST-OP-MA:s3"));
     expect(zoneOf(s, "player2", "TST-OP-MA:s3")).toBe("deck");
     expect(s.players.player2.deck).toHaveLength(4);

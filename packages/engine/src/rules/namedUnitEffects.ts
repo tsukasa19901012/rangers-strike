@@ -1,4 +1,5 @@
 import { rk9UsePrintedDefenderBp } from "./rk/rk9Fields";
+import { rk11UsePrintedDefenderBp } from "./rk/rk11Fields";
 import {
   findNamedEffectByEffectId,
   getOnRushNamedEffect,
@@ -234,7 +235,9 @@ export function battleDefenderBp(
       // RK-067【飛翔斬】（rules/rk/rk4UnitEffects.ts）。
       rk4UsePrintedDefenderBp(state, pending) ||
       // RK-182【Zブリンガーアタック】（rules/rk/rk9Fields.ts）。
-      rk9UsePrintedDefenderBp(state, pending));
+      rk9UsePrintedDefenderBp(state, pending) ||
+      // RK-215【スペード2―スラッシュ】で得た能力（rules/rk/rk11Fields.ts）。
+      rk11UsePrintedDefenderBp(state, pending));
 
   const mirageOverride = pending.substituteInstanceId ? undefined : pending.mirageBeamDefenderBpOverride;
   const base =

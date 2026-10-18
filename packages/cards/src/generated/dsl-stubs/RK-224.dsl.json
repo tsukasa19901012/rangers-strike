@@ -27,11 +27,10 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-224::sapoto",
+          "keyword": "rk11::RK-224::support",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

@@ -1,5 +1,7 @@
 import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
 import { rk5AttackerCanAttackRush } from "../rk/rk5Fields";
+import { rk11AttackerCanAttackRush, rk11EntryDiscardFeature } from "../rk/rk11Fields";
+import { rk10UnitHasResist } from "../rk/rk10Fields";
 import { rk6SnakeBlocksSelection } from "../rk/rk6Fields";
 import { set9AAttackerCanAttackRush, set9ADefenderBlocksAttack } from "../legend1/set9NamedEffectsA";
 import { set7DDefenderBlocksAttack } from "../legend1/set7NamedEffectsD";
@@ -95,7 +97,9 @@ export function needsBattleEntryRushDiscard(cardId: string): boolean {
     // RS-242 / RS-416: ※自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない
     cardHasGrantKeyword(cardId, "require_discard_rush_s_entry") ||
     // RK-032 アナザーアギト: ※自軍ラッシュエリアの特徴「仮面ライダー」を持つユニットを1体捨札にしなければバトルエリアに出られない
-    rk2NeedsKamenRiderRushDiscard(cardId)
+    rk2NeedsKamenRiderRushDiscard(cardId) ||
+    // RK-220 アルビノジョーカー: ※自軍ラッシュエリアの特徴「アンデッド」を持つユニットを1体捨札にしなければバトルエリアに出られない
+    rk11EntryDiscardFeature(cardId) !== undefined
   );
 }
 
@@ -108,6 +112,12 @@ function isBattleEntryRushDiscardable(
   // RK-032: 「特徴「仮面ライダー」を持つユニット」（サイズを問わない。rules/rk/rk2UnitEffects.ts）。
   if (enteringCardId && rk2NeedsKamenRiderRushDiscard(enteringCardId)) {
     return rk2KamenRiderRushDiscardable(definitions, cardId);
+  }
+  // RK-220: 「特徴「アンデッド」を持つユニット」（サイズを問わない。rules/rk/rk11Fields.ts）。
+  const feature = enteringCardId ? rk11EntryDiscardFeature(enteringCardId) : undefined;
+  if (feature) {
+    const def = getDefinition(definitions, cardId);
+    return def?.type === "unit" && (def.features ?? []).includes(feature);
   }
   return isSmallUnit(definitions, cardId);
 }
@@ -515,6 +525,8 @@ export function canAttackDefender(
     if (set9AAttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
     // RK-103 仮面ライダークウガPF【ブラストペガサス】（rules/rk/rk5Fields.ts）。
     if (rk5AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
+    // RK-217 イーグルアンデッド【滑空攻撃】（敵軍ラッシュエリアのレジストを持つユニット。rules/rk/rk11Fields.ts）。
+    if (rk11AttackerCanAttackRush(attacker.card, () => rk10UnitHasResist(state, defenderPlayerId, inRush.card))) return true;
     // RS-213【炸裂超力バトン】（相手が選んだユニット）・RS-225【大回転獅子爆裂弾】で得た能力。
     if (
       chikaraBatonAllowsAttack(state, attackerPlayerId, attackerInstanceId, defenderInstanceId) ||

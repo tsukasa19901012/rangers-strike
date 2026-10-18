@@ -39,18 +39,12 @@
       },
       "effects": [
         {
-          "type": "draw",
-          "amount": 1,
-          "player": "controller"
+          "type": "grant_keyword",
+          "keyword": "rk11::RK-226::goka_kenran",
+          "duration": "turn"
         }
-      ]
-    }
-  ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい)",
-      "rule": "register"
+      ],
+      "optional": true
     }
   ],
   "implementation": {

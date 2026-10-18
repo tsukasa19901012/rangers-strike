@@ -42,18 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-230::geki_3",
+          "keyword": "rk11::RK-230::irasshai",
           "duration": "turn"
         }
       ],
       "optional": true
-    }
-  ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※スクラム（これのＣＮより1多いCNを持つユニットがこれの次に並んでいる間、これはアタックされない）",
-      "rule": "scrum"
     }
   ],
   "implementation": {

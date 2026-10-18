@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-214::inpakutosutabu",
+          "keyword": "rk11::RK-214::impact_stab",
           "duration": "turn"
         }
       ],

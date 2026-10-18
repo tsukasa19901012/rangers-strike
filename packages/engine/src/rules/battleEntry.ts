@@ -7,6 +7,7 @@ import { rk1MissionMemoryOnEntry } from "./rk/rk1NamedEffects";
 import { rk6SideBasherOnEntry } from "./rk/rk6UnitEffects";
 import { rk8KaiserBmOnEntry } from "./rk/rk8UnitEffects";
 import { rk9NewNigoOnEntry } from "./rk/rk9UnitEffects";
+import { rk11IbukiOnEntry } from "./rk/rk11UnitEffects";
 
 export function riderHasRidingComboOnRideOff(cardId: string): boolean {
   return !!getRidingComboEffect(cardId);
@@ -83,7 +84,9 @@ export function openBattleEntryOrRideOffChoice(
       rk6SideBasherOnEntry(state, entry.playerId, entry.instanceId) ??
       rk8KaiserBmOnEntry(state, entry.playerId, entry.instanceId) ??
       // RK-176 仮面ライダー新2号: 「仮面ライダー1号」からコンビネーションしたときはナンバーに関係なく【ライダーキック】（rules/rk/rk9UnitEffects.ts）。
-      rk9NewNigoOnEntry(state, entry.playerId, entry.instanceId);
+      rk9NewNigoOnEntry(state, entry.playerId, entry.instanceId) ??
+      // RK-223 仮面ライダー威吹鬼: 特徴「猛士」を持つユニットからコンビネーションしたときはナンバーに関係なく【音撃射・疾風一閃】（rules/rk/rk11UnitEffects.ts）。
+      rk11IbukiOnEntry(state, entry.playerId, entry.instanceId);
     if (rc) return afterEnterBattle(rc, entry);
   }
   if (shouldPromptRideOffChoice(state, entry)) {

@@ -296,7 +296,7 @@ describe("RS-558 ガンマジン", () => {
     );
 
   // atwiki/page-1186 Q5・atwiki/page-945 Q1「いいえ、それはできません。…｢仮面ライダーギャレン｣1体を捨札にしたことにできる、というだけであり、実際には追加条件を実行してはいないと扱われます。」
-  it.fails("RS-558: atwiki Q&A — ギャレンJF（XG5-056）の追加条件を RK-218 ピーコックアンデッドを捨札にして満たしても、追加条件を実行したことにならずドローできない（出典: atwiki/page-1186 Q5・atwiki/page-945 Q1）", () => {
+  it("RS-558: atwiki Q&A — ギャレンJF（XG5-056）の追加条件を RK-218 ピーコックアンデッドを捨札にして満たしても、追加条件を実行したことにならずドローできない（出典: atwiki/page-1186 Q5・atwiki/page-945 Q1）", () => {
     const r = garrenJf({ hand: [inst("XG5-056", "gj"), inst("RK-218", "pc")] }, "RK-218:pc");
     expect(r.ok, r.error).toBe(true);
     expect(zoneOf(r.state, "player1", "XG5-056:gj")).toBe("rush");

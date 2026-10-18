@@ -57,6 +57,7 @@ import {
 import { effectiveRushAdditionalCondition } from "../rules/rushAdditionalCondition";
 import { set5PassiveBpBonus } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower, effectivePowerCost, rushEffectivePowerCost } from "./power";
+import { rk11CounterCostReduction } from "../rules/rk/rk11Fields";
 
 export function buildDefinitionMap(
   decks: CardDefinition[][],
@@ -794,7 +795,9 @@ export function canPlayOperationExceptCommandHold(
   playerId: PlayerId,
   definition: CardDefinition,
 ): boolean {
-  const cost = effectivePowerCost(state, playerId, parsePowerCost(definition.powerCost));
+  // RK-225 仮面ライダー朱鬼【陰陽術】: カウンターを持つオペレーションの必要パワーの数字は3少なくなる（rules/rk/rk11Fields.ts）。
+  const printed = Math.max(0, parsePowerCost(definition.powerCost) - rk11CounterCostReduction(state, definition));
+  const cost = effectivePowerCost(state, playerId, printed);
   return countAvailablePower(state, playerId) >= cost;
 }
 

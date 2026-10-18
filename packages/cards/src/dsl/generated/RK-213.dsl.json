@@ -44,15 +44,14 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "rk11::RK-213::gravity_slash",
+          "duration": "turn"
         }
-      ]
-    }
-  ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
-      "rule": "scrum"
+      ],
+      "optional": true
     }
   ],
   "implementation": {

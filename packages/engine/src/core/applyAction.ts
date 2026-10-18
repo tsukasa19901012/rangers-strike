@@ -2,6 +2,8 @@ import { isInstancePlacedAnywhere } from "./helpers";
 import { rk6RecordSnakeSelected } from "../rules/rk/rk6Fields";
 import { rk6SideBasherOnEntry } from "../rules/rk/rk6UnitEffects";
 import { applyRk7AfterAction, openRk7LocustReplace } from "../rules/rk/rk7UnitEffects";
+import { openRk11UndeadReplace } from "../rules/rk/rk11UnitEffects";
+import { rk11IsHandSubstitute } from "../rules/rk/rk11Fields";
 import { applyRk8AfterAction } from "../rules/rk/rk8UnitEffects";
 import { applyRk10AfterAction, rk10CraneDeclined, rk10CraneIntercept, runRk10OnRush } from "../rules/rk/rk10UnitEffects";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
@@ -2134,8 +2136,10 @@ function applyActionCore(
       {
         // 追加条件で捨札にしたカードを記録する（RS-437 白熱する実況。rules/legend1/set7NamedEffectsA.ts）。
         const discardBefore = new Set(state.players[playerId].discard.map((c) => c.instanceId));
+        // RK-217・RK-218 の※で手札から捨札にしたカードは、追加条件を実行したことにならない（atwiki/page-945 Q1・page-1186 Q5）。
         const zordDiscarded = nextPlayer.discard
           .filter((c) => !discardBefore.has(c.instanceId))
+          .filter((c) => !rk11IsHandSubstitute(state, state.players[playerId].hand, c, found.card.cardId))
           .map((c) => c.instanceId);
         if (zordDiscarded.length > 0) {
           nextPlayer = { ...nextPlayer, lastZordDiscard: { rushedInstanceId: found.card.instanceId, instanceIds: zordDiscarded } };
@@ -2198,13 +2202,12 @@ function applyActionCore(
 
       const handFound = findInZone(nextPlayer, "hand", action.instanceId);
       if (!handFound) return fail("card_not_in_hand");
-      // RK-130【スペード5－キック】: 手続きを終えたら、ラッシュするかわりに捨札にするかを選ぶ（rules/rk/rk7UnitEffects.ts）。
+      // RK-130【スペード5－キック】・RK-215【スペード2―スラッシュ】・RK-216【ハート4―フロート】: 手続きを終えたら、ラッシュするかわりに捨札にするかを選ぶ
+      // （rules/rk/rk7UnitEffects.ts・rules/rk/rk11UnitEffects.ts）。
       {
-        const replaced = openRk7LocustReplace(
-          { ...nextStateAfterRush, ...updatePlayer(nextStateAfterRush, playerId, clearCostWindow(nextPlayer, "rush_category")) },
-          playerId,
-          handFound.card,
-        );
+        const procedureDone = { ...nextStateAfterRush, ...updatePlayer(nextStateAfterRush, playerId, clearCostWindow(nextPlayer, "rush_category")) };
+        const replaced =
+          openRk7LocustReplace(procedureDone, playerId, handFound.card) ?? openRk11UndeadReplace(procedureDone, playerId, handFound.card);
         if (replaced) return ok(replaced, buildLogEntry(playerId, "rush", found.card.cardId, state.definitions, "rk130_replace_pending"));
       }
 

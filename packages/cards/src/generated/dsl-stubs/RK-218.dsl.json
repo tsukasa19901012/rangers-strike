@@ -25,11 +25,10 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_discard_substitute_for_named::仮面ライダーギャレンJF",
+          "keyword": "rk11::RK-218::substitute",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "andedoworu",
@@ -41,11 +40,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-218::andedoworu",
+          "keyword": "rk11::RK-218::peacock",
           "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

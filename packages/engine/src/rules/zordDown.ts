@@ -32,6 +32,7 @@ import type { CardInstance, PlayerState } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { findInZone, removeAt } from "../core/helpers";
 import { getDefinition } from "../core/catalog";
+import { rk11IsHandSubstitute } from "./rk/rk11Fields";
 
 /** ゾードダウン素材を取れるゾーン（手札・捨札・フィールド）。 */
 export type ZordDownMaterialZone = "hand" | "discard" | "rush" | "battle";
@@ -72,6 +73,9 @@ export function isValidZordDownMaterial(
 
   const def = getDefinition(definitions, card.cardId);
   if (!def || def.type !== "unit") return false;
+
+  // RK-217 イーグルアンデッド・RK-218 ピーコックアンデッドの※: 手札のこれを捨札にすれば、指定の名前のユニットを捨札にしたことにできる（rules/rk/rk11Fields.ts）。
+  if (condition.conditionId === "zord_down_discard_named" && rk11IsHandSubstitute({ definitions }, player.hand, card, rushingCardId)) return true;
 
   switch (condition.conditionId) {
     case "zord_down_discard_fusion":

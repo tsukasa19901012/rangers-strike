@@ -7,6 +7,7 @@ import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
 import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
 import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
 import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
+import { rk11KyosukeWinButDestroyed } from "./rk/rk11Fields";
 import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import { openKuugaStayOnLeave } from "./legend1/otherLinesNamedEffects";
 import {
@@ -1436,7 +1437,9 @@ export function resolveBattlePendingCore(
     destroyDefender &&
     battleState.activePlayer !== attackerId &&
     (winButDestroyedVsSp1(refreshedAttackerFound.card.cardId) ||
-      rk1WinButDestroyed(battleState, attackerId, pending.attackerInstanceId)) &&
+      rk1WinButDestroyed(battleState, attackerId, pending.attackerInstanceId) ||
+      // RK-224 京介変身体【サポート】（rules/rk/rk11Fields.ts）。
+      rk11KyosukeWinButDestroyed(battleState, attackerId, pending.attackerInstanceId)) &&
     winDestroyOpponentQualifies(
       battleState,
       refreshedAttackerFound.card.cardId,
@@ -1450,7 +1453,8 @@ export function resolveBattlePendingCore(
     battleState.activePlayer !== defenderOwner &&
     (winButDestroyedVsSp1(refreshedDefenderFound.card.cardId) ||
       // RK-019 音撃で「…バトルに勝っても撃破される」と書かれているかのように扱うユニット（rules/rk/rk1NamedEffects.ts）。
-      rk1WinButDestroyed(battleState, defenderOwner, defenderInstanceId)) &&
+      rk1WinButDestroyed(battleState, defenderOwner, defenderInstanceId) ||
+      rk11KyosukeWinButDestroyed(battleState, defenderOwner, defenderInstanceId)) &&
     winDestroyOpponentQualifies(
       battleState,
       refreshedDefenderFound.card.cardId,

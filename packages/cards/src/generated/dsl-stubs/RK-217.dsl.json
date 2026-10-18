@@ -25,27 +25,25 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_discard_substitute_for_named::仮面ライダーブレイドJF",
+          "keyword": "rk11::RK-217::substitute",
           "duration": "permanent"
         }
-      ],
-      "optional": true
+      ]
     },
     {
       "id": "geki_e6bb91",
       "name": "滑空攻撃",
       "text": "これは敵軍ラッシュエリアのレジストを持つユニットにアタックできる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-217::geki_e6bb91",
-          "duration": "turn"
+          "keyword": "rk11::RK-217::glide",
+          "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

@@ -1,6 +1,7 @@
 import { rk8EffectiveSp } from "../rk/rk8UnitEffects";
 import { rk9EffectiveSp } from "../rk/rk9UnitEffects";
 import { rk10EffectiveSp } from "../rk/rk10UnitEffects";
+import { rk11EffectiveSp } from "../rk/rk11Fields";
 import { hasUnnamedRule } from "@rangers-strike/cards";
 import { rk5EffectiveSp } from "../rk/rk5Fields";
 import { set9AEffectiveSp } from "../legend1/set9NamedEffectsA";
@@ -256,6 +257,8 @@ export function legend3EffectiveSp(
   sp = rk9EffectiveSp(state, playerId, instance, sp);
   // RK-191 ガライ【ガライソード】の「このターン、これはSP1になる」（rules/rk/rk10UnitEffects.ts）。
   sp = rk10EffectiveSp(state, playerId, instance, sp);
+  // RK-218【下級アンデッドを操る者】・RK-221【音撃打・火炎連打】・RK-222【音撃打・灼熱真紅の型】の「SP1」（rules/rk/rk11Fields.ts）。
+  sp = rk11EffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。
