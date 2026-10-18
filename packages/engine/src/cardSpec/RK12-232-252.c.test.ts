@@ -195,8 +195,16 @@ describe("RK-247 仮面ライダーネガ電王", () => {
     expect(canEndPhase(board({ rush: [inst("SPEC-POLICE", "p")], hand: [inst("RK-247", "ng")] }))).toBe(true);
   });
 
+  // atwiki/page-1011 Q1「はい、できます。」
+  for (const id of ["RK-280", "RK-281"]) {
+    it.fails(`RK-247: 公式Q&A — ${id} を自軍ラッシュフェイズ中に自身の効果でホールドしたターンも、ネガ電王はバトルエリアに出られる（出典: atwiki/page-1011 Q1）`, () => {
+      const s = nextPhase(act(rushPhase({ rush: [inst("RK-247", "ng"), inst(id, "v")] }), { type: "activate_field_unit_ability", playerId: "player1", unitInstanceId: `${id}:v` }));
+      expect(s.phase).toBe("battle");
+      expect(canEnter(s, "RK-247:ng")).toBe(true);
+    });
+  }
   it.todo(
-    "RK-247: 公式Q&A — RK-280 ダークレイダー・RK-281 ドラグランザー・XG2-082 電子星獣ドルを自軍ラッシュフェイズ中に自身の効果でホールドしたターンも、ネガ電王はバトルエリアに出られる（出典: atwiki/page-1011 Q1）— RK-280・RK-281・XG2-082 の「ホールドしてもよい」が未実装（本範囲外のカード。RS8-560-581.c の RS-579 と同じ）",
+    "RK-247: 公式Q&A — XG2-082 電子星獣ドルを自軍ラッシュフェイズ中に自身の効果でホールドしたターンも、ネガ電王はバトルエリアに出られる（出典: atwiki/page-1011 Q1）— XG2-082 の「ホールドしてもよい」が未実装（本範囲外のカード。RS8-560-581.c の RS-579 と同じ。RK-280・RK-281 は上で照合）",
   );
 });
 
@@ -381,9 +389,14 @@ describe("RK-250 サバイブ", () => {
     expect(zoneOf(s, "player1", "RK-250:sv")).toBe("discard");
   });
 
-  it.todo(
-    "RK-250: 公式Q&A — サバイブを重ねた RK-280 ダークレイダー・RK-281 ドラグランザーをホールドしてビークルにすると、ユニットでなくなるのでサバイブは捨札になる（出典: atwiki/page-1350 Q2）— RK-280・RK-281 の「ホールドしてビークルとして扱う」が未実装（本範囲外のカード）",
-  );
+  // atwiki/page-1350 Q2「はい、そのとおりです。ユニットでなくなるので「RK-250 サバイブ」は捨札になります。」
+  for (const id of ["RK-280", "RK-281"]) {
+    it.fails(`RK-250: 公式Q&A — サバイブを重ねた ${id} をホールドしてビークルにすると、ユニットでなくなるのでサバイブは捨札になる（出典: atwiki/page-1350 Q2）`, () => {
+      const s = settle(act(rushPhase({ rush: [{ ...inst(id, "v"), stackedCards: [inst("RK-250", "sv")] }] }), { type: "activate_field_unit_ability", playerId: "player1", unitInstanceId: `${id}:v` }));
+      expect(zoneOf(s, "player1", "RK-250:sv")).toBe("discard");
+      expect(zoneOf(s, "player1", `${id}:v`)).toBe("rush");
+    });
+  }
   it.todo("RK-250: 重ねたユニットが手札・山札に戻る（「ユニットでなくなる」）ときも留まるか（出典: atwiki/page-1350）— エンジンの手札・山札に戻す処理が「ユニットでなくなるとき」の置換を通らない（撃破・パワーゾーン送り・効果の捨札だけ対応）");
 });
 

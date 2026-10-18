@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState } from "../types/game";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
-import { act, canRush, hasLegal, inst, KW, powerCards, realDef, state, unitDef, vehicleDef, where } from "./07-helpers";
+import { act, canRush, hasLegal, inst, KW, passWindows, powerCards, realDef, state, unitDef, vehicleDef, where } from "./07-helpers";
 
 const BRK = unitDef("RSPEC-BRK", { name: "仮面ライダーW・CJX", bp: 3000, text: KW.breaker });
 const SAME_PLAIN = unitDef("RSPEC-SAME", { name: "仮面ライダーW・CJX", bp: 3000 });
@@ -141,7 +141,20 @@ describe("R-KW-BREAKER-03 選ばれない範囲", () => {
   it.todo("R-KW-BREAKER-03: XG6-003 で手札から見せた RS-168【爆竜必殺クロスサンダー】ではブレイカー持ちを選べる（出典: atwiki/page-2355 Q5。手札公開効果の起動経路がない）");
 
   // 「【戦いのリセット】の効果はユニットを選んではいない」
-  it.todo("R-KW-BREAKER-03: RK-286 オーディン【戦いのリセット】で必要パワーを満たしていないブレイカー持ちも撃破される（出典: atwiki/page-2355 Q6。RK-286 を追加条件込みでラッシュする経路を組めない）");
+  it.fails("R-KW-BREAKER-03: RK-286 オーディン【戦いのリセット】で必要パワーを満たしていないブレイカー持ちも撃破される（出典: atwiki/page-2355 Q6）", () => {
+    // 敵軍パワー3・必要パワー4 のブレイカー持ち。自軍はパワー6・捨札の合計11枚でオーディンをラッシュする。
+    const BRK4 = unitDef("RSPEC-BRK4", { name: "仮面ライダーW・CJX", bp: 3000, powerCost: 4, text: KW.breaker });
+    const discard = (n: number, p: string) => Array.from({ length: n }, (_, i) => inst("TST-OP", `${p}${i}`));
+    let s = state([BRK4, realDef("RK-286")], {
+      phase: "rush",
+      player1: { hand: [inst("RK-286", "od")], command: [inst("TST-OP", "c")], power: powerCards(6), discard: discard(6, "d1"), deck: discard(3, "dk") },
+      player2: { battle: [inst(BRK4.id, "b")], power: powerCards(3, "ep"), discard: discard(5, "d2"), deck: discard(3, "ek") },
+    });
+    s = act(s, { type: "initiate_command_payment", playerId: "player1", kind: "category_use", sourceInstanceId: "RK-286:od" });
+    if (s.pendingCommandPayment) s = act(s, { type: "resolve_command_payment", playerId: "player1", commandInstanceIds: ["TST-OP:c"] });
+    s = passWindows(s);
+    expect(where(s, "player2", `${BRK4.id}:b`)).toBe("discard");
+  });
 
   // 「適切な対象がいないので、【荒ぶる折神】の効果は解決に失敗します」
   it("R-KW-BREAKER-03: 敵軍ユニットがブレイカー持ちだけなら、XG4-037 牛折神【荒ぶる折神】は解決に失敗し、ブレイカー持ちはダメージにならない（出典: atwiki/page-2355 Q7）", () => {
