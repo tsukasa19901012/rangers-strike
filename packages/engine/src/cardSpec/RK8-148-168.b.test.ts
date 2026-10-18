@@ -137,20 +137,20 @@ describe("RK-155 キングライナー", () => {
   const entered = (battle = [inst("RK-147", "is"), inst("SPEC-VEH-S", "vs"), inst("SPEC-PLAIN-M", "pm")], rush = [inst("SPEC-VEH-M", "rm")]) =>
     enter(board({ battle, rush: [inst("RK-155", "kl"), ...rush] }, { battle: [inst("SPEC-VEH-M", "em")] }), "RK-155:kl");
 
-  it.fails("RK-155: 自軍ターン中にバトルエリアに出たとき、自軍バトルエリアの特徴「車両」を持つ M ユニットだけから1体選べる（S・車両でない M・ラッシュエリア・敵軍は対象外。任意）（出典: atwiki/page-678「自軍バトルエリアから特徴「車両」を持つMユニットを1体選び、自軍パワーゾーンに送ってもよい」）", () => {
+  it("RK-155: 自軍ターン中にバトルエリアに出たとき、自軍バトルエリアの特徴「車両」を持つ M ユニットだけから1体選べる（S・車両でない M・ラッシュエリア・敵軍は対象外。任意）（出典: atwiki/page-678「自軍バトルエリアから特徴「車両」を持つMユニットを1体選び、自軍パワーゾーンに送ってもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RK-155");
     expect(choiceIds(s)).toEqual(["RK-147:is"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-155: 選んだユニットは自軍パワーゾーンにオモテ向きで送られる（出典: atwiki/page-678「自軍パワーゾーンに送ってもよい」）", () => {
+  it("RK-155: 選んだユニットは自軍パワーゾーンにオモテ向きで送られる（出典: atwiki/page-678「自軍パワーゾーンに送ってもよい」）", () => {
     const s = resolveAll(pick(entered(), "RK-147:is"));
     expect(zoneOf(s, "player1", "RK-147:is")).toBe("power");
     expect(cardIn(s, "player1", "RK-147:is")?.faceDown ?? false).toBe(false);
   });
 
-  it.fails("RK-155: 送らなければ何も起きない（出典: atwiki/page-678「送ってもよい」）", () => {
+  it("RK-155: 送らなければ何も起きない（出典: atwiki/page-678「送ってもよい」）", () => {
     const s = resolveAll(skip(entered()));
     expect(zoneOf(s, "player1", "RK-147:is")).toBe("battle");
   });
@@ -158,7 +158,7 @@ describe("RK-155 キングライナー", () => {
   const returned = (power = [faceUp("RK-147", "p1"), faceDown("RK-151", "dm"), faceUp("SPEC-VEH-S", "ps"), faceUp("SPEC-PLAIN-M", "pm")]) =>
     returnAll(startPhase({ battle: [inst("RK-155", "kl")], power }));
 
-  it.fails("RK-155: ラッシュエリアに戻るとき、自軍パワーゾーンのオモテ向きの、特徴「車両」を持つ M ユニットのカードだけから1枚選べる（ダメージ・S・車両でない M は対象外。任意）（出典: atwiki/page-678「自軍パワーゾーンのオモテ向きのカードから、特徴「車両」を持つMユニットのカードを1枚選び」）", () => {
+  it("RK-155: ラッシュエリアに戻るとき、自軍パワーゾーンのオモテ向きの、特徴「車両」を持つ M ユニットのカードだけから1枚選べる（ダメージ・S・車両でない M は対象外。任意）（出典: atwiki/page-678「自軍パワーゾーンのオモテ向きのカードから、特徴「車両」を持つMユニットのカードを1枚選び」）", () => {
     const s = returned();
     expect(zoneOf(s, "player1", "RK-155:kl")).toBe("rush");
     expectChoiceFrom(s, "player1", "RK-155");
@@ -166,12 +166,12 @@ describe("RK-155 キングライナー", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-155: 選んだカードは自軍ラッシュエリアに出る（出典: atwiki/page-678「自軍ラッシュエリアに出してもよい」）", () => {
+  it("RK-155: 選んだカードは自軍ラッシュエリアに出る（出典: atwiki/page-678「自軍ラッシュエリアに出してもよい」）", () => {
     const s = settle(pick(returned(), "RK-147:p1"));
     expect(zoneOf(s, "player1", "RK-147:p1")).toBe("rush");
   });
 
-  it.fails("RK-155: 出さなければパワーゾーンに残る（出典: atwiki/page-678「出してもよい」）", () => {
+  it("RK-155: 出さなければパワーゾーンに残る（出典: atwiki/page-678「出してもよい」）", () => {
     const s = settle(skip(returned()));
     expect(zoneOf(s, "player1", "RK-147:p1")).toBe("power");
   });
@@ -200,20 +200,20 @@ describe("RK-156 マシンデンバード", () => {
   const returned = (ridden = true, p2: Partial<GameState["players"]["player2"]> = {}) =>
     returnAll(startPhase({ battle: ridden ? riding(inst("RK-156", "db"), inst("SPEC-RC", "r")) : [inst("RK-156", "db"), inst("SPEC-RC", "r")], deck }, p2));
 
-  it.fails("RK-156: ライドされたままラッシュエリアに戻るとき、自軍山札の特徴「車両」を持つ M ユニットのカードだけから1枚選べる（任意）（出典: atwiki/page-680「自軍山札から特徴「車両」を持つMユニットのカードを1枚選び、…手札に加えてもよい」）", () => {
+  it("RK-156: ライドされたままラッシュエリアに戻るとき、自軍山札の特徴「車両」を持つ M ユニットのカードだけから1枚選べる（任意）（出典: atwiki/page-680「自軍山札から特徴「車両」を持つMユニットのカードを1枚選び、…手札に加えてもよい」）", () => {
     const s = returned();
     expectChoiceFrom(s, "player1", "RK-156");
     expect(choiceIds(s)).toEqual(["RK-147:d1", "RK-151:d4"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-156: 選んだカードは手札に加わる（出典: atwiki/page-680「自分の手札に加えてもよい」）", () => {
+  it("RK-156: 選んだカードは手札に加わる（出典: atwiki/page-680「自分の手札に加えてもよい」）", () => {
     const s = settle(pick(returned(), "RK-151:d4"));
     expect(zoneOf(s, "player1", "RK-151:d4")).toBe("hand");
     expect(s.players.player1.deck).toHaveLength(4);
   });
 
-  it.fails("RK-156: その後、山札をシャッフルする（敵軍 RK-132 闘鬼【妻子のバックアップ】が発動できる）（出典: atwiki/page-680「その後、山札をシャッフルする」・RK-132 本文「敵軍山札がシャッフルされたとき」）", () => {
+  it("RK-156: その後、山札をシャッフルする（敵軍 RK-132 闘鬼【妻子のバックアップ】が発動できる）（出典: atwiki/page-680「その後、山札をシャッフルする」・RK-132 本文「敵軍山札がシャッフルされたとき」）", () => {
     const s = settle(pick(returned(true, { rush: [heldUnit("RK-132", "tk")] }), "RK-151:d4"));
     expectChoiceFrom(s, "player2", "RK-132");
   });
@@ -245,7 +245,7 @@ describe("RK-157 バットイマジン", () => {
   const returned = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = { operation: [inst("SPEC-RES", "er")] }) =>
     returnAll(startPhase({ battle: [inst("RK-157", "bt")], operation: [inst("SPEC-RES", "r1"), { ...inst("TST-OP", "fd"), faceDown: true }], ...p1 }, p2));
 
-  it.fails("RK-157: 自軍バトルエリアからラッシュエリアに戻るとき、自軍常駐置き場のカード（ウラ向きのカードを含む）から1枚選べる（敵軍の常駐は対象外。任意）（出典: atwiki/page-637「自軍常駐置き場からカードを1枚選び」「ウラ向きのカードはウラ向きのまま選ぶ」）", () => {
+  it("RK-157: 自軍バトルエリアからラッシュエリアに戻るとき、自軍常駐置き場のカード（ウラ向きのカードを含む）から1枚選べる（敵軍の常駐は対象外。任意）（出典: atwiki/page-637「自軍常駐置き場からカードを1枚選び」「ウラ向きのカードはウラ向きのまま選ぶ」）", () => {
     const s = returned();
     expect(zoneOf(s, "player1", "RK-157:bt")).toBe("rush");
     expectChoiceFrom(s, "player1", "RK-157");
@@ -253,18 +253,18 @@ describe("RK-157 バットイマジン", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-157: 選んだカードは自分の手札に加わる（出典: atwiki/page-637「自分の手札に加えてもよい」）", () => {
+  it("RK-157: 選んだカードは自分の手札に加わる（出典: atwiki/page-637「自分の手札に加えてもよい」）", () => {
     const s = settle(pick(returned(), "SPEC-RES:r1"));
     expect(zoneOf(s, "player1", "SPEC-RES:r1")).toBe("hand");
     expect(zoneOf(s, "player1", "TST-OP:fd")).toBe("operation");
   });
 
-  it.fails("RK-157: ウラ向きのカードもそのまま選んで手札に加えられる（出典: atwiki/page-637「ウラ向きのカードはウラ向きのまま選ぶ」）", () => {
+  it("RK-157: ウラ向きのカードもそのまま選んで手札に加えられる（出典: atwiki/page-637「ウラ向きのカードはウラ向きのまま選ぶ」）", () => {
     const s = settle(pick(returned(), "TST-OP:fd"));
     expect(zoneOf(s, "player1", "TST-OP:fd")).toBe("hand");
   });
 
-  it.fails("RK-157: 加えなければ常駐置き場に残る（出典: atwiki/page-637「加えてもよい」）", () => {
+  it("RK-157: 加えなければ常駐置き場に残る（出典: atwiki/page-637「加えてもよい」）", () => {
     const s = settle(skip(returned()));
     expect(s.players.player1.operation).toHaveLength(2);
   });
@@ -306,10 +306,12 @@ describe("RK-158 ギガンデスヘブン", () => {
     expect(zoneOf(r.state, "player1", "RK-158:gh")).toBe("rush");
   });
 
-  it.fails("RK-158: ※ 手札を2枚選んで捨札にすればバトルエリアに出られる（選んだ2枚が捨札になる）（出典: atwiki/page-704「自分の手札からカードを2枚選び、捨札にしなければバトルエリアに出られない」）", () => {
+  it("RK-158: ※ 手札を2枚選んで捨札にすればバトルエリアに出られる（選んだ2枚が捨札になる）（出典: atwiki/page-704「自分の手札からカードを2枚選び、捨札にしなければバトルエリアに出られない」）", () => {
     let s = enter(board({ rush: [inst("RK-158", "gh")], hand: [inst("TST-OP", "h0"), inst("TST-OP", "h1"), inst("TST-OP", "h2")] }), "RK-158:gh");
     for (const id of ["TST-OP:h0", "TST-OP:h2"]) if (s.pendingEffectChoice?.validInstanceIds.includes(id)) s = pick(s, id);
     if (s.pendingEffectChoice && canConfirm(s)) s = confirm(s);
+    // 捨札にする手順を済ませてから、あらためてバトルエリアに出す（エンジンの「出るときの支払い」の手順）。
+    if (zoneOf(s, "player1", "RK-158:gh") === "rush") s = enter(s, "RK-158:gh");
     s = settle(s);
     expect(zoneOf(s, "player1", "RK-158:gh")).toBe("battle");
     expect(zoneOf(s, "player1", "TST-OP:h0")).toBe("discard");
@@ -342,7 +344,7 @@ describe("RK-159 仮面ライダーV3（THE NEXT）", () => {
   const rc = (p2: Partial<GameState["players"]["player2"]> = enemy) =>
     rcRideOff(board({ rush: [inst("RK-159", "v3"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-159:v3", "SPEC-VEHICLE:v");
 
-  it.fails("RK-159: RC — 必要パワーに「－」のある敵軍 S ユニット（エリアを問わない）だけから1体選べる（M・「＋」は対象外。任意）（出典: atwiki/page-655「必要パワーの数字に「－」のある敵軍Sユニットを1体選び撃破してもよい」・カード評価「エリアを問わず「－」ユニットを除去できる」）", () => {
+  it("RK-159: RC — 必要パワーに「－」のある敵軍 S ユニット（エリアを問わない）だけから1体選べる（M・「＋」は対象外。任意）（出典: atwiki/page-655「必要パワーの数字に「－」のある敵軍Sユニットを1体選び撃破してもよい」・カード評価「エリアを問わず「－」ユニットを除去できる」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "RK-159");
     expect(choiceIds(s)).toEqual(["SPEC-MINUS-S:ms", "SPEC-MINUS-S:rs"]);
@@ -389,21 +391,21 @@ describe("RK-160 シザーズジャガー", () => {
     return r.state;
   };
 
-  it.fails("RK-160: 追加条件を持たない敵軍 S ユニット（必要パワー5）がラッシュされたとき、手札の、必要パワーの数字が5の DA のユニットカードから1枚選べる（追加条件の有無・サイズは問わない。任意）（出典: atwiki/page-703・カード評価「パワーが同じならば追加条件を満たさずともDAのカテゴリを持つあらゆるユニットを一発でラッシュでき」）", () => {
+  it("RK-160: 追加条件を持たない敵軍 S ユニット（必要パワー5）がラッシュされたとき、手札の、必要パワーの数字が5の DA のユニットカードから1枚選べる（追加条件の有無・サイズは問わない。任意）（出典: atwiki/page-703・カード評価「パワーが同じならば追加条件を満たさずともDAのカテゴリを持つあらゆるユニットを一発でラッシュでき」）", () => {
     const s = enemyRushes();
     expectChoiceFrom(s, "player1", "RK-160");
     expect(choiceIds(s)).toEqual(["SPEC-DA5:d5", "SPEC-DA5C:d5c"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-160: 選んだカードは自軍ラッシュエリアに出て、DA の自軍コマンドを1つホールドし、ラッシュされた敵軍ユニットを撃破する（出典: atwiki/page-703「ラッシュエリアに出してもよい。ただし、DAの自軍コマンドを1つホールドすること。そうしたとき、ラッシュされた敵軍ユニットを撃破する」）", () => {
+  it("RK-160: 選んだカードは自軍ラッシュエリアに出て、DA の自軍コマンドを1つホールドし、ラッシュされた敵軍ユニットを撃破する（出典: atwiki/page-703「ラッシュエリアに出してもよい。ただし、DAの自軍コマンドを1つホールドすること。そうしたとき、ラッシュされた敵軍ユニットを撃破する」）", () => {
     const s = resolveAll(pick(enemyRushes(), "SPEC-DA5C:d5c"));
     expect(zoneOf(s, "player1", "SPEC-DA5C:d5c")).toBe("rush");
     expect(s.players.player1.command.every((c) => c.commandHeld)).toBe(true);
     expect(zoneOf(s, "player2", "SPEC-E5:er")).toBe("discard");
   });
 
-  it.fails("RK-160: 出さなければ何も起きない（出典: atwiki/page-703「出してもよい」）", () => {
+  it("RK-160: 出さなければ何も起きない（出典: atwiki/page-703「出してもよい」）", () => {
     const s = resolveAll(skip(enemyRushes()));
     expect(zoneOf(s, "player1", "SPEC-DA5:d5")).toBe("hand");
     expect(zoneOf(s, "player2", "SPEC-E5:er")).toBe("rush");
@@ -442,7 +444,7 @@ describe("RK-160 シザーズジャガー", () => {
   );
 
   // faq-rider-2 RK-160 Q2「はい、可能です。」
-  it.fails("RK-160: 公式Q&A — 自軍のラッシュに対して相手がモーフで入れ替えた（ラッシュエリアに出た）敵軍 S ユニットに対しても発動できる（出典: grnrngr/faq-rider-2 RK-160 Q2・atwiki/page-703 Q2）", () => {
+  it("RK-160: 公式Q&A — 自軍のラッシュに対して相手がモーフで入れ替えた（ラッシュエリアに出た）敵軍 S ユニットに対しても発動できる（出典: grnrngr/faq-rider-2 RK-160 Q2・atwiki/page-703 Q2）", () => {
     let s = rushPhase(
       { rush: [inst("RK-160", "sj")], hand: [inst("SPEC-ES", "mine"), inst("SPEC-DA5", "d5")], command: [released("TST-OP", "w"), ...releasedCat("DA", 1)], power: powerCards(5) },
       { rush: [inst("SPEC-MORPH", "m")], command: [inst("SPEC-MORPH-T", "t")] },
@@ -481,7 +483,7 @@ describe("RK-161 ショッカーライダー", () => {
 
   const riders = (n: number, prefix = "sr") => Array.from({ length: n }, (_, i) => inst("RK-161", `${prefix}${i}`));
 
-  it.fails("RK-161: ※ ショッカーライダーだけで6番目に並んだとき「SP1」になり、ストライクできる（出典: atwiki/page-702「「ショッカーライダー」だけでコンビネーションしてバトルエリアの6番目に並んだとき「SP1」になる」）", () => {
+  it("RK-161: ※ ショッカーライダーだけで6番目に並んだとき「SP1」になり、ストライクできる（出典: atwiki/page-702「「ショッカーライダー」だけでコンビネーションしてバトルエリアの6番目に並んだとき「SP1」になる」）", () => {
     const s = enter(board({ battle: riders(5), rush: [inst("RK-161", "six")] }), "RK-161:six");
     expect(spOf(s, "player1", "RK-161:six")).toBe(1);
     expect(canStrike(s, "RK-161:six")).toBe(true);

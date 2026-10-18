@@ -100,24 +100,24 @@ describe("RK-148 デンライナーレッコウ", () => {
   const enemy = { battle: [inst("SPEC-EM-MECHA", "mm"), inst("SPEC-EM-PLAIN", "mp"), inst("SPEC-ES", "s"), inst("SPEC-EL", "l")], rush: [inst("SPEC-EM-PLAIN", "rm")] };
   const entered = (p2: Partial<GameState["players"]["player2"]> = enemy) => enter(board({ rush: [inst("RK-148", "rk")] }, p2), "RK-148:rk");
 
-  it.fails("RK-148: 自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアの M ユニットだけから1体選べる（S・L・ラッシュエリアは対象外。任意）（出典: atwiki/page-674「敵軍バトルエリアからMユニットを1体選び、…戻してもよい」）", () => {
+  it("RK-148: 自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアの M ユニットだけから1体選べる（S・L・ラッシュエリアは対象外。任意）（出典: atwiki/page-674「敵軍バトルエリアからMユニットを1体選び、…戻してもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RK-148");
     expect(choiceIds(s)).toEqual(["SPEC-EM-MECHA:mm", "SPEC-EM-PLAIN:mp"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-148: 特徴「メカ」を持つ M ユニットは敵軍ラッシュエリアに戻る（パワーゾーンには送らない）（出典: atwiki/page-674「敵軍ラッシュエリアに戻してもよい。そうしたとき、戻したユニットが特徴「メカ」を持っていなければ」）", () => {
+  it("RK-148: 特徴「メカ」を持つ M ユニットは敵軍ラッシュエリアに戻る（パワーゾーンには送らない）（出典: atwiki/page-674「敵軍ラッシュエリアに戻してもよい。そうしたとき、戻したユニットが特徴「メカ」を持っていなければ」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-EM-MECHA:mm"));
     expect(zoneOf(s, "player2", "SPEC-EM-MECHA:mm")).toBe("rush");
   });
 
-  it.fails("RK-148: 特徴「メカ」を持たない M ユニットは、戻したうえで持ち主のパワーゾーンへ送られる（出典: atwiki/page-674「持ち主のパワーゾーンへ送る」・カード評価「特徴にメカを持たないWBのMユニットに対して効果がある」）", () => {
+  it("RK-148: 特徴「メカ」を持たない M ユニットは、戻したうえで持ち主のパワーゾーンへ送られる（出典: atwiki/page-674「持ち主のパワーゾーンへ送る」・カード評価「特徴にメカを持たないWBのMユニットに対して効果がある」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-EM-PLAIN:mp"));
     expect(zoneOf(s, "player2", "SPEC-EM-PLAIN:mp")).toBe("power");
   });
 
-  it.fails("RK-148: 戻さなければ何も起きない（出典: atwiki/page-674「戻してもよい」）", () => {
+  it("RK-148: 戻さなければ何も起きない（出典: atwiki/page-674「戻してもよい」）", () => {
     const s = resolveAll(skip(entered()));
     expect(zoneOf(s, "player2", "SPEC-EM-MECHA:mm")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-EM-PLAIN:mp")).toBe("battle");
@@ -159,7 +159,7 @@ describe("RK-149 デンライナーイカヅチ", () => {
   const fourth = (battle = [inst("RK-149", "ik"), inst("RK-060", "gk"), inst("RK-147", "is")], p2: Partial<GameState["players"]["player2"]> = enemy) =>
     enter(board({ battle, rush: [inst("RK-148", "rk")], hand: [] }, p2), "RK-148:rk");
 
-  it.fails("RK-149: イカヅチ→ゴウカ→イスルギ→レッコウの順に並んだとき、本来の BP が3000以下の敵軍ユニットをすべて（バトル・ラッシュエリアを問わず）撃破する（出典: atwiki/page-675・カード評価「ラッシュエリアまで含む複数を対象とした除去効果」）", () => {
+  it("RK-149: イカヅチ→ゴウカ→イスルギ→レッコウの順に並んだとき、本来の BP が3000以下の敵軍ユニットをすべて（バトル・ラッシュエリアを問わず）撃破する（出典: atwiki/page-675・カード評価「ラッシュエリアまで含む複数を対象とした除去効果」）", () => {
     const s = resolveAll(fourth());
     expect(zoneOf(s, "player2", "SPEC-B3000:b3")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-B2000M:m2")).toBe("discard");
@@ -168,7 +168,7 @@ describe("RK-149 デンライナーイカヅチ", () => {
     expect(zoneOf(s, "player2", "SPEC-B4000:b4")).toBe("rush");
   });
 
-  it.fails("RK-149: 判定は本来の BP（ビークルにライドして BP が上がっていても、印刷の BP1000 なら撃破）（出典: atwiki/page-675「本来のBPが3000以下」）", () => {
+  it("RK-149: 判定は本来の BP（ビークルにライドして BP が上がっていても、印刷の BP1000 なら撃破）（出典: atwiki/page-675「本来のBPが3000以下」）", () => {
     const s = resolveAll(fourth(undefined, { rush: riding(inst("RK-024", "cy"), inst("SPEC-B3000", "r3")) }));
     expect(zoneOf(s, "player2", "SPEC-B3000:r3")).toBe("discard");
   });
@@ -217,28 +217,28 @@ describe("RK-150 ゼロライナードリル", () => {
     discard: [inst("SPEC-EM-PLAIN", "d1"), inst("SPEC-EL", "d2"), inst("TST-OP", "d3")],
   };
 
-  it.fails("RK-150: ラッシュしたとき、敵軍パワーゾーンのカードを捨札にするかを選べる（任意）（出典: atwiki/page-676「すべて捨札にしてもよい」）", () => {
+  it("RK-150: ラッシュしたとき、敵軍パワーゾーンのカードを捨札にするかを選べる（任意）（出典: atwiki/page-676「すべて捨札にしてもよい」）", () => {
     const s = rushed(enemy);
     expectChoiceFrom(s, "player1", "RK-150");
     expect(canConfirm(s)).toBe(true);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-150: 捨札にすると、ダメージ以外のカード（2枚）がすべて捨札になり、ダメージは残る（出典: atwiki/page-676「ダメージ以外のカードの枚数を数えてから、そのカードをすべて捨札にしてもよい」）", () => {
+  it("RK-150: 捨札にすると、ダメージ以外のカード（2枚）がすべて捨札になり、ダメージは残る（出典: atwiki/page-676「ダメージ以外のカードの枚数を数えてから、そのカードをすべて捨札にしてもよい」）", () => {
     const s = confirm(rushed(enemy));
     expect(zoneOf(s, "player2", "SPEC-ES:p1")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-B3000:p2")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-B4000:dmg")).toBe("power");
   });
 
-  it.fails("RK-150: その後、敵軍捨札（捨札にしたばかりのカードを含む）から自分がカードを選ぶ（選ばないことはできない）（出典: atwiki/page-676「数えた枚数と同じ枚数になるまで敵軍捨札からカードを選び」）", () => {
+  it("RK-150: その後、敵軍捨札（捨札にしたばかりのカードを含む）から自分がカードを選ぶ（選ばないことはできない）（出典: atwiki/page-676「数えた枚数と同じ枚数になるまで敵軍捨札からカードを選び」）", () => {
     const s = confirm(rushed(enemy));
     expectChoiceFrom(s, "player1", "RK-150");
     expect(choiceIds(s)).toEqual(["SPEC-B3000:p2", "SPEC-EL:d2", "SPEC-EM-PLAIN:d1", "SPEC-ES:p1", "TST-OP:d3"].sort());
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-150: 数えた枚数（2枚）になるまで選び、選んだカードは敵軍パワーゾーンにオモテ向きで置かれる（出典: atwiki/page-676「敵軍パワーゾーンにオモテ向きで置く」）", () => {
+  it("RK-150: 数えた枚数（2枚）になるまで選び、選んだカードは敵軍パワーゾーンにオモテ向きで置かれる（出典: atwiki/page-676「敵軍パワーゾーンにオモテ向きで置く」）", () => {
     let s = pick(confirm(rushed(enemy)), "SPEC-EL:d2");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-150");
     s = resolveAll(pick(s, "TST-OP:d3"));
@@ -249,7 +249,7 @@ describe("RK-150 ゼロライナードリル", () => {
     expect(s.players.player2.power).toHaveLength(3);
   });
 
-  it.fails("RK-150: 捨札にしなければ何も起きない（出典: atwiki/page-676「捨札にしてもよい。そうしたとき」）", () => {
+  it("RK-150: 捨札にしなければ何も起きない（出典: atwiki/page-676「捨札にしてもよい。そうしたとき」）", () => {
     const s = resolveAll(skip(rushed(enemy)));
     expect(zoneOf(s, "player2", "SPEC-ES:p1")).toBe("power");
     expect(s.players.player2.power).toHaveLength(3);
@@ -261,7 +261,7 @@ describe("RK-150 ゼロライナードリル", () => {
   });
 
   // faq-rider-2 RK-150 Q「はい、できます。「ラッシュしたとき」とある…効果が、「ラッシュされたとき」とあるモーフより先に発動します。」
-  it.fails("RK-150: 公式Q&A — 相手のモーフより先に【掘削】を解決し、モーフの置き換え先になるパワーゾーンのオモテ向きのカードを捨札にできる（出典: grnrngr/faq-rider-2 RK-150 Q）", () => {
+  it("RK-150: 公式Q&A — 相手のモーフより先に【掘削】を解決し、モーフの置き換え先になるパワーゾーンのオモテ向きのカードを捨札にできる（出典: grnrngr/faq-rider-2 RK-150 Q）", () => {
     let s = rushed({ rush: [inst("SPEC-MORPH", "m")], power: [faceUp("SPEC-MORPH-T", "t")] });
     expectChoiceFrom(s, "player1", "RK-150");
     s = confirm(s);
@@ -323,20 +323,20 @@ describe("RK-152 仮面ライダー電王PF", () => {
     expect(bpOf(s, "player1", "RK-152:pf")).toBe(500);
   });
 
-  it("RK-152: ※ BP3000以上（イマジン3枚で BP3500）なら「SP1/4」— 先頭でストライクできる（出典: atwiki/page-633「BP3000以上なら「SP1/4」になる」）", () => {
-    const s = enter(board({ rush: [inst("RK-152", "pf")], power: imagins(3) }), "RK-152:pf");
+  it("RK-152: ※ BP3000以上（イマジン3枚で BP3500）なら「SP1/4」— 4番目でストライクできる（出典: atwiki/page-633「BP3000以上なら「SP1/4」になる」・R-STK-03「分母の数字と同じ順番に並んでいれば…「SP1」」）", () => {
+    const s = enter(board({ battle: fill(3), rush: [inst("RK-152", "pf")], power: imagins(3) }), "RK-152:pf");
     expect(bpOf(s, "player1", "RK-152:pf")).toBe(3500);
     expect(spOf(s, "player1", "RK-152:pf")).toBe(1);
     expect(canStrike(s, "RK-152:pf")).toBe(true);
   });
 
-  it.fails("RK-152: ※ 「SP1/4」なので2番目ではストライクできない（出典: atwiki/page-633「SP1/4」）", () => {
-    const s = enter(board({ battle: fill(1), rush: [inst("RK-152", "pf")], power: imagins(3) }), "RK-152:pf");
+  it("RK-152: ※ 「SP1/4」なので4番目以外（先頭）ではストライクできない（出典: atwiki/page-633「SP1/4」・R-STK-03）", () => {
+    const s = enter(board({ rush: [inst("RK-152", "pf")], power: imagins(3) }), "RK-152:pf");
     expect(spOf(s, "player1", "RK-152:pf")).toBe(0);
   });
 
-  it("RK-152: ※ BP3000未満（イマジン2枚で BP2500）なら SP を持たず、先頭でもストライクできない（出典: atwiki/page-633「SP：！」「BP3000以上なら」）", () => {
-    const s = enter(board({ rush: [inst("RK-152", "pf")], power: imagins(2) }), "RK-152:pf");
+  it("RK-152: ※ BP3000未満（イマジン2枚で BP2500）なら SP を持たず、4番目でもストライクできない（出典: atwiki/page-633「SP：！」「BP3000以上なら」）", () => {
+    const s = enter(board({ battle: fill(3), rush: [inst("RK-152", "pf")], power: imagins(2) }), "RK-152:pf");
     expect(spOf(s, "player1", "RK-152:pf")).toBe(0);
     expect(canStrike(s, "RK-152:pf")).toBe(false);
   });
@@ -353,7 +353,7 @@ describe("RK-153 仮面ライダーガオウ", () => {
     expectRarityIn("RK-153", ["R"]);
   });
 
-  it.fails("RK-153: ※ 敵軍ユニットを撃破していないターンはバトルエリアに出られない（出典: atwiki/page-705「敵軍ユニットを撃破したターンにしかバトルエリアに出られない」）", () => {
+  it("RK-153: ※ 敵軍ユニットを撃破していないターンはバトルエリアに出られない（出典: atwiki/page-705「敵軍ユニットを撃破したターンにしかバトルエリアに出られない」）", () => {
     const s = board({ rush: [inst("RK-153", "ga")] }, { battle: [inst("SPEC-B500", "e")] });
     expect(canEnter(s, "RK-153:ga")).toBe(false);
   });
@@ -369,14 +369,14 @@ describe("RK-153 仮面ライダーガオウ", () => {
   const atEnd = (p1: Partial<GameState["players"]["player1"]> = { rush: [inst("RK-153", "ga")] }, p2: Partial<GameState["players"]["player2"]> = enemy) =>
     endTurnKeep(board(p1, p2));
 
-  it.fails("RK-153: 【車両強奪】自軍ラッシュエリアにある間、ターンを終えるとき、敵軍バトルエリアの特徴「車両」を持つユニットを1体選べる（任意）（出典: atwiki/page-705「敵軍バトルエリアから特徴「車両」を持つユニットを1体選んでもよい」）", () => {
+  it("RK-153: 【車両強奪】自軍ラッシュエリアにある間、ターンを終えるとき、敵軍バトルエリアの特徴「車両」を持つユニットを1体選べる（任意）（出典: atwiki/page-705「敵軍バトルエリアから特徴「車両」を持つユニットを1体選んでもよい」）", () => {
     const s = atEnd();
     expectChoiceFrom(s, "player1", "RK-153");
     expect(choiceIds(s)).toEqual(["SPEC-VEH-UNIT:vu"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-153: 【車両強奪】選ばれたユニットは、次の相手のスタートフェイズにラッシュエリアに戻らずバトルエリアに残る（ほかのユニットは戻る）（出典: atwiki/page-705「選ばれたユニットをラッシュエリアに戻すことはできない」）", () => {
+  it("RK-153: 【車両強奪】選ばれたユニットは、次の相手のスタートフェイズにラッシュエリアに戻らずバトルエリアに残る（ほかのユニットは戻る）（出典: atwiki/page-705「選ばれたユニットをラッシュエリアに戻すことはできない」）", () => {
     let s = pick(atEnd(), "SPEC-VEH-UNIT:vu");
     s = endTurnKeep(settle(s));
     expect(s.activePlayer).toBe("player2");
@@ -385,7 +385,7 @@ describe("RK-153 仮面ライダーガオウ", () => {
     expect(zoneOf(s, "player2", "SPEC-ES:s")).toBe("rush");
   });
 
-  it.fails("RK-153: 【車両強奪】選ばなければ、相手のスタートフェイズにふつうにラッシュエリアに戻る（出典: atwiki/page-705「選んでもよい。そうしたとき」）", () => {
+  it("RK-153: 【車両強奪】選ばなければ、相手のスタートフェイズにふつうにラッシュエリアに戻る（出典: atwiki/page-705「選んでもよい。そうしたとき」）", () => {
     let s = skip(atEnd());
     s = toPhase(endTurnKeep(settle(s)), "player2", "rush");
     expect(zoneOf(s, "player2", "SPEC-VEH-UNIT:vu")).toBe("rush");
@@ -421,7 +421,7 @@ describe("RK-154 ジーク", () => {
   };
   const enemy = { battle: [inst("SPEC-B3000", "s"), inst("SPEC-EL", "l")], rush: [inst("SPEC-EM-PLAIN", "m")] };
 
-  it.fails("RK-154: ラッシュしたとき、敵軍の S・M ユニット（エリアを問わない。L は対象外）から1体選べる（任意）（出典: atwiki/page-679「敵軍Sユニットか、敵軍Mユニットを1体選んでもよい」・カード評価「エリアを問わない点も強い」）", () => {
+  it("RK-154: ラッシュしたとき、敵軍の S・M ユニット（エリアを問わない。L は対象外）から1体選べる（任意）（出典: atwiki/page-679「敵軍Sユニットか、敵軍Mユニットを1体選んでもよい」・カード評価「エリアを問わない点も強い」）", () => {
     const s = rushed(enemy);
     expectChoiceFrom(s, "player1", "RK-154");
     expect(choiceIds(s)).toEqual(["SPEC-B3000:s", "SPEC-EM-PLAIN:m"]);
@@ -444,7 +444,7 @@ describe("RK-154 ジーク", () => {
     expect(bpOf(s, "player2", "SPEC-B3000:s")).toBe(3000);
   });
 
-  it.fails("RK-154: M ユニットを選ぶと、このターン S ユニットになる（BP はそのまま。RK-162 アギトGF の「DA の S ユニット」に選べる）（出典: atwiki/page-679「このターン、そのユニットはSユニットになる」・カード評価「サイズをSに変更する事で他のカードでの除去が容易に出来るようになる」）", () => {
+  it("RK-154: M ユニットを選ぶと、このターン S ユニットになる（BP はそのまま。RK-162 アギトGF の「DA の S ユニット」に選べる）（出典: atwiki/page-679「このターン、そのユニットはSユニットになる」・カード評価「サイズをSに変更する事で他のカードでの除去が容易に出来るようになる」）", () => {
     let s = resolveAll(pick(rushed({ battle: [inst("SPEC-EM-DA", "dm")] }, { rush: [inst("RK-162", "gf"), inst("SPEC-VEHICLE", "v")] }), "SPEC-EM-DA:dm"));
     expect(bpOf(s, "player2", "SPEC-EM-DA:dm")).toBe(5000);
     s = toPhase(s, "player1", "battle");

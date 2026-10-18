@@ -135,6 +135,7 @@ import { canConfirmRk4Choice, isRk4ChoiceEffect, swapResidentFeature } from "../
 import { canConfirmRk5Choice, isRk5BattleCounterCard, isRk5ChoiceEffect, rk5BattleCounterConditionMet } from "../rules/rk/rk5UnitEffects";
 import { canConfirmRk6Choice, isRk6ChoiceEffect } from "../rules/rk/rk6UnitEffects";
 import { canConfirmRk7Choice, isRk7ChoiceEffect } from "../rules/rk/rk7UnitEffects";
+import { canConfirmRk8Choice, isRk8ChoiceEffect } from "../rules/rk/rk8UnitEffects";
 import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
 import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
@@ -1263,6 +1264,15 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk3Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk8ChoiceEffect(pending.effectId)) {
+    // ライダーEXP vol.2 RK-148〜RK-168 の選択（rules/rk/rk8UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk8Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

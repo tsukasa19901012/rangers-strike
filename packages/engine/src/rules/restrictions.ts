@@ -91,6 +91,7 @@ import {
 import { getBattleEntryPowerDiscardCount } from "./batch07FieldEffects";
 import { damageGateBlocksEntry } from "./keywordGapRuntime";
 import { rk6BlocksBattleEntry } from "./rk/rk6Fields";
+import { rk8BlocksBattleEntry } from "./rk/rk8UnitEffects";
 import {
   rs482BlocksAttackStrike,
   rs579BlocksAttackStrikeOnRushTurn,
@@ -357,6 +358,8 @@ export function canMoveUnitToBattle(
   if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
   // RK-122 ホースオルフェノク格闘態 ※（自軍パワーゾーンに6枚以上カードが無ければ出られない。rules/rk/rk6Fields.ts）。
   if (def.type === "unit" && rk6BlocksBattleEntry(state, playerId, unit)) return false;
+  // RK-153 仮面ライダーガオウ・RK-167 仮面ライダーカイザ の※（rules/rk/rk8UnitEffects.ts）。
+  if (def.type === "unit" && rk8BlocksBattleEntry(state, playerId, unit)) return false;
   // RS-289 / XP-023「※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない」（atwiki/page-416）。
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
@@ -492,6 +495,8 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
   // RK-122 ホースオルフェノク格闘態 ※（自軍パワーゾーンに6枚以上カードが無ければ出られない。rules/rk/rk6Fields.ts）。
   if (def.type === "unit" && rk6BlocksBattleEntry(state, playerId, unit)) return false;
+  // RK-153 仮面ライダーガオウ・RK-167 仮面ライダーカイザ の※（rules/rk/rk8UnitEffects.ts）。
+  if (def.type === "unit" && rk8BlocksBattleEntry(state, playerId, unit)) return false;
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {

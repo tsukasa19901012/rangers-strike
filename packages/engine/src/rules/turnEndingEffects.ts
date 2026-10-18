@@ -1,3 +1,4 @@
+import { clearRk8SeizedFor, collectRk8TurnEndQueue, openRk8TurnEndEntry } from "./rk/rk8UnitEffects";
 import { collectOtherLinesTurnEndQueue, openOtherLinesTurnEndEntry } from "./legend1/otherLinesNamedEffects";
 import { applyRk5TurnEndDestroy, collectRk5TurnEndQueue, openRk5TurnEndEntry } from "./rk/rk5UnitEffects";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
@@ -325,6 +326,17 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.rk5Queue!;
     progress = { ...progress, rk5Queue: rest };
     nextState = openRk5TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // RK-153 仮面ライダーガオウ【車両強奪】（rules/rk/rk8UnitEffects.ts）。このターンのプレイヤーが戻せなかったユニットの記録はここで消す。
+  if (!progress.rk8Queue) {
+    nextState = clearRk8SeizedFor(nextState, endingPlayerId);
+    progress = { ...progress, rk8Queue: collectRk8TurnEndQueue(nextState, endingPlayerId) };
+  }
+  while ((progress.rk8Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.rk8Queue!;
+    progress = { ...progress, rk8Queue: rest };
+    nextState = openRk8TurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {

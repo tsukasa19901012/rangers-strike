@@ -2,6 +2,7 @@ import { isInstancePlacedAnywhere } from "./helpers";
 import { rk6RecordSnakeSelected } from "../rules/rk/rk6Fields";
 import { rk6SideBasherOnEntry } from "../rules/rk/rk6UnitEffects";
 import { applyRk7AfterAction, openRk7LocustReplace } from "../rules/rk/rk7UnitEffects";
+import { applyRk8AfterAction } from "../rules/rk/rk8UnitEffects";
 import { isRk5BattleCounterCard, openRk5GuardVent, rk5GuardVentCost, rk5TigerBomberDestroy, rk5TigerBomberDestroys, rk5TigerBomberPenalty } from "../rules/rk/rk5UnitEffects";
 import { openRk3OnEnemyRush } from "../rules/rk/rk3UnitEffects";
 import { applyRk2StrikeDamageTriggers, rk2RecordStartRelease } from "../rules/rk/rk2UnitEffects";
@@ -990,6 +991,8 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applySwordTornadoAfterShuffle(next, shuffleEpochAtStart);
   // RK-129【サンダースペイダー】・RK-132【妻子のバックアップ】（rules/rk/rk7UnitEffects.ts）。
   if (applyActionDepth === 0) next = applyRk7AfterAction(state, next, shuffleEpochAtStart);
+  // RK-153 仮面ライダーガオウ ※（このターン敵軍ユニットを撃破したかの記録。rules/rk/rk8UnitEffects.ts）。
+  if (applyActionDepth === 0) next = applyRk8AfterAction(state, next, turnPlayerOf(state));
   // RS-319 デカマスター ※: 自軍ラッシュフェイズ中、条件を満たせば即座に手札に戻る（進行中の処理がないとき）。
   if (!hasBlockingInteraction(next)) next = applyDekaMasterReturn(next);
   // RS-325【マジチケット】: 発動したカードが捨札になったら「かわりに」の選択を開く。

@@ -48,6 +48,11 @@
           },
           "amount": 2000,
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "rk8::RK-164::rider_punch_sp1",
+          "duration": "turn"
         }
       ]
     }

@@ -73,6 +73,8 @@ export function rk1ZoneCardFeatures(state: Pick<GameState, "players" | "definiti
 
 /** いまのサイズが S か（J パワー・RS-255 巨大化爆弾を重ねたユニットは L）。 */
 export function rk1IsSmallNow(state: Pick<GameState, "definitions">, instance: CardInstance): boolean {
+  // RK-154【頭が高い！】で、このターン S ユニットになった M ユニット（rules/pendingChoices.ts）。
+  if (instance.sizeOverride === "S") return true;
   if (getDefinition(state.definitions, instance.cardId)?.size !== "S") return false;
   return !hasJPower(instance) && !hasGiantBomb(instance);
 }

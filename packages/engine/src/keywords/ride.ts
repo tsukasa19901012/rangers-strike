@@ -7,6 +7,7 @@ import { updatePlayer } from "../core/helpers";
 import { canMoveUnitToBattle } from "../rules/restrictions";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import { hasKamenRiderTitle } from "../rules/rk/rk1Features";
+import { rk8BlocksMount } from "../rules/rk/rk8UnitEffects";
 import {
   cardHasGrantKeyword,
   listCardGrantKeywords,
@@ -214,6 +215,8 @@ export function canRiderMountVehicle(
 
   const riderDef = getDefinition(state.definitions, rider.cardId);
   if (!riderDef || !isUnit(riderDef)) return false;
+  // RK-166 仮面ライダーG3「※これはホールド状態のときビークルにライドできない。」（rules/rk/rk8UnitEffects.ts）。
+  if (rk8BlocksMount(rider)) return false;
 
   // RS-527 バルジオン（2nd）「※本来のカテゴリにDAを持つSユニットは、ＲＣを持っていなくてもこのビークルに
   // ライドでき、それ以外のユニットはライドできない」（atwiki/page-1156。page-474 Q3）。

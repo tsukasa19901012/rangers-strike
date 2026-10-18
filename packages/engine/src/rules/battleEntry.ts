@@ -5,6 +5,7 @@ import { hasScopedRestriction } from "../core/scopedModifiers";
 import { rideOffBlockedBySet7D } from "./legend1/set7NamedEffectsD";
 import { rk1MissionMemoryOnEntry } from "./rk/rk1NamedEffects";
 import { rk6SideBasherOnEntry } from "./rk/rk6UnitEffects";
+import { rk8KaiserBmOnEntry } from "./rk/rk8UnitEffects";
 
 export function riderHasRidingComboOnRideOff(cardId: string): boolean {
   return !!getRidingComboEffect(cardId);
@@ -75,7 +76,11 @@ export function openBattleEntryOrRideOffChoice(
   const entered = state.players[entry.playerId].battle.find((c) => c.instanceId === entry.instanceId);
   if (entered && !entered.mountedOnInstanceId) {
     // RK-120 サイドバッシャーVM【ニーラーシャトル】: ライドされたままのこれからコンビネーションした RC のユニット（rules/rk/rk6UnitEffects.ts）。
-    const rc = rk1MissionMemoryOnEntry(state, entry.playerId, entry.instanceId) ?? rk6SideBasherOnEntry(state, entry.playerId, entry.instanceId);
+    // RK-167 仮面ライダーカイザ: サイドバッシャーBM からコンビネーションしたときはナンバーに関係なく【カイザブレイガン】（rules/rk/rk8UnitEffects.ts）。
+    const rc =
+      rk1MissionMemoryOnEntry(state, entry.playerId, entry.instanceId) ??
+      rk6SideBasherOnEntry(state, entry.playerId, entry.instanceId) ??
+      rk8KaiserBmOnEntry(state, entry.playerId, entry.instanceId);
     if (rc) return afterEnterBattle(rc, entry);
   }
   if (shouldPromptRideOffChoice(state, entry)) {

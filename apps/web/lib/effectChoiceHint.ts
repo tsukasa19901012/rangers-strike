@@ -230,6 +230,28 @@ const RK7_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk141_denebic_resume: { label: "デネビックバスター", hint: "デネビックバスターの続きを行います" },
 };
 
+/** ライダーEXP vol.2 RK-148〜RK-168 のカード固有の選択（engine rules/rk/rk8UnitEffects.ts）の表示名と案内文。 */
+const RK8_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk148_front_axe: { label: "フロントアックス", hint: "敵軍ラッシュエリアに戻す、敵軍バトルエリアの M ユニットを選んでください（しないなら「スキップ」）" },
+  rk149_giant_dragon: { label: "巨龍形態", hint: "本来の BP が3000以下の敵軍ユニットをすべて撃破します" },
+  rk150_drill: { label: "掘削", hint: "敵軍パワーゾーンのダメージ以外のカードをすべて捨札にしますか？" },
+  rk150_drill_pick: { label: "掘削", hint: "敵軍パワーゾーンにオモテ向きで置く、敵軍捨札のカードを選んでください" },
+  rk153_vehicle_seize: { label: "車両強奪", hint: "次の相手のスタートフェイズにラッシュエリアに戻させない、特徴「車両」を持つ敵軍ユニットを選んでください（しないなら「スキップ」）" },
+  rk155_king_liner_store: { label: "車両の収納と発車", hint: "自軍パワーゾーンに送る、特徴「車両」を持つ自軍 M ユニットを選んでください（しないなら「スキップ」）" },
+  rk155_king_liner_return: { label: "車両の収納と発車", hint: "自軍ラッシュエリアに出す、パワーゾーンの特徴「車両」を持つ M ユニットのカードを選んでください（しないなら「スキップ」）" },
+  rk156_denbird: { label: "デンライナー搭乗", hint: "手札に加える、山札の特徴「車両」を持つ M ユニットのカードを選んでください（しないなら「スキップ」）" },
+  rk157_bat_imagin: { label: "契約者の望むもの", hint: "手札に加える、自軍常駐置き場のカードを選んでください（しないなら「スキップ」）" },
+  rk159_v3_kick: { label: "V3キック", hint: "撃破する、必要パワーに「－」のある敵軍 S ユニットを選んでください（しないなら「スキップ」）" },
+  rk160_nano_robot: { label: "ナノロボット散布実験", hint: "ラッシュエリアに出す、同じ必要パワーの DA のユニットカードを手札から選んでください（DA のコマンドを1つホールドします。しないなら「スキップ」）" },
+  rk162_rider_kick: { label: "ライダーキック", hint: "撃破する、敵軍バトルエリアの DA の S ユニットを選んでください" },
+  rk163_unconscious_memory: { label: "無意識の記憶力", hint: "敵軍捨札のユニットカードを選んでください（しないなら「スキップ」）" },
+  rk163_unconscious_memory_destroy: { label: "無意識の記憶力", hint: "撃破する、選んだカードと同じカード名の敵軍ユニットを選んでください" },
+  rk165_ongaeshi: { label: "恩返し", hint: "オモテにする、自軍パワーゾーンのダメージのカードを選んでください（しないなら「スキップ」）" },
+  rk166_gm01: { label: "GM-01", hint: "持ち主のコマンドゾーンに置く、ホールド状態の敵軍 S ユニットを選んでください" },
+  rk167_kaiser_hold: { label: "仮面ライダーカイザ", hint: "ホールドする、これ以外の自軍 S ユニットを選んでください" },
+  rk167_kaiser_blaygun: { label: "カイザブレイガン", hint: "撃破する、BP の下三桁が500の敵軍 S ユニットを選んでください" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -268,7 +290,8 @@ export function effectChoiceHint(
     RK4_CHOICE_UI[pending.effectId] ??
     RK5_CHOICE_UI[pending.effectId] ??
     RK6_CHOICE_UI[pending.effectId] ??
-    RK7_CHOICE_UI[pending.effectId];
+    RK7_CHOICE_UI[pending.effectId] ??
+    RK8_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -468,6 +491,7 @@ export function effectChoiceTitle(
     RK5_CHOICE_UI[pending.effectId]?.label ??
     RK6_CHOICE_UI[pending.effectId]?.label ??
     RK7_CHOICE_UI[pending.effectId]?.label ??
+    RK8_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

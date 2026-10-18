@@ -1,3 +1,6 @@
+import { openRk8JaguarOnEnemyRush } from "./rk/rk8UnitEffects";
+import { rk1IsSmallNow } from "./rk/rk1Features";
+import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import { openProphecyOnEnemyRush } from "./legend1/set7NamedEffectsC";
 import { openRk3OnEnemyRush } from "./rk/rk3UnitEffects";
 import { trySet9COnUnitRushed } from "./legend1/set9NamedEffectsC";
@@ -57,9 +60,9 @@ function applyDrawOnRush(
 export const HEAD_HELD_HIGH_EFFECT_ID = "rk154_head_held_high";
 
 /**
- * RK-154 ジーク【頭が高い！】: これをラッシュしたとき、敵軍 S ユニットを1体選んでもよい。
- * 選んだユニットはこのターン BP500 になり、それより高い BP になる効果はすべて無効（R-BP-01: 指定値が最優先）。
- * 「M ユニットを選んで S ユニットにする」分岐はサイズ変更の仕組みがないため未対応（対象は S ユニットのみ）。
+ * RK-154 ジーク【頭が高い！】: これをラッシュしたとき、敵軍 S ユニットか M ユニットを1体選んでもよい（エリアを問わない。atwiki/page-679）。
+ * S ユニットはこのターン BP500 になり、それより高い BP になる効果はすべて無効（R-BP-01: 指定値が最優先）。
+ * M ユニットはこのターン S ユニットになる（CardInstance.sizeOverride。rules/rk/rk1Features.ts rk1IsSmallNow が見る）。解決は rules/pendingChoices.ts。
  */
 function startHeadHeldHighChoice(
   state: GameState,
@@ -72,7 +75,9 @@ function startHeadHeldHighChoice(
   const targets = [...enemy.rush, ...enemy.battle]
     .filter((c) => {
       const def = state.definitions[c.cardId];
-      return def?.type === "unit" && def.size === "S";
+      if (def?.type !== "unit") return false;
+      if (!rk1IsSmallNow(state, c) && def.size !== "M") return false;
+      return isSelectableByOpponentEffect(state, playerId, c.instanceId, "RK-154", playerId);
     })
     .map((c) => c.instanceId);
   return startSelectUnitChoice(state, {
@@ -320,5 +325,7 @@ export function applyPassiveRushTriggers(
   next = openBioParticleOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // RK-053 仮面ライダーガタックMF【ガタックバルカン】（rules/rk/rk3UnitEffects.ts）。
   next = openRk3OnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // RK-160 シザーズジャガー【ナノロボット散布実験】（rules/rk/rk8UnitEffects.ts）。
+  next = openRk8JaguarOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   return { state: next, logs: rsEnemyRush.logs };
 }

@@ -2613,7 +2613,7 @@
       "【フロントアックス】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-148::furontoakusu"
+      "rk8::RK-148::front_axe"
     ],
     "bp": 5000,
     "sp": null,
@@ -2630,7 +2630,7 @@
       "【巨龍形態】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-149::ryu"
+      "rk8::RK-149::giant_dragon"
     ],
     "bp": 6000,
     "sp": null,
@@ -2647,7 +2647,7 @@
       "【掘削】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-150::fx_unknown_e68e98"
+      "rk8::RK-150::drill"
     ],
     "bp": 4000,
     "sp": null,
@@ -2695,7 +2695,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_win_only_turn_entry",
-      "rk_fx::RK-153::ryo_e8bb8a"
+      "rk8::RK-153::vehicle_seize"
     ],
     "bp": 5000,
     "sp": 1,
@@ -2713,7 +2713,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "rk_fx::RK-154::gai"
+      "rk8::RK-154::head_held_high"
     ],
     "bp": 1000,
     "sp": "1/4",
@@ -2731,7 +2731,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_4000",
-      "rk_fx::RK-155::ryo_noto"
+      "rk8::RK-155::store"
     ],
     "bp": 5000,
     "sp": null,
@@ -2746,6 +2746,9 @@
     "category": "OT",
     "textSnippets": [
       "【デンライナー搭乗】"
+    ],
+    "expectedDslKeywords": [
+      "rk8::RK-156::denliner_board"
     ],
     "sp": null,
     "size": "S"
@@ -2762,7 +2765,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "rk_fx::RK-157::nomumono"
+      "rk8::RK-157::contract_wish"
     ],
     "bp": 4000,
     "sp": null,
@@ -2794,7 +2797,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-159::v3kiku"
+      "rk8::RK-159::v3_kick"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -2811,7 +2814,7 @@
       "【ナノロボット散布実験】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-160::nanoroboto"
+      "rk8::RK-160::nano_robot"
     ],
     "bp": 2000,
     "sp": null,
@@ -2846,7 +2849,8 @@
       "【ライダーキック】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk8::RK-162::rider_kick"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -2865,7 +2869,7 @@
     "expectedDslKeywords": [
       "no_strike_after_rideoff",
       "register",
-      "rk_fx::RK-163::no_chikara_e784a1"
+      "rk8::RK-163::unconscious_memory"
     ],
     "bp": 2000,
     "sp": "1/2",
@@ -2882,7 +2886,8 @@
       "【ライダーパンチ】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk8::RK-164::rider_punch_sp1"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -2899,7 +2904,7 @@
       "【恩返し】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-165::shi_e681a9"
+      "rk8::RK-165::ongaeshi"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -2917,7 +2922,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "no_ride_while_held"
+      "no_ride_while_held",
+      "rk8::RK-166::gm01"
     ],
     "bp": 1000,
     "sp": "1/5",
@@ -2934,8 +2940,8 @@
       "【カイザブレイガン】"
     ],
     "expectedDslKeywords": [
-      "require_hold_other_s_entry",
-      "rk_fx::RK-167::kaizabureigan"
+      "rk8::RK-167::entry_hold",
+      "rk8::RK-167::kaiser_blaygun"
     ],
     "bp": 4000,
     "sp": "1/5",

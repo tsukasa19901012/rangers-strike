@@ -94,7 +94,7 @@ describe("RK-162 仮面ライダーアギトGF", () => {
   const rc = (p2: Partial<GameState["players"]["player2"]> = enemy) =>
     rcRideOff(board({ rush: [inst("RK-162", "gf"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-162:gf", "SPEC-VEHICLE:v");
 
-  it.fails("RK-162: RC — 敵軍バトルエリアの、カテゴリに DA を持つ S ユニットだけから1体選ぶ（ラッシュエリア・DA でない・M は対象外。選ばないことはできない）（出典: atwiki/page-692「敵軍バトルエリアから、カテゴリにDAを持つ敵軍Sユニットを1体選び撃破する」・カード評価「ラッシュエリアのDAのユニットも対象に取れるようになったディケイド アギトGF」）", () => {
+  it("RK-162: RC — 敵軍バトルエリアの、カテゴリに DA を持つ S ユニットだけから1体選ぶ（ラッシュエリア・DA でない・M は対象外。選ばないことはできない）（出典: atwiki/page-692「敵軍バトルエリアから、カテゴリにDAを持つ敵軍Sユニットを1体選び撃破する」・カード評価「ラッシュエリアのDAのユニットも対象に取れるようになったディケイド アギトGF」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "RK-162");
     expect(choiceIds(s)).toEqual(["SPEC-DA-S:ds"]);
@@ -106,7 +106,7 @@ describe("RK-162 仮面ライダーアギトGF", () => {
     expect(zoneOf(s, "player2", "SPEC-DA-S:ds")).toBe("discard");
   });
 
-  it.fails("RK-162: RC — 敵軍バトルエリアに DA の S ユニットがいなければ何も起きない（出典: atwiki/page-692）", () => {
+  it("RK-162: RC — 敵軍バトルエリアに DA の S ユニットがいなければ何も起きない（出典: atwiki/page-692）", () => {
     const s = settle(rc({ battle: [inst("SPEC-WB-S", "ws")], rush: [inst("SPEC-DA-S", "rs")] }));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-162");
     expect(zoneOf(s, "player2", "SPEC-DA-S:rs")).toBe("rush");
@@ -141,47 +141,47 @@ describe("RK-163 オルタナティブ・ゼロ", () => {
   const rc = (p2: Partial<GameState["players"]["player2"]> = enemy) =>
     rcRideOff(board({ rush: [inst("RK-163", "az"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-163:az", "SPEC-VEHICLE:v");
 
-  it.fails("RK-163: RC — 敵軍捨札のユニットカードから1枚選べる（オペレーションは対象外。任意）（出典: atwiki/page-650「敵軍捨札からユニットカードを1枚選んでもよい」）", () => {
+  it("RK-163: RC — 敵軍捨札のユニットカードから1枚選べる（オペレーションは対象外。任意）（出典: atwiki/page-650「敵軍捨札からユニットカードを1枚選んでもよい」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "RK-163");
     expect(choiceIds(s)).toEqual(["SPEC-B1500:dx", "SPEC-B2000:db", "SPEC-EM:dm"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-163: RC — 選んだカードと同じカード名の敵軍ユニット（エリア・サイズを問わない）から1体選ぶ（選ばないことはできない）（出典: atwiki/page-650「選んだカードと同じカード名の敵軍ユニットを1体選び、撃破する」・カード評価「サイズ、エリア問わず撃破」）", () => {
+  it("RK-163: RC — 選んだカードと同じカード名の敵軍ユニット（エリア・サイズを問わない）から1体選ぶ（選ばないことはできない）（出典: atwiki/page-650「選んだカードと同じカード名の敵軍ユニットを1体選び、撃破する」・カード評価「サイズ、エリア問わず撃破」）", () => {
     const s = pick(rc(), "SPEC-B2000:db");
     expectChoiceFrom(s, "player1", "RK-163");
     expect(choiceIds(s)).toEqual(["SPEC-B2000:b1", "SPEC-B2000:b2"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-163: RC — 選んだ敵軍ユニットを撃破する（M ユニットでも）（出典: atwiki/page-650「撃破する」）", () => {
+  it("RK-163: RC — 選んだ敵軍ユニットを撃破する（M ユニットでも）（出典: atwiki/page-650「撃破する」）", () => {
     let s = pick(rc(), "SPEC-EM:dm");
     if (s.pendingEffectChoice?.sourceCardId === "RK-163") s = pick(s, "SPEC-EM:m1");
     s = resolveAll(s);
     expect(zoneOf(s, "player2", "SPEC-EM:m1")).toBe("discard");
   });
 
-  it.fails("RK-163: RC — 同じカード名の敵軍ユニットがいなければ何も撃破しない（出典: atwiki/page-650「同じカード名の敵軍ユニット」）", () => {
+  it("RK-163: RC — 同じカード名の敵軍ユニットがいなければ何も撃破しない（出典: atwiki/page-650「同じカード名の敵軍ユニット」）", () => {
     const s = resolveAll(pick(rc(), "SPEC-B1500:dx"));
     expect(zoneOf(s, "player2", "SPEC-B2000:b1")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-EM:m1")).toBe("battle");
   });
 
-  it.fails("RK-163: RC — 選ばなければ何も起きない（出典: atwiki/page-650「選んでもよい」）", () => {
+  it("RK-163: RC — 選ばなければ何も起きない（出典: atwiki/page-650「選んでもよい」）", () => {
     const s = resolveAll(skip(rc()));
     expect(zoneOf(s, "player2", "SPEC-B2000:b1")).toBe("battle");
   });
 
   // atwiki/page-650 Q1「はい、撃破されます。また、…の場合でも同様です。」
-  it.fails("RK-163: Q&A — 敵軍捨札の XG1-068 ディケイド クウガMF（「仮面ライダークウガMF」として使える）を選ぶと、敵軍ラッシュエリアの RK-029 仮面ライダークウガMF を撃破できる（出典: atwiki/page-650 Q1）", () => {
+  it("RK-163: Q&A — 敵軍捨札の XG1-068 ディケイド クウガMF（「仮面ライダークウガMF」として使える）を選ぶと、敵軍ラッシュエリアの RK-029 仮面ライダークウガMF を撃破できる（出典: atwiki/page-650 Q1）", () => {
     let s = pick(rc({ rush: [inst("RK-029", "k")], discard: [inst("XG1-068", "d")] }), "XG1-068:d");
     expect(choiceIds(s)).toEqual(["RK-029:k"]);
     s = resolveAll(pick(s, "RK-029:k"));
     expect(zoneOf(s, "player2", "RK-029:k")).toBe("discard");
   });
 
-  it.fails("RK-163: Q&A — 逆に、敵軍捨札の RK-029 を選んで、敵軍ラッシュエリアの XG1-068 を撃破できる（出典: atwiki/page-650 Q1「…の場合でも同様です」）", () => {
+  it("RK-163: Q&A — 逆に、敵軍捨札の RK-029 を選んで、敵軍ラッシュエリアの XG1-068 を撃破できる（出典: atwiki/page-650 Q1「…の場合でも同様です」）", () => {
     let s = pick(rc({ rush: [inst("XG1-068", "k")], discard: [inst("RK-029", "d")] }), "RK-029:d");
     expect(choiceIds(s)).toEqual(["XG1-068:k"]);
     s = resolveAll(pick(s, "XG1-068:k"));
@@ -218,7 +218,7 @@ describe("RK-164 仮面ライダー1号（THE FIRST）", () => {
     expect(canStrike(s, "RK-164:n1")).toBe(false);
   });
 
-  it.fails("RK-164: RC — ホールド状態なら、このターン「SP1」になる（2番目でもストライクで1点）（出典: atwiki/page-663「さらに、このユニットがホールド状態なら、このターン、これは「SP1」になる」・カード評価「仮面ライダーカイザやウエイクアップ！のホールドを利用したい」）", () => {
+  it("RK-164: RC — ホールド状態なら、このターン「SP1」になる（2番目でもストライクで1点）（出典: atwiki/page-663「さらに、このユニットがホールド状態なら、このターン、これは「SP1」になる」・カード評価「仮面ライダーカイザやウエイクアップ！のホールドを利用したい」）", () => {
     const s = rc(true);
     expect(bpOf(s, "player1", "RK-164:n1")).toBe(5000);
     expect(spOf(s, "player1", "RK-164:n1")).toBe(1);
@@ -248,7 +248,7 @@ describe("RK-165 仮面ライダー電王WF", () => {
   const power = [faceDown("TST-UNIT-0", "d1"), faceDown("RK-154", "zk"), faceDown("RK-154", "zk2"), faceUp("TST-P", "up")];
   const destroyed = (p = power) => attackedInEnemyTurn({ battle: [inst("RK-165", "wf")], power: p }, "RK-165:wf");
 
-  it.fails("RK-165: 敵軍ターン中に撃破されて捨札になったとき、自軍パワーゾーンのダメージ（ウラ向き）のカードから1枚選べる（任意）（出典: atwiki/page-681「自軍パワーゾーンからダメージになっているカードを1枚選び、オモテにする」「発動できる」）", () => {
+  it("RK-165: 敵軍ターン中に撃破されて捨札になったとき、自軍パワーゾーンのダメージ（ウラ向き）のカードから1枚選べる（任意）（出典: atwiki/page-681「自軍パワーゾーンからダメージになっているカードを1枚選び、オモテにする」「発動できる」）", () => {
     const s = destroyed();
     expect(zoneOf(s, "player1", "RK-165:wf")).toBe("discard");
     expectChoiceFrom(s, "player1", "RK-165");
@@ -256,7 +256,7 @@ describe("RK-165 仮面ライダー電王WF", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-165: 選んだカードはオモテになる（パワーゾーンに残る。ジークでなければ1回で終わる）（出典: atwiki/page-681「オモテにする」）", () => {
+  it("RK-165: 選んだカードはオモテになる（パワーゾーンに残る。ジークでなければ1回で終わる）（出典: atwiki/page-681「オモテにする」）", () => {
     const s = settle(pick(destroyed(), "TST-UNIT-0:d1"));
     expect(zoneOf(s, "player1", "TST-UNIT-0:d1")).toBe("power");
     expect(cardIn(s, "player1", "TST-UNIT-0:d1")?.faceDown ?? false).toBe(false);
@@ -264,7 +264,7 @@ describe("RK-165 仮面ライダー電王WF", () => {
     expect(cardIn(s, "player1", "RK-154:zk")?.faceDown).toBe(true);
   });
 
-  it.fails("RK-165: オモテにしたカードが「ジーク」なら、それを捨札にして、もう一度ダメージを1枚選べる（出典: atwiki/page-681「オモテにしたカードが「ジーク」なら、そのカードを捨札にしてこの効果をもう一度発動できる」）", () => {
+  it("RK-165: オモテにしたカードが「ジーク」なら、それを捨札にして、もう一度ダメージを1枚選べる（出典: atwiki/page-681「オモテにしたカードが「ジーク」なら、そのカードを捨札にしてこの効果をもう一度発動できる」）", () => {
     const s = pick(destroyed(), "RK-154:zk");
     expect(zoneOf(s, "player1", "RK-154:zk")).toBe("discard");
     expectChoiceFrom(s, "player1", "RK-165");
@@ -272,7 +272,7 @@ describe("RK-165 仮面ライダー電王WF", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-165: 2回目もジークなら続けて発動でき、最大で（ジーク2枚＋1枚）3枚オモテにできる（出典: atwiki/page-681・カード評価「1回に最大で4点回復することができる」）", () => {
+  it("RK-165: 2回目もジークなら続けて発動でき、最大で（ジーク2枚＋1枚）3枚オモテにできる（出典: atwiki/page-681・カード評価「1回に最大で4点回復することができる」）", () => {
     let s = pick(pick(destroyed(), "RK-154:zk"), "RK-154:zk2");
     expect(zoneOf(s, "player1", "RK-154:zk2")).toBe("discard");
     s = settle(pick(s, "TST-UNIT-0:d1"));
@@ -280,7 +280,7 @@ describe("RK-165 仮面ライダー電王WF", () => {
     expect(s.players.player1.power.filter((c) => c.faceDown)).toHaveLength(0);
   });
 
-  it.fails("RK-165: 発動しなければダメージはそのまま（出典: atwiki/page-681「発動できる」）", () => {
+  it("RK-165: 発動しなければダメージはそのまま（出典: atwiki/page-681「発動できる」）", () => {
     const s = settle(skip(destroyed()));
     expect(s.players.player1.power.filter((c) => c.faceDown)).toHaveLength(3);
   });
@@ -313,7 +313,7 @@ describe("RK-166 仮面ライダーG3", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("RK-166", "g3")] }, "RK-166:g3"))).toBe(true);
   });
 
-  it.fails("RK-166: ※ ホールド状態のときはビークルにライドできない（リリース状態ならライドできる）（出典: atwiki/page-636「※これはホールド状態のときビークルにライドできない」）", () => {
+  it("RK-166: ※ ホールド状態のときはビークルにライドできない（リリース状態ならライドできる）（出典: atwiki/page-636「※これはホールド状態のときビークルにライドできない」）", () => {
     expect(canMount(board({ rush: [heldUnit("RK-166", "g3"), inst("SPEC-VEHICLE", "v")] }), "RK-166:g3", "SPEC-VEHICLE:v")).toBe(false);
     expect(canMount(board({ rush: [inst("RK-166", "g3"), inst("SPEC-VEHICLE", "v")] }), "RK-166:g3", "SPEC-VEHICLE:v")).toBe(true);
   });
@@ -322,7 +322,7 @@ describe("RK-166 仮面ライダーG3", () => {
   const rc = (p2: Partial<GameState["players"]["player2"]> = enemy) =>
     rcRideOff(board({ rush: [inst("RK-166", "g3"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-166:g3", "SPEC-VEHICLE:v");
 
-  it.fails("RK-166: RC — ホールド状態の敵軍 S ユニット（エリアを問わない）だけから1体選ぶ（リリース状態・M は対象外。選ばないことはできない）（出典: atwiki/page-636「ホールド状態の敵軍Sユニットを1体選び」）", () => {
+  it("RK-166: RC — ホールド状態の敵軍 S ユニット（エリアを問わない）だけから1体選ぶ（リリース状態・M は対象外。選ばないことはできない）（出典: atwiki/page-636「ホールド状態の敵軍Sユニットを1体選び」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "RK-166");
     expect(choiceIds(s)).toEqual(["SPEC-DA-S:hr", "SPEC-WB-S:hb"]);
@@ -335,14 +335,14 @@ describe("RK-166 仮面ライダーG3", () => {
     expect(cardIn(s, "player2", "SPEC-DA-S:hr")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-166: RC — 敵軍コマンドゾーンに置けない（5枚ある）ときは発動しない（出典: atwiki/page-636「置けなければこの効果は発動できない」）", () => {
+  it("RK-166: RC — 敵軍コマンドゾーンに置けない（5枚ある）ときは発動しない（出典: atwiki/page-636「置けなければこの効果は発動できない」）", () => {
     const s = settle(rc({ ...enemy, command: releasedCat("WB", 5, "ec") }));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-166");
     expect(zoneOf(s, "player2", "SPEC-WB-S:hb")).toBe("battle");
   });
 
   // faq-rider-2 RK-166 Q3「はい、できます。」
-  it.fails("RK-166: 公式Q&A — ホールド状態の敵軍 S ユニットがいなくても、ライドオフできる（出典: grnrngr/faq-rider-2 RK-166 Q3）", () => {
+  it("RK-166: 公式Q&A — ホールド状態の敵軍 S ユニットがいなくても、ライドオフできる（出典: grnrngr/faq-rider-2 RK-166 Q3）", () => {
     let s = board({ rush: [inst("RK-166", "g3"), inst("SPEC-VEHICLE", "v")] }, { battle: [inst("SPEC-WB-S", "rb")] });
     s = settle(rideOff(mount(s, "RK-166:g3", "SPEC-VEHICLE:v"), true));
     expect(zoneOf(s, "player1", "RK-166:g3")).toBe("battle");
@@ -362,13 +362,13 @@ describe("RK-167 仮面ライダーカイザ", () => {
     expectRarityIn("RK-167", ["R"]);
   });
 
-  it.fails("RK-167: ※ ほかに自軍 S ユニットがなければバトルエリアに出られない（ライドしても出られない）（出典: atwiki/page-664「これ以外の自軍Sユニットを１体ホールドしなければバトルエリアに出られない」）", () => {
+  it("RK-167: ※ ほかに自軍 S ユニットがなければバトルエリアに出られない（ライドしても出られない）（出典: atwiki/page-664「これ以外の自軍Sユニットを１体ホールドしなければバトルエリアに出られない」）", () => {
     const s = board({ rush: [inst("RK-167", "kz"), inst("SPEC-VEHICLE", "v"), inst("SPEC-EM", "m")] });
     expect(canEnter(s, "RK-167:kz")).toBe(false);
     expect(canMount(s, "RK-167:kz", "SPEC-VEHICLE:v")).toBe(false);
   });
 
-  it.fails("RK-167: ※ 出るときは、これ以外のリリース状態の自軍 S ユニット（エリアを問わない）から1体選んでホールドする（ホールド状態のものは選べない。選ばないことはできない）（出典: atwiki/page-664・コメント欄「ホールドするのはユニット」）", () => {
+  it("RK-167: ※ 出るときは、これ以外のリリース状態の自軍 S ユニット（エリアを問わない）から1体選んでホールドする（ホールド状態のものは選べない。選ばないことはできない）（出典: atwiki/page-664・コメント欄「ホールドするのはユニット」）", () => {
     let s = board({ battle: [inst("TST-UNIT-0", "b")], rush: [inst("RK-167", "kz"), inst("TST-UNIT-0", "r"), heldUnit("TST-UNIT-0", "h"), inst("SPEC-EM", "m")] });
     s = enter(s, "RK-167:kz");
     expectChoiceFrom(s, "player1", "RK-167");
@@ -387,19 +387,19 @@ describe("RK-167 仮面ライダーカイザ", () => {
     return rideOff(s, true);
   };
 
-  it.fails("RK-167: RC — BP の下三桁が500の敵軍 S ユニット（エリアを問わない）だけから1体選ぶ（M は対象外。選ばないことはできない）（出典: atwiki/page-664「BPの下三桁が500の敵軍Sユニットを1体選び撃破する」・カード評価「ラッシュエリアにも効果が届く」）", () => {
+  it("RK-167: RC — BP の下三桁が500の敵軍 S ユニット（エリアを問わない）だけから1体選ぶ（M は対象外。選ばないことはできない）（出典: atwiki/page-664「BPの下三桁が500の敵軍Sユニットを1体選び撃破する」・カード評価「ラッシュエリアにも効果が届く」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "RK-167");
     expect(choiceIds(s)).toEqual(["SPEC-B1500:b15", "SPEC-B1500:r15"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-167: RC — 選んだユニットを撃破する（出典: atwiki/page-664「撃破する」）", () => {
+  it("RK-167: RC — 選んだユニットを撃破する（出典: atwiki/page-664「撃破する」）", () => {
     const s = resolveAll(pick(rc(), "SPEC-B1500:r15"));
     expect(zoneOf(s, "player2", "SPEC-B1500:r15")).toBe("discard");
   });
 
-  it.fails("RK-167: サイドバッシャーBM の次にライドせずに出たときも【カイザブレイガン】を発動する（出典: atwiki/page-664「「サイドバッシャーBM」からコンビネーションするときはナンバーに関係なく発動する」）", () => {
+  it("RK-167: サイドバッシャーBM の次にライドせずに出たときも【カイザブレイガン】を発動する（出典: atwiki/page-664「「サイドバッシャーBM」からコンビネーションするときはナンバーに関係なく発動する」）", () => {
     let s = board({ battle: [inst("RK-121", "bm")], rush: [inst("RK-167", "kz"), inst("TST-UNIT-0", "o")] }, enemy);
     s = enter(s, "RK-167:kz");
     if (s.pendingEffectChoice?.sourceCardId === "RK-167" && s.pendingEffectChoice.validInstanceIds.includes("TST-UNIT-0:o")) s = pick(s, "TST-UNIT-0:o");

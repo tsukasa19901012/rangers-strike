@@ -1,3 +1,4 @@
+import { isRk8BattleToRushTrigger, rk8StaysInBattleAtStart, tryRk8BattleToRush } from "./rk/rk8UnitEffects";
 import { isOtherLinesBattleToRushTrigger, tryOtherLinesBattleToRush } from "./legend1/otherLinesNamedEffects";
 import { applyRk2StartPhaseEnd } from "./rk/rk2UnitEffects";
 import { applyRk4StartPhaseEnd, isRk4BattleToRushTrigger, tryRk4BattleToRush } from "./rk/rk4UnitEffects";
@@ -47,7 +48,9 @@ function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
         isSet6BBattleToRushTrigger(card) ||
         isOtherLinesBattleToRushTrigger(card) ||
         // RK-074 ライダーマン【カギ爪アーム】（rules/rk/rk4UnitEffects.ts）。
-        isRk4BattleToRushTrigger(card),
+        isRk4BattleToRushTrigger(card) ||
+        // RK-155 キングライナー・RK-156 マシンデンバード・RK-157 バットイマジン（rules/rk/rk8UnitEffects.ts）。
+        isRk8BattleToRushTrigger(card),
     )
     .map((card) => card.instanceId);
 }
@@ -141,6 +144,8 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
     if (!withChoice.pendingEffectChoice) withChoice = tryOtherLinesBattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     // RK-074【カギ爪アーム】（rules/rk/rk4UnitEffects.ts）。
     if (!withChoice.pendingEffectChoice) withChoice = tryRk4BattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
+    // RK-155・RK-156・RK-157（rules/rk/rk8UnitEffects.ts）。
+    if (!withChoice.pendingEffectChoice) withChoice = tryRk8BattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     return continueBattleToRushEffectQueue({ ...withChoice, pendingBattleToRushQueue: rest });
   }
 
@@ -151,6 +156,8 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
     // RS-652【清輝顕現バブルキャプチャー】で戻せない／RS-648【イカロスバインド】で撃破するか戻さないかを選ぶ
     // （rules/legend1/set9NamedEffectsC.ts）。選択を開いたら、選んだ後にここから続ける。
     const members = [...returnGroupMembers(base.players[phasePlayerId], nextId!)];
+    // RK-153【車両強奪】で選ばれたユニットは戻さない（rules/rk/rk8UnitEffects.ts）。
+    if (members.some((m) => rk8StaysInBattleAtStart(base, phasePlayerId, m))) return continueBattleToRushEffectQueue(base);
     const restriction = members.length > 0 ? set9CBeforeStartReturn(base, phasePlayerId, members) : null;
     if (restriction === "stay") return continueBattleToRushEffectQueue(base);
     if (restriction) return restriction;
@@ -241,7 +248,10 @@ export function returnAllBattleUnitsToRush(
 export function listReturnableStartGroupIds(state: GameState, playerId: PlayerId): string[] {
   const player = state.players[playerId];
   return listStartReturnGroupIds(player).filter(
-    (id) => ![...returnGroupMembers(player, id)].some((m) => set9CStaysInBattleAtStart(state, playerId, m)),
+    (id) =>
+      ![...returnGroupMembers(player, id)].some(
+        (m) => set9CStaysInBattleAtStart(state, playerId, m) || rk8StaysInBattleAtStart(state, playerId, m),
+      ),
   );
 }
 

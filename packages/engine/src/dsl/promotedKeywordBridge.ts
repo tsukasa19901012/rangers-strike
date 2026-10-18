@@ -1,3 +1,4 @@
+import { rk8SkipsPromotedSpFloor } from "../rules/rk/rk8UnitEffects";
 import { isDivingOrochi } from "../rules/errataCardEffects";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
@@ -362,7 +363,8 @@ export function promotedKeywordSpFloor(
     }
 
     const featureSp = keyword.match(/^power_feature_bp_sp_.+_\d+_(\d+)_sp(\d+)$/);
-    if (featureSp && bp >= Number(featureSp[1])) {
+    // RK-152 電王PF は「SP1」でなく「SP1/4」になる（rules/rk/rk8UnitEffects.ts rk8EffectiveSp）。
+    if (featureSp && bp >= Number(featureSp[1]) && !rk8SkipsPromotedSpFloor(instance.cardId)) {
       floor = Math.max(floor, Number(featureSp[2]));
       continue;
     }

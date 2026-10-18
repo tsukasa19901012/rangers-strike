@@ -1,3 +1,4 @@
+import { openRk8JaguarOnEnemyRush } from "../rules/rk/rk8UnitEffects";
 import { filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingMorph, PlayerId, PlayerState } from "../types/game";
@@ -395,5 +396,8 @@ export function resolveMorphReplacementChoice(
     morphPending.activeMorphUnitInstanceId!,
   );
 
-  return { state: next, log: swap.log, extraLogs: extraLogs.length > 0 ? extraLogs : undefined };
+  // RK-160 シザーズジャガー【ナノロボット散布実験】: モーフで入れ替わって出た敵軍ユニットにも発動する（faq-rider-2 RK-160 Q2。rules/rk/rk8UnitEffects.ts）。
+  const withJaguar = openRk8JaguarOnEnemyRush(next, defenderId, replacementInstanceId, morphPending.phasePlayerId);
+
+  return { state: withJaguar, log: swap.log, extraLogs: extraLogs.length > 0 ? extraLogs : undefined };
 }

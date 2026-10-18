@@ -96,6 +96,8 @@ export type CardInstance = {
    * ルール: R-BP-01 — 指定の値になる効果が最優先で、増減の計算は行わない。
    */
   bpSetValue?: number;
+  /** このターン「Sユニットになる」（RK-154【頭が高い！】で選んだ M ユニット）。ターン終了時にクリア。 */
+  sizeOverride?: "S";
   /** XG1-048【エレキ光線】で選ばれたターン番号（そのターンを終えるとき隣のユニットが撃破される）。 */
   electroBeamTurn?: number;
   /** RK-010 ハイブリッドエネルギー: 自分がターンを終えるときにオモテにした山札の上のカード（rules/rk/rk1NamedEffects.ts）。 */
@@ -601,6 +603,8 @@ export type PendingEffectChoice = {
   rk6Meta?: { riderInstanceId?: string; lined?: boolean; remaining?: number };
   /** ライダーEXP vol.2 RK-127〜RK-147 の選択の続き（rules/rk/rk7UnitEffects.ts）。 */
   rk7Meta?: Rk7ChoiceMeta;
+  /** ライダーEXP vol.2 RK-148〜RK-168 の選択の続き（rules/rk/rk8UnitEffects.ts）。 */
+  rk8Meta?: { remaining?: number; picked?: string };
   /** ライダーEXP vol.1 RK-001〜RK-021 の選択の続き（rules/rk/rk1NamedEffects.ts）。 */
   rk1Meta?: Rk1ChoiceMeta;
   /** ライダーEXP vol.1 RK-022〜RK-042 の選択の続き（rules/rk/rk2UnitEffects.ts）。 */
@@ -1178,6 +1182,8 @@ export type GameState = {
   resolvingOperations?: Array<{ playerId: PlayerId; card: CardInstance }>;
   /** RK-129【サンダースペイダー】・RK-132【妻子のバックアップ】の、まだ開いていない発動（rules/rk/rk7UnitEffects.ts）。 */
   rk7PendingTriggers?: Array<{ kind: "rk129" | "rk132"; playerId: PlayerId; sourceInstanceId: string }>;
+  /** RK-153【車両強奪】で選ばれたユニット（次の相手のスタートフェイズに戻せない。rules/rk/rk8UnitEffects.ts）。 */
+  rk8Seized?: Array<{ playerId: PlayerId; instanceId: string }>;
   /** RK-011 第三の眼: 無効にしなかったカウンターの使用をもう一度処理する（core/applyAction.ts の後処理）。 */
   rk1CounterReplay?: unknown;
   /** RK-011 第三の眼: 無効にするかを選び終えたカウンターの instanceId（再処理で再び選ばせない）。 */
@@ -1273,6 +1279,8 @@ export type TurnEndProgress = {
   otherLinesQueue?: string[];
   /** ライダーEXP vol.2 の「自分がターンを終えるとき」の選択（RK-095・RK-103）のうち未処理のもの（rules/rk/rk5UnitEffects.ts）。 */
   rk5Queue?: string[];
+  /** ライダーEXP vol.2 RK-148〜RK-168 の「自分がターンを終えるとき」の選択（RK-153）のうち未処理のもの（rules/rk/rk8UnitEffects.ts）。 */
+  rk8Queue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

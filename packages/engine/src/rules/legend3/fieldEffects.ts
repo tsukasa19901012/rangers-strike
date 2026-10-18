@@ -1,3 +1,4 @@
+import { rk8EffectiveSp } from "../rk/rk8UnitEffects";
 import { hasUnnamedRule } from "@rangers-strike/cards";
 import { rk5EffectiveSp } from "../rk/rk5Fields";
 import { set9AEffectiveSp } from "../legend1/set9NamedEffectsA";
@@ -247,6 +248,8 @@ export function legend3EffectiveSp(
   sp = set9BEffectiveSp(state, playerId, instance, sp);
   // RK-091 ゾル大佐（BP3000 の「戦闘員」は「SP1」）・RK-099 アポロガイスト（rules/rk/rk5Fields.ts）。
   sp = rk5EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // RK-152 仮面ライダー電王PF・RK-161 ショッカーライダー の※（rules/rk/rk8UnitEffects.ts）。
+  sp = rk8EffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。
