@@ -64,7 +64,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-187::janboraidakiku",
+          "keyword": "rk9::RK-187::jumbo_rider_kick",
           "duration": "turn"
         }
       ],

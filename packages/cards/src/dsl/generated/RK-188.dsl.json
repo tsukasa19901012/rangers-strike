@@ -25,7 +25,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-188::noejiento",
+          "keyword": "rk9::RK-188::agent",
           "duration": "permanent"
         }
       ],

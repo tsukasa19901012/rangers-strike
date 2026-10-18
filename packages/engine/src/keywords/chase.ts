@@ -1,4 +1,5 @@
 import type { CardInstance, GameState, PendingChase, PlayerId } from "../types/game";
+import { rk9EnemyKeywordsNullified } from "../rules/rk/rk9Fields";
 import { getDefinition } from "../core/catalog";
 import { buildSimpleLogEntry } from "../log/formatLog";
 import { findInZone, updatePlayer } from "../core/helpers";
@@ -145,6 +146,8 @@ export function buildPendingChaseOnVehicleDestroyed(
   if (def?.type !== "vehicle" || intent.toZone !== "discard" || intent.fromZone !== "rush") {
     return null;
   }
+  // RK-175 新1号【ライダーキック】: このターン、敵軍ユニットのチェイスは無効（rules/rk/rk9Fields.ts）。
+  if (rk9EnemyKeywordsNullified(state, intent.ownerPlayerId)) return null;
   if (!playerHasChaseUnitInField(state, intent.ownerPlayerId)) return null;
 
   const rider = findChaseRiderOnVehicle(state, intent.ownerPlayerId, intent.instanceId);
@@ -262,6 +265,8 @@ export function buildPendingChaseFromIntent(
   state: GameState,
   intent: LeaveIntent,
 ): PendingChase | null {
+  // RK-175 新1号【ライダーキック】: このターン、敵軍ユニットのチェイスは無効（rules/rk/rk9Fields.ts）。
+  if (rk9EnemyKeywordsNullified(state, intent.ownerPlayerId)) return null;
   const owner = state.players[intent.ownerPlayerId];
   const found = findInZone(owner, intent.fromZone, intent.instanceId);
   if (!found?.card.mountedOnInstanceId) return null;

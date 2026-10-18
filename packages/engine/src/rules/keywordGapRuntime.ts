@@ -1,4 +1,5 @@
 import { hasScopedRestriction } from "../core/scopedModifiers";
+import { sameCardName } from "../core/cardNames";
 /**
  * 監査で検出された「付与のみで未消費」キーワードのランタイム実装。
  *
@@ -196,6 +197,19 @@ function handDeployConditionMet(state: GameState, playerId: PlayerId, cardId: st
     const cost = typeof def?.powerCost === "number" ? def.powerCost : parseInt(String(def?.powerCost), 10);
     if (!Number.isFinite(cost)) return false;
     return state.players[playerId].damage >= cost;
+  }
+  // 「自軍「X」があれば」（RK-180 モグラ獣人「自軍「仮面ライダーアマゾン」があれば」。atwiki/page-910）— 自軍エリアにそのカード名のユニット
+  // （「これは「X」として使える」を含む）があるとき。
+  const named = text.match(/自軍「([^」]+)」があれば/);
+  if (named?.[1]) {
+    const want = named[1];
+    const p = state.players[playerId];
+    return [...p.battle, ...p.rush].some((c) => {
+      const d = getDefinition(state.definitions, c.cardId);
+      if (d?.type !== "unit") return false;
+      if (sameCardName(d.name, want)) return true;
+      return [...(d.text ?? "").matchAll(/これは「([^」]+)」として(?:つかえる|使える)/g)].some((m) => sameCardName(m[1], want));
+    });
   }
   return false;
 }

@@ -4068,7 +4068,7 @@
       "本来の特徴に「ミラーライダー」を持つ自軍ユニット"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-171::kontorakuto"
+      "rk9::RK-171::contract"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -4087,7 +4087,7 @@
       "※カウンター"
     ],
     "expectedDslKeywords": [
-      "counter_note::kaunta_korehayunitog"
+      "rk9::RK-172::ruri_ookami"
     ],
     "operationKind": "counter",
     "expectedMechanisms": [
@@ -4105,7 +4105,7 @@
       "自軍Sユニットを選ぶ。そして、このカードを自軍ラ"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-173::no_e9acbc"
+      "rk9::RK-173::oni_armor"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -4141,7 +4141,7 @@
     ],
     "expectedDslKeywords": [
       "alias_raida1_go",
-      "combo_bp_from_skipped_attack"
+      "rk9::RK-175::rider_kick"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -4175,7 +4175,7 @@
       "【催眠音波】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-177::nami"
+      "rk9::RK-177::hypnotic_wave"
     ],
     "bp": 3000,
     "sp": null,
@@ -4210,7 +4210,7 @@
       "【体当たり攻撃】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-179::tari_geki"
+      "rk9::RK-179::body_blow"
     ],
     "sp": null,
     "size": "S"
@@ -4228,7 +4228,7 @@
     "expectedDslKeywords": [
       "no_attack_from_enemy_s_bp2000",
       "while_in_hand_rush_deploy::raidaamazongaareba",
-      "rk_fx::RK-180::shin"
+      "rk9::RK-180::shinshutsu_kibotsu"
     ],
     "bp": 500,
     "sp": null,
@@ -4246,7 +4246,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-181::haibaibuneiru"
+      "rk9::RK-181::high_vibe_nail"
     ],
     "bp": 3000,
     "sp": "special",
@@ -4263,7 +4263,7 @@
       "【Zブリンガーアタック】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-182::zburingaataku"
+      "rk9::RK-182::z_bringer_attack"
     ],
     "sp": null,
     "size": "S"
@@ -4279,7 +4279,7 @@
       "【ZOキック】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-183::zokiku"
+      "rk9::RK-183::zo_kick"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -4298,7 +4298,7 @@
     "expectedDslKeywords": [
       "register",
       "sp1_while_held",
-      "rk_fx::RK-184::puru"
+      "rk9::RK-184::life_pool"
     ],
     "bp": 5000,
     "sp": "special",
@@ -4315,8 +4315,8 @@
       "【合体吸収】"
     ],
     "expectedDslKeywords": [
-      "on_rush_return_enemy_feature_s_to_deck_bottom::仮面ライダー",
-      "rk_fx::RK-185::fx_unknown_e59088"
+      "rk9::RK-185::deck_bottom",
+      "rk9::RK-185::absorb"
     ],
     "bp": 6000,
     "sp": "special",
@@ -4351,7 +4351,7 @@
       "【ジャンボライダーキック】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-187::janboraidakiku"
+      "rk9::RK-187::jumbo_rider_kick"
     ],
     "bp": 5500,
     "sp": null,
@@ -4368,7 +4368,7 @@
       "【地空人のエージェント】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-188::noejiento"
+      "rk9::RK-188::agent"
     ],
     "bp": 500,
     "sp": null,
@@ -4385,7 +4385,7 @@
       "【地空人の精霊パワー】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-189::nopawa"
+      "rk9::RK-189::spirit_power"
     ],
     "sp": null,
     "size": "S"

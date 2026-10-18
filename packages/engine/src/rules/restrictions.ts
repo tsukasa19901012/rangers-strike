@@ -92,6 +92,7 @@ import { getBattleEntryPowerDiscardCount } from "./batch07FieldEffects";
 import { damageGateBlocksEntry } from "./keywordGapRuntime";
 import { rk6BlocksBattleEntry } from "./rk/rk6Fields";
 import { rk8BlocksBattleEntry } from "./rk/rk8UnitEffects";
+import { rk9BlocksBattleEntry } from "./rk/rk9Fields";
 import {
   rs482BlocksAttackStrike,
   rs579BlocksAttackStrikeOnRushTurn,
@@ -360,6 +361,8 @@ export function canMoveUnitToBattle(
   if (def.type === "unit" && rk6BlocksBattleEntry(state, playerId, unit)) return false;
   // RK-153 仮面ライダーガオウ・RK-167 仮面ライダーカイザ の※（rules/rk/rk8UnitEffects.ts）。
   if (def.type === "unit" && rk8BlocksBattleEntry(state, playerId, unit)) return false;
+  // RK-177 蜂女【催眠音波】でホールドしなかったユニット（rules/rk/rk9Fields.ts）。
+  if (def.type === "unit" && rk9BlocksBattleEntry(state, playerId, unit)) return false;
   // RS-289 / XP-023「※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない」（atwiki/page-416）。
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
@@ -497,6 +500,8 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   if (def.type === "unit" && rk6BlocksBattleEntry(state, playerId, unit)) return false;
   // RK-153 仮面ライダーガオウ・RK-167 仮面ライダーカイザ の※（rules/rk/rk8UnitEffects.ts）。
   if (def.type === "unit" && rk8BlocksBattleEntry(state, playerId, unit)) return false;
+  // RK-177 蜂女【催眠音波】でホールドしなかったユニット（rules/rk/rk9Fields.ts）。
+  if (def.type === "unit" && rk9BlocksBattleEntry(state, playerId, unit)) return false;
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {

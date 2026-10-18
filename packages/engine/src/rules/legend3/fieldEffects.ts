@@ -1,4 +1,5 @@
 import { rk8EffectiveSp } from "../rk/rk8UnitEffects";
+import { rk9EffectiveSp } from "../rk/rk9UnitEffects";
 import { hasUnnamedRule } from "@rangers-strike/cards";
 import { rk5EffectiveSp } from "../rk/rk5Fields";
 import { set9AEffectiveSp } from "../legend1/set9NamedEffectsA";
@@ -250,6 +251,8 @@ export function legend3EffectiveSp(
   sp = rk5EffectiveSp(state, playerId, instance, sp, effectiveBp);
   // RK-152 仮面ライダー電王PF・RK-161 ショッカーライダー の※（rules/rk/rk8UnitEffects.ts）。
   sp = rk8EffectiveSp(state, playerId, instance, sp);
+  // RK-181 仮面ライダーシン【ハイバイブネイル】の「SP1/5」（rules/rk/rk9UnitEffects.ts）。
+  sp = rk9EffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

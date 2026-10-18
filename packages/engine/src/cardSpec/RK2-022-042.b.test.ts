@@ -141,7 +141,7 @@ describe("RK-029 仮面ライダークウガMF", () => {
   });
 
   // atwiki/page-217 Q1（RK-188 側の atwiki/page-916 Q1 と同じ公式回答）「はい、できます。」
-  it.fails("RK-029: 公式Q&A（相互参照）— クウガMF を「RK-271 仮面ライダークウガRM」の追加条件として指定されたユニットとして扱い、敵軍ターンにアタックされたときベリー（RK-188）でクウガRM を出せる（出典: atwiki/page-217 Q1・atwiki/page-916 Q1）", () => {
+  it("RK-029: 公式Q&A（相互参照）— クウガMF を「RK-271 仮面ライダークウガRM」の追加条件として指定されたユニットとして扱い、敵軍ターンにアタックされたときベリー（RK-188）でクウガRM を出せる（出典: atwiki/page-217 Q1・atwiki/page-916 Q1）", () => {
     let s = st({ activePlayer: "player2", player1: { battle: [inst("RK-029", "k")], rush: [inst("RK-188", "be")], hand: [inst("RK-271", "rm")], deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-7", "atk")], deck: deckCards(3, "e") } });
     s = attack(s, "TST-UNIT-7:atk", "RK-029:k", "player2");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-188");

@@ -488,7 +488,7 @@ describe("RK-005 超電子ダイナモ", () => {
   });
 
   // atwiki/page-193 Q1（RK-183 側の atwiki/page-1000 Q1 と同じ公式回答）「いいえ、それはできません。」
-  it.fails("RK-005: 公式Q&A — 超電子ダイナモを使った RK-183 仮面ライダーZO が【ZOキック】で SP のあるユニットを4体撃破して4点与えたあと、BP0 になって撃破されても、それを「撃破した」とみなして5点目を与えることはない（出典: atwiki/page-193 Q1・atwiki/page-1000 Q1）", () => {
+  it("RK-005: 公式Q&A — 超電子ダイナモを使った RK-183 仮面ライダーZO が【ZOキック】で SP のあるユニットを4体撃破して4点与えたあと、BP0 になって撃破されても、それを「撃破した」とみなして5点目を与えることはない（出典: atwiki/page-193 Q1・atwiki/page-1000 Q1）", () => {
     const VEH = { id: "SPEC-VEHICLE", name: "SPEC-VEHICLE", type: "vehicle", category: "ET", rarity: "N", expansion: "card-spec", powerCost: 0, size: "S", features: ["メカ"] } as never;
     const enemy = Array.from({ length: 4 }, (_, i) => inst("TST-UNIT-0", `e${i}`));
     let s = rushBoard(

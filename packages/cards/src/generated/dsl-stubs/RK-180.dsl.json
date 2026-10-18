@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-180::shin",
+          "keyword": "rk9::RK-180::shinshutsu_kibotsu",
           "duration": "turn"
         }
       ],

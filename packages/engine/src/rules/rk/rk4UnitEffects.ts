@@ -10,6 +10,7 @@
  * 構成は rules/rk/rk3UnitEffects.ts と同じ。
  */
 import { isSameCardIdentity } from "@rangers-strike/cards";
+import { rk9ContractCovers } from "./rk9Fields";
 import type { CardInstance, DamagePaymentResume, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, parsePowerCost } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
@@ -324,12 +325,14 @@ export function tryRk4OnEnterBattle(state: GameState, playerId: PlayerId, card: 
   const partner = comboPartner(state, battleBeforeEnter);
   if (!partner) return state;
   const partnerName = cardName(state.definitions, partner.cardId);
+  // RK-171 コントラクトで選ばれたミラーライダーは、指定されたユニットのかわりに本来の特徴「ミラーモンスター」のユニットからでもよい（rules/rk/rk9Fields.ts）。
+  const contract = rk9ContractCovers(state, playerId, card, partner);
   if (isSameCardIdentity(card.cardId, "RK-064") && partnerName === AUTOVAJIN_BM_NAME) {
     if (hasInstancePayload(state, playerId, FAIZ_EDGE_DONE_RULE, card.instanceId)) return state;
     const marked = addTurnPayload(state, playerId, FAIZ_EDGE_DONE_RULE, "RK-064", { instanceId: card.instanceId });
     return openFaizEdge(marked, playerId, playerId, card.instanceId);
   }
-  if (isSameCardIdentity(card.cardId, "RK-067") && partnerName === "ダークウイング") {
+  if (isSameCardIdentity(card.cardId, "RK-067") && (partnerName === "ダークウイング" || contract)) {
     if (state.pendingEffectChoice) return state;
     return openOptionalEffectConfirm(state, {
       playerId,
@@ -339,7 +342,7 @@ export function tryRk4OnEnterBattle(state: GameState, playerId: PlayerId, card: 
       phasePlayerId: playerId,
     });
   }
-  if (isSameCardIdentity(card.cardId, "RK-068") && partnerName === "ベノスネーカー") {
+  if (isSameCardIdentity(card.cardId, "RK-068") && (partnerName === "ベノスネーカー" || contract)) {
     const ids = venoCrashTargets(state, playerId);
     if (ids.length === 0) return state;
     return openOrQueue(state, {
@@ -351,7 +354,7 @@ export function tryRk4OnEnterBattle(state: GameState, playerId: PlayerId, card: 
       optional: true,
     });
   }
-  if (isSameCardIdentity(card.cardId, "RK-069") && partnerName === "ブランウイング") {
+  if (isSameCardIdentity(card.cardId, "RK-069") && (partnerName === "ブランウイング" || contract)) {
     return addTurnPayload(state, playerId, MISTY_SLASH_RULE, "RK-069", { instanceId: card.instanceId });
   }
   return state;

@@ -11,6 +11,7 @@
  * 構成は rules/rk/rk5UnitEffects.ts と同じ。
  */
 import { isSameCardIdentity } from "@rangers-strike/cards";
+import { rk9ContractCovers } from "./rk9Fields";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, isVehicle, parsePowerCost } from "../../core/catalog";
@@ -558,10 +559,12 @@ export function tryRk6OnEnterBattle(state: GameState, playerId: PlayerId, card: 
   if (state.phase !== "battle" || state.activePlayer !== playerId) return next;
   const partner = comboPartner(state, battleBeforeEnter);
   const partnerName = partner ? cardName(state.definitions, partner.cardId) : "";
-  if (isSameCardIdentity(card.cardId, "RK-115") && partnerName === "マグナギガ") {
+  // RK-171 コントラクト（rules/rk/rk9Fields.ts）。
+  const contract = rk9ContractCovers(state, playerId, card, partner);
+  if (isSameCardIdentity(card.cardId, "RK-115") && (partnerName === "マグナギガ" || contract)) {
     next = openOrQueue(next, confirmChoice({ ...ctx, sourceInstanceId: card.instanceId }, "RK-115", END_OF_WORLD_EFFECT_ID));
   }
-  if (isSameCardIdentity(card.cardId, "RK-117") && partnerName === "デストワイルダー") {
+  if (isSameCardIdentity(card.cardId, "RK-117") && (partnerName === "デストワイルダー" || contract)) {
     const enemyId = opponent(playerId);
     const ids = next.players[enemyId].battle
       .filter((c) => c.commandHeld && isSUnit(next, c) && selectableEnemy(next, playerId, "RK-117", c))

@@ -252,6 +252,28 @@ const RK8_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk167_kaiser_blaygun: { label: "カイザブレイガン", hint: "撃破する、BP の下三桁が500の敵軍 S ユニットを選んでください" },
 };
 
+/** ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 のカード固有の選択（engine rules/rk/rk9UnitEffects.ts）の表示名と案内文。 */
+const RK9_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk169_grand_strike: { label: "グランドストライク", hint: "相手に1点ダメージを与えますか？" },
+  rk171_contract: { label: "コントラクト", hint: "このターン、ミラーモンスターからのコンビネーションで効果を発動できるようにする、本来の特徴に「ミラーライダー」を持つ自軍ユニットを選んでください" },
+  rk173_oni_armor: { label: "鬼の鎧", hint: "鬼の鎧を重ねる自軍 S ユニットを選んでください" },
+  rk174_put_on_rf: { label: "プットオン", hint: "手札に戻す、カード名に「RF」を含む自軍ユニットを選んでください（しないなら「スキップ」）" },
+  rk174_put_on_mf: { label: "プットオン", hint: "自軍ラッシュエリアに出す、パワーゾーンのオモテ向きの「MF」を含むユニットカードを選んでください" },
+  rk176_rider_kick: { label: "ライダーキック", hint: "持ち主のコマンドゾーンにホールド状態で置く、BP4000以上の敵軍 S ユニットを選んでください" },
+  rk177_hypnotic_wave: { label: "催眠音波", hint: "ホールドする、このターンにラッシュした自軍 S ユニットを選んでください（残りをホールドしないなら「スキップ」。そのユニットはこのターンバトルエリアに出られません）" },
+  rk178_daisetsudan: { label: "大切断", hint: "撃破する、このユニットの BP 以下の敵軍ユニットを選んでください（しないなら「スキップ」）" },
+  rk179_body_blow: { label: "体当たり攻撃", hint: "ライド中の敵軍 S ユニットを選んでください（カテゴリがビークルと違えば、ビークルを捨札にしてから撃破します。しないなら「スキップ」）" },
+  rk180_mole_vehicle: { label: "神出鬼没", hint: "敵軍ラッシュエリアの、ライドされていない S ビークルを選んでください（しないなら「スキップ」）" },
+  rk180_mole_rider: { label: "神出鬼没", hint: "選んだビークルにライドさせる、ライドしていない敵軍 S ユニットを選んでください" },
+  rk181_high_vibe_nail: { label: "ハイバイブネイル", hint: "ホールドする WB の自軍コマンドを選んでください（しないなら「スキップ」）" },
+  rk184_life_pool: { label: "生命維持プール", hint: "捨札にする自軍常駐置き場のカードを選んでください（このユニットをリリースします。しないなら「スキップ」）" },
+  rk185_deck_bottom: { label: "レッドドラス", hint: "持ち主の山札の下に戻す、特徴「仮面ライダー」を持つ敵軍 S ユニットを選んでください" },
+  rk185_absorb: { label: "合体吸収", hint: "敵軍山札の下から1枚ひいてオモテにしますか？" },
+  rk187_jumbo_rider_kick: { label: "ジャンボライダーキック", hint: "持ち主のパワーゾーンにダメージにして置く、DA の敵軍 L ユニットを選んでください（しないなら「スキップ」）" },
+  rk188_agent: { label: "地空人のエージェント", hint: "かわりにバトルエリアに出す、手札のカードを選んでください（しないなら「スキップ」）" },
+  rk189_spirit_power: { label: "地空人の精霊パワー", hint: "リリースする自軍コマンドを選んでください（2つまで。やめるなら「スキップ」）" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -291,7 +313,8 @@ export function effectChoiceHint(
     RK5_CHOICE_UI[pending.effectId] ??
     RK6_CHOICE_UI[pending.effectId] ??
     RK7_CHOICE_UI[pending.effectId] ??
-    RK8_CHOICE_UI[pending.effectId];
+    RK8_CHOICE_UI[pending.effectId] ??
+    RK9_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -492,6 +515,7 @@ export function effectChoiceTitle(
     RK6_CHOICE_UI[pending.effectId]?.label ??
     RK7_CHOICE_UI[pending.effectId]?.label ??
     RK8_CHOICE_UI[pending.effectId]?.label ??
+    RK9_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

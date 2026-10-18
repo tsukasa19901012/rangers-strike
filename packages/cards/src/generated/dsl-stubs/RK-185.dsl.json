@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "on_rush_return_enemy_feature_s_to_deck_bottom::仮面ライダー",
+          "keyword": "rk9::RK-185::deck_bottom",
           "duration": "turn"
         }
       ],
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-185::fx_unknown_e59088",
+          "keyword": "rk9::RK-185::absorb",
           "duration": "turn"
         }
       ],

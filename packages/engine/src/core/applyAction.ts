@@ -3,6 +3,17 @@ import { rk6RecordSnakeSelected } from "../rules/rk/rk6Fields";
 import { rk6SideBasherOnEntry } from "../rules/rk/rk6UnitEffects";
 import { applyRk7AfterAction, openRk7LocustReplace } from "../rules/rk/rk7UnitEffects";
 import { applyRk8AfterAction } from "../rules/rk/rk8UnitEffects";
+import {
+  applyRk9AfterAction,
+  applyRk9RuriOokami,
+  isRk9BattleCounterCard,
+  isRk9BerryChoice,
+  openRk9Berry,
+  openRk9HachiAtRushEnd,
+  resolveRk9BerryPick,
+  rk9RecordAttack,
+  skipRk9Berry,
+} from "../rules/rk/rk9UnitEffects";
 import { isRk5BattleCounterCard, openRk5GuardVent, rk5GuardVentCost, rk5TigerBomberDestroy, rk5TigerBomberDestroys, rk5TigerBomberPenalty } from "../rules/rk/rk5UnitEffects";
 import { openRk3OnEnemyRush } from "../rules/rk/rk3UnitEffects";
 import { applyRk2StrikeDamageTriggers, rk2RecordStartRelease } from "../rules/rk/rk2UnitEffects";
@@ -482,6 +493,14 @@ function continueAttackAfterDeclaration(
       return ok(parked, buildSimpleLogEntry(playerId, "battle_pending"));
     }
     return continueAttackAfterDeclaration(afterOnAttack, marked, wingAttackFromRush);
+  }
+  // RK-175【ライダーキック】の「これがアタックしなかったとき」のためのアタックの記録（rules/rk/rk9UnitEffects.ts）。
+  battleState = rk9RecordAttack(battleState, pending);
+  // RK-188 ベリー【地空人のエージェント】: 敵軍ターン中、自軍 S ユニットがアタックされたとき（rules/rk/rk9UnitEffects.ts）。
+  const berry = openRk9Berry(battleState, pending, wingAttackFromRush);
+  if (berry) {
+    const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...berry, pendingBattleEntry: undefined } : berry;
+    return ok(parked, buildSimpleLogEntry(playerId, "rk188_agent_choice"));
   }
   // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
   const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
@@ -998,6 +1017,20 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRk7AfterAction(state, next, shuffleEpochAtStart);
   // RK-153 仮面ライダーガオウ ※（このターン敵軍ユニットを撃破したかの記録。rules/rk/rk8UnitEffects.ts）。
   if (applyActionDepth === 0) next = applyRk8AfterAction(state, next, turnPlayerOf(state));
+  // RK-169【グランドストライク】・RK-184【生命維持プール】（rules/rk/rk9UnitEffects.ts）。
+  if (applyActionDepth === 0) next = applyRk9AfterAction(state, next, turnPlayerOf(state));
+  // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
+  if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
+    const endingPlayer = next.rk9RushEndAdvance;
+    const cleared: GameState = { ...next, rk9RushEndAdvance: undefined };
+    if (cleared.phase === "rush" && cleared.activePlayer === endingPlayer) {
+      let afterPhase = advancePhase(cleared);
+      if (afterPhase.phase === "battle") afterPhase = openChargeInsteadOfBattle(afterPhase, endingPlayer);
+      next = { ...afterPhase, log: [...afterPhase.log, buildSimpleLogEntry(endingPlayer, "end_phase", "rush")] };
+    } else {
+      next = cleared;
+    }
+  }
   // RS-319 デカマスター ※: 自軍ラッシュフェイズ中、条件を満たせば即座に手札に戻る（進行中の処理がないとき）。
   if (!hasBlockingInteraction(next)) next = applyDekaMasterReturn(next);
   // RS-325【マジチケット】: 発動したカードが捨札になったら「かわりに」の選択を開く。
@@ -2757,6 +2790,38 @@ function applyActionCore(
             },
           };
         }
+        // RK-172 ルリオオカミ: 山札の上から3枚のうち、アタックしてきたユニットの必要パワー以上のカードを手札へ。1枚以上なら、そのバトルは行われない
+        // （rules/rk/rk9UnitEffects.ts）。
+        if (counterCardId && isRk9BattleCounterCard(counterCardId)) {
+          const used: GameState = {
+            ...state,
+            ...updatePlayer(state, playerId, {
+              ...player,
+              hand: player.hand.filter((c) => c.instanceId !== action.instanceId),
+              discard: [...player.discard, { instanceId: action.instanceId, cardId: counterCardId }],
+            }),
+          };
+          const result = applyRk9RuriOokami(used, playerId, pending);
+          const log = buildLogEntry(playerId, "play_counter", counterCardId, state.definitions, result.detail);
+          const nextPending: PendingBattle = result.cancel ? { ...pending, battleCancelled: true } : pending;
+          if (
+            !result.cancel &&
+            hasBattleCounterReactions(
+              { ...result.state, activePlayer: pending.attackerPlayerId },
+              playerId,
+              pending.defenderInstanceId,
+              pending.attackerPlayerId,
+              pending.attackerInstanceId,
+            )
+          ) {
+            return ok(clearCounterHoldReady({ ...result.state, pendingBattle: nextPending, activePlayer: playerId }, playerId), log);
+          }
+          const resolved = emitBattleDeclaredAndResolve(clearCounterHoldReady(result.state, playerId), nextPending);
+          return {
+            ok: true,
+            state: { ...resolved.state, log: [...resolved.state.log, log, resolved.log], winner: checkWinner(resolved.state) },
+          };
+        }
         // RK-085 ガードベント: そのバトルは行われない。そして、アタックされたユニットの必要パワー以下の敵軍ユニットを撃破する（rules/rk/rk5UnitEffects.ts）。
         if (counterCardId && isRk5BattleCounterCard(counterCardId)) {
           const used: GameState = {
@@ -2982,6 +3047,11 @@ function applyActionCore(
         if ("error" in picked) return fail(picked.error);
         return continueAttackAfterDeclaration({ ...picked.state, log: [...picked.state.log, picked.log] }, picked.battle, picked.wingAttackFromRush);
       }
+      if (isRk9BerryChoice(pending)) {
+        const picked = resolveRk9BerryPick(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
+      }
       if (pending?.effectId === DIONE_WALL_EFFECT_ID && pending.machineEmpireMeta) {
         const picked = resolveDioneWallPick(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
@@ -3082,6 +3152,11 @@ function applyActionCore(
         const skipped = skipTakeTheBlow(state, playerId);
         if ("error" in skipped) return fail(skipped.error);
         return continueAttackAfterDeclaration({ ...skipped.state, log: [...skipped.state.log, skipped.log] }, skipped.battle, skipped.wingAttackFromRush);
+      }
+      if (isRk9BerryChoice(pending)) {
+        const skipped = skipRk9Berry(state, playerId);
+        if (!skipped) return fail("invalid_target");
+        return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
       }
       if ((pending?.effectId === MACHINE_EMPIRE_EFFECT_ID || pending?.effectId === DIONE_WALL_EFFECT_ID) && pending.machineEmpireMeta) {
         const skipped = skipMachineEmpireChoice(state, playerId);
@@ -3696,6 +3771,11 @@ function applyActionCore(
         return finishTurnEnd({ ...state, endPhaseStep: undefined }, playerId);
       }
 
+      // RK-177 蜂女【催眠音波】: 自分自身のラッシュフェイズを終えるとき（rules/rk/rk9UnitEffects.ts）。選び終えたら後処理でフェイズを進める。
+      if (state.phase === "rush") {
+        const hachi = openRk9HachiAtRushEnd(state, playerId);
+        if (hachi) return ok(hachi, buildSimpleLogEntry(playerId, "rk177_hypnotic_wave"));
+      }
       const nextState: GameState = {
         ...advancePhase(state),
         endPhaseStep: advancePhase(state).phase === "end" ? "end_effects" : undefined,

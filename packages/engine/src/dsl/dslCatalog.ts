@@ -172,6 +172,9 @@ export function shouldUseDslOperation(
 ): boolean {
   if (!effect || !isDslInterpretableEffect(effect)) return false;
   if (dslOperationOpensChoose(effect)) return true;
+  // RK-174 プットオン（rk9:: のカード固有の効果。本文の「その後、このカードを自軍パワーゾーンに置く」から読む place_in_power より優先。
+  // rules/rk/rk9UnitEffects.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rk9::"))) return true;
   const wiredId = getCardEffect(cardId)?.effectId;
   if (wiredId && isOperationImplemented(wiredId)) return false;
   return true;

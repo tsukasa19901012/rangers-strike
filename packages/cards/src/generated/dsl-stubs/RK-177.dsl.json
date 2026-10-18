@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-177::nami",
+          "keyword": "rk9::RK-177::hypnotic_wave",
           "duration": "permanent"
         }
       ],

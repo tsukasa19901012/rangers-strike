@@ -18,6 +18,7 @@ import { set9CFieldBpBonus } from "./legend1/set9NamedEffectsC";
 import { set9DFieldBpBonus } from "./legend1/set9NamedEffectsD";
 import { rk1FieldBpBonus } from "./rk/rk1NamedEffects";
 import { rk2FieldBpBonus } from "./rk/rk2UnitEffects";
+import { rk9FieldBpBonus } from "./rk/rk9Fields";
 import { rk5FieldBpBonus } from "./rk/rk5Fields";
 import { rk6FieldBpBonus } from "./rk/rk6Fields";
 import { anyOtherBaseLargeUnit } from "./legend1/set8NamedEffectsB";
@@ -259,6 +260,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += rk5FieldBpBonus(state, playerId, instance);
   // RK-107【硬化装甲】・RK-117 ※（ホールド状態の敵軍ユニット1体につき）・RK-121【エクザップバスター】（rules/rk/rk6Fields.ts）。
   if (role === "general") bonus += rk6FieldBpBonus(state, playerId, instance);
+  // RK-173 鬼の鎧を重ねたユニット（rules/rk/rk9Fields.ts）。
+  if (role === "general") bonus += rk9FieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

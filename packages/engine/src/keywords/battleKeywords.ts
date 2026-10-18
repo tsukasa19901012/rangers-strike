@@ -1,4 +1,5 @@
 import type { Category } from "@rangers-strike/cards";
+import { rk9EnemyKeywordsNullified } from "../rules/rk/rk9Fields";
 import { set9ATaxisCategory } from "../rules/legend1/set9NamedEffectsA";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
@@ -191,6 +192,8 @@ export function scrumBlocksAttack(
   defenderPlayerId: PlayerId,
   defenderInstanceId: string,
 ): boolean {
+  // RK-175 新1号【ライダーキック】: このターン、敵軍ユニットのスクラムは無効（rules/rk/rk9Fields.ts）。
+  if (rk9EnemyKeywordsNullified(state, defenderPlayerId)) return false;
   const player = state.players[defenderPlayerId];
   const defenderIndex = player.battle.findIndex((c) => c.instanceId === defenderInstanceId);
   if (defenderIndex < 0) return false;

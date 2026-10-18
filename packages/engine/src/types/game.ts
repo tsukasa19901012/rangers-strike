@@ -229,6 +229,8 @@ export type PendingBattle = {
   tigerBomberApplied?: boolean;
   /** RS-215【不滅のマシン帝国】の選択をこのアタックで既に出したか。 */
   machineEmpireOffered?: boolean;
+  /** RK-188【地空人のエージェント】の選択をこのアタックで既に出したか（rules/rk/rk9UnitEffects.ts）。 */
+  rk9BerryOffered?: boolean;
   /** RS-414【ディオネを守る壁】の選択を出したか。 */
   dioneWallOffered?: boolean;
   /** RS-583【災いを受け止める覚悟】の「代わりに選ばれたことにする」選択をこのアタックで既に出したか。 */
@@ -605,6 +607,17 @@ export type PendingEffectChoice = {
   rk7Meta?: Rk7ChoiceMeta;
   /** ライダーEXP vol.2 RK-148〜RK-168 の選択の続き（rules/rk/rk8UnitEffects.ts）。 */
   rk8Meta?: { remaining?: number; picked?: string };
+  /** ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 の選択の続き（rules/rk/rk9UnitEffects.ts）。 */
+  rk9Meta?: {
+    /** RK-174: 戻した RF のあとに置くプットオン本体。RK-180: 選んだビークル。RK-189: 残りの数。 */
+    picked?: string;
+    remaining?: number;
+    /** RK-177: このターンにラッシュした、まだ選んでいない S ユニット。 */
+    pendingIds?: string[];
+    /** RK-188: 続けるアタック。 */
+    battle?: PendingBattle;
+    wingAttackFromRush?: boolean;
+  };
   /** ライダーEXP vol.1 RK-001〜RK-021 の選択の続き（rules/rk/rk1NamedEffects.ts）。 */
   rk1Meta?: Rk1ChoiceMeta;
   /** ライダーEXP vol.1 RK-022〜RK-042 の選択の続き（rules/rk/rk2UnitEffects.ts）。 */
@@ -1037,6 +1050,10 @@ export type GameState = {
   pendingRush?: PendingRush;
   /** 敵ラッシュへのモーフ反応窓。 */
   pendingMorph?: PendingMorph;
+  /** RK-169・RK-184 の選択を、操作待ちがなくなってから開く（rules/rk/rk9UnitEffects.ts applyRk9AfterAction）。 */
+  rk9DeferredChoices?: PendingEffectChoice[];
+  /** RK-177【催眠音波】の選択を終えたら、このプレイヤーのラッシュフェイズを終える（core/applyAction.ts）。 */
+  rk9RushEndAdvance?: PlayerId;
   /**
    * モーフで出たユニットの「ラッシュしたとき」（または他のカードの「ラッシュされたとき」）の選択待ちのため、まだ続けていない
    * モーフの処理（残りのモーフ・「ラッシュされたとき」の誘発・カウンター窓）。選択がすべて終わった時点で続ける

@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-179::tari_geki",
+          "keyword": "rk9::RK-179::body_blow",
           "duration": "turn"
         }
       ],

@@ -5,6 +5,7 @@ import { openRk7RengelSubstitute } from "./rk/rk7UnitEffects";
 import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects";
 import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
 import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
+import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
 import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import { openKuugaStayOnLeave } from "./legend1/otherLinesNamedEffects";
 import {
@@ -429,6 +430,20 @@ export function hasBattleCounterReactions(
       attackerPlayerId &&
       attackerInstanceId &&
       rk5BattleCounterConditionMet(state, defenderId, card.cardId, {
+        attackerPlayerId,
+        attackerInstanceId,
+        defenderPlayerId: defenderId,
+        defenderInstanceId,
+      })
+    ) {
+      return true;
+    }
+    // RK-172 ルリオオカミ（自軍ユニットがアタックされたとき。rules/rk/rk9UnitEffects.ts）。
+    if (
+      isRk9BattleCounterCard(card.cardId) &&
+      attackerPlayerId &&
+      attackerInstanceId &&
+      rk9BattleCounterConditionMet(state, defenderId, card.cardId, {
         attackerPlayerId,
         attackerInstanceId,
         defenderPlayerId: defenderId,
@@ -1303,6 +1318,8 @@ export function resolveBattlePendingCore(
         }),
       };
     }
+    // RK-183【ZOキック】: バトルを終えるたび、このターン BP-1000（rules/rk/rk9UnitEffects.ts）。
+    if (!pending.battleCancelled) resolved = rk9AfterBattle(resolved, pending);
     const restored = restorePhaseActivePlayerUnlessBlocked(
       { ...resolved, pendingBattle: undefined },
       pending.phasePlayerId,
@@ -1461,10 +1478,15 @@ export function resolveBattlePendingCore(
     );
 
   // RK-040 ベノスネーカー【毒液】: 敵軍ターン中、これとバトルした「男」「女」のユニットはバトルに勝っても撃破される（rules/rk/rk2UnitEffects.ts）。
+  // RK-181【ハイバイブネイル】「これとバトルしたSユニットは、バトルに勝っても撃破される」も同じ扱い（rules/rk/rk9UnitEffects.ts）。
   const venomDefender =
-    !destroyDefender && rk2VenomDestroys(battleState, defenderOwner, refreshedDefenderFound.card, refreshedAttackerFound.card);
+    !destroyDefender &&
+    (rk2VenomDestroys(battleState, defenderOwner, refreshedDefenderFound.card, refreshedAttackerFound.card) ||
+      rk9WinButDestroyed(battleState, defenderOwner, refreshedDefenderFound.card, refreshedAttackerFound.card));
   const venomAttacker =
-    !destroyAttacker && rk2VenomDestroys(battleState, attackerId, refreshedAttackerFound.card, refreshedDefenderFound.card);
+    !destroyAttacker &&
+    (rk2VenomDestroys(battleState, attackerId, refreshedAttackerFound.card, refreshedDefenderFound.card) ||
+      rk9WinButDestroyed(battleState, attackerId, refreshedAttackerFound.card, refreshedDefenderFound.card));
 
   const finalDestroyDefender = destroyDefender || winButDefenderSelfDestruct || reflectBarrierDefender || venomDefender;
 
@@ -1632,6 +1654,8 @@ export function resolveBattlePendingCore(
         // RK-069【ミスティースラッシュ】（rules/rk/rk4UnitEffects.ts）。
         if (!finalDestroyAttacker && !pending.effectBattle) {
           withAttacker = rk4OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, refreshedDefenderFound.card, defenderOwner);
+          // RK-183【ZOキック】（rules/rk/rk9UnitEffects.ts）。
+          withAttacker = rk9OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId);
         }
         withAttacker = drainDeferredDestroyTriggers(withAttacker);
       }
@@ -1743,6 +1767,8 @@ export function resolveBattlePendingCore(
     if (!pending.effectBattle) nextState = openDaiganganKen(nextState, attackerId, pending.attackerInstanceId);
     // RK-069【ミスティースラッシュ】: 「ミラーモンスター」にアタックしてバトルに勝つたび、追加でアタックできる（rules/rk/rk4UnitEffects.ts）。
     if (!pending.effectBattle) nextState = rk4OnAttackWin(nextState, attackerId, pending.attackerInstanceId, refreshedDefenderFound.card, defenderOwner);
+    // RK-183【ZOキック】: アタックしてバトルに勝つたび、追加でアタックできる（rules/rk/rk9UnitEffects.ts）。
+    if (!pending.effectBattle) nextState = rk9OnAttackWin(nextState, attackerId, pending.attackerInstanceId);
   } else {
     nextState = markAttackerActed(nextState);
   }

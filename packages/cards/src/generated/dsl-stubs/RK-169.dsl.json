@@ -40,15 +40,16 @@
       "name": "グランドストライク",
       "text": "これが自軍エリアにある間、自軍パワーゾーンのカードが8枚になったとき、次の効果を発動できる⇒相手に1点ダメージを与える。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "rk9::RK-169::grand_strike",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

@@ -40,6 +40,7 @@ import {
   fill,
   heldUnit,
   inst,
+  lastBattleBps,
   legal,
   mount,
   p1Battle,
@@ -108,20 +109,20 @@ describe("RK-183 仮面ライダーZO", () => {
   const enemy = { battle: [inst("SPEC-E1000", "a"), inst("SPEC-E1000", "b"), inst("SPEC-E1000", "c"), inst("SPEC-E1000", "d"), inst("SPEC-E1000", "e")] };
   const rc = (p2: Partial<GameState["players"]["player2"]> = enemy) => settle(rcRideOff(board({ rush: [inst("RK-183", "zo"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-183:zo", "SPEC-VEHICLE:v"));
 
-  it.fails("RK-183: RC — アタックしてバトルに勝ったら、追加でアタックできる（出典: atwiki/page-1000「これは、アタックしてバトルに勝つたび、追加でアタックできる」）", () => {
+  it("RK-183: RC — アタックしてバトルに勝ったら、追加でアタックできる（出典: atwiki/page-1000「これは、アタックしてバトルに勝つたび、追加でアタックできる」）", () => {
     const s = resolveAll(attack(rc(), "RK-183:zo", "SPEC-E1000:a"));
     expect(zoneOf(s, "player2", "SPEC-E1000:a")).toBe("discard");
     expect(hasExtraAttack(s, "RK-183:zo")).toBe(true);
   });
 
-  it.fails("RK-183: RC — バトルを終えるたび、このターン BP-1000 される（出典: atwiki/page-1000「これはバトルを終えるたび、このターン、BP-1000される」）", () => {
+  it("RK-183: RC — バトルを終えるたび、このターン BP-1000 される（出典: atwiki/page-1000「これはバトルを終えるたび、このターン、BP-1000される」）", () => {
     let s = resolveAll(attack(rc(), "RK-183:zo", "SPEC-E1000:a"));
     expect(bpOf(s, "player1", "RK-183:zo")).toBe(3000);
     s = resolveAll(attack(s, "RK-183:zo", "SPEC-E1000:b"));
     expect(bpOf(s, "player1", "RK-183:zo")).toBe(2000);
   });
 
-  it.fails("RK-183: RC — BP が0以下になると撃破される（4回バトルすると BP0）（出典: atwiki/page-1000「（BP0以下になったユニットは撃破される）」・R-BP-02）", () => {
+  it("RK-183: RC — BP が0以下になると撃破される（4回バトルすると BP0）（出典: atwiki/page-1000「（BP0以下になったユニットは撃破される）」・R-BP-02）", () => {
     let s = rc();
     for (const id of ["a", "b", "c", "d"]) s = resolveAll(attack(s, "RK-183:zo", `SPEC-E1000:${id}`));
     expect(zoneOf(s, "player1", "RK-183:zo")).toBe("discard");
@@ -139,7 +140,7 @@ describe("RK-183 仮面ライダーZO", () => {
     expect(hasExtraAttack(s, "RK-183:zo")).toBe(false);
   });
 
-  it.fails("RK-183: 新1号の RC で「BP8000 になる」ときは、バトルを終えても BP は下がらない（出典: atwiki/page-1000 カード評価「BPが固定になるのでデメリットでアタックするたびに-1000される事も無い」・コメント欄・R-BP-01）", () => {
+  it("RK-183: 新1号の RC で「BP8000 になる」ときは、バトルを終えても BP は下がらない（出典: atwiki/page-1000 カード評価「BPが固定になるのでデメリットでアタックするたびに-1000される事も無い」・コメント欄・R-BP-01）", () => {
     let s = rcRideOff(board({ rush: [inst("RK-175", "s1"), inst("SPEC-VEHICLE", "v1"), inst("RK-183", "zo"), inst("SPEC-VEHICLE", "v2")] }, enemy), "RK-175:s1", "SPEC-VEHICLE:v1");
     s = passEntry(settle(s));
     s = settle(act(act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: "RK-183:zo", vehicleInstanceId: "SPEC-VEHICLE:v2" }), { type: "resolve_ride_off_choice", playerId: "player1", rideOff: true }));
@@ -190,7 +191,7 @@ describe("RK-184 ドラス", () => {
     return act(s, use!);
   };
 
-  it.fails("RK-184: 【生命維持プール】ホールド状態になったとき（敵軍ターンのレジストでも）、自軍常駐置き場のカード（ウラ向きを含む）から1枚選んでもよい（出典: atwiki/page-1001「これがホールド状態になったとき、自軍常駐置き場からカードを1枚選び捨札にしてもよい（ウラ向きのカードはウラ向きのまま選ぶ）」・コメント欄「ターンが指定されていないので可能」）", () => {
+  it("RK-184: 【生命維持プール】ホールド状態になったとき（敵軍ターンのレジストでも）、自軍常駐置き場のカード（ウラ向きを含む）から1枚選んでもよい（出典: atwiki/page-1001「これがホールド状態になったとき、自軍常駐置き場からカードを1枚選び捨札にしてもよい（ウラ向きのカードはウラ向きのまま選ぶ）」・コメント欄「ターンが指定されていないので可能」）", () => {
     const s = registered();
     expect(cardIn(s, "player1", "RK-184:dr")?.commandHeld).toBe(true);
     expectChoiceFrom(s, "player1", "RK-184");
@@ -198,7 +199,7 @@ describe("RK-184 ドラス", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-184: 【生命維持プール】捨札にしたら、これをリリースする（出典: atwiki/page-1001「そうしたとき、これをリリースする」）", () => {
+  it("RK-184: 【生命維持プール】捨札にしたら、これをリリースする（出典: atwiki/page-1001「そうしたとき、これをリリースする」）", () => {
     const s = resolveAll(pick(registered(), "TST-OP:fd"));
     expect(zoneOf(s, "player1", "TST-OP:fd")).toBe("discard");
     expect(cardIn(s, "player1", "RK-184:dr")?.commandHeld).toBeFalsy();
@@ -233,14 +234,14 @@ describe("RK-185 レッドドラス", () => {
     expect(zoneOf(s, "player1", "RK-184:dr")).toBe("discard");
   });
 
-  it.fails("RK-185: ※ ラッシュしたとき、特徴「仮面ライダー」を持つ敵軍 S ユニットから1体選ぶ（エリアを問わない。M・仮面ライダーでないものは対象外。選ばないことはできない）（出典: atwiki/page-1048「※これをラッシュしたとき、特徴「仮面ライダー」を持つ敵軍Sユニットを1体選び」）", () => {
+  it("RK-185: ※ ラッシュしたとき、特徴「仮面ライダー」を持つ敵軍 S ユニットから1体選ぶ（エリアを問わない。M・仮面ライダーでないものは対象外。選ばないことはできない）（出典: atwiki/page-1048「※これをラッシュしたとき、特徴「仮面ライダー」を持つ敵軍Sユニットを1体選び」）", () => {
     const s = rushed({ battle: [inst("SPEC-KAMEN", "k1"), inst("SPEC-KAMEN-M", "km")], rush: [inst("SPEC-KAMEN", "k2"), inst("SPEC-E1000", "x")] });
     expectChoiceFrom(s, "player1", "RK-185");
     expect(choiceIds(s)).toEqual(["SPEC-KAMEN:k1", "SPEC-KAMEN:k2"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-185: ※ 選んだユニットを持ち主の山札の下に戻す（出典: atwiki/page-1048「持ち主の山札の下に戻す」）", () => {
+  it("RK-185: ※ 選んだユニットを持ち主の山札の下に戻す（出典: atwiki/page-1048「持ち主の山札の下に戻す」）", () => {
     const s = resolveAll(pick(rushed({ battle: [inst("SPEC-KAMEN", "k1")] }), "SPEC-KAMEN:k1"));
     expect(s.players.player2.deck.at(-1)?.instanceId).toBe("SPEC-KAMEN:k1");
   });
@@ -249,14 +250,14 @@ describe("RK-185 レッドドラス", () => {
   const entered = (bottom: ReturnType<typeof inst>, p2: Partial<GameState["players"]["player2"]> = {}) =>
     enter(board({ rush: [inst("RK-185", "rd")] }, { deck: [...deckCards(3, "e"), bottom], ...p2 }), "RK-185:rd");
 
-  it.fails("RK-185: 【合体吸収】自軍ターン中、バトルエリアに出たとき、敵軍山札の下から1枚ひいてオモテにするかを選べる（任意）（出典: atwiki/page-1048「敵軍山札の下から1枚ひいてオモテにしてもよい」）", () => {
+  it("RK-185: 【合体吸収】自軍ターン中、バトルエリアに出たとき、敵軍山札の下から1枚ひいてオモテにするかを選べる（任意）（出典: atwiki/page-1048「敵軍山札の下から1枚ひいてオモテにしてもよい」）", () => {
     const s = entered(inst("RK-176", "bot"));
     expectChoiceFrom(s, "player1", "RK-185");
     expect(canConfirm(s)).toBe(true);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-185: 【合体吸収】オモテにしたカードが RC を持つユニットカードなら、このターン SP1 になり、その RC の効果をこのユニットの効果として発動する（RK-176 新2号の【ライダーキック】）（出典: atwiki/page-1048「このターン、これはSP1になり、オモテにしたカードのRCの効果をこのユニットの効果として発動する」）", () => {
+  it("RK-185: 【合体吸収】オモテにしたカードが RC を持つユニットカードなら、このターン SP1 になり、その RC の効果をこのユニットの効果として発動する（RK-176 新2号の【ライダーキック】）（出典: atwiki/page-1048「このターン、これはSP1になり、オモテにしたカードのRCの効果をこのユニットの効果として発動する」）", () => {
     const s = confirm(entered(inst("RK-176", "bot"), { battle: [inst("SPEC-E9000", "big")] }));
     expectChoiceFrom(s, "player1", "RK-176");
     expect(choiceIds(s)).toEqual(["SPEC-E9000:big"]);
@@ -265,12 +266,12 @@ describe("RK-185 レッドドラス", () => {
     expect(spOf(done, "player1", "RK-185:rd")).toBe(1);
   });
 
-  it.fails("RK-185: 【合体吸収】その後、オモテにしたカードは持ち主の山札の下に戻す（出典: atwiki/page-1048「その後、オモテにしたカードは持ち主の山札の下に戻す」）", () => {
+  it("RK-185: 【合体吸収】その後、オモテにしたカードは持ち主の山札の下に戻す（出典: atwiki/page-1048「その後、オモテにしたカードは持ち主の山札の下に戻す」）", () => {
     const s = resolveAll(confirm(entered(inst("RK-176", "bot"), { battle: [inst("SPEC-E9000", "big")] })));
     expect(s.players.player2.deck.at(-1)?.instanceId).toBe("RK-176:bot");
   });
 
-  it.fails("RK-185: 【合体吸収】RC を持たないカードなら SP1 にならず、カードは山札の下に戻る（出典: atwiki/page-1048「RCを持つユニットカードなら」）", () => {
+  it("RK-185: 【合体吸収】RC を持たないカードなら SP1 にならず、カードは山札の下に戻る（出典: atwiki/page-1048「RCを持つユニットカードなら」）", () => {
     const s = resolveAll(confirm(entered(inst("SPEC-E1000", "bot"))));
     expect(spOf(s, "player1", "RK-185:rd")).toBe(0);
     expect(s.players.player2.deck.at(-1)?.instanceId).toBe("SPEC-E1000:bot");
@@ -314,14 +315,14 @@ describe("RK-187 仮面ライダーJ ジャンボフォーメーション", () =
   const enemy = { battle: [inst("SPEC-DA-L", "dl"), inst("SPEC-WB-L", "wl"), inst("SPEC-DA-L-FUSION", "fl"), inst("SPEC-DA-S", "ds")], rush: [inst("SPEC-DA-L", "rl")] };
   const entered = (p2: Partial<GameState["players"]["player2"]> = enemy) => enter(board({ rush: [inst("RK-187", "jj")] }, p2), "RK-187:jj");
 
-  it.fails("RK-187: 【ジャンボライダーキック】自軍ターン中、バトルエリアに出たとき、敵軍バトルエリアの DA を持つ L ユニット（追加条件が「自軍合体ユニットを捨札にする」でないもの）から1体選べる（任意）（出典: atwiki/page-1086「追加条件に「自軍合体ユニットを捨札にする」と表記されていないDAを持つ敵軍Lユニットを1体選び」）", () => {
+  it("RK-187: 【ジャンボライダーキック】自軍ターン中、バトルエリアに出たとき、敵軍バトルエリアの DA を持つ L ユニット（追加条件が「自軍合体ユニットを捨札にする」でないもの）から1体選べる（任意）（出典: atwiki/page-1086「追加条件に「自軍合体ユニットを捨札にする」と表記されていないDAを持つ敵軍Lユニットを1体選び」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RK-187");
     expect(choiceIds(s)).toEqual(["SPEC-DA-L:dl"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-187: 【ジャンボライダーキック】選んだユニットを持ち主のパワーゾーンにダメージ（ウラ向き）にして置く（出典: atwiki/page-1086「持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
+  it("RK-187: 【ジャンボライダーキック】選んだユニットを持ち主のパワーゾーンにダメージ（ウラ向き）にして置く（出典: atwiki/page-1086「持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-DA-L:dl"));
     expect(zoneOf(s, "player2", "SPEC-DA-L:dl")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-DA-L:dl")?.faceDown).toBe(true);
@@ -354,23 +355,25 @@ describe("RK-188 ベリー", () => {
     return attack(s, "SPEC-E9000:atk", target.instanceId, "player2");
   };
 
-  it.fails("RK-188: 敵軍ターン中、自軍 S ユニットがアタックされたとき、手札の必要パワーに「－」を持つユニットカードのうち、アタックされたユニットを追加条件で指定しているカードを選べる（任意）（出典: atwiki/page-916「アタックされたSユニットが追加条件で指定されているカードを1枚選び、自軍バトルエリアに出してもよい」）", () => {
+  it("RK-188: 敵軍ターン中、自軍 S ユニットがアタックされたとき、手札の必要パワーに「－」を持つユニットカードのうち、アタックされたユニットを追加条件で指定しているカードを選べる（任意）（出典: atwiki/page-916「アタックされたSユニットが追加条件で指定されているカードを1枚選び、自軍バトルエリアに出してもよい」）", () => {
     const s = attacked(inst("RK-186", "j"), [inst("RK-187", "jj"), inst("XP-008", "vf"), inst("TST-UNIT-0", "h")]);
     expectChoiceFrom(s, "player1", "RK-188");
     expect(choiceIds(s)).toEqual(["RK-187:jj"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-188: 選んだカードを自軍バトルエリアに出し、アタックされたユニットを捨札にして、かわりに出したユニットでバトルする（出典: atwiki/page-916「アタックされたユニットを捨札にして、かわりにバトルエリアに出したユニットでバトルする」）", () => {
-    const s = resolveAll(pick(attacked(inst("RK-186", "j"), [inst("RK-187", "jj")]), "RK-187:jj"));
+  it("RK-188: 選んだカードを自軍バトルエリアに出し、アタックされたユニットを捨札にして、かわりに出したユニットでバトルする（BP9000 にアタックされた RK-187 が撃破される）（出典: atwiki/page-916「アタックされたユニットを捨札にして、かわりにバトルエリアに出したユニットでバトルする」）", () => {
+    const s = pick(attacked(inst("RK-186", "j"), [inst("RK-187", "jj")]), "RK-187:jj");
     expect(zoneOf(s, "player1", "RK-186:j")).toBe("discard");
     expect(zoneOf(s, "player1", "RK-187:jj")).toBe("discard");
+    expect(lastBattleBps(s)?.defender).toBe(5500);
     expect(zoneOf(s, "player2", "SPEC-E9000:atk")).toBe("battle");
   });
 
-  it.fails("RK-188: 出したユニットの効果は発動しない（RK-187【ジャンボライダーキック】の選択は開かない）（出典: atwiki/page-916「（このとき出したユニットの効果は発動しない）」）", () => {
+  it("RK-188: 出したユニットの効果は発動しない（RK-187【ジャンボライダーキック】の選択は開かない）（出典: atwiki/page-916「（このとき出したユニットの効果は発動しない）」）", () => {
     const s = pick(attacked(inst("RK-186", "j"), [inst("RK-187", "jj")]), "RK-187:jj");
-    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-187");
+    expect(s.pendingEffectChoice?.effectId).not.toBe("rk187_jumbo_rider_kick");
+    expect(s.log.some((l) => l.includes("rk187_jumbo_rider_kick"))).toBe(false);
   });
 
   it("RK-188: ベリーが自軍エリアになければ選択は開かない（出典: atwiki/page-916「これが自軍エリアにある間」）", () => {
@@ -379,14 +382,14 @@ describe("RK-188 ベリー", () => {
   });
 
   // atwiki/page-916 Q1「はい、できます。その場合は、「RK-029 仮面ライダークウガMF」を『「RK-271 仮面ライダークウガRM」の追加条件として指定されたユニット』と考えて頂いて構いません。」
-  it.fails("RK-188: 公式Q&A — 特徴で指定する追加条件（RK-271 クウガRM「特徴「アマダム」を持つ自軍ユニット」）でも、アタックされた RK-029 クウガMF を指定されたユニットとして出せる（出典: atwiki/page-916 Q1・atwiki/page-217 Q1）", () => {
+  it("RK-188: 公式Q&A — 特徴で指定する追加条件（RK-271 クウガRM「特徴「アマダム」を持つ自軍ユニット」）でも、アタックされた RK-029 クウガMF を指定されたユニットとして出せる（出典: atwiki/page-916 Q1・atwiki/page-217 Q1）", () => {
     const s = attacked(inst("RK-029", "mf"), [inst("RK-271", "rm")]);
     expectChoiceFrom(s, "player1", "RK-188");
     expect(choiceIds(s)).toEqual(["RK-271:rm"]);
   });
 
   // atwiki/page-916 Q2「はい、できます。合体ユニットのうちの1体だけであっても「追加条件で指定されたユニット」ですので…捨札にする必要があるのは「アタックされたユニット」だけ」
-  it.fails("RK-188: 公式Q&A — 合体ユニットのうち1体（XG2-069 NEW電王SF・RK-146 デネブ）がアタックされたときも XP-008 NEW電王VF を出せ、捨札にするのはアタックされたユニットだけ（出典: atwiki/page-916 Q2）", () => {
+  it("RK-188: 公式Q&A — 合体ユニットのうち1体（XG2-069 NEW電王SF・RK-146 デネブ）がアタックされたときも XP-008 NEW電王VF を出せ、捨札にするのはアタックされたユニットだけ（出典: atwiki/page-916 Q2）", () => {
     let s = attacked(inst("RK-146", "dn"), [inst("XP-008", "vf")]);
     s = { ...s, players: { ...s.players, player1: { ...s.players.player1, battle: [...s.players.player1.battle, inst("XG2-069", "sf")] } } };
     expectChoiceFrom(s, "player1", "RK-188");
@@ -410,14 +413,14 @@ describe("RK-189 ジェイクロッサー", () => {
   const heldCmd = (n: number) => Array.from({ length: n }, (_, i) => ({ ...inst("TST-OP", `h${i}`), commandHeld: true }));
   const entered = (command = heldCmd(3)) => mount(board({ rush: [inst("RK-189", "jc"), inst("SPEC-RC-E", "r")], command }), "SPEC-RC-E:r", "RK-189:jc");
 
-  it.fails("RK-189: 自軍ターン中、バトルエリアに出たとき、ホールド状態の自軍コマンドから選んでリリースできる（任意）（出典: atwiki/page-914「自軍コマンドを2つまで選び、リリースしてもよい」）", () => {
+  it("RK-189: 自軍ターン中、バトルエリアに出たとき、ホールド状態の自軍コマンドから選んでリリースできる（任意）（出典: atwiki/page-914「自軍コマンドを2つまで選び、リリースしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RK-189");
     expect(choiceIds(s)).toEqual(["TST-OP:h0", "TST-OP:h1", "TST-OP:h2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-189: 2つまで選んでリリースする（3つ目は選べない）（出典: atwiki/page-914「2つまで選び」）", () => {
+  it("RK-189: 2つまで選んでリリースする（3つ目は選べない）（出典: atwiki/page-914「2つまで選び」）", () => {
     let s = pick(entered(), "TST-OP:h0");
     s = pick(s, "TST-OP:h2");
     s = settle(s);
@@ -427,7 +430,7 @@ describe("RK-189 ジェイクロッサー", () => {
     expect(cmd("TST-OP:h1")).toBe(true);
   });
 
-  it.fails("RK-189: 1つだけ選んでリリースしてもよい（出典: atwiki/page-914「2つまで」）", () => {
+  it("RK-189: 1つだけ選んでリリースしてもよい（出典: atwiki/page-914「2つまで」）", () => {
     let s = pick(entered(), "TST-OP:h1");
     if (s.pendingEffectChoice?.sourceCardId === "RK-189") s = canConfirm(s) ? confirm(s) : skip(s);
     s = settle(s);

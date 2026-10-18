@@ -8,6 +8,7 @@
  * 構成は rules/rk/rk1NamedEffects.ts と同じ。
  */
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
+import { rk9ContractCovers } from "./rk9Fields";
 import type {
   CardInstance,
   DeferredDestroyTrigger,
@@ -731,10 +732,11 @@ export function tryRk2OnEnterBattle(
   if (!ownBattlePhase) return next;
   const partner = comboPartner(next, battleBeforeEnter);
   // RK-063（スターター版）も同じテキスト（atwiki/page-178）。
-  if ((card.cardId === "RK-033" || card.cardId === "RK-063") && partner && featuresOf(next, playerId, partner).includes("ドラゴン")) {
+  // RK-171 コントラクトで選ばれていれば、本来の特徴に「ミラーモンスター」を持つユニットからでもよい（rules/rk/rk9Fields.ts）。
+  if ((card.cardId === "RK-033" || card.cardId === "RK-063") && partner && (featuresOf(next, playerId, partner).includes("ドラゴン") || rk9ContractCovers(next, playerId, card, partner))) {
     next = patchPlayer(next, playerId, (p) => grantSp1OnPlayer(p, card.instanceId, next.definitions));
   }
-  if (card.cardId === "RK-038" && partner && cardName(next.definitions, partner.cardId) === "メタルゲラス") {
+  if (card.cardId === "RK-038" && partner && (cardName(next.definitions, partner.cardId) === "メタルゲラス" || rk9ContractCovers(next, playerId, card, partner))) {
     const ids = heavyPressureTargets(next, playerId);
     if (ids.length > 0) {
       next = openOrQueue(next, {

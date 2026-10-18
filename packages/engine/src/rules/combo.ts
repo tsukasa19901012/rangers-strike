@@ -1,4 +1,5 @@
 import type { CardDefinition } from "@rangers-strike/cards";
+import { tryRk9OnEnterBattle } from "./rk/rk9UnitEffects";
 import { openWarriorSoulNcChoice } from "./legend1/set9NamedEffectsA";
 import { tryResidentRushOnAllyEnterBattle } from "./residentAllyEnterRush";
 import { listNcColumnNamedEffects, getNumberComboEffect } from "@rangers-strike/cards";
@@ -283,6 +284,12 @@ export function resolveEnterBattleEffectsImpl(
     const beforeRk6Choice = nextState.pendingEffectChoice;
     nextState = tryRk6OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
     if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk6Choice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+    // RK-175【ライダーキック】の次のユニットの BP・RK-179/RK-189（ライドして出たビークル）（rules/rk/rk9UnitEffects.ts）。
+    const beforeRk9Choice = nextState.pendingEffectChoice;
+    nextState = tryRk9OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk9Choice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }
     // RS-523 臨気で得た能力・RS-521 スーパー戦隊魂（レッドが出たとき）（rules/legend1/set8NamedEffectsA.ts）。

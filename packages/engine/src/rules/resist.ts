@@ -16,6 +16,7 @@ import { resolveDestroyedFactEffects } from "./leaveEffects";
 import { riddenVehicleGrantsResist } from "./legend1/set7NamedEffectsB";
 import { set8BGrantsResist } from "./legend1/set8NamedEffectsB";
 import { stackOntoLargeGrantsKeyword } from "./stackOntoLargeGrants";
+import { rk9EnemyKeywordsNullified } from "./rk/rk9Fields";
 
 export function canOfferRegister(
   state: GameState,
@@ -27,6 +28,8 @@ export function canOfferRegister(
 ): boolean {
   if (pending.skipRegister) return false;
   if (pending.registerEligible !== true) return false;
+  // RK-175 新1号【ライダーキック】: このターン、敵軍ユニットのレジストは無効（rules/rk/rk9Fields.ts）。
+  if (pending.ownerPlayerId && rk9EnemyKeywordsNullified(state, pending.ownerPlayerId)) return false;
   if (pending.toZone !== "discard" || pending.fromZone !== "battle") return false;
   // ルール: R-KW-RESIST-04 — リリース状態でなければ使えない（レジストでホールド中のユニットは再レジスト不可）。
   if (pending.ownerPlayerId && pending.instanceId) {

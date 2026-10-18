@@ -96,7 +96,7 @@ describe("RK-176 仮面ライダー新2号", () => {
   const rc = (p2: Partial<GameState["players"]["player2"]> = enemy) =>
     rcRideOff(board({ rush: [inst("RK-176", "s2"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-176:s2", "SPEC-VEHICLE:v");
 
-  it.fails("RK-176: RC — 敵軍バトルエリアの、BP4000以上の S ユニットだけから1体選ぶ（ラッシュエリア・BP3500・M は対象外。選ばないことはできない）（出典: atwiki/page-1085「敵軍バトルエリアから、BP4000以上の敵軍Sユニットを1体選び」・カード評価「バトルエリア限定」）", () => {
+  it("RK-176: RC — 敵軍バトルエリアの、BP4000以上の S ユニットだけから1体選ぶ（ラッシュエリア・BP3500・M は対象外。選ばないことはできない）（出典: atwiki/page-1085「敵軍バトルエリアから、BP4000以上の敵軍Sユニットを1体選び」・カード評価「バトルエリア限定」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "RK-176");
     expect(choiceIds(s)).toEqual(["SPEC-E4000:a"]);
@@ -114,14 +114,14 @@ describe("RK-176 仮面ライダー新2号", () => {
     expect(zoneOf(s, "player2", "SPEC-E4000:a")).toBe("discard");
   });
 
-  it.fails("RK-176: （）書き — 「仮面ライダー1号」（RK-023）の次にライドせずに出ても【ライダーキック】を発動する（出典: atwiki/page-1085「（この効果は「仮面ライダー1号」からコンビネーションするときは、ナンバーに関係なく発動する）」）", () => {
+  it("RK-176: （）書き — 「仮面ライダー1号」（RK-023）の次にライドせずに出ても【ライダーキック】を発動する（出典: atwiki/page-1085「（この効果は「仮面ライダー1号」からコンビネーションするときは、ナンバーに関係なく発動する）」）", () => {
     let s = board({ rush: [inst("RK-023", "s1"), inst("RK-176", "s2")] }, enemy);
     s = passEntry(enter(s, "RK-023:s1"));
     s = enter(s, "RK-176:s2");
     expectChoiceFrom(s, "player1", "RK-176");
   });
 
-  it.fails("RK-176: （）書き — 「仮面ライダー1号」として使える RK-175 仮面ライダー新1号の次でも発動する（出典: atwiki/page-1085・RK-175「※これは「仮面ライダー1号」としてつかえる」・カード評価「1号（新1号含む）からのコンビネーションならば、ビークル無しで能力の発動が可能」）", () => {
+  it("RK-176: （）書き — 「仮面ライダー1号」として使える RK-175 仮面ライダー新1号の次でも発動する（出典: atwiki/page-1085・RK-175「※これは「仮面ライダー1号」としてつかえる」・カード評価「1号（新1号含む）からのコンビネーションならば、ビークル無しで能力の発動が可能」）", () => {
     let s = board({ rush: [inst("RK-175", "s1"), inst("RK-176", "s2")] }, enemy);
     s = passEntry(enter(s, "RK-175:s1"));
     s = enter(s, "RK-176:s2");
@@ -163,14 +163,14 @@ describe("RK-177 蜂女", () => {
     return act(settle(r.state), end!);
   };
 
-  it.fails("RK-177: 【催眠音波】自軍ラッシュフェイズを終えるとき、そのターンにラッシュした自軍 S ユニットをホールドするかを選ぶ（前からいたユニット・M ユニットは対象外）（出典: atwiki/page-909「自分自身のラッシュフェイズを終えるとき、そのターン中にラッシュした自分自身のSユニットをホールドするかしないかを選ぶ」）", () => {
+  it("RK-177: 【催眠音波】自軍ラッシュフェイズを終えるとき、そのターンにラッシュした自軍 S ユニットをホールドするかを選ぶ（前からいたユニット・M ユニットは対象外）（出典: atwiki/page-909「自分自身のラッシュフェイズを終えるとき、そのターン中にラッシュした自分自身のSユニットをホールドするかしないかを選ぶ」）", () => {
     const s = rushThenEnd({ rush: [inst("RK-177", "hb"), inst("TST-UNIT-0", "old"), inst("TST-UNIT-2", "m")] });
     expectChoiceFrom(s, "player1", "RK-177");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:new"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-177: ホールドすることを選んだユニットはホールドされ、バトルエリアに出られる（出典: atwiki/page-909・コメント欄「出なくてもいい」）", () => {
+  it("RK-177: ホールドすることを選んだユニットはホールドされ、バトルエリアに出られる（出典: atwiki/page-909・コメント欄「出なくてもいい」）", () => {
     let s = pick(rushThenEnd({ rush: [inst("RK-177", "hb")] }), "TST-UNIT-0:new");
     s = toPhase(settle(s), "player1", "battle");
     expect(s.phase).toBe("battle");
@@ -178,7 +178,7 @@ describe("RK-177 蜂女", () => {
     expect(canEnter(s, "TST-UNIT-0:new")).toBe(true);
   });
 
-  it.fails("RK-177: ホールドしないことを選んだユニットは、そのターン中バトルエリアに出られない（出典: atwiki/page-909「ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない」）", () => {
+  it("RK-177: ホールドしないことを選んだユニットは、そのターン中バトルエリアに出られない（出典: atwiki/page-909「ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない」）", () => {
     let s = skip(rushThenEnd({ rush: [inst("RK-177", "hb")] }));
     s = toPhase(settle(s), "player1", "battle");
     expect(s.phase).toBe("battle");
@@ -186,12 +186,12 @@ describe("RK-177 蜂女", () => {
     expect(canEnter(s, "TST-UNIT-0:new")).toBe(false);
   });
 
-  it.fails("RK-177: 相手の蜂女でも、自分のラッシュフェイズを終えるときに選ぶ（出典: atwiki/page-909「自分も相手も次の制限を受ける」）", () => {
+  it("RK-177: 相手の蜂女でも、自分のラッシュフェイズを終えるときに選ぶ（出典: atwiki/page-909「自分も相手も次の制限を受ける」）", () => {
     const s = rushThenEnd({}, { battle: [inst("RK-177", "ehb")] });
     expectChoiceFrom(s, "player1", "RK-177");
   });
 
-  it.fails("RK-177: 蜂女が場を離れれば、ホールドしなかったユニットも出られるようになる（出典: atwiki/page-909 コメント欄「「自軍エリアにある間」って書いてあるから、蜂女除去できればホールドしてなくても出せる」）", () => {
+  it("RK-177: 蜂女が場を離れれば、ホールドしなかったユニットも出られるようになる（出典: atwiki/page-909 コメント欄「「自軍エリアにある間」って書いてあるから、蜂女除去できればホールドしてなくても出せる」）", () => {
     let s = skip(rushThenEnd({ rush: [inst("RK-177", "hb")] }));
     s = toPhase(settle(s), "player1", "battle");
     const removed: GameState = { ...s, players: { ...s.players, player1: { ...s.players.player1, rush: s.players.player1.rush.filter((c) => c.cardId !== "RK-177") } } };
@@ -233,7 +233,7 @@ describe("RK-178 仮面ライダーアマゾン", () => {
     expect(canStrike(s, "RK-178:am")).toBe(false);
   });
 
-  it.fails("RK-178: RC【大切断】敵軍バトルエリアから、このユニットの BP（2000）以下の BP を持つユニットを1体選ぶ（サイズを問わない。ラッシュエリアは対象外。任意）（出典: atwiki/page-952「敵軍バトルエリアから、このユニットのBP以下のBPを持つユニットを1体選び撃破してもよい」・コメント欄「大切断の利点はサイズ問わないこと」）", () => {
+  it("RK-178: RC【大切断】敵軍バトルエリアから、このユニットの BP（2000）以下の BP を持つユニットを1体選ぶ（サイズを問わない。ラッシュエリアは対象外。任意）（出典: atwiki/page-952「敵軍バトルエリアから、このユニットのBP以下のBPを持つユニットを1体選び撃破してもよい」・コメント欄「大切断の利点はサイズ問わないこと」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "RK-178");
     expect(choiceIds(s)).toEqual(["SPEC-E2000:a", "SPEC-L:l"]);
@@ -269,26 +269,26 @@ describe("RK-179 ジャングラー", () => {
   };
   const entered = (p2: Partial<GameState["players"]["player2"]> = enemy) => mount(board({ rush: [inst("RK-179", "jg"), inst("SPEC-ET-RIDER", "me")] }, p2), "SPEC-ET-RIDER:me", "RK-179:jg");
 
-  it.fails("RK-179: 自軍ターン中、これがバトルエリアに出たとき、ライド中の敵軍 S ユニットから1体選べる（ライドしていないユニットは対象外。任意）（出典: atwiki/page-912「ライド中の敵軍Sユニットを1体選んでもよい」）", () => {
+  it("RK-179: 自軍ターン中、これがバトルエリアに出たとき、ライド中の敵軍 S ユニットから1体選べる（ライドしていないユニットは対象外。任意）（出典: atwiki/page-912「ライド中の敵軍Sユニットを1体選んでもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RK-179");
     expect(choiceIds(s)).toEqual(["SPEC-ET-RIDER:sr", "SPEC-WB-RIDER:dr"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-179: 選んだユニットのカテゴリとビークルのカテゴリが違えば、ビークルを捨札にした後でユニットを撃破する（出典: atwiki/page-912「そのビークルを捨札にした後で、選んだユニットを撃破する」）", () => {
+  it("RK-179: 選んだユニットのカテゴリとビークルのカテゴリが違えば、ビークルを捨札にした後でユニットを撃破する（出典: atwiki/page-912「そのビークルを捨札にした後で、選んだユニットを撃破する」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-WB-RIDER:dr"));
     expect(zoneOf(s, "player2", "SPEC-VEHICLE:diff")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-WB-RIDER:dr")).toBe("discard");
   });
 
-  it.fails("RK-179: カテゴリが同じなら何も起きない（出典: atwiki/page-912「カテゴリが違うなら」）", () => {
+  it("RK-179: カテゴリが同じなら何も起きない（出典: atwiki/page-912「カテゴリが違うなら」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-ET-RIDER:sr"));
     expect(zoneOf(s, "player2", "SPEC-VEHICLE:same")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-ET-RIDER:sr")).toBe("battle");
   });
 
-  it.fails("RK-179: マルチカテゴリのユニットは、カテゴリが1つでもビークルと合っていれば撃破しない（出典: atwiki/page-912 カード評価「カテゴリが一つでも合っていれば【体当たり攻撃】の対象にならない」）", () => {
+  it("RK-179: マルチカテゴリのユニットは、カテゴリが1つでもビークルと合っていれば撃破しない（出典: atwiki/page-912 カード評価「カテゴリが一つでも合っていれば【体当たり攻撃】の対象にならない」）", () => {
     const multi = { battle: [inst("SPEC-MA-VEHICLE", "mv"), { ...inst("SPEC-MULTI-RIDER", "mr"), mountedOnInstanceId: "SPEC-MA-VEHICLE:mv" }] };
     const s = resolveAll(pick(entered(multi), "SPEC-MULTI-RIDER:mr"));
     expect(zoneOf(s, "player2", "SPEC-MULTI-RIDER:mr")).toBe("battle");
@@ -315,7 +315,7 @@ describe("RK-180 モグラ獣人", () => {
 
   const selfRush = (s: GameState) => legal(s).some((a) => a.type === "self_rush_from_zone" && a.instanceId === "RK-180:mg");
 
-  it.fails("RK-180: ※ 手札にある間、自軍ラッシュフェイズ中、自軍「仮面ライダーアマゾン」があれば自軍ラッシュエリアに出せる（出典: atwiki/page-910「自軍「仮面ライダーアマゾン」があれば、これを自軍ラッシュエリアに出してもよい」）", () => {
+  it("RK-180: ※ 手札にある間、自軍ラッシュフェイズ中、自軍「仮面ライダーアマゾン」があれば自軍ラッシュエリアに出せる（出典: atwiki/page-910「自軍「仮面ライダーアマゾン」があれば、これを自軍ラッシュエリアに出してもよい」）", () => {
     expect(selfRush(rushPhase({ hand: [inst("RK-180", "mg")], rush: [inst("RK-178", "am")] }))).toBe(true);
     expect(selfRush(rushPhase({ hand: [inst("RK-180", "mg")] }))).toBe(false);
   });
@@ -327,20 +327,20 @@ describe("RK-180 モグラ獣人", () => {
     battle: [inst("SPEC-WB-RIDER", "b1")],
   };
 
-  it.fails("RK-180: NC【神出鬼没】敵軍ラッシュエリアの、ライドされていない S ビークルから1体選べる（任意）（出典: atwiki/page-910「敵軍ラッシュエリアからライドされていないSビークルを1体選んでもよい」）", () => {
+  it("RK-180: NC【神出鬼没】敵軍ラッシュエリアの、ライドされていない S ビークルから1体選べる（任意）（出典: atwiki/page-910「敵軍ラッシュエリアからライドされていないSビークルを1体選んでもよい」）", () => {
     const s = nc(enemy);
     expectChoiceFrom(s, "player1", "RK-180");
     expect(choiceIds(s)).toEqual(["SPEC-VEHICLE:free"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-180: NC【神出鬼没】そうしたとき、ライドしていない敵軍 S ユニット（ライドできるもの。RC を持たないユニットは対象外）を1体選ぶ（出典: atwiki/page-910「ライドしていない敵軍Sユニットを1体選び」・カード評価「RCをもってないSユニットを強制的にライドさせる事は公式の回答で出来ない」）", () => {
+  it("RK-180: NC【神出鬼没】そうしたとき、ライドしていない敵軍 S ユニット（ライドできるもの。RC を持たないユニットは対象外）を1体選ぶ（出典: atwiki/page-910「ライドしていない敵軍Sユニットを1体選び」・カード評価「RCをもってないSユニットを強制的にライドさせる事は公式の回答で出来ない」）", () => {
     const s = pick(nc(enemy), "SPEC-VEHICLE:free");
     expectChoiceFrom(s, "player1", "RK-180");
     expect(choiceIds(s)).toEqual(["SPEC-ET-RIDER:r1", "SPEC-WB-RIDER:b1"]);
   });
 
-  it.fails("RK-180: NC【神出鬼没】選んだユニットを選んだビークルにライドさせる（バトルエリアのユニットはラッシュエリアに戻ってライドする）（出典: atwiki/page-910「選んだビークルにライドさせる」・カード評価「選んだユニットはラッシュエリアに戻ってビークルにライドする」）", () => {
+  it("RK-180: NC【神出鬼没】選んだユニットを選んだビークルにライドさせる（バトルエリアのユニットはラッシュエリアに戻ってライドする）（出典: atwiki/page-910「選んだビークルにライドさせる」・カード評価「選んだユニットはラッシュエリアに戻ってビークルにライドする」）", () => {
     const s = resolveAll(pick(pick(nc(enemy), "SPEC-VEHICLE:free"), "SPEC-WB-RIDER:b1"));
     expect(zoneOf(s, "player2", "SPEC-WB-RIDER:b1")).toBe("rush");
     expect(cardIn(s, "player2", "SPEC-WB-RIDER:b1")?.mountedOnInstanceId).toBe("SPEC-VEHICLE:free");
@@ -366,7 +366,7 @@ describe("RK-181 仮面ライダーシン", () => {
   const entered = (fillers = 0, p2: Partial<GameState["players"]["player2"]> = {}, command = [...releasedCat("WB", 1), ...releasedCat("ET", 1)]) =>
     enter(board({ battle: fill(fillers), rush: [inst("RK-181", "sn")], command }, p2), "RK-181:sn");
 
-  it.fails("RK-181: 自軍ターン中、バトルエリアに出たとき、WB を持つ自軍コマンドを1つホールドしてもよい（任意）（出典: atwiki/page-761「WBを持つ自軍コマンドを1つホールドしてもよい」）", () => {
+  it("RK-181: 自軍ターン中、バトルエリアに出たとき、WB を持つ自軍コマンドを1つホールドしてもよい（任意）（出典: atwiki/page-761「WBを持つ自軍コマンドを1つホールドしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RK-181");
     expect(choiceIds(s)).toEqual(["TST-OP:cWB0"]);
@@ -378,18 +378,18 @@ describe("RK-181 仮面ライダーシン", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-181");
   });
 
-  it.fails("RK-181: ホールドしたら、このターン SP1/5 になる（5番目に並べば SP1）（出典: atwiki/page-761「SP1/5になり」・R-STK-03）", () => {
+  it("RK-181: ホールドしたら、このターン SP1/5 になる（5番目に並べば SP1）（出典: atwiki/page-761「SP1/5になり」・R-STK-03）", () => {
     const s = settle(pick(entered(4), "TST-OP:cWB0"));
     expect(spOf(s, "player1", "RK-181:sn")).toBe(1);
   });
 
-  it.fails("RK-181: ホールドしたら、これとバトルした S ユニットはバトルに勝っても撃破される（出典: atwiki/page-761「これとバトルしたSユニットは、バトルに勝っても撃破される」）", () => {
+  it("RK-181: ホールドしたら、これとバトルした S ユニットはバトルに勝っても撃破される（出典: atwiki/page-761「これとバトルしたSユニットは、バトルに勝っても撃破される」）", () => {
     let s = settle(pick(entered(0, { battle: [inst("SPEC-E9000", "big")] }), "TST-OP:cWB0"));
     s = resolveAll(attack(s, "RK-181:sn", "SPEC-E9000:big"));
     expect(zoneOf(s, "player2", "SPEC-E9000:big")).toBe("discard");
   });
 
-  it.fails("RK-181: バトルした相手が M ユニットなら、勝った相手は撃破されない（出典: atwiki/page-761「Sユニットは」）", () => {
+  it("RK-181: バトルした相手が M ユニットなら、勝った相手は撃破されない（出典: atwiki/page-761「Sユニットは」）", () => {
     let s = settle(pick(entered(0, { battle: [inst("SPEC-E9000M", "bigm")] }), "TST-OP:cWB0"));
     s = resolveAll(attack(s, "RK-181:sn", "SPEC-E9000M:bigm"));
     expect(zoneOf(s, "player2", "SPEC-E9000M:bigm")).toBe("battle");
@@ -415,7 +415,7 @@ describe("RK-182 Zブリンガー", () => {
   /** BP+3000 された敵軍ユニット（本来 BP2000）。 */
   const enemy = { battle: [{ ...inst("SPEC-E2000", "boost"), bpModifier: 3000 }] };
 
-  it.fails("RK-182: これにライドしているユニットがアタックするとき、敵軍ユニットの BP を本来の値としてバトルする（BP+3000 されていても本来の2000）（出典: atwiki/page-913「敵軍ユニットのBPをカードに表記された本来の値としてバトルする」）", () => {
+  it("RK-182: これにライドしているユニットがアタックするとき、敵軍ユニットの BP を本来の値としてバトルする（BP+3000 されていても本来の2000）（出典: atwiki/page-913「敵軍ユニットのBPをカードに表記された本来の値としてバトルする」）", () => {
     let s = mount(board({ rush: [inst("RK-182", "zb"), inst("SPEC-RIDER3", "r")] }, enemy), "SPEC-RIDER3:r", "RK-182:zb");
     s = act(settle(s), { type: "resolve_ride_off_choice", playerId: "player1", rideOff: false });
     expect(bpOf(s, "player2", "SPEC-E2000:boost")).toBe(5000);

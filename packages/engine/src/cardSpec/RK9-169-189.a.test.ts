@@ -131,7 +131,7 @@ describe("RK-169 仮面ライダーゼロノスVF", () => {
   const charged = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
     chargePower(chargePhase({ rush: [inst("RK-169", "vf")], hand: [inst("TST-OP", "h")], power: powerCards(7), ...p1 }, { power: powerCards(3, "ep"), ...p2 }), "TST-OP:h");
 
-  it.fails("RK-169: 【グランドストライク】自軍パワーゾーンのカードが7枚から8枚になったとき、発動するかを選べる（任意）（出典: atwiki/page-683「8枚になったとき、次の効果を発動できる」）", () => {
+  it("RK-169: 【グランドストライク】自軍パワーゾーンのカードが7枚から8枚になったとき、発動するかを選べる（任意）（出典: atwiki/page-683「8枚になったとき、次の効果を発動できる」）", () => {
     const s = charged();
     expect(s.players.player1.power).toHaveLength(8);
     expectChoiceFrom(s, "player1", "RK-169");
@@ -139,12 +139,12 @@ describe("RK-169 仮面ライダーゼロノスVF", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-169: 【グランドストライク】発動すると相手に1点ダメージを与える（出典: atwiki/page-683「相手に1点ダメージを与える」）", () => {
+  it("RK-169: 【グランドストライク】発動すると相手に1点ダメージを与える（出典: atwiki/page-683「相手に1点ダメージを与える」）", () => {
     const s = settle(confirm(charged()));
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RK-169: 【グランドストライク】発動しなければダメージはない（出典: atwiki/page-683「発動できる」）", () => {
+  it("RK-169: 【グランドストライク】発動しなければダメージはない（出典: atwiki/page-683「発動できる」）", () => {
     const s = settle(skip(charged()));
     expect(damageOf(s, "player2")).toBe(0);
   });
@@ -164,17 +164,17 @@ describe("RK-169 仮面ライダーゼロノスVF", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-169");
   });
 
-  it.fails("RK-169: 【グランドストライク】2体あればそれぞれ発動し、2点ダメージを与えられる（出典: atwiki/page-683 カード評価「効果は重複する」）", () => {
+  it("RK-169: 【グランドストライク】2体あればそれぞれ発動し、2点ダメージを与えられる（出典: atwiki/page-683 カード評価「効果は重複する」）", () => {
     let s = charged({ rush: [inst("RK-169", "vf"), inst("RK-169", "vf2")] });
     expectChoiceFrom(s, "player1", "RK-169");
-    s = confirm(s);
+    s = settle(confirm(s));
     expectChoiceFrom(s, "player1", "RK-169");
     s = settle(confirm(s));
     expect(damageOf(s, "player2")).toBe(2);
   });
 
   // faq-rider-2 RK-169 Q「はい、発動します。すべてのカード操作は、同時に複数枚に対して行う場合でも、1枚ごとに実行しているものとして扱います。」
-  it.fails("RK-169: 公式Q&A — パワーゾーン9枚のとき RS-043 パトストライカー【ジャッジメントソード】で2枚捨札にすると、8枚の状態を経過したとして発動する（出典: grnrngr/faq-rider-2 RK-169 Q・atwiki/page-683 Q1）", () => {
+  it("RK-169: 公式Q&A — パワーゾーン9枚のとき RS-043 パトストライカー【ジャッジメントソード】で2枚捨札にすると、8枚の状態を経過したとして発動する（出典: grnrngr/faq-rider-2 RK-169 Q・atwiki/page-683 Q1）", () => {
     let s = board({ rush: [inst("RS-043", "pa"), inst("RK-169", "vf")], power: powerCards(9) }, { power: powerCards(3, "ep") });
     s = enter(s, "RS-043:pa");
     expectChoiceFrom(s, "player1", "RS-043");
@@ -253,7 +253,7 @@ describe("RK-171 コントラクト", () => {
     return r.state;
   };
 
-  it.fails("RK-171: 本来の特徴に「ミラーライダー」を持つ自軍ユニットだけから1体選ぶ（ラッシュエリア・バトルエリア。敵軍・ミラーライダーでないものは対象外。選ばないことはできない）（出典: atwiki/page-902「本来の特徴に「ミラーライダー」を持つ自軍ユニットを1体選ぶ」）", () => {
+  it("RK-171: 本来の特徴に「ミラーライダー」を持つ自軍ユニットだけから1体選ぶ（ラッシュエリア・バトルエリア。敵軍・ミラーライダーでないものは対象外。選ばないことはできない）（出典: atwiki/page-902「本来の特徴に「ミラーライダー」を持つ自軍ユニットを1体選ぶ」）", () => {
     const s = used({ rush: [inst("RK-067", "kn"), inst("SPEC-MM", "mm")], battle: [inst("SPEC-MR", "mr")] }, { rush: [inst("RK-038", "eg")] });
     expectChoiceFrom(s, "player1", "RK-171");
     expect(choiceIds(s)).toEqual(["RK-067:kn", "SPEC-MR:mr"]);
@@ -270,7 +270,7 @@ describe("RK-171 コントラクト", () => {
     return enter(s, "RK-067:kn");
   };
 
-  it.fails("RK-171: このターン、選んだユニット（RK-067 仮面ライダーナイト）は、「ダークウイング」のかわりに本来の特徴に「ミラーモンスター」を持つユニットからコンビネーションしても【飛翔斬】を発動できる（出典: atwiki/page-902・カード評価「ミラーモンスターであれば何であっても能力が発動できるようになる」）", () => {
+  it("RK-171: このターン、選んだユニット（RK-067 仮面ライダーナイト）は、「ダークウイング」のかわりに本来の特徴に「ミラーモンスター」を持つユニットからコンビネーションしても【飛翔斬】を発動できる（出典: atwiki/page-902・カード評価「ミラーモンスターであれば何であっても能力が発動できるようになる」）", () => {
     const s = knightAfter("SPEC-MM");
     expectChoiceFrom(s, "player1", "RK-067");
   });
@@ -280,12 +280,12 @@ describe("RK-171 コントラクト", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-067");
   });
 
-  it.fails("RK-171: 本来の特徴に「ミラーモンスター」を持たないユニットからのコンビネーションでは発動しない（出典: atwiki/page-902「本来の特徴に「ミラーモンスター」を持つユニットからコンビネーションすれば」）", () => {
+  it("RK-171: 本来の特徴に「ミラーモンスター」を持たないユニットからのコンビネーションでは発動しない（出典: atwiki/page-902「本来の特徴に「ミラーモンスター」を持つユニットからコンビネーションすれば」）", () => {
     const s = knightAfter("SPEC-NOT-MM");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-067");
   });
 
-  it.fails("RK-171: 選んでいない別のミラーライダーには効かない（出典: atwiki/page-902「選んだユニットは」）", () => {
+  it("RK-171: 選んでいない別のミラーライダーには効かない（出典: atwiki/page-902「選んだユニットは」）", () => {
     let s = pick(used({ rush: [inst("RK-067", "kn"), inst("SPEC-MR", "mr"), inst("SPEC-MM", "p"), inst("RK-067", "kn2")] }), "SPEC-MR:mr");
     s = toPhase(settle(s), "player1", "battle");
     s = passEntry(enter(s, "SPEC-MM:p"));
@@ -293,7 +293,7 @@ describe("RK-171 コントラクト", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-067");
   });
 
-  it.fails("RK-171: 特徴で指定されたユニット（RK-033 仮面ライダー龍騎「特徴「ドラゴン」を持つユニットから」）も、ミラーモンスターから SP1 を得る（出典: atwiki/page-902「指定されたユニットからコンビネーションしたときに発動できる効果名を持つ効果」・カード評価「ドラグレッダーなどの補助効果が高いミラーモンスターとコンビネーションしたい場合」）", () => {
+  it("RK-171: 特徴で指定されたユニット（RK-033 仮面ライダー龍騎「特徴「ドラゴン」を持つユニットから」）も、ミラーモンスターから SP1 を得る（出典: atwiki/page-902「指定されたユニットからコンビネーションしたときに発動できる効果名を持つ効果」・カード評価「ドラグレッダーなどの補助効果が高いミラーモンスターとコンビネーションしたい場合」）", () => {
     let s = pick(used({ rush: [inst("RK-033", "ry"), inst("SPEC-MM", "p")] }), "RK-033:ry");
     s = toPhase(settle(s), "player1", "battle");
     s = passEntry(enter(s, "SPEC-MM:p"));
@@ -328,12 +328,12 @@ describe("RK-172 ルリオオカミ", () => {
   };
   const DECK = [inst("SPEC-C1", "d1"), inst("SPEC-C3", "d3"), inst("SPEC-OP4", "d4"), inst("SPEC-C5", "d5")];
 
-  it.fails("RK-172: ※カウンター — 敵軍ターン中、自軍ユニットがアタックされたとき使える（出典: atwiki/page-906「これは自軍ユニットがアタックされたとき発動できる」）", () => {
+  it("RK-172: ※カウンター — 敵軍ターン中、自軍ユニットがアタックされたとき使える（出典: atwiki/page-906「これは自軍ユニットがアタックされたとき発動できる」）", () => {
     const s = attacked(DECK);
     expect(legal(s).some((a) => a.playerId === "player1" && ((a.type === "play_counter" && a.instanceId === "RK-172:rw") || (a.type === "initiate_command_payment" && "sourceInstanceId" in a && a.sourceInstanceId === "RK-172:rw")))).toBe(true);
   });
 
-  it.fails("RK-172: 山札の上から3枚をオモテにし、アタックしてきたユニットの必要パワーの数字（3）以上のカード（オペレーションを含む）をすべて手札に加え、残りは山札に戻す（出典: atwiki/page-906「アタックしてきたユニットの必要パワーの数字以上の必要パワーの数字を持つカードをすべて自分の手札に加え、それ以外は山札に戻してシャッフルする」）", () => {
+  it("RK-172: 山札の上から3枚をオモテにし、アタックしてきたユニットの必要パワーの数字（3）以上のカード（オペレーションを含む）をすべて手札に加え、残りは山札に戻す（出典: atwiki/page-906「アタックしてきたユニットの必要パワーの数字以上の必要パワーの数字を持つカードをすべて自分の手札に加え、それ以外は山札に戻してシャッフルする」）", () => {
     const s = resolveAll(use(attacked(DECK)));
     expect(zoneOf(s, "player1", "SPEC-C3:d3")).toBe("hand");
     expect(zoneOf(s, "player1", "SPEC-OP4:d4")).toBe("hand");
@@ -342,19 +342,19 @@ describe("RK-172 ルリオオカミ", () => {
     expect(s.players.player1.deck).toHaveLength(2);
   });
 
-  it.fails("RK-172: 1枚以上手札に加えたなら、そのバトルは行われない（アタックされたユニットは撃破されない）（出典: atwiki/page-906「この効果で1枚以上のカードを手札に加えたなら、そのバトルは行われない」）", () => {
+  it("RK-172: 1枚以上手札に加えたなら、そのバトルは行われない（アタックされたユニットは撃破されない）（出典: atwiki/page-906「この効果で1枚以上のカードを手札に加えたなら、そのバトルは行われない」）", () => {
     const s = resolveAll(use(attacked(DECK)));
     expect(zoneOf(s, "player1", "TST-UNIT-0:t")).toBe("battle");
     expect(zoneOf(s, "player1", "RK-172:rw")).toBe("discard");
   });
 
-  it.fails("RK-172: 1枚も手札に加えなければ、オモテにしたカードは山札に戻り、バトルは行われる（出典: atwiki/page-906・カード評価「一枚も手札を増やせずにバトルも続行という結果になりかねない」）", () => {
+  it("RK-172: 1枚も手札に加えなければ、オモテにしたカードは山札に戻り、バトルは行われる（出典: atwiki/page-906・カード評価「一枚も手札を増やせずにバトルも続行という結果になりかねない」）", () => {
     const s = resolveAll(use(attacked([inst("SPEC-C1", "d1"), inst("SPEC-OP2", "d2"), inst("SPEC-C3", "d3"), inst("SPEC-C5", "d5")], "SPEC-ATK7")));
     expect(s.players.player1.deck).toHaveLength(4);
     expect(zoneOf(s, "player1", "TST-UNIT-0:t")).toBe("discard");
   });
 
-  it.fails("RK-172: 必要パワー「7+」のユニットにアタックされたときは、必要パワーの数字7以上のカードだけを手札に加える（出典: atwiki/page-906「必要パワーの数字」）", () => {
+  it("RK-172: 必要パワー「7+」のユニットにアタックされたときは、必要パワーの数字7以上のカードだけを手札に加える（出典: atwiki/page-906「必要パワーの数字」）", () => {
     const s = resolveAll(use(attacked([inst("SPEC-C5", "d5"), inst("SPEC-ATK7", "d7"), inst("SPEC-C1", "d1")], "SPEC-ATK7")));
     expect(zoneOf(s, "player1", "SPEC-ATK7:d7")).toBe("hand");
     expect(zoneOf(s, "player1", "SPEC-C5:d5")).toBe("deck");
@@ -379,14 +379,14 @@ describe("RK-173 鬼の鎧", () => {
     return r.state;
   };
 
-  it.fails("RK-173: 自軍 S ユニットだけから1体選ぶ（M ユニットは対象外。選ばないことはできない）（出典: atwiki/page-907「自軍Sユニットを選ぶ」）", () => {
+  it("RK-173: 自軍 S ユニットだけから1体選ぶ（M ユニットは対象外。選ばないことはできない）（出典: atwiki/page-907「自軍Sユニットを選ぶ」）", () => {
     const s = armored();
     expectChoiceFrom(s, "player1", "RK-173");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:u"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-173: 選んだユニットをこのカードに重ねる（鬼の鎧はユニットの下に置かれ、捨札にならない）（出典: atwiki/page-907「このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる」・RK-013 Jパワーと同じ扱い）", () => {
+  it("RK-173: 選んだユニットをこのカードに重ねる（鬼の鎧はユニットの下に置かれ、捨札にならない）（出典: atwiki/page-907「このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる」・RK-013 Jパワーと同じ扱い）", () => {
     const s = settle(pick(armored(), "TST-UNIT-0:u"));
     expect((cardIn(s, "player1", "TST-UNIT-0:u")?.stackedCards ?? []).map((c) => c.cardId)).toEqual(["RK-173"]);
     expect(zoneOf(s, "player1", "RK-173:oy")).toBeNull();
@@ -398,7 +398,7 @@ describe("RK-173 鬼の鎧", () => {
     return st({ activePlayer, player1: { battle: [{ ...inst("TST-UNIT-0", "u"), stackedCards: stacked }], command, deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } }, EXTRA);
   };
 
-  it.fails("RK-173: 重ねたユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつき BP+1000 される（出典: atwiki/page-907「敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される」）", () => {
+  it("RK-173: 重ねたユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつき BP+1000 される（出典: atwiki/page-907「敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される」）", () => {
     const s = withArmor("player2", [...releasedCat("MA", 2), { ...inst("TST-OP", "h"), commandHeld: true }]);
     expect(bpOf(s, "player1", "TST-UNIT-0:u")).toBe(3000);
   });
@@ -408,12 +408,12 @@ describe("RK-173 鬼の鎧", () => {
     expect(bpOf(s, "player1", "TST-UNIT-0:u")).toBe(1000);
   });
 
-  it.fails("RK-173: 1体のユニットに2枚重ねると、効果も2つ分になる（出典: atwiki/page-907 コメント欄「つけられる」）", () => {
+  it("RK-173: 1体のユニットに2枚重ねると、効果も2つ分になる（出典: atwiki/page-907 コメント欄「つけられる」）", () => {
     const s = withArmor("player2", releasedCat("MA", 2), 2);
     expect(bpOf(s, "player1", "TST-UNIT-0:u")).toBe(5000);
   });
 
-  it.fails("RK-173: 重ねたユニットがユニットでなくなる（撃破される）とき、このカードは捨札になる（出典: atwiki/page-907「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）", () => {
+  it("RK-173: 重ねたユニットがユニットでなくなる（撃破される）とき、このカードは捨札になる（出典: atwiki/page-907「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）", () => {
     let s = st({ activePlayer: "player2", player1: { battle: [{ ...inst("TST-UNIT-0", "u"), stackedCards: [inst("RK-173", "oy")] }], deck: deckCards(3) }, player2: { battle: [inst("SPEC-BIG", "atk")], deck: deckCards(3, "e") } }, EXTRA);
     s = resolveAll(attack(s, "SPEC-BIG:atk", "TST-UNIT-0:u", "player2"));
     expect(zoneOf(s, "player1", "TST-UNIT-0:u")).toBe("discard");
@@ -453,28 +453,28 @@ describe("RK-174 プットオン", () => {
     return r.state;
   };
 
-  it.fails("RK-174: カード名に「RF」を含む自軍ユニット（ラッシュエリア・バトルエリア）だけから選ぶ（任意）（出典: atwiki/page-908「カード名に「RF（ライダーフォーム）」を含む自軍ユニットを1体選び、手札に戻してもよい」）", () => {
+  it("RK-174: カード名に「RF」を含む自軍ユニット（ラッシュエリア・バトルエリア）だけから選ぶ（任意）（出典: atwiki/page-908「カード名に「RF（ライダーフォーム）」を含む自軍ユニットを1体選び、手札に戻してもよい」）", () => {
     const s = putOn();
     expectChoiceFrom(s, "player1", "RK-174");
     expect(choiceIds(s)).toEqual(["RK-054:grf", "RK-057:zrf"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-174: 戻したら、自軍パワーゾーンのオモテ向きの「MF」を含むユニットカードから1枚選ぶ（ウラ向きは対象外。戻した RF と別のライダーでもよい）（出典: atwiki/page-908・カード評価「同じユニットのものでなくてもいい」）", () => {
+  it("RK-174: 戻したら、自軍パワーゾーンのオモテ向きの「MF」を含むユニットカードから1枚選ぶ（ウラ向きは対象外。戻した RF と別のライダーでもよい）（出典: atwiki/page-908・カード評価「同じユニットのものでなくてもいい」）", () => {
     const s = pick(putOn(), "RK-057:zrf");
     expect(zoneOf(s, "player1", "RK-057:zrf")).toBe("hand");
     expectChoiceFrom(s, "player1", "RK-174");
     expect(choiceIds(s)).toEqual(["RK-053:gmf2", "RK-056:zmf"]);
   });
 
-  it.fails("RK-174: 選んだ MF のカードを自軍ラッシュエリアに出し、その後このカードを自軍パワーゾーンに置く（パワーゾーンの枚数は減らない）（出典: atwiki/page-908「自軍ラッシュエリアに出す。その後、このカードを自軍パワーゾーンに置く」・カード評価「パワーの減少はない」）", () => {
+  it("RK-174: 選んだ MF のカードを自軍ラッシュエリアに出し、その後このカードを自軍パワーゾーンに置く（パワーゾーンの枚数は減らない）（出典: atwiki/page-908「自軍ラッシュエリアに出す。その後、このカードを自軍パワーゾーンに置く」・カード評価「パワーの減少はない」）", () => {
     const s = resolveAll(pick(pick(putOn(), "RK-057:zrf"), "RK-053:gmf2"));
     expect(zoneOf(s, "player1", "RK-053:gmf2")).toBe("rush");
     expect(zoneOf(s, "player1", "RK-174:po")).toBe("power");
     expect(s.players.player1.power).toHaveLength(4);
   });
 
-  it.fails("RK-174: RF を戻さなければ効果はそこで終わり、このカードはパワーゾーンに置かれない（出典: atwiki/page-908 コメント欄「ユーザーレベルFAQの確認済みの項…オペの空打ちになり、途中で効果が終わる」）", () => {
+  it("RK-174: RF を戻さなければ効果はそこで終わり、このカードはパワーゾーンに置かれない（出典: atwiki/page-908 コメント欄「ユーザーレベルFAQの確認済みの項…オペの空打ちになり、途中で効果が終わる」）", () => {
     const s = resolveAll(skip(putOn()));
     expect(zoneOf(s, "player1", "RK-174:po")).toBe("discard");
     expect(s.players.player1.power).toHaveLength(4);
@@ -496,7 +496,7 @@ describe("RK-175 仮面ライダー新1号", () => {
   const rc = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
     settle(rcRideOff(board({ ...p1, rush: [inst("RK-175", "s1"), inst("SPEC-VEHICLE", "v"), ...(p1.rush ?? [])] }, p2), "RK-175:s1", "SPEC-VEHICLE:v"));
 
-  it.fails("RK-175: RC — このターン、敵軍ユニットのレジストは無効になる（撃破された敵軍のレジスト持ちはホールドして留まれない）（出典: atwiki/page-1084「このターン、敵軍ユニットのレジスト…の効果は無効になる」）", () => {
+  it("RK-175: RC — このターン、敵軍ユニットのレジストは無効になる（撃破された敵軍のレジスト持ちはホールドして留まれない）（出典: atwiki/page-1084「このターン、敵軍ユニットのレジスト…の効果は無効になる」）", () => {
     let s = rc({}, { battle: [inst("RK-186", "j")] });
     s = attack(s, "RK-175:s1", "RK-186:j");
     expect(registerOffered(s, "player2")).toBe(false);
@@ -510,14 +510,14 @@ describe("RK-175 仮面ライダー新1号", () => {
     expect(registerOffered(s, "player2")).toBe(true);
   });
 
-  it.fails("RK-175: RC — このターン、敵軍ユニットのスクラムは無効になる（CN が1多いユニットが次に並んでいてもアタックできる）（出典: atwiki/page-1084「スクラム…の効果は無効になる」・R-KW-SCRUM-01）", () => {
+  it("RK-175: RC — このターン、敵軍ユニットのスクラムは無効になる（CN が1多いユニットが次に並んでいてもアタックできる）（出典: atwiki/page-1084「スクラム…の効果は無効になる」・R-KW-SCRUM-01）", () => {
     const enemy = { battle: [inst("SPEC-SCRUM1", "sc"), inst("SPEC-CN2", "cn")] };
     expect(targetsOf(rc({}, enemy), "RK-175:s1")).toContain("SPEC-SCRUM1:sc");
     const plain = enter(board({ rush: [inst("RK-175", "s1")] }, enemy), "RK-175:s1");
     expect(targetsOf(plain, "RK-175:s1")).not.toContain("SPEC-SCRUM1:sc");
   });
 
-  it.fails("RK-175: RC — これがアタックしなかったとき、次にコンビネーションする S ユニットの BP は「そのユニットの BP＋新1号の BP」になる（出典: atwiki/page-1084「このユニットの次にコンビネーションするSユニットのBPは、このユニットのBPを「＋」した値になる」）", () => {
+  it("RK-175: RC — これがアタックしなかったとき、次にコンビネーションする S ユニットの BP は「そのユニットの BP＋新1号の BP」になる（出典: atwiki/page-1084「このユニットの次にコンビネーションするSユニットのBPは、このユニットのBPを「＋」した値になる」）", () => {
     let s = rc({ rush: [inst("TST-UNIT-0", "next")] });
     s = enter(passEntry(s), "TST-UNIT-0:next");
     expect(bpOf(s, "player1", "TST-UNIT-0:next")).toBe(5000);
@@ -537,7 +537,7 @@ describe("RK-175 仮面ライダー新1号", () => {
     expect(bpOf(s, "player1", "TST-UNIT-0:after")).toBe(1000);
   });
 
-  it.fails("RK-175: 「値になる」ので、その後の BP の増減は受けない（出典: atwiki/page-1084 カード評価「BPを「＋」した値になる」・atwiki/page-1000 コメント欄「新1号のテキストは値に「なる」だから変動しなくなる」・R-BP-01）", () => {
+  it("RK-175: 「値になる」ので、その後の BP の増減は受けない（出典: atwiki/page-1084 カード評価「BPを「＋」した値になる」・atwiki/page-1000 コメント欄「新1号のテキストは値に「なる」だから変動しなくなる」・R-BP-01）", () => {
     let s = rc({ rush: [inst("TST-UNIT-0", "next")] });
     s = enter(passEntry(s), "TST-UNIT-0:next");
     const boosted = { ...s, players: { ...s.players, player1: { ...s.players.player1, battle: s.players.player1.battle.map((c) => (c.instanceId === "TST-UNIT-0:next" ? { ...c, bpModifier: -2000 } : c)) } } };
@@ -547,7 +547,7 @@ describe("RK-175 仮面ライダー新1号", () => {
   it.todo(
     "RK-175: 公式Q&A — BK-001 タイフーン（1号）で、山札から新1号を「仮面ライダー1号」として選んで手札に加えられる（出典: atwiki/page-1084 Q1）— BK-001 は本範囲外のカード（「仮面ライダー1号」として使えることは RK-176 の（）書きで確かめる）",
   );
-  it.fails("RK-175: RC — このターン、敵軍ユニットのチェイスは無効になる（ライド中に撃破されても乗り換えられない）（出典: atwiki/page-1084「チェイスの効果は無効になる」・R-KW-CHASE-01）", () => {
+  it("RK-175: RC — このターン、敵軍ユニットのチェイスは無効になる（ライド中に撃破されても乗り換えられない）（出典: atwiki/page-1084「チェイスの効果は無効になる」・R-KW-CHASE-01）", () => {
     const chaser = { ...inst("SPEC-CHASER", "c"), mountedOnInstanceId: "SPEC-VEHICLE:ev1" };
     const enemy = { battle: [inst("SPEC-VEHICLE", "ev1"), chaser], rush: [inst("SPEC-VEHICLE", "ev2")] };
     const chaseOffered = (s: GameState) => legal(s).some((a) => a.type === "resolve_chase" && a.playerId === "player2");

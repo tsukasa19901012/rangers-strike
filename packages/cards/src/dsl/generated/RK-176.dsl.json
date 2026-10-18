@@ -42,25 +42,9 @@
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "hold_command",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk9::RK-176::rider_kick",
+          "duration": "turn"
         }
       ],
       "optional": false,

@@ -18,7 +18,8 @@ export function hasKamenRiderTitle(instance: Pick<CardInstance, "stackedCards"> 
 /** ユニットでなくなったら捨札になる、ユニットの下に重ねたオペレーション（J パワー・仮面ライダーの称号・イマジンとの契約）。 */
 export function isStackedUnderUnitOperation(cardId: string): boolean {
   // RK-088 イマジンとの契約も同じ（atwiki/page-710「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）。
-  return cardId === J_POWER_CARD_ID || isSameCardIdentity(cardId, KAMEN_TITLE_CARD_ID) || isSameCardIdentity(cardId, "RK-088");
+  // RK-173 鬼の鎧も同じ（atwiki/page-907「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）。
+  return cardId === J_POWER_CARD_ID || isSameCardIdentity(cardId, KAMEN_TITLE_CARD_ID) || isSameCardIdentity(cardId, "RK-088") || isSameCardIdentity(cardId, "RK-173");
 }
 const GIANT_BOMB_CARD_ID = "RS-255";
 

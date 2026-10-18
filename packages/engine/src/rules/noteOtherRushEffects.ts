@@ -141,37 +141,7 @@ export function resolveNoteOtherOnRushEffects(
     }
   }
 
-  // RK-185 (レッドドラス): on rush → send 1 enemy 仮面ライダー S-unit to deck bottom
-  if (cardId === "RK-185") {
-    const enemyId = opponent(rusherPlayerId);
-    const enemy = nextState.players[enemyId];
-    const targets = [...enemy.rush, ...enemy.battle].filter((c) => {
-      const def = getDefinition(nextState.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "S" && def.features?.includes("仮面ライダー");
-    });
-    if (targets.length > 0) {
-      // Auto-pick first target and send to deck bottom
-      const target = targets[0]!;
-      const fromZone = enemy.rush.some((c) => c.instanceId === target.instanceId)
-        ? "rush"
-        : "battle";
-      const [, newZone] = removeAt(
-        fromZone === "rush" ? enemy.rush : enemy.battle,
-        (fromZone === "rush" ? enemy.rush : enemy.battle).findIndex(
-          (c) => c.instanceId === target.instanceId,
-        ),
-      );
-      const updatedEnemy =
-        fromZone === "rush"
-          ? { ...enemy, rush: newZone, deck: [target, ...enemy.deck] }
-          : { ...enemy, battle: newZone, deck: [target, ...enemy.deck] };
-      nextState = {
-        ...nextState,
-        ...updatePlayer(nextState, enemyId, updatedEnemy),
-      };
-      logs.push(buildLogEntry(rusherPlayerId, "rush_effect", cardId, nextState.definitions, "red_dorace_deck_bottom"));
-    }
-  }
+  // RK-185 レッドドラス の※（ラッシュしたとき、特徴「仮面ライダー」の敵軍 S ユニットを選んで山札の下へ）は rules/rk/rk9UnitEffects.ts（rk9:: キーワード）。
 
   // RS-188 (アチャとコチャ): on rush → if power ≥ 7, discard face-up cards until 6 remain
   if (cardId === "RS-188") {

@@ -136,6 +136,7 @@ import { canConfirmRk5Choice, isRk5BattleCounterCard, isRk5ChoiceEffect, rk5Batt
 import { canConfirmRk6Choice, isRk6ChoiceEffect } from "../rules/rk/rk6UnitEffects";
 import { canConfirmRk7Choice, isRk7ChoiceEffect } from "../rules/rk/rk7UnitEffects";
 import { canConfirmRk8Choice, isRk8ChoiceEffect } from "../rules/rk/rk8UnitEffects";
+import { canConfirmRk9Choice, isRk9BattleCounterCard, isRk9ChoiceEffect, rk9BattleCounterConditionMet } from "../rules/rk/rk9UnitEffects";
 import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
 import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
@@ -322,6 +323,16 @@ function appendBattleReactionActions(
             substituteInstanceId: recruit,
           });
         }
+      }
+      continue;
+    }
+    // RK-172 ルリオオカミ（自軍ユニットがアタックされたとき。rules/rk/rk9UnitEffects.ts）。
+    if (isRk9BattleCounterCard(card.cardId)) {
+      if (!rk9BattleCounterConditionMet(state, playerId, card.cardId, pending)) continue;
+      if (!canPlayHandCounter(state, playerId, card.instanceId)) continue;
+      appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
+      if (canExecuteHandCounter(state, playerId, card.instanceId)) {
+        actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
       }
       continue;
     }
@@ -1264,6 +1275,15 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk3Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk9ChoiceEffect(pending.effectId)) {
+    // ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 の選択（rules/rk/rk9UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk9Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

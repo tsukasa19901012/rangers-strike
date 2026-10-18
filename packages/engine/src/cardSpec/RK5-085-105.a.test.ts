@@ -371,7 +371,7 @@ describe("RK-089 乗車拒否", () => {
 
   // grnrngr/faq-rider-2 RK-089 Q1「はい、発動します。すべてのカード操作は、同時に複数枚に対して行う場合でも、1枚ごとに実行しているものとして扱います。」
   // Q2「…２枚のカードを自軍パワーゾーンに置くことが決定したのち、その２枚のカードを１枚ずつパワーゾーンに置いてゆく」
-  it.fails("RK-089: 公式Q&A — 乗車拒否で自軍パワーゾーンが6枚から9枚になるとき、8枚の状態を経過したとして RK-169 仮面ライダーゼロノスVF【グランドストライク】が発動する（出典: grnrngr/faq-rider-2 RK-089 Q1・Q2）", () => {
+  it("RK-089: 公式Q&A — 乗車拒否で自軍パワーゾーンが6枚から9枚になるとき、8枚の状態を経過したとして RK-169 仮面ライダーゼロノスVF【グランドストライク】が発動する（出典: grnrngr/faq-rider-2 RK-089 Q1・Q2）", () => {
     let s = played(
       rushPhase(
         { hand: [inst("RK-089", "jk")], rush: [inst("RK-169", "vf")], command: releasedCat("OT", 1), power: powerCards(6), deck: [inst("SPEC-TRAIN", "t1"), inst("SPEC-TRAIN", "t2"), inst("SPEC-TRAIN", "t3"), inst("TST-OP", "d4")] },
