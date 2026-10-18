@@ -487,9 +487,23 @@ describe("RK-005 超電子ダイナモ", () => {
     expect(damageOf(s, "player2")).toBe(0);
   });
 
-  it.todo(
-    "RK-005: 公式Q&A — 【ZOキック】で撃破された仮面ライダーZO 自身の撃破は「SPが空欄ではないユニットを1体撃破した」とはみなさない（出典: atwiki/page-193 Q1「いいえ、それはできません」）— RK-183 仮面ライダーZO の【ZOキック】が本範囲外で、公開 API での再現手順が組めないため",
-  );
+  // atwiki/page-193 Q1（RK-183 側の atwiki/page-1000 Q1 と同じ公式回答）「いいえ、それはできません。」
+  it.fails("RK-005: 公式Q&A — 超電子ダイナモを使った RK-183 仮面ライダーZO が【ZOキック】で SP のあるユニットを4体撃破して4点与えたあと、BP0 になって撃破されても、それを「撃破した」とみなして5点目を与えることはない（出典: atwiki/page-193 Q1・atwiki/page-1000 Q1）", () => {
+    const VEH = { id: "SPEC-VEHICLE", name: "SPEC-VEHICLE", type: "vehicle", category: "ET", rarity: "N", expansion: "card-spec", powerCost: 0, size: "S", features: ["メカ"] } as never;
+    const enemy = Array.from({ length: 4 }, (_, i) => inst("TST-UNIT-0", `e${i}`));
+    let s = rushBoard(
+      { hand: [inst("RK-005", "dy")], rush: [inst("RK-183", "zo"), inst("SPEC-VEHICLE", "v")], command: releasedCat("ET", 1) },
+      { battle: enemy, power: powerCards(6, "epw") },
+    );
+    s = { ...s, definitions: { ...s.definitions, "SPEC-VEHICLE": VEH } };
+    s = resolveAll(played(s, "RK-005:dy"), ["RK-183:zo"]);
+    s = nextPhase(s);
+    s = act(s, { type: "mount_ride", playerId: "player1", riderInstanceId: "RK-183:zo", vehicleInstanceId: "SPEC-VEHICLE:v" });
+    s = settle(act(s, { type: "resolve_ride_off_choice", playerId: "player1", rideOff: true }));
+    for (const e of enemy) s = resolveAll(attack(s, "RK-183:zo", e.instanceId));
+    expect(zoneOf(s, "player1", "RK-183:zo")).toBe("discard");
+    expect(damageOf(s, "player2")).toBe(4);
+  });
   it.todo(
     "RK-005: 公式Q&A — 撃破する効果を持つユニット（デカマスター【ディーソードベガ】・グリーンサイ【サイカッター】・モモレンジャー【ゴレンジャーハリケーン】）に使えば、効果で撃破したユニット1体につき1点（出典: grnrngr/faq-rider-1 RK-005 Q3〜Q6・grnrngr/faq-rider-2 RK-061 Q）— 撃破効果の持ち主の記録が RS-259/RS-279/RS-319 側の範囲で、それらのカードは特徴「改造人間」を持たないため（RS5-243-263.c・RS5-264-284.c の todo と同じ）",
   );

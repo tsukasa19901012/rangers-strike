@@ -140,9 +140,15 @@ describe("RK-029 仮面ライダークウガMF", () => {
     expect(bpOf(s, "player1", "RK-029:k")).toBe(3000);
   });
 
-  it.todo(
-    "RK-029: 公式Q&A（相互参照）— クウガMF を「RK-271 仮面ライダークウガRM」の追加条件として指定されたユニットとして扱い、ベリー（RK-188）でクウガRM を出せる（出典: atwiki/page-217 Q1）— RK-188・RK-271 は本範囲外のカード",
-  );
+  // atwiki/page-217 Q1（RK-188 側の atwiki/page-916 Q1 と同じ公式回答）「はい、できます。」
+  it.fails("RK-029: 公式Q&A（相互参照）— クウガMF を「RK-271 仮面ライダークウガRM」の追加条件として指定されたユニットとして扱い、敵軍ターンにアタックされたときベリー（RK-188）でクウガRM を出せる（出典: atwiki/page-217 Q1・atwiki/page-916 Q1）", () => {
+    let s = st({ activePlayer: "player2", player1: { battle: [inst("RK-029", "k")], rush: [inst("RK-188", "be")], hand: [inst("RK-271", "rm")], deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-7", "atk")], deck: deckCards(3, "e") } });
+    s = attack(s, "TST-UNIT-7:atk", "RK-029:k", "player2");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-188");
+    expect(choiceIds(s)).toEqual(["RK-271:rm"]);
+    s = settle(pick(s, "RK-271:rm"));
+    expect(zoneOf(s, "player1", "RK-029:k")).toBe("discard");
+  });
   // atwiki/page-217 Q2（RK-163 側の atwiki/page-650 Q1 と同じ公式回答）「はい、撃破されます。」
   it("RK-029: 公式Q&A（相互参照）— 「仮面ライダークウガMF」として使える XG1-068 ディケイド クウガMF も、カード名を指定する効果（RK-163【無意識の記憶力】）の対象になり、敵軍の RK-029 を撃破できる（出典: atwiki/page-217 Q2・atwiki/page-650 Q1）", () => {
     let s = board({ rush: [inst("RK-163", "az"), inst("RK-058", "v")] }, { rush: [inst("RK-029", "k")], discard: [inst("XG1-068", "d")] });
