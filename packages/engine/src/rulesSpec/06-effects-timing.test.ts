@@ -554,9 +554,32 @@ describe("R-TIME-05 1タイミングに複数発動可", () => {
     expect(hasUseAction(s, "player2", "RS-018:n2")).toBe(true);
   });
 
-  it.todo(
-    "R-TIME-05: 「1つのタイミングに発動できるアカネタカは1枚だけ」の例外（出典: atwiki/page-1828）— RK-086 アカネタカのストライクダメージ置換がエンジン未実装",
-  );
+  // 「「1つのタイミングにつき1枚まで」と特記されたカードは例外」(atwiki/page-1828)、
+  // 「（ただし１つのタイミングに発動できる「アカネタカ」は１枚だけとする）」(grnrngr/faq-rider-2 RK-086 の読み替え)
+  it("R-TIME-05: 「1つのタイミングに発動できるアカネタカは1枚だけ」の例外 — 1回のストライクのダメージに1枚目を使ったら、2枚目は使えない（出典: atwiki/page-1828・grnrngr/faq-rider-2 RK-086 読み替え・Q1）", () => {
+    const real = Object.fromEntries(allCardsCatalog.cards.filter((c) => c.id === "RK-086").map((c) => [c.id, c]));
+    let s = st({
+      definitions: { ...defs, ...real },
+      phase: "battle",
+      player1: { battle: [inst("TST-UNIT-0", "striker")], deck: deck(3) },
+      player2: {
+        hand: [inst("RK-086", "a1"), inst("RK-086", "a2")],
+        command: [cmd("TST-OP-MA", "m1"), cmd("TST-OP-MA", "m2")],
+        power: powers(2, "p2pw"),
+        deck: deck(4, "p2dk"),
+      },
+    });
+    s = run(s, { type: "strike", playerId: "player1", instanceId: "TST-UNIT-0:striker" });
+    const useOf = (state: GameState, id: string) =>
+      legal(state).find((a) => a.playerId === "player2" && JSON.stringify(a).includes(id));
+    // 1枚目は使える（どちらも候補に出る）。
+    expect(useOf(s, "RK-086:a1")).toBeDefined();
+    expect(useOf(s, "RK-086:a2")).toBeDefined();
+    s = run(s, useOf(s, "RK-086:a1")!);
+    expect(inZone(s, "player2", "power", "RK-086:a1")).toBe(true);
+    // 同じタイミング（同じストライクのダメージ）に2枚目は使えない。
+    expect(useOf(s, "RK-086:a2")).toBeUndefined();
+  });
 });
 
 describe("R-TIME-06 「フェイズ中」と「フェイズ開始時・終了時」", () => {
