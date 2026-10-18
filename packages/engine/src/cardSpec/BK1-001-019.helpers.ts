@@ -92,8 +92,6 @@ export function searchBeltTests(opts: {
     ...deckCards(3),
   ];
   const usedWith = (p1: Partial<GameState["players"]["player1"]> = {}) => beltUsed(id, opts.cat, opts.cost, { deck: heroDeck(), ...p1 });
-  // 既知の不具合: CARD-BK-001〜008・014 — 2つの効果の選択と「山札から手札に加える」が未実装（DSL は山札の先頭の1枚を手札に加えるだけ）。
-  const t = it.fails;
 
   it(`${id}: カタログ本文・スペックが出典と一致（出典: ${page}）`, () => {
     expectCatalogText(id, opts.text);
@@ -101,20 +99,20 @@ export function searchBeltTests(opts: {
     expectRarityIn(id, [opts.rarity ?? "N"]);
   });
 
-  t(`${id}: 使うと、2つの効果のどちらを発動するかを選ぶ（出典: ${page}「次の効果から1つ選び発動する」）`, () => {
+  it(`${id}: 使うと、2つの効果のどちらを発動するかを選ぶ（出典: ${page}「次の効果から1つ選び発動する」）`, () => {
     const s = usedWith();
     expectChoiceFrom(s, "player1", id);
     expect(choiceIds(s)).toEqual(["search", opts.otherMode].sort());
   });
 
-  t(`${id}: ◎1つ目 — 自軍山札の「${opts.heroName}」のカードから1枚選べる（任意）（出典: ${page}「自軍山札から「${opts.heroName}」のカードを1枚選び…手札に加えてもよい」・atwiki/page-1084 Q1（「これは「○○」として使える」カードは山札でも選べる）・${opts.othersWhy}）`, () => {
+  it(`${id}: ◎1つ目 — 自軍山札の「${opts.heroName}」のカードから1枚選べる（任意）（出典: ${page}「自軍山札から「${opts.heroName}」のカードを1枚選び…手札に加えてもよい」・atwiki/page-1084 Q1（「これは「○○」として使える」カードは山札でも選べる）・${opts.othersWhy}）`, () => {
     const s = pick(usedWith(), "search");
     expectChoiceFrom(s, "player1", id);
     expect(choiceIds(s)).toEqual(opts.heroes.map((h, i) => `${h}:h${i}`).sort());
     expect(canSkip(s)).toBe(true);
   });
 
-  t(`${id}: ◎1つ目 — 選んだカードは相手に見せてから手札に加わる（山札から離れ、このカードは捨札）（出典: ${page}「相手に見せてから手札に加えて」）`, () => {
+  it(`${id}: ◎1つ目 — 選んだカードは相手に見せてから手札に加わる（山札から離れ、このカードは捨札）（出典: ${page}「相手に見せてから手札に加えて」）`, () => {
     const hero = `${opts.heroes[0]}:h0`;
     const s = resolveAll(pick(pick(usedWith(), "search"), hero));
     expect(zoneOf(s, "player1", hero)).toBe("hand");
@@ -123,7 +121,7 @@ export function searchBeltTests(opts: {
     expect(logged(s, "reveal")).toBe(true);
   });
 
-  t(`${id}: ◎1つ目 — 手札に加えなくてもよい（手札・山札の枚数は変わらない）（出典: ${page}「手札に加えてもよい」）`, () => {
+  it(`${id}: ◎1つ目 — 手札に加えなくてもよい（手札・山札の枚数は変わらない）（出典: ${page}「手札に加えてもよい」）`, () => {
     const s = resolveAll(skip(pick(usedWith(), "search")));
     expect(s.players.player1.hand).toHaveLength(0);
     expect(s.players.player1.deck).toHaveLength(heroDeck().length);

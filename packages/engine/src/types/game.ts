@@ -698,6 +698,11 @@ export type PendingEffectChoice = {
     /** RK-324: 撃破したカードの持ち主。 */
     owner?: PlayerId;
   };
+  /** ベルトコレクション BK-001〜BK-019 の選択の続き（rules/bk/bk1Effects.ts）。 */
+  bk1Meta?: {
+    /** BK-006: 選んだ敵軍の「航空機」の M ユニット。 */
+    enemy?: string;
+  };
   /** スペシャルメタルエディション RM-043〜RM-062 の選択の続き（rules/rm/rm3Effects.ts）。 */
   rm3Meta?: {
     /** RM-045: 相手がこれまでに選んだ敵軍 S ユニット。 */
@@ -1386,7 +1391,7 @@ export type EffectRushTrigger = {
 };
 
 /** 効果でラッシュエリアに出せるカードの置き場。 */
-export type EffectRushSourceZone = "command" | "hand" | "discard" | "power" | "deck";
+export type EffectRushSourceZone = "command" | "hand" | "discard" | "power" | "deck" | "operation";
 
 export type PendingEffectRush = {
   /** 出すユニットの持ち主。 */

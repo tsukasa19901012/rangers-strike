@@ -30,29 +30,12 @@
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "self",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "modify_bp",
-              "target": {
-                "type": "trigger_source"
-              },
-              "amount": 1000,
-              "duration": "turn"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "bk1::BK-004::condorer",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

@@ -72,7 +72,7 @@ describe("BK-001 タイフーン（1号）", () => {
     othersWhy: "grnrngr/faq-rider-2 SK-002 Q2（括弧書きもカード名に含むので「仮面ライダー1号（THE FIRST）」は別のカード名）",
   });
 
-  it.fails("BK-001: 公式Q&A — 山札の「RK-175 仮面ライダー新1号」を「仮面ライダー1号」として選び、手札に加えられる（出典: atwiki/page-715 Q1・atwiki/page-1084 Q1）", () => {
+  it("BK-001: 公式Q&A — 山札の「RK-175 仮面ライダー新1号」を「仮面ライダー1号」として選び、手札に加えられる（出典: atwiki/page-715 Q1・atwiki/page-1084 Q1）", () => {
     let s = used("BK-001", "ET", 2, { deck: [inst("RK-175", "new1"), ...deckCards(3)] });
     s = pick(s, "search");
     expect(choiceIds(s)).toEqual(["RK-175:new1"]);
@@ -80,7 +80,7 @@ describe("BK-001 タイフーン（1号）", () => {
     expect(zoneOf(s, "player1", "RK-175:new1")).toBe("hand");
   });
 
-  it.fails("BK-001: ◎2つ目 — 選べるのは自軍の S ユニット（ラッシュエリア・バトルエリア）だけ。M ユニット・敵軍のユニット・コマンドゾーンのユニットカードは選べない（出典: atwiki/page-715「自軍Sユニットを1体選ぶ」）", () => {
+  it("BK-001: ◎2つ目 — 選べるのは自軍の S ユニット（ラッシュエリア・バトルエリア）だけ。M ユニット・敵軍のユニット・コマンドゾーンのユニットカードは選べない（出典: atwiki/page-715「自軍Sユニットを1体選ぶ」）", () => {
     const s = pick(
       used("BK-001", "ET", 2, { rush: [inst("SPEC-PLAIN", "a"), inst("SPEC-PLAIN-M", "m")], battle: [inst("SPEC-NOSP", "b")], command: [inst("SPEC-PLAIN", "cmd")] }, { rush: [inst("SPEC-E3000", "e")] }),
       "add_feature",
@@ -90,14 +90,14 @@ describe("BK-001 タイフーン（1号）", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("BK-001: ◎2つ目 — このターン、選んだユニットに特徴「仮面ライダー」が追加される（ほかの自軍ユニットには追加されない）（出典: atwiki/page-715「このターン、選んだユニットは特徴「仮面ライダー」が追加される」）", () => {
+  it("BK-001: ◎2つ目 — このターン、選んだユニットに特徴「仮面ライダー」が追加される（ほかの自軍ユニットには追加されない）（出典: atwiki/page-715「このターン、選んだユニットは特徴「仮面ライダー」が追加される」）", () => {
     let s = used("BK-001", "ET", 2, { rush: [inst("SPEC-PLAIN", "a"), inst("SPEC-NOSP", "o")] });
     s = resolveAll(pick(pick(s, "add_feature"), "SPEC-PLAIN:a"));
     expect(featuresOf(s, "player1", "SPEC-PLAIN:a")).toEqual(["仮面ライダー"]);
     expect(featuresOf(s, "player1", "SPEC-NOSP:o")).toEqual([]);
   });
 
-  it.fails("BK-001: ◎2つ目 — 追加された特徴はターンの終わりに消える（出典: atwiki/page-715「このターン」）", () => {
+  it("BK-001: ◎2つ目 — 追加された特徴はターンの終わりに消える（出典: atwiki/page-715「このターン」）", () => {
     let s = used("BK-001", "ET", 2, { rush: [inst("SPEC-PLAIN", "a")] });
     s = resolveAll(pick(pick(s, "add_feature"), "SPEC-PLAIN:a"));
     s = endTurn(s);
@@ -126,24 +126,24 @@ describe("BK-002 ダブルタイフーン", () => {
 
   const deck = () => [inst("SPEC-PLAIN", "top"), ...deckCards(3)];
 
-  it.fails("BK-002: ◎2つ目 — 自軍山札の上から1枚を見て、山札の上か下かを選ぶ（出典: atwiki/page-716「そのカードを山札の上か下かに戻す」）", () => {
+  it("BK-002: ◎2つ目 — 自軍山札の上から1枚を見て、山札の上か下かを選ぶ（出典: atwiki/page-716「そのカードを山札の上か下かに戻す」）", () => {
     const s = pick(used("BK-002", "ET", 2, { deck: deck() }), "scry");
     expectChoiceFrom(s, "player1", "BK-002");
     expect(choiceIds(s)).toEqual(["deck_bottom", "deck_top"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("BK-002: ◎2つ目 — 下を選べば、見たカードは山札の一番下に移る（出典: atwiki/page-716）", () => {
+  it("BK-002: ◎2つ目 — 下を選べば、見たカードは山札の一番下に移る（出典: atwiki/page-716）", () => {
     const s = resolveAll(pick(pick(used("BK-002", "ET", 2, { deck: deck() }), "scry"), "deck_bottom"));
     expect(deckOrder(s)).toEqual(["TST-OP:dk0", "TST-OP:dk1", "TST-OP:dk2", "SPEC-PLAIN:top"]);
   });
 
-  it.fails("BK-002: ◎2つ目 — 上を選べば、山札はそのまま（出典: atwiki/page-716）", () => {
+  it("BK-002: ◎2つ目 — 上を選べば、山札はそのまま（出典: atwiki/page-716）", () => {
     const s = resolveAll(pick(pick(used("BK-002", "ET", 2, { deck: deck() }), "scry"), "deck_top"));
     expect(deckOrder(s)).toEqual(["SPEC-PLAIN:top", "TST-OP:dk0", "TST-OP:dk1", "TST-OP:dk2"]);
   });
 
-  it.fails("BK-002: ◎2つ目 — 山札が0枚なら何もしない（このカードは捨札）（出典: atwiki/page-716「自軍山札の上から1枚を見て」）", () => {
+  it("BK-002: ◎2つ目 — 山札が0枚なら何もしない（このカードは捨札）（出典: atwiki/page-716「自軍山札の上から1枚を見て」）", () => {
     const s = resolveAll(pick(used("BK-002", "ET", 2, { deck: [] }), "scry"));
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(zoneOf(s, "player1", "BK-002:op")).toBe("discard");
@@ -171,20 +171,20 @@ describe("BK-003 ライドル", () => {
 
   const discard = () => [inst("SPEC-PLAIN", "s"), inst("SPEC-PLAIN-M", "m"), inst("TST-OP", "op2"), inst("RK-323", "v")];
 
-  it.fails("BK-003: ◎2つ目 — 自軍捨札の S ユニットのカードから1枚選ぶ（M ユニット・オペレーション・ビークルは選べない。見送れない）（出典: atwiki/page-717「自軍捨札からSユニットのカードを1枚選び」）", () => {
+  it("BK-003: ◎2つ目 — 自軍捨札の S ユニットのカードから1枚選ぶ（M ユニット・オペレーション・ビークルは選べない。見送れない）（出典: atwiki/page-717「自軍捨札からSユニットのカードを1枚選び」）", () => {
     const s = pick(used("BK-003", "ET", 3, { discard: discard() }), "discard_to_deck_bottom");
     expectChoiceFrom(s, "player1", "BK-003");
     expect(choiceIds(s)).toEqual(["SPEC-PLAIN:s"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("BK-003: ◎2つ目 — 選んだカードは自軍山札の一番下に戻る（出典: atwiki/page-717「自軍山札の下に戻す」）", () => {
+  it("BK-003: ◎2つ目 — 選んだカードは自軍山札の一番下に戻る（出典: atwiki/page-717「自軍山札の下に戻す」）", () => {
     const s = resolveAll(pick(pick(used("BK-003", "ET", 3, { discard: discard() }), "discard_to_deck_bottom"), "SPEC-PLAIN:s"));
     expect(deckOrder(s).at(-1)).toBe("SPEC-PLAIN:s");
     expect(zoneOf(s, "player1", "SPEC-PLAIN-M:m")).toBe("discard");
   });
 
-  it.fails("BK-003: ◎2つ目 — 自軍捨札に S ユニットのカードがなければ何もしない（出典: atwiki/page-717）", () => {
+  it("BK-003: ◎2つ目 — 自軍捨札に S ユニットのカードがなければ何もしない（出典: atwiki/page-717）", () => {
     const s = resolveAll(pick(used("BK-003", "ET", 3, { discard: [inst("SPEC-PLAIN-M", "m")] }), "discard_to_deck_bottom"));
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(zoneOf(s, "player1", "SPEC-PLAIN-M:m")).toBe("discard");
@@ -214,7 +214,7 @@ describe("BK-004 コンドラー", () => {
     expect(bpOf(s, "player1", "SPEC-PLAIN:a")).toBe(4000);
   });
 
-  it.fails("BK-004: 選んだユニットが「仮面ライダーアマゾン」（RK-178・XG1-041）なら、さらに BP+4000（合計 +5000）（出典: atwiki/page-712「さらにBP+4000される」・カード評価「仮面ライダーアマゾン（XG）に使えば、BPが9000になり」）", () => {
+  it("BK-004: 選んだユニットが「仮面ライダーアマゾン」（RK-178・XG1-041）なら、さらに BP+4000（合計 +5000）（出典: atwiki/page-712「さらにBP+4000される」・カード評価「仮面ライダーアマゾン（XG）に使えば、BPが9000になり」）", () => {
     let s = resolveAll(pick(board({ rush: [inst("RK-178", "amz")] }), "RK-178:amz"));
     expect(bpOf(s, "player1", "RK-178:amz")).toBe(7000);
     s = resolveAll(pick(board({ rush: [inst("XG1-041", "amz")] }), "XG1-041:amz"));
@@ -257,20 +257,20 @@ describe("BK-005 エレクトラー", () => {
     return enterSeq(s, [...fill(fillers).map((c) => c.instanceId), unit.instanceId]);
   };
 
-  it.fails("BK-005: ◎2つ目 — 選べるのは自軍の S ユニットだけ（出典: atwiki/page-718「自軍Sユニットを1体選ぶ」）", () => {
+  it("BK-005: ◎2つ目 — 選べるのは自軍の S ユニットだけ（出典: atwiki/page-718「自軍Sユニットを1体選ぶ」）", () => {
     const s = pick(used("BK-005", "ET", 3, { rush: [inst("SPEC-NOSP", "u"), inst("SPEC-PLAIN-M", "m")] }, { rush: [inst("SPEC-E3000", "e")] }), "sp_1_5");
     expect(choiceIds(s)).toEqual(["SPEC-NOSP:u"]);
   });
 
-  it.fails("BK-005: ◎2つ目 — 選んだユニットは SP1/5 になる（バトルエリアの5番目に並べば「SP1」）（出典: atwiki/page-718「このターン、選んだユニットは「SP1/5」になる」・R-STK-03）", () => {
+  it("BK-005: ◎2つ目 — 選んだユニットは SP1/5 になる（バトルエリアの5番目に並べば「SP1」）（出典: atwiki/page-718「このターン、選んだユニットは「SP1/5」になる」・R-STK-03）", () => {
     expect(spOf(sp15(inst("SPEC-NOSP", "u"), 4), "player1", "SPEC-NOSP:u")).toBe(1);
   });
 
-  it.fails("BK-005: ◎2つ目 — SP1/5 のユニットは5番目以外では SP を持たない（出典: atwiki/page-718・R-STK-03（分数 SP は分母の位置で SP1））", () => {
+  it("BK-005: ◎2つ目 — SP1/5 のユニットは5番目以外では SP を持たない（出典: atwiki/page-718・R-STK-03（分数 SP は分母の位置で SP1））", () => {
     expect(spOf(sp15(inst("SPEC-NOSP", "u"), 3), "player1", "SPEC-NOSP:u")).toBe(0);
   });
 
-  it.fails("BK-005: 公式Q&A（相互参照）— エレクトラーで分数 SP を得た SP 空欄のユニットは RS-495 オモ・カル【宇宙忍法・重力無秩序】の対象から外れる（ガオブラックは本来の CN4 のまま4番目で NC が成立）（出典: grnrngr/faq-card-7 RS-495 Q・atwiki/page-818 Q1）", () => {
+  it("BK-005: 公式Q&A（相互参照）— エレクトラーで分数 SP を得た SP 空欄のユニットは RS-495 オモ・カル【宇宙忍法・重力無秩序】の対象から外れる（ガオブラックは本来の CN4 のまま4番目で NC が成立）（出典: grnrngr/faq-card-7 RS-495 Q・atwiki/page-818 Q1）", () => {
     const s = sp15(inst("RS-163", "g"), 3, [inst("RS-495", "o")]);
     expect(bpOf(s, "player1", "RS-163:g")).toBe(6000);
   });
@@ -298,38 +298,38 @@ describe("BK-006 トルネード", () => {
   const enemy = () => ({ battle: [inst("RS-135", "jf"), inst("RS-128", "bj"), inst("SPEC-PLAIN-EM", "pm"), inst("SPEC-AIR-S", "as")], rush: [inst("RS-143", "sp")] });
   const own = () => ({ rush: [inst("SPEC-PLAIN", "a"), inst("SPEC-PLAIN-M", "m")], battle: [inst("SPEC-NOSP", "b")] });
 
-  it.fails("BK-006: ◎2つ目 — まず敵軍バトルエリアの、特徴「航空機」を持つ M ユニットから1体選ぶ（S ユニット・「航空機」を持たない M ユニット・敵軍ラッシュエリアのユニットは選べない）（出典: atwiki/page-719「敵軍バトルエリアから特徴「航空機」を持つ敵軍Mユニットを1体選び」）", () => {
+  it("BK-006: ◎2つ目 — まず敵軍バトルエリアの、特徴「航空機」を持つ M ユニットから1体選ぶ（S ユニット・「航空機」を持たない M ユニット・敵軍ラッシュエリアのユニットは選べない）（出典: atwiki/page-719「敵軍バトルエリアから特徴「航空機」を持つ敵軍Mユニットを1体選び」）", () => {
     const s = pick(used("BK-006", "ET", 4, own(), enemy()), "air_battle");
     expectChoiceFrom(s, "player1", "BK-006");
     expect(choiceIds(s)).toEqual(["RS-128:bj", "RS-135:jf"]);
   });
 
-  it.fails("BK-006: ◎2つ目 — 次に自軍 S ユニット（ラッシュエリア・バトルエリア）を1体選ぶ（出典: atwiki/page-719「自軍Sユニットを1体選ぶ」）", () => {
+  it("BK-006: ◎2つ目 — 次に自軍 S ユニット（ラッシュエリア・バトルエリア）を1体選ぶ（出典: atwiki/page-719「自軍Sユニットを1体選ぶ」）", () => {
     const s = pick(pick(used("BK-006", "ET", 4, own(), enemy()), "air_battle"), "RS-135:jf");
     expectChoiceFrom(s, "player1", "BK-006");
     expect(choiceIds(s)).toEqual(["SPEC-NOSP:b", "SPEC-PLAIN:a"]);
   });
 
-  it.fails("BK-006: ◎2つ目 — 選んだ2体がバトルし、BP の低い敵軍ユニットが撃破される（出典: atwiki/page-719「選んだユニット同士でバトルする」・R-BTL-02）", () => {
+  it("BK-006: ◎2つ目 — 選んだ2体がバトルし、BP の低い敵軍ユニットが撃破される（出典: atwiki/page-719「選んだユニット同士でバトルする」・R-BTL-02）", () => {
     const s = resolveAll(pick(pick(pick(used("BK-006", "ET", 4, own(), enemy()), "air_battle"), "RS-135:jf"), "SPEC-PLAIN:a"));
     expect(zoneOf(s, "player2", "RS-135:jf")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-PLAIN:a")).toBe("rush");
   });
 
-  it.fails("BK-006: ◎2つ目 — 自軍ユニットの BP が低ければ自軍ユニットが撃破される（出典: atwiki/page-719・R-BTL-02）", () => {
+  it("BK-006: ◎2つ目 — 自軍ユニットの BP が低ければ自軍ユニットが撃破される（出典: atwiki/page-719・R-BTL-02）", () => {
     const s = resolveAll(pick(pick(pick(used("BK-006", "ET", 4, own(), enemy()), "air_battle"), "RS-128:bj"), "SPEC-PLAIN:a"));
     expect(zoneOf(s, "player1", "SPEC-PLAIN:a")).toBe("discard");
     expect(zoneOf(s, "player2", "RS-128:bj")).toBe("battle");
   });
 
-  it.fails("BK-006: ◎2つ目 — BP が同じなら両方撃破される（出典: atwiki/page-719・R-BTL-02）", () => {
+  it("BK-006: ◎2つ目 — BP が同じなら両方撃破される（出典: atwiki/page-719・R-BTL-02）", () => {
     const enemyEq = { battle: [{ ...inst("RS-135", "jf"), bpModifier: 2000 }] };
     const s = resolveAll(pick(pick(pick(used("BK-006", "ET", 4, own(), enemyEq), "air_battle"), "RS-135:jf"), "SPEC-PLAIN:a"));
     expect(zoneOf(s, "player1", "SPEC-PLAIN:a")).toBe("discard");
     expect(zoneOf(s, "player2", "RS-135:jf")).toBe("discard");
   });
 
-  it.fails("BK-006: ◎2つ目 — 選べる敵軍 M ユニットか自軍 S ユニットがなければ何もしない（出典: atwiki/page-719）", () => {
+  it("BK-006: ◎2つ目 — 選べる敵軍 M ユニットか自軍 S ユニットがなければ何もしない（出典: atwiki/page-719）", () => {
     let s = resolveAll(pick(used("BK-006", "ET", 4, own(), { battle: [inst("SPEC-PLAIN-EM", "pm")] }), "air_battle"));
     expect(s.pendingEffectChoice).toBeUndefined();
     s = resolveAll(pick(used("BK-006", "ET", 4, { rush: [inst("SPEC-PLAIN-M", "m")] }, enemy()), "air_battle"));
@@ -362,20 +362,20 @@ describe("BK-007 サイクロード", () => {
 
   const discard = () => [inst("RK-023", "c"), inst("SPEC-PLAIN", "s"), inst("SPEC-CYBORG-M", "m")];
 
-  it.fails("BK-007: ◎2つ目 — 自軍捨札の、特徴「改造人間」を持つ S ユニットのカードから1枚選ぶ（見送れない）（出典: atwiki/page-720「自軍捨札から特徴「改造人間」を持つSユニットのカードを1枚選び」）", () => {
+  it("BK-007: ◎2つ目 — 自軍捨札の、特徴「改造人間」を持つ S ユニットのカードから1枚選ぶ（見送れない）（出典: atwiki/page-720「自軍捨札から特徴「改造人間」を持つSユニットのカードを1枚選び」）", () => {
     const s = pick(used("BK-007", "ET", 4, { discard: discard() }), "discard_to_command");
     expectChoiceFrom(s, "player1", "BK-007");
     expect(choiceIds(s)).toEqual(["RK-023:c"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("BK-007: ◎2つ目 — 選んだカードは自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-720「自軍コマンドゾーンにホールド状態で置く」）", () => {
+  it("BK-007: ◎2つ目 — 選んだカードは自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-720「自軍コマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(pick(pick(used("BK-007", "ET", 4, { discard: discard() }), "discard_to_command"), "RK-023:c"));
     expect(zoneOf(s, "player1", "RK-023:c")).toBe("command");
     expect(s.players.player1.command.find((c) => c.instanceId === "RK-023:c")?.commandHeld).toBe(true);
   });
 
-  it.fails("BK-007: ◎2つ目 — 自軍コマンドゾーンが5枚なら置けない（捨札のまま）（出典: atwiki/page-720「（コマンドゾーンに置けるカードは通常5枚まで）」）", () => {
+  it("BK-007: ◎2つ目 — 自軍コマンドゾーンが5枚なら置けない（捨札のまま）（出典: atwiki/page-720「（コマンドゾーンに置けるカードは通常5枚まで）」）", () => {
     const s = resolveAll(pick(used("BK-007", "ET", 4, { discard: discard(), command: releasedN(4, "TST-OP-ET", "c") }), "discard_to_command"));
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(zoneOf(s, "player1", "RK-023:c")).toBe("discard");

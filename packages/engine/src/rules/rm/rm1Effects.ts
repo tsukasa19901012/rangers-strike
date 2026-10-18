@@ -222,7 +222,7 @@ export function genericPick(ctx: BaseCtx, sourceCardId: string, effectId: string
 }
 
 /** ids のユニットをすべて撃破する（全員を選んだ確定済みの撃破の選択で処理する）。 */
-function destroyAll(state: GameState, ctx: BaseCtx, sourceCardId: string, effectId: string, ids: string[]): GameState {
+export function destroyAll(state: GameState, ctx: BaseCtx, sourceCardId: string, effectId: string, ids: string[]): GameState {
   if (ids.length === 0) return state;
   const choice: PendingEffectChoice = {
     ...base(ctx, sourceCardId),

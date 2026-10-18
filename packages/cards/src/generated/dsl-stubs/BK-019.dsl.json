@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_effect_branch",
+          "keyword": "bk1::BK-019::kivat_belt",
           "duration": "turn"
         }
       ],

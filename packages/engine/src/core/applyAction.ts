@@ -797,8 +797,13 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
   if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslOperationOpensChoose(dslEffect)) {
     return false;
   }
-  // スペシャルメタルエディションのカード固有の効果（`rm1::`）は、使ったあとで対象を選ぶ（rules/rm/rm1Effects.ts）。
-  if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslEffect.effects.some((p) => p.type === "grant_keyword" && p.keyword.startsWith("rm1::"))) {
+  // スペシャルメタルエディション（`rm1::`）・ベルトコレクション（`bk1::`）のカード固有の効果は、使ったあとで対象を選ぶ
+  // （rules/rm/rm1Effects.ts・rules/bk/bk1Effects.ts）。
+  if (
+    dslEffect &&
+    shouldUseDslOperation(cardId, dslEffect) &&
+    dslEffect.effects.some((p) => p.type === "grant_keyword" && (p.keyword.startsWith("rm1::") || p.keyword.startsWith("bk1::")))
+  ) {
     return false;
   }
   return needsOperationTarget(cardId);

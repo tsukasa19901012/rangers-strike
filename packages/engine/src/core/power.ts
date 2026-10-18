@@ -132,7 +132,7 @@ export function rushEffectivePowerCost(
       (def?.features ?? []).includes("ミラーライダー") &&
       hasMirrorRiderPowerMinusRule(state.players[playerId])
     ) {
-      const reduction = countMirrorMonstersOnField(state as GameState, state.players[playerId]);
+      const reduction = countMirrorMonstersOnField(state as GameState, state.players[playerId], playerId);
       return Math.max(0, effectivePowerCost(state, playerId, rawCost) - reduction);
     }
     const flowerBomb = flowerBombPowerCostOverride(state, playerId, cardId);

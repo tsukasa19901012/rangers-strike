@@ -32,6 +32,8 @@ import {
   powerCards,
   releasedCat,
   resolveAll,
+  rushBoard,
+  rushFromHand,
   spOf,
   sUnit,
   zoneOf,
@@ -59,20 +61,20 @@ describe("BK-015 ブレイバックル", () => {
     expectRarityIn("BK-015", ["N"]);
   });
 
-  it.fails("BK-015: 使うと、2つの効果のどちらを発動するかを選ぶ（出典: atwiki/page-714「次の効果から1つ選び発動する」）", () => {
+  it("BK-015: 使うと、2つの効果のどちらを発動するかを選ぶ（出典: atwiki/page-714「次の効果から1つ選び発動する」）", () => {
     const s = used("BK-015", "WB", 2, { hand: HAND() });
     expectChoiceFrom(s, "player1", "BK-015");
     expect(choiceIds(s)).toEqual(["rush", "sp_1_2"]);
   });
 
-  it.fails("BK-015: ◎1つ目 — 手札の「仮面ライダーブレイド」のカードから1枚選べる。「仮面ライダーブレイドKF」は対象外、「ディケイド ブレイド」は対象（任意）（出典: atwiki/page-714「自分の手札から「仮面ライダーブレイド」のカードを1枚選び、自軍ラッシュエリアに出してもよい」・atwiki/page-1739「ブレイバックルは「仮面ライダーブレイド」が対象なので「仮面ライダーブレイドKF」は対象外。一方「ディケイド ブレイド」は…対象になる」）", () => {
+  it("BK-015: ◎1つ目 — 手札の「仮面ライダーブレイド」のカードから1枚選べる。「仮面ライダーブレイドKF」は対象外、「ディケイド ブレイド」は対象（任意）（出典: atwiki/page-714「自分の手札から「仮面ライダーブレイド」のカードを1枚選び、自軍ラッシュエリアに出してもよい」・atwiki/page-1739「ブレイバックルは「仮面ライダーブレイド」が対象なので「仮面ライダーブレイドKF」は対象外。一方「ディケイド ブレイド」は…対象になる」）", () => {
     const s = pick(used("BK-015", "WB", 2, { hand: HAND() }), "rush");
     expectChoiceFrom(s, "player1", "BK-015");
     expect(choiceIds(s)).toEqual(["RK-125:h0", "XG1-067:h3", "XG2-075:h1", "XG4-081:h2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("BK-015: ◎1つ目 — 選んだカードは自軍ラッシュエリアに出る（必要パワーを満たさなくてよい）（出典: atwiki/page-714・カード評価「ブレイドを本来のパワー-1で出せるカード」）", () => {
+  it("BK-015: ◎1つ目 — 選んだカードは自軍ラッシュエリアに出る（必要パワーを満たさなくてよい）（出典: atwiki/page-714・カード評価「ブレイドを本来のパワー-1で出せるカード」）", () => {
     const s = resolveAll(pick(pick(used("BK-015", "WB", 2, { hand: HAND() }), "rush"), "RK-125:h0"));
     expect(zoneOf(s, "player1", "RK-125:h0")).toBe("rush");
   });
@@ -85,13 +87,13 @@ describe("BK-015 ブレイバックル", () => {
     return enterSeq(s, [...fill(fillers).map((c) => c.instanceId), "SPEC-NOSP:u"]);
   };
 
-  it.fails("BK-015: ◎2つ目 — 選べるのは自軍の S ユニットだけ（出典: atwiki/page-714「自軍Sユニットを1体選ぶ」）", () => {
+  it("BK-015: ◎2つ目 — 選べるのは自軍の S ユニットだけ（出典: atwiki/page-714「自軍Sユニットを1体選ぶ」）", () => {
     const s = pick(used("BK-015", "WB", 2, { rush: [inst("SPEC-NOSP", "u"), inst("SPEC-PLAIN-M", "m")], command: [inst("SPEC-PLAIN", "cmd")] }, { rush: [inst("SPEC-PLAIN", "e")] }), "sp_1_2");
     expect(choiceIds(s)).toEqual(["SPEC-NOSP:u"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("BK-015: ◎2つ目 — 選んだユニットは SP1/2 になる（バトルエリアの2番目で「SP1」、1番目では SP なし）（出典: atwiki/page-714「このターン、選んだユニットは「SP1/2」になる」・R-STK-03）", () => {
+  it("BK-015: ◎2つ目 — 選んだユニットは SP1/2 になる（バトルエリアの2番目で「SP1」、1番目では SP なし）（出典: atwiki/page-714「このターン、選んだユニットは「SP1/2」になる」・R-STK-03）", () => {
     expect(spOf(sp12(1), "player1", "SPEC-NOSP:u")).toBe(1);
     expect(spOf(sp12(0), "player1", "SPEC-NOSP:u")).toBe(0);
   });
@@ -108,18 +110,18 @@ describe("BK-016 火炎鼓装備帯", () => {
     expectRarityIn("BK-016", ["N"]);
   });
 
-  it.fails("BK-016: 特徴「猛士」を持つ自軍ユニット（ラッシュエリア・バトルエリア。サイズを問わない）4体なら2枚ドローする（出典: atwiki/page-729「特徴「猛士」を持つ自軍ユニット2体につき1枚ドローする」）", () => {
+  it("BK-016: 特徴「猛士」を持つ自軍ユニット（ラッシュエリア・バトルエリア。サイズを問わない）4体なら2枚ドローする（出典: atwiki/page-729「特徴「猛士」を持つ自軍ユニット2体につき1枚ドローする」）", () => {
     const s = resolveAll(used("BK-016", "MA", 5, { rush: [...ONI(2), inst("SPEC-ONI-M", "m")], battle: ONI(1, "b") }));
     expect(s.players.player1.hand).toHaveLength(2);
   });
 
-  it.fails("BK-016: 3体なら1枚、1体なら0枚（出典: atwiki/page-729「2体につき1枚」）", () => {
+  it("BK-016: 3体なら1枚、1体なら0枚（出典: atwiki/page-729「2体につき1枚」）", () => {
     expect(resolveAll(used("BK-016", "MA", 5, { rush: ONI(3) })).players.player1.hand).toHaveLength(1);
     expect(resolveAll(used("BK-016", "MA", 5, { rush: ONI(1) })).players.player1.hand).toHaveLength(0);
   });
 
-  it.fails("BK-016: 敵軍のユニット・自軍コマンドゾーンの「猛士」のカード・「猛士」を持たない自軍ユニットは数えない（出典: atwiki/page-729「特徴「猛士」を持つ自軍ユニット」）", () => {
-    const s = resolveAll(used("BK-016", "MA", 5, { rush: [...ONI(1), inst("SPEC-PLAIN", "p")], command: [...releasedCat("MA", 1), inst("RK-047", "cmd")] }, { rush: ONI(2, "e") }));
+  it("BK-016: 敵軍のユニット・自軍コマンドゾーンの「猛士」のカード・「猛士」を持たない自軍ユニットは数えない（出典: atwiki/page-729「特徴「猛士」を持つ自軍ユニット」）", () => {
+    const s = resolveAll(used("BK-016", "MA", 5, { rush: [...ONI(1), inst("SPEC-PLAIN", "p")], command: [inst("RK-047", "cmd")] }, { rush: ONI(2, "e") }));
     expect(s.players.player1.hand).toHaveLength(0);
   });
 });
@@ -136,37 +138,41 @@ describe("BK-017 カブトゼクター", () => {
     expectRarityIn("BK-017", ["PR"]);
   });
 
-  it.fails("BK-017: 使うと、2つの効果のどちらを発動するかを選ぶ（出典: atwiki/page-723「次の効果から1つ選び発動する」）", () => {
+  it("BK-017: 使うと、2つの効果のどちらを発動するかを選ぶ（出典: atwiki/page-723「次の効果から1つ選び発動する」）", () => {
     const s = used("BK-017", "OT", 5, { deck: DECK() });
     expectChoiceFrom(s, "player1", "BK-017");
     expect(choiceIds(s)).toEqual(["accel_waive", "rush"]);
   });
 
-  it.fails("BK-017: ◎1つ目 — 自軍山札の「仮面ライダーカブトMF」のカードから1枚選べる（「仮面ライダーカブトRF」は対象外。任意）（出典: atwiki/page-723「自軍山札から「仮面ライダーカブトMF」のカードを1枚選び、自軍ラッシュエリアに出してもよい」・atwiki/page-1739）", () => {
+  it("BK-017: ◎1つ目 — 自軍山札の「仮面ライダーカブトMF」のカードから1枚選べる（「仮面ライダーカブトRF」は対象外。任意）（出典: atwiki/page-723「自軍山札から「仮面ライダーカブトMF」のカードを1枚選び、自軍ラッシュエリアに出してもよい」・atwiki/page-1739）", () => {
     const s = pick(used("BK-017", "OT", 5, { deck: DECK() }), "rush");
     expectChoiceFrom(s, "player1", "BK-017");
     expect(choiceIds(s)).toEqual(["RK-070:h0", "XG2-064:h1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("BK-017: ◎1つ目 — 選んだカードは自軍ラッシュエリアに出る（山札から離れる）（出典: atwiki/page-723）", () => {
+  it("BK-017: ◎1つ目 — 選んだカードは自軍ラッシュエリアに出る（山札から離れる）（出典: atwiki/page-723）", () => {
     const s = resolveAll(pick(pick(used("BK-017", "OT", 5, { deck: DECK() }), "rush"), "RK-070:h0"));
     expect(zoneOf(s, "player1", "RK-070:h0")).toBe("rush");
     expect(s.players.player1.deck).toHaveLength(DECK().length - 1);
   });
 
-  /** ◎2つ目の後（または使わずに）、手札の unit をパワーゾーン3枚・OT のコマンドで出せるか。 */
+  /** ◎2つ目の後（または使わずに）、手札の unit をパワーゾーン5枚・OT のリリース状態のコマンドで出せるか。 */
   const canRushAfter = (unit: string, useOp: boolean) => {
-    const p1 = { hand: [inst(unit, "u")], power: powerCards(5), command: releasedCat("OT", 1) };
-    const s = useOp ? resolveAll(pick(used("BK-017", "OT", 5, p1), "accel_waive")) : used("BK-017", "OT", 5, p1);
+    const p1 = { hand: [inst(unit, "u")], power: powerCards(5), command: releasedCat("OT", 1, "rushCmd") };
+    const s = useOp ? resolveAll(pick(used("BK-017", "OT", 5, p1), "accel_waive")) : rushBoard(p1, {}, EXTRA);
     return canStartRush(s, "player1", `${unit}:u`);
   };
 
-  it.fails("BK-017: ◎2つ目 — このターン、特徴「加速」を持つ BP2000 以下の S ユニットのカード（RK-065 カブトRF。追加条件は自軍カブトMF をパワーゾーンに送る）は、追加条件を満たさずにラッシュできる（出典: atwiki/page-723「このターン、特徴「加速」を持つBP2000以下のSユニットのカードは、追加条件を満たさなくてもラッシュできる」）", () => {
+  it("BK-017: ◎2つ目 — このターン、特徴「加速」を持つ BP2000 以下の S ユニットのカード（RK-065 カブトRF。追加条件は自軍カブトMF をパワーゾーンに送る）は、追加条件を満たさずにラッシュできる（出典: atwiki/page-723「このターン、特徴「加速」を持つBP2000以下のSユニットのカードは、追加条件を満たさなくてもラッシュできる」）", () => {
     expect(canRushAfter("RK-065", true)).toBe(true);
+    const s = resolveAll(pick(used("BK-017", "OT", 5, { hand: [inst("RK-065", "u")], power: powerCards(5), command: releasedCat("OT", 1, "rushCmd") }), "accel_waive"));
+    const r = rushFromHand(s, "player1", "RK-065:u");
+    expect(r.ok, r.error).toBe(true);
+    expect(zoneOf(r.state, "player1", "RK-065:u")).toBe("rush");
   });
 
-  it.fails("BK-017: ◎2つ目 — BP が2000より大きい「加速」の S ユニット（XG1-074 ザビーRF・BP3000）は追加条件が必要（出典: atwiki/page-723「BP2000以下」）", () => {
+  it("BK-017: ◎2つ目 — BP が2000より大きい「加速」の S ユニット（XG1-074 ザビーRF・BP3000）は追加条件が必要（出典: atwiki/page-723「BP2000以下」）", () => {
     expect(canRushAfter("XG1-074", true)).toBe(false);
   });
 
@@ -194,19 +200,19 @@ describe("BK-018 デンオウベルト", () => {
     expectRarityIn("BK-018", ["N"]);
   });
 
-  it.fails("BK-018: 自軍山札と、自軍常駐置き場でオモテ向きのカードの中から、本来の特徴に「DEN-O」を持つユニットカードを1枚選ぶ（手札・ウラ向き・追加条件を満たせないカードは選べない。見送れない）（出典: atwiki/page-724「自軍山札か、自軍常駐置き場でオモテ向きになっているカードの中から…1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）」）", () => {
+  it("BK-018: 自軍山札と、自軍常駐置き場でオモテ向きのカードの中から、本来の特徴に「DEN-O」を持つユニットカードを1枚選ぶ（手札・ウラ向き・追加条件を満たせないカードは選べない。見送れない）（出典: atwiki/page-724「自軍山札か、自軍常駐置き場でオモテ向きになっているカードの中から…1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）」）", () => {
     const s = board();
     expectChoiceFrom(s, "player1", "BK-018");
     expect(choiceIds(s)).toEqual(["RK-062:res", "RK-072:gf"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("BK-018: 追加条件を満たせるカード（RK-140 電王LF: 自軍「仮面ライダー電王PF」1体をパワーゾーンに送る）は選べる（出典: atwiki/page-724「ただし、追加条件は満たすこと」）", () => {
+  it("BK-018: 追加条件を満たせるカード（RK-140 電王LF: 自軍「仮面ライダー電王PF」1体をパワーゾーンに送る）は選べる（出典: atwiki/page-724「ただし、追加条件は満たすこと」）", () => {
     const s = board({ rush: [inst("RK-152", "pf")] });
     expect(choiceIds(s)).toEqual(["RK-062:res", "RK-072:gf", "RK-140:lf"]);
   });
 
-  it.fails("BK-018: 選んだカードは自軍ラッシュエリアに出る（必要パワーを満たさなくてよい。このカードは常駐せず捨札）（出典: atwiki/page-724「必要パワーは満たさなくてもよい」）", () => {
+  it("BK-018: 選んだカードは自軍ラッシュエリアに出る（必要パワーを満たさなくてよい。このカードは常駐せず捨札）（出典: atwiki/page-724「必要パワーは満たさなくてもよい」）", () => {
     let s = resolveAll(pick(board(), "RK-072:gf"));
     expect(zoneOf(s, "player1", "RK-072:gf")).toBe("rush");
     expect(zoneOf(s, "player1", "BK-018:op")).toBe("discard");
@@ -227,25 +233,25 @@ describe("BK-019 キバットベルト", () => {
     expectRarityIn("BK-019", ["N"]);
   });
 
-  it.fails("BK-019: 使うと、2つの効果のどちらを発動するかを選ぶ（出典: atwiki/page-942「次の効果から1つ選び発動する」）", () => {
+  it("BK-019: 使うと、2つの効果のどちらを発動するかを選ぶ（出典: atwiki/page-942「次の効果から1つ選び発動する」）", () => {
     const s = used("BK-019", "MA", 3, { hand: HAND() });
     expectChoiceFrom(s, "player1", "BK-019");
     expect(choiceIds(s)).toEqual(["release", "rush"]);
   });
 
-  it.fails("BK-019: ◎1つ目 — 手札の、本来の特徴に「魔皇力」を持つカード（ユニット・ビークル）で追加条件を満たせるものから1枚選べる（RK-324 ブロンブースターは自軍ビークルがないので選べない。任意）（出典: atwiki/page-942「自分の手札から本来の特徴に｢魔皇力｣を持つカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと」）", () => {
+  it("BK-019: ◎1つ目 — 手札の、本来の特徴に「魔皇力」を持つカード（ユニット・ビークル）で追加条件を満たせるものから1枚選べる（RK-324 ブロンブースターは自軍ビークルがないので選べない。任意）（出典: atwiki/page-942「自分の手札から本来の特徴に｢魔皇力｣を持つカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと」）", () => {
     const s = pick(used("BK-019", "MA", 3, { hand: HAND() }), "rush");
     expectChoiceFrom(s, "player1", "BK-019");
     expect(choiceIds(s)).toEqual(["RK-245:kiba", "RK-323:mk"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("BK-019: 公式Q&A — 必要パワーを満たさずにラッシュできる（パワーゾーン3枚で必要パワー4のキバを出せる）（出典: atwiki/page-942 Q1「はい、可能です」）", () => {
+  it("BK-019: 公式Q&A — 必要パワーを満たさずにラッシュできる（パワーゾーン3枚で必要パワー4のキバを出せる）（出典: atwiki/page-942 Q1「はい、可能です」）", () => {
     const s = resolveAll(pick(pick(used("BK-019", "MA", 3, { hand: HAND() }), "rush"), "RK-245:kiba"));
     expect(zoneOf(s, "player1", "RK-245:kiba")).toBe("rush");
   });
 
-  it.fails("BK-019: ◎2つ目 — 自軍のホールド状態の S ユニット（ラッシュエリア・バトルエリア）から1体選ぶ（M ユニット・敵軍のユニットは選べない）（出典: atwiki/page-942「自軍Sユニットを1体選び、リリースする」）", () => {
+  it("BK-019: ◎2つ目 — 自軍のホールド状態の S ユニット（ラッシュエリア・バトルエリア）から1体選ぶ（M ユニット・敵軍のユニットは選べない）（出典: atwiki/page-942「自軍Sユニットを1体選び、リリースする」）", () => {
     const s = pick(
       used("BK-019", "MA", 3, { rush: [heldField("SPEC-PLAIN", "h"), inst("SPEC-PLAIN", "r"), heldField("SPEC-PLAIN-M", "m")], battle: [heldField("SPEC-NOSP", "b")] }, { battle: [heldField("SPEC-PLAIN", "e")] }),
       "release",
@@ -254,7 +260,7 @@ describe("BK-019 キバットベルト", () => {
     expect(choiceIds(s)).toEqual(["SPEC-NOSP:b", "SPEC-PLAIN:h"]);
   });
 
-  it.fails("BK-019: ◎2つ目 — 選んだユニットはリリース状態になる（出典: atwiki/page-942「リリースする」）", () => {
+  it("BK-019: ◎2つ目 — 選んだユニットはリリース状態になる（出典: atwiki/page-942「リリースする」）", () => {
     const s = resolveAll(pick(pick(used("BK-019", "MA", 3, { battle: [heldField("SPEC-NOSP", "b")] }), "release"), "SPEC-NOSP:b"));
     expect(isHeld(s, "player1", "SPEC-NOSP:b")).toBe(false);
   });

@@ -539,6 +539,28 @@ const RM3_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rm062_lina_stick: { label: "リーナステッキ", hint: "ホールドする自軍コマンドを選ぶと、アタックされたユニットをラッシュエリアに戻します（バトルは行われません。しないなら「スキップ」）" },
 };
 
+/** ベルトコレクション BK-001〜BK-019 のカード固有の選択（engine rules/bk/bk1Effects.ts）の表示名と案内文。 */
+const BK1_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  bk1_belt_mode: { label: "変身ベルト", hint: "発動する効果を1つ選んでください" },
+  bk1_belt_search: { label: "変身ベルト", hint: "相手に見せてから手札に加える、山札のカードを選んでください（しないなら「スキップ」）" },
+  bk1_belt_hand_rush: { label: "変身ベルト", hint: "自軍ラッシュエリアに出す、手札のカードを選んでください（しないなら「スキップ」）" },
+  bk1_belt_deck_rush: { label: "変身ベルト", hint: "自軍ラッシュエリアに出す、山札のカードを選んでください（しないなら「スキップ」）" },
+  bk1_belt_maou_rush: { label: "キバットベルト", hint: "自軍ラッシュエリアに出す、本来の特徴に「魔皇力」を持つ手札のカードを選んでください（しないなら「スキップ」）" },
+  bk1_belt_add_feature: { label: "タイフーン（1号）", hint: "このターン特徴「仮面ライダー」を追加する自軍 S ユニットを選んでください" },
+  bk1_belt_scry: { label: "ダブルタイフーン", hint: "見た山札の上のカードを、山札の上か下のどちらに戻すか選んでください" },
+  bk1_belt_discard_to_deck_bottom: { label: "ライドル", hint: "自軍山札の下に戻す、捨札の S ユニットのカードを選んでください" },
+  bk1_belt_sp: { label: "変身ベルト", hint: "このターン分数 SP にする自軍 S ユニットを選んでください" },
+  bk1_belt_air_battle_enemy: { label: "トルネード", hint: "バトルさせる、敵軍バトルエリアの「航空機」の M ユニットを選んでください" },
+  bk1_belt_air_battle_own: { label: "トルネード", hint: "バトルさせる自軍 S ユニットを選んでください" },
+  bk1_belt_discard_to_command: { label: "サイクロード", hint: "自軍コマンドゾーンにホールド状態で置く、捨札の「改造人間」の S ユニットのカードを選んでください" },
+  bk1_belt_command_rush: { label: "ゼクロスベルト", hint: "自軍ラッシュエリアに出す、コマンドゾーンの「改造人間」の S ユニットのカードを選んでください" },
+  bk1_belt_vehicle_without_ride: { label: "キングストーン（太陽の石）", hint: "このターン、ライドされずにバトルエリアに出せるようにする自軍 S ビークルを選んでください" },
+  bk1_belt_draw_return: { label: "サンライザー", hint: "自軍山札の上に戻す手札のカードを選んでください" },
+  bk1_belt_release: { label: "キバットベルト", hint: "リリースする、ホールド状態の自軍 S ユニットを選んでください" },
+  bk004_condorer: { label: "コンドラー", hint: "このターン BP を上げる自軍 S ユニットを選んでください" },
+  bk1_recruit: { label: "変身ベルト", hint: "ラッシュエリアに出すユニットカードを選んでください" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -589,7 +611,8 @@ export function effectChoiceHint(
     RK16_CHOICE_UI[pending.effectId] ??
     RM1_CHOICE_UI[pending.effectId] ??
     RM2_CHOICE_UI[pending.effectId] ??
-    RM3_CHOICE_UI[pending.effectId];
+    RM3_CHOICE_UI[pending.effectId] ??
+    BK1_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
