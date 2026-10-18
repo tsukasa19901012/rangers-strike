@@ -15,6 +15,7 @@ import {
 } from "../pendingChoices";
 import { defenderHasPowerCostMinus } from "../zordDown";
 import { resolveSkyMagicSlash } from "../namedUnitEffects";
+import { rk7RiderKickEnabled } from "../rk/rk7UnitEffects";
 import type { NamedEffectOutcome } from "../namedUnitEffects";
 import type { ComboOutcome } from "../comboTypes";
 
@@ -123,7 +124,8 @@ export function legend2AttackerBpBonus(
 
   if (atkEffect?.effectId === "dump_punch") bonus += 2000;
   if (atkEffect?.effectId === "adventure_drive_sword") bonus += 4000;
-  if (atkEffect?.effectId === "raidakiku" && attacker.card.commandHeld) bonus += 2000;
+  // RK-134【ライダーキック】は RC を発動したターンだけ（rules/rk/rk7UnitEffects.ts）。
+  if (atkEffect?.effectId === "raidakiku" && attacker.card.commandHeld && rk7RiderKickEnabled(state, pending.attackerPlayerId, attacker.card)) bonus += 2000;
 
   if (
     atkEffect &&
@@ -169,7 +171,7 @@ export function legend2UsePrintedDefenderBp(
   }
   return (
     effect?.effectId === "ptera_dagger" ||
-    effect?.effectId === "raidakiku"
+    (effect?.effectId === "raidakiku" && rk7RiderKickEnabled(state, pending.attackerPlayerId, attacker.card))
   );
 }
 

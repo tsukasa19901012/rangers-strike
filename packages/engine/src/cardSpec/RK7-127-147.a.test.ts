@@ -109,7 +109,7 @@ describe("RK-127 仮面ライダーカリス", () => {
     expectRarityIn("RK-127", ["SR"]);
   });
 
-  it.fails("RK-127: ※ 相手の手札1枚につき BP+2000（手札2枚で BP5000・0枚で BP1000）（出典: atwiki/page-648「※これは相手の手札1枚につきBP+2000される」・grnrngr/faq-rider-2 RK-127 Q（手札2枚のとき BP5000））", () => {
+  it("RK-127: ※ 相手の手札1枚につき BP+2000（手札2枚で BP5000・0枚で BP1000）（出典: atwiki/page-648「※これは相手の手札1枚につきBP+2000される」・grnrngr/faq-rider-2 RK-127 Q（手札2枚のとき BP5000））", () => {
     expect(bpOf(board({ battle: [inst("RK-127", "ch")] }, { hand: deckCards(2, "eh") }), "player1", "RK-127:ch")).toBe(5000);
     expect(bpOf(board({ battle: [inst("RK-127", "ch")] }, { hand: [] }), "player1", "RK-127:ch")).toBe(1000);
   });
@@ -118,7 +118,7 @@ describe("RK-127 仮面ライダーカリス", () => {
     expect(bpOf(board({ battle: [inst("RK-127", "ch")], hand: deckCards(3, "mh") }, { hand: [] }), "player1", "RK-127:ch")).toBe(1000);
   });
 
-  it.fails("RK-127: ※ ラッシュエリアにあるときも BP が上がる（出典: atwiki/page-648（エリアの限定がない）・grnrngr/faq-rider-2 RK-127 Q「ラッシュされた「RK-127 仮面ライダーカリス」はBP5000」）", () => {
+  it("RK-127: ※ ラッシュエリアにあるときも BP が上がる（出典: atwiki/page-648（エリアの限定がない）・grnrngr/faq-rider-2 RK-127 Q「ラッシュされた「RK-127 仮面ライダーカリス」はBP5000」）", () => {
     expect(bpOf(board({ rush: [inst("RK-127", "ch")] }, { hand: deckCards(2, "eh") }), "player1", "RK-127:ch")).toBe(5000);
   });
 
@@ -144,7 +144,7 @@ describe("RK-127 仮面ライダーカリス", () => {
     expect(canStrike(s, "RK-127:ch")).toBe(true);
   });
 
-  it.fails("RK-127: RC — 自分の手札を3枚選んで見せるかを選べる（任意）（出典: atwiki/page-648「自分の手札を3枚選び、相手に見せてもよい」）", () => {
+  it("RK-127: RC — 自分の手札を3枚選んで見せるかを選べる（任意）（出典: atwiki/page-648「自分の手札を3枚選び、相手に見せてもよい」）", () => {
     const hand = [c(1), c(1, "h1b"), c(2), c(3)];
     const s = arrow(hand, enemyCmd);
     expectChoiceFrom(s, "player1", "RK-127");
@@ -152,12 +152,12 @@ describe("RK-127 仮面ライダーカリス", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-127: RC — 手札が3枚未満なら選べない（出典: atwiki/page-648「自分の手札を3枚選び」・grnrngr/faq-rider-2 RK-125 Q（「3枚まで」でなく必ず3枚選ぶ）と同じ書き方）", () => {
+  it("RK-127: RC — 手札が3枚未満なら選べない（出典: atwiki/page-648「自分の手札を3枚選び」・grnrngr/faq-rider-2 RK-125 Q（「3枚まで」でなく必ず3枚選ぶ）と同じ書き方）", () => {
     const s = arrow([c(1), c(1, "h1b")], enemyCmd);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-127");
   });
 
-  it.fails("RK-127: RC — 見せた3枚の必要パワーがすべて同じなら、敵軍コマンドゾーンのホールド状態のカードだけから1枚選ぶ（選ばないことはできない）（出典: atwiki/page-648「すべて同じなら、敵軍コマンドゾーンからホールド状態のカードを1枚選び捨札にする」）", () => {
+  it("RK-127: RC — 見せた3枚の必要パワーがすべて同じなら、敵軍コマンドゾーンのホールド状態のカードだけから1枚選ぶ（選ばないことはできない）（出典: atwiki/page-648「すべて同じなら、敵軍コマンドゾーンからホールド状態のカードを1枚選び捨札にする」）", () => {
     const hand = [c(1), c(1, "h1b"), c(1, "h1c")];
     const s = show(hand, hand);
     expectChoiceFrom(s, "player1", "RK-127");
@@ -165,7 +165,7 @@ describe("RK-127 仮面ライダーカリス", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-127: RC — 選んだホールド状態のコマンドは捨札になる（見せた手札は手札に残る）（出典: atwiki/page-648「捨札にする」「相手に見せて」）", () => {
+  it("RK-127: RC — 選んだホールド状態のコマンドは捨札になる（見せた手札は手札に残る）（出典: atwiki/page-648「捨札にする」「相手に見せて」）", () => {
     const hand = [c(1), c(1, "h1b"), c(1, "h1c")];
     const s = settle(pick(show(hand, hand), "TST-UNIT-0:eh2"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:eh2")).toBe("discard");
@@ -173,20 +173,20 @@ describe("RK-127 仮面ライダーカリス", () => {
     for (const x of hand) expect(zoneOf(s, "player1", x.instanceId)).toBe("hand");
   });
 
-  it.fails("RK-127: RC — 必要パワーが揃わなければ何も捨札にしない（出典: atwiki/page-648「見せたカードの必要パワーの数字がすべて同じなら」）", () => {
+  it("RK-127: RC — 必要パワーが揃わなければ何も捨札にしない（出典: atwiki/page-648「見せたカードの必要パワーの数字がすべて同じなら」）", () => {
     const hand = [c(1), c(1, "h1b"), c(2)];
     const s = settle(show(hand, hand));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-127");
     expect(s.players.player2.command).toHaveLength(3);
   });
 
-  it.fails("RK-127: RC — ユニットとオペレーションが混じっていても、必要パワーの数字が同じなら揃う（出典: atwiki/page-648「必要パワーの数字がすべて同じなら」（カードの種類を問わない））", () => {
+  it("RK-127: RC — ユニットとオペレーションが混じっていても、必要パワーの数字が同じなら揃う（出典: atwiki/page-648「必要パワーの数字がすべて同じなら」（カードの種類を問わない））", () => {
     const hand = [c(2), inst("SPEC-OP2", "op"), c(2, "h2b")];
     const s = show(hand, hand);
     expectChoiceFrom(s, "player1", "RK-127");
   });
 
-  it.fails("RK-127: RC — 見せなければ何も起きない（出典: atwiki/page-648「相手に見せてもよい」）", () => {
+  it("RK-127: RC — 見せなければ何も起きない（出典: atwiki/page-648「相手に見せてもよい」）", () => {
     const s = settle(skip(arrow([c(1), c(1, "h1b"), c(1, "h1c")], enemyCmd)));
     expect(s.players.player2.command).toHaveLength(3);
   });
@@ -216,7 +216,7 @@ describe("RK-128 仮面ライダーレンゲル", () => {
     expect(canStrike(s, "RK-128:rg")).toBe(false);
   });
 
-  it.fails("RK-128: ※ 撃破されて捨札になるとき、かわりに DA を持つ自軍 S ユニット（エリアを問わない）を1体選び捨札にできる（任意）（出典: atwiki/page-649「かわりにダークアライアンスを持つ自軍Sユニットを1体選び捨札にしてもよい」）", () => {
+  it("RK-128: ※ 撃破されて捨札になるとき、かわりに DA を持つ自軍 S ユニット（エリアを問わない）を1体選び捨札にできる（任意）（出典: atwiki/page-649「かわりにダークアライアンスを持つ自軍Sユニットを1体選び捨札にしてもよい」）", () => {
     const s = attackedInEnemyTurn(
       { battle: [inst("RK-128", "rg"), inst("SPEC-DA", "d1")], rush: [inst("SPEC-DA", "d2"), inst("SPEC-DA-M", "dm"), inst("TST-UNIT-0", "wb")] },
       "RK-128:rg",
@@ -229,7 +229,7 @@ describe("RK-128 仮面ライダーレンゲル", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-128: ※ DA のユニットを捨札にすると、このユニットは捨札にならずその場に残る（出典: atwiki/page-649「かわりに」・カード評価「DAの戦闘員ならばこれが撃破された時に捨札にすることでその場に留まれる」）", () => {
+  it("RK-128: ※ DA のユニットを捨札にすると、このユニットは捨札にならずその場に残る（出典: atwiki/page-649「かわりに」・カード評価「DAの戦闘員ならばこれが撃破された時に捨札にすることでその場に留まれる」）", () => {
     const s = resolveAll(
       pick(attackedInEnemyTurn({ battle: [inst("RK-128", "rg")], rush: [inst("SPEC-DA", "d2")] }, "RK-128:rg", {}, "TST-UNIT-7:atk", EXTRA), "SPEC-DA:d2"),
     );
@@ -237,7 +237,7 @@ describe("RK-128 仮面ライダーレンゲル", () => {
     expect(zoneOf(s, "player1", "RK-128:rg")).toBe("battle");
   });
 
-  it.fails("RK-128: ※ 選ばなければこのユニットが捨札になる（出典: atwiki/page-649「捨札にしてもよい」）", () => {
+  it("RK-128: ※ 選ばなければこのユニットが捨札になる（出典: atwiki/page-649「捨札にしてもよい」）", () => {
     const s = resolveAll(skip(attackedInEnemyTurn({ battle: [inst("RK-128", "rg")], rush: [inst("SPEC-DA", "d2")] }, "RK-128:rg", {}, "TST-UNIT-7:atk", EXTRA)));
     expect(zoneOf(s, "player1", "RK-128:rg")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-DA:d2")).toBe("rush");
@@ -249,7 +249,7 @@ describe("RK-128 仮面ライダーレンゲル", () => {
     expect(zoneOf(resolveAll(s), "player1", "RK-128:rg")).toBe("discard");
   });
 
-  it.fails("RK-128: ※ 効果で撃破されるときも、かわりに DA のユニットを捨札にできる（出典: atwiki/page-649「撃破されて捨札になるとき」（撃破の方法を問わない））", () => {
+  it("RK-128: ※ 効果で撃破されるときも、かわりに DA のユニットを捨札にできる（出典: atwiki/page-649「撃破されて捨札になるとき」（撃破の方法を問わない））", () => {
     // 敵軍（player2）のラッシュフェイズに、敵軍の RS-245（敵軍Sユニットを1体選び撃破する）で撃破する。
     let s = st(
       {
@@ -269,7 +269,7 @@ describe("RK-128 仮面ライダーレンゲル", () => {
     expect(zoneOf(s, "player1", "RK-128:rg")).toBe("battle");
   });
 
-  it.fails("RK-128: RC — 自分の手札を3枚選んで見せるかを選べる（任意）。手札が3枚未満なら選べない（出典: atwiki/page-649「自分の手札を3枚選び、相手に見せてもよい」・コメント欄「必ず3枚見せなければいけません」）", () => {
+  it("RK-128: RC — 自分の手札を3枚選んで見せるかを選べる（任意）。手札が3枚未満なら選べない（出典: atwiki/page-649「自分の手札を3枚選び、相手に見せてもよい」・コメント欄「必ず3枚見せなければいけません」）", () => {
     const hand = [inst("SPEC-B1500", "a"), inst("SPEC-B500", "b"), inst("SPEC-B2500M", "c")];
     const s = rouzer(hand);
     expectChoiceFrom(s, "player1", "RK-128");
@@ -278,20 +278,20 @@ describe("RK-128 仮面ライダーレンゲル", () => {
     expect(rouzer(hand.slice(0, 2)).pendingEffectChoice?.sourceCardId).not.toBe("RK-128");
   });
 
-  it.fails("RK-128: RC — 見せた3枚がすべて BP の下三桁が500 の追加条件を持たないユニットカード（S・M を問わない）なら、3枚とも自軍ラッシュエリアに出す（出典: atwiki/page-649「そのカードをすべて自軍ラッシュエリアに出す」）", () => {
+  it("RK-128: RC — 見せた3枚がすべて BP の下三桁が500 の追加条件を持たないユニットカード（S・M を問わない）なら、3枚とも自軍ラッシュエリアに出す（出典: atwiki/page-649「そのカードをすべて自軍ラッシュエリアに出す」）", () => {
     const hand = [inst("SPEC-B1500", "a"), inst("SPEC-B500", "b"), inst("SPEC-B2500M", "c"), inst("SPEC-B1000", "x")];
     const s = resolveAll(show(hand, hand.slice(0, 3)));
     for (const x of hand.slice(0, 3)) expect(zoneOf(s, "player1", x.instanceId)).toBe("rush");
     expect(zoneOf(s, "player1", "SPEC-B1000:x")).toBe("hand");
   });
 
-  it.fails("RK-128: RC — BP の下三桁が500 でないユニットが1枚でも混じっていれば、どれも出さない（出典: atwiki/page-649「見せたカードがすべて…なら」）", () => {
+  it("RK-128: RC — BP の下三桁が500 でないユニットが1枚でも混じっていれば、どれも出さない（出典: atwiki/page-649「見せたカードがすべて…なら」）", () => {
     const hand = [inst("SPEC-B1500", "a"), inst("SPEC-B500", "b"), inst("SPEC-B1000", "x")];
     const s = resolveAll(show(hand));
     for (const x of hand) expect(zoneOf(s, "player1", x.instanceId)).toBe("hand");
   });
 
-  it.fails("RK-128: RC — 追加条件を持つユニット・ユニットでないカードが混じっていれば、どれも出さない（出典: atwiki/page-649「追加条件を持たないユニットカードなら」）", () => {
+  it("RK-128: RC — 追加条件を持つユニット・ユニットでないカードが混じっていれば、どれも出さない（出典: atwiki/page-649「追加条件を持たないユニットカードなら」）", () => {
     for (const odd of [inst("SPEC-B1500C", "cond"), inst("TST-OP", "op")]) {
       const hand = [inst("SPEC-B1500", "a"), inst("SPEC-B500", "b"), odd];
       const s = resolveAll(show(hand));
@@ -299,7 +299,7 @@ describe("RK-128 仮面ライダーレンゲル", () => {
     }
   });
 
-  it.fails("RK-128: RC — 見せなければ何も起きない（出典: atwiki/page-649「相手に見せてもよい」）", () => {
+  it("RK-128: RC — 見せなければ何も起きない（出典: atwiki/page-649「相手に見せてもよい」）", () => {
     const hand = [inst("SPEC-B1500", "a"), inst("SPEC-B500", "b"), inst("SPEC-B2500M", "c")];
     const s = settle(skip(rouzer(hand)));
     for (const x of hand) expect(zoneOf(s, "player1", x.instanceId)).toBe("hand");
@@ -328,7 +328,7 @@ describe("RK-129 ブルースペイダー", () => {
     return settle(next);
   };
 
-  it.fails("RK-129: 公式Q&A — これにライドしたユニットがある間、手札のオペレーションを使って捨札になったときも発動できる。ホールド状態の敵軍ユニット（サイズ・エリアを問わない）から選ぶ（任意）（出典: grnrngr/faq-rider-2 RK-129 Q「手札のオペレーションを使用して捨札になった場合も、効果を発動させる事ができます」・atwiki/page-617 Q1・カード評価「能力はサイズに関係なく発動する」）", () => {
+  it("RK-129: 公式Q&A — これにライドしたユニットがある間、手札のオペレーションを使って捨札になったときも発動できる。ホールド状態の敵軍ユニット（サイズ・エリアを問わない）から選ぶ（任意）（出典: grnrngr/faq-rider-2 RK-129 Q「手札のオペレーションを使用して捨札になった場合も、効果を発動させる事ができます」・atwiki/page-617 Q1・カード評価「能力はサイズに関係なく発動する」）", () => {
     const s = useOp({ battle: riding(inst("RK-129", "bs"), inst("SPEC-RC2000", "r")) });
     expect(zoneOf(s, "player1", "RS-025:op")).toBe("discard");
     expectChoiceFrom(s, "player1", "RK-129");
@@ -336,7 +336,7 @@ describe("RK-129 ブルースペイダー", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-129: 選んだホールド状態の敵軍ユニットを撃破する（出典: atwiki/page-617「ホールド状態の敵軍ユニットを1体選び撃破する」）", () => {
+  it("RK-129: 選んだホールド状態の敵軍ユニットを撃破する（出典: atwiki/page-617「ホールド状態の敵軍ユニットを1体選び撃破する」）", () => {
     const s = resolveAll(pick(useOp({ battle: riding(inst("RK-129", "bs"), inst("SPEC-RC2000", "r")) }), "SPEC-EM:hm"));
     expect(zoneOf(s, "player2", "SPEC-EM:hm")).toBe("discard");
   });
@@ -351,7 +351,7 @@ describe("RK-129 ブルースペイダー", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-129");
   });
 
-  it.fails("RK-129: 効果（追加条件）で手札を捨札にしたときも発動する（出典: atwiki/page-617「自分の手札からカードが1枚捨札に置かれるたび」・カード評価「仮面ライダーゼロノスAF…を使い、手札を捨てる事で任意に能力を発動させることが出来る」）", () => {
+  it("RK-129: 効果（追加条件）で手札を捨札にしたときも発動する（出典: atwiki/page-617「自分の手札からカードが1枚捨札に置かれるたび」・カード評価「仮面ライダーゼロノスAF…を使い、手札を捨てる事で任意に能力を発動させることが出来る」）", () => {
     const s0 = rushPhase(
       { hand: [inst("RK-139", "af"), inst("TST-OP", "cost")], rush: riding(inst("RK-129", "bs"), inst("SPEC-RC2000", "r")), command: releasedCat("OT", 1), power: powerCards(3) },
       enemy,
@@ -379,7 +379,7 @@ describe("RK-130 ローカストアンデッド", () => {
   const declare = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = regEnemy) =>
     rushOpen(rushPhase({ hand: [inst("RK-130", "lc")], command: releasedCat("DA", 1), power: powerCards(3), rush: [inst("SPEC-KAMEN", "k1")], battle: [inst("SPEC-KAMEN", "k2"), inst("TST-UNIT-0", "u")], ...p1 }, p2), "player1", "RK-130:lc");
 
-  it.fails("RK-130: 公式Q&A — ラッシュのための手続き（コマンドのホールド）を行ってから、ラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニット（エリアを問わない）を選べる（任意）（出典: grnrngr/faq-rider-2 RK-130 Q「ラッシュのための手続きを行ってから、捨札にしてください」・atwiki/page-640 Q1）", () => {
+  it("RK-130: 公式Q&A — ラッシュのための手続き（コマンドのホールド）を行ってから、ラッシュするかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニット（エリアを問わない）を選べる（任意）（出典: grnrngr/faq-rider-2 RK-130 Q「ラッシュのための手続きを行ってから、捨札にしてください」・atwiki/page-640 Q1）", () => {
     const s = declare();
     expect(s.players.player1.command[0]?.commandHeld).toBe(true);
     expectChoiceFrom(s, "player1", "RK-130");
@@ -387,12 +387,12 @@ describe("RK-130 ローカストアンデッド", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-130: 選ぶと、これはラッシュされずに捨札になる（出典: atwiki/page-640「これをラッシュするかわりに捨札にして」）", () => {
+  it("RK-130: 選ぶと、これはラッシュされずに捨札になる（出典: atwiki/page-640「これをラッシュするかわりに捨札にして」）", () => {
     const s = settle(pick(declare(), "SPEC-KAMEN:k1"));
     expect(zoneOf(s, "player1", "RK-130:lc")).toBe("discard");
   });
 
-  it.fails("RK-130: 選ばなければ、ふつうにラッシュエリアに出る（出典: atwiki/page-640「選んでもよい」）", () => {
+  it("RK-130: 選ばなければ、ふつうにラッシュエリアに出る（出典: atwiki/page-640「選んでもよい」）", () => {
     const s = settle(skip(declare()));
     expect(zoneOf(s, "player1", "RK-130:lc")).toBe("rush");
   });
@@ -412,19 +412,19 @@ describe("RK-130 ローカストアンデッド", () => {
     return settle(strike(s, "SPEC-KAMEN:k1"));
   };
 
-  it.fails("RK-130: このターン、選んだユニットはストライクしたとき、レジストを持つ敵軍 S ユニット（エリアを問わない）を1体選ぶ（選ばないことはできない）（出典: atwiki/page-640「ストライクしたとき、レジストを持つ敵軍Sユニットを1体選び、撃破する」・カード評価「エリアも問わない」）", () => {
+  it("RK-130: このターン、選んだユニットはストライクしたとき、レジストを持つ敵軍 S ユニット（エリアを問わない）を1体選ぶ（選ばないことはできない）（出典: atwiki/page-640「ストライクしたとき、レジストを持つ敵軍Sユニットを1体選び、撃破する」・カード評価「エリアも問わない」）", () => {
     const s = kick();
     expectChoiceFrom(s, "player1", "RK-130");
     expect(choiceIds(s)).toEqual(["RK-133:rb", "RK-133:rr"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-130: 選んだレジストを持つ敵軍ユニットを撃破する（出典: atwiki/page-640）", () => {
+  it("RK-130: 選んだレジストを持つ敵軍ユニットを撃破する（出典: atwiki/page-640）", () => {
     const s = resolveAll(pick(kick(), "RK-133:rr"));
     expect(zoneOf(s, "player2", "RK-133:rr")).toBe("discard");
   });
 
-  it.fails("RK-130: 選ばなかったユニットはストライクしても能力を得ていない（出典: atwiki/page-640「選んだユニットは次の能力を得る」）", () => {
+  it("RK-130: 選ばなかったユニットはストライクしても能力を得ていない（出典: atwiki/page-640「選んだユニットは次の能力を得る」）", () => {
     let s = settle(pick(declare(), "SPEC-KAMEN:k1"));
     s = nextPhase(s);
     s = settle(strike(s, "SPEC-KAMEN:k2"));
@@ -448,7 +448,7 @@ describe("RK-131 仮面ライダー剛鬼", () => {
   const gouki = (n = 1, p2: Partial<GameState["players"]["player2"]> = { battle: [inst("SPEC-EL", "lb")], rush: [inst("SPEC-EL", "lr"), inst("SPEC-EM", "m")] }) =>
     enter(board({ battle: fill(n), rush: [inst("RK-131", "go")], deck }, p2), "RK-131:go");
 
-  it.fails("RK-131: NC（2番目）— 敵軍 L ユニット（エリアを問わない）を1体選ぶかを選べる（任意）（出典: atwiki/page-634「敵軍Lユニットを1体選び、…オモテにしてもよい」・カード評価「エリアを問わないので…要塞ワンセブンの除去も可能」）", () => {
+  it("RK-131: NC（2番目）— 敵軍 L ユニット（エリアを問わない）を1体選ぶかを選べる（任意）（出典: atwiki/page-634「敵軍Lユニットを1体選び、…オモテにしてもよい」・カード評価「エリアを問わないので…要塞ワンセブンの除去も可能」）", () => {
     const s = gouki();
     expectChoiceFrom(s, "player1", "RK-131");
     expect(choiceIds(s)).toEqual(["SPEC-EL:lb", "SPEC-EL:lr"]);
@@ -459,7 +459,7 @@ describe("RK-131 仮面ライダー剛鬼", () => {
     expect(gouki(0).pendingEffectChoice?.sourceCardId).not.toBe("RK-131");
   });
 
-  it.fails("RK-131: 公式Q&A — 枚数を宣言せず、山札の上から1枚ずつオモテにして、好きなところで止められる（出典: grnrngr/faq-rider-2 RK-131 Q1「はい、その通りです」・Q2「いいえ、その必要はありません」）", () => {
+  it("RK-131: 公式Q&A — 枚数を宣言せず、山札の上から1枚ずつオモテにして、好きなところで止められる（出典: grnrngr/faq-rider-2 RK-131 Q1「はい、その通りです」・Q2「いいえ、その必要はありません」）", () => {
     let s = pick(gouki(), "SPEC-EL:lb");
     expectChoiceFrom(s, "player1", "RK-131");
     expect(canConfirm(s)).toBe(true);
@@ -469,7 +469,7 @@ describe("RK-131 仮面ライダー剛鬼", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-131: オモテにしたユニットカードの BP の合計が選んだ L ユニットの BP 以上なら撃破し、オモテにしたカードはすべて捨札になる（出典: atwiki/page-634）", () => {
+  it("RK-131: オモテにしたユニットカードの BP の合計が選んだ L ユニットの BP 以上なら撃破し、オモテにしたカードはすべて捨札になる（出典: atwiki/page-634）", () => {
     let s = pick(gouki(), "SPEC-EL:lb");
     s = confirm(confirm(confirm(confirm(s)))); // 5000 + 1000 + 0（オペレーション） + 13000
     s = resolveAll(skip(s));
@@ -478,7 +478,7 @@ describe("RK-131 仮面ライダー剛鬼", () => {
     expect(s.players.player1.deck[0]?.instanceId).toBe("TST-OP:rest0");
   });
 
-  it.fails("RK-131: 合計が L ユニットの BP に届かなければ撃破しないが、オモテにしたカードは捨札になる（オペレーションの BP は数えない）（出典: atwiki/page-634・カード評価「オペレーションカードやビークルカードが有った場合は…役に立たないまま捨札行き」）", () => {
+  it("RK-131: 合計が L ユニットの BP に届かなければ撃破しないが、オモテにしたカードは捨札になる（オペレーションの BP は数えない）（出典: atwiki/page-634・カード評価「オペレーションカードやビークルカードが有った場合は…役に立たないまま捨札行き」）", () => {
     let s = pick(gouki(), "SPEC-EL:lb");
     s = confirm(confirm(confirm(s))); // 5000 + 1000 + 0 = 6000 < 8000
     s = resolveAll(skip(s));
@@ -487,13 +487,13 @@ describe("RK-131 仮面ライダー剛鬼", () => {
     expect(zoneOf(s, "player1", "SPEC-BIG:d4")).toBe("deck");
   });
 
-  it.fails("RK-131: コミュニティQ&A — 合計が L ユニットの BP を超えても、7枚まではオモテにし続けられる（出典: atwiki/page-634 コメント欄「対象のBPを超えても7枚までなら表にして捨て札にしてもよいのでしょうか？」「大丈夫ですよ」）", () => {
+  it("RK-131: コミュニティQ&A — 合計が L ユニットの BP を超えても、7枚まではオモテにし続けられる（出典: atwiki/page-634 コメント欄「対象のBPを超えても7枚までなら表にして捨て札にしてもよいのでしょうか？」「大丈夫ですよ」）", () => {
     let s = pick(gouki(), "SPEC-EL:lb");
     s = confirm(confirm(confirm(confirm(s)))); // 19000 ≥ 8000
     expect(canConfirm(s)).toBe(true);
   });
 
-  it.fails("RK-131: 7枚オモテにしたら、それ以上はオモテにできない（出典: atwiki/page-634「7枚までオモテにしてもよい」）", () => {
+  it("RK-131: 7枚オモテにしたら、それ以上はオモテにできない（出典: atwiki/page-634「7枚までオモテにしてもよい」）", () => {
     let s = pick(gouki(), "SPEC-EL:lb");
     for (let i = 0; i < 7; i++) s = confirm(s);
     s = resolveAll(s);
@@ -502,7 +502,7 @@ describe("RK-131 仮面ライダー剛鬼", () => {
     expect(zoneOf(s, "player2", "SPEC-EL:lb")).toBe("discard");
   });
 
-  it.fails("RK-131: 敵軍 L ユニットがいなければ発動しない（出典: atwiki/page-634「敵軍Lユニットを1体選び」）", () => {
+  it("RK-131: 敵軍 L ユニットがいなければ発動しない（出典: atwiki/page-634「敵軍Lユニットを1体選び」）", () => {
     expect(gouki(1, { battle: [inst("SPEC-EM", "m")] }).pendingEffectChoice?.sourceCardId).not.toBe("RK-131");
   });
 
@@ -549,13 +549,13 @@ describe("RK-132 仮面ライダー闘鬼", () => {
     return next;
   };
 
-  it.fails("RK-132: これがホールド状態で自軍エリアにある間、敵軍山札がシャッフルされたとき、リリースするかを選べる（任意）（出典: atwiki/page-685「敵軍山札がシャッフルされたとき、これがホールド状態ならリリースしてもよい」）", () => {
+  it("RK-132: これがホールド状態で自軍エリアにある間、敵軍山札がシャッフルされたとき、リリースするかを選べる（任意）（出典: atwiki/page-685「敵軍山札がシャッフルされたとき、これがホールド状態ならリリースしてもよい」）", () => {
     const s = enemyLooks(deneb({ rush: [heldUnit("RK-132", "tk")] }));
     expectChoiceFrom(s, "player1", "RK-132");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-132: 選ぶとリリース状態になる（出典: atwiki/page-685「リリースしてもよい」）", () => {
+  it("RK-132: 選ぶとリリース状態になる（出典: atwiki/page-685「リリースしてもよい」）", () => {
     let s = enemyLooks(deneb({ rush: [heldUnit("RK-132", "tk")] }));
     s = s.pendingEffectChoice?.kind === "confirm" ? confirm(s) : pick(s, s.pendingEffectChoice!.validInstanceIds[0]!);
     expect(cardIn(s, "player1", "RK-132:tk")?.commandHeld ?? false).toBe(false);

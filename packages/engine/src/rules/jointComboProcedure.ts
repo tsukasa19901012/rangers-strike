@@ -12,6 +12,7 @@ import {
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getDefinition, unitEffectiveCategories } from "../core/catalog";
 import { updatePlayer } from "../core/helpers";
+import { crossReducedNumber, crossReductionFor } from "../keywords/battleKeywords";
 import { buildLogEntry } from "../log/formatLog";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import { listDslEffectsForTrigger } from "../dsl/effectLookup";
@@ -58,16 +59,30 @@ export function isJointLSizeAnchor(
   return def?.size === "L";
 }
 
+/**
+ * 並びの中の分数 SP（クロスで分母が減ったもの。R-KW-CROSS-01）。RK-147 デンライナーイスルギ「SP1/4のSユニット」は、クロスで
+ * SP1/5 から SP1/4 になったユニットを含み、SP1/4 から SP1/3 になったユニットを含まない（atwiki/page-673 コメント欄）。
+ */
+function withCrossAdjustedSp(def: CardDefinition, battle: CardInstance[] | undefined, partner: CardInstance): CardDefinition {
+  if (!battle || typeof def.sp !== "string") return def;
+  const m = def.sp.match(/^1\/(\d+)$/);
+  if (!m) return def;
+  const reduction = crossReductionFor(battle, partner.instanceId);
+  if (reduction <= 0) return def;
+  return { ...def, sp: `1/${crossReducedNumber(Number(m[1]), reduction)}` as CardDefinition["sp"] };
+}
+
 function isJointLPartnerMatch(
   definitions: GameState["definitions"],
   anchor: CardInstance,
   partner: CardInstance,
   categoriesOf?: JointCategoriesOf,
+  battle?: CardInstance[],
 ): boolean {
   const anchorDef = definitionWithCategories(definitions, anchor, categoriesOf);
   const partnerDef = definitionWithCategories(definitions, partner, categoriesOf);
   if (!anchorDef || !partnerDef) return false;
-  return matchesJointLPartnerById(anchor.cardId, anchorDef, partnerDef);
+  return matchesJointLPartnerById(anchor.cardId, anchorDef, withCrossAdjustedSp(partnerDef, battle, partner));
 }
 
 function isJointRPartnerMatch(
@@ -117,7 +132,7 @@ export function findJointComboTriggersOnEnter(
 
   if (enteringDef.comboNumber === "L") {
     const partner = battle[enterIndex + 1];
-    if (partner && isJointLPartnerMatch(definitions, entering, partner, categoriesOf)) {
+    if (partner && isJointLPartnerMatch(definitions, entering, partner, categoriesOf, battle)) {
       triggers.push({ kind: "joint_l", lIndex: enterIndex, partnerIndex: enterIndex + 1 });
     }
   }
@@ -134,7 +149,7 @@ export function findJointComboTriggersOnEnter(
   if (
     left &&
     leftDef?.comboNumber === "L" &&
-    isJointLPartnerMatch(definitions, left, entering, categoriesOf)
+    isJointLPartnerMatch(definitions, left, entering, categoriesOf, battle)
   ) {
     triggers.push({ kind: "joint_l", lIndex: enterIndex - 1, partnerIndex: enterIndex });
   }

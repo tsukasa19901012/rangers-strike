@@ -3,6 +3,7 @@ import { tryResolveDslTriggeredEffects } from "../../dsl/triggerResolver";
 import { isStrikeDamageDealtTriggerText } from "../../rules/strikeDamageTriggers";
 import { openHamsterStrikeDraw } from "../../rules/legend1/set7NamedEffectsC";
 import { applyThunderboltSword } from "../../rules/legend1/set8NamedEffectsA";
+import { applyRk7OnStrike } from "../../rules/rk/rk7UnitEffects";
 
 /**
  * StrikeDeclared: on_strike DSL 効果（RS-067 等）。
@@ -30,6 +31,8 @@ export const strikeDeclaredListener: EventListener = (event, state) => {
   let hamster = openHamsterStrikeDraw(result.state, strikeEvent.strikerPlayerId, card);
   // RS-529 チェンジロボ【電撃剣スーパーサンダーボルト】「これがアタックまたはストライクしたとき」（rules/legend1/set8NamedEffectsA.ts）。
   hamster = applyThunderboltSword(hamster, strikeEvent.strikerPlayerId, card.cardId);
+  // RK-130【スペード5－キック】で得た能力「ストライクしたとき、レジストを持つ敵軍Sユニットを1体選び、撃破する」（rules/rk/rk7UnitEffects.ts）。
+  hamster = applyRk7OnStrike(hamster, strikeEvent.strikerPlayerId, card);
 
   return {
     state: hamster,

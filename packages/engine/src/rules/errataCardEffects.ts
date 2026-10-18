@@ -18,7 +18,7 @@ import {
 import { applyDamageToPlayer } from "./damagePayment";
 import { sameCardName } from "../core/cardNames";
 import { isZordUpCost, resolveRushAdditionalCondition } from "@rangers-strike/cards";
-import { isMirrorWorld } from "./rk/rk1NamedEffects";
+import { isMirrorWorld, takeHybridRevealedToHand } from "./rk/rk1NamedEffects";
 import { swapResidentFeature } from "./rk/rk4UnitEffects";
 import { countAvailablePower, rushEffectivePowerCost } from "../core/power";
 import { opponent, updatePlayer } from "../core/helpers";
@@ -261,15 +261,18 @@ function updateEntering(
   };
 }
 
-/** 電王CF の残り（まだ発動していないイマジン）があれば選択を開き直す。 */
+/**
+ * まだ発動していないイマジンがあれば選択を開き直す。
+ * - 電王CF【てんこもりだぜ！】: 捨札にせずに1枚につき1度ずつ。
+ * - 通常: パワーゾーンのイマジン1枚ごとの効果なので、残りのイマジンも捨札にして発動できる
+ *   （atwiki/page-652 コメント欄「1枚ごとに効果を発動できるため、2枚捨札にしてBP+6000することができます」）。
+ */
 function continueTenkomori(
   state: GameState,
   pending: NonNullable<GameState["pendingEffectChoice"]>,
   usedId: string,
 ): GameState {
-  if (pending.effectId !== IMAGIN_TENKOMORI_EFFECT && !pending.selectedInstanceIds?.includes("tenkomori")) {
-    return state;
-  }
+  const tenkomori = pending.effectId === IMAGIN_TENKOMORI_EFFECT || !!pending.selectedInstanceIds?.includes("tenkomori");
   const remaining = (pending.viewedInstanceIds ?? []).filter(
     (id) =>
       id !== usedId &&
@@ -278,8 +281,8 @@ function continueTenkomori(
   if (remaining.length === 0) return state;
   return openEffectChoice(state, {
     ...pending,
-    effectId: IMAGIN_TENKOMORI_EFFECT,
-    sourceCardId: "RK-168",
+    effectId: tenkomori ? IMAGIN_TENKOMORI_EFFECT : IMAGIN_DISCARD_EFFECT,
+    sourceCardId: tenkomori ? "RK-168" : "RK-142",
     kind: "select_power",
     validInstanceIds: remaining,
     viewedInstanceIds: remaining,
@@ -757,53 +760,82 @@ function resolveAddressBook(state: GameState, playerId: PlayerId, instanceId: st
 // RK-146 デネブ【デネブキャンディー】
 
 const DENEB_CANDY = "deneb_candy";
+const DENEB_CANDY_LOOK = "deneb_candy_look";
 
 /**
  * ルール: R-ERR-RK146 — 相手、自分の順に「自分自身の山札を見てもよい。そうしたとき、その中から
  * オペレーションカードを1枚選び手札に加える。その後、山札をシャッフルする。」
- * selectedInstanceIds[0] に残りの手番（"self"）を持たせる。
+ * - まず山札を見るかを選ぶ（DENEB_CANDY_LOOK。見送れば何もしない）。
+ * - 見たら、オペレーションカードがあれば1枚選んで手札に加える（選ばないことはできない）。なくても山札はシャッフルする（atwiki/page-672 Q2）。
+ * - RK-010 ハイブリッドエネルギーでオモテにしたカードは、山札を見る前に手札に加える（atwiki/page-672 Q1・page-210 Q4）。
+ * selectedInstanceIds に残りの手番（"player1" / "player2"）を持たせる。
  */
 function openDenebCandyFor(
   state: GameState,
   base: { sourceCardId: string; sourceInstanceId?: string; phasePlayerId: PlayerId },
   order: PlayerId[],
 ): GameState {
-  let next = state;
   for (let i = 0; i < order.length; i += 1) {
     const pid = order[i]!;
-    const ops = next.players[pid].deck
-      .filter((c) => getDefinition(next.definitions, c.cardId)?.type === "operation")
-      .map((c) => c.instanceId);
-    if (ops.length === 0) continue;
-    return openEffectChoice(next, {
+    if (state.players[pid].deck.length === 0) continue;
+    return openEffectChoice(state, {
       playerId: pid,
-      effectId: DENEB_CANDY,
+      effectId: DENEB_CANDY_LOOK,
       sourceCardId: base.sourceCardId,
       sourceInstanceId: base.sourceInstanceId,
       phasePlayerId: base.phasePlayerId,
-      kind: "scry_keep_one",
-      validInstanceIds: ops,
-      viewedInstanceIds: ops,
+      kind: "confirm",
+      validInstanceIds: [],
       selectedInstanceIds: order.slice(i + 1),
-      selectCount: 1,
       optional: true,
+      mayConfirm: true,
     });
   }
-  return next;
+  return state;
+}
+
+function denebRest(pending: NonNullable<GameState["pendingEffectChoice"]>): PlayerId[] {
+  return (pending.selectedInstanceIds ?? []).filter((p): p is PlayerId => p === "player1" || p === "player2");
 }
 
 function continueDenebCandy(
   state: GameState,
   pending: NonNullable<GameState["pendingEffectChoice"]>,
 ): GameState {
-  const rest = (pending.selectedInstanceIds ?? []).filter(
-    (p): p is PlayerId => p === "player1" || p === "player2",
-  );
-  return openDenebCandyFor(clearPending(state, pending.phasePlayerId), pending, rest);
+  return openDenebCandyFor(clearPending(state, pending.phasePlayerId), pending, denebRest(pending));
+}
+
+/** 山札を見る: オペレーションカードがあれば選ぶ選択を開き、なければシャッフルして次の手番へ。 */
+function lookDenebCandy(state: GameState, playerId: PlayerId): ChoiceOutcome {
+  const pending = state.pendingEffectChoice!;
+  let next = takeHybridRevealedToHand(state, playerId);
+  const ops = next.players[playerId].deck
+    .filter((c) => getDefinition(next.definitions, c.cardId)?.type === "operation")
+    .map((c) => c.instanceId);
+  const log = logFor(state, playerId, pending.sourceCardId, `${DENEB_CANDY_LOOK}:look`);
+  if (ops.length > 0) {
+    return {
+      state: openEffectChoice(clearPending(next, pending.phasePlayerId), {
+        ...pending,
+        effectId: DENEB_CANDY,
+        kind: "scry_keep_one",
+        validInstanceIds: ops,
+        viewedInstanceIds: ops,
+        selectCount: 1,
+        optional: false,
+        mayConfirm: undefined,
+      }),
+      log,
+    };
+  }
+  const player = next.players[playerId];
+  next = { ...next, ...updatePlayer(next, playerId, { ...player, deck: shuffleDeckCards(player.deck) }) };
+  return { state: continueDenebCandy(next, pending), log };
 }
 
 function resolveDenebCandy(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
   const pending = state.pendingEffectChoice!;
+  if (pending.effectId === DENEB_CANDY_LOOK) return lookDenebCandy(state, playerId);
   if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
   const next = deckCardToHandShuffle(state, playerId, instanceId);
   return {
@@ -1662,6 +1694,7 @@ const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {
   [OROCHI_DIVE]: resolveOrochiDive,
   [ADDRESS_BOOK]: resolveAddressBook,
   [DENEB_CANDY]: resolveDenebCandy,
+  [DENEB_CANDY_LOOK]: resolveDenebCandy,
   [COUNTER_STRIKE]: resolveCounterStrike,
   [SENBON_RETURN]: resolveSenbonKnock,
   [SENBON_BOTTOM]: resolveSenbonKnock,
@@ -1699,7 +1732,7 @@ export function isErrataConfirmableChoice(effectId: string): boolean {
 export function trySkipErrataChoice(state: GameState, playerId: PlayerId): ChoiceOutcome | null {
   const pending = state.pendingEffectChoice;
   if (!pending || pending.playerId !== playerId || !pending.optional) return null;
-  if (pending.effectId === DENEB_CANDY) {
+  if (pending.effectId === DENEB_CANDY_LOOK) {
     return { state: continueDenebCandy(state, pending) };
   }
   if (pending.effectId === OROCHI_DIVE) {
@@ -1718,6 +1751,7 @@ export function trySkipErrataChoice(state: GameState, playerId: PlayerId): Choic
 export function tryConfirmErrataChoice(state: GameState, playerId: PlayerId): ChoiceOutcome | null {
   const pending = state.pendingEffectChoice;
   if (!pending || pending.playerId !== playerId) return null;
+  if (pending.effectId === DENEB_CANDY_LOOK) return lookDenebCandy(state, playerId);
   if (pending.effectId === SENBON_RETURN) {
     return finishSenbonReturn(state, pending, pending.selectedInstanceIds ?? []);
   }

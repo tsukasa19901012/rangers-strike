@@ -36,16 +36,16 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが撃破されて捨札になるとき、かわりにダークアライアンスを持つ自軍Sユニットを1体選び捨札にしてもよい。",
       "trigger": {
-        "type": "riding_combo"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_substitute_on_destroy_feature_s::feature",
-          "duration": "turn"
+          "keyword": "rk7::RK-128::substitute",
+          "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     },
     {
       "id": "rengerurauza",
@@ -57,11 +57,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_pick_show_nowo3binisetemoyoisoushitatokisetakadogasubetebpno",
+          "keyword": "rk7::RK-128::rengel_rouzer",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

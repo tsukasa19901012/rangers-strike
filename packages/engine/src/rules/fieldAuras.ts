@@ -102,10 +102,7 @@ function noteOtherNcBpBonus(
   const enemy = state.players[enemyId];
   let bonus = 0;
 
-  // RK-127: BP+2000 per enemy hand card
-  if (cardId === "RK-127") {
-    bonus += enemy.hand.length * 2000;
-  }
+  // RK-127 の※（相手の手札1枚につき BP+2000）は rules/rkFieldPassives.ts の文言の解析で数える（ここでも足すと2重になる）。
 
   // RK-292: BP+3000 per copy of itself in own discard
   if (cardId === "RK-292") {

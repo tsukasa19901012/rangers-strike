@@ -42,11 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-132::nobakuapu",
+          "keyword": "rk7::RK-132::family_backup",
           "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

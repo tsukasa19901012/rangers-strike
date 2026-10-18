@@ -2241,7 +2241,8 @@
     ],
     "expectedDslKeywords": [
       "no_strike_after_rideoff",
-      "bp_plus_per_enemy_hand_card_2000"
+      "bp_plus_per_enemy_hand_card_2000",
+      "rk7::RK-127::chalice_arrow"
     ],
     "bp": 1000,
     "sp": "1/2",
@@ -2259,8 +2260,8 @@
     ],
     "expectedDslKeywords": [
       "no_strike_after_rideoff",
-      "note_substitute_on_destroy_feature_s::feature",
-      "rk_fx::RK-128::rengerurauza"
+      "rk7::RK-128::substitute",
+      "rk7::RK-128::rengel_rouzer"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -2277,7 +2278,7 @@
       "【サンダースペイダー】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-129::sandasupeida"
+      "rk7::RK-129::thunder_spader"
     ],
     "sp": null,
     "size": "S"
@@ -2293,7 +2294,7 @@
       "【スペード5－キック】"
     ],
     "expectedDslKeywords": [
-      "replace_rush_kamen_rider"
+      "rk7::RK-130::spade5_kick"
     ],
     "bp": 1500,
     "sp": null,
@@ -2310,7 +2311,7 @@
       "【音響打・豪腕無双】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-131::fx_unknown_e99fb3"
+      "rk7::RK-131::gouki"
     ],
     "bp": 4000,
     "sp": "1/3",
@@ -2328,7 +2329,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-132::nobakuapu"
+      "rk7::RK-132::family_backup"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -2363,7 +2364,9 @@
       "【ライダーキック】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk7::RK-134::rider_kick_attack",
+      "rk7::RK-134::rider_kick"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -2399,7 +2402,7 @@
     ],
     "expectedDslKeywords": [
       "not_selectable_except_attack",
-      "rk_fx::RK-136::raidashuteingu"
+      "rk7::RK-136::rider_shooting"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -2434,7 +2437,7 @@
     ],
     "expectedDslKeywords": [
       "no_battle_rush_turn",
-      "rk_fx::RK-138::na"
+      "rk7::RK-138::unstable_mimicry"
     ],
     "bp": 2000,
     "sp": 1,
@@ -2451,7 +2454,7 @@
       "【俺はかーなーり強い】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-139::hakanarii"
+      "rk7::RK-139::kanari_tsuyoi"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -2486,7 +2489,7 @@
       "【デネビックバスター】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-141::denebikubasuta"
+      "rk7::RK-141::denebic_buster"
     ],
     "bp": 5000,
     "sp": 1,

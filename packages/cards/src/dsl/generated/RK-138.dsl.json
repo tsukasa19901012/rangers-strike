@@ -43,11 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-138::na",
+          "keyword": "rk7::RK-138::unstable_mimicry",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

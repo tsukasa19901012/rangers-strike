@@ -1,6 +1,7 @@
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
 import { isRk5BattleCounterCard, rk5BattleCounterConditionMet } from "./rk/rk5UnitEffects";
 import { applyRk6AfterUnitLeft, rk6IsNonCraneOrphnoch } from "./rk/rk6UnitEffects";
+import { openRk7RengelSubstitute } from "./rk/rk7UnitEffects";
 import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects";
 import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
 import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
@@ -2076,6 +2077,9 @@ export function tryLeaveField(
   // RS-303【シティガーディアンズ隊長】: 撃破されたとき、「戦闘員」2体をかわりに捨札にしてもよい。
   const cityGuardians = openCityGuardiansSubstitute(state, intent);
   if (cityGuardians) return { state: cityGuardians, deferred: true };
+  // RK-128 仮面ライダーレンゲル ※: 撃破されて捨札になるとき、かわりに DA の自軍 S ユニットを捨札にするか（rules/rk/rk7UnitEffects.ts）。
+  const rengel = openRk7RengelSubstitute(state, intent);
+  if (rengel) return { state: rengel, deferred: true };
   // RS-502【忘我の中に修行あり】: ブルーの S ユニットが撃破されて捨札になるとき、かわりに手札のユニットカードを捨札にするか
   // （rules/legend1/set7NamedEffectsD.ts）。
   const batLee = openBatLeeChoice(state, intent);

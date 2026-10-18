@@ -183,7 +183,8 @@ describe("報告カードの能動効果ランタイム", () => {
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.state.players.player1.hand.some((c) => c.instanceId === bottom.instanceId)).toBe(false);
-    expect(r.state.players.player1.deck[0]?.instanceId).toBe(bottom.instanceId);
+    // 山札の下に戻す（atwiki/page-632「それ以外なら山札の下に戻す」）。
+    expect(r.state.players.player1.deck.at(-1)?.instanceId).toBe(bottom.instanceId);
   });
 
   it("RK-301 エクステンドライダー落とし: ライドされたカブトエクステンダーからのラッシュ配置で発動", () => {

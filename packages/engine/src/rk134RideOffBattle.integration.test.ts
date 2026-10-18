@@ -19,10 +19,14 @@ describe("RK-134 ride-off then battle", () => {
   it("uses printed defender BP for ライダーキック (ignores attacked boost)", () => {
     const rk134 = inst("RK-134", "atk");
     const rk135 = inst("RK-135", "def");
+    // 【ライダーキック】は RC の効果なので、RC を発動したターンだけ有効（atwiki/page-662・R-KW-RC-01。rules/rk/rk7UnitEffects.ts）。
     const state = createTestState({
       phase: "battle",
       definitions: DEFINITIONS,
-      player1: { battle: [rk134] },
+      player1: {
+        battle: [rk134],
+        modifiers: [{ kind: "rule", ruleId: "rk134_rider_kick", scope: "turn", sourceCardId: "RK-134", payload: { instanceId: rk134.instanceId } }],
+      },
       player2: { battle: [rk135] },
     });
     const pending = {

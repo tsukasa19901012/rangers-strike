@@ -15,15 +15,16 @@
       "name": "サンダースペイダー",
       "text": "これにライドしたユニットがある間、自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒ホールド状態の敵軍ユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_discard_trigger_koreniraidoshitayunitogaarunokarakadoga1nikarerutab",
+          "keyword": "rk7::RK-129::thunder_spader",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

@@ -28,6 +28,8 @@ import { beginChikaraBaton } from "../legend1/set4NamedEffects";
 import { NO_ATTACK_THIS_TURN_RESTRICTION } from "../legend1/set5AuditFixes";
 import { noEntryOnRushTurn, unconditionalNoEntryText } from "../restrictions";
 import { resolveBattlePending } from "../operationCounters";
+import { errataBattleEntryBlocked } from "../errataCardEffects";
+import { applyDestroyOnEnterBattle } from "../destroyOnEnterBattle";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -689,6 +691,8 @@ function ipponZuriCandidates(state: GameState, playerId: PlayerId): string[] {
       if (!def || def.type !== "unit" || def.size !== "S") return false;
       if (cardNotSelectableByOpponent(c.cardId)) return false;
       if (noEntryOnRushTurn(c.cardId) || unconditionalNoEntryText(def)) return false;
+      // RK-140 電王LF の※（必要パワーの数字が2以下のユニットはバトルエリアに出られない）があれば選べない（grnrngr/faq-rider-2 RK-140 Q）。
+      if (errataBattleEntryBlocked(state, enemyId, c)) return false;
       if (rk2NeedsKamenRiderRushDiscard(c.cardId) && kamenRushIds(state, enemyId).length === 0) return false;
       return true;
     })
@@ -748,7 +752,11 @@ CHOICE_RESOLVERS[IPPON_ZURI_EFFECT_ID] = (state, playerId, instanceId) => {
       log,
     };
   }
-  return { state: proceed(close(placeFromPower(state, enemyId, instanceId), pending), pending), log };
+  // 出したユニットの効果は発動しないが、「※これはバトルエリアに出たとき撃破される」（RK-142 モモタロス等）では撃破される
+  // （grnrngr/faq-rider-2 RK-142 Q1「その「RK-142 モモタロス」は、自身の持つ効果…により撃破されます」・Q2）。
+  let next = placeFromPower(close(state, pending), enemyId, instanceId);
+  next = applyDestroyOnEnterBattle(next, enemyId, instanceId, pending.phasePlayerId).state;
+  return { state: proceed(next, pending), log };
 };
 
 CHOICE_SKIPPERS[IPPON_ZURI_EFFECT_ID] = simpleSkip();

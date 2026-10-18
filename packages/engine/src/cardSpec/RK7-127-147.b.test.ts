@@ -123,15 +123,29 @@ describe("RK-134 仮面ライダー2号（THE FIRST）", () => {
     expect(zoneOf(s, "player1", "RK-134:n2")).toBe("battle");
   });
 
-  it.fails("RK-134: ライドしないで出たときは RC が発動せず、ドレイクMF（アタックされるとき BP5000）に負ける（出典: atwiki/page-662・R-KW-RC-01）", () => {
+  it("RK-134: ライドしないで出たときは RC が発動せず、ドレイクMF（アタックされるとき BP5000）に負ける（出典: atwiki/page-662・R-KW-RC-01）", () => {
     let s = enter(board({ rush: [inst("RK-134", "n2")] }, { battle: [inst("RK-135", "mf")] }), "RK-134:n2");
     s = resolveAll(attack(s, "RK-134:n2", "RK-135:mf"));
     expect(zoneOf(s, "player2", "RK-135:mf")).toBe("battle");
   });
 
-  it.todo(
-    "RK-134: RC — このユニットがホールド状態でアタックするとき、このターン BP+2000 される（出典: atwiki/page-662「さらに、このユニットがホールド状態なら、このターン、これはBP+2000される」）— ホールド状態のユニットがアタックできるかが R-HOLD-03 で [未確定] のままで、エンジンはホールド状態のユニットのアタックを認めていないため確かめられない（本文はホールド状態でのアタックを前提にしているので、R-HOLD-03 を決める材料になる）",
-  );
+  /** RC を発動したあと、2号をホールド状態にする（レジストではないホールド。R-HOLD-03 の [未確定] にかからない場面）。 */
+  const heldAfterRc = (p2: Partial<GameState["players"]["player2"]>) => {
+    const s = rc(p2);
+    return { ...s, players: { ...s.players, player1: { ...s.players.player1, battle: s.players.player1.battle.map((c) => (c.instanceId === "RK-134:n2" ? { ...c, commandHeld: true } : c)) } } };
+  };
+
+  it("RK-134: RC — このユニットがホールド状態でアタックするとき、このターン BP+2000 される（BP5000 で本来の BP4000 の相手に勝つ）（出典: atwiki/page-662「さらに、このユニットがホールド状態なら、このターン、これはBP+2000される」）", () => {
+    const s = resolveAll(attack(heldAfterRc({ battle: [inst("SPEC-E4", "d")] }), "RK-134:n2", "SPEC-E4:d"));
+    expect(zoneOf(s, "player2", "SPEC-E4:d")).toBe("discard");
+    expect(zoneOf(s, "player1", "RK-134:n2")).toBe("battle");
+  });
+
+  it("RK-134: RC — リリース状態なら BP+2000 されない（BP3000 で本来の BP4000 の相手に負ける）（出典: atwiki/page-662「このユニットがホールド状態なら」）", () => {
+    const s = resolveAll(attack(rc({ battle: [inst("SPEC-E4", "d")] }), "RK-134:n2", "SPEC-E4:d"));
+    expect(zoneOf(s, "player2", "SPEC-E4:d")).toBe("battle");
+  });
+
 
   it.todo(
     "RK-134: 公式Q&A（相互参照）— SK-002 仮面ライダーV3【ダブルタイフーン】では「RK-134 仮面ライダー2号（THE FIRST）」をホールドして RC を発動できない（括弧書きもカード名に含む）（出典: grnrngr/faq-rider-2 SK-002 Q2）— SK-002 は本範囲外のカード",
@@ -178,7 +192,7 @@ describe("RK-135 仮面ライダードレイクMF", () => {
     expect(zoneOf(s, "player1", "SPEC-E3:bottom")).toBe("hand");
   });
 
-  it.fails("RK-135: RC — 違えば山札の下に戻す（出典: atwiki/page-632「それ以外なら山札の下に戻す」）", () => {
+  it("RK-135: RC — 違えば山札の下に戻す（出典: atwiki/page-632「それ以外なら山札の下に戻す」）", () => {
     const s = settle(pick(search(), "1"));
     expect(zoneOf(s, "player1", "SPEC-E3:bottom")).toBe("deck");
     expect(s.players.player1.deck.at(-1)?.instanceId).toBe("SPEC-E3:bottom");
@@ -232,7 +246,7 @@ describe("RK-136 仮面ライダードレイクRF", () => {
     expect(legal(s).some((a) => "sourceInstanceId" in a && a.sourceInstanceId === "RK-136:rf")).toBe(false);
   });
 
-  it.fails("RK-136: ラッシュしたとき、自軍パワーゾーンのオモテ向きのカードの枚数（追加条件で送ったドレイクMF を含む。ダメージは数えない）以下の必要パワーを持つ、追加条件を持たない敵軍ユニット（エリア・サイズを問わない）を1体選べる（任意）（出典: atwiki/page-668・カード評価「除去はエリアとサイズを問わない」「追加条件でのパワー加速をあわせれば」）", () => {
+  it("RK-136: ラッシュしたとき、自軍パワーゾーンのオモテ向きのカードの枚数（追加条件で送ったドレイクMF を含む。ダメージは数えない）以下の必要パワーを持つ、追加条件を持たない敵軍ユニット（エリア・サイズを問わない）を1体選べる（任意）（出典: atwiki/page-668・カード評価「除去はエリアとサイズを問わない」「追加条件でのパワー加速をあわせれば」）", () => {
     const r = rushRf();
     expect(r.ok, r.error).toBe(true);
     const s = r.state;
@@ -241,13 +255,13 @@ describe("RK-136 仮面ライダードレイクRF", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-136: 選んだユニットは持ち主のパワーゾーンに（オモテ向きで）送られる（出典: atwiki/page-668「持ち主のパワーゾーンに送ってもよい」）", () => {
+  it("RK-136: 選んだユニットは持ち主のパワーゾーンに（オモテ向きで）送られる（出典: atwiki/page-668「持ち主のパワーゾーンに送ってもよい」）", () => {
     const s = resolveAll(pick(rushRf().state, "SPEC-EM4:m4"));
     expect(zoneOf(s, "player2", "SPEC-EM4:m4")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-EM4:m4")?.faceDown ?? false).toBe(false);
   });
 
-  it.fails("RK-136: 送らないこともできる（出典: atwiki/page-668「送ってもよい」）", () => {
+  it("RK-136: 送らないこともできる（出典: atwiki/page-668「送ってもよい」）", () => {
     const s = settle(skip(rushRf().state));
     expect(zoneOf(s, "player2", "SPEC-E4:c4")).toBe("battle");
   });
@@ -309,7 +323,7 @@ describe("RK-138 ウカワーム", () => {
   const p1Discard = { discard: [inst("SPEC-WOMAN", "w1"), inst("RK-138", "uk2"), inst("SPEC-MAN", "m1"), inst("TST-OP", "op")] };
   const p2Discard = { discard: [inst("SPEC-WOMAN2", "ew"), inst("SPEC-MAN", "em")] };
 
-  it.fails("RK-138: 撃破されて捨札になったとき、まず相手が自分自身の捨札の特徴「女」を持つユニットカードを1枚選び、自分自身のラッシュエリアに出せる（任意）（出典: atwiki/page-639「相手は自分自身の捨札から特徴「女」を持つユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい」）", () => {
+  it("RK-138: 撃破されて捨札になったとき、まず相手が自分自身の捨札の特徴「女」を持つユニットカードを1枚選び、自分自身のラッシュエリアに出せる（任意）（出典: atwiki/page-639「相手は自分自身の捨札から特徴「女」を持つユニットカードを1枚選び、自分自身のラッシュエリアに出してもよい」）", () => {
     const s = destroyed(p1Discard, p2Discard);
     expect(zoneOf(s, "player1", "RK-138:uk")).toBe("discard");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
@@ -317,13 +331,13 @@ describe("RK-138 ウカワーム", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-138: 相手が出したら、相手のラッシュエリアに出て、自分は手札に戻せない（出典: atwiki/page-639「相手がそうしなかったとき」）", () => {
+  it("RK-138: 相手が出したら、相手のラッシュエリアに出て、自分は手札に戻せない（出典: atwiki/page-639「相手がそうしなかったとき」）", () => {
     const s = resolveAll(pick(destroyed(p1Discard, p2Discard), "SPEC-WOMAN2:ew"));
     expect(zoneOf(s, "player2", "SPEC-WOMAN2:ew")).toBe("rush");
     expect(zoneOf(s, "player1", "SPEC-WOMAN:w1")).toBe("discard");
   });
 
-  it.fails("RK-138: 相手が出さなければ、自軍捨札の「ウカワーム」以外の特徴「女」を持つユニットカードを1枚選び、手札に戻せる（任意）（出典: atwiki/page-639「自軍捨札から「ウカワーム」以外の特徴「女」を持つユニットカードを1枚選び、自分の手札に戻してもよい」）", () => {
+  it("RK-138: 相手が出さなければ、自軍捨札の「ウカワーム」以外の特徴「女」を持つユニットカードを1枚選び、手札に戻せる（任意）（出典: atwiki/page-639「自軍捨札から「ウカワーム」以外の特徴「女」を持つユニットカードを1枚選び、自分の手札に戻してもよい」）", () => {
     let s = settle(skip(destroyed(p1Discard, p2Discard)));
     expectChoiceFrom(s, "player1", "RK-138");
     expect(choiceIds(s)).toEqual(["SPEC-WOMAN:w1"]);
@@ -332,7 +346,7 @@ describe("RK-138 ウカワーム", () => {
     expect(zoneOf(s, "player1", "SPEC-WOMAN:w1")).toBe("hand");
   });
 
-  it.fails("RK-138: 相手の捨札に特徴「女」のユニットカードがなければ（相手は出せないので）、自分が手札に戻せる（出典: atwiki/page-639「相手がそうしなかったとき」）", () => {
+  it("RK-138: 相手の捨札に特徴「女」のユニットカードがなければ（相手は出せないので）、自分が手札に戻せる（出典: atwiki/page-639「相手がそうしなかったとき」）", () => {
     const s = destroyed(p1Discard, { discard: [inst("SPEC-MAN", "em")] });
     expectChoiceFrom(s, "player1", "RK-138");
     expect(choiceIds(s)).toEqual(["SPEC-WOMAN:w1"]);
@@ -376,7 +390,7 @@ describe("RK-139 仮面ライダーゼロノスAF", () => {
   const rc = (p2: Partial<GameState["players"]["player2"]>) =>
     rcRideOff(board({ rush: [inst("RK-139", "af"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-139:af", "SPEC-VEHICLE:v");
 
-  it.fails("RK-139: RC — 相手が自分自身のラッシュエリアのユニット（サイズを問わない）を1体選ぶ（選ばないことはできない）（出典: atwiki/page-670「相手は自分自身のラッシュエリアからユニットを1体選び」・カード評価「サイズ制限が無い」）", () => {
+  it("RK-139: RC — 相手が自分自身のラッシュエリアのユニット（サイズを問わない）を1体選ぶ（選ばないことはできない）（出典: atwiki/page-670「相手は自分自身のラッシュエリアからユニットを1体選び」・カード評価「サイズ制限が無い」）", () => {
     const s = rc({ rush: [inst("SPEC-E1", "r1"), inst("SPEC-EM4", "rm")], battle: [inst("SPEC-E2", "b")] });
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-139");
@@ -384,13 +398,13 @@ describe("RK-139 仮面ライダーゼロノスAF", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-139: RC — 選ばれたユニットは相手のバトルエリアに出る（出典: atwiki/page-670「可能ならバトルエリアに出す」）", () => {
+  it("RK-139: RC — 選ばれたユニットは相手のバトルエリアに出る（出典: atwiki/page-670「可能ならバトルエリアに出す」）", () => {
     const s = resolveAll(pick(rc({ rush: [inst("SPEC-E1", "r1"), inst("SPEC-EM4", "rm")] }), "SPEC-EM4:rm"));
     expect(zoneOf(s, "player2", "SPEC-EM4:rm")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-E1:r1")).toBe("rush");
   });
 
-  it.fails("RK-139: RC — バトルエリアに出られないユニット（ホースオルフェノク格闘態・パワー6枚未満）も選べ、選ばれたらラッシュエリアに残る（出典: atwiki/page-670「可能なら」・カード評価「キャッスルドランのようなバトルエリアに出るのに制限のあるユニットが相手の場にいると効果がうまく機能しなくなる」）", () => {
+  it("RK-139: RC — バトルエリアに出られないユニット（ホースオルフェノク格闘態・パワー6枚未満）も選べ、選ばれたらラッシュエリアに残る（出典: atwiki/page-670「可能なら」・カード評価「キャッスルドランのようなバトルエリアに出るのに制限のあるユニットが相手の場にいると効果がうまく機能しなくなる」）", () => {
     let s = rc({ rush: [inst("RK-122", "ho"), inst("SPEC-E1", "r1")], power: powerCards(2, "ep") });
     expect(choiceIds(s)).toEqual(["RK-122:ho", "SPEC-E1:r1"]);
     s = resolveAll(pick(s, "RK-122:ho"));
@@ -434,7 +448,7 @@ describe("RK-140 仮面ライダー電王LF", () => {
     expect(canEnter(e, "SPEC-E3:mid", "player2")).toBe(true);
   });
 
-  it.fails("RK-140: 公式Q&A — 効果でバトルエリアに出すときも、必要パワー2以下のユニットは出せない（電王RF【一本釣り】で選べない）（出典: grnrngr/faq-rider-2 RK-140 Q「否定文を優先するルールにより、必要パワー2以下のカードをバトルエリアに出すことはできません」）", () => {
+  it("RK-140: 公式Q&A — 効果でバトルエリアに出すときも、必要パワー2以下のユニットは出せない（電王RF【一本釣り】で選べない）（出典: grnrngr/faq-rider-2 RK-140 Q「否定文を優先するルールにより、必要パワー2以下のカードをバトルエリアに出すことはできません」）", () => {
     const s = rcRideOff(
       board({ rush: [inst("RK-140", "lf"), inst("RK-061", "rf"), inst("SPEC-VEHICLE", "v")] }, { power: [inst("SPEC-E2", "p2"), inst("SPEC-E3", "p3")] }),
       "RK-061:rf",

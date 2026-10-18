@@ -287,9 +287,28 @@ export type PendingMorph = {
   morphResolved?: boolean;
 };
 
+/** ライダーEXP vol.2 RK-127〜RK-147 の選択の続き（rules/rk/rk7UnitEffects.ts）。 */
+export type Rk7ChoiceMeta = {
+  /** RK-128 の※: 撃破されて捨札になるところだった離場。 */
+  intent?: PendingLeave;
+  /** RK-131: 選んだ L ユニット・オモテにしたカード。 */
+  targetInstanceId?: string;
+  revealed?: string[];
+  /** RK-141: 効果の持ち主・自分が行った回数・相手が行う残りの回数。 */
+  owner?: PlayerId;
+  done?: number;
+  remaining?: number;
+  /** RK-131: オモテにした枚数。 */
+  count?: number;
+  /** オモテにしたカード（RK-141 の1回分）。 */
+  revealedId?: string;
+};
+
 export type PendingLeave = {
   /** RS-303【シティガーディアンズ隊長】の「かわりに捨札にしてもよい」を見送った（再度は尋ねない）。 */
   cityGuardiansDeclined?: boolean;
+  /** RK-128 仮面ライダーレンゲルの※「かわりに…捨札にしてもよい」を見送った（再度は尋ねない）。 */
+  rk7SubstituteDeclined?: boolean;
   ownerPlayerId: PlayerId;
   instanceId: string;
   fromZone: "rush" | "battle";
@@ -580,6 +599,8 @@ export type PendingEffectChoice = {
   rk5Meta?: { owners?: PlayerId[] };
   /** ライダーEXP vol.2 RK-106〜RK-126 の選択の続き（rules/rk/rk6UnitEffects.ts）。 */
   rk6Meta?: { riderInstanceId?: string; lined?: boolean; remaining?: number };
+  /** ライダーEXP vol.2 RK-127〜RK-147 の選択の続き（rules/rk/rk7UnitEffects.ts）。 */
+  rk7Meta?: Rk7ChoiceMeta;
   /** ライダーEXP vol.1 RK-001〜RK-021 の選択の続き（rules/rk/rk1NamedEffects.ts）。 */
   rk1Meta?: Rk1ChoiceMeta;
   /** ライダーEXP vol.1 RK-022〜RK-042 の選択の続き（rules/rk/rk2UnitEffects.ts）。 */
@@ -1155,6 +1176,8 @@ export type GameState = {
    * 捨札（常駐なら常駐置き場）に置く（applyAction の後処理 settleResolvingOperations）。
    */
   resolvingOperations?: Array<{ playerId: PlayerId; card: CardInstance }>;
+  /** RK-129【サンダースペイダー】・RK-132【妻子のバックアップ】の、まだ開いていない発動（rules/rk/rk7UnitEffects.ts）。 */
+  rk7PendingTriggers?: Array<{ kind: "rk129" | "rk132"; playerId: PlayerId; sourceInstanceId: string }>;
   /** RK-011 第三の眼: 無効にしなかったカウンターの使用をもう一度処理する（core/applyAction.ts の後処理）。 */
   rk1CounterReplay?: unknown;
   /** RK-011 第三の眼: 無効にするかを選び終えたカウンターの instanceId（再処理で再び選ばせない）。 */

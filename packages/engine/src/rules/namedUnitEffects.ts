@@ -36,6 +36,7 @@ import {
 } from "./legend2/battleEffects";
 import { resolveLegend2OnRushEffects } from "./legend2/rushEffects";
 import { rk6CommandHoldBlocked } from "./rk/rk6Fields";
+import { rk7RiderKickEnabled } from "./rk/rk7UnitEffects";
 import {
   isLegend3OnRushEffect,
   resolveLegend3OnRushEffects,
@@ -221,7 +222,8 @@ export function battleDefenderBp(
       namedEffectActive(attackerCard, "abareuingu") ||
       activeOnAttackNamedEffect(attackerCard)?.effectId === "shark_jaws" ||
       activeOnAttackNamedEffect(attackerCard)?.effectId === "super_cutter" ||
-      activeOnAttackNamedEffect(attackerCard)?.effectId === "raidakiku" ||
+      // RK-134【ライダーキック】は RC を発動したターンだけ（rules/rk/rk7UnitEffects.ts）。
+      (activeOnAttackNamedEffect(attackerCard)?.effectId === "raidakiku" && rk7RiderKickEnabled(state, pending.attackerPlayerId, attackerCard)) ||
       legend2UsePrintedDefenderBp(state, pending) ||
       legend3UsePrintedDefenderBp(state, pending) ||
       // RS-503【シャッキーン！の中に修行あり】（rules/legend1/set7NamedEffectsD.ts）。

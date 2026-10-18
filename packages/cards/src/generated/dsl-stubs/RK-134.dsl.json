@@ -42,14 +42,28 @@
       },
       "effects": [
         {
-          "type": "modify_bp",
-          "target": {
-            "type": "trigger_source"
-          },
-          "amount": 2000,
+          "type": "grant_keyword",
+          "keyword": "rk7::RK-134::rider_kick_attack",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
+    },
+    {
+      "id": "raidakiku_rc",
+      "name": "ライダーキック",
+      "text": "これがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。さらに、このユニットがホールド状態なら、このターン、これはBP+2000される。",
+      "trigger": {
+        "type": "riding_combo"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "rk7::RK-134::rider_kick",
+          "duration": "turn"
+        }
+      ],
+      "optional": false
     }
   ],
   "implementation": {

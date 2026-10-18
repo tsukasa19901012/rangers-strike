@@ -117,14 +117,14 @@ describe("RK-141 仮面ライダーゼロノスZF", () => {
   const struck = (a: Partial<GameState["players"]["player1"]> = p1, b: Partial<GameState["players"]["player2"]> = p2) =>
     settle(strike(board(a, b), "RK-141:zf"));
 
-  it.fails("RK-141: ストライクしたとき、自分は効果を行うかを選べる（0回でもよい）（出典: atwiki/page-669「自分が三回まで好きな回数行った後で」）", () => {
+  it("RK-141: ストライクしたとき、自分は効果を行うかを選べる（0回でもよい）（出典: atwiki/page-669「自分が三回まで好きな回数行った後で」）", () => {
     const s = struck();
     expectChoiceFrom(s, "player1", "RK-141");
     expect(canConfirm(s)).toBe(true);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-141: 1回行う — 山札の上をオモテにし、同じ必要パワーの自分自身のユニットがあれば1体選び撃破し、オモテにしたカードは捨札になる（選ばないことはできない）（出典: atwiki/page-669）", () => {
+  it("RK-141: 1回行う — 山札の上をオモテにし、同じ必要パワーの自分自身のユニットがあれば1体選び撃破し、オモテにしたカードは捨札になる（選ばないことはできない）（出典: atwiki/page-669）", () => {
     let s = confirm(struck());
     expectChoiceFrom(s, "player1", "RK-141");
     expect(choiceIds(s)).toEqual(["SPEC-C3:a", "SPEC-C3:b"]);
@@ -134,29 +134,33 @@ describe("RK-141 仮面ライダーゼロノスZF", () => {
     expect(zoneOf(s, "player1", "SPEC-C3:t1")).toBe("discard");
   });
 
-  it.fails("RK-141: 同じ必要パワーの自分自身のユニットがなければ、オモテにしたカードを手札に加える（出典: atwiki/page-669「撃破しなかったら手札に加える」・カード評価「ドロー加速ともいえる」）", () => {
+  it("RK-141: 同じ必要パワーの自分自身のユニットがなければ、オモテにしたカードを手札に加える（出典: atwiki/page-669「撃破しなかったら手札に加える」・カード評価「ドロー加速ともいえる」）", () => {
     let s = settle(pick(confirm(struck()), "SPEC-C3:a"));
     s = settle(confirm(s)); // 2回目: 必要パワー1 — 自軍に必要パワー1のユニットはいない
     expect(zoneOf(s, "player1", "SPEC-E1:t2")).toBe("hand");
   });
 
-  it.fails("RK-141: 自分が行った回数と同じ回数を、相手も自分自身の山札とユニットで行う（出典: atwiki/page-669「相手も同じ回数行う」）", () => {
+  it("RK-141: 自分が行った回数と同じ回数を、相手も自分自身の山札とユニットで行う（出典: atwiki/page-669「相手も同じ回数行う」）", () => {
     let s = settle(pick(confirm(struck()), "SPEC-C3:a"));
     s = settle(skip(s)); // 自分は1回でやめる
     // 相手: 山札の上は必要パワー2。相手の必要パワー2のユニットを撃破する（相手が選ぶ）。
     if (s.pendingEffectChoice?.playerId === "player2") s = settle(pick(s, "SPEC-E2:x"));
     expect(zoneOf(s, "player2", "SPEC-E2:x")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E2:u1")).toBe("discard");
-    expect(zoneOf(s, "player2", "SPEC-E2:u2")).toBe("deck");
+    // 相手が行うのは1回だけ（2枚目はオモテにしない。その後のストライクのダメージで山札の上からパワーゾーンに置かれる）。
+    expect(s.players.player2.hand).toHaveLength(0);
+    expect(zoneOf(s, "player2", "SPEC-E2:u2")).toBe("power");
   });
 
-  it.fails("RK-141: 自分が0回なら相手も行わない（出典: atwiki/page-669「相手も同じ回数行う」）", () => {
+  it("RK-141: 自分が0回なら相手も行わない（出典: atwiki/page-669「相手も同じ回数行う」）", () => {
     const s = settle(skip(struck()));
     expect(zoneOf(s, "player2", "SPEC-E2:x")).toBe("battle");
-    expect(s.players.player2.deck[0]?.instanceId).toBe("SPEC-E2:u1");
+    // 山札の上はオモテにされず、ストライクのダメージとしてパワーゾーンに置かれる。
+    expect(s.players.player2.hand).toHaveLength(0);
+    expect(zoneOf(s, "player2", "SPEC-E2:u1")).toBe("power");
   });
 
-  it.fails("RK-141: 自分が行えるのは3回まで（出典: atwiki/page-669「三回まで」）", () => {
+  it("RK-141: 自分が行えるのは3回まで（出典: atwiki/page-669「三回まで」）", () => {
     let s = settle(pick(confirm(struck()), "SPEC-C3:a")); // 1回目
     s = settle(confirm(s)); // 2回目（必要パワー1 → 手札）
     expect(canConfirm(s)).toBe(true);
@@ -165,7 +169,7 @@ describe("RK-141 仮面ライダーゼロノスZF", () => {
     expect(s.pendingEffectChoice?.playerId).not.toBe("player1");
   });
 
-  it.fails("RK-141: 公式Q&A — 必要パワー6をオモテにしてゼロノスZF 自身が撃破されても、効果の処理は続く（出典: grnrngr/faq-rider-2 RK-141 Q「いいえ。…捨札になっても、効果の処理は継続されます」）", () => {
+  it("RK-141: 公式Q&A — 必要パワー6をオモテにしてゼロノスZF 自身が撃破されても、効果の処理は続く（出典: grnrngr/faq-rider-2 RK-141 Q「いいえ。…捨札になっても、効果の処理は継続されます」）", () => {
     const a = { ...p1, deck: [inst("SPEC-C6", "t3"), inst("SPEC-C3", "t1"), ...deckCards(4)] };
     let s = confirm(struck(a));
     expect(choiceIds(s)).toEqual(["RK-141:zf"]);
@@ -265,7 +269,7 @@ describe("RK-142 モモタロス", () => {
   });
 
   // faq-rider-2 RK-142 Q1「はい、できます。」
-  it.fails("RK-142: 公式Q&A — 敵軍の電王RF【一本釣り】で自軍パワーゾーンのモモタロスが自軍バトルエリアに出て撃破されるとき、ダイノガッツを使って場に留められる（出典: grnrngr/faq-rider-2 RK-142 Q1「はい、できます」）", () => {
+  it("RK-142: 公式Q&A — 敵軍の電王RF【一本釣り】で自軍パワーゾーンのモモタロスが自軍バトルエリアに出て撃破されるとき、ダイノガッツを使って場に留められる（出典: grnrngr/faq-rider-2 RK-142 Q1「はい、できます」）", () => {
     let s = enemyTurn(
       { power: [faceUp("RK-142", "mo"), ...powerCards(2)], hand: [inst("RS-027", "dg")], command: releasedCat("WB", 1), deck: deckCards(5) },
       { rush: [inst("RK-061", "rf"), inst("SPEC-VEHICLE", "v")] },
@@ -317,7 +321,7 @@ describe("RK-144 キンタロス", () => {
     expect(bpOf(s, "player1", "SPEC-KAMEN:k")).toBe(4000);
   });
 
-  it.fails("RK-144: コミュニティQ&A — パワーゾーンに2枚あれば1枚ごとに発動でき、2枚捨札にして BP+6000 にできる（出典: atwiki/page-652 コメント欄「1枚ごとに効果を発動できるため、2枚捨札にしてBP+6000することができます」）", () => {
+  it("RK-144: コミュニティQ&A — パワーゾーンに2枚あれば1枚ごとに発動でき、2枚捨札にして BP+6000 にできる（出典: atwiki/page-652 コメント欄「1枚ごとに効果を発動できるため、2枚捨札にしてBP+6000することができます」）", () => {
     let s = pick(kamenEnters([faceUp("RK-144", "im"), faceUp("RK-144", "im2")]), "RK-144:im");
     expect(choiceIds(s)).toEqual(["RK-144:im2"]);
     s = settle(pick(s, "RK-144:im2"));
@@ -425,7 +429,7 @@ describe("RK-147 デンライナーイスルギ", () => {
     expect(spOf(s, "player1", "SPEC-PLAIN:p")).toBe(0);
   });
 
-  it.fails("RK-147: コミュニティQ&A — クロスで SP1/5 から SP1/4 になったユニットも能力を得る（出典: atwiki/page-673 コメント欄「1/5はクロス効果で1/4になるからこの電車の対象になる」・R-KW-CROSS-01）", () => {
+  it("RK-147: コミュニティQ&A — クロスで SP1/5 から SP1/4 になったユニットも能力を得る（出典: atwiki/page-673 コメント欄「1/5はクロス効果で1/4になるからこの電車の対象になる」・R-KW-CROSS-01）", () => {
     // 1番目: クロス1 のユニット（XG7-010）、2番目: イスルギ、3番目に SP1/5 の S ユニット（クロスで 1/4）。
     const s = enter(board({ battle: [inst("XG7-010", "cr"), inst("RK-147", "is")], rush: [inst("SPEC-KAMEN5", "p")] }), "SPEC-KAMEN5:p");
     expect(spOf(s, "player1", "SPEC-KAMEN5:p")).toBe(1);

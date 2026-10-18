@@ -209,6 +209,27 @@ const RK6_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk126_garren_rouzer_destroy: { label: "ギャレンラウザー", hint: "撃破する敵軍 S ユニットを選んでください" },
 };
 
+/** ライダーEXP vol.2 RK-127〜RK-147 のカード固有の選択（engine rules/rk/rk7UnitEffects.ts）の表示名と案内文。 */
+const RK7_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk127_chalice_arrow: { label: "カリスアロー", hint: "相手に見せる自分の手札を3枚選んでください（しないなら「スキップ」）" },
+  rk127_chalice_arrow_target: { label: "カリスアロー", hint: "捨札にする、敵軍コマンドゾーンのホールド状態のカードを選んでください" },
+  rk128_rengel_substitute: { label: "仮面ライダーレンゲル", hint: "かわりに捨札にする DA の自軍 S ユニットを選んでください（しないなら「スキップ」）" },
+  rk128_rengel_rouzer: { label: "レンゲルラウザー", hint: "相手に見せる自分の手札を3枚選んでください（しないなら「スキップ」）" },
+  rk129_thunder_spader: { label: "サンダースペイダー", hint: "撃破するホールド状態の敵軍ユニットを選んでください（しないなら「スキップ」）" },
+  rk130_spade5_kick: { label: "スペード5－キック", hint: "ラッシュするかわりにこのカードを捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを選んでください（ラッシュするなら「スキップ」）" },
+  rk130_spade5_kick_strike: { label: "スペード5－キック", hint: "撃破する、レジストを持つ敵軍 S ユニットを選んでください" },
+  rk131_gouki_target: { label: "音響打・豪腕無双", hint: "敵軍 L ユニットを選んでください（しないなら「スキップ」）" },
+  rk131_gouki_reveal: { label: "音響打・豪腕無双", hint: "山札の上からもう1枚オモテにしますか？（止めるなら「スキップ」。7枚まで）" },
+  rk132_family_backup: { label: "妻子のバックアップ", hint: "このユニットをリリースしますか？" },
+  rk136_rider_shooting: { label: "ライダーシューティング", hint: "持ち主のパワーゾーンに送る敵軍ユニットを選んでください（しないなら「スキップ」）" },
+  rk138_uka_enemy: { label: "不安定な擬態", hint: "自分のラッシュエリアに出す、自分の捨札の特徴「女」を持つユニットカードを選んでください（しないなら「スキップ」）" },
+  rk138_uka_own: { label: "不安定な擬態", hint: "手札に戻す、自軍捨札の特徴「女」を持つユニットカードを選んでください（しないなら「スキップ」）" },
+  rk139_zeronos_af: { label: "俺はかーなーり強い", hint: "バトルエリアに出す、自分のラッシュエリアのユニットを選んでください" },
+  rk141_denebic_step: { label: "デネビックバスター", hint: "山札の上から1枚オモテにする処理を行いますか？（やめるなら「スキップ」。3回まで）" },
+  rk141_denebic_destroy: { label: "デネビックバスター", hint: "撃破する、オモテにしたカードと同じ必要パワーの自分のユニットを選んでください" },
+  rk141_denebic_resume: { label: "デネビックバスター", hint: "デネビックバスターの続きを行います" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -246,7 +267,8 @@ export function effectChoiceHint(
     RK3_CHOICE_UI[pending.effectId] ??
     RK4_CHOICE_UI[pending.effectId] ??
     RK5_CHOICE_UI[pending.effectId] ??
-    RK6_CHOICE_UI[pending.effectId];
+    RK6_CHOICE_UI[pending.effectId] ??
+    RK7_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -445,6 +467,7 @@ export function effectChoiceTitle(
     RK4_CHOICE_UI[pending.effectId]?.label ??
     RK5_CHOICE_UI[pending.effectId]?.label ??
     RK6_CHOICE_UI[pending.effectId]?.label ??
+    RK7_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

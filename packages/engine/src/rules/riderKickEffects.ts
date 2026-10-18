@@ -199,9 +199,10 @@ export function resolveSenkoSosa(
       log: [...state.log, `潜行捜索: ${revealedName} を公開（宣言 ${declared}）→ 手札へ`],
     };
   }
+  // 違えば山札の下に戻す（山札の並びは変わらない。atwiki/page-632「それ以外なら山札の下に戻す」）。
   return {
     ...state,
-    ...updatePlayer(state, pending.playerId, { ...player, deck: [bottom, ...rest] }),
+    ...updatePlayer(state, pending.playerId, { ...player, deck: [...rest, bottom] }),
     log: [...state.log, `潜行捜索: ${revealedName} を公開（宣言 ${declared}）→ 山札の下へ`],
   };
 }
