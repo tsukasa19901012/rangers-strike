@@ -7,6 +7,7 @@
  */
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { engineRandomInt } from "./rng";
+import { noteEngineSideEffect } from "./sideEffects";
 
 const shuffleMarks = new WeakMap<object, number>();
 let shuffleEpoch = 0;
@@ -18,6 +19,7 @@ export function shuffleCards<T>(cards: T[]): T[] {
     const j = engineRandomInt(i + 1);
     [copy[i], copy[j]] = [copy[j]!, copy[i]!];
   }
+  noteEngineSideEffect();
   shuffleEpoch += 1;
   for (const card of copy) {
     if (card && typeof card === "object") shuffleMarks.set(card as object, shuffleEpoch);

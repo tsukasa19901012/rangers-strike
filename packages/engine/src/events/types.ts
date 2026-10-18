@@ -1,3 +1,4 @@
+import { noteEngineSideEffect } from "../core/sideEffects";
 import type {
   EnterBattleResumeFrom,
   GameState,
@@ -150,6 +151,7 @@ export function resetEventSeqForTests(): void {
 }
 
 export function nextEventSeqNumber(): number {
+  noteEngineSideEffect();
   nextEventSeq += 1;
   return nextEventSeq;
 }

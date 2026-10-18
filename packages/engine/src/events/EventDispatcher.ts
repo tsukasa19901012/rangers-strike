@@ -1,3 +1,4 @@
+import { noteEngineSideEffect } from "../core/sideEffects";
 import type {
   EnterBattleResumeFrom,
   EventListener,
@@ -12,6 +13,7 @@ import type { GameState } from "../types/game";
 let nextListenerId = 0;
 
 function listenerId(): string {
+  noteEngineSideEffect();
   nextListenerId += 1;
   return `listener_${nextListenerId}`;
 }

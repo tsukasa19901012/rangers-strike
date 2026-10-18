@@ -1,3 +1,4 @@
+import { noteEngineSideEffect } from "./sideEffects";
 import { isInstancePlacedAnywhere } from "./helpers";
 import { rk6RecordSnakeSelected } from "../rules/rk/rk6Fields";
 import { rk6SideBasherOnEntry } from "../rules/rk/rk6UnitEffects";
@@ -978,6 +979,7 @@ function applyActionWithRng(
   action: GameAction,
   options?: { trustLegality?: boolean },
 ): ActionResult {
+  noteEngineSideEffect();
   // RS-359【最後の手段】: 山札の候補をラッシュエリアに置いた状態で、手札からのラッシュの手続きを始める
   // （rules/legend1/icyLastResort.ts。手続きが終わったら settleIcyPhantoms で片付ける）。
   const icyState = applyActionDepth === 0 ? icyStateForAction(state, action, isLegalActionBase) : null;

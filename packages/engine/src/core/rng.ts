@@ -6,6 +6,7 @@
  * 適用すれば必ず同じ結果になる（Math.random・時刻・ワーカーごとの状態に依存しない）。
  */
 import type { GameState } from "../types/game";
+import { noteEngineSideEffect } from "./sideEffects";
 
 /** rngState を持たない状態（手で組み立てたテスト状態など）に使う既定の種。 */
 export const DEFAULT_RNG_SEED = 0x2f6b_1d3c;
@@ -16,6 +17,7 @@ let active: RngContext | null = null;
 
 /** mulberry32 の 1 ステップ。 */
 function step(ctx: RngContext): number {
+  noteEngineSideEffect();
   ctx.used = true;
   ctx.s = (ctx.s + 0x6d2b79f5) >>> 0;
   let t = ctx.s;

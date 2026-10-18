@@ -1,3 +1,4 @@
+import { noteEngineSideEffect } from "./sideEffects";
 import { countLogicalBattleSlots } from "../rules/battleLine";
 import { rk12ResidentsNegated } from "../rules/rk/rk12Fields";
 import { rngFromSeed, seedFromRng } from "./rng";
@@ -19,6 +20,7 @@ import { TURN_RULE_IDS } from "../types/scopedModifiers";
 let instanceCounter = 0;
 
 function createInstance(cardId: string): CardInstance {
+  noteEngineSideEffect();
   instanceCounter += 1;
   return { instanceId: `${cardId}-${instanceCounter}`, cardId };
 }
