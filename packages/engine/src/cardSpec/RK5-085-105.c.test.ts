@@ -37,6 +37,7 @@ import {
   heldCount,
   inst,
   lastBattleBps,
+  legal,
   mount,
   p1Battle,
   pick,
@@ -141,9 +142,22 @@ describe("RK-099 アポロガイスト", () => {
   it.todo(
     "RK-099: 公式Q&A — アポロガイストがいるとき【神出鬼没の疾風】でラッシュしたサイクロン・ドーパントのリード ET で宏のオルゴール時計を発動できる（出典: atwiki/page-698 Q1）— XG7-055 サイクロン・ドーパントは本範囲外のカードで、その効果の照合がまだのため",
   );
-  it.todo(
-    "RK-099: 公式Q&A — クウガRM の RC で撃破されたアポロガイストは、すでにバトルで撃破されているので【ライジングマイティキック】の効果での撃破の対象にならない（出典: atwiki/page-698 Q2）— RK-271 仮面ライダークウガRMは本範囲外のカードで、その効果の照合がまだのため",
-  );
+  // atwiki/page-698 Q2 = atwiki/page-1399 Q4「いいえ、なりません。バトルで撃破されたユニットはすでに「撃破」されており、その状態からさらに効果などで重複して撃破されることはありません。」
+  it.fails("RK-099: 公式Q&A — クウガRM の RC で撃破されたアポロガイストは、すでにバトルで撃破されているので【ライジングマイティキック】の効果での撃破の対象にならない（レジストで留まれば場に残り、BP がそれ以下の他の S ユニットだけが撃破される）（出典: atwiki/page-698 Q2・atwiki/page-1399 Q4）", () => {
+    let s = rcRideOff(board({ rush: [inst("RK-271", "rm"), inst("SPEC-VEHICLE", "v")] }, { battle: [inst("RK-099", "ap"), inst("SPEC-E2", "e2")] }), "RK-271:rm", "SPEC-VEHICLE:v");
+    s = resolveAll(s);
+    s = attack(s, "RK-271:rm", "RK-099:ap");
+    for (let i = 0; i < 6 && !registerOffered(s, "player2"); i++) {
+      const p = legal(s).find((a) => a.type === "pass_battle_reaction" || a.type === "pass_leave_reaction");
+      if (!p) break;
+      s = act(s, p);
+    }
+    expect(registerOffered(s, "player2")).toBe(true);
+    s = resolveAll(act(s, { type: "use_register", playerId: "player2" }));
+    expect(zoneOf(s, "player2", "RK-099:ap")).toBe("battle");
+    expect(cardIn(s, "player2", "RK-099:ap")?.commandHeld).toBe(true);
+    expect(zoneOf(s, "player2", "SPEC-E2:e2")).toBe("discard");
+  });
 });
 
 // ===========================================================================

@@ -277,9 +277,14 @@ describe("RK-185 レッドドラス", () => {
     expect(s.players.player2.deck.at(-1)?.instanceId).toBe("SPEC-E1000:bot");
   });
 
-  it.todo(
-    "RK-185: 公式Q&A — 【合体吸収】で発動した RC の効果は、RK-272 仮面ライダークウガRD【ライジングスプラッシュドラゴン】で無効にできる（出典: atwiki/page-1048 Q1（2010/10/25修正））— RK-272 は本範囲外のカード",
-  );
+  // atwiki/page-1048 Q1 = atwiki/page-1370 Q1「はい、「RK-185 レッドドラス」はRCの効果を自身の効果として発動していますので、【ライジングスプラッシュドラゴン】で無効にすることができます。（2010/10/25修正）」
+  it.fails("RK-185: 公式Q&A — 【合体吸収】で発動した RC の効果は、RK-272 仮面ライダークウガRD【ライジングスプラッシュドラゴン】で無効にできる（新2号の【ライダーキック】で選ばれるはずの敵軍ユニットが残る）（出典: atwiki/page-1048 Q1（2010/10/25修正）・atwiki/page-1370 Q1）", () => {
+    let s = confirm(entered(inst("RK-176", "bot"), { battle: [inst("SPEC-E9000", "big")], rush: [inst("RK-272", "rd")], hand: [inst("TST-OP", "eh")] }));
+    expectChoiceFrom(s, "player2", "RK-272");
+    s = resolveAll(act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "TST-OP:eh" }));
+    expect(s.players.player2.deck[0]?.instanceId).toBe("TST-OP:eh");
+    expect(zoneOf(s, "player2", "SPEC-E9000:big")).toBe("battle");
+  });
 });
 
 // ===========================================================================
