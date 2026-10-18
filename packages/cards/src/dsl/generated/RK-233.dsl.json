@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-233::haiparaidakiku",
+          "keyword": "rk12::RK-233::hyper_rider_kick",
           "duration": "turn"
         }
       ],

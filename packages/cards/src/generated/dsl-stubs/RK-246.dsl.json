@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_faceup_bp_per_1000",
+          "keyword": "rk12::RK-246::faceup_bp",
           "duration": "permanent"
         }
       ]
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-246::garuruhauringusurashu",
+          "keyword": "rk12::RK-246::garulu_howling_slash",
           "duration": "turn"
         }
       ],

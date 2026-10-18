@@ -565,6 +565,8 @@ export type TagChoiceMeta = {
   revealedLId?: string;
   /** 太字部分の途中で選んだもの（RS-519 の「男」のユニット、RS-525 の1枚目のパワー、RS-609 の S ユニット）。 */
   picked?: string[];
+  /** RK-239 ウエイクアップ！: ホールド状態でバトルエリアに出たユニット（「そうしたとき」にリリースする）。 */
+  rk239EnteredId?: string;
 };
 
 /** RK-001〜RK-021 の選択の続き（rules/rk/rk1NamedEffects.ts）。 */
@@ -631,6 +633,21 @@ export type PendingEffectChoice = {
     remaining?: number;
     /** RK-211: 撃破したユニット。RK-214: ホールドするもう1体。 */
     target?: string;
+  };
+  /** ザ・マスクドライダーEXP vol.3〜4 RK-232〜RK-252 の選択の続き（rules/rk/rk12UnitEffects.ts）。 */
+  rk12Meta?: {
+    /** RK-233・RK-244: 効果の持ち主（相手が選ぶ選択のとき）。 */
+    owner?: PlayerId;
+    /** RK-234: 戻したユニット。RK-251: 無効にするオペレーション。 */
+    target?: string;
+    /** RK-240: 数えた「イマジン」の数。 */
+    count?: number;
+    /** RK-250: 「ユニットでなくなるとき」の離場。 */
+    intent?: PendingLeave;
+    /** RK-251: 相手のオペレーションの使用（使わなければそのまま続ける）。 */
+    operation?: { playerId: PlayerId; instanceId: string; targetInstanceId?: string; extraInstanceId?: string };
+    /** RK-252: このカードを使用するためにホールドしたコマンド。 */
+    paid?: string[];
   };
   /** RK-208【迎撃の毒矢】: この選択に答えたら（発動を宣言したら）クレインの窓を開く（rules/rk/rk10UnitEffects.ts）。 */
   rk10CraneWatch?: { craneOwner: PlayerId; rushedOwner: PlayerId; rushedInstanceId: string };
@@ -1083,6 +1100,12 @@ export type GameState = {
   rk10DeferredChoices?: PendingEffectChoice[];
   /** 直近のラッシュでホールドしたコマンド（RK-205【フライングアタッカー】。core/applyAction.ts resolve_command_payment が記録）。 */
   rk10RushPaid?: { instanceId: string; commandIds: string[] };
+  /** RK-252 変身音叉 音角: オペレーションを使用するためにホールドしたコマンド（rules/rk/rk12UnitEffects.ts）。 */
+  rk12OpPaid?: { instanceId: string; commandIds: string[] };
+  /** RK-251 ゴルゴムの仕業を使わなかった: このオペレーションの使用を続ける（core/applyAction.ts の後処理）。 */
+  rk12ResumeOperation?: { playerId: PlayerId; instanceId: string; targetInstanceId?: string; extraInstanceId?: string };
+  /** RK-251 の選択を済ませたオペレーション（同じ使用で2度は尋ねない）。 */
+  rk12GorgomPassedOp?: string;
   /** RK-177【催眠音波】の選択を終えたら、このプレイヤーのラッシュフェイズを終える（core/applyAction.ts）。 */
   rk9RushEndAdvance?: PlayerId;
   /**

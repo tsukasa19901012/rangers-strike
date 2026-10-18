@@ -4088,7 +4088,7 @@
       "※これが自軍捨札にある間、自軍スタートフェイズ中"
     ],
     "expectedDslKeywords": [
-      "note_card::RK-232::koreganiarusutat"
+      "rk12::RK-232::kaen"
     ],
     "bp": 500,
     "sp": null,
@@ -4105,7 +4105,7 @@
       "【ハイパーライダーキック】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-233::haiparaidakiku"
+      "rk12::RK-233::hyper_rider_kick"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -4122,7 +4122,7 @@
       "【ショルダータックル】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-234::shorudatakuru"
+      "rk12::RK-234::shoulder_tackle"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -4139,7 +4139,7 @@
       "【アバランチクラッシュ】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-235::abaranchikurashu"
+      "rk12::RK-235::avalanche_crash"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -4156,7 +4156,7 @@
       "【ネガタロス軍団（仮）結成の野望】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-236::negatarosu"
+      "rk12::RK-236::negataros"
     ],
     "bp": 4000,
     "sp": null,
@@ -4173,7 +4173,7 @@
       "【バッシャー・アクアトルネード】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-237::bashaakuatorunedo"
+      "rk12::RK-237::aqua_tornado"
     ],
     "bp": 2000,
     "sp": "1/3",
@@ -4191,7 +4191,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rk_fx::RK-238::no_e9ad82"
+      "rk12::RK-238::soul_capture"
     ],
     "bp": 4000,
     "sp": null,
@@ -4228,8 +4228,8 @@
       "【俺達の必殺技】"
     ],
     "expectedDslKeywords": [
-      "SP1",
-      "rk_fx::RK-240::no_4"
+      "rk12::RK-240::sp1_hold_turn",
+      "rk12::RK-240::oretachi"
     ],
     "bp": 5000,
     "sp": "1/4",
@@ -4247,7 +4247,7 @@
     ],
     "expectedDslKeywords": [
       "no_attack_from_enemy_s_bp2000",
-      "rk_fx::RK-241::muriyarina"
+      "rk12::RK-241::muriyari"
     ],
     "bp": 500,
     "sp": "1/4",
@@ -4285,7 +4285,10 @@
     ],
     "bp": 4000,
     "sp": "1/2",
-    "size": "S"
+    "size": "S",
+    "expectedDslKeywords": [
+      "rk12::RK-243::dragon_rider_kick"
+    ]
   },
   {
     "cardId": "RK-244",
@@ -4319,7 +4322,8 @@
     ],
     "expectedDslKeywords": [
       "rush_prefer_hold",
-      "register"
+      "register",
+      "rk12::RK-245::darkness_moon_break"
     ],
     "bp": 3000,
     "sp": null,
@@ -4336,8 +4340,8 @@
       "【ガルル・ハウリングスラッシュ】"
     ],
     "expectedDslKeywords": [
-      "power_faceup_bp_per_1000",
-      "rk_fx::RK-246::garuruhauringusurashu"
+      "rk12::RK-246::faceup_bp",
+      "rk12::RK-246::garulu_howling_slash"
     ],
     "bp": 500,
     "sp": "1/3",
@@ -4354,8 +4358,8 @@
       "【不敵な挑発】"
     ],
     "expectedDslKeywords": [
-      "hold_turn_only_entry",
-      "rk_fx::RK-247::na_e4b88d"
+      "rk12::RK-247::hold_turn_entry",
+      "rk12::RK-247::provocation"
     ],
     "bp": 4500,
     "sp": 1,
@@ -4411,7 +4415,7 @@
       "WBを持ち、特徴「サバイブ」を持たない自軍Sユニ"
     ],
     "expectedDslKeywords": [
-      "stack_s_on_self_rush"
+      "rk12::RK-250::survive"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -4430,7 +4434,7 @@
       "※カウンター"
     ],
     "expectedDslKeywords": [
-      "counter_op_interrupt"
+      "rk12::RK-251::gorgom"
     ],
     "operationKind": "counter",
     "expectedMechanisms": [
@@ -4451,7 +4455,10 @@
     "expectedMechanisms": [
       "operation_drag_direct"
     ],
-    "expectedDropRoute": "direct_play"
+    "expectedDropRoute": "direct_play",
+    "expectedDslKeywords": [
+      "rk12::RK-252::onkaku"
+    ]
   },
   {
     "cardId": "RK-253",

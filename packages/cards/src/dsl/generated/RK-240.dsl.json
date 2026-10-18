@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "rk12::RK-240::sp1_hold_turn",
           "duration": "turn"
         }
       ]
@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-240::no_4",
+          "keyword": "rk12::RK-240::oretachi",
           "duration": "turn"
         }
       ],

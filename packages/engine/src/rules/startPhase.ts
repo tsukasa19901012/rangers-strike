@@ -1,6 +1,7 @@
 import { isRk8BattleToRushTrigger, rk8StaysInBattleAtStart, tryRk8BattleToRush } from "./rk/rk8UnitEffects";
 import { isOtherLinesBattleToRushTrigger, tryOtherLinesBattleToRush } from "./legend1/otherLinesNamedEffects";
 import { applyRk2StartPhaseEnd } from "./rk/rk2UnitEffects";
+import { collectRk12KaenQueue, isRk12KaenQueueEntry, openRk12KaenOnReturn } from "./rk/rk12UnitEffects";
 import { applyRk4StartPhaseEnd, isRk4BattleToRushTrigger, tryRk4BattleToRush } from "./rk/rk4UnitEffects";
 import { getCardEffect } from "@rangers-strike/cards";
 import { gorgonBlocksRelease, isSet6BBattleToRushTrigger, trySet6BBattleToRush } from "./legend1/set6NamedEffectsB";
@@ -120,6 +121,10 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
   if (phasePlayerId && queue.length > 0) {
     const [nextId, ...rest] = queue;
     const owner = state.players[phasePlayerId];
+    if (isRk12KaenQueueEntry(nextId!)) {
+      // RK-232 火焔大将の※（rules/rk/rk12UnitEffects.ts）。
+      return continueBattleToRushEffectQueue(openRk12KaenOnReturn({ ...state, pendingBattleToRushQueue: rest }, phasePlayerId, nextId!));
+    }
     const cyclops = parseCyclopsQueueEntry(nextId!);
     if (cyclops) {
       // RS-417【消滅の緋色】: 戻った敵軍 S ユニット1体・サイクロプス1体ごとに1回（grnrngr/faq-card-6 RS-417 Q2/Q3）。
@@ -200,6 +205,8 @@ function returnBattleGroupToRush(
   const effectQueue = [
     ...collectBattleToRushEffectQueue(movedCards),
     ...collectCyclopsScarletQueue(state, playerId, movedCards),
+    // RK-232 火焔大将の※（戻った「本来のカテゴリにMAを持ち、ナンバーを持たない」S ユニット1体ごと）。
+    ...collectRk12KaenQueue(state, playerId, movedCards),
   ];
   return {
     ...state,

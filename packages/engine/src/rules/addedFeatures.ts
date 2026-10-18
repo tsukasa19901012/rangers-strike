@@ -6,6 +6,7 @@
  *   grnrngr/faq-card-4 RS-203 Q1/Q4）。手札のカードはユニットではないので対象外（同 Q5）。
  * - RS-206 シシレンジャー【天幻星・霧隠れ】: このターン、このユニットは選んだユニットの特徴が追加される（atwiki/page-117）。
  */
+import { rk12AddedFeatures } from "./rk/rk12Fields";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { getPlayerModifiers } from "../core/scopedModifiers";
 import { rk1AddedUnitFeatures } from "./rk/rk1Features";
@@ -73,6 +74,8 @@ export function unitFeatures(
   extra.push(...rk1AddedUnitFeatures(state, _ownerId, instance, base));
   // RK-122 ホースオルフェノク格闘態【使途再生】（ホールド状態の自軍 S ユニットに「オルフェノク」。rules/rk/rk6Fields.ts）。
   extra.push(...rk6AddedFeatures(state, _ownerId, instance));
+  // RK-250 サバイブ（「サバイブ」）・RK-242 クライマックス刑事（自軍のイマジンに「警察」）（rules/rk/rk12Fields.ts）。
+  extra.push(...rk12AddedFeatures(state, _ownerId, instance, base));
   if (extra.length === 0) return base;
   return [...new Set([...base, ...extra])];
 }

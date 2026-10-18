@@ -23,34 +23,13 @@
       "name": "ドラゴンライダーキック",
       "text": "特徴「ドラゴン」を持つユニットからコンビネーションしたとき発動できる⇒敵軍バトルエリアから、ナンバーを持たない敵軍Sユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
+        "type": "enter_battle"
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk12::RK-243::dragon_rider_kick",
+          "duration": "permanent"
         }
       ]
     }

@@ -5,6 +5,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { getDefinition } from "../../core/catalog";
+import { rk12ResidentsNegated } from "./rk12Fields";
 
 export const J_POWER_CARD_ID = "RK-013";
 /** RK-079 仮面ライダーの称号（J パワーと同じくユニットの下に重ねる。rules/rk/rk4UnitEffects.ts）。 */
@@ -19,7 +20,14 @@ export function hasKamenRiderTitle(instance: Pick<CardInstance, "stackedCards"> 
 export function isStackedUnderUnitOperation(cardId: string): boolean {
   // RK-088 イマジンとの契約も同じ（atwiki/page-710「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）。
   // RK-173 鬼の鎧も同じ（atwiki/page-907「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）。
-  return cardId === J_POWER_CARD_ID || isSameCardIdentity(cardId, KAMEN_TITLE_CARD_ID) || isSameCardIdentity(cardId, "RK-088") || isSameCardIdentity(cardId, "RK-173");
+  // RK-250 サバイブも、留まらずに場を離れたら捨札になる（その場に留まる置換は rules/rk/rk12UnitEffects.ts）。
+  return (
+    cardId === J_POWER_CARD_ID ||
+    isSameCardIdentity(cardId, KAMEN_TITLE_CARD_ID) ||
+    isSameCardIdentity(cardId, "RK-088") ||
+    isSameCardIdentity(cardId, "RK-173") ||
+    isSameCardIdentity(cardId, "RK-250")
+  );
 }
 const GIANT_BOMB_CARD_ID = "RS-255";
 
@@ -28,6 +36,8 @@ function isUnitCard(state: Pick<GameState, "definitions">, cardId: string): bool
 }
 
 function hasResident(state: Pick<GameState, "players">, playerId: PlayerId, cardId: string): boolean {
+  // RK-248 パラダイス・ロストで、このターン無効になった常駐（rules/rk/rk12Fields.ts）。
+  if (rk12ResidentsNegated(state, playerId)) return false;
   return state.players[playerId].operation.some((c) => c.cardId === cardId);
 }
 

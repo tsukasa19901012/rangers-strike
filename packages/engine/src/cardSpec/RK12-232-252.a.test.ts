@@ -112,24 +112,24 @@ describe("RK-232 火焔大将", () => {
   const started = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     toStartEnd(endTurn(enemyTurn({ battle: [inst("SPEC-MA-NONUM", "u")], discard: [inst("RK-232", "kd")], deck: deckCards(6), ...p1 })), "RK-232");
 
-  it.fails("RK-232: ※ 自軍スタートフェイズに、本来のカテゴリに MA を持ちナンバーを持たない自軍 S ユニットがバトルエリアからラッシュエリアに戻るとき、捨札のこれをラッシュエリアに出すかを選べる（任意）（出典: atwiki/page-949「これをラッシュエリアに出してもよい」）", () => {
+  it("RK-232: ※ 自軍スタートフェイズに、本来のカテゴリに MA を持ちナンバーを持たない自軍 S ユニットがバトルエリアからラッシュエリアに戻るとき、捨札のこれをラッシュエリアに出すかを選べる（任意）（出典: atwiki/page-949「これをラッシュエリアに出してもよい」）", () => {
     const s = started();
     expect(zoneOf(s, "player1", "SPEC-MA-NONUM:u")).toBe("rush");
     expectChoiceFrom(s, "player1", "RK-232");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-232: ※ 出すことを選ぶと、捨札のこれが自軍ラッシュエリアに出る（出典: atwiki/page-949）", () => {
+  it("RK-232: ※ 出すことを選ぶと、捨札のこれが自軍ラッシュエリアに出る（出典: atwiki/page-949）", () => {
     const s = resolveAll(accept(started()));
     expect(zoneOf(s, "player1", "RK-232:kd")).toBe("rush");
   });
 
-  it.fails("RK-232: ※ 出さないことも選べる（捨札に残る）（出典: atwiki/page-949「出してもよい」）", () => {
+  it("RK-232: ※ 出さないことも選べる（捨札に残る）（出典: atwiki/page-949「出してもよい」）", () => {
     const s = resolveAll(skip(started()));
     expect(zoneOf(s, "player1", "RK-232:kd")).toBe("discard");
   });
 
-  it.fails("RK-232: ※ 本来のカテゴリが MA を含むマルチカテゴリ（MA・WB）のユニットでも出せる（出典: atwiki/page-949「本来のカテゴリにMAを持ち」）", () => {
+  it("RK-232: ※ 本来のカテゴリが MA を含むマルチカテゴリ（MA・WB）のユニットでも出せる（出典: atwiki/page-949「本来のカテゴリにMAを持ち」）", () => {
     const s = started({ battle: [inst("SPEC-MA-WB", "u")] });
     expectChoiceFrom(s, "player1", "RK-232");
   });
@@ -183,20 +183,20 @@ describe("RK-233 仮面ライダーコーカサス", () => {
   };
   const entered = (p2: Partial<GameState["players"]["player2"]> = enemy) => enter(board({ rush: [inst("RK-233", "ck")] }, p2), "RK-233:ck");
 
-  it.fails("RK-233: 【ハイパーライダーキック】自軍ターン中、バトルエリアに出たとき、発動するかを選べる（任意）（出典: atwiki/page-953「次の効果を発動できる」）", () => {
+  it("RK-233: 【ハイパーライダーキック】自軍ターン中、バトルエリアに出たとき、発動するかを選べる（任意）（出典: atwiki/page-953「次の効果を発動できる」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RK-233");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-233: 発動すると、相手は1枚ドローしてから、自分の手札（ドローしたカードを含む）から1枚選ぶ（選ばないことはできない）（出典: atwiki/page-953「相手は1枚ドローしてから、自分自身の手札からカードを1枚選び」）", () => {
+  it("RK-233: 発動すると、相手は1枚ドローしてから、自分の手札（ドローしたカードを含む）から1枚選ぶ（選ばないことはできない）（出典: atwiki/page-953「相手は1枚ドローしてから、自分自身の手札からカードを1枚選び」）", () => {
     const s = accept(entered());
     expectChoiceFrom(s, "player2", "RK-233");
     expect(choiceIds(s)).toEqual(["SPEC-C0:h0", "SPEC-C2:h2", "TST-OP:e0"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-233: 相手が選んだカードは相手のパワーゾーンに置かれ、その必要パワーの数字（2）以下の必要パワーの数字を持つ敵軍ユニット（サイズ・エリアを問わない）から1体選ぶ（出典: atwiki/page-953「その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び」）", () => {
+  it("RK-233: 相手が選んだカードは相手のパワーゾーンに置かれ、その必要パワーの数字（2）以下の必要パワーの数字を持つ敵軍ユニット（サイズ・エリアを問わない）から1体選ぶ（出典: atwiki/page-953「その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び」）", () => {
     const s = pick(accept(entered()), "SPEC-C2:h2");
     expect(zoneOf(s, "player2", "SPEC-C2:h2")).toBe("power");
     expectChoiceFrom(s, "player1", "RK-233");
@@ -204,25 +204,25 @@ describe("RK-233 仮面ライダーコーカサス", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-233: 選んだ敵軍ユニットは持ち主のパワーゾーンに送られる（出典: atwiki/page-953「持ち主のパワーゾーンに送る」）", () => {
+  it("RK-233: 選んだ敵軍ユニットは持ち主のパワーゾーンに送られる（出典: atwiki/page-953「持ち主のパワーゾーンに送る」）", () => {
     const s = resolveAll(pick(pick(accept(entered()), "SPEC-C2:h2"), "SPEC-M2:m2"));
     expect(zoneOf(s, "player2", "SPEC-M2:m2")).toBe("power");
     expect(zoneOf(s, "player2", "SPEC-C1:b1")).toBe("battle");
   });
 
-  it.fails("RK-233: 相手が必要パワー0のカードを置けば、必要パワーの数字が0の敵軍ユニットしか選べない（いなければ送らない）（出典: atwiki/page-953）", () => {
+  it("RK-233: 相手が必要パワー0のカードを置けば、必要パワーの数字が0の敵軍ユニットしか選べない（いなければ送らない）（出典: atwiki/page-953）", () => {
     const s = resolveAll(pick(accept(entered()), "SPEC-C0:h0"));
     expect(zoneOf(s, "player2", "SPEC-C0:h0")).toBe("power");
     expect(s.players.player2.battle).toHaveLength(2);
     expect(s.players.player2.rush).toHaveLength(2);
   });
 
-  it.fails("RK-233: 「7+」の必要パワーは数字の 7 として比べる（出典: atwiki/page-953「必要パワーの数字」）", () => {
+  it("RK-233: 「7+」の必要パワーは数字の 7 として比べる（出典: atwiki/page-953「必要パワーの数字」）", () => {
     const s = pick(accept(entered({ ...enemy, hand: [inst("TST-UNIT-7", "h7")] })), "TST-UNIT-7:h7");
     expect(choiceIds(s)).toEqual(["SPEC-C1:b1", "SPEC-C3:b3", "SPEC-M2:m2", "TST-UNIT-7:l"]);
   });
 
-  it.fails("RK-233: 発動しなければ、相手はドローしない（出典: atwiki/page-953「発動できる」）", () => {
+  it("RK-233: 発動しなければ、相手はドローしない（出典: atwiki/page-953「発動できる」）", () => {
     const s = resolveAll(skip(entered()));
     expect(s.players.player2.hand).toHaveLength(2);
     expect(s.players.player2.power).toHaveLength(0);
@@ -252,14 +252,14 @@ describe("RK-234 仮面ライダーケタロス", () => {
   };
   const entered = (p2: Partial<GameState["players"]["player2"]> = enemy) => enter(board({ rush: [inst("RK-234", "kt")] }, p2), "RK-234:kt");
 
-  it.fails("RK-234: 【ショルダータックル】自軍ターン中、バトルエリアに出たとき、敵軍バトルエリアの S ユニット（M は対象外）から1体選んでラッシュエリアに戻すかを選べる（任意）（出典: atwiki/page-933「敵軍バトルエリアからSユニットを1体選び、敵軍ラッシュエリアに戻してもよい」）", () => {
+  it("RK-234: 【ショルダータックル】自軍ターン中、バトルエリアに出たとき、敵軍バトルエリアの S ユニット（M は対象外）から1体選んでラッシュエリアに戻すかを選べる（任意）（出典: atwiki/page-933「敵軍バトルエリアからSユニットを1体選び、敵軍ラッシュエリアに戻してもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RK-234");
     expect(choiceIds(s)).toEqual(["SPEC-WB2000:w"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-234: 戻すと、敵軍ラッシュエリアの、戻したユニットのカテゴリ（WB）を持たないユニット（サイズを問わない）から1体選ぶ（出典: atwiki/page-933「戻したユニットの持つカテゴリを持たないユニットがあれば1体選び」）", () => {
+  it("RK-234: 戻すと、敵軍ラッシュエリアの、戻したユニットのカテゴリ（WB）を持たないユニット（サイズを問わない）から1体選ぶ（出典: atwiki/page-933「戻したユニットの持つカテゴリを持たないユニットがあれば1体選び」）", () => {
     const s = pick(entered(), "SPEC-WB2000:w");
     expect(zoneOf(s, "player2", "SPEC-WB2000:w")).toBe("rush");
     expectChoiceFrom(s, "player1", "RK-234");
@@ -267,25 +267,25 @@ describe("RK-234 仮面ライダーケタロス", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-234: 選んだユニットと戻したユニットをバトルさせ、BP の低い方が撃破される（出典: atwiki/page-933「戻したユニットとバトルさせる」・R-BTL-02）", () => {
+  it("RK-234: 選んだユニットと戻したユニットをバトルさせ、BP の低い方が撃破される（出典: atwiki/page-933「戻したユニットとバトルさせる」・R-BTL-02）", () => {
     const s = resolveAll(pick(pick(entered(), "SPEC-WB2000:w"), "SPEC-MA1000:ma"));
     expect(zoneOf(s, "player2", "SPEC-MA1000:ma")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-WB2000:w")).toBe("rush");
   });
 
-  it.fails("RK-234: 戻したユニットの方が BP が低ければ、戻したユニットが撃破される（出典: atwiki/page-933・R-BTL-02）", () => {
+  it("RK-234: 戻したユニットの方が BP が低ければ、戻したユニットが撃破される（出典: atwiki/page-933・R-BTL-02）", () => {
     const s = resolveAll(pick(pick(entered(), "SPEC-WB2000:w"), "SPEC-MA3000:big"));
     expect(zoneOf(s, "player2", "SPEC-WB2000:w")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-MA3000:big")).toBe("rush");
   });
 
-  it.fails("RK-234: BP が同じなら両方とも撃破される（出典: R-BTL-02）", () => {
+  it("RK-234: BP が同じなら両方とも撃破される（出典: R-BTL-02）", () => {
     const s = resolveAll(pick(pick(entered({ ...enemy, rush: [inst("SPEC-MA2000", "eq")] }), "SPEC-WB2000:w"), "SPEC-MA2000:eq"));
     expect(zoneOf(s, "player2", "SPEC-WB2000:w")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-MA2000:eq")).toBe("discard");
   });
 
-  it.fails("RK-234: 敵軍ラッシュエリアに戻したユニットのカテゴリを持たないユニットがなければ、戻すだけでバトルは起きない（出典: atwiki/page-933「…がなければ」・カード評価「相手が単色の場合は同士討ちを狙えない」）", () => {
+  it("RK-234: 敵軍ラッシュエリアに戻したユニットのカテゴリを持たないユニットがなければ、戻すだけでバトルは起きない（出典: atwiki/page-933「…がなければ」・カード評価「相手が単色の場合は同士討ちを狙えない」）", () => {
     const s = resolveAll(pick(entered({ ...enemy, rush: [inst("SPEC-WB1000", "wb")] }), "SPEC-WB2000:w"));
     expect(zoneOf(s, "player2", "SPEC-WB2000:w")).toBe("rush");
     expect(zoneOf(s, "player2", "SPEC-WB1000:wb")).toBe("rush");
@@ -317,24 +317,24 @@ describe("RK-235 仮面ライダーヘラクス", () => {
   const four = { battle: [inst("SPEC-C1", "a"), inst("SPEC-C2", "b")], rush: [inst("SPEC-C3", "c"), inst("SPEC-C1", "d"), inst("SPEC-M2", "m")] };
   const rc = (p2: Partial<GameState["players"]["player2"]> = four) => rcRideOff(board({ rush: [inst("RK-235", "hx"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-235:hx", "SPEC-VEHICLE:v");
 
-  it.fails("RK-235: 【アバランチクラッシュ】RC — 敵軍 S ユニット（4体）が自軍 S ユニット（これ1体）より3体以上多ければ、敵軍 S ユニット（エリアを問わない。M は対象外）を1体選ぶ（選ばないことはできない）（出典: atwiki/page-934「敵軍Sユニットの数が自軍Sユニットの数より3体以上多いとき、敵軍Sユニットを1体選び」）", () => {
+  it("RK-235: 【アバランチクラッシュ】RC — 敵軍 S ユニット（4体）が自軍 S ユニット（これ1体）より3体以上多ければ、敵軍 S ユニット（エリアを問わない。M は対象外）を1体選ぶ（選ばないことはできない）（出典: atwiki/page-934「敵軍Sユニットの数が自軍Sユニットの数より3体以上多いとき、敵軍Sユニットを1体選び」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "RK-235");
     expect(choiceIds(s)).toEqual(["SPEC-C1:a", "SPEC-C1:d", "SPEC-C2:b", "SPEC-C3:c"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-235: 選んだユニットは持ち主のパワーゾーンに送られる（出典: atwiki/page-934「持ち主のパワーゾーンに送る」）", () => {
+  it("RK-235: 選んだユニットは持ち主のパワーゾーンに送られる（出典: atwiki/page-934「持ち主のパワーゾーンに送る」）", () => {
     const s = resolveAll(pick(rc(), "SPEC-C3:c"));
     expect(zoneOf(s, "player2", "SPEC-C3:c")).toBe("power");
   });
 
-  it.fails("RK-235: 差が2体（敵軍 S 3体）なら発動しない（M ユニットは数えない）（出典: atwiki/page-934「3体以上多いとき」）", () => {
+  it("RK-235: 差が2体（敵軍 S 3体）なら発動しない（M ユニットは数えない）（出典: atwiki/page-934「3体以上多いとき」）", () => {
     const s = rc({ ...four, rush: [inst("SPEC-C3", "c"), inst("SPEC-M2", "m")] });
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-235");
   });
 
-  it.fails("RK-235: 自軍 S ユニットが増えれば、その分だけ多く必要になる（自軍2体・敵軍4体では発動しない）（出典: atwiki/page-934）", () => {
+  it("RK-235: 自軍 S ユニットが増えれば、その分だけ多く必要になる（自軍2体・敵軍4体では発動しない）（出典: atwiki/page-934）", () => {
     const s = rcRideOff(board({ rush: [inst("RK-235", "hx"), inst("SPEC-VEHICLE", "v"), inst("SPEC-C1", "own")] }, four), "RK-235:hx", "SPEC-VEHICLE:v");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-235");
   });
@@ -356,7 +356,7 @@ describe("RK-236 ネガタロス", () => {
   const enemyRush = (id = "SPEC-POLICE:p", p1: Partial<GameState["players"]["player1"]> = { rush: [inst("RK-236", "ng")] }) =>
     rushed(enemyTurn({ hand: HAND, ...p1 }, { hand: [inst(id.split(":")[0]!, id.split(":")[1]!)], command: releasedCat("WB", 1), power: powerCards(3, "ep") }, "rush"), id, "player2");
 
-  it.fails("RK-236: 【ネガタロス軍団（仮）結成の野望】敵軍ラッシュフェイズ中、特徴「警察」を持つ敵軍ユニットがラッシュされたとき、手札の DA・BP3000 以下の S ユニットのカード（BP3500・M・WB は対象外）から1枚選べる（任意）（出典: atwiki/page-950「自分の手札からDAを持つBP3000以下のSユニットのカードを1枚選び、ラッシュエリアに出してもよい」）", () => {
+  it("RK-236: 【ネガタロス軍団（仮）結成の野望】敵軍ラッシュフェイズ中、特徴「警察」を持つ敵軍ユニットがラッシュされたとき、手札の DA・BP3000 以下の S ユニットのカード（BP3500・M・WB は対象外）から1枚選べる（任意）（出典: atwiki/page-950「自分の手札からDAを持つBP3000以下のSユニットのカードを1枚選び、ラッシュエリアに出してもよい」）", () => {
     const s = enemyRush();
     expect(zoneOf(s, "player2", "SPEC-POLICE:p")).toBe("rush");
     expectChoiceFrom(s, "player1", "RK-236");
@@ -364,12 +364,12 @@ describe("RK-236 ネガタロス", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-236: 選んだカードは自軍ラッシュエリアに出る（必要パワーは満たさなくてよい）（出典: atwiki/page-950「ラッシュエリアに出してもよい。ただし、追加条件は満たすこと」）", () => {
+  it("RK-236: 選んだカードは自軍ラッシュエリアに出る（必要パワーは満たさなくてよい）（出典: atwiki/page-950「ラッシュエリアに出してもよい。ただし、追加条件は満たすこと」）", () => {
     const s = resolveAll(pick(enemyRush(), "SPEC-DA3000:ok"));
     expect(zoneOf(s, "player1", "SPEC-DA3000:ok")).toBe("rush");
   });
 
-  it.fails("RK-236: 出さないことも選べる（出典: atwiki/page-950「発動できる」「出してもよい」）", () => {
+  it("RK-236: 出さないことも選べる（出典: atwiki/page-950「発動できる」「出してもよい」）", () => {
     const s = resolveAll(skip(enemyRush()));
     expect(zoneOf(s, "player1", "SPEC-DA3000:ok")).toBe("hand");
   });
@@ -379,7 +379,7 @@ describe("RK-236 ネガタロス", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-236");
   });
 
-  it.fails("RK-236: これがバトルエリアにあっても発動する（出典: atwiki/page-950「これが自軍エリアにある間」）", () => {
+  it("RK-236: これがバトルエリアにあっても発動する（出典: atwiki/page-950「これが自軍エリアにある間」）", () => {
     const s = enemyRush("SPEC-POLICE:p", { battle: [inst("RK-236", "ng")] });
     expectChoiceFrom(s, "player1", "RK-236");
   });
@@ -413,13 +413,13 @@ describe("RK-237 仮面ライダーキバBF", () => {
   const entered = (p1Ops = residents.p1, p2Ops = residents.p2) =>
     enter(board({ rush: [inst("RK-237", "bf")], operation: p1Ops }, { operation: p2Ops }), "RK-237:bf");
 
-  it.fails("RK-237: 【バッシャー・アクアトルネード】自軍ターン中、バトルエリアに出たとき、このユニットをホールドするかを選べる（任意）（出典: atwiki/page-940「このユニットをホールドしてもよい」）", () => {
+  it("RK-237: 【バッシャー・アクアトルネード】自軍ターン中、バトルエリアに出たとき、このユニットをホールドするかを選べる（任意）（出典: atwiki/page-940「このユニットをホールドしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RK-237");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-237: ホールドすると、常駐しているオペレーション（自軍・敵軍とも）から1つ選ぶ（選ばないことはできない）（出典: atwiki/page-940「そうしたとき、常駐しているオペレーションを1つ選び」）", () => {
+  it("RK-237: ホールドすると、常駐しているオペレーション（自軍・敵軍とも）から1つ選ぶ（選ばないことはできない）（出典: atwiki/page-940「そうしたとき、常駐しているオペレーションを1つ選び」）", () => {
     const s = accept(entered());
     expect(cardIn(s, "player1", "RK-237:bf")?.commandHeld).toBe(true);
     expectChoiceFrom(s, "player1", "RK-237");
@@ -427,14 +427,14 @@ describe("RK-237 仮面ライダーキバBF", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-237: 選んだオペレーションは持ち主の山札に戻る（敵軍の常駐は敵軍の山札へ）（出典: atwiki/page-940「選んだオペレーションを持ち主の山札に戻してシャッフルする」）", () => {
+  it("RK-237: 選んだオペレーションは持ち主の山札に戻る（敵軍の常駐は敵軍の山札へ）（出典: atwiki/page-940「選んだオペレーションを持ち主の山札に戻してシャッフルする」）", () => {
     const s = resolveAll(pick(accept(entered()), "RK-001:kz"));
     expect(zoneOf(s, "player2", "RK-001:kz")).toBe("deck");
     expect(s.players.player2.deck).toHaveLength(6);
     expect(zoneOf(s, "player1", "RK-249:own")).toBe("operation");
   });
 
-  it.fails("RK-237: ホールドしなければ常駐は残る（出典: atwiki/page-940「ホールドしてもよい。そうしたとき」）", () => {
+  it("RK-237: ホールドしなければ常駐は残る（出典: atwiki/page-940「ホールドしてもよい。そうしたとき」）", () => {
     const s = resolveAll(skip(entered()));
     expect(cardIn(s, "player1", "RK-237:bf")?.commandHeld ?? false).toBe(false);
     expect(zoneOf(s, "player2", "RK-001:kz")).toBe("operation");
@@ -474,25 +474,25 @@ describe("RK-238 キャッスルドラン", () => {
   const ownKill = (p1: Partial<GameState["players"]["player1"]> = { rush: [inst("RK-238", "cd")] }, p2: Partial<GameState["players"]["player2"]> = {}) =>
     settle(attack(board({ battle: [inst("SPEC-KAMEN", "k")], ...p1 }, { battle: [inst("SPEC-C1", "e")], ...p2 }), "SPEC-KAMEN:k", "SPEC-C1:e"));
 
-  it.fails("RK-238: 【魂の捕獲】特徴「仮面ライダー」を持つ自軍ユニットがバトルで敵軍ユニットを撃破して捨札にしたとき、自分は1枚ドローするかを選べる（任意）（出典: atwiki/page-941「その特徴「仮面ライダー」を持つユニットの持ち主は1枚ドローしてもよい」）", () => {
+  it("RK-238: 【魂の捕獲】特徴「仮面ライダー」を持つ自軍ユニットがバトルで敵軍ユニットを撃破して捨札にしたとき、自分は1枚ドローするかを選べる（任意）（出典: atwiki/page-941「その特徴「仮面ライダー」を持つユニットの持ち主は1枚ドローしてもよい」）", () => {
     const s = ownKill();
     expect(zoneOf(s, "player2", "SPEC-C1:e")).toBe("discard");
     expectChoiceFrom(s, "player1", "RK-238");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-238: ドローを選ぶと1枚ドローする（出典: atwiki/page-941）", () => {
+  it("RK-238: ドローを選ぶと1枚ドローする（出典: atwiki/page-941）", () => {
     const s = resolveAll(confirm(ownKill()));
     expect(s.players.player1.hand).toHaveLength(1);
     expect(s.players.player1.deck).toHaveLength(4);
   });
 
-  it.fails("RK-238: ドローしないことも選べる（出典: atwiki/page-941「ドローしてもよい」）", () => {
+  it("RK-238: ドローしないことも選べる（出典: atwiki/page-941「ドローしてもよい」）", () => {
     const s = resolveAll(skip(ownKill()));
     expect(s.players.player1.hand).toHaveLength(0);
   });
 
-  it.fails("RK-238: 敵軍の「仮面ライダー」が自軍ユニットを撃破したときは、相手（その仮面ライダーの持ち主）がドローするかを選べる（出典: atwiki/page-941「その特徴「仮面ライダー」を持つユニットの持ち主は」・カード評価「相手も恩恵を受ける」）", () => {
+  it("RK-238: 敵軍の「仮面ライダー」が自軍ユニットを撃破したときは、相手（その仮面ライダーの持ち主）がドローするかを選べる（出典: atwiki/page-941「その特徴「仮面ライダー」を持つユニットの持ち主は」・カード評価「相手も恩恵を受ける」）", () => {
     let s = enemyTurn({ rush: [inst("RK-238", "cd")], battle: [inst("SPEC-C1", "mine")] }, { battle: [inst("SPEC-KAMEN", "ek")] });
     s = settle(attack(s, "SPEC-KAMEN:ek", "SPEC-C1:mine", "player2"));
     expect(zoneOf(s, "player1", "SPEC-C1:mine")).toBe("discard");
@@ -502,7 +502,7 @@ describe("RK-238 キャッスルドラン", () => {
     expect(s.players.player1.hand).toHaveLength(0);
   });
 
-  it.fails("RK-238: キャッスルドランが敵軍エリアにあっても、自軍の「仮面ライダー」が撃破すれば自分がドローできる（出典: atwiki/page-941「これが自軍エリアにある間」（キャッスルドランの持ち主から見て）・「その…ユニットの持ち主は」）", () => {
+  it("RK-238: キャッスルドランが敵軍エリアにあっても、自軍の「仮面ライダー」が撃破すれば自分がドローできる（出典: atwiki/page-941「これが自軍エリアにある間」（キャッスルドランの持ち主から見て）・「その…ユニットの持ち主は」）", () => {
     const s = ownKill({}, { rush: [inst("RK-238", "cd")] });
     expectChoiceFrom(s, "player1", "RK-238");
   });

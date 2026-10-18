@@ -4,6 +4,7 @@
  * DSL スタブが「resident」マーカーのみのカード（wiki テキストに実処理があるもの）を
  * ここで実装する。配置時 / 自軍ユニット被アタック時などのフックを提供する。
  */
+import { rk12ResidentsNegated } from "./rk/rk12Fields";
 import { applyRk2ResidentPlaced } from "./rk/rk2UnitEffects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../types/game";
@@ -264,6 +265,8 @@ export function applyResidentOpsOnAllyAttacked(
     player.rush.find((c) => c.instanceId === pending.defenderInstanceId);
   if (!defender) return null;
   const defenderDef = getDefinition(state.definitions, defender.cardId);
+  // RK-248 パラダイス・ロスト: このターン、相手の常駐オペレーションは無効（rules/rk/rk12Fields.ts）。
+  if (rk12ResidentsNegated(state, ownerId)) return null;
 
   for (const op of player.operation) {
     const runtime = runtimeForCard(op.cardId);

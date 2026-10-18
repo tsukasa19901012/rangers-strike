@@ -1,5 +1,6 @@
 import { openRk8JaguarOnEnemyRush } from "./rk/rk8UnitEffects";
 import { openRk11UndeadMasterOnRush } from "./rk/rk11UnitEffects";
+import { openRk12NegatarosOnRush } from "./rk/rk12UnitEffects";
 import { rk10CraneBeforeOnRush, rk10CraneWatch, setRk10OnRushRunner } from "./rk/rk10UnitEffects";
 import { rk1IsSmallNow } from "./rk/rk1Features";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
@@ -345,6 +346,8 @@ export function applyPassiveRushTriggers(
   next = openRk8JaguarOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // RK-220 アルビノジョーカー【アンデッドを従える者】（自軍「アルビローチ」をラッシュしたとき。rules/rk/rk11UnitEffects.ts）。
   next = openRk11UndeadMasterOnRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // RK-236 ネガタロス（敵軍ラッシュフェイズ中、特徴「警察」を持つ敵軍ユニットがラッシュされたとき。rules/rk/rk12UnitEffects.ts）。
+  next = openRk12NegatarosOnRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   return { state: next, logs: rsEnemyRush.logs };
 }
 

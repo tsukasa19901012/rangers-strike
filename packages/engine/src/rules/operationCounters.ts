@@ -8,6 +8,7 @@ import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
 import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
 import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
 import { rk11KyosukeWinButDestroyed } from "./rk/rk11Fields";
+import { openRk12SurviveStay } from "./rk/rk12UnitEffects";
 import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import { openKuugaStayOnLeave } from "./legend1/otherLinesNamedEffects";
 import {
@@ -2125,6 +2126,9 @@ export function tryLeaveField(
   // SK-004 仮面ライダークウガUF【凄まじき戦士】: 重ねたウラ向きのカードを1枚捨札にして留める（強制。rules/legend1/otherLinesNamedEffects.ts）。
   const kuugaStay = openKuugaStayOnLeave(state, intent);
   if (kuugaStay) return { state: kuugaStay, deferred: true };
+  // RK-250 サバイブ: 重ねたユニットがユニットでなくなるとき、サバイブを捨札にしてその場に留める（rules/rk/rk12UnitEffects.ts）。
+  const survive = openRk12SurviveStay(state, intent);
+  if (survive) return { state: survive, deferred: true };
   // RS-437 白熱する実況: 下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる（rules/legend1/set7NamedEffectsA.ts）。
   const liveCommentary = openLiveCommentaryStay(state, intent);
   if (liveCommentary) return { state: liveCommentary, deferred: true };

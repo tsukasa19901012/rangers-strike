@@ -8,6 +8,7 @@
  *   1枚出すごとに「ラッシュしたとき」誘発と「ラッシュされたとき」窓を処理し（R-RUSH-22, R-RUSH-30）、
  *   窓が閉じてから次の1枚に進む。
  */
+import { rk12PlacesHeldOnRush } from "./rk/rk12Fields";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { cardHasCategory, getZordCondition, isZordUpCost, MOTHERSHIP_CONFIG, resolveRushAdditionalCondition } from "@rangers-strike/cards";
@@ -499,7 +500,8 @@ function placeUnit(state: GameState, instanceId: string): GameState {
   let nextOwner: PlayerState = {
     ...owner,
     [pending.fromZone]: zoneCards,
-    rush: [...owner.rush, stripCommandFlags(found.card)],
+    // RK-245 等「※これはラッシュするとき、可能ならホールド状態で置く。」— 効果のラッシュでも（atwiki/page-876 Q2）。
+    rush: [...owner.rush, rk12PlacesHeldOnRush(state, found.card.cardId) ? { ...stripCommandFlags(found.card), commandHeld: true } : stripCommandFlags(found.card)],
   };
   if (pending.blockBattleEntryThisTurn) nextOwner = markBattleBlocked(nextOwner, instanceId);
   const placed = { ...state, ...updatePlayer(state, pending.playerId, nextOwner) };

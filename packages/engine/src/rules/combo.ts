@@ -1,6 +1,7 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import { tryRk9OnEnterBattle } from "./rk/rk9UnitEffects";
 import { tryRk10OnEnterBattle } from "./rk/rk10UnitEffects";
+import { rk12MarkHeldEntry, tryRk12OnEnterBattle } from "./rk/rk12UnitEffects";
 import { openWarriorSoulNcChoice } from "./legend1/set9NamedEffectsA";
 import { tryResidentRushOnAllyEnterBattle } from "./residentAllyEnterRush";
 import { listNcColumnNamedEffects, getNumberComboEffect } from "@rangers-strike/cards";
@@ -215,6 +216,8 @@ export function resolveEnterBattleEffectsImpl(
     nextState = applyWingPentactOnCombo(nextState, playerId, card, battleBeforeEnter);
     // RS-273〜276 ファイブマン（NC）: アタックしなかったファイブマンの次にコンビネーションする S ユニット。
     nextState = applyFivemanOnCombo(nextState, playerId, card, battleBeforeEnter);
+    // RK-239 ウエイクアップ！: ホールド状態で出たかを、出たときに記録する（rules/rk/rk12UnitEffects.ts）。
+    nextState = rk12MarkHeldEntry(nextState, playerId, card);
   }
 
   if (shouldRunEnterStep(resumeFrom, "conditional")) {
@@ -297,6 +300,12 @@ export function resolveEnterBattleEffectsImpl(
     const beforeRk10Choice = nextState.pendingEffectChoice;
     nextState = tryRk10OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
     if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk10Choice) {
+      return { state: nextState, logs, enterResumeFrom: "nc" };
+    }
+    // RK-239 ウエイクアップ！・RK-243【ドラゴンライダーキック】（rules/rk/rk12UnitEffects.ts）。
+    const beforeRk12Choice = nextState.pendingEffectChoice;
+    nextState = tryRk12OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk12Choice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }
     // RS-523 臨気で得た能力・RS-521 スーパー戦隊魂（レッドが出たとき）（rules/legend1/set8NamedEffectsA.ts）。

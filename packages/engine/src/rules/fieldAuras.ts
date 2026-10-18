@@ -19,6 +19,7 @@ import { set9DFieldBpBonus } from "./legend1/set9NamedEffectsD";
 import { rk1FieldBpBonus } from "./rk/rk1NamedEffects";
 import { rk2FieldBpBonus } from "./rk/rk2UnitEffects";
 import { rk9FieldBpBonus } from "./rk/rk9Fields";
+import { rk12FieldBpBonus } from "./rk/rk12Fields";
 import { rk5FieldBpBonus } from "./rk/rk5Fields";
 import { rk6FieldBpBonus } from "./rk/rk6Fields";
 import { anyOtherBaseLargeUnit } from "./legend1/set8NamedEffectsB";
@@ -262,6 +263,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += rk6FieldBpBonus(state, playerId, instance);
   // RK-173 鬼の鎧を重ねたユニット（rules/rk/rk9Fields.ts）。
   if (role === "general") bonus += rk9FieldBpBonus(state, playerId, instance);
+  // RK-250 サバイブを重ねたユニット（BP+1500。rules/rk/rk12Fields.ts）。
+  if (role === "general") bonus += rk12FieldBpBonus(instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

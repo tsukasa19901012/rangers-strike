@@ -65,8 +65,6 @@ const ACTION_PRIMITIVE_IDS = [
   "PK-013",
   "PR-025",
   "RK-222",
-  "RK-245",
-  "RK-252",
   "RK-254",
   "RK-278",
   "RK-313",

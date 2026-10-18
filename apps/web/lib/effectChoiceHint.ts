@@ -330,6 +330,39 @@ const RK11_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk11_release_at_end: { label: "リリース", hint: "ホールド状態のこのユニットをリリースしますか？" },
 };
 
+/** ザ・マスクドライダーEXP vol.3〜4 RK-232〜RK-252 のカード固有の選択（engine rules/rk/rk12UnitEffects.ts）の表示名と案内文。 */
+const RK12_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk232_kaen_taisho: { label: "火焔大将", hint: "自軍ラッシュエリアに出す、捨札の「火焔大将」を選んでください（出さないなら「スキップ」）" },
+  rk233_hyper_rider_kick: { label: "ハイパーライダーキック", hint: "発動しますか？（相手は1枚ドローして手札を1枚パワーゾーンに置き、その必要パワー以下の敵軍ユニットをパワーゾーンに送ります）" },
+  rk233_hyper_rider_kick_place: { label: "ハイパーライダーキック", hint: "自分のパワーゾーンに置く、自分の手札のカードを1枚選んでください" },
+  rk233_hyper_rider_kick_send: { label: "ハイパーライダーキック", hint: "持ち主のパワーゾーンに送る敵軍ユニットを選んでください（相手の置いたカードの必要パワー以下）" },
+  rk234_shoulder_tackle: { label: "ショルダータックル", hint: "敵軍ラッシュエリアに戻す、敵軍バトルエリアの S ユニットを選んでください（しないなら「スキップ」）" },
+  rk234_shoulder_tackle_battle: { label: "ショルダータックル", hint: "戻したユニットとバトルさせる、そのカテゴリを持たない敵軍ラッシュエリアのユニットを選んでください" },
+  rk235_avalanche_crash: { label: "アバランチクラッシュ", hint: "持ち主のパワーゾーンに送る敵軍 S ユニットを選んでください" },
+  rk236_negataros_army: { label: "ネガタロス軍団（仮）結成の野望", hint: "自軍ラッシュエリアに出す、手札の DA・BP3000 以下の S ユニットのカードを選んでください（出さないなら「スキップ」）" },
+  rk237_aqua_tornado: { label: "バッシャー・アクアトルネード", hint: "このユニットをホールドしますか？（常駐しているオペレーションを1つ持ち主の山札に戻します）" },
+  rk237_aqua_tornado_pick: { label: "バッシャー・アクアトルネード", hint: "持ち主の山札に戻す、常駐しているオペレーションを選んでください" },
+  rk238_soul_capture: { label: "魂の捕獲", hint: "1枚ドローしますか？" },
+  rk239_wake_up_hold: { label: "ウエイクアップ！", hint: "ホールドする自軍 S ユニットを選んでください（バトルエリアに出たユニットをリリースします。しないなら「スキップ」）" },
+  rk240_oretachi: { label: "俺達の必殺技", hint: "自軍バトルエリアの「イマジン」の数を数えますか？（その数以下の必要パワーの S ユニットを、その数までパワーゾーンに送ります）" },
+  rk240_oretachi_pick: { label: "俺達の必殺技", hint: "持ち主のパワーゾーンに送る S ユニットを選んでください（数えた数まで。途中で確定してもよい）" },
+  rk241_muriyari: { label: "ムリヤリな変身", hint: "自軍ラッシュエリアに出す、捨札の「モモタロス」を選んでください（出さないなら「スキップ」）" },
+  rk242_climax_bold: { label: "クライマックス刑事", hint: "自軍山札の上に戻す、オモテ向きの自軍パワーを選んでください" },
+  rk243_dragon_rider_kick: { label: "ドラゴンライダーキック", hint: "撃破する、ナンバーを持たない敵軍バトルエリアの S ユニットを選んでください（しないなら「スキップ」）" },
+  rk244_missing_ace_bold: { label: "ミッシングエース", hint: "捨札にする手札のカードを選んでください" },
+  rk244_missing_ace_destroy: { label: "ミッシングエース", hint: "撃破する自分のユニットを選んでください（自分の捨札のユニットカードと同じカード名）" },
+  rk245_darkness_moon_break: { label: "ダークネスムーンブレイク", hint: "このユニットをホールドしますか？（敵軍 S ユニットを1体ダメージにします）" },
+  rk245_darkness_moon_break_target: { label: "ダークネスムーンブレイク", hint: "持ち主のパワーゾーンにダメージにして置く敵軍 S ユニットを選んでください" },
+  rk246_garulu_howling_slash: { label: "ガルル・ハウリングスラッシュ", hint: "このユニットをホールドしますか？（相手の手札の枚数以下の必要パワーの敵軍 S ユニットを1体ダメージにします）" },
+  rk246_garulu_howling_slash_target: { label: "ガルル・ハウリングスラッシュ", hint: "持ち主のパワーゾーンにダメージにして置く敵軍 S ユニットを選んでください" },
+  rk248_paradise_lost_bold: { label: "パラダイス・ロスト", hint: "持ち主の手札に加える、敵軍捨札のカードを選んでください（このターン、相手の常駐は無効になります）" },
+  rk250_survive: { label: "サバイブ", hint: "サバイブを重ねる、WB の自軍 S ユニットを選んでください" },
+  rk250_survive_order: { label: "サバイブ", hint: "先に解決する「ユニットでなくなるとき」のカードを選んでください（サバイブを先にすると、ユニットは留まります）" },
+  rk251_gorgom: { label: "ゴルゴムの仕業", hint: "ゴルゴムの仕業を使って、相手のオペレーションの効果を無効にしますか？" },
+  rk252_onkaku: { label: "変身音叉 音角", hint: "発動する効果を選んでください（hibiki_rush: 手札の「仮面ライダー響鬼」を出す／reveal_draw: 敵軍山札の上をオモテにする）" },
+  rk252_onkaku_hibiki: { label: "変身音叉 音角", hint: "自軍ラッシュエリアに出す、手札の「仮面ライダー響鬼」を選んでください（出さないなら「スキップ」）" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -372,7 +405,8 @@ export function effectChoiceHint(
     RK8_CHOICE_UI[pending.effectId] ??
     RK9_CHOICE_UI[pending.effectId] ??
     RK10_CHOICE_UI[pending.effectId] ??
-    RK11_CHOICE_UI[pending.effectId];
+    RK11_CHOICE_UI[pending.effectId] ??
+    RK12_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -576,6 +610,7 @@ export function effectChoiceTitle(
     RK9_CHOICE_UI[pending.effectId]?.label ??
     RK10_CHOICE_UI[pending.effectId]?.label ??
     RK11_CHOICE_UI[pending.effectId]?.label ??
+    RK12_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

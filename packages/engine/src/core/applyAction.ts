@@ -4,6 +4,8 @@ import { rk6SideBasherOnEntry } from "../rules/rk/rk6UnitEffects";
 import { applyRk7AfterAction, openRk7LocustReplace } from "../rules/rk/rk7UnitEffects";
 import { openRk11UndeadReplace } from "../rules/rk/rk11UnitEffects";
 import { rk11IsHandSubstitute } from "../rules/rk/rk11Fields";
+import { rk12PlacesHeldOnRush } from "../rules/rk/rk12Fields";
+import { openRk12GorgomWindow, trackRk12UnitHolds } from "../rules/rk/rk12UnitEffects";
 import { applyRk8AfterAction } from "../rules/rk/rk8UnitEffects";
 import { applyRk10AfterAction, rk10CraneDeclined, rk10CraneIntercept, runRk10OnRush } from "../rules/rk/rk10UnitEffects";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
@@ -980,6 +982,16 @@ function applyActionWithRng(
   }
   // RS-660【SPインカム】: このターン、場の外からラッシュエリアに出たユニットを記録する（rules/legend1/set9NamedEffectsC.ts）。
   next = trackSpIncomeEntries(state, next);
+  // RK-240・RK-247: このターン、ユニットがホールドされたかを記録する（rules/rk/rk12UnitEffects.ts）。
+  next = trackRk12UnitHolds(state, next);
+  // RK-251 ゴルゴムの仕業を使わなかった: オペレーションの使用（効果の実行）を続ける（rules/rk/rk12UnitEffects.ts）。
+  if (next.rk12ResumeOperation && !next.pendingEffectChoice) {
+    const op = next.rk12ResumeOperation;
+    const resumed = applyAction({ ...next, rk12ResumeOperation: undefined }, { type: "play_operation", ...op }, { trustLegality: true });
+    next = resumed.ok
+      ? { ...resumed.state, rk12GorgomPassedOp: undefined }
+      : { ...next, rk12ResumeOperation: undefined, rk12GorgomPassedOp: undefined };
+  }
   // 第9弾 RS-607 の続き・RS-613 のホールド待ち（rules/legend1/set9NamedEffectsA.ts）。
   if (applyActionDepth === 0) next = settleSet9AAfterAction(state, next);
   next = releaseCounterLockWhenAttackSettled(next);
@@ -1696,6 +1708,8 @@ function applyActionCore(
         }
         return countered;
       }
+      // RK-252 変身音叉 音角: 「このカードを使用するためにホールドしたコマンド」を記録する（rules/rk/rk12UnitEffects.ts）。
+      nextState = { ...nextState, rk12OpPaid: { instanceId: pending.sourceInstanceId, commandIds: paidIds } };
       return applyAction(
         nextState,
         {
@@ -1795,6 +1809,16 @@ function applyActionCore(
 
       const cost = parsePowerCost(definition.powerCost);
       if (!payPowerCost(state, playerId, cost)) return fail("insufficient_power");
+
+      // RK-251 ゴルゴムの仕業: 相手が通常のオペレーションを使用したとき、その効果を実行する前（rules/rk/rk12UnitEffects.ts）。
+      {
+        const gorgom = openRk12GorgomWindow(
+          state,
+          { playerId, instanceId: action.instanceId, targetInstanceId: action.targetInstanceId, extraInstanceId: action.extraInstanceId },
+          found.card.cardId,
+        );
+        if (gorgom) return ok(gorgom, buildLogEntry(playerId, "play_operation", found.card.cardId, state.definitions, "rk251_window"));
+      }
 
       const [, hand] = removeAt(player.hand, found.index);
       let nextPlayer = clearCostWindow({ ...player, hand }, "operation_category");
@@ -2254,7 +2278,8 @@ function applyActionCore(
       nextPlayer = {
         ...nextPlayer,
         hand,
-        rush: [...nextPlayer.rush, rushCard],
+        // RK-245 等「※これはラッシュするとき、可能ならホールド状態で置く。」（rules/rk/rk12Fields.ts）。
+        rush: [...nextPlayer.rush, rk12PlacesHeldOnRush(state, rushCard.cardId) ? { ...rushCard, commandHeld: true } : rushCard],
       };
       nextPlayer = markRushedThisTurn(nextPlayer, handFound.card.instanceId);
       nextPlayer = clearShironLightRushTarget(nextPlayer);

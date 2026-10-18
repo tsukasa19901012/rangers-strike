@@ -94,6 +94,8 @@ import { rk6BlocksBattleEntry } from "./rk/rk6Fields";
 import { rk8BlocksBattleEntry } from "./rk/rk8UnitEffects";
 import { rk9BlocksBattleEntry } from "./rk/rk9Fields";
 import { rk10BlocksBattleEntry, rk10ElasmoHoldReduction, rk10OmegaIgnoresEntryHold } from "./rk/rk10Fields";
+import { rk12BlocksBattleEntry, rk12RequiresBattleEntry, rk12ResidentsNegated } from "./rk/rk12Fields";
+import { unitFeatures as rk12UnitFeatures } from "./addedFeatures";
 import {
   rs482BlocksAttackStrike,
   rs579BlocksAttackStrikeOnRushTurn,
@@ -129,6 +131,8 @@ export function countActiveLightningGravity(state: GameState): number {
   for (const playerId of ["player1", "player2"] as const) {
     const player = state.players[playerId];
     if (opponentInfiniteChainBlocks(state, playerId)) continue;
+    // RK-248 パラダイス・ロスト: このターン、相手の常駐オペレーションは無効（rules/rk/rk12Fields.ts）。
+    if (rk12ResidentsNegated(state, playerId)) continue;
     for (const card of player.operation) {
       if (getCardEffect(card.cardId)?.effectId === "lightning_gravity") {
         count += 1;
@@ -369,6 +373,8 @@ export function canMoveUnitToBattle(
   // RK-177 蜂女【催眠音波】でホールドしなかったユニット（rules/rk/rk9Fields.ts）。
   if (def.type === "unit" && rk9BlocksBattleEntry(state, playerId, unit)) return false;
   if (def.type === "unit" && rk10BlocksBattleEntry(state, playerId, unit)) return false;
+  // RK-247 仮面ライダーネガ電王の※（自軍ユニットがホールドされたターンにしか出られない。rules/rk/rk12Fields.ts）。
+  if (def.type === "unit" && rk12BlocksBattleEntry(state, playerId, unit)) return false;
   // RS-289 / XP-023「※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない」（atwiki/page-416）。
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
@@ -509,6 +515,7 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   // RK-177 蜂女【催眠音波】でホールドしなかったユニット（rules/rk/rk9Fields.ts）。
   if (def.type === "unit" && rk9BlocksBattleEntry(state, playerId, unit)) return false;
   if (def.type === "unit" && rk10BlocksBattleEntry(state, playerId, unit)) return false;
+  if (def.type === "unit" && rk12BlocksBattleEntry(state, playerId, unit)) return false;
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {
@@ -954,7 +961,9 @@ export function findMandatoryBattleEntries(
       (emperorCurse && isSmallUnit(state.definitions, card.cardId)) ||
       highwayPlanRequiresBattleEntry(state, card.cardId) ||
       // RS-557 ビンボーガミ【札束の誘惑】（rules/legend1/set8NamedEffectsB.ts）。
-      set8BRequiresBattleEntry(state, playerId, card)
+      set8BRequiresBattleEntry(state, playerId, card) ||
+      // RK-247 仮面ライダーネガ電王【不敵な挑発】（特徴「警察」を持つユニット。rules/rk/rk12Fields.ts）。
+      rk12RequiresBattleEntry(state, rk12UnitFeatures(state, playerId, card))
     ) {
       mandatory.push(card);
     }

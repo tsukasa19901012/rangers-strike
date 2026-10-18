@@ -1,4 +1,5 @@
 import { countLogicalBattleSlots } from "../rules/battleLine";
+import { rk12ResidentsNegated } from "../rules/rk/rk12Fields";
 import { rngFromSeed, seedFromRng } from "./rng";
 import { allCardsCatalog, type CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
@@ -159,6 +160,8 @@ export function meditationActive(
 ): boolean {
   const opponentId: PlayerId = playerId === "player1" ? "player2" : "player1";
   if (hasTurnRuleModifier(state.players[opponentId], TURN_RULE_IDS.INFINITE_CHAIN)) return false;
+  // RK-248 パラダイス・ロスト: このターン、相手の常駐オペレーションは無効（rules/rk/rk12Fields.ts）。
+  if (rk12ResidentsNegated(state, playerId)) return false;
   return state.players[playerId].operation.some((c) => c.cardId === "RS-348");
 }
 

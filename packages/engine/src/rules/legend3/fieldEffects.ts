@@ -2,6 +2,7 @@ import { rk8EffectiveSp } from "../rk/rk8UnitEffects";
 import { rk9EffectiveSp } from "../rk/rk9UnitEffects";
 import { rk10EffectiveSp } from "../rk/rk10UnitEffects";
 import { rk11EffectiveSp } from "../rk/rk11Fields";
+import { rk12EffectiveSp } from "../rk/rk12Fields";
 import { hasUnnamedRule } from "@rangers-strike/cards";
 import { rk5EffectiveSp } from "../rk/rk5Fields";
 import { set9AEffectiveSp } from "../legend1/set9NamedEffectsA";
@@ -259,6 +260,8 @@ export function legend3EffectiveSp(
   sp = rk10EffectiveSp(state, playerId, instance, sp);
   // RK-218【下級アンデッドを操る者】・RK-221【音撃打・火炎連打】・RK-222【音撃打・灼熱真紅の型】の「SP1」（rules/rk/rk11Fields.ts）。
   sp = rk11EffectiveSp(state, playerId, instance, sp);
+  // RK-240 仮面ライダー電王CF（2nd）の※（特徴「仮面ライダー」を持つ自軍ユニットがホールドされたターン「SP1」。rules/rk/rk12Fields.ts）。
+  sp = rk12EffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

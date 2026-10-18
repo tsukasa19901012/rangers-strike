@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_s_on_self_rush",
+          "keyword": "rk12::RK-250::survive",
           "duration": "permanent"
         }
       ],

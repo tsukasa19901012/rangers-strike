@@ -58,6 +58,7 @@ import { effectiveRushAdditionalCondition } from "../rules/rushAdditionalConditi
 import { set5PassiveBpBonus } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower, effectivePowerCost, rushEffectivePowerCost } from "./power";
 import { rk11CounterCostReduction } from "../rules/rk/rk11Fields";
+import { rk12ResidentsNegated } from "../rules/rk/rk12Fields";
 
 export function buildDefinitionMap(
   decks: CardDefinition[][],
@@ -211,6 +212,8 @@ export function hasOperationEffect(
   if (context && opponentInfiniteChainBlocks(context.state, context.playerId)) {
     return false;
   }
+  // RK-248 パラダイス・ロスト: このターン、相手の常駐オペレーションは無効（rules/rk/rk12Fields.ts）。
+  if (context && rk12ResidentsNegated(context.state, context.playerId)) return false;
   return true;
 }
 

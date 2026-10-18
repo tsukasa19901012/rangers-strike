@@ -20,7 +20,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "counter_op_interrupt",
+          "keyword": "rk12::RK-251::gorgom",
           "duration": "permanent"
         }
       ]

@@ -1076,6 +1076,10 @@ const SET8A_RESIDENT_PHASE: Record<string, "rush" | "battle"> = {
   "RS-522": "rush",
   "RS-524": "battle",
   "RS-525": "rush",
+  // ライダーのタッグの常駐（自軍ラッシュフェイズごとに1度だけ）。太字部分と「そうしたとき」は rules/rk/rk12UnitEffects.ts の registerTagResident。
+  "RK-242": "rush",
+  "RK-244": "rush",
+  "RK-248": "rush",
 };
 const RESIDENT_USED_RULE = "set8a_resident_bold_used";
 

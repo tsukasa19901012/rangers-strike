@@ -139,6 +139,7 @@ import { canConfirmRk8Choice, isRk8ChoiceEffect } from "../rules/rk/rk8UnitEffec
 import { canConfirmRk9Choice, isRk9BattleCounterCard, isRk9ChoiceEffect, rk9BattleCounterConditionMet } from "../rules/rk/rk9UnitEffects";
 import { canConfirmRk10Choice, isRk10ChoiceEffect } from "../rules/rk/rk10UnitEffects";
 import { canConfirmRk11Choice, isRk11ChoiceEffect } from "../rules/rk/rk11UnitEffects";
+import { canConfirmRk12Choice, isRk12ChoiceEffect } from "../rules/rk/rk12UnitEffects";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
 import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
 import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
@@ -1278,6 +1279,15 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk3Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk12ChoiceEffect(pending.effectId)) {
+    // ザ・マスクドライダーEXP vol.3〜4 RK-232〜RK-252 の選択（rules/rk/rk12UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk12Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 
