@@ -22,6 +22,7 @@ import { addBakiBakiExtraAttack } from "../turnModifierBridge";
 import { cardHasGrantKeyword } from "../../dsl/promotedKeywordBridge";
 import { fireAkaRedSoulNc } from "./set6AuditFixes";
 import { baseLargeNow, hasBecomesLIfAnyLText } from "./set8NamedEffectsB";
+import { rk6CommandHoldBlocked } from "../rk/rk6Fields";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -999,6 +1000,9 @@ export function openDaiganganKen(state: GameState, attackerId: PlayerId, attacke
   if (state.pendingEffectChoice || state.pendingLeave) return state;
   const attacker = state.players[attackerId].battle.find((c) => c.instanceId === attackerInstanceId);
   if (!attacker || attacker.cardId !== "RS-422") return state;
+  // RK-116 マグナギガ【そびえる巨体】: 敵軍バトルエリアにあれば、このユニットの効果ではホールドされない（atwiki/page-645。rules/rk/rk6Fields.ts）。
+  // ホールドできなければ「そうしたとき」の追加アタックも得ない。
+  if (rk6CommandHoldBlocked(state, opponent(attackerId), "RS-422")) return state;
   const ids = state.players[opponent(attackerId)].command.filter((c) => !c.commandHeld).map((c) => c.instanceId);
   if (ids.length === 0) return state;
   return openEffectChoice(state, {

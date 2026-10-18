@@ -22,6 +22,7 @@ import { applyThunderRoar } from "./legend1/set6NamedEffects348";
 import { enemyCommandHoldSubstitutes } from "./legend1/set7NamedEffectsB";
 import { shifuSubstituteAvailable } from "./legend1/set6NamedEffectsB";
 import { registerKibaShot } from "./legend1/set6AuditFixes";
+import { rk6CommandHoldBlocked } from "./rk/rk6Fields";
 
 export const HOLD_ACTIVATE_EFFECT_PREFIX = "hold_activate::";
 
@@ -115,6 +116,9 @@ const HOLD_BODY_HANDLERS: BodyHandler[] = [
     match: /^敵軍コマンドをすべてホールドする。?$/,
     resolve: (state, ctx) => {
       const enemyId = opponent(ctx.playerId);
+      // RK-116 マグナギガ【そびえる巨体】: 敵軍バトルエリアにあれば、このユニットの効果ではホールドされない
+      // （atwiki/page-645 カード評価「ギンガピンク…の能力の防止」。rules/rk/rk6Fields.ts）。
+      if (rk6CommandHoldBlocked(state, enemyId, ctx.sourceCardId)) return state;
       const enemy = state.players[enemyId];
       return {
         ...state,

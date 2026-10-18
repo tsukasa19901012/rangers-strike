@@ -150,6 +150,7 @@ import { isRk3ChoiceEffect, tryConfirmRk3Choice, tryResolveRk3Choice, trySkipRk3
 import { isRk4ChoiceEffect, tryConfirmRk4Choice, tryResolveRk4Choice, trySkipRk4Choice } from "./rk/rk4UnitEffects";
 import { isRk5ChoiceEffect, tryConfirmRk5Choice, tryResolveRk5Choice, trySkipRk5Choice } from "./rk/rk5UnitEffects";
 import { isRk6ChoiceEffect, tryConfirmRk6Choice, tryResolveRk6Choice, trySkipRk6Choice } from "./rk/rk6UnitEffects";
+import { rk6CommandHoldBlocked } from "./rk/rk6Fields";
 import { filthyAirActive, isOtherLinesChoiceEffect, tryOtherLinesBattleToRush, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
@@ -2195,6 +2196,24 @@ export function startCrossThunderChoice(
   });
 }
 
+/**
+ * RK-116 マグナギガ【そびえる巨体】「これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは敵軍ユニットの効果によってホールドされない。」
+ * （atwiki/page-645。カード評価「ガオパンダやギンガピンク、トリケラレンジャーたちの能力の防止」）。コマンドをホールドする選択（commandAction "hold"）の
+ * 候補から、発生源（敵軍のユニット）の効果ではホールドされないコマンドを除く（rules/rk/rk6Fields.ts rk6CommandHoldBlocked）。
+ */
+function withoutHoldBlockedCommands(
+  state: GameState,
+  ids: string[],
+  commandAction: PendingEffectChoice["commandAction"],
+  sourceCardId: string,
+): string[] {
+  if (commandAction !== "hold") return ids;
+  return ids.filter((id) => {
+    const owner = (["player1", "player2"] as const).find((pid) => state.players[pid].command.some((c) => c.instanceId === id));
+    return !owner || !rk6CommandHoldBlocked(state, owner, sourceCardId);
+  });
+}
+
 export function startMultiCommandChoice(
   state: GameState,
   params: {
@@ -2210,9 +2229,12 @@ export function startMultiCommandChoice(
     sourceInstanceId?: string;
   },
 ): GameState | null {
-  const valid =
-    params.validInstanceIds ??
-    collectCommandIds(state, params.playerId, params.commandFilter);
+  const valid = withoutHoldBlockedCommands(
+    state,
+    params.validInstanceIds ?? collectCommandIds(state, params.playerId, params.commandFilter),
+    params.commandAction,
+    params.sourceCardId,
+  );
   if (valid.length === 0 && !params.optional) return null;
   if (valid.length === 0) return null;
   return openEffectChoice(state, {
@@ -2246,9 +2268,12 @@ export function startSelectCommandChoice(
     selectCount?: number;
   },
 ): GameState | null {
-  const valid =
-    params.validInstanceIds ??
-    collectCommandIds(state, params.playerId, params.commandFilter);
+  const valid = withoutHoldBlockedCommands(
+    state,
+    params.validInstanceIds ?? collectCommandIds(state, params.playerId, params.commandFilter),
+    params.commandAction,
+    params.sourceCardId,
+  );
   const selectCount = params.selectCount ?? 1;
   if (valid.length === 0 || valid.length < selectCount) return null;
   return openEffectChoice(state, {

@@ -35,6 +35,7 @@ import {
   tryStartLegend2ConditionalChoice,
 } from "./legend2/battleEffects";
 import { resolveLegend2OnRushEffects } from "./legend2/rushEffects";
+import { rk6CommandHoldBlocked } from "./rk/rk6Fields";
 import {
   isLegend3OnRushEffect,
   resolveLegend3OnRushEffects,
@@ -564,8 +565,9 @@ export function resolveNamedOnRushEffects(
   return { state: nextState, logs };
 }
 
-function holdAllEnemyCommands(state: GameState, playerId: PlayerId): GameState {
+function holdAllEnemyCommands(state: GameState, playerId: PlayerId, sourceCardId?: string): GameState {
   const enemyId = opponent(playerId);
+  if (rk6CommandHoldBlocked(state, enemyId, sourceCardId)) return state;
   const enemy = state.players[enemyId];
   const command = enemy.command.map((c) => ({ ...c, commandHeld: true }));
   return { ...state, ...updatePlayer(state, enemyId, { ...enemy, command }) };
@@ -584,6 +586,8 @@ export function resolveSkyMagicSlash(
 ): NamedEffectOutcome {
   const enemy = state.players[opponent(playerId)];
   if (!enemy.command.some((c) => !c.commandHeld)) return { state, logs: [] };
+  // RK-116 マグナギガ【そびえる巨体】: 敵軍バトルエリアにあれば、このユニットの効果ではホールドされない（atwiki/page-645。rules/rk/rk6Fields.ts）。
+  if (rk6CommandHoldBlocked(state, opponent(playerId), cardId)) return { state, logs: [] };
   return {
     state: openOptionalEffectConfirm(state, {
       playerId,
@@ -600,7 +604,7 @@ export function resolveSkyMagicSlash(
 
 registerOptionalEffect("sky_magic_slash", {
   apply: (state, pending) => {
-    const next = holdAllEnemyCommands(state, pending.playerId);
+    const next = holdAllEnemyCommands(state, pending.playerId, pending.sourceCardId);
     return {
       ...next,
       log: [

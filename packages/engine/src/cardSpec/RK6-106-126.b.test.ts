@@ -17,6 +17,9 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState } from "../types/game";
 import {
   DEFS,
+  legal,
+  damageCards,
+  act,
   PLAIN_VEHICLE,
   attackTargets,
   bpOf,
@@ -54,6 +57,7 @@ import {
   sUnit,
   zoneOf,
 } from "./RK6-106-126.helpers";
+import { useHoldEffect } from "./RS6-369-389.helpers";
 
 const RC2000 = rcUnit("SPEC-RC2000", { category: "WB", bp: 2000 });
 const E1 = sUnit("SPEC-E1", { bp: 1000, powerCost: 1 });
@@ -62,6 +66,11 @@ const OWN = sUnit("SPEC-OWN", { bp: 1000 });
 /** M サイズのビークル。 */
 const M_VEHICLE = { ...PLAIN_VEHICLE, id: "SPEC-MVEH", name: "SPEC-MVEH", size: "M" } as unknown as CardDefinition;
 const EXTRA = [RC2000, E1, EM, OWN, M_VEHICLE, PLAIN_VEHICLE];
+/** RK-116 の照合で使う敵軍の並び（CN なしの S ユニット）。 */
+const FILL2 = sUnit("SPEC-FILL2", { bp: 1000, sp: undefined });
+const HOLD_EXTRA = [FILL2];
+const fill2 = (n: number): CardInstance[] => Array.from({ length: n }, (_, i) => inst("SPEC-FILL2", `ef${i}`));
+const attackAs2 = (s: GameState, attacker: string, defender: string) => act(s, { type: "battle", playerId: "player2", attackerInstanceId: attacker, defenderInstanceId: defender });
 
 const board = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
   p1Battle(p1, p2, EXTRA);
@@ -272,6 +281,84 @@ describe("RK-116 マグナギガ", () => {
 
   it("RK-116: マグナギガがいなければ（比較）、ガオパンダで自軍コマンドがすべてホールドされる（出典: atwiki/page-645・RS-305 本文）", () => {
     expect(heldCount(panda({}))).toBe(2);
+  });
+
+  // ---- 個別に実装された「敵軍コマンドをホールドする」効果（RK-127〜147 の照合で整理）----
+  // atwiki/page-645 カード評価「ガオパンダやギンガピンク、トリケラレンジャーたちの能力の防止」。敵軍（player2）のターンに、敵軍のユニットの効果で
+  // 自軍（player1）コマンドをホールドしようとする。mg = true なら自軍バトルエリアにマグナギガがいる。
+  const p2Turn = (mg: boolean, p2: Partial<GameState["players"]["player2"]>, phase: GameState["phase"] = "battle", p1: Partial<GameState["players"]["player1"]> = {}) =>
+    st(
+      {
+        phase,
+        activePlayer: "player2",
+        player1: { battle: mg ? [inst("RK-116", "mg")] : [], command: releasedCat("WB", 3), deck: deckCards(5), ...p1 },
+        player2: { deck: deckCards(5, "e"), ...p2 },
+      },
+      [...EXTRA, ...HOLD_EXTRA],
+    );
+  const p2Enter = (s: GameState, id: string) => act(s, { type: "move_to_battle", playerId: "player2", instanceId: id });
+  const p1Held = (s: GameState) => heldCount(s, "player1");
+
+  it("RK-116: トリケラレンジャー（RS-082【トリケランス】NC）でも自軍コマンドはホールドされない。いなければ1つホールドされる（出典: atwiki/page-645 カード評価「トリケラレンジャー…の能力の防止」・RS-082 本文「敵軍コマンドを1つ選んでホールドする」）", () => {
+    const run = (mg: boolean) => resolveAll(p2Enter(p2Turn(mg, { battle: fill2(2), rush: [inst("RS-082", "tr")] }), "RS-082:tr"));
+    expect(p1Held(run(true))).toBe(0);
+    expect(p1Held(run(false))).toBe(1);
+  });
+
+  it("RK-116: ギンガピンク（RS-380【花弁の爪】「敵軍コマンドをすべてホールドする」）でも自軍コマンドはホールドされない（コストの MA はホールドされる）（出典: atwiki/page-645 カード評価「ギンガピンク…の能力の防止」）", () => {
+    const run = (mg: boolean) => {
+      const s = p2Enter(p2Turn(mg, { battle: fill2(1), rush: [inst("RS-380", "gp")], command: releasedCat("MA", 1, "eMA") }), "RS-380:gp");
+      return resolveAll(useHoldEffect(s, "player2", "RS-380:gp", ["TST-OP-MA:eMA0"]));
+    };
+    const blocked = run(true);
+    expect(blocked.players.player2.command[0]?.commandHeld).toBe(true);
+    expect(p1Held(blocked)).toBe(0);
+    expect(p1Held(run(false))).toBe(3);
+  });
+
+  it("RK-116: ガオコング（RS-159【ファイヤーダンス】「敵軍コマンドを敵軍ダメージの数まで選んでホールドする」）でも自軍コマンドはホールドされない（出典: atwiki/page-645「敵軍ユニットの効果によってホールドされない」・RS-159 本文）", () => {
+    const run = (mg: boolean) =>
+      resolveAll(
+        enterWithHold(p2Turn(mg, { rush: [inst("RS-159", "gk")], command: releasedCat("WB", 1, "e") }, "battle", { power: damageCards(2) }), "RS-159:gk", ["TST-OP:e0"], "player2"),
+      );
+    expect(p1Held(run(true))).toBe(0);
+    expect(p1Held(run(false))).toBe(2);
+  });
+
+  it("RK-116: マジキング（RS-070【天空魔法斬り】「敵軍コマンドをすべてホールドしてもよい」）でも自軍コマンドはホールドされない（RS-111 も同じ処理）（出典: atwiki/page-645・RS-070 本文）", () => {
+    const blocked = p2Enter(p2Turn(true, { rush: [inst("RS-070", "mk")] }), "RS-070:mk");
+    expect(blocked.pendingEffectChoice?.sourceCardId).not.toBe("RS-070");
+    expect(p1Held(resolveAll(blocked))).toBe(0);
+    const open = p2Enter(p2Turn(false, { rush: [inst("RS-070", "mk")] }), "RS-070:mk");
+    expect(open.pendingEffectChoice?.sourceCardId).toBe("RS-070");
+    expect(p1Held(confirm(open))).toBe(3);
+  });
+
+  it("RK-116: ゲキトージャ（RS-422【大頑頑拳】アタックしてバトルに勝つたび敵軍コマンドを1つホールドしてもよい）でも自軍コマンドはホールドされず、追加のアタックも得ない（出典: atwiki/page-645・RS-422 本文「ホールドしてもよい。そうしたとき、これは追加でアタックできる」）", () => {
+    const run = (mg: boolean) => settle(attackAs2(p2Turn(mg, { battle: [inst("RS-422", "gt")] }, "battle", { battle: [...(mg ? [inst("RK-116", "mg")] : []), inst("SPEC-OWN", "d")] }), "RS-422:gt", "SPEC-OWN:d"));
+    expect(run(true).pendingEffectChoice?.sourceCardId).not.toBe("RS-422");
+    expect(run(false).pendingEffectChoice?.sourceCardId).toBe("RS-422");
+  });
+
+  it("RK-116: 守護獣ジュウマンモス（RS-036【モスブリザード】「相手は可能ならコマンドを2つ選んでホールドする」）でも自軍コマンドはホールドしない（出典: atwiki/page-645「敵軍ユニットの効果によってホールドされない」・RS-036 本文「可能なら」）", () => {
+    const run = (mg: boolean) => {
+      const s = p2Turn(mg, { hand: [inst("RS-036", "jm")], command: releasedCat("WB", 1, "e"), power: powerCards(5, "ep") }, "rush");
+      const r = rushFromHand(s, "player2", "RS-036:jm");
+      expect(r.ok, r.error).toBe(true);
+      let next = settle(r.state);
+      // 相手（自軍）がコマンドを選んでホールドする（effect_hold の支払いで2つ選ぶ）。
+      const hold = legal(next).find((a) => a.type === "initiate_command_payment" && a.kind === "effect_hold" && a.playerId === "player1");
+      if (hold) next = act(next, hold);
+      return settle(next);
+    };
+    expect(p1Held(run(true))).toBe(0);
+    expect(p1Held(run(false))).toBe(2);
+  });
+
+  it("RK-116: マンモスレンジャー（RS-040【モスブレイカー】NC「相手は可能ならコマンドを1つ選んでホールドする」）でも自軍コマンドはホールドしない（出典: atwiki/page-645・RS-040 本文「可能なら」）", () => {
+    const run = (mg: boolean) => p2Enter(p2Turn(mg, { battle: fill2(1), rush: [inst("RS-040", "mr")] }), "RS-040:mr");
+    expect(run(true).pendingEffectChoice?.sourceCardId).not.toBe("RS-040");
+    expect(run(false).pendingEffectChoice?.sourceCardId).toBe("RS-040");
   });
 
   it("RK-116: 自軍ラッシュエリアにあるときは防げない（出典: atwiki/page-645「これが自軍バトルエリアにある間」）", () => {
