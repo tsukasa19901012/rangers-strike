@@ -26,11 +26,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": false,
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-050::misairurancha",
+          "keyword": "rm3::RM-050::missile_launcher",
           "duration": "turn"
         }
       ]

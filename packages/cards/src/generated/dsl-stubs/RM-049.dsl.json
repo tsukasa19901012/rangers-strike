@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-049::deikuteita",
+          "keyword": "rm3::RM-049::dictator",
           "duration": "turn"
         }
       ]

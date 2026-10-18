@@ -42,11 +42,11 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": false,
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-061::misairu",
+          "keyword": "rm3::RM-061::missile_shot",
           "duration": "turn"
         }
       ]

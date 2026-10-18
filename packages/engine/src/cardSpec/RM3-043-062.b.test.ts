@@ -85,7 +85,7 @@ describe("RM-050 隊員コード071 シグ", () => {
   const nc = (fillerCount: number, p2: Partial<GameState["players"]["player2"]> = {}, p1: Partial<GameState["players"]["player1"]> = {}) =>
     ncEnter("RM-050:sg", fillerCount, p1, { ...ENEMY, ...p2 }, EXTRA);
 
-  it.fails("RM-050: NC【ミサイルランチャー】— 敵軍パワーゾーンのオモテ向きのカードに S ユニットのカードがなければ、DA か OT を持つ敵軍 M ユニット（エリアを問わない）から1体選べる（WB・S ユニットは選べない。任意）（出典: atwiki/page-859「敵軍パワーゾーンのオモテ向きのカードにSユニットのカードが無ければ、次の効果を発動できる⇒DAまたはOTを持つ敵軍Mユニットを1体選び」）", () => {
+  it("RM-050: NC【ミサイルランチャー】— 敵軍パワーゾーンのオモテ向きのカードに S ユニットのカードがなければ、DA か OT を持つ敵軍 M ユニット（エリアを問わない）から1体選べる（WB・S ユニットは選べない。任意）（出典: atwiki/page-859「敵軍パワーゾーンのオモテ向きのカードにSユニットのカードが無ければ、次の効果を発動できる⇒DAまたはOTを持つ敵軍Mユニットを1体選び」）", () => {
     const s = nc(2, { power: [faceUp("TST-OP", "op"), faceDown("SPEC-DA-S", "fd")] });
     expectChoiceFrom(s, "player1", "RM-050");
     expect(choiceIds(s)).toEqual(["SPEC-DA-M:dm", "SPEC-DA-M:rm", "SPEC-OT-M:om"]);
@@ -97,18 +97,18 @@ describe("RM-050 隊員コード071 シグ", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-050");
   });
 
-  it.fails("RM-050: NC — 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-859「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("RM-050: NC — 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-859「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(pick(nc(2), "SPEC-DA-M:dm"));
     expect(zoneOf(s, "player2", "SPEC-DA-M:dm")).toBe("command");
     expect(cardIn(s, "player2", "SPEC-DA-M:dm")?.commandHeld).toBe(true);
   });
 
-  it.fails("RM-050: NC — 置けなければ（敵軍コマンドゾーンが5枚）捨札にする（出典: atwiki/page-859「置けなければ捨札にする」）", () => {
+  it("RM-050: NC — 置けなければ（敵軍コマンドゾーンが5枚）捨札にする（出典: atwiki/page-859「置けなければ捨札にする」）", () => {
     const s = resolveAll(pick(nc(2, { command: heldN(5) }), "SPEC-DA-M:dm"));
     expect(zoneOf(s, "player2", "SPEC-DA-M:dm")).toBe("discard");
   });
 
-  it.fails("RM-050: NC — 特徴「スワット」を持つユニット（隊員コード153 ショウ）からコンビネーションするときは、ナンバーに関係なく発動する（出典: atwiki/page-859「ナンバーに関係なく発動する」・R-CN-05）", () => {
+  it("RM-050: NC — 特徴「スワット」を持つユニット（隊員コード153 ショウ）からコンビネーションするときは、ナンバーに関係なく発動する（出典: atwiki/page-859「ナンバーに関係なく発動する」・R-CN-05）", () => {
     const s = nc(0, {}, { battle: [inst("RM-048", "sh")] });
     expectChoiceFrom(s, "player1", "RM-050");
   });
@@ -140,23 +140,23 @@ describe("RM-051 メガヘラクレス", () => {
   const withMachines = (machines: CardInstance[], p2: Partial<GameState["players"]["player2"]> = {}, command: CardInstance[] = []) =>
     battleBoard({ battle: [inst("RM-051", "mh")], rush: machines, command }, p2);
 
-  it.fails("RM-051:【メガビートフォーメーション】— 自軍エリアに「ビートルーダー」があれば「SP1」になる（なければ SP！のまま）（出典: atwiki/page-861「自軍エリアに「ビートルーダー」があれば「SP1」になり」）", () => {
+  it("RM-051:【メガビートフォーメーション】— 自軍エリアに「ビートルーダー」があれば「SP1」になる（なければ SP！のまま）（出典: atwiki/page-861「自軍エリアに「ビートルーダー」があれば「SP1」になり」）", () => {
     expect(spOf(withMachines([inst("RM-052", "bt")]), "player1", "RM-051:mh")).toBe(1);
     expect(spOf(withMachines([]), "player1", "RM-051:mh")).toBe(0);
   });
 
-  it.fails("RM-051:【メガビートフォーメーション】— 自軍エリアに「スタッガータンク」があれば BP+3000（2台あっても BP9000）（出典: atwiki/page-861「「スタッガータンク」があればBP+3000され」・カード評価「スタッガータンクが2枚以上いてもBPは9000」）", () => {
+  it("RM-051:【メガビートフォーメーション】— 自軍エリアに「スタッガータンク」があれば BP+3000（2台あっても BP9000）（出典: atwiki/page-861「「スタッガータンク」があればBP+3000され」・カード評価「スタッガータンクが2枚以上いてもBPは9000」）", () => {
     expect(bpOf(withMachines([inst("RM-053", "st")]), "player1", "RM-051:mh")).toBe(9000);
     expect(bpOf(withMachines([inst("RM-053", "st"), inst("RM-053", "st2")]), "player1", "RM-051:mh")).toBe(9000);
     expect(bpOf(withMachines([]), "player1", "RM-051:mh")).toBe(6000);
   });
 
-  it.fails("RM-051:【メガビートフォーメーション】— 自軍エリアに「レッドジャイロ」があればレジストを得る（バトルで撃破されたときホールドして留められる）（出典: atwiki/page-861「「レッドジャイロ」があればレジストを得る」）", () => {
+  it("RM-051:【メガビートフォーメーション】— 自軍エリアに「レッドジャイロ」があればレジストを得る（バトルで撃破されたときホールドして留められる）（出典: atwiki/page-861「「レッドジャイロ」があればレジストを得る」）", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("RM-051", "mh")], rush: [inst("RM-054", "rg")] }, "RM-051:mh"))).toBe(true);
     expect(registerOffered(attackUntilRegister({ battle: [inst("RM-051", "mh")] }, "RM-051:mh"))).toBe(false);
   });
 
-  it.fails("RM-051:【メガビートフォーメーション】— ラッシュエリアにあるときも効く（「これは」の継続効果）（出典: atwiki/page-861・コメント欄「「これは〜」とあるので…常時BPは＋3000されます」）", () => {
+  it("RM-051:【メガビートフォーメーション】— ラッシュエリアにあるときも効く（「これは」の継続効果）（出典: atwiki/page-861・コメント欄「「これは〜」とあるので…常時BPは＋3000されます」）", () => {
     const s = battleBoard({ rush: [inst("RM-051", "mh"), inst("RM-053", "st")] });
     expect(bpOf(s, "player1", "RM-051:mh")).toBe(9000);
   });
@@ -193,7 +193,7 @@ describe("RM-052 ビートルーダー", () => {
   /** 自軍ターンを終え、相手のスタートフェイズのバトルエリアの戻しを終えたところ。 */
   const afterEnemyStart = (p1: Partial<GameState["players"]["player1"]>) => toPhase(endTurnKeep(settle(battleBoard(p1, ENEMY))), "player2", "rush");
 
-  it.fails("RM-052:【マグネアタッチメント】— これがライドされている間、自軍エリアに「スタッガータンク」があれば、相手はスタートフェイズに「メカ」のホールド状態のユニットをラッシュエリアに戻せない（ほかのユニットは戻す）（出典: atwiki/page-862「相手はスタートフェイズ中に自分自身のバトルエリアのユニットをラッシュエリアに戻すとき、特徴「メカ」を持つホールド状態のユニットは戻せない」・カード評価「バトルエリアに釘付け」）", () => {
+  it("RM-052:【マグネアタッチメント】— これがライドされている間、自軍エリアに「スタッガータンク」があれば、相手はスタートフェイズに「メカ」のホールド状態のユニットをラッシュエリアに戻せない（ほかのユニットは戻す）（出典: atwiki/page-862「相手はスタートフェイズ中に自分自身のバトルエリアのユニットをラッシュエリアに戻すとき、特徴「メカ」を持つホールド状態のユニットは戻せない」・カード評価「バトルエリアに釘付け」）", () => {
     const s = afterEnemyStart({ battle: ridingPair("SPEC-INSECT", "r", "RM-052", "bt"), rush: [inst("RM-053", "st")] });
     expect(zoneOf(s, "player2", "SPEC-MECHA:hm")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-ES:hn")).toBe("rush");
@@ -233,14 +233,14 @@ describe("RM-053 スタッガータンク", () => {
   const entered = (rush: CardInstance[]) =>
     mount(battleBoard({ rush: [inst("SPEC-INSECT", "i"), inst("RM-053", "st"), ...rush], command: releasedCat("WB", 1) }, ENEMY), "SPEC-INSECT:i", "RM-053:st");
 
-  it.fails("RM-053:【ドリルアタッチメント】— 自軍ターン中、バトルエリアに出たとき、自軍エリアに「ビートルーダー」があれば、特徴「メカ」を持つ敵軍 M ユニット（エリアを問わない）から1体選べる（任意）（出典: atwiki/page-863「自軍エリアに「ビートルーダー」があれば、次の効果を発動できる⇒特徴「メカ」を持つ敵軍Mユニットを1体選びホールドする」）", () => {
+  it("RM-053:【ドリルアタッチメント】— 自軍ターン中、バトルエリアに出たとき、自軍エリアに「ビートルーダー」があれば、特徴「メカ」を持つ敵軍 M ユニット（エリアを問わない）から1体選べる（任意）（出典: atwiki/page-863「自軍エリアに「ビートルーダー」があれば、次の効果を発動できる⇒特徴「メカ」を持つ敵軍Mユニットを1体選びホールドする」）", () => {
     const s = entered([inst("RM-052", "bt")]);
     expectChoiceFrom(s, "player1", "RM-053");
     expect(choiceIds(s)).toEqual(["SPEC-MECHA-M:a", "SPEC-MECHA-M:b"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-053:【ドリルアタッチメント】— 選んだユニットをホールドする（その場に留まる）（出典: atwiki/page-863「1体選びホールドする」）", () => {
+  it("RM-053:【ドリルアタッチメント】— 選んだユニットをホールドする（その場に留まる）（出典: atwiki/page-863「1体選びホールドする」）", () => {
     const s = resolveAll(pick(entered([inst("RM-052", "bt")]), "SPEC-MECHA-M:a"));
     expect(zoneOf(s, "player2", "SPEC-MECHA-M:a")).toBe("battle");
     expect(cardIn(s, "player2", "SPEC-MECHA-M:a")?.commandHeld).toBe(true);
@@ -271,14 +271,14 @@ describe("RM-054 レッドジャイロ", () => {
   const ENEMY = { battle: [inst("SPEC-AIR", "a"), inst("SPEC-AIR-M", "m"), inst("SPEC-AIR-HI", "hi"), inst("SPEC-ES", "n"), heldUnit("SPEC-AIR", "h")], rush: [inst("SPEC-AIR", "r")] };
   const entered = () => mount(battleBoard({ rush: [inst("SPEC-INSECT", "i"), inst("RM-054", "rg")], command: releasedCat("WB", 1) }, ENEMY), "SPEC-INSECT:i", "RM-054:rg");
 
-  it.fails("RM-054:【レッドパルサー】— 自軍ターン中、バトルエリアに出たとき、敵軍バトルエリアの BP3000 以下の「航空機」のユニット（サイズを問わない）から1体選ぶ（BP3500・「航空機」を持たない・ラッシュエリアのユニットは選べない。すでにホールド状態のユニットは選ばない。見送れない）（出典: atwiki/page-864「敵軍バトルエリアからBP3000以下の特徴「航空機」を持つ敵軍ユニットを1体選びホールドする」・カード評価「効果にサイズ制限はない」）", () => {
+  it("RM-054:【レッドパルサー】— 自軍ターン中、バトルエリアに出たとき、敵軍バトルエリアの BP3000 以下の「航空機」のユニット（サイズを問わない）から1体選ぶ（BP3500・「航空機」を持たない・ラッシュエリアのユニットは選べない。すでにホールド状態のユニットは選ばない。見送れない）（出典: atwiki/page-864「敵軍バトルエリアからBP3000以下の特徴「航空機」を持つ敵軍ユニットを1体選びホールドする」・カード評価「効果にサイズ制限はない」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RM-054");
     expect(choiceIds(s)).toEqual(["SPEC-AIR-M:m", "SPEC-AIR:a"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RM-054:【レッドパルサー】— 選んだユニットをホールドする（出典: atwiki/page-864「1体選びホールドする」）", () => {
+  it("RM-054:【レッドパルサー】— 選んだユニットをホールドする（出典: atwiki/page-864「1体選びホールドする」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-AIR:a"));
     expect(zoneOf(s, "player2", "SPEC-AIR:a")).toBe("battle");
     expect(cardIn(s, "player2", "SPEC-AIR:a")?.commandHeld).toBe(true);
@@ -309,14 +309,14 @@ describe("RM-055 ブルービート", () => {
     expect(spOf(settle(s), "player1", "RM-055:bb")).toBe(1);
   });
 
-  it.fails("RM-055: NC【スティンガーブレード】— 敵軍バトルエリアのホールド状態のユニット（サイズを問わない）から1体選べる（リリース状態・ラッシュエリアのユニットは選べない。任意）（出典: atwiki/page-871「敵軍バトルエリアから、ホールド状態のユニットを1体選び撃破してもよい」・カード評価「ホールドされていればサイズに影響されずに撃破できる」）", () => {
+  it("RM-055: NC【スティンガーブレード】— 敵軍バトルエリアのホールド状態のユニット（サイズを問わない）から1体選べる（リリース状態・ラッシュエリアのユニットは選べない。任意）（出典: atwiki/page-871「敵軍バトルエリアから、ホールド状態のユニットを1体選び撃破してもよい」・カード評価「ホールドされていればサイズに影響されずに撃破できる」）", () => {
     const s = nc(1);
     expectChoiceFrom(s, "player1", "RM-055");
     expect(choiceIds(s)).toEqual(["SPEC-EM:hm", "SPEC-ES:h"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-055: NC【スティンガーブレード】— 選んだユニットを撃破する（出典: atwiki/page-871「撃破してもよい」）", () => {
+  it("RM-055: NC【スティンガーブレード】— 選んだユニットを撃破する（出典: atwiki/page-871「撃破してもよい」）", () => {
     const s = resolveAll(pick(nc(1), "SPEC-EM:hm"));
     expect(zoneOf(s, "player2", "SPEC-EM:hm")).toBe("discard");
   });
@@ -349,14 +349,14 @@ describe("RM-056 ジースタッグ", () => {
   };
   const nc = () => ncEnter("RM-056:gs", 2, {}, ENEMY, EXTRA);
 
-  it.fails("RM-056: NC【スティンガークロー】— ライド中の敵軍 S ユニット（エリアを問わない）から1体選べる（任意）（出典: atwiki/page-865「ライド中の敵軍Sユニットを1体選んでもよい」・カード評価「地味にエリアを問わない」）", () => {
+  it("RM-056: NC【スティンガークロー】— ライド中の敵軍 S ユニット（エリアを問わない）から1体選べる（任意）（出典: atwiki/page-865「ライド中の敵軍Sユニットを1体選んでもよい」・カード評価「地味にエリアを問わない」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "RM-056");
     expect(choiceIds(s)).toEqual(["SPEC-ES:r", "SPEC-ES:rr"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-056: NC — 選ぶと、相手がそのユニットかそのユニットがライドしているビークルのどちらかを選ぶ（見送れない）（出典: atwiki/page-865「相手はそのSユニットか、そのSユニットがライドしているビークルのうち、どちらか1体を選び捨札にする」）", () => {
+  it("RM-056: NC — 選ぶと、相手がそのユニットかそのユニットがライドしているビークルのどちらかを選ぶ（見送れない）（出典: atwiki/page-865「相手はそのSユニットか、そのSユニットがライドしているビークルのうち、どちらか1体を選び捨札にする」）", () => {
     const s = pick(nc(), "SPEC-ES:r");
     expect(choicePlayer(s)).toBe("player2");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RM-056");
@@ -364,13 +364,13 @@ describe("RM-056 ジースタッグ", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RM-056: NC — 相手がビークルを選べば、ビークルが捨札になる（出典: atwiki/page-865「どちらか1体を選び捨札にする」・カード評価「Mビークル・Lビークルを除去できる」）", () => {
+  it("RM-056: NC — 相手がビークルを選べば、ビークルが捨札になる（出典: atwiki/page-865「どちらか1体を選び捨札にする」・カード評価「Mビークル・Lビークルを除去できる」）", () => {
     const s = resolveAll(pickAs(pick(nc(), "SPEC-ES:rr"), "player2", "SPEC-MV:mv"));
     expect(zoneOf(s, "player2", "SPEC-MV:mv")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-ES:rr")).not.toBe("discard");
   });
 
-  it.fails("RM-056: NC — 相手がユニットを選べば、ユニットが捨札になる（出典: atwiki/page-865「どちらか1体を選び捨札にする」）", () => {
+  it("RM-056: NC — 相手がユニットを選べば、ユニットが捨札になる（出典: atwiki/page-865「どちらか1体を選び捨札にする」）", () => {
     const s = resolveAll(pickAs(pick(nc(), "SPEC-ES:r"), "player2", "SPEC-ES:r"));
     expect(zoneOf(s, "player2", "SPEC-ES:r")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-VEHICLE:v")).not.toBe("discard");

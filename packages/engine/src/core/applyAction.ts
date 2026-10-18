@@ -97,6 +97,7 @@ import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
+import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import {
@@ -512,6 +513,12 @@ function continueAttackAfterDeclaration(
   if (berry) {
     const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...berry, pendingBattleEntry: undefined } : berry;
     return ok(parked, buildSimpleLogEntry(playerId, "rk188_agent_choice"));
+  }
+  // RM-062 テントリーナ【リーナステッキ】: 敵軍ターン中、「女」の自軍ユニットが「男」のユニットにアタックされたとき（rules/rm/rm3Effects.ts）。
+  const tentrina = openRm3Tentrina(battleState, pending, wingAttackFromRush);
+  if (tentrina) {
+    const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...tentrina, pendingBattleEntry: undefined } : tentrina;
+    return ok(parked, buildSimpleLogEntry(playerId, "rm062_lina_stick_choice"));
   }
   // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
   const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
@@ -1056,6 +1063,8 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRm1AfterAction(state, next);
   // RM-026 グランドバース【収容】: チェイス等の選択の後で、選んだビークルをパワーゾーンに送る（rules/rm/rm2Effects.ts）。
   if (applyActionDepth === 0) next = applyRm2AfterAction(next);
+  // RM-059 異次元調達屋カブト（WB の自軍 S ユニットがバトルエリアに出たとき。rules/rm/rm3Effects.ts）。
+  if (applyActionDepth === 0) next = applyRm3AfterAction(state, next);
   // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
   if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
     const endingPlayer = next.rk9RushEndAdvance;
@@ -3125,6 +3134,11 @@ function applyActionCore(
         if ("error" in picked) return fail(picked.error);
         return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
       }
+      if (isRm3TentrinaChoice(pending)) {
+        const picked = resolveRm3Tentrina(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
+      }
       if (pending?.effectId === DIONE_WALL_EFFECT_ID && pending.machineEmpireMeta) {
         const picked = resolveDioneWallPick(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
@@ -3240,6 +3254,11 @@ function applyActionCore(
       }
       if (isRk9BerryChoice(pending)) {
         const skipped = skipRk9Berry(state, playerId);
+        if (!skipped) return fail("invalid_target");
+        return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
+      }
+      if (isRm3TentrinaChoice(pending)) {
+        const skipped = skipRm3Tentrina(state, playerId);
         if (!skipped) return fail("invalid_target");
         return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
       }
@@ -3581,6 +3600,8 @@ function applyActionCore(
       if (!action.rideOff) nextState = rk6SideBasherOnEntry(nextState, playerId, pending.instanceId) ?? nextState;
       // RM-022 サイバリアン【サイバリアンレーザースピード】: このターン、ライドしたまま進んでも RC の効果を発動する（rules/rm/rm2Effects.ts）。
       if (!action.rideOff) nextState = rm2CyberianOnEntry(nextState, playerId, pending.instanceId) ?? nextState;
+      // RM-045 ガンギブソン ※: これからコンビネーションする「メカ」の S ユニットは、ライドしたまま進んでも RC の効果を発動する（rules/rm/rm3Effects.ts）。
+      if (!action.rideOff) nextState = rm3GunGibsonOnEntry(nextState, playerId, pending.instanceId) ?? nextState;
       const opened = action.rideOff
         ? openBattleEntryOrRideOffChoice(nextState, pending.battleEntry)
         : afterEnterBattle(nextState, pending.battleEntry);

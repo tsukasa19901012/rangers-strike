@@ -7769,7 +7769,7 @@
     ],
     "expectedDslKeywords": [
       "deck_unlimited",
-      "rm_fx::RM-043::fx_31"
+      "rm3::RM-043::sannin_ichikumi"
     ],
     "bp": 500,
     "sp": null,
@@ -7788,7 +7788,7 @@
     "expectedDslKeywords": [
       "register",
       "cannot_attack_gender_male_female",
-      "rm_fx::RM-044::jandejiku"
+      "rm3::RM-044::jandejiku"
     ],
     "bp": 5000,
     "sp": "1/5",
@@ -7805,8 +7805,8 @@
       "【ホーミングブリッド】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-045::note_e280bbe38193e381aee383a6",
-      "rm_fx::RM-045::hominguburido"
+      "rm3::RM-045::gun_gibson",
+      "rm3::RM-045::homing_bullet"
     ],
     "bp": 4000,
     "sp": null,
@@ -7824,7 +7824,8 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack",
-      "no_attack_from_enemy_s_bp2000"
+      "no_attack_from_enemy_s_bp2000",
+      "rm3::RM-046::jick_cannon"
     ],
     "bp": 500,
     "sp": null,
@@ -7842,7 +7843,7 @@
     ],
     "expectedDslKeywords": [
       "ride_without_rc_feat_e8ada6e5af9f",
-      "rm_fx::RM-047::bigukyanon"
+      "rm3::RM-047::big_cannon"
     ],
     "sp": null,
     "size": "S"
@@ -7858,7 +7859,7 @@
       "【フレイムスローワー】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-048::fureimusurowa"
+      "rm3::RM-048::flame_thrower"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -7875,7 +7876,7 @@
       "【ディクテイター】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-049::deikuteita"
+      "rm3::RM-049::dictator"
     ],
     "bp": 1000,
     "sp": "1/5",
@@ -7892,7 +7893,7 @@
       "【ミサイルランチャー】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-050::misairurancha"
+      "rm3::RM-050::missile_launcher"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -7910,7 +7911,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rm_fx::RM-051::megabitofuomeshon"
+      "rm3::RM-051::mega_beet"
     ],
     "bp": 6000,
     "sp": "special",
@@ -7945,7 +7946,7 @@
     ],
     "expectedDslKeywords": [
       "ride_command_without_rc_feat_e69886e899ab",
-      "rm_fx::RM-053::doriruatachimento"
+      "rm3::RM-053::drill_attachment"
     ],
     "sp": null,
     "size": "M"
@@ -7962,7 +7963,7 @@
     ],
     "expectedDslKeywords": [
       "ride_command_without_rc_feat_e69886e899ab",
-      "rm_fx::RM-054::redoparusa"
+      "rm3::RM-054::red_pulsar"
     ],
     "sp": null,
     "size": "M"
@@ -7979,7 +7980,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "SP1"
+      "SP1",
+      "rm3::RM-055::stinger_blade"
     ],
     "bp": 2000,
     "sp": "special",
@@ -7997,7 +7999,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rm_fx::RM-056::suteingakuro"
+      "rm3::RM-056::stinger_claw"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -8015,7 +8017,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rm_fx::RM-057::suteingapurazuma"
+      "rm3::RM-057::stinger_plasma"
     ],
     "bp": 500,
     "sp": "1/2",
@@ -8032,7 +8034,7 @@
       "【昆虫の精】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-058::no_e69886"
+      "rm3::RM-058::insect_spirit"
     ],
     "bp": 1000,
     "sp": null,
@@ -8049,7 +8051,7 @@
       "【トランクの中身】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-059::torankuno"
+      "rm3::RM-059::trunk"
     ],
     "bp": 2000,
     "sp": null,
@@ -8084,7 +8086,7 @@
     ],
     "expectedDslKeywords": [
       "deck_unlimited",
-      "rm_fx::RM-061::misairu"
+      "rm3::RM-061::missile_shot"
     ],
     "bp": 2500,
     "sp": null,
@@ -8101,7 +8103,7 @@
       "【リーナステッキ】"
     ],
     "expectedDslKeywords": [
-      "rm_fx::RM-062::rinasuteki"
+      "rm3::RM-062::lina_stick"
     ],
     "bp": 1000,
     "sp": null,

@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-043::fx_31",
+          "keyword": "rm3::RM-043::sannin_ichikumi",
           "duration": "turn"
         }
       ]

@@ -286,7 +286,7 @@ export function effectRushPicked(
   pending: PendingEffectChoice,
   ownerId: PlayerId,
   instanceId: string,
-  fromZone: "deck" | "power" | "discard",
+  fromZone: "deck" | "power" | "discard" | "command",
   after?: (state: GameState) => GameState,
 ): GameState {
   let next = startEffectRush(close(state, pending), {

@@ -20,7 +20,6 @@ import {
   cardIn,
   choiceIds,
   choicePlayer,
-  confirm,
   deckCards,
   deckWithTen,
   enterAfter,
@@ -102,14 +101,14 @@ describe("RM-043 鳥忍　カラス天狗", () => {
     return r.state;
   };
 
-  it.fails("RM-043:【3人1組】— ラッシュしたとき、自軍パワーゾーンのオモテ向きのカードか自軍コマンドゾーンのカードから「鳥忍　カラス天狗」を選べる（ウラ向きのダメージは選べない。任意）（出典: atwiki/page-851「自軍パワーゾーンのオモテ向きのカードか自軍コマンドゾーンのカードから「鳥忍　カラス天狗」のカードを選び、自軍ラッシュエリアに出してもよい」）", () => {
+  it("RM-043:【3人1組】— ラッシュしたとき、自軍パワーゾーンのオモテ向きのカードか自軍コマンドゾーンのカードから「鳥忍　カラス天狗」を選べる（ウラ向きのダメージは選べない。任意）（出典: atwiki/page-851「自軍パワーゾーンのオモテ向きのカードか自軍コマンドゾーンのカードから「鳥忍　カラス天狗」のカードを選び、自軍ラッシュエリアに出してもよい」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "RM-043");
     expect(choiceIds(s)).toEqual(["RM-043:c1", "RM-043:p1", "RM-043:p2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-043:【3人1組】— 自軍エリアにこれだけなら、3体になるまで（2枚）選んで自軍ラッシュエリアに出せる（出典: atwiki/page-851「3体になるまで」・カード評価・コメント欄「序盤はゾーン送り…NCの数合わせ」）", () => {
+  it("RM-043:【3人1組】— 自軍エリアにこれだけなら、3体になるまで（2枚）選んで自軍ラッシュエリアに出せる（出典: atwiki/page-851「3体になるまで」・カード評価・コメント欄「序盤はゾーン送り…NCの数合わせ」）", () => {
     const s = resolveAll(pick(pick(rushed(), "RM-043:p1"), "RM-043:c1"));
     expect(zoneOf(s, "player1", "RM-043:p1")).toBe("rush");
     expect(zoneOf(s, "player1", "RM-043:c1")).toBe("rush");
@@ -117,7 +116,7 @@ describe("RM-043 鳥忍　カラス天狗", () => {
     expect(s.players.player1.rush.filter((c) => c.cardId === "RM-043")).toHaveLength(3);
   });
 
-  it.fails("RM-043:【3人1組】— 自軍エリアにほかに1体（バトルエリアを含む）あれば、出せるのは1枚だけ（選ぶとすぐ出す）（出典: atwiki/page-851「自軍エリアの「鳥忍　カラス天狗」が3体以下なら、3体になるまで」）", () => {
+  it("RM-043:【3人1組】— 自軍エリアにほかに1体（バトルエリアを含む）あれば、出せるのは1枚だけ（選ぶとすぐ出す）（出典: atwiki/page-851「自軍エリアの「鳥忍　カラス天狗」が3体以下なら、3体になるまで」）", () => {
     let s = pick(rushed({ battle: [inst("RM-043", "b0")] }), "RM-043:p1");
     expect(zoneOf(s, "player1", "RM-043:p1")).toBe("rush");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-043");
@@ -131,15 +130,17 @@ describe("RM-043 鳥忍　カラス天狗", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-043");
   });
 
-  it.fails("RM-043:【3人1組】— 1枚だけ選んで確定できる（出典: atwiki/page-851「出してもよい」）", () => {
-    let s = confirm(pick(rushed(), "RM-043:p1"));
+  it("RM-043:【3人1組】— 1枚ずつ選んで効果のラッシュで出す。出したカラス天狗の【3人1組】も発動し、そこで見送れば1枚だけで終わる（出典: atwiki/page-851「出してもよい」・R-RUSH-22（効果でラッシュしたユニットの「ラッシュしたとき」も発動する））", () => {
+    let s = pick(rushed(), "RM-043:p1");
     expect(zoneOf(s, "player1", "RM-043:p1")).toBe("rush");
-    if (s.pendingEffectChoice?.sourceCardId === "RM-043") s = skip(s);
-    s = resolveAll(s);
+    expectChoiceFrom(s, "player1", "RM-043");
+    expect(choiceIds(s)).toEqual(["RM-043:c1", "RM-043:p2"]);
+    s = resolveAll(skip(s));
     expect(zoneOf(s, "player1", "RM-043:c1")).toBe("command");
+    expect(zoneOf(s, "player1", "RM-043:p2")).toBe("power");
   });
 
-  it.fails("RM-043:【3人1組】— 見送ればパワーゾーン・コマンドゾーンのカードは動かない（出典: atwiki/page-851「出してもよい」）", () => {
+  it("RM-043:【3人1組】— 見送ればパワーゾーン・コマンドゾーンのカードは動かない（出典: atwiki/page-851「出してもよい」）", () => {
     const s = resolveAll(skip(rushed()));
     expect(zoneOf(s, "player1", "RM-043:p1")).toBe("power");
     expect(zoneOf(s, "player1", "RM-043:c1")).toBe("command");
@@ -175,7 +176,7 @@ describe("RM-044 ジャンパーソン", () => {
     rush: [inst("SPEC-NOG", "r")],
   };
 
-  it.fails("RM-044: RC【ジャンデジック】— 敵軍バトルエリアの、特徴「男」「女」を持たない S ユニットをすべて持ち主のコマンドゾーンにホールド状態で置く（「男」「女」のユニット・M ユニット・ラッシュエリアのユニットはそのまま）（出典: atwiki/page-878「敵軍バトルエリアにある、特徴「男」または「女」を持たないSユニットを、すべて持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("RM-044: RC【ジャンデジック】— 敵軍バトルエリアの、特徴「男」「女」を持たない S ユニットをすべて持ち主のコマンドゾーンにホールド状態で置く（「男」「女」のユニット・M ユニット・ラッシュエリアのユニットはそのまま）（出典: atwiki/page-878「敵軍バトルエリアにある、特徴「男」または「女」を持たないSユニットを、すべて持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = rc(ENEMY);
     for (const id of ["SPEC-NOG:n1", "SPEC-NOG2:n2"]) {
       expect(zoneOf(s, "player2", id)).toBe("command");
@@ -187,13 +188,13 @@ describe("RM-044 ジャンパーソン", () => {
     expect(zoneOf(s, "player2", "SPEC-NOG:r")).toBe("rush");
   });
 
-  it.fails("RM-044: RC【ジャンデジック】— 置けなければ（敵軍コマンドゾーンが5枚）捨札にする（出典: atwiki/page-878「置けなければ捨札にする」）", () => {
+  it("RM-044: RC【ジャンデジック】— 置けなければ（敵軍コマンドゾーンが5枚）捨札にする（出典: atwiki/page-878「置けなければ捨札にする」）", () => {
     const s = rc({ ...ENEMY, command: heldN(5) });
     expect(zoneOf(s, "player2", "SPEC-NOG:n1")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-NOG2:n2")).toBe("discard");
   });
 
-  it.fails("RM-044: RC【ジャンデジック】— コマンドゾーンに1枚分しか空きがなければ、1体を置き、残りは捨札にする（出典: atwiki/page-878「置けなければ捨札にする」）", () => {
+  it("RM-044: RC【ジャンデジック】— コマンドゾーンに1枚分しか空きがなければ、1体を置き、残りは捨札にする（出典: atwiki/page-878「置けなければ捨札にする」）", () => {
     const s = rc({ ...ENEMY, command: heldN(4) });
     const zones = [zoneOf(s, "player2", "SPEC-NOG:n1"), zoneOf(s, "player2", "SPEC-NOG2:n2")].sort();
     expect(zones).toEqual(["command", "discard"]);
@@ -216,7 +217,7 @@ describe("RM-045 ガンギブソン", () => {
   const riding = (left: CardInstance[], rider: string) =>
     mount(battleBoard({ battle: left, rush: [inst(rider.split(":")[0]!, rider.split(":")[1]!), inst("SPEC-VEHICLE", "v")] }, { rush: [inst("SPEC-E4000", "e")] }), rider, "SPEC-VEHICLE:v");
 
-  it.fails("RM-045: ※ — これからコンビネーションする特徴「メカ」の S ユニット（宇宙刑事ギャバン）は、ライドオフしないで進んでも RC の効果を発動する（出典: atwiki/page-887「このユニットからコンビネーションする特徴「メカ」を持つSユニットは、ライドオフしなくてもＲＣの効果を発動できる」・カード評価「ジャンパーソンやギャバンなどの能力をライドオフさせなくても発動出来る」）", () => {
+  it("RM-045: ※ — これからコンビネーションする特徴「メカ」の S ユニット（宇宙刑事ギャバン）は、ライドオフしないで進んでも RC の効果を発動する（出典: atwiki/page-887「このユニットからコンビネーションする特徴「メカ」を持つSユニットは、ライドオフしなくてもＲＣの効果を発動できる」・カード評価「ジャンパーソンやギャバンなどの能力をライドオフさせなくても発動出来る」）", () => {
     let s = riding([inst("RM-045", "gg")], "RM-018:g");
     expect(rideOffOffered(s)).toBe(true);
     s = rideOff(s, false);
@@ -240,13 +241,13 @@ describe("RM-045 ガンギブソン", () => {
   const rc = (command: CardInstance[] = releasedCat("WB", 1)) =>
     rideOff(mount(battleBoard({ rush: [inst("RM-045", "gg"), inst("SPEC-VEHICLE", "v")], command }, ENEMY), "RM-045:gg", "SPEC-VEHICLE:v"), true);
 
-  it.fails("RM-045: RC【ホーミングブリッド】— 相手に選ばせるかを選べる（任意）（出典: atwiki/page-887「敵軍Sユニットの中から1体を、相手に選ばせてもよい」）", () => {
+  it("RM-045: RC【ホーミングブリッド】— 相手に選ばせるかを選べる（任意）（出典: atwiki/page-887「敵軍Sユニットの中から1体を、相手に選ばせてもよい」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "RM-045");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-045: RC【ホーミングブリッド】— 相手が敵軍 S ユニット（エリアを問わない。M ユニットは選べない。「相手に選ばれない」ユニットも含む）から1体を選ぶ（出典: atwiki/page-887「敵軍Sユニットの中から1体を、相手に選ばせて」・カード評価「対象を選ぶのは相手なので…「これは相手に選ばれない」というテキストを持ったユニットも撃破可能」）", () => {
+  it("RM-045: RC【ホーミングブリッド】— 相手が敵軍 S ユニット（エリアを問わない。M ユニットは選べない。「相手に選ばれない」ユニットも含む）から1体を選ぶ（出典: atwiki/page-887「敵軍Sユニットの中から1体を、相手に選ばせて」・カード評価「対象を選ぶのは相手なので…「これは相手に選ばれない」というテキストを持ったユニットも撃破可能」）", () => {
     const s = accept(rc());
     expect(choicePlayer(s)).toBe("player2");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RM-045");
@@ -254,20 +255,20 @@ describe("RM-045 ガンギブソン", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RM-045: RC【ホーミングブリッド】— 相手が選んだあと、まだ選ばれていない敵軍 S ユニットがあり自軍コマンドをホールドできれば、選びなおさせるかを選べる（任意）（出典: atwiki/page-887「まだ相手に選ばれてない敵軍Sユニットがあれば、その中から選びなおさせてもよい。ただし、自軍コマンドを1つホールドすること」）", () => {
+  it("RM-045: RC【ホーミングブリッド】— 相手が選んだあと、まだ選ばれていない敵軍 S ユニットがあり自軍コマンドをホールドできれば、選びなおさせるかを選べる（任意）（出典: atwiki/page-887「まだ相手に選ばれてない敵軍Sユニットがあれば、その中から選びなおさせてもよい。ただし、自軍コマンドを1つホールドすること」）", () => {
     const s = pickAs(accept(rc()), "player2", "SPEC-ES:a");
     expect(choicePlayer(s)).toBe("player1");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RM-045");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-045: RC【ホーミングブリッド】— 選びなおさせなければ、相手が選んだ1体を撃破する（出典: atwiki/page-887「その後、相手が最終的に選んだ1体を撃破する」）", () => {
+  it("RM-045: RC【ホーミングブリッド】— 選びなおさせなければ、相手が選んだ1体を撃破する（出典: atwiki/page-887「その後、相手が最終的に選んだ1体を撃破する」）", () => {
     const s = resolveAll(skip(pickAs(accept(rc()), "player2", "SPEC-ES:a")));
     expect(zoneOf(s, "player2", "SPEC-ES:a")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-ES:b")).toBe("rush");
   });
 
-  it.fails("RM-045: RC【ホーミングブリッド】— 選びなおさせると自軍コマンドを1つホールドし、相手はまだ選んでいない S ユニットから選びなおす。最後に選んだ1体を撃破する（出典: atwiki/page-887「選びなおさせてもよい。ただし、自軍コマンドを1つホールドすること」・カード評価「コマンドをホールドすることで残りから強制的に再度選ばせる」）", () => {
+  it("RM-045: RC【ホーミングブリッド】— 選びなおさせると自軍コマンドを1つホールドし、相手はまだ選んでいない S ユニットから選びなおす。最後に選んだ1体を撃破する（出典: atwiki/page-887「選びなおさせてもよい。ただし、自軍コマンドを1つホールドすること」・カード評価「コマンドをホールドすることで残りから強制的に再度選ばせる」）", () => {
     let s = accept(pickAs(accept(rc()), "player2", "SPEC-ES:a"));
     expect(s.players.player1.command.every((c) => c.commandHeld)).toBe(true);
     expect(choicePlayer(s)).toBe("player2");
@@ -277,13 +278,13 @@ describe("RM-045 ガンギブソン", () => {
     expect(zoneOf(s, "player2", "SPEC-ES:a")).toBe("battle");
   });
 
-  it.fails("RM-045: RC【ホーミングブリッド】— ホールドできる自軍コマンドがなければ選びなおさせられず、相手が選んだ1体を撃破する（出典: atwiki/page-887「ただし、自軍コマンドを1つホールドすること」）", () => {
+  it("RM-045: RC【ホーミングブリッド】— ホールドできる自軍コマンドがなければ選びなおさせられず、相手が選んだ1体を撃破する（出典: atwiki/page-887「ただし、自軍コマンドを1つホールドすること」）", () => {
     const s = pickAs(accept(rc([])), "player2", "SPEC-ES:a");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-045");
     expect(zoneOf(resolveAll(s), "player2", "SPEC-ES:a")).toBe("discard");
   });
 
-  it.fails("RM-045: RC【ホーミングブリッド】— 相手に選ばせなければ何も起きない（出典: atwiki/page-887「選ばせてもよい」）", () => {
+  it("RM-045: RC【ホーミングブリッド】— 相手に選ばせなければ何も起きない（出典: atwiki/page-887「選ばせてもよい」）", () => {
     const s = resolveAll(skip(rc()));
     expect(zoneOf(s, "player2", "SPEC-ES:a")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-ES:b")).toBe("rush");
@@ -321,14 +322,14 @@ describe("RM-046 アールジーコ", () => {
   /** 自軍バトルフェイズ、left の次にアールジーコを出す（自軍コマンドゾーンは ET のカードだけ）。 */
   const jc = (left: CardInstance[]) => enterAfter("RM-046:z", left, { command: [released("TST-OP-ET", "c")] }, ENEMY, EXTRA);
 
-  it.fails("RM-046: JC【ジックキャノン】— 特徴「メカ」と「警察」を持つ S ユニット（宇宙刑事ギャバン）からコンビネーションするとき、敵軍バトルエリアの、自軍コマンドゾーンにないカテゴリを持つ S ユニットから1体選べる（任意）（出典: atwiki/page-856「これが特徴「メカ」と「警察」を持つSユニットからコンビネーションするとき、次の効果を発動できる⇒敵軍バトルエリアから、自軍コマンドゾーンにないカテゴリを持つ敵軍Sユニットを1体選び撃破する」）", () => {
+  it("RM-046: JC【ジックキャノン】— 特徴「メカ」と「警察」を持つ S ユニット（宇宙刑事ギャバン）からコンビネーションするとき、敵軍バトルエリアの、自軍コマンドゾーンにないカテゴリを持つ S ユニットから1体選べる（任意）（出典: atwiki/page-856「これが特徴「メカ」と「警察」を持つSユニットからコンビネーションするとき、次の効果を発動できる⇒敵軍バトルエリアから、自軍コマンドゾーンにないカテゴリを持つ敵軍Sユニットを1体選び撃破する」）", () => {
     const s = jc([inst("RM-018", "g")]);
     expectChoiceFrom(s, "player1", "RM-046");
     expect(choiceIds(s)).toEqual(["SPEC-ES:wb", "TST-UNIT-WB-ET:mx"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-046: JC【ジックキャノン】— 選んだユニットを撃破する（出典: atwiki/page-856「1体選び撃破する」）", () => {
+  it("RM-046: JC【ジックキャノン】— 選んだユニットを撃破する（出典: atwiki/page-856「1体選び撃破する」）", () => {
     const s = resolveAll(pick(jc([inst("RM-018", "g")]), "SPEC-ES:wb"));
     expect(zoneOf(s, "player2", "SPEC-ES:wb")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-ET-S:et")).toBe("battle");
@@ -365,14 +366,14 @@ describe("RM-047 ダークジェイカー", () => {
   const entered = (p2: Partial<GameState["players"]["player2"]> = ENEMY) =>
     mount(battleBoard({ rush: [inst("SPEC-COP", "c"), inst("RM-047", "dj")] }, p2), "SPEC-COP:c", "RM-047:dj");
 
-  it.fails("RM-047:【ビッグキャノン】— 自軍ターン中、バトルエリアに出たとき、敵軍バトルエリアのライドされていない S ビークルを1体選ぶ（ライドされているビークル・M ビークル・ラッシュエリアのビークルは選べない。見送れない）（出典: atwiki/page-857「敵軍バトルエリアから、ライドされていないSビークルを1体選び、持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("RM-047:【ビッグキャノン】— 自軍ターン中、バトルエリアに出たとき、敵軍バトルエリアのライドされていない S ビークルを1体選ぶ（ライドされているビークル・M ビークル・ラッシュエリアのビークルは選べない。見送れない）（出典: atwiki/page-857「敵軍バトルエリアから、ライドされていないSビークルを1体選び、持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "RM-047");
     expect(choiceIds(s)).toEqual(["SPEC-VEHICLE:ev"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RM-047:【ビッグキャノン】— 選んだビークルは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-857）", () => {
+  it("RM-047:【ビッグキャノン】— 選んだビークルは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-857）", () => {
     const s = resolveAll(pick(entered(), "SPEC-VEHICLE:ev"));
     expect(zoneOf(s, "player2", "SPEC-VEHICLE:ev")).toBe("command");
     expect(cardIn(s, "player2", "SPEC-VEHICLE:ev")?.commandHeld).toBe(true);
@@ -399,14 +400,14 @@ describe("RM-048 隊員コード153 ショウ", () => {
   const ENEMY = { battle: [inst("SPEC-DA-S", "d"), inst("SPEC-OT-S", "o"), inst("SPEC-ES", "w"), inst("SPEC-DA-M", "dm")], rush: [inst("SPEC-DA-S", "r")] };
   const nc = (fillerCount: number, p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = ENEMY) => ncEnter("RM-048:sh", fillerCount, p1, p2, EXTRA);
 
-  it.fails("RM-048: NC【フレイムスローワー】— 敵軍バトルエリアの DA か OT を持つ S ユニットから1体選ぶ（WB・M ユニット・ラッシュエリアは選べない。見送れない）（出典: atwiki/page-886「敵軍バトルエリアから、DAまたはOTを持つSユニットを1体選び」）", () => {
+  it("RM-048: NC【フレイムスローワー】— 敵軍バトルエリアの DA か OT を持つ S ユニットから1体選ぶ（WB・M ユニット・ラッシュエリアは選べない。見送れない）（出典: atwiki/page-886「敵軍バトルエリアから、DAまたはOTを持つSユニットを1体選び」）", () => {
     const s = nc(0);
     expectChoiceFrom(s, "player1", "RM-048");
     expect(choiceIds(s)).toEqual(["SPEC-DA-S:d", "SPEC-OT-S:o"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RM-048: NC — 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-886「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("RM-048: NC — 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-886「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(pick(nc(0), "SPEC-OT-S:o"));
     expect(zoneOf(s, "player2", "SPEC-OT-S:o")).toBe("command");
     expect(cardIn(s, "player2", "SPEC-OT-S:o")?.commandHeld).toBe(true);
@@ -422,7 +423,7 @@ describe("RM-048 隊員コード153 ショウ", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-048");
   });
 
-  it.fails("RM-048: NC — 特徴「スワット」を持つユニット（隊員コード011 サラ）からコンビネーションするときは、ナンバーに関係なく発動する（出典: atwiki/page-886「この効果は、特徴「スワット」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する」・R-CN-05）", () => {
+  it("RM-048: NC — 特徴「スワット」を持つユニット（隊員コード011 サラ）からコンビネーションするときは、ナンバーに関係なく発動する（出典: atwiki/page-886「この効果は、特徴「スワット」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する」・R-CN-05）", () => {
     const s = nc(1, { battle: [inst("RM-049", "sr")] });
     expectChoiceFrom(s, "player1", "RM-048");
   });
@@ -442,14 +443,14 @@ describe("RM-049 隊員コード011 サラ", () => {
   const ENEMY = { command: [released("TST-OP-DA", "d"), { ...inst("TST-OP-OT", "o"), commandHeld: true }, released("TST-OP", "w"), released("SPEC-DA-S", "u")] };
   const nc = (fillerCount: number, p1: Partial<GameState["players"]["player1"]> = {}) => ncEnter("RM-049:sa", fillerCount, p1, ENEMY, EXTRA);
 
-  it.fails("RM-049: NC【ディクテイター】— 敵軍コマンドゾーンの DA か OT を持つカード（リリース状態・ホールド状態、ユニットのカードを含む）から1枚選ぶ（WB のカードは選べない。見送れない）（出典: atwiki/page-858「敵軍コマンドゾーンから、DAまたはOTを持つカードを1枚選び」・カード評価「リリースされたコマンドも除去できる」）", () => {
+  it("RM-049: NC【ディクテイター】— 敵軍コマンドゾーンの DA か OT を持つカード（リリース状態・ホールド状態、ユニットのカードを含む）から1枚選ぶ（WB のカードは選べない。見送れない）（出典: atwiki/page-858「敵軍コマンドゾーンから、DAまたはOTを持つカードを1枚選び」・カード評価「リリースされたコマンドも除去できる」）", () => {
     const s = nc(1);
     expectChoiceFrom(s, "player1", "RM-049");
     expect(choiceIds(s)).toEqual(["SPEC-DA-S:u", "TST-OP-DA:d", "TST-OP-OT:o"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RM-049: NC — 選んだカードは持ち主のパワーゾーンに（オモテ向きで）送られる（出典: atwiki/page-858「持ち主のパワーゾーンに送る」）", () => {
+  it("RM-049: NC — 選んだカードは持ち主のパワーゾーンに（オモテ向きで）送られる（出典: atwiki/page-858「持ち主のパワーゾーンに送る」）", () => {
     const s = resolveAll(pick(nc(1), "TST-OP-OT:o"));
     expect(zoneOf(s, "player2", "TST-OP-OT:o")).toBe("power");
     expect(cardIn(s, "player2", "TST-OP-OT:o")?.faceDown ?? false).toBe(false);
@@ -460,7 +461,7 @@ describe("RM-049 隊員コード011 サラ", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-049");
   });
 
-  it.fails("RM-049: NC — 特徴「スワット」を持つユニット（隊員コード153 ショウ）からコンビネーションするときは、ナンバーに関係なく発動する（出典: atwiki/page-858「ナンバーに関係なく発動する」・R-CN-05）", () => {
+  it("RM-049: NC — 特徴「スワット」を持つユニット（隊員コード153 ショウ）からコンビネーションするときは、ナンバーに関係なく発動する（出典: atwiki/page-858「ナンバーに関係なく発動する」・R-CN-05）", () => {
     const s = nc(1, { battle: [inst("RM-048", "sh")] });
     expectChoiceFrom(s, "player1", "RM-049");
   });

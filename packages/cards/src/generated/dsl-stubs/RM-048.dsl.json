@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-048::fureimusurowa",
+          "keyword": "rm3::RM-048::flame_thrower",
           "duration": "turn"
         }
       ]

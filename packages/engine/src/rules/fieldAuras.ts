@@ -1,3 +1,4 @@
+import { rm3FieldBpBonus } from "./rm/rm3Fields";
 import type { Category } from "@rangers-strike/cards";
 import { set9AFieldBpBonus } from "./legend1/set9NamedEffectsA";
 import { changePowerBpBonus } from "./legend1/set6NamedEffects348";
@@ -268,6 +269,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += rk14FieldBpBonus(state, playerId, instance);
   // RK-295【頂点に立つ男】（NC が成立したターン、パワーゾーンの枚数の差1枚につき BP+1000。rules/rk/rk15Fields.ts）。
   if (role === "general") bonus += rk15FieldBpBonus(state, playerId, instance);
+  // RM-051 メガヘラクレス【メガビートフォーメーション】（自軍エリアに「スタッガータンク」があれば BP+3000。rules/rm/rm3Fields.ts）。
+  if (role === "general") bonus += rm3FieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

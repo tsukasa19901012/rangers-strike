@@ -1,3 +1,4 @@
+import { rm3GrantsResist } from "./rm/rm3Fields";
 import { rk14GrantsRegister } from "./rk/rk14Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { hasResist } from "@rangers-strike/cards";
@@ -48,6 +49,8 @@ export function canOfferRegister(
   if (riddenVehicleGrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
   // RS-547【守護獣の使徒】: WB を持つ自軍 M ユニットはレジストを得る（rules/legend1/set8NamedEffectsB.ts）。
   if (set8BGrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
+  // RM-051 メガヘラクレス【メガビートフォーメーション】（自軍エリアに「レッドジャイロ」があればレジスト。rules/rm/rm3Fields.ts）。
+  if (rm3GrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
   // RK-197 アントロード【女王の僕】: 特徴「女」を持つユニットはレジストを得る（rules/rk/rk10Fields.ts）。
   if (rk10AntlordGrantsResist(state, { cardId: pending.leavingCardId })) return true;
   // RS-647 ピヨちゃん【ソウルバード】「このカードに重ねたユニットは、次の能力を得る⇒※レジスト」（rules/stackOntoLargeUnit.ts）。

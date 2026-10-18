@@ -179,6 +179,8 @@ export function shouldUseDslOperation(
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rm1::"))) return true;
   // RM-022〜RM-042（rm2::。rules/rm/rm2Effects.ts）。
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rm2::"))) return true;
+  // RM-043〜RM-062（rm3::。rules/rm/rm3Effects.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rm3::"))) return true;
   const wiredId = getCardEffect(cardId)?.effectId;
   if (wiredId && isOperationImplemented(wiredId)) return false;
   return true;

@@ -1,3 +1,4 @@
+import { tryRm3OnEnterBattle } from "./rm/rm3Effects";
 import { tryRm2OnEnterBattle } from "./rm/rm2Effects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { tryRk9OnEnterBattle } from "./rk/rk9UnitEffects";
@@ -256,6 +257,8 @@ export function resolveEnterBattleEffectsImpl(
     nextState = trySet5AOnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
     // RM-022 サイバリアン（ライドして一緒に出たビークルの【サイバリアンレーザースピード】。ほかの選択があればその後に開く。rules/rm/rm2Effects.ts）。
     nextState = tryRm2OnEnterBattle(nextState, playerId, battleCard);
+    // RM-047 ダークジェイカー・RM-053 スタッガータンク・RM-054 レッドジャイロ（ライドされて一緒に出たビークルの効果。rules/rm/rm3Effects.ts）。
+    nextState = tryRm3OnEnterBattle(nextState, playerId, battleCard);
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };
     }

@@ -1,3 +1,4 @@
+import { rm3EffectiveSp } from "../rm/rm3Fields";
 import { rk8EffectiveSp } from "../rk/rk8UnitEffects";
 import { rk9EffectiveSp } from "../rk/rk9UnitEffects";
 import { rk10EffectiveSp } from "../rk/rk10UnitEffects";
@@ -272,6 +273,8 @@ export function legend3EffectiveSp(
   sp = rk15EffectiveSp(state, playerId, instance, sp, effectiveBp);
   // RK-325 の※（ライドしている「仮面ライダーイクサBM」は「SP1」。rules/rk/rk16Fields.ts）。
   sp = rk16EffectiveSp(state, playerId, instance, sp);
+  // RM-051 メガヘラクレス【メガビートフォーメーション】（自軍エリアに「ビートルーダー」があれば「SP1」。rules/rm/rm3Fields.ts）。
+  sp = rm3EffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

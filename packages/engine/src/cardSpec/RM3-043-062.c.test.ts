@@ -79,14 +79,14 @@ describe("RM-057 レッドル", () => {
   const ENEMY = { battle: [inst("SPEC-ES", "a"), inst("RM-055", "bb"), inst("SPEC-EM", "m")], rush: [inst("SPEC-ES", "r"), heldUnit("SPEC-ES", "h")] };
   const nc = (fillerCount = 0) => ncEnter("RM-057:rd", fillerCount, {}, ENEMY, EXTRA);
 
-  it.fails("RM-057: NC【スティンガープラズマー】— レジストを持たない敵軍 S ユニット（エリアを問わない）から1体選べる（レジストを持つユニット・M ユニットは選べない。すでにホールド状態のユニットは選ばない。任意）（出典: atwiki/page-866「レジストを持たない敵軍Sユニットを1体選びホールドしてもよい」）", () => {
+  it("RM-057: NC【スティンガープラズマー】— レジストを持たない敵軍 S ユニット（エリアを問わない）から1体選べる（レジストを持つユニット・M ユニットは選べない。すでにホールド状態のユニットは選ばない。任意）（出典: atwiki/page-866「レジストを持たない敵軍Sユニットを1体選びホールドしてもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "RM-057");
     expect(choiceIds(s)).toEqual(["SPEC-ES:a", "SPEC-ES:r"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-057: NC — 選んだユニットをホールドする（出典: atwiki/page-866「1体選びホールドしてもよい」）", () => {
+  it("RM-057: NC — 選んだユニットをホールドする（出典: atwiki/page-866「1体選びホールドしてもよい」）", () => {
     const s = resolveAll(pick(nc(), "SPEC-ES:r"));
     expect(zoneOf(s, "player2", "SPEC-ES:r")).toBe("rush");
     expect(cardIn(s, "player2", "SPEC-ES:r")?.commandHeld).toBe(true);
@@ -118,7 +118,7 @@ describe("RM-058 老師グル", () => {
       { battle: [inst("SPEC-MECHA", "em")] },
     );
 
-  it.fails("RM-058:【昆虫の精】— 自軍ラッシュエリアにある間、特徴「メカ」を持つユニット（自軍・敵軍とも）とビークルに特徴「昆虫」を追加する（「メカ」を持たないユニットには追加しない）（出典: atwiki/page-867「特徴「メカ」を持つユニットと、特徴「メカ」を持つビークルに、特徴「昆虫」を追加する」・カード評価「サイズを問わず…相手にも特徴を追加できる」）", () => {
+  it("RM-058:【昆虫の精】— 自軍ラッシュエリアにある間、特徴「メカ」を持つユニット（自軍・敵軍とも）とビークルに特徴「昆虫」を追加する（「メカ」を持たないユニットには追加しない）（出典: atwiki/page-867「特徴「メカ」を持つユニットと、特徴「メカ」を持つビークルに、特徴「昆虫」を追加する」・カード評価「サイズを問わず…相手にも特徴を追加できる」）", () => {
     const s = withGuru("rush");
     expect(featuresOf(s, "player1", "SPEC-MECHA:m")).toContain("昆虫");
     expect(featuresOf(s, "player2", "SPEC-MECHA:em")).toContain("昆虫");
@@ -131,7 +131,7 @@ describe("RM-058 老師グル", () => {
     expect(featuresOf(s, "player1", "SPEC-MECHA:m")).not.toContain("昆虫");
   });
 
-  it.fails("RM-058:【昆虫の精】— 「昆虫」を追加された「メカ」の S ユニットは、ビートルーダーにライドできる（出典: atwiki/page-867・atwiki/page-862 ※・カード評価（RM-053）「ビートマシンにライドするユニットは老師グルがいれば増やす事ができる」）", () => {
+  it("RM-058:【昆虫の精】— 「昆虫」を追加された「メカ」の S ユニットは、ビートルーダーにライドできる（出典: atwiki/page-867・atwiki/page-862 ※・カード評価（RM-053）「ビートマシンにライドするユニットは老師グルがいれば増やす事ができる」）", () => {
     const p1 = (rush: CardInstance[]) => battleBoard({ rush: [inst("SPEC-MECHA", "m"), inst("RM-052", "bt"), ...rush], command: releasedCat("WB", 1) });
     expect(canMount(p1([inst("RM-058", "gu")]), "SPEC-MECHA:m", "RM-052:bt")).toBe(true);
     expect(canMount(p1([]), "SPEC-MECHA:m", "RM-052:bt")).toBe(false);
@@ -154,14 +154,14 @@ describe("RM-059 異次元調達屋カブト", () => {
   const entered = (unit: CardInstance, kabuto: CardInstance[] = [inst("RM-059", "kb")], stacked: CardInstance[] = STACKED, battle: CardInstance[] = []) =>
     enter(battleBoard({ rush: [unit, ...kabuto], battle, operation: [resident("TST-OP", "res", stacked)] }), unit.instanceId);
 
-  it.fails("RM-059:【トランクの中身】— 自軍ラッシュエリアにある間、WB を持つ自軍 S ユニットがバトルエリアに出たとき、常駐している自軍オペレーションに重ねたカード（ウラ向きを含む）から1枚選べる（任意）（出典: atwiki/page-868「常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、自分の手札に加えてもよい（ウラ向きのカードはウラ向きのまま選ぶ）」）", () => {
+  it("RM-059:【トランクの中身】— 自軍ラッシュエリアにある間、WB を持つ自軍 S ユニットがバトルエリアに出たとき、常駐している自軍オペレーションに重ねたカード（ウラ向きを含む）から1枚選べる（任意）（出典: atwiki/page-868「常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、自分の手札に加えてもよい（ウラ向きのカードはウラ向きのまま選ぶ）」）", () => {
     const s = entered(inst("TST-UNIT-0", "w"));
     expectChoiceFrom(s, "player1", "RM-059");
     expect(choiceIds(s)).toEqual(["TST-OP:s2", "TST-P:s1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-059:【トランクの中身】— 選んだカードを手札に加える（常駐のオペレーションからはなくなる）（出典: atwiki/page-868「自分の手札に加えてもよい」・カード評価「常駐の上に重ねたカードを回収する」）", () => {
+  it("RM-059:【トランクの中身】— 選んだカードを手札に加える（常駐のオペレーションからはなくなる）（出典: atwiki/page-868「自分の手札に加えてもよい」・カード評価「常駐の上に重ねたカードを回収する」）", () => {
     const s = resolveAll(pick(entered(inst("TST-UNIT-0", "w")), "TST-OP:s2"));
     expect(zoneOf(s, "player1", "TST-OP:s2")).toBe("hand");
     const res = s.players.player1.operation.find((c) => c.instanceId === "TST-OP:res");
@@ -178,7 +178,7 @@ describe("RM-059 異次元調達屋カブト", () => {
     expect(entered(inst("TST-UNIT-0", "w"), [inst("RM-059", "kb")], []).pendingEffectChoice?.sourceCardId).not.toBe("RM-059");
   });
 
-  it.fails("RM-059:【トランクの中身】— 自軍ラッシュエリアに2枚あれば、それぞれ発動する（2枚まで手札に加えられる）（出典: atwiki/page-868・コメント欄「重複は恐らく可能」）", () => {
+  it("RM-059:【トランクの中身】— 自軍ラッシュエリアに2枚あれば、それぞれ発動する（2枚まで手札に加えられる）（出典: atwiki/page-868・コメント欄「重複は恐らく可能」）", () => {
     const s = pick(entered(inst("TST-UNIT-0", "w"), [inst("RM-059", "kb"), inst("RM-059", "kb2")]), "TST-P:s1");
     expectChoiceFrom(s, "player1", "RM-059");
     expect(choiceIds(s)).toEqual(["TST-OP:s2"]);
@@ -229,14 +229,14 @@ describe("RM-061 ジャマール戦闘機", () => {
     expect(zoneOf(s, "player1", "TST-UNIT-0:f")).toBe("discard");
   });
 
-  it.fails("RM-061:【ミサイル射出】— ラッシュしたとき、敵軍バトルエリアのスクラムを持つユニットから1体選べる（ラッシュエリアのユニット・スクラムを持たないユニットは選べない。任意）（出典: atwiki/page-855「敵軍バトルエリアから、スクラムを持つユニットを1体選び、ラッシュエリアに戻す」「次の効果を発動できる」）", () => {
+  it("RM-061:【ミサイル射出】— ラッシュしたとき、敵軍バトルエリアのスクラムを持つユニットから1体選べる（ラッシュエリアのユニット・スクラムを持たないユニットは選べない。任意）（出典: atwiki/page-855「敵軍バトルエリアから、スクラムを持つユニットを1体選び、ラッシュエリアに戻す」「次の効果を発動できる」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "RM-061");
     expect(choiceIds(s)).toEqual(["RK-213:gr"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-061:【ミサイル射出】— 選んだユニットはラッシュエリアに戻る（出典: atwiki/page-855「ラッシュエリアに戻す」）", () => {
+  it("RM-061:【ミサイル射出】— 選んだユニットはラッシュエリアに戻る（出典: atwiki/page-855「ラッシュエリアに戻す」）", () => {
     const s = resolveAll(pick(rushed(), "RK-213:gr"));
     expect(zoneOf(s, "player2", "RK-213:gr")).toBe("rush");
   });
@@ -263,13 +263,13 @@ describe("RM-062 テントリーナ", () => {
       EXTRA,
     );
 
-  it.fails("RM-062:【リーナステッキ】— 敵軍ターン中、自軍バトルエリアの「女」のユニットが「男」のユニットにアタックされたとき、自軍コマンドを1つホールドするかを選べる（任意）（出典: atwiki/page-860「自軍バトルエリアにある特徴「女」を持つユニットが、特徴「男」を持つユニットにアタックされたとき、自軍コマンドを1つホールドしてもよい」）", () => {
+  it("RM-062:【リーナステッキ】— 敵軍ターン中、自軍バトルエリアの「女」のユニットが「男」のユニットにアタックされたとき、自軍コマンドを1つホールドするかを選べる（任意）（出典: atwiki/page-860「自軍バトルエリアにある特徴「女」を持つユニットが、特徴「男」を持つユニットにアタックされたとき、自軍コマンドを1つホールドしてもよい」）", () => {
     const s = attacked();
     expectChoiceFrom(s, "player1", "RM-062");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RM-062:【リーナステッキ】— ホールドすると、アタックされたユニットはラッシュエリアに戻り、バトルは行われない（出典: atwiki/page-860「そうしたとき、アタックされた自軍ユニットをラッシュエリアに戻す。このときバトルは行われない」）", () => {
+  it("RM-062:【リーナステッキ】— ホールドすると、アタックされたユニットはラッシュエリアに戻り、バトルは行われない（出典: atwiki/page-860「そうしたとき、アタックされた自軍ユニットをラッシュエリアに戻す。このときバトルは行われない」）", () => {
     const s = settle(resolveAll(pick(attacked(), "TST-OP:cWB0")));
     expect(s.players.player1.command.every((c) => c.commandHeld)).toBe(true);
     expect(zoneOf(s, "player1", "SPEC-FEM:f")).toBe("rush");
@@ -277,7 +277,7 @@ describe("RM-062 テントリーナ", () => {
     expect(damageOf(s, "player1")).toBe(0);
   });
 
-  it.fails("RM-062:【リーナステッキ】— ホールドしなければ、ふつうにバトルする（出典: atwiki/page-860「ホールドしてもよい」）", () => {
+  it("RM-062:【リーナステッキ】— ホールドしなければ、ふつうにバトルする（出典: atwiki/page-860「ホールドしてもよい」）", () => {
     const s = settle(resolveAll(skip(attacked())));
     expect(zoneOf(s, "player1", "SPEC-FEM:f")).toBe("discard");
   });
@@ -291,7 +291,7 @@ describe("RM-062 テントリーナ", () => {
     expect(attacked("SPEC-FEM:f", "SPEC-MALE-ATK:a", { command: [] }).pendingEffectChoice?.sourceCardId).not.toBe("RM-062");
   });
 
-  it.fails("RM-062:【リーナステッキ】— テントリーナが自軍バトルエリアにあるときも発動する（出典: atwiki/page-860「これが自軍エリアにある間」・カード評価「自軍エリアにいれば能力の発動はできる」）", () => {
+  it("RM-062:【リーナステッキ】— テントリーナが自軍バトルエリアにあるときも発動する（出典: atwiki/page-860「これが自軍エリアにある間」・カード評価「自軍エリアにいれば能力の発動はできる」）", () => {
     const s = attacked("SPEC-FEM:f", "SPEC-MALE-ATK:a", { rush: [], battle: [inst("RM-062", "tr"), inst("SPEC-FEM", "f")] });
     expectChoiceFrom(s, "player1", "RM-062");
   });

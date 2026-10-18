@@ -233,6 +233,8 @@ export type PendingBattle = {
   machineEmpireOffered?: boolean;
   /** RK-188【地空人のエージェント】の選択をこのアタックで既に出したか（rules/rk/rk9UnitEffects.ts）。 */
   rk9BerryOffered?: boolean;
+  /** RM-062 テントリーナ【リーナステッキ】の選択を出した（rules/rm/rm3Effects.ts）。 */
+  rm3TentrinaOffered?: boolean;
   /** RS-414【ディオネを守る壁】の選択を出したか。 */
   dioneWallOffered?: boolean;
   /** RS-583【災いを受け止める覚悟】の「代わりに選ばれたことにする」選択をこのアタックで既に出したか。 */
@@ -695,6 +697,16 @@ export type PendingEffectChoice = {
     picked?: string;
     /** RK-324: 撃破したカードの持ち主。 */
     owner?: PlayerId;
+  };
+  /** スペシャルメタルエディション RM-043〜RM-062 の選択の続き（rules/rm/rm3Effects.ts）。 */
+  rm3Meta?: {
+    /** RM-045: 相手がこれまでに選んだ敵軍 S ユニット。 */
+    chosen?: string[];
+    /** RM-045: 相手がいま選んでいる敵軍 S ユニット。 */
+    current?: string;
+    /** RM-062: 続けるアタック。 */
+    battle?: PendingBattle;
+    wingAttackFromRush?: boolean;
   };
   /** スペシャルメタルエディション RM-022〜RM-042 の選択の続き（rules/rm/rm2Effects.ts）。 */
   rm2Meta?: {
@@ -1331,6 +1343,8 @@ export type GameState = {
   resolvingOperations?: Array<{ playerId: PlayerId; card: CardInstance }>;
   /** RK-129【サンダースペイダー】・RK-132【妻子のバックアップ】の、まだ開いていない発動（rules/rk/rk7UnitEffects.ts）。 */
   rk7PendingTriggers?: Array<{ kind: "rk129" | "rk132"; playerId: PlayerId; sourceInstanceId: string }>;
+  /** RM-059 異次元調達屋カブト【トランクの中身】の、まだ開いていない発動（rules/rm/rm3Effects.ts applyRm3AfterAction）。 */
+  rm3PendingTriggers?: Array<{ kind: "rm059"; playerId: PlayerId; sourceInstanceId: string }>;
   /** RM-026 グランドバース【収容】の、チェイス等の選択を待っている「その後、選んだビークルをパワーゾーンに送る」（rules/rm/rm2Effects.ts applyRm2AfterAction）。 */
   rm2PendingTriggers?: Array<{ kind: "rm026_vehicle"; playerId: PlayerId; instanceId: string; phasePlayerId: PlayerId }>;
   /** RM-017 オメデトロフィーの、まだ開いていない発動（rules/rm/rm1Effects.ts applyRm1AfterAction）。 */

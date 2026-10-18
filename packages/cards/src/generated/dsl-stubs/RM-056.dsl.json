@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-056::suteingakuro",
+          "keyword": "rm3::RM-056::stinger_claw",
           "duration": "turn"
         }
       ]

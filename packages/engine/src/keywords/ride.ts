@@ -1,3 +1,4 @@
+import { rm3GuruInsectRide } from "../rules/rm/rm3Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
 import type { CardInstance, GameState, PlayerId, PlayerState, ZoneName } from "../types/game";
@@ -154,11 +155,13 @@ export function findRideVehicleForRider(
       continue;
     }
     if (
-      riderMatchesVehicleRideWithoutRc(
+      (riderMatchesVehicleRideWithoutRc(
         state.definitions,
         vehicle.cardId,
         rider.cardId,
-      ) &&
+      ) ||
+        // RM-058 老師グルで「昆虫」を追加された「メカ」の S ユニット（rules/rm/rm3Fields.ts）。
+        rm3GuruInsectRide(state, vehicle.cardId, rider.cardId)) &&
       (!vehicleRideWithoutRcNeedsHold(vehicle.cardId) || player.command.some((cmd) => !cmd.commandHeld))
     ) {
       return vehicle;
@@ -250,7 +253,9 @@ export function canRiderMountVehicle(
       state.definitions,
       vehicle.card.cardId,
       rider.cardId,
-    )
+    ) ||
+    // RM-058 老師グルで「昆虫」を追加された「メカ」の S ユニット（rules/rm/rm3Fields.ts）。
+    rm3GuruInsectRide(state, vehicle.card.cardId, rider.cardId)
   ) {
     // RS-381「自軍コマンドを1つホールドすれば」— ホールドできるリリース状態の自軍コマンドが必要。
     if (vehicleRideWithoutRcNeedsHold(vehicle.card.cardId)) {

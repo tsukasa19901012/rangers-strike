@@ -516,6 +516,29 @@ const RM2_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rm042_midare_cho_unit: { label: "妖魔忍法乱れ蝶", hint: "ダメージにする、2枚の必要パワーの合計と同じ必要パワーの敵軍 S ユニットを選んでください" },
 };
 
+/** スペシャルメタルエディション RM-043〜RM-062 のカード固有の選択（engine rules/rm/rm3Effects.ts）の表示名と案内文。 */
+const RM3_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rm043_sannin_ichikumi: { label: "3人1組", hint: "自軍ラッシュエリアに出す、パワーゾーンのオモテ向きかコマンドゾーンの「鳥忍　カラス天狗」を選んでください（しないなら「スキップ」）" },
+  rm045_homing_bullet: { label: "ホーミングブリッド", hint: "相手に敵軍 S ユニットを1体選ばせますか？（最後に選ばれたユニットを撃破します）" },
+  rm045_homing_bullet_pick: { label: "ホーミングブリッド", hint: "撃破される自分の S ユニットを1体選んでください" },
+  rm045_homing_bullet_repick: { label: "ホーミングブリッド", hint: "自軍コマンドを1つホールドして、相手に選びなおさせますか？（しないなら「スキップ」で選ばれたユニットを撃破）" },
+  rm045_homing_bullet_hold: { label: "ホーミングブリッド", hint: "ホールドする自軍コマンドを選んでください" },
+  rm046_jick_cannon: { label: "ジックキャノン", hint: "撃破する、自軍コマンドゾーンにないカテゴリを持つ敵軍 S ユニットを選んでください（しないなら「スキップ」）" },
+  rm047_big_cannon: { label: "ビッグキャノン", hint: "持ち主のコマンドゾーンにホールド状態で置く、ライドされていない敵軍の S ビークルを選んでください" },
+  rm048_flame_thrower: { label: "フレイムスローワー", hint: "持ち主のコマンドゾーンにホールド状態で置く、DA か OT を持つ敵軍 S ユニットを選んでください" },
+  rm049_dictator: { label: "ディクテイター", hint: "持ち主のパワーゾーンに送る、DA か OT を持つ敵軍コマンドゾーンのカードを選んでください" },
+  rm050_missile_launcher: { label: "ミサイルランチャー", hint: "持ち主のコマンドゾーンにホールド状態で置く、DA か OT を持つ敵軍 M ユニットを選んでください（しないなら「スキップ」）" },
+  rm053_drill_attachment: { label: "ドリルアタッチメント", hint: "ホールドする、「メカ」を持つ敵軍 M ユニットを選んでください（しないなら「スキップ」）" },
+  rm054_red_pulsar: { label: "レッドパルサー", hint: "ホールドする、BP3000 以下の「航空機」を持つ敵軍ユニットを選んでください" },
+  rm055_stinger_blade: { label: "スティンガーブレード", hint: "撃破する、敵軍バトルエリアのホールド状態のユニットを選んでください（しないなら「スキップ」）" },
+  rm056_stinger_claw: { label: "スティンガークロー", hint: "ライド中の敵軍 S ユニットを選んでください（しないなら「スキップ」）" },
+  rm056_stinger_claw_pick: { label: "スティンガークロー", hint: "捨札にする、自分のユニットかそのユニットがライドしているビークルを選んでください" },
+  rm057_stinger_plasma: { label: "スティンガープラズマー", hint: "ホールドする、レジストを持たない敵軍 S ユニットを選んでください（しないなら「スキップ」）" },
+  rm059_trunk: { label: "トランクの中身", hint: "手札に加える、常駐している自軍オペレーションに重ねたカードを選んでください（しないなら「スキップ」）" },
+  rm061_missile_shot: { label: "ミサイル射出", hint: "ラッシュエリアに戻す、スクラムを持つ敵軍ユニットを選んでください（しないなら「スキップ」）" },
+  rm062_lina_stick: { label: "リーナステッキ", hint: "ホールドする自軍コマンドを選ぶと、アタックされたユニットをラッシュエリアに戻します（バトルは行われません。しないなら「スキップ」）" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -565,7 +588,8 @@ export function effectChoiceHint(
     RK15_CHOICE_UI[pending.effectId] ??
     RK16_CHOICE_UI[pending.effectId] ??
     RM1_CHOICE_UI[pending.effectId] ??
-    RM2_CHOICE_UI[pending.effectId];
+    RM2_CHOICE_UI[pending.effectId] ??
+    RM3_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {

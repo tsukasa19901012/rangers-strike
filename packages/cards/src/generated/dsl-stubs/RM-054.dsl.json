@@ -34,14 +34,13 @@
       "name": "レッドパルサー",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからBP3000以下の特徴「航空機」を持つ敵軍ユニットを1体選びホールドする。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-054::redoparusa",
-          "duration": "turn"
+          "keyword": "rm3::RM-054::red_pulsar",
+          "duration": "permanent"
         }
       ]
     }

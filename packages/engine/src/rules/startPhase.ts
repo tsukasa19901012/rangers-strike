@@ -1,3 +1,5 @@
+import { rm3StaysInBattleAtStart } from "./rm/rm3Fields";
+import { unitFeatures } from "./addedFeatures";
 import { isRk8BattleToRushTrigger, rk8StaysInBattleAtStart, tryRk8BattleToRush } from "./rk/rk8UnitEffects";
 import { isOtherLinesBattleToRushTrigger, tryOtherLinesBattleToRush } from "./legend1/otherLinesNamedEffects";
 import { applyRk2StartPhaseEnd } from "./rk/rk2UnitEffects";
@@ -163,6 +165,8 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
     const members = [...returnGroupMembers(base.players[phasePlayerId], nextId!)];
     // RK-153【車両強奪】で選ばれたユニットは戻さない（rules/rk/rk8UnitEffects.ts）。
     if (members.some((m) => rk8StaysInBattleAtStart(base, phasePlayerId, m))) return continueBattleToRushEffectQueue(base);
+    // RM-052 ビートルーダー【マグネアタッチメント】で戻せない「メカ」のホールド状態のユニット（rules/rm/rm3Fields.ts）。
+    if (members.some((m) => rm3StaysAtStart(base, phasePlayerId, m))) return continueBattleToRushEffectQueue(base);
     const restriction = members.length > 0 ? set9CBeforeStartReturn(base, phasePlayerId, members) : null;
     if (restriction === "stay") return continueBattleToRushEffectQueue(base);
     if (restriction) return restriction;
@@ -257,9 +261,14 @@ export function listReturnableStartGroupIds(state: GameState, playerId: PlayerId
   return listStartReturnGroupIds(player).filter(
     (id) =>
       ![...returnGroupMembers(player, id)].some(
-        (m) => set9CStaysInBattleAtStart(state, playerId, m) || rk8StaysInBattleAtStart(state, playerId, m),
+        (m) => set9CStaysInBattleAtStart(state, playerId, m) || rk8StaysInBattleAtStart(state, playerId, m) || rm3StaysAtStart(state, playerId, m),
       ),
   );
+}
+
+/** RM-052【マグネアタッチメント】で戻せないユニットか（今の特徴で「メカ」を見る）。 */
+function rm3StaysAtStart(state: GameState, playerId: PlayerId, instanceId: string): boolean {
+  return rm3StaysInBattleAtStart(state, playerId, instanceId, (card) => unitFeatures(state, playerId, card));
 }
 
 /** バトルエリアに残っているユニットがすべて戻せない（戻さない）ユニットか。 */

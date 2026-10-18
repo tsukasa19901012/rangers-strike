@@ -34,14 +34,13 @@
       "name": "ドリルアタッチメント",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍エリアに「ビートルーダー」があれば、次の効果を発動できる⇒特徴「メカ」を持つ敵軍Mユニットを1体選びホールドする。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-053::doriruatachimento",
-          "duration": "turn"
+          "keyword": "rm3::RM-053::drill_attachment",
+          "duration": "permanent"
         }
       ]
     }
