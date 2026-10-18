@@ -131,6 +131,7 @@ import { canActivateSet9AResident, canConfirmSet9AChoice, isSet9AChoiceEffect, i
 import { isRk2ChoiceEffect, rk2RaiaDiscardCandidates } from "../rules/rk/rk2UnitEffects";
 import { canConfirmRk3Choice, isRk3ChoiceEffect } from "../rules/rk/rk3UnitEffects";
 import { canConfirmRk4Choice, isRk4ChoiceEffect, swapResidentFeature } from "../rules/rk/rk4UnitEffects";
+import { canConfirmRk5Choice, isRk5BattleCounterCard, isRk5ChoiceEffect, rk5BattleCounterConditionMet } from "../rules/rk/rk5UnitEffects";
 import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
 import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
@@ -317,6 +318,16 @@ function appendBattleReactionActions(
             substituteInstanceId: recruit,
           });
         }
+      }
+      continue;
+    }
+    // RK-085 ガードベント（特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき。rules/rk/rk5UnitEffects.ts）。
+    if (isRk5BattleCounterCard(card.cardId)) {
+      if (!rk5BattleCounterConditionMet(state, playerId, card.cardId, pending)) continue;
+      if (!canPlayHandCounter(state, playerId, card.instanceId)) continue;
+      appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
+      if (canExecuteHandCounter(state, playerId, card.instanceId)) {
+        actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
       }
       continue;
     }
@@ -1248,6 +1259,15 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk3Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk5ChoiceEffect(pending.effectId)) {
+    // ライダーEXP vol.2 RK-085〜RK-105 の選択（rules/rk/rk5UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk5Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

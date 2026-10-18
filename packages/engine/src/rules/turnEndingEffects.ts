@@ -1,4 +1,5 @@
 import { collectOtherLinesTurnEndQueue, openOtherLinesTurnEndEntry } from "./legend1/otherLinesNamedEffects";
+import { applyRk5TurnEndDestroy, collectRk5TurnEndQueue, openRk5TurnEndEntry } from "./rk/rk5UnitEffects";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { CardInstance, GameState, PlayerId, TurnEndProgress } from "../types/game";
 import { applySet6TurnEnd } from "./legend1/set6AuditFixes";
@@ -318,6 +319,14 @@ export function resolveTurnEndingEffectsImpl(
     nextState = openOtherLinesTurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
+  // RK-095【ハリケーンダッシュ】・RK-103 の※（超変身に重ねる）（rules/rk/rk5UnitEffects.ts）。
+  if (!progress.rk5Queue) progress = { ...progress, rk5Queue: collectRk5TurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.rk5Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.rk5Queue!;
+    progress = { ...progress, rk5Queue: rest };
+    nextState = openRk5TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
   if (!progress.exodusOrderAsked) {
     progress = { ...progress, exodusOrderAsked: true };
     const ask = exodusOrderChoice(nextState, endingPlayerId);
@@ -341,6 +350,8 @@ export function resolveTurnEndingEffectsImpl(
   nextState = applyRocketBoosterEndTurnRushReturn(nextState, endingPlayerId);
   nextState = applyNoteOtherNcTurnEndEffects(nextState, endingPlayerId, exodusFirst);
   nextState = applyGegeruTurnEnd(nextState, endingPlayerId);
+  // RK-094 ショッカー戦闘員バイク部隊の※（ビークルにライドしていなければ撃破される。rules/rk/rk5UnitEffects.ts）。
+  nextState = applyRk5TurnEndDestroy(nextState, endingPlayerId);
   // RS-256 闇の戒律: 重ねたカードが3枚あれば自軍ユニットをすべて撃破し、これを捨札にする。
   nextState = applyDarkLawTurnEnd(nextState, endingPlayerId);
   nextState = applyTempDiscardAtTurnEnd(nextState, endingPlayerId);

@@ -21,11 +21,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "force_enemy_s_rush_to_battle_reorder",
+          "keyword": "rk5::RK-087::zectmizer",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

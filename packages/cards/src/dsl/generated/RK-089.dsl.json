@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-089::fx_unknown_e4b997",
+          "keyword": "rk5::RK-089::boarding_refusal",
           "duration": "turn"
         }
       ],

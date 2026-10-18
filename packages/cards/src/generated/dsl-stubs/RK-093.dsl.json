@@ -29,11 +29,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enemy_cannot_enter_battle_text",
+          "keyword": "rk5::RK-093::assassination",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

@@ -18,6 +18,7 @@ import { set9CFieldBpBonus } from "./legend1/set9NamedEffectsC";
 import { set9DFieldBpBonus } from "./legend1/set9NamedEffectsD";
 import { rk1FieldBpBonus } from "./rk/rk1NamedEffects";
 import { rk2FieldBpBonus } from "./rk/rk2UnitEffects";
+import { rk5FieldBpBonus } from "./rk/rk5Fields";
 import { anyOtherBaseLargeUnit } from "./legend1/set8NamedEffectsB";
 import { set7AFieldBpBonus } from "./legend1/set7NamedEffectsA";
 import { set8AFieldBpBonus } from "./legend1/set8NamedEffectsA";
@@ -261,6 +262,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += rk1FieldBpBonus(state, playerId, instance);
   // RK-027 ※（ライド中）・RK-029【マイティキック】・RK-034【ドラグブレス】（rules/rk/rk2UnitEffects.ts）。
   bonus += rk2FieldBpBonus(state, playerId, instance, role);
+  // RK-099【怪人の監視権限】・RK-103【ブラストペガサス】・RK-105 ※（ライド中）（rules/rk/rk5Fields.ts）。
+  if (role === "general") bonus += rk5FieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

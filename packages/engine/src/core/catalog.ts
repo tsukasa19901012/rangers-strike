@@ -24,6 +24,7 @@ import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
 import { srBigBatonBpFloor } from "../rules/srEffects";
 import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
 import { unitFeatures } from "../rules/addedFeatures";
+import { rk5AddedCategories, rk5BpSetValue } from "../rules/rk/rk5Fields";
 import { legend3EnemySComboDelta } from "../rules/legend3/fieldEffects";
 import { validateZordAdditionalPayment } from "../rules/mothership";
 import {
@@ -306,8 +307,11 @@ export function bpSetValueOf(
   playerId: PlayerId,
   instance: CardInstance,
 ): number | undefined {
-  if (instance.bpSetValue !== undefined) return instance.bpSetValue;
-  return sComboFinisherSetValues(state, playerId, instance)?.bp;
+  const current = instance.bpSetValue !== undefined ? instance.bpSetValue : sComboFinisherSetValues(state, playerId, instance)?.bp;
+  // RK-091 ゾル大佐【戦闘員の統率】（rules/rk/rk5Fields.ts）。R-BP-01 — 「～になる」が複数あれば低い方を適用する。
+  const zol = rk5BpSetValue(state, playerId, instance);
+  if (zol === undefined) return current;
+  return current === undefined ? zol : Math.min(current, zol);
 }
 
 /** 「SP○になる」で指定された値（あれば）。加算ではなく上書き（RS-001/RS-002「「SP1」…になる」）。 */
@@ -416,7 +420,10 @@ export function unitEffectiveCategories(
   const base = unitEffectiveCategoriesBase(state, playerId, instance, zone);
   // RS-524 呉越同舟「このターン、宣言したカテゴリを選んだユニットに追加する。」（rules/legend1/set8TurnGrants.ts）。
   const declared = set8AddedCategories(state.players[playerId], instance).filter((c) => !base.includes(c));
-  return declared.length > 0 ? [...base, ...declared] : base;
+  const withDeclared = declared.length > 0 ? [...base, ...declared] : base;
+  // RK-092 狼男【狼作戦】（rules/rk/rk5Fields.ts）。既に持っているカテゴリは重ねて追加しない。
+  const wolf = rk5AddedCategories(state, playerId, instance).filter((c) => !withDeclared.includes(c));
+  return wolf.length > 0 ? [...withDeclared, ...wolf] : withDeclared;
 }
 
 function unitEffectiveCategoriesBase(

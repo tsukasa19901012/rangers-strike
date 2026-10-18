@@ -1505,7 +1505,7 @@
       "※カウンター"
     ],
     "expectedDslKeywords": [
-      "counter_mirror_rider_cancel_battle"
+      "rk5::RK-085::guard_vent"
     ],
     "operationKind": "counter",
     "expectedMechanisms": [
@@ -1538,7 +1538,7 @@
       "敵軍ラッシュエリアにあるすべてのSユニットをバト"
     ],
     "expectedDslKeywords": [
-      "force_enemy_s_rush_to_battle_reorder"
+      "rk5::RK-087::zectmizer"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1557,7 +1557,7 @@
       "特徴「イマジン」を持たない自軍Sユニットを1体選"
     ],
     "expectedDslKeywords": [
-      "stack_s_on_self_rush"
+      "rk5::RK-088::imagin_contract"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1576,7 +1576,7 @@
       "次の効果を、相手、自分の順に行う。 自分自身の山"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-089::fx_unknown_e4b997"
+      "rk5::RK-089::boarding_refusal"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1612,7 +1612,7 @@
       "【戦闘員の統率】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-091::no_e688a6"
+      "rk5::RK-091::grunt_command"
     ],
     "bp": 3000,
     "sp": null,
@@ -1629,7 +1629,7 @@
       "【狼作戦】"
     ],
     "expectedDslKeywords": [
-      "while_feature_s_add_category::男::WB"
+      "rk5::RK-092::wolf_operation"
     ],
     "bp": 6000,
     "sp": 1,
@@ -1646,7 +1646,7 @@
       "【要人の暗殺】"
     ],
     "expectedDslKeywords": [
-      "destroy_enemy_cannot_enter_battle_text"
+      "rk5::RK-093::assassination"
     ],
     "bp": 2000,
     "sp": null,
@@ -1664,7 +1664,7 @@
     ],
     "expectedDslKeywords": [
       "deck_unlimited",
-      "destroy_if_no_ride_end_turn"
+      "rk5::RK-094::bike_unit"
     ],
     "bp": 1500,
     "sp": null,
@@ -1681,7 +1681,7 @@
       "【ハリケーンダッシュ】"
     ],
     "expectedDslKeywords": [
-      "return_rider_to_rush_end_turn"
+      "rk5::RK-095::hurricane_dash"
     ],
     "sp": null,
     "size": "S"
@@ -1698,7 +1698,10 @@
     ],
     "bp": 1000,
     "sp": null,
-    "size": "S"
+    "size": "S",
+    "expectedDslKeywords": [
+      "rk5::RK-096::cut_melt"
+    ]
   },
   {
     "cardId": "RK-097",
@@ -1711,7 +1714,8 @@
       "【ライドルスティック】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk5::RK-097::ridol_stick"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -1729,7 +1733,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_1000",
-      "deck_bottom_hold_command"
+      "rk5::RK-098::underwater"
     ],
     "sp": null,
     "size": "S"
@@ -1746,7 +1750,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "while_feature_bp_plus::怪人::1000"
+      "rk5::RK-099::kaijin_watch"
     ],
     "bp": 4000,
     "sp": "special",
@@ -1763,7 +1767,7 @@
       "【虚像投影装置】"
     ],
     "expectedDslKeywords": [
-      "release_command_feature_s_to_rush::改造人間"
+      "rk5::RK-100::projector"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -1780,7 +1784,7 @@
       "【タイガーボンバー】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-101::taigabonba"
+      "rk5::RK-101::tiger_bomber"
     ],
     "bp": 500,
     "sp": null,
@@ -1797,7 +1801,8 @@
       "【スプラッシュドラゴン】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk5::RK-102::splash_dragon"
     ],
     "bp": 2000,
     "sp": "1/3",
@@ -1814,8 +1819,8 @@
       "【ブラストペガサス】"
     ],
     "expectedDslKeywords": [
-      "end_turn_stack_on_resident",
-      "combo_feature_bp_attack_rush::警察::3000"
+      "rk5::RK-103::stack_on_chouhenshin",
+      "rk5::RK-103::blast_pegasus"
     ],
     "bp": 500,
     "sp": "1/3",
@@ -1851,7 +1856,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_1000",
-      "return_enemy_power_sum_shuffle::3"
+      "rk5::RK-105::halberd_spin"
     ],
     "bp": 2000,
     "sp": "1/3",

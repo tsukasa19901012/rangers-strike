@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_feature_bp_plus::怪人::1000",
-          "duration": "permanent"
+          "keyword": "rk5::RK-099::kaijin_watch",
+          "duration": "turn"
         }
       ],
       "optional": false

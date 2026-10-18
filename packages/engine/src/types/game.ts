@@ -223,6 +223,8 @@ export type PendingBattle = {
   defenderBpBonus?: number;
   /** RS-006: バトルキャンセル、守り側はラッシュに戻る */
   battleCancelled?: boolean;
+  /** RK-101【タイガーボンバー】の BP-3000 をこのバトルに適用済み（rules/rk/rk5UnitEffects.ts）。 */
+  tigerBomberApplied?: boolean;
   /** RS-215【不滅のマシン帝国】の選択をこのアタックで既に出したか。 */
   machineEmpireOffered?: boolean;
   /** RS-414【ディオネを守る壁】の選択を出したか。 */
@@ -574,6 +576,8 @@ export type Rk3ChoiceMeta = {
 export type PendingEffectChoice = {
   /** ライダーEXP vol.1 RK-043〜RK-063 の選択の続き（rules/rk/rk3UnitEffects.ts）。 */
   rk3Meta?: Rk3ChoiceMeta;
+  /** ライダーEXP vol.2 RK-085〜RK-105 の選択の続き（rules/rk/rk5UnitEffects.ts）。 */
+  rk5Meta?: { owners?: PlayerId[] };
   /** ライダーEXP vol.1 RK-001〜RK-021 の選択の続き（rules/rk/rk1NamedEffects.ts）。 */
   rk1Meta?: Rk1ChoiceMeta;
   /** ライダーEXP vol.1 RK-022〜RK-042 の選択の続き（rules/rk/rk2UnitEffects.ts）。 */
@@ -1242,6 +1246,8 @@ export type TurnEndProgress = {
   set8cQueue?: string[];
   /** RS 以外のラインの「自分がターンを終えるとき」の選択（XP-026 の※）のうち未処理のもの（rules/legend1/otherLinesNamedEffects.ts）。 */
   otherLinesQueue?: string[];
+  /** ライダーEXP vol.2 の「自分がターンを終えるとき」の選択（RK-095・RK-103）のうち未処理のもの（rules/rk/rk5UnitEffects.ts）。 */
+  rk5Queue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

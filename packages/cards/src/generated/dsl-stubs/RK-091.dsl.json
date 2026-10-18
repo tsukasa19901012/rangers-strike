@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-091::no_e688a6",
+          "keyword": "rk5::RK-091::grunt_command",
           "duration": "permanent"
         }
       ],

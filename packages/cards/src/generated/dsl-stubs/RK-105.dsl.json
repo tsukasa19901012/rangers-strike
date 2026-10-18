@@ -43,11 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_enemy_power_sum_shuffle::3",
+          "keyword": "rk5::RK-105::halberd_spin",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

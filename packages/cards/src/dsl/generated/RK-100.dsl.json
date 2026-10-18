@@ -31,11 +31,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "release_command_feature_s_to_rush::改造人間",
+          "keyword": "rk5::RK-100::projector",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

@@ -40,34 +40,12 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "command",
-          "owner": "self"
-        }
-      },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_command",
-          "valid": {
-            "type": "zone",
-            "zone": "command",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "hand"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk5::RK-097::ridol_stick",
+          "duration": "turn"
         }
       ]
     }

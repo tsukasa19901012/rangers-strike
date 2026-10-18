@@ -109,7 +109,7 @@ describe("RK-092 狼男", () => {
     expect(rushOffered(s, "RK-092:wo")).toBe(false);
   });
 
-  it.fails("RK-092: これが自軍エリアにある間、特徴「男」を持つ自軍 S ユニット（これ自身を含む）はカテゴリに WB が追加される（出典: atwiki/page-697「特徴「男」を持つ自軍SユニットはカテゴリにWBが追加される」）", () => {
+  it("RK-092: これが自軍エリアにある間、特徴「男」を持つ自軍 S ユニット（これ自身を含む）はカテゴリに WB が追加される（出典: atwiki/page-697「特徴「男」を持つ自軍SユニットはカテゴリにWBが追加される」）", () => {
     const s = board({ battle: [inst("SPEC-MALE-DA", "m")], rush: [inst("RK-092", "wo")] });
     expect(categoriesOf(s, "player1", "SPEC-MALE-DA:m")).toEqual(["DA", "WB"]);
     expect(categoriesOf(s, "player1", "RK-092:wo")).toEqual(["DA", "WB"]);
@@ -148,28 +148,28 @@ describe("RK-093 蜘蛛男", () => {
   const assassin = (p2: Partial<GameState["players"]["player2"]>) => ncEnter("RK-093:km", 2, {}, p2, EXTRA);
   const enemy = {
     battle: [inst("SPEC-E", "plain")],
-    rush: [inst("RS-223", "tak"), inst("RS-140", "col"), inst("RS-628", "wing"), inst("RK-104", "tf"), inst("SPEC-E2M", "m")],
+    rush: [inst("RS-223", "tak"), inst("RS-170", "abl"), inst("RS-628", "wing"), inst("RK-104", "tf"), inst("SPEC-E2M", "m")],
   };
 
   // 公式 Q（atwiki/page-625 Q1）「はい、できます。省略表記のテキストも、カードに書かれているものとして扱ってください。」
-  it.fails("RK-093: NC — 「これはバトルエリアに出られない」「これは自軍ターン中、バトルエリアに出られない」と書かれた敵軍ユニットと、ウイングを持つ敵軍ユニットを選べる（任意）（出典: atwiki/page-625 本文・Q1「省略表記のテキストも、カードに書かれているものとして扱ってください」）", () => {
+  it("RK-093: NC — 「これはバトルエリアに出られない」「これは自軍ターン中、バトルエリアに出られない」と書かれた敵軍ユニット（エージェント・アブレラ）と、ウイングを持つ敵軍ユニットを選べる（任意）（出典: atwiki/page-625 本文・Q1「省略表記のテキストも、カードに書かれているものとして扱ってください」）", () => {
     const s = assassin(enemy);
     expectChoiceFrom(s, "player1", "RK-093");
-    expect(choiceIds(s)).toEqual(["RS-140:col", "RS-223:tak", "RS-628:wing"]);
+    expect(choiceIds(s)).toEqual(["RS-170:abl", "RS-223:tak", "RS-628:wing"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-093: NC — 選んだ敵軍ユニットを撃破する（出典: atwiki/page-625「1体選び撃破してもよい」）", () => {
+  it("RK-093: NC — 選んだ敵軍ユニットを撃破する（出典: atwiki/page-625「1体選び撃破してもよい」）", () => {
     const s = resolveAll(pick(assassin(enemy), "RS-628:wing"));
     expect(zoneOf(s, "player2", "RS-628:wing")).toBe("discard");
     expect(zoneOf(s, "player2", "RS-223:tak")).toBe("rush");
   });
 
-  it.fails("RK-093: NC — 「これは自軍コマンドを2つホールドしなければバトルエリアに出られない」（クウガTF）は「これは」と「バトルエリアに出られない」の間に文があるので選べない（出典: atwiki/page-625 コメント欄「「これは」と「バトルエリアに出られない」の間にテキストがあるから無理」）", () => {
+  it("RK-093: NC — 「これは自軍コマンドを2つホールドしなければバトルエリアに出られない」（クウガTF）は「これは」と「バトルエリアに出られない」の間に文があるので選べない（出典: atwiki/page-625 コメント欄「「これは」と「バトルエリアに出られない」の間にテキストがあるから無理」）", () => {
     expect(choiceIds(assassin({ rush: [inst("RK-104", "tf"), inst("RS-223", "tak")] }))).toEqual(["RS-223:tak"]);
   });
 
-  it.fails("RK-093: NC — 敵軍の蜘蛛男も、テキストに「これはバトルエリアに出られない」と書かれているので選べる（出典: atwiki/page-625 カード評価「蜘蛛男は蜘蛛男を能力で撃破することが出来る」）", () => {
+  it("RK-093: NC — 敵軍の蜘蛛男も、テキストに「これはバトルエリアに出られない」と書かれているので選べる（出典: atwiki/page-625 カード評価「蜘蛛男は蜘蛛男を能力で撃破することが出来る」）", () => {
     expect(choiceIds(assassin({ rush: [inst("RK-093", "ekm")] }))).toEqual(["RK-093:ekm"]);
   });
 
@@ -193,7 +193,7 @@ describe("RK-094 ショッカー戦闘員バイク部隊", () => {
     expect(deckWithTen("RK-094", "ショッカー戦闘員バイク部隊")).toBe(true);
   });
 
-  it.fails("RK-094: ※ 自分がターンを終えるとき、ビークルにライドしていなければ撃破される（バトルエリア・ラッシュエリアとも）（出典: atwiki/page-701「自分がターンを終えるとき、ビークルにライドしていなければ撃破される」）", () => {
+  it("RK-094: ※ 自分がターンを終えるとき、ビークルにライドしていなければ撃破される（バトルエリア・ラッシュエリアとも）（出典: atwiki/page-701「自分がターンを終えるとき、ビークルにライドしていなければ撃破される」）", () => {
     const s = endTurn(board({ battle: [inst("RK-094", "b1")], rush: [inst("RK-094", "b2")] }));
     expect(zoneOf(s, "player1", "RK-094:b1")).toBe("discard");
     expect(zoneOf(s, "player1", "RK-094:b2")).toBe("discard");
@@ -227,13 +227,13 @@ describe("RK-095 ハリケーン", () => {
     expect(bpOf(board({ battle: riding() }), "player1", "SPEC-RIDER:r")).toBe(2000);
   });
 
-  it.fails("RK-095: 自分がターンを終えるとき、バトルエリアでライドされていれば、ライドしているユニットをラッシュエリアに戻すかを選べる（任意）（出典: atwiki/page-658「戻してもよい」）", () => {
+  it("RK-095: 自分がターンを終えるとき、バトルエリアでライドされていれば、ライドしているユニットをラッシュエリアに戻すかを選べる（任意）（出典: atwiki/page-658「戻してもよい」）", () => {
     const s = toTurnEnd(board({ battle: riding() }), "RK-095");
     expectChoiceFrom(s, "player1", "RK-095");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-095: 戻すと、ユニットとビークルは重ねたままラッシュエリアに戻り、敵軍ターンにアタックされない（出典: atwiki/page-658「（ライドオフしない限り、ユニットとビークルは重ねたまま扱う）」・カード評価「やられてしまっては困るユニットを守るためのビークル」）", () => {
+  it("RK-095: 戻すと、ユニットとビークルは重ねたままラッシュエリアに戻り、敵軍ターンにアタックされない（出典: atwiki/page-658「（ライドオフしない限り、ユニットとビークルは重ねたまま扱う）」・カード評価「やられてしまっては困るユニットを守るためのビークル」）", () => {
     const s = toTurnEnd(confirm(toTurnEnd(board({ battle: riding() }), "RK-095")));
     expect(s.activePlayer).toBe("player2");
     expect(zoneOf(s, "player1", "SPEC-RIDER:r")).toBe("rush");
@@ -241,7 +241,7 @@ describe("RK-095 ハリケーン", () => {
     expect(mountedOn(s, "player1", "SPEC-RIDER:r")).toBe("RK-095:hu");
   });
 
-  it.fails("RK-095: 戻さなければバトルエリアに残る（出典: atwiki/page-658「戻してもよい」）", () => {
+  it("RK-095: 戻さなければバトルエリアに残る（出典: atwiki/page-658「戻してもよい」）", () => {
     const s = toTurnEnd(skip(toTurnEnd(board({ battle: riding() }), "RK-095")));
     expect(s.activePlayer).toBe("player2");
     expect(zoneOf(s, "player1", "SPEC-RIDER:r")).toBe("battle");
@@ -273,7 +273,7 @@ describe("RK-096 ハサミジャガー", () => {
   const cut = (p2: Partial<GameState["players"]["player2"]>) => ncEnter("RK-096:hj", 1, {}, p2, EXTRA);
   const enemy = { battle: [inst("RK-102", "df"), inst("SPEC-E", "plain")], rush: [inst("RK-104", "tf"), inst("RS-680", "mreg")] };
 
-  it.fails("RK-096: NC — レジストを持つ敵軍 S ユニットを、バトルエリア・ラッシュエリアから選ぶ（M ユニット・レジストのないユニットは選べない。選ばないことはできない）（出典: atwiki/page-696「レジストを持つ敵軍Sユニットを1体選び撃破する」・カード評価「エリア制限が無い」）", () => {
+  it("RK-096: NC — レジストを持つ敵軍 S ユニットを、バトルエリア・ラッシュエリアから選ぶ（M ユニット・レジストのないユニットは選べない。選ばないことはできない）（出典: atwiki/page-696「レジストを持つ敵軍Sユニットを1体選び撃破する」・カード評価「エリア制限が無い」）", () => {
     const s = cut(enemy);
     expectChoiceFrom(s, "player1", "RK-096");
     expect(choiceIds(s)).toEqual(["RK-102:df", "RK-104:tf"]);
@@ -313,14 +313,14 @@ describe("RK-097 仮面ライダーX", () => {
   const heldCard = (id: string, suffix: string): CardInstance => ({ ...inst(id, suffix), commandHeld: true });
   const releasedCard = (id: string, suffix: string): CardInstance => ({ ...inst(id, suffix), commandHeld: false });
 
-  it.fails("RK-097: RC — 自軍コマンドゾーンのホールド状態の、RC を持つユニットカードだけを選べる（任意）（出典: atwiki/page-615「ホールド状態のＲＣを持つユニットカードを1枚選び、手札に戻してもよい」）", () => {
+  it("RK-097: RC — 自軍コマンドゾーンのホールド状態の、RC を持つユニットカードだけを選べる（任意）（出典: atwiki/page-615「ホールド状態のＲＣを持つユニットカードを1枚選び、手札に戻してもよい」）", () => {
     const s = riddle([heldCard("RK-064", "fz"), releasedCard("RK-105", "sf"), heldCard("RK-096", "hj"), heldCard("TST-OP", "op")]);
     expectChoiceFrom(s, "player1", "RK-097");
     expect(choiceIds(s)).toEqual(["RK-064:fz"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-097: RC — 選んだカードは手札に戻り、そのカードの RC の効果（ファイズ【ファイズエッジ】）をこのユニットの効果として発動する（出典: atwiki/page-615「そうしたとき、戻したカードのRCの効果を、このユニットの効果として発動する」）", () => {
+  it("RK-097: RC — 選んだカードは手札に戻り、そのカードの RC の効果（ファイズ【ファイズエッジ】）をこのユニットの効果として発動する（出典: atwiki/page-615「そうしたとき、戻したカードのRCの効果を、このユニットの効果として発動する」）", () => {
     let s = pick(riddle([heldCard("RK-064", "fz")], { battle: [inst("SPEC-E2500", "a"), inst("SPEC-E", "b")] }), "RK-064:fz");
     expect(zoneOf(s, "player1", "RK-064:fz")).toBe("hand");
     expectChoiceFrom(s, "player1", "RK-064");
@@ -336,7 +336,7 @@ describe("RK-097 仮面ライダーX", () => {
   });
 
   // 公式 Q「はい、できます。」
-  it.fails("RK-097: 公式Q&A — 戻した仮面ライダーX の【ライドルスティック】で、コマンドゾーンの別の仮面ライダーX のカードを戻せる（出典: grnrngr/faq-rider-2 RK-097 Q）", () => {
+  it("RK-097: 公式Q&A — 戻した仮面ライダーX の【ライドルスティック】で、コマンドゾーンの別の仮面ライダーX のカードを戻せる（出典: grnrngr/faq-rider-2 RK-097 Q）", () => {
     let s = pick(riddle([heldCard("RK-097", "x2"), heldCard("RK-097", "x3")]), "RK-097:x2");
     expect(zoneOf(s, "player1", "RK-097:x2")).toBe("hand");
     expectChoiceFrom(s, "player1", "RK-097");
@@ -373,20 +373,20 @@ describe("RK-098 クルーザー", () => {
   const cruise = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
     mount(board({ rush: [inst("SPEC-RIDER", "r"), inst("RK-098", "cr")], deck: MY_DECK, ...p1 }, { deck: ENEMY_DECK, ...p2 }), "SPEC-RIDER:r", "RK-098:cr");
 
-  it.fails("RK-098: 自軍ターン中、バトルエリアに出たとき、発動するかを選べる（出典: atwiki/page-659「次の効果を発動できる」）", () => {
+  it("RK-098: 自軍ターン中、バトルエリアに出たとき、発動するかを選べる（出典: atwiki/page-659「次の効果を発動できる」）", () => {
     const s = cruise();
     expectChoiceFrom(s, "player1", "RK-098");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-098: 発動すると、自軍山札の下から1枚ひいて、自軍コマンドゾーンにホールド状態で置く（出典: atwiki/page-659「自軍山札の下から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
+  it("RK-098: 発動すると、自軍山札の下から1枚ひいて、自軍コマンドゾーンにホールド状態で置く（出典: atwiki/page-659「自軍山札の下から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
     const s = confirm(cruise());
     expect(zoneOf(s, "player1", "TST-OP-ET:bottom")).toBe("command");
     expect(cardIn(s, "player1", "TST-OP-ET:bottom")?.commandHeld).toBe(true);
     expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:top", "TST-OP:mid"]);
   });
 
-  it.fails("RK-098: そうしたとき、相手も同じようにするかを選べ、選ぶと相手の山札の下の1枚が相手のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-659「そうしたとき、相手も同じようにしてもよい」）", () => {
+  it("RK-098: そうしたとき、相手も同じようにするかを選べ、選ぶと相手の山札の下の1枚が相手のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-659「そうしたとき、相手も同じようにしてもよい」）", () => {
     let s = confirm(cruise());
     expectChoiceFrom(s, "player2", "RK-098");
     expect(canSkip(s)).toBe(true);
@@ -395,14 +395,14 @@ describe("RK-098 クルーザー", () => {
     expect(cardIn(s, "player2", "TST-OP-DA:ebottom")?.commandHeld).toBe(true);
   });
 
-  it.fails("RK-098: 相手が選ばなければ相手のコマンドは増えない（出典: atwiki/page-659「相手も同じようにしてもよい」）", () => {
+  it("RK-098: 相手が選ばなければ相手のコマンドは増えない（出典: atwiki/page-659「相手も同じようにしてもよい」）", () => {
     let s = confirm(cruise());
     s = settle(skip(s));
     expect(zoneOf(s, "player2", "TST-OP-DA:ebottom")).toBe("deck");
     expect(s.players.player2.command).toHaveLength(0);
   });
 
-  it.fails("RK-098: 自分が発動しなければ、相手は何もしない（出典: atwiki/page-659「そうしたとき、」）", () => {
+  it("RK-098: 自分が発動しなければ、相手は何もしない（出典: atwiki/page-659「そうしたとき、」）", () => {
     const s = settle(skip(cruise()));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-098");
     expect(s.players.player1.command).toHaveLength(0);

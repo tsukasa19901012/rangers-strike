@@ -1,4 +1,5 @@
 import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
+import { rk5AttackerCanAttackRush } from "../rk/rk5Fields";
 import { set9AAttackerCanAttackRush, set9ADefenderBlocksAttack } from "../legend1/set9NamedEffectsA";
 import { set7DDefenderBlocksAttack } from "../legend1/set7NamedEffectsD";
 import { set8ADefenderBlocksAttack } from "../legend1/set8NamedEffectsA";
@@ -509,6 +510,8 @@ export function canAttackDefender(
     }
     // RS-622 グリフォーザー【グリフォカリバー4世】（rules/legend1/set9NamedEffectsA.ts）。
     if (set9AAttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
+    // RK-103 仮面ライダークウガPF【ブラストペガサス】（rules/rk/rk5Fields.ts）。
+    if (rk5AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
     // RS-213【炸裂超力バトン】（相手が選んだユニット）・RS-225【大回転獅子爆裂弾】で得た能力。
     if (
       chikaraBatonAllowsAttack(state, attackerPlayerId, attackerInstanceId, defenderInstanceId) ||

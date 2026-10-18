@@ -112,7 +112,7 @@ describe("RK-085 ガードベント", () => {
     );
   const enemyUnits = { battle: [inst("SPEC-E2M", "m"), inst("SPEC-E5", "c5")], rush: [inst("SPEC-E4", "c4"), inst("SPEC-E1", "c1")] };
 
-  it.fails("RK-085: 特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき使える（出典: atwiki/page-643「特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき発動できる」）", () => {
+  it("RK-085: 特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき使える（出典: atwiki/page-643「特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき発動できる」）", () => {
     expect(canUseCard(attacked(inst("SPEC-MIRROR4P", "d")), "player1", "RK-085:gv")).toBe(true);
   });
 
@@ -120,33 +120,33 @@ describe("RK-085 ガードベント", () => {
     expect(canUseCard(attacked(inst("SPEC-KAMEN", "d")), "player1", "RK-085:gv")).toBe(false);
   });
 
-  it.fails("RK-085: 使うとそのバトルは行われない（アタックしたユニットもされたユニットも撃破されない）（出典: atwiki/page-643「そのバトルは行われない」）", () => {
+  it("RK-085: 使うとそのバトルは行われない（アタックしたユニットもされたユニットも撃破されない）（出典: atwiki/page-643「そのバトルは行われない」）", () => {
     const s = resolveAll(useCard(attacked(inst("SPEC-MIRROR4P", "d")), "player1", "RK-085:gv"));
     expect(zoneOf(s, "player1", "SPEC-MIRROR4P:d")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-ATK5:a")).toBe("battle");
     expect(zoneOf(s, "player1", "RK-085:gv")).toBe("discard");
   });
 
-  it.fails("RK-085: そして、アタックされたユニットの必要パワーの数字（「4+」は 4）以下の敵軍ユニットを、エリア・サイズを問わず選ぶ（選ばないことはできない）（出典: atwiki/page-643「その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する」・カード評価「撃破する対象のサイズ制限が無い」）", () => {
+  it("RK-085: そして、アタックされたユニットの必要パワーの数字（「4+」は 4）以下の敵軍ユニットを、エリア・サイズを問わず選ぶ（選ばないことはできない）（出典: atwiki/page-643「その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する」・カード評価「撃破する対象のサイズ制限が無い」）", () => {
     const s = settle(useCard(attacked(inst("SPEC-MIRROR4P", "d"), enemyUnits), "player1", "RK-085:gv"));
     expectChoiceFrom(s, "player1", "RK-085");
     expect(choiceIds(s)).toEqual(["SPEC-E1:c1", "SPEC-E2M:m", "SPEC-E4:c4"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-085: 選んだ敵軍ユニットを撃破する（出典: atwiki/page-643）", () => {
+  it("RK-085: 選んだ敵軍ユニットを撃破する（出典: atwiki/page-643）", () => {
     let s = settle(useCard(attacked(inst("SPEC-MIRROR4P", "d"), enemyUnits), "player1", "RK-085:gv"));
     s = resolveAll(pick(s, "SPEC-E2M:m"));
     expect(zoneOf(s, "player2", "SPEC-E2M:m")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E4:c4")).toBe("rush");
   });
 
-  it.fails("RK-085: 必要パワー2のミラーライダーなら、必要パワー2以下の敵軍ユニットだけを選べる（出典: atwiki/page-643）", () => {
+  it("RK-085: 必要パワー2のミラーライダーなら、必要パワー2以下の敵軍ユニットだけを選べる（出典: atwiki/page-643）", () => {
     const s = settle(useCard(attacked(inst("SPEC-MIRROR2", "d"), enemyUnits), "player1", "RK-085:gv"));
     expect(choiceIds(s)).toEqual(["SPEC-E1:c1", "SPEC-E2M:m"]);
   });
 
-  it.fails("RK-085: 撃破できる敵軍ユニットがなくても、バトルは行われない（出典: atwiki/page-643「そのバトルは行われない。そして、」）", () => {
+  it("RK-085: 撃破できる敵軍ユニットがなくても、バトルは行われない（出典: atwiki/page-643「そのバトルは行われない。そして、」）", () => {
     const s = resolveAll(useCard(attacked(inst("SPEC-MIRROR2", "d")), "player1", "RK-085:gv"));
     expect(zoneOf(s, "player1", "SPEC-MIRROR2:d")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-ATK5:a")).toBe("battle");
@@ -213,13 +213,13 @@ describe("RK-087 ゼクトマイザー", () => {
   const zecto = (p2: Partial<GameState["players"]["player2"]>) =>
     played(rushPhase({ hand: [inst("RK-087", "zm")], command: releasedCat("OT", 1), power: powerCards(3) }, p2), "RK-087:zm");
 
-  it.fails("RK-087: 敵軍ラッシュエリアの S ユニットをバトルエリアに出すかを選べる（任意）（出典: atwiki/page-666「出してもよい」）", () => {
+  it("RK-087: 敵軍ラッシュエリアの S ユニットをバトルエリアに出すかを選べる（任意）（出典: atwiki/page-666「出してもよい」）", () => {
     const s = zecto({ rush: [inst("SPEC-E1", "a"), inst("SPEC-E4", "b")] });
     expectChoiceFrom(s, "player1", "RK-087");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-087: 出すなら、出す順番を自分が選び、敵軍ラッシュエリアの S ユニットがすべてバトルエリアに出る（M ユニットは残る）（出典: atwiki/page-666「すべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）」・コメント欄「すべて自分で出す順番を決めて、1体ずつ順々に出していきます」）", () => {
+  it("RK-087: 出すなら、出す順番を自分が選び、敵軍ラッシュエリアの S ユニットがすべてバトルエリアに出る（M ユニットは残る）（出典: atwiki/page-666「すべてのSユニットをバトルエリアに出してもよい（出す順番は自分が選ぶ）」・コメント欄「すべて自分で出す順番を決めて、1体ずつ順々に出していきます」）", () => {
     let s = confirm(zecto({ rush: [inst("SPEC-E1", "a"), inst("SPEC-E4", "b"), inst("SPEC-E2M", "m")] }));
     expectChoiceFrom(s, "player1", "RK-087");
     expect(choiceIds(s)).toEqual(["SPEC-E1:a", "SPEC-E4:b"]);
@@ -229,7 +229,7 @@ describe("RK-087 ゼクトマイザー", () => {
     expect(zoneOf(s, "player2", "SPEC-E2M:m")).toBe("rush");
   });
 
-  it.fails("RK-087: その後、敵軍バトルエリアのユニットを好きな順に並べ替える（出典: atwiki/page-666「その後、敵軍バトルエリアのユニットを、好きな順に並べ替える」）", () => {
+  it("RK-087: その後、敵軍バトルエリアのユニットを好きな順に並べ替える（出典: atwiki/page-666「その後、敵軍バトルエリアのユニットを、好きな順に並べ替える」）", () => {
     let s = confirm(zecto({ battle: [inst("SPEC-E5", "x")], rush: [inst("SPEC-E1", "a"), inst("SPEC-E4", "b")] }));
     s = pick(s, "SPEC-E4:b");
     expectChoiceFrom(s, "player1", "RK-087");
@@ -241,14 +241,14 @@ describe("RK-087 ゼクトマイザー", () => {
 
   // 公式 Q1「いいえ。否定文がもっとも優先されるルールにより、バトルエリアに出すことのできないユニットはバトルエリアに出すことはできません。」
   // 公式 Q2「可能な限り解決するようにしてください。」
-  it.fails("RK-087: 公式Q&A — 「これはバトルエリアに出られない」（タック）や「コマンドを2つホールドしなければ出られない」（クウガTF）ユニットは出せず、出せるユニットだけを出す（出典: grnrngr/faq-rider-2 RK-087 Q1・Q2）", () => {
+  it("RK-087: 公式Q&A — 「これはバトルエリアに出られない」（タック）や「コマンドを2つホールドしなければ出られない」（クウガTF）ユニットは出せず、出せるユニットだけを出す（出典: grnrngr/faq-rider-2 RK-087 Q1・Q2）", () => {
     const s = resolveAll(confirm(zecto({ rush: [inst("RS-223", "tak"), inst("RK-104", "tf"), inst("SPEC-E1", "a")] })));
     expect(zoneOf(s, "player2", "SPEC-E1:a")).toBe("battle");
     expect(zoneOf(s, "player2", "RS-223:tak")).toBe("rush");
     expect(zoneOf(s, "player2", "RK-104:tf")).toBe("rush");
   });
 
-  it.fails("RK-087: 出さないことを選んでも、敵軍バトルエリアのユニットの並べ替えは行う（出典: atwiki/page-666「その後、」・コメント欄「そうしたときの絡むプットオンと違って、その後以下が独立してるから」）", () => {
+  it("RK-087: 出さないことを選んでも、敵軍バトルエリアのユニットの並べ替えは行う（出典: atwiki/page-666「その後、」・コメント欄「そうしたときの絡むプットオンと違って、その後以下が独立してるから」）", () => {
     let s = skip(zecto({ battle: [inst("SPEC-E5", "x"), inst("SPEC-E4", "y")], rush: [inst("SPEC-E1", "a")] }));
     expectChoiceFrom(s, "player1", "RK-087");
     expect(choiceIds(s)).toEqual(["SPEC-E4:y", "SPEC-E5:x"]);
@@ -257,11 +257,15 @@ describe("RK-087 ゼクトマイザー", () => {
     expect(zoneOf(s, "player2", "SPEC-E1:a")).toBe("rush");
   });
 
-  it.fails("RK-087: 「アタックされる以外では相手に選ばれない」ユニット（カブトRF）も、選ぶ効果ではないので出せる（出典: atwiki/page-666 コメント欄「どちらも選ぶ効果じゃないから可能」）", () => {
+  it("RK-087: 「アタックされる以外では相手に選ばれない」ユニット（カブトRF）も、選ぶ効果ではないので出せる（出典: atwiki/page-666 コメント欄「どちらも選ぶ効果じゃないから可能」）", () => {
     const s = resolveAll(confirm(zecto({ rush: [inst("RK-065", "rf"), inst("SPEC-E1", "a")] })));
     expect(zoneOf(s, "player2", "RK-065:rf")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-E1:a")).toBe("battle");
   });
+
+  it.todo(
+    "RK-087: 出した敵軍ユニットの「バトルエリアに出たとき」の効果が発動するか（出典: atwiki/page-666 カード評価「バトルエリアに出た時に効果が発動する能力を持ったカードには注意」）— 出典はカード評価の注意書きだけで、相手のターンに効果で出たユニットの進入時の効果をどう扱うかの公式の出典がないため（エンジンは発動させない）",
+  );
 });
 
 // ===========================================================================
@@ -278,14 +282,14 @@ describe("RK-088 イマジンとの契約", () => {
   const contract = (p1: Partial<GameState["players"]["player1"]>) =>
     played(rushPhase({ hand: [inst("RK-088", "ct")], command: releasedCat("DA", 1), ...p1 }), "RK-088:ct");
 
-  it.fails("RK-088: 特徴「イマジン」を持たない自軍 S ユニットを、ラッシュエリア・バトルエリアから選ぶ（イマジン・M ユニットは選べない。選ばないことはできない）（出典: atwiki/page-710「特徴「イマジン」を持たない自軍Sユニットを1体選ぶ」）", () => {
+  it("RK-088: 特徴「イマジン」を持たない自軍 S ユニットを、ラッシュエリア・バトルエリアから選ぶ（イマジン・M ユニットは選べない。選ばないことはできない）（出典: atwiki/page-710「特徴「イマジン」を持たない自軍Sユニットを1体選ぶ」）", () => {
     const s = contract({ rush: [inst("TST-UNIT-0", "u"), inst("RK-142", "mo"), inst("SPEC-PLAIN-M", "m")], battle: [inst("SPEC-E1", "b")] });
     expectChoiceFrom(s, "player1", "RK-088");
     expect(choiceIds(s)).toEqual(["SPEC-E1:b", "TST-UNIT-0:u"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-088: このカードは選んだユニットの下に重なる（捨札にならない）（出典: atwiki/page-710「このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる」・grnrngr/faq-rider-2 RK-088 Q「そのユニットの下には…重ねる」）", () => {
+  it("RK-088: このカードは選んだユニットの下に重なる（捨札にならない）（出典: atwiki/page-710「このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる」・grnrngr/faq-rider-2 RK-088 Q「そのユニットの下には…重ねる」）", () => {
     const s = resolveAll(pick(contract({ rush: [inst("TST-UNIT-0", "u"), inst("RK-142", "mo")] }), "TST-UNIT-0:u"));
     expect((cardIn(s, "player1", "TST-UNIT-0:u")?.stackedCards ?? []).map((c) => c.cardId)).toEqual(["RK-088"]);
     expect(zoneOf(s, "player1", "RK-088:ct")).toBeNull();
@@ -295,7 +299,7 @@ describe("RK-088 イマジンとの契約", () => {
   // 公式 Q（RK-142 欄）「バトルエリアに出たとき撃破されないようにするためには、「RK-088 イマジンとの契約」を併用してください。」
   const contracted = { ...inst("TST-UNIT-0", "u"), stackedCards: [inst("RK-088", "ct")] };
 
-  it.fails("RK-088: 重ねたユニットが自軍エリアにある間、特徴「イマジン」を持つ自軍ユニット（モモタロス）はバトルエリアに出ても撃破されない（出典: atwiki/page-710「そのテキストは無効になる」・grnrngr/faq-rider-2 RK-142 Q「「RK-088 イマジンとの契約」を併用してください」）", () => {
+  it("RK-088: 重ねたユニットが自軍エリアにある間、特徴「イマジン」を持つ自軍ユニット（モモタロス）はバトルエリアに出ても撃破されない（出典: atwiki/page-710「そのテキストは無効になる」・grnrngr/faq-rider-2 RK-142 Q「「RK-088 イマジンとの契約」を併用してください」）", () => {
     const s = settle(enter(board({ rush: [contracted, inst("RK-142", "mo")] }), "RK-142:mo"));
     expect(zoneOf(s, "player1", "RK-142:mo")).toBe("battle");
   });
@@ -310,7 +314,7 @@ describe("RK-088 イマジンとの契約", () => {
     expect(zoneOf(s, "player1", "RK-142:mo")).toBe("discard");
   });
 
-  it.fails("RK-088: 重ねたユニットがユニットでなくなる（撃破される）と、このカードは捨札になり、その後のイマジンは撃破される（出典: atwiki/page-710「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）", () => {
+  it("RK-088: 重ねたユニットがユニットでなくなる（撃破される）と、このカードは捨札になり、その後のイマジンは撃破される（出典: atwiki/page-710「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）", () => {
     let s = board({ battle: [contracted], rush: [inst("RK-142", "mo")] }, { battle: [inst("SPEC-BIG", "big")] });
     s = resolveAll(attack(s, "TST-UNIT-0:u", "SPEC-BIG:big"));
     expect(zoneOf(s, "player1", "TST-UNIT-0:u")).toBe("discard");
@@ -336,7 +340,7 @@ describe("RK-089 乗車拒否", () => {
   const ENEMY_DECK = [inst("SPEC-TRAIN", "et"), inst("TST-OP", "e1"), inst("TST-OP", "e2"), inst("TST-OP", "e3")];
   const MY_DECK = [inst("SPEC-CAR", "car"), inst("SPEC-TRAIN", "t"), inst("RK-095", "veh"), inst("TST-OP", "d3")];
 
-  it.fails("RK-089: まず相手が、山札の上から3枚のうち特徴「車両」を持つ M ユニットのカードを自分自身のパワーゾーンに置き、残りを山札の下に戻す順番を相手が選ぶ（出典: atwiki/page-667「次の効果を、相手、自分の順に行う」「好きな順で自分自身の山札の下に戻す」）", () => {
+  it("RK-089: まず相手が、山札の上から3枚のうち特徴「車両」を持つ M ユニットのカードを自分自身のパワーゾーンに置き、残りを山札の下に戻す順番を相手が選ぶ（出典: atwiki/page-667「次の効果を、相手、自分の順に行う」「好きな順で自分自身の山札の下に戻す」）", () => {
     const s = refuse(MY_DECK, ENEMY_DECK);
     expect(zoneOf(s, "player2", "SPEC-TRAIN:et")).toBe("power");
     expectChoiceFrom(s, "player2", "RK-089");
@@ -344,12 +348,12 @@ describe("RK-089 乗車拒否", () => {
     expect(zoneOf(s, "player1", "SPEC-TRAIN:t")).toBe("deck");
   });
 
-  it.fails("RK-089: 戻す順番は、先に選んだカードから山札の下に置く（出典: atwiki/page-667「それ以外は好きな順で自分自身の山札の下に戻す」）", () => {
+  it("RK-089: 戻す順番は、先に選んだカードから山札の下に置く（出典: atwiki/page-667「それ以外は好きな順で自分自身の山札の下に戻す」）", () => {
     const s = pick(refuse(MY_DECK, ENEMY_DECK), "TST-OP:e2");
     expect(zoneIds(s, "player2", "deck")).toEqual(["TST-OP:e3", "TST-OP:e2", "TST-OP:e1"]);
   });
 
-  it.fails("RK-089: その後、自分も同じようにする — M ユニットでない「車両」（S ユニット・ビークル）は山札の下に戻る（出典: atwiki/page-667「特徴「車両」を持つMユニットのカードをすべて」）", () => {
+  it("RK-089: その後、自分も同じようにする — M ユニットでない「車両」（S ユニット・ビークル）は山札の下に戻る（出典: atwiki/page-667「特徴「車両」を持つMユニットのカードをすべて」）", () => {
     let s = pick(refuse(MY_DECK, ENEMY_DECK), "TST-OP:e1");
     expect(zoneOf(s, "player1", "SPEC-TRAIN:t")).toBe("power");
     expectChoiceFrom(s, "player1", "RK-089");
@@ -394,7 +398,7 @@ describe("RK-091 ゾル大佐", () => {
     expectRarityIn("RK-091", ["NR"]);
   });
 
-  it.fails("RK-091: 自軍バトルエリアの「戦闘員」の S ユニットの BP は、それらの本来の BP の合計になる（ゾル大佐がラッシュエリアにいてもよい）（出典: atwiki/page-699「これが自軍エリアにある間」「本来のBPをすべて「＋」した値になる」）", () => {
+  it("RK-091: 自軍バトルエリアの「戦闘員」の S ユニットの BP は、それらの本来の BP の合計になる（ゾル大佐がラッシュエリアにいてもよい）（出典: atwiki/page-699「これが自軍エリアにある間」「本来のBPをすべて「＋」した値になる」）", () => {
     const s = board({ battle: [inst("RK-090", "g1"), inst("RK-090", "g2")], rush: [inst("RK-091", "zol")] });
     expect(bpOf(s, "player1", "RK-090:g1")).toBe(1000);
     expect(bpOf(s, "player1", "RK-090:g2")).toBe(1000);
@@ -417,26 +421,26 @@ describe("RK-091 ゾル大佐", () => {
     expect(bpOf(s, "player1", "RK-090:g1")).toBe(500);
   });
 
-  it.fails("RK-091: 合計するのは本来の BP で、「～になる」が優先されるのでビークルの BP+1000 は加わらない（出典: atwiki/page-699「本来のBP」・R-BP-01「指定の値になる」を最も優先し計算は行われない・atwiki/page-701 カード評価）", () => {
+  it("RK-091: 合計するのは本来の BP で、「～になる」が優先されるのでビークルの BP+1000 は加わらない（出典: atwiki/page-699「本来のBP」・R-BP-01「指定の値になる」を最も優先し計算は行われない・atwiki/page-701 カード評価）", () => {
     const s = board({ battle: [inst("RK-098", "cr"), { ...inst("RK-094", "b1"), mountedOnInstanceId: "RK-098:cr" }, inst("RK-090", "g1")], rush: [inst("RK-091", "zol")] });
     expect(bpOf(s, "player1", "RK-094:b1")).toBe(2000);
     expect(bpOf(s, "player1", "RK-090:g1")).toBe(2000);
   });
 
-  it.fails("RK-091: 「戦闘員」の S ユニットは BP3000 のとき「SP1」になる（バイク部隊2体で 1500＋1500）（出典: atwiki/page-699「BP3000のとき「SP1」になる」・atwiki/page-701 カード評価「ゾル大佐の能力を使えば2体でSP1に早変わり」）", () => {
+  it("RK-091: 「戦闘員」の S ユニットは BP3000 のとき「SP1」になる（バイク部隊2体で 1500＋1500）（出典: atwiki/page-699「BP3000のとき「SP1」になる」・atwiki/page-701 カード評価「ゾル大佐の能力を使えば2体でSP1に早変わり」）", () => {
     const s = board({ battle: [inst("RK-094", "b1"), inst("RK-094", "b2")], rush: [inst("RK-091", "zol")] });
     expect(bpOf(s, "player1", "RK-094:b2")).toBe(3000);
     expect(spOf(s, "player1", "RK-094:b2")).toBe(1);
     expect(spOf(s, "player1", "RK-094:b1")).toBe(1);
   });
 
-  it.fails("RK-091: BP が 3000 ちょうどでなければ（3500）「SP1」にならない（出典: atwiki/page-699「BP3000のとき」・カード評価「SP1になるのはBPが3000ピッタリの時」）", () => {
+  it("RK-091: BP が 3000 ちょうどでなければ（3500）「SP1」にならない（出典: atwiki/page-699「BP3000のとき」・カード評価「SP1になるのはBPが3000ピッタリの時」）", () => {
     const s = board({ battle: [inst("RK-094", "b1"), inst("SPEC-GRUNT2000", "g")], rush: [inst("RK-091", "zol")] });
     expect(bpOf(s, "player1", "SPEC-GRUNT2000:g")).toBe(3500);
     expect(spOf(s, "player1", "SPEC-GRUNT2000:g")).toBe(0);
   });
 
-  it.fails("RK-091: 本来の BP が 3000 の「戦闘員」1体だけでも「SP1」になる。ゾル大佐がいなければならない（出典: atwiki/page-699）", () => {
+  it("RK-091: 本来の BP が 3000 の「戦闘員」1体だけでも「SP1」になる。ゾル大佐がいなければならない（出典: atwiki/page-699）", () => {
     expect(spOf(board({ battle: [inst("SPEC-GRUNT3000", "g")], rush: [inst("RK-091", "zol")] }), "player1", "SPEC-GRUNT3000:g")).toBe(1);
     expect(spOf(board({ battle: [inst("SPEC-GRUNT3000", "g")] }), "player1", "SPEC-GRUNT3000:g")).toBe(0);
   });

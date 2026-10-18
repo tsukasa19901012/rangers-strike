@@ -1,4 +1,5 @@
 import { isInstancePlacedAnywhere } from "./helpers";
+import { isRk5BattleCounterCard, openRk5GuardVent, rk5GuardVentCost, rk5TigerBomberDestroy, rk5TigerBomberDestroys, rk5TigerBomberPenalty } from "../rules/rk/rk5UnitEffects";
 import { openRk3OnEnemyRush } from "../rules/rk/rk3UnitEffects";
 import { applyRk2StrikeDamageTriggers, rk2RecordStartRelease } from "../rules/rk/rk2UnitEffects";
 import { continueFieldAbilityAfterLeave } from "../rules/fieldActivatedAbilities";
@@ -429,6 +430,22 @@ function continueAttackAfterDeclaration(
       pendingState = { ...pendingState, pendingBattleEntry: undefined };
     }
     return ok(pendingState, buildSimpleLogEntry(playerId, "battle_pending"));
+  }
+  if (!pending.onAttackResolved && !pending.tigerBomberApplied) {
+    // RK-101 タイガーロイド【タイガーボンバー】: アタックするとき、バトルの前に BP-3000（BP0 以下なら撃破し、バトルは行わない）。
+    const penalty = rk5TigerBomberPenalty(battleState, pending);
+    if (penalty > 0) {
+      if (rk5TigerBomberDestroys(battleState, pending, pending.attackerBpBonus ?? 0)) {
+        let destroyed = rk5TigerBomberDestroy(battleState, pending);
+        if (destroyed.pendingBattleEntry?.instanceId === pending.attackerInstanceId) destroyed = { ...destroyed, pendingBattleEntry: undefined };
+        return ok(destroyed, buildLogEntry(playerId, "battle", pending.attackerInstanceId, battleState.definitions, "rk101_tiger_bomber_destroyed"));
+      }
+      return continueAttackAfterDeclaration(
+        battleState,
+        { ...pending, tigerBomberApplied: true, attackerBpBonus: (pending.attackerBpBonus ?? 0) - penalty },
+        wingAttackFromRush,
+      );
+    }
   }
   if (!pending.onAttackResolved) {
     // ルール: R-TIME-01 — 「アタックするとき／アタックしたとき」（アタックしたユニットの DSL on_attack）は、
@@ -2716,6 +2733,25 @@ function applyActionCore(
               log: [...resolved.state.log, result.log, resolved.log],
               winner: checkWinner(resolved.state),
             },
+          };
+        }
+        // RK-085 ガードベント: そのバトルは行われない。そして、アタックされたユニットの必要パワー以下の敵軍ユニットを撃破する（rules/rk/rk5UnitEffects.ts）。
+        if (counterCardId && isRk5BattleCounterCard(counterCardId)) {
+          const used: GameState = {
+            ...state,
+            ...updatePlayer(state, playerId, {
+              ...player,
+              hand: player.hand.filter((c) => c.instanceId !== action.instanceId),
+              discard: [...player.discard, { instanceId: action.instanceId, cardId: counterCardId }],
+            }),
+          };
+          const cost = rk5GuardVentCost(used, pending);
+          const log = buildLogEntry(playerId, "play_counter", counterCardId, state.definitions, "guard_vent");
+          const resolved = emitBattleDeclaredAndResolve(clearCounterHoldReady(used, playerId), { ...pending, battleCancelled: true });
+          const opened = openRk5GuardVent(resolved.state, playerId, pending, cost);
+          return {
+            ok: true,
+            state: { ...opened, log: [...opened.log, log, resolved.log], winner: checkWinner(opened) },
           };
         }
         // RK-004 ギギの腕輪・RK-009 二人の世紀王（rules/rk/rk1NamedEffects.ts）。

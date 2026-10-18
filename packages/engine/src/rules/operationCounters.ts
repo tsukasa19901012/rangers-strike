@@ -1,4 +1,5 @@
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
+import { isRk5BattleCounterCard, rk5BattleCounterConditionMet } from "./rk/rk5UnitEffects";
 import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects";
 import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
 import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
@@ -418,6 +419,20 @@ export function hasBattleCounterReactions(
     }
     if (effectId === "hidden_ninja") return true;
     if (isMechanicNinjaCounter(card.cardId) && isSmallUnit(state.definitions, defenderCard.cardId)) {
+      return true;
+    }
+    // RK-085 ガードベント（特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき。rules/rk/rk5UnitEffects.ts）。
+    if (
+      isRk5BattleCounterCard(card.cardId) &&
+      attackerPlayerId &&
+      attackerInstanceId &&
+      rk5BattleCounterConditionMet(state, defenderId, card.cardId, {
+        attackerPlayerId,
+        attackerInstanceId,
+        defenderPlayerId: defenderId,
+        defenderInstanceId,
+      })
+    ) {
       return true;
     }
     // RK-004 ギギの腕輪・RK-009 二人の世紀王（自軍Sユニットが敵軍Sユニットにアタックされたとき）。

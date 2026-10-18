@@ -99,7 +99,7 @@ describe("RK-099 アポロガイスト", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("RK-099", "ap")] }, "RK-099:ap"))).toBe(true);
   });
 
-  it.fails("RK-099: これが自軍エリアにある間、特徴「怪人」を持つ自軍ユニット（バトルエリア・ラッシュエリア、M ユニットも）は BP+1000 される（出典: atwiki/page-698「特徴「怪人」を持つ自軍ユニットはBP+1000される」）", () => {
+  it("RK-099: これが自軍エリアにある間、特徴「怪人」を持つ自軍ユニット（バトルエリア・ラッシュエリア、M ユニットも）は BP+1000 される（出典: atwiki/page-698「特徴「怪人」を持つ自軍ユニットはBP+1000される」）", () => {
     const s = board({ battle: [inst("SPEC-KAIJIN", "k")], rush: [inst("RK-099", "ap"), inst("SPEC-KAIJIN-M", "km")] });
     expect(bpOf(s, "player1", "SPEC-KAIJIN:k")).toBe(3000);
     expect(bpOf(s, "player1", "SPEC-KAIJIN-M:km")).toBe(5000);
@@ -112,27 +112,27 @@ describe("RK-099 アポロガイスト", () => {
     expect(bpOf(s, "player2", "SPEC-KAIJIN:ek")).toBe(2000);
   });
 
-  it.fails("RK-099: 2体あれば BP+2000 される（出典: atwiki/page-698 カード評価「重複するため出した分だけBP+1000される」）", () => {
+  it("RK-099: 2体あれば BP+2000 される（出典: atwiki/page-698 カード評価「重複するため出した分だけBP+1000される」）", () => {
     const s = board({ battle: [inst("SPEC-KAIJIN", "k")], rush: [inst("RK-099", "ap"), inst("RK-099", "ap2")] });
     expect(bpOf(s, "player1", "SPEC-KAIJIN:k")).toBe(4000);
   });
 
   const enterApollo = (rush: CardInstance[]) => enter(board({ rush: [inst("RK-099", "ap"), ...rush] }, { battle: [inst("SPEC-E1", "e")] }), "RK-099:ap");
 
-  it.fails("RK-099: 自軍ターン中にバトルエリアに出たとき、自軍ラッシュエリアの「怪人」のユニットを1体選んで捨札にするかを選べる（任意）（出典: atwiki/page-698「自軍ラッシュエリアから特徴「怪人」を持つユニットを1体選び、捨札にしてもよい」）", () => {
+  it("RK-099: 自軍ターン中にバトルエリアに出たとき、自軍ラッシュエリアの「怪人」のユニットを1体選んで捨札にするかを選べる（任意）（出典: atwiki/page-698「自軍ラッシュエリアから特徴「怪人」を持つユニットを1体選び、捨札にしてもよい」）", () => {
     const s = enterApollo([inst("SPEC-KAIJIN", "k"), inst("SPEC-KAIJIN-M", "km"), inst("SPEC-NON", "n")]);
     expectChoiceFrom(s, "player1", "RK-099");
     expect(choiceIds(s)).toEqual(["SPEC-KAIJIN-M:km", "SPEC-KAIJIN:k"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-099: 捨札にすると、このターン、これは「SP1」になる（出典: atwiki/page-698「そうしたとき、このターン、これは「SP1」になる」）", () => {
+  it("RK-099: 捨札にすると、このターン、これは「SP1」になる（出典: atwiki/page-698「そうしたとき、このターン、これは「SP1」になる」）", () => {
     const s = settle(pick(enterApollo([inst("SPEC-KAIJIN", "k")]), "SPEC-KAIJIN:k"));
     expect(zoneOf(s, "player1", "SPEC-KAIJIN:k")).toBe("discard");
     expect(spOf(s, "player1", "RK-099:ap")).toBe(1);
   });
 
-  it.fails("RK-099: 捨札にしなければ「SP1」にならない（SP「！」のまま）（出典: atwiki/page-698「SP：！」）", () => {
+  it("RK-099: 捨札にしなければ「SP1」にならない（SP「！」のまま）（出典: atwiki/page-698「SP：！」）", () => {
     const s = settle(skip(enterApollo([inst("SPEC-KAIJIN", "k")])));
     expect(zoneOf(s, "player1", "SPEC-KAIJIN:k")).toBe("rush");
     expect(spOf(s, "player1", "RK-099:ap")).toBe(0);
@@ -167,12 +167,12 @@ describe("RK-100 仮面ライダーZX", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-100: RC — 必要パワーを満たさないカード（必要パワー5・パワー4枚）は選べない（出典: atwiki/page-654「ただし、必要パワーと追加条件は満たすこと」）", () => {
+  it("RK-100: RC — 必要パワーを満たさないカード（必要パワー5・パワー4枚）は選べない（出典: atwiki/page-654「ただし、必要パワーと追加条件は満たすこと」）", () => {
     const s = projector([released("SPEC-KAIZO5", "k5"), released("SPEC-KAIZO", "k")]);
     expect(choiceIds(s)).toEqual(["SPEC-KAIZO:k"]);
   });
 
-  it.fails("RK-100: RC — 追加条件を満たせないカード（狼男: 自軍「ゾル大佐」がない）は選べない（出典: atwiki/page-654「追加条件は満たすこと」）", () => {
+  it("RK-100: RC — 追加条件を満たせないカード（狼男: 自軍「ゾル大佐」がない）は選べない（出典: atwiki/page-654「追加条件は満たすこと」）", () => {
     const s = projector([released("RK-092", "wo"), released("SPEC-KAIZO", "k")], { power: powerCards(5) });
     expect(choiceIds(s)).toEqual(["SPEC-KAIZO:k"]);
   });
@@ -207,18 +207,18 @@ describe("RK-101 タイガーロイド", () => {
     return resolveAll(attack(enemyTurn(p1, { battle: [inst(aid, suf)] }), attacker, target, "player2"));
   };
 
-  it.fails("RK-101: これが自軍バトルエリアにある間、敵軍ターン中にアタックする敵軍ユニットは、バトルの前に BP-3000 される（5000 → 2000）（出典: atwiki/page-641「アタックするとき、バトルの前にBP-3000される」）", () => {
+  it("RK-101: これが自軍バトルエリアにある間、敵軍ターン中にアタックする敵軍ユニットは、バトルの前に BP-3000 される（5000 → 2000）（出典: atwiki/page-641「アタックするとき、バトルの前にBP-3000される」）", () => {
     const s = attacked({ battle: [inst("RK-101", "tg")] }, "RK-101:tg", "SPEC-ATK5000:a");
     expect(lastBattleBps(s)).toEqual({ attacker: 2000, defender: 500 });
   });
 
-  it.fails("RK-101: BP0 以下になったユニットは撃破され、バトルは行われない（出典: atwiki/page-641「（BP0以下になったユニットは撃破される）」）", () => {
+  it("RK-101: BP0 以下になったユニットは撃破され、バトルは行われない（出典: atwiki/page-641「（BP0以下になったユニットは撃破される）」）", () => {
     const s = attacked({ battle: [inst("RK-101", "tg")] }, "RK-101:tg", "SPEC-ATK3000:a");
     expect(zoneOf(s, "player2", "SPEC-ATK3000:a")).toBe("discard");
     expect(zoneOf(s, "player1", "RK-101:tg")).toBe("battle");
   });
 
-  it.fails("RK-101: タイガーロイド以外の自軍ユニットがアタックされるときも効く（出典: atwiki/page-641・カード評価「他のユニットがアタックされる際にも効果がある」）", () => {
+  it("RK-101: タイガーロイド以外の自軍ユニットがアタックされるときも効く（出典: atwiki/page-641・カード評価「他のユニットがアタックされる際にも効果がある」）", () => {
     const s = attacked({ battle: [inst("RK-101", "tg"), inst("SPEC-NON", "n")] }, "SPEC-NON:n", "SPEC-ATK5000:a");
     expect(lastBattleBps(s)).toEqual({ attacker: 2000, defender: 2000 });
   });
@@ -228,7 +228,7 @@ describe("RK-101 タイガーロイド", () => {
     expect(lastBattleBps(s)).toEqual({ attacker: 5000, defender: 500 });
   });
 
-  it.fails("RK-101: 2体あっても BP-3000 だけ（重複しない）（出典: atwiki/page-641「この効果は重複しない」）", () => {
+  it("RK-101: 2体あっても BP-3000 だけ（重複しない）（出典: atwiki/page-641「この効果は重複しない」）", () => {
     const s = attacked({ battle: [inst("RK-101", "tg"), inst("RK-101", "tg2")] }, "RK-101:tg", "SPEC-ATK5000:a");
     expect(lastBattleBps(s)).toEqual({ attacker: 2000, defender: 500 });
   });
@@ -263,14 +263,14 @@ describe("RK-102 仮面ライダークウガDF", () => {
     rcRideOff(board({ rush: [inst("RK-102", "df"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-102:df", "SPEC-VEHICLE:v");
   const enemy = { battle: [inst("SPEC-E0", "c0"), inst("SPEC-E2M", "m"), inst("SPEC-E3", "c3")], rush: [inst("SPEC-E1", "c1"), inst("SPEC-E2", "c2")] };
 
-  it.fails("RK-102: RC — 敵軍常駐置き場のカード枚数（常駐に重ねたカードも数える）以下の必要パワーの敵軍ユニットを、エリア・サイズを問わず選べる（任意）（出典: atwiki/page-688「敵軍常駐置き場のカード枚数以下の必要パワーの数字を持つ敵軍ユニットを1体選び」・カード評価「常駐置き場に複数枚カードを置くライダーパス」「サイズとエリアを選ばない」）", () => {
+  it("RK-102: RC — 敵軍常駐置き場のカード枚数（常駐に重ねたカードも数える）以下の必要パワーの敵軍ユニットを、エリア・サイズを問わず選べる（任意）（出典: atwiki/page-688「敵軍常駐置き場のカード枚数以下の必要パワーの数字を持つ敵軍ユニットを1体選び」・カード評価「常駐置き場に複数枚カードを置くライダーパス」「サイズとエリアを選ばない」）", () => {
     const s = splash({ ...enemy, operation: [resident("RK-022", "rp", [inst("TST-UNIT-0", "s1")])] });
     expectChoiceFrom(s, "player1", "RK-102");
     expect(choiceIds(s)).toEqual(["SPEC-E0:c0", "SPEC-E1:c1", "SPEC-E2:c2", "SPEC-E2M:m"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-102: RC — 敵軍常駐置き場にカードがなければ 0 と数え、必要パワー0 のユニットだけを選べる（出典: atwiki/page-688「（敵軍常駐置き場にカードが1枚も無ければ0と数える）」）", () => {
+  it("RK-102: RC — 敵軍常駐置き場にカードがなければ 0 と数え、必要パワー0 のユニットだけを選べる（出典: atwiki/page-688「（敵軍常駐置き場にカードが1枚も無ければ0と数える）」）", () => {
     expect(choiceIds(splash(enemy))).toEqual(["SPEC-E0:c0"]);
   });
 
@@ -291,19 +291,20 @@ describe("RK-103 仮面ライダークウガPF", () => {
     expectRarityIn("RK-103", ["NR"]);
   });
 
-  it.fails("RK-103: ※ 自分がターンを終えるとき、自軍常駐置き場に「超変身」があれば、このユニットを重ねて置くかを選べる（任意）（出典: atwiki/page-689「「超変身」の上に、このユニットを重ねて置いてもよい」）", () => {
+  it("RK-103: ※ 自分がターンを終えるとき、自軍常駐置き場に「超変身」があれば、このユニットを重ねて置くかを選べる（任意）（出典: atwiki/page-689「「超変身」の上に、このユニットを重ねて置いてもよい」）", () => {
     const s = toTurnEnd(board({ battle: [inst("RK-103", "pf")], operation: [resident("RK-080", "ch")] }), "RK-103");
     expectChoiceFrom(s, "player1", "RK-103");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-103: ※ 重ねると、このユニットは「超変身」に重なる（場から離れる）（出典: atwiki/page-689）", () => {
+  it("RK-103: ※ 重ねると、このユニットは「超変身」に重なる（場から離れる）（出典: atwiki/page-689）", () => {
     const s = toTurnEnd(confirm(toTurnEnd(board({ battle: [inst("RK-103", "pf")], operation: [resident("RK-080", "ch")] }), "RK-103")));
     expect(stackedOn(s, "player1", "RK-080:ch")).toEqual(["RK-103:pf"]);
-    expect(zoneOf(s, "player1", "RK-103:pf")).toBe("operation");
+    // 重ねたカードは常駐の下にあり、場（バトル・ラッシュ）にも他のゾーンにもない。
+    expect(zoneOf(s, "player1", "RK-103:pf")).toBeNull();
   });
 
-  it.fails("RK-103: ※ 重ねなければ場に残る（出典: atwiki/page-689「重ねて置いてもよい」）", () => {
+  it("RK-103: ※ 重ねなければ場に残る（出典: atwiki/page-689「重ねて置いてもよい」）", () => {
     const s = toTurnEnd(skip(toTurnEnd(board({ battle: [inst("RK-103", "pf")], operation: [resident("RK-080", "ch")] }), "RK-103")));
     expect(stackedOn(s, "player1", "RK-080:ch")).toEqual([]);
     expect(zoneOf(s, "player1", "RK-103:pf")).toBe("battle");
@@ -314,7 +315,7 @@ describe("RK-103 仮面ライダークウガPF", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-103");
   });
 
-  it.fails("RK-103: 【ブラストペガサス】特徴「警察」を持つ自軍ユニットからコンビネーションするとき BP+3000 され、敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-689「特徴「警察」を持つ自軍ユニットからコンビネーションするときBP+3000され、敵軍ラッシュエリアのユニットにアタックできる」）", () => {
+  it("RK-103: 【ブラストペガサス】特徴「警察」を持つ自軍ユニットからコンビネーションするとき BP+3000 され、敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-689「特徴「警察」を持つ自軍ユニットからコンビネーションするときBP+3000され、敵軍ラッシュエリアのユニットにアタックできる」）", () => {
     const s = enterKeep(board({ rush: [inst("SPEC-POLICE", "po"), inst("RK-103", "pf")] }, { battle: [inst("SPEC-E1", "b")], rush: [inst("SPEC-E2", "r")] }), ["SPEC-POLICE:po", "RK-103:pf"]);
     expect(bpOf(s, "player1", "RK-103:pf")).toBe(3500);
     expect(attackTargets(s, "RK-103:pf").sort()).toEqual(["SPEC-E1:b", "SPEC-E2:r"]);
@@ -368,7 +369,7 @@ describe("RK-105 仮面ライダーアギトSF", () => {
     expectRarityIn("RK-105", ["NR"]);
   });
 
-  it.fails("RK-105: ※ ライド中は BP+1000 される（ライドしていなければ 2000）（出典: atwiki/page-690「※これはライド中、BP+1000される」）", () => {
+  it("RK-105: ※ ライド中は BP+1000 される（ライドしていなければ 2000）（出典: atwiki/page-690「※これはライド中、BP+1000される」）", () => {
     expect(bpOf(board({ battle: [inst("SPEC-VEHICLE", "v"), { ...inst("RK-105", "sf"), mountedOnInstanceId: "SPEC-VEHICLE:v" }] }), "player1", "RK-105:sf")).toBe(3000);
     expect(bpOf(board({ battle: [inst("RK-105", "sf")] }), "player1", "RK-105:sf")).toBe(2000);
   });
@@ -377,19 +378,19 @@ describe("RK-105 仮面ライダーアギトSF", () => {
     rcRideOff(board({ rush: [inst("RK-105", "sf"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-105:sf", "SPEC-VEHICLE:v");
   const enemy = { battle: [inst("SPEC-E2", "c2"), inst("SPEC-E2M", "m"), inst("SPEC-E0", "c0")], rush: [inst("SPEC-E1", "c1"), inst("SPEC-E3", "c3"), inst("TST-UNIT-0", "z")] };
 
-  it.fails("RK-105: RC — 必要パワーの数字が3以下の敵軍ユニットを、エリア・サイズを問わず選べる（任意）（出典: atwiki/page-690「敵軍ユニットを、必要パワーの数字の合計が3になるまで好きな数選び」・カード評価「ラッシュエリアにも効果が届く」）", () => {
+  it("RK-105: RC — 必要パワーの数字が3以下の敵軍ユニットを、エリア・サイズを問わず選べる（任意）（出典: atwiki/page-690「敵軍ユニットを、必要パワーの数字の合計が3になるまで好きな数選び」・カード評価「ラッシュエリアにも効果が届く」）", () => {
     const s = spin({ ...enemy, rush: [...enemy.rush, inst("SPEC-E5", "c5")] });
     expectChoiceFrom(s, "player1", "RK-105");
     expect(choiceIds(s)).toEqual(["SPEC-E0:c0", "SPEC-E1:c1", "SPEC-E2:c2", "SPEC-E2M:m", "SPEC-E3:c3", "TST-UNIT-0:z"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-105: RC — 選んだ数字の合計が3を超えるユニットは続けて選べない（必要パワー2 を選ぶと、残りは1以下だけ）（出典: atwiki/page-690「必要パワーの数字の合計が3になるまで」）", () => {
+  it("RK-105: RC — 選んだ数字の合計が3を超えるユニットは続けて選べない（必要パワー2 を選ぶと、残りは1以下だけ）（出典: atwiki/page-690「必要パワーの数字の合計が3になるまで」）", () => {
     const s = pick(spin(enemy), "SPEC-E2:c2");
     expect(choiceIds(s)).toEqual(["SPEC-E0:c0", "SPEC-E1:c1", "TST-UNIT-0:z"]);
   });
 
-  it.fails("RK-105: RC — 選んだユニットは持ち主の山札に戻ってシャッフルされる。必要パワー0 のユニットはいくつでも選べる（出典: atwiki/page-690「持ち主の山札に戻してシャッフルしてもよい」・カード評価「必要パワー0のユニットは何枚選んでも0なので好きなだけ選べる」）", () => {
+  it("RK-105: RC — 選んだユニットは持ち主の山札に戻ってシャッフルされる。必要パワー0 のユニットはいくつでも選べる（出典: atwiki/page-690「持ち主の山札に戻してシャッフルしてもよい」・カード評価「必要パワー0のユニットは何枚選んでも0なので好きなだけ選べる」）", () => {
     let s = pick(pick(pick(spin(enemy), "SPEC-E3:c3"), "SPEC-E0:c0"), "TST-UNIT-0:z");
     s = resolveAll(s.pendingEffectChoice ? confirm(s) : s);
     expect(zoneOf(s, "player2", "SPEC-E3:c3")).toBe("deck");
@@ -399,13 +400,13 @@ describe("RK-105 仮面ライダーアギトSF", () => {
   });
 
   // 公式 Q「はい、できます。」
-  it.fails("RK-105: 公式Q&A — 選んだユニットの必要パワーの合計が3に足りなくても、選び終えて山札に戻せる（出典: grnrngr/faq-rider-2 RK-105 Q）", () => {
+  it("RK-105: 公式Q&A — 選んだユニットの必要パワーの合計が3に足りなくても、選び終えて山札に戻せる（出典: grnrngr/faq-rider-2 RK-105 Q）", () => {
     const s = resolveAll(confirm(pick(spin(enemy), "SPEC-E1:c1")));
     expect(zoneOf(s, "player2", "SPEC-E1:c1")).toBe("deck");
     expect(zoneOf(s, "player2", "SPEC-E2:c2")).toBe("battle");
   });
 
-  it.fails("RK-105: RC — 選ばなければ何も戻さない（出典: atwiki/page-690「戻してシャッフルしてもよい」）", () => {
+  it("RK-105: RC — 選ばなければ何も戻さない（出典: atwiki/page-690「戻してシャッフルしてもよい」）", () => {
     const s = settle(skip(spin(enemy)));
     expect(s.players.player2.deck).toHaveLength(5);
   });

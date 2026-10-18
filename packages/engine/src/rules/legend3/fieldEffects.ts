@@ -1,4 +1,5 @@
 import { hasUnnamedRule } from "@rangers-strike/cards";
+import { rk5EffectiveSp } from "../rk/rk5Fields";
 import { set9AEffectiveSp } from "../legend1/set9NamedEffectsA";
 import { hellSaturnGrantCount } from "../hellSaturn";
 import { activeNamedEffect, namedEffectActive } from "../ncGatedEffects";
@@ -244,6 +245,8 @@ export function legend3EffectiveSp(
   sp = set9AEffectiveSp(state, playerId, instance, sp);
   // 第9弾 RS-645 ビクトリーマーズ ※（rules/legend1/set9NamedEffectsB.ts）。
   sp = set9BEffectiveSp(state, playerId, instance, sp);
+  // RK-091 ゾル大佐（BP3000 の「戦闘員」は「SP1」）・RK-099 アポロガイスト（rules/rk/rk5Fields.ts）。
+  sp = rk5EffectiveSp(state, playerId, instance, sp, effectiveBp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

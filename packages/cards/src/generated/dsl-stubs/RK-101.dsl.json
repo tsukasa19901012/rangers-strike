@@ -23,12 +23,12 @@
       "name": "タイガーボンバー",
       "text": "これが自軍バトルエリアにある間、敵軍ターン中、敵軍バトルエリアの特徴「忍者」を持たないユニットは、アタックするとき、バトルの前にBP-3000される。（BP0以下になったユニットは撃破される）この効果は重複しない。",
       "trigger": {
-        "type": "on_attack"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-101::taigabonba",
+          "keyword": "rk5::RK-101::tiger_bomber",
           "duration": "permanent"
         }
       ],
