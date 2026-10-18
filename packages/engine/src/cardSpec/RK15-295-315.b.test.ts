@@ -32,6 +32,7 @@ import {
   enemyEnter,
   enemyRushes,
   enter,
+  enteredInEnemyTurn,
   expectCatalogText,
   expectChoiceFrom,
   expectRarityIn,
@@ -125,17 +126,17 @@ describe("RK-302 スコルピオワーム", () => {
   const enemyEnters = (unit: string, own: Partial<GameState["players"]["player1"]> = { battle: [inst("RK-302", "sw"), inst("SPEC-NOFEAT", "t")] }) =>
     enemyEnter(enemyTurn(own, { rush: [inst(unit, "e")] }), `${unit}:e`);
 
-  it.fails("RK-302: 【ワームの頂点に立つ男】これが自軍エリアにある間、特徴「怪人」を持つ敵軍ユニットはアタックもストライクもできない（出典: atwiki/page-1342「特徴「ワーム」または特徴「怪人」を持つ敵軍ユニットはアタックもストライクも出来ない」）", () => {
+  it("RK-302: 【ワームの頂点に立つ男】これが自軍エリアにある間、特徴「怪人」を持つ敵軍ユニットはアタックもストライクもできない（出典: atwiki/page-1342「特徴「ワーム」または特徴「怪人」を持つ敵軍ユニットはアタックもストライクも出来ない」）", () => {
     const s = enemyEnters("SPEC-KAIJIN");
     expect(unitActions(s, "SPEC-KAIJIN:e")).toEqual([]);
   });
 
-  it.fails("RK-302: 特徴「ワーム」を持つ敵軍ユニットもアタック・ストライクできない（出典: atwiki/page-1342）", () => {
+  it("RK-302: 特徴「ワーム」を持つ敵軍ユニットもアタック・ストライクできない（出典: atwiki/page-1342）", () => {
     const s = enemyEnters("SPEC-WORM");
     expect(unitActions(s, "SPEC-WORM:e")).toEqual([]);
   });
 
-  it.fails("RK-302: これが自軍ラッシュエリアにあっても働く（出典: atwiki/page-1342「これが自軍エリアにある間」）", () => {
+  it("RK-302: これが自軍ラッシュエリアにあっても働く（出典: atwiki/page-1342「これが自軍エリアにある間」）", () => {
     const s = enemyEnters("SPEC-KAIJIN", { rush: [inst("RK-302", "sw")], battle: [inst("SPEC-NOFEAT", "t")] });
     expect(unitActions(s, "SPEC-KAIJIN:e")).toEqual([]);
   });
@@ -156,7 +157,7 @@ describe("RK-302 スコルピオワーム", () => {
       ),
     );
 
-  it.fails("RK-302: 敵軍ターン中に撃破されたとき、特徴「ワーム」または「怪人」を持つすべてのユニット（自軍・敵軍、エリアを問わない）を撃破する（出典: atwiki/page-1342「敵軍ターン中、これが撃破されたとき、特徴「ワーム」または特徴「怪人」を持つすべてのユニットを撃破する」・カード評価「両軍の怪人かワームを持つユニットをすべて巻き添え」）", () => {
+  it("RK-302: 敵軍ターン中に撃破されたとき、特徴「ワーム」または「怪人」を持つすべてのユニット（自軍・敵軍、エリアを問わない）を撃破する（出典: atwiki/page-1342「敵軍ターン中、これが撃破されたとき、特徴「ワーム」または特徴「怪人」を持つすべてのユニットを撃破する」・カード評価「両軍の怪人かワームを持つユニットをすべて巻き添え」）", () => {
     const s = destroyedByEnemy();
     expect(zoneOf(s, "player1", "RK-302:sw")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-KAIJIN:ok")).toBe("discard");
@@ -190,9 +191,9 @@ describe("RK-303 ワームサナギ体（4弾）", () => {
     expectRarityIn("RK-303", ["N"]);
   });
 
-  const killed = (unit: string, hand: ReturnType<typeof inst>[] = [inst("RK-303", "s1")]) => attackedInEnemyTurn({ battle: [inst(unit, "v")], hand }, `${unit}:v`);
+  const killed = (unit: string, hand: ReturnType<typeof inst>[] = [inst("RK-303", "s1")]) => attackedInEnemyTurn({ battle: [inst(unit, "v")], hand }, `${unit}:v`, {}, "TST-UNIT-7:atk", EXTRA);
 
-  it.fails("RK-303: 【擬態の解除】手札にある間、敵軍ターン中に特徴「男」を持つ自軍ユニットが撃破されて捨札になったとき、手札の「ワームサナギ体」を1枚選び自軍ラッシュエリアに出せる（任意）（出典: atwiki/page-1278「自分の手札から「ワームサナギ体」のカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
+  it("RK-303: 【擬態の解除】手札にある間、敵軍ターン中に特徴「男」を持つ自軍ユニットが撃破されて捨札になったとき、手札の「ワームサナギ体」を1枚選び自軍ラッシュエリアに出せる（任意）（出典: atwiki/page-1278「自分の手札から「ワームサナギ体」のカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
     let s = killed("SPEC-MALE");
     expectChoiceFrom(s, "player1", "RK-303");
     expect(choiceIds(s)).toEqual(["RK-303:s1"]);
@@ -201,16 +202,16 @@ describe("RK-303 ワームサナギ体（4弾）", () => {
     expect(zoneOf(s, "player1", "RK-303:s1")).toBe("rush");
   });
 
-  it.fails("RK-303: 特徴「女」を持つ自軍ユニットでも出せる（出典: atwiki/page-1278「特徴「男」または「女」を持つ自軍ユニット」）", () => {
+  it("RK-303: 特徴「女」を持つ自軍ユニットでも出せる（出典: atwiki/page-1278「特徴「男」または「女」を持つ自軍ユニット」）", () => {
     expectChoiceFrom(killed("SPEC-FEMALE"), "player1", "RK-303");
   });
 
-  it.fails("RK-303: 出さないことも選べる（出典: atwiki/page-1278「出してもよい」）", () => {
+  it("RK-303: 出さないことも選べる（出典: atwiki/page-1278「出してもよい」）", () => {
     const s = resolveAll(skip(killed("SPEC-MALE")));
     expect(zoneOf(s, "player1", "RK-303:s1")).toBe("hand");
   });
 
-  it.fails("RK-303: 同名の RK-137 ワームサナギ体（2弾）のカードも選べる（出典: atwiki/page-1278「「ワームサナギ体」のカード」・カード評価「ワームサナギ体の2ndカード的なもの」）", () => {
+  it("RK-303: 同名の RK-137 ワームサナギ体（2弾）のカードも選べる（出典: atwiki/page-1278「「ワームサナギ体」のカード」・カード評価「ワームサナギ体の2ndカード的なもの」）", () => {
     const s = killed("SPEC-MALE", [inst("RK-303", "s1"), inst("RK-137", "old")]);
     expect(choiceIds(s)).toEqual(["RK-137:old", "RK-303:s1"]);
   });
@@ -227,7 +228,7 @@ describe("RK-303 ワームサナギ体（4弾）", () => {
     expect(zoneOf(s, "player1", "RK-303:s1")).toBe("hand");
   });
 
-  it.fails("RK-303: 撃破されたユニットカード1枚につき1枚だけ出せる（手札に2枚あっても、1体の撃破では1枚）（出典: atwiki/page-1278「捨札になったユニットカード1枚につき、…1枚選び」）", () => {
+  it("RK-303: 撃破されたユニットカード1枚につき1枚だけ出せる（手札に2枚あっても、1体の撃破では1枚）（出典: atwiki/page-1278「捨札になったユニットカード1枚につき、…1枚選び」）", () => {
     const s = resolveAll(killed("SPEC-MALE", [inst("RK-303", "s1"), inst("RK-303", "s2")]), ["RK-303:s1", "RK-303:s2"]);
     expect([zoneOf(s, "player1", "RK-303:s1"), zoneOf(s, "player1", "RK-303:s2")].sort()).toEqual(["hand", "rush"]);
   });
@@ -248,19 +249,19 @@ describe("RK-304 仮面ライダー電王RF（2nd）", () => {
   const solid = (p2: Partial<GameState["players"]["player2"]> = { battle: [heldUnit("SPEC-C3", "hb"), inst("SPEC-C3", "rb"), heldUnit("SPEC-EM2000", "hm")], rush: [heldUnit("SPEC-C4", "hr")] }) =>
     rcRideOff(board({ rush: [inst("RK-304", "rf"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-304:rf", "SPEC-VEHICLE:v");
 
-  it.fails("RK-304: 【ソリッドアタック】RC — ホールド状態の敵軍 S ユニット（エリアを問わない）から1体選べる（任意。リリース状態・M は対象外）（出典: atwiki/page-1272「ホールド状態の敵軍Ｓユニットを1体選び、持ち主のパワーゾーンに送っても良い」）", () => {
+  it("RK-304: 【ソリッドアタック】RC — ホールド状態の敵軍 S ユニット（エリアを問わない）から1体選べる（任意。リリース状態・M は対象外）（出典: atwiki/page-1272「ホールド状態の敵軍Ｓユニットを1体選び、持ち主のパワーゾーンに送っても良い」）", () => {
     const s = solid();
     expectChoiceFrom(s, "player1", "RK-304");
     expect(choiceIds(s)).toEqual(["SPEC-C3:hb", "SPEC-C4:hr"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-304: 選んだユニットは持ち主のパワーゾーンに送られる（出典: atwiki/page-1272）", () => {
+  it("RK-304: 選んだユニットは持ち主のパワーゾーンに送られる（出典: atwiki/page-1272）", () => {
     const s = resolveAll(pick(solid(), "SPEC-C4:hr"));
     expect(zoneOf(s, "player2", "SPEC-C4:hr")).toBe("power");
   });
 
-  it.fails("RK-304: 送らないことも選べる（出典: atwiki/page-1272「送っても良い」）", () => {
+  it("RK-304: 送らないことも選べる（出典: atwiki/page-1272「送っても良い」）", () => {
     const s = resolveAll(skip(solid()));
     expect(zoneOf(s, "player2", "SPEC-C3:hb")).toBe("battle");
   });
@@ -290,14 +291,14 @@ describe("RK-305 仮面ライダー電王SF（2nd）", () => {
   });
   const special = (p2 = enemy()) => rcRideOff(board({ rush: [inst("RK-305", "sf"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-305:sf", "SPEC-VEHICLE:v");
 
-  it.fails("RK-305: 【俺の必殺技特別編】RC — 敵軍のホールド状態のコマンドを1つずつ選べる（任意）（出典: atwiki/page-1275「敵軍コマンドを2つ、1つずつ順番に選びリリースしてもよい」）", () => {
+  it("RK-305: 【俺の必殺技特別編】RC — 敵軍のホールド状態のコマンドを1つずつ選べる（任意）（出典: atwiki/page-1275「敵軍コマンドを2つ、1つずつ順番に選びリリースしてもよい」）", () => {
     const s = special();
     expectChoiceFrom(s, "player1", "RK-305");
     expect(choiceIds(s)).toEqual(["TST-OP-DA:da", "TST-OP:wb"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-305: 1つ目が DA・2つ目が必要パワー3 のコマンドなら、本来のカテゴリ DA・本来の必要パワー3 の敵軍 S ユニットをエリアを問わずすべて撃破する。リリースしたコマンドはリリース状態になる（出典: atwiki/page-1275「本来のカテゴリが1つ目にリリースしたコマンドと同じで、本来の必要パワーが2つ目にリリースしたコマンドと同じ敵軍Sユニットをすべて撃破する」・カード評価「エリアを問わず一気に敵軍Sユニットを除去」）", () => {
+  it("RK-305: 1つ目が DA・2つ目が必要パワー3 のコマンドなら、本来のカテゴリ DA・本来の必要パワー3 の敵軍 S ユニットをエリアを問わずすべて撃破する。リリースしたコマンドはリリース状態になる（出典: atwiki/page-1275「本来のカテゴリが1つ目にリリースしたコマンドと同じで、本来の必要パワーが2つ目にリリースしたコマンドと同じ敵軍Sユニットをすべて撃破する」・カード評価「エリアを問わず一気に敵軍Sユニットを除去」）", () => {
     const s = resolveAll(pickAll(special(), ["TST-OP-DA:da", "TST-OP:wb"]));
     expect(zoneOf(s, "player2", "SPEC-DA3:a")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-DA3:r")).toBe("discard");
@@ -308,18 +309,18 @@ describe("RK-305 仮面ライダー電王SF（2nd）", () => {
     expect(cardIn(s, "player2", "TST-OP:wb")?.commandHeld).not.toBe(true);
   });
 
-  it.fails("RK-305: 選ぶ順番で結果が変わる（1つ目が WB・2つ目が必要パワー1 なら、WB で必要パワー1 のユニットだけ）（出典: atwiki/page-1275「1つずつ順番に選び」）", () => {
+  it("RK-305: 選ぶ順番で結果が変わる（1つ目が WB・2つ目が必要パワー1 なら、WB で必要パワー1 のユニットだけ）（出典: atwiki/page-1275「1つずつ順番に選び」）", () => {
     const s = resolveAll(pickAll(special(), ["TST-OP:wb", "TST-OP-DA:da"]));
     expect(zoneOf(s, "player2", "SPEC-DA3:a")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-WB3:c")).toBe("battle");
   });
 
-  it.fails("RK-305: ユニットを選ぶ効果ではないので、「相手に選ばれない」敵軍ユニット（ダークカブトRF。OT・必要パワー4+）も撃破される（出典: atwiki/page-1275 カード評価「対象を選ばずに撃破するという点が強み」）", () => {
+  it("RK-305: ユニットを選ぶ効果ではないので、「相手に選ばれない」敵軍ユニット（ダークカブトRF。OT・必要パワー4+）も撃破される（出典: atwiki/page-1275 カード評価「対象を選ばずに撃破するという点が強み」）", () => {
     const s = resolveAll(pickAll(special(enemy([held("TST-OP-OT", "ot1"), held("SPEC-C4", "c4")])), ["TST-OP-OT:ot1", "SPEC-C4:c4"]));
     expect(zoneOf(s, "player2", "RK-299:rf")).toBe("discard");
   });
 
-  it.fails("RK-305: 「相手に選ばれない」を持つコマンド（敵軍コマンドゾーンのホールド状態のダークカブトRF）は選べない（今のエンジンの扱い）（出典: atwiki/page-1275「1つずつ順番に選び」・atwiki/page-1383「※これはアタックされる以外では相手に選ばれない」）", () => {
+  it("RK-305: 「相手に選ばれない」を持つコマンド（敵軍コマンドゾーンのホールド状態のダークカブトRF）は選べない（今のエンジンの扱い）（出典: atwiki/page-1275「1つずつ順番に選び」・atwiki/page-1383「※これはアタックされる以外では相手に選ばれない」）", () => {
     const s = special(enemy([held("TST-OP-DA", "da"), held("TST-OP", "wb"), held("RK-299", "cmd")]));
     expect(choiceIds(s)).toEqual(["TST-OP-DA:da", "TST-OP:wb"]);
   });
@@ -328,7 +329,7 @@ describe("RK-305 仮面ライダー電王SF（2nd）", () => {
     "RK-305: 敵軍コマンドゾーンのカードに「相手に選ばれない」が効くか — ユーザー確認待ち: grnrngr/faq-rider-1 は効かない、atwiki と grnrngr/faq-card-3 RS-149 Q1 は効くとする。今のエンジンは効く（選べない）として実装し、上の照合もその扱い",
   );
 
-  it.fails("RK-305: 敵軍のホールド状態のコマンドが1つしかなければ発動できない（出典: atwiki/page-1275 カード評価「発動には相手コマンドのカードが２枚ホールドされている必要があり」）", () => {
+  it("RK-305: 敵軍のホールド状態のコマンドが1つしかなければ発動できない（出典: atwiki/page-1275 カード評価「発動には相手コマンドのカードが２枚ホールドされている必要があり」）", () => {
     const s = special(enemy([held("TST-OP-DA", "da"), released("TST-OP", "wb")]));
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-305");
   });
@@ -353,14 +354,14 @@ describe("RK-306 仮面ライダー電王AF（2nd）", () => {
   const chop = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = { battle: [inst("SPEC-E4000", "a"), inst("SPEC-E5000", "b")], rush: [inst("SPEC-E2000", "r")] }) =>
     enter(board({ rush: [inst("RK-306", "af"), inst("SPEC-E3000", "o3")], battle: [inst("SPEC-E5000", "o5")], ...p1 }, p2), "RK-306:af");
 
-  it.fails("RK-306: 【ダイナミックチョップ】自軍ターン中に出たとき、まず本来の BP がこのユニットの BP（4000）以下の自軍ユニット（これ自身も含む。エリアを問わない）から1体選ぶ（強制）（出典: atwiki/page-1273「本来のBPがこのユニットのBP以下のユニットを、自軍と敵軍のユニットからそれぞれ1体ずつ選び」・コメント欄「こいつだけパワーに飛んでいく」）", () => {
+  it("RK-306: 【ダイナミックチョップ】自軍ターン中に出たとき、まず本来の BP がこのユニットの BP（4000）以下の自軍ユニット（これ自身も含む。エリアを問わない）から1体選ぶ（強制）（出典: atwiki/page-1273「本来のBPがこのユニットのBP以下のユニットを、自軍と敵軍のユニットからそれぞれ1体ずつ選び」・コメント欄「こいつだけパワーに飛んでいく」）", () => {
     const s = chop();
     expectChoiceFrom(s, "player1", "RK-306");
     expect(choiceIds(s)).toEqual(["RK-306:af", "SPEC-E3000:o3"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-306: 続けて敵軍ユニットから1体選び、選んだ2体をそれぞれ持ち主のパワーゾーンに送る（ラッシュエリアのユニットも選べる）（出典: atwiki/page-1273「持ち主のパワーゾーンに送る」・カード評価「ラッシュエリアにも届く除去能力」）", () => {
+  it("RK-306: 続けて敵軍ユニットから1体選び、選んだ2体をそれぞれ持ち主のパワーゾーンに送る（ラッシュエリアのユニットも選べる）（出典: atwiki/page-1273「持ち主のパワーゾーンに送る」・カード評価「ラッシュエリアにも届く除去能力」）", () => {
     let s = pick(chop(), "SPEC-E3000:o3");
     expect(choiceIds(s)).toEqual(["SPEC-E2000:r", "SPEC-E4000:a"]);
     s = resolveAll(pick(s, "SPEC-E2000:r"));
@@ -370,20 +371,21 @@ describe("RK-306 仮面ライダー電王AF（2nd）", () => {
   });
 
   // atwiki/page-1273 Q2「いいえ、それはできません。「自軍と敵軍のユニットからそれぞれ1体ずつ選び」とあるので、それを満たせなかった場合は処理が中断されます。」
-  it.fails("RK-306: 公式Q&A — このユニットの BP 以下の敵軍ユニットが1体もなければ、自軍のユニット（これ自身）だけをパワーゾーンに送ることはできない（出典: atwiki/page-1273 Q2）", () => {
+  it("RK-306: 公式Q&A — このユニットの BP 以下の敵軍ユニットが1体もなければ、自軍のユニット（これ自身）だけをパワーゾーンに送ることはできない（出典: atwiki/page-1273 Q2）", () => {
     const s = resolveAll(chop({}, { battle: [inst("SPEC-E5000", "b")] }));
     expect(zoneOf(s, "player1", "RK-306:af")).toBe("battle");
     expect(zoneOf(s, "player1", "SPEC-E3000:o3")).toBe("rush");
     expect(zoneOf(s, "player2", "SPEC-E5000:b")).toBe("battle");
   });
 
-  it.fails("RK-306: 敵軍ユニットは「相手に選ばれない」ものを選べない（出典: atwiki/page-1273「選び」・atwiki/page-1383「※これはアタックされる以外では相手に選ばれない」）", () => {
+  it("RK-306: 敵軍ユニットは「相手に選ばれない」ものを選べない（出典: atwiki/page-1273「選び」・atwiki/page-1383「※これはアタックされる以外では相手に選ばれない」）", () => {
     const s = pick(chop({}, { battle: [inst("RK-299", "rf"), inst("SPEC-E2000", "x")] }), "SPEC-E3000:o3");
     expect(choiceIds(s)).toEqual(["SPEC-E2000:x"]);
   });
 
-  it.fails("RK-306: 敵軍ターン中に出たときは発動しない（出典: atwiki/page-1273「自軍ターン中」）", () => {
-    const s = enemyEnter(enemyTurn({ battle: [inst("SPEC-E2000", "x")] }, { rush: [inst("RK-306", "af")] }), "RK-306:af");
+  it("RK-306: 敵軍ターン中に（敵軍 RK-139 ゼロノスAF の効果で）出たときは発動しない（出典: atwiki/page-1273「自軍ターン中」）", () => {
+    const s = enteredInEnemyTurn("RK-306:af", { battle: [inst("SPEC-E2000", "x")] }, { battle: [inst("SPEC-E2000", "y")] }, EXTRA);
+    expect(zoneOf(s, "player1", "RK-306:af")).toBe("battle");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-306");
   });
 });
@@ -403,7 +405,7 @@ describe("RK-307 仮面ライダー電王GF（2nd）", () => {
   const shot = (p2: Partial<GameState["players"]["player2"]> = { rush: [inst("SPEC-C3", "a"), inst("SPEC-C4", "b"), inst("SPEC-DA3M", "m")], battle: [inst("SPEC-C3", "x")] }) =>
     rcRideOff(board({ rush: [inst("RK-307", "gf"), inst("SPEC-VEHICLE", "v")] }, p2), "RK-307:gf", "SPEC-VEHICLE:v");
 
-  it.fails("RK-307: 【ワイルドショット】RC — 敵軍ラッシュエリアの必要パワー3以下のユニット（M も含む）から1体選ぶ（強制。バトルエリアは対象外）（出典: atwiki/page-1274「敵軍ラッシュエリアから、必要パワーの数字が3以下のユニットを1体選び撃破する」）", () => {
+  it("RK-307: 【ワイルドショット】RC — 敵軍ラッシュエリアの必要パワー3以下のユニット（M も含む）から1体選ぶ（強制。バトルエリアは対象外）（出典: atwiki/page-1274「敵軍ラッシュエリアから、必要パワーの数字が3以下のユニットを1体選び撃破する」）", () => {
     const s = shot();
     expectChoiceFrom(s, "player1", "RK-307");
     expect(choiceIds(s)).toEqual(["SPEC-C3:a", "SPEC-DA3M:m"]);
@@ -415,7 +417,7 @@ describe("RK-307 仮面ライダー電王GF（2nd）", () => {
     expect(zoneOf(s, "player2", "SPEC-C3:a")).toBe("discard");
   });
 
-  it.fails("RK-307: 当てはまるユニットがなければ何も起きない（出典: atwiki/page-1274・R-TGT-01）", () => {
+  it("RK-307: 当てはまるユニットがなければ何も起きない（出典: atwiki/page-1274・R-TGT-01）", () => {
     const s = resolveAll(shot({ rush: [inst("SPEC-C4", "b")] }));
     expect(zoneOf(s, "player2", "SPEC-C4:b")).toBe("rush");
   });
@@ -437,7 +439,7 @@ describe("RK-308 リュウタロス（2nd）", () => {
     expect(attackTargets(s, "RK-308:ry")).toEqual(["SPEC-MALE:m"]);
   });
 
-  it.fails("RK-308: ※ 自軍ターン中、敵軍バトルエリアにユニットがあれば、可能ならバトルエリアに出る（出さずにバトルフェイズを終えられない）（出典: atwiki/page-1282「※自軍ターン中、これは、敵軍バトルエリアにユニットがあれば、可能ならバトルエリアに出る」）", () => {
+  it("RK-308: ※ 自軍ターン中、敵軍バトルエリアにユニットがあれば、可能ならバトルエリアに出る（出さずにバトルフェイズを終えられない）（出典: atwiki/page-1282「※自軍ターン中、これは、敵軍バトルエリアにユニットがあれば、可能ならバトルエリアに出る」）", () => {
     expect(canEndPhase(board({ rush: [inst("RK-308", "ry")] }, { battle: [inst("SPEC-MALE", "m")] }))).toBe(false);
   });
 
@@ -448,14 +450,14 @@ describe("RK-308 リュウタロス（2nd）", () => {
   const cat = (power = [faceUp("SPEC-BEAST", "pb"), faceUp("SPEC-BEAST-OP", "po"), faceUp("SPEC-MALE", "pm"), faceDown("SPEC-BEAST", "pd")], p2: Partial<GameState["players"]["player2"]> = { rush: [inst("SPEC-E3000", "a"), inst("SPEC-E3500", "b")] }) =>
     ncEnter("RK-308:ry", 1, { power }, p2, EXTRA);
 
-  it.fails("RK-308: 【猫はこっち、アンタは嫌い】NC（2番目）— 自軍パワーゾーンのオモテ向きの、特徴「獣」を持つユニットカードを1枚選べる（任意。オペレーション・ダメージは対象外）（出典: atwiki/page-1282「自軍パワーゾーンのオモテ向きのカードから、特徴「獣」を持つユニットカードを1枚選び自分の手札に戻してもよい」）", () => {
+  it("RK-308: 【猫はこっち、アンタは嫌い】NC（2番目）— 自軍パワーゾーンのオモテ向きの、特徴「獣」を持つユニットカードを1枚選べる（任意。オペレーション・ダメージは対象外）（出典: atwiki/page-1282「自軍パワーゾーンのオモテ向きのカードから、特徴「獣」を持つユニットカードを1枚選び自分の手札に戻してもよい」）", () => {
     const s = cat();
     expectChoiceFrom(s, "player1", "RK-308");
     expect(choiceIds(s)).toEqual(["SPEC-BEAST:pb"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-308: 戻したとき、敵軍ラッシュエリアから本来の BP が3000以下のユニットを1体選び撃破する（出典: atwiki/page-1282「そうしたとき、敵軍ラッシュエリアから本来のBPが3000以下のユニットを1体選び撃破する」）", () => {
+  it("RK-308: 戻したとき、敵軍ラッシュエリアから本来の BP が3000以下のユニットを1体選び撃破する（出典: atwiki/page-1282「そうしたとき、敵軍ラッシュエリアから本来のBPが3000以下のユニットを1体選び撃破する」）", () => {
     let s = pick(cat(), "SPEC-BEAST:pb");
     expect(zoneOf(s, "player1", "SPEC-BEAST:pb")).toBe("hand");
     expect(choiceIds(s)).toEqual(["SPEC-E3000:a"]);
@@ -474,7 +476,7 @@ describe("RK-308 リュウタロス（2nd）", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-308");
   });
 
-  it.fails("RK-308: 自軍パワーゾーンに「獣」のユニットカードがなければ何も起きない（出典: atwiki/page-1282）", () => {
+  it("RK-308: 自軍パワーゾーンに「獣」のユニットカードがなければ何も起きない（出典: atwiki/page-1282）", () => {
     const s = cat([faceUp("SPEC-MALE", "pm"), ...powerCards(1)]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-308");
   });

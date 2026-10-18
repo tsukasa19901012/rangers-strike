@@ -48,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-300::kurokuapu",
+          "keyword": "rk15::RK-300::clock_up",
           "duration": "turn"
         }
       ],

@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-304::soridoataku",
+          "keyword": "rk15::RK-304::solid_attack",
           "duration": "turn"
         }
       ],

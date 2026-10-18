@@ -10,7 +10,7 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RK-NNN …」）で残す。
  *
  * 既存の照合と重なるもの: なし（RK-310 は RK12-232-252.b の RK-240 の照合で候補のカードとして使われるだけ）。
- * RK-312 Q1 は RK10-190-210.b の RK-203 の it.todo だったものをここで照合する。
+ * RK-312 Q1 は RK10-190-210.b の RK-203 の it.todo だったものをここ（RK-312）の it.todo に移した（RK-316 が必要なため、まだ照合できない）。
  */
 import { describe, expect, it } from "vitest";
 import type { CardDefinition } from "@rangers-strike/cards";
@@ -32,6 +32,7 @@ import {
   enemyBoard,
   enemyEnter,
   enter,
+  enteredInEnemyTurn,
   enterWithHold,
   expectCatalogText,
   expectChoiceFrom,
@@ -102,22 +103,27 @@ describe("RK-309 ウラタロス（2nd）", () => {
     expectRarityIn("RK-309", ["N"]);
   });
 
-  const power = [faceUp("SPEC-FEMALE3", "f3"), faceUp("SPEC-FEMALE4", "f4"), faceUp("SPEC-FEMALE3M", "fm"), faceUp("SPEC-MALE3", "m3"), faceDown("SPEC-FEMALE3", "fd")];
+  const power = [faceUp("SPEC-FEMALE3", "f3"), faceUp("SPEC-FEMALE4", "f4"), faceUp("SPEC-FEMALE3M", "fm")];
   const fish = (p = power) => ncEnter("RK-309:ur", 2, { power: p }, {}, EXTRA);
 
-  it.fails("RK-309: 【僕に釣られてみる？】NC（3番目）— 自軍パワーゾーンのオモテ向きの、必要パワーを満たしている（パワーゾーンのカード枚数以下の）特徴「女」を持つ S ユニットのカードを1枚選べる（任意）（出典: atwiki/page-1280「必要パワーを満たしている特徴「女」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい」・コメント欄「パワーを満たしていることを確認してからラッシュ」）", () => {
+  it("RK-309: 【僕に釣られてみる？】NC（3番目）— 自軍パワーゾーンのオモテ向きの、必要パワーを満たしている（パワーゾーンのカード枚数以下の）特徴「女」を持つ S ユニットのカードを1枚選べる（任意。パワー3枚なら必要パワー4は対象外。M ユニットも対象外）（出典: atwiki/page-1280「必要パワーを満たしている特徴「女」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい」・コメント欄「パワーを満たしていることを確認してからラッシュ」）", () => {
     const s = fish();
     expectChoiceFrom(s, "player1", "RK-309");
     expect(choiceIds(s)).toEqual(["SPEC-FEMALE3:f3"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-309: パワーゾーンのカードが4枚以上なら必要パワー4の「女」も選べる（そのカード自身も数える）（出典: atwiki/page-1280 コメント欄「特徴「女」を持つユニットがパワーゾーンにいるときの数でしょうかねぇ？／合ってるよ」）", () => {
+  it("RK-309: ウラ向きのカード（ダメージ）と「女」を持たないユニットのカードは選べない（出典: atwiki/page-1280「オモテ向きのカードから」「特徴「女」を持つ」）", () => {
+    const s = fish([faceDown("SPEC-FEMALE3", "fd"), faceUp("SPEC-MALE3", "m3"), faceUp("SPEC-FEMALE3", "f3")]);
+    expect(choiceIds(s)).toEqual(["SPEC-FEMALE3:f3"]);
+  });
+
+  it("RK-309: パワーゾーンのカードが4枚以上なら必要パワー4の「女」も選べる（そのカード自身も数える）（出典: atwiki/page-1280 コメント欄「特徴「女」を持つユニットがパワーゾーンにいるときの数でしょうかねぇ？／合ってるよ」）", () => {
     const s = fish([faceUp("SPEC-FEMALE4", "f4"), ...powerCards(3)]);
     expect(choiceIds(s)).toEqual(["SPEC-FEMALE4:f4"]);
   });
 
-  it.fails("RK-309: 選んだカードは自軍ラッシュエリアに出て、このターンはバトルエリアに出られない（出典: atwiki/page-1280「この効果でラッシュしたユニットは、このターン、バトルエリアに出られない」）", () => {
+  it("RK-309: 選んだカードは自軍ラッシュエリアに出て、このターンはバトルエリアに出られない（出典: atwiki/page-1280「この効果でラッシュしたユニットは、このターン、バトルエリアに出られない」）", () => {
     const s = resolveAll(pick(fish(), "SPEC-FEMALE3:f3"));
     expect(zoneOf(s, "player1", "SPEC-FEMALE3:f3")).toBe("rush");
     expect(canEnter(s, "SPEC-FEMALE3:f3")).toBe(false);
@@ -128,9 +134,18 @@ describe("RK-309 ウラタロス（2nd）", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-309");
   });
 
-  it.todo(
-    "RK-309: 追加条件を持つ「女」のユニットは、追加条件を満たしてラッシュする（「ただし追加条件は満たすこと」。atwiki/page-1280 コメント欄「7-の素体が場にあれば、追加条件を満たしてラッシュ可能」）— 効果のラッシュで追加条件の手続き（素材の選択）を行う手順を本範囲では実装していない（追加条件を持つカードは候補にしない）",
-  );
+  it("RK-309: 追加条件を持つ「女」のユニットは、追加条件を満たして出す（「自分の手札を1枚捨札にする」を実行する）（出典: atwiki/page-1280「（ただし追加条件は満たすこと）」・コメント欄「追加条件を満たしてラッシュ可能」）", () => {
+    let s = ncEnter("RK-309:ur", 2, { power: [faceUp("SPEC-FEMALE-COND", "fc"), ...powerCards(1)], hand: [inst("TST-OP", "h0")] }, {}, EXTRA);
+    expect(choiceIds(s)).toEqual(["SPEC-FEMALE-COND:fc"]);
+    s = resolveAll(pick(s, "SPEC-FEMALE-COND:fc"), ["TST-OP:h0"]);
+    expect(zoneOf(s, "player1", "SPEC-FEMALE-COND:fc")).toBe("rush");
+    expect(zoneOf(s, "player1", "TST-OP:h0")).toBe("discard");
+  });
+
+  it("RK-309: 追加条件を満たせない「女」のユニット（捨札にする手札がない）は選べない（出典: atwiki/page-1280「（ただし追加条件は満たすこと）」）", () => {
+    const s = ncEnter("RK-309:ur", 2, { power: [faceUp("SPEC-FEMALE-COND", "fc"), ...powerCards(1)], hand: [] }, {}, EXTRA);
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-309");
+  });
 });
 
 // ===========================================================================
@@ -147,7 +162,7 @@ describe("RK-310 モモタロス（2nd）", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("RK-310", "mo")] }, "RK-310:mo"))).toBe(true);
   });
 
-  it.fails("RK-310: ※ 特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される（出典: atwiki/page-1279「※これは特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される」）", () => {
+  it("RK-310: ※ 特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される（出典: atwiki/page-1279「※これは特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される」）", () => {
     const s = resolveAll(attack(enemyTurn({ battle: [inst("RK-310", "mo")] }, { battle: [inst("SPEC-FEMALE-ATK", "f")] }), "SPEC-FEMALE-ATK:f", "RK-310:mo", "player2"));
     expect(zoneOf(s, "player2", "SPEC-FEMALE-ATK:f")).toBe("discard");
     expect(zoneOf(s, "player1", "RK-310:mo")).toBe("discard");
@@ -190,7 +205,7 @@ describe("RK-311 キンタロス（2nd）", () => {
     expect(attackTargets(s, "RK-311:kt")).toEqual(["SPEC-C1:e"]);
   });
 
-  it.fails("RK-311: ※ ビークルはユニットの数に数えない（ビークルを含めると多いが、ユニットだけなら同数）（出典: atwiki/page-1281「自軍ユニットの数」）", () => {
+  it("RK-311: ※ ビークルはユニットの数に数えない（ビークルを含めると多いが、ユニットだけなら同数）（出典: atwiki/page-1281「自軍ユニットの数」）", () => {
     const s = enter(board({ rush: [inst("RK-311", "kt"), inst("SPEC-VEHICLE", "v")] }, { battle: [inst("SPEC-C1", "e")] }), "RK-311:kt");
     expect(attackTargets(s, "RK-311:kt")).toEqual(["SPEC-C1:e"]);
   });
@@ -203,7 +218,7 @@ describe("RK-311 キンタロス（2nd）", () => {
     return enemyEnter(s, `${enemyUnit}:e`);
   };
 
-  it.fails("RK-311: 【俺の強さにお前が泣いた】NC（5番目）— 次の相手ターン、バトルエリアに出た敵軍 S ユニットはこれにアタックしなければならない（ほかへのアタック・ストライク・何もしないは選べない）（出典: atwiki/page-1281「次の相手ターン、バトルエリアに出た敵軍Sユニットは、可能ならこれにアタックする」・コメント欄「「何もしない」と「ストライク」を選択できない／そうです」）", () => {
+  it("RK-311: 【俺の強さにお前が泣いた】NC（5番目）— 次の相手ターン、バトルエリアに出た敵軍 S ユニットはこれにアタックしなければならない（ほかへのアタック・ストライク・何もしないは選べない）（出典: atwiki/page-1281「次の相手ターン、バトルエリアに出た敵軍Sユニットは、可能ならこれにアタックする」・コメント欄「「何もしない」と「ストライク」を選択できない／そうです」）", () => {
     const s = nextEnemyTurn(4);
     const acts = unitActions(s, "SPEC-C1:e");
     expect(acts.length).toBeGreaterThan(0);
@@ -243,45 +258,33 @@ describe("RK-312 仮面ライダーキバDF", () => {
     return enterWithHold(s, "RK-312:df", ["TST-OP:cWB0", "TST-OP:cWB1"]);
   };
 
-  it.fails("RK-312: 【ドッガ・サンダースラップ】自軍ターン中に出たとき、このユニットをホールドするかを選べる（任意）（出典: atwiki/page-1365「このユニットをホールドしてもよい」）", () => {
+  it("RK-312: 【ドッガ・サンダースラップ】自軍ターン中に出たとき、このユニットをホールドするかを選べる（任意）（出典: atwiki/page-1365「このユニットをホールドしてもよい」）", () => {
     const s = slap();
     expectChoiceFrom(s, "player1", "RK-312");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-312: ホールドすると、敵軍バトルエリアの、自分の手札の枚数（2）以下の必要パワーの S ユニットから1体選ぶ（強制。M・ラッシュエリアは対象外）（出典: atwiki/page-1365「敵軍バトルエリアから、自分の手札の枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する」）", () => {
+  it("RK-312: ホールドすると、敵軍バトルエリアの、自分の手札の枚数（2）以下の必要パワーの S ユニットから1体選ぶ（強制。M・ラッシュエリアは対象外）（出典: atwiki/page-1365「敵軍バトルエリアから、自分の手札の枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する」）", () => {
     const s = accept(slap());
     expect(cardIn(s, "player1", "RK-312:df")?.commandHeld).toBe(true);
     expect(choiceIds(s)).toEqual(["SPEC-C2:a"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("RK-312: 選んだユニットは撃破される（出典: atwiki/page-1365「撃破する」）", () => {
+  it("RK-312: 選んだユニットは撃破される（出典: atwiki/page-1365「撃破する」）", () => {
     const s = resolveAll(pick(accept(slap()), "SPEC-C2:a"));
     expect(zoneOf(s, "player2", "SPEC-C2:a")).toBe("discard");
   });
 
-  it.fails("RK-312: ホールドしなければ何もしない（出典: atwiki/page-1365「ホールドしてもよい。そうしたとき」）", () => {
+  it("RK-312: ホールドしなければ何もしない（出典: atwiki/page-1365「ホールドしてもよい。そうしたとき」）", () => {
     const s = resolveAll(skip(slap()));
     expect(cardIn(s, "player1", "RK-312:df")?.commandHeld ?? false).toBe(false);
     expect(zoneOf(s, "player2", "SPEC-C2:a")).toBe("battle");
   });
 
-  // atwiki/page-1365 Q1・page-873 Q1「置き換える元のユニットが、まだアタックやストライクを行っていないのであれば、置き換えた後のユニットもアタックやストライクを行うことができます。」
-  it.fails("RK-312: 公式Q&A — 【ドッガ・サンダースラップ】で敵軍 RK-203 ファイズAF を撃破し、捨札からラッシュされたファイズに対して自軍のモーフで置き換えたユニットは、元のユニットがアタック・ストライクしていなければアタック・ストライクできる（出典: atwiki/page-1365 Q1・atwiki/page-873 Q1）", () => {
-    let s = board(
-      { battle: [inst("SPEC-MORPH", "mo")], power: [faceUp("SPEC-MORPH2", "mo2")], rush: [inst("RK-312", "df")], command: releasedCat("WB", 2), hand: deckCards(7, "h") },
-      { battle: [inst("RK-203", "af")], discard: [inst("RK-064", "fz")] },
-    );
-    s = enterWithHold(s, "RK-312:df", ["TST-OP:cWB0", "TST-OP:cWB1"]);
-    s = pick(accept(s), "RK-203:af");
-    for (let i = 0; i < 6 && morphCandidates(s).length === 0 && s.pendingEffectChoice; i++) s = accept(settle(s));
-    s = settle(s);
-    expect(morphCandidates(s)).toEqual(["SPEC-MORPH2:mo2"]);
-    s = settle(pick(s, "SPEC-MORPH2:mo2"));
-    expect(zoneOf(s, "player1", "SPEC-MORPH2:mo2")).toBe("battle");
-    expect(canStrike(s, "SPEC-MORPH2:mo2")).toBe(true);
-  });
+  it.todo(
+    "RK-312: 公式Q&A — 【ドッガ・サンダースラップ】で敵軍 RK-203 ファイズAF を撃破し、捨札からラッシュされたファイズに対して自軍のモーフで置き換えたユニットは、元のユニットがアタック・ストライクしていなければアタック・ストライクできる（出典: atwiki/page-1365 Q1・atwiki/page-873 Q1）— 置き換え元がまだアタック・ストライクを選べる状況は、置き換え元が出たばかりの RK-312 自身（RK-316 キバットバットIII世【フエッスル】で得たモーフ）のときだけ組めるが、RK-316 は本範囲外で【フエッスル】が未実装",
+  );
 
   it.todo(
     "RK-312: 公式Q&A — RK-316 キバットバットIII世【フエッスル】で得たモーフでバトルエリアに出るときも、コマンドを2つホールドする（出典: atwiki/page-1365 Q2）— RK-316 は本範囲外のカード（照合がまだ。【フエッスル】のモーフ付与が未実装）",
@@ -321,7 +324,7 @@ describe("RK-313 仮面ライダーキバDGBKF", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-313: ホールドすると、敵軍 S ユニット（エリアを問わない。M は対象外）から1体選び、持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-1247「敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("RK-313: ホールドすると、敵軍 S ユニット（エリアを問わない。M は対象外）から1体選び、持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-1247「敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
     let s = accept(entered());
     expect(cardIn(s, "player1", "RK-313:dg")?.commandHeld).toBe(true);
     expect(choiceIds(s)).toEqual(["SPEC-C1:a", "SPEC-C2:r"]);
@@ -364,14 +367,14 @@ describe("RK-314 仮面ライダーキバEF", () => {
   const fever = (hand = [inst("RK-245", "kb"), inst("RK-246", "gf"), inst("RK-313", "dg"), inst("RK-315", "hs"), inst("SPEC-C1", "x")], p2: Partial<GameState["players"]["player2"]> = enemy) =>
     enter(board({ rush: [inst("RK-314", "ef")], hand }, p2), "RK-314:ef");
 
-  it.fails("RK-314: 【モンスターフィーバー】自軍ターン中に出るとき、手札の特徴「魔皇力」を持つ、追加条件を持たない S ユニットのカードを1枚選べる（任意。必要パワーに「+」「-」のあるキバDGBKF・飛翔態は対象外）（出典: atwiki/page-1260「自分の手札から特徴「魔皇力」を持つ、追加条件を持たないSユニットのカードを1枚選び相手に見せてもよい」・コメント欄「追加条件無しの制限がなければDGBKにも対応出来たのに」）", () => {
+  it("RK-314: 【モンスターフィーバー】自軍ターン中に出るとき、手札の特徴「魔皇力」を持つ、追加条件を持たない S ユニットのカードを1枚選べる（任意。必要パワーに「+」「-」のあるキバDGBKF・飛翔態は対象外）（出典: atwiki/page-1260「自分の手札から特徴「魔皇力」を持つ、追加条件を持たないSユニットのカードを1枚選び相手に見せてもよい」・コメント欄「追加条件無しの制限がなければDGBKにも対応出来たのに」）", () => {
     const s = fever();
     expectChoiceFrom(s, "player1", "RK-314");
     expect(choiceIds(s)).toEqual(["RK-245:kb", "RK-246:gf"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("RK-314: キバ（RK-245）を見せると、その【ダークネスムーンブレイク】をこのユニットの効果として発動する（このユニットをホールドして敵軍 S ユニットをダメージにする）。見せたカードは手札に残る（出典: atwiki/page-1260「そのユニットカードの効果名を持つ効果を、このユニットの効果として発動する」・カード評価「手札にある仮面ライダーキバなどの効果を使うことができる」）", () => {
+  it("RK-314: キバ（RK-245）を見せると、その【ダークネスムーンブレイク】をこのユニットの効果として発動する（このユニットをホールドして敵軍 S ユニットをダメージにする）。見せたカードは手札に残る（出典: atwiki/page-1260「そのユニットカードの効果名を持つ効果を、このユニットの効果として発動する」・カード評価「手札にある仮面ライダーキバなどの効果を使うことができる」）", () => {
     let s = pick(fever(), "RK-245:kb");
     expect(zoneOf(s, "player1", "RK-245:kb")).toBe("hand");
     s = accept(s);
@@ -382,7 +385,7 @@ describe("RK-314 仮面ライダーキバEF", () => {
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("RK-314: キバGF（RK-246）を見せると【ガルル・ハウリングスラッシュ】を発動する（相手の手札の枚数以下の必要パワーの、敵軍バトルエリアの S ユニット）（出典: atwiki/page-1260・atwiki/page-959）", () => {
+  it("RK-314: キバGF（RK-246）を見せると【ガルル・ハウリングスラッシュ】を発動する（相手の手札の枚数以下の必要パワーの、敵軍バトルエリアの S ユニット）（出典: atwiki/page-1260・atwiki/page-959）", () => {
     const s = accept(pick(fever(undefined, { ...enemy, battle: [inst("SPEC-C1", "a"), inst("SPEC-C2", "b")], hand: deckCards(1, "eh") }), "RK-246:gf"));
     expect(choiceIds(s)).toEqual(["SPEC-C1:a"]);
   });
@@ -393,8 +396,9 @@ describe("RK-314 仮面ライダーキバEF", () => {
     expect(damageOf(s, "player2")).toBe(0);
   });
 
-  it.fails("RK-314: 敵軍ターン中に出るときは発動しない（出典: atwiki/page-1260「自軍ターン中」）", () => {
-    const s = enemyEnter(enemyTurn({ battle: [inst("SPEC-C1", "a")] }, { rush: [inst("RK-314", "ef")], hand: [inst("RK-245", "kb")] }), "RK-314:ef");
+  it("RK-314: 敵軍ターン中に（敵軍 RK-139 ゼロノスAF の効果で）出るときは発動しない（出典: atwiki/page-1260「自軍ターン中」）", () => {
+    const s = enteredInEnemyTurn("RK-314:ef", { hand: [inst("RK-245", "kb")] }, { battle: [inst("SPEC-C1", "a")] }, EXTRA);
+    expect(zoneOf(s, "player1", "RK-314:ef")).toBe("battle");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-314");
   });
 

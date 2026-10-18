@@ -92,6 +92,7 @@ import { getBattleEntryPowerDiscardCount } from "./batch07FieldEffects";
 import { damageGateBlocksEntry } from "./keywordGapRuntime";
 import { rk6BlocksBattleEntry } from "./rk/rk6Fields";
 import { rk14NeedsEntryHold } from "./rk/rk14Fields";
+import { rk15BlocksAttackStrike, rk15RequiresBattleEntry } from "./rk/rk15Fields";
 import { rk8BlocksBattleEntry } from "./rk/rk8UnitEffects";
 import { rk9BlocksBattleEntry } from "./rk/rk9Fields";
 import { rk10BlocksBattleEntry, rk10ElasmoHoldReduction, rk10OmegaIgnoresEntryHold } from "./rk/rk10Fields";
@@ -475,6 +476,8 @@ export function cannotAttackOrStrikeThisTurn(
     if (rs482BlocksAttackStrike(state, playerId, unit.cardId)) return true;
     if (rs579BlocksAttackStrikeOnRushTurn(state, playerId, unit.instanceId)) return true;
     if (rs603BlocksVehicle(state, playerId, unit.cardId)) return true;
+    // RK-295 の※（1番目でなければ）・RK-302【ワームの頂点に立つ男】（rules/rk/rk15Fields.ts）。
+    if (rk15BlocksAttackStrike(state, playerId, unit, rk12UnitFeatures)) return true;
   }
   if (unit.activatedNcEffects?.includes("optional_battle_no_attack")) return true;
   // RK-231 オロチ【潜水】: ホールド状態のときアタックもストライクもできない（ルール: R-ERR-RK231）。
@@ -967,7 +970,9 @@ export function findMandatoryBattleEntries(
       // RS-557 ビンボーガミ【札束の誘惑】（rules/legend1/set8NamedEffectsB.ts）。
       set8BRequiresBattleEntry(state, playerId, card) ||
       // RK-247 仮面ライダーネガ電王【不敵な挑発】（特徴「警察」を持つユニット。rules/rk/rk12Fields.ts）。
-      rk12RequiresBattleEntry(state, rk12UnitFeatures(state, playerId, card))
+      rk12RequiresBattleEntry(state, rk12UnitFeatures(state, playerId, card)) ||
+      // RK-308 リュウタロス（2nd）の※（敵軍バトルエリアにユニットがあれば。rules/rk/rk15Fields.ts）。
+      rk15RequiresBattleEntry(state, playerId, card)
     ) {
       mandatory.push(card);
     }

@@ -48,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-301::ekusutendoraidatoshi",
+          "keyword": "rk15::RK-301::extend_rider_drop",
           "duration": "turn"
         }
       ],

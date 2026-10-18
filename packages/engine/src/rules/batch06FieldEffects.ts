@@ -1,3 +1,4 @@
+import { rk15RequiredDefender } from "./rk/rk15UnitEffects";
 import type { GameState, PendingBattleEntry, PlayerId } from "../types/game";
 import { openZubazubanKick } from "./legend1/set6NamedEffectsB";
 import {
@@ -424,7 +425,12 @@ export function applyShinobiBallRequiredDefender(
   if (state.activePlayer !== enteringPlayerId) return entry;
   const shinobiOwnerId = opponent(enteringPlayerId);
   const shinobiId = findShinobiBallOnBattle(state, shinobiOwnerId);
-  if (!shinobiId) return entry;
+  if (!shinobiId) {
+    // RK-311 キンタロス（2nd）【俺の強さにお前が泣いた】（次の相手ターン。rules/rk/rk15UnitEffects.ts）。
+    return rk15RequiredDefender(state, enteringPlayerId, entry, (defenderId) =>
+      canAttackDefender(state, enteringPlayerId, entry.instanceId, shinobiOwnerId, defenderId, canAttackRushWithYellowThunder),
+    );
+  }
   const unit = state.players[enteringPlayerId].battle.find(
     (c) => c.instanceId === entry.instanceId,
   );

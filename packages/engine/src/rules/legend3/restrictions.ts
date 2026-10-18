@@ -53,6 +53,7 @@ import {
 } from "../pendingChoices";
 import { keywordAllowsAttackIntoRush } from "../keywordGapRuntime";
 import { rk13AttackerCanAttackRush, rk13DefenderBlocksAttack } from "../rk/rk13Fields";
+import { rk15DefenderBlocksAttack } from "../rk/rk15Fields";
 
 export function hasDarkDealInRush(state: GameState, playerId: PlayerId): boolean {
   return state.players[playerId].rush.some(
@@ -361,10 +362,11 @@ function noteOtherNcAttackRestriction(
     if (defFeatures.includes("獣")) return true;
   }
 
-  // RK-311: can't attack if own unit count > enemy unit count
+  // RK-311: can't attack if own unit count > enemy unit count（ビークルはユニットに数えない。atwiki/page-1281「自軍ユニットの数」）
   if (atkId === "RK-311") {
-    const ownCount = atkPlayer.rush.length + atkPlayer.battle.length;
-    const enemyCount = defPlayer.rush.length + defPlayer.battle.length;
+    const units = (cards: CardInstance[]) => cards.filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit").length;
+    const ownCount = units([...atkPlayer.rush, ...atkPlayer.battle]);
+    const enemyCount = units([...defPlayer.rush, ...defPlayer.battle]);
     if (ownCount > enemyCount) return true;
   }
 
@@ -497,6 +499,8 @@ export function canAttackDefender(
   if (defenderCard && rk13DefenderBlocksAttack(state, attackerPlayerId, defenderPlayerId, defenderCard)) return false;
   // RK-124 スネークオルフェノク【人を守る決意】（rules/rk/rk6Fields.ts）。
   if (defenderCard && rk6SnakeBlocksSelection(state, attackerPlayerId, defenderPlayerId, defenderCard, unitFeatures)) return false;
+  // RK-300 カブトエクステンダー【クロックアップ】（rules/rk/rk15Fields.ts）。
+  if (defenderCard && rk15DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard, unitFeatures)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;

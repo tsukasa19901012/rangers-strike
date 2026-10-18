@@ -680,6 +680,15 @@ export type PendingEffectChoice = {
     targetBp?: number;
     selfBp?: number;
   };
+  /** ザ・マスクドライダーEXP vol.4 RK-295〜RK-315 の選択の続き（rules/rk/rk15UnitEffects.ts）。 */
+  rk15Meta?: {
+    /** RK-296: 選べる必要パワーの数字の合計の残り。 */
+    budget?: number;
+    /** RK-298: 送る敵軍ユニット。RK-306: 選んだ自軍ユニット。RK-303: 撃破されたユニット。 */
+    picked?: string;
+    /** RK-305: 1つ目にリリースしたコマンドの本来のカテゴリ。 */
+    categories?: string[];
+  };
   /** RK-208【迎撃の毒矢】: この選択に答えたら（発動を宣言したら）クレインの窓を開く（rules/rk/rk10UnitEffects.ts）。 */
   rk10CraneWatch?: { craneOwner: PlayerId; rushedOwner: PlayerId; rushedInstanceId: string };
   /** ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 の選択の続き（rules/rk/rk9UnitEffects.ts）。 */

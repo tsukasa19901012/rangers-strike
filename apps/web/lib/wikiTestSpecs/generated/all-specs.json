@@ -6276,7 +6276,7 @@
     "expectedDslKeywords": [
       "no_attack_strike_unless_battle_slot_1",
       "not_selectable_except_attack",
-      "rk_fx::RK-295::nitsu"
+      "rk15::RK-295::apex"
     ],
     "bp": 2000,
     "sp": "special",
@@ -6293,7 +6293,7 @@
       "【ライダーキック】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-296::raidakiku"
+      "rk15::RK-296::rider_kick"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -6310,7 +6310,7 @@
       "【ライダーパンチ】"
     ],
     "expectedDslKeywords": [
-      "raidapanchi_discard_enemy_power_faceup"
+      "rk15::RK-297::rider_punch"
     ],
     "bp": 2000,
     "sp": null,
@@ -6328,7 +6328,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_3000",
-      "rk_fx::RK-298::mukishino"
+      "rk15::RK-298::naked_intent"
     ],
     "bp": 2000,
     "sp": null,
@@ -6346,7 +6346,7 @@
     ],
     "expectedDslKeywords": [
       "not_selectable_except_attack",
-      "rk_fx::RK-299::dakuraidakiku"
+      "rk15::RK-299::dark_rider_kick"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -6365,7 +6365,7 @@
     "expectedDslKeywords": [
       "ride_without_rc_feat_e58aa0e9809f",
       "ride_bp_boost_500",
-      "rk_fx::RK-300::kurokuapu"
+      "rk15::RK-300::clock_up"
     ],
     "sp": null,
     "size": "S"
@@ -6383,7 +6383,7 @@
     "expectedDslKeywords": [
       "ride_without_rc_feat_e58aa0e9809f",
       "ride_bp_boost_500",
-      "rk_fx::RK-301::ekusutendoraidatoshi"
+      "rk15::RK-301::extend_rider_drop"
     ],
     "sp": null,
     "size": "S"
@@ -6399,7 +6399,7 @@
       "【ワームの頂点に立つ男】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-302::wamunonitsu"
+      "rk15::RK-302::worm_apex"
     ],
     "bp": 4000,
     "sp": null,
@@ -6417,7 +6417,7 @@
     ],
     "expectedDslKeywords": [
       "deck_unlimited",
-      "rk_fx::RK-303::no_e693ac"
+      "rk15::RK-303::mimic_release"
     ],
     "bp": 500,
     "sp": null,
@@ -6435,7 +6435,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "rk_fx::RK-304::soridoataku"
+      "rk15::RK-304::solid_attack"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -6453,7 +6453,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "rk_fx::RK-305::no_2"
+      "rk15::RK-305::special_edition"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -6471,7 +6471,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "rk_fx::RK-306::dainamikuchopu"
+      "rk15::RK-306::dynamic_chop"
     ],
     "bp": 4000,
     "sp": null,
@@ -6489,7 +6489,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "rk_fx::RK-307::wairudoshoto"
+      "rk15::RK-307::wild_shot"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -6508,7 +6508,7 @@
     "expectedDslKeywords": [
       "cannot_attack_feature_獣",
       "auto_battle_entry_if_enemy_battle",
-      "rk_fx::RK-308::hakochiantahai"
+      "rk15::RK-308::cat_not_you"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -6525,7 +6525,7 @@
       "【僕に釣られてみる？】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-309::niraretemiru"
+      "rk15::RK-309::fishing"
     ],
     "bp": 1000,
     "sp": "1/4",
@@ -6562,7 +6562,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack_if_own_unit_count_exceeds_enemy",
-      "rk_fx::RK-311::nosaniogaita"
+      "rk15::RK-311::tears"
     ],
     "bp": 5000,
     "sp": null,
@@ -6579,7 +6579,8 @@
       "【ドッガ・サンダースラップ】"
     ],
     "expectedDslKeywords": [
-      "require_command_hold_entry"
+      "require_command_hold_entry",
+      "rk15::RK-312::dogga_thunder_slap"
     ],
     "bp": 5000,
     "sp": null,
@@ -6596,7 +6597,8 @@
       "【ダークネスムーンブレイク】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk15::RK-313::darkness_moon_break"
     ],
     "bp": 4500,
     "sp": "1/3",
@@ -6614,7 +6616,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hand_rush_feat_e9ad94e79a87e58a9b_s_on_battle"
+      "rk15::RK-314::monster_fever"
     ],
     "bp": 5000,
     "sp": "1/3",

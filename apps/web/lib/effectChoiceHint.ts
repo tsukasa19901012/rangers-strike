@@ -412,6 +412,30 @@ const RK14_CHOICE_UI: Record<string, { label: string; hint: string }> = {
   rk293_binding_whip_enemy: { label: "捕縛する鞭", hint: "ホールドする自分のコマンドを選んでください（ホールドしないとラッシュしたユニットはこのターンバトルエリアに出られません。しないなら「スキップ」）" },
 };
 
+/** ザ・マスクドライダーEXP vol.4 RK-295〜RK-315 のカード固有の選択（engine rules/rk/rk15UnitEffects.ts・rk12UnitEffects.ts）の表示名と案内文。 */
+const RK15_CHOICE_UI: Record<string, { label: string; hint: string }> = {
+  rk296_rider_kick: { label: "ライダーキック", hint: "持ち主のパワーゾーンに送る敵軍バトルエリアのユニットを選んでください（必要パワーの合計まで。1体以上選んだら確定できます。しないなら「スキップ」）" },
+  rk297_rider_punch: { label: "ライダーパンチ", hint: "捨札にする、敵軍パワーゾーンのオモテ向きのカードを選んでください（しないなら「スキップ」）" },
+  rk298_naked_intent: { label: "むき出しの殺意", hint: "敵軍バトルエリアのただ1体の S ユニットを持ち主のパワーゾーンに送りますか？" },
+  rk299_dark_rider_kick: { label: "ダークライダーキック", hint: "リリースする敵軍のホールド状態のコマンドを3つ、1つずつ選んでください（しないなら「スキップ」）" },
+  rk301_extend_rider_drop: { label: "エクステンドライダー落とし", hint: "持ち主のパワーゾーンに送る、本来の BP が8000以下の敵軍ユニットを選んでください（しないなら「スキップ」）" },
+  rk303_mimic_release: { label: "擬態の解除", hint: "自軍ラッシュエリアに出す、手札の「ワームサナギ体」を選んでください（しないなら「スキップ」）" },
+  rk304_solid_attack: { label: "ソリッドアタック", hint: "持ち主のパワーゾーンに送る、ホールド状態の敵軍 S ユニットを選んでください（しないなら「スキップ」）" },
+  rk305_special_first: { label: "俺の必殺技特別編", hint: "1つ目にリリースする敵軍コマンドを選んでください（このカードの本来のカテゴリで撃破するユニットが決まります。しないなら「スキップ」）" },
+  rk305_special_second: { label: "俺の必殺技特別編", hint: "2つ目にリリースする敵軍コマンドを選んでください（このカードの本来の必要パワーで撃破するユニットが決まります）" },
+  rk306_chop_own: { label: "ダイナミックチョップ", hint: "持ち主のパワーゾーンに送る自軍ユニットを選んでください（本来の BP がこのユニットの BP 以下）" },
+  rk306_chop_enemy: { label: "ダイナミックチョップ", hint: "持ち主のパワーゾーンに送る敵軍ユニットを選んでください（本来の BP がこのユニットの BP 以下）" },
+  rk307_wild_shot: { label: "ワイルドショット", hint: "撃破する、敵軍ラッシュエリアの必要パワー3以下のユニットを選んでください" },
+  rk308_cat_return: { label: "猫はこっち、アンタは嫌い", hint: "手札に戻す、自軍パワーゾーンの特徴「獣」を持つユニットカードを選んでください（しないなら「スキップ」）" },
+  rk308_cat_destroy: { label: "猫はこっち、アンタは嫌い", hint: "撃破する、敵軍ラッシュエリアの本来の BP が3000以下のユニットを選んでください" },
+  rk309_fishing: { label: "僕に釣られてみる？", hint: "自軍ラッシュエリアに出す、自軍パワーゾーンの特徴「女」を持つ S ユニットのカードを選んでください（このターンはバトルエリアに出られません。しないなら「スキップ」）" },
+  rk312_dogga_thunder_slap: { label: "ドッガ・サンダースラップ", hint: "このユニットをホールドしますか？（自分の手札の枚数以下の必要パワーの敵軍 S ユニットを1体撃破します）" },
+  rk312_dogga_thunder_slap_target: { label: "ドッガ・サンダースラップ", hint: "撃破する敵軍バトルエリアの S ユニットを選んでください" },
+  rk313_darkness_moon_break: { label: "ダークネスムーンブレイク", hint: "このユニットをホールドしますか？（敵軍 S ユニットを1体ダメージにします）" },
+  rk313_darkness_moon_break_target: { label: "ダークネスムーンブレイク", hint: "持ち主のパワーゾーンにダメージにして置く敵軍 S ユニットを選んでください" },
+  rk314_monster_fever: { label: "モンスターフィーバー", hint: "相手に見せる、手札の特徴「魔皇力」を持つ S ユニットのカードを選んでください（その効果をこのユニットの効果として発動します。しないなら「スキップ」）" },
+};
+
 /** 好きな数を選ぶ選択の「選び終える」（engine SET9A_DONE と同じ値）。 */
 export const SET9A_DONE_CHOICE = "__set9a_done__";
 
@@ -457,7 +481,8 @@ export function effectChoiceHint(
     RK11_CHOICE_UI[pending.effectId] ??
     RK12_CHOICE_UI[pending.effectId] ??
     RK13_CHOICE_UI[pending.effectId] ??
-    RK14_CHOICE_UI[pending.effectId];
+    RK14_CHOICE_UI[pending.effectId] ??
+    RK15_CHOICE_UI[pending.effectId];
   if (set7d) return set7d.hint;
   const label = EFFECT_LABELS[pending.effectId] ?? pending.effectId;
   switch (pending.kind) {
@@ -664,6 +689,7 @@ export function effectChoiceTitle(
     RK12_CHOICE_UI[pending.effectId]?.label ??
     RK13_CHOICE_UI[pending.effectId]?.label ??
     RK14_CHOICE_UI[pending.effectId]?.label ??
+    RK15_CHOICE_UI[pending.effectId]?.label ??
     RIDER_EFFECT_UI_LABELS[pending.effectId] ??
     EFFECT_LABELS[pending.effectId] ??
     pending.effectId;

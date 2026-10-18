@@ -21,6 +21,7 @@ import { rk2FieldBpBonus } from "./rk/rk2UnitEffects";
 import { rk9FieldBpBonus } from "./rk/rk9Fields";
 import { rk12FieldBpBonus } from "./rk/rk12Fields";
 import { rk14FieldBpBonus } from "./rk/rk14Fields";
+import { rk15FieldBpBonus } from "./rk/rk15Fields";
 import { rk5FieldBpBonus } from "./rk/rk5Fields";
 import { rk6FieldBpBonus } from "./rk/rk6Fields";
 import { anyOtherBaseLargeUnit } from "./legend1/set8NamedEffectsB";
@@ -268,6 +269,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += rk12FieldBpBonus(instance);
   // RK-288【デルタムーバー】（このターン、敵軍バトルエリアの S ユニットは BP-500。rules/rk/rk14Fields.ts）。
   if (role === "general") bonus += rk14FieldBpBonus(state, playerId, instance);
+  // RK-295【頂点に立つ男】（NC が成立したターン、パワーゾーンの枚数の差1枚につき BP+1000。rules/rk/rk15Fields.ts）。
+  if (role === "general") bonus += rk15FieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

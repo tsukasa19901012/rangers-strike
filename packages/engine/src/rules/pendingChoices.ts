@@ -160,6 +160,7 @@ import { isRk11ChoiceEffect, tryConfirmRk11Choice, tryResolveRk11Choice, trySkip
 import { isRk12ChoiceEffect, tryConfirmRk12Choice, tryResolveRk12Choice, trySkipRk12Choice } from "./rk/rk12UnitEffects";
 import { isRk13ChoiceEffect, tryConfirmRk13Choice, tryResolveRk13Choice, trySkipRk13Choice } from "./rk/rk13UnitEffects";
 import { isRk14ChoiceEffect, tryConfirmRk14Choice, tryResolveRk14Choice, trySkipRk14Choice } from "./rk/rk14UnitEffects";
+import { isRk15ChoiceEffect, tryConfirmRk15Choice, tryResolveRk15Choice, trySkipRk15Choice } from "./rk/rk15UnitEffects";
 import { filthyAirActive, isOtherLinesChoiceEffect, tryOtherLinesBattleToRush, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
@@ -671,6 +672,7 @@ export function isValidEffectChoiceTarget(
     isRk12ChoiceEffect(pending.effectId) ||
     isRk13ChoiceEffect(pending.effectId) ||
     isRk14ChoiceEffect(pending.effectId) ||
+    isRk15ChoiceEffect(pending.effectId) ||
     isOtherLinesChoiceEffect(pending.effectId) ||
     isSet9BChoiceEffect(pending.effectId) ||
     isSet8BChoiceEffect(pending.effectId) ||
@@ -2052,6 +2054,8 @@ export function applyConfirmEffectChoice(
   if (rk13) return rk13;
   const rk14 = tryConfirmRk14Choice(state, playerId);
   if (rk14) return rk14;
+  const rk15 = tryConfirmRk15Choice(state, playerId);
+  if (rk15) return rk15;
   if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
     // RS-472【現場への搬送】: 「…まで好きな数選び」— 選んだところで確定し、山札をシャッフルする。
     return finishChoice(finishSiteTransportDeck(state, pending), pending, String(pending.selectedInstanceIds?.length ?? 0));
@@ -3045,6 +3049,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (rk13) return rk13;
   const rk14 = trySkipRk14Choice(state, playerId);
   if (rk14) return rk14;
+  const rk15 = trySkipRk15Choice(state, playerId);
+  if (rk15) return rk15;
   const otherLines = trySkipOtherLinesChoice(state, playerId);
   if (otherLines) return otherLines;
   const abduction = skipAbductionChoice(state, playerId);
@@ -3368,6 +3374,8 @@ export function applyEffectChoiceSelect(
   if (rk13) return rk13;
   const rk14 = tryResolveRk14Choice(state, playerId, instanceId);
   if (rk14) return rk14;
+  const rk15 = tryResolveRk15Choice(state, playerId, instanceId);
+  if (rk15) return rk15;
   const otherLines = tryResolveOtherLinesChoice(state, playerId, instanceId);
   if (otherLines) return otherLines;
   const set9b = tryResolveSet9BChoice(state, playerId, instanceId);

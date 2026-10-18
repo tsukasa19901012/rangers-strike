@@ -47,11 +47,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-299::dakuraidakiku",
+          "keyword": "rk15::RK-299::dark_rider_kick",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

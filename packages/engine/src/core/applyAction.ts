@@ -365,7 +365,7 @@ import {
   openBattleEntryOrRideOffChoice,
 } from "../rules/battleEntry";
 import { resolveRidingComboOnRideOff } from "../rules/ridingComboEffects";
-import { beginKamenRideDeploy, tryExtendRiderComboOnRush } from "../rules/riderKickEffects";
+import { beginKamenRideDeploy } from "../rules/riderKickEffects";
 import {
   activateFieldAbility,
   consumeRideShooterRushRule,
@@ -2319,17 +2319,8 @@ function applyActionCore(
         nextState = openReorderEnemyBattle(nextState, playerId, found.card);
       }
 
-      // RK-301 等: ライドされている指定ビークルからのコンビネーション（配置時）。
-      if (!nextState.pendingEffectChoice && !rushFinal.counterPending) {
-        const extendCombo = tryExtendRiderComboOnRush(
-          nextState,
-          playerId,
-          found.card.cardId,
-          handFound.card.instanceId,
-          playerId,
-        );
-        if (extendCombo) nextState = extendCombo;
-      }
+      // RK-301 ガタックエクステンダー【エクステンドライダー落とし】はバトルエリアに出たときのコンビネーション（rules/rk/rk15UnitEffects.ts）。
+      // ラッシュでは発動しない。
 
       const mainLog = buildLogEntry(
         playerId,

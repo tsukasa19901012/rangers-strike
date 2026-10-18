@@ -6,6 +6,7 @@ import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects"
 import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
 import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
 import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
+import { rk15WinButDestroyed } from "./rk/rk15UnitEffects";
 import { rk13OnAttackWin, rk13OnBattleDestroy } from "./rk/rk13UnitEffects";
 import { rk13BattleUsesPrintedBp, rk13BlocksResist, rk13PrintedBp } from "./rk/rk13Fields";
 import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
@@ -1494,11 +1495,14 @@ export function resolveBattlePendingCore(
   const venomDefender =
     !destroyDefender &&
     (rk2VenomDestroys(battleState, defenderOwner, refreshedDefenderFound.card, refreshedAttackerFound.card) ||
-      rk9WinButDestroyed(battleState, defenderOwner, refreshedDefenderFound.card, refreshedAttackerFound.card));
+      rk9WinButDestroyed(battleState, defenderOwner, refreshedDefenderFound.card, refreshedAttackerFound.card) ||
+      // RK-310 モモタロス（2nd）の※（「女」とバトルしたとき、バトルに勝っても撃破される。rules/rk/rk15UnitEffects.ts）。
+      rk15WinButDestroyed(battleState, defenderOwner, refreshedDefenderFound.card, refreshedAttackerFound.card));
   const venomAttacker =
     !destroyAttacker &&
     (rk2VenomDestroys(battleState, attackerId, refreshedAttackerFound.card, refreshedDefenderFound.card) ||
-      rk9WinButDestroyed(battleState, attackerId, refreshedAttackerFound.card, refreshedDefenderFound.card));
+      rk9WinButDestroyed(battleState, attackerId, refreshedAttackerFound.card, refreshedDefenderFound.card) ||
+      rk15WinButDestroyed(battleState, attackerId, refreshedAttackerFound.card, refreshedDefenderFound.card));
 
   const finalDestroyDefender = destroyDefender || winButDefenderSelfDestruct || reflectBarrierDefender || venomDefender;
 

@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-307::wairudoshoto",
+          "keyword": "rk15::RK-307::wild_shot",
           "duration": "turn"
         }
       ],

@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-302::wamunonitsu",
+          "keyword": "rk15::RK-302::worm_apex",
           "duration": "permanent"
         }
       ],

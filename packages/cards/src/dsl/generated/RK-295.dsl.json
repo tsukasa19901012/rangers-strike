@@ -63,7 +63,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-295::nitsu",
+          "keyword": "rk15::RK-295::apex",
           "duration": "turn"
         }
       ],

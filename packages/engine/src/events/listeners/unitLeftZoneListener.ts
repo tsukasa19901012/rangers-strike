@@ -6,6 +6,7 @@ import { openRk10OmegaDraw } from "../../rules/rk/rk10UnitEffects";
 import { openRk12CastleDoranDraw } from "../../rules/rk/rk12UnitEffects";
 import { applyRk13OnUnitLeft } from "../../rules/rk/rk13UnitEffects";
 import { applyRk14OnUnitLeft } from "../../rules/rk/rk14UnitEffects";
+import { applyRk15OnUnitLeft } from "../../rules/rk/rk15UnitEffects";
 
 export const unitLeftZoneListener: EventListener = (event, state) => {
   const leaveEvent = event as UnitLeftZoneEvent;
@@ -35,6 +36,8 @@ export const unitLeftZoneListener: EventListener = (event, state) => {
     nextState = applyRk13OnUnitLeft(nextState, leaveEvent);
     // RK-283【契約解除者の捕食】・RK-292【三つの魂】（rules/rk/rk14UnitEffects.ts）。
     nextState = applyRk14OnUnitLeft(nextState, leaveEvent);
+    // RK-302【ワームの頂点に立つ男】の後半・RK-303【擬態の解除】（rules/rk/rk15UnitEffects.ts）。
+    nextState = applyRk15OnUnitLeft(nextState, leaveEvent);
   }
   return {
     state: nextState,

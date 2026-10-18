@@ -549,16 +549,41 @@ CHOICE_RESOLVERS[NEGATAROS_EFFECT_ID] = (state, playerId, instanceId) => {
 CHOICE_SKIPPERS[NEGATAROS_EFFECT_ID] = simpleSkip();
 
 // ---------------------------------------------------------------------------
-// 「自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、…」（RK-237・RK-245・RK-246）
+// 「自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、…」（RK-237・RK-245・RK-246・RK-312・RK-313）
 // ホールド状態で出たときはホールドできないので発動しない（RK-245 カード評価「ホールド状態で場に出なければならず、そのままでは能力は使えない」）。
+// RK-312・RK-313（rules/rk/rk15UnitEffects.ts の rk15:: キーワード）と、RK-314【モンスターフィーバー】で発動する効果（openRk12SelfHold）も同じ処理。
 
 const SELF_HOLD_EFFECTS: Record<string, string> = {
   "RK-237": "rk237_aqua_tornado",
   "RK-245": "rk245_darkness_moon_break",
   "RK-246": "rk246_garulu_howling_slash",
+  "RK-312": "rk312_dogga_thunder_slap",
+  "RK-313": "rk313_darkness_moon_break",
 };
 
-function applySelfHold(cardId: string) {
+/** 自分をホールドする効果を持つカード（RK-314【モンスターフィーバー】で効果を発動できるカード）か。 */
+export function isRk12SelfHoldCard(cardId: string): string | undefined {
+  return Object.keys(SELF_HOLD_EFFECTS).find((id) => isSameCardIdentity(cardId, id));
+}
+
+/**
+ * copiedCardId の「このユニットをホールドしてもよい。そうしたとき、…」を、場の selfInstanceId のユニットの効果として開く（ホールドできなければ何もしない）。
+ * sourceCardId は選択に表示するカード（RK-314【モンスターフィーバー】ならキバEF）。
+ */
+export function openRk12SelfHold(
+  state: GameState,
+  ctx: { playerId: PlayerId; phasePlayerId: PlayerId; selfInstanceId: string },
+  copiedCardId: string,
+  sourceCardId: string = copiedCardId,
+): GameState {
+  const effectId = SELF_HOLD_EFFECTS[copiedCardId];
+  if (!effectId || state.activePlayer !== ctx.playerId) return state;
+  const self = state.players[ctx.playerId].battle.find((c) => c.instanceId === ctx.selfInstanceId);
+  if (!self || self.commandHeld) return state;
+  return openOrQueue(state, confirmChoice({ playerId: ctx.playerId, phasePlayerId: ctx.phasePlayerId, sourceInstanceId: ctx.selfInstanceId }, sourceCardId, effectId));
+}
+
+export function applySelfHold(cardId: string) {
   return (state: GameState, ctx: GrantKeywordContext): GrantKeywordResult => {
     if (state.activePlayer !== ctx.playerId) return { state, detail: `${cardId}:enemy_turn` };
     const selfId = ctx.triggerSourceInstanceId;
@@ -578,13 +603,26 @@ function afterSelfHold(state: GameState, playerId: PlayerId, cardId: string, pen
     if (ids.length === 0) return undefined;
     return { ...next, effectId: "rk237_aqua_tornado_pick", kind: "select_unit", validInstanceIds: ids };
   }
-  if (cardId === "RK-245") {
-    // 「敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。」（atwiki/page-876）。エリアを問わない。
+  if (cardId === "RK-245" || cardId === "RK-313") {
+    // 「敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。」（RK-245 atwiki/page-876・RK-313 atwiki/page-1247）。エリアを問わない。
     const ids = fieldUnits(state, enemyId)
-      .filter((c) => rk1IsSmallNow(state, c) && selectableEnemy(state, playerId, "RK-245", c))
+      .filter((c) => rk1IsSmallNow(state, c) && selectableEnemy(state, playerId, cardId, c))
       .map((c) => c.instanceId);
     if (ids.length === 0) return undefined;
-    return { ...next, effectId: "rk245_darkness_moon_break_target", kind: "select_unit", validInstanceIds: ids, unitDestination: "power", placeAsDamage: true };
+    return { ...next, effectId: `${SELF_HOLD_EFFECTS[cardId]}_target`, kind: "select_unit", validInstanceIds: ids, unitDestination: "power", placeAsDamage: true };
+  }
+  if (cardId === "RK-312") {
+    // RK-312【ドッガ・サンダースラップ】「敵軍バトルエリアから、自分の手札の枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。」
+    // （atwiki/page-1365）。手札の枚数はホールドした後の今の枚数。
+    const handCount = state.players[playerId].hand.length;
+    const ids = state.players[enemyId].battle
+      .filter((c) => {
+        const n = costNumber(state, c.cardId);
+        return isUnitCard(state, c.cardId) && rk1IsSmallNow(state, c) && Number.isFinite(n) && n <= handCount && selectableEnemy(state, playerId, "RK-312", c);
+      })
+      .map((c) => c.instanceId);
+    if (ids.length === 0) return undefined;
+    return { ...next, effectId: "rk312_dogga_thunder_slap_target", kind: "select_unit", validInstanceIds: ids, unitDestination: "discard" };
   }
   // RK-246「敵軍バトルエリアから相手の手札の枚数以下の必要パワーの数字を持つSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。」（atwiki/page-959）
   const handCount = state.players[enemyId].hand.length;
