@@ -1,4 +1,5 @@
 import { noteEngineSideEffect } from "./sideEffects";
+import { memoizeInSearch } from "./searchCache";
 import { isInstancePlacedAnywhere } from "./helpers";
 import { rk6RecordSnakeSelected } from "../rules/rk/rk6Fields";
 import { rk6SideBasherOnEntry } from "../rules/rk/rk6UnitEffects";
@@ -29,7 +30,7 @@ import { continueFieldAbilityAfterLeave } from "../rules/fieldActivatedAbilities
 import { resumeAbductionAfterChase } from "../rules/abduction";
 import { applyKyouryuumaru, canUseKyouryuumaru, filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import { currentShuffleEpoch } from "./deckShuffle";
-import { runWithStateRng } from "./rng";
+import { hasActiveEngineRng, runWithStateRng } from "./rng";
 import { applySwordTornadoAfterShuffle } from "../rules/legend1/set8NamedEffectsC";
 import {
   applySet7AStrikeCounter,
@@ -962,6 +963,18 @@ function settleEffectRushes(before: GameState, after: GameState): GameState {
 let applyActionDepth = 0;
 
 export function applyAction(
+  state: GameState,
+  action: GameAction,
+  options?: { trustLegality?: boolean },
+): ActionResult {
+  // CPU の探索の間（core/searchCache.ts）は、入口の呼び出し（入れ子でない applyAction）の結果を状態・アクションごとに使い回す。
+  // 結果は状態とアクションだけで決まる（乱数は状態の rngState から作る。イベント ID 等の採番は状態に残らない）。
+  if (applyActionDepth !== 0 || hasActiveEngineRng()) return applyActionUncached(state, action, options);
+  const key = `apply:${options?.trustLegality ? "T" : ""}${JSON.stringify(action)}`;
+  return memoizeInSearch(state, key, () => applyActionUncached(state, action, options));
+}
+
+function applyActionUncached(
   state: GameState,
   action: GameAction,
   options?: { trustLegality?: boolean },

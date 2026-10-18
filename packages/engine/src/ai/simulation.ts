@@ -2,6 +2,7 @@ import type { GameAction } from "../types/actions";
 import type { GameState, PlayerId } from "../types/game";
 import { applyAction } from "../core/applyAction";
 import { getLegalActions } from "../core/legalActions";
+import { memoizeInSearch } from "../core/searchCache";
 import { opponent } from "../core/helpers";
 import { quickActionPriority } from "./helpers";
 import { isCpuTurn, pickCpuAction, type PickCpuActionOptions } from "./level1";
@@ -107,6 +108,17 @@ function opponentSearchOptions(
 
 /** 相手のリアクションウィンドウを解決。浅い探索で相手の最善手も考慮する。 */
 export function resolveOpponentResponses(
+  state: GameState,
+  playerId: PlayerId,
+  options?: SearchOptions,
+): GameState {
+  // 同じ状態からの読みは同じ結果になる（探索の間だけ使い回す。core/searchCache.ts）。
+  return memoizeInSearch(state, `responses:${playerId}:${JSON.stringify(options ?? null)}`, () =>
+    resolveOpponentResponsesUncached(state, playerId, options),
+  );
+}
+
+function resolveOpponentResponsesUncached(
   state: GameState,
   playerId: PlayerId,
   options?: SearchOptions,

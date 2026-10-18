@@ -2,6 +2,7 @@ import { canUseKyouryuumaru } from "../rules/legend1/otherLinesNamedEffects";
 import { lionArmorAvailable } from "../rules/legend1/set6NamedEffects348";
 import { runWithStateRng } from "./rng";
 import { engineSideEffectCount } from "./sideEffects";
+import { activeSearchCache } from "./searchCache";
 import { listSet8BHandActivations } from "../rules/legend1/set8NamedEffectsB";
 import { hasTurnRuleModifier } from "./scopedModifiers";
 import { isHoldToActivateNc } from "../rules/holdToActivate";
@@ -1871,24 +1872,10 @@ export function getActionPlayerId(state: GameState): PlayerId {
 
 /**
  * 同じ状態のオブジェクトに対する合法手の一覧の使い回し（CPU の探索は、同じ状態の合法手を探索と applyAction の合法判定で
- * 何度も調べる）。withLegalActionsCache の中だけで有効にし、抜けたら捨てる（外では状態を書き換えてから調べ直す呼び出し方
- * （テストの状態の組み立て等）があるので覚えない）。
+ * 何度も調べる）。core/searchCache.ts の表が有効な間（CPU の探索の間）だけ使う。
  * 計算の間に乱数・applyAction・ID の採番などを一度も行わなかったときだけ覚える（そのときは状態だけで結果が決まる。
  * core/sideEffects.ts）。使い回すアクションは書き換えられないよう凍結し、配列は呼び出しごとに新しく作る。
  */
-let legalActionsCache: WeakMap<GameState, readonly GameAction[]> | null = null;
-
-/** fn の間、同じ状態のオブジェクトの合法手の一覧を使い回す（入れ子の呼び出しは外側の表を使う）。fn の間は状態を書き換えないこと。 */
-export function withLegalActionsCache<T>(fn: () => T): T {
-  if (legalActionsCache) return fn();
-  legalActionsCache = new WeakMap();
-  try {
-    return fn();
-  } finally {
-    legalActionsCache = null;
-  }
-}
-
 function deepFreeze<T>(value: T): T {
   if (value && typeof value === "object" && !Object.isFrozen(value)) {
     Object.freeze(value);
@@ -1899,7 +1886,7 @@ function deepFreeze<T>(value: T): T {
 
 export function getLegalActions(input: GameState): GameAction[] {
   if (input.winner) return [];
-  const cache = legalActionsCache;
+  const cache = activeSearchCache()?.legalActions;
   const cached = cache?.get(input);
   if (cached) return [...cached];
   const sideEffectsBefore = engineSideEffectCount();
