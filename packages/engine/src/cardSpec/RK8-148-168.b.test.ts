@@ -18,6 +18,7 @@ import { validateDeckEntries } from "@rangers-strike/cards";
 import type { GameState } from "../types/game";
 import { fillerEntries } from "../rulesSpec/01-helpers";
 import {
+  act,
   KW_MORPH,
   PLAIN_VEHICLE,
   attack,
@@ -439,9 +440,29 @@ describe("RK-160 シザーズジャガー", () => {
     expect(r.state.pendingEffectChoice?.sourceCardId).not.toBe("RK-160");
   });
 
-  it.todo(
-    "RK-160: 公式Q&A — 敵軍 RK-204 仮面ライダーサイガのラッシュの効果でシザーズジャガーがコマンドゾーンに送られたときは発動できない（ラッシュの処理がすべて終わった時点で場にいなければならない）（出典: grnrngr/faq-rider-2 RK-160 Q1・atwiki/page-703 Q1）— RK-204 は本範囲外のカード",
-  );
+  // grnrngr/faq-rider-2 RK-160 Q1「いいえ、できません。…ラッシュに関するすべての処理が終わった時点で、自軍エリアに「RK-160 シザーズジャガー」がユニットとして場に無くてはいけないからです。」（Q の「RK-204 仮面ライダーサイガ」は RK-205 の誤記）
+  it.fails("RK-160: 公式Q&A — 敵軍の仮面ライダーサイガ（RK-205）【フライングアタッカー】でシザーズジャガーがコマンドゾーンに送られたときは発動できない（出典: grnrngr/faq-rider-2 RK-160 Q1・atwiki/page-703 Q1）", () => {
+    const OPET5 = { id: "SPEC-OPET5", name: "SPEC-OPET5", type: "operation", category: "ET", rarity: "N", expansion: "card-spec", powerCost: 5 } as never;
+    const DA4 = sUnit("SPEC-DA4X", { category: "DA", bp: 1000, powerCost: 4 });
+    let s = st(
+      {
+        activePlayer: "player2",
+        phase: "rush",
+        player1: { rush: [inst("RK-160", "sj")], hand: [inst("SPEC-DA4X", "d4")], command: releasedCat("DA", 1), deck: deckCards(3) },
+        player2: { hand: [inst("RK-205", "sg")], command: [released("SPEC-OPET5", "c5")], power: powerCards(4, "ep"), deck: deckCards(3, "e") },
+      },
+      [OPET5, DA4],
+    );
+    const r = rushFromHand(s, "player2", "RK-205:sg");
+    expect(r.ok, r.error).toBe(true);
+    s = r.state;
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RK-205");
+    s = act(s, s.pendingEffectChoice!.kind === "confirm" ? { type: "confirm_effect_choice", playerId: "player2" } : { type: "resolve_effect_choice", playerId: "player2", instanceId: s.pendingEffectChoice!.validInstanceIds[0]! });
+    expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["RK-160:sj"]);
+    s = settle(act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "RK-160:sj" }));
+    expect(zoneOf(s, "player1", "RK-160:sj")).toBe("command");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-160");
+  });
 
   // faq-rider-2 RK-160 Q2「はい、可能です。」
   it("RK-160: 公式Q&A — 自軍のラッシュに対して相手がモーフで入れ替えた（ラッシュエリアに出た）敵軍 S ユニットに対しても発動できる（出典: grnrngr/faq-rider-2 RK-160 Q2・atwiki/page-703 Q2）", () => {
