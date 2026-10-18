@@ -283,9 +283,33 @@ describe("RS-558 ガンマジン", () => {
     expect(choiceIds(r.state)).not.toContain("RS-558:dg");
   });
 
-  it.todo(
-    "RS-558: atwiki Q&A — ギャレンJF の追加条件をピーコックアンデッドを捨札にして満たしても、追加条件を実行したことにならずドローできない（出典: atwiki/page-1186 Q5）— ピーコックアンデッドの「「仮面ライダーギャレン」1体を捨札にしたことにできる」置換がギャレンJF の追加条件の手続きに接続されておらず、公開 API で組めない",
-  );
+  /** XG5-056 仮面ライダーギャレンJF（3+。追加条件「自軍「仮面ライダーギャレン」1体を捨札にする」）を、material を捨札にしてラッシュする（ガンマジンは自軍ラッシュエリア）。 */
+  const garrenJf = (extra: Partial<GameState["players"]["player1"]>, material: string) =>
+    rushFromHand(
+      st({
+        phase: "rush",
+        player1: { hand: [inst("XG5-056", "gj")], rush: [inst("RS-558", "gm")], command: releasedCat("WB", 1), power: powerCards(3), deck: deckCards(3), ...extra },
+      }),
+      "player1",
+      "XG5-056:gj",
+      { materials: [material] },
+    );
+
+  // atwiki/page-1186 Q5・atwiki/page-945 Q1「いいえ、それはできません。…｢仮面ライダーギャレン｣1体を捨札にしたことにできる、というだけであり、実際には追加条件を実行してはいないと扱われます。」
+  it.fails("RS-558: atwiki Q&A — ギャレンJF（XG5-056）の追加条件を RK-218 ピーコックアンデッドを捨札にして満たしても、追加条件を実行したことにならずドローできない（出典: atwiki/page-1186 Q5・atwiki/page-945 Q1）", () => {
+    const r = garrenJf({ hand: [inst("XG5-056", "gj"), inst("RK-218", "pc")] }, "RK-218:pc");
+    expect(r.ok, r.error).toBe(true);
+    expect(zoneOf(r.state, "player1", "XG5-056:gj")).toBe("rush");
+    expect(zoneOf(r.state, "player1", "RK-218:pc")).toBe("discard");
+    expect(r.state.pendingEffectChoice?.sourceCardId).not.toBe("RS-558");
+  });
+
+  it("RS-558: 対照 — 同じギャレンJF（XG5-056）を場の「仮面ライダーギャレン」（XG5-055）を捨札にして（追加条件を実行して）ラッシュすればドローできる（出典: atwiki/page-1186「追加条件を実行して満たしたとき」）", () => {
+    const r = garrenJf({ rush: [inst("XG5-055", "g"), inst("RS-558", "gm")] }, "XG5-055:g");
+    expect(r.ok, r.error).toBe(true);
+    expect(zoneOf(r.state, "player1", "XG5-055:g")).toBe("discard");
+    expect(r.state.pendingEffectChoice?.sourceCardId).toBe("RS-558");
+  });
 
   it.todo(
     "RS-558: atwiki Q&A — ガンマジンと仮面ライダーアークの L ユニット化が循環する場合は、ターンプレイヤーが優先順を選んでループを止める（出典: atwiki/page-1186 Q6・R-RES-08）— 仮面ライダーアークの「これ以外が S ユニットだけなら L」との循環で、ターンプレイヤーがループを止める選択が公開 API にない（ガンマジンは条件つきで L になったユニットを数えない）",
