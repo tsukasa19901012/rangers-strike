@@ -69,6 +69,8 @@ export function crossShiftLeftOf(
   let shift = 0;
   for (let i = 0; i < index; i += 1) {
     shift += crossValueForCard(battle[i]!.cardId);
+    // このターン得たクロス（XG7-015【ボウケンジャーになれ】等。rules/xg7/xg7aEffects.ts）。
+    shift += battle[i]!.xg7Turn?.cross ?? 0;
   }
   return shift;
 }

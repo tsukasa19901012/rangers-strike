@@ -48,12 +48,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-023::zane5a4a7",
-          "duration": "turn"
+          "keyword": "xg7::XG7-023::daidai_saidaizan",
+          "duration": "permanent"
         }
       ]
     }

@@ -50,7 +50,12 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-021::garuzuintoraburu",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg7::XG7-021::girls_in_trouble",
           "duration": "permanent"
         }
       ]

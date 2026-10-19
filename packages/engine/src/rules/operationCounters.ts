@@ -15,6 +15,8 @@ import { rk13BattleUsesPrintedBp, rk13BlocksResist, rk13PrintedBp } from "./rk/r
 import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
 import { rk11KyosukeWinButDestroyed } from "./rk/rk11Fields";
 import { openRk12SurviveStay } from "./rk/rk12UnitEffects";
+import { openXg7LeaveStay } from "./xg7/xg7Effects";
+import { xg7AdjustLeaveIntent } from "./xg7/xg7Fields";
 import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import { openKuugaStayOnLeave } from "./legend1/otherLinesNamedEffects";
 import {
@@ -1946,6 +1948,7 @@ export function finalizeLeavePending(
   let medicalRescueToPower = false;
   let triConcordId: string | null = null;
   let discardAsDamage = false;
+  let xg7Exiled = false;
 
   if (pending.toZone === "deck_top") {
     // ルール: R-MOVE-01 — 山札に戻すのも「場を離れる」移動（ウラ向きで山札の上へ）。
@@ -2013,6 +2016,14 @@ export function finalizeLeavePending(
   ) {
     // RS-567 トライコンドル【カラクリ忍法・消身の術】（rules/legend1/set8NamedEffectsC.ts）。
     return startToPowerOnDestroyChoice(state, pending, leavingCard, fromCards, { cardId: "RS-567", instanceId: triConcordId });
+  } else if (pending.toZone === "discard" && pending.xg7Exile) {
+    // XG7-008【アースの戦士】: 捨札にするかわりにゲームから除外する（rules/xg7/xg7Fields.ts）。
+    xg7Exiled = true;
+    nextOwner = {
+      ...owner,
+      [pending.fromZone]: fromCards,
+      exile: [...(owner.exile ?? []), leavingCard],
+    };
   } else if (pending.toZone === "discard" && pending.discardAsDamage && !pending.notDestruction) {
     // RS-182 ジャイアントローラー: 撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く。
     discardAsDamage = true;
@@ -2051,7 +2062,9 @@ export function finalizeLeavePending(
     ...updatePlayer(state, pending.ownerPlayerId, nextOwner),
   };
 
-  const effectiveToZone = medicalRescueToPower || discardAsDamage
+  const effectiveToZone = xg7Exiled
+    ? "exile"
+    : medicalRescueToPower || discardAsDamage
     ? "power" // ルール: R-REPL-02 — 捨札を経由しないので「撃破されて捨札になったとき」は発動しない
     : pending.toZone === "command" && owner.command.length >= COMMAND_ZONE_MAX
       ? "discard"
@@ -2164,6 +2177,8 @@ export function tryLeaveField(
   state: GameState,
   intent: LeaveIntent,
 ): { state: GameState; deferred: boolean } {
+  // XG7-008【アースの戦士】（撃破したユニットを捨札にするかわりに除外する。rules/xg7/xg7Fields.ts）。
+  intent = xg7AdjustLeaveIntent(state, intent);
   // RS-303【シティガーディアンズ隊長】: 撃破されたとき、「戦闘員」2体をかわりに捨札にしてもよい。
   const cityGuardians = openCityGuardiansSubstitute(state, intent);
   if (cityGuardians) return { state: cityGuardians, deferred: true };
@@ -2183,6 +2198,9 @@ export function tryLeaveField(
   // RK-250 サバイブ: 重ねたユニットがユニットでなくなるとき、サバイブを捨札にしてその場に留める（rules/rk/rk12UnitEffects.ts）。
   const survive = openRk12SurviveStay(state, intent);
   if (survive) return { state: survive, deferred: true };
+  // XG7-005【モバイレーツ】・XG7-012【荒ぶるダイノガッツ】等（rules/xg7/xg7Effects.ts）。
+  const xg7Stay = openXg7LeaveStay(state, intent);
+  if (xg7Stay) return { state: xg7Stay, deferred: true };
   // RS-437 白熱する実況: 下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる（rules/legend1/set7NamedEffectsA.ts）。
   const liveCommentary = openLiveCommentaryStay(state, intent);
   if (liveCommentary) return { state: liveCommentary, deferred: true };

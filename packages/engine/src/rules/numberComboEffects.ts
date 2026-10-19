@@ -1,3 +1,4 @@
+import { xg7NcAnyNumberAt } from "./xg7/xg7Fields";
 import { rm1ComboNumber } from "./rm/rm1Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { falconBreakTriggers } from "./rs4NcEffects";
@@ -148,6 +149,8 @@ export function numberComboTriggers(
   if (missionBurningForcesNc(state, playerId, card, definition, battleBeforeEnter)) return true;
   // RS-204 レッドファルコン【ファルコンブレイク】: BP が一番低ければナンバーに関係なく発動する。
   if (falconBreakTriggers(state, playerId, card)) return true;
+  // XG7-013・XG7-016（2番目ならナンバーに関係なく発動する。rules/xg7/xg7Fields.ts）。
+  if (xg7NcAnyNumberAt(card.cardId, battlePosition)) return true;
   const effectiveNumber = ncEffectiveNumber(state, playerId, card, definition);
   const position = battlePosition;
 
@@ -263,6 +266,7 @@ export function markNcColumnEffectsOnEnter(
   const missionBurning = missionBurningForcesNc(state, playerId, card, definition, battleBeforeEnter);
   const numberMatches =
     missionBurning ||
+    xg7NcAnyNumberAt(card.cardId, battlePosition) ||
     (typeof definition.comboNumber === "number" &&
       ncEffectiveNumber(state, playerId, card, definition) === battlePosition);
   const leftNeighbor = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);

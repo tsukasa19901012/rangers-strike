@@ -35,13 +35,13 @@
       "name": "マッハ全開！",
       "text": "自軍ターン中、これがバトルエリアに出るとき、これがライドしていなければ、次の効果を発動できる⇒自分の手札から特徴「車両」を持ち追加条件を持たないビークルカードを1枚選び自軍ラッシュエリアに出してから、これをライドさせる。そうしたとき、このターン、これはライドオフできない。",
       "trigger": {
-        "type": "while_in_field"
+        "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-017::maha",
+          "keyword": "xg7::XG7-017::mach_zenkai",
           "duration": "permanent"
         }
       ]

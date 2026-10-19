@@ -60,13 +60,13 @@
       "id": "unnamed_e280bbe887aae8bb8d4ce383",
       "text": "※自軍Lユニットが無ければ、これは「ゲキレッド+黒獅子リオ」として使える。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-016::lyunitogakerebak",
+          "keyword": "xg7::XG7-016::geki_red_alias",
           "duration": "permanent"
         }
       ]
@@ -78,11 +78,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-016::no5",
+          "keyword": "xg7::XG7-016::our_road",
           "duration": "permanent"
         }
       ]

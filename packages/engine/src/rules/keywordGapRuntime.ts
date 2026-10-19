@@ -1,3 +1,4 @@
+import { xg7HandDeployCondition } from "./xg7/xg7Fields";
 import { hasScopedRestriction } from "../core/scopedModifiers";
 import { sameCardName } from "../core/cardNames";
 /**
@@ -194,6 +195,9 @@ export function canSelfRushFromZone(
  */
 function handDeployConditionMet(state: GameState, playerId: PlayerId, cardId: string): boolean {
   if (!listCardGrantKeywords(cardId).some((k) => k.startsWith("while_in_hand_rush_deploy::"))) return false;
+  // XG7-006 ギンガピンク等（rules/xg7/xg7Fields.ts）。
+  const xg7 = xg7HandDeployCondition(state, playerId, cardId);
+  if (xg7 !== null) return xg7;
   const def = getDefinition(state.definitions, cardId);
   const text = def?.text ?? "";
   if (/自軍ダメージの数がこれの必要パワーの数字以上あれば/.test(text)) {

@@ -1,3 +1,4 @@
+import { xg7UsableAsName } from "./xg7/xg7Fields";
 import type { GameState, PlayerId } from "../types/game";
 import { openSet9ADestroyedEffects } from "./legend1/set9NamedEffectsA";
 import { applySet7AAfterDiscard } from "./legend1/set7NamedEffectsA";
@@ -378,7 +379,7 @@ export function resolveAfterDiscardDestroyEffects(
       (c) => cardName(nextState.definitions, c.cardId) === "スーパーゲキレッド",
     );
     const baseInDiscard = player.discard.filter(
-      (c) => cardName(nextState.definitions, c.cardId) === "ゲキレッド",
+      (c) => cardName(nextState.definitions, c.cardId) === "ゲキレッド" || xg7UsableAsName(nextState, ctx.ownerPlayerId, c.cardId, "ゲキレッド"),
     );
     if (superInHand.length === 0 && baseInDiscard.length > 0) {
       // Only discard option: reanimate ゲキレッド

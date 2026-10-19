@@ -38,11 +38,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-015::boukenjaninare",
+          "keyword": "xg7::XG7-015::boukenger",
           "duration": "permanent"
         }
       ]

@@ -1,4 +1,5 @@
 import { rm3EffectiveSp } from "../rm/rm3Fields";
+import { xg7EffectiveSp } from "../xg7/xg7Fields";
 import { rk8EffectiveSp } from "../rk/rk8UnitEffects";
 import { rk9EffectiveSp } from "../rk/rk9UnitEffects";
 import { rk10EffectiveSp } from "../rk/rk10UnitEffects";
@@ -285,6 +286,8 @@ function legend3EffectiveSpUncached(
   sp = rk16EffectiveSp(state, playerId, instance, sp);
   // RM-051 メガヘラクレス【メガビートフォーメーション】（自軍エリアに「ビートルーダー」があれば「SP1」。rules/rm/rm3Fields.ts）。
   sp = rm3EffectiveSp(state, playerId, instance, sp);
+  // XG7-007【龍撃剣＆獣奏剣】（BP8000以上のとき SP1。rules/xg7/xg7Fields.ts）。
+  sp = xg7EffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

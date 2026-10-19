@@ -181,6 +181,8 @@ export function shouldUseDslOperation(
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rm2::"))) return true;
   // RM-043〜RM-062（rm3::。rules/rm/rm3Effects.ts）。
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rm3::"))) return true;
+  // XG7-001〜XG7-068（xg7::。rules/xg7/xg7Effects.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("xg7::"))) return true;
   // ベルトコレクション BK-001〜BK-019（bk1::。rules/bk/bk1Effects.ts）。
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("bk1::"))) return true;
   const wiredId = getCardEffect(cardId)?.effectId;

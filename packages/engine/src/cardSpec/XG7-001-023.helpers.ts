@@ -175,7 +175,6 @@ export function breakerTests(id: string, page: string, extra: CardDefinition[] =
 
 // ===========================================================================
 /** ゴーカイジャーの※「これをラッシュしたとき、「X」以外のオモテ向きの自軍パワーから、追加条件を持たない、特徴…を持つSユニットのカードを1枚選び、これと置き換えてもよい」。 */
-const GOKAI_GAP = "置き換えるカードを選ばせない（オモテ向きのパワーの先頭の候補と、確認なしに自動で置き換える）";
 export function gokaiSwapTests(opts: { id: string; name: string; page: string; cost: number; colors: string[]; gaps?: Gaps }): void {
   const { id, name, page, cost, colors } = opts;
   const gaps = opts.gaps ?? {};
@@ -209,7 +208,7 @@ export function gokaiSwapTests(opts: { id: string; name: string; page: string; c
     expect(s.pendingEffectChoice?.sourceCardId).toBe(id);
     expect([...(s.pendingEffectChoice?.validInstanceIds ?? [])].sort()).toEqual([`${OK1.id}:a`, `${OK2.id}:b`].sort());
     expect(legal(s).some((a) => a.type === "skip_effect_choice")).toBe(true);
-  }, gaps.gokai_choice ?? GOKAI_GAP);
+  }, gaps.gokai_choice);
 
   specIt(id, `${id}: ※置き換え — 選んだカードが自軍ラッシュエリアに出て、これはオモテ向きで自軍パワーゾーンに置かれる（パワーの枚数は変わらない）（出典: ${page}「これと置き換えて」・atwiki/page-1413（置き換え））`, () => {
     let s = rushedWith(power());
@@ -227,7 +226,7 @@ export function gokaiSwapTests(opts: { id: string; name: string; page: string; c
     if (s.pendingEffectChoice?.sourceCardId === id) s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: `${OK2.id}:b` });
     expect(zoneOf(s, "player1", `${OK2.id}:b`)).toBe("rush");
     expect(zoneOf(s, "player1", `${OK1.id}:a`)).toBe("power");
-  }, gaps.gokai_second ?? GOKAI_GAP);
+  }, gaps.gokai_second);
 
   specIt(id, `${id}: ※置き換えなくてもよい（これはラッシュエリアに残る）（出典: ${page}「置き換えてもよい」）`, () => {
     let s = rushedWith(power());
@@ -235,7 +234,7 @@ export function gokaiSwapTests(opts: { id: string; name: string; page: string; c
     expect(zoneOf(s, "player1", `${id}:g`)).toBe("rush");
     expect(zoneOf(s, "player1", `${OK1.id}:a`)).toBe("power");
     expect(zoneOf(s, "player1", `${OK2.id}:b`)).toBe("power");
-  }, gaps.gokai_skip ?? GOKAI_GAP);
+  }, gaps.gokai_skip);
 
   specIt(id, `${id}: ※ 候補がなければ（同名・M・ウラ向き・追加条件あり・ほかの色だけ）置き換えない（出典: ${page}）`, () => {
     const s = rushedWith([inst(SAME_NAME.id, "same"), inst(SIZE_M.id, "m"), inst(OTHER_COLOR.id, "x"), { ...inst(OK1.id, "down"), faceDown: true }, inst(withCondition, "cond")]);

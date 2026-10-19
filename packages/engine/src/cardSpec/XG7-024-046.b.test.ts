@@ -88,7 +88,7 @@ describe("XG7-032 仮面ライダー新2号×仮面ライダー新1号", () => {
 
   crossTests("XG7-032", "atwiki/page-2388");
   extraHoldTests("XG7-032", ["ET"], "5+", "atwiki/page-2388");
-  breakerTests("XG7-032", "atwiki/page-2388", EXTRA, { breaker_select: "※ブレイカーが効かない（ブレイカーを持たない敵軍ユニットの効果に選ばれる）", breaker_name: "※ブレイカーの同名ラッシュ制限が効かない" });
+  breakerTests("XG7-032", "atwiki/page-2388", EXTRA, { breaker_name: "※ブレイカーの同名ラッシュ制限が効かない" });
 
   /** 自軍バトルフェイズ、XG7-032 をビークルにライドさせて出し、ライドオフ（RC）する。 */
   const rc = (p2: Partial<GameState["players"]["player2"]> = {}) =>

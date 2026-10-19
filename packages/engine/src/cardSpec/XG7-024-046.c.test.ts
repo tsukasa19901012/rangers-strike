@@ -237,7 +237,7 @@ describe("XG7-043 仮面ライダーパンチホッパー×仮面ライダーキ
   crossTests("XG7-043", "atwiki/page-2451");
   extraHoldTests("XG7-043", ["OT"], "4+", "atwiki/page-2451");
 
-  it.fails("XG7-043: ※ アタックされる以外では相手に選ばれない — 相手の RS-155 ガオバイソン【鋼の角】で選べない（出典: atwiki/page-2451「※これはアタックされる以外では相手に選ばれない」） — 既知の不具合: CARD-XG7-043 「アタックされる以外では相手に選ばれない」が効かない", () => {
+  it("XG7-043: ※ アタックされる以外では相手に選ばれない — 相手の RS-155 ガオバイソン【鋼の角】で選べない（出典: atwiki/page-2451「※これはアタックされる以外では相手に選ばれない」）", () => {
     let s = p1Battle(
       { rush: [inst("RS-155", "bs")], command: releasedCat("WB", 1) },
       { battle: [inst("XG7-043", "h"), inst("SPEC-ENEMY", "o")], damage: 6, power: Array.from({ length: 6 }, (_, i) => ({ ...inst("TST-P", `ed${i}`), faceDown: true })) },

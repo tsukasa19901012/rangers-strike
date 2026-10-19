@@ -102,14 +102,14 @@ describe("XG7-009 タイムレッド", () => {
     return r.state;
   };
 
-  it.fails("XG7-009: ※ラッシュしたとき — 自軍山札の「Vコマンダー」のカード（RS-249）から1枚選べる。特徴「Vコマンダー」を持つだけの別名のカードは選べない（発動は任意）（出典: atwiki/page-2449「自軍山札を見て「Vコマンダー」のカードを1枚選び」「次の効果を発動できる」） — 既知の不具合: CARD-XG7-009 ラッシュしたときの「Vコマンダー」のサーチが未実装（選択が開かない）", () => {
+  it("XG7-009: ※ラッシュしたとき — 自軍山札の「Vコマンダー」のカード（RS-249）から1枚選べる。特徴「Vコマンダー」を持つだけの別名のカードは選べない（発動は任意）（出典: atwiki/page-2449「自軍山札を見て「Vコマンダー」のカードを1枚選び」「次の効果を発動できる」）", () => {
     const s = rushed([inst("RS-249", "vc"), inst("XG7-009", "other"), ...deckCards(3)]);
     expectChoiceFrom(s, "player1", "XG7-009");
     expect(choiceIds(s)).toEqual(["RS-249:vc"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-009: ※ 選んだカードを相手に見せてから手札に加える（出典: atwiki/page-2449「相手に見せてから手札に加える」） — 既知の不具合: CARD-XG7-009 ラッシュしたときの「Vコマンダー」のサーチが未実装（選択が開かない）", () => {
+  it("XG7-009: ※ 選んだカードを相手に見せてから手札に加える（出典: atwiki/page-2449「相手に見せてから手札に加える」）", () => {
     const s = resolveAll(rushed([inst("RS-249", "vc"), ...deckCards(3)]), ["RS-249:vc"]);
     expect(zoneOf(s, "player1", "RS-249:vc")).toBe("hand");
     expect(s.players.player1.deck).toHaveLength(3);
@@ -121,7 +121,7 @@ describe("XG7-009 タイムレッド", () => {
   const attackedBoard = (p1Battle: CardInstance[], p1Rush: CardInstance[] = []) =>
     enemyTurnOf({ battle: p1Battle, rush: p1Rush }, { battle: [inst("SPEC-BIG", "atk")] }, EXTRA);
 
-  it.fails("XG7-009: 【受け継いだもの】自軍 L ユニットがあれば、敵軍ユニットにアタックされない（出典: atwiki/page-2449「これは自軍Lユニットがあれば、敵軍ユニットにアタックされない」） — 既知の不具合: CARD-XG7-009 CN を持たない【受け継いだもの】（アタックされない・隣の OT の L ユニットを選ばれない）が未実装", () => {
+  it("XG7-009: 【受け継いだもの】自軍 L ユニットがあれば、敵軍ユニットにアタックされない（出典: atwiki/page-2449「これは自軍Lユニットがあれば、敵軍ユニットにアタックされない」）", () => {
     const s = attackedBoard([inst("XG7-009", "tr")], [inst("SPEC-OWN-L", "l")]);
     expect(targetsOf(s, "SPEC-BIG:atk", "player2")).not.toContain("XG7-009:tr");
   });
@@ -131,7 +131,7 @@ describe("XG7-009 タイムレッド", () => {
     expect(targetsOf(s, "SPEC-BIG:atk", "player2")).toContain("XG7-009:tr");
   });
 
-  it.fails("XG7-009: 【受け継いだもの】隣り合う OT の L ユニットは、敵軍ユニットの効果（RS-155 ガオバイソン【鋼の角】）に選ばれない。隣り合わない OT の L ユニットは選ばれる（出典: atwiki/page-2449「このユニットと隣り合うOTを持つLユニットはアタックされる以外では相手に選ばれない」） — 既知の不具合: CARD-XG7-009 CN を持たない【受け継いだもの】（アタックされない・隣の OT の L ユニットを選ばれない）が未実装", () => {
+  it("XG7-009: 【受け継いだもの】隣り合う OT の L ユニットは、敵軍ユニットの効果（RS-155 ガオバイソン【鋼の角】）に選ばれない。隣り合わない OT の L ユニットは選ばれる（出典: atwiki/page-2449「このユニットと隣り合うOTを持つLユニットはアタックされる以外では相手に選ばれない」）", () => {
     let s = enemyTurnOf(
       { battle: [inst("SPEC-OT-L", "adj"), inst("XG7-009", "tr"), inst("SPEC-ENEMY", "mid"), inst("SPEC-OT-L2", "far")], damage: 6, power: Array.from({ length: 6 }, (_, i) => ({ ...inst("TST-P", `d${i}`), faceDown: true })) },
       { rush: [inst("RS-155", "bs")], command: releasedCat("WB", 1) },
@@ -195,19 +195,19 @@ describe("XG7-011 ハリケンレッド", () => {
 
   const enemy = { battle: [inst("SPEC-C5", "c5"), inst("SPEC-C6", "c6")], rush: [inst("SPEC-C2M", "c2m")], deck: deckCards(3, "e") };
 
-  it.fails("XG7-011: 【ジャイロ手裏剣】NC（5番目）— 並び順（5）以下の必要パワーの数字を持つ敵軍ユニット（エリア・サイズを問わない）から1体選べる（任意）（出典: atwiki/page-2414「その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び」） — 既知の不具合: CARD-XG7-011 【ジャイロ手裏剣】が未実装（NC・忍者からのコンビネーションで選択が開かない）", () => {
+  it("XG7-011: 【ジャイロ手裏剣】NC（5番目）— 並び順（5）以下の必要パワーの数字を持つ敵軍ユニット（エリア・サイズを問わない）から1体選べる（任意）（出典: atwiki/page-2414「その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び」）", () => {
     const s = nc("XG7-011:h", 4, {}, enemy);
     expectChoiceFrom(s, "player1", "XG7-011");
     expect(choiceIds(s)).toEqual(["SPEC-C2M:c2m", "SPEC-C5:c5"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-011: 【ジャイロ手裏剣】選んだユニットを持ち主の山札の上に戻す（出典: atwiki/page-2414「持ち主の山札の上に戻してもよい」） — 既知の不具合: CARD-XG7-011 【ジャイロ手裏剣】が未実装（NC・忍者からのコンビネーションで選択が開かない）", () => {
+  it("XG7-011: 【ジャイロ手裏剣】選んだユニットを持ち主の山札の上に戻す（出典: atwiki/page-2414「持ち主の山札の上に戻してもよい」）", () => {
     const s = resolveAll(nc("XG7-011:h", 4, {}, enemy), ["SPEC-C5:c5"]);
     expect(deckOf(s, "player2")[0]).toBe("SPEC-C5:c5");
   });
 
-  it.fails("XG7-011: 【ジャイロ手裏剣】特徴「忍者」を持つユニットからコンビネーションすると、ナンバーに関係なく（2番目でも）発動し、並び順2以下の必要パワーのユニットだけが候補（出典: atwiki/page-2414「（この効果は、特徴「忍者」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する）」） — 既知の不具合: CARD-XG7-011 【ジャイロ手裏剣】が未実装（NC・忍者からのコンビネーションで選択が開かない）", () => {
+  it("XG7-011: 【ジャイロ手裏剣】特徴「忍者」を持つユニットからコンビネーションすると、ナンバーに関係なく（2番目でも）発動し、並び順2以下の必要パワーのユニットだけが候補（出典: atwiki/page-2414「（この効果は、特徴「忍者」を持つユニットからコンビネーションするとき、ナンバーに関係なく発動する）」）", () => {
     const s = ncBoard("XG7-011:h", 0, { battle: [inst("SPEC-NINJA", "nj")] }, enemy, EXTRA);
     expectChoiceFrom(s, "player1", "XG7-011");
     expect(choiceIds(s)).toEqual(["SPEC-C2M:c2m"]);
@@ -218,7 +218,7 @@ describe("XG7-011 ハリケンレッド", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG7-011");
   });
 
-  it.fails("XG7-011: クロス1 の S ユニット2体の右に出ると CN3 として NC が成立し、並び順は3番目として数える（必要パワー3以下）（出典: atwiki/page-2393 Q2「３番目になります」） — 既知の不具合: CARD-XG7-011 【ジャイロ手裏剣】が未実装（NC・忍者からのコンビネーションで選択が開かない）", () => {
+  it("XG7-011: クロス1 の S ユニット2体の右に出ると CN3 として NC が成立し、並び順は3番目として数える（必要パワー3以下）（出典: atwiki/page-2393 Q2「３番目になります」）", () => {
     const s = ncBoard("XG7-011:h", 0, { battle: [inst("SX-010", "x1"), inst("SX-010", "x2")] }, { battle: [inst("SPEC-C3", "c3"), inst("SPEC-C5", "c5")], deck: deckCards(3, "e") }, EXTRA);
     expectChoiceFrom(s, "player1", "XG7-011");
     expect(choiceIds(s)).toEqual(["SPEC-C3:c3"]);
@@ -251,13 +251,13 @@ describe("XG7-012 アバレッド×爆竜ティラノサウルス", () => {
   const guts = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
     attackedInEnemyTurn({ battle: [inst("XG7-012", "ab"), inst("SPEC-C2", "u")], deck: deckCards(5), ...p1 }, "SPEC-C2:u", p2, "TST-UNIT-7:atk", EXTRA);
 
-  it.fails("XG7-012: 【荒ぶるダイノガッツ】これが自軍バトルエリアにある間、自軍ユニットが撃破されたとき、発動するかを選べる（任意）（出典: atwiki/page-2387「次の効果を発動できる⇒…その場に留めてもよい」） — 既知の不具合: CARD-XG7-012 【荒ぶるダイノガッツ】が未実装（自軍ユニットが撃破されても選択が開かず、捨札になる）", () => {
+  it("XG7-012: 【荒ぶるダイノガッツ】これが自軍バトルエリアにある間、自軍ユニットが撃破されたとき、発動するかを選べる（任意）（出典: atwiki/page-2387「次の効果を発動できる⇒…その場に留めてもよい」）", () => {
     const s = guts();
     expectChoiceFrom(s, "player1", "XG7-012");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-012: 【荒ぶるダイノガッツ】発動すると、自軍山札の上から必要パワーの数字（2）と同じ枚数を捨札にして、撃破されたユニットはその場に留まる（出典: atwiki/page-2387「自軍山札の上からそのユニットの必要パワーの数字と同じ枚数を捨札にして、その場に留めて」） — 既知の不具合: CARD-XG7-012 【荒ぶるダイノガッツ】が未実装（自軍ユニットが撃破されても選択が開かず、捨札になる）", () => {
+  it("XG7-012: 【荒ぶるダイノガッツ】発動すると、自軍山札の上から必要パワーの数字（2）と同じ枚数を捨札にして、撃破されたユニットはその場に留まる（出典: atwiki/page-2387「自軍山札の上からそのユニットの必要パワーの数字と同じ枚数を捨札にして、その場に留めて」）", () => {
     const s = resolveAll(guts());
     expect(zoneOf(s, "player1", "SPEC-C2:u")).toBe("battle");
     expect(s.players.player1.deck).toHaveLength(3);
@@ -312,7 +312,7 @@ describe("XG7-013 デカブルー×デカレッド", () => {
     expect(zoneOf(s, "player2", "SPEC-E-S:rs")).toBe("discard");
   });
 
-  it.fails("XG7-013: 【ファイヤーソウル・クールブレイン】2番目にコンビネーションしたときもナンバーに関係なく発動する（出典: atwiki/page-2450「（この効果はバトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する）」） — 既知の不具合: CARD-XG7-013 「2番目にコンビネーションするときはナンバーに関係なく発動する」が未実装（2番目では発動しない）", () => {
+  it("XG7-013: 【ファイヤーソウル・クールブレイン】2番目にコンビネーションしたときもナンバーに関係なく発動する（出典: atwiki/page-2450「（この効果はバトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する）」）", () => {
     expectChoiceFrom(attackAfter(1), "player1", "XG7-013");
   });
 
@@ -350,14 +350,14 @@ describe("XG7-014 マジレッド", () => {
     expect(spOf(resolveAll(magic()), "player1", "XG7-014:mr")).toBe(1);
   });
 
-  it.fails("XG7-014: 【ジルマ・マジーロ】NC — 敵軍バトルエリアの S ユニットから1体選べる（任意。M・ラッシュエリアは選べない）（出典: atwiki/page-2416「敵軍バトルエリアからSユニットを1体選び、持ち主の手札に戻してもよい」） — 既知の不具合: CARD-XG7-014 【ジルマ・マジーロ】の除去（手札に戻す→BP 以下の敵軍ユニットを撃破）が未実装（SP1 だけ付く）", () => {
+  it("XG7-014: 【ジルマ・マジーロ】NC — 敵軍バトルエリアの S ユニットから1体選べる（任意。M・ラッシュエリアは選べない）（出典: atwiki/page-2416「敵軍バトルエリアからSユニットを1体選び、持ち主の手札に戻してもよい」）", () => {
     const s = magic();
     expectChoiceFrom(s, "player1", "XG7-014");
     expect(choiceIds(s)).toEqual(["SPEC-E1000:s1", "SPEC-E3000:s3"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-014: 【ジルマ・マジーロ】戻したユニットは持ち主の手札へ。続けて、そのユニット以下の BP を持つ敵軍ユニット（エリア・サイズを問わない）から1体を選び撃破する（見送れない）（出典: atwiki/page-2416「そうしたとき、戻したユニット以下のBPを持つ敵軍ユニットを1体選び撃破する」・カード評価「2枚目に選ぶユニットはエリア・サイズを問わない」） — 既知の不具合: CARD-XG7-014 【ジルマ・マジーロ】の除去（手札に戻す→BP 以下の敵軍ユニットを撃破）が未実装（SP1 だけ付く）", () => {
+  it("XG7-014: 【ジルマ・マジーロ】戻したユニットは持ち主の手札へ。続けて、そのユニット以下の BP を持つ敵軍ユニット（エリア・サイズを問わない）から1体を選び撃破する（見送れない）（出典: atwiki/page-2416「そうしたとき、戻したユニット以下のBPを持つ敵軍ユニットを1体選び撃破する」・カード評価「2枚目に選ぶユニットはエリア・サイズを問わない」）", () => {
     let s = pick(magic(), "SPEC-E3000:s3");
     expect(zoneOf(s, "player2", "SPEC-E3000:s3")).toBe("hand");
     expectChoiceFrom(s, "player1", "XG7-014");
@@ -383,26 +383,26 @@ describe("XG7-015 ボウケンレッド", () => {
   const discard = () => [inst("SPEC-S-WB3000", "wb"), inst("SPEC-S-DA2000", "da"), inst("SPEC-S-WBDA", "wbda"), inst("SPEC-M-WB5000", "m")];
   const bouken = () => nc("XG7-015:br", 0, { discard: discard(), rush: [inst("XG1-007", "cd")] });
 
-  it.fails("XG7-015: 【ボウケンジャーになれ】NC — 自軍捨札の、DA を持たない S ユニットのカードから1枚選べる（任意。DA を持つもの・M は選べない）（出典: atwiki/page-2415「自軍捨札から、DAを持たないSユニットのカードを1枚選んでもよい」） — 既知の不具合: CARD-XG7-015 【ボウケンジャーになれ】が未実装（NC で選択が開かず、BP・クロス1 が付かない）", () => {
+  it("XG7-015: 【ボウケンジャーになれ】NC — 自軍捨札の、DA を持たない S ユニットのカードから1枚選べる（任意。DA を持つもの・M は選べない）（出典: atwiki/page-2415「自軍捨札から、DAを持たないSユニットのカードを1枚選んでもよい」）", () => {
     const s = bouken();
     expectChoiceFrom(s, "player1", "XG7-015");
     expect(choiceIds(s)).toEqual(["SPEC-S-WB3000:wb"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-015: 【ボウケンジャーになれ】このターン、選んだカードの BP が加わる（4000＋3000）。選んだカードは捨札に残る（出典: atwiki/page-2415「選んだカードのBPが「+」され」） — 既知の不具合: CARD-XG7-015 【ボウケンジャーになれ】が未実装（NC で選択が開かず、BP・クロス1 が付かない）", () => {
+  it("XG7-015: 【ボウケンジャーになれ】このターン、選んだカードの BP が加わる（4000＋3000）。選んだカードは捨札に残る（出典: atwiki/page-2415「選んだカードのBPが「+」され」）", () => {
     const s = resolveAll(bouken(), ["SPEC-S-WB3000:wb"]);
     expect(bpOf(s, "player1", "XG7-015:br")).toBe(7000);
     expect(zoneOf(s, "player1", "SPEC-S-WB3000:wb")).toBe("discard");
   });
 
-  it.fails("XG7-015: 【ボウケンジャーになれ】このターン、クロス1を得る（右に出た CN3 の XG1-007 が2番目で NC）（出典: atwiki/page-2415「クロス1を得る」） — 既知の不具合: CARD-XG7-015 【ボウケンジャーになれ】が未実装（NC で選択が開かず、BP・クロス1 が付かない）", () => {
+  it("XG7-015: 【ボウケンジャーになれ】このターン、クロス1を得る（右に出た CN3 の XG1-007 が2番目で NC）（出典: atwiki/page-2415「クロス1を得る」）", () => {
     let s = resolveAll(bouken(), ["SPEC-S-WB3000:wb"]);
     s = enter(passEntry(s), "XG1-007:cd");
     expect(canStrike(s, "XG1-007:cd")).toBe(true);
   });
 
-  it.fails("XG7-015: 【ボウケンジャーになれ】選ばなければ BP は変わらない（出典: atwiki/page-2415「選んでもよい。そうしたとき」） — 既知の不具合: CARD-XG7-015 【ボウケンジャーになれ】が未実装（NC で選択が開かず、BP・クロス1 が付かない）", () => {
+  it("XG7-015: 【ボウケンジャーになれ】選ばなければ BP は変わらない（出典: atwiki/page-2415「選んでもよい。そうしたとき」）", () => {
     expect(bpOf(resolveAll(skip(bouken())), "player1", "XG7-015:br")).toBe(4000);
   });
 });
@@ -425,7 +425,7 @@ describe("XG7-016 黒獅子リオ×スーパーゲキレッド", () => {
   const superGeki = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     attackedInEnemyTurn({ battle: [inst("RS-426", "sg")], discard: [inst("XG7-016", "rio")], ...p1 }, "RS-426:sg", {}, "TST-UNIT-7:atk", EXTRA);
 
-  it.fails("XG7-016: ※ 自軍 L ユニットがなければ「ゲキレッド」として使える — RS-426 スーパーゲキレッドが撃破されて捨札になったとき、自軍捨札のこれをラッシュエリアに出せる（出典: atwiki/page-2452 Q1「はい、できます」） — 既知の不具合: CARD-XG7-016 「ゲキレッド+黒獅子リオ」として使える※が未実装（RS-426 の「ゲキレッド」として捨札から出せない）", () => {
+  it("XG7-016: ※ 自軍 L ユニットがなければ「ゲキレッド」として使える — RS-426 スーパーゲキレッドが撃破されて捨札になったとき、自軍捨札のこれをラッシュエリアに出せる（出典: atwiki/page-2452 Q1「はい、できます」）", () => {
     const s = resolveAll(superGeki(), ["XG7-016:rio"]);
     expect(zoneOf(s, "player1", "XG7-016:rio")).toBe("rush");
   });
@@ -437,20 +437,20 @@ describe("XG7-016 黒獅子リオ×スーパーゲキレッド", () => {
 
   const hand = () => [inst("SPEC-WB-M5", "m5"), inst("SPEC-WB-M4P", "m4"), inst("SPEC-WB-M6", "m6"), inst("SPEC-WB-S3", "s3"), inst("SPEC-MA-M3", "ma")];
 
-  it.fails("XG7-016: 【俺達の道】NC（1番目）— 手札の、必要パワーの数字が5以下の WB の M ユニットのカードから2枚まで選べる（任意）（出典: atwiki/page-2452「必要パワーの数字が5以下のWBのMユニットのカードを2枚まで選び、自軍ラッシュエリアに出してもよい」） — 既知の不具合: CARD-XG7-016 【俺達の道】が未実装（NC で手札の M ユニットを出す選択が開かない）", () => {
+  it("XG7-016: 【俺達の道】NC（1番目）— 手札の、必要パワーの数字が5以下の WB の M ユニットのカードから2枚まで選べる（任意）（出典: atwiki/page-2452「必要パワーの数字が5以下のWBのMユニットのカードを2枚まで選び、自軍ラッシュエリアに出してもよい」）", () => {
     const s = nc("XG7-016:rio", 0, { hand: hand() });
     expectChoiceFrom(s, "player1", "XG7-016");
     expect(choiceIds(s)).toEqual(["SPEC-WB-M4P:m4", "SPEC-WB-M5:m5"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-016: 【俺達の道】選んだ2枚を自軍ラッシュエリアに出す（必要パワー・コマンドは問わない）（出典: atwiki/page-2452） — 既知の不具合: CARD-XG7-016 【俺達の道】が未実装（NC で手札の M ユニットを出す選択が開かない）", () => {
+  it("XG7-016: 【俺達の道】選んだ2枚を自軍ラッシュエリアに出す（必要パワー・コマンドは問わない）（出典: atwiki/page-2452）", () => {
     const s = resolveAll(nc("XG7-016:rio", 0, { hand: hand() }), ["SPEC-WB-M5:m5", "SPEC-WB-M4P:m4"]);
     expect(zoneOf(s, "player1", "SPEC-WB-M5:m5")).toBe("rush");
     expect(zoneOf(s, "player1", "SPEC-WB-M4P:m4")).toBe("rush");
   });
 
-  it.fails("XG7-016: 【俺達の道】2番目にコンビネーションしたときもナンバーに関係なく発動する（出典: atwiki/page-2452「（この効果はバトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する）」） — 既知の不具合: CARD-XG7-016 【俺達の道】が未実装（NC で手札の M ユニットを出す選択が開かない）", () => {
+  it("XG7-016: 【俺達の道】2番目にコンビネーションしたときもナンバーに関係なく発動する（出典: atwiki/page-2452「（この効果はバトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する）」）", () => {
     expectChoiceFrom(nc("XG7-016:rio", 1, { hand: hand() }), "player1", "XG7-016");
   });
 

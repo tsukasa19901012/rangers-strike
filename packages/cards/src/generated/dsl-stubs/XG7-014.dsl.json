@@ -59,8 +59,14 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg7::XG7-014::jiruma_majiro",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

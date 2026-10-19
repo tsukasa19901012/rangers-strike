@@ -100,6 +100,8 @@ export type CardInstance = {
   sizeOverride?: "S";
   /** XG1-048【エレキ光線】で選ばれたターン番号（そのターンを終えるとき隣のユニットが撃破される）。 */
   electroBeamTurn?: number;
+  /** XG7-001〜XG7-068 のこのターンだけの付与（クロス・ライドオフ不可。rules/xg7/xg7Types.ts）。 */
+  xg7Turn?: import("../rules/xg7/xg7Types").Xg7CardTurn;
   /** RK-010 ハイブリッドエネルギー: 自分がターンを終えるときにオモテにした山札の上のカード（rules/rk/rk1NamedEffects.ts）。 */
   hybridRevealed?: boolean;
 };
@@ -315,6 +317,9 @@ export type Rk7ChoiceMeta = {
 export type PendingLeave = {
   /** RS-303【シティガーディアンズ隊長】の「かわりに捨札にしてもよい」を見送った（再度は尋ねない）。 */
   cityGuardiansDeclined?: boolean;
+  /** XG7-001〜XG7-068 の離場の置換で見送ったもの・捨札のかわりに除外する（rules/xg7/xg7Effects.ts）。 */
+  xg7Declined?: string[];
+  xg7Exile?: boolean;
   /** RK-128 仮面ライダーレンゲルの※「かわりに…捨札にしてもよい」を見送った（再度は尋ねない）。 */
   rk7SubstituteDeclined?: boolean;
   ownerPlayerId: PlayerId;
@@ -750,6 +755,8 @@ export type PendingEffectChoice = {
     enemy?: string;
   };
   /** スペシャルメタルエディション RM-043〜RM-062 の選択の続き（rules/rm/rm3Effects.ts）。 */
+  /** クロスギャザー ザ・ベストパートナー XG7-001〜XG7-068 の選択の続き（rules/xg7/xg7Effects.ts）。 */
+  xg7Meta?: import("../rules/xg7/xg7Types").Xg7ChoiceMeta;
   rm3Meta?: {
     /** RM-045: 相手がこれまでに選んだ敵軍 S ユニット。 */
     chosen?: string[];
@@ -1401,6 +1408,8 @@ export type GameState = {
   /** RK-129【サンダースペイダー】・RK-132【妻子のバックアップ】の、まだ開いていない発動（rules/rk/rk7UnitEffects.ts）。 */
   rk7PendingTriggers?: Array<{ kind: "rk129" | "rk132"; playerId: PlayerId; sourceInstanceId: string }>;
   /** RM-059 異次元調達屋カブト【トランクの中身】の、まだ開いていない発動（rules/rm/rm3Effects.ts applyRm3AfterAction）。 */
+  /** XG7-001〜XG7-068 のターンを限った記録（rules/xg7/xg7Types.ts）。 */
+  xg7?: import("../rules/xg7/xg7Types").Xg7State;
   rm3PendingTriggers?: Array<{ kind: "rm059"; playerId: PlayerId; sourceInstanceId: string }>;
   /**
    * 効果で場のカードを撃破ではなく別のゾーンへ移す処理のうち、チェイス等の離場の応答を待っている残り（rules/fieldLeaveQueue.ts。

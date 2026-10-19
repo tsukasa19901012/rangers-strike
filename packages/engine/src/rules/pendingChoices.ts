@@ -167,6 +167,7 @@ import { isRk16ChoiceEffect, tryConfirmRk16Choice, tryResolveRk16Choice, trySkip
 import { isRm1ChoiceEffect, tryConfirmRm1Choice, tryResolveRm1Choice, trySkipRm1Choice } from "./rm/rm1Effects";
 import { isRm2ChoiceEffect, tryCompleteRm2HoldChoice, tryConfirmRm2Choice, tryResolveRm2Choice, trySkipRm2Choice } from "./rm/rm2Effects";
 import { isRm3ChoiceEffect, tryCompleteRm3HoldChoice, tryConfirmRm3Choice, tryResolveRm3Choice, trySkipRm3Choice } from "./rm/rm3Effects";
+import { isXg7ChoiceEffect, tryConfirmXg7Choice, tryResolveXg7Choice, trySkipXg7Choice } from "./xg7/xg7Effects";
 import { isBk1ChoiceEffect, tryResolveBk1Choice, trySkipBk1Choice } from "./bk/bk1Effects";
 import { filthyAirActive, isOtherLinesChoiceEffect, tryOtherLinesBattleToRush, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
@@ -686,6 +687,7 @@ export function isValidEffectChoiceTarget(
     isRm1ChoiceEffect(pending.effectId) ||
     isRm2ChoiceEffect(pending.effectId) ||
     isRm3ChoiceEffect(pending.effectId) ||
+    isXg7ChoiceEffect(pending.effectId) ||
     isBk1ChoiceEffect(pending.effectId) ||
     isOtherLinesChoiceEffect(pending.effectId) ||
     isSet9BChoiceEffect(pending.effectId) ||
@@ -2078,6 +2080,8 @@ export function applyConfirmEffectChoice(
   if (rm2) return rm2;
   const rm3 = tryConfirmRm3Choice(state, playerId);
   if (rm3) return rm3;
+  const xg7 = tryConfirmXg7Choice(state, playerId);
+  if (xg7) return xg7;
   if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
     // RS-472【現場への搬送】: 「…まで好きな数選び」— 選んだところで確定し、山札をシャッフルする。
     return finishChoice(finishSiteTransportDeck(state, pending), pending, String(pending.selectedInstanceIds?.length ?? 0));
@@ -3087,6 +3091,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (rm2) return rm2;
   const rm3 = trySkipRm3Choice(state, playerId);
   if (rm3) return rm3;
+  const xg7 = trySkipXg7Choice(state, playerId);
+  if (xg7) return xg7;
   const bk1 = trySkipBk1Choice(state, playerId);
   if (bk1) return bk1;
   const otherLines = trySkipOtherLinesChoice(state, playerId);
@@ -3422,6 +3428,8 @@ export function applyEffectChoiceSelect(
   if (rm2) return rm2;
   const rm3 = tryResolveRm3Choice(state, playerId, instanceId);
   if (rm3) return rm3;
+  const xg7 = tryResolveXg7Choice(state, playerId, instanceId);
+  if (xg7) return xg7;
   const bk1 = tryResolveBk1Choice(state, playerId, instanceId);
   if (bk1) return bk1;
   const otherLines = tryResolveOtherLinesChoice(state, playerId, instanceId);
