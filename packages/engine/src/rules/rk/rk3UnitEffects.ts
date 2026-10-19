@@ -23,6 +23,7 @@ import { battlePositionOneBased } from "../fractionalSp";
 import { unitFeatures } from "../addedFeatures";
 import { rk1IsSmallNow } from "./rk1Features";
 import { rk1OngekiMarked } from "./rk1NamedEffects";
+import { rk11KyosukeTreatsAsWritten } from "./rk11Fields";
 import { rk2KamenRiderRushDiscardable, rk2NeedsKamenRiderRushDiscard } from "./rk2UnitEffects";
 import { beginChikaraBaton } from "../legend1/set4NamedEffects";
 import { NO_ATTACK_THIS_TURN_RESTRICTION } from "../legend1/set5AuditFixes";
@@ -392,7 +393,8 @@ export function rk3BattleValues(state: GameState, pending: PendingBattle): { att
 // 「自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに
 //  勝っても撃破される」と書かれた敵軍ユニットを1体選び撃破する。」（atwiki/page-223）
 // テキストのどこかにその文言があれば対象（能力の説明文の中でもよい。grnrngr/faq-rider-1 RK-051 Q1 の鋭鬼・サンジェル）。
-// RK-019 音撃で「…と書かれているかのように扱う」ユニットも対象にする。
+// RK-019 音撃・RK-224 京介変身体【サポート】で「…と書かれているかのように扱う」ユニットも対象にする（RK-224 はユーザー決定 2026-10-19 の
+// RM-008 と同じ扱い。docs/rules/README.md §5.7 o）。
 
 export const EIKI_EFFECT_ID = "rk051_hissatsu_hicchu";
 const WIN_BUT_DESTROYED_PHRASE = "これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される";
@@ -411,7 +413,9 @@ function applyEiki(state: GameState, ctx: GrantKeywordContext): GrantKeywordResu
     .filter(
       (c) =>
         isUnitCard(state, c.cardId) &&
-        (hasWinButDestroyedText(state, c.cardId) || rk1OngekiMarked(state, ctx.playerId, c.instanceId)) &&
+        (hasWinButDestroyedText(state, c.cardId) ||
+          rk1OngekiMarked(state, ctx.playerId, c.instanceId) ||
+          rk11KyosukeTreatsAsWritten(state, opponent(ctx.playerId), c.instanceId)) &&
         selectableEnemy(state, ctx.playerId, "RK-051", c),
     )
     .map((c) => c.instanceId);

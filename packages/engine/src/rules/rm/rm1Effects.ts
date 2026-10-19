@@ -33,7 +33,8 @@ import { KIRIGAKURE_RULE_ID, addTurnFeatureModifier, unitFeatures } from "../add
 import { startEffectRush } from "../effectRush";
 import { applyDamageToPlayer } from "../damagePayment";
 import { rk1IsSmallNow } from "../rk/rk1Features";
-import { rk1LeaveCounterConditionMet } from "../rk/rk1NamedEffects";
+import { rk1LeaveCounterConditionMet, rk1OngekiMarked } from "../rk/rk1NamedEffects";
+import { rk11KyosukeTreatsAsWritten } from "../rk/rk11Fields";
 import { rk14ActsAsVehicle } from "../rk/rk14Fields";
 import { MULTI_PACK_CARD_ID, TURBO_UNIT_CARD_ID, hasRm1MultiPack, rm1CostNumber, rm1ResidentActive, rm1ResidentCount } from "./rm1Fields";
 
@@ -640,7 +641,8 @@ CHOICE_CONFIRMERS[NINJA_WAR_EFFECT_ID] = (state, playerId) => {
 // RM-008 対バイオロン法（オペレーション）
 // 「敵軍バトルエリアから「これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される」と書かれた敵軍ユニットを1体選び、
 //  持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。」（atwiki/page-880）
-// 「書かれた」はカードに印刷されたテキスト（サイズを問わない）。効果で同じ能力を得たユニットは含めない（it.todo）。
+// 「書かれた」はカードに印刷されたテキスト（サイズを問わない）と、効果でその文が「書かれているかのように扱う」ユニット（RK-019 音撃・
+// RK-224 京介変身体【サポート】。RK-051 鋭鬼と同じ）。ユーザー決定 2026-10-19（docs/rules/README.md §5.7 o）。
 
 const BIORON_EFFECT_ID = "rm008_tai_bioron";
 const BIORON_TEXT = "敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される";
@@ -653,7 +655,14 @@ function applyBioron(state: GameState, ctx: GrantKeywordContext): GrantKeywordRe
   const enemyId = opponent(ctx.playerId);
   const needle = normText(BIORON_TEXT);
   const ids = state.players[enemyId].battle
-    .filter((c) => isUnitCard(state, c.cardId) && normText(getDefinition(state.definitions, c.cardId)?.text).includes(needle) && selectableEnemy(state, ctx.playerId, "RM-008", c))
+    .filter(
+      (c) =>
+        isUnitCard(state, c.cardId) &&
+        (normText(getDefinition(state.definitions, c.cardId)?.text).includes(needle) ||
+          rk1OngekiMarked(state, ctx.playerId, c.instanceId) ||
+          rk11KyosukeTreatsAsWritten(state, enemyId, c.instanceId)) &&
+        selectableEnemy(state, ctx.playerId, "RM-008", c),
+    )
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "rm008:no_targets" };
   return {

@@ -117,6 +117,19 @@ export function rk11KyosukeWinButDestroyed(state: Pick<GameState, "players" | "d
 }
 
 /**
+ * RK-224【サポート】で、ownerId のユニット instanceId が「これは敵軍ターン中、SP1以上のユニットとバトルしたときバトルに勝っても撃破される」と
+ * 書かれているかのように扱われているか（ターンを問わない。RM-008 対バイオロン法・RK-051 鋭鬼の「…と書かれた敵軍ユニット」の判定に使う。
+ * ユーザー決定 2026-10-19、docs/rules/README.md §5.7 o）。
+ */
+export function rk11KyosukeTreatsAsWritten(state: Pick<GameState, "players" | "definitions">, ownerId: PlayerId, instanceId: string): boolean {
+  const unit = state.players[ownerId].battle.find((c) => c.instanceId === instanceId);
+  if (!unit) return false;
+  const d = def(state, unit.cardId);
+  if (d?.type !== "unit" || d.size !== "S") return false;
+  return fieldOf(state, opponentOf(ownerId)).some((c) => isSameCardIdentity(c.cardId, "RK-224"));
+}
+
+/**
  * RK-225 仮面ライダー朱鬼【陰陽術】「これが自軍エリアにある間（これをラッシュしたときも含む）、自分も相手もカウンターを持つオペレーションカードを
  * 使用するとき、その必要パワーの数字は3少なくなる（この効果は重複しない）。」（atwiki/page-901）。どちらかの場に朱鬼があれば3。
  */

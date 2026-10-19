@@ -110,9 +110,41 @@ describe("RM-008 対バイオロン法", () => {
     expect(zoneOf(s, "player2", "SPEC-BIO:b")).toBe("discard");
   });
 
-  it.todo(
-    "RM-008: 効果で同じ文の能力を得たユニット（atwiki カード評価「京介変身体や音撃と組み合わせれば効果の適用範囲がぐっと広がる」）も選べるか — コミュニティの記述だけで、「書かれた」に付与された能力を含めるかを確かめる公式の記述がない。エンジンはカードに印刷された文だけを見る",
-  );
+  // ユーザー決定 2026-10-19（docs/rules/README.md §5.7 o）: 「…と書かれた敵軍ユニット」には、効果でその文が「書かれているかのように扱う」
+  // ユニット（RK-019 音撃・RK-224 京介変身体【サポート】）も含める（RK-051 鋭鬼と同じ）。以前の it.todo を実テストにした。
+  it("RM-008: RK-019 音撃で「…バトルに勝っても撃破される」と書かれているかのように扱うユニットも選べる（ユーザー決定 2026-10-19。出典: atwiki/page-880「…と書かれた敵軍ユニットを1体選び」・atwiki/page-214「と書かれているかのように扱う」・カード評価「京介変身体や音撃と組み合わせれば効果の適用範囲がぐっと広がる」）", () => {
+    let s = board(
+      { hand: [inst("RK-019", "og"), inst("RM-008", "op")], command: releasedCat("MA", 1).concat(releasedCat("ET", 1)), power: powerCards(7) },
+      { battle: [inst("SPEC-PLAIN", "p"), inst("SPEC-BIO", "b")] },
+    );
+    s = resolveAll(played(s, "RK-019:og"), ["SPEC-PLAIN:p"]);
+    s = played(s, "RM-008:op");
+    expectChoiceFrom(s, "player1", "RM-008");
+    expect(choiceIds(s)).toEqual(["SPEC-BIO:b", "SPEC-PLAIN:p"].sort());
+    s = resolveAll(pick(s, "SPEC-PLAIN:p"));
+    expect(zoneOf(s, "player2", "SPEC-PLAIN:p")).toBe("command");
+  });
+
+  it("RM-008: 敵軍エリアに RK-224 京介変身体があれば、敵軍バトルエリアの S ユニットは文がなくても選べる（M ユニットは選べない）（ユーザー決定 2026-10-19。出典: atwiki/page-880・atwiki/page-900「敵軍バトルエリアのSユニットは、…と書かれているかのように扱う」）", () => {
+    const s = played(
+      board(
+        { hand: [inst("RM-008", "op")], command: releasedCat("ET", 1), power: powerCards(3) },
+        { battle: [inst("SPEC-PLAIN", "p"), inst("SPEC-ET-M", "m")] },
+      ),
+      "RM-008:op",
+    );
+    // 京介変身体は RM-008 を使う側（自軍）の場にあるとき、相手のバトルエリアの S ユニットに効く。
+    expect(s.pendingEffectChoice).toBeFalsy();
+    const withKyosuke = played(
+      board(
+        { hand: [inst("RM-008", "op")], command: releasedCat("ET", 1), power: powerCards(3), rush: [inst("RK-224", "ky")] },
+        { battle: [inst("SPEC-PLAIN", "p"), inst("SPEC-ET-M", "m")] },
+      ),
+      "RM-008:op",
+    );
+    expectChoiceFrom(withKyosuke, "player1", "RM-008");
+    expect(choiceIds(withKyosuke)).toEqual(["SPEC-PLAIN:p"]);
+  });
 });
 
 // ===========================================================================

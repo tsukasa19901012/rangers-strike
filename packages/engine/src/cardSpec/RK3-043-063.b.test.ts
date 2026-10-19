@@ -209,6 +209,12 @@ describe("RK-051 仮面ライダー鋭鬼", () => {
     s = resolveAll(pick(s, "RS-408:sj"));
     expect(zoneOf(s, "player2", "RS-408:sj")).toBe("discard");
   });
+
+  it("RK-051: 自軍エリアに RK-224 京介変身体があれば、敵軍バトルエリアの S ユニット（その文が書かれているかのように扱う）も選べる（ユーザー決定 2026-10-19 の RM-008 と同じ扱い。docs/rules/README.md §5.7 o。出典: atwiki/page-223・atwiki/page-900）", () => {
+    const s = enter(board({ rush: [inst("RK-051", "ek"), inst("RK-224", "ky")] }, { battle: [inst("TST-UNIT-0", "n")] }), "RK-051:ek");
+    expectChoiceFrom(s, "player1", "RK-051");
+    expect(choiceIds(s)).toEqual(["TST-UNIT-0:n"]);
+  });
 });
 
 // ===========================================================================
