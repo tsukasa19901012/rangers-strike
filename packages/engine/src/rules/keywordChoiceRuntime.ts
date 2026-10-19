@@ -185,7 +185,8 @@ export function resolveDeclareNumberDeckReveal(
   const enemy = withBottom.players[enemyId];
   const targets = [...enemy.battle, ...enemy.rush].filter((c) => {
     const d = getDefinition(withBottom.definitions, c.cardId);
-    const cost = typeof d?.powerCost === "number" ? d.powerCost : NaN;
+    // 「7+」「7-」は数字7（XG2-069・XP-007 atwiki/page-1723「必要パワーの数字」）。
+    const cost = typeof d?.powerCost === "number" ? d.powerCost : parseInt(String(d?.powerCost ?? ""), 10);
     return cost === declared;
   });
   if (targets.length === 0) return withBottom;

@@ -32,8 +32,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-059::chikarano",
-          "duration": "turn"
+          "keyword": "xg2::XG2-059::show_of_power",
+          "duration": "permanent"
         }
       ]
     }

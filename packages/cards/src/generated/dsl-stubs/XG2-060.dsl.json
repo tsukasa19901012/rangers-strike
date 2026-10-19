@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-060::supedo10taimu",
-          "duration": "turn"
+          "keyword": "xg2::XG2-060::spade_ten_time",
+          "duration": "permanent"
         }
       ]
     }

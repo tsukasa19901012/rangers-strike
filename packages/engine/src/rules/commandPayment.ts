@@ -1,3 +1,4 @@
+import { isXg2SelfHoldPayment } from "./xg2/xg2Effects";
 import { rm1SonicFlapExtraHolds } from "./rm/rm1Fields";
 import {
   emergencyRequestEnemyCommandIds,
@@ -713,6 +714,8 @@ export function needsEffectHoldPayment(
   // （RS-082【トリケランス】等）は resolve_effect_choice で選ぶ。
   if (!state) return true;
   const own = state.players[pending.playerId].command;
+  // XG2-075・076・078「これをホールドして次の効果を発動できる」（場のこのユニット自身。rules/xg2/xg2Core.ts）。
+  if (isXg2SelfHoldPayment(state, pending)) return true;
   return pending.validInstanceIds.every((id) => own.some((c) => c.instanceId === id));
 }
 

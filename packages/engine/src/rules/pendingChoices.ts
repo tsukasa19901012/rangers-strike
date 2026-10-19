@@ -168,7 +168,7 @@ import { isRm1ChoiceEffect, tryConfirmRm1Choice, tryResolveRm1Choice, trySkipRm1
 import { isRm2ChoiceEffect, tryCompleteRm2HoldChoice, tryConfirmRm2Choice, tryResolveRm2Choice, trySkipRm2Choice } from "./rm/rm2Effects";
 import { isRm3ChoiceEffect, tryCompleteRm3HoldChoice, tryConfirmRm3Choice, tryResolveRm3Choice, trySkipRm3Choice } from "./rm/rm3Effects";
 import { isBk1ChoiceEffect, tryResolveBk1Choice, trySkipBk1Choice } from "./bk/bk1Effects";
-import { isXg2ChoiceEffect, tryConfirmXg2Choice, tryResolveXg2Choice, trySkipXg2Choice } from "./xg2/xg2Effects";
+import { isXg2ChoiceEffect, tryCompleteXg2HoldChoice, tryConfirmXg2Choice, tryResolveXg2Choice, trySkipXg2Choice } from "./xg2/xg2Effects";
 import { filthyAirActive, isOtherLinesChoiceEffect, tryOtherLinesBattleToRush, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
@@ -3008,6 +3008,9 @@ export function completeEffectHoldChoice(
   // 第7弾 RS-440【武器換装】・RS-441【コサックダンス】: ホールドするコマンドを選んだあとの続き（rules/legend1/set7NamedEffectsA.ts）。
   const set7aHold = tryCompleteSet7AHoldChoice(state, playerId, commandInstanceIds);
   if (set7aHold) return set7aHold;
+  // XG2-075・076・078: これ自身をホールドしたあとの続き（rules/xg2/xg2dEffects.ts）。
+  const xg2Hold = tryCompleteXg2HoldChoice(state, playerId, commandInstanceIds);
+  if (xg2Hold) return xg2Hold;
   // RM-022 サイバリアン・RM-038 凱聖バルスキー: ホールドするコマンドを選んだあとの続き（rules/rm/rm2Effects.ts）。
   const rm2Hold = tryCompleteRm2HoldChoice(state, playerId, commandInstanceIds);
   if (rm2Hold) return rm2Hold;

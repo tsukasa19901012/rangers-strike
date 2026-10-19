@@ -17,11 +17,11 @@
         "type": "operation",
         "timing": "rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-055::nokaramatahawots",
+          "keyword": "xg2::XG2-055::henshin_ippatsu",
           "duration": "permanent"
         }
       ]

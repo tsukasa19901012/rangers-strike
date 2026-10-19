@@ -99,7 +99,7 @@ import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
 import { drainQueuedFieldLeaves } from "../rules/fieldLeaveQueue";
 import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
-import { applyXg2AfterAction, applyXg2BattlePhaseEnd, applyXg2StrikeDamageTriggers, isXg2ActivatableResident, openXg2OnBattlePhaseStart } from "../rules/xg2/xg2Effects";
+import { applyXg2AfterAction, applyXg2BattleCounter, applyXg2BattlePhaseEnd, applyXg2StrikeDamageTriggers, isXg2ActivatableResident, isXg2BattleCounterCard, openXg2OnBattlePhaseStart, xg2RejectsOperationTarget } from "../rules/xg2/xg2Effects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
@@ -1855,6 +1855,7 @@ function applyActionCore(
       if (!fizzle && operationNeedsUpfrontTarget(found.card.cardId) && !action.targetInstanceId) {
         return fail("target_required");
       }
+      if (xg2RejectsOperationTarget(state, playerId, found.card, action.targetInstanceId)) return fail("invalid_target");
 
       if (
         !fizzle &&
@@ -2898,7 +2899,8 @@ function applyActionCore(
         }
         // RK-172 ルリオオカミ: 山札の上から3枚のうち、アタックしてきたユニットの必要パワー以上のカードを手札へ。1枚以上なら、そのバトルは行われない
         // （rules/rk/rk9UnitEffects.ts）。
-        if (counterCardId && isRk9BattleCounterCard(counterCardId)) {
+        // XG2-061 リョクオオザル（このターン BP 修正。バトルは行われる。rules/xg2/xg2cEffects.ts）も同じ手順。
+        if (counterCardId && (isRk9BattleCounterCard(counterCardId) || isXg2BattleCounterCard(counterCardId))) {
           const used: GameState = {
             ...state,
             ...updatePlayer(state, playerId, {
@@ -2907,7 +2909,7 @@ function applyActionCore(
               discard: [...player.discard, { instanceId: action.instanceId, cardId: counterCardId }],
             }),
           };
-          const result = applyRk9RuriOokami(used, playerId, pending);
+          const result = isXg2BattleCounterCard(counterCardId) ? applyXg2BattleCounter(used, playerId, action.instanceId) : applyRk9RuriOokami(used, playerId, pending);
           const log = buildLogEntry(playerId, "play_counter", counterCardId, state.definitions, result.detail);
           const nextPending: PendingBattle = result.cancel ? { ...pending, battleCancelled: true } : pending;
           if (

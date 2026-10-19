@@ -1,4 +1,5 @@
 import { clearRk8SeizedFor, collectRk8TurnEndQueue, openRk8TurnEndEntry } from "./rk/rk8UnitEffects";
+import { applyXg2TurnEnd } from "./xg2/xg2Effects";
 import { collectRk10TurnEndQueue, openRk10TurnEndEntry } from "./rk/rk10UnitEffects";
 import { collectRk11TurnEndQueue, openRk11TurnEndEntry } from "./rk/rk11UnitEffects";
 import { collectRk13TurnEndQueue, openRk13TurnEndEntry } from "./rk/rk13UnitEffects";
@@ -373,6 +374,12 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.rk16Queue!;
     progress = { ...progress, rk16Queue: rest };
     nextState = openRk16TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // XG2-042【ファイナルアタックライド】・XG2-055 変身一発で出したユニット（rules/xg2/xg2cEffects.ts）。
+  if (!progress.xg2Done) {
+    progress = { ...progress, xg2Done: true };
+    nextState = applyXg2TurnEnd(nextState, endingPlayerId);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {

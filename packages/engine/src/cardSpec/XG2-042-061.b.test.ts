@@ -88,14 +88,14 @@ describe("XG2-049 仮面ライダーギルス", () => {
 
   const rc = (top: CardInstance) => rcBoard("XG2-049:g", {}, { deck: [top, inst("TST-OP", "e2")] });
 
-  it.fails("XG2-049: 【デモンズファングクラッシャー】RC（ライドオフ）で、敵軍山札の上から1枚をオモテにし、S ユニットのカードなら敵軍バトルエリアに出すかを選べる（任意）（出典: atwiki/page-1759「敵軍山札の上から1枚をオモテにする。…Sユニットのカードだったなら、敵軍バトルエリアに出してもよい」・R-KW-RC-01） 既知の不具合: CARD-XG2-049 【デモンズファングクラッシャー】が自軍の山札の上のカードを見る", () => {
+  it("XG2-049: 【デモンズファングクラッシャー】RC（ライドオフ）で、敵軍山札の上から1枚をオモテにし、S ユニットのカードなら敵軍バトルエリアに出すかを選べる（任意）（出典: atwiki/page-1759「敵軍山札の上から1枚をオモテにする。…Sユニットのカードだったなら、敵軍バトルエリアに出してもよい」・R-KW-RC-01）", () => {
     const s = rc(inst("TST-UNIT-0", "top"));
     expectChoiceFrom(s, "player1", "XG2-049");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:top"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-049: 【デモンズファングクラッシャー】出すと、そのカードは敵軍バトルエリアに出る（出典: atwiki/page-1759・カード評価「敵軍Sユニットを山札から強制的にラッシュさせる」） 既知の不具合: CARD-XG2-049 【デモンズファングクラッシャー】が自軍の山札の上のカードを見て、敵軍の山札のカードを出せない", () => {
+  it("XG2-049: 【デモンズファングクラッシャー】出すと、そのカードは敵軍バトルエリアに出る（出典: atwiki/page-1759・カード評価「敵軍Sユニットを山札から強制的にラッシュさせる」）", () => {
     const s = resolveAll(pick(rc(inst("TST-UNIT-0", "top")), "TST-UNIT-0:top"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:top")).toBe("battle");
   });
@@ -129,13 +129,13 @@ describe("XG2-050 仮面ライダーエクシードギルス", () => {
   const sting = () =>
     enter(p1Battle({ rush: [inst("XG2-050", "x")] }, { battle: [inst("TST-UNIT-0", "a"), inst("SPEC-C2", "c2"), inst("SPEC-C3", "c3"), inst("SPEC-C4", "c4")], rush: [inst("TST-UNIT-0", "r")] }, EXTRA), "XG2-050:x");
 
-  it.fails("XG2-050: 【ギルススティンガー】自軍ターン中にバトルエリアに出たとき、これをホールドするかを選べる（任意）（出典: atwiki/page-1856「これをホールドしてもよい」） 既知の不具合: CARD-XG2-050 【ギルススティンガー】の選択が開かない", () => {
+  it("XG2-050: 【ギルススティンガー】自軍ターン中にバトルエリアに出たとき、これをホールドするかを選べる（任意）（出典: atwiki/page-1856「これをホールドしてもよい」）", () => {
     const s = sting();
     expectChoiceFrom(s, "player1", "XG2-050");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-050: 【ギルススティンガー】ホールドしたら、敵軍バトルエリアのユニットを必要パワーの数字の合計が3以下になるように2体まで選び（0＋3）、持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-1856「必要パワーの数字の合計が3以下になるように2体まで選び、持ち主のパワーゾーンにダメージにして置く」） 既知の不具合: CARD-XG2-050 【ギルススティンガー】がなく、敵軍ユニットをダメージにできない", () => {
+  it("XG2-050: 【ギルススティンガー】ホールドしたら、敵軍バトルエリアのユニットを必要パワーの数字の合計が3以下になるように2体まで選び（0＋3）、持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-1856「必要パワーの数字の合計が3以下になるように2体まで選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
     let s = settle(accept(sting()));
     expect(cardIn(s, "player1", "XG2-050:x")?.commandHeld).toBe(true);
     expect(choiceIds(s)).not.toContain("SPEC-C4:c4");
@@ -180,14 +180,14 @@ describe("XG2-051 地のエル", () => {
     return r.state;
   };
 
-  it.fails("XG2-051: 【塵は塵に】ラッシュしたとき、敵軍捨札の S ユニットのカードから1枚選べる（オペレーションは選べない）。任意（出典: atwiki/page-1760「敵軍捨札からSユニットのカードを1枚選んでもよい」・コメント「強制効果じゃない」） 既知の不具合: CARD-XG2-051 【塵は塵に】の選択が開かない", () => {
+  it("XG2-051: 【塵は塵に】ラッシュしたとき、敵軍捨札の S ユニットのカードから1枚選べる（オペレーションは選べない）。任意（出典: atwiki/page-1760「敵軍捨札からSユニットのカードを1枚選んでもよい」・コメント「強制効果じゃない」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "XG2-051");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:d", "XG2-049:d2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-051: 【塵は塵に】選んだカードと同じカード名の敵軍ユニットを（ラッシュエリア・バトルエリアとも）すべて撃破する。違う名前のユニットは残る（出典: atwiki/page-1760「選んだカードと同じカード名の敵軍ユニットがあれば、すべて撃破する」） 既知の不具合: CARD-XG2-051 【塵は塵に】がなく、同名の敵軍ユニットを撃破できない", () => {
+  it("XG2-051: 【塵は塵に】選んだカードと同じカード名の敵軍ユニットを（ラッシュエリア・バトルエリアとも）すべて撃破する。違う名前のユニットは残る（出典: atwiki/page-1760「選んだカードと同じカード名の敵軍ユニットがあれば、すべて撃破する」）", () => {
     const s = resolveAll(pick(rushed(), "TST-UNIT-0:d"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:a")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-UNIT-0:r")).toBe("discard");
@@ -206,7 +206,7 @@ describe("XG2-052 ユナイトベント", () => {
     expectRarityIn("XG2-052", ["N"]);
   });
 
-  it.fails("XG2-052: カタログの特徴 — オペレーションだが特徴「アドベントカード」を持つ（出典: atwiki/page-1761「特徴：アドベントカード」） 既知の不具合: CARD-XG2-052 カタログ: オペレーションの特徴「アドベントカード」がない", () => {
+  it("XG2-052: カタログの特徴 — オペレーションだが特徴「アドベントカード」を持つ（出典: atwiki/page-1761「特徴：アドベントカード」）", () => {
     expect((DEFS["XG2-052"] as { features?: string[] }).features ?? []).toEqual(["アドベントカード"]);
   });
 
@@ -243,7 +243,7 @@ describe("XG2-052 ユナイトベント", () => {
     expect(spOf(s, "player1", "SPEC-BEAST-L10:t")).toBe(2);
   });
 
-  it.fails("XG2-052: ターゲットがユニットでなくなる（撃破される）とき、下に重ねていたカードはすべて捨札になる（出典: atwiki/page-1761「ターゲットの下に重ねていたカードはすべて捨札になる」） 既知の不具合: CARD-XG2-052 ターゲットが撃破されると、重ねていたカード（ユナイトベント・ウラ向きのカード）が捨札にならず、どのゾーンにも残らない", () => {
+  it("XG2-052: ターゲットがユニットでなくなる（撃破される）とき、下に重ねていたカードはすべて捨札になる（出典: atwiki/page-1761「ターゲットの下に重ねていたカードはすべて捨札になる」）", () => {
     let s = vent(inst("SPEC-BEAST-L", "t"), [inst("SPEC-BEAST-M", "b1")], ["SPEC-BEAST-M:b1"]);
     const tgt = cardIn(s, "player1", "SPEC-BEAST-L:t")!;
     s = resolveAll(attackedInEnemyTurn({ battle: [tgt] }, "SPEC-BEAST-L:t", {}, "TST-UNIT-7:atk", EXTRA));
@@ -252,16 +252,21 @@ describe("XG2-052 ユナイトベント", () => {
     expect(zoneOf(s, "player1", "SPEC-BEAST-M:b1")).toBe("discard");
   });
 
-  it.fails("XG2-052: 公式Q&A — 2枚重ねたターゲットは効果が重複し、ウラ向きのカード1枚につき BP+4000（出典: atwiki/page-1761 Q7「ターゲットはウラ向きのカード1枚につきBP＋4000され、BP10000ごとにSP＋2されます」） 既知の不具合: CARD-XG2-052 2枚重ねても効果が重複せず、ウラ向きのカード1枚につき BP+2000 のまま", () => {
+  it("XG2-052: 公式Q&A — 2枚重ねたターゲットは効果が重複し、ウラ向きのカード1枚につき BP+4000（出典: atwiki/page-1761 Q7「ターゲットはウラ向きのカード1枚につきBP＋4000され、BP10000ごとにSP＋2されます」）", () => {
     const t = withStacked(inst("SPEC-BEAST-L", "t"), [inst("XG2-052", "v1"), faceDownCard("SPEC-BEAST-M", "b1"), inst("XG2-052", "v2"), faceDownCard("SPEC-BEAST-M", "b2")]);
     const s = p1Battle({ battle: [t] }, {}, EXTRA);
     expect(bpOf(s, "player1", "SPEC-BEAST-L:t")).toBe(13000);
     expect(spOf(s, "player1", "SPEC-BEAST-L:t")).toBe(3);
   });
 
-  it.fails("XG2-052: ターゲットに選べるのは「獣」を持つ自軍ユニットだけ（出典: atwiki/page-1761「ライドしていない特徴「獣」を持つ自軍ユニットを1体選びターゲットとする」） 既知の不具合: CARD-XG2-052 「獣」を持たない自軍ユニットもターゲットにして使える", () => {
+  it("XG2-052: ターゲットに選べるのは「獣」を持つ自軍ユニットだけ（出典: atwiki/page-1761「ライドしていない特徴「獣」を持つ自軍ユニットを1体選びターゲットとする」）", () => {
     const s = rushBoard({ hand: [inst("XG2-052", "uv")], rush: [inst("TST-UNIT-0", "n")], power: powerCards(5), command: releasedCat("WB", 1) }, {}, EXTRA);
-    expect(playOp(s, "player1", "XG2-052:uv", "TST-UNIT-0:n").ok).toBe(false);
+    // 「獣」を持たないユニットはターゲットに選べない。適正な対象がないので使えば空撃ち（R-CARD-03・R-RES-04）になり、
+    // ユニットには何も重ならず、このカードもラッシュエリアに置かれない。
+    const r = playOp(s, "player1", "XG2-052:uv", "TST-UNIT-0:n");
+    expect(cardIn(r.state, "player1", "TST-UNIT-0:n")?.stackedCards ?? []).toEqual([]);
+    expect(zoneOf(r.state, "player1", "XG2-052:uv")).not.toBe("rush");
+    expect(r.state.log.some((l) => l.includes("XG2-052") && l.includes("unite_vent"))).toBe(false);
   });
 });
 
@@ -277,20 +282,20 @@ describe("XG2-053 仮面ライダータイガ", () => {
 
   const hero = () => enter(p1Battle({ rush: [inst("XG2-053", "t"), inst("XG2-042", "k"), inst("XG2-046", "ph"), inst("TST-UNIT-0", "u")] }), "XG2-053:t");
 
-  it.fails("XG2-053: 【間違った英雄】自軍ターン中にバトルエリアに出たとき、自軍ラッシュエリアの特徴「仮面ライダー」を持つユニットから1体選べる（「仮面ライダー」を持たないユニットは選べない）。任意（出典: atwiki/page-1762「自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを1体選び捨札にしてもよい」） 既知の不具合: CARD-XG2-053 【間違った英雄】の選択が開かない", () => {
+  it("XG2-053: 【間違った英雄】自軍ターン中にバトルエリアに出たとき、自軍ラッシュエリアの特徴「仮面ライダー」を持つユニットから1体選べる（「仮面ライダー」を持たないユニットは選べない）。任意（出典: atwiki/page-1762「自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを1体選び捨札にしてもよい」）", () => {
     const s = hero();
     expectChoiceFrom(s, "player1", "XG2-053");
     expect(choiceIds(s)).toEqual(["XG2-042:k", "XG2-046:ph"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-053: 【間違った英雄】捨札にしたユニットの本来の BP を足した値になる（XG2-042 BP6000 なら 9000）（出典: atwiki/page-1762「このユニットのBPは、捨札にしたユニットの本来のBPを「+」した値になる」） 既知の不具合: CARD-XG2-053 【間違った英雄】の選択が開かず、BP が上がらない", () => {
+  it("XG2-053: 【間違った英雄】捨札にしたユニットの本来の BP を足した値になる（XG2-042 BP6000 なら 9000）（出典: atwiki/page-1762「このユニットのBPは、捨札にしたユニットの本来のBPを「+」した値になる」）", () => {
     const s = resolveAll(pick(hero(), "XG2-042:k"));
     expect(zoneOf(s, "player1", "XG2-042:k")).toBe("discard");
     expect(bpOf(s, "player1", "XG2-053:t")).toBe(9000);
   });
 
-  it.fails("XG2-053: 【間違った英雄】足すのは「本来の」BP（自軍ターン中 BP+5000 の XG2-046 でも 3000 を足して 6000）（出典: atwiki/page-1762「本来のBP」・コメント「参照が本来のBPでなけりゃスーパー１PHを肥やしにして､BP11000」） 既知の不具合: CARD-XG2-053 【間違った英雄】の選択が開かず、BP が上がらない", () => {
+  it("XG2-053: 【間違った英雄】足すのは「本来の」BP（自軍ターン中 BP+5000 の XG2-046 でも 3000 を足して 6000）（出典: atwiki/page-1762「本来のBP」・コメント「参照が本来のBPでなけりゃスーパー１PHを肥やしにして､BP11000」）", () => {
     const s = resolveAll(pick(hero(), "XG2-046:ph"));
     expect(bpOf(s, "player1", "XG2-053:t")).toBe(6000);
   });
@@ -318,7 +323,7 @@ describe("XG2-054 アビスハンマー", () => {
     rushBoard({ discard: [inst("XG2-054", "ah")], power: damageCards(damage), damage, command });
   const ambushAction = (s: GameState) => legal(s).find((a) => a.playerId === "player1" && JSON.stringify(a).includes("XG2-054:ah"));
 
-  it.fails("XG2-054: 【土中からの奇襲】自軍捨札にある間、自軍ラッシュフェイズ中、自軍ダメージが4点（必要パワーの数字）以上あれば、WB を持つ自軍コマンドを2つホールドして自軍ラッシュエリアに出せる（出典: atwiki/page-1763「WBを持つ自軍コマンドを2つホールドしてから、これを自軍ラッシュエリアに出してもよい」・カード評価「捨札からラッシュできる珍しい能力」） 既知の不具合: CARD-XG2-054 【土中からの奇襲】がなく、捨札から出す合法手がない", () => {
+  it("XG2-054: 【土中からの奇襲】自軍捨札にある間、自軍ラッシュフェイズ中、自軍ダメージが4点（必要パワーの数字）以上あれば、WB を持つ自軍コマンドを2つホールドして自軍ラッシュエリアに出せる（出典: atwiki/page-1763「WBを持つ自軍コマンドを2つホールドしてから、これを自軍ラッシュエリアに出してもよい」・カード評価「捨札からラッシュできる珍しい能力」）", () => {
     const s = inDiscard(4);
     const a = ambushAction(s);
     expect(a).toBeDefined();
@@ -352,28 +357,28 @@ describe("XG2-055 変身一発", () => {
     return r.state;
   };
 
-  it.fails("XG2-055: 自分の手札から、特徴「男」か「女」を持つ S ユニットのカード（必要パワー・追加条件を満たさない XG2-042 も）を1枚選べる。「男」「女」を持たないユニット・M ユニット・オペレーションは選べない。任意（出典: atwiki/page-1764・カード評価「必要パワーや追加条件を無視してSユニットを出せる」・コメント「スカラベアンデッドは特徴に男も女も持っていないので変身一発ではラッシュできません」） 既知の不具合: CARD-XG2-055 変身一発の効果がない（使っても選択が開かない）", () => {
+  it("XG2-055: 自分の手札から、特徴「男」か「女」を持つ S ユニットのカード（必要パワー・追加条件を満たさない XG2-042 も）を1枚選べる。「男」「女」を持たないユニット・M ユニット・オペレーションは選べない。任意（出典: atwiki/page-1764・カード評価「必要パワーや追加条件を無視してSユニットを出せる」・コメント「スカラベアンデッドは特徴に男も女も持っていないので変身一発ではラッシュできません」）", () => {
     const s = played();
     expectChoiceFrom(s, "player1", "XG2-055");
     expect(choiceIds(s)).toEqual(["XG2-042:m"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-055: 選んだユニットは自軍ラッシュエリアに出て、このターンはストライクできない（出典: atwiki/page-1764「このターン、ストライクすることができず」） 既知の不具合: CARD-XG2-055 変身一発の効果がなく、手札のユニットを出せない", () => {
+  it("XG2-055: 選んだユニットは自軍ラッシュエリアに出て、このターンはストライクできない（出典: atwiki/page-1764「このターン、ストライクすることができず」）", () => {
     let s = resolveAll(pick(played(), "XG2-042:m"));
     expect(zoneOf(s, "player1", "XG2-042:m")).toBe("rush");
     s = enter(nextPhase(s), "XG2-042:m");
     expect(canStrike(settle(s), "XG2-042:m")).toBe(false);
   });
 
-  it.fails("XG2-055: 自分がターンを終えるとき、出したユニットが自軍エリアにあれば、自軍コマンドゾーンにホールド状態で置く（出典: atwiki/page-1764「自分がターンを終えるとき、自軍エリアにあれば持ち主のコマンドゾーンにホールド状態で置く」） 既知の不具合: CARD-XG2-055 変身一発の効果がなく、手札のユニットを出せない", () => {
+  it("XG2-055: 自分がターンを終えるとき、出したユニットが自軍エリアにあれば、自軍コマンドゾーンにホールド状態で置く（出典: atwiki/page-1764「自分がターンを終えるとき、自軍エリアにあれば持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     let s = resolveAll(pick(played(), "XG2-042:m"));
     s = endTurn(s);
     expect(zoneOf(s, "player1", "XG2-042:m")).toBe("command");
     expect(cardIn(s, "player1", "XG2-042:m")?.commandHeld).toBe(true);
   });
 
-  it.fails("XG2-055: 公式Q&A — 出したユニットの「ラッシュしたとき」の効果は発動しない（XG2-025 ギンガレッドの ※「これをラッシュしたとき、…ビークルを1体選び、これの下に重ねてもよい」）（出典: atwiki/page-1764 Q1「ラッシュしたときに発動できる効果だけが発動しません」） 既知の不具合: CARD-XG2-055 変身一発の効果がなく、手札のユニットを出せない", () => {
+  it("XG2-055: 公式Q&A — 出したユニットの「ラッシュしたとき」の効果は発動しない（XG2-025 ギンガレッドの ※「これをラッシュしたとき、…ビークルを1体選び、これの下に重ねてもよい」）（出典: atwiki/page-1764 Q1「ラッシュしたときに発動できる効果だけが発動しません」）", () => {
     const r = playOp(rushBoard({ hand: [inst("XG2-055", "ip"), inst("XG2-025", "gr")], rush: [inst("RS-466", "v")], command: releasedCat("ET", 1) }), "player1", "XG2-055:ip");
     expect(r.ok, r.error).toBe(true);
     let s = r.state;

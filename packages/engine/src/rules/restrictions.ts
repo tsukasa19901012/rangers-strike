@@ -1,5 +1,5 @@
 import { rm2BlocksBattleEntry } from "./rm/rm2Fields";
-import { xg2KijouReplacesEntryHold } from "./xg2/xg2Fields";
+import { xg2KijouReplacesEntryHold, xg2RequiresBattleEntry } from "./xg2/xg2Fields";
 import { filthyAirActive } from "./legend1/otherLinesNamedEffects";
 import { rk3BattleEntryBlocked } from "./rk/rk3UnitEffects";
 import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
@@ -1000,7 +1000,9 @@ export function findMandatoryBattleEntries(
       // RK-247 仮面ライダーネガ電王【不敵な挑発】（特徴「警察」を持つユニット。rules/rk/rk12Fields.ts）。
       rk12RequiresBattleEntry(state, rk12UnitFeatures(state, playerId, card)) ||
       // RK-308 リュウタロス（2nd）の※（敵軍バトルエリアにユニットがあれば。rules/rk/rk15Fields.ts）。
-      rk15RequiresBattleEntry(state, playerId, card)
+      rk15RequiresBattleEntry(state, playerId, card) ||
+      // XG2-068 リュウタロス【憑依】で重ねたユニットが敵軍バトルエリアにある（rules/xg2/xg2Fields.ts）。
+      xg2RequiresBattleEntry(state, playerId, card)
     ) {
       mandatory.push(card);
     }

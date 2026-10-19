@@ -1,4 +1,5 @@
 import { rm3StaysInBattleAtStart } from "./rm/rm3Fields";
+import { applyXg2BattleToRush, applyXg2StartPhaseEnd, isXg2BattleToRushTrigger } from "./xg2/xg2Effects";
 import { unitFeatures } from "./addedFeatures";
 import { isRk8BattleToRushTrigger, rk8StaysInBattleAtStart, tryRk8BattleToRush } from "./rk/rk8UnitEffects";
 import { isOtherLinesBattleToRushTrigger, tryOtherLinesBattleToRush } from "./legend1/otherLinesNamedEffects";
@@ -53,7 +54,9 @@ function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
         // RK-074 ライダーマン【カギ爪アーム】（rules/rk/rk4UnitEffects.ts）。
         isRk4BattleToRushTrigger(card) ||
         // RK-155 キングライナー・RK-156 マシンデンバード・RK-157 バットイマジン（rules/rk/rk8UnitEffects.ts）。
-        isRk8BattleToRushTrigger(card),
+        isRk8BattleToRushTrigger(card) ||
+        // XG2-048 仮面ライダースーパー1・RH【レーダーアイ】（rules/xg2/xg2cEffects.ts）。
+        isXg2BattleToRushTrigger(card),
     )
     .map((card) => card.instanceId);
 }
@@ -153,6 +156,8 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
     if (!withChoice.pendingEffectChoice) withChoice = tryRk4BattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     // RK-155・RK-156・RK-157（rules/rk/rk8UnitEffects.ts）。
     if (!withChoice.pendingEffectChoice) withChoice = tryRk8BattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
+    // XG2-048【レーダーアイ】（rules/xg2/xg2cEffects.ts）。
+    if (!withChoice.pendingEffectChoice) withChoice = applyXg2BattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     return continueBattleToRushEffectQueue({ ...withChoice, pendingBattleToRushQueue: rest });
   }
 
@@ -419,6 +424,8 @@ export function transitionStartToChargePhase(
   nextState = applyRk2StartPhaseEnd(nextState, playerId);
   // RK-080 超変身・RK-082 オルタフォース「自軍スタートフェイズを終えるとき、一度だけ…」（rules/rk/rk4UnitEffects.ts）。
   nextState = applyRk4StartPhaseEnd(nextState, playerId);
+  // XG2-057【ラッキークローバー招集】（rules/xg2/xg2cEffects.ts）。
+  nextState = applyXg2StartPhaseEnd(nextState, playerId);
 
   return {
     ...nextState,

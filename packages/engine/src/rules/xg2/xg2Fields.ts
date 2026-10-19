@@ -51,6 +51,8 @@ export function xg2EffectiveSp(
   bpOf?: (state: GameState, playerId: PlayerId, instance: CardInstance) => number,
 ): number {
   if (isSameCardIdentity(instance.cardId, "XG2-028")) return sp + xg2FaceDownStacked(instance).length;
+  // XG2-067 仮面ライダー電王GF「※このユニットの下にオモテ向きの「リュウタロス」のカードが重なっている間、これは「SP1」になる。」（atwiki/page-1772）。
+  if (isSameCardIdentity(instance.cardId, "XG2-067") && (instance.stackedCards ?? []).some((c) => !c.faceDown && cardName(state.definitions, c.cardId) === "リュウタロス")) return 1;
   if (isSameCardIdentity(instance.cardId, "XG2-029") && bpOf) {
     return bpOf(state as GameState, playerId, instance) >= 8000 ? Math.max(sp, 1) : sp;
   }
@@ -67,9 +69,22 @@ export function xg2FaceDownStacked(card: CardInstance): CardInstance[] {
  * XG2-029【災魔ツリー】「下に重なっているウラ向きのカード1枚につきBP+500」・XG2-031 デカマシン【宇宙警察のバックアップ】「これが自軍エリアにある間、
  * 特徴「警察」を持つユニットはBP+1000される」（自軍・敵軍を問わない。デカマシン1枚につき。atwiki/page-1799）。rules/fieldAuras.ts から呼ぶ。
  */
-export function xg2FieldBpBonus(state: Board, _playerId: PlayerId, instance: CardInstance): number {
+export function xg2FieldBpBonus(state: Board & Partial<Pick<GameState, "activePlayer" | "turn" | "xg2">>, playerId: PlayerId, instance: CardInstance): number {
   let bonus = 0;
+  // XG2-046 仮面ライダースーパー1・PH【怪力】「自軍ターン中、これはBP+5000される。」（atwiki/page-1745）。
+  if (isSameCardIdentity(instance.cardId, "XG2-046") && state.activePlayer === playerId) bonus += 5000;
+  bonus += xg2TigerUndeadBonus(state, playerId, instance);
+  // XG2-061 リョクオオザル「このターン、すべての自軍ユニットは、カテゴリを2つ以上持つ自軍コマンド1つにつきBP+1000される。」（使った回数分）。
+  const ryoku = ((state.xg2?.[XG2_RYOKU_KEY] as Xg2TurnEntry[] | undefined) ?? []).filter((e) => e.ownerId === playerId && e.turn === state.turn).length;
+  if (ryoku > 0) bonus += 1000 * ryoku * xg2MultiCategoryCommands(state, playerId);
   if (isSameCardIdentity(instance.cardId, "XG2-029")) bonus += 500 * xg2FaceDownStacked(instance).length;
+  // XG2-080 リュウキドラグレッダー【ファイナルアタックライド】「このユニットからコンビネーションする、「仮面ライダーディケイド」または
+  // 「仮面ライダーディエンド」は、次の能力を得る⇒BP+3000」（atwiki/page-1778）: 自軍バトルエリアでこれのすぐ次に並んでいるとき。
+  if (XG2_DECADE_NAMES.includes(cardName(state.definitions, instance.cardId))) {
+    const battle = state.players[playerId].battle;
+    const i = battle.findIndex((c) => c.instanceId === instance.instanceId);
+    if (i > 0 && isSameCardIdentity(battle[i - 1]!.cardId, "XG2-080")) bonus += 3000;
+  }
   const machines = (["player1", "player2"] as const).reduce((n, pid) => n + areaCards(state, pid).filter((c) => isSameCardIdentity(c.cardId, "XG2-031")).length, 0);
   if (machines > 0) {
     const features = getDefinition(state.definitions, instance.cardId)?.features ?? [];
@@ -153,7 +168,94 @@ export function xg2FusionOrNamedCondition(
 
 /** XG2-016 天空気殿 ※「カード名に「X」を含む自軍ユニットがある」（rules/rushAdditionalCondition.ts の条件）。 */
 export function xg2NameContainsGate(state: Board, playerId: PlayerId, gateText: string): boolean | null {
+  // XG2-044 仮面ライダーW・HM「特徴「メカ」を持つ自軍コマンドがある」（atwiki/page-1815）。
+  const cmd = /^特徴[「｢]([^」｣]+)[」｣]を持つ自軍コマンドがある$/.exec(gateText);
+  if (cmd) return state.players[playerId].command.some((c) => (getDefinition(state.definitions, c.cardId)?.features ?? []).includes(cmd[1]!));
   const m = /^カード名に[「｢]([^」｣]+)[」｣]を含む自軍ユニットがある$/.exec(gateText);
   if (!m) return null;
   return areaCards(state, playerId).some((c) => getDefinition(state.definitions, c.cardId)?.type === "unit" && cardName(state.definitions, c.cardId).includes(m[1]!));
+}
+
+/** その場の効果で記録した、ターン限定のユニット（XG2-042・XG2-055 で出したユニット、XG2-061 を使ったプレイヤー）。 */
+export type Xg2TurnEntry = { ownerId: PlayerId; instanceId: string; turn: number };
+export const XG2_FAR_KEY = "far";
+export const XG2_HENSHIN_KEY = "henshin";
+export const XG2_RYOKU_KEY = "ryoku";
+
+/**
+ * XG2-058 タイガーアンデッド ※「これが自軍捨札にある間、自軍「仮面ライダーレンゲル」はBP+1000される。（この効果は重複しない）」・
+ * 【種のための戦い】「これは、これと同じ特徴を1つ以上持つ、これ以外の自軍バトルエリアのユニット1体につき、BP+1000される。」（atwiki/page-1766）。
+ */
+function xg2TigerUndeadBonus(state: Board, playerId: PlayerId, instance: CardInstance): number {
+  let bonus = 0;
+  const player = state.players[playerId];
+  if (cardName(state.definitions, instance.cardId) === "仮面ライダーレンゲル" && player.discard.some((c) => isSameCardIdentity(c.cardId, "XG2-058"))) bonus += 1000;
+  if (isSameCardIdentity(instance.cardId, "XG2-058")) {
+    const own = getDefinition(state.definitions, instance.cardId)?.features ?? [];
+    const others = player.battle.filter((c) => {
+      if (c.instanceId === instance.instanceId || getDefinition(state.definitions, c.cardId)?.type !== "unit") return false;
+      return (getDefinition(state.definitions, c.cardId)?.features ?? []).some((f) => own.includes(f));
+    });
+    bonus += 1000 * others.length;
+  }
+  return bonus;
+}
+
+/**
+ * XG2-042【ファイナルアタックライド】で出したユニットは、このターン、ナンバーの数字が「2」になる（rules/numberComboEffects.ts ncEffectiveNumber。
+ * RC のユニットはコンビネーションの判定で扱う。rules/xg2/xg2cEffects.ts）。対象外なら undefined。
+ */
+export function xg2ComboNumberOverride(state: Pick<GameState, "xg2" | "turn">, playerId: PlayerId, card: CardInstance): number | undefined {
+  const entries = (state.xg2?.[XG2_FAR_KEY] as Xg2TurnEntry[] | undefined) ?? [];
+  return entries.some((e) => e.ownerId === playerId && e.instanceId === card.instanceId && e.turn === state.turn) ? 2 : undefined;
+}
+
+/** 追加条件「特徴「X」を持つ自軍ユニット1体をパワーゾーンに送る」の X（XG2-042・XP-005。rules/zord.ts）。 */
+export function xg2PowerPartnerFeature(text: string | undefined): string | undefined {
+  return /^特徴[「｢]([^」｣]+)[」｣]を持つ自軍ユニット1体をパワーゾーンに送る。?$/.exec((text ?? "").normalize("NFKC").trim())?.[1];
+}
+
+/** 「仮面ライダーディケイド」または「仮面ライダーディエンド」（XG2-075・076・078・080 のかっこ書き）。 */
+export const XG2_DECADE_NAMES = ["仮面ライダーディケイド", "仮面ライダーディエンド"];
+
+/**
+ * 「自軍「X」1枚をパワーゾーンに送る」（XG2-065 仮面ライダーカブトHF atwiki/page-895。rules/zord.ts の「1体」の形と同じに扱う）。
+ */
+export function xg2NamedPowerPartner(text: string | undefined): string | undefined {
+  return /^自軍[「｢]([^」｣]+)[」｣]1枚をパワーゾーンに送る。?$/.exec((text ?? "").normalize("NFKC").trim())?.[1];
+}
+
+/** 常駐置き場のカードの枚数（常駐オペレーションに重ねたカードも数える。XG2-questions Q6）。 */
+function residentZoneCount(state: Board, playerId: PlayerId): number {
+  return state.players[playerId].operation.reduce((n, c) => n + 1 + (c.stackedCards ?? []).length, 0);
+}
+
+/**
+ * アタックされないか（dsl/promotedKeywordBridge.ts promotedDefenderBlocksAttack）。
+ * XG2-065 仮面ライダーカブトHF【ハイパークロックアップ】「これは、自軍常駐置き場にカードが5枚以上あるとき、次の能力を得る⇒
+ * 特徴「加速」を持たないユニットにアタックされない。」（atwiki/page-895）。
+ */
+export function xg2DefenderBlocksAttack(state: Board, attackerPlayerId: PlayerId, attacker: CardInstance, defenderPlayerId: PlayerId, defender: CardInstance): boolean {
+  if (!isSameCardIdentity(defender.cardId, "XG2-065") || residentZoneCount(state, defenderPlayerId) < 5) return false;
+  void attackerPlayerId;
+  return !(getDefinition(state.definitions, attacker.cardId)?.features ?? []).includes("加速");
+}
+
+/**
+ * XG2-068 リュウタロス【憑依】で重ねたユニットの能力「これが自軍バトルエリアにある間、すべての敵軍Sユニットは、可能ならバトルエリアに出る。」
+ * （atwiki/page-1773。rules/restrictions.ts findMandatoryBattleEntries）。
+ */
+export function xg2RequiresBattleEntry(state: Board, playerId: PlayerId, card: CardInstance): boolean {
+  if (unitSizeOf(state.definitions, card) !== "S" || getDefinition(state.definitions, card.cardId)?.type !== "unit") return false;
+  const enemy: PlayerId = playerId === "player1" ? "player2" : "player1";
+  return state.players[enemy].battle.some((c) => (c.stackedCards ?? []).some((u) => !u.faceDown && isSameCardIdentity(u.cardId, "XG2-068")));
+}
+
+/**
+ * XG2-074 クウガゴウラム「※これは、自軍「仮面ライダーディケイド」があれば、ライドされていなくてもバトルエリアに出ることができる。」
+ * （atwiki/page-1775。rules/vehicleRules.ts canVehicleEnterBattleFromRush）。
+ */
+export function xg2VehicleMayEnterUnridden(state: Board, playerId: PlayerId, vehicle: CardInstance): boolean {
+  if (!isSameCardIdentity(vehicle.cardId, "XG2-074")) return false;
+  return areaCards(state, playerId).some((c) => c.instanceId !== vehicle.instanceId && cardName(state.definitions, c.cardId) === "仮面ライダーディケイド");
 }

@@ -24,12 +24,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-051::hani",
-          "duration": "turn"
+          "keyword": "xg2::XG2-051::dust_to_dust",
+          "duration": "permanent"
         }
       ]
     }

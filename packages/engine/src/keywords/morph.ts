@@ -4,6 +4,7 @@ import { getDefinition } from "../core/catalog";
 import { cardHasKeyword } from "./cardKeywords";
 import { ryuseioBlocksMove } from "../rules/restrictions";
 import { rk16CanMorphFromDiscard, rk16MorphDiscardCost, rk16MorphEntryHolds, rk16ReleasedCommands } from "../rules/rk/rk16Fields";
+import { xg2MorphStackCandidates } from "../rules/xg2/xg2Effects";
 
 /**
  * モーフの置き換え先を探すゾーン。「自軍ゾーン」はコマンドゾーンとパワーゾーンだけ
@@ -77,6 +78,8 @@ export function listPlaceableMorphReplacementCandidates(
   if (rk16CanMorphFromDiscard(state, defenderId)) {
     candidates = [...candidates, ...listMorphReplacementCandidates(defender, state.definitions, morphUnit.cardId, ["discard"])];
   }
+  // XG2-070 ライドブッカー・ブックモード: これに重ねたカードからも選べる（rules/xg2/xg2dEffects.ts）。
+  candidates = [...candidates, ...xg2MorphStackCandidates(state, defenderId, morphUnit.cardId)];
   const inBattle = defender.battle.some((c) => c.instanceId === morphUnit.instanceId);
   if (!inBattle) return candidates;
   return candidates.filter((c) => !ryuseioBlocksMove(state, defenderId, c.card) && morphEntryHoldsPayable(state, defenderId, c));

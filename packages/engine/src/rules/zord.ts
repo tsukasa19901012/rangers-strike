@@ -1,4 +1,5 @@
 import type { CardDefinition } from "@rangers-strike/cards";
+import { xg2NamedPowerPartner, xg2PowerPartnerFeature } from "./xg2/xg2Fields";
 import {
   canonicalCardName,
   fusionMaterialAliasNames,
@@ -542,7 +543,10 @@ export function isValidZordUpMaterial(
       if (isSendSUnitZordCondition(condition.conditionId)) {
         // 「自軍「X」1体をパワーゾーンに送る」はその名前の S ユニットだけ（RK-054「仮面ライダーガタックMF」・RK-057「仮面ライダーザビーMF」
         // atwiki/page-171・161）。
-        const named = condition.conditionId === "send_s_unit_to_power" ? singleNamedPowerPartner(condition.text) : undefined;
+        const named = condition.conditionId === "send_s_unit_to_power" ? (singleNamedPowerPartner(condition.text) ?? xg2NamedPowerPartner(condition.text)) : undefined;
+        // 「特徴「X」を持つ自軍ユニット1体をパワーゾーンに送る」（XG2-042・XP-005。rules/xg2/xg2Fields.ts）。
+        const feature = condition.conditionId === "send_s_unit_to_power" ? xg2PowerPartnerFeature(condition.text) : undefined;
+        if (feature) return card.instanceId !== rushingInstanceId && def.type === "unit" && (def.features ?? []).includes(feature);
         if (named) {
           // 名前で指定されたユニットは大きさを問わない（XG2-032「自軍「デカマシン」（SC）1体をパワーゾーンに送る」atwiki/page-1800）。
           return (

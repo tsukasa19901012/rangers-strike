@@ -26,7 +26,8 @@
             "type": "zones",
             "zones": [
               {
-                "type": "zone", "zone": "battle",
+                "type": "zone",
+                "zone": "battle",
                 "owner": "self",
                 "filter": {
                   "cardType": "unit",
@@ -35,7 +36,8 @@
                 }
               },
               {
-                "type": "zone", "zone": "rush",
+                "type": "zone",
+                "zone": "rush",
                 "owner": "self",
                 "filter": {
                   "cardType": "unit",
@@ -61,5 +63,8 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "features": [
+    "アドベントカード"
+  ]
 }

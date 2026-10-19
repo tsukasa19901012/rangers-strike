@@ -1,4 +1,5 @@
 import { hasScopedRestriction } from "../core/scopedModifiers";
+import { xg2CanDeployFromDiscard, xg2DeployFromDiscard } from "./xg2/xg2Effects";
 import { XG2_NO_STRIKE_RESTRICTION } from "./xg2/xg2Fields";
 import { sameCardName } from "../core/cardNames";
 /**
@@ -166,13 +167,15 @@ export function attackerSuppressesAttackedCounters(attackerCardId: string): bool
 export function canSelfRushFromZone(
   state: GameState,
   playerId: PlayerId,
-  zone: "command" | "power" | "hand",
+  zone: "command" | "power" | "hand" | "discard",
   instanceId: string,
 ): boolean {
   if (state.phase !== "rush" || state.activePlayer !== playerId) return false;
   const player = state.players[playerId];
   const card = player[zone].find((c) => c.instanceId === instanceId);
   if (!card) return false;
+  // XG2-054 アビスハンマー【土中からの奇襲】（自軍捨札から。rules/xg2/xg2cEffects.ts）。
+  if (zone === "discard") return xg2CanDeployFromDiscard(state, playerId, card);
   if (zone === "hand") return handDeployConditionMet(state, playerId, card.cardId);
   if (zone === "power" && card.faceDown) return false;
   // RK-320 仮面ライダーライジングイクサの※（必要パワー1・9・3の自軍コマンドがそれぞれあれば。rules/rk/rk16Fields.ts）。
@@ -233,10 +236,11 @@ function handDeployConditionMet(state: GameState, playerId: PlayerId, cardId: st
 export function applySelfRushFromZone(
   state: GameState,
   playerId: PlayerId,
-  zone: "command" | "power" | "hand",
+  zone: "command" | "power" | "hand" | "discard",
   instanceId: string,
 ): GameState | null {
   if (!canSelfRushFromZone(state, playerId, zone, instanceId)) return null;
+  if (zone === "discard") return xg2DeployFromDiscard(state, playerId, instanceId);
   const player = state.players[playerId];
   const card = player[zone].find((c) => c.instanceId === instanceId);
   if (!card) return null;

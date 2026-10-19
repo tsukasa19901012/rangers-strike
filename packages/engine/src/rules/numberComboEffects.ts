@@ -1,4 +1,5 @@
 import { rm1ComboNumber } from "./rm/rm1Fields";
+import { xg2ComboNumberOverride } from "./xg2/xg2Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { falconBreakTriggers } from "./rs4NcEffects";
 import {
@@ -76,6 +77,9 @@ export function ncEffectiveNumber(
   definition: CardDefinition,
 ): number {
   if (typeof definition.comboNumber !== "number") return -1;
+  // XG2-042【ファイナルアタックライド】で出したユニットは、このターン「2」（rules/xg2/xg2Fields.ts）。
+  const xg2Number = xg2ComboNumberOverride(state, playerId, card);
+  if (xg2Number !== undefined) return xg2Number;
   // RK-079 仮面ライダーの称号を重ねたユニットのナンバーは RC（数字ではない。R-KW-RC-01・atwiki/page-661）。
   if (hasKamenRiderTitle(card)) return -1;
   // RS-495【宇宙忍法・重力無秩序】: SP が空欄のユニットのナンバーは必要パワーの数字になる（rules/legend1/set7NamedEffectsD.ts）。

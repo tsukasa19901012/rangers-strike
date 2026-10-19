@@ -153,7 +153,7 @@ import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "
 import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
 import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
 import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
-import { canActivateXg2Resident, canConfirmXg2Choice, isXg2ActivatableResident, isXg2ChoiceEffect } from "../rules/xg2/xg2Effects";
+import { canActivateXg2Resident, canConfirmXg2Choice, isXg2ActivatableResident, isXg2BattleCounterCard, isXg2ChoiceEffect, xg2BattleCounterConditionMet } from "../rules/xg2/xg2Effects";
 import { xg2ReturnToRushBlocked } from "../rules/xg2/xg2Fields";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
@@ -348,8 +348,9 @@ function appendBattleReactionActions(
       continue;
     }
     // RK-172 ルリオオカミ（自軍ユニットがアタックされたとき。rules/rk/rk9UnitEffects.ts）。
-    if (isRk9BattleCounterCard(card.cardId)) {
-      if (!rk9BattleCounterConditionMet(state, playerId, card.cardId, pending)) continue;
+    // XG2-061 リョクオオザル（敵軍ユニットにアタックされたとき。rules/xg2/xg2cEffects.ts）も同じ手順。
+    if (isRk9BattleCounterCard(card.cardId) || isXg2BattleCounterCard(card.cardId)) {
+      if (!rk9BattleCounterConditionMet(state, playerId, card.cardId, pending) && !xg2BattleCounterConditionMet(state, playerId, card.cardId, pending)) continue;
       if (!canPlayHandCounter(state, playerId, card.instanceId)) continue;
       appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
       if (canExecuteHandCounter(state, playerId, card.instanceId)) {
@@ -1097,7 +1098,8 @@ function appendRushCategoryPaymentActions(
   };
 
   // rush_from_discard_count_*: コマンド/パワーからの自己ラッシュ
-  for (const zone of ["command", "power", "hand"] as const) {
+  // discard: XG2-054【土中からの奇襲】（rules/xg2/xg2cEffects.ts）。
+  for (const zone of ["command", "power", "hand", "discard"] as const) {
     for (const card of player[zone]) {
       if (canSelfRushFromZone(state, playerId, zone, card.instanceId)) {
         actions.push({
@@ -1324,6 +1326,8 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmXg2Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    // 「これをホールドして発動できる」（XG2-075 ほか）はホールドの支払いでも発動できる。
+    if (needsEffectHoldPayment(pending, state) && buildEffectHoldPayment(state)) actions.push({ type: "initiate_command_payment", playerId, kind: "effect_hold", sourceInstanceId: pending.sourceInstanceId! });
     return;
   }
 

@@ -8,7 +8,7 @@
  * カードごとの効果は rules/xg2/xg2aEffects.ts（XG2-001〜020）ほか。central のファイルは rules/xg2/xg2Effects.ts を読み込む（ここではカードの
  * ファイルを読み込まない）。選択の組み立ては rules/rm/rm1Effects.ts の共通の部品を使う。
  */
-import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingStrike, PlayerId, Xg2Meta } from "../../types/game";
+import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId, Xg2Meta } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { getDefinition } from "../../core/catalog";
@@ -36,6 +36,12 @@ type Registry = {
   battlePhaseEnd: BattlePhaseStartHook[];
   unitLeftZone: UnitLeftZoneHook[];
   afterUnitLeft: AfterUnitLeftHook[];
+  leaveStay: LeaveStayHook[];
+  battleToRush: BattleToRushHook[];
+  turnEnd: BattlePhaseStartHook[];
+  startPhaseEnd: BattlePhaseStartHook[];
+  unitRushed: UnitRushedHook[];
+  residentPlaced: ResidentPlacedHook[];
 };
 
 /**
@@ -43,7 +49,7 @@ type Registry = {
  */
 function registry(): Registry {
   const holder = registry as unknown as { r?: Registry };
-  holder.r ??= { resolvers: {}, skippers: {}, confirmers: {}, keywords: {}, battlePhaseStart: [], beforeBattle: [], strikeDamage: [], comboEnter: [], afterAction: [], residents: [], battlePhaseEnd: [], unitLeftZone: [], afterUnitLeft: [] };
+  holder.r ??= { resolvers: {}, skippers: {}, confirmers: {}, keywords: {}, battlePhaseStart: [], beforeBattle: [], strikeDamage: [], comboEnter: [], afterAction: [], residents: [], battlePhaseEnd: [], unitLeftZone: [], afterUnitLeft: [], leaveStay: [], battleToRush: [], turnEnd: [], startPhaseEnd: [], unitRushed: [], residentPlaced: [] };
   return holder.r;
 }
 
@@ -132,6 +138,14 @@ export type Xg2UnitLeftEvent = {
 type UnitLeftZoneHook = (state: GameState, event: Xg2UnitLeftEvent) => GameState;
 /** 離場の処理を終えたとき（離れる前のカード。rules/operationCounters.ts）。 */
 type AfterUnitLeftHook = (state: GameState, left: { ownerPlayerId: PlayerId; card: CardInstance; phasePlayerId: PlayerId }) => GameState;
+/** 場を離れるとき（「その場に留まる」の選択。rules/operationCounters.ts tryLeaveField）。開いたら state、対象外なら null。 */
+type LeaveStayHook = (state: GameState, intent: PendingLeave) => GameState | null;
+/** バトルエリアからラッシュエリアに戻ったとき（rules/startPhase.ts）。 */
+type BattleToRushHook = (state: GameState, ownerId: PlayerId, card: CardInstance, phasePlayerId: PlayerId) => GameState;
+/** ユニットがラッシュされたとき（「ラッシュされたとき」の誘発。rules/onRushUnitEffects.ts applyPassiveRushTriggers）。 */
+type UnitRushedHook = (state: GameState, rusherPlayerId: PlayerId, rushedInstanceId: string, phasePlayerId: PlayerId) => GameState;
+/** 常駐オペレーションを配置したとき（rules/residentOps.ts applyResidentOpOnPlace）。対象外なら null。 */
+type ResidentPlacedHook = (state: GameState, ownerId: PlayerId, opInstanceId: string, cardId: string) => GameState | null;
 type ResidentHook = {
   matches: (cardId: string) => boolean;
   canActivate: (state: GameState, playerId: PlayerId, op: CardInstance) => boolean;
@@ -140,7 +154,22 @@ type ResidentHook = {
 
 /** ほかの処理の場所から呼ぶ効果の登録（関数なので循環した読み込みの途中でも使える）。 */
 export function xg2Hook<
-  K extends "battlePhaseStart" | "beforeBattle" | "strikeDamage" | "comboEnter" | "afterAction" | "residents" | "battlePhaseEnd" | "unitLeftZone" | "afterUnitLeft",
+  K extends
+    | "battlePhaseStart"
+    | "beforeBattle"
+    | "strikeDamage"
+    | "comboEnter"
+    | "afterAction"
+    | "residents"
+    | "battlePhaseEnd"
+    | "unitLeftZone"
+    | "afterUnitLeft"
+    | "leaveStay"
+    | "battleToRush"
+    | "turnEnd"
+    | "startPhaseEnd"
+    | "unitRushed"
+    | "residentPlaced",
 >(
   kind: K,
   hook: Registry[K][number],
@@ -209,6 +238,39 @@ export function applyXg2OnUnitLeftZone(state: GameState, event: Xg2UnitLeftEvent
 export function applyXg2AfterUnitLeft(state: GameState, left: { ownerPlayerId: PlayerId; card: CardInstance; phasePlayerId: PlayerId }): GameState {
   let next = state;
   for (const hook of registry().afterUnitLeft) next = hook(next, left);
+  return next;
+}
+
+/** 場を離れるとき「その場に留まる」の選択を開く（rules/operationCounters.ts tryLeaveField）。開いたら state、対象外なら null。 */
+export function openXg2LeaveStay(state: GameState, intent: PendingLeave): GameState | null {
+  for (const hook of registry().leaveStay) {
+    const opened = hook(state, intent);
+    if (opened) return opened;
+  }
+  return null;
+}
+
+/** バトルエリアからラッシュエリアに戻ったとき（rules/startPhase.ts continueBattleToRushEffectQueue）。 */
+export function applyXg2BattleToRush(state: GameState, ownerId: PlayerId, card: CardInstance, phasePlayerId: PlayerId): GameState {
+  let next = state;
+  for (const hook of registry().battleToRush) {
+    if (next.pendingEffectChoice) break;
+    next = hook(next, ownerId, card, phasePlayerId);
+  }
+  return next;
+}
+
+/** 自分がターンを終えるとき（rules/turnEndingEffects.ts。選択を開かない処理だけ）。 */
+export function applyXg2TurnEnd(state: GameState, endingPlayerId: PlayerId): GameState {
+  let next = state;
+  for (const hook of registry().turnEnd) next = hook(next, endingPlayerId);
+  return next;
+}
+
+/** 自軍スタートフェイズを終えるとき（rules/startPhase.ts transitionStartToChargePhase）。 */
+export function applyXg2StartPhaseEnd(state: GameState, playerId: PlayerId): GameState {
+  let next = state;
+  for (const hook of registry().startPhaseEnd) next = hook(next, playerId);
   return next;
 }
 
@@ -303,4 +365,38 @@ export function costNumber(state: Pick<GameState, "definitions">, cardId: string
   if (typeof cost === "number") return cost;
   const m = /\d+/.exec(String(cost ?? ""));
   return m ? Number(m[0]) : Number.NaN;
+}
+
+/** ユニットがラッシュされたとき（rules/onRushUnitEffects.ts applyPassiveRushTriggers）。 */
+export function applyXg2OnUnitRushed(state: GameState, rusherPlayerId: PlayerId, rushedInstanceId: string, phasePlayerId: PlayerId): GameState {
+  let next = state;
+  for (const hook of registry().unitRushed) next = hook(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  return next;
+}
+
+/** 常駐オペレーションを配置したとき（rules/residentOps.ts applyResidentOpOnPlace）。対象外なら null。 */
+export function applyXg2ResidentPlaced(state: GameState, ownerId: PlayerId, opInstanceId: string, cardId: string): GameState | null {
+  for (const hook of registry().residentPlaced) {
+    const placed = hook(state, ownerId, opInstanceId, cardId);
+    if (placed) return placed;
+  }
+  return null;
+}
+
+/**
+ * 「これをホールドして次の効果を発動できる」（場のこのユニット自身をホールドする支払い。rules/commandPayment.ts needsEffectHoldPayment）:
+ * XG2 の選択で、候補がこのユニット1体だけ（xg2Meta.selfHold）のとき。
+ */
+export function isXg2SelfHoldPayment(state: GameState, pending: PendingEffectChoice): boolean {
+  if (!(pending.effectId in registry().resolvers)) return false;
+  if (!(pending.xg2Meta as { selfHold?: boolean } | undefined)?.selfHold) return false;
+  const id = pending.validInstanceIds[0];
+  return pending.validInstanceIds.length === 1 && !!id && id === pending.sourceInstanceId && !!findField(state, pending.playerId, id);
+}
+
+/** 支払いで場のこのユニットをホールドしたあとの続き（rules/pendingChoices.ts completeEffectHoldChoice）。対象外なら null。 */
+export function tryCompleteXg2HoldChoice(state: GameState, playerId: PlayerId, instanceIds: string[]): ChoiceOutcome | null {
+  const pending = state.pendingEffectChoice;
+  if (!pending || pending.playerId !== playerId || !isXg2SelfHoldPayment(state, pending)) return null;
+  return tryResolveXg2Choice(state, playerId, instanceIds[0] ?? "");
 }

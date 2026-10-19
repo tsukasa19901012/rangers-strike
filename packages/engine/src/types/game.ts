@@ -370,6 +370,8 @@ export type PendingLeave = {
   batLeeDeclined?: boolean;
   /** RS-437 白熱する実況「下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる」を見送った。 */
   liveCommentaryDeclined?: boolean;
+  /** XG2 の「その場に留まる」を見送った効果（rules/xg2/xg2cEffects.ts。再度は尋ねない）。 */
+  xg2Declined?: string[];
   /**
    * RS-182 ジャイアントローラー: 撃破されて捨札になったとき、持ち主のパワーゾーンにダメージ（ウラ向き）にして置く。
    * 置換・カウンターで捨札にならなければ置かれない（faq-card-4 RS-182 Q1〜Q3）。
@@ -1510,6 +1512,8 @@ export type TurnEndProgress = {
    */
   exodusOrderAsked?: boolean;
   exodusFirst?: boolean;
+  /** XG2 の「自分がターンを終えるとき」を処理済みか（rules/xg2/xg2cEffects.ts）。 */
+  xg2Done?: boolean;
   /** 第6弾の「ターンを終えるとき」の選択（RS-398【時間漂流者の送還】・RS-413 のコマンド捨札）のうち未処理のもの。 */
   set6bQueue?: string[];
   /** 第7弾 RS-484【ハリーアップ！】の「ターンを終えるとき」の選択のうち未処理のもの（rules/legend1/set7NamedEffectsC.ts）。 */

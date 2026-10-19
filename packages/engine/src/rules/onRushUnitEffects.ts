@@ -1,3 +1,4 @@
+import { applyXg2OnUnitRushed } from "./xg2/xg2Effects";
 import { openRm2MotoSharian } from "./rm/rm2Effects";
 import { openRm1OnUnitRushed } from "./rm/rm1Effects";
 import { openRk8JaguarOnEnemyRush } from "./rk/rk8UnitEffects";
@@ -350,6 +351,8 @@ export function applyPassiveRushTriggers(
   next = openRk12NegatarosOnRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // RK-293 センチピードオルフェノク【捕縛する鞭】（敵軍ターン中、敵軍ユニットがラッシュされたとき。rules/rk/rk14UnitEffects.ts）。
   next = openRk14WhipOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // XG2-063 仮面ライダー響鬼【鬼幻術・鬼火】（自軍バトルフェイズ中、敵軍ユニットがラッシュされたとき。rules/xg2/xg2dEffects.ts）。
+  next = applyXg2OnUnitRushed(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   return { state: next, logs: rsEnemyRush.logs };
 }
 
