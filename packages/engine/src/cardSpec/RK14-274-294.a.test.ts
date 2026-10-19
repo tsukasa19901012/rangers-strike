@@ -18,6 +18,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState } from "../types/game";
 import {
   PLAIN_VEHICLE,
+  act,
   activateField,
   attackUntilRegister,
   bpOf,
@@ -44,6 +45,7 @@ import {
   featuresOf,
   held,
   inst,
+  legal,
   mount,
   nextPhase,
   p1Battle,
@@ -146,6 +148,49 @@ describe("RK-274 ビートチェイサー", () => {
 
   it("RK-274: 自軍山札が1枚なら、その1枚だけを見る（出典: atwiki/page-1371・R-TGT-01（できる限り実行する））", () => {
     expect(choiceIds(chase(deckCards(1)))).toEqual(["TST-OP:dk0"]);
+  });
+
+  /** 次の自軍バトルフェイズまで進める（任意の選択は見送り、ライドオフはしない）。 */
+  const toNextOwnBattle = (s0: GameState): GameState => {
+    let s = s0;
+    const turn = s.turn;
+    for (let i = 0; i < 60; i++) {
+      if (s.turn > turn && s.activePlayer === "player1" && s.phase === "battle" && !s.pendingEffectChoice) return s;
+      const L = legal(s);
+      const a =
+        L.find((x) => x.type === "skip_effect_choice") ??
+        L.find((x) => x.type === "resolve_ride_off_choice" && !x.rideOff) ??
+        L.find((x) => x.type.startsWith("pass_")) ??
+        L.find((x) => x.type === "return_all_battle_to_rush") ??
+        L.find((x) => x.type === "draw") ??
+        L.find((x) => x.type === "end_phase");
+      if (!a) throw new Error(`stuck: ${L.map((x) => x.type).join(",")}`);
+      s = act(s, a);
+    }
+    throw new Error("did not reach the next own battle phase");
+  };
+
+  it("RK-274: 見送っても、次の自軍ターンにまたバトルエリアに出たときは改めて発動するかを選べる（ユーザー報告「スキップすると次のターン以降も自動でスキップ」の回帰）（出典: atwiki/page-1371「これがバトルエリアに出たとき、次の効果を発動できる」）", () => {
+    let s = st({ player1: { deck: deckCards(20), rush: [inst("SPEC-RCU", "r"), inst("RK-274", "bc")] }, player2: { deck: deckCards(20, "e") } }, EXTRA);
+    s = mount(s, "SPEC-RCU:r", "RK-274:bc");
+    expectChoiceFrom(s, "player1", "RK-274");
+    s = toNextOwnBattle(skip(s));
+    expect(zoneIds(s, "player1", "rush")).toEqual(["RK-274:bc", "SPEC-RCU:r"]);
+    s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "SPEC-RCU:r" });
+    expectChoiceFrom(s, "player1", "RK-274");
+    expect(canSkip(s)).toBe(true);
+    // 2回目も見送り、さらに次の自軍ターンでも選べる。
+    s = toNextOwnBattle(skip(s));
+    s = act(s, { type: "move_to_battle", playerId: "player1", instanceId: "SPEC-RCU:r" });
+    expectChoiceFrom(s, "player1", "RK-274");
+  });
+
+  it("RK-274: ライドしたユニットの「出たとき」の選択（RM-034 暴魂トップガンダー※ 相手は1枚ドローしてもよい）が先に開いても、それを解決したあとで発動するかを選べる（出典: atwiki/page-1371・R-TIME-08（同時に誘発した効果はすべて処理する））", () => {
+    let s = mount(board({ rush: [inst("RM-034", "tg"), inst("RK-274", "bc")], deck: deckCards(5) }), "RM-034:tg", "RK-274:bc");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RM-034");
+    s = skip(s);
+    expectChoiceFrom(s, "player1", "RK-274");
+    expect(choiceIds(s)).toEqual(["TST-OP:dk0", "TST-OP:dk1"]);
   });
 });
 

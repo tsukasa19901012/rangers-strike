@@ -171,7 +171,27 @@ function shouldRunEnterStep(
 ): boolean {
   if (!resumeFrom) return true;
   const order: EnterBattleResumeFrom[] = ["conditional", "nc", "tail"];
-  return order.indexOf(step) >= order.indexOf(resumeFrom);
+  const from = resumeFrom.startsWith("conditional") ? "conditional" : resumeFrom;
+  return order.indexOf(step) >= order.indexOf(from);
+}
+
+/** 条件の効果（conditional）のどの区切りから処理するか（"conditional:<n>" なら n、それ以外は先頭）。 */
+function conditionalResumeIndex(resumeFrom: EnterBattleResumeFrom | undefined): number {
+  const m = resumeFrom ? /^conditional:(\d+)/.exec(resumeFrom) : null;
+  return m ? Number(m[1]) : 0;
+}
+
+/** 再開時、DSL の「出たとき」の効果を処理済み（handled）だったか（区切り 0 で記録したもの）。 */
+function conditionalResumeDslHandled(resumeFrom: EnterBattleResumeFrom | undefined): boolean {
+  return !!resumeFrom && /^conditional:\d+:dsl$/.test(resumeFrom);
+}
+
+/**
+ * 条件の効果の途中で選択が開いたときの再開位置。以前は "nc" で再開していたため、選択を開いた効果より後ろの
+ * 「出たとき」の効果（RK-274 ビートチェイサー【ニューマシンの性能】等）が、先に別の選択が開くと発動の機会ごと失われていた。
+ */
+function conditionalResumeMarker(next: number, dslHandled: boolean): EnterBattleResumeFrom {
+  return dslHandled ? `conditional:${next}:dsl` : `conditional:${next}`;
 }
 
 /** Event Listener から呼ばれる進入効果の実装本体。 */
@@ -227,294 +247,380 @@ export function resolveEnterBattleEffectsImpl(
   }
 
   if (shouldRunEnterStep(resumeFrom, "conditional")) {
-    // NC の成立（ナンバーの欄の効果の有効化）は、出たときの並び順で先に判定しておく。ナンバーの欄の効果のうち
-    // 出たときに処理する効果（RS-141【紐拳】等）も、成立していなければ発動しない（R-CN-02 / R-CN-04）。
-    if (isOwnBattlePhase(nextState, playerId) && definition) {
-      nextState = markOnAttackNcEffectOnEnter(
-        nextState,
-        playerId,
-        card,
-        definition,
-        battlePosition,
-        battleBeforeEnter,
-      );
-      battleCard =
-        nextState.players[playerId].battle.find((c) => c.instanceId === card.instanceId) ?? battleCard;
-    }
-
-    const dslEnter = tryResolveDslTriggeredEffects({
-      state: nextState,
-      cardId: card.cardId,
-      instanceId: card.instanceId,
-      playerId,
-      phasePlayerId: playerId,
-      triggerType: "enter_battle",
-      logAction: "enter_battle",
-    });
-    nextState = dslEnter.state;
-    logs.push(...dslEnter.logs);
-    // RS-291【大火炎】: 「レッド」を持つユニットからコンビネーションするとき。
-    nextState = trySet5AOnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
-    // RM-022 サイバリアン（ライドして一緒に出たビークルの【サイバリアンレーザースピード】。ほかの選択があればその後に開く。rules/rm/rm2Effects.ts）。
-    nextState = tryRm2OnEnterBattle(nextState, playerId, battleCard);
-    // RM-047 ダークジェイカー・RM-053 スタッガータンク・RM-054 レッドジャイロ（ライドされて一緒に出たビークルの効果。rules/rm/rm3Effects.ts）。
-    nextState = tryRm3OnEnterBattle(nextState, playerId, battleCard);
-    if (nextState.pendingEffectChoice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RS-419【ゴールデンクラッシュ】: DA 以外のユニットからコンビネーションするとき（rules/legend1/set6NamedEffectsB.ts）。
-    nextState = trySet6BOnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
-    if (nextState.pendingEffectChoice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RS-452 テトラボーイ【テトラバスター】・※（敵軍の BP6000 以上が出たとき）（rules/legend1/set7NamedEffectsA.ts）。
-    nextState = trySet7AOnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
-    if (nextState.pendingEffectChoice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // 第9弾 RS-653【後輩戦士への叱咤】・RS-654【先輩戦士の教え】・RS-669【アイスエイジエクスプレス】（rules/legend1/set9NamedEffectsC.ts）。
-    nextState = trySet9COnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
-    if (nextState.pendingEffectChoice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RK-020 ダブルライダーキック: 選んだ2体が自軍バトルエリアで隣り合ったとき（rules/rk/rk1NamedEffects.ts）。
-    nextState = tryRk1OnEnterBattle(nextState, playerId, battleCard);
-    if (nextState.pendingEffectChoice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RK-024/RK-028/RK-030 ライドして一緒に出たビークルの進入効果・RK-033/RK-038 のコンビネーション（rules/rk/rk2UnitEffects.ts）。
-    nextState = tryRk2OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
-    if (nextState.pendingEffectChoice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RK-064/RK-067/RK-068/RK-069 のコンビネーション（rules/rk/rk4UnitEffects.ts）。
-    nextState = tryRk4OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
-    if (nextState.pendingEffectChoice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RK-103【ブラストペガサス】のコンビネーション（rules/rk/rk5UnitEffects.ts）。
-    nextState = tryRk5OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
-    // RK-109【自己修復能力】・RK-114【デッドエンド】・RK-115/RK-117 のコンビネーション（rules/rk/rk6UnitEffects.ts）。
-    const beforeRk6Choice = nextState.pendingEffectChoice;
-    nextState = tryRk6OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
-    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk6Choice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RK-175【ライダーキック】の次のユニットの BP・RK-179/RK-189（ライドして出たビークル）（rules/rk/rk9UnitEffects.ts）。
-    const beforeRk9Choice = nextState.pendingEffectChoice;
-    nextState = tryRk9OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
-    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk9Choice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RK-198【ドライブディバイダー】（「レイヨウ型」からのコンビネーション。rules/rk/rk10UnitEffects.ts）。
-    const beforeRk10Choice = nextState.pendingEffectChoice;
-    nextState = tryRk10OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
-    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk10Choice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RK-239 ウエイクアップ！・RK-243【ドラゴンライダーキック】（rules/rk/rk12UnitEffects.ts）。
-    const beforeRk12Choice = nextState.pendingEffectChoice;
-    nextState = tryRk12OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
-    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk12Choice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RK-256・RK-264・RK-265（ライドして一緒に出たビークル）（rules/rk/rk13UnitEffects.ts）。
-    const beforeRk13Choice = nextState.pendingEffectChoice;
-    nextState = tryRk13OnEnterBattle(nextState, playerId, battleCard);
-    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk13Choice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RK-274・RK-289（ライドして一緒に出たビークル）・RK-275/276/290/291（出たとき）・RK-278/284（コンビネーション）・RK-294（NC）
-    // （rules/rk/rk14UnitEffects.ts）。
-    const beforeRk14Choice = nextState.pendingEffectChoice;
-    nextState = tryRk14OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter, battlePosition);
-    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk14Choice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RK-298・RK-299・RK-306・RK-314（自軍ターン中に出たとき）・RK-301（カブトエクステンダーからのコンビネーション）（rules/rk/rk15UnitEffects.ts）。
-    const beforeRk15Choice = nextState.pendingEffectChoice;
-    nextState = tryRk15OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
-    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk15Choice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RK-318・RK-321・RK-329・RK-331（自軍ターン中に出たとき）・RK-325（ライドして一緒に出たビークル）・RK-332（「ドラゴン」からのコンビネーション）
-    // （rules/rk/rk16UnitEffects.ts）。
-    const beforeRk16Choice = nextState.pendingEffectChoice;
-    nextState = tryRk16OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
-    if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk16Choice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-    // RS-523 臨気で得た能力・RS-521 スーパー戦隊魂（レッドが出たとき）（rules/legend1/set8NamedEffectsA.ts）。
-    nextState = trySet8AOnEnterBattle(nextState, playerId, battleCard, isOwnBattlePhase(nextState, playerId));
-    if (nextState.pendingEffectChoice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-
-    nextState = applyBeastSwordHoldOnEnter(nextState, playerId, battleCard);
-    nextState = applyVCommanderHoldOnEnter(nextState, playerId, battleCard);
-    nextState = tryMereChameleonOnAllyEnterBattle(
-      nextState,
-      playerId,
-      battleCard,
-      playerId,
-    );
-    if (nextState.pendingEffectChoice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-
-    nextState = tryPowerFaceupRaidaOnAllyEnter(
-      nextState,
-      playerId,
-      battleCard,
-      playerId,
-    );
-    if (nextState.pendingEffectChoice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-
-    // RS-436 激気等の常駐: 特徴「X」を持つ自軍 S ユニットが出たとき、手札から WB の M ユニットを出せる（任意）。
-    nextState = tryResidentRushOnAllyEnterBattle(nextState, playerId, battleCard);
-    if (nextState.pendingEffectChoice) {
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-
+    // 条件の効果は区切りごとに再開できる（先に開いた選択を解決したあと、残りの「出たとき」の効果を落とさない）。
+    const condFrom = conditionalResumeIndex(resumeFrom);
+    let dslHandled = conditionalResumeDslHandled(resumeFrom);
     const enterEffect = getEnterBattleEffect(card.cardId);
-    if (!dslEnter.handled && enterEffect === "destroy_enemy_bp4000") {
-      const withChoice = tryStartDestroyEnemyChoice(
-        nextState,
-        playerId,
-        card.cardId,
-        4000,
-        playerId,
-      );
-      if (withChoice) {
-        nextState = withChoice;
-        logs.push(
-          buildLogEntry(playerId, "enter_battle", card.cardId, state.definitions, "destroy_choice"),
-        );
-        return { state: nextState, logs, enterResumeFrom: "nc" };
-      }
-    }
-    if (!dslEnter.handled && enterEffect === "sky_magic_slash") {
-      const slash = resolveSkyMagicSlash(nextState, playerId, card.cardId, card.instanceId);
-      nextState = slash.state;
-      logs.push(...slash.logs);
-      if (nextState.pendingEffectChoice) {
-        return { state: nextState, logs, enterResumeFrom: "nc" };
-      }
-    }
-    if (
-      !dslEnter.handled &&
-      (enterEffect === "mane_hurricane" || enterEffect === "ruin_excavation")
-    ) {
-      const legend2 = resolveLegend2EnterBattle(nextState, playerId, card.cardId, enterEffect);
-      nextState = legend2.state;
-      logs.push(...legend2.logs);
-      if (nextState.pendingEffectChoice) {
-        return { state: nextState, logs, enterResumeFrom: "nc" };
-      }
-    }
-
     const namedEnter = getEnterBattleNamedEffect(card.cardId);
-    if (
-      !dslEnter.handled &&
-      namedEnter &&
-      isLegend3EnterBattleEffect(namedEnter.effectId)
-    ) {
-      const legend3 = resolveLegend3EnterBattle(
-        nextState,
-        playerId,
-        card.cardId,
-        namedEnter.effectId,
-      );
-      nextState = legend3.state;
-      logs.push(...legend3.logs);
-      if (nextState.pendingEffectChoice) {
-        return { state: nextState, logs, enterResumeFrom: "nc" };
-      }
-    }
-
-    nextState = tryStartOpponentDrawOnEnter(
-      nextState,
-      playerId,
-      card.cardId,
-      playerId,
-    );
-    if (nextState.pendingEffectChoice) {
-      logs.push(
-        buildLogEntry(
-          playerId,
-          "enter_battle",
-          card.cardId,
-          state.definitions,
-          "opponent_may_draw",
-        ),
-      );
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-
-    const dslConditional = tryStartDslConditionalChoice(
-      nextState,
-      playerId,
-      battleCard,
-      playerId,
-    );
-    if (dslConditional) {
-      nextState = dslConditional;
-      logs.push(
-        buildLogEntry(
-          playerId,
-          "named_effect",
-          card.cardId,
-          state.definitions,
-          "choice:dsl_conditional",
-        ),
-      );
-      return { state: nextState, logs, enterResumeFrom: "nc" };
-    }
-
     const conditional = getConditionalNamedEffect(card.cardId);
-    if (
-      conditional &&
-      ncGateAllows(battleCard, conditional.effectId) &&
-      shouldRunConditionalOnEnter(conditional.effectId) &&
-      canRunEnterBattleConditionalEffect(nextState, playerId, conditional.effectId)
-    ) {
-      const modified = applyLegend2ConditionalModifiers(nextState, playerId, battleCard, conditional.effectId);
-      if (modified !== battleCard) {
-        battleCard = modified;
-        const player = nextState.players[playerId];
-        nextState = {
-          ...nextState,
-          ...updatePlayer(nextState, playerId, {
-            ...player,
-            battle: player.battle.map((c) =>
-              c.instanceId === card.instanceId ? modified : c,
-            ),
-          }),
-        };
-      }
-      const withChoice = tryStartConditionalChoice(
-        nextState,
-        playerId,
-        battleCard,
-        conditional.effectId,
-        playerId,
-      );
-      if (withChoice) {
-        nextState = withChoice;
-        logs.push(
-          buildLogEntry(
+    const resumeAt = (next: number): EnterBattleResumeFrom => conditionalResumeMarker(next, dslHandled);
+    switch (condFrom) {
+      case 0: {
+        // NC の成立（ナンバーの欄の効果の有効化）は、出たときの並び順で先に判定しておく。ナンバーの欄の効果のうち
+        // 出たときに処理する効果（RS-141【紐拳】等）も、成立していなければ発動しない（R-CN-02 / R-CN-04）。
+        if (isOwnBattlePhase(nextState, playerId) && definition) {
+          nextState = markOnAttackNcEffectOnEnter(
+            nextState,
             playerId,
-            "named_effect",
-            card.cardId,
-            state.definitions,
-            `choice:${conditional.effectId}`,
-          ),
+            card,
+            definition,
+            battlePosition,
+            battleBeforeEnter,
+          );
+          battleCard =
+            nextState.players[playerId].battle.find((c) => c.instanceId === card.instanceId) ?? battleCard;
+        }
+
+        const dslEnter = tryResolveDslTriggeredEffects({
+          state: nextState,
+          cardId: card.cardId,
+          instanceId: card.instanceId,
+          playerId,
+          phasePlayerId: playerId,
+          triggerType: "enter_battle",
+          logAction: "enter_battle",
+        });
+        nextState = dslEnter.state;
+        logs.push(...dslEnter.logs);
+        dslHandled = dslEnter.handled;
+        // RS-291【大火炎】: 「レッド」を持つユニットからコンビネーションするとき。
+        nextState = trySet5AOnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
+        // RM-022 サイバリアン（ライドして一緒に出たビークルの【サイバリアンレーザースピード】。ほかの選択があればその後に開く。rules/rm/rm2Effects.ts）。
+        nextState = tryRm2OnEnterBattle(nextState, playerId, battleCard);
+        // RM-047 ダークジェイカー・RM-053 スタッガータンク・RM-054 レッドジャイロ（ライドされて一緒に出たビークルの効果。rules/rm/rm3Effects.ts）。
+        nextState = tryRm3OnEnterBattle(nextState, playerId, battleCard);
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(1) };
+        }
+      }
+      // falls through
+      case 1: {
+        // RS-419【ゴールデンクラッシュ】: DA 以外のユニットからコンビネーションするとき（rules/legend1/set6NamedEffectsB.ts）。
+        nextState = trySet6BOnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(2) };
+        }
+      }
+      // falls through
+      case 2: {
+        // RS-452 テトラボーイ【テトラバスター】・※（敵軍の BP6000 以上が出たとき）（rules/legend1/set7NamedEffectsA.ts）。
+        nextState = trySet7AOnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(3) };
+        }
+      }
+      // falls through
+      case 3: {
+        // 第9弾 RS-653【後輩戦士への叱咤】・RS-654【先輩戦士の教え】・RS-669【アイスエイジエクスプレス】（rules/legend1/set9NamedEffectsC.ts）。
+        nextState = trySet9COnComboEnter(nextState, playerId, battleCard, battleBeforeEnter);
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(4) };
+        }
+      }
+      // falls through
+      case 4: {
+        // RK-020 ダブルライダーキック: 選んだ2体が自軍バトルエリアで隣り合ったとき（rules/rk/rk1NamedEffects.ts）。
+        nextState = tryRk1OnEnterBattle(nextState, playerId, battleCard);
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(5) };
+        }
+      }
+      // falls through
+      case 5: {
+        // RK-024/RK-028/RK-030 ライドして一緒に出たビークルの進入効果・RK-033/RK-038 のコンビネーション（rules/rk/rk2UnitEffects.ts）。
+        nextState = tryRk2OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(6) };
+        }
+      }
+      // falls through
+      case 6: {
+        // RK-064/RK-067/RK-068/RK-069 のコンビネーション（rules/rk/rk4UnitEffects.ts）。
+        nextState = tryRk4OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(7) };
+        }
+      }
+      // falls through
+      case 7: {
+        // RK-103【ブラストペガサス】のコンビネーション（rules/rk/rk5UnitEffects.ts）。
+        nextState = tryRk5OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+        // RK-109【自己修復能力】・RK-114【デッドエンド】・RK-115/RK-117 のコンビネーション（rules/rk/rk6UnitEffects.ts）。
+        const beforeRk6Choice = nextState.pendingEffectChoice;
+        nextState = tryRk6OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+        if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk6Choice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(8) };
+        }
+      }
+      // falls through
+      case 8: {
+        // RK-175【ライダーキック】の次のユニットの BP・RK-179/RK-189（ライドして出たビークル）（rules/rk/rk9UnitEffects.ts）。
+        const beforeRk9Choice = nextState.pendingEffectChoice;
+        nextState = tryRk9OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+        if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk9Choice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(9) };
+        }
+      }
+      // falls through
+      case 9: {
+        // RK-198【ドライブディバイダー】（「レイヨウ型」からのコンビネーション。rules/rk/rk10UnitEffects.ts）。
+        const beforeRk10Choice = nextState.pendingEffectChoice;
+        nextState = tryRk10OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+        if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk10Choice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(10) };
+        }
+      }
+      // falls through
+      case 10: {
+        // RK-239 ウエイクアップ！・RK-243【ドラゴンライダーキック】（rules/rk/rk12UnitEffects.ts）。
+        const beforeRk12Choice = nextState.pendingEffectChoice;
+        nextState = tryRk12OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+        if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk12Choice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(11) };
+        }
+      }
+      // falls through
+      case 11: {
+        // RK-256・RK-264・RK-265（ライドして一緒に出たビークル）（rules/rk/rk13UnitEffects.ts）。
+        const beforeRk13Choice = nextState.pendingEffectChoice;
+        nextState = tryRk13OnEnterBattle(nextState, playerId, battleCard);
+        if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk13Choice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(12) };
+        }
+      }
+      // falls through
+      case 12: {
+        // RK-274・RK-289（ライドして一緒に出たビークル）・RK-275/276/290/291（出たとき）・RK-278/284（コンビネーション）・RK-294（NC）
+        // （rules/rk/rk14UnitEffects.ts）。
+        const beforeRk14Choice = nextState.pendingEffectChoice;
+        nextState = tryRk14OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter, battlePosition);
+        if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk14Choice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(13) };
+        }
+      }
+      // falls through
+      case 13: {
+        // RK-298・RK-299・RK-306・RK-314（自軍ターン中に出たとき）・RK-301（カブトエクステンダーからのコンビネーション）（rules/rk/rk15UnitEffects.ts）。
+        const beforeRk15Choice = nextState.pendingEffectChoice;
+        nextState = tryRk15OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+        if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk15Choice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(14) };
+        }
+      }
+      // falls through
+      case 14: {
+        // RK-318・RK-321・RK-329・RK-331（自軍ターン中に出たとき）・RK-325（ライドして一緒に出たビークル）・RK-332（「ドラゴン」からのコンビネーション）
+        // （rules/rk/rk16UnitEffects.ts）。
+        const beforeRk16Choice = nextState.pendingEffectChoice;
+        nextState = tryRk16OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+        if (nextState.pendingEffectChoice && nextState.pendingEffectChoice !== beforeRk16Choice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(15) };
+        }
+      }
+      // falls through
+      case 15: {
+        // RS-523 臨気で得た能力・RS-521 スーパー戦隊魂（レッドが出たとき）（rules/legend1/set8NamedEffectsA.ts）。
+        nextState = trySet8AOnEnterBattle(nextState, playerId, battleCard, isOwnBattlePhase(nextState, playerId));
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(16) };
+        }
+      }
+      // falls through
+      case 16: {
+
+        nextState = applyBeastSwordHoldOnEnter(nextState, playerId, battleCard);
+        nextState = applyVCommanderHoldOnEnter(nextState, playerId, battleCard);
+        nextState = tryMereChameleonOnAllyEnterBattle(
+          nextState,
+          playerId,
+          battleCard,
+          playerId,
         );
-        return { state: nextState, logs, enterResumeFrom: "nc" };
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(17) };
+        }
+      }
+      // falls through
+      case 17: {
+
+        nextState = tryPowerFaceupRaidaOnAllyEnter(
+          nextState,
+          playerId,
+          battleCard,
+          playerId,
+        );
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(18) };
+        }
+      }
+      // falls through
+      case 18: {
+
+        // RS-436 激気等の常駐: 特徴「X」を持つ自軍 S ユニットが出たとき、手札から WB の M ユニットを出せる（任意）。
+        nextState = tryResidentRushOnAllyEnterBattle(nextState, playerId, battleCard);
+        if (nextState.pendingEffectChoice) {
+          return { state: nextState, logs, enterResumeFrom: resumeAt(19) };
+        }
+      }
+      // falls through
+      case 19: {
+
+        if (!dslHandled && enterEffect === "destroy_enemy_bp4000") {
+          const withChoice = tryStartDestroyEnemyChoice(
+            nextState,
+            playerId,
+            card.cardId,
+            4000,
+            playerId,
+          );
+          if (withChoice) {
+            nextState = withChoice;
+            logs.push(
+              buildLogEntry(playerId, "enter_battle", card.cardId, state.definitions, "destroy_choice"),
+            );
+            return { state: nextState, logs, enterResumeFrom: resumeAt(20) };
+          }
+        }
+      }
+      // falls through
+      case 20: {
+        if (!dslHandled && enterEffect === "sky_magic_slash") {
+          const slash = resolveSkyMagicSlash(nextState, playerId, card.cardId, card.instanceId);
+          nextState = slash.state;
+          logs.push(...slash.logs);
+          if (nextState.pendingEffectChoice) {
+            return { state: nextState, logs, enterResumeFrom: resumeAt(21) };
+          }
+        }
+      }
+      // falls through
+      case 21: {
+        if (
+          !dslHandled &&
+          (enterEffect === "mane_hurricane" || enterEffect === "ruin_excavation")
+        ) {
+          const legend2 = resolveLegend2EnterBattle(nextState, playerId, card.cardId, enterEffect);
+          nextState = legend2.state;
+          logs.push(...legend2.logs);
+          if (nextState.pendingEffectChoice) {
+            return { state: nextState, logs, enterResumeFrom: resumeAt(22) };
+          }
+        }
+      }
+      // falls through
+      case 22: {
+
+        if (
+          !dslHandled &&
+          namedEnter &&
+          isLegend3EnterBattleEffect(namedEnter.effectId)
+        ) {
+          const legend3 = resolveLegend3EnterBattle(
+            nextState,
+            playerId,
+            card.cardId,
+            namedEnter.effectId,
+          );
+          nextState = legend3.state;
+          logs.push(...legend3.logs);
+          if (nextState.pendingEffectChoice) {
+            return { state: nextState, logs, enterResumeFrom: resumeAt(23) };
+          }
+        }
+      }
+      // falls through
+      case 23: {
+
+        nextState = tryStartOpponentDrawOnEnter(
+          nextState,
+          playerId,
+          card.cardId,
+          playerId,
+        );
+        if (nextState.pendingEffectChoice) {
+          logs.push(
+            buildLogEntry(
+              playerId,
+              "enter_battle",
+              card.cardId,
+              state.definitions,
+              "opponent_may_draw",
+            ),
+          );
+          return { state: nextState, logs, enterResumeFrom: resumeAt(24) };
+        }
+      }
+      // falls through
+      case 24: {
+
+        const dslConditional = tryStartDslConditionalChoice(
+          nextState,
+          playerId,
+          battleCard,
+          playerId,
+        );
+        if (dslConditional) {
+          nextState = dslConditional;
+          logs.push(
+            buildLogEntry(
+              playerId,
+              "named_effect",
+              card.cardId,
+              state.definitions,
+              "choice:dsl_conditional",
+            ),
+          );
+          // 次の区切り（getConditionalNamedEffect）は同じ効果の従来の実装なので、二重に開かないよう飛ばす。
+          return { state: nextState, logs, enterResumeFrom: "nc" };
+        }
+      }
+      // falls through
+      case 25: {
+
+        if (
+          conditional &&
+          ncGateAllows(battleCard, conditional.effectId) &&
+          shouldRunConditionalOnEnter(conditional.effectId) &&
+          canRunEnterBattleConditionalEffect(nextState, playerId, conditional.effectId)
+        ) {
+          const modified = applyLegend2ConditionalModifiers(nextState, playerId, battleCard, conditional.effectId);
+          if (modified !== battleCard) {
+            battleCard = modified;
+            const player = nextState.players[playerId];
+            nextState = {
+              ...nextState,
+              ...updatePlayer(nextState, playerId, {
+                ...player,
+                battle: player.battle.map((c) =>
+                  c.instanceId === card.instanceId ? modified : c,
+                ),
+              }),
+            };
+          }
+          const withChoice = tryStartConditionalChoice(
+            nextState,
+            playerId,
+            battleCard,
+            conditional.effectId,
+            playerId,
+          );
+          if (withChoice) {
+            nextState = withChoice;
+            logs.push(
+              buildLogEntry(
+                playerId,
+                "named_effect",
+                card.cardId,
+                state.definitions,
+                `choice:${conditional.effectId}`,
+              ),
+            );
+            return { state: nextState, logs, enterResumeFrom: "nc" };
+          }
+        }
       }
     }
+
 
     if (nextState.pendingEffectChoice) {
       return { state: nextState, logs, enterResumeFrom: "nc" };

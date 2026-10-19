@@ -1030,7 +1030,11 @@ export type PendingScry = {
 };
 
 /** バトル進入後、攻撃側は攻撃/ストライク/パスを選ぶ必要がある。 */
-export type EnterBattleResumeFrom = "conditional" | "nc" | "tail";
+/**
+ * 中断した進入処理の再開位置。"conditional" は条件の効果の先頭から、`conditional:<n>`（`:dsl` 付きは DSL の進入効果を処理済み）は
+ * 条件の効果の n 番目の区切りから（先に開いた選択の後で、残りの「出たとき」の効果を落とさずに処理する。rules/combo.ts）。
+ */
+export type EnterBattleResumeFrom = "conditional" | `conditional:${number}` | `conditional:${number}:dsl` | "nc" | "tail";
 
 export type EnterBattleResume = {
   battlePosition: number;
