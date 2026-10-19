@@ -30,17 +30,6 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "rush",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      },
       "optional": true,
       "effects": [
         {

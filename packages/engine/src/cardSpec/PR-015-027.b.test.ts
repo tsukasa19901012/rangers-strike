@@ -197,7 +197,7 @@ describe("PR-022 ゴーオンレッド", () => {
     expect(zoneOf(s, "player1", `${ID}:x`)).toBe("discard");
   });
 
-  it.fails("PR-022: 【ロードサーベル】のバトルはアタックではない — 勝ったあとも「SP1」でストライクできる（出典: atwiki/page-976「※これはアタックすることができない」・RS-508 のカード評価） — 既知の不具合: CARD-PR-022 再録（RS-508）の【ロードサーベル】のバトルが未実装（「SP1」は働く）", () => {
+  it("PR-022: 【ロードサーベル】のバトルはアタックではない — 勝ったあとも「SP1」でストライクできる（出典: atwiki/page-976「※これはアタックすることができない」・RS-508 のカード評価）", () => {
     let s = at(4, { battle: [inst("TST-UNIT-0", "e1")] });
     s = resolveAll(pick(s, "TST-UNIT-0:e1"));
     expect(cardIn(s, "player1", `${ID}:x`)?.battleActed).toBeFalsy();

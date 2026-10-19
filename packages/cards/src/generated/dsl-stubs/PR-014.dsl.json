@@ -22,7 +22,7 @@
       "name": "闇の舞",
       "text": "敵軍ラッシュエリアか敵軍バトルエリアに特徴「レッド」を持つユニットがあるとき、このユニットは次の能力を得る。⇒SP1",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
@@ -37,5 +37,6 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": []
 }

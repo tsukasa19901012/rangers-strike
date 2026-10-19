@@ -104,13 +104,13 @@ describe("PR-025 スーパーハイウェイバスター", () => {
     expectOp("PR-025", { name: "スーパーハイウェイバスター", category: "OT", powerCost: 2, rarity: "PR" });
   });
 
-  it.fails("PR-025: 山札から選べるのは特徴「炎神」を持つ M ユニットのカードだけ（出典: atwiki/page-1095「特徴「炎神」を持つMユニットのカードを1枚選び」） — 既知の不具合: CARD-PR-025 再録（RS-526）の効果（山札から炎神 M ユニットをパワーゾーンに置き、BP 以下の敵軍 S ユニットをパワーゾーンに送る）が未実装", () => {
+  it("PR-025: 山札から選べるのは特徴「炎神」を持つ M ユニットのカードだけ（出典: atwiki/page-1095「特徴「炎神」を持つMユニットのカードを1枚選び」）", () => {
     const r = use();
     expect(r.ok, r.error).toBe(true);
     expect(choiceIds(r.state)).toEqual(["SPEC-ENGINE-M:en"]);
   });
 
-  it.fails("PR-025: 炎神の M ユニットを自軍パワーゾーンに置くと、その BP（3000）以下の敵軍 S ユニット（ラッシュエリアも可）を1体選び持ち主のパワーゾーンに送る（出典: atwiki/page-1095） — 既知の不具合: CARD-PR-025 再録（RS-526）の効果（山札から炎神 M ユニットをパワーゾーンに置き、BP 以下の敵軍 S ユニットをパワーゾーンに送る）が未実装", () => {
+  it("PR-025: 炎神の M ユニットを自軍パワーゾーンに置くと、その BP（3000）以下の敵軍 S ユニット（ラッシュエリアも可）を1体選び持ち主のパワーゾーンに送る（出典: atwiki/page-1095）", () => {
     let s = pick(use().state, "SPEC-ENGINE-M:en");
     expect(zoneOf(s, "player1", "SPEC-ENGINE-M:en")).toBe("power");
     expect(choiceIds(s)).toEqual(["SPEC-S3000:e3"]);
@@ -120,7 +120,7 @@ describe("PR-025 スーパーハイウェイバスター", () => {
     expect(zoneOf(s, "player2", "SPEC-S3500:e35")).toBe("battle");
   });
 
-  it.fails("PR-025: 「置いてもよい」— 置かなければ敵軍ユニットは送られない（出典: atwiki/page-1095「置いてもよい。そうしたとき」） — 既知の不具合: CARD-PR-025 再録（RS-526）の効果（山札から炎神 M ユニットをパワーゾーンに置き、BP 以下の敵軍 S ユニットをパワーゾーンに送る）が未実装", () => {
+  it("PR-025: 「置いてもよい」— 置かなければ敵軍ユニットは送られない（出典: atwiki/page-1095「置いてもよい。そうしたとき」）", () => {
     let s = use().state;
     expect(canSkip(s)).toBe(true);
     s = resolveAll(act(s, { type: "skip_effect_choice", playerId: "player1" }));
@@ -162,7 +162,7 @@ describe("PR-026 デカマスター", () => {
 
   const entered = (enemyBattle = [inst("TST-UNIT-0", "e1")]) => enter(st({ player1: { rush: [inst(ID, "dm")], deck: deckCards(3) }, player2: { battle: enemyBattle, deck: deckCards(3, "e") } }), `${ID}:dm`);
 
-  it.fails("PR-026: 【ディーソードベガ】選ぶのは相手 — 撃破を選べば自分自身のユニットを1体撃破し、ダメージは受けない（出典: atwiki/page-1396「相手は…を選ぶ」） — 既知の不具合: CARD-PR-026 再録（RS-572）の【ディーソードベガ】で相手が「自分のユニットを撃破」を選べない（ダメージ側だけ働く）", () => {
+  it("PR-026: 【ディーソードベガ】選ぶのは相手 — 撃破を選べば自分自身のユニットを1体撃破し、ダメージは受けない（出典: atwiki/page-1396「相手は…を選ぶ」）", () => {
     let s = entered();
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     s = resolveAll(s, ["TST-UNIT-0:e1"]);

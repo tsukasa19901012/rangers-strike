@@ -15,19 +15,62 @@ export function normalizeCardIdentityText(text: string | undefined): string {
     .replace(/。/g, "");
 }
 
+/**
+ * 本文が元カードと表記だけ違う再録・プロモ（効果名・「SP1」の括弧・OT/オーバーテクノロジーなどの略記・
+ * 元カードのカタログ本文が空）。処理は元カードと同じ（docs/verification/unverified/PR-judgments.md ほか）。
+ */
+const PROMO_REPRINT_OF: Readonly<Record<string, string>> = {
+  "PK-001": "RK-033",
+  "PK-003": "RK-033",
+  "PK-004": "RK-066",
+  "PK-005": "RK-060",
+  "PK-013": "RK-252",
+  "PK-014": "RK-314",
+  "PR-001": "RS-062",
+  "PR-002": "RS-117",
+  "PR-003": "RS-030",
+  "PR-004": "RS-031",
+  "PR-006": "RS-106",
+  "PR-007": "RS-126",
+  "PR-008": "RS-079",
+  "PR-009": "RS-073",
+  "PR-010": "RS-001",
+  "PR-011": "RS-062",
+  "PR-012": "RS-018",
+  "PR-014": "RS-078",
+  "PR-017": "RS-340",
+  "PR-019": "RS-204",
+  "PR-021": "RS-436",
+  "PR-026": "RS-572",
+  "SR-001": "RS-151",
+};
+
 let groups: Map<string, string[]> | null = null;
 
 function identityGroups(): Map<string, string[]> {
   if (groups) return groups;
   const byKey = new Map<string, string[]>();
   const byId = new Map<string, string[]>();
+  const keyOf = new Map<string, string>();
   for (const card of extendedCardsCatalog.cards) {
     const text = normalizeCardIdentityText(card.text);
     if (!text) continue;
     const key = `${card.type}|${card.name}|${text}`;
+    keyOf.set(card.id, key);
     const list = byKey.get(key) ?? [];
     if (!list.includes(card.id)) list.push(card.id);
     byKey.set(key, list);
+  }
+  for (const [promoId, originalId] of Object.entries(PROMO_REPRINT_OF)) {
+    const key = keyOf.get(originalId) ?? `reprint|${originalId}`;
+    const list = byKey.get(key) ?? [];
+    for (const id of [originalId, promoId]) if (!list.includes(id)) list.push(id);
+    byKey.set(key, list);
+    const promoKey = keyOf.get(promoId);
+    if (promoKey && promoKey !== key) {
+      const own = byKey.get(promoKey) ?? [];
+      byKey.set(promoKey, own.filter((id) => id !== promoId));
+    }
   }
   for (const list of byKey.values()) {
     if (list.length < 2) continue;

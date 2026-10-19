@@ -70,11 +70,11 @@ describe("PR-001 ボウケンレッド（プロモ1）", () => {
     return enter(s, "PR-001:r");
   }
 
-  it.fails("PR-001: 5番目で「SP1」を得てストライクで1点（出典: atwiki/page-995「CN：5」） — 既知の不具合: CARD-PR-001 再録（RS-062）の【アクセルラー】（NC の「SP1」・メカへのアタック時 BP+4000）が未実装", () => {
+  it("PR-001: 5番目で「SP1」を得てストライクで1点（出典: atwiki/page-995「CN：5」）", () => {
     expect(strikeDmg(red(5, "SPEC-BP6000"), "PR-001:r")).toBe(1);
   });
 
-  it.fails("PR-001: 特徴「メカ」のユニット（パトストライカー BP6000）にアタックするとき BP8000 で勝つ（出典: atwiki/page-995） — 既知の不具合: CARD-PR-001 再録（RS-062）の【アクセルラー】（NC の「SP1」・メカへのアタック時 BP+4000）が未実装", () => {
+  it("PR-001: 特徴「メカ」のユニット（パトストライカー BP6000）にアタックするとき BP8000 で勝つ（出典: atwiki/page-995）", () => {
     const s = settle(attack(red(5, "RS-043"), "PR-001:r", "RS-043:d"));
     expect(zoneOf(s, "player2", "RS-043:d")).toBe("discard");
     expect(zoneOf(s, "player1", "PR-001:r")).toBe("battle");
@@ -90,7 +90,7 @@ describe("PR-001 ボウケンレッド（プロモ1）", () => {
     expect(zoneOf(s, "player1", "PR-001:r")).toBe("discard");
   });
 
-  it.fails("PR-001: 公式Q&A（RS-062 と同じ本文）— 隠流忍術でバトル相手が非メカに変わっても、メカにアタックした BP+4000 は残る（出典: grnrngr/faq-card-1 RS-018） — 既知の不具合: CARD-PR-001 再録（RS-062）の【アクセルラー】（NC の「SP1」・メカへのアタック時 BP+4000）が未実装", () => {
+  it("PR-001: 公式Q&A（RS-062 と同じ本文）— 隠流忍術でバトル相手が非メカに変わっても、メカにアタックした BP+4000 は残る（出典: grnrngr/faq-card-1 RS-018）", () => {
     let s = st({
       player1: { battle: fillers(4), rush: [inst("PR-001", "r")] },
       player2: { battle: [inst("RS-089", "rescue"), inst("RS-165", "rouki")], hand: [inst("RS-018", "nin")], command: [released("TST-OP-MA", "ma")], power: powerCards(4), deck: deckCards(3, "e") },
@@ -155,14 +155,14 @@ describe("PR-003 アドベンチャー", () => {
   });
 
   // ターンを終えたプレイヤーが、自分のホールド状態のコマンドを戻す（R-ERR-RS030 の修正後の読み・faq-card-1 RS-030 Q2）。
-  it.fails("PR-003: 自分のターンを終えるとき、自分のホールド状態のコマンドを1つ手札に戻す（出典: atwiki/page-997・08-errata R-ERR-RS030） — 既知の不具合: CARD-PR-003 再録（RS-030）の常駐（ターンを終えるときホールド状態のコマンドを手札に戻す）が働かない", () => {
+  it("PR-003: 自分のターンを終えるとき、自分のホールド状態のコマンドを1つ手札に戻す（出典: atwiki/page-997・08-errata R-ERR-RS030）", () => {
     const next = endWithChoices(st({ phase: "end", player1: { operation: [inst("PR-003", "adv")], command: [held("TST-OP", "h1"), held("TST-OP", "h2"), released("TST-OP", "r")] } }));
     expect(next.players.player1.hand).toHaveLength(1);
     expect(next.players.player1.command).toHaveLength(2);
     expect(zoneOf(next, "player1", "TST-OP:r")).toBe("command");
   });
 
-  it.fails("PR-003: 相手が配置したアドベンチャーでも、自分のターン終了時に自分のコマンドを戻す（出典: atwiki/page-997「自分も相手も次の制限を受ける」） — 既知の不具合: CARD-PR-003 再録（RS-030）の常駐（ターンを終えるときホールド状態のコマンドを手札に戻す）が働かない", () => {
+  it("PR-003: 相手が配置したアドベンチャーでも、自分のターン終了時に自分のコマンドを戻す（出典: atwiki/page-997「自分も相手も次の制限を受ける」）", () => {
     const next = endWithChoices(st({ phase: "end", player1: { command: [held("TST-OP", "h1")] }, player2: { operation: [inst("PR-003", "adv")] } }));
     expect(zoneOf(next, "player1", "TST-OP:h1")).toBe("hand");
   });
@@ -173,7 +173,7 @@ describe("PR-003 アドベンチャー", () => {
     expect(zoneOf(next, "player1", "TST-OP:r")).toBe("command");
   });
 
-  it.fails("PR-003: 公式Q&A — 自分も相手も常駐していれば効果は重複し、ターンを終えたプレイヤーが2つ戻す（出典: grnrngr/faq-card-plomo PR-003 →faq-card-1 RS-030 Q1） — 既知の不具合: CARD-PR-003 再録（RS-030）の常駐（ターンを終えるときホールド状態のコマンドを手札に戻す）が働かない", () => {
+  it("PR-003: 公式Q&A — 自分も相手も常駐していれば効果は重複し、ターンを終えたプレイヤーが2つ戻す（出典: grnrngr/faq-card-plomo PR-003 →faq-card-1 RS-030 Q1）", () => {
     const next = endWithChoices(
       st({
         phase: "end",
@@ -185,14 +185,14 @@ describe("PR-003 アドベンチャー", () => {
     expect(zoneOf(next, "player2", "TST-OP-ET:o1")).toBe("command");
   });
 
-  it.fails("PR-003: 公式Q&A — 元の RS-030 と並べても重複する（同じ「アドベンチャー」）（出典: grnrngr/faq-card-plomo PR-003 →faq-card-1 RS-030 Q1） — 既知の不具合: CARD-PR-003 再録（RS-030）の常駐（ターンを終えるときホールド状態のコマンドを手札に戻す）が働かない", () => {
+  it("PR-003: 公式Q&A — 元の RS-030 と並べても重複する（同じ「アドベンチャー」）（出典: grnrngr/faq-card-plomo PR-003 →faq-card-1 RS-030 Q1）", () => {
     const next = endWithChoices(
       st({ phase: "end", player1: { operation: [inst("PR-003", "adv1")], command: [held("TST-OP", "h1"), held("TST-OP", "h2"), held("TST-OP", "h3")] }, player2: { operation: [inst("RS-030", "adv2")] } }),
     );
     expect(next.players.player1.hand).toHaveLength(2);
   });
 
-  it.fails("PR-003: 公式Q&A — 重複していてもホールド状態が1枚しかなければその1枚だけ戻す（出典: grnrngr/faq-card-plomo PR-003 →faq-card-1 RS-030 Q1） — 既知の不具合: CARD-PR-003 再録（RS-030）の常駐（ターンを終えるときホールド状態のコマンドを手札に戻す）が働かない", () => {
+  it("PR-003: 公式Q&A — 重複していてもホールド状態が1枚しかなければその1枚だけ戻す（出典: grnrngr/faq-card-plomo PR-003 →faq-card-1 RS-030 Q1）", () => {
     const next = endWithChoices(st({ phase: "end", player1: { operation: [inst("PR-003", "adv1")], command: [held("TST-OP", "h1")] }, player2: { operation: [inst("PR-003", "adv2")] } }));
     expect(next.players.player1.hand).toHaveLength(1);
     expect(next.players.player1.command).toHaveLength(0);
@@ -294,13 +294,13 @@ describe("PR-005 デカレンジャーロボ", () => {
     expect(strikeDmg(s, "PR-005:robo")).toBe(2);
   });
 
-  it.fails("PR-005: 【ジャスティスフラッシャー】発動は任意 — バトルエリアに出たとき選ばずに済ませられる（出典: atwiki/page-1003「捨札にしてもよい」） — 既知の不具合: CARD-PR-005 再録（RS-042）の【ジャスティスフラッシャー】が未実装", () => {
+  it("PR-005: 【ジャスティスフラッシャー】発動は任意 — バトルエリアに出たとき選ばずに済ませられる（出典: atwiki/page-1003「捨札にしてもよい」）", () => {
     const s = robo(powerCards(5));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("PR-005");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("PR-005: 【ジャスティスフラッシャー】ダメージ以外のパワー5枚を捨札にすると、このターン「SP3」— ストライクはちょうど3点（出典: atwiki/page-1003） — 既知の不具合: CARD-PR-005 再録（RS-042）の【ジャスティスフラッシャー】が未実装", () => {
+  it("PR-005: 【ジャスティスフラッシャー】ダメージ以外のパワー5枚を捨札にすると、このターン「SP3」— ストライクはちょうど3点（出典: atwiki/page-1003）", () => {
     const s = choosePowers(robo(powerCards(5)), 5);
     expect(s.players.player1.power).toHaveLength(0);
     expect(s.players.player1.discard.filter((c) => c.cardId === "TST-P")).toHaveLength(5);
@@ -315,7 +315,7 @@ describe("PR-005 デカレンジャーロボ", () => {
     expect(robo([...powerCards(4), damageCard("dmg")]).pendingEffectChoice?.sourceCardId).not.toBe("PR-005");
   });
 
-  it.fails("PR-005: 公式Q&A（RS-042 と同じ本文）— SP を得る効果は自軍バトルフェイズ中に発動できる（出たときに見送っても同じバトルフェイズ中に発動できる）（出典: grnrngr/faq-card-1 RS-051 Q3） — 既知の不具合: CARD-PR-005 再録（RS-042）の【ジャスティスフラッシャー】が未実装", () => {
+  it("PR-005: 公式Q&A（RS-042 と同じ本文）— SP を得る効果は自軍バトルフェイズ中に発動できる（出たときに見送っても同じバトルフェイズ中に発動できる）（出典: grnrngr/faq-card-1 RS-051 Q3）", () => {
     let s = act(robo(powerCards(5)), { type: "skip_effect_choice", playerId: "player1" });
     s = passEntry(s);
     const offered = legal(s).some(

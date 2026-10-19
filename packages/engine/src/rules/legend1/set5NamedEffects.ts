@@ -1,3 +1,4 @@
+import { isSameCardIdentity } from "@rangers-strike/cards";
 /**
  * 第5弾「五龍の逆鱗」（legend1）のカード固有の名前付き効果（RS-306〜RS-347 の一部）。
  *
@@ -604,7 +605,7 @@ function applyGekiNunchaku(state: GameState, ctx: GrantKeywordContext): GameStat
 
 /** 効果による BP の継続修正（core/catalog.ts passiveBpBonus から呼ぶ）。 */
 export function set5PassiveBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
-  if (instance.cardId !== "RS-340" && instance.cardId !== "RS-343") return 0;
+  if (!isSameCardIdentity(instance.cardId, "RS-340") && !isSameCardIdentity(instance.cardId, "RS-343")) return 0;
   return hasTurnRuleModifier(state.players[playerId], `${GEKI_NUNCHAKU_RULE}::${instance.instanceId}`) ? 2000 : 0;
 }
 

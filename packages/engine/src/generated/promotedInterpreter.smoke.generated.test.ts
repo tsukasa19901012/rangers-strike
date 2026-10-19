@@ -52,8 +52,6 @@ const GRANT_KEYWORD_IDS = [
 ] as const;
 const INTERPRET_EFFECT_IDS = [] as const;
 const ACTION_PRIMITIVE_IDS = [
-  "PK-013",
-  "PR-025",
   "RK-222",
   "RK-313",
   "RK-331",

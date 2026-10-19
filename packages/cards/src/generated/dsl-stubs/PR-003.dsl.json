@@ -11,16 +11,37 @@
   "rawText": "※常駐（場に配置して、離れるまで効果が有効になる） 自分も相手も次の制限を受ける。ターンを終えるときホールド状態のコマンドを1つ選んで手札に戻す。",
   "effects": [
     {
-      "id": "unnamed_e280bbe5b8b8e9a79028e5a0",
+      "id": "adventure",
+      "name": "RS-030",
       "text": "※常駐（場に配置して、離れるまで効果が有効になる） 自分も相手も次の制限を受ける。ターンを終えるときホールド状態のコマンドを1つ選んで手札に戻す。",
       "trigger": {
-        "type": "while_in_field"
+        "type": "on_turn_end"
+      },
+      "condition": {
+        "type": "controller_is_phase_player"
       },
       "effects": [
         {
-          "type": "grant_keyword",
-          "keyword": "resident",
-          "duration": "permanent"
+          "type": "choose",
+          "kind": "select_command",
+          "valid": {
+            "type": "zone",
+            "zone": "command",
+            "owner": "self",
+            "filter": {
+              "commandHeld": true
+            }
+          },
+          "count": 1,
+          "then": [
+            {
+              "type": "move",
+              "target": {
+                "type": "trigger_source"
+              },
+              "to": "hand"
+            }
+          ]
         }
       ]
     }
@@ -29,5 +50,9 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "effectId": "adventure",
+  "tags": [
+    "常駐"
+  ]
 }

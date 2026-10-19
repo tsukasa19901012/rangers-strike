@@ -1,3 +1,4 @@
+import { isSameCardIdentity } from "@rangers-strike/cards";
 /**
  * 第6弾「紅き六戦士の帰還」（legend1）RS-390〜RS-431 のカード固有の名前付き効果（set-6 監査で未実装だったもの）。
  *
@@ -163,7 +164,7 @@ export function set6BEffectiveSp(state: GameState, playerId: PlayerId, instance:
  * - RS-431 ※「これは自軍コマンドが１つ以上あるときストライクできない」（リリース・ホールドを問わない）。
  */
 export function set6BBlocksStrike(state: GameState, playerId: PlayerId, instance: CardInstance): boolean {
-  if (instance.cardId === "RS-431") return state.players[playerId].command.length > 0;
+  if (isSameCardIdentity(instance.cardId, "RS-431")) return state.players[playerId].command.length > 0;
   return false;
 }
 
@@ -999,7 +1000,7 @@ export const DAIGANGAN_EFFECT_ID = "rs422_daigangan_ken";
 export function openDaiganganKen(state: GameState, attackerId: PlayerId, attackerInstanceId: string): GameState {
   if (state.pendingEffectChoice || state.pendingLeave) return state;
   const attacker = state.players[attackerId].battle.find((c) => c.instanceId === attackerInstanceId);
-  if (!attacker || attacker.cardId !== "RS-422") return state;
+  if (!attacker || !isSameCardIdentity(attacker.cardId, "RS-422")) return state;
   // RK-116 マグナギガ【そびえる巨体】: 敵軍バトルエリアにあれば、このユニットの効果ではホールドされない（atwiki/page-645。rules/rk/rk6Fields.ts）。
   // ホールドできなければ「そうしたとき」の追加アタックも得ない。
   if (rk6CommandHoldBlocked(state, opponent(attackerId), "RS-422")) return state;

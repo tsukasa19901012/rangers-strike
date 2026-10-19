@@ -326,12 +326,12 @@ describe("PK-012 仮面ライダー龍騎サバイブ", () => {
     expect(zoneOf(s, "player2", "SPEC-M5:m5")).toBe("discard");
   });
 
-  it.fails("PK-012: 1枚だけ選んで確定してもよい（合計2）（出典: atwiki/page-1140「2枚まで」）— 既知の不具合: CARD-PK-012 【ドラグバイザーツバイ】が発動しない", () => {
+  it("PK-012: 1枚だけ選んで確定してもよい（合計2）（出典: atwiki/page-1140「2枚まで」）", () => {
     const s = confirm(pick(visor(), "SPEC-ADV2:a2"));
     expect(choiceIds(s)).toEqual(["SPEC-C2:r2"]);
   });
 
-  it.fails("PK-012: 選ばなければ何も起きない（出典: atwiki/page-1140「選んでもよい。そうしたとき」）— 既知の不具合: CARD-PK-012 【ドラグバイザーツバイ】の選択が開かない", () => {
+  it("PK-012: 選ばなければ何も起きない（出典: atwiki/page-1140「選んでもよい。そうしたとき」）", () => {
     expect(zoneOf(resolveAll(skip(visor())), "player2", "SPEC-C2:r2")).toBe("rush");
   });
 
@@ -369,13 +369,13 @@ describe("PK-013 変身音叉 音角", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("PK-013: ◎1つ目 — 選んだ「仮面ライダー響鬼」は自軍ラッシュエリアに出る（出典: atwiki/page-1093）— 既知の不具合: CARD-PK-013 効果の選択が開かない", () => {
+  it("PK-013: ◎1つ目 — 選んだ「仮面ライダー響鬼」は自軍ラッシュエリアに出る（出典: atwiki/page-1093）", () => {
     const s = resolveAll(pick(pick(used(), "hibiki_rush"), "RK-221:hb"));
     expect(zoneOf(s, "player1", "RK-221:hb")).toBe("rush");
     expect(zoneOf(s, "player1", "PK-013:ok")).toBe("discard");
   });
 
-  it.fails("PK-013: ◎2つ目 — 使用したコマンドが特徴「ディスクアニマル」を持つ（XG5-069 キハダガニ）なら、自分は1枚ドローし、オモテにした敵軍山札の上のカードは山札（の上）に戻る（出典: atwiki/page-1093「このカードを使用したコマンドが特徴に｢ディスクアニマル｣を持つカードなら自分は1枚ドローする。その後、オモテにしたカードを山札に戻す」）— 既知の不具合: CARD-PK-013 効果の選択が開かない", () => {
+  it("PK-013: ◎2つ目 — 使用したコマンドが特徴「ディスクアニマル」を持つ（XG5-069 キハダガニ）なら、自分は1枚ドローし、オモテにした敵軍山札の上のカードは山札（の上）に戻る（出典: atwiki/page-1093「このカードを使用したコマンドが特徴に｢ディスクアニマル｣を持つカードなら自分は1枚ドローする。その後、オモテにしたカードを山札に戻す」）", () => {
     const s = resolveAll(pick(used([inst("XG5-069", "disk")]), "reveal_draw"));
     expect(cardIn(s, "player1", "XG5-069:disk")?.commandHeld).toBe(true);
     expect(s.players.player1.hand).toHaveLength(4);
@@ -383,7 +383,7 @@ describe("PK-013 変身音叉 音角", () => {
     expect(s.players.player2.deck).toHaveLength(5);
   });
 
-  it.fails("PK-013: ◎2つ目 — 使用したコマンドが「ディスクアニマル」を持たなければドローしない（出典: atwiki/page-1093）— 既知の不具合: CARD-PK-013 効果の選択が開かない", () => {
+  it("PK-013: ◎2つ目 — 使用したコマンドが「ディスクアニマル」を持たなければドローしない（出典: atwiki/page-1093）", () => {
     const s = resolveAll(pick(used(), "reveal_draw"));
     expect(s.players.player1.hand).toHaveLength(3);
     expect(s.players.player2.deck[0]?.instanceId).toBe("TST-OP:e0");
@@ -423,7 +423,7 @@ describe("PK-014 仮面ライダーキバEF", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("PK-014: キバ（RK-245）を見せると、その【ダークネスムーンブレイク】をこのユニットの効果として発動する（このユニットをホールドして敵軍 S ユニットをダメージにする）。見せたカードは手札に残る（出典: atwiki/page-1395「そのユニットの効果名を持つ効果を、このユニットの効果として発動する」）— 既知の不具合: CARD-PK-014 【モンスターフィーバー】が発動しない", () => {
+  it("PK-014: キバ（RK-245）を見せると、その【ダークネスムーンブレイク】をこのユニットの効果として発動する（このユニットをホールドして敵軍 S ユニットをダメージにする）。見せたカードは手札に残る（出典: atwiki/page-1395「そのユニットの効果名を持つ効果を、このユニットの効果として発動する」）", () => {
     let s = pick(fever(), "RK-245:kb");
     expect(zoneOf(s, "player1", "RK-245:kb")).toBe("hand");
     s = accept(s);
@@ -434,7 +434,7 @@ describe("PK-014 仮面ライダーキバEF", () => {
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("PK-014: 見せなければ何も起きない（出典: atwiki/page-1395「見せてもよい」）— 既知の不具合: CARD-PK-014 【モンスターフィーバー】の選択が開かない", () => {
+  it("PK-014: 見せなければ何も起きない（出典: atwiki/page-1395「見せてもよい」）", () => {
     const s = resolveAll(skip(fever()));
     expect(cardIn(s, "player1", "PK-014:ef")?.commandHeld ?? false).toBe(false);
     expect(damageOf(s, "player2")).toBe(0);

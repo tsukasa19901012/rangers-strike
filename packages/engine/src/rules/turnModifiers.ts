@@ -1,3 +1,4 @@
+import { isSameCardIdentity } from "@rangers-strike/cards";
 import {
   addTurnRestrictionModifier,
   clearRushPhaseScopedModifiers,
@@ -79,7 +80,7 @@ export function opponentInfiniteChainBlocks(
 export function countAdventureReturns(state: GameState): number {
   let count = 0;
   for (const pid of ["player1", "player2"] as const) {
-    if (state.players[pid].operation.some((c) => c.cardId === "RS-030")) {
+    if (state.players[pid].operation.some((c) => isSameCardIdentity(c.cardId, "RS-030"))) {
       count += 1;
     }
   }

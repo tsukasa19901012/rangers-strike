@@ -77,7 +77,7 @@ const rushPhase = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partia
 
 // ===========================================================================
 describe("PK-001 仮面ライダー龍騎", () => {
-  dragonComboTests("PK-001", "ドラゴクロー", "atwiki/page-960", "（効果名【ドラゴクロー】が RK-033 の【ドラゴンライダーキック】と違うため、「ドラゴン」からのコンビネーションで「SP1」を得ない。RK-033 は同じ盤面で得る）");
+  dragonComboTests("PK-001", "ドラゴクロー", "atwiki/page-960");
 
   it("PK-001: 同名カードの枚数制限 — 「仮面ライダー龍騎」は PK-001・PK-003・RK-033 を合わせて3枚まで（4枚はデッキに入れられない）（出典: R-DECK-02・atwiki/page-960 カード評価「能力名が…から【ドラグクロー】になっている」（同じカード名の別版））", () => {
     expect(validateDeckEntries([{ cardId: "PK-001", count: 2 }, { cardId: "RK-033", count: 2 }]).errors.some((e) => e.includes("枚まで"))).toBe(true);
@@ -132,7 +132,7 @@ describe("PK-002 ゼクトルーパー", () => {
 
 // ===========================================================================
 describe("PK-003 仮面ライダー龍騎", () => {
-  dragonComboTests("PK-003", "ドラグセイバー", "atwiki/page-961", "（効果名【ドラグセイバー】が RK-033 の【ドラゴンライダーキック】と違うため、「ドラゴン」からのコンビネーションで「SP1」を得ない。RK-033 は同じ盤面で得る）");
+  dragonComboTests("PK-003", "ドラグセイバー", "atwiki/page-961");
 });
 
 // ===========================================================================
@@ -163,14 +163,14 @@ describe("PK-004 仮面ライダー電王SF", () => {
     power: [inst("TST-OP", "pw3"), inst("SPEC-COST5", "pw5")],
   };
 
-  it.fails("PK-004: 【俺の必殺技・パートⅡ】（RC）ストライクして相手がウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選ぶ（ラッシュエリア・M ユニットも対象。選ばないことはできない）（出典: atwiki/page-971）— 既知の不具合: CARD-PK-004 RC の効果が発動しない（RK-066【俺の必殺技！】は同じ盤面で発動する。効果名だけが違う）", () => {
+  it("PK-004: 【俺の必殺技・パートⅡ】（RC）ストライクして相手がウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選ぶ（ラッシュエリア・M ユニットも対象。選ばないことはできない）（出典: atwiki/page-971）", () => {
     const s = swung("TST-OP:pw3", enemyField);
     expectChoiceFrom(s, "player1", "PK-004");
     expect(choiceIds(s)).toEqual(["SPEC-COST3-M:c3m", "SPEC-COST3:c3"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("PK-004: 【俺の必殺技・パートⅡ】選んだユニットを撃破し、カードはウラ返る（出典: atwiki/page-971「1体選び撃破する」）— 既知の不具合: CARD-PK-004 RC の効果が発動しない", () => {
+  it("PK-004: 【俺の必殺技・パートⅡ】選んだユニットを撃破し、カードはウラ返る（出典: atwiki/page-971「1体選び撃破する」）", () => {
     const s = resolveAll(pick(swung("TST-OP:pw3", enemyField), "SPEC-COST3:c3"));
     expect(zoneOf(s, "player2", "SPEC-COST3:c3")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-COST3-M:c3m")).toBe("rush");
@@ -206,14 +206,14 @@ describe("PK-005 デンライナーゴウカ", () => {
     expect(zoneOf(r.state, "player1", "TST-UNIT-0:u")).toBe("power");
   });
 
-  it.fails("PK-005: 【時の列車】必要パワーの数字に「－」のあるユニットにアタックするとき BP+5000（11000対10000で勝つ）（出典: atwiki/page-967）— 既知の不具合: CARD-PK-005 BP+5000 が2重にかかり 16000 になる（RK-060 は同じ盤面で 11000）", () => {
+  it("PK-005: 【時の列車】必要パワーの数字に「－」のあるユニットにアタックするとき BP+5000（11000対10000で勝つ）（出典: atwiki/page-967）", () => {
     const s = resolveAll(attack(board({ battle: [inst("PK-005", "g")] }, { battle: [inst("SPEC-MINUS", "x")] }), "PK-005:g", "SPEC-MINUS:x"));
     expect(lastBattleBps(s)?.attacker).toBe(11000);
     expect(zoneOf(s, "player2", "SPEC-MINUS:x")).toBe("discard");
     expect(zoneOf(s, "player1", "PK-005:g")).toBe("battle");
   });
 
-  it.fails("PK-005: 【時の列車】必要パワーに「－」のないユニットにアタックするときは BP+5000 されない（6000対7000で負ける）（出典: atwiki/page-967「必要パワーの数字に「－」のあるユニットに」）— 既知の不具合: CARD-PK-005 相手の必要パワーを問わず、アタックするとき BP+5000 される（11000）", () => {
+  it("PK-005: 【時の列車】必要パワーに「－」のないユニットにアタックするときは BP+5000 されない（6000対7000で負ける）（出典: atwiki/page-967「必要パワーの数字に「－」のあるユニットに」）", () => {
     const s = resolveAll(attack(board({ battle: [inst("PK-005", "g")] }, { battle: [inst("SPEC-E7000", "x")] }), "PK-005:g", "SPEC-E7000:x"));
     expect(lastBattleBps(s)?.attacker).toBe(6000);
     expect(zoneOf(s, "player1", "PK-005:g")).toBe("discard");

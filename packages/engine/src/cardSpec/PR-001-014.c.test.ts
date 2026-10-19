@@ -57,11 +57,11 @@ describe("PR-011 ボウケンレッド（プロモ2）", () => {
   const red = (position: 1 | 5, defender: string) =>
     enter(st({ player1: { battle: fillers(position - 1), rush: [inst("PR-011", "r")] }, player2: { battle: [inst(defender, "d")], power: powerCards(3), deck: deckCards(3, "e") } }, EXTRA), "PR-011:r");
 
-  it.fails("PR-011: 5番目で「SP1」を得てストライクで1点（出典: atwiki/page-994「CN：5」） — 既知の不具合: CARD-PR-011 再録（RS-062）の【サバイバスター】（NC の「SP1」・メカへのアタック時 BP+4000）が未実装", () => {
+  it("PR-011: 5番目で「SP1」を得てストライクで1点（出典: atwiki/page-994「CN：5」）", () => {
     expect(strikeDmg(red(5, "SPEC-BP6000"), "PR-011:r")).toBe(1);
   });
 
-  it.fails("PR-011: 特徴「メカ」のユニット（パトストライカー BP6000）にアタックするとき BP8000 で勝つ（出典: atwiki/page-994） — 既知の不具合: CARD-PR-011 再録（RS-062）の【サバイバスター】（NC の「SP1」・メカへのアタック時 BP+4000）が未実装", () => {
+  it("PR-011: 特徴「メカ」のユニット（パトストライカー BP6000）にアタックするとき BP8000 で勝つ（出典: atwiki/page-994）", () => {
     const s = settle(attack(red(5, "RS-043"), "PR-011:r", "RS-043:d"));
     expect(zoneOf(s, "player2", "RS-043:d")).toBe("discard");
     expect(zoneOf(s, "player1", "PR-011:r")).toBe("battle");
@@ -75,7 +75,7 @@ describe("PR-011 ボウケンレッド（プロモ2）", () => {
     expect(zoneOf(settle(attack(red(1, "RS-043"), "PR-011:r", "RS-043:d")), "player1", "PR-011:r")).toBe("discard");
   });
 
-  it.fails("PR-011: 公式Q&A（RS-062 と同じ本文）— 隠流忍術でバトル相手が非メカに変わっても、メカにアタックした BP+4000 は残る（出典: grnrngr/faq-card-1 RS-018） — 既知の不具合: CARD-PR-011 再録（RS-062）の【サバイバスター】（NC の「SP1」・メカへのアタック時 BP+4000）が未実装", () => {
+  it("PR-011: 公式Q&A（RS-062 と同じ本文）— 隠流忍術でバトル相手が非メカに変わっても、メカにアタックした BP+4000 は残る（出典: grnrngr/faq-card-1 RS-018）", () => {
     let s = st({
       player1: { battle: fillers(4), rush: [inst("PR-011", "r")] },
       player2: { battle: [inst("RS-089", "rescue"), inst("RS-165", "rouki")], hand: [inst("RS-018", "nin")], command: [released("TST-OP-MA", "ma")], power: powerCards(4), deck: deckCards(3, "e") },
@@ -119,7 +119,7 @@ describe("PR-012 隠流忍術", () => {
     expect(canUseCard(rushPhase({ hand: [inst("PR-012", "op")], power: powerCards(4), command: releasedCat("MA", 1) }), "player1", "PR-012:op")).toBe(false);
   });
 
-  it.fails("PR-012: 自軍ユニットがアタックされたとき、選んだ別のユニットがかわりにバトルする（出典: atwiki/page-993） — 既知の不具合: CARD-PR-012 再録（RS-018）の隠流忍術を使っても「かわりにバトルさせる」ことができない（候補が出ない）", () => {
+  it("PR-012: 自軍ユニットがアタックされたとき、選んだ別のユニットがかわりにバトルする（出典: atwiki/page-993）", () => {
     let s = attack(ninjaState({ p1Battle: [inst("SPEC-ATK4", "atk")], p2Battle: [inst("TST-UNIT-0", "def"), inst("SPEC-BIG9", "sub")] }), "SPEC-ATK4:atk", "TST-UNIT-0:def");
     s = settle(useNinja(s, N, "SPEC-BIG9:sub"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:def")).toBe("battle");
@@ -127,7 +127,7 @@ describe("PR-012 隠流忍術", () => {
     expect(zoneOf(s, "player1", "SPEC-ATK4:atk")).toBe("discard");
   });
 
-  it.fails("PR-012: 「すべての場から」— 敵軍（アタックした側）のユニットや自軍ラッシュエリアのユニットも選べる（出典: atwiki/page-993「すべての場から」・08-errata R-ERR-RS018） — 既知の不具合: CARD-PR-012 再録（RS-018）の隠流忍術を使っても「かわりにバトルさせる」ことができない（候補が出ない）", () => {
+  it("PR-012: 「すべての場から」— 敵軍（アタックした側）のユニットや自軍ラッシュエリアのユニットも選べる（出典: atwiki/page-993「すべての場から」・08-errata R-ERR-RS018）", () => {
     const s = attack(ninjaState({ p1Battle: [inst("SPEC-ATK4", "atk"), inst("TST-UNIT-0", "ally")], p2Battle: [inst("TST-UNIT-0", "def")], p2Rush: [inst("TST-UNIT-0", "myRush")] }), "SPEC-ATK4:atk", "TST-UNIT-0:def");
     const subs = substitutes(s, N);
     expect(subs).toContain("TST-UNIT-0:ally");
@@ -139,7 +139,7 @@ describe("PR-012 隠流忍術", () => {
     expect(substitutes(s, N)).not.toContain("SPEC-ATK4:atk");
   });
 
-  it.fails("PR-012: 公式Q&A（RS-018 と同じ本文）— 1回のアタックに対してカウンターを2枚以上使用できる（出典: grnrngr/faq-card-1 RS-018・atwiki/page-242 Q1） — 既知の不具合: CARD-PR-012 再録（RS-018）の隠流忍術を使っても「かわりにバトルさせる」ことができない（候補が出ない）", () => {
+  it("PR-012: 公式Q&A（RS-018 と同じ本文）— 1回のアタックに対してカウンターを2枚以上使用できる（出典: grnrngr/faq-card-1 RS-018・atwiki/page-242 Q1）", () => {
     let s = attack(
       ninjaState({ p1Battle: [inst("SPEC-ATK4", "atk")], p2Battle: [inst("TST-UNIT-0", "def"), inst("SPEC-BIG9", "sub")], p2Hand: [inst("PR-012", "n"), inst("PR-012", "n2")] }),
       "SPEC-ATK4:atk",
@@ -149,7 +149,7 @@ describe("PR-012 隠流忍術", () => {
     expect(canCounter(s, "PR-012:n2", "player2")).toBe(true);
   });
 
-  it.fails("PR-012: 公式Q&A（RS-018 と同じ本文）— レジストを持つユニット（XP-024）を選んでバトルで撃破されたら、レジストできる（出典: grnrngr/faq-card-1 RS-018・atwiki/page-242 Q2） — 既知の不具合: CARD-PR-012 再録（RS-018）の隠流忍術を使っても「かわりにバトルさせる」ことができない（候補が出ない）", () => {
+  it("PR-012: 公式Q&A（RS-018 と同じ本文）— レジストを持つユニット（XP-024）を選んでバトルで撃破されたら、レジストできる（出典: grnrngr/faq-card-1 RS-018・atwiki/page-242 Q2）", () => {
     let s = attack(ninjaState({ p1Battle: [inst("SPEC-BIG9", "atk")], p2Battle: [inst("TST-UNIT-0", "def"), inst("XP-024", "r")] }), "SPEC-BIG9:atk", "TST-UNIT-0:def");
     s = useNinja(s, N, "XP-024:r");
     for (let i = 0; i < 6 && !legal(s).some((a) => a.type === "use_register"); i += 1) {
@@ -160,7 +160,7 @@ describe("PR-012 隠流忍術", () => {
     expect(legal(s).some((a) => a.type === "use_register" && a.playerId === "player2")).toBe(true);
   });
 
-  it.fails("PR-012: 公式Q&A（RS-018 と同じ本文）— 「航空機」を持たないアタッカーとジェットファルコンをバトルさせられる（出典: grnrngr/faq-card-1 RS-018・atwiki/page-242 Q8） — 既知の不具合: CARD-PR-012 再録（RS-018）の隠流忍術を使っても「かわりにバトルさせる」ことができない（候補が出ない）", () => {
+  it("PR-012: 公式Q&A（RS-018 と同じ本文）— 「航空機」を持たないアタッカーとジェットファルコンをバトルさせられる（出典: grnrngr/faq-card-1 RS-018・atwiki/page-242 Q8）", () => {
     let s = attack(ninjaState({ p1Battle: [inst("SPEC-ATK4", "atk")], p2Battle: [inst("TST-UNIT-0", "def"), inst("RS-135", "jet")] }), "SPEC-ATK4:atk", "TST-UNIT-0:def");
     expect(substitutes(s, N)).toContain("RS-135:jet");
     s = settle(useNinja(s, N, "RS-135:jet"));
@@ -184,12 +184,12 @@ describe("PR-012 隠流忍術", () => {
     expect(canCounter(s, N, "player2")).toBe(false);
   });
 
-  it.fails("PR-012: 公式Q&A（RS-018 と同じ本文）— ガオシャークが敵軍ラッシュエリアの S ユニットにアタックしたとき、バトルエリアの S ユニットをかわりにバトルさせられる（出典: grnrngr/faq-card-1 RS-018・atwiki/page-242 Q10） — 既知の不具合: CARD-PR-012 再録（RS-018）の隠流忍術を使っても「かわりにバトルさせる」ことができない（候補が出ない）", () => {
+  it("PR-012: 公式Q&A（RS-018 と同じ本文）— ガオシャークが敵軍ラッシュエリアの S ユニットにアタックしたとき、バトルエリアの S ユニットをかわりにバトルさせられる（出典: grnrngr/faq-card-1 RS-018・atwiki/page-242 Q10）", () => {
     const s = attack(ninjaState({ p1Battle: [inst("RS-154", "shark")], p2Rush: [inst("TST-UNIT-0", "rushS")], p2Battle: [inst("TST-UNIT-7", "battleS")] }), "RS-154:shark", "TST-UNIT-0:rushS");
     expect(substitutes(s, N)).toContain("TST-UNIT-7:battleS");
   });
 
-  it.fails("PR-012: 公式Q&A（RS-018 と同じ本文）— 変わるのはバトルの対象のみ。メカにアタックしたボウケンレッドの BP+4000 は残る（出典: grnrngr/faq-card-1 RS-018・atwiki/page-242 Q11） — 既知の不具合: CARD-PR-012 再録（RS-018）の隠流忍術を使っても「かわりにバトルさせる」ことができない（候補が出ない）", () => {
+  it("PR-012: 公式Q&A（RS-018 と同じ本文）— 変わるのはバトルの対象のみ。メカにアタックしたボウケンレッドの BP+4000 は残る（出典: grnrngr/faq-card-1 RS-018・atwiki/page-242 Q11）", () => {
     let s = ninjaState({ p1Battle: fillers(4, "f"), p1Rush: [inst("RS-062", "red")], p2Battle: [inst("RS-089", "rescue"), inst("RS-165", "rouki")] });
     s = attack(enter(s, "RS-062:red"), "RS-062:red", "RS-089:rescue");
     s = settle(useNinja(s, N, "RS-165:rouki"));
@@ -270,11 +270,11 @@ describe("PR-014 ダークナイト", () => {
   const knight = (p1: Partial<GameState["players"]["player1"]>, p2: Partial<GameState["players"]["player2"]>) =>
     st({ player1: { battle: [inst("PR-014", "dk")], ...p1 }, player2: { power: powerCards(3, "e"), ...p2 } }, EXTRA);
 
-  it.fails("PR-014: 【闇の舞】敵軍ラッシュエリアに特徴「レッド」のユニットがあれば SP1（ストライクで1点）（出典: atwiki/page-990） — 既知の不具合: CARD-PR-014 再録（RS-078）の【闇の舞】（敵軍にレッドがいるとき「SP1」）が未実装", () => {
+  it("PR-014: 【闇の舞】敵軍ラッシュエリアに特徴「レッド」のユニットがあれば SP1（ストライクで1点）（出典: atwiki/page-990）", () => {
     expect(strikeDmg(knight({}, { rush: [inst("SPEC-S-RED", "r")] }), "PR-014:dk")).toBe(1);
   });
 
-  it.fails("PR-014: 【闇の舞】敵軍バトルエリアに特徴「レッド」のユニットがあっても SP1（出典: atwiki/page-990） — 既知の不具合: CARD-PR-014 再録（RS-078）の【闇の舞】（敵軍にレッドがいるとき「SP1」）が未実装", () => {
+  it("PR-014: 【闇の舞】敵軍バトルエリアに特徴「レッド」のユニットがあっても SP1（出典: atwiki/page-990）", () => {
     expect(canStrike(knight({}, { battle: [inst("SPEC-S-RED", "r")] }), "PR-014:dk")).toBe(true);
   });
 

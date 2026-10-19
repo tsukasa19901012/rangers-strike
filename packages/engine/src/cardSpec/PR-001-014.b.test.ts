@@ -227,7 +227,7 @@ describe("PR-007 アカレンジャー", () => {
     expect(canStrike(fifth(1), "PR-007:aka")).toBe(false);
   });
 
-  it.fails("PR-007: NC 成立後、バトルで敵軍ユニットを撃破すると敵軍ラッシュエリアの BP2000 以下を1体選んで撃破する（BP3000 は対象外。強制）（出典: atwiki/page-1005） — 既知の不具合: CARD-PR-007 再録（RS-126）の【レッドビュート】の撃破が発動しない（「SP1」は働く）", () => {
+  it("PR-007: NC 成立後、バトルで敵軍ユニットを撃破すると敵軍ラッシュエリアの BP2000 以下を1体選んで撃破する（BP3000 は対象外。強制）（出典: atwiki/page-1005）", () => {
     let s = settle(attack(fifth(), "PR-007:aka", "TST-UNIT-0:def"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("PR-007");
     expect(choiceIds(s)).toEqual(["SPEC-E2K:r2"]);
@@ -237,7 +237,7 @@ describe("PR-007 アカレンジャー", () => {
     expect(zoneOf(s, "player2", "SPEC-E3K:r3")).toBe("rush");
   });
 
-  it.fails("PR-007: 公式Q&A — 【レッドビュート】で撃破しても、もう一度【レッドビュート】は発動しない（バトルで撃破したときに1度だけ）（出典: grnrngr/faq-card-plomo PR-007 Q） — 既知の不具合: CARD-PR-007 再録（RS-126）の【レッドビュート】の撃破が発動しない（「SP1」は働く）", () => {
+  it("PR-007: 公式Q&A — 【レッドビュート】で撃破しても、もう一度【レッドビュート】は発動しない（バトルで撃破したときに1度だけ）（出典: grnrngr/faq-card-plomo PR-007 Q）", () => {
     let s = settle(attack(fifth(4, [inst("SPEC-E1K", "a"), inst("SPEC-E2K", "b")]), "PR-007:aka", "TST-UNIT-0:def"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("PR-007");
     s = settle(pick(s, "SPEC-E1K:a"));
@@ -347,7 +347,7 @@ describe("PR-009 サンバルカンロボ", () => {
     expect(roboStrike(0)).toBe(1);
   });
 
-  it.fails("PR-009: 【オーロラプラズマ返し】自軍ダメージがちょうど6点のとき SP2（ストライクで2点）（出典: atwiki/page-1007） — 既知の不具合: CARD-PR-009 再録（RS-073）の【オーロラプラズマ返し】（自軍ダメージ6点で「SP2」）が未実装", () => {
+  it("PR-009: 【オーロラプラズマ返し】自軍ダメージがちょうど6点のとき SP2（ストライクで2点）（出典: atwiki/page-1007）", () => {
     expect(roboStrike(6)).toBe(2);
   });
 

@@ -333,7 +333,7 @@ describe("PR-019 レッドファルコン", () => {
 
   const falconFirst = (enemy: CardInstance[], enemyOps: CardInstance[] = []) => enterNext("PR-019", [], { battle: enemy, operation: enemyOps }, EXTRA);
 
-  it.fails("PR-019: 1番目でも、BP が敵軍ユニットより低ければ「SP1」でストライクできる（出典: atwiki/page-985） — 既知の不具合: CARD-PR-019 再録（RS-204）の【ファルコンブレイク】のナンバーに関係ない発動（BP が一番低いとき）が未実装", () => {
+  it("PR-019: 1番目でも、BP が敵軍ユニットより低ければ「SP1」でストライクできる（出典: atwiki/page-985）", () => {
     expect(canStrike(falconFirst([inst("TST-UNIT-2", "m"), inst("TST-UNIT-7", "l")]), "PR-019:x")).toBe(true);
     const s = settle(strike(enterNext("PR-019", [], { battle: [inst("TST-UNIT-2", "m")], power: powerCards(2, "e"), deck: deckCards(2, "e") }), "PR-019:x"));
     expect(s.players.player2.damage).toBe(1);
@@ -350,13 +350,13 @@ describe("PR-019 レッドファルコン", () => {
     expect(settle(strike(s, "PR-019:x")).players.player2.damage).toBe(1);
   });
 
-  it.fails("PR-019: 公式Q&A（RS-204 と同じ本文）— 補正後の BP で比べる（BP1000 のイエローフォーがカレーで3000なら一番低い）（出典: grnrngr/faq-card-4 RS-204 Q1） — 既知の不具合: CARD-PR-019 再録（RS-204）の【ファルコンブレイク】のナンバーに関係ない発動（BP が一番低いとき）が未実装", () => {
+  it("PR-019: 公式Q&A（RS-204 と同じ本文）— 補正後の BP で比べる（BP1000 のイエローフォーがカレーで3000なら一番低い）（出典: grnrngr/faq-card-4 RS-204 Q1）", () => {
     const s = falconFirst([inst("RS-201", "y")], [inst("RS-179", "cur")]);
     expect(bpOf(s, "player2", "RS-201:y")).toBe(3000);
     expect(canStrike(s, "PR-019:x")).toBe(true);
   });
 
-  it.fails("PR-019: 公式Q&A（RS-204 と同じ本文）— 同じ BP2000 の敵軍ユニットがあっても発動する（同着も「一番低い」）（出典: grnrngr/faq-card-4 RS-204 Q2） — 既知の不具合: CARD-PR-019 再録（RS-204）の【ファルコンブレイク】のナンバーに関係ない発動（BP が一番低いとき）が未実装", () => {
+  it("PR-019: 公式Q&A（RS-204 と同じ本文）— 同じ BP2000 の敵軍ユニットがあっても発動する（同着も「一番低い」）（出典: grnrngr/faq-card-4 RS-204 Q2）", () => {
     expect(canStrike(falconFirst([inst("SPEC-BP2000", "e")]), "PR-019:x")).toBe(true);
   });
 });

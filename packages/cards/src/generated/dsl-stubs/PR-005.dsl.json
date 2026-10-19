@@ -26,16 +26,16 @@
       "name": "ジャスティスフラッシャー",
       "text": "自軍パワーゾーンからダメージ以外のカードを5枚選び捨札にしてもよい。そうしたとき、このターン、このユニットは次の能力を得る⇒「SP3」",
       "trigger": {
-        "type": "nc"
+        "type": "conditional"
       },
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pr_fx::PR-005::justice_flasher",
+          "keyword": "pay_power_discard_5_for_sp3",
           "duration": "turn"
         }
-      ],
-      "optional": true
+      ]
     }
   ],
   "unnamedRules": [

@@ -19,9 +19,9 @@
       },
       "effects": [
         {
-          "type": "draw",
-          "amount": 1,
-          "player": "controller"
+          "type": "grant_keyword",
+          "keyword": "rk12::RK-252::onkaku",
+          "duration": "turn"
         }
       ]
     }

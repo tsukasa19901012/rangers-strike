@@ -1,3 +1,4 @@
+import { isSameCardIdentity } from "@rangers-strike/cards";
 /**
  * 第4弾「四雄の覚醒」RS-201〜RS-208 の NC 効果ほか（cardSpec RS4-201-221）。
  *
@@ -101,7 +102,7 @@ export function openHolography(
 
 /** 敵軍ユニットが1体以上あり、このユニットの BP がすべての敵軍ユニット以下（同着でもよい）なら、ナンバーに関係なく発動する。 */
 export function falconBreakTriggers(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
-  if (card.cardId !== "RS-204") return false;
+  if (!isSameCardIdentity(card.cardId, "RS-204")) return false;
   const enemyId = opponent(playerId);
   const enemies = fieldUnits(state, enemyId);
   if (enemies.length === 0) return false;

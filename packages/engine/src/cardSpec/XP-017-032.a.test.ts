@@ -188,7 +188,7 @@ describe("XP-019 仮面ライダー1号", () => {
 
   const rc = (p2: Partial<GameState["players"]["player2"]> = {}, p1: Partial<GameState["players"]["player1"]> = {}) => settle(rcBoard("XP-019:one", p1, p2, EXTRA));
 
-  it.fails("XP-019: RC — ライドオフすると「SP1」を得て、2番目に並んでもストライクで1点与える（出典: atwiki/page-2131「【技の1号】「SP1」」・カード評価「実物にはちゃんと通常のものと同様にRCがついている」・R-KW-RC-01） — 既知の不具合: CARD-XP-019 再録の XP-019 は RC【技の1号】が発動しない（同じ本文の RK-023 は発動する）", () => {
+  it("XP-019: RC — ライドオフすると「SP1」を得て、2番目に並んでもストライクで1点与える（出典: atwiki/page-2131「【技の1号】「SP1」」・カード評価「実物にはちゃんと通常のものと同様にRCがついている」・R-KW-RC-01）", () => {
     let s = rc();
     expect(zoneIds(s, "player1", "battle")).toEqual(["SPEC-VEHICLE:v", "XP-019:one"]);
     expect(canStrike(s, "XP-019:one")).toBe(true);
@@ -196,7 +196,7 @@ describe("XP-019 仮面ライダー1号", () => {
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("XP-019: RC — アタックするとき、敵軍ユニットの BP を本来の値としてバトルする（ライドで BP4500 の相手〈本来 3500〉に BP4000 で勝つ）（出典: atwiki/page-2131「敵軍ユニットのBPをカードに表記された本来の値としてバトルし」） — 既知の不具合: CARD-XP-019 RC が発動しない", () => {
+  it("XP-019: RC — アタックするとき、敵軍ユニットの BP を本来の値としてバトルする（ライドで BP4500 の相手〈本来 3500〉に BP4000 で勝つ）（出典: atwiki/page-2131「敵軍ユニットのBPをカードに表記された本来の値としてバトルし」）", () => {
     let s = rc({ battle: ridingPair("SPEC-RC3500", "e", "RK-024", "ev") });
     expect(bpOf(s, "player2", "SPEC-RC3500:e")).toBe(4500);
     s = resolveAll(attack(s, "XP-019:one", "SPEC-RC3500:e"));
@@ -209,7 +209,7 @@ describe("XP-019 仮面ライダー1号", () => {
   const canCounter = (s: GameState) =>
     legal(s).some((a) => (a.type === "initiate_command_payment" && a.sourceInstanceId === "RK-004:g") || (a.type === "play_counter" && a.instanceId === "RK-004:g"));
 
-  it.fails("XP-019: RC — これがアタックするとき、相手はカウンターを発動できない（出典: atwiki/page-2131「自分が次の行動の宣言をするまで相手はカウンターを発動できない」） — 既知の不具合: CARD-XP-019 RC が発動しない", () => {
+  it("XP-019: RC — これがアタックするとき、相手はカウンターを発動できない（出典: atwiki/page-2131「自分が次の行動の宣言をするまで相手はカウンターを発動できない」）", () => {
     const s = attack(rc({ battle: [inst("SPEC-E1500", "e")], ...gigi }), "XP-019:one", "SPEC-E1500:e");
     expect(canCounter(s)).toBe(false);
   });

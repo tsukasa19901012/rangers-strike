@@ -19,13 +19,18 @@
   ],
   "effects": [
     {
-      "id": "ken_re_zan_ri",
+      "id": "eagle_diving",
       "name": "秘剣流れ十文字斬り",
       "text": "SP1 このターン、これはBP＋2000される。（この効果は「バルシャーク」または「バルパンサー」からコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
         "type": "nc"
       },
       "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
         {
           "type": "modify_bp",
           "target": {
@@ -39,7 +44,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  }
+    "handler": "interpreter"
+  },
+  "unnamedRules": []
 }
