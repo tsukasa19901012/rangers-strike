@@ -14,6 +14,7 @@ import { XG1_CONFIRMERS, XG1_HOLD_COMPLETERS, XG1_KEYWORDS, XG1_KEYWORD_PREFIX, 
 import { holdCommands } from "./xg1Shared";
 import "./xg1aEffects";
 import "./xg1bEffects";
+import "./xg1cEffects";
 
 export { xg1bOnAttackDeclared } from "./xg1bEffects";
 

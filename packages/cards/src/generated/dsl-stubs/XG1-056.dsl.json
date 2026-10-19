@@ -24,11 +24,10 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-056::agitono",
+          "keyword": "xg1::XG1-056::annihilation",
           "duration": "turn"
         }
       ]

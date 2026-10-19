@@ -44,13 +44,12 @@
       "name": "ファイヤーストームアタック",
       "text": "これが自軍エリアにある間、相手がターンを終えるとき、次の効果を発動できる⇒そのターン中にホールド状態になった敵軍ユニットを、すべて持ち主の山札に戻してシャッフルする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-052::fuaiyasutomuataku",
+          "keyword": "xg1::XG1-052::fire_storm",
           "duration": "permanent"
         }
       ]

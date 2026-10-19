@@ -1,3 +1,4 @@
+import { openXg1cMantisOnEnemyRush } from "./xg1/xg1cEffects";
 import { openRm2MotoSharian } from "./rm/rm2Effects";
 import { openRm1OnUnitRushed } from "./rm/rm1Effects";
 import { openRk8JaguarOnEnemyRush } from "./rk/rk8UnitEffects";
@@ -350,6 +351,8 @@ export function applyPassiveRushTriggers(
   next = openRk12NegatarosOnRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // RK-293 センチピードオルフェノク【捕縛する鞭】（敵軍ターン中、敵軍ユニットがラッシュされたとき。rules/rk/rk14UnitEffects.ts）。
   next = openRk14WhipOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // XG1-055 マンティスロード【血に飢えた予言者】（手札にある間。rules/xg1/xg1cEffects.ts）。
+  next = openXg1cMantisOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   return { state: next, logs: rsEnemyRush.logs };
 }
 

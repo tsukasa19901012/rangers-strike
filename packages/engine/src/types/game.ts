@@ -1542,6 +1542,8 @@ export type TurnEndProgress = {
   rk13Queue?: string[];
   /** RK-323【シャドウベール】（rules/rk/rk16UnitEffects.ts）。 */
   rk16Queue?: string[];
+  /** XG1-052【ファイヤーストームアタック】・XG1-053 の撃破（rules/xg1/xg1cEffects.ts）。 */
+  xg1Queue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

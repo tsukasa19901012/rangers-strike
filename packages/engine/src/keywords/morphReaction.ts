@@ -1,3 +1,4 @@
+import { xg1cOnMorphSwap } from "../rules/xg1/xg1cEffects";
 import { filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingMorph, PlayerId, PlayerState } from "../types/game";
@@ -420,6 +421,8 @@ export function resolveMorphReplacementChoice(
     );
     nextState = rushEffects.state;
     extraLogs.push(...rushEffects.logs);
+    // XG1-046【Vジェット】: ライドしているユニットがモーフで置き換えられたとき（rules/xg1/xg1cEffects.ts）。
+    nextState = xg1cOnMorphSwap(nextState, defenderId, replacementInstanceId, morphPending.phasePlayerId);
   }
   const continuation = {
     pending: resolvedPending,

@@ -55,11 +55,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_enemy_deck_1",
+          "keyword": "xg1::XG1-049::sailing_jump",
           "duration": "turn"
         }
       ]

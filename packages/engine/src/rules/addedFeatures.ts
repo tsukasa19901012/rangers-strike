@@ -86,8 +86,8 @@ export function unitFeatures(
   // RM-058 老師グル【昆虫の精】（自軍ラッシュエリアにある間、「メカ」のユニット・ビークルに「昆虫」。自軍だけ（ユーザー決定 2026-10-19）。
   // rules/rm/rm3Fields.ts）。
   if (rm3GuruAddsInsect(state, _ownerId, instance.cardId, [...base, ...extra])) extra.push("昆虫");
-  // XG1-015 宇宙警察（OT の「警察」の自軍 S ユニットに「宇宙刑事」。rules/xg1/xg1Fields.ts）。
-  extra.push(...xg1AddedFeatures(state, _ownerId, instance.cardId, [...base, ...extra]));
+  // XG1-015 宇宙警察（OT の「警察」の自軍 S ユニットに「宇宙刑事」）・XG1-045【墨攻撃】（「ブラック」）（rules/xg1/xg1Fields.ts）。
+  extra.push(...xg1AddedFeatures(state, _ownerId, instance.cardId, [...base, ...extra], instance.instanceId));
   if (extra.length === 0) return base;
   return [...new Set([...base, ...extra])];
 }

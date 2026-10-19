@@ -154,6 +154,7 @@ import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
 import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
 import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
 import { canConfirmXg1Choice, isXg1ChoiceEffect } from "../rules/xg1/xg1Effects";
+import { xg1ForcedAttackFilter } from "../rules/xg1/xg1cEffects";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
@@ -1966,7 +1967,8 @@ export function getLegalActions(input: GameState): GameAction[] {
   const state = withEffectiveRushConditionDefinitions(input);
   // 追加条件の素材の特徴（効果・フェイズで追加された特徴）はこの状態で判定する（rules/zordFeatureContext.ts）。
   // 合法判定の中で乱数を使っても、状態の rngState から作るので決定的（core/rng.ts）。
-  const actions = runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCoreWithMemo(state))).value;
+  // XG1-053【バーニングライダーパンチ】: 追加でアタックできる間は、そのアタックしか選べない（rules/xg1/xg1cEffects.ts）。
+  const actions = xg1ForcedAttackFilter(state, runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCoreWithMemo(state))).value);
   if (cache && engineSideEffectCount() === sideEffectsBefore) {
     for (const action of actions) deepFreeze(action);
     cache.set(input, [...actions]);

@@ -94,6 +94,8 @@ export function xg1DefenderBlocksAttack(state: GameState, attackerPlayerId: Play
 export function xg1AttackerCanAttackRush(state: GameState, attackerPlayerId: PlayerId, attacker: CardInstance, defender: CardInstance): boolean {
   // XG1-035 兜折神【侍武装】で得る「これは敵軍ラッシュエリアのユニットにアタックできる」（atwiki/page-1591。XG1-039 の【折神の結集】を含む）。
   if (xg1HasSamuraiGrant(state, attackerPlayerId, attacker, "XG1-035")) return true;
+  // XG1-043 カメバズーカ【砲撃】「このユニットは、ホールド状態のとき敵軍ラッシュエリアのユニットにアタックできる。」（atwiki/page-1612）
+  if (isSameCardIdentity(attacker.cardId, "XG1-043") && attacker.commandHeld) return true;
   if (!isSameCardIdentity(attacker.cardId, "XG1-021") || !defender.commandHeld) return false;
   if (attacker.activatedNcEffects?.includes("jgan")) return true;
   return state.players[attackerPlayerId].battle[0]?.instanceId === attacker.instanceId && def(state, attacker.cardId)?.comboNumber === 1;
@@ -114,7 +116,15 @@ function isPoliceS(state: Defs, cardId: string, features?: string[]): boolean {
 }
 
 /** XG1-015: 追加される特徴（rules/addedFeatures.ts unitFeatures。features はいまの特徴）。 */
-export function xg1AddedFeatures(state: Pick<GameState, "players" | "definitions">, ownerId: PlayerId, cardId: string, features: string[]): string[] {
+export function xg1AddedFeatures(state: Pick<GameState, "players" | "definitions">, ownerId: PlayerId, cardId: string, features: string[], instanceId?: string): string[] {
+  // XG1-045 イカファイア【墨攻撃】: 敵軍バトルエリアにイカファイアがある間、自軍バトルエリアのユニットに「ブラック」（atwiki/page-1614）。
+  if (
+    instanceId &&
+    state.players[ownerId].battle.some((c) => c.instanceId === instanceId) &&
+    state.players[other(ownerId)].battle.some((c) => isSameCardIdentity(c.cardId, "XG1-045"))
+  ) {
+    return [...xg1AddedFeatures(state, ownerId, cardId, features), "ブラック"];
+  }
   if (!policeResidentActive(state, ownerId)) return [];
   if (!isPoliceS(state, cardId, features) || !cats(state, cardId).includes("OT")) return [];
   return ["宇宙刑事"];
@@ -225,6 +235,23 @@ export function xg1MaxFusionMaterialCount(state: Defs, cardId: string): number {
 export function xg1SamuraiBpBonus(state: GameState, ownerId: PlayerId, host: CardInstance): number {
   if (!xg1HasSamuraiGrant(state, ownerId, host, "XG1-040")) return 0;
   return xg1MaxFusionMaterialCount(state, host.cardId) * 1000;
+}
+
+/** XG1 の BP の修正（core/catalog.ts effectiveBp）: XG1-040 の【侍武装】・XG1-058 の※「これはライド中、BP+1000される。」（atwiki/page-1565）。 */
+export function xg1BpBonus(state: GameState, ownerId: PlayerId, card: CardInstance): number {
+  let bonus = xg1SamuraiBpBonus(state, ownerId, card);
+  if (isSameCardIdentity(card.cardId, "XG1-058") && card.mountedOnInstanceId) bonus += 1000;
+  return bonus;
+}
+
+// ---------------------------------------------------------------------------
+// XG1-044 仮面ライダーV3 ※「これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、自軍捨札に「仮面ライダー1号」のカードと「仮面ライダー2号」の
+// カードがあれば、これを自軍ラッシュエリアに出してもよい。」（atwiki/page-1619）。ホールド・リリースは問わない（rules/keywordGapRuntime.ts）。
+
+export function xg1CanDeployFromCommand(state: Pick<GameState, "players" | "definitions">, playerId: PlayerId, card: CardInstance): boolean {
+  if (!isSameCardIdentity(card.cardId, "XG1-044")) return false;
+  const names = new Set(state.players[playerId].discard.map((c) => def(state, c.cardId)?.name));
+  return names.has("仮面ライダー1号") && names.has("仮面ライダー2号");
 }
 
 export { other as xg1Other, cats as xg1PrintedCategories };

@@ -41,7 +41,8 @@ import {
 } from "../rm/rm1Effects";
 import { XG1_KEYWORDS, XG1_RESOLVERS, XG1_SKIPPERS, noop } from "./xg1Core";
 import { xg1bAfterBattle } from "./xg1bEffects";
-import { costNumber, enemySUnits, holdThen, isUnitDef, registerHold, releasedCommands, unitCatsNow } from "./xg1Shared";
+import { xg1cAfterBattle } from "./xg1cEffects";
+import { costNumber, enemySUnits, fieldUnitToCommandReleased, holdThen, isUnitDef, registerHold, releasedCommands, residentZoneCards, unitCatsNow } from "./xg1Shared";
 
 const CATEGORIES = ["WB", "MA", "OT", "ET", "DA"];
 
@@ -52,14 +53,6 @@ function pickOne(ctx: BaseCtx, sourceCardId: string, effectId: string, ids: stri
 /** NC の効果を発動したユニットに目印を付ける（「NC が成立したとき」の効果の判定に使う）。 */
 function markNc(state: GameState, ctx: GrantKeywordContext, effectId: string): GameState {
   return ctx.triggerSourceInstanceId ? markBattleNcEffect(state, ctx.playerId, ctx.triggerSourceInstanceId, effectId) : state;
-}
-
-/** 場のユニットを持ち主のコマンドゾーンにリリース状態で置く（置けなければ捨札。撃破ではない）。 */
-function fieldUnitToCommandReleased(state: GameState, ownerId: PlayerId, instanceId: string, phasePlayerId: PlayerId): GameState {
-  const room = state.players[ownerId].command.length < COMMAND_ZONE_MAX;
-  const next = moveFieldUnit(state, ownerId, instanceId, phasePlayerId, room ? "command_held" : "discard");
-  if (!room) return next;
-  return patchPlayer(next, ownerId, (p) => ({ ...p, command: p.command.map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: false } : c)) }));
 }
 
 // ---------------------------------------------------------------------------
@@ -89,15 +82,6 @@ XG1_RESOLVERS[KARATE_EFFECT_ID] = (state, playerId, instanceId) => {
 // 常駐を選べば、それに重ねたカードは捨札になる。
 
 const DENJI_STICK_EFFECT_ID = "xg1_002_denji_stick";
-
-function residentZoneCards(state: GameState, ownerId: PlayerId): Array<{ card: CardInstance; parent?: string }> {
-  const out: Array<{ card: CardInstance; parent?: string }> = [];
-  for (const op of state.players[ownerId].operation) {
-    out.push({ card: op });
-    for (const s of op.stackedCards ?? []) out.push({ card: s, parent: op.instanceId });
-  }
-  return out;
-}
 
 XG1_KEYWORDS["XG1-002::denji_stick"] = (state, ctx) => {
   const enemyId = opponent(ctx.playerId);
@@ -156,9 +140,12 @@ export function xg1aAfterBattle(
   }
   // XG1-037【虚空からの一撃】（rules/xg1/xg1bEffects.ts）。
   const kokuu = xg1bAfterBattle(state, pending.attackerPlayerId, r.attacker, r.defenderOwner, r.defender, r.defenderDestroyed);
-  if (hits.length === 0) return kokuu;
+  // XG1-042【吸血】・XG1-053【バーニングライダーパンチ】（rules/xg1/xg1cEffects.ts）。
+  const c = xg1cAfterBattle(state, pending, r);
+  const before = kokuu && c ? (s: GameState) => c(kokuu(s)) : (kokuu ?? c);
+  if (hits.length === 0) return before;
   return (s) => {
-    let next = kokuu ? kokuu(s) : s;
+    let next = before ? before(s) : s;
     for (const h of hits) {
       const ids = fieldUnits(next, h.enemyOwner)
         .filter((c) => c.instanceId !== h.destroyedId && sameCardName(getDefinition(next.definitions, c.cardId)?.name, h.name))

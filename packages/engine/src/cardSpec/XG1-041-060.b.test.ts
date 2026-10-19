@@ -139,13 +139,13 @@ describe("XG1-049 スカイライダー", () => {
 
   const rc = (top: string) => rcAt("XG1-049:sk", {}, { deck: [inst(top, "top"), ...deckCards(3, "e")] });
 
-  it.fails("XG1-049: 【セイリングジャンプ】RC — 敵軍山札の上をオモテにするかを選べる（任意）（既知の不具合: CARD-XG1-049 選択が開かない）（出典: atwiki/page-1540「敵軍山札の上から1枚をオモテにしてもよい」）", () => {
+  it("XG1-049: 【セイリングジャンプ】RC — 敵軍山札の上をオモテにするかを選べる（任意）（既知の不具合: CARD-XG1-049 選択が開かない）（出典: atwiki/page-1540「敵軍山札の上から1枚をオモテにしてもよい」）", () => {
     const s = rc("TST-UNIT-0");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XG1-049");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-049: オモテにしたカードが S ユニットのカードなら、持ち主の山札の下に戻る（既知の不具合: CARD-XG1-049 山札の上に残る）（出典: atwiki/page-1540「Sユニットのカードなら持ち主の山札の下に」）", () => {
+  it("XG1-049: オモテにしたカードが S ユニットのカードなら、持ち主の山札の下に戻る（既知の不具合: CARD-XG1-049 山札の上に残る）（出典: atwiki/page-1540「Sユニットのカードなら持ち主の山札の下に」）", () => {
     const s = resolveAll(rc("TST-UNIT-0"), ["accept", "reveal"]);
     expect(s.players.player2.deck.at(-1)?.instanceId).toBe("TST-UNIT-0:top");
   });
@@ -174,14 +174,14 @@ describe("XG1-050 ライダーシンドローム", () => {
       EXTRA,
     );
 
-  it.fails("XG1-050: 9体以下なら、仮面ライダーの自軍ユニットの BP の合計（V3 4000＋スーパー1 3000＝7000）以下の敵軍ユニットを1体選び撃破する（BP9000 は選べない。仮面ライダーでない自軍ユニットは数えない）（既知の不具合: CARD-XG1-050 何も撃破されない）（出典: atwiki/page-1633「本来の特徴に「仮面ライダー」を持つ自軍ユニットのBPを合計して、その合計以下のBPを持つ敵軍ユニットを1体選び撃破する」・カード評価「サイズやエリアを問わずに対象を選べる」）", () => {
+  it("XG1-050: 9体以下なら、仮面ライダーの自軍ユニットの BP の合計（V3 4000＋スーパー1 3000＝7000）以下の敵軍ユニットを1体選び撃破する（BP9000 は選べない。仮面ライダーでない自軍ユニットは数えない）（既知の不具合: CARD-XG1-050 何も撃破されない）（出典: atwiki/page-1633「本来の特徴に「仮面ライダー」を持つ自軍ユニットのBPを合計して、その合計以下のBPを持つ敵軍ユニットを1体選び撃破する」・カード評価「サイズやエリアを問わずに対象を選べる」）", () => {
     const s = useCard(board([inst("XG1-044", "r1"), inst("XG1-047", "r2"), inst("TST-UNIT-7", "x")]), "player1", "XG1-050:op");
     expectChoiceFrom(s, "player1", "XG1-050");
     expect([...choiceIds(s)].sort()).toEqual(["SPEC-B6:e6", "TST-UNIT-0:er"]);
     expect(zoneOf(resolveAll(s, ["SPEC-B6:e6"]), "player2", "SPEC-B6:e6")).toBe("discard");
   });
 
-  it.fails("XG1-050: 仮面ライダーの自軍ユニットが10体以上なら、すべての敵軍ユニットを撃破する（既知の不具合: CARD-XG1-050）（出典: atwiki/page-1633「10体以上あれば、すべての敵軍ユニットを撃破する」）", () => {
+  it("XG1-050: 仮面ライダーの自軍ユニットが10体以上なら、すべての敵軍ユニットを撃破する（既知の不具合: CARD-XG1-050）（出典: atwiki/page-1633「10体以上あれば、すべての敵軍ユニットを撃破する」）", () => {
     const riders = Array.from({ length: 10 }, (_, i) => inst("RK-125", `r${i}`));
     const s = resolveAll(useCard(board(riders), "player1", "XG1-050:op"));
     expect(s.players.player2.battle).toHaveLength(0);
@@ -209,18 +209,18 @@ describe("XG1-051 仮面ライダーZX", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-051: 選んだカードは持ち主のコマンドゾーンにホールド状態で置かれる（既知の不具合: CARD-XG1-051 候補は出るが選ぶ手が合法手にない）（出典: atwiki/page-1637「選んだカードを持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("XG1-051: 選んだカードは持ち主のコマンドゾーンにホールド状態で置かれる（既知の不具合: CARD-XG1-051 候補は出るが選ぶ手が合法手にない）（出典: atwiki/page-1637「選んだカードを持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = pick(two(), "RS-437:o2");
     expect(zoneOf(s, "player2", "RS-437:o2")).toBe("command");
     expect(isHeldCard(s, "player2", "RS-437:o2")).toBe(true);
   });
 
-  it.fails("XG1-051: 敵軍コマンドゾーンが5枚で置けなければ捨札にする（既知の不具合: CARD-XG1-051）（出典: atwiki/page-1637「置けなければ捨札にする」）", () => {
+  it("XG1-051: 敵軍コマンドゾーンが5枚で置けなければ捨札にする（既知の不具合: CARD-XG1-051）（出典: atwiki/page-1637「置けなければ捨札にする」）", () => {
     const s = pick(two({ command: releasedCat("WB", 5, "fc") }), "RS-437:o2");
     expect(zoneOf(s, "player2", "RS-437:o2")).toBe("discard");
   });
 
-  it.fails("XG1-051: 常駐に重ねたウラ向きのカードも常駐置き場のカードとして選べる（ウラ向きのまま）（既知の不具合: CARD-XG1-051 重ねたカードを数えず選択が開かない）（出典: atwiki/page-1637「（ウラ向きのカードはウラ向きのまま選ぶ）」・カード評価「貴重な常駐破壊能力」）", () => {
+  it("XG1-051: 常駐に重ねたウラ向きのカードも常駐置き場のカードとして選べる（ウラ向きのまま）（既知の不具合: CARD-XG1-051 重ねたカードを数えず選択が開かない）（出典: atwiki/page-1637「（ウラ向きのカードはウラ向きのまま選ぶ）」・カード評価「貴重な常駐破壊能力」）", () => {
     const s = rcAt("XG1-051:zx", {}, { operation: [{ ...inst("RS-436", "o1"), stackedCards: [{ ...inst("TST-OP", "fd"), faceDown: true }] }, inst("RS-437", "o2")] });
     expect(choiceIds(s)).toContain("TST-OP:fd");
   });
@@ -253,13 +253,13 @@ describe("XG1-052 仮面ライダーアギトTF", () => {
     return endTurn(s);
   };
 
-  it.fails("XG1-052: 【ファイヤーストームアタック】相手がターンを終えるとき、発動するかを選べる（任意）（既知の不具合: CARD-XG1-052 選択が開かない）（出典: atwiki/page-1673「相手がターンを終えるとき、次の効果を発動できる」）", () => {
+  it("XG1-052: 【ファイヤーストームアタック】相手がターンを終えるとき、発動するかを選べる（任意）（既知の不具合: CARD-XG1-052 選択が開かない）（出典: atwiki/page-1673「相手がターンを終えるとき、次の効果を発動できる」）", () => {
     const s = enemyTurnEnd();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XG1-052");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-052: そのターン中にホールド状態になった敵軍ユニット（ウイングでホールドしたバルイーグル）だけが持ち主の山札に戻る（前からホールド状態のユニットは残る）（既知の不具合: CARD-XG1-052）（出典: atwiki/page-1673「そのターン中にホールド状態になった敵軍ユニットを、すべて持ち主の山札に戻してシャッフルする」・カード評価「ウイング…へのメタ」）", () => {
+  it("XG1-052: そのターン中にホールド状態になった敵軍ユニット（ウイングでホールドしたバルイーグル）だけが持ち主の山札に戻る（前からホールド状態のユニットは残る）（既知の不具合: CARD-XG1-052）（出典: atwiki/page-1673「そのターン中にホールド状態になった敵軍ユニットを、すべて持ち主の山札に戻してシャッフルする」・カード評価「ウイング…へのメタ」）", () => {
     const s = resolveAll(enemyTurnEnd(), ["accept"]);
     expect(zoneOf(s, "player2", "XG1-003:w")).toBe("deck");
     expect(zoneOf(s, "player2", "TST-UNIT-0:old")).toBe("rush");
@@ -280,20 +280,22 @@ describe("XG1-053 仮面ライダーアギトBF", () => {
   const won = () =>
     settle(attack(p1Battle({ battle: [inst("XG1-053", "bf")] }, { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2"), inst("TST-UNIT-0", "e3"), inst("TST-UNIT-0", "e4"), inst("TST-UNIT-0", "e5")] }), "XG1-053:bf", "TST-UNIT-0:e1"));
 
-  it.fails("XG1-053: 【バーニングライダーパンチ】アタックしてバトルに勝つと、可能なら追加でアタックする（ほかの行動・フェイズの終了より先にアタックしなければならない）（既知の不具合: CARD-XG1-053 追加のアタックの手がない）（出典: atwiki/page-1571「アタックしてバトルに勝つたび、可能なら追加でアタックする」・カード評価「強制的にアタックし続けなければならない」）", () => {
+  it("XG1-053: 【バーニングライダーパンチ】アタックしてバトルに勝つと、可能なら追加でアタックする（ほかの行動・フェイズの終了より先にアタックしなければならない）（既知の不具合: CARD-XG1-053 追加のアタックの手がない）（出典: atwiki/page-1571「アタックしてバトルに勝つたび、可能なら追加でアタックする」・カード評価「強制的にアタックし続けなければならない」）", () => {
     const s = won();
     expect(targetsOf(s, "XG1-053:bf")).toContain("TST-UNIT-0:e2");
     expect(legal(s).some((a) => a.type === "end_phase")).toBe(false);
   });
 
-  it.fails("XG1-053: バトルを終えるたび、このターン BP+500（1回で 4500）（既知の不具合: CARD-XG1-053 BP4000 のまま）（出典: atwiki/page-1571「バトルを終えるたび、このターン、BP+500され」）", () => {
+  it("XG1-053: バトルを終えるたび、このターン BP+500（1回で 4500）（既知の不具合: CARD-XG1-053 BP4000 のまま）（出典: atwiki/page-1571「バトルを終えるたび、このターン、BP+500され」）", () => {
     expect(bpOf(won(), "player1", "XG1-053:bf")).toBe(4500);
   });
 
-  it.fails("XG1-053: 4回バトルして BP6000 になれば、自分がターンを終えるとき撃破される（既知の不具合: CARD-XG1-053）（出典: atwiki/page-1571「自分がターンを終えるときBP6000以上なら撃破される」・カード評価「4体以上撃破すると自分も撃破されてしまう」）", () => {
+  it("XG1-053: 4回バトルして BP6000 になれば、自分がターンを終えるとき撃破される（既知の不具合: CARD-XG1-053）（出典: atwiki/page-1571「自分がターンを終えるときBP6000以上なら撃破される」・カード評価「4体以上撃破すると自分も撃破されてしまう」）", () => {
     let s = won();
     for (const e of ["e2", "e3", "e4"]) s = settle(attack(s, "XG1-053:bf", `TST-UNIT-0:${e}`));
     expect(bpOf(s, "player1", "XG1-053:bf")).toBe(6000);
+    // 「可能なら追加でアタックする」ので、残りの e5 にもアタックしてからでないとターンを終えられない（XG1-judgments.md）。
+    s = settle(attack(s, "XG1-053:bf", "TST-UNIT-0:e5"));
     s = endTurn(s);
     expect(zoneOf(s, "player1", "XG1-053:bf")).toBe("discard");
   });
@@ -331,17 +333,17 @@ describe("XG1-054 仮面ライダーアギトSHF", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-054: 選べるのは、オモテにした2枚の必要パワー（2と6）の間（2以上6以下）の必要パワーを持つ敵軍ユニットだけ（0・7 は選べない）（既知の不具合: CARD-XG1-054 山札をオモテにせず必要パワー0 のユニットも候補になる）（出典: atwiki/page-1670「数字の小さい方以上～数字が大きい方以下の必要パワーの数字を持つ敵軍ユニット」）", () => {
+  it("XG1-054: 選べるのは、オモテにした2枚の必要パワー（2と6）の間（2以上6以下）の必要パワーを持つ敵軍ユニットだけ（0・7 は選べない）（既知の不具合: CARD-XG1-054 山札をオモテにせず必要パワー0 のユニットも候補になる）（出典: atwiki/page-1670「数字の小さい方以上～数字が大きい方以下の必要パワーの数字を持つ敵軍ユニット」）", () => {
     expect(choiceIds(entered())).toEqual(["SPEC-C3:c3"]);
   });
 
-  it.fails("XG1-054: 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（既知の不具合: CARD-XG1-054 オモテ向きで置かれる）（出典: atwiki/page-1670「持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("XG1-054: 選んだユニットは持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（既知の不具合: CARD-XG1-054 オモテ向きで置かれる）（出典: atwiki/page-1670「持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(entered(), ["accept", "SPEC-C3:c3", "SPEC-C6:d6"]);
     expect(zoneOf(s, "player2", "SPEC-C3:c3")).toBe("power");
     expect(isDamageCard(s, "player2", "SPEC-C3:c3")).toBe(true);
   });
 
-  it.fails("XG1-054: その後、オモテにした2枚から1枚を手札に加え、残りを山札の上に戻す（既知の不具合: CARD-XG1-054 手札に加わらない）（出典: atwiki/page-1670「オモテにしたカードから1枚選び手札に加え、残りを山札の上に戻す」）", () => {
+  it("XG1-054: その後、オモテにした2枚から1枚を手札に加え、残りを山札の上に戻す（既知の不具合: CARD-XG1-054 手札に加わらない）（出典: atwiki/page-1670「オモテにしたカードから1枚選び手札に加え、残りを山札の上に戻す」）", () => {
     const s = resolveAll(entered(), ["accept", "SPEC-C3:c3", "SPEC-C6:d6"]);
     expect(zoneOf(s, "player1", "SPEC-C6:d6")).toBe("hand");
     expect(s.players.player1.deck[0]?.instanceId).toBe("SPEC-C2:d2");

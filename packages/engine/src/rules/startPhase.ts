@@ -1,3 +1,5 @@
+import { isSameCardIdentity } from "@rangers-strike/cards";
+import { xg1cBattleToRush } from "./xg1/xg1cEffects";
 import { rm3StaysInBattleAtStart } from "./rm/rm3Fields";
 import { unitFeatures } from "./addedFeatures";
 import { isRk8BattleToRushTrigger, rk8StaysInBattleAtStart, tryRk8BattleToRush } from "./rk/rk8UnitEffects";
@@ -53,7 +55,9 @@ function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
         // RK-074 ライダーマン【カギ爪アーム】（rules/rk/rk4UnitEffects.ts）。
         isRk4BattleToRushTrigger(card) ||
         // RK-155 キングライナー・RK-156 マシンデンバード・RK-157 バットイマジン（rules/rk/rk8UnitEffects.ts）。
-        isRk8BattleToRushTrigger(card),
+        isRk8BattleToRushTrigger(card) ||
+        // XG1-060 コーカサスビートルアンデッド【カード強奪】（rules/xg1/xg1cEffects.ts）。
+        isSameCardIdentity(card.cardId, "XG1-060"),
     )
     .map((card) => card.instanceId);
 }
@@ -153,6 +157,8 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
     if (!withChoice.pendingEffectChoice) withChoice = tryRk4BattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     // RK-155・RK-156・RK-157（rules/rk/rk8UnitEffects.ts）。
     if (!withChoice.pendingEffectChoice) withChoice = tryRk8BattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
+    // XG1-060【カード強奪】（rules/xg1/xg1cEffects.ts）。
+    if (!withChoice.pendingEffectChoice) withChoice = xg1cBattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     return continueBattleToRushEffectQueue({ ...withChoice, pendingBattleToRushQueue: rest });
   }
 

@@ -59,7 +59,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-044::v3kiku5633e5",
+          "keyword": "xg1::XG1-044::v3_kick",
           "duration": "turn"
         }
       ]

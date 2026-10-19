@@ -9,7 +9,7 @@ import { opponent } from "../../core/helpers";
 import { openEffectChoice } from "../pendingChoices";
 import { patchPlayer } from "../playerPatches";
 import { rk1IsSmallNow } from "../rk/rk1Features";
-import { type BaseCtx, base, close, fieldUnits, logFor, selectableEnemy, zoneOfField } from "../rm/rm1Effects";
+import { type BaseCtx, base, close, fieldUnits, logFor, moveFieldUnit, selectableEnemy, zoneOfField } from "../rm/rm1Effects";
 import { rm1CostNumber } from "../rm/rm1Fields";
 import { XG1_HOLD_COMPLETERS, XG1_RESOLVERS } from "./xg1Core";
 
@@ -96,4 +96,22 @@ export function isSCard(state: Pick<GameState, "definitions">, card: CardInstanc
 /** コマンドゾーンに置ける（5枚未満）か。 */
 export function commandHasRoom(state: GameState, playerId: PlayerId): boolean {
   return state.players[playerId].command.length < COMMAND_ZONE_MAX;
+}
+
+/** 場のユニットを持ち主のコマンドゾーンにリリース状態で置く（置けなければ捨札。撃破ではない）。 */
+export function fieldUnitToCommandReleased(state: GameState, ownerId: PlayerId, instanceId: string, phasePlayerId: PlayerId): GameState {
+  const room = state.players[ownerId].command.length < COMMAND_ZONE_MAX;
+  const next = moveFieldUnit(state, ownerId, instanceId, phasePlayerId, room ? "command_held" : "discard");
+  if (!room) return next;
+  return patchPlayer(next, ownerId, (p) => ({ ...p, command: p.command.map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: false } : c)) }));
+}
+
+/** 常駐置き場のカード（置かれた常駐と、常駐に重ねたカード。ウラ向きのものも）。parent は重ねた先の常駐。 */
+export function residentZoneCards(state: GameState, ownerId: PlayerId): Array<{ card: CardInstance; parent?: string }> {
+  const out: Array<{ card: CardInstance; parent?: string }> = [];
+  for (const op of state.players[ownerId].operation) {
+    out.push({ card: op });
+    for (const s of op.stackedCards ?? []) out.push({ card: s, parent: op.instanceId });
+  }
+  return out;
 }

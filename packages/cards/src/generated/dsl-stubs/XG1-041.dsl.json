@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-041::gagano",
+          "keyword": "xg1::XG1-041::gaga",
           "duration": "turn"
         }
       ]

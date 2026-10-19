@@ -103,6 +103,7 @@ import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1Str
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
 import { openXg1aStrikeReplacement } from "../rules/xg1/xg1aEffects";
 import { openXg1bSakanamaru, xg1bOnAttackDeclared } from "../rules/xg1/xg1bEffects";
+import { xg1cBlackFangOnRide, xg1cOnAttackDeclared } from "../rules/xg1/xg1cEffects";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -3610,7 +3611,9 @@ function applyActionCore(
       );
       if (!mounted.ok) return mounted;
       // RS-381 ガレオパルサー: RC を持たない「レッド」の S ユニットは自軍コマンドを1つホールドしてライドする。
-      const held = holdCommandForGaleoPulsarRide(mounted.state, playerId, action.riderInstanceId, action.vehicleInstanceId);
+      let held = holdCommandForGaleoPulsarRide(mounted.state, playerId, action.riderInstanceId, action.vehicleInstanceId);
+      // XG1-057 ブラックファング【衝撃波】: 敵軍のライドされているブラックファングがあれば、ライドして出た S ユニットはホールド状態になる。
+      held = xg1cBlackFangOnRide(held, playerId, action.riderInstanceId);
       return held === mounted.state ? mounted : { ...mounted, state: held };
     }
 
@@ -3753,6 +3756,9 @@ function applyActionCore(
       battleState = rk6RecordSnakeSelected(battleState, playerId, action.defenderInstanceId);
       // XG1-030【キラークロー】ウイングでアタックするとき（rules/xg1/xg1bEffects.ts）。
       battleState = xg1bOnAttackDeclared(battleState, playerId, action.attackerInstanceId, wingAttackFromRush);
+      // XG1-045【墨攻撃】: アタックするとき、バトルの前に山札の上をオモテにする（rules/xg1/xg1cEffects.ts）。
+      const sumi = xg1cOnAttackDeclared(battleState, playerId, action.attackerInstanceId, wingAttackFromRush);
+      battleState = sumi.state;
       // ルール: R-CTR-03 — 「アタックするとき、相手はカウンターを発動できない」はアタック処理の終わりまで続く。
       if (attackerBlocksDefenderCounters(battleState, playerId, action.attackerInstanceId)) {
         battleState = { ...battleState, counterLockedPlayerId: enemyId };
@@ -3768,6 +3774,7 @@ function applyActionCore(
         mirageBeamDiscard: miragePrep.revealedCard,
         mirageBeamDefenderBpOverride: defenderMirage.bpOverride,
         mirageBeamDefenderDiscard: defenderMirage.revealedCard,
+        ...(sumi.cancel ? { battleCancelled: true } : {}),
       };
 
       // ルール: RS-019 超力／RK-186【Jパンチ】 — アタックするとき、ホールドするコマンドの数をアタックした
