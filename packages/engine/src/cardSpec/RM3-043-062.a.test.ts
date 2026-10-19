@@ -236,6 +236,33 @@ describe("RM-045 ガンギブソン", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-018");
   });
 
+  // ユーザー決定 2026-10-19（docs/rules/README.md §5.7 m）「ライドせずに出ても発動する」。RK-120 サイドバッシャーと同じ扱い。
+  /** 自軍バトルフェイズ、バトルエリアの left の次に、unit がライドせずに出る。 */
+  const plain = (left: CardInstance[], unit: string) => enterAfter(unit, left, {}, { rush: [inst("SPEC-E4000", "e")] }, EXTRA);
+
+  it("RM-045: ※ — ライドせずに出た特徴「メカ」の RC の S ユニット（宇宙刑事ギャバン）も、ガンギブソンからコンビネーションすれば RC の効果を発動する（出典: ユーザー決定 2026-10-19「ライドせずに出ても発動する」・atwiki/page-887「このユニットからコンビネーションする特徴「メカ」を持つSユニットは、ライドオフしなくてもＲＣの効果を発動できる」）", () => {
+    const s = plain([inst("RM-045", "gg")], "RM-018:g");
+    expectChoiceFrom(s, "player1", "RM-018");
+    expect(choiceIds(s)).toEqual(["SPEC-E4000:e"]);
+  });
+
+  it("RM-045: ※ — ライドせずに出ても、特徴「メカ」を持たない RC のユニット（城忍 フクロウ男爵）は RC の効果を発動しない（出典: ユーザー決定 2026-10-19・atwiki/page-887「特徴「メカ」を持つSユニットは」）", () => {
+    const s = plain([inst("RM-045", "gg")], "RM-041:fk");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-041");
+  });
+
+  it("RM-045: ※ — ライドせずに出ても、ガンギブソンの次に並ばなければ RC の効果は発動しない（出典: ユーザー決定 2026-10-19・atwiki/page-887「このユニットからコンビネーションする」）", () => {
+    const s = plain([inst("RM-045", "gg"), inst("TST-UNIT-0", "f")], "RM-018:g");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-018");
+  });
+
+  it("RM-045: ※ — ライドしてライドオフした RC のユニットは、通常の RC の1回だけ発動する（2重には発動しない）（出典: ユーザー決定 2026-10-19・R-KW-RC-01）", () => {
+    let s = rideOff(riding([inst("RM-045", "gg")], "RM-018:g"), true);
+    expectChoiceFrom(s, "player1", "RM-018");
+    s = pick(s, "SPEC-E4000:e");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RM-018");
+  });
+
   const ENEMY = { battle: [inst("SPEC-ES", "a"), inst("SPEC-EM", "m")], rush: [inst("SPEC-ES", "b"), inst("RK-054", "ga")] };
   /** 自軍バトルフェイズ、ガンギブソンが SPEC-VEHICLE にライドして出てライドオフする（RC の選択まで）。 */
   const rc = (command: CardInstance[] = releasedCat("WB", 1)) =>

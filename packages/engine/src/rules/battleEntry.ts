@@ -8,6 +8,7 @@ import { rk6SideBasherOnEntry } from "./rk/rk6UnitEffects";
 import { rk8KaiserBmOnEntry } from "./rk/rk8UnitEffects";
 import { rk9NewNigoOnEntry } from "./rk/rk9UnitEffects";
 import { rk11IbukiOnEntry } from "./rk/rk11UnitEffects";
+import { rm3GunGibsonOnEntry } from "./rm/rm3Effects";
 
 export function riderHasRidingComboOnRideOff(cardId: string): boolean {
   return !!getRidingComboEffect(cardId);
@@ -86,7 +87,10 @@ export function openBattleEntryOrRideOffChoice(
       // RK-176 仮面ライダー新2号: 「仮面ライダー1号」からコンビネーションしたときはナンバーに関係なく【ライダーキック】（rules/rk/rk9UnitEffects.ts）。
       rk9NewNigoOnEntry(state, entry.playerId, entry.instanceId) ??
       // RK-223 仮面ライダー威吹鬼: 特徴「猛士」を持つユニットからコンビネーションしたときはナンバーに関係なく【音撃射・疾風一閃】（rules/rk/rk11UnitEffects.ts）。
-      rk11IbukiOnEntry(state, entry.playerId, entry.instanceId);
+      rk11IbukiOnEntry(state, entry.playerId, entry.instanceId) ??
+      // RM-045 ガンギブソン ※: これからコンビネーションする「メカ」の RC の S ユニットは、ライドせずに出ても RC の効果を発動する
+      // （ユーザー決定 2026-10-19。rules/rm/rm3Effects.ts）。
+      rm3GunGibsonOnEntry(state, entry.playerId, entry.instanceId);
     if (rc) return afterEnterBattle(rc, entry);
   }
   if (shouldPromptRideOffChoice(state, entry)) {

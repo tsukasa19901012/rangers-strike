@@ -5,7 +5,7 @@
  * - `tryResolveRm3Choice` / `trySkipRm3Choice` / `tryConfirmRm3Choice`: このモジュールが開いた選択の解決。
  * - `tryCompleteRm3HoldChoice`: コマンドの支払い（effect_hold）でホールドを選び終えたときの続き（RM-045。rules/pendingChoices.ts）。
  * - `tryRm3OnEnterBattle`: RM-047・RM-053・RM-054（ライドされてバトルエリアに出たビークル。rules/combo.ts）。
- * - `rm3GunGibsonOnEntry`: RM-045 ※（ガンギブソンからコンビネーションする「メカ」の S ユニットがライドしたまま進んだときの RC。core/applyAction.ts）。
+ * - `rm3GunGibsonOnEntry`: RM-045 ※（ガンギブソンからコンビネーションする「メカ」の S ユニットが、ライドしたまま進んだとき（core/applyAction.ts）・ライドせずに出たとき（rules/battleEntry.ts）の RC）。
  * - `applyRm3AfterAction`: RM-059 異次元調達屋カブト（WB の自軍 S ユニットがバトルエリアに出たとき。applyAction の後処理）。
  * - `openRm3Tentrina` / `resolveRm3Tentrina` / `skipRm3Tentrina`: RM-062 テントリーナ（アタックされたとき。core/applyAction.ts）。
  * 継続効果の判定（RM-051・RM-052・RM-058）は rules/rm/rm3Fields.ts。選択の組み立ては rules/rm/rm1Effects.ts の共通の部品を使う。
@@ -269,6 +269,8 @@ function applyJandejiku(state: GameState, ctx: GrantKeywordContext): GrantKeywor
 //  選びなおさせてもよい。ただし、自軍コマンドを1つホールドすること）。その後、相手が最終的に選んだ1体を撃破する。」
 // 相手が自分自身のユニットを選ぶので「相手に選ばれない」ユニットも選べる（カード評価）。ブレイカーを持つユニットは選べない（R-KW-BREAKER-03「選ぶのが
 // 自分…でも選べない」）。エリアを問わない。
+// ※はライドしたまま進んだときも、ライドせずに出たときも RC の効果を発動する（ユーザー決定 2026-10-19「ライドせずに出ても発動する」。
+// RK-120 サイドバッシャーと同じ。docs/rules/README.md §5.7 m）。ライドオフして発動したら2重には発動しない（RIDE_OFF_RC_MARK）。
 
 const HOMING_EFFECT_ID = "rm045_homing_bullet";
 const HOMING_PICK_EFFECT_ID = "rm045_homing_bullet_pick";
@@ -349,16 +351,19 @@ CHOICE_CONFIRMERS[HOMING_REPICK_EFFECT_ID] = (state, playerId) => {
 };
 HOLD_COMPLETERS[HOMING_HOLD_EFFECT_ID] = (state, pending) => homingPick(state, pending, pending.playerId, pending.rm3Meta?.chosen ?? [], pending.rm3Meta?.current);
 
-/** ライドしたまま進んだユニットが、ガンギブソンからコンビネーションする「メカ」の S ユニットなら RC の効果を発動する。対象外なら null。 */
+/**
+ * ライドしたまま進んだユニット・ライドせずに出たユニットが、ガンギブソンからコンビネーションする「メカ」の RC の S ユニットなら RC の効果を発動する。
+ * 対象外なら null（ユーザー決定 2026-10-19「ライドせずに出ても発動する」）。
+ */
 export function rm3GunGibsonOnEntry(state: GameState, playerId: PlayerId, instanceId: string): GameState | null {
   const battle = state.players[playerId].battle;
   const idx = battle.findIndex((c) => c.instanceId === instanceId);
   const unit = battle[idx];
-  if (!unit?.mountedOnInstanceId || getDefinition(state.definitions, unit.cardId)?.comboNumber !== "RC") return null;
+  if (!unit || getDefinition(state.definitions, unit.cardId)?.comboNumber !== "RC") return null;
   if ((unit.activatedNcEffects ?? []).includes(RIDE_OFF_RC_MARK)) return null;
   if (!rk1IsSmallNow(state, unit) || !unitFeatures(state, playerId, unit).includes("メカ")) return null;
   // ライドして出たユニットは [ビークル, ユニット] の順に並ぶ。その前（1つ前の組のユニット）を見る。
-  const start = battle[idx - 1]?.instanceId === unit.mountedOnInstanceId ? idx - 1 : idx;
+  const start = unit.mountedOnInstanceId && battle[idx - 1]?.instanceId === unit.mountedOnInstanceId ? idx - 1 : idx;
   const prev = battle[start - 1];
   if (!prev || !isUnitCard(state, prev.cardId) || !isSameCardIdentity(prev.cardId, "RM-045")) return null;
   const marked = patchPlayer(state, playerId, (p) => ({
