@@ -1,4 +1,4 @@
-import { xg7HandDeployCondition } from "./xg7/xg7Fields";
+import { xg7CanDeployFromPower, xg7HandDeployCondition } from "./xg7/xg7Fields";
 import { hasScopedRestriction } from "../core/scopedModifiers";
 import { sameCardName } from "../core/cardNames";
 /**
@@ -175,6 +175,8 @@ export function canSelfRushFromZone(
   if (!card) return false;
   if (zone === "hand") return handDeployConditionMet(state, playerId, card.cardId);
   if (zone === "power" && card.faceDown) return false;
+  // XG7-068【蒸着・赤射・焼結】（rules/xg7/xg7Fields.ts）。
+  if (zone === "power" && xg7CanDeployFromPower(state, playerId, card)) return true;
   // RK-320 仮面ライダーライジングイクサの※（必要パワー1・9・3の自軍コマンドがそれぞれあれば。rules/rk/rk16Fields.ts）。
   if (zone === "command" && rk16CanDeployFromCommand(state, playerId, card)) return true;
   // 「これが自軍コマンドゾーンにある間」— リリース／ホールドの状態は問わない（RS-447・XG4-077。atwiki/page-786）。

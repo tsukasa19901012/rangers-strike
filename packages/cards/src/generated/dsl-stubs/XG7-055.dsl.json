@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-055::shinnokaze",
+          "keyword": "xg7::XG7-055::cyclone_gale",
           "duration": "permanent"
         }
       ]

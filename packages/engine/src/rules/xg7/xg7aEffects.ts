@@ -365,7 +365,7 @@ function dinoGutsSource(state: GameState, intent: PendingLeave): CardInstance | 
 // ---------------------------------------------------------------------------
 // 撃破の置換（その場に留める）。rules/operationCounters.ts tryLeaveField から呼ぶ。
 
-function leaveChoice(intent: PendingLeave, cardId: string, effectId: string, sourceInstanceId: string | undefined, ids: string[]): PendingEffectChoice {
+export function leaveChoice(intent: PendingLeave, cardId: string, effectId: string, sourceInstanceId: string | undefined, ids: string[]): PendingEffectChoice {
   return {
     ...base({ playerId: intent.ownerPlayerId, phasePlayerId: intent.phasePlayerId, sourceInstanceId }, cardId),
     effectId,
@@ -392,12 +392,12 @@ export function openXg7aLeaveStay(state: GameState, intent: PendingLeave): GameS
   return null;
 }
 
-function stayed(state: GameState, intent: PendingLeave): GameState {
+export function stayed(state: GameState, intent: PendingLeave): GameState {
   const next = finalizeLeaveReaction({ ...state, pendingLeave: intent }, intent, true);
   return next.pendingEffectChoice || next.pendingLeave ? next : promoteDeferredBattleEntry(next);
 }
 
-function declineLeaveStay(effectId: string, cardId: string) {
+export function declineLeaveStay(effectId: string, cardId: string) {
   return (state: GameState, playerId: PlayerId) => {
     const pending = state.pendingEffectChoice!;
     const intent = pending.xg7Meta?.intent;

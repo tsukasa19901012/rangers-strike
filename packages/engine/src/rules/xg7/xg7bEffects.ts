@@ -54,7 +54,7 @@ import { addTurnCross, boostBp, registerMultiPick, selectOne, selfUnit } from ".
 
 const NONE = "__none__";
 
-function areaCards(state: Pick<GameState, "players">, playerId: PlayerId): CardInstance[] {
+export function areaCards(state: Pick<GameState, "players">, playerId: PlayerId): CardInstance[] {
   const p = state.players[playerId];
   return [...p.battle, ...p.rush];
 }
@@ -69,7 +69,7 @@ function destroyOne(state: GameState, pending: PendingEffectChoice, instanceId: 
 }
 
 /** 撃破の選択（1体）。 */
-function registerDestroyPick(effectId: string): void {
+export function registerDestroyPick(effectId: string): void {
   CHOICE_RESOLVERS[effectId] = (state, playerId, instanceId) => {
     const pending = state.pendingEffectChoice!;
     return { state: destroyOne(state, pending, instanceId), log: logFor(state, playerId, pending.sourceCardId, `${effectId}:${instanceId}`) };
@@ -89,14 +89,14 @@ function exileFieldCard(state: GameState, ownerId: PlayerId, instanceId: string)
   });
 }
 
-function setHeld(state: GameState, playerId: PlayerId, instanceId: string, held: boolean): GameState {
+export function setHeld(state: GameState, playerId: PlayerId, instanceId: string, held: boolean): GameState {
   return patchPlayer(state, playerId, (p) => {
     const set = (cards: CardInstance[]) => cards.map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: held } : c));
     return { ...p, battle: set(p.battle), rush: set(p.rush), command: set(p.command) };
   });
 }
 
-function setSpOverride(state: GameState, playerId: PlayerId, instanceId: string, sp: NonNullable<CardInstance["spOverride"]>): GameState {
+export function setSpOverride(state: GameState, playerId: PlayerId, instanceId: string, sp: NonNullable<CardInstance["spOverride"]>): GameState {
   return patchPlayer(state, playerId, (p) => {
     const set = (cards: CardInstance[]) => cards.map((c) => (c.instanceId === instanceId ? { ...c, spOverride: sp } : c));
     return { ...p, battle: set(p.battle), rush: set(p.rush) };

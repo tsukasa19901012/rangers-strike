@@ -30,12 +30,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-060::nosutapisu",
-          "duration": "turn"
+          "keyword": "xg7::XG7-060::sagittarius",
+          "duration": "permanent"
         }
       ]
     }

@@ -1,6 +1,6 @@
 import { openRm2MotoSharian } from "./rm/rm2Effects";
 import { openRm1OnUnitRushed } from "./rm/rm1Effects";
-import { openXg7OnUnitRushed } from "./xg7/xg7Effects";
+import { consumeXg7NextCardCost, markXg7RushOrigin, openXg7BeforeOnRush, openXg7OnUnitRushed } from "./xg7/xg7Effects";
 import { openRk8JaguarOnEnemyRush } from "./rk/rk8UnitEffects";
 import { openRk11UndeadMasterOnRush } from "./rk/rk11UnitEffects";
 import { openRk12NegatarosOnRush } from "./rk/rk12UnitEffects";
@@ -197,7 +197,14 @@ export function applyOnRushUnitEffects(
   if (craneOn && !nextState.pendingEffectChoice) {
     const window = rk10CraneBeforeOnRush(nextState, ownerPlayerId, instanceId, found.card.cardId, phasePlayerId);
     if (window) return { state: window, logs };
+    // XG7-059【ゲームスタート……】（実行する前に出して無効にする。rules/xg7/xg7Effects.ts）。
+    const xg7Window = openXg7BeforeOnRush(nextState, ownerPlayerId, instanceId, found.card.cardId, phasePlayerId);
+    if (xg7Window) return { state: xg7Window, logs };
   }
+  // XG7-054 ◎2（次に手札から使うカードの必要パワー-3）は手札からラッシュしたら消える（rules/xg7/xg7Effects.ts）。
+  if (options.fromHandRush === true && zone === "rush") nextState = consumeXg7NextCardCost(nextState, ownerPlayerId);
+  // 「手札からラッシュしたとき」の判定のため、効果で出たユニットに印を付ける（rules/xg7/xg7Effects.ts）。
+  nextState = markXg7RushOrigin(nextState, instanceId, options.viaEffect === true);
   const beforeDslRush = nextState;
   const dslRush = suppressSelf
     ? { state: nextState, logs: [] as string[], handled: true }
@@ -210,7 +217,7 @@ export function applyOnRushUnitEffects(
         triggerType: "on_rush",
         logAction: "named_effect",
       });
-  nextState = dslRush.state;
+  nextState = markXg7RushOrigin(dslRush.state, instanceId, false);
   logs.push(...dslRush.logs);
   // RK-208: 任意の「ラッシュしたとき」の最初の選択に、答えたら（発動を宣言したら）クレインの窓を開く印を付ける。
   if (craneOn) nextState = rk10CraneWatch(beforeDslRush, nextState, ownerPlayerId, instanceId, found.card.cardId);

@@ -117,12 +117,12 @@ describe("XG7-055 サイクロン・ドーパント", () => {
 
   leadTests("XG7-055", "ET", "atwiki/page-2423");
 
-  it.fails("XG7-055: 【神出鬼没の疾風】自軍コマンドゾーンにある間、敵軍ターン中、自軍 S ユニットがアタックされたとき、置き換えるかを選べる（出典: atwiki/page-2423「アタックされたユニットとこれを置き換えてもよい」） — 既知の不具合: CARD-XG7-055 【神出鬼没の疾風】（アタックされたユニットとの置き換え）が未実装", () => {
+  it("XG7-055: 【神出鬼没の疾風】自軍コマンドゾーンにある間、敵軍ターン中、自軍 S ユニットがアタックされたとき、置き換えるかを選べる（出典: atwiki/page-2423「アタックされたユニットとこれを置き換えてもよい」）", () => {
     const s = attacked({ battle: [inst("SPEC-PLAIN", "p")], command: [released("XG7-055", "c")] }, "SPEC-PLAIN:p");
     expect(offeredBy(s, "XG7-055", "XG7-055:c")).toBe(true);
   });
 
-  it.fails("XG7-055: 【神出鬼没の疾風】置き換えたとき、アタックされたユニットはコマンドゾーンへ、これがバトルエリアでかわりにバトルする（出典: atwiki/page-2423「そうしたとき、アタックされたユニットのかわりにこのユニットがバトルする」・rules R-REPL-04） — 既知の不具合: CARD-XG7-055 【神出鬼没の疾風】（アタックされたユニットとの置き換え）が未実装", () => {
+  it("XG7-055: 【神出鬼没の疾風】置き換えたとき、アタックされたユニットはコマンドゾーンへ、これがバトルエリアでかわりにバトルする（出典: atwiki/page-2423「そうしたとき、アタックされたユニットのかわりにこのユニットがバトルする」・rules R-REPL-04）", () => {
     const s = settle(accept(attacked({ battle: [inst("SPEC-PLAIN", "p")], command: [released("XG7-055", "c")] }, "SPEC-PLAIN:p"), "XG7-055:c"));
     expect(zoneOf(s, "player1", "SPEC-PLAIN:p")).toBe("command");
     expect(lastBattleBps(s)?.defender).toBe(3000);
@@ -148,7 +148,7 @@ describe("XG7-056 ルナ・ドーパント", () => {
     expect(categoriesOf(enemyTurn("XG7-056"), "player1", "XG7-056:x")).toEqual(["DA"]);
   });
 
-  it.fails("XG7-056: 【嫌いじゃないわ！】手札にある間、特徴「男」を持つ敵軍 S ユニットがラッシュされたとき、これを自軍ラッシュエリアに出すかを選べる（出典: atwiki/page-2376「これを自軍ラッシュエリアに出してもよい」） — 既知の不具合: CARD-XG7-056 【嫌いじゃないわ！】（手札から出してバトルエリアに出られなくする）が未実装", () => {
+  it("XG7-056: 【嫌いじゃないわ！】手札にある間、特徴「男」を持つ敵軍 S ユニットがラッシュされたとき、これを自軍ラッシュエリアに出すかを選べる（出典: atwiki/page-2376「これを自軍ラッシュエリアに出してもよい」）", () => {
     const s = enemyRushedFromHand({ hand: [inst("XG7-056", "ln")] }, EXTRA);
     expect(offeredBy(s, "XG7-056", "XG7-056:ln")).toBe(true);
   });
@@ -158,7 +158,7 @@ describe("XG7-056 ルナ・ドーパント", () => {
     expect(offeredBy(s, "XG7-056", "XG7-056:ln")).toBe(false);
   });
 
-  it.fails("XG7-056: 【嫌いじゃないわ！】出したとき、そのターン、ラッシュされたユニットはバトルエリアに出られない（出典: atwiki/page-2376「そのターン、そのユニットはバトルエリアに出られない」） — 既知の不具合: CARD-XG7-056 【嫌いじゃないわ！】（手札から出してバトルエリアに出られなくする）が未実装", () => {
+  it("XG7-056: 【嫌いじゃないわ！】出したとき、そのターン、ラッシュされたユニットはバトルエリアに出られない（出典: atwiki/page-2376「そのターン、そのユニットはバトルエリアに出られない」）", () => {
     let s = accept(enemyRushedFromHand({ hand: [inst("XG7-056", "ln")] }, EXTRA), "XG7-056:ln");
     expect(zoneOf(s, "player1", "XG7-056:ln")).toBe("rush");
     s = toPhase(s, "player2", "battle");
@@ -187,11 +187,11 @@ describe("XG7-057 ヒート・ドーパント", () => {
   const heat = (p2: Partial<GameState["players"]["player2"]> = {}) =>
     resolveAll(settle(rcRideOff(p1Battle({ rush: [inst("XG7-057", "ht"), inst("SPEC-V", "v")] }, { battle: [inst("SPEC-E1000", "e")], discard: [inst("TST-OP", "d0"), inst("TST-OP", "d1")], ...p2 }, EXTRA), "XG7-057:ht", "SPEC-V:v")));
 
-  it.fails("XG7-057: 【冷たいファイヤーガール】RC（ライドオフ）— 「SP1/2」になり、ビークルの次（2番目）で SP1（出典: atwiki/page-2377「【冷たいファイヤーガール】「SP1/2」」・rules/07-keywords R-KW-RIDE「ライドオフしたユニットはビークルの次に並び」） — 既知の不具合: CARD-XG7-057 【冷たいファイヤーガール】（RC の SP1/2・アタック時の捨札除外）が未実装", () => {
+  it("XG7-057: 【冷たいファイヤーガール】RC（ライドオフ）— 「SP1/2」になり、ビークルの次（2番目）で SP1（出典: atwiki/page-2377「【冷たいファイヤーガール】「SP1/2」」・rules/07-keywords R-KW-RIDE「ライドオフしたユニットはビークルの次に並び」）", () => {
     expect(spOf(heat(), "player1", "XG7-057:ht")).toBe(1);
   });
 
-  it.fails("XG7-057: 【冷たいファイヤーガール】アタックしたとき、相手は自分自身の捨札を1枚選んで除外する（出典: atwiki/page-2377「これがアタックしたとき、相手は自分自身の捨札を1枚選び、ゲームから除外する」） — 既知の不具合: CARD-XG7-057 【冷たいファイヤーガール】（RC の SP1/2・アタック時の捨札除外）が未実装", () => {
+  it("XG7-057: 【冷たいファイヤーガール】アタックしたとき、相手は自分自身の捨札を1枚選んで除外する（出典: atwiki/page-2377「これがアタックしたとき、相手は自分自身の捨札を1枚選び、ゲームから除外する」）", () => {
     const s = resolveAll(settle(attack(heat(), "XG7-057:ht", "SPEC-E1000:e")), ["TST-OP:d1"]);
     expect((s.players.player2.exile ?? []).length).toBe(1);
   });
@@ -207,7 +207,7 @@ describe("XG7-058 メタル・ドーパント", () => {
     expectRarityIn("XG7-058", ["N"]);
   });
 
-  it.fails("XG7-058: ※ 自軍ターン中、自軍エリアにある間は特徴「メカ」を得る（出典: atwiki/page-2378「自軍ターン中、特徴「メカ」を得る」） — 既知の不具合: CARD-XG7-058 自軍ターン中に特徴「メカ」を得ない", () => {
+  it("XG7-058: ※ 自軍ターン中、自軍エリアにある間は特徴「メカ」を得る（出典: atwiki/page-2378「自軍ターン中、特徴「メカ」を得る」）", () => {
     expect(featuresOf(ownTurn("XG7-058"), "player1", "XG7-058:x")).toContain("メカ");
   });
 
@@ -215,13 +215,13 @@ describe("XG7-058 メタル・ドーパント", () => {
     expect(featuresOf(enemyTurn("XG7-058"), "player1", "XG7-058:x")).not.toContain("メカ");
   });
 
-  it.fails("XG7-058: 【鋼鉄のマッチョボディ】バトルで撃破されてユニットでなくなるとき、ホールドしてその場に留めるかを選べる（出典: atwiki/page-2378「これがユニットでなくなるとき、これをホールドしてその場に留めてもよい」・Q2） — 既知の不具合: CARD-XG7-058 【鋼鉄のマッチョボディ】（ホールドして留まる・ホールド中のアタックで BP+2000）が未実装", () => {
+  it("XG7-058: 【鋼鉄のマッチョボディ】バトルで撃破されてユニットでなくなるとき、ホールドしてその場に留めるかを選べる（出典: atwiki/page-2378「これがユニットでなくなるとき、これをホールドしてその場に留めてもよい」・Q2）", () => {
     let s = attacked({ battle: [inst("XG7-058", "mt")] }, "XG7-058:mt");
     for (let i = 0; i < 4 && !offeredBy(s, "XG7-058", "XG7-058:mt"); i++) s = settle(s, 1);
     expect(offeredBy(s, "XG7-058", "XG7-058:mt")).toBe(true);
   });
 
-  it.fails("XG7-058: 【鋼鉄のマッチョボディ】留めたとき、ホールド状態でバトルエリアに残る（出典: atwiki/page-2378） — 既知の不具合: CARD-XG7-058 【鋼鉄のマッチョボディ】（ホールドして留まる・ホールド中のアタックで BP+2000）が未実装", () => {
+  it("XG7-058: 【鋼鉄のマッチョボディ】留めたとき、ホールド状態でバトルエリアに残る（出典: atwiki/page-2378）", () => {
     let s = attacked({ battle: [inst("XG7-058", "mt")] }, "XG7-058:mt");
     for (let i = 0; i < 4 && !offeredBy(s, "XG7-058", "XG7-058:mt"); i++) s = settle(s, 1);
     s = settle(accept(s, "XG7-058:mt"));
@@ -229,7 +229,7 @@ describe("XG7-058 メタル・ドーパント", () => {
     expect(cardIn(s, "player1", "XG7-058:mt")?.commandHeld).toBe(true);
   });
 
-  it.fails("XG7-058: 【鋼鉄のマッチョボディ】ホールド状態ならアタックするとき BP+2000（5000）（出典: atwiki/page-2378「ホールド状態なら、アタックするときBP+2000される」・カード評価「自力でBP5000にまで上昇する」） — 既知の不具合: CARD-XG7-058 【鋼鉄のマッチョボディ】（ホールドして留まる・ホールド中のアタックで BP+2000）が未実装", () => {
+  it("XG7-058: 【鋼鉄のマッチョボディ】ホールド状態ならアタックするとき BP+2000（5000）（出典: atwiki/page-2378「ホールド状態なら、アタックするときBP+2000される」・カード評価「自力でBP5000にまで上昇する」）", () => {
     const s = settle(attack(p1Battle({ battle: [{ ...inst("XG7-058", "mt"), commandHeld: true }] }, { battle: [inst("SPEC-E1000", "e")] }, EXTRA), "XG7-058:mt", "SPEC-E1000:e"));
     expect(lastBattleBps(s)?.attacker).toBe(5000);
   });
@@ -263,7 +263,7 @@ describe("XG7-059 トリガー・ドーパント", () => {
   const trigger = (power: CardInstance[] = [inst("XG7-059", "tg")]) =>
     enemyRush({ power }, "XG7-049:g", { deck: [inst("XG7-049", "e1"), inst("TST-OP", "e2"), ...deckCards(3, "e")], power: powerCards(4, "ep") });
 
-  it.fails("XG7-059: 【ゲームスタート……】自軍パワーゾーンでオモテ向きの間、敵軍ユニットの「ラッシュしたとき」の効果の発動に対して、これを自軍ラッシュエリアに出すかを選べる（出典: atwiki/page-2379「それを実行する前に、これを自軍ラッシュエリアに出してもよい」） — 既知の不具合: CARD-XG7-059 【ゲームスタート……】（パワーゾーンから出て「ラッシュしたとき」の効果を無効にする）が未実装", () => {
+  it("XG7-059: 【ゲームスタート……】自軍パワーゾーンでオモテ向きの間、敵軍ユニットの「ラッシュしたとき」の効果の発動に対して、これを自軍ラッシュエリアに出すかを選べる（出典: atwiki/page-2379「それを実行する前に、これを自軍ラッシュエリアに出してもよい」）", () => {
     expect(offeredBy(trigger(), "XG7-059", "XG7-059:tg")).toBe(true);
   });
 
@@ -271,7 +271,7 @@ describe("XG7-059 トリガー・ドーパント", () => {
     expect(offeredBy(trigger([{ ...inst("XG7-059", "tg"), faceDown: true }]), "XG7-059", "XG7-059:tg")).toBe(false);
   });
 
-  it.fails("XG7-059: 【ゲームスタート……】出したとき、その効果は無効になる（【分身体】で敵軍の山札の XG7-049 がラッシュエリアに出ない）（出典: atwiki/page-2379「そうしたとき、その効果は無効になる」） — 既知の不具合: CARD-XG7-059 【ゲームスタート……】（パワーゾーンから出て「ラッシュしたとき」の効果を無効にする）が未実装", () => {
+  it("XG7-059: 【ゲームスタート……】出したとき、その効果は無効になる（【分身体】で敵軍の山札の XG7-049 がラッシュエリアに出ない）（出典: atwiki/page-2379「そうしたとき、その効果は無効になる」）", () => {
     const s = accept(trigger(), "XG7-059:tg");
     expect(zoneOf(s, "player1", "XG7-059:tg")).toBe("rush");
     expect(zoneOf(s, "player2", "XG7-049:e1")).toBe("deck");
@@ -290,9 +290,10 @@ describe("XG7-060 ドデカブタック", () => {
   });
 
   const SM = { ...inst("XG7-063", "sm"), faceDown: false };
-  const board = (power: CardInstance[]) => rushPhaseOf({ hand: [inst("XG7-060", "dk")], command: releasedCat("OT", 1), power }, {}, EXTRA);
+  // マルチカテゴリ（OT・ET）のカードは、両方のカテゴリのコマンドがコマンドゾーンに要る（rules/02-zones-cards R-CAT-02）。
+  const board = (power: CardInstance[]) => rushPhaseOf({ hand: [inst("XG7-060", "dk")], command: [...releasedCat("OT", 1), ...releasedCat("ET", 1)], power }, {}, EXTRA);
 
-  it.fails("XG7-060: 追加条件 — カード名に「SM」を含む自軍パワー（オモテ向きの XG7-063 シャークラーSM）があればラッシュできる（出典: atwiki/page-2432「追加条件：カード名に「スター」または「SM」を含む自軍パワーがある」） — 既知の不具合: CARD-XG7-060 追加条件（カード名に「スター」「SM」を含む自軍パワー）を満たしてもラッシュできず、【射手座のスターピース】まで進めない", () => {
+  it("XG7-060: 追加条件 — カード名に「SM」を含む自軍パワー（オモテ向きの XG7-063 シャークラーSM）があればラッシュできる（出典: atwiki/page-2432「追加条件：カード名に「スター」または「SM」を含む自軍パワーがある」）", () => {
     const r = rushFromHand(board([SM, ...powerCards(4)]), "player1", "XG7-060:dk");
     expect(r.ok, r.error).toBe(true);
     expect(zoneOf(r.state, "player1", "XG7-060:dk")).toBe("rush");
@@ -305,20 +306,20 @@ describe("XG7-060 ドデカブタック", () => {
   const piece = () =>
     rushFromHand(board([SM, { ...inst("TST-OP", "dop"), faceDown: true }, { ...inst("SPEC-PLAIN", "dun"), faceDown: true }, ...powerCards(2)]), "player1", "XG7-060:dk").state;
 
-  it.fails("XG7-060: 【射手座のスターピース】ラッシュしたとき、自軍パワーゾーンのウラ向きのカードから1枚選べる（任意）（出典: atwiki/page-2432「自軍パワーゾーンからウラ向きのカードを1枚選び、捨札にしてもよい」） — 既知の不具合: CARD-XG7-060 追加条件（カード名に「スター」「SM」を含む自軍パワー）を満たしてもラッシュできず、【射手座のスターピース】まで進めない", () => {
+  it("XG7-060: 【射手座のスターピース】ラッシュしたとき、自軍パワーゾーンのウラ向きのカードから1枚選べる（任意）（出典: atwiki/page-2432「自軍パワーゾーンからウラ向きのカードを1枚選び、捨札にしてもよい」）", () => {
     const s = piece();
     expectChoiceFrom(s, "player1", "XG7-060");
     expect(choiceIds(s)).toEqual(["SPEC-PLAIN:dun", "TST-OP:dop"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-060: 【射手座のスターピース】捨札にしたのがオペレーションカードなら、自軍パワーゾーンにオモテ向きで置き直せる（出典: atwiki/page-2432「捨札にしたカードがオペレーションカードなら、自軍パワーゾーンにオモテ向きで置き直してもよい」） — 既知の不具合: CARD-XG7-060 追加条件（カード名に「スター」「SM」を含む自軍パワー）を満たしてもラッシュできず、【射手座のスターピース】まで進めない", () => {
+  it("XG7-060: 【射手座のスターピース】捨札にしたのがオペレーションカードなら、自軍パワーゾーンにオモテ向きで置き直せる（出典: atwiki/page-2432「捨札にしたカードがオペレーションカードなら、自軍パワーゾーンにオモテ向きで置き直してもよい」）", () => {
     const s = resolveAll(piece(), ["TST-OP:dop", "confirm"]);
     expect(zoneOf(s, "player1", "TST-OP:dop")).toBe("power");
     expect(cardIn(s, "player1", "TST-OP:dop")?.faceDown).toBe(false);
   });
 
-  it.fails("XG7-060: 【射手座のスターピース】捨札にしたのがユニットカードなら捨札のまま（出典: atwiki/page-2432「オペレーションカードなら」） — 既知の不具合: CARD-XG7-060 追加条件（カード名に「スター」「SM」を含む自軍パワー）を満たしてもラッシュできず、【射手座のスターピース】まで進めない", () => {
+  it("XG7-060: 【射手座のスターピース】捨札にしたのがユニットカードなら捨札のまま（出典: atwiki/page-2432「オペレーションカードなら」）", () => {
     const s = resolveAll(piece(), ["SPEC-PLAIN:dun"]);
     expect(zoneOf(s, "player1", "SPEC-PLAIN:dun")).toBe("discard");
   });
@@ -335,9 +336,11 @@ describe("XG7-061 トンデモジョーズ", () => {
   });
 
   const SM = { ...inst("XG7-063", "sm"), faceDown: false };
-  const board = (power: CardInstance[], p2: Partial<GameState["players"]["player2"]> = {}) => rushPhaseOf({ hand: [inst("XG7-061", "tj")], command: releasedCat("OT", 1), power }, p2, EXTRA);
+  // マルチカテゴリ（OT・DA）のカードは、両方のカテゴリのコマンドがコマンドゾーンに要る（rules/02-zones-cards R-CAT-02）。
+  const board = (power: CardInstance[], p2: Partial<GameState["players"]["player2"]> = {}) =>
+    rushPhaseOf({ hand: [inst("XG7-061", "tj")], command: [...releasedCat("OT", 1), ...releasedCat("DA", 1)], power }, p2, EXTRA);
 
-  it.fails("XG7-061: 追加条件 — カード名に「SM」を含む自軍パワーがあればラッシュできる（出典: atwiki/page-2410「追加条件：カード名に「スター」または「SM」を含む自軍パワーがある」） — 既知の不具合: CARD-XG7-061 追加条件（カード名に「スター」「SM」を含む自軍パワー）を満たしてもラッシュできず、【蠍座のスターピース】まで進めない", () => {
+  it("XG7-061: 追加条件 — カード名に「SM」を含む自軍パワーがあればラッシュできる（出典: atwiki/page-2410「追加条件：カード名に「スター」または「SM」を含む自軍パワーがある」）", () => {
     const r = rushFromHand(board([SM, ...powerCards(5)]), "player1", "XG7-061:tj");
     expect(r.ok, r.error).toBe(true);
   });
@@ -349,20 +352,20 @@ describe("XG7-061 トンデモジョーズ", () => {
   const piece = () =>
     rushFromHand(board([SM, ...powerCards(5)], { power: [inst("TST-OP", "eop"), inst("SPEC-PLAIN", "eun"), { ...inst("TST-OP", "edn"), faceDown: true }] }), "player1", "XG7-061:tj").state;
 
-  it.fails("XG7-061: 【蠍座のスターピース】ラッシュしたとき、敵軍パワーゾーンのオモテ向きのカードから1枚選べる（任意。ウラ向きは選べない）（出典: atwiki/page-2410「敵軍パワーゾーンからオモテ向きのカードを1枚選び、捨札にしてもよい」） — 既知の不具合: CARD-XG7-061 追加条件（カード名に「スター」「SM」を含む自軍パワー）を満たしてもラッシュできず、【蠍座のスターピース】まで進めない", () => {
+  it("XG7-061: 【蠍座のスターピース】ラッシュしたとき、敵軍パワーゾーンのオモテ向きのカードから1枚選べる（任意。ウラ向きは選べない）（出典: atwiki/page-2410「敵軍パワーゾーンからオモテ向きのカードを1枚選び、捨札にしてもよい」）", () => {
     const s = piece();
     expectChoiceFrom(s, "player1", "XG7-061");
     expect(choiceIds(s)).toEqual(["SPEC-PLAIN:eun", "TST-OP:eop"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-061: 【蠍座のスターピース】捨札にしたのがオペレーションカードなら、敵軍パワーゾーンにダメージ（ウラ向き）で置き直せる（出典: atwiki/page-2410「敵軍パワーゾーンにダメージにして置き直してもよい」） — 既知の不具合: CARD-XG7-061 追加条件（カード名に「スター」「SM」を含む自軍パワー）を満たしてもラッシュできず、【蠍座のスターピース】まで進めない", () => {
+  it("XG7-061: 【蠍座のスターピース】捨札にしたのがオペレーションカードなら、敵軍パワーゾーンにダメージ（ウラ向き）で置き直せる（出典: atwiki/page-2410「敵軍パワーゾーンにダメージにして置き直してもよい」）", () => {
     const s = resolveAll(piece(), ["TST-OP:eop", "confirm"]);
     expect(zoneOf(s, "player2", "TST-OP:eop")).toBe("power");
     expect(cardIn(s, "player2", "TST-OP:eop")?.faceDown).toBe(true);
   });
 
-  it.fails("XG7-061: 【蠍座のスターピース】捨札にしたのがユニットカードなら捨札のまま（出典: atwiki/page-2410「オペレーションカードなら」） — 既知の不具合: CARD-XG7-061 追加条件（カード名に「スター」「SM」を含む自軍パワー）を満たしてもラッシュできず、【蠍座のスターピース】まで進めない", () => {
+  it("XG7-061: 【蠍座のスターピース】捨札にしたのがユニットカードなら捨札のまま（出典: atwiki/page-2410「オペレーションカードなら」）", () => {
     const s = resolveAll(piece(), ["SPEC-PLAIN:eun"]);
     expect(zoneOf(s, "player2", "SPEC-PLAIN:eun")).toBe("discard");
   });

@@ -237,6 +237,8 @@ export type PendingBattle = {
   rk9BerryOffered?: boolean;
   /** RM-062 テントリーナ【リーナステッキ】の選択を出した（rules/rm/rm3Effects.ts）。 */
   rm3TentrinaOffered?: boolean;
+  /** XG7-055【神出鬼没の疾風】の選択を出した（rules/xg7/xg7cEffects.ts）。 */
+  xg7AttackedOffered?: boolean;
   /** RS-414【ディオネを守る壁】の選択を出したか。 */
   dioneWallOffered?: boolean;
   /** RS-583【災いを受け止める覚悟】の「代わりに選ばれたことにする」選択をこのアタックで既に出したか。 */

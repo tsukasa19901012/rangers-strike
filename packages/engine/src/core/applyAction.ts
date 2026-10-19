@@ -1,5 +1,18 @@
 import { noteEngineSideEffect } from "./sideEffects";
-import { applyXg7RushCounter, isXg7RushCounterCard, openXg7OnSelfRushFromZone } from "../rules/xg7/xg7Effects";
+import {
+  applyXg7RushCounter,
+  consumeXg7NextCardCost,
+  isXg7AttackedChoice,
+  isXg7RushCounterCard,
+  isXg7StrikeChoice,
+  openXg7OnAttacked,
+  openXg7OnSelfRushFromZone,
+  openXg7OnStrike,
+  resolveXg7Attacked,
+  resolveXg7Strike,
+  skipXg7Attacked,
+  skipXg7Strike,
+} from "../rules/xg7/xg7Effects";
 import { payMirrorWorldSelection } from "../rules/mirrorWorldSelection";
 import { memoizeInSearch } from "./searchCache";
 import { isInstancePlacedAnywhere } from "./helpers";
@@ -526,6 +539,12 @@ function continueAttackAfterDeclaration(
     const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...tentrina, pendingBattleEntry: undefined } : tentrina;
     return ok(parked, buildSimpleLogEntry(playerId, "rm062_lina_stick_choice"));
   }
+  // XG7-055【神出鬼没の疾風】: 敵軍ターン中、自軍 S ユニットがアタックされたとき、コマンドゾーンのこれと置き換える（rules/xg7/xg7Effects.ts）。
+  const xg7Attacked = openXg7OnAttacked(battleState, pending, wingAttackFromRush);
+  if (xg7Attacked) {
+    const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...xg7Attacked, pendingBattleEntry: undefined } : xg7Attacked;
+    return ok(parked, buildSimpleLogEntry(playerId, "xg7055_cyclone_gale_choice"));
+  }
   // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
   const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
   // RS-414【ディオネを守る壁】: 冥府神の自軍ユニットがアタックされたとき、常駐を捨札にしてバトルを行わなくてもよい。
@@ -711,7 +730,8 @@ function continueStrikeAfterDeclaration(
   const playerId = pending.strikerPlayerId;
   const damage = pending.damage;
   // RS-196 ダイナモビル【迎撃モビルミサイル】: ストライクされたとき発動できる（任意）。
-  const mobil = openMobilMissileChoice(nextState, pending);
+  // XG7-067 シンクレッダー ※（コマンドゾーンのこれを捨札にしてストライクを無効にする。rules/xg7/xg7Effects.ts）。
+  const mobil = openMobilMissileChoice(nextState, pending) ?? openXg7OnStrike(nextState, pending);
   if (mobil) {
     const cleared =
       state.pendingBattleEntry?.instanceId === strikerInstanceId ? { ...mobil, pendingBattleEntry: undefined } : mobil;
@@ -1865,6 +1885,8 @@ function applyActionCore(
 
       const cost = parsePowerCost(definition.powerCost);
       if (!payPowerCost(state, playerId, cost)) return fail("insufficient_power");
+      // XG7-054 ◎2（次に手札から使うカードの必要パワー-3）は、手札からオペレーションを使ったら消える（rules/xg7/xg7Effects.ts）。
+      state = consumeXg7NextCardCost(state, playerId);
 
       // RK-251 ゴルゴムの仕業: 相手が通常のオペレーションを使用したとき、その効果を実行する前（rules/rk/rk12UnitEffects.ts）。
       {
@@ -3178,6 +3200,16 @@ function applyActionCore(
         if ("error" in picked) return fail(picked.error);
         return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
       }
+      if (isXg7AttackedChoice(pending)) {
+        const picked = resolveXg7Attacked(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
+      }
+      if (isXg7StrikeChoice(pending)) {
+        const picked = resolveXg7Strike(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return completeStrike(picked.state, picked.strike, [picked.log]);
+      }
       if (pending?.effectId === DIONE_WALL_EFFECT_ID && pending.machineEmpireMeta) {
         const picked = resolveDioneWallPick(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
@@ -3300,6 +3332,20 @@ function applyActionCore(
         const skipped = skipRm3Tentrina(state, playerId);
         if (!skipped) return fail("invalid_target");
         return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
+      }
+      if (isXg7AttackedChoice(pending)) {
+        const skipped = skipXg7Attacked(state, playerId);
+        if (!skipped) return fail("invalid_target");
+        return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
+      }
+      if (isXg7StrikeChoice(pending)) {
+        // 発動しない — ストライクは通常どおり（ほかのストライクへの応答があれば開く）。
+        const skipped = skipXg7Strike(state, playerId);
+        if (!skipped) return fail("invalid_target");
+        if (hasStrikeReactions(skipped.state, playerId, skipped.strike)) {
+          return ok({ ...skipped.state, pendingStrike: skipped.strike, activePlayer: playerId }, buildSimpleLogEntry(playerId, "skip_effect_choice"));
+        }
+        return completeStrike(skipped.state, skipped.strike);
       }
       if ((pending?.effectId === MACHINE_EMPIRE_EFFECT_ID || pending?.effectId === DIONE_WALL_EFFECT_ID) && pending.machineEmpireMeta) {
         const skipped = skipMachineEmpireChoice(state, playerId);

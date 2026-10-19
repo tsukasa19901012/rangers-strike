@@ -1,5 +1,5 @@
 import { activateRm2FieldAbility, canActivateRm2FieldAbility, isRm2FieldAbilityCard } from "./rm/rm2Effects";
-import { activateXg7FieldAbility, canActivateXg7FieldAbility, isXg7FieldAbilityCard } from "./xg7/xg7Effects";
+import { activateXg7FieldAbility, canActivateXg7FieldAbility, isXg7BattleFieldAbilityCard, isXg7FieldAbilityCard } from "./xg7/xg7Effects";
 import { tryLeaveField } from "./operationCounters";
 import { liveCommentaryStayAvailable } from "./legend1/set7NamedEffectsA";
 import { kuugaStayCandidates } from "./legend1/otherLinesNamedEffects";
@@ -481,6 +481,18 @@ ABILITIES.push({
   phase: "rush",
   discardSelf: false,
   matches: (cardId) => isXg7FieldAbilityCard(cardId),
+  canActivate: (state, playerId, card) => canActivateXg7FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg7FieldAbility(state, playerId, card),
+});
+
+// XG7-052【タジャスピナー】「自軍バトルフェイズごとに1度だけ、敵軍Sユニットを1体選び、これとバトルさせてもよい。」（rules/xg7/xg7Effects.ts）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "xg7052_taja_spinner",
+  zones: ["rush", "battle"],
+  phase: "battle",
+  discardSelf: false,
+  matches: (cardId) => isXg7BattleFieldAbilityCard(cardId),
   canActivate: (state, playerId, card) => canActivateXg7FieldAbility(state, playerId, card),
   resolve: (state, playerId, card) => activateXg7FieldAbility(state, playerId, card),
 });

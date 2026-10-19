@@ -2,7 +2,7 @@
  * クロスギャザー ザ・ベストパートナー（XG7-001〜XG7-068）の状態の型（types/game.ts から型だけ読み込む）。
  * 実装は rules/xg7/xg7Effects.ts（入口）・xg7aEffects.ts / xg7bEffects.ts / xg7cEffects.ts（バッチごと）・xg7Fields.ts（継続効果）。
  */
-import type { PendingBattle, PendingLeave, PlayerId } from "../../types/game";
+import type { PendingBattle, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
 
 /** ターンを限った記録（key ごと。turn はその記録が有効なターン番号）。 */
 export type Xg7Flag = {
@@ -16,6 +16,8 @@ export type Xg7Flag = {
 /** GameState.xg7。 */
 export type Xg7State = {
   flags?: Xg7Flag[];
+  /** 効果でラッシュエリアに出て「ラッシュしたとき」を処理しているユニット（「手札からラッシュしたとき」の判定。rules/onRushUnitEffects.ts）。 */
+  rushViaEffect?: string;
 };
 
 /** CardInstance.xg7Turn（このターンだけの付与。core/modifiers.ts clearTurnModifiers で消える）。 */
@@ -42,6 +44,8 @@ export type Xg7ChoiceMeta = {
   /** 続けるバトル。 */
   battle?: PendingBattle;
   wingAttackFromRush?: boolean;
+  /** 無効にできるストライク（XG7-067）。 */
+  strike?: PendingStrike;
   /** 任意の文字列の記録。 */
   tags?: string[];
 };

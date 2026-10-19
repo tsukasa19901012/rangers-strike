@@ -17,11 +17,11 @@
         "type": "operation",
         "timing": "rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-054::nokara1tsubisuru",
+          "keyword": "xg7::XG7-054::ooo_driver",
           "duration": "permanent"
         }
       ]

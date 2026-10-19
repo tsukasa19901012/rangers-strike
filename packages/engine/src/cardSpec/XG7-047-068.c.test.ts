@@ -100,14 +100,14 @@ describe("XG7-062 シャークラー", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-062: 【シャーブラシ】捨札にしたとき、山札の上の1枚が特徴「メカ」を持つならリリース状態でコマンドゾーンに置く（出典: atwiki/page-2381「特徴「メカ」を持つならリリース状態で」） — 既知の不具合: CARD-XG7-062 【シャーブラシ】が本文と違う（選んだコマンドを捨札にせず、山札の上のカードもコマンドゾーンに置かない）", () => {
+  it("XG7-062: 【シャーブラシ】捨札にしたとき、山札の上の1枚が特徴「メカ」を持つならリリース状態でコマンドゾーンに置く（出典: atwiki/page-2381「特徴「メカ」を持つならリリース状態で」）", () => {
     const s = resolveAll(brush(inst("SPEC-MECHA", "top")), ["TST-OP:h0"]);
     expect(zoneOf(s, "player1", "TST-OP:h0")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-MECHA:top")).toBe("command");
     expect(cardIn(s, "player1", "SPEC-MECHA:top")?.commandHeld).not.toBe(true);
   });
 
-  it.fails("XG7-062: 【シャーブラシ】山札の上の1枚が「メカ」を持たないならホールド状態で置く（出典: atwiki/page-2381「持たないならホールド状態で自軍コマンドゾーンに置く」） — 既知の不具合: CARD-XG7-062 【シャーブラシ】が本文と違う（選んだコマンドを捨札にせず、山札の上のカードもコマンドゾーンに置かない）", () => {
+  it("XG7-062: 【シャーブラシ】山札の上の1枚が「メカ」を持たないならホールド状態で置く（出典: atwiki/page-2381「持たないならホールド状態で自軍コマンドゾーンに置く」）", () => {
     const s = resolveAll(brush(inst("SPEC-PLAIN", "top")), ["TST-OP:h0"]);
     expect(zoneOf(s, "player1", "SPEC-PLAIN:top")).toBe("command");
     expect(cardIn(s, "player1", "SPEC-PLAIN:top")?.commandHeld).toBe(true);
@@ -162,11 +162,11 @@ describe("XG7-063 シャークラーSM", () => {
 
   const kobun = () => rushPhaseOf({ rush: [inst("XG7-063", "sm")] }, { battle: [inst("SPEC-E2000", "a"), inst("SPEC-E2500", "b")], rush: [inst("SPEC-EC1", "c")] }, EXTRA);
 
-  it.fails("XG7-063: 【コブンザメ】自軍ラッシュフェイズ中、これをホールドして起動できる（出典: atwiki/page-2382「自軍ラッシュフェイズ中、このユニットをホールドしてもよい」） — 既知の不具合: CARD-XG7-063 【コブンザメ】（ホールドして BP2000 以下の敵軍ユニットを撃破）の起動が未実装", () => {
+  it("XG7-063: 【コブンザメ】自軍ラッシュフェイズ中、これをホールドして起動できる（出典: atwiki/page-2382「自軍ラッシュフェイズ中、このユニットをホールドしてもよい」）", () => {
     expect(canActivate(kobun(), "XG7-063:sm")).toBe(true);
   });
 
-  it.fails("XG7-063: 【コブンザメ】ホールドしたとき、BP2000 以下の敵軍ユニット（エリアを問わない）を1体選び撃破する（BP2500 は選べない）（出典: atwiki/page-2382「BP2000以下の敵軍ユニットを1体選び撃破する」） — 既知の不具合: CARD-XG7-063 【コブンザメ】（ホールドして BP2000 以下の敵軍ユニットを撃破）の起動が未実装", () => {
+  it("XG7-063: 【コブンザメ】ホールドしたとき、BP2000 以下の敵軍ユニット（エリアを問わない）を1体選び撃破する（BP2500 は選べない）（出典: atwiki/page-2382「BP2000以下の敵軍ユニットを1体選び撃破する」）", () => {
     let s = kobun();
     const a = legal(s).find((x) => x.type === "activate_field_unit_ability" && x.playerId === "player1" && JSON.stringify(x).includes("XG7-063:sm"));
     expect(a).toBeDefined();
@@ -196,7 +196,7 @@ describe("XG7-064 ドラフトレッダー", () => {
   const revolver = (p2Command: CardInstance[] = []) =>
     nc("XG7-064:dr", 0, { rush: [inst("SPEC-POLICE", "pl")] }, { battle: [inst("SPEC-EC1", "e1"), inst("SPEC-EC2", "e2")], rush: [inst("SPEC-EC3", "e3")], command: p2Command });
 
-  it.fails("XG7-064: 【リボルバックG-3】NC（1番目）— 「警察」を持つ自軍ユニットの数（2）以下の必要パワーの敵軍ユニット（エリアを問わない）から1体選べる（任意）（出典: atwiki/page-2442「その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、…置いてもよい」） — 既知の不具合: CARD-XG7-064 【リボルバックG-3】の選択を見送れない（本文は「置いてもよい」）", () => {
+  it("XG7-064: 【リボルバックG-3】NC（1番目）— 「警察」を持つ自軍ユニットの数（2）以下の必要パワーの敵軍ユニット（エリアを問わない）から1体選べる（任意）（出典: atwiki/page-2442「その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、…置いてもよい」）", () => {
     const s = revolver();
     expectChoiceFrom(s, "player1", "XG7-064");
     expect(choiceIds(s)).toEqual(["SPEC-EC1:e1", "SPEC-EC2:e2"]);
@@ -229,14 +229,14 @@ describe("XG7-065 ドラフトブルース", () => {
 
   const cannon = () => nc("XG7-065:db", 1, { rush: [inst("SPEC-MECHA-V3", "mv"), inst("SPEC-PLAIN-V3", "pv")] });
 
-  it.fails("XG7-065: 【トライキャノン】NC（2番目）— 自軍ラッシュエリアの特徴「メカ」を持つビークルから1体選べる（任意）（出典: atwiki/page-2380「自軍ラッシュエリアから、特徴「メカ」を持つビークルを1体選んでもよい」） — 既知の不具合: CARD-XG7-065 【トライキャノン】（メカのビークルの必要パワーで BP+1000 ずつ）が未実装", () => {
+  it("XG7-065: 【トライキャノン】NC（2番目）— 自軍ラッシュエリアの特徴「メカ」を持つビークルから1体選べる（任意）（出典: atwiki/page-2380「自軍ラッシュエリアから、特徴「メカ」を持つビークルを1体選んでもよい」）", () => {
     const s = cannon();
     expectChoiceFrom(s, "player1", "XG7-065");
     expect(choiceIds(s)).toEqual(["SPEC-MECHA-V3:mv"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-065: 【トライキャノン】選んだビークルの必要パワーの数字（3）1ごとに BP+1000（5000）（出典: atwiki/page-2380「選んだビークルの必要パワーの数字1ごとにBP+1000される」） — 既知の不具合: CARD-XG7-065 【トライキャノン】（メカのビークルの必要パワーで BP+1000 ずつ）が未実装", () => {
+  it("XG7-065: 【トライキャノン】選んだビークルの必要パワーの数字（3）1ごとに BP+1000（5000）（出典: atwiki/page-2380「選んだビークルの必要パワーの数字1ごとにBP+1000される」）", () => {
     const s = resolveAll(cannon(), ["SPEC-MECHA-V3:mv"]);
     expect(bpOf(s, "player1", "XG7-065:db")).toBe(5000);
     expect(zoneOf(s, "player1", "SPEC-MECHA-V3:mv")).toBe("rush");
@@ -261,14 +261,14 @@ describe("XG7-066 ドラフトキース", () => {
 
   const hydra = () => nc("XG7-066:dk", 2, { command: [{ ...inst("TST-OP", "h0"), commandHeld: true }, released("TST-OP", "r0")], deck: [inst("SPEC-PLAIN", "top"), ...deckCards(3)] });
 
-  it.fails("XG7-066: 【ハイドランダー】NC（3番目）— 自軍コマンド（ホールド・リリースを問わない）から1つ選べる（任意）（出典: atwiki/page-2424「自軍コマンドを1つ選び捨札にしてもよい」） — 既知の不具合: CARD-XG7-066 【ハイドランダー】（コマンドの入れ替え）が未実装", () => {
+  it("XG7-066: 【ハイドランダー】NC（3番目）— 自軍コマンド（ホールド・リリースを問わない）から1つ選べる（任意）（出典: atwiki/page-2424「自軍コマンドを1つ選び捨札にしてもよい」）", () => {
     const s = hydra();
     expectChoiceFrom(s, "player1", "XG7-066");
     expect(choiceIds(s)).toEqual(["TST-OP:h0", "TST-OP:r0"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-066: 【ハイドランダー】捨札にしたとき、山札の上の1枚をリリース状態でコマンドゾーンに置く（出典: atwiki/page-2424「自軍山札の上から1枚ひいて、そのカードを自軍コマンドゾーンにリリース状態で置く」） — 既知の不具合: CARD-XG7-066 【ハイドランダー】（コマンドの入れ替え）が未実装", () => {
+  it("XG7-066: 【ハイドランダー】捨札にしたとき、山札の上の1枚をリリース状態でコマンドゾーンに置く（出典: atwiki/page-2424「自軍山札の上から1枚ひいて、そのカードを自軍コマンドゾーンにリリース状態で置く」）", () => {
     const s = resolveAll(hydra(), ["TST-OP:h0"]);
     expect(zoneOf(s, "player1", "TST-OP:h0")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-PLAIN:top")).toBe("command");
@@ -293,11 +293,11 @@ describe("XG7-067 シンクレッダー", () => {
     expect(legal(s).some((a) => a.type === "use_register" && a.playerId === "player1")).toBe(true);
   });
 
-  it.fails("XG7-067: 【ヘビーサイクロン】NC（5番目）— SP1（出典: atwiki/page-2448「【ヘビーサイクロン】SP1」） — 既知の不具合: CARD-XG7-067 【ヘビーサイクロン】（SP1・ブルース／キースからの発動）が未実装", () => {
+  it("XG7-067: 【ヘビーサイクロン】NC（5番目）— SP1（出典: atwiki/page-2448「【ヘビーサイクロン】SP1」）", () => {
     expect(spOf(resolveAll(nc("XG7-067:sr", 4)), "player1", "XG7-067:sr")).toBe(1);
   });
 
-  it.fails("XG7-067: 【ヘビーサイクロン】XG7-065 ドラフトブルースからコンビネーションするとき（2番目）はナンバーに関係なく SP1（出典: atwiki/page-2448「「ドラフトブルース」または「ドラフトキース」からコンビネーションするときはナンバーに関係なく発動する」） — 既知の不具合: CARD-XG7-067 【ヘビーサイクロン】（SP1・ブルース／キースからの発動）が未実装", () => {
+  it("XG7-067: 【ヘビーサイクロン】XG7-065 ドラフトブルースからコンビネーションするとき（2番目）はナンバーに関係なく SP1（出典: atwiki/page-2448「「ドラフトブルース」または「ドラフトキース」からコンビネーションするときはナンバーに関係なく発動する」）", () => {
     let s = resolveAll(enter(p1Battle({ rush: [inst("XG7-065", "db"), inst("XG7-067", "sr")] }, {}, EXTRA), "XG7-065:db"), ["__none__"]);
     s = resolveAll(enter(passEntry(s), "XG7-067:sr"));
     expect(spOf(s, "player1", "XG7-067:sr")).toBe(1);
@@ -314,7 +314,7 @@ describe("XG7-067 シンクレッダー", () => {
     return strike(s, "SPEC-STRIKER:s", "player2");
   };
 
-  it.fails("XG7-067: ※ リリース状態で自軍コマンドゾーンにある間、相手にストライクされたとき、これを捨札にしてストライクを無効にできる（出典: atwiki/page-2448「これを捨札にしてそのストライクを無効にしてもよい」） — 既知の不具合: CARD-XG7-067 コマンドゾーンからストライクを無効にする※が未実装", () => {
+  it("XG7-067: ※ リリース状態で自軍コマンドゾーンにある間、相手にストライクされたとき、これを捨札にしてストライクを無効にできる（出典: atwiki/page-2448「これを捨札にしてそのストライクを無効にしてもよい」）", () => {
     expect(offeredBy(struck(released("XG7-067", "sr")), "XG7-067", "XG7-067:sr")).toBe(true);
   });
 
@@ -334,19 +334,19 @@ describe("XG7-068 宇宙刑事シャリバン×ギャバン×シャイダー", (
     expectRarityIn("XG7-068", ["SR"]);
   });
 
-  it.fails("XG7-068: 追加条件 — コマンドを追加で2つホールドしてラッシュする（ホールドしたコマンドは合わせて3つ）（出典: atwiki/page-2433「追加条件：追加で自軍コマンドを2つホールドする」） — 既知の不具合: CARD-XG7-068 カタログ: 追加条件の unitCount が 1（本文は「追加で自軍コマンドを2つホールドする」）で、追加のホールドが1つで済んでしまう", () => {
+  it("XG7-068: 追加条件 — コマンドを追加で2つホールドしてラッシュする（ホールドしたコマンドは合わせて3つ）（出典: atwiki/page-2433「追加条件：追加で自軍コマンドを2つホールドする」）", () => {
     const r = rushFromHand(rushPhaseOf({ hand: [inst("XG7-068", "h")], command: releasedCat("OT", 3, "x"), power: powerCards(6) }, {}, EXTRA), "player1", "XG7-068:h");
     expect(r.ok, r.error).toBe(true);
     expect(r.state.players.player1.command.filter((c) => c.commandHeld).length).toBe(3);
   });
 
-  it.fails("XG7-068: 追加条件 — リリース状態の自軍コマンドが2つだけならラッシュできない（出典: atwiki/page-2433「追加で自軍コマンドを2つホールドする」） — 既知の不具合: CARD-XG7-068 カタログ: 追加条件の unitCount が 1（本文は「追加で自軍コマンドを2つホールドする」）で、追加のホールドが1つで済んでしまう", () => {
+  it("XG7-068: 追加条件 — リリース状態の自軍コマンドが2つだけならラッシュできない（出典: atwiki/page-2433「追加で自軍コマンドを2つホールドする」）", () => {
     expect(canStartRush(rushPhaseOf({ hand: [inst("XG7-068", "h")], command: releasedCat("OT", 2, "x"), power: powerCards(6) }, {}, EXTRA), "player1", "XG7-068:h")).toBe(false);
   });
 
   breakerTests("XG7-068", "atwiki/page-2433", EXTRA);
 
-  it.fails("XG7-068: ※クロス2 — これが自軍バトルエリアにある間、右に並ぶ SP1/4 のユニットは2番目で SP1 になる（分母が2少なくなる）（出典: atwiki/page-2433「※クロス2」・atwiki/page-2393 規定文） — 既知の不具合: CARD-XG7-068 ※クロス2（分母・CN を2減らす）が効かない", () => {
+  it("XG7-068: ※クロス2 — これが自軍バトルエリアにある間、右に並ぶ SP1/4 のユニットは2番目で SP1 になる（分母が2少なくなる）（出典: atwiki/page-2433「※クロス2」・atwiki/page-2393 規定文）", () => {
     const s = enter(p1Battle({ battle: [inst("XG7-068", "x")], rush: [inst("SPEC-XFRAC4", "f")] }, {}, EXTRA), "SPEC-XFRAC4:f");
     expect(spOf(s, "player1", "SPEC-XFRAC4:f")).toBe(1);
   });
@@ -365,7 +365,7 @@ describe("XG7-068 宇宙刑事シャリバン×ギャバン×シャイダー", (
   const steam = (rush: CardInstance[] = [], command: CardInstance[] = [released("TST-OP", "o0"), released("TST-OP", "o1"), released("TST-OP", "o2")]) =>
     rushPhaseOf({ power: [{ ...inst("XG7-068", "pw"), faceDown: false }, ...powerCards(1)], command, rush }, {}, EXTRA);
 
-  it.fails("XG7-068: 【蒸着・赤射・焼結】自軍パワーゾーンでオモテ向きの間、自軍ラッシュフェイズ中、「宇宙刑事」の自軍ユニットがいなければ、コマンドゾーンのオペレーションカード3枚をホールドしてラッシュエリアに出せる（出典: atwiki/page-2433「自軍コマンドゾーンからオペレーションカードを3枚選びホールドしてもよい。そうしたとき、これを自軍ラッシュエリアに出す」） — 既知の不具合: CARD-XG7-068 【蒸着・赤射・焼結】（パワーゾーンから出る）が未実装", () => {
+  it("XG7-068: 【蒸着・赤射・焼結】自軍パワーゾーンでオモテ向きの間、自軍ラッシュフェイズ中、「宇宙刑事」の自軍ユニットがいなければ、コマンドゾーンのオペレーションカード3枚をホールドしてラッシュエリアに出せる（出典: atwiki/page-2433「自軍コマンドゾーンからオペレーションカードを3枚選びホールドしてもよい。そうしたとき、これを自軍ラッシュエリアに出す」）", () => {
     expect(canSelfRush(steam(), "power", "XG7-068:pw") || offeredBy(steam(), "XG7-068", "XG7-068:pw")).toBe(true);
   });
 

@@ -44,13 +44,13 @@
       "name": "コブンザメ",
       "text": "自軍ラッシュフェイズ中、このユニットをホールドしてもよい。そうしたとき、BP2000以下の敵軍ユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-063::kobunzame",
+          "keyword": "xg7::XG7-063::kobunzame",
           "duration": "permanent"
         }
       ]

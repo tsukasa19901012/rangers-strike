@@ -77,6 +77,12 @@ export function xg7FieldBpBonus(state: GameState, playerId: PlayerId, instance: 
     }
     if (ridingOn(state, playerId, instance, "XG7-031")) bonus += 1000;
     if (xg7043Restricted(state, playerId, instance)) bonus -= 6000;
+    // XG7-049 ※「これはカード名に「ガタ」を含む自軍ユニット1体につきBP+500される。」（これ自身も数える）。
+    if (isId(instance.cardId, "XG7-049")) {
+      bonus += 500 * areaUnits(state, playerId).filter((c) => (getDefinition(state.definitions, c.cardId)?.name ?? "").includes("ガタ")).length;
+    }
+    // XG7-053 ※「これは、自分と相手の手札1枚につきBP+500される。」
+    if (isId(instance.cardId, "XG7-053")) bonus += 500 * (state.players.player1.hand.length + state.players.player2.hand.length);
   }
   if (role === "attacking") {
     const copies = state.players[playerId].discard.filter((c) => isId(c.cardId, "XG7-007")).length;
@@ -102,6 +108,15 @@ export function xg7AttackerBattleBonus(state: GameState, pending: PendingBattle)
     const skyCombi = (state.xg7?.flags ?? []).filter((f) => f.key === "xg7019_sky_combi" && f.playerId === pending.attackerPlayerId && f.turn === state.turn);
     bonus += 2000 * new Set(skyCombi.map((f) => f.instanceId)).size;
   }
+  // XG7-047【カマキリソード】「これは敵軍Sユニットにアタックするとき、BP+5000される。」
+  if (isId(attacker.card.cardId, "XG7-047")) {
+    const defender = areaCards(state, pending.defenderPlayerId).find((c) => c.instanceId === pending.defenderInstanceId);
+    if (defender && isUnit(state, defender.cardId) && unitSizeOf(state.definitions, defender) === "S") bonus += 5000;
+  }
+  // XG7-052 ※「これは、ウイングでアタックするときBP+2000される。」（ラッシュエリアからのアタック）。
+  if (attacker.zone === "rush" && isId(attacker.card.cardId, "XG7-052")) bonus += 2000;
+  // XG7-058【鋼鉄のマッチョボディ】「これはホールド状態なら、アタックするときBP+2000される。」
+  if (isId(attacker.card.cardId, "XG7-058") && attacker.card.commandHeld) bonus += 2000;
   if (isId(attacker.card.cardId, "XG7-034")) {
     const defender = areaCards(state, pending.defenderPlayerId).find((c) => c.instanceId === pending.defenderInstanceId);
     const sp = defender ? getDefinition(state.definitions, defender.cardId)?.sp : undefined;
@@ -171,9 +186,20 @@ export function xg7HandDeployCondition(state: GameState, playerId: PlayerId, car
 // ---------------------------------------------------------------------------
 // コンビネーション・クロス
 
-/** 「（この効果はバトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する）」（XG7-013・XG7-016）。 */
-export function xg7NcAnyNumberAt(cardId: string, battlePosition: number): boolean {
-  return battlePosition === 2 && (isId(cardId, "XG7-013") || isId(cardId, "XG7-016"));
+/**
+ * 「ナンバーに関係なく発動する」。
+ * - XG7-013・XG7-016「（この効果はバトルエリアの2番目にコンビネーションするときは、ナンバーに関係なく発動する）」。
+ * - XG7-067【ヘビーサイクロン】「（この効果は「ドラフトブルース」または「ドラフトキース」からコンビネーションするときはナンバーに関係なく発動する）」
+ *   （すぐ前に並んだユニット）。
+ */
+export function xg7NcAnyNumberAt(cardId: string, battlePosition: number, state?: Defs, battleBeforeEnter: readonly CardInstance[] = []): boolean {
+  if (battlePosition === 2 && (isId(cardId, "XG7-013") || isId(cardId, "XG7-016"))) return true;
+  if (state && isId(cardId, "XG7-067")) {
+    const left = battleBeforeEnter.at(-1);
+    const name = left ? getDefinition(state.definitions, left.cardId)?.name : undefined;
+    return sameCardName(name, "ドラフトブルース") || sameCardName(name, "ドラフトキース");
+  }
+  return false;
 }
 
 /** このターン得たクロスの値（XG7-015【ボウケンジャーになれ】等）。 */
@@ -266,4 +292,30 @@ export function xg7RiderCross(battle: readonly CardInstance[], index: number): n
   if (!vehicle || !isId(vehicle.cardId, "XG7-031")) return 0;
   const name = getCardById(card.cardId)?.name;
   return sameCardName(name, "仮面ライダー1号") || sameCardName(name, "仮面ライダー2号") ? 1 : 0;
+}
+
+// ---------------------------------------------------------------------------
+// XG7-047〜XG7-068
+
+/** XG7-058 ※「これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、特徴「メカ」を得る。」（rules/addedFeatures.ts unitFeatures）。 */
+export function xg7AddedFeatures(state: Partial<Pick<GameState, "activePlayer">>, ownerId: PlayerId, instance: Pick<CardInstance, "cardId">): string[] {
+  if (isId(instance.cardId, "XG7-058") && state.activePlayer === ownerId) return ["メカ"];
+  return [];
+}
+
+/**
+ * XG7-068【蒸着・赤射・焼結】「これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、特徴「宇宙刑事」を持つ自軍ユニットがなければ、
+ * 自軍コマンドゾーンからオペレーションカードを3枚選びホールドしてもよい。」（rules/keywordGapRuntime.ts canSelfRushFromZone。ホールドできるのはリリース状態のもの）。
+ */
+export function xg7CanDeployFromPower(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  if (!isId(card.cardId, "XG7-068") || card.faceDown) return false;
+  if (areaUnits(state, playerId).some((c) => unitFeatures(state, playerId, c).includes("宇宙刑事"))) return false;
+  return state.players[playerId].command.filter((c) => !c.commandHeld && getDefinition(state.definitions, c.cardId)?.type === "operation").length >= 3;
+}
+
+/** XG7-054 ◎2「このターン、次に自分が手札から使用するカードの必要パワーの数字は、3少なくなる。」（core/power.ts effectivePowerCost）。 */
+export function xg7NextCardCostReduction(state: Pick<GameState, "activePlayer">, playerId: PlayerId): number {
+  const full = state as Partial<GameState>;
+  if (full.activePlayer !== playerId || full.turn === undefined) return 0;
+  return hasFlag(full as GameState, "xg7054_cost_minus3", playerId) ? 3 : 0;
 }

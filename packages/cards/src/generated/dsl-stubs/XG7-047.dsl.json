@@ -36,14 +36,14 @@
       "name": "カマキリソード",
       "text": "これは敵軍Sユニットにアタックするとき、BP+5000される。",
       "trigger": {
-        "type": "on_attack"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-047::kamakirisodo",
-          "duration": "turn"
+          "keyword": "xg7::XG7-047::kamakiri_sword",
+          "duration": "permanent"
         }
       ]
     }

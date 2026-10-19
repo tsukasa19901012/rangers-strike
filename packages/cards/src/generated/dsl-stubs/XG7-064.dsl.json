@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-064::riborubakug3",
+          "keyword": "xg7::XG7-064::revolver",
           "duration": "permanent"
         }
       ]

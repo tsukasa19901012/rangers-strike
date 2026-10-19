@@ -21,7 +21,7 @@
   "rushAdditionalCondition": {
     "conditionId": "hold_extra_command",
     "text": "追加で自軍コマンドを2つホールドする",
-    "unitCount": 1
+    "unitCount": 2
   },
   "effects": [
     {
@@ -42,13 +42,13 @@
       "id": "unnamed_e280bbe382afe383ade382b9",
       "text": "※クロス2",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-068::kurosu2",
+          "keyword": "cross2",
           "duration": "permanent"
         }
       ]
@@ -86,13 +86,13 @@
       "name": "蒸着・赤射・焼結",
       "text": "これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、特徴「宇宙刑事」を持つ自軍ユニットがなければ、自軍コマンドゾーンからオペレーションカードを3枚選びホールドしてもよい。そうしたとき、これを自軍ラッシュエリアに出す。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-068::fxunknown13",
+          "keyword": "xg7::XG7-068::jouchaku",
           "duration": "permanent"
         }
       ]

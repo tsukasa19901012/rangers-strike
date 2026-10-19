@@ -35916,7 +35916,7 @@
       "rushAdditionalCondition": {
         "conditionId": "hold_extra_command",
         "text": "追加で自軍コマンドを2つホールドする",
-        "unitCount": 1
+        "unitCount": 2
       },
       "bp": 7000,
       "size": "S",

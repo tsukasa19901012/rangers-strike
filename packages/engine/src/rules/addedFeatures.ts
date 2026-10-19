@@ -1,3 +1,4 @@
+import { xg7AddedFeatures } from "./xg7/xg7Fields";
 /**
  * 効果で追加された特徴（このターンだけ）。
  *
@@ -85,6 +86,8 @@ export function unitFeatures(
   // RM-058 老師グル【昆虫の精】（自軍ラッシュエリアにある間、「メカ」のユニット・ビークルに「昆虫」。自軍だけ（ユーザー決定 2026-10-19）。
   // rules/rm/rm3Fields.ts）。
   if (rm3GuruAddsInsect(state, _ownerId, instance.cardId, [...base, ...extra])) extra.push("昆虫");
+  // XG7-058 メタル・ドーパント ※（自軍ターン中、「メカ」。rules/xg7/xg7Fields.ts）。
+  extra.push(...xg7AddedFeatures(state as Partial<Pick<GameState, "activePlayer">>, _ownerId, instance));
   if (extra.length === 0) return base;
   return [...new Set([...base, ...extra])];
 }
