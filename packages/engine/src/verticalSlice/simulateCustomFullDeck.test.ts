@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { yieldToEventLoop } from "../testing/yieldToEventLoop";
 import {
   expandDeck,
   fullPlayableCatalog,
@@ -38,7 +39,7 @@ function buildCustomPromotedDeckDefinition(): DeckDefinition {
 describe("vertical slice — custom full promoted deck (AC-07)", () => {
   it(
     `runs ${GAME_COUNT} CPU vs CPU games with a custom 40-card deck containing promoted cards`,
-    () => {
+    async () => {
     const deck = expandDeck(
       buildCustomPromotedDeckDefinition(),
       fullPlayableCatalog,
@@ -50,6 +51,7 @@ describe("vertical slice — custom full promoted deck (AC-07)", () => {
     let applyFailed = 0;
 
     for (let seed = 1; seed <= GAME_COUNT; seed += 1) {
+      await yieldToEventLoop();
       const rng = mulberry32(seed);
       const result = playStarterMatchUntilEnd(
         createGameForDecks(deck, deck, {

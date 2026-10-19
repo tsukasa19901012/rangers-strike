@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { yieldToEventLoop } from "./testing/yieldToEventLoop";
 import { buildStarterDeck, type StarterDeckId } from "@rangers-strike/cards";
 import { applyAction, createGame, getLegalActions } from "./index";
 import { ALL_STARTER_DECK_IDS } from "./verticalSlice/starterDeckIds";
@@ -84,12 +85,14 @@ describe("monkey test (random legal actions)", () => {
   it(
     `completes ${DEFAULT_GAMES} games without engine errors`,
     { timeout: 120_000 },
-    () => {
+    async () => {
       const failures: MonkeyFailure[] = [];
       let finished = 0;
       let timedOut = 0;
 
       for (let seed = 1; seed <= DEFAULT_GAMES; seed += 1) {
+        // 長い同期ループで vitest ワーカーの RPC（onTaskUpdate）が待たされないよう、1ゲームごとに譲る。
+        await yieldToEventLoop();
         const failure = runMonkeyGame(seed);
         if (!failure) {
           finished += 1;

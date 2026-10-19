@@ -8,6 +8,7 @@
  * 重ねたカードのある常駐オペレーションが捨札になるとき重ねたカードが二重になる不具合の回帰テスト。
  */
 import { describe, expect, it } from "vitest";
+import { yieldToEventLoop } from "../testing/yieldToEventLoop";
 import { fullPlayableCatalog, type CardDefinition } from "@rangers-strike/cards";
 import { applyAction } from "../core/applyAction";
 import {
@@ -128,13 +129,15 @@ function randomPlayout(
 }
 
 describe("card conservation invariant", () => {
-  it("CPU vs CPU simulations never create or lose cards", () => {
+  it("CPU vs CPU simulations never create or lose cards", async () => {
     const games: Array<() => GameState> = [
       () => createFullPromotedGame({ rng: mulberry32(11), firstPlayer: "player1" }),
       () => createFullPromotedGame({ rng: mulberry32(12), firstPlayer: "player2" }),
       () => createStarterGame({ rng: mulberry32(13) }),
     ];
     for (const make of games) {
+      // 長い同期ループで vitest ワーカーの RPC（onTaskUpdate）が待たされないよう、1ゲームごとに譲る。
+      await yieldToEventLoop();
       const initial = make();
       const baseline = captureCardBaseline(initial);
       let checked = 0;
@@ -150,8 +153,9 @@ describe("card conservation invariant", () => {
     }
   }, 600_000);
 
-  it("random play with the full card pool never creates or loses cards", () => {
+  it("random play with the full card pool never creates or loses cards", async () => {
     for (let seed = 1; seed <= 120; seed += 1) {
+      await yieldToEventLoop();
       const rng = mulberry32(seed);
       const initial = createGame({
         player1Deck: randomDeck(rng),
@@ -181,11 +185,12 @@ describe("card conservation invariant", () => {
   ];
 
   for (const cardId of PAUSING_OPERATIONS) {
-    it(`${cardId}: the used operation ends in discard / operation zone after its choice resolves`, () => {
+    it(`${cardId}: the used operation ends in discard / operation zone after its choice resolves`, async () => {
       const card = POOL.find((c) => c.id === cardId);
       expect(card, `${cardId} is playable`).toBeDefined();
       let played = false;
       for (let seed = 1; seed <= 60 && !played; seed += 1) {
+        await yieldToEventLoop();
         const rng = mulberry32(seed * 7919);
         let initial = createGame({
           player1Deck: randomDeck(rng, [card!]),

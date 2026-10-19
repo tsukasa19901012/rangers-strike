@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { yieldToEventLoop } from "../testing/yieldToEventLoop";
 import {
   isComplexityPromotedCardId,
   isVanillaPromotedCardId,
@@ -39,7 +40,7 @@ function countPromotedCards(deck: { cardId: string }[]): number {
   ).length;
 }
 
-function runSimulation(count: number, swapCount: number): SimReport {
+async function runSimulation(count: number, swapCount: number): Promise<SimReport> {
   const report: SimReport = {
     total: count,
     winner: 0,
@@ -59,6 +60,8 @@ function runSimulation(count: number, swapCount: number): SimReport {
   };
 
   for (let seed = 1; seed <= count; seed += 1) {
+    // 長い同期ループで vitest ワーカーの RPC（onTaskUpdate）が待たされないよう、1ゲームごとに譲る。
+    await yieldToEventLoop();
     const p1 = LEGEND1_STARTER_IDS[seed % LEGEND1_STARTER_IDS.length]!;
     const p2 = LEGEND1_STARTER_IDS[(seed + 1) % LEGEND1_STARTER_IDS.length]!;
 
@@ -99,8 +102,8 @@ describe("vertical slice — hybrid promoted simulation (M16/M17)", () => {
   for (const tier of tiers) {
     it(
       `runs ${tier.count} games — ${tier.label}`,
-      () => {
-        const report = runSimulation(tier.count, tier.swapCount);
+      async () => {
+        const report = await runSimulation(tier.count, tier.swapCount);
 
         console.info(`\n=== Hybrid Promoted Simulation: ${tier.label} ===`);
         console.info(`total:           ${report.total}`);
