@@ -5,6 +5,7 @@ import {
   canMoveUnitToBattle,
   getLightningGravityHoldNotice,
   requiredBattleEntryHolds,
+  zenibombBlocksBattleEntry,
 } from "./rules/restrictions";
 import { getBattleEntryHoldCount } from "@rangers-strike/cards";
 import { getLegalActions } from "./core/legalActions";
@@ -194,7 +195,7 @@ describe("explainCannotEnterBattle", () => {
             {
               kind: "restriction",
               instanceId: unit.instanceId,
-              restriction: "rushed_this_turn",
+              restriction: "zenibomb_new_rush_entry",
               scope: "turn",
             },
           ],
@@ -204,6 +205,28 @@ describe("explainCannotEnterBattle", () => {
 
     const reason = explainCannotEnterBattle(state, "player1", unit, "rush");
     expect(reason).toContain("ゼニボム");
+  });
+
+  // ユーザー決定（2026-10-19）: ゼニボムの「新しくラッシュエリアに出たユニット」は、場の外からそのターンにラッシュエリアに出たユニット
+  // （手段は問わない。rules/rushAreaEntries.ts）。ラッシュの目印（rushed_this_turn）だけ — 例えば直接バトルエリアに出てから
+  // ラッシュエリアに戻ったユニット — では止めない。
+  it("zenibomb does not block a unit that only carries the rushed_this_turn marker (e.g. returned from battle)", () => {
+    const unit = inst("RS-054", "s1");
+    let state = createTestState({ definitions: legendDefinitions, phase: "battle", player1: { rush: [unit] } });
+    state = {
+      ...state,
+      players: {
+        ...state.players,
+        player1: {
+          ...state.players.player1,
+          modifiers: [
+            { kind: "rule", ruleId: "zenibomb", scope: "turn" },
+            { kind: "restriction", instanceId: unit.instanceId, restriction: "rushed_this_turn", scope: "turn" },
+          ],
+        },
+      },
+    };
+    expect(zenibombBlocksBattleEntry(state.players.player1, unit.instanceId)).toBe(false);
   });
 });
 

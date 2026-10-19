@@ -11,6 +11,7 @@ import { describe, expect, it } from "vitest";
 import {
   act,
   attack,
+  cardIn,
   canEnter,
   canStrike,
   canUseCard,
@@ -40,7 +41,8 @@ import {
   zoneIds,
   zoneOf,
 } from "./RS2-097-122.helpers";
-import type { GameState, PlayerId } from "../types/game";
+import type { CardInstance, GameState, PlayerId } from "../types/game";
+import { canMoveUnitToBattle } from "../rules/restrictions";
 
 function canJuu(s: GameState, attacker: string, playerId: PlayerId = "player1"): boolean {
   return legal(s).some(
@@ -705,6 +707,73 @@ describe("RS-110 デカピンク", () => {
     const r = rushFromHand(s, "player2", "RS-090:red");
     expect(r.ok).toBe(true);
     expect(zoneOf(settle(r.state), "player2", "RS-090:red")).toBe("battle");
+  });
+
+  // ユーザー決定（2026-10-19）:「ゼニボムとSPインカム両方とも相手ユニットが対象。新しくラッシュエリアに出たユニットに関しては、
+  // ゼニボムとSPインカム両方とも手段は問わない。」（docs/rules/README.md §5.7）
+  /** ※の「自軍捨札から選び、自軍ラッシュエリアに出す」選択をすべて解決する（反応はパス）。 */
+  function resolveChoices(s: GameState): GameState {
+    let next = settle(s);
+    for (let i = 0; i < 12; i++) {
+      const p = next.pendingEffectChoice;
+      const pick = p?.validInstanceIds[0];
+      if (!p || !pick) break;
+      const r = tryAct(next, { type: "resolve_effect_choice", playerId: p.playerId, instanceId: pick });
+      if (!r.ok) break;
+      next = settle(r.state);
+    }
+    return next;
+  }
+
+  /** player1 がゼニボムを発動して、player2 のバトルフェイズ（phase で変更可）へ。p1Battle / p2 で両軍の場を足す。 */
+  function zenibombEnemyBattle(opts: {
+    p1Battle?: CardInstance[];
+    p1Discard?: CardInstance[];
+    p2?: Partial<GameState["players"]["player2"]>;
+    phase?: "rush" | "battle";
+  }): GameState {
+    const p1Battle = opts.p1Battle ?? [];
+    let s = st({
+      player1: { battle: [...fillers(4 - p1Battle.length), ...p1Battle], rush: [inst("RS-110", "pink")], discard: opts.p1Discard ?? [], deck: deckCards(5) },
+      player2: { deck: deckCards(5, "e"), ...opts.p2 },
+    });
+    s = enter(s, "RS-110:pink");
+    expect(ncLogged(s, "RS-110")).toBe(true);
+    s = passEntry(s);
+    s = endTurn(s);
+    return toPhase(s, "player2", opts.phase ?? "battle");
+  }
+
+  it("RS-110: 「新しくラッシュエリアに出た」は手段を問わない — ラッシュではなく「出す」効果（RS-455 ニンジャブラックの※）で相手ラッシュエリアに出たユニットもバトルエリアに出られない（出典: ユーザー決定 2026-10-19「手段は問わない」、docs/rules/README.md §5.7。atwiki/page-800）", () => {
+    let s = zenibombEnemyBattle({
+      p2: { hand: [inst("RS-455", "nb")], power: powerCards(4), damage: 4 },
+      phase: "rush",
+    });
+    const deploy = legal(s).find((a) => a.type === "self_rush_from_zone" && a.instanceId === "RS-455:nb");
+    expect(deploy).toBeTruthy();
+    s = settle(act(s, deploy!));
+    expect(zoneOf(s, "player2", "RS-455:nb")).toBe("rush");
+    s = toPhase(s, "player2", "battle");
+    expect(canEnter(s, "RS-455:nb", "player2")).toBe(false);
+  });
+
+  it("RS-110: 対象は相手のユニットだけ — ゼニボムの次の相手ターン中に効果（RS-660 の※）で自軍ラッシュエリアに出た自軍ユニットはバトルエリアに出られる（出典: ユーザー決定 2026-10-19「ゼニボムとSPインカム両方とも相手ユニットが対象」）", () => {
+    let s = zenibombEnemyBattle({
+      p1Battle: [inst("RS-660", "swat")],
+      p1Discard: [inst("RS-110", "dp")],
+      p2: { battle: [inst("TST-UNIT-7", "big")] },
+    });
+    s = settle(enter(s, "TST-UNIT-7:big", "player2"));
+    s = resolveChoices(attack(s, "TST-UNIT-7:big", "RS-660:swat", "player2"));
+    expect(zoneOf(s, "player1", "RS-660:swat")).toBe("discard");
+    expect(zoneOf(s, "player1", "RS-110:dp")).toBe("rush");
+    expect(canMoveUnitToBattle(s, "player1", cardIn(s, "player1", "RS-110:dp")!, "rush")).toBe(true);
+  });
+
+  it("RS-110: バトルエリアからラッシュエリアに戻ったユニットは「新しくラッシュエリアに出た」ユニットにあたらない（スタートフェイズに戻ったユニットは出られる）（出典: atwiki/page-308「新しくラッシュエリアに出たユニット」、ユーザー決定 2026-10-19）", () => {
+    const s = zenibombEnemyBattle({ p2: { battle: [inst("TST-UNIT-0", "back")] } });
+    expect(zoneOf(s, "player2", "TST-UNIT-0:back")).toBe("rush");
+    expect(canEnter(s, "TST-UNIT-0:back", "player2")).toBe(true);
   });
 });
 

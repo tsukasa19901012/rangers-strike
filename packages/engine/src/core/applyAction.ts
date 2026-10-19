@@ -205,6 +205,7 @@ import { openCastTransferOnCharge } from "../rules/legend1/set9NamedEffectsD";
 import { openMegaCaptureIfReady, queueMegaCapture } from "../rules/legend1/set9NamedEffectsB";
 import { settleStackOntoLargeCards } from "../rules/stackOntoLargeUnit";
 import { trackSpIncomeEntries } from "../rules/legend1/set9NamedEffectsC";
+import { trackZenibombEntries } from "../rules/rushAreaEntries";
 import { applyMeeMegaloAfterAction, openTakeTheBlowChoice, resolveTakeTheBlow, skipTakeTheBlow, TAKE_THE_BLOW_EFFECT_ID } from "../rules/legend1/set8NamedEffectsD";
 import { prepareMirageBeamForBattle } from "../rules/legend3/mirageBeam";
 import {
@@ -1022,6 +1023,8 @@ function applyActionWithRng(
   }
   // RS-660【SPインカム】: このターン、場の外からラッシュエリアに出たユニットを記録する（rules/legend1/set9NamedEffectsC.ts）。
   next = trackSpIncomeEntries(state, next);
+  // RS-110【ゼニボム】: このターン、場の外から相手のラッシュエリアに出たユニットに目印を付ける（rules/rushAreaEntries.ts）。
+  next = trackZenibombEntries(state, next);
   // RK-240・RK-247: このターン、ユニットがホールドされたかを記録する（rules/rk/rk12UnitEffects.ts）。
   next = trackRk12UnitHolds(state, next);
   // RK-251 ゴルゴムの仕業を使わなかった: オペレーションの使用（効果の実行）を続ける（rules/rk/rk12UnitEffects.ts）。

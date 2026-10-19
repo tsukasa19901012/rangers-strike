@@ -24,6 +24,7 @@ import { addJointComboGrant, jointRGrantActive } from "../jointComboGrants";
 import { wasRushedThisTurn } from "../turnModifiers";
 import { stackOntoLargeCardsOn, stackOntoLargeGrant } from "../stackOntoLargeGrants";
 import { turnPlayerOf } from "./set6NamedEffectsB";
+import { newlyEnteredRushUnitIds } from "../rushAreaEntries";
 import { continueBattleToRushEffectQueue } from "../startPhase";
 import type { ComboOutcome } from "../comboTypes";
 
@@ -740,8 +741,10 @@ CHOICE_RESOLVERS[SENSOR_DRAW_EFFECT_ID] = (state, playerId) => {
 // 「次の相手ターン、新しくラッシュエリアに出たユニットと、ホールド状態のユニットは、ターンが終わるまでバトルエリアに出られない」（atwiki/page-1527）
 // - 「新しくラッシュエリアに出た」: そのターン中に、場の外（手札・山札・捨札・コマンドゾーン・パワーゾーン等）からラッシュエリアに
 //   出たユニット（ラッシュ・効果で出す・モーフの置き換え等、手段を問わない）。バトルエリアからラッシュエリアに戻ったユニットは含まない。
-//   そのターンの各アクションの前後でラッシュエリアに増えたユニットを記録する（trackSpIncomeEntries）。
-// - 「自軍」「敵軍」の限定がないので、両軍のユニットが対象（相手ターン中に効果で自軍のユニットをバトルエリアに出す場合も）。
+//   そのターンの各アクションの前後でラッシュエリアに増えたユニットを記録する（trackSpIncomeEntries。判定は rules/rushAreaEntries.ts で【ゼニボム】と共通）。
+// - 対象は相手（制限を受ける軍）のユニットだけ（新しく出たユニットもホールド状態のユニットも）。
+//   ユーザー決定（2026-10-19）:「ゼニボムとSPインカム両方とも相手ユニットが対象。新しくラッシュエリアに出たユニットに関しては、
+//   ゼニボムとSPインカム両方とも手段は問わない。」（docs/rules/README.md §5.7）
 
 function armSpIncome(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const armer = ctx.playerId;
@@ -761,19 +764,14 @@ function activeSpIncome(state: GameState): Array<NonNullable<NonNullable<GameSta
 }
 
 /**
- * applyAction の後処理: 【SPインカム】が有効なターンに、場の外からラッシュエリアに出たユニットを記録する。
+ * applyAction の後処理: 【SPインカム】が有効なターンに、場の外から制限を受ける軍（相手）のラッシュエリアに出たユニットを記録する。
  * 前の状態でどちらかのエリア（ラッシュ・バトル）にあったユニットは「新しく」出たものではない。
  */
 export function trackSpIncomeEntries(before: GameState, after: GameState): GameState {
-  if (activeSpIncome(after).length === 0) return after;
-  const onField = new Set<string>();
-  for (const pid of ["player1", "player2"] as const) {
-    for (const c of [...before.players[pid].rush, ...before.players[pid].battle]) onField.add(c.instanceId);
-  }
-  const entered = (["player1", "player2"] as const)
-    .flatMap((pid) => after.players[pid].rush)
-    .map((c) => c.instanceId)
-    .filter((id) => !onField.has(id));
+  const active = activeSpIncome(after);
+  if (active.length === 0) return after;
+  const restricted = active[0]!.restrictedPlayerId;
+  const entered = newlyEnteredRushUnitIds(before, after, restricted);
   if (entered.length === 0) return after;
   const spIncome = (after.set9cMeta?.spIncome ?? []).map((e) =>
     e.turn === after.turn && turnPlayerOf(after) === e.restrictedPlayerId
@@ -783,9 +781,9 @@ export function trackSpIncomeEntries(before: GameState, after: GameState): GameS
   return { ...after, set9cMeta: { ...after.set9cMeta, spIncome } };
 }
 
-/** バトルエリアに出られない（rules/restrictions.ts canMoveUnitToBattle から呼ぶ）。両軍のユニットが対象。 */
-export function set9CBlocksBattleEntry(state: GameState, _playerId: PlayerId, unit: CardInstance): boolean {
-  const active = activeSpIncome(state);
+/** バトルエリアに出られない（rules/restrictions.ts canMoveUnitToBattle から呼ぶ）。制限を受ける軍（相手）のユニットだけが対象。 */
+export function set9CBlocksBattleEntry(state: GameState, playerId: PlayerId, unit: CardInstance): boolean {
+  const active = activeSpIncome(state).filter((e) => e.restrictedPlayerId === playerId);
   if (active.length === 0) return false;
   if (unit.commandHeld) return true;
   return active.some((e) => (e.enteredInstanceIds ?? []).includes(unit.instanceId));

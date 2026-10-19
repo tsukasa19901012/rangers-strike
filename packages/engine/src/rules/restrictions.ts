@@ -3,6 +3,7 @@ import { filthyAirActive } from "./legend1/otherLinesNamedEffects";
 import { rk3BattleEntryBlocked } from "./rk/rk3UnitEffects";
 import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
 import { set9CBlocksBattleEntry } from "./legend1/set9NamedEffectsC";
+import { enteredRushAreaUnderZenibomb } from "./rushAreaEntries";
 import { ownAutoBattleEntryNegated } from "./legend1/set8NamedEffectsD";
 import { set8BRequiresBattleEntry } from "./legend1/set8NamedEffectsB";
 import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
@@ -116,10 +117,13 @@ export const DIRECT_BATTLE_RUSH_RESTRICTION = "direct_battle_rush";
  * 「ラッシュするとき可能ならバトルエリアに置く」（RS-090 レッドレーサー）はバトルエリアに直接ラッシュする効果で、
  * 「新しくラッシュエリアに出たユニット」にあたらない（atwiki/page-308 Q2・page-303 Q1「（2010/10/25修正）」。
  * docs/rules/README.md §1.2 例外2・§5.7 e）。
+ * 「新しくラッシュエリアに出たユニット」は手段を問わず、場の外からそのターンに相手のラッシュエリアに出たユニット
+ * （ユーザー決定 2026-10-19、docs/rules/README.md §5.7。判定は rules/rushAreaEntries.ts trackZenibombEntries）。
+ * バトルエリアからラッシュエリアに戻ったユニットは含まない。
  */
 export function zenibombBlocksBattleEntry(player: PlayerState, instanceId: string): boolean {
   if (!hasTurnRuleModifier(player, TURN_RULE_IDS.ZENIBOMB)) return false;
-  if (!wasRushedThisTurn(player, instanceId)) return false;
+  if (!enteredRushAreaUnderZenibomb(player, instanceId)) return false;
   return !hasScopedRestriction(player, instanceId, DIRECT_BATTLE_RUSH_RESTRICTION);
 }
 
@@ -915,7 +919,7 @@ export function explainCannotEnterBattle(
   }
 
   if (zenibombBlocksBattleEntry(player, unit.instanceId)) {
-    return "相手の【ゼニボム】の効果で、このターンにラッシュしたユニットはバトルエリアに出せません。";
+    return "相手の【ゼニボム】の効果で、このターン新しくラッシュエリアに出たユニットはバトルエリアに出せません。";
   }
 
   if (trafficControlRequiresSameSize(state, playerId, def?.size)) {
