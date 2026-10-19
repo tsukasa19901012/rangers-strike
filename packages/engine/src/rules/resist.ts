@@ -12,6 +12,7 @@ import type {
   PlayerId,
 } from "../types/game";
 import { findInZone, updatePlayer } from "../core/helpers";
+import { activeSearchCache } from "../core/searchCache";
 import type { LeaveIntent } from "./operationCounters";
 import { finalizeLeavePending } from "./operationCounters";
 import { resolveDestroyedFactEffects } from "./leaveEffects";
@@ -210,7 +211,16 @@ const AREA_ONLY_FIELDS = [
 ] as const;
 
 function stripAreaState(card: CardInstance, zone: (typeof NON_UNIT_ZONES)[number]): CardInstance {
-  const hasAreaField = AREA_ONLY_FIELDS.some((f) => card[f] !== undefined);
+  // 対局中のアクションごとにすべてのゾーンのカードを調べるので、配列のメソッドを使わずに見る（AREA_ONLY_FIELDS と同じ並び）。
+  const hasAreaField =
+    card.bpModifier !== undefined ||
+    card.spModifier !== undefined ||
+    card.spOverride !== undefined ||
+    card.registerHeld !== undefined ||
+    card.battleActed !== undefined ||
+    card.activatedNcEffects !== undefined ||
+    card.jointComboGrants !== undefined ||
+    card.mountedOnInstanceId !== undefined;
   // コマンドゾーン以外ではホールド（横向き）という状態自体がない。
   const staleHold = zone !== "command" && (card.commandHeld || card.mothershipHold || card.paymentHeld);
   // レジストのホールドが残ったままコマンドゾーンへ来たカードはリリース状態で置く（R-ZONE-09）。
@@ -236,19 +246,23 @@ function stripAreaState(card: CardInstance, zone: (typeof NON_UNIT_ZONES)[number
  */
 export function clearRegisterHoldOffField(state: GameState): GameState {
   let next = state;
+  const cleanZones = activeSearchCache()?.cleanZones;
   for (const pid of ["player1", "player2"] as const) {
     const player = next.players[pid];
     let patch: Partial<typeof player> | undefined;
     // ルール: R-KW-RIDE-05, R-KW-RC-01 — ライドしていたビークルがエリアを離れたら、ユニットはライドしていない状態になる
     // （ライドオフの手順ではないので RC は発動しない）。
-    const fieldIds = new Set([...player.rush, ...player.battle].map((c) => c.instanceId));
+    // 場のインスタンス ID の集合は、ライドしているユニットがあるときだけ作る。
+    let fieldIds: Set<string> | undefined;
+    const isOnField = (instanceId: string): boolean =>
+      (fieldIds ??= new Set([...player.rush, ...player.battle].map((c) => c.instanceId))).has(instanceId);
     for (const zone of ["rush", "battle"] as const) {
       const cards = player[zone];
-      if (!cards.some((c) => c.mountedOnInstanceId && !fieldIds.has(c.mountedOnInstanceId))) continue;
+      if (!cards.some((c) => c.mountedOnInstanceId && !isOnField(c.mountedOnInstanceId))) continue;
       patch = {
         ...patch,
         [zone]: cards.map((c) => {
-          if (!c.mountedOnInstanceId || fieldIds.has(c.mountedOnInstanceId)) return c;
+          if (!c.mountedOnInstanceId || isOnField(c.mountedOnInstanceId)) return c;
           const dismounted = { ...c };
           delete dismounted.mountedOnInstanceId;
           return dismounted;
@@ -258,13 +272,21 @@ export function clearRegisterHoldOffField(state: GameState): GameState {
     for (const zone of NON_UNIT_ZONES) {
       const cards = player[zone];
       if (!cards) continue;
-      let changed = false;
-      const mapped = cards.map((c) => {
+      // CPU の探索の間は、確かめ済みの配列を調べ直さない（core/searchCache.ts）。
+      if (cleanZones?.get(cards) === zone) continue;
+      // 変わったカードが無ければ配列を作り直さない。
+      let mapped: CardInstance[] | undefined;
+      for (let i = 0; i < cards.length; i += 1) {
+        const c = cards[i]!;
         const n = stripAreaState(c, zone);
-        if (n !== c) changed = true;
-        return n;
-      });
-      if (changed) patch = { ...patch, [zone]: mapped };
+        if (mapped) mapped.push(n);
+        else if (n !== c) {
+          mapped = cards.slice(0, i);
+          mapped.push(n);
+        }
+      }
+      if (mapped) patch = { ...patch, [zone]: mapped };
+      else cleanZones?.set(cards, zone);
     }
     if (patch) next = { ...next, ...updatePlayer(next, pid, { ...player, ...patch }) };
   }

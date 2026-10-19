@@ -20,6 +20,11 @@ export type SearchCache = {
    * 状態ごと・種類とプレイヤーごと・カードのインスタンスのオブジェクトごと。
    */
   perCard: WeakMap<GameState, Map<string, Map<object, number>>>;
+  /**
+   * rules/resist.ts clearRegisterHoldOffField で、エリアで得た付加情報が残っていないと確かめたゾーンの配列と、そのゾーンの名前
+   * （探索の間は配列を書き換えないので、同じ配列は調べ直さない）。
+   */
+  cleanZones: WeakMap<object, string>;
 };
 
 let active: SearchCache | null = null;
@@ -27,7 +32,7 @@ let active: SearchCache | null = null;
 /** fn の間、状態ごとの計算結果を使い回す（入れ子の呼び出しは外側の表を使う）。fn の間は状態を書き換えないこと。 */
 export function withSearchCache<T>(fn: () => T): T {
   if (active) return fn();
-  active = { legalActions: new WeakMap(), memo: new WeakMap(), perCard: new WeakMap() };
+  active = { legalActions: new WeakMap(), memo: new WeakMap(), perCard: new WeakMap(), cleanZones: new WeakMap() };
   try {
     return fn();
   } finally {
