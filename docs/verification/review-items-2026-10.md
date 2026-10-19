@@ -439,6 +439,8 @@
 - `packages/engine/src/rules/legend1/set9NamedEffectsB.ts:306`〜367（候補の絞り込みは 315 行）
 - スペック：`packages/engine/src/cardSpec/RS9-627-647.b.test.ts:52`
 
+**【2026-10-19 ユーザー確認】** 選べるのはホールド状態の敵軍コマンドだけ、で合っている（ユーザーの回答）。今の実装のままでよい。
+
 ## B-2. RS-636〜638 ネジレンジャー：※の条件は両軍のホールド状態のコマンドを数える
 
 **カード本文**（`page-1437-RS-636.md`・`page-1488-RS-637.md`・`page-1438-RS-638.md`）
@@ -465,6 +467,8 @@
 - `packages/engine/src/rules/combo.ts:617`〜622
 - DSL：`packages/cards/src/dsl/generated/RS-636.dsl.json:30`
 - スペック：`packages/engine/src/cardSpec/RS9-627-647.b.test.ts:248`（自軍）・259 行（敵軍）
+
+**【2026-10-19 ユーザー確認】** 両軍のホールド状態のコマンドを数える、で合っている（ユーザーの回答）。今の実装のままでよい。
 
 ## B-3. RS-647 ピヨちゃん：ピヨちゃん自身の「※レジスト」を削除
 
