@@ -1,4 +1,4 @@
-import { xg7NcAnyNumberAt } from "./xg7/xg7Fields";
+import { xg7ComboNumberDelta, xg7NcAnyNumberAt } from "./xg7/xg7Fields";
 import { rm1ComboNumber } from "./rm/rm1Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { falconBreakTriggers } from "./rs4NcEffects";
@@ -87,6 +87,8 @@ export function ncEffectiveNumber(
     card,
     (gravityComboNumber(state, card, definition) ?? definition.comboNumber) +
       set8NumberDelta(state.players[playerId], card) +
+      // XG7-025 ※（リリース状態の自軍コマンド1つにつき1少なくなる。rules/xg7/xg7Fields.ts）。
+      xg7ComboNumberDelta(state, playerId, card) +
       set8BComboNumberBonus(state, definition),
   );
   return crossReducedNumber(

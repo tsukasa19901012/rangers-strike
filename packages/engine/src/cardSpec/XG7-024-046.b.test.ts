@@ -39,6 +39,7 @@ import {
   legal,
   ncBoard,
   p1Battle,
+  passEntry,
   pick,
   played,
   powerCards,
@@ -88,13 +89,13 @@ describe("XG7-032 仮面ライダー新2号×仮面ライダー新1号", () => {
 
   crossTests("XG7-032", "atwiki/page-2388");
   extraHoldTests("XG7-032", ["ET"], "5+", "atwiki/page-2388");
-  breakerTests("XG7-032", "atwiki/page-2388", EXTRA, { breaker_name: "※ブレイカーの同名ラッシュ制限が効かない" });
+  breakerTests("XG7-032", "atwiki/page-2388", EXTRA);
 
   /** 自軍バトルフェイズ、XG7-032 をビークルにライドさせて出し、ライドオフ（RC）する。 */
   const rc = (p2: Partial<GameState["players"]["player2"]> = {}) =>
     resolveAll(settle(rcRideOff(p1Battle({ rush: [inst("XG7-032", "x"), inst("SPEC-V", "v")] }, p2, EXTRA), "XG7-032:x", "SPEC-V:v")));
 
-  it.fails("XG7-032: 【ライダーダブルキック】RC（ライドオフ）— このターン SP1 になり、BP+2000（8000）（出典: atwiki/page-2388「【ライダーダブルキック】SP1 このターン、これはBP+2000される」・rules/07-keywords R-KW-RC-01） — 既知の不具合: CARD-XG7-032 【ライダーダブルキック】（RC の SP1・BP+2000・本来の BP でのバトル・ホールド禁止）が未実装", () => {
+  it("XG7-032: 【ライダーダブルキック】RC（ライドオフ）— このターン SP1 になり、BP+2000（8000）（出典: atwiki/page-2388「【ライダーダブルキック】SP1 このターン、これはBP+2000される」・rules/07-keywords R-KW-RC-01）", () => {
     const s = rc();
     expect(spOf(s, "player1", "XG7-032:x")).toBe(1);
     expect(bpOf(s, "player1", "XG7-032:x")).toBe(8000);
@@ -105,13 +106,13 @@ describe("XG7-032 仮面ライダー新2号×仮面ライダー新1号", () => {
     expect(bpOf(s, "player1", "XG7-032:x")).toBe(6000);
   });
 
-  it.fails("XG7-032: 【ライダーダブルキック】アタックするとき、バトル相手の BP は本来の値（BP3000 に +6000 されている敵軍ユニットとも 3000 でバトルする）（出典: atwiki/page-2388「バトル相手のユニットのBPをカードに表記された本来の値としてバトルし」） — 既知の不具合: CARD-XG7-032 【ライダーダブルキック】（RC の SP1・BP+2000・本来の BP でのバトル・ホールド禁止）が未実装", () => {
+  it("XG7-032: 【ライダーダブルキック】アタックするとき、バトル相手の BP は本来の値（BP3000 に +6000 されている敵軍ユニットとも 3000 でバトルする）（出典: atwiki/page-2388「バトル相手のユニットのBPをカードに表記された本来の値としてバトルし」）", () => {
     const s = settle(attack(rc({ battle: [{ ...inst("SPEC-E3000", "e"), bpModifier: 6000 }] }), "XG7-032:x", "SPEC-E3000:e"));
     expect(lastBattleBps(s)?.defender).toBe(3000);
     expect(zoneOf(s, "player2", "SPEC-E3000:e")).toBe("discard");
   });
 
-  it.fails("XG7-032: 【ライダーダブルキック】アタックしたバトルでは、敵軍ユニットはホールドできない（レジストの XG7-026 は撃破されてもレジストを使えない）（出典: atwiki/page-2388「すべての敵軍ユニットはホールドすることができない」・カード評価「レジストやリードからのカウンターを防ぐ」） — 既知の不具合: CARD-XG7-032 【ライダーダブルキック】（RC の SP1・BP+2000・本来の BP でのバトル・ホールド禁止）が未実装", () => {
+  it("XG7-032: 【ライダーダブルキック】アタックしたバトルでは、敵軍ユニットはホールドできない（レジストの XG7-026 は撃破されてもレジストを使えない）（出典: atwiki/page-2388「すべての敵軍ユニットはホールドすることができない」・カード評価「レジストやリードからのカウンターを防ぐ」）", () => {
     const s = attack(rc({ battle: [inst("XG7-026", "e")] }), "XG7-032:x", "XG7-026:e");
     expect(registerOffered(settleUntilRegister(s), "player2")).toBe(false);
   });
@@ -164,14 +165,14 @@ describe("XG7-033 仮面ライダーV3×ライダーマン", () => {
     return back ? act(s, back) : s;
   };
 
-  it.fails("XG7-033: 【復讐の果てに得たもの】自軍バトルエリアからラッシュエリアに戻ったとき、これをホールドするかを選べる（任意）（出典: atwiki/page-2427「これをホールドしてもよい」） — 既知の不具合: CARD-XG7-033 【復讐の果てに得たもの】（ラッシュエリアに戻ったときのホールドと敵軍ユニットの引き出し）が未実装", () => {
+  it("XG7-033: 【復讐の果てに得たもの】自軍バトルエリアからラッシュエリアに戻ったとき、これをホールドするかを選べる（任意）（出典: atwiki/page-2427「これをホールドしてもよい」）", () => {
     const s = returned();
     expect(zoneOf(s, "player1", "XG7-033:v")).toBe("rush");
     expectChoiceFrom(s, "player1", "XG7-033");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-033: 【復讐の果てに得たもの】ホールドしたとき、敵軍ラッシュエリアのユニット（サイズを問わない）を1体選び、バトルエリアに出す（出典: atwiki/page-2427「敵軍ラッシュエリアからユニットを1体選び、可能ならバトルエリアに出す」） — 既知の不具合: CARD-XG7-033 【復讐の果てに得たもの】（ラッシュエリアに戻ったときのホールドと敵軍ユニットの引き出し）が未実装", () => {
+  it("XG7-033: 【復讐の果てに得たもの】ホールドしたとき、敵軍ラッシュエリアのユニット（サイズを問わない）を1体選び、バトルエリアに出す（出典: atwiki/page-2427「敵軍ラッシュエリアからユニットを1体選び、可能ならバトルエリアに出す」）", () => {
     const s = resolveAll(returned(), ["XG7-033:v", "SPEC-E-M:rm"]);
     expect(isHeld(s, "player1", "XG7-033:v")).toBe(true);
     expect(zoneOf(s, "player2", "SPEC-E-M:rm")).toBe("battle");
@@ -197,11 +198,11 @@ describe("XG7-034 仮面ライダーストロンガー×電波人間タックル
 
   const hit = (target: string) => settle(attack(enter(p1Battle({ rush: [inst("XG7-034", "s")] }, { battle: [inst(target, "e")] }, EXTRA), "XG7-034:s"), "XG7-034:s", `${target}:e`));
 
-  it.fails("XG7-034: 【天が呼ぶ…】DA を持つユニットにアタックするとき BP+2000（5000）（出典: atwiki/page-2384「DAを持つ…ユニットにアタックするとき、BP+2000される」） — 既知の不具合: CARD-XG7-034 【天が呼ぶ、地が呼ぶ、人が呼ぶ】（DA か SP のあるユニットへのアタックで BP+2000）が未実装", () => {
+  it("XG7-034: 【天が呼ぶ…】DA を持つユニットにアタックするとき BP+2000（5000）（出典: atwiki/page-2384「DAを持つ…ユニットにアタックするとき、BP+2000される」）", () => {
     expect(lastBattleBps(hit("SPEC-E-DA"))?.attacker).toBe(5000);
   });
 
-  it.fails("XG7-034: 【天が呼ぶ…】SP が空欄ではない（SP1/5）ユニットにアタックするとき BP+2000（5000）（出典: atwiki/page-2384「SPが空欄ではないユニット」） — 既知の不具合: CARD-XG7-034 【天が呼ぶ、地が呼ぶ、人が呼ぶ】（DA か SP のあるユニットへのアタックで BP+2000）が未実装", () => {
+  it("XG7-034: 【天が呼ぶ…】SP が空欄ではない（SP1/5）ユニットにアタックするとき BP+2000（5000）（出典: atwiki/page-2384「SPが空欄ではないユニット」）", () => {
     expect(lastBattleBps(hit("SPEC-E-SP"))?.attacker).toBe(5000);
   });
 
@@ -222,14 +223,14 @@ describe("XG7-035 ヨロイ騎士", () => {
 
   const yoroi = () => nc("XG7-035:y", 1, { discard: [inst("TST-OP", "d0")] }, { battle: [inst("XG7-026", "x"), inst("SPEC-ENEMY", "e")], rush: [inst("XG7-033", "xr")] });
 
-  it.fails("XG7-035: 【結束するデルザー改造魔人】NC（2番目）— 自軍捨札から1枚選んで除外するかを選べる（任意）（出典: atwiki/page-2421「自軍捨札を1枚選び、ゲームから除外してもよい」） — 既知の不具合: CARD-XG7-035 【結束するデルザー改造魔人】（捨札の除外・クロス1・クロス1 を持つ敵軍 S ユニットの撃破）が未実装", () => {
+  it("XG7-035: 【結束するデルザー改造魔人】NC（2番目）— 自軍捨札から1枚選んで除外するかを選べる（任意）（出典: atwiki/page-2421「自軍捨札を1枚選び、ゲームから除外してもよい」）", () => {
     const s = yoroi();
     expectChoiceFrom(s, "player1", "XG7-035");
     expect(choiceIds(s)).toEqual(["TST-OP:d0"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-035: 【結束するデルザー改造魔人】除外したとき、クロス1 を持つ敵軍 S ユニット（エリアを問わない）を1体選び撃破する（クロス1 を持たない SPEC-ENEMY は選べない）（出典: atwiki/page-2421「その後、クロス1を持つ敵軍Sユニットを1体選び撃破する」） — 既知の不具合: CARD-XG7-035 【結束するデルザー改造魔人】（捨札の除外・クロス1・クロス1 を持つ敵軍 S ユニットの撃破）が未実装", () => {
+  it("XG7-035: 【結束するデルザー改造魔人】除外したとき、クロス1 を持つ敵軍 S ユニット（エリアを問わない）を1体選び撃破する（クロス1 を持たない SPEC-ENEMY は選べない）（出典: atwiki/page-2421「その後、クロス1を持つ敵軍Sユニットを1体選び撃破する」）", () => {
     let s = pick(yoroi(), "TST-OP:d0");
     expect((s.players.player1.exile ?? []).map((c) => c.instanceId)).toContain("TST-OP:d0");
     expectChoiceFrom(s, "player1", "XG7-035");
@@ -238,17 +239,17 @@ describe("XG7-035 ヨロイ騎士", () => {
     expect(zoneOf(s, "player2", "XG7-033:xr")).toBe("discard");
   });
 
-  it.fails("XG7-035: 【結束するデルザー改造魔人】除外しなければ撃破もしない（出典: atwiki/page-2421「そうしたとき、…その後、…撃破する」） — 既知の不具合: CARD-XG7-035 【結束するデルザー改造魔人】（捨札の除外・クロス1・クロス1 を持つ敵軍 S ユニットの撃破）が未実装", () => {
+  it("XG7-035: 【結束するデルザー改造魔人】除外しなければ撃破もしない（出典: atwiki/page-2421「そうしたとき、…その後、…撃破する」）", () => {
     const s = resolveAll(skip(yoroi()));
     expect(zoneOf(s, "player2", "XG7-026:x")).toBe("battle");
     expect(zoneOf(s, "player2", "XG7-033:xr")).toBe("rush");
   });
 
-  it.fails("XG7-035: 【結束するデルザー改造魔人】除外したとき、このターン、これはクロス1 を得る — 続けて右に出た SP1/3 のユニット（3番目）が SP1 になる（出典: atwiki/page-2421「このターン、これはクロス1を得る」・atwiki/page-2393 規定文） — 既知の不具合: CARD-XG7-035 【結束するデルザー改造魔人】（捨札の除外・クロス1・クロス1 を持つ敵軍 S ユニットの撃破）が未実装", () => {
-    const FRAC = sUnit("SPEC-XFRAC3", { sp: "1/3", bp: 1000 } as never);
-    let s = resolveAll(pick(ncBoard("XG7-035:y", 1, { discard: [inst("TST-OP", "d0")], rush: [inst("SPEC-XFRAC3", "f")] }, {}, [...EXTRA, FRAC]), "TST-OP:d0"));
-    s = resolveAll(enter(s, "SPEC-XFRAC3:f"));
-    expect(spOf(s, "player1", "SPEC-XFRAC3:f")).toBe(1);
+  it("XG7-035: 【結束するデルザー改造魔人】除外したとき、このターン、これはクロス1 を得る — 続けて右に出た SP1/4 のユニット（3番目）が SP1 になる（分母が1少なくなる）（出典: atwiki/page-2421「このターン、これはクロス1を得る」・atwiki/page-2393 規定文）", () => {
+    const FRAC = sUnit("SPEC-XFRAC4", { sp: "1/4", bp: 1000 } as never);
+    let s = resolveAll(pick(ncBoard("XG7-035:y", 1, { discard: [inst("TST-OP", "d0")], rush: [inst("SPEC-XFRAC4", "f")] }, {}, [...EXTRA, FRAC]), "TST-OP:d0"));
+    s = resolveAll(enter(passEntry(s), "SPEC-XFRAC4:f"));
+    expect(spOf(s, "player1", "SPEC-XFRAC4:f")).toBe(1);
   });
 });
 
@@ -283,7 +284,7 @@ describe("XG7-036 仮面ライダーナイト×仮面ライダー龍騎", () => 
     expect(zoneOf(t, "player1", "XG7-036:n")).toBe("discard");
   });
 
-  it.fails("XG7-036: 【戦わなければ生き残れない】自軍ラッシュフェイズに、能力の宣言を起動できる（出典: atwiki/page-2436「自軍ラッシュフェイズごとに1度だけ、…どれか1つを宣言してもよい」） — 既知の不具合: CARD-XG7-036 【戦わなければ生き残れない】（能力の宣言）が未実装", () => {
+  it("XG7-036: 【戦わなければ生き残れない】自軍ラッシュフェイズに、能力の宣言を起動できる（出典: atwiki/page-2436「自軍ラッシュフェイズごとに1度だけ、…どれか1つを宣言してもよい」）", () => {
     expect(canActivate(rushPhaseOf({ rush: [inst("XG7-036", "n")] }, {}, EXTRA), "XG7-036:n")).toBe(true);
   });
 
@@ -309,7 +310,7 @@ describe("XG7-037 仮面ライダーカイザ×仮面ライダーファイズ", 
   /** バトルエリアにいる XG7-037 が target にアタックする（【紅と金】は絡めない）。 */
   const kaixa = (target: string) => settle(attack(p1Battle({ battle: [inst("XG7-037", "k")] }, { battle: [inst(target, "e")] }, EXTRA), "XG7-037:k", `${target}:e`));
 
-  it.fails("XG7-037: ※ アタックして BP の下三桁が500（BP1500）の敵軍 S ユニットを撃破したとき、相手に1点ダメージ（出典: atwiki/page-2428「BPの下三桁が500の敵軍Sユニットを撃破したとき、相手に1点ダメージを与える」） — 既知の不具合: CARD-XG7-037 BP の下三桁が500のユニットを撃破したときの1点ダメージが未実装", () => {
+  it("XG7-037: ※ アタックして BP の下三桁が500（BP1500）の敵軍 S ユニットを撃破したとき、相手に1点ダメージ（出典: atwiki/page-2428「BPの下三桁が500の敵軍Sユニットを撃破したとき、相手に1点ダメージを与える」）", () => {
     const s = kaixa("SPEC-E1500");
     expect(zoneOf(s, "player2", "SPEC-E1500:e")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(1);
@@ -324,21 +325,22 @@ describe("XG7-037 仮面ライダーカイザ×仮面ライダーファイズ", 
   const red = () =>
     enter(p1Battle({ rush: [inst("XG7-037", "k")], hand: [inst("TST-OP", "h0"), inst("TST-OP", "h1"), inst("TST-OP", "h2")], command: releasedCat("ET", 1, "c") }, { battle: [inst("SPEC-E3000", "a"), inst("SPEC-E-M", "m")] }, EXTRA), "XG7-037:k");
 
-  it.fails("XG7-037: 【紅と金】自軍ターン中、バトルエリアに出たとき、手札を1枚選ぶ（任意）（出典: atwiki/page-2428「次の効果を2回まで発動できる⇒自分の手札を1枚選び」） — 既知の不具合: CARD-XG7-037 【紅と金】が本文と違う（手札を置く選択がなく、敵軍ユニットを選ばせて見送れない）", () => {
+  it("XG7-037: 【紅と金】自軍ターン中、バトルエリアに出たとき、手札を1枚選ぶ（任意）（出典: atwiki/page-2428「次の効果を2回まで発動できる⇒自分の手札を1枚選び」）", () => {
     const s = red();
     expectChoiceFrom(s, "player1", "XG7-037");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-037: 【紅と金】選んだ手札を自軍コマンドゾーンにホールド状態で置き、敵軍ユニット（サイズを問わない）を1体選びこのターン BP-1500（出典: atwiki/page-2428「自軍コマンドゾーンにホールド状態で置く。そうしたとき、敵軍ユニットを1体選び、このターン、BP-1500する」・カード評価「サイズを無視してBPを下げる」） — 既知の不具合: CARD-XG7-037 【紅と金】が本文と違う（手札を置く選択がなく、敵軍ユニットを選ばせて見送れない）", () => {
+  it("XG7-037: 【紅と金】選んだ手札を自軍コマンドゾーンにホールド状態で置き、敵軍ユニット（サイズを問わない）を1体選びこのターン BP-1500（出典: atwiki/page-2428「自軍コマンドゾーンにホールド状態で置く。そうしたとき、敵軍ユニットを1体選び、このターン、BP-1500する」・カード評価「サイズを無視してBPを下げる」）", () => {
     const s = resolveAll(red(), ["TST-OP:h0", "SPEC-E-M:m", "__none__"]);
     expect(zoneOf(s, "player1", "TST-OP:h0")).toBe("command");
     expect(cardIn(s, "player1", "TST-OP:h0")?.commandHeld).toBe(true);
     expect(bpOf(s, "player2", "SPEC-E-M:m")).toBe(1500);
   });
 
-  it.fails("XG7-037: 【紅と金】2回まで発動できる（2回目で別の手札を置き、BP3000 の敵軍ユニットを BP1500 に）（出典: atwiki/page-2428「次の効果を2回まで発動できる」） — 既知の不具合: CARD-XG7-037 【紅と金】が本文と違う（手札を置く選択がなく、敵軍ユニットを選ばせて見送れない）", () => {
-    const s = resolveAll(red(), ["TST-OP:h0", "SPEC-E-M:m", "TST-OP:h1", "SPEC-E3000:a", "__none__"]);
+  it("XG7-037: 【紅と金】2回まで発動できる（2回目で別の手札を置き、BP3000 の敵軍ユニットを BP1500 に）（出典: atwiki/page-2428「次の効果を2回まで発動できる」）", () => {
+    let s = pick(pick(pick(red(), "TST-OP:h0"), "SPEC-E-M:m"), "TST-OP:h1");
+    s = resolveAll(pick(s, "SPEC-E3000:a"));
     expect(zoneOf(s, "player1", "TST-OP:h1")).toBe("command");
     expect(bpOf(s, "player2", "SPEC-E3000:a")).toBe(1500);
     expect(zoneOf(s, "player1", "TST-OP:h2")).toBe("hand");
@@ -366,21 +368,22 @@ describe("XG7-038 仮面ライダーギャレン×仮面ライダーブレイド
   const blast = (hand: CardInstance[]) =>
     enter(p1Battle({ rush: [inst("XG7-038", "g")], hand }, { battle: [inst("SPEC-E3000", "b")], rush: [inst("SPEC-ENEMY", "r"), inst("SPEC-E-M", "m")] }, EXTRA), "XG7-038:g");
 
-  it.fails("XG7-038: 【ライトニングブラスト&バーニングスマッシュ】自軍ターン中、バトルエリアに出たとき、手札を2枚選んで見せるかを選べる（任意）（出典: atwiki/page-2437「自分の手札を2枚選び、相手に見せてもよい」） — 既知の不具合: CARD-XG7-038 【ライトニングブラスト&バーニングスマッシュ】（手札2枚を見せてホールド・撃破）が未実装", () => {
+  it("XG7-038: 【ライトニングブラスト&バーニングスマッシュ】自軍ターン中、バトルエリアに出たとき、手札を2枚選んで見せるかを選べる（任意）（出典: atwiki/page-2437「自分の手札を2枚選び、相手に見せてもよい」）", () => {
     const s = blast([inst("SPEC-WB-C", "w1"), inst("SPEC-WB-C2", "w2")]);
     expectChoiceFrom(s, "player1", "XG7-038");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-038: 【ライトニングブラスト&バーニングスマッシュ】見せたとき、敵軍 S ユニット（エリアを問わない）を1体ホールドし、見せた2枚が同じカテゴリ（WB）なら敵軍 S ユニットを1体撃破する（出典: atwiki/page-2437「敵軍Sユニットを1体選びホールドする。その後、見せたカードのカテゴリが同じなら、敵軍Sユニットを1体選び撃破する」・カード評価「エリアを問わないホールド・撃破能力」） — 既知の不具合: CARD-XG7-038 【ライトニングブラスト&バーニングスマッシュ】（手札2枚を見せてホールド・撃破）が未実装", () => {
-    const s = resolveAll(blast([inst("SPEC-WB-C", "w1"), inst("SPEC-WB-C2", "w2")]), ["SPEC-WB-C:w1", "SPEC-WB-C2:w2", "SPEC-ENEMY:r", "SPEC-E3000:b"]);
+  it("XG7-038: 【ライトニングブラスト&バーニングスマッシュ】見せたとき、敵軍 S ユニット（エリアを問わない）を1体ホールドし、見せた2枚が同じカテゴリ（WB）なら敵軍 S ユニットを1体撃破する（出典: atwiki/page-2437「敵軍Sユニットを1体選びホールドする。その後、見せたカードのカテゴリが同じなら、敵軍Sユニットを1体選び撃破する」・カード評価「エリアを問わないホールド・撃破能力」）", () => {
+    let s = pick(pick(blast([inst("SPEC-WB-C", "w1"), inst("SPEC-WB-C2", "w2")]), "SPEC-WB-C:w1"), "SPEC-WB-C2:w2");
+    s = resolveAll(pick(pick(s, "SPEC-ENEMY:r"), "SPEC-E3000:b"));
     expect(isHeld(s, "player2", "SPEC-ENEMY:r")).toBe(true);
     expect(zoneOf(s, "player2", "SPEC-E3000:b")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E-M:m")).toBe("rush");
     expect(zoneOf(s, "player1", "SPEC-WB-C:w1")).toBe("hand");
   });
 
-  it.fails("XG7-038: 【ライトニングブラスト&バーニングスマッシュ】見せた2枚のカテゴリが違えば（WB と MA）ホールドだけで撃破しない（出典: atwiki/page-2437「見せたカードのカテゴリが同じなら」） — 既知の不具合: CARD-XG7-038 【ライトニングブラスト&バーニングスマッシュ】（手札2枚を見せてホールド・撃破）が未実装", () => {
+  it("XG7-038: 【ライトニングブラスト&バーニングスマッシュ】見せた2枚のカテゴリが違えば（WB と MA）ホールドだけで撃破しない（出典: atwiki/page-2437「見せたカードのカテゴリが同じなら」）", () => {
     const s = resolveAll(blast([inst("SPEC-WB-C", "w1"), inst("SPEC-MA-C", "m1")]), ["SPEC-WB-C:w1", "SPEC-MA-C:m1", "SPEC-ENEMY:r", "SPEC-E3000:b"]);
     expect(isHeld(s, "player2", "SPEC-ENEMY:r")).toBe(true);
     expect(zoneOf(s, "player2", "SPEC-E3000:b")).toBe("battle");
@@ -414,7 +417,7 @@ describe("XG7-039 GOD SPEED LOVE", () => {
       EXTRA,
     );
 
-  it.fails("XG7-039: 自軍ラッシュフェイズに起動し、特徴「加速」を持つ自軍ユニットを1体除外できる（加速を持たないユニットは選べない）（出典: atwiki/page-2402「『特徴「加速」を持つ自軍ユニット1体をゲームから除外する』を実行してもよい」） — 既知の不具合: CARD-XG7-039 常駐の起動（加速のユニットの除外とパワーゾーンのカードの戻し）が未実装", () => {
+  it("XG7-039: 自軍ラッシュフェイズに起動し、特徴「加速」を持つ自軍ユニットを1体除外できる（加速を持たないユニットは選べない）（出典: atwiki/page-2402「『特徴「加速」を持つ自軍ユニット1体をゲームから除外する』を実行してもよい」）", () => {
     const s = activateResident(board(), "XG7-039:gs");
     expectChoiceFrom(s, "player1", "XG7-039");
     expect(choiceIds(s)).toEqual(["SPEC-ACCEL:a"]);
@@ -422,7 +425,7 @@ describe("XG7-039 GOD SPEED LOVE", () => {
     expect((t.players.player1.exile ?? []).map((c) => c.instanceId)).toContain("SPEC-ACCEL:a");
   });
 
-  it.fails("XG7-039: 除外したとき、自分が自軍パワーゾーンのカード（ウラ向きも選べる）を1枚選び手札に戻し、続いて相手も自分自身のパワーゾーンから1枚選ぶ（出典: atwiki/page-2402「次の効果を自分、相手の順に行う⇒自分自身のパワーゾーンのカードを（ウラ向きのカードはウラ向きのまま）1枚選び、オモテにするか手札に戻す」） — 既知の不具合: CARD-XG7-039 常駐の起動（加速のユニットの除外とパワーゾーンのカードの戻し）が未実装", () => {
+  it("XG7-039: 除外したとき、自分が自軍パワーゾーンのカード（ウラ向きも選べる）を1枚選び手札に戻し、続いて相手も自分自身のパワーゾーンから1枚選ぶ（出典: atwiki/page-2402「次の効果を自分、相手の順に行う⇒自分自身のパワーゾーンのカードを（ウラ向きのカードはウラ向きのまま）1枚選び、オモテにするか手札に戻す」）", () => {
     let s = pick(activateResident(board(), "XG7-039:gs"), "SPEC-ACCEL:a");
     expectChoiceFrom(s, "player1", "XG7-039");
     expect(choiceIds(s)).toEqual(expect.arrayContaining(["TST-P:pd", "TST-P:pu"]));
@@ -431,7 +434,7 @@ describe("XG7-039 GOD SPEED LOVE", () => {
     expect(s.pendingEffectChoice?.playerId ?? "none").not.toBe("player1");
   });
 
-  it.fails("XG7-039: ウラ向き（ダメージ）のカードをオモテにできる（出典: atwiki/page-2402「オモテにするか手札に戻す」） — 既知の不具合: CARD-XG7-039 常駐の起動（加速のユニットの除外とパワーゾーンのカードの戻し）が未実装", () => {
+  it("XG7-039: ウラ向き（ダメージ）のカードをオモテにできる（出典: atwiki/page-2402「オモテにするか手札に戻す」）", () => {
     let s = pick(activateResident(board(), "XG7-039:gs"), "SPEC-ACCEL:a");
     s = resolveAll(s, ["TST-P:pd", "faceup"]);
     expect(zoneOf(s, "player1", "TST-P:pd")).toBe("power");

@@ -120,7 +120,7 @@ describe("XG7-024 獣拳神サイダイン", () => {
     expect(s.players.player1.hand).toHaveLength(1);
   });
 
-  it.fails("XG7-024: ※ 自軍「ゲキチョッパー」がなければドローしない（出典: atwiki/page-2418「…があれば」） — 既知の不具合: CARD-XG7-024 自軍「ゲキチョッパー」がなくてもドローする", () => {
+  it("XG7-024: ※ 自軍「ゲキチョッパー」がなければドローしない（出典: atwiki/page-2418「…があれば」）", () => {
     const s = resolveAll(rushFromHand(rushBoard([inst("SPEC-GEKI-S", "g")]), "player1", "XG7-024:sd").state);
     expect(s.players.player1.hand).toHaveLength(0);
   });
@@ -128,14 +128,14 @@ describe("XG7-024 獣拳神サイダイン", () => {
   const bloom = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     enter(p1Battle({ rush: [inst("XG7-024", "sd"), inst("SPEC-GEKI-S", "g")], hand: [inst("SPEC-WB-M1", "m1"), inst("SPEC-WB-M2", "m2"), inst("SPEC-MA-M1", "ma"), inst("SPEC-WB-S1", "s1")], ...p1 }, {}, EXTRA), "SPEC-GEKI-S:g");
 
-  it.fails("XG7-024: 【獣力開花】これが自軍エリアにある間、特徴「激気」のユニットがバトルエリアに出たとき、手札の、それより必要パワーの数字が小さい WB の M ユニットのカードから1枚選べる（任意）（出典: atwiki/page-2418「これの必要パワーの数字よりも必要パワーの数字が小さいWBのMユニットのカードを1枚選び、自分自身のラッシュエリアに出してもよい」） — 既知の不具合: CARD-XG7-024 【獣力開花】（激気のユニットに手札の WB の M ユニットを出す能力を与える）が未実装", () => {
+  it("XG7-024: 【獣力開花】これが自軍エリアにある間、特徴「激気」のユニットがバトルエリアに出たとき、手札の、それより必要パワーの数字が小さい WB の M ユニットのカードから1枚選べる（任意）（出典: atwiki/page-2418「これの必要パワーの数字よりも必要パワーの数字が小さいWBのMユニットのカードを1枚選び、自分自身のラッシュエリアに出してもよい」）", () => {
     const s = bloom();
     expectChoiceFrom(s, "player1", "XG7-024");
     expect(choiceIds(s)).toEqual(["SPEC-WB-M1:m1", "SPEC-WB-M2:m2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-024: 【獣力開花】選んだカードを自軍ラッシュエリアに出す（出典: atwiki/page-2418） — 既知の不具合: CARD-XG7-024 【獣力開花】（激気のユニットに手札の WB の M ユニットを出す能力を与える）が未実装", () => {
+  it("XG7-024: 【獣力開花】選んだカードを自軍ラッシュエリアに出す（出典: atwiki/page-2418）", () => {
     const s = resolveAll(bloom(), ["SPEC-WB-M2:m2"]);
     expect(zoneOf(s, "player1", "SPEC-WB-M2:m2")).toBe("rush");
   });
@@ -173,14 +173,14 @@ describe("XG7-025 ゴーオンシルバー×ゴーオンゴールド", () => {
     return settle(attack(s, "XG7-025:gg", "SPEC-E-B:b"));
   };
 
-  it.fails("XG7-025: ※ナンバーの減少 — リリース状態の自軍コマンド2つで CN4 になり、4番目で【正義のツバサ】が働く（撃破したユニットと隣り合う S ユニットから1体選べる・任意）（出典: atwiki/page-2391「リリース状態の自軍コマンド1つにつき1少なくなる」「そのユニットと隣り合うSユニットを1体選び撃破してもよい」） — 既知の不具合: CARD-XG7-025 【正義のツバサ】（撃破したユニットと隣り合う S ユニットの撃破）が未実装", () => {
+  it("XG7-025: ※ナンバーの減少 — リリース状態の自軍コマンド2つで CN4 になり、4番目で【正義のツバサ】が働く（撃破したユニットと隣り合う S ユニットから1体選べる・任意）（出典: atwiki/page-2391「リリース状態の自軍コマンド1つにつき1少なくなる」「そのユニットと隣り合うSユニットを1体選び撃破してもよい」）", () => {
     const s = wingsAt(3, 2);
     expectChoiceFrom(s, "player1", "XG7-025");
     expect(choiceIds(s)).toEqual(["SPEC-E-A:a", "SPEC-E-C:c"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-025: 【正義のツバサ】選んだユニットを撃破する（出典: atwiki/page-2391） — 既知の不具合: CARD-XG7-025 【正義のツバサ】（撃破したユニットと隣り合う S ユニットの撃破）が未実装", () => {
+  it("XG7-025: 【正義のツバサ】選んだユニットを撃破する（出典: atwiki/page-2391）", () => {
     const s = resolveAll(wingsAt(3, 2), ["SPEC-E-C:c"]);
     expect(zoneOf(s, "player2", "SPEC-E-B:b")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E-C:c")).toBe("discard");
@@ -191,7 +191,7 @@ describe("XG7-025 ゴーオンシルバー×ゴーオンゴールド", () => {
     expect(wingsAt(3, 0).pendingEffectChoice?.sourceCardId).not.toBe("XG7-025");
   });
 
-  it.fails("XG7-025: 【正義のツバサ】ウイングでアタックして撃破したときはナンバーに関係なく働く（出典: atwiki/page-2391「（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）」） — 既知の不具合: CARD-XG7-025 【正義のツバサ】（撃破したユニットと隣り合う S ユニットの撃破）が未実装", () => {
+  it("XG7-025: 【正義のツバサ】ウイングでアタックして撃破したときはナンバーに関係なく働く（出典: atwiki/page-2391「（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）」）", () => {
     let s = p1Battle({ rush: [inst("XG7-025", "gg")] }, enemy, EXTRA);
     s = act(s, { type: "hold_for_wing", playerId: "player1", instanceId: "XG7-025:gg" });
     s = settle(attack(s, "XG7-025:gg", "SPEC-E-B:b"));
@@ -219,14 +219,14 @@ describe("XG7-026 ゴセイブラック×ゴセイイエロー", () => {
   const land = () =>
     nc("XG7-026:gb", 2, {}, { battle: [inst("RK-214", "b"), inst("SPEC-ENEMY", "e")], rush: [inst("RK-214", "r")], command: [{ ...inst("RK-214", "c"), commandHeld: false }, ...releasedCat("WB", 1, "ec")] });
 
-  it.fails("XG7-026: 【ランドコンビアタック】NC（3番目）— レジストを持つ敵軍 S ユニット（エリアを問わない）か、レジストを持つ敵軍コマンドから1つを選ぶ（見送れない）（出典: atwiki/page-2386「レジストを持つ敵軍Sユニットを1体選ぶか、レジストを持つ敵軍コマンドを1つ選び」） — 既知の不具合: CARD-XG7-026 【ランドコンビアタック】がレジストを見ずに敵軍バトルエリアのユニットを選ばせる（ラッシュエリア・コマンドも選べない）", () => {
+  it("XG7-026: 【ランドコンビアタック】NC（3番目）— レジストを持つ敵軍 S ユニット（エリアを問わない）か、レジストを持つ敵軍コマンドから1つを選ぶ（見送れない）（出典: atwiki/page-2386「レジストを持つ敵軍Sユニットを1体選ぶか、レジストを持つ敵軍コマンドを1つ選び」）", () => {
     const s = land();
     expectChoiceFrom(s, "player1", "XG7-026");
     expect(choiceIds(s)).toEqual(["RK-214:b", "RK-214:c", "RK-214:r"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG7-026: 【ランドコンビアタック】選んだカードを持ち主のパワーゾーンにダメージ（ウラ向き）で置く（出典: atwiki/page-2386「持ち主のパワーゾーンにダメージにして置く」） — 既知の不具合: CARD-XG7-026 【ランドコンビアタック】がレジストを見ずに敵軍バトルエリアのユニットを選ばせる（ラッシュエリア・コマンドも選べない）", () => {
+  it("XG7-026: 【ランドコンビアタック】選んだカードを持ち主のパワーゾーンにダメージ（ウラ向き）で置く（出典: atwiki/page-2386「持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(land(), ["RK-214:c"]);
     expect(zoneOf(s, "player2", "RK-214:c")).toBe("power");
     expect(cardIn(s, "player2", "RK-214:c")?.faceDown).toBe(true);
@@ -258,17 +258,17 @@ describe("XG7-027 雷撃ディスク", () => {
     return rushOpen(s, "player2", `${rushedUnit}:h`);
   };
 
-  it.fails("XG7-027: ※カウンター — 敵軍 S ユニットがラッシュされたとき使える（出典: atwiki/page-2419「敵軍Sユニットがラッシュされたとき発動できる」） — 既知の不具合: CARD-XG7-027 「敵軍 S ユニットがラッシュされたとき」のカウンターが使えない（効果も未実装）", () => {
+  it("XG7-027: ※カウンター — 敵軍 S ユニットがラッシュされたとき使える（出典: atwiki/page-2419「敵軍Sユニットがラッシュされたとき発動できる」）", () => {
     expect(canCounter(enemyRushed(), "XG7-027:rd")).toBe(true);
   });
 
-  it.fails("XG7-027: 使うと、自軍ラッシュエリアの MA を持つ S ユニットから1体を選ぶ（出典: atwiki/page-2419「自軍ラッシュエリアから、MAを持つ自軍Sユニットを1体選ぶ」） — 既知の不具合: CARD-XG7-027 「敵軍 S ユニットがラッシュされたとき」のカウンターが使えない（効果も未実装）", () => {
+  it("XG7-027: 使うと、自軍ラッシュエリアの MA を持つ S ユニットから1体を選ぶ（出典: atwiki/page-2419「自軍ラッシュエリアから、MAを持つ自軍Sユニットを1体選ぶ」）", () => {
     const s = useCounter(enemyRushed(), "XG7-027:rd");
     expectChoiceFrom(s, "player1", "XG7-027");
     expect(choiceIds(s)).toEqual(["SPEC-MA-S1:ma1", "SPEC-MA-S3:ma3"]);
   });
 
-  it.fails("XG7-027: 選んだユニット（必要パワー1）より必要パワーの数字が大きい、追加条件を持たない敵軍 S ユニット（いまラッシュされたものも含む）から1体選び撃破する（出典: atwiki/page-2419・カード評価「既にラッシュされているユニットも対象にすることができる」） — 既知の不具合: CARD-XG7-027 「敵軍 S ユニットがラッシュされたとき」のカウンターが使えない（効果も未実装）", () => {
+  it("XG7-027: 選んだユニット（必要パワー1）より必要パワーの数字が大きい、追加条件を持たない敵軍 S ユニット（いまラッシュされたものも含む）から1体選び撃破する（出典: atwiki/page-2419・カード評価「既にラッシュされているユニットも対象にすることができる」）", () => {
     let s = pick(useCounter(enemyRushed(), "XG7-027:rd"), "SPEC-MA-S1:ma1");
     expectChoiceFrom(s, "player1", "XG7-027");
     expect(choiceIds(s)).toEqual(["SPEC-C2:r2", "SPEC-C3:h"]);
@@ -306,7 +306,7 @@ describe("XG7-028 ゴセイアルティメット", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-028: 【アルティメットストライク】ホールド状態の自軍コマンドを2回リリースすると、必要パワーの数字が2以下の敵軍ユニットを持ち主のパワーゾーンにダメージで置ける（出典: atwiki/page-2425「実行した回数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」） — 既知の不具合: CARD-XG7-028 【アルティメットストライク】（リリースした回数以下の敵軍ユニットをダメージに）が未実装", () => {
+  it("XG7-028: 【アルティメットストライク】ホールド状態の自軍コマンドを2回リリースすると、必要パワーの数字が2以下の敵軍ユニットを持ち主のパワーゾーンにダメージで置ける（出典: atwiki/page-2425「実行した回数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(strike(), ["TST-OP-MA:hc0", "TST-OP-MA:hc1", "SPEC-C2:e2"]);
     expect(s.players.player1.command.filter((c) => !c.commandHeld).length).toBeGreaterThanOrEqual(2);
     expect(zoneOf(s, "player2", "SPEC-C2:e2")).toBe("power");
@@ -335,14 +335,14 @@ describe("XG7-029 ゴセイアルティメットMM", () => {
   const combo = (l: string) =>
     enter(p1Battle({ battle: [inst("XG7-029", "mm")], rush: [inst(l, "l")] }, { battle: [inst("SPEC-ENEMY", "e"), inst("XG7-011", "w")] }, EXTRA), `${l}:l`);
 
-  it.fails("XG7-029: 【アルティメットグレートストライク】カテゴリを2つ以上持つ L ユニットがこれからコンビネーションするとき、ウイングを持たない敵軍ユニットから1体選べる（発動は任意）（出典: atwiki/page-2405「次の効果を発動できる⇒ウイングを持たない敵軍ユニットを1体選び撃破する」） — 既知の不具合: CARD-XG7-029 【アルティメットグレートストライク】が未実装", () => {
+  it("XG7-029: 【アルティメットグレートストライク】カテゴリを2つ以上持つ L ユニットがこれからコンビネーションするとき、ウイングを持たない敵軍ユニットから1体選べる（発動は任意）（出典: atwiki/page-2405「次の効果を発動できる⇒ウイングを持たない敵軍ユニットを1体選び撃破する」）", () => {
     const s = combo("SPEC-MULTI-L");
     expectChoiceFrom(s, "player1", "XG7-029");
     expect(choiceIds(s)).toEqual(["SPEC-ENEMY:e"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-029: 【アルティメットグレートストライク】選んだユニットを撃破する（出典: atwiki/page-2405） — 既知の不具合: CARD-XG7-029 【アルティメットグレートストライク】が未実装", () => {
+  it("XG7-029: 【アルティメットグレートストライク】選んだユニットを撃破する（出典: atwiki/page-2405）", () => {
     const s = resolveAll(combo("SPEC-MULTI-L"), ["SPEC-ENEMY:e"]);
     expect(zoneOf(s, "player2", "SPEC-ENEMY:e")).toBe("discard");
   });
@@ -373,19 +373,19 @@ describe("XG7-030 ゴセイヘッダー", () => {
       "XG7-030:op",
     );
 
-  it.fails("XG7-030: 使うと、ウイング・タクス・レジスト・リードのどれかを持つ自軍ユニットから1体を選ぶ（出典: atwiki/page-2420「ウイング、タクス、レジスト、リードのどれかを持つ自軍ユニットを1体選ぶ」） — 既知の不具合: CARD-XG7-030 選んだユニットの BP+1000・リリースと、コマンドゾーンからの発動が未実装", () => {
+  it("XG7-030: 使うと、ウイング・タクス・レジスト・リードのどれかを持つ自軍ユニットから1体を選ぶ（出典: atwiki/page-2420「ウイング、タクス、レジスト、リードのどれかを持つ自軍ユニットを1体選ぶ」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "XG7-030");
     expect(choiceIds(s)).toEqual(["XG7-011:w", "XG7-018:rg"]);
   });
 
-  it.fails("XG7-030: このターン、選んだユニットは BP+1000 され、ホールド状態ならリリースする（出典: atwiki/page-2420「このターン、選んだユニットはBP+1000され、ホールド状態ならリリースする」） — 既知の不具合: CARD-XG7-030 選んだユニットの BP+1000・リリースと、コマンドゾーンからの発動が未実装", () => {
+  it("XG7-030: このターン、選んだユニットは BP+1000 され、ホールド状態ならリリースする（出典: atwiki/page-2420「このターン、選んだユニットはBP+1000され、ホールド状態ならリリースする」）", () => {
     const s = resolveAll(used(), ["XG7-011:w"]);
     expect(bpOf(s, "player1", "XG7-011:w")).toBe(4000);
     expect(cardIn(s, "player1", "XG7-011:w")?.commandHeld ?? false).toBe(false);
   });
 
-  it.fails("XG7-030: （）— 自軍コマンドゾーンにある間、カード名に「ゴセイ」を含む自軍ユニットがバトルエリアに出たとき、これをホールドして効果を発動できる（出典: atwiki/page-2420「これが自軍コマンドゾーンにある間…これをホールドしてもよい。そうしたとき、このカードの効果を発動する」） — 既知の不具合: CARD-XG7-030 選んだユニットの BP+1000・リリースと、コマンドゾーンからの発動が未実装", () => {
+  it("XG7-030: （）— 自軍コマンドゾーンにある間、カード名に「ゴセイ」を含む自軍ユニットがバトルエリアに出たとき、これをホールドして効果を発動できる（出典: atwiki/page-2420「これが自軍コマンドゾーンにある間…これをホールドしてもよい。そうしたとき、このカードの効果を発動する」）", () => {
     let s = enter(p1Battle({ rush: [inst("XG7-019", "gs")], command: [{ ...inst("XG7-030", "cz"), commandHeld: false }] }, {}, EXTRA), "XG7-019:gs");
     s = resolveAll(s, ["XG7-030:cz", "XG7-019:gs"]);
     expect(cardIn(s, "player1", "XG7-030:cz")?.commandHeld).toBe(true);
@@ -409,12 +409,12 @@ describe("XG7-031 新サイクロン号", () => {
     expect(canStartRush(s, "player1", "XG7-031:h")).toBe(false);
   });
 
-  it.fails("XG7-031: 【サイクロンアタック】これにライドしているユニットは BP+1000（RK-023 仮面ライダー1号 4000→5000）（出典: atwiki/page-2429「これにライドしているユニットはBP+1000され」） — 既知の不具合: CARD-XG7-031 【サイクロンアタック】（ライドしたユニットの BP+1000）が未実装", () => {
+  it("XG7-031: 【サイクロンアタック】これにライドしているユニットは BP+1000（RK-023 仮面ライダー1号 4000→5000）（出典: atwiki/page-2429「これにライドしているユニットはBP+1000され」）", () => {
     const s = p1Battle({ battle: ridingPair("RK-023", "r", "XG7-031", "v") }, {}, EXTRA);
     expect(bpOf(s, "player1", "RK-023:r")).toBe(5000);
   });
 
-  it.fails("XG7-031: ※ ライドしている「仮面ライダー1号」はクロス1を得る（右に出た CN3 の XG1-007 が2番目で NC）（出典: atwiki/page-2429「「仮面ライダー1号」または「仮面ライダー2号」ならクロス1を得る」） — 既知の不具合: CARD-XG7-031 ライドしている「仮面ライダー1号」がクロス1を得ない", () => {
+  it("XG7-031: ※ ライドしている「仮面ライダー1号」はクロス1を得る（右に出た CN3 の XG1-007 が2番目で NC）（出典: atwiki/page-2429「「仮面ライダー1号」または「仮面ライダー2号」ならクロス1を得る」）", () => {
     const s = enter(p1Battle({ battle: ridingPair("RK-023", "r", "XG7-031", "v"), rush: [inst("XG1-007", "cd")] }, {}, EXTRA), "XG1-007:cd");
     expect(s.log.some((l) => l.includes("number_combo") && l.includes("XG1-007"))).toBe(true);
   });

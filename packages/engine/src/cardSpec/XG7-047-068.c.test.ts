@@ -344,7 +344,7 @@ describe("XG7-068 宇宙刑事シャリバン×ギャバン×シャイダー", (
     expect(canStartRush(rushPhaseOf({ hand: [inst("XG7-068", "h")], command: releasedCat("OT", 2, "x"), power: powerCards(6) }, {}, EXTRA), "player1", "XG7-068:h")).toBe(false);
   });
 
-  breakerTests("XG7-068", "atwiki/page-2433", EXTRA, { breaker_name: "※ブレイカーの同名ラッシュ制限が効かない" });
+  breakerTests("XG7-068", "atwiki/page-2433", EXTRA);
 
   it.fails("XG7-068: ※クロス2 — これが自軍バトルエリアにある間、右に並ぶ SP1/4 のユニットは2番目で SP1 になる（分母が2少なくなる）（出典: atwiki/page-2433「※クロス2」・atwiki/page-2393 規定文） — 既知の不具合: CARD-XG7-068 ※クロス2（分母・CN を2減らす）が効かない", () => {
     const s = enter(p1Battle({ battle: [inst("XG7-068", "x")], rush: [inst("SPEC-XFRAC4", "f")] }, {}, EXTRA), "SPEC-XFRAC4:f");

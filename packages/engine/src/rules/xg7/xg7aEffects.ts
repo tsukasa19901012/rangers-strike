@@ -64,12 +64,12 @@ import {
 // ---------------------------------------------------------------------------
 // 共通
 
-function selfUnit(state: GameState, ctx: GrantKeywordContext): CardInstance | undefined {
+export function selfUnit(state: GameState, ctx: GrantKeywordContext): CardInstance | undefined {
   const id = ctx.triggerSourceInstanceId;
   return id ? findField(state, ctx.playerId, id) : undefined;
 }
 
-function boostBp(state: GameState, playerId: PlayerId, instanceId: string, amount: number): GameState {
+export function boostBp(state: GameState, playerId: PlayerId, instanceId: string, amount: number): GameState {
   if (amount === 0) return state;
   return patchPlayer(state, playerId, (p) => {
     const add = (cards: CardInstance[]) => cards.map((c) => (c.instanceId === instanceId ? { ...c, bpModifier: (c.bpModifier ?? 0) + amount } : c));
@@ -77,7 +77,7 @@ function boostBp(state: GameState, playerId: PlayerId, instanceId: string, amoun
   });
 }
 
-function addTurnCross(state: GameState, playerId: PlayerId, instanceId: string, value: number): GameState {
+export function addTurnCross(state: GameState, playerId: PlayerId, instanceId: string, value: number): GameState {
   return patchPlayer(state, playerId, (p) => {
     const add = (cards: CardInstance[]) =>
       cards.map((c) => (c.instanceId === instanceId ? { ...c, xg7Turn: { ...c.xg7Turn, cross: (c.xg7Turn?.cross ?? 0) + value } } : c));
@@ -96,14 +96,14 @@ export function moveFieldUnitToDeckTop(state: GameState, ownerId: PlayerId, inst
 }
 
 /** 選択（1つ）を開く。 */
-function selectOne(ctx: { playerId: PlayerId; phasePlayerId: PlayerId; sourceInstanceId?: string }, cardId: string, effectId: string, ids: string[], optional: boolean, extra: Partial<PendingEffectChoice> = {}): PendingEffectChoice {
+export function selectOne(ctx: { playerId: PlayerId; phasePlayerId: PlayerId; sourceInstanceId?: string }, cardId: string, effectId: string, ids: string[], optional: boolean, extra: Partial<PendingEffectChoice> = {}): PendingEffectChoice {
   return { ...base(ctx, cardId), effectId, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional, ...extra };
 }
 
 /**
  * 「…まで選ぶ」複数の選択。1つ選ぶたびに候補を作りなおし、上限に達するか候補がなくなれば finish する。確定（confirm）・見送り（選んだ後）でも finish する。
  */
-function registerMultiPick(
+export function registerMultiPick(
   effectId: string,
   candidates: (state: GameState, pending: PendingEffectChoice, selected: string[]) => string[],
   finish: (state: GameState, pending: PendingEffectChoice, selected: string[]) => GameState,
@@ -130,7 +130,7 @@ function registerMultiPick(
 }
 
 /** オモテ向きの自軍パワーのカード。 */
-function faceUpPower(state: GameState, playerId: PlayerId): CardInstance[] {
+export function faceUpPower(state: GameState, playerId: PlayerId): CardInstance[] {
   return state.players[playerId].power.filter((c) => !c.faceDown);
 }
 

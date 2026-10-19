@@ -1,4 +1,5 @@
 import { activateRm1Resident, canActivateRm1Resident, isRm1ActivatableResident } from "./rm/rm1Effects";
+import { activateXg7Resident, canActivateXg7Resident, isXg7ActivatableResident } from "./xg7/xg7Effects";
 import { getCardEffect, type CardDefinition } from "@rangers-strike/cards";
 import { activateSet8AResident, canActivateSet8AResident, isSet8AResident } from "./legend1/set8NamedEffectsA";
 import type { EffectDefinition } from "@rangers-strike/cards/dsl/types";
@@ -129,6 +130,9 @@ export function canActivateResidentOperation(
   // RM-012 JPカード（自軍ラッシュフェイズごとに1度だけ。rules/rm/rm1Effects.ts）。
   const rm1 = canActivateRm1Resident(state, playerId, op);
   if (rm1 !== null) return rm1;
+  // XG7-039 GOD SPEED LOVE（rules/xg7/xg7Effects.ts）。
+  const xg7 = canActivateXg7Resident(state, playerId, op);
+  if (xg7 !== null) return xg7;
   if (isResidentActivatedThisRush(op)) return false;
 
   const wired = getCardEffect(op.cardId);
@@ -202,6 +206,9 @@ export function applyActivateResidentOperation(
   }
   if (isRm1ActivatableResident(op.cardId)) {
     return { ok: true, state: activateRm1Resident(state, playerId, op) };
+  }
+  if (isXg7ActivatableResident(op.cardId)) {
+    return { ok: true, state: activateXg7Resident(state, playerId, op) };
   }
   if (op.cardId === ADVENT_CARD_ID) {
     const opened = beginAdvent(state, playerId, op);

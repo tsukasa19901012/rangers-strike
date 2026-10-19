@@ -152,7 +152,7 @@ import { rm1ActsAsVehicle } from "../rules/rm/rm1Fields";
 import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "../rules/rm/rm2Effects";
 import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
 import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
-import { canConfirmXg7Choice, isXg7ChoiceEffect } from "../rules/xg7/xg7Effects";
+import { canConfirmXg7Choice, isXg7ActivatableResident, isXg7ChoiceEffect } from "../rules/xg7/xg7Effects";
 import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
@@ -820,6 +820,8 @@ function appendActivateResidentOperationActions(
       card.cardId !== "RK-249" &&
       !isRk1ActivatableResident(card.cardId) &&
       !isRm1ActivatableResident(card.cardId) &&
+      // XG7-039 GOD SPEED LOVE（rules/xg7/xg7Effects.ts）。
+      !isXg7ActivatableResident(card.cardId) &&
       listResidentActivationEffects(card.cardId).length === 0
     ) {
       continue;

@@ -2,10 +2,29 @@
  * クロスギャザー ザ・ベストパートナー XG7-001〜XG7-068 のカード固有の効果の入口（`xg7::` キーワード・選択の解決）。
  * 実装はバッチごとのモジュール（xg7aEffects.ts 等）が rules/xg7/xg7Registry.ts に登録する。継続効果は rules/xg7/xg7Fields.ts。
  */
-import type { GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { CHOICE_CONFIRMERS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, XG7_KEYWORDS, XG7_KEYWORD_PREFIX, type ChoiceOutcome } from "./xg7Registry";
 import { openXg7aLeaveStay, openXg7aOnUnitRushed } from "./xg7aEffects";
+import {
+  activateXg7bFieldAbility,
+  activateXg7bResident,
+  applyXg7bRushCounter,
+  canActivateXg7bFieldAbility,
+  canActivateXg7bResident,
+  collectXg7bTurnEndQueue,
+  isXg7bActivatableResident,
+  isXg7bBattleToRushTrigger,
+  isXg7bFieldAbilityCard,
+  isXg7bRushCounterCard,
+  openXg7bAfterUnitLeft,
+  openXg7bOnSelfRushFromZone,
+  openXg7bTurnEndEntry,
+  tryXg7bBattleToRush,
+  tryXg7bOnEnterBattle,
+  xg7bOnAttackWin,
+  xg7bRushCounterConditionMet,
+} from "./xg7bEffects";
 
 export function tryXg7CardEffect(state: GameState, ctx: GrantKeywordContext, keyword: string): GrantKeywordResult | null {
   if (!keyword.startsWith(XG7_KEYWORD_PREFIX)) return null;
@@ -61,4 +80,81 @@ export function openXg7LeaveStay(state: GameState, intent: PendingLeave): GameSt
 /** 自軍ユニットをラッシュしたときの効果（rules/onRushUnitEffects.ts applyPassiveRushTriggers）。 */
 export function openXg7OnUnitRushed(state: GameState, rusherPlayerId: PlayerId, rushedInstanceId: string, phasePlayerId: PlayerId): GameState {
   return openXg7aOnUnitRushed(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
+}
+
+/** ユニットがバトルエリアに出たとき（rules/combo.ts resolveEnterBattleEffectsImpl）。ほかの選択があればその後に開く。 */
+export function tryXg7OnEnterBattle(state: GameState, playerId: PlayerId, card: CardInstance, battleBeforeEnter: CardInstance[]): GameState {
+  return tryXg7bOnEnterBattle(state, playerId, card, battleBeforeEnter);
+}
+
+/** アタックして敵軍ユニットを撃破したとき（rules/operationCounters.ts resolveBattlePendingCore）。before はバトルの直前の state。 */
+export function xg7OnAttackWin(state: GameState, before: GameState, attackerId: PlayerId, attackerInstanceId: string, defenderOwner: PlayerId, defenderInstanceId: string, defenderBp: number): GameState {
+  return xg7bOnAttackWin(state, before, attackerId, attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+}
+
+/** 場を離れたとき（rules/operationCounters.ts finalizeLeavePending）。before は離れる前の state。 */
+export function openXg7AfterUnitLeft(state: GameState, before: GameState, intent: PendingLeave, card: CardInstance, toZone: string, destroyed: boolean): GameState {
+  return openXg7bAfterUnitLeft(state, before, intent, card, toZone, destroyed);
+}
+
+/** スタートフェイズにバトルエリアからラッシュエリアに戻ったとき（rules/startPhase.ts）。 */
+export function isXg7BattleToRushTrigger(card: CardInstance): boolean {
+  return isXg7bBattleToRushTrigger(card);
+}
+
+export function tryXg7BattleToRush(state: GameState, playerId: PlayerId, card: CardInstance, phasePlayerId: PlayerId): GameState {
+  return tryXg7bBattleToRush(state, playerId, card, phasePlayerId);
+}
+
+/** 「自分がターンを終えるとき」（rules/turnEndingEffects.ts）。 */
+export function collectXg7TurnEndQueue(state: GameState, endingPlayerId: PlayerId): string[] {
+  return collectXg7bTurnEndQueue(state, endingPlayerId);
+}
+
+export function openXg7TurnEndEntry(state: GameState, endingPlayerId: PlayerId, entry: string): GameState {
+  return openXg7bTurnEndEntry(state, endingPlayerId, entry);
+}
+
+/** 常駐オペレーションの起動（rules/permanentOperation.ts）。対象外のカードは null。 */
+export function canActivateXg7Resident(state: GameState, playerId: PlayerId, op: CardInstance): boolean | null {
+  return canActivateXg7bResident(state, playerId, op);
+}
+
+export function isXg7ActivatableResident(cardId: string): boolean {
+  return isXg7bActivatableResident(cardId);
+}
+
+export function activateXg7Resident(state: GameState, playerId: PlayerId, op: CardInstance): GameState {
+  return activateXg7bResident(state, playerId, op);
+}
+
+/** 場の起動型の能力（rules/fieldActivatedAbilities.ts）。 */
+export function isXg7FieldAbilityCard(cardId: string): boolean {
+  return isXg7bFieldAbilityCard(cardId);
+}
+
+export function canActivateXg7FieldAbility(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  return canActivateXg7bFieldAbility(state, playerId, card);
+}
+
+export function activateXg7FieldAbility(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
+  return activateXg7bFieldAbility(state, playerId, card);
+}
+
+/** 「ラッシュされたとき」のカウンター（rules/operationCounters.ts・core/applyAction.ts）。XG7-027 雷撃ディスク。 */
+export function isXg7RushCounterCard(cardId: string): boolean {
+  return isXg7bRushCounterCard(cardId);
+}
+
+export function xg7RushCounterConditionMet(state: GameState, rushed: CardInstance, rushedOwnerId: PlayerId, rusherId: PlayerId, userId?: PlayerId): boolean {
+  return xg7bRushCounterConditionMet(state, rushed, rushedOwnerId, rusherId, userId);
+}
+
+export function applyXg7RushCounter(state: GameState, playerId: PlayerId, counterInstanceId: string, pending: { phasePlayerId: PlayerId }): { state: GameState; log: string } {
+  return applyXg7bRushCounter(state, playerId, counterInstanceId, pending.phasePlayerId);
+}
+
+/** ゾーン（手札以外）からユニットをラッシュしたとき（core/applyAction.ts self_rush_from_zone）。XG7-044【風都の護り手】。 */
+export function openXg7OnSelfRushFromZone(state: GameState, rusherId: PlayerId, zone: string, rushedInstanceId: string): GameState {
+  return openXg7bOnSelfRushFromZone(state, rusherId, zone, rushedInstanceId);
 }

@@ -3,6 +3,7 @@ import { collectRk10TurnEndQueue, openRk10TurnEndEntry } from "./rk/rk10UnitEffe
 import { collectRk11TurnEndQueue, openRk11TurnEndEntry } from "./rk/rk11UnitEffects";
 import { collectRk13TurnEndQueue, openRk13TurnEndEntry } from "./rk/rk13UnitEffects";
 import { collectRk16TurnEndQueue, openRk16TurnEndEntry } from "./rk/rk16UnitEffects";
+import { collectXg7TurnEndQueue, openXg7TurnEndEntry } from "./xg7/xg7Effects";
 import { collectOtherLinesTurnEndQueue, openOtherLinesTurnEndEntry } from "./legend1/otherLinesNamedEffects";
 import { applyRk5TurnEndDestroy, collectRk5TurnEndQueue, openRk5TurnEndEntry } from "./rk/rk5UnitEffects";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
@@ -373,6 +374,14 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.rk16Queue!;
     progress = { ...progress, rk16Queue: rest };
     nextState = openRk16TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // XG7-041 ※（除外）・XG7-042【ライダー大戦の世界】の「自分がターンを終えるとき」（rules/xg7/xg7Effects.ts）。
+  if (!progress.xg7Queue) progress = { ...progress, xg7Queue: collectXg7TurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.xg7Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.xg7Queue!;
+    progress = { ...progress, xg7Queue: rest };
+    nextState = openXg7TurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {

@@ -39,15 +39,16 @@
       "id": "deal_damage_1",
       "text": "※これがアタックして、BPの下三桁が500の敵軍Sユニットを撃破したとき、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg7::XG7-037::kaixa_damage",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "to_e7b485",
@@ -60,8 +61,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-037::toe7b485",
-          "duration": "turn"
+          "keyword": "xg7::XG7-037::red_gold",
+          "duration": "permanent"
         }
       ]
     }

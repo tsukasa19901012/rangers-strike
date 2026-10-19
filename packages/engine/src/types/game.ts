@@ -1531,6 +1531,8 @@ export type TurnEndProgress = {
   rk13Queue?: string[];
   /** RK-323【シャドウベール】（rules/rk/rk16UnitEffects.ts）。 */
   rk16Queue?: string[];
+  /** XG7-041・XG7-042 の「自分がターンを終えるとき」（rules/xg7/xg7Effects.ts）。 */
+  xg7Queue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

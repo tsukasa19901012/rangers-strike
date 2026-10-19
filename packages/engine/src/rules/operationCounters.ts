@@ -15,8 +15,8 @@ import { rk13BattleUsesPrintedBp, rk13BlocksResist, rk13PrintedBp } from "./rk/r
 import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
 import { rk11KyosukeWinButDestroyed } from "./rk/rk11Fields";
 import { openRk12SurviveStay } from "./rk/rk12UnitEffects";
-import { openXg7LeaveStay } from "./xg7/xg7Effects";
-import { xg7AdjustLeaveIntent } from "./xg7/xg7Fields";
+import { isXg7RushCounterCard, openXg7AfterUnitLeft, openXg7LeaveStay, xg7OnAttackWin, xg7RushCounterConditionMet } from "./xg7/xg7Effects";
+import { xg7AdjustLeaveIntent, xg7BlocksResist } from "./xg7/xg7Fields";
 import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import { openKuugaStayOnLeave } from "./legend1/otherLinesNamedEffects";
 import {
@@ -662,7 +662,7 @@ export function listUsableRushCounters(
   for (const card of defender.hand) {
     if (allowedCounterInstanceIds && !allowedCounterInstanceIds.includes(card.instanceId)) continue;
     if (!isRushReactionCounterCard(state, card.cardId)) continue;
-    if (!rushCounterConditionMet(state, card.cardId, rushedInstanceId, rusherId)) continue;
+    if (!rushCounterConditionMet(state, card.cardId, rushedInstanceId, rusherId, defenderId)) continue;
     if (canPlayHandCounter(state, defenderId, card.instanceId)) ids.push(card.instanceId);
   }
   return ids;
@@ -682,7 +682,8 @@ export function isMusicBoxClockCard(state: GameState, cardId: string): boolean {
 
 /** ラッシュ反応窓で使えるカウンター（疾風流超忍法・宏のオルゴール時計）。 */
 export function isRushReactionCounterCard(state: GameState, cardId: string): boolean {
-  return isShippuNinjaCard(state, cardId) || isMusicBoxClockCard(state, cardId);
+  // XG7-027 雷撃ディスク（rules/xg7/xg7Effects.ts）。
+  return isShippuNinjaCard(state, cardId) || isMusicBoxClockCard(state, cardId) || isXg7RushCounterCard(cardId);
 }
 
 /**
@@ -714,6 +715,7 @@ function rushCounterConditionMet(
   counterCardId: string,
   rushedInstanceId: string,
   rusherId: PlayerId,
+  userId?: PlayerId,
 ): boolean {
   const rushed = findRushedUnit(state, rushedInstanceId, rusherId);
   if (!rushed) return false;
@@ -727,6 +729,8 @@ function rushCounterConditionMet(
   if (isMusicBoxClockCard(state, counterCardId)) {
     return isSmallUnit(state.definitions, rushed.card) && bp >= 4000;
   }
+  // XG7-027 雷撃ディスク「敵軍Sユニットがラッシュされたとき」（rules/xg7/xg7Effects.ts）。
+  if (isXg7RushCounterCard(counterCardId)) return xg7RushCounterConditionMet(state, rushed.card, rushed.ownerId, rusherId, userId);
   return false;
 }
 
@@ -744,7 +748,7 @@ export function canUseRushReactionCounter(
   if (pending.allowedCounterInstanceIds && !pending.allowedCounterInstanceIds.includes(counterInstanceId)) return false;
   const card = findInZone(state.players[defenderId], "hand", counterInstanceId)?.card;
   if (!card || !isRushReactionCounterCard(state, card.cardId)) return false;
-  return rushCounterConditionMet(state, card.cardId, pending.rushedInstanceId, pending.rusherPlayerId);
+  return rushCounterConditionMet(state, card.cardId, pending.rushedInstanceId, pending.rusherPlayerId, defenderId);
 }
 
 export const MUSIC_BOX_SKIP_BATTLE_RULE = "skip_battle_phase_this_turn";
@@ -1609,7 +1613,9 @@ export function resolveBattlePendingCore(
       !venomDefender &&
       defenderZone === "battle" &&
       // RK-267【怪魔稲妻剣】（rules/rk/rk13Fields.ts）。
-      !rk13BlocksResist(refreshedAttackerFound.card.cardId),
+      !rk13BlocksResist(refreshedAttackerFound.card.cardId) &&
+      // XG7-032【ライダーダブルキック】（rules/xg7/xg7Fields.ts）。
+      !xg7BlocksResist(battleState, pending),
     battleOpponentInstanceId: pending.attackerInstanceId,
   };
 
@@ -1707,6 +1713,8 @@ export function resolveBattlePendingCore(
           withAttacker = rk10OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
           // RK-269【シャドーセイバー】（rules/rk/rk13UnitEffects.ts）。
           withAttacker = rk13OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+          // XG7-025【正義のツバサ】・XG7-037 ※（rules/xg7/xg7Effects.ts）。
+          withAttacker = xg7OnAttackWin(withAttacker, battleState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
         }
         withAttacker = drainDeferredDestroyTriggers(withAttacker);
       }
@@ -1830,6 +1838,8 @@ export function resolveBattlePendingCore(
     if (!pending.effectBattle) nextState = rk10OnAttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
     // RK-269【シャドーセイバー】: 自軍ターン中、アタックしてバトルに勝ったとき（rules/rk/rk13UnitEffects.ts）。
     if (!pending.effectBattle) nextState = rk13OnAttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+    // XG7-025【正義のツバサ】・XG7-037 ※: アタックして敵軍ユニットを撃破したとき（rules/xg7/xg7Effects.ts）。
+    if (!pending.effectBattle) nextState = xg7OnAttackWin(nextState, battleState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
   } else {
     nextState = markAttackerActed(nextState);
   }
@@ -2101,6 +2111,8 @@ export function finalizeLeavePending(
     phasePlayerId: pending.phasePlayerId,
     wasNonCraneOrphnoch: rk6IsNonCraneOrphnoch(state, pending.ownerPlayerId, found.card),
   });
+  // XG7-043【地獄の兄弟】（rules/xg7/xg7Effects.ts）。
+  resolvedState = openXg7AfterUnitLeft(resolvedState, state, pending, found.card, effectiveToZone, isDestructionLeave(pending));
   if (
     pending.fusionReturnOnDiscard === "battle" &&
     effectiveToZone === "discard" &&

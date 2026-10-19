@@ -56,12 +56,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-038::raitoninguburasutobaning",
-          "duration": "turn"
+          "keyword": "xg7::XG7-038::blast",
+          "duration": "permanent"
         }
       ]
     }

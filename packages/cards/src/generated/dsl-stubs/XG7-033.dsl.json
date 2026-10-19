@@ -56,13 +56,13 @@
       "name": "復讐の果てに得たもの",
       "text": "これが自軍バトルエリアからラッシュエリアに戻ったとき、これをホールドしてもよい。そうしたとき、敵軍ラッシュエリアからユニットを1体選び、可能ならバトルエリアに出す。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-033::notenitamono",
+          "keyword": "xg7::XG7-033::revenge",
           "duration": "permanent"
         }
       ]

@@ -1,4 +1,5 @@
 import { noteEngineSideEffect } from "./sideEffects";
+import { applyXg7RushCounter, isXg7RushCounterCard, openXg7OnSelfRushFromZone } from "../rules/xg7/xg7Effects";
 import { payMirrorWorldSelection } from "../rules/mirrorWorldSelection";
 import { memoizeInSearch } from "./searchCache";
 import { isInstancePlacedAnywhere } from "./helpers";
@@ -2596,8 +2597,10 @@ function applyActionCore(
     case "self_rush_from_zone": {
       const applied = applySelfRushFromZone(state, playerId, action.zone, action.instanceId);
       if (!applied) return fail("illegal_action");
+      // XG7-044【風都の護り手】（相手の手札以外からラッシュされたとき。rules/xg7/xg7Effects.ts）。
+      const rushedFromZone = openXg7OnSelfRushFromZone(applied, playerId, action.zone, action.instanceId);
       return ok(
-        applied,
+        rushedFromZone,
         buildLogEntry(playerId, "rush", 
           state.players[playerId][action.zone].find((c) => c.instanceId === action.instanceId)?.cardId ?? action.instanceId,
           state.definitions,
@@ -2989,7 +2992,10 @@ function applyActionCore(
           return fail("invalid_counter");
         }
         const counterCardId = findInZone(state.players[playerId], "hand", action.instanceId)!.card.cardId;
-        const result = isShippuNinjaCard(state, counterCardId)
+        // XG7-027 雷撃ディスク（rules/xg7/xg7Effects.ts）。
+        const result = isXg7RushCounterCard(counterCardId)
+          ? applyXg7RushCounter(state, playerId, action.instanceId, pending)
+          : isShippuNinjaCard(state, counterCardId)
           ? applyShippuNinjaCounter(state, playerId, action.instanceId, pending)
           : applyMusicBoxClockCounter(state, playerId, action.instanceId, pending);
         // 同じラッシュに対して続けて別のカウンターを使える（atwiki/page-424 Q12・Q15）。

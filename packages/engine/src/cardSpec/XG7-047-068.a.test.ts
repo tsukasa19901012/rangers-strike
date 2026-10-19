@@ -237,7 +237,7 @@ describe("XG7-052 仮面ライダーオーズ・タジャドルコンボ", () =>
     expectRarityIn("XG7-052", ["SR"]);
   });
 
-  breakerTests("XG7-052", "atwiki/page-2426", EXTRA, { breaker_name: "※ブレイカーの同名ラッシュ制限が効かない" });
+  breakerTests("XG7-052", "atwiki/page-2426", EXTRA);
   wingTests("XG7-052", "atwiki/page-2426");
 
   it("XG7-052: 追加条件 — 特徴「オーズドライバー」を持つ自軍ユニット1体を捨札にすれば必要パワー0でラッシュできる（出典: atwiki/page-2426「追加条件：特徴「オーズドライバー」を持つ自軍ユニット1体を捨札にすれば必要パワー0になる」）", () => {

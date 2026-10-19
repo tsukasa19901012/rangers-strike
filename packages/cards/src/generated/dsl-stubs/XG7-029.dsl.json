@@ -49,13 +49,13 @@
       "name": "アルティメットグレートストライク",
       "text": "カテゴリを2つ以上持つLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒ウイングを持たない敵軍ユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-029::aruteimetoguretosutoraik",
+          "keyword": "xg7::XG7-029::great_strike",
           "duration": "permanent"
         }
       ]

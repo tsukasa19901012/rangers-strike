@@ -109,7 +109,7 @@ describe("XG7-040 仮面ライダー電王LF×モモタロス", () => {
     );
   const offered = (s: GameState) => choiceFromCard(s, "XG7-040") || actionsMentioning(s, "XG7-040:lf").length > 0;
 
-  it.fails("XG7-040: 【ダブルアクション】手札にある間、敵軍ユニットがバトルエリアに出たとき、自軍ユニットが1体もなければ、出すかを選べる（出典: atwiki/page-2438「自軍ユニットが1体もなければ、…これを自軍バトルエリアに出してもよい」） — 既知の不具合: CARD-XG7-040 【ダブルアクション】（敵軍ユニットが出たときに手札から出す）が未実装", () => {
+  it("XG7-040: 【ダブルアクション】手札にある間、敵軍ユニットがバトルエリアに出たとき、自軍ユニットが1体もなければ、出すかを選べる（出典: atwiki/page-2438「自軍ユニットが1体もなければ、…これを自軍バトルエリアに出してもよい」）", () => {
     expect(offered(entered())).toBe(true);
   });
 
@@ -121,7 +121,7 @@ describe("XG7-040 仮面ライダー電王LF×モモタロス", () => {
     expect(offered(entered({ command: releasedCat("OT", 1, "ot") }))).toBe(false);
   });
 
-  it.fails("XG7-040: 【ダブルアクション】出したとき、OT のコマンド2つがホールドされ、敵軍バトルエリアの S ユニットをすべて持ち主のパワーゾーンに送る（M ユニットは残る）（出典: atwiki/page-2438「敵軍バトルエリアのSユニットをすべて持ち主のパワーゾーンに送る」） — 既知の不具合: CARD-XG7-040 【ダブルアクション】（敵軍ユニットが出たときに手札から出す）が未実装", () => {
+  it("XG7-040: 【ダブルアクション】出したとき、OT のコマンド2つがホールドされ、敵軍バトルエリアの S ユニットをすべて持ち主のパワーゾーンに送る（M ユニットは残る）（出典: atwiki/page-2438「敵軍バトルエリアのSユニットをすべて持ち主のパワーゾーンに送る」）", () => {
     let s = entered();
     const a = legal(s).find((x) => x.playerId === "player1" && JSON.stringify(x).includes("XG7-040:lf"));
     if (a) s = act(s, a);
@@ -163,7 +163,7 @@ describe("XG7-041 仮面ライダーW・CJGX", () => {
     expect(canStartRush(gold({ rush: [inst("SPEC-PLAIN", "p")] }), "player1", "XG7-041:gx")).toBe(false);
   });
 
-  it.fails("XG7-041: 【黄金の希望】手札からラッシュしたとき、自軍コマンドをすべて捨札にし、そのカテゴリ（ET・DA）を持つ敵軍 S ユニットをエリアを問わずすべて撃破する（MA・WB のユニットは残る）（出典: atwiki/page-2443「自軍コマンドをすべて捨札にする。そうしたとき、捨札にしたコマンドと同じカテゴリを持つ敵軍Sユニットをすべて撃破する」） — 既知の不具合: CARD-XG7-041 【黄金の希望】（コマンドをすべて捨札にして同じカテゴリの敵軍 S ユニットを撃破・SP2）が未実装", () => {
+  it("XG7-041: 【黄金の希望】手札からラッシュしたとき、自軍コマンドをすべて捨札にし、そのカテゴリ（ET・DA）を持つ敵軍 S ユニットをエリアを問わずすべて撃破する（MA・WB のユニットは残る）（出典: atwiki/page-2443「自軍コマンドをすべて捨札にする。そうしたとき、捨札にしたコマンドと同じカテゴリを持つ敵軍Sユニットをすべて撃破する」）", () => {
     const s = resolveAll(rushFromHand(gold(), "player1", "XG7-041:gx").state);
     expect(s.players.player1.command).toHaveLength(0);
     expect(zoneOf(s, "player1", "TST-OP-ET:et0")).toBe("discard");
@@ -172,7 +172,7 @@ describe("XG7-041 仮面ライダーW・CJGX", () => {
     expect(zoneOf(s, "player2", "SPEC-E-WB:w")).toBe("rush");
   });
 
-  it.fails("XG7-041: 【黄金の希望】その後、自軍捨札（コマンド2枚＋XG2-043 で3枚）が敵軍捨札（撃破した1枚）より多ければ SP2 になる（出典: atwiki/page-2443「自軍捨札が敵軍捨札より多ければ、これはSP2になる」） — 既知の不具合: CARD-XG7-041 【黄金の希望】（コマンドをすべて捨札にして同じカテゴリの敵軍 S ユニットを撃破・SP2）が未実装", () => {
+  it("XG7-041: 【黄金の希望】その後、自軍捨札（コマンド2枚＋XG2-043 で3枚）が敵軍捨札（撃破した1枚）より多ければ SP2 になる（出典: atwiki/page-2443「自軍捨札が敵軍捨札より多ければ、これはSP2になる」）", () => {
     const s = resolveAll(rushFromHand(gold(), "player1", "XG7-041:gx").state);
     expect(spOf(s, "player1", "XG7-041:gx")).toBe(2);
   });
@@ -182,7 +182,7 @@ describe("XG7-041 仮面ライダーW・CJGX", () => {
     expect(spOf(s, "player1", "XG7-041:gx")).toBe(1);
   });
 
-  it.fails("XG7-041: ※ 自軍エリアにある間、自分がターンを終えるとき、これをゲームから除外する（出典: atwiki/page-2443「自分がターンを終えるとき、これをゲームから除外する」） — 既知の不具合: CARD-XG7-041 ターンを終えるときの除外が未実装", () => {
+  it("XG7-041: ※ 自軍エリアにある間、自分がターンを終えるとき、これをゲームから除外する（出典: atwiki/page-2443「自分がターンを終えるとき、これをゲームから除外する」）", () => {
     const s = endTurn(p1Battle({ battle: [inst("XG7-041", "gx")] }, {}, EXTRA));
     expect((s.players.player1.exile ?? []).map((c) => c.instanceId)).toContain("XG7-041:gx");
   });
@@ -209,12 +209,12 @@ describe("XG7-042 仮面ライダークウガ×仮面ライダーディケイド
   /** 自軍バトルフェイズを終えてターンを終える（山札6枚: k0〜k5）。 */
   const ending = () => endTurn(p1Battle({ battle: [inst("XG7-042", "kd")], deck: deckCards(6, "k") }, {}, EXTRA));
 
-  it.fails("XG7-042: 【ライダー大戦の世界】自分がターンを終えるとき、発動するかを選べ、山札の上から5枚の中から1枚を選ぶ（出典: atwiki/page-2439「自軍山札の上から5枚をオモテにして、その中から1枚を選び手札に加える」） — 既知の不具合: CARD-XG7-042 【ライダー大戦の世界】（ターンを終えるときのサーチ）が未実装", () => {
+  it("XG7-042: 【ライダー大戦の世界】自分がターンを終えるとき、発動するかを選べ、山札の上から5枚の中から1枚を選ぶ（出典: atwiki/page-2439「自軍山札の上から5枚をオモテにして、その中から1枚を選び手札に加える」）", () => {
     const s = ending();
     expectChoiceFrom(s, "player1", "XG7-042");
   });
 
-  it.fails("XG7-042: 【ライダー大戦の世界】選んだ1枚を手札に加え、残り4枚とこのユニットを山札の下に戻す（出典: atwiki/page-2439「残りのカードとこのユニットを好きな順で山札の下に戻す」） — 既知の不具合: CARD-XG7-042 【ライダー大戦の世界】（ターンを終えるときのサーチ）が未実装", () => {
+  it("XG7-042: 【ライダー大戦の世界】選んだ1枚を手札に加え、残り4枚とこのユニットを山札の下に戻す（出典: atwiki/page-2439「残りのカードとこのユニットを好きな順で山札の下に戻す」）", () => {
     const s = resolveAll(ending(), ["TST-OP:k2"]);
     expect(zoneOf(s, "player1", "TST-OP:k2")).toBe("hand");
     expect(zoneOf(s, "player1", "XG7-042:kd")).toBe("deck");
@@ -253,7 +253,7 @@ describe("XG7-043 仮面ライダーパンチホッパー×仮面ライダーキ
     expect(targetsOf(s, "TST-UNIT-7:a")).toContain("XG7-043:h");
   });
 
-  it.fails("XG7-043: ※ これ以外の自軍ユニットがあれば BP-6000（1000）され、ストライクできない（出典: atwiki/page-2451「これ以外の自軍ユニットがあれば、これはBP-6000されストライクできない」） — 既知の不具合: CARD-XG7-043 ほかの自軍ユニットがいるときの BP-6000・ストライク不可が未実装", () => {
+  it("XG7-043: ※ これ以外の自軍ユニットがあれば BP-6000（1000）され、ストライクできない（出典: atwiki/page-2451「これ以外の自軍ユニットがあれば、これはBP-6000されストライクできない」）", () => {
     const s = p1Battle({ battle: [inst("XG7-043", "h")], rush: [inst("SPEC-PLAIN", "p")] }, {}, EXTRA);
     expect(bpOf(s, "player1", "XG7-043:h")).toBe(1000);
     expect(canStrike(s, "XG7-043:h")).toBe(false);
@@ -271,7 +271,7 @@ describe("XG7-043 仮面ライダーパンチホッパー×仮面ライダーキ
     return settle(attack(s, "TST-UNIT-7:atk", `${victim}:v`, "player2"), 2);
   };
 
-  it.fails("XG7-043: 【地獄の兄弟】自軍パワーゾーンにある間、敵軍ターン中、加速を持つ自軍ユニットが撃破されて捨札になったとき、これを自軍ラッシュエリアに出せる（出典: atwiki/page-2451「これを自軍ラッシュエリアに出してもよい」） — 既知の不具合: CARD-XG7-043 【地獄の兄弟】（パワーゾーンから出す）が未実装", () => {
+  it("XG7-043: 【地獄の兄弟】自軍パワーゾーンにある間、敵軍ターン中、加速を持つ自軍ユニットが撃破されて捨札になったとき、これを自軍ラッシュエリアに出せる（出典: atwiki/page-2451「これを自軍ラッシュエリアに出してもよい」）", () => {
     let s = hell();
     expect(zoneOf(s, "player1", "SPEC-ACCEL:v")).toBe("discard");
     expect(choiceFromCard(s, "XG7-043") || actionsMentioning(s, "XG7-043:pw").length > 0).toBe(true);
@@ -323,7 +323,7 @@ describe("XG7-044 仮面ライダーアクセル×仮面ライダーW・CJ", () 
     return resolveAll(s, ["XG7-044:ac", "confirm"]);
   };
 
-  it.fails("XG7-044: 【風都の護り手】リリース状態で自軍コマンドゾーンにある間、相手の手札以外から敵軍 S ユニットがラッシュされたとき、これを自軍ラッシュエリアに出せる（出典: atwiki/page-2440「相手の手札以外から敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい」・カード評価「自軍ターン・敵軍ターンを問わず発動可能」） — 既知の不具合: CARD-XG7-044 【風都の護り手】（手札以外からのラッシュに反応してコマンドゾーンから出る）が未実装", () => {
+  it("XG7-044: 【風都の護り手】リリース状態で自軍コマンドゾーンにある間、相手の手札以外から敵軍 S ユニットがラッシュされたとき、これを自軍ラッシュエリアに出せる（出典: atwiki/page-2440「相手の手札以外から敵軍Sユニットがラッシュされたとき、これを自軍ラッシュエリアに出してもよい」・カード評価「自軍ターン・敵軍ターンを問わず発動可能」）", () => {
     const s = ixa();
     expect(zoneOf(s, "player2", "RK-320:ri")).toBe("rush");
     expect(offered(s)).toBe(true);
@@ -333,14 +333,14 @@ describe("XG7-044 仮面ライダーアクセル×仮面ライダーW・CJ", () 
     expect(offered(ixa([{ ...inst("XG7-044", "ac"), commandHeld: true }]))).toBe(false);
   });
 
-  it.fails("XG7-044: 【風都の護り手】出したとき、ラッシュされた敵軍ユニットを持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-2440「ラッシュされた敵軍ユニットを持ち主のコマンドゾーンにホールド状態で置く」） — 既知の不具合: CARD-XG7-044 【風都の護り手】（手札以外からのラッシュに反応してコマンドゾーンから出る）が未実装", () => {
+  it("XG7-044: 【風都の護り手】出したとき、ラッシュされた敵軍ユニットを持ち主のコマンドゾーンにホールド状態で置く（出典: atwiki/page-2440「ラッシュされた敵軍ユニットを持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = accept(ixa());
     expect(zoneOf(s, "player1", "XG7-044:ac")).toBe("rush");
     expect(zoneOf(s, "player2", "RK-320:ri")).toBe("command");
     expect(cardIn(s, "player2", "RK-320:ri")?.commandHeld).toBe(true);
   });
 
-  it.fails("XG7-044: 【風都の護り手】持ち主のコマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-2440「置けなければ捨札にする」・rules/02-zones-cards コマンドゾーン5枚まで） — 既知の不具合: CARD-XG7-044 【風都の護り手】（手札以外からのラッシュに反応してコマンドゾーンから出る）が未実装", () => {
+  it("XG7-044: 【風都の護り手】持ち主のコマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-2440「置けなければ捨札にする」・rules/02-zones-cards コマンドゾーン5枚まで）", () => {
     const s = accept(ixa(undefined, [released("SPEC-C1", "k1b"), released("SPEC-C1", "k1c")]));
     expect(zoneOf(s, "player2", "RK-320:ri")).toBe("discard");
   });
@@ -376,14 +376,14 @@ describe("XG7-045 ロストドライバー", () => {
     return played(s0, "XG7-045:ld");
   };
 
-  it.fails("XG7-045: ◎ 使うためにホールドしたコマンド（必要パワー2）と同じ必要パワーの S ユニットのカードを山札から選べる（カテゴリ・追加条件は問わず、M と必要パワー3は選べない）（出典: atwiki/page-2399「これを使用するためにホールドしたコマンドと同じ必要パワーを持つSユニットのカードを1枚選び」・カード評価「追加条件やカテゴリさえも関係なくサーチできる」） — 既知の不具合: CARD-XG7-045 ◎ のサーチ（ホールドしたコマンドと同じ必要パワーの S ユニット）が未実装", () => {
+  it("XG7-045: ◎ 使うためにホールドしたコマンド（必要パワー2）と同じ必要パワーの S ユニットのカードを山札から選べる（カテゴリ・追加条件は問わず、M と必要パワー3は選べない）（出典: atwiki/page-2399「これを使用するためにホールドしたコマンドと同じ必要パワーを持つSユニットのカードを1枚選び」・カード評価「追加条件やカテゴリさえも関係なくサーチできる」）", () => {
     const s = search();
     expectChoiceFrom(s, "player1", "XG7-045");
     expect(choiceIds(s)).toEqual(["SPEC-S2:d2", "SPEC-S2COND:d2c"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-045: ◎ 選んだカードを手札に加える（出典: atwiki/page-2399「相手に見せてから手札に加えてもよい」） — 既知の不具合: CARD-XG7-045 ◎ のサーチ（ホールドしたコマンドと同じ必要パワーの S ユニット）が未実装", () => {
+  it("XG7-045: ◎ 選んだカードを手札に加える（出典: atwiki/page-2399「相手に見せてから手札に加えてもよい」）", () => {
     const s = resolveAll(search(), ["SPEC-S2:d2"]);
     expect(zoneOf(s, "player1", "SPEC-S2:d2")).toBe("hand");
   });
@@ -438,14 +438,14 @@ describe("XG7-046 仮面ライダーオーズ・サゴーゾコンボ", () => {
       "XG7-046:oz",
     ).state;
 
-  it.fails("XG7-046: 【ゴリバゴーン】自軍ターン中、ラッシュしたとき、ライドしている敵軍 S ユニットから1体選べる（任意。ライドしていない SPEC-ENEMY は選べない）（出典: atwiki/page-2441「ライドしている敵軍Sユニットを1体選び、撃破してもよい」） — 既知の不具合: CARD-XG7-046 【ゴリバゴーン】（ライドしている敵軍 S ユニットの撃破）が未実装", () => {
+  it("XG7-046: 【ゴリバゴーン】自軍ターン中、ラッシュしたとき、ライドしている敵軍 S ユニットから1体選べる（任意。ライドしていない SPEC-ENEMY は選べない）（出典: atwiki/page-2441「ライドしている敵軍Sユニットを1体選び、撃破してもよい」）", () => {
     const s = gori();
     expectChoiceFrom(s, "player1", "XG7-046");
     expect(choiceIds(s)).toEqual(["RK-023:r"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-046: 【ゴリバゴーン】選んだユニットを撃破する（出典: atwiki/page-2441） — 既知の不具合: CARD-XG7-046 【ゴリバゴーン】（ライドしている敵軍 S ユニットの撃破）が未実装", () => {
+  it("XG7-046: 【ゴリバゴーン】選んだユニットを撃破する（出典: atwiki/page-2441）", () => {
     const s = resolveAll(gori(), ["RK-023:r"]);
     expect(zoneOf(s, "player2", "RK-023:r")).toBe("discard");
   });

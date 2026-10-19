@@ -12,7 +12,7 @@
  * - `xg7UsableAsName`: 条件つきの「「X」として使える」（rules/leaveEffects.ts RS-426）。
  * - `xg7AdjustLeaveIntent`: 撃破したユニットを捨札にするかわりに除外する（rules/operationCounters.ts tryLeaveField）。
  */
-import { isSameCardIdentity } from "@rangers-strike/cards";
+import { getCardById, isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingLeave, PlayerId } from "../../types/game";
 import { effectiveBp, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
@@ -59,6 +59,8 @@ function attackerOf(state: GameState, pending: PendingBattle): { card: CardInsta
  * - XG7-007【龍撃剣＆獣奏剣】「これは自軍ターン中、特徴「恐竜」を持つユニット1体につきBP+1000され」（自軍・敵軍のユニットを数える。XG7-questions Q1）。
  * - XG7-007 ※「これが自軍捨札にある間、特徴「恐竜」を持つ自軍Mユニットは、アタックするとき、BP+1000される。」（捨札の枚数分）。
  * - XG7-008【アースの戦士】「これは自軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。」
+ * - XG7-031【サイクロンアタック】「これにライドしているユニットはBP+1000され」。
+ * - XG7-043 ※「これ以外の自軍ユニットがあれば、これはBP-6000され」。
  */
 export function xg7FieldBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance, role: "general" | "attacking" | "defending"): number {
   let bonus = 0;
@@ -73,6 +75,8 @@ export function xg7FieldBpBonus(state: GameState, playerId: PlayerId, instance: 
     if (isId(instance.cardId, "XG7-008") && ownTurn(state, playerId)) {
       bonus += 1000 * state.players[playerId].command.filter((c) => !c.commandHeld).length;
     }
+    if (ridingOn(state, playerId, instance, "XG7-031")) bonus += 1000;
+    if (xg7043Restricted(state, playerId, instance)) bonus -= 6000;
   }
   if (role === "attacking") {
     const copies = state.players[playerId].discard.filter((c) => isId(c.cardId, "XG7-007")).length;
@@ -87,6 +91,7 @@ export function xg7FieldBpBonus(state: GameState, playerId: PlayerId, instance: 
  * バトル中のアタックしたユニットの BP 修正。
  * - XG7-019【スカイコンビブレイク】「このターン、自軍ユニットは、ウイングでアタックしたとき、そのバトル中、BP+2000される。」
  *   （ウイングのアタック＝ラッシュエリアからのアタック。NC・これ自身のウイングのアタックで記録する。rules/xg7/xg7aEffects.ts）。
+ * - XG7-034【天が呼ぶ、地が呼ぶ、人が呼ぶ】「これは、DAを持つかSPが空欄ではないユニットにアタックするとき、BP+2000される。」
  */
 export function xg7AttackerBattleBonus(state: GameState, pending: PendingBattle): number {
   if (pending.effectBattle) return 0;
@@ -96,6 +101,12 @@ export function xg7AttackerBattleBonus(state: GameState, pending: PendingBattle)
   if (attacker.zone === "rush") {
     const skyCombi = (state.xg7?.flags ?? []).filter((f) => f.key === "xg7019_sky_combi" && f.playerId === pending.attackerPlayerId && f.turn === state.turn);
     bonus += 2000 * new Set(skyCombi.map((f) => f.instanceId)).size;
+  }
+  if (isId(attacker.card.cardId, "XG7-034")) {
+    const defender = areaCards(state, pending.defenderPlayerId).find((c) => c.instanceId === pending.defenderInstanceId);
+    const sp = defender ? getDefinition(state.definitions, defender.cardId)?.sp : undefined;
+    const hasDa = defender ? unitEffectiveCategories(state, pending.defenderPlayerId, defender, "battle").includes("DA") : false;
+    if (defender && (hasDa || (sp !== undefined && sp !== null))) bonus += 2000;
   }
   return bonus;
 }
@@ -202,3 +213,57 @@ export function xg7AdjustLeaveIntent(state: GameState, intent: PendingLeave): Pe
 
 /** このターンの記録があるか（xg7Registry.hasFlag の再輸出。fields だけを読み込む呼び出し側のため）。 */
 export const xg7HasFlag = hasFlag;
+
+// ---------------------------------------------------------------------------
+// XG7-024〜XG7-046
+
+/** instance がライドしているビークルが vehicleId か（同じプレイヤーのエリア）。 */
+function ridingOn(state: Pick<GameState, "players">, playerId: PlayerId, instance: CardInstance, vehicleId: string): boolean {
+  const mounted = instance.mountedOnInstanceId;
+  if (!mounted) return false;
+  const vehicle = areaCards(state, playerId).find((c) => c.instanceId === mounted);
+  return !!vehicle && isId(vehicle.cardId, vehicleId);
+}
+
+/** XG7-043 ※「これ以外の自軍ユニットがあれば、これはBP-6000されストライクできない。」 */
+function xg7043Restricted(state: GameState, playerId: PlayerId, instance: CardInstance): boolean {
+  if (!isId(instance.cardId, "XG7-043")) return false;
+  const p = state.players[playerId];
+  if (![...p.battle, ...p.rush].some((c) => c.instanceId === instance.instanceId)) return false;
+  return areaUnits(state, playerId).some((c) => c.instanceId !== instance.instanceId);
+}
+
+/** ストライクできない（rules/combo.ts canStrikeUnit）。XG7-043。 */
+export function xg7BlocksStrike(state: GameState, playerId: PlayerId, instance: CardInstance): boolean {
+  return xg7043Restricted(state, playerId, instance);
+}
+
+/** XG7-032【ライダーダブルキック】「これがアタックするとき、バトル相手のユニットのBPをカードに表記された本来の値としてバトルし」（RC で得たこのターンの記録）。 */
+export function xg7UsePrintedDefenderBp(state: GameState, pending: Pick<PendingBattle, "attackerPlayerId" | "attackerInstanceId" | "effectBattle">): boolean {
+  if (pending.effectBattle) return false;
+  return hasFlag(state, "xg7032_double_kick", pending.attackerPlayerId, pending.attackerInstanceId);
+}
+
+/** XG7-032【ライダーダブルキック】「自分が次の行動を宣言するまで、すべての敵軍ユニットはホールドすることができない。」— そのバトルで撃破された敵軍ユニットはレジストを使えない。 */
+export function xg7BlocksResist(state: GameState, pending: Pick<PendingBattle, "attackerPlayerId" | "attackerInstanceId" | "effectBattle">): boolean {
+  return xg7UsePrintedDefenderBp(state, pending);
+}
+
+/** XG7-025 ※「このユニットのナンバーの数字は、リリース状態の自軍コマンド1つにつき1少なくなる。」（rules/numberComboEffects.ts ncEffectiveNumber）。 */
+export function xg7ComboNumberDelta(state: GameState, playerId: PlayerId, card: CardInstance): number {
+  if (!isId(card.cardId, "XG7-025")) return 0;
+  return -state.players[playerId].command.filter((c) => !c.commandHeld).length;
+}
+
+/**
+ * XG7-031 新サイクロン号 ※「これにライドしているユニットは、「仮面ライダー1号」または「仮面ライダー2号」ならクロス1を得る。」
+ * バトルエリアの index のカードが持つクロス（keywords/battleKeywords.ts crossShiftLeftOf）。
+ */
+export function xg7RiderCross(battle: readonly CardInstance[], index: number): number {
+  const card = battle[index];
+  if (!card?.mountedOnInstanceId) return 0;
+  const vehicle = battle.find((c) => c.instanceId === card.mountedOnInstanceId);
+  if (!vehicle || !isId(vehicle.cardId, "XG7-031")) return 0;
+  const name = getCardById(card.cardId)?.name;
+  return sameCardName(name, "仮面ライダー1号") || sameCardName(name, "仮面ライダー2号") ? 1 : 0;
+}
