@@ -24,6 +24,7 @@ import { cardHasGrantKeyword } from "../../dsl/promotedKeywordBridge";
 import { fireAkaRedSoulNc } from "./set6AuditFixes";
 import { baseLargeNow, hasBecomesLIfAnyLText } from "./set8NamedEffectsB";
 import { rk6CommandHoldBlocked } from "../rk/rk6Fields";
+import { canonicalCardIdAmong } from "../promo/cardIdentity";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -114,6 +115,8 @@ export function turnPlayerOf(state: GameState): PlayerId {
 // ---------------------------------------------------------------------------
 // BP・SP の継続効果
 
+const SET6B_FIELD_BP_IDS = ["RS-409", "RS-415", "RS-431"] as const;
+
 /**
  * 効果による BP の継続修正（rules/fieldAuras.ts passiveNamedFieldBpBonus の general から呼ぶ）。
  * - RS-409 冥府神スレイプニル【フレンジー・スピア・クラッシュ】: 自軍と敵軍の常駐置き場のカード1枚につき BP+1000。
@@ -121,7 +124,7 @@ export function turnPlayerOf(state: GameState): PlayerId {
  * - RS-431 黒獅子リオ【剛勇吼波】: 敵軍 S ユニット1体につき BP+1000。
  */
 export function set6BFieldBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
-  switch (instance.cardId) {
+  switch (canonicalCardIdAmong(instance.cardId, SET6B_FIELD_BP_IDS)) {
     case "RS-409": {
       if (!inField(state, playerId, instance.instanceId)) return 0;
       const count = state.players.player1.operation.length + state.players.player2.operation.length;
@@ -1009,7 +1012,7 @@ export function openDaiganganKen(state: GameState, attackerId: PlayerId, attacke
   return openEffectChoice(state, {
     playerId: attackerId,
     effectId: DAIGANGAN_EFFECT_ID,
-    sourceCardId: "RS-422",
+    sourceCardId: attacker.cardId,
     sourceInstanceId: attackerInstanceId,
     kind: "select_command",
     commandFilter: "released",

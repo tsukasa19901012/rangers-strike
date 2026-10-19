@@ -228,7 +228,7 @@ describe("PR-013 スーパーダイボウケン", () => {
     expect(zoneOf(r.state, "player1", "PR-002:db")).toBe("discard");
   });
 
-  it.fails("PR-013: ダイボウケンのかわりにダンプ・フォーミュラ・ジャイロ・ドーザー・マリンの5体でもラッシュできる（出典: atwiki/page-991「（または、…）」） — 既知の不具合: CARD-PR-013 再録（RS-236）の合体で「（または、ゴーゴーダンプ＋…＋ゴーゴーマリン）」の5体を素材にできない", () => {
+  it("PR-013: ダイボウケンのかわりにダンプ・フォーミュラ・ジャイロ・ドーザー・マリンの5体でもラッシュできる（出典: atwiki/page-991「（または、…）」）", () => {
     const five = ["RS-118", "RS-119", "RS-120", "RS-121", "RS-122"].map((id) => inst(id, "v"));
     const r = rushFromHand(sdbRush([...five, ...FOUR.map((id) => inst(id, "m"))]), "player1", "PR-013:sdb");
     expect(r.ok, r.error).toBe(true);

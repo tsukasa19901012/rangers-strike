@@ -640,7 +640,7 @@ export function set5AttackerBpBonus(
 
 /** grant_keyword の通常処理の前に行う、カード固有の付随処理（効果の本体は通常どおり処理する）。 */
 export function applySet5GrantSideEffects(state: GameState, ctx: GrantKeywordContext): GameState {
-  if ((ctx.sourceCardId === "RS-340" || ctx.sourceCardId === "RS-343") && ctx.effectId === "gekinunchaku") {
+  if ((isSameCardIdentity(ctx.sourceCardId, "RS-340") || isSameCardIdentity(ctx.sourceCardId, "RS-343")) && ctx.effectId === "gekinunchaku") {
     return applyGekiNunchaku(state, ctx);
   }
   return state;

@@ -1,5 +1,6 @@
 import type { Category, ComboNumber, CardDefinition } from "./schema";
 import { ALL_CARDS_BY_ID } from "./catalog";
+import { lookupByCardIdentity, reprintSiblingIds } from "./reprints";
 import {
   getEnterBattleNamedEffect,
   getJointLNamedEffect,
@@ -303,11 +304,18 @@ export function getEnterBattleEffect(cardId: string): EnterBattleEffectId | unde
 }
 
 export function getNumberComboEffect(cardId: string): NumberComboEffectId | undefined {
-  return NUMBER_COMBO_EFFECTS[cardId];
+  // 再録・プロモ（効果名だけ違う PR-004 = RS-031 等）は元カードの NC 効果を引く。
+  return lookupByCardIdentity(NUMBER_COMBO_EFFECTS, cardId);
 }
 
 export function getAltNumberComboPartners(cardId: string): string[] {
-  return listAltNcPartnerIds(cardId);
+  const own = listAltNcPartnerIds(cardId);
+  if (own.length > 0) return own;
+  for (const id of reprintSiblingIds(cardId)) {
+    const sibling = listAltNcPartnerIds(id);
+    if (sibling.length > 0) return sibling;
+  }
+  return own;
 }
 
 export function getJointLEffect(cardId: string): JointComboLEffectId | undefined {

@@ -41,7 +41,13 @@ const PROMO_REPRINT_OF: Readonly<Record<string, string>> = {
   "PR-017": "RS-340",
   "PR-019": "RS-204",
   "PR-021": "RS-436",
+  "PR-013": "RS-236",
+  "PR-018": "RS-422",
+  "PR-020": "RS-218",
+  "PR-022": "RS-508",
+  "PR-023": "RS-483",
   "PR-026": "RS-572",
+  "PR-027": "RS-431",
   "SR-001": "RS-151",
 };
 
