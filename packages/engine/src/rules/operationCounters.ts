@@ -6,6 +6,7 @@ import { applyRk6AfterUnitLeft, rk6IsNonCraneOrphnoch } from "./rk/rk6UnitEffect
 import { openRk7RengelSubstitute } from "./rk/rk7UnitEffects";
 import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects";
 import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
+import { tryOpenXg2BattleChoice } from "./xg2/xg2Effects";
 import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
 import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
 import { rk15WinButDestroyed } from "./rk/rk15UnitEffects";
@@ -1364,6 +1365,9 @@ export function resolveBattlePendingCore(
   // RK-050【音撃斬・閻魔裁き】: 裁鬼のアタックなら、解決の直前に数字を選ぶ（選んだあとこのバトルを解決し直す）。
   const sabaki = tryOpenRk3BattleChoice(state, pending);
   if (sabaki) return { state: sabaki, log: buildLogEntry(pending.attackerPlayerId, "battle", pending.attackerInstanceId, state.definitions, "rk050_choose_number") };
+  // XG2-010【龍星キック】ほか「アタックするとき、バトルの前に」（選んだあとこのバトルを解決し直す。rules/xg2/xg2Effects.ts）。
+  const xg2Before = tryOpenXg2BattleChoice(state, pending);
+  if (xg2Before) return { state: xg2Before, log: buildLogEntry(pending.attackerPlayerId, "battle", pending.attackerInstanceId, state.definitions, "xg2_before_battle") };
 
   const attackerId = pending.attackerPlayerId;
   const defenderId = pending.defenderPlayerId;

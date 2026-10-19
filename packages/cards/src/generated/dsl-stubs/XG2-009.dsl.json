@@ -23,13 +23,12 @@
       "name": "行動予測",
       "text": "これが自軍バトルエリアにある間、敵軍バトルフェイズ開始時、次の効果を発動できる⇒敵軍Sユニットを1体選び、アタックかストライクのどちらかを宣言する。選んだユニットは、そのターン、宣言した行動を行えない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-009::fxunknowne8a18c",
+          "keyword": "xg2::XG2-009::kodo_yosoku",
           "duration": "permanent"
         }
       ]

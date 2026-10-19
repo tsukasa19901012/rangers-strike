@@ -97,6 +97,7 @@ import { set8ABlocksStrike, trySet8AOnEnterBattle } from "./legend1/set8NamedEff
 import { clearWolfRoarDecision, openWolfRoarBeforeNc } from "./legend1/set7NamedEffectsC";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredBattleListener";
+import { applyXg2OnComboEnter } from "./xg2/xg2Effects";
 
 export type { ComboOutcome } from "./comboTypes";
 
@@ -242,6 +243,8 @@ export function resolveEnterBattleEffectsImpl(
     nextState = applyWingPentactOnCombo(nextState, playerId, card, battleBeforeEnter);
     // RS-273〜276 ファイブマン（NC）: アタックしなかったファイブマンの次にコンビネーションする S ユニット。
     nextState = applyFivemanOnCombo(nextState, playerId, card, battleBeforeEnter);
+    // XG2-016 天空気殿【天空大風車】: これからコンビネーションする「人型」の M ユニット（rules/xg2/xg2Effects.ts）。
+    nextState = applyXg2OnComboEnter(nextState, playerId, card, battleBeforeEnter);
     // RK-239 ウエイクアップ！: ホールド状態で出たかを、出たときに記録する（rules/rk/rk12UnitEffects.ts）。
     nextState = rk12MarkHeldEntry(nextState, playerId, card);
   }

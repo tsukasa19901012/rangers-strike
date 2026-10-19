@@ -99,6 +99,7 @@ import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
 import { drainQueuedFieldLeaves } from "../rules/fieldLeaveQueue";
 import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
+import { applyXg2AfterAction, applyXg2StrikeDamageTriggers, isXg2ActivatableResident, openXg2OnBattlePhaseStart } from "../rules/xg2/xg2Effects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
@@ -677,6 +678,8 @@ function finishStrikeResolution(
   resolved = applyRk16StrikeDamageTriggers(resolved, pending);
   // RM-009 マルチパック（重ねたユニットがストライクしてダメージを与えたとき。rules/rm/rm1Effects.ts）。
   resolved = applyRm1StrikeDamageTriggers(resolved, pending);
+  // XG2-016 天空気殿【天空大風車】で得た能力（rules/xg2/xg2Effects.ts）。
+  resolved = applyXg2StrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -807,7 +810,7 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
   if (
     dslEffect &&
     shouldUseDslOperation(cardId, dslEffect) &&
-    dslEffect.effects.some((p) => p.type === "grant_keyword" && (p.keyword.startsWith("rm1::") || p.keyword.startsWith("bk1::")))
+    dslEffect.effects.some((p) => p.type === "grant_keyword" && (p.keyword.startsWith("rm1::") || p.keyword.startsWith("bk1::") || p.keyword.startsWith("xg2::")))
   ) {
     return false;
   }
@@ -1092,6 +1095,8 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRm2AfterAction(next);
   // RM-059 異次元調達屋カブト（WB の自軍 S ユニットがバトルエリアに出たとき。rules/rm/rm3Effects.ts）。
   if (applyActionDepth === 0) next = applyRm3AfterAction(state, next);
+  // XG2-019 知恵の樹モーク（ターンが変わったら M ユニットとして扱うのをやめる。rules/xg2/xg2Effects.ts）。
+  if (applyActionDepth === 0) next = applyXg2AfterAction(state, next);
   // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
   if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
     const endingPlayer = next.rk9RushEndAdvance;
@@ -1099,6 +1104,7 @@ function applyActionWithRng(
     if (cleared.phase === "rush" && cleared.activePlayer === endingPlayer) {
       let afterPhase = advancePhase(cleared);
       if (afterPhase.phase === "battle") afterPhase = openChargeInsteadOfBattle(afterPhase, endingPlayer);
+      if (afterPhase.phase === "battle") afterPhase = openXg2OnBattlePhaseStart(afterPhase, endingPlayer);
       next = { ...afterPhase, log: [...afterPhase.log, buildSimpleLogEntry(endingPlayer, "end_phase", "rush")] };
     } else {
       next = cleared;
@@ -3853,7 +3859,7 @@ function applyActionCore(
         return ok(activated, buildLogEntry(playerId, "activate_resident_operation", op.cardId, state.definitions));
       }
       // RS-524 呉越同舟は自軍バトルフェイズ中（rules/legend1/set8NamedEffectsA.ts）。それ以外の常駐はラッシュフェイズ。
-      if (state.phase !== "rush" && !(op && isSet8AResident(op.cardId))) return fail("wrong_phase");
+      if (state.phase !== "rush" && !(op && (isSet8AResident(op.cardId) || isXg2ActivatableResident(op.cardId)))) return fail("wrong_phase");
       if (!op) return fail("illegal_action");
       const result = applyActivateResidentOperation(
         state,
@@ -3947,6 +3953,8 @@ function applyActionCore(
       if (state.phase === "charge") afterPhase = openBlueMoonSlash(afterPhase, playerId);
       // RS-470 ギンガット【花の星獣】: バトルフェイズを行うとき、かわりにチャージフェイズを行ってもよい（同上）。
       if (state.phase === "rush" && afterPhase.phase === "battle") afterPhase = openChargeInsteadOfBattle(afterPhase, playerId);
+      // XG2-009 コンピュータードラゴン【行動予測】（敵軍バトルフェイズ開始時。rules/xg2/xg2Effects.ts）。
+      if (state.phase === "rush" && afterPhase.phase === "battle") afterPhase = openXg2OnBattlePhaseStart(afterPhase, playerId);
       return ok(
         afterPhase,
         buildSimpleLogEntry(playerId, "end_phase", state.phase),

@@ -27,12 +27,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-012::kene9a39b",
-          "duration": "turn"
+          "keyword": "xg2::XG2-012::hisho_ken",
+          "duration": "permanent"
         }
       ]
     }

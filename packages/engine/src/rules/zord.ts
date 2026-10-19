@@ -456,7 +456,10 @@ function namedUnitPartnerNames(condition: { text?: string; partnerName?: string 
   const text = (condition.text ?? "").normalize("NFKC");
   const names = /、または/.test(text)
     ? [...text.matchAll(/自軍[「｢]([^」｣]+)[」｣]/g)].map((m) => m[1]!)
-    : [];
+    : // 「自軍「A」か「B」1体を…」（XG2-010・XG2-011）。
+      /^自軍[「｢][^」｣]+[」｣]か[「｢]/.test(text)
+      ? [...text.matchAll(/[「｢]([^」｣]+)[」｣]/g)].map((m) => m[1]!)
+      : [];
   if (condition.partnerName && !names.includes(condition.partnerName)) names.push(condition.partnerName);
   return names;
 }
@@ -558,6 +561,9 @@ export function isValidZordUpMaterial(
  */
 export function zordOffersCommandOrDiscard(zordCardId: string, conditionId: string | undefined): boolean {
   if (conditionId === "send_s_unit_to_command_or_discard") return true;
+  // XG2-005〜007「自軍Sユニット…を自軍ゾーンに送る」— 「ゾーン」はパワーゾーンとコマンドゾーンの総称（atwiki/page-1517 Q1）。
+  // 行き先の "command" はコマンドゾーン（リリース状態）、"discard" はパワーゾーン（applyZordMaterial の既定の行き先）。
+  if (conditionId === "send_s_units_to_zones") return true;
   if (conditionId !== "discard_named_unit" && conditionId !== "discard_feature_unit" && conditionId !== "discard_vehicle_unit") return false;
   return /コマンドゾーンに送るか捨札にする/.test((resolveRushAdditionalCondition(zordCardId)?.text ?? "").normalize("NFKC"));
 }

@@ -110,14 +110,14 @@ describe("XG2-009 コンピュータードラゴン", () => {
   const toEnemyBattle = (p1: Partial<GameState["players"]["player1"]>) =>
     nextPhase(enemyTurn(p1, { rush: [inst("TST-UNIT-0", "e"), inst("SPEC-DA-M", "m")] }, EXTRA, "rush"));
 
-  it.fails("XG2-009: 【行動予測】自軍バトルエリアにある間、敵軍バトルフェイズ開始時に発動するかを選べ、敵軍 S ユニットから1体選ぶ（M ユニットは選べない。任意）（出典: atwiki/page-1753「敵軍バトルフェイズ開始時、次の効果を発動できる⇒敵軍Sユニットを1体選び」） 既知の不具合: CARD-XG2-009 【行動予測】がなく、敵軍バトルフェイズ開始時に選択が開かない", () => {
+  it("XG2-009: 【行動予測】自軍バトルエリアにある間、敵軍バトルフェイズ開始時に発動するかを選べ、敵軍 S ユニットから1体選ぶ（M ユニットは選べない。任意）（出典: atwiki/page-1753「敵軍バトルフェイズ開始時、次の効果を発動できる⇒敵軍Sユニットを1体選び」）", () => {
     const s = toEnemyBattle({ battle: [inst("XG2-009", "cd")] });
     expectChoiceFrom(s, "player1", "XG2-009");
     expect(canSkip(s)).toBe(true);
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e"]);
   });
 
-  it.fails("XG2-009: 【行動予測】「アタック」を宣言すると、選んだユニットはそのターンアタックできない（ストライクはできる）（出典: atwiki/page-1753「選んだユニットは、そのターン、宣言した行動を行えない」） 既知の不具合: CARD-XG2-009 【行動予測】がなく、宣言した行動を制限できない", () => {
+  it("XG2-009: 【行動予測】「アタック」を宣言すると、選んだユニットはそのターンアタックできない（ストライクはできる）（出典: atwiki/page-1753「選んだユニットは、そのターン、宣言した行動を行えない」）", () => {
     let s = resolveAll(pick(toEnemyBattle({ battle: [inst("XG2-009", "cd"), inst("TST-UNIT-0", "mine")] }), "TST-UNIT-0:e"), ["attack"]);
     s = act(s, { type: "move_to_battle", playerId: "player2", instanceId: "TST-UNIT-0:e" });
     const acts = legal(s).filter((a) => a.playerId === "player2");
@@ -153,7 +153,7 @@ describe("XG2-010 気伝武人龍星王", () => {
     expect(zoneOf(r.state, "player1", "XG2-015:m")).toBe("discard");
   });
 
-  it.fails("XG2-010: 追加条件 — 自軍「気伝獣龍星王」（RS-291）1体を捨札にしてもラッシュできる（出典: atwiki/page-1805「「リュウレンジャー」か「気伝獣龍星王」」） 既知の不具合: CARD-XG2-010 追加条件の「気伝獣龍星王」が素材に入らず、リュウレンジャーしか選べない", () => {
+  it("XG2-010: 追加条件 — 自軍「気伝獣龍星王」（RS-291）1体を捨札にしてもラッシュできる（出典: atwiki/page-1805「「リュウレンジャー」か「気伝獣龍星王」」）", () => {
     const r = rushFromHand(rushWith("RS-291:m"), "player1", "XG2-010:h");
     expect(r.ok, r.error).toBe(true);
     expect(zoneOf(r.state, "player1", "RS-291:m")).toBe("discard");
@@ -164,7 +164,7 @@ describe("XG2-010 気伝武人龍星王", () => {
     expect(canStartRush(rushWith("XG2-015:m", 3), "player1", "XG2-010:h")).toBe(false);
   });
 
-  it.fails("XG2-010: NC — CN3（バトルエリアの3番目）で「SP1」を得る（出典: atwiki/page-1805「「SP1」」・R-CN-01） 既知の不具合: CARD-XG2-010 NC が成立せず「SP1」を得ない", () => {
+  it("XG2-010: NC — CN3（バトルエリアの3番目）で「SP1」を得る（出典: atwiki/page-1805「「SP1」」・R-CN-01）", () => {
     let s = ncEnter("XG2-010:r", 2, {}, {}, EXTRA);
     if (s.pendingEffectChoice?.sourceCardId === "XG2-010") s = skip(s);
     expect(spOf(settle(s), "player1", "XG2-010:r")).toBe(1);
@@ -176,7 +176,7 @@ describe("XG2-010 気伝武人龍星王", () => {
     return attack(p1Battle({ battle: [inst("XG2-010", "r")] }, { battle: [inst(id, suf)], deck: [inst("TST-OP", "etop")] }, EXTRA), "XG2-010:r", defender);
   };
 
-  it.fails("XG2-010: 【龍星キック】DA を持つ敵軍ユニット（マルチカテゴリも含む）にアタックするとき、バトルの前にバトル相手を戻すかを選べる（任意）（出典: atwiki/page-1805「DAを持つ敵軍ユニットにアタックするとき、バトルの前に…戻してもよい」・grnrngr/faq-card-5 RS-339「そのカテゴリを含むものはすべて対象」） 既知の不具合: CARD-XG2-010 【龍星キック】がなく、DA の敵軍ユニットにアタックしても選択が開かない", () => {
+  it("XG2-010: 【龍星キック】DA を持つ敵軍ユニット（マルチカテゴリも含む）にアタックするとき、バトルの前にバトル相手を戻すかを選べる（任意）（出典: atwiki/page-1805「DAを持つ敵軍ユニットにアタックするとき、バトルの前に…戻してもよい」・grnrngr/faq-card-5 RS-339「そのカテゴリを含むものはすべて対象」）", () => {
     for (const d of ["SPEC-DA-S:e", "SPEC-MADA-S:e"]) {
       const s = kicked(d);
       expectChoiceFrom(s, "player1", "XG2-010");
@@ -184,7 +184,7 @@ describe("XG2-010 気伝武人龍星王", () => {
     }
   });
 
-  it.fails("XG2-010: 【龍星キック】戻すと、バトル相手は持ち主の山札の一番上に戻り、バトルは行われない（サイズを問わない）（出典: atwiki/page-1805「バトル相手のユニットを持ち主の山札の上に戻してもよい」・カード評価「サイズを問わない」・コメント「バトルは行われない」） 既知の不具合: CARD-XG2-010 【龍星キック】がなく、バトル相手を山札の上に戻せない", () => {
+  it("XG2-010: 【龍星キック】戻すと、バトル相手は持ち主の山札の一番上に戻り、バトルは行われない（サイズを問わない）（出典: atwiki/page-1805「バトル相手のユニットを持ち主の山札の上に戻してもよい」・カード評価「サイズを問わない」・コメント「バトルは行われない」）", () => {
     const s = resolveAll(accept(kicked("SPEC-DA-L:e")));
     expect(s.players.player2.deck[0]?.instanceId).toBe("SPEC-DA-L:e");
     expect(zoneOf(s, "player1", "XG2-010:r")).toBe("battle");
@@ -195,7 +195,7 @@ describe("XG2-010 気伝武人龍星王", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG2-010");
   });
 
-  it.fails("XG2-010: 公式Q&A — DA の敵軍ユニットにアタックし、相手が RS-018 隠流忍術で DA を持たないユニットにかわりにバトルさせても、そのバトル相手を山札の上に戻せる（出典: atwiki/page-1805 Q1「「RS-018 隠流忍術」の効果で変更されたバトル相手のユニットを、持ち主の山札の上に戻すことになります」） 既知の不具合: CARD-XG2-010 【龍星キック】がなく、隠流忍術で変わったバトル相手も戻せない", () => {
+  it("XG2-010: 公式Q&A — DA の敵軍ユニットにアタックし、相手が RS-018 隠流忍術で DA を持たないユニットにかわりにバトルさせても、そのバトル相手を山札の上に戻せる（出典: atwiki/page-1805 Q1「「RS-018 隠流忍術」の効果で変更されたバトル相手のユニットを、持ち主の山札の上に戻すことになります」）", () => {
     let s = attack(
       p1Battle({ battle: [inst("XG2-010", "r")] }, { battle: [inst("SPEC-DA-S", "e"), inst("SPEC-WB-S", "sub")], hand: [inst("RS-018", "c")], command: releasedCat("MA", 2), power: powerCards(5, "ep"), deck: [inst("TST-OP", "etop")] }, EXTRA),
       "XG2-010:r",
@@ -221,7 +221,7 @@ describe("XG2-011 気伝武人ウォンタイガー", () => {
     expectRarityIn("XG2-011", ["N"]);
   });
 
-  it.fails("XG2-011: 追加条件 — 自軍「キバレンジャー」（XG2-013）か「気伝獣ウォンタイガー」（RS-293）1体を捨札にしてパワー5でラッシュできる。パワー4ではできない（出典: atwiki/page-1804） 既知の不具合: CARD-XG2-011 追加条件の「気伝獣ウォンタイガー」が素材に入らず、キバレンジャーしか選べない", () => {
+  it("XG2-011: 追加条件 — 自軍「キバレンジャー」（XG2-013）か「気伝獣ウォンタイガー」（RS-293）1体を捨札にしてパワー5でラッシュできる。パワー4ではできない（出典: atwiki/page-1804）", () => {
     for (const [id, suf] of [["XG2-013", "k"], ["RS-293", "w"]] as const) {
       const b = (power: number) => rushBoard({ hand: [inst("XG2-011", "h")], rush: [inst(id, suf)], power: powerCards(power), command: releasedCat("MA", 1) }, {}, EXTRA);
       const r = rushFromHand(b(5), "player1", "XG2-011:h");
@@ -234,20 +234,20 @@ describe("XG2-011 気伝武人ウォンタイガー", () => {
   /** CN4（バトルエリアの4番目）で出る。敵軍山札の一番上は TST-UNIT-0（カード名「Test Striker」）。 */
   const entered = () => ncEnter("XG2-011:w", 3, {}, { deck: [inst("TST-UNIT-0", "top"), inst("TST-OP", "second")] }, EXTRA);
 
-  it.fails("XG2-011: NC【虎の子大秘術】— カード名を宣言して敵軍山札の上から1枚をオモテにするかを選べる（任意）（出典: atwiki/page-1804「好きなカード名1つを宣言してから…オモテにしてもよい」） 既知の不具合: CARD-XG2-011 【虎の子大秘術】がなく、NC で選択が開かない（カード名を宣言する手もない）", () => {
+  it("XG2-011: NC【虎の子大秘術】— カード名を宣言して敵軍山札の上から1枚をオモテにするかを選べる（任意）（出典: atwiki/page-1804「好きなカード名1つを宣言してから…オモテにしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG2-011");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-011: NC【虎の子大秘術】— オモテにしたカードが宣言したカード名と同名なら、持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-1804「そのカードを持ち主のパワーゾーンにダメージにして置く」） 既知の不具合: CARD-XG2-011 【虎の子大秘術】がなく、宣言したカード名と同名のカードをダメージにできない", () => {
+  it("XG2-011: NC【虎の子大秘術】— オモテにしたカードが宣言したカード名と同名なら、持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-1804「そのカードを持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(pick(entered(), "Test Striker"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:top")).toBe("power");
     expect(cardIn(s, "player2", "TST-UNIT-0:top")?.faceDown).toBe(true);
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("XG2-011: NC【虎の子大秘術】— 違うカード名なら山札の上に戻す（出典: atwiki/page-1804「それ以外なら山札の上に戻す」） 既知の不具合: CARD-XG2-011 【虎の子大秘術】がなく、選択が開かない", () => {
+  it("XG2-011: NC【虎の子大秘術】— 違うカード名なら山札の上に戻す（出典: atwiki/page-1804「それ以外なら山札の上に戻す」）", () => {
     const s = resolveAll(pick(entered(), "Test Operation"));
     expect(s.players.player2.deck[0]?.instanceId).toBe("TST-UNIT-0:top");
     expect(damageOf(s, "player2")).toBe(0);
@@ -282,7 +282,7 @@ describe("XG2-012 牙大王", () => {
     expect(zoneOf(r.state, "player1", "RS-293:w")).toBe("discard");
   });
 
-  it.fails("XG2-012: 追加条件 — 自軍「大連王」1体を捨札にしてもラッシュできる（出典: atwiki/page-1145「追加条件：自軍合体ユニットまたは自軍「大連王」1体を捨札にする」） 既知の不具合: CARD-XG2-012 追加条件の「自軍「大連王」1体を捨札にする」が使えず、合体でしかラッシュできない", () => {
+  it("XG2-012: 追加条件 — 自軍「大連王」1体を捨札にしてもラッシュできる（出典: atwiki/page-1145「追加条件：自軍合体ユニットまたは自軍「大連王」1体を捨札にする」）", () => {
     const r = rushFromHand(board([inst("XG2-017", "d")]), "player1", "XG2-012:h");
     expect(r.ok, r.error).toBe(true);
     expect(zoneOf(r.state, "player1", "XG2-017:d")).toBe("discard");
@@ -294,20 +294,20 @@ describe("XG2-012 牙大王", () => {
       "XG2-012:k",
     );
 
-  it.fails("XG2-012: 【飛翔剣・木端微塵】自軍ターン中にバトルエリアに出たとき、敵軍ラッシュエリアの DA を持つ敵軍ユニット（サイズを問わない。マルチカテゴリも）から1体選べる。バトルエリアのユニット・DA を持たないユニットは選べない（任意）（出典: atwiki/page-1145「敵軍ラッシュエリアから、DAを持つ敵軍ユニットを1体選び撃破してもよい」） 既知の不具合: CARD-XG2-012 【飛翔剣・木端微塵】の候補が DA で絞られない（DA を持たない敵軍ユニットも選べる）", () => {
+  it("XG2-012: 【飛翔剣・木端微塵】自軍ターン中にバトルエリアに出たとき、敵軍ラッシュエリアの DA を持つ敵軍ユニット（サイズを問わない。マルチカテゴリも）から1体選べる。バトルエリアのユニット・DA を持たないユニットは選べない（任意）（出典: atwiki/page-1145「敵軍ラッシュエリアから、DAを持つ敵軍ユニットを1体選び撃破してもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG2-012");
     expect(choiceIds(s)).toEqual(["SPEC-DA-L:l", "SPEC-DA-S:s", "SPEC-MADA-S:md"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-012: 【飛翔剣・木端微塵】L ユニット以外を選ぶと撃破して捨札にする（出典: atwiki/page-1145） 既知の不具合: CARD-XG2-012 【飛翔剣・木端微塵】が撃破せず、選んだユニットをパワーゾーンに送る", () => {
+  it("XG2-012: 【飛翔剣・木端微塵】L ユニット以外を選ぶと撃破して捨札にする（出典: atwiki/page-1145）", () => {
     const s = resolveAll(pick(entered(), "SPEC-DA-S:s"));
     expect(zoneOf(s, "player2", "SPEC-DA-S:s")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(0);
   });
 
-  it.fails("XG2-012: 【飛翔剣・木端微塵】撃破したユニットが L ユニットなら、捨札にするかわりに持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-1145「捨札にするかわりに持ち主のパワーゾーンにダメージにして置く」） 既知の不具合: CARD-XG2-012 【飛翔剣・木端微塵】が L ユニットをオモテ向きのままパワーゾーンに送り、ダメージにならない", () => {
+  it("XG2-012: 【飛翔剣・木端微塵】撃破したユニットが L ユニットなら、捨札にするかわりに持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-1145「捨札にするかわりに持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-DA-L:l"));
     expect(zoneOf(s, "player2", "SPEC-DA-L:l")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-DA-L:l")?.faceDown).toBe(true);
@@ -334,14 +334,14 @@ describe("XG2-013 キバレンジャー", () => {
     expect(spOf(settle(s), "player1", "XG2-013:k")).toBe(1);
   });
 
-  it.fails("XG2-013: NC【白虎真剣】— 敵軍バトルエリアの、カテゴリを2つ以上持つ S ユニットから1体選べる（M ユニット・単色・ラッシュエリアのユニットは選べない。任意）（出典: atwiki/page-1790「敵軍バトルエリアから、カテゴリを2つ以上持つSユニットを1体選び」） 既知の不具合: CARD-XG2-013 【白虎真剣】がなく、NC で選択が開かない（「SP1」だけ得る）", () => {
+  it("XG2-013: NC【白虎真剣】— 敵軍バトルエリアの、カテゴリを2つ以上持つ S ユニットから1体選べる（M ユニット・単色・ラッシュエリアのユニットは選べない。任意）（出典: atwiki/page-1790「敵軍バトルエリアから、カテゴリを2つ以上持つSユニットを1体選び」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG2-013");
     expect(choiceIds(s)).toEqual(["SPEC-MULTI-S:b"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-013: NC【白虎真剣】— 選んだユニットを撃破する（出典: atwiki/page-1790「撃破してもよい」） 既知の不具合: CARD-XG2-013 【白虎真剣】がなく、撃破できない", () => {
+  it("XG2-013: NC【白虎真剣】— 選んだユニットを撃破する（出典: atwiki/page-1790「撃破してもよい」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-MULTI-S:b"));
     expect(zoneOf(s, "player2", "SPEC-MULTI-S:b")).toBe("discard");
   });
@@ -358,7 +358,7 @@ describe("XG2-014 鉄面臂張遼", () => {
     expectRarityIn("XG2-014", ["NR"]);
   });
 
-  it.fails("XG2-014: ※ 敵軍ターン中、SP1 のユニット（BP1000）にアタックされてバトルに勝っても撃破される（出典: atwiki/page-1754「バトルに勝っても撃破される」） 既知の不具合: CARD-XG2-014 ※（敵軍ターン中に「SP1」以上のユニットとバトルしたら勝っても撃破される）が効かず、場に残る", () => {
+  it("XG2-014: ※ 敵軍ターン中、SP1 のユニット（BP1000）にアタックされてバトルに勝っても撃破される（出典: atwiki/page-1754「バトルに勝っても撃破される」）", () => {
     const s = resolveAll(attackedInEnemyTurn({ battle: [inst("XG2-014", "t")] }, "XG2-014:t", {}, "TST-UNIT-0:atk"));
     expect(zoneOf(s, "player1", "XG2-014:t")).toBe("discard");
   });

@@ -153,6 +153,8 @@ import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "
 import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
 import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
 import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
+import { canActivateXg2Resident, canConfirmXg2Choice, isXg2ActivatableResident, isXg2ChoiceEffect } from "../rules/xg2/xg2Effects";
+import { xg2ReturnToRushBlocked } from "../rules/xg2/xg2Fields";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
@@ -809,6 +811,11 @@ function appendActivateResidentOperationActions(
       }
       continue;
     }
+    // XG2-019 知恵の樹モーク（自軍バトルフェイズ。rules/xg2/xg2Effects.ts）。
+    if (isXg2ActivatableResident(card.cardId)) {
+      if (canActivateXg2Resident(state, playerId, card)) actions.push({ type: "activate_resident_operation", playerId, operationInstanceId: card.instanceId });
+      continue;
+    }
     if (state.phase !== "rush") continue;
     const wired = getCardEffect(card.cardId);
     if (wired?.effectId === "shiron_light" || wired?.effectId === "hidora_egg") {
@@ -866,6 +873,8 @@ function appendBattleDanceActions(
   if (state.phase !== "battle") return;
   const player = state.players[playerId];
   if (!hasOperationEffect(player, "battle_dance", state.definitions)) return;
+  // XG2-006 キャリアベータ【ベータランチャー】（rules/xg2/xg2Fields.ts）。
+  if (xg2ReturnToRushBlocked(state, playerId)) return;
 
   const released = player.command.filter((c) => !c.commandHeld);
   if (released.length < 2) return;
@@ -1306,6 +1315,15 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk3Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg2ChoiceEffect(pending.effectId)) {
+    // クロスギャザー XG2 の選択（rules/xg2/xg2Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg2Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

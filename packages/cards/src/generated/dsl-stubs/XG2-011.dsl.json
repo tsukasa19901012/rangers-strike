@@ -30,12 +30,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_enemy_deck_1",
-          "duration": "turn"
+          "keyword": "xg2::XG2-011::tora_no_ko",
+          "duration": "permanent"
         }
       ]
     }

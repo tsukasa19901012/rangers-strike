@@ -1,4 +1,5 @@
 import { hasScopedRestriction } from "../core/scopedModifiers";
+import { XG2_NO_STRIKE_RESTRICTION } from "./xg2/xg2Fields";
 import { sameCardName } from "../core/cardNames";
 /**
  * 監査で検出された「付与のみで未消費」キーワードのランタイム実装。
@@ -269,6 +270,8 @@ export function battleActBlocked(
   if (hasScopedRestriction(player, card.instanceId, "neko_damashi_no_attack_strike", "turn")) return true;
   // RK-048【音撃斬・雷電斬震】で撃破したとき「これはアタックすることができない」。
   if (action === "attack" && hasScopedRestriction(player, card.instanceId, "no_attack_this_turn", "turn")) return true;
+  // XG2-009【行動予測】で「ストライク」を宣言されたユニット（rules/xg2/xg2Fields.ts）。
+  if (action === "strike" && hasScopedRestriction(player, card.instanceId, XG2_NO_STRIKE_RESTRICTION, "turn")) return true;
   // RS-167【爆竜必殺バキバキパンチ】で得た「アタックしてバトルに勝つたび、追加でアタックできる」。
   if (action === "attack" && hasBakiBakiExtraAttack(player, card.instanceId)) return false;
   // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックする権利を失っている。

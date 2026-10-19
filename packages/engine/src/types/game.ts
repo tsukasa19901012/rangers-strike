@@ -216,6 +216,11 @@ export type PendingDamagePayment = {
   replacedDamage?: number;
 };
 
+/** クロスギャザー XG2 の選択の続き（rules/xg2。カードごとの効果が型を決める）。 */
+export type Xg2Meta = Record<string, unknown>;
+/** クロスギャザー XG2 のカード固有の効果の状態（rules/xg2/xg2Core.ts）。 */
+export type Xg2State = Record<string, unknown>;
+
 export type PendingBattle = {
   attackerPlayerId: PlayerId;
   attackerInstanceId: string;
@@ -262,6 +267,8 @@ export type PendingBattle = {
   effectBattle?: boolean;
   /** RK-050 仮面ライダー裁鬼【音撃斬・閻魔裁き】: お互いにバトルする数字（rules/rk/rk3UnitEffects.ts）。 */
   rk050Mode?: "bp" | "power_cost" | "number";
+  /** クロスギャザー XG2: バトルの前に発動を確かめ終えた効果（rules/xg2/xg2Core.ts tryOpenXg2BattleChoice）。 */
+  xg2Asked?: string[];
 };
 
 export type PendingRush = {
@@ -764,6 +771,8 @@ export type PendingEffectChoice = {
     /** RM-037: 相手の手札から選んだカード。 */
     handInstanceId?: string;
   };
+  /** クロスギャザー XG2 の選択の続き（rules/xg2。中身はカードごとの効果が決める）。 */
+  xg2Meta?: Xg2Meta;
   /** スペシャルメタルエディション RM-001〜RM-021 の選択の続き（rules/rm/rm1Effects.ts）。 */
   rm1Meta?: {
     /** RM-006: 選べる数（「メカ」「人型」の自軍ユニットの数）。 */
@@ -1409,6 +1418,8 @@ export type GameState = {
   queuedFieldLeaves?: PendingLeave[];
   /** RM-026 グランドバース【収容】の、チェイス等の選択を待っている「その後、選んだビークルをパワーゾーンに送る」（rules/rm/rm2Effects.ts applyRm2AfterAction）。 */
   rm2PendingTriggers?: Array<{ kind: "rm026_vehicle"; playerId: PlayerId; instanceId: string; phasePlayerId: PlayerId }>;
+  /** クロスギャザー XG2 のカード固有の効果の状態（ターン中の記録など。rules/xg2/xg2Core.ts）。 */
+  xg2?: Xg2State;
   /** RM-017 オメデトロフィーの、まだ開いていない発動（rules/rm/rm1Effects.ts applyRm1AfterAction）。 */
   rm1PendingTriggers?: Array<{ kind: "rm017"; playerId: PlayerId; sourceInstanceId: string; unitCardId: string }>;
   /** RK-153【車両強奪】で選ばれたユニット（次の相手のスタートフェイズに戻せない。rules/rk/rk8UnitEffects.ts）。 */

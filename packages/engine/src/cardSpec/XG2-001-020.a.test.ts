@@ -94,14 +94,14 @@ function fiveTests(opts: { id: string; page: string; effect: string; yes: string
     expect(spOf(settle(s), "player1", `${id}:f`)).toBe(1);
   });
 
-  it.fails(`${id}: NC【${effect}】— 選べるのは条件に合う敵軍 S ユニット（ラッシュエリア・バトルエリア）。${opts.noWhy}は選べない。任意（出典: ${page}） 既知の不具合: CARD-${id} NC で敵軍 S ユニットを選ぶ選択が開かない（「SP1」だけ得る）`, () => {
+  it(`${id}: NC【${effect}】— 選べるのは条件に合う敵軍 S ユニット（ラッシュエリア・バトルエリア）。${opts.noWhy}は選べない。任意（出典: ${page}）`, () => {
     const s = entered();
     expectChoiceFrom(s, "player1", id);
     expect(choiceIds(s)).toEqual(yesIds);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails(`${id}: NC【${effect}】— 選んだユニットは持ち主（敵軍）のゾーン（パワーゾーンかコマンドゾーン）に置かれる（出典: ${page}「持ち主のゾーンに置いてもよい」・atwiki/page-1517 Q1） 既知の不具合: CARD-${id} NC で敵軍 S ユニットを選ぶ選択が開かず、持ち主のゾーンに置けない`, () => {
+  it(`${id}: NC【${effect}】— 選んだユニットは持ち主（敵軍）のゾーン（パワーゾーンかコマンドゾーン）に置かれる（出典: ${page}「持ち主のゾーンに置いてもよい」・atwiki/page-1517 Q1）`, () => {
     const target = yesIds[0]!;
     const s = resolveZone(pick(entered(), target));
     expect(inOwnersZone(s, "player2", target)).toBe(true);
@@ -232,7 +232,7 @@ describe("XG2-004 ファイブロボ", () => {
   const inBattle = (cmds: number) =>
     p1Battle({ battle: [inst("XG2-004", "r")], command: [...multiCmd(cmds), ...releasedCat("OT", 1)] }, {}, EXTRA);
 
-  it.fails("XG2-004: 【超次元ソード】カテゴリを2つ以上持つ自軍コマンドが2つ以上あれば「SP2」になる（出典: atwiki/page-1693） 既知の不具合: CARD-XG2-004 【超次元ソード】がなく、マルチカテゴリの自軍コマンドが2つあっても SP1 のまま", () => {
+  it("XG2-004: 【超次元ソード】カテゴリを2つ以上持つ自軍コマンドが2つ以上あれば「SP2」になる（出典: atwiki/page-1693）", () => {
     expect(spOf(inBattle(2), "player1", "XG2-004:r")).toBe(2);
   });
 
@@ -269,7 +269,7 @@ function zoneZordTests(id: string, page: string, n: number, power: number) {
     expect(canStartRush(board(n, power - 1), "player1", `${id}:z`)).toBe(false);
   });
 
-  it.fails(`${id}: 追加条件 — 送り先に自軍コマンドゾーンも選べる（「ゾーン」はパワーゾーンとコマンドゾーンの総称）（出典: ${page}・atwiki/page-1517 Q1）既知の不具合: CARD-${id} 追加条件のユニットはパワーゾーンにしか送れず、コマンドゾーンを選ぶ手がない`, () => {
+  it(`${id}: 追加条件 — 送り先に自軍コマンドゾーンも選べる（「ゾーン」はパワーゾーンとコマンドゾーンの総称）（出典: ${page}・atwiki/page-1517 Q1）`, () => {
     const r = rushFromHand(board(n), "player1", `${id}:z`, { destination: "command" });
     expect(r.ok, r.error).toBe(true);
     expect(zoneOf(resolveAll(r.state), "player1", "TST-UNIT-0:s0")).toBe("command");
@@ -301,20 +301,20 @@ describe("XG2-005 スカイアルファー", () => {
       "XG2-005:a",
     );
 
-  it.fails("XG2-005: 【アルファーレーザー】自軍ターン中にバトルエリアに出たとき、ホールド状態の敵軍コマンドをすべてリリースするかを選べる（任意）。リリースすると敵軍のコマンドはすべてリリース状態になる（出典: atwiki/page-1787「ホールド状態の敵軍コマンドをすべてリリースしてもよい」） 既知の不具合: CARD-XG2-005 【アルファーレーザー】が本文と違う（最初から M ユニットを選ぶ選択が開き、敵軍のコマンドをリリースしない）", () => {
+  it("XG2-005: 【アルファーレーザー】自軍ターン中にバトルエリアに出たとき、ホールド状態の敵軍コマンドをすべてリリースするかを選べる（任意）。リリースすると敵軍のコマンドはすべてリリース状態になる（出典: atwiki/page-1787「ホールド状態の敵軍コマンドをすべてリリースしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG2-005");
     expect(canSkip(s)).toBe(true);
     expect(accept(s).players.player2.command.every((c) => !c.commandHeld)).toBe(true);
   });
 
-  it.fails("XG2-005: 【アルファーレーザー】リリースすると、リリースした枚数（3）以下の必要パワーの数字を持つ敵軍ユニット（サイズ・エリアを問わない。「3+」は3）から1体選ぶ。必要パワー4のユニットは選べない（出典: atwiki/page-1787「その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び」・コメント「サイズ無視」） 既知の不具合: CARD-XG2-005 【アルファーレーザー】でリリースした枚数を数えず、必要パワーで候補を絞らない", () => {
+  it("XG2-005: 【アルファーレーザー】リリースすると、リリースした枚数（3）以下の必要パワーの数字を持つ敵軍ユニット（サイズ・エリアを問わない。「3+」は3）から1体選ぶ。必要パワー4のユニットは選べない（出典: atwiki/page-1787「その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び」・コメント「サイズ無視」）", () => {
     const s = accept(entered());
     expectChoiceFrom(s, "player1", "XG2-005");
     expect(choiceIds(s)).toEqual(["SPEC-C2:c2", "SPEC-C3M:m3"]);
   });
 
-  it.fails("XG2-005: 【アルファーレーザー】選んだユニットは持ち主のゾーンに置かれる（出典: atwiki/page-1787「持ち主のゾーンに置く」） 既知の不具合: CARD-XG2-005 【アルファーレーザー】で選んだユニットを持ち主のゾーンに置かない", () => {
+  it("XG2-005: 【アルファーレーザー】選んだユニットは持ち主のゾーンに置かれる（出典: atwiki/page-1787「持ち主のゾーンに置く」）", () => {
     const s = resolveZone(pick(accept(entered()), "SPEC-C3M:m3"));
     expect(inOwnersZone(s, "player2", "SPEC-C3M:m3")).toBe(true);
   });
@@ -350,12 +350,12 @@ describe("XG2-006 キャリアベータ", () => {
     expect(canDance(danceBoard({}))).toBe(true);
   });
 
-  it.fails("XG2-006: 【ベータランチャー】自軍エリアにある間、自軍バトルフェイズ（スタートフェイズ以外の自分のターン）にはバトルエリアの自軍ユニットをラッシュエリアに戻せない（出典: atwiki/page-1788・コメント「バトルダンスとナイトフィーバー封じ」） 既知の不具合: CARD-XG2-006 【ベータランチャー】がなく、自軍バトルフェイズにバトルダンスでバトルエリアのユニットを戻せてしまう", () => {
+  it("XG2-006: 【ベータランチャー】自軍エリアにある間、自軍バトルフェイズ（スタートフェイズ以外の自分のターン）にはバトルエリアの自軍ユニットをラッシュエリアに戻せない（出典: atwiki/page-1788・コメント「バトルダンスとナイトフィーバー封じ」）", () => {
     const s = danceBoard({ rush: [inst("XG2-006", "cb")] });
     expect(canDance(s)).toBe(false);
   });
 
-  it.fails("XG2-006: 【ベータランチャー】「自分も相手も」— 相手のエリアにあるときも、自分のバトルフェイズに自分のバトルエリアのユニットを戻せない（出典: atwiki/page-1788「自分も相手も次の制限を受ける」） 既知の不具合: CARD-XG2-006 【ベータランチャー】がなく、相手のエリアにあっても制限を受けない", () => {
+  it("XG2-006: 【ベータランチャー】「自分も相手も」— 相手のエリアにあるときも、自分のバトルフェイズに自分のバトルエリアのユニットを戻せない（出典: atwiki/page-1788「自分も相手も次の制限を受ける」）", () => {
     const s = danceBoard({}, { rush: [inst("XG2-006", "cb")] });
     expect(canDance(s)).toBe(false);
   });
@@ -379,7 +379,7 @@ describe("XG2-007 ランドガンマ", () => {
 
   zoneZordTests("XG2-007", "atwiki/page-1789", 2, 3);
 
-  it.fails("XG2-007: 【ガンマカノン砲】カテゴリを2つ以上持つ自軍 M ユニット（これ自身も）は、アタックされるときカテゴリを2つ以上持つ自軍コマンド1つにつき BP+3000（2つで BP4000→10000）（出典: atwiki/page-1789） 既知の不具合: CARD-XG2-007 【ガンマカノン砲】がなく、アタックされても BP が上がらない", () => {
+  it("XG2-007: 【ガンマカノン砲】カテゴリを2つ以上持つ自軍 M ユニット（これ自身も）は、アタックされるときカテゴリを2つ以上持つ自軍コマンド1つにつき BP+3000（2つで BP4000→10000）（出典: atwiki/page-1789）", () => {
     const s = attackedInEnemyTurn({ battle: [inst("XG2-007", "g")], command: multiCmd(2) }, "XG2-007:g", {}, "TST-UNIT-7:atk", EXTRA);
     expect(lastBattleBps(s)?.defender).toBe(10000);
   });
@@ -389,7 +389,7 @@ describe("XG2-007 ランドガンマ", () => {
     expect(lastBattleBps(s)?.defender).toBe(4000);
   });
 
-  it.fails("XG2-007: 【ガンマカノン砲】ラッシュエリアにあっても効く（「自軍エリアにある間」）。マルチカテゴリの M ユニット（キャリアベータ）が BP6000→12000（出典: atwiki/page-1789「これが自軍エリアにある間」） 既知の不具合: CARD-XG2-007 【ガンマカノン砲】がなく、アタックされても BP が上がらない", () => {
+  it("XG2-007: 【ガンマカノン砲】ラッシュエリアにあっても効く（「自軍エリアにある間」）。マルチカテゴリの M ユニット（キャリアベータ）が BP6000→12000（出典: atwiki/page-1789「これが自軍エリアにある間」）", () => {
     const s = attackedInEnemyTurn({ battle: [inst("XG2-006", "cb")], rush: [inst("XG2-007", "g")], command: multiCmd(2) }, "XG2-006:cb", {}, "TST-UNIT-7:atk", EXTRA);
     expect(lastBattleBps(s)?.defender).toBe(12000);
   });

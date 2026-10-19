@@ -1,4 +1,5 @@
 import { rm2AttackerBattleBonus, rm2DefenderBattleBonus } from "./rm/rm2Effects";
+import { xg2DefenderBattleBonus } from "./xg2/xg2Fields";
 import { rk9UsePrintedDefenderBp } from "./rk/rk9Fields";
 import { rk11UsePrintedDefenderBp } from "./rk/rk11Fields";
 import {
@@ -265,7 +266,9 @@ export function battleDefenderBp(
     // RK-052【音撃打・破砕細石】（rules/rk/rk3UnitEffects.ts）。
     rk3DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card) +
     // RM-030【ダイレオンレーザー】・RM-033 メタルダー ※（rules/rm/rm2Effects.ts）。
-    rm2DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card)
+    rm2DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card) +
+    // XG2-007 ランドガンマ【ガンマカノン砲】（rules/xg2/xg2Fields.ts）。
+    xg2DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card)
   );
 }
 

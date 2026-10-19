@@ -131,6 +131,7 @@ import { tryRm1CardEffect } from "../rules/rm/rm1Effects";
 import { tryRm2CardEffect } from "../rules/rm/rm2Effects";
 import { tryRm3CardEffect } from "../rules/rm/rm3Effects";
 import { tryBk1CardEffect } from "../rules/bk/bk1Effects";
+import { tryXg2CardEffect } from "../rules/xg2/xg2Effects";
 import { tryOtherLinesCardEffect } from "../rules/legend1/otherLinesNamedEffects";
 import { trySet9BCardEffect } from "../rules/legend1/set9NamedEffectsB";
 import { trySet8BCardEffect } from "../rules/legend1/set8NamedEffectsB";
@@ -498,6 +499,9 @@ export function applyGrantKeyword(
   // ベルトコレクション BK-001〜BK-019 のカード固有の効果（`bk1::` キーワード。rules/bk/bk1Effects.ts）。
   const bk1 = tryBk1CardEffect(state, ctx, keyword);
   if (bk1) return bk1;
+  // クロスギャザー XG2 のカード固有の効果（`xg2::` キーワード。rules/xg2/xg2Effects.ts）。
+  const xg2 = tryXg2CardEffect(state, ctx, keyword);
+  if (xg2) return xg2;
   // 第8弾 RS-560〜RS-581 のカード固有の名前付き効果（`set8c::` と一部の既存キーワード。rules/legend1/set8NamedEffectsC.ts）。
   const set8c = trySet8CCardEffect(state, ctx, keyword);
   if (set8c) return set8c;
