@@ -32,8 +32,10 @@ export function resetUnitEffectBlockCache(): void {
 }
 
 function loadBlockForCard(cardId: string): UnitEffectBlock | undefined {
-  if (blockCache.has(cardId)) {
-    return blockCache.get(cardId);
+  // 対局中に何度も引かれるので、読み込み済みなら表を1回だけ引く（効果の無いカードは undefined を覚えている）。
+  const hit = blockCache.get(cardId);
+  if (hit !== undefined || blockCache.has(cardId)) {
+    return hit;
   }
   try {
     const doc = loadCardById(cardId, inferCatalogTierForCardId(cardId));
@@ -387,13 +389,24 @@ export function battleHasComboPartner(
   return battleHasPartner(battle, partnerCardIds, excludeInstanceId);
 }
 
+/** カードの名前つき効果を effectId で引く表（同じ effectId が複数あれば最初のもの。ブロックごとに作る）。 */
+const namedEffectIndex = new WeakMap<UnitEffectBlock, Map<string, NamedUnitEffect>>();
+
 export function findNamedEffectByEffectId(
   cardId: string,
   effectId: string,
 ): NamedUnitEffect | undefined {
-  return loadBlockForCard(cardId)?.namedEffects.find(
-    (named) => named.effectId === effectId,
-  );
+  const block = loadBlockForCard(cardId);
+  if (!block) return undefined;
+  let index = namedEffectIndex.get(block);
+  if (!index) {
+    index = new Map();
+    for (const named of block.namedEffects) {
+      if (!index.has(named.effectId)) index.set(named.effectId, named);
+    }
+    namedEffectIndex.set(block, index);
+  }
+  return index.get(effectId);
 }
 
 /**
