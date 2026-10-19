@@ -244,6 +244,10 @@ export function evaluateStateGate(
     return total >= Number(discardTotalMatch[1]);
   }
 
+  // 「自軍捨札が5枚以上ある」（XG6-031・XG6-043）。
+  const ownDiscardMatch = text.match(/^自軍捨札が(\d+)枚以上ある$/);
+  if (ownDiscardMatch) return player.discard.length >= Number(ownDiscardMatch[1]);
+
   const namedDiscardMatch = text.match(/^自軍捨札に[「｢]([^」｣]+)[」｣]がある$/);
   if (namedDiscardMatch) {
     // RS-327: 自軍捨札にその名前のカードがあること（捨札にはしない。atwiki/page-488）。

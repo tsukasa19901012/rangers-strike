@@ -69,7 +69,7 @@ import { loseDamageThreshold } from "../../core/createGame";
 // ---------------------------------------------------------------------------
 // 共通
 
-function def(state: Pick<GameState, "definitions">, cardId: string) {
+export function def(state: Pick<GameState, "definitions">, cardId: string) {
   return getDefinition(state.definitions, cardId);
 }
 
@@ -77,7 +77,7 @@ function printedCats(state: Pick<GameState, "definitions">, cardId: string): str
   return cardCategories(def(state, cardId)) as string[];
 }
 
-function isUnitDef(state: Pick<GameState, "definitions">, cardId: string): boolean {
+export function isUnitDef(state: Pick<GameState, "definitions">, cardId: string): boolean {
   return def(state, cardId)?.type === "unit";
 }
 
@@ -94,12 +94,12 @@ function zoneOf(state: GameState, playerId: PlayerId, instanceId: string): "batt
   return zoneOfField(state, playerId, instanceId) ?? undefined;
 }
 
-function currentCats(state: GameState, playerId: PlayerId, card: CardInstance): string[] {
+export function currentCats(state: GameState, playerId: PlayerId, card: CardInstance): string[] {
   const zone = zoneOf(state, playerId, card.instanceId);
   return zone ? (unitEffectiveCategories(state, playerId, card, zone) as string[]) : printedCats(state, card.cardId);
 }
 
-function choice(
+export function choice(
   ctx: BaseCtx,
   sourceCardId: string,
   effectId: string,
@@ -112,7 +112,7 @@ function choice(
 }
 
 /** ターンプレイヤー（反応・選択の間に activePlayer が移っていても）。 */
-function turnPlayer(state: GameState): PlayerId {
+export function turnPlayer(state: GameState): PlayerId {
   if (state.pendingStrike) return state.pendingStrike.battlePhasePlayer;
   if (state.pendingBattle) return state.pendingBattle.phasePlayerId;
   if (state.pendingLeave) return state.pendingLeave.phasePlayerId;
@@ -121,7 +121,7 @@ function turnPlayer(state: GameState): PlayerId {
 }
 
 /** 場のユニットを指定のゾーンへ移す（撃破ではない。離場の処理を通す）。toZone が command のとき place で置き方を変える。 */
-function relocateFieldUnit(
+export function relocateFieldUnit(
   state: GameState,
   ownerId: PlayerId,
   instanceId: string,
@@ -158,7 +158,7 @@ function relocateFieldUnit(
 }
 
 /** 場以外のゾーンのカードを別のゾーンへ移す。 */
-function moveZoneCard(
+export function moveZoneCard(
   state: GameState,
   playerId: PlayerId,
   from: "hand" | "command" | "power" | "discard" | "deck",
@@ -202,7 +202,7 @@ function effectRush(
   });
 }
 
-function enemyUnitsWhere(state: GameState, playerId: PlayerId, sourceCardId: string, pred: (c: CardInstance) => boolean): string[] {
+export function enemyUnitsWhere(state: GameState, playerId: PlayerId, sourceCardId: string, pred: (c: CardInstance) => boolean): string[] {
   const enemyId = opponent(playerId);
   return fieldUnits(state, enemyId)
     .filter((c) => pred(c) && selectableEnemy(state, playerId, sourceCardId, c))

@@ -1,4 +1,5 @@
 import { tryXg6OnEnterBattle } from "./xg6/xg6Hooks";
+import { xg6BlocksStrike } from "./xg6/xg6Fields";
 import { tryRm3OnEnterBattle } from "./rm/rm3Effects";
 import { tryRm2OnEnterBattle } from "./rm/rm2Effects";
 import type { CardDefinition } from "@rangers-strike/cards";
@@ -806,6 +807,8 @@ export function canStrikeUnit(
   // XG1-028 アバレンオージ: ※これはホールド状態のときストライクできない（出典: atwiki/page-1665）。
   if (instance.cardId === "XG1-028" && instance.commandHeld) return false;
   if (state && playerId) {
+    // XG6-041【死神のパーティータイムだ】（アルファベットを3文字以上含むユニットはストライクできない。rules/xg6/xg6Fields.ts）。
+    if (xg6BlocksStrike(state, instance)) return false;
     if (hasBakiBakiExtraAttackOnly(state, playerId, instance.instanceId)) {
       return false;
     }

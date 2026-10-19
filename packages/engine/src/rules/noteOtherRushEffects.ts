@@ -6,6 +6,7 @@ import { applyDamageToPlayer } from "./damagePayment";
 import { startSelectCommandChoice, startSelectPowerChoice, startSelectUnitChoice } from "./pendingChoices";
 import { releaseHeldSUnitCommands } from "./batch03RushEffects";
 import type { NamedEffectOutcome } from "./namedUnitEffects";
+import { openXg6Teddy } from "./xg6/xg6Hooks";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 
 /** on_rush note_other_* カードの個別効果実装。 */
@@ -120,25 +121,10 @@ export function resolveNoteOtherOnRushEffects(
     }
   }
 
-  // XG6-044 (仮面ライダーNEW電王SF): on rush → may bring テディ from power to rush (auto-yes)
+  // XG6-044 仮面ライダーNEW電王SF ※: ラッシュしたとき、パワーゾーンの「テディ」を出すかを選ぶ（rules/xg6/xg6bEffects.ts）。
   if (cardId === "XG6-044") {
-    const player = nextState.players[rusherPlayerId];
-    const teddyInPower = player.power.filter(
-      (c) => cardName(nextState.definitions, c.cardId) === "テディ",
-    );
-    if (teddyInPower.length > 0) {
-      const target = teddyInPower[0]!;
-      const newPower = player.power.filter((c) => c.instanceId !== target.instanceId);
-      nextState = {
-        ...nextState,
-        ...updatePlayer(nextState, rusherPlayerId, {
-          ...player,
-          power: newPower,
-          rush: [...player.rush, target],
-        }),
-      };
-      logs.push(buildLogEntry(rusherPlayerId, "rush_effect", cardId, nextState.definitions, "teddy_rush"));
-    }
+    const opened = openXg6Teddy(nextState, rusherPlayerId, rushedInstanceId, phasePlayerId);
+    if (opened) nextState = opened;
   }
 
   // RK-185 レッドドラス の※（ラッシュしたとき、特徴「仮面ライダー」の敵軍 S ユニットを選んで山札の下へ）は rules/rk/rk9UnitEffects.ts（rk9:: キーワード）。

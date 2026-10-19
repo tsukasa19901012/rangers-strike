@@ -1,6 +1,7 @@
 import type { GameState, PlayerId } from "../types/game";
 import { beginTurnStartSwaps } from "./keywordGapRuntime";
 import { applyGegeruStartPhase } from "./residentOps";
+import { applyXg6StartPhaseBegin } from "./xg6/xg6Hooks";
 
 /**
  * スタートフェイズに入った直後（3行程より前）に処理する効果。
@@ -17,5 +18,7 @@ export function applyStartPhaseBeginEffects(state: GameState, playerId: PlayerId
   if (state.phase !== "start" || state.activePlayer !== playerId) return state;
   let next = applyGegeruStartPhase(state, playerId);
   next = beginTurnStartSwaps(next, playerId);
+  // XG6-042【ゼロのスタート】（このスタートフェイズ中、山札からドローできない。rules/xg6/xg6bEffects.ts）。
+  next = applyXg6StartPhaseBegin(next, playerId);
   return next;
 }

@@ -38,13 +38,13 @@
       "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これがユニットでなくなるとき、自軍捨札を3枚選びゲームから除外すれば、その場に留まる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-031::koregayunitodena",
+          "keyword": "xg6::XG6-031::field",
           "duration": "permanent"
         }
       ]
@@ -58,10 +58,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-031::koregaerianiarun",
+          "keyword": "xg6::XG6-031::field",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "no_e7a8ae",
@@ -73,10 +74,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP3",
-          "duration": "turn"
+          "keyword": "xg6::XG6-031::eradication",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

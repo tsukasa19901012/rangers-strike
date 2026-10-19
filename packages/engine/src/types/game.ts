@@ -319,6 +319,8 @@ export type Rk7ChoiceMeta = {
 export type PendingLeave = {
   /** RS-303【シティガーディアンズ隊長】の「かわりに捨札にしてもよい」を見送った（再度は尋ねない）。 */
   cityGuardiansDeclined?: boolean;
+  /** XG6-031 ジョーカーアンデッドの※「自軍捨札を3枚選びゲームから除外すれば、その場に留まる」を見送った（rules/xg6/）。 */
+  xg6StayDeclined?: boolean;
   /** RK-128 仮面ライダーレンゲルの※「かわりに…捨札にしてもよい」を見送った（再度は尋ねない）。 */
   rk7SubstituteDeclined?: boolean;
   ownerPlayerId: PlayerId;
@@ -1512,6 +1514,10 @@ export type Xg6ChoiceMeta = {
 /** クロスギャザー ザ・ギガンティックタイタン XG6 のターン中の記録（rules/xg6/）。key はカードと効果の名前。 */
 export type Xg6Records = {
   marks?: Array<{ key: string; playerId: PlayerId; instanceId?: string; turn: number; value?: number; ref?: string }>;
+  /** XG6-025【ここからは私のターンだ】: このプレイヤーのバトルフェイズを終了する（core/applyAction.ts の後処理）。 */
+  endBattlePhase?: PlayerId;
+  /** XG6-042【ゼロのスタート】: 次のスタートフェイズにドローできないプレイヤーと、記録したターン。 */
+  noStartDraw?: Array<{ playerId: PlayerId; turn: number }>;
 };
 
 export type TurnEndProgress = {

@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-041::shinnopateitaimuda",
+          "keyword": "xg6::XG6-041::party_time",
           "duration": "permanent"
         }
       ]

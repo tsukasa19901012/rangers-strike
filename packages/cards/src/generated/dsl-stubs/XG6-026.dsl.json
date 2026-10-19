@@ -58,11 +58,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-026::gurandeionireiza",
+          "keyword": "xg6::XG6-026::eraser",
           "duration": "permanent"
         }
       ]

@@ -393,9 +393,9 @@ export function promotedKeywordSpFloor(
   const keywords = cachedCardGrantKeywords(instance.cardId);
   if (keywords.length === 0) return 0;
 
+  // instanceBp は bpModifier を含む（二重に足さない。XG6-044 の BP4500 で SP1 にならない）。
   const bp =
     instanceBp(state.definitions, instance) +
-    (instance.bpModifier ?? 0) +
     promotedKeywordBpBonus(state, playerId, instance);
 
   let floor = 0;

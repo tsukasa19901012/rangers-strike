@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-039::komandozonnokado",
+          "keyword": "xg6::XG6-039::stag_phone",
           "duration": "permanent"
         }
       ]

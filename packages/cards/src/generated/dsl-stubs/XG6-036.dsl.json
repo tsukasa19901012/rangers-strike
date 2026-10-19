@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-036::memorichienji",
-          "duration": "turn"
+          "keyword": "xg6::XG6-036::memory_change",
+          "duration": "permanent"
         }
       ]
     }

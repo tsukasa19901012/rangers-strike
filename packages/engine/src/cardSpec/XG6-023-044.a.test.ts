@@ -92,8 +92,8 @@ describe("XG6-023 データスハイパー", () => {
     expect(zoneOf(s, "player2", "XG5-046:ed")).toBe("discard");
   });
 
-  it.fails(
-    `XG6-023: 【ハイパーパンチ】敵軍 L ユニットがあれば BP+5000（BP8500）（出典: ${PAGE}「敵軍Lユニットがあれば、これはBP+5000される」）— 既知の不具合: CARD-XG6-023 BP が上がらない`,
+  it(
+    `XG6-023: 【ハイパーパンチ】敵軍 L ユニットがあれば BP+5000（BP8500）（出典: ${PAGE}「敵軍Lユニットがあれば、これはBP+5000される」）`,
     () => {
       expect(bpOf(p1Battle({ battle: [inst("XG6-023", "h")] }, { rush: [inst("SPEC-L10", "l")] }, EXTRA), "player1", "XG6-023:h")).toBe(8500);
     },
@@ -138,8 +138,8 @@ describe("XG6-024 ゴセイナイト", () => {
     expect(spOf(ncEnter("XG6-024:k", 1, {}, {}, EXTRA), "player1", "XG6-024:k")).toBe(0);
   });
 
-  it.fails(
-    `XG6-024: NC【ナイトダイナミック】OT・ET・DA のどれかを持つ敵軍 S ユニット（エリアを問わない）から1体選んで撃破する（WB だけの S ユニット・M ユニットは選べない。選ばない選び方はない）（出典: ${PAGE}「OTまたはETまたはDAを持つ敵軍Sユニットを1体選び撃破する」・カード評価「エリアを問わず」）— 既知の不具合: CARD-XG6-024 撃破の選択が開かない`,
+  it(
+    `XG6-024: NC【ナイトダイナミック】OT・ET・DA のどれかを持つ敵軍 S ユニット（エリアを問わない）から1体選んで撃破する（WB だけの S ユニット・M ユニットは選べない。選ばない選び方はない）（出典: ${PAGE}「OTまたはETまたはDAを持つ敵軍Sユニットを1体選び撃破する」・カード評価「エリアを問わず」）`,
     () => {
       let s = nc();
       expectChoiceFrom(s, "player1", "XG6-024");
@@ -193,8 +193,8 @@ describe("XG6-025 ゴセイグランド", () => {
     return strike(s, "TST-UNIT-7:a", "player2");
   };
 
-  it.fails(
-    `XG6-025: 【ここからは私のターンだ】敵軍バトルフェイズにダメージを受けたとき、手札が1枚以上あれば、全部捨札にしてそのバトルフェイズを終了させられる（出典: ${PAGE}「自分の手札が1枚以上あればすべて捨札にしてもよい。そうしたとき、そのバトルフェイズを終了する」）— 既知の不具合: CARD-XG6-025 ダメージを受けても選択が開かない`,
+  it(
+    `XG6-025: 【ここからは私のターンだ】敵軍バトルフェイズにダメージを受けたとき、手札が1枚以上あれば、全部捨札にしてそのバトルフェイズを終了させられる（出典: ${PAGE}「自分の手札が1枚以上あればすべて捨札にしてもよい。そうしたとき、そのバトルフェイズを終了する」）`,
     () => {
       let s = struck(2);
       expectChoiceFrom(s, "player1", "XG6-025");
@@ -232,8 +232,8 @@ describe("XG6-026 グランディオン", () => {
 
   const nc = (pos = 3) => ncEnter("XG6-026:g", pos - 1, { command: [released("TST-OP", "mc"), released("TST-OP-ET", "mc2")] }, { command: [released("TST-OP", "ec"), { ...inst("TST-OP-DA", "eh"), commandHeld: true }] }, EXTRA);
 
-  it.fails(
-    `XG6-026: NC【グランディオンイレイザー】自軍コマンドを1つ選んで捨札にしてもよい（出典: ${PAGE}「自軍コマンドを1つ選び捨札にしてもよい」）— 既知の不具合: CARD-XG6-026 3番目に出て NC が成立しても選択が開かない（ログだけ出る）`,
+  it(
+    `XG6-026: NC【グランディオンイレイザー】自軍コマンドを1つ選んで捨札にしてもよい（出典: ${PAGE}「自軍コマンドを1つ選び捨札にしてもよい」）`,
     () => {
       const s = nc();
       expectChoiceFrom(s, "player1", "XG6-026");
@@ -242,8 +242,8 @@ describe("XG6-026 グランディオン", () => {
     },
   );
 
-  it.fails(
-    `XG6-026: NC — 自軍コマンドを捨札にしたとき、敵軍コマンド（ホールド状態も）を1つ選んで持ち主のパワーゾーンにダメージとして置く（出典: ${PAGE}「敵軍コマンドを1つ選び、持ち主のパワーゾーンにダメージにして置く」）— 既知の不具合: CARD-XG6-026 NC が何もしない`,
+  it(
+    `XG6-026: NC — 自軍コマンドを捨札にしたとき、敵軍コマンド（ホールド状態も）を1つ選んで持ち主のパワーゾーンにダメージとして置く（出典: ${PAGE}「敵軍コマンドを1つ選び、持ち主のパワーゾーンにダメージにして置く」）`,
     () => {
       let s = pick(nc(), "TST-OP:mc");
       expect(zoneOf(s, "player1", "TST-OP:mc")).toBe("discard");
@@ -281,8 +281,8 @@ describe("XG6-027 シーレオン", () => {
   const rushed = (deck: ReturnType<typeof inst>[]) =>
     resolveAll(rushFromHand(rushBoard({ hand: [inst("XG6-027", "s")], command: releasedCat("MA", 1), power: powerCards(3), deck }, {}, EXTRA), "player1", "XG6-027:s").state);
 
-  it.fails(
-    `XG6-027: 【青き海の獅子】山札の一番下が「シーレオン」以外の特徴「獣」のユニットカードなら手札に加える（出典: ${PAGE}「自軍山札の下から1枚をオモテにする…手札に加える」・カード評価「山札の下を参照する」）— 既知の不具合: CARD-XG6-027 山札の上のカードを選ばせ、手札に加えない`,
+  it(
+    `XG6-027: 【青き海の獅子】山札の一番下が「シーレオン」以外の特徴「獣」のユニットカードなら手札に加える（出典: ${PAGE}「自軍山札の下から1枚をオモテにする…手札に加える」・カード評価「山札の下を参照する」）`,
     () => {
       const s = rushed([inst("TST-UNIT-0", "t"), ...deckCards(2), inst("SPEC-BEAST", "b")]);
       expect(zoneOf(s, "player1", "SPEC-BEAST:b")).toBe("hand");
@@ -315,8 +315,8 @@ describe("XG6-028 スカイオン", () => {
   const rushed = (deck: ReturnType<typeof inst>[]) =>
     resolveAll(rushFromHand(rushBoard({ hand: [inst("XG6-028", "s")], command: releasedCat("MA", 1), power: powerCards(4), deck }, {}, EXTRA), "player1", "XG6-028:s").state);
 
-  it.fails(
-    `XG6-028: 【赤き空の獅子】山札の一番上が「スカイオン」以外の特徴「獣」のユニットカード（XG6-027 シーレオン）なら手札に加える（出典: ${PAGE}「自軍山札の上から1枚をオモテにする…手札に加える」）— 既知の不具合: CARD-XG6-028 山札の上のカードを選ばせるだけで手札に加えない`,
+  it(
+    `XG6-028: 【赤き空の獅子】山札の一番上が「スカイオン」以外の特徴「獣」のユニットカード（XG6-027 シーレオン）なら手札に加える（出典: ${PAGE}「自軍山札の上から1枚をオモテにする…手札に加える」）`,
     () => {
       const s = rushed([inst("XG6-027", "t"), ...deckCards(3)]);
       expect(zoneOf(s, "player1", "XG6-027:t")).toBe("hand");
@@ -354,8 +354,8 @@ describe("XG6-029 強化スカイライダー", () => {
     expect(choiceIds(s)).not.toContain("TST-UNIT-0:x");
   });
 
-  it.fails(
-    `XG6-029: ※ 特徴「仮面ライダー」を持つ自軍コマンド1つにつき BP+500（2つで BP4000。TST-OP は数えない）（出典: ${PAGE}「特徴「仮面ライダー」を持つ自軍コマンド1つにつきBP+500される」）— 既知の不具合: CARD-XG6-029 BP が上がらない`,
+  it(
+    `XG6-029: ※ 特徴「仮面ライダー」を持つ自軍コマンド1つにつき BP+500（2つで BP4000。TST-OP は数えない）（出典: ${PAGE}「特徴「仮面ライダー」を持つ自軍コマンド1つにつきBP+500される」）`,
     () => {
       const s = p1Battle({ battle: [inst("XG6-029", "s")], command: [released("XG4-087", "c1"), released("XG1-049", "c2"), released("TST-OP", "c3")] }, {}, EXTRA);
       expect(bpOf(s, "player1", "XG6-029:s")).toBe(4000);
@@ -369,8 +369,8 @@ describe("XG6-029 強化スカイライダー", () => {
       "SPEC-VEH:v",
     );
 
-  it.fails(
-    `XG6-029: RC【大反転スカイキック】これをラッシュエリアに戻すかを選べる（任意）（出典: ${PAGE}「これをラッシュエリアに戻してもよい」）— 既知の不具合: CARD-XG6-029 RC が何もしない（ログだけ出る）`,
+  it(
+    `XG6-029: RC【大反転スカイキック】これをラッシュエリアに戻すかを選べる（任意）（出典: ${PAGE}「これをラッシュエリアに戻してもよい」）`,
     () => {
       const s = rc();
       expectChoiceFrom(s, "player1", "XG6-029");
@@ -378,8 +378,8 @@ describe("XG6-029 強化スカイライダー", () => {
     },
   );
 
-  it.fails(
-    `XG6-029: RC — 戻したとき、敵軍バトルエリアのユニット（サイズを問わない。ラッシュエリアは選べない）を1体選んでバトルし、このターンはバトルエリアに出られない（出典: ${PAGE}「敵軍バトルエリアからユニットを1体選び、これとバトルさせてもよい。その後、このターン、これはバトルエリアに出られない」）— 既知の不具合: CARD-XG6-029 RC が何もしない`,
+  it(
+    `XG6-029: RC — 戻したとき、敵軍バトルエリアのユニット（サイズを問わない。ラッシュエリアは選べない）を1体選んでバトルし、このターンはバトルエリアに出られない（出典: ${PAGE}「敵軍バトルエリアからユニットを1体選び、これとバトルさせてもよい。その後、このターン、これはバトルエリアに出られない」）`,
     () => {
       let s = accept(rc());
       expect(zoneOf(s, "player1", "XG6-029:s")).toBe("rush");

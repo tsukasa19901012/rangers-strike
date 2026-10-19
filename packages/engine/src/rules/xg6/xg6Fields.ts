@@ -73,7 +73,132 @@ export function xg6FieldBpBonus(state: GameState, playerId: PlayerId, instance: 
   }
   // XG6-021【激臨剣】「これは、自軍捨札にあるカテゴリを2つ以上持つカード1枚につきBP+2000され」（atwiki/page-2351）
   if (hasGekirinken(state, playerId, instance.instanceId)) bonus += 2000 * xg6MultiCategoryDiscardCount(state, playerId);
+  return bonus + xg6bFieldBpBonus(state, playerId, instance);
+}
+
+// ---------------------------------------------------------------------------
+// XG6-023〜XG6-044 の継続効果
+
+function isCardId(cardId: string, id: string): boolean {
+  return isSameCardIdentity(cardId, id);
+}
+
+function enemyOf(playerId: PlayerId): PlayerId {
+  return playerId === "player1" ? "player2" : "player1";
+}
+
+function isUnitCardId(state: Pick<GameState, "definitions">, cardId: string): boolean {
+  return state.definitions[cardId]?.type === "unit";
+}
+
+function fieldUnitsOf(state: Pick<GameState, "players" | "definitions">, playerId: PlayerId): CardInstance[] {
+  return fieldOf(state.players[playerId]).filter((c) => isUnitCardId(state, c.cardId));
+}
+
+/** 本来のカード名に含むアルファベット（A〜Z・a〜z。全角も数える。ギリシャ文字は数えない。XG6-041 Q1）の数。 */
+function latinLetterCount(state: Pick<GameState, "definitions">, cardId: string): number {
+  return ((state.definitions[cardId]?.name ?? "").normalize("NFKC").match(/[A-Za-z]/g) ?? []).length;
+}
+
+/** 場の XG6-041 仮面ライダーエターナルの数（両軍）。 */
+function eternalCount(state: Pick<GameState, "players">): number {
+  return (["player1", "player2"] as const).reduce((n, pid) => n + fieldOf(state.players[pid]).filter((c) => isCardId(c.cardId, "XG6-041")).length, 0);
+}
+
+/** XG6-035 仮面ライダーW・CJX「※これは自軍コマンドゾーンにあるカテゴリが追加される。」（atwiki/page-2317） */
+export function xg6AddedCategories<T extends string>(state: Pick<GameState, "players" | "definitions">, playerId: PlayerId, instance: CardInstance): T[] {
+  if (!isCardId(instance.cardId, "XG6-035")) return [];
+  const cats = state.players[playerId].command.flatMap((c) => xg6CommandCategories(c.cardId, printedCategories(state, c.cardId)));
+  return [...new Set(cats)] as T[];
+}
+
+function xg6bFieldBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
+  let bonus = 0;
+  const enemyId = enemyOf(playerId);
+  // XG6-023 データスハイパー【ハイパーパンチ】「敵軍Lユニットがあれば、これはBP+5000される。」（atwiki/page-2293）
+  if (isCardId(instance.cardId, "XG6-023") && fieldUnitsOf(state, enemyId).some((c) => state.definitions[c.cardId]?.size === "L")) bonus += 5000;
+  // XG6-029 強化スカイライダー「※これは特徴「仮面ライダー」を持つ自軍コマンド1つにつきBP+500される。」（atwiki/page-2323）
+  if (isCardId(instance.cardId, "XG6-029")) {
+    bonus += 500 * state.players[playerId].command.filter((c) => (state.definitions[c.cardId]?.features ?? []).includes("仮面ライダー")).length;
+  }
+  // XG6-032 巨大邪神14【絶対的な最強の力】「下にウラ向きで重ねたカードがあれば…敵軍ユニット1体につきBP+1000され」（atwiki/page-2288）
+  if (isCardId(instance.cardId, "XG6-032") && (instance.stackedCards ?? []).some((c) => c.faceDown)) bonus += 1000 * fieldUnitsOf(state, enemyId).length;
+  // XG6-035【ビッカーチャージブレイク】「これが持っているカテゴリ１つにつきBP＋2000される。」（atwiki/page-2317）
+  if (isCardId(instance.cardId, "XG6-035")) {
+    bonus += 2000 * new Set([...printedCategories(state, instance.cardId), ...xg6AddedCategories(state, playerId, instance)]).size;
+  }
+  // XG6-041【死神のパーティータイムだ】「本来のカード名にアルファベットを含むユニットはBP－1000され」（両軍。atwiki/page-2316）
+  if (latinLetterCount(state, instance.cardId) > 0) bonus -= 1000 * eternalCount(state);
+  // XG6-043【強き心と強き願い】「これはBP+3000され」（このターンの記録）
+  if (hasXg6Mark(state, "XG6-043:bp", playerId, instance.instanceId)) bonus += 3000;
   return bonus;
+}
+
+/** XG6-030【唯一の弱点】「これは自軍コマンドがすべてホールド状態なら、敵軍Sユニットにアタックされない。」（コマンドが0枚なら発動しない） */
+export function xg6DefenderBlocksAttack(
+  state: Pick<GameState, "players" | "definitions">,
+  attacker: CardInstance,
+  defenderPlayerId: PlayerId,
+  defenderInstanceId: string,
+): boolean {
+  const defender = fieldOf(state.players[defenderPlayerId]).find((c) => c.instanceId === defenderInstanceId);
+  if (!defender || !isCardId(defender.cardId, "XG6-030")) return false;
+  if (state.definitions[attacker.cardId]?.size !== "S") return false;
+  const command = state.players[defenderPlayerId].command;
+  return command.length > 0 && command.every((c) => c.commandHeld);
+}
+
+/** XG6-031「※これが自軍エリアにある間、本来のBPの下三桁が500でない自軍ユニットはラッシュできない。」 */
+export function xg6BlocksRush(state: Pick<GameState, "players" | "definitions">, playerId: PlayerId, cardId: string): boolean {
+  if (!fieldOf(state.players[playerId]).some((c) => isCardId(c.cardId, "XG6-031"))) return false;
+  const def = state.definitions[cardId];
+  if (def?.type !== "unit") return false;
+  const bp = typeof def.bp === "number" ? def.bp : 0;
+  return bp % 1000 !== 500;
+}
+
+/** XG6-029【大反転スカイキック】「その後、このターン、これはバトルエリアに出られない。」（このターンの記録） */
+export function xg6BlocksBattleEntry(state: Pick<GameState, "xg6" | "turn">, playerId: PlayerId, unit: CardInstance): boolean {
+  return hasXg6Mark(state, "XG6-029:no_entry", playerId, unit.instanceId);
+}
+
+/** XG6-041「含んだアルファベットが3文字以上あれば次の制限を受ける→これはストライクすることができない。」 */
+export function xg6BlocksStrike(state: Pick<GameState, "players" | "definitions">, instance: CardInstance): boolean {
+  return eternalCount(state) > 0 && latinLetterCount(state, instance.cardId) >= 3;
+}
+
+/** XG6-043「※特徴「女」を持つ自軍ユニットがあれば、これはレジストを得る。」 */
+export function xg6GrantsRegister(
+  state: Pick<GameState, "players" | "definitions">,
+  playerId: PlayerId,
+  instanceId: string,
+  featuresOf: (card: CardInstance) => string[],
+): boolean {
+  const self = fieldOf(state.players[playerId]).find((c) => c.instanceId === instanceId);
+  if (!self || !isCardId(self.cardId, "XG6-043")) return false;
+  return fieldUnitsOf(state, playerId).some((c) => c.instanceId !== instanceId && featuresOf(c).includes("女"));
+}
+
+function xg6bEffectiveSp(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+  sp: number,
+  bpOf: (state: GameState, playerId: PlayerId, instance: CardInstance) => number,
+): number {
+  // XG6-031【種の根絶】「ユニットがこれ1体だけなら、これは「SP3」になる。」（両軍の場のユニット。Q1 ラッシュしたターン以降も）
+  if (isCardId(instance.cardId, "XG6-031")) {
+    const all = [...fieldUnitsOf(state, "player1"), ...fieldUnitsOf(state, "player2")];
+    if (all.length === 1 && all[0]!.instanceId === instance.instanceId) sp = Math.max(sp, 3);
+  }
+  // XG6-032「BP12000以上のときSP2になる」（下にウラ向きのカードがあるとき）
+  if (isCardId(instance.cardId, "XG6-032") && (instance.stackedCards ?? []).some((c) => c.faceDown) && bpOf(state, playerId, instance) >= 12000) {
+    sp = Math.max(sp, 2);
+  }
+  // XG6-040【ライダーキック】「そうしたとき、これはSP1になる。」・XG6-043「「SP2」になる」（このターンの記録）
+  if (hasXg6Mark(state, "XG6-040:sp1", playerId, instance.instanceId)) sp = Math.max(sp, 1);
+  if (hasXg6Mark(state, "XG6-043:sp2", playerId, instance.instanceId)) sp = Math.max(sp, 2);
+  return sp;
 }
 
 export function xg6EffectiveSp(
@@ -84,8 +209,8 @@ export function xg6EffectiveSp(
   bpOf: (state: GameState, playerId: PlayerId, instance: CardInstance) => number,
 ): number {
   // XG6-021【激臨剣】「BP20000以上のとき「SP2」になる」
-  if (hasGekirinken(state, playerId, instance.instanceId) && bpOf(state, playerId, instance) >= 20000) return Math.max(sp, 2);
-  return sp;
+  if (hasGekirinken(state, playerId, instance.instanceId) && bpOf(state, playerId, instance) >= 20000) sp = Math.max(sp, 2);
+  return xg6bEffectiveSp(state, playerId, instance, sp, bpOf);
 }
 
 /** XG6-013【未来の戦士達へ】「これが自軍コマンドゾーンにある間、このカードはカテゴリにWB、MA、ETが追加され」 */

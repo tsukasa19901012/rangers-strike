@@ -1,4 +1,4 @@
-import { activateXg6HandEffect, openXg6OnAttacked, openXg6OnStrike } from "../rules/xg6/xg6Hooks";
+import { activateXg6HandEffect, applyXg6AfterAction, applyXg6StrikeDamageTriggers, endXg6BattlePhase, openXg6OnAttacked, openXg6OnStrike, takeXg6BattlePhaseEnd } from "../rules/xg6/xg6Hooks";
 import { noteEngineSideEffect } from "./sideEffects";
 import { payMirrorWorldSelection } from "../rules/mirrorWorldSelection";
 import { memoizeInSearch } from "./searchCache";
@@ -681,6 +681,8 @@ function finishStrikeResolution(
   resolved = applyRk16StrikeDamageTriggers(resolved, pending);
   // RM-009 マルチパック（重ねたユニットがストライクしてダメージを与えたとき。rules/rm/rm1Effects.ts）。
   resolved = applyRm1StrikeDamageTriggers(resolved, pending);
+  // XG6-025【ここからは私のターンだ】・XG6-042【ゼロのスタート】（rules/xg6/xg6bEffects.ts）。
+  resolved = applyXg6StrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -1104,6 +1106,12 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRm2AfterAction(next);
   // RM-059 異次元調達屋カブト（WB の自軍 S ユニットがバトルエリアに出たとき。rules/rm/rm3Effects.ts）。
   if (applyActionDepth === 0) next = applyRm3AfterAction(state, next);
+  // XG6-042 の※（手札が0枚のとき撃破）・XG6-025【ここからは私のターンだ】のバトルフェイズの終了（rules/xg6/xg6bEffects.ts）。
+  if (applyActionDepth === 0) next = applyXg6AfterAction(next);
+  if (applyActionDepth === 0 && next.xg6?.endBattlePhase && !hasBlockingInteraction(next) && !next.winner) {
+    const ending = takeXg6BattlePhaseEnd(next);
+    if (ending) next = ending.playerId && ending.state.activePlayer === ending.playerId ? endXg6BattlePhase(ending.state, ending.playerId) : ending.state;
+  }
   // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
   if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
     const endingPlayer = next.rk9RushEndAdvance;

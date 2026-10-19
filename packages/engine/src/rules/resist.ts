@@ -1,4 +1,6 @@
 import { rm3GrantsResist } from "./rm/rm3Fields";
+import { xg6GrantsRegister } from "./xg6/xg6Fields";
+import { unitFeatures } from "./addedFeatures";
 import { rk14GrantsRegister } from "./rk/rk14Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { hasResist } from "@rangers-strike/cards";
@@ -54,6 +56,8 @@ export function canOfferRegister(
   if (rm3GrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
   // RK-197 アントロード【女王の僕】: 特徴「女」を持つ自軍ユニットはレジストを得る（自軍だけ。rules/rk/rk10Fields.ts）。
   if (rk10AntlordGrantsResist(state, pending.ownerPlayerId, { cardId: pending.leavingCardId })) return true;
+  // XG6-043 仮面ライダーゼロノスZF の※（特徴「女」を持つ自軍ユニットがあればレジスト。rules/xg6/xg6Fields.ts）。
+  if (xg6GrantsRegister(state, pending.ownerPlayerId, pending.instanceId, (c) => unitFeatures(state, pending.ownerPlayerId!, c))) return true;
   // RS-647 ピヨちゃん【ソウルバード】「このカードに重ねたユニットは、次の能力を得る⇒※レジスト」（rules/stackOntoLargeUnit.ts）。
   const host = state.players[pending.ownerPlayerId].battle.find((c) => c.instanceId === pending.instanceId);
   return !!host && stackOntoLargeGrantsKeyword(host, "register");

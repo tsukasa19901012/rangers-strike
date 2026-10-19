@@ -23,7 +23,7 @@ import {
   rideMountedVehicleBpBonus,
 } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
-import { xg6CommandCategories } from "../rules/xg6/xg6Fields";
+import { xg6AddedCategories, xg6BlocksRush, xg6CommandCategories } from "../rules/xg6/xg6Fields";
 import { srBigBatonBpFloor } from "../rules/srEffects";
 import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
 import { unitFeatures } from "../rules/addedFeatures";
@@ -474,7 +474,10 @@ export function unitEffectiveCategories(
   const withDeclared = declared.length > 0 ? [...base, ...declared] : base;
   // RK-092 狼男【狼作戦】（rules/rk/rk5Fields.ts）。既に持っているカテゴリは重ねて追加しない。
   const wolf = rk5AddedCategories(state, playerId, instance).filter((c) => !withDeclared.includes(c));
-  return wolf.length > 0 ? [...withDeclared, ...wolf] : withDeclared;
+  const withWolf = wolf.length > 0 ? [...withDeclared, ...wolf] : withDeclared;
+  // XG6-035 の※（自軍コマンドゾーンにあるカテゴリが追加される。rules/xg6/xg6Fields.ts）。
+  const xg6 = xg6AddedCategories<Category>(state, playerId, instance).filter((c) => !withWolf.includes(c));
+  return xg6.length > 0 ? [...withWolf, ...xg6] : withWolf;
 }
 
 function unitEffectiveCategoriesBase(
@@ -655,6 +658,8 @@ function evaluateRushPowerAndZord(
   zordMaterialInstanceIds?: string[],
   zordExtraCommandHoldInstanceIds?: string[],
 ): boolean {
+  // XG6-031 の※（本来の BP の下三桁が500でない自軍ユニットはラッシュできない。rules/xg6/xg6Fields.ts）。
+  if (powerContext && xg6BlocksRush(powerContext, powerContext.playerId, unitDefinition.id)) return false;
   const isZordDown = needsZordDownPayment(
     unitDefinition.id,
     unitDefinition.powerCost,

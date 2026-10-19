@@ -113,8 +113,8 @@ describe("XG6-038 仮面ライダーアクセルトライアル", () => {
 
   zordDownTests("XG6-038", "XG6-037", "仮面ライダーアクセル", PAGE, "ET");
 
-  it.fails(
-    `XG6-038: 追加条件 — 「仮面ライダーアクセル」をコマンドゾーンに送っても、必要パワー0でラッシュできる（出典: ${PAGE}「コマンドゾーンに送るか捨て札にすれば」）— 既知の不具合: CARD-XG6-038 送り先を選べず、捨札にしかできない`,
+  it(
+    `XG6-038: 追加条件 — 「仮面ライダーアクセル」をコマンドゾーンに送っても、必要パワー0でラッシュできる（出典: ${PAGE}「コマンドゾーンに送るか捨て札にすれば」）`,
     () => {
       const s = rushBoard({ hand: [inst("XG6-038", "t")], rush: [inst("XG6-037", "a")], command: releasedCat("ET", 1), power: [] }, {}, EXTRA);
       const r = rushFromHand(s, "player1", "XG6-038:t", { materials: ["XG6-037:a"], destination: "command" });
@@ -135,8 +135,8 @@ describe("XG6-038 仮面ライダーアクセルトライアル", () => {
 
   const spike = (deck: CardInstance[]) => entered("XG6-038:t", { deck }, { battle: [inst("SPEC-C3", "e3"), inst("SPEC-L10", "big")], rush: [inst("SPEC-C2", "r2")] }, EXTRA);
 
-  it.fails(
-    `XG6-038: 【マシンガンスパイク】出たとき、まず自軍山札の上から捨札にするかを選ぶ（いきなり敵軍ユニットを選ばない）（出典: ${PAGE}「自軍山札の上から3枚まで捨て札にしてもよい。そうしたとき」・Q1「宣言しておく必要はありません」）— 既知の不具合: CARD-XG6-038 山札を捨札にせずに、敵軍バトルエリアのユニットを必要パワーを問わず選ばせて撃破する`,
+  it(
+    `XG6-038: 【マシンガンスパイク】出たとき、まず自軍山札の上から捨札にするかを選ぶ（いきなり敵軍ユニットを選ばない）（出典: ${PAGE}「自軍山札の上から3枚まで捨て札にしてもよい。そうしたとき」・Q1「宣言しておく必要はありません」）`,
     () => {
       const s = spike([inst("SPEC-C3", "d1"), inst("SPEC-C2", "d2"), ...deckCards(3)]);
       expectChoiceFrom(s, "player1", "XG6-038");
@@ -162,8 +162,8 @@ describe("XG6-039 スタッグフォン", () => {
     expectRarityIn("XG6-039", ["N"]);
   });
 
-  it.fails(
-    `XG6-039: 自軍コマンドゾーンのカード（ユニットのカードも、支払いでホールドしたコマンドも）を1枚選び手札に加え、このカードを自軍コマンドゾーンにホールド状態で置く（出典: ${PAGE}「自軍コマンドゾーンのカードを1枚選び手札に加える。そうしたとき、このカードを自軍コマンドゾーンにホールド状態で置く」）— 既知の不具合: CARD-XG6-039 何も選ばせず、このカードは捨札になる`,
+  it(
+    `XG6-039: 自軍コマンドゾーンのカード（ユニットのカードも、支払いでホールドしたコマンドも）を1枚選び手札に加え、このカードを自軍コマンドゾーンにホールド状態で置く（出典: ${PAGE}「自軍コマンドゾーンのカードを1枚選び手札に加える。そうしたとき、このカードを自軍コマンドゾーンにホールド状態で置く」）`,
     () => {
       let s = beltUsed("XG6-039", "ET", 4, { command: [released("TST-UNIT-7", "u")] }, {}, EXTRA);
       expectChoiceFrom(s, "player1", "XG6-039");
@@ -193,8 +193,8 @@ describe("XG6-040 仮面ライダージョーカー", () => {
   const rc = (p1: Partial<Parameters<typeof p1Battle>[0]> = {}, p2: Partial<Parameters<typeof p1Battle>[1]> = { battle: [inst("TST-UNIT-0", "e1"), inst("SPEC-L10", "l")], rush: [inst("SPEC-C2", "e2")] }) =>
     mountAndRideOff(p1Battle({ ...p1, rush: [inst("XG6-040", "j"), inst("SPEC-VEH", "v"), ...(p1.rush ?? [])] }, p2, EXTRA), "XG6-040:j", "SPEC-VEH:v");
 
-  it.fails(
-    `XG6-040: RC【ライダーキック】これ以外の自軍 S ユニットがなければ、相手が自分の S ユニット（エリアを問わない。L ユニットは選べない）を1体選んで撃破し、これは SP1 になる（出典: ${PAGE}「相手は自分自身のSユニットを１体選び撃破する。そうしたとき、これはSP1になる」）— 既知の不具合: CARD-XG6-040 RC が何もしない（ログだけ出る）`,
+  it(
+    `XG6-040: RC【ライダーキック】これ以外の自軍 S ユニットがなければ、相手が自分の S ユニット（エリアを問わない。L ユニットは選べない）を1体選んで撃破し、これは SP1 になる（出典: ${PAGE}「相手は自分自身のSユニットを１体選び撃破する。そうしたとき、これはSP1になる」）`,
     () => {
       let s = rc();
       expect(choicePlayer(s)).toBe("player2");
@@ -237,8 +237,8 @@ describe("XG6-041 仮面ライダーエターナル", () => {
   const field = () =>
     p1Battle({ battle: [inst("XG6-041", "et"), inst("SPEC-ABC", "x")] }, { battle: [inst("SPEC-AB", "y"), inst("SPEC-ABC", "z"), inst("RS-394", "ta")] }, EXTRA);
 
-  it.fails(
-    `XG6-041: 【死神のパーティータイムだ】本来のカード名にアルファベットを含むユニットは、両軍とも BP-1000（ABロボ・ABCロボ BP3000 → 2000）（出典: ${PAGE}「本来のカード名にアルファベットを含むユニットはBP－1000され」）— 既知の不具合: CARD-XG6-041 BP が下がらない`,
+  it(
+    `XG6-041: 【死神のパーティータイムだ】本来のカード名にアルファベットを含むユニットは、両軍とも BP-1000（ABロボ・ABCロボ BP3000 → 2000）（出典: ${PAGE}「本来のカード名にアルファベットを含むユニットはBP－1000され」）`,
     () => {
       const s = field();
       expect(bpOf(s, "player2", "SPEC-AB:y")).toBe(2000);
@@ -247,8 +247,8 @@ describe("XG6-041 仮面ライダーエターナル", () => {
     },
   );
 
-  it.fails(
-    `XG6-041: 【死神のパーティータイムだ】アルファベットを3文字以上含むユニット（自軍の ABCロボ）はストライクできない（出典: ${PAGE}「含んだアルファベットが3文字以上あれば…これはストライクすることができない」）— 既知の不具合: CARD-XG6-041 ストライクできる`,
+  it(
+    `XG6-041: 【死神のパーティータイムだ】アルファベットを3文字以上含むユニット（自軍の ABCロボ）はストライクできない（出典: ${PAGE}「含んだアルファベットが3文字以上あれば…これはストライクすることができない」）`,
     () => {
       expect(canStrike(field(), "SPEC-ABC:x")).toBe(false);
     },
@@ -274,8 +274,8 @@ describe("XG6-042 仮面ライダーゼロノスAF", () => {
     expectRarityIn("XG6-042", ["R"]);
   });
 
-  it.fails(
-    `XG6-042: ※ 自分の手札が0枚になったとき（最後の手札のオペレーションを使った）、これを撃破する（出典: ${PAGE}「自分の手札が0枚のとき、これを撃破する」・コメント欄「手札0の瞬間があるからコイツは撃破される」）— 既知の不具合: CARD-XG6-042 手札が0枚になっても場に残る`,
+  it(
+    `XG6-042: ※ 自分の手札が0枚になったとき（最後の手札のオペレーションを使った）、これを撃破する（出典: ${PAGE}「自分の手札が0枚のとき、これを撃破する」・コメント欄「手札0の瞬間があるからコイツは撃破される」）`,
     () => {
       const s = played(rushBoard({ battle: [inst("XG6-042", "z")], hand: [inst("TST-OP-OT", "o")], command: releasedCat("OT", 1), power: powerCards(1) }, {}, EXTRA), "TST-OP-OT:o");
       expect(s.players.player1.hand).toHaveLength(0);
@@ -293,8 +293,8 @@ describe("XG6-042 仮面ライダーゼロノスAF", () => {
     expect(canStrike(p1Battle({ battle: [inst("XG6-042", "z")], hand: [inst("TST-OP", "h")] }, {}, EXTRA), "XG6-042:z")).toBe(false);
   });
 
-  it.fails(
-    `XG6-042: 【ゼロのスタート】ストライクしてダメージを与えたとき、相手に1枚ドローさせるかを選べる（任意）。させると相手の手札が1枚増える（出典: ${PAGE}「相手に1枚ドローさせてもよい」）— 既知の不具合: CARD-XG6-042 選択が開かない（ログだけ出る）`,
+  it(
+    `XG6-042: 【ゼロのスタート】ストライクしてダメージを与えたとき、相手に1枚ドローさせるかを選べる（任意）。させると相手の手札が1枚増える（出典: ${PAGE}「相手に1枚ドローさせてもよい」）`,
     () => {
       let s = strike(p1Battle({ battle: [...fill(3), inst("XG6-042", "z")], hand: [inst("TST-OP", "h")] }, {}, EXTRA), "XG6-042:z");
       expectChoiceFrom(s, "player1", "XG6-042");
@@ -321,8 +321,8 @@ describe("XG6-043 仮面ライダーゼロノスZF", () => {
 
   const board = (n: number) => rushBoard({ hand: [inst("XG6-043", "z")], command: releasedCat("OT", 1), discard: fill(n, "dd") }, {}, EXTRA);
 
-  it.fails(
-    `XG6-043: 追加条件 — 自軍捨札が7枚あれば、必要パワー0でラッシュできる（出典: ${PAGE}「自軍捨札が7枚以上ある」）— 既知の不具合: CARD-XG6-043 捨札の枚数の条件を満たしてもラッシュできない`,
+  it(
+    `XG6-043: 追加条件 — 自軍捨札が7枚あれば、必要パワー0でラッシュできる（出典: ${PAGE}「自軍捨札が7枚以上ある」）`,
     () => {
       expect(rushFromHand(board(7), "player1", "XG6-043:z").ok).toBe(true);
     },
@@ -332,8 +332,8 @@ describe("XG6-043 仮面ライダーゼロノスZF", () => {
     expect(canStartRush(board(6), "player1", "XG6-043:z")).toBe(false);
   });
 
-  it.fails(
-    `XG6-043: ※ 特徴「女」を持つ自軍ユニットがあればレジストを得る（バトルで撃破されたときホールドして留められる）（出典: ${PAGE}「特徴「女」を持つ自軍ユニットがあれば、これはレジストを得る」・R-KW-RESIST-01）— 既知の不具合: CARD-XG6-043 レジストを得ない`,
+  it(
+    `XG6-043: ※ 特徴「女」を持つ自軍ユニットがあればレジストを得る（バトルで撃破されたときホールドして留められる）（出典: ${PAGE}「特徴「女」を持つ自軍ユニットがあれば、これはレジストを得る」・R-KW-RESIST-01）`,
     () => {
       expect(registerOffered(attackUntilRegister({ battle: [inst("XG6-043", "z"), inst("SPEC-FEMALE", "f")] }, "XG6-043:z", {}, "TST-UNIT-7:atk", EXTRA))).toBe(true);
     },
@@ -343,8 +343,8 @@ describe("XG6-043 仮面ライダーゼロノスZF", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("XG6-043", "z")] }, "XG6-043:z", {}, "TST-UNIT-7:atk", EXTRA))).toBe(false);
   });
 
-  it.fails(
-    `XG6-043: 【強き心と強き願い】出たとき、自軍パワーゾーンのオモテ向きのカード（ダメージは選べない）を1枚選んでゲームから除外してよい。除外すると BP+3000（BP9000）（出典: ${PAGE}「オモテ向きのカードを1枚選びゲームから除外してよい。そうしたとき、これはBP+3000され」）— 既知の不具合: CARD-XG6-043 選択が開かない（ログだけ出る）`,
+  it(
+    `XG6-043: 【強き心と強き願い】出たとき、自軍パワーゾーンのオモテ向きのカード（ダメージは選べない）を1枚選んでゲームから除外してよい。除外すると BP+3000（BP9000）（出典: ${PAGE}「オモテ向きのカードを1枚選びゲームから除外してよい。そうしたとき、これはBP+3000され」）`,
     () => {
       let s = entered("XG6-043:z", withDamage(2, [faceUp("TST-OP", "fu")]), {}, EXTRA);
       expectChoiceFrom(s, "player1", "XG6-043");
@@ -356,8 +356,8 @@ describe("XG6-043 仮面ライダーゼロノスZF", () => {
     },
   );
 
-  it.fails(
-    `XG6-043: 【強き心と強き願い】除外したとき、負けるまで残り1点（ダメージ6点）なら「SP2」になる（出典: ${PAGE}「自分がゲームに負けるまで残り1点なら「SP2」になる」）— 既知の不具合: CARD-XG6-043 選択が開かない`,
+  it(
+    `XG6-043: 【強き心と強き願い】除外したとき、負けるまで残り1点（ダメージ6点）なら「SP2」になる（出典: ${PAGE}「自分がゲームに負けるまで残り1点なら「SP2」になる」）`,
     () => {
       const s = resolveAll(pick(entered("XG6-043:z", withDamage(6, [faceUp("TST-OP", "fu")]), {}, EXTRA), "TST-OP:fu"));
       expect(spOf(s, "player1", "XG6-043:z")).toBe(2);
@@ -393,8 +393,8 @@ describe("XG6-044 仮面ライダーNEW電王SF", () => {
     expect(zoneOf(s, "player1", "XG6-045:td")).toBe("rush");
   });
 
-  it.fails(
-    `XG6-044: ※ 「テディ」を出すかは選べる（出さない選び方がある）（出典: ${PAGE}「出してもよい」）— 既知の不具合: CARD-XG6-044 確認なしに自動で出す`,
+  it(
+    `XG6-044: ※ 「テディ」を出すかは選べる（出さない選び方がある）（出典: ${PAGE}「出してもよい」）`,
     () => {
       const s = rushed().state;
       expectChoiceFrom(s, "player1", "XG6-044");
@@ -408,8 +408,8 @@ describe("XG6-044 仮面ライダーNEW電王SF", () => {
     expect(spOf(p1Battle({ battle: [...fill(3), inst("XG6-044", "sf")] }, {}, EXTRA), "player1", "XG6-044:sf")).toBe(1);
   });
 
-  it.fails(
-    `XG6-044: ※ BP4500（5000 未満）で1番目なら SP を持たない（出典: ${PAGE}「BP5000以上のとき」）— 既知の不具合: CARD-XG6-044 BP が上がると 5000 未満でも SP1 になる`,
+  it(
+    `XG6-044: ※ BP4500（5000 未満）で1番目なら SP を持たない（出典: ${PAGE}「BP5000以上のとき」）`,
     () => {
       const s = p1Battle({ battle: [withBp(inst("XG6-044", "sf"), 1500)] }, {}, EXTRA);
       expect(bpOf(s, "player1", "XG6-044:sf")).toBe(4500);

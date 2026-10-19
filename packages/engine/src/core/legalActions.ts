@@ -1223,6 +1223,8 @@ function appendRushCategoryPaymentActions(
             // RS-586【魔神に不足する物】・アブレラ【闇の取引】で必要パワーを補える分も含める。
             rushPowerBudget(state, playerId, player, definition),
             { ...state, playerId },
+            // 「必要パワーの数字が5以上の自軍パワーを4枚捨札にすれば」（zord_down_discard_power_cards。XG6-032）は複数の素材。
+            zord.zordMaterialInstanceIds,
           )
         ) {
           continue;

@@ -42,13 +42,13 @@
       "name": "ハイパーパンチ",
       "text": "敵軍Lユニットがあれば、これはBP+5000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-023::haipapanchi",
+          "keyword": "xg6::XG6-023::hyper_punch",
           "duration": "permanent"
         }
       ]

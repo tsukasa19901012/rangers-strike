@@ -11,6 +11,7 @@ import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKey
 import type { ChoiceOutcome } from "../rm/rm1Effects";
 import { CHOICE_CONFIRMERS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, XG6_DONE, XG6_KEYWORDS, XG6_KEYWORD_PREFIX } from "./xg6Common";
 import "./xg6aEffects";
+import "./xg6bEffects";
 
 export {
   applyXg6OnUnitLeft,
@@ -22,6 +23,16 @@ export {
   activateXg6HandEffect,
   tryXg6OnEnterBattle,
 } from "./xg6aEffects";
+export {
+  applyXg6AfterAction,
+  applyXg6StartPhaseBegin,
+  applyXg6StrikeDamageTriggers,
+  endXg6BattlePhase,
+  openXg6StayOnLeave,
+  openXg6Teddy,
+  takeXg6BattlePhaseEnd,
+  xg6OnAttackWin,
+} from "./xg6bEffects";
 
 export function isXg6ChoiceEffect(effectId: string): boolean {
   return effectId in CHOICE_RESOLVERS;
