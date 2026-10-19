@@ -55,6 +55,7 @@ import {
   p1Battle,
   passEntry,
   pick,
+  playOp,
   powerCards,
   rcUnit,
   releasedCat,
@@ -83,6 +84,7 @@ const E3000 = sUnit("SPEC-E3000", { bp: 3000 });
 const EM5000 = sUnit("SPEC-EM5000", { bp: 5000, size: "M" });
 const COST2 = sUnit("SPEC-COST2", { bp: 3000, powerCost: 2 });
 const RC = rcUnit("SPEC-RC", { bp: 1500 });
+const MALE_K = sUnit("SPEC-MALE-K", { category: "ET", bp: 2000, features: ["男"] });
 const EXTRA = [MIRROR3, MIRROR6, NONMIRROR3, E2000, E3000, EM5000, COST2, RC];
 
 const board = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
@@ -362,9 +364,25 @@ describe("RK-046 オートバジンBM", () => {
     expect(zoneOf(s, "player2", "SPEC-EM5000:m")).toBe("battle");
   });
 
-  it.todo(
-    "RK-046: 公式Q&A — 改造人間・超電子ダイナモとの組み合わせで【バスターホイール】の BP0 撃破にダメージを与えるか（出典: grnrngr/faq-rider-1 RK-046 Q1・atwiki/page-206 Q1）— 公式FAQ の中で回答が食い違う（RK-046 欄「はい」、RK-005 欄「いいえ…状況が成立しない」。atwiki 注釈はルールの補足なので撃破とは扱わない）ため保留",
-  );
+  // 公式FAQ の RK-046 欄と RK-005 欄が食い違っていた（RK-046 欄「はい」、RK-005 欄「いいえ…状況が成立しない」）。
+  // ユーザー決定（2026-10-19）で「いいえ」（grnrngr/faq-rider-1 RK-005 欄）を採る（docs/rules/README.md §5.7 k）。
+  it("RK-046: 公式Q&A — 自軍に RK-001 改造人間が常駐していても、オートバジンBM は超電子ダイナモ（RK-005）で選べないので、【バスターホイール】の撃破でダメージを与える状況にならない（出典: grnrngr/faq-rider-1 RK-005 欄「いいえ、できません。「RK-046 オートバジンBM（バトルモード）」は、「RK-005 超電子ダイナモ」の効果を得るために必要な特徴「改造人間」を持っておらず、なおかつ「RK-001 改造人間」の効果を得るための特徴「男」も特徴「女」も持たないため、ご質問にあるような状況が成立しないからです」・ユーザー決定 2026-10-19「いいえ」）", () => {
+    let s = rushPhase({
+      operation: [inst("RK-001", "kz")],
+      hand: [inst("RK-005", "dy")],
+      rush: [inst("RK-046", "bm"), inst("SPEC-MALE-K", "m")],
+      command: releasedCat("ET", 2),
+      power: powerCards(3),
+    });
+    s = { ...s, definitions: { ...s.definitions, [MALE_K.id]: MALE_K } };
+    const r = playOp(s, "player1", "RK-005:dy");
+    expect(r.ok, r.error).toBe(true);
+    s = r.state;
+    expectChoiceFrom(s, "player1", "RK-005");
+    // RK-001 で「改造人間」が追加されるのは「男」「女」のユニットだけ。オートバジンBM は候補にならない。
+    expect(choiceIds(s)).toEqual(["SPEC-MALE-K:m"]);
+  });
+
   // 公式 Q3「はい、できます。」
   it("RK-046: 公式Q&A（相互参照）— 下三桁が 500 になった敵軍 S ユニットを RK-064 仮面ライダーファイズ【ファイズエッジ】で撃破できる（出典: grnrngr/faq-rider-1 RK-046 Q3）", () => {
     let s = enter(board({ battle: [inst("RK-046", "bm")], rush: [inst("RK-064", "fz")] }, { battle: [inst("SPEC-E3000", "b")] }), "RK-064:fz");

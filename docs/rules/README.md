@@ -226,6 +226,10 @@
     - 見ないで選ぶ手札（RS-594 の最初の3枚、RK-228・RK-276・RM-037・XG1-060・XG3-035 の手札）には効かない（選ぶ時点でカードが見えていない）。
     - ウラ向きのカード（ダメージ）は能力が有効でない（atwiki/page-81 RS-039 Q2 のまま）。R-TGT-02（選ばない範囲指定は受ける）もそのまま。
   - 実装: `packages/engine/src/keywords/effectTargetability.ts` cardNotSelectableByOpponent（場以外のカードの判定）。手札を見て選ぶ効果は `rules/legend1/set4NamedEffects.ts`（RS-185）・`rules/legend1/set8NamedEffectsD.ts`（RS-588・RS-590・RS-594）で候補から外す。
+- **k. RK-046 Q1（改造人間・超電子ダイナモとオートバジンBM【バスターホイール】）** — RK-005, RK-046
+  - 公式: `grnrngr/faq-rider-1` の RK-046 欄は「はい」、RK-005 欄は同じ問い（自軍に RK-001 改造人間が常駐、RK-046 オートバジンBM に RK-005 超電子ダイナモを使い、【バスターホイール】で複数撃破）に「いいえ、できません。…特徴「改造人間」を持っておらず、なおかつ「RK-001 改造人間」の効果を得るための特徴「男」も特徴「女」も持たないため、ご質問にあるような状況が成立しないからです」。atwiki/page-206 Q1 は RK-046 欄の転載。
+  - 本書: **ユーザー決定（2026-10-19）**「いいえ」（RK-005 欄を採る）。オートバジンBM は特徴「改造人間」を持たず、RK-001 でも追加されない（「男」「女」がない）ので、RK-005 で選べない。
+  - 実装: 変更なし（`packages/engine/src/rules/rk/rk1NamedEffects.ts` の RK-005 は元から特徴「改造人間」を持つ S ユニットだけを候補にする）。テストは `cardSpec/RK3-043-063.a.test.ts` RK-046。
 
 ---
 
