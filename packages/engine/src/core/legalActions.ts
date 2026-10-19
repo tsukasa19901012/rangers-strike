@@ -623,7 +623,7 @@ function appendZordSetupActions(
     }
     if (requiresAllFusionPartners(card.cardId)) continue;
     if (findDirectZordRushAction(state, playerId, card.instanceId)) continue;
-    if (!canBeginZordSetup(state, playerId, card.instanceId)) continue;
+    if (!canBeginZordSetupInEnumeration(state, playerId, card.instanceId)) continue;
     actions.push({
       type: "begin_zord_setup",
       playerId,
@@ -1144,7 +1144,7 @@ function appendRushCategoryPaymentActions(
           pushPayment(card.instanceId, undefined, true);
         }
       } else {
-        if (canBeginZordSetup(state, playerId, card.instanceId)) {
+        if (canBeginZordSetupInEnumeration(state, playerId, card.instanceId)) {
           continue;
         }
         const variants = listZordUpRushPaymentVariants(
@@ -1884,6 +1884,34 @@ function deepFreeze<T>(value: T): T {
   return value;
 }
 
+/**
+ * 1回の合法手の列挙の中では、同じ手札のゾードについて canBeginZordSetup（追加条件の手順を最後まで試す重い判定）を
+ * ラッシュの支払いとゾードの手順の両方から調べるので、列挙の間だけ結果を覚える（計算に乱数等を使ったときは覚えない）。
+ */
+let beginZordMemo: { state: GameState; results: Map<string, boolean> } | null = null;
+
+function canBeginZordSetupInEnumeration(state: GameState, playerId: PlayerId, zordInstanceId: string): boolean {
+  const memo = beginZordMemo;
+  if (!memo || memo.state !== state) return canBeginZordSetup(state, playerId, zordInstanceId);
+  const key = `${playerId}:${zordInstanceId}`;
+  const hit = memo.results.get(key);
+  if (hit !== undefined) return hit;
+  const sideEffectsBefore = engineSideEffectCount();
+  const result = canBeginZordSetup(state, playerId, zordInstanceId);
+  if (engineSideEffectCount() === sideEffectsBefore) memo.results.set(key, result);
+  return result;
+}
+
+function getLegalActionsCoreWithMemo(state: GameState): GameAction[] {
+  const previous = beginZordMemo;
+  beginZordMemo = { state, results: new Map() };
+  try {
+    return getLegalActionsCore(state);
+  } finally {
+    beginZordMemo = previous;
+  }
+}
+
 export function getLegalActions(input: GameState): GameAction[] {
   if (input.winner) return [];
   const cache = activeSearchCache()?.legalActions;
@@ -1894,7 +1922,7 @@ export function getLegalActions(input: GameState): GameAction[] {
   const state = withEffectiveRushConditionDefinitions(input);
   // 追加条件の素材の特徴（効果・フェイズで追加された特徴）はこの状態で判定する（rules/zordFeatureContext.ts）。
   // 合法判定の中で乱数を使っても、状態の rngState から作るので決定的（core/rng.ts）。
-  const actions = runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCore(state))).value;
+  const actions = runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCoreWithMemo(state))).value;
   if (cache && engineSideEffectCount() === sideEffectsBefore) {
     for (const action of actions) deepFreeze(action);
     cache.set(input, [...actions]);
