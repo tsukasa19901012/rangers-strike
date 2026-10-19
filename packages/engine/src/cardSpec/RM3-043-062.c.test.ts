@@ -118,12 +118,20 @@ describe("RM-058 老師グル", () => {
       { battle: [inst("SPEC-MECHA", "em")] },
     );
 
-  it("RM-058:【昆虫の精】— 自軍ラッシュエリアにある間、特徴「メカ」を持つユニット（自軍・敵軍とも）とビークルに特徴「昆虫」を追加する（「メカ」を持たないユニットには追加しない）（出典: atwiki/page-867「特徴「メカ」を持つユニットと、特徴「メカ」を持つビークルに、特徴「昆虫」を追加する」・カード評価「サイズを問わず…相手にも特徴を追加できる」）", () => {
+  it("RM-058:【昆虫の精】— 自軍ラッシュエリアにある間、特徴「メカ」を持つ自軍ユニットとビークルに特徴「昆虫」を追加する（「メカ」を持たないユニットには追加しない）（出典: atwiki/page-867「特徴「メカ」を持つユニットと、特徴「メカ」を持つビークルに、特徴「昆虫」を追加する」）", () => {
     const s = withGuru("rush");
     expect(featuresOf(s, "player1", "SPEC-MECHA:m")).toContain("昆虫");
-    expect(featuresOf(s, "player2", "SPEC-MECHA:em")).toContain("昆虫");
     expect(featuresOf(s, "player1", "SPEC-VEHICLE:v")).toContain("昆虫");
     expect(featuresOf(s, "player1", "SPEC-ES:n")).not.toContain("昆虫");
+  });
+
+  it("RM-058:【昆虫の精】— 敵軍の「メカ」のユニットには追加しない（ユーザー決定 2026-10-19「自軍だけ」。本文「特徴「メカ」を持つユニットと…」に自軍・敵軍の指定がない。docs/rules/README.md §5.7 n）", () => {
+    const s = withGuru("rush");
+    expect(featuresOf(s, "player2", "SPEC-MECHA:em")).not.toContain("昆虫");
+    // 相手の老師グルでは、自軍の「メカ」に「昆虫」は追加されない。
+    const enemyGuru = battleBoard({ battle: [inst("SPEC-MECHA", "m")] }, { rush: [inst("RM-058", "gu")], battle: [inst("SPEC-MECHA", "em")] });
+    expect(featuresOf(enemyGuru, "player1", "SPEC-MECHA:m")).not.toContain("昆虫");
+    expect(featuresOf(enemyGuru, "player2", "SPEC-MECHA:em")).toContain("昆虫");
   });
 
   it("RM-058:【昆虫の精】— バトルエリアにあるときは追加しない（出典: atwiki/page-867「これが自軍ラッシュエリアにある間」）", () => {
@@ -135,6 +143,11 @@ describe("RM-058 老師グル", () => {
     const p1 = (rush: CardInstance[]) => battleBoard({ rush: [inst("SPEC-MECHA", "m"), inst("RM-052", "bt"), ...rush], command: releasedCat("WB", 1) });
     expect(canMount(p1([inst("RM-058", "gu")]), "SPEC-MECHA:m", "RM-052:bt")).toBe(true);
     expect(canMount(p1([]), "SPEC-MECHA:m", "RM-052:bt")).toBe(false);
+  });
+
+  it("RM-058:【昆虫の精】— 相手の老師グルでは、自軍の「メカ」の S ユニットはビートルーダーにライドできない（ユーザー決定 2026-10-19「自軍だけ」。docs/rules/README.md §5.7 n）", () => {
+    const s = battleBoard({ rush: [inst("SPEC-MECHA", "m"), inst("RM-052", "bt")], command: releasedCat("WB", 1) }, { rush: [inst("RM-058", "gu")] });
+    expect(canMount(s, "SPEC-MECHA:m", "RM-052:bt")).toBe(false);
   });
 });
 

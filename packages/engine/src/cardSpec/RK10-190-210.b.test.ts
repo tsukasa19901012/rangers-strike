@@ -125,9 +125,9 @@ describe("RK-197 アントロード", () => {
     expect(registerOffered(s)).toBe(true);
   });
 
-  it("RK-197: 【女王の僕】敵軍の特徴「女」のユニットもレジストを得る（出典: atwiki/page-921 カード評価「女性ユニットにレジストを付加する効果は敵軍も受けてしまう」・コメント欄）", () => {
+  it("RK-197: 【女王の僕】敵軍の特徴「女」のユニットはレジストを得ない（ユーザー決定 2026-10-19「自軍だけ」。本文「特徴「女」を持つユニットは次の能力を得る⇒レジスト」に自軍・敵軍の指定がない。docs/rules/README.md §5.7 n）", () => {
     const s = attack(battlePhase({ battle: [inst("RK-197", "al"), inst("TST-UNIT-7", "atk")] }, { battle: [inst("SPEC-FEMALE", "ef")] }), "TST-UNIT-7:atk", "SPEC-FEMALE:ef");
-    expect(registerOffered(untilRegister(s), "player2")).toBe(true);
+    expect(registerOffered(untilRegister(s), "player2")).toBe(false);
   });
 
   it("RK-197: 【女王の僕】アントロードがラッシュエリアにあるだけでは得ない（出典: atwiki/page-921「これが自軍バトルエリアにある間」）", () => {

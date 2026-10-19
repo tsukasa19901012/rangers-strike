@@ -133,8 +133,8 @@ describe("RS-516 アースフォース", () => {
     expect(canStartRush(rushState("SPEC-WB-BLANK"), "player1", "SPEC-ET-S:e")).toBe(false);
   });
 
-  it("RS-516: 「自軍」の指定がない — 敵軍のアースフォースでも自軍のチェンジマーメイドはコールET を得る（出典: atwiki/page-1149 本文・コメント「敵軍にも適用されます」）", () => {
-    expect(canStartRush(rushState(MERMAID, { p2: true }), "player1", "SPEC-ET-S:e")).toBe(true);
+  it("RS-516: 「自軍」の指定がないが、敵軍のアースフォースでは自軍のチェンジマーメイドはコールET を得ない（ユーザー決定 2026-10-19「自軍だけ」。本文「MAを持つSPが空欄のSユニットは、次の能力を得る⇒コールET」。docs/rules/README.md §5.7 n）", () => {
+    expect(canStartRush(rushState(MERMAID, { p2: true }), "player1", "SPEC-ET-S:e")).toBe(false);
   });
 
   it("RS-516: 敵軍のチェンジマーメイドをホールドして自軍の ET ユニットをラッシュすることはできない（出典: atwiki/page-1149 コメント「後者については不可能です」・R-KW-CALL-01「このユニットは」）", () => {

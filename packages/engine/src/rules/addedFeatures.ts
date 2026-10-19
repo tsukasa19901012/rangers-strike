@@ -81,8 +81,9 @@ export function unitFeatures(
   extra.push(...rk6AddedFeatures(state, _ownerId, instance));
   // RK-250 サバイブ（「サバイブ」）・RK-242 クライマックス刑事（自軍のイマジンに「警察」）（rules/rk/rk12Fields.ts）。
   extra.push(...rk12AddedFeatures(state, _ownerId, instance, base));
-  // RM-058 老師グル【昆虫の精】（自軍ラッシュエリアにある間、「メカ」のユニット・ビークルに「昆虫」。自軍・敵軍とも。rules/rm/rm3Fields.ts）。
-  if (rm3GuruAddsInsect(state, instance.cardId, [...base, ...extra])) extra.push("昆虫");
+  // RM-058 老師グル【昆虫の精】（自軍ラッシュエリアにある間、「メカ」のユニット・ビークルに「昆虫」。自軍だけ（ユーザー決定 2026-10-19）。
+  // rules/rm/rm3Fields.ts）。
+  if (rm3GuruAddsInsect(state, _ownerId, instance.cardId, [...base, ...extra])) extra.push("昆虫");
   if (extra.length === 0) return base;
   return [...new Set([...base, ...extra])];
 }

@@ -45,18 +45,23 @@ export function rk10HasInstancePayload(state: Pick<GameState, "players">, player
 
 /**
  * RK-197 アントロード【女王の僕】「これが自軍バトルエリアにある間、特徴「女」を持つユニットは次の能力を得る⇒レジスト」（atwiki/page-921）。
- * 敵軍の「女」のユニットも得る（カード評価・コメント欄）。
+ * 得るのは自軍（アントロードの持ち主）の「女」のユニットだけ。ownerId はそのユニットの持ち主
+ * （ユーザー決定 2026-10-19「自軍だけ」。docs/rules/README.md §5.7 n。カード評価「敵軍も受けてしまう」は採らない）。
  */
-export function rk10AntlordGrantsResist(state: Pick<GameState, "players" | "definitions">, card: Pick<CardInstance, "cardId">): boolean {
+export function rk10AntlordGrantsResist(
+  state: Pick<GameState, "players" | "definitions">,
+  ownerId: PlayerId,
+  card: Pick<CardInstance, "cardId">,
+): boolean {
   if (getDefinition(state.definitions, card.cardId)?.type !== "unit") return false;
   if (!printedFeatures(state, card.cardId).includes("女")) return false;
-  return PLAYERS.some((pid) => state.players[pid].battle.some((c) => isSameCardIdentity(c.cardId, "RK-197")));
+  return state.players[ownerId].battle.some((c) => isSameCardIdentity(c.cardId, "RK-197"));
 }
 
 /** レジストを持つユニットか（本文のレジスト・アントロードで得たレジスト）。 */
 export function rk10UnitHasResist(state: GameState, ownerId: PlayerId, card: CardInstance): boolean {
   if (getDefinition(state.definitions, card.cardId)?.type !== "unit") return false;
-  return cardHasRegisterKeyword(state, card.cardId, ownerId) || rk10AntlordGrantsResist(state, card);
+  return cardHasRegisterKeyword(state, card.cardId, ownerId) || rk10AntlordGrantsResist(state, ownerId, card);
 }
 
 /**

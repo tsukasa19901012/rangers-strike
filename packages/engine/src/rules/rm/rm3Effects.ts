@@ -584,7 +584,7 @@ function unitHasResist(state: GameState, ownerId: PlayerId, card: CardInstance):
     cardHasRegisterKeyword(state, card.cardId, ownerId) ||
     riddenVehicleGrantsResist(state, ownerId, card.instanceId) ||
     set8BGrantsResist(state, ownerId, card.instanceId) ||
-    rk10AntlordGrantsResist(state, card) ||
+    rk10AntlordGrantsResist(state, ownerId, card) ||
     rm3GrantsResist(state, ownerId, card.instanceId)
   );
 }

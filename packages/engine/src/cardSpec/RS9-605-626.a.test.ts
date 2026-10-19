@@ -464,7 +464,7 @@ describe("RS-610 秘伝ディスク", () => {
   const MA_RUSH = sUnit("SPEC-MA-RUSH", { category: "MA", sp: undefined, powerCost: 1 });
 
   /** 侍を2番目に置き、次（3番目）に SP－ の MA ユニットを出す。 */
-  const taxis = (withDisk: boolean, samurai = "SPEC-SAMURAI") =>
+  const taxis = (withDisk: boolean, samurai = "SPEC-SAMURAI", enemyDisk = false) =>
     enterSeq(
       st(
         {
@@ -474,7 +474,7 @@ describe("RS-610 秘伝ディスク", () => {
             rush: [inst(samurai, "sam"), inst("SPEC-MA-NOSP", "n")],
             deck: deckCards(3),
           },
-          player2: { deck: deckCards(3, "e") },
+          player2: { operation: enemyDisk ? [inst("RS-610", "eop")] : [], deck: deckCards(3, "e") },
         },
         [SAMURAI, MA_NOSP],
       ),
@@ -505,6 +505,10 @@ describe("RS-610 秘伝ディスク", () => {
     expect(spOf(taxis(false), "player1", "SPEC-MA-NOSP:n")).toBe(0);
   });
 
+  it("RS-610: 相手の秘伝ディスクでは自軍の「侍」はタクスMA を得ない（ユーザー決定 2026-10-19「自軍だけ」。本文「特徴「侍」を持つユニットは、次の能力を得る⇒タクスMA、コールMA」。docs/rules/README.md §5.7 n）", () => {
+    expect(spOf(taxis(false, "SPEC-SAMURAI", true), "player1", "SPEC-MA-NOSP:n")).toBe(0);
+  });
+
   it("RS-610: 「侍」を持たないユニットはタクスMA を得ない（出典: atwiki/page-1440「特徴「侍」を持つユニットは」）", () => {
     expect(spOf(taxis(true, "SPEC-MA-NOSP"), "player1", "SPEC-MA-NOSP:n")).toBe(0);
   });
@@ -523,6 +527,18 @@ describe("RS-610 秘伝ディスク", () => {
     expect(r.ok).toBe(true);
     expect(zoneOf(r.state, "player1", "SPEC-MA-RUSH:r")).toBe("rush");
     expect(cardIn(r.state, "player1", "SPEC-SAMURAI:sam")?.commandHeld).toBe(true);
+  });
+
+  it("RS-610: 相手の秘伝ディスクでは自軍の「侍」でコールできない（ユーザー決定 2026-10-19「自軍だけ」。docs/rules/README.md §5.7 n）", () => {
+    const s = st(
+      {
+        phase: "rush",
+        player1: { hand: [inst("SPEC-MA-RUSH", "r")], rush: [inst("SPEC-SAMURAI", "sam")], command: [], power: powerCards(1), deck: deckCards(3) },
+        player2: { operation: [inst("RS-610", "eop")], deck: deckCards(3, "e") },
+      },
+      [SAMURAI, MA_RUSH],
+    );
+    expect(canStartRush(s, "player1", "SPEC-MA-RUSH:r")).toBe(false);
   });
 
   it("RS-610: 秘伝ディスクがなければ「侍」でコールできず、MA のコマンドがないとラッシュできない（出典: atwiki/page-1440・R-KW-CALL-01）", () => {

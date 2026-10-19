@@ -17,8 +17,6 @@ export const GURU_CARD_ID = "RM-058";
 export const MEGA_HERACLES_CARD_ID = "RM-051";
 export const BEETRUDER_CARD_ID = "RM-052";
 
-const PLAYERS = ["player1", "player2"] as const;
-
 function nameOf(state: Defs, cardId: string): string | undefined {
   return state.definitions[cardId]?.name;
 }
@@ -33,27 +31,42 @@ export function rm3AreaHasName(state: Pick<GameState, "players" | "definitions">
   return areaCards(state, playerId).some((c) => nameOf(state, c.cardId) === name);
 }
 
-/** RM-058「これが自軍ラッシュエリアにある間、…特徴「メカ」を持つユニットと、特徴「メカ」を持つビークルに、特徴「昆虫」を追加する。」（atwiki/page-867）。 */
-export function rm3GuruActive(state: Pick<GameState, "players">): boolean {
-  return PLAYERS.some((pid) => state.players[pid].rush.some((c) => isSameCardIdentity(c.cardId, GURU_CARD_ID)));
+/**
+ * RM-058「これが自軍ラッシュエリアにある間、…特徴「メカ」を持つユニットと、特徴「メカ」を持つビークルに、特徴「昆虫」を追加する。」（atwiki/page-867）。
+ * ownerId のラッシュエリアに老師グルがあるか（追加されるのは自軍のユニット・ビークルだけ。ユーザー決定 2026-10-19「自軍だけ」、
+ * docs/rules/README.md §5.7 n。カード評価「相手にも特徴を追加できる」は採らない）。
+ */
+export function rm3GuruActive(state: Pick<GameState, "players">, ownerId: PlayerId): boolean {
+  return state.players[ownerId].rush.some((c) => isSameCardIdentity(c.cardId, GURU_CARD_ID));
 }
 
-/** features（今の特徴）を持つユニット・ビークルに、RM-058 で「昆虫」が追加されるか（自軍・敵軍とも）。 */
-export function rm3GuruAddsInsect(state: Pick<GameState, "players" | "definitions">, cardId: string, features: string[]): boolean {
+/** ownerId の features（今の特徴）を持つユニット・ビークルに、RM-058 で「昆虫」が追加されるか（自軍の老師グルだけを見る）。 */
+export function rm3GuruAddsInsect(
+  state: Pick<GameState, "players" | "definitions">,
+  ownerId: PlayerId,
+  cardId: string,
+  features: string[],
+): boolean {
   const type = state.definitions[cardId]?.type;
   if (type !== "unit" && type !== "vehicle") return false;
-  return features.includes("メカ") && rm3GuruActive(state);
+  return features.includes("メカ") && rm3GuruActive(state, ownerId);
 }
 
 /**
  * 「※特徴「昆虫」を持つSユニットは、…ＲＣを持っていなくてもこのビークルにライドできる。」のビークルに、RM-058 で「昆虫」を追加された
  * 「メカ」の S ユニットがライドできるか（カード評価（RM-053）「ビートマシンにライドするユニットは老師グルがいれば増やす事ができる」）。
+ * riderOwnerId はライドするユニットの持ち主（その自軍ラッシュエリアの老師グルだけを見る）。
  */
-export function rm3GuruInsectRide(state: Pick<GameState, "players" | "definitions">, vehicleCardId: string, riderCardId: string): boolean {
+export function rm3GuruInsectRide(
+  state: Pick<GameState, "players" | "definitions">,
+  riderOwnerId: PlayerId,
+  vehicleCardId: string,
+  riderCardId: string,
+): boolean {
   const rider = state.definitions[riderCardId];
   if (rider?.type !== "unit" || rider.size !== "S") return false;
   if (!listRideWithoutRcFeatures(vehicleCardId).includes("昆虫")) return false;
-  return rm3GuruAddsInsect(state, riderCardId, rider.features ?? []);
+  return rm3GuruAddsInsect(state, riderOwnerId, riderCardId, rider.features ?? []);
 }
 
 /** RM-051「自軍エリアに「ビートルーダー」があれば「SP1」になり」（atwiki/page-861）。 */

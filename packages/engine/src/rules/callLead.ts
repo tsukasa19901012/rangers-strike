@@ -19,18 +19,21 @@ export function parseCallLeadKeyword(
   return { kind: match[1] as CallLeadKind, category: match[2] as Category };
 }
 
+/** owner はユニットの持ち主（渡せば、その常駐置き場の常駐で得た能力も見る）。 */
 export function unitHasCallLeadKeyword(
   cardId: string,
   kind: CallLeadKind,
   category: Category,
+  owner?: Pick<PlayerState, "operation">,
 ): boolean {
-  return cardHasGrantKeyword(cardId, `${kind}_${category}`) || residentGrantsCallLead(cardId, kind, category);
+  return cardHasGrantKeyword(cardId, `${kind}_${category}`) || (!!owner && residentGrantsCallLead(owner, cardId, kind, category));
 }
 
 /**
  * 「※常駐 MAを持つSPが空欄のSユニットは、次の能力を得る⇒コールET（…）」（RS-516 アースフォース。atwiki/page-1149）。
- * 「自軍」の指定がないので、どちらのプレイヤーの常駐置き場にあっても両軍の該当ユニットが得る（atwiki/page-1149 コメント）。
- * 常駐置き場は applyAction / getLegalActions の入口で置いた状態（rules/zordFeatureContext.ts）から読む。
+ * 得るのは常駐させたプレイヤー（自軍）のユニットだけ（ユーザー決定 2026-10-19「自軍だけ」。docs/rules/README.md §5.7 n。
+ * atwiki/page-1149 コメント「敵軍にも適用されます」は採らない）。見るのはユニットの持ち主 owner の常駐置き場。
+ * 定義は applyAction / getLegalActions の入口で置いた状態（rules/zordFeatureContext.ts）から読む。
  */
 const RESIDENT_CALL_LEAD_GRANT_RE =
   /^※常駐\s*「?(WB|OT|ET|MA|DA)」?を持つSPが空欄のSユニットは、次の能力を得る⇒(コール|リード)「?(WB|OT|ET|MA|DA)」?/;
@@ -48,19 +51,18 @@ function residentCallLeadGrantMatch(text: string | undefined): RegExpMatchArray 
   return m;
 }
 
-function residentGrantsCallLead(cardId: string, kind: CallLeadKind, category: Category): boolean {
+function residentGrantsCallLead(owner: Pick<PlayerState, "operation">, cardId: string, kind: CallLeadKind, category: Category): boolean {
+  if (owner.operation.length === 0) return false;
   const state = actionContextState();
   if (!state) return false;
   const def = getDefinition(state.definitions, cardId);
   if (!def || def.type !== "unit" || def.size !== "S" || (def.sp !== undefined && def.sp !== null)) return false;
   const cats: string[] = Array.isArray(def.category) ? def.category : [def.category as string];
-  for (const pid of ["player1", "player2"] as const) {
-    for (const op of state.players[pid].operation) {
-      const m = residentCallLeadGrantMatch(getDefinition(state.definitions, op.cardId)?.text);
-      if (!m) continue;
-      if ((m[2] === "コール" ? "call" : "lead") !== kind || m[3] !== category) continue;
-      if (cats.includes(m[1]!)) return true;
-    }
+  for (const op of owner.operation) {
+    const m = residentCallLeadGrantMatch(getDefinition(state.definitions, op.cardId)?.text);
+    if (!m) continue;
+    if ((m[2] === "コール" ? "call" : "lead") !== kind || m[3] !== category) continue;
+    if (cats.includes(m[1]!)) return true;
   }
   return false;
 }
@@ -74,7 +76,7 @@ function fieldUnitHasCallLead(
   category: Category,
 ): boolean {
   return (
-    unitHasCallLeadKeyword(card.cardId, kind, category) ||
+    unitHasCallLeadKeyword(card.cardId, kind, category, player) ||
     set9AGrantsCallLead(player, definitions, card, kind, category) ||
     // RK-249 アドベント「このターン、選んだユニットは次の能力を得る⇒※コールWB」（rules/rk/rk249Advent.ts）。
     adventGrantsCall(player, card, kind, category)
@@ -177,7 +179,7 @@ export function playerHasAllyWithLeadOnField(
   const cats = categories ?? (["MA", "ET", "DA", "WB", "OT"] as Category[]);
   for (const zone of ["rush", "battle"] as const) {
     for (const card of player[zone]) {
-      if (cats.some((cat) => unitHasCallLeadKeyword(card.cardId, "lead", cat))) {
+      if (cats.some((cat) => unitHasCallLeadKeyword(card.cardId, "lead", cat, player))) {
         return true;
       }
     }

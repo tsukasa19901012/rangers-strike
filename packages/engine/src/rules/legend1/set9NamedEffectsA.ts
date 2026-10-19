@@ -29,7 +29,7 @@ import { isResidentActivatedThisRush, markResidentActivatedThisRush } from "../p
 import { isSmallUnitNow, turnPlayerOf } from "./set6NamedEffectsB";
 import { getNumberComboEffect } from "@rangers-strike/cards";
 import { applyNumberComboEffect } from "../numberComboEffects";
-import { zordMaterialFeatures, zordRuleContextState } from "../zordFeatureContext";
+import { zordMaterialFeatures } from "../zordFeatureContext";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -832,22 +832,23 @@ export function listSet9AResidentActivations(state: GameState, playerId: PlayerI
 
 // ---------------------------------------------------------------------------
 // RS-610 秘伝ディスク（※常駐）
-// 「特徴「侍」を持つユニットは、次の能力を得る⇒タクスMA、コールMA」（atwiki/page-1440）— 自軍・敵軍のユニットとも。
+// 「特徴「侍」を持つユニットは、次の能力を得る⇒タクスMA、コールMA」（atwiki/page-1440）— 得るのは秘伝ディスクを常駐させた
+// プレイヤー（自軍）のユニットだけ（ユーザー決定 2026-10-19「自軍だけ」。docs/rules/README.md §5.7 n）。
 
 const SECRET_DISK_CARD_ID = "RS-610";
 
-function secretDiskActive(state: Pick<GameState, "players"> | null, fallback?: PlayerState): boolean {
-  if (state) return state.players.player1.operation.some((c) => c.cardId === SECRET_DISK_CARD_ID) || state.players.player2.operation.some((c) => c.cardId === SECRET_DISK_CARD_ID);
-  return !!fallback?.operation.some((c) => c.cardId === SECRET_DISK_CARD_ID);
+/** player（ユニットの持ち主）の常駐置き場に秘伝ディスクがあるか。 */
+function secretDiskActive(player: Pick<PlayerState, "operation">): boolean {
+  return player.operation.some((c) => c.cardId === SECRET_DISK_CARD_ID);
 }
 
 /** タクス: 左隣のユニットが【秘伝ディスク】で得たタクスMA（rules/../keywords/battleKeywords.ts taxisSpFloor から呼ぶ）。 */
 export function set9ATaxisCategory(state: GameState, playerId: PlayerId, left: CardInstance): "MA" | null {
-  if (!secretDiskActive(state)) return null;
+  if (!secretDiskActive(state.players[playerId])) return null;
   return unitFeatures(state, playerId, left).includes("侍") ? "MA" : null;
 }
 
-/** コール: 【秘伝ディスク】で得たコールMA（rules/callLead.ts から呼ぶ）。 */
+/** コール: 【秘伝ディスク】で得たコールMA（rules/callLead.ts から呼ぶ）。player はユニットの持ち主。 */
 export function set9AGrantsCallLead(
   player: PlayerState,
   definitions: GameState["definitions"],
@@ -856,8 +857,7 @@ export function set9AGrantsCallLead(
   category: string,
 ): boolean {
   if (kind !== "call" || category !== "MA") return false;
-  const context = zordRuleContextState();
-  if (!secretDiskActive(context, player)) return false;
+  if (!secretDiskActive(player)) return false;
   return zordMaterialFeatures(getDefinition(definitions, card.cardId), card).includes("侍");
 }
 

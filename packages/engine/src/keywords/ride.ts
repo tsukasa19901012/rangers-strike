@@ -161,7 +161,7 @@ export function findRideVehicleForRider(
         rider.cardId,
       ) ||
         // RM-058 老師グルで「昆虫」を追加された「メカ」の S ユニット（rules/rm/rm3Fields.ts）。
-        rm3GuruInsectRide(state, vehicle.cardId, rider.cardId)) &&
+        rm3GuruInsectRide(state, playerId, vehicle.cardId, rider.cardId)) &&
       (!vehicleRideWithoutRcNeedsHold(vehicle.cardId) || player.command.some((cmd) => !cmd.commandHeld))
     ) {
       return vehicle;
@@ -255,7 +255,7 @@ export function canRiderMountVehicle(
       rider.cardId,
     ) ||
     // RM-058 老師グルで「昆虫」を追加された「メカ」の S ユニット（rules/rm/rm3Fields.ts）。
-    rm3GuruInsectRide(state, vehicle.card.cardId, rider.cardId)
+    rm3GuruInsectRide(state, playerId, vehicle.card.cardId, rider.cardId)
   ) {
     // RS-381「自軍コマンドを1つホールドすれば」— ホールドできるリリース状態の自軍コマンドが必要。
     if (vehicleRideWithoutRcNeedsHold(vehicle.card.cardId)) {

@@ -52,8 +52,8 @@ export function canOfferRegister(
   if (set8BGrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
   // RM-051 メガヘラクレス【メガビートフォーメーション】（自軍エリアに「レッドジャイロ」があればレジスト。rules/rm/rm3Fields.ts）。
   if (rm3GrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
-  // RK-197 アントロード【女王の僕】: 特徴「女」を持つユニットはレジストを得る（rules/rk/rk10Fields.ts）。
-  if (rk10AntlordGrantsResist(state, { cardId: pending.leavingCardId })) return true;
+  // RK-197 アントロード【女王の僕】: 特徴「女」を持つ自軍ユニットはレジストを得る（自軍だけ。rules/rk/rk10Fields.ts）。
+  if (rk10AntlordGrantsResist(state, pending.ownerPlayerId, { cardId: pending.leavingCardId })) return true;
   // RS-647 ピヨちゃん【ソウルバード】「このカードに重ねたユニットは、次の能力を得る⇒※レジスト」（rules/stackOntoLargeUnit.ts）。
   const host = state.players[pending.ownerPlayerId].battle.find((c) => c.instanceId === pending.instanceId);
   return !!host && stackOntoLargeGrantsKeyword(host, "register");
