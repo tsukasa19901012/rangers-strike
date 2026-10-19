@@ -8,14 +8,18 @@
  */
 import type { GameAction } from "../types/actions";
 import type { GameState } from "../types/game";
+import { engineSideEffectCount } from "./sideEffects";
 
 export type SearchCache = {
   /** core/legalActions.ts getLegalActions の結果。 */
   legalActions: WeakMap<GameState, readonly GameAction[]>;
   /** core/applyAction.ts applyAction の結果（アクションの JSON ごと）・CPU の読みの結果（ai/）。 */
   memo: WeakMap<GameState, Map<string, unknown>>;
-  /** core/catalog.ts effectiveBp の結果（状態ごと・プレイヤーごと・カードのインスタンスのオブジェクトごと）。 */
-  bp: WeakMap<GameState, { player1: Map<object, number>; player2: Map<object, number> }>;
+  /**
+   * カードごとの数値（core/catalog.ts effectiveBp・rules/legend3/fieldEffects.ts legend3EffectiveSp）の結果。
+   * 状態ごと・種類とプレイヤーごと・カードのインスタンスのオブジェクトごと。
+   */
+  perCard: WeakMap<GameState, Map<string, Map<object, number>>>;
 };
 
 let active: SearchCache | null = null;
@@ -23,7 +27,7 @@ let active: SearchCache | null = null;
 /** fn の間、状態ごとの計算結果を使い回す（入れ子の呼び出しは外側の表を使う）。fn の間は状態を書き換えないこと。 */
 export function withSearchCache<T>(fn: () => T): T {
   if (active) return fn();
-  active = { legalActions: new WeakMap(), memo: new WeakMap(), bp: new WeakMap() };
+  active = { legalActions: new WeakMap(), memo: new WeakMap(), perCard: new WeakMap() };
   try {
     return fn();
   } finally {
@@ -51,5 +55,37 @@ export function memoizeInSearch<T>(state: GameState, key: string, compute: () =>
     cache.set(state, byKey);
   }
   byKey.set(key, value);
+  return value;
+}
+
+/**
+ * 探索の間は、状態・プレイヤー・カードのインスタンスで決まる数値 compute（BP・SP 等。kind で区別する）を使い回す
+ * （探索の外では毎回計算する）。計算の中で状態の外に残る処理をしたときは覚えない（core/sideEffects.ts）。
+ */
+export function memoizePerCardInSearch(
+  state: GameState,
+  kind: string,
+  playerId: string,
+  instance: object,
+  compute: () => number,
+): number {
+  const cache = active?.perCard;
+  if (!cache) return compute();
+  let perState = cache.get(state);
+  if (!perState) {
+    perState = new Map();
+    cache.set(state, perState);
+  }
+  const mapKey = kind + playerId;
+  let byInstance = perState.get(mapKey);
+  if (!byInstance) {
+    byInstance = new Map();
+    perState.set(mapKey, byInstance);
+  }
+  const hit = byInstance.get(instance);
+  if (hit !== undefined) return hit;
+  const sideEffectsBefore = engineSideEffectCount();
+  const value = compute();
+  if (engineSideEffectCount() === sideEffectsBefore) byInstance.set(instance, value);
   return value;
 }

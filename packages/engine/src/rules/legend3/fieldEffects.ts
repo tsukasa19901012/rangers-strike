@@ -25,6 +25,7 @@ import {
 } from "../../core/catalog";
 import { countReleasedCommands } from "../restrictions";
 import { opponent } from "../../core/helpers";
+import { memoizePerCardInSearch } from "../../core/searchCache";
 import { promotedKeywordSpFloor } from "../../dsl/promotedKeywordBridge";
 import { legend2EffectiveSp } from "../legend2/fieldEffects";
 import { sameCardName } from "../../core/cardNames";
@@ -223,6 +224,15 @@ export function earthConquestDeclarationActive(
 
 /** RS-157 oni_neck_last: BP20000+ で自ターンにSP2付与。 */
 export function legend3EffectiveSp(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+): number {
+  // CPU の探索の間は、同じ状態・同じカードの SP を使い回す（盤面評価で何度も調べる。core/searchCache.ts）。
+  return memoizePerCardInSearch(state, "sp", playerId, instance, () => legend3EffectiveSpUncached(state, playerId, instance));
+}
+
+function legend3EffectiveSpUncached(
   state: GameState,
   playerId: PlayerId,
   instance: CardInstance,
