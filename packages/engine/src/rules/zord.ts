@@ -23,7 +23,7 @@ import { findInZone, removeAt } from "../core/helpers";
 import { hasTurnRuleModifier } from "../core/scopedModifiers";
 import { actionContextState, zordMaterialAlteredName, zordMaterialFeatures } from "./zordFeatureContext";
 import { rk11IsHandSubstitute } from "./rk/rk11Fields";
-import { xg4HoldForHandSubstitute, xg4IsHandSubstituteMaterial } from "./xg4/xg4Fields";
+import { xg4FusionSlotWaived, xg4HoldForHandSubstitute, xg4IsHandSubstituteMaterial } from "./xg4/xg4Fields";
 
 /** ゾードアップ素材を取れるゾーン（フィールドのみ、手札不可）。 */
 export type ZordMaterialZone = "rush" | "battle" | "hand";
@@ -349,6 +349,8 @@ function matchFusionCombination(
     const parts = useAlt.has(slotIndex) ? alternatives.get(slotIndex)! : [slot];
     for (const part of parts) {
       const match = matchSlot(part);
+      // XG4-039 の※（自軍捨札に同名のカードがあれば、その素材は捨札にしなくてよい。rules/xg4/xg4Fields.ts）。
+      if (!match && xg4FusionSlotWaived(player, rushingInstanceId, part, (c, id) => fieldCardMatchesPartner(definitions, c, id))) continue;
       if (!match) return null;
       usedInstanceIds.add(match.card.instanceId);
       found.push(match);

@@ -122,6 +122,15 @@ export function xg4DefenderBlocksAttack(
   if (attackerPlayerId === defenderPlayerId) return false;
   // XG4-013「※これはライド中、ウイングを持たないユニットにアタックされない。」（atwiki/page-2092）。
   if (isSameCardIdentity(defender.cardId, "XG4-013") && defender.mountedOnInstanceId && !hasWing(attacker)) return true;
+  // XG4-034【風の電子モヂカラ】「これが自軍バトルエリアにある間、これ以外のLユニットとMユニットは、敵軍ユニットにアタックされない。」（atwiki/page-2104）。
+  // 守られるのはこれの持ち主の自軍ユニットだけ（同 Q1）。
+  const defenderSize = defender.sizeOverride ?? (state.definitions[defender.cardId] as { size?: string } | undefined)?.size;
+  if (
+    (defenderSize === "L" || defenderSize === "M") &&
+    state.players[defenderPlayerId].battle.some((c) => isSameCardIdentity(c.cardId, "XG4-034") && c.instanceId !== defender.instanceId)
+  ) {
+    return true;
+  }
   return false;
 }
 
@@ -135,6 +144,11 @@ export function xg4HoldRideAllowed(state: View, vehicleCardId: string, rider: Pi
     const d = state.definitions[rider.cardId];
     const cats = (Array.isArray(d?.category) ? d.category : d?.category ? [d.category] : []) as string[];
     return d?.type === "unit" && riderSize === "S" && cats.includes("WB");
+  }
+  // XG4-027「※特徴「魔法」を持つ自軍Sユニットは、自軍コマンドを1つホールドすればＲＣを持っていなくてもこのビークルにライドできる。」（atwiki/page-2086）。
+  if (isSameCardIdentity(vehicleCardId, "XG4-027")) {
+    const d = state.definitions[rider.cardId] as { type?: string; features?: string[] } | undefined;
+    return d?.type === "unit" && riderSize === "S" && (d.features ?? []).includes("魔法");
   }
   return false;
 }
@@ -178,4 +192,20 @@ export function xg4HoldForHandSubstitute(player: PlayerState, definitions: Recor
   const target = releasedEtCommands(player, definitions)[0];
   if (!target) return player;
   return { ...player, command: player.command.map((c) => (c.instanceId === target.instanceId ? { ...c, commandHeld: true } : c)) };
+}
+
+/**
+ * XG4-039 サムライハオー「※自軍捨札に合体ユニットと同名のカードがあれば、そのユニットは捨札にしなくてもよい。」（atwiki/page-2125）。
+ * 合体の素材 slot（どれか1枚）が場にないとき、自軍捨札に同名のカードがあればその素材を省けるか（rules/zord.ts matchFusionCombination）。
+ * matchesPartner は捨札のカードが素材 partnerId と同名か（rules/zord.ts fieldCardMatchesPartner）。
+ */
+export function xg4FusionSlotWaived(
+  player: PlayerState,
+  rushingInstanceId: string,
+  slot: string[],
+  matchesPartner: (card: CardInstance, partnerId: string) => boolean,
+): boolean {
+  const rushing = [...player.hand, ...player.rush, ...player.battle].find((c) => c.instanceId === rushingInstanceId);
+  if (!rushing || !isSameCardIdentity(rushing.cardId, "XG4-039")) return false;
+  return player.discard.some((c) => slot.some((id) => matchesPartner(c, id)));
 }

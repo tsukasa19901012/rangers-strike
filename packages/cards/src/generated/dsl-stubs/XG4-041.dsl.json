@@ -45,8 +45,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-041::soutenda",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-041::soutender",
+          "duration": "turn"
         }
       ]
     }

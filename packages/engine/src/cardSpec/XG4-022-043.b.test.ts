@@ -17,9 +17,12 @@ import {
   activate,
   attack,
   attackersOf,
+  attackTargets,
   canActivate,
   canConfirm,
+  canEnter,
   canSkip,
+  canStrike,
   canWing,
   cardIn,
   choiceIds,
@@ -55,12 +58,62 @@ import {
   settle,
   skip,
   spOf,
+  st,
   sUnit,
   targetsOf,
   taxTests,
   wingTests,
   zoneOf,
 } from "./XG4-022-043.helpers";
+
+/** wingTests（RS9-648-669.helpers.ts）と同じ。XG4-033 の【フリージングダガー】の選択が開いたら見送る。 */
+function wingTestsDecliningFreeze(id: string, page: string): void {
+  const ENEMY = sUnit("SPEC-WING-ENEMY", { bp: 500, sp: undefined });
+  const board = (phase: GameState["phase"] = "battle") =>
+    st(
+      {
+        phase,
+        player1: { rush: [inst(id, "w")], deck: deckCards(3) },
+        player2: { battle: [inst("SPEC-WING-ENEMY", "e")], deck: deckCards(3, "e") },
+      },
+      [ENEMY],
+    );
+
+  it(`${id}: ※ウイング — 自軍バトルフェイズにラッシュエリアでホールドし、ラッシュエリアから敵軍ユニットにアタックできる（出典: ${page}、grnrngr/faq-card-9 ウイング A1・R-KW-WING-01）`, () => {
+    let s = board();
+    expect(canWing(s, `${id}:w`)).toBe(true);
+    s = act(s, { type: "hold_for_wing", playerId: "player1", instanceId: `${id}:w` });
+    expect(cardIn(s, "player1", `${id}:w`)?.commandHeld).toBe(true);
+    expect(attackTargets(s, `${id}:w`)).toContain("SPEC-WING-ENEMY:e");
+    s = settle(attack(s, `${id}:w`, "SPEC-WING-ENEMY:e"));
+    if (s.pendingEffectChoice?.sourceCardId === id) s = settle(skip(s));
+    expect(zoneOf(s, "player2", "SPEC-WING-ENEMY:e")).toBe("discard");
+    expect(zoneOf(s, "player1", `${id}:w`)).toBe("rush");
+  });
+
+  it(`${id}: ※ウイング — 発動したターンはバトルエリアに出られない（出典: grnrngr/faq-card-9 ウイング Q4「いいえ、できません」）`, () => {
+    let s = board();
+    s = act(s, { type: "hold_for_wing", playerId: "player1", instanceId: `${id}:w` });
+    expect(canEnter(s, `${id}:w`)).toBe(false);
+  });
+
+  it(`${id}: ※ウイング — 自軍バトルフェイズ以外（ラッシュフェイズ）には発動できない（出典: grnrngr/faq-card-9 ウイング Q3「いいえ、できません」）`, () => {
+    expect(canWing(board("rush"), `${id}:w`)).toBe(false);
+  });
+
+  it(`${id}: ※ウイング — ラッシュエリア以外（バトルエリア）からは発動できない（出典: grnrngr/faq-card-9 ウイング Q5）`, () => {
+    const s = st(
+      { player1: { battle: [inst(id, "w")], deck: deckCards(3) }, player2: { battle: [inst("SPEC-WING-ENEMY", "e")] } },
+      [ENEMY],
+    );
+    expect(canWing(s, `${id}:w`)).toBe(false);
+  });
+
+  it(`${id}: ※ウイング — ホールドしてもストライクはできない（出典: grnrngr/faq-card-9 ウイング Q6「いいえ、できません」）`, () => {
+    const s = act(board(), { type: "hold_for_wing", playerId: "player1", instanceId: `${id}:w` });
+    expect(canStrike(s, `${id}:w`)).toBe(false);
+  });
+}
 
 const OWN_S = sUnit("SPEC-OWN-S", { category: "OT", bp: 2000 });
 const OWN_S2 = sUnit("SPEC-OWN-S2", { category: "OT", bp: 2000 });
@@ -96,20 +149,20 @@ describe("XG4-031 ロケットブースター", () => {
   const used = (p1: Partial<GameState["players"]["player1"]> = {}) => opUsed("XG4-031", "OT", 3, { rush: [inst("SPEC-OWN-S", "a"), inst("SPEC-OWN-S2", "b")], ...p1 }, { battle: [inst("SPEC-E-WEAK", "e")] }, EXTRA);
   const declare = (s: GameState, name: string) => resolveAll(act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: name }));
 
-  it.fails("XG4-031: 使うとカード名を1つ宣言する（自軍の S ユニットのカード名を選べる）（出典: atwiki/page-2094「カード名を１つ宣言する」）（既知の不具合: CARD-XG4-031 ロケットブースターを使ってもカード名宣言の選択が開かない（カタログのカードに効果が結び付いていない））", () => {
+  it("XG4-031: 使うとカード名を1つ宣言する（自軍の S ユニットのカード名を選べる）（出典: atwiki/page-2094「カード名を１つ宣言する」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "XG4-031");
     expect(choiceIds(s)).toContain("SPEC-OWN-S");
   });
 
-  it.fails("XG4-031: このターン、宣言したカード名の S ユニットは「ウイング」を得る（宣言していないカード名のユニットは得ない）（出典: atwiki/page-2094「宣言したカード名と同じカード名を持つSユニットとSユニットのカードは次のテキストを得る⇒「ウイング」」）（既知の不具合: CARD-XG4-031 ロケットブースターを使ってもカード名宣言の選択が開かない（カタログのカードに効果が結び付いていない））", () => {
+  it("XG4-031: このターン、宣言したカード名の S ユニットは「ウイング」を得る（宣言していないカード名のユニットは得ない）（出典: atwiki/page-2094「宣言したカード名と同じカード名を持つSユニットとSユニットのカードは次のテキストを得る⇒「ウイング」」）", () => {
     const s = nextPhase(declare(used(), "SPEC-OWN-S"));
     expect(s.phase).toBe("battle");
     expect(canWing(s, "SPEC-OWN-S:a")).toBe(true);
     expect(canWing(s, "SPEC-OWN-S2:b")).toBe(false);
   });
 
-  it.fails("XG4-031: 宣言したカード名の手札の S ユニットのカードも得る（このターンにラッシュすればウイングを使える）（出典: atwiki/page-2094「SユニットとSユニットのカード」・カード評価「ユニットカードにもウイングを追加できる」）（既知の不具合: CARD-XG4-031 ロケットブースターを使ってもカード名宣言の選択が開かない（カタログのカードに効果が結び付いていない））", () => {
+  it("XG4-031: 宣言したカード名の手札の S ユニットのカードも得る（このターンにラッシュすればウイングを使える）（出典: atwiki/page-2094「SユニットとSユニットのカード」・カード評価「ユニットカードにもウイングを追加できる」）", () => {
     let s = declare(used({ hand: [inst("SPEC-OWN-S", "h")], command: releasedCat("OT", 1) }), "SPEC-OWN-S");
     const r = rushFromHand(s, "player1", "SPEC-OWN-S:h");
     expect(r.ok, r.error).toBe(true);
@@ -117,14 +170,14 @@ describe("XG4-031 ロケットブースター", () => {
     expect(canWing(s, "SPEC-OWN-S:h")).toBe(true);
   });
 
-  it.fails("XG4-031: 宣言したカード名のユニットは、持ち主がターンを終えるとき、ラッシュエリアにあれば手札に戻せる（出典: atwiki/page-2094「このユニットの持ち主は、自分自身のターンを終えるとき、このユニットがラッシュエリアにあれば手札に戻してもよい」）（既知の不具合: CARD-XG4-031 ロケットブースターを使ってもカード名宣言の選択が開かない（カタログのカードに効果が結び付いていない））", () => {
+  it("XG4-031: 宣言したカード名のユニットは、持ち主がターンを終えるとき、ラッシュエリアにあれば手札に戻せる（出典: atwiki/page-2094「このユニットの持ち主は、自分自身のターンを終えるとき、このユニットがラッシュエリアにあれば手札に戻してもよい」）", () => {
     let s = endTurnKeep(declare(used(), "SPEC-OWN-S"));
     expectChoiceFrom(s, "player1", "XG4-031");
     s = resolveAll(s.pendingEffectChoice?.validInstanceIds.includes("SPEC-OWN-S:a") ? pick(s, "SPEC-OWN-S:a") : confirm(s));
     expect(zoneOf(s, "player1", "SPEC-OWN-S:a")).toBe("hand");
   });
 
-  it.fails("XG4-031: ウイングを得るのは「このターン」だけ（次の自軍ターンには持たない）（出典: atwiki/page-2094「このターン」）（既知の不具合: CARD-XG4-031 ロケットブースターを使ってもカード名宣言の選択が開かない（カタログのカードに効果が結び付いていない））", () => {
+  it("XG4-031: ウイングを得るのは「このターン」だけ（次の自軍ターンには持たない）（出典: atwiki/page-2094「このターン」）", () => {
     let s = declare(used(), "SPEC-OWN-S");
     s = endTurnKeep(s);
     if (s.pendingEffectChoice?.sourceCardId === "XG4-031") s = skip(s);
@@ -159,24 +212,24 @@ describe("XG4-032 ゴーオンゴールド（XG4）", () => {
   const POWER = () => [faceUp("TST-OP-DA", "da1"), faceUp("TST-OP-DA", "da2"), faceUp("TST-OP-ET", "et"), faceDown("TST-OP-DA", "dd")];
   const ENEMY = () => ({ battle: [inst("SPEC-E-DA", "t")], power: POWER() });
 
-  it.fails("XG4-032: NC【バーニングダガー】— 4番目に出ると「SP1」を得る（出典: atwiki/page-2042「「SP1」」）（既知の不具合: CARD-XG4-032 NC【バーニングダガー】の SP1 が付かず、撃破時の敵軍パワー選択も開かない（ウイングでも同じ））", () => {
+  it("XG4-032: NC【バーニングダガー】— 4番目に出ると「SP1」を得る（出典: atwiki/page-2042「「SP1」」）", () => {
     expect(spOf(settle(ncEnter("XG4-032:gg", 3, {}, ENEMY(), EXTRA)), "player1", "XG4-032:gg")).toBe(1);
   });
 
-  it.fails("XG4-032: NC — バトルで敵軍ユニット（DA）を撃破すると、同じカテゴリ（DA）のオモテ向きの敵軍パワーから1枚選べる（ウラ向き・違うカテゴリは選べない。任意）（出典: atwiki/page-2042「撃破したユニットと同じカテゴリを持つオモテ向きの敵軍パワーを1枚選び捨札にしてもよい」）（既知の不具合: CARD-XG4-032 NC【バーニングダガー】の SP1 が付かず、撃破時の敵軍パワー選択も開かない（ウイングでも同じ））", () => {
+  it("XG4-032: NC — バトルで敵軍ユニット（DA）を撃破すると、同じカテゴリ（DA）のオモテ向きの敵軍パワーから1枚選べる（ウラ向き・違うカテゴリは選べない。任意）（出典: atwiki/page-2042「撃破したユニットと同じカテゴリを持つオモテ向きの敵軍パワーを1枚選び捨札にしてもよい」）", () => {
     const s = settle(attack(ncEnter("XG4-032:gg", 3, {}, ENEMY(), EXTRA), "XG4-032:gg", "SPEC-E-DA:t"));
     expectChoiceFrom(s, "player1", "XG4-032");
     expect(choiceIds(s)).toEqual(["TST-OP-DA:da1", "TST-OP-DA:da2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-032: NC — 選んだ敵軍パワーは捨札になる（出典: atwiki/page-2042「捨札にしてもよい」）（既知の不具合: CARD-XG4-032 NC【バーニングダガー】の SP1 が付かず、撃破時の敵軍パワー選択も開かない（ウイングでも同じ））", () => {
+  it("XG4-032: NC — 選んだ敵軍パワーは捨札になる（出典: atwiki/page-2042「捨札にしてもよい」）", () => {
     const s = resolveAll(pick(settle(attack(ncEnter("XG4-032:gg", 3, {}, ENEMY(), EXTRA), "XG4-032:gg", "SPEC-E-DA:t")), "TST-OP-DA:da1"));
     expect(zoneOf(s, "player2", "TST-OP-DA:da1")).toBe("discard");
     expect(s.players.player2.power).toHaveLength(3);
   });
 
-  it.fails("XG4-032: ウイングでアタックするとき — ナンバーに関係なく発動する（ラッシュエリアからウイングでアタックして撃破）（出典: atwiki/page-2042「（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）」・カード評価「まずラッシュエリアにて効果を発動し」）（既知の不具合: CARD-XG4-032 NC【バーニングダガー】の SP1 が付かず、撃破時の敵軍パワー選択も開かない（ウイングでも同じ））", () => {
+  it("XG4-032: ウイングでアタックするとき — ナンバーに関係なく発動する（ラッシュエリアからウイングでアタックして撃破）（出典: atwiki/page-2042「（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）」・カード評価「まずラッシュエリアにて効果を発動し」）", () => {
     let s = battle({ rush: [inst("XG4-032", "gg")] }, ENEMY());
     s = act(s, { type: "hold_for_wing", playerId: "player1", instanceId: "XG4-032:gg" });
     s = settle(attack(s, "XG4-032:gg", "SPEC-E-DA:t"));
@@ -196,12 +249,14 @@ describe("XG4-033 ゴーオンシルバー（XG4）", () => {
     expectRarityIn("XG4-033", ["SR"]);
   });
 
-  wingTests("XG4-033", "atwiki/page-2143");
+  // ※ウイングの共通テンプレート（wingTests）は、アタックのあとに開く【フリージングダガー】の選択（任意）を見送れない
+  // （settle は効果の選択を閉じない）。期待値はテンプレートのまま、選択を見送ってから続ける（XG4-judgments.md）。
+  wingTestsDecliningFreeze("XG4-033", "atwiki/page-2143");
   taxTests("XG4-033", "OT", "atwiki/page-2143");
 
   const nc = (target: string) => attack(ncEnter("XG4-033:gs", 2, {}, { battle: [inst("SPEC-E-STRONG", "s"), inst("SPEC-E-STRONG-M", "m")], power: [] }, EXTRA), "XG4-033:gs", target);
 
-  it.fails("XG4-033: NC【フリージングダガー】— 3番目に出て敵軍 S ユニットにアタックするとき、バトルの前にバトル相手を持ち主のパワーゾーンに送れる（任意）。送ればバトルは行われず、これは撃破されない（出典: atwiki/page-2143「これが敵軍Sユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のパワーゾーンに送ってもよい」）（既知の不具合: CARD-XG4-033 NC【フリージングダガー】の「パワーゾーンに送る」選択が開かず、M ユニットへのアタックでも効果が出る）", () => {
+  it("XG4-033: NC【フリージングダガー】— 3番目に出て敵軍 S ユニットにアタックするとき、バトルの前にバトル相手を持ち主のパワーゾーンに送れる（任意）。送ればバトルは行われず、これは撃破されない（出典: atwiki/page-2143「これが敵軍Sユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のパワーゾーンに送ってもよい」）", () => {
     let s = nc("SPEC-E-STRONG:s");
     s = settleTo(s, "XG4-033");
     expectChoiceFrom(s, "player1", "XG4-033");
@@ -211,7 +266,7 @@ describe("XG4-033 ゴーオンシルバー（XG4）", () => {
     expect(zoneOf(s, "player1", "XG4-033:gs")).toBe("battle");
   });
 
-  it.fails("XG4-033: NC — 送らなければ通常どおりバトルする（BP9000 の相手に撃破される）（出典: atwiki/page-2143「してもよい」）（既知の不具合: CARD-XG4-033 NC【フリージングダガー】の「パワーゾーンに送る」選択が開かず、M ユニットへのアタックでも効果が出る）", () => {
+  it("XG4-033: NC — 送らなければ通常どおりバトルする（BP9000 の相手に撃破される）（出典: atwiki/page-2143「してもよい」）", () => {
     let s = settleTo(nc("SPEC-E-STRONG:s"), "XG4-033");
     if (s.pendingEffectChoice?.sourceCardId === "XG4-033") s = skip(s);
     s = resolveAll(s);
@@ -219,12 +274,12 @@ describe("XG4-033 ゴーオンシルバー（XG4）", () => {
     expect(zoneOf(s, "player2", "SPEC-E-STRONG:s")).toBe("battle");
   });
 
-  it.fails("XG4-033: NC — 敵軍 M ユニットにアタックするときは発動しない（出典: atwiki/page-2143「敵軍Sユニットにアタックするとき」）（既知の不具合: CARD-XG4-033 NC【フリージングダガー】の「パワーゾーンに送る」選択が開かず、M ユニットへのアタックでも効果が出る）", () => {
+  it("XG4-033: NC — 敵軍 M ユニットにアタックするときは発動しない（出典: atwiki/page-2143「敵軍Sユニットにアタックするとき」）", () => {
     const s = settleTo(nc("SPEC-E-STRONG-M:m"), "XG4-033");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG4-033");
   });
 
-  it.fails("XG4-033: ウイングでアタックするとき — ナンバーに関係なく発動する（出典: atwiki/page-2143「（この効果はこれがウイングでアタックするときはナンバーに関係なく発動する）」・カード評価「ウイングから発動可能」）（既知の不具合: CARD-XG4-033 NC【フリージングダガー】の「パワーゾーンに送る」選択が開かず、M ユニットへのアタックでも効果が出る）", () => {
+  it("XG4-033: ウイングでアタックするとき — ナンバーに関係なく発動する（出典: atwiki/page-2143「（この効果はこれがウイングでアタックするときはナンバーに関係なく発動する）」・カード評価「ウイングから発動可能」）", () => {
     let s = battle({ rush: [inst("XG4-033", "gs")] }, { battle: [inst("SPEC-E-STRONG", "s")], power: [] });
     s = act(s, { type: "hold_for_wing", playerId: "player1", instanceId: "XG4-033:gs" });
     s = settleTo(attack(s, "XG4-033:gs", "SPEC-E-STRONG:s"), "XG4-033");
@@ -266,7 +321,7 @@ describe("XG4-034 ダイカイオーニシ", () => {
   const defended = () =>
     enemyTurn({ battle: [inst("XG4-034", "n"), inst("SPEC-OWN-M", "m"), inst("SPEC-OWN-L", "l"), inst("SPEC-OWN-SS", "s")] }, { battle: [inst("SPEC-E-ATK", "a")] }, EXTRA);
 
-  it.fails("XG4-034:【風の電子モヂカラ】— これが自軍バトルエリアにある間、これ以外の自軍 L・M ユニットは敵軍ユニットにアタックされない（これ自身と S ユニットはアタックされる）（出典: atwiki/page-2104「これ以外のLユニットとMユニットは、敵軍ユニットにアタックされない」）（既知の不具合: CARD-XG4-034 【風の電子モヂカラ】が働かず、ほかの自軍 L・M ユニットがアタックされる）", () => {
+  it("XG4-034:【風の電子モヂカラ】— これが自軍バトルエリアにある間、これ以外の自軍 L・M ユニットは敵軍ユニットにアタックされない（これ自身と S ユニットはアタックされる）（出典: atwiki/page-2104「これ以外のLユニットとMユニットは、敵軍ユニットにアタックされない」）", () => {
     const s = defended();
     expect(targetsOf(s, "SPEC-E-ATK:a", "player2")).toEqual(["SPEC-OWN-SS:s", "XG4-034:n"]);
   });
@@ -296,18 +351,18 @@ describe("XG4-035 シンケンゴールド（XG4）", () => {
   const rb = (top: ReturnType<typeof inst>, command = [released("TST-OP-ET", "et"), released("TST-OP-MA", "ma")]) =>
     board({ rush: [inst("XG4-035", "sg")], command, deck: [top, ...deckCards(3)] });
 
-  it.fails("XG4-035:【モヂカラのプログラム】— これが自軍エリアにあり、ET を持つリリース状態の自軍コマンドがあれば、自軍ラッシュフェイズ中に起動できる（出典: atwiki/page-2044「自軍ラッシュフェイズ中、 ETを持つ自軍コマンドを1つホールドしてもよい」）（既知の不具合: CARD-XG4-035 【モヂカラのプログラム】を起動できない）", () => {
+  it("XG4-035:【モヂカラのプログラム】— これが自軍エリアにあり、ET を持つリリース状態の自軍コマンドがあれば、自軍ラッシュフェイズ中に起動できる（出典: atwiki/page-2044「自軍ラッシュフェイズ中、 ETを持つ自軍コマンドを1つホールドしてもよい」）", () => {
     expect(canActivate(rb(inst("SPEC-MA-FEAT", "top")), "XG4-035:sg")).toBe(true);
     expect(canActivate(rb(inst("SPEC-MA-FEAT", "top"), [released("TST-OP-MA", "ma")]), "XG4-035:sg")).toBe(false);
   });
 
-  it.fails("XG4-035:【モヂカラのプログラム】— ET のコマンドをホールドし、山札の一番上が「特徴」を持つ MA のカードなら手札に加える（出典: atwiki/page-2044「オモテにしたカードが「特徴」を持つMAのカードなら手札に加え」）（既知の不具合: CARD-XG4-035 【モヂカラのプログラム】を起動できない）", () => {
+  it("XG4-035:【モヂカラのプログラム】— ET のコマンドをホールドし、山札の一番上が「特徴」を持つ MA のカードなら手札に加える（出典: atwiki/page-2044「オモテにしたカードが「特徴」を持つMAのカードなら手札に加え」）", () => {
     const s = resolveAll(activate(rb(inst("SPEC-MA-FEAT", "top")), "XG4-035:sg"));
     expect(cardIn(s, "player1", "TST-OP-ET:et")?.commandHeld).toBe(true);
     expect(zoneOf(s, "player1", "SPEC-MA-FEAT:top")).toBe("hand");
   });
 
-  it.fails("XG4-035:【モヂカラのプログラム】— それ以外（特徴のない MA のカード・特徴のある ET のカード）なら山札の上か下を選んで戻す（出典: atwiki/page-2044「それ以外なら山札の上か下に戻す」）（既知の不具合: CARD-XG4-035 【モヂカラのプログラム】を起動できない）", () => {
+  it("XG4-035:【モヂカラのプログラム】— それ以外（特徴のない MA のカード・特徴のある ET のカード）なら山札の上か下を選んで戻す（出典: atwiki/page-2044「それ以外なら山札の上か下に戻す」）", () => {
     for (const top of [inst("SPEC-MA-NOFEAT", "top"), inst("SPEC-ET-FEAT", "top")]) {
       let s = activate(rb(top), "XG4-035:sg");
       expectChoiceFrom(s, "player1", "XG4-035");
@@ -366,11 +421,11 @@ describe("XG4-037 牛折神", () => {
     return r.state;
   };
 
-  it.fails("XG4-037: ※ — ラッシュするとき可能ならバトルエリアに置く（出典: atwiki/page-2090「※これはラッシュするとき可能ならバトルエリアに置く」）（既知の不具合: CARD-XG4-037 ラッシュしてもバトルエリアに置かれず、【荒ぶる折神】の選択も開かない）", () => {
+  it("XG4-037: ※ — ラッシュするとき可能ならバトルエリアに置く（出典: atwiki/page-2090「※これはラッシュするとき可能ならバトルエリアに置く」）", () => {
     expect(zoneOf(resolveAll(rushed(0, 0)), "player1", "XG4-037:us")).toBe("battle");
   });
 
-  it.fails("XG4-037:【荒ぶる折神】— 相手のダメージが少なければ、相手が自分のユニットを1体選び、自分のパワーゾーンにダメージとして置く（出典: atwiki/page-2090「少ない方は自分自身のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」・カード評価「敵軍ユニット除去＋１点ダメージ」）（既知の不具合: CARD-XG4-037 ラッシュしてもバトルエリアに置かれず、【荒ぶる折神】の選択も開かない）", () => {
+  it("XG4-037:【荒ぶる折神】— 相手のダメージが少なければ、相手が自分のユニットを1体選び、自分のパワーゾーンにダメージとして置く（出典: atwiki/page-2090「少ない方は自分自身のユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」・カード評価「敵軍ユニット除去＋１点ダメージ」）", () => {
     let s = rushed(3, 1);
     expect(choicePlayer(s)).toBe("player2");
     expect(choiceIds(s)).toEqual(["SPEC-E-STRONG:e2", "SPEC-E-WEAK:e1"]);
@@ -380,7 +435,7 @@ describe("XG4-037 牛折神", () => {
     expect(damageOf(s, "player2")).toBe(2);
   });
 
-  it.fails("XG4-037:【荒ぶる折神】— 自分のダメージが少なければ、自分が自軍ユニット（これ自身を含む）を1体選んでダメージにする（出典: atwiki/page-2090「少ない方は」・カード評価「ダメージで勝っている場合は自軍に被害が出る」）（既知の不具合: CARD-XG4-037 ラッシュしてもバトルエリアに置かれず、【荒ぶる折神】の選択も開かない）", () => {
+  it("XG4-037:【荒ぶる折神】— 自分のダメージが少なければ、自分が自軍ユニット（これ自身を含む）を1体選んでダメージにする（出典: atwiki/page-2090「少ない方は」・カード評価「ダメージで勝っている場合は自軍に被害が出る」）", () => {
     let s = rushed(1, 3);
     expect(choicePlayer(s)).toBe("player1");
     expect(choiceIds(s)).toEqual(["SPEC-OWN-SS:own", "XG4-037:us"]);

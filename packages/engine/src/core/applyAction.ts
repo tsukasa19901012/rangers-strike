@@ -100,7 +100,16 @@ import { drainQueuedFieldLeaves } from "../rules/fieldLeaveQueue";
 import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
-import { applyXg4AfterAction, applyXg4BattleCounter, applyXg4RideOff, isXg4BattleCounterCard } from "../rules/xg4/xg4Effects";
+import {
+  applyXg4AfterAction,
+  applyXg4BattleCounter,
+  applyXg4RideOff,
+  isXg4BattleCounterCard,
+  isXg4BeforeBattleChoice,
+  openXg4BeforeBattle,
+  resolveXg4BeforeBattle,
+  skipXg4BeforeBattle,
+} from "../rules/xg4/xg4Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
@@ -514,6 +523,12 @@ function continueAttackAfterDeclaration(
   }
   // RK-175【ライダーキック】の「これがアタックしなかったとき」のためのアタックの記録（rules/rk/rk9UnitEffects.ts）。
   battleState = rk9RecordAttack(battleState, pending);
+  // XG4-033【フリージングダガー】: アタックするとき、バトルの前にバトル相手を持ち主のパワーゾーンに送ってもよい（rules/xg4/xg4bEffects.ts）。
+  const xg4Before = openXg4BeforeBattle(battleState, pending, wingAttackFromRush);
+  if (xg4Before) {
+    const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...xg4Before, pendingBattleEntry: undefined } : xg4Before;
+    return ok(parked, buildSimpleLogEntry(playerId, "xg4033_freezing_dagger_choice"));
+  }
   // RK-188 ベリー【地空人のエージェント】: 敵軍ターン中、自軍 S ユニットがアタックされたとき（rules/rk/rk9UnitEffects.ts）。
   const berry = openRk9Berry(battleState, pending, wingAttackFromRush);
   if (berry) {
@@ -3187,6 +3202,11 @@ function applyActionCore(
         if ("error" in picked) return fail(picked.error);
         return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
       }
+      if (isXg4BeforeBattleChoice(pending)) {
+        const picked = resolveXg4BeforeBattle(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
+      }
       if (isRm3TentrinaChoice(pending)) {
         const picked = resolveRm3Tentrina(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
@@ -3307,6 +3327,11 @@ function applyActionCore(
       }
       if (isRk9BerryChoice(pending)) {
         const skipped = skipRk9Berry(state, playerId);
+        if (!skipped) return fail("invalid_target");
+        return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
+      }
+      if (isXg4BeforeBattleChoice(pending)) {
+        const skipped = skipXg4BeforeBattle(state, playerId);
         if (!skipped) return fail("invalid_target");
         return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
       }

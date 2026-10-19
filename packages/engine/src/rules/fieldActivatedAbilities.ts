@@ -1,4 +1,5 @@
 import { activateRm2FieldAbility, canActivateRm2FieldAbility, isRm2FieldAbilityCard } from "./rm/rm2Effects";
+import { activateXg4FieldAbility, canActivateXg4FieldAbility, isXg4FieldAbilityCard } from "./xg4/xg4Effects";
 import { tryLeaveField } from "./operationCounters";
 import { liveCommentaryStayAvailable } from "./legend1/set7NamedEffectsA";
 import { kuugaStayCandidates } from "./legend1/otherLinesNamedEffects";
@@ -470,6 +471,20 @@ ABILITIES.push({
   matches: (cardId) => isRm2FieldAbilityCard(cardId),
   canActivate: (state, playerId, card) => canActivateRm2FieldAbility(state, playerId, card),
   resolve: (state, playerId, card) => activateRm2FieldAbility(state, playerId, card),
+});
+
+// XG4-035 シンケンゴールド【モヂカラのプログラム】「これが自軍エリアにある間、自軍ラッシュフェイズ中、ETを持つ自軍コマンドを1つホールドしてもよい。…」
+// （atwiki/page-2044。rules/xg4/xg4bEffects.ts）。回数の制限はない（RM-038 と同じ）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "xg4035_program",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  discardSelf: false,
+  repeatable: true,
+  matches: (cardId) => isXg4FieldAbilityCard(cardId),
+  canActivate: (state, playerId, card) => canActivateXg4FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg4FieldAbility(state, playerId, card),
 });
 
 // 能力の当てはめはカード ID（とカードの文言）だけで決まるので、ID ごとに覚える。表に能力が足されたら捨てる。

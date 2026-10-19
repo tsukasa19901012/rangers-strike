@@ -235,6 +235,8 @@ export type PendingBattle = {
   rk9BerryOffered?: boolean;
   /** RM-062 テントリーナ【リーナステッキ】の選択を出した（rules/rm/rm3Effects.ts）。 */
   rm3TentrinaOffered?: boolean;
+  /** XG4-033【フリージングダガー】の選択を出したアタック（rules/xg4/xg4bEffects.ts）。 */
+  xg4FreezeOffered?: boolean;
   /** RS-414【ディオネを守る壁】の選択を出したか。 */
   dioneWallOffered?: boolean;
   /** RS-583【災いを受け止める覚悟】の「代わりに選ばれたことにする」選択をこのアタックで既に出したか。 */
@@ -1526,6 +1528,8 @@ export type TurnEndProgress = {
   rk13Queue?: string[];
   /** RK-323【シャドウベール】（rules/rk/rk16UnitEffects.ts）。 */
   rk16Queue?: string[];
+  /** クロスギャザー ザ・ジェットアクセル XG4 の「ターンを終えるとき」（rules/xg4/xg4Effects.ts）。 */
+  xg4Queue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

@@ -94,14 +94,14 @@ describe("XG4-022 シュリケンジャー（XG4）", () => {
   const entered = (unit: string) =>
     enterNow(battle({ rush: [inst("XG4-022", "sj"), inst(unit.split(":")[0]!, unit.split(":")[1]!)], command: [...heldN(2), released("TST-OP", "rc")] }), unit);
 
-  it.fails("XG4-022:【ニンジャミセン】— これが自軍ラッシュエリアにある間、特徴「メカ」を持つ自軍ユニットがバトルエリアに出たとき、ホールド状態の自軍コマンドから1つ選べる（任意）（出典: atwiki/page-2045「自軍コマンドを1つ選びリリースしてもよい」）（既知の不具合: CARD-XG4-022 NC【ニンジャミセン】の選択が開かない（効果が働かない））", () => {
+  it("XG4-022:【ニンジャミセン】— これが自軍ラッシュエリアにある間、特徴「メカ」を持つ自軍ユニットがバトルエリアに出たとき、ホールド状態の自軍コマンドから1つ選べる（任意）（出典: atwiki/page-2045「自軍コマンドを1つ選びリリースしてもよい」）", () => {
     const s = entered("SPEC-MECHA:m");
     expectChoiceFrom(s, "player1", "XG4-022");
     expect(choiceIds(s)).toEqual(["TST-OP:hc0", "TST-OP:hc1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-022:【ニンジャミセン】— 選んだコマンドはリリース状態になる（出典: atwiki/page-2045「リリースしてもよい」・カード評価「コマンド確保」）（既知の不具合: CARD-XG4-022 NC【ニンジャミセン】の選択が開かない（効果が働かない））", () => {
+  it("XG4-022:【ニンジャミセン】— 選んだコマンドはリリース状態になる（出典: atwiki/page-2045「リリースしてもよい」・カード評価「コマンド確保」）", () => {
     const s = resolveAll(pick(entered("SPEC-MECHA:m"), "TST-OP:hc0"));
     expect(cardIn(s, "player1", "TST-OP:hc0")?.commandHeld).toBe(false);
     expect(cardIn(s, "player1", "TST-OP:hc1")?.commandHeld).toBe(true);
@@ -196,18 +196,18 @@ describe("XG4-025 デカブレイク（XG4）", () => {
   const ENEMY = () => ({ battle: [inst("SPEC-C2", "c2"), inst("SPEC-C3", "c3"), inst("SPEC-C4", "c4"), inst("SPEC-C3M", "c3m")], rush: [inst("SPEC-C2", "r2")], power: [] });
   const nc = () => yes(ncEnter("XG4-025:db", 5, { power: POWER() }, ENEMY(), EXTRA));
 
-  it.fails("XG4-025: NC【必殺拳ソニックハンマー】— 6番目に出ると、オモテ向きの自軍パワー（3枚。ウラ向きのダメージは数えない）以下の必要パワーの数字を持つ敵軍バトルエリアのユニット（サイズを問わない）から1体選ぶ（ラッシュエリアは選べない）（出典: atwiki/page-2142「オモテ向きの自軍パワーの枚数を数えてもよい。そうしたき、敵軍バトルエリアから、その数以下の必要パワーの数字を持つ敵軍ユニットを１体選び」）（既知の不具合: CARD-XG4-025 NC の選択が開かない）", () => {
+  it("XG4-025: NC【必殺拳ソニックハンマー】— 6番目に出ると、オモテ向きの自軍パワー（3枚。ウラ向きのダメージは数えない）以下の必要パワーの数字を持つ敵軍バトルエリアのユニット（サイズを問わない）から1体選ぶ（ラッシュエリアは選べない）（出典: atwiki/page-2142「オモテ向きの自軍パワーの枚数を数えてもよい。そうしたき、敵軍バトルエリアから、その数以下の必要パワーの数字を持つ敵軍ユニットを１体選び」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG4-025");
     expect(choiceIds(s)).toEqual(["SPEC-C2:c2", "SPEC-C3:c3", "SPEC-C3M:c3m"]);
   });
 
-  it.fails("XG4-025: NC — 選んだユニットは持ち主のパワーゾーンに送られる（出典: atwiki/page-2142「持ち主のパワーゾーンに送る」）（既知の不具合: CARD-XG4-025 NC の選択が開かない）", () => {
+  it("XG4-025: NC — 選んだユニットは持ち主のパワーゾーンに送られる（出典: atwiki/page-2142「持ち主のパワーゾーンに送る」）", () => {
     const s = resolveAll(pick(nc(), "SPEC-C3:c3"));
     expect(zoneOf(s, "player2", "SPEC-C3:c3")).toBe("power");
   });
 
-  it.fails("XG4-025: ライドオフしたとき — ナンバーに関係なく発動する（RS-406 マシンボクサーにライドして出てライドオフ）（出典: atwiki/page-2142「（この効果は、ライドオフしたときナンバーに関係なく発動する）」・atwiki RS-406「特徴「警察」を持つ自軍Sユニットは、ＲＣを持っていなくてもこのビークルにライドできる」）（既知の不具合: CARD-XG4-025 RS-406 マシンボクサーから降りたときの選択が開かない）", () => {
+  it("XG4-025: ライドオフしたとき — ナンバーに関係なく発動する（RS-406 マシンボクサーにライドして出てライドオフ）（出典: atwiki/page-2142「（この効果は、ライドオフしたときナンバーに関係なく発動する）」・atwiki RS-406「特徴「警察」を持つ自軍Sユニットは、ＲＣを持っていなくてもこのビークルにライドできる」）", () => {
     let s = battle({ rush: [inst("XG4-025", "db"), inst("RS-406", "mb")], power: POWER() }, ENEMY());
     expect(canMount(s, "XG4-025:db", "RS-406:mb")).toBe(true);
     s = yes(mountAndRideOff(s, "XG4-025:db", "RS-406:mb"));
@@ -239,20 +239,20 @@ describe("XG4-026 天空勇者マジシャイン（XG4）", () => {
     return r.state;
   };
 
-  it.fails("XG4-026:【マジランプバスター】— ラッシュしたとき、リリース状態の自軍コマンドを好きな数選べる（任意）（出典: atwiki/page-2146「自軍コマンドを好きな数選びホールドしてもよい」）（既知の不具合: CARD-XG4-026 候補に支払いでホールドしたコマンドが入り、選べる数も1つだけになっている（ホールド数×BP2000・撃破が働かない））", () => {
+  it("XG4-026:【マジランプバスター】— ラッシュしたとき、リリース状態の自軍コマンドを好きな数選べる（任意）（出典: atwiki/page-2146「自軍コマンドを好きな数選びホールドしてもよい」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "XG4-026");
     expect(choiceIds(s)).toEqual(["TST-OP:c1", "TST-OP:c2", "TST-OP:c3"]);
     expect(canSkip(s) || canConfirm(s)).toBe(true);
   });
 
-  it.fails("XG4-026:【マジランプバスター】— 2つホールドすれば BP4000 以下の敵軍ユニット（エリア・サイズを問わない）から1体選び撃破する（出典: atwiki/page-2146「ホールドしたコマンド1つにつきBP2000として、そのBPの合計以下のBPを持つ敵軍ユニットを1体選び撃破する」）（既知の不具合: CARD-XG4-026 候補に支払いでホールドしたコマンドが入り、選べる数も1つだけになっている（ホールド数×BP2000・撃破が働かない））", () => {
+  it("XG4-026:【マジランプバスター】— 2つホールドすれば BP4000 以下の敵軍ユニット（エリア・サイズを問わない）から1体選び撃破する（出典: atwiki/page-2146「ホールドしたコマンド1つにつきBP2000として、そのBPの合計以下のBPを持つ敵軍ユニットを1体選び撃破する」）", () => {
     let s = pick(pick(rushed(), "TST-OP:c1"), "TST-OP:c2");
     if (canConfirm(s) && s.pendingEffectChoice?.selectedInstanceIds?.length) s = confirm(s);
     expect(cardIn(s, "player1", "TST-OP:c1")?.commandHeld).toBe(true);
     expect(cardIn(s, "player1", "TST-OP:c2")?.commandHeld).toBe(true);
     expectChoiceFrom(s, "player1", "XG4-026");
-    expect(choiceIds(s)).toEqual(["SPEC-B4000M:m", "SPEC-B4000:a"]);
+    expect(choiceIds(s)).toEqual(["SPEC-B4000:a", "SPEC-B4000M:m"]);
     expect(canSkip(s)).toBe(false);
     s = resolveAll(pick(s, "SPEC-B4000M:m"));
     expect(zoneOf(s, "player2", "SPEC-B4000M:m")).toBe("discard");
@@ -277,7 +277,7 @@ describe("XG4-027 スカーペット", () => {
     expectRarityIn("XG4-027", ["N"]);
   });
 
-  it.fails("XG4-027: ※ — 特徴「魔法」を持つ自軍 S ユニットは、リリース状態の自軍コマンドがあればライドでき、ライドするとコマンドが1つホールドされる（出典: atwiki/page-2086「自軍コマンドを1つホールドすればＲＣを持っていなくてもこのビークルにライドできる」）（既知の不具合: CARD-XG4-027 魔法を持つユニットがコマンドのホールドで乗れない／【魔法の絨毯】の選択が開かない）", () => {
+  it("XG4-027: ※ — 特徴「魔法」を持つ自軍 S ユニットは、リリース状態の自軍コマンドがあればライドでき、ライドするとコマンドが1つホールドされる（出典: atwiki/page-2086「自軍コマンドを1つホールドすればＲＣを持っていなくてもこのビークルにライドできる」）", () => {
     let s = battle({ rush: [inst("XG4-027", "sc"), inst("SPEC-MAGIC", "mg")], command: [released("TST-OP", "c1")] });
     expect(canMount(s, "SPEC-MAGIC:mg", "XG4-027:sc")).toBe(true);
     s = mount(s, "SPEC-MAGIC:mg", "XG4-027:sc");
@@ -293,7 +293,7 @@ describe("XG4-027 スカーペット", () => {
   /** 自軍スタートフェイズ、バトルエリアにスカーペットとそれにライドした「魔法」のユニットがある。 */
   const start = () => st({ phase: "start", player1: { battle: [...ridingPair("SPEC-MAGIC", "mg", "XG4-027", "sc")], deck: deckCards(5) }, player2: { deck: deckCards(5, "e") } }, EXTRA);
 
-  it.fails("XG4-027:【魔法の絨毯】— バトルエリアからラッシュエリアに戻るとき、ライドしているユニットを手札に戻すかを選べ、戻せば手札に入る（出典: atwiki/page-2086「これがバトルエリアからラッシュエリアに戻るとき、このビークルにライドしているユニットを手札に戻してもよい」）（既知の不具合: CARD-XG4-027 魔法を持つユニットがコマンドのホールドで乗れない／【魔法の絨毯】の選択が開かない）", () => {
+  it("XG4-027:【魔法の絨毯】— バトルエリアからラッシュエリアに戻るとき、ライドしているユニットを手札に戻すかを選べ、戻せば手札に入る（出典: atwiki/page-2086「これがバトルエリアからラッシュエリアに戻るとき、このビークルにライドしているユニットを手札に戻してもよい」）", () => {
     let s = returnAll(start());
     expectChoiceFrom(s, "player1", "XG4-027");
     expect(canSkip(s)).toBe(true);
@@ -330,14 +330,14 @@ describe("XG4-029 ゲキバイオレット（XG4）", () => {
     expect(spOf(s, "player1", "XG4-029:gv")).toBe(1);
   });
 
-  it.fails("XG4-029: NC — 「激気」の自軍 M ユニット（エリアを問わない。S ユニットは数えない）の BP の合計（9000）以下の BP を持つ敵軍バトルエリアのユニットから1体選ぶ（ラッシュエリアは選べない。見送れない）（出典: atwiki/page-2153「特徴「激気」を持つ自軍MユニットのBPを合計して、その合計以下のBPを持つ敵軍ユニットを敵軍バトルエリアから1体選び撃破する」・カード評価「エリアを問わない」）（既知の不具合: CARD-XG4-029 撃破の選択が開かない）", () => {
+  it("XG4-029: NC — 「激気」の自軍 M ユニット（エリアを問わない。S ユニットは数えない）の BP の合計（9000）以下の BP を持つ敵軍バトルエリアのユニットから1体選ぶ（ラッシュエリアは選べない。見送れない）（出典: atwiki/page-2153「特徴「激気」を持つ自軍MユニットのBPを合計して、その合計以下のBPを持つ敵軍ユニットを敵軍バトルエリアから1体選び撃破する」・カード評価「エリアを問わない」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG4-029");
     expect(choiceIds(s)).toEqual(["SPEC-E-M:m", "SPEC-E9000:a"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG4-029: NC — 選んだ敵軍ユニットは撃破される（出典: atwiki/page-2153「撃破する」）（既知の不具合: CARD-XG4-029 撃破の選択が開かない）", () => {
+  it("XG4-029: NC — 選んだ敵軍ユニットは撃破される（出典: atwiki/page-2153「撃破する」）", () => {
     const s = resolveAll(pick(nc(), "SPEC-E9000:a"));
     expect(zoneOf(s, "player2", "SPEC-E9000:a")).toBe("discard");
   });
@@ -363,14 +363,14 @@ describe("XG4-030 ゲキチョッパー（XG4）", () => {
     ncEnter("XG4-030:gc", 0, { rush: [inst("SPEC-GEKI-M4", "g4"), inst("SPEC-GEKI-S", "gs")], battle: [], command: [] }, ENEMY(), EXTRA);
   const ncWithBattleGeki = () => ncEnter("XG4-030:gc", 0, { rush: [inst("SPEC-GEKI-M4", "g4")] }, ENEMY(), EXTRA);
 
-  it.fails("XG4-030: NC【千千斬】— 1番目に出ると、自軍ラッシュエリアの「激気」の M ユニットから1体選べる（S ユニットは選べない。任意）（出典: atwiki/page-2100「自軍ラッシュエリアから、特徴「激気」を持つ自軍Mユニットを1体選びホールドしてもよい」）（既知の不具合: CARD-XG4-030 NC【千千斬】の選択が開かない）", () => {
+  it("XG4-030: NC【千千斬】— 1番目に出ると、自軍ラッシュエリアの「激気」の M ユニットから1体選べる（S ユニットは選べない。任意）（出典: atwiki/page-2100「自軍ラッシュエリアから、特徴「激気」を持つ自軍Mユニットを1体選びホールドしてもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG4-030");
     expect(choiceIds(s)).toEqual(["SPEC-GEKI-M4:g4"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-030: NC — 選んだユニットはホールド状態になり、その必要パワーの数字（4）と同じ数字の敵軍 S ユニットがエリアを問わずすべて撃破される（M ユニット・数字が違うものは残る）（出典: atwiki/page-2100「ホールドしたユニットの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを全て撃破する」）（既知の不具合: CARD-XG4-030 NC【千千斬】の選択が開かない）", () => {
+  it("XG4-030: NC — 選んだユニットはホールド状態になり、その必要パワーの数字（4）と同じ数字の敵軍 S ユニットがエリアを問わずすべて撃破される（M ユニット・数字が違うものは残る）（出典: atwiki/page-2100「ホールドしたユニットの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを全て撃破する」）", () => {
     const s = resolveAll(pick(ncWithBattleGeki(), "SPEC-GEKI-M4:g4"));
     expect(cardIn(s, "player1", "SPEC-GEKI-M4:g4")?.commandHeld).toBe(true);
     expect(zoneOf(s, "player2", "SPEC-C4:b4")).toBe("discard");
@@ -379,7 +379,7 @@ describe("XG4-030 ゲキチョッパー（XG4）", () => {
     expect(zoneOf(s, "player2", "SPEC-C3M:m3")).toBe("rush");
   });
 
-  it.fails("XG4-030: NC — ホールドしなければ何も撃破しない（出典: atwiki/page-2100「してもよい。そうしたとき」）（既知の不具合: CARD-XG4-030 NC【千千斬】の選択が開かない）", () => {
+  it("XG4-030: NC — ホールドしなければ何も撃破しない（出典: atwiki/page-2100「してもよい。そうしたとき」）", () => {
     const s = resolveAll(skip(nc()));
     expect(zoneOf(s, "player2", "SPEC-C4:b4")).toBe("battle");
   });

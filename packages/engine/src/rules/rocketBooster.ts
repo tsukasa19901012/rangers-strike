@@ -1,8 +1,7 @@
 import type { GameState, PlayerId, ScopedModifier } from "../types/game";
-import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
+import { cardName, isSmallUnit } from "../core/catalog";
 import { updatePlayer } from "../core/helpers";
 import { addTurnRuleModifier, getPlayerModifiers } from "../core/scopedModifiers";
-import { bounceToHand } from "./bounce";
 import { openEffectChoice } from "./pendingChoices";
 
 export const ROCKET_BOOSTER_RULE = "rocket_booster";
@@ -79,28 +78,14 @@ export function applyRocketBoosterDeclaredName(
   return { ...state, ...updatePlayer(state, playerId, player) };
 }
 
-/** ターン終了時: 宣言名と同じ S ユニットをラッシュから手札へ戻す（任意）。 */
+/**
+ * ターン終了時: 宣言名と同じ S ユニットをラッシュから手札へ戻す（任意）。
+ * 「戻してもよい」の選択は rules/xg4/xg4bEffects.ts の collectXg4bTurnEndQueue（turnEndingEffects.ts の xg4Queue）が
+ * ユニットごとに開くので、ここでは何もしない（自動で戻すと任意の選択ができない）。
+ */
 export function applyRocketBoosterEndTurnRushReturn(
   state: GameState,
-  endingPlayerId: PlayerId,
+  _endingPlayerId: PlayerId,
 ): GameState {
-  const declared = getRocketBoosterDeclaredName(state, endingPlayerId);
-  if (!declared) return state;
-
-  let nextState = state;
-  const player = nextState.players[endingPlayerId];
-  for (const card of player.rush) {
-    if (cardName(nextState.definitions, card.cardId) !== declared) continue;
-    const def = getDefinition(nextState.definitions, card.cardId);
-    if (!def || def.type !== "unit" || !isSmallUnit(nextState.definitions, card)) {
-      continue;
-    }
-    const bounced = bounceToHand(nextState, {
-      playerId: endingPlayerId,
-      instanceId: card.instanceId,
-      fromZone: "rush",
-    });
-    if (bounced.bounced) nextState = bounced.state;
-  }
-  return nextState;
+  return state;
 }
