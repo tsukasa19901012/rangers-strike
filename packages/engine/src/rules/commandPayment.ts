@@ -49,6 +49,8 @@ import {
 } from "../core/catalog";
 import { countAvailablePower, effectivePowerCost } from "../core/power";
 import { findInZone } from "../core/helpers";
+import { memoizeInSearchWithContext } from "../core/searchCache";
+import { actionContextState } from "./zordFeatureContext";
 import {
   canMoveUnitToBattle,
   canMoveUnitToBattleExceptHoldRequirements,
@@ -207,18 +209,38 @@ function unheldPaymentSourcesMatchingCategory(
   return [...fromCommand, ...fromField, ...undeadHold];
 }
 
+type CategoryPaymentOptionsInput = {
+  perRushPayment?: boolean;
+  callLeadKind?: CallLeadKind;
+  rushingCardId?: string;
+  /** ラッシュするカード（RS-223【緊急システム発動要請】の判定だけに使う）。 */
+  emergencyRushCardId?: string;
+};
+
+type CategoryPaymentOptions = { selectCount: number; prismAvailable: boolean; prismSubstitute: boolean; shifuSubstitute?: boolean };
+
 export function getCategoryPaymentOptions(
   state: GameState,
   playerId: PlayerId,
   categories: Category[],
-  options?: {
-    perRushPayment?: boolean;
-    callLeadKind?: CallLeadKind;
-    rushingCardId?: string;
-    /** ラッシュするカード（RS-223【緊急システム発動要請】の判定だけに使う）。 */
-    emergencyRushCardId?: string;
-  },
-): { selectCount: number; prismAvailable: boolean; prismSubstitute: boolean; shifuSubstitute?: boolean } | null {
+  options?: CategoryPaymentOptionsInput,
+): CategoryPaymentOptions | null {
+  // CPU の探索の間は、同じ状態・同じ指定の結果を使い回す（合法手の列挙と支払いの合法判定で何度も調べる。コール／リードの判定は
+  // applyAction / getLegalActions の入口の状態も読むので、それも区別する）。結果は呼び出しごとに写して返す。
+  const key = `${playerId}|${categories.join(",")}|${options?.perRushPayment ?? ""}|${options?.callLeadKind ?? ""}|${options?.rushingCardId ?? ""}|${options?.emergencyRushCardId ?? ""}|${options ? 1 : 0}`;
+  const result = memoizeInSearchWithContext(state, actionContextState(), state, `categoryPayment:${key}`, () => {
+    const computed = getCategoryPaymentOptionsUncached(state, playerId, categories, options);
+    return computed ? { ...computed } : null;
+  });
+  return result ? { ...result } : null;
+}
+
+function getCategoryPaymentOptionsUncached(
+  state: GameState,
+  playerId: PlayerId,
+  categories: Category[],
+  options?: CategoryPaymentOptionsInput,
+): CategoryPaymentOptions | null {
   const player = state.players[playerId];
   // RS-429【暮らしの中に修行あり】: 自軍ターン中、MA のコマンドのかわりに WB のコマンド＋追加1つをホールドしてよい。
   const shifu = (options?.callLeadKind ?? "call") === "call" && shifuSubstituteAvailable(state, playerId, categories);
