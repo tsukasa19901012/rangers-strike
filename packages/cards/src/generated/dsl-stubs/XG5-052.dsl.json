@@ -50,13 +50,13 @@
       "name": "俺達の必殺技",
       "text": "自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、撃破したユニットを捨札にするかわりに持ち主のパワーゾーンに送ってもよい。そうしたとき、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg5::XG5-052::oretachi",
+          "duration": "permanent"
         }
       ]
     }

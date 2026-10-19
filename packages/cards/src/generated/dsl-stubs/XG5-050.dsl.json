@@ -40,11 +40,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-050::ru",
+          "keyword": "xg5::XG5-050::kataru_senaka",
           "duration": "permanent"
         }
       ]

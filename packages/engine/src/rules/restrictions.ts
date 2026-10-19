@@ -98,6 +98,7 @@ import { damageGateBlocksEntry } from "./keywordGapRuntime";
 import { rk6BlocksBattleEntry } from "./rk/rk6Fields";
 import { rk14NeedsEntryHold } from "./rk/rk14Fields";
 import { rk15BlocksAttackStrike, rk15RequiresBattleEntry } from "./rk/rk15Fields";
+import { xg5RequiresBattleEntry } from "./xg5/xg5Fields";
 import { rk8BlocksBattleEntry } from "./rk/rk8UnitEffects";
 import { rk9BlocksBattleEntry } from "./rk/rk9Fields";
 import { rk10BlocksBattleEntry, rk10ElasmoHoldReduction, rk10OmegaIgnoresEntryHold } from "./rk/rk10Fields";
@@ -997,7 +998,9 @@ export function findMandatoryBattleEntries(
       // RK-247 仮面ライダーネガ電王【不敵な挑発】（特徴「警察」を持つユニット。rules/rk/rk12Fields.ts）。
       rk12RequiresBattleEntry(state, rk12UnitFeatures(state, playerId, card)) ||
       // RK-308 リュウタロス（2nd）の※（敵軍バトルエリアにユニットがあれば。rules/rk/rk15Fields.ts）。
-      rk15RequiresBattleEntry(state, playerId, card)
+      rk15RequiresBattleEntry(state, playerId, card) ||
+      // XG5-059 仮面ライダーカリス【暴走する本能】（手札が1枚以下のとき。rules/xg5/xg5Fields.ts）。
+      xg5RequiresBattleEntry(state, playerId, card)
     ) {
       mandatory.push(card);
     }

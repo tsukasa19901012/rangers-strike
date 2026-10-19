@@ -92,17 +92,17 @@ describe("XG5-041 ゴセイイエロー", () => {
     return passEntry(settle(enter(s, "SPEC-CN3:c3")));
   };
 
-  it.fails("XG5-041: NC【兄妹の絆】— 2番目に出れば BP+3000（BP4000） 既知の不具合: CARD-XG5-041 NC の効果がない（出典: atwiki/page-2232「「BP+3000｣」・CN：2）", () => {
+  it("XG5-041: NC【兄妹の絆】— 2番目に出れば BP+3000（BP4000）（出典: atwiki/page-2232「「BP+3000｣」・CN：2）", () => {
     expect(bpOf(lined(), "player1", "XG5-041:y")).toBe(4000);
   });
 
-  it.fails("XG5-041: NC【兄妹の絆】— 次の相手ターン中も BP4000 のまま 既知の不具合: CARD-XG5-041 NC の効果がない（出典: atwiki/page-2232「次の相手ターン終了時まで」）", () => {
+  it("XG5-041: NC【兄妹の絆】— 次の相手ターン中も BP4000 のまま（出典: atwiki/page-2232「次の相手ターン終了時まで」）", () => {
     const s = passTurnTo(lined(), "player2", "battle");
     expect(s.activePlayer).toBe("player2");
     expect(bpOf(s, "player1", "XG5-041:y")).toBe(4000);
   });
 
-  it.fails("XG5-041: NC【兄妹の絆】—「スクラム」— 次の相手ターン、次に CN3 のユニットが並んでいれば、これはアタックされない 既知の不具合: CARD-XG5-041 NC の効果がない（出典: atwiki/page-2232「「スクラム」」・atwiki/page-1290・R-KW-SCRUM-01）", () => {
+  it("XG5-041: NC【兄妹の絆】—「スクラム」— 次の相手ターン、次に CN3 のユニットが並んでいれば、これはアタックされない（出典: atwiki/page-2232「「スクラム」」・atwiki/page-1290・R-KW-SCRUM-01）", () => {
     let s = passTurnTo(lined(), "player2", "battle");
     s = enter(s, "TST-UNIT-7:atk", "player2");
     const t = attackTargets(s, "TST-UNIT-7:atk", "player2");
@@ -115,7 +115,7 @@ describe("XG5-041 ゴセイイエロー", () => {
     expect(bpOf(s, "player1", "XG5-041:y")).toBe(1000);
   });
 
-  it.fails("XG5-041: NC【兄妹の絆】— 自分の手札が1枚以下なら、相手の効果に選ばれない（相手の XG5-037【レッドブレイク】の候補に入らない） 既知の不具合: CARD-XG5-041 NC の効果がない（出典: atwiki/page-2232「これはアタックされる以外では相手に選ばれない」）", () => {
+  it("XG5-041: NC【兄妹の絆】— 自分の手札が1枚以下なら、相手の効果に選ばれない（相手の XG5-037【レッドブレイク】の候補に入らない）（出典: atwiki/page-2232「これはアタックされる以外では相手に選ばれない」）", () => {
     let s = passTurnTo(lined(1), "player2", "battle");
     s = enter(s, "XG5-037:gr", "player2");
     expectChoiceFrom(s, "player2", "XG5-037");
@@ -168,7 +168,7 @@ describe("XG5-042 ゴセイマシン", () => {
     expect(r.ok && zoneOf(r.state, "player1", "XG5-042:m") === "rush").toBe(false);
   });
 
-  it.fails("XG5-042:【天装合体】— 自軍ラッシュフェイズ中、自軍エリアのこれを捨札にでき、そうしたとき手札の「ゴセイグレート」（XG4-040）を自軍ラッシュエリアに出せる 既知の不具合: CARD-XG5-042 起動できない（出典: atwiki/page-2204「自軍ラッシュフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自分の手札から「ゴセイグレート」のカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
+  it("XG5-042:【天装合体】— 自軍ラッシュフェイズ中、自軍エリアのこれを捨札にでき、そうしたとき手札の「ゴセイグレート」（XG4-040）を自軍ラッシュエリアに出せる（出典: atwiki/page-2204「自軍ラッシュフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自分の手札から「ゴセイグレート」のカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
     let s = rushBoard({ hand: [inst("XG4-040", "gg")], rush: [inst("XG5-042", "m")] });
     expect(canActivateField(s, "XG5-042:m")).toBe(true);
     s = activateField(s, "XG5-042:m");
@@ -203,7 +203,7 @@ function greatTests(id: string, page: string, cost: number, kw: string, withKw: 
     expect(zoneOf(s, "player1", "XG4-040:gg")).toBe("discard");
   });
 
-  it.fails(`${id}: 追加条件 —「ゴセイマシン」（XG5-042）1体を捨札にしてもラッシュできる 既知の不具合: CARD-${id} 「ゴセイマシン」を素材にできない（出典: ${page}「または「ゴセイマシン」」）`, () => {
+  it(`${id}: 追加条件 —「ゴセイマシン」（XG5-042）1体を捨札にしてもラッシュできる（出典: ${page}「または「ゴセイマシン」」）`, () => {
     const r = rushFromHand(mk(inst("XG5-042", "gm")), "player1", `${id}:g`, { materials: ["XG5-042:gm"] });
     expect(r.ok, r.error).toBe(true);
     const s = resolveAll(r.state);
@@ -217,21 +217,21 @@ function greatTests(id: string, page: string, cost: number, kw: string, withKw: 
       `${id}:g`,
     );
 
-  it.fails(`${id}:【${effect}】— 自軍ターン中に出たとき、自軍捨札の${kw}を持つカードの枚数（2）以下の必要パワーの数字を持つ敵軍ユニット（エリアを問わない）を選ぶ（7+ は選べない。見送れない）既知の不具合: CARD-${id} 枚数を数えず、ラッシュエリアの敵軍ユニットも選べない（出典: ${page}「自軍捨札にある${kw}を持つカードの枚数を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び」）`, () => {
+  it(`${id}:【${effect}】— 自軍ターン中に出たとき、自軍捨札の${kw}を持つカードの枚数（2）以下の必要パワーの数字を持つ敵軍ユニット（エリアを問わない）を選ぶ（7+ は選べない。見送れない）（出典: ${page}「自軍捨札にある${kw}を持つカードの枚数を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び」）`, () => {
     const s = entered();
     expectChoiceFrom(s, "player1", id);
     expect([...choiceIds(s)].sort()).toEqual(["TST-UNIT-0:e0", "TST-UNIT-2:e2"]);
     expect(s.pendingEffectChoice?.optional ?? false).toBe(false);
   });
 
-  it.fails(`${id}:【${effect}】— 選んだユニットは持ち主のパワーゾーンにダメージとして置かれる 既知の不具合: CARD-${id} オモテ向きで置かれる（ダメージにならない）（出典: ${page}「持ち主のパワーゾーンにダメージにして置く」）`, () => {
+  it(`${id}:【${effect}】— 選んだユニットは持ち主のパワーゾーンにダメージとして置かれる（出典: ${page}「持ち主のパワーゾーンにダメージにして置く」）`, () => {
     const s = resolveAll(pick(entered(), "TST-UNIT-2:e2"));
     expect(zoneOf(s, "player2", "TST-UNIT-2:e2")).toBe("power");
     expect(cardIn(s, "player2", "TST-UNIT-2:e2")?.faceDown).toBe(true);
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails(`${id}:【${effect}】— ${kw}を持つカードが自軍捨札になければ、必要パワー0 の敵軍ユニットだけを選ぶ 既知の不具合: CARD-${id} 枚数を数えない（出典: ${page}「その数以下」）`, () => {
+  it(`${id}:【${effect}】— ${kw}を持つカードが自軍捨札になければ、必要パワー0 の敵軍ユニットだけを選ぶ（出典: ${page}「その数以下」）`, () => {
     const s = entered([inst(withoutKw, "n1")]);
     expectChoiceFrom(s, "player1", id);
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e0"]);
@@ -299,7 +299,7 @@ describe("XG5-046 データス", () => {
   /** 自軍ラッシュエリアにデータス・S ユニット sCount 体・L ユニット1体。ラッシュフェイズを終える。 */
   const ended = (sCount: number) => endPhase(rushBoard({ rush: [inst("XG5-046", "d"), ...fill(sCount), inst("TST-UNIT-7", "L")], deck: deckCards(5) }));
 
-  it.fails("XG5-046:【マスターヘッドの加護】— 自軍ラッシュフェイズを終えるとき、S ユニット5体以上（これを含む）と L ユニット1体以上があれば、発動して1枚ドローできる 既知の不具合: CARD-XG5-046 発動の選択が開かない（出典: atwiki/page-2205「自軍ラッシュフェイズを終えるとき、次の効果を発動できる⇒…自分は1枚ドローする」・カード評価「条件のSユニットには自身も含まれる」）", () => {
+  it("XG5-046:【マスターヘッドの加護】— 自軍ラッシュフェイズを終えるとき、S ユニット5体以上（これを含む）と L ユニット1体以上があれば、発動して1枚ドローできる（出典: atwiki/page-2205「自軍ラッシュフェイズを終えるとき、次の効果を発動できる⇒…自分は1枚ドローする」・カード評価「条件のSユニットには自身も含まれる」）", () => {
     let s = ended(4);
     expectChoiceFrom(s, "player1", "XG5-046");
     s = resolveAll(s);
@@ -326,13 +326,13 @@ describe("XG5-047 キューユソウル", () => {
   // 自軍パワーゾーン: オモテ向き2枚・ダメージ5枚（パワー7）。
   const POWER = () => [faceUp("TST-P", "u0"), faceUp("TST-P", "u1"), ...damageCards(5, "d")];
 
-  it.fails("XG5-047: 自軍パワーゾーンのダメージ以外（オモテ向き）のカードをすべて捨札にする 既知の不具合: CARD-XG5-047 効果がない（出典: atwiki/page-2206「自軍パワーゾーンのダメージ以外のカードをすべて捨札にする」）", () => {
+  it("XG5-047: 自軍パワーゾーンのダメージ以外（オモテ向き）のカードをすべて捨札にする（出典: atwiki/page-2206「自軍パワーゾーンのダメージ以外のカードをすべて捨札にする」）", () => {
     const s = resolveAll(beltUsed("XG5-047", "OT", 7, { power: POWER() }), []);
     expect(zoneOf(s, "player1", "TST-P:u0")).toBe("discard");
     expect(zoneOf(s, "player1", "TST-P:u1")).toBe("discard");
   });
 
-  it.fails("XG5-047: 捨札にした枚数（2）まで、ダメージのカードを選んで自軍山札の上に戻す（3枚目は選べない） 既知の不具合: CARD-XG5-047 効果がない（出典: atwiki/page-2206「捨札にしたカードと同じ枚数まで、自軍パワーゾーンからダメージになっているカードを選び、自軍山札の上に好きな順で戻す」）", () => {
+  it("XG5-047: 捨札にした枚数（2）まで、ダメージのカードを選んで自軍山札の上に戻す（3枚目は選べない）（出典: atwiki/page-2206「捨札にしたカードと同じ枚数まで、自軍パワーゾーンからダメージになっているカードを選び、自軍山札の上に好きな順で戻す」）", () => {
     let s = beltUsed("XG5-047", "OT", 7, { power: POWER() });
     expectChoiceFrom(s, "player1", "XG5-047");
     s = resolveAll(pickAll(s, ["TST-P:d0", "TST-P:d1"]), []);

@@ -63,10 +63,10 @@ function isSUnit(state: GameState, c: CardInstance): boolean {
 }
 
 /** 「〇〇を△まで選ぶ」の途中の選択（1枚ずつ選び、上限に達するか確定で apply）。 */
-function multiChoice(ctx: BaseCtx, sourceCardId: string, effectId: string, ids: string[], max: number): PendingEffectChoice {
+export function multiChoice(ctx: BaseCtx, sourceCardId: string, effectId: string, ids: string[], max: number): PendingEffectChoice {
   return { ...selectOne(ctx, sourceCardId, effectId, ids, true), selectCount: max, mayConfirm: true, xg5Meta: { n: max } };
 }
-function registerMulti(effectId: string, apply: (state: GameState, pending: PendingEffectChoice, ids: string[]) => GameState): void {
+export function registerMulti(effectId: string, apply: (state: GameState, pending: PendingEffectChoice, ids: string[]) => GameState): void {
   const finish = (state: GameState, playerId: PlayerId, ids: string[]) => {
     const pending = state.pendingEffectChoice!;
     const next = apply(close(state, pending), pending, ids);

@@ -17,12 +17,11 @@
         "type": "operation",
         "timing": "rush"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-048::komandozonkarawo",
-          "duration": "permanent"
+          "keyword": "xg5::XG5-048::perfecter",
+          "duration": "turn"
         }
       ]
     }

@@ -48,11 +48,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-043::shiikusutoraiku",
+          "keyword": "xg5::XG5-043::great_strike",
           "duration": "turn"
         }
       ]

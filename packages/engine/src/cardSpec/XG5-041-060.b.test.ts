@@ -79,17 +79,17 @@ describe("XG5-048 パーフェクター", () => {
   const used = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     beltUsed("XG5-048", "ET", 3, { command: [released("RK-099", "ap"), released("XG5-049", "ra"), released("TST-UNIT-0", "u")], power: powerCards(4), deck: deckCards(5, "d"), ...p1 }, {}, EXTRA);
 
-  it.fails("XG5-048: 自軍コマンドゾーンの「改造人間」を持つ S ユニットのカードのうち、必要パワーと追加条件を満たすものを選べる（任意） 既知の不具合: CARD-XG5-048 効果がない（出典: atwiki/page-2207「特徴「改造人間」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと」）", () => {
+  it("XG5-048: 自軍コマンドゾーンの「改造人間」を持つ S ユニットのカードのうち、必要パワーと追加条件を満たすものを選べる（任意）（出典: atwiki/page-2207「特徴「改造人間」を持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい。ただし、必要パワーと追加条件は満たすこと」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "XG5-048");
     expect(choiceIds(s)).toEqual(["RK-099:ap"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-048: 出したとき、自軍山札の上か下の1枚を自軍コマンドゾーンにホールド状態で置く 既知の不具合: CARD-XG5-048 効果がない（出典: atwiki/page-2207「そうしたとき、自軍山札の上か下から1枚ひいて、自軍コマンドゾーンにホールド状態で置く」）", () => {
+  it("XG5-048: 出したとき、自軍山札の上か下の1枚を自軍コマンドゾーンにホールド状態で置く（出典: atwiki/page-2207「そうしたとき、自軍山札の上か下から1枚ひいて、自軍コマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(pick(used(), "RK-099:ap"));
     expect(zoneOf(s, "player1", "RK-099:ap")).toBe("rush");
-    const moved = ["TST-P:d0", "TST-P:d4"].filter((id) => zoneOf(s, "player1", id) === "command");
+    const moved = ["TST-OP:d0", "TST-OP:d4"].filter((id) => zoneOf(s, "player1", id) === "command");
     expect(moved.length).toBe(1);
     expect(cardIn(s, "player1", moved[0]!)?.commandHeld).toBe(true);
   });
@@ -126,20 +126,20 @@ describe("XG5-049 再生アポロガイスト", () => {
     expect(zoneOf(s, "player1", "RK-099:ap")).toBe("discard");
   });
 
-  it.fails("XG5-049: 追加条件 — リリース状態の「アポロガイスト」ではラッシュできない 既知の不具合: CARD-XG5-049 リリース状態の「アポロガイスト」でもラッシュできる（出典: atwiki/page-2271「ホールド状態の」）", () => {
+  it("XG5-049: 追加条件 — リリース状態の「アポロガイスト」ではラッシュできない（出典: atwiki/page-2271「ホールド状態の」）", () => {
     const r = rushFromHand(mk(inst("RK-099", "ap")), "player1", "XG5-049:ra", { materials: ["RK-099:ap"] });
     expect(r.ok && zoneOf(r.state, "player1", "XG5-049:ra") === "rush").toBe(false);
   });
 
   const entered = () => enter(battle({ rush: [inst("XG5-049", "ra")] }), "XG5-049:ra");
 
-  it.fails("XG5-049:【アポロマグナム】— 自軍ターン中にバトルエリアに出たとき、これをホールドするかを選べる（任意） 既知の不具合: CARD-XG5-049 選択が開かない（出典: atwiki/page-2271「このユニットをホールドしてもよい」）", () => {
+  it("XG5-049:【アポロマグナム】— 自軍ターン中にバトルエリアに出たとき、これをホールドするかを選べる（任意）（出典: atwiki/page-2271「このユニットをホールドしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG5-049");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-049:【アポロマグナム】— ホールドすれば、次の相手ターン終了時まで BP+4000（相手ターン中も BP9000） 既知の不具合: CARD-XG5-049 効果がない（出典: atwiki/page-2271「これは次の相手ターン終了時まで次の能力を得る⇒BP+4000」）", () => {
+  it("XG5-049:【アポロマグナム】— ホールドすれば、次の相手ターン終了時まで BP+4000（相手ターン中も BP9000）（出典: atwiki/page-2271「これは次の相手ターン終了時まで次の能力を得る⇒BP+4000」）", () => {
     let s = resolveAll(entered());
     expect(cardIn(s, "player1", "XG5-049:ra")?.commandHeld).toBe(true);
     expect(bpOf(s, "player1", "XG5-049:ra")).toBe(9000);
@@ -170,7 +170,7 @@ describe("XG5-050 仮面ライダー装甲響鬼", () => {
 
   const ownEnd = (enemy: string, me = inst("XG5-050", "hb")) => settle(endPhase(rushBoard({ rush: [me], deck: deckCards(5) }, { rush: [inst(enemy, "e")] }, EXTRA)));
 
-  it.fails("XG5-050:【語る背中】— 自分がラッシュフェイズを終えるとき「SP1」の敵軍ユニットがあれば、そのターン中 BP+3000（BP7000） 既知の不具合: CARD-XG5-050 BP が上がらない（出典: atwiki/page-2254「自分か相手がラッシュフェイズを終えるとき、「SP1」以上の敵軍ユニットがあれば、そのターン中、これは次の能力を得る。⇒BP+3000」）", () => {
+  it("XG5-050:【語る背中】— 自分がラッシュフェイズを終えるとき「SP1」の敵軍ユニットがあれば、そのターン中 BP+3000（BP7000）（出典: atwiki/page-2254「自分か相手がラッシュフェイズを終えるとき、「SP1」以上の敵軍ユニットがあれば、そのターン中、これは次の能力を得る。⇒BP+3000」）", () => {
     const s = ownEnd("SPEC-SP1-E");
     expect(s.phase).toBe("battle");
     expect(bpOf(s, "player1", "XG5-050:hb")).toBe(7000);
@@ -180,14 +180,14 @@ describe("XG5-050 仮面ライダー装甲響鬼", () => {
     expect(bpOf(ownEnd("SPEC-NOSP-E"), "player1", "XG5-050:hb")).toBe(4000);
   });
 
-  it.fails("XG5-050:【語る背中】— 相手がラッシュフェイズを終えるときも、そのターン中 BP+3000 既知の不具合: CARD-XG5-050 BP が上がらない（出典: atwiki/page-2254「自分か相手が」）", () => {
+  it("XG5-050:【語る背中】— 相手がラッシュフェイズを終えるときも、そのターン中 BP+3000（出典: atwiki/page-2254「自分か相手が」）", () => {
     let s = st({ phase: "rush", activePlayer: "player2", player1: { battle: [inst("XG5-050", "hb")], deck: deckCards(5) }, player2: { rush: [inst("SPEC-SP1-E", "e")], deck: deckCards(5, "e") } }, EXTRA);
     s = settle(endPhase(s, "player2"));
     expect(s.phase).toBe("battle");
     expect(bpOf(s, "player1", "XG5-050:hb")).toBe(7000);
   });
 
-  it.fails("XG5-050:【語る背中】— 能力を得たターンを終えるときホールド状態なら、リリースするかを選べる 既知の不具合: CARD-XG5-050 ターン終了時の選択が開かない（出典: atwiki/page-2254「このターンを終えるときホールド状態なら、リリースしてもよい」）", () => {
+  it("XG5-050:【語る背中】— 能力を得たターンを終えるときホールド状態なら、リリースするかを選べる（出典: atwiki/page-2254「このターンを終えるときホールド状態なら、リリースしてもよい」）", () => {
     let s = ownEnd("SPEC-SP1-E", heldCard("XG5-050", "hb"));
     for (let i = 0; i < 4 && s.pendingEffectChoice?.sourceCardId !== "XG5-050" && s.activePlayer === "player1"; i++) {
       const end = legal(s).find((a) => a.type === "end_phase" && a.playerId === "player1");
@@ -223,7 +223,7 @@ describe("XG5-051 仮面ライダーカブトHF", () => {
   const NAMES = () => [faceUp("RK-300", "k"), faceUp("RK-056", "z"), faceUp("RK-135", "d"), faceUp("RK-294", "s")];
   const spWith = (power: ReturnType<typeof inst>[]) => spOf(battle({ battle: [inst("XG5-051", "kb")], power }), "player1", "XG5-051:kb");
 
-  it.fails("XG5-051: ※ — カード名に「カブト」「ザビー」「ドレイク」「サソード」を含むオモテ向きの自軍パワーがそれぞれあれば SP1 既知の不具合: CARD-XG5-051 SP1 にならない（出典: atwiki/page-2258「それぞれあれば、SP1になる」）", () => {
+  it("XG5-051: ※ — カード名に「カブト」「ザビー」「ドレイク」「サソード」を含むオモテ向きの自軍パワーがそれぞれあれば SP1（出典: atwiki/page-2258「それぞれあれば、SP1になる」）", () => {
     expect(spWith(NAMES())).toBe(1);
   });
 
@@ -240,14 +240,14 @@ describe("XG5-051 仮面ライダーカブトHF", () => {
     return r.state;
   };
 
-  it.fails("XG5-051:【天の道】— ラッシュしたとき、自軍パワーゾーンのオモテ向きの、OT を持つ常駐オペレーションのカードを選べる（任意） 既知の不具合: CARD-XG5-051 選択が開かない（出典: atwiki/page-2258「自軍パワーゾーンのオモテ向きのカードから、OTを持つ常駐オペレーションのカードを1枚選び自軍常駐置き場に配置してもよい」）", () => {
+  it("XG5-051:【天の道】— ラッシュしたとき、自軍パワーゾーンのオモテ向きの、OT を持つ常駐オペレーションのカードを選べる（任意）（出典: atwiki/page-2258「自軍パワーゾーンのオモテ向きのカードから、OTを持つ常駐オペレーションのカードを1枚選び自軍常駐置き場に配置してもよい」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "XG5-051");
     expect(choiceIds(s)).toEqual(["RK-021:cu"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-051:【天の道】— 選んだカードは自軍常駐置き場に配置される 既知の不具合: CARD-XG5-051 選択が開かない（出典: atwiki/page-2258「自軍常駐置き場に配置してもよい」・R-KW-PERM-01）", () => {
+  it("XG5-051:【天の道】— 選んだカードは自軍常駐置き場に配置される（出典: atwiki/page-2258「自軍常駐置き場に配置してもよい」・R-KW-PERM-01）", () => {
     const s = resolveAll(pick(rushed(), "RK-021:cu"), []);
     expect(zoneOf(s, "player1", "RK-021:cu")).toBe("operation");
   });
@@ -277,13 +277,13 @@ describe("XG5-052 仮面ライダー電王CF", () => {
 
   const won = () => settle(attack(enter(battle({ rush: [inst("XG5-052", "dn")] }, { battle: [inst("TST-UNIT-0", "e")] }), "XG5-052:dn"), "XG5-052:dn", "TST-UNIT-0:e"));
 
-  it.fails("XG5-052:【俺達の必殺技】— 自軍ターン中、バトルで敵軍ユニットを撃破したとき、捨札にするかわりに持ち主のパワーゾーンに送るかを選べる（任意） 既知の不具合: CARD-XG5-052 選択が開かない（出典: atwiki/page-2226「撃破したユニットを捨札にするかわりに持ち主のパワーゾーンに送ってもよい」）", () => {
+  it("XG5-052:【俺達の必殺技】— 自軍ターン中、バトルで敵軍ユニットを撃破したとき、捨札にするかわりに持ち主のパワーゾーンに送るかを選べる（任意）（出典: atwiki/page-2226「撃破したユニットを捨札にするかわりに持ち主のパワーゾーンに送ってもよい」）", () => {
     const s = won();
     expectChoiceFrom(s, "player1", "XG5-052");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-052:【俺達の必殺技】— 送れば、撃破したユニットは持ち主のパワーゾーンに置かれ、相手に1点ダメージ 既知の不具合: CARD-XG5-052 効果がない（捨札になる）（出典: atwiki/page-2226「そうしたとき、相手に1点ダメージを与える」）", () => {
+  it("XG5-052:【俺達の必殺技】— 送れば、撃破したユニットは持ち主のパワーゾーンに置かれ、相手に1点ダメージ（出典: atwiki/page-2226「そうしたとき、相手に1点ダメージを与える」）", () => {
     const s = resolveAll(won());
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("power");
     expect(damageOf(s, "player2")).toBe(1);
@@ -316,14 +316,14 @@ describe("XG5-053 仮面ライダーキバEF", () => {
   const entered = (p1: Partial<GameState["players"]["player1"]> = { rush: [inst("XG5-053", "kv"), inst("RK-093", "k"), inst("TST-UNIT-0", "o")], command: [released("RK-096", "kc"), released("TST-OP", "c")] }) =>
     enter(battle(p1, { rush: [inst("SPEC-E5000", "a")], battle: [inst("SPEC-E6000", "b")] }), "XG5-053:kv");
 
-  it.fails("XG5-053:【ファイナルザンバット斬】— 自軍ターン中に出たとき、「怪人」の自軍ユニットか自軍コマンドを選んでホールドできる（任意） 既知の不具合: CARD-XG5-053 ホールドを選ばず、BP6000 のバトルエリアの敵軍ユニットを選ばせる（出典: atwiki/page-2259「特徴「怪人」を持つ自軍ユニットを1体選びホールドするか、特徴「怪人」を持つ自軍コマンドを1つ選びホールドしてもよい」）", () => {
+  it("XG5-053:【ファイナルザンバット斬】— 自軍ターン中に出たとき、「怪人」の自軍ユニットか自軍コマンドを選んでホールドできる（任意）（出典: atwiki/page-2259「特徴「怪人」を持つ自軍ユニットを1体選びホールドするか、特徴「怪人」を持つ自軍コマンドを1つ選びホールドしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG5-053");
     expect([...choiceIds(s)].sort()).toEqual(["RK-093:k", "RK-096:kc"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-053:【ファイナルザンバット斬】— ホールドしたとき、BP5000以下の敵軍ユニットを選び、持ち主のパワーゾーンにダメージにして置く（BP6000 は選べない） 既知の不具合: CARD-XG5-053 ホールドを選べない（出典: atwiki/page-2259「そうしたとき、BP5000以下の敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("XG5-053:【ファイナルザンバット斬】— ホールドしたとき、BP5000以下の敵軍ユニットを選び、持ち主のパワーゾーンにダメージにして置く（BP6000 は選べない）（出典: atwiki/page-2259「そうしたとき、BP5000以下の敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
     let s = pick(entered(), "RK-096:kc");
     expect(cardIn(s, "player1", "RK-096:kc")?.commandHeld).toBe(true);
     expectChoiceFrom(s, "player1", "XG5-053");
@@ -354,7 +354,7 @@ describe("XG5-054 仮面ライダーディケイドCF", () => {
 
   const spAt1 = (power: ReturnType<typeof inst>[]) => spOf(enter(battle({ rush: [inst("XG5-054", "dc")], power }), "XG5-054:dc"), "player1", "XG5-054:dc");
 
-  it.fails("XG5-054:【歩く完全ライダー図鑑】— オモテ向きの自軍パワーに「仮面ライダー」を持つ同名のカード（仮面ライダーザビーMF）が3枚あれば、1番目でも「SP1」 既知の不具合: CARD-XG5-054 SP1 にならない（出典: atwiki/page-2244「特徴「仮面ライダー」を持つ同名のカードが3枚以上あれば、「SP1」になる」）", () => {
+  it("XG5-054:【歩く完全ライダー図鑑】— オモテ向きの自軍パワーに「仮面ライダー」を持つ同名のカード（仮面ライダーザビーMF）が3枚あれば、1番目でも「SP1」（出典: atwiki/page-2244「特徴「仮面ライダー」を持つ同名のカードが3枚以上あれば、「SP1」になる」）", () => {
     expect(spAt1([faceUp("RK-056", "a"), faceUp("RK-056", "b"), faceUp("XG1-073", "c")])).toBe(1);
   });
 

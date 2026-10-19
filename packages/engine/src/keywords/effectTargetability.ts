@@ -12,6 +12,7 @@ import { set7BNotSelectable } from "../rules/legend1/set7NamedEffectsB";
 import { rk6SnakeBlocksSelection } from "../rules/rk/rk6Fields";
 import { rk10G3xProtects } from "../rules/rk/rk10Fields";
 import { unitFeatures } from "../rules/addedFeatures";
+import { xg5NotSelectable } from "../rules/xg5/xg5Fields";
 
 /**
  * 場以外（コマンドゾーン等）にあるカードが「相手に選ばれない」能力（not_selectable／アタックされる以外では
@@ -60,6 +61,8 @@ export function isSelectableByOpponentEffect(
   if (rk6SnakeBlocksSelection(state, selectorPlayerId, found.playerId, found.card, unitFeatures)) return false;
   // RK-194 仮面ライダーG3-X ※（自軍ラッシュエリアの SP が空欄のユニットは相手に選ばれない。rules/rk/rk10Fields.ts）。
   if (rk10G3xProtects(state, found.playerId, found.card)) return false;
+  // XG5-041 ゴセイイエロー【兄妹の絆】（手札が1枚以下のとき。rules/xg5/xg5Fields.ts）。
+  if (xg5NotSelectable(state, found.playerId, targetInstanceId)) return false;
   return true;
 }
 

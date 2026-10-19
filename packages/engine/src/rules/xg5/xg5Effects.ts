@@ -14,8 +14,9 @@ import { type ApplyActionFn, AFTER_ACTION_HOOKS, STRIKE_RESOLVED_HOOKS, WATCH_HA
 import { xg5Busy } from "./xg5Shared";
 import "./xg5aEffects";
 import "./xg5bEffects";
+import "./xg5cEffects";
 
-export { activateXg5HandEffect, listXg5HandActivations } from "./xg5Core";
+export { activateXg5HandEffect, listXg5HandActivations, openXg5Attacked } from "./xg5Core";
 export { canConfirmXg5Choice, isXg5ChoiceEffect, tryConfirmXg5Choice, tryResolveXg5Choice, trySkipXg5Choice, tryXg5CardEffect } from "./xg5Core";
 
 /** 効果のラッシュを終えたら、「出した…そうしたとき」の続きを処理する。 */

@@ -101,7 +101,7 @@ import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
-import { activateXg5HandEffect, applyXg5AfterAction, applyXg5StrikeResolved } from "../rules/xg5/xg5Effects";
+import { activateXg5HandEffect, applyXg5AfterAction, applyXg5StrikeResolved, openXg5Attacked } from "../rules/xg5/xg5Effects";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -511,6 +511,12 @@ function continueAttackAfterDeclaration(
       return ok(parked, buildSimpleLogEntry(playerId, "battle_pending"));
     }
     return continueAttackAfterDeclaration(afterOnAttack, marked, wingAttackFromRush);
+  }
+  // XG5-056【捨て身の一撃】: 敵軍 S ユニットにアタックされたとき（rules/xg5/xg5cEffects.ts）。続きは deferredAttack で待たせる。
+  const xg5Attacked = openXg5Attacked(battleState, pending, wingAttackFromRush);
+  if (xg5Attacked) {
+    const parked = xg5Attacked.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...xg5Attacked, pendingBattleEntry: undefined } : xg5Attacked;
+    return ok(parked, buildSimpleLogEntry(playerId, "xg5_attacked_choice"));
   }
   // RK-175【ライダーキック】の「これがアタックしなかったとき」のためのアタックの記録（rules/rk/rk9UnitEffects.ts）。
   battleState = rk9RecordAttack(battleState, pending);
@@ -3896,6 +3902,9 @@ function applyActionCore(
         if (!handCard || !fromHand) return fail("illegal_action");
         return ok(fromHand, buildLogEntry(playerId, "activate_field_unit_ability", handCard.cardId, state.definitions, "from_hand"));
       }
+      // XG5-042 ゴセイマシン【天装合体】等、場のこのカードから発動する XG5 の効果（rules/xg5/xg5cEffects.ts）。
+      const xg5Field = activateXg5HandEffect(state, playerId, action.unitInstanceId);
+      if (xg5Field) return ok(xg5Field, buildLogEntry(playerId, "activate_field_unit_ability", unit.cardId, state.definitions));
       const activated = activateFieldAbility(state, playerId, action.unitInstanceId);
       if (activated) {
         return ok(

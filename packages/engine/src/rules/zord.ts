@@ -456,7 +456,10 @@ function namedUnitPartnerNames(condition: { text?: string; partnerName?: string 
   const text = (condition.text ?? "").normalize("NFKC");
   const names = /、または/.test(text)
     ? [...text.matchAll(/自軍[「｢]([^」｣]+)[」｣]/g)].map((m) => m[1]!)
-    : [];
+    : // 「自軍「A」または「B」1体」（XG5-043〜045 atwiki/page-2242 等）。
+      /自軍[「｢][^」｣]+[」｣]または[「｢]/.test(text)
+      ? [...text.matchAll(/(?:自軍|または)[「｢]([^」｣]+)[」｣]/g)].map((m) => m[1]!)
+      : [];
   if (condition.partnerName && !names.includes(condition.partnerName)) names.push(condition.partnerName);
   return names;
 }
@@ -508,6 +511,8 @@ export function isValidZordUpMaterial(
       // 「自軍「X」1体」はカード名で指定するので、その名前のビークルも満たす（RK-046 の「オートバジンVM」）。
       return (
         (def.type === "unit" || def.type === "vehicle") &&
+        // 「ホールド状態の自軍「X」1体」はホールド状態のものだけ（XG5-049 atwiki/page-2271）。
+        (!/^ホールド状態の/.test((condition.text ?? "").normalize("NFKC")) || card.commandHeld === true) &&
         // 「自軍「A」、または自軍「B」1体を捨札にする」はどちらの名前でもよい（RS-655・RS-656 atwiki/page-1528・1474）。
         namedUnitPartnerNames(condition).some((name) =>
           // RS-602【汚染された水】で変わったカード名で判定する。

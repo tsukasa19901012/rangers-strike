@@ -90,13 +90,13 @@ describe("XG5-055 仮面ライダーギャレン", () => {
     return rideOff(mount(s, "XG5-055:g", "XG5-057:rb"), true);
   };
 
-  it.fails("XG5-055: RC【ファイアアッパー】— ライドオフしたとき、手札を2枚選んで相手に見せるかを選べる（任意） 既知の不具合: CARD-XG5-055 RC は成立するが選択が開かない（出典: atwiki/page-2173「自分の手札を2枚選び、相手に見せてもよい」・R-KW-RC-01）", () => {
+  it("XG5-055: RC【ファイアアッパー】— ライドオフしたとき、手札を2枚選んで相手に見せるかを選べる（任意）（出典: atwiki/page-2173「自分の手札を2枚選び、相手に見せてもよい」・R-KW-RC-01）", () => {
     const s = rc([inst("SPEC-C3", "a"), inst("SPEC-C6", "b"), inst("SPEC-C5", "c")]);
     expectChoiceFrom(s, "player1", "XG5-055");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-055: RC【ファイアアッパー】— 見せたとき、敵軍 S ユニットを1体選んでホールドする（M ユニットは選べない） 既知の不具合: CARD-XG5-055 RC の効果がない（出典: atwiki/page-2173「そうしたとき、敵軍Sユニットを1体選びホールドする」）", () => {
+  it("XG5-055: RC【ファイアアッパー】— 見せたとき、敵軍 S ユニットを1体選んでホールドする（M ユニットは選べない）（出典: atwiki/page-2173「そうしたとき、敵軍Sユニットを1体選びホールドする」）", () => {
     let s = pickAll(rc([inst("SPEC-C3", "a"), inst("SPEC-C5", "c")]), ["SPEC-C3:a", "SPEC-C5:c"]);
     expectChoiceFrom(s, "player1", "XG5-055");
     expect(choiceIds(s)).toEqual(["SPEC-ES:s"]);
@@ -105,7 +105,7 @@ describe("XG5-055 仮面ライダーギャレン", () => {
     expect(zoneOf(s, "player2", "SPEC-ES:d")).toBe("discard");
   });
 
-  it.fails("XG5-055: RC【ファイアアッパー】— 見せたカードの必要パワーが「3」と「6」なら、さらに敵軍捨札の S ユニットのカードを1枚ゲームから除外する 既知の不具合: CARD-XG5-055 RC の効果がない（出典: atwiki/page-2173「見せたカードの必要パワーの数字が「3」と「6」なら、敵軍捨札からSユニットのカードを１枚選びゲームから除外する」）", () => {
+  it("XG5-055: RC【ファイアアッパー】— 見せたカードの必要パワーが「3」と「6」なら、さらに敵軍捨札の S ユニットのカードを1枚ゲームから除外する（出典: atwiki/page-2173「見せたカードの必要パワーの数字が「3」と「6」なら、敵軍捨札からSユニットのカードを１枚選びゲームから除外する」）", () => {
     let s = pickAll(rc([inst("SPEC-C3", "a"), inst("SPEC-C6", "b")]), ["SPEC-C3:a", "SPEC-C6:b"]);
     s = resolveAll(pick(s, "SPEC-ES:s"), ["SPEC-ES:d"]);
     expect(exiled(s, "player2", "SPEC-ES:d")).toBe(true);
@@ -159,13 +159,13 @@ describe("XG5-056 仮面ライダーギャレンJF", () => {
   const attacked = (attacker: string) =>
     attack(st({ activePlayer: "player2", player1: { battle: [inst("XG5-056", "jf")], deck: deckCards(5) }, player2: { battle: [inst(attacker, "atk")], deck: deckCards(5, "e") } }, EXTRA), `${attacker}:atk`, "XG5-056:jf", "player2");
 
-  it.fails("XG5-056:【捨て身の一撃】— 敵軍 S ユニットにアタックされたとき、これをホールドするか撃破するかを選べる（任意） 既知の不具合: CARD-XG5-056 選択が開かない（出典: atwiki/page-2174「これが敵軍Sユニットにアタックされたとき、このユニットをホールドするか撃破してもよい」）", () => {
+  it("XG5-056:【捨て身の一撃】— 敵軍 S ユニットにアタックされたとき、これをホールドするか撃破するかを選べる（任意）（出典: atwiki/page-2174「これが敵軍Sユニットにアタックされたとき、このユニットをホールドするか撃破してもよい」）", () => {
     const s = attacked("SPEC-ATK-S");
     expectChoiceFrom(s, "player1", "XG5-056");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-056:【捨て身の一撃】— ホールドすれば、アタックしてきた敵軍 S ユニットを撃破し、バトルは行われない（これはホールド状態で残る） 既知の不具合: CARD-XG5-056 効果がなくバトルになる（出典: atwiki/page-2174「そうしたとき、アタックしてきた敵軍Sユニットを撃破する。（このとき、バトルは行われない）」）", () => {
+  it("XG5-056:【捨て身の一撃】— ホールドすれば、アタックしてきた敵軍 S ユニットを撃破し、バトルは行われない（これはホールド状態で残る）（出典: atwiki/page-2174「そうしたとき、アタックしてきた敵軍Sユニットを撃破する。（このとき、バトルは行われない）」）", () => {
     const s = resolveAll(attacked("SPEC-ATK-S"));
     expect(zoneOf(s, "player2", "SPEC-ATK-S:atk")).toBe("discard");
     expect(zoneOf(s, "player1", "XG5-056:jf")).toBe("battle");
@@ -195,7 +195,7 @@ describe("XG5-057 レッドランバス", () => {
   const used = (riding = true) =>
     settle(beltUsed("TST-OP", "WB", 3, { battle: riding ? ridingPair("SPEC-RC", "r", "XG5-057", "rb") : [inst("XG5-057", "rb"), inst("SPEC-RC", "r")] }, ENEMY(), EXTRA));
 
-  it.fails("XG5-057:【ファイアランバス】— ライドしたユニットがある間、手札のカード（必要パワー3 のオペレーション）が捨札に置かれたとき、同じ必要パワーの数字の敵軍捨札（カードの種類を問わない）から選べる（任意） 既知の不具合: CARD-XG5-057 発動の選択が開かない（出典: atwiki/page-2208「捨札に置かれたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍捨札を1枚選び」・grnrngr/faq-rider-2 RK-129（同じ書き方）「手札のオペレーションを使用して捨札になった場合も、効果を発動させる事ができます」）", () => {
+  it("XG5-057:【ファイアランバス】— ライドしたユニットがある間、手札のカード（必要パワー3 のオペレーション）が捨札に置かれたとき、同じ必要パワーの数字の敵軍捨札（カードの種類を問わない）から選べる（任意）（出典: atwiki/page-2208「捨札に置かれたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍捨札を1枚選び」・grnrngr/faq-rider-2 RK-129（同じ書き方）「手札のオペレーションを使用して捨札になった場合も、効果を発動させる事ができます」）", () => {
     const s = used();
     expect(zoneOf(s, "player1", "TST-OP:op")).toBe("discard");
     expectChoiceFrom(s, "player1", "XG5-057");
@@ -203,7 +203,7 @@ describe("XG5-057 レッドランバス", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-057:【ファイアランバス】— 選んだ敵軍捨札はゲームから除外される 既知の不具合: CARD-XG5-057 発動の選択が開かない（出典: atwiki/page-2208「ゲームから除外する」）", () => {
+  it("XG5-057:【ファイアランバス】— 選んだ敵軍捨札はゲームから除外される（出典: atwiki/page-2208「ゲームから除外する」）", () => {
     const s = resolveAll(pick(used(), "SPEC-C3:e3"));
     expect(exiled(s, "player2", "SPEC-C3:e3")).toBe(true);
   });
@@ -229,13 +229,13 @@ describe("XG5-058 ロイヤルストレートフラッシュ", () => {
   const DECK = () => [inst("TST-UNIT-2", "d1"), inst("TST-UNIT-2", "d2"), inst("TST-OP", "d3"), inst("TST-UNIT-0", "d4"), inst("TST-UNIT-0", "d5"), inst("TST-UNIT-7", "d6")];
   const used = () => beltUsed("XG5-058", "WB", 6, { deck: DECK() }, { rush: [inst("SPEC-E8000", "a"), inst("SPEC-E8500", "b")], battle: [inst("TST-UNIT-0", "c")] }, EXTRA);
 
-  it.fails("XG5-058: 山札の上5枚のユニットカードの BP の合計（8000）以下の敵軍ユニットを選ぶ（エリアを問わない。BP8500 は選べない） 既知の不具合: CARD-XG5-058 効果がない（出典: atwiki/page-2262「オモテにしたユニットカードのBPの合計以下のBPを持つ敵軍ユニットを1体選び」）", () => {
+  it("XG5-058: 山札の上5枚のユニットカードの BP の合計（8000）以下の敵軍ユニットを選ぶ（エリアを問わない。BP8500 は選べない）（出典: atwiki/page-2262「オモテにしたユニットカードのBPの合計以下のBPを持つ敵軍ユニットを1体選び」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "XG5-058");
     expect([...choiceIds(s)].sort()).toEqual(["SPEC-E8000:a", "TST-UNIT-0:c"]);
   });
 
-  it.fails("XG5-058: 選んだユニットはゲームから除外され、オモテにした5枚はすべて捨札になる（6枚目は山札に残る） 既知の不具合: CARD-XG5-058 効果がない（出典: atwiki/page-2262「ゲームから除外する」「その後、オモテにしたカードはすべて捨札になる」）", () => {
+  it("XG5-058: 選んだユニットはゲームから除外され、オモテにした5枚はすべて捨札になる（6枚目は山札に残る）（出典: atwiki/page-2262「ゲームから除外する」「その後、オモテにしたカードはすべて捨札になる」）", () => {
     const s = resolveAll(pick(used(), "SPEC-E8000:a"));
     expect(exiled(s, "player2", "SPEC-E8000:a")).toBe(true);
     for (const id of ["TST-UNIT-2:d1", "TST-UNIT-2:d2", "TST-OP:d3", "TST-UNIT-0:d4", "TST-UNIT-0:d5"]) expect(zoneOf(s, "player1", id)).toBe("discard");
@@ -258,12 +258,12 @@ describe("XG5-059 仮面ライダーカリス", () => {
 
   undeadCommandTests("XG5-059", "atwiki/page-2172");
 
-  it.fails("XG5-059:【暴走する本能】— 自分の手札が1枚以下なら BP+3000（BP6000）、2枚なら BP3000 既知の不具合: CARD-XG5-059 BP が上がらない（出典: atwiki/page-2172「自分の手札が1枚以下のとき、BP+3000され」・カード評価「BP6000まで上がる」）", () => {
+  it("XG5-059:【暴走する本能】— 自分の手札が1枚以下なら BP+3000（BP6000）、2枚なら BP3000（出典: atwiki/page-2172「自分の手札が1枚以下のとき、BP+3000され」・カード評価「BP6000まで上がる」）", () => {
     expect(bpOf(battle({ hand: handN(1), battle: [inst("XG5-059", "c")] }), "player1", "XG5-059:c")).toBe(6000);
     expect(bpOf(battle({ hand: handN(2), battle: [inst("XG5-059", "c")] }), "player1", "XG5-059:c")).toBe(3000);
   });
 
-  it.fails("XG5-059:【暴走する本能】— 手札が1枚以下なら、出られるかぎり出ずにバトルフェイズを終えられない 既知の不具合: CARD-XG5-059 能力を得ない（出典: atwiki/page-2172「これは毎ターン可能ならバトルエリアに出る」）", () => {
+  it("XG5-059:【暴走する本能】— 手札が1枚以下なら、出られるかぎり出ずにバトルフェイズを終えられない（出典: atwiki/page-2172「これは毎ターン可能ならバトルエリアに出る」）", () => {
     const s = battle({ hand: handN(1), rush: [inst("XG5-059", "c")] });
     expect(legal(s).some((a) => a.type === "end_phase")).toBe(false);
   });
@@ -276,7 +276,7 @@ describe("XG5-059 仮面ライダーカリス", () => {
   /** 2番目に出る（SP1/2 で SP1）。敵軍バトルエリアに TST-UNIT-0。 */
   const second = (hand: number) => enter(battle({ hand: handN(hand), battle: fill(1), rush: [inst("XG5-059", "c")] }, { battle: [inst("TST-UNIT-0", "e")] }), "XG5-059:c");
 
-  it.fails("XG5-059:【暴走する本能】— 手札が1枚以下なら、アタックできる敵軍ユニットがいればストライクを選べない 既知の不具合: CARD-XG5-059 能力を得ない（出典: atwiki/page-2172「アタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする」）", () => {
+  it("XG5-059:【暴走する本能】— 手札が1枚以下なら、アタックできる敵軍ユニットがいればストライクを選べない（出典: atwiki/page-2172「アタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする」）", () => {
     const s = second(1);
     expect(targetsOf(s, "XG5-059:c")).toEqual(["TST-UNIT-0:e"]);
     expect(canStrike(s, "XG5-059:c")).toBe(false);
@@ -317,11 +317,11 @@ describe("XG5-060 仮面ライダーワイルドカリス", () => {
     expect(damageOf(entered(1), "player2")).toBe(1);
   });
 
-  it.fails("XG5-060:【ワイルド】— 手札が2枚のときはダメージを与えない 既知の不具合: CARD-XG5-060 手札の枚数を見ずにダメージを与える（出典: atwiki/page-2171「自軍の手札が1枚のとき」）", () => {
+  it("XG5-060:【ワイルド】— 手札が2枚のときはダメージを与えない（出典: atwiki/page-2171「自軍の手札が1枚のとき」）", () => {
     expect(damageOf(entered(2), "player2")).toBe(0);
   });
 
-  it.fails("XG5-060:【ワイルド】— 手札が0枚のときもダメージを与えない 既知の不具合: CARD-XG5-060 手札の枚数を見ずにダメージを与える（出典: atwiki/page-2171「自軍の手札が1枚のとき」。「1枚以下」ではない）", () => {
+  it("XG5-060:【ワイルド】— 手札が0枚のときもダメージを与えない（出典: atwiki/page-2171「自軍の手札が1枚のとき」。「1枚以下」ではない）", () => {
     expect(damageOf(entered(0), "player2")).toBe(0);
   });
 });

@@ -6,7 +6,7 @@
  * - `AFTER_ACTION_HOOKS`: applyAction の後処理（core/applyAction.ts から rules/xg5/xg5Effects.ts の applyXg5AfterAction で呼ぶ）。
  * 選択の組み立ては rules/rm/rm1Effects.ts の共通の部品（openAfter・proceed・close 等）を使う。
  */
-import type { GameState, PendingEffectChoice, PendingStrike, PlayerId } from "../../types/game";
+import type { GameState, PendingBattle, PendingEffectChoice, PendingStrike, PlayerId } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import type { ChoiceOutcome } from "../rm/rm1Effects";
 import type { Xg5Watch } from "./xg5Types";
@@ -29,15 +29,27 @@ export const XG5_KEYWORDS: Record<string, KeywordHandler> = {};
 export const AFTER_ACTION_HOOKS: AfterActionHook[] = [];
 export const STRIKE_RESOLVED_HOOKS: StrikeHook[] = [];
 /** アタックしたユニットがバトルで敵軍ユニットを撃破したとき（rules/operationCounters.ts から applyXg5AttackWin で呼ぶ）。 */
-export type AttackWinHook = (state: GameState, attackerId: PlayerId, attackerInstanceId: string, phasePlayerId: PlayerId) => GameState;
+export type AttackWinHook = (state: GameState, attackerId: PlayerId, attackerInstanceId: string, phasePlayerId: PlayerId, defenderInstanceId?: string) => GameState;
 export const ATTACK_WIN_HOOKS: AttackWinHook[] = [];
 
 /** アタックして敵軍ユニットをバトルで撃破したとき。このモジュールは型以外を読み込まない（循環しない）。 */
-export function applyXg5AttackWin(state: GameState, attackerId: PlayerId, attackerInstanceId: string, phasePlayerId: PlayerId): GameState {
+export function applyXg5AttackWin(state: GameState, attackerId: PlayerId, attackerInstanceId: string, phasePlayerId: PlayerId, defenderInstanceId?: string): GameState {
   let next = state;
-  for (const hook of ATTACK_WIN_HOOKS) next = hook(next, attackerId, attackerInstanceId, phasePlayerId);
+  for (const hook of ATTACK_WIN_HOOKS) next = hook(next, attackerId, attackerInstanceId, phasePlayerId, defenderInstanceId);
   return next;
 }
+/** アタックされたとき（core/applyAction.ts continueAttackAfterDeclaration。「アタックしたとき」の後、カウンターの前）。開いた state か null。 */
+export type AttackedHook = (state: GameState, battle: PendingBattle, wingAttackFromRush: boolean) => GameState | null;
+export const ATTACKED_HOOKS: AttackedHook[] = [];
+
+export function openXg5Attacked(state: GameState, battle: PendingBattle, wingAttackFromRush: boolean): GameState | null {
+  for (const hook of ATTACKED_HOOKS) {
+    const opened = hook(state, battle, wingAttackFromRush);
+    if (opened) return opened;
+  }
+  return null;
+}
+
 /** 手札のカードから発動する効果（activate_field_unit_ability。core/legalActions.ts・core/applyAction.ts）。 */
 export const HAND_ACTIVATIONS: Array<{
   list: (state: GameState, playerId: PlayerId) => string[];

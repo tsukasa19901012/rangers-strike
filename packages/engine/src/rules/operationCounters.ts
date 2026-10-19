@@ -1707,7 +1707,7 @@ export function resolveBattlePendingCore(
           // RK-269【シャドーセイバー】（rules/rk/rk13UnitEffects.ts）。
           withAttacker = rk13OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
           // XG5-029・XG5-034（rules/xg5/xg5bEffects.ts）。
-          withAttacker = applyXg5AttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+          withAttacker = applyXg5AttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId, refreshedDefenderFound.card.instanceId);
         }
         withAttacker = drainDeferredDestroyTriggers(withAttacker);
       }
@@ -1832,7 +1832,7 @@ export function resolveBattlePendingCore(
     // RK-269【シャドーセイバー】: 自軍ターン中、アタックしてバトルに勝ったとき（rules/rk/rk13UnitEffects.ts）。
     if (!pending.effectBattle) nextState = rk13OnAttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
     // XG5-029【頑頑ナックル落とし】・XG5-034【二刀流烈火大斬刀】（rules/xg5/xg5bEffects.ts）。
-    if (!pending.effectBattle) nextState = applyXg5AttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+    if (!pending.effectBattle) nextState = applyXg5AttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId, refreshedDefenderFound.card.instanceId);
   } else {
     nextState = markAttackerActed(nextState);
   }

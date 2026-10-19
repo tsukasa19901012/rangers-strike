@@ -50,9 +50,9 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg5::XG5-060::wild",
+          "duration": "turn"
         }
       ]
     }

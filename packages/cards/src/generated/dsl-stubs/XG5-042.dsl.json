@@ -44,13 +44,12 @@
       "name": "天装合体",
       "text": "自軍ラッシュフェイズ中、このユニットを捨札にしてもよい。そうしたとき、自分の手札から「ゴセイグレート」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-042::fxunknown6",
+          "keyword": "xg5::XG5-042::tenso_gattai",
           "duration": "permanent"
         }
       ]

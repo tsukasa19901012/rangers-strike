@@ -48,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-049::aporomagunamu",
+          "keyword": "xg5::XG5-049::apollo_magnum",
           "duration": "turn"
         }
       ]
