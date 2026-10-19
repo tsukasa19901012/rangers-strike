@@ -21,6 +21,7 @@ import { isShironLightRushTarget } from "./shironLight";
 import { rushPowerBudget } from "./rushDeclaration";
 import { countAvailablePower, effectivePowerCost } from "../core/power";
 import { findInZone } from "../core/helpers";
+import { xg1HoldSubstituteAvailable } from "./xg1/xg1Fields";
 import {
   buildCategoryPayment,
   buildMothershipHoldPayment,
@@ -154,7 +155,7 @@ function listZordSetupResolveSteps(
   };
 
   if (setup.step === "destination") {
-    for (const destination of ["command", "discard"] as const) {
+    for (const destination of ["command", "discard", "hold"] as const) {
       tryInput({ destination }, { type: "resolve_zord_setup", playerId, destination });
     }
     if ((setup.chosenMaterialIds?.length ?? 0) > 0) {
@@ -266,7 +267,7 @@ export function createZordSetup(
       state.definitions,
       found.card.cardId,
     );
-    if (needsDestinationChoice(found.card.cardId, commandZoneHasSpace)) {
+    if (needsDestinationChoice(found.card.cardId, commandZoneHasSpace) || xg1HoldOffered(state, playerId, found.card.cardId)) {
       return {
         playerId,
         zordInstanceId,
@@ -327,6 +328,11 @@ function destinationPerUnit(state: GameState, zordCardId: string): boolean {
 function commandZoneFitsMaterials(state: GameState, commandCount: number, zordCardId: string): boolean {
   if (destinationPerUnit(state, zordCardId)) return commandCount < COMMAND_ZONE_MAX;
   return commandCount + Math.max(1, zordMaterialUnitCount(state, zordCardId)) <= COMMAND_ZONE_MAX;
+}
+
+/** XG1-013【巨大要塞】で素材をホールドに置きかえられるか（rules/xg1/xg1Fields.ts）。 */
+function xg1HoldOffered(state: GameState, playerId: PlayerId, zordCardId: string): boolean {
+  return xg1HoldSubstituteAvailable(state.players[playerId], state.definitions, zordCardId, getZordCondition(zordCardId), zordMaterialUnitCount(state, zordCardId));
 }
 
 function needsDestinationChoice(
@@ -394,8 +400,19 @@ export function advanceZordSetup(
       return advanceZordSetup(state, { ...setup, step: "material", materialDestination: prev }, input);
     }
     const dest = input.destination;
+    // XG1-013【巨大要塞】: 行き先「hold」（捨札にするかわりにホールド）。この置きかえだけで行き先を選ぶときはコマンドゾーンは選べない。
+    const xg1Hold = setup.direction !== "down" && xg1HoldOffered(state, playerId, setup.zordCardId);
+    if (dest === "hold" && xg1Hold) {
+      const holdIds = setup.validInstanceIds.filter((id) => [...player.rush, ...player.battle].some((c) => c.instanceId === id && !c.commandHeld));
+      if (holdIds.length === 0) return { kind: "error", error: "invalid_material" };
+      return { kind: "continue", setup: { ...setup, step: "material", materialDestination: "hold", validInstanceIds: holdIds } };
+    }
     if (dest !== "command" && dest !== "discard") {
       return { kind: "error", error: "invalid_destination" };
+    }
+    if (xg1Hold && !needsDestinationChoice(setup.zordCardId, true)) {
+      if (dest !== "discard") return { kind: "error", error: "invalid_destination" };
+      return { kind: "continue", setup: { ...setup, step: "material", materialDestination: undefined } };
     }
     if (
       dest === "command" &&

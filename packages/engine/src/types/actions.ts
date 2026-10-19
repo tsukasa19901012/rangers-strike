@@ -12,7 +12,8 @@ export type ChargeCommandAction = {
   instanceId: string;
 };
 
-export type ZordMaterialDestination = "command" | "discard";
+/** "hold": XG1-013【巨大要塞】で「捨札にする」かわりに素材の S ユニットをホールドする（rules/xg1/xg1Fields.ts）。 */
+export type ZordMaterialDestination = "command" | "discard" | "hold";
 
 export type SelfRushFromZoneAction = {
   type: "self_rush_from_zone";

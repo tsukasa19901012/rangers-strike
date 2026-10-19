@@ -37,13 +37,18 @@
       "name": "新飛羽返し",
       "text": "SP1これがバトルで敵軍ユニットを撃破したとき、これが撃破したユニットと同じカード名の敵軍ユニットをすべて撃破する。（この効果はこれがウイングでアタックするときはナンバーに関係なく発動する）",
       "trigger": {
-        "type": "on_attack"
+        "type": "nc"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-003::shie696b0",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg1::XG1-003::shin_hibagaeshi",
           "duration": "turn"
         }
       ]

@@ -170,6 +170,8 @@ export type PendingStrike = {
   damageApplied?: boolean;
   /** RS-184 マジパンチを使った（ストライクしたユニットは手札に戻った）。続けて同じストライクに使える。 */
   magiPunchApplied?: boolean;
+  /** XG1-009【マスキークラッシュ】のダメージの置きかえを選ぶ機会を出した（rules/xg1/xg1aEffects.ts）。 */
+  xg1StrikeReplaceOffered?: boolean;
 };
 
 export type DamagePaymentResume =
@@ -764,6 +766,20 @@ export type PendingEffectChoice = {
     /** RM-037: 相手の手札から選んだカード。 */
     handInstanceId?: string;
   };
+  /** クロスギャザー XG1 の選択の続き（rules/xg1/xg1Effects.ts）。 */
+  xg1Meta?: {
+    /** 選んだユニット・カード（続きの処理の対象）。 */
+    target?: string;
+    /** 対象の持ち主。 */
+    ownerId?: PlayerId;
+    /** 選べる数・数え上げた数。 */
+    count?: number;
+    /** まだ処理していない段（カードごとの文字列）。 */
+    steps?: string[];
+    /** 保留しているバトル（アタックの途中で開いた選択）。 */
+    battle?: PendingBattle;
+    wingAttackFromRush?: boolean;
+  };
   /** スペシャルメタルエディション RM-001〜RM-021 の選択の続き（rules/rm/rm1Effects.ts）。 */
   rm1Meta?: {
     /** RM-006: 選べる数（「メカ」「人型」の自軍ユニットの数）。 */
@@ -1072,8 +1088,8 @@ export type CommandPaymentContinuation =
       type: "rush";
       zordMaterialInstanceId?: string;
       zordMaterialInstanceIds?: string[];
-      zordMaterialDestination?: "command" | "discard";
-      zordMaterialDestinations?: Array<"command" | "discard">;
+      zordMaterialDestination?: ZordMaterialDestination;
+      zordMaterialDestinations?: ZordMaterialDestination[];
       zordMothershipHoldInstanceIds?: string[];
       zordExtraCommandHoldInstanceIds?: string[];
       /** RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニット（RushAction と同じ）。 */

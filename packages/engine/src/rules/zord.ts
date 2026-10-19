@@ -472,6 +472,11 @@ function singleNamedPowerPartner(text: string | undefined): string | undefined {
   return m?.[1];
 }
 
+function singleFeaturedPowerPartner(text: string | undefined): string | undefined {
+  const m = /^特徴[「｢]([^」｣]+)[」｣]を持つ自軍Sユニット(?:を1体|1体を)パワーゾーンに送る。?$/.exec((text ?? "").normalize("NFKC").trim());
+  return m?.[1];
+}
+
 export function isValidZordUpMaterial(
   definitions: Record<string, CardDefinition>,
   rushingCardId: string,
@@ -546,6 +551,9 @@ export function isValidZordUpMaterial(
             normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(named))
           );
         }
+        // 「特徴「X」を持つ自軍Sユニットを1体パワーゾーンに送る」はその特徴を持つ S ユニットだけ（XG1-018 サイレンダーPM atwiki/page-1585）。
+        const featured = condition.conditionId === "send_s_unit_to_power" ? singleFeaturedPowerPartner(condition.text) : undefined;
+        if (featured) return isValidPowerMaterial(definitions, card, rushingInstanceId) && zordMaterialFeatures(def, card).includes(featured);
         return isValidPowerMaterial(definitions, card, rushingInstanceId);
       }
       return false;
@@ -651,6 +659,14 @@ export function applyZordMaterial(
   const resolved = resolveZordUpCondition(definitions, rushingCardId);
   const conditionId = resolved?.conditionId ?? getZordCondition(rushingCardId);
   if (!conditionId) return null;
+
+  if (destination === "hold") {
+    // XG1-013【巨大要塞】「自軍Sユニットを1体捨札にするかわりに、自軍Sユニットを1体ホールドする」（rules/xg1/xg1Fields.ts）。
+    if (conditionId !== "send_s_unit_to_discard" || (material.zone !== "rush" && material.zone !== "battle") || material.card.commandHeld) return null;
+    const cards = [...player[material.zone]];
+    cards[material.index] = { ...material.card, commandHeld: true };
+    return { ...player, [material.zone]: cards };
+  }
 
   const [, zoneCards] = removeAt(player[material.zone], material.index);
   let nextPlayer: PlayerState = { ...player, [material.zone]: zoneCards };

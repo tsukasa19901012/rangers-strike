@@ -101,6 +101,7 @@ import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
+import { openXg1aStrikeReplacement } from "../rules/xg1/xg1aEffects";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -790,6 +791,9 @@ function continueDeferredPowerFlip(state: GameState): GameState {
 }
 
 function completeStrike(state: GameState, pending: PendingStrike, extraLogs: string[] = []): ActionResult {
+  // XG1-009【マスキークラッシュ】: ダメージを与えるかわりに敵軍捨札のカードをダメージにするかを選ぶ（rules/xg1/xg1aEffects.ts）。
+  const xg1Replace = openXg1aStrikeReplacement(state, pending);
+  if (xg1Replace) return ok(xg1Replace, buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending", String(pending.damage)));
   const nextState = finalizeStrike(state, pending);
   if (nextState.pendingDamagePayment || nextState.deferredPowerFlip) {
     return ok(nextState, buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending_damage"));
@@ -811,6 +815,8 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
   ) {
     return false;
   }
+  // クロスギャザー XG1（`xg1::`）のカード固有の効果も、使ったあとで対象を選ぶ（rules/xg1/xg1Effects.ts）。
+  if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslEffect.effects.some((p) => p.type === "grant_keyword" && p.keyword.startsWith("xg1::"))) return false;
   return needsOperationTarget(cardId);
 }
 

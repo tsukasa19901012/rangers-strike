@@ -43,8 +43,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-009::masukikurashu",
-          "duration": "permanent"
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg1::XG1-009::masky_crash",
+          "duration": "turn"
         }
       ]
     }

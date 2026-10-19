@@ -55,6 +55,7 @@ import { keywordAllowsAttackIntoRush } from "../keywordGapRuntime";
 import { rk13AttackerCanAttackRush, rk13DefenderBlocksAttack } from "../rk/rk13Fields";
 import { rk15DefenderBlocksAttack } from "../rk/rk15Fields";
 import { rk16DefenderBlocksAttack } from "../rk/rk16Fields";
+import { xg1DefenderBlocksAttack } from "../xg1/xg1Fields";
 
 export function hasDarkDealInRush(state: GameState, playerId: PlayerId): boolean {
   return state.players[playerId].rush.some(
@@ -504,6 +505,8 @@ export function canAttackDefender(
   if (defenderCard && rk15DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard, unitFeatures)) return false;
   // RK-327 の※（ホールド状態のとき敵軍ユニットにアタックされない。rules/rk/rk16Fields.ts）。
   if (defenderCard && rk16DefenderBlocksAttack(defenderCard)) return false;
+  // XG1-017【許可なき戦いへの介入】・XG1-018【治安維持】（rules/xg1/xg1Fields.ts）。
+  if (defenderCard && xg1DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;

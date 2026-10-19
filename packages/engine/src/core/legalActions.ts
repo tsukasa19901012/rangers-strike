@@ -153,6 +153,7 @@ import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "
 import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
 import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
 import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
+import { canConfirmXg1Choice, isXg1ChoiceEffect } from "../rules/xg1/xg1Effects";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
@@ -1306,6 +1307,13 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk3Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg1ChoiceEffect(pending.effectId)) {
+    // クロスギャザー XG1-001〜XG1-100 の選択（rules/xg1/xg1Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    if (canConfirmXg1Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

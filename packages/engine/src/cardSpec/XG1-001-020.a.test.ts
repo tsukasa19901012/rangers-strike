@@ -83,21 +83,21 @@ describe("XG1-001 バトルジャパン", () => {
     expect(spOf(ncAt("XG1-001:bj", 1, {}, enemy(), EXTRA), "player1", "XG1-001:bj")).toBe(0);
   });
 
-  it.fails("XG1-001: 【空手技】NC — レジストを持つ敵軍 S ユニット（ラッシュエリア・バトルエリアを問わない）から1体を選ぶ。レジストを持たないユニットは選べない。見送れない（既知の不具合: CARD-XG1-001 【空手技】のユニットの選択が開かない）（出典: atwiki/page-1544「レジストを持つ敵軍Sユニットを1体選び」・カード評価「ラッシュエリアに届くのが強み」）", () => {
+  it("XG1-001: 【空手技】NC — レジストを持つ敵軍 S ユニット（ラッシュエリア・バトルエリアを問わない）から1体を選ぶ。レジストを持たないユニットは選べない。見送れない（既知の不具合: CARD-XG1-001 【空手技】のユニットの選択が開かない）（出典: atwiki/page-1544「レジストを持つ敵軍Sユニットを1体選び」・カード評価「ラッシュエリアに届くのが強み」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG1-001");
     expect(choiceIds(s)).toEqual(["XG1-041:am", "XG1-043:kb"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG1-001: 選んだユニットは持ち主（敵軍）のコマンドゾーンにホールド状態で置かれる（既知の不具合: CARD-XG1-001）（出典: atwiki/page-1544「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("XG1-001: 選んだユニットは持ち主（敵軍）のコマンドゾーンにホールド状態で置かれる（既知の不具合: CARD-XG1-001）（出典: atwiki/page-1544「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(nc(), ["XG1-043:kb"]);
     expect(zoneOf(s, "player2", "XG1-043:kb")).toBe("command");
     expect(isHeldCard(s, "player2", "XG1-043:kb")).toBe(true);
     expect(zoneOf(s, "player2", "XG1-041:am")).toBe("battle");
   });
 
-  it.fails("XG1-001: 敵軍コマンドゾーンが5枚で置けなければ、選んだユニットは捨札になる（既知の不具合: CARD-XG1-001）（出典: atwiki/page-1544「置けなければ捨札にする」・02-zones-cards コマンドゾーンは5枚まで）", () => {
+  it("XG1-001: 敵軍コマンドゾーンが5枚で置けなければ、選んだユニットは捨札になる（既知の不具合: CARD-XG1-001）（出典: atwiki/page-1544「置けなければ捨札にする」・02-zones-cards コマンドゾーンは5枚まで）", () => {
     const s = resolveAll(nc({ command: fullCommand(5) }), ["XG1-041:am"]);
     expect(zoneOf(s, "player2", "XG1-041:am")).toBe("discard");
     expect(s.players.player2.command).toHaveLength(5);
@@ -130,7 +130,7 @@ describe("XG1-002 デンジレッド", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-002: 選んだオモテ向きのカードは持ち主（敵軍）のパワーゾーンにオモテ向きで置かれる。もう1枚は常駐置き場に残る（既知の不具合: CARD-XG1-002 候補は出るが、選ぶ手〈resolve_effect_choice〉が不正な手になり選べない）（出典: atwiki/page-1597「選んだカードを持ち主のパワーゾーンに置く」）", () => {
+  it("XG1-002: 選んだオモテ向きのカードは持ち主（敵軍）のパワーゾーンにオモテ向きで置かれる。もう1枚は常駐置き場に残る（既知の不具合: CARD-XG1-002 候補は出るが、選ぶ手〈resolve_effect_choice〉が不正な手になり選べない）（出典: atwiki/page-1597「選んだカードを持ち主のパワーゾーンに置く」）", () => {
     const s = resolveAll(pick(nc(), "XG1-015:o1"));
     expect(zoneOf(s, "player2", "XG1-015:o1")).toBe("power");
     expect(isDamageCard(s, "player2", "XG1-015:o1")).toBe(false);
@@ -148,7 +148,7 @@ describe("XG1-002 デンジレッド", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG1-002");
   });
 
-  it.fails("XG1-002: 常駐に重ねられたウラ向きのカードも「常駐置き場のカード」としてウラ向きのまま選べ、選べば持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（既知の不具合: CARD-XG1-002 重ねたウラ向きのカードが候補にない）（出典: atwiki/page-1597「（ウラ向きのカードはウラ向きのまま選ぶ）」「選んだカードがウラ向きだったなら、ダメージにして置く」・カード評価「カードをウラ向きで重ねる常駐オペレーションは闇の戒律やゲゲル、クロックアップなど」）", () => {
+  it("XG1-002: 常駐に重ねられたウラ向きのカードも「常駐置き場のカード」としてウラ向きのまま選べ、選べば持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（既知の不具合: CARD-XG1-002 重ねたウラ向きのカードが候補にない）（出典: atwiki/page-1597「（ウラ向きのカードはウラ向きのまま選ぶ）」「選んだカードがウラ向きだったなら、ダメージにして置く」・カード評価「カードをウラ向きで重ねる常駐オペレーションは闇の戒律やゲゲル、クロックアップなど」）", () => {
     const s0 = nc([resident("TST-OP", "res", [faceDown("TST-OP", "fd")]), inst("XG1-015", "o1")]);
     expect(choiceIds(s0)).toContain("TST-OP:fd");
     const s = resolveAll(pick(s0, "TST-OP:fd"));
@@ -173,11 +173,11 @@ describe("XG1-003 バルイーグル", () => {
   // 敵軍: 同じカード名（SPEC-E500。うち1体はカード ID の違う SPEC-E500-ALT）のユニットがバトルエリアとラッシュエリアに、違うカード名のユニットが1体。
   const enemy = { battle: [inst("SPEC-E500", "a"), inst("SPEC-C2", "other")], rush: [inst("SPEC-E500", "b"), inst("SPEC-E500-ALT", "c")] };
 
-  it.fails("XG1-003: 「SP1」— 5番目に並んで NC が成立すると SP1 になる（既知の不具合: CARD-XG1-003 NC が成立しても SP を持たない）（出典: atwiki/page-1594「SP：！」「【新飛羽返し】SP1」）", () => {
+  it("XG1-003: 「SP1」— 5番目に並んで NC が成立すると SP1 になる（既知の不具合: CARD-XG1-003 NC が成立しても SP を持たない）（出典: atwiki/page-1594「SP：！」「【新飛羽返し】SP1」）", () => {
     expect(spOf(ncAt("XG1-003:be", 5, {}, enemy, EXTRA), "player1", "XG1-003:be")).toBe(1);
   });
 
-  it.fails("XG1-003: NC — これがバトルで敵軍ユニットを撃破したとき、同じカード名の敵軍ユニット（エリアを問わない）をすべて撃破する。違うカード名のユニットは残る（既知の不具合: CARD-XG1-003 【新飛羽返し】の撃破が起きない）（出典: atwiki/page-1594「これが撃破したユニットと同じカード名の敵軍ユニットをすべて撃破する」）", () => {
+  it("XG1-003: NC — これがバトルで敵軍ユニットを撃破したとき、同じカード名の敵軍ユニット（エリアを問わない）をすべて撃破する。違うカード名のユニットは残る（既知の不具合: CARD-XG1-003 【新飛羽返し】の撃破が起きない）（出典: atwiki/page-1594「これが撃破したユニットと同じカード名の敵軍ユニットをすべて撃破する」）", () => {
     const s = resolveAll(attackSettled(ncAt("XG1-003:be", 5, {}, enemy, EXTRA), "XG1-003:be", "SPEC-E500:a"));
     expect(zoneOf(s, "player2", "SPEC-E500:a")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E500:b")).toBe("discard");
@@ -185,7 +185,7 @@ describe("XG1-003 バルイーグル", () => {
     expect(zoneOf(s, "player2", "SPEC-C2:other")).toBe("battle");
   });
 
-  it.fails("XG1-003: ウイングでアタックするときは、ナンバーに関係なく【新飛羽返し】が発動する（ラッシュエリアからのアタックで撃破したときも同名のユニットをすべて撃破する）（既知の不具合: CARD-XG1-003）（出典: atwiki/page-1594「（この効果はこれがウイングでアタックするときはナンバーに関係なく発動する）」・カード評価「ラッシュエリアから単体で効果が使えるのが強み」）", () => {
+  it("XG1-003: ウイングでアタックするときは、ナンバーに関係なく【新飛羽返し】が発動する（ラッシュエリアからのアタックで撃破したときも同名のユニットをすべて撃破する）（既知の不具合: CARD-XG1-003）（出典: atwiki/page-1594「（この効果はこれがウイングでアタックするときはナンバーに関係なく発動する）」・カード評価「ラッシュエリアから単体で効果が使えるのが強み」）", () => {
     const s0 = p1Battle({ rush: [inst("XG1-003", "w")] }, enemy, EXTRA);
     const s = resolveAll(wingAttack(s0, "XG1-003:w", "SPEC-E500:a"));
     expect(zoneOf(s, "player2", "SPEC-E500:a")).toBe("discard");
@@ -221,26 +221,26 @@ describe("XG1-004 ゴーグルレッド", () => {
   // 敵軍コマンドゾーン: S ユニットのカード・M ユニットのカード・オペレーションのカード。
   const nc = () => ncAt("XG1-004:gr", 3, {}, { command: [inst("SPEC-C2", "cu"), inst("SPEC-M1", "cm"), inst("TST-OP", "co")] }, EXTRA);
 
-  it.fails("XG1-004: 【レッドルビームチ】NC — 敵軍コマンドゾーンの S ユニットのカードから1枚選べる（M ユニット・オペレーションのカードは選べない。任意）（既知の不具合: CARD-XG1-004 【レッドルビームチ】の選択が開かない）（出典: atwiki/page-1680「敵軍コマンドゾーンからSユニットのカードを1枚選んでもよい」）", () => {
+  it("XG1-004: 【レッドルビームチ】NC — 敵軍コマンドゾーンの S ユニットのカードから1枚選べる（M ユニット・オペレーションのカードは選べない。任意）（既知の不具合: CARD-XG1-004 【レッドルビームチ】の選択が開かない）（出典: atwiki/page-1680「敵軍コマンドゾーンからSユニットのカードを1枚選んでもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG1-004");
     expect(choiceIds(s)).toEqual(["SPEC-C2:cu"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-004: 選ぶと、ラッシュエリアかバトルエリアかは相手が選ぶ（既知の不具合: CARD-XG1-004）（出典: atwiki/page-1680「相手は選ばれたカードをラッシュエリアかバトルエリアに出す」・カード評価「どのエリアに出すのか決めるのが自分では無い」）", () => {
+  it("XG1-004: 選ぶと、ラッシュエリアかバトルエリアかは相手が選ぶ（既知の不具合: CARD-XG1-004）（出典: atwiki/page-1680「相手は選ばれたカードをラッシュエリアかバトルエリアに出す」・カード評価「どのエリアに出すのか決めるのが自分では無い」）", () => {
     const s = pick(nc(), "SPEC-C2:cu");
     expect(choicePlayer(s)).toBe("player2");
   });
 
-  it.fails("XG1-004: 相手がラッシュエリアを選べば、そのカードは敵軍ラッシュエリアに出て、コマンドの補充はない（既知の不具合: CARD-XG1-004）（出典: atwiki/page-1680「このときバトルエリアに出したなら」）", () => {
+  it("XG1-004: 相手がラッシュエリアを選べば、そのカードは敵軍ラッシュエリアに出て、コマンドの補充はない（既知の不具合: CARD-XG1-004）（出典: atwiki/page-1680「このときバトルエリアに出したなら」）", () => {
     const s = resolveAll(nc(), ["SPEC-C2:cu", "rush"]);
     expect(zoneOf(s, "player2", "SPEC-C2:cu")).toBe("rush");
     expect(s.players.player2.command).toHaveLength(2);
     expect(s.players.player2.deck).toHaveLength(5);
   });
 
-  it.fails("XG1-004: 相手がバトルエリアを選べば、そのカードは敵軍バトルエリアに出て、相手は山札の上から1枚引いてリリース状態でコマンドゾーンに置く（既知の不具合: CARD-XG1-004）（出典: atwiki/page-1680「相手は自分自身の山札の上から1枚引いて、自分自身のコマンドゾーンに置く」・カード評価「補充されるコマンドはリリース状態で置かれる」）", () => {
+  it("XG1-004: 相手がバトルエリアを選べば、そのカードは敵軍バトルエリアに出て、相手は山札の上から1枚引いてリリース状態でコマンドゾーンに置く（既知の不具合: CARD-XG1-004）（出典: atwiki/page-1680「相手は自分自身の山札の上から1枚引いて、自分自身のコマンドゾーンに置く」・カード評価「補充されるコマンドはリリース状態で置かれる」）", () => {
     const s = resolveAll(nc(), ["SPEC-C2:cu", "battle"]);
     expect(zoneOf(s, "player2", "SPEC-C2:cu")).toBe("battle");
     expect(zoneOf(s, "player2", "TST-OP:e0")).toBe("command");
@@ -264,7 +264,7 @@ describe("XG1-005 ダイナレッド", () => {
   const nc = (command = [...releasedCat("ET", 1), ...releasedCat("OT", 1)], p2: Partial<GameState["players"]["player2"]> = {}) =>
     ncAt("XG1-005:dn", 3, { command }, enemy(p2), EXTRA);
 
-  it.fails("XG1-005: 【ドリームギャラクシー】NC — 自軍コマンドのカテゴリの数（ET・OT の2）以下の必要パワーの数字を持つ敵軍 S ユニット（エリアを問わない。M は対象外）から1体選ぶ。見送れない（既知の不具合: CARD-XG1-005 ラッシュエリアのユニットが候補にない・数より大きい必要パワーのユニットが候補に入る）（出典: atwiki/page-1595「その数以下の必要パワーの数字を持つ敵軍Sユニットを１体選び」・コメント欄「エリア無視とはいえ1体しか除去出来ない」）", () => {
+  it("XG1-005: 【ドリームギャラクシー】NC — 自軍コマンドのカテゴリの数（ET・OT の2）以下の必要パワーの数字を持つ敵軍 S ユニット（エリアを問わない。M は対象外）から1体選ぶ。見送れない（既知の不具合: CARD-XG1-005 ラッシュエリアのユニットが候補にない・数より大きい必要パワーのユニットが候補に入る）（出典: atwiki/page-1595「その数以下の必要パワーの数字を持つ敵軍Sユニットを１体選び」・コメント欄「エリア無視とはいえ1体しか除去出来ない」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG1-005");
     expect(choiceIds(s)).toEqual(["SPEC-C0:z", "SPEC-C2:b"]);
@@ -282,12 +282,12 @@ describe("XG1-005 ダイナレッド", () => {
     expect(zoneOf(s, "player2", "SPEC-C2:b")).toBe("discard");
   });
 
-  it.fails("XG1-005: 数えるのはカテゴリの種類の数（ET のコマンドが3枚でも1）（既知の不具合: CARD-XG1-005）（出典: atwiki/page-1595「自軍コマンドのカテゴリの数を数えて」）", () => {
+  it("XG1-005: 数えるのはカテゴリの種類の数（ET のコマンドが3枚でも1）（既知の不具合: CARD-XG1-005）（出典: atwiki/page-1595「自軍コマンドのカテゴリの数を数えて」）", () => {
     const s = nc(releasedCat("ET", 3));
     expect(choiceIds(s)).toEqual(["SPEC-C0:z"]);
   });
 
-  it.fails("XG1-005: マルチカテゴリのコマンドは持つカテゴリをそれぞれ数える（WB／ET のコマンド1枚で2）（既知の不具合: CARD-XG1-005）（出典: atwiki/page-1595・コメント欄「カテゴリ跨ぎのモーフ持ち…を使ってコマンドのカテゴリの合計数が多くなる様に」）", () => {
+  it("XG1-005: マルチカテゴリのコマンドは持つカテゴリをそれぞれ数える（WB／ET のコマンド1枚で2）（既知の不具合: CARD-XG1-005）（出典: atwiki/page-1595・コメント欄「カテゴリ跨ぎのモーフ持ち…を使ってコマンドのカテゴリの合計数が多くなる様に」）", () => {
     const s = nc([{ ...inst("TST-OP-WB-ET", "mc"), commandHeld: false }]);
     expect(choiceIds(s)).toEqual(["SPEC-C0:z", "SPEC-C2:b"]);
   });
@@ -311,19 +311,20 @@ describe("XG1-006 レッドワン", () => {
     expect(spOf(nc(), "player1", "XG1-006:r1")).toBe(1);
   });
 
-  it.fails("XG1-006: 【バイオソード】NC — カテゴリを1つ宣言するかを選べる（任意）（既知の不具合: CARD-XG1-006 カテゴリの宣言が開かない）（出典: atwiki/page-1598「カテゴリを1つ宣言してもよい」）", () => {
+  it("XG1-006: 【バイオソード】NC — カテゴリを1つ宣言するかを選べる（任意）（既知の不具合: CARD-XG1-006 カテゴリの宣言が開かない）（出典: atwiki/page-1598「カテゴリを1つ宣言してもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG1-006");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-006: 宣言すると、宣言したカテゴリ（OT）を持つ S ユニット（自軍のユニットも含む。M・ほかのカテゴリは対象外）の中から相手が1体選ぶ（既知の不具合: CARD-XG1-006）（出典: atwiki/page-1598「宣言したカテゴリを持つSユニットを相手に1体選ばせ」・コメント欄「相手と自分が同じカテゴリのカードを使ってたら自爆させられる」）", () => {
+  it("XG1-006: 宣言すると、宣言したカテゴリ（OT）を持つ S ユニット（自軍のユニットも含む。M・ほかのカテゴリは対象外）の中から相手が1体選ぶ（既知の不具合: CARD-XG1-006）（出典: atwiki/page-1598「宣言したカテゴリを持つSユニットを相手に1体選ばせ」・コメント欄「相手と自分が同じカテゴリのカードを使ってたら自爆させられる」）", () => {
     const s = pick(nc(), "OT");
     expectChoiceFrom(s, "player2", "XG1-006");
-    expect(choiceIds(s)).toEqual(["SPEC-OT-S:eb", "SPEC-OT-S:er", "SPEC-OT-S:own"]);
+    // これ自身（OT の S ユニット）も宣言したカテゴリを持つ S ユニットなので候補に入る（XG1-judgments 実装時の判断）。
+    expect(choiceIds(s)).toEqual(["SPEC-OT-S:eb", "SPEC-OT-S:er", "SPEC-OT-S:own", "XG1-006:r1"]);
   });
 
-  it.fails("XG1-006: 相手が選んだユニットは持ち主のパワーゾーンに送られる（相手が自軍のユニットを選べば自軍パワーゾーン）（既知の不具合: CARD-XG1-006）（出典: atwiki/page-1598「持ち主のパワーゾーンに送る」）", () => {
+  it("XG1-006: 相手が選んだユニットは持ち主のパワーゾーンに送られる（相手が自軍のユニットを選べば自軍パワーゾーン）（既知の不具合: CARD-XG1-006）（出典: atwiki/page-1598「持ち主のパワーゾーンに送る」）", () => {
     const s = resolveAll(nc(), ["OT", "SPEC-OT-S:own"]);
     expect(zoneOf(s, "player1", "SPEC-OT-S:own")).toBe("power");
     expect(zoneOf(s, "player2", "SPEC-OT-S:eb")).toBe("battle");

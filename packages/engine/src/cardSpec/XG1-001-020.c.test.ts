@@ -92,14 +92,14 @@ describe("XG1-015 宇宙警察", () => {
       EXTRA,
     );
 
-  it.fails("XG1-015: OT を持つ「警察」の S ユニットには特徴「宇宙刑事」が追加される。ET の「警察」、「警察」を持たない OT のユニットには追加されない（既知の不具合: CARD-XG1-015 特徴が追加されない）（出典: atwiki/page-1584「さらにそのユニットがOTを持つなら、特徴「宇宙刑事」が追加され」・コメント欄「警察持ちじゃないとまったく意味無い」）", () => {
+  it("XG1-015: OT を持つ「警察」の S ユニットには特徴「宇宙刑事」が追加される。ET の「警察」、「警察」を持たない OT のユニットには追加されない（既知の不具合: CARD-XG1-015 特徴が追加されない）（出典: atwiki/page-1584「さらにそのユニットがOTを持つなら、特徴「宇宙刑事」が追加され」・コメント欄「警察持ちじゃないとまったく意味無い」）", () => {
     const s = field();
     expect(featuresOf(s, "player1", "XG1-017:sm")).toContain("宇宙刑事");
     expect(featuresOf(s, "player1", "XG1-088:bk")).not.toContain("宇宙刑事");
     expect(featuresOf(s, "player1", "SPEC-OT-S:ot")).not.toContain("宇宙刑事");
   });
 
-  it.fails("XG1-015: OT を持つ「警察」の S ユニットはコールOT を得る（OT のユニットをラッシュするためのコマンドとしてホールドできる）（既知の不具合: CARD-XG1-015）（出典: atwiki/page-1584「コールOTを得る」・R-KW-CALL-01）", () => {
+  it("XG1-015: OT を持つ「警察」の S ユニットはコールOT を得る（OT のユニットをラッシュするためのコマンドとしてホールドできる）（既知の不具合: CARD-XG1-015）（出典: atwiki/page-1584「コールOTを得る」・R-KW-CALL-01）", () => {
     const s = raw(field(true, "rush"), { type: "initiate_command_payment", playerId: "player1", kind: "category_use", sourceInstanceId: "SPEC-OT-S:h" });
     expect(s.pendingCommandPayment?.validInstanceIds).toContain("XG1-017:sm");
     expect(s.pendingCommandPayment?.validInstanceIds).not.toContain("XG1-088:bk");
@@ -122,7 +122,7 @@ describe("XG1-015 宇宙警察", () => {
     return s;
   };
 
-  it.fails("XG1-015: 「警察」の S ユニットはチェイスを得る（ライド中に撃破されるとき、ライドされていない自軍ビークルに乗り換えられる）（既知の不具合: CARD-XG1-015 チェイスの乗り換えが出ない）（出典: atwiki/page-1584「特徴「警察」を持つSユニットはチェイスを得る」・R-KW-CHASE-01）", () => {
+  it("XG1-015: 「警察」の S ユニットはチェイスを得る（ライド中に撃破されるとき、ライドされていない自軍ビークルに乗り換えられる）（既知の不具合: CARD-XG1-015 チェイスの乗り換えが出ない）（出典: atwiki/page-1584「特徴「警察」を持つSユニットはチェイスを得る」・R-KW-CHASE-01）", () => {
     expect(chaseTargets(chase(true), "player2")).toEqual(["SPEC-VEHICLE:v2"]);
   });
 
@@ -206,7 +206,7 @@ describe("XG1-017 シグナルマン", () => {
       EXTRA,
     );
 
-  it.fails("XG1-017: 【許可なき戦いへの介入】相手の S ユニットは、追加条件を持つ M ユニット・SC ユニットにアタックできない（追加条件を持たない M ユニットにはできる）（既知の不具合: CARD-XG1-017 アタックの制限がない）（出典: atwiki/page-1672「Sユニットは、追加条件を持つ、MユニットまたはSCユニットにアタックすることができない」）", () => {
+  it("XG1-017: 【許可なき戦いへの介入】相手の S ユニットは、追加条件を持つ M ユニット・SC ユニットにアタックできない（追加条件を持たない M ユニットにはできる）（既知の不具合: CARD-XG1-017 アタックの制限がない）（出典: atwiki/page-1672「Sユニットは、追加条件を持つ、MユニットまたはSCユニットにアタックすることができない」）", () => {
     const t = attackTargets(enemyTurn(), "TST-UNIT-0:s", "player2");
     expect(t).not.toContain("XG1-035:kb");
     expect(t).not.toContain("XG1-019:tm");
@@ -221,7 +221,7 @@ describe("XG1-017 シグナルマン", () => {
     expect(attackTargets(enemyTurn(false), "TST-UNIT-0:s", "player2")).toContain("XG1-035:kb");
   });
 
-  it.fails("XG1-017: 自分も制限を受ける — 自軍の S ユニットも、追加条件を持つ敵軍の M ユニットにアタックできない（既知の不具合: CARD-XG1-017）（出典: atwiki/page-1672「自分も相手も次の制限を受ける」・カード評価「効果は自軍にも適用されるのを忘れずに」）", () => {
+  it("XG1-017: 自分も制限を受ける — 自軍の S ユニットも、追加条件を持つ敵軍の M ユニットにアタックできない（既知の不具合: CARD-XG1-017）（出典: atwiki/page-1672「自分も相手も次の制限を受ける」・カード評価「効果は自軍にも適用されるのを忘れずに」）", () => {
     const s = p1Battle({ rush: [inst("XG1-017", "sm")], battle: [inst("TST-UNIT-0", "s")] }, { battle: [inst("XG1-035", "kb"), inst("RS-051", "ty")] }, EXTRA);
     const t = attackTargets(s, "TST-UNIT-0:s");
     expect(t).not.toContain("XG1-035:kb");
@@ -248,7 +248,7 @@ describe("XG1-018 サイレンダーPM", () => {
     expect(zoneOf(r.state, "player1", "XG1-017:sm")).toBe("power");
   });
 
-  it.fails("XG1-018: 「警察」を持たない S ユニットしかいなければラッシュできない（既知の不具合: CARD-XG1-018 「警察」を持たない S ユニットを追加条件でパワーゾーンに送ってラッシュできる）（出典: atwiki/page-1585「特徴「警察」を持つ自軍Sユニット」）", () => {
+  it("XG1-018: 「警察」を持たない S ユニットしかいなければラッシュできない（既知の不具合: CARD-XG1-018 「警察」を持たない S ユニットを追加条件でパワーゾーンに送ってラッシュできる）（出典: atwiki/page-1585「特徴「警察」を持つ自軍Sユニット」）", () => {
     const r = rushResults(rushBoard([inst("TST-UNIT-0", "s")]), "player1", "XG1-018:h");
     expect(r.filter((x) => zoneOf(x, "player1", "XG1-018:h") === "rush")).toHaveLength(0);
   });
@@ -268,7 +268,7 @@ describe("XG1-018 サイレンダーPM", () => {
       EXTRA,
     );
 
-  it.fails("XG1-018: 【治安維持】自軍バトルエリアにある間、相手の S ユニットは M・L ユニット（これ自身も含む）にアタックできず、S ユニットにはアタックできる（既知の不具合: CARD-XG1-018 アタックの制限がない）（出典: atwiki/page-1585「Sユニットは、MユニットまたはSCユニットまたはLユニットにアタックすることができない」）", () => {
+  it("XG1-018: 【治安維持】自軍バトルエリアにある間、相手の S ユニットは M・L ユニット（これ自身も含む）にアタックできず、S ユニットにはアタックできる（既知の不具合: CARD-XG1-018 アタックの制限がない）（出典: atwiki/page-1585「Sユニットは、MユニットまたはSCユニットまたはLユニットにアタックすることができない」）", () => {
     const t = attackTargets(enemyTurn("battle"), "TST-UNIT-0:s", "player2");
     expect(t).toEqual(["SPEC-E4000:s"]);
   });
@@ -316,7 +316,7 @@ describe("XG1-019 ターボマシン", () => {
       EXTRA,
     );
 
-  it.fails("XG1-019: ※ 自軍捨札にカテゴリを2つ以上持つ S ユニットのカードが5枚あれば、追加条件は「自軍ゾーンのオモテ向きの S ユニットのカードを1枚捨札にする」に変わる（既知の不具合: CARD-XG1-019 変更後の追加条件でラッシュできない）（出典: atwiki/page-1647「次のように変更される⇒自軍ゾーンのオモテ向きのカードからSユニットのカードを1枚選び捨札にする」）", () => {
+  it("XG1-019: ※ 自軍捨札にカテゴリを2つ以上持つ S ユニットのカードが5枚あれば、追加条件は「自軍ゾーンのオモテ向きの S ユニットのカードを1枚捨札にする」に変わる（既知の不具合: CARD-XG1-019 変更後の追加条件でラッシュできない）（出典: atwiki/page-1647「次のように変更される⇒自軍ゾーンのオモテ向きのカードからSユニットのカードを1枚選び捨札にする」）", () => {
     const ok = rushResults(changed(5), "player1", "XG1-019:h").filter((r) => zoneOf(r, "player1", "XG1-019:h") === "rush" && zoneOf(r, "player1", "TST-UNIT-0:pw") === "discard");
     expect(ok.length).toBeGreaterThan(0);
   });
@@ -351,7 +351,7 @@ describe("XG1-020 ターボロボ", () => {
     expect(bpOf(field([...multi(2), ...releasedCat("ET", 2)]), "player1", "XG1-020:tr")).toBe(10000);
   });
 
-  it.fails("XG1-020: 【高速剣ターボクラッシュ】BP10000 以上なら SP1 を得る（既知の不具合: CARD-XG1-020 BP10000 でも SP を持たない）（出典: atwiki/page-1545「これはBP10000以上の時、次の能力を得る⇒SP1」）", () => {
+  it("XG1-020: 【高速剣ターボクラッシュ】BP10000 以上なら SP1 を得る（既知の不具合: CARD-XG1-020 BP10000 でも SP を持たない）（出典: atwiki/page-1545「これはBP10000以上の時、次の能力を得る⇒SP1」）", () => {
     expect(spOf(field(multi(2)), "player1", "XG1-020:tr")).toBe(1);
   });
 

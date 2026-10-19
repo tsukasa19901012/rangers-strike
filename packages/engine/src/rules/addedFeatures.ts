@@ -8,6 +8,7 @@
  */
 import { rk12AddedFeatures } from "./rk/rk12Fields";
 import { rm3GuruAddsInsect } from "./rm/rm3Fields";
+import { xg1AddedFeatures } from "./xg1/xg1Fields";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { getPlayerModifiers } from "../core/scopedModifiers";
 import { rk1AddedUnitFeatures } from "./rk/rk1Features";
@@ -85,6 +86,8 @@ export function unitFeatures(
   // RM-058 老師グル【昆虫の精】（自軍ラッシュエリアにある間、「メカ」のユニット・ビークルに「昆虫」。自軍だけ（ユーザー決定 2026-10-19）。
   // rules/rm/rm3Fields.ts）。
   if (rm3GuruAddsInsect(state, _ownerId, instance.cardId, [...base, ...extra])) extra.push("昆虫");
+  // XG1-015 宇宙警察（OT の「警察」の自軍 S ユニットに「宇宙刑事」。rules/xg1/xg1Fields.ts）。
+  extra.push(...xg1AddedFeatures(state, _ownerId, instance.cardId, [...base, ...extra]));
   if (extra.length === 0) return base;
   return [...new Set([...base, ...extra])];
 }
