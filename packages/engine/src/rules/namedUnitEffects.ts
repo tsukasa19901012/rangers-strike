@@ -1,4 +1,6 @@
 import { rm2AttackerBattleBonus, rm2DefenderBattleBonus } from "./rm/rm2Effects";
+import { xg4AttackerBattleBonus } from "./xg4/xg4Fields";
+import { unitFeatures as xg4UnitFeatures } from "./addedFeatures";
 import { rk9UsePrintedDefenderBp } from "./rk/rk9Fields";
 import { rk11UsePrintedDefenderBp } from "./rk/rk11Fields";
 import {
@@ -129,6 +131,8 @@ export function battleAttackerBpBonus(
   total += rk3AttackerBattleBonus(state, pending);
   // RM-033 メタルダー ※（rules/rm/rm2Effects.ts）。
   total += rm2AttackerBattleBonus(state, pending);
+  // クロスギャザー ザ・ジェットアクセル XG4-007【獣奏剣】等（rules/xg4/xg4Fields.ts）。
+  total += xg4AttackerBattleBonus(state, pending, xg4UnitFeatures);
 
   // RS-062【ボウケンジャベリン】・RS-241【デュアルクラッシャー・ドリルヘッド】（CN5）:
   // 特徴「メカ」を持つユニットにアタックするとき BP+4000（NC の効果は成立しているときだけ。R-CN-02）。

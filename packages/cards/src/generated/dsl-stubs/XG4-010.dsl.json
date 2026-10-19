@@ -52,9 +52,14 @@
       },
       "effects": [
         {
-          "type": "draw",
-          "amount": 1,
-          "player": "controller"
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg4::XG4-010::senko",
+          "duration": "turn"
         }
       ]
     }

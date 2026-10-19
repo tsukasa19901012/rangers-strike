@@ -165,6 +165,7 @@ import { isRk14ChoiceEffect, tryConfirmRk14Choice, tryResolveRk14Choice, trySkip
 import { isRk15ChoiceEffect, tryConfirmRk15Choice, tryResolveRk15Choice, trySkipRk15Choice } from "./rk/rk15UnitEffects";
 import { isRk16ChoiceEffect, tryConfirmRk16Choice, tryResolveRk16Choice, trySkipRk16Choice } from "./rk/rk16UnitEffects";
 import { isRm1ChoiceEffect, tryConfirmRm1Choice, tryResolveRm1Choice, trySkipRm1Choice } from "./rm/rm1Effects";
+import { isXg4ChoiceEffect, tryConfirmXg4Choice, tryResolveXg4Choice, trySkipXg4Choice } from "./xg4/xg4Effects";
 import { isRm2ChoiceEffect, tryCompleteRm2HoldChoice, tryConfirmRm2Choice, tryResolveRm2Choice, trySkipRm2Choice } from "./rm/rm2Effects";
 import { isRm3ChoiceEffect, tryCompleteRm3HoldChoice, tryConfirmRm3Choice, tryResolveRm3Choice, trySkipRm3Choice } from "./rm/rm3Effects";
 import { isBk1ChoiceEffect, tryResolveBk1Choice, trySkipBk1Choice } from "./bk/bk1Effects";
@@ -684,6 +685,7 @@ export function isValidEffectChoiceTarget(
     isRk15ChoiceEffect(pending.effectId) ||
     isRk16ChoiceEffect(pending.effectId) ||
     isRm1ChoiceEffect(pending.effectId) ||
+    isXg4ChoiceEffect(pending.effectId) ||
     isRm2ChoiceEffect(pending.effectId) ||
     isRm3ChoiceEffect(pending.effectId) ||
     isBk1ChoiceEffect(pending.effectId) ||
@@ -2074,6 +2076,8 @@ export function applyConfirmEffectChoice(
   if (rk16) return rk16;
   const rm1 = tryConfirmRm1Choice(state, playerId);
   if (rm1) return rm1;
+  const xg4 = tryConfirmXg4Choice(state, playerId);
+  if (xg4) return xg4;
   const rm2 = tryConfirmRm2Choice(state, playerId);
   if (rm2) return rm2;
   const rm3 = tryConfirmRm3Choice(state, playerId);
@@ -3083,6 +3087,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (rk16) return rk16;
   const rm1 = trySkipRm1Choice(state, playerId);
   if (rm1) return rm1;
+  const xg4 = trySkipXg4Choice(state, playerId);
+  if (xg4) return xg4;
   const rm2 = trySkipRm2Choice(state, playerId);
   if (rm2) return rm2;
   const rm3 = trySkipRm3Choice(state, playerId);
@@ -3276,7 +3282,8 @@ export function suppressesDeployedUnitEffects(pending: Pick<PendingEffectChoice,
   return DEPLOYED_EFFECTS_SUPPRESSED_RE.test(text);
 }
 
-const DEPLOYED_EFFECTS_SUPPRESSED_RE = /(このとき|この効果で)出したユニットの効果は発動しない/;
+// 「このとき、出したユニットの効果は発動しない」（XG4-002【TV受像機】）のように読点が入る本文も同じ。
+const DEPLOYED_EFFECTS_SUPPRESSED_RE = /(このとき|この効果で)、?出したユニットの効果は発動しない/;
 
 /**
  * 敵軍の zone で隣り合う size ユニット2体のうち、BP（そのときの値）の合計が bpSum になる組に入るユニット。
@@ -3418,6 +3425,8 @@ export function applyEffectChoiceSelect(
   if (rk16) return rk16;
   const rm1 = tryResolveRm1Choice(state, playerId, instanceId);
   if (rm1) return rm1;
+  const xg4 = tryResolveXg4Choice(state, playerId, instanceId);
+  if (xg4) return xg4;
   const rm2 = tryResolveRm2Choice(state, playerId, instanceId);
   if (rm2) return rm2;
   const rm3 = tryResolveRm3Choice(state, playerId, instanceId);

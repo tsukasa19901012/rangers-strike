@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-015::nono",
+          "keyword": "xg4::XG4-015::sanzu",
           "duration": "turn"
         }
       ]

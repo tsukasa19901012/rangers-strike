@@ -764,6 +764,8 @@ export type PendingEffectChoice = {
     /** RM-037: 相手の手札から選んだカード。 */
     handInstanceId?: string;
   };
+  /** クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 の選択の続き（rules/xg4/xg4Common.ts）。 */
+  xg4Meta?: Record<string, unknown>;
   /** スペシャルメタルエディション RM-001〜RM-021 の選択の続き（rules/rm/rm1Effects.ts）。 */
   rm1Meta?: {
     /** RM-006: 選べる数（「メカ」「人型」の自軍ユニットの数）。 */
@@ -1466,6 +1468,8 @@ export type PendingEffectRush = {
   blockBattleEntryThisTurn?: boolean;
   /** 「1枚選び、…出す」（任意でない）: 選択・追加条件の素材の選択を見送れない（RS-605 異次元からの翼）。 */
   forced?: boolean;
+  /** 出したユニットを、このビークルにライドした状態で出す（XG4-009【緊急出動】。rules/xg4/xg4aEffects.ts）。 */
+  mountOnInstanceId?: string;
   /** 選び終えて、まだ出していないユニット（1体ずつ出す）。 */
   queue: string[];
   /** 選ぶ段階: 候補とあと何枚選べるか。 */

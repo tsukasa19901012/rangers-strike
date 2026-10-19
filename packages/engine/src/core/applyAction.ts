@@ -100,6 +100,7 @@ import { drainQueuedFieldLeaves } from "../rules/fieldLeaveQueue";
 import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
+import { applyXg4AfterAction, applyXg4BattleCounter, applyXg4RideOff, isXg4BattleCounterCard } from "../rules/xg4/xg4Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
@@ -811,6 +812,8 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
   ) {
     return false;
   }
+  // クロスギャザー ザ・ジェットアクセル（`xg4::`）のカード固有の効果も、使ったあとで対象を選ぶ（rules/xg4/xg4Effects.ts）。
+  if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslEffect.effects.some((p) => p.type === "grant_keyword" && p.keyword.startsWith("xg4::"))) return false;
   return needsOperationTarget(cardId);
 }
 
@@ -1088,6 +1091,8 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRk13AfterAction(state, next);
   // RM-017 オメデトロフィー（自軍ユニットがバトルエリアに出たとき。rules/rm/rm1Effects.ts）。
   if (applyActionDepth === 0) next = applyRm1AfterAction(state, next);
+  // クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 の後処理（rules/xg4/xg4Effects.ts）。
+  if (applyActionDepth === 0) next = applyXg4AfterAction(state, next);
   // RM-026 グランドバース【収容】: チェイス等の選択の後で、選んだビークルをパワーゾーンに送る（rules/rm/rm2Effects.ts）。
   if (applyActionDepth === 0) next = applyRm2AfterAction(next);
   // RM-059 異次元調達屋カブト（WB の自軍 S ユニットがバトルエリアに出たとき。rules/rm/rm3Effects.ts）。
@@ -2941,6 +2946,21 @@ function applyActionCore(
             state: { ...opened, log: [...opened.log, log, resolved.log], winner: checkWinner(opened) },
           };
         }
+        // クロスギャザー ザ・ジェットアクセル XG4-021 カラクリマント等（rules/xg4/xg4Effects.ts）。
+        if (counterCardId && isXg4BattleCounterCard(counterCardId)) {
+          const used: GameState = {
+            ...state,
+            ...updatePlayer(state, playerId, {
+              ...player,
+              hand: player.hand.filter((c) => c.instanceId !== action.instanceId),
+              discard: [...player.discard, { instanceId: action.instanceId, cardId: counterCardId }],
+            }),
+          };
+          const result = applyXg4BattleCounter(used, playerId, counterCardId, pending);
+          const log = buildLogEntry(playerId, "play_counter", counterCardId, state.definitions, result.detail);
+          const resolved = emitBattleDeclaredAndResolve(clearCounterHoldReady(result.state, playerId), result.pending);
+          return { ok: true, state: { ...resolved.state, log: [...resolved.state.log, log, resolved.log], winner: checkWinner(resolved.state) } };
+        }
         // RK-004 ギギの腕輪・RK-009 二人の世紀王（rules/rk/rk1NamedEffects.ts）。
         if (counterCardId && isRk1BattleCounterCard(counterCardId)) {
           const used: GameState = {
@@ -3625,6 +3645,8 @@ function applyActionCore(
         };
         // RM-020【ドルファイヤー】: 自軍ターン中、「宇宙刑事」のユニットが電子星獣ドルからライドオフしたとき（rules/rm/rm1Effects.ts）。
         nextState = applyRm1DolFire(nextState, playerId, rider);
+        // クロスギャザー ザ・ジェットアクセル XG4-017 等「ライドオフしたとき」（rules/xg4/xg4Effects.ts）。
+        nextState = applyXg4RideOff(nextState, playerId, unmounted);
       }
 
       // RK-017 ミッションメモリー: ライドしたまま進むことを選んでも、RC の効果を発動する（rules/rk/rk1NamedEffects.ts）。

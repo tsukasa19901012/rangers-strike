@@ -36,36 +36,14 @@
       "name": "スターライトニードロップ",
       "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒敵軍コマンドゾーンからカードを1枚選び、持ち主の手札に戻す。",
       "trigger": {
-        "type": "nc"
+        "type": "joint_combo_r"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "command",
-          "owner": "opponent"
-        }
-      },
-      "optional": false,
+      "optional": true,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "command",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "hand"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg4::XG4-019::starlight",
+          "duration": "turn"
         }
       ]
     }

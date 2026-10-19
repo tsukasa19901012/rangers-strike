@@ -8,6 +8,7 @@
  */
 import { rk12AddedFeatures } from "./rk/rk12Fields";
 import { rm3GuruAddsInsect } from "./rm/rm3Fields";
+import { xg4AddedFeatures } from "./xg4/xg4Fields";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { getPlayerModifiers } from "../core/scopedModifiers";
 import { rk1AddedUnitFeatures } from "./rk/rk1Features";
@@ -82,6 +83,8 @@ export function unitFeatures(
   extra.push(...rk6AddedFeatures(state, _ownerId, instance));
   // RK-250 サバイブ（「サバイブ」）・RK-242 クライマックス刑事（自軍のイマジンに「警察」）（rules/rk/rk12Fields.ts）。
   extra.push(...rk12AddedFeatures(state, _ownerId, instance, base));
+  // クロスギャザー ザ・ジェットアクセル XG4-006 ドラゴンアーマー（「獣奏剣」）等（rules/xg4/xg4Fields.ts）。
+  extra.push(...xg4AddedFeatures(state, _ownerId, instance));
   // RM-058 老師グル【昆虫の精】（自軍ラッシュエリアにある間、「メカ」のユニット・ビークルに「昆虫」。自軍だけ（ユーザー決定 2026-10-19）。
   // rules/rm/rm3Fields.ts）。
   if (rm3GuruAddsInsect(state, _ownerId, instance.cardId, [...base, ...extra])) extra.push("昆虫");

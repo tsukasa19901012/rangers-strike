@@ -10,6 +10,7 @@ import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
 import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
 import { rk15WinButDestroyed } from "./rk/rk15UnitEffects";
 import { rk16OnBattleDestroy } from "./rk/rk16UnitEffects";
+import { isXg4BattleCounterCard, xg4BattleCounterConditionMet, xg4OnBattleDestroy } from "./xg4/xg4Effects";
 import { rk13OnAttackWin, rk13OnBattleDestroy } from "./rk/rk13UnitEffects";
 import { rk13BattleUsesPrintedBp, rk13BlocksResist, rk13PrintedBp } from "./rk/rk13Fields";
 import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
@@ -433,6 +434,8 @@ export function hasBattleCounterReactions(
     if (isMechanicNinjaCounter(card.cardId) && isSmallUnit(state.definitions, defenderCard)) {
       return true;
     }
+    // クロスギャザー ザ・ジェットアクセル XG4-021 カラクリマント等（rules/xg4/xg4Effects.ts）。
+    if (isXg4BattleCounterCard(card.cardId) && attackerPlayerId && attackerInstanceId && xg4BattleCounterConditionMet(state, defenderId, card.cardId, { attackerPlayerId, attackerInstanceId, defenderPlayerId: defenderId, defenderInstanceId })) return true;
     // RK-085 ガードベント（特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき。rules/rk/rk5UnitEffects.ts）。
     if (
       isRk5BattleCounterCard(card.cardId) &&
@@ -1678,6 +1681,7 @@ export function resolveBattlePendingCore(
         withAttacker = rk13OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
         // RK-324【凄いのが来るぜ！】（rules/rk/rk16UnitEffects.ts）。
         withAttacker = rk16OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+        withAttacker = xg4OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId);
       }
       if (!withAttacker.pendingLeave && !withAttacker.pendingRegister) {
         // 撃破は済み、別の選択が開いている — RS-226（段階 1）を先に、RS-212（段階 4）は段階の順に処理する。
@@ -1715,6 +1719,8 @@ export function resolveBattlePendingCore(
     if (!finalDestroyAttacker) nextState = rk13OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
     // RK-324【凄いのが来るぜ！】: ライドしているユニットが BP4000 以上の敵軍 S ユニットをバトルで撃破して捨札にしたとき（rules/rk/rk16UnitEffects.ts）。
     if (!finalDestroyAttacker) nextState = rk16OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+    // クロスギャザー ザ・ジェットアクセル XG4-010・XG4-017 等（rules/xg4/xg4Effects.ts）。
+    if (!finalDestroyAttacker) nextState = xg4OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId);
 
     if (refreshedAttackerFound.card.cardId === "RS-065") {
       const fb = resolveFocusedBreakthroughDamage(
@@ -1786,6 +1792,7 @@ export function resolveBattlePendingCore(
     if (!finalDestroyDefender) {
       // RK-324【凄いのが来るぜ！】（アタックしてきたユニットを、ライドしているユニットがバトルで撃破したとき）。
       nextState = rk16OnBattleDestroy(nextState, defenderOwner, defenderInstanceId, attackerId, pending.attackerInstanceId, attackerBp);
+      nextState = xg4OnBattleDestroy(nextState, defenderOwner, defenderInstanceId, attackerId, pending.attackerInstanceId);
       nextState = openRaigekiZanChoice(
         nextState,
         defenderOwner,
