@@ -211,6 +211,13 @@
     - 「新しくラッシュエリアに出た」は、そのターン中に場の外（手札・山札・捨札・コマンドゾーン・パワーゾーン等）から相手のラッシュエリアに出たユニット。ラッシュ・効果で出す・置き換え等、手段を問わない。バトルエリアからラッシュエリアに戻ったユニットは含まない。
     - e の例外（バトルエリアに直接ラッシュしたユニットは【ゼニボム】の対象にならない）はそのまま。
   - 実装: `packages/engine/src/rules/rushAreaEntries.ts`（両カード共通の判定。applyAction の前後でラッシュエリアに増えたユニット）、`rules/restrictions.ts` zenibombBlocksBattleEntry、`rules/legend1/set9NamedEffectsC.ts` set9CBlocksBattleEntry。
+- **i. 同名の※タッグを2枚常駐させたときの太字部分の回数** — R-KW-TAG-01, RK-242
+  - 公式: `grnrngr/faq-rider_3` RK-240（クライマックス刑事。RK-242 の誤記）「１度のラッシュフェイズの間に太字部分の効果は１度だけしか発動することはできません」。
+  - atwiki: `atwiki/page-762` RK-242 Q1「同名のタッグ…を２枚同時に常駐させていれば、両方の効果をそれぞれ発動することができます。(2010/10/25修正)」。
+  - 本書: **ユーザー決定（2026-10-19）**「両方の効果をそれぞれ発動することができる」。§1.2 例外2（日付つきの後日修正を採る）と同じく atwiki の修正後を採る。2026-10-17 の確認（review-items B-11、公式 FAQ どおり「まとめて1回」）を置き換える。
+    - 「1度だけ」は常駐1枚ごとに数える。同名の常駐を2枚置けば、同じフェイズにそれぞれ1度ずつ太字部分を実行できる。同じ1枚を2回は使えない。
+    - RK のタッグ（RK-242・RK-244・RK-248・RK-253）と RS のタッグ（RS-519・RS-522・RS-524・RS-525・RS-608・RS-609。RS-521 は回数制限のない誘発なので元から1枚ごと）に同じく当てはめる。
+  - 実装: `packages/engine/src/rules/legend1/set8NamedEffectsA.ts` residentUsedThisTurn、`rules/legend1/set9NamedEffectsA.ts` residentUsed（どちらもその1枚の使用だけを見る）。
 
 ---
 

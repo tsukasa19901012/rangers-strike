@@ -775,16 +775,14 @@ export function isSet9AResidentCard(cardId: string): boolean {
   return cardId === GOSHOKU_CARD_ID || cardId === SOUL_CARD_ID;
 }
 
-/** この常駐（または同名の常駐。同名のタッグは2枚でも太字部分の効果は1度だけ。grnrngr/faq-rider_3 RK-240）を使ったか。 */
-function sameNameResidentUsed(state: GameState, playerId: PlayerId, op: CardInstance): boolean {
+/**
+ * この常駐（この1枚）を使ったか。同名のタッグを2枚常駐させていれば、それぞれ1度ずつ使える（ユーザー決定 2026-10-19
+ * 「両方の効果をそれぞれ発動することができる」・atwiki/page-762 RK-242 Q1（2010/10/25修正）。docs/rules/README.md §5.7 i）。
+ */
+function residentUsed(state: GameState, playerId: PlayerId, op: CardInstance): boolean {
   const player = state.players[playerId];
-  const sameName = player.operation.filter((c) => sameName9A(state, c.cardId, op.cardId));
-  if (op.cardId === GOSHOKU_CARD_ID) return sameName.some((c) => isResidentActivatedThisRush(c));
-  return sameName.some((c) => soulUsedThisTurn(player, c.instanceId));
-}
-
-function sameName9A(state: GameState, a: string, b: string): boolean {
-  return a === b || cardName(state.definitions, a) === cardName(state.definitions, b);
+  if (op.cardId === GOSHOKU_CARD_ID) return isResidentActivatedThisRush(op);
+  return soulUsedThisTurn(player, op.instanceId);
 }
 
 export function canActivateSet9AResident(state: GameState, playerId: PlayerId, operationInstanceId: string): boolean {
@@ -794,7 +792,7 @@ export function canActivateSet9AResident(state: GameState, playerId: PlayerId, o
   const op = player.operation.find((c) => c.instanceId === operationInstanceId);
   if (!op || !isSet9AResidentCard(op.cardId)) return false;
   if (state.phase !== (op.cardId === GOSHOKU_CARD_ID ? "rush" : "battle")) return false;
-  if (sameNameResidentUsed(state, playerId, op)) return false;
+  if (residentUsed(state, playerId, op)) return false;
   // ※タッグ: 自分の太字部分か、入れ替えられる他の自軍常駐の太字部分を実行できること（rules/legend1/set8NamedEffectsA.ts）。
   return tagBoldExecutable(state, playerId, op);
 }

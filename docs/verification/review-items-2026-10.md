@@ -18,6 +18,8 @@
 
 **【2026-10-17 ユーザー確認】** 3件とも OK（今の実装と資料のとおりで進める）。実装・テストは変更なし。
 
+**【2026-10-19 ユーザー決定】** 1（B-11）は「両方の効果をそれぞれ発動することができる」に変更（同名の常駐は1枚ごとに1回ずつ）。B-11 の末尾を参照。
+
 ---
 
 # A. テストの前提を出典に合わせて変えたもの
@@ -720,6 +722,8 @@
 - `packages/engine/src/rules/legend1/set8NamedEffectsA.ts:1066`〜1067（コメント）、1086〜1096 行（`residentUsedThisTurn`）
 - `packages/engine/src/rules/legend1/set9NamedEffectsA.ts:778`〜783（`sameNameResidentUsed`）
 - スペック：`packages/engine/src/rulesSpec/07-perm-tag-other.test.ts:131`
+
+**【2026-10-19 ユーザー決定】** 「両方の効果をそれぞれ発動することができる」— atwiki/page-762 RK-242 Q1（2010/10/25修正）を採り、同名のタッグは常駐1枚ごとに1度ずつ使える。RK・RS のタッグとも同じ。2026-10-17 の確認（まとめて1回）を置き換える。対応済み（コミット COMMIT1）。docs/rules/README.md §5.7 i。
 
 ## B-12. RS-586 巨神ゴードム：CPU が捨札にする戦闘員の選び方
 

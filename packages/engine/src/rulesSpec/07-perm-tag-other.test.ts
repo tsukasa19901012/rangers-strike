@@ -127,8 +127,9 @@ describe("R-KW-TAG-01 タッグ", () => {
   const activate = (s: GameState, opId: string) => act(s, { type: "activate_resident_operation", playerId: "player1", operationInstanceId: opId });
   const choose = (s: GameState, id: string) => act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: id });
 
-  // 「２枚常駐させていても…太字部分の効果は１度だけ」
-  it("R-KW-TAG-01: 同名のタッグ（ボウケンスピリッツ2枚）を常駐させても、1度のラッシュフェイズに太字部分の効果は1度だけ（出典: grnrngr/faq-rider_3 RK-240「１度のラッシュフェイズの間に太字部分の効果は１度だけしか発動することはできません」）", () => {
+  // ユーザー決定（2026-10-19）「両方の効果をそれぞれ発動することができる」— atwiki/page-762 RK-242 Q1 の後日修正（2010/10/25修正）を採り、
+  // grnrngr/faq-rider_3 RK-240「１度だけしか発動することはできません」は採らない（README §1.2 例外2・§5.7 i）。RS のタッグにも同じく当てはめる。
+  it("R-KW-TAG-01: 同名のタッグ（ボウケンスピリッツ2枚）を常駐させていれば、1度のラッシュフェイズに両方の太字部分の効果をそれぞれ1度ずつ発動できる（出典: ユーザー決定 2026-10-19「両方の効果をそれぞれ発動することができる」・atwiki/page-762 RK-242 Q1（2010/10/25修正））", () => {
     let s = tagBoard([inst(BOUKEN.id, "a"), inst(BOUKEN.id, "b")]);
     expect(canActivate(s, `${BOUKEN.id}:a`)).toBe(true);
     expect(canActivate(s, `${BOUKEN.id}:b`)).toBe(true);
@@ -139,7 +140,24 @@ describe("R-KW-TAG-01 タッグ", () => {
     s = choose(s, `${NUMBERED.id}:u`);
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(canActivate(s, `${BOUKEN.id}:a`)).toBe(false);
+    // 同名の別の1枚（b）はまだ使っていないので、同じラッシュフェイズに実行できる。
+    expect(canActivate(s, `${BOUKEN.id}:b`)).toBe(true);
+    s = activate(s, `${BOUKEN.id}:b`);
+    if (s.pendingEffectChoice?.effectId === "tag_bold_pick") s = choose(s, `${BOUKEN.id}:b`);
+    s = choose(s, "TST-OP:c2");
+    s = choose(s, `${NUMBERED.id}:u`);
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(canActivate(s, `${BOUKEN.id}:a`)).toBe(false);
     expect(canActivate(s, `${BOUKEN.id}:b`)).toBe(false);
+  });
+
+  it("R-KW-TAG-01: 同名のタッグを2枚常駐させても、1枚ごとの「1度だけ」は変わらない — 同じ常駐を同じラッシュフェイズに2回は実行できない（出典: atwiki/page-1152「自軍ラッシュフェイズ中に1度だけ」・ユーザー決定 2026-10-19）", () => {
+    let s = tagBoard([inst(BOUKEN.id, "a"), inst(BOUKEN.id, "b")]);
+    s = activate(s, `${BOUKEN.id}:a`);
+    if (s.pendingEffectChoice?.effectId === "tag_bold_pick") s = choose(s, `${BOUKEN.id}:a`);
+    s = choose(s, "TST-OP:c1");
+    s = choose(s, `${NUMBERED.id}:u`);
+    expect(hasLegal(s, (a) => a.type === "activate_resident_operation" && a.operationInstanceId === `${BOUKEN.id}:a`)).toBe(false);
   });
 
   // 「これは2つのオペレーションがどちらもタッグを持っていなければ有効にならない」

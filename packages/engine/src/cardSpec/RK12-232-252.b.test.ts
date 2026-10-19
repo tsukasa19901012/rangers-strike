@@ -10,10 +10,11 @@
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-RK-NNN …」）で残す。
  * レアリティは atwiki の「ノーマル／ノーマルレア／レア／スーパーレア」を N／NR／R／SR として照合する。
  *
- * 公式どうしの食い違い（ユーザーの判断待ち。it.todo に残す）:
+ * 公式どうしの食い違い（ユーザー決定済み）:
  *  - RK-242 Q1（atwiki/page-762「同名のタッグ…を２枚同時に常駐させていれば、両方の効果をそれぞれ発動することができます。(2010/10/25修正)」）と
- *    grnrngr/faq-rider-3「１度のラッシュフェイズの間に太字部分の効果は１度だけしか発動することはできません」。README §1.2 例外2 では
- *    日付つきの修正が優先だが、エンジンは公式FAQ どおり（docs/verification/review-items-2026-10.md B-11、2026-10-17 ユーザー確認済み）。
+ *    grnrngr/faq-rider-3「１度のラッシュフェイズの間に太字部分の効果は１度だけしか発動することはできません」。
+ *    ユーザー決定（2026-10-19）「両方の効果をそれぞれ発動することができる」により atwiki の修正後を採る（README §5.7 i、
+ *    docs/verification/review-items-2026-10.md B-11）。
  *
  * 既存の照合で済んでいるもの（重複させない）:
  *  - RK-239 Q3（インフェルシアの花嫁の太字部分を RK-239 と読み替えてキバ（XG5-074）をホールドした場合）— cardSpec/RS8-516-537.a.test.ts RS-519
@@ -386,9 +387,20 @@ describe("RK-242 クライマックス刑事", () => {
     expect(canActivateResident(nextPhase(cxBoard()), "RK-242:cx")).toBe(false);
   });
 
-  it.todo(
-    "RK-242: 公式Q&A — 同名のタッグ（RK-242 と PK-011）を2枚同時に常駐させていれば、1度のラッシュフェイズに両方の太字部分の効果をそれぞれ発動できる（出典: atwiki/page-762 Q1（2010/10/25修正））— 公式FAQ（grnrngr/faq-rider-3「１度だけしか発動することはできません」）と食い違う。README §1.2 例外2 では日付つきの修正が優先だが、同名のタッグの扱いはユーザー確認済みの現行実装（review-items B-11、公式FAQ どおり）を変えないため、ユーザーの判断待ち",
-  );
+  // ユーザー決定（2026-10-19）「両方の効果をそれぞれ発動することができる」（docs/rules/README.md §5.7 i）。
+  // Q1 の例は RK-242 と PK-011 だが、PK-011 はカタログの同一性（packages/cards/src/reprints.ts）に入っていないため、RK-242 を2枚使う（同名のタッグ2枚）。
+  it("RK-242: 公式Q&A — 同名のタッグ（クライマックス刑事2枚）を2枚同時に常駐させていれば、1度のラッシュフェイズに両方の太字部分の効果をそれぞれ発動できる（出典: atwiki/page-762 Q1「両方の効果をそれぞれ発動することができます。(2010/10/25修正)」・ユーザー決定 2026-10-19「両方の効果をそれぞれ発動することができる」）", () => {
+    const pickOwnBold = (st: GameState, opId: string) => (st.pendingEffectChoice?.effectId === "tag_bold_pick" ? pick(st, opId) : st);
+    let s = cxBoard({ operation: [resident("RK-242", "cx"), resident("RK-242", "cx2")], power: [faceUp("TST-P", "up"), faceUp("TST-P", "up2")] });
+    s = resolveAll(pick(pickOwnBold(activateResident(s, "RK-242:cx"), "RK-242:cx"), "TST-P:up"));
+    expect(canActivateResident(s, "RK-242:cx")).toBe(false);
+    // 同名のもう1枚（cx2）はまだ使っていないので、同じラッシュフェイズにもう1度太字部分を実行できる。
+    expect(canActivateResident(s, "RK-242:cx2")).toBe(true);
+    s = resolveAll(pick(pickOwnBold(activateResident(s, "RK-242:cx2"), "RK-242:cx2"), "TST-P:up2"));
+    expect(zoneOf(s, "player1", "TST-P:up")).toBe("deck");
+    expect(zoneOf(s, "player1", "TST-P:up2")).toBe("deck");
+    expect(canActivateResident(s, "RK-242:cx2")).toBe(false);
+  });
 });
 
 // ===========================================================================

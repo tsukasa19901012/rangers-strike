@@ -359,6 +359,20 @@ describe("RS-608 五色の戦士", () => {
     expect(canActivateResident(s, "RS-608:op")).toBe(false);
   });
 
+  it("RS-608: 同名の五色の戦士を2枚常駐させていれば、1度のラッシュフェイズにそれぞれ1度ずつ起動できる（1枚目を使っても2枚目は使用済みにならない）（出典: ユーザー決定 2026-10-19「両方の効果をそれぞれ発動することができる」・atwiki/page-762 RK-242 Q1（2010/10/25修正）・docs/rules/README.md §5.7 i）", () => {
+    let s = activateGoshoku(placed({ operation: [inst("RS-608", "op"), inst("RS-608", "op2")] }));
+    if (s.pendingEffectChoice?.effectId === "tag_bold_pick") s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-608:op" });
+    s = resolveAll(s, ["TST-UNIT-0:s"]);
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(canActivateResident(s, "RS-608:op")).toBe(false);
+    expect(canActivateResident(s, "RS-608:op2")).toBe(true);
+    s = act(s, { type: "activate_resident_operation", playerId: "player1", operationInstanceId: "RS-608:op2" });
+    if (s.pendingEffectChoice?.effectId === "tag_bold_pick") s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "RS-608:op2" });
+    s = resolveAll(s, ["TST-UNIT-0:s"]);
+    expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(2);
+    expect(canActivateResident(s, "RS-608:op2")).toBe(false);
+  });
+
   it("RS-608: 宣言できる特徴は「レッド」「イエロー」「ブルー」「ブラック」「ホワイト」の5つだけ（出典: atwiki/page-1495）", () => {
     let s = activateGoshoku(placed());
     s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: s.pendingEffectChoice!.validInstanceIds[0]! });

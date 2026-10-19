@@ -1063,8 +1063,9 @@ register(BIO_PARTICLE_ANSWER_EFFECT_ID, (state, playerId, instanceId) => {
 // - RS-524 呉越同舟（自軍バトルフェイズ中に1度だけ。atwiki/page-1151）
 // - RS-525 頼もしい相棒（自軍ラッシュフェイズ中に1度だけ。atwiki/page-1153）
 // 「実行してもよい」は起動するかどうかの選択（起動しなければ何も起きない）。「1度だけ」はターンの記録で数える。
-// 同名のタッグを2枚常駐させても、太字部分の効果は1度だけ（grnrngr/faq-rider_3 RK-240「１度のラッシュフェイズの間に太字部分の
-// 効果は１度だけしか発動することはできません」）なので、同名の常駐のどれかを使えば使用済み。
+// 「1度だけ」は常駐1枚ごとに数える。同名のタッグを2枚常駐させていれば、両方の太字部分の効果をそれぞれ1度ずつ使える
+// （ユーザー決定 2026-10-19「両方の効果をそれぞれ発動することができる」。atwiki/page-762 RK-242 Q1「両方の効果をそれぞれ
+// 発動することができます。(2010/10/25修正)」を採り、grnrngr/faq-rider_3 RK-240「１度だけ」は採らない。README §5.7 i）。
 //
 // ※タッグ（R-KW-TAG-01）「太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる」:
 // 太字部分（『』の中）を実行する時点で、他の自軍のタッグの常駐の太字部分のうち実行できるものがあれば、どれを実行するかを選ぶ
@@ -1088,15 +1089,14 @@ export function isSet8AResident(cardId: string): boolean {
   return cardId in SET8A_RESIDENT_PHASE;
 }
 
-/** このターン、この常駐（または同名の常駐）の太字部分の効果を使ったか。 */
+/** このターン、この常駐（この1枚）の太字部分の効果を使ったか。同名の別の常駐を使っても使用済みにならない（README §5.7 i）。 */
 function residentUsedThisTurn(state: GameState, playerId: PlayerId, op: CardInstance): boolean {
   return getPlayerModifiers(state.players[playerId]).some(
     (m) =>
       m.kind === "rule" &&
       m.ruleId === RESIDENT_USED_RULE &&
       m.scope === "turn" &&
-      ((m.payload as { instanceId?: string } | undefined)?.instanceId === op.instanceId ||
-        (!!m.sourceCardId && sameCardName(cardName(state.definitions, m.sourceCardId), cardName(state.definitions, op.cardId)))),
+      (m.payload as { instanceId?: string } | undefined)?.instanceId === op.instanceId,
   );
 }
 
