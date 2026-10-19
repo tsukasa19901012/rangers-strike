@@ -7374,7 +7374,10 @@
       ],
       "rarity": "LR",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "features": [
+        "メカ"
+      ]
     },
     {
       "id": "XP-016",
@@ -7383,7 +7386,11 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "rushAdditionalCondition": {
+        "conditionId": "state_gate",
+        "text": "特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚以上ある"
+      }
     },
     {
       "id": "XP-017",

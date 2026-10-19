@@ -244,6 +244,16 @@ export function evaluateStateGate(
     return total >= Number(discardTotalMatch[1]);
   }
 
+  // XP-016「特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚以上ある」（捨札にはしない。atwiki/page-1982）。
+  const featureDiscardTotalMatch = text.match(/特徴[「｢]([^」｣]+)[」｣]を持つ捨札が自軍と敵軍で合計(\d+)枚以上ある/);
+  if (featureDiscardTotalMatch) {
+    const feature = featureDiscardTotalMatch[1]!;
+    const total = [...state.players.player1.discard, ...state.players.player2.discard].filter((c) =>
+      (getDefinition(state.definitions, c.cardId)?.features ?? []).includes(feature),
+    ).length;
+    return total >= Number(featureDiscardTotalMatch[2]);
+  }
+
   const namedDiscardMatch = text.match(/^自軍捨札に[「｢]([^」｣]+)[」｣]がある$/);
   if (namedDiscardMatch) {
     // RS-327: 自軍捨札にその名前のカードがあること（捨札にはしない。atwiki/page-488）。

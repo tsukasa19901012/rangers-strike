@@ -814,7 +814,7 @@ function applyDragVisor(state: GameState, ctx: GrantKeywordContext): GrantKeywor
   const ids = adventIds(state, ctx.playerId, []);
   if (ids.length === 0) return { state, detail: "rk333:no_advent" };
   return {
-    state: openOrQueue(state, { ...base(ctxBase(ctx), "RK-333"), effectId: VISOR_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, optional: true }),
+    state: openOrQueue(state, { ...base(ctxBase(ctx), ctx.sourceCardId), effectId: VISOR_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, optional: true }),
     detail: VISOR_EFFECT_ID,
   };
 }
@@ -834,7 +834,7 @@ function visorTarget(state: GameState, pending: PendingEffectChoice, playerId: P
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) return proceed(next, pending);
-  return openNext(next, pending, genericPick({ playerId, phasePlayerId: pending.phasePlayerId, sourceInstanceId: pending.sourceInstanceId }, "RK-333", VISOR_TARGET_EFFECT_ID, ids, false, "discard"));
+  return openNext(next, pending, genericPick({ playerId, phasePlayerId: pending.phasePlayerId, sourceInstanceId: pending.sourceInstanceId }, pending.sourceCardId, VISOR_TARGET_EFFECT_ID, ids, false, "discard"));
 }
 
 CHOICE_RESOLVERS[VISOR_EFFECT_ID] = (state, playerId, instanceId) => {

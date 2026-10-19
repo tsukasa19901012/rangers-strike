@@ -128,6 +128,7 @@ import { tryRk14CardEffect } from "../rules/rk/rk14UnitEffects";
 import { tryRk15CardEffect } from "../rules/rk/rk15UnitEffects";
 import { tryRk16CardEffect } from "../rules/rk/rk16UnitEffects";
 import { tryRm1CardEffect } from "../rules/rm/rm1Effects";
+import { tryPromoCardEffect } from "../rules/promo";
 import { tryRm2CardEffect } from "../rules/rm/rm2Effects";
 import { tryRm3CardEffect } from "../rules/rm/rm3Effects";
 import { tryBk1CardEffect } from "../rules/bk/bk1Effects";
@@ -489,6 +490,9 @@ export function applyGrantKeyword(
   // スペシャルメタルエディション RM-001〜RM-021 のカード固有の効果（`rm1::` キーワード。rules/rm/rm1Effects.ts）。
   const rm1 = tryRm1CardEffect(state, ctx, keyword);
   if (rm1) return rm1;
+  // プロモーションカードのカード固有の効果（`promo::` キーワード。rules/promo）。
+  const promo = tryPromoCardEffect(state, ctx, keyword);
+  if (promo) return promo;
   // スペシャルメタルエディション RM-022〜RM-042 のカード固有の効果（`rm2::` キーワード。rules/rm/rm2Effects.ts）。
   const rm2 = tryRm2CardEffect(state, ctx, keyword);
   if (rm2) return rm2;

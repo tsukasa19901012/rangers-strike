@@ -235,6 +235,8 @@ export type PendingBattle = {
   rk9BerryOffered?: boolean;
   /** RM-062 テントリーナ【リーナステッキ】の選択を出した（rules/rm/rm3Effects.ts）。 */
   rm3TentrinaOffered?: boolean;
+  /** プロモーションカードの「アタックされたとき」の選択を出した（XP-016【赤い瞳に宿るもの】等。rules/promo）。 */
+  promoAttackedOffered?: boolean;
   /** RS-414【ディオネを守る壁】の選択を出したか。 */
   dioneWallOffered?: boolean;
   /** RS-583【災いを受け止める覚悟】の「代わりに選ばれたことにする」選択をこのアタックで既に出したか。 */
@@ -764,6 +766,8 @@ export type PendingEffectChoice = {
     /** RM-037: 相手の手札から選んだカード。 */
     handInstanceId?: string;
   };
+  /** プロモーションカードの選択の続き（rules/promo。カードごとの値をモジュール側で読む）。 */
+  promoMeta?: Readonly<Record<string, unknown>>;
   /** スペシャルメタルエディション RM-001〜RM-021 の選択の続き（rules/rm/rm1Effects.ts）。 */
   rm1Meta?: {
     /** RM-006: 選べる数（「メカ」「人型」の自軍ユニットの数）。 */
@@ -1411,6 +1415,8 @@ export type GameState = {
   rm2PendingTriggers?: Array<{ kind: "rm026_vehicle"; playerId: PlayerId; instanceId: string; phasePlayerId: PlayerId }>;
   /** RM-017 オメデトロフィーの、まだ開いていない発動（rules/rm/rm1Effects.ts applyRm1AfterAction）。 */
   rm1PendingTriggers?: Array<{ kind: "rm017"; playerId: PlayerId; sourceInstanceId: string; unitCardId: string }>;
+  /** プロモーションカードの、まだ開いていない発動（XP-013【キョウリュウマル】等。rules/promo/promoAfterAction.ts）。 */
+  promoPendingTriggers?: Array<{ kind: string; playerId: PlayerId; sourceInstanceId: string; phasePlayerId: PlayerId }>;
   /** RK-153【車両強奪】で選ばれたユニット（次の相手のスタートフェイズに戻せない。rules/rk/rk8UnitEffects.ts）。 */
   rk8Seized?: Array<{ playerId: PlayerId; instanceId: string }>;
   /** RK-011 第三の眼: 無効にしなかったカウンターの使用をもう一度処理する（core/applyAction.ts の後処理）。 */

@@ -147,6 +147,7 @@ import { canConfirmRk13Choice, isRk13ChoiceEffect } from "../rules/rk/rk13UnitEf
 import { canConfirmRk14Choice, isRk14ChoiceEffect } from "../rules/rk/rk14UnitEffects";
 import { canConfirmRk15Choice, isRk15ChoiceEffect } from "../rules/rk/rk15UnitEffects";
 import { canConfirmRk16Choice, isRk16ChoiceEffect } from "../rules/rk/rk16UnitEffects";
+import { canConfirmPromoChoice, isPromoChoiceEffect } from "../rules/promo";
 import { canConfirmRm1Choice, isRm1ActivatableResident, isRm1ChoiceEffect, isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "../rules/rm/rm1Effects";
 import { rm1ActsAsVehicle } from "../rules/rm/rm1Fields";
 import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "../rules/rm/rm2Effects";
@@ -1332,6 +1333,13 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRm2Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isPromoChoiceEffect(pending.effectId)) {
+    // プロモーションカードの選択（rules/promo）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    if (canConfirmPromoChoice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

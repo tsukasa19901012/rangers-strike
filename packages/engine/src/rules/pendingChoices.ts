@@ -165,6 +165,7 @@ import { isRk14ChoiceEffect, tryConfirmRk14Choice, tryResolveRk14Choice, trySkip
 import { isRk15ChoiceEffect, tryConfirmRk15Choice, tryResolveRk15Choice, trySkipRk15Choice } from "./rk/rk15UnitEffects";
 import { isRk16ChoiceEffect, tryConfirmRk16Choice, tryResolveRk16Choice, trySkipRk16Choice } from "./rk/rk16UnitEffects";
 import { isRm1ChoiceEffect, tryConfirmRm1Choice, tryResolveRm1Choice, trySkipRm1Choice } from "./rm/rm1Effects";
+import { isPromoChoiceEffect, tryConfirmPromoChoice, tryResolvePromoChoice, trySkipPromoChoice } from "./promo";
 import { isRm2ChoiceEffect, tryCompleteRm2HoldChoice, tryConfirmRm2Choice, tryResolveRm2Choice, trySkipRm2Choice } from "./rm/rm2Effects";
 import { isRm3ChoiceEffect, tryCompleteRm3HoldChoice, tryConfirmRm3Choice, tryResolveRm3Choice, trySkipRm3Choice } from "./rm/rm3Effects";
 import { isBk1ChoiceEffect, tryResolveBk1Choice, trySkipBk1Choice } from "./bk/bk1Effects";
@@ -684,6 +685,7 @@ export function isValidEffectChoiceTarget(
     isRk15ChoiceEffect(pending.effectId) ||
     isRk16ChoiceEffect(pending.effectId) ||
     isRm1ChoiceEffect(pending.effectId) ||
+    isPromoChoiceEffect(pending.effectId) ||
     isRm2ChoiceEffect(pending.effectId) ||
     isRm3ChoiceEffect(pending.effectId) ||
     isBk1ChoiceEffect(pending.effectId) ||
@@ -2074,6 +2076,8 @@ export function applyConfirmEffectChoice(
   if (rk16) return rk16;
   const rm1 = tryConfirmRm1Choice(state, playerId);
   if (rm1) return rm1;
+  const promo = tryConfirmPromoChoice(state, playerId);
+  if (promo) return promo;
   const rm2 = tryConfirmRm2Choice(state, playerId);
   if (rm2) return rm2;
   const rm3 = tryConfirmRm3Choice(state, playerId);
@@ -3083,6 +3087,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (rk16) return rk16;
   const rm1 = trySkipRm1Choice(state, playerId);
   if (rm1) return rm1;
+  const promo = trySkipPromoChoice(state, playerId);
+  if (promo) return promo;
   const rm2 = trySkipRm2Choice(state, playerId);
   if (rm2) return rm2;
   const rm3 = trySkipRm3Choice(state, playerId);
@@ -3418,6 +3424,8 @@ export function applyEffectChoiceSelect(
   if (rk16) return rk16;
   const rm1 = tryResolveRm1Choice(state, playerId, instanceId);
   if (rm1) return rm1;
+  const promo = tryResolvePromoChoice(state, playerId, instanceId);
+  if (promo) return promo;
   const rm2 = tryResolveRm2Choice(state, playerId, instanceId);
   if (rm2) return rm2;
   const rm3 = tryResolveRm3Choice(state, playerId, instanceId);
