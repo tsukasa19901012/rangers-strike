@@ -6,6 +6,8 @@ import { describe, expect, it } from "vitest";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance } from "../types/game";
 import { canRush, inst, KW, powerCards, realDef, state, unitDef } from "./07-helpers";
+import { addTurnRuleModifier } from "../core/scopedModifiers";
+import { TURN_RULE_IDS } from "../types/scopedModifiers";
 
 /** 追加条件「自軍Sユニット1体をパワーゾーンに送る」を持つブラスト持ち M ユニット（必要パワー5）。 */
 const BLAST = unitDef("RSPEC-BLAST", {
@@ -100,6 +102,36 @@ describe("R-KW-BLAST-02 条件の変更", () => {
   it("R-KW-BLAST-02: XG2-034 があっても自軍 L ユニットがいれば追加条件は無視できない（出典: atwiki/page-1801 XG2-034 本文）", () => {
     const s = rushPhase({ damage: 5, rush: [inst(BUGGY.id, "bg"), inst(L_UNIT.id, "l")], extra: [BUGGY] });
     expect(canRush(s, b.instanceId)).toBe(false);
+  });
+});
+
+// ユーザー決定（2026-10-19。案1「字面どおり残り1点＝ダメージ13点」）: RS-348 メディテーションが働いている間、ブラストの「残りダメージ」は
+// 負ける点数（14点）からの残り。メディテーションが無効（無限連鎖カード・RK-248）なら7点が基準。docs/rules/README.md §5.7 l。
+describe("R-KW-BLAST-01 RS-348 メディテーションとの関係", () => {
+  const MEDITATION = realDef("RS-348");
+  const BUGGY = realDef("XG2-034");
+  const withMeditation = (opts: Parameters<typeof rushPhase>[0]) => {
+    const s = rushPhase({ ...opts, extra: [MEDITATION, ...(opts.extra ?? [])] });
+    return { ...s, players: { ...s.players, player1: { ...s.players.player1, operation: [inst(MEDITATION.id, "med")] } } };
+  };
+
+  it("R-KW-BLAST-01: メディテーションが働いている間は、ダメージ13点（14点まで残り1点）で自軍 L ユニットがなければ追加条件を無視できる（出典: ユーザー決定 2026-10-19 案1「字面どおり残り1点＝ダメージ13点」・grnrngr/faq-card-9 ブラスト「自分がゲームに負けるまで残りダメージ１点」・RS-348 本文「ダメージが14点になるまでゲームに負けない」）", () => {
+    expect(canRush(withMeditation({ damage: 13 }), b.instanceId)).toBe(true);
+  });
+
+  it("R-KW-BLAST-01: メディテーションが働いている間は、ダメージ12点（残り2点）では追加条件を無視できない（ダメージ6点の基準は使わない）（出典: ユーザー決定 2026-10-19 案1）", () => {
+    expect(canRush(withMeditation({ damage: 12 }), b.instanceId)).toBe(false);
+    expect(canRush(withMeditation({ damage: 6 }), b.instanceId)).toBe(false);
+  });
+
+  it("R-KW-BLAST-01: メディテーションと XG2-034 ブラストバギーがあれば、ダメージ12点（残り2点）でも追加条件を無視できる（出典: ユーザー決定 2026-10-19 案1・atwiki/page-1801 XG2-034「残りダメージ1点または2点」）", () => {
+    expect(canRush(withMeditation({ damage: 12, rush: [inst(BUGGY.id, "bg")], extra: [BUGGY] }), b.instanceId)).toBe(true);
+  });
+
+  it("R-KW-BLAST-01: 相手の無限連鎖カードでメディテーションが無効なら、7点の基準に戻り、ダメージ6点で追加条件を無視できる（出典: ユーザー決定 2026-10-19・grnrngr/faq-card-6 RS-348 Q2）", () => {
+    const s = withMeditation({ damage: 6 });
+    const negated = { ...s, players: { ...s.players, player2: addTurnRuleModifier(s.players.player2, TURN_RULE_IDS.INFINITE_CHAIN) } };
+    expect(canRush(negated, b.instanceId)).toBe(true);
   });
 });
 
