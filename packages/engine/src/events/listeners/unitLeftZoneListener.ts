@@ -1,3 +1,4 @@
+import { applyXg6OnUnitLeft } from "../../rules/xg6/xg6Hooks";
 import type { EventListener, UnitLeftZoneEvent } from "../types";
 import { resolveUnitLeftZoneEffectsImpl } from "../../rules/leaveEffects";
 import { applyGegeruOnEnemyDestroyed } from "../../rules/residentOps";
@@ -38,6 +39,8 @@ export const unitLeftZoneListener: EventListener = (event, state) => {
     nextState = applyRk14OnUnitLeft(nextState, leaveEvent);
     // RK-302【ワームの頂点に立つ男】の後半・RK-303【擬態の解除】（rules/rk/rk15UnitEffects.ts）。
     nextState = applyRk15OnUnitLeft(nextState, leaveEvent);
+    // XG6-001 火の山、吠える（※常駐。rules/xg6/xg6Hooks.ts）。
+    nextState = applyXg6OnUnitLeft(nextState, leaveEvent);
   }
   return {
     state: nextState,

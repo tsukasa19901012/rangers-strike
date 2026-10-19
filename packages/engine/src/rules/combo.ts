@@ -1,3 +1,4 @@
+import { tryXg6OnEnterBattle } from "./xg6/xg6Hooks";
 import { tryRm3OnEnterBattle } from "./rm/rm3Effects";
 import { tryRm2OnEnterBattle } from "./rm/rm2Effects";
 import type { CardDefinition } from "@rangers-strike/cards";
@@ -289,6 +290,8 @@ export function resolveEnterBattleEffectsImpl(
         nextState = tryRm2OnEnterBattle(nextState, playerId, battleCard);
         // RM-047 ダークジェイカー・RM-053 スタッガータンク・RM-054 レッドジャイロ（ライドされて一緒に出たビークルの効果。rules/rm/rm3Effects.ts）。
         nextState = tryRm3OnEnterBattle(nextState, playerId, battleCard);
+        // XG6-008 炎神剣（コマンドゾーンから。OT の自軍 L ユニットがバトルエリアに出たとき。rules/xg6/xg6Hooks.ts）。
+        nextState = tryXg6OnEnterBattle(nextState, playerId, battleCard);
         if (nextState.pendingEffectChoice) {
           return { state: nextState, logs, enterResumeFrom: resumeAt(1) };
         }

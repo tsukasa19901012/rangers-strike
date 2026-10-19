@@ -51,8 +51,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-007::zane6bf80",
-          "duration": "turn"
+          "keyword": "xg6::XG6-007::zan",
+          "duration": "permanent"
         }
       ]
     }

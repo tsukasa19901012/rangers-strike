@@ -9,6 +9,7 @@ import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { grantKeywordActiveOnCard } from "./ncGatedEffects";
 import { getDefinition, isSmallUnit, unitEffectiveCategories } from "../core/catalog";
 import { rk1IsSmallNow } from "./rk/rk1Features";
+import { unitFeatures } from "./addedFeatures";
 import { updatePlayer } from "../core/helpers";
 import { cardHasGrantKeyword, listCardGrantKeywords } from "../dsl/promotedKeywordBridge";
 import { applyUnitLeave, openEffectChoice } from "./pendingChoices";
@@ -211,6 +212,15 @@ function handDeployConditionMet(state: GameState, playerId: PlayerId, cardId: st
       if (d?.type !== "unit" || !rk1IsSmallNow(state, c)) return false;
       return unitEffectiveCategories(state, enemyId, c, enemy.battle.some((b) => b.instanceId === c.instanceId) ? "battle" : "rush").includes(catEnemy[1] as never);
     });
+  }
+  // 「特徴「X」または「Y」を持つ自軍ユニットがあれば」（XG6-017 ヤツデンワニ。atwiki/page-2290）— 自軍エリアにその特徴のユニットがあるとき。
+  const featured = text.match(/特徴「([^」]+)」または「([^」]+)」を持つ自軍ユニットがあれば、これを自軍ラッシュエリアに出してもよい/);
+  if (featured?.[1] && featured[2]) {
+    const wants = [featured[1], featured[2]];
+    const p = state.players[playerId];
+    return [...p.battle, ...p.rush].some(
+      (c) => getDefinition(state.definitions, c.cardId)?.type === "unit" && unitFeatures(state, playerId, c).some((f) => wants.includes(f)),
+    );
   }
   // 「自軍「X」があれば」（RK-180 モグラ獣人「自軍「仮面ライダーアマゾン」があれば」。atwiki/page-910）— 自軍エリアにそのカード名のユニット
   // （「これは「X」として使える」を含む）があるとき。

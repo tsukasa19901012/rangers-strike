@@ -53,13 +53,13 @@
       "name": "リンギ・がんじがため",
       "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒敵軍ユニットを1体選ぶ。そうしたとき、選んだユニットがリリース状態ならホールドし、ホールド状態なら撃破する。ただし、必要パワーの数字が、自軍捨札にあるカテゴリを2つ以上持つカードの枚数以下のユニットしか選べない。",
       "trigger": {
-        "type": "nc"
+        "type": "joint_combo_r"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-022::ringiganjigatame",
+          "keyword": "xg6::XG6-022::ganjigarame",
           "duration": "permanent"
         }
       ]

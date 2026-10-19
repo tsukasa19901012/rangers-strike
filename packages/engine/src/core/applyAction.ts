@@ -1,3 +1,4 @@
+import { activateXg6HandEffect, openXg6OnAttacked, openXg6OnStrike } from "../rules/xg6/xg6Hooks";
 import { noteEngineSideEffect } from "./sideEffects";
 import { payMirrorWorldSelection } from "../rules/mirrorWorldSelection";
 import { memoizeInSearch } from "./searchCache";
@@ -525,6 +526,9 @@ function continueAttackAfterDeclaration(
     const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...tentrina, pendingBattleEntry: undefined } : tentrina;
     return ok(parked, buildSimpleLogEntry(playerId, "rm062_lina_stick_choice"));
   }
+  // XG6-019【奥の手】・XG6-005【マジカルショータイム】（アタックするとき・アタックされたとき。rules/xg6/xg6Hooks.ts）。
+  const xg6Attacked = openXg6OnAttacked(battleState, pending, wingAttackFromRush);
+  if (xg6Attacked) return ok(xg6Attacked, buildSimpleLogEntry(playerId, "battle_pending"));
   // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
   const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
   // RS-414【ディオネを守る壁】: 冥府神の自軍ユニットがアタックされたとき、常駐を捨札にしてバトルを行わなくてもよい。
@@ -709,6 +713,12 @@ function continueStrikeAfterDeclaration(
 ): ActionResult {
   const playerId = pending.strikerPlayerId;
   const damage = pending.damage;
+  // XG6-019【奥の手】（敵軍ユニットがストライクをするとき。rules/xg6/xg6Hooks.ts）。
+  const xg6Strike = openXg6OnStrike(nextState, pending);
+  if (xg6Strike) {
+    const parked = state.pendingBattleEntry?.instanceId === strikerInstanceId ? { ...xg6Strike, pendingBattleEntry: undefined } : xg6Strike;
+    return ok(parked, buildSimpleLogEntry(playerId, "strike_pending", String(damage)));
+  }
   // RS-196 ダイナモビル【迎撃モビルミサイル】: ストライクされたとき発動できる（任意）。
   const mobil = openMobilMissileChoice(nextState, pending);
   if (mobil) {
@@ -811,6 +821,8 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
   ) {
     return false;
   }
+  // クロスギャザー ザ・ギガンティックタイタン XG6（`xg6::`。rules/xg6/xg6Hooks.ts）も、使ったあとで対象を選ぶ。
+  if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslEffect.effects.some((p) => p.type === "grant_keyword" && p.keyword.startsWith("xg6::"))) return false;
   return needsOperationTarget(cardId);
 }
 
@@ -3888,7 +3900,13 @@ function applyActionCore(
         // RS-559【パワーアロー】等「自分の手札からこのカードを捨札にして発動できる」（rules/legend1/set8NamedEffectsB.ts）。
         const handCard = player.hand.find((c) => c.instanceId === action.unitInstanceId);
         const fromHand = handCard ? activateSet8BHandEffect(state, playerId, action.unitInstanceId) : null;
-        if (!handCard || !fromHand) return fail("illegal_action");
+        if (!handCard || !fromHand) {
+          // XG6-009（手札から）・XG6-014【英雄の遺産】（パワーゾーンから。rules/xg6/xg6Hooks.ts）。
+          const xg6 = activateXg6HandEffect(state, playerId, action.unitInstanceId);
+          const xg6Card = player.hand.find((c) => c.instanceId === action.unitInstanceId) ?? player.power.find((c) => c.instanceId === action.unitInstanceId);
+          if (xg6 && xg6Card) return ok(xg6, buildLogEntry(playerId, "activate_field_unit_ability", xg6Card.cardId, state.definitions, "xg6"));
+          return fail("illegal_action");
+        }
         return ok(fromHand, buildLogEntry(playerId, "activate_field_unit_ability", handCard.cardId, state.definitions, "from_hand"));
       }
       const activated = activateFieldAbility(state, playerId, action.unitInstanceId);

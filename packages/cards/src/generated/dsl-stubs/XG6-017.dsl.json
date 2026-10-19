@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-017::dokonidemogaru",
+          "keyword": "xg6::XG6-017::phone",
           "duration": "permanent"
         }
       ]

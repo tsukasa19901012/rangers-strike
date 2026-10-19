@@ -286,6 +286,18 @@ export function evaluateStateGate(
     return hasSelfCommandWithFeature(player, state.definitions, features);
   }
 
+  // 「特徴「臨気」と「男」を持つ自軍ユニットがある」（XG6-021・XG6-022）— 両方の特徴を持つ1体。
+  const twoFeatureUnitMatch = text.match(/特徴[「｢]([^」｣]+)[」｣]と[「｢]([^」｣]+)[」｣]を持つ自軍ユニットがある/);
+  if (twoFeatureUnitMatch) {
+    const [, a, b] = twoFeatureUnitMatch;
+    return FIELD_ZONES.some((zone) =>
+      player[zone].some((card) => {
+        const def = getDefinition(state.definitions, card.cardId);
+        return !!def && isUnit(def) && (def.features ?? []).includes(a!) && (def.features ?? []).includes(b!);
+      }),
+    );
+  }
+
   const featureUnitMatch = text.match(/特徴[「｢]([^」｣]+)[」｣]を持つ自軍ユニットがある/);
   if (featureUnitMatch) {
     return hasSelfUnitWithFeature(player, state.definitions, featureUnitMatch[1]!);

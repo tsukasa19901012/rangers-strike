@@ -1,3 +1,4 @@
+import { collectXg6TurnEndQueue, openXg6TurnEndEntry } from "./xg6/xg6Hooks";
 import { clearRk8SeizedFor, collectRk8TurnEndQueue, openRk8TurnEndEntry } from "./rk/rk8UnitEffects";
 import { collectRk10TurnEndQueue, openRk10TurnEndEntry } from "./rk/rk10UnitEffects";
 import { collectRk11TurnEndQueue, openRk11TurnEndEntry } from "./rk/rk11UnitEffects";
@@ -373,6 +374,14 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.rk16Queue!;
     progress = { ...progress, rk16Queue: rest };
     nextState = openRk16TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // クロスギャザー ザ・ギガンティックタイタン XG6-005・XG6-011 の「ターン終了時」「ターンを終えるとき」（rules/xg6/xg6Hooks.ts）。
+  if (!progress.xg6Queue) progress = { ...progress, xg6Queue: collectXg6TurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.xg6Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.xg6Queue!;
+    progress = { ...progress, xg6Queue: rest };
+    nextState = openXg6TurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {

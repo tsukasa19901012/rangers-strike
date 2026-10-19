@@ -23,6 +23,7 @@ import {
   rideMountedVehicleBpBonus,
 } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
+import { xg6CommandCategories } from "../rules/xg6/xg6Fields";
 import { srBigBatonBpFloor } from "../rules/srEffects";
 import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
 import { unitFeatures } from "../rules/addedFeatures";
@@ -542,7 +543,8 @@ export function effectiveCommandCategories(
   cardId: string,
 ): Category[] {
   const def = getDefinition(definitions, cardId);
-  const printed = cardCategories(def);
+  // XG6-013【未来の戦士達へ】: コマンドゾーンにある間、WB・MA・ET が追加される（rules/xg6/xg6Fields.ts）。
+  const printed = xg6CommandCategories(cardId, cardCategories(def));
   if (!yogosteinGrantsDa(player)) return printed;
   if (printed.includes("DA")) return printed;
   if (parsePowerCost(def?.powerCost) > 3) return printed;

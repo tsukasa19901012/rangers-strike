@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-013::nohe",
+          "keyword": "xg6::XG6-013::mirai",
           "duration": "permanent"
         }
       ]

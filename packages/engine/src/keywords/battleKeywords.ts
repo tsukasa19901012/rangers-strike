@@ -1,3 +1,4 @@
+import { xg6GrantsBlast } from "../rules/xg6/xg6Fields";
 import { rm1GrantsScrum } from "../rules/rm/rm1Fields";
 import type { Category } from "@rangers-strike/cards";
 import { rk9EnemyKeywordsNullified } from "../rules/rk/rk9Fields";
@@ -278,7 +279,8 @@ export function blastBypassesRushAdditionalCondition(
   playerId: PlayerId,
   rushingCardId: string,
 ): boolean {
-  if (!cardHasBattleKeyword(state.definitions, rushingCardId, "blast")) return false;
+  // XG6-004 フルブラスト・アクション: このターン、手札の BP16000 以下の L ユニットのカードはブラストを得る（rules/xg6/xg6Fields.ts）。
+  if (!cardHasBattleKeyword(state.definitions, rushingCardId, "blast") && !xg6GrantsBlast(state, playerId, rushingCardId)) return false;
   const player = state.players[playerId];
   const remaining = loseDamageThreshold(state, playerId) - player.damage;
   // ルール: R-KW-BLAST-02 — XG2-034 ブラストバギーが（どちらかの）エリアにある間は残り1点または2点。

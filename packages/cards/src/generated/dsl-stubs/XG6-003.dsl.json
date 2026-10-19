@@ -60,8 +60,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-003::bakumaruchikonbain",
-          "duration": "turn"
+          "keyword": "xg6::XG6-003::multi_combine",
+          "duration": "permanent"
         }
       ]
     }
@@ -81,6 +81,33 @@
         [
           "RS-226"
         ]
+      ],
+      "partnerSlotAlternatives": [
+        {
+          "slot": 0,
+          "slots": [
+            [
+              "RS-051"
+            ],
+            [
+              "RS-052"
+            ],
+            [
+              "RS-053"
+            ]
+          ]
+        },
+        {
+          "slot": 1,
+          "slots": [
+            [
+              "RS-227"
+            ],
+            [
+              "RS-228"
+            ]
+          ]
+        }
       ]
     }
   ],

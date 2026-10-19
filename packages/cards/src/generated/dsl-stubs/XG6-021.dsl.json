@@ -40,12 +40,12 @@
       "name": "激臨剣",
       "text": "このユニットからコンビネーションする同カテゴリのLユニットは、このターン、次の能力を得る⇒これは、自軍捨札にあるカテゴリを2つ以上持つカード1枚につきBP+2000され、BP20000以上のとき「SP2」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "joint_combo_l"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-021::kene6bf80",
+          "keyword": "xg6::XG6-021::gekirinken",
           "duration": "permanent"
         }
       ]
