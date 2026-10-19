@@ -56,6 +56,8 @@ import {
 } from "../core/costWindow";
 import { hasScopedRestriction, hasTurnRuleModifier } from "../core/scopedModifiers";
 import { findInZone, opponent } from "../core/helpers";
+import { memoizeInSearchWithContext } from "../core/searchCache";
+import { actionContextState } from "./zordFeatureContext";
 import { TURN_RULE_IDS } from "../types/scopedModifiers";
 import { earthForceActive } from "./strikeReactions";
 import { effectiveBattleEntryHoldCount } from "./rushAdditionalCondition";
@@ -353,6 +355,19 @@ export function canMoveUnitToBattle(
   playerId: PlayerId,
   unit: CardInstance,
   fromZone: "rush" | "hand" = "rush",
+): boolean {
+  // CPU の探索の間は、同じ状態・同じユニットの判定を使い回す（合法手の列挙・出なければならないユニットの判定・
+  // ホールドの支払いの判定で何度も調べる。判定は applyAction / getLegalActions の入口の状態も読むので、それも区別する）。
+  return memoizeInSearchWithContext(state, actionContextState(), unit, `${playerId}:${fromZone}`, () =>
+    canMoveUnitToBattleUncached(state, playerId, unit, fromZone),
+  );
+}
+
+function canMoveUnitToBattleUncached(
+  state: GameState,
+  playerId: PlayerId,
+  unit: CardInstance,
+  fromZone: "rush" | "hand",
 ): boolean {
   const def = getDefinition(state.definitions, unit.cardId);
   if (!def || !canEnterBattleFromRush(def)) return false;

@@ -25,6 +25,16 @@ export type SearchCache = {
    * （探索の間は配列を書き換えないので、同じ配列は調べ直さない）。
    */
   cleanZones: WeakMap<object, string>;
+  /**
+   * applyAction / getLegalActions の入口の状態（rules/zordFeatureContext.ts actionContextState）も読む判定の結果。
+   * 状態ごと・入口の状態ごと（無ければ noContext）・対象のオブジェクトごと・key ごと。
+   */
+  withContext: WeakMap<GameState, ContextMemo>;
+};
+
+type ContextMemo = {
+  noContext: WeakMap<object, Map<string, unknown>>;
+  byContext: WeakMap<object, WeakMap<object, Map<string, unknown>>>;
 };
 
 let active: SearchCache | null = null;
@@ -32,7 +42,7 @@ let active: SearchCache | null = null;
 /** fn の間、状態ごとの計算結果を使い回す（入れ子の呼び出しは外側の表を使う）。fn の間は状態を書き換えないこと。 */
 export function withSearchCache<T>(fn: () => T): T {
   if (active) return fn();
-  active = { legalActions: new WeakMap(), memo: new WeakMap(), perCard: new WeakMap(), cleanZones: new WeakMap() };
+  active = { legalActions: new WeakMap(), memo: new WeakMap(), perCard: new WeakMap(), cleanZones: new WeakMap(), withContext: new WeakMap() };
   try {
     return fn();
   } finally {
@@ -92,5 +102,48 @@ export function memoizePerCardInSearch(
   const sideEffectsBefore = engineSideEffectCount();
   const value = compute();
   if (engineSideEffectCount() === sideEffectsBefore) byInstance.set(instance, value);
+  return value;
+}
+
+/**
+ * 探索の間は、状態・入口の状態（context。rules/zordFeatureContext.ts actionContextState の値）・対象のオブジェクト subject・key で
+ * 決まる計算 compute の結果を使い回す（探索の外では毎回計算する）。計算の中で状態の外に残る処理をしたときは覚えない。
+ * 結果をそのまま返すので、呼び出し側で書き換えない値（真偽値・数値・使うたびに写す値）に限る。
+ */
+export function memoizeInSearchWithContext<T>(
+  state: GameState,
+  context: object | null,
+  subject: object,
+  key: string,
+  compute: () => T,
+): T {
+  const cache = active?.withContext;
+  if (!cache) return compute();
+  let perState = cache.get(state);
+  if (!perState) {
+    perState = { noContext: new WeakMap(), byContext: new WeakMap() };
+    cache.set(state, perState);
+  }
+  let perContext: WeakMap<object, Map<string, unknown>> | undefined;
+  if (context === null) {
+    perContext = perState.noContext;
+  } else {
+    perContext = perState.byContext.get(context);
+    if (!perContext) {
+      perContext = new WeakMap();
+      perState.byContext.set(context, perContext);
+    }
+  }
+  let byKey = perContext.get(subject);
+  if (byKey?.has(key)) return byKey.get(key) as T;
+  const sideEffectsBefore = engineSideEffectCount();
+  const value = compute();
+  if (engineSideEffectCount() === sideEffectsBefore) {
+    if (!byKey) {
+      byKey = new Map();
+      perContext.set(subject, byKey);
+    }
+    byKey.set(key, value);
+  }
   return value;
 }
