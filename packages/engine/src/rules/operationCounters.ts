@@ -10,7 +10,7 @@ import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
 import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
 import { rk15WinButDestroyed } from "./rk/rk15UnitEffects";
 import { rk16OnBattleDestroy } from "./rk/rk16UnitEffects";
-import { isXg4BattleCounterCard, xg4BattleCounterConditionMet, xg4OnBattleDestroy } from "./xg4/xg4Effects";
+import { isXg4BattleCounterCard, xg4BattleCounterConditionMet, xg4OnAttackWin, xg4OnBattleDestroy } from "./xg4/xg4Effects";
 import { rk13OnAttackWin, rk13OnBattleDestroy } from "./rk/rk13UnitEffects";
 import { rk13BattleUsesPrintedBp, rk13BlocksResist, rk13PrintedBp } from "./rk/rk13Fields";
 import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
@@ -1835,6 +1835,8 @@ export function resolveBattlePendingCore(
     if (!pending.effectBattle) nextState = rk10OnAttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
     // RK-269【シャドーセイバー】: 自軍ターン中、アタックしてバトルに勝ったとき（rules/rk/rk13UnitEffects.ts）。
     if (!pending.effectBattle) nextState = rk13OnAttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+    // XG4-060【フォトンブレイカー】: BP の下三桁が500のユニットにアタックしてバトルに勝ったとき（rules/xg4/xg4Effects.ts）。
+    if (!pending.effectBattle) nextState = xg4OnAttackWin(nextState, pending, defenderBp);
   } else {
     nextState = markAttackerActed(nextState);
   }

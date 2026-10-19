@@ -1,5 +1,5 @@
 import { activateRm2FieldAbility, canActivateRm2FieldAbility, isRm2FieldAbilityCard } from "./rm/rm2Effects";
-import { activateXg4FieldAbility, canActivateXg4FieldAbility, isXg4FieldAbilityCard } from "./xg4/xg4Effects";
+import { activateXg4FieldAbility, canActivateXg4FieldAbility, isXg4FieldAbilityCard, resolveXg4DiscardSelfAbility } from "./xg4/xg4Effects";
 import { tryLeaveField } from "./operationCounters";
 import { liveCommentaryStayAvailable } from "./legend1/set7NamedEffectsA";
 import { kuugaStayCandidates } from "./legend1/otherLinesNamedEffects";
@@ -485,6 +485,16 @@ ABILITIES.push({
   matches: (cardId) => isXg4FieldAbilityCard(cardId),
   canActivate: (state, playerId, card) => canActivateXg4FieldAbility(state, playerId, card),
   resolve: (state, playerId, card) => activateXg4FieldAbility(state, playerId, card),
+});
+
+// XG4-051 マックジャバー【液化】「自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、自分は1枚ドローする。」（atwiki/page-2056。
+// rules/xg4/xg4cEffects.ts）。
+ABILITIES.push({
+  cardId: "XG4-051",
+  effectId: "xg4051_ekika",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  resolve: (state, playerId, card) => resolveXg4DiscardSelfAbility(state, playerId, card),
 });
 
 // 能力の当てはめはカード ID（とカードの文言）だけで決まるので、ID ごとに覚える。表に能力が足されたら捨てる。

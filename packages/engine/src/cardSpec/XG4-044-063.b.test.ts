@@ -80,7 +80,7 @@ describe("XG4-051 マックジャバー", () => {
 
   swapTests("XG4-051", ["XG4-049", "XG4-050"], "TST-UNIT-0", "atwiki/page-2056");
 
-  it.fails("XG4-051:【液化】— 自軍ラッシュフェイズ中、これを捨札にして1枚ドローできる（出典: atwiki/page-2056「このビークルを捨札にしてもよい。そうしたとき、自分は1枚ドローする」）（既知の不具合: CARD-XG4-051 【液化】を起動できない）", () => {
+  it("XG4-051:【液化】— 自軍ラッシュフェイズ中、これを捨札にして1枚ドローできる（出典: atwiki/page-2056「このビークルを捨札にしてもよい。そうしたとき、自分は1枚ドローする」）", () => {
     const s0 = board({ rush: [inst("XG4-051", "mj")], deck: [inst("TST-UNIT-0", "top"), ...deckCards(3)] });
     expect(canActivate(s0, "XG4-051:mj")).toBe(true);
     const s = resolveAll(activate(s0, "XG4-051:mj"));
@@ -116,14 +116,14 @@ describe("XG4-052 仮面ライダークウガUF（XG4）", () => {
 
   it.todo("XG4-052: ※ — 手札・常駐置場以外（山札・コマンドゾーン・捨札・モーフ）からはラッシュできない（出典: atwiki/page-2148・カード評価「仮面ライダーディケイドCFの効果や仮面ライダークウガDF（XG4）からのモーフでは出せない」）（未対応の理由: 手札以外からラッシュさせるカードの効果と組み合わせた盤面がこのバッチの範囲で組めない）");
 
-  it.fails("XG4-052: NC【空我】— 1番目に出て、敵軍バトルエリアのユニットが1体だけなら、そのユニットが持ち主のパワーゾーンにダメージとして置かれ、これは捨札になる（出典: atwiki/page-2148「敵軍バトルエリアのユニットが1体だけなら…ダメージにして置く。そうしたとき、これを捨札にする」）（既知の不具合: CARD-XG4-052 NC【空我】が敵軍バトルエリアのユニット数を見ずに働き、置いたカードもダメージとして数えられない）", () => {
+  it("XG4-052: NC【空我】— 1番目に出て、敵軍バトルエリアのユニットが1体だけなら、そのユニットが持ち主のパワーゾーンにダメージとして置かれ、これは捨札になる（出典: atwiki/page-2148「敵軍バトルエリアのユニットが1体だけなら…ダメージにして置く。そうしたとき、これを捨札にする」）", () => {
     const s = resolveAll(settle(ncEnter("XG4-052:ku", 0, {}, { battle: [inst("SPEC-E-7000", "one")], deck: deckCards(3, "e") }, EXTRA)));
     expect(zoneOf(s, "player2", "SPEC-E-7000:one")).toBe("power");
     expect(damageOf(s, "player2")).toBe(1);
     expect(zoneOf(s, "player1", "XG4-052:ku")).toBe("discard");
   });
 
-  it.fails("XG4-052: NC【空我】— 敵軍バトルエリアのユニットが2体なら何もしない（これも残る）（出典: atwiki/page-2148「1体だけなら」）（既知の不具合: CARD-XG4-052 NC【空我】が敵軍バトルエリアのユニット数を見ずに働き、置いたカードもダメージとして数えられない）", () => {
+  it("XG4-052: NC【空我】— 敵軍バトルエリアのユニットが2体なら何もしない（これも残る）（出典: atwiki/page-2148「1体だけなら」）", () => {
     const s = resolveAll(settle(ncEnter("XG4-052:ku", 0, {}, { battle: [inst("SPEC-E-7000", "a"), inst("SPEC-E-S", "b")], deck: deckCards(3, "e") }, EXTRA)));
     expect(zoneOf(s, "player2", "SPEC-E-7000:a")).toBe("battle");
     expect(zoneOf(s, "player1", "XG4-052:ku")).toBe("battle");
@@ -148,13 +148,13 @@ describe("XG4-053 仮面ライダーアギトSHF（XG4）", () => {
   const lost = (victim = "SPEC-RIDER", others: ReturnType<typeof inst>[] = []) =>
     settle(destroyedInEnemyBattle(inst(victim, "v"), { hand: [inst("XG4-053", "ag")], command: releasedCat("MA", 1), rush: others, deck: [inst("TST-UNIT-0", "top"), ...deckCards(4)] }, {}, EXTRA));
 
-  it.fails("XG4-053:【AGITΩ】— 敵軍ターン中、最後の自軍ユニット（「仮面ライダー」）がいなくなると、MA のコマンドをホールドするかを選べる（任意）（出典: atwiki/page-2111「MAを持つ自軍コマンドを1つホールドしてもよい」）（既知の不具合: CARD-XG4-053 【AGITΩ】が働かない（手札からの選択が開かない））", () => {
+  it("XG4-053:【AGITΩ】— 敵軍ターン中、最後の自軍ユニット（「仮面ライダー」）がいなくなると、MA のコマンドをホールドするかを選べる（任意）（出典: atwiki/page-2111「MAを持つ自軍コマンドを1つホールドしてもよい」）", () => {
     const s = lost();
     expectChoiceFrom(s, "player1", "XG4-053");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-053:【AGITΩ】— ホールドすると、これが自軍ラッシュエリアに出て、その後1枚ドローする（出典: atwiki/page-2111「そうしたとき、これを自軍ラッシュエリアに出す。その後、自分は1枚ドローする」）（既知の不具合: CARD-XG4-053 【AGITΩ】が働かない（手札からの選択が開かない））", () => {
+  it("XG4-053:【AGITΩ】— ホールドすると、これが自軍ラッシュエリアに出て、その後1枚ドローする（出典: atwiki/page-2111「そうしたとき、これを自軍ラッシュエリアに出す。その後、自分は1枚ドローする」）", () => {
     let s = lost();
     expectChoiceFrom(s, "player1", "XG4-053");
     s = resolveAll(choiceIds(s).length > 0 ? pick(s, choiceIds(s)[0]!) : confirm(s));
@@ -199,13 +199,13 @@ describe("XG4-054 仮面ライダーブレイドKF（XG4）", () => {
     return n;
   };
 
-  it.fails("XG4-054:【ストレートフラッシュ】— 自軍ターン中にバトルエリアに出たとき、自軍捨札5枚を除外するかを選べる（任意）（出典: atwiki/page-2134「自軍捨札を5枚選びゲームから除外してもよい」）（既知の不具合: CARD-XG4-054 【ストレートフラッシュ】の選択が開かない）", () => {
+  it("XG4-054:【ストレートフラッシュ】— 自軍ターン中にバトルエリアに出たとき、自軍捨札5枚を除外するかを選べる（任意）（出典: atwiki/page-2134「自軍捨札を5枚選びゲームから除外してもよい」）", () => {
     const s = entered(same());
     expectChoiceFrom(s, "player1", "XG4-054");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-054:【ストレートフラッシュ】— 除外すると、本来の BP が6000以下の敵軍ユニットを1体選び撃破する（BP7000 は選べない）（出典: atwiki/page-2134「本来のBPが6000以下の敵軍ユニットを1体選び撃破する」）（既知の不具合: CARD-XG4-054 【ストレートフラッシュ】の選択が開かない）", () => {
+  it("XG4-054:【ストレートフラッシュ】— 除外すると、本来の BP が6000以下の敵軍ユニットを1体選び撃破する（BP7000 は選べない）（出典: atwiki/page-2134「本来のBPが6000以下の敵軍ユニットを1体選び撃破する」）", () => {
     let s = exileAll(entered(same()), same());
     for (const c of same()) expect(isExiled(s, "player1", c.instanceId)).toBe(true);
     expectChoiceFrom(s, "player1", "XG4-054");
@@ -214,14 +214,14 @@ describe("XG4-054 仮面ライダーブレイドKF（XG4）", () => {
     expect(zoneOf(s, "player2", "SPEC-E-6000:a")).toBe("discard");
   });
 
-  it.fails("XG4-054:【ストレートフラッシュ】— 除外したカードのカテゴリがすべて同じなら、このターン「SP1」になる（出典: atwiki/page-2134「除外したカードのカテゴリがすべて同じなら、このターン、これは「SP1」になる」）（既知の不具合: CARD-XG4-054 【ストレートフラッシュ】の選択が開かない）", () => {
+  it("XG4-054:【ストレートフラッシュ】— 除外したカードのカテゴリがすべて同じなら、このターン「SP1」になる（出典: atwiki/page-2134「除外したカードのカテゴリがすべて同じなら、このターン、これは「SP1」になる」）", () => {
     let s = exileAll(entered(same()), same());
     expectChoiceFrom(s, "player1", "XG4-054");
     s = resolveAll(pick(s, "SPEC-E-6000:a"));
     expect(spOf(s, "player1", "XG4-054:bk")).toBe(1);
   });
 
-  it.fails("XG4-054:【ストレートフラッシュ】— カテゴリが混ざっていれば「SP1」にならない（1番目なので分数 SP も0）（出典: atwiki/page-2134「すべて同じなら」）（既知の不具合: CARD-XG4-054 【ストレートフラッシュ】の選択が開かない）", () => {
+  it("XG4-054:【ストレートフラッシュ】— カテゴリが混ざっていれば「SP1」にならない（1番目なので分数 SP も0）（出典: atwiki/page-2134「すべて同じなら」）", () => {
     let s = exileAll(entered(mixed()), mixed());
     expectChoiceFrom(s, "player1", "XG4-054");
     s = resolveAll(pick(s, "SPEC-E-6000:a"));
@@ -285,13 +285,13 @@ describe("XG4-056 ドラグランザー（バイク形態）", () => {
     expect(zoneOf(s, "player1", "XG4-056:bk")).toBe("hand");
   });
 
-  it.fails("XG4-056: ※ — 特徴「サバイブ」を持つ自軍 S ユニットは RC がなくてもライドできる（「サバイブ」も RC も持たないユニットはライドできない）（出典: atwiki/page-2080「RCを持っていなくてもこのビークルにライドすることができ」）（既知の不具合: CARD-XG4-056 「サバイブ」を持つ S ユニットが RC なしでライドできない（BP+1500 も確かめられない））", () => {
+  it("XG4-056: ※ — 特徴「サバイブ」を持つ自軍 S ユニットは RC がなくてもライドできる（「サバイブ」も RC も持たないユニットはライドできない）（出典: atwiki/page-2080「RCを持っていなくてもこのビークルにライドすることができ」）", () => {
     const s = battle({ rush: [inst("XG4-056", "bk"), inst("SPEC-SURVIVE", "sv"), inst("SPEC-PLAIN", "p")] });
     expect(canMount(s, "SPEC-SURVIVE:sv", "XG4-056:bk")).toBe(true);
     expect(canMount(s, "SPEC-PLAIN:p", "XG4-056:bk")).toBe(false);
   });
 
-  it.fails("XG4-056: ※ — ライド中 BP+1500（出典: atwiki/page-2080「ライド中BP＋1500される」）（既知の不具合: CARD-XG4-056 「サバイブ」を持つ S ユニットが RC なしでライドできない（BP+1500 も確かめられない））", () => {
+  it("XG4-056: ※ — ライド中 BP+1500（出典: atwiki/page-2080「ライド中BP＋1500される」）", () => {
     const s = settle(mount(battle({ rush: [inst("XG4-056", "bk"), inst("SPEC-SURVIVE", "sv")] }), "SPEC-SURVIVE:sv", "XG4-056:bk"));
     expect(bpOf(s, "player1", "SPEC-SURVIVE:sv")).toBe(2500);
   });
@@ -308,7 +308,7 @@ describe("XG4-057 仮面ライダー龍騎サバイブ（XG4）", () => {
     expectRarityIn("XG4-057", ["R"]);
   });
 
-  it.fails("XG4-057: ※ — 常駐置場にカードが1枚もなければ「SP1」になる（1番目にいても SP1）（出典: atwiki/page-2135「これは常駐置場にカードが1枚もなければ、「SP1」になる」）（既知の不具合: CARD-XG4-057 常駐置場が空でも「SP1」にならない）", () => {
+  it("XG4-057: ※ — 常駐置場にカードが1枚もなければ「SP1」になる（1番目にいても SP1）（出典: atwiki/page-2135「これは常駐置場にカードが1枚もなければ、「SP1」になる」）", () => {
     expect(spOf(battle({ battle: [inst("XG4-057", "ry")] }), "player1", "XG4-057:ry")).toBe(1);
   });
 
@@ -328,13 +328,13 @@ describe("XG4-057 仮面ライダー龍騎サバイブ（XG4）", () => {
       ),
     );
 
-  it.fails("XG4-057: RC【叶えたい願い】— ライドオフしたとき、上にカードが重なっている常駐オペレーション（自軍・敵軍）をすべて捨札にするかを選べる（任意）（出典: atwiki/page-2135「上にカードが重なっている常駐オペレーションをすべて捨札にしてもよい」・カード評価「常駐オペレーションをプレイヤーを問わず除去」）（既知の不具合: CARD-XG4-057 RC【叶えたい願い】の選択が開かない）", () => {
+  it("XG4-057: RC【叶えたい願い】— ライドオフしたとき、上にカードが重なっている常駐オペレーション（自軍・敵軍）をすべて捨札にするかを選べる（任意）（出典: atwiki/page-2135「上にカードが重なっている常駐オペレーションをすべて捨札にしてもよい」・カード評価「常駐オペレーションをプレイヤーを問わず除去」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "XG4-057");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-057: RC — 捨札にすると、重なっている常駐（自軍・敵軍）だけが捨札になり、重なっていない常駐は残る。その後、ウラ向きの自軍パワーを1枚捨札にできる（出典: atwiki/page-2135「そうしたとき、ウラ向きの自軍パワーを1枚選び捨札にしてもよい」）（既知の不具合: CARD-XG4-057 RC【叶えたい願い】の選択が開かない）", () => {
+  it("XG4-057: RC — 捨札にすると、重なっている常駐（自軍・敵軍）だけが捨札になり、重なっていない常駐は残る。その後、ウラ向きの自軍パワーを1枚捨札にできる（出典: atwiki/page-2135「そうしたとき、ウラ向きの自軍パワーを1枚選び捨札にしてもよい」）", () => {
     let s = rc();
     expectChoiceFrom(s, "player1", "XG4-057");
     s = settle(confirm(s));

@@ -76,7 +76,7 @@ describe("XG4-058 オートバジンBM（XG4）", () => {
   const attacked = (battleArea: ReturnType<typeof inst>[]) =>
     st({ activePlayer: "player2", player1: { battle: battleArea, deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-7", "atk")], deck: deckCards(3, "e") } }, EXTRA);
 
-  it.fails("XG4-058:【忠実な愛機】— 自軍バトルエリアの最後に並んでいる間、これ以外の自軍 S ユニットはアタックされない（M ユニットとこれ自身はアタックされる）（出典: atwiki/page-2114「これ以外の自軍Sユニットはアタックされない」）（既知の不具合: CARD-XG4-058 【忠実な愛機】が働かず、ほかの自軍 S ユニットもアタックされる）", () => {
+  it("XG4-058:【忠実な愛機】— 自軍バトルエリアの最後に並んでいる間、これ以外の自軍 S ユニットはアタックされない（M ユニットとこれ自身はアタックされる）（出典: atwiki/page-2114「これ以外の自軍Sユニットはアタックされない」）", () => {
     expect(targetsOf(attacked([inst("SPEC-OWN-S", "b"), inst("SPEC-OWN-M", "m"), inst("XG4-058", "bm")]), "TST-UNIT-7:atk", "player2")).toEqual(["SPEC-OWN-M:m", "XG4-058:bm"]);
   });
 
@@ -100,13 +100,13 @@ describe("XG4-059 オートバジンVM（XG4）", () => {
   const enemyBattleStart = (command: ReturnType<typeof inst>[]) =>
     settle(nextPhase(enemyBoard({ rush: [inst("XG4-059", "vm")], battle: [inst("SPEC-OWN-S", "b")], command }, {}, EXTRA, "rush")));
 
-  it.fails("XG4-059:【自律変形】— 敵軍バトルフェイズ開始時、これを自軍コマンドゾーンに送るかを選べる（任意）（出典: atwiki/page-2085「敵軍バトルフェイズ開始時、このビークルを自軍コマンドゾーンに送ってもよい」）（既知の不具合: CARD-XG4-059 【自律変形】が敵軍バトルフェイズ開始時に働かない）", () => {
+  it("XG4-059:【自律変形】— 敵軍バトルフェイズ開始時、これを自軍コマンドゾーンに送るかを選べる（任意）（出典: atwiki/page-2085「敵軍バトルフェイズ開始時、このビークルを自軍コマンドゾーンに送ってもよい」）", () => {
     const s = enemyBattleStart([released("XG4-058", "bm")]);
     expectChoiceFrom(s, "player1", "XG4-059");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-059:【自律変形】— 送ると、自軍コマンドゾーンの「オートバジンBM」が自軍バトルエリアの最後に出る（BM の「ホールドしなければ出られない」は BM 自身のホールドで満たせる）（出典: atwiki/page-2085「自軍コマンドゾーンから「オートバジンBM」のカードを1枚選び、自軍バトルエリアの最後に出す」・atwiki/page-2114 Q1「はい、できます」）（既知の不具合: CARD-XG4-059 【自律変形】が敵軍バトルフェイズ開始時に働かない）", () => {
+  it("XG4-059:【自律変形】— 送ると、自軍コマンドゾーンの「オートバジンBM」が自軍バトルエリアの最後に出る（BM の「ホールドしなければ出られない」は BM 自身のホールドで満たせる）（出典: atwiki/page-2085「自軍コマンドゾーンから「オートバジンBM」のカードを1枚選び、自軍バトルエリアの最後に出す」・atwiki/page-2114 Q1「はい、できます」）", () => {
     let s = enemyBattleStart([released("XG4-058", "bm")]);
     expectChoiceFrom(s, "player1", "XG4-059");
     s = settle(confirm(s));
@@ -144,7 +144,7 @@ describe("XG4-060 仮面ライダーファイズBF（XG4）", () => {
     return settle(attack(act(s, { type: "hold_for_wing", playerId: "player1", instanceId: "XG4-060:fz" }), "XG4-060:fz", `${target}:t`));
   };
 
-  it.fails("XG4-060:【フォトンブレイカー】— ウイングで BP の下三桁が500（BP1500）のユニットにアタックして勝つと、ラッシュエリアから追加でアタックできる（出典: atwiki/page-2115「追加でアタックしてもよい」・同 Q2「【フォトンブレイカー】の効果により、追加でアタックできます」）（既知の不具合: CARD-XG4-060 【フォトンブレイカー】の追加アタックができない）", () => {
+  it("XG4-060:【フォトンブレイカー】— ウイングで BP の下三桁が500（BP1500）のユニットにアタックして勝つと、ラッシュエリアから追加でアタックできる（出典: atwiki/page-2115「追加でアタックしてもよい」・同 Q2「【フォトンブレイカー】の効果により、追加でアタックできます」）", () => {
     const s = wingAttack("SPEC-E-1500");
     expect(zoneOf(s, "player2", "SPEC-E-1500:t")).toBe("discard");
     expect(targetsOf(s, "XG4-060:fz")).toContain("SPEC-E-S:next");
@@ -178,7 +178,7 @@ describe("XG4-061 仮面ライダーアクセル", () => {
     return r.state;
   };
 
-  it.fails("XG4-061:【エンジンブレード】— ラッシュしたとき、「加速」を持たない敵軍 S ユニット（どのエリアでも）を1体選ぶ（M ユニット・「加速」を持つユニットは選べない。任意ではない）（出典: atwiki/page-2138「特徴「加速」を持たない敵軍Sユニットを1体選び」）（既知の不具合: CARD-XG4-061 【エンジンブレード】の候補に M ユニット・「加速」を持つユニットが入る）", () => {
+  it("XG4-061:【エンジンブレード】— ラッシュしたとき、「加速」を持たない敵軍 S ユニット（どのエリアでも）を1体選ぶ（M ユニット・「加速」を持つユニットは選べない。任意ではない）（出典: atwiki/page-2138「特徴「加速」を持たない敵軍Sユニットを1体選び」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "XG4-061");
     expect(choiceIds(s)).toEqual(["SPEC-E-S:b", "SPEC-E-S:r"]);
@@ -225,7 +225,7 @@ describe("XG4-062 仮面ライダーアクセル バイクフォーム", () => {
     expect(canStartRush(board({ hand: [inst("XG4-062", "bf")], command: releasedCat("ET", 1), power: powerCards(4) }), "player1", "XG4-062:bf")).toBe(false);
   });
 
-  it.fails("XG4-062: ※ — ライドされていなくてもバトルエリアに出られる（出典: atwiki/page-2139「これは、ライドされていなくてもバトルエリアに出ることができる」）（既知の不具合: CARD-XG4-062 ライドされていないビークルがバトルエリアに出られない）", () => {
+  it("XG4-062: ※ — ライドされていなくてもバトルエリアに出られる（出典: atwiki/page-2139「これは、ライドされていなくてもバトルエリアに出ることができる」）", () => {
     const s0 = battle({ rush: [inst("XG4-062", "bf")] });
     expect(canEnter(s0, "XG4-062:bf")).toBe(true);
     expect(zoneOf(settle(enter(s0, "XG4-062:bf")), "player1", "XG4-062:bf")).toBe("battle");
@@ -278,7 +278,7 @@ describe("XG4-063 仮面ライダースカル", () => {
       ),
     );
 
-  it.fails("XG4-063:【お前の罪を数えろ】— 自軍捨札に S ユニットのカードが5枚以上あれば、アタックするとき BP+3000（BP6000 で BP5000 に勝つ）（出典: atwiki/page-2124「アタックするときBP+3000される」）（既知の不具合: CARD-XG4-063 【お前の罪を数えろ】の BP+3000 が働かない）", () => {
+  it("XG4-063:【お前の罪を数えろ】— 自軍捨札に S ユニットのカードが5枚以上あれば、アタックするとき BP+3000（BP6000 で BP5000 に勝つ）（出典: atwiki/page-2124「アタックするときBP+3000される」）", () => {
     const s = attacked(5);
     expect(lastBattleBps(s)?.attacker).toBe(6000);
     expect(zoneOf(s, "player2", "SPEC-E-5000:t")).toBe("discard");

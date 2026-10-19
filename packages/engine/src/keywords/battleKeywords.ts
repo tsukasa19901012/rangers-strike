@@ -21,6 +21,7 @@ import { isBattleBlocked, markBattleBlocked } from "../rules/turnModifiers";
 import { RESTRICTION_IDS } from "../types/scopedModifiers";
 import { findInZone, updatePlayer } from "../core/helpers";
 import { riddenVehicleGrantsScrum } from "../rules/legend1/set7NamedEffectsB";
+import { hasBakiBakiExtraAttack } from "../rules/turnModifierBridge";
 import { unitFeatures } from "../rules/addedFeatures";
 import { featuresMatchKeywordSlug } from "../dsl/featureKeywords";
 
@@ -354,7 +355,8 @@ export function canWingAttackFromRush(
   ) {
     return false;
   }
-  if (unit.battleActed) return false;
+  // 「追加でアタックできる」（RS-167 と同じ記録。XG4-060【フォトンブレイカー】等）を得ていれば、アタックしたあとでもラッシュエリアからアタックできる。
+  if (unit.battleActed && !hasBakiBakiExtraAttack(state.players[playerId], unit.instanceId)) return false;
   if (!unit.commandHeld) return false;
   // ルール: R-HOLD-03 — レジストのホールドはウイングのホールドの代わりにならない。
   if (unit.registerHeld) return false;

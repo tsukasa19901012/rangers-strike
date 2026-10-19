@@ -22,6 +22,12 @@ export const XG4_HARIKEN_RULE = "xg4_001_hariken";
 export const XG4_RUSH_DISCARD_RULE = "xg4_rush_phase_discard";
 
 export const DRAGON_ARMOR_CARD_ID = "XG4-006";
+/** XG4-044【ランディックアックス】の NC が成立した（payload: { instanceId }。このターン）。 */
+export const XG4_RANDIC_RULE = "xg4_044_randic";
+/** XG4-054【ストレートフラッシュ】で除外したカードのカテゴリがすべて同じだった（payload: { instanceId }。このターン「SP1」）。 */
+export const XG4_STRAIGHT_RULE = "xg4_054_straight";
+/** XG4-060【フォトンブレイカー】の RC が成立した（payload: { instanceId }。このターン）。 */
+export const XG4_PHOTON_RULE = "xg4_060_photon";
 
 function hasTurnRecord(state: Pick<GameState, "players">, playerId: PlayerId, ruleId: string, instanceId?: string): boolean {
   return getPlayerModifiers(state.players[playerId]).some(
@@ -63,6 +69,12 @@ export function xg4FieldBpBonus(state: View, playerId: PlayerId, instance: CardI
   }
   // XG4-006「このカードに重ねたユニットはBP+1000され」（atwiki/page-2061）。
   bonus += hasDragonArmor(instance) * 1000;
+  // XG4-044【ランディックアックス】「このターン、これは、リリース状態の自軍コマンド1つにつきBP+1000される。」（atwiki/page-2096）。
+  if (isSameCardIdentity(instance.cardId, "XG4-044") && hasTurnRecord(state, playerId, XG4_RANDIC_RULE, instance.instanceId)) {
+    bonus += state.players[playerId].command.filter((c) => !c.commandHeld).length * 1000;
+  }
+  // XG4-046「※これはホールド状態のときBP-3000される。」（atwiki/page-2149）。
+  if (isSameCardIdentity(instance.cardId, "XG4-046") && instance.commandHeld) bonus -= 3000;
   return bonus;
 }
 
@@ -77,6 +89,12 @@ export function xg4EffectiveSp(
   // XG4-001「BP8000以上のときSP2になる」（NC が成立したターンだけ）。
   if (isSameCardIdentity(instance.cardId, "XG4-001") && hasTurnRecord(state, playerId, XG4_HARIKEN_RULE, instance.instanceId) && bpOf(state, playerId, instance) >= 8000) {
     sp = Math.max(sp, 2);
+  }
+  // XG4-054【ストレートフラッシュ】「このターン、これは「SP1」になる」（除外したカードのカテゴリがすべて同じだったとき）。
+  if (isSameCardIdentity(instance.cardId, "XG4-054") && hasTurnRecord(state, playerId, XG4_STRAIGHT_RULE, instance.instanceId)) sp = Math.max(sp, 1);
+  // XG4-057「※これは常駐置場にカードが1枚もなければ、「SP1」になる。」（atwiki/page-2135）。常駐置場は自軍・敵軍の両方を見る。
+  if (isSameCardIdentity(instance.cardId, "XG4-057") && (["player1", "player2"] as const).every((pid) => (state.players[pid].operation ?? []).length === 0)) {
+    sp = Math.max(sp, 1);
   }
   return sp;
 }
@@ -97,6 +115,14 @@ export function xg4AttackerBattleBonus(state: View, pending: Pick<PendingBattle,
   // XG4-007【獣奏剣】「これが自軍エリアにある間、特徴「恐竜」を持つすべての自軍ユニットは、アタックするときBP+2000される。」（1枚につき）。
   const dragons = fieldOf(state, pending.attackerPlayerId).filter((c) => isSameCardIdentity(c.cardId, "XG4-007")).length;
   if (dragons > 0 && featuresOf(state, pending.attackerPlayerId, attacker).includes("恐竜")) bonus += dragons * 2000;
+  // XG4-063【お前の罪を数えろ】「これは自軍捨札にSユニットのカードが5枚以上あるとき、次の効果を得る⇒アタックするときBP+3000される。」（atwiki/page-2124）。
+  if (isSameCardIdentity(attacker.cardId, "XG4-063")) {
+    const sCards = state.players[pending.attackerPlayerId].discard.filter((c) => {
+      const d = state.definitions[c.cardId] as { type?: string; size?: string } | undefined;
+      return d?.type === "unit" && d.size === "S";
+    }).length;
+    if (sCards >= 5) bonus += 3000;
+  }
   return bonus;
 }
 
@@ -117,9 +143,11 @@ export function xg4DefenderBlocksAttack(
   defenderPlayerId: PlayerId,
   defender: CardInstance,
   hasWing: (card: CardInstance) => boolean,
+  info?: { hasResist: (card: CardInstance) => boolean; bpOf: (card: CardInstance) => number },
 ): boolean {
-  void state;
   if (attackerPlayerId === defenderPlayerId) return false;
+  // XG4-046「※これはレジストを持たないBP3000以下のユニットにアタックできない。」（atwiki/page-2149）。いまの BP。
+  if (info && isSameCardIdentity(attacker.cardId, "XG4-046") && !info.hasResist(defender) && info.bpOf(defender) <= 3000) return true;
   // XG4-013「※これはライド中、ウイングを持たないユニットにアタックされない。」（atwiki/page-2092）。
   if (isSameCardIdentity(defender.cardId, "XG4-013") && defender.mountedOnInstanceId && !hasWing(attacker)) return true;
   // XG4-034【風の電子モヂカラ】「これが自軍バトルエリアにある間、これ以外のLユニットとMユニットは、敵軍ユニットにアタックされない。」（atwiki/page-2104）。
@@ -131,7 +159,19 @@ export function xg4DefenderBlocksAttack(
   ) {
     return true;
   }
+  // XG4-058【忠実な愛機】「これが自軍バトルエリアの最後に並んでいる間、これ以外の自軍Sユニットはアタックされない。」（atwiki/page-2114）。
+  const lastInBattle = state.players[defenderPlayerId].battle.at(-1);
+  if (defenderSize === "S" && lastInBattle && isSameCardIdentity(lastInBattle.cardId, "XG4-058") && lastInBattle.instanceId !== defender.instanceId) return true;
   return false;
+}
+
+/**
+ * ライドされていなくてもバトルエリアに出られるビークルか（rules/vehicleRules.ts）。
+ * XG4-049【光機動生命体】「これはライドされていなくてもバトルエリアに出ることができる。」（atwiki/page-2076）・
+ * XG4-062「※これは、ライドされていなくてもバトルエリアに出ることができる。」（atwiki/page-2139）。
+ */
+export function xg4VehicleEntersWithoutRide(cardId: string): boolean {
+  return isSameCardIdentity(cardId, "XG4-049") || isSameCardIdentity(cardId, "XG4-062");
 }
 
 /**

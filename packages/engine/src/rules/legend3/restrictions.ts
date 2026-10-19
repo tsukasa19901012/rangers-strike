@@ -28,6 +28,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types
 import { isCostWindowSatisfied } from "../../core/costWindow";
 import {
   cardCategories,
+  effectiveBp,
   getDefinition,
   isSmallUnit,
   isVehicle,
@@ -506,7 +507,15 @@ export function canAttackDefender(
   // RK-327 の※（ホールド状態のとき敵軍ユニットにアタックされない。rules/rk/rk16Fields.ts）。
   if (defenderCard && rk16DefenderBlocksAttack(defenderCard)) return false;
   // クロスギャザー ザ・ジェットアクセル XG4-013 の※等（rules/xg4/xg4Fields.ts）。
-  if (defenderCard && xg4DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard, (c) => cardHasKeyword(state.definitions, c.cardId, "wing", { state, playerId: attackerPlayerId }))) return false;
+  if (
+    defenderCard &&
+    xg4DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard, (c) => cardHasKeyword(state.definitions, c.cardId, "wing", { state, playerId: attackerPlayerId }), {
+      hasResist: (c) => cardHasKeyword(state.definitions, c.cardId, "register", { state, playerId: defenderPlayerId }),
+      bpOf: (c) => effectiveBp(state, defenderPlayerId, c),
+    })
+  ) {
+    return false;
+  }
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;

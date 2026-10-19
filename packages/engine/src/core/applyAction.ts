@@ -106,6 +106,7 @@ import {
   applyXg4RideOff,
   isXg4BattleCounterCard,
   isXg4BeforeBattleChoice,
+  openXg4BattlePhaseStart,
   openXg4BeforeBattle,
   resolveXg4BeforeBattle,
   skipXg4BeforeBattle,
@@ -3994,6 +3995,8 @@ function applyActionCore(
       if (state.phase === "charge") afterPhase = openBlueMoonSlash(afterPhase, playerId);
       // RS-470 ギンガット【花の星獣】: バトルフェイズを行うとき、かわりにチャージフェイズを行ってもよい（同上）。
       if (state.phase === "rush" && afterPhase.phase === "battle") afterPhase = openChargeInsteadOfBattle(afterPhase, playerId);
+      // クロスギャザー ザ・ジェットアクセル XG4-059【自律変形】等「敵軍バトルフェイズ開始時」（rules/xg4/xg4Effects.ts）。
+      if (state.phase === "rush" && afterPhase.phase === "battle" && !afterPhase.pendingEffectChoice) afterPhase = openXg4BattlePhaseStart(afterPhase, playerId);
       return ok(
         afterPhase,
         buildSimpleLogEntry(playerId, "end_phase", state.phase),

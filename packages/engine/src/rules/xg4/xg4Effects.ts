@@ -22,6 +22,7 @@ import {
   openXg4bTurnEndEntry,
   xg4bOnBattleDestroy,
 } from "./xg4bEffects";
+import { applyXg4cAfterAction, applyXg4cRideOff, openXg4cBattlePhaseStart, resolveXg4cDiscardSelfAbility, xg4cOnAttackWin, xg4cOnBattleDestroy } from "./xg4cEffects";
 import { isCard } from "./xg4Common";
 
 export {
@@ -36,12 +37,13 @@ export {
 export { isXg4BeforeBattleChoice, openXg4BeforeBattle, resolveXg4BeforeBattle, skipXg4BeforeBattle } from "./xg4bEffects";
 
 export function applyXg4AfterAction(before: GameState, after: GameState): GameState {
-  return applyXg4bAfterAction(before, applyXg4aAfterAction(before, after));
+  return applyXg4cAfterAction(before, applyXg4bAfterAction(before, applyXg4aAfterAction(before, after)));
 }
 
 export function xg4OnBattleDestroy(state: GameState, winnerId: PlayerId, winnerInstanceId: string, defeatedOwnerId: PlayerId, defeatedInstanceId: string): GameState {
   const next = xg4aOnBattleDestroy(state, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
-  return next.pendingEffectChoice ? next : xg4bOnBattleDestroy(next, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
+  const b = next.pendingEffectChoice ? next : xg4bOnBattleDestroy(next, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
+  return xg4cOnBattleDestroy(b, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
 }
 
 export function isXg4BattleCounterCard(cardId: string): boolean {
@@ -64,7 +66,23 @@ export function applyXg4BattleCounter(state: GameState, defenderId: PlayerId, _c
 /** ライドオフしたとき（core/applyAction.ts resolve_ride_off_choice。rider はライドオフ後のユニット）。 */
 export function applyXg4RideOff(state: GameState, playerId: PlayerId, rider: CardInstance): GameState {
   const next = applyXg4aRideOff(state, playerId, rider);
-  return next.pendingEffectChoice ? next : applyXg4bRideOff(next, playerId, rider);
+  const b = next.pendingEffectChoice ? next : applyXg4bRideOff(next, playerId, rider);
+  return b.pendingEffectChoice ? b : applyXg4cRideOff(b, playerId, rider);
+}
+
+/** アタックしてバトルに勝ったとき（rules/operationCounters.ts）。defenderBp はバトルのときの BP。 */
+export function xg4OnAttackWin(state: GameState, pending: Pick<PendingBattle, "attackerPlayerId" | "attackerInstanceId">, defenderBp: number): GameState {
+  return xg4cOnAttackWin(state, pending, defenderBp);
+}
+
+/** バトルフェイズ開始時（core/applyAction.ts end_phase。activePlayerId はバトルフェイズを始めたプレイヤー）。 */
+export function openXg4BattlePhaseStart(state: GameState, activePlayerId: PlayerId): GameState {
+  return openXg4cBattlePhaseStart(state, activePlayerId);
+}
+
+/** このカードを捨札にして起動する効果のあと（rules/fieldActivatedAbilities.ts）。 */
+export function resolveXg4DiscardSelfAbility(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
+  return resolveXg4cDiscardSelfAbility(state, playerId, card);
 }
 
 /** ターン終了時の処理の列（rules/turnEndingEffects.ts）。 */

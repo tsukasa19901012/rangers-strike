@@ -52,15 +52,16 @@
       "name": "妖刀・裏正",
       "text": "これが敵軍ユニットをバトルで撃破した時、撃破したユニットのSPが1以上だったなら、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg4::XG4-046::yoto",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

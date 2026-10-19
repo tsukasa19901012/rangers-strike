@@ -52,11 +52,11 @@ function sizeNow(state: GameState, card: CardInstance): string | undefined {
 }
 
 /** 場のユニット1体を持ち主のパワーゾーンにダメージにして置く選択（resolver は POWER_DAMAGE_PICK）。 */
-function damagePick(ctx: BaseCtx, sourceCardId: string, effectId: string, ids: string[], optional = false): PendingEffectChoice {
+export function damagePick(ctx: BaseCtx, sourceCardId: string, effectId: string, ids: string[], optional = false): PendingEffectChoice {
   return { ...base(ctx, sourceCardId), effectId, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional, xg4Meta: { damagePick: true } };
 }
 
-function registerDamagePick(effectId: string, sourceCardId: string): void {
+export function registerDamagePick(effectId: string, sourceCardId: string): void {
   XG4_RESOLVERS[effectId] = (state, playerId, instanceId) => {
     const pending = state.pendingEffectChoice!;
     const owner: PlayerId = findField(state, "player1", instanceId) ? "player1" : "player2";
