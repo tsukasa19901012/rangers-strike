@@ -38,11 +38,10 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_bottom_hold_command",
+          "keyword": "xg5::XG5-024::precious",
           "duration": "turn"
         }
       ]

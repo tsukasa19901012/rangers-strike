@@ -1,5 +1,6 @@
 import { ncEstablishedThisTurn } from "../legend1/set7NamedEffectsA";
 import { namedEffectActive } from "../ncGatedEffects";
+import { xg5EndTurnChoice } from "../xg5/xg5Fields";
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit } from "../../core/catalog";
 import { findInZone, updatePlayer } from "../../core/helpers";
@@ -61,6 +62,10 @@ export function tryOpenEndTurnEffectsMenu(
     if (set4.pendingEffectChoice) return set4;
     state = set4;
   }
+
+  // XG5-032 ゲキペンギン【ジェットボード】（rules/xg5/xg5Fields.ts・xg5bEffects.ts）。
+  const xg5 = xg5EndTurnChoice(state, playerId);
+  if (xg5) return openEffectChoice(xg5.state, xg5.choice);
 
   const discoChoice = tryStartDiscoDanceEndTurnChoice(state, playerId);
   if (discoChoice) return discoChoice;

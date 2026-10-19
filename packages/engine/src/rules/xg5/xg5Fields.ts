@@ -5,9 +5,13 @@
  * - `xg5GrantsScrum`: XG5-001 ゴーグルレッド ※・XG5-041 ゴセイイエロー【兄妹の絆】（keywords/battleKeywords.ts scrumBlocksAttack）。
  * - `xg5CostNumber`: 必要パワーの数字（XG5-003 ゴーグルブルー【ブルージェットダッシュ】で敵軍ユニットは1少なくなる）。
  * - `isXg5StackedUnderUnitOperation`: XG5-012 ゴレムカード・XG5-015 スティライザー（ユニットの下に重ね、ユニットでなくなるとき捨札。rules/rk/rk1Features.ts）。
+ * - `xg5BlocksOwnTurnHold`: XG5-025【上空からの牽制】（keywords/battleKeywords.ts のウイング）。
+ * - `xg5ForcesAttack`: XG5-031【ガゼル脚】（core/legalActions.ts）。
+ * - `xg5FieldBpBonus`: XG5-034 ※（rules/fieldAuras.ts）。
+ * - `xg5EndTurnChoice`: XG5-032【ジェットボード】（rules/legend3/endTurnEffects.ts）。
  */
 import { isSameCardIdentity } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import type { Xg5Flag } from "./xg5Types";
 import { hasTurnRuleModifier } from "../../core/scopedModifiers";
 
@@ -59,6 +63,71 @@ export function xg5CostNumber(state: Pick<GameState, "definitions" | "players">,
   // NC の効果そのものは rules/promotedNcEffects.ts（enemy_power_cost_minus のターンのルール）。
   const minus = ownerId === opp(viewerId) && hasTurnRuleModifier(state.players[viewerId], "enemy_power_cost_minus") ? 1 : 0;
   return Math.max(0, n - minus);
+}
+
+/** いまのターンのプレイヤー（処理の途中は、その処理のフェイズのプレイヤー）。 */
+export function xg5TurnPlayer(state: Pick<GameState, "pendingStrike" | "pendingBattle" | "pendingRush" | "pendingLeave" | "pendingEffectChoice" | "activePlayer">): PlayerId {
+  if (state.pendingStrike) return state.pendingStrike.battlePhasePlayer;
+  if (state.pendingBattle) return state.pendingBattle.phasePlayerId;
+  if (state.pendingRush) return state.pendingRush.phasePlayerId;
+  if (state.pendingLeave) return state.pendingLeave.phasePlayerId;
+  if (state.pendingEffectChoice) return state.pendingEffectChoice.phasePlayerId;
+  return state.activePlayer;
+}
+
+/**
+ * XG5-025 ボウケンブルーAT【上空からの牽制】「これが自軍エリアにある間、リリース状態の敵軍ユニットは次の制限を受ける⇒これは、自分自身のターン中、
+ * ホールドすることができない。」（atwiki/page-2265）。playerId のユニットがいまホールドできないか（keywords/battleKeywords.ts のウイング）。
+ */
+export function xg5BlocksOwnTurnHold(state: GameState, playerId: PlayerId): boolean {
+  if (xg5TurnPlayer(state) !== playerId) return false;
+  return fieldOf(state, opp(playerId)).some((c) => isSameCardIdentity(c.cardId, "XG5-025"));
+}
+
+/** XG5-031 ゲキガゼル【ガゼル脚】「アタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする」を得たユニットか（core/legalActions.ts）。 */
+export function xg5ForcesAttack(state: Pick<GameState, "xg5" | "turn">, playerId: PlayerId, instanceId: string): boolean {
+  return xg5Flags(state, "xg5-031").some((f) => f.playerId === playerId && f.turn === state.turn && f.target === instanceId);
+}
+
+/**
+ * 場のユニットの BP の増減（rules/fieldAuras.ts passiveNamedFieldBpBonus）。
+ * XG5-034 シンケンレッド ※「これは自軍ターン中、これ以外の特徴「侍」を持つSユニット1体につきBP+2000される。」（atwiki/page-2263）。数えるのは自軍の場の S ユニット。
+ */
+export function xg5FieldBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
+  if (!isSameCardIdentity(instance.cardId, "XG5-034") || xg5TurnPlayer(state) !== playerId) return 0;
+  const n = fieldOf(state, playerId).filter((c) => {
+    if (c.instanceId === instance.instanceId) return false;
+    const d = state.definitions[c.cardId];
+    return d?.type === "unit" && d.size === "S" && (d.features ?? []).includes("侍");
+  }).length;
+  return 2000 * n;
+}
+
+/**
+ * XG5-032 ゲキペンギン【ジェットボード】「自分がターンを終えるとき、このユニットがバトルエリアにあれば、自軍ラッシュエリアに戻してもよい。」（atwiki/page-2200）。
+ * エンドフェイズの選択（rules/legend3/endTurnEffects.ts tryOpenEndTurnEffectsMenu）。まだ尋ねていないこれがあれば、尋ねた印を付けた state と確認の選択を返す。
+ */
+export const XG5_JET_BOARD = "xg5_032_jet_board";
+export function xg5EndTurnChoice(state: GameState, playerId: PlayerId): { state: GameState; choice: PendingEffectChoice } | null {
+  const asked = new Set(xg5Flags(state, "xg5-032").filter((f) => f.turn === state.turn).map((f) => f.target));
+  const card = state.players[playerId].battle.find((c) => isSameCardIdentity(c.cardId, "XG5-032") && !asked.has(c.instanceId));
+  if (!card) return null;
+  const flag: Xg5Flag = { kind: "xg5-032", playerId, turn: state.turn, target: card.instanceId };
+  return {
+    state: { ...state, xg5: { ...state.xg5, flags: [...(state.xg5?.flags ?? []), flag] } },
+    choice: {
+      playerId,
+      phasePlayerId: playerId,
+      effectId: XG5_JET_BOARD,
+      sourceCardId: card.cardId,
+      sourceInstanceId: card.instanceId,
+      kind: "confirm",
+      validInstanceIds: [],
+      selectedInstanceIds: [],
+      optional: true,
+      mayConfirm: true,
+    },
+  };
 }
 
 /** XG5-012 ゴレムカード・XG5-015 スティライザー（ユニットの下に重ね、重ねたユニットがユニットでなくなるとき捨札になる）。 */

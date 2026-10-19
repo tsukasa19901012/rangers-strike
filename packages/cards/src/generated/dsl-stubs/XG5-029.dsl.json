@@ -29,13 +29,12 @@
       "name": "頑頑ナックル落とし",
       "text": "これがアタックして敵軍ユニットをバトルで撃破するたび、自分コマンドを1つ選びホールドしてもよい。そうしたとき、このターン、これはBP+2000され、追加でアタックかストライクを行ってもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-029::nakurutoshi",
+          "keyword": "xg5::XG5-029::gangan_knuckle",
           "duration": "permanent"
         }
       ]

@@ -85,7 +85,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-025::karano",
+          "keyword": "xg5::XG5-025::aerial_check",
           "duration": "permanent"
         }
       ]

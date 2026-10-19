@@ -1,4 +1,5 @@
 import { rm3FieldBpBonus } from "./rm/rm3Fields";
+import { xg5FieldBpBonus } from "./xg5/xg5Fields";
 import type { Category } from "@rangers-strike/cards";
 import { set9AFieldBpBonus } from "./legend1/set9NamedEffectsA";
 import { changePowerBpBonus } from "./legend1/set6NamedEffects348";
@@ -281,6 +282,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += rk15FieldBpBonus(state, playerId, instance);
   // RM-051 メガヘラクレス【メガビートフォーメーション】（自軍エリアに「スタッガータンク」があれば BP+3000。rules/rm/rm3Fields.ts）。
   if (role === "general") bonus += rm3FieldBpBonus(state, playerId, instance);
+  // XG5-034 シンケンレッド ※（自軍ターン中、これ以外の「侍」の S ユニット1体につき BP+2000。rules/xg5/xg5Fields.ts）。
+  if (role === "general") bonus += xg5FieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

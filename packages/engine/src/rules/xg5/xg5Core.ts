@@ -28,6 +28,16 @@ export const CHOICE_CONFIRMERS: Record<string, ChoiceSkipper> = {};
 export const XG5_KEYWORDS: Record<string, KeywordHandler> = {};
 export const AFTER_ACTION_HOOKS: AfterActionHook[] = [];
 export const STRIKE_RESOLVED_HOOKS: StrikeHook[] = [];
+/** アタックしたユニットがバトルで敵軍ユニットを撃破したとき（rules/operationCounters.ts から applyXg5AttackWin で呼ぶ）。 */
+export type AttackWinHook = (state: GameState, attackerId: PlayerId, attackerInstanceId: string, phasePlayerId: PlayerId) => GameState;
+export const ATTACK_WIN_HOOKS: AttackWinHook[] = [];
+
+/** アタックして敵軍ユニットをバトルで撃破したとき。このモジュールは型以外を読み込まない（循環しない）。 */
+export function applyXg5AttackWin(state: GameState, attackerId: PlayerId, attackerInstanceId: string, phasePlayerId: PlayerId): GameState {
+  let next = state;
+  for (const hook of ATTACK_WIN_HOOKS) next = hook(next, attackerId, attackerInstanceId, phasePlayerId);
+  return next;
+}
 /** 手札のカードから発動する効果（activate_field_unit_ability。core/legalActions.ts・core/applyAction.ts）。 */
 export const HAND_ACTIVATIONS: Array<{
   list: (state: GameState, playerId: PlayerId) => string[];

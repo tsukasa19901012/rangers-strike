@@ -78,13 +78,13 @@ describe("XG5-035 獅子ディスク", () => {
   const P2 = () => ({ rush: [inst("SPEC-E2", "a"), inst("SPEC-E4", "c"), inst("SPEC-EM", "m")], battle: [inst("SPEC-E3", "b")] });
   const used = (p1: Partial<GameState["players"]["player1"]> = P1()) => beltUsed("XG5-035", "MA", 5, p1, P2(), EXTRA);
 
-  it.fails("XG5-035: まず自軍ラッシュエリアの MA を持つ自軍 S ユニットを1体選ぶ（バトルエリア・MA を持たないユニットは選べない） 既知の不具合: CARD-XG5-035 自軍ユニットを選ばずに敵軍ユニットを選ぶ（出典: atwiki/page-2175「自軍ラッシュエリアから、MAを持つ自軍Sユニットを１体選ぶ」）", () => {
+  it("XG5-035: まず自軍ラッシュエリアの MA を持つ自軍 S ユニットを1体選ぶ（バトルエリア・MA を持たないユニットは選べない）（出典: atwiki/page-2175「自軍ラッシュエリアから、MAを持つ自軍Sユニットを１体選ぶ」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "XG5-035");
     expect(choiceIds(s)).toEqual(["SPEC-MA3:m"]);
   });
 
-  it.fails("XG5-035: 選んだユニットの BP（3000）以下の敵軍 S ユニットを1体選び（エリアを問わない。BP4000・M ユニットは選べない）、持ち主のパワーゾーンにダメージにして置く 既知の不具合: CARD-XG5-035 自軍ユニットを選ばない（出典: atwiki/page-2175「選んだユニットのBP以下のBPを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」・カード評価「エリアを問わないユニット除去とダメージを同時に行える」）", () => {
+  it("XG5-035: 選んだユニットの BP（3000）以下の敵軍 S ユニットを1体選び（エリアを問わない。BP4000・M ユニットは選べない）、持ち主のパワーゾーンにダメージにして置く（出典: atwiki/page-2175「選んだユニットのBP以下のBPを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」・カード評価「エリアを問わないユニット除去とダメージを同時に行える」）", () => {
     let s = pick(used(), "SPEC-MA3:m");
     expect(choiceIds(s)).toEqual(["SPEC-E2:a", "SPEC-E3:b"]);
     s = resolveAll(pick(s, "SPEC-E3:b"));
@@ -93,7 +93,7 @@ describe("XG5-035 獅子ディスク", () => {
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("XG5-035: 自軍ラッシュエリアに MA を持つ S ユニットがなければ、敵軍ユニットは選ばない 既知の不具合: CARD-XG5-035 自軍ユニットを見ずに敵軍ユニットをダメージにする（出典: atwiki/page-2175「そうしたとき」）", () => {
+  it("XG5-035: 自軍ラッシュエリアに MA を持つ S ユニットがなければ、敵軍ユニットは選ばない（出典: atwiki/page-2175「そうしたとき」）", () => {
     const s = resolveAll(used({ rush: [inst("SPEC-WB5", "w")], battle: [inst("SPEC-MA3B", "mb")] }));
     for (const id of ["SPEC-E2:a", "SPEC-E3:b", "SPEC-E4:c"]) expect(zoneOf(s, "player2", id)).not.toBe("power");
     expect(damageOf(s, "player2")).toBe(0);
@@ -114,13 +114,13 @@ describe("XG5-036 龍ディスク", () => {
   const P2 = () => ({ rush: [inst("SPEC-E2", "a"), inst("SPEC-E4", "c"), inst("SPEC-EM", "m")], battle: [inst("SPEC-E3", "b")] });
   const used = (p1: Partial<GameState["players"]["player1"]> = P1()) => beltUsed("XG5-036", "MA", 4, p1, P2(), EXTRA);
 
-  it.fails("XG5-036: まず自軍ラッシュエリアの MA を持つ自軍 S ユニットを1体選ぶ（バトルエリア・MA を持たないユニットは選べない） 既知の不具合: CARD-XG5-036 効果がない（選択が開かない）（出典: atwiki/page-2201「自軍ラッシュエリアから、MAを持つ自軍Sユニットを1体選ぶ」）", () => {
+  it("XG5-036: まず自軍ラッシュエリアの MA を持つ自軍 S ユニットを1体選ぶ（バトルエリア・MA を持たないユニットは選べない）（出典: atwiki/page-2201「自軍ラッシュエリアから、MAを持つ自軍Sユニットを1体選ぶ」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "XG5-036");
     expect(choiceIds(s)).toEqual(["SPEC-MA3:m"]);
   });
 
-  it.fails("XG5-036: 選んだユニットの BP（3000）以下の敵軍 S ユニットをすべて（エリアを問わない）持ち主の手札に戻す。BP4000・M ユニットは残る 既知の不具合: CARD-XG5-036 効果がない（出典: atwiki/page-2201「選んだユニットのBP以下のBPを持つ敵軍Sユニットをすべて持ち主の手札に戻す」）", () => {
+  it("XG5-036: 選んだユニットの BP（3000）以下の敵軍 S ユニットをすべて（エリアを問わない）持ち主の手札に戻す。BP4000・M ユニットは残る（出典: atwiki/page-2201「選んだユニットのBP以下のBPを持つ敵軍Sユニットをすべて持ち主の手札に戻す」）", () => {
     const s = resolveAll(pick(used(), "SPEC-MA3:m"));
     expect(zoneOf(s, "player2", "SPEC-E2:a")).toBe("hand");
     expect(zoneOf(s, "player2", "SPEC-E3:b")).toBe("hand");
@@ -159,7 +159,7 @@ describe("XG5-037 ゴセイレッド", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-037: NC【レッドブレイク】— 敵軍 M ユニットは選べない 既知の不具合: CARD-XG5-037 M ユニットも選べる（出典: atwiki/page-2228「敵軍Sユニット」）", () => {
+  it("XG5-037: NC【レッドブレイク】— 敵軍 M ユニットは選べない（出典: atwiki/page-2228「敵軍Sユニット」）", () => {
     expect(choiceIds(entered())).not.toContain("SPEC-EM:m");
   });
 
@@ -171,7 +171,7 @@ describe("XG5-037 ゴセイレッド", () => {
     expect(damageOf(s, "player2")).toBe(0);
   });
 
-  it.fails("XG5-037: NC【レッドブレイク】— 自分の手札が1枚以下なら、手札に戻すかわりに持ち主のパワーゾーンにダメージにして置くかを選べる 既知の不具合: CARD-XG5-037 ダメージにする選択がない（出典: atwiki/page-2228「自分の手札が1枚以下なら、手札に戻すかわりに、持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
+  it("XG5-037: NC【レッドブレイク】— 自分の手札が1枚以下なら、手札に戻すかわりに持ち主のパワーゾーンにダメージにして置くかを選べる（出典: atwiki/page-2228「自分の手札が1枚以下なら、手札に戻すかわりに、持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
     const s = pick(entered(1), "SPEC-E3:b");
     expectChoiceFrom(s, "player1", "XG5-037");
   });
@@ -207,7 +207,7 @@ describe("XG5-038 ゴセイピンク", () => {
       "XG5-038:p",
     );
 
-  it.fails("XG5-038: NC【息吹のスカイックパワー】— 4番目に出たとき、カテゴリを2つ以上持つ自軍 S ユニットを選べる（単カテゴリ・M ユニットは選べない。任意） 既知の不具合: CARD-XG5-038 NC の効果がない（出典: atwiki/page-2202「カテゴリを2つ以上持つ自軍Sユニットを1体選びリリースしてもよい」）", () => {
+  it("XG5-038: NC【息吹のスカイックパワー】— 4番目に出たとき、カテゴリを2つ以上持つ自軍 S ユニットを選べる（単カテゴリ・M ユニットは選べない。任意）（出典: atwiki/page-2202「カテゴリを2つ以上持つ自軍Sユニットを1体選びリリースしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG5-038");
     expect(choiceIds(s)).toEqual(expect.arrayContaining(["SPEC-MULTI:b", "SPEC-MULTI:r"]));
@@ -216,13 +216,13 @@ describe("XG5-038 ゴセイピンク", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-038: NC【息吹のスカイックパワー】— 選んだユニットはリリース状態になる（手札2枚なら1体だけ） 既知の不具合: CARD-XG5-038 NC の効果がない（出典: atwiki/page-2202「1体選びリリースしてもよい」）", () => {
+  it("XG5-038: NC【息吹のスカイックパワー】— 選んだユニットはリリース状態になる（手札2枚なら1体だけ）（出典: atwiki/page-2202「1体選びリリースしてもよい」）", () => {
     const s = resolveAll(pick(entered(2), "SPEC-MULTI:r"), []);
     expect(cardIn(s, "player1", "SPEC-MULTI:r")?.commandHeld ?? false).toBe(false);
     expect(cardIn(s, "player1", "SPEC-MULTI:b")?.commandHeld).toBe(true);
   });
 
-  it.fails("XG5-038: NC【息吹のスカイックパワー】— 自分の手札が1枚以下なら2体選んでリリースできる 既知の不具合: CARD-XG5-038 NC の効果がない（出典: atwiki/page-2202「自分の手札が1枚以下なら、カテゴリを2つ以上持つ自軍Sユニットを2体選んでもよい」）", () => {
+  it("XG5-038: NC【息吹のスカイックパワー】— 自分の手札が1枚以下なら2体選んでリリースできる（出典: atwiki/page-2202「自分の手札が1枚以下なら、カテゴリを2つ以上持つ自軍Sユニットを2体選んでもよい」）", () => {
     const s = resolveAll(pickAll(entered(1), ["SPEC-MULTI:r", "SPEC-MULTI:b"]), []);
     expect(cardIn(s, "player1", "SPEC-MULTI:r")?.commandHeld ?? false).toBe(false);
     expect(cardIn(s, "player1", "SPEC-MULTI:b")?.commandHeld ?? false).toBe(false);
@@ -247,18 +247,18 @@ describe("XG5-039 ゴセイブルー", () => {
   const P2 = () => ({ command: [released("TST-UNIT-0", "u0"), released("TST-UNIT-2", "u2"), released("TST-UNIT-7", "u7"), released("TST-OP", "op")] });
   const entered = (hand = 2) => enter(battle({ hand: handN(hand), battle: fill(4), rush: [inst("XG5-039", "b")] }, P2()), "XG5-039:b");
 
-  it.fails("XG5-039: NC【ブルーチェック】— 5番目に出たとき、敵軍コマンドゾーンの、自分の手札の枚数（2）以上の必要パワーの数字を持つユニットカードから選ぶ（0 のユニット・オペレーションは選べない） 既知の不具合: CARD-XG5-039 NC の効果がない（出典: atwiki/page-2203「自分の手札の枚数以上の必要パワーの数字を持つユニットカードを1枚選び」）", () => {
+  it("XG5-039: NC【ブルーチェック】— 5番目に出たとき、敵軍コマンドゾーンの、自分の手札の枚数（2）以上の必要パワーの数字を持つユニットカードから選ぶ（0 のユニット・オペレーションは選べない）（出典: atwiki/page-2203「自分の手札の枚数以上の必要パワーの数字を持つユニットカードを1枚選び」）", () => {
     const s = entered(2);
     expectChoiceFrom(s, "player1", "XG5-039");
     expect([...choiceIds(s)].sort()).toEqual(["TST-UNIT-2:u2", "TST-UNIT-7:u7"]);
   });
 
-  it.fails("XG5-039: NC【ブルーチェック】— 選んだカードは捨札になる 既知の不具合: CARD-XG5-039 NC の効果がない（出典: atwiki/page-2203「1枚選び捨札にする」）", () => {
+  it("XG5-039: NC【ブルーチェック】— 選んだカードは捨札になる（出典: atwiki/page-2203「1枚選び捨札にする」）", () => {
     const s = resolveAll(pick(entered(2), "TST-UNIT-2:u2"), []);
     expect(zoneOf(s, "player2", "TST-UNIT-2:u2")).toBe("discard");
   });
 
-  it.fails("XG5-039: NC【ブルーチェック】— 自分の手札が1枚以下なら、捨札にするかわりに持ち主の山札の上に戻せる 既知の不具合: CARD-XG5-039 NC の効果がない（出典: atwiki/page-2203「捨札にするかわりに持ち主の山札の上に戻してもよい」）", () => {
+  it("XG5-039: NC【ブルーチェック】— 自分の手札が1枚以下なら、捨札にするかわりに持ち主の山札の上に戻せる（出典: atwiki/page-2203「捨札にするかわりに持ち主の山札の上に戻してもよい」）", () => {
     let s = pick(entered(1), "TST-UNIT-7:u7");
     expectChoiceFrom(s, "player1", "XG5-039");
     s = resolveAll(s, ["deck_top", "deck"]);
@@ -291,18 +291,18 @@ describe("XG5-040 ゴセイブラック", () => {
     expect(spOf(entered(), "player1", "XG5-040:k")).toBe(1);
   });
 
-  it.fails("XG5-040: NC【スネークバレット】— 自軍コマンドゾーンにないカテゴリ（ET）を持つ敵軍 S ユニットから選ぶ（WB だけのユニット・M ユニットは選べない） 既知の不具合: CARD-XG5-040 SP1 だけで撃破の選択が開かない（出典: atwiki/page-2241「自軍コマンドゾーンにないカテゴリを持つ敵軍Sユニットを1体選び撃破する」）", () => {
+  it("XG5-040: NC【スネークバレット】— 自軍コマンドゾーンにないカテゴリ（ET）を持つ敵軍 S ユニットから選ぶ（WB だけのユニット・M ユニットは選べない）（出典: atwiki/page-2241「自軍コマンドゾーンにないカテゴリを持つ敵軍Sユニットを1体選び撃破する」）", () => {
     const s = entered(2);
     expectChoiceFrom(s, "player1", "XG5-040");
     expect([...choiceIds(s)].sort()).toEqual(["SPEC-ETS:et", "SPEC-WBET:we"]);
   });
 
-  it.fails("XG5-040: NC【スネークバレット】— 選んだユニットは撃破されて捨札になる 既知の不具合: CARD-XG5-040 撃破の選択が開かない（出典: atwiki/page-2241「撃破する」）", () => {
+  it("XG5-040: NC【スネークバレット】— 選んだユニットは撃破されて捨札になる（出典: atwiki/page-2241「撃破する」）", () => {
     const s = resolveAll(pick(entered(2), "SPEC-ETS:et"), []);
     expect(zoneOf(s, "player2", "SPEC-ETS:et")).toBe("discard");
   });
 
-  it.fails("XG5-040: NC【スネークバレット】— 自分の手札が1枚以下なら、自軍コマンドゾーンにあるカテゴリ（WB）だけを持つ敵軍 S ユニットも選べる 既知の不具合: CARD-XG5-040 撃破の選択が開かない（出典: atwiki/page-2241「自軍コマンドゾーンにあるカテゴリを持つ敵軍Sユニットを選んでもよい」）", () => {
+  it("XG5-040: NC【スネークバレット】— 自分の手札が1枚以下なら、自軍コマンドゾーンにあるカテゴリ（WB）だけを持つ敵軍 S ユニットも選べる（出典: atwiki/page-2241「自軍コマンドゾーンにあるカテゴリを持つ敵軍Sユニットを選んでもよい」）", () => {
     const s = entered(1);
     expectChoiceFrom(s, "player1", "XG5-040");
     expect(choiceIds(s)).toContain("SPEC-E2:wb");

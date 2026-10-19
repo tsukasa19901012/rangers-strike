@@ -153,6 +153,7 @@ import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "
 import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
 import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
 import { canConfirmXg5Choice, isXg5ChoiceEffect, listXg5HandActivations } from "../rules/xg5/xg5Effects";
+import { xg5ForcesAttack } from "../rules/xg5/xg5Fields";
 import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
@@ -1823,7 +1824,10 @@ function appendBattleEntryActions(
     });
   }
   // ルール: R-ATK-05 — ゴーマ宮で「可能ならアタックする」ユニットはアタックしなければならない。
-  const forcedAttack = gomaPalaceForcesAttack(state, playerId, pending.instanceId);
+  const forcedAttack =
+    gomaPalaceForcesAttack(state, playerId, pending.instanceId) ||
+    // XG5-031【ガゼル脚】: 可能なら敵軍ユニットにアタックする（rules/xg5/xg5Fields.ts）。
+    (xg5ForcesAttack(state, playerId, pending.instanceId) && actions.some((a) => a.type === "battle"));
   if (forcedAttack) return;
   if (
     canStrikeUnit(state.definitions, unit, state, playerId) &&

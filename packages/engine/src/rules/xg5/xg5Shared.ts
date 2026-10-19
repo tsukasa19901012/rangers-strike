@@ -4,7 +4,8 @@
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { cardCategories, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { sameCardName } from "../../core/cardNames";
-import { base, type BaseCtx, fieldUnits, zoneOfField } from "../rm/rm1Effects";
+import { base, type BaseCtx, fieldUnits, stripForZone, zoneOfField } from "../rm/rm1Effects";
+import { patchPlayer } from "../playerPatches";
 import type { Xg5Flag, Xg5State, Xg5Watch } from "./xg5Types";
 
 export function opp(playerId: PlayerId): PlayerId {
@@ -83,4 +84,29 @@ export function newBattleUnits(before: GameState, after: GameState, ownerId: Pla
 
 export function fieldUnitCount(state: GameState, ownerId: PlayerId): number {
   return fieldUnits(state, ownerId).length;
+}
+
+/** 山札・捨札・手札のカードを持ち主のコマンドゾーンにホールド状態で置く（空きは呼び出し側で確かめる）。 */
+export function cmdHeldPut(state: GameState, ownerId: PlayerId, card: CardInstance, from: "deck" | "discard" | "hand"): GameState {
+  return patchPlayer(state, ownerId, (p) => ({
+    ...p,
+    [from]: p[from].filter((c) => c.instanceId !== card.instanceId),
+    command: [...p.command, { ...stripForZone(card), commandHeld: true }],
+  }));
+}
+
+/** 場のユニットの BP を増減する（このターン。bpModifier はターン終了時に消える）。 */
+export function addBp(state: GameState, ownerId: PlayerId, instanceId: string, amount: number): GameState {
+  return patchPlayer(state, ownerId, (p) => {
+    const f = (cards: CardInstance[]) => cards.map((c) => (c.instanceId === instanceId ? { ...c, bpModifier: (c.bpModifier ?? 0) + amount } : c));
+    return { ...p, rush: f(p.rush), battle: f(p.battle) };
+  });
+}
+
+/** 場のユニットのホールド状態を変える（その場で）。 */
+export function setFieldHeld(state: GameState, ownerId: PlayerId, instanceId: string, held: boolean): GameState {
+  return patchPlayer(state, ownerId, (p) => {
+    const f = (cards: CardInstance[]) => cards.map((c) => (c.instanceId === instanceId ? { ...c, commandHeld: held, paymentHeld: held ? c.paymentHeld : undefined } : c));
+    return { ...p, rush: f(p.rush), battle: f(p.battle), command: f(p.command) };
+  });
 }

@@ -1,5 +1,5 @@
 import { rm1GrantsScrum } from "../rules/rm/rm1Fields";
-import { xg5GrantsScrum } from "../rules/xg5/xg5Fields";
+import { xg5BlocksOwnTurnHold, xg5GrantsScrum } from "../rules/xg5/xg5Fields";
 import type { Category } from "@rangers-strike/cards";
 import { rk9EnemyKeywordsNullified } from "../rules/rk/rk9Fields";
 import { set9ATaxisCategory } from "../rules/legend1/set9NamedEffectsA";
@@ -381,6 +381,8 @@ export function canHoldForWing(
   // ルール: R-KW-WING-03 — ウイングでアタックした後もリリースされれば同じターンに再び発動できる
   // （発動できるかはリリース状態かどうかだけで決まる）。
   if (unit.commandHeld) return false;
+  // XG5-025【上空からの牽制】: 敵軍のこれがあれば、自分自身のターン中はホールドできない（rules/xg5/xg5Fields.ts）。
+  if (xg5BlocksOwnTurnHold(state, playerId)) return false;
   return state.players[playerId].rush.some((c) => c.instanceId === unit.instanceId);
 }
 

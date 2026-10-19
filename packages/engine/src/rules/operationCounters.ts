@@ -1,3 +1,4 @@
+import { applyXg5AttackWin } from "./xg5/xg5Core";
 import { rm2AfterBattle } from "./rm/rm2Effects";
 import { isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "./rm/rm1Effects";
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
@@ -1705,6 +1706,8 @@ export function resolveBattlePendingCore(
           withAttacker = rk10OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
           // RK-269【シャドーセイバー】（rules/rk/rk13UnitEffects.ts）。
           withAttacker = rk13OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+          // XG5-029・XG5-034（rules/xg5/xg5bEffects.ts）。
+          withAttacker = applyXg5AttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
         }
         withAttacker = drainDeferredDestroyTriggers(withAttacker);
       }
@@ -1828,6 +1831,8 @@ export function resolveBattlePendingCore(
     if (!pending.effectBattle) nextState = rk10OnAttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
     // RK-269【シャドーセイバー】: 自軍ターン中、アタックしてバトルに勝ったとき（rules/rk/rk13UnitEffects.ts）。
     if (!pending.effectBattle) nextState = rk13OnAttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+    // XG5-029【頑頑ナックル落とし】・XG5-034【二刀流烈火大斬刀】（rules/xg5/xg5bEffects.ts）。
+    if (!pending.effectBattle) nextState = applyXg5AttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
   } else {
     nextState = markAttackerActed(nextState);
   }

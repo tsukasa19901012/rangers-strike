@@ -30,6 +30,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg5::XG5-023::scooper_phantom",
+          "duration": "turn"
         }
       ]
     }

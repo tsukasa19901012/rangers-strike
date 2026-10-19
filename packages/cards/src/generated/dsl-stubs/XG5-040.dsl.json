@@ -61,6 +61,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg5::XG5-040::snake_bullet",
+          "duration": "turn"
         }
       ]
     }

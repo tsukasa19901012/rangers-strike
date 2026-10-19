@@ -60,11 +60,10 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-027::deyuarukurashakonbinesho",
+          "keyword": "xg5::XG5-027::dual_crusher",
           "duration": "permanent"
         }
       ]

@@ -112,13 +112,13 @@ describe("XG5-028 バーニングレジェンドダイボイジャー", () => {
   const enters = (p2: Partial<GameState["players"]["player2"]> = { rush: [inst("SPEC-C3", "e3"), inst("SPEC-C4", "e4")] }) =>
     enter(battle({ rush: [inst("XG5-028", "bl")], discard: DISCARD() }, p2), "XG5-028:bl");
 
-  it.fails("XG5-028:【スーパーサーティーセンタイソウル】— 自軍ターン中にバトルエリアに出たとき、発動するかを選べる（任意）既知の不具合: CARD-XG5-028 発動の確認・選択が開かない（出典: atwiki/page-2237「次の効果を発動できる」）", () => {
+  it("XG5-028:【スーパーサーティーセンタイソウル】— 自軍ターン中にバトルエリアに出たとき、発動するかを選べる（任意）（出典: atwiki/page-2237「次の効果を発動できる」）", () => {
     const s = enters();
     expectChoiceFrom(s, "player1", "XG5-028");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-028:【スーパーサーティーセンタイソウル】— 作品名に「戦隊」を含み DA を持たない自軍捨札の枚数（3枚）以下の必要パワーの数字を持つ敵軍ユニットを選び、持ち主のパワーゾーンにダメージにして置く（必要パワー4は選べない）既知の不具合: CARD-XG5-028 効果がない（出典: atwiki/page-2237「作品名に「戦隊」を含む、DAを持たない自軍捨札の枚数を数え、その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く」・カード評価「初の作品名を参照するカード」）", () => {
+  it("XG5-028:【スーパーサーティーセンタイソウル】— 作品名に「戦隊」を含み DA を持たない自軍捨札の枚数（3枚）以下の必要パワーの数字を持つ敵軍ユニットを選び、持ち主のパワーゾーンにダメージにして置く（必要パワー4は選べない）（出典: atwiki/page-2237「作品名に「戦隊」を含む、DAを持たない自軍捨札の枚数を数え、その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く」・カード評価「初の作品名を参照するカード」）", () => {
     let s = enters();
     if (s.pendingEffectChoice?.kind === "confirm") s = accept(s);
     expect(choiceIds(s)).toEqual(["SPEC-C3:e3"]);
@@ -159,7 +159,7 @@ describe("XG5-029 ゲキファイヤー", () => {
   const won = () =>
     settle(attack(battle({ battle: [inst("XG5-029", "gf")], command: [released("TST-OP", "c1"), released("TST-OP-MA", "c2")] }, { battle: [inst("SPEC-E500", "a"), inst("SPEC-E500", "b")] }), "XG5-029:gf", "SPEC-E500:a"));
 
-  it.fails("XG5-029:【頑頑ナックル落とし】— アタックして敵軍ユニットをバトルで撃破したとき、自軍コマンドを1つ選んでホールドするかを選べる（任意）既知の不具合: CARD-XG5-029 選択が開かない（出典: atwiki/page-2281「これがアタックして敵軍ユニットをバトルで撃破するたび、自分コマンドを1つ選びホールドしてもよい」）", () => {
+  it("XG5-029:【頑頑ナックル落とし】— アタックして敵軍ユニットをバトルで撃破したとき、自軍コマンドを1つ選んでホールドするかを選べる（任意）（出典: atwiki/page-2281「これがアタックして敵軍ユニットをバトルで撃破するたび、自分コマンドを1つ選びホールドしてもよい」）", () => {
     const s = won();
     expect(zoneOf(s, "player2", "SPEC-E500:a")).toBe("discard");
     expectChoiceFrom(s, "player1", "XG5-029");
@@ -167,7 +167,7 @@ describe("XG5-029 ゲキファイヤー", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-029:【頑頑ナックル落とし】— ホールドすれば、このターン BP+2000 され、追加でアタックかストライクを行える 既知の不具合: CARD-XG5-029 選択が開かない（出典: atwiki/page-2281「このターン、これはBP+2000され、追加でアタックかストライクを行ってもよい」）", () => {
+  it("XG5-029:【頑頑ナックル落とし】— ホールドすれば、このターン BP+2000 され、追加でアタックかストライクを行える（出典: atwiki/page-2281「このターン、これはBP+2000され、追加でアタックかストライクを行ってもよい」）", () => {
     const s = settle(pick(won(), "TST-OP:c1"));
     expect(bpOf(s, "player1", "XG5-029:gf")).toBe(14000);
     expect(targetsOf(s, "XG5-029:gf")).toEqual(["SPEC-E500:b"]);
@@ -212,7 +212,7 @@ describe("XG5-030 ゲキゴリラ", () => {
     command: [released("TST-OP", "c1")],
   });
 
-  it.fails("XG5-030:【ゴリゴリ波】— ラッシュしたとき、敵軍 S ユニットか敵軍コマンドから選べる（M ユニットは選べない。任意） 既知の不具合: CARD-XG5-030 敵軍 S ユニットが候補にない（コマンドだけ）（出典: atwiki/page-2198「敵軍Sユニットか敵軍コマンドを敵軍ダメージの数まで選びホールドしてもよい」）", () => {
+  it("XG5-030:【ゴリゴリ波】— ラッシュしたとき、敵軍 S ユニットか敵軍コマンドから選べる（M ユニットは選べない。任意）（出典: atwiki/page-2198「敵軍Sユニットか敵軍コマンドを敵軍ダメージの数まで選びホールドしてもよい」）", () => {
     const r = rushFromHand(board({}, ENEMY()), "player1", "XG5-030:g");
     expect(r.ok, r.error).toBe(true);
     const s = r.state;
@@ -221,7 +221,7 @@ describe("XG5-030 ゲキゴリラ", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-030:【ゴリゴリ波】— 敵軍ダメージの数（2）まで選んでホールドする 既知の不具合: CARD-XG5-030 敵軍 S ユニットを選べず、複数を選べない（出典: atwiki/page-2198「敵軍ダメージの数まで選びホールドしてもよい」）", () => {
+  it("XG5-030:【ゴリゴリ波】— 敵軍ダメージの数（2）まで選んでホールドする（出典: atwiki/page-2198「敵軍ダメージの数まで選びホールドしてもよい」）", () => {
     const r = rushFromHand(board({}, ENEMY()), "player1", "XG5-030:g");
     let s = pickAll(r.state, ["SPEC-E500:s1", "TST-OP:c1"]);
     s = resolveAll(s, []);
@@ -230,7 +230,7 @@ describe("XG5-030 ゲキゴリラ", () => {
     expect(cardIn(s, "player2", "SPEC-E500:s2")?.commandHeld ?? false).toBe(false);
   });
 
-  it.fails("XG5-030:【ゴリゴリ波】— 敵軍ダメージが0なら何も選ばない 既知の不具合: CARD-XG5-030 敵軍ダメージを見ずに選択が開く（出典: atwiki/page-2198「敵軍ダメージの数まで」）", () => {
+  it("XG5-030:【ゴリゴリ波】— 敵軍ダメージが0なら何も選ばない（出典: atwiki/page-2198「敵軍ダメージの数まで」）", () => {
     const r = rushFromHand(board({}, { ...ENEMY(), damage: 0, power: [] }), "player1", "XG5-030:g");
     expect(r.state.pendingEffectChoice?.sourceCardId).not.toBe("XG5-030");
   });
@@ -255,13 +255,13 @@ describe("XG5-031 ゲキガゼル", () => {
   /** 1番目にゲキガゼル、2番目に next。 */
   const combo = (next: string) => enterKeep(battle({ rush: [inst("XG5-031", "z"), inst(next.split(":")[0]!, next.split(":")[1]!)] }, { battle: [inst("SPEC-E500", "e")] }), ["XG5-031:z", next]);
 
-  it.fails("XG5-031:【ガゼル脚】— ゲキガゼルからコンビネーションする「メカ」を持たない M ユニットは BP+3000 され「SP1/2」になる（2番目なので SP1）既知の不具合: CARD-XG5-031 JC の効果がない（出典: atwiki/page-2199「このユニットからコンビネーションする特徴「メカ」を持たないMユニットは、BP+3000され「SP1/2」になり」）", () => {
+  it("XG5-031:【ガゼル脚】— ゲキガゼルからコンビネーションする「メカ」を持たない M ユニットは BP+3000 され「SP1/2」になる（2番目なので SP1）（出典: atwiki/page-2199「このユニットからコンビネーションする特徴「メカ」を持たないMユニットは、BP+3000され「SP1/2」になり」）", () => {
     const s = combo("SPEC-M-PLAIN:m");
     expect(bpOf(s, "player1", "SPEC-M-PLAIN:m")).toBe(6000);
     expect(spOf(s, "player1", "SPEC-M-PLAIN:m")).toBe(1);
   });
 
-  it.fails("XG5-031:【ガゼル脚】— そのユニットはアタックかストライクを選ぶとき、敵軍ユニットにアタックできるならアタックしなければならない（ストライクを選べない）既知の不具合: CARD-XG5-031 JC の効果がない（出典: atwiki/page-2199「アタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする」・カード評価「ストライクは制限される」）", () => {
+  it("XG5-031:【ガゼル脚】— そのユニットはアタックかストライクを選ぶとき、敵軍ユニットにアタックできるならアタックしなければならない（ストライクを選べない）（出典: atwiki/page-2199「アタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする」・カード評価「ストライクは制限される」）", () => {
     const s = combo("SPEC-M-PLAIN:m");
     expect(spOf(s, "player1", "SPEC-M-PLAIN:m")).toBe(1); // 前提: 「SP1/2」になっている（ならなければストライクできないのは SP がないため）
     expect(targetsOf(s, "SPEC-M-PLAIN:m")).toEqual(["SPEC-E500:e"]);
@@ -292,13 +292,13 @@ describe("XG5-032 ゲキペンギン", () => {
 
   wingTests("XG5-032", "atwiki/page-2200");
 
-  it.fails("XG5-032:【ジェットボード】— 自分がターンを終えるとき、バトルエリアにあれば自軍ラッシュエリアに戻すかを選べる（任意） 既知の不具合: CARD-XG5-032 ターン終了時の選択が開かない（出典: atwiki/page-2200「自分がターンを終えるとき、このユニットがバトルエリアにあれば、自軍ラッシュエリアに戻してもよい」）", () => {
+  it("XG5-032:【ジェットボード】— 自分がターンを終えるとき、バトルエリアにあれば自軍ラッシュエリアに戻すかを選べる（任意）（出典: atwiki/page-2200「自分がターンを終えるとき、このユニットがバトルエリアにあれば、自軍ラッシュエリアに戻してもよい」）", () => {
     const s = toTurnEnd(battle({ battle: [inst("XG5-032", "p")] }), "XG5-032");
     expectChoiceFrom(s, "player1", "XG5-032");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-032:【ジェットボード】— 戻すことを選べば自軍ラッシュエリアに戻り、相手のターンにはラッシュエリアにいる 既知の不具合: CARD-XG5-032 ターン終了時の選択が開かない（出典: atwiki/page-2200・カード評価「ラッシュエリアに戻り安全を確保する」）", () => {
+  it("XG5-032:【ジェットボード】— 戻すことを選べば自軍ラッシュエリアに戻り、相手のターンにはラッシュエリアにいる（出典: atwiki/page-2200・カード評価「ラッシュエリアに戻り安全を確保する」）", () => {
     let s = toTurnEnd(battle({ battle: [inst("XG5-032", "p")] }), "XG5-032");
     s = settle(accept(s));
     s = toTurnEnd(s);
@@ -343,20 +343,20 @@ describe("XG5-033 シンケンレッド（志葉 薫）", () => {
   const ENEMY = () => ({ rush: [inst("SPEC-U1", "e1"), inst("SPEC-DA1", "d1"), inst("SPEC-COND1", "c1"), inst("SPEC-C3", "e3")], deck: deckCards(3, "e") });
   const enters = () => enter(battle({ rush: [inst("XG5-033", "k")], hand: HAND() }, ENEMY()), "XG5-033:k");
 
-  it.fails("XG5-033:【封印のモヂカラ】— 自軍ターン中にバトルエリアに出たとき、手札を1枚選んで相手に見せるかを選べる（任意）既知の不具合: CARD-XG5-033 選択が開かない（出典: atwiki/page-2170「自分の手札を1枚選び相手に見せてもよい」）", () => {
+  it("XG5-033:【封印のモヂカラ】— 自軍ターン中にバトルエリアに出たとき、手札を1枚選んで相手に見せるかを選べる（任意）（出典: atwiki/page-2170「自分の手札を1枚選び相手に見せてもよい」）", () => {
     const s = enters();
     expectChoiceFrom(s, "player1", "XG5-033");
     expect(choiceIds(s)).toEqual(["SPEC-C3:h3", "SPEC-OP1:h2", "SPEC-U1:h1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-033:【封印のモヂカラ】— 見せたカード（必要パワー1）と同じ必要パワーの数字の、追加条件を持たない敵軍ユニットから選ぶ（「1+」の追加条件持ち・必要パワー3は選べない）既知の不具合: CARD-XG5-033 選択が開かない（出典: atwiki/page-2170「見せたカードの必要パワーの数字と同じ必要パワーの数字を持つ、追加条件を持たない敵軍ユニットを1体選び」）", () => {
+  it("XG5-033:【封印のモヂカラ】— 見せたカード（必要パワー1）と同じ必要パワーの数字の、追加条件を持たない敵軍ユニットから選ぶ（「1+」の追加条件持ち・必要パワー3は選べない）（出典: atwiki/page-2170「見せたカードの必要パワーの数字と同じ必要パワーの数字を持つ、追加条件を持たない敵軍ユニットを1体選び」）", () => {
     const s = pick(enters(), "SPEC-OP1:h2");
     expectChoiceFrom(s, "player1", "XG5-033");
     expect(choiceIds(s)).toEqual(["SPEC-DA1:d1", "SPEC-U1:e1"]);
   });
 
-  it.fails("XG5-033:【封印のモヂカラ】— 選んだユニットは持ち主の山札の下に戻る。DA を持つならゲームから除外する 既知の不具合: CARD-XG5-033 選択が開かない（出典: atwiki/page-2170「持ち主の山札の下に戻す。（選んだユニットがDAを持つなら、山札の下に戻すかわりにゲームから除外する）」）", () => {
+  it("XG5-033:【封印のモヂカラ】— 選んだユニットは持ち主の山札の下に戻る。DA を持つならゲームから除外する（出典: atwiki/page-2170「持ち主の山札の下に戻す。（選んだユニットがDAを持つなら、山札の下に戻すかわりにゲームから除外する）」）", () => {
     let s = resolveAll(pick(pick(enters(), "SPEC-U1:h1"), "SPEC-U1:e1"));
     expect(s.players.player2.deck.at(-1)?.instanceId).toBe("SPEC-U1:e1");
     expect(zoneOf(s, "player1", "SPEC-U1:h1")).toBe("hand");
@@ -387,7 +387,7 @@ describe("XG5-034 シンケンレッド", () => {
     expect(spOf(s, "player1", "XG5-034:s")).toBe(1);
   });
 
-  it.fails("XG5-034: ※ — 自軍ターン中、これ以外の特徴「侍」を持つ自軍 S ユニット1体につき BP+2000（ラッシュエリア・バトルエリアとも。M ユニットは数えない） 既知の不具合: CARD-XG5-034 BP が上がらない（出典: atwiki/page-2263「これ以外の特徴「侍」を持つSユニット1体につきBP+2000される」）", () => {
+  it("XG5-034: ※ — 自軍ターン中、これ以外の特徴「侍」を持つ自軍 S ユニット1体につき BP+2000（ラッシュエリア・バトルエリアとも。M ユニットは数えない）（出典: atwiki/page-2263「これ以外の特徴「侍」を持つSユニット1体につきBP+2000される」）", () => {
     const s = battle({ battle: [inst("XG5-034", "s"), inst("SPEC-SAMURAI", "a")], rush: [inst("XG5-033", "k"), inst("SPEC-SAMURAI-M", "m")] });
     expect(bpOf(s, "player1", "XG5-034:s")).toBe(6000);
   });
@@ -401,14 +401,14 @@ describe("XG5-034 シンケンレッド", () => {
   const won = () =>
     settle(attack(enter(battle({ rush: [inst("XG5-034", "s"), inst("SPEC-SAMURAI", "a"), inst("SPEC-SAMURAI-M", "m")] }, { battle: [inst("SPEC-E500", "x"), inst("SPEC-E500", "y")] }), "XG5-034:s"), "XG5-034:s", "SPEC-E500:x"));
 
-  it.fails("XG5-034: NC【二刀流烈火大斬刀】— アタックして敵軍ユニットをバトルで撃破したとき、特徴「侍」を持つ自軍 S ユニットを1体選んでホールドするかを選べる（M ユニットは選べない。任意）既知の不具合: CARD-XG5-034 NC は成立するが、撃破しても選択が開かない（出典: atwiki/page-2263「特徴「侍」を持つ自軍Sユニットを1体選びホールドしてもよい」）", () => {
+  it("XG5-034: NC【二刀流烈火大斬刀】— アタックして敵軍ユニットをバトルで撃破したとき、特徴「侍」を持つ自軍 S ユニットを1体選んでホールドするかを選べる（M ユニットは選べない。任意）（出典: atwiki/page-2263「特徴「侍」を持つ自軍Sユニットを1体選びホールドしてもよい」）", () => {
     const s = won();
     expectChoiceFrom(s, "player1", "XG5-034");
     expect(choiceIds(s)).toEqual(["SPEC-SAMURAI:a"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-034: NC【二刀流烈火大斬刀】— ホールドすれば追加でアタックを行える 既知の不具合: CARD-XG5-034 選択が開かない（出典: atwiki/page-2263「そうしたとき、これは追加でアタックを行ってもよい」）", () => {
+  it("XG5-034: NC【二刀流烈火大斬刀】— ホールドすれば追加でアタックを行える（出典: atwiki/page-2263「そうしたとき、これは追加でアタックを行ってもよい」）", () => {
     const s = settle(pick(won(), "SPEC-SAMURAI:a"));
     expect(cardIn(s, "player1", "SPEC-SAMURAI:a")?.commandHeld).toBe(true);
     expect(targetsOf(s, "XG5-034:s")).toEqual(["SPEC-E500:y"]);

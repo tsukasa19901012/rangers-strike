@@ -102,14 +102,14 @@ describe("XG5-021 ボウケンブラック", () => {
     expect(spOf(nc("XG5-021:b", 4, {}, ENEMY()), "player1", "XG5-021:b")).toBe(1);
   });
 
-  it.fails("XG5-021: NC【ハンマーブレイク】— DA を持つ、本来の BP が8000以下の敵軍ユニット（エリア・サイズを問わない。マルチカテゴリも）から選べる。いまの BP ではなく本来の BP で見る（任意）既知の不具合: CARD-XG5-021 NC は成立するが効果がない（選択が開かない）（出典: atwiki/page-2195「DAを持つ、本来のBPが8000以下の敵軍ユニットを1体選び、…置いてもよい」）", () => {
+  it("XG5-021: NC【ハンマーブレイク】— DA を持つ、本来の BP が8000以下の敵軍ユニット（エリア・サイズを問わない。マルチカテゴリも）から選べる。いまの BP ではなく本来の BP で見る（任意）（出典: atwiki/page-2195「DAを持つ、本来のBPが8000以下の敵軍ユニットを1体選び、…置いてもよい」）", () => {
     const s = nc("XG5-021:b", 4, { rush: [inst("SPEC-DA-S", "own")] }, ENEMY());
     expectChoiceFrom(s, "player1", "XG5-021");
     expect(choiceIds(s)).toEqual(["SPEC-DA-S:c", "SPEC-DA-WB:m", "SPEC-DA8000:a"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-021: NC【ハンマーブレイク】— 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる。置けなければ捨札 既知の不具合: CARD-XG5-021 NC の効果がない（出典: atwiki/page-2195「持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする」）", () => {
+  it("XG5-021: NC【ハンマーブレイク】— 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる。置けなければ捨札（出典: atwiki/page-2195「持ち主のコマンドゾーンにホールド状態で置いてもよい。置けなければ捨札にする」）", () => {
     let s = resolveAll(pick(nc("XG5-021:b", 4, {}, ENEMY()), "SPEC-DA8000:a"));
     expect(commandState(s, "player2", "SPEC-DA8000:a")).toBe("held");
     s = resolveAll(pick(nc("XG5-021:b", 4, {}, { ...ENEMY(), command: heldN(5) }), "SPEC-DA8000:a"));
@@ -143,14 +143,14 @@ describe("XG5-022 ボウケンブルー", () => {
   const attacked = (p1: Partial<GameState["players"]["player1"]> = {}, fillers = 1) =>
     attack(nc("XG5-022:b", fillers, { discard: DISCARD(), ...p1 }, { battle: [inst("SPEC-E500", "e")] }), "XG5-022:b", "SPEC-E500:e");
 
-  it.fails("XG5-022: NC【ナックルキャノン】— アタックしたとき、自軍コマンドが3つ以下なら、自軍捨札の必要パワーの数字が2以下のオペレーションカードから選べる（必要パワー3・ユニットは選べない。任意）既知の不具合: CARD-XG5-022 選択が開かない（出典: atwiki/page-2196「自軍捨札から必要パワーの数字が2以下のオペレーションカードを1枚選び自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
+  it("XG5-022: NC【ナックルキャノン】— アタックしたとき、自軍コマンドが3つ以下なら、自軍捨札の必要パワーの数字が2以下のオペレーションカードから選べる（必要パワー3・ユニットは選べない。任意）（出典: atwiki/page-2196「自軍捨札から必要パワーの数字が2以下のオペレーションカードを1枚選び自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
     const s = attacked({ command: releasedCat("ET", 3) });
     expectChoiceFrom(s, "player1", "XG5-022");
     expect(choiceIds(s)).toEqual(["SPEC-OP2:o2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-022: NC【ナックルキャノン】— 選んだカードは自軍コマンドゾーンにホールド状態で置かれる 既知の不具合: CARD-XG5-022 置かれない（出典: atwiki/page-2196）", () => {
+  it("XG5-022: NC【ナックルキャノン】— 選んだカードは自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-2196）", () => {
     const s = resolveAll(attacked(), ["SPEC-OP2:o2"]);
     expect(zoneOf(s, "player1", "SPEC-OP2:o2")).toBe("command");
     expect(commandState(s, "player1", "SPEC-OP2:o2")).toBe("held");
@@ -184,7 +184,7 @@ describe("XG5-023 ボウケンイエロー", () => {
     expect(spOf(nc("XG5-023:y", 2, {}, ENEMY()), "player1", "XG5-023:y")).toBe(1);
   });
 
-  it.fails("XG5-023: NC【スクーパーファントム】— 相手が自分自身のコマンドゾーンのユニットカード（リリース状態・ホールド状態とも）から1枚選ぶ（オペレーションは選べない。見送れない）既知の不具合: CARD-XG5-023 NC は成立するが効果がない（相手の選択が開かない）（出典: atwiki/page-2197「相手は、自分自身のコマンドゾーンからユニットカードを1枚選び自分自身のラッシュエリアに出す」）", () => {
+  it("XG5-023: NC【スクーパーファントム】— 相手が自分自身のコマンドゾーンのユニットカード（リリース状態・ホールド状態とも）から1枚選ぶ（オペレーションは選べない。見送れない）（出典: atwiki/page-2197「相手は、自分自身のコマンドゾーンからユニットカードを1枚選び自分自身のラッシュエリアに出す」）", () => {
     const s = nc("XG5-023:y", 2, {}, ENEMY());
     expect(choicePlayer(s)).toBe("player2");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XG5-023");
@@ -192,7 +192,7 @@ describe("XG5-023 ボウケンイエロー", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG5-023: NC【スクーパーファントム】— 選ばれたユニットは相手のラッシュエリアに出て、これとバトルする（BP の低いほうが撃破される）既知の不具合: CARD-XG5-023 NC の効果がない（出典: atwiki/page-2197「そうしたとき、出したユニットとこのユニットとでバトルする」・カード評価「ラッシュされたユニットと強制的にバトルしなければならない」）", () => {
+  it("XG5-023: NC【スクーパーファントム】— 選ばれたユニットは相手のラッシュエリアに出て、これとバトルする（BP の低いほうが撃破される）（出典: atwiki/page-2197「そうしたとき、出したユニットとこのユニットとでバトルする」・カード評価「ラッシュされたユニットと強制的にバトルしなければならない」）", () => {
     let s = resolveAll(pickAs(nc("XG5-023:y", 2, {}, ENEMY()), "player2", "SPEC-E3000:big"));
     expect(zoneOf(s, "player2", "SPEC-E3000:big")).toBe("rush");
     expect(zoneOf(s, "player1", "XG5-023:y")).toBe("discard");
@@ -231,13 +231,13 @@ describe("XG5-024 ボウケンピンク", () => {
   const DECKS = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
     nc("XG5-024:p", 3, { deck: [...deckCards(3), inst("SPEC-WB-S", "bot")], ...p1 }, { deck: [...deckCards(3, "e"), inst("SPEC-E500", "ebot")], ...p2 });
 
-  it.fails("XG5-024: NC【プレシャスの確保】— 自軍山札の下の1枚を自軍コマンドゾーンにホールド状態で置くかを選べる（任意）既知の不具合: CARD-XG5-024 NC は成立するが効果がない（出典: atwiki/page-2240「自軍山札の下から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
+  it("XG5-024: NC【プレシャスの確保】— 自軍山札の下の1枚を自軍コマンドゾーンにホールド状態で置くかを選べる（任意）（出典: atwiki/page-2240「自軍山札の下から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
     const s = DECKS();
     expectChoiceFrom(s, "player1", "XG5-024");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-024: NC【プレシャスの確保】— 置けば、相手も自分自身の山札の下の1枚を自分自身のコマンドゾーンにホールド状態で置くかを選べる 既知の不具合: CARD-XG5-024 NC の効果がない（出典: atwiki/page-2240「そうしたとき、相手も同じようにしてもよい」）", () => {
+  it("XG5-024: NC【プレシャスの確保】— 置けば、相手も自分自身の山札の下の1枚を自分自身のコマンドゾーンにホールド状態で置くかを選べる（出典: atwiki/page-2240「そうしたとき、相手も同じようにしてもよい」）", () => {
     let s = accept(DECKS());
     expect(commandState(s, "player1", "SPEC-WB-S:bot")).toBe("held");
     expect(choicePlayer(s)).toBe("player2");
@@ -245,7 +245,7 @@ describe("XG5-024 ボウケンピンク", () => {
     expect(commandState(s, "player2", "SPEC-E500:ebot")).toBe("held");
   });
 
-  it.fails("XG5-024: NC【プレシャスの確保】— 自軍コマンドゾーンが5枚で置けなければ手札に加える 既知の不具合: CARD-XG5-024 NC の効果がない（出典: atwiki/page-2240「置けなければ手札に加える」）", () => {
+  it("XG5-024: NC【プレシャスの確保】— 自軍コマンドゾーンが5枚で置けなければ手札に加える（出典: atwiki/page-2240「置けなければ手札に加える」）", () => {
     const s = accept(DECKS({ command: heldN(5) }));
     expect(zoneOf(s, "player1", "SPEC-WB-S:bot")).toBe("hand");
   });
@@ -275,7 +275,7 @@ describe("XG5-025 ボウケンブルーAT", () => {
   const enemyTurn = (p1: Partial<GameState["players"]["player1"]>) =>
     st({ activePlayer: "player2", player1: { deck: deckCards(5), ...p1 }, player2: { deck: deckCards(5, "e"), rush: [inst("RS-631", "w")], battle: [inst("SPEC-E500", "x")] } }, EXTRA);
 
-  it.fails("XG5-025:【上空からの牽制】— これが自軍エリアにある間、リリース状態の敵軍ユニットは自分自身のターン中ホールドできない（ウイングを発動できない） 既知の不具合: CARD-XG5-025 敵軍ユニットのホールド（ウイング）が制限されない（出典: atwiki/page-2265「リリース状態の敵軍ユニットは…自分自身のターン中、ホールドすることができない」・カード評価「相手のウイング、コール、リードといった厄介な効果を封印出来る」）", () => {
+  it("XG5-025:【上空からの牽制】— これが自軍エリアにある間、リリース状態の敵軍ユニットは自分自身のターン中ホールドできない（ウイングを発動できない）（出典: atwiki/page-2265「リリース状態の敵軍ユニットは…自分自身のターン中、ホールドすることができない」・カード評価「相手のウイング、コール、リードといった厄介な効果を封印出来る」）", () => {
     expect(wingOffered(enemyTurn({ battle: [inst("SPEC-WB-S", "d")], rush: [inst("XG5-025", "at")] }), "RS-631:w", "player2")).toBe(false);
   });
 
@@ -326,18 +326,18 @@ describe("XG5-026 ボウケンイエローAT", () => {
   const at5 = (left = FOUR(), p2: Partial<GameState["players"]["player2"]> = ENEMY()) =>
     act(battle({ battle: left, rush: [inst("XG5-026", "y")] }, p2), { type: "move_to_battle", playerId: "player1", instanceId: "XG5-026:y" });
 
-  it.fails("XG5-026: NC【仲間の支え】— 5番目に出れば「SP1」 既知の不具合: CARD-XG5-026 5番目に出ても SP が付かない（出典: atwiki/page-2272「【仲間の支え】｢SP1｣」）", () => {
+  it("XG5-026: NC【仲間の支え】— 5番目に出れば「SP1」（出典: atwiki/page-2272「【仲間の支え】｢SP1｣」）", () => {
     expect(spOf(at5(), "player1", "XG5-026:y")).toBe(1);
   });
 
-  it.fails("XG5-026: NC【仲間の支え】— 自軍バトルエリアに「レッド」「ブラック」「ブルー」「ピンク」の S ユニットがそれぞれあれば、本来の BP が6000以下の敵軍ユニットをすべて持ち主のコマンドゾーンにホールド状態で置く（本来の BP6500 は残る）既知の不具合: CARD-XG5-026 NC は成立するが効果がない（出典: atwiki/page-2272「本来のBPが6000以下の敵軍ユニットをすべて持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("XG5-026: NC【仲間の支え】— 自軍バトルエリアに「レッド」「ブラック」「ブルー」「ピンク」の S ユニットがそれぞれあれば、本来の BP が6000以下の敵軍ユニットをすべて持ち主のコマンドゾーンにホールド状態で置く（本来の BP6500 は残る）（出典: atwiki/page-2272「本来のBPが6000以下の敵軍ユニットをすべて持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(at5());
     expect(commandState(s, "player2", "SPEC-E6000:a")).toBe("held");
     expect(commandState(s, "player2", "SPEC-E500:c")).toBe("held");
     expect(zoneOf(s, "player2", "SPEC-E6500:b")).toBe("rush");
   });
 
-  it.fails("XG5-026: NC【仲間の支え】— 置けなければ捨札にする 既知の不具合: CARD-XG5-026 NC の効果がない（出典: atwiki/page-2272「置けなければ捨札にする」）", () => {
+  it("XG5-026: NC【仲間の支え】— 置けなければ捨札にする（出典: atwiki/page-2272「置けなければ捨札にする」）", () => {
     const s = resolveAll(at5(FOUR(), { ...ENEMY(), command: heldN(5) }));
     expect(zoneOf(s, "player2", "SPEC-E6000:a")).toBe("discard");
   });
@@ -382,13 +382,13 @@ describe("XG5-027 ボウケンピンクAT", () => {
     return settle(act(s, legal(s).find((a) => a.type === "use_register" && a.playerId === "player2")!));
   };
 
-  it.fails("XG5-027: NC【デュアルクラッシャー・コンビネーションクラッシュ】— 成立したときにはユニットを選ばない（選択は開かない）既知の不具合: CARD-XG5-027 NC で敵軍ユニットを1体選ばせてホールドさせる（本文にない処理）（出典: atwiki/page-2270「このターン、次に敵軍ユニットがホールド状態になったとき」）", () => {
+  it("XG5-027: NC【デュアルクラッシャー・コンビネーションクラッシュ】— 成立したときにはユニットを選ばない（選択は開かない）（出典: atwiki/page-2270「このターン、次に敵軍ユニットがホールド状態になったとき」）", () => {
     const s = nc("XG5-027:pk", 0, {}, { battle: [inst("SPEC-RESIST-S", "r")] });
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG5-027");
     expect(cardIn(s, "player2", "SPEC-RESIST-S:r")?.commandHeld ?? false).toBe(false);
   });
 
-  it.fails("XG5-027: NC【デュアルクラッシャー・コンビネーションクラッシュ】— このターン、次に敵軍ユニットがホールド状態になったとき（相手がレジストでホールドしたとき）、そのユニットを撃破する 既知の不具合: CARD-XG5-027 NC で敵軍ユニットを選んでホールドさせ、その後のアタックができなくなる（出典: atwiki/page-2270「このターン、次に敵軍ユニットがホールド状態になったとき、そのユニットを撃破する」・カード評価「単純にレジストを封じられる」）", () => {
+  it("XG5-027: NC【デュアルクラッシャー・コンビネーションクラッシュ】— このターン、次に敵軍ユニットがホールド状態になったとき（相手がレジストでホールドしたとき）、そのユニットを撃破する（出典: atwiki/page-2270「このターン、次に敵軍ユニットがホールド状態になったとき、そのユニットを撃破する」・カード評価「単純にレジストを封じられる」）", () => {
     const s = registerAfter(0);
     expect(zoneOf(s, "player2", "SPEC-RESIST-S:r")).toBe("discard");
   });

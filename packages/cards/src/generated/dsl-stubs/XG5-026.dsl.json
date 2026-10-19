@@ -47,12 +47,16 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-026::noe",
-          "duration": "permanent"
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg5::XG5-026::nakama",
+          "duration": "turn"
         }
       ]
     }

@@ -13,6 +13,7 @@ import type { GameState, PendingStrike } from "../../types/game";
 import { type ApplyActionFn, AFTER_ACTION_HOOKS, STRIKE_RESOLVED_HOOKS, WATCH_HANDLERS } from "./xg5Core";
 import { xg5Busy } from "./xg5Shared";
 import "./xg5aEffects";
+import "./xg5bEffects";
 
 export { activateXg5HandEffect, listXg5HandActivations } from "./xg5Core";
 export { canConfirmXg5Choice, isXg5ChoiceEffect, tryConfirmXg5Choice, tryResolveXg5Choice, trySkipXg5Choice, tryXg5CardEffect } from "./xg5Core";

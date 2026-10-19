@@ -39,8 +39,10 @@ import {
 import { AFTER_ACTION_HOOKS, CHOICE_CONFIRMERS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, HAND_ACTIVATIONS, STRIKE_RESOLVED_HOOKS, WATCH_HANDLERS, XG5_KEYWORDS, noop } from "./xg5Core";
 import { printedCostNumber, xg5CostNumber } from "./xg5Fields";
 import {
+  addBp,
   addFlag,
   addWatch,
+  cmdHeldPut,
   defOf,
   fieldCategories,
   isNamed,
@@ -55,21 +57,6 @@ import {
 } from "./xg5Shared";
 
 const PLAYERS: PlayerId[] = ["player1", "player2"];
-
-function cmdHeldPut(state: GameState, ownerId: PlayerId, card: CardInstance, from: "deck" | "discard" | "hand"): GameState {
-  return patchPlayer(state, ownerId, (p) => ({
-    ...p,
-    [from]: p[from].filter((c) => c.instanceId !== card.instanceId),
-    command: [...p.command, { ...stripForZone(card), commandHeld: true }],
-  }));
-}
-
-function addBp(state: GameState, ownerId: PlayerId, instanceId: string, amount: number): GameState {
-  return patchPlayer(state, ownerId, (p) => {
-    const f = (cards: CardInstance[]) => cards.map((c) => (c.instanceId === instanceId ? { ...c, bpModifier: (c.bpModifier ?? 0) + amount } : c));
-    return { ...p, rush: f(p.rush), battle: f(p.battle) };
-  });
-}
 
 // ---------------------------------------------------------------------------
 // XG5-001 ゴーグルレッド【レッドロープ】（NC）
