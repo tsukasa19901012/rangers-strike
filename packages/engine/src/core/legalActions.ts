@@ -918,7 +918,7 @@ export function findDirectZordRushAction(
     );
     for (const variant of variants) {
       if (
-        !canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId, variant)
+        !canDeclareRushInEnumeration(state, playerId, definition, card.instanceId, variant)
       ) {
         continue;
       }
@@ -950,7 +950,7 @@ export function findDirectZordRushAction(
   );
   for (const variant of variants) {
     if (
-      !canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId, variant)
+      !canDeclareRushInEnumeration(state, playerId, definition, card.instanceId, variant)
     ) {
       continue;
     }
@@ -1114,7 +1114,7 @@ function appendRushCategoryPaymentActions(
         requiresAllFusionPartners(card.cardId))
     ) {
       if (requiresAllFusionPartners(card.cardId)) {
-        if (canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId)) {
+        if (canDeclareRushInEnumeration(state, playerId, definition, card.instanceId)) {
           continue;
         }
         if (
@@ -1154,7 +1154,7 @@ function appendRushCategoryPaymentActions(
           card.instanceId,
         );
         for (const variant of variants) {
-          if (canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId, variant)) {
+          if (canDeclareRushInEnumeration(state, playerId, definition, card.instanceId, variant)) {
             continue;
           }
           if (
@@ -1201,7 +1201,7 @@ function appendRushCategoryPaymentActions(
       ];
       for (const zord of zordVariants) {
         if (
-          canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId, zord)
+          canDeclareRushInEnumeration(state, playerId, definition, card.instanceId, zord)
         ) {
           continue;
         }
@@ -1234,7 +1234,7 @@ function appendRushCategoryPaymentActions(
       }
     } else {
       if (
-        canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId) &&
+        canDeclareRushInEnumeration(state, playerId, definition, card.instanceId) &&
         // RS-242: ホールドせずにラッシュしてもよい（ホールドしてラッシュすることもできる）。
         !jaryuInvasionAllowsRushWithoutHold(state, playerId, definition)
       ) {
@@ -1885,30 +1885,58 @@ function deepFreeze<T>(value: T): T {
 }
 
 /**
- * 1回の合法手の列挙の中では、同じ手札のゾードについて canBeginZordSetup（追加条件の手順を最後まで試す重い判定）を
- * ラッシュの支払いとゾードの手順の両方から調べるので、列挙の間だけ結果を覚える（計算に乱数等を使ったときは覚えない）。
+ * 1回の合法手の列挙の中で同じ引数で何度も呼ぶ判定の結果を、列挙の間だけ覚える（計算に乱数等を使ったときは覚えない）。
+ * - canBeginZordSetup（追加条件の手順を最後まで試す重い判定）: 手札のゾードをラッシュの支払いとゾードの手順の両方から調べる。
+ * - canDeclareRush: 手札のユニットをラッシュとラッシュのカテゴリ支払いの両方から調べる。
  */
-let beginZordMemo: { state: GameState; results: Map<string, boolean> } | null = null;
+let enumerationMemo: { state: GameState; results: Map<string, boolean> } | null = null;
 
-function canBeginZordSetupInEnumeration(state: GameState, playerId: PlayerId, zordInstanceId: string): boolean {
-  const memo = beginZordMemo;
-  if (!memo || memo.state !== state) return canBeginZordSetup(state, playerId, zordInstanceId);
-  const key = `${playerId}:${zordInstanceId}`;
+function memoizeInEnumeration(state: GameState, key: string, compute: () => boolean): boolean {
+  const memo = enumerationMemo;
+  if (!memo || memo.state !== state) return compute();
   const hit = memo.results.get(key);
   if (hit !== undefined) return hit;
   const sideEffectsBefore = engineSideEffectCount();
-  const result = canBeginZordSetup(state, playerId, zordInstanceId);
+  const result = compute();
   if (engineSideEffectCount() === sideEffectsBefore) memo.results.set(key, result);
   return result;
 }
 
+function canBeginZordSetupInEnumeration(state: GameState, playerId: PlayerId, zordInstanceId: string): boolean {
+  return memoizeInEnumeration(state, `zord:${playerId}:${zordInstanceId}`, () =>
+    canBeginZordSetup(state, playerId, zordInstanceId),
+  );
+}
+
+type RushDeclarationZord = Parameters<typeof canDeclareRush>[6];
+
+function canDeclareRushInEnumeration(
+  state: GameState,
+  playerId: PlayerId,
+  definition: CardDefinition,
+  instanceId: string,
+  zord?: RushDeclarationZord,
+): boolean {
+  const player = state.players[playerId];
+  // canDeclareRush が見るゾードの指定だけをキーにする。
+  const key = zord
+    ? `rush:${playerId}:${instanceId}:${definition.id}:${zord.zordMaterialInstanceId ?? ""}:${(zord.zordMaterialInstanceIds ?? []).join(",")}:${(zord.zordMothershipHoldInstanceIds ?? []).join(",")}:${(zord.zordExtraCommandHoldInstanceIds ?? []).join(",")}:${zord.zordMaterialDestination ?? ""}:${zord.zordMaterialInstanceIds ? 1 : 0}${zord.zordMothershipHoldInstanceIds ? 1 : 0}${zord.zordExtraCommandHoldInstanceIds ? 1 : 0}`
+    : `rush:${playerId}:${instanceId}:${definition.id}`;
+  if (definition !== getDefinition(state.definitions, definition.id)) {
+    return canDeclareRush(state, playerId, player, state.definitions, definition, instanceId, zord);
+  }
+  return memoizeInEnumeration(state, key, () =>
+    canDeclareRush(state, playerId, player, state.definitions, definition, instanceId, zord),
+  );
+}
+
 function getLegalActionsCoreWithMemo(state: GameState): GameAction[] {
-  const previous = beginZordMemo;
-  beginZordMemo = { state, results: new Map() };
+  const previous = enumerationMemo;
+  enumerationMemo = { state, results: new Map() };
   try {
     return getLegalActionsCore(state);
   } finally {
-    beginZordMemo = previous;
+    enumerationMemo = previous;
   }
 }
 
@@ -2215,7 +2243,7 @@ function getLegalActionsCore(state: GameState): GameAction[] {
             card.instanceId,
           )) {
             if (
-              !canDeclareRush(state, playerId, player, state.definitions, definition!, card.instanceId, variant)
+              !canDeclareRushInEnumeration(state, playerId, definition!, card.instanceId, variant)
             ) {
               continue;
             }
@@ -2228,7 +2256,7 @@ function getLegalActionsCore(state: GameState): GameAction[] {
               zordMaterialDestination: variant.zordMaterialDestination,
             });
           }
-          if (canDeclareRush(state, playerId, player, state.definitions, definition!, card.instanceId)) {
+          if (canDeclareRushInEnumeration(state, playerId, definition!, card.instanceId)) {
             actions.push({
               type: "rush",
               playerId,
@@ -2248,7 +2276,7 @@ function getLegalActionsCore(state: GameState): GameAction[] {
             card.instanceId,
           )) {
             if (
-              !canDeclareRush(state, playerId, player, state.definitions, definition!, card.instanceId, variant)
+              !canDeclareRushInEnumeration(state, playerId, definition!, card.instanceId, variant)
             ) {
               continue;
             }
@@ -2263,7 +2291,7 @@ function getLegalActionsCore(state: GameState): GameAction[] {
               zordExtraCommandHoldInstanceIds: variant.zordExtraCommandHoldInstanceIds,
             });
           }
-        } else if (canDeclareRush(state, playerId, player, state.definitions, definition!, card.instanceId)) {
+        } else if (canDeclareRushInEnumeration(state, playerId, definition!, card.instanceId)) {
           actions.push({
             type: "rush",
             playerId,
