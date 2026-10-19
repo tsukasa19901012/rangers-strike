@@ -749,6 +749,8 @@ export type PendingEffectChoice = {
     /** BK-006: 選んだ敵軍の「航空機」の M ユニット。 */
     enemy?: string;
   };
+  /** クロスギャザー ザ・Wインパクト XG3 の選択の続き（rules/xg3/xg3Types.ts）。 */
+  xg3Meta?: import("../rules/xg3/xg3Types").Xg3ChoiceMeta;
   /** スペシャルメタルエディション RM-043〜RM-062 の選択の続き（rules/rm/rm3Effects.ts）。 */
   rm3Meta?: {
     /** RM-045: 相手がこれまでに選んだ敵軍 S ユニット。 */
@@ -1194,6 +1196,8 @@ export type EffectStack = {
 };
 
 export type GameState = {
+  /** クロスギャザー ザ・Wインパクト XG3 の、ターンをまたぐ記録・処理待ち（rules/xg3/xg3Types.ts）。 */
+  xg3?: import("../rules/xg3/xg3Types").Xg3State;
   turn: number;
   activePlayer: PlayerId;
   /** 先攻プレイヤー（先攻）。 */
@@ -1522,6 +1526,8 @@ export type TurnEndProgress = {
   rk13Queue?: string[];
   /** RK-323【シャドウベール】（rules/rk/rk16UnitEffects.ts）。 */
   rk16Queue?: string[];
+  /** クロスギャザー ザ・Wインパクト XG3 の「自分がターンを終えるとき」（rules/xg3/xg3Effects.ts）。 */
+  xg3Queue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

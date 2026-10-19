@@ -36,36 +36,14 @@
       "name": "暴れ独楽",
       "text": "このユニットからコンビネーションする同カテゴリのLユニットは、次の能力を得る⇒これがストライクしたとき、追加条件を持たない敵軍ユニットを1体選び、持ち主の手札に戻す。",
       "trigger": {
-        "type": "on_strike"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "hand"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg3::XG3-018::abare_goma",
+          "duration": "permanent"
         }
       ]
     }

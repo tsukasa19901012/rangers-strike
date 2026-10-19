@@ -172,6 +172,9 @@ export function canSelfRushFromZone(
   const player = state.players[playerId];
   const card = player[zone].find((c) => c.instanceId === instanceId);
   if (!card) return false;
+  // クロスギャザー ザ・Wインパクト XG3 の、自軍ゾーンから起動する効果（XG3-002【宇宙を走る車】等。rules/xg3/xg3Effects.ts）。
+  const xg3 = canActivateXg3FromZone(state, playerId, zone, instanceId);
+  if (xg3 !== null) return xg3;
   if (zone === "hand") return handDeployConditionMet(state, playerId, card.cardId);
   if (zone === "power" && card.faceDown) return false;
   // RK-320 仮面ライダーライジングイクサの※（必要パワー1・9・3の自軍コマンドがそれぞれあれば。rules/rk/rk16Fields.ts）。
@@ -236,6 +239,8 @@ export function applySelfRushFromZone(
   instanceId: string,
 ): GameState | null {
   if (!canSelfRushFromZone(state, playerId, zone, instanceId)) return null;
+  const xg3 = activateXg3FromZone(state, playerId, zone, instanceId);
+  if (xg3) return xg3;
   const player = state.players[playerId];
   const card = player[zone].find((c) => c.instanceId === instanceId);
   if (!card) return null;
@@ -255,6 +260,7 @@ import type { PlayerState } from "../types/game";
 import { hasBakiBakiExtraAttack } from "./turnModifierBridge";
 import { markTurnBattleAct } from "./rk/rk10Fields";
 import { rk16CanDeployFromCommand } from "./rk/rk16Fields";
+import { activateXg3FromZone, canActivateXg3FromZone } from "./xg3/xg3Effects";
 
 /**
  * battleActed 済みでも「アタックとストライクを1度ずつ」持ちなら

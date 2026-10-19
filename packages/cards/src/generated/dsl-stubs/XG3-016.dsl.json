@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-016::bananabomu",
-          "duration": "turn"
+          "keyword": "xg3::XG3-016::banana_bomb",
+          "duration": "permanent"
         }
       ]
     }

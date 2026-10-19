@@ -106,14 +106,14 @@ describe("XG3-009 ミント", () => {
       ),
     );
 
-  it.fails("XG3-009:【戦いの記録】— 自軍スタートフェイズ開始時に、このユニットを捨札にして発動するかを選べる（任意）（既知の不具合: CARD-XG3-009 スタートフェイズ開始時の起動がない）（出典: atwiki/page-1890「自軍スタートフェイズ開始時、このユニットを捨札にして次の効果を発動できる」）", () => {
+  it("XG3-009:【戦いの記録】— 自軍スタートフェイズ開始時に、このユニットを捨札にして発動するかを選べる（任意）（出典: atwiki/page-1890「自軍スタートフェイズ開始時、このユニットを捨札にして次の効果を発動できる」）", () => {
     const s = startBoard();
     expect(s.phase).toBe("start");
     expectChoiceFrom(s, "player1", "XG3-009");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-009:【戦いの記録】— 発動すると、自軍ラッシュエリアの、効果名を持つテキストに「これをラッシュしたとき」と書かれたユニットから選べる（※の「これをラッシュしたとき」・効果のないユニットは選べない。任意）（既知の不具合: CARD-XG3-009）（出典: atwiki/page-1890「効果名を持つテキストに「これをラッシュしたとき」と書かれたユニットを1体選んでもよい」）", () => {
+  it("XG3-009:【戦いの記録】— 発動すると、自軍ラッシュエリアの、効果名を持つテキストに「これをラッシュしたとき」と書かれたユニットから選べる（※の「これをラッシュしたとき」・効果のないユニットは選べない。任意）（出典: atwiki/page-1890「効果名を持つテキストに「これをラッシュしたとき」と書かれたユニットを1体選んでもよい」）", () => {
     let s = startBoard();
     s = s.pendingEffectChoice?.sourceCardId === "XG3-009" && s.pendingEffectChoice.kind !== "select_unit" ? pick(s, s.pendingEffectChoice.validInstanceIds[0]!) : s;
     expect(zoneOf(s, "player1", "XG3-009:m")).toBe("discard");
@@ -122,7 +122,7 @@ describe("XG3-009 ミント", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-009:【戦いの記録】— 選んだユニットの「ラッシュしたとき」の効果（RS-383 レッドラダー【救出作業】自軍捨札の S ユニットを手札に）を発動する（既知の不具合: CARD-XG3-009）（出典: atwiki/page-1890「そのラッシュしたときの効果を発動する」・カード評価「ユニットをラッシュしたときの効果を再利用する」）", () => {
+  it("XG3-009:【戦いの記録】— 選んだユニットの「ラッシュしたとき」の効果（RS-383 レッドラダー【救出作業】自軍捨札の S ユニットを手札に）を発動する（出典: atwiki/page-1890「そのラッシュしたときの効果を発動する」・カード評価「ユニットをラッシュしたときの効果を再利用する」）", () => {
     const s = resolveAll(startBoard(), ["accept", "RS-383:rl", "TST-UNIT-0:d1", "TST-UNIT-0:d2"]);
     expect(zoneOf(s, "player1", "XG3-009:m")).toBe("discard");
     expect(zoneOf(s, "player1", "TST-UNIT-0:d1")).toBe("hand");
@@ -173,13 +173,13 @@ describe("XG3-010 ジークジェンヌ", () => {
     expect(canEnter(s, "XG3-010:z")).toBe(false);
   });
 
-  it.fails("XG3-010:【ジークの命】— 重ねたユニットは、自軍ターン中にバトルエリアに出たとき、これをホールドするかを選べる（任意）（既知の不具合: CARD-XG3-010 重ねたユニットが能力を得ない）（出典: atwiki/page-1891「自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい」）", () => {
+  it("XG3-010:【ジークの命】— 重ねたユニットは、自軍ターン中にバトルエリアに出たとき、これをホールドするかを選べる（任意）（出典: atwiki/page-1891「自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい」）", () => {
     const s = stackedThenEnter({ battle: [inst("TST-UNIT-0", "e")] });
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-010:【ジークの命】— ホールドすれば、敵軍ユニット（エリア・サイズ・BP を問わない）を1体選び、持ち主のパワーゾーンに送る（既知の不具合: CARD-XG3-010）（出典: atwiki/page-1891「そうしたとき、敵軍ユニットを1体選び、持ち主のパワーゾーンに送る」・カード評価「敵軍ユニットをサイズ・BP・エリアを問わず除去」）", () => {
+  it("XG3-010:【ジークの命】— ホールドすれば、敵軍ユニット（エリア・サイズ・BP を問わない）を1体選び、持ち主のパワーゾーンに送る（出典: atwiki/page-1891「そうしたとき、敵軍ユニットを1体選び、持ち主のパワーゾーンに送る」・カード評価「敵軍ユニットをサイズ・BP・エリアを問わず除去」）", () => {
     const s = resolveAll(stackedThenEnter({ battle: [inst("TST-UNIT-0", "e")], rush: [inst("SPEC-E20000", "big")] }), ["accept", "SPEC-E20000:big"]);
     expect(isHeld(s, "player1", "SPEC-HUMAN-L:L")).toBe(true);
     expect(zoneOf(s, "player2", "SPEC-E20000:big")).toBe("power");
@@ -202,11 +202,11 @@ describe("XG3-011 獣魔ハンター・ジーク", () => {
     expect(spOf(s, "player1", "XG3-011:j")).toBe(0);
   });
 
-  it.fails("XG3-011:【ジークブラスター】— 本来のカテゴリに DA を持つ敵軍ユニットがあれば「SP1」になる（1番目でも SP1）（既知の不具合: CARD-XG3-011【ジークブラスター】が効かない）（出典: atwiki/page-2009「本来のカテゴリにDAを持つ敵軍ユニットがあれば「SP1」になり」・カード評価「パワー3でSP1は破格」）", () => {
+  it("XG3-011:【ジークブラスター】— 本来のカテゴリに DA を持つ敵軍ユニットがあれば「SP1」になる（1番目でも SP1）（出典: atwiki/page-2009「本来のカテゴリにDAを持つ敵軍ユニットがあれば「SP1」になり」・カード評価「パワー3でSP1は破格」）", () => {
     expect(spOf(battle({ battle: [inst("XG3-011", "j")] }, { rush: [inst("SPEC-DA-E", "da")] }), "player1", "XG3-011:j")).toBe(1);
   });
 
-  it.fails("XG3-011:【ジークブラスター】— 本来の特徴に「獣」を持つ敵軍ユニットがあれば BP+2000（4000）（既知の不具合: CARD-XG3-011）（出典: atwiki/page-2009「本来の特徴に「獣」を持つ敵軍ユニットがあればBP+2000される」）", () => {
+  it("XG3-011:【ジークブラスター】— 本来の特徴に「獣」を持つ敵軍ユニットがあれば BP+2000（4000）（出典: atwiki/page-2009「本来の特徴に「獣」を持つ敵軍ユニットがあればBP+2000される」）", () => {
     expect(bpOf(battle({ battle: [inst("XG3-011", "j")] }, { battle: [inst("SPEC-BEAST-E", "b")] }), "player1", "XG3-011:j")).toBe(4000);
   });
 
@@ -261,14 +261,14 @@ describe("XG3-012 獣装光ギンガレッド", () => {
     rush: [inst("TST-UNIT-0", "r")],
   });
 
-  it.fails("XG3-012:【閃光星獣剣】— 自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアのナンバーを持たない S ユニットから選ぶ（ナンバーを持つユニット・M ユニット・ラッシュエリアのユニットは選べない。見送れない）（既知の不具合: CARD-XG3-012 選択が開かず、除外もされない）（出典: atwiki/page-2011「敵軍バトルエリアからナンバーを持たないSユニットを1体選び」）", () => {
+  it("XG3-012:【閃光星獣剣】— 自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアのナンバーを持たない S ユニットから選ぶ（ナンバーを持つユニット・M ユニット・ラッシュエリアのユニットは選べない。見送れない）（出典: atwiki/page-2011「敵軍バトルエリアからナンバーを持たないSユニットを1体選び」）", () => {
     const s = enter(battle({ rush: [inst("XG3-012", "g")] }, { ...enemy(), battle: [...enemy().battle, inst("SPEC-E4000", "e2")] }), "XG3-012:g");
     expectChoiceFrom(s, "player1", "XG3-012");
     expect(choiceIds(s)).toEqual(["SPEC-E4000:e2", "TST-UNIT-0:e"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG3-012:【閃光星獣剣】— 選んだユニットをゲームから除外する（捨札にも置かれない）（既知の不具合: CARD-XG3-012 選択が開かず、除外もされない）（出典: atwiki/page-2011「ゲームから除外する」・コメント欄「捨札の再利用を許さない」）", () => {
+  it("XG3-012:【閃光星獣剣】— 選んだユニットをゲームから除外する（捨札にも置かれない）（出典: atwiki/page-2011「ゲームから除外する」・コメント欄「捨札の再利用を許さない」）", () => {
     const s = resolveAll(enter(battle({ rush: [inst("XG3-012", "g")] }, enemy()), "XG3-012:g"), ["TST-UNIT-0:e"]);
     expect(exiled(s, "player2")).toEqual(["TST-UNIT-0:e"]);
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBeNull();
@@ -311,18 +311,18 @@ describe("XG3-013 ガオポーラー", () => {
   const enemies = () => ({ battle: [inst("TST-UNIT-0", "e1"), inst("SPEC-E5000", "e5")], rush: [inst("SPEC-E20000", "big"), inst("SPEC-E4000", "e4")] });
   const cmds = () => releasedCat("WB", 3);
 
-  it.fails("XG3-013:【冷凍光線】— 特徴「人型」を持つ L ユニットがこれからコンビネーションするとき発動でき、そのユニットの BP 以下の敵軍ユニット（エリアを問わない）から選ぶ（既知の不具合: CARD-XG3-013【冷凍光線】が発動しない）（出典: atwiki/page-1892「コンビネーションしたユニットのBP以下のBPを持つ敵軍ユニットを1体選びホールドする」・カード評価「カテゴリが一致していなくてもJCが発動できる」）", () => {
+  it("XG3-013:【冷凍光線】— 特徴「人型」を持つ L ユニットがこれからコンビネーションするとき発動でき、そのユニットの BP 以下の敵軍ユニット（エリアを問わない）から選ぶ（出典: atwiki/page-1892「コンビネーションしたユニットのBP以下のBPを持つ敵軍ユニットを1体選びホールドする」・カード評価「カテゴリが一致していなくてもJCが発動できる」）", () => {
     const s = line(["XG3-013:p", "SPEC-HUMAN-L2:L"], { command: cmds() }, enemies());
     expectChoiceFrom(s, "player1", "XG3-013");
     expect(choiceIds(s)).toEqual(["SPEC-E4000:e4", "SPEC-E5000:e5", "TST-UNIT-0:e1"]);
   });
 
-  it.fails("XG3-013:【冷凍光線】— 選んだ敵軍ユニットはホールド状態になる（既知の不具合: CARD-XG3-013）（出典: atwiki/page-1892「選びホールドする」）", () => {
+  it("XG3-013:【冷凍光線】— 選んだ敵軍ユニットはホールド状態になる（出典: atwiki/page-1892「選びホールドする」）", () => {
     const s = resolveAll(line(["XG3-013:p", "SPEC-HUMAN-L2:L"], { command: cmds() }, enemies()), ["accept", "SPEC-E5000:e5"]);
     expect(isHeld(s, "player2", "SPEC-E5000:e5")).toBe(true);
   });
 
-  it.fails("XG3-013:【冷凍光線】—「ガオベアー」がこれからコンビネーションするときも発動する（ガオベアーは BP4000 なので BP4000 以下）（既知の不具合: CARD-XG3-013）（出典: atwiki/page-1892「「ガオベアー」か特徴「人型」を持つLユニットがこのユニットからコンビネーションするとき」・カード評価「ガオベアーをコンビネーションさせても発動できる」）", () => {
+  it("XG3-013:【冷凍光線】—「ガオベアー」がこれからコンビネーションするときも発動する（ガオベアーは BP4000 なので BP4000 以下）（出典: atwiki/page-1892「「ガオベアー」か特徴「人型」を持つLユニットがこのユニットからコンビネーションするとき」・カード評価「ガオベアーをコンビネーションさせても発動できる」）", () => {
     const s = line(["XG3-013:p", "XG3-015:b"], { command: cmds() }, enemies());
     expectChoiceFrom(s, "player1", "XG3-013");
     expect(choiceIds(s)).toEqual(["SPEC-E4000:e4", "TST-UNIT-0:e1"]);
@@ -364,7 +364,7 @@ describe("XG3-014 ガオマッスル", () => {
   const entered = (cmdN: number, p2: Partial<GameState["players"]["player2"]> = { battle: [inst("TST-UNIT-0", "e"), inst("SPEC-E20000", "big")], rush: [inst("TST-UNIT-0", "r")] }) =>
     enter(battle({ rush: [inst("XG3-014", "mu")], command: releasedCat("WB", cmdN) }, p2), "XG3-014:mu");
 
-  it.fails("XG3-014:【剛力無双マッスルラリアット】— 自軍ターン中にバトルエリアに出たとき、自軍コマンドを2つホールドするかを選べる（任意）（既知の不具合: CARD-XG3-014 コマンドのホールドを求めず、見送れない）（出典: atwiki/page-1972「自軍コマンドを2つ選びホールドしてもよい」）", () => {
+  it("XG3-014:【剛力無双マッスルラリアット】— 自軍ターン中にバトルエリアに出たとき、自軍コマンドを2つホールドするかを選べる（任意）（出典: atwiki/page-1972「自軍コマンドを2つ選びホールドしてもよい」）", () => {
     const s = entered(2);
     expectChoiceFrom(s, "player1", "XG3-014");
     expect(canSkip(s)).toBe(true);
@@ -376,13 +376,13 @@ describe("XG3-014 ガオマッスル", () => {
     expect(choiceIds(s)).toEqual(["SPEC-E20000:big", "TST-UNIT-0:e"]);
   });
 
-  it.fails("XG3-014:【剛力無双マッスルラリアット】— ホールドすると自軍コマンドが2つホールド状態になり、選んだユニットを撃破する（既知の不具合: CARD-XG3-014 コマンドをホールドしない）（出典: atwiki/page-1972「そうしたとき、敵軍バトルエリアからユニットを1体選び撃破する」）", () => {
+  it("XG3-014:【剛力無双マッスルラリアット】— ホールドすると自軍コマンドが2つホールド状態になり、選んだユニットを撃破する（出典: atwiki/page-1972「そうしたとき、敵軍バトルエリアからユニットを1体選び撃破する」）", () => {
     const s = resolveAll(entered(2), ["accept", "SPEC-E20000:big"]);
     expect(zoneOf(s, "player2", "SPEC-E20000:big")).toBe("discard");
     expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(2);
   });
 
-  it.fails("XG3-014:【剛力無双マッスルラリアット】— リリース状態の自軍コマンドが1つしかなければ発動できない（撃破しない）（既知の不具合: CARD-XG3-014）（出典: atwiki/page-1972「自軍コマンドを2つ選びホールドしてもよい。そうしたとき」・カード評価「コマンドを2枚も用意しなければいけない」）", () => {
+  it("XG3-014:【剛力無双マッスルラリアット】— リリース状態の自軍コマンドが1つしかなければ発動できない（撃破しない）（出典: atwiki/page-1972「自軍コマンドを2つ選びホールドしてもよい。そうしたとき」・カード評価「コマンドを2枚も用意しなければいけない」）", () => {
     const s = entered(1);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG3-014");
   });
@@ -415,19 +415,21 @@ describe("XG3-015 ガオベアー", () => {
   const enemies = () => ({ battle: [heldUnit("SPEC-E20000", "hb"), inst("TST-UNIT-0", "e")], rush: [heldUnit("TST-UNIT-0", "hr")] });
   const cmds = () => releasedCat("WB", 3);
 
-  it.fails("XG3-015:【氷牙炎滅ベアーストライク】— 「ガオポーラー」からコンビネーションするとき発動でき、ホールド状態の敵軍ユニット（エリア・BP を問わない）から選ぶ（既知の不具合: CARD-XG3-015【氷牙炎滅ベアーストライク】が発動しない）（出典: atwiki/page-1893「ホールド状態の敵軍ユニットを1体選び撃破する」）", () => {
+  it("XG3-015:【氷牙炎滅ベアーストライク】— 「ガオポーラー」からコンビネーションするとき発動でき、ホールド状態の敵軍ユニット（エリア・BP を問わない）から選ぶ（出典: atwiki/page-1893「ホールド状態の敵軍ユニットを1体選び撃破する」）", () => {
     const s = line(["XG3-013:p", "XG3-015:b"], { command: cmds() }, enemies());
     expectChoiceFrom(s, "player1", "XG3-015");
     expect(choiceIds(s)).toEqual(["SPEC-E20000:hb", "TST-UNIT-0:hr"]);
   });
 
-  it.fails("XG3-015:【氷牙炎滅ベアーストライク】— 特徴「人型」を持つ L ユニットからコンビネーションしても発動し、選んだユニットを撃破する（既知の不具合: CARD-XG3-015）（出典: atwiki/page-1893「特徴「人型」を持つLユニットからコンビネーションするとき」・カード評価「MAのガンマジンなど…で効果を発動させやすい」）", () => {
+  it("XG3-015:【氷牙炎滅ベアーストライク】— 特徴「人型」を持つ L ユニットからコンビネーションしても発動し、選んだユニットを撃破する（出典: atwiki/page-1893「特徴「人型」を持つLユニットからコンビネーションするとき」・カード評価「MAのガンマジンなど…で効果を発動させやすい」）", () => {
     const s = resolveAll(line(["SPEC-HUMAN-L:L", "XG3-015:b"], { command: cmds() }, enemies()), ["accept", "SPEC-E20000:hb"]);
     expect(zoneOf(s, "player2", "SPEC-E20000:hb")).toBe("discard");
   });
 
-  it.fails("XG3-015:【氷牙炎滅ベアーストライク】— 自軍バトルエリアに「ガオポーラー」と特徴「人型」を持つ L ユニットがあれば「SP1」になる（2番目でも SP1）（既知の不具合: CARD-XG3-015）（出典: atwiki/page-1893「また、自軍バトルエリアに「ガオポーラー」と特徴「人型」を持つLユニットがあれば、これは「SP1」になる」・カード評価「ナンバーに関係なくSPを得ることができる」）", () => {
-    const s = resolveAll(line(["XG3-013:p", "SPEC-HUMAN-L:L", "XG3-015:b"], { command: cmds() }, enemies()));
+  it("XG3-015:【氷牙炎滅ベアーストライク】— 自軍バトルエリアに「ガオポーラー」と特徴「人型」を持つ L ユニットがあれば「SP1」になる（2番目でも SP1）（出典: atwiki/page-1893「また、自軍バトルエリアに「ガオポーラー」と特徴「人型」を持つLユニットがあれば、これは「SP1」になる」・カード評価「ナンバーに関係なくSPを得ることができる」）", () => {
+    // 「人型」の L がガオポーラーからコンビネーションするとき【冷凍光線】の選択が開くので、答えてから「ガオベアー」を出す。
+    let s = resolveAll(line(["XG3-013:p", "SPEC-HUMAN-L:L"], { command: cmds(), rush: [inst("XG3-015", "b")] }, enemies()));
+    s = resolveAll(enterAny(passEntry(s), "XG3-015:b"));
     expect(spOf(s, "player1", "XG3-015:b")).toBe(1);
   });
 

@@ -1,3 +1,4 @@
+import { xg3DefenderBlocksAttack } from "../xg3/xg3Fields";
 import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
 import { rk5AttackerCanAttackRush } from "../rk/rk5Fields";
 import { rk11AttackerCanAttackRush, rk11EntryDiscardFeature } from "../rk/rk11Fields";
@@ -504,6 +505,8 @@ export function canAttackDefender(
   if (defenderCard && rk15DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard, unitFeatures)) return false;
   // RK-327 の※（ホールド状態のとき敵軍ユニットにアタックされない。rules/rk/rk16Fields.ts）。
   if (defenderCard && rk16DefenderBlocksAttack(defenderCard)) return false;
+  // クロスギャザー ザ・Wインパクト XG3（XG3-007【マックスシャトル】等。rules/xg3/xg3Fields.ts）。
+  if (defenderCard && xg3DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;

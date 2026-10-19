@@ -253,6 +253,38 @@ export function collectRequiredFusionMaterials(
       if (rest) return rest;
     }
   }
+  // 「X（または、A＋B＋…）」の A・B…の枠を、1枚で複数の合体ユニットとしてつかえるカードでまとめて満たす（XG3-005 マックスビクトリーロボの
+  // 「レッドラダー＋ブルースローワー＋…」をビクトリーウォーカーで。atwiki/page-1888 カード評価「3体分の合体パーツになる」）。
+  const alternatives = resolveZordFusionSlotAlternatives(rushingCardId);
+  if (alternatives.size === 0) return null;
+  const altIndexes = [...alternatives.keys()];
+  for (let mask = 1; mask < 1 << altIndexes.length; mask++) {
+    const flat = slots.flatMap((slot, i) => {
+      const bit = altIndexes.indexOf(i);
+      return bit >= 0 && (mask >> bit) & 1 ? alternatives.get(i)! : [slot];
+    });
+    for (const zone of aliasZones) {
+      for (let index = 0; index < player[zone].length; index++) {
+        const card = player[zone][index]!;
+        if (card.instanceId === rushingInstanceId) continue;
+        if (zone === "command" && card.commandHeld) continue;
+        const names = multiFusionAliasNames(getDefinition(definitions, card.cardId));
+        if (names.length === 0 || !fusionAliasUsable(definitions, card.cardId, player)) continue;
+        const covered = new Set<number>();
+        for (const name of names) {
+          const slotIndex = flat.findIndex((slot, i) => !covered.has(i) && slot.some((id) => partnerNamesForId(definitions, id).has(name)));
+          if (slotIndex < 0) break;
+          covered.add(slotIndex);
+        }
+        if (covered.size !== names.length) continue;
+        const rest = matchFusionCombination(player, definitions, rushingInstanceId, flat, new Map(), new Set(), false, {
+          slots: covered,
+          material: { zone, index, card },
+        });
+        if (rest) return rest;
+      }
+    }
+  }
   return null;
 }
 

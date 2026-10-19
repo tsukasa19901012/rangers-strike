@@ -92,7 +92,7 @@ describe("XG3-002 ラジエッカー", () => {
     expectRarityIn("XG3-002", ["N"]);
   });
 
-  it.fails("XG3-002:【宇宙を走る車】— 自軍パワーゾーンでオモテ向きなら、自軍ラッシュフェイズ中に発動できる（既知の不具合: CARD-XG3-002 パワーゾーンからの起動がない）（出典: atwiki/page-1885「これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、次の効果を発動できる」）", () => {
+  it("XG3-002:【宇宙を走る車】— 自軍パワーゾーンでオモテ向きなら、自軍ラッシュフェイズ中に発動できる（出典: atwiki/page-1885「これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、次の効果を発動できる」）", () => {
     expect(refsOf(board({ power: POWER() }), "XG3-002:v")).not.toEqual([]);
   });
 
@@ -102,28 +102,28 @@ describe("XG3-002 ラジエッカー", () => {
     expect(refsOf(battle({ power: POWER() }), "XG3-002:v")).toEqual([]);
   });
 
-  it.fails("XG3-002:【宇宙を走る車】— 選べるのは自軍パワーゾーンのオモテ向きの、必要パワーを満たしている OT の S ユニットのカードだけ（M・ET・必要パワー9・ウラ向きは選べない。任意）（既知の不具合: CARD-XG3-002）（出典: atwiki/page-1885「必要パワーを満たしているOTのSユニットのカードを1枚選び、…出してもよい」）", () => {
+  it("XG3-002:【宇宙を走る車】— 選べるのは自軍パワーゾーンのオモテ向きの、必要パワーを満たしている OT の S ユニットのカードだけ（M・ET・必要パワー9・ウラ向きは選べない。任意）（出典: atwiki/page-1885「必要パワーを満たしているOTのSユニットのカードを1枚選び、…出してもよい」）", () => {
     const s = useRef(board({ power: POWER() }), "XG3-002:v");
     expectChoiceFrom(s, "player1", "XG3-002");
     expect(choiceIds(s)).toEqual(["SPEC-OT-S2:s"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-002:【宇宙を走る車】— ラジエッカーを自軍ラッシュエリアに出し、選んだユニットをその上に重ねて（ライドした状態で）出す（既知の不具合: CARD-XG3-002）（出典: atwiki/page-1885「これの上に重ねて自軍ラッシュエリアに出してもよい」・Q2「まず…ラジエッカーを自軍ラッシュエリアに出してから、…その上に重ねて出す」・カード評価「これを重ねた状態でラッシュされる」）", () => {
+  it("XG3-002:【宇宙を走る車】— ラジエッカーを自軍ラッシュエリアに出し、選んだユニットをその上に重ねて（ライドした状態で）出す（出典: atwiki/page-1885「これの上に重ねて自軍ラッシュエリアに出してもよい」・Q2「まず…ラジエッカーを自軍ラッシュエリアに出してから、…その上に重ねて出す」・カード評価「これを重ねた状態でラッシュされる」）", () => {
     const s = resolveAll(pick(useRef(board({ power: POWER() }), "XG3-002:v"), "SPEC-OT-S2:s"));
     expect(zoneOf(s, "player1", "XG3-002:v")).toBe("rush");
     expect(zoneOf(s, "player1", "SPEC-OT-S2:s")).toBe("rush");
     expect(mountedOn(s, "player1", "SPEC-OT-S2:s")).toBe("XG3-002:v");
   });
 
-  it.fails("XG3-002: 公式Q&A — 自軍エリアに「RS-106 デカレッド」があれば、それを捨札にして（追加条件）パワーゾーンの「RS-345 デカレッドSWAT」を出せる（既知の不具合: CARD-XG3-002）（出典: atwiki/page-1885 Q1「はい、「RS-106 デカレッド」を捨札にすることで、ラッシュエリアに出すことができます」）", () => {
+  it("XG3-002: 公式Q&A — 自軍エリアに「RS-106 デカレッド」があれば、それを捨札にして（追加条件）パワーゾーンの「RS-345 デカレッドSWAT」を出せる（出典: atwiki/page-1885 Q1「はい、「RS-106 デカレッド」を捨札にすることで、ラッシュエリアに出すことができます」）", () => {
     let s = board({ power: [faceUp("XG3-002", "v"), faceUp("RS-345", "sw"), ...powerCards(4)], rush: [inst("RS-106", "dr")] });
     s = resolveAll(pick(useRef(s, "XG3-002:v"), "RS-345:sw"), ["RS-106:dr"]);
     expect(zoneOf(s, "player1", "RS-345:sw")).toBe("rush");
     expect(zoneOf(s, "player1", "RS-106:dr")).toBe("discard");
   });
 
-  it.fails("XG3-002: 公式Q&A — パワーゾーンの「XG3-003 ラジエッカーロボ」を、先に出たこのラジエッカーを捨札にして（追加条件）出せる（既知の不具合: CARD-XG3-002）（出典: atwiki/page-1885 Q3「はい、できます」）", () => {
+  it("XG3-002: 公式Q&A — パワーゾーンの「XG3-003 ラジエッカーロボ」を、先に出たこのラジエッカーを捨札にして（追加条件）出せる（出典: atwiki/page-1885 Q3「はい、できます」）", () => {
     let s = board({ power: [faceUp("XG3-002", "v"), faceUp("XG3-003", "rb"), ...powerCards(3)] });
     s = resolveAll(pick(useRef(s, "XG3-002:v"), "XG3-003:rb"), ["XG3-002:v"]);
     expect(zoneOf(s, "player1", "XG3-003:rb")).toBe("rush");
@@ -175,13 +175,13 @@ describe("XG3-003 ラジエッカーロボ", () => {
   const endBoard = (discard = [inst("XG3-002", "d")]) =>
     st({ player1: { battle: [inst("XG3-003", "r")], discard, deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } }, EXTRA);
 
-  it.fails("XG3-003:【チーキュでは1分間しかもたない】— 自分がターンを終えるとき、自軍捨札の「ラジエッカー」とこれを置き換える（ラジエッカーがこれのいた場所へ、これは捨札へ）（既知の不具合: CARD-XG3-003 ターンを終えるときの置き換えがない）（出典: atwiki/page-1886「自分がターンを終えるとき、自軍捨札の「ラジエッカー」のカードとこれを置き換える」・R-REPL-04）", () => {
+  it("XG3-003:【チーキュでは1分間しかもたない】— 自分がターンを終えるとき、自軍捨札の「ラジエッカー」とこれを置き換える（ラジエッカーがこれのいた場所へ、これは捨札へ）（出典: atwiki/page-1886「自分がターンを終えるとき、自軍捨札の「ラジエッカー」のカードとこれを置き換える」・R-REPL-04）", () => {
     const s = resolveAll(endTurnKeep(endBoard()), ["XG3-002:d"]);
     expect(zoneOf(s, "player1", "XG3-003:r")).toBe("discard");
     expect(zoneOf(s, "player1", "XG3-002:d")).toBe("battle");
   });
 
-  it.fails("XG3-003:【チーキュでは1分間しかもたない】— 自軍捨札に「ラジエッカー」がなければ、ターンを終えるときこれを捨札にする（既知の不具合: CARD-XG3-003）（出典: atwiki/page-1886「置き換えられなければこれを捨札にする」）", () => {
+  it("XG3-003:【チーキュでは1分間しかもたない】— 自軍捨札に「ラジエッカー」がなければ、ターンを終えるときこれを捨札にする（出典: atwiki/page-1886「置き換えられなければこれを捨札にする」）", () => {
     const s = resolveAll(endTurnKeep(endBoard([])));
     expect(zoneOf(s, "player1", "XG3-003:r")).toBe("discard");
   });
@@ -209,28 +209,28 @@ describe("XG3-004 芋長の芋ヨーカン", () => {
     expectRarityIn("XG3-004", ["N"]);
   });
 
-  it.fails("XG3-004: 選べるのは特徴「怪人」を持つ自軍の S ユニット（ラッシュエリア・バトルエリア）だけ（M ユニット・「怪人」でないユニット・敵軍ユニットは選べない。見送れない）（既知の不具合: CARD-XG3-004 選択が開かず、効果が何も起きない）（出典: atwiki/page-1887「特徴「怪人」を持つ自軍Sユニットを1体選ぶ」・コメント欄「巨大化爆弾と違って怪人はＳユニット限定」）", () => {
+  it("XG3-004: 選べるのは特徴「怪人」を持つ自軍の S ユニット（ラッシュエリア・バトルエリア）だけ（M ユニット・「怪人」でないユニット・敵軍ユニットは選べない。見送れない）（出典: atwiki/page-1887「特徴「怪人」を持つ自軍Sユニットを1体選ぶ」・コメント欄「巨大化爆弾と違って怪人はＳユニット限定」）", () => {
     const s = used(field(), { rush: [inst("SPEC-KAIJIN", "e")] });
     expectChoiceFrom(s, "player1", "XG3-004");
     expect(choiceIds(s)).toEqual(["SPEC-KAIJIN:k", "SPEC-KAIJIN:kb"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG3-004: このカードは自軍ラッシュエリアに置かれ（捨札にならない）、選んだユニットはこのカードに重なって BP+3000 される（既知の不具合: CARD-XG3-004）（出典: atwiki/page-1887「このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、BP+3000され」）", () => {
+  it("XG3-004: このカードは自軍ラッシュエリアに置かれ（捨札にならない）、選んだユニットはこのカードに重なって BP+3000 される（出典: atwiki/page-1887「このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる。このカードに重ねたユニットは、BP+3000され」）", () => {
     const s = resolveAll(used(field()), ["SPEC-KAIJIN:k"]);
     expect(zoneOf(s, "player1", "XG3-004:op")).not.toBe("discard");
     expect(bpOf(s, "player1", "SPEC-KAIJIN:k")).toBe(5000);
   });
 
-  it.fails("XG3-004: 重ねたユニットは L ユニットになる — 敵軍の「Sユニットを選ぶ」効果（RS-481 天空神【ホバリング】）に選ばれない（既知の不具合: CARD-XG3-004）（出典: atwiki/page-1887「Lユニットになる」・カード評価「何かと除去されやすい怪人たちの守りを固める」）", () => {
+  it("XG3-004: 重ねたユニットは L ユニットになる — 敵軍の「Sユニットを選ぶ」効果（RS-481 天空神【ホバリング】）に選ばれない（出典: atwiki/page-1887「Lユニットになる」・カード評価「何かと除去されやすい怪人たちの守りを固める」）", () => {
     let s = resolveAll(used({ rush: [inst("SPEC-KAIJIN", "k"), inst("SPEC-PLAIN", "p")] }, { rush: [inst("RS-481", "tk")] }), ["SPEC-KAIJIN:k"]);
     s = endTurn(s);
     s = act({ ...s, phase: "battle" }, { type: "move_to_battle", playerId: "player2", instanceId: "RS-481:tk" });
     expect(choiceIds(s)).toEqual(["SPEC-PLAIN:p"]);
   });
 
-  it.fails("XG3-004: 重ねたユニットが撃破されてユニットでなくなるとき、このカードは捨札になる（既知の不具合: CARD-XG3-004）（出典: atwiki/page-1887「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）", () => {
-    let s = resolveAll(used({ rush: [inst("SPEC-KAIJIN", "k")] }), ["SPEC-KAIJIN:k"]);
+  it("XG3-004: 重ねたユニットが撃破されてユニットでなくなるとき、このカードは捨札になる（出典: atwiki/page-1887「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）", () => {
+    let s = resolveAll(used({ battle: [inst("SPEC-KAIJIN", "k")] }), ["SPEC-KAIJIN:k"]);
     expect(zoneOf(s, "player1", "XG3-004:op")).not.toBe("discard");
     s = endTurn(s);
     s = settle(act({ ...s, phase: "battle", players: { ...s.players, player2: { ...s.players.player2, battle: [inst("TST-UNIT-7", "big")] } } }, { type: "battle", playerId: "player2", attackerInstanceId: "TST-UNIT-7:big", defenderInstanceId: "SPEC-KAIJIN:k" }));
@@ -265,7 +265,7 @@ describe("XG3-005 マックスビクトリーロボ", () => {
     expect(canStartRush(rushBoardOf([inst("RS-382", "vr")]), "player1", "XG3-005:mv")).toBe(false);
   });
 
-  it.fails("XG3-005: 合体 — 「ビクトリーロボ」のかわりにレッドラダー・グリーンホバー・ビクトリーウォーカー（「ブルースローワー＋イエローアーマー＋ピンクエイダー」としてつかえる）で合体できる（既知の不具合: CARD-XG3-005 ビクトリーウォーカーを3体分の合体パーツとして数えず、ラッシュの合法手が出ない）（出典: atwiki/page-2000・atwiki/page-1888 カード評価「イエローアーマー、ピンクエイダー、ブルースローワー3体分の合体パーツになる」）", () => {
+  it("XG3-005: 合体 — 「ビクトリーロボ」のかわりにレッドラダー・グリーンホバー・ビクトリーウォーカー（「ブルースローワー＋イエローアーマー＋ピンクエイダー」としてつかえる）で合体できる（出典: atwiki/page-2000・atwiki/page-1888 カード評価「イエローアーマー、ピンクエイダー、ブルースローワー3体分の合体パーツになる」）", () => {
     const r = rushFromHand(
       rushBoardOf([inst("RS-383", "rl"), inst("RS-385", "gh"), inst("XG3-006", "vw"), inst("XG3-008", "lb")]),
       "player1",
@@ -337,13 +337,13 @@ describe("XG3-006 ビクトリーウォーカー", () => {
     return strike(s, "TST-UNIT-0:a", "player2");
   };
 
-  it.fails("XG3-006:【ケミカルディスチャージャー】— 敵軍ターン中、オモテ向きの自軍パワーがウラ向きになるとき、ET の自軍コマンドを2つホールドするかを選べる（任意）（既知の不具合: CARD-XG3-006 ダメージを無効にする選択が開かない）（出典: atwiki/page-1888「ETの自軍コマンドを2つ選びホールドしてもよい」）", () => {
+  it("XG3-006:【ケミカルディスチャージャー】— 敵軍ターン中、オモテ向きの自軍パワーがウラ向きになるとき、ET の自軍コマンドを2つホールドするかを選べる（任意）（出典: atwiki/page-1888「ETの自軍コマンドを2つ選びホールドしてもよい」）", () => {
     const s = settle(struck());
     expectChoiceFrom(s, "player1", "XG3-006");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-006:【ケミカルディスチャージャー】— ホールドすれば、そのダメージは無効になる（パワーはオモテ向きのまま、ET のコマンド2つがホールド状態）（既知の不具合: CARD-XG3-006）（出典: atwiki/page-1888「そうしたとき、そのダメージは無効になる」・カード評価「ゴーオンブラックやデカブレイク、メディテーションによるダメージも無効化できる」）", () => {
+  it("XG3-006:【ケミカルディスチャージャー】— ホールドすれば、そのダメージは無効になる（パワーはオモテ向きのまま、ET のコマンド2つがホールド状態）（出典: atwiki/page-1888「そうしたとき、そのダメージは無効になる」・カード評価「ゴーオンブラックやデカブレイク、メディテーションによるダメージも無効化できる」）", () => {
     let s = struck();
     if (s.pendingDamagePayment) s = act(s, { type: "resolve_damage_payment", playerId: "player1", instanceId: "TST-P:pw0" } as never);
     s = resolveAll(s, ["confirm", "accept"]);
@@ -371,14 +371,14 @@ describe("XG3-007 マックスライナー", () => {
     expectRarityIn("XG3-007", ["N"]);
   });
 
-  it.fails("XG3-007: 公式Q&A — ウイングでホールドすると【マックスシャトル】で BP-2000（アタックする時点の BP は 2000）（既知の不具合: CARD-XG3-007 ホールド状態でも BP-2000 されない）（出典: atwiki/page-1889 Q1「はい、その通りです」）", () => {
+  it("XG3-007: 公式Q&A — ウイングでホールドすると【マックスシャトル】で BP-2000（アタックする時点の BP は 2000）（出典: atwiki/page-1889 Q1「はい、その通りです」）", () => {
     let s = battle({ rush: [inst("XG3-007", "ml")] }, { battle: [inst("TST-UNIT-0", "e")] });
     expect(bpOf(s, "player1", "XG3-007:ml")).toBe(4000);
     s = act(s, { type: "hold_for_wing", playerId: "player1", instanceId: "XG3-007:ml" });
     expect(bpOf(s, "player1", "XG3-007:ml")).toBe(2000);
   });
 
-  it.fails("XG3-007:【マックスシャトル】— ホールド状態の間、ウイングを持たないユニットにアタックされない（リリース状態ならアタックされる）（既知の不具合: CARD-XG3-007 ホールド状態でもウイングを持たないユニットにアタックされる）（出典: atwiki/page-1889「「これはウイングを持たないユニットにアタックされない」と書かれているかのように扱い」）", () => {
+  it("XG3-007:【マックスシャトル】— ホールド状態の間、ウイングを持たないユニットにアタックされない（リリース状態ならアタックされる）（出典: atwiki/page-1889「「これはウイングを持たないユニットにアタックされない」と書かれているかのように扱い」）", () => {
     const mk = (held: boolean) =>
       st({ activePlayer: "player2", player1: { battle: [{ ...inst("XG3-007", "ml"), commandHeld: held }] }, player2: { battle: [inst("TST-UNIT-0", "a")] } }, EXTRA);
     expect(attackersOf(mk(false), "XG3-007:ml")).toEqual(["TST-UNIT-0:a"]);
@@ -411,7 +411,7 @@ describe("XG3-008 ライナーボーイ", () => {
     expect(zoneOf(r.state, "player1", "XG3-007:ml")).toBe("hand");
   });
 
-  it.fails("XG3-008: ※ 自分が「マックスライナー」をラッシュしたとき、自軍エリアの「ライナーボーイ」を1体選んで手札に戻す（強制）（既知の不具合: CARD-XG3-008 バトルエリアの「ライナーボーイ」が候補にならない）（出典: atwiki/page-2013「自軍エリアに「ライナーボーイ」があれば1体選んで手札に戻す」）", () => {
+  it("XG3-008: ※ 自分が「マックスライナー」をラッシュしたとき、自軍エリアの「ライナーボーイ」を1体選んで手札に戻す（強制）（出典: atwiki/page-2013「自軍エリアに「ライナーボーイ」があれば1体選んで手札に戻す」）", () => {
     let s = board({ hand: [inst("XG3-007", "ml")], rush: [inst("XG3-008", "lb")], battle: [inst("XG3-008", "lb2")], power: powerCards(4), command: releasedCat("ET", 1) });
     const r = rushFromHand(s, "player1", "XG3-007:ml");
     expect(r.ok, r.error).toBe(true);
@@ -440,12 +440,12 @@ describe("XG3-008 ライナーボーイ", () => {
     return enter(s, "XG3-008:lb");
   };
 
-  it.fails("XG3-008:【ライナーコンボ】— 特徴「人型」を持つ L ユニットからコンビネーションすれば「SP1」になる（カテゴリを問わない）（既知の不具合: CARD-XG3-008【ライナーコンボ】が発動しない）（出典: atwiki/page-2013「特徴「人型」を持つLユニット…からコンビネーションするとき、…これは「SP1」になる」）", () => {
+  it("XG3-008:【ライナーコンボ】— 特徴「人型」を持つ L ユニットからコンビネーションすれば「SP1」になる（カテゴリを問わない）（出典: atwiki/page-2013「特徴「人型」を持つLユニット…からコンビネーションするとき、…これは「SP1」になる」）", () => {
     const s = resolveAll(afterL("SPEC-HUMAN-L:L"));
     expect(spOf(s, "player1", "XG3-008:lb")).toBe(1);
   });
 
-  it.fails("XG3-008:【ライナーコンボ】— 特徴「人型」を持つ XL ユニットからでも「SP1」になる（既知の不具合: CARD-XG3-008【ライナーコンボ】が発動しない）（出典: atwiki/page-2013「Lユニットまたは XLユニット」・Q1）", () => {
+  it("XG3-008:【ライナーコンボ】— 特徴「人型」を持つ XL ユニットからでも「SP1」になる（出典: atwiki/page-2013「Lユニットまたは XLユニット」・Q1）", () => {
     const s = resolveAll(afterL("SPEC-HUMAN-XL:L"));
     expect(spOf(s, "player1", "XG3-008:lb")).toBe(1);
   });

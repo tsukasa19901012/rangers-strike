@@ -1,4 +1,5 @@
 import { rm3EffectiveSp } from "../rm/rm3Fields";
+import { xg3EffectiveSp } from "../xg3/xg3Fields";
 import { rk8EffectiveSp } from "../rk/rk8UnitEffects";
 import { rk9EffectiveSp } from "../rk/rk9UnitEffects";
 import { rk10EffectiveSp } from "../rk/rk10UnitEffects";
@@ -285,6 +286,8 @@ function legend3EffectiveSpUncached(
   sp = rk16EffectiveSp(state, playerId, instance, sp);
   // RM-051 メガヘラクレス【メガビートフォーメーション】（自軍エリアに「ビートルーダー」があれば「SP1」。rules/rm/rm3Fields.ts）。
   sp = rm3EffectiveSp(state, playerId, instance, sp);
+  // クロスギャザー ザ・Wインパクト XG3（XG3-011【ジークブラスター】等。rules/xg3/xg3Fields.ts）。
+  sp = xg3EffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

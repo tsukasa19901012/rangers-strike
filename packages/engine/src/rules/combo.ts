@@ -1,4 +1,5 @@
 import { tryRm3OnEnterBattle } from "./rm/rm3Effects";
+import { tryXg3OnEnterBattle } from "./xg3/xg3Effects";
 import { tryRm2OnEnterBattle } from "./rm/rm2Effects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { tryRk9OnEnterBattle } from "./rk/rk9UnitEffects";
@@ -289,6 +290,8 @@ export function resolveEnterBattleEffectsImpl(
         nextState = tryRm2OnEnterBattle(nextState, playerId, battleCard);
         // RM-047 ダークジェイカー・RM-053 スタッガータンク・RM-054 レッドジャイロ（ライドされて一緒に出たビークルの効果。rules/rm/rm3Effects.ts）。
         nextState = tryRm3OnEnterBattle(nextState, playerId, battleCard);
+        // クロスギャザー ザ・Wインパクト XG3 の「バトルエリアに出たとき」「〜からコンビネーションするとき」（rules/xg3/xg3Effects.ts）。
+        nextState = tryXg3OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
         if (nextState.pendingEffectChoice) {
           return { state: nextState, logs, enterResumeFrom: resumeAt(1) };
         }

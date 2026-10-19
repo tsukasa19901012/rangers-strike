@@ -101,6 +101,7 @@ import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
+import { applyXg3AfterAction } from "../rules/xg3/xg3Effects";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -803,11 +804,11 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
     return false;
   }
   // スペシャルメタルエディション（`rm1::`）・ベルトコレクション（`bk1::`）のカード固有の効果は、使ったあとで対象を選ぶ
-  // （rules/rm/rm1Effects.ts・rules/bk/bk1Effects.ts）。
+  // （rules/rm/rm1Effects.ts・rules/bk/bk1Effects.ts）。クロスギャザー ザ・Wインパクト（`xg3::`）も同じ（rules/xg3/xg3Effects.ts）。
   if (
     dslEffect &&
     shouldUseDslOperation(cardId, dslEffect) &&
-    dslEffect.effects.some((p) => p.type === "grant_keyword" && (p.keyword.startsWith("rm1::") || p.keyword.startsWith("bk1::")))
+    dslEffect.effects.some((p) => p.type === "grant_keyword" && (p.keyword.startsWith("rm1::") || p.keyword.startsWith("bk1::") || p.keyword.startsWith("xg3::")))
   ) {
     return false;
   }
@@ -1092,6 +1093,8 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRm2AfterAction(next);
   // RM-059 異次元調達屋カブト（WB の自軍 S ユニットがバトルエリアに出たとき。rules/rm/rm3Effects.ts）。
   if (applyActionDepth === 0) next = applyRm3AfterAction(state, next);
+  // クロスギャザー ザ・Wインパクト XG3-002〜XG3-103 の後処理（rules/xg3/xg3Effects.ts）。
+  if (applyActionDepth === 0) next = applyXg3AfterAction(state, next);
   // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
   if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
     const endingPlayer = next.rk9RushEndAdvance;

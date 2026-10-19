@@ -27,8 +27,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-017::inoe78c9b",
-          "duration": "turn"
+          "keyword": "xg3::XG3-017::whip",
+          "duration": "permanent"
         }
       ]
     }

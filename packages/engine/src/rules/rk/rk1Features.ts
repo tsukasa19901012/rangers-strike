@@ -3,6 +3,7 @@
  * カードの効果そのものは rules/rk/rk1NamedEffects.ts。
  */
 import { isRm1StackedUnderUnitOperation } from "../rm/rm1Fields";
+import { isXg3StackedUnderUnitCard } from "../xg3/xg3Fields";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { getDefinition, isSmallUnit } from "../../core/catalog";
@@ -29,7 +30,9 @@ export function isStackedUnderUnitOperation(cardId: string): boolean {
     isSameCardIdentity(cardId, "RK-173") ||
     isSameCardIdentity(cardId, "RK-250") ||
     // RM-009 マルチパック・RM-011 ターボユニット-W も同じ（atwiki/page-830・page-882。rules/rm/rm1Fields.ts）。
-    isRm1StackedUnderUnitOperation(cardId)
+    isRm1StackedUnderUnitOperation(cardId) ||
+    // XG3-004 芋長の芋ヨーカン・XG3-010 ジークジェンヌも同じ（atwiki/page-1887・page-1891。rules/xg3/xg3Fields.ts）。
+    isXg3StackedUnderUnitCard(cardId)
   );
 }
 function isUnitCard(state: Pick<GameState, "definitions">, cardId: string): boolean {

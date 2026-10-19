@@ -156,13 +156,13 @@ describe("XG3-045 チャージアップストロンガー", () => {
 
   const endBoard = (discard = [inst("XG3-044", "d")]) => battle({ battle: [inst("XG3-045", "cs")], discard });
 
-  it.fails("XG3-045: ※ 自分がターンを終えるとき、自軍捨札の「仮面ライダーストロンガー」とこれを置き換える（ストロンガーがこれのいた場所へ、これは捨札へ）（既知の不具合: CARD-XG3-045 ターンを終えるときの置き換えがない）（出典: atwiki/page-2015「自軍捨札の「仮面ライダーストロンガー」のカードとこれを置き換える」・R-REPL-04）", () => {
+  it("XG3-045: ※ 自分がターンを終えるとき、自軍捨札の「仮面ライダーストロンガー」とこれを置き換える（ストロンガーがこれのいた場所へ、これは捨札へ）（出典: atwiki/page-2015「自軍捨札の「仮面ライダーストロンガー」のカードとこれを置き換える」・R-REPL-04）", () => {
     const s = resolveAll(endTurnKeep(endBoard()), ["XG3-044:d"]);
     expect(zoneOf(s, "player1", "XG3-045:cs")).toBe("discard");
     expect(zoneOf(s, "player1", "XG3-044:d")).toBe("battle");
   });
 
-  it.fails("XG3-045: ※ 自軍捨札に「仮面ライダーストロンガー」がなければ、ターンを終えるときにこれを捨札にする（既知の不具合: CARD-XG3-045）（出典: atwiki/page-2015「置き換えられなければこれを捨札にする」）", () => {
+  it("XG3-045: ※ 自軍捨札に「仮面ライダーストロンガー」がなければ、ターンを終えるときにこれを捨札にする（出典: atwiki/page-2015「置き換えられなければこれを捨札にする」）", () => {
     const s = resolveAll(endTurnKeep(endBoard([])));
     expect(zoneOf(s, "player1", "XG3-045:cs")).toBe("discard");
   });

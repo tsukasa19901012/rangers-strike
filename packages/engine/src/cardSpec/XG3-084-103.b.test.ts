@@ -199,7 +199,7 @@ describe("XG3-095 カブタックSM", () => {
     expect(zoneOf(s, "player1", "XG3-095:sm")).toBe("command");
   });
 
-  it.fails("XG3-095: ※ 置き換えられる「カブタック」がなければ、ターンを終えるときこれを捨札にする（既知の不具合: CARD-XG3-095 残ったまま）（出典: atwiki/page-2001「置き換えられなければこれを捨札にする」）", () => {
+  it("XG3-095: ※ 置き換えられる「カブタック」がなければ、ターンを終えるときこれを捨札にする（出典: atwiki/page-2001「置き換えられなければこれを捨札にする」）", () => {
     const s = resolveAll(endTurnKeep(battle({ battle: [inst("XG3-095", "sm")] })));
     expect(zoneOf(s, "player1", "XG3-095:sm")).toBe("discard");
   });

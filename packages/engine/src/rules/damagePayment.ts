@@ -13,6 +13,7 @@ import { applyPlayerDamage, removeAt, updatePlayer } from "../core/helpers";
 import { emitDamageAppliedAndResolve } from "../events/emitDamageApplied";
 import { applyPowerFlipBeforeDamage, openBreakActionBeforeFlip } from "./powerFlipEffects";
 import { openRk4BeforeFlip } from "./rk/rk4UnitEffects";
+import { openXg3BeforeFlip } from "./xg3/xg3Effects";
 import {
   cardHasMorphKeyword,
   powerZoneHasMorphUnitCard,
@@ -344,7 +345,9 @@ function flipPowerForDamage(state: GameState, flip: DeferredPowerFlip): GameStat
   // RK-066【俺の必殺技！】も RS-199 と同じ「ストライクして相手がパワーゾーンのカードをウラ返すとき」（rules/rk/rk4UnitEffects.ts）。
   const opened =
     openBreakActionBeforeFlip(state, flip.playerId, flip.flipIds, flip.resume) ??
-    openRk4BeforeFlip(state, flip.playerId, flip.flipIds, flip.resume);
+    openRk4BeforeFlip(state, flip.playerId, flip.flipIds, flip.resume) ??
+    // XG3-006 ビクトリーウォーカー【ケミカルディスチャージャー】（ダメージを無効にする。rules/xg3/xg3Effects.ts）。
+    openXg3BeforeFlip(state, flip);
   if (opened) {
     // ストライクの反応窓（pendingStrike）は閉じ、ストライクの残りはウラ返したあとで終える（resume.pending に保持）。
     const strikeClosed = flip.resume.kind === "strike" && flip.finishStrike ? { pendingStrike: undefined } : {};

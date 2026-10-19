@@ -4,6 +4,7 @@ import { isStrikeDamageDealtTriggerText } from "../../rules/strikeDamageTriggers
 import { openHamsterStrikeDraw } from "../../rules/legend1/set7NamedEffectsC";
 import { applyThunderboltSword } from "../../rules/legend1/set8NamedEffectsA";
 import { applyRk7OnStrike } from "../../rules/rk/rk7UnitEffects";
+import { applyXg3OnStrike } from "../../rules/xg3/xg3Effects";
 
 /**
  * StrikeDeclared: on_strike DSL 効果（RS-067 等）。
@@ -33,6 +34,8 @@ export const strikeDeclaredListener: EventListener = (event, state) => {
   hamster = applyThunderboltSword(hamster, strikeEvent.strikerPlayerId, card.cardId);
   // RK-130【スペード5－キック】で得た能力「ストライクしたとき、レジストを持つ敵軍Sユニットを1体選び、撃破する」（rules/rk/rk7UnitEffects.ts）。
   hamster = applyRk7OnStrike(hamster, strikeEvent.strikerPlayerId, card);
+  // クロスギャザー ザ・Wインパクト XG3（XG3-018【暴れ独楽】等で得た能力。rules/xg3/xg3Effects.ts）。
+  hamster = applyXg3OnStrike(hamster, strikeEvent.strikerPlayerId, card);
 
   return {
     state: hamster,
