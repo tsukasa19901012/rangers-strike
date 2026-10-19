@@ -35,6 +35,7 @@ export * from "./rules/reanimate";
 export * from "./rules/commander";
 export * from "./rules/postDamageEffects";
 export * from "./rules/bounce";
+export * from "./rules/revealNotice";
 export {
   isDenjiRevealAudience,
   canActOnDenjiChoice,

@@ -2,6 +2,7 @@
  * 選択（pendingEffectChoice）を伴う未消費キーワードのランタイム。
  * dsl/grantKeyword.ts のディスパッチから呼ばれる。
  */
+import { recordReveal } from "./revealNotice";
 import type { Category } from "@rangers-strike/cards";
 import { cardCategories } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
@@ -156,15 +157,30 @@ export function resolveDeclareNumberDeckReveal(
   const topCost =
     typeof def?.powerCost === "number" ? def.powerCost : parseInt(String(def?.powerCost ?? ""), 10);
   // オモテにして山札の下へ
-  const withBottom = {
-    ...state,
-    ...updatePlayer(state, pending.playerId, { ...player, deck: [...rest, top] }),
-    log: [
-      ...state.log,
-      `${cardName(state.definitions, top.cardId)} を公開（宣言: ${declared}）`,
-    ],
-  };
-  if (!Number.isFinite(topCost) || topCost < declared) return withBottom;
+  const matched = Number.isFinite(topCost) && topCost >= declared;
+  const withBottom = recordReveal(
+    {
+      ...state,
+      ...updatePlayer(state, pending.playerId, { ...player, deck: [...rest, top] }),
+      log: [
+        ...state.log,
+        `${cardName(state.definitions, top.cardId)} を公開（宣言: ${declared}）`,
+      ],
+    },
+    {
+      playerId: pending.playerId,
+      ownerId: pending.playerId,
+      sourceCardId: pending.sourceCardId,
+      effectLabel: pending.sourceCardId
+        ? `${cardName(state.definitions, pending.sourceCardId)}の効果`
+        : "数字宣言",
+      from: "deck_top",
+      declaredNumber: declared,
+      matched,
+      cards: [{ instanceId: top.instanceId, cardId: top.cardId, destination: "deck_bottom" }],
+    },
+  );
+  if (!matched) return withBottom;
   const enemyId = opponent(pending.playerId);
   const enemy = withBottom.players[enemyId];
   const targets = [...enemy.battle, ...enemy.rush].filter((c) => {

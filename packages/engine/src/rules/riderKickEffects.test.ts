@@ -161,6 +161,18 @@ describe("報告カードの能動効果ランタイム", () => {
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.state.players.player1.hand.some((c) => c.instanceId === bottom.instanceId)).toBe(true);
+    // オモテにしたカードは両プレイヤーに見える公開情報として記録される（UI が表示する）。
+    expect(r.state.lastReveal).toMatchObject({
+      playerId: "player1",
+      ownerId: "player1",
+      sourceCardId: "RK-135",
+      effectLabel: "潜行捜索",
+      from: "deck_bottom",
+      declaredNumber: 1,
+      matched: true,
+      cards: [{ instanceId: bottom.instanceId, cardId: "RK-135", destination: "hand" }],
+    });
+    expect(r.state.lastReveal?.seq).toBe((opened.lastReveal?.seq ?? 0) + 1);
   });
 
   it("RK-135 潜行捜索: 不一致なら山札の下へ戻る", () => {
@@ -185,6 +197,12 @@ describe("報告カードの能動効果ランタイム", () => {
     expect(r.state.players.player1.hand.some((c) => c.instanceId === bottom.instanceId)).toBe(false);
     // 山札の下に戻す（atwiki/page-632「それ以外なら山札の下に戻す」）。
     expect(r.state.players.player1.deck.at(-1)?.instanceId).toBe(bottom.instanceId);
+    expect(r.state.lastReveal).toMatchObject({
+      effectLabel: "潜行捜索",
+      declaredNumber: 5,
+      matched: false,
+      cards: [{ instanceId: bottom.instanceId, destination: "deck_bottom" }],
+    });
   });
 
   it("RK-301 エクステンドライダー落とし: ラッシュ配置では発動しない（バトルエリアに出たときのコンビネーション。cardSpec/RK15-295-315.a で照合）", () => {

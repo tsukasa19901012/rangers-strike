@@ -427,12 +427,22 @@ describe("RS-318 ドギー・クルーガー", () => {
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     s = reveal(s);
     expect(zoneOf(s, "player1", "SPEC-POLICE:top")).toBe("rush");
+    // オモテにしたカードは両プレイヤーの画面に出す公開情報として記録する。
+    expect(s.lastReveal).toMatchObject({
+      playerId: "player1",
+      effectLabel: "出動指令",
+      from: "deck_top",
+      cards: [{ instanceId: "SPEC-POLICE:top", destination: "rush" }],
+    });
   });
 
   // 「それ以外なら手札に加える」
   it("RS-318: オモテにしたカードが警察の S ユニットでなければ（警察の M ユニット・オペレーション）手札に加える（出典: atwiki/page-21「それ以外なら手札に加える」）", () => {
     let s = reveal(enemyRushes("SPEC-DA", inst("SPEC-POLICE-M", "top")));
     expect(zoneOf(s, "player1", "SPEC-POLICE-M:top")).toBe("hand");
+    expect(s.lastReveal?.cards).toEqual([
+      { instanceId: "SPEC-POLICE-M:top", cardId: "SPEC-POLICE-M", destination: "hand" },
+    ]);
     s = reveal(enemyRushes("SPEC-DA", inst("TST-OP", "top")));
     expect(zoneOf(s, "player1", "TST-OP:top")).toBe("hand");
   });

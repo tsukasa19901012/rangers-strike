@@ -1,3 +1,4 @@
+import { recordReveal } from "./revealNotice";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import { redRacerPowerCostBonus } from "../core/power";
 import { isSet6LowChoiceEffect, tryResolveSet6LowChoice, trySkipSet6LowChoice } from "./legend1/set6NamedEffects348";
@@ -3686,11 +3687,32 @@ export function applyEffectChoiceSelect(
     case "optional_deck_draw": {
       if (instanceId !== "draw") return { error: "invalid_target" };
       if (pending.effectId === "hanga") {
-        const nextState = applyHangaEvolutionReveal(
+        const hangaTop = state.players[playerId].deck[0];
+        const hangaApplied = applyHangaEvolutionReveal(
           state,
           playerId,
           pending.sourceInstanceId,
         );
+        const nextState = hangaTop
+          ? recordReveal(hangaApplied, {
+              playerId,
+              ownerId: playerId,
+              sourceCardId: pending.sourceCardId,
+              effectLabel: `${cardName(state.definitions, pending.sourceCardId)}の効果`,
+              from: "deck_top",
+              cards: [
+                {
+                  instanceId: hangaTop.instanceId,
+                  cardId: hangaTop.cardId,
+                  destination: hangaApplied.players[playerId].rush.some(
+                    (c) => c.instanceId === hangaTop.instanceId,
+                  )
+                    ? "rush"
+                    : "discard",
+                },
+              ],
+            })
+          : hangaApplied;
         const player = nextState.players[playerId];
         const revealedId =
           player.rush.at(-1)?.cardId ??
@@ -5589,7 +5611,25 @@ export function applyEffectChoiceSelect(
       if (pending.effectId === "arino" && instanceId === "reveal_top") {
         const top = state.players[pending.playerId].deck[0];
         if (!top) return finishChoice(state, pending, "empty_deck");
-        const nextState = applyZorobTopDeckReveal(state, pending.playerId, top.instanceId);
+        const zorobApplied = applyZorobTopDeckReveal(state, pending.playerId, top.instanceId);
+        const nextState = recordReveal(zorobApplied, {
+          playerId: pending.playerId,
+          ownerId: pending.playerId,
+          sourceCardId: pending.sourceCardId,
+          effectLabel: `${cardName(state.definitions, pending.sourceCardId)}の効果`,
+          from: "deck_top",
+          cards: [
+            {
+              instanceId: top.instanceId,
+              cardId: top.cardId,
+              destination: zorobApplied.players[pending.playerId].rush.some(
+                (c) => c.instanceId === top.instanceId,
+              )
+                ? "rush"
+                : "discard",
+            },
+          ],
+        });
         return finishChoice(nextState, pending, cardName(state.definitions, top.cardId));
       }
       if (pending.effectId === "to_power_on_destroy") {

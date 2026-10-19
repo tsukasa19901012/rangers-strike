@@ -421,6 +421,48 @@ export type DenjiMachineMeta = {
   orderedBottomIds?: string[];
 };
 
+/** 「オモテにする／公開する」で公開されたカードの行き先。 */
+export type RevealDestination =
+  | "hand"
+  | "deck_top"
+  | "deck_bottom"
+  | "discard"
+  | "rush"
+  | "power"
+  | "command"
+  | "stay";
+
+/** 公開されたカード 1 枚分の記録（両プレイヤーが見られる公開情報）。 */
+export type RevealedCardNotice = {
+  instanceId: string;
+  cardId: string;
+  destination: RevealDestination;
+};
+
+/**
+ * 効果でカードをオモテにした（公開した）記録。両プレイヤーに見せる公開情報で、
+ * UI は seq が変わったら公開カード・宣言・行き先を表示する（RK-135 潜行捜索ほか）。
+ */
+export type RevealNotice = {
+  /** 公開ごとに 1 ずつ増える通し番号（UI が新しい公開を検出する用）。 */
+  seq: number;
+  /** 効果を使ったプレイヤー。 */
+  playerId: PlayerId;
+  /** 公開したカードの持ち主（山札の持ち主）。 */
+  ownerId: PlayerId;
+  /** 効果の発生源カード。 */
+  sourceCardId?: string;
+  /** 効果名（例: 潜行捜索）。 */
+  effectLabel: string;
+  /** どこから公開したか。 */
+  from: "deck_top" | "deck_bottom" | "hand" | "power";
+  /** 数字を宣言した効果なら宣言した数字。 */
+  declaredNumber?: number;
+  /** 条件に一致したか（一致で行き先が変わる効果のみ）。 */
+  matched?: boolean;
+  cards: RevealedCardNotice[];
+};
+
 export type EffectChoiceKind =
   | "deck_top_or_bottom"
   | "seabed_draw"
@@ -1290,6 +1332,8 @@ export type GameState = {
    * 選択待ちで中断したら、解決後にここから再開する（R-END-01）。
    */
   turnEndProgress?: TurnEndProgress;
+  /** 直近に効果でオモテにした（公開した）カード。両プレイヤーの UI に表示する。 */
+  lastReveal?: RevealNotice;
   /** 第8弾 RS-560〜RS-581 のカード固有の効果の記録（rules/legend1/set8NamedEffectsC.ts）。 */
   set8cMeta?: Set8CMeta;
   /** 第9弾 RS-648〜RS-669 のカード固有の効果の記録（rules/legend1/set9NamedEffectsC.ts）。 */

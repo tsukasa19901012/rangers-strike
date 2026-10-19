@@ -10,6 +10,7 @@
  *  - senko_sosa                   : 数字宣言→山札下公開→一致で手札（RK-135 等）
  *  - extend_rider_drop            : 指定ビークルからのコンビで本来 BP 8000 以下の敵をパワー送り（RK-301 等）
  */
+import { recordReveal } from "./revealNotice";
 import { openImaginPowerChoice } from "./errataCardEffects";
 import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
@@ -188,23 +189,40 @@ export function resolveSenkoSosa(
   const def = getDefinition(state.definitions, bottom.cardId);
   const digit = parsePowerCost(def?.powerCost);
   const revealedName = cardName(state.definitions, bottom.cardId);
-  if (digit === declared) {
-    return {
-      ...state,
-      ...updatePlayer(state, pending.playerId, {
-        ...player,
-        deck: rest,
-        hand: [...player.hand, bottom],
-      }),
-      log: [...state.log, `潜行捜索: ${revealedName} を公開（宣言 ${declared}）→ 手札へ`],
-    };
-  }
-  // 違えば山札の下に戻す（山札の並びは変わらない。atwiki/page-632「それ以外なら山札の下に戻す」）。
-  return {
-    ...state,
-    ...updatePlayer(state, pending.playerId, { ...player, deck: [...rest, bottom] }),
-    log: [...state.log, `潜行捜索: ${revealedName} を公開（宣言 ${declared}）→ 山札の下へ`],
-  };
+  const matched = digit === declared;
+  const moved: GameState = matched
+    ? {
+        ...state,
+        ...updatePlayer(state, pending.playerId, {
+          ...player,
+          deck: rest,
+          hand: [...player.hand, bottom],
+        }),
+        log: [...state.log, `潜行捜索: ${revealedName} を公開（宣言 ${declared}）→ 手札へ`],
+      }
+    : // 違えば山札の下に戻す（山札の並びは変わらない。atwiki/page-632「それ以外なら山札の下に戻す」）。
+      {
+        ...state,
+        ...updatePlayer(state, pending.playerId, { ...player, deck: [...rest, bottom] }),
+        log: [...state.log, `潜行捜索: ${revealedName} を公開（宣言 ${declared}）→ 山札の下へ`],
+      };
+  // オモテにしたカードは公開情報。両プレイヤーの UI が見られるよう記録する。
+  return recordReveal(moved, {
+    playerId: pending.playerId,
+    ownerId: pending.playerId,
+    sourceCardId: pending.sourceCardId,
+    effectLabel: "潜行捜索",
+    from: "deck_bottom",
+    declaredNumber: declared,
+    matched,
+    cards: [
+      {
+        instanceId: bottom.instanceId,
+        cardId: bottom.cardId,
+        destination: matched ? "hand" : "deck_bottom",
+      },
+    ],
+  });
 }
 
 // ---- RK-301 系: ライドされている指定ビークルからのコンビで本来 BP 8000 以下の敵をパワー送り ----

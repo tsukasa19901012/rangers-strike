@@ -3540,3 +3540,8 @@ select {
   text-align: center;
   font-weight: 700;
 }
+
+/* 効果でオモテにしたカードの公開表示は、同時に開く他のゲームモーダルより手前に出す（カード詳細 130 よりは奥）。 */
+.modal-backdrop--game:has(.modal--reveal-notice) {
+  z-index: 125;
+}

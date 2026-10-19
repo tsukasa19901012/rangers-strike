@@ -7,6 +7,7 @@
  * ルール: R-RUSH-20 — 効果でラッシュエリアに出すのにコマンドのホールドは不要（RS-318 Q1）。
  * ルール: R-ADD-02 — 「－」も「追加条件を持つ」（RS-318 Q3）。
  */
+import { recordReveal } from "./revealNotice";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
@@ -110,6 +111,15 @@ function revealDispatchOrder(
     const rushed = finalizeEffectRush(next, playerId, [top.instanceId], pending.phasePlayerId);
     next = { ...rushed.state, log: [...rushed.state.log, ...rushed.logs] };
   }
+  next = recordReveal(next, {
+    playerId,
+    ownerId: playerId,
+    sourceCardId: pending.sourceCardId ?? DOGGIE_CARD_ID,
+    effectLabel: "出動指令",
+    from: "deck_top",
+    matched: toRush,
+    cards: [{ instanceId: top.instanceId, cardId: top.cardId, destination: toRush ? "rush" : "hand" }],
+  });
   return {
     state: next,
     log: buildLogEntry(

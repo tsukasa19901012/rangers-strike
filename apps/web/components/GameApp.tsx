@@ -89,6 +89,7 @@ import { EffectChoiceModal } from "./EffectChoiceModal";
 import { DamagePaymentModal } from "./DamagePaymentModal";
 import { damagePaymentHint } from "@/lib/damagePaymentHint";
 import { EffectNoticeModal } from "./EffectNoticeModal";
+import { RevealNoticeModal } from "./RevealNoticeModal";
 import { CommandPaymentBanner } from "./CommandPaymentBanner";
 import {
   buildCommandPaymentView,
@@ -130,6 +131,7 @@ import {
   formatEffectLogNotice,
   shouldShowEffectLogNotice,
 } from "@/lib/effectLogNotice";
+import { buildRevealNoticeView, pickNewReveal } from "@/lib/revealNoticeUi";
 import { useCompactGameViewport } from "@/lib/compactViewport";
 import { useViewportBoardFit } from "@/lib/useViewportBoardFit";
 import {
@@ -248,6 +250,9 @@ export function GameApp() {
   const [turnNotice, setTurnNotice] = useState<PlayerId | null>(null);
   const [phaseNotice, setPhaseNotice] = useState<Phase | null>(null);
   const [effectNotice, setEffectNotice] = useState<string | null>(null);
+  /** 効果でオモテにした（公開した）カード。OK を押すまで表示し、その間 CPU は待つ。 */
+  const [revealNotice, setRevealNotice] = useState<GameState["lastReveal"] | null>(null);
+  const prevRevealSeqRef = useRef(0);
   const [commandPaymentSelection, setCommandPaymentSelection] = useState<string[]>([]);
   const prevLogLenRef = useRef(0);
   const prevActivePlayerRef = useRef<PlayerId | null>(null);
@@ -352,6 +357,8 @@ export function GameApp() {
       setTurnNotice(game.activePlayer);
       setPhaseNotice(null);
       setEffectNotice(null);
+      setRevealNotice(null);
+      prevRevealSeqRef.current = game.lastReveal?.seq ?? 0;
       prevLogLenRef.current = 0;
       prevPhaseRef.current = game.phase;
     } catch (error) {
@@ -397,7 +404,7 @@ export function GameApp() {
   }, [state?.phase, state?.activePlayer, state?.pendingStrike, state?.pendingBattle, state?.pendingRush, state?.pendingLeave, state?.pendingEffectChoice, state?.pendingBattleEntry]);
 
   useEffect(() => {
-    if (!state || !isCpuTurn(state, CPU_PLAYER)) return;
+    if (!state || revealNotice || !isCpuTurn(state, CPU_PLAYER)) return;
 
     const timer = window.setTimeout(() => {
       const action =
@@ -426,7 +433,20 @@ export function GameApp() {
     }, 550);
 
     return () => window.clearTimeout(timer);
-  }, [state, cpuLevel]);
+  }, [state, cpuLevel, revealNotice]);
+
+  useEffect(() => {
+    if (!state) return;
+    const seq = state.lastReveal?.seq ?? 0;
+    if (seq < prevRevealSeqRef.current) {
+      prevRevealSeqRef.current = seq;
+      return;
+    }
+    const reveal = pickNewReveal(state, prevRevealSeqRef.current);
+    if (!reveal) return;
+    prevRevealSeqRef.current = reveal.seq;
+    setRevealNotice(reveal);
+  }, [state, state?.lastReveal]);
 
   const legalActions = useMemo(
     () => (state ? getLegalActions(state) : []),
@@ -2247,6 +2267,7 @@ export function GameApp() {
 
   const showEffectNotice =
     !!effectNotice &&
+    !revealNotice &&
     !showReactionModal &&
     !showDenjiRevealModal &&
     !showOperationModal &&
@@ -2790,6 +2811,16 @@ export function GameApp() {
         <LightningGravityHoldModal
           notice={lightningGravityNotice}
           onClose={() => setLightningGravityNotice(null)}
+        />
+      )}
+      {revealNotice && state && (
+        <RevealNoticeModal
+          view={buildRevealNoticeView(revealNotice, state.definitions, HUMAN_PLAYER)}
+          onClose={() => setRevealNotice(null)}
+          onPreview={(cardId) => {
+            const card = resolvePlayableCard(cardId);
+            if (card) setPreviewCard(card);
+          }}
         />
       )}
       {showEffectNotice && effectNotice && (

@@ -1,6 +1,7 @@
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
-import type { GameState, PlayerId } from "../types/game";
+import type { GameState, PlayerId, RevealedCardNotice } from "../types/game";
+import { recordReveal } from "./revealNotice";
 import { getDefinition, parsePowerCost } from "../core/catalog";
 import { canAffordAvailablePower, effectivePowerCost } from "../core/power";
 import { opponent, removeAt, updatePlayer } from "../core/helpers";
@@ -25,6 +26,7 @@ export function applyFalconSummonerOperation(
   const enemyId = opponent(playerId);
   let remaining = state.players[enemyId].damage;
   let next = state;
+  const revealed: RevealedCardNotice[] = [];
 
   while (remaining > 0) {
     const player = next.players[playerId];
@@ -49,6 +51,7 @@ export function applyFalconSummonerOperation(
           rush: [...player.rush, top],
         }),
       };
+      revealed.push({ instanceId: top.instanceId, cardId: top.cardId, destination: "rush" });
       remaining -= 1;
       continue;
     }
@@ -69,8 +72,17 @@ export function applyFalconSummonerOperation(
         discard,
       }),
     };
+    revealed.push({ instanceId: top.instanceId, cardId: top.cardId, destination: "hand" });
     remaining -= 1;
   }
 
-  return next;
+  if (revealed.length === 0) return next;
+  return recordReveal(next, {
+    playerId,
+    ownerId: playerId,
+    sourceCardId: "RS-607",
+    effectLabel: "ファルコンサモナー",
+    from: "deck_top",
+    cards: revealed,
+  });
 }
