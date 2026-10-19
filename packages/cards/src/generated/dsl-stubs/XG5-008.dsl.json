@@ -29,11 +29,10 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-008::gogochienji",
+          "keyword": "xg5::XG5-008::gogo_change",
           "duration": "permanent"
         }
       ]

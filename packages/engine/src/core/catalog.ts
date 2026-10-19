@@ -148,7 +148,8 @@ export function getDefinition(
 export type SizedCard = string | (Pick<CardInstance, "cardId"> & Partial<Pick<CardInstance, "stackedCards" | "sizeOverride">>);
 
 /** 重ねたユニットを「Lユニット」にするカード（RK-013 Jパワー・RS-255 巨大化爆弾）。 */
-const LARGE_STACK_CARD_IDS = ["RK-013", "RS-255"];
+// XG5-012 ゴレムカード「このカードに重ねたユニットはLユニットになる」（atwiki/page-2192）。
+const LARGE_STACK_CARD_IDS = ["RK-013", "RS-255", "XG5-012"];
 
 /** インスタンスの効果によるサイズ（なければ undefined）。サイズの判定のたびに呼ばれるので、重ねたカードがなければすぐ返す。 */
 function instanceSizeOverride(card: SizedCard): UnitSize | undefined {

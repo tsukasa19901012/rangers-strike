@@ -101,6 +101,7 @@ import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
+import { activateXg5HandEffect, applyXg5AfterAction, applyXg5StrikeResolved } from "../rules/xg5/xg5Effects";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -677,6 +678,8 @@ function finishStrikeResolution(
   resolved = applyRk16StrikeDamageTriggers(resolved, pending);
   // RM-009 マルチパック（重ねたユニットがストライクしてダメージを与えたとき。rules/rm/rm1Effects.ts）。
   resolved = applyRm1StrikeDamageTriggers(resolved, pending);
+  // クロスギャザー XG5 のストライクしたときの効果（rules/xg5/xg5Effects.ts）。
+  resolved = applyXg5StrikeResolved(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -807,7 +810,7 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
   if (
     dslEffect &&
     shouldUseDslOperation(cardId, dslEffect) &&
-    dslEffect.effects.some((p) => p.type === "grant_keyword" && (p.keyword.startsWith("rm1::") || p.keyword.startsWith("bk1::")))
+    dslEffect.effects.some((p) => p.type === "grant_keyword" && (p.keyword.startsWith("rm1::") || p.keyword.startsWith("bk1::") || p.keyword.startsWith("xg5::")))
   ) {
     return false;
   }
@@ -1092,6 +1095,8 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRm2AfterAction(next);
   // RM-059 異次元調達屋カブト（WB の自軍 S ユニットがバトルエリアに出たとき。rules/rm/rm3Effects.ts）。
   if (applyActionDepth === 0) next = applyRm3AfterAction(state, next);
+  // クロスギャザー XG5 の後処理（rules/xg5/xg5Effects.ts）。
+  if (applyActionDepth === 0) next = applyXg5AfterAction(state, next, applyAction);
   // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
   if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
     const endingPlayer = next.rk9RushEndAdvance;
@@ -3887,7 +3892,7 @@ function applyActionCore(
       if (!unit) {
         // RS-559【パワーアロー】等「自分の手札からこのカードを捨札にして発動できる」（rules/legend1/set8NamedEffectsB.ts）。
         const handCard = player.hand.find((c) => c.instanceId === action.unitInstanceId);
-        const fromHand = handCard ? activateSet8BHandEffect(state, playerId, action.unitInstanceId) : null;
+        const fromHand = handCard ? (activateXg5HandEffect(state, playerId, action.unitInstanceId) ?? activateSet8BHandEffect(state, playerId, action.unitInstanceId)) : null;
         if (!handCard || !fromHand) return fail("illegal_action");
         return ok(fromHand, buildLogEntry(playerId, "activate_field_unit_ability", handCard.cardId, state.definitions, "from_hand"));
       }

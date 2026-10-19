@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-013::karadawotsukadow",
+          "keyword": "xg5::XG5-013::regen_card",
           "duration": "permanent"
         }
       ]

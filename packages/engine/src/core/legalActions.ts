@@ -152,6 +152,7 @@ import { rm1ActsAsVehicle } from "../rules/rm/rm1Fields";
 import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "../rules/rm/rm2Effects";
 import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
 import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
+import { canConfirmXg5Choice, isXg5ChoiceEffect, listXg5HandActivations } from "../rules/xg5/xg5Effects";
 import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
@@ -856,6 +857,10 @@ function appendActivateFieldUnitAbilityActions(
   for (const unitInstanceId of listSet8BHandActivations(state, playerId)) {
     actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
   }
+  // XG5-006 ゴーグルロボ ※: 手札からこれを捨札にして発動する（rules/xg5/xg5aEffects.ts）。
+  for (const unitInstanceId of listXg5HandActivations(state, playerId)) {
+    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+  }
 }
 
 function appendBattleDanceActions(
@@ -1314,6 +1319,15 @@ function appendEffectChoiceActions(
     for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
+    return;
+  }
+
+  if (isXg5ChoiceEffect(pending.effectId)) {
+    // クロスギャザー XG5 の選択（rules/xg5/xg5Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg5Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

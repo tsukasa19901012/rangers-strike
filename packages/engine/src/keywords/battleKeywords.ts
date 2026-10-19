@@ -1,4 +1,5 @@
 import { rm1GrantsScrum } from "../rules/rm/rm1Fields";
+import { xg5GrantsScrum } from "../rules/xg5/xg5Fields";
 import type { Category } from "@rangers-strike/cards";
 import { rk9EnemyKeywordsNullified } from "../rules/rk/rk9Fields";
 import { set9ATaxisCategory } from "../rules/legend1/set9NamedEffectsA";
@@ -205,7 +206,9 @@ export function scrumBlocksAttack(
     // RS-467 ギンガルコン【風の星獣】: ライドしたユニットがある間、WB の自軍 S ユニットはスクラムを得る（rules/legend1/set7NamedEffectsB.ts）。
     !riddenVehicleGrantsScrum(state, defenderPlayerId, defender) &&
     // RM-013 BSフォーメーション: 特徴「ブルー」「スワット」を持つ自軍ユニットはスクラムを得る（rules/rm/rm1Fields.ts）。
-    !rm1GrantsScrum(state, defenderPlayerId, unitFeatures(state, defenderPlayerId, defender))
+    !rm1GrantsScrum(state, defenderPlayerId, unitFeatures(state, defenderPlayerId, defender)) &&
+    // XG5-001 ゴーグルレッド ※・XG5-041 ゴセイイエロー【兄妹の絆】（rules/xg5/xg5Fields.ts）。
+    !xg5GrantsScrum(state, defenderPlayerId, defender)
   ) {
     return false;
   }

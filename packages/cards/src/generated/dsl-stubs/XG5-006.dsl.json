@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-006::koreganoniaruras",
+          "keyword": "xg5::XG5-006::hand_recover",
           "duration": "permanent"
         }
       ]

@@ -109,13 +109,13 @@ describe("XG5-001 ゴーグルレッド", () => {
     expectRarityIn("XG5-001", ["R"]);
   });
 
-  it.fails("XG5-001: ※ — これが自軍ラッシュエリアにある間、CN2 の自軍ユニットの次に CN3 のユニットが並べば、CN2 のユニットはアタックされない（スクラムを得る） 既知の不具合: CARD-XG5-001 自軍ユニットにスクラムが付与されない（出典: atwiki/page-2180「ナンバーに数字を持つ自軍ユニットは次の能力を得る⇒スクラム」・R-KW-SCRUM-01）", () => {
+  it("XG5-001: ※ — これが自軍ラッシュエリアにある間、CN2 の自軍ユニットの次に CN3 のユニットが並べば、CN2 のユニットはアタックされない（スクラムを得る）（出典: atwiki/page-2180「ナンバーに数字を持つ自軍ユニットは次の能力を得る⇒スクラム」・R-KW-SCRUM-01）", () => {
     const t = enemyAttackTargets({ battle: [inst("SPEC-CN2", "a"), inst("SPEC-CN3", "b")], rush: [inst("XG5-001", "r")] }, EXTRA);
     expect(t).not.toContain("SPEC-CN2:a");
     expect(t).toContain("SPEC-CN3:b");
   });
 
-  it.fails("XG5-001: ※ — これが自軍バトルエリアにある間も、自軍ユニットはスクラムを得る 既知の不具合: CARD-XG5-001 自軍ユニットにスクラムが付与されない（出典: atwiki/page-2180「これが自軍エリアにある間」）", () => {
+  it("XG5-001: ※ — これが自軍バトルエリアにある間も、自軍ユニットはスクラムを得る（出典: atwiki/page-2180「これが自軍エリアにある間」）", () => {
     const t = enemyAttackTargets({ battle: [inst("XG5-001", "r"), inst("SPEC-CN3", "a"), inst("SPEC-CN4", "b")] }, EXTRA);
     expect(t).not.toContain("SPEC-CN3:a");
   });
@@ -130,7 +130,7 @@ describe("XG5-001 ゴーグルレッド", () => {
     expect(t).toContain("SPEC-CN2:a");
   });
 
-  it.fails("XG5-001: NC【レッドロープ】— 1番目に出れば「SP1」になりストライクできる 既知の不具合: CARD-XG5-001 NC は成立するが SP が付かない（出典: atwiki/page-2180「【レッドロープ】「SP1」」）", () => {
+  it("XG5-001: NC【レッドロープ】— 1番目に出れば「SP1」になりストライクできる（出典: atwiki/page-2180「【レッドロープ】「SP1」」）", () => {
     const s = nc("XG5-001:r", 0);
     expect(spOf(s, "player1", "XG5-001:r")).toBe(1);
     expect(canStrike(s, "XG5-001:r")).toBe(true);
@@ -142,7 +142,7 @@ describe("XG5-001 ゴーグルレッド", () => {
     expect(canStrike(s, "XG5-001:r")).toBe(false);
   });
 
-  it.fails("XG5-001: NC【レッドロープ】— ストライクしたとき、そのダメージの処理を終えてから、このバトルフェイズを終える（ほかのユニットはもう出られない）既知の不具合: CARD-XG5-001 SP1 が付かずストライクできない（出典: atwiki/page-2180「これがストライクしたとき、その処理をすべて終えてから、このバトルフェイズを終える」）", () => {
+  it("XG5-001: NC【レッドロープ】— ストライクしたとき、そのダメージの処理を終えてから、このバトルフェイズを終える（ほかのユニットはもう出られない）（出典: atwiki/page-2180「これがストライクしたとき、その処理をすべて終えてから、このバトルフェイズを終える」）", () => {
     let s = nc("XG5-001:r", 0, { rush: [inst("SPEC-PLAIN", "next")] });
     s = settle(strike(s, "XG5-001:r"));
     expect(damageOf(s, "player2")).toBe(1);
@@ -172,27 +172,27 @@ describe("XG5-002 ゴーグルブラック", () => {
     released("TST-OP-ET", "c5"),
   ];
 
-  it.fails("XG5-002: NC【ブラックシャドウ】— 自軍コマンドゾーンの、特徴「ブラック」を持つユニットカード（ホールド状態・M ユニットも）から選べる。「ゴーグルブラック」・「ブラック」を持たないカード・オペレーション・敵軍のカードは選べない（任意） 既知の不具合: CARD-XG5-002 NC は成立するが選択が開かない（効果がない）（出典: atwiki/page-2274「自軍コマンドゾーンから、「ゴーグルブラック」以外の特徴「ブラック」を持つユニットカードを1枚選び、…出してもよい」・カード評価「効果のラッシュはサイズも問わない」）", () => {
+  it("XG5-002: NC【ブラックシャドウ】— 自軍コマンドゾーンの、特徴「ブラック」を持つユニットカード（ホールド状態・M ユニットも）から選べる。「ゴーグルブラック」・「ブラック」を持たないカード・オペレーション・敵軍のカードは選べない（任意）（出典: atwiki/page-2274「自軍コマンドゾーンから、「ゴーグルブラック」以外の特徴「ブラック」を持つユニットカードを1枚選び、…出してもよい」・カード評価「効果のラッシュはサイズも問わない」）", () => {
     const s = nc("XG5-002:b", 1, { command: COMMAND() }, { command: [released("SPEC-BLACK", "e1")] });
     expectChoiceFrom(s, "player1", "XG5-002");
     expect(choiceIds(s)).toEqual(["SPEC-BLACK-M:c2", "SPEC-BLACK:c1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-002: NC【ブラックシャドウ】— 選んだカードは自軍ラッシュエリアに出て（必要パワー7でもパワー0で出せる）、これは自軍コマンドゾーンにホールド状態で置かれる 既知の不具合: CARD-XG5-002 NC の効果がない（出典: atwiki/page-2274「ただし、追加条件は満たすこと。そうしたとき、これを自軍コマンドゾーンにホールド状態で置く」・カード評価「必要パワーを無視できる」）", () => {
+  it("XG5-002: NC【ブラックシャドウ】— 選んだカードは自軍ラッシュエリアに出て（必要パワー7でもパワー0で出せる）、これは自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-2274「ただし、追加条件は満たすこと。そうしたとき、これを自軍コマンドゾーンにホールド状態で置く」・カード評価「必要パワーを無視できる」）", () => {
     const s = resolveAll(pick(nc("XG5-002:b", 1, { command: COMMAND(), power: [] }), "SPEC-BLACK:c1"));
     expect(zoneOf(s, "player1", "SPEC-BLACK:c1")).toBe("rush");
     expect(zoneOf(s, "player1", "XG5-002:b")).toBe("command");
     expect(commandState(s, "player1", "XG5-002:b")).toBe("held");
   });
 
-  it.fails("XG5-002: NC【ブラックシャドウ】— 出さなければ、これはバトルエリアに残る 既知の不具合: CARD-XG5-002 NC の効果がない（選択が開かない）（出典: atwiki/page-2274「出してもよい。…そうしたとき」）", () => {
+  it("XG5-002: NC【ブラックシャドウ】— 出さなければ、これはバトルエリアに残る（出典: atwiki/page-2274「出してもよい。…そうしたとき」）", () => {
     const s = resolveAll(skip(nc("XG5-002:b", 1, { command: COMMAND() })));
     expect(zoneOf(s, "player1", "SPEC-BLACK:c1")).toBe("command");
     expect(zoneOf(s, "player1", "XG5-002:b")).toBe("battle");
   });
 
-  it.fails("XG5-002: NC【ブラックシャドウ】— 追加条件は満たすこと: RS-584 ボウケンブラックAT（追加条件「自軍「ボウケンブラック」1体を捨札にする」）は、自軍エリアにボウケンブラックがあれば選べて、出すときにボウケンブラックを捨札にする 既知の不具合: CARD-XG5-002 NC の効果がない（出典: atwiki/page-2274「ただし、追加条件は満たすこと」・カード評価「同じETで性能の高いブラックであるボウケンブラックATを引っ張り出す」）", () => {
+  it("XG5-002: NC【ブラックシャドウ】— 追加条件は満たすこと: RS-584 ボウケンブラックAT（追加条件「自軍「ボウケンブラック」1体を捨札にする」）は、自軍エリアにボウケンブラックがあれば選べて、出すときにボウケンブラックを捨札にする（出典: atwiki/page-2274「ただし、追加条件は満たすこと」・カード評価「同じETで性能の高いブラックであるボウケンブラックATを引っ張り出す」）", () => {
     let s = nc("XG5-002:b", 1, { command: [released("RS-584", "at")], rush: [inst("RS-063", "bb")] });
     expect(choiceIds(s)).toEqual(["RS-584:at"]);
     s = resolveAll(pick(s, "RS-584:at"), ["RS-063:bb"]);
@@ -222,7 +222,7 @@ describe("XG5-003 ゴーグルブルー", () => {
     expectRarityIn("XG5-003", ["N"]);
   });
 
-  it.fails("XG5-003: NC【ブルージェットダッシュ】— このターン、敵軍ユニットの必要パワーの数字が1少なくなる（必要パワー3の敵軍ユニットを XG5-004 ゴーグルイエロー【イエローボール】（必要パワー2以下）で選べる） 既知の不具合: CARD-XG5-003 自軍ターン中の敵軍ユニットの必要パワーの数字が減らない（「○以下」の判定に反映されない）（出典: atwiki/page-2185「このターン、敵軍ユニットの必要パワーの数字は1少なくなる」・コメント欄「ゴーグルイエロー…のサポート担当」）", () => {
+  it("XG5-003: NC【ブルージェットダッシュ】— このターン、敵軍ユニットの必要パワーの数字が1少なくなる（必要パワー3の敵軍ユニットを XG5-004 ゴーグルイエロー【イエローボール】（必要パワー2以下）で選べる）（出典: atwiki/page-2185「このターン、敵軍ユニットの必要パワーの数字は1少なくなる」・コメント欄「ゴーグルイエロー…のサポート担当」）", () => {
     const enemy = { rush: [inst("SPEC-C3", "e3"), inst("SPEC-C2", "e2")] };
     let s = battle({ battle: fill(2), rush: [inst("XG5-003", "bl"), inst("XG5-004", "y")] }, enemy);
     s = enterKeep(s, ["XG5-003:bl", "XG5-004:y"]);
@@ -273,7 +273,7 @@ describe("XG5-004 ゴーグルイエロー", () => {
     expect(choiceIds(s)).toEqual(["SPEC-C0:e0", "SPEC-C2:e2", "SPEC-C2P:e2p"]);
   });
 
-  it.fails("XG5-004: NC【イエローボール】— 選ぶかは任意（見送れる）既知の不具合: CARD-XG5-004 選択が必須になっていて見送れない（出典: atwiki/page-2186「置いてもよい」）", () => {
+  it("XG5-004: NC【イエローボール】— 選ぶかは任意（見送れる）（出典: atwiki/page-2186「置いてもよい」）", () => {
     expect(canSkip(nc("XG5-004:y", 3, {}, ENEMY()))).toBe(true);
   });
 
@@ -288,7 +288,7 @@ describe("XG5-004 ゴーグルイエロー", () => {
     expect(zoneOf(s, "player2", "SPEC-C2:e2")).toBe("discard");
   });
 
-  it.fails("XG5-004: NC【イエローボール】— 選ばなければ何も起きない 既知の不具合: CARD-XG5-004 見送れない（出典: atwiki/page-2186「置いてもよい」）", () => {
+  it("XG5-004: NC【イエローボール】— 選ばなければ何も起きない（出典: atwiki/page-2186「置いてもよい」）", () => {
     const s = resolveAll(skip(nc("XG5-004:y", 3, {}, ENEMY())));
     expect(zoneOf(s, "player2", "SPEC-C2:e2")).toBe("rush");
   });
@@ -320,19 +320,19 @@ describe("XG5-005 ゴーグルピンク", () => {
     return act(s, { type: "move_to_battle", playerId: "player2", instanceId: unit });
   };
 
-  it.fails("XG5-005: ※ — 自軍バトルエリアにある間、敵軍 S ユニットがバトルエリアに出たとき、これを自軍コマンドゾーンに置くかを自分が選べる（任意） 既知の不具合: CARD-XG5-005 ※ が発動しない（出典: atwiki/page-2187「敵軍Sユニットがバトルエリアに出たとき、これを自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
+  it("XG5-005: ※ — 自軍バトルエリアにある間、敵軍 S ユニットがバトルエリアに出たとき、これを自軍コマンドゾーンに置くかを自分が選べる（任意）（出典: atwiki/page-2187「敵軍Sユニットがバトルエリアに出たとき、これを自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
     const s = enemyEnters("SPEC-ES:e");
     expectChoiceFrom(s, "player1", "XG5-005");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-005: ※ — 置くことを選べば、自軍コマンドゾーンにホールド状態で置かれる 既知の不具合: CARD-XG5-005 ※ が発動しない（出典: atwiki/page-2187）", () => {
+  it("XG5-005: ※ — 置くことを選べば、自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-2187）", () => {
     const s = resolveAll(accept(enemyEnters("SPEC-ES:e")));
     expect(zoneOf(s, "player1", "XG5-005:p")).toBe("command");
     expect(commandState(s, "player1", "XG5-005:p")).toBe("held");
   });
 
-  it.fails("XG5-005: ※ — 自軍コマンドゾーンが5枚で置けなければ手札に加える 既知の不具合: CARD-XG5-005 ※ が発動しない（出典: atwiki/page-2187「置けなければ手札に加える」）", () => {
+  it("XG5-005: ※ — 自軍コマンドゾーンが5枚で置けなければ手札に加える（出典: atwiki/page-2187「置けなければ手札に加える」）", () => {
     const s = resolveAll(accept(enemyEnters("SPEC-ES:e", { command: heldN(5) })));
     expect(zoneOf(s, "player1", "XG5-005:p")).toBe("hand");
   });
@@ -376,9 +376,14 @@ describe("XG5-006 ゴーグルロボ", () => {
     expect(r.ok && zoneOf(r.state, "player1", "XG5-006:robo") === "rush").toBe(false);
   });
 
-  it.fails("XG5-006: ※ — 手札にある間、自軍ラッシュフェイズ中、自軍パワーが5以上あれば、これを捨札にして自軍捨札の必要パワーの数字が4以下のカードを手札に加えられる 既知の不具合: CARD-XG5-006 手札から使う手段（合法手）がない（出典: atwiki/page-2231「これを捨札にしてから、必要パワーの数字が4以下の自軍捨札を1枚選び手札に加えてもよい」・カード評価「オペレーションのように使える効果名を持たないテキスト」）", () => {
+  it("XG5-006: ※ — 手札にある間、自軍ラッシュフェイズ中、自軍パワーが5以上あれば、これを捨札にして自軍捨札の必要パワーの数字が4以下のカードを手札に加えられる（出典: atwiki/page-2231「これを捨札にしてから、必要パワーの数字が4以下の自軍捨札を1枚選び手札に加えてもよい」・カード評価「オペレーションのように使える効果名を持たないテキスト」）", () => {
     const s = rushBoard({ hand: [inst("XG5-006", "robo")], power: powerCards(5), discard: [inst("SPEC-C3", "d3"), inst("TST-UNIT-7", "d7")] }, {}, EXTRA);
-    const fromRobo = legal(s).filter((a) => ("instanceId" in a && a.instanceId === "XG5-006:robo") || ("sourceInstanceId" in a && a.sourceInstanceId === "XG5-006:robo"));
+    const fromRobo = legal(s).filter(
+      (a) =>
+        ("instanceId" in a && a.instanceId === "XG5-006:robo") ||
+        ("sourceInstanceId" in a && a.sourceInstanceId === "XG5-006:robo") ||
+        ("unitInstanceId" in a && a.unitInstanceId === "XG5-006:robo"),
+    );
     expect(fromRobo.length).toBeGreaterThan(0);
   });
 
@@ -423,7 +428,7 @@ describe("XG5-007 ゴーグルジェット", () => {
 
   wingTests("XG5-007", "atwiki/page-2188");
 
-  it.fails("XG5-007: NC【ゴーゴーチェンジ】— このターン、自軍コマンドゾーンにホールド状態でカードを置くとき（RS-631 メガブラック【サテライトサーチ】）、かわりにリリース状態で置くか捨札にするかを選べる 既知の不具合: CARD-XG5-007 NC は成立するが効果がない（ホールド状態で置かれる）（出典: atwiki/page-2188「かわりにリリース状態で置くか捨札にしてもよい」）", () => {
+  it("XG5-007: NC【ゴーゴーチェンジ】— このターン、自軍コマンドゾーンにホールド状態でカードを置くとき（RS-631 メガブラック【サテライトサーチ】）、かわりにリリース状態で置くか捨札にするかを選べる（出典: atwiki/page-2188「かわりにリリース状態で置くか捨札にしてもよい」）", () => {
     // 1番目にジェット（NC）、2・3番目にフィラー、4番目にメガブラック（CN4。NC）。
     let s = battle({ rush: [inst("XG5-007", "j"), ...fill(2), inst("RS-631", "mb")], deck: [inst("SPEC-PLAIN", "top"), ...deckCards(3)] });
     s = passEntry(resolveAll(enter(s, "XG5-007:j")));

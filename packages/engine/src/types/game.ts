@@ -764,6 +764,8 @@ export type PendingEffectChoice = {
     /** RM-037: 相手の手札から選んだカード。 */
     handInstanceId?: string;
   };
+  /** クロスギャザー XG5 の選択の続き（rules/xg5/xg5Types.ts）。 */
+  xg5Meta?: import("../rules/xg5/xg5Types").Xg5ChoiceMeta;
   /** スペシャルメタルエディション RM-001〜RM-021 の選択の続き（rules/rm/rm1Effects.ts）。 */
   rm1Meta?: {
     /** RM-006: 選べる数（「メカ」「人型」の自軍ユニットの数）。 */
@@ -1411,6 +1413,8 @@ export type GameState = {
   rm2PendingTriggers?: Array<{ kind: "rm026_vehicle"; playerId: PlayerId; instanceId: string; phasePlayerId: PlayerId }>;
   /** RM-017 オメデトロフィーの、まだ開いていない発動（rules/rm/rm1Effects.ts applyRm1AfterAction）。 */
   rm1PendingTriggers?: Array<{ kind: "rm017"; playerId: PlayerId; sourceInstanceId: string; unitCardId: string }>;
+  /** クロスギャザー XG5 の継続中の効果・まだ開いていない発動（rules/xg5/xg5Types.ts）。 */
+  xg5?: import("../rules/xg5/xg5Types").Xg5State;
   /** RK-153【車両強奪】で選ばれたユニット（次の相手のスタートフェイズに戻せない。rules/rk/rk8UnitEffects.ts）。 */
   rk8Seized?: Array<{ playerId: PlayerId; instanceId: string }>;
   /** RK-011 第三の眼: 無効にしなかったカウンターの使用をもう一度処理する（core/applyAction.ts の後処理）。 */

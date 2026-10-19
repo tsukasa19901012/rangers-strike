@@ -20,6 +20,7 @@ import {
   canSkip,
   choiceIds,
   commandState,
+  confirm,
   damageOf,
   deckCards,
   enter,
@@ -89,13 +90,13 @@ describe("XG5-008 ゴーグルタンク", () => {
 
   const DECK = () => [inst("SPEC-M-PLAIN", "m"), inst("SPEC-L-MECHA", "l1"), inst("TST-OP", "op"), inst("SPEC-L-PLAIN", "l2"), ...deckCards(2)];
 
-  it.fails("XG5-008: NC【ゴーゴーチェンジ】— 自軍コマンドが4つ以下なら発動できる（任意）既知の不具合: CARD-XG5-008 NC は成立するが効果がない（選択が開かない）（出典: atwiki/page-2189「自軍コマンドが4つ以下なら、次の効果を発動できる」）", () => {
+  it("XG5-008: NC【ゴーゴーチェンジ】— 自軍コマンドが4つ以下なら発動できる（任意）（出典: atwiki/page-2189「自軍コマンドが4つ以下なら、次の効果を発動できる」）", () => {
     const s = nc("XG5-008:t", 1, { deck: DECK(), command: releasedCat("ET", 4) });
     expectChoiceFrom(s, "player1", "XG5-008");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-008: NC【ゴーゴーチェンジ】— 自軍山札の L ユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く（M ユニット・オペレーションは選べない）既知の不具合: CARD-XG5-008 NC の効果がない（出典: atwiki/page-2189「自軍山札を見てLユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く」）", () => {
+  it("XG5-008: NC【ゴーゴーチェンジ】— 自軍山札の L ユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く（M ユニット・オペレーションは選べない）（出典: atwiki/page-2189「自軍山札を見てLユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(nc("XG5-008:t", 1, { deck: DECK() }), ["SPEC-L-PLAIN:l2"]);
     expect(zoneOf(s, "player1", "SPEC-L-PLAIN:l2")).toBe("command");
     expect(commandState(s, "player1", "SPEC-L-PLAIN:l2")).toBe("held");
@@ -128,14 +129,14 @@ describe("XG5-009 ゴーグルダンプ", () => {
 
   const COMMAND = () => [released("SPEC-L-MECHA", "c1"), { ...inst("SPEC-L-MECHA", "c2"), commandHeld: true }, released("SPEC-L-PLAIN", "c3"), released("SPEC-M-PLAIN", "c4")];
 
-  it.fails("XG5-009: NC【ゴーゴーチェンジ】— 自軍コマンドゾーンの、リリース状態の特徴「メカ」を持つ L ユニットのカードから選べる（ホールド状態・「メカ」を持たない・M ユニットは選べない。任意）既知の不具合: CARD-XG5-009 NC は成立するが効果がない（出典: atwiki/page-2190「リリース状態の特徴「メカ」を持つLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
+  it("XG5-009: NC【ゴーゴーチェンジ】— 自軍コマンドゾーンの、リリース状態の特徴「メカ」を持つ L ユニットのカードから選べる（ホールド状態・「メカ」を持たない・M ユニットは選べない。任意）（出典: atwiki/page-2190「リリース状態の特徴「メカ」を持つLユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
     const s = nc("XG5-009:d", 2, { command: COMMAND(), power: powerCards(5) });
     expectChoiceFrom(s, "player1", "XG5-009");
     expect(choiceIds(s)).toEqual(["SPEC-L-MECHA:c1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-009: NC【ゴーゴーチェンジ】— 選んだカードを自軍ラッシュエリアに出す。「ゴーグルロボ」でなければダメージは与えない 既知の不具合: CARD-XG5-009 NC の効果がない（出典: atwiki/page-2190「出したユニットが「ゴーグルロボ」だったなら」）", () => {
+  it("XG5-009: NC【ゴーゴーチェンジ】— 選んだカードを自軍ラッシュエリアに出す。「ゴーグルロボ」でなければダメージは与えない（出典: atwiki/page-2190「出したユニットが「ゴーグルロボ」だったなら」）", () => {
     const s = resolveAll(nc("XG5-009:d", 2, { command: COMMAND(), power: powerCards(5) }), ["SPEC-L-MECHA:c1"]);
     expect(zoneOf(s, "player1", "SPEC-L-MECHA:c1")).toBe("rush");
     expect(damageOf(s, "player2")).toBe(0);
@@ -146,7 +147,7 @@ describe("XG5-009 ゴーグルダンプ", () => {
     expect(zoneOf(s, "player1", "SPEC-L-MECHA:c1")).toBe("command");
   });
 
-  it.fails("XG5-009: NC【ゴーゴーチェンジ】— ジェット（1番目）・タンク（2番目）・ダンプ（3番目）で、コマンドゾーンの「ゴーグルロボ」を合体（バトルエリアの3体を捨札）で出せば、相手に1点ダメージ 既知の不具合: CARD-XG5-009 NC の効果がない（出典: atwiki/page-2190「出したユニットが「ゴーグルロボ」だったなら、相手に1点ダメージを与える」・カード評価「この効果で合体に使うユニットはエリアを問わない」）", () => {
+  it("XG5-009: NC【ゴーゴーチェンジ】— ジェット（1番目）・タンク（2番目）・ダンプ（3番目）で、コマンドゾーンの「ゴーグルロボ」を合体（バトルエリアの3体を捨札）で出せば、相手に1点ダメージ（出典: atwiki/page-2190「出したユニットが「ゴーグルロボ」だったなら、相手に1点ダメージを与える」・カード評価「この効果で合体に使うユニットはエリアを問わない」）", () => {
     let s = battle({ rush: [inst("XG5-007", "j"), inst("XG5-008", "t"), inst("XG5-009", "d")], command: [released("XG5-006", "robo")], power: powerCards(5) });
     s = enterSeq(s, ["XG5-007:j", "XG5-008:t"]);
     s = resolveAll(enter(resolveAll(s), "XG5-009:d"), ["XG5-006:robo", "XG5-007:j", "XG5-008:t", "XG5-009:d"]);
@@ -171,33 +172,33 @@ describe("XG5-010 恐竜剣ゴッドホーン", () => {
   const OWN = () => ({ rush: [inst("RS-039", "pt"), inst("SPEC-WB-M", "m"), inst("RS-305", "pd")], battle: [inst("RS-039", "pb")] });
   const ENEMY = () => ({ rush: [inst("RS-039", "ept")], command: [{ ...inst("TST-OP", "eh"), commandHeld: true }, released("TST-OP", "er")] });
 
-  it.fails("XG5-010: 自軍ラッシュエリアの、効果に「ラッシュしたとき」とある WB の M ユニットから選べる（「ラッシュしたとき」のない M ユニット・自軍バトルエリア・敵軍のユニットは選べない。任意） 既知の不具合: CARD-XG5-010 使っても効果がない（選択が開かない）（出典: atwiki/page-2277「自軍ラッシュエリアから、効果に｢ラッシュしたとき｣とあるWBのMユニットを1体選んでもよい」）", () => {
+  it("XG5-010: 自軍ラッシュエリアの、効果に「ラッシュしたとき」とある WB の M ユニットから選べる（「ラッシュしたとき」のない M ユニット・自軍バトルエリア・敵軍のユニットは選べない。任意）（出典: atwiki/page-2277「自軍ラッシュエリアから、効果に｢ラッシュしたとき｣とあるWBのMユニットを1体選んでもよい」）", () => {
     const s = used(OWN(), ENEMY());
     expectChoiceFrom(s, "player1", "XG5-010");
     expect(choiceIds(s)).toEqual(["RS-039:pt", "RS-305:pd"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-010: 選んだユニットの「ラッシュしたとき」の効果を発動する（RS-039 守護獣プテラノドン【プテラビーム】で敵軍コマンドゾーンのホールド状態のカードを捨札にする） 既知の不具合: CARD-XG5-010 使っても効果がない（出典: atwiki/page-2277「そのラッシュしたときの効果を発動する」・atwiki/page-2277 Q2）", () => {
+  it("XG5-010: 選んだユニットの「ラッシュしたとき」の効果を発動する（RS-039 守護獣プテラノドン【プテラビーム】で敵軍コマンドゾーンのホールド状態のカードを捨札にする）（出典: atwiki/page-2277「そのラッシュしたときの効果を発動する」・atwiki/page-2277 Q2）", () => {
     const s = resolveAll(pick(used(OWN(), ENEMY()), "RS-039:pt"), ["TST-OP:eh"]);
     expect(zoneOf(s, "player2", "TST-OP:eh")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-OP:er")).toBe("command");
     expect(zoneOf(s, "player1", "XG5-010:op")).toBe("discard");
   });
 
-  it.fails("XG5-010: 選ばなければ何も起きない 既知の不具合: CARD-XG5-010 選択が開かない（出典: atwiki/page-2277「選んでもよい」）", () => {
+  it("XG5-010: 選ばなければ何も起きない（出典: atwiki/page-2277「選んでもよい」）", () => {
     const s = resolveAll(skip(used(OWN(), ENEMY())));
     expect(zoneOf(s, "player2", "TST-OP:eh")).toBe("command");
   });
 
   /** 自軍バトルフェイズ、コマンドゾーンにゴッドホーン（リリース状態）、ラッシュエリアに unit とプテラノドン。unit をバトルエリアに出す。 */
-  const lEnters = (unit: string) => {
+  const lEnters = (unit: string, enemy: Partial<GameState["players"]["player2"]> = ENEMY()) => {
     const [cid, suf] = unit.split(":") as [string, string];
-    const s = battle({ rush: [inst(cid, suf), inst("RS-039", "pt")], command: [released("XG5-010", "gh")] }, ENEMY());
+    const s = battle({ rush: [inst(cid, suf), inst("RS-039", "pt")], command: [released("XG5-010", "gh")] }, enemy);
     return act(s, { type: "move_to_battle", playerId: "player1", instanceId: unit });
   };
 
-  it.fails("XG5-010: （）— 自軍コマンドゾーンにある間、WB を持つ自軍 L ユニットがバトルエリアに出たとき、これをホールドして効果を発動できる（任意）既知の不具合: CARD-XG5-010 コマンドゾーンからの発動が提示されない（出典: atwiki/page-2277「これが自軍コマンドゾーンにある間、WBを持つ自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する」）", () => {
+  it("XG5-010: （）— 自軍コマンドゾーンにある間、WB を持つ自軍 L ユニットがバトルエリアに出たとき、これをホールドして効果を発動できる（任意）（出典: atwiki/page-2277「これが自軍コマンドゾーンにある間、WBを持つ自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する」）", () => {
     const s = lEnters("SPEC-WB-L:l");
     expectChoiceFrom(s, "player1", "XG5-010");
     expect(canSkip(s)).toBe(true);
@@ -209,9 +210,18 @@ describe("XG5-010 恐竜剣ゴッドホーン", () => {
     expect(commandState(s, "player1", "XG5-010:gh")).toBe("released");
   });
 
-  it.todo(
-    "XG5-010: 公式Q&A — コマンドゾーンにあるときの効果で発動しても、オペレーションカードの使用にはあたらない（RK-251 ゴルゴムの仕業で無効にできない）（出典: atwiki/page-2277 Q1）— コマンドゾーンからの発動が提示されない（上の it.fails）ため前提が作れない",
-  );
+  it("XG5-010: 公式Q&A — コマンドゾーンにあるときの効果で発動しても、オペレーションカードの使用にはあたらない（RK-251 ゴルゴムの仕業で無効にできない）（出典: atwiki/page-2277 Q1）", () => {
+    const enemy = () => ({ ...ENEMY(), hand: [inst("RK-251", "g")], command: [...ENEMY().command, ...releasedCat("DA", 1, "eDA")], power: powerCards(5, "epw") });
+    // 対照: 手札から使えば、相手は RK-251 を使う機会がある
+    expectChoiceFrom(used(OWN(), enemy()), "player2", "RK-251");
+    let s = lEnters("SPEC-WB-L:l", enemy());
+    expectChoiceFrom(s, "player1", "XG5-010");
+    s = confirm(s);
+    expectChoiceFrom(s, "player1", "XG5-010");
+    s = resolveAll(pick(s, "RS-039:pt"), ["TST-OP:eh"]);
+    expect(zoneOf(s, "player2", "TST-OP:eh")).toBe("discard");
+    expect(zoneOf(s, "player2", "RK-251:g")).toBe("hand");
+  });
   it.todo(
     "XG5-010: 公式Q&A — ゴッドホーンで発動した RS-039【プテラビーム】はユニットの効果として XG7-059 トリガードーパント【ゲームスタート……】の対象になる（出典: atwiki/page-2277 Q2）— XG7-059 は本範囲外で照合がまだのため",
   );
@@ -256,37 +266,37 @@ describe("XG5-012 ゴレムカード", () => {
   const used = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
     beltUsed("XG5-012", "DA", 5, { discard: DISCARD(), ...p1 }, p2, EXTRA);
 
-  it.fails("XG5-012: 自軍捨札の、追加条件を持たない DA の S ユニットのカードから選ぶ（追加条件を持つ・M ユニット・WB・オペレーションは選べない。見送れない） 既知の不具合: CARD-XG5-012 使っても効果がない（選択が開かない）（出典: atwiki/page-2192「自軍捨札から、追加条件を持たないDAのSユニットのカードを1枚選び」）", () => {
+  it("XG5-012: 自軍捨札の、追加条件を持たない DA の S ユニットのカードから選ぶ（追加条件を持つ・M ユニット・WB・オペレーションは選べない。見送れない）（出典: atwiki/page-2192「自軍捨札から、追加条件を持たないDAのSユニットのカードを1枚選び」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "XG5-012");
     expect(choiceIds(s)).toEqual(["RK-192:ag", "SPEC-DA-S:s"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG5-012: 選んだカードは自軍ラッシュエリアに出て、このカードはその下に重なる（捨札にならない） 既知の不具合: CARD-XG5-012 使っても効果がない（出典: atwiki/page-2192「このカードに重ねて自軍ラッシュエリアに出す」）", () => {
+  it("XG5-012: 選んだカードは自軍ラッシュエリアに出て、このカードはその下に重なる（捨札にならない）（出典: atwiki/page-2192「このカードに重ねて自軍ラッシュエリアに出す」）", () => {
     const s = resolveAll(pick(used(), "SPEC-DA-S:s"));
     expect(zoneOf(s, "player1", "SPEC-DA-S:s")).toBe("rush");
     expect(stackedUnder(s, "player1", "SPEC-DA-S:s")).toContain("XG5-012:op");
     expect(zoneOf(s, "player1", "XG5-012:op")).toBeNull();
   });
 
-  it.fails("XG5-012: このとき出したユニットの「ラッシュしたとき」の効果は発動しない（RK-192 アギト【アギトファング】） 既知の不具合: CARD-XG5-012 使っても効果がない（出典: atwiki/page-2192「このとき出したユニットの効果は発動しない」）", () => {
+  it("XG5-012: このとき出したユニットの「ラッシュしたとき」の効果は発動しない（RK-192 アギト【アギトファング】）（出典: atwiki/page-2192「このとき出したユニットの効果は発動しない」）", () => {
     const s = pick(used({}, { rush: [inst("SPEC-RESIST-S", "er")] }), "RK-192:ag");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-192");
     expect(zoneOf(s, "player1", "RK-192:ag")).toBe("rush");
   });
 
-  it.fails("XG5-012: 重ねたユニットは L ユニットになる（BK-004 コンドラーの「自軍Sユニットを1体選ぶ」で選べない） 既知の不具合: CARD-XG5-012 使っても効果がない（出典: atwiki/page-2192「このカードに重ねたユニットはLユニットになる」）", () => {
+  it("XG5-012: 重ねたユニットは L ユニットになる（BK-004 コンドラーの「自軍Sユニットを1体選ぶ」で選べない）（出典: atwiki/page-2192「このカードに重ねたユニットはLユニットになる」）", () => {
     let s = resolveAll(pick(used({ rush: [inst("SPEC-WB-S", "other")], hand: [inst("BK-004", "op")], command: releasedCat("WB", 1, "w") }), "SPEC-DA-S:s"));
     s = played(s, "BK-004:op");
     expectChoiceFrom(s, "player1", "BK-004");
     expect(choiceIds(s)).toEqual(["SPEC-WB-S:other"]);
   });
 
-  it.fails("XG5-012: 重ねたユニットがバトルで撃破されてユニットでなくなるとき、このカードは捨札になる 既知の不具合: CARD-XG5-012 使っても効果がない（出典: atwiki/page-2192「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）", () => {
+  it("XG5-012: 重ねたユニットがバトルで撃破されてユニットでなくなるとき、このカードは捨札になる（出典: atwiki/page-2192「重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）", () => {
     let s = resolveAll(pick(used({}, { battle: [inst("TST-UNIT-7", "big")] }), "SPEC-DA-S:s"));
     s = nextPhase(s);
-    s = passEntry(enter(s, "SPEC-DA-S:s"));
+    s = enter(s, "SPEC-DA-S:s");
     s = resolveAll(attack(s, "SPEC-DA-S:s", "TST-UNIT-7:big"));
     expect(zoneOf(s, "player1", "SPEC-DA-S:s")).toBe("discard");
     expect(zoneOf(s, "player1", "XG5-012:op")).toBe("discard");
@@ -313,14 +323,14 @@ describe("XG5-013 再生カード", () => {
   const used = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
     beltUsed("XG5-013", "DA", 5, { discard: DISCARD(), ...p1 }, p2, EXTRA);
 
-  it.fails("XG5-013: 自軍捨札の DA を持つカード（ユニット・オペレーション・マルチカテゴリ）から選ぶ（DA を持たないカード・敵軍の捨札は選べない。見送れない） 既知の不具合: CARD-XG5-013 使っても効果がない（選択が開かない）（出典: atwiki/page-2169「自軍捨札から、DAを持つカードを1枚選び」）", () => {
+  it("XG5-013: 自軍捨札の DA を持つカード（ユニット・オペレーション・マルチカテゴリ）から選ぶ（DA を持たないカード・敵軍の捨札は選べない。見送れない）（出典: atwiki/page-2169「自軍捨札から、DAを持つカードを1枚選び」）", () => {
     const s = used({}, { discard: [inst("SPEC-DA-S", "es")] });
     expectChoiceFrom(s, "player1", "XG5-013");
     expect(choiceIds(s)).toEqual(["SPEC-DA-S:s", "TST-OP-DA:op2", "XG2-095:multi"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG5-013: 選んだカードを手札に加える 既知の不具合: CARD-XG5-013 使っても効果がない（出典: atwiki/page-2169「手札に加える」）", () => {
+  it("XG5-013: 選んだカードを手札に加える（出典: atwiki/page-2169「手札に加える」）", () => {
     const s = resolveAll(pick(used(), "TST-OP-DA:op2"));
     expect(zoneOf(s, "player1", "TST-OP-DA:op2")).toBe("hand");
     expect(zoneOf(s, "player1", "XG5-013:op")).toBe("discard");

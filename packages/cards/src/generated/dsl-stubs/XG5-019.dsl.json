@@ -45,9 +45,9 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg5::XG5-019::double_screw",
+          "duration": "permanent"
         }
       ]
     }

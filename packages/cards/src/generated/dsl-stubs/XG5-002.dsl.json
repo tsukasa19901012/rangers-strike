@@ -38,11 +38,10 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-002::burakushadou",
+          "keyword": "xg5::XG5-002::black_shadow",
           "duration": "permanent"
         }
       ]
