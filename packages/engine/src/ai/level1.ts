@@ -212,14 +212,12 @@ function battleActionDelta(
   );
 }
 
+/** 呼び出し側（pickCpuActionInner のバトルフェイズ）で、出なければならないユニットが無いと確かめてから呼ぶ。 */
 function collectBattleCandidates(
   state: GameState,
   playerId: PlayerId,
   actions: GameAction[],
 ): GameAction[] {
-  const mandatory = pickMandatoryBattleMove(state, playerId, actions);
-  if (mandatory) return [mandatory];
-
   const candidates: GameAction[] = [
     ...actionsOfType(actions, "strike"),
     ...actionsOfType(actions, "battle")
@@ -500,6 +498,7 @@ function pickCpuActionInner(
       }
 
       if (enableSearch) {
+        // 出なければならないユニットは上の pickMandatoryBattleMove で見て無かった（同じ状態・同じ合法手なので調べ直さない）。
         let candidates = collectBattleCandidates(state, playerId, actions);
         const hasRushUnits = state.players[playerId].rush.length > 0;
         const hasCombat =
