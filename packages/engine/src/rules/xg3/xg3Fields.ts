@@ -8,7 +8,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
-import { cardCategories, getDefinition, isVehicle, unitSizeOf } from "../../core/catalog";
+import { cardCategories, getDefinition, isVehicle, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 
 export const IMOYOKAN_CARD_ID = "XG3-004";
@@ -41,6 +41,12 @@ export function xg3FieldBpBonus(state: View, playerId: PlayerId, instance: CardI
     if (isSameCardIdentity(instance.cardId, JUMA_HUNTER_CARD_ID) && enemyUnitPrinted(state, playerId, (d) => (d.features ?? []).includes("獣"))) bonus += 2000;
     bonus += abareMaxBonus(state, playerId, instance);
     for (const b of turnBuffsOf(state, instance.instanceId)) bonus += b.bp ?? 0;
+    // XG3-051 仮面ライダー王蛇【ここが祭りの場所か】特徴「仮面ライダー」を持つオモテ向きの敵軍パワー1枚につき BP+1000（印刷の特徴。atwiki/page-1915）。
+    if (isSameCardIdentity(instance.cardId, "XG3-051")) {
+      bonus += 1000 * state.players[opponent(playerId)].power.filter((c) => !c.faceDown && (getDefinition(state.definitions, c.cardId)?.features ?? []).includes("仮面ライダー")).length;
+    }
+    // XG3-052 オックスオルフェノク【強力無双の怪腕】自軍ターン中 BP+2000（atwiki/page-1916）。
+    if (isSameCardIdentity(instance.cardId, "XG3-052") && state.activePlayer === playerId) bonus += 2000;
   }
   void state;
   void playerId;
@@ -62,6 +68,11 @@ export function xg3DefenderBlocksAttack(
   if (xg3NoAttackTextDisabled(state, defender.instanceId)) return false;
   if (defender.commandHeld && isSameCardIdentity(defender.cardId, MAX_LINER_CARD_ID)) {
     if (!cardHasKeyword(state.definitions, attacker.cardId, "wing", { state, playerId: attackerPlayerId })) return true;
+  }
+  // XG3-054 牛鬼【受け止める覚悟】「これはMAを持たない敵軍Sユニットにアタックされない」（いまのカテゴリ。atwiki/page-1918）。
+  if (isSameCardIdentity(defender.cardId, "XG3-054") && unitSizeOf(state.definitions, attacker) === "S") {
+    const zone = state.players[attackerPlayerId].battle.some((c) => c.instanceId === attacker.instanceId) ? "battle" : "rush";
+    if (!(unitEffectiveCategories(state, attackerPlayerId, attacker, zone) as string[]).includes("MA")) return true;
   }
   return false;
 }

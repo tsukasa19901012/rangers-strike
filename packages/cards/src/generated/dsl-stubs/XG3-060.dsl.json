@@ -25,11 +25,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-060::keru",
+          "keyword": "xg3::XG3-060::tasukeru",
           "duration": "permanent"
         }
       ]

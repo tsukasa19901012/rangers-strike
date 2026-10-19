@@ -7,14 +7,15 @@
  * - `applyXg3AfterAction`: applyAction の後処理（core/applyAction.ts）。
  * カードごとの処理はバッチのファイル（xg3aEffects.ts＝XG3-002〜021 等）、継続効果の判定は xg3Fields.ts。
  */
-import type { CardInstance, DeferredPowerFlip, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import type { CardInstance, DeferredPowerFlip, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import type { GameAction } from "../../types/actions";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { type ChoiceOutcome, close, logFor } from "../rm/rm1Effects";
 import { patchPlayer } from "../playerPatches";
-import { AFTER_ACTION_HOOKS, BEFORE_FLIP_HOOKS, FIELD_ABILITIES, ENTER_BATTLE_HOOKS, START_PHASE_HOOKS, STRIKE_HOOKS, UNIT_RUSHED_HOOKS, TURN_END_HOOKS, ZONE_ACTIVATIONS, CHOICE_CONFIRMERS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, HOLD_COMPLETERS, KEYWORDS, XG3_KEYWORD_PREFIX } from "./xg3Registry";
+import { AFTER_ACTION_HOOKS, BATTLE_DESTROY_HOOKS, BEFORE_FLIP_HOOKS, FIELD_ABILITIES, LEAVE_STAY_HOOKS, ENTER_BATTLE_HOOKS, START_PHASE_HOOKS, STRIKE_HOOKS, UNIT_RUSHED_HOOKS, TURN_END_HOOKS, ZONE_ACTIVATIONS, CHOICE_CONFIRMERS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, HOLD_COMPLETERS, KEYWORDS, XG3_KEYWORD_PREFIX } from "./xg3Registry";
 import "./xg3aEffects";
 import "./xg3bEffects";
+import "./xg3cEffects";
 
 export function isXg3ChoiceEffect(effectId: string): boolean {
   return effectId in CHOICE_RESOLVERS;
@@ -90,14 +91,14 @@ export function openXg3TurnEndEntry(state: GameState, endingPlayerId: PlayerId, 
 }
 
 /** 自軍ゾーンのカードの起動（self_rush_from_zone）。このモジュールのカードでなければ null。 */
-export function canActivateXg3FromZone(state: GameState, playerId: PlayerId, zone: "power" | "command" | "hand", instanceId: string): boolean | null {
+export function canActivateXg3FromZone(state: GameState, playerId: PlayerId, zone: "power" | "command" | "hand" | "discard", instanceId: string): boolean | null {
   const card = state.players[playerId][zone].find((c) => c.instanceId === instanceId);
   const entry = card && ZONE_ACTIVATIONS.find((a) => a.zone === zone && a.matches(card.cardId));
   if (!entry) return null;
   return entry.canActivate(state, playerId, instanceId);
 }
 
-export function activateXg3FromZone(state: GameState, playerId: PlayerId, zone: "power" | "command" | "hand", instanceId: string): GameState | null {
+export function activateXg3FromZone(state: GameState, playerId: PlayerId, zone: "power" | "command" | "hand" | "discard", instanceId: string): GameState | null {
   const card = state.players[playerId][zone].find((c) => c.instanceId === instanceId);
   const entry = card && ZONE_ACTIVATIONS.find((a) => a.zone === zone && a.matches(card.cardId));
   if (!entry) return null;
@@ -169,4 +170,20 @@ export function applyXg3OnStrike(state: GameState, strikerPlayerId: PlayerId, st
   let next = state;
   for (const hook of STRIKE_HOOKS) next = hook(next, strikerPlayerId, striker);
   return next;
+}
+
+/** ユニットがバトルで敵軍ユニットを撃破したとき（rules/operationCounters.ts）。 */
+export function applyXg3OnBattleDestroy(state: GameState, winnerId: PlayerId, winnerInstanceId: string, defeatedOwnerId: PlayerId, defeatedInstanceId: string): GameState {
+  let next = state;
+  for (const hook of BATTLE_DESTROY_HOOKS) next = hook(next, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
+  return next;
+}
+
+/** 場を離れるユニットをかわりにその場に留める（rules/operationCounters.ts tryLeaveField）。対象外なら null。 */
+export function openXg3StayOnLeave(state: GameState, intent: PendingLeave): GameState | null {
+  for (const hook of LEAVE_STAY_HOOKS) {
+    const done = hook(state, intent);
+    if (done) return done;
+  }
+  return null;
 }

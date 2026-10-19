@@ -1,4 +1,5 @@
 import { rm2AfterBattle } from "./rm/rm2Effects";
+import { applyXg3OnBattleDestroy, openXg3StayOnLeave } from "./xg3/xg3Effects";
 import { isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "./rm/rm1Effects";
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
 import { isRk5BattleCounterCard, rk5BattleCounterConditionMet } from "./rk/rk5UnitEffects";
@@ -1678,6 +1679,8 @@ export function resolveBattlePendingCore(
         withAttacker = rk13OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
         // RK-324【凄いのが来るぜ！】（rules/rk/rk16UnitEffects.ts）。
         withAttacker = rk16OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+        // XG3-045【超電稲妻キック】等（rules/xg3/xg3Effects.ts）。
+        withAttacker = applyXg3OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId);
       }
       if (!withAttacker.pendingLeave && !withAttacker.pendingRegister) {
         // 撃破は済み、別の選択が開いている — RS-226（段階 1）を先に、RS-212（段階 4）は段階の順に処理する。
@@ -1715,6 +1718,8 @@ export function resolveBattlePendingCore(
     if (!finalDestroyAttacker) nextState = rk13OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
     // RK-324【凄いのが来るぜ！】: ライドしているユニットが BP4000 以上の敵軍 S ユニットをバトルで撃破して捨札にしたとき（rules/rk/rk16UnitEffects.ts）。
     if (!finalDestroyAttacker) nextState = rk16OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+    // XG3-045【超電稲妻キック】等（rules/xg3/xg3Effects.ts）。
+    if (!finalDestroyAttacker) nextState = applyXg3OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId);
 
     if (refreshedAttackerFound.card.cardId === "RS-065") {
       const fb = resolveFocusedBreakthroughDamage(
@@ -1786,6 +1791,7 @@ export function resolveBattlePendingCore(
     if (!finalDestroyDefender) {
       // RK-324【凄いのが来るぜ！】（アタックしてきたユニットを、ライドしているユニットがバトルで撃破したとき）。
       nextState = rk16OnBattleDestroy(nextState, defenderOwner, defenderInstanceId, attackerId, pending.attackerInstanceId, attackerBp);
+      nextState = applyXg3OnBattleDestroy(nextState, defenderOwner, defenderInstanceId, attackerId, pending.attackerInstanceId);
       nextState = openRaigekiZanChoice(
         nextState,
         defenderOwner,
@@ -2180,6 +2186,9 @@ export function tryLeaveField(
   // SK-004 仮面ライダークウガUF【凄まじき戦士】: 重ねたウラ向きのカードを1枚捨札にして留める（強制。rules/legend1/otherLinesNamedEffects.ts）。
   const kuugaStay = openKuugaStayOnLeave(state, intent);
   if (kuugaStay) return { state: kuugaStay, deferred: true };
+  // XG3-060【助ける仲間】で出したディスクアニマル: 本来の特徴「猛士」の自軍ユニットのかわりに捨札になる（強制。rules/xg3/xg3cEffects.ts）。
+  const xg3Stay = openXg3StayOnLeave(state, intent);
+  if (xg3Stay) return { state: xg3Stay, deferred: true };
   // RK-250 サバイブ: 重ねたユニットがユニットでなくなるとき、サバイブを捨札にしてその場に留める（rules/rk/rk12UnitEffects.ts）。
   const survive = openRk12SurviveStay(state, intent);
   if (survive) return { state: survive, deferred: true };

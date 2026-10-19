@@ -34,6 +34,7 @@ import {
   faceDown,
   faceUp,
   inst,
+  pickAs,
   lineUp,
   PLAIN_VEHICLE,
   powerCards,
@@ -94,15 +95,15 @@ describe("XG3-050 仮面ライダーゾルダ", () => {
       "XG3-050:z",
     ).state;
 
-  it.fails("XG3-050:【ギガランチャー】— ラッシュしたとき、まずカテゴリに WB を持つ自軍コマンド（ホールド状態のものも）から1つ選べる（MA のコマンドは選べない。任意）（既知の不具合: CARD-XG3-050 コマンドを選ばずに敵軍ユニットの選択が開く）（出典: atwiki/page-1914「カテゴリにWBを持つ自軍コマンドを1つ選び捨札にしてもよい」・カード評価「捨札にするコマンドはホールドされていても良い」）", () => {
+  it("XG3-050:【ギガランチャー】— ラッシュしたとき、まずカテゴリに WB を持つ自軍コマンド（ホールド状態のものも）から1つ選べる（MA のコマンドは選べない。任意）（出典: atwiki/page-1914「カテゴリにWBを持つ自軍コマンドを1つ選び捨札にしてもよい」・カード評価「捨札にするコマンドはホールドされていても良い」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "XG3-050");
     expect(choiceIds(s).sort()).toEqual(["TST-OP:cWB0", "TST-OP:cWB1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-050:【ギガランチャー】— コマンドを捨札にしたとき、BP5000 以下の敵軍ユニット（エリア・サイズを問わない）を1体選び撃破する（BP5500 は選べない）（既知の不具合: CARD-XG3-050 候補が BP5000 以下にならない）（出典: atwiki/page-1914「BP5000以下の敵軍ユニットを1体選び撃破する」・カード評価「サイズ、エリアを問わない」）", () => {
-    let s = resolveAll(rushed(), ["TST-OP:cWB1"]);
+  it("XG3-050:【ギガランチャー】— コマンドを捨札にしたとき、BP5000 以下の敵軍ユニット（エリア・サイズを問わない）を1体選び撃破する（BP5500 は選べない）（出典: atwiki/page-1914「BP5000以下の敵軍ユニットを1体選び撃破する」・カード評価「サイズ、エリアを問わない」）", () => {
+    let s = pickAs(rushed(), "player1", "TST-OP:cWB1");
     expect(zoneOf(s, "player1", "TST-OP:cWB1")).toBe("discard");
     expect(choiceIds(s).sort()).toEqual(["SPEC-E5000:e5", "TST-UNIT-0:e1"]);
     s = resolveAll(s, ["SPEC-E5000:e5"]);
@@ -127,7 +128,7 @@ describe("XG3-051 仮面ライダー王蛇", () => {
     expectRarityIn("XG3-051", ["N"]);
   });
 
-  it.fails("XG3-051:【ここが祭りの場所か】— 特徴「仮面ライダー」を持つオモテ向きの敵軍パワー1枚につき BP+1000（2枚で 5000。ウラ向き・仮面ライダーでないカードは数えない）（既知の不具合: CARD-XG3-051 BP が上がらない）（出典: atwiki/page-1915「特徴「仮面ライダー」を持つオモテ向きの敵軍パワー1枚につきBP+1000される」）", () => {
+  it("XG3-051:【ここが祭りの場所か】— 特徴「仮面ライダー」を持つオモテ向きの敵軍パワー1枚につき BP+1000（2枚で 5000。ウラ向き・仮面ライダーでないカードは数えない）（出典: atwiki/page-1915「特徴「仮面ライダー」を持つオモテ向きの敵軍パワー1枚につきBP+1000される」）", () => {
     const s = battle({ battle: [inst("XG3-051", "o")] }, { power: [faceUp("SPEC-RIDER", "p1"), faceUp("XG3-044", "p2"), faceDown("SPEC-RIDER", "p3"), faceUp("TST-UNIT-0", "p4")] });
     expect(bpOf(s, "player1", "XG3-051:o")).toBe(5000);
   });
@@ -147,7 +148,7 @@ describe("XG3-052 オックスオルフェノク", () => {
     expectRarityIn("XG3-052", ["N"]);
   });
 
-  it.fails("XG3-052:【強力無双の怪腕】— 自軍ターン中は BP+2000（4000）（既知の不具合: CARD-XG3-052 BP が上がらない）（出典: atwiki/page-1916「自軍ターン中、これはBP+2000される」・カード評価「自軍ターン中はBPが4000まで上昇」）", () => {
+  it("XG3-052:【強力無双の怪腕】— 自軍ターン中は BP+2000（4000）（出典: atwiki/page-1916「自軍ターン中、これはBP+2000される」・カード評価「自軍ターン中はBPが4000まで上昇」）", () => {
     expect(bpOf(battle({ battle: [inst("XG3-052", "o")] }), "player1", "XG3-052:o")).toBe(4000);
   });
 
@@ -174,7 +175,7 @@ describe("XG3-053 港区のウワン", () => {
 
   const entered = () => enter(battle({ rush: [inst("XG3-053", "u")], deck: [inst("XG3-053", "d1"), inst("TST-OP", "d2"), ...deckCards(3)] }), "XG3-053:u");
 
-  it.fails("XG3-053:【分裂】— 自軍ターン中にバトルエリアに出たとき、山札の上2枚をオモテにでき（任意）、「港区のウワン」は自軍ラッシュエリアに、それ以外は捨札に置く（既知の不具合: CARD-XG3-053【分裂】の選択が開かず、山札も動かない）（出典: atwiki/page-1917「自軍山札の上から2枚をオモテにしてもよい。オモテにしたカードが「港区のウワン」なら自軍ラッシュエリアに出し、それ以外なら捨札にする」）", () => {
+  it("XG3-053:【分裂】— 自軍ターン中にバトルエリアに出たとき、山札の上2枚をオモテにでき（任意）、「港区のウワン」は自軍ラッシュエリアに、それ以外は捨札に置く（出典: atwiki/page-1917「自軍山札の上から2枚をオモテにしてもよい。オモテにしたカードが「港区のウワン」なら自軍ラッシュエリアに出し、それ以外なら捨札にする」）", () => {
     let s = entered();
     expectChoiceFrom(s, "player1", "XG3-053");
     expect(canSkip(s)).toBe(true);
@@ -183,7 +184,7 @@ describe("XG3-053 港区のウワン", () => {
     expect(zoneOf(s, "player1", "TST-OP:d2")).toBe("discard");
   });
 
-  it.fails("XG3-053:【分裂】— この効果で出したウワンは、このターンバトルエリアに出られない（既知の不具合: CARD-XG3-053）（出典: atwiki/page-1917「この効果で出したユニットは、このターン、バトルエリアに出られない」）", () => {
+  it("XG3-053:【分裂】— この効果で出したウワンは、このターンバトルエリアに出られない（出典: atwiki/page-1917「この効果で出したユニットは、このターン、バトルエリアに出られない」）", () => {
     const s = resolveAll(entered(), ["confirm"]);
     expect(zoneOf(s, "player1", "XG3-053:d1")).toBe("rush");
     expect(canEnter(s, "XG3-053:d1")).toBe(false);
@@ -236,7 +237,7 @@ describe("XG3-054 牛鬼", () => {
   const attackers = () =>
     attackersOf(st({ activePlayer: "player2", player1: { battle: [inst("XG3-054", "g")], deck: deckCards(3) }, player2: { battle: [inst("SPEC-WB-S", "wb"), inst("SPEC-MA-S", "ma"), inst("TST-UNIT-2", "m")], deck: deckCards(3, "e") } }, EXTRA), "XG3-054:g");
 
-  it.fails("XG3-054:【受け止める覚悟】— MA を持たない敵軍 S ユニットにアタックされない（既知の不具合: CARD-XG3-054 WB の S ユニットにもアタックされる）（出典: atwiki/page-1918「これはMAを持たない敵軍Sユニットにアタックされない」）", () => {
+  it("XG3-054:【受け止める覚悟】— MA を持たない敵軍 S ユニットにアタックされない（出典: atwiki/page-1918「これはMAを持たない敵軍Sユニットにアタックされない」）", () => {
     expect(attackers()).not.toContain("SPEC-WB-S:wb");
   });
 
@@ -255,7 +256,7 @@ describe("XG3-055 セイジガエル", () => {
     expectRarityIn("XG3-055", ["N"]);
   });
 
-  it.fails("XG3-055: 特徴「ディスクアニマル」を持つ（既知の不具合: CARD-XG3-055 カタログ: 特徴が入っていない）（出典: atwiki/page-1919「特徴：ディスクアニマル」）", () => {
+  it("XG3-055: 特徴「ディスクアニマル」を持つ（出典: atwiki/page-1919「特徴：ディスクアニマル」）", () => {
     expect(DEFS["XG3-055"]?.features).toEqual(["ディスクアニマル"]);
   });
 
@@ -289,7 +290,7 @@ describe("XG3-056 仮面ライダー響鬼", () => {
   const entered = () =>
     line(["SPEC-TK:t", "XG3-056:h"], {}, { battle: [inst("SPEC-C1", "c1"), inst("SPEC-C2", "c2"), inst("SPEC-C2M", "c2m"), inst("SPEC-C3", "c3")], rush: [inst("SPEC-C2", "r2")] });
 
-  it.fails("XG3-056:【集う音撃】— 自軍ターン中にバトルエリアに出たとき、本来の特徴「猛士」の自軍バトルエリアのユニットの数（これを含めて2）と同じ必要パワーの数字を持つ敵軍バトルエリアのユニット（サイズを問わない）から選ぶ（数えるかは任意）（既知の不具合: CARD-XG3-056 候補が必要パワーで絞られず、見送れない）（出典: atwiki/page-1920「…ユニットの数を数えてもよい。そうしたとき、敵軍バトルエリアからその数と同じ必要パワーの数字を持つユニットを1体選び撃破する」・カード評価「サイズも関係ない」）", () => {
+  it("XG3-056:【集う音撃】— 自軍ターン中にバトルエリアに出たとき、本来の特徴「猛士」の自軍バトルエリアのユニットの数（これを含めて2）と同じ必要パワーの数字を持つ敵軍バトルエリアのユニット（サイズを問わない）から選ぶ（数えるかは任意）（出典: atwiki/page-1920「…ユニットの数を数えてもよい。そうしたとき、敵軍バトルエリアからその数と同じ必要パワーの数字を持つユニットを1体選び撃破する」・カード評価「サイズも関係ない」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG3-056");
     expect(choiceIds(s).sort()).toEqual(["SPEC-C2:c2", "SPEC-C2M:c2m"]);

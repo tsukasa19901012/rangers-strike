@@ -114,13 +114,13 @@ describe("XG3-057 ヒビキアカネタカ", () => {
     return enter(s, next);
   };
 
-  it.fails("XG3-057:【ヒビキオンゲキコ】— ホールド状態のこれから特徴「猛士」のユニットがコンビネーションしたとき、敵軍バトルエリアの「男」「女」「人型」を持たないユニット（サイズを問わない）から選べる（既知の不具合: CARD-XG3-057【ヒビキオンゲキコ】の選択が開かない）（出典: atwiki/page-1921「敵軍バトルエリアから特徴「男」または「女」または「人型」を持たないユニットを1体選び撃破する」・カード評価「サイズを無視してユニットを撃破できる」）", () => {
+  it("XG3-057:【ヒビキオンゲキコ】— ホールド状態のこれから特徴「猛士」のユニットがコンビネーションしたとき、敵軍バトルエリアの「男」「女」「人型」を持たないユニット（サイズを問わない）から選べる（出典: atwiki/page-1921「敵軍バトルエリアから特徴「男」または「女」または「人型」を持たないユニットを1体選び撃破する」・カード評価「サイズを無視してユニットを撃破できる」）", () => {
     const s = combo("SPEC-TK:t");
     expectChoiceFrom(s, "player1", "XG3-057");
     expect(choiceIds(s).sort()).toEqual(["SPEC-BEAST:b", "TST-UNIT-0:x"]);
   });
 
-  it.fails("XG3-057:【ヒビキオンゲキコ】— 「仮面ライダーディケイド」（XG1-077）からのコンビネーションでも発動し、選んだユニットを撃破する（既知の不具合: CARD-XG3-057）（出典: atwiki/page-1921「「仮面ライダーディケイド」または「仮面ライダーディエンド」または特徴「猛士」を持つユニット」）", () => {
+  it("XG3-057:【ヒビキオンゲキコ】— 「仮面ライダーディケイド」（XG1-077）からのコンビネーションでも発動し、選んだユニットを撃破する（出典: atwiki/page-1921「「仮面ライダーディケイド」または「仮面ライダーディエンド」または特徴「猛士」を持つユニット」）", () => {
     const s = resolveAll(combo("XG1-077:d"), ["SPEC-BEAST:b"]);
     expect(zoneOf(s, "player2", "SPEC-BEAST:b")).toBe("discard");
   });
@@ -147,7 +147,7 @@ describe("XG3-058 仮面ライダー斬鬼", () => {
     expectRarityIn("XG3-058", ["NR"]);
   });
 
-  it.fails("XG3-058: ※ 自軍ラッシュフェイズ中、これをホールドして、これ以外のホールド状態の自軍 S ユニットを1体リリースできる（既知の不具合: CARD-XG3-058 ※の起動がない）（出典: atwiki/page-1922「このユニットをホールドしてもよい。そうしたとき、このユニット以外の自軍Sユニットを1体選びリリースする」）", () => {
+  it("XG3-058: ※ 自軍ラッシュフェイズ中、これをホールドして、これ以外のホールド状態の自軍 S ユニットを1体リリースできる（出典: atwiki/page-1922「このユニットをホールドしてもよい。そうしたとき、このユニット以外の自軍Sユニットを1体選びリリースする」）", () => {
     const s = resolveAll(useRef(board({ rush: [inst("XG3-058", "z"), heldUnit("TST-UNIT-0", "h")] }), "XG3-058:z"), ["TST-UNIT-0:h"]);
     expect(cardIn(s, "player1", "XG3-058:z")?.commandHeld).toBe(true);
     expect(cardIn(s, "player1", "TST-UNIT-0:h")?.commandHeld ?? false).toBe(false);
@@ -158,7 +158,7 @@ describe("XG3-058 仮面ライダー斬鬼", () => {
     expect(refsOf(s, "XG3-058:z").filter((a) => a.type !== "move_to_battle" && a.type !== "mount_ride")).toEqual([]);
   });
 
-  it.fails("XG3-058:【蘇る雷】— 自軍捨札にある間、自軍ラッシュフェイズ中、手札の「ディスクアニマル」のカード（オペレーションでもユニットでも）を捨札にして、これを自軍ラッシュエリアに出せる（既知の不具合: CARD-XG3-058【蘇る雷】の起動がない）（出典: atwiki/page-1922「自分の手札から特徴「ディスクアニマル」を持つカードを1枚選び捨札にしてもよい。そうしたとき、これを自軍ラッシュエリアに出す」）", () => {
+  it("XG3-058:【蘇る雷】— 自軍捨札にある間、自軍ラッシュフェイズ中、手札の「ディスクアニマル」のカード（オペレーションでもユニットでも）を捨札にして、これを自軍ラッシュエリアに出せる（出典: atwiki/page-1922「自分の手札から特徴「ディスクアニマル」を持つカードを1枚選び捨札にしてもよい。そうしたとき、これを自軍ラッシュエリアに出す」）", () => {
     const s = resolveAll(useRef(board({ discard: [inst("XG3-058", "z")], hand: [inst("SPEC-DISC-OP", "da"), inst("TST-OP", "op")] }), "XG3-058:z"), ["SPEC-DISC-OP:da"]);
     expect(zoneOf(s, "player1", "SPEC-DISC-OP:da")).toBe("discard");
     expect(zoneOf(s, "player1", "XG3-058:z")).toBe("rush");
@@ -188,13 +188,13 @@ describe("XG3-059 仮面ライダー轟鬼", () => {
     expect(spOf(line(["XG3-059:t"]), "player1", "XG3-059:t")).toBe(0);
   });
 
-  it.fails("XG3-059:【轟く二刀】— リリース状態なら、アタックしたあとにストライクもできる（既知の不具合: CARD-XG3-059 アタックのあとストライクできない）（出典: atwiki/page-1923「このターン、これはアタックとストライクを1度ずつ行ってもよい」）", () => {
+  it("XG3-059:【轟く二刀】— リリース状態なら、アタックしたあとにストライクもできる（出典: atwiki/page-1923「このターン、これはアタックとストライクを1度ずつ行ってもよい」）", () => {
     const s = resolveAll(settle(attack(nc(), "XG3-059:t", "TST-UNIT-0:e")));
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
     expect(canStrike(s, "XG3-059:t")).toBe(true);
   });
 
-  it.fails("XG3-059:【轟く二刀】— リリース状態なら、ストライクしたあとにアタックもできる（既知の不具合: CARD-XG3-059 ストライクのあとアタックできない）（出典: atwiki/page-1923「アタックとストライクを1度ずつ」）", () => {
+  it("XG3-059:【轟く二刀】— リリース状態なら、ストライクしたあとにアタックもできる（出典: atwiki/page-1923「アタックとストライクを1度ずつ」）", () => {
     const s = resolveAll(settle(strike(nc(), "XG3-059:t")));
     expect(s.players.player2.damage).toBe(1);
     expect(targetsOf(s, "XG3-059:t")).toContain("TST-UNIT-0:e");
@@ -215,23 +215,23 @@ describe("XG3-060 仮面ライダー天鬼", () => {
   /** 1番目に出る（NC）。手札: ディスクアニマルのオペレーション・ディスクアニマルのユニット・通常のオペレーション。 */
   const nc = () => line(["XG3-060:a"], { hand: [inst("SPEC-DISC-OP", "da"), inst("SPEC-DISC-UNIT", "du"), inst("TST-OP", "op")] });
 
-  it.fails("XG3-060:【助ける仲間】— 1番目に出れば（NC）、手札の特徴「ディスクアニマル」を持つオペレーションカードを選べる（ユニットカード・通常のオペレーションは選べない。任意）（既知の不具合: CARD-XG3-060【助ける仲間】の選択が開かない）（出典: atwiki/page-1924「自分の手札から特徴「ディスクアニマル」を持つオペレーションカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
+  it("XG3-060:【助ける仲間】— 1番目に出れば（NC）、手札の特徴「ディスクアニマル」を持つオペレーションカードを選べる（ユニットカード・通常のオペレーションは選べない。任意）（出典: atwiki/page-1924「自分の手札から特徴「ディスクアニマル」を持つオペレーションカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG3-060");
     expect(choiceIds(s)).toEqual(["SPEC-DISC-OP:da"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-060:【助ける仲間】— 出したカードは自軍ラッシュエリアの BP500・SP1/3 の S ユニットとして扱う（Q2: 本来の BP が500）（既知の不具合: CARD-XG3-060）（出典: atwiki/page-1924「そのカードは「BP500」「SP1/3」のSユニットとして扱い」・Q2「本来のＢＰが５００として扱う」）", () => {
+  it("XG3-060:【助ける仲間】— 出したカードは自軍ラッシュエリアの BP500・SP1/3 の S ユニットとして扱う（Q2: 本来の BP が500）（出典: atwiki/page-1924「そのカードは「BP500」「SP1/3」のSユニットとして扱い」・Q2「本来のＢＰが５００として扱う」）", () => {
     const s = resolveAll(nc(), ["SPEC-DISC-OP:da"]);
     expect(zoneOf(s, "player1", "SPEC-DISC-OP:da")).toBe("rush");
     expect(bpOf(s, "player1", "SPEC-DISC-OP:da")).toBe(500);
   });
 
-  it.fails("XG3-060:【助ける仲間】— 出したディスクアニマルは、本来の特徴「猛士」の自軍ユニット（天鬼）が撃破されるとき、かわりに捨札になり、そのユニットはその場に留まる（既知の不具合: CARD-XG3-060）（出典: atwiki/page-1924「本来の特徴に「猛士」を持つ自軍ユニットがユニットでなくなるとき、これを捨札にして、そのユニットをその場に留める」・カード評価「ラッシュしたディスクアニマルの特徴「猛士」を持つユニットを守る効果は強制発動する」）", () => {
+  it("XG3-060:【助ける仲間】— 出したディスクアニマルは、本来の特徴「猛士」の自軍ユニット（天鬼）が撃破されるとき、かわりに捨札になり、そのユニットはその場に留まる（出典: atwiki/page-1924「本来の特徴に「猛士」を持つ自軍ユニットがユニットでなくなるとき、これを捨札にして、そのユニットをその場に留める」・カード評価「ラッシュしたディスクアニマルの特徴「猛士」を持つユニットを守る効果は強制発動する」）", () => {
     let s = resolveAll(nc(), ["SPEC-DISC-OP:da"]);
     expect(zoneOf(s, "player1", "SPEC-DISC-OP:da")).toBe("rush");
-    s = { ...s, activePlayer: "player2", players: { ...s.players, player2: { ...s.players.player2, battle: [inst("TST-UNIT-7", "atk")] } } };
+    s = { ...s, activePlayer: "player2", pendingBattleEntry: undefined, players: { ...s.players, player2: { ...s.players.player2, battle: [inst("TST-UNIT-7", "atk")] } } };
     s = resolveAll(settle(attack(s, "TST-UNIT-7:atk", "XG3-060:a", "player2")));
     expect(zoneOf(s, "player1", "XG3-060:a")).toBe("battle");
     expect(zoneOf(s, "player1", "SPEC-DISC-OP:da")).toBe("discard");

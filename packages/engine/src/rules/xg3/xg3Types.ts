@@ -38,4 +38,6 @@ export type Xg3State = {
   nanashi?: Array<{ ownerId: PlayerId; turn: number; count: number }>;
   /** XG3-024・XG3-025 で、ラッシュフェイズを行うかわりに効果を発動したターン（そのラッシュフェイズの行動はもうできない）。 */
   rushPhaseReplaced?: { ownerId: PlayerId; turn: number };
+  /** XG3-045【超電稲妻キック】を得たユニット（そのターン）。 */
+  choudenKick?: Array<{ instanceId: string; turn: number }>;
 };

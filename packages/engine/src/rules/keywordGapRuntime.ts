@@ -165,7 +165,7 @@ export function attackerSuppressesAttackedCounters(attackerCardId: string): bool
 export function canSelfRushFromZone(
   state: GameState,
   playerId: PlayerId,
-  zone: "command" | "power" | "hand",
+  zone: "command" | "power" | "hand" | "discard",
   instanceId: string,
 ): boolean {
   if (state.phase !== "rush" || state.activePlayer !== playerId) return false;
@@ -175,6 +175,8 @@ export function canSelfRushFromZone(
   // クロスギャザー ザ・Wインパクト XG3 の、自軍ゾーンから起動する効果（XG3-002【宇宙を走る車】等。rules/xg3/xg3Effects.ts）。
   const xg3 = canActivateXg3FromZone(state, playerId, zone, instanceId);
   if (xg3 !== null) return xg3;
+  // 自軍捨札から出すのは XG3 のカードだけ（XG3-058【蘇る雷】）。
+  if (zone === "discard") return false;
   if (zone === "hand") return handDeployConditionMet(state, playerId, card.cardId);
   if (zone === "power" && card.faceDown) return false;
   // RK-320 仮面ライダーライジングイクサの※（必要パワー1・9・3の自軍コマンドがそれぞれあれば。rules/rk/rk16Fields.ts）。
@@ -235,7 +237,7 @@ function handDeployConditionMet(state: GameState, playerId: PlayerId, cardId: st
 export function applySelfRushFromZone(
   state: GameState,
   playerId: PlayerId,
-  zone: "command" | "power" | "hand",
+  zone: "command" | "power" | "hand" | "discard",
   instanceId: string,
 ): GameState | null {
   if (!canSelfRushFromZone(state, playerId, zone, instanceId)) return null;
@@ -268,7 +270,7 @@ import { activateXg3FromZone, canActivateXg3FromZone } from "./xg3/xg3Effects";
  */
 export function battleActBlocked(
   player: PlayerState,
-  card: { cardId: string; instanceId: string; battleActed?: boolean; activatedNcEffects?: string[] },
+  card: { cardId: string; instanceId: string; battleActed?: boolean; activatedNcEffects?: string[]; commandHeld?: boolean },
   action: "attack" | "strike",
 ): boolean {
   // RS-326【究極奥義・猫だまし】で出したユニットはアタックもストライクもできない（atwiki/page-487）。
@@ -289,7 +291,9 @@ export function battleActBlocked(
  * NC の効果として「アタックとストライクを1度ずつ行ってもよい」を持ち、NC が成立しているか。
  * RS-191 ダイナレッド【ダイナ剣・夢の翼】（atwiki/page-393。NC 不成立なら1回だけ — faq-rider-2 RS-191）。
  */
-function ncAttackAndStrikeOnce(card: { cardId: string; activatedNcEffects?: string[] }): boolean {
+function ncAttackAndStrikeOnce(card: { cardId: string; activatedNcEffects?: string[]; commandHeld?: boolean }): boolean {
+  // XG3-059 仮面ライダー轟鬼【轟く二刀】「このユニットがリリース状態なら、このターン、これはアタックとストライクを1度ずつ行ってもよい」（atwiki/page-1923）。
+  if (card.cardId === "XG3-059" && !!card.activatedNcEffects?.includes("ku_to") && !card.commandHeld) return true;
   return card.cardId === "RS-191" && !!card.activatedNcEffects?.includes("daina_ken_no_tsubasa");
 }
 

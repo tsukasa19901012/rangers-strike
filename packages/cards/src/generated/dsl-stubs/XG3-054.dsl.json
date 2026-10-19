@@ -57,13 +57,13 @@
       "name": "受け止める覚悟",
       "text": "これはMAを持たない敵軍Sユニットにアタックされない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-054::kemeru",
+          "keyword": "xg3::XG3-054::uketomeru",
           "duration": "permanent"
         }
       ]

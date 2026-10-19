@@ -1089,7 +1089,7 @@ function appendRushCategoryPaymentActions(
   };
 
   // rush_from_discard_count_*: コマンド/パワーからの自己ラッシュ
-  for (const zone of ["command", "power", "hand"] as const) {
+  for (const zone of ["command", "power", "hand", "discard"] as const) {
     for (const card of player[zone]) {
       if (canSelfRushFromZone(state, playerId, zone, card.instanceId)) {
         actions.push({

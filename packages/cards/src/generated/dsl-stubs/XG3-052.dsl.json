@@ -22,13 +22,13 @@
       "name": "強力無双の怪腕",
       "text": "自軍ターン中、これはBP+2000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-052::chikaranoe5bcb7",
+          "keyword": "xg3::XG3-052::kaiwan",
           "duration": "permanent"
         }
       ]

@@ -22,13 +22,13 @@
       "id": "unnamed_e280bbe887aae8bb8de383a9",
       "text": "※自軍ラッシュフェイズ中、このユニットをホールドしてもよい。そうしたとき、このユニット以外の自軍Sユニットを1体選びリリースする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG3-058::rashufueizukonoy",
+          "keyword": "xg3::XG3-058::zanki_note",
           "duration": "permanent"
         }
       ]
@@ -40,11 +40,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-058::rukami",
+          "keyword": "xg3::XG3-058::yomigaeru",
           "duration": "permanent"
         }
       ]

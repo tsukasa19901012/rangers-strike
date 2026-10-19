@@ -28019,6 +28019,9 @@
       "rarity": "N",
       "expansion": "vanilla-promoted",
       "powerCost": 4,
+      "features": [
+        "アドベントカード"
+      ],
       "imageUrl": "/cards/promoted/XG3-049.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-049-RK.jpg",
       "text": "自軍捨札にある「ストレンジベント」以外のカードを、すべてウラ向きにしてシャッフルする。その後、その中から相手にウラ向きのまま1枚選ばせてから、すべてオモテにする。選ばれたカードが通常のオペレーションカードなら、その効果を発動してもよい。発動しなかったか、それ以外のカードだったなら、特徴「ミラーライダー」を持つユニットを1体選び、このターン、BP+2000する。"
@@ -28134,6 +28137,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 4,
+      "features": [
+        "ディスクアニマル"
+      ],
       "imageUrl": "/cards/promoted/XG3-055.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-055-RK.jpg",
       "text": "※カウンター BP3000以下の自軍Sユニットがバトルで撃破されて捨札になるとき発動できる⇒そのユニットを捨札にするかわりに、自分の手札に戻す。"

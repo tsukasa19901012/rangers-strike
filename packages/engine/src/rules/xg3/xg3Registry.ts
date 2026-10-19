@@ -4,7 +4,7 @@
  * バッチごとのファイル（xg3aEffects.ts 等）が、grant_keyword のキーワード（`xg3::cardId::name`）・選択の解決・見送り・確定・
  * コマンドの支払い（effect_hold）の続きをここに登録する。選択の組み立ては rules/rm/rm1Effects.ts の共通の部品を使う。
  */
-import type { CardInstance, DeferredPowerFlip, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import type { CardInstance, DeferredPowerFlip, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import type { ChoiceOutcome } from "../rm/rm1Effects";
 
@@ -31,7 +31,7 @@ export const TURN_END_HOOKS: Array<{
 }> = [];
 /** 自軍のパワーゾーン等から起動する効果（self_rush_from_zone の合法手。rules/keywordGapRuntime.ts）。 */
 export const ZONE_ACTIVATIONS: Array<{
-  zone: "power" | "command" | "hand";
+  zone: "power" | "command" | "hand" | "discard";
   matches: (cardId: string) => boolean;
   canActivate: (state: GameState, playerId: PlayerId, instanceId: string) => boolean;
   activate: (state: GameState, playerId: PlayerId, instanceId: string) => GameState;
@@ -52,3 +52,7 @@ export const FIELD_ABILITIES: Array<{
   canActivate: (state: GameState, playerId: PlayerId, card: CardInstance) => boolean;
   resolve: (state: GameState, playerId: PlayerId, card: CardInstance) => GameState;
 }> = [];
+/** ユニットがバトルで敵軍ユニットを撃破したとき（rules/operationCounters.ts。RK-324 と同じ場所）。 */
+export const BATTLE_DESTROY_HOOKS: Array<(state: GameState, winnerId: PlayerId, winnerInstanceId: string, defeatedOwnerId: PlayerId, defeatedInstanceId: string) => GameState> = [];
+/** 自軍ユニットが場を離れるとき、かわりにその場に留める（rules/operationCounters.ts tryLeaveField）。処理したら state、対象外なら null。 */
+export const LEAVE_STAY_HOOKS: Array<(state: GameState, intent: PendingLeave) => GameState | null> = [];

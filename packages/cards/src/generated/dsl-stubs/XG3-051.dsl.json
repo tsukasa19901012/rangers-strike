@@ -23,13 +23,13 @@
       "name": "ここが祭りの場所か",
       "text": "このユニットは、特徴「仮面ライダー」を持つオモテ向きの敵軍パワー1枚につきBP+1000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-051::kokogarinoka",
+          "keyword": "xg3::XG3-051::matsuri",
           "duration": "permanent"
         }
       ]

@@ -3567,7 +3567,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "features": [
+        "アドベントカード"
+      ]
     },
     {
       "id": "XG3-050",
@@ -3621,7 +3624,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "features": [
+        "ディスクアニマル"
+      ]
     },
     {
       "id": "XG3-056",
