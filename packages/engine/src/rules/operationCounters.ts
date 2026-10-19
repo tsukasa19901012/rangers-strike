@@ -6,7 +6,7 @@ import { applyRk6AfterUnitLeft, rk6IsNonCraneOrphnoch } from "./rk/rk6UnitEffect
 import { openRk7RengelSubstitute } from "./rk/rk7UnitEffects";
 import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects";
 import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
-import { tryOpenXg2BattleChoice } from "./xg2/xg2Effects";
+import { applyXg2AfterUnitLeft, tryOpenXg2BattleChoice } from "./xg2/xg2Effects";
 import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
 import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
 import { rk15WinButDestroyed } from "./rk/rk15UnitEffects";
@@ -2092,6 +2092,8 @@ export function finalizeLeavePending(
     phasePlayerId: pending.phasePlayerId,
     wasNonCraneOrphnoch: rk6IsNonCraneOrphnoch(state, pending.ownerPlayerId, found.card),
   });
+  // XG2-028・XG2-029: ユニットでなくなるとき、下に重ねたウラ向きのカード（rules/xg2/xg2bEffects.ts）。
+  resolvedState = applyXg2AfterUnitLeft(resolvedState, { ownerPlayerId: pending.ownerPlayerId, card: found.card, phasePlayerId: pending.phasePlayerId });
   if (
     pending.fusionReturnOnDiscard === "battle" &&
     effectiveToZone === "discard" &&

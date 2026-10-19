@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "wing_attack_enemy_rush",
+          "keyword": "xg2::XG2-038::shin_suiryu",
           "duration": "permanent"
         }
       ]

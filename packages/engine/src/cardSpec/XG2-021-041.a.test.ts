@@ -97,16 +97,18 @@ describe("XG2-021 重騎士", () => {
       "XG2-021:k",
     );
 
-  it.fails("XG2-021: 【騎乗】自軍ターン中にバトルエリアに出たとき、「ホールドしなければバトルエリアに出られない」と書かれた自軍ユニット（XG2-022 重星獣・ゴウタウラス）を1体選べる。書かれていないユニットは選べない。任意（出典: atwiki/page-1192「…と書かれている自軍ユニットを1体選んでもよい」） 既知の不具合: CARD-XG2-021 【騎乗】で選ぶ選択が開かない（選ばずに自動で適用される）", () => {
+  it("XG2-021: 【騎乗】自軍ターン中にバトルエリアに出たとき、「ホールドしなければバトルエリアに出られない」と書かれた自軍ユニット（XG2-022 重星獣・ゴウタウラス）を1体選べる。書かれていないユニットは選べない。任意（出典: atwiki/page-1192「…と書かれている自軍ユニットを1体選んでもよい」）", () => {
     const s = kijou();
     expectChoiceFrom(s, "player1", "XG2-021");
     expect(choiceIds(s)).toEqual(["XG2-022:g"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-021: 【騎乗】選んだユニットをこのターンにバトルエリアに出すとき、自軍コマンドをホールドするかわりに、相手が自分自身のコマンドを1つホールドする（出典: atwiki/page-1192「自軍コマンドを1つホールドするかわりに、相手は自分自身のコマンドを1つ選びホールドする」・カード評価「【騎乗】からの重星獣・ゴウタウラスが強力」） 既知の不具合: CARD-XG2-021 【騎乗】で選んだ XG2-022 を出しても、自軍コマンドがホールドされ、相手のコマンドはホールドされない", () => {
+  it("XG2-021: 【騎乗】選んだユニットをこのターンにバトルエリアに出すとき、自軍コマンドをホールドするかわりに、相手が自分自身のコマンドを1つホールドする（出典: atwiki/page-1192「自軍コマンドを1つホールドするかわりに、相手は自分自身のコマンドを1つ選びホールドする」・カード評価「【騎乗】からの重星獣・ゴウタウラスが強力」）", () => {
     let s = kijou();
     s = resolveAll(pick(s, "XG2-022:g"));
+    // 重騎士はアタックもストライクもしない（バトル進入の行動ウィンドウを閉じてから次のユニットを出す）。
+    s = passEntry(s);
     const direct = legal(s).find((a) => a.type === "move_to_battle" && a.playerId === "player1" && a.instanceId === "XG2-022:g");
     s = direct ? act(s, direct) : enterWithHold(s, "XG2-022:g", ["TST-OP:cWB0"]);
     s = resolveAll(s);
@@ -140,13 +142,13 @@ describe("XG2-022 重星獣・ゴウタウラス", () => {
   const enemyCmd = () => ({ command: [held("TST-OP", "eh"), released("TST-OP", "er")] });
   const nc5 = () => enterWithHold(p1Battle({ battle: fill(4), rush: [inst("XG2-022", "g")], command: releasedCat("WB", 3) }, enemyCmd()), "XG2-022:g", ["TST-OP:cWB0"]);
 
-  it.fails("XG2-022: 【騎獣激突】NC（バトルエリアの5番目）で、自軍コマンドを1つホールドするかを選べる（任意）（出典: atwiki/page-1794「自軍コマンドを1つ選びホールドしてもよい」・R-CN-01） 既知の不具合: CARD-XG2-022 【騎獣激突】の選択が開かない", () => {
+  it("XG2-022: 【騎獣激突】NC（バトルエリアの5番目）で、自軍コマンドを1つホールドするかを選べる（任意）（出典: atwiki/page-1794「自軍コマンドを1つ選びホールドしてもよい」・R-CN-01）", () => {
     const s = nc5();
     expectChoiceFrom(s, "player1", "XG2-022");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-022: 【騎獣激突】ホールドしたとき、ホールド状態の敵軍コマンド（リリース状態のものは選べない）を1つ選び捨札にする（出典: atwiki/page-1794「そうしたとき、ホールド状態の敵軍コマンドを1つ選び捨札にする」） 既知の不具合: CARD-XG2-022 【騎獣激突】がなく、敵軍コマンドを捨札にできない", () => {
+  it("XG2-022: 【騎獣激突】ホールドしたとき、ホールド状態の敵軍コマンド（リリース状態のものは選べない）を1つ選び捨札にする（出典: atwiki/page-1794「そうしたとき、ホールド状態の敵軍コマンドを1つ選び捨札にする」）", () => {
     let s = nc5();
     expectChoiceFrom(s, "player1", "XG2-022");
     s = settle(accept(s));
@@ -157,7 +159,7 @@ describe("XG2-022 重星獣・ゴウタウラス", () => {
     expect(zoneOf(s, "player2", "TST-OP:er")).toBe("command");
   });
 
-  it.fails("XG2-022: 【騎獣激突】特徴「人型」を持つ M ユニット（XG2-021 重騎士）からコンビネーションするときは、ナンバーに関係なく（2番目でも）発動する（出典: atwiki/page-1794「特徴「人型」を持つMユニットからコンビネーションするときはナンバーに関係なく発動する」・カード評価「現在WBでは重騎士からしかこの効果が使えない」） 既知の不具合: CARD-XG2-022 【騎獣激突】の選択が開かない", () => {
+  it("XG2-022: 【騎獣激突】特徴「人型」を持つ M ユニット（XG2-021 重騎士）からコンビネーションするときは、ナンバーに関係なく（2番目でも）発動する（出典: atwiki/page-1794「特徴「人型」を持つMユニットからコンビネーションするときはナンバーに関係なく発動する」・カード評価「現在WBでは重騎士からしかこの効果が使えない」）", () => {
     const s = enterWithHold(p1Battle({ battle: [inst("XG2-021", "k")], rush: [inst("XG2-022", "g")], command: releasedCat("WB", 3) }, enemyCmd()), "XG2-022:g", ["TST-OP:cWB0"]);
     expectChoiceFrom(s, "player1", "XG2-022");
   });
@@ -182,19 +184,19 @@ describe("XG2-023 黒騎士ブルブラック", () => {
 
   const enemy = () => ({ battle: [inst("TST-UNIT-0", "x"), inst("XG2-001", "cn"), inst("SPEC-NONUM-M", "m")], rush: [inst("TST-UNIT-0", "r")] });
 
-  it.fails("XG2-023: 【黒の一撃】NC で、敵軍バトルエリアのナンバーを持たない S ユニットから1体選べる（ナンバーを持つユニット・M ユニット・ラッシュエリアのユニットは選べない）。任意（出典: atwiki/page-1795「敵軍バトルエリアからナンバーを持たないSユニットを1体選び、撃破してもよい」） 既知の不具合: CARD-XG2-023 【黒の一撃】の候補にナンバーを持つ S ユニット（XG2-001 ファイブレッド CN5）と M ユニットが入る", () => {
+  it("XG2-023: 【黒の一撃】NC で、敵軍バトルエリアのナンバーを持たない S ユニットから1体選べる（ナンバーを持つユニット・M ユニット・ラッシュエリアのユニットは選べない）。任意（出典: atwiki/page-1795「敵軍バトルエリアからナンバーを持たないSユニットを1体選び、撃破してもよい」）", () => {
     const s = ncEnter("XG2-023:b", 2, {}, enemy(), EXTRA);
     expectChoiceFrom(s, "player1", "XG2-023");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:x"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-023: 【黒の一撃】選んだユニットを撃破する（出典: atwiki/page-1795） 既知の不具合: CARD-XG2-023 【黒の一撃】で選んだユニットが撃破されず、敵軍のコマンドゾーンに置かれる", () => {
+  it("XG2-023: 【黒の一撃】選んだユニットを撃破する（出典: atwiki/page-1795）", () => {
     const s = resolveAll(pick(ncEnter("XG2-023:b", 2, {}, enemy(), EXTRA), "TST-UNIT-0:x"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:x")).toBe("discard");
   });
 
-  it.fails("XG2-023: 【黒の一撃】DA を持つ自軍コマンドを1つホールドすると、このターン「SP1」になる（出典: atwiki/page-1795「DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは「SP1」になる」） 既知の不具合: CARD-XG2-023 【黒の一撃】で DA を持つ自軍コマンドをホールドする選択が開かず、「SP1」にならない", () => {
+  it("XG2-023: 【黒の一撃】DA を持つ自軍コマンドを1つホールドすると、このターン「SP1」になる（出典: atwiki/page-1795「DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは「SP1」になる」）", () => {
     const s = resolveAll(ncEnter("XG2-023:b", 2, { command: releasedCat("DA", 1) }, {}), ["TST-OP-DA:cDA0"]);
     expect(cardIn(s, "player1", "TST-OP-DA:cDA0")?.commandHeld).toBe(true);
     expect(spOf(s, "player1", "XG2-023:b")).toBe(1);
@@ -229,7 +231,7 @@ describe("XG2-024 剣将ブドー", () => {
 
   const one = () => ncEnter("XG2-024:b", 0, {}, { battle: [inst("TST-UNIT-0", "x")] });
 
-  it.fails("XG2-024: 【一騎打ち】NC で、敵軍バトルエリアのユニットが1体だけなら BP+4000 するかを選べ（任意）、すると BP9000 になる（出典: atwiki/page-1741「これのBPを+4000してもよい」・カード評価「BPが9000にまで上昇する」） 既知の不具合: CARD-XG2-024 【一騎打ち】の選択が開かず、BP が上がらない", () => {
+  it("XG2-024: 【一騎打ち】NC で、敵軍バトルエリアのユニットが1体だけなら BP+4000 するかを選べ（任意）、すると BP9000 になる（出典: atwiki/page-1741「これのBPを+4000してもよい」・カード評価「BPが9000にまで上昇する」）", () => {
     let s = one();
     expectChoiceFrom(s, "player1", "XG2-024");
     expect(canSkip(s)).toBe(true);
@@ -237,7 +239,7 @@ describe("XG2-024 剣将ブドー", () => {
     expect(bpOf(s, "player1", "XG2-024:b")).toBe(9000);
   });
 
-  it.fails("XG2-024: 【一騎打ち】BP+4000 したときは、自軍バトルフェイズ終了時にこれを撃破する（出典: atwiki/page-1741「そうしたとき、自軍バトルフェイズ終了時にこれを撃破する」） 既知の不具合: CARD-XG2-024 【一騎打ち】がなく、バトルフェイズ終了時に撃破されない", () => {
+  it("XG2-024: 【一騎打ち】BP+4000 したときは、自軍バトルフェイズ終了時にこれを撃破する（出典: atwiki/page-1741「そうしたとき、自軍バトルフェイズ終了時にこれを撃破する」）", () => {
     let s = settle(accept(one()));
     s = resolveAll(nextPhase(passEntry(s)));
     expect(zoneOf(s, "player1", "XG2-024:b")).toBe("discard");
@@ -327,7 +329,7 @@ describe("XG2-025 ギンガレッド", () => {
 
   const nc = (p2battle: ReturnType<typeof inst>[]) => ncEnter("XG2-025:r", 0, { rush: [inst("TST-UNIT-0", "a"), inst("TST-UNIT-0", "b")] }, { battle: p2battle });
 
-  it.fails("XG2-025: 【二刃一閃】NC で、自分も相手も、自分のエリア（ラッシュエリア・バトルエリア）に同名ユニットが2体以上あれば1体選びゲームから除外する（出典: atwiki/page-1233「自分も相手も次のようにする⇒自分自身のエリアに同名ユニットが2体以上あれば、1体選びゲームから除外する」・カード評価「自軍にも効果が及ぶ」） 既知の不具合: CARD-XG2-025 【二刃一閃】がなく、同名ユニットが除外されない", () => {
+  it("XG2-025: 【二刃一閃】NC で、自分も相手も、自分のエリア（ラッシュエリア・バトルエリア）に同名ユニットが2体以上あれば1体選びゲームから除外する（出典: atwiki/page-1233「自分も相手も次のようにする⇒自分自身のエリアに同名ユニットが2体以上あれば、1体選びゲームから除外する」・カード評価「自軍にも効果が及ぶ」）", () => {
     const s = resolveAll(nc([inst("TST-UNIT-0", "c"), inst("TST-UNIT-0", "d")]));
     expect(["TST-UNIT-0:a", "TST-UNIT-0:b"].filter((id) => exiled(s, "player1", id))).toHaveLength(1);
     expect(["TST-UNIT-0:c", "TST-UNIT-0:d"].filter((id) => exiled(s, "player2", id))).toHaveLength(1);
@@ -358,7 +360,7 @@ describe("XG2-026 ギンガブルー", () => {
     expect(spOf(settle(ncEnter("XG2-026:b", 0)), "player1", "XG2-026:b")).toBe(0);
   });
 
-  it.fails("XG2-026: 【激流一刀】NC したターン、これが敵軍ユニットをバトルで撃破したとき、1枚ドローするかを選べ（任意）、ドローすると手札が1枚増える（出典: atwiki/page-1749「これが敵軍ユニットをバトルで撃破したとき、1枚ドローしてもよい」） 既知の不具合: CARD-XG2-026 【激流一刀】のドローがない（撃破しても選択が開かずドローしない）", () => {
+  it("XG2-026: 【激流一刀】NC したターン、これが敵軍ユニットをバトルで撃破したとき、1枚ドローするかを選べ（任意）、ドローすると手札が1枚増える（出典: atwiki/page-1749「これが敵軍ユニットをバトルで撃破したとき、1枚ドローしてもよい」）", () => {
     let s = settle(attack(settle(ncEnter("XG2-026:b", 1, {}, { battle: [inst("TST-UNIT-0", "x")] })), "XG2-026:b", "TST-UNIT-0:x"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:x")).toBe("discard");
     expectChoiceFrom(s, "player1", "XG2-026");
@@ -403,14 +405,14 @@ describe("XG2-027 ギンガイエロー", () => {
     expect(spOf(settle(s), "player1", "XG2-027:y")).toBe(1);
   });
 
-  it.fails("XG2-027: 【雷一掃】NC で、特徴「メカ」を持つ敵軍 S ユニット（ラッシュエリア・バトルエリア）を選べる。M ユニット・「メカ」を持たないユニットは選べない。任意（出典: atwiki/page-1796「特徴「メカ」を持つ敵軍Sユニットを好きな数選びホールドしてもよい」） 既知の不具合: CARD-XG2-027 【雷一掃】の選択が開かない（「SP1」だけ得る）", () => {
+  it("XG2-027: 【雷一掃】NC で、特徴「メカ」を持つ敵軍 S ユニット（ラッシュエリア・バトルエリア）を選べる。M ユニット・「メカ」を持たないユニットは選べない。任意（出典: atwiki/page-1796「特徴「メカ」を持つ敵軍Sユニットを好きな数選びホールドしてもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG2-027");
     expect(choiceIds(s)).toEqual(["SPEC-MECHA-S:m1", "SPEC-MECHA-S:m2", "SPEC-MECHA-S:r"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-027: 【雷一掃】選べる数はリリース状態の自軍コマンドの数まで（2つなら2体）。選んだユニットはホールド状態になる（出典: atwiki/page-1796「ただし、選べるユニットの数は、リリース状態の自軍コマンドの数までとする」） 既知の不具合: CARD-XG2-027 【雷一掃】がなく、敵軍ユニットをホールドできない", () => {
+  it("XG2-027: 【雷一掃】選べる数はリリース状態の自軍コマンドの数まで（2つなら2体）。選んだユニットはホールド状態になる（出典: atwiki/page-1796「ただし、選べるユニットの数は、リリース状態の自軍コマンドの数までとする」）", () => {
     let s = nc(2);
     expectChoiceFrom(s, "player1", "XG2-027");
     expect(s.pendingEffectChoice?.selectCount).toBe(2);

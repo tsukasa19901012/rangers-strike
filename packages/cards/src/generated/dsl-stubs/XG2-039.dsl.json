@@ -52,6 +52,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg2::XG2-039::shin_tenku",
+          "duration": "permanent"
         }
       ]
     }

@@ -1,4 +1,5 @@
 import { rm2BlocksBattleEntry } from "./rm/rm2Fields";
+import { xg2KijouReplacesEntryHold } from "./xg2/xg2Fields";
 import { filthyAirActive } from "./legend1/otherLinesNamedEffects";
 import { rk3BattleEntryBlocked } from "./rk/rk3UnitEffects";
 import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
@@ -231,6 +232,8 @@ export function requiredBattleEntryHolds(
   if (unitHold > 0 && rk10OmegaIgnoresEntryHold(state, playerId, unit)) unitHold = 0;
   // RK-209 エラスモテリウムオルフェノク ※: ホールドする数は相手の手札1枚につき1少なくなる（rules/rk/rk10Fields.ts）。
   if (unitHold > 0) unitHold = Math.max(0, unitHold - rk10ElasmoHoldReduction(state, playerId, unit));
+  // XG2-021 重騎士【騎乗】で選んだユニット（ホールドするかわりに相手がホールドする。rules/xg2/xg2Fields.ts）。
+  if (unitHold > 0 && xg2KijouReplacesEntryHold(state, playerId, unit)) unitHold -= 1;
   const lgHold = isMediumUnit(state.definitions, unit)
     ? countActiveLightningGravity(state)
     : 0;

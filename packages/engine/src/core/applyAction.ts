@@ -99,7 +99,7 @@ import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
 import { drainQueuedFieldLeaves } from "../rules/fieldLeaveQueue";
 import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
-import { applyXg2AfterAction, applyXg2StrikeDamageTriggers, isXg2ActivatableResident, openXg2OnBattlePhaseStart } from "../rules/xg2/xg2Effects";
+import { applyXg2AfterAction, applyXg2BattlePhaseEnd, applyXg2StrikeDamageTriggers, isXg2ActivatableResident, openXg2OnBattlePhaseStart } from "../rules/xg2/xg2Effects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
@@ -3927,10 +3927,15 @@ function applyActionCore(
         const hachi = openRk9HachiAtRushEnd(state, playerId);
         if (hachi) return ok(hachi, buildSimpleLogEntry(playerId, "rk177_hypnotic_wave"));
       }
-      const nextState: GameState = {
+      let nextState: GameState = {
         ...advancePhase(state),
         endPhaseStep: advancePhase(state).phase === "end" ? "end_effects" : undefined,
       };
+      // XG2-024【一騎打ち】・XG2-028【マイナスエネルギー吸収】（自軍バトルフェイズを終えるとき。rules/xg2/xg2Effects.ts）。
+      if (state.phase === "battle") nextState = applyXg2BattlePhaseEnd(nextState, playerId);
+      if (nextState.phase === "end" && nextState.pendingEffectChoice && !state.pendingEffectChoice) {
+        return ok({ ...nextState, endPhaseStep: "end_effects" }, buildSimpleLogEntry(playerId, "end_phase", state.phase));
+      }
       if (nextState.phase === "end") {
         const withMenu = tryOpenEndTurnEffectsMenu(nextState, playerId);
         if (withMenu) {

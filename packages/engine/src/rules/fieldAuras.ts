@@ -1,4 +1,5 @@
 import { rm3FieldBpBonus } from "./rm/rm3Fields";
+import { xg2FieldBpBonus } from "./xg2/xg2Fields";
 import type { Category } from "@rangers-strike/cards";
 import { set9AFieldBpBonus } from "./legend1/set9NamedEffectsA";
 import { changePowerBpBonus } from "./legend1/set6NamedEffects348";
@@ -281,6 +282,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += rk15FieldBpBonus(state, playerId, instance);
   // RM-051 メガヘラクレス【メガビートフォーメーション】（自軍エリアに「スタッガータンク」があれば BP+3000。rules/rm/rm3Fields.ts）。
   if (role === "general") bonus += rm3FieldBpBonus(state, playerId, instance);
+  // XG2-029【災魔ツリー】・XG2-031【宇宙警察のバックアップ】（rules/xg2/xg2Fields.ts）。
+  if (role === "general") bonus += xg2FieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

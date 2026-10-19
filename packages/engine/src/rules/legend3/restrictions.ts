@@ -10,6 +10,7 @@ import { set8DDefenderBlocksAttack } from "../legend1/set8NamedEffectsD";
 import { rk1DefenderBlocksAttack } from "../rk/rk1NamedEffects";
 import { rk2DefenderBlocksAttack, rk2KamenRiderRushDiscardable, rk2NeedsKamenRiderRushDiscard } from "../rk/rk2UnitEffects";
 import { set9DAllowsRushAttack } from "../legend1/set9NamedEffectsD";
+import { xg2AllowsRushAttack } from "../xg2/xg2Fields";
 import { set8CAllowsRushAttack, set8CDefenderBlocksAttack } from "../legend1/set8NamedEffectsC";
 import { set8BDefenderBlocksAttack } from "../legend1/set8NamedEffectsB";
 import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
@@ -547,7 +548,9 @@ export function canAttackDefender(
       // RS-562 ガオソーシャークの※・RS-573【バリランサー】（rules/legend1/set8NamedEffectsC.ts）。
       set8CAllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, inRush.card) ||
       // RS-675【ウォーターアロー】（NC。rules/legend1/set9NamedEffectsD.ts）。
-      set9DAllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId)
+      set9DAllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId) ||
+      // XG2-038【真・水流の舞い】（NC。rules/xg2/xg2Fields.ts）。
+      xg2AllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId)
     ) {
       return true;
     }

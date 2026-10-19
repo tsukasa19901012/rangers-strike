@@ -37,11 +37,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-022::fxunknown14",
+          "keyword": "xg2::XG2-022::kiju_gekitotsu",
           "duration": "permanent"
         }
       ]

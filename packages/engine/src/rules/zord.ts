@@ -544,8 +544,10 @@ export function isValidZordUpMaterial(
         // atwiki/page-171・161）。
         const named = condition.conditionId === "send_s_unit_to_power" ? singleNamedPowerPartner(condition.text) : undefined;
         if (named) {
+          // 名前で指定されたユニットは大きさを問わない（XG2-032「自軍「デカマシン」（SC）1体をパワーゾーンに送る」atwiki/page-1800）。
           return (
-            isValidPowerMaterial(definitions, card, rushingInstanceId) &&
+            card.instanceId !== rushingInstanceId &&
+            def.type === "unit" &&
             normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(named))
           );
         }

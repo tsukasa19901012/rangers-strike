@@ -3,10 +3,14 @@
  * カードごとの効果を読み込んで登録し、rules/xg2/xg2Core.ts の API を出す。
  */
 import "./xg2aEffects";
+import "./xg2bEffects";
 
 export {
   activateXg2Resident,
   applyXg2AfterAction,
+  applyXg2AfterUnitLeft,
+  applyXg2BattlePhaseEnd,
+  applyXg2OnUnitLeftZone,
   applyXg2OnComboEnter,
   applyXg2StrikeDamageTriggers,
   canActivateXg2Resident,
