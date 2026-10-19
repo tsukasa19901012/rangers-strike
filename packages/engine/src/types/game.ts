@@ -1255,6 +1255,10 @@ export type GameState = {
   rk12ResumeOperation?: { playerId: PlayerId; instanceId: string; targetInstanceId?: string; extraInstanceId?: string };
   /** RK-251 の選択を済ませたオペレーション（同じ使用で2度は尋ねない）。 */
   rk12GorgomPassedOp?: string;
+  /** XG1-038【サカナマル】の選択の後で続ける相手の move_to_battle（core/applyAction.ts の後処理。rules/xg1/xg1bEffects.ts）。 */
+  xg1ResumeMove?: { playerId: PlayerId; instanceId: string; vehicleInstanceId?: string; rideOff?: boolean };
+  /** XG1-038【サカナマル】を尋ね終えた相手のユニット（続ける move_to_battle で2度は尋ねない）。 */
+  xg1SakanamaruDone?: string;
   /** RK-272【ライジングスプラッシュドラゴン】: NC の効果を無効にするかの答え（rules/rk/rk13UnitEffects.ts）。 */
   rk13NcNegation?: { instanceId: string; negate: boolean };
   /** RK-272: 無効にしなかった RC の効果を実行している（同じ RC で2度は尋ねない）。 */

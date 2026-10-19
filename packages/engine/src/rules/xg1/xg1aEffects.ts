@@ -40,6 +40,7 @@ import {
   zoneOfField,
 } from "../rm/rm1Effects";
 import { XG1_KEYWORDS, XG1_RESOLVERS, XG1_SKIPPERS, noop } from "./xg1Core";
+import { xg1bAfterBattle } from "./xg1bEffects";
 import { costNumber, enemySUnits, holdThen, isUnitDef, registerHold, releasedCommands, unitCatsNow } from "./xg1Shared";
 
 const CATEGORIES = ["WB", "MA", "OT", "ET", "DA"];
@@ -153,9 +154,11 @@ export function xg1aAfterBattle(
     if (!wing && !hasBattleNcEffect(s.self, HIBAGAESHI_MARK)) continue;
     hits.push({ selfOwner: s.selfOwner, enemyOwner: s.enemyOwner, name: getDefinition(state.definitions, s.enemy.cardId)?.name, destroyedId: s.enemy.instanceId, sourceInstanceId: s.self.instanceId });
   }
-  if (hits.length === 0) return undefined;
+  // XG1-037【虚空からの一撃】（rules/xg1/xg1bEffects.ts）。
+  const kokuu = xg1bAfterBattle(state, pending.attackerPlayerId, r.attacker, r.defenderOwner, r.defender, r.defenderDestroyed);
+  if (hits.length === 0) return kokuu;
   return (s) => {
-    let next = s;
+    let next = kokuu ? kokuu(s) : s;
     for (const h of hits) {
       const ids = fieldUnits(next, h.enemyOwner)
         .filter((c) => c.instanceId !== h.destroyedId && sameCardName(getDefinition(next.definitions, c.cardId)?.name, h.name))

@@ -11,6 +11,7 @@ import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { cardCategories, getDefinition, parsePowerCost, unitSizeOf } from "../core/catalog";
 import { unitFeatures } from "./addedFeatures";
 import { startEffectRush } from "./effectRush";
+import { xg1HandCardAddedCategories } from "./xg1/xg1Fields";
 
 const RESIDENT_ALLY_ENTER_RUSH_RE =
   /自軍バトルフェイズ中、特徴「([^」]+)」を持つ自軍(S|M|L)ユニットがバトルエリアに出たとき、次の効果を発動できる\s*⇒\s*バトルエリアに出たユニットの必要パワーの数字よりも、必要パワーの数字が小さい([A-Z]{2})の(S|M|L)ユニットのカードを、自分の手札から1枚選び、自軍ラッシュエリアに出す/;
@@ -52,7 +53,8 @@ export function tryResidentRushOnAllyEnterBattle(
         return (
           def?.type === "unit" &&
           unitSizeOf(state.definitions, c) === parsed.size &&
-          cardCategories(def).includes(parsed.category) &&
+          // XG1-031 ゴーオンレッドの※（手札の炎神に WB。rules/xg1/xg1Fields.ts）。
+          (cardCategories(def).includes(parsed.category) || xg1HandCardAddedCategories(state, playerId, c.cardId).includes(parsed.category)) &&
           parsePowerCost(def.powerCost ?? 99) < enteringCost
         );
       })

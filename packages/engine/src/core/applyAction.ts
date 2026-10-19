@@ -102,6 +102,7 @@ import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
 import { openXg1aStrikeReplacement } from "../rules/xg1/xg1aEffects";
+import { openXg1bSakanamaru, xg1bOnAttackDeclared } from "../rules/xg1/xg1bEffects";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -1042,6 +1043,14 @@ function applyActionWithRng(
     next = resumed.ok
       ? { ...resumed.state, rk12GorgomPassedOp: undefined }
       : { ...next, rk12ResumeOperation: undefined, rk12GorgomPassedOp: undefined };
+  }
+  // XG1-038【サカナマル】の選択の後: 相手のユニットがまだラッシュエリアにあれば move_to_battle を続ける（rules/xg1/xg1bEffects.ts）。
+  if (next.xg1ResumeMove && !next.pendingEffectChoice) {
+    const mv = next.xg1ResumeMove;
+    const cleared: GameState = { ...next, xg1ResumeMove: undefined, activePlayer: mv.playerId };
+    const stillInRush = cleared.players[mv.playerId].rush.some((c) => c.instanceId === mv.instanceId);
+    const resumed = stillInRush ? applyAction(cleared, { type: "move_to_battle", ...mv }, { trustLegality: true }) : null;
+    next = resumed?.ok ? { ...resumed.state, xg1SakanamaruDone: undefined } : { ...cleared, xg1SakanamaruDone: undefined };
   }
   // 第9弾 RS-607 の続き・RS-613 のホールド待ち（rules/legend1/set9NamedEffectsA.ts）。
   if (applyActionDepth === 0) next = settleSet9AAfterAction(state, next);
@@ -2443,6 +2452,10 @@ function applyActionCore(
         );
       }
 
+      // XG1-038【サカナマル】: 相手が S ユニットをバトルエリアに出すために選んだとき（rules/xg1/xg1bEffects.ts）。
+      const sakanamaru = openXg1bSakanamaru(state, { playerId, instanceId: action.instanceId, vehicleInstanceId: action.vehicleInstanceId, rideOff: action.rideOff });
+      if (sakanamaru) return ok(sakanamaru, buildSimpleLogEntry(playerId, "battle_entry_reaction_pending"));
+
       // ライドして出るときは、ライドした状態で出られるかを判定する（例: RS-290 の対象外になる。atwiki/page-474 Q3）。
       const enteringCard = action.vehicleInstanceId
         ? { ...found.card, mountedOnInstanceId: action.vehicleInstanceId }
@@ -3738,6 +3751,8 @@ function applyActionCore(
       battleState = rk1PayAttackCommandCost(battleState, playerId, enemyId, action.defenderInstanceId);
       // RK-124【人を守る決意】: アタックの対象として「スネークオルフェノク」を選んだことを記録する（rules/rk/rk6Fields.ts）。
       battleState = rk6RecordSnakeSelected(battleState, playerId, action.defenderInstanceId);
+      // XG1-030【キラークロー】ウイングでアタックするとき（rules/xg1/xg1bEffects.ts）。
+      battleState = xg1bOnAttackDeclared(battleState, playerId, action.attackerInstanceId, wingAttackFromRush);
       // ルール: R-CTR-03 — 「アタックするとき、相手はカウンターを発動できない」はアタック処理の終わりまで続く。
       if (attackerBlocksDefenderCounters(battleState, playerId, action.attackerInstanceId)) {
         battleState = { ...battleState, counterLockedPlayerId: enemyId };

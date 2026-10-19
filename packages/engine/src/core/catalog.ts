@@ -61,6 +61,7 @@ import { set5PassiveBpBonus } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower, effectivePowerCost, rushEffectivePowerCost } from "./power";
 import { rk11CounterCostReduction } from "../rules/rk/rk11Fields";
 import { rk12ResidentsNegated } from "../rules/rk/rk12Fields";
+import { xg1SamuraiBpBonus, xg1YogosteinOnEitherField } from "../rules/xg1/xg1Fields";
 import { memoizePerCardInSearch } from "./searchCache";
 
 export function buildDefinitionMap(
@@ -453,7 +454,9 @@ function effectiveBpUncached(
     signed(passiveBpBonus(state, playerId, instance)) +
     signed(passiveNamedFieldBpBonus(state, playerId, instance, "general")) +
     signed(promotedKeywordBpBonus(state, playerId, instance)) +
-    signed(rideMountedVehicleBpBonus(state, playerId, instance));
+    signed(rideMountedVehicleBpBonus(state, playerId, instance)) +
+    // XG1-040 虎折神【侍武装】・XG1-039【折神の結集】（rules/xg1/xg1Fields.ts）。
+    signed(xg1SamuraiBpBonus(state, playerId, instance));
   const floor = srBigBatonBpFloor(state, playerId, instance);
   return floor > 0 ? Math.max(base, floor) : base;
 }
@@ -531,7 +534,9 @@ const YOGOSTEIN_CARD_ID = "XG1-033";
 function yogosteinGrantsDa(player: PlayerState): boolean {
   return (
     player.rush.some((c) => c.cardId === YOGOSTEIN_CARD_ID) ||
-    player.battle.some((c) => c.cardId === YOGOSTEIN_CARD_ID)
+    player.battle.some((c) => c.cardId === YOGOSTEIN_CARD_ID) ||
+    // 敵軍エリアのヨゴシュタインも「コマンドゾーンにある」カードに DA を追加する（rules/xg1/xg1Fields.ts）。
+    xg1YogosteinOnEitherField()
   );
 }
 

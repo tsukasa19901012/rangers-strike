@@ -13,7 +13,9 @@ import { close, logFor, type ChoiceOutcome } from "../rm/rm1Effects";
 import { XG1_CONFIRMERS, XG1_HOLD_COMPLETERS, XG1_KEYWORDS, XG1_KEYWORD_PREFIX, XG1_RESOLVERS, XG1_SKIPPERS } from "./xg1Core";
 import { holdCommands } from "./xg1Shared";
 import "./xg1aEffects";
+import "./xg1bEffects";
 
+export { xg1bOnAttackDeclared } from "./xg1bEffects";
 
 export function isXg1ChoiceEffect(effectId: string): boolean {
   return effectId in XG1_RESOLVERS;

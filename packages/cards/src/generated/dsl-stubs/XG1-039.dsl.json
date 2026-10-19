@@ -83,6 +83,22 @@
         [
           "XG1-037"
         ]
+      ],
+      "partnerSlotAlternatives": [
+        {
+          "slot": 5,
+          "slots": [
+            [
+              "XG1-035"
+            ],
+            [
+              "XG1-036"
+            ],
+            [
+              "XG1-040"
+            ]
+          ]
+        }
       ]
     }
   ],

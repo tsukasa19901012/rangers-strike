@@ -10,6 +10,7 @@ import { tryRk15OnEnterBattle } from "./rk/rk15UnitEffects";
 import { tryRk16OnEnterBattle } from "./rk/rk16UnitEffects";
 import { openWarriorSoulNcChoice } from "./legend1/set9NamedEffectsA";
 import { tryResidentRushOnAllyEnterBattle } from "./residentAllyEnterRush";
+import { xg1bOnEnterBattle } from "./xg1/xg1bEffects";
 import { listNcColumnNamedEffects, getNumberComboEffect } from "@rangers-strike/cards";
 import { registerBattleCommandHooks, tryOpenBattleCommand } from "./battleCommand";
 import { applyGorengerHurricaneOnEnter } from "./legend3/gorengerHurricane";
@@ -436,6 +437,8 @@ export function resolveEnterBattleEffectsImpl(
           battleCard,
           playerId,
         );
+        // XG1-036 舵木折神【侍武装】で得た「これがバトルエリアに出たとき」（rules/xg1/xg1bEffects.ts）。
+        nextState = xg1bOnEnterBattle(nextState, playerId, battleCard);
         if (nextState.pendingEffectChoice) {
           return { state: nextState, logs, enterResumeFrom: resumeAt(17) };
         }

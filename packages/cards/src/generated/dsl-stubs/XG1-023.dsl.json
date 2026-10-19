@@ -33,6 +33,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg1::XG1-023::gt_sword",
+          "duration": "turn"
         }
       ]
     }

@@ -6,6 +6,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { rm1ResidentCount } from "../rm/rm1Fields";
+import { actionContextState } from "../zordFeatureContext";
 
 type Defs = Pick<GameState, "definitions">;
 
@@ -43,6 +44,7 @@ function otFaceUpInZones(state: GameState): boolean {
  * - XG1-011 巨大バッカスフンド【スペースメタルの魔剣】（atwiki/page-1644）
  * - XG1-012 レッドパンチャー ※（自軍コマンドがすべてリリース状態。atwiki/page-1615）
  * - XG1-020 ターボロボ【高速剣ターボクラッシュ】（BP10000 以上。atwiki/page-1545）
+ * - XG1-026 ヤミマル【ヤミオノ】（自軍ダメージが3点以下。atwiki/page-1676・コメント欄「常時SP1」）
  */
 export function xg1EffectiveSp(
   state: GameState,
@@ -54,6 +56,7 @@ export function xg1EffectiveSp(
   const id = instance.cardId;
   if (isSameCardIdentity(id, "XG1-011") && otFaceUpInZones(state)) return Math.max(sp, 1);
   if (isSameCardIdentity(id, "XG1-012") && state.players[playerId].command.every((c) => !c.commandHeld)) return Math.max(sp, 1);
+  if (isSameCardIdentity(id, "XG1-026") && state.players[playerId].damage <= 3) return Math.max(sp, 1);
   if (isSameCardIdentity(id, "XG1-020") && effectiveBp(state, playerId, instance) >= 10000) return Math.max(sp, 1);
   return sp;
 }
@@ -81,6 +84,19 @@ export function xg1DefenderBlocksAttack(state: GameState, attackerPlayerId: Play
   if ((size === "M" || size === "SC" || size === "L") && areaHas(state, other(attackerPlayerId), "XG1-018", ["battle"])) return true;
   void defenderPlayerId;
   return false;
+}
+
+/**
+ * 敵軍ラッシュエリアのユニットにアタックできる（rules/legend3/restrictions.ts canAttackDefender）。
+ * - XG1-021 ブルーターボ【Jガン】（NC）「これは敵軍ラッシュエリアのホールド状態のユニットにアタックできる。」（atwiki/page-1574）
+ *   NC を発動したとき、またはナンバー1のこれがバトルエリアの1番目にある（NC が成立している）とき。
+ */
+export function xg1AttackerCanAttackRush(state: GameState, attackerPlayerId: PlayerId, attacker: CardInstance, defender: CardInstance): boolean {
+  // XG1-035 兜折神【侍武装】で得る「これは敵軍ラッシュエリアのユニットにアタックできる」（atwiki/page-1591。XG1-039 の【折神の結集】を含む）。
+  if (xg1HasSamuraiGrant(state, attackerPlayerId, attacker, "XG1-035")) return true;
+  if (!isSameCardIdentity(attacker.cardId, "XG1-021") || !defender.commandHeld) return false;
+  if (attacker.activatedNcEffects?.includes("jgan")) return true;
+  return state.players[attackerPlayerId].battle[0]?.instanceId === attacker.instanceId && def(state, attacker.cardId)?.comboNumber === 1;
 }
 
 // ---------------------------------------------------------------------------
@@ -139,6 +155,76 @@ export function xg1HoldSubstituteAvailable(
   const size = definitions[rushingCardId]?.size;
   if (size !== "M" && size !== "L") return false;
   return player.rush.some((c) => isSameCardIdentity(c.cardId, "XG1-013"));
+}
+
+// ---------------------------------------------------------------------------
+// XG1-026 ヤミマル【ヤミオノ】は xg1EffectiveSp。XG1-033 害地大臣ヨゴシュタイン【汚れた大地】
+// 「これが自軍エリアにある間、コマンドゾーンにある本来のカテゴリにDAを持たないカードのうち、必要パワーの数字が3以下のカードは、カテゴリにDAが
+//  追加される（この効果は重複しない）。」（atwiki/page-1581）— 軍の限定がないので敵軍のコマンドゾーンのカードにも追加される。
+// コマンドのカテゴリはプレイヤー単位で判定する（core/catalog.ts effectiveCommandCategories）ので、敵軍エリアのものは applyAction / getLegalActions の
+// 入口の状態で見る。
+
+export function xg1YogosteinOnEitherField(): boolean {
+  const state = actionContextState();
+  if (!state) return false;
+  return (["player1", "player2"] as const).some((pid) => areaHas(state, pid, "XG1-033"));
+}
+
+// ---------------------------------------------------------------------------
+// XG1-031 ゴーオンレッド ※「これが自軍エリアにある間、自軍バトルフェイズ中、自分の手札にある特徴「炎神」を持つユニットカードはカテゴリにWBが
+// 追加される。」（atwiki/page-1638）。手札のカードのカテゴリを見る判定（rules/residentAllyEnterRush.ts 激気）から呼ぶ。
+
+export function xg1HandCardAddedCategories(state: GameState, playerId: PlayerId, cardId: string): string[] {
+  if (state.phase !== "battle" || state.activePlayer !== playerId) return [];
+  const d = def(state, cardId);
+  if (!d || d.type !== "unit" || !(d.features ?? []).includes("炎神")) return [];
+  return areaHas(state, playerId, "XG1-031") ? ["WB"] : [];
+}
+
+// ---------------------------------------------------------------------------
+// 【侍武装】（XG1-035 兜折神・XG1-036 舵木折神・XG1-040 虎折神）で重ねたユニットが得る能力と、XG1-039 テンクウシンケンオー【折神の結集】
+// 「これが自軍エリアにある間、自軍捨札にある効果名「侍武装」を持つユニットカードは、このユニットが重ねられているかのように効果を発動する。
+//  ただし、同じカード名の効果は重複して発動しない。」（atwiki/page-1589）
+
+function isSamuraiArmorCard(state: Defs, cardId: string): boolean {
+  const d = def(state, cardId);
+  return !!d && d.type === "unit" && (d.text ?? "").includes("【侍武装】");
+}
+
+/** host が得ている【侍武装】の能力の元のカード（重ねたカードと、テンクウシンケンオーなら自軍捨札のもの。同じカード名は1つ）。 */
+export function xg1SamuraiSources(state: GameState, ownerId: PlayerId, host: CardInstance): string[] {
+  const ids = (host.stackedCards ?? []).filter((c) => isSamuraiArmorCard(state, c.cardId)).map((c) => c.cardId);
+  if (isSameCardIdentity(host.cardId, "XG1-039") && [...state.players[ownerId].rush, ...state.players[ownerId].battle].some((c) => c.instanceId === host.instanceId)) {
+    for (const c of state.players[ownerId].discard) if (isSamuraiArmorCard(state, c.cardId)) ids.push(c.cardId);
+  }
+  const seen = new Set<string>();
+  return ids.filter((id) => {
+    const name = def(state, id)?.name ?? id;
+    if (seen.has(name)) return false;
+    seen.add(name);
+    return true;
+  });
+}
+
+export function xg1HasSamuraiGrant(state: GameState, ownerId: PlayerId, host: CardInstance, sourceCardId: string): boolean {
+  return xg1SamuraiSources(state, ownerId, host).some((id) => isSameCardIdentity(id, sourceCardId));
+}
+
+/** 「このユニットの合体に必要なユニットの最大数」（合体の文の素材の数。かっこ内の「または」の組があれば多いほう）。合体ユニットでなければ 0。 */
+export function xg1MaxFusionMaterialCount(state: Defs, cardId: string): number {
+  const m = (def(state, cardId)?.text ?? "").match(/^合体[―ー-]+(\S+)/);
+  if (!m) return 0;
+  const body = m[1]!;
+  const paren = body.match(/[（(]または(.+?)[）)]/);
+  const main = body.replace(/[（(].*?[）)]/g, "").split("＋").filter((x) => x.trim()).length;
+  const alt = paren ? paren[1]!.split("＋").filter((x) => x.trim()).length : 0;
+  return Math.max(main, alt > 0 ? main - 1 + alt : main);
+}
+
+/** XG1-040 虎折神【侍武装】で得る「このユニットの合体に必要なユニットの最大数を数えて、1体につきBP+1000される」（atwiki/page-1593）。 */
+export function xg1SamuraiBpBonus(state: GameState, ownerId: PlayerId, host: CardInstance): number {
+  if (!xg1HasSamuraiGrant(state, ownerId, host, "XG1-040")) return 0;
+  return xg1MaxFusionMaterialCount(state, host.cardId) * 1000;
 }
 
 export { other as xg1Other, cats as xg1PrintedCategories };

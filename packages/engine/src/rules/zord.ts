@@ -211,6 +211,28 @@ function discardThresholdFusionMaterial(
   return null;
 }
 
+const NAMED_OR_FUSION_RE = /^自軍[「｢]([^」｣]+)[」｣]1体または自軍合体ユニットを捨札にする$/;
+
+function namedOrFusionMaterial(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+  rushingInstanceId: string,
+): FusionMaterialFound[] | null {
+  const m = getDefinition(definitions, rushingCardId)?.rushAdditionalCondition?.text?.match(NAMED_OR_FUSION_RE);
+  if (!m) return null;
+  const name = canonicalCardName(m[1]!);
+  for (const zone of ZORD_MATERIAL_ZONES) {
+    for (let index = 0; index < player[zone].length; index++) {
+      const card = player[zone][index]!;
+      if (card.instanceId === rushingInstanceId) continue;
+      const def = getDefinition(definitions, card.cardId);
+      if (def?.type === "unit" && canonicalCardName(def.name) === name) return [{ zone, index, card }];
+    }
+  }
+  return null;
+}
+
 /** ゾードカードに列挙された全合体パートナー（例: RS-050 → 051/052/053）。 */
 export function collectRequiredFusionMaterials(
   player: PlayerState,
@@ -222,6 +244,9 @@ export function collectRequiredFusionMaterials(
   if (threshold !== undefined) return threshold;
   const plain = collectRequiredFusionMaterialsWith(player, definitions, rushingCardId, rushingInstanceId, null);
   if (plain) return plain;
+  // 「自軍「X」1体または自軍合体ユニットを捨札にする」（XG1-039 テンクウシンケンオー。atwiki/page-1589）— 合体の素材のかわりに「X」1体。
+  const namedOr = namedOrFusionMaterial(player, definitions, rushingCardId, rushingInstanceId);
+  if (namedOr) return namedOr;
   // 1枚で複数の合体ユニットとしてつかえるカード（XG3-006「ブルースローワー＋イエローアーマー＋ピンクエイダー」。
   // atwiki/page-388 Q1）で、その名前の枠をまとめて満たす。
   const slots = resolveZordFusionPartnerSlots(rushingCardId);
