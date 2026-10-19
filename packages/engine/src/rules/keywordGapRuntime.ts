@@ -274,7 +274,9 @@ export function battleActBlocked(
   // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックする権利を失っている。
   if (action === "attack" && player.unitActionsThisTurn?.[card.instanceId]?.attacked) return true;
   if (!card.battleActed) return false;
-  if (!cardHasGrantKeyword(card.cardId, "attack_and_strike_once") && !ncAttackAndStrikeOnce(card)) return true;
+  // XG5-063【ダイヤ4－ラピッド】で得た「アタックとストライクを1度ずつ行ってもよい」（rules/xg5/xg5dEffects.ts）。
+  const xg5Rapid = hasScopedRestriction(player, card.instanceId, "xg5_attack_and_strike_once", "turn");
+  if (!cardHasGrantKeyword(card.cardId, "attack_and_strike_once") && !ncAttackAndStrikeOnce(card) && !xg5Rapid) return true;
   const rec = player.unitActionsThisTurn?.[card.instanceId];
   return action === "attack" ? !!rec?.attacked : !!rec?.struck;
 }

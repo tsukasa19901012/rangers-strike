@@ -36,11 +36,10 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-080::atakuraido",
+          "keyword": "xg5::XG5-080::attack_ride",
           "duration": "turn"
         }
       ]

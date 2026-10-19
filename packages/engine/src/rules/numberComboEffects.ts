@@ -57,6 +57,7 @@ import { isSet8ANcCard, trySet8ANumberCombo } from "./legend1/set8NamedEffectsA"
 import { set8NumberDelta } from "./legend1/set8TurnGrants";
 import { trySet7BNcEffect } from "./legend1/set7NamedEffectsB";
 import type { ComboOutcome } from "./comboTypes";
+import { NC_RESUME, tryXg5InterceptNc } from "./xg5/xg5Core";
 import { hasKamenRiderTitle } from "./rk/rk1Features";
 
 function ncLog(
@@ -303,6 +304,9 @@ export function applyNumberComboEffect(
   card: CardInstance,
   effectId: ReturnType<typeof getNumberComboEffect>,
 ): ComboOutcome {
+  // XG5-070【偵察】: 敵軍 S ユニットの NC の効果を実行する前に割り込む（rules/xg5/xg5dEffects.ts）。
+  const xg5 = tryXg5InterceptNc(state, playerId, card, effectId);
+  if (xg5) return xg5;
   // 第7弾 RS-441〜RS-449 の NC（rules/legend1/set7NamedEffectsA.ts）。
   const set7 = trySet7ANumberCombo(state, playerId, card);
   if (set7) return set7;
@@ -505,3 +509,5 @@ export function battleUnitAfterNc(
 ): CardInstance | undefined {
   return findBattleUnit(state.players[playerId], instanceId);
 }
+
+NC_RESUME.fn = (state, playerId, card, effectId) => applyNumberComboEffect(state, playerId, card, effectId as ReturnType<typeof getNumberComboEffect>);

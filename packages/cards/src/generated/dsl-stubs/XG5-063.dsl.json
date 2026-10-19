@@ -21,12 +21,12 @@
       "name": "ダイヤ4－ラピッド",
       "text": "自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒これはアタックとストライクを1度ずつ行ってもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "on_rush"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "attack_and_strike_once",
+          "keyword": "xg5::XG5-063::rapid",
           "duration": "turn"
         }
       ]

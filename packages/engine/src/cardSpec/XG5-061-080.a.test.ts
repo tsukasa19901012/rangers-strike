@@ -61,7 +61,7 @@ const battle = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<G
 /** 「自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりに捨札にして…発動できる」の共通テスト（確認と、選ばないとき）。 */
 function insteadTests(id: string, cost: number, page: string, effect: string, p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) {
   const board = () => rushBoard({ hand: [inst(id, "x")], power: powerCards(cost), command: releasedCat("DA", 1), ...p1 }, p2, EXTRA);
-  it.fails(`${id}:【${effect}】— 自軍ラッシュフェイズにこれをラッシュするとき、ラッシュエリアに出すかわりに捨札にして発動するかを選べる（任意）既知の不具合: CARD-${id} 選ばせずにラッシュエリアに出す（出典: ${page}「自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりに捨札にして、次の効果を発動できる」）`, () => {
+  it(`${id}:【${effect}】— 自軍ラッシュフェイズにこれをラッシュするとき、ラッシュエリアに出すかわりに捨札にして発動するかを選べる（任意）（出典: ${page}「自軍ラッシュフェイズ中、これをラッシュするとき、ラッシュエリアに出すかわりに捨札にして、次の効果を発動できる」）`, () => {
     const r = rushFromHand(board(), "player1", `${id}:x`);
     expect(r.ok, r.error).toBe(true);
     expectChoiceFrom(r.state, "player1", id);
@@ -88,7 +88,7 @@ describe("XG5-061 バッファローアンデッド", () => {
   const ENEMY = () => ({ rush: [inst("SPEC-MECHA", "a"), inst("SPEC-MECHA", "b"), inst("SPEC-MECHA-M", "m"), inst("TST-UNIT-0", "o")] });
   insteadTests("XG5-061", 4, "atwiki/page-2183", "スペード8－マグネット", {}, ENEMY());
 
-  it.fails("XG5-061:【スペード8－マグネット】— 発動すれば、これは捨札になり、敵軍ラッシュエリアの「メカ」の S ユニットをすべて敵軍バトルエリアに出せる（M ユニット・メカでないユニットは残る） 既知の不具合: CARD-XG5-061 捨札にする手段がなく効果もない（出典: atwiki/page-2183「敵軍ラッシュエリアにある特徴「メカ」を持つSユニットをすべて敵軍バトルエリアに出してもよい」）", () => {
+  it("XG5-061:【スペード8－マグネット】— 発動すれば、これは捨札になり、敵軍ラッシュエリアの「メカ」の S ユニットをすべて敵軍バトルエリアに出せる（M ユニット・メカでないユニットは残る）（出典: atwiki/page-2183「敵軍ラッシュエリアにある特徴「メカ」を持つSユニットをすべて敵軍バトルエリアに出してもよい」）", () => {
     const s = resolveAll(rushedInstead(rushBoard({ hand: [inst("XG5-061", "x")], power: powerCards(4), command: releasedCat("DA", 1) }, ENEMY(), EXTRA), "XG5-061:x"));
     expect(zoneOf(s, "player1", "XG5-061:x")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-MECHA:a")).toBe("battle");
@@ -110,7 +110,7 @@ describe("XG5-062 モスアンデッド", () => {
 
   insteadTests("XG5-062", 3, "atwiki/page-2209", "ハート8－リフレクト");
 
-  it.fails("XG5-062:【ハート8－リフレクト】— 発動したターン、相手はカウンター（XG5-064 コンファインベント。自軍バトルフェイズ開始時）を使えない 既知の不具合: CARD-XG5-062 捨札にする手段がない（出典: atwiki/page-2209「このターン、相手はカウンターを発動できない」）", () => {
+  it("XG5-062:【ハート8－リフレクト】— 発動したターン、相手はカウンター（XG5-064 コンファインベント。自軍バトルフェイズ開始時）を使えない（出典: atwiki/page-2209「このターン、相手はカウンターを発動できない」）", () => {
     let s = rushedInstead(rushBoard({ hand: [inst("XG5-062", "x")], power: powerCards(3), command: releasedCat("DA", 1) }, { hand: [inst("XG5-064", "cv")], command: releasedCat("WB", 1, "ec") }, EXTRA), "XG5-062:x");
     s = resolveAll(s);
     expect(zoneOf(s, "player1", "XG5-062:x")).toBe("discard");
@@ -132,7 +132,7 @@ describe("XG5-063 ペッカーアンデッド", () => {
 
   const board = () => rushBoard({ hand: [inst("XG5-063", "x")], rush: [inst("SPEC-RIDER", "r"), inst("TST-UNIT-0", "o")], power: powerCards(2), command: releasedCat("DA", 1) }, { battle: [inst("TST-UNIT-0", "e")] }, EXTRA);
 
-  it.fails("XG5-063:【ダイヤ4－ラピッド】— ラッシュするとき、捨札にして「仮面ライダー」を持つ自軍ユニットを選べる（任意。持たないユニットは選べない） 既知の不具合: CARD-XG5-063 選ばせずにラッシュエリアに出す（出典: atwiki/page-2210「ラッシュエリアに出すかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい」）", () => {
+  it("XG5-063:【ダイヤ4－ラピッド】— ラッシュするとき、捨札にして「仮面ライダー」を持つ自軍ユニットを選べる（任意。持たないユニットは選べない）（出典: atwiki/page-2210「ラッシュエリアに出すかわりに捨札にして、特徴「仮面ライダー」を持つ自軍ユニットを1体選んでもよい」）", () => {
     const r = rushFromHand(board(), "player1", "XG5-063:x");
     expect(r.ok, r.error).toBe(true);
     expectChoiceFrom(r.state, "player1", "XG5-063");
@@ -140,7 +140,7 @@ describe("XG5-063 ペッカーアンデッド", () => {
     expect(canSkip(r.state)).toBe(true);
   });
 
-  it.fails("XG5-063:【ダイヤ4－ラピッド】— 選んだユニットは、このターン、アタックしたあとにストライクも行える 既知の不具合: CARD-XG5-063 効果がない（出典: atwiki/page-2210「これはアタックとストライクを1度ずつ行ってもよい」）", () => {
+  it("XG5-063:【ダイヤ4－ラピッド】— 選んだユニットは、このターン、アタックしたあとにストライクも行える（出典: atwiki/page-2210「これはアタックとストライクを1度ずつ行ってもよい」）", () => {
     const r = rushFromHand(board(), "player1", "XG5-063:x");
     let s = resolveAll(pick(r.state, "SPEC-RIDER:r"));
     expect(zoneOf(s, "player1", "XG5-063:x")).toBe("discard");
@@ -195,7 +195,7 @@ describe("XG5-065 タイムベント", () => {
     expectRarityIn("XG5-065", ["R"]);
   });
 
-  it.fails("XG5-065: 両軍の、追加条件を持たないユニットをすべて撃破する（エリア・サイズを問わない）。追加条件を持つユニットは残る 既知の不具合: CARD-XG5-065 効果がない（出典: atwiki/page-2261「追加条件を持たないユニットをすべて撃破する」）", () => {
+  it("XG5-065: 両軍の、追加条件を持たないユニットをすべて撃破する（エリア・サイズを問わない）。追加条件を持つユニットは残る（出典: atwiki/page-2261「追加条件を持たないユニットをすべて撃破する」）", () => {
     const s = resolveAll(beltUsed("XG5-065", "WB", 8, { rush: [inst("TST-UNIT-0", "a"), inst("XG5-049", "c")] }, { rush: [inst("TST-UNIT-2", "b")], battle: [inst("XG5-043", "d"), inst("TST-UNIT-0", "e")] }, EXTRA));
     expect(zoneOf(s, "player1", "TST-UNIT-0:a")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-UNIT-2:b")).toBe("discard");
@@ -221,7 +221,7 @@ describe("XG5-066 仮面ライダーベルデ", () => {
   // 自軍パワーゾーン: オモテ向きの XG5-067 仮面ライダーナイト（ミラーライダー・必要パワー4）・XG5-068 ナイトサバイブ（7）・TST-UNIT-0（ミラーライダーでない）、ほか3枚（パワー6）。
   const board = () => rushBoard({ rush: [inst("XG5-066", "v")], power: [faceUp("XG5-067", "n"), faceUp("XG5-068", "ns"), faceUp("TST-UNIT-0", "o"), ...powerCards(3)] }, {}, EXTRA);
 
-  it.fails("XG5-066:【コピーベント】— 自軍ラッシュフェイズ中に起動でき、自軍ゾーンのオモテ向きの「ミラーライダー」のユニットのカードのうち、必要パワーを満たすものを選べる 既知の不具合: CARD-XG5-066 起動できない（出典: atwiki/page-2212「自軍ゾーンのオモテ向きのカードから、特徴「ミラーライダー」を持つユニットのカードを1枚選びこれと置き換えてもよい。ただし、必要パワーは満たすこと」）", () => {
+  it("XG5-066:【コピーベント】— 自軍ラッシュフェイズ中に起動でき、自軍ゾーンのオモテ向きの「ミラーライダー」のユニットのカードのうち、必要パワーを満たすものを選べる（出典: atwiki/page-2212「自軍ゾーンのオモテ向きのカードから、特徴「ミラーライダー」を持つユニットのカードを1枚選びこれと置き換えてもよい。ただし、必要パワーは満たすこと」）", () => {
     const s0 = board();
     expect(canActivateField(s0, "XG5-066:v")).toBe(true);
     const s = activateField(s0, "XG5-066:v");
@@ -229,7 +229,7 @@ describe("XG5-066 仮面ライダーベルデ", () => {
     expect(choiceIds(s)).toEqual(["XG5-067:n"]);
   });
 
-  it.fails("XG5-066:【コピーベント】— 選んだカードとこれを置き換える（ナイトがラッシュエリアに、ベルデがパワーゾーンに） 既知の不具合: CARD-XG5-066 起動できない（出典: atwiki/page-2212「これと置き換えてもよい」）", () => {
+  it("XG5-066:【コピーベント】— 選んだカードとこれを置き換える（ナイトがラッシュエリアに、ベルデがパワーゾーンに）（出典: atwiki/page-2212「これと置き換えてもよい」）", () => {
     const s = resolveAll(pick(activateField(board(), "XG5-066:v"), "XG5-067:n"));
     expect(zoneOf(s, "player1", "XG5-067:n")).toBe("rush");
     expect(zoneOf(s, "player1", "XG5-066:v")).toBe("power");

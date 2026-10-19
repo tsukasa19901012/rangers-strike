@@ -87,14 +87,14 @@ describe("XG5-068 仮面ライダーナイトサバイブ", () => {
   // 敵軍常駐置き場に RK-021 クロックアップ、敵軍パワーゾーンにオモテ向き1枚・ダメージ1枚。
   const ENEMY = () => ({ operation: [inst("RK-021", "cu")], power: [faceUp("TST-P", "up"), { ...inst("TST-P", "dn"), faceDown: true }] });
 
-  it.fails("XG5-068: RC【戦い続ける覚悟】— ライドオフしたとき、常駐しているオペレーションカード（両軍）を選んで捨札にできる（任意） 既知の不具合: CARD-XG5-068 RC は成立するが選択が開かない（出典: atwiki/page-2229「常駐しているオペレーションカードを1枚選び捨札にしてもよい」）", () => {
+  it("XG5-068: RC【戦い続ける覚悟】— ライドオフしたとき、常駐しているオペレーションカード（両軍）を選んで捨札にできる（任意）（出典: atwiki/page-2229「常駐しているオペレーションカードを1枚選び捨札にしてもよい」）", () => {
     const s = rc("XG5-068:ns", { operation: [inst("RK-078", "own")] }, ENEMY());
     expectChoiceFrom(s, "player1", "XG5-068");
     expect([...choiceIds(s)].sort()).toEqual(["RK-021:cu", "RK-078:own"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-068: RC【戦い続ける覚悟】— 捨札にしたとき、そのカードの持ち主（相手）がウラ向きのパワーを捨札にするかオモテ向きのパワーをダメージにするかを選ぶ 既知の不具合: CARD-XG5-068 RC の効果がない（出典: atwiki/page-2229「そのカードの持ち主は次のようにする⇒ウラ向きのパワーを1枚選び捨札にするか、オモテ向きのパワーを1枚選びダメージにするかを選ぶ」）", () => {
+  it("XG5-068: RC【戦い続ける覚悟】— 捨札にしたとき、そのカードの持ち主（相手）がウラ向きのパワーを捨札にするかオモテ向きのパワーをダメージにするかを選ぶ（出典: atwiki/page-2229「そのカードの持ち主は次のようにする⇒ウラ向きのパワーを1枚選び捨札にするか、オモテ向きのパワーを1枚選びダメージにするかを選ぶ」）", () => {
     let s = pick(rc("XG5-068:ns", {}, ENEMY()), "RK-021:cu");
     expect(zoneOf(s, "player2", "RK-021:cu")).toBe("discard");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
@@ -130,14 +130,14 @@ describe("XG5-069 キハダガニ", () => {
   const destroyed = (attacker: string) =>
     settle2(attack(st({ activePlayer: "player2", player1: { battle: [inst("XG5-069", "k")], deck: deckCards(5) }, player2: { battle: [inst(attacker, "atk")], deck: deckCards(5, "e") } }, EXTRA), `${attacker}:atk`, "XG5-069:k", "player2"));
 
-  it.fails("XG5-069:【待ち伏せ】— 敵軍ターン中、S ユニットとのバトルで撃破されて捨札になったとき、バトルしたユニットを持ち主の山札の下に戻すかを選べる（任意） 既知の不具合: CARD-XG5-069 選択が開かない（出典: atwiki/page-2214「これとバトルしたユニットを、持ち主の山札の下に戻してもよい」）", () => {
+  it("XG5-069:【待ち伏せ】— 敵軍ターン中、S ユニットとのバトルで撃破されて捨札になったとき、バトルしたユニットを持ち主の山札の下に戻すかを選べる（任意）（出典: atwiki/page-2214「これとバトルしたユニットを、持ち主の山札の下に戻してもよい」）", () => {
     const s = destroyed("SPEC-ATK-S");
     expect(zoneOf(s, "player1", "XG5-069:k")).toBe("discard");
     expectChoiceFrom(s, "player1", "XG5-069");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-069:【待ち伏せ】— 戻せば、バトルしたユニットは持ち主の山札の一番下になる 既知の不具合: CARD-XG5-069 効果がない（出典: atwiki/page-2214「持ち主の山札の下に戻してもよい」）", () => {
+  it("XG5-069:【待ち伏せ】— 戻せば、バトルしたユニットは持ち主の山札の一番下になる（出典: atwiki/page-2214「持ち主の山札の下に戻してもよい」）", () => {
     const s = resolveAll(destroyed("SPEC-ATK-S"));
     const deck = s.players.player2.deck;
     expect(deck[deck.length - 1]?.instanceId).toBe("SPEC-ATK-S:atk");
@@ -179,13 +179,13 @@ describe("XG5-070 ニビイロヘビ", () => {
   const enemyNc = () =>
     enter(st({ activePlayer: "player2", player1: { rush: [inst("XG5-070", "n")], battle: [inst("TST-UNIT-0", "o")], deck: deckCards(5) }, player2: { rush: [inst("XG5-037", "gr")], deck: deckCards(5, "e") } }, EXTRA), "XG5-037:gr", "player2");
 
-  it.fails("XG5-070:【偵察】— 敵軍 S ユニットが NC の効果を発動させたとき、実行する前に、これをホールドするかを選べる（任意） 既知の不具合: CARD-XG5-070 選択が開かない（相手の NC がそのまま進む）（出典: atwiki/page-2215「その効果を実行する前に、これをホールドしてもよい」）", () => {
+  it("XG5-070:【偵察】— 敵軍 S ユニットが NC の効果を発動させたとき、実行する前に、これをホールドするかを選べる（任意）（出典: atwiki/page-2215「その効果を実行する前に、これをホールドしてもよい」）", () => {
     const s = enemyNc();
     expectChoiceFrom(s, "player1", "XG5-070");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-070:【偵察】— ホールドすれば、その NC の効果は無効になる（【レッドブレイク】の選択は開かない） 既知の不具合: CARD-XG5-070 効果がない（出典: atwiki/page-2215「そうしたとき、そのNCまたはRCまたはJCの効果を無効にする」）", () => {
+  it("XG5-070:【偵察】— ホールドすれば、その NC の効果は無効になる（【レッドブレイク】の選択は開かない）（出典: atwiki/page-2215「そうしたとき、そのNCまたはRCまたはJCの効果を無効にする」）", () => {
     const s = resolveAll(enemyNc(), []);
     expect(cardIn(s, "player1", "XG5-070:n")?.commandHeld).toBe(true);
     expect(zoneOf(s, "player1", "TST-UNIT-0:o")).toBe("battle");
@@ -209,7 +209,7 @@ describe("XG5-071 仮面ライダー響鬼", () => {
 
   leadMaTests("XG5-071", "atwiki/page-2264");
 
-  it.fails("XG5-071: NC【鍛えてます】— 1番目に出たとき、これより BP の低い自軍ユニットがあれば、このターン BP+1000（BP4000） 既知の不具合: CARD-XG5-071 NC の効果がない（出典: atwiki/page-2264「このユニットよりBPの低い自軍ユニットがあれば、このターン、これは次の能力を得る⇒BP+1000」）", () => {
+  it("XG5-071: NC【鍛えてます】— 1番目に出たとき、これより BP の低い自軍ユニットがあれば、このターン BP+1000（BP4000）（出典: atwiki/page-2264「このユニットよりBPの低い自軍ユニットがあれば、このターン、これは次の能力を得る⇒BP+1000」）", () => {
     const s = enter(battle({ rush: [inst("XG5-071", "h"), inst("SPEC-LOW", "l")] }), "XG5-071:h");
     expect(bpOf(s, "player1", "XG5-071:h")).toBe(4000);
   });
@@ -244,7 +244,7 @@ describe("XG5-072 仮面ライダー威吹鬼", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-072: RC【挫けぬ疾風】— オモテにするのは敵軍山札の上3枚で、そのあと敵軍山札の上に戻る（敵軍山札の枚数は変わらず、自軍山札は動かない） 既知の不具合: CARD-XG5-072 自軍山札を見る（出典: atwiki/page-2278「敵軍山札の上から3枚をオモテにし…オモテにしたカードを山札の上に好きな順で戻す」）", () => {
+  it("XG5-072: RC【挫けぬ疾風】— オモテにするのは敵軍山札の上3枚で、そのあと敵軍山札の上に戻る（敵軍山札の枚数は変わらず、自軍山札は動かない）（出典: atwiki/page-2278「敵軍山札の上から3枚をオモテにし…オモテにしたカードを山札の上に好きな順で戻す」）", () => {
     const s0 = rc("XG5-072:ib", {}, { deck: [inst("SPEC-DA-CARD", "e0"), ...deckCards(5, "e")] });
     const own = s0.players.player1.deck.map((c) => c.instanceId);
     const s = resolveAll(s0);
@@ -280,14 +280,14 @@ describe("XG5-073 仮面ライダー電王SF", () => {
   // 手札: TST-UNIT-2（必要パワー2）。敵軍: TST-UNIT-2（2）・TST-UNIT-0（0）。
   const fired = () => rc("XG5-073:den", { hand: [inst("TST-UNIT-2", "h")] }, { rush: [inst("TST-UNIT-2", "e2"), inst("TST-UNIT-0", "e0")] });
 
-  it.fails("XG5-073: RC【俺の必殺技】— ライドオフしたとき、自分の手札を1枚選んで捨札にできる（任意） 既知の不具合: CARD-XG5-073 手札でなくこのユニットを選ばせる（出典: atwiki/page-2243「自分の手札を1枚捨札にしてもよい」）", () => {
+  it("XG5-073: RC【俺の必殺技】— ライドオフしたとき、自分の手札を1枚選んで捨札にできる（任意）（出典: atwiki/page-2243「自分の手札を1枚捨札にしてもよい」）", () => {
     const s = fired();
     expectChoiceFrom(s, "player1", "XG5-073");
     expect(choiceIds(s)).toEqual(["TST-UNIT-2:h"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-073: RC【俺の必殺技】— 捨札にしたカードと同じ必要パワーの数字（2）の敵軍ユニットを選び、持ち主のパワーゾーンに送る 既知の不具合: CARD-XG5-073 手札を捨札にできない（出典: atwiki/page-2243「捨札にしたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍ユニットを1体選び持ち主のパワーゾーンに送る」）", () => {
+  it("XG5-073: RC【俺の必殺技】— 捨札にしたカードと同じ必要パワーの数字（2）の敵軍ユニットを選び、持ち主のパワーゾーンに送る（出典: atwiki/page-2243「捨札にしたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍ユニットを1体選び持ち主のパワーゾーンに送る」）", () => {
     let s = pick(fired(), "TST-UNIT-2:h");
     expect(zoneOf(s, "player1", "TST-UNIT-2:h")).toBe("discard");
     expect(choiceIds(s)).toEqual(["TST-UNIT-2:e2"]);
@@ -327,13 +327,13 @@ describe("XG5-074 仮面ライダーキバ", () => {
     return resolveAll(paid.state);
   };
 
-  it.fails("XG5-074:【ファンガイアの王】— これをホールドして DA のユニットをラッシュしたとき、このターン、そのユニットは BP+3000 既知の不具合: CARD-XG5-074 BP が上がらない（出典: atwiki/page-2245「そのユニットは次の効果を得る⇒BP+3000され」）", () => {
+  it("XG5-074:【ファンガイアの王】— これをホールドして DA のユニットをラッシュしたとき、このターン、そのユニットは BP+3000（出典: atwiki/page-2245「そのユニットは次の効果を得る⇒BP+3000され」）", () => {
     const s = rushedWithKiva("SPEC-DA-NOSP");
     expect(cardIn(s, "player1", "XG5-074:kv")?.commandHeld).toBe(true);
     expect(bpOf(s, "player1", "SPEC-DA-NOSP:u")).toBe(4000);
   });
 
-  it.fails("XG5-074:【ファンガイアの王】— 本来の SP が空欄なら「SP1/3」になる（3番目に出れば SP1） 既知の不具合: CARD-XG5-074 SP が付かない（出典: atwiki/page-2245「本来のSPが空欄なら「SP1/3」になる」）", () => {
+  it("XG5-074:【ファンガイアの王】— 本来の SP が空欄なら「SP1/3」になる（3番目に出れば SP1）（出典: atwiki/page-2245「本来のSPが空欄なら「SP1/3」になる」）", () => {
     let s = settle(endPhase(rushedWithKiva("SPEC-DA-NOSP")));
     s = passEntry(settle(enter(s, "TST-UNIT-0:f0")));
     s = passEntry(settle(enter(s, "TST-UNIT-0:f1")));

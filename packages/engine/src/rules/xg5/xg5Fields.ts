@@ -122,7 +122,15 @@ function nameOf(state: Defs, cardId: string): string {
  * - XG5-054 仮面ライダーディケイドCF【歩く完全ライダー図鑑】「これは、自軍パワーゾーンのオモテ向きのカードに、特徴「仮面ライダー」を持つ同名のカードが3枚以上
  *   あれば、「SP1」になる。」（atwiki/page-2244）。
  */
-export function xg5EffectiveSp(state: Pick<GameState, "players" | "definitions">, playerId: PlayerId, instance: CardInstance, sp: number): number {
+export function xg5EffectiveSp(state: Pick<GameState, "players" | "definitions"> & Partial<Pick<GameState, "xg5" | "turn">>, playerId: PlayerId, instance: CardInstance, sp: number): number {
+  // XG5-074 仮面ライダーキバ【ファンガイアの王】で得た「本来のSPが空欄なら「SP1/3」」（3番目に出ていれば SP1。flags の xg5-074）。
+  if (
+    state.xg5?.flags?.some((f) => f.kind === "xg5-074" && f.playerId === playerId && f.target === instance.instanceId && f.turn === state.turn) &&
+    state.definitions[instance.cardId]?.sp == null &&
+    state.players[playerId].battle.findIndex((c) => c.instanceId === instance.instanceId) === 2
+  ) {
+    sp = Math.max(sp, 1);
+  }
   const faceUp = state.players[playerId].power.filter((c) => !c.faceDown);
   if (isSameCardIdentity(instance.cardId, "XG5-051")) {
     const names = faceUp.map((c) => nameOf(state, c.cardId));
@@ -161,6 +169,8 @@ function xg5FlagBp(state: GameState, playerId: PlayerId, instance: CardInstance)
     if (f.kind === "xg5-041" && f.turn >= state.turn) bonus += 3000;
     if (f.kind === "xg5-049" && f.turn >= state.turn) bonus += 4000;
     if (f.kind === "xg5-050" && f.turn === state.turn) bonus += 3000;
+    if (f.kind === "xg5-071" && f.turn === state.turn) bonus += 1000;
+    if (f.kind === "xg5-074" && f.turn === state.turn) bonus += 3000;
   }
   if (isSameCardIdentity(instance.cardId, "XG5-059") && state.players[playerId].hand.length <= 1) bonus += 3000;
   return bonus;
@@ -210,7 +220,8 @@ export function xg5EndTurnChoice(state: GameState, playerId: PlayerId): { state:
 export const XG5_KATARU = "xg5_050_kataru_senaka";
 function xg5KataruEndTurnChoice(state: GameState, turnPlayerId: PlayerId): { state: GameState; choice: PendingEffectChoice } | null {
   const asked = new Set(xg5Flags(state, "xg5-050-asked").filter((f) => f.turn === state.turn).map((f) => f.target));
-  for (const flag of xg5Flags(state, "xg5-050")) {
+  // XG5-071 仮面ライダー響鬼【鍛えてます】の「このターンを終えるときホールド状態ならリリースしてもよい」も同じ確認（flags の xg5-071）。
+  for (const flag of [...xg5Flags(state, "xg5-050"), ...xg5Flags(state, "xg5-071")]) {
     if (flag.turn !== state.turn || !flag.target || asked.has(flag.target)) continue;
     const card = fieldOf(state, flag.playerId).find((c) => c.instanceId === flag.target);
     if (!card?.commandHeld) continue;

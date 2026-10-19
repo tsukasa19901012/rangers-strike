@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-071::etemasu",
+          "keyword": "xg5::XG5-071::kitaetemasu",
           "duration": "permanent"
         }
       ]

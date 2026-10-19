@@ -6,7 +6,7 @@
  * - `AFTER_ACTION_HOOKS`: applyAction の後処理（core/applyAction.ts から rules/xg5/xg5Effects.ts の applyXg5AfterAction で呼ぶ）。
  * 選択の組み立ては rules/rm/rm1Effects.ts の共通の部品（openAfter・proceed・close 等）を使う。
  */
-import type { GameState, PendingBattle, PendingEffectChoice, PendingStrike, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PendingStrike, PlayerId } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import type { ChoiceOutcome } from "../rm/rm1Effects";
 import type { Xg5Watch } from "./xg5Types";
@@ -46,6 +46,22 @@ export function openXg5Attacked(state: GameState, battle: PendingBattle, wingAtt
   for (const hook of ATTACKED_HOOKS) {
     const opened = hook(state, battle, wingAttackFromRush);
     if (opened) return opened;
+  }
+  return null;
+}
+
+/**
+ * NC の効果を実行する前（rules/numberComboEffects.ts applyNumberComboEffect の先頭）。選択を開いたら { state, logs } を返す（その NC の効果はまだ実行しない）。
+ * 実行を続けるときは NC_RESUME.fn（applyNumberComboEffect。numberComboEffects.ts が登録する）を呼ぶ。
+ */
+export type NcIntercept = (state: GameState, playerId: PlayerId, card: CardInstance, effectId: string | undefined) => { state: GameState; logs: string[] } | null;
+export const NC_INTERCEPTS: NcIntercept[] = [];
+export const NC_RESUME: { fn?: (state: GameState, playerId: PlayerId, card: CardInstance, effectId: string | undefined) => { state: GameState; logs: string[] } } = {};
+
+export function tryXg5InterceptNc(state: GameState, playerId: PlayerId, card: CardInstance, effectId: string | undefined): { state: GameState; logs: string[] } | null {
+  for (const hook of NC_INTERCEPTS) {
+    const r = hook(state, playerId, card, effectId);
+    if (r) return r;
   }
   return null;
 }

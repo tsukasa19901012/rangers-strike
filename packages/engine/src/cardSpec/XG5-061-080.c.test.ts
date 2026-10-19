@@ -12,6 +12,7 @@
 import { describe, expect, it } from "vitest";
 import type { GameState } from "../types/game";
 import {
+  accept,
   attack,
   beltUsed,
   bpOf,
@@ -73,12 +74,12 @@ describe("XG5-075 仮面ライダーイクサSM", () => {
     return settle(attack(enter(s, "XG5-075:ix"), "XG5-075:ix", "SPEC-LOW:e"));
   };
 
-  it.fails("XG5-075: NC【母娘の絆】— 成立したときには何も選ばない（撃破するまで選択は開かない） 既知の不具合: CARD-XG5-075 成立したときに自軍捨札のユニットカードを選ばせる（出典: atwiki/page-2246「このターン、次に…撃破したとき」）", () => {
+  it("XG5-075: NC【母娘の絆】— 成立したときには何も選ばない（撃破するまで選択は開かない）（出典: atwiki/page-2246「このターン、次に…撃破したとき」）", () => {
     const s = enter(battle({ rush: [inst("XG5-075", "ix")], discard: [inst("SPEC-MAN", "dm")] }, { battle: [inst("SPEC-LOW", "e")] }), "XG5-075:ix");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG5-075");
   });
 
-  it.fails("XG5-075: NC【母娘の絆】— このターン、次に「女」の自軍ユニット（これ自身）が敵軍ユニットを撃破したとき、自軍捨札の「男」のユニットカードを選んで手札に加えられる（任意） 既知の不具合: CARD-XG5-075 成立したときに選択が開き、撃破したときには開かない（出典: atwiki/page-2246「次に特徴「女」を持つ自軍ユニットが敵軍ユニットを撃破したとき、自軍捨札から特徴「男」を持つユニットカードを1枚選び、手札に加えてもよい」）", () => {
+  it("XG5-075: NC【母娘の絆】— このターン、次に「女」の自軍ユニット（これ自身）が敵軍ユニットを撃破したとき、自軍捨札の「男」のユニットカードを選んで手札に加えられる（任意）（出典: atwiki/page-2246「次に特徴「女」を持つ自軍ユニットが敵軍ユニットを撃破したとき、自軍捨札から特徴「男」を持つユニットカードを1枚選び、手札に加えてもよい」）", () => {
     const s = won();
     expect(zoneOf(s, "player2", "SPEC-LOW:e")).toBe("discard");
     expectChoiceFrom(s, "player1", "XG5-075");
@@ -86,7 +87,7 @@ describe("XG5-075 仮面ライダーイクサSM", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-075: NC【母娘の絆】— 選んだカードは手札に加わる 既知の不具合: CARD-XG5-075 成立したときに選択が開き、撃破したときには開かない（出典: atwiki/page-2246「手札に加えてもよい」）", () => {
+  it("XG5-075: NC【母娘の絆】— 選んだカードは手札に加わる（出典: atwiki/page-2246「手札に加えてもよい」）", () => {
     const s = resolveAll(pick(won(), "SPEC-MAN:dm"));
     expect(zoneOf(s, "player1", "SPEC-MAN:dm")).toBe("hand");
   });
@@ -116,14 +117,14 @@ describe("XG5-076 仮面ライダーイクサBM", () => {
     return enter(s, "XG5-076:ib");
   };
 
-  it.fails("XG5-076:【ダブル・ブロウクン・ファング】—「女」の自軍ユニットからコンビネーションするとき、自軍コマンドの枚数（2）以下の必要パワーの数字の敵軍 S ユニットを選べる（M ユニット・7+ は選べない。任意） 既知の不具合: CARD-XG5-076 効果がない（出典: atwiki/page-2247「自軍コマンドの枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する」）", () => {
+  it("XG5-076:【ダブル・ブロウクン・ファング】—「女」の自軍ユニットからコンビネーションするとき、自軍コマンドの枚数（2）以下の必要パワーの数字の敵軍 S ユニットを選べる（M ユニット・7+ は選べない。任意）（出典: atwiki/page-2247「自軍コマンドの枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する」）", () => {
     const s = combo("SPEC-WOMAN");
     expectChoiceFrom(s, "player1", "XG5-076");
     expect([...choiceIds(s)].sort()).toEqual(["TST-UNIT-0:e0", "XG5-075:es"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-076:【ダブル・ブロウクン・ファング】— 選んだユニットは撃破される 既知の不具合: CARD-XG5-076 効果がない（出典: atwiki/page-2247「撃破する」）", () => {
+  it("XG5-076:【ダブル・ブロウクン・ファング】— 選んだユニットは撃破される（出典: atwiki/page-2247「撃破する」）", () => {
     const s = resolveAll(pick(combo("SPEC-WOMAN"), "XG5-075:es"));
     expect(zoneOf(s, "player2", "XG5-075:es")).toBe("discard");
   });
@@ -148,15 +149,15 @@ describe("XG5-077 仮面ライダーキバーラ", () => {
   const P2 = () => ({ battle: [inst("SPEC-MAN", "b"), inst("SPEC-PLAIN", "p")], rush: [inst("SPEC-MAN", "r")], discard: [inst("SPEC-MAN", "d"), inst("SPEC-MAN-M", "dm")] });
   const entered = () => enter(battle({ rush: [inst("XG5-077", "kb")] }, P2()), "XG5-077:kb");
 
-  it.fails("XG5-077:【ソニックスタッブ】— 自軍ターン中にバトルエリアに出たとき、これをホールドするかを選べる（任意） 既知の不具合: CARD-XG5-077 選択が開かない（出典: atwiki/page-2266「これをホールドしてもよい」）", () => {
+  it("XG5-077:【ソニックスタッブ】— 自軍ターン中にバトルエリアに出たとき、これをホールドするかを選べる（任意）（出典: atwiki/page-2266「これをホールドしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG5-077");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-077:【ソニックスタッブ】— ホールドしたとき、敵軍バトルエリアの「男」のユニットを選び、持ち主のパワーゾーンにダメージにして置く（ラッシュエリアのユニットは選べない） 既知の不具合: CARD-XG5-077 効果がない（出典: atwiki/page-2266「敵軍バトルエリアから特徴「男」を持つユニットを1体選び持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("XG5-077:【ソニックスタッブ】— ホールドしたとき、敵軍バトルエリアの「男」のユニットを選び、持ち主のパワーゾーンにダメージにして置く（ラッシュエリアのユニットは選べない）（出典: atwiki/page-2266「敵軍バトルエリアから特徴「男」を持つユニットを1体選び持ち主のパワーゾーンにダメージにして置く」）", () => {
     let s = entered();
-    if (s.pendingEffectChoice?.kind === "confirm") s = resolveAll(s, []);
+    if (s.pendingEffectChoice?.kind === "confirm") s = accept(s);
     expect(cardIn(s, "player1", "XG5-077:kb")?.commandHeld).toBe(true);
     expect(choiceIds(s)).toEqual(["SPEC-MAN:b"]);
     s = pick(s, "SPEC-MAN:b");
@@ -164,9 +165,9 @@ describe("XG5-077 仮面ライダーキバーラ", () => {
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("XG5-077:【ソニックスタッブ】— そうしたとき、相手は自分自身の捨札の「男」の S ユニットのカードを選び、自分自身のラッシュエリアに出す（M のカードは選べない） 既知の不具合: CARD-XG5-077 効果がない（出典: atwiki/page-2266「相手は自分自身の捨札から特徴「男」を持つSユニットのカードを1枚選び自分自身のラッシュエリアに出す」）", () => {
+  it("XG5-077:【ソニックスタッブ】— そうしたとき、相手は自分自身の捨札の「男」の S ユニットのカードを選び、自分自身のラッシュエリアに出す（M のカードは選べない）（出典: atwiki/page-2266「相手は自分自身の捨札から特徴「男」を持つSユニットのカードを1枚選び自分自身のラッシュエリアに出す」）", () => {
     let s = entered();
-    if (s.pendingEffectChoice?.kind === "confirm") s = resolveAll(s, []);
+    if (s.pendingEffectChoice?.kind === "confirm") s = accept(s);
     s = pick(s, "SPEC-MAN:b");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(choiceIds(s)).toEqual(["SPEC-MAN:d"]);
@@ -190,7 +191,7 @@ describe("XG5-078 ファイナルフォームライド", () => {
   const used = () =>
     beltUsed("XG5-078", "OT", 6, { rush: [inst("TST-UNIT-0", "u")], power: [faceUp("XG5-049", "ra"), faceUp("XG5-080", "md"), faceUp("TST-UNIT-7", "big"), faceUp("XG5-047", "op"), ...powerCards(2)] }, {}, EXTRA);
 
-  it.fails("XG5-078: 自軍 S ユニットを選び、パワーゾーンのオモテ向きの S ユニット・S ビークルのカードのうち必要パワーを満たすものを選ぶ（追加条件は問わない） 既知の不具合: CARD-XG5-078 効果がない（出典: atwiki/page-2179「自軍Sユニットを1体選び、自軍パワーゾーンのオモテ向きのカードからSユニットまたはSビークルのカードを1枚選ぶ…ただし、必要パワーは満たすこと（追加条件は満たさなくてもよい）」）", () => {
+  it("XG5-078: 自軍 S ユニットを選び、パワーゾーンのオモテ向きの S ユニット・S ビークルのカードのうち必要パワーを満たすものを選ぶ（追加条件は問わない）（出典: atwiki/page-2179「自軍Sユニットを1体選び、自軍パワーゾーンのオモテ向きのカードからSユニットまたはSビークルのカードを1枚選ぶ…ただし、必要パワーは満たすこと（追加条件は満たさなくてもよい）」）", () => {
     let s = used();
     expectChoiceFrom(s, "player1", "XG5-078");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:u"]);
@@ -198,7 +199,7 @@ describe("XG5-078 ファイナルフォームライド", () => {
     expect([...choiceIds(s)].sort()).toEqual(["XG5-049:ra", "XG5-080:md"]);
   });
 
-  it.fails("XG5-078: 選んだユニットとカードを置き換える（再生アポロガイストがラッシュエリアに、TST-UNIT-0 がパワーゾーンに） 既知の不具合: CARD-XG5-078 効果がない（出典: atwiki/page-2179「選んだユニットとカードを置き換える」）", () => {
+  it("XG5-078: 選んだユニットとカードを置き換える（再生アポロガイストがラッシュエリアに、TST-UNIT-0 がパワーゾーンに）（出典: atwiki/page-2179「選んだユニットとカードを置き換える」）", () => {
     const s = resolveAll(pick(pick(used(), "TST-UNIT-0:u"), "XG5-049:ra"));
     expect(zoneOf(s, "player1", "XG5-049:ra")).toBe("rush");
     expect(zoneOf(s, "player1", "TST-UNIT-0:u")).toBe("power");
@@ -225,14 +226,14 @@ describe("XG5-079 仮面ライダーディケイド", () => {
   // 敵軍捨札: XG5-072 仮面ライダー威吹鬼（RC）・TST-UNIT-0（RC でない）。
   const fired = () => rcOff(battle({ rush: [inst("XG5-080", "md"), inst("XG5-079", "dc")] }, { discard: [inst("XG5-072", "ib"), inst("TST-UNIT-0", "o")] }), "XG5-079:dc", "XG5-080:md");
 
-  it.fails("XG5-079: RC【ライダーカード】— ライドオフしたとき、敵軍捨札のナンバーに RC を持つユニットカードを選べる（任意） 既知の不具合: CARD-XG5-079 RC は成立するが選択が開かない（出典: atwiki/page-2216「敵軍捨札から、ナンバーにＲＣを持つユニットカードを1枚選んでもよい」）", () => {
+  it("XG5-079: RC【ライダーカード】— ライドオフしたとき、敵軍捨札のナンバーに RC を持つユニットカードを選べる（任意）（出典: atwiki/page-2216「敵軍捨札から、ナンバーにＲＣを持つユニットカードを1枚選んでもよい」）", () => {
     const s = fired();
     expectChoiceFrom(s, "player1", "XG5-079");
     expect(choiceIds(s)).toEqual(["XG5-072:ib"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-079: RC【ライダーカード】— 選んだカード（XG5-072）の RC【挫けぬ疾風】をこのユニットの効果として発動する 既知の不具合: CARD-XG5-079 RC の効果がない（出典: atwiki/page-2216「選んだカードのRCの効果をこのユニットの効果として発動する」）", () => {
+  it("XG5-079: RC【ライダーカード】— 選んだカード（XG5-072）の RC【挫けぬ疾風】をこのユニットの効果として発動する（出典: atwiki/page-2216「選んだカードのRCの効果をこのユニットの効果として発動する」）", () => {
     const s = pick(fired(), "XG5-072:ib");
     expect(zoneOf(s, "player2", "XG5-072:ib")).toBe("discard");
     // 【挫けぬ疾風】の「敵軍山札をシャッフルしてもよい」の選択が、このユニット（XG5-079）の効果として開く
@@ -269,14 +270,14 @@ describe("XG5-080 マシンディケイダー", () => {
     return r.state;
   };
 
-  it.fails("XG5-080:【アタックライド】— ラッシュしたとき、自軍パワーゾーンのオモテ向きの、必要パワーを満たす S ビークルのカードを選べる（任意） 既知の不具合: CARD-XG5-080 選択が開かない（出典: atwiki/page-2217「必要パワーを満たしているSビークルのカードを1枚選び、これと置き換えてもよい」）", () => {
+  it("XG5-080:【アタックライド】— ラッシュしたとき、自軍パワーゾーンのオモテ向きの、必要パワーを満たす S ビークルのカードを選べる（任意）（出典: atwiki/page-2217「必要パワーを満たしているSビークルのカードを1枚選び、これと置き換えてもよい」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "XG5-080");
     expect([...choiceIds(s)].sort()).toEqual(["RK-300:ke", "XG5-057:rb"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-080:【アタックライド】— 選んだカードとこれを置き換える（レッドランバスがラッシュエリアに、これがパワーゾーンに） 既知の不具合: CARD-XG5-080 選択が開かない（出典: atwiki/page-2217「これと置き換えてもよい」）", () => {
+  it("XG5-080:【アタックライド】— 選んだカードとこれを置き換える（レッドランバスがラッシュエリアに、これがパワーゾーンに）（出典: atwiki/page-2217「これと置き換えてもよい」）", () => {
     const s = resolveAll(pick(rushed(), "XG5-057:rb"));
     expect(zoneOf(s, "player1", "XG5-057:rb")).toBe("rush");
     expect(zoneOf(s, "player1", "XG5-080:md")).toBe("power");

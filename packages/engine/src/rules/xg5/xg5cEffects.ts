@@ -298,13 +298,13 @@ CHOICE_RESOLVERS[XG5_KATARU] = () => ({ error: "invalid_target" });
 CHOICE_SKIPPERS[XG5_KATARU] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;
   const next = proceed(close(state, pending), pending);
-  return { state: continueEndTurn(next, pending.phasePlayerId), log: logFor(state, playerId, "XG5-050", `${XG5_KATARU}:stay`) };
+  return { state: continueEndTurn(next, pending.phasePlayerId), log: logFor(state, playerId, pending.sourceCardId, `${XG5_KATARU}:stay`) };
 };
 CHOICE_CONFIRMERS[XG5_KATARU] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;
   let next = close(state, pending);
   if (pending.sourceInstanceId) next = setFieldHeld(next, playerId, pending.sourceInstanceId, false);
-  return { state: continueEndTurn(proceed(next, pending), pending.phasePlayerId), log: logFor(state, playerId, "XG5-050", `${XG5_KATARU}:release`) };
+  return { state: continueEndTurn(proceed(next, pending), pending.phasePlayerId), log: logFor(state, playerId, pending.sourceCardId, `${XG5_KATARU}:release`) };
 };
 
 // ---------------------------------------------------------------------------

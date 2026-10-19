@@ -40,11 +40,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-072::kenukaze",
+          "keyword": "xg5::XG5-072::ibuki",
           "duration": "turn"
         }
       ]

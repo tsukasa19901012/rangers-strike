@@ -36,11 +36,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-070::fxunknowne581b5",
+          "keyword": "xg5::XG5-070::scout",
           "duration": "permanent"
         }
       ]
