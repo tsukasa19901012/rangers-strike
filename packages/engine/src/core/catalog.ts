@@ -61,6 +61,8 @@ import { set5PassiveBpBonus } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower, effectivePowerCost, rushEffectivePowerCost } from "./power";
 import { rk11CounterCostReduction } from "../rules/rk/rk11Fields";
 import { rk12ResidentsNegated } from "../rules/rk/rk12Fields";
+import { activeSearchCache } from "./searchCache";
+import { engineSideEffectCount } from "./sideEffects";
 
 export function buildDefinitionMap(
   decks: CardDefinition[][],
@@ -393,6 +395,29 @@ export function bpPlusInvertedFor(
 }
 
 export function effectiveBp(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+): number {
+  // CPU の探索の間は、同じ状態・同じカードの BP を使い回す（盤面評価・BP0 の撃破判定・候補の並べ替えで何度も調べる。
+  // core/searchCache.ts）。計算の中で状態の外に残る処理をしたときは覚えない（core/sideEffects.ts）。
+  const cache = activeSearchCache()?.bp;
+  if (!cache) return effectiveBpUncached(state, playerId, instance);
+  let perState = cache.get(state);
+  if (!perState) {
+    perState = { player1: new Map(), player2: new Map() };
+    cache.set(state, perState);
+  }
+  const byInstance = perState[playerId];
+  const hit = byInstance.get(instance);
+  if (hit !== undefined) return hit;
+  const sideEffectsBefore = engineSideEffectCount();
+  const value = effectiveBpUncached(state, playerId, instance);
+  if (engineSideEffectCount() === sideEffectsBefore) byInstance.set(instance, value);
+  return value;
+}
+
+function effectiveBpUncached(
   state: GameState,
   playerId: PlayerId,
   instance: CardInstance,

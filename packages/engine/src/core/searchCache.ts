@@ -14,6 +14,8 @@ export type SearchCache = {
   legalActions: WeakMap<GameState, readonly GameAction[]>;
   /** core/applyAction.ts applyAction の結果（アクションの JSON ごと）・CPU の読みの結果（ai/）。 */
   memo: WeakMap<GameState, Map<string, unknown>>;
+  /** core/catalog.ts effectiveBp の結果（状態ごと・プレイヤーごと・カードのインスタンスのオブジェクトごと）。 */
+  bp: WeakMap<GameState, { player1: Map<object, number>; player2: Map<object, number> }>;
 };
 
 let active: SearchCache | null = null;
@@ -21,7 +23,7 @@ let active: SearchCache | null = null;
 /** fn の間、状態ごとの計算結果を使い回す（入れ子の呼び出しは外側の表を使う）。fn の間は状態を書き換えないこと。 */
 export function withSearchCache<T>(fn: () => T): T {
   if (active) return fn();
-  active = { legalActions: new WeakMap(), memo: new WeakMap() };
+  active = { legalActions: new WeakMap(), memo: new WeakMap(), bp: new WeakMap() };
   try {
     return fn();
   } finally {
