@@ -539,9 +539,12 @@ export function isValidZordUpMaterial(
       return (
         (def.type === "unit" || def.type === "vehicle") &&
         // 「自軍「A」、または自軍「B」1体を捨札にする」はどちらの名前でもよい（RS-655・RS-656 atwiki/page-1528・1474）。
-        namedUnitPartnerNames(condition).some((name) =>
-          // RS-602【汚染された水】で変わったカード名で判定する。
-          normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(name)),
+        namedUnitPartnerNames(condition).some(
+          (name) =>
+            // RS-602【汚染された水】で変わったカード名で判定する。
+            normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(name)) ||
+            // 「※これは「X」としてつかえる」（XG1-067 等。atwiki/page-1668 Q1「全ての場にあるとき常に有効」）。
+            fusionMaterialAliasNames(def.text).some((n) => normalizeName(n).includes(normalizeName(name))),
         )
       );
     case "discard_feature_unit": {

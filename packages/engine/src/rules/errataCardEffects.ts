@@ -17,6 +17,7 @@ import {
   unitSizeOf,
 } from "../core/catalog";
 import { applyDamageToPlayer } from "./damagePayment";
+import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import { sameCardName } from "../core/cardNames";
 import { isZordUpCost, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import { isMirrorWorld, takeHybridRevealedToHand } from "./rk/rk1NamedEffects";
@@ -426,8 +427,9 @@ const ELECTRO_BEAM_PICK = "ereki_hikari_pick";
  */
 function beginElectroBeam(state: GameState, ctx: GrantKeywordContext): GameState | null {
   const enemy = state.players[opponent(ctx.playerId)];
+  // 「相手に選ばれない」ユニット（XG1-074 等）は選べない。
   const targets = fieldUnits(enemy)
-    .filter((c) => isSmallUnit(state.definitions, c))
+    .filter((c) => isSmallUnit(state.definitions, c) && isSelectableByOpponentEffect(state, ctx.playerId, c.instanceId, ctx.sourceCardId, ctx.playerId))
     .map((c) => c.instanceId);
   if (targets.length === 0) return null;
   return openEffectChoice(state, {

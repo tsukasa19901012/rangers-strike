@@ -9,6 +9,7 @@ import { openRk11UndeadReplace } from "../rules/rk/rk11UnitEffects";
 import { rk11IsHandSubstitute } from "../rules/rk/rk11Fields";
 import { rk12PlacesHeldOnRush } from "../rules/rk/rk12Fields";
 import { openRk12GorgomWindow, trackRk12UnitHolds } from "../rules/rk/rk12UnitEffects";
+import { xg1dTrackHandDiscards } from "../rules/xg1/xg1dEffects";
 import { applyRk13AfterAction } from "../rules/rk/rk13UnitEffects";
 import { applyRk8AfterAction } from "../rules/rk/rk8UnitEffects";
 import { applyRk10AfterAction, rk10CraneDeclined, rk10CraneIntercept, runRk10OnRush } from "../rules/rk/rk10UnitEffects";
@@ -1037,6 +1038,8 @@ function applyActionWithRng(
   next = trackZenibombEntries(state, next);
   // RK-240・RK-247: このターン、ユニットがホールドされたかを記録する（rules/rk/rk12UnitEffects.ts）。
   next = trackRk12UnitHolds(state, next);
+  // XG1-063【トルネードチェイサー】: 手札のカードが捨札に置かれたか（いちばん外側のアクションの前後で見る。rules/xg1/xg1dEffects.ts）。
+  if (applyActionDepth === 0) next = xg1dTrackHandDiscards(state, next, action);
   // RK-251 ゴルゴムの仕業を使わなかった: オペレーションの使用（効果の実行）を続ける（rules/rk/rk12UnitEffects.ts）。
   if (next.rk12ResumeOperation && !next.pendingEffectChoice) {
     const op = next.rk12ResumeOperation;

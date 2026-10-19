@@ -7,6 +7,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { rm1ResidentCount } from "../rm/rm1Fields";
 import { actionContextState } from "../zordFeatureContext";
+import { rk12AddedFeatures, rk12TurnPayloads } from "../rk/rk12Fields";
 
 type Defs = Pick<GameState, "definitions">;
 
@@ -237,12 +238,26 @@ export function xg1SamuraiBpBonus(state: GameState, ownerId: PlayerId, host: Car
   return xg1MaxFusionMaterialCount(state, host.cardId) * 1000;
 }
 
-/** XG1 の BP の修正（core/catalog.ts effectiveBp）: XG1-040 の【侍武装】・XG1-058 の※「これはライド中、BP+1000される。」（atwiki/page-1565）。 */
+/**
+ * XG1 の BP の修正（core/catalog.ts effectiveBp）: XG1-040 の【侍武装】・XG1-058 の※「これはライド中、BP+1000される。」（atwiki/page-1565）・
+ * XG1-068 の【アタックライド】「このターン、これは特徴「警察」を持つ自軍ユニット1体につきBP+1000される。」（atwiki/page-1668。エリアを問わない）。
+ */
 export function xg1BpBonus(state: GameState, ownerId: PlayerId, card: CardInstance): number {
   let bonus = xg1SamuraiBpBonus(state, ownerId, card);
   if (isSameCardIdentity(card.cardId, "XG1-058") && card.mountedOnInstanceId) bonus += 1000;
+  if (isSameCardIdentity(card.cardId, "XG1-068") && rk12TurnPayloads<{ instanceId?: string }>(state, ownerId, XG1_068_KUUGA_RULE).some((p) => p.instanceId === card.instanceId)) {
+    const field = [...state.players[ownerId].rush, ...state.players[ownerId].battle];
+    const police = field.filter((c) => {
+      const printed = def(state, c.cardId)?.features ?? [];
+      return def(state, c.cardId)?.type === "unit" && [...printed, ...rk12AddedFeatures(state, ownerId, c, printed)].includes("警察");
+    });
+    bonus += 1000 * police.length;
+  }
   return bonus;
 }
+
+/** XG1-068 ディケイド クウガMF【アタックライド】を発動した記録（payload: { instanceId }。rules/xg1/xg1dEffects.ts）。 */
+export const XG1_068_KUUGA_RULE = "xg1_068_kuuga_police";
 
 // ---------------------------------------------------------------------------
 // XG1-044 仮面ライダーV3 ※「これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、自軍捨札に「仮面ライダー1号」のカードと「仮面ライダー2号」の

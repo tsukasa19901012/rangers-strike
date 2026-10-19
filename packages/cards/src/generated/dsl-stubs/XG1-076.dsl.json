@@ -17,12 +17,11 @@
         "type": "operation",
         "timing": "rush"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG1-076::nokara1tsubisuru",
-          "duration": "permanent"
+          "keyword": "xg1::XG1-076::decadriver",
+          "duration": "turn"
         }
       ]
     }

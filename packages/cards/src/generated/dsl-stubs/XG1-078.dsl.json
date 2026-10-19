@@ -31,5 +31,8 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "features": [
+    "アドベントカード"
+  ]
 }

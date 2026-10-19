@@ -15,6 +15,7 @@ import { holdCommands } from "./xg1Shared";
 import "./xg1aEffects";
 import "./xg1bEffects";
 import "./xg1cEffects";
+import "./xg1dEffects";
 
 export { xg1bOnAttackDeclared } from "./xg1bEffects";
 

@@ -11,6 +11,8 @@ import { patchPlayer } from "../playerPatches";
 import { rk1IsSmallNow } from "../rk/rk1Features";
 import { type BaseCtx, base, close, fieldUnits, logFor, moveFieldUnit, selectableEnemy, zoneOfField } from "../rm/rm1Effects";
 import { rm1CostNumber } from "../rm/rm1Fields";
+import { getPlayerModifiers } from "../../core/scopedModifiers";
+import { rk12TurnPayloads } from "../rk/rk12Fields";
 import { XG1_HOLD_COMPLETERS, XG1_RESOLVERS } from "./xg1Core";
 
 export function holdCommands(state: GameState, playerId: PlayerId, ids: string[]): GameState {
@@ -114,4 +116,14 @@ export function residentZoneCards(state: GameState, ownerId: PlayerId): Array<{ 
     for (const s of op.stackedCards ?? []) out.push({ card: s, parent: op.instanceId });
   }
   return out;
+}
+
+/** このターンの記録（kind "rule"・scope "turn"、payload に instanceId）を付ける。 */
+export function addTurnMark(state: GameState, playerId: PlayerId, ruleId: string, sourceCardId: string, instanceId: string): GameState {
+  return patchPlayer(state, playerId, (p) => ({ ...p, modifiers: [...getPlayerModifiers(p), { kind: "rule", ruleId, scope: "turn", sourceCardId, payload: { instanceId } }] }));
+}
+
+/** このターン、instanceId に ruleId の記録があるか。 */
+export function hasTurnMark(state: Pick<GameState, "players">, playerId: PlayerId, ruleId: string, instanceId: string): boolean {
+  return rk12TurnPayloads<{ instanceId?: string }>(state, playerId, ruleId).some((p) => p.instanceId === instanceId);
 }

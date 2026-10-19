@@ -28,11 +28,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-080::abisudaibu",
+          "keyword": "xg1::XG1-080::abyss_dive",
           "duration": "turn"
         }
       ]
