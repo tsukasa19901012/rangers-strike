@@ -29,6 +29,7 @@ import { buildLogEntry } from "../../log/formatLog";
 import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice, requestDrawFromDeck } from "../pendingChoices";
+import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
 import { patchPlayer } from "../playerPatches";
 import { unitFeatures } from "../addedFeatures";
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
@@ -211,20 +212,6 @@ function setHeld(state: GameState, ownerId: PlayerId, instanceIds: Set<string>):
     battle: p.battle.map((c) => (instanceIds.has(c.instanceId) ? { ...c, commandHeld: true } : c)),
     rush: p.rush.map((c) => (instanceIds.has(c.instanceId) ? { ...c, commandHeld: true } : c)),
   }));
-}
-
-/** 場のユニットを取り除く（重ねていたカードは捨札。ライドしていたビークルはその場に残る）。 */
-function takeUnitOff(state: GameState, ownerId: PlayerId, instanceId: string): { state: GameState; card: CardInstance } | null {
-  const zone = zoneOfField(state, ownerId, instanceId);
-  if (!zone) return null;
-  const card = state.players[ownerId][zone].find((c) => c.instanceId === instanceId)!;
-  const stacked = (card.stackedCards ?? []).map(stripForZone);
-  const next = patchPlayer(state, ownerId, (pl) => ({
-    ...pl,
-    [zone]: pl[zone].filter((c) => c.instanceId !== instanceId),
-    discard: [...pl.discard, ...stacked],
-  }));
-  return { state: next, card: stripForZone(card) };
 }
 
 /** ids のユニットをすべて撃破する（RK-115 と同じく、全員を選んだ確定済みの撃破の選択で処理する）。resume は撃破の後に開く。 */
@@ -473,20 +460,16 @@ function applyGx05(state: GameState, ctx: GrantKeywordContext): GrantKeywordResu
 }
 
 /** 選んだユニットを持ち主のコマンドゾーンにホールド状態で置く（置けなければ捨札）。 */
-function toEnemyCommandHeld(state: GameState, enemyId: PlayerId, instanceId: string): { state: GameState; cardId?: string } {
-  const taken = takeUnitOff(state, enemyId, instanceId);
-  if (!taken) return { state };
-  const placed = patchPlayer(taken.state, enemyId, (p) =>
-    p.command.length < COMMAND_ZONE_MAX
-      ? { ...p, command: [...p.command, { ...taken.card, commandHeld: true }] }
-      : { ...p, discard: [...p.discard, taken.card] },
-  );
-  return { state: placed, cardId: taken.card.cardId };
+function toEnemyCommandHeld(state: GameState, enemyId: PlayerId, instanceId: string, phasePlayerId: PlayerId): { state: GameState; cardId?: string } {
+  const target = [...state.players[enemyId].battle, ...state.players[enemyId].rush].find((c) => c.instanceId === instanceId);
+  if (!target) return { state };
+  // 離場の処理を通す（チェイスの機会を出す。R-KW-CHASE-01・rules/fieldLeaveQueue.ts）。
+  return { state: sendFieldCardsToCommandHeld(state, enemyId, [instanceId], phasePlayerId), cardId: target.cardId };
 }
 
 CHOICE_RESOLVERS[GX05_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
-  const placed = toEnemyCommandHeld(close(state, pending), opponent(playerId), instanceId);
+  const placed = toEnemyCommandHeld(close(state, pending), opponent(playerId), instanceId, pending.phasePlayerId);
   return { state: proceed(placed.state, pending), log: logFor(state, playerId, "RK-194", `${GX05_EFFECT_ID}:${placed.cardId ?? instanceId}`) };
 };
 
@@ -938,7 +921,7 @@ CHOICE_CONFIRMERS[SAIGA_EFFECT_ID] = (state, playerId) => {
 
 CHOICE_RESOLVERS[SAIGA_PICK_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
-  const placed = toEnemyCommandHeld(close(state, pending), opponent(playerId), instanceId);
+  const placed = toEnemyCommandHeld(close(state, pending), opponent(playerId), instanceId, pending.phasePlayerId);
   return { state: proceed(placed.state, pending), log: logFor(state, playerId, "RK-205", `${SAIGA_PICK_EFFECT_ID}:${placed.cardId ?? instanceId}`) };
 };
 

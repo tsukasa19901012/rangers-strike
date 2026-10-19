@@ -1350,6 +1350,11 @@ export type GameState = {
   rk7PendingTriggers?: Array<{ kind: "rk129" | "rk132"; playerId: PlayerId; sourceInstanceId: string }>;
   /** RM-059 異次元調達屋カブト【トランクの中身】の、まだ開いていない発動（rules/rm/rm3Effects.ts applyRm3AfterAction）。 */
   rm3PendingTriggers?: Array<{ kind: "rm059"; playerId: PlayerId; sourceInstanceId: string }>;
+  /**
+   * 効果で場のカードを撃破ではなく別のゾーンへ移す処理のうち、チェイス等の離場の応答を待っている残り（rules/fieldLeaveQueue.ts。
+   * R-KW-CHASE-01）。応答の解決後に core/applyAction.ts の後処理で順に続ける。
+   */
+  queuedFieldLeaves?: PendingLeave[];
   /** RM-026 グランドバース【収容】の、チェイス等の選択を待っている「その後、選んだビークルをパワーゾーンに送る」（rules/rm/rm2Effects.ts applyRm2AfterAction）。 */
   rm2PendingTriggers?: Array<{ kind: "rm026_vehicle"; playerId: PlayerId; instanceId: string; phasePlayerId: PlayerId }>;
   /** RM-017 オメデトロフィーの、まだ開いていない発動（rules/rm/rm1Effects.ts applyRm1AfterAction）。 */

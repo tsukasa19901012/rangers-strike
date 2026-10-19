@@ -28,6 +28,7 @@ import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKey
 import { buildLogEntry } from "../../log/formatLog";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { openEffectChoice } from "../pendingChoices";
+import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
 import { grantSp1OnPlayer, patchPlayer } from "../playerPatches";
 import { markBattleBlocked } from "../turnModifiers";
 import { unitFeatures } from "../addedFeatures";
@@ -166,22 +167,6 @@ function featuresOf(state: GameState, ownerId: PlayerId, card: CardInstance): st
   return unitFeatures(state, ownerId, card);
 }
 
-/**
- * 場のユニットを場から取り除く（ユニットでなくなる）。ライドしていたユニットのビークルはその場に残り、
- * ユニットの下に重ねたカード（J パワー等）は持ち主の捨札になる。取り除いたカード（状態を持たない）を返す。
- */
-function takeUnitOff(state: GameState, ownerId: PlayerId, instanceId: string): { state: GameState; card: CardInstance } | null {
-  const found = findField(state, ownerId, instanceId);
-  if (!found) return null;
-  const stacked = (found.card.stackedCards ?? []).map((s) => stripForZone(s));
-  const next = patchPlayer(state, ownerId, (p) => ({
-    ...p,
-    [found.zone]: p[found.zone].filter((c) => c.instanceId !== instanceId),
-    discard: stacked.length > 0 ? [...p.discard, ...stacked] : p.discard,
-  }));
-  return { state: next, card: stripForZone(found.card) };
-}
-
 // ---------------------------------------------------------------------------
 // RK-022 ライダーパス（※常駐）— 配置するとき
 // 「これを配置するとき、自軍山札から特徴「DEN-O」を持つユニットカードを4枚まで選び、相手に見せてからこれに重ねて置いた後、
@@ -317,14 +302,11 @@ function openCyclone(state: GameState, playerId: PlayerId, vehicleInstanceId: st
 CHOICE_RESOLVERS[CYCLONE_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
   const enemyId = opponent(playerId);
-  const taken = takeUnitOff(state, enemyId, instanceId);
-  if (!taken) return { error: "invalid_target" };
-  const placed = patchPlayer(taken.state, enemyId, (p) =>
-    p.command.length < COMMAND_ZONE_MAX
-      ? { ...p, command: [...p.command, { ...taken.card, commandHeld: true }] }
-      : { ...p, discard: [...p.discard, taken.card] },
-  );
-  return { state: proceed(close(placed, pending), pending), log: logFor(state, playerId, "RK-024", `${CYCLONE_EFFECT_ID}:${taken.card.cardId}`) };
+  const target = [...state.players[enemyId].battle, ...state.players[enemyId].rush].find((c) => c.instanceId === instanceId);
+  if (!target) return { error: "invalid_target" };
+  // 離場の処理を通す（チェイスの機会を出す。R-KW-CHASE-01・rules/fieldLeaveQueue.ts）。
+  const placed = sendFieldCardsToCommandHeld(close(state, pending), enemyId, [instanceId], pending.phasePlayerId);
+  return { state: proceed(placed, pending), log: logFor(state, playerId, "RK-024", `${CYCLONE_EFFECT_ID}:${target.cardId}`) };
 };
 
 export const SMASH_EFFECT_ID = "rk028_dynamic_smash";

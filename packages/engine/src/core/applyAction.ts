@@ -95,6 +95,7 @@ import {
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { checkWinner, advancePhase } from "./createGame";
 import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
+import { drainQueuedFieldLeaves } from "../rules/fieldLeaveQueue";
 import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
@@ -1044,6 +1045,8 @@ function applyActionWithRng(
   if (applyActionDepth === 0 && "playerId" in action && action.playerId) next = applyMeeMegaloAfterAction(state, next, action.type, action.playerId);
   // 起動効果の「このユニットを捨札にしてもよい。そうしたとき、…」の続き（rules/fieldActivatedAbilities.ts）。
   if (next.pendingFieldAbilityAfterLeave) next = continueFieldAbilityAfterLeave(next);
+  // ルール: R-KW-CHASE-01 — チェイス等の応答を待っていた、効果でコマンドゾーン等へ移す残りのカード（rules/fieldLeaveQueue.ts）。
+  next = drainQueuedFieldLeaves(next);
   next = continueDeferredPowerFlip(next);
   next = continueDeferredAttack(next);
   next = continueDeferredStrike(next);

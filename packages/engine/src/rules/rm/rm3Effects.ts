@@ -56,6 +56,7 @@ import {
   zoneOfField,
 } from "./rm1Effects";
 import { rm1GrantsScrum } from "./rm1Fields";
+import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
 import { rm3AreaHasName, rm3GrantsResist } from "./rm3Fields";
 
 // ---------------------------------------------------------------------------
@@ -199,7 +200,7 @@ function holdPick(cardId: string, effectId: string): ChoiceResolver {
   };
 }
 
-/** 敵軍の場のユニット・ビークルを持ち主のコマンドゾーンにホールド状態で置く選択の解決（置けなければ捨札。moveFieldUnit）。 */
+/** 敵軍の場のユニット・ビークルを持ち主のコマンドゾーンにホールド状態で置く選択の解決（置けなければ捨札。離場の処理を通しチェイスの機会を出す。R-KW-CHASE-01）。 */
 function commandPick(cardId: string, effectId: string): ChoiceResolver {
   return (state, playerId, instanceId) => {
     const pending = state.pendingEffectChoice!;
@@ -256,8 +257,8 @@ function applyJandejiku(state: GameState, ctx: GrantKeywordContext): GrantKeywor
       return !f.includes("男") && !f.includes("女");
     })
     .map((c) => c.instanceId);
-  let next = state;
-  for (const id of ids) next = moveFieldUnit(next, enemyId, id, ctx.phasePlayerId, "command_held");
+  // 並び順に1体ずつ離場の処理を通す（チェイスの機会を出す。R-KW-CHASE-01・rules/fieldLeaveQueue.ts）。
+  const next = sendFieldCardsToCommandHeld(state, enemyId, ids, ctx.phasePlayerId);
   return { state: next, detail: `rm044:${ids.length}` };
 }
 

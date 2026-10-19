@@ -27,6 +27,7 @@ import { emitUnitLeftZoneAndResolve } from "../../events/emitUnitLeftZone";
 import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyConfirmEffectChoice, openEffectChoice } from "../pendingChoices";
+import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
 import { patchPlayer } from "../playerPatches";
 import { KIRIGAKURE_RULE_ID, addTurnFeatureModifier, unitFeatures } from "../addedFeatures";
 import { startEffectRush } from "../effectRush";
@@ -239,7 +240,10 @@ export function destroyAll(state: GameState, ctx: BaseCtx, sourceCardId: string,
   return "error" in destroyed ? state : destroyed.state;
 }
 
-/** 場のユニットを持ち主の指定のゾーンに移す（撃破ではない。ライドしているビークル・下に重ねたカードは捨札）。 */
+/**
+ * 場のユニットを持ち主の指定のゾーンに移す（撃破ではない。ライドしているビークル・下に重ねたカードは捨札）。
+ * コマンドゾーンへ置くとき（command_held）は離場の処理を通し、チェイスの機会を出す（R-KW-CHASE-01。rules/fieldLeaveQueue.ts）。
+ */
 export function moveFieldUnit(
   state: GameState,
   ownerId: PlayerId,
@@ -247,12 +251,12 @@ export function moveFieldUnit(
   phasePlayerId: PlayerId,
   to: "command_held" | "hand" | "power_damage" | "power" | "discard" | "deck_bottom",
 ): GameState {
+  if (to === "command_held") return sendFieldCardsToCommandHeld(state, ownerId, [instanceId], phasePlayerId);
   const zone = zoneOfField(state, ownerId, instanceId);
   const found = findField(state, ownerId, instanceId);
   if (!zone || !found) return state;
-  const toCommand = to === "command_held" && state.players[ownerId].command.length < COMMAND_ZONE_MAX;
   const toPower = to === "power_damage" || to === "power";
-  const toZone = to === "hand" ? "hand" : toPower ? "power" : to === "deck_bottom" ? "deck" : toCommand ? "command" : "discard";
+  const toZone = to === "hand" ? "hand" : toPower ? "power" : to === "deck_bottom" ? "deck" : "discard";
   const moved = patchPlayer(state, ownerId, (p) => {
     const strip = (cards: CardInstance[]) =>
       cards.filter((c) => c.instanceId !== instanceId).map((c) => (c.mountedOnInstanceId === instanceId ? { ...c, mountedOnInstanceId: undefined } : c));
@@ -263,7 +267,6 @@ export function moveFieldUnit(
       hand: to === "hand" ? [...p.hand, card] : p.hand,
       power: toPower ? [...p.power, to === "power_damage" ? { ...card, faceDown: true } : card] : p.power,
       damage: to === "power_damage" ? p.damage + 1 : p.damage,
-      command: toCommand ? [...p.command, { ...card, commandHeld: true }] : p.command,
       deck: to === "deck_bottom" ? [...p.deck, card] : p.deck,
       discard: [...p.discard, ...(toZone === "discard" ? [card] : []), ...(found.stackedCards ?? []).map(stripForZone)],
     };
@@ -562,7 +565,7 @@ export function applyRm1LeaveCounter(state: GameState, ownerId: PlayerId, phaseP
 function ikaruPlace(state: GameState, pending: PendingEffectChoice, playerId: PlayerId, selected: string[]): GameState {
   let next = close(state, pending);
   const enemyId = opponent(playerId);
-  for (const id of selected) next = moveFieldUnit(next, enemyId, id, pending.phasePlayerId, "command_held");
+  next = sendFieldCardsToCommandHeld(next, enemyId, selected, pending.phasePlayerId);
   return proceed(next, pending);
 }
 

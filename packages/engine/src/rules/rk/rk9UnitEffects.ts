@@ -17,7 +17,6 @@
  */
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
-import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
@@ -30,6 +29,7 @@ import { crossReductionFor } from "../../keywords/battleKeywords";
 import { canRiderMountVehicle } from "../../keywords/ride";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice } from "../pendingChoices";
+import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
 import { patchPlayer } from "../playerPatches";
 import { unitFeatures } from "../addedFeatures";
 import { battlePositionOneBased, printedSpBase } from "../fractionalSp";
@@ -589,14 +589,11 @@ function applyRiderKick2(state: GameState, ctx: GrantKeywordContext): GrantKeywo
 CHOICE_RESOLVERS[NEW_NIGO_EFFECT_ID] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
   const enemyId = opponent(playerId);
-  const taken = takeUnitOff(close(state, pending), enemyId, instanceId);
-  if (!taken) return { error: "invalid_target" };
-  const placed = patchPlayer(taken.state, enemyId, (p) =>
-    p.command.length < COMMAND_ZONE_MAX
-      ? { ...p, command: [...p.command, { ...taken.card, commandHeld: true }] }
-      : { ...p, discard: [...p.discard, taken.card] },
-  );
-  return { state: proceed(placed, pending), log: logFor(state, playerId, "RK-176", `${NEW_NIGO_EFFECT_ID}:${taken.card.cardId}`) };
+  const target = [...state.players[enemyId].battle, ...state.players[enemyId].rush].find((c) => c.instanceId === instanceId);
+  if (!target) return { error: "invalid_target" };
+  // 離場の処理を通す（チェイスの機会を出す。R-KW-CHASE-01・rules/fieldLeaveQueue.ts）。
+  const placed = sendFieldCardsToCommandHeld(close(state, pending), enemyId, [instanceId], pending.phasePlayerId);
+  return { state: proceed(placed, pending), log: logFor(state, playerId, "RK-176", `${NEW_NIGO_EFFECT_ID}:${target.cardId}`) };
 };
 
 /** ライドせずに出た新2号の直前が「仮面ライダー1号」なら RC の効果を発動する（rules/battleEntry.ts から呼ぶ）。対象外なら null。 */

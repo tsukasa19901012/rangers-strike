@@ -26,7 +26,6 @@ import { unitFeatures } from "../addedFeatures";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { isCostWindowSatisfied } from "../../core/costWindow";
-import { COMMAND_ZONE_MAX } from "../../types/game";
 import {
   cardCategories,
   getDefinition,
@@ -43,8 +42,9 @@ import { scrumBlocksAttack } from "../../keywords";
 import { canWingAttackFromRush } from "../../keywords/battleKeywords";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { countAvailablePower, effectivePowerCost } from "../../core/power";
-import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
+import { findInZone, opponent } from "../../core/helpers";
 import { countReleasedCommands } from "../restrictions";
+import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
 import { getBattleEntryPowerDiscardCount } from "../batch07FieldEffects";
 import {
   canEffectPutRushUnitIntoBattle,
@@ -653,29 +653,16 @@ export function tryLegend3BattleToRush(
   return withChoice ?? state;
 }
 
+/**
+ * 敵軍バトルエリアのユニットを持ち主のコマンドゾーンにホールド状態で置く（置けなければ捨札。unitDestination "enemy_command"）。
+ * 離場の処理を通す（チェイスの機会を出す。R-KW-CHASE-01・rules/fieldLeaveQueue.ts）。
+ */
 export function applyAssaultToCommandHold(
   state: GameState,
   ownerId: PlayerId,
   instanceId: string,
+  phasePlayerId: PlayerId,
 ): GameState {
-  const owner = state.players[ownerId];
-  const found = findInZone(owner, "battle", instanceId);
-  if (!found) return state;
-
-  const [, battle] = removeAt(owner.battle, found.index);
-  let nextOwner: PlayerState;
-  if (owner.command.length < COMMAND_ZONE_MAX) {
-    nextOwner = {
-      ...owner,
-      battle,
-      command: [...owner.command, { ...found.card, commandHeld: true }],
-    };
-  } else {
-    nextOwner = {
-      ...owner,
-      battle,
-      discard: [...owner.discard, found.card],
-    };
-  }
-  return { ...state, ...updatePlayer(state, ownerId, nextOwner) };
+  if (!findInZone(state.players[ownerId], "battle", instanceId)) return state;
+  return sendFieldCardsToCommandHeld(state, ownerId, [instanceId], phasePlayerId);
 }

@@ -4176,7 +4176,7 @@ export function applyEffectChoiceSelect(
       if (dest === "enemy_command") {
         const located = findCardOwner(state, instanceId);
         if (!located || located.zone !== "battle") return { error: "invalid_target" };
-        const nextState = applyAssaultToCommandHold(state, located.playerId, instanceId);
+        const nextState = applyAssaultToCommandHold(state, located.playerId, instanceId, pending.phasePlayerId);
         return finishChoice(
           nextState,
           pending,

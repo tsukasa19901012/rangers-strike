@@ -22,6 +22,7 @@ import { promoteDeferredBattleEntry } from "../battleEntry";
 import { filterEffectRushCandidates, startEffectRush } from "../effectRush";
 import { addTurnFeatureModifier, KIRIGAKURE_RULE_ID, unitFeatures } from "../addedFeatures";
 import { applyUnitLeave, openEffectChoice } from "../pendingChoices";
+import { sendFieldCardsToCommandOrDiscard } from "../fieldLeaveQueue";
 import { patchPlayer } from "../playerPatches";
 import { findCardInField } from "../fieldLookup";
 import { isResidentActivatedThisRush, markResidentActivatedThisRush } from "../permanentOperation";
@@ -190,28 +191,12 @@ function placeAsDamage(state: GameState, ids: string[], phasePlayerId: PlayerId)
   return next;
 }
 
-/** 場のユニットを持ち主のコマンドゾーンにホールド状態で置く／捨札にする（重ねたカードは捨札）。 */
-function placeUnitsInCommand(state: GameState, ownerId: PlayerId, toCommand: string[], toDiscard: string[]): GameState {
-  return patchPlayer(state, ownerId, (p) => {
-    const all = [...p.battle, ...p.rush];
-    const moving = (c: CardInstance) => toCommand.includes(c.instanceId) || toDiscard.includes(c.instanceId);
-    const stacked = all.filter(moving).flatMap((c) => (c.stackedCards ?? []).map(strip));
-    const pick = (ids: string[]) =>
-      ids.map((id) => all.find((c) => c.instanceId === id)).filter((c): c is CardInstance => !!c).map(strip);
-    const unmount = (cards: CardInstance[]) =>
-      cards.map((c) => {
-        if (!c.mountedOnInstanceId || !toCommand.concat(toDiscard).includes(c.mountedOnInstanceId)) return c;
-        const { mountedOnInstanceId: _m, ...rest } = c;
-        return rest as CardInstance;
-      });
-    return {
-      ...p,
-      battle: unmount(p.battle.filter((c) => !moving(c))),
-      rush: unmount(p.rush.filter((c) => !moving(c))),
-      command: [...p.command, ...pick(toCommand).map((c) => ({ ...c, commandHeld: true }))],
-      discard: [...p.discard, ...pick(toDiscard), ...stacked],
-    };
-  });
+/**
+ * 場のユニットを持ち主のコマンドゾーンにホールド状態で置く／捨札にする（重ねたカードは捨札）。離場の処理を通す
+ * （チェイスの機会を出す。R-KW-CHASE-01・rules/fieldLeaveQueue.ts）。
+ */
+function placeUnitsInCommand(state: GameState, ownerId: PlayerId, toCommand: string[], toDiscard: string[], phasePlayerId: PlayerId): GameState {
+  return sendFieldCardsToCommandOrDiscard(state, ownerId, toCommand, toDiscard, phasePlayerId);
 }
 
 /**
@@ -228,8 +213,8 @@ function placeAllInCommand(
 ): GameState {
   if (targets.length === 0) return state;
   const space = Math.max(0, COMMAND_ZONE_MAX - state.players[ownerId].command.length);
-  if (targets.length <= space) return placeUnitsInCommand(state, ownerId, targets, []);
-  if (space === 0) return placeUnitsInCommand(state, ownerId, [], targets);
+  if (targets.length <= space) return placeUnitsInCommand(state, ownerId, targets, [], ctx.phasePlayerId);
+  if (space === 0) return placeUnitsInCommand(state, ownerId, [], targets, ctx.phasePlayerId);
   const turnPlayer = turnPlayerOf(state);
   return openAfter(state, {
     ...base({ ...ctx, playerId: turnPlayer }),
@@ -262,7 +247,7 @@ CHOICE_RESOLVERS[COMMAND_OVERFLOW_EFFECT_ID] = (state, playerId, instanceId) => 
   }
   const all = pending.viewedInstanceIds ?? [];
   const ownerId = meta.ownerId ?? opponent(playerId);
-  const next = placeUnitsInCommand(close(state, pending), ownerId, all.filter((id) => !selected.includes(id)), selected);
+  const next = placeUnitsInCommand(close(state, pending), ownerId, all.filter((id) => !selected.includes(id)), selected, pending.phasePlayerId);
   return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${COMMAND_OVERFLOW_EFFECT_ID}:${selected.length}`) };
 };
 

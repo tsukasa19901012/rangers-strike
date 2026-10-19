@@ -28,6 +28,7 @@ import { buildLogEntry } from "../../log/formatLog";
 import { hasBattleNcEffect } from "../namedUnitEffects";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
+import { sendFieldCardsToCommandOrDiscard } from "../fieldLeaveQueue";
 import { findCardInField } from "../fieldLookup";
 import { startEffectRush } from "../effectRush";
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
@@ -748,22 +749,9 @@ function resolveRevolver(state: GameState, playerId: PlayerId, instanceId: strin
 
 export const ROCK_DROP_EFFECT_ID = "ganseki_otoshi_discard_pick";
 
-function placeUnitsInCommand(state: GameState, ownerId: PlayerId, toCommand: string[], toDiscard: string[]): GameState {
-  return patchPlayer(state, ownerId, (p) => {
-    const all = [...p.battle, ...p.rush];
-    const strip = (c: CardInstance): CardInstance => ({ instanceId: c.instanceId, cardId: c.cardId });
-    const moving = (c: CardInstance) => toCommand.includes(c.instanceId) || toDiscard.includes(c.instanceId);
-    const stacked = all.filter(moving).flatMap((c) => (c.stackedCards ?? []).map(({ faceDown: _f, ...s }) => s));
-    const pick = (ids: string[]) =>
-      ids.map((id) => all.find((c) => c.instanceId === id)).filter((c): c is CardInstance => !!c).map(strip);
-    return {
-      ...p,
-      battle: p.battle.filter((c) => !moving(c)),
-      rush: p.rush.filter((c) => !moving(c)),
-      command: [...p.command, ...pick(toCommand).map((c) => ({ ...c, commandHeld: true }))],
-      discard: [...p.discard, ...pick(toDiscard), ...stacked],
-    };
-  });
+/** 置くユニット・捨札にするユニットを、離場の処理を通して移す（チェイスの機会を出す。R-KW-CHASE-01・rules/fieldLeaveQueue.ts）。 */
+function placeUnitsInCommand(state: GameState, ownerId: PlayerId, toCommand: string[], toDiscard: string[], phasePlayerId: PlayerId): GameState {
+  return sendFieldCardsToCommandOrDiscard(state, ownerId, toCommand, toDiscard, phasePlayerId);
 }
 
 function beginRockDrop(state: GameState, ctx: GrantKeywordContext): GameState {
@@ -773,8 +761,8 @@ function beginRockDrop(state: GameState, ctx: GrantKeywordContext): GameState {
     .map((c) => c.instanceId);
   if (targets.length === 0) return state;
   const space = Math.max(0, COMMAND_ZONE_MAX - state.players[enemyId].command.length);
-  if (targets.length <= space) return placeUnitsInCommand(state, enemyId, targets, []);
-  if (space === 0) return placeUnitsInCommand(state, enemyId, [], targets);
+  if (targets.length <= space) return placeUnitsInCommand(state, enemyId, targets, [], ctx.phasePlayerId);
+  if (space === 0) return placeUnitsInCommand(state, enemyId, [], targets, ctx.phasePlayerId);
   return openEffectChoice(state, {
     playerId: ctx.playerId,
     effectId: ROCK_DROP_EFFECT_ID,
@@ -803,8 +791,15 @@ function resolveRockDrop(state: GameState, playerId: PlayerId, instanceId: strin
     };
   }
   const all = pending.viewedInstanceIds ?? [];
-  const next = placeUnitsInCommand(state, opponent(playerId), all.filter((id) => !selected.includes(id)), selected);
-  return { state: finish(next, pending.phasePlayerId, state), log: logFor(state, playerId, "RS-282", ROCK_DROP_EFFECT_ID) };
+  const log = logFor(state, playerId, "RS-282", ROCK_DROP_EFFECT_ID);
+  const next = placeUnitsInCommand(clearPending(state, pending.phasePlayerId), opponent(playerId), all.filter((id) => !selected.includes(id)), selected, pending.phasePlayerId);
+  if (next.pendingEffectChoice || next.pendingChase || next.pendingLeave || next.pendingRegister) {
+    // 離場の応答（チェイス等）・誘発の選択が開いた: 割り込まれていた選択はその解決後に開く。
+    const resume = pending.resumeChoice;
+    if (!resume) return { state: next, log };
+    return { state: { ...next, deferredDestroyTriggers: [...(next.deferredDestroyTriggers ?? []), { kind: "open_choice", step: "after_discard", pending: resume }] }, log };
+  }
+  return { state: finish(next, pending.phasePlayerId, state), log };
 }
 
 // ---------------------------------------------------------------------------

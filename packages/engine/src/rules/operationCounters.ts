@@ -1972,19 +1972,24 @@ export function finalizeLeavePending(
       discard: [...owner.discard, ...stacked],
     };
   } else if (pending.toZone === "command") {
-    if (owner.command.length < COMMAND_ZONE_MAX) {
-      nextOwner = {
-        ...owner,
-        [pending.fromZone]: fromCards,
-        command: [...owner.command, { ...leavingCard, commandHeld: true }],
-      };
-    } else {
-      nextOwner = {
-        ...owner,
-        [pending.fromZone]: fromCards,
-        discard: [...owner.discard, leavingCard],
-      };
-    }
+    // 持ち主のコマンドゾーンにホールド状態で置く（置けなければ捨札。R-ZONE-08）。場の状態は持ち込まない。下に重ねていたカードは
+    // 捨札になり、これにライドしていたユニットはライドしていない状態になる（rules/fieldLeaveQueue.ts。R-KW-CHASE-01）。
+    const unmount = (cards: typeof fromCards) =>
+      cards.map((c) => {
+        if (c.mountedOnInstanceId !== leavingCard.instanceId) return c;
+        const { mountedOnInstanceId: _m, ...rest } = c;
+        return rest as typeof c;
+      });
+    const plain = { instanceId: leavingCard.instanceId, cardId: leavingCard.cardId };
+    const stacked = (found.card.stackedCards ?? []).map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }));
+    const toCommand = owner.command.length < COMMAND_ZONE_MAX;
+    nextOwner = {
+      ...owner,
+      rush: unmount(pending.fromZone === "rush" ? fromCards : owner.rush),
+      battle: unmount(pending.fromZone === "battle" ? fromCards : owner.battle),
+      command: toCommand ? [...owner.command, { ...plain, commandHeld: true }] : owner.command,
+      discard: [...owner.discard, ...(toCommand ? [] : [plain]), ...stacked],
+    };
   } else if (
     pending.toZone === "discard" &&
     !pending.notDestruction &&

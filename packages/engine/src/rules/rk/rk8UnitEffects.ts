@@ -27,6 +27,7 @@ import { cardNotSelectableByOpponent, isSelectableByOpponentEffect } from "../..
 import { crossReductionFor } from "../../keywords/battleKeywords";
 import { promoteDeferredBattleEntry } from "../battleEntry";
 import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice } from "../pendingChoices";
+import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
 import { patchPlayer } from "../playerPatches";
 import { unitFeatures } from "../addedFeatures";
 import { battlePositionOneBased, printedSpBase } from "../fractionalSp";
@@ -845,14 +846,8 @@ CHOICE_RESOLVERS[GM01_EFFECT_ID] = (state, playerId, instanceId) => {
   const enemyId = opponent(playerId);
   const unit = fieldCards(state, enemyId).find((c) => c.instanceId === instanceId);
   if (!unit) return { error: "invalid_target" };
-  const stacked = (unit.stackedCards ?? []).map(stripForZone);
-  const next = patchPlayer(close(state, pending), enemyId, (p) => ({
-    ...p,
-    battle: p.battle.filter((c) => c.instanceId !== instanceId).map((c) => (c.mountedOnInstanceId === instanceId ? { ...c, mountedOnInstanceId: undefined } : c)),
-    rush: p.rush.filter((c) => c.instanceId !== instanceId),
-    command: [...p.command, { ...stripForZone(unit), commandHeld: true }],
-    discard: [...p.discard, ...stacked],
-  }));
+  // 離場の処理を通す（チェイスの機会を出す。R-KW-CHASE-01・rules/fieldLeaveQueue.ts）。
+  const next = sendFieldCardsToCommandHeld(close(state, pending), enemyId, [instanceId], pending.phasePlayerId);
   return { state: proceed(next, pending), log: logFor(state, playerId, "RK-166", `${GM01_EFFECT_ID}:${cardName(state.definitions, unit.cardId)}`) };
 };
 
