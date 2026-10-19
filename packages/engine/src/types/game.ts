@@ -1416,7 +1416,7 @@ export type GameState = {
   /** RM-017 オメデトロフィーの、まだ開いていない発動（rules/rm/rm1Effects.ts applyRm1AfterAction）。 */
   rm1PendingTriggers?: Array<{ kind: "rm017"; playerId: PlayerId; sourceInstanceId: string; unitCardId: string }>;
   /** プロモーションカードの、まだ開いていない発動（XP-013【キョウリュウマル】等。rules/promo/promoAfterAction.ts）。 */
-  promoPendingTriggers?: Array<{ kind: string; playerId: PlayerId; sourceInstanceId: string; phasePlayerId: PlayerId }>;
+  promoPendingTriggers?: Array<{ kind: string; playerId: PlayerId; sourceInstanceId: string; phasePlayerId: PlayerId; data?: Readonly<Record<string, unknown>> }>;
   /** RK-153【車両強奪】で選ばれたユニット（次の相手のスタートフェイズに戻せない。rules/rk/rk8UnitEffects.ts）。 */
   rk8Seized?: Array<{ playerId: PlayerId; instanceId: string }>;
   /** RK-011 第三の眼: 無効にしなかったカウンターの使用をもう一度処理する（core/applyAction.ts の後処理）。 */

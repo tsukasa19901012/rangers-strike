@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SK-003::noe5bea9",
-          "duration": "permanent"
+          "keyword": "promo::SK-003::famme",
+          "duration": "turn"
         }
       ]
     }

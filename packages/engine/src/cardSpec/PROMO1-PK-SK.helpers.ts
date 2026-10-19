@@ -188,8 +188,6 @@ export function shadowMoonTests(id: string, page: string, rarity: string, text: 
 // ===========================================================================
 /** 仮面ライダーV3（PK-009・SK-002）の共通テスト。 */
 export function v3Tests(id: string, page: string, rarity: string, text: string): void {
-  /** 【ダブルタイフーン】は SK-002・PK-009 とも未実装（RC の選択が開かない）。 */
-  const bug = ` — 既知の不具合: CARD-${id} 【ダブルタイフーン】が未実装（ライドオフしても選択が開かない）`;
   const EXTRA = [PLAIN_VEHICLE];
   const board = (p1: P1 = {}, p2: P2 = {}) => battleBoard(EXTRA, p1, p2);
   const command = () => [inst("RK-023", "n1"), inst("RK-073", "n2"), inst("RK-164", "f1"), inst("RK-134", "f2"), inst("TST-OP-ET", "et")];
@@ -206,27 +204,27 @@ export function v3Tests(id: string, page: string, rarity: string, text: string):
     expect(registerOffered(attackUntilRegister({ battle: [inst(id, "v3")] }, `${id}:v3`))).toBe(true);
   });
 
-  it.fails(`${id}: 【ダブルタイフーン】（RC）自軍コマンドゾーンの「仮面ライダー1号」「仮面ライダー2号」のカードから1枚選べる（任意。「（THE FIRST）」は別のカード名なので選べない）（出典: ${page}「自軍コマンドゾーンから「仮面ライダー1号」か「仮面ライダー2号」のカードを1枚選びホールドしてもよい」・grnrngr/faq-rider-2 SK-002 Q2「括弧書きの部分もカード名として含みます」）${bug}`, () => {
+  it(`${id}: 【ダブルタイフーン】（RC）自軍コマンドゾーンの「仮面ライダー1号」「仮面ライダー2号」のカードから1枚選べる（任意。「（THE FIRST）」は別のカード名なので選べない）（出典: ${page}「自軍コマンドゾーンから「仮面ライダー1号」か「仮面ライダー2号」のカードを1枚選びホールドしてもよい」・grnrngr/faq-rider-2 SK-002 Q2「括弧書きの部分もカード名として含みます」）`, () => {
     const s = typhoon();
     expectChoiceFrom(s, "player1", id);
     expect(choiceIds(s)).toEqual(["RK-023:n1", "RK-073:n2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails(`${id}: 公式Q&A — RK-023 仮面ライダー1号をホールドすると、【技の1号】の「SP1」をこのユニットの効果として発動し、V3 は SP1 を得る（出典: grnrngr/faq-rider-2 SK-002 Q1「はい、SP1を得ます」・${page} Q1）${bug}`, () => {
+  it(`${id}: 公式Q&A — RK-023 仮面ライダー1号をホールドすると、【技の1号】の「SP1」をこのユニットの効果として発動し、V3 は SP1 を得る（出典: grnrngr/faq-rider-2 SK-002 Q1「はい、SP1を得ます」・${page} Q1）`, () => {
     const s = resolveAll(pick(typhoon(), "RK-023:n1"));
     expect(cardIn(s, "player1", "RK-023:n1")?.commandHeld).toBe(true);
     expect(spOf(s, "player1", `${id}:v3`)).toBe(1);
     expect(canStrike(s, `${id}:v3`)).toBe(true);
   });
 
-  it.fails(`${id}: RK-073 仮面ライダー2号をホールドすると、【力の2号】（このターン BP+2000）をこのユニットの効果として発動する（出典: ${page}「ホールドしたユニットカードのＲＣの効果を、このユニットの効果として発動する」・atwiki/page-208 RK-073 本文）${bug}`, () => {
+  it(`${id}: RK-073 仮面ライダー2号をホールドすると、【力の2号】（このターン BP+2000）をこのユニットの効果として発動する（出典: ${page}「ホールドしたユニットカードのＲＣの効果を、このユニットの効果として発動する」・atwiki/page-208 RK-073 本文）`, () => {
     const s = resolveAll(pick(typhoon(), "RK-073:n2"));
     expect(cardIn(s, "player1", "RK-073:n2")?.commandHeld).toBe(true);
     expect(bpOf(s, "player1", `${id}:v3`)).toBe(6000);
   });
 
-  it.fails(`${id}: ホールドしなければ何も起きない（1番目の SP1/5 は SP を持たない）（出典: ${page}「ホールドしてもよい。そうしたとき」）${bug}`, () => {
+  it(`${id}: ホールドしなければ何も起きない（1番目の SP1/5 は SP を持たない）（出典: ${page}「ホールドしてもよい。そうしたとき」）`, () => {
     const s = resolveAll(skip(typhoon()));
     expect(cardIn(s, "player1", "RK-023:n1")?.commandHeld ?? false).toBe(false);
     expect(spOf(s, "player1", `${id}:v3`)).toBe(0);

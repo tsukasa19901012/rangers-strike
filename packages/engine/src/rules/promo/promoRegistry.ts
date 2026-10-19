@@ -7,7 +7,7 @@
  * 登録先は関数の中に持つ（循環 import でカードのモジュールが先に評価されても登録できる。rules/legend1/set8NamedEffectsA.ts tagResidents と同じ）。
  * 選択の組み立ての部品は rules/rm/rm1Effects.ts のもの（openAfter・close・proceed・simpleSkip 等）を使う。
  */
-import type { GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import type { ChoiceOutcome } from "../rm/rm1Effects";
 import { openEffectChoice } from "../pendingChoices";
@@ -108,6 +108,51 @@ export function registerPromoAfterAction(kind: string, detect: TriggerDetector, 
   const s = triggerStore();
   s.detectors.push(detect);
   s.openers[kind] = open;
+}
+
+// バトルで撃破したとき（rules/operationCounters.ts のバトルの解決。RK-271 rk13OnBattleDestroy と同じ場所）: 発動をキューに積み、
+// applyPromoAfterAction で選択を開く。
+export type PromoBattleDestroyed = { ownerId: PlayerId; instanceId: string; cardId: string };
+type BattleDestroyHook = (state: GameState, winnerId: PlayerId, winnerInstanceId: string, defeated: PromoBattleDestroyed) => PromoTrigger[];
+
+function battleDestroyHooks(): BattleDestroyHook[] {
+  const holder = battleDestroyHooks as unknown as { s?: BattleDestroyHook[] };
+  return (holder.s ??= []);
+}
+
+export function registerPromoBattleDestroy(kind: string, hook: BattleDestroyHook, open: TriggerOpener): void {
+  battleDestroyHooks().push(hook);
+  triggerStore().openers[kind] = open;
+}
+
+export function promoOnBattleDestroy(
+  state: GameState,
+  winnerId: PlayerId,
+  winnerInstanceId: string,
+  defeatedOwner: PlayerId,
+  defeatedInstanceId: string,
+  defeatedCardId: string,
+): GameState {
+  const defeated: PromoBattleDestroyed = { ownerId: defeatedOwner, instanceId: defeatedInstanceId, cardId: defeatedCardId };
+  const queued = battleDestroyHooks().flatMap((hook) => hook(state, winnerId, winnerInstanceId, defeated));
+  if (queued.length === 0) return state;
+  return { ...state, promoPendingTriggers: [...(state.promoPendingTriggers ?? []), ...queued] };
+}
+
+// アタックもストライクもできない制限（rules/restrictions.ts cannotAttackOrStrikeThisTurn から呼ぶ。SK-003【復讐の女詐欺師】等）。
+type AttackStrikeBlock = (state: GameState, playerId: PlayerId, unit: CardInstance) => boolean;
+
+function attackStrikeBlocks(): AttackStrikeBlock[] {
+  const holder = attackStrikeBlocks as unknown as { s?: AttackStrikeBlock[] };
+  return (holder.s ??= []);
+}
+
+export function registerPromoAttackStrikeBlock(block: AttackStrikeBlock): void {
+  attackStrikeBlocks().push(block);
+}
+
+export function promoBlocksAttackStrike(state: GameState, playerId: PlayerId, unit: CardInstance): boolean {
+  return attackStrikeBlocks().some((block) => block(state, playerId, unit));
 }
 
 function blocked(state: GameState): boolean {

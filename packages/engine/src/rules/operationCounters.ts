@@ -139,6 +139,7 @@ import { magiMotherSubstitutes, openKasumoShieldChoice, openRaigekiZanChoice } f
 import { openBatLeeChoice } from "./legend1/set7NamedEffectsD";
 import { applySet8BAfterUnitLeft } from "./legend1/set8NamedEffectsB";
 import { registerBattlePendingResolver } from "../events/listeners/battleDeclaredListener";
+import { promoOnBattleDestroy } from "./promo/promoRegistry";
 
 function isEnemyTurn(state: GameState, counterPlayerId: PlayerId): boolean {
   return state.activePlayer !== counterPlayerId;
@@ -1678,6 +1679,8 @@ export function resolveBattlePendingCore(
         withAttacker = rk13OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
         // RK-324【凄いのが来るぜ！】（rules/rk/rk16UnitEffects.ts）。
         withAttacker = rk16OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+        // PM-001【真っ向両断】等（rules/promo）。
+        withAttacker = promoOnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, refreshedDefenderFound.card.cardId);
       }
       if (!withAttacker.pendingLeave && !withAttacker.pendingRegister) {
         // 撃破は済み、別の選択が開いている — RS-226（段階 1）を先に、RS-212（段階 4）は段階の順に処理する。
@@ -1715,6 +1718,8 @@ export function resolveBattlePendingCore(
     if (!finalDestroyAttacker) nextState = rk13OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
     // RK-324【凄いのが来るぜ！】: ライドしているユニットが BP4000 以上の敵軍 S ユニットをバトルで撃破して捨札にしたとき（rules/rk/rk16UnitEffects.ts）。
     if (!finalDestroyAttacker) nextState = rk16OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+    // PM-001【真っ向両断】等（rules/promo）。
+    if (!finalDestroyAttacker) nextState = promoOnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, refreshedDefenderFound.card.cardId);
 
     if (refreshedAttackerFound.card.cardId === "RS-065") {
       const fb = resolveFocusedBreakthroughDamage(
