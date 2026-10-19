@@ -28,6 +28,14 @@ export const XG4_RANDIC_RULE = "xg4_044_randic";
 export const XG4_STRAIGHT_RULE = "xg4_054_straight";
 /** XG4-060【フォトンブレイカー】の RC が成立した（payload: { instanceId }。このターン）。 */
 export const XG4_PHOTON_RULE = "xg4_060_photon";
+/** XG4-074【ライドルスティック】の RC が成立した（payload: { instanceId }。このターン）。 */
+export const XG4_RIDOL_RULE = "xg4_074_ridol";
+/** XG4-080【ハードショット】の RC が成立した（payload: { instanceId }。このターン）。 */
+export const XG4_HARDSHOT_RULE = "xg4_080_hardshot";
+/** XG4-081【ライトニングスラッシュ】で「2」と「6」を見せた（payload: { instanceId }。このターン BP+3000）。 */
+export const XG4_LIGHTNING_RULE = "xg4_081_lightning";
+/** XG4-083【アタックライド】の RC が成立した（payload: { instanceId }。このターン）。 */
+export const XG4_ATTACKRIDE_RULE = "xg4_083_attackride";
 
 function hasTurnRecord(state: Pick<GameState, "players">, playerId: PlayerId, ruleId: string, instanceId?: string): boolean {
   return getPlayerModifiers(state.players[playerId]).some(
@@ -75,6 +83,8 @@ export function xg4FieldBpBonus(state: View, playerId: PlayerId, instance: CardI
   }
   // XG4-046「※これはホールド状態のときBP-3000される。」（atwiki/page-2149）。
   if (isSameCardIdentity(instance.cardId, "XG4-046") && instance.commandHeld) bonus -= 3000;
+  // XG4-081【ライトニングスラッシュ】「見せたカードの必要パワーの数字が「2」と「6」なら、このターン、このユニットのBPを+3000する。」（atwiki/page-2072）。
+  if (isSameCardIdentity(instance.cardId, "XG4-081") && hasTurnRecord(state, playerId, XG4_LIGHTNING_RULE, instance.instanceId)) bonus += 3000;
   return bonus;
 }
 
@@ -248,4 +258,23 @@ export function xg4FusionSlotWaived(
   const rushing = [...player.hand, ...player.rush, ...player.battle].find((c) => c.instanceId === rushingInstanceId);
   if (!rushing || !isSameCardIdentity(rushing.cardId, "XG4-039")) return false;
   return player.discard.some((c) => slot.some((id) => matchesPartner(c, id)));
+}
+
+/**
+ * XG4-065 マシンハードタービュラー【飛行】「これにライドしているユニットは次の能力を得る⇒「ウイング」」（atwiki/page-2040）。
+ * keywords/battleKeywords.ts のウイングの判定から呼ぶ。
+ */
+export function xg4RiddenVehicleGrantsWing(state: Pick<GameState, "players">, playerId: PlayerId, unit: Pick<CardInstance, "mountedOnInstanceId">): boolean {
+  const vehicleId = unit.mountedOnInstanceId;
+  if (!vehicleId) return false;
+  const vehicle = findOnField(state, playerId, vehicleId);
+  return !!vehicle && isSameCardIdentity(vehicle.cardId, "XG4-065");
+}
+
+/**
+ * XG4-072 タブー・ドーパント【光弾】「これが自軍エリアにある間、すべてのオペレーションカードは、必要パワーの数字が2増える。（この効果は重複しない）」
+ * （atwiki/page-2066）。どちらかの場にあれば +2（core/catalog.ts・rules/operationProcedure.ts のオペレーションの必要パワー）。
+ */
+export function xg4OperationCostIncrease(state: Pick<GameState, "players">): number {
+  return (["player1", "player2"] as const).some((pid) => fieldOf(state, pid).some((c) => isSameCardIdentity(c.cardId, "XG4-072"))) ? 2 : 0;
 }

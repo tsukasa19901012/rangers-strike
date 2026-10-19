@@ -22,6 +22,7 @@ import { RESTRICTION_IDS } from "../types/scopedModifiers";
 import { findInZone, updatePlayer } from "../core/helpers";
 import { riddenVehicleGrantsScrum } from "../rules/legend1/set7NamedEffectsB";
 import { hasBakiBakiExtraAttack } from "../rules/turnModifierBridge";
+import { xg4RiddenVehicleGrantsWing } from "../rules/xg4/xg4Fields";
 import { unitFeatures } from "../rules/addedFeatures";
 import { featuresMatchKeywordSlug } from "../dsl/featureKeywords";
 
@@ -351,7 +352,8 @@ export function canWingAttackFromRush(
   if (state.phase !== "battle") return false;
   if (
     !cardHasKeyword(state.definitions, unit.cardId, "wing", { state, playerId }) &&
-    !stackedEquipmentGrantsWing(unit)
+    !stackedEquipmentGrantsWing(unit) &&
+    !xg4RiddenVehicleGrantsWing(state, playerId, unit)
   ) {
     return false;
   }
@@ -372,7 +374,8 @@ export function canHoldForWing(
   if (state.phase !== "battle") return false;
   if (
     !cardHasKeyword(state.definitions, unit.cardId, "wing", { state, playerId }) &&
-    !stackedEquipmentGrantsWing(unit)
+    !stackedEquipmentGrantsWing(unit) &&
+    !xg4RiddenVehicleGrantsWing(state, playerId, unit)
   ) {
     return false;
   }
@@ -430,7 +433,7 @@ export function canCancelWingHold(
     cardHasKeyword(state.definitions, found.card.cardId, "wing", {
       state,
       playerId,
-    }) || stackedEquipmentGrantsWing(found.card)
+    }) || stackedEquipmentGrantsWing(found.card) || xg4RiddenVehicleGrantsWing(state, playerId, found.card)
   );
 }
 

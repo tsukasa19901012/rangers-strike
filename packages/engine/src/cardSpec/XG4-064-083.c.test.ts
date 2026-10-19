@@ -55,7 +55,8 @@ const P6 = sUnit("SPEC-P6", { bp: 1000, powerCost: 6 });
 const BIKE = vehicleCard("SPEC-BIKE", { category: "ET" });
 const E_ATK_S = sUnit("SPEC-E-ATK-S", { bp: 20000, sp: 1 });
 const E_ATK_M = sUnit("SPEC-E-ATK-M", { bp: 20000, sp: 1, size: "M" });
-const EXTRA = [E_S, E_1500, E_2000, P1, P2, P3, P6, BIKE, E_ATK_S, E_ATK_M];
+const BIKE_MA = vehicleCard("SPEC-BIKE-MA", { category: "MA" });
+const EXTRA = [E_S, E_1500, E_2000, P1, P2, P3, P6, BIKE, BIKE_MA, E_ATK_S, E_ATK_M];
 
 const battle = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) => p1Battle(p1, p2, EXTRA);
 
@@ -134,18 +135,29 @@ describe("XG4-080 ロボライダー（XG4）", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("XG4-080", "rr")] }, "XG4-080:rr"))).toBe(true);
   });
 
-  // 3番目に出て分数 SP（1/3）でストライクする。
+  // CN が RC なので、【ハードショット】はライドオフしたターンだけ（docs/rules/07-keywords.md「RC は…ライドオフしたときに発動」。XG4-judgments.md）。
+  // ビークルにライドしてバトルエリアの2番目に出てライドオフし（これはビークルの次の3番目）、分数 SP（1/3）でストライクする。
   const struck = () =>
-    settle(strike(enterKeep(battle({ battle: fill(2), rush: [inst("XG4-080", "rr")] }, { rush: [inst("SPEC-E-S", "r"), inst("TST-UNIT-2", "m")], battle: [inst("SPEC-E-S", "b")], deck: deckCards(3, "e") }), ["XG4-080:rr"]), "XG4-080:rr"));
+    settle(
+      strike(
+        settle(rcRideOff(battle({ battle: fill(1), rush: [inst("XG4-080", "rr"), inst("SPEC-BIKE-MA", "bk")] }, { rush: [inst("SPEC-E-S", "r"), inst("TST-UNIT-2", "m")], battle: [inst("SPEC-E-S", "b")], deck: deckCards(3, "e") }), "XG4-080:rr", "SPEC-BIKE-MA:bk")),
+        "XG4-080:rr",
+      ),
+    );
 
-  it.fails("XG4-080:【ハードショット】— ストライクしてダメージを与えるとき、かわりに敵軍ラッシュエリアの S ユニットを1体選べる（バトルエリア・M ユニットは選べない。任意）（出典: atwiki/page-2071「かわりに敵軍ラッシュエリアからSユニットを1体選び…置いてもよい」）（既知の不具合: CARD-XG4-080 【ハードショット】の選択が開かない）", () => {
+  it("XG4-080:【ハードショット】— ライドオフしていなければ（RC が成立していなければ）選択は開かない（出典: atwiki/page-2071「CN：RC」）", () => {
+    const s = settle(strike(enterKeep(battle({ battle: fill(2), rush: [inst("XG4-080", "rr")] }, { rush: [inst("SPEC-E-S", "r")], deck: deckCards(3, "e") }), ["XG4-080:rr"]), "XG4-080:rr"));
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG4-080");
+  });
+
+  it("XG4-080:【ハードショット】— ストライクしてダメージを与えるとき、かわりに敵軍ラッシュエリアの S ユニットを1体選べる（バトルエリア・M ユニットは選べない。任意）（出典: atwiki/page-2071「かわりに敵軍ラッシュエリアからSユニットを1体選び…置いてもよい」）", () => {
     const s = struck();
     expectChoiceFrom(s, "player1", "XG4-080");
     expect(choiceIds(s)).toEqual(["SPEC-E-S:r"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-080:【ハードショット】— 選ぶと、そのユニットがダメージとして置かれ、山札からのダメージはない（ダメージは1点）（出典: atwiki/page-2071「かわりに…持ち主のパワーゾーンにダメージにして置いてもよい」）（既知の不具合: CARD-XG4-080 【ハードショット】の選択が開かない）", () => {
+  it("XG4-080:【ハードショット】— 選ぶと、そのユニットがダメージとして置かれ、山札からのダメージはない（ダメージは1点）（出典: atwiki/page-2071「かわりに…持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
     let s = struck();
     expectChoiceFrom(s, "player1", "XG4-080");
     s = resolveAll(pick(s, "SPEC-E-S:r"));
@@ -178,13 +190,13 @@ describe("XG4-081 仮面ライダーブレイド（XG4）", () => {
       ),
     );
 
-  it.fails("XG4-081: RC【ライトニングスラッシュ】— ライドオフしたとき、手札を2枚見せるかを選べる（任意）（出典: atwiki/page-2072「自分の手札を2枚選び、相手に見せてもよい」）（既知の不具合: CARD-XG4-081 RC【ライトニングスラッシュ】の選択が開かない）", () => {
+  it("XG4-081: RC【ライトニングスラッシュ】— ライドオフしたとき、手札を2枚見せるかを選べる（任意）（出典: atwiki/page-2072「自分の手札を2枚選び、相手に見せてもよい」）", () => {
     const s = rodeOff([inst("SPEC-P2", "h2"), inst("SPEC-P6", "h6")]);
     expectChoiceFrom(s, "player1", "XG4-081");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-081: RC — 見せると、敵軍バトルエリアの S ユニットを1体ホールドし、見せたカードが「2」と「6」なら BP+3000（BP5000）（出典: atwiki/page-2072「敵軍バトルエリアのSユニットを1体選びホールドする。その後、見せたカードの必要パワーの数字が「2」と「6」なら、このターン、このユニットのBPを+3000する」）（既知の不具合: CARD-XG4-081 RC【ライトニングスラッシュ】の選択が開かない）", () => {
+  it("XG4-081: RC — 見せると、敵軍バトルエリアの S ユニットを1体ホールドし、見せたカードが「2」と「6」なら BP+3000（BP5000）（出典: atwiki/page-2072「敵軍バトルエリアのSユニットを1体選びホールドする。その後、見せたカードの必要パワーの数字が「2」と「6」なら、このターン、このユニットのBPを+3000する」）", () => {
     let s = rodeOff([inst("SPEC-P2", "h2"), inst("SPEC-P6", "h6")]);
     expectChoiceFrom(s, "player1", "XG4-081");
     s = resolveAll(pickThrough(s, "XG4-081", ["SPEC-P2:h2", "SPEC-P6:h6", "SPEC-E-S:b"]));
@@ -193,7 +205,7 @@ describe("XG4-081 仮面ライダーブレイド（XG4）", () => {
     expect(bp(s)).toBe(5000);
   });
 
-  it.fails("XG4-081: RC — 見せたカードが「2」と「2」なら BP は上がらない（ホールドはする）（出典: atwiki/page-2072「「2」と「6」なら」）（既知の不具合: CARD-XG4-081 RC【ライトニングスラッシュ】の選択が開かない）", () => {
+  it("XG4-081: RC — 見せたカードが「2」と「2」なら BP は上がらない（ホールドはする）（出典: atwiki/page-2072「「2」と「6」なら」）", () => {
     let s = rodeOff([inst("SPEC-P2", "h2"), inst("SPEC-P2", "h2b")]);
     expectChoiceFrom(s, "player1", "XG4-081");
     s = resolveAll(pickThrough(s, "XG4-081", ["SPEC-P2:h2", "SPEC-P2:h2b", "SPEC-E-S:b"]));
@@ -248,7 +260,7 @@ describe("XG4-083 ディケイド ファイズ（XG4）", () => {
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("XG4-083: RC — BP2000 のユニットを撃破してもダメージは与えない（出典: atwiki/page-2068「BPの下三桁が500だったなら」）（既知の不具合: CARD-XG4-083 RC【アタックライド】が撃破したユニットの BP を見ずにダメージを与える）", () => {
+  it("XG4-083: RC — BP2000 のユニットを撃破してもダメージは与えない（出典: atwiki/page-2068「BPの下三桁が500だったなら」）", () => {
     const s = resolveAll(settle(attack(afterRideOff(), "XG4-083:dz", "SPEC-E-2000:b")));
     expect(zoneOf(s, "player2", "SPEC-E-2000:b")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(0);

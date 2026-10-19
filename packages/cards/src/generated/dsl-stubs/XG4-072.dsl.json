@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-072::hikaridan",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-072::taboo",
+          "duration": "turn"
         }
       ]
     }

@@ -73,13 +73,13 @@ describe("XG4-064 リボルギャリー", () => {
   const entered = (power = 4) =>
     settle(enterNow(battle({ rush: [inst("XG4-064", "rg"), inst("XG4-066", "sp")], command: [released("XG4-065", "tb")], power: powerCards(power) }), "XG4-064:rg"));
 
-  it.fails("XG4-064:【リボルバーハンガー】— 自軍ターン中にバトルエリアに出たとき、発動するかを選べる（任意）（出典: atwiki/page-2116「次の効果を発動できる」）（既知の不具合: CARD-XG4-064 【リボルバーハンガー】の選択が開かない）", () => {
+  it("XG4-064:【リボルバーハンガー】— 自軍ターン中にバトルエリアに出たとき、発動するかを選べる（任意）（出典: atwiki/page-2116「次の効果を発動できる」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG4-064");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-064:【リボルバーハンガー】— 発動すると、コマンドゾーンのカテゴリ2つ以上のビークルカードと、カテゴリ2つ以上の自軍ビークルが置き換わる（出典: atwiki/page-2116「自軍コマンドゾーンから、カテゴリを2つ以上持つビークルカードを1枚選び、カテゴリを2つ以上持つ自軍ビークル1体と置き換える」）（既知の不具合: CARD-XG4-064 【リボルバーハンガー】の選択が開かない）", () => {
+  it("XG4-064:【リボルバーハンガー】— 発動すると、コマンドゾーンのカテゴリ2つ以上のビークルカードと、カテゴリ2つ以上の自軍ビークルが置き換わる（出典: atwiki/page-2116「自軍コマンドゾーンから、カテゴリを2つ以上持つビークルカードを1枚選び、カテゴリを2つ以上持つ自軍ビークル1体と置き換える」）", () => {
     let s = entered();
     expectChoiceFrom(s, "player1", "XG4-064");
     s = resolveAll(pickThrough(s, "XG4-064", ["XG4-065:tb", "XG4-066:sp"]));
@@ -112,7 +112,7 @@ describe("XG4-065 マシンハードタービュラー", () => {
     expect(canMount(s, "SPEC-PLAIN:p", "XG4-065:tb")).toBe(false);
   });
 
-  it.fails("XG4-065:【飛行】— これにライドしているユニットは「ウイング」を得る（自軍バトルフェイズにラッシュエリアで発動できる）（出典: atwiki/page-2040「これにライドしているユニットは次の能力を得る⇒「ウイング」」）（既知の不具合: CARD-XG4-065 ライドしているユニットが「ウイング」を得ない）", () => {
+  it("XG4-065:【飛行】— これにライドしているユニットは「ウイング」を得る（自軍バトルフェイズにラッシュエリアで発動できる）（出典: atwiki/page-2040「これにライドしているユニットは次の能力を得る⇒「ウイング」」）", () => {
     const s = battle({ rush: ridingPair("SPEC-RIDER", "r", "XG4-065", "tb") }, { battle: [inst("SPEC-E-S", "e")] });
     expect(canWing(s, "SPEC-RIDER:r")).toBe(true);
   });
@@ -155,7 +155,7 @@ describe("XG4-066 マシンハードスプラッシャー", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-066:【水中魚雷】— オモテにすると、その3枚は敵軍山札の下に戻る（4枚目が一番上になる）（出典: atwiki/page-2095「オモテにしたカードをそれぞれ持ち主の山札の下に好きな順で戻す」）（既知の不具合: CARD-XG4-066 【水中魚雷】が敵軍ではなく自軍の山札の上3枚を見て、確認でも進められない）", () => {
+  it("XG4-066:【水中魚雷】— オモテにすると、その3枚は敵軍山札の下に戻る（4枚目が一番上になる）（出典: atwiki/page-2095「オモテにしたカードをそれぞれ持ち主の山札の下に好きな順で戻す」）", () => {
     let s = rushed();
     expectChoiceFrom(s, "player1", "XG4-066");
     s = resolveAll(pickThrough(confirm(s), "XG4-066", ["TST-UNIT-0:e1", "TST-UNIT-0:e2", "TST-UNIT-0:e3"]));
@@ -194,14 +194,14 @@ describe("XG4-067 仮面ライダーW・LM", () => {
   const entered = () =>
     settle(enterNow(battle({ rush: [inst("XG4-067", "lm")] }, { rush: [{ ...inst("SPEC-E-S", "h"), commandHeld: true }, inst("SPEC-E-S", "r")], battle: [{ ...inst("SPEC-E-S", "b"), commandHeld: true }], deck: deckCards(3, "e") }), "XG4-067:lm"));
 
-  it.fails("XG4-067:【メタルシャフト】— 自軍ターン中にバトルエリアに出たとき、敵軍ラッシュエリアのホールド状態の S ユニットから1体選べる（リリース状態・バトルエリアのユニットは選べない。任意）（出典: atwiki/page-2117「敵軍ラッシュエリアからホールド状態の敵軍Sユニットを1体選び…戻してもよい」）（既知の不具合: CARD-XG4-067 【メタルシャフト】の候補が敵軍ラッシュエリアのホールド状態のユニットではなく、バトルエリアのホールド状態のユニットになっている）", () => {
+  it("XG4-067:【メタルシャフト】— 自軍ターン中にバトルエリアに出たとき、敵軍ラッシュエリアのホールド状態の S ユニットから1体選べる（リリース状態・バトルエリアのユニットは選べない。任意）（出典: atwiki/page-2117「敵軍ラッシュエリアからホールド状態の敵軍Sユニットを1体選び…戻してもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG4-067");
     expect(choiceIds(s)).toEqual(["SPEC-E-S:h"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-067:【メタルシャフト】— 選んだユニットは持ち主の山札の一番上に戻る（出典: atwiki/page-2117「持ち主の山札の上に戻してもよい」）（既知の不具合: CARD-XG4-067 【メタルシャフト】の候補が敵軍ラッシュエリアのホールド状態のユニットではなく、バトルエリアのホールド状態のユニットになっている）", () => {
+  it("XG4-067:【メタルシャフト】— 選んだユニットは持ち主の山札の一番上に戻る（出典: atwiki/page-2117「持ち主の山札の上に戻してもよい」）", () => {
     let s = entered();
     expectChoiceFrom(s, "player1", "XG4-067");
     s = resolveAll(pick(s, "SPEC-E-S:h"));
@@ -226,14 +226,14 @@ describe("XG4-068 仮面ライダーW・CT", () => {
   const entered = () =>
     settle(enterNow(battle({ rush: [inst("XG4-068", "ct")], operation: [resident("RK-075", "own")] }, { operation: [resident("RK-075", "en"), resident("RK-078", "cu")], deck: deckCards(3, "e") }), "XG4-068:ct"));
 
-  it.fails("XG4-068:【トリガーマグナム】— 自軍ターン中にバトルエリアに出たとき、必要パワー3以下の常駐オペレーション（自軍・敵軍）から1つ選べる（必要パワー4は選べない。任意）（出典: atwiki/page-2136「必要パワーの数字が3以下の常駐しているオペレーションを1つ選び」・カード評価「自軍常駐も対象にできる」）（既知の不具合: CARD-XG4-068 【トリガーマグナム】の選択が開かない）", () => {
+  it("XG4-068:【トリガーマグナム】— 自軍ターン中にバトルエリアに出たとき、必要パワー3以下の常駐オペレーション（自軍・敵軍）から1つ選べる（必要パワー4は選べない。任意）（出典: atwiki/page-2136「必要パワーの数字が3以下の常駐しているオペレーションを1つ選び」・カード評価「自軍常駐も対象にできる」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG4-068");
     expect(choiceIds(s)).toEqual(["RK-075:en", "RK-075:own"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-068:【トリガーマグナム】— 選んだ常駐は持ち主のゾーン（パワーゾーンかコマンドゾーン）に送られる（出典: atwiki/page-2136「持ち主のゾーンに送ってもよい」・カード評価「パワーだけでなくコマンドにも常駐を飛ばせる」）（既知の不具合: CARD-XG4-068 【トリガーマグナム】の選択が開かない）", () => {
+  it("XG4-068:【トリガーマグナム】— 選んだ常駐は持ち主のゾーン（パワーゾーンかコマンドゾーン）に送られる（出典: atwiki/page-2136「持ち主のゾーンに送ってもよい」・カード評価「パワーだけでなくコマンドにも常駐を飛ばせる」）", () => {
     let s = entered();
     expectChoiceFrom(s, "player1", "XG4-068");
     s = resolveAll(pickThrough(pick(s, "RK-075:en"), "XG4-068", ["power"]));
@@ -266,14 +266,14 @@ describe("XG4-069 仮面ライダーW・FJ（XG4）", () => {
   const entered = () =>
     settle(enterNow(battle({ rush: [inst("XG4-069", "fj")], command: [released("SPEC-BEAST", "bc"), ...releasedCat("DA", 1)] }, { battle: [inst("SPEC-E-C2", "a"), inst("SPEC-E-C3", "c")], rush: [inst("SPEC-E-C2", "b")], deck: deckCards(3, "e") }), "XG4-069:fj"));
 
-  it.fails("XG4-069:【ショルダー・ファング】— バトルエリアに出たとき、特徴「獣」「恐竜」を持つ自軍コマンドから1つ選んでホールドできる（任意）（出典: atwiki/page-2043「特徴「獣」または「恐竜」を持つ自軍コマンドを1つ選び、ホールドしてもよい」）（既知の不具合: CARD-XG4-069 【ショルダー・ファング】が自軍コマンドのホールドを飛ばして敵軍ユニットの選択を開き、必要パワーの違うユニットも候補に入る（ホールドもされない））", () => {
+  it("XG4-069:【ショルダー・ファング】— バトルエリアに出たとき、特徴「獣」「恐竜」を持つ自軍コマンドから1つ選んでホールドできる（任意）（出典: atwiki/page-2043「特徴「獣」または「恐竜」を持つ自軍コマンドを1つ選び、ホールドしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG4-069");
     expect(canSkip(s)).toBe(true);
     if (choiceIds(s).length > 0) expect(choiceIds(s)).toEqual(["SPEC-BEAST:bc"]);
   });
 
-  it.fails("XG4-069:【ショルダー・ファング】— ホールドすると、必要パワーの数字が同じ敵軍 S ユニットを3体まで（1〜2体でもよい）選びホールドする（出典: atwiki/page-2043「必要パワーの数字が同じ敵軍Sユニットを3体まで選びホールドする」・同 Q1・Q2「3体までの任意の数を選びホールドすることができます」）（既知の不具合: CARD-XG4-069 【ショルダー・ファング】が自軍コマンドのホールドを飛ばして敵軍ユニットの選択を開き、必要パワーの違うユニットも候補に入る（ホールドもされない））", () => {
+  it("XG4-069:【ショルダー・ファング】— ホールドすると、必要パワーの数字が同じ敵軍 S ユニットを3体まで（1〜2体でもよい）選びホールドする（出典: atwiki/page-2043「必要パワーの数字が同じ敵軍Sユニットを3体まで選びホールドする」・同 Q1・Q2「3体までの任意の数を選びホールドすることができます」）", () => {
     let s = entered();
     expectChoiceFrom(s, "player1", "XG4-069");
     s = resolveAll(pickThrough(s, "XG4-069", ["SPEC-BEAST:bc", "SPEC-E-C2:a", "SPEC-E-C2:b"]));
@@ -295,7 +295,7 @@ describe("XG4-070 クレイドール・ドーパント", () => {
     expectRarityIn("XG4-070", ["N"]);
   });
 
-  it.fails("XG4-070:【不死身のドーパント】— 敵軍ターン中に撃破されると、捨札にならず持ち主の山札に戻る（強制）（出典: atwiki/page-2084「捨札にするかわりに持ち主の山札に戻してシャッフルする」・カード評価「効果の発動が強制」）（既知の不具合: CARD-XG4-070 敵軍ターン中に撃破されても山札に戻らず捨札になる）", () => {
+  it("XG4-070:【不死身のドーパント】— 敵軍ターン中に撃破されると、捨札にならず持ち主の山札に戻る（強制）（出典: atwiki/page-2084「捨札にするかわりに持ち主の山札に戻してシャッフルする」・カード評価「効果の発動が強制」）", () => {
     const s = resolveAll(settle(destroyedInEnemyBattle(inst("XG4-070", "cd"), {}, {}, EXTRA)));
     expect(zoneOf(s, "player1", "XG4-070:cd")).toBe("deck");
   });

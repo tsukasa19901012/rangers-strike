@@ -1,4 +1,5 @@
 import { rm1DorugiranWaivesCondition } from "../rules/rm/rm1Fields";
+import { xg4OperationCostIncrease } from "../rules/xg4/xg4Fields";
 import { isAccelerateRushWaived } from "../rules/bkOperationTurnRules";
 import { isCostWindowSatisfied } from "./costWindow";
 import { set8AddedCategories } from "../rules/legend1/set8TurnGrants";
@@ -850,7 +851,8 @@ export function canPlayOperationExceptCommandHold(
   definition: CardDefinition,
 ): boolean {
   // RK-225 仮面ライダー朱鬼【陰陽術】: カウンターを持つオペレーションの必要パワーの数字は3少なくなる（rules/rk/rk11Fields.ts）。
-  const printed = Math.max(0, parsePowerCost(definition.powerCost) - rk11CounterCostReduction(state, definition));
+  // XG4-072 タブー・ドーパント【光弾】: すべてのオペレーションカードの必要パワーの数字が2増える（rules/xg4/xg4Fields.ts）。
+  const printed = Math.max(0, parsePowerCost(definition.powerCost) - rk11CounterCostReduction(state, definition)) + xg4OperationCostIncrease(state);
   const cost = effectivePowerCost(state, playerId, printed);
   return countAvailablePower(state, playerId) >= cost;
 }

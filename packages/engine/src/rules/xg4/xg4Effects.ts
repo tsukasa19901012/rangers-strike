@@ -10,7 +10,7 @@
  *   （core/legalActions.ts・core/applyAction.ts・rules/operationCounters.ts）。
  * カードごとの中身は rules/xg4/xg4aEffects.ts（XG4-001〜021）ほか。継続効果は rules/xg4/xg4Fields.ts。
  */
-import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PendingBattle, PendingStrike, PlayerId } from "../../types/game";
 import { KARAKURI_MANTLE_CARD_ID, applyXg4aAfterAction, applyXg4aRideOff, applyXg4aBattleCounter, xg4aBattleCounterConditionMet, xg4aOnBattleDestroy } from "./xg4aEffects";
 import {
   activateXg4bFieldAbility,
@@ -23,6 +23,19 @@ import {
   xg4bOnBattleDestroy,
 } from "./xg4bEffects";
 import { applyXg4cAfterAction, applyXg4cRideOff, openXg4cBattlePhaseStart, resolveXg4cDiscardSelfAbility, xg4cOnAttackWin, xg4cOnBattleDestroy } from "./xg4cEffects";
+import {
+  applyXg4dAfterUnitLeft,
+  collectXg4dTurnEndQueue,
+  confirmXg4dBeforeBattle,
+  isXg4dBeforeBattleChoice,
+  openXg4dBeforeBattle,
+  openXg4dOnStrike,
+  openXg4dTurnEndEntry,
+  resolveXg4dBeforeBattle,
+  skipXg4dBeforeBattle,
+  xg4dOnBattleDestroy,
+} from "./xg4dEffects";
+import { isXg4BeforeBattleChoice as isXg4bBeforeBattleChoice, openXg4BeforeBattle as openXg4bBeforeBattle, resolveXg4BeforeBattle as resolveXg4bBeforeBattle, skipXg4BeforeBattle as skipXg4bBeforeBattle } from "./xg4bEffects";
 import { isCard } from "./xg4Common";
 
 export {
@@ -34,16 +47,54 @@ export {
   tryXg4CardEffect,
   XG4_KEYWORD_PREFIX,
 } from "./xg4Common";
-export { isXg4BeforeBattleChoice, openXg4BeforeBattle, resolveXg4BeforeBattle, skipXg4BeforeBattle } from "./xg4bEffects";
+export { xg4DestroyedToDeckInstead, xg4ShuffleInto } from "./xg4dEffects";
+
+type BeforeBattleResult = { state: GameState; battle: PendingBattle; wingAttackFromRush: boolean };
+
+/** アタックするとき、バトルの前の選択（core/applyAction.ts continueAttackAfterDeclaration）。開かなければ null。 */
+export function openXg4BeforeBattle(state: GameState, battle: PendingBattle, wingAttackFromRush: boolean): GameState | null {
+  return openXg4bBeforeBattle(state, battle, wingAttackFromRush) ?? openXg4dBeforeBattle(state, battle, wingAttackFromRush);
+}
+
+export function isXg4BeforeBattleChoice(pending: GameState["pendingEffectChoice"]): boolean {
+  return isXg4bBeforeBattleChoice(pending) || isXg4dBeforeBattleChoice(pending);
+}
+
+/** 選んだ。partial は選択が続く（XG4-073 の1つ目）。 */
+export function resolveXg4BeforeBattle(state: GameState, playerId: PlayerId, instanceId: string): BeforeBattleResult | { partial: GameState } | { error: string } {
+  if (isXg4dBeforeBattleChoice(state.pendingEffectChoice)) return resolveXg4dBeforeBattle(state, playerId, instanceId);
+  return resolveXg4bBeforeBattle(state, playerId, instanceId);
+}
+
+export function skipXg4BeforeBattle(state: GameState, playerId: PlayerId): BeforeBattleResult | null {
+  if (isXg4dBeforeBattleChoice(state.pendingEffectChoice)) return skipXg4dBeforeBattle(state, playerId);
+  return skipXg4bBeforeBattle(state, playerId);
+}
+
+/** 確認（XG4-074）。 */
+export function confirmXg4BeforeBattle(state: GameState, playerId: PlayerId): BeforeBattleResult | null {
+  return confirmXg4dBeforeBattle(state, playerId);
+}
+
+/** ストライクしたとき（core/applyAction.ts strike。「ストライクしたとき」の選択と同じ所）。 */
+export function openXg4OnStrike(state: GameState, pending: PendingStrike): GameState {
+  return openXg4dOnStrike(state, pending);
+}
+
+/** 場のユニットが離れたあと（rules/operationCounters.ts finalizeLeavePending）。before は離れる前の盤面。 */
+export function applyXg4AfterUnitLeft(before: GameState, state: GameState, ctx: { ownerPlayerId: PlayerId; card: CardInstance; destroyed: boolean }): GameState {
+  return applyXg4dAfterUnitLeft(before, state, ctx);
+}
 
 export function applyXg4AfterAction(before: GameState, after: GameState): GameState {
   return applyXg4cAfterAction(before, applyXg4bAfterAction(before, applyXg4aAfterAction(before, after)));
 }
 
-export function xg4OnBattleDestroy(state: GameState, winnerId: PlayerId, winnerInstanceId: string, defeatedOwnerId: PlayerId, defeatedInstanceId: string): GameState {
+export function xg4OnBattleDestroy(state: GameState, winnerId: PlayerId, winnerInstanceId: string, defeatedOwnerId: PlayerId, defeatedInstanceId: string, defeatedBp?: number): GameState {
   const next = xg4aOnBattleDestroy(state, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
   const b = next.pendingEffectChoice ? next : xg4bOnBattleDestroy(next, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
-  return xg4cOnBattleDestroy(b, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
+  const c = xg4cOnBattleDestroy(b, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
+  return xg4dOnBattleDestroy(c, winnerId, winnerInstanceId, defeatedOwnerId, defeatedBp);
 }
 
 export function isXg4BattleCounterCard(cardId: string): boolean {
@@ -87,10 +138,11 @@ export function resolveXg4DiscardSelfAbility(state: GameState, playerId: PlayerI
 
 /** ターン終了時の処理の列（rules/turnEndingEffects.ts）。 */
 export function collectXg4TurnEndQueue(state: GameState, endingPlayerId: PlayerId): string[] {
-  return collectXg4bTurnEndQueue(state, endingPlayerId);
+  return [...collectXg4bTurnEndQueue(state, endingPlayerId), ...collectXg4dTurnEndQueue(state, endingPlayerId)];
 }
 
 export function openXg4TurnEndEntry(state: GameState, endingPlayerId: PlayerId, entry: string): GameState {
+  if (entry.startsWith("apollo:")) return openXg4dTurnEndEntry(state, endingPlayerId, entry);
   return openXg4bTurnEndEntry(state, endingPlayerId, entry);
 }
 

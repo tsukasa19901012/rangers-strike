@@ -237,6 +237,8 @@ export type PendingBattle = {
   rm3TentrinaOffered?: boolean;
   /** XG4-033【フリージングダガー】の選択を出したアタック（rules/xg4/xg4bEffects.ts）。 */
   xg4FreezeOffered?: boolean;
+  /** XG4-073・XG4-074 のバトルの前の選択を出したカード（instanceId。rules/xg4/xg4dEffects.ts）。 */
+  xg4BeforeBattleOffered?: string[];
   /** RS-414【ディオネを守る壁】の選択を出したか。 */
   dioneWallOffered?: boolean;
   /** RS-583【災いを受け止める覚悟】の「代わりに選ばれたことにする」選択をこのアタックで既に出したか。 */

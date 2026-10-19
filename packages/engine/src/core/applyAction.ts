@@ -106,6 +106,8 @@ import {
   applyXg4RideOff,
   isXg4BattleCounterCard,
   isXg4BeforeBattleChoice,
+  confirmXg4BeforeBattle,
+  openXg4OnStrike,
   openXg4BattlePhaseStart,
   openXg4BeforeBattle,
   resolveXg4BeforeBattle,
@@ -2663,6 +2665,8 @@ function applyActionCore(
         battlePhasePlayer: playerId,
       };
       nextState = emitStrikeDeclared(nextState, pending);
+      // XG4-080【ハードショット】: ストライクしてダメージを与えるとき、かわりに敵軍ラッシュエリアの S ユニットをダメージにしてもよい（rules/xg4/xg4Effects.ts）。
+      nextState = openXg4OnStrike(nextState, pending);
 
       if (nextState.pendingEffectChoice) {
         // ルール: R-TIME-01 — 「ストライクしたとき」の効果の選択をすべて解決してから、「ストライクされたとき」
@@ -3140,6 +3144,11 @@ function applyActionCore(
         const crane = rk10CraneIntercept(state, playerId, action);
         if (crane) return ok(crane, buildSimpleLogEntry(playerId, "confirm_effect_choice"));
       }
+      // XG4-074【ライドルスティック】: バトルの前の確認（rules/xg4/xg4dEffects.ts）。
+      if (isXg4BeforeBattleChoice(state.pendingEffectChoice)) {
+        const confirmed = confirmXg4BeforeBattle(state, playerId);
+        if (confirmed) return continueAttackAfterDeclaration(confirmed.state, confirmed.battle, confirmed.wingAttackFromRush);
+      }
       const confirming = state.pendingEffectChoice;
       const result = applyConfirmEffectChoice(state, playerId);
       if ("error" in result) return fail(result.error);
@@ -3206,6 +3215,7 @@ function applyActionCore(
       if (isXg4BeforeBattleChoice(pending)) {
         const picked = resolveXg4BeforeBattle(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
+        if ("partial" in picked) return ok(picked.partial, buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId));
         return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
       }
       if (isRm3TentrinaChoice(pending)) {
