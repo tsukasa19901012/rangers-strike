@@ -132,57 +132,57 @@ export function listZordSetupResolveActions(
   state: GameState,
   setup: PendingZordSetup,
 ): ResolveZordSetupAction[] {
+  return listZordSetupResolveSteps(state, setup).map((step) => step.action);
+}
+
+type ZordSetupResolveStep = {
+  action: ResolveZordSetupAction;
+  /** その解決を advanceZordSetup に渡した結果（エラーでないもの）。 */
+  advanced: Exclude<ZordSetupAdvanceResult, { kind: "error" }>;
+};
+
+/** 受け付ける解決と、それぞれを進めた結果（canFinishZordSetup で同じ解決を進め直さないように結果も返す）。 */
+function listZordSetupResolveSteps(
+  state: GameState,
+  setup: PendingZordSetup,
+): ZordSetupResolveStep[] {
   const { playerId } = setup;
-  const actions: ResolveZordSetupAction[] = [];
+  const steps: ZordSetupResolveStep[] = [];
+  const tryInput = (input: ZordSetupResolveInput, action: ResolveZordSetupAction) => {
+    const advanced = advanceZordSetup(state, setup, input);
+    if (advanced.kind !== "error") steps.push({ action, advanced });
+  };
 
   if (setup.step === "destination") {
     for (const destination of ["command", "discard"] as const) {
-      const advanced = advanceZordSetup(state, setup, { destination });
-      if (advanced.kind !== "error") {
-        actions.push({ type: "resolve_zord_setup", playerId, destination });
-      }
+      tryInput({ destination }, { type: "resolve_zord_setup", playerId, destination });
     }
     if ((setup.chosenMaterialIds?.length ?? 0) > 0) {
       // 「それぞれ」の2体目以降: 行き先を選ばずに素材を選ぶと直前と同じ行き先になる。
       for (const materialInstanceId of setup.validInstanceIds) {
-        const advanced = advanceZordSetup(state, setup, { materialInstanceId });
-        if (advanced.kind !== "error") {
-          actions.push({ type: "resolve_zord_setup", playerId, materialInstanceId });
-        }
+        tryInput({ materialInstanceId }, { type: "resolve_zord_setup", playerId, materialInstanceId });
       }
       // 残りを【母艦】ホールドで代えることもできる（RS-076 Q7・RS-075 Q2）。
-      const advanced = advanceZordSetup(state, setup, { paymentPath: "mothership" });
-      if (advanced.kind !== "error") {
-        actions.push({ type: "resolve_zord_setup", playerId, paymentPath: "mothership" });
-      }
+      tryInput({ paymentPath: "mothership" }, { type: "resolve_zord_setup", playerId, paymentPath: "mothership" });
     }
-    return actions;
+    return steps;
   }
 
   if (setup.step === "material") {
     for (const materialInstanceId of setup.validInstanceIds) {
-      const advanced = advanceZordSetup(state, setup, { materialInstanceId });
-      if (advanced.kind !== "error") {
-        actions.push({ type: "resolve_zord_setup", playerId, materialInstanceId });
-      }
+      tryInput({ materialInstanceId }, { type: "resolve_zord_setup", playerId, materialInstanceId });
     }
     if (setup.mothershipAvailable || (setup.chosenMaterialIds?.length ?? 0) > 0) {
-      const advanced = advanceZordSetup(state, setup, { paymentPath: "mothership" });
-      if (advanced.kind !== "error") {
-        actions.push({ type: "resolve_zord_setup", playerId, paymentPath: "mothership" });
-      }
+      tryInput({ paymentPath: "mothership" }, { type: "resolve_zord_setup", playerId, paymentPath: "mothership" });
     }
-    return actions;
+    return steps;
   }
 
   if (setup.step === "mothership") {
-    const advanced = advanceZordSetup(state, setup, {});
-    if (advanced.kind !== "error") {
-      actions.push({ type: "resolve_zord_setup", playerId });
-    }
+    tryInput({}, { type: "resolve_zord_setup", playerId });
   }
 
-  return actions;
+  return steps;
 }
 
 /** 解決シーケンスのいずれかがラッシュまたはコマンド支払いで終了するとき true。 */
@@ -190,13 +190,8 @@ export function canFinishZordSetup(
   state: GameState,
   setup: PendingZordSetup,
 ): boolean {
-  for (const action of listZordSetupResolveActions(state, setup)) {
-    const advanced = advanceZordSetup(state, setup, {
-      materialInstanceId: action.materialInstanceId,
-      destination: action.destination,
-      paymentPath: action.paymentPath,
-    });
-    if (advanced.kind === "error") continue;
+  // 各解決を進めた結果は、受け付ける解決を数えたときのものを使う（同じ状態・同じ入力なので結果は同じ）。
+  for (const { advanced } of listZordSetupResolveSteps(state, setup)) {
     if (advanced.kind === "rush" || advanced.kind === "payment") return true;
     if (advanced.kind === "continue" && canFinishZordSetup(state, advanced.setup)) {
       return true;
