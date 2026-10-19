@@ -35,6 +35,19 @@ export function unitHasCallLeadKeyword(
 const RESIDENT_CALL_LEAD_GRANT_RE =
   /^※常駐\s*「?(WB|OT|ET|MA|DA)」?を持つSPが空欄のSユニットは、次の能力を得る⇒(コール|リード)「?(WB|OT|ET|MA|DA)」?/;
 
+const residentCallLeadGrantCache = new Map<string, RegExpMatchArray | null>();
+
+/** 常駐オペレーションの本文の RESIDENT_CALL_LEAD_GRANT_RE の一致（本文ごとに覚える。合法手の判定のたびに引かれる）。 */
+function residentCallLeadGrantMatch(text: string | undefined): RegExpMatchArray | null | undefined {
+  if (text === undefined) return undefined;
+  let m = residentCallLeadGrantCache.get(text);
+  if (m === undefined) {
+    m = text.match(RESIDENT_CALL_LEAD_GRANT_RE);
+    residentCallLeadGrantCache.set(text, m);
+  }
+  return m;
+}
+
 function residentGrantsCallLead(cardId: string, kind: CallLeadKind, category: Category): boolean {
   const state = actionContextState();
   if (!state) return false;
@@ -43,7 +56,7 @@ function residentGrantsCallLead(cardId: string, kind: CallLeadKind, category: Ca
   const cats: string[] = Array.isArray(def.category) ? def.category : [def.category as string];
   for (const pid of ["player1", "player2"] as const) {
     for (const op of state.players[pid].operation) {
-      const m = getDefinition(state.definitions, op.cardId)?.text?.match(RESIDENT_CALL_LEAD_GRANT_RE);
+      const m = residentCallLeadGrantMatch(getDefinition(state.definitions, op.cardId)?.text);
       if (!m) continue;
       if ((m[2] === "コール" ? "call" : "lead") !== kind || m[3] !== category) continue;
       if (cats.includes(m[1]!)) return true;
