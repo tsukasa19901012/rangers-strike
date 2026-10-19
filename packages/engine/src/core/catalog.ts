@@ -275,7 +275,8 @@ export function passiveBpBonus(
     player.battle.some((c) => c.instanceId === instance.instanceId);
   if (inField && isSmallUnit(state.definitions, instance.cardId)) {
     // RS-203【デウス遺伝子】・RS-206【天幻星・霧隠れ】で追加された特徴も含める（rules/addedFeatures.ts）。
-    const features = unitFeatures(state, playerId, instance);
+    // 特徴は、特徴で決まるオーラの常駐オペレーションがあるときだけ求める。
+    let features: string[] | undefined;
     for (const op of player.operation) {
       const aura = permanentSUnitBpAura(state.definitions, op.cardId);
       if (!aura) continue;
@@ -284,7 +285,7 @@ export function passiveBpBonus(
         if (state.activePlayer === playerId) continue;
         const released = player.command.filter((c) => !c.commandHeld).length;
         bonus += released * aura.amount;
-      } else if (features.includes(aura.feature)) {
+      } else if ((features ??= unitFeatures(state, playerId, instance)).includes(aura.feature)) {
         // RS-179 恐竜やのカレー（常駐）: 特徴「イエロー」を持つ自軍SユニットはBP＋2000（枚数分重複、R-CONT-01）。
         // ルール: R-RUSH-05 — 適用中の継続効果はラッシュの瞬間から反映される（最初から修正済みの状態でラッシュされた扱い）。
         bonus += aura.amount;
