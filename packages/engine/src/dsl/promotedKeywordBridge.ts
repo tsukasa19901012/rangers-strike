@@ -194,6 +194,25 @@ function countFaceUpPowerUnitsWithFeatureSlug(
   }).length;
 }
 
+type PowerKeyword = { kind: "per_card"; amount: number } | { kind: "feature"; slug: string; bpPer: number } | null;
+const powerKeywordCache = new Map<string, PowerKeyword>();
+
+/** grant_keyword「power_faceup_bp_per_<数>」「power_feature_bp_sp_<特徴>_<数>_<数>_sp<数>」の読み取り（キーワードごとに覚える）。 */
+function powerKeywordOf(keyword: string): PowerKeyword {
+  let parsed = powerKeywordCache.get(keyword);
+  if (parsed === undefined) {
+    const perCard = keyword.match(/^power_faceup_bp_per_(\d+)$/);
+    const featureBp = perCard ? null : keyword.match(/^power_feature_bp_sp_(.+)_(\d+)_(\d+)_sp(\d+)$/);
+    parsed = perCard
+      ? { kind: "per_card", amount: Number(perCard[1]) }
+      : featureBp
+        ? { kind: "feature", slug: featureBp[1]!, bpPer: Number(featureBp[2]) }
+        : null;
+    powerKeywordCache.set(keyword, parsed);
+  }
+  return parsed;
+}
+
 /** 昇格 DSL grant_keyword による BP ボーナス（パワーゾーン連動等）。 */
 export function promotedKeywordBpBonus(
   state: GameState,
@@ -243,19 +262,15 @@ export function promotedKeywordBpBonus(
       continue;
     }
 
-    const perCard = keyword.match(/^power_faceup_bp_per_(\d+)$/);
-    if (perCard) {
-      bonus += faceUpPower * Number(perCard[1]);
+    const parsed = powerKeywordOf(keyword);
+    if (parsed?.kind === "per_card") {
+      bonus += faceUpPower * parsed.amount;
       continue;
     }
 
-    const featureBp = keyword.match(
-      /^power_feature_bp_sp_(.+)_(\d+)_(\d+)_sp(\d+)$/,
-    );
-    if (featureBp) {
-      const [, slug, bpPer] = featureBp;
-      const count = countFaceUpPowerUnitsWithFeatureSlug(state, playerId, slug!);
-      bonus += count * Number(bpPer);
+    if (parsed?.kind === "feature") {
+      const count = countFaceUpPowerUnitsWithFeatureSlug(state, playerId, parsed.slug);
+      bonus += count * parsed.bpPer;
     }
   }
 
@@ -278,6 +293,19 @@ export function stackedEquipmentGrantsWing(instance: CardInstance): boolean {
   return stackOntoLargeGrantsKeyword(instance, "wing");
 }
 
+const allyFeatureBoostCache = new Map<string, { slug: string; amount: number } | null>();
+
+/** grant_keyword「ally_<特徴>_bp_boost_<数>」の読み取り（キーワードごとに覚える）。 */
+function allyFeatureBoostOf(keyword: string): { slug: string; amount: number } | null {
+  let parsed = allyFeatureBoostCache.get(keyword);
+  if (parsed === undefined) {
+    const m = keyword.match(/^ally_(.+)_bp_boost_(\d+)$/);
+    parsed = m ? { slug: m[1]!, amount: Number(m[2]) } : null;
+    allyFeatureBoostCache.set(keyword, parsed);
+  }
+  return parsed;
+}
+
 /** 自軍エリアのカードが放つ BP オーラ（RS-289/XP-023 恐竜 +1000 / RS-430 WB S 等）。 */
 function fieldAuraBpBonus(
   state: GameState,
@@ -288,24 +316,23 @@ function fieldAuraBpBonus(
   if (!def) return 0;
   const own = state.players[playerId];
   let bonus = 0;
-  const sources = [...own.rush, ...own.battle];
-  for (const source of sources) {
-    if (source.instanceId === instance.instanceId) {
-      // 自分自身にもかかるオーラ（「すべての自軍ユニット」）は除外しない
-    }
-    for (const keyword of cachedCardGrantKeywords(source.cardId)) {
-      // RS-289 / XP-023: 特徴「恐竜」を持つすべての自軍ユニットは BP+1000
-      const allyFeatureBoost = keyword.match(/^ally_(.+)_bp_boost_(\d+)$/);
-      if (allyFeatureBoost && unitHasFeatureSlug(def, allyFeatureBoost[1]!)) {
-        bonus += Number(allyFeatureBoost[2]);
-      }
-      // RS-430（ラッシュエリアにある間）: 追加条件を持たない WB の S ユニットは
-      // 必要パワーの数字2ごとに BP+1000
-      if (
-        keyword === "battle_position_sp_any_pos2_sp1" &&
-        own.rush.some((c) => c.instanceId === source.instanceId)
-      ) {
-        bonus += robotoughBpBonus(def);
+  // 自分自身にもかかるオーラ（「すべての自軍ユニット」）は除外しない。BP の計算のたびに呼ばれるので、場の配列を作らずに見る。
+  for (const zone of [own.rush, own.battle]) {
+    for (const source of zone) {
+      for (const keyword of cachedCardGrantKeywords(source.cardId)) {
+        // RS-289 / XP-023: 特徴「恐竜」を持つすべての自軍ユニットは BP+1000
+        const allyFeatureBoost = allyFeatureBoostOf(keyword);
+        if (allyFeatureBoost && unitHasFeatureSlug(def, allyFeatureBoost.slug)) {
+          bonus += allyFeatureBoost.amount;
+        }
+        // RS-430（ラッシュエリアにある間）: 追加条件を持たない WB の S ユニットは
+        // 必要パワーの数字2ごとに BP+1000
+        if (
+          keyword === "battle_position_sp_any_pos2_sp1" &&
+          own.rush.some((c) => c.instanceId === source.instanceId)
+        ) {
+          bonus += robotoughBpBonus(def);
+        }
       }
     }
   }
