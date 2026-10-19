@@ -16,7 +16,7 @@ import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEf
 import { findCardInField } from "../fieldLookup";
 import { cardNotSelectableByOpponent } from "../../keywords/effectTargetability";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
-import { cardName, effectiveBp, getDefinition, isCounterOperation, isSmallUnit } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, isCounterOperation, isSmallUnit, unitSizeOf } from "../../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import {
   addNextTurnRuleModifier,
@@ -588,7 +588,7 @@ function providerBaseCandidates(state: GameState, playerId: PlayerId, exclude: s
     .filter((c) => {
       if (exclude.includes(c.instanceId)) return false;
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size !== "S" && (def.features ?? []).includes("メカ");
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) !== "S" && (def.features ?? []).includes("メカ");
     })
     .map((c) => c.instanceId);
 }
@@ -925,14 +925,14 @@ export function tryRideRaptorOnRush(
   const raptor = player.operation.find((c) => c.cardId === "RS-180");
   if (!raptor) return state;
   const rushed = findInZone(player, "rush", rushedInstanceId)?.card;
-  if (!rushed || !isSmallUnit(state.definitions, rushed.cardId)) return state;
+  if (!rushed || !isSmallUnit(state.definitions, rushed)) return state;
   // 自軍コマンド（コールのユニットを含む）をホールドしてラッシュしたか。
   const payment = player.lastRushPayment;
   if (!payment || payment.rushedInstanceId !== rushedInstanceId || payment.holdInstanceIds.length === 0) return state;
   const candidates = player.hand
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return !!def && def.type === "unit" && def.size === "S" && cardHasCategory(def, "WB");
+      return !!def && def.type === "unit" && unitSizeOf(state.definitions, c) === "S" && cardHasCategory(def, "WB");
     })
     .map((c) => c.instanceId);
   if (candidates.length === 0) return state;

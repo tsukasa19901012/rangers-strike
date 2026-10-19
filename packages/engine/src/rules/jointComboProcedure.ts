@@ -10,7 +10,7 @@ import {
   getUnitEffectBlock,
 } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { getDefinition, unitEffectiveCategories } from "../core/catalog";
+import { getDefinition, unitEffectiveCategories, unitSizeOf } from "../core/catalog";
 import { updatePlayer } from "../core/helpers";
 import { crossReducedNumber, crossReductionFor } from "../keywords/battleKeywords";
 import { buildLogEntry } from "../log/formatLog";
@@ -55,8 +55,8 @@ export function isJointLSizeAnchor(
   definitions: GameState["definitions"],
   card: CardInstance,
 ): boolean {
-  const def = getDefinition(definitions, card.cardId);
-  return def?.size === "L";
+  // RK-013 Jパワー・RS-255 巨大化爆弾を重ねたユニットも L（core/catalog.ts unitSizeOf）。
+  return unitSizeOf(definitions, card) === "L";
 }
 
 /**

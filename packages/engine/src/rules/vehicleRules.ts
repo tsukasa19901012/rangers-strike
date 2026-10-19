@@ -51,6 +51,6 @@ export function canVehicleEnterBattleFromRush(
 
   return player.battle.some((c) => {
     const def = getDefinition(state.definitions, c.cardId);
-    return def && isUnit(def) && isSmallUnit(state.definitions, c.cardId);
+    return def && isUnit(def) && isSmallUnit(state.definitions, c);
   });
 }

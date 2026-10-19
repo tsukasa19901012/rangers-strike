@@ -11,6 +11,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { rm1ActsAsVehicle } from "./rm1Fields";
+import { unitSizeOf } from "../../core/catalog";
 
 export const SCOOPER_CARD_ID = "RM-023";
 export const JASPION_CARD_ID = "RM-029";
@@ -53,7 +54,7 @@ export function rm2BlocksBattleEntry(state: Pick<GameState, "players" | "definit
   return fieldCards(state, playerId).some((c) => {
     if (c.instanceId === unit.instanceId) return false;
     const d = state.definitions[c.cardId];
-    if (d?.type !== "unit" || d.size !== "S") return false;
+    if (d?.type !== "unit" || unitSizeOf(state.definitions, c) !== "S") return false;
     return d.sp !== undefined && d.sp !== null;
   });
 }

@@ -5,7 +5,7 @@ import { rk3SpFloor } from "../rk/rk3UnitEffects";
 import { activeNamedEffect } from "../ncGatedEffects";
 import type { Category } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
-import { effectiveBp, getDefinition, isSmallUnit, spSetValueOf, unitBp } from "../../core/catalog";
+import { effectiveBp, getDefinition, isSmallUnit, spSetValueOf, unitBp, unitSizeOf } from "../../core/catalog";
 import {
   battlePositionOneBased,
   printedSpBase,
@@ -102,7 +102,7 @@ export function legend2EffectiveSp(
   // RK-081 ゲゲル: 発動ターン中は自軍 S ユニットすべて SP1
   if (
     instance.activatedNcEffects?.includes("gegeru_sp1") &&
-    isSmallUnit(state.definitions, instance.cardId)
+    isSmallUnit(state.definitions, instance)
   ) {
     sp = Math.max(sp, 1);
   }
@@ -167,7 +167,7 @@ export function trafficControlRequiresSameSize(
   if (!controller || controller.playerId === playerId) return false;
   // 「並べるユニットはすべて同じサイズ」— 既にサイズが混在していれば、どのサイズも出せない（faq-card-2 RS-086 Q1）。
   return state.players[playerId].battle.some(
-    (c) => getDefinition(state.definitions, c.cardId)?.size !== unitSize,
+    (c) => unitSizeOf(state.definitions, c) !== unitSize,
   );
 }
 

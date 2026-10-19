@@ -9,7 +9,7 @@
  */
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardCategories, cardName, effectiveBp, effectiveCommandCategories, getDefinition } from "../../core/catalog";
+import { cardCategories, cardName, effectiveBp, effectiveCommandCategories, getDefinition, unitSizeOf } from "../../core/catalog";
 import { beginTagBold, registerTagResident, tagBoldExecutable } from "./set8NamedEffectsA";
 import { opponent } from "../../core/helpers";
 import { shuffleCards } from "../../core/deckShuffle";
@@ -892,7 +892,7 @@ function mechaSDeckIds(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].deck
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "S" && (def.features ?? []).includes("メカ");
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && (def.features ?? []).includes("メカ");
     })
     .map((c) => c.instanceId);
 }
@@ -1386,7 +1386,7 @@ function megaShieldDiscardIds(state: GameState, playerId: PlayerId, exclude: str
     .filter((c) => {
       if (exclude.includes(c.instanceId)) return false;
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "S" && isWingUnitCard(state, c.cardId);
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && isWingUnitCard(state, c.cardId);
     })
     .map((c) => c.instanceId);
 }

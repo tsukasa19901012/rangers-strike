@@ -23,7 +23,7 @@ export function tryCyclopsScarletOnReturnToRush(
   phasePlayerId: PlayerId,
 ): GameState {
   if (state.pendingEffectChoice) return state;
-  if (!isSmallUnit(state.definitions, returned.cardId)) return state;
+  if (!isSmallUnit(state.definitions, returned)) return state;
   if (!findInZone(state.players[returnedOwnerId], "rush", returned.instanceId)) return state;
   const controllerId = opponent(returnedOwnerId);
   const controller = state.players[controllerId];

@@ -45,6 +45,7 @@ import {
   isUnit,
   isVehicle,
   unitEffectiveCategories,
+  unitSizeOf,
 } from "../core/catalog";
 import {
   heldCallLeadMatchesCategories,
@@ -178,7 +179,7 @@ export function getLightningGravityHoldNotice(
   unit: CardInstance,
 ): LightningGravityHoldNotice | null {
   if (!lightningGravityActive(state)) return null;
-  if (!isMediumUnit(state.definitions, unit.cardId)) return null;
+  if (!isMediumUnit(state.definitions, unit)) return null;
   if (canMoveUnitToBattle(state, playerId, unit, "rush")) return null;
 
   const lgCount = countActiveLightningGravity(state);
@@ -230,7 +231,7 @@ export function requiredBattleEntryHolds(
   if (unitHold > 0 && rk10OmegaIgnoresEntryHold(state, playerId, unit)) unitHold = 0;
   // RK-209 エラスモテリウムオルフェノク ※: ホールドする数は相手の手札1枚につき1少なくなる（rules/rk/rk10Fields.ts）。
   if (unitHold > 0) unitHold = Math.max(0, unitHold - rk10ElasmoHoldReduction(state, playerId, unit));
-  const lgHold = isMediumUnit(state.definitions, unit.cardId)
+  const lgHold = isMediumUnit(state.definitions, unit)
     ? countActiveLightningGravity(state)
     : 0;
   // ルール: R-ADD-07 — 「〜しなければバトルエリアに出られない」制限は1つずつ別々に満たす
@@ -250,7 +251,7 @@ export function accelMemoryHoldCount(
   unit: CardInstance,
 ): number {
   const def = getDefinition(state.definitions, unit.cardId);
-  if (!def || def.type !== "unit" || def.size !== "S") return 0;
+  if (!def || def.type !== "unit" || unitSizeOf(state.definitions, unit) !== "S") return 0;
   if ((def.features ?? []).includes("加速")) return 0;
   const enemy = state.players[opponent(playerId)];
   const riders = [...enemy.battle, ...enemy.rush];
@@ -271,7 +272,7 @@ export function ryuseioBlocksMove(state: GameState, playerId: PlayerId, unit: Ca
   // ビークルにライドして出るなら L ユニットとして扱い、対象外（atwiki/page-474 Q3）。
   if (unit.mountedOnInstanceId) return false;
   const def = getDefinition(state.definitions, unit.cardId);
-  if (def?.type !== "unit" || def.size !== "S") return false;
+  if (def?.type !== "unit" || unitSizeOf(state.definitions, unit) !== "S") return false;
   return unitEffectiveCategories(state, playerId, unit, "rush").includes("DA");
 }
 
@@ -282,7 +283,7 @@ export function patSignerBlocksMove(
   unit: CardInstance,
 ): boolean {
   const def = getDefinition(state.definitions, unit.cardId);
-  if (def?.size !== "M") return false;
+  if (unitSizeOf(state.definitions, unit) !== "M") return false;
 
   const bp = effectiveBp(state, playerId, unit);
   if (bp < 5000) return false;
@@ -407,7 +408,7 @@ function canMoveUnitToBattleUncached(
 
   if (needsAllySInBattle(unit.cardId)) {
     const hasAllyS = state.players[playerId].battle.some((c) =>
-      isSmallUnit(state.definitions, c.cardId),
+      isSmallUnit(state.definitions, c),
     );
     if (!hasAllyS) return false;
   }
@@ -551,7 +552,7 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {
     const hasAllyS = state.players[playerId].battle.some((c) =>
-      isSmallUnit(state.definitions, c.cardId),
+      isSmallUnit(state.definitions, c),
     );
     if (!hasAllyS) return false;
   }
@@ -938,7 +939,7 @@ export function explainCannotEnterBattle(
   }
 
   const unitHolds = unitBattleEntryHoldCount(state, playerId, unit.cardId);
-  const lgCount = isMediumUnit(state.definitions, unit.cardId) ? countActiveLightningGravity(state) : 0;
+  const lgCount = isMediumUnit(state.definitions, unit) ? countActiveLightningGravity(state) : 0;
   const lionCount = karakuriLionChainHoldCount(state, playerId, unit);
   const requiredTotal = requiredBattleEntryHolds(state, playerId, unit);
   const released = countReleasedCommands(player);
@@ -989,7 +990,7 @@ export function findMandatoryBattleEntries(
       // RS-595【頼もしい背中】: 「炎神」の自軍ユニット自身の「可能ならバトルエリアに出る」は無効（rules/legend1/set8NamedEffectsD.ts）。
       (hasAutoBattleEntryEachTurnNote(card.cardId) && !ownAutoBattleEntryNegated(state, playerId, card)) ||
       earthForceRequiresBattleEntry(state) ||
-      (emperorCurse && isSmallUnit(state.definitions, card.cardId)) ||
+      (emperorCurse && isSmallUnit(state.definitions, card)) ||
       highwayPlanRequiresBattleEntry(state, card.cardId) ||
       // RS-557 ビンボーガミ【札束の誘惑】（rules/legend1/set8NamedEffectsB.ts）。
       set8BRequiresBattleEntry(state, playerId, card) ||

@@ -410,7 +410,7 @@ export function trySet9COnComboEnter(
   const rhino = stackedComboBoost(state, left, card);
   if (rhino > 0) next = grantBpBoostToBattleUnit(next, playerId, card.instanceId, rhino);
   // RS-653: 左隣のレッドファルコン（2nd）が NC で【後輩戦士への叱咤】を発動していれば、イエローの S ユニットが能力を得る。
-  if ((left.activatedNcEffects ?? []).includes(SCOLDING_MARK) && isSmallUnit(state.definitions, card.cardId) && featuresOf(state, card.cardId).includes("イエロー")) {
+  if ((left.activatedNcEffects ?? []).includes(SCOLDING_MARK) && isSmallUnit(state.definitions, card) && featuresOf(state, card.cardId).includes("イエロー")) {
     next = grantBpBoostToBattleUnit(next, playerId, card.instanceId, 3000);
     next = grantSp1ToBattleUnit(next, playerId, card.instanceId);
   }
@@ -441,7 +441,7 @@ function startTeaching(state: GameState, playerId: PlayerId, selfId: string): Ga
       (c) =>
         c.instanceId !== selfId &&
         !c.commandHeld &&
-        isSmallUnit(next.definitions, c.cardId) &&
+        isSmallUnit(next.definitions, c) &&
         featuresOf(next, c.cardId).includes("レッド"),
     )
     .map((c) => c.instanceId);
@@ -464,7 +464,7 @@ CHOICE_RESOLVERS[TEACHING_HOLD_EFFECT_ID] = (state, playerId, redId) => {
   let next = patchFieldCard(close(state, pending), playerId, redId, (c) => ({ ...c, commandHeld: true }));
   const enemyId = opponent(playerId);
   const targets = next.players[enemyId].battle
-    .filter((c) => isSmallUnit(next.definitions, c.cardId) && isSelectableByOpponentEffect(next, playerId, c.instanceId, "RS-654"))
+    .filter((c) => isSmallUnit(next.definitions, c) && isSelectableByOpponentEffect(next, playerId, c.instanceId, "RS-654"))
     .map((c) => c.instanceId);
   const log = logFor(state, playerId, "RS-654", `${pending.effectId}:${cardName(state.definitions, findCardInField(state, redId)?.card.cardId ?? redId)}`);
   if (targets.length === 0) return { state: proceed(next, pending), log };
@@ -542,7 +542,7 @@ export function set9CEffectiveSp(state: GameState, playerId: PlayerId, instance:
 export function set9CFieldBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
   let bonus = 0;
   if (instance.cardId === "RS-661" && fieldUnits(state, playerId).some((c) => c.instanceId === instance.instanceId)) {
-    const enemyS = fieldUnits(state, opponent(playerId)).filter((c) => isSmallUnit(state.definitions, c.cardId)).length;
+    const enemyS = fieldUnits(state, opponent(playerId)).filter((c) => isSmallUnit(state.definitions, c)).length;
     bonus += 1000 * enemyS;
   }
   return bonus;
@@ -651,7 +651,7 @@ CHOICE_RESOLVERS[ALL_STAR_BUSTER_EFFECT_ID] = (state, playerId, instanceId) => {
 function openRaid(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const enemyId = opponent(ctx.playerId);
   const ids = state.players[enemyId].rush
-    .filter((c) => isSmallUnit(state.definitions, c.cardId) && isSelectableByOpponentEffect(state, ctx.playerId, c.instanceId, ctx.sourceCardId))
+    .filter((c) => isSmallUnit(state.definitions, c) && isSelectableByOpponentEffect(state, ctx.playerId, c.instanceId, ctx.sourceCardId))
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "rs658_raid:no_targets" };
   return {
@@ -682,7 +682,7 @@ function openSensor(state: GameState, ctx: GrantKeywordContext): GrantKeywordRes
   const self = ctx.triggerSourceInstanceId;
   let next = self ? grantSp1ToBattleUnit(state, ctx.playerId, self) : state;
   const ids = next.players[ctx.playerId].power
-    .filter((c) => !c.faceDown && isUnitCard(next, c.cardId) && isSmallUnit(next.definitions, c.cardId))
+    .filter((c) => !c.faceDown && isUnitCard(next, c.cardId) && isSmallUnit(next.definitions, c))
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state: next, detail: "rs659_sensor:no_targets" };
   next = openEffectChoice(next, {

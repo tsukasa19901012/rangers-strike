@@ -12,6 +12,7 @@ import {
   isUnit,
   parsePowerCost,
   unitBp,
+  unitSizeOf,
 } from "../core/catalog";
 import {
   findInZone,
@@ -119,7 +120,7 @@ function resolveLandBalkan(ctx: EffectContext): EffectOutcome {
       (card) =>
         !card.commandHeld &&
         isUnit(getDefinition(ctx.state.definitions, card.cardId)) &&
-        isSmallUnit(ctx.state.definitions, card.cardId),
+        isSmallUnit(ctx.state.definitions, card),
     )
     .map((card) => card.instanceId);
 
@@ -279,7 +280,7 @@ function resolvePowerBazooka(ctx: EffectContext): EffectOutcome {
   const enemy = ctx.state.players[enemyId];
   const found = findInZone(enemy, "battle", ctx.targetInstanceId);
   if (!found) return fail(ctx.state, "invalid_target");
-  if (!isLargeUnit(ctx.state.definitions, found.card.cardId)) {
+  if (!isLargeUnit(ctx.state.definitions, found.card)) {
     return fail(ctx.state, "invalid_target");
   }
 
@@ -342,7 +343,7 @@ function resolveJudgment(ctx: EffectContext): EffectOutcome {
   const restDeck = player.deck.slice(1);
   const revealedDef = getDefinition(ctx.state.definitions, revealed.cardId);
   const matches =
-    revealedDef?.type === "unit" && revealedDef.size === targetSize;
+    revealedDef?.type === "unit" && unitSizeOf(ctx.state.definitions, revealed) === targetSize;
 
   const targetName = cardName(ctx.state.definitions, targetFound.card.cardId);
   const revealedName = cardName(ctx.state.definitions, revealed.cardId);
@@ -449,7 +450,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
     case "aura_power": {
       if (!ctx.targetInstanceId) return fail(ctx.state, "target_required");
       const found = findOwnUnit(player, ctx.targetInstanceId);
-      if (!found || !isSmallUnit(ctx.state.definitions, found.card.cardId)) {
+      if (!found || !isSmallUnit(ctx.state.definitions, found.card)) {
         return fail(ctx.state, "invalid_target");
       }
       const nextPlayer = setAuraPowerInstanceId(player, ctx.targetInstanceId, ctx.operationCardId);
@@ -493,7 +494,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
       if (!ctx.targetInstanceId) return fail(ctx.state, "target_required");
       const found = findInZone(player, "discard", ctx.targetInstanceId);
       if (!found) return fail(ctx.state, "invalid_target");
-      if (!isSmallUnit(ctx.state.definitions, found.card.cardId)) {
+      if (!isSmallUnit(ctx.state.definitions, found.card)) {
         return fail(ctx.state, "invalid_target");
       }
 
@@ -692,7 +693,7 @@ export function isValidOperationTarget(
       return (
         found !== null &&
         isUnit(getDefinition(state.definitions, found.card.cardId)) &&
-        isSmallUnit(state.definitions, found.card.cardId)
+        isSmallUnit(state.definitions, found.card)
       );
     }
     case "discard_any":
@@ -701,7 +702,7 @@ export function isValidOperationTarget(
       const found = findInZone(player, "discard", targetInstanceId);
       return (
         found !== null &&
-        isSmallUnit(state.definitions, found.card.cardId)
+        isSmallUnit(state.definitions, found.card)
       );
     }
     case "discard_mecha": {
@@ -715,7 +716,7 @@ export function isValidOperationTarget(
       const found = findInZone(enemy, "battle", targetInstanceId);
       return (
         found !== null &&
-        isLargeUnit(state.definitions, found.card.cardId) &&
+        isLargeUnit(state.definitions, found.card) &&
         isSelectableByOpponentEffect(
           state,
           playerId,

@@ -7,6 +7,7 @@ import {
   effectiveBp,
   getDefinition,
   isSmallUnit,
+  unitSizeOf,
 } from "../core/catalog";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { listZordFusionPartnerIds, resolveRushAdditionalCondition } from "@rangers-strike/cards";
@@ -52,7 +53,7 @@ export function collectEnemyBattleAtMostBp(
 
 export function collectDiscardSmallUnits(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].discard
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .map((c) => c.instanceId);
 }
 
@@ -61,7 +62,7 @@ export function collectHandMediumWithAdditional(state: GameState, playerId: Play
   return player.hand
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (def?.type !== "unit" || def.size !== "M") return false;
+      if (def?.type !== "unit" || unitSizeOf(state.definitions, c) !== "M") return false;
       const doc = getCardDslDocument(c.cardId);
       return !!doc?.rushAdditionalCondition;
     })
@@ -73,7 +74,7 @@ export function collectRushWbMWithOnRush(state: GameState, playerId: PlayerId): 
   return player.rush
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (def?.type !== "unit" || def.size !== "M") return false;
+      if (def?.type !== "unit" || unitSizeOf(state.definitions, c) !== "M") return false;
       if (!cardCategories(def).includes("WB")) return false;
       const doc = getCardDslDocument(c.cardId);
       return doc?.effects?.some((e) => e.trigger?.type === "on_rush") ?? false;
@@ -108,7 +109,7 @@ function cardHasDslKeyword(cardId: string, keyword: string): boolean {
 export function countOwnFieldSmallUnits(state: GameState, playerId: PlayerId): number {
   const player = state.players[playerId];
   return [...player.rush, ...player.battle].filter((c) =>
-    isSmallUnit(state.definitions, c.cardId),
+    isSmallUnit(state.definitions, c),
   ).length;
 }
 
@@ -315,7 +316,7 @@ export function tryZubazubanOnAllyRush(
   const found = findInZone(rusher, "rush", rushedInstanceId);
   if (!found) return state;
   const def = getDefinition(state.definitions, found.card.cardId);
-  if (def?.size !== "L" || !(def.features ?? []).includes("メカ")) return state;
+  if (unitSizeOf(state.definitions, found.card) !== "L" || !(def?.features ?? []).includes("メカ")) return state;
   // 「その追加条件を満たすために捨札にした合体ユニット」— 追加条件が「自軍合体ユニットを捨札にする」のユニットだけ
   // （faq-card-6 RS-420 Q1: トラベリオンエクスプレスを捨札にしたトラベリオンでは発動しない）。
   if (resolveRushAdditionalCondition(found.card.cardId, def)?.conditionId !== "discard_fusion_unit") return state;
@@ -436,7 +437,7 @@ export function applyShinobiBallRequiredDefender(
   );
   if (!unit) return entry;
   const def = getDefinition(state.definitions, unit.cardId);
-  if (def?.size !== "S") return entry;
+  if (unitSizeOf(state.definitions, unit) !== "S") return entry;
   if (
     !canAttackDefender(
       state,
@@ -464,7 +465,7 @@ export function applyMegasuringuEnemyRushSBpDebuff(
   let changed = false;
 
   for (const unit of enemy.rush) {
-    if (!isSmallUnit(state.definitions, unit.cardId)) {
+    if (!isSmallUnit(state.definitions, unit)) {
       kept.push(unit);
       continue;
     }

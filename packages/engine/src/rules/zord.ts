@@ -18,7 +18,7 @@ import {
 import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, PlayerState } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
-import { getDefinition, isSmallUnit } from "../core/catalog";
+import { getDefinition, isSmallUnit, unitSizeOf } from "../core/catalog";
 import { findInZone, removeAt } from "../core/helpers";
 import { hasTurnRuleModifier } from "../core/scopedModifiers";
 import { actionContextState, zordMaterialAlteredName, zordMaterialFeatures } from "./zordFeatureContext";
@@ -100,7 +100,7 @@ export function fusionAliasUsable(
   if (!fusionMaterialAliasRequiresNoOwnL(getDefinition(definitions, fieldCardId)?.text)) return true;
   return ![...player.battle, ...player.rush].some((c) => {
     const def = getDefinition(definitions, c.cardId);
-    return def?.type === "unit" && def.size === "L";
+    return def?.type === "unit" && unitSizeOf(definitions, c) === "L";
   });
 }
 
@@ -568,7 +568,7 @@ export function isValidPowerMaterial(
   rushingInstanceId: string,
 ): boolean {
   if (card.instanceId === rushingInstanceId) return false;
-  return isSmallUnit(definitions, card.cardId);
+  return isSmallUnit(definitions, card);
 }
 
 export function collectZordMaterials(

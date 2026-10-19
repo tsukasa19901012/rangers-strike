@@ -3,7 +3,7 @@ import { isDivingOrochi } from "../rules/errataCardEffects";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { getDefinition, instanceBp, isSmallUnit, unitEffectiveCategories } from "../core/catalog";
+import { getDefinition, instanceBp, isSmallUnit, unitEffectiveCategories, unitSizeOf, type SizedCard } from "../core/catalog";
 import { findInZone, opponent } from "../core/helpers";
 import { lastBattleProtectsOtherS } from "../rules/promotedNcEffects";
 import { getCardDslDocument } from "./effectLookup";
@@ -255,7 +255,7 @@ export function promotedKeywordBpBonus(
     if (keyword === "bp_per_own_rush_s_1000_own_turn") {
       if (state.activePlayer === playerId) {
         const sCount = state.players[playerId].rush.filter((c) =>
-          isSmallUnit(state.definitions, c.cardId),
+          isSmallUnit(state.definitions, c),
         ).length;
         bonus += sCount * 1000;
       }
@@ -331,7 +331,7 @@ function fieldAuraBpBonus(
           keyword === "battle_position_sp_any_pos2_sp1" &&
           own.rush.some((c) => c.instanceId === source.instanceId)
         ) {
-          bonus += robotoughBpBonus(def);
+          bonus += robotoughBpBonus(state, instance, def);
         }
       }
     }
@@ -340,18 +340,18 @@ function fieldAuraBpBonus(
   // 自軍と敵軍のラッシュエリアに合わせて複数体あれば重複する（同 Q1）。
   for (const source of state.players[opponent(playerId)].rush) {
     if (cachedCardGrantKeywords(source.cardId).includes("battle_position_sp_any_pos2_sp1")) {
-      bonus += robotoughBpBonus(def);
+      bonus += robotoughBpBonus(state, instance, def);
     }
   }
   return bonus;
 }
 
 /** RS-430【獣拳トレーナー】: 追加条件を持たない WB の S ユニットは必要パワーの数字2ごとに BP+1000。 */
-function robotoughBpBonus(def: CardDefinition): number {
+function robotoughBpBonus(state: Pick<GameState, "definitions">, instance: CardInstance, def: CardDefinition): number {
   const cost =
     typeof def.powerCost === "number" ? def.powerCost : parseInt(String(def.powerCost), 10);
   if (
-    def.size === "S" &&
+    unitSizeOf(state.definitions, instance) === "S" &&
     cardCategories(def).includes("WB") &&
     !def.rushAdditionalCondition &&
     Number.isFinite(cost)
@@ -417,7 +417,7 @@ export function promotedKeywordSpFloor(
     if (keyword === "sp1_if_no_own_discard_s_unit") {
       const hasSInDiscard = state.players[playerId].discard.some((c) => {
         const def = getDefinition(state.definitions, c.cardId);
-        return def?.type === "unit" && def.size === "S";
+        return def?.type === "unit" && unitSizeOf(state.definitions, c) === "S";
       });
       if (!hasSInDiscard) floor = Math.max(floor, 1);
       continue;
@@ -529,18 +529,20 @@ export function listRideWithoutRcFeatures(vehicleCardId: string): string[] {
 export function riderMatchesVehicleRideWithoutRc(
   definitions: Record<string, CardDefinition>,
   vehicleCardId: string,
-  riderCardId: string,
+  rider: SizedCard,
 ): boolean {
   const allowedFeatures = listRideWithoutRcFeatures(vehicleCardId);
   if (allowedFeatures.length === 0) return false;
-  const riderDef = definitions[riderCardId];
+  const riderDef = definitions[typeof rider === "string" ? rider : rider.cardId];
   if (!riderDef?.features?.length) return false;
+  // 場のライダーはいまのサイズ（RK-013 Jパワーを重ねたユニットは L。core/catalog.ts unitSizeOf）。
+  const riderSize = unitSizeOf(definitions, rider);
   const sizedEffects = rideWithoutRcEffects(vehicleCardId).filter((e) => e.size);
   if (sizedEffects.length > 0) {
     const riderCats = Array.isArray(riderDef.category) ? riderDef.category : riderDef.category ? [riderDef.category] : [];
     return sizedEffects.some(
       (e) =>
-        riderDef.size === e.size &&
+        riderSize === e.size &&
         !!e.feature &&
         riderDef.features!.includes(e.feature) &&
         !(e.excludedCategory && riderCats.includes(e.excludedCategory as never)),
@@ -548,7 +550,7 @@ export function riderMatchesVehicleRideWithoutRc(
   }
   // 「※特徴「○○」を持つ（自軍）Sユニットは、…ライドできる」— S ユニットに限る
   // （RS-381 atwiki/page-522・RS-406 atwiki/page-563）。
-  if (rideWithoutRcTexts(vehicleCardId).every((t) => /Sユニットは/.test(t)) && riderDef.size !== "S") {
+  if (rideWithoutRcTexts(vehicleCardId).every((t) => /Sユニットは/.test(t)) && riderSize !== "S") {
     return false;
   }
   return allowedFeatures.some((feature) => riderDef.features!.includes(feature));
@@ -601,7 +603,7 @@ function riddenVehicleGrantsNoAttackFromS(
   const text = (getDefinition(state.definitions, vehicle.cardId)?.text ?? "").normalize("NFKC");
   const m = text.match(/これにライドしている(S)?ユニットは次の能力を得る⇒これはSユニットにアタックされない/);
   if (!m) return false;
-  return !m[1] || isSmallUnit(state.definitions, rider.cardId);
+  return !m[1] || isSmallUnit(state.definitions, rider);
 }
 
 function riddenVehicleBlocksNonPlusAttacker(
@@ -617,7 +619,7 @@ function riddenVehicleBlocksNonPlusAttacker(
   const text = (getDefinition(state.definitions, vehicle.cardId)?.text ?? "").normalize("NFKC");
   const m = text.match(/これにライドしている(S|M|L)?ユニットは、必要パワーに「\+」を持たないユニットにアタックされない/);
   if (!m) return false;
-  if (m[1] && getDefinition(state.definitions, rider.cardId)?.size !== m[1]) return false;
+  if (m[1] && unitSizeOf(state.definitions, rider) !== m[1]) return false;
   const cost = getDefinition(state.definitions, attackerCardId)?.powerCost;
   return !(typeof cost === "string" && cost.normalize("NFKC").includes("+"));
 }
@@ -645,7 +647,7 @@ export function promotedDefenderBlocksAttack(
   }
 
   if (
-    isSmallUnit(state.definitions, attacker.card.cardId) &&
+    isSmallUnit(state.definitions, attacker.card) &&
     lastBattleProtectsOtherS(state, defenderPlayerId, defender.card.instanceId)
   ) {
     return true;
@@ -653,7 +655,7 @@ export function promotedDefenderBlocksAttack(
 
   // 「これにライドしているSユニットは次の能力を得る⇒これはSユニットにアタックされない」（RS-488【滑空】atwiki/page-810）。
   if (
-    isSmallUnit(state.definitions, attacker.card.cardId) &&
+    isSmallUnit(state.definitions, attacker.card) &&
     riddenVehicleGrantsNoAttackFromS(state, defenderPlayerId, defender.card)
   ) {
     return true;
@@ -670,7 +672,7 @@ export function promotedDefenderBlocksAttack(
   for (const keyword of keywords) {
     if (keyword === "enemy_cannot_attack") return true;
 
-    if (keyword === "no_attack_from_s" && isSmallUnit(state.definitions, attacker.card.cardId)) {
+    if (keyword === "no_attack_from_s" && isSmallUnit(state.definitions, attacker.card)) {
       return true;
     }
 
@@ -684,7 +686,7 @@ export function promotedDefenderBlocksAttack(
     if (
       keyword === "no_attack_from_enemy_s" &&
       attackerPlayerId !== defenderPlayerId &&
-      isSmallUnit(state.definitions, attacker.card.cardId)
+      isSmallUnit(state.definitions, attacker.card)
     ) {
       return true;
     }
@@ -692,7 +694,7 @@ export function promotedDefenderBlocksAttack(
     const enemySBp = keyword.match(/^no_attack_from_enemy_s_bp(\d+)$/);
     if (
       enemySBp &&
-      isSmallUnit(state.definitions, attacker.card.cardId) &&
+      isSmallUnit(state.definitions, attacker.card) &&
       attackerBp >= Number(enemySBp[1])
     ) {
       return true;
@@ -701,7 +703,7 @@ export function promotedDefenderBlocksAttack(
     const allyProtect = keyword.match(/^ally_(.+)_protects_from_enemy_s$/);
     if (
       allyProtect &&
-      isSmallUnit(state.definitions, attacker.card.cardId) &&
+      isSmallUnit(state.definitions, attacker.card) &&
       playerHasAllyWithFeatureInBattle(
         state,
         defenderPlayerId,
@@ -749,7 +751,7 @@ export function promotedAttackerCannotTarget(
 
     if (keyword === "cannot_attack_non_da" && !defenderCats.includes("DA")) return true;
 
-    if (keyword === "cannot_attack_s" && isSmallUnit(state.definitions, defender.card.cardId)) {
+    if (keyword === "cannot_attack_s" && isSmallUnit(state.definitions, defender.card)) {
       return true;
     }
 

@@ -2,7 +2,7 @@ import { rm3GuruInsectRide } from "../rules/rm/rm3Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
 import type { CardInstance, GameState, PlayerId, PlayerState, ZoneName } from "../types/game";
-import { getDefinition, isUnit } from "../core/catalog";
+import { getDefinition, isUnit, unitSizeOf } from "../core/catalog";
 import { findInZone } from "../core/helpers";
 import { updatePlayer } from "../core/helpers";
 import { canMoveUnitToBattle } from "../rules/restrictions";
@@ -103,9 +103,9 @@ function vehicleAlreadyRidden(
 }
 
 /** RS-381: RC を持たないライダーが、コマンドを1つホールドしてライドできるか。 */
-function galeoPulsarHoldRideAllowed(state: GameState, playerId: PlayerId, riderDef: CardDefinition): boolean {
+function galeoPulsarHoldRideAllowed(state: GameState, playerId: PlayerId, rider: CardInstance, riderDef: CardDefinition): boolean {
   return (
-    riderDef.size === "S" &&
+    unitSizeOf(state.definitions, rider) === "S" &&
     (riderDef.features ?? []).includes("レッド") &&
     state.players[playerId].command.some((cmd) => !cmd.commandHeld)
   );
@@ -151,15 +151,11 @@ export function findRideVehicleForRider(
     if (riderHasRc(riderDef, rider)) return vehicle;
     // RS-381 ガレオパルサーは、RC を持たない「レッド」の S ユニットが自軍コマンドを1つホールドしてライドする（mount_ride でホールド）。
     if (vehicle.cardId === "RS-381") {
-      if (galeoPulsarHoldRideAllowed(state, playerId, riderDef)) return vehicle;
+      if (galeoPulsarHoldRideAllowed(state, playerId, rider, riderDef)) return vehicle;
       continue;
     }
     if (
-      (riderMatchesVehicleRideWithoutRc(
-        state.definitions,
-        vehicle.cardId,
-        rider.cardId,
-      ) ||
+      (riderMatchesVehicleRideWithoutRc(state.definitions, vehicle.cardId, rider) ||
         // RM-058 老師グルで「昆虫」を追加された「メカ」の S ユニット（rules/rm/rm3Fields.ts）。
         rm3GuruInsectRide(state, playerId, vehicle.cardId, rider.cardId)) &&
       (!vehicleRideWithoutRcNeedsHold(vehicle.cardId) || player.command.some((cmd) => !cmd.commandHeld))
@@ -177,7 +173,7 @@ export function findRideVehicleForRider(
     const holdFeature = vehicleFeatureHoldRideFeature(vehicle.cardId);
     if (
       holdFeature &&
-      riderDef.size === "S" &&
+      unitSizeOf(state.definitions, rider) === "S" &&
       (riderDef.features ?? []).includes(holdFeature) &&
       player.command.some((cmd) => !cmd.commandHeld)
     ) {
@@ -194,11 +190,7 @@ export function findRideVehicleForRider(
   return (
     candidates.find(
       (vehicle) =>
-        riderMatchesVehicleRideWithoutRc(
-          state.definitions,
-          vehicle.cardId,
-          rider.cardId,
-        ) &&
+        riderMatchesVehicleRideWithoutRc(state.definitions, vehicle.cardId, rider) &&
         (!vehicleRideWithoutRcNeedsHold(vehicle.cardId) || player.command.some((cmd) => !cmd.commandHeld)),
     ) ?? null
   );
@@ -226,13 +218,13 @@ export function canRiderMountVehicle(
   const categoryRide = vehicleCategoryRideWithoutRc(state.definitions, vehicle.card.cardId);
   if (categoryRide) {
     const cats = Array.isArray(riderDef.category) ? riderDef.category : riderDef.category ? [riderDef.category] : [];
-    return riderDef.size === "S" && cats.includes(categoryRide as never);
+    return unitSizeOf(state.definitions, rider) === "S" && cats.includes(categoryRide as never);
   }
 
   // ルール: R-KW-RIDE-02 — ビークルに「それ以外のユニットはライドできない」とあれば、
   // RC を持っていても指定外のユニットはライドできない。
   if (vehicleRideIsExclusive(state.definitions, vehicle.card.cardId)) {
-    return riderMatchesVehicleRideWithoutRc(state.definitions, vehicle.card.cardId, rider.cardId);
+    return riderMatchesVehicleRideWithoutRc(state.definitions, vehicle.card.cardId, rider);
   }
 
   if (riderHasRc(riderDef, rider)) return true;
@@ -240,20 +232,16 @@ export function canRiderMountVehicle(
   // 「※ETのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。」（RS-393 コマンドアタッカー、atwiki/page-539）
   // 「※DAのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。」（RS-492 炎の騎馬、atwiki/page-815）
   const plainCategoryRide = vehiclePlainCategoryRideWithoutRc(state.definitions, vehicle.card.cardId);
-  if (plainCategoryRide && riderDef.size === "S") {
+  if (plainCategoryRide && unitSizeOf(state.definitions, rider) === "S") {
     const cats = Array.isArray(riderDef.category) ? riderDef.category : riderDef.category ? [riderDef.category] : [];
     if (cats.includes(plainCategoryRide as never)) return true;
   }
   // RS-381 ガレオパルサーの※「特徴「レッド」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくても
   // このビークルにライドできる。」（atwiki/page-522）— ホールドできるリリース状態のコマンドが必要（ホールドは mount_ride で行う）。
-  if (vehicle.card.cardId === "RS-381") return galeoPulsarHoldRideAllowed(state, playerId, riderDef);
+  if (vehicle.card.cardId === "RS-381") return galeoPulsarHoldRideAllowed(state, playerId, rider, riderDef);
 
   if (
-    riderMatchesVehicleRideWithoutRc(
-      state.definitions,
-      vehicle.card.cardId,
-      rider.cardId,
-    ) ||
+    riderMatchesVehicleRideWithoutRc(state.definitions, vehicle.card.cardId, rider) ||
     // RM-058 老師グルで「昆虫」を追加された「メカ」の S ユニット（rules/rm/rm3Fields.ts）。
     rm3GuruInsectRide(state, playerId, vehicle.card.cardId, rider.cardId)
   ) {
@@ -276,7 +264,7 @@ export function canRiderMountVehicle(
   const holdFeature = vehicleFeatureHoldRideFeature(vehicle.card.cardId);
   if (
     holdFeature &&
-    riderDef.size === "S" &&
+    unitSizeOf(state.definitions, rider) === "S" &&
     (riderDef.features ?? []).includes(holdFeature) &&
     player.command.some((cmd) => !cmd.commandHeld)
   ) {

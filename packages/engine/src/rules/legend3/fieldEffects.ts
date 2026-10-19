@@ -58,7 +58,7 @@ export function legend3FieldBpBonus(
       activeNamedEffect(instance, "heaven_earth_animal_heart")) {
     const wbMCount = state.players[playerId].battle.filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
-      return d?.category === "WB" && isMediumUnit(state.definitions, c.cardId);
+      return d?.category === "WB" && isMediumUnit(state.definitions, c);
     }).length;
     bonus += wbMCount * 2000;
   }
@@ -105,7 +105,7 @@ export function legend3FieldBpBonus(
     if (
       hasMoaLoader &&
       instance.cardId !== "RS-147" &&
-      isMediumUnit(state.definitions, instance.cardId) &&
+      isMediumUnit(state.definitions, instance) &&
       unitEffectiveCategories(state, playerId, instance, "battle").includes("MA")
     ) {
       bonus += 1000;
@@ -218,7 +218,7 @@ export function earthConquestDeclarationActive(
   const player = state.players[playerId];
   if (player.power.length < 12) return false;
   if (![...player.rush, ...player.battle].some((c) => c.cardId === "RS-188")) return false;
-  if (!isSmallUnit(state.definitions, instance.cardId)) return false;
+  if (!isSmallUnit(state.definitions, instance)) return false;
   return getDefinition(state.definitions, instance.cardId)?.features?.includes("メカ") ?? false;
 }
 
@@ -361,7 +361,7 @@ function legend3EffectiveSpUncached(
     const enemyId = opponent(playerId);
     const enemyUnits = [...state.players[enemyId].rush, ...state.players[enemyId].battle];
     const allEnemyAreS = enemyUnits.length > 0 && enemyUnits.every((c) =>
-      isSmallUnit(state.definitions, c.cardId),
+      isSmallUnit(state.definitions, c),
     );
     if (allEnemyAreS) sp = Math.max(sp, 1);
   }

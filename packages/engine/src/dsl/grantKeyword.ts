@@ -20,6 +20,7 @@ import {
   isSmallUnit,
   isUnit,
   parsePowerCost,
+  unitSizeOf,
 } from "../core/catalog";
 import { findInZone, opponent, takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
@@ -350,7 +351,7 @@ function resolveJudgmentKeyword(
   const revealed = player.deck[0]!;
   const restDeck = player.deck.slice(1);
   const revealedDef = getDefinition(state.definitions, revealed.cardId);
-  const matches = revealedDef?.type === "unit" && revealedDef.size === targetSize;
+  const matches = revealedDef?.type === "unit" && unitSizeOf(state.definitions, revealed) === targetSize;
 
   const targetName = cardName(state.definitions, targetFound.card.cardId);
   const revealedName = cardName(state.definitions, revealed.cardId);
@@ -672,7 +673,7 @@ export function applyGrantKeyword(
       );
       const allEnemyBattleAreS =
         enemyBattle.length > 0 &&
-        enemyBattle.every((c) => isSmallUnit(state.definitions, c.cardId));
+        enemyBattle.every((c) => isSmallUnit(state.definitions, c));
       if (!allEnemyBattleAreS) return { state, detail: `${keyword}:unmet` };
       return {
         state: grantSp1ToBattleUnit(state, ctx.playerId, instanceId),

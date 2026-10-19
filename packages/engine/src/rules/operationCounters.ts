@@ -426,11 +426,11 @@ export function hasBattleCounterReactions(
   for (const card of defender.hand) {
     if (!canPlayHandCounter(state, defenderId, card.instanceId)) continue;
     const effectId = getCardEffect(card.cardId)?.effectId;
-    if (effectId === "new_gymnastics" && isSmallUnit(state.definitions, defenderCard.cardId)) {
+    if (effectId === "new_gymnastics" && isSmallUnit(state.definitions, defenderCard)) {
       return true;
     }
     if (effectId === "hidden_ninja") return true;
-    if (isMechanicNinjaCounter(card.cardId) && isSmallUnit(state.definitions, defenderCard.cardId)) {
+    if (isMechanicNinjaCounter(card.cardId) && isSmallUnit(state.definitions, defenderCard)) {
       return true;
     }
     // RK-085 ガードベント（特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき。rules/rk/rk5UnitEffects.ts）。
@@ -570,7 +570,7 @@ export function collectMechanicNinjaRecruits(state: GameState, playerId: PlayerI
     .filter((c) => {
       const def = state.definitions[c.cardId];
       if (!def || def.type !== "unit") return false;
-      if (!isSmallUnit(state.definitions, c.cardId)) return false;
+      if (!isSmallUnit(state.definitions, c)) return false;
       // RK-001 改造人間で追加された「改造人間」も含む（コマンドゾーンのユニットカード。atwiki/page-190）。
       if (!rk1ZoneCardFeatures(state, playerId, c.cardId).includes("改造人間")) return false;
       return !effectiveRushAdditionalCondition(state, playerId, c.cardId, def);
@@ -723,7 +723,7 @@ function rushCounterConditionMet(
   const snapshot = state.rushedBpSnapshot?.instanceId === rushedInstanceId ? state.rushedBpSnapshot.bp : undefined;
   if (isShippuNinjaCard(state, counterCardId)) return (snapshot ?? bp) <= 8000;
   if (isMusicBoxClockCard(state, counterCardId)) {
-    return isSmallUnit(state.definitions, rushed.card.cardId) && bp >= 4000;
+    return isSmallUnit(state.definitions, rushed.card) && bp >= 4000;
   }
   return false;
 }
@@ -998,7 +998,7 @@ export function applyNewGymnasticsCounter(
   let nextState = discarded.state;
   const defender = nextState.players[defenderId];
   const found = findInZone(defender, "battle", pending.defenderInstanceId);
-  if (!found || !isSmallUnit(nextState.definitions, found.card.cardId)) {
+  if (!found || !isSmallUnit(nextState.definitions, found.card)) {
     return {
       state: nextState,
       log: buildLogEntry(defenderId, "play_counter", "RS-006", state.definitions, "failed"),
@@ -1521,7 +1521,7 @@ export function resolveBattlePendingCore(
     (() => {
       const defCardId = refreshedDefenderFound.card.cardId;
       if (defCardId === "XG2-086") return true;
-      if (defCardId === "XG3-087") return isSmallUnit(battleState.definitions, refreshedAttackerFound.card.cardId);
+      if (defCardId === "XG3-087") return isSmallUnit(battleState.definitions, refreshedAttackerFound.card);
       return false;
     })();
 

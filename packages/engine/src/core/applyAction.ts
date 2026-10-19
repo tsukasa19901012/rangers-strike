@@ -3783,7 +3783,7 @@ function applyActionCore(
       }
 
       const found = findInZone(nextPlayer, "battle", action.battleInstanceId);
-      if (!found || !isSmallUnit(state.definitions, found.card.cardId)) {
+      if (!found || !isSmallUnit(state.definitions, found.card)) {
         return fail("invalid_target");
       }
 

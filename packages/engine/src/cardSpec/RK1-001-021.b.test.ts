@@ -13,6 +13,9 @@ import { describe, expect, it } from "vitest";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { unitFeatures } from "../rules/addedFeatures";
+import { isLargeUnit, isSmallUnit, unitSizeOf } from "../core/catalog";
+import { playerHasAllyLargeUnit } from "../keywords/battleKeywords";
+import { isJointLSizeAnchor } from "../rules/jointComboProcedure";
 import {
   act,
   attack,
@@ -632,6 +635,34 @@ describe("RK-013 Jパワー", () => {
     s = resolveAll(attack(s, "SPEC-KAIZO:k", "TST-UNIT-0:e"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(1);
+  });
+
+  // ユーザー決定 2026-10-19（docs/rules/README.md §5.7 p）: J パワーを重ねたユニットは、DSL・RK モジュールだけでなくエンジン全体のサイズ判定で
+  // L ユニット（core/catalog.ts unitSizeOf。「Sユニットを選ぶ」対象・コンビネーション・ブラストの「自軍Lユニット」等）。
+  it("RK-013: エンジン全体のサイズ判定で L ユニット（isSmallUnit は偽・isLargeUnit は真）（ユーザー決定 2026-10-19。出典: atwiki/page-211「このカードに重ねたユニットは…「Lユニット」になる」）", () => {
+    const s = powered();
+    const k = cardIn(s, "player1", "SPEC-KAIZO:k")!;
+    expect(isSmallUnit(s.definitions, k)).toBe(false);
+    expect(isLargeUnit(s.definitions, k)).toBe(true);
+    expect(unitSizeOf(s.definitions, k)).toBe("L");
+    // カード ID だけなら印刷のサイズ（S）。
+    expect(unitSizeOf(s.definitions, k.cardId)).toBe("S");
+    // ジョイントコンビネーションの L サイズの相手としても数える（wiki p266 既定: L サイズ）。
+    expect(isJointLSizeAnchor(s.definitions, k)).toBe(true);
+  });
+
+  it("RK-013: J パワーを重ねたユニットはブラストの「自軍Lユニット」に数える（ユーザー決定 2026-10-19。出典: atwiki/page-211・R-KW-BLAST-01「自軍Ｌユニットが１体もなければ」）", () => {
+    expect(playerHasAllyLargeUnit(board(), "player1")).toBe(false);
+    expect(playerHasAllyLargeUnit(powered(), "player1")).toBe(true);
+  });
+
+  it("RK-013: 敵軍の J パワーを重ねたユニットは、RS の「敵軍Sユニットを1体選び」（RS-245 ガオメインバスター）で選べない（ユーザー決定 2026-10-19。出典: atwiki/page-211・RS-245「敵軍Sユニットを1体選び撃破する」）", () => {
+    const jp = { ...inst("SPEC-KAIZO", "ek"), stackedCards: [inst("RK-013", "ejp")] };
+    const s = played(
+      rushBoard({ hand: [inst("RS-245", "gm")], command: releasedCat("WB", 1), power: powerCards(5) }, { rush: [jp, inst("SPEC-KAIZO", "es")] }),
+      "RS-245:gm",
+    );
+    expect(choiceIds(s)).toEqual(["SPEC-KAIZO:es"]);
   });
 
   it("RK-013: 使ったターンが終わっても L ユニットのまま（期間の指定がない）（出典: atwiki/page-211「このカードに重ねたユニットは…「Lユニット」になる」）", () => {

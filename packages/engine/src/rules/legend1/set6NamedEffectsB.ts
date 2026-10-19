@@ -8,7 +8,7 @@
  */
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, isSmallUnit } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, isSmallUnit, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { buildLogEntry } from "../../log/formatLog";
@@ -177,7 +177,7 @@ export function set6BBlocksStrike(state: GameState, playerId: PlayerId, instance
  */
 export function zubaanIsLarge(state: GameState, instance: CardInstance): boolean {
   // RS-539【再生巨大化能力】等で L ユニットになっている（rules/legend1/set8NamedEffectsB.ts）。
-  if (getDefinition(state.definitions, instance.cardId)?.size !== "L" && baseLargeNow(state, instance)) return true;
+  if (unitSizeOf(state.definitions, instance) !== "L" && baseLargeNow(state, instance)) return true;
   // RS-558 ガンマジン「自分か相手のLユニットがあれば、これはLユニットになり、…」も同じ種類の能力（文言で判定）。
   if (
     instance.cardId !== "RS-420" &&
@@ -198,7 +198,7 @@ export function zubaanIsLarge(state: GameState, instance: CardInstance): boolean
 
 /** 現在 S ユニットか（RS-420 が L ユニットになっていれば S ではない）。 */
 export function isSmallUnitNow(state: GameState, _playerId: PlayerId, instance: CardInstance): boolean {
-  if (!isSmallUnit(state.definitions, instance.cardId)) return false;
+  if (!isSmallUnit(state.definitions, instance)) return false;
   return !zubaanIsLarge(state, instance);
 }
 
@@ -362,7 +362,7 @@ function sUnitCardIds(state: GameState, cards: CardInstance[]): string[] {
   return cards
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "S";
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "S";
     })
     .map((c) => c.instanceId);
 }
@@ -776,7 +776,7 @@ export function gorgonRestricts(state: GameState, playerId: PlayerId): boolean {
 export function gorgonBlocksRelease(state: GameState, playerId: PlayerId, command: CardInstance): boolean {
   if (!gorgonRestricts(state, playerId)) return false;
   const def = getDefinition(state.definitions, command.cardId);
-  return def?.type === "unit" && def.size === "S";
+  return def?.type === "unit" && unitSizeOf(state.definitions, command) === "S";
 }
 
 function resolveGorgonDiscard(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome {
@@ -839,7 +839,7 @@ function isSOrLUnitForCombo(state: GameState, playerId: PlayerId, card: CardInst
   if (card.mountedOnInstanceId) return true;
   const def = getDefinition(state.definitions, card.cardId);
   if (def?.type !== "unit") return false;
-  return def.size === "S" || def.size === "L" || zubaanIsLarge(state, card);
+  return unitSizeOf(state.definitions, card) === "S" || unitSizeOf(state.definitions, card) === "L" || zubaanIsLarge(state, card);
 }
 
 /** バトルエリアに出る制限（rules/restrictions.ts canMoveUnitToBattle から呼ぶ）。true なら出られない。 */

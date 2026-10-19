@@ -4,6 +4,7 @@ import {
   getDefinition,
   isSmallUnit,
   unitBp,
+  unitSizeOf,
 } from "../../core/catalog";
 import { findBattleAttacker, findInZone, opponent } from "../../core/helpers";
 import { bounceAllFromZone } from "../bounce";
@@ -30,7 +31,7 @@ export function resolveManeHurricane(
     state,
     enemyId,
     "rush",
-    (card) => isSmallUnit(state.definitions, card.cardId),
+    (card) => isSmallUnit(state.definitions, card),
   );
   if (!bounced.bounced) {
     return { state, logs: [] };
@@ -54,7 +55,7 @@ export function resolveRuinExcavation(
   const targets = state.players[enemyId].command
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && (def.size === "S" || def.size === "M");
+      return def?.type === "unit" && (unitSizeOf(state.definitions, c) === "S" || unitSizeOf(state.definitions, c) === "M");
     })
     .map((c) => c.instanceId);
 
@@ -205,7 +206,7 @@ export function tryStartLegend2ConditionalChoice(
     case "ghost_absorption": {
       const enemyId = opponent(playerId);
       const targets = state.players[enemyId].discard
-        .filter((c) => isSmallUnit(state.definitions, c.cardId))
+        .filter((c) => isSmallUnit(state.definitions, c))
         .map((c) => c.instanceId);
       if (targets.length === 0) return null;
       return startSelectUnitChoice(state, {
@@ -240,7 +241,7 @@ export function tryStartLegend2ConditionalChoice(
       const targets = state.players[playerId].battle
         .filter(
           (c) =>
-            isSmallUnit(state.definitions, c.cardId) &&
+            isSmallUnit(state.definitions, c) &&
             c.instanceId !== card.instanceId,
         )
         .map((c) => c.instanceId);

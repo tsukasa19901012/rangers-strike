@@ -70,7 +70,7 @@ function collectCyclopsScarletQueue(state: GameState, playerId: PlayerId, movedC
   if (cyclopses.length === 0) return [];
   const entries: string[] = [];
   for (const card of movedCards) {
-    if (!isSmallUnit(state.definitions, card.cardId)) continue;
+    if (!isSmallUnit(state.definitions, card)) continue;
     for (const cy of cyclopses) entries.push(`${CYCLOPS_QUEUE_PREFIX}${cy.instanceId}::${card.instanceId}`);
   }
   return entries;

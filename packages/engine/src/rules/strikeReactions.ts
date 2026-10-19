@@ -57,7 +57,7 @@ export function collectFiveTechInterceptors(
   // ルール: R-BA-03 — 効果で出す場合も「出る制限」は出る直前に判定する。
   // ルール: R-ADD-07 — ハリケンレオン等の「ホールドしなければ出られない」はホールドできなければ出せない（RS-014 Q2）。
   return defender.rush
-    .filter((card) => isSmallUnit(state.definitions, card.cardId))
+    .filter((card) => isSmallUnit(state.definitions, card))
     .filter((card) => canMoveUnitToBattleWithHolds(state, defenderId, card))
     .map((card) => card.instanceId);
 }
@@ -259,7 +259,7 @@ export function applyFiveTechIntercept(
 ): { state: GameState; pending: PendingStrike; log: string } {
   const defender = state.players[defenderId];
   const interceptFound = findInZone(defender, "rush", interceptInstanceId);
-  if (!interceptFound || !isSmallUnit(state.definitions, interceptFound.card.cardId)) {
+  if (!interceptFound || !isSmallUnit(state.definitions, interceptFound.card)) {
     return {
       state,
       pending,

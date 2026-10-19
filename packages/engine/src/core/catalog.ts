@@ -138,19 +138,51 @@ export function getDefinition(
   return definitions[cardId];
 }
 
+/**
+ * サイズを判定するカード: カード ID（定義のサイズ）か、場のカードのインスタンス（効果で変わったサイズを含む）。
+ * 場のユニットは、インスタンスを渡すと次の効果を反映する（文字列の ID を渡すと定義のサイズのまま）。
+ * - RK-013 Jパワー・RS-255 巨大化爆弾を重ねたユニットは「Lユニット」（重ねたカードは stackedCards。atwiki/page-211・page-300）。
+ *   J パワーはエンジン全体で L 扱い（ユーザー決定 2026-10-19、docs/rules/README.md §5.7 p）。
+ * - RK-154【頭が高い！】で、このターン S ユニットになった M ユニット（sizeOverride）。
+ */
+export type SizedCard = string | (Pick<CardInstance, "cardId"> & Partial<Pick<CardInstance, "stackedCards" | "sizeOverride">>);
+
+/** 重ねたユニットを「Lユニット」にするカード（RK-013 Jパワー・RS-255 巨大化爆弾）。 */
+const LARGE_STACK_CARD_IDS = ["RK-013", "RS-255"];
+
+/** インスタンスの効果によるサイズ（なければ undefined）。サイズの判定のたびに呼ばれるので、重ねたカードがなければすぐ返す。 */
+function instanceSizeOverride(card: SizedCard): UnitSize | undefined {
+  if (typeof card === "string") return undefined;
+  if (card.sizeOverride) return card.sizeOverride;
+  const stacked = card.stackedCards;
+  if (stacked === undefined || stacked.length === 0) return undefined;
+  for (const c of stacked) if (LARGE_STACK_CARD_IDS.includes(c.cardId)) return "L";
+  return undefined;
+}
+
+function sizedCardId(card: SizedCard): string {
+  return typeof card === "string" ? card : card.cardId;
+}
+
+/** いまのサイズ（場のインスタンスなら効果で変わったサイズ。SizedCard を参照）。 */
+export function unitSizeOf(definitions: Record<string, CardDefinition>, card: SizedCard): UnitSize | undefined {
+  return instanceSizeOverride(card) ?? getDefinition(definitions, sizedCardId(card))?.size;
+}
+
 /** ゲーム状態の定義にフィールドが欠けている場合、完全なカードカタログにフォールバック。 */
 export function resolveUnitSize(
   definitions: Record<string, CardDefinition>,
-  cardId: string,
+  card: SizedCard,
 ): UnitSize | undefined {
-  return getDefinition(definitions, cardId)?.size ?? getCardById(cardId)?.size;
+  const cardId = sizedCardId(card);
+  return instanceSizeOverride(card) ?? getDefinition(definitions, cardId)?.size ?? getCardById(cardId)?.size;
 }
 
 export function isMediumUnit(
   definitions: Record<string, CardDefinition>,
-  cardId: string,
+  card: SizedCard,
 ): boolean {
-  return resolveUnitSize(definitions, cardId) === "M";
+  return resolveUnitSize(definitions, card) === "M";
 }
 
 export function isUnit(
@@ -222,16 +254,16 @@ export function hasOperationEffect(
 
 export function isSmallUnit(
   definitions: Record<string, CardDefinition>,
-  cardId: string,
+  card: SizedCard,
 ): boolean {
-  return getDefinition(definitions, cardId)?.size === "S";
+  return unitSizeOf(definitions, card) === "S";
 }
 
 export function isLargeUnit(
   definitions: Record<string, CardDefinition>,
-  cardId: string,
+  card: SizedCard,
 ): boolean {
-  return getDefinition(definitions, cardId)?.size === "L";
+  return unitSizeOf(definitions, card) === "L";
 }
 
 /** RS-015 減少 + RS-140 データ解析（敵場のコロンで自軍SのCN+1）。 */

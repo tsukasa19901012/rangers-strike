@@ -161,7 +161,7 @@ function hasSelfUnitWithFeature(
     for (const card of player[zone]) {
       const def = getDefinition(definitions, card.cardId);
       if (!def || !isUnit(def)) continue;
-      if (size === "S" && !isSmallUnit(definitions, card.cardId)) continue;
+      if (size === "S" && !isSmallUnit(definitions, card)) continue;
       if ((def.features ?? []).includes(feature)) return true;
     }
   }
@@ -318,7 +318,7 @@ function isValidCategoryLUnit(
   requiredCategory?: string,
 ): boolean {
   const def = getDefinition(definitions, card.cardId);
-  if (!def || !isLargeUnit(definitions, card.cardId)) return false;
+  if (!def || !isLargeUnit(definitions, card)) return false;
   if (!requiredCategory) return true;
   // 「ダークアライアンスを持つ自軍Lユニット」（RS-580 絶対神ン・マ atwiki/page-1219）— 正式名・略号のどちらでも照合する。
   const category = CATEGORY_FULL_NAMES[normalizeName(requiredCategory)] ?? requiredCategory;

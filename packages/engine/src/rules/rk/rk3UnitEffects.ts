@@ -9,7 +9,7 @@
  */
 import { hasAutoBattleEntryOnRushNote } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, parsePowerCost } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { addTurnRestrictionModifier, getPlayerModifiers } from "../../core/scopedModifiers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -692,7 +692,7 @@ function ipponZuriCandidates(state: GameState, playerId: PlayerId): string[] {
     .filter((c) => {
       if (c.faceDown) return false;
       const def = getDefinition(state.definitions, c.cardId);
-      if (!def || def.type !== "unit" || def.size !== "S") return false;
+      if (!def || def.type !== "unit" || unitSizeOf(state.definitions, c) !== "S") return false;
       if (cardNotSelectableByOpponent(c.cardId)) return false;
       if (noEntryOnRushTurn(c.cardId) || unconditionalNoEntryText(def)) return false;
       // RK-140 電王LF の※（必要パワーの数字が2以下のユニットはバトルエリアに出られない）があれば選べない（grnrngr/faq-rider-2 RK-140 Q）。

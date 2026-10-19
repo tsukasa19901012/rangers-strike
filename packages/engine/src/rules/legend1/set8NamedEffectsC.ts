@@ -10,7 +10,7 @@
 import { resolveZordFusionPartnerSlots, resolveZordFusionSlotAlternatives } from "../../dsl/zordBridge";
 import { canonicalCardName } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
-import { cardName, cardCategories, getDefinition, parsePowerCost } from "../../core/catalog";
+import { cardName, cardCategories, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { buildLogEntry } from "../../log/formatLog";
@@ -484,7 +484,7 @@ function fusionCallCombinations(state: GameState, lCardId: string): string[][][]
 
 function handCardFitsPart(state: GameState, card: CardInstance, part: string[]): boolean {
   const def = getDefinition(state.definitions, card.cardId);
-  if (def?.type !== "unit" || def.size !== "M") return false;
+  if (def?.type !== "unit" || unitSizeOf(state.definitions, card) !== "M") return false;
   const name = canonicalCardName(def.name);
   return part.some((id) => id === card.cardId || canonicalCardName(cardName(state.definitions, id)) === name);
 }
@@ -534,7 +534,7 @@ function fusionCallLCandidates(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].hand
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "L" && (def.features ?? []).includes("メカ");
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "L" && (def.features ?? []).includes("メカ");
     })
     .filter((c) => feasibleCombos(state, playerId, c.instanceId).length > 0)
     .map((c) => c.instanceId);

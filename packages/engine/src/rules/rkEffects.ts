@@ -1,7 +1,7 @@
 import type { GameState, PlayerId } from "../types/game";
 import type { GrantKeywordContext } from "../dsl/grantKeyword";
 import { addTurnRuleModifier } from "../core/scopedModifiers";
-import { getDefinition, isSmallUnit, parsePowerCost } from "../core/catalog";
+import { getDefinition, isSmallUnit, parsePowerCost, unitSizeOf } from "../core/catalog";
 import { findInZone, opponent, updatePlayer } from "../core/helpers";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import { openEffectChoice, startSelectCommandChoice } from "./pendingChoices";
@@ -36,7 +36,7 @@ function openChoice(
 function collectEnemyBattleHeldS(state: GameState, playerId: PlayerId): string[] {
   const enemyId = opponent(playerId);
   return state.players[enemyId].battle
-    .filter((c) => c.commandHeld && isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => c.commandHeld && isSmallUnit(state.definitions, c))
     .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId))
     .map((c) => c.instanceId);
 }
@@ -44,7 +44,7 @@ function collectEnemyBattleHeldS(state: GameState, playerId: PlayerId): string[]
 function collectEnemyBattleS(state: GameState, playerId: PlayerId): string[] {
   const enemyId = opponent(playerId);
   return state.players[enemyId].battle
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId))
     .map((c) => c.instanceId);
 }
@@ -59,7 +59,7 @@ function collectReleasedCommandFeatureS(
     .filter((c) => {
       if (c.commandHeld) return false;
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "S" && (def.features ?? []).includes(feature);
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && (def.features ?? []).includes(feature);
     })
     .map((c) => c.instanceId);
 }

@@ -17,7 +17,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardCategories, cardName, effectiveBp, effectiveCommandCategories, getDefinition, unitEffectiveCategories } from "../../core/catalog";
+import { cardCategories, cardName, effectiveBp, effectiveCommandCategories, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { drawOne, opponent } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
@@ -280,7 +280,7 @@ function applyGavion(state: GameState, ctx: GrantKeywordContext): GrantKeywordRe
   const ids = state.players[ctx.playerId].deck
     .filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
-      return d?.type === "unit" && d.size === "S" && (d.features ?? []).includes("車両");
+      return d?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && (d.features ?? []).includes("車両");
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "rm024:no_targets" };
@@ -489,7 +489,7 @@ function daileonLaserBonus(state: GameState, ownerId: PlayerId, defender: CardIn
   const copies = state.players[ownerId].rush.filter((c) => isSameCardIdentity(c.cardId, "RM-030")).length;
   if (copies === 0) return 0;
   const d = getDefinition(state.definitions, defender.cardId);
-  if (d?.type !== "unit" || d.size !== "L") return 0;
+  if (d?.type !== "unit" || unitSizeOf(state.definitions, defender) !== "L") return 0;
   const zone = zoneOfField(state, ownerId, defender.instanceId) ?? "battle";
   if (!(unitEffectiveCategories(state, ownerId, defender, zone) as string[]).includes("OT")) return 0;
   return 2000 * copies;
@@ -760,7 +760,7 @@ function bulskyTargets(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].discard
     .filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
-      return d?.type === "unit" && d.size === "S" && (cardCategories(d) as string[]).includes("DA") && (d.features ?? []).includes("メカ");
+      return d?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && (cardCategories(d) as string[]).includes("DA") && (d.features ?? []).includes("メカ");
     })
     .map((c) => c.instanceId);
 }

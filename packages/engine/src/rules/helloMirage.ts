@@ -30,7 +30,7 @@ export function canStrikeWithHelloMirage(
 ): boolean {
   if (!helloMirageActive(state, playerId)) return true;
   const def = getDefinition(state.definitions, instance.cardId);
-  if (!def || !isSmallUnit(state.definitions, instance.cardId)) return true;
+  if (!def || !isSmallUnit(state.definitions, instance)) return true;
 
   // 効果で追加されたカテゴリ（RS-339 闇のヤイバの DA 等）も含める（faq-card-6 RS-407 Q1）。
   const categories = unitEffectiveCategories(state, playerId, instance, "battle");

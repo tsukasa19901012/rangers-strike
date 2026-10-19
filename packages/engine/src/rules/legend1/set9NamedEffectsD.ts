@@ -8,7 +8,7 @@
  */
 import type { CardInstance, DeferredDestroyTrigger, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, getDefinition } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -211,7 +211,7 @@ function castTransferCandidates(state: GameState, playerId: PlayerId, placedInst
     .filter((c) => !c.faceDown && c.instanceId !== placedInstanceId)
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "M" && (def.features ?? []).includes("炎神");
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "M" && (def.features ?? []).includes("炎神");
     })
     .map((c) => c.instanceId);
 }
@@ -499,7 +499,7 @@ export const STURDY_SHELL_EFFECT_ID = "rs682_sturdy_shell";
 
 function applySturdyShell(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const ids = fieldUnits(state, ctx.playerId)
-    .filter((c) => getDefinition(state.definitions, c.cardId)?.size === "M" && isUnit(state, c.cardId))
+    .filter((c) => unitSizeOf(state.definitions, c) === "M" && isUnit(state, c.cardId))
     .filter((c) => unitHasResist(state, ctx.playerId, c))
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: `${STURDY_SHELL_EFFECT_ID}:no_targets` };

@@ -254,6 +254,13 @@
     - RK-051 鋭鬼【音撃打・必殺必中】も同じ文言なので、RK-224 で扱われるユニットを含めるようにした（これまでは RK-019 だけ）。
     - 「書かれているかのように扱う」はターンを問わない（RK-224 の能力そのものが効くのは持ち主から見た敵軍ターンだけだが、文が書かれている扱いは常に）。
   - 実装: `packages/engine/src/rules/rm/rm1Effects.ts` applyBioron、`rules/rk/rk3UnitEffects.ts` applyEiki、`rules/rk/rk11Fields.ts` rk11KyosukeTreatsAsWritten・`rules/rk/rk1NamedEffects.ts` rk1OngekiMarked。テストは `cardSpec/RM1-001-021.b.test.ts` RM-008（以前の it.todo を実テストにした）、`cardSpec/RK3-043-063.b.test.ts` RK-051。動きが変わるカード: RM-008・RK-051（とその相手の RK-019・RK-224 との組み合わせ）。XG2-015 リュウレンジャー【赤龍双竜剣】（「効果名を持たないテキストに…と書かれた」）は XG の別の作業で、今回は触れていない。
+- **p. RK-013 Jパワーの「Lユニット」が効く範囲** — RK-013, R-SIZE
+  - 本文: 「このカードに重ねたユニットは特徴「人型」を追加されて「Lユニット」になる。」（atwiki/page-211）。
+  - 本書: **ユーザー決定（2026-10-19）** J パワーを重ねたユニットは、エンジン全体のすべてのサイズ判定で L ユニット（これまでは DSL のサイズ判定と RK のモジュールの中だけ）。「Sユニットを選ぶ」効果の対象にならない、コンビネーションやブラストの「自軍Lユニット」に数える、等。
+    - 実装: サイズの判定を `packages/engine/src/core/catalog.ts` unitSizeOf（isSmallUnit・isMediumUnit・isLargeUnit・resolveUnitSize も同じ）に集め、場のインスタンスを渡すと重ねたカード（stackedCards）・RK-154 のサイズ変更（sizeOverride）を反映するようにした。カード ID を渡したときは印刷のサイズのまま。各モジュールの「定義の size を見る」判定（約200か所）を、インスタンスがある所はインスタンスを渡す形に置き換えた（rules/rk/rk1Features.ts rk1IsSmallNow・dsl/targetSelectors.ts・rules/rs/rsCatchallChoices.ts・keywords/battleKeywords.ts のブラスト・keywords/ride.ts・dsl/promotedKeywordBridge.ts のライド等）。判定は重ねたカードがなければすぐ返す（シミュレーションの速さを保つ）。
+    - 同じ部品で動きが変わるもの: RS-255 巨大化爆弾（重ねたユニットは「Lユニット」。本文が同じ形なので J パワーと同じく全体で L にした）、RK-154【頭が高い！】で S ユニットになった M ユニット（全体で S。これまでも RK モジュールではそう扱っていた）。
+    - 残り: カード ID だけを受け取る一部のカード固有の判定（RS-029【勇気の魔法】・XG3-055・XG5-083 のカウンター・RS-220 のバトルの判定・RS-214 の撃破したユニットの判定・rules/rocketBooster.ts 等）は、場のインスタンスを渡していないので印刷のサイズのまま。
+  - テスト: `cardSpec/RK1-001-021.b.test.ts` RK-013（エンジン全体のサイズ・ブラスト・RS-245 の「敵軍Sユニット」の対象・ジョイントコンビネーションの L）。
 
 ---
 

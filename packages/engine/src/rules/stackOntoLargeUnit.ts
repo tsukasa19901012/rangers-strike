@@ -12,7 +12,7 @@
  * - 重ねたユニットがユニットでなくなる（場を離れる）とき、重ねたカードは持ち主の捨札になる（settleStackOntoLargeCards）。
  */
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../types/game";
-import { getDefinition, unitEffectiveCategories } from "../core/catalog";
+import { getDefinition, unitEffectiveCategories, unitSizeOf } from "../core/catalog";
 import { updatePlayer } from "../core/helpers";
 import { openEffectChoice } from "./pendingChoices";
 import { namedTextNegated } from "./legend1/set6NamedEffects348";
@@ -41,7 +41,7 @@ export function stackOntoLargeHosts(state: GameState, playerId: PlayerId, selfIn
     for (const c of p[zone]) {
       if (c.instanceId === selfInstanceId) continue;
       const def = getDefinition(state.definitions, c.cardId);
-      if (def?.type !== "unit" || def.size !== "L") continue;
+      if (def?.type !== "unit" || unitSizeOf(state.definitions, c) !== "L") continue;
       if (unitEffectiveCategories(state, playerId, c, zone).includes("DA")) continue;
       hosts.push(c.instanceId);
     }

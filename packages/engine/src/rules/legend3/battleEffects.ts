@@ -43,7 +43,7 @@ export function legend3AttackerBpBonus(
       defenderZone,
       pending.defenderInstanceId,
     );
-    if (defender && isSmallUnit(state.definitions, defender.card.cardId)) {
+    if (defender && isSmallUnit(state.definitions, defender.card)) {
       bonus += 5000;
     }
   }
@@ -74,7 +74,7 @@ export function legend3UsePrintedDefenderBp(
     "battle",
     pending.attackerInstanceId,
   );
-  if (!attacker || !isSmallUnit(state.definitions, attacker.card.cardId)) return false;
+  if (!attacker || !isSmallUnit(state.definitions, attacker.card)) return false;
   return hasTurnRuleModifier(
     state.players[pending.attackerPlayerId],
     TURN_RULE_IDS.SUPER_DYNAMITE,

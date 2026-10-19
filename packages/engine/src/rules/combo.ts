@@ -879,7 +879,7 @@ export function canStrikeUnit(
     if (instance.cardId === "RM-018") {
       const player = state.players[playerId];
       const otherSUnits = [...player.rush, ...player.battle].filter(
-        (c) => c.instanceId !== instance.instanceId && isSmallUnit(state.definitions, c.cardId),
+        (c) => c.instanceId !== instance.instanceId && isSmallUnit(state.definitions, c),
       );
       if (otherSUnits.length > 0) return false;
     }

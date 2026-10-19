@@ -13,7 +13,7 @@
  */
 import { isSameCardIdentity, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId, PlayerState } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, parsePowerCost, unitEffectiveCategories } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { deckShuffledSince } from "../../core/deckShuffle";
@@ -588,7 +588,7 @@ const GOUKI_MAX = 7;
 function isLargeNow(state: GameState, card: CardInstance): boolean {
   const def = getDefinition(state.definitions, card.cardId);
   if (def?.type !== "unit") return false;
-  return def.size === "L" || (def.size === "S" && !rk1IsSmallNow(state, card));
+  return unitSizeOf(state.definitions, card) === "L" || (unitSizeOf(state.definitions, card) === "S" && !rk1IsSmallNow(state, card));
 }
 
 function applyGouki(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {

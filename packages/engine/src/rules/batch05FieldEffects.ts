@@ -1,6 +1,6 @@
 import type { Category } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
-import { cardCategories, cardName, getDefinition, isSmallUnit, parsePowerCost } from "../core/catalog";
+import { cardCategories, cardName, getDefinition, isSmallUnit, parsePowerCost, unitSizeOf } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { sameCardName } from "../core/cardNames";
 import { getCardDslDocument } from "../dsl/effectLookup";
@@ -170,7 +170,7 @@ export function collectEnemyBattleCategoryM(
   const ids: string[] = [];
   for (const card of player.battle) {
     const def = getDefinition(state.definitions, card.cardId);
-    if (def?.type === "unit" && def.size === "M" && cardCategories(def).includes(category)) {
+    if (def?.type === "unit" && unitSizeOf(state.definitions, card) === "M" && cardCategories(def).includes(category)) {
       ids.push(card.instanceId);
     }
   }

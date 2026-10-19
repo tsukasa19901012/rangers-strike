@@ -17,7 +17,7 @@
 import { isSameCardIdentity, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, parsePowerCost, unitEffectiveCategories } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { shuffleCards } from "../../core/deckShuffle";
@@ -198,7 +198,7 @@ function stripForZone(card: Pick<CardInstance, "instanceId" | "cardId">): CardIn
 
 /** 今 M ユニットか（RK-154 で S ユニットになったものを除く）。 */
 function isMediumNow(state: Pick<GameState, "definitions">, card: CardInstance): boolean {
-  return getDefinition(state.definitions, card.cardId)?.size === "M" && card.sizeOverride !== "S";
+  return unitSizeOf(state.definitions, card) === "M" && card.sizeOverride !== "S";
 }
 
 function categoriesOfCard(state: Pick<GameState, "definitions">, cardId: string): string[] {

@@ -7,6 +7,7 @@ import {
 } from "../core/scopedModifiers";
 import { RESTRICTION_IDS, RUSH_PHASE_RULE_IDS, TURN_RULE_IDS } from "../types/scopedModifiers";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
+import { unitSizeOf } from "../core/catalog";
 
 export function isBattleBlocked(player: PlayerState, instanceId: string): boolean {
   return hasScopedRestriction(player, instanceId, RESTRICTION_IDS.CANNOT_ENTER_BATTLE, "turn");
@@ -119,6 +120,6 @@ export function isSOnlyComboLine(
   if (battle.length === 0) return false;
   return battle.every((card) => {
     const def = definitions[card.cardId];
-    return def?.size === "S";
+    return unitSizeOf(definitions, card) === "S";
   });
 }

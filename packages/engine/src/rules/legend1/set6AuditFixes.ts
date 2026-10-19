@@ -9,7 +9,7 @@
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
-import { cardCategories, cardName, effectiveBp, getDefinition, isMediumUnit, parsePowerCost, rushPowerCost } from "../../core/catalog";
+import { cardCategories, cardName, effectiveBp, getDefinition, isMediumUnit, parsePowerCost, rushPowerCost, unitSizeOf } from "../../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { redRacerPowerCostBonus } from "../../core/power";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
@@ -89,7 +89,7 @@ function beginFighterChange(state: GameState, ctx: GrantKeywordContext): GameSta
 
 function isMechaL(state: GameState, card: CardInstance): boolean {
   const def = getDefinition(state.definitions, card.cardId);
-  return def?.type === "unit" && def.size === "L" && (def.features ?? []).includes("メカ");
+  return def?.type === "unit" && unitSizeOf(state.definitions, card) === "L" && (def.features ?? []).includes("メカ");
 }
 
 function moveDeckCardToBottom(state: GameState, playerId: PlayerId, instanceId: string): GameState {
@@ -402,7 +402,7 @@ function unriddenSVehicles(state: GameState, ownerId: PlayerId): string[] {
   return player.rush
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (def?.type !== "vehicle" || def.size !== "S") return false;
+      if (def?.type !== "vehicle" || unitSizeOf(state.definitions, c) !== "S") return false;
       return !player.rush.some((r) => r.mountedOnInstanceId === c.instanceId && r.instanceId !== c.instanceId);
     })
     .map((c) => c.instanceId);
@@ -532,7 +532,7 @@ function resolveLifeSearchPick(state: GameState, _playerId: PlayerId, instanceId
   if (!found) return { error: "invalid_target" };
   const def = getDefinition(state.definitions, found.card.cardId);
   let next = state;
-  if (def?.type === "unit" && def.size === "S") {
+  if (def?.type === "unit" && unitSizeOf(state.definitions, found.card) === "S") {
     next = applyReanimate(state, { playerId: ownerId, instanceId, from: "discard", to: "hand" });
   }
   return {
@@ -776,7 +776,7 @@ function ownWbMediumCount(state: GameState, playerId: PlayerId): number {
   const own = state.players[playerId];
   return [...own.battle, ...own.rush].filter((c) => {
     const def = getDefinition(state.definitions, c.cardId);
-    return !!def && cardCategories(def).includes("WB") && isMediumUnit(state.definitions, c.cardId);
+    return !!def && cardCategories(def).includes("WB") && isMediumUnit(state.definitions, c);
   }).length;
 }
 
@@ -920,7 +920,7 @@ function kibaShotTargets(state: GameState, playerId: PlayerId, powerCost: number
   return [...enemy.battle, ...enemy.rush]
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (def?.type !== "unit" || def.size !== "S") return false;
+      if (def?.type !== "unit" || unitSizeOf(state.definitions, c) !== "S") return false;
       if (parsePowerCost(def.powerCost) !== powerCost) return false;
       return isSelectableByOpponentEffect(state, playerId, c.instanceId, "RS-377");
     })

@@ -7,7 +7,7 @@ import type { Category } from "@rangers-strike/cards";
 import { cardCategories } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
 import type { GrantKeywordContext } from "../dsl/grantKeyword";
-import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
+import { cardName, getDefinition, isSmallUnit, unitSizeOf } from "../core/catalog";
 import { applyPlayerDamage, opponent, updatePlayer } from "../core/helpers";
 import { meditationActive } from "../core/createGame";
 import { openEffectChoice, applyUnitLeave } from "./pendingChoices";
@@ -213,7 +213,7 @@ export function beginDestroyVehicleAndRider(
   const enemyId = opponent(ctx.playerId);
   const vehicles = state.players[enemyId].battle.filter((c) => {
     const d = getDefinition(state.definitions, c.cardId);
-    return d?.type === "vehicle" && d.size === "S";
+    return d?.type === "vehicle" && unitSizeOf(state.definitions, c) === "S";
   });
   if (vehicles.length === 0) return null;
   return openEffectChoice(state, {

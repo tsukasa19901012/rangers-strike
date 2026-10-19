@@ -14,6 +14,7 @@ import {
   getDefinition,
   isSmallUnit,
   parsePowerCost,
+  unitSizeOf,
 } from "../core/catalog";
 import { applyDamageToPlayer } from "./damagePayment";
 import { sameCardName } from "../core/cardNames";
@@ -89,13 +90,13 @@ function beginBlayRouzer(state: GameState, ctx: GrantKeywordContext): GameState 
 function enemySUnitsToHold(state: GameState, playerId: PlayerId): string[] {
   const enemy = state.players[opponent(playerId)];
   return fieldUnits(enemy)
-    .filter((c) => !c.commandHeld && isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => !c.commandHeld && isSmallUnit(state.definitions, c))
     .map((c) => c.instanceId);
 }
 
 function enemyBattleSUnits(state: GameState, playerId: PlayerId): string[] {
   return state.players[opponent(playerId)].battle
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .map((c) => c.instanceId);
 }
 
@@ -426,7 +427,7 @@ const ELECTRO_BEAM_PICK = "ereki_hikari_pick";
 function beginElectroBeam(state: GameState, ctx: GrantKeywordContext): GameState | null {
   const enemy = state.players[opponent(ctx.playerId)];
   const targets = fieldUnits(enemy)
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .map((c) => c.instanceId);
   if (targets.length === 0) return null;
   return openEffectChoice(state, {
@@ -508,7 +509,7 @@ function beginSenbonKnock(state: GameState, ctx: GrantKeywordContext): GameState
 
 function enemyRushSUnits(state: GameState, enemyId: PlayerId): string[] {
   return state.players[enemyId].rush
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .map((c) => c.instanceId);
 }
 
@@ -729,7 +730,7 @@ function beginAddressBook(state: GameState, ctx: GrantKeywordContext): GameState
   const valid = state.players[ctx.playerId].deck
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (!def || def.type !== "unit" || def.size !== "S") return false;
+      if (!def || def.type !== "unit" || unitSizeOf(state.definitions, c) !== "S") return false;
       if (cardCategories(def).includes("DA")) return false;
       return !def.rushAdditionalCondition && !isZordUpCost(def.powerCost);
     })
@@ -1064,7 +1065,7 @@ function resolveKiryoku(state: GameState, playerId: PlayerId, instanceId: string
     };
   }
   const targets = fieldUnits(held.players[opponent(playerId)])
-    .filter((c) => isSmallUnit(held.definitions, c.cardId))
+    .filter((c) => isSmallUnit(held.definitions, c))
     .map((c) => c.instanceId);
   const cleared = clearPending(held, pending.phasePlayerId);
   const log = logFor(state, playerId, pending.sourceCardId, `${KIRYOKU_HOLD}:${selected.length}`);
@@ -1098,7 +1099,7 @@ function beginDragonSoul(state: GameState, ctx: GrantKeywordContext): GameState 
   const targets = state.players[opponent(ctx.playerId)].battle
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "L" && (def.bp ?? 0) <= 8000;
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "L" && (def.bp ?? 0) <= 8000;
     })
     .map((c) => c.instanceId);
   if (targets.length === 0) return null;
@@ -1150,7 +1151,7 @@ const WILD_CYCLONE = "wild_cyclone";
 function beginWildCyclone(state: GameState, ctx: GrantKeywordContext): GameState | null {
   if (state.activePlayer !== ctx.playerId) return null;
   const targets = state.players[opponent(ctx.playerId)].battle
-    .filter((c) => !c.commandHeld && isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => !c.commandHeld && isSmallUnit(state.definitions, c))
     .map((c) => c.instanceId);
   if (targets.length === 0) return null;
   return openEffectChoice(state, {

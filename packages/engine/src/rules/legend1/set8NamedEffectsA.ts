@@ -9,7 +9,7 @@
  */
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, TagChoiceMeta } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories } from "../../core/catalog";
+import { cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { finalizeEffectRush } from "../../events/emitUnitRushed";
 import { opponent } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
@@ -684,7 +684,7 @@ function openSuperHighwayBuster(state: GameState, ctx: Set8ACardEffectContext): 
   const ids = state.players[ctx.playerId].deck
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "M" && (def.features ?? []).includes("炎神");
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "M" && (def.features ?? []).includes("炎神");
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) {
@@ -851,7 +851,7 @@ function afterSentaiBold(state: GameState, playerId: PlayerId, pending: PendingE
   const ids = state.players[playerId].hand
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "S" && typeof def.comboNumber === "number" && def.comboNumber <= limit;
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && typeof def.comboNumber === "number" && def.comboNumber <= limit;
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state: finish(state, pending), log };
@@ -1121,7 +1121,7 @@ function fusionLCardsInHand(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].hand
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "L" && requiresFusion(state, c.cardId);
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "L" && requiresFusion(state, c.cardId);
     })
     .map((c) => c.instanceId);
 }
@@ -1871,7 +1871,7 @@ function afterPartnerBold(state: GameState, playerId: PlayerId, pending: Pending
   const materials = state.players[playerId].deck
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (def?.type !== "unit" || def.size !== "M") return false;
+      if (def?.type !== "unit" || unitSizeOf(state.definitions, c) !== "M") return false;
       return partners.includes(c.cardId) || partnerNames.has(def.name);
     })
     .map((c) => c.instanceId);

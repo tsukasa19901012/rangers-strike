@@ -143,7 +143,7 @@ export function applyDiscoDanceReturnFemaleSToRush(
     player.battle
       .filter((c) => {
         const d = getDefinition(state.definitions, c.cardId);
-        return isSmallUnit(state.definitions, c.cardId) && d?.features?.includes("女");
+        return isSmallUnit(state.definitions, c) && d?.features?.includes("女");
       })
       .map((c) => c.instanceId),
   );
@@ -170,7 +170,7 @@ export function tryStartDiscoDanceEndTurnChoice(
   const player = state.players[playerId];
   const hasFemaleSInBattle = player.battle.some((c) => {
     const d = getDefinition(state.definitions, c.cardId);
-    return isSmallUnit(state.definitions, c.cardId) && d?.features?.includes("女");
+    return isSmallUnit(state.definitions, c) && d?.features?.includes("女");
   });
   if (!hasFemaleSInBattle) return null;
 

@@ -79,7 +79,7 @@ import type {
   SeabedDrawMeta,
 } from "../types/game";
 import { clearCostWindow, satisfyCostWindow } from "../core/costWindow";
-import { cardName, cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp, unitEffectiveCategories } from "../core/catalog";
+import { cardName, cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp, unitEffectiveCategories, unitSizeOf } from "../core/catalog";
 import { withSpBecomes } from "./fractionalSp";
 import {
   applyDiscoDanceReturnFemaleSToRush,
@@ -603,7 +603,7 @@ function collectHandIdsByCardId(
 function collectEnemyRushSmallIds(state: GameState, playerId: PlayerId): string[] {
   const enemyId = opponent(playerId);
   return state.players[enemyId].rush
-    .filter((c) => getDefinition(state.definitions, c.cardId)?.size === "S")
+    .filter((c) => unitSizeOf(state.definitions, c) === "S")
     .map((c) => c.instanceId);
 }
 
@@ -942,7 +942,7 @@ export function startEnterHoldEnemyPowerLeDamageChoice(
 function raidapanchiMaxPowerCost(state: GameState, playerId: PlayerId): number {
   const battle = state.players[playerId].battle;
   if (battle.length === 0) return 2;
-  const sUnits = battle.filter((c) => isSmallUnit(state.definitions, c.cardId));
+  const sUnits = battle.filter((c) => isSmallUnit(state.definitions, c));
   if (sUnits.length !== battle.length) return 2;
   const names = new Set(
     sUnits.map((c) => canonicalCardName(cardName(state.definitions, c.cardId))),
@@ -1023,7 +1023,7 @@ export function applyHangaEvolutionReveal(
   const def = getDefinition(state.definitions, top.cardId);
   const isWbM =
     def?.type === "unit" &&
-    def.size === "M" &&
+    unitSizeOf(state.definitions, top) === "M" &&
     cardCategories(def).includes("WB");
   const revealed = { ...top, faceDown: false };
   const restDeck = player.deck.slice(1);
@@ -1093,7 +1093,7 @@ export function startEnterRushFromDiscardFeatureChoice(
       const def = getDefinition(state.definitions, c.cardId);
       return (
         def?.type === "unit" &&
-        def.size === "M" &&
+        unitSizeOf(state.definitions, c) === "M" &&
         (def.features ?? []).includes(params.feature)
       );
     })
@@ -1248,7 +1248,7 @@ function collectEnemyBattleFeatureM(
     const def = getDefinition(state.definitions, card.cardId);
     if (
       def?.type === "unit" &&
-      def.size === "M" &&
+      unitSizeOf(state.definitions, card) === "M" &&
       (def.features ?? []).includes(feature)
     ) {
       ids.push(card.instanceId);
@@ -1563,7 +1563,7 @@ export function startFuasutokurasunaChoice(
   const validInstanceIds = player.deck
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (def?.type !== "unit" || def.size !== "M") return false;
+      if (def?.type !== "unit" || unitSizeOf(state.definitions, c) !== "M") return false;
       if (!(def.features ?? []).includes("炎神")) return false;
       if (canonicalCardName(def.name) === excludeName) return false;
       return true;
@@ -1692,7 +1692,7 @@ function openSiteTransportDeckStep(
       const def = getDefinition(state.definitions, c.cardId);
       return (
         def?.type === "unit" &&
-        def.size === "M" &&
+        unitSizeOf(state.definitions, c) === "M" &&
         (def.features ?? []).includes(feature)
       );
     })
@@ -3289,8 +3289,8 @@ export function adjacentPairCandidates(
   const row = state.players[enemyId][constraint.adjacentZone];
   const sizeOk = (c: CardInstance) =>
     constraint.size === "S"
-      ? isSmallUnit(state.definitions, c.cardId)
-      : getDefinition(state.definitions, c.cardId)?.size === constraint.size;
+      ? isSmallUnit(state.definitions, c)
+      : unitSizeOf(state.definitions, c) === constraint.size;
   const ok = (c: CardInstance) => sizeOk(c) && isSelectableByOpponentEffect(state, actorId, c.instanceId);
   const result = new Set<string>();
   for (let i = 0; i + 1 < row.length; i++) {
@@ -4625,7 +4625,7 @@ export function applyEffectChoiceSelect(
           const maxPowerCost = parsePowerCost(def?.powerCost ?? 99);
           const enemyId = opponent(pending.playerId);
           const enemyTargets = state.players[enemyId].battle
-            .filter((c) => isSmallUnit(state.definitions, c.cardId))
+            .filter((c) => isSmallUnit(state.definitions, c))
             .filter((c) => parsePowerCost(getDefinition(state.definitions, c.cardId)?.powerCost ?? 99) <= maxPowerCost)
             .filter((c) => isSelectableByOpponentEffect(state, pending.playerId, c.instanceId, pending.sourceCardId, pending.playerId))
             .map((c) => c.instanceId);

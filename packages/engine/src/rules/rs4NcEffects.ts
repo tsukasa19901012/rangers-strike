@@ -60,7 +60,7 @@ function fieldUnits(state: GameState, playerId: PlayerId): Array<{ card: CardIns
 }
 
 function countS(state: GameState, playerId: PlayerId): number {
-  return fieldUnits(state, playerId).filter((u) => isSmallUnit(state.definitions, u.card.cardId)).length;
+  return fieldUnits(state, playerId).filter((u) => isSmallUnit(state.definitions, u.card)).length;
 }
 
 // ---------------------------------------------------------------------------
@@ -117,7 +117,7 @@ function daEnemySUnitIds(state: GameState, playerId: PlayerId): string[] {
   return fieldUnits(state, enemyId)
     .filter(
       (u) =>
-        isSmallUnit(state.definitions, u.card.cardId) &&
+        isSmallUnit(state.definitions, u.card) &&
         unitEffectiveCategories(state, enemyId, u.card, u.zone).includes("DA") &&
         isSelectableByOpponentEffect(state, playerId, u.card.instanceId, "RS-205", playerId),
     )
@@ -253,7 +253,7 @@ function openTenmaReturn(state: GameState, pending: PendingEffectChoice): GameSt
   const surplus = countS(state, enemyId) - countS(state, ownerId);
   if (surplus <= 0) return state;
   const ids = fieldUnits(state, enemyId)
-    .filter((u) => isSmallUnit(state.definitions, u.card.cardId))
+    .filter((u) => isSmallUnit(state.definitions, u.card))
     .map((u) => u.card.instanceId);
   return {
     ...state,

@@ -1,13 +1,11 @@
 import type { EffectChoiceKind, TargetSelector } from "@rangers-strike/cards/dsl/types";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
-import { cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost } from "../core/catalog";
+import { cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitSizeOf } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
-import { hasGiantBomb } from "../rules/legend1/set5NamedEffectsA";
 import { zubaanIsLarge } from "../rules/legend1/set6NamedEffectsB";
-import { hasJPower } from "../rules/rk/rk1Features";
 
 type FieldZone = keyof Pick<PlayerState, "hand" | "discard" | "power" | "command" | "rush" | "battle">;
 
@@ -15,12 +13,11 @@ function cardsInZone(state: GameState, playerId: PlayerId, zone: FieldZone): Car
   return state.players[playerId][zone] ?? [];
 }
 
-function currentSize(state: GameState, card: CardInstance, printed: string | undefined): string | undefined {
-  if (hasGiantBomb(card)) return "L";
-  // RK-013 Jパワーを重ねたユニットは「Lユニット」（atwiki/page-211）。
-  if (hasJPower(card)) return "L";
-  if (printed && printed !== "L" && zubaanIsLarge(state, card)) return "L";
-  return printed;
+function currentSize(state: GameState, card: CardInstance): string | undefined {
+  // RS-255 巨大化爆弾・RK-013 Jパワーを重ねたユニットは「Lユニット」（core/catalog.ts unitSizeOf。atwiki/page-211）。
+  const size = unitSizeOf(state.definitions, card);
+  if (size && size !== "L" && zubaanIsLarge(state, card)) return "L";
+  return size;
 }
 
 function matchesFilter(
@@ -57,7 +54,7 @@ function matchesFilter(
   if (filter.cardType && filter.cardType !== "any" && def?.type !== filter.cardType) return false;
   // 効果でサイズが変わったユニット（RS-255 巨大化爆弾を重ねたユニットは「Lユニット」、「自分か相手のLユニットがあれば、
   // これはLユニットになり」RS-420・RS-672 等）は変わったサイズで判定する。
-  if (filter.size && currentSize(state, card, def?.size) !== filter.size) return false;
+  if (filter.size && currentSize(state, card) !== filter.size) return false;
   if (filter.maxPowerCost !== undefined && parsePowerCost(def?.powerCost ?? 99) > filter.maxPowerCost) {
     return false;
   }
@@ -195,5 +192,5 @@ export function isValidOwnSmallUnitTarget(
   instanceId: string,
 ): boolean {
   const found = findOwnUnit(state.players[playerId], instanceId);
-  return found !== null && isSmallUnit(state.definitions, found.card.cardId);
+  return found !== null && isSmallUnit(state.definitions, found.card);
 }

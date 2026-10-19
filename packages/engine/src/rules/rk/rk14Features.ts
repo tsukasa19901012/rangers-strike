@@ -4,6 +4,7 @@
  */
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
+import { unitSizeOf } from "../../core/catalog";
 
 function riddenIn(player: Pick<PlayerState, "battle" | "rush">, instanceId: string): boolean {
   return [...player.battle, ...player.rush].some((c) => c.mountedOnInstanceId === instanceId && c.instanceId !== instanceId);
@@ -26,6 +27,6 @@ export function rk14FeaturesStripped(
   if (!raider) return false;
   const card = state.players[ownerId].battle.find((c) => c.instanceId === instance.instanceId);
   if (!card || state.definitions[card.cardId]?.type !== "unit") return false;
-  return card.sizeOverride === "S" || state.definitions[card.cardId]?.size === "S";
+  return card.sizeOverride === "S" || unitSizeOf(state.definitions, card) === "S";
 }
 

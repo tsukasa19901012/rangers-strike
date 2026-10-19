@@ -49,7 +49,7 @@ export function listAttackHoldSources(
 ): AttackHoldSource[] {
   const player = state.players[playerId];
   const sources: AttackHoldSource[] = [];
-  if (isSmallUnit(state.definitions, attacker.cardId)) {
+  if (isSmallUnit(state.definitions, attacker)) {
     for (const op of player.operation) {
       if (getCardEffect(op.cardId)?.effectId !== "super_power") continue;
       sources.push({ sourceCardId: op.cardId, sourceInstanceId: op.instanceId, scope: "battle" });

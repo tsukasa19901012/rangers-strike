@@ -9,7 +9,7 @@
  */
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, getDefinition } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -267,7 +267,7 @@ CHOICE_RESOLVERS[BELT_MODE_EFFECT_ID] = (state, playerId, mode) => {
       const enemies = cleared.players[enemyId].battle
         .filter((c) => {
           const d = getDefinition(cleared.definitions, c.cardId);
-          return d?.type === "unit" && d.size === "M" && c.sizeOverride !== "S" && unitFeatures(cleared, enemyId, c).includes("航空機") && selectableEnemy(cleared, playerId, belt.cardId, c);
+          return d?.type === "unit" && unitSizeOf(cleared.definitions, c) === "M" && c.sizeOverride !== "S" && unitFeatures(cleared, enemyId, c).includes("航空機") && selectableEnemy(cleared, playerId, belt.cardId, c);
         })
         .map((c) => c.instanceId);
       const own = ownSmallUnits(cleared, playerId);
@@ -301,7 +301,7 @@ CHOICE_RESOLVERS[BELT_MODE_EFFECT_ID] = (state, playerId, mode) => {
       const ids = p.rush
         .filter((c) => {
           const d = getDefinition(cleared.definitions, c.cardId);
-          return d?.type === "vehicle" && d.size === "S" && !hasRiderInRush(p, c.instanceId);
+          return d?.type === "vehicle" && unitSizeOf(cleared.definitions, c) === "S" && !hasRiderInRush(p, c.instanceId);
         })
         .map((c) => c.instanceId);
       return { state: next(cleared, pending, { effectId: VEHICLE_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, optional: false }), log };

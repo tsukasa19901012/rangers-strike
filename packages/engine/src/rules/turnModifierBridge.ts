@@ -8,6 +8,7 @@ import {
 import { RESTRICTION_IDS, TURN_RULE_IDS } from "../types/scopedModifiers";
 import type { CardInstance } from "../types/game";
 import { logicalBattlePosition } from "./battleLine";
+import { unitSizeOf } from "../core/catalog";
 
 export type SComboFinisher = "goren_storm" | "jacker_hurricane";
 
@@ -139,7 +140,7 @@ export function sComboFinisherSetValues(
   const battle = player.battle;
   if (!battle.some((c) => c.instanceId === instance.instanceId)) return null;
   // 「Sユニットだけでコンビネーションするとき」
-  if (!battle.every((c) => state.definitions[c.cardId]?.size === "S")) return null;
+  if (!battle.every((c) => unitSizeOf(state.definitions, c) === "S")) return null;
   const position = logicalBattlePosition(battle, instance.instanceId);
   if (position === null) return null;
   if (finisher === "goren_storm" && position === 5) return { bp: 12000, sp: 1 };

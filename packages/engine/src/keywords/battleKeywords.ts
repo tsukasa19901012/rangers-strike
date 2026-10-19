@@ -8,7 +8,7 @@ import { sameCanonicalCardName, textHasKeywordNotation } from "@rangers-strike/c
 import type { KeywordNotationLabel } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { cardHasKeyword } from "./cardKeywords";
-import { getDefinition, isLargeUnit, isSmallUnit } from "../core/catalog";
+import { getDefinition, isLargeUnit, isSmallUnit, unitSizeOf } from "../core/catalog";
 import { loseDamageThreshold } from "../core/createGame";
 import {
   addTurnRestrictionModifier,
@@ -124,7 +124,7 @@ export function taxisSpFloor(
   const def = getDefinition(state.definitions, instance.cardId);
   if (!def || def.type !== "unit") return 0;
   // ルール: R-KW-TAKUS-01 — 対象は指定カテゴリを持つ「S ユニット」だけ。
-  if (!isSmallUnit(state.definitions, instance.cardId)) return 0;
+  if (!isSmallUnit(state.definitions, instance)) return 0;
   if (!cardCategories(def).includes(taxisCategory)) return 0;
   return 1;
 }
@@ -136,7 +136,7 @@ function featurePositionSpFloor(state: GameState, playerId: PlayerId, instance: 
   const index = state.players[playerId].battle.findIndex((c) => c.instanceId === instance.instanceId);
   if (index !== 1) return 0;
   const def = getDefinition(state.definitions, instance.cardId);
-  if (!def || def.type !== "unit" || def.size !== "S") return 0;
+  if (!def || def.type !== "unit" || unitSizeOf(state.definitions, instance) !== "S") return 0;
   const features = unitFeatures(state, playerId, instance);
   for (const source of [...state.players.player1.rush, ...state.players.player2.rush]) {
     for (const keyword of listCardGrantKeywords(source.cardId)) {
@@ -173,7 +173,7 @@ export function fieldPositionSpFloor(
   if (index + 1 !== 2) return 0;
 
   const def = getDefinition(state.definitions, instance.cardId);
-  if (!def || def.type !== "unit" || def.size !== "S") return 0;
+  if (!def || def.type !== "unit" || unitSizeOf(state.definitions, instance) !== "S") return 0;
   if (!cardCategories(def).includes("WB")) return 0;
   if (def.rushAdditionalCondition) return 0;
   return 1;
@@ -300,7 +300,7 @@ export function playerHasAllyLargeUnit(
 ): boolean {
   const player = state.players[playerId];
   for (const zone of ["rush", "battle"] as const) {
-    if (player[zone].some((c) => isLargeUnit(state.definitions, c.cardId))) {
+    if (player[zone].some((c) => isLargeUnit(state.definitions, c))) {
       return true;
     }
   }

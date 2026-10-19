@@ -5,7 +5,7 @@
 import { isRm1StackedUnderUnitOperation } from "../rm/rm1Fields";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
-import { getDefinition } from "../../core/catalog";
+import { getDefinition, isSmallUnit } from "../../core/catalog";
 import { rk12ResidentsNegated } from "./rk12Fields";
 
 export const J_POWER_CARD_ID = "RK-013";
@@ -32,8 +32,6 @@ export function isStackedUnderUnitOperation(cardId: string): boolean {
     isRm1StackedUnderUnitOperation(cardId)
   );
 }
-const GIANT_BOMB_CARD_ID = "RS-255";
-
 function isUnitCard(state: Pick<GameState, "definitions">, cardId: string): boolean {
   return getDefinition(state.definitions, cardId)?.type === "unit";
 }
@@ -42,10 +40,6 @@ function hasResident(state: Pick<GameState, "players">, playerId: PlayerId, card
   // RK-248 パラダイス・ロストで、このターン無効になった常駐（rules/rk/rk12Fields.ts）。
   if (rk12ResidentsNegated(state, playerId)) return false;
   return state.players[playerId].operation.some((c) => c.cardId === cardId);
-}
-
-function hasGiantBomb(instance: Pick<CardInstance, "stackedCards">): boolean {
-  return (instance.stackedCards ?? []).some((c) => c.cardId === GIANT_BOMB_CARD_ID);
 }
 
 /** J パワーを重ねたユニットか（J パワーはユニットの下に重ねる。grnrngr/faq-rider-2 RK-088 Q）。 */
@@ -85,11 +79,11 @@ export function rk1ZoneCardFeatures(state: Pick<GameState, "players" | "definiti
   return kaizoNingenAdds(state, ownerId, cardId, base) && !base.includes("改造人間") ? [...base, "改造人間"] : base;
 }
 
-/** いまのサイズが S か（J パワー・RS-255 巨大化爆弾を重ねたユニットは L）。 */
+/**
+ * いまのサイズが S か（J パワー・RS-255 巨大化爆弾を重ねたユニットは L、RK-154【頭が高い！】で S になった M ユニットは S）。
+ * 判定はエンジン全体と同じ core/catalog.ts unitSizeOf（ユーザー決定 2026-10-19、docs/rules/README.md §5.7 p）。
+ */
 export function rk1IsSmallNow(state: Pick<GameState, "definitions">, instance: CardInstance): boolean {
-  // RK-154【頭が高い！】で、このターン S ユニットになった M ユニット（rules/pendingChoices.ts）。
-  if (instance.sizeOverride === "S") return true;
-  if (getDefinition(state.definitions, instance.cardId)?.size !== "S") return false;
-  return !hasJPower(instance) && !hasGiantBomb(instance);
+  return isSmallUnit(state.definitions, instance);
 }
 

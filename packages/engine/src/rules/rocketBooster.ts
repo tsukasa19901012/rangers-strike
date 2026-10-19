@@ -41,7 +41,7 @@ export function listRocketBoosterNameChoices(
   const player = state.players[playerId];
   const names = new Set<string>();
   for (const card of [...player.hand, ...player.rush, ...player.battle]) {
-    if (!isSmallUnit(state.definitions, card.cardId)) continue;
+    if (!isSmallUnit(state.definitions, card)) continue;
     names.add(cardName(state.definitions, card.cardId));
   }
   return [...names].sort();
@@ -92,7 +92,7 @@ export function applyRocketBoosterEndTurnRushReturn(
   for (const card of player.rush) {
     if (cardName(nextState.definitions, card.cardId) !== declared) continue;
     const def = getDefinition(nextState.definitions, card.cardId);
-    if (!def || def.type !== "unit" || !isSmallUnit(nextState.definitions, card.cardId)) {
+    if (!def || def.type !== "unit" || !isSmallUnit(nextState.definitions, card)) {
       continue;
     }
     const bounced = bounceToHand(nextState, {

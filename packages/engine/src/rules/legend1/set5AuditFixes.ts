@@ -7,7 +7,7 @@
  */
 import type { CardInstance, GameState, PendingStrike, PlayerId } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
-import { cardName, getDefinition, parsePowerCost } from "../../core/catalog";
+import { cardName, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { addTurnRestrictionModifier } from "../../core/scopedModifiers";
 import { opponent, performDeckDraws, updatePlayer } from "../../core/helpers";
 import type { GameAction } from "../../types/actions";
@@ -144,7 +144,7 @@ function nekoDamashiCandidates(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].hand
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "L" && typeof def.bp === "number" && def.bp <= 16000;
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "L" && typeof def.bp === "number" && def.bp <= 16000;
     })
     .map((c) => c.instanceId);
 }

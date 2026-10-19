@@ -12,7 +12,7 @@
  */
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, parsePowerCost } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { shuffleCards } from "../../core/deckShuffle";
@@ -470,7 +470,7 @@ function runBoardingRefusal(state: GameState, owners: PlayerId[], template: Pend
     const revealed = next.players[owner].deck.slice(0, 3);
     const trains = revealed.filter((c) => {
       const def = getDefinition(next.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "M" && (def.features ?? []).includes("車両");
+      return def?.type === "unit" && unitSizeOf(next.definitions, c) === "M" && (def.features ?? []).includes("車両");
     });
     const trainIds = new Set(trains.map((c) => c.instanceId));
     next = patchPlayer(next, owner, (p) => ({
@@ -735,7 +735,7 @@ function applyZx(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult
     .filter((c) => {
       if (c.commandHeld) return false;
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "S" && (def.features ?? []).includes("改造人間");
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && (def.features ?? []).includes("改造人間");
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "rk100:no_targets" };

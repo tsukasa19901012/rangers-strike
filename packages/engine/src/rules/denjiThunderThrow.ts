@@ -6,7 +6,7 @@
  * 選んだときは、ほかの S ユニットを捨札にできるなら1体捨札にして出す。できなければラッシュエリアに留まる
  * （faq-card-4 RS-242 Q2）。
  */
-import { getDefinition } from "../core/catalog";
+import { getDefinition, unitSizeOf } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import type { GameState, PlayerId } from "../types/game";
 import { needsBattleEntryRushDiscard } from "./legend3/restrictions";
@@ -17,7 +17,7 @@ export const DENJI_THUNDER_THROW_DISCARD_EFFECT_ID = "denjisandage_entry_discard
 
 function rushSIds(state: GameState, playerId: PlayerId, exclude?: string): string[] {
   return state.players[playerId].rush
-    .filter((c) => getDefinition(state.definitions, c.cardId)?.size === "S" && c.instanceId !== exclude)
+    .filter((c) => unitSizeOf(state.definitions, c) === "S" && c.instanceId !== exclude)
     .map((c) => c.instanceId);
 }
 

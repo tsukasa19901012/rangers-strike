@@ -101,7 +101,7 @@ export function beginAssaultVectorDestroy(
     for (const zone of ["rush", "battle"] as const) {
       for (const card of state.players[pid][zone]) {
         const def = getDefinition(state.definitions, card.cardId);
-        if (!def || !isSmallUnit(state.definitions, card.cardId)) continue;
+        if (!def || !isSmallUnit(state.definitions, card)) continue;
         if (cardHasComboNumber(card.cardId)) continue;
         if (def.comboNumber != null) continue;
         valid.push(card.instanceId);

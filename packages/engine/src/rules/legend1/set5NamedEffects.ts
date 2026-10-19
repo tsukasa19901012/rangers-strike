@@ -258,7 +258,7 @@ function applyDSwordVega(state: GameState, ctx: GrantKeywordContext): GrantKeywo
   const enemyId = opponent(ctx.playerId);
   const enemy = state.players[enemyId];
   const targets = [...enemy.battle, ...enemy.rush]
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .filter((c) => bpLastThreeDigitsIs500(effectiveBp(state, enemyId, c)))
     .map((c) => c.instanceId);
   if (targets.length === 0) return { state, detail: `${D_SWORD_VEGA_EFFECT_ID}:no_targets` };
@@ -317,7 +317,7 @@ export function applySwanIllusionOnStrike(state: GameState, pending: PendingStri
   if (pending.battlePhasePlayer !== strikerId) return state;
   if (!state.players[defenderId].rush.some((c) => c.cardId === "RS-320")) return state;
   const striker = findInZone(state.players[strikerId], "battle", pending.strikerInstanceId)?.card;
-  if (!striker || !isSmallUnit(state.definitions, striker.cardId)) return state;
+  if (!striker || !isSmallUnit(state.definitions, striker)) return state;
   const next = blockRushAreaEntry(state, strikerId, "RS-320");
   if (next === state) return state;
   return {
@@ -380,7 +380,7 @@ export function comboFromUnit(state: GameState, playerId: PlayerId, instanceId: 
 
 export function magiMergeAllowsRushAttack(state: GameState, attackerPlayerId: PlayerId, attackerInstanceId: string): boolean {
   const attacker = findInZone(state.players[attackerPlayerId], "battle", attackerInstanceId)?.card;
-  if (!attacker || !isSmallUnit(state.definitions, attacker.cardId)) return false;
+  if (!attacker || !isSmallUnit(state.definitions, attacker)) return false;
   const from = comboFromUnit(state, attackerPlayerId, attackerInstanceId);
   return !!from && from.cardId === "RS-323" && hasBattleNcEffect(from, MAGI_MERGE_EFFECT_ID);
 }
@@ -629,7 +629,7 @@ export function set5AttackerBpBonus(
   ) {
     const enemy = state.players[defenderPlayerId];
     const defender = findInZone(enemy, "battle", defenderInstanceId) ?? findInZone(enemy, "rush", defenderInstanceId);
-    if (defender && isSmallUnit(state.definitions, defender.card.cardId)) total += 4000;
+    if (defender && isSmallUnit(state.definitions, defender.card)) total += 4000;
   }
   if (attacker.cardId === "RS-344") {
     total += state.players[attackerPlayerId].command.filter((c) => !c.commandHeld).length * 1000;

@@ -103,7 +103,7 @@ export function tryOpenBattleCommand(
 ): GameState | null {
   if (!hooks || state.phase !== "battle" || state.activePlayer !== playerId) return null;
   if (state.pendingEffectChoice) return null;
-  if (!isSmallUnit(state.definitions, card.cardId) || typeof definition.comboNumber !== "number") return null;
+  if (!isSmallUnit(state.definitions, card) || typeof definition.comboNumber !== "number") return null;
   const left = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
   if (!left || !grantsNcRegardlessOfNumber(state, left)) return null;
   const number = hooks.ncEffectiveNumber(state, playerId, card, definition);

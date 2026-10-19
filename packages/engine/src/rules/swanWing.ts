@@ -15,7 +15,7 @@
  * - 同時に出た複数体の処理順はターンプレイヤー（使用者）が決める（R-SIM-01）。2 体以上なら
  *   `swan_wing_order` の選択で順に選ぶ（最後の 1 体は自動）。
  */
-import { getDefinition } from "../core/catalog";
+import { getDefinition, unitSizeOf } from "../core/catalog";
 import { opponent, updatePlayer } from "../core/helpers";
 import { finalizeEffectRush, markFieldEntryHandled } from "../events/emitUnitRushed";
 import { buildLogEntry } from "../log/formatLog";
@@ -30,7 +30,7 @@ export function listSwanWingTargets(state: GameState, playerId: PlayerId): CardI
   const enemy = state.players[opponent(playerId)];
   return enemy.command.filter((c) => {
     const def = getDefinition(state.definitions, c.cardId);
-    return def?.type === "unit" && def.size === "S";
+    return def?.type === "unit" && unitSizeOf(state.definitions, c) === "S";
   });
 }
 

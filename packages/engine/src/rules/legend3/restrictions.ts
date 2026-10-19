@@ -564,7 +564,7 @@ export function canAttackDefender(
     }
     if (
       hasUnnamedRule(attacker.card.cardId, "can_attack_enemy_rush_s") &&
-      isSmallUnit(state.definitions, inRush.card.cardId)
+      isSmallUnit(state.definitions, inRush.card)
     ) {
       return true;
     }
@@ -609,7 +609,7 @@ export function canAttackDefender(
 
   if (
     cannotAttackEnemyBattleS(attacker.card.cardId) &&
-    isSmallUnit(state.definitions, inBattle.card.cardId)
+    isSmallUnit(state.definitions, inBattle.card)
   ) {
     return false;
   }

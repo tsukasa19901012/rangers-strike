@@ -10,7 +10,7 @@
  * - ホールドの要件は RS-243 獣奏剣で無効にできる（Q4。requiredBattleEntryHolds の獣奏剣の判定より前に加える）。
  */
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { getDefinition, unitEffectiveCategories } from "../core/catalog";
+import { getDefinition, unitEffectiveCategories, unitSizeOf } from "../core/catalog";
 
 const HELL_SATURN_ID = "RS-364";
 const HELL_SATURN_NAME = "ヘルサターン総統";
@@ -18,7 +18,7 @@ const HELL_SATURN_NAME = "ヘルサターン総統";
 /** instance（playerId の S ユニット）に効果を与えている RS-364 の数。条件を満たさなければ 0。 */
 export function hellSaturnGrantCount(state: GameState, playerId: PlayerId, instance: CardInstance): number {
   const def = getDefinition(state.definitions, instance.cardId);
-  if (!def || def.type !== "unit" || def.size !== "S" || def.name === HELL_SATURN_NAME) return 0;
+  if (!def || def.type !== "unit" || unitSizeOf(state.definitions, instance) !== "S" || def.name === HELL_SATURN_NAME) return 0;
   const player = state.players[playerId];
   const count =
     player.rush.filter((c) => c.cardId === HELL_SATURN_ID).length +

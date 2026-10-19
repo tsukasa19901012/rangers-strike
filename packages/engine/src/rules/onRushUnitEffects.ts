@@ -40,6 +40,7 @@ import { tryRsCatchallOnEnemyRush } from "./rs/rsCatchallRuntime";
 import { openEffectChoice, startSelectUnitChoice } from "./pendingChoices";
 import { tryRideRaptorOnRush } from "./legend1/set4NamedEffects";
 import { applyVrvMasterOnRush } from "./legend1/set5NamedEffectsA";
+import { unitSizeOf } from "../core/catalog";
 
 function applyDrawOnRush(
   state: GameState,
@@ -81,7 +82,7 @@ function startHeadHeldHighChoice(
     .filter((c) => {
       const def = state.definitions[c.cardId];
       if (def?.type !== "unit") return false;
-      if (!rk1IsSmallNow(state, c) && def.size !== "M") return false;
+      if (!rk1IsSmallNow(state, c) && unitSizeOf(state.definitions, c) !== "M") return false;
       return isSelectableByOpponentEffect(state, playerId, c.instanceId, "RK-154", playerId);
     })
     .map((c) => c.instanceId);

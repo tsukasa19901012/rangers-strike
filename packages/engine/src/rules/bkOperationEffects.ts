@@ -7,7 +7,7 @@ import {
 } from "@rangers-strike/cards/pipeline/extractEffects";
 import { isCatchallGrantKeyword } from "../dsl/hashGrantKeywordStub";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
-import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
+import { cardName, getDefinition, isSmallUnit, unitSizeOf } from "../core/catalog";
 import { findInZone, updatePlayer } from "../core/helpers";
 import { getDslEffectById } from "../dsl/effectLookup";
 import { interpretEffectPrimitives } from "../dsl/cardInterpreter";
@@ -62,7 +62,7 @@ function collectOwnSVehicles(state: GameState, playerId: PlayerId): string[] {
   return player.rush
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "vehicle" && def.size === "S";
+      return def?.type === "vehicle" && unitSizeOf(state.definitions, c) === "S";
     })
     .map((c) => c.instanceId);
 }
@@ -70,7 +70,7 @@ function collectOwnSVehicles(state: GameState, playerId: PlayerId): string[] {
 function collectOwnSUnitsInCommand(state: GameState, playerId: PlayerId): string[] {
   const player = state.players[playerId];
   return player.command
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .map((c) => c.instanceId);
 }
 

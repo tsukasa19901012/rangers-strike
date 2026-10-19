@@ -12,6 +12,7 @@ import { isSameCardIdentity, normalizeSameCardName } from "@rangers-strike/cards
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { battlePositionOneBased } from "../fractionalSp";
+import { unitSizeOf } from "../../core/catalog";
 
 /** RK-295【頂点に立つ男】の NC が成立した（payload: { instanceId }。このターン）。 */
 export const RK15_APEX_RULE = "rk295_apex";
@@ -38,7 +39,7 @@ function isUnit(state: Pick<GameState, "definitions">, card: Pick<CardInstance, 
 }
 
 function isSmall(state: Pick<GameState, "definitions">, card: Pick<CardInstance, "cardId" | "sizeOverride">): boolean {
-  return (card.sizeOverride ?? state.definitions[card.cardId]?.size) === "S";
+  return (card.sizeOverride ?? unitSizeOf(state.definitions, card)) === "S";
 }
 
 /**

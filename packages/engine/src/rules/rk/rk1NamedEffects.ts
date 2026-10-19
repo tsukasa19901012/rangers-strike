@@ -20,7 +20,7 @@ import type {
   PlayerState,
 } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardCategories, cardName, effectiveBp, getDefinition, parsePowerCost } from "../../core/catalog";
+import { cardCategories, cardName, effectiveBp, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -562,7 +562,7 @@ export const MAINTENANCE_PLACE_EFFECT_ID = "rk007_maintenance_place";
 
 function maintenanceReturnIds(state: GameState, pid: PlayerId): string[] {
   return state.players[pid].command
-    .filter((c) => !c.commandHeld && isUnitCard(state, c.cardId) && getDefinition(state.definitions, c.cardId)?.size === "S")
+    .filter((c) => !c.commandHeld && isUnitCard(state, c.cardId) && unitSizeOf(state.definitions, c) === "S")
     .map((c) => c.instanceId);
 }
 
@@ -571,7 +571,7 @@ function maintenancePlaceIds(state: GameState, pid: PlayerId): string[] {
     .filter(
       (c) =>
         isUnitCard(state, c.cardId) &&
-        getDefinition(state.definitions, c.cardId)?.size === "S" &&
+        unitSizeOf(state.definitions, c) === "S" &&
         rk1ZoneCardFeatures(state, pid, c.cardId).includes("改造人間"),
     )
     .map((c) => c.instanceId);
@@ -1106,7 +1106,7 @@ export const ROUSE_DISCARD_EFFECT_ID = "rk018_rouse_discard";
 
 function rouseDiscardIds(state: GameState, pid: PlayerId): string[] {
   return state.players[pid].discard
-    .filter((c) => isUnitCard(state, c.cardId) && getDefinition(state.definitions, c.cardId)?.size === "S")
+    .filter((c) => isUnitCard(state, c.cardId) && unitSizeOf(state.definitions, c) === "S")
     .map((c) => c.instanceId);
 }
 

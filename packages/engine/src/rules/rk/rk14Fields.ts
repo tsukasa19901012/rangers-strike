@@ -15,6 +15,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { alignedFractionSp, battlePositionOneBased } from "../fractionalSp";
 import { crossReductionFor } from "../../keywords/battleKeywords";
+import { unitSizeOf } from "../../core/catalog";
 
 /** RK-288【デルタムーバー】を発動した（payload: { instanceId }。発動したプレイヤーの記録）。 */
 export const RK14_DELTA_MOVER_RULE = "rk288_delta_mover";
@@ -103,7 +104,7 @@ export function rk14FieldBpBonus(state: Pick<GameState, "players" | "definitions
   if (!state.players[playerId].battle.some((c) => c.instanceId === instance.instanceId)) return 0;
   const d = state.definitions[instance.cardId];
   if (d?.type !== "unit") return 0;
-  if (instance.sizeOverride !== "S" && d.size !== "S") return 0;
+  if (instance.sizeOverride !== "S" && unitSizeOf(state.definitions, instance) !== "S") return 0;
   return -500 * movers;
 }
 

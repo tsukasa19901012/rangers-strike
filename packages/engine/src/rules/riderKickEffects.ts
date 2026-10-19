@@ -15,7 +15,7 @@ import { openImaginPowerChoice } from "./errataCardEffects";
 import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../dsl/grantKeyword";
-import { cardCategories, cardName, getDefinition, parsePowerCost } from "../core/catalog";
+import { cardCategories, cardName, getDefinition, parsePowerCost, unitSizeOf } from "../core/catalog";
 import { opponent, updatePlayer } from "../core/helpers";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import { openEffectChoice } from "./pendingChoices";
@@ -25,7 +25,7 @@ function enemyStackUnits(state: GameState, playerId: PlayerId) {
   const enemy = state.players[opponent(playerId)];
   return [...enemy.battle, ...enemy.rush].filter((c) => {
     const d = getDefinition(state.definitions, c.cardId);
-    return d?.type === "unit" && d.size === "S";
+    return d?.type === "unit" && unitSizeOf(state.definitions, c) === "S";
   });
 }
 
@@ -115,7 +115,7 @@ function beginRiderKickSendPower(state: GameState, ctx: GrantKeywordContext): Ga
   const enemy = state.players[opponent(ctx.playerId)];
   const targets = enemy.battle.filter((c) => {
     const d = getDefinition(state.definitions, c.cardId);
-    return d?.type === "unit" && d.size === "S";
+    return d?.type === "unit" && unitSizeOf(state.definitions, c) === "S";
   });
   if (targets.length === 0) return null;
   return openEffectChoice(state, {

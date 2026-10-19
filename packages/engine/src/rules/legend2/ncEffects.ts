@@ -150,7 +150,7 @@ function destroyAllEnemyAtBp(
 /** RS-108【グリーンクラッシュ】で出せる敵軍ラッシュエリアの S ユニット。 */
 export function greenCrushTargets(state: GameState, enemyId: PlayerId): string[] {
   return state.players[enemyId].rush
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .filter((c) => canBeDeployedToBattleByEffect(state, enemyId, c))
     .map((c) => c.instanceId);
 }
@@ -204,7 +204,7 @@ export function applyLegend2NcEffect(
     }
     case "life_rescue": {
       const targets = state.players[playerId].discard
-        .filter((c) => isSmallUnit(state.definitions, c.cardId))
+        .filter((c) => isSmallUnit(state.definitions, c))
         .map((c) => c.instanceId);
       const withChoice = startSelectUnitChoice(state, {
         playerId,
@@ -225,7 +225,7 @@ export function applyLegend2NcEffect(
       // 出典: atwiki/page-319 — 「Sユニットを1体選んで手札に戻す」。バトルエリアに出られるかは関係しない
       // （マンドラ坊やなど出られない S ユニットも戻す対象）。
       const targets = state.players[enemyId].rush
-        .filter((c) => isSmallUnit(state.definitions, c.cardId))
+        .filter((c) => isSmallUnit(state.definitions, c))
         .map((c) => c.instanceId);
       const withChoice = startSelectUnitChoice(state, {
         playerId: enemyId,
@@ -289,7 +289,7 @@ export function applyLegend2NcEffect(
     case "backup_request": {
       let nextState = grantSp1ToBattleUnit(state, playerId, card.instanceId);
       const targets = nextState.players[playerId].power
-        .filter((c) => !c.faceDown && isSmallUnit(state.definitions, c.cardId))
+        .filter((c) => !c.faceDown && isSmallUnit(state.definitions, c))
         .map((c) => c.instanceId);
       if (targets.length > 0) {
         const withChoice = startSelectUnitChoice(nextState, {

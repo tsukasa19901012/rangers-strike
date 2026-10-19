@@ -16,7 +16,7 @@
 import { getZordCondition, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { GameAction } from "../../types/actions";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
-import { cardCategories, getDefinition } from "../../core/catalog";
+import { cardCategories, getDefinition, unitSizeOf } from "../../core/catalog";
 import { updatePlayer } from "../../core/helpers";
 import { buildLogEntry } from "../../log/formatLog";
 import { shuffleCards } from "../errataCardEffects";
@@ -36,7 +36,7 @@ function icyIds(player: PlayerState): string[] {
 /** 手札のこのカードのラッシュに【最後の手段】を使えるか（OT の L ユニットで、追加条件が「捨札にする」ユニット）。 */
 function icyRushApplies(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
   const def = getDefinition(state.definitions, card.cardId);
-  if (!def || def.type !== "unit" || def.size !== "L" || !cardCategories(def).includes("OT")) return false;
+  if (!def || def.type !== "unit" || unitSizeOf(state.definitions, card) !== "L" || !cardCategories(def).includes("OT")) return false;
   const conditionId = resolveRushAdditionalCondition(card.cardId, def)?.conditionId ?? getZordCondition(card.cardId);
   if (!conditionId || !ICY_CONDITIONS.has(conditionId)) return false;
   return icyIds(state.players[playerId]).length > 0;

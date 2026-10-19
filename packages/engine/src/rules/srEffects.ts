@@ -212,7 +212,7 @@ export function findEnemySWithPowerCost(
   const matches: CardInstance[] = [];
   for (const zone of ["rush", "battle"] as const) {
     for (const card of state.players[enemyId][zone]) {
-      if (!isSmallUnit(state.definitions, card.cardId)) continue;
+      if (!isSmallUnit(state.definitions, card)) continue;
       const cost = parsePowerCost(getDefinition(state.definitions, card.cardId)?.powerCost ?? 99);
       if (cost === powerCost) matches.push(card);
     }

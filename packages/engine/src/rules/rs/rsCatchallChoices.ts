@@ -7,6 +7,7 @@ import {
   isSmallUnit,
   isMediumUnit,
   isLargeUnit,
+  unitSizeOf,
 } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
@@ -49,8 +50,9 @@ function unitMatchesFilter(
   if (filter.size === "S") {
     if (!isSmallUnitNow(state, ownerId, card)) return false;
   } else if (filter.size === "L") {
-    if (def.size !== "L" && !zubaanIsLarge(state, card)) return false;
-  } else if (filter.size && def.size !== filter.size) {
+    // RK-013 Jパワー・RS-255 巨大化爆弾を重ねたユニットも L（core/catalog.ts unitSizeOf）。
+    if (!isLargeUnit(state.definitions, card) && !zubaanIsLarge(state, card)) return false;
+  } else if (filter.size && unitSizeOf(state.definitions, card) !== filter.size) {
     return false;
   }
   if (filter.held && !card.commandHeld) return false;

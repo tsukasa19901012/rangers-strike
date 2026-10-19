@@ -15,7 +15,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, parsePowerCost } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { sameCardName } from "../../core/cardNames";
@@ -349,7 +349,7 @@ function openGadoru(state: GameState, playerId: PlayerId, self: CardInstance): G
     .filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
       // 「相手に選ばれない」を持つオモテ向きのカードは選べない（ユーザー決定 2026-10-19。docs/rules/README.md §5.7 j）。
-      return !c.faceDown && d?.type === "unit" && d.size === "S" && !cardNotSelectableByOpponent(c.cardId);
+      return !c.faceDown && d?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && !cardNotSelectableByOpponent(c.cardId);
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) return state;
@@ -439,7 +439,7 @@ CHOICE_RESOLVERS[BAZU_EFFECT_ID] = (state, playerId, instanceId) => {
   const card = state.players[enemyId].hand.find((c) => c.instanceId === instanceId);
   if (!card) return { error: "invalid_target" };
   const d = getDefinition(state.definitions, card.cardId);
-  const isS = d?.type === "unit" && d.size === "S";
+  const isS = d?.type === "unit" && unitSizeOf(state.definitions, card) === "S";
   let next = close(state, pending);
   if (isS) {
     next = patchPlayer(next, enemyId, (p) => ({
@@ -661,7 +661,7 @@ function cancerIds(state: GameState, playerId: PlayerId, cost: number): string[]
   return state.players[playerId].command
     .filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
-      return d?.type === "unit" && d.size === "S" && costNumber(state, c.cardId) === cost;
+      return d?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && costNumber(state, c.cardId) === cost;
     })
     .map((c) => c.instanceId);
 }
@@ -822,7 +822,7 @@ function openJetSlider(state: GameState, playerId: PlayerId, vehicle: CardInstan
   if (vehicles.length < 2) return state;
   const ids = vehicles
     .filter((c) => {
-      const size = getDefinition(state.definitions, c.cardId)?.size;
+      const size = unitSizeOf(state.definitions, c);
       const ridden = fieldCards(state, enemyId).some((u) => u.mountedOnInstanceId === c.instanceId);
       return !ridden && (size === "S" || size === "M") && selectableEnemy(state, playerId, "RK-289", c);
     })

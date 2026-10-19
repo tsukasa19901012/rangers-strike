@@ -15,7 +15,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import { isZordUpCost } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { findInZone, removeAt, updatePlayer } from "../core/helpers";
-import { cardCategories, getDefinition, parsePowerCost } from "../core/catalog";
+import { cardCategories, getDefinition, parsePowerCost, unitSizeOf } from "../core/catalog";
 import { sameCardName } from "../core/cardNames";
 import { countAvailablePower, rushEffectivePowerCost } from "../core/power";
 import { getPlayerModifiers } from "../core/scopedModifiers";
@@ -112,7 +112,7 @@ function ginkuronTargets(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].deck
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (!def || def.type !== "vehicle" || def.size !== "S") return false;
+      if (!def || def.type !== "vehicle" || unitSizeOf(state.definitions, c) !== "S") return false;
       if (sameCardName(def.name, "ケンローダー")) return false;
       if (!cardCategories(def).includes("OT")) return false;
       // 「ただし、追加条件は満たすこと」— 追加条件（ゾードアップ等）を持つカードは山札からは満たせないので除外。
@@ -131,7 +131,7 @@ function scrambleTargets(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].command
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (!def || def.type !== "unit" || def.size !== "M") return false;
+      if (!def || def.type !== "unit" || unitSizeOf(state.definitions, c) !== "M") return false;
       if (!cardCategories(def).includes("ET")) return false;
       const cost = rushEffectivePowerCost(state, playerId, parsePowerCost(def.powerCost), def.id);
       return available >= cost;
@@ -240,7 +240,7 @@ function ghostAbsorptionTargets(state: GameState, playerId: PlayerId): string[] 
   return state.players[enemyId].discard
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "S";
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "S";
     })
     .map((c) => c.instanceId);
 }

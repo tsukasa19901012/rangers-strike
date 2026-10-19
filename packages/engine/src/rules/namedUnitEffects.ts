@@ -18,6 +18,7 @@ import {
   effectiveBp,
   getDefinition,
   unitBp,
+  unitSizeOf,
 } from "../core/catalog";
 import { withSpBecomes } from "./fractionalSp";
 import { set7DUsePrintedDefenderBp } from "./legend1/set7NamedEffectsD";
@@ -851,7 +852,7 @@ export function collectBpLastThree500UnitIds(
     for (const card of player[zone]) {
       const def = getDefinition(state.definitions, card.cardId);
       if (!def || def.type !== "unit") continue;
-      if (options.size && def.size !== options.size) continue;
+      if (options.size && unitSizeOf(state.definitions, card) !== options.size) continue;
       if (bpLastThreeDigits(effectiveBp(state, targetPlayerId, card)) !== 500) continue;
       ids.push(card.instanceId);
     }
@@ -1162,7 +1163,7 @@ export function applyWingPentactOnCombo(
   const left = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
   if (!left || !hasBattleNcEffect(left, WING_PENTACT_NC)) return state;
   const def = getDefinition(state.definitions, card.cardId);
-  if (def?.type !== "unit" || def.size !== "M" || !cardCategories(def).includes("WB")) return state;
+  if (def?.type !== "unit" || unitSizeOf(state.definitions, card) !== "M" || !cardCategories(def).includes("WB")) return state;
   let next = grantBpBoostToBattleUnit(state, playerId, card.instanceId, 3000);
   next = markBattleNcEffect(next, playerId, card.instanceId, WING_PENTACT_COMBO_MARK);
   const entered = next.players[playerId].battle.find((c) => c.instanceId === card.instanceId);

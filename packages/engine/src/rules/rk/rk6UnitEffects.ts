@@ -14,7 +14,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
 import { rk9ContractCovers } from "./rk9Fields";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, isVehicle, parsePowerCost } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, isVehicle, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -415,7 +415,7 @@ function deadEndTargets(state: GameState, playerId: PlayerId): string[] {
   return cards
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (!isVehicle(def) || def?.size !== "S") return false;
+      if (!isVehicle(def) || unitSizeOf(state.definitions, c) !== "S") return false;
       if (cards.some((u) => u.mountedOnInstanceId === c.instanceId)) return false;
       return selectableEnemy(state, playerId, "RK-114", c);
     })

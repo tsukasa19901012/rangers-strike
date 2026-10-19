@@ -8,7 +8,7 @@
  */
 import type { Category } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { cardCategories, getDefinition, parsePowerCost } from "../core/catalog";
+import { cardCategories, getDefinition, parsePowerCost, unitSizeOf } from "../core/catalog";
 import { unitFeatures } from "./addedFeatures";
 import { startEffectRush } from "./effectRush";
 
@@ -43,7 +43,7 @@ export function tryResidentRushOnAllyEnterBattle(
   for (const op of player.operation) {
     const parsed = parse(state, op.cardId);
     if (!parsed) continue;
-    if (enteringDef.size !== parsed.enteringSize) continue;
+    if (unitSizeOf(state.definitions, entering) !== parsed.enteringSize) continue;
     if (!unitFeatures(state, playerId, entering).includes(parsed.feature)) continue;
     const enteringCost = parsePowerCost(enteringDef.powerCost ?? 0);
     const candidates = player.hand
@@ -51,7 +51,7 @@ export function tryResidentRushOnAllyEnterBattle(
         const def = getDefinition(state.definitions, c.cardId);
         return (
           def?.type === "unit" &&
-          def.size === parsed.size &&
+          unitSizeOf(state.definitions, c) === parsed.size &&
           cardCategories(def).includes(parsed.category) &&
           parsePowerCost(def.powerCost ?? 99) < enteringCost
         );

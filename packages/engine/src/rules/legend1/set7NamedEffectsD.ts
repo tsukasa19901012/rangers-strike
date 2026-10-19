@@ -9,7 +9,7 @@
  */
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, DeferredDestroyTrigger, GameState, PendingBattle, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitBp, unitSizeOf } from "../../core/catalog";
 import { opponent, updatePlayer } from "../../core/helpers";
 import { addNextTurnRuleModifier, hasTurnRuleModifier } from "../../core/scopedModifiers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -166,7 +166,7 @@ export function transformationHindranceNegates(
 ): boolean {
   if (!anyFieldHas(state, "RS-497", ["battle"])) return false;
   const def = getDefinition(state.definitions, card.cardId);
-  if (!def || def.type !== "unit" || def.size !== "S") return false;
+  if (!def || def.type !== "unit" || unitSizeOf(state.definitions, card) !== "S") return false;
   if (definitionCategories(def).includes("DA")) return false;
   const features = def.features ?? [];
   return features.includes("男") || features.includes("女");
@@ -274,7 +274,7 @@ CHOICE_SKIPPERS[MULTI_DESTROY_EFFECT_ID] = (state) => {
 function wbMUnitCount(state: GameState, playerId: PlayerId): number {
   return fieldUnits(state, playerId).filter((c) => {
     const def = getDefinition(state.definitions, c.cardId);
-    return def?.type === "unit" && def.size === "M" && definitionCategories(def).includes("WB");
+    return def?.type === "unit" && unitSizeOf(state.definitions, c) === "M" && definitionCategories(def).includes("WB");
   }).length;
 }
 
@@ -412,7 +412,7 @@ export function openBatLeeChoice(state: GameState, intent: PendingLeave): GameSt
   if (!anyFieldHas(state, "RS-502", ["rush"])) return null;
   const owner = state.players[intent.ownerPlayerId];
   const leaving = owner[intent.fromZone].find((c) => c.instanceId === intent.instanceId);
-  if (!leaving || !isSmallUnit(state.definitions, leaving.cardId)) return null;
+  if (!leaving || !isSmallUnit(state.definitions, leaving)) return null;
   if (!unitFeatures(state, intent.ownerPlayerId, leaving).includes("ブルー")) return null;
   const candidates = owner.hand
     .filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit")
@@ -518,7 +518,7 @@ CHOICE_RESOLVERS[BAT_LEE_DESTROY_EFFECT_ID] = (state, playerId, instanceId) => {
 export function set7DUsePrintedDefenderBp(state: GameState, pending: PendingBattle): boolean {
   if (!anyFieldHas(state, "RS-503", ["rush"])) return false;
   const attacker = fieldUnits(state, pending.attackerPlayerId).find((c) => c.instanceId === pending.attackerInstanceId);
-  if (!attacker || !isSmallUnit(state.definitions, attacker.cardId)) return false;
+  if (!attacker || !isSmallUnit(state.definitions, attacker)) return false;
   return unitFeatures(state, pending.attackerPlayerId, attacker).includes("レッド");
 }
 
@@ -681,7 +681,7 @@ CHOICE_RESOLVERS[RACING_BULLET_EFFECT_ID] = (state, playerId, instanceId) => {
   const targets = fieldUnits(next, enemyId)
     .filter((c) => {
       const def = getDefinition(next.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "S" && parsePowerCost(def.powerCost) === cost;
+      return def?.type === "unit" && unitSizeOf(next.definitions, c) === "S" && parsePowerCost(def.powerCost) === cost;
     })
     .map((c) => c.instanceId);
   if (targets.length === 0) return { state: finish(next, pending), log };
@@ -1001,7 +1001,7 @@ export function set7DDefenderBlocksAttack(
 ): boolean {
   const text = (getDefinition(state.definitions, defender.cardId)?.text ?? "").normalize("NFKC");
   if (NO_NC_RC_ATTACK_RE.test(text)) {
-    if (isSmallUnit(state.definitions, attacker.cardId) && !unitHasNcOrRcActive(attacker)) return true;
+    if (isSmallUnit(state.definitions, attacker) && !unitHasNcOrRcActive(attacker)) return true;
   }
   return false;
 }
@@ -1103,7 +1103,7 @@ export function pickSet7DCpuChoice(state: GameState, pending: PendingEffectChoic
       // 相手に同じ必要パワーの S ユニットがあるカードを優先する。
       const enemyCosts = new Set(
         fieldUnits(state, opponent(me))
-          .filter((c) => isSmallUnit(state.definitions, c.cardId))
+          .filter((c) => isSmallUnit(state.definitions, c))
           .map((c) => parsePowerCost(getDefinition(state.definitions, c.cardId)?.powerCost)),
       );
       const hit = picks.find((a) => {

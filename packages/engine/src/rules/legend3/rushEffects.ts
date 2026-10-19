@@ -1,6 +1,6 @@
 import { getUnitEffectBlock, hasUnnamedRule } from "@rangers-strike/cards";
 import type { GameState, PendingEffectChoice, PlayerId } from "../../types/game";
-import { getDefinition, isSmallUnit } from "../../core/catalog";
+import { getDefinition, isSmallUnit, unitSizeOf } from "../../core/catalog";
 import { crossReductionFor } from "../../keywords/battleKeywords";
 import {
   battlePositionOneBased,
@@ -89,7 +89,7 @@ export function superRadarAppliesOnRush(
   if (!isSuperRadarActive(state)) return false;
   const rusher = state.players[rusherPlayerId];
   const found = findRushedUnit(rusher, rushedInstanceId);
-  if (!found || !isSmallUnit(state.definitions, found.card.cardId)) return false;
+  if (!found || !isSmallUnit(state.definitions, found.card)) return false;
   return rusher.power.some((c) => !c.faceDown);
 }
 
@@ -143,7 +143,7 @@ export function applySuperRadarOnRush(
 
   const rusher = state.players[rusherPlayerId];
   const found = findRushedUnit(rusher, rushedInstanceId);
-  if (!found || !isSmallUnit(state.definitions, found.card.cardId)) {
+  if (!found || !isSmallUnit(state.definitions, found.card)) {
     return { state, logs: [] };
   }
 
@@ -223,7 +223,7 @@ export function resolveLegend3OnRushEffects(
           nextState.players[enemyId].battle.find((c) => c.instanceId === id) ??
           nextState.players[enemyId].rush.find((c) => c.instanceId === id);
         if (!inst) return false;
-        return getDefinition(nextState.definitions, inst.cardId)?.size === "L";
+        return unitSizeOf(nextState.definitions, inst) === "L";
       });
       if (targets.length > 0) {
         const withChoice = startSelectUnitChoice(nextState, {
@@ -292,7 +292,7 @@ export function resolveLegend3OnRushEffects(
     case "taurus_dive": {
       const enemy = nextState.players[enemyId];
       const toReturn = [...enemy.battle, ...enemy.rush].filter((c) => {
-        if (!isSmallUnit(nextState.definitions, c.cardId)) return false;
+        if (!isSmallUnit(nextState.definitions, c)) return false;
         const def = getDefinition(nextState.definitions, c.cardId);
         const spValue = resolveInstanceSpValue(def, c);
         const inBattle = enemy.battle.some((u) => u.instanceId === c.instanceId);

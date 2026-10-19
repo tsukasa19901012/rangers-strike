@@ -27,6 +27,7 @@ import {
   isRushable,
   parsePowerCost,
   rushPowerCost,
+  unitSizeOf,
 } from "../core/catalog";
 import { countAvailablePower, effectivePowerCost, findInZone, updatePlayer } from "../core/helpers";
 import { redRacerPowerCostBonus } from "../core/power";
@@ -94,7 +95,7 @@ const DENJI_ICY_CARD_ID = "RS-359";
 
 function icyApplies(state: GameState, card: CardInstance): boolean {
   const def = getDefinition(state.definitions, card.cardId);
-  return !!def && def.type === "unit" && def.size === "L" && cardHasCategory(def, "OT");
+  return !!def && def.type === "unit" && unitSizeOf(state.definitions, card) === "L" && cardHasCategory(def, "OT");
 }
 
 /** 使えるデンジ犬アイシー（自軍ラッシュエリア）。 */
@@ -356,7 +357,7 @@ export function releasedCommandUnitIds(
     .filter((c) => {
       if (c.commandHeld) return false;
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === size;
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === size;
     })
     .map((c) => c.instanceId);
 }

@@ -224,7 +224,7 @@ export function applyCoreGapNcEffect(
     case "new_red_beet": {
       nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
       const targets = nextState.players[enemyId].command
-        .filter((c) => isSmallUnit(state.definitions, c.cardId))
+        .filter((c) => isSmallUnit(state.definitions, c))
         .map((c) => c.instanceId);
       if (targets.length > 0) {
         // 「選び、…出してもよい」— 選ぶのも出すかを決めるのも効果を使う自分（atwiki/page-538）。

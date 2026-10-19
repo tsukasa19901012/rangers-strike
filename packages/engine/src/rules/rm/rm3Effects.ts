@@ -13,7 +13,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, effectiveCommandCategories, getDefinition, unitEffectiveCategories } from "../../core/catalog";
+import { cardName, effectiveBp, effectiveCommandCategories, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { cardNotSelectableByOpponent } from "../../keywords/effectTargetability";
@@ -415,7 +415,7 @@ function bigCannonTargets(state: GameState, playerId: PlayerId): string[] {
   return enemy.battle
     .filter((v) => {
       const d = getDefinition(state.definitions, v.cardId);
-      return d?.type === "vehicle" && d.size === "S" && !enemy.battle.some((c) => c.mountedOnInstanceId === v.instanceId) && selectableEnemy(state, playerId, "RM-047", v);
+      return d?.type === "vehicle" && unitSizeOf(state.definitions, v) === "S" && !enemy.battle.some((c) => c.mountedOnInstanceId === v.instanceId) && selectableEnemy(state, playerId, "RM-047", v);
     })
     .map((c) => c.instanceId);
 }
@@ -423,7 +423,7 @@ function bigCannonTargets(state: GameState, playerId: PlayerId): string[] {
 function drillTargets(state: GameState, playerId: PlayerId): string[] {
   const enemyId = opponent(playerId);
   return fieldUnits(state, enemyId)
-    .filter((c) => getDefinition(state.definitions, c.cardId)?.size === "M" && !rk1IsSmallNow(state, c) && !c.commandHeld && unitFeatures(state, enemyId, c).includes("メカ") && selectableEnemy(state, playerId, "RM-053", c))
+    .filter((c) => unitSizeOf(state.definitions, c) === "M" && !rk1IsSmallNow(state, c) && !c.commandHeld && unitFeatures(state, enemyId, c).includes("メカ") && selectableEnemy(state, playerId, "RM-053", c))
     .map((c) => c.instanceId);
 }
 
@@ -510,11 +510,11 @@ function applyMissileLauncher(state: GameState, ctx: GrantKeywordContext): Grant
   const enemyId = opponent(ctx.playerId);
   const faceUpS = state.players[enemyId].power.some((c) => {
     const d = getDefinition(state.definitions, c.cardId);
-    return !c.faceDown && d?.type === "unit" && d.size === "S";
+    return !c.faceDown && d?.type === "unit" && unitSizeOf(state.definitions, c) === "S";
   });
   if (faceUpS) return { state, detail: "rm050:face_up_s_unit" };
   const ids = fieldUnits(state, enemyId)
-    .filter((c) => getDefinition(state.definitions, c.cardId)?.size === "M" && !rk1IsSmallNow(state, c) && hasAnyCategory(fieldCategories(state, enemyId, c), DA_OT) && selectableEnemy(state, ctx.playerId, "RM-050", c))
+    .filter((c) => unitSizeOf(state.definitions, c) === "M" && !rk1IsSmallNow(state, c) && hasAnyCategory(fieldCategories(state, enemyId, c), DA_OT) && selectableEnemy(state, ctx.playerId, "RM-050", c))
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "rm050:no_targets" };
   return { state: openAfter(state, selectOne(ctxBase(ctx), "RM-050", MISSILE_LAUNCHER_EFFECT_ID, ids, true)), detail: MISSILE_LAUNCHER_EFFECT_ID };

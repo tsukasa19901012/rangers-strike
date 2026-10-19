@@ -9,7 +9,7 @@
  *
  * 効果を使ったプレイヤーのバトルフェイズ中の撃破なので、闇の戒律等の「敵軍ユニットを撃破するたび」を満たす（faq-card-5 RS-256）。
  */
-import { effectiveBp, getDefinition } from "../core/catalog";
+import { effectiveBp, getDefinition, unitSizeOf } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import type { GameState, PlayerId } from "../types/game";
 import { applyDamageToPlayer } from "./damagePayment";
@@ -27,7 +27,7 @@ export function startGrapFighter(
   if (state.pendingEffectChoice) return state;
   const enemy = state.players[opponent(playerId)];
   const valid = enemy.battle
-    .filter((c) => getDefinition(state.definitions, c.cardId)?.size === "S")
+    .filter((c) => unitSizeOf(state.definitions, c) === "S")
     .map((c) => c.instanceId);
   if (valid.length === 0) return state;
   return {

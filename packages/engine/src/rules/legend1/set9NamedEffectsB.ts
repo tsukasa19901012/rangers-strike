@@ -9,7 +9,7 @@
  */
 import type { CardInstance, DeferredDestroyTrigger, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardCategories, cardName, effectiveBp, getDefinition, isLargeUnit } from "../../core/catalog";
+import { cardCategories, cardName, effectiveBp, getDefinition, isLargeUnit, unitSizeOf } from "../../core/catalog";
 import { opponent, updatePlayer } from "../../core/helpers";
 import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -539,7 +539,7 @@ function applyMarsRecover(state: GameState, ctx: GrantKeywordContext): GrantKeyw
   const ids = state.players[ctx.playerId].discard
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "S";
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "S";
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: `${MARS_RECOVER_EFFECT_ID}:no_targets` };

@@ -37,7 +37,7 @@ export function resolveAnimalHeart(
   const own = state.players[playerId];
   const maxCount = [...own.rush, ...own.battle].filter((c) => {
     const def = getDefinition(state.definitions, c.cardId);
-    return def?.category === "WB" && isMediumUnit(state.definitions, c.cardId);
+    return def?.category === "WB" && isMediumUnit(state.definitions, c);
   }).length;
 
   if (maxCount === 0) {

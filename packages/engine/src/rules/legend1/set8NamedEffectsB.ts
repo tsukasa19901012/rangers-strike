@@ -9,7 +9,7 @@
  */
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, parsePowerCost, unitEffectiveCategories } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, isLargeUnit, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { countAvailablePower } from "../../core/power";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -246,7 +246,8 @@ export function hasBecomesLIfAnyLText(state: Pick<GameState, "definitions">, car
 export function baseLargeNow(state: Pick<GameState, "players" | "definitions">, card: CardInstance): boolean {
   const def = getDefinition(state.definitions, card.cardId);
   if (def?.type !== "unit") return false;
-  if (def.size === "L") return true;
+  // RK-013 Jパワー・RS-255 巨大化爆弾を重ねたユニットも L（core/catalog.ts unitSizeOf）。
+  if (isLargeUnit(state.definitions, card)) return true;
   const ownerId = ownerOf(state, card.instanceId);
   return ownerId !== null && regenGiantLarge(state, ownerId, card);
 }
@@ -314,7 +315,7 @@ function guardianApostleSource(state: GameState, ownerId: PlayerId, card: CardIn
     const m = text.match(GUARDIAN_APOSTLE_RE);
     if (!m) return false;
     if (requireHoldClause && !GUARDIAN_APOSTLE_HOLD_RE.test(text)) return false;
-    if (def.size !== m[2]) return false;
+    if (unitSizeOf(state.definitions, card) !== m[2]) return false;
     const zone = state.players[ownerId].battle.some((c) => c.instanceId === card.instanceId) ? "battle" : "rush";
     return unitEffectiveCategories(state, ownerId, card, zone).includes(m[1] as never);
   });
@@ -746,7 +747,7 @@ const MONEY_TEMPTATION_RE =
 /** 可能ならバトルエリアに出なければならないか（rules/restrictions.ts findMandatoryBattleEntries から呼ぶ）。 */
 export function set8BRequiresBattleEntry(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
   const def = getDefinition(state.definitions, card.cardId);
-  if (def?.type !== "unit" || def.size !== "S" || typeof def.comboNumber !== "number") return false;
+  if (def?.type !== "unit" || unitSizeOf(state.definitions, card) !== "S" || typeof def.comboNumber !== "number") return false;
   const active = (["player1", "player2"] as const).some((pid) =>
     fieldUnits(state, pid).some((c) => MONEY_TEMPTATION_RE.test(textOf(state, c.cardId))),
   );

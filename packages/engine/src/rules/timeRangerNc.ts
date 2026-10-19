@@ -7,7 +7,7 @@
  *   次の効果を発動できる⇒自軍Sユニットと同じ数になるまで、敵軍Sユニットを選び撃破する。
  *   先に撃破する対象をすべて選んでから1体ずつ撃破し、途中で止められない（faq-card-4 RS-219 Q1・Q3）。
  */
-import { getDefinition } from "../core/catalog";
+import { getDefinition, unitSizeOf } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import type { GameState, PlayerId } from "../types/game";
 
@@ -88,7 +88,7 @@ export function resolveAssaultVectorPick(
 
 function countFieldS(state: GameState, playerId: PlayerId): number {
   const p = state.players[playerId];
-  return [...p.rush, ...p.battle].filter((c) => getDefinition(state.definitions, c.cardId)?.size === "S").length;
+  return [...p.rush, ...p.battle].filter((c) => unitSizeOf(state.definitions, c) === "S").length;
 }
 
 /** RS-219【スピニングスラッシュ】: 条件を満たせば、撃破する敵軍 S ユニットの選択（任意）を開く。 */
@@ -100,7 +100,7 @@ export function startSpinningSlash(state: GameState, playerId: PlayerId, sourceI
   if (enemy - own < 4) return state;
   const enemyPlayer = state.players[enemyId];
   const valid = [...enemyPlayer.battle, ...enemyPlayer.rush]
-    .filter((c) => getDefinition(state.definitions, c.cardId)?.size === "S")
+    .filter((c) => unitSizeOf(state.definitions, c) === "S")
     .map((c) => c.instanceId);
   return {
     ...state,

@@ -55,7 +55,7 @@ function enemySmallUnits(
   const ids: string[] = [];
   for (const zone of zones) {
     for (const c of state.players[enemyId][zone]) {
-      if (!isSmallUnit(state.definitions, c.cardId)) continue;
+      if (!isSmallUnit(state.definitions, c)) continue;
       if (!isSelectableByOpponentEffect(state, ctx.playerId, c.instanceId, ctx.sourceCardId)) continue;
       if (pick(c)) ids.push(c.instanceId);
     }

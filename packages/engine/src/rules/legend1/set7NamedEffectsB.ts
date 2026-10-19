@@ -8,7 +8,7 @@
  */
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
-import { cardName, getDefinition, parsePowerCost } from "../../core/catalog";
+import { cardName, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { addNextTurnRuleModifier, addTurnRuleModifier, getPlayerModifiers, hasTurnRuleModifier } from "../../core/scopedModifiers";
@@ -142,7 +142,7 @@ function destroyByEffect(state: GameState, instanceId: string, phasePlayerId: Pl
 
 /** ユニットの現在のサイズ（「Lユニットになる」RS-420・RS-454 を含む）。 */
 function currentUnitSize(state: GameState, card: CardInstance): CardDefinition["size"] | undefined {
-  const size = getDefinition(state.definitions, card.cardId)?.size;
+  const size = unitSizeOf(state.definitions, card);
   if (size !== "L" && zubaanIsLarge(state, card)) return "L";
   return size;
 }
@@ -309,7 +309,7 @@ export function set7BEffectiveSp(state: GameState, playerId: PlayerId, instance:
   const [, feature, size, countText] = m;
   const count = state.players[playerId].command.filter((c) => {
     const d = getDefinition(state.definitions, c.cardId);
-    return d?.type === "unit" && d.size === size && (d.features ?? []).includes(feature!);
+    return d?.type === "unit" && unitSizeOf(state.definitions, c) === size && (d.features ?? []).includes(feature!);
   }).length;
   return count >= Number(countText) ? Math.max(sp, 1) : sp;
 }
@@ -893,7 +893,7 @@ export function openGrandLinerRush(state: GameState, ownerId: PlayerId, sourceCa
   const valid = state.players[ownerId].command
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "M" && (def.features ?? []).includes("メカ");
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "M" && (def.features ?? []).includes("メカ");
     })
     .map((c) => c.instanceId);
   if (valid.length === 0) return null;

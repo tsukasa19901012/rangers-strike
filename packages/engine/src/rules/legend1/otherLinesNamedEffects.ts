@@ -16,7 +16,7 @@ import { applyConfirmEffectChoice, applyUnitLeave, openEffectChoice } from "../p
 import { isSmallUnitNow } from "./set6NamedEffectsB";
 import { patchPlayer } from "../playerPatches";
 import { namedTextNegated } from "./set6NamedEffects348";
-import { cardCategories, cardName, effectiveBp, getDefinition } from "../../core/catalog";
+import { cardCategories, cardName, effectiveBp, getDefinition, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
 import { countJointLGrant } from "../jointComboGrants";
@@ -305,7 +305,7 @@ function accelGranzerTargets(state: GameState, playerId: PlayerId, categories: s
       if (!def) return false;
       if (cardCategories(def).some((cat) => categories.includes(cat))) return false;
       if (def.type === "unit") return isSmallUnitNow(state, enemyId, c);
-      return def.type === "vehicle" && def.size === "S" && !ridden.has(c.instanceId);
+      return def.type === "vehicle" && unitSizeOf(state.definitions, c) === "S" && !ridden.has(c.instanceId);
     })
     .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId, "XP-026", playerId))
     .map((c) => c.instanceId);

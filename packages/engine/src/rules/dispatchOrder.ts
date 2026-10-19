@@ -11,7 +11,7 @@ import { recordReveal } from "./revealNotice";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
-import { cardName, getDefinition, unitEffectiveCategories } from "../core/catalog";
+import { cardName, getDefinition, unitEffectiveCategories, unitSizeOf } from "../core/catalog";
 import { openEffectChoice } from "./pendingChoices";
 import { findInZone, opponent, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
@@ -99,7 +99,7 @@ function revealDispatchOrder(
   const toRush =
     !!def &&
     def.type === "unit" &&
-    def.size === "S" &&
+    unitSizeOf(cleared.definitions, top) === "S" &&
     (def.features ?? []).includes("警察") &&
     !hasAdditionalCondition(def);
   const deck = owner.deck.slice(1);

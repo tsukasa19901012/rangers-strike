@@ -17,7 +17,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PendingStrike, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardCategories, cardName, effectiveBp, getDefinition, unitEffectiveCategories } from "../../core/catalog";
+import { cardCategories, cardName, effectiveBp, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { shuffleCards } from "../../core/deckShuffle";
@@ -439,7 +439,7 @@ function applyKyoju(state: GameState, ctx: GrantKeywordContext): GrantKeywordRes
   const ids = next.players[pid].deck
     .filter((c) => {
       const d = getDefinition(next.definitions, c.cardId);
-      return d?.type === "unit" && d.size === "L" && categoriesOf(next, c.cardId).includes("OT");
+      return d?.type === "unit" && unitSizeOf(next.definitions, c) === "L" && categoriesOf(next, c.cardId).includes("OT");
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state: shuffleDeck(next, pid), detail: log };
@@ -732,7 +732,7 @@ function sUnitCardsInDiscard(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].discard
     .filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
-      return d?.type === "unit" && d.size === "S";
+      return d?.type === "unit" && unitSizeOf(state.definitions, c) === "S";
     })
     .map((c) => c.instanceId);
 }
@@ -1195,7 +1195,7 @@ function applyVehicleLaunch(state: GameState, ctx: GrantKeywordContext): GrantKe
       const d = getDefinition(state.definitions, c.cardId);
       const n = rm1CostNumber(state, c.cardId);
       if (!Number.isFinite(n) || n > 4) return false;
-      return (d?.type === "unit" && d.size === "M") || (d?.type === "vehicle" && d.size === "S");
+      return (d?.type === "unit" && unitSizeOf(state.definitions, c) === "M") || (d?.type === "vehicle" && unitSizeOf(state.definitions, c) === "S");
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "rm021:no_targets" };

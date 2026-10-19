@@ -319,14 +319,14 @@ function appendBattleReactionActions(
   for (const card of defender.hand) {
     const effectId = getCounterEffectId(state, playerId, card.instanceId);
     if (effectId === "new_gymnastics") {
-      if (!defenderCard || !isSmallUnit(state.definitions, defenderCard.cardId)) continue;
+      if (!defenderCard || !isSmallUnit(state.definitions, defenderCard)) continue;
       appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
       if (canExecuteHandCounter(state, playerId, card.instanceId)) {
         actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
       }
     }
     if (isMechanicNinjaCounter(card.cardId)) {
-      if (!defenderCard || !isSmallUnit(state.definitions, defenderCard.cardId)) continue;
+      if (!defenderCard || !isSmallUnit(state.definitions, defenderCard)) continue;
       const recruits = collectMechanicNinjaRecruits(state, playerId);
       const options: Array<string | undefined> = recruits.length > 0 ? recruits : [undefined];
       for (const recruit of options) {
@@ -870,7 +870,7 @@ function appendBattleDanceActions(
   if (released.length < 2) return;
 
   const sUnits = player.battle.filter((card) =>
-    isSmallUnit(state.definitions, card.cardId),
+    isSmallUnit(state.definitions, card),
   );
   if (sUnits.length === 0) return;
 

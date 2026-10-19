@@ -1,5 +1,5 @@
 import type { GameState, PlayerId } from "../types/game";
-import { cardName, getDefinition } from "../core/catalog";
+import { cardName, getDefinition, unitSizeOf } from "../core/catalog";
 import { opponent, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { applyDamageToPlayer } from "./damagePayment";
@@ -52,7 +52,7 @@ export function resolveNoteOtherOnRushEffects(
     let changed = false;
     const newCommand = player.command.map((c) => {
       const def = getDefinition(nextState.definitions, c.cardId);
-      if (def?.type === "unit" && def.size === "S" && c.commandHeld) {
+      if (def?.type === "unit" && unitSizeOf(nextState.definitions, c) === "S" && c.commandHeld) {
         changed = true;
         return { ...c, commandHeld: false };
       }
@@ -97,7 +97,7 @@ export function resolveNoteOtherOnRushEffects(
         const def = getDefinition(nextState.definitions, c.cardId);
         return (
           def?.type === "unit" &&
-          def.size === "S" &&
+          unitSizeOf(nextState.definitions, c) === "S" &&
           cardName(nextState.definitions, c.cardId) !== "ミミーナ"
         );
       })
@@ -181,7 +181,7 @@ export function resolveNoteOtherOnRushEffects(
       if (c.faceDown) return false;
       if (cardName(nextState.definitions, c.cardId) === selfName) return false;
       const def = getDefinition(nextState.definitions, c.cardId);
-      if (!def || def.type !== "unit" || def.size !== "S") return false;
+      if (!def || def.type !== "unit" || unitSizeOf(nextState.definitions, c) !== "S") return false;
       if (resolveRushAdditionalCondition(c.cardId, def)) return false;
       return features.some((f) => def.features?.includes(f));
     });

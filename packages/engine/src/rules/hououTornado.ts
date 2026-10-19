@@ -17,14 +17,14 @@ export const HOUOU_TORNADO_ENEMY_EFFECT_ID = "houou_tornado_enemy";
 
 function ownRushSmallUnits(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].rush
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .map((c) => c.instanceId);
 }
 
 function fieldSmallUnits(state: GameState, playerId: PlayerId): string[] {
   const player = state.players[playerId];
   return [...player.rush, ...player.battle]
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .map((c) => c.instanceId);
 }
 

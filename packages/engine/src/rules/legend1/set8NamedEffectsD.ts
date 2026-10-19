@@ -10,7 +10,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, DeferredDestroyTrigger, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { canAttackDefender } from "../legend3/restrictions";
 import { canAttackRushWithYellowThunder } from "../namedUnitEffects";
-import { cardName, effectiveBp, getDefinition, isCounterOperation, isSmallUnit, parsePowerCost } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, isCounterOperation, isSmallUnit, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { sameCardName } from "../../core/cardNames";
 import { shuffleCards } from "../errataCardEffects";
 
@@ -313,7 +313,7 @@ CHOICE_RESOLVERS[OPPONENT_SELF_DESTROY_EFFECT_ID] = (state, playerId, instanceId
 function otherOwnSUnits(state: GameState, playerId: PlayerId, selfId: string | undefined, requireReleased: boolean): string[] {
   return fieldUnits(state, playerId)
     .filter((c) => c.instanceId !== selfId)
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .filter((c) => !requireReleased || !c.commandHeld)
     .map((c) => c.instanceId);
 }
@@ -474,7 +474,7 @@ function finishGunpardPick(state: GameState, pending: PendingEffectChoice, selec
   // お互いに見たカードの中から選ぶので、「相手に選ばれない」を持つカードは選べない（ユーザー決定 2026-10-19
   // 「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」。docs/rules/README.md §5.7 j）。
   // 見ないで選ぶ最初の3枚は外さない（手札を見ていない）。
-  const sUnits = shown.filter((c) => isSmallUnit(state.definitions, c.cardId) && !cardNotSelectableByOpponent(c.cardId)).map((c) => c.instanceId);
+  const sUnits = shown.filter((c) => isSmallUnit(state.definitions, c) && !cardNotSelectableByOpponent(c.cardId)).map((c) => c.instanceId);
   if (sUnits.length === 0) return { state: proceed(next, pending), log };
   next = openEffectChoice(next, {
     ...pending,
@@ -639,7 +639,7 @@ CHOICE_RESOLVERS[JUSTICE_SORTIE_EFFECT_ID] = (state, playerId, instanceId) => {
     .filter((c) => !c.faceDown)
     .filter((c) => {
       const def = getDefinition(next.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "M" && (def.features ?? []).includes("炎神");
+      return def?.type === "unit" && unitSizeOf(next.definitions, c) === "M" && (def.features ?? []).includes("炎神");
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state: proceed(next, pending), log };
@@ -921,7 +921,7 @@ export function missionBurningForcesNc(
   definition: CardDefinition,
   battleBeforeEnter: CardInstance[],
 ): boolean {
-  if (definition.comboNumber !== 4 || !isSmallUnit(state.definitions, card.cardId)) return false;
+  if (definition.comboNumber !== 4 || !isSmallUnit(state.definitions, card)) return false;
   const left = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
   if (!left || left.cardId !== "RS-600") return false;
   if (!(left.activatedNcEffects ?? []).includes(MISSION1_EFFECT_ID)) return false;

@@ -9,7 +9,7 @@
 import { set8DNamedTextNegated } from "./set8NamedEffectsD";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
-import { cardName, effectiveBp, getDefinition, parsePowerCost } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { findInZone, opponent, updatePlayer } from "../../core/helpers";
 import { addNextTurnRuleModifier, addTurnRuleModifier, hasTurnRuleModifier } from "../../core/scopedModifiers";
 import { grantSp1ToBattleUnit, hasBattleNcEffect, markBattleNcEffect } from "../namedUnitEffects";
@@ -451,7 +451,7 @@ function beginDarkArmor(state: GameState, ctx: GrantKeywordContext): GameState {
   const ids = fieldUnits(state, ctx.playerId)
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "S";
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "S";
     })
     .map((c) => c.instanceId);
   if (ids.length === 0 || !ctx.operationInstanceId) return state;
@@ -597,7 +597,7 @@ function allAboardDeckTargets(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].deck
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (!def || def.type !== "unit" || def.size !== "M") return false;
+      if (!def || def.type !== "unit" || unitSizeOf(state.definitions, c) !== "M") return false;
       if (!cardHasCategory(def, "DA")) return false;
       const cond = (def as { rushAdditionalCondition?: { conditionId?: string; text?: string; unitCount?: number } }).rushAdditionalCondition;
       if (!cond) return false;
@@ -718,7 +718,7 @@ function unriddenEnemySVehicles(state: GameState, playerId: PlayerId): string[] 
   return [...enemy.rush, ...enemy.battle]
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "vehicle" && def.size === "S" && !ridden.has(c.instanceId);
+      return def?.type === "vehicle" && unitSizeOf(state.definitions, c) === "S" && !ridden.has(c.instanceId);
     })
     .map((c) => c.instanceId);
 }

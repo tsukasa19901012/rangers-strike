@@ -21,7 +21,7 @@ import type {
 } from "../../types/game";
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
 import { buildLogEntry } from "../../log/formatLog";
@@ -399,7 +399,7 @@ export const KUNG_FU_DANCE_EFFECT_ID = "rs443_kung_fu_dance";
 
 function kungFuTargets(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].rush
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .map((c) => c.instanceId);
 }
 
@@ -701,7 +701,7 @@ export function set7AEffectiveSp(state: GameState, playerId: PlayerId, instance:
   const prev = battle[index - 1]!;
   if (
     spanishDanceActive(prev) &&
-    isSmallUnit(state.definitions, instance.cardId) &&
+    isSmallUnit(state.definitions, instance) &&
     hasFeature(state, playerId, instance, "女") &&
     effectiveBp(state, playerId, prev) >= 5000
   ) {
@@ -752,14 +752,14 @@ function openTetraBuster(state: GameState, playerId: PlayerId, card: CardInstanc
   const from = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
   if (!from) return state;
   const fromDef = getDefinition(state.definitions, from.cardId);
-  if (fromDef?.type !== "unit" || fromDef.size !== "L") return state;
+  if (fromDef?.type !== "unit" || unitSizeOf(state.definitions, from) !== "L") return state;
   const own = categoriesOf(state, card.cardId);
   if (!categoriesOf(state, from.cardId).some((c) => own.includes(c))) return state;
   const enemyId = opponent(playerId);
   const ids = fieldUnits(state, enemyId)
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (def?.type !== "unit" || def.size !== "L") return false;
+      if (def?.type !== "unit" || unitSizeOf(state.definitions, c) !== "L") return false;
       return !(def.rushAdditionalCondition?.text ?? "").includes("自軍合体ユニットを捨札にする");
     })
     .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId, card.cardId))
@@ -1192,7 +1192,7 @@ export function applySet7ABattlePhaseEnd(state: GameState, endingPlayerId: Playe
   });
   if (!fires) return next;
   const targets = next.players[endingPlayerId].battle
-    .filter((c) => isSmallUnit(next.definitions, c.cardId))
+    .filter((c) => isSmallUnit(next.definitions, c))
     .map((c) => c.instanceId);
   for (const id of targets) {
     if (!next.players[endingPlayerId].battle.some((c) => c.instanceId === id)) continue;
@@ -1300,7 +1300,7 @@ export const LIFE_BIRD_PICK_EFFECT_ID = "rs434_life_bird_pick";
 
 function discardSUnitIds(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].discard
-    .filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit" && isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit" && isSmallUnit(state.definitions, c))
     .map((c) => c.instanceId);
 }
 
@@ -1511,7 +1511,7 @@ function hasResidentText(state: GameState, playerId: PlayerId, re: RegExp): Card
 
 function isLargeFieldUnit(state: GameState, card: CardInstance): boolean {
   const def = getDefinition(state.definitions, card.cardId);
-  return def?.type === "unit" && def.size === "L";
+  return def?.type === "unit" && unitSizeOf(state.definitions, card) === "L";
 }
 
 /** L ユニットをラッシュしたとき: 追加条件で捨札にした合体ユニットのカードをウラ向きで下に重ねる。 */

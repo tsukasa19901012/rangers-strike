@@ -15,7 +15,7 @@
  */
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattleEntry, PendingEffectChoice, PlayerId } from "../../types/game";
-import { cardName, effectiveBp, getDefinition, parsePowerCost } from "../../core/catalog";
+import { cardName, effectiveBp, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { addNextTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
 import { sameCardName } from "../../core/cardNames";
@@ -726,7 +726,7 @@ function fishingIds(state: GameState, playerId: PlayerId): string[] {
   const ids = state.players[playerId].power
     .filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
-      return !c.faceDown && d?.type === "unit" && d.size === "S" && (d.features ?? []).includes("女");
+      return !c.faceDown && d?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && (d.features ?? []).includes("女");
     })
     .map((c) => c.instanceId);
   return filterEffectRushCandidates(state, playerId, "power", ids, true);
@@ -822,7 +822,7 @@ function openMonsterFever(state: GameState, playerId: PlayerId, self: CardInstan
   const ids = state.players[playerId].hand
     .filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
-      return d?.type === "unit" && d.size === "S" && (d.features ?? []).includes("魔皇力") && !hasAdditionalCondition(d) && !!isRk12SelfHoldCard(c.cardId);
+      return d?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && (d.features ?? []).includes("魔皇力") && !hasAdditionalCondition(d) && !!isRk12SelfHoldCard(c.cardId);
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) return state;

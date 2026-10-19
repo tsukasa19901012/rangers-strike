@@ -16,7 +16,7 @@
  */
 import { fusionMaterialAliasRequiresNoOwnL, isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
-import { canPlayOperationExceptCommandHold, cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories } from "../../core/catalog";
+import { canPlayOperationExceptCommandHold, cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { shuffleCards } from "../../core/deckShuffle";
@@ -518,7 +518,7 @@ export function openRk12NegatarosOnRush(state: GameState, rusherId: PlayerId, ru
   const handIds = state.players[ownerId].hand
     .filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
-      return d?.type === "unit" && d.size === "S" && categoriesOfCard(state, c.cardId).includes("DA") && typeof d.bp === "number" && d.bp <= 3000;
+      return d?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && categoriesOfCard(state, c.cardId).includes("DA") && typeof d.bp === "number" && d.bp <= 3000;
     })
     .map((c) => c.instanceId);
   const ids = filterEffectRushCandidates(state, ownerId, "hand", handIds, true, true);
@@ -855,7 +855,7 @@ function namesOf(state: GameState, ownerId: PlayerId, cardId: string): string[] 
   const names = [d.name];
   const m = (d.text ?? "").match(/※(?:自軍Lユニットがなければ、)?これは「([^」]+)」としてつかえる/);
   if (m) {
-    const ownL = fieldUnits(state, ownerId).some((c) => getDefinition(state.definitions, c.cardId)?.size === "L");
+    const ownL = fieldUnits(state, ownerId).some((c) => unitSizeOf(state.definitions, c) === "L");
     if (!(fusionMaterialAliasRequiresNoOwnL(d.text) && ownL)) names.push(...m[1]!.split(/[＋+]/));
   }
   return names;

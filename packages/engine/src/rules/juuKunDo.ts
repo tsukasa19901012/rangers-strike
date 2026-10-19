@@ -52,7 +52,7 @@ export function gomaPalaceForcesAttack(
   const player = state.players[playerId];
   const first = player.battle[0];
   if (!first || first.instanceId !== attackerInstanceId) return false;
-  if (!isSmallUnit(state.definitions, first.cardId)) return false;
+  if (!isSmallUnit(state.definitions, first)) return false;
   if (first.battleActed) return false;
   if (cannotAttackOrStrikeThisTurn(player, first, state, playerId)) return false;
   return hasAttackableDefender(state, playerId, attackerInstanceId);

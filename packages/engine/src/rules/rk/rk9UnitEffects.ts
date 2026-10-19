@@ -17,7 +17,7 @@
  */
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
-import { cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories } from "../../core/catalog";
+import { cardName, effectiveBp, effectiveCommandCategories, getDefinition, parsePowerCost, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { shuffleCards } from "../../core/deckShuffle";
@@ -799,7 +799,7 @@ function moleRiders(state: GameState, enemyId: PlayerId, vehicleId: string): str
 function applyMole(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const enemyId = opponent(ctx.playerId);
   const ids = state.players[enemyId].rush
-    .filter((c) => isVehicleCard(state, c.cardId) && getDefinition(state.definitions, c.cardId)?.size === "S" && !ridden(state, enemyId, c.instanceId) && selectableEnemy(state, ctx.playerId, "RK-180", c))
+    .filter((c) => isVehicleCard(state, c.cardId) && unitSizeOf(state.definitions, c) === "S" && !ridden(state, enemyId, c.instanceId) && selectableEnemy(state, ctx.playerId, "RK-180", c))
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "rk180:no_targets" };
   return {
@@ -994,7 +994,7 @@ function applyJumboKick(state: GameState, ctx: GrantKeywordContext): GrantKeywor
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
       if (def?.type !== "unit" || rk1IsSmallNow(state, c)) return false;
-      if (def.size !== "L" && !(c.stackedCards ?? []).some((s) => s.cardId === "RK-013")) return false;
+      if (unitSizeOf(state.definitions, c) !== "L" && !(c.stackedCards ?? []).some((s) => s.cardId === "RK-013")) return false;
       if (!unitEffectiveCategories(state, enemyId, c, "battle").includes("DA")) return false;
       const cond = def.rushAdditionalCondition as { text?: string } | undefined;
       if ((cond?.text ?? "").includes("自軍合体ユニットを捨札にする")) return false;
