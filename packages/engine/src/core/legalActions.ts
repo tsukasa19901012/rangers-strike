@@ -1,4 +1,5 @@
 import { canUseKyouryuumaru } from "../rules/legend1/otherLinesNamedEffects";
+import { mirrorWorldChoiceAffordable } from "../rules/mirrorWorldSelection";
 import { lionArmorAvailable } from "../rules/legend1/set6NamedEffects348";
 import { runWithStateRng } from "./rng";
 import { engineSideEffectCount } from "./sideEffects";
@@ -1277,6 +1278,13 @@ function appendEffectChoiceActions(
 ): void {
   const pending = state.pendingEffectChoice;
   if (!pending || pending.playerId !== playerId) return;
+  // RK-016 ミラーワールド: ホールドするコマンドが足りない相手のユニットは選べない（rules/mirrorWorldSelection.ts）。
+  const choiceIds = pending.validInstanceIds.filter((id) => mirrorWorldChoiceAffordable(state, pending, id));
+  if (choiceIds.length === 0 && pending.validInstanceIds.length > 0 && !pending.mayConfirm) {
+    // 候補がすべて選べなくなった — 選ばずに終える。
+    actions.push({ type: "skip_effect_choice", playerId });
+    return;
+  }
 
   if (pending.optional || pending.effectId === "earth_force") {
     actions.push({ type: "skip_effect_choice", playerId });
@@ -1286,7 +1294,7 @@ function appendEffectChoiceActions(
   if (pending.mayConfirm) {
     actions.push({ type: "confirm_effect_choice", playerId });
     // 「行う」を選択肢（validInstanceIds）として選んでもよい（confirm と同じ）。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     return;
@@ -1294,7 +1302,7 @@ function appendEffectChoiceActions(
 
   if (isRk3ChoiceEffect(pending.effectId)) {
     // ライダーEXP vol.1 RK-043〜RK-063 の選択（rules/rk/rk3UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk3Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1303,7 +1311,7 @@ function appendEffectChoiceActions(
 
   if (isBk1ChoiceEffect(pending.effectId)) {
     // ベルトコレクション BK-001〜BK-019 の選択（rules/bk/bk1Effects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     return;
@@ -1311,7 +1319,7 @@ function appendEffectChoiceActions(
 
   if (isRm3ChoiceEffect(pending.effectId)) {
     // スペシャルメタルエディション RM-043〜RM-062 の選択（rules/rm/rm3Effects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRm3Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1320,7 +1328,7 @@ function appendEffectChoiceActions(
 
   if (isRm2ChoiceEffect(pending.effectId)) {
     // スペシャルメタルエディション RM-022〜RM-042 の選択（rules/rm/rm2Effects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRm2Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1329,7 +1337,7 @@ function appendEffectChoiceActions(
 
   if (isRm1ChoiceEffect(pending.effectId)) {
     // スペシャルメタルエディション RM-001〜RM-021 の選択（rules/rm/rm1Effects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRm1Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1338,7 +1346,7 @@ function appendEffectChoiceActions(
 
   if (isRk16ChoiceEffect(pending.effectId)) {
     // ザ・マスクドライダーEXP vol.4 RK-316〜RK-335 の選択（rules/rk/rk16UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk16Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1347,7 +1355,7 @@ function appendEffectChoiceActions(
 
   if (isRk15ChoiceEffect(pending.effectId)) {
     // ザ・マスクドライダーEXP vol.4 RK-295〜RK-315 の選択（rules/rk/rk15UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk15Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1356,7 +1364,7 @@ function appendEffectChoiceActions(
 
   if (isRk14ChoiceEffect(pending.effectId)) {
     // ザ・マスクドライダーEXP vol.4 RK-274〜RK-294 の選択（rules/rk/rk14UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk14Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1365,7 +1373,7 @@ function appendEffectChoiceActions(
 
   if (isRk13ChoiceEffect(pending.effectId)) {
     // ザ・マスクドライダーEXP vol.4 RK-253〜RK-273 の選択（rules/rk/rk13UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk13Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1374,7 +1382,7 @@ function appendEffectChoiceActions(
 
   if (isRk12ChoiceEffect(pending.effectId)) {
     // ザ・マスクドライダーEXP vol.3〜4 RK-232〜RK-252 の選択（rules/rk/rk12UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk12Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1383,7 +1391,7 @@ function appendEffectChoiceActions(
 
   if (isRk11ChoiceEffect(pending.effectId)) {
     // ザ・マスクドライダーEXP vol.3 RK-211〜RK-231 の選択（rules/rk/rk11UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk11Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1392,7 +1400,7 @@ function appendEffectChoiceActions(
 
   if (isRk10ChoiceEffect(pending.effectId)) {
     // ザ・マスクドライダーEXP vol.3 RK-190〜RK-210 の選択（rules/rk/rk10UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk10Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1401,7 +1409,7 @@ function appendEffectChoiceActions(
 
   if (isRk9ChoiceEffect(pending.effectId)) {
     // ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 の選択（rules/rk/rk9UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk9Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1410,7 +1418,7 @@ function appendEffectChoiceActions(
 
   if (isRk8ChoiceEffect(pending.effectId)) {
     // ライダーEXP vol.2 RK-148〜RK-168 の選択（rules/rk/rk8UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk8Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1419,7 +1427,7 @@ function appendEffectChoiceActions(
 
   if (isRk7ChoiceEffect(pending.effectId)) {
     // ライダーEXP vol.2 RK-127〜RK-147 の選択（rules/rk/rk7UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk7Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1428,7 +1436,7 @@ function appendEffectChoiceActions(
 
   if (isRk6ChoiceEffect(pending.effectId)) {
     // ライダーEXP vol.2 RK-106〜RK-126 の選択（rules/rk/rk6UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk6Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1437,7 +1445,7 @@ function appendEffectChoiceActions(
 
   if (isRk5ChoiceEffect(pending.effectId)) {
     // ライダーEXP vol.2 RK-085〜RK-105 の選択（rules/rk/rk5UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk5Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1446,7 +1454,7 @@ function appendEffectChoiceActions(
 
   if (isRk4ChoiceEffect(pending.effectId)) {
     // ライダーEXP RK-064〜RK-084 の選択（rules/rk/rk4UnitEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRk4Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1455,7 +1463,7 @@ function appendEffectChoiceActions(
 
   if (isRk1ChoiceEffect(pending.effectId) || isRk2ChoiceEffect(pending.effectId)) {
     // ライダーEXP vol.1 RK-001〜RK-021 の選択（rules/rk/rk1NamedEffects.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     return;
@@ -1463,7 +1471,7 @@ function appendEffectChoiceActions(
 
   if (pending.effectId === FIRE_DANCE_EFFECT_ID) {
     // RS-159【ファイヤーダンス】「敵軍ダメージの数まで選んで」— 1つずつ選び、少なくても確定できる。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     actions.push({ type: "confirm_effect_choice", playerId });
@@ -1498,7 +1506,7 @@ function appendEffectChoiceActions(
   }
 
   if (pending.kind === "declare_number") {
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     return;
@@ -1510,7 +1518,7 @@ function appendEffectChoiceActions(
     isSet5AConfirmableChoice(pending) ||
     isSet6AuditConfirmableChoice(pending.effectId)
   ) {
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     actions.push({ type: "confirm_effect_choice", playerId });
@@ -1520,7 +1528,7 @@ function appendEffectChoiceActions(
   if (isSet8AChoiceEffect(pending.effectId)) {
     // 第8弾 RS-516〜RS-537 の選択（rules/legend1/set8NamedEffectsA.ts）。候補はモジュール側で絞り込み済み。
     const selected = pending.selectedInstanceIds ?? [];
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       if (selected.includes(instanceId)) continue;
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
@@ -1530,7 +1538,7 @@ function appendEffectChoiceActions(
 
   if (isSet9AChoiceEffect(pending.effectId)) {
     // 第9弾 RS-605〜RS-626 の選択（rules/legend1/set9NamedEffectsA.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmSet9AChoice(state, pending)) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1539,7 +1547,7 @@ function appendEffectChoiceActions(
 
   if (isSet9BChoiceEffect(pending.effectId)) {
     // 第9弾 RS-627〜RS-647 の選択（rules/legend1/set9NamedEffectsB.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmSet9BChoice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1548,7 +1556,7 @@ function appendEffectChoiceActions(
 
   if (isSet8CChoiceEffect(pending.effectId)) {
     // 第8弾 RS-560〜RS-581 の選択（rules/legend1/set8NamedEffectsC.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmSet8CChoice(state, pending)) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1557,7 +1565,7 @@ function appendEffectChoiceActions(
 
   if (isSet9CChoiceEffect(pending.effectId)) {
     // 第9弾 RS-648〜RS-669 の選択（rules/legend1/set9NamedEffectsC.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmSet9CChoice(state, pending)) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1566,7 +1574,7 @@ function appendEffectChoiceActions(
 
   if (isSet7AChoiceEffect(pending.effectId)) {
     // 第7弾 RS-432〜RS-452 の選択（rules/legend1/set7NamedEffectsA.ts）。候補はモジュール側で絞り込み済み。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (isSet7AConfirmableChoice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
@@ -1575,7 +1583,7 @@ function appendEffectChoiceActions(
 
   if (pending.kind === "select_commands" && pending.effectId === SCRAMBLE_EFFECT_ID) {
     // RS-446【スクランブル】「3枚まで」— 1枚以上選べば、少なくても確定できる。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if ((pending.selectedInstanceIds ?? []).length > 0) {
@@ -1587,7 +1595,7 @@ function appendEffectChoiceActions(
   // 第7弾（rules/legend1/set7NamedEffectsB.ts）の「…まで選ぶ」選択: 1つずつ選び、1つ以上選んだら確定できる。
   if (isSet7BConfirmableChoice(pending)) {
     const selected = pending.selectedInstanceIds ?? [];
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       if (selected.includes(instanceId)) continue;
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
@@ -1599,7 +1607,7 @@ function appendEffectChoiceActions(
     // RS-472【現場への搬送】: 山札から1枚ずつ選んで置き、1枚以上置いたら確定できる（見送りは optional の skip）。
     const selected = pending.selectedInstanceIds ?? [];
     const deck = state.players[playerId].deck;
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       if (selected.includes(instanceId) || !deck.some((c) => c.instanceId === instanceId)) continue;
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
@@ -1608,7 +1616,7 @@ function appendEffectChoiceActions(
   }
 
   if (pending.kind === "select_commands" && pending.siteTransportMeta?.step === "discard") {
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     actions.push({ type: "confirm_effect_choice", playerId });
@@ -1617,7 +1625,7 @@ function appendEffectChoiceActions(
 
   if (pending.kind === "shiron_light") {
     if (pending.shironLightMeta?.step === "pick") {
-      for (const instanceId of pending.validInstanceIds) {
+      for (const instanceId of choiceIds) {
         actions.push({ type: "resolve_effect_choice", playerId, instanceId });
       }
       return;
@@ -1635,7 +1643,7 @@ function appendEffectChoiceActions(
       return;
     }
     if (pending.denjiMachineMeta?.step === "order_bottom") {
-      for (const instanceId of pending.validInstanceIds) {
+      for (const instanceId of choiceIds) {
         actions.push({ type: "resolve_effect_choice", playerId, instanceId });
       }
       return;
@@ -1645,7 +1653,7 @@ function appendEffectChoiceActions(
 
   if (pending.effectId === "hi_honoo_ha" && pending.sourceCardId === "RS-205" && !pending.mayConfirm) {
     // RS-205【天火星・稲妻炎上破】「好きな数ホールドしてもよい」— 1つずつ選び、少なくても確定できる。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if ((pending.selectedInstanceIds ?? []).length > 0) {
@@ -1656,7 +1664,7 @@ function appendEffectChoiceActions(
 
   if (pending.effectId === "assault_vector_destroy") {
     // RS-181 破邪百獣剣「カテゴリの数まで好きな数選び」— 1体ずつ選び、少なくても確定できる。
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       if (!isValidEffectChoiceTarget(state, pending, instanceId)) continue;
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
@@ -1667,7 +1675,7 @@ function appendEffectChoiceActions(
   }
 
   if (pending.kind === "select_units_bp_budget") {
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       if (canToggleBpBudgetTarget(state, pending, instanceId)) {
         actions.push({ type: "resolve_effect_choice", playerId, instanceId });
       }
@@ -1676,7 +1684,7 @@ function appendEffectChoiceActions(
     return;
   }
 
-  for (const instanceId of pending.validInstanceIds) {
+  for (const instanceId of choiceIds) {
     if (!isValidEffectChoiceTarget(state, pending, instanceId)) continue;
     actions.push({ type: "resolve_effect_choice", playerId, instanceId });
   }

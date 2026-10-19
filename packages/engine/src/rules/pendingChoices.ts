@@ -154,6 +154,7 @@ import { isRk6ChoiceEffect, tryConfirmRk6Choice, tryResolveRk6Choice, trySkipRk6
 import { rk6CommandHoldBlocked } from "./rk/rk6Fields";
 import { isRk7ChoiceEffect, tryConfirmRk7Choice, tryResolveRk7Choice, trySkipRk7Choice } from "./rk/rk7UnitEffects";
 import { rk1IsSmallNow } from "./rk/rk1Features";
+import { mirrorWorldChoiceAffordable } from "./mirrorWorldSelection";
 import { isRk8ChoiceEffect, tryConfirmRk8Choice, tryResolveRk8Choice, trySkipRk8Choice } from "./rk/rk8UnitEffects";
 import { isRk9ChoiceEffect, tryConfirmRk9Choice, tryResolveRk9Choice, trySkipRk9Choice } from "./rk/rk9UnitEffects";
 import { isRk10ChoiceEffect, tryConfirmRk10Choice, tryResolveRk10Choice, trySkipRk10Choice } from "./rk/rk10UnitEffects";
@@ -640,6 +641,8 @@ export function isValidEffectChoiceTarget(
     );
   }
   if (!pending.validInstanceIds.includes(instanceId)) return false;
+  // RK-016 ミラーワールド: 相手が選ぶには自分自身のコマンドをホールドしなければならない（払えなければ選べない。rules/mirrorWorldSelection.ts）。
+  if (!mirrorWorldChoiceAffordable(state, pending, instanceId)) return false;
 
   if (
     isEffectRushChoice(pending) ||

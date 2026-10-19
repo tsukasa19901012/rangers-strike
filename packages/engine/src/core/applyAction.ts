@@ -1,4 +1,5 @@
 import { noteEngineSideEffect } from "./sideEffects";
+import { payMirrorWorldSelection } from "../rules/mirrorWorldSelection";
 import { memoizeInSearch } from "./searchCache";
 import { isInstancePlacedAnywhere } from "./helpers";
 import { rk6RecordSnakeSelected } from "../rules/rk/rk6Fields";
@@ -3125,6 +3126,12 @@ function applyActionCore(
     }
 
     case "resolve_effect_choice": {
+      {
+        // RK-016 ミラーワールド: 相手のユニットを選ぶとき、自分自身のコマンドをホールドする（払えなければ選べない。rules/mirrorWorldSelection.ts）。
+        const paid = payMirrorWorldSelection(state, playerId, action.instanceId);
+        if (!paid) return fail("invalid_target");
+        state = paid;
+      }
       {
         const crane = rk10CraneIntercept(state, playerId, action);
         if (crane) return ok(crane, buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId));

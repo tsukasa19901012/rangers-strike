@@ -306,6 +306,44 @@ describe("RK-016 ミラーワールド", () => {
     expect(attackersOf(s, "SPEC-MIRROR:u")).toEqual([]);
   });
 
+  // ユーザー決定 2026-10-19（docs/rules/README.md §5.7 q）: 相手がこのユニットを「選ぶ」効果はすべて、自分自身のコマンドをホールドしなければ
+  // 選べない（払えなければ候補にならない）。RK-019 音撃・RS-288 だけでなく、汎用の効果の選択（rules/mirrorWorldSelection.ts）でも。
+  /** player1 が RS-245 ガオメインバスター（「敵軍Sユニットを1体選び撃破する」。WB のコマンドを1つホールドして使う）を使う。 */
+  const gaoMain = (commands: number, stacked: CardInstance[] = [inst("SPEC-MIRROR", "stk")]) =>
+    played(
+      rushBoard(
+        { hand: [inst("RS-245", "gm")], command: releasedCat("WB", commands), power: powerCards(5) },
+        { operation: [mirror(stacked)], rush: [inst("SPEC-MIRROR", "u"), inst("TST-UNIT-0", "x")] },
+      ),
+      "RS-245:gm",
+    );
+
+  it("RK-016: 相手の効果で選ぶとき — ホールドできる自分自身のコマンドがなければ、能力を得たユニットは選べない（ユーザー決定 2026-10-19。出典: atwiki/page-176「相手は自分自身のコマンドを1つホールドしなければ、このユニットを選べない」・RS-245「敵軍Sユニットを1体選び撃破する」）", () => {
+    const s = gaoMain(1);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-245");
+    const pickable = legal(s).filter((a) => a.type === "resolve_effect_choice").map((a) => (a as { instanceId: string }).instanceId);
+    expect(pickable).toEqual(["TST-UNIT-0:x"]);
+    expect(() => act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "SPEC-MIRROR:u" })).toThrow();
+  });
+
+  it("RK-016: 相手の効果で選ぶとき — リリース状態の自分自身のコマンドがあれば選べ、選ぶとそれを1つホールドする（ユーザー決定 2026-10-19。出典: atwiki/page-176）", () => {
+    let s = gaoMain(2);
+    const pickable = legal(s).filter((a) => a.type === "resolve_effect_choice").map((a) => (a as { instanceId: string }).instanceId);
+    expect(pickable.sort()).toEqual(["SPEC-MIRROR:u", "TST-UNIT-0:x"]);
+    expect(s.players.player1.command.filter((c) => !c.commandHeld)).toHaveLength(1);
+    s = resolveAll(pick(s, "SPEC-MIRROR:u"));
+    expect(s.players.player1.command.filter((c) => !c.commandHeld)).toHaveLength(0);
+    expect(zoneOf(s, "player2", "SPEC-MIRROR:u")).toBe("discard");
+  });
+
+  it("RK-016: 相手の効果で選ぶとき — 同名を2枚重ねていれば2つホールドしなければ選べない（能力は重複する）（ユーザー決定 2026-10-19。出典: atwiki/page-176・grnrngr/faq-rider-1 RK-016 Q3）", () => {
+    const two = [inst("SPEC-MIRROR", "stk"), inst("SPEC-MIRROR", "stk2")];
+    const pickableWith = (n: number) =>
+      legal(gaoMain(n, two)).filter((a) => a.type === "resolve_effect_choice").map((a) => (a as { instanceId: string }).instanceId);
+    expect(pickableWith(2)).toEqual(["TST-UNIT-0:x"]);
+    expect(pickableWith(3).sort()).toEqual(["SPEC-MIRROR:u", "TST-UNIT-0:x"]);
+  });
+
   it.todo(
     "RK-016: 公式Q&A — ギンガベリック等でコマンドのホールドを代替できればアタックできる（出典: atwiki/page-176 Q5）— RS-469 ギンガベリックの代替手順が本範囲外のため",
   );
