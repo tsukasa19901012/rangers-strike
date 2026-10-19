@@ -29,6 +29,7 @@ import { autoHoldForBattleEntry, canMoveUnitToBattle, clearEffectBattleEntryWind
 import { startEffectRush } from "../effectRush";
 import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
 import { rk1IsSmallNow } from "./rk1Features";
+import { recordReveal, revealedCards } from "../revealNotice";
 import { APOLLO_SP_RULE, BLAST_PEGASUS_RULE } from "./rk5Fields";
 
 // ---------------------------------------------------------------------------
@@ -478,6 +479,17 @@ function runBoardingRefusal(state: GameState, owners: PlayerId[], template: Pend
       deck: p.deck.filter((c) => !trainIds.has(c.instanceId)),
       power: [...p.power, ...trains.map((c) => stripForZone(c))],
     }));
+    // 「オモテにして相手に見せる」— 両プレイヤーに公開する。車両の M ユニットはパワーゾーン、それ以外は山札の下。
+    if (revealed.length > 0) {
+      next = recordReveal(next, {
+        playerId: owner,
+        ownerId: owner,
+        sourceCardId: template.sourceCardId,
+        effectLabel: "乗車拒否",
+        from: "deck_top",
+        cards: revealedCards(revealed, (c) => (trainIds.has(c.instanceId) ? "power" : "deck_bottom")),
+      });
+    }
     const others = revealed.filter((c) => !trainIds.has(c.instanceId)).map((c) => c.instanceId);
     if (others.length === 1) next = deckTopToBottom(next, owner, others[0]!);
     if (others.length >= 2) {

@@ -36,6 +36,7 @@ import { finalizeEffectRush } from "../../events/emitUnitRushed";
 import { applyDamageToPlayer } from "../damagePayment";
 import { resolveBattlePending } from "../operationCounters";
 import { rk1IsSmallNow } from "./rk1Features";
+import { recordReveal, revealedCards } from "../revealNotice";
 import { RK10_GARAI_SP1_RULE, rk10HasInstancePayload, rk10UnitHasResist } from "./rk10Fields";
 
 // ---------------------------------------------------------------------------
@@ -296,6 +297,17 @@ CHOICE_CONFIRMERS[FOG_MOTHER_EFFECT_ID] = (state, playerId) => {
   const deck = next.players[playerId].deck;
   const shown = deck.slice(0, 2);
   const log = logFor(state, playerId, "RK-190", `${FOG_MOTHER_EFFECT_ID}:${shown.map((c) => cardName(state.definitions, c.cardId)).join(",")}`);
+  // オモテにした2枚は公開情報。最後に山札に戻してシャッフルする。
+  if (shown.length > 0) {
+    next = recordReveal(next, {
+      playerId,
+      ownerId: playerId,
+      sourceCardId: pending.sourceCardId,
+      effectLabel: "孵化を迎える厄災",
+      from: "deck_top",
+      cards: revealedCards(shown, "deck_shuffle"),
+    });
+  }
   if (shown.length < 2) return { state: proceed(reshuffleDeck(next, playerId), pending), log };
   const cats = categoriesOfCard(next, shown[0]!.cardId);
   const num = costNumber(next, shown[1]!.cardId);

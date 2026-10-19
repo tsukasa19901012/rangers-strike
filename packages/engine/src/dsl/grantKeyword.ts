@@ -23,6 +23,7 @@ import {
   unitSizeOf,
 } from "../core/catalog";
 import { findInZone, opponent, takeFromDeckTop, updatePlayer } from "../core/helpers";
+import { recordReveal } from "../rules/revealNotice";
 import { findOwnUnit } from "../core/modifiers";
 import { tryLeaveField } from "../rules/operationCounters";
 import { startKurokoMemory } from "../rules/kurokoMemory";
@@ -363,6 +364,16 @@ function resolveJudgmentKeyword(
       deck: [...restDeck, revealed],
     }),
   };
+  // オモテにしたカードは公開情報。同じサイズなら撃破し、どちらでもその後、山札の下に戻す。
+  nextState = recordReveal(nextState, {
+    playerId: ctx.playerId,
+    ownerId: ctx.playerId,
+    sourceCardId: ctx.sourceCardId,
+    effectLabel: cardName(state.definitions, ctx.sourceCardId),
+    from: "deck_top",
+    matched: matches,
+    cards: [{ instanceId: revealed.instanceId, cardId: revealed.cardId, destination: "deck_bottom" }],
+  });
 
   if (matches) {
     const leaveResult = tryLeaveField(nextState, {

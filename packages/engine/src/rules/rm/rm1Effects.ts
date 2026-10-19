@@ -32,6 +32,7 @@ import { patchPlayer } from "../playerPatches";
 import { KIRIGAKURE_RULE_ID, addTurnFeatureModifier, unitFeatures } from "../addedFeatures";
 import { startEffectRush } from "../effectRush";
 import { applyDamageToPlayer } from "../damagePayment";
+import { recordReveal, revealedCards } from "../revealNotice";
 import { rk1IsSmallNow } from "../rk/rk1Features";
 import { rk1LeaveCounterConditionMet, rk1OngekiMarked } from "../rk/rk1NamedEffects";
 import { rk11KyosukeTreatsAsWritten } from "../rk/rk11Fields";
@@ -434,6 +435,18 @@ function applyKyoju(state: GameState, ctx: GrantKeywordContext): GrantKeywordRes
     });
   }
   next = shuffleDeck(next, enemyId);
+  // オモテにしたカードは公開情報。「獣」「恐竜」のユニットカードは持ち主のラッシュエリア、それ以外は山札に戻してシャッフルする。
+  if (revealed.length > 0) {
+    const beastIds = new Set(beasts.map((c) => c.instanceId));
+    next = recordReveal(next, {
+      playerId: pid,
+      ownerId: enemyId,
+      sourceCardId: ctx.sourceCardId,
+      effectLabel: "巨獣特捜",
+      from: "deck_top",
+      cards: revealedCards(revealed, (c) => (beastIds.has(c.instanceId) ? "rush" : "deck_shuffle")),
+    });
+  }
   const log = `rm004:revealed:${revealed.length}:beasts:${beasts.length}`;
   if (beasts.length === 0) return { state: next, detail: log };
   const ids = next.players[pid].deck

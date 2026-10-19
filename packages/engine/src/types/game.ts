@@ -430,6 +430,8 @@ export type RevealDestination =
   | "rush"
   | "power"
   | "command"
+  /** 山札に戻してシャッフルした（「山札に戻してシャッフルする」）。 */
+  | "deck_shuffle"
   | "stay";
 
 /** 公開されたカード 1 枚分の記録（両プレイヤーが見られる公開情報）。 */
@@ -437,6 +439,8 @@ export type RevealedCardNotice = {
   instanceId: string;
   cardId: string;
   destination: RevealDestination;
+  /** カードの持ち主（お互いの山札をオモテにする効果で RevealNotice.ownerId と違うとき）。省略時は RevealNotice.ownerId。 */
+  ownerId?: PlayerId;
 };
 
 /**
@@ -455,7 +459,7 @@ export type RevealNotice = {
   /** 効果名（例: 潜行捜索）。 */
   effectLabel: string;
   /** どこから公開したか。 */
-  from: "deck_top" | "deck_bottom" | "hand" | "power";
+  from: "deck_top" | "deck_bottom" | "hand" | "power" | "discard";
   /** 数字を宣言した効果なら宣言した数字。 */
   declaredNumber?: number;
   /** 条件に一致したか（一致で行き先が変わる効果のみ）。 */

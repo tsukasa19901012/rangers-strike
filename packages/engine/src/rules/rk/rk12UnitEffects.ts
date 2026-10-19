@@ -33,6 +33,7 @@ import { finalizeLeaveReaction } from "../operationCounters";
 import { IMAGIN_DESTROY_ON_ENTER_SUPPRESSED } from "../destroyOnEnterBattle";
 import { registerTagResident, tagEntryChoice } from "../legend1/set8NamedEffectsA";
 import { rk1IsSmallNow, isStackedUnderUnitOperation } from "./rk1Features";
+import { recordReveal, revealedCards } from "../revealNotice";
 import {
   RK12_CLIMAX_POLICE_RULE,
   RK12_PARADISE_LOST_RULE,
@@ -1347,7 +1348,17 @@ CHOICE_RESOLVERS[ONKAKU_EFFECT_ID] = (state, playerId, mode) => {
   }
   const enemyId = opponent(playerId);
   const top = cleared.players[enemyId].deck[0];
-  let next = cleared;
+  // オモテにした敵軍山札の上のカードは公開情報。その後、持ち主の山札の上に戻す（位置は変わらない）。
+  let next = top
+    ? recordReveal(cleared, {
+        playerId,
+        ownerId: enemyId,
+        sourceCardId: pending.sourceCardId,
+        effectLabel: "変身音叉 音角",
+        from: "deck_top",
+        cards: revealedCards([top], "deck_top"),
+      })
+    : cleared;
   const draw = paidHasFeature(cleared, playerId, pending.rk12Meta?.paid ?? [], "ディスクアニマル");
   if (draw) next = requestDrawFromDeck(next, playerId, pending.phasePlayerId, { count: 1, sourceCardId: "RK-252" }).state;
   return {

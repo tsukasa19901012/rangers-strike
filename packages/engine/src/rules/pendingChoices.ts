@@ -5596,6 +5596,17 @@ export function applyEffectChoiceSelect(
         }
         const { hasSpUnit, top3 } = scryTop3ForSagasSpear(state, deckOwnerId);
         let nextState = applySagasSpearScryReturn(state, deckOwnerId, top3, top3);
+        // RS-585【サガスピアー】: オモテにした3枚は公開情報。その後、持ち主が相手に見せずに山札の上に戻す。
+        nextState = recordReveal(nextState, {
+          playerId: pending.playerId,
+          ownerId: deckOwnerId,
+          sourceCardId: pending.sourceCardId,
+          effectLabel: "サガスピアー",
+          from: "deck_top",
+          cards: deckOwner.deck
+            .filter((c) => top3.includes(c.instanceId))
+            .map((c) => ({ instanceId: c.instanceId, cardId: c.cardId, destination: "deck_top" as const })),
+        });
         if (hasSpUnit && pending.sourceInstanceId) {
           const owner = nextState.players[pending.playerId];
           nextState = {

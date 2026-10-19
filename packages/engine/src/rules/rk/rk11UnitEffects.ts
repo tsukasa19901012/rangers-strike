@@ -31,6 +31,8 @@ import { applyDamageToPlayer } from "../damagePayment";
 import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
 import { RIDE_OFF_RC_MARK } from "../legend1/set7NamedEffectsD";
 import { rk1IsSmallNow } from "./rk1Features";
+import { recordReveal, revealedCards } from "../revealNotice";
+import type { RevealedCardNotice } from "../../types/game";
 import {
   RK11_DRAGONFLY_RULE,
   RK11_LIZARD_RULE,
@@ -704,13 +706,28 @@ CHOICE_CONFIRMERS[SHIPPU_EFFECT_ID] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;
   let next = close(state, pending);
   const names: string[] = [];
+  const revealed: RevealedCardNotice[] = [];
   for (const pid of [playerId, opponent(playerId)]) {
     next = patchPlayer(next, pid, (p) => {
       const shown = p.deck.slice(0, 3);
       names.push(...shown.map((c) => cardName(state.definitions, c.cardId)));
+      revealed.push(
+        ...revealedCards(shown, (c) => (isSp1SUnitCard(state, c.cardId) ? "discard" : "deck_shuffle")).map((c) => ({ ...c, ownerId: pid })),
+      );
       const discarded = shown.filter((c) => isSp1SUnitCard(state, c.cardId));
       const back = shown.filter((c) => !isSp1SUnitCard(state, c.cardId));
       return { ...p, deck: shuffleCards([...back, ...p.deck.slice(3)]), discard: [...p.discard, ...discarded.map(stripForZone)] };
+    });
+  }
+  // お互いにオモテにした最大6枚は公開情報。1つの公開として記録する。
+  if (revealed.length > 0) {
+    next = recordReveal(next, {
+      playerId,
+      ownerId: playerId,
+      sourceCardId: pending.sourceCardId,
+      effectLabel: "音撃射・疾風一閃",
+      from: "deck_top",
+      cards: revealed,
     });
   }
   return { state: proceed(next, pending), log: logFor(state, playerId, "RK-223", `${SHIPPU_EFFECT_ID}:${names.join(",")}`) };

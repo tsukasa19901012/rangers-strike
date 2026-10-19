@@ -41,6 +41,7 @@ import { applyDamageToPlayer } from "../damagePayment";
 import { wasRushedThisTurn } from "../turnModifiers";
 import { addBakiBakiExtraAttack } from "../turnModifierBridge";
 import { rk1IsSmallNow } from "./rk1Features";
+import { recordReveal, revealedCards } from "../revealNotice";
 import { rk1ResidentLeaving } from "./rk1NamedEffects";
 import {
   RK9_CONTRACT_RULE,
@@ -426,7 +427,16 @@ export function applyRk9RuriOokami(state: GameState, defenderId: PlayerId, battl
     deck: shuffleCards(p.deck.filter((c) => !takenIds.has(c.instanceId))),
     hand: [...p.hand, ...taken.map(stripForZone)],
   }));
-  return { state: next, cancel: taken.length > 0, detail: `ruri_ookami:${taken.length}` };
+  // オモテにした3枚は公開情報。条件を満たすカードは手札、それ以外は山札に戻してシャッフルする。
+  const revealedState = recordReveal(next, {
+    playerId: defenderId,
+    ownerId: defenderId,
+    sourceCardId: RURI_OOKAMI_CARD_ID,
+    effectLabel: "ルリオオカミ",
+    from: "deck_top",
+    cards: revealedCards(revealed, (c) => (takenIds.has(c.instanceId) ? "hand" : "deck_shuffle")),
+  });
+  return { state: revealedState, cancel: taken.length > 0, detail: `ruri_ookami:${taken.length}` };
 }
 
 // ---------------------------------------------------------------------------
@@ -971,6 +981,15 @@ CHOICE_CONFIRMERS[RED_DORAS_ABSORB_EFFECT_ID] = (state, playerId) => {
   let next = close(state, pending);
   if (!bottom) return { state: proceed(next, pending) };
   const log = logFor(state, playerId, "RK-185", `${RED_DORAS_ABSORB_EFFECT_ID}:${cardName(state.definitions, bottom.cardId)}`);
+  // オモテにした敵軍山札の下のカードは公開情報。最後に持ち主の山札の下に戻す（位置は変わらない）。
+  next = recordReveal(next, {
+    playerId,
+    ownerId: enemyId,
+    sourceCardId: pending.sourceCardId,
+    effectLabel: "合体吸収",
+    from: "deck_bottom",
+    cards: revealedCards([bottom], "deck_bottom"),
+  });
   const def = getDefinition(state.definitions, bottom.cardId);
   const selfId = pending.sourceInstanceId;
   const self = selfId ? next.players[playerId].battle.find((c) => c.instanceId === selfId) : undefined;

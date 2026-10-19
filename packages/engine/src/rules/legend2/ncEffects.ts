@@ -25,6 +25,7 @@ import { addNextTurnRuleModifier, addTurnRuleModifier } from "../../core/scopedM
 import { canBeDeployedToBattleByEffect } from "../restrictions";
 import { TURN_RULE_IDS } from "../../types/scopedModifiers";
 import type { ComboOutcome } from "../comboTypes";
+import { recordReveal } from "../revealNotice";
 
 function ncLog(
   playerId: PlayerId,
@@ -71,11 +72,25 @@ function applyCompetition(
     nextP2 = { ...p2, deck: [c2!, ...d2] };
   }
 
-  return {
-    state: {
-      ...state,
-      players: { ...state.players, [playerId]: nextP1, [enemyId]: nextP2 },
+  // お互いにオモテにした1枚ずつは公開情報。大きい方は手札、小さい方は山札の下、同じなら山札の上。
+  const dest = (mine: number, theirs: number) =>
+    mine > theirs ? "hand" : mine < theirs ? "deck_bottom" : "deck_top";
+  const revealedState = recordReveal(
+    { ...state, players: { ...state.players, [playerId]: nextP1, [enemyId]: nextP2 } },
+    {
+      playerId,
+      ownerId: playerId,
+      sourceCardId: card.cardId,
+      effectLabel: "競争",
+      from: "deck_top",
+      cards: [
+        { instanceId: c1!.instanceId, cardId: c1!.cardId, destination: dest(n1, n2), ownerId: playerId },
+        { instanceId: c2!.instanceId, cardId: c2!.cardId, destination: dest(n2, n1), ownerId: enemyId },
+      ],
     },
+  );
+  return {
+    state: revealedState,
     logs: [ncLog(playerId, card.cardId, state.definitions, "competition")],
   };
 }

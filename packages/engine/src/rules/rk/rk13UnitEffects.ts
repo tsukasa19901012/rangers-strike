@@ -33,6 +33,7 @@ import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
 import { finishForeignTagBold, registerForeignTagBold, registerTagResident } from "../legend1/set8NamedEffectsA";
 import { turnPlayerOf } from "../legend1/set6NamedEffectsB";
 import { rk1IsSmallNow, rk1ZoneCardFeatures } from "./rk1Features";
+import { recordReveal, revealedCards } from "../revealNotice";
 import {
   RK13_FEMALE_DESTROYED_RULE,
   RK13_KICK_RULE,
@@ -793,6 +794,15 @@ function applyTarot(state: GameState, ctx: GrantKeywordContext): GrantKeywordRes
   if (!top) return { state, detail: "rk259:empty_deck" };
   const n = costNumber(state, top.cardId);
   let next = patchPlayer(state, ctx.playerId, (p) => ({ ...p, deck: [...p.deck.slice(1), p.deck[0]!] }));
+  // オモテにしたカードは公開情報。山札の下に戻す。
+  next = recordReveal(next, {
+    playerId: ctx.playerId,
+    ownerId: ctx.playerId,
+    sourceCardId: ctx.sourceCardId,
+    effectLabel: "トランプ占い",
+    from: "deck_top",
+    cards: revealedCards([top], "deck_bottom"),
+  });
   next = { ...next, log: [...next.log, buildLogEntry(ctx.playerId, "reveal", "RK-259", state.definitions, `rk259_tarot:${cardName(state.definitions, top.cardId)}:${Number.isFinite(n) ? n : "none"}`)] };
   if (n === 1 || n === 3 || n === 5) {
     next = patchFieldCard(next, ctx.playerId, id, (c) => ({ ...c, bpModifier: (c.bpModifier ?? 0) + 4000 }));
@@ -975,8 +985,21 @@ CHOICE_RESOLVERS[SCOUT_PLACE_EFFECT_ID] = (state, playerId, where) => {
   const pending = state.pendingEffectChoice!;
   const enemyId = opponent(playerId);
   let next = close(state, pending);
-  if (where === DECK_BOTTOM && next.players[enemyId].deck[0]?.instanceId === pending.rk13Meta?.target) {
+  const scouted = next.players[enemyId].deck[0];
+  const onTop = scouted?.instanceId === pending.rk13Meta?.target;
+  if (where === DECK_BOTTOM && onTop) {
     next = patchPlayer(next, enemyId, (p) => ({ ...p, deck: [...p.deck.slice(1), p.deck[0]!] }));
+  }
+  // オモテにした敵軍山札の上のカードは公開情報。戻す場所を選んだところで記録する。
+  if (scouted && onTop) {
+    next = recordReveal(next, {
+      playerId,
+      ownerId: enemyId,
+      sourceCardId: pending.sourceCardId,
+      effectLabel: "偵察",
+      from: "deck_top",
+      cards: revealedCards([scouted], where === DECK_BOTTOM ? "deck_bottom" : "deck_top"),
+    });
   }
   return { state: proceed(next, pending), log: logFor(state, playerId, "RK-270", `${SCOUT_PLACE_EFFECT_ID}:${where}`) };
 };

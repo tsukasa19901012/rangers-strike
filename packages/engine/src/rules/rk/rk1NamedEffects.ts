@@ -34,6 +34,7 @@ import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
 import { RIDE_OFF_RC_MARK } from "../legend1/set7NamedEffectsD";
 import { J_POWER_CARD_ID, hasJPower, isStackedUnderUnitOperation, rk1AddedUnitFeatures, rk1IsSmallNow, rk1ZoneCardFeatures } from "./rk1Features";
 import { rk2FeaturesStripped } from "./rk2Features";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 export { J_POWER_CARD_ID, hasJPower, rk1AddedUnitFeatures, rk1IsSmallNow, rk1ZoneCardFeatures };
 
@@ -643,7 +644,16 @@ export function applyRk1TurnEndResident(state: GameState, ownerId: PlayerId, opC
   if (ownerId !== endingPlayerId) return state;
   const top = state.players[ownerId].deck[0];
   if (!top || top.hybridRevealed) return state;
-  return patchPlayer(state, ownerId, (p) => ({ ...p, deck: [{ ...top, hybridRevealed: true }, ...p.deck.slice(1)] }));
+  const flipped = patchPlayer(state, ownerId, (p) => ({ ...p, deck: [{ ...top, hybridRevealed: true }, ...p.deck.slice(1)] }));
+  // オモテにしたカードは公開情報。オモテのまま山札の上に置いておく。
+  return recordReveal(flipped, {
+    playerId: ownerId,
+    ownerId,
+    sourceCardId: HYBRID_CARD_ID,
+    effectLabel: "ハイブリッドエネルギー",
+    from: "deck_top",
+    cards: revealedCards([top], "stay"),
+  });
 }
 
 function hybridRevealedTop(state: Pick<GameState, "players">, playerId: PlayerId): CardInstance | undefined {

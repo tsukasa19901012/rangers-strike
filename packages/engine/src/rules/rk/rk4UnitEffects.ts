@@ -26,6 +26,7 @@ import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEf
 import { addBakiBakiExtraAttack } from "../turnModifierBridge";
 import { filterEffectRushCandidates, startEffectRush } from "../effectRush";
 import { rk1IsSmallNow } from "./rk1Features";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -662,8 +663,18 @@ function applyTrickVent(state: GameState, ctx: GrantKeywordContext): GrantKeywor
   }
   // 出し終えたら（追加条件の素材を選ぶ選択が残っていても）、出さなかったオモテのカードを捨札にする。
   const stillRushing = new Set(next.pendingEffectRush?.queue ?? []);
+  const discarded = discardRevealed(next, pid, revealed.map((c) => c.instanceId).filter((id) => !stillRushing.has(id)));
+  // オモテにした3枚は公開情報。両プレイヤーの UI が見られるよう記録する。
+  const inRushOrQueue = new Set([...stillRushing, ...discarded.players[pid].rush.map((c) => c.instanceId)]);
   return {
-    state: discardRevealed(next, pid, revealed.map((c) => c.instanceId).filter((id) => !stillRushing.has(id))),
+    state: recordReveal(discarded, {
+      playerId: pid,
+      ownerId: pid,
+      sourceCardId: ctx.sourceCardId,
+      effectLabel: "トリックベント",
+      from: "deck_top",
+      cards: revealedCards(revealed, (c) => (inRushOrQueue.has(c.instanceId) ? "rush" : "discard")),
+    }),
     detail: `${TRICK_VENT_EFFECT_ID}:${rushable.length}`,
   };
 }

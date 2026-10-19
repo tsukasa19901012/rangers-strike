@@ -14,6 +14,7 @@ const DESTINATION_LABELS: Record<RevealDestination, string> = {
   rush: "ラッシュエリアに出した",
   power: "パワーゾーンに置いた",
   command: "コマンドゾーンに置いた",
+  deck_shuffle: "山札に戻してシャッフルした",
   stay: "そのまま",
 };
 
@@ -22,6 +23,7 @@ const FROM_LABELS: Record<RevealNotice["from"], string> = {
   deck_bottom: "山札の下",
   hand: "手札",
   power: "パワーゾーン",
+  discard: "捨札",
 };
 
 export type RevealNoticeCardView = {
@@ -66,7 +68,14 @@ export function buildRevealNoticeView(
   viewerId: PlayerId,
 ): RevealNoticeView {
   const actor = reveal.playerId === viewerId ? "自分" : "相手";
-  const owner = reveal.ownerId === reveal.playerId ? "" : reveal.ownerId === viewerId ? "自分の" : "相手の";
+  const mutual = reveal.cards.some((c) => c.ownerId !== undefined && c.ownerId !== reveal.ownerId);
+  const owner = mutual
+    ? "お互いの"
+    : reveal.ownerId === reveal.playerId
+      ? ""
+      : reveal.ownerId === viewerId
+        ? "自分の"
+        : "相手の";
   const count = reveal.cards.length;
   const summary = `${actor}が${owner}${FROM_LABELS[reveal.from]}から${count}枚オモテにしました`;
   let declaredText: string | undefined;

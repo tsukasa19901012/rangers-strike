@@ -43,6 +43,7 @@ import { startDenjiMachineChoice } from "../rules/denjiMachine";
 import { tryResolveP0OperationEffect } from "./p0EffectBridge";
 import { recordSUnitRecoveredFromDiscardToHand } from "../rules/turnRecoveryTracking";
 import { startRocketBoosterChoice } from "../rules/rocketBooster";
+import { recordReveal } from "../rules/revealNotice";
 
 export type EffectContext = {
   state: GameState;
@@ -355,6 +356,16 @@ function resolveJudgment(ctx: EffectContext): EffectOutcome {
       deck: [...restDeck, revealed],
     }),
   };
+  // オモテにしたカードは公開情報。同じサイズなら撃破し、どちらでもその後、山札の下に戻す。
+  nextState = recordReveal(nextState, {
+    playerId: ctx.playerId,
+    ownerId: ctx.playerId,
+    sourceCardId: ctx.operationCardId,
+    effectLabel: cardName(ctx.state.definitions, ctx.operationCardId),
+    from: "deck_top",
+    matched: matches,
+    cards: [{ instanceId: revealed.instanceId, cardId: revealed.cardId, destination: "deck_bottom" }],
+  });
 
   if (matches) {
     const leaveResult = tryLeaveField(nextState, {

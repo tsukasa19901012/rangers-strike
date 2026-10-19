@@ -59,6 +59,7 @@ import {
   zoneOfField,
 } from "./rm1Effects";
 import { rm2ActsAsVehicle, rm2CostNumber } from "./rm2Fields";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -443,7 +444,17 @@ function applyCosmicHarley(state: GameState, ctx: GrantKeywordContext): GrantKey
   const top = state.players[enemyId].deck[0];
   if (!top) return { state, detail: "rm029:empty_deck" };
   const d = getDefinition(state.definitions, top.cardId);
-  if (d?.type === "unit" && (cardCategories(d) as string[]).includes("WB")) {
+  const isWbUnit = d?.type === "unit" && (cardCategories(d) as string[]).includes("WB");
+  // オモテにした敵軍山札の上のカードは公開情報。WB のユニットカードは持ち主のラッシュエリア、違えば持ち主のパワーゾーン。
+  state = recordReveal(state, {
+    playerId: ctx.playerId,
+    ownerId: enemyId,
+    sourceCardId: ctx.sourceCardId,
+    effectLabel: "コズミックハーレー",
+    from: "deck_top",
+    cards: revealedCards([top], isWbUnit ? "rush" : "power"),
+  });
+  if (isWbUnit) {
     const next = startEffectRush(state, {
       playerId: enemyId,
       phasePlayerId: ctx.phasePlayerId,

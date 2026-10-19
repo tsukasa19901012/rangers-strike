@@ -30,6 +30,7 @@ import { canMoveUnitToBattle } from "../restrictions";
 import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { emitUnitRushedAndFinalize } from "../../events/emitUnitRushed";
 import { rk1IsSmallNow, rk1ZoneCardFeatures } from "./rk1Features";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -654,8 +655,18 @@ CHOICE_CONFIRMERS[GOUKI_REVEAL_EFFECT_ID] = (state, playerId) => {
   const count = Math.min((pending.rk7Meta?.count ?? 0) + 1, deck.length);
   const revealed = deck[count - 1];
   const log = logFor(state, playerId, "RK-131", `${GOUKI_REVEAL_EFFECT_ID}:${cardName(state.definitions, revealed?.cardId ?? "")}`);
-  if (count >= GOUKI_MAX || count >= deck.length) return { state: finishGouki(state, pending, count), log };
-  return { state: { ...state, pendingEffectChoice: { ...pending, rk7Meta: { ...pending.rk7Meta, count } } }, log };
+  // オモテにしたカード（ここまでの全部）は公開情報。最後にすべて捨札になる。
+  const reveal = (s: GameState): GameState =>
+    recordReveal(s, {
+      playerId,
+      ownerId: playerId,
+      sourceCardId: pending.sourceCardId,
+      effectLabel: "音響打・豪腕無双",
+      from: "deck_top",
+      cards: revealedCards(deck.slice(0, count), "discard"),
+    });
+  if (count >= GOUKI_MAX || count >= deck.length) return { state: reveal(finishGouki(state, pending, count)), log };
+  return { state: reveal({ ...state, pendingEffectChoice: { ...pending, rk7Meta: { ...pending.rk7Meta, count } } }), log };
 };
 CHOICE_SKIPPERS[GOUKI_REVEAL_EFFECT_ID] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;
@@ -866,6 +877,15 @@ function denebicReveal(state: GameState, actorId: PlayerId, pending: PendingEffe
   const ids = fieldUnits(state, actorId)
     .filter((c) => Number.isFinite(cost) && parsePowerCost(getDefinition(state.definitions, c.cardId)?.powerCost) === cost)
     .map((c) => c.instanceId);
+  // オモテにしたカードは公開情報。撃破する（必ず選ぶ）なら捨札、撃破しなかったら手札に加える。
+  state = recordReveal(state, {
+    playerId: actorId,
+    ownerId: actorId,
+    sourceCardId: "RK-141",
+    effectLabel: "デネビックバスター",
+    from: "deck_top",
+    cards: revealedCards([top], ids.length > 0 ? "discard" : "hand"),
+  });
   if (ids.length > 0) {
     return {
       state,

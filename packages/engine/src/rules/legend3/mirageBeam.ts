@@ -2,6 +2,7 @@ import { findNamedEffectByEffectId } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
 import { getDefinition, unitBp } from "../../core/catalog";
 import { removeAt, updatePlayer } from "../../core/helpers";
+import { recordReveal } from "../revealNotice";
 
 export type MirageBeamPrep = {
   state: GameState;
@@ -29,11 +30,20 @@ export function prepareMirageBeamForBattle(
   const bpOverride =
     def?.type === "unit" ? unitBp(def) : undefined;
 
-  return {
-    state: {
-      ...state,
-      ...updatePlayer(state, playerId, { ...player, deck: rest }),
+  // オモテにしたカードは公開情報。バトルの後で捨札にする。
+  const revealedState = recordReveal(
+    { ...state, ...updatePlayer(state, playerId, { ...player, deck: rest }) },
+    {
+      playerId,
+      ownerId: playerId,
+      sourceCardId: attackerCardId,
+      effectLabel: "ミラージュビーム",
+      from: "deck_top",
+      cards: [{ instanceId: top.instanceId, cardId: top.cardId, destination: "discard" }],
     },
+  );
+  return {
+    state: revealedState,
     bpOverride,
     revealedCard: top,
   };

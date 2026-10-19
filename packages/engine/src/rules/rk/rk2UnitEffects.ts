@@ -35,6 +35,7 @@ import { unitFeatures } from "../addedFeatures";
 import { rk1IsSmallNow } from "./rk1Features";
 import { tryLeaveField } from "../operationCounters";
 import { destroyStriker } from "../strikeReactions";
+import { recordReveal, revealedCards } from "../revealNotice";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -427,6 +428,15 @@ function applyDenpaNage(state: GameState, ctx: GrantKeywordContext): GrantKeywor
       back.push(card);
     }
   }
+  const backIds = new Set(back.map((c) => c.instanceId));
+  next = recordReveal(next, {
+    playerId: ctx.playerId,
+    ownerId: enemyId,
+    sourceCardId: ctx.sourceCardId,
+    effectLabel: "電波投げ",
+    from: "deck_top",
+    cards: revealedCards(revealed, (c) => (backIds.has(c.instanceId) ? "deck_top" : "command")),
+  });
   if (back.length < 2) return { state: next, detail: "rk025:denpa_nage" };
   return {
     state: openOrQueue(next, {
