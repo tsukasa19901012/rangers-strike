@@ -27,12 +27,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-037::fxunknowne7838f",
-          "duration": "turn"
+          "keyword": "xg3::XG3-037::ikasumi",
+          "duration": "permanent"
         }
       ]
     }

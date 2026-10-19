@@ -85,12 +85,12 @@ describe("XG3-029 魔導騎士ウルザード", () => {
     expectRarityIn("XG3-029", ["SR"]);
   });
 
-  it.fails("XG3-029: ※ 自軍 M ビークルがあれば特徴「人型」が追加される（既知の不具合: CARD-XG3-029 ※の M ユニット化・「人型」の追加がない）（出典: atwiki/page-2016「これはMユニットになり、特徴「人型」が追加される」）", () => {
+  it("XG3-029: ※ 自軍 M ビークルがあれば特徴「人型」が追加される（出典: atwiki/page-2016「これはMユニットになり、特徴「人型」が追加される」）", () => {
     const s = battle({ rush: [inst("XG3-029", "u"), inst("SPEC-MV", "v")] });
     expect(featuresOf(s, "player1", "XG3-029:u")).toContain("人型");
   });
 
-  it.fails("XG3-029: ※ 自軍 M ビークルがあれば M ユニットになり、敵軍の「Sユニットを選ぶ」効果（RS-481 天空神【ホバリング】）に選ばれない（既知の不具合: CARD-XG3-029）（出典: atwiki/page-2016・コメント欄「先に魔導馬バリキオン（2nd）出してからラッシュすればオルゴール引っかからない」「その通り」）", () => {
+  it("XG3-029: ※ 自軍 M ビークルがあれば M ユニットになり、敵軍の「Sユニットを選ぶ」効果（RS-481 天空神【ホバリング】）に選ばれない（出典: atwiki/page-2016・コメント欄「先に魔導馬バリキオン（2nd）出してからラッシュすればオルゴール引っかからない」「その通り」）", () => {
     expect(tenkuujinCandidates([inst("XG3-029", "u"), inst("SPEC-MV", "v"), inst("TST-UNIT-0", "s")])).toEqual(["TST-UNIT-0:s"]);
   });
 
@@ -102,14 +102,14 @@ describe("XG3-029 魔導騎士ウルザード", () => {
 
   const entered = (hand = [inst("TST-OP", "h1"), inst("TST-OP", "h2")]) => enter(battle({ rush: [inst("XG3-029", "u")], hand }), "XG3-029:u");
 
-  it.fails("XG3-029:【ウルサーベル】— 自軍ターン中にバトルエリアに出たとき、自分の手札から1枚選べる（任意）（既知の不具合: CARD-XG3-029【ウルサーベル】の手札の選択が開かない）（出典: atwiki/page-2016「自分の手札を1枚選び捨札にしてもよい」）", () => {
+  it("XG3-029:【ウルサーベル】— 自軍ターン中にバトルエリアに出たとき、自分の手札から1枚選べる（任意）（出典: atwiki/page-2016「自分の手札を1枚選び捨札にしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG3-029");
     expect(choiceIds(s)).toEqual(["TST-OP:h1", "TST-OP:h2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-029:【ウルサーベル】— 手札を1枚捨札にすれば、このターンこれは BP+2000（7000）・「SP1」（バトルエリアの1番目でも）（既知の不具合: CARD-XG3-029 BP も SP も変わらない）（出典: atwiki/page-2016「このターン、これはBP+2000され、「SP1」になる」）", () => {
+  it("XG3-029:【ウルサーベル】— 手札を1枚捨札にすれば、このターンこれは BP+2000（7000）・「SP1」（バトルエリアの1番目でも）（出典: atwiki/page-2016「このターン、これはBP+2000され、「SP1」になる」）", () => {
     const s = resolveAll(entered(), ["TST-OP:h1"]);
     expect(zoneOf(s, "player1", "TST-OP:h1")).toBe("discard");
     expect(bpOf(s, "player1", "XG3-029:u")).toBe(7000);
@@ -185,7 +185,7 @@ describe("XG3-031 ゲキブルー", () => {
 
   scrumTests("XG3-031", 1, "atwiki/page-1904");
 
-  it.fails("XG3-031:【宙宙斬】— 1番目に出れば（NC）、2番目に並ぶ特徴「激気」を持つ M ユニット（SP なし）が「SP1」になる（既知の不具合: CARD-XG3-031 NC のあとに2番目に出た「激気」の M ユニットが「SP1」にならない）（出典: atwiki/page-1904「自軍バトルエリアの2番目に並ぶ、特徴「激気」を持つMユニットは次の能力を得る⇒「SP1」」・カード評価「ゲキビースト限定のタクスWB」）", () => {
+  it("XG3-031:【宙宙斬】— 1番目に出れば（NC）、2番目に並ぶ特徴「激気」を持つ M ユニット（SP なし）が「SP1」になる（出典: atwiki/page-1904「自軍バトルエリアの2番目に並ぶ、特徴「激気」を持つMユニットは次の能力を得る⇒「SP1」」・カード評価「ゲキビースト限定のタクスWB」）", () => {
     const s = line(["XG3-031:g", "SPEC-GEKI-M:m"]);
     expect(spOf(s, "player1", "SPEC-GEKI-M:m")).toBe(1);
   });
@@ -224,15 +224,16 @@ describe("XG3-032 ゲキイエロー", () => {
     expect(spOf(resolveAll(line(["XG3-032:y"])), "player1", "XG3-032:y")).toBe(0);
   });
 
-  it.fails("XG3-032:【弾弾丸】— 自分の手札の、特徴「激気」を持つ M ユニットのカードから選べる（任意）（既知の不具合: CARD-XG3-032【弾弾丸】の手札の選択が開かない）（出典: atwiki/page-1905「自分の手札から、特徴「激気」を持つMユニットのカードを1枚選び捨札にしてもよい」）", () => {
+  it("XG3-032:【弾弾丸】— 自分の手札の、特徴「激気」を持つ M ユニットのカードから選べる（任意）（出典: atwiki/page-1905「自分の手札から、特徴「激気」を持つMユニットのカードを1枚選び捨札にしてもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG3-032");
     expect(choiceIds(s)).toEqual(["SPEC-GEKI-M:hm"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-032:【弾弾丸】— 捨札にしたとき、敵軍ラッシュエリアの S ユニットを1体選び撃破し（M ユニット・バトルエリアのユニットは選べない）、その後1枚ドローする（既知の不具合: CARD-XG3-032）（出典: atwiki/page-1905「敵軍ラッシュエリアにSユニットがあれば1体選び撃破する。その後、自分は1枚ドローする」）", () => {
-    let s = resolveAll(nc(), ["SPEC-GEKI-M:hm"]);
+  it("XG3-032:【弾弾丸】— 捨札にしたとき、敵軍ラッシュエリアの S ユニットを1体選び撃破し（M ユニット・バトルエリアのユニットは選べない）、その後1枚ドローする（出典: atwiki/page-1905「敵軍ラッシュエリアにSユニットがあれば1体選び撃破する。その後、自分は1枚ドローする」）", () => {
+    // 撃破の選択（強制・候補1体）を確かめるため、手札の選択だけ答える（resolveAll は強制の選択も自動で答えてしまう）。
+    let s = act(nc(), { type: "resolve_effect_choice", playerId: "player1", instanceId: "SPEC-GEKI-M:hm" });
     expect(zoneOf(s, "player1", "SPEC-GEKI-M:hm")).toBe("discard");
     expectChoiceFrom(s, "player1", "XG3-032");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:es"]);
@@ -241,7 +242,7 @@ describe("XG3-032 ゲキイエロー", () => {
     expect(s.players.player1.hand).toHaveLength(3);
   });
 
-  it.fails("XG3-032:【弾弾丸】— 敵軍ラッシュエリアに S ユニットがいなくても、捨札にすれば1枚ドローする（既知の不具合: CARD-XG3-032）（出典: atwiki/page-1905「Sユニットがあれば1体選び撃破する。その後、自分は1枚ドローする」）", () => {
+  it("XG3-032:【弾弾丸】— 敵軍ラッシュエリアに S ユニットがいなくても、捨札にすれば1枚ドローする（出典: atwiki/page-1905「Sユニットがあれば1体選び撃破する。その後、自分は1枚ドローする」）", () => {
     const s = resolveAll(nc([inst("TST-UNIT-2", "em")]), ["SPEC-GEKI-M:hm"]);
     expect(zoneOf(s, "player1", "SPEC-GEKI-M:hm")).toBe("discard");
     expect(s.players.player1.hand).toHaveLength(3);
@@ -270,13 +271,13 @@ describe("XG3-033 ナナシ連中", () => {
     expect(deckWithTen("XG3-033", "ナナシ連中")).toBe(true);
   });
 
-  it.fails("XG3-033:【隙間より這い出す者達】— 自軍ラッシュフェイズ中、自軍パワーゾーンでオモテ向きのこれをラッシュエリアに出せる（コマンド・パワーは要らない）（既知の不具合: CARD-XG3-033 ゾーンから出す手がない）（出典: atwiki/page-1906「これが自軍ゾーンでオモテ向きになっている間、…これを自軍ラッシュエリアに出してもよい」・コメント欄「表記のないコストは全部踏み倒せる」）", () => {
+  it("XG3-033:【隙間より這い出す者達】— 自軍ラッシュフェイズ中、自軍パワーゾーンでオモテ向きのこれをラッシュエリアに出せる（コマンド・パワーは要らない）（出典: atwiki/page-1906「これが自軍ゾーンでオモテ向きになっている間、…これを自軍ラッシュエリアに出してもよい」・コメント欄「表記のないコストは全部踏み倒せる」）", () => {
     const s = board({ power: [faceUp("XG3-033", "p")] });
     expect(canSelfRush(s, "power", "XG3-033:p")).toBe(true);
     expect(zoneOf(selfRush(s, "power", "XG3-033:p"), "player1", "XG3-033:p")).toBe("rush");
   });
 
-  it.fails("XG3-033:【隙間より這い出す者達】— 自軍コマンドゾーンのこれも出せる（既知の不具合: CARD-XG3-033）（出典: atwiki/page-1906「自軍ゾーン」・カード評価「コマンドを任意に減らせる」「コマンドとして使用した後にラッシュすればいい」）", () => {
+  it("XG3-033:【隙間より這い出す者達】— 自軍コマンドゾーンのこれも出せる（出典: atwiki/page-1906「自軍ゾーン」・カード評価「コマンドを任意に減らせる」「コマンドとして使用した後にラッシュすればいい」）", () => {
     const s = board({ command: [inst("XG3-033", "c")] });
     expect(canSelfRush(s, "command", "XG3-033:c")).toBe(true);
     expect(zoneOf(selfRush(s, "command", "XG3-033:c"), "player1", "XG3-033:c")).toBe("rush");
@@ -290,7 +291,7 @@ describe("XG3-033 ナナシ連中", () => {
     expect(canSelfRush(battle({ power: [faceUp("XG3-033", "p")] }), "power", "XG3-033:p")).toBe(false);
   });
 
-  it.fails("XG3-033:【隙間より這い出す者達】— この効果で出せるのは1ターンに2体まで（3体目は出せない）（既知の不具合: CARD-XG3-033）（出典: atwiki/page-1906「この効果でラッシュできる「ナナシ連中」の数は、1ターンにつき2体までとする」）", () => {
+  it("XG3-033:【隙間より這い出す者達】— この効果で出せるのは1ターンに2体まで（3体目は出せない）（出典: atwiki/page-1906「この効果でラッシュできる「ナナシ連中」の数は、1ターンにつき2体までとする」）", () => {
     let s = board({ power: [faceUp("XG3-033", "p1"), faceUp("XG3-033", "p2")], command: [inst("XG3-033", "c")] });
     s = selfRush(s, "power", "XG3-033:p1");
     s = selfRush(s, "power", "XG3-033:p2");
@@ -394,14 +395,14 @@ describe("XG3-035 海老折神", () => {
     expect(zoneOf(r.state, "player1", "XG1-038:g")).toBe("rush");
   });
 
-  it.fails("XG3-035:【太巻き光輪】— ラッシュしたとき、相手の手札が1枚以上あれば、敵軍コマンドゾーンのカードを選べる（発動は任意）（既知の不具合: CARD-XG3-035【太巻き光輪】の選択が開かない）（出典: atwiki/page-1908「次の効果を発動できる⇒敵軍コマンドゾーンのカードを1枚選び」）", () => {
+  it("XG3-035:【太巻き光輪】— ラッシュしたとき、相手の手札が1枚以上あれば、敵軍コマンドゾーンのカードを選べる（発動は任意）（出典: atwiki/page-1908「次の効果を発動できる⇒敵軍コマンドゾーンのカードを1枚選び」）", () => {
     const r = rushOf([inst("XG1-038", "g")]);
     expectChoiceFrom(r.state, "player1", "XG3-035");
     expect(choiceIds(r.state)).toEqual(["TST-OP:ec"]);
     expect(canSkip(r.state)).toBe(true);
   });
 
-  it.fails("XG3-035:【太巻き光輪】— 選んだ敵軍コマンドと、見ないで選んだ相手の手札1枚を置き換える（コマンドは相手の手札へ、手札のカードは敵軍コマンドゾーンへ）（既知の不具合: CARD-XG3-035）（出典: atwiki/page-1908「相手の手札を見ないで1枚選ぶ。そうしたとき、選んだ2枚を置き換える」・R-REPL-04）", () => {
+  it("XG3-035:【太巻き光輪】— 選んだ敵軍コマンドと、見ないで選んだ相手の手札1枚を置き換える（コマンドは相手の手札へ、手札のカードは敵軍コマンドゾーンへ）（出典: atwiki/page-1908「相手の手札を見ないで1枚選ぶ。そうしたとき、選んだ2枚を置き換える」・R-REPL-04）", () => {
     const s = resolveAll(rushOf([inst("XG1-038", "g")]).state, ["TST-OP:ec", "TST-OP:eh"]);
     expect(zoneOf(s, "player2", "TST-OP:ec")).toBe("hand");
     expect(zoneOf(s, "player2", "TST-OP:eh")).toBe("command");

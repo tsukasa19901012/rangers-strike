@@ -101,19 +101,19 @@ describe("XG3-022 アバレッド", () => {
 
   /** 自軍: 恐竜のユニット2体（ラッシュエリア・バトルエリアに1体ずつ）。敵軍: 必要パワー0・1・2+・3 のユニット。 */
   const nc = () =>
-    line(["TST-UNIT-0:f", "XG3-022:a"], { rush: [inst("SPEC-DINO-S", "d1")], battle: [inst("SPEC-DINO-S", "d2")] }, {
+    line(["SPEC-DINO-S:d2", "XG3-022:a"], { rush: [inst("SPEC-DINO-S", "d1")] }, {
       battle: [inst("TST-UNIT-0", "c0"), inst("SPEC-COST2", "c2")],
       rush: [inst("SPEC-COST1", "c1"), inst("SPEC-COST3", "c3")],
     });
 
-  it.fails("XG3-022:【アバレイザー】— 特徴「恐竜」を持つ自軍ユニットの数（2）以下の必要パワーの数字を持つ敵軍ユニット（エリア・サイズを問わない。「2+」は2）から選べる（任意）（既知の不具合: CARD-XG3-022【アバレイザー】の撃破の選択が開かない）（出典: atwiki/page-1898「その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破してもよい」・カード評価「サイズ、エリアを問わず対象にとれる」）", () => {
+  it("XG3-022:【アバレイザー】— 特徴「恐竜」を持つ自軍ユニットの数（2）以下の必要パワーの数字を持つ敵軍ユニット（エリア・サイズを問わない。「2+」は2）から選べる（任意）（出典: atwiki/page-1898「その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破してもよい」・カード評価「サイズ、エリアを問わず対象にとれる」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG3-022");
     expect(choiceIds(s)).toEqual(["SPEC-COST1:c1", "SPEC-COST2:c2", "TST-UNIT-0:c0"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-022:【アバレイザー】— 選んだユニットを撃破する（既知の不具合: CARD-XG3-022）（出典: atwiki/page-1898）", () => {
+  it("XG3-022:【アバレイザー】— 選んだユニットを撃破する（出典: atwiki/page-1898）", () => {
     const s = resolveAll(nc(), ["SPEC-COST2:c2"]);
     expect(zoneOf(s, "player2", "SPEC-COST2:c2")).toBe("discard");
   });
@@ -148,7 +148,7 @@ describe("XG3-023 アバレマックス", () => {
 
   resistTests("XG3-023", "atwiki/page-1969");
 
-  it.fails("XG3-023:【大気爆裂マックスフィールド】— 自軍バトルエリアがこれ1体だけなら、これは BP+2000（8000）、敵軍バトルエリアのユニットは BP-2000（敵軍ラッシュエリアのユニットは変わらない）（既知の不具合: CARD-XG3-023【大気爆裂マックスフィールド】が有効にならない）（出典: atwiki/page-1969「自軍バトルエリアのユニットはBP+2000され、敵軍バトルエリアのユニットはBP-2000される」）", () => {
+  it("XG3-023:【大気爆裂マックスフィールド】— 自軍バトルエリアがこれ1体だけなら、これは BP+2000（8000）、敵軍バトルエリアのユニットは BP-2000（敵軍ラッシュエリアのユニットは変わらない）（出典: atwiki/page-1969「自軍バトルエリアのユニットはBP+2000され、敵軍バトルエリアのユニットはBP-2000される」）", () => {
     const s = battle({ battle: [inst("XG3-023", "am")] }, { battle: [inst("SPEC-E3500", "e")], rush: [inst("SPEC-E3500", "r")] });
     expect(bpOf(s, "player1", "XG3-023:am")).toBe(8000);
     expect(bpOf(s, "player2", "SPEC-E3500:e")).toBe(1500);
@@ -161,14 +161,14 @@ describe("XG3-023 アバレマックス", () => {
     expect(bpOf(s, "player2", "SPEC-E3500:e")).toBe(3500);
   });
 
-  it.fails("XG3-023:【大気爆裂マックスフィールド】— 敵軍バトルエリアの BP2000 以下のユニットは BP0 以下になって撃破される（既知の不具合: CARD-XG3-023）（出典: atwiki/page-1969「（BP0以下になったユニットは撃破される）」）", () => {
+  it("XG3-023:【大気爆裂マックスフィールド】— 敵軍バトルエリアの BP2000 以下のユニットは BP0 以下になって撃破される（出典: atwiki/page-1969「（BP0以下になったユニットは撃破される）」）", () => {
     let s = line(["XG3-023:am"], {}, { battle: [inst("SPEC-E2000", "e"), inst("SPEC-E3000", "e3")] });
     s = resolveAll(s);
     expect(zoneOf(s, "player2", "SPEC-E2000:e")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E3000:e3")).toBe("battle");
   });
 
-  it.fails("XG3-023:【大気爆裂マックスフィールド】— 敵軍ターン中も有効で、敵軍バトルエリアに出た BP2000 のユニットは撃破される（既知の不具合: CARD-XG3-023）（出典: atwiki/page-1969・カード評価「敵軍ターンではBPの低いユニットがバトルエリアに出るのを防ぐ」）", () => {
+  it("XG3-023:【大気爆裂マックスフィールド】— 敵軍ターン中も有効で、敵軍バトルエリアに出た BP2000 のユニットは撃破される（出典: atwiki/page-1969・カード評価「敵軍ターンではBPの低いユニットがバトルエリアに出るのを防ぐ」）", () => {
     let s = st({ activePlayer: "player2", player1: { battle: [inst("XG3-023", "am")], deck: deckCards(3) }, player2: { rush: [inst("SPEC-E2000", "e")], deck: deckCards(3, "e") } }, EXTRA);
     s = resolveAll(enter(s, "SPEC-E2000:e", "player2"));
     expect(zoneOf(s, "player2", "SPEC-E2000:e")).toBe("discard");
@@ -182,7 +182,7 @@ function creationTests(opts: { id: string; name: string; page: string; effect: s
   const deck = () => [inst(opts.good, "g"), ...opts.bad.map((b, i) => inst(b, `x${i}`)), inst(opts.condUnit, "cd"), ...deckCards(3)];
   const rushPhaseStart = (cmdN = 3) => board({ rush: [inst(id, "u")], command: releasedCat("DA", cmdN), deck: deck() });
 
-  it.fails(`${id}:【${opts.effect}】— 自軍ラッシュフェイズを行うとき、かわりに発動できる（DA のコマンド3つが必要）（既知の不具合: CARD-${id}【${opts.effect}】の起動がない）（出典: ${page}「自軍ラッシュフェイズを行うとき、かわりに次の効果を発動できる」）`, () => {
+  it(`${id}:【${opts.effect}】— 自軍ラッシュフェイズを行うとき、かわりに発動できる（DA のコマンド3つが必要）（出典: ${page}「自軍ラッシュフェイズを行うとき、かわりに次の効果を発動できる」）`, () => {
     expect(refsOf(rushPhaseStart(), `${id}:u`)).not.toEqual([]);
   });
 
@@ -190,7 +190,7 @@ function creationTests(opts: { id: string; name: string; page: string; effect: s
     expect(refsOf(rushPhaseStart(2), `${id}:u`)).toEqual([]);
   });
 
-  it.fails(`${id}:【${opts.effect}】— 発動すると DA の自軍コマンド3つをホールドし、自軍山札の${opts.goodWhy}から選べる（追加条件を満たせないカードは選べない。任意）（既知の不具合: CARD-${id}）（出典: ${page}「自軍山札を見て、…自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと」）`, () => {
+  it(`${id}:【${opts.effect}】— 発動すると DA の自軍コマンド3つをホールドし、自軍山札の${opts.goodWhy}から選べる（追加条件を満たせないカードは選べない。任意）（出典: ${page}「自軍山札を見て、…自軍ラッシュエリアに出してもよい。ただし、追加条件は満たすこと」）`, () => {
     const s = useRef(rushPhaseStart(), `${id}:u`);
     expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(3);
     expectChoiceFrom(s, "player1", id);
@@ -198,7 +198,7 @@ function creationTests(opts: { id: string; name: string; page: string; effect: s
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails(`${id}:【${opts.effect}】— 選んだカードを自軍ラッシュエリアに出し、山札をシャッフルする。その後ラッシュフェイズは行わない（手札からラッシュできない）（既知の不具合: CARD-${id}）（出典: ${page}「その後、山札をシャッフルする」「かわりに」）`, () => {
+  it(`${id}:【${opts.effect}】— 選んだカードを自軍ラッシュエリアに出し、山札をシャッフルする。その後ラッシュフェイズは行わない（手札からラッシュできない）（出典: ${page}「その後、山札をシャッフルする」「かわりに」）`, () => {
     let s = useRef(board({ rush: [inst(id, "u")], hand: [inst("TST-UNIT-0", "h")], command: releasedCat("DA", 4), deck: deck() }), `${id}:u`);
     s = resolveAll(pick(s, `${opts.good}:g`));
     expect(zoneOf(s, "player1", `${opts.good}:g`)).toBe("rush");
@@ -270,14 +270,14 @@ describe("XG3-026 マックスオージャ", () => {
 
   const entered = (enemyCmd: number) => enter(battle({ rush: [inst("XG3-026", "o")] }, { command: releasedCat("WB", enemyCmd, "ec"), power: powerCards(3, "ep") }), "XG3-026:o");
 
-  it.fails("XG3-026:【爆竜必殺マックスショルダーアタック】— 自軍ターン中にバトルエリアに出たとき、相手（リリース状態のコマンドが2つ以上）が「1点ダメージ」か「コマンドをすべてホールド」かを選ぶ（既知の不具合: CARD-XG3-026 相手の選択が開かず何も起きない）（出典: atwiki/page-1999「相手は1点ダメージを受けるか、リリース状態の自軍コマンドが2つ以上あればすべて選びホールドするかを選ぶ」）", () => {
+  it("XG3-026:【爆竜必殺マックスショルダーアタック】— 自軍ターン中にバトルエリアに出たとき、相手（リリース状態のコマンドが2つ以上）が「1点ダメージ」か「コマンドをすべてホールド」かを選ぶ（出典: atwiki/page-1999「相手は1点ダメージを受けるか、リリース状態の自軍コマンドが2つ以上あればすべて選びホールドするかを選ぶ」）", () => {
     const s = entered(2);
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XG3-026");
     expect(choiceIds(s)).toHaveLength(2);
   });
 
-  it.fails("XG3-026:【爆竜必殺マックスショルダーアタック】— 相手がホールドを選べば、相手のリリース状態のコマンドがすべてホールド状態になる（ダメージは受けない）（既知の不具合: CARD-XG3-026）（出典: atwiki/page-1999「すべて選びホールドする」・カード評価「強力なカウンター封じ」）", () => {
+  it("XG3-026:【爆竜必殺マックスショルダーアタック】— 相手がホールドを選べば、相手のリリース状態のコマンドがすべてホールド状態になる（ダメージは受けない）（出典: atwiki/page-1999「すべて選びホールドする」・カード評価「強力なカウンター封じ」）", () => {
     let s = entered(3);
     const hold = choiceIds(s).find((c) => /hold/.test(c));
     s = resolveAll(pickAs(s, "player2", hold!));
@@ -285,7 +285,7 @@ describe("XG3-026 マックスオージャ", () => {
     expect(s.players.player2.damage).toBe(0);
   });
 
-  it.fails("XG3-026:【爆竜必殺マックスショルダーアタック】— 相手のリリース状態のコマンドが1つ以下なら、相手は1点ダメージを受ける（既知の不具合: CARD-XG3-026）（出典: atwiki/page-1999「リリース状態の自軍コマンドが2つ以上あれば」）", () => {
+  it("XG3-026:【爆竜必殺マックスショルダーアタック】— 相手のリリース状態のコマンドが1つ以下なら、相手は1点ダメージを受ける（出典: atwiki/page-1999「リリース状態の自軍コマンドが2つ以上あれば」）", () => {
     const s = resolveAll(entered(1));
     expect(s.players.player2.damage).toBe(1);
   });
@@ -318,7 +318,7 @@ describe("XG3-027 スティラコサウルス", () => {
     expect(zoneOf(r.state, "player1", "XG3-023:am")).toBe("rush");
   });
 
-  it.fails("XG3-027: 追加条件 — 特徴「スティライザー」を持つ自軍コマンド（コマンドゾーンのアバレマックス）があってもラッシュできる（既知の不具合: CARD-XG3-027 自軍コマンドの「スティライザー」を数えない）（出典: atwiki/page-1901「自軍ユニットまたは自軍コマンドがある」）", () => {
+  it("XG3-027: 追加条件 — 特徴「スティライザー」を持つ自軍コマンド（コマンドゾーンのアバレマックス）があってもラッシュできる（出典: atwiki/page-1901「自軍ユニットまたは自軍コマンドがある」）", () => {
     const r2 = rushOf({ command: [...releasedCat("WB", 1), inst("XG3-023", "cmd")] });
     expect(r2.ok, r2.error).toBe(true);
     expect(zoneOf(r2.state, "player1", "XG3-027:st")).toBe("rush");
@@ -331,14 +331,14 @@ describe("XG3-027 スティラコサウルス", () => {
 
   const enemy = () => ({ battle: [inst("TST-UNIT-0", "e1"), inst("SPEC-E3000", "e2"), inst("SPEC-E2000", "e3"), inst("SPEC-E2000", "e4"), inst("SPEC-E3500", "big")], rush: [inst("TST-UNIT-0", "r")] });
 
-  it.fails("XG3-027:【ファイヤーボールクラッシュ】— ラッシュしたとき、敵軍バトルエリアの BP3000 以下のユニットから選べる（BP3500・ラッシュエリアのユニットは選べない。任意）（既知の不具合: CARD-XG3-027 候補が敵軍ラッシュエリアのユニットになり、バトルエリアのユニットを選べない）（出典: atwiki/page-1901「敵軍バトルエリアからBP3000以下のユニットを3体まで選び撃破してもよい」）", () => {
+  it("XG3-027:【ファイヤーボールクラッシュ】— ラッシュしたとき、敵軍バトルエリアの BP3000 以下のユニットから選べる（BP3500・ラッシュエリアのユニットは選べない。任意）（出典: atwiki/page-1901「敵軍バトルエリアからBP3000以下のユニットを3体まで選び撃破してもよい」）", () => {
     const r = rushOf({ rush: [inst("XG3-023", "am")] }, enemy());
     expectChoiceFrom(r.state, "player1", "XG3-027");
     expect(choiceIds(r.state)).toEqual(["SPEC-E2000:e3", "SPEC-E2000:e4", "SPEC-E3000:e2", "TST-UNIT-0:e1"]);
     expect(canSkip(r.state)).toBe(true);
   });
 
-  it.fails("XG3-027:【ファイヤーボールクラッシュ】— 3体まで選んで撃破する（4体目は選べない）（既知の不具合: CARD-XG3-027）（出典: atwiki/page-1901「3体まで選び撃破してもよい」）", () => {
+  it("XG3-027:【ファイヤーボールクラッシュ】— 3体まで選んで撃破する（4体目は選べない）（出典: atwiki/page-1901「3体まで選び撃破してもよい」）", () => {
     const r = rushOf({ rush: [inst("XG3-023", "am")] }, enemy());
     const s = resolveAll(r.state, ["TST-UNIT-0:e1", "SPEC-E3000:e2", "SPEC-E2000:e3", "confirm"]);
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("discard");
@@ -364,7 +364,7 @@ describe("XG3-028 魔導馬バリキオン", () => {
     expect(zoneOf(enterAny(battle({ rush: [inst("XG3-028", "b")], command: releasedCat("MA", 1) }), "XG3-028:b"), "player1", "XG3-028:b")).toBe("battle");
   });
 
-  it.fails("XG3-028:【荒ぶる駿馬】— 自軍ラッシュフェイズ中、「魔導馬バリキオン」以外の特徴「魔法」を持つ自軍ユニットがあれば、手札のこれをラッシュエリアに出せる（コマンド・パワーは要らない）（既知の不具合: CARD-XG3-028 手札から出す手がない）（出典: atwiki/page-1902「これが自分の手札にある間、…これをラッシュエリアに出してもよい」・カード評価「コマンドを無視できる」）", () => {
+  it("XG3-028:【荒ぶる駿馬】— 自軍ラッシュフェイズ中、「魔導馬バリキオン」以外の特徴「魔法」を持つ自軍ユニットがあれば、手札のこれをラッシュエリアに出せる（コマンド・パワーは要らない）（出典: atwiki/page-1902「これが自分の手札にある間、…これをラッシュエリアに出してもよい」・カード評価「コマンドを無視できる」）", () => {
     let s = board({ hand: [inst("XG3-028", "b")], rush: [inst("SPEC-MAGIC", "m")] });
     expect(canSelfRush(s, "hand", "XG3-028:b")).toBe(true);
     s = resolveAll(selfRush(s, "hand", "XG3-028:b"));

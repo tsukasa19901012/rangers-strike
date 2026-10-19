@@ -8,11 +8,13 @@
  * カードごとの処理はバッチのファイル（xg3aEffects.ts＝XG3-002〜021 等）、継続効果の判定は xg3Fields.ts。
  */
 import type { CardInstance, DeferredPowerFlip, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import type { GameAction } from "../../types/actions";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { type ChoiceOutcome, close, logFor } from "../rm/rm1Effects";
 import { patchPlayer } from "../playerPatches";
-import { AFTER_ACTION_HOOKS, BEFORE_FLIP_HOOKS, ENTER_BATTLE_HOOKS, START_PHASE_HOOKS, STRIKE_HOOKS, UNIT_RUSHED_HOOKS, TURN_END_HOOKS, ZONE_ACTIVATIONS, CHOICE_CONFIRMERS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, HOLD_COMPLETERS, KEYWORDS, XG3_KEYWORD_PREFIX } from "./xg3Registry";
+import { AFTER_ACTION_HOOKS, BEFORE_FLIP_HOOKS, FIELD_ABILITIES, ENTER_BATTLE_HOOKS, START_PHASE_HOOKS, STRIKE_HOOKS, UNIT_RUSHED_HOOKS, TURN_END_HOOKS, ZONE_ACTIVATIONS, CHOICE_CONFIRMERS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, HOLD_COMPLETERS, KEYWORDS, XG3_KEYWORD_PREFIX } from "./xg3Registry";
 import "./xg3aEffects";
+import "./xg3bEffects";
 
 export function isXg3ChoiceEffect(effectId: string): boolean {
   return effectId in CHOICE_RESOLVERS;
@@ -131,6 +133,35 @@ export function openXg3StartPhaseBegin(state: GameState, playerId: PlayerId): Ga
   let next = state;
   for (const hook of START_PHASE_HOOKS) next = hook(next, playerId);
   return next;
+}
+
+/** 場のユニットの起動（rules/fieldActivatedAbilities.ts）。 */
+export function isXg3FieldAbilityCard(cardId: string): boolean {
+  return FIELD_ABILITIES.some((a) => a.matches(cardId));
+}
+
+export function canActivateXg3FieldAbility(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  return FIELD_ABILITIES.some((a) => a.matches(card.cardId) && a.canActivate(state, playerId, card));
+}
+
+export function activateXg3FieldAbility(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
+  const entry = FIELD_ABILITIES.find((a) => a.matches(card.cardId) && a.canActivate(state, playerId, card));
+  return entry ? entry.resolve(state, playerId, card) : state;
+}
+
+/**
+ * 合法手の後処理（core/legalActions.ts）: XG3-024・XG3-025 で「自軍ラッシュフェイズを行うとき、かわりに」効果を発動したターンは、
+ * そのラッシュフェイズのラッシュ（手札から・ゾーンから出す）をもう行わない。
+ */
+export function filterXg3LegalActions(state: GameState, actions: GameAction[]): GameAction[] {
+  const replaced = state.xg3?.rushPhaseReplaced;
+  if (!replaced || replaced.turn !== state.turn || replaced.ownerId !== state.activePlayer || state.phase !== "rush") return actions;
+  if (state.pendingEffectChoice || state.pendingEffectRush || state.pendingCommandPayment || state.pendingZordSetup) return actions;
+  return actions.filter(
+    (a) =>
+      a.playerId !== replaced.ownerId ||
+      !(a.type === "rush" || a.type === "begin_zord_setup" || a.type === "self_rush_from_zone" || (a.type === "initiate_command_payment" && a.kind === "category_use")),
+  );
 }
 
 /** ユニットがストライクしたとき（events/listeners/strikeDeclaredListener.ts）。 */

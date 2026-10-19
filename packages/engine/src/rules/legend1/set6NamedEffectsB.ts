@@ -7,6 +7,7 @@ import { isSameCardIdentity } from "@rangers-strike/cards";
  * - 継続効果・制限の参照関数（BP/SP 補正、ストライク・バトル進入の制限など）。
  * 構成は rules/legend1/set5NamedEffects.ts と同じ。
  */
+import { xg3SizeNow } from "../xg3/xg3Fields";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, isSmallUnit, unitSizeOf } from "../../core/catalog";
@@ -200,6 +201,8 @@ export function zubaanIsLarge(state: GameState, instance: CardInstance): boolean
 /** 現在 S ユニットか（RS-420 が L ユニットになっていれば S ではない）。 */
 export function isSmallUnitNow(state: GameState, _playerId: PlayerId, instance: CardInstance): boolean {
   if (!isSmallUnit(state.definitions, instance)) return false;
+  // XG3-029 ※（自軍 M ビークルがあれば M ユニット。rules/xg3/xg3Fields.ts）。
+  if (xg3SizeNow(state, instance)) return false;
   return !zubaanIsLarge(state, instance);
 }
 

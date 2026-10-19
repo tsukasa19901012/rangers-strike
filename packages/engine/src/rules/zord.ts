@@ -578,10 +578,18 @@ export function isValidZordUpMaterial(
             normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(named))
           );
         }
+        // 「特徴「X」を持つ自軍ユニット1体をパワーゾーンに送る」はその特徴（印刷）を持つ S ユニットだけ（XG3-041 仮面ライダーディケイドCF
+        // 「ディケイドライバー」atwiki/page-2007）。同じ本文の再録（XP-005・XG2-042）はそれぞれのシリーズの担当なので XG3-041 の印刷に限る。
+        const feature = condition.conditionId === "send_s_unit_to_power" && rushingCardId === "XG3-041" ? featurePowerPartner(condition.text) : undefined;
+        if (feature) return isValidPowerMaterial(definitions, card, rushingInstanceId) && (def.features ?? []).includes(feature);
         return isValidPowerMaterial(definitions, card, rushingInstanceId);
       }
       return false;
   }
+}
+
+function featurePowerPartner(text: string | undefined): string | undefined {
+  return /^特徴[「｢]([^」｣]+)[」｣]を持つ自軍S?ユニット1体をパワーゾーンに送る。?$/.exec((text ?? "").normalize("NFKC").trim())?.[1];
 }
 
 /**

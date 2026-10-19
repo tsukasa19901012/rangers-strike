@@ -46,3 +46,9 @@ export const UNIT_RUSHED_HOOKS: Array<(state: GameState, rusherPlayerId: PlayerI
 export const START_PHASE_HOOKS: Array<(state: GameState, playerId: PlayerId) => GameState> = [];
 /** ユニットがストライクしたとき（events/listeners/strikeDeclaredListener.ts）。 */
 export const STRIKE_HOOKS: Array<(state: GameState, strikerPlayerId: PlayerId, striker: CardInstance) => GameState> = [];
+/** 場のユニットの起動（activate_field_unit_ability。rules/fieldActivatedAbilities.ts）。 */
+export const FIELD_ABILITIES: Array<{
+  matches: (cardId: string) => boolean;
+  canActivate: (state: GameState, playerId: PlayerId, card: CardInstance) => boolean;
+  resolve: (state: GameState, playerId: PlayerId, card: CardInstance) => GameState;
+}> = [];

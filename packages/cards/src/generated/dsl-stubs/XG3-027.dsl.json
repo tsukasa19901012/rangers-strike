@@ -40,12 +40,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-027::fuaiyaborukurashu",
-          "duration": "turn"
+          "keyword": "xg3::XG3-027::fireball",
+          "duration": "permanent"
         }
       ]
     }

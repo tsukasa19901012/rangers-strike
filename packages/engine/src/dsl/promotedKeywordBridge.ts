@@ -1,4 +1,5 @@
 import { rk8SkipsPromotedSpFloor } from "../rules/rk/rk8UnitEffects";
+import { xg3NoAttackTextDisabled } from "../rules/xg3/xg3Fields";
 import { isDivingOrochi } from "../rules/errataCardEffects";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
@@ -667,7 +668,8 @@ export function promotedDefenderBlocksAttack(
   }
 
   const attackerBp = quickBpForAttackCheck(state, attackerPlayerId, attacker.card);
-  const keywords = cachedCardGrantKeywords(defender.card.cardId);
+  // XG3-037【烏賊墨砲】で「アタックされない」テキストが無効になったユニット（rules/xg3/xg3Fields.ts）。
+  const keywords = xg3NoAttackTextDisabled(state, defender.card.instanceId) ? [] : cachedCardGrantKeywords(defender.card.cardId);
 
   for (const keyword of keywords) {
     if (keyword === "enemy_cannot_attack") return true;

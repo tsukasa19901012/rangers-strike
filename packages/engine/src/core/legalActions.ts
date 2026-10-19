@@ -152,7 +152,7 @@ import { rm1ActsAsVehicle } from "../rules/rm/rm1Fields";
 import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "../rules/rm/rm2Effects";
 import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
 import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
-import { canConfirmXg3Choice, isXg3ChoiceEffect } from "../rules/xg3/xg3Effects";
+import { canConfirmXg3Choice, filterXg3LegalActions, isXg3ChoiceEffect } from "../rules/xg3/xg3Effects";
 import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
@@ -1968,7 +1968,8 @@ export function getLegalActions(input: GameState): GameAction[] {
   const state = withEffectiveRushConditionDefinitions(input);
   // 追加条件の素材の特徴（効果・フェイズで追加された特徴）はこの状態で判定する（rules/zordFeatureContext.ts）。
   // 合法判定の中で乱数を使っても、状態の rngState から作るので決定的（core/rng.ts）。
-  const actions = runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCoreWithMemo(state))).value;
+  // XG3-024・XG3-025（ラッシュフェイズのかわりに発動した後）の絞り込み（rules/xg3/xg3Effects.ts）。
+  const actions = filterXg3LegalActions(state, runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCoreWithMemo(state))).value);
   if (cache && engineSideEffectCount() === sideEffectsBefore) {
     for (const action of actions) deepFreeze(action);
     cache.set(input, [...actions]);

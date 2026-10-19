@@ -35,13 +35,13 @@
       "name": "隙間より這い出す者達",
       "text": "これが自軍ゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、これを自軍ラッシュエリアに出してもよい。（この効果でラッシュできる「ナナシ連中」の数は、1ターンにつき2体までとする）",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-033::yoriisu",
+          "keyword": "xg3::XG3-033::nanashi",
           "duration": "permanent"
         }
       ]
