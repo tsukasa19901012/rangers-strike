@@ -268,9 +268,17 @@ describe("RK-150 ゼロライナードリル", () => {
     expect(zoneOf(s, "player2", "SPEC-MORPH-T:t")).toBe("discard");
   });
 
-  it.todo(
-    "RK-150: コミュニティQ&A — 敵軍捨札が0枚で、敵軍パワーゾーンに「相手に選ばれない」カードがあるときは、捨札にしたカードを選び直せず敵軍のパワーが減る（出典: atwiki/page-676 コメント欄）— ゾーンにあるカードに「相手に選ばれない」が効くか（faq-rider-1 は効かない、atwiki・faq-card-3 RS-149 Q1 は効く）がユーザー確認待ち（問い a）のため",
-  );
+  // ゾーン・捨札のオモテ向きのカードにも「相手に選ばれない」が効く（ユーザー決定 2026-10-19。README §5.7 j）ので、コメント欄の回答どおりになる。
+  it("RK-150: コミュニティQ&A — 敵軍捨札が0枚で、敵軍パワーゾーンに「相手に選ばれない」カード（RK-054）があるときは、捨札にしたそのカードを選び直せず敵軍のパワーが減る（出典: atwiki/page-676 コメント欄・ユーザー決定 2026-10-19「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」）", () => {
+    let s = confirm(rushed({ power: [faceUp("RK-054", "gt"), faceUp("SPEC-ES", "p1")], discard: [] }));
+    expectChoiceFrom(s, "player1", "RK-150");
+    expect(choiceIds(s)).toEqual(["SPEC-ES:p1"]);
+    s = resolveAll(pick(s, "SPEC-ES:p1"));
+    expect(zoneOf(s, "player2", "SPEC-ES:p1")).toBe("power");
+    expect(zoneOf(s, "player2", "RK-054:gt")).toBe("discard");
+    expect(s.players.player2.power).toHaveLength(1);
+  });
+
 });
 
 // ===========================================================================

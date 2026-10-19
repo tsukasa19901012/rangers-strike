@@ -140,6 +140,25 @@ describe("RS-590 クエスター・レイ", () => {
     expect(s.players.player1.hand).toHaveLength(0);
   });
 
+  // ユーザー決定（2026-10-19）「クエスターレイ等の相手の手札を見て選ぶ場合も指しています」（docs/rules/README.md §5.7 j）。
+  it("RS-590: 【グレイボンバー】相手の手札を見て選ぶので、「相手に選ばれない」を持つカード（XG3-066 仮面ライダーサソードRF。NC を持つ S ユニット）は選べない（出典: ユーザー決定 2026-10-19「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」「クエスターレイ等の相手の手札を見て選ぶ場合も指しています」・XG3-066 本文「※これはアタックされる以外では相手に選ばれない」）", () => {
+    const b = board(fill(4));
+    const s0 = { ...b, players: { ...b.players, player2: { ...b.players.player2, hand: [inst("XG3-066", "sa"), ...b.players.player2.hand] } } };
+    let s = enterSeq(s0, ["RS-590:q"]);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-590");
+    s = pick(s, "RS-590:q");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-590");
+    expect(choiceIds(s)).toEqual(["RS-059:blue"]);
+  });
+
+  it("RS-590: 【グレイボンバー】見た手札に「相手に選ばれない」カードしかなければ、選ぶカードがなく何も起きない（出典: ユーザー決定 2026-10-19「クエスターレイ等の相手の手札を見て選ぶ場合も指しています」）", () => {
+    const b = board(fill(4));
+    const s0 = { ...b, players: { ...b.players, player2: { ...b.players.player2, hand: [inst("XG3-066", "sa"), inst("TST-OP", "eo")] } } };
+    const s = resolveAll(enterSeq(s0, ["RS-590:q"]), ["RS-590:q", "XG3-066:sa"]);
+    expect(zoneOf(s, "player2", "XG3-066:sa")).toBe("hand");
+    expect(s.players.player1.hand).toHaveLength(0);
+  });
+
   it.todo(
     "RS-590: 【グレイボンバー】RC を持つ S ユニットのカードを選べば、その RC の効果をこのユニットの効果として発動する（出典: atwiki/page-1200「ＮＣかＲＣを持つSユニット」）— RC を持つ S ユニットの RC 効果を手札から借りて発動させたかを公開 API で観測できる組み合わせがないため",
   );
@@ -428,6 +447,26 @@ describe("RS-594 ガンパード", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:es")).toBe("power");
     expect(zoneOf(s, "player2", "TST-UNIT-2:em")).toBe("hand");
     expect(zoneOf(s, "player2", "TST-OP:eo")).toBe("hand");
+  });
+
+  // ユーザー決定（2026-10-19）— 見ないで選ぶ3枚は「相手に選ばれない」で外さないが、お互いに見た後で S ユニットのカードを選ぶときは外す（docs/rules/README.md §5.7 j）。
+  it("RS-594: 【ガンパードガン】見ないで選ぶ手札には「相手に選ばれない」カード（RK-054）も選べるが、お互いに見た後の S ユニットの選択では選べない（出典: ユーザー決定 2026-10-19「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」・atwiki/page-1203「選んだカードをお互いで見る。選んだカードの中からSユニットのカードを1枚選び」）", () => {
+    const b = ncBoard();
+    const s0 = { ...b, players: { ...b.players, player2: { ...b.players.player2, hand: [inst("RK-054", "rf"), inst("TST-UNIT-0", "es"), inst("TST-OP", "eo")] } } };
+    let s = enterSeq(s0, ["RS-594:gp"]);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-594");
+    expect(choiceIds(s)).toContain("RK-054:rf");
+    s = pick(pick(pick(s, "RK-054:rf"), "TST-UNIT-0:es"), "TST-OP:eo");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-594");
+    expect(choiceIds(s)).toEqual(["TST-UNIT-0:es"]);
+  });
+
+  it("RS-594: 【ガンパードガン】お互いに見たカードの S ユニットが「相手に選ばれない」カードだけなら、パワーゾーンに置くカードはない（出典: ユーザー決定 2026-10-19）", () => {
+    const b = ncBoard();
+    const s0 = { ...b, players: { ...b.players, player2: { ...b.players.player2, hand: [inst("RK-054", "rf"), inst("TST-OP", "eo")] } } };
+    const s = resolveAll(enterSeq(s0, ["RS-594:gp"]), ["RK-054:rf", "TST-OP:eo"]);
+    expect(zoneOf(s, "player2", "RK-054:rf")).toBe("hand");
+    expect(s.players.player2.power).toHaveLength(0);
   });
 
   it("RS-594: 【ガンパードガン】任意 — 選ばなければ相手の手札は変わらない（出典: atwiki/page-1203「選んでもよい」）", () => {

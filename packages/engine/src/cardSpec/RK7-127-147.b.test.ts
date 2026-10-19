@@ -278,9 +278,19 @@ describe("RK-136 仮面ライダードレイクRF", () => {
     expect(legal(s).some((a) => a.type === "battle" && a.defenderInstanceId === "RK-136:rf")).toBe(true);
   });
 
-  it.todo(
-    "RK-136: ※「相手に選ばれない」は、パワーゾーン・捨札などゾーンにあるときも有効か（出典: grnrngr/faq-rider-1 の「パワーゾーンやコマンドゾーンにあるカードは…有効ではない」と、atwiki 公式回答の転載・grnrngr/faq-card-3 RS-149 Q1「有効」）— 公式の回答どうしが食い違い、ユーザーの判断待ち（エンジンは現状「ゾーンでも有効」のまま変えていない）",
-  );
+  // 公式の回答どうしの食い違い（grnrngr/faq-rider-1 と atwiki 公式回答の転載・grnrngr/faq-card-3 RS-149 Q1）は、ユーザー決定（2026-10-19）で後者を採る（README §5.7 j）。
+  it("RK-136: ※「相手に選ばれない」は、オモテ向きでパワーゾーンにあるときも有効（敵軍 RK-061 の RC【一本釣り】で選べない）（出典: grnrngr/faq-card-3 RS-149 Q1・ユーザー決定 2026-10-19「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」）", () => {
+    const s = rideOff(mount(board({ rush: [inst("RK-061", "dr"), inst("RK-058", "v")] }, { power: [inst("RK-136", "rf"), inst("SPEC-E2", "p")] }), "RK-061:dr", "RK-058:v"), true);
+    expectChoiceFrom(s, "player1", "RK-061");
+    expect(choiceIds(s)).toEqual(["SPEC-E2:p"]);
+  });
+
+  it("RK-136: ※「相手に選ばれない」は、捨札にあるときも有効（敵軍 RK-163 の RC【無意識の記憶力】で選べない）（出典: grnrngr/faq-card-3 RS-149 Q1「オモテ向きのゾーン・捨札では常に有効」・ユーザー決定 2026-10-19「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」）", () => {
+    const s = rideOff(mount(board({ rush: [inst("RK-163", "az"), inst("RK-058", "v")] }, { discard: [inst("RK-136", "rf"), inst("SPEC-E2", "d")], battle: [inst("RK-136", "rf2"), inst("SPEC-E2", "b")] }), "RK-163:az", "RK-058:v"), true);
+    expectChoiceFrom(s, "player1", "RK-163");
+    expect(choiceIds(s)).toEqual(["SPEC-E2:d"]);
+  });
+
 });
 
 // ===========================================================================

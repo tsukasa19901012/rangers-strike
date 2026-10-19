@@ -40,6 +40,7 @@ import {
   fill,
   inst,
   lastBattleBps,
+  mount,
   ncEnter,
   p1Battle,
   passEntry,
@@ -48,6 +49,7 @@ import {
   rcUnit,
   releasedCat,
   resolveAll,
+  rideOff,
   ridingPair,
   rushFromHand,
   rushOffered,
@@ -458,9 +460,17 @@ describe("RK-054 仮面ライダーガタックRF", () => {
     expect(bpOf(s, "player2", "RK-054:rf")).toBe(1500);
   });
 
-  it.todo(
-    "RK-054: 公式Q&A — パワーゾーン・コマンドゾーン・捨札にあるときも「相手に選ばれない」が有効か（出典: grnrngr/faq-rider-1 RK-054 Q「いいえ。…パワーゾーンやコマンドゾーンにあるカードは…有効ではない」と、atwiki/page-171 Q2（公式回答の転載）・grnrngr/faq-card-3 RS-149 Q1「オモテ向きのゾーン・捨札では常に有効」）— 公式の回答どうしが食い違い、日付がなくどちらが新しいか決められないため保留（現状のエンジンは後者で、cardSpec/RS3-123-150.c.test.ts RS-149 Q1 が確認済み）",
-  );
+  // 公式の回答どうしが食い違っていた（grnrngr/faq-rider-1 RK-054 Q「パワーゾーンやコマンドゾーンにあるカードは…有効ではない」と、
+  // atwiki/page-171 Q2・grnrngr/faq-card-3 RS-149 Q1「オモテ向きのゾーン・捨札では常に有効」）。ユーザー決定（2026-10-19）で後者を採る（README §5.7 j）。
+  it("RK-054: 公式Q&A — 敵軍パワーゾーンにオモテ向きで置かれていても「相手に選ばれない」は有効（敵軍 RK-061 ドレイクRF の RC【一本釣り】で選べない）（出典: atwiki/page-171 Q2・grnrngr/faq-card-3 RS-149 Q1・ユーザー決定 2026-10-19「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」）", () => {
+    const fishing = rideOff(
+      mount(board({ rush: [inst("RK-061", "rf"), inst("RK-058", "v")] }, { power: [inst("RK-054", "gt"), inst("SPEC-E2000", "p")] }), "RK-061:rf", "RK-058:v"),
+      true,
+    );
+    expectChoiceFrom(fishing, "player1", "RK-061");
+    expect(choiceIds(fishing)).toEqual(["SPEC-E2000:p"]);
+  });
+
 });
 
 // ===========================================================================

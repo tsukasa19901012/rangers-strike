@@ -41,6 +41,7 @@ import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
 import { unitFeatures } from "../addedFeatures";
 import { rs603BlocksVehicle } from "../rs/rsCatchallField";
 import { namedTextNegated } from "./set6NamedEffects348";
+import { cardNotSelectableByOpponent } from "../../keywords/effectTargetability";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -470,7 +471,10 @@ function finishGunpardPick(state: GameState, pending: PendingEffectChoice, selec
   let next = patchPlayer(close(state, pending), enemyId, (p) =>
     addNextTurnRuleModifier(p, `${GUNPARD_RETURN_RULE_PREFIX}${pending.sourceInstanceId ?? "rs594"}:${state.turn}`, { sourceCardId: "RS-594" }),
   );
-  const sUnits = shown.filter((c) => isSmallUnit(state.definitions, c.cardId)).map((c) => c.instanceId);
+  // お互いに見たカードの中から選ぶので、「相手に選ばれない」を持つカードは選べない（ユーザー決定 2026-10-19
+  // 「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」。docs/rules/README.md §5.7 j）。
+  // 見ないで選ぶ最初の3枚は外さない（手札を見ていない）。
+  const sUnits = shown.filter((c) => isSmallUnit(state.definitions, c.cardId) && !cardNotSelectableByOpponent(c.cardId)).map((c) => c.instanceId);
   if (sUnits.length === 0) return { state: proceed(next, pending), log };
   next = openEffectChoice(next, {
     ...pending,
@@ -850,7 +854,11 @@ CHOICE_RESOLVERS[SOUL_ART_EFFECT_ID] = (state, playerId) => {
   const pending = state.pendingEffectChoice!;
   const enemyHand = state.players[opponent(playerId)].hand;
   const { allowRc } = borrowMeta(pending.sourceCardId);
-  const ids = enemyHand.filter((c) => borrowKinds(state, c.cardId, allowRc).length > 0).map((c) => c.instanceId);
+  // 相手の手札を見て選ぶので、「相手に選ばれない」を持つカードは選べない（ユーザー決定 2026-10-19「クエスターレイ等の相手の手札を
+  // 見て選ぶ場合も指しています」。docs/rules/README.md §5.7 j）。
+  const ids = enemyHand
+    .filter((c) => borrowKinds(state, c.cardId, allowRc).length > 0 && !cardNotSelectableByOpponent(c.cardId))
+    .map((c) => c.instanceId);
   const log = logFor(state, playerId, pending.sourceCardId, `${SOUL_ART_EFFECT_ID}:look`);
   if (ids.length === 0) return { state: finish(state, pending), log };
   return {

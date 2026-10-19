@@ -299,7 +299,7 @@ CHOICE_SKIPPERS[FRONT_AXE_EFFECT_ID] = simpleSkip();
 // 「敵軍パワーゾーンのダメージ以外のカードの枚数を数えてから、そのカードをすべて捨札にしてもよい。そうしたとき、数えた枚数と同じ枚数になるまで
 //  敵軍捨札からカードを選び、敵軍パワーゾーンにオモテ向きで置く。」（atwiki/page-676）
 // - まず捨札にするかを選ぶ（任意）。その後、自分が敵軍捨札（捨札にしたばかりのカードを含む）から1枚ずつ数えた枚数まで選ぶ（捨札が尽きたら止まる）。
-// - オモテ向きの「相手に選ばれない」カードは選べない（エンジンの今の扱い。ゾーンで効くかはユーザー確認待ちの問い a）。
+// - オモテ向きの「相手に選ばれない」カードは選べない（ユーザー決定 2026-10-19。docs/rules/README.md §5.7 j）。
 
 export const DRILL_EFFECT_ID = "rk150_drill";
 export const DRILL_PICK_EFFECT_ID = "rk150_drill_pick";
@@ -716,7 +716,7 @@ function applyAgitoGf(state: GameState, ctx: GrantKeywordContext): GrantKeywordR
 // RK-163 オルタナティブ・ゼロ【無意識の記憶力】（RC）
 // 「敵軍捨札からユニットカードを1枚選んでもよい。そうしたとき、選んだカードと同じカード名の敵軍ユニットを1体選び、撃破する。」（atwiki/page-650）
 // - 「これは「○○」として使える」カードは、そのカード名としても扱う（Q1）。同じカード名の敵軍ユニットはエリア・サイズを問わない（カード評価）。
-// - オモテ向きの「相手に選ばれない」カードは捨札から選べない（エンジンの今の扱い。問い a）。
+// - オモテ向きの「相手に選ばれない」カードは捨札から選べない（ユーザー決定 2026-10-19。docs/rules/README.md §5.7 j）。
 
 export const ALT_ZERO_EFFECT_ID = "rk163_unconscious_memory";
 export const ALT_ZERO_DESTROY_EFFECT_ID = "rk163_unconscious_memory_destroy";

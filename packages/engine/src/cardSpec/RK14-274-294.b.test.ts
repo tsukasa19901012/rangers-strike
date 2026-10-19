@@ -60,6 +60,7 @@ import {
   withStacked,
   zoneOf,
 } from "./RK14-274-294.helpers";
+import { cardHasMorphKeyword } from "../keywords/battleKeywords";
 
 const KW_MORPH =
   "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選びこれと置き換えてもよい）";
@@ -490,7 +491,17 @@ describe("RK-287 ゴルトフェニックス", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-287");
   });
 
-  it.todo(
-    "RK-287: 敵軍コマンドゾーンのモーフを持つユニットカードが「相手に選ばれない」を持つとき選べるか（出典: atwiki/page-1355）— ゾーンのカードにも「相手に選ばれない」が効くかは公式の出典が食い違い、ユーザー確認待ち（grnrngr/faq-rider-1 は効かない、atwiki・grnrngr/faq-card-3 RS-149 Q1 は効く。エンジンは今の扱いのまま「選べない」）",
-  );
+  // モーフと「相手に選ばれない」を両方持つ実カードはないので、この盤面だけ RK-054 仮面ライダーガタックRF の定義の本文にモーフを足す
+  // （「相手に選ばれない」はカード ID の能力として残る）。
+  it("RK-287: 敵軍コマンドゾーンのモーフを持つユニットカードが「相手に選ばれない」を持つときは選べない（出典: atwiki/page-1355・ユーザー決定 2026-10-19「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」）", () => {
+    const base = rushPhase({ hand: [inst("RK-287", "gf")], command: releasedCat("WB", 1), power: powerCards(6) }, { command: [inst("RK-054", "gt"), inst("SPEC-MORPH", "mu")] });
+    const def = base.definitions["RK-054"]!;
+    const s0: GameState = { ...base, definitions: { ...base.definitions, "RK-054": { ...def, text: `${KW_MORPH} ${def.text ?? ""}` } } };
+    expect(cardHasMorphKeyword(s0.definitions, "RK-054")).toBe(true);
+    const r = rushFromHand(s0, "player1", "RK-287:gf");
+    expect(r.ok, r.error).toBe(true);
+    expectChoiceFrom(r.state, "player1", "RK-287");
+    expect(choiceIds(r.state)).toEqual(["SPEC-MORPH:mu"]);
+  });
+
 });

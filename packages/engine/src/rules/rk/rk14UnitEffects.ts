@@ -348,7 +348,7 @@ function openGadoru(state: GameState, playerId: PlayerId, self: CardInstance): G
   const ids = state.players[enemyId].power
     .filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
-      // 「相手に選ばれない」を持つオモテ向きのカードは選べない（今のエンジンの扱い。ゾーンでも効くかはユーザー確認待ち）。
+      // 「相手に選ばれない」を持つオモテ向きのカードは選べない（ユーザー決定 2026-10-19。docs/rules/README.md §5.7 j）。
       return !c.faceDown && d?.type === "unit" && d.size === "S" && !cardNotSelectableByOpponent(c.cardId);
     })
     .map((c) => c.instanceId);
@@ -774,7 +774,7 @@ export const NIGHTMARE_EFFECT_ID = "rk287_instant_nightmare";
 function applyNightmare(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const enemyId = opponent(ctx.playerId);
   const ids = state.players[enemyId].command
-    // 「相手に選ばれない」を持つカードは選べない（今のエンジンの扱い。ゾーンでも効くかはユーザー確認待ち）。
+    // 「相手に選ばれない」を持つカードは選べない（ユーザー決定 2026-10-19。docs/rules/README.md §5.7 j）。
     .filter((c) => isUnitCard(state, c.cardId) && cardHasMorphKeyword(state.definitions, c.cardId) && !cardNotSelectableByOpponent(c.cardId))
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "rk287:no_targets" };

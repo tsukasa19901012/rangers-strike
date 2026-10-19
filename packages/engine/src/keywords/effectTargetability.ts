@@ -16,6 +16,10 @@ import { unitFeatures } from "../rules/addedFeatures";
 /**
  * 場以外（コマンドゾーン等）にあるカードが「相手に選ばれない」能力（not_selectable／アタックされる以外では
  * 相手に選ばれない）を持つか。オモテ向きのカードはその能力が有効（atwiki/page-81 RS-039 Q2 ガタックRF）。
+ * ユーザー決定（2026-10-19）「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」
+ * 「クエスターレイ等の相手の手札を見て選ぶ場合も指しています」: 相手が見て選ぶとき（オモテ向きのゾーン・捨札、見た手札、
+ * お互いに見たカード）はこれで候補から外す。見ないで選ぶ手札（RS-594 の最初の3枚・RK-276・RM-037 等）は外さない。
+ * docs/rules/README.md §5.7 j。
  */
 export function cardNotSelectableByOpponent(cardId: string): boolean {
   return cardHasGrantKeyword(cardId, "not_selectable") || cardHasNotSelectableExceptAttack(cardId);

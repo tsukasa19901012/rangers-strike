@@ -14,6 +14,7 @@ import { canPlayHandCounter } from "../operationCounters";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEffects";
 import { findCardInField } from "../fieldLookup";
+import { cardNotSelectableByOpponent } from "../../keywords/effectTargetability";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { cardName, effectiveBp, getDefinition, isCounterOperation, isSmallUnit } from "../../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
@@ -531,7 +532,8 @@ function beginCarNavic(state: GameState, ctx: GrantKeywordContext): GameState | 
   const enemyId = opponent(ctx.playerId);
   const enemy = state.players[enemyId];
   const ids = enemy.hand
-    .filter((c) => isCounterOperation(getDefinition(state.definitions, c.cardId)))
+    // 見て選ぶので、「相手に選ばれない」を持つカードは選べない（ユーザー決定 2026-10-19。docs/rules/README.md §5.7 j）。
+    .filter((c) => isCounterOperation(getDefinition(state.definitions, c.cardId)) && !cardNotSelectableByOpponent(c.cardId))
     .map((c) => c.instanceId);
   if (ids.length === 0) return null;
   return openEffectChoice(state, {

@@ -178,7 +178,7 @@ function selectableEnemy(state: GameState, playerId: PlayerId, sourceCardId: str
 
 /**
  * ゾーン（パワーゾーン・コマンドゾーン）の敵軍のカードを選べるか。「相手に選ばれない」を持つカードは選べない
- * （今のエンジンの扱い。ゾーンでも効くかはユーザー確認待ち。cardSpec の it.todo）。
+ * （ユーザー決定 2026-10-19。docs/rules/README.md §5.7 j）。
  */
 function selectableZoneCard(cardId: string): boolean {
   return !cardNotSelectableByOpponent(cardId);

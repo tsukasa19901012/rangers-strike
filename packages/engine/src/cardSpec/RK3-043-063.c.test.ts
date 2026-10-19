@@ -158,9 +158,19 @@ describe("RK-057 仮面ライダーザビーRF", () => {
     expect(bpOf(board({ battle: [inst("RK-046", "bm")] }, { battle: [inst("RK-057", "rf")] }), "player2", "RK-057:rf")).toBe(500);
   });
 
-  it.todo(
-    "RK-057: 公式Q&A — 捨札・パワーゾーンにあるときも「相手に選ばれない」が有効か（出典: grnrngr/faq-rider-1 RK-057 Q「いいえ。…パワーゾーンやコマンドゾーンにあるカードは…有効ではない」と、atwiki/page-161 Q3（公式回答の転載）「オモテ向きのゾーン・捨札では常に有効」）— 公式の回答どうしが食い違い、日付がなくどちらが新しいか決められないため保留",
-  );
+  // 公式の回答どうしの食い違い（grnrngr/faq-rider-1 RK-057 Q と atwiki/page-161 Q3）は、ユーザー決定（2026-10-19）で atwiki 側を採る（README §5.7 j）。
+  it("RK-057: 公式Q&A — 敵軍パワーゾーンにオモテ向きで置かれていても「相手に選ばれない」は有効（敵軍 RK-061 の RC【一本釣り】で選べない）（出典: atwiki/page-161 Q3「オモテ向きのゾーン・捨札では常に有効」・ユーザー決定 2026-10-19「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」）", () => {
+    const s = rideOff(mount(board({ rush: [inst("RK-061", "rf"), inst("RK-058", "v")] }, { power: [inst("RK-057", "zb"), inst("SPEC-E2000", "p")] }), "RK-061:rf", "RK-058:v"), true);
+    expectChoiceFrom(s, "player1", "RK-061");
+    expect(choiceIds(s)).toEqual(["SPEC-E2000:p"]);
+  });
+
+  it("RK-057: 公式Q&A — 敵軍捨札にあっても「相手に選ばれない」は有効（敵軍 RK-163 オルタナティブ・ゼロの RC【無意識の記憶力】で選べない）（出典: atwiki/page-161 Q3「オモテ向きのゾーン・捨札では常に有効」・ユーザー決定 2026-10-19「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」）", () => {
+    const s = rideOff(mount(board({ rush: [inst("RK-163", "az"), inst("RK-058", "v")] }, { discard: [inst("RK-057", "zb"), inst("SPEC-E2000", "d")], battle: [inst("RK-057", "zb2"), inst("SPEC-E2000", "b")] }), "RK-163:az", "RK-058:v"), true);
+    expectChoiceFrom(s, "player1", "RK-163");
+    expect(choiceIds(s)).toEqual(["SPEC-E2000:d"]);
+  });
+
 });
 
 // ===========================================================================
@@ -370,9 +380,13 @@ describe("RK-061 仮面ライダー電王RF", () => {
     expect(zoneOf(s, "player2", "SPEC-KAMEN:k")).toBe("discard");
   });
 
-  it.todo(
-    "RK-061: 公式Q&A — 敵軍パワーゾーンにオモテ向きの仮面ライダーカブトRF（RK-065「相手に選ばれない」）は選べない（出典: atwiki/page-166 Q3（公式回答の転載）と、grnrngr/faq-rider-1 RK-054・RK-057 欄「パワーゾーンやコマンドゾーンにあるカードは…有効ではない」）— 公式の回答どうしが食い違い、どちらが新しいか決められないためユーザーの判断待ち（エンジンは現状「選べない」のまま。RK-065 側の同じ問いは cardSpec/RK4-064-084.a.test.ts）",
-  );
+  // 公式 Q3（atwiki/page-166。公式回答の転載）と grnrngr/faq-rider-1 RK-054・RK-057 欄の食い違いは、ユーザー決定（2026-10-19）で Q3 を採る（README §5.7 j）。
+  it("RK-061: 公式Q&A — 敵軍パワーゾーンにオモテ向きの仮面ライダーカブトRF（RK-065「相手に選ばれない」）は選べない（出典: atwiki/page-166 Q3・ユーザー決定 2026-10-19「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」）", () => {
+    const s = fishing({ power: [inst("RK-065", "kb"), inst("SPEC-E2000", "p")] });
+    expectChoiceFrom(s, "player1", "RK-061");
+    expect(choiceIds(s)).toEqual(["SPEC-E2000:p"]);
+  });
+
 });
 
 // ===========================================================================

@@ -310,9 +310,14 @@ describe("RK-065 仮面ライダーカブトRF", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:u")).toBe("battle");
   });
 
-  it.todo(
-    "RK-065: 公式Q&A — パワーゾーンにオモテ向きのときも RK-061【一本釣り】で選ばれない（出典: atwiki/page-163 Q3（公式回答の転載）・grnrngr/faq-card-3 RS-149 Q1 と、grnrngr/faq-rider-1 RK-054・RK-057 欄「パワーゾーンやコマンドゾーンにあるカードは…有効ではない」）— 公式の回答どうしが食い違い、ユーザーの判断待ち（エンジンは現状「選ばれない」のまま）",
-  );
+  // 公式の回答どうしの食い違い（atwiki/page-163 Q3・grnrngr/faq-card-3 RS-149 Q1 と grnrngr/faq-rider-1 RK-054・RK-057 欄）は、
+  // ユーザー決定（2026-10-19）で前者を採る（README §5.7 j）。
+  it("RK-065: 公式Q&A — パワーゾーンにオモテ向きのときも RK-061【一本釣り】で選ばれない（出典: atwiki/page-163 Q3・grnrngr/faq-card-3 RS-149 Q1・ユーザー決定 2026-10-19「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」）", () => {
+    const s = rideOff(mount(board({ rush: [inst("RK-061", "dr"), inst("RK-058", "v")] }, { power: [inst("RK-065", "rf"), inst("SPEC-E2000", "p")] }), "RK-061:dr", "RK-058:v"), true);
+    expectChoiceFrom(s, "player1", "RK-061");
+    expect(choiceIds(s)).toEqual(["SPEC-E2000:p"]);
+  });
+
 });
 
 // ===========================================================================

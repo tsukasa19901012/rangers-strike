@@ -176,7 +176,7 @@ function ownTurn(state: GameState, playerId: PlayerId): boolean {
   return state.activePlayer === playerId;
 }
 
-/** 敵軍のゾーンのカードを選べるか（オモテ向きの「相手に選ばれない」カードは選べない。今のエンジンの扱い。問い a の確認待ち）。 */
+/** 敵軍のゾーンのカードを選べるか（オモテ向きの「相手に選ばれない」カードは選べない。ユーザー決定 2026-10-19。docs/rules/README.md §5.7 j）。 */
 function selectableEnemyZoneCard(cardId: string): boolean {
   return !cardNotSelectableByOpponent(cardId);
 }

@@ -676,6 +676,17 @@ describe("RS-588 大いなる獣　レイ", () => {
     expect(zoneOf(s, "player2", "RS-059:blue")).toBe("hand");
   });
 
+  // ユーザー決定（2026-10-19）「クエスターレイ等の相手の手札を見て選ぶ場合も指しています」（docs/rules/README.md §5.7 j）。
+  it("RS-588: 【術魂】相手の手札を見て選ぶので、「相手に選ばれない」を持つ NC の S ユニット（XG3-066 仮面ライダーサソードRF）は選べない（出典: ユーザー決定 2026-10-19「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」「クエスターレイ等の相手の手札を見て選ぶ場合も指しています」）", () => {
+    const b = board(fill(4));
+    const s0 = { ...b, players: { ...b.players, player2: { ...b.players.player2, hand: [inst("XG3-066", "sa"), ...b.players.player2.hand] } } };
+    let s = enterSeq(s0, ["RS-588:r"]);
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-588");
+    s = pick(s, "RS-588:r");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-588");
+    expect(choiceIds(s)).toEqual(["RS-059:blue"]);
+  });
+
   it("RS-588: 【術魂】「怒りの鬼神　ガイ」の次（2番目）ならナンバーに関係なく発動する（出典: atwiki/page-1198「ナンバーに関係なく発動する」）", () => {
     const s = resolveAll(enterSeq(board([inst("RS-587", "gai")]), ["RS-588:r"]), ["RS-059:blue"]);
     expect(s.players.player1.hand).toHaveLength(1);

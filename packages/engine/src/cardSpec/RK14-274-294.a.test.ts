@@ -206,9 +206,12 @@ describe("RK-275 ゴ・ガドル・バ", () => {
     expect(zoneOf(s, "player2", "SPEC-C3:pu")).toBe("discard");
   });
 
-  it.todo(
-    "RK-275: 敵軍パワーゾーンのオモテ向きのカードが「相手に選ばれない」を持つとき選べるか（出典: atwiki/page-1255）— ゾーンのカードにも「相手に選ばれない」が効くかは公式の出典が食い違い、ユーザー確認待ち（grnrngr/faq-rider-1 は効かない、atwiki・grnrngr/faq-card-3 RS-149 Q1 は効く。エンジンは今の扱いのまま「選べない」）",
-  );
+  it("RK-275: 敵軍パワーゾーンのオモテ向きの S ユニットのカードが「相手に選ばれない」を持つとき（RK-054 仮面ライダーガタックRF）は選べない（出典: atwiki/page-1255・ユーザー決定 2026-10-19「ゾーンだけでなく手札等からでも面（オモテ）状態のカードから選ぶ場合は「相手に選ばれない」が効く」）", () => {
+    const s = enter(board({ rush: [inst("RK-275", "gd")] }, { power: [faceUp("RK-054", "gt"), ...enemyPower], damage: 1 }), "RK-275:gd");
+    expectChoiceFrom(s, "player1", "RK-275");
+    expect(choiceIds(s)).toEqual(["SPEC-C3:pu"]);
+  });
+
 });
 
 // ===========================================================================
