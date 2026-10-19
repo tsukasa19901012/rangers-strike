@@ -37,6 +37,7 @@ import {
   releasedCat,
   resolveAll,
   rushBoard,
+  skip,
   skipFrom,
   st,
   sUnit,
@@ -78,33 +79,33 @@ describe("XG5-092 ビジンダー", () => {
   const entered = (command: GameState["players"]["player1"]["command"], p2: Partial<GameState["players"]["player2"]> = {}) =>
     enter(battle({ rush: [inst("XG5-092", "bj")], command }, { battle: [inst("TST-UNIT-0", "s"), inst("SPEC-M", "m")], rush: [inst("TST-UNIT-0", "r")], ...p2 }), "XG5-092:bj");
 
-  it.fails("XG5-092:【天使と悪魔】— DA 以外（ET だけ）なら、敵軍バトルエリアの S ユニットを選べる（M ユニット・ラッシュエリアは選べない。任意） 既知の不具合: CARD-XG5-092 コマンドのカテゴリが1つだけでも【天使と悪魔】が発動しない（出典: atwiki/page-2224「DA以外なら、敵軍バトルエリアからSユニットを1体選び」「発動できる」）", () => {
+  it("XG5-092:【天使と悪魔】— DA 以外（ET だけ）なら、敵軍バトルエリアの S ユニットを選べる（M ユニット・ラッシュエリアは選べない。任意）（出典: atwiki/page-2224「DA以外なら、敵軍バトルエリアからSユニットを1体選び」「発動できる」）", () => {
     const s = entered(releasedCat("ET", 2));
     expectChoiceFrom(s, "player1", "XG5-092");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:s"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-092:【天使と悪魔】— DA 以外なら、選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる 既知の不具合: CARD-XG5-092 【天使と悪魔】が発動せずホールドできない（出典: atwiki/page-2224「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("XG5-092:【天使と悪魔】— DA 以外なら、選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-2224「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(pick(entered(releasedCat("ET", 2)), "TST-UNIT-0:s"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:s")).toBe("command");
     expect(cardIn(s, "player2", "TST-UNIT-0:s")?.commandHeld).toBe(true);
     expect(zoneOf(s, "player1", "XG5-092:bj")).toBe("battle");
   });
 
-  it.fails("XG5-092:【天使と悪魔】— DA 以外で持ち主のコマンドゾーンが5枚なら捨札になる 既知の不具合: CARD-XG5-092 【天使と悪魔】が発動せず捨札にもならない（出典: atwiki/page-2224「置けなければ捨札にする」）", () => {
+  it("XG5-092:【天使と悪魔】— DA 以外で持ち主のコマンドゾーンが5枚なら捨札になる（出典: atwiki/page-2224「置けなければ捨札にする」）", () => {
     const s = resolveAll(pick(entered(releasedCat("ET", 2), { command: releasedCat("WB", 5) }), "TST-UNIT-0:s"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:s")).toBe("discard");
   });
 
-  it.fails("XG5-092:【天使と悪魔】— DA だけなら、敵軍 S ユニット（バトルエリア・ラッシュエリア）を選べる（M ユニットは選べない） 既知の不具合: CARD-XG5-092 DA だけでも【天使と悪魔】が発動しない（出典: atwiki/page-2224「DAなら、敵軍Sユニットを1体選び」）", () => {
+  it("XG5-092:【天使と悪魔】— DA だけなら、敵軍 S ユニット（バトルエリア・ラッシュエリア）を選べる（M ユニットは選べない）（出典: atwiki/page-2224「DAなら、敵軍Sユニットを1体選び」）", () => {
     const s = entered(releasedCat("DA", 2));
     expectChoiceFrom(s, "player1", "XG5-092");
     expect([...choiceIds(s)].sort()).toEqual(["TST-UNIT-0:r", "TST-UNIT-0:s"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-092:【天使と悪魔】— DA なら、これと選んだユニットを撃破する 既知の不具合: CARD-XG5-092 【天使と悪魔】が発動せず撃破できない（出典: atwiki/page-2224「このユニットと選んだユニットを撃破する」）", () => {
+  it("XG5-092:【天使と悪魔】— DA なら、これと選んだユニットを撃破する（出典: atwiki/page-2224「このユニットと選んだユニットを撃破する」）", () => {
     const s = resolveAll(pick(entered(releasedCat("DA", 2)), "TST-UNIT-0:s"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:s")).toBe("discard");
     expect(zoneOf(s, "player1", "XG5-092:bj")).toBe("discard");
@@ -138,25 +139,25 @@ describe("XG5-093 ダブルブラザーパワー", () => {
       EXTRA,
     );
 
-  it.fails("XG5-093: 特徴「人型」を持つ自軍ユニットを選ぶ（人型でないユニットは選べない） 既知の不具合: CARD-XG5-093 使っても何も選ばせない（効果がない）（出典: atwiki/page-2273「特徴「人型」を持つ自軍ユニットを2体選び」）", () => {
+  it("XG5-093: 特徴「人型」を持つ自軍ユニットを選ぶ（人型でないユニットは選べない）（出典: atwiki/page-2273「特徴「人型」を持つ自軍ユニットを2体選び」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "XG5-093");
     expect([...choiceIds(s)].sort()).toEqual(["SPEC-HUM2:h2", "SPEC-HUM3:h3"]);
   });
 
-  it.fails("XG5-093: 選んだ2体の本来の BP の合計（2000＋3000＝5000。BP の増減は数えない）以下の敵軍ユニットを選ぶ 既知の不具合: CARD-XG5-093 効果がなく敵軍ユニットを選べない（出典: atwiki/page-2273「選んだ2体の本来のBPを合計する。そして、合計したBP以下の敵軍ユニットを1体選び」）", () => {
+  it("XG5-093: 選んだ2体の本来の BP の合計（2000＋3000＝5000。BP の増減は数えない）以下の敵軍ユニットを選ぶ（出典: atwiki/page-2273「選んだ2体の本来のBPを合計する。そして、合計したBP以下の敵軍ユニットを1体選び」）", () => {
     const s = pick(pick(used(), "SPEC-HUM2:h2"), "SPEC-HUM3:h3");
     expectChoiceFrom(s, "player1", "XG5-093");
     expect([...choiceIds(s)].sort()).toEqual(["SPEC-E4:e4", "SPEC-E5:e5"]);
   });
 
-  it.fails("XG5-093: 選んだ敵軍ユニットは持ち主のコマンドゾーンにホールド状態で置かれる 既知の不具合: CARD-XG5-093 効果がなくホールドできない（出典: atwiki/page-2273「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("XG5-093: 選んだ敵軍ユニットは持ち主のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-2273「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(pick(pick(pick(used(), "SPEC-HUM2:h2"), "SPEC-HUM3:h3"), "SPEC-E5:e5"));
     expect(zoneOf(s, "player2", "SPEC-E5:e5")).toBe("command");
     expect(cardIn(s, "player2", "SPEC-E5:e5")?.commandHeld).toBe(true);
   });
 
-  it.fails("XG5-093: 持ち主のコマンドゾーンが5枚なら捨札になる 既知の不具合: CARD-XG5-093 効果がなく捨札にもならない（出典: atwiki/page-2273「置けなければ捨札にする」）", () => {
+  it("XG5-093: 持ち主のコマンドゾーンが5枚なら捨札になる（出典: atwiki/page-2273「置けなければ捨札にする」）", () => {
     const s = resolveAll(pick(pick(pick(used({ command: releasedCat("WB", 5) }), "SPEC-HUM2:h2"), "SPEC-HUM3:h3"), "SPEC-E5:e5"));
     expect(zoneOf(s, "player2", "SPEC-E5:e5")).toBe("discard");
   });
@@ -185,7 +186,7 @@ describe("XG5-094 ギルハカイダー", () => {
       EXTRA,
     );
 
-  it.fails("XG5-094:【ハカイダー部隊の決起】— 自軍ラッシュフェイズに発動でき、自軍山札の DA と「メカ」を持つ S ユニットのカードを選べる（任意） 既知の不具合: CARD-XG5-094 自軍ラッシュフェイズに発動できない（出典: atwiki/page-2280「自軍ラッシュフェイズごとに1度だけ次の効果を発動できる⇒自軍山札を見て、DAを持ち特徴「メカ」を持つSユニットのカードを1枚選び」）", () => {
+  it("XG5-094:【ハカイダー部隊の決起】— 自軍ラッシュフェイズに発動でき、自軍山札の DA と「メカ」を持つ S ユニットのカードを選べる（任意）（出典: atwiki/page-2280「自軍ラッシュフェイズごとに1度だけ次の効果を発動できる⇒自軍山札を見て、DAを持ち特徴「メカ」を持つSユニットのカードを1枚選び」）", () => {
     const s0 = board();
     expect(canActivate(s0, "XG5-094:gh")).toBe(true);
     const s = activate(s0, "XG5-094:gh");
@@ -194,7 +195,7 @@ describe("XG5-094 ギルハカイダー", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-094:【ハカイダー部隊の決起】— 選んだカードを手札に加え、その後、手札を1枚選び捨札にする 既知の不具合: CARD-XG5-094 発動できず山札から手札に加えられない（出典: atwiki/page-2280「手札に加えてもよい。その後、山札をシャッフルし、自分の手札を1枚選び捨札にする」）", () => {
+  it("XG5-094:【ハカイダー部隊の決起】— 選んだカードを手札に加え、その後、手札を1枚選び捨札にする（出典: atwiki/page-2280「手札に加えてもよい。その後、山札をシャッフルし、自分の手札を1枚選び捨札にする」）", () => {
     let s = pick(activate(board(), "XG5-094:gh"), "SPEC-DA-MECHA:d1");
     expect(zoneOf(s, "player1", "SPEC-DA-MECHA:d1")).toBe("hand");
     expectChoiceFrom(s, "player1", "XG5-094");
@@ -204,13 +205,13 @@ describe("XG5-094 ギルハカイダー", () => {
     expect(zoneOf(s, "player1", "SPEC-DA-MECHA:d1")).toBe("hand");
   });
 
-  it.fails("XG5-094:【ハカイダー部隊の決起】— 手札に加えなくても、その後に手札を1枚捨札にする 既知の不具合: CARD-XG5-094 発動できず手札を捨札にしない（出典: atwiki/page-2280「〜手札に加えてもよい。その後、…自分の手札を1枚選び捨札にする」）", () => {
-    const s = skipFrom(activate(board(), "XG5-094:gh"), "XG5-094");
+  it("XG5-094:【ハカイダー部隊の決起】— 手札に加えなくても、その後に手札を1枚捨札にする（出典: atwiki/page-2280「〜手札に加えてもよい。その後、…自分の手札を1枚選び捨札にする」）", () => {
+    const s = skip(activate(board(), "XG5-094:gh"));
     expectChoiceFrom(s, "player1", "XG5-094");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:h"]);
   });
 
-  it.fails("XG5-094:【ハカイダー部隊の決起】— 自軍ラッシュフェイズごとに1度だけ 既知の不具合: CARD-XG5-094 発動できない（1度目も使えない）（出典: atwiki/page-2280「自軍ラッシュフェイズごとに1度だけ」）", () => {
+  it("XG5-094:【ハカイダー部隊の決起】— 自軍ラッシュフェイズごとに1度だけ（出典: atwiki/page-2280「自軍ラッシュフェイズごとに1度だけ」）", () => {
     const s = resolveAll(pick(pick(activate(board(), "XG5-094:gh"), "SPEC-DA-MECHA:d1"), "TST-UNIT-0:h"));
     expect(canActivate(s, "XG5-094:gh")).toBe(false);
   });
@@ -255,19 +256,19 @@ describe("XG5-095 ブラックドラゴン", () => {
   const entered = () =>
     enter(
       battle(
-        { rush: [inst("XG5-095", "bd")], power: [faceUp("TST-UNIT-0", "mp"), faceUp("TST-OP", "mo"), inst("TST-UNIT-0", "md")] },
-        { power: [faceUp("TST-UNIT-0", "ep"), faceUp("TST-OP", "eo"), inst("TST-UNIT-0", "ed")] },
+        { rush: [inst("XG5-095", "bd")], power: [faceUp("TST-UNIT-0", "mp"), faceUp("TST-OP", "mo"), { ...inst("TST-UNIT-0", "md"), faceDown: true }] },
+        { power: [faceUp("TST-UNIT-0", "ep"), faceUp("TST-OP", "eo"), { ...inst("TST-UNIT-0", "ed"), faceDown: true }] },
       ),
       "XG5-095:bd",
     );
 
-  it.fails("XG5-095:【サタンダークネス】— 自軍ターン中に出たとき、まず自分が相手のパワーゾーンのオモテ向きのユニットカードを選ぶ（オペレーション・ウラ向きは選べない） 既知の不具合: CARD-XG5-095 出ても選ばせない（効果がない）（出典: atwiki/page-2177「次の効果を自分、相手の順に行う⇒対戦相手のパワーゾーンから、オモテ向きのユニットカードを1体選び」）", () => {
+  it("XG5-095:【サタンダークネス】— 自軍ターン中に出たとき、まず自分が相手のパワーゾーンのオモテ向きのユニットカードを選ぶ（オペレーション・ウラ向きは選べない）（出典: atwiki/page-2177「次の効果を自分、相手の順に行う⇒対戦相手のパワーゾーンから、オモテ向きのユニットカードを1体選び」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG5-095");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:ep"]);
   });
 
-  it.fails("XG5-095:【サタンダークネス】— 選んだカードは相手のダメージになり、次に相手が自分のパワーゾーンのオモテ向きのユニットカードを選ぶ 既知の不具合: CARD-XG5-095 効果がなく相手のカードをダメージにできない（出典: atwiki/page-2177「1体選びダメージにする」「自分、相手の順に行う」・R-DMG-02）", () => {
+  it("XG5-095:【サタンダークネス】— 選んだカードは相手のダメージになり、次に相手が自分のパワーゾーンのオモテ向きのユニットカードを選ぶ（出典: atwiki/page-2177「1体選びダメージにする」「自分、相手の順に行う」・R-DMG-02）", () => {
     const s = pick(entered(), "TST-UNIT-0:ep");
     expect(cardIn(s, "player2", "TST-UNIT-0:ep")?.faceDown).toBe(true);
     expect(damageOf(s, "player2")).toBe(1);
@@ -275,7 +276,7 @@ describe("XG5-095 ブラックドラゴン", () => {
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:mp"]);
   });
 
-  it.fails("XG5-095:【サタンダークネス】— 相手が選んだ自分のカードは自分のダメージになる 既知の不具合: CARD-XG5-095 効果がなく相手が選べない（出典: atwiki/page-2177「次の効果を自分、相手の順に行う」）", () => {
+  it("XG5-095:【サタンダークネス】— 相手が選んだ自分のカードは自分のダメージになる（出典: atwiki/page-2177「次の効果を自分、相手の順に行う」）", () => {
     const s = resolveAll(pick(pick(entered(), "TST-UNIT-0:ep"), "TST-UNIT-0:mp"));
     expect(cardIn(s, "player1", "TST-UNIT-0:mp")?.faceDown).toBe(true);
     expect(damageOf(s, "player1")).toBe(1);
@@ -298,13 +299,13 @@ describe("XG5-096 ギルの笛の音", () => {
 
   const RES = [inst("XG5-096", "g")];
 
-  it.fails("XG5-096: ※常駐 —「メカ」と「人型」を持つ敵軍ユニットは DA を持つ（XG5-019「DA を持たないユニットにアタックできない」でアタックできる。「メカ」だけは不可） 既知の不具合: CARD-XG5-096 「メカ」「人型」を持つユニットに DA が追加されない（出典: atwiki/page-2225「特徴に「メカ」と「人型」を持つすべてのユニットは、カテゴリにDAが追加され」）", () => {
+  it("XG5-096: ※常駐 —「メカ」と「人型」を持つ敵軍ユニットは DA を持つ（XG5-019「DA を持たないユニットにアタックできない」でアタックできる。「メカ」だけは不可）（出典: atwiki/page-2225「特徴に「メカ」と「人型」を持つすべてのユニットは、カテゴリにDAが追加され」）", () => {
     const p2 = { battle: [inst("SPEC-MH", "mh"), inst("SPEC-MECHA", "me")] };
     expect(attackTargets(battle({ battle: [inst("XG5-019", "dv")] }, p2), "XG5-019:dv")).toEqual([]);
     expect(attackTargets(battle({ battle: [inst("XG5-019", "dv")], operation: RES }, p2), "XG5-019:dv")).toEqual(["SPEC-MH:mh"]);
   });
 
-  it.fails("XG5-096: ※常駐 —「メカ」と「人型」を持つ自軍ラッシュエリアのユニットは、出さずにバトルフェイズを終えられない 既知の不具合: CARD-XG5-096 出さずにバトルフェイズを終えられる（出典: atwiki/page-2225「毎ターン可能ならバトルエリアに出る」）", () => {
+  it("XG5-096: ※常駐 —「メカ」と「人型」を持つ自軍ラッシュエリアのユニットは、出さずにバトルフェイズを終えられない（出典: atwiki/page-2225「毎ターン可能ならバトルエリアに出る」）", () => {
     expect(canEndPhase(battle({ rush: [inst("SPEC-MH", "u")] }))).toBe(true);
     expect(canEndPhase(battle({ rush: [inst("SPEC-MH", "u")], operation: RES }))).toBe(false);
   });

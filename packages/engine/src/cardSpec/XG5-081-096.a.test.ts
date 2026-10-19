@@ -84,7 +84,7 @@ describe("XG5-081 仮面ライダーアクセルトライアル", () => {
   const struck = () =>
     settle(strike(enter(battle({ rush: [inst("XG5-081", "ac")] }, { power: [faceUp("SPEC-C2", "pw")], rush: [inst("TST-UNIT-0", "e0"), inst("SPEC-C2", "e2"), inst("SPEC-C3", "e3")], battle: [inst("SPEC-M", "em")] }), "XG5-081:ac"), "XG5-081:ac"));
 
-  it.fails("XG5-081:【絶望がお前のゴールだ】— ストライクして敵軍パワーゾーンのカード（必要パワー2）がウラ向きになったとき、その数字以下の必要パワーの敵軍 S ユニットを選ぶ（見送れない） 既知の不具合: CARD-XG5-081 ストライクでパワーゾーンがウラ向きになっても【絶望がお前のゴールだ】が発動しない（出典: atwiki/page-2236「そのカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び撃破する」）", () => {
+  it("XG5-081:【絶望がお前のゴールだ】— ストライクして敵軍パワーゾーンのカード（必要パワー2）がウラ向きになったとき、その数字以下の必要パワーの敵軍 S ユニットを選ぶ（見送れない）（出典: atwiki/page-2236「そのカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び撃破する」）", () => {
     const s = struck();
     expect(cardIn(s, "player2", "SPEC-C2:pw")?.faceDown).toBe(true);
     expectChoiceFrom(s, "player1", "XG5-081");
@@ -92,7 +92,7 @@ describe("XG5-081 仮面ライダーアクセルトライアル", () => {
     expect(s.pendingEffectChoice?.optional ?? false).toBe(false);
   });
 
-  it.fails("XG5-081:【絶望がお前のゴールだ】— 選んだユニットは撃破される 既知の不具合: CARD-XG5-081 【絶望がお前のゴールだ】が発動せず撃破できない（出典: atwiki/page-2236「撃破する」）", () => {
+  it("XG5-081:【絶望がお前のゴールだ】— 選んだユニットは撃破される（出典: atwiki/page-2236「撃破する」）", () => {
     const s = resolveAll(pick(struck(), "SPEC-C2:e2"));
     expect(zoneOf(s, "player2", "SPEC-C2:e2")).toBe("discard");
   });
@@ -112,19 +112,19 @@ describe("XG5-082 バットショット", () => {
   const used = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     beltUsed("XG5-082", "ET", 3, p1, { command: [released("TST-UNIT-0", "c0"), released("TST-UNIT-2", "c2"), released("TST-OP", "co")] }, EXTRA);
 
-  it.fails("XG5-082: 敵軍コマンドゾーンの S ユニットのカードを選べる（M ユニット・オペレーションは選べない。任意） 既知の不具合: CARD-XG5-082 M ユニット・オペレーションのカードも選ばされる（出典: atwiki/page-2218「敵軍コマンドゾーンからSユニットのカードを1枚選び、敵軍ラッシュエリアに出してもよい」）", () => {
+  it("XG5-082: 敵軍コマンドゾーンの S ユニットのカードを選べる（M ユニット・オペレーションは選べない。任意）（出典: atwiki/page-2218「敵軍コマンドゾーンからSユニットのカードを1枚選び、敵軍ラッシュエリアに出してもよい」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "XG5-082");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:c0"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-082: 選んだカードは敵軍ラッシュエリアに出る 既知の不具合: CARD-XG5-082 選んだカードがラッシュエリアに出ずコマンドゾーンに残る（出典: atwiki/page-2218「敵軍ラッシュエリアに出してもよい」）", () => {
+  it("XG5-082: 選んだカードは敵軍ラッシュエリアに出る（出典: atwiki/page-2218「敵軍ラッシュエリアに出してもよい」）", () => {
     const s = resolveAll(pick(used(), "TST-UNIT-0:c0"));
     expect(zoneOf(s, "player2", "TST-UNIT-0:c0")).toBe("rush");
   });
 
-  it.fails("XG5-082: その後、このカードは自軍コマンドゾーンにホールド状態で置かれる 既知の不具合: CARD-XG5-082 使用後にこのカードが自軍コマンドゾーンにホールド状態で置かれず捨札になる（出典: atwiki/page-2218「その後、このカードを自軍コマンドゾーンにホールド状態で置く」）", () => {
+  it("XG5-082: その後、このカードは自軍コマンドゾーンにホールド状態で置かれる（出典: atwiki/page-2218「その後、このカードを自軍コマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(pick(used(), "TST-UNIT-0:c0"));
     expect(zoneOf(s, "player1", "XG5-082:op")).toBe("command");
     expect(cardIn(s, "player1", "XG5-082:op")?.commandHeld).toBe(true);
@@ -191,7 +191,7 @@ describe("XG5-084 仮面ライダーW・CJ", () => {
   };
   const enemyAttack = (s: GameState) => attack(s, "SPEC-ATK:atk", "TST-UNIT-0:o", "player2");
 
-  it.fails("XG5-084: RC【『お前の罪を数えろ』】— 自軍捨札に S ユニットのカードが5枚あれば、次の相手ターン中、これ以外の S ユニットがアタックされたとき、かわりにバトルするかを選べる 既知の不具合: CARD-XG5-084 RC の「かわりにバトルする」効果が次の相手ターンに発動しない（出典: atwiki/page-2227「アタックされたユニットのかわりにこのユニットがバトルしてもよい」）", () => {
+  it("XG5-084: RC【『お前の罪を数えろ』】— 自軍捨札に S ユニットのカードが5枚あれば、次の相手ターン中、これ以外の S ユニットがアタックされたとき、かわりにバトルするかを選べる（出典: atwiki/page-2227「アタックされたユニットのかわりにこのユニットがバトルしてもよい」）", () => {
     const s = defended(5);
     expectChoiceFrom(s, "player1", "XG5-084");
     expect(canSkip(s)).toBe(true);
@@ -213,7 +213,7 @@ describe("XG5-085 超時空戦闘母艦グランナスカ", () => {
     expectRarityIn("XG5-085", ["N"]);
   });
 
-  it.fails("XG5-085: ※ — S ユニットにはアタックできず、M ユニットにはアタックできる 既知の不具合: CARD-XG5-085 S ユニットにアタックできてしまう（出典: atwiki/page-2220「これはSユニットにアタックすることが出来ない」）", () => {
+  it("XG5-085: ※ — S ユニットにはアタックできず、M ユニットにはアタックできる（出典: atwiki/page-2220「これはSユニットにアタックすることが出来ない」）", () => {
     const s = enter(battle({ rush: [inst("XG5-085", "gn")] }, { battle: [inst("TST-UNIT-0", "s"), inst("SPEC-M", "m")] }), "XG5-085:gn");
     expect(attackTargets(s, "XG5-085:gn")).toEqual(["SPEC-M:m"]);
   });
@@ -242,14 +242,14 @@ describe("XG5-086 グランナスカ・コンバットフォーメーション",
 
   const entered = () => enter(battle({ rush: [inst("XG5-086", "cf")] }, { battle: [inst("SPEC-M", "m"), inst("TST-UNIT-0", "s")], rush: [inst("SPEC-M", "rm")] }), "XG5-086:cf");
 
-  it.fails("XG5-086:【ナックルボンバー】— 自軍ターン中に出たとき、敵軍バトルエリアの M ユニットを選べる（S ユニット・ラッシュエリアの M ユニットは選べない。任意） 既知の不具合: CARD-XG5-086 敵軍 M ユニットではなく自分自身を選ばされる（出典: atwiki/page-2248「敵軍バトルエリアからMユニットを1体選び、持ち主のパワーゾーンに送ってもよい」）", () => {
+  it("XG5-086:【ナックルボンバー】— 自軍ターン中に出たとき、敵軍バトルエリアの M ユニットを選べる（S ユニット・ラッシュエリアの M ユニットは選べない。任意）（出典: atwiki/page-2248「敵軍バトルエリアからMユニットを1体選び、持ち主のパワーゾーンに送ってもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG5-086");
     expect(choiceIds(s)).toEqual(["SPEC-M:m"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG5-086:【ナックルボンバー】— 選んだユニットは持ち主のパワーゾーンに送られる 既知の不具合: CARD-XG5-086 敵軍 M ユニットを選べずパワーゾーンに送れない（出典: atwiki/page-2248「持ち主のパワーゾーンに送ってもよい」）", () => {
+  it("XG5-086:【ナックルボンバー】— 選んだユニットは持ち主のパワーゾーンに送られる（出典: atwiki/page-2248「持ち主のパワーゾーンに送ってもよい」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-M:m"));
     expect(zoneOf(s, "player2", "SPEC-M:m")).toBe("power");
   });

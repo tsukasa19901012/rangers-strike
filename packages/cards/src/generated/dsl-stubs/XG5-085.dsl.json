@@ -20,13 +20,13 @@
       "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはSユニットにアタックすることが出来ない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-085::korehasyunitonia",
+          "keyword": "cannot_attack_s",
           "duration": "permanent"
         }
       ]
@@ -38,11 +38,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-085::wapu",
+          "keyword": "xg5::XG5-085::warp",
           "duration": "permanent"
         }
       ]

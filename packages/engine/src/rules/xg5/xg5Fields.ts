@@ -13,7 +13,7 @@
  * - `xg5NotSelectable`: XG5-041【兄妹の絆】（keywords/effectTargetability.ts）。
  * - `xg5EffectiveSp`: XG5-051 ※・XG5-054【歩く完全ライダー図鑑】（rules/legend3/fieldEffects.ts）。
  */
-import { isSameCardIdentity, normalizeSameCardName } from "@rangers-strike/cards";
+import { cardCategories, isSameCardIdentity, normalizeSameCardName } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import type { Xg5Flag } from "./xg5Types";
 import { hasTurnRuleModifier } from "../../core/scopedModifiers";
@@ -99,8 +99,37 @@ export function xg5ForcesAttack(state: Pick<GameState, "xg5" | "turn" | "players
  * XG5-059 仮面ライダーカリス【暴走する本能】「これは、自分の手札が1枚以下のとき、BP+3000され、次の能力を得る⇒これは毎ターン可能ならバトルエリアに出る。
  * また、これはアタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする。」（atwiki/page-2172）。rules/restrictions.ts findMandatoryBattleEntries。
  */
-export function xg5RequiresBattleEntry(state: Pick<GameState, "players">, playerId: PlayerId, card: CardInstance): boolean {
-  return isSameCardIdentity(card.cardId, "XG5-059") && state.players[playerId].hand.length <= 1;
+export function xg5RequiresBattleEntry(state: Pick<GameState, "players"> & Partial<Pick<GameState, "definitions">>, playerId: PlayerId, card: CardInstance): boolean {
+  if (isSameCardIdentity(card.cardId, "XG5-059") && state.players[playerId].hand.length <= 1) return true;
+  // XG5-096 ギルの笛の音 ※常駐「特徴に「メカ」と「人型」を持つすべてのユニットは、…毎ターン可能ならバトルエリアに出る。」（atwiki/page-2225）。
+  return !!state.definitions && gillFluteApplies(state as Pick<GameState, "players" | "definitions">, card);
+}
+
+function gillFluteApplies(state: Pick<GameState, "players" | "definitions">, card: CardInstance): boolean {
+  const d = state.definitions[card.cardId];
+  if (d?.type !== "unit" || !(d.features ?? []).includes("メカ") || !(d.features ?? []).includes("人型")) return false;
+  return (["player1", "player2"] as const).some((pid) => state.players[pid].operation.some((c) => isSameCardIdentity(c.cardId, "XG5-096")));
+}
+
+/** XG5-096 ギルの笛の音 ※常駐「…カテゴリにDAが追加され」（core/catalog.ts unitEffectiveCategories）。 */
+export function xg5AddedCategories(state: Pick<GameState, "players" | "definitions">, card: CardInstance): string[] {
+  return gillFluteApplies(state, card) ? ["DA"] : [];
+}
+
+/**
+ * アタックできない相手（rules/legend3/restrictions.ts canAttackDefender）。
+ * XG5-091 キカイダー01 ※「これは特徴「男」または「女」を持つユニットにアタックすることができない。」（atwiki/page-2238）。特徴は印刷された特徴。
+ */
+export function xg5AttackForbidden(state: Pick<GameState, "players" | "definitions">, attacker: CardInstance, defenderPlayerId: PlayerId, defenderInstanceId: string): boolean {
+  if (!isSameCardIdentity(attacker.cardId, "XG5-091")) return false;
+  const defender = fieldOf(state, defenderPlayerId).find((c) => c.instanceId === defenderInstanceId);
+  const features = defender ? (state.definitions[defender.cardId]?.features ?? []) : [];
+  return features.includes("男") || features.includes("女");
+}
+
+/** XG5-088 カバドス【力まかせ】「これがバトルするとき、そのバトルは本来のBPで行う。」（atwiki/page-2221。rules/operationCounters.ts）。 */
+export function xg5BattleUsesPrintedBp(attackerCardId: string | undefined, defenderCardId: string | undefined): boolean {
+  return [attackerCardId, defenderCardId].some((id) => !!id && isSameCardIdentity(id, "XG5-088"));
 }
 
 /**
@@ -131,6 +160,8 @@ export function xg5EffectiveSp(state: Pick<GameState, "players" | "definitions">
   ) {
     sp = Math.max(sp, 1);
   }
+  // XG5-091 キカイダー01【ブラストエンド】の「SP1」（RC の効果を処理したターン。flags の xg5-091）。
+  if (state.xg5?.flags?.some((f) => f.kind === "xg5-091" && f.playerId === playerId && f.target === instance.instanceId && f.turn === state.turn)) sp = Math.max(sp, 1);
   const faceUp = state.players[playerId].power.filter((c) => !c.faceDown);
   if (isSameCardIdentity(instance.cardId, "XG5-051")) {
     const names = faceUp.map((c) => nameOf(state, c.cardId));
@@ -172,6 +203,14 @@ function xg5FlagBp(state: GameState, playerId: PlayerId, instance: CardInstance)
     if (f.kind === "xg5-071" && f.turn === state.turn) bonus += 1000;
     if (f.kind === "xg5-074" && f.turn === state.turn) bonus += 3000;
   }
+  // XG5-089 カバドスSM【マサカリホーク】「自軍ターン中、このユニットはBP+3000される。」（atwiki/page-2222）。
+  if (isSameCardIdentity(instance.cardId, "XG5-089") && xg5TurnPlayer(state) === playerId) bonus += 3000;
+  // XG5-090 クワジーロ【友情】「自軍ターン中、このユニットは、これ以外の自軍バトルエリアのSユニット1体につきBP+2000される。」（atwiki/page-2223）。
+  if (isSameCardIdentity(instance.cardId, "XG5-090") && xg5TurnPlayer(state) === playerId) {
+    bonus += 2000 * state.players[playerId].battle.filter((c) => c.instanceId !== instance.instanceId && state.definitions[c.cardId]?.type === "unit" && state.definitions[c.cardId]?.size === "S").length;
+  }
+  // XG5-091 キカイダー01 ※「これは自軍パワーゾーンにオモテ向きのカードが1枚もなければBP-5000される。」（atwiki/page-2238）。
+  if (isSameCardIdentity(instance.cardId, "XG5-091") && !state.players[playerId].power.some((c) => !c.faceDown)) bonus -= 5000;
   if (isSameCardIdentity(instance.cardId, "XG5-059") && state.players[playerId].hand.length <= 1) bonus += 3000;
   return bonus;
 }
@@ -192,6 +231,9 @@ function xg5SamuraiBp(state: GameState, playerId: PlayerId, instance: CardInstan
  */
 export const XG5_JET_BOARD = "xg5_032_jet_board";
 export function xg5EndTurnChoice(state: GameState, playerId: PlayerId): { state: GameState; choice: PendingEffectChoice } | null {
+  // XG5-087【ビッグバンカノン】（自軍バトルフェイズ終了時）を先に尋ねる。
+  const cannon = xg5CannonEndTurnChoice(state, playerId);
+  if (cannon) return cannon;
   const asked = new Set(xg5Flags(state, "xg5-032").filter((f) => f.turn === state.turn).map((f) => f.target));
   const card = state.players[playerId].battle.find((c) => isSameCardIdentity(c.cardId, "XG5-032") && !asked.has(c.instanceId));
   if (!card) return xg5KataruEndTurnChoice(state, playerId);
@@ -243,6 +285,42 @@ function xg5KataruEndTurnChoice(state: GameState, turnPlayerId: PlayerId): { sta
     };
   }
   return null;
+}
+
+/**
+ * XG5-087 グランナスカ・カノンフォーメーション【ビッグバンカノン】「これが自軍エリアにある間、自軍バトルフェイズ終了時、自軍バトルエリアからOTを持つSユニットを
+ * 1体選んでもよい。…」（atwiki/page-2276）。エンドフェイズの選択（rules/legend3/endTurnEffects.ts）。これごとに1度、OT（印刷されたカテゴリ）の
+ * 自軍バトルエリアの S ユニットを選ぶか尋ねる。続き（撃破・ダメージ）は rules/xg5/xg5eEffects.ts。
+ */
+export const XG5_CANNON = "xg5_087_big_bang_cannon";
+function xg5CannonEndTurnChoice(state: GameState, playerId: PlayerId): { state: GameState; choice: PendingEffectChoice } | null {
+  const asked = new Set(xg5Flags(state, "xg5-087-asked").filter((f) => f.turn === state.turn).map((f) => f.target));
+  const card = fieldOf(state, playerId).find((c) => isSameCardIdentity(c.cardId, "XG5-087") && !asked.has(c.instanceId));
+  if (!card) return null;
+  const ids = state.players[playerId].battle
+    .filter((c) => {
+      const d = state.definitions[c.cardId];
+      return d?.type === "unit" && d.size === "S" && cardCategories(d).includes("OT");
+    })
+    .map((c) => c.instanceId);
+  const mark: Xg5Flag = { kind: "xg5-087-asked", playerId, turn: state.turn, target: card.instanceId };
+  const marked = { ...state, xg5: { ...state.xg5, flags: [...(state.xg5?.flags ?? []), mark] } };
+  if (ids.length === 0) return xg5CannonEndTurnChoice(marked, playerId);
+  return {
+    state: marked,
+    choice: {
+      playerId,
+      phasePlayerId: playerId,
+      effectId: XG5_CANNON,
+      sourceCardId: card.cardId,
+      sourceInstanceId: card.instanceId,
+      kind: "select_unit",
+      validInstanceIds: ids,
+      selectedInstanceIds: [],
+      selectCount: 1,
+      optional: true,
+    },
+  };
 }
 
 /** XG5-012 ゴレムカード・XG5-015 スティライザー（ユニットの下に重ね、重ねたユニットがユニットでなくなるとき捨札になる）。 */

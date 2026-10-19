@@ -53,6 +53,7 @@ import {
 } from "../pendingChoices";
 import { keywordAllowsAttackIntoRush } from "../keywordGapRuntime";
 import { rk13AttackerCanAttackRush, rk13DefenderBlocksAttack } from "../rk/rk13Fields";
+import { xg5AttackForbidden } from "../xg5/xg5Fields";
 import { rk15DefenderBlocksAttack } from "../rk/rk15Fields";
 import { rk16DefenderBlocksAttack } from "../rk/rk16Fields";
 
@@ -464,6 +465,8 @@ export function canAttackDefender(
   if (timeJetRearGuardBlocksAttack(state, defenderPlayerId, defenderInstanceId)) return false;
   // RS-619 ジェットマシン【航空戦力の奇襲】（rules/legend1/set9NamedEffectsA.ts）。
   if (set9ADefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
+  // XG5-091 キカイダー01 ※（「男」「女」を持つユニットにアタックできない。rules/xg5/xg5Fields.ts）。
+  if (xg5AttackForbidden(state, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
 
   const attackerInRush = findInZone(attackerPlayer, "rush", attackerInstanceId);
   if (

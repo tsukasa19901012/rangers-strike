@@ -1,4 +1,5 @@
 import { applyXg5AttackWin } from "./xg5/xg5Core";
+import { xg5BattleUsesPrintedBp } from "./xg5/xg5Fields";
 import { rm2AfterBattle } from "./rm/rm2Effects";
 import { isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "./rm/rm1Effects";
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
@@ -1441,7 +1442,8 @@ export function resolveBattlePendingCore(
   const defenderBp = rk3Values ? rk3Values.defender : battleDefenderBp(battleState, pending);
 
   // RK-268 デスガロン【分析能力】: バトルの勝ち負けは本来の BP で決める（BP の変動そのものは無効にしない。atwiki/page-1349 Q2。rules/rk/rk13Fields.ts）。
-  const printedBattle = !rk3Values && rk13BattleUsesPrintedBp(battleState);
+  // XG5-088 カバドス【力まかせ】（これがバトルするとき。rules/xg5/xg5Fields.ts）。
+  const printedBattle = !rk3Values && (rk13BattleUsesPrintedBp(battleState) || xg5BattleUsesPrintedBp(refreshedAttackerFound.card.cardId, refreshedDefenderFound.card.cardId));
   const compareAttackerBp = printedBattle ? rk13PrintedBp(battleState, refreshedAttackerFound.card.cardId) : attackerBp;
   const compareDefenderBp = printedBattle ? rk13PrintedBp(battleState, refreshedDefenderFound.card.cardId) : defenderBp;
   const destroyAttacker = compareAttackerBp <= compareDefenderBp;

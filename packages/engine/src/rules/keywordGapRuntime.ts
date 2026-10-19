@@ -269,6 +269,8 @@ export function battleActBlocked(
   if (hasScopedRestriction(player, card.instanceId, "neko_damashi_no_attack_strike", "turn")) return true;
   // RK-048【音撃斬・雷電斬震】で撃破したとき「これはアタックすることができない」。
   if (action === "attack" && hasScopedRestriction(player, card.instanceId, "no_attack_this_turn", "turn")) return true;
+  // XG5-091【ブラストエンド】で撃破したとき「このターン、これはストライクすることができない」（rules/xg5/xg5eEffects.ts）。
+  if (action === "strike" && hasScopedRestriction(player, card.instanceId, "xg5_no_strike_this_turn", "turn")) return true;
   // RS-167【爆竜必殺バキバキパンチ】で得た「アタックしてバトルに勝つたび、追加でアタックできる」。
   if (action === "attack" && hasBakiBakiExtraAttack(player, card.instanceId)) return false;
   // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックする権利を失っている。

@@ -27,6 +27,7 @@ import { srBigBatonBpFloor } from "../rules/srEffects";
 import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
 import { unitFeatures } from "../rules/addedFeatures";
 import { rk5AddedCategories, rk5BpSetValue } from "../rules/rk/rk5Fields";
+import { xg5AddedCategories } from "../rules/xg5/xg5Fields";
 import { legend3EnemySComboDelta } from "../rules/legend3/fieldEffects";
 import { validateZordAdditionalPayment } from "../rules/mothership";
 import {
@@ -474,7 +475,10 @@ export function unitEffectiveCategories(
   const withDeclared = declared.length > 0 ? [...base, ...declared] : base;
   // RK-092 狼男【狼作戦】（rules/rk/rk5Fields.ts）。既に持っているカテゴリは重ねて追加しない。
   const wolf = rk5AddedCategories(state, playerId, instance).filter((c) => !withDeclared.includes(c));
-  return wolf.length > 0 ? [...withDeclared, ...wolf] : withDeclared;
+  const withWolf = wolf.length > 0 ? [...withDeclared, ...wolf] : withDeclared;
+  // XG5-096 ギルの笛の音 ※常駐（「メカ」と「人型」を持つユニットに DA を追加。rules/xg5/xg5Fields.ts）。
+  const gill = (xg5AddedCategories(state, instance) as Category[]).filter((c) => !withWolf.includes(c));
+  return gill.length > 0 ? [...withWolf, ...gill] : withWolf;
 }
 
 function unitEffectiveCategoriesBase(

@@ -340,12 +340,7 @@ export function resolveAfterDiscardDestroyEffects(
     if (result.log) logs.push(result.log);
   }
 
-  // XG5-089: destroyed → bring カバドス from command or discard to rush
-  if (ctx.cardId === "XG5-089") {
-    const result = reanimateNamedToRush(nextState, ctx, "カバドス", "kabados_reanimate");
-    nextState = result.state;
-    if (result.log) logs.push(result.log);
-  }
+  // XG5-089: 撃破されて捨札になったときの「カバドス」の選択は rules/xg5/xg5eEffects.ts（DSL on_destroy の xg5:: キーワード。候補を選ばせる）。
 
   // XG7-063: destroyed → bring シャークラー from command or discard to rush
   if (ctx.cardId === "XG7-063") {
