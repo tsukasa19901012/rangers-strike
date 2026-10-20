@@ -207,7 +207,7 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
   // Several moves and none on a visible card (start phase: release commands or
   // draw): the button opens the list of moves, so it must look pressable.
   const choose = () =>
-    !v().endButton.enabled && v().endButton.lines.includes("×:操作") && !v().rows.some((row) => row.tiles.some((tile) => tile.actionable));
+    !v().endButton.enabled && !v().dialog && v().endButton.lines.includes("×:操作") && !v().rows.some((row) => row.tiles.some((tile) => tile.actionable));
   const endLines = () => (choose() ? ["操作を選ぶ"] : v().endButton.lines.filter((line) => line && line !== "R" && line !== "×:操作"));
   const endLive = () => v().endButton.enabled || choose();
   const buttons = () => matchButtons(g());
