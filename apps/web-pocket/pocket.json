@@ -1,0 +1,22 @@
+{
+  "$schema": "https://pocketjs.dev/schema/pocket-2.json",
+  "pocket": 2,
+  "id": "dev.rangers-strike.web",
+  "name": "rangers-strike-web",
+  "title": "Rangers Strike",
+  "version": "0.1.0",
+  "engine": {
+    "capabilities": {
+      "requires": ["text.glyphs.baked", "input.buttons"],
+      "enhances": ["display.viewport.live"]
+    }
+  },
+  "app": {
+    "entry": "src/main.tsx",
+    "output": "rangers-strike-web",
+    "framework": "solid",
+    "viewport": {
+      "dynamic": { "default": [1280, 720], "min": [1024, 640], "max": [1680, 1050] }
+    }
+  }
+}

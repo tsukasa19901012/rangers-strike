@@ -1,0 +1,65 @@
+{
+  // Read by `pocket check` and editors. The PocketJS framework comes from the
+  // toolchain install shared with apps/vita (apps/vita/toolchain).
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "types": [],
+    "jsx": "preserve",
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "allowJs": false,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@rangers-strike/client-core": [
+        "../../packages/client-core/src/index.ts"
+      ],
+      "solid-js": [
+        "../vita/toolchain/node_modules/solid-js"
+      ],
+      "solid-js/*": [
+        "../vita/toolchain/node_modules/solid-js/*"
+      ],
+      "@pocketjs/framework": [
+        "../vita/toolchain/node_modules/@pocketjs/framework/framework/src/index.ts"
+      ],
+      "@pocketjs/framework/solid": [
+        "../vita/toolchain/node_modules/@pocketjs/framework/framework/src/index.ts"
+      ],
+      "@pocketjs/framework/solid/components": [
+        "../vita/toolchain/node_modules/@pocketjs/framework/framework/src/components.ts"
+      ],
+      "@pocketjs/framework/components": [
+        "../vita/toolchain/node_modules/@pocketjs/framework/framework/src/components.ts"
+      ],
+      "@pocketjs/framework/lifecycle": [
+        "../vita/toolchain/node_modules/@pocketjs/framework/framework/src/lifecycle.ts"
+      ],
+      "@pocketjs/framework/solid/lifecycle": [
+        "../vita/toolchain/node_modules/@pocketjs/framework/framework/src/lifecycle.ts"
+      ],
+      "@pocketjs/framework/input": [
+        "../vita/toolchain/node_modules/@pocketjs/framework/framework/src/input-api.ts"
+      ],
+      "@pocketjs/framework/platform": [
+        "../vita/toolchain/node_modules/@pocketjs/framework/framework/src/platform.ts"
+      ],
+      "@pocketjs/framework/pak": [
+        "../vita/toolchain/node_modules/@pocketjs/framework/framework/src/pak.ts"
+      ],
+      "@pocketjs/framework/overlay-host": [
+        "../vita/toolchain/node_modules/@pocketjs/framework/framework/src/overlay-host.ts"
+      ]
+    }
+  },
+  "include": [
+    "src"
+  ]
+}

@@ -12,7 +12,8 @@ import { fitLine, wrapText, type WrapOptions } from "../text/wrap";
 import { boardLines, buildBoardView, buildPendingView, pendingLines } from "../view/board";
 import { computeLayout, type FontPx, type Layout, type Viewport } from "../view/layout";
 import { GuiMatch, type GuiView } from "./guiMatch";
-import { DeckBuilder, type DeckBuilderView } from "./deckBuilder";
+import { DeckBuilder, type DeckBuilderView, type DeckGeometry } from "./deckBuilder";
+import type { GuiGeometry } from "../view/gui";
 import { CUSTOM_DECK_PREFIX } from "../platform/settings";
 
 export type Row = { text: string; selected: boolean };
@@ -51,7 +52,15 @@ export type ControllerOptions = {
   gui?: boolean;
   /** With `gui`: the shell draws card images (see GuiView.detailArt). */
   cardArt?: boolean;
+  /** Shell-specific screen geometry for the match and the deck builder (defaults: the Vita layout). */
+  layouts?: {
+    match?: (viewport: Viewport) => GuiGeometry;
+    deck?: (viewport: Viewport) => DeckGeometry;
+  };
 };
+
+/** A deck the title screen can pick (starter decks and the player's own). */
+export type DeckChoice = { id: string; name: string; custom: boolean };
 
 const MATCH_TABS = ["盤面:CPU", "盤面:自分", "ログ", "詳細"];
 const TITLE_TABS = ["説明", "記録"];
@@ -80,9 +89,11 @@ export class AppController {
   private readonly cardArt: boolean;
   private gui: GuiMatch | null = null;
   private builder: DeckBuilder | null = null;
+  private readonly layouts: NonNullable<ControllerOptions["layouts"]>;
 
   constructor(options: ControllerOptions) {
     this.platform = options.platform;
+    this.layouts = options.layouts ?? {};
     this.viewport = options.viewport;
     this.guiEnabled = !!options.gui;
     this.cardArt = !!options.cardArt;
@@ -241,11 +252,62 @@ export class AppController {
     this.settingsStore.save(this.settings);
   }
 
+  // ------------------------------------------------- title screen (pointer shells)
+
+  /** Decks the title screen can pick, the player's own first. */
+  deckChoices(): DeckChoice[] {
+    return this.deckIds.map((id) => ({ id, name: this.deckName(id), custom: id.startsWith(CUSTOM_DECK_PREFIX) }));
+  }
+
+  /** Current match settings (decks and CPU level). */
+  get matchSettings(): Readonly<Settings> {
+    return this.settings;
+  }
+
+  /** Sets match settings directly (pointer shells pick from lists instead of cycling rows). */
+  updateSettings(patch: Partial<Settings>): void {
+    if (patch.humanDeck !== undefined && this.deckIds.includes(patch.humanDeck)) this.settings.humanDeck = patch.humanDeck;
+    if (patch.cpuDeck !== undefined && this.deckIds.includes(patch.cpuDeck)) this.settings.cpuDeck = patch.cpuDeck;
+    if (patch.cpuLevel !== undefined) this.settings.cpuLevel = Math.max(1, Math.min(CPU_LEVEL_MAX, Math.round(patch.cpuLevel)));
+    this.settingsStore.save(this.settings);
+    this.touch();
+  }
+
+  /** Finished matches, newest first as stored. */
+  matchRecords(): ReturnType<SettingsStore["records"]> {
+    return this.settingsStore.records();
+  }
+
+  /** The last notice (deck saved, invalid deck...) for the title screen. */
+  get notice(): string {
+    return this.message;
+  }
+
+  /** Abandons the match in progress and returns to the title (no record is kept). */
+  leaveMatch(): void {
+    if (this.screen !== "match") return;
+    this.session = null;
+    this.gui = null;
+    this.screen = "title";
+    this.message = "";
+    this.tab = 0;
+    this.resetCursor();
+    this.touch();
+  }
+
+  /** Leaves the result screen for the title (same as confirming it). */
+  backToTitle(): void {
+    if (this.screen !== "result") return;
+    this.confirm();
+    this.touch();
+  }
+
   openDeckBuilder(): void {
     if (!this.engine) return;
-    this.builder = new DeckBuilder(this.engine, this.viewport, () => this.settingsStore.customDecks(), this.cardArt);
+    this.builder = new DeckBuilder(this.engine, this.viewport, () => this.settingsStore.customDecks(), this.cardArt, this.layouts.deck);
     this.screen = "deck";
     this.message = "";
+    this.touch();
   }
 
   private afterBuilder(): void {
@@ -301,7 +363,7 @@ export class AppController {
         memory: this.platform.memory,
         log: this.platform.log,
       });
-      this.gui = this.guiEnabled ? new GuiMatch(engine, this.session, this.viewport, this.cardArt) : null;
+      this.gui = this.guiEnabled ? new GuiMatch(engine, this.session, this.viewport, this.cardArt, this.layouts.match) : null;
       this.screen = "match";
       this.tab = 1;
       this.message = "対戦開始";

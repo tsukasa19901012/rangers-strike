@@ -149,12 +149,14 @@ export class GuiMatch {
     viewport: Viewport,
     /** The shell can draw card images: the detail panel leaves room for one. */
     private readonly cardArt = false,
+    /** Screen geometry for a viewport (the Vita layout unless a shell supplies its own). */
+    private readonly layout: (viewport: Viewport) => GuiGeometry = computeGuiGeometry,
   ) {
-    this.geometry = computeGuiGeometry(viewport);
+    this.geometry = layout(viewport);
   }
 
   setViewport(viewport: Viewport): void {
-    this.geometry = computeGuiGeometry(viewport);
+    this.geometry = this.layout(viewport);
     this.syncedVersion = -1;
   }
 

@@ -1,0 +1,4 @@
+# build outputs
+.cache/
+dist/
+src/generated/

@@ -132,16 +132,18 @@ export class DeckBuilder {
     viewport: Viewport,
     private readonly saved: () => CustomDeck[],
     private readonly cardArt = false,
+    /** Screen geometry for a viewport (the Vita layout unless a shell supplies its own). */
+    private readonly layout: (viewport: Viewport) => DeckGeometry = computeDeckGeometry,
   ) {
     this.deck = engine.deckApi;
     this.byId = new Map(this.deck.cards.map((card) => [card.id, card]));
-    this.geometry = computeDeckGeometry(viewport);
+    this.geometry = layout(viewport);
     this.recount();
     this.openStartMenu();
   }
 
   setViewport(viewport: Viewport): void {
-    this.geometry = computeDeckGeometry(viewport);
+    this.geometry = this.layout(viewport);
   }
 
   /** Call once per frame (toast timer). Returns true when the view changed. */
