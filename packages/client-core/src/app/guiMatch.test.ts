@@ -209,3 +209,23 @@ describe("GUI match (commercial-style controls)", () => {
     }
   });
 });
+
+describe("GuiMatch card art", () => {
+  it("leaves room for the card image above the detail text", () => {
+    const app = new AppController({ platform: testPlatform(), viewport: VITA, cpuDelayFrames: 0, seed: () => 3, gui: true, cardArt: true });
+    app.dispatch(input.select(3, true));
+    const gui = app.view().gui!;
+    const art = gui.detailArt!;
+    expect(art.cardId).not.toBe("");
+    const d = gui.geometry.detail;
+    expect(art.rect.x).toBeGreaterThanOrEqual(d.x);
+    expect(art.rect.x + art.rect.w).toBeLessThanOrEqual(d.x + d.w);
+    expect(art.rect.y + art.rect.h).toBeLessThanOrEqual(d.y + d.h);
+    for (const line of gui.detailLines) {
+      const beside = line.rect.x >= art.rect.x + art.rect.w;
+      const below = line.rect.y >= art.rect.y + art.rect.h;
+      expect(beside || below).toBe(true);
+      expect(line.rect.y + line.rect.h).toBeLessThanOrEqual(d.y + d.h);
+    }
+  });
+});

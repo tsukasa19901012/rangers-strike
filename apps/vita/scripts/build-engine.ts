@@ -22,6 +22,7 @@ import {
   pruneCardData,
   type DeckLike,
 } from "../../../packages/client-core/src/data/split";
+import { bakeCardImages } from "./bake-card-images";
 
 const APP_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const REPO = resolve(APP_ROOT, "../..");
@@ -171,6 +172,7 @@ if (!full && !outArg) {
   writeFileSync(join(APP_ROOT, "src/generated/chars.txt"), sorted.join(""));
   console.log(`glyphs: ${sorted.length} non-ASCII characters -> src/generated/chars.txt`);
 }
+if (!full && !outArg && !args.includes("--no-images")) await bakeCardImages(APP_ROOT, REPO, keep);
 console.log(
   `engine: ${relative(APP_ROOT, out)} ${(bytes / 1024 / 1024).toFixed(2)} MiB` +
     `${full ? " (full card data)" : ` (pruned to ${keep.size} cards from ${decks.length} starter decks)`}` +

@@ -19,6 +19,19 @@ import {
 } from "@rangers-strike/client-core";
 import { vitaPlatform } from "./platform";
 import { GuiMatchView } from "./GuiMatchView";
+import { hasCardArt, preloadCards, releaseCards } from "./cardTextures";
+
+/** Every card id in both players' zones: at match start, the two decks. */
+function matchCardIds(state: { players: Record<string, Record<string, unknown>> }): Set<string> {
+  const ids = new Set<string>();
+  for (const player of Object.values(state.players)) {
+    for (const zone of Object.values(player)) {
+      if (!Array.isArray(zone)) continue;
+      for (const card of zone) if (card && typeof card.cardId === "string") ids.add(card.cardId);
+    }
+  }
+  return ids;
+}
 
 /**
  * Japanese layout: ○ = confirm, × = cancel/pass. Match screen: D-pad moves over
@@ -58,11 +71,13 @@ function readViewport(): { width: number; height: number } {
 
 export default function App() {
   let viewport = readViewport();
-  const controller = new AppController({ platform: vitaPlatform, viewport, fontPx: 12, cpuDelayFrames: 10, gui: true });
+  const cardArt = hasCardArt();
+  const controller = new AppController({ platform: vitaPlatform, viewport, fontPx: 12, cpuDelayFrames: 10, gui: true, cardArt });
   const [view, setView] = createSignal<ScreenView>(controller.view(), { equals: false });
   const repeater = new ButtonRepeater(BINDINGS);
   const taps = new TapRecognizer();
   let frame = 0;
+  let loadedFor: unknown = null;
 
   onFrame((buttons) => {
     let changed = false;
@@ -81,6 +96,18 @@ export default function App() {
       }
     }
     if (controller.tick()) changed = true;
+    // Card textures live for one match: upload both decks when it starts,
+    // free them when the match screen closes.
+    const session = controller.currentScreen === "match" ? controller.session : null;
+    if (cardArt && session !== loadedFor) {
+      releaseCards();
+      if (session) {
+        const count = preloadCards(matchCardIds(session.state as never));
+        vitaPlatform.log?.(`card textures: ${count} uploaded`);
+      }
+      loadedFor = session;
+      changed = true;
+    }
     if (++frame % 30 === 0) {
       const next = readViewport();
       if (next.width !== viewport.width || next.height !== viewport.height) {

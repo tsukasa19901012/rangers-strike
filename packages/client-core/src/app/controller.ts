@@ -45,6 +45,8 @@ export type ControllerOptions = {
   defaults?: Partial<Settings>;
   /** Draw the match as card tiles with an action menu instead of the text list. */
   gui?: boolean;
+  /** With `gui`: the shell draws card images (see GuiView.detailArt). */
+  cardArt?: boolean;
 };
 
 const MATCH_TABS = ["盤面:CPU", "盤面:自分", "ログ", "詳細"];
@@ -71,12 +73,14 @@ export class AppController {
   private deckIds: string[] = [];
   private viewport: Viewport;
   private readonly guiEnabled: boolean;
+  private readonly cardArt: boolean;
   private gui: GuiMatch | null = null;
 
   constructor(options: ControllerOptions) {
     this.platform = options.platform;
     this.viewport = options.viewport;
     this.guiEnabled = !!options.gui;
+    this.cardArt = !!options.cardArt;
     this.fontPx = options.fontPx;
     this.layout = computeLayout(options.viewport, options.fontPx);
     this.cpuDelayFrames = options.cpuDelayFrames ?? 8;
@@ -233,7 +237,7 @@ export class AppController {
         memory: this.platform.memory,
         log: this.platform.log,
       });
-      this.gui = this.guiEnabled ? new GuiMatch(engine, this.session, this.viewport) : null;
+      this.gui = this.guiEnabled ? new GuiMatch(engine, this.session, this.viewport, this.cardArt) : null;
       this.screen = "match";
       this.tab = 1;
       this.message = "対戦開始";

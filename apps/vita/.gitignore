@@ -6,3 +6,4 @@ toolchain/.bin/
 .pocket/
 dist/
 src/generated/
+src/pak.json

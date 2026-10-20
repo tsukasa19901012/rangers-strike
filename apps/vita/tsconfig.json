@@ -26,7 +26,8 @@
       "@pocketjs/framework/lifecycle": ["./toolchain/node_modules/@pocketjs/framework/framework/src/lifecycle.ts"],
       "@pocketjs/framework/solid/lifecycle": ["./toolchain/node_modules/@pocketjs/framework/framework/src/lifecycle.ts"],
       "@pocketjs/framework/input": ["./toolchain/node_modules/@pocketjs/framework/framework/src/input-api.ts"],
-      "@pocketjs/framework/platform": ["./toolchain/node_modules/@pocketjs/framework/framework/src/platform.ts"]
+      "@pocketjs/framework/platform": ["./toolchain/node_modules/@pocketjs/framework/framework/src/platform.ts"],
+      "@pocketjs/framework/pak": ["./toolchain/node_modules/@pocketjs/framework/framework/src/pak.ts"]
     }
   },
   "include": ["src"]

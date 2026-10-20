@@ -85,6 +85,8 @@ export type GuiView = {
   strips: [string, string];
   rows: GuiRowView[];
   detailLines: PanelLine[];
+  /** Card image at the top of the detail panel (only with `cardArt`). */
+  detailArt?: { cardId: string; hidden: boolean; rect: Rect };
   popup?: GuiBox;
   list?: GuiBox;
   dialog?: GuiDialogView;
@@ -145,6 +147,8 @@ export class GuiMatch {
     private readonly engine: EngineApi,
     private readonly session: GameSession,
     viewport: Viewport,
+    /** The shell can draw card images: the detail panel leaves room for one. */
+    private readonly cardArt = false,
   ) {
     this.geometry = computeGuiGeometry(viewport);
   }
@@ -831,14 +835,14 @@ export class GuiMatch {
 
     // --- detail panel (left)
     const detailLines: PanelLine[] = [];
+    let detailArt: GuiView["detailArt"];
+    let lineY = g.detail.y + 3;
+    const detailBottom = g.detail.y + g.detail.h - 2;
     const pushDetail = (tone: PanelTone, texts: string[]) => {
       for (const text of texts) {
-        if (detailLines.length >= g.detailLines) return;
-        detailLines.push({
-          text,
-          tone,
-          rect: { x: g.detail.x + 4, y: g.detail.y + 3 + detailLines.length * g.lineHeight, w: g.detail.w - 6, h: g.lineHeight },
-        });
+        if (lineY + g.lineHeight > detailBottom) return;
+        detailLines.push({ text, tone, rect: { x: g.detail.x + 4, y: lineY, w: g.detail.w - 6, h: g.lineHeight } });
+        lineY += g.lineHeight;
       }
     };
     if (this.showLog && !dialogShown) {
@@ -847,9 +851,29 @@ export class GuiMatch {
       pushDetail("body", lines.slice(-(g.detailLines - 1)));
     } else {
       const [name, stats, text] = this.detailFor(detailCard.cardId, detailCard.hidden);
-      if (name) pushDetail("head", wrapText(name, { ...wrapDetail, maxLines: 2 }));
-      if (stats) pushDetail("dim", wrapText(stats, { ...wrapDetail, maxLines: 2 }));
-      if (text) pushDetail("body", wrapText(text, wrapDetail));
+      if (this.cardArt && (detailCard.cardId || detailCard.hidden)) {
+        // Card image on the left, its stats one per line beside it.
+        const artW = Math.round(g.detail.w * 0.5);
+        const rect = { x: g.detail.x + 4, y: g.detail.y + 4, w: artW, h: Math.round((artW * 190) / 130) };
+        detailArt = { cardId: detailCard.cardId ?? "", hidden: detailCard.hidden, rect };
+        const sideX = rect.x + rect.w + 4;
+        const sideW = g.detail.x + g.detail.w - sideX - 2;
+        const tokens = stats ? stats.split(" ") : [];
+        tokens.slice(0, Math.floor(rect.h / g.lineHeight)).forEach((token, i) => {
+          detailLines.push({
+            text: fitLine(token, { fontPx: g.fontPx, maxWidthPx: sideW }),
+            tone: i === 0 ? "dim" : "body",
+            rect: { x: sideX, y: rect.y + i * g.lineHeight, w: sideW, h: g.lineHeight },
+          });
+        });
+        lineY = rect.y + rect.h + 3;
+        if (name) pushDetail("head", wrapText(name, { ...wrapDetail, maxLines: 2 }));
+        if (text) pushDetail("body", wrapText(text, wrapDetail));
+      } else {
+        if (name) pushDetail("head", wrapText(name, { ...wrapDetail, maxLines: 2 }));
+        if (stats) pushDetail("dim", wrapText(stats, { ...wrapDetail, maxLines: 2 }));
+        if (text) pushDetail("body", wrapText(text, wrapDetail));
+      }
     }
 
     // --- popup / list
@@ -927,6 +951,7 @@ export class GuiMatch {
       ],
       rows,
       detailLines,
+      detailArt,
       popup,
       list,
       dialog,
