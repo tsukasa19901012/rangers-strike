@@ -22,6 +22,7 @@ import {
   damageOf,
   deckCards,
   enter,
+  enterHold,
   expectCatalogText,
   expectChoiceFrom,
   expectRarityIn,
@@ -31,6 +32,7 @@ import {
   mount,
   ncEnter,
   p1Battle,
+  passEntry,
   pick,
   registerOffered,
   released,
@@ -86,6 +88,19 @@ describe("XG4-044 ゴセイブラック（XG4）", () => {
   it("XG4-044: NC — 4番目以外（3番目）に出れば BP は上がらない（出典: atwiki/page-2096「CN：4」）", () => {
     const s = settle(ncEnter("XG4-044:gb", 2, { command: releasedCat("MA", 2) }, {}, EXTRA));
     expect(bpOf(s, "player1", "XG4-044:gb")).toBe(3000);
+  });
+
+  it("XG4-044: NC【ランディックアックス】— 数は BP を見るたびのリリース状態のコマンド。NC の後でコマンドをホールドすると BP が下がり、リリースすると上がる（出典: 利用者の決定 2026-10-20・questions-all.md U-21）", () => {
+    // 4番目に XG4-044、5番目に XG4-055 ドラグランザー（※自軍コマンドを1つホールドしなければバトルエリアに出られない）。
+    let s = settle(ncEnter("XG4-044:gb", 3, { rush: [inst("XG4-055", "dr")], command: releasedCat("WB", 3) }, {}, EXTRA));
+    expect(bpOf(s, "player1", "XG4-044:gb")).toBe(6000);
+    s = settle(enterHold(passEntry(s), "XG4-055:dr"));
+    expect(zoneOf(s, "player1", "XG4-055:dr")).toBe("battle");
+    expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(1);
+    expect(bpOf(s, "player1", "XG4-044:gb")).toBe(5000);
+    // ホールドしたコマンドをリリース状態に戻す（状態の書き換え）。
+    s = { ...s, players: { ...s.players, player1: { ...s.players.player1, command: s.players.player1.command.map((c) => ({ ...c, commandHeld: false })) } } };
+    expect(bpOf(s, "player1", "XG4-044:gb")).toBe(6000);
   });
 });
 
@@ -209,7 +224,25 @@ describe("XG4-047 シンケンレッド（XG4）", () => {
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.todo("XG4-047: ライドしている自軍ユニットからコンビネーションするときはナンバーに関係なく発動する（出典: atwiki/page-2108「（この効果はライドしている自軍ユニットからコンビネーションするときはナンバーに関係なく発動する）」）（未対応の理由: 「ライドしている自軍ユニットからのコンビネーション」が RC・JC のどちらを指すか出典で決まらず、盤面を決められない）");
+  const enemyRiding = () => ({ battle: [...ridingPair("SPEC-E-S", "rd", "SPEC-BIKE", "bk"), inst("SPEC-E-S", "nr")], deck: deckCards(3, "e") });
+
+  it("XG4-047: NC — ライドしている自軍ユニットの直後（2番目）に出ると、ナンバーに関係なく発動する（出典: atwiki/page-2108「（この効果はライドしている自軍ユニットからコンビネーションするときはナンバーに関係なく発動する）」・利用者の決定 2026-10-20・questions-all.md U-22）", () => {
+    const s = settle(ncEnter("XG4-047:sr", 0, { battle: ridingPair("SPEC-RC", "r", "SPEC-BIKE", "ob") }, enemyRiding(), EXTRA));
+    expectChoiceFrom(s, "player1", "XG4-047");
+    expect(choiceIds(s)).toEqual(["SPEC-E-S:rd"]);
+  });
+
+  it("XG4-047: NC — ライドしている自軍ユニットが1番目でも、間にライドしていないユニットがいる3番目では発動しない（出典: atwiki/page-2108「ライドしている自軍ユニットからコンビネーションするとき」・利用者の決定 2026-10-20・questions-all.md U-22）", () => {
+    const s = settle(ncEnter("XG4-047:sr", 0, { battle: [...ridingPair("SPEC-RC", "r", "SPEC-BIKE", "ob"), inst("SPEC-OWN-S", "n")] }, enemyRiding(), EXTRA));
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG4-047");
+    expect(zoneOf(s, "player2", "SPEC-E-S:rd")).toBe("battle");
+  });
+
+  it("XG4-047: NC — ライドしている自軍ユニットがいなくても、4番目に出ればこれまでどおり発動する（出典: atwiki/page-2108・利用者の決定 2026-10-20・questions-all.md U-22）", () => {
+    const s = settle(ncEnter("XG4-047:sr", 3, {}, enemyRiding(), EXTRA));
+    expectChoiceFrom(s, "player1", "XG4-047");
+    expect(choiceIds(s)).toEqual(["SPEC-E-S:rd"]);
+  });
 });
 
 // ===========================================================================

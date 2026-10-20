@@ -2,6 +2,7 @@ import {
   getRidingComboEffect,
   getRidingComboNamedEffect,
   isJointComboEffectImplemented,
+  isSameCardIdentity,
   type NumberComboEffectId,
 } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
@@ -118,6 +119,13 @@ export function resolveRidingComboOnRideOff(
         ),
       };
     }
+  }
+
+  // XG4-101 バイクロッサー・ギン【ブレーザーカノン】「これがライドしていれば、相手に1点ダメージを与える。」（atwiki/page-2110）。
+  // ライドしたまま RC を発動したとき（RK-017 ミッションメモリー・RM-045 ガンギブソン等）だけダメージを与える。ふつうのライドオフでは
+  // 発動の時点でライドしていないので何もしない（利用者の決定 2026-10-20・questions-all.md U-24）。
+  if (isSameCardIdentity(card.cardId, "XG4-101") && !card.mountedOnInstanceId) {
+    return { state, logs: [ridingComboLog(playerId, card.cardId, state.definitions, "xg4_101:not_riding")] };
   }
 
   const dsl = tryResolveDslTriggeredEffects({

@@ -291,7 +291,7 @@ describe("XG5-040 ゴセイブラック", () => {
     expect(spOf(entered(), "player1", "XG5-040:k")).toBe(1);
   });
 
-  it("XG5-040: NC【スネークバレット】— 自軍コマンドゾーンにないカテゴリ（ET）を持つ敵軍 S ユニットから選ぶ（WB だけのユニット・M ユニットは選べない）（出典: atwiki/page-2241「自軍コマンドゾーンにないカテゴリを持つ敵軍Sユニットを1体選び撃破する」）", () => {
+  it("XG5-040: NC【スネークバレット】— 自軍コマンドゾーンにないカテゴリ（ET）を持つ敵軍 S ユニットから選ぶ（WB/ET のマルチカテゴリも、ET がないので選べる。WB だけのユニット・M ユニットは選べない）（出典: atwiki/page-2241「自軍コマンドゾーンにないカテゴリを持つ敵軍Sユニットを1体選び撃破する」・利用者の決定 2026-10-20・questions-all.md U-26）", () => {
     const s = entered(2);
     expectChoiceFrom(s, "player1", "XG5-040");
     expect([...choiceIds(s)].sort()).toEqual(["SPEC-ETS:et", "SPEC-WBET:we"]);

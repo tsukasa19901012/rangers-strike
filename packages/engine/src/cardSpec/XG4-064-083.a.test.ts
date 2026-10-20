@@ -7,6 +7,7 @@
  * 公開エンジン API（createTestState / applyAction / getLegalActions）だけを使う。
  */
 import { describe, expect, it } from "vitest";
+import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState } from "../types/game";
 import {
   attack,
@@ -53,7 +54,9 @@ const E_C2 = sUnit("SPEC-E-C2", { bp: 1000, powerCost: 2, sp: undefined });
 const E_C3 = sUnit("SPEC-E-C3", { bp: 1000, powerCost: 3, sp: undefined });
 const E_5000 = sUnit("SPEC-E-5000", { bp: 5000, sp: undefined });
 const BEAST_CMD = sUnit("SPEC-BEAST", { category: "DA", bp: 1000, features: ["獣"] });
-const EXTRA = [DD, PLAIN, RIDER, E_S, E_C2, E_C3, E_5000, BEAST_CMD];
+const OP_MECHA = { id: "SPEC-OP-MECHA", name: "SPEC-OP-MECHA", type: "operation", category: "MA", rarity: "N", expansion: "card-spec", powerCost: 1, features: ["メカ"] } as unknown as CardDefinition;
+const OP_DINO = { id: "SPEC-OP-DINO", name: "SPEC-OP-DINO", type: "operation", category: "DA", rarity: "N", expansion: "card-spec", powerCost: 1, features: ["恐竜"] } as unknown as CardDefinition;
+const EXTRA = [DD, PLAIN, RIDER, E_S, E_C2, E_C3, E_5000, BEAST_CMD, OP_MECHA, OP_DINO];
 
 const board = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) => rushBoard(p1, p2, EXTRA);
 const battle = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) => p1Battle(p1, p2, EXTRA);
@@ -176,11 +179,18 @@ describe("XG4-067 仮面ライダーW・LM", () => {
     expectRarityIn("XG4-067", ["NR"]);
   });
 
-  it("XG4-067: 追加条件 — 特徴「メカ」を持つ自軍コマンドがあればラッシュできる（なければできない）（出典: atwiki/page-2117「追加条件：特徴「メカ」を持つ自軍コマンドがある」）（既知の不具合: CARD-XG4-067 追加条件「特徴「メカ」を持つ自軍コマンドがある」がオペレーションカードしか数えず、ユニットカードのコマンドではラッシュできない）", () => {
+  it("XG4-067: 追加条件 — 特徴「メカ」を持つ自軍コマンドがあればラッシュできる（なければできない）（出典: atwiki/page-2117「追加条件：特徴「メカ」を持つ自軍コマンドがある」）（ユニットのカードのコマンド。出典: 利用者の決定 2026-10-20・questions-all.md U-23）", () => {
     const mk = (withMecha: boolean) =>
       board({ hand: [inst("XG4-067", "lm")], command: [...releasedCat("MA", 1), ...(withMecha ? [released("XG4-064", "mc")] : [])], power: powerCards(3) });
     expect(canStartRush(mk(false), "player1", "XG4-067:lm")).toBe(false);
     const r = rushFromHand(mk(true), "player1", "XG4-067:lm");
+    expect(r.ok, r.error).toBe(true);
+    expect(zoneOf(r.state, "player1", "XG4-067:lm")).toBe("rush");
+  });
+
+  it("XG4-067: 追加条件 — コマンドゾーンのカードはオペレーションでもユニットのカードでも、特徴「メカ」があれば数える（オペレーションのカードでもラッシュできる）（出典: 利用者の決定 2026-10-20・questions-all.md U-23）", () => {
+    const s = board({ hand: [inst("XG4-067", "lm")], command: [...releasedCat("MA", 1), released("SPEC-OP-MECHA", "om")], power: powerCards(3) });
+    const r = rushFromHand(s, "player1", "XG4-067:lm");
     expect(r.ok, r.error).toBe(true);
     expect(zoneOf(r.state, "player1", "XG4-067:lm")).toBe("rush");
   });
@@ -280,11 +290,18 @@ describe("XG4-069 仮面ライダーW・FJ（XG4）", () => {
     expectRarityIn("XG4-069", ["R"]);
   });
 
-  it("XG4-069: 追加条件 — 特徴「獣」または「恐竜」を持つ自軍コマンドがあればラッシュできる（なければできない）（出典: atwiki/page-2043「追加条件：特徴「獣」または「恐竜」を持つ自軍コマンドがある」）（既知の不具合: CARD-XG4-069 追加条件「特徴「獣」または「恐竜」を持つ自軍コマンドがある」がオペレーションカードしか数えず、ユニットカードのコマンドではラッシュできない）", () => {
+  it("XG4-069: 追加条件 — 特徴「獣」または「恐竜」を持つ自軍コマンドがあればラッシュできる（なければできない）（出典: atwiki/page-2043「追加条件：特徴「獣」または「恐竜」を持つ自軍コマンドがある」）（ユニットのカードのコマンド。出典: 利用者の決定 2026-10-20・questions-all.md U-23）", () => {
     const mk = (withBeast: boolean) =>
       board({ hand: [inst("XG4-069", "fj")], command: [...releasedCat("DA", 1), ...(withBeast ? [released("SPEC-BEAST", "bc")] : [])], power: powerCards(3) });
     expect(canStartRush(mk(false), "player1", "XG4-069:fj")).toBe(false);
     const r = rushFromHand(mk(true), "player1", "XG4-069:fj");
+    expect(r.ok, r.error).toBe(true);
+    expect(zoneOf(r.state, "player1", "XG4-069:fj")).toBe("rush");
+  });
+
+  it("XG4-069: 追加条件 — コマンドゾーンのカードはオペレーションでもユニットのカードでも、特徴「獣」「恐竜」があれば数える（「恐竜」のオペレーションのカードでもラッシュできる）（出典: 利用者の決定 2026-10-20・questions-all.md U-23）", () => {
+    const s = board({ hand: [inst("XG4-069", "fj")], command: [...releasedCat("DA", 1), released("SPEC-OP-DINO", "od")], power: powerCards(3) });
+    const r = rushFromHand(s, "player1", "XG4-069:fj");
     expect(r.ok, r.error).toBe(true);
     expect(zoneOf(r.state, "player1", "XG4-069:fj")).toBe("rush");
   });

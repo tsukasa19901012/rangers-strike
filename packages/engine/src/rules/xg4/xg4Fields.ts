@@ -251,6 +251,17 @@ export function xg4VehicleEntersWithoutRide(cardId: string): boolean {
 }
 
 /**
+ * 「（この効果はライドしている自軍ユニットからコンビネーションするときはナンバーに関係なく発動する）」の NC（rules/numberComboEffects.ts）。
+ * XG4-047 シンケンレッド【車上の赤き侍】（atwiki/page-2108）。直前のユニット（左隣。ビークルは数えない）が、いまビークルにライドしている
+ * 自軍ユニットなら、並び順に関係なく成立する。左隣より前にライドしているユニットがいても数えない（利用者の決定 2026-10-20・questions-all.md U-22）。
+ */
+export function xg4NcAnyNumberFromLeft(state: Pick<GameState, "definitions">, cardId: string, battleBeforeEnter: readonly CardInstance[]): boolean {
+  if (!isSameCardIdentity(cardId, "XG4-047")) return false;
+  const left = [...battleBeforeEnter].reverse().find((c) => state.definitions[c.cardId]?.type === "unit");
+  return !!left?.mountedOnInstanceId;
+}
+
+/**
  * RC を持たないユニットが、自軍コマンドを1つホールドすればこのビークルにライドできるか（keywords/ride.ts）。
  * XG4-018「※WBを持つSユニットは、自軍コマンドを1つホールドすればRCを持っていなくてもこのビークルにライドできる。」（atwiki/page-2098）。
  * リリース状態のコマンドがあるかは呼び出し側で見る。

@@ -63,6 +63,7 @@ const RED = sUnit("SPEC-RED", { category: "WB", bp: 1000, features: ["レッド"
 const C1 = sUnit("SPEC-C1", { bp: 1000, powerCost: 1 });
 const C3 = sUnit("SPEC-C3", { bp: 1000, powerCost: 3 });
 const EXTRA = [E4K, YEL, WHITE, RED, C1, C3];
+const U28 = "（出典: 利用者の決定 2026-10-20・questions-all.md U-28）";
 
 // ===========================================================================
 describe("XG6-016 爆竜アンキロベイルス", () => {
@@ -391,6 +392,22 @@ describe("XG6-021 リンライオン", () => {
       expect(spOf(s, "player1", "XG6-007:gk")).toBe(2);
     },
   );
+
+  /** リンライオン（バトルフェイズ中は DA／WB）→ カテゴリ cat の L ユニット（BP10000）。自軍捨札にマルチカテゴリのカード2枚。 */
+  const jcWith = (cat: string | string[]) => {
+    const LU = sUnit("SPEC-LU", { category: cat as never, size: "L", bp: 10000, powerCost: 5 });
+    let s = p1Battle({ rush: [inst("XG6-021", "r"), inst("SPEC-LU", "l")], discard: [inst("XG6-048", "m0"), inst("XG6-048", "m1")] }, {}, [...EXTRA, LU]);
+    s = passEntry(enter(s, "XG6-021:r"));
+    return enter(s, "SPEC-LU:l");
+  };
+
+  it(`XG6-021: 【激臨剣】「同カテゴリ」はカテゴリを1つでも共有すればよい — DA だけの L ユニットも能力を得る（BP10000→14000）${U28}`, () => {
+    expect(bpOf(jcWith("DA"), "player1", "SPEC-LU:l")).toBe(14000);
+  });
+
+  it(`XG6-021: 【激臨剣】DA も WB も持たない L ユニット（MA／OT）は能力を得ない（BP10000 のまま）${U28}`, () => {
+    expect(bpOf(jcWith(["MA", "OT"]), "player1", "SPEC-LU:l")).toBe(10000);
+  });
 });
 
 // ===========================================================================
@@ -453,4 +470,23 @@ describe("XG6-022 リンカメレオン", () => {
       expect(zoneOf(s, "player2", "SPEC-C1:e1")).toBe("discard");
     },
   );
+
+  /** カテゴリ cat の L ユニットの次にリンカメレオンを出す。自軍捨札にマルチカテゴリのカード1枚。 */
+  const ganjiFrom = (cat: string | string[]) => {
+    const LU = sUnit("SPEC-LU", { category: cat as never, size: "L", bp: 10000, powerCost: 5 });
+    return enter(
+      p1Battle({ battle: [inst("SPEC-LU", "l")], rush: [inst("XG6-022", "c")], discard: [inst("XG6-048", "m0")] }, { battle: [inst("SPEC-C1", "e1")] }, [...EXTRA, LU]),
+      "XG6-022:c",
+    );
+  };
+
+  it(`XG6-022: 【リンギ・がんじがため】「同カテゴリ」はカテゴリを1つでも共有すればよい — WB だけの L ユニットからコンビネーションしても発動できる${U28}`, () => {
+    const s = ganjiFrom("WB");
+    expectChoiceFrom(s, "player1", "XG6-022");
+    expect(choiceIds(s)).toEqual(["SPEC-C1:e1"]);
+  });
+
+  it(`XG6-022: 【リンギ・がんじがため】DA も WB も持たない L ユニット（MA／OT）からでは発動しない${U28}`, () => {
+    expect(ganjiFrom(["MA", "OT"]).pendingEffectChoice?.sourceCardId).not.toBe("XG6-022");
+  });
 });

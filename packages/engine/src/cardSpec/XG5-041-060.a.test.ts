@@ -128,6 +128,25 @@ describe("XG5-041 ゴセイイエロー", () => {
     expectChoiceFrom(s, "player2", "XG5-037");
     expect(choiceIds(s)).toContain("XG5-041:y");
   });
+
+  /** NC の後で自分の手札の枚数を n 枚にする（手札の増減を状態の書き換えで作る）。 */
+  const withHand = (s: GameState, n: number): GameState => ({ ...s, players: { ...s.players, player1: { ...s.players.player1, hand: handN(n) } } });
+
+  it("XG5-041: NC【兄妹の絆】— NC のとき手札1枚で得た「選ばれない」は、あとで手札が2枚になっても次の相手ターン終了時まで残る（出典: 利用者の決定 2026-10-20・questions-all.md U-21）", () => {
+    let s = passTurnTo(withHand(lined(1), 2), "player2", "battle");
+    expect(s.players.player1.hand).toHaveLength(2);
+    s = enter(s, "XG5-037:gr", "player2");
+    expectChoiceFrom(s, "player2", "XG5-037");
+    expect(choiceIds(s)).not.toContain("XG5-041:y");
+  });
+
+  it("XG5-041: NC【兄妹の絆】— NC のとき手札2枚なら「選ばれない」は得ず、あとで手札が1枚になっても相手の効果に選ばれる（出典: 利用者の決定 2026-10-20・questions-all.md U-21）", () => {
+    let s = passTurnTo(withHand(lined(2), 1), "player2", "battle");
+    expect(s.players.player1.hand).toHaveLength(1);
+    s = enter(s, "XG5-037:gr", "player2");
+    expectChoiceFrom(s, "player2", "XG5-037");
+    expect(choiceIds(s)).toContain("XG5-041:y");
+  });
 });
 
 // ===========================================================================

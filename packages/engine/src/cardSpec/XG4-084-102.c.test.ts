@@ -14,7 +14,9 @@ import {
   bpOf,
   canActivate,
   canMount,
+  cardIn,
   choiceIds,
+  damageOf,
   deckCards,
   endTurnKeep,
   expectCatalogText,
@@ -23,11 +25,13 @@ import {
   expectUnit,
   expectVehicle,
   inst,
+  mount,
   p1Battle,
   pick,
   registerOffered,
   releasedCat,
   resolveAll,
+  rideOff,
   ridingPair,
   spOf,
   st,
@@ -148,7 +152,25 @@ describe("XG4-101 バイクロッサー・ギン", () => {
     expectRarityIn("XG4-101", ["NR"]);
   });
 
-  it.todo("XG4-101: RC【ブレーザーカノン】— これがライドしていれば相手に1点ダメージを与える（出典: atwiki/page-2110「これがライドしていれば」）（未対応の理由: RC はライドオフしたときに発動するので、そのときに「ライドしていれば」が成り立つ場面（ライドオフせずに RC を発動できる XG4-091 ガンギブソン等）が出典で決まらない。XG4-questions.md に記載）");
+  /** 自軍バトルフェイズ、バトルエリアの RM-045 ガンギブソンの次に、これが XG4-102 ケンローダーにライドして出る（ライドオフの選択まで）。 */
+  const riding = () =>
+    mount(battle({ battle: [inst("RM-045", "gg")], rush: [inst("XG4-101", "gin"), inst("XG4-102", "kl")] }), "XG4-101:gin", "XG4-102:kl");
+
+  it("XG4-101: RC【ブレーザーカノン】— ライドオフせずに RC を発動したとき（RM-045 ガンギブソンからコンビネーションし、ライドしたまま進む）は、これがライドしているので相手に1点ダメージを与える（出典: atwiki/page-2110・利用者の決定 2026-10-20・questions-all.md U-24）", () => {
+    const s0 = riding();
+    const before = damageOf(s0, "player2");
+    const s = resolveAll(rideOff(s0, false));
+    expect(cardIn(s, "player1", "XG4-101:gin")?.mountedOnInstanceId).toBe("XG4-102:kl");
+    expect(damageOf(s, "player2")).toBe(before + 1);
+  });
+
+  it("XG4-101: RC【ブレーザーカノン】— ふつうにライドオフして RC を発動したときは、もうライドしていないのでダメージを与えない（出典: atwiki/page-2110・利用者の決定 2026-10-20・questions-all.md U-24）", () => {
+    const s0 = riding();
+    const before = damageOf(s0, "player2");
+    const s = resolveAll(rideOff(s0, true));
+    expect(cardIn(s, "player1", "XG4-101:gin")?.mountedOnInstanceId).toBeUndefined();
+    expect(damageOf(s, "player2")).toBe(before);
+  });
 });
 
 // ===========================================================================

@@ -349,6 +349,7 @@ describe("XG7-037 仮面ライダーカイザ×仮面ライダーファイズ", 
 
 // ===========================================================================
 describe("XG7-038 仮面ライダーギャレン×仮面ライダーブレイド", () => {
+  const U28 = "（出典: 利用者の決定 2026-10-20・questions-all.md U-28）";
   const TEXT =
     "※クロス1 ※これはビークルにライドできる。 【ライトニングブラスト&バーニングスマッシュ】自軍ターン中、これがバトルエリアに出たとき、自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードのカテゴリが同じなら、敵軍Sユニットを1体選び撃破する。";
 
@@ -385,6 +386,25 @@ describe("XG7-038 仮面ライダーギャレン×仮面ライダーブレイド
 
   it("XG7-038: 【ライトニングブラスト&バーニングスマッシュ】見せた2枚のカテゴリが違えば（WB と MA）ホールドだけで撃破しない（出典: atwiki/page-2437「見せたカードのカテゴリが同じなら」）", () => {
     const s = resolveAll(blast([inst("SPEC-WB-C", "w1"), inst("SPEC-MA-C", "m1")]), ["SPEC-WB-C:w1", "SPEC-MA-C:m1", "SPEC-ENEMY:r", "SPEC-E3000:b"]);
+    expect(isHeld(s, "player2", "SPEC-ENEMY:r")).toBe(true);
+    expect(zoneOf(s, "player2", "SPEC-E3000:b")).toBe("battle");
+  });
+
+  const WBDA = sUnit("SPEC-WBDA-C", { category: ["WB", "DA"] as never, bp: 1000 });
+  const DAOT = sUnit("SPEC-DAOT-C", { category: ["DA", "OT"] as never, bp: 1000 });
+  const MAOT = sUnit("SPEC-MAOT-C", { category: ["MA", "OT"] as never, bp: 1000 });
+  const blast2 = (hand: CardInstance[]) =>
+    enter(p1Battle({ rush: [inst("XG7-038", "g")], hand }, { battle: [inst("SPEC-E3000", "b")], rush: [inst("SPEC-ENEMY", "r")] }, [...EXTRA, WBDA, DAOT, MAOT]), "XG7-038:g");
+
+  it(`XG7-038: 【ライトニングブラスト&バーニングスマッシュ】「カテゴリが同じ」はカテゴリを1つでも共有すればよい — WB／DA と DA／OT（DA を共有）を見せれば撃破する${U28}`, () => {
+    let s = pick(pick(blast2([inst("SPEC-WBDA-C", "h1"), inst("SPEC-DAOT-C", "h2")]), "SPEC-WBDA-C:h1"), "SPEC-DAOT-C:h2");
+    s = resolveAll(pick(pick(s, "SPEC-ENEMY:r"), "SPEC-E3000:b"));
+    expect(isHeld(s, "player2", "SPEC-ENEMY:r")).toBe(true);
+    expect(zoneOf(s, "player2", "SPEC-E3000:b")).toBe("discard");
+  });
+
+  it(`XG7-038: 【ライトニングブラスト&バーニングスマッシュ】共有するカテゴリがなければ（WB／DA と MA／OT）ホールドだけで撃破しない${U28}`, () => {
+    const s = resolveAll(blast2([inst("SPEC-WBDA-C", "h1"), inst("SPEC-MAOT-C", "h2")]), ["SPEC-WBDA-C:h1", "SPEC-MAOT-C:h2", "SPEC-ENEMY:r", "SPEC-E3000:b"]);
     expect(isHeld(s, "player2", "SPEC-ENEMY:r")).toBe(true);
     expect(zoneOf(s, "player2", "SPEC-E3000:b")).toBe("battle");
   });

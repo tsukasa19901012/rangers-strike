@@ -1,4 +1,5 @@
 import { xg7ComboNumberDelta, xg7NcAnyNumberAt } from "./xg7/xg7Fields";
+import { xg4NcAnyNumberFromLeft } from "./xg4/xg4Fields";
 import { rm1ComboNumber } from "./rm/rm1Fields";
 import { xg2ComboNumberOverride } from "./xg2/xg2Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
@@ -158,6 +159,8 @@ export function numberComboTriggers(
   if (falconBreakTriggers(state, playerId, card)) return true;
   // XG7-013・XG7-016（2番目ならナンバーに関係なく発動する。rules/xg7/xg7Fields.ts）。
   if (xg7NcAnyNumberAt(card.cardId, battlePosition, state, battleBeforeEnter)) return true;
+  // XG4-047（ライドしている自軍ユニットからコンビネーションするときはナンバーに関係なく発動する。rules/xg4/xg4Fields.ts）。
+  if (xg4NcAnyNumberFromLeft(state, card.cardId, battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId))) return true;
   const effectiveNumber = ncEffectiveNumber(state, playerId, card, definition);
   const position = battlePosition;
 
@@ -274,6 +277,7 @@ export function markNcColumnEffectsOnEnter(
   const numberMatches =
     missionBurning ||
     xg7NcAnyNumberAt(card.cardId, battlePosition, state, battleBeforeEnter) ||
+    xg4NcAnyNumberFromLeft(state, card.cardId, battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId)) ||
     (typeof definition.comboNumber === "number" &&
       ncEffectiveNumber(state, playerId, card, definition) === battlePosition);
   const leftNeighbor = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
