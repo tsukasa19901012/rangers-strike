@@ -26,8 +26,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-071::kapu",
-          "duration": "turn"
+          "keyword": "xg3::XG3-071::kapu",
+          "duration": "permanent"
         }
       ]
     }

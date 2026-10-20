@@ -34,6 +34,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg3::XG3-032::dandan",
+          "duration": "permanent"
         }
       ]
     }

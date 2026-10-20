@@ -3,6 +3,7 @@ import { xg7AttackerBattleBonus } from "./xg7/xg7Fields";
 import { xg4AttackerBattleBonus } from "./xg4/xg4Fields";
 import { unitFeatures as xg4UnitFeatures } from "./addedFeatures";
 import { xg2DefenderBattleBonus } from "./xg2/xg2Fields";
+import { xg3AttackerBpBonus } from "./xg3/xg3Fields";
 import { rk9UsePrintedDefenderBp } from "./rk/rk9Fields";
 import { rk11UsePrintedDefenderBp } from "./rk/rk11Fields";
 import { xg7UsePrintedDefenderBp } from "./xg7/xg7Fields";
@@ -138,6 +139,8 @@ export function battleAttackerBpBonus(
   total += xg7AttackerBattleBonus(state, pending);
   // クロスギャザー ザ・ジェットアクセル XG4-007【獣奏剣】等（rules/xg4/xg4Fields.ts）。
   total += xg4AttackerBattleBonus(state, pending, xg4UnitFeatures);
+  // XG3-070 ズ・ザイン・ダ【車両への憎悪】（rules/xg3/xg3Fields.ts）。
+  total += xg3AttackerBpBonus(state, pending);
 
   // RS-062【ボウケンジャベリン】・RS-241【デュアルクラッシャー・ドリルヘッド】（CN5）:
   // 特徴「メカ」を持つユニットにアタックするとき BP+4000（NC の効果は成立しているときだけ。R-CN-02）。

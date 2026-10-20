@@ -14,6 +14,7 @@ import { emitDamageAppliedAndResolve } from "../events/emitDamageApplied";
 import { applyPowerFlipBeforeDamage, openBreakActionBeforeFlip } from "./powerFlipEffects";
 import { openRk4BeforeFlip } from "./rk/rk4UnitEffects";
 import { openXg1dBeforeFlip } from "./xg1/xg1dEffects";
+import { openXg3BeforeFlip } from "./xg3/xg3Effects";
 import {
   cardHasMorphKeyword,
   powerZoneHasMorphUnitCard,
@@ -347,7 +348,9 @@ function flipPowerForDamage(state: GameState, flip: DeferredPowerFlip): GameStat
   const opened =
     openBreakActionBeforeFlip(state, flip.playerId, flip.flipIds, flip.resume) ??
     openRk4BeforeFlip(state, flip.playerId, flip.flipIds, flip.resume) ??
-    openXg1dBeforeFlip(state, flip.playerId, flip.flipIds, flip.resume);
+    openXg1dBeforeFlip(state, flip.playerId, flip.flipIds, flip.resume) ??
+    // XG3-006 ビクトリーウォーカー【ケミカルディスチャージャー】（ダメージを無効にする。rules/xg3/xg3Effects.ts）。
+    openXg3BeforeFlip(state, flip);
   if (opened) {
     // ストライクの反応窓（pendingStrike）は閉じ、ストライクの残りはウラ返したあとで終える（resume.pending に保持）。
     const strikeClosed = flip.resume.kind === "strike" && flip.finishStrike ? { pendingStrike: undefined } : {};

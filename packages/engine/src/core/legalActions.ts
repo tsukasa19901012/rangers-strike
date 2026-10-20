@@ -1,4 +1,5 @@
 import { canUseKyouryuumaru } from "../rules/legend1/otherLinesNamedEffects";
+import { isXg3ZordUpVehicle } from "../rules/xg3/xg3Fields";
 import { mirrorWorldChoiceAffordable } from "../rules/mirrorWorldSelection";
 import { lionArmorAvailable } from "../rules/legend1/set6NamedEffects348";
 import { runWithStateRng } from "./rng";
@@ -157,6 +158,7 @@ import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
 import { canConfirmXg5Choice, isXg5ChoiceEffect, listXg5HandActivations } from "../rules/xg5/xg5Effects";
 import { xg5ForcesAttack } from "../rules/xg5/xg5Fields";
 import { canConfirmXg7Choice, isXg7ActivatableResident, isXg7ChoiceEffect } from "../rules/xg7/xg7Effects";
+import { canConfirmXg3Choice, filterXg3LegalActions, isXg3ChoiceEffect } from "../rules/xg3/xg3Effects";
 import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
 import { canConfirmXg1Choice, isXg1ChoiceEffect } from "../rules/xg1/xg1Effects";
 import { xg1ForcedAttackFilter } from "../rules/xg1/xg1cEffects";
@@ -1145,7 +1147,8 @@ function appendRushCategoryPaymentActions(
     if (categories.length === 0) continue;
 
     if (
-      (isUnit(definition) || (isVehicle(definition) && needsZordExtendedMaterial(state.definitions, card.cardId))) &&
+      // XG3-077 アギトトルネイダー（追加条件つきのビークル。rules/xg3/xg3Fields.ts）もユニットと同じ手順でラッシュする。
+      (isUnit(definition) || isXg3ZordUpVehicle(card.cardId) || (isVehicle(definition) && needsZordExtendedMaterial(state.definitions, card.cardId))) &&
       isZordUpCost(definition.powerCost) &&
       (rushAdditionalConditionApplies(state, playerId, card.cardId) ||
         requiresAllFusionPartners(card.cardId))
@@ -1390,6 +1393,15 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmXg7Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg3ChoiceEffect(pending.effectId)) {
+    // クロスギャザー ザ・Wインパクト XG3-002〜XG3-103 の選択（rules/xg3/xg3Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg3Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 
@@ -2054,7 +2066,8 @@ export function getLegalActions(input: GameState): GameAction[] {
   // 追加条件の素材の特徴（効果・フェイズで追加された特徴）はこの状態で判定する（rules/zordFeatureContext.ts）。
   // 合法判定の中で乱数を使っても、状態の rngState から作るので決定的（core/rng.ts）。
   // XG1-053【バーニングライダーパンチ】: 追加でアタックできる間は、そのアタックしか選べない（rules/xg1/xg1cEffects.ts）。
-  const actions = xg1ForcedAttackFilter(state, runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCoreWithMemo(state))).value);
+  // XG3-024・XG3-025（ラッシュフェイズのかわりに発動した後）の絞り込み（rules/xg3/xg3Effects.ts）。
+  const actions = filterXg3LegalActions(state, xg1ForcedAttackFilter(state, runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCoreWithMemo(state))).value));
   if (cache && engineSideEffectCount() === sideEffectsBefore) {
     for (const action of actions) deepFreeze(action);
     cache.set(input, [...actions]);
@@ -2370,6 +2383,7 @@ function getLegalActionsCore(state: GameState): GameAction[] {
         } else if (
           // 「自軍「X」1体を手札に戻す」等の追加条件を持つビークル（XG2-074 クウガゴウラム）も、ユニットと同じ支払いの組で列挙する。
           (isUnit(definition) || (isVehicle(definition) && needsZordExtendedMaterial(state.definitions, card.cardId))) &&
+          (isUnit(definition) || isXg3ZordUpVehicle(card.cardId)) &&
           isZordUpCost(definition!.powerCost) &&
           (rushAdditionalConditionApplies(state, playerId, card.cardId) ||
             requiresAllFusionPartners(card.cardId))

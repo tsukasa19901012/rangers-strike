@@ -189,6 +189,8 @@ export function shouldUseDslOperation(
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("xg5::"))) return true;
   // XG7-001〜XG7-068（xg7::。rules/xg7/xg7Effects.ts）。
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("xg7::"))) return true;
+  // クロスギャザー ザ・Wインパクト XG3-002〜XG3-103（xg3::。rules/xg3/xg3Effects.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("xg3::"))) return true;
   // ベルトコレクション BK-001〜BK-019（bk1::。rules/bk/bk1Effects.ts）。
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("bk1::"))) return true;
   // クロスギャザー XG1-001〜XG1-100（xg1::。rules/xg1/xg1Effects.ts）。

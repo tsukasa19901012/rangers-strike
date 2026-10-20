@@ -177,7 +177,12 @@ export function canSelfRushFromZone(
   const card = player[zone].find((c) => c.instanceId === instanceId);
   if (!card) return false;
   // XG2-054 アビスハンマー【土中からの奇襲】（自軍捨札から。rules/xg2/xg2cEffects.ts）。
-  if (zone === "discard") return xg2CanDeployFromDiscard(state, playerId, card);
+  if (zone === "discard" && xg2CanDeployFromDiscard(state, playerId, card)) return true;
+  // クロスギャザー ザ・Wインパクト XG3 の、自軍ゾーンから起動する効果（XG3-002【宇宙を走る車】等。rules/xg3/xg3Effects.ts）。
+  const xg3 = canActivateXg3FromZone(state, playerId, zone, instanceId);
+  if (xg3 !== null) return xg3;
+  // 自軍捨札から出すのは XG3 のカードだけ（XG3-058【蘇る雷】）。
+  if (zone === "discard") return false;
   if (zone === "hand") return handDeployConditionMet(state, playerId, card.cardId);
   if (zone === "power" && card.faceDown) return false;
   // XG7-068【蒸着・赤射・焼結】（rules/xg7/xg7Fields.ts）。
@@ -258,6 +263,8 @@ export function applySelfRushFromZone(
   instanceId: string,
 ): GameState | null {
   if (!canSelfRushFromZone(state, playerId, zone, instanceId)) return null;
+  const xg3 = activateXg3FromZone(state, playerId, zone, instanceId);
+  if (xg3) return xg3;
   if (zone === "discard") return xg2DeployFromDiscard(state, playerId, instanceId);
   const player = state.players[playerId];
   const card = player[zone].find((c) => c.instanceId === instanceId);
@@ -279,6 +286,7 @@ import { hasBakiBakiExtraAttack } from "./turnModifierBridge";
 import { markTurnBattleAct } from "./rk/rk10Fields";
 import { rk16CanDeployFromCommand } from "./rk/rk16Fields";
 import { xg1CanDeployFromCommand } from "./xg1/xg1Fields";
+import { activateXg3FromZone, canActivateXg3FromZone } from "./xg3/xg3Effects";
 
 /**
  * battleActed 済みでも「アタックとストライクを1度ずつ」持ちなら
@@ -286,7 +294,7 @@ import { xg1CanDeployFromCommand } from "./xg1/xg1Fields";
  */
 export function battleActBlocked(
   player: PlayerState,
-  card: { cardId: string; instanceId: string; battleActed?: boolean; activatedNcEffects?: string[] },
+  card: { cardId: string; instanceId: string; battleActed?: boolean; activatedNcEffects?: string[]; commandHeld?: boolean },
   action: "attack" | "strike",
 ): boolean {
   // RS-326【究極奥義・猫だまし】で出したユニットはアタックもストライクもできない（atwiki/page-487）。
@@ -313,7 +321,9 @@ export function battleActBlocked(
  * NC の効果として「アタックとストライクを1度ずつ行ってもよい」を持ち、NC が成立しているか。
  * RS-191 ダイナレッド【ダイナ剣・夢の翼】（atwiki/page-393。NC 不成立なら1回だけ — faq-rider-2 RS-191）。
  */
-function ncAttackAndStrikeOnce(card: { cardId: string; activatedNcEffects?: string[] }): boolean {
+function ncAttackAndStrikeOnce(card: { cardId: string; activatedNcEffects?: string[]; commandHeld?: boolean }): boolean {
+  // XG3-059 仮面ライダー轟鬼【轟く二刀】「このユニットがリリース状態なら、このターン、これはアタックとストライクを1度ずつ行ってもよい」（atwiki/page-1923）。
+  if (card.cardId === "XG3-059" && !!card.activatedNcEffects?.includes("ku_to") && !card.commandHeld) return true;
   return card.cardId === "RS-191" && !!card.activatedNcEffects?.includes("daina_ken_no_tsubasa");
 }
 

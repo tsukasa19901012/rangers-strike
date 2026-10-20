@@ -2,6 +2,7 @@ import type { GameState, PlayerId } from "../types/game";
 import { beginTurnStartSwaps } from "./keywordGapRuntime";
 import { applyGegeruStartPhase } from "./residentOps";
 import { applyXg6StartPhaseBegin } from "./xg6/xg6Hooks";
+import { openXg3StartPhaseBegin } from "./xg3/xg3Effects";
 
 /**
  * スタートフェイズに入った直後（3行程より前）に処理する効果。
@@ -20,5 +21,7 @@ export function applyStartPhaseBeginEffects(state: GameState, playerId: PlayerId
   next = beginTurnStartSwaps(next, playerId);
   // XG6-042【ゼロのスタート】（このスタートフェイズ中、山札からドローできない。rules/xg6/xg6bEffects.ts）。
   next = applyXg6StartPhaseBegin(next, playerId);
+  // クロスギャザー ザ・Wインパクト XG3（XG3-009【戦いの記録】等。rules/xg3/xg3Effects.ts）。
+  next = openXg3StartPhaseBegin(next, playerId);
   return next;
 }

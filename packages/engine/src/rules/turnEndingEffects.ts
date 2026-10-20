@@ -7,6 +7,7 @@ import { collectRk11TurnEndQueue, openRk11TurnEndEntry } from "./rk/rk11UnitEffe
 import { collectRk13TurnEndQueue, openRk13TurnEndEntry } from "./rk/rk13UnitEffects";
 import { collectRk16TurnEndQueue, openRk16TurnEndEntry } from "./rk/rk16UnitEffects";
 import { collectXg7TurnEndQueue, openXg7TurnEndEntry } from "./xg7/xg7Effects";
+import { collectXg3TurnEndQueue, openXg3TurnEndEntry } from "./xg3/xg3Effects";
 import { collectOtherLinesTurnEndQueue, openOtherLinesTurnEndEntry } from "./legend1/otherLinesNamedEffects";
 import { applyRk5TurnEndDestroy, collectRk5TurnEndQueue, openRk5TurnEndEntry } from "./rk/rk5UnitEffects";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
@@ -416,6 +417,14 @@ export function resolveTurnEndingEffectsImpl(
   if (!progress.xg2Done) {
     progress = { ...progress, xg2Done: true };
     nextState = applyXg2TurnEnd(nextState, endingPlayerId);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // クロスギャザー ザ・Wインパクト XG3 の「自分がターンを終えるとき」（XG3-003・XG3-045・XG3-095 の置き換え等。rules/xg3/xg3Effects.ts）。
+  if (!progress.xg3Queue) progress = { ...progress, xg3Queue: collectXg3TurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.xg3Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.xg3Queue!;
+    progress = { ...progress, xg3Queue: rest };
+    nextState = openXg3TurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {

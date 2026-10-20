@@ -56,36 +56,16 @@
       "name": "ヒビキオンゲキコ",
       "text": "ホールド状態のこのユニットから、「仮面ライダーディケイド」または「仮面ライダーディエンド」または特徴「猛士」を持つユニットがコンビネーションしたとき、次の効果を発動できる⇒敵軍バトルエリアから特徴「男」または「女」または「人型」を持たないユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg3::XG3-057::ongekiko",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

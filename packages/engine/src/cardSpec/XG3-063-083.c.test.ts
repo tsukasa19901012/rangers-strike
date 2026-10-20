@@ -90,7 +90,7 @@ describe("XG3-077 アギトトルネイダー", () => {
     expectRarityIn("XG3-077", ["N"]);
   });
 
-  it("XG3-077: 追加条件 — 自軍「仮面ライダーアギト」1体を手札に戻し、パワー4でラッシュできる（既知の不具合: CARD-XG3-077 追加条件つきのラッシュが提示されない）（出典: atwiki/page-1935「必要パワー：4+」「追加条件：自軍「仮面ライダーアギト」1体を手札に戻す」）", () => {
+  it("XG3-077: 追加条件 — 自軍「仮面ライダーアギト」1体を手札に戻し、パワー4でラッシュできる（出典: atwiki/page-1935「必要パワー：4+」「追加条件：自軍「仮面ライダーアギト」1体を手札に戻す」）", () => {
     const r = rushVia(board({ hand: [inst("XG3-077", "t")], rush: [inst("XG3-076", "ag")], power: powerCards(4), command: releasedCat("MA", 1) }), "player1", "XG3-077:t");
     expect(r.ok, r.error).toBe(true);
     const s = resolveAll(r.state, ["XG3-076:ag"]);
@@ -111,7 +111,7 @@ describe("XG3-077 アギトトルネイダー", () => {
     expect(zoneOf(s, "player1", "XG3-076:ag")).toBe("rush");
   });
 
-  it.fails("XG3-077: ※ ライドしているユニットが「仮面ライダーディケイド」（XG1-077。SP なし）なら「SP1」になる（既知の不具合: CARD-XG3-077 SP が 0 のまま）（出典: atwiki/page-1935「これにライドしているユニットは、「仮面ライダーディケイド」なら「SP1」になる」）", () => {
+  it("XG3-077: ※ ライドしているユニットが「仮面ライダーディケイド」（XG1-077。SP なし）なら「SP1」になる（出典: atwiki/page-1935「これにライドしているユニットは、「仮面ライダーディケイド」なら「SP1」になる」）", () => {
     const s = rideOff(mount(st({ player1: { rush: [inst("XG3-077", "t"), inst("XG1-077", "d")], deck: deckCards(3) } }, EXTRA), "XG1-077:d", "XG3-077:t"), false);
     expect(zoneOf(s, "player1", "XG1-077:d")).toBe("battle");
     expect(spOf(s, "player1", "XG1-077:d")).toBe(1);
@@ -127,7 +127,7 @@ describe("XG3-077 アギトトルネイダー", () => {
     return enter(passEntry(s), "TST-UNIT-0:nx");
   };
 
-  it.fails("XG3-077:【ファイナルアタックライド】— ライドされたままなら、このビークルからコンビネーションする S ユニットは敵軍ラッシュエリアのユニットにアタックできる（既知の不具合: CARD-XG3-077 アタック先にラッシュエリアが入らない）（出典: atwiki/page-1935「このビークルからコンビネーションするSユニットは次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる」）", () => {
+  it("XG3-077:【ファイナルアタックライド】— ライドされたままなら、このビークルからコンビネーションする S ユニットは敵軍ラッシュエリアのユニットにアタックできる（出典: atwiki/page-1935「このビークルからコンビネーションするSユニットは次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる」）", () => {
     const s = ridden(false);
     expect(zoneOf(s, "player1", "TST-UNIT-0:nx")).toBe("battle");
     expect(targetsOf(s, "TST-UNIT-0:nx")).toContain("TST-UNIT-0:r");
@@ -158,7 +158,7 @@ describe("XG3-078 マシンハードボイルダー", () => {
     expectRarityIn("XG3-078", ["N"]);
   });
 
-  it.fails("XG3-078: ※ 手札にある間、自軍ラッシュフェイズ中、特徴「ダブルドライバー」を持つ自軍コマンド（XG3-079）をホールドして、パワーなしで自軍ラッシュエリアに出せる（既知の不具合: CARD-XG3-078 手札から出す手が提示されない）（出典: atwiki/page-1936「特徴「ダブルドライバー」を持つ自軍コマンドをホールドしてから、これを自軍ラッシュエリアに出してもよい」・カード評価「コマンドのカテゴリを無視して出せる」）", () => {
+  it("XG3-078: ※ 手札にある間、自軍ラッシュフェイズ中、特徴「ダブルドライバー」を持つ自軍コマンド（XG3-079）をホールドして、パワーなしで自軍ラッシュエリアに出せる（出典: atwiki/page-1936「特徴「ダブルドライバー」を持つ自軍コマンドをホールドしてから、これを自軍ラッシュエリアに出してもよい」・カード評価「コマンドのカテゴリを無視して出せる」）", () => {
     const s0 = board({ hand: [inst("XG3-078", "m")], command: [inst("XG3-079", "cmd")], power: [] });
     const s = resolveAll(useRef(s0, "XG3-078:m"), ["XG3-079:cmd"]);
     expect(zoneOf(s, "player1", "XG3-078:m")).toBe("rush");
@@ -170,7 +170,7 @@ describe("XG3-078 マシンハードボイルダー", () => {
     expect(refsOf(s, "XG3-078:m")).toEqual([]);
   });
 
-  it.fails("XG3-078:【リモコン操作】— 特徴「ダブルドライバー」を持つ自軍ユニット（XG3-079）がいれば、ライドされていなくてもバトルエリアに出られる（既知の不具合: CARD-XG3-078 ライドなしで出る手が提示されない）（出典: atwiki/page-1936「このビークルはライドされていなくてもバトルエリアに出ることができる」）", () => {
+  it("XG3-078:【リモコン操作】— 特徴「ダブルドライバー」を持つ自軍ユニット（XG3-079）がいれば、ライドされていなくてもバトルエリアに出られる（出典: atwiki/page-1936「このビークルはライドされていなくてもバトルエリアに出ることができる」）", () => {
     const s = st({ player1: { rush: [inst("XG3-078", "m")], battle: [inst("XG3-079", "lj")], deck: deckCards(3) } }, EXTRA);
     expect(canEnter(s, "XG3-078:m")).toBe(true);
   });
@@ -213,25 +213,25 @@ describe("XG3-080 仮面ライダーW・HJ", () => {
 
   const enemies: P2 = { battle: [inst("TST-UNIT-0", "e"), inst("SPEC-NOSP", "n"), inst("TST-UNIT-2", "m")], rush: [inst("TST-UNIT-0", "r")] };
 
-  it.fails("XG3-080:【ジョーカーグレネイト】— RC で、敵軍バトルエリアの S ユニットを1体選べる（M ユニット・ラッシュエリアのユニットは選べない。任意）（既知の不具合: CARD-XG3-080 選ばずにすぐダメージを与える）（出典: atwiki/page-1957「敵軍バトルエリアから、Sユニットを1体選び撃破してもよい」）", () => {
+  it("XG3-080:【ジョーカーグレネイト】— RC で、敵軍バトルエリアの S ユニットを1体選べる（M ユニット・ラッシュエリアのユニットは選べない。任意）（出典: atwiki/page-1957「敵軍バトルエリアから、Sユニットを1体選び撃破してもよい」）", () => {
     const s = rc("XG3-080:hj", {}, enemies);
     expect(choiceIds(s).sort()).toEqual(["SPEC-NOSP:n", "TST-UNIT-0:e"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-080:【ジョーカーグレネイト】— SP1 のユニットを撃破したら、相手に1点ダメージ（既知の不具合: CARD-XG3-080）（出典: atwiki/page-1957「撃破したユニットのSPが1以上だったなら、相手に1点ダメージを与える」）", () => {
+  it("XG3-080:【ジョーカーグレネイト】— SP1 のユニットを撃破したら、相手に1点ダメージ（出典: atwiki/page-1957「撃破したユニットのSPが1以上だったなら、相手に1点ダメージを与える」）", () => {
     const s = resolveAll(rc("XG3-080:hj", {}, enemies), ["TST-UNIT-0:e"]);
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
     expect(s.players.player2.damage).toBe(1);
   });
 
-  it.fails("XG3-080:【ジョーカーグレネイト】— SP のないユニットを撃破したら、ダメージは与えない（既知の不具合: CARD-XG3-080）（出典: atwiki/page-1957「撃破したユニットのSPが1以上だったなら」）", () => {
+  it("XG3-080:【ジョーカーグレネイト】— SP のないユニットを撃破したら、ダメージは与えない（出典: atwiki/page-1957「撃破したユニットのSPが1以上だったなら」）", () => {
     const s = resolveAll(rc("XG3-080:hj", {}, enemies), ["SPEC-NOSP:n"]);
     expect(zoneOf(s, "player2", "SPEC-NOSP:n")).toBe("discard");
     expect(s.players.player2.damage).toBe(0);
   });
 
-  it.fails("XG3-080:【ジョーカーグレネイト】— 敵軍バトルエリアに S ユニットがいなければ撃破できず、ダメージも与えない（既知の不具合: CARD-XG3-080 撃破なしで1点ダメージを与える）（出典: atwiki/page-1957「撃破してもよい。そうしたとき」）", () => {
+  it("XG3-080:【ジョーカーグレネイト】— 敵軍バトルエリアに S ユニットがいなければ撃破できず、ダメージも与えない（出典: atwiki/page-1957「撃破してもよい。そうしたとき」）", () => {
     const s = resolveAll(rc("XG3-080:hj", {}, { battle: [inst("TST-UNIT-2", "m")] }));
     expect(zoneOf(s, "player2", "TST-UNIT-2:m")).toBe("battle");
     expect(s.players.player2.damage).toBe(0);
@@ -261,13 +261,13 @@ describe("XG3-081 仮面ライダーW・HT", () => {
     power,
   });
 
-  it.fails("XG3-081:【トリガー・エクスプロージョン】— ラッシュしたとき、ホールド状態の敵軍 S ユニットを1体選べる（リリース状態・M ユニットは選べない。任意）（既知の不具合: CARD-XG3-081 選択が出ない）（出典: atwiki/page-1937「ホールド状態の敵軍Sユニットを1体選んでもよい」）", () => {
+  it("XG3-081:【トリガー・エクスプロージョン】— ラッシュしたとき、ホールド状態の敵軍 S ユニットを1体選べる（リリース状態・M ユニットは選べない。任意）（出典: atwiki/page-1937「ホールド状態の敵軍Sユニットを1体選んでもよい」）", () => {
     const s = rushed(enemies());
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:hu"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-081:【トリガー・エクスプロージョン】— 相手が選ぶ: パワーゾーンのオモテ向きのカードを捨札にすれば、選んだユニットは残る（既知の不具合: CARD-XG3-081）（出典: atwiki/page-1937「相手は選んだユニットを捨札にするか、自分自身のパワーゾーンのオモテ向きのカードを1枚捨札にするかを選ぶ」）", () => {
+  it("XG3-081:【トリガー・エクスプロージョン】— 相手が選ぶ: パワーゾーンのオモテ向きのカードを捨札にすれば、選んだユニットは残る（出典: atwiki/page-1937「相手は選んだユニットを捨札にするか、自分自身のパワーゾーンのオモテ向きのカードを1枚捨札にするかを選ぶ」）", () => {
     let s = resolveAll(rushed(enemies()), ["TST-UNIT-0:hu"], 1);
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     s = resolveAll(s, ["TST-UNIT-0:pf"]);
@@ -275,7 +275,7 @@ describe("XG3-081 仮面ライダーW・HT", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:hu")).toBe("battle");
   });
 
-  it.fails("XG3-081:【トリガー・エクスプロージョン】— 相手のパワーゾーンにオモテ向きのカードがなければ、選んだユニットを捨札にする（既知の不具合: CARD-XG3-081）（出典: atwiki/page-1937 カード評価「オモテ向きのカードがない場合…強制的にユニットを捨札にすることになる」）", () => {
+  it("XG3-081:【トリガー・エクスプロージョン】— 相手のパワーゾーンにオモテ向きのカードがなければ、選んだユニットを捨札にする（出典: atwiki/page-1937 カード評価「オモテ向きのカードがない場合…強制的にユニットを捨札にすることになる」）", () => {
     const s = resolveAll(rushed(enemies([faceDown("TST-UNIT-0", "pd")])), ["TST-UNIT-0:hu"]);
     expect(zoneOf(s, "player2", "TST-UNIT-0:hu")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-UNIT-0:pd")).toBe("power");
@@ -310,7 +310,7 @@ describe("XG3-083 宇宙忍デモスト", () => {
     expect(canSelfRush(inPower(6, {}, faceDown("XG3-083", "dm")), "power", "XG3-083:dm")).toBe(false);
   });
 
-  it.fails("XG3-083:【暗黒剣】— ラッシュしたとき、捨札の枚数（6）以下の必要パワーの、追加条件を持たない敵軍ユニットをエリア・サイズを問わず選べる（任意）（既知の不具合: CARD-XG3-083 敵軍バトルエリアのユニットが候補に入らず、数えるかを選べない）（出典: atwiki/page-1938「その数以下の必要パワーの数字を持つ追加条件を持たない敵軍ユニットを1体選び、撃破する」・カード評価「サイズもエリアも問わない除去」）", () => {
+  it("XG3-083:【暗黒剣】— ラッシュしたとき、捨札の枚数（6）以下の必要パワーの、追加条件を持たない敵軍ユニットをエリア・サイズを問わず選べる（任意）（出典: atwiki/page-1938「その数以下の必要パワーの数字を持つ追加条件を持たない敵軍ユニットを1体選び、撃破する」・カード評価「サイズもエリアも問わない除去」）", () => {
     const s = selfRush(
       inPower(6, { battle: [inst("TST-UNIT-0", "e"), inst("SPEC-C3", "c3"), inst("SPEC-C6", "c6"), inst("SPEC-C7", "c7")], rush: [inst("TST-UNIT-2", "m")] }),
       "power",
@@ -325,7 +325,7 @@ describe("XG3-083 宇宙忍デモスト", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-2:m")).toBe("discard");
   });
 
-  it.fails("XG3-083:【暗黒剣】— 必要パワーが捨札の枚数より大きいユニット・追加条件を持つユニット（XG3-074）は選べない（既知の不具合: CARD-XG3-083 必要パワー・追加条件で絞り込まない）（出典: atwiki/page-1938「その数以下の必要パワーの数字を持つ追加条件を持たない敵軍ユニット」）", () => {
+  it("XG3-083:【暗黒剣】— 必要パワーが捨札の枚数より大きいユニット・追加条件を持つユニット（XG3-074）は選べない（出典: atwiki/page-1938「その数以下の必要パワーの数字を持つ追加条件を持たない敵軍ユニット」）", () => {
     const s = selfRush(inPower(6, { rush: [inst("SPEC-C7", "c7"), inst("XG3-074", "kd"), inst("SPEC-C6", "c6")] }), "power", "XG3-083:dm");
     expect(choiceIds(s)).toEqual(["SPEC-C6:c6"]);
   });

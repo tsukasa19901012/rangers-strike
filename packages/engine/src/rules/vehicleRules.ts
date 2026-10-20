@@ -11,6 +11,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 import { vehicleMayBattleWithoutRide } from "./bkOperationTurnRules";
 import { xg4VehicleEntersWithoutRide } from "./xg4/xg4Fields";
 import { xg2VehicleMayEnterUnridden } from "./xg2/xg2Fields";
+import { xg3VehicleMayEnterAlone } from "./xg3/xg3Fields";
 
 /** ラッシュ上でこのビークルにライドしているユニットがいるか。 */
 export function hasRiderInRush(
@@ -48,6 +49,8 @@ export function canVehicleEnterBattleFromRush(
   if (xg4VehicleEntersWithoutRide(vehicle.cardId)) return true;
   // XG2-074 クウガゴウラム（自軍「仮面ライダーディケイド」があれば。rules/xg2/xg2Fields.ts）。
   if (xg2VehicleMayEnterUnridden(state, playerId, vehicle)) return true;
+  // XG3-078 マシンハードボイルダー【リモコン操作】（rules/xg3/xg3Fields.ts）。
+  if (xg3VehicleMayEnterAlone(state, playerId, vehicle)) return true;
 
   const cardId = vehicle.cardId;
   const maySelfEnter =

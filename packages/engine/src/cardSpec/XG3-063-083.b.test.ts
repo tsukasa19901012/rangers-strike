@@ -81,11 +81,11 @@ describe("XG3-070 ズ・ザイン・ダ", () => {
 
   const entered = () => line(["XG3-070:z"], {}, { battle: [inst("TST-UNIT-0", "x"), inst("SPEC-CAR", "car")] });
 
-  it.fails("XG3-070:【車両への憎悪】— 敵軍バトルエリアに「車両」のユニットがいれば、アタック先はそのユニットだけになる（既知の不具合: CARD-XG3-070 ほかのユニットにもアタックできる）（出典: atwiki/page-1930「可能ならそのユニットにアタックする」）", () => {
+  it("XG3-070:【車両への憎悪】— 敵軍バトルエリアに「車両」のユニットがいれば、アタック先はそのユニットだけになる（出典: atwiki/page-1930「可能ならそのユニットにアタックする」）", () => {
     expect(targetsOf(entered(), "XG3-070:z")).toEqual(["SPEC-CAR:car"]);
   });
 
-  it.fails("XG3-070:【車両への憎悪】— そのユニットにアタックしたとき、このターン BP+2000（5000）（既知の不具合: CARD-XG3-070 BP が上がらない）（出典: atwiki/page-1930「そうしたとき、これは、このターン、BP+2000される」）", () => {
+  it("XG3-070:【車両への憎悪】— そのユニットにアタックしたとき、このターン BP+2000（5000）（出典: atwiki/page-1930「そうしたとき、これは、このターン、BP+2000される」）", () => {
     const s = settle(attack(entered(), "XG3-070:z", "SPEC-CAR:car"));
     expect(lastBattleBps(s)?.attacker).toBe(5000);
   });
@@ -110,11 +110,11 @@ describe("XG3-071 キバーラ", () => {
   const rushed = (top: ReturnType<typeof inst>) =>
     resolveAll(rushFromHand(board({ hand: [inst("XG3-071", "k")], power: powerCards(2), command: releasedCat("MA", 1), deck: [top, ...deckCards(3)] }), "player1", "XG3-071:k").state, [top.instanceId]);
 
-  it.fails("XG3-071:【カプッ】— ラッシュしたとき、山札の上のカードがユニットカードなら捨札にする（既知の不具合: CARD-XG3-071 山札の上のカードが動かない）（出典: atwiki/page-1931「オモテにしたカードがユニットカードだったなら捨札にする」）", () => {
+  it("XG3-071:【カプッ】— ラッシュしたとき、山札の上のカードがユニットカードなら捨札にする（出典: atwiki/page-1931「オモテにしたカードがユニットカードだったなら捨札にする」）", () => {
     expect(zoneOf(rushed(inst("TST-UNIT-0", "top")), "player1", "TST-UNIT-0:top")).toBe("discard");
   });
 
-  it.fails("XG3-071:【カプッ】— ユニットカード以外（オペレーション）なら自分の手札に加える（既知の不具合: CARD-XG3-071）（出典: atwiki/page-1931「それ以外だったなら自分の手札に加える」）", () => {
+  it("XG3-071:【カプッ】— ユニットカード以外（オペレーション）なら自分の手札に加える（出典: atwiki/page-1931「それ以外だったなら自分の手札に加える」）", () => {
     expect(zoneOf(rushed(inst("TST-OP", "top")), "player1", "TST-OP:top")).toBe("hand");
   });
 });
@@ -130,7 +130,7 @@ describe("XG3-072 仮面ライダーキバーラ", () => {
     expectRarityIn("XG3-072", ["R"]);
   });
 
-  it.fails("XG3-072: ※ 手札にある間、自軍ラッシュフェイズ中、自軍「キバーラ」（XG3-071）1体と置き換えられる（これがキバーラのいた場所へ、キバーラは手札へ）（既知の不具合: CARD-XG3-072 ※の置き換えの手がない）（出典: atwiki/page-1963「このカードと自軍「キバーラ」1体を置き換えてもよい」・R-REPL-04）", () => {
+  it("XG3-072: ※ 手札にある間、自軍ラッシュフェイズ中、自軍「キバーラ」（XG3-071）1体と置き換えられる（これがキバーラのいた場所へ、キバーラは手札へ）（出典: atwiki/page-1963「このカードと自軍「キバーラ」1体を置き換えてもよい」・R-REPL-04）", () => {
     const s = resolveAll(useRef(board({ hand: [inst("XG3-072", "kb")], rush: [inst("XG3-071", "k")] }), "XG3-072:kb"), ["XG3-071:k"]);
     expect(zoneOf(s, "player1", "XG3-072:kb")).toBe("rush");
     expect(zoneOf(s, "player1", "XG3-071:k")).toBe("hand");
@@ -181,7 +181,7 @@ describe("XG3-073 仮面ライダーJジャンボフォーメーション", () =
     expect(zoneOf(enterAny(battle({ rush: [inst("XG3-073", "j")], command: releasedCat("MA", 1) }), "XG3-073:j"), "player1", "XG3-073:j")).toBe("battle");
   });
 
-  it.fails("XG3-073:【とっておきのお宝】— 自軍「仮面ライダーディエンド」（XG3-069）があれば「SP1/3」（3番目なら SP1）（既知の不具合: CARD-XG3-073 SP が得られない）（出典: atwiki/page-1932「自軍「仮面ライダーディエンド」があれば「SP1/3」になる」）", () => {
+  it("XG3-073:【とっておきのお宝】— 自軍「仮面ライダーディエンド」（XG3-069）があれば「SP1/3」（3番目なら SP1）（出典: atwiki/page-1932「自軍「仮面ライダーディエンド」があれば「SP1/3」になる」）", () => {
     const s = st({ player1: { battle: [inst("TST-UNIT-0", "a"), inst("TST-UNIT-0", "b"), inst("XG3-073", "j")], rush: [inst("XG3-069", "de")], deck: deckCards(3) } }, EXTRA);
     expect(spOf(s, "player1", "XG3-073:j")).toBe(1);
   });
@@ -215,7 +215,7 @@ describe("XG3-074 キングダーク", () => {
     expect(canStartRush(board({ hand: [inst("XG3-074", "kd")], power: [faceDown("TST-UNIT-0", "d1")], command: releasedCat("DA", 1) }), "player1", "XG3-074:kd")).toBe(false);
   });
 
-  it.fails("XG3-074:【大ショッカーの巨大幹部】— 自軍 L ユニットがいなければ、手札のこれで発動でき、山札の上7枚を捨札にしてからラッシュエリアに出せる（追加条件のかわり。必要パワーは要る）（既知の不具合: CARD-XG3-074【大ショッカーの巨大幹部】の手がない）（出典: atwiki/page-1964「自軍山札の上から7枚を捨札にしてから、これをラッシュエリアに出してもよい。ただし、必要パワーは満たす事」）", () => {
+  it("XG3-074:【大ショッカーの巨大幹部】— 自軍 L ユニットがいなければ、手札のこれで発動でき、山札の上7枚を捨札にしてからラッシュエリアに出せる（追加条件のかわり。必要パワーは要る）（出典: atwiki/page-1964「自軍山札の上から7枚を捨札にしてから、これをラッシュエリアに出してもよい。ただし、必要パワーは満たす事」）", () => {
     const s0 = board({ hand: [inst("XG3-074", "kd")], power: [faceDown("TST-UNIT-0", "d0"), ...powerCards(8)], command: releasedCat("DA", 1), deck: deckCards(10) });
     const s = resolveAll(useRef(s0, "XG3-074:kd"), ["confirm"]);
     expect(zoneOf(s, "player1", "XG3-074:kd")).toBe("rush");
@@ -248,14 +248,14 @@ describe("XG3-075 仮面ライダーディケイドCFジャンボフォーメー
     expect(zoneOf(r.state, "player1", "XG3-073:j")).toBe("discard");
   });
 
-  it.fails("XG3-075:【ファイナルカメンアタックフォームライド】— 自軍ターン中にバトルエリアに出たとき、オモテ向きの自軍パワーの、RC を持つ「仮面ライダー」のカードを選べる（RC のないカードは選べない。任意）（既知の不具合: CARD-XG3-075 選択が開かない）（出典: atwiki/page-1965「オモテ向きの自軍パワーから、RCを持ち特徴「仮面ライダー」を持つカードを1枚選び捨札にしてもよい」）", () => {
+  it("XG3-075:【ファイナルカメンアタックフォームライド】— 自軍ターン中にバトルエリアに出たとき、オモテ向きの自軍パワーの、RC を持つ「仮面ライダー」のカードを選べる（RC のないカードは選べない。任意）（出典: atwiki/page-1965「オモテ向きの自軍パワーから、RCを持ち特徴「仮面ライダー」を持つカードを1枚選び捨札にしてもよい」）", () => {
     const s = enterAny(battle({ rush: [inst("XG3-075", "cf")], command: releasedCat("MA", 1), power: [faceUp("XG3-048", "rx"), faceUp("XG3-068", "d"), faceDown("XG3-044", "st")] }, { battle: [inst("TST-UNIT-0", "e0")] }), "XG3-075:cf");
     expectChoiceFrom(s, "player1", "XG3-075");
     expect(choiceIds(s)).toEqual(["XG3-048:rx"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-075:【ファイナルカメンアタックフォームライド】— 捨札にしたカードの RC の効果（XG3-048【リボルクラッシュ】）を、このユニットの効果として発動する（既知の不具合: CARD-XG3-075）（出典: atwiki/page-1965「捨札にしたカードのRCの効果を、このユニットの効果として発動する」）", () => {
+  it("XG3-075:【ファイナルカメンアタックフォームライド】— 捨札にしたカードの RC の効果（XG3-048【リボルクラッシュ】）を、このユニットの効果として発動する（出典: atwiki/page-1965「捨札にしたカードのRCの効果を、このユニットの効果として発動する」）", () => {
     const s0 = enterAny(battle({ rush: [inst("XG3-075", "cf")], command: releasedCat("MA", 1), power: [faceUp("XG3-048", "rx")] }, { battle: [inst("TST-UNIT-0", "e0")] }), "XG3-075:cf");
     const s = resolveAll(s0, ["XG3-048:rx", "TST-UNIT-0:e0"]);
     expect(zoneOf(s, "player1", "XG3-048:rx")).toBe("discard");
@@ -278,14 +278,14 @@ describe("XG3-076 仮面ライダーアギト", () => {
   const rushed = () =>
     rushFromHand(board({ hand: [inst("XG3-076", "ag")], rush: [inst("SPEC-MAN-S", "m"), inst("SPEC-WOMAN-S", "w")], power: powerCards(4), command: releasedCat("MA", 1) }), "player1", "XG3-076:ag").state;
 
-  it.fails("XG3-076:【覚醒】— ラッシュしたとき、特徴「男」を持つ自軍 S ユニット（これ自身は含まない）から選べる（任意）（既知の不具合: CARD-XG3-076【覚醒】の選択が開かない）（出典: atwiki/page-1933「特徴「男」を持つ自軍Sユニットを1体選び捨札にしてもよい」）", () => {
+  it("XG3-076:【覚醒】— ラッシュしたとき、特徴「男」を持つ自軍 S ユニット（これ自身は含まない）から選べる（任意）（出典: atwiki/page-1933「特徴「男」を持つ自軍Sユニットを1体選び捨札にしてもよい」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "XG3-076");
     expect(choiceIds(s)).toEqual(["SPEC-MAN-S:m"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-076:【覚醒】— 捨札にすれば、このターンこれは BP+3000（6000）・「SP1」（既知の不具合: CARD-XG3-076 BP も SP も変わらない）（出典: atwiki/page-1933「このターン、これは次の能力を得る⇒BP+3000され、「SP1」になる」）", () => {
+  it("XG3-076:【覚醒】— 捨札にすれば、このターンこれは BP+3000（6000）・「SP1」（出典: atwiki/page-1933「このターン、これは次の能力を得る⇒BP+3000され、「SP1」になる」）", () => {
     const s = resolveAll(rushed(), ["SPEC-MAN-S:m"]);
     expect(zoneOf(s, "player1", "SPEC-MAN-S:m")).toBe("discard");
     expect(bpOf(s, "player1", "XG3-076:ag")).toBe(6000);

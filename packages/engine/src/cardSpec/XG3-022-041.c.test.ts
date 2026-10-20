@@ -137,14 +137,14 @@ describe("XG3-037 烏賊折神", () => {
     expect(zoneOf(r.state, "player1", "SPEC-SAM:s")).toBe("rush");
   });
 
-  it.fails("XG3-037:【烏賊墨砲】— ラッシュしたとき、テキストに「アタックされない」と書かれた敵軍ユニット（XG3-018 スピンビー）を選べる（書かれていないユニットは選べない。任意）（既知の不具合: CARD-XG3-037【烏賊墨砲】の選択が開かない）（出典: atwiki/page-1909「テキストに「アタックされない」と書かれた敵軍ユニットを1体選んでもよい」）", () => {
+  it("XG3-037:【烏賊墨砲】— ラッシュしたとき、テキストに「アタックされない」と書かれた敵軍ユニット（XG3-018 スピンビー）を選べる（書かれていないユニットは選べない。任意）（出典: atwiki/page-1909「テキストに「アタックされない」と書かれた敵軍ユニットを1体選んでもよい」）", () => {
     const r = rushOf();
     expectChoiceFrom(r.state, "player1", "XG3-037");
     expect(choiceIds(r.state)).toEqual(["XG3-018:sb"]);
     expect(canSkip(r.state)).toBe(true);
   });
 
-  it.fails("XG3-037:【烏賊墨砲】— 選んだユニットの「アタックされない」テキストはこのターン無効になり、S ユニットでもスピンビーにアタックできる（既知の不具合: CARD-XG3-037）（出典: atwiki/page-1909「このターン、そのユニットの持つ「アタックされない」という記述のあるテキストは無効になる」・カード評価「他のユニットでもアタックできる」）", () => {
+  it("XG3-037:【烏賊墨砲】— 選んだユニットの「アタックされない」テキストはこのターン無効になり、S ユニットでもスピンビーにアタックできる（出典: atwiki/page-1909「このターン、そのユニットの持つ「アタックされない」という記述のあるテキストは無効になる」・カード評価「他のユニットでもアタックできる」）", () => {
     let s = resolveAll(rushOf().state, ["XG3-018:sb"]);
     s = { ...s, phase: "battle", players: { ...s.players, player1: { ...s.players.player1, battle: [inst("SPEC-S-ATK", "atk")] } } };
     expect(targetsOf(s, "SPEC-S-ATK:atk")).toContain("XG3-018:sb");
@@ -182,15 +182,16 @@ describe("XG3-038 イカダイカイオー", () => {
     expect(canStartRush(board({ hand: [inst("XG3-038", "i")], rush: [inst("XG3-036", "h")], power: powerCards(7), command: releasedCat("MA", 1) }), "player1", "XG3-038:i")).toBe(false);
   });
 
-  it.fails("XG3-038:【槍烏賊突貫】— ラッシュしたとき、BP5000 以下の敵軍ユニット（エリアを問わない）から選べる（BP5500 は選べない。任意）（既知の不具合: CARD-XG3-038 候補に BP5000 を超えるユニットも入る）（出典: atwiki/page-1881「BP5000以下の敵軍ユニットを1体選び、持ち主の手札に戻してもよい」）", () => {
+  it("XG3-038:【槍烏賊突貫】— ラッシュしたとき、BP5000 以下の敵軍ユニット（エリアを問わない）から選べる（BP5500 は選べない。任意）（出典: atwiki/page-1881「BP5000以下の敵軍ユニットを1体選び、持ち主の手札に戻してもよい」）", () => {
     const r = rushOf();
     expectChoiceFrom(r.state, "player1", "XG3-038");
     expect(choiceIds(r.state).sort()).toEqual(["SPEC-E5000:e5", "TST-UNIT-2:m"]);
     expect(canSkip(r.state)).toBe(true);
   });
 
-  it.fails("XG3-038:【槍烏賊突貫】— 選んだユニットを持ち主の手札に戻し、相手は自分の手札を1枚選び捨札にする（既知の不具合: CARD-XG3-038 相手が手札を捨札にしない）（出典: atwiki/page-1881「そうしたとき、相手は自分自身の手札を1枚選び捨札にする」）", () => {
-    let s = resolveAll(rushOf().state, ["SPEC-E5000:e5"]);
+  it("XG3-038:【槍烏賊突貫】— 選んだユニットを持ち主の手札に戻し、相手は自分の手札を1枚選び捨札にする（出典: atwiki/page-1881「そうしたとき、相手は自分自身の手札を1枚選び捨札にする」）", () => {
+    // 相手の捨札の選択を確かめるため、自分の選択だけ答える（resolveAll は相手の選択も自動で答えてしまう）。
+    let s = pickAs(rushOf().state, "player1", "SPEC-E5000:e5");
     expect(zoneOf(s, "player2", "SPEC-E5000:e5")).toBe("hand");
     expect(choiceOf(s, "player2", "XG3-038")).toBe(true);
     expect(choiceIds(s).sort()).toEqual(["SPEC-E5000:e5", "TST-OP:eh1", "TST-OP:eh2"]);
@@ -221,7 +222,7 @@ describe("XG3-039 ダイゴヨウ", () => {
   const rushOf = (hand = [inst("TST-OP", "op"), inst("TST-UNIT-0", "un")]) =>
     rushFromHand(board({ hand: [inst("XG3-039", "d"), ...hand], power: powerCards(4), command: releasedCat("MA", 1) }, { hand: [inst("TST-UNIT-0", "eh")] }), "player1", "XG3-039:d");
 
-  it.fails("XG3-039:【秘伝ディスク乱れ撃ち】— ラッシュしたとき、自分の手札のオペレーションカードから選べる（ユニットカードは選べない。任意）（既知の不具合: CARD-XG3-039【秘伝ディスク乱れ撃ち】の選択が開かない）（出典: atwiki/page-1910「自分の手札からオペレーションカードを1枚選び捨札にしてもよい」）", () => {
+  it("XG3-039:【秘伝ディスク乱れ撃ち】— ラッシュしたとき、自分の手札のオペレーションカードから選べる（ユニットカードは選べない。任意）（出典: atwiki/page-1910「自分の手札からオペレーションカードを1枚選び捨札にしてもよい」）", () => {
     const r = rushOf();
     expect(r.ok, r.error).toBe(true);
     expectChoiceFrom(r.state, "player1", "XG3-039");
@@ -229,7 +230,7 @@ describe("XG3-039 ダイゴヨウ", () => {
     expect(canSkip(r.state)).toBe(true);
   });
 
-  it.fails("XG3-039:【秘伝ディスク乱れ撃ち】— 捨札にしたとき、相手は自分の手札を1枚選び山札に戻す（既知の不具合: CARD-XG3-039）（出典: atwiki/page-1910「相手は自分自身の手札を1枚選び山札に戻してシャッフルする」）", () => {
+  it("XG3-039:【秘伝ディスク乱れ撃ち】— 捨札にしたとき、相手は自分の手札を1枚選び山札に戻す（出典: atwiki/page-1910「相手は自分自身の手札を1枚選び山札に戻してシャッフルする」）", () => {
     const s = resolveAll(rushOf().state, ["TST-OP:op", "TST-UNIT-0:eh"]);
     expect(zoneOf(s, "player1", "TST-OP:op")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-UNIT-0:eh")).toBe("deck");
@@ -276,14 +277,14 @@ describe("XG3-040 シンケンレッド", () => {
       battle: [inst("SPEC-DA-WB-S", "dw"), inst("TST-UNIT-0", "w")],
     });
 
-  it.fails("XG3-040:【シンケンマル】— 4番目に出れば（NC）、カテゴリに DA を持つ敵軍 S ユニット（マルチカテゴリも含む。エリアを問わない）から1体選ぶ（DA でない・M ユニットは選べない。見送れない）（既知の不具合: CARD-XG3-040 候補に DA を持たないユニットも入る）（出典: atwiki/page-2006「カテゴリにDAを持つ敵軍Sユニットを1体選び」）", () => {
+  it("XG3-040:【シンケンマル】— 4番目に出れば（NC）、カテゴリに DA を持つ敵軍 S ユニット（マルチカテゴリも含む。エリアを問わない）から1体選ぶ（DA でない・M ユニットは選べない。見送れない）（出典: atwiki/page-2006「カテゴリにDAを持つ敵軍Sユニットを1体選び」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG3-040");
     expect(choiceIds(s).sort()).toEqual(["SPEC-DA-S:d", "SPEC-DA-WB-S:dw"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG3-040:【シンケンマル】— 選んだユニットを持ち主のパワーゾーンにダメージ（ウラ向き）にして置く（既知の不具合: CARD-XG3-040 パワーゾーンにオモテ向きで置き、ダメージにならない）（出典: atwiki/page-2006「持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("XG3-040:【シンケンマル】— 選んだユニットを持ち主のパワーゾーンにダメージ（ウラ向き）にして置く（出典: atwiki/page-2006「持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(nc(), ["SPEC-DA-S:d"]);
     expect(zoneOf(s, "player2", "SPEC-DA-S:d")).toBe("power");
     expect(s.players.player2.damage).toBe(1);
@@ -313,11 +314,11 @@ describe("XG3-041 仮面ライダーディケイドCF", () => {
     expect(zoneOf(r.state, "player1", "SPEC-DCD:x")).toBe("power");
   });
 
-  it("XG3-041: 追加条件 — 「ディケイドライバー」を持たない自軍ユニット（XG2-001 ファイブレッド）しかいなければラッシュできない（既知の不具合: CARD-XG3-041 特徴を問わず S ユニットを送ってラッシュできる）（出典: atwiki/page-2007「特徴「ディケイドライバー」を持つ自軍ユニット1体」）", () => {
+  it("XG3-041: 追加条件 — 「ディケイドライバー」を持たない自軍ユニット（XG2-001 ファイブレッド）しかいなければラッシュできない（出典: atwiki/page-2007「特徴「ディケイドライバー」を持つ自軍ユニット1体」）", () => {
     expect(rushFromHand(mk([inst("XG2-001", "x")]), "player1", "XG3-041:d").ok).toBe(false);
   });
 
-  it.fails("XG3-041:【通りすがりの仮面ライダー】— このターン NC を発動した DA 以外の S ユニット（XG3-022 アバレッド【アバレイザー】「SP1」）の次に出たとき、その NC をこのユニットの効果として発動でき、これが「SP1」になる（既知の不具合: CARD-XG3-041 コピーの選択が開かない）（出典: atwiki/page-2007「コンビネーションするユニットのNCまたはRCの効果を、このユニットの効果として発動する」・カード評価「戦隊ユニットなどのＮＣでSPを得る能力とあわせると簡単にSPを得られる」）", () => {
+  it("XG3-041:【通りすがりの仮面ライダー】— このターン NC を発動した DA 以外の S ユニット（XG3-022 アバレッド【アバレイザー】「SP1」）の次に出たとき、その NC をこのユニットの効果として発動でき、これが「SP1」になる（出典: atwiki/page-2007「コンビネーションするユニットのNCまたはRCの効果を、このユニットの効果として発動する」・カード評価「戦隊ユニットなどのＮＣでSPを得る能力とあわせると簡単にSPを得られる」）", () => {
     const s = resolveAll(line(["TST-UNIT-0:a", "XG3-022:ab", "XG3-041:d"]), ["XG3-022:ab", "confirm"]);
     expect(spOf(s, "player1", "XG3-041:d")).toBe(1);
   });

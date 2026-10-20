@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-020::kamikenkamikiba",
+          "keyword": "xg3::XG3-020::raiga_issen",
           "duration": "permanent"
         }
       ]

@@ -1,4 +1,5 @@
 import type { EffectChoiceKind, TargetSelector } from "@rangers-strike/cards/dsl/types";
+import { xg3SizeNow } from "../rules/xg3/xg3Fields";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { cardCategories, effectiveBp, getDefinition, isSmallUnit, parsePowerCost, unitSizeOf } from "../core/catalog";
@@ -15,7 +16,8 @@ function cardsInZone(state: GameState, playerId: PlayerId, zone: FieldZone): Car
 
 function currentSize(state: GameState, card: CardInstance): string | undefined {
   // RS-255 巨大化爆弾・RK-013 Jパワーを重ねたユニットは「Lユニット」（core/catalog.ts unitSizeOf。atwiki/page-211）。
-  const size = unitSizeOf(state.definitions, card);
+  // XG3-029 ※（自軍 M ビークルがあれば M ユニット。rules/xg3/xg3Fields.ts）。
+  const size = xg3SizeNow(state, card) ?? unitSizeOf(state.definitions, card);
   if (size && size !== "L" && zubaanIsLarge(state, card)) return "L";
   return size;
 }

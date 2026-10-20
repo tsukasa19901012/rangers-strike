@@ -1,4 +1,5 @@
 import { xg6AttackerBlocked, xg6BlocksAttack, xg6DefenderBlocksAttack } from "../xg6/xg6Fields";
+import { xg3AttackerCanAttackRush, xg3DefenderBlocksAttack } from "../xg3/xg3Fields";
 import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
 import { rk5AttackerCanAttackRush } from "../rk/rk5Fields";
 import { rk11AttackerCanAttackRush, rk11EntryDiscardFeature } from "../rk/rk11Fields";
@@ -533,6 +534,8 @@ export function canAttackDefender(
   ) {
     return false;
   }
+  // クロスギャザー ザ・Wインパクト XG3（XG3-007【マックスシャトル】等。rules/xg3/xg3Fields.ts）。
+  if (defenderCard && xg3DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;
@@ -568,6 +571,8 @@ export function canAttackDefender(
     if (xg1AttackerCanAttackRush(state, attackerPlayerId, attacker.card, inRush.card)) return true;
     // RK-103 仮面ライダークウガPF【ブラストペガサス】（rules/rk/rk5Fields.ts）。
     if (rk5AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
+    // XG3-077 アギトトルネイダー【ファイナルアタックライド】（rules/xg3/xg3Fields.ts）。
+    if (xg3AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
     // RK-217 イーグルアンデッド【滑空攻撃】（敵軍ラッシュエリアのレジストを持つユニット。rules/rk/rk11Fields.ts）。
     if (rk11AttackerCanAttackRush(attacker.card, () => rk10UnitHasResist(state, defenderPlayerId, inRush.card))) return true;
     // RS-213【炸裂超力バトン】（相手が選んだユニット）・RS-225【大回転獅子爆裂弾】で得た能力。

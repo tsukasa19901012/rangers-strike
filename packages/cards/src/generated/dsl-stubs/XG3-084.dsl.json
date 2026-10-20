@@ -45,12 +45,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-084::bigufurea",
-          "duration": "turn"
+          "keyword": "xg3::XG3-084::big_flare",
+          "duration": "permanent"
         }
       ]
     }

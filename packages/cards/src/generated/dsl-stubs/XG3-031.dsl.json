@@ -46,10 +46,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-031::zane5ae99",
+          "keyword": "xg3::XG3-031::chuchuzan",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

@@ -28,6 +28,7 @@ import {
   heldUnit,
   inst,
   lineUp,
+  passEntry,
   pick,
   PLAIN_VEHICLE,
   powerCards,
@@ -80,7 +81,7 @@ describe("XG3-016 ガオゴリラ", () => {
   const enemy = () => ({ battle: [heldUnit("TST-UNIT-0", "hb")], rush: [heldUnit("SPEC-M3000", "hr"), inst("TST-UNIT-0", "r")] });
   const entered = () => enterAny(battle({ rush: [inst("XG3-016", "g")], command: releasedCat("WB", 1) }, enemy()), "XG3-016:g");
 
-  it.fails("XG3-016:【バナナボム】— 選べるのは敵軍ラッシュエリアのホールド状態の敵軍ユニットだけ（リリース状態のユニット・バトルエリアのユニットは選べない。任意）（既知の不具合: CARD-XG3-016 リリース状態のユニットも候補になる）（出典: atwiki/page-1894「敵軍ラッシュエリアからホールド状態の敵軍ユニットを1体選び撃破してもよい」）", () => {
+  it("XG3-016:【バナナボム】— 選べるのは敵軍ラッシュエリアのホールド状態の敵軍ユニットだけ（リリース状態のユニット・バトルエリアのユニットは選べない。任意）（出典: atwiki/page-1894「敵軍ラッシュエリアからホールド状態の敵軍ユニットを1体選び撃破してもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG3-016");
     expect(choiceIds(s)).toEqual(["SPEC-M3000:hr"]);
@@ -109,20 +110,20 @@ describe("XG3-017 猛獣使いオルグ", () => {
   const p2 = () => ({ battle: [inst("SPEC-BEAST-S", "eb")], rush: [inst("SPEC-BEAST-BIG", "er"), inst("TST-UNIT-0", "ex")] });
   const entered = () => enter(battle(p1(), p2()), "XG3-017:o");
 
-  it.fails("XG3-017:【猛獣使いの鞭】— 特徴「獣」を持つユニットなら、自軍・敵軍、ラッシュエリア・バトルエリアを問わず選べる（任意）（既知の不具合: CARD-XG3-017 自軍ラッシュエリアのユニットしか候補にならない（「獣」でないユニットも含む））（出典: atwiki/page-1895「特徴「獣」を持つユニットを2体選んでもよい」・コメント欄「相手に獣を追加させて、自軍のゴルトフェニックスにぶつけさせる」）", () => {
+  it("XG3-017:【猛獣使いの鞭】— 特徴「獣」を持つユニットなら、自軍・敵軍、ラッシュエリア・バトルエリアを問わず選べる（任意）（出典: atwiki/page-1895「特徴「獣」を持つユニットを2体選んでもよい」・コメント欄「相手に獣を追加させて、自軍のゴルトフェニックスにぶつけさせる」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG3-017");
     expect(choiceIds(s)).toEqual(["SPEC-BEAST-BIG:er", "SPEC-BEAST-BIG:ownb", "SPEC-BEAST-S:eb", "SPEC-BEAST-S:own"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-017:【猛獣使いの鞭】— 選んだ2体でバトルし、BP の低いほうが撃破される（既知の不具合: CARD-XG3-017）（出典: atwiki/page-1895「そうしたとき、選んだ2体でバトルする」・R-BTL-02）", () => {
+  it("XG3-017:【猛獣使いの鞭】— 選んだ2体でバトルし、BP の低いほうが撃破される（出典: atwiki/page-1895「そうしたとき、選んだ2体でバトルする」・R-BTL-02）", () => {
     const s = resolveAll(pick(pick(entered(), "SPEC-BEAST-S:eb"), "SPEC-BEAST-BIG:ownb"));
     expect(zoneOf(s, "player2", "SPEC-BEAST-S:eb")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-BEAST-BIG:ownb")).toBe("battle");
   });
 
-  it.fails("XG3-017:【猛獣使いの鞭】— 「獣」でないユニットは選べない（既知の不具合: CARD-XG3-017 「獣」でない自軍ラッシュエリアのユニットも候補になる）（出典: atwiki/page-1895）", () => {
+  it("XG3-017:【猛獣使いの鞭】— 「獣」でないユニットは選べない（出典: atwiki/page-1895）", () => {
     const s = entered();
     expect(choiceIds(s)).not.toContain("TST-UNIT-0:x");
     expect(choiceIds(s)).not.toContain("TST-UNIT-0:ex");
@@ -163,16 +164,17 @@ describe("XG3-018 スピンビー", () => {
 
   karakuriTests("XG3-018", "暴れ独楽", "atwiki/page-1896", "手札に戻す能力");
 
-  const struck = () => resolveAll(strike(line(["XG3-018:k", "SPEC-MA-L:L"], {}, { battle: [inst("TST-UNIT-0", "e")], rush: [inst("XG3-003", "rb"), inst("SPEC-M3000", "m")], power: powerCards(3, "ep") }), "SPEC-MA-L:L"), ["__none__"]);
+  // ストライクしたときの選択（強制）を残すため、resolveAll（選択に答えてしまう）ではなく settle で止める。
+  const struck = () => settle(strike(line(["XG3-018:k", "SPEC-MA-L:L"], {}, { battle: [inst("TST-UNIT-0", "e")], rush: [inst("XG3-003", "rb"), inst("SPEC-M3000", "m")], power: powerCards(3, "ep") }), "SPEC-MA-L:L"));
 
-  it.fails("XG3-018:【暴れ独楽】— コンビネーションした MA の L ユニットがストライクしたとき、追加条件を持たない敵軍ユニット（エリア・サイズを問わない）から1体選ぶ（既知の不具合: CARD-XG3-018 ストライクしても選択が開かない）（出典: atwiki/page-1896「これがストライクしたとき、追加条件を持たない敵軍ユニットを1体選び」）", () => {
+  it("XG3-018:【暴れ独楽】— コンビネーションした MA の L ユニットがストライクしたとき、追加条件を持たない敵軍ユニット（エリア・サイズを問わない）から1体選ぶ（出典: atwiki/page-1896「これがストライクしたとき、追加条件を持たない敵軍ユニットを1体選び」）", () => {
     const s = struck();
     expectChoiceFrom(s, "player1", "XG3-018");
     expect(choiceIds(s)).toEqual(["SPEC-M3000:m", "TST-UNIT-0:e"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG3-018:【暴れ独楽】— 選んだユニットを持ち主の手札に戻す（既知の不具合: CARD-XG3-018）（出典: atwiki/page-1896「持ち主の手札に戻す」）", () => {
+  it("XG3-018:【暴れ独楽】— 選んだユニットを持ち主の手札に戻す（出典: atwiki/page-1896「持ち主の手札に戻す」）", () => {
     const s = resolveAll(struck(), ["SPEC-M3000:m"]);
     expect(zoneOf(s, "player2", "SPEC-M3000:m")).toBe("hand");
   });
@@ -190,7 +192,7 @@ describe("XG3-019 キャッチスパイダー", () => {
 
   karakuriTests("XG3-019", "カラクリボール奪還", "atwiki/page-1897", "ドローする能力");
 
-  it.fails("XG3-019:【カラクリボール奪還】— コンビネーションした MA の L ユニットがストライクしたとき、自分は1枚ドローする（既知の不具合: CARD-XG3-019 ストライクしてもドローしない）（出典: atwiki/page-1897「これがストライクしたとき、自分は1枚ドローする」・コメント欄「ストライクしてダメージを与えたときではないので相手テクター時のドロー加速」）", () => {
+  it("XG3-019:【カラクリボール奪還】— コンビネーションした MA の L ユニットがストライクしたとき、自分は1枚ドローする（出典: atwiki/page-1897「これがストライクしたとき、自分は1枚ドローする」・コメント欄「ストライクしてダメージを与えたときではないので相手テクター時のドロー加速」）", () => {
     let s = line(["XG3-019:k", "SPEC-MA-L:L"], {}, { power: powerCards(3, "ep") });
     const hand = s.players.player1.hand.length;
     const deck = s.players.player1.deck.length;
@@ -224,23 +226,24 @@ describe("XG3-020 クワガライジャー", () => {
 
   const nc = () => line(["TST-UNIT-0:f", "XG3-020:k"], {}, { battle: [inst("SPEC-DA-S", "e")], rush: [inst("TST-UNIT-0", "r"), inst("SPEC-M3000", "m")] });
 
-  it.fails("XG3-020:【迅雷流剣技・雷牙一閃】— 2番目に出たとき（NC）、敵軍 S ユニット（エリアを問わない。M は選べない）を1体選ぶ（既知の不具合: CARD-XG3-020 NC は記録されるが選択が開かず、カテゴリも追加されない）（出典: atwiki/page-1961「敵軍Sユニットを1体選び」・R-CN-02）", () => {
+  it("XG3-020:【迅雷流剣技・雷牙一閃】— 2番目に出たとき（NC）、敵軍 S ユニット（エリアを問わない。M は選べない）を1体選ぶ（出典: atwiki/page-1961「敵軍Sユニットを1体選び」・R-CN-02）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG3-020");
     expect(choiceIds(s)).toEqual(["SPEC-DA-S:e", "TST-UNIT-0:r"]);
   });
 
-  it.fails("XG3-020:【迅雷流剣技・雷牙一閃】— 宣言したカテゴリ（例: ET）が、このターン選んだユニットに追加される（もとのカテゴリも残る）（既知の不具合: CARD-XG3-020）（出典: atwiki/page-1961「カテゴリを1つ宣言する。このターン、宣言したカテゴリを選んだユニットに追加する」）", () => {
+  it("XG3-020:【迅雷流剣技・雷牙一閃】— 宣言したカテゴリ（例: ET）が、このターン選んだユニットに追加される（もとのカテゴリも残る）（出典: atwiki/page-1961「カテゴリを1つ宣言する。このターン、宣言したカテゴリを選んだユニットに追加する」）", () => {
     let s = pick(nc(), "SPEC-DA-S:e");
     expectChoiceFrom(s, "player1", "XG3-020");
     s = resolveAll(pick(s, choiceIds(s).find((c) => c.includes("ET"))!));
     expect(categoriesOf(s, "player2", "SPEC-DA-S:e")).toEqual(["DA", "ET"]);
   });
 
-  it.fails("XG3-020:【迅雷流剣技・雷牙一閃】— 追加したカテゴリはターンの終わりに消える（既知の不具合: CARD-XG3-020）（出典: atwiki/page-1961「このターン」）", () => {
+  it("XG3-020:【迅雷流剣技・雷牙一閃】— 追加したカテゴリはターンの終わりに消える（出典: atwiki/page-1961「このターン」）", () => {
     let s = pick(nc(), "SPEC-DA-S:e");
     s = resolveAll(pick(s, choiceIds(s).find((c) => c.includes("ET"))!));
-    s = toTurnEnd(s);
+    // 2番目に出た直後の進入ウィンドウ（end_phase が出ない）をパスしてからターンを終える。
+    s = toTurnEnd(passEntry(s));
     expect(categoriesOf(s, "player2", "SPEC-DA-S:e")).toEqual(["DA"]);
   });
 });
@@ -261,14 +264,14 @@ describe("XG3-021 カブトライジャー", () => {
   const nc = (enemyBattle = [inst("SPEC-DA-S", "e"), inst("SPEC-DA-M", "m"), inst("TST-UNIT-0", "wb")]) =>
     line(["TST-UNIT-0:f1", "TST-UNIT-0:f2", "XG3-021:k"], {}, { battle: enemyBattle, rush: [inst("SPEC-DA-S0", "r")], discard: [inst("TST-OP", "ed")], power: powerCards(2, "ep") });
 
-  it.fails("XG3-021:【迅雷流剣技・カブト雷撃破】— 3番目に出たとき（NC）、敵軍バトルエリアの DA を持つ S ユニットから選ぶ（M ユニット・DA でないユニット・ラッシュエリアのユニットは選べない。任意）（既知の不具合: CARD-XG3-021 M ユニット・DA でないユニットも候補になり、見送れない）（出典: atwiki/page-1960「敵軍バトルエリアから、DAを持つSユニットを1体選び撃破してもよい」）", () => {
+  it("XG3-021:【迅雷流剣技・カブト雷撃破】— 3番目に出たとき（NC）、敵軍バトルエリアの DA を持つ S ユニットから選ぶ（M ユニット・DA でないユニット・ラッシュエリアのユニットは選べない。任意）（出典: atwiki/page-1960「敵軍バトルエリアから、DAを持つSユニットを1体選び撃破してもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG3-021");
     expect(choiceIds(s)).toEqual(["SPEC-DA-S:e"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-021:【迅雷流剣技・カブト雷撃破】— 選んだユニットを撃破し、その本来の SP が1以上なら、敵軍捨札のカードを1枚選び持ち主のパワーゾーンにダメージ（ウラ向き）として置く（既知の不具合: CARD-XG3-021 撃破してもダメージを置かない）（出典: atwiki/page-1960「選んだユニットの本来のSPが1以上だったなら、敵軍捨札からカードを1枚選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("XG3-021:【迅雷流剣技・カブト雷撃破】— 選んだユニットを撃破し、その本来の SP が1以上なら、敵軍捨札のカードを1枚選び持ち主のパワーゾーンにダメージ（ウラ向き）として置く（出典: atwiki/page-1960「選んだユニットの本来のSPが1以上だったなら、敵軍捨札からカードを1枚選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(nc(), ["SPEC-DA-S:e", "TST-OP:ed"]);
     expect(zoneOf(s, "player2", "SPEC-DA-S:e")).not.toBe("battle");
     const dmg = s.players.player2.power.filter((c) => c.faceDown).map((c) => c.instanceId);
@@ -282,7 +285,7 @@ describe("XG3-021 カブトライジャー", () => {
     expect(s.players.player2.power.filter((c) => c.faceDown)).toEqual([]);
   });
 
-  it.fails("XG3-021:【迅雷流剣技・カブト雷撃破】— 敵軍バトルエリアに DA の S ユニットがいなければ何もしない（既知の不具合: CARD-XG3-021 DA でないユニットも候補になり選択が開く）（出典: atwiki/page-1960）", () => {
+  it("XG3-021:【迅雷流剣技・カブト雷撃破】— 敵軍バトルエリアに DA の S ユニットがいなければ何もしない（出典: atwiki/page-1960）", () => {
     const s = nc([inst("TST-UNIT-0", "wb")]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG3-021");
     expect(zoneOf(resolveAll(s), "player2", "TST-UNIT-0:wb")).toBe("battle");

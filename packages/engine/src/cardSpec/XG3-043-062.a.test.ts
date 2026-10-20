@@ -33,6 +33,7 @@ import {
   inst,
   legal,
   morphCandidates,
+  pickAs,
   PLAIN_VEHICLE,
   powerCards,
   rcEnter,
@@ -89,14 +90,14 @@ describe("XG3-043 ライダーマン", () => {
   const enemyDeck = () => [inst("TST-OP", "o1"), inst("PK-010", "res"), inst("TST-UNIT-0", "u1"), inst("TST-OP", "o2"), inst("TST-UNIT-2", "u2"), inst("TST-OP", "o6")];
   const rushPhase = () => board({ rush: [inst("XG3-043", "rm")] }, { deck: enemyDeck() });
 
-  it.fails("XG3-043:【プルトンロケット阻止】— 自軍ラッシュフェイズ中、自軍エリアのこれを捨札にして発動でき、敵軍山札の上5枚から常駐でないオペレーションカードを選ぶ（常駐オペレーション・ユニット・6枚目は選べない）（既知の不具合: CARD-XG3-043【プルトンロケット阻止】の起動がない）（出典: atwiki/page-1911「これを捨札にして次の効果を発動できる⇒敵軍山札の上から5枚をオモテにする。そうしたとき、その中から常駐オペレーション以外のオペレーションカードを1枚選び」）", () => {
+  it("XG3-043:【プルトンロケット阻止】— 自軍ラッシュフェイズ中、自軍エリアのこれを捨札にして発動でき、敵軍山札の上5枚から常駐でないオペレーションカードを選ぶ（常駐オペレーション・ユニット・6枚目は選べない）（出典: atwiki/page-1911「これを捨札にして次の効果を発動できる⇒敵軍山札の上から5枚をオモテにする。そうしたとき、その中から常駐オペレーション以外のオペレーションカードを1枚選び」）", () => {
     const s = useRef(rushPhase(), "XG3-043:rm");
     expect(zoneOf(s, "player1", "XG3-043:rm")).toBe("discard");
     expectChoiceFrom(s, "player1", "XG3-043");
     expect(choiceIds(s).sort()).toEqual(["TST-OP:o1", "TST-OP:o2"]);
   });
 
-  it.fails("XG3-043:【プルトンロケット阻止】— 選んだオペレーションカードを捨札にし、残りを山札に戻す（敵軍山札は1枚減る）（既知の不具合: CARD-XG3-043）（出典: atwiki/page-1911「1枚選び捨札にする。その後、残りのカードを山札に戻してシャッフルする」）", () => {
+  it("XG3-043:【プルトンロケット阻止】— 選んだオペレーションカードを捨札にし、残りを山札に戻す（敵軍山札は1枚減る）（出典: atwiki/page-1911「1枚選び捨札にする。その後、残りのカードを山札に戻してシャッフルする」）", () => {
     const s = resolveAll(useRef(rushPhase(), "XG3-043:rm"), ["TST-OP:o2"]);
     expect(zoneOf(s, "player2", "TST-OP:o2")).toBe("discard");
     expect(s.players.player2.deck).toHaveLength(5);
@@ -121,14 +122,14 @@ describe("XG3-044 仮面ライダーストロンガー", () => {
   /** 敵軍コマンドゾーン: SP！のユニット（XG3-022）・SP1 のユニット・SP なしのユニット・オペレーション。 */
   const ridden = () => rc("XG3-044:s", {}, { command: [inst("XG3-022", "c1"), inst("TST-UNIT-0", "c2"), inst("SPEC-NOSP", "c3"), inst("TST-OP", "c4")] });
 
-  it.fails("XG3-044:【エレクトロファイヤー】— RC で、敵軍コマンドゾーンの SP が空欄でないユニットカード（「！」・「1」）から選べる（SP なしのユニット・オペレーションは選べない。任意）（既知の不具合: CARD-XG3-044 候補にすべてのカードが入り、見送れない）（出典: atwiki/page-1912「SPが空欄ではないユニットカードを1枚選び…出してもよい」・R-CN-05）", () => {
+  it("XG3-044:【エレクトロファイヤー】— RC で、敵軍コマンドゾーンの SP が空欄でないユニットカード（「！」・「1」）から選べる（SP なしのユニット・オペレーションは選べない。任意）（出典: atwiki/page-1912「SPが空欄ではないユニットカードを1枚選び…出してもよい」・R-CN-05）", () => {
     const s = ridden();
     expectChoiceFrom(s, "player1", "XG3-044");
     expect(choiceIds(s).sort()).toEqual(["TST-UNIT-0:c2", "XG3-022:c1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-044:【エレクトロファイヤー】— 選んだカードを敵軍ラッシュエリアにホールド状態で出す（既知の不具合: CARD-XG3-044 コマンドゾーンでホールドするだけで、ラッシュエリアに出さない）（出典: atwiki/page-1912「敵軍ラッシュエリアにホールド状態で出してもよい」）", () => {
+  it("XG3-044:【エレクトロファイヤー】— 選んだカードを敵軍ラッシュエリアにホールド状態で出す（出典: atwiki/page-1912「敵軍ラッシュエリアにホールド状態で出してもよい」）", () => {
     const s = resolveAll(ridden(), ["TST-UNIT-0:c2"]);
     expect(zoneOf(s, "player2", "TST-UNIT-0:c2")).toBe("rush");
     expect(cardIn(s, "player2", "TST-UNIT-0:c2")?.commandHeld).toBe(true);
@@ -156,23 +157,23 @@ describe("XG3-045 チャージアップストロンガー", () => {
 
   const endBoard = (discard = [inst("XG3-044", "d")]) => battle({ battle: [inst("XG3-045", "cs")], discard });
 
-  it.fails("XG3-045: ※ 自分がターンを終えるとき、自軍捨札の「仮面ライダーストロンガー」とこれを置き換える（ストロンガーがこれのいた場所へ、これは捨札へ）（既知の不具合: CARD-XG3-045 ターンを終えるときの置き換えがない）（出典: atwiki/page-2015「自軍捨札の「仮面ライダーストロンガー」のカードとこれを置き換える」・R-REPL-04）", () => {
+  it("XG3-045: ※ 自分がターンを終えるとき、自軍捨札の「仮面ライダーストロンガー」とこれを置き換える（ストロンガーがこれのいた場所へ、これは捨札へ）（出典: atwiki/page-2015「自軍捨札の「仮面ライダーストロンガー」のカードとこれを置き換える」・R-REPL-04）", () => {
     const s = resolveAll(endTurnKeep(endBoard()), ["XG3-044:d"]);
     expect(zoneOf(s, "player1", "XG3-045:cs")).toBe("discard");
     expect(zoneOf(s, "player1", "XG3-044:d")).toBe("battle");
   });
 
-  it.fails("XG3-045: ※ 自軍捨札に「仮面ライダーストロンガー」がなければ、ターンを終えるときにこれを捨札にする（既知の不具合: CARD-XG3-045）（出典: atwiki/page-2015「置き換えられなければこれを捨札にする」）", () => {
+  it("XG3-045: ※ 自軍捨札に「仮面ライダーストロンガー」がなければ、ターンを終えるときにこれを捨札にする（出典: atwiki/page-2015「置き換えられなければこれを捨札にする」）", () => {
     const s = resolveAll(endTurnKeep(endBoard([])));
     expect(zoneOf(s, "player1", "XG3-045:cs")).toBe("discard");
   });
 
-  it.fails("XG3-045:【超電稲妻キック】— RC しただけでは相手にダメージを与えない（既知の不具合: CARD-XG3-045 RC した時点で相手に1点ダメージを与える）（出典: atwiki/page-2015「このターン、これがSPが空欄ではないユニットをバトルで撃破したとき、相手に1点ダメージを与える」）", () => {
+  it("XG3-045:【超電稲妻キック】— RC しただけでは相手にダメージを与えない（出典: atwiki/page-2015「このターン、これがSPが空欄ではないユニットをバトルで撃破したとき、相手に1点ダメージを与える」）", () => {
     const s = resolveAll(rc("XG3-045:cs", {}, { battle: [inst("TST-UNIT-0", "e")] }));
     expect(s.players.player2.damage).toBe(0);
   });
 
-  it.fails("XG3-045:【超電稲妻キック】— RC したターン、SP のあるユニットをバトルで撃破すると相手に1点ダメージ（既知の不具合: CARD-XG3-045 撃破してもダメージが増えない）（出典: atwiki/page-2015「SPが空欄ではないユニットをバトルで撃破したとき」）", () => {
+  it("XG3-045:【超電稲妻キック】— RC したターン、SP のあるユニットをバトルで撃破すると相手に1点ダメージ（出典: atwiki/page-2015「SPが空欄ではないユニットをバトルで撃破したとき」）", () => {
     let s = resolveAll(rc("XG3-045:cs", {}, { battle: [inst("TST-UNIT-0", "e")] }));
     const before = s.players.player2.damage;
     s = resolveAll(settle(attack(s, "XG3-045:cs", "TST-UNIT-0:e")));
@@ -205,14 +206,14 @@ describe("XG3-046 仮面ライダーBLACK", () => {
     expect(chaseTargets(s, "player1")).toEqual(["SPEC-VEHICLE2:v2"]);
   });
 
-  it.fails("XG3-046: ※ 敵軍ターン中に撃破されて捨札になったとき、自軍パワーゾーンにダメージとして置き、手札の「仮面ライダーBLACK RX」（XG3-048）を自軍ラッシュエリアに出せる（既知の不具合: CARD-XG3-046 ※の選択が開かない）（出典: atwiki/page-1967「これを自軍パワーゾーンにダメージにして置いてもよい。そうしたとき、自分の手札から「仮面ライダーBLACK RX」のカードを1枚選び、自軍ラッシュエリアに出す」）", () => {
+  it("XG3-046: ※ 敵軍ターン中に撃破されて捨札になったとき、自軍パワーゾーンにダメージとして置き、手札の「仮面ライダーBLACK RX」（XG3-048）を自軍ラッシュエリアに出せる（出典: atwiki/page-1967「これを自軍パワーゾーンにダメージにして置いてもよい。そうしたとき、自分の手札から「仮面ライダーBLACK RX」のカードを1枚選び、自軍ラッシュエリアに出す」）", () => {
     const s = resolveAll(settle(enemyAttack({ battle: [inst("XG3-046", "b")], hand: [inst("XG3-048", "rx")] }, "XG3-046:b")), ["XG3-048:rx"]);
     expect(zoneOf(s, "player1", "XG3-046:b")).toBe("power");
     expect(cardIn(s, "player1", "XG3-046:b")?.faceDown).toBe(true);
     expect(zoneOf(s, "player1", "XG3-048:rx")).toBe("rush");
   });
 
-  it.fails("XG3-046: ※ 手札に「仮面ライダーBLACK RX」がなくても、ダメージとして置くことはできる（既知の不具合: CARD-XG3-046）（出典: atwiki/page-1967 カード評価「仮面ライダーBLACK RXがラッシュできなくてもダメージに送ることができる」）", () => {
+  it("XG3-046: ※ 手札に「仮面ライダーBLACK RX」がなくても、ダメージとして置くことはできる（出典: atwiki/page-1967 カード評価「仮面ライダーBLACK RXがラッシュできなくてもダメージに送ることができる」）", () => {
     const s = resolveAll(settle(enemyAttack({ battle: [inst("XG3-046", "b")] }, "XG3-046:b")), ["XG3-046:b", "confirm"]);
     expect(zoneOf(s, "player1", "XG3-046:b")).toBe("power");
   });
@@ -221,15 +222,15 @@ describe("XG3-046 仮面ライダーBLACK", () => {
   const kingStone = () =>
     rc("XG3-046:b", { deck: [inst("SPEC-C4", "top"), ...deckCards(3)], hand: [inst("SPEC-C2", "h")] }, { rush: [inst("TST-UNIT-0", "e0"), inst("SPEC-C2", "e2"), inst("SPEC-C4", "e4"), inst("TST-UNIT-2", "m")] });
 
-  it.fails("XG3-046:【キングストーンフラッシュ】— RC で、1枚ドローしてから手札を1枚選び捨札にする（既知の不具合: CARD-XG3-046【キングストーンフラッシュ】のドローも手札の選択もない）（出典: atwiki/page-1967「自分は1枚ドローしてから、自分の手札を1枚選び捨札にする」）", () => {
+  it("XG3-046:【キングストーンフラッシュ】— RC で、1枚ドローしてから手札を1枚選び捨札にする（出典: atwiki/page-1967「自分は1枚ドローしてから、自分の手札を1枚選び捨札にする」）", () => {
     const s = kingStone();
     expect(zoneOf(s, "player1", "SPEC-C4:top")).toBe("hand");
     expectChoiceFrom(s, "player1", "XG3-046");
     expect(choiceIds(s).sort()).toEqual(["SPEC-C2:h", "SPEC-C4:top"]);
   });
 
-  it.fails("XG3-046:【キングストーンフラッシュ】— 捨札にしたカードの必要パワー（4）以下の必要パワーを持つ敵軍 S ユニットを1体選び、持ち主の山札の下に戻す（M ユニットは選べない）（既知の不具合: CARD-XG3-046）（出典: atwiki/page-1967「捨札にしたカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す」）", () => {
-    let s = resolveAll(kingStone(), ["SPEC-C4:top"]);
+  it("XG3-046:【キングストーンフラッシュ】— 捨札にしたカードの必要パワー（4）以下の必要パワーを持つ敵軍 S ユニットを1体選び、持ち主の山札の下に戻す（M ユニットは選べない）（出典: atwiki/page-1967「捨札にしたカードの必要パワーの数字以下の必要パワーを持つ敵軍Sユニットを1体選び、持ち主の山札の下に戻す」）", () => {
+    let s = pickAs(kingStone(), "player1", "SPEC-C4:top");
     expect(zoneOf(s, "player1", "SPEC-C4:top")).toBe("discard");
     expect(choiceIds(s).sort()).toEqual(["SPEC-C2:e2", "SPEC-C4:e4", "TST-UNIT-0:e0"]);
     s = resolveAll(s, ["SPEC-C4:e4"]);
@@ -270,15 +271,15 @@ describe("XG3-047 シャドームーン", () => {
   const shadow = () =>
     rc("XG3-047:sm", { hand: [inst("SPEC-BP3000", "h"), inst("TST-OP", "op")] }, { battle: [inst("TST-UNIT-0", "e1")], rush: [inst("TST-UNIT-2", "e3"), inst("TST-UNIT-7", "e13")] });
 
-  it.fails("XG3-047:【シャドーフラッシュ】— RC で、自分の手札のユニットカードから選べる（オペレーションは選べない。任意）（既知の不具合: CARD-XG3-047【シャドーフラッシュ】の手札の選択が開かない）（出典: atwiki/page-1968「自分の手札からユニットカードを1枚選び、捨札にしてもよい」）", () => {
+  it("XG3-047:【シャドーフラッシュ】— RC で、自分の手札のユニットカードから選べる（オペレーションは選べない。任意）（出典: atwiki/page-1968「自分の手札からユニットカードを1枚選び、捨札にしてもよい」）", () => {
     const s = shadow();
     expectChoiceFrom(s, "player1", "XG3-047");
     expect(choiceIds(s)).toEqual(["SPEC-BP3000:h"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-047:【シャドーフラッシュ】— 捨札にしたカードの BP（3000）以下の本来の BP を持つ敵軍ユニット（エリア・サイズを問わない）を1体選び撃破する（既知の不具合: CARD-XG3-047）（出典: atwiki/page-1968「捨札にしたカードのBP以下の本来のBPを持つ敵軍ユニットを1体選び撃破する」）", () => {
-    let s = resolveAll(shadow(), ["SPEC-BP3000:h"]);
+  it("XG3-047:【シャドーフラッシュ】— 捨札にしたカードの BP（3000）以下の本来の BP を持つ敵軍ユニット（エリア・サイズを問わない）を1体選び撃破する（出典: atwiki/page-1968「捨札にしたカードのBP以下の本来のBPを持つ敵軍ユニットを1体選び撃破する」）", () => {
+    let s = pickAs(shadow(), "player1", "SPEC-BP3000:h");
     expect(zoneOf(s, "player1", "SPEC-BP3000:h")).toBe("discard");
     expect(choiceIds(s).sort()).toEqual(["TST-UNIT-0:e1", "TST-UNIT-2:e3"]);
     s = resolveAll(s, ["TST-UNIT-2:e3"]);
@@ -303,27 +304,27 @@ describe("XG3-048 仮面ライダーBLACK RX", () => {
     expect(morphCandidates(s)).toEqual(["RK-261:rk"]);
   });
 
-  it.fails("XG3-048:【リボルクラッシュ】— RC で、敵軍バトルエリアのユニットが S ユニット1体だけなら、そのユニットを選べる（任意）（既知の不具合: CARD-XG3-048 見送れない）（出典: atwiki/page-2008「そのユニットを持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
+  it("XG3-048:【リボルクラッシュ】— RC で、敵軍バトルエリアのユニットが S ユニット1体だけなら、そのユニットを選べる（任意）（出典: atwiki/page-2008「そのユニットを持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
     const s = rc("XG3-048:rx", {}, { battle: [inst("TST-UNIT-0", "e0")] });
     expectChoiceFrom(s, "player1", "XG3-048");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e0"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-048:【リボルクラッシュ】— そのユニットを持ち主のパワーゾーンにダメージ（ウラ向き）として置く（既知の不具合: CARD-XG3-048 パワーゾーンにオモテ向きで置き、ダメージにならない）（出典: atwiki/page-2008「持ち主のパワーゾーンにダメージにして置いてもよい」・カード評価「除去+2点を狙える」）", () => {
+  it("XG3-048:【リボルクラッシュ】— そのユニットを持ち主のパワーゾーンにダメージ（ウラ向き）として置く（出典: atwiki/page-2008「持ち主のパワーゾーンにダメージにして置いてもよい」・カード評価「除去+2点を狙える」）", () => {
     const s = resolveAll(rc("XG3-048:rx", {}, { battle: [inst("TST-UNIT-0", "e0")] }), ["TST-UNIT-0:e0"]);
     expect(zoneOf(s, "player2", "TST-UNIT-0:e0")).toBe("power");
     expect(cardIn(s, "player2", "TST-UNIT-0:e0")?.faceDown).toBe(true);
     expect(s.players.player2.damage).toBe(1);
   });
 
-  it.fails("XG3-048:【リボルクラッシュ】— 敵軍バトルエリアのユニットが2体以上なら発動しない（既知の不具合: CARD-XG3-048 条件を見ずに敵軍ユニットをパワーゾーンに置く）（出典: atwiki/page-2008「敵軍バトルエリアのユニットがSユニット1体だけなら」）", () => {
+  it("XG3-048:【リボルクラッシュ】— 敵軍バトルエリアのユニットが2体以上なら発動しない（出典: atwiki/page-2008「敵軍バトルエリアのユニットがSユニット1体だけなら」）", () => {
     const s = resolveAll(rc("XG3-048:rx", {}, { battle: [inst("TST-UNIT-0", "e0"), inst("TST-UNIT-0", "e1")] }));
     expect(zoneOf(s, "player2", "TST-UNIT-0:e0")).toBe("battle");
     expect(zoneOf(s, "player2", "TST-UNIT-0:e1")).toBe("battle");
   });
 
-  it.fails("XG3-048:【リボルクラッシュ】— 敵軍バトルエリアのユニットが M ユニット1体だけなら発動しない（既知の不具合: CARD-XG3-048）（出典: atwiki/page-2008「Sユニット1体だけなら」）", () => {
+  it("XG3-048:【リボルクラッシュ】— 敵軍バトルエリアのユニットが M ユニット1体だけなら発動しない（出典: atwiki/page-2008「Sユニット1体だけなら」）", () => {
     const s = resolveAll(rc("XG3-048:rx", {}, { battle: [inst("TST-UNIT-2", "m")] }));
     expect(zoneOf(s, "player2", "TST-UNIT-2:m")).toBe("battle");
   });
@@ -340,7 +341,7 @@ describe("XG3-049 ストレンジベント", () => {
     expectRarityIn("XG3-049", ["N"]);
   });
 
-  it.fails("XG3-049: 特徴「アドベントカード」を持つ（既知の不具合: CARD-XG3-049 カタログ: 特徴が入っていない）（出典: atwiki/page-1913「特徴：アドベントカード」）", () => {
+  it("XG3-049: 特徴「アドベントカード」を持つ（出典: atwiki/page-1913「特徴：アドベントカード」）", () => {
     expect(DEFS["XG3-049"]?.features).toEqual(["アドベントカード"]);
   });
 
@@ -348,13 +349,13 @@ describe("XG3-049 ストレンジベント", () => {
   const used = (discard = [inst("TST-UNIT-2", "d1"), inst("TST-UNIT-0", "d2")]) =>
     useCard(board({ hand: [inst("XG3-049", "sv")], discard, rush: [inst("SPEC-MIRROR", "mr")], command: releasedCat("WB", 1), power: powerCards(4) }), "player1", "XG3-049:sv");
 
-  it.fails("XG3-049: 使うと、相手が自軍捨札（ストレンジベント以外）のカードからウラ向きのまま1枚選ぶ（既知の不具合: CARD-XG3-049 使っても何も起きない）（出典: atwiki/page-1913「その中から相手にウラ向きのまま1枚選ばせてから」）", () => {
+  it("XG3-049: 使うと、相手が自軍捨札（ストレンジベント以外）のカードからウラ向きのまま1枚選ぶ（出典: atwiki/page-1913「その中から相手にウラ向きのまま1枚選ばせてから」）", () => {
     const s = used();
     expect(choiceOf(s, "player2", "XG3-049")).toBe(true);
     expect(choiceIds(s).sort()).toEqual(["TST-UNIT-0:d2", "TST-UNIT-2:d1"]);
   });
 
-  it.fails("XG3-049: 選ばれたカードがユニットなら、特徴「ミラーライダー」を持つユニットを1体選び、このターン BP+2000（既知の不具合: CARD-XG3-049）（出典: atwiki/page-1913「それ以外のカードだったなら、特徴「ミラーライダー」を持つユニットを1体選び、このターン、BP+2000する」）", () => {
+  it("XG3-049: 選ばれたカードがユニットなら、特徴「ミラーライダー」を持つユニットを1体選び、このターン BP+2000（出典: atwiki/page-1913「それ以外のカードだったなら、特徴「ミラーライダー」を持つユニットを1体選び、このターン、BP+2000する」）", () => {
     let s = used();
     s = act(s, { type: "resolve_effect_choice", playerId: "player2", instanceId: "TST-UNIT-0:d2" });
     s = resolveAll(s, ["SPEC-MIRROR:mr"]);

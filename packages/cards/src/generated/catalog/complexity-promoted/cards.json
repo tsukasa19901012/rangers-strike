@@ -6146,6 +6146,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 4,
+      "features": [
+        "ディスクアニマル"
+      ],
       "imageUrl": "/cards/promoted/XG3-055.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG3-055-RK.jpg",
       "text": "※カウンター BP3000以下の自軍Sユニットがバトルで撃破されて捨札になるとき発動できる⇒そのユニットを捨札にするかわりに、自分の手札に戻す。"

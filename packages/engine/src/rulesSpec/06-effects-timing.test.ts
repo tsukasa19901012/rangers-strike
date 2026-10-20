@@ -216,13 +216,14 @@ describe("R-TIME-01 5つのタイミング", () => {
 
   // 能動（「ストライクしたとき」）が受動（「ストライクされたとき」）より先 (atwiki/page-1828)
   it("R-TIME-01: 「ストライクしたとき」の選択（スピンビーの能力）を解決してから、「ストライクされたとき」のダイナモビル【迎撃モビルミサイル】を発動できる（出典: atwiki/page-1828）", () => {
-    // 本文の【暴れ独楽】は「コンビネーションする L ユニットが得る能力」だが、DSL では XG3-018 自身の on_strike として
-    // 登録されている。ここではストライクできる（SP1）ようにして、その「ストライクしたとき」の選択を使う。
+    // 【暴れ独楽】は「スピンビーからコンビネーションする同カテゴリの L ユニットが得る能力」（rules/xg3/xg3aEffects.ts。得た能力は
+    // state.xg3.strikeGrants）。ここでは能力を得たユニットとしてストライクできる（SP1）スピンビーを使い、パートナー（バトルエリアの
+    // 前のユニット）とともに能力を得た状態から始めて、その「ストライクしたとき」の選択を使う。
     const spin = { ...defs["XG3-018"]!, sp: 1 };
     let s = st({
       phase: "battle",
       definitions: { ...defs, "XG3-018": spin },
-      player1: { battle: [inst("XG3-018", "spin")], deck: deck(3) },
+      player1: { battle: [inst("TST-UNIT-0", "partner"), inst("XG3-018", "spin")], deck: deck(3) },
       player2: {
         battle: [inst("TST-UNIT-0", "e")],
         rush: [inst("RS-196", "mob")],
@@ -232,6 +233,7 @@ describe("R-TIME-01 5つのタイミング", () => {
         deck: deck(5, "e"),
       },
     });
+    s = { ...s, xg3: { strikeGrants: [{ ownerId: "player1", instanceId: "XG3-018:spin", partnerInstanceId: "TST-UNIT-0:partner", sourceCardId: "XG3-018", turn: s.turn }] } };
     s = run(s, { type: "strike", playerId: "player1", instanceId: "XG3-018:spin" });
     // 先に「ストライクしたとき」の選択。迎撃モビルミサイルの選択・ダメージはまだ。
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XG3-018");

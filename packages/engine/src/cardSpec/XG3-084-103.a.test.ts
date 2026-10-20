@@ -23,6 +23,7 @@ import {
   enemyAttackOn,
   enemyBoard,
   enter,
+  exiled,
   expectCatalogText,
   expectRarityIn,
   expectUnitStats,
@@ -112,7 +113,7 @@ describe("XG3-084 大甲神カブテリオス", () => {
     expect(cardIn(s, "player1", "TST-OP:cWB0")?.commandHeld).toBeFalsy();
   });
 
-  it.fails("XG3-084:【ビッグフレア】— WB のコマンドをホールドすれば、敵軍ラッシュエリアの本来の BP5000 のユニットも撃破できる（既知の不具合: CARD-XG3-084 候補が敵軍バトルエリアだけで、WB のコマンドがホールドされない）（出典: atwiki/page-1939「本来のBPが5000以下の敵軍ユニットを1体選び撃破する」・カード評価「サイズ、エリア無視で本来値でユニットを撃破できる」）", () => {
+  it("XG3-084:【ビッグフレア】— WB のコマンドをホールドすれば、敵軍ラッシュエリアの本来の BP5000 のユニットも撃破できる（出典: atwiki/page-1939「本来のBPが5000以下の敵軍ユニットを1体選び撃破する」・カード評価「サイズ、エリア無視で本来値でユニットを撃破できる」）", () => {
     const s = resolveAll(entered(), ["TST-OP:cWB0", "SPEC-BP5:r"]);
     expect(zoneOf(s, "player2", "SPEC-BP5:r")).toBe("discard");
     expect(cardIn(s, "player1", "TST-OP:cWB0")?.commandHeld).toBe(true);
@@ -124,12 +125,12 @@ describe("XG3-084 大甲神カブテリオス", () => {
     expect(zoneOf(s, "player2", "SPEC-L5:l")).toBe("discard");
   });
 
-  it.fails("XG3-084:【ビッグフレア】— 本来の BP が6000のユニットは撃破できない（既知の不具合: CARD-XG3-084 BP6000 のユニットも候補になる）（出典: atwiki/page-1939「本来のBPが5000以下」）", () => {
+  it("XG3-084:【ビッグフレア】— 本来の BP が6000のユニットは撃破できない（出典: atwiki/page-1939「本来のBPが5000以下」）", () => {
     const s = resolveAll(entered(), ["TST-OP:cWB0", "SPEC-BP6:b"]);
     expect(zoneOf(s, "player2", "SPEC-BP6:b")).toBe("battle");
   });
 
-  it.fails("XG3-084:【ビッグフレア】— WB を持つ自軍コマンドがなければ（MA だけ）発動できない（既知の不具合: CARD-XG3-084 WB のコマンドがなくても撃破できる）（出典: atwiki/page-1939「WBを持つ自軍コマンドを1つ選びホールドしてもよい。そうしたとき」）", () => {
+  it("XG3-084:【ビッグフレア】— WB を持つ自軍コマンドがなければ（MA だけ）発動できない（出典: atwiki/page-1939「WBを持つ自軍コマンドを1つ選びホールドしてもよい。そうしたとき」）", () => {
     const s = resolveAll(entered(releasedCat("MA", 1)), ["SPEC-BP5:a"]);
     expect(zoneOf(s, "player2", "SPEC-BP5:a")).toBe("battle");
   });
@@ -146,7 +147,7 @@ describe("XG3-085 邪甲神クワガタイタン", () => {
   resistTests("XG3-085", "atwiki/page-1940");
   insectZordUpTests("XG3-085", "atwiki/page-1940", "DA");
 
-  it.fails("XG3-085:【タイタニックフレア】— 自軍ターン中、WB を持つ自軍コマンド1つにつき BP+1000（リリース1・ホールド1で 7000。DA のコマンドは数えない）（既知の不具合: CARD-XG3-085 BP が上がらない）（出典: atwiki/page-1940「WBを持つ自軍コマンド1つにつきBP+1000される」・カード評価「最大BP10000になる」）", () => {
+  it("XG3-085:【タイタニックフレア】— 自軍ターン中、WB を持つ自軍コマンド1つにつき BP+1000（リリース1・ホールド1で 7000。DA のコマンドは数えない）（出典: atwiki/page-1940「WBを持つ自軍コマンド1つにつきBP+1000される」・カード評価「最大BP10000になる」）", () => {
     const s = battle({ battle: [inst("XG3-085", "kw")], command: [...releasedCat("WB", 1), heldUnit("TST-OP", "hw"), ...releasedCat("DA", 1)] });
     expect(bpOf(s, "player1", "XG3-085:kw")).toBe(7000);
   });
@@ -173,12 +174,13 @@ describe("XG3-086 冷血鎧将ムカデリンガー", () => {
   const enemyEnters = (discard: P1["discard"]) =>
     enter(enemyBoard({ battle: [inst("XG3-086", "mk")], discard }, { rush: [inst("SPEC-C3", "e3")] }, EXTRA), "SPEC-C3:e3", "player2");
 
-  it.fails("XG3-086:【ハンドレットフィーラー】— 相手がリリース状態の S ユニット（必要パワー3）をバトルエリアに出すために選んだとき、自軍捨札の必要パワー3のカードを除外して、そのユニットをホールドできる（既知の不具合: CARD-XG3-086 選択が開かない）（出典: atwiki/page-1941「自軍捨札から同じ必要パワーの数字を持つカードを1枚選びゲームから除外してもよい。そうしたとき、そのユニットをホールドする」）", () => {
+  it("XG3-086:【ハンドレットフィーラー】— 相手がリリース状態の S ユニット（必要パワー3）をバトルエリアに出すために選んだとき、自軍捨札の必要パワー3のカードを除外して、そのユニットをホールドできる（出典: atwiki/page-1941「自軍捨札から同じ必要パワーの数字を持つカードを1枚選びゲームから除外してもよい。そうしたとき、そのユニットをホールドする」）", () => {
     const s0 = enemyEnters([inst("SPEC-C3", "d3"), inst("TST-UNIT-2", "d2")]);
     expect(choiceIds(s0)).toEqual(["SPEC-C3:d3"]);
     expect(canSkip(s0)).toBe(true);
     const s = resolveAll(s0, ["SPEC-C3:d3"]);
-    expect(zoneOf(s, "player1", "SPEC-C3:d3")).toBe("exile");
+    expect(exiled(s, "player1")).toEqual(["SPEC-C3:d3"]);
+    expect(zoneOf(s, "player1", "SPEC-C3:d3")).toBeNull();
     expect(cardIn(s, "player2", "SPEC-C3:e3")?.commandHeld).toBe(true);
   });
 
@@ -218,7 +220,7 @@ describe("XG3-087 魔剣鎧将キルマンティス", () => {
     expect(zoneOf(s, "player2", "SPEC-BP5:e")).toBe("battle");
   });
 
-  it.fails("XG3-087:【フェリンガースナイプ】— 自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアの特徴「メカ」か「昆虫」を持つ S ユニットを1体選びホールドできる（ラッシュエリア・M・ほかの特徴は選べない。任意）（既知の不具合: CARD-XG3-087 選択が開かず、何もホールドされない）（出典: atwiki/page-1942「敵軍バトルエリアから特徴「メカ」または「昆虫」を持つSユニットを1体選びホールドしてもよい」）", () => {
+  it("XG3-087:【フェリンガースナイプ】— 自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアの特徴「メカ」か「昆虫」を持つ S ユニットを1体選びホールドできる（ラッシュエリア・M・ほかの特徴は選べない。任意）（出典: atwiki/page-1942「敵軍バトルエリアから特徴「メカ」または「昆虫」を持つSユニットを1体選びホールドしてもよい」）", () => {
     const s0 = enter(
       battle({ rush: [inst("XG3-087", "km")] }, { battle: [inst("SPEC-MECHA", "m"), inst("SPEC-INS", "i"), inst("TST-UNIT-0", "x"), inst("SPEC-MECHA-M", "mm")], rush: [inst("SPEC-MECHA", "rm")] }),
       "XG3-087:km",
@@ -250,7 +252,7 @@ describe("XG3-088 変幻鎧将ビーザック", () => {
   const enemyRushes = (rusher: string, p2: P2) =>
     rushKeepReaction(enemyBoard({ hand: [inst("XG3-088", "bz")], command: releasedCat("DA", 1) }, { hand: [inst(rusher.split(":")[0]!, rusher.split(":")[1]!)], ...p2 }, EXTRA, "rush"), "player2", rusher);
 
-  it.fails("XG3-088:【ハードックショッカー】— レジストを持つ敵軍 S ユニット（XG3-089）がラッシュされたとき、DA のコマンドをホールドして手札のこれを自軍ラッシュエリアに出し、そのユニットをホールドできる（既知の不具合: CARD-XG3-088 手札から出す手が提示されない）（出典: atwiki/page-1943「DAを持つ自軍コマンドを1つホールドしてから、これを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットをホールドする」）", () => {
+  it("XG3-088:【ハードックショッカー】— レジストを持つ敵軍 S ユニット（XG3-089）がラッシュされたとき、DA のコマンドをホールドして手札のこれを自軍ラッシュエリアに出し、そのユニットをホールドできる（出典: atwiki/page-1943「DAを持つ自軍コマンドを1つホールドしてから、これを自軍ラッシュエリアに出してもよい。そうしたとき、ラッシュされた敵軍ユニットをホールドする」）", () => {
     const s0 = enemyRushes("XG3-089:bb", { command: cmds("WB", "ET"), power: powerCards(4) });
     const s = resolveAll(useRef(s0, "XG3-088:bz"));
     expect(zoneOf(s, "player1", "XG3-088:bz")).toBe("rush");
@@ -279,7 +281,7 @@ describe("XG3-089 ブルービート", () => {
 
   const enemies: P2 = { battle: [inst("XG3-086", "mk"), inst("TST-UNIT-0", "x"), inst("SPEC-INS", "i")], rush: [inst("XG3-086", "mk2")] };
 
-  it.fails("XG3-089:【スティンガードリル】— RC で、敵軍バトルエリアのレジストを持つ S ユニットだけを選べる（ラッシュエリア・レジストのないユニットは選べない。任意）（既知の不具合: CARD-XG3-089 レジストのないユニットも候補になり、見送れない）（出典: atwiki/page-1973「敵軍バトルエリアから、レジストを持つSユニットを1体選び撃破してもよい」）", () => {
+  it("XG3-089:【スティンガードリル】— RC で、敵軍バトルエリアのレジストを持つ S ユニットだけを選べる（ラッシュエリア・レジストのないユニットは選べない。任意）（出典: atwiki/page-1973「敵軍バトルエリアから、レジストを持つSユニットを1体選び撃破してもよい」）", () => {
     const s = rc("XG3-089:bb", {}, enemies);
     expect(choiceIds(s)).toEqual(["XG3-086:mk"]);
     expect(canSkip(s)).toBe(true);
@@ -291,7 +293,7 @@ describe("XG3-089 ブルービート", () => {
     expect(zoneOf(s, "player2", "XG3-086:mk2")).toBe("rush");
   });
 
-  it.fails("XG3-089:【スティンガードリル】— 特徴「昆虫」を持つユニット（SPEC-INS）からコンビネーションすれば、RC でなくても発動する（既知の不具合: CARD-XG3-089 発動しない）（出典: atwiki/page-1973「この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する」）", () => {
+  it("XG3-089:【スティンガードリル】— 特徴「昆虫」を持つユニット（SPEC-INS）からコンビネーションすれば、RC でなくても発動する（出典: atwiki/page-1973「この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する」）", () => {
     const s = resolveAll(line(["SPEC-INS:i", "XG3-089:bb"], {}, enemies), ["XG3-086:mk"]);
     expect(zoneOf(s, "player2", "XG3-086:mk")).toBe("discard");
   });
@@ -337,14 +339,14 @@ describe("XG3-090 スーパーブルービート", () => {
   /** 「昆虫」の自軍ユニット: これ・SPEC-INS ×2（計3 → BP6000）。 */
   const enemies: P2 = { battle: [inst("SPEC-BP6", "b6"), inst("TST-UNIT-7", "l")], rush: [inst("SPEC-BP5", "r5")] };
 
-  it.fails("XG3-090:【スーパーファイナルブロー】— ラッシュしたとき、「昆虫」の自軍ユニット（これを含め3体）× BP2000 = 6000 以下の敵軍ユニット（サイズ・エリアを問わない）を選べる（任意）（既知の不具合: CARD-XG3-090 選択が開かない）（出典: atwiki/page-1958「ユニット1体につきBP2000として、特徴「昆虫」を持つ自軍ユニットの数分のBPを計算し、そのBP以下の敵軍ユニットを1体選び撃破する」・カード評価「サイズを指定されていない」）", () => {
+  it("XG3-090:【スーパーファイナルブロー】— ラッシュしたとき、「昆虫」の自軍ユニット（これを含め3体）× BP2000 = 6000 以下の敵軍ユニット（サイズ・エリアを問わない）を選べる（任意）（出典: atwiki/page-1958「ユニット1体につきBP2000として、特徴「昆虫」を持つ自軍ユニットの数分のBPを計算し、そのBP以下の敵軍ユニットを1体選び撃破する」・カード評価「サイズを指定されていない」）", () => {
     const r = zordDown(enemies, [inst("SPEC-INS", "i1"), inst("SPEC-INS", "i2")]);
     expect(r.ok, r.error).toBe(true);
     expect(choiceIds(r.state).sort()).toEqual(["SPEC-BP5:r5", "SPEC-BP6:b6"]);
     expect(canSkip(r.state)).toBe(true);
   });
 
-  it.fails("XG3-090:【スーパーファイナルブロー】— 選んだ BP6000 のユニットを撃破する（既知の不具合: CARD-XG3-090）（出典: atwiki/page-1958「1体選び撃破する」）", () => {
+  it("XG3-090:【スーパーファイナルブロー】— 選んだ BP6000 のユニットを撃破する（出典: atwiki/page-1958「1体選び撃破する」）", () => {
     const r = zordDown(enemies, [inst("SPEC-INS", "i1"), inst("SPEC-INS", "i2")]);
     const s = resolveAll(r.state, ["SPEC-BP6:b6"]);
     expect(zoneOf(s, "player2", "SPEC-BP6:b6")).toBe("discard");

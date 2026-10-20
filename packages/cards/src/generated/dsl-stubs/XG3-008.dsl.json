@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "on_ally_rush_named_return_self_to_hand",
+          "keyword": "xg3::XG3-008::liner_return",
           "duration": "permanent"
         }
       ]
@@ -50,7 +50,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-008::rainakonbo",
+          "keyword": "xg3::XG3-008::liner_combo",
           "duration": "permanent"
         }
       ]

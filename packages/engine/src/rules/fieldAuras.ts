@@ -4,6 +4,7 @@ import { xg7FieldBpBonus } from "./xg7/xg7Fields";
 import { xg6FieldBpBonus } from "./xg6/xg6Fields";
 import { xg4FieldBpBonus } from "./xg4/xg4Fields";
 import { xg2FieldBpBonus } from "./xg2/xg2Fields";
+import { xg3FieldBpBonus } from "./xg3/xg3Fields";
 import type { Category } from "@rangers-strike/cards";
 import { set9AFieldBpBonus } from "./legend1/set9NamedEffectsA";
 import { changePowerBpBonus } from "./legend1/set6NamedEffects348";
@@ -292,6 +293,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += xg4FieldBpBonus(state, playerId, instance, unitFeatures);
   // XG2-029【災魔ツリー】・XG2-031【宇宙警察のバックアップ】（rules/xg2/xg2Fields.ts）。
   if (role === "general") bonus += xg2FieldBpBonus(state, playerId, instance);
+  // クロスギャザー ザ・Wインパクト XG3（rules/xg3/xg3Fields.ts）。
+  bonus += xg3FieldBpBonus(state, playerId, instance, role);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

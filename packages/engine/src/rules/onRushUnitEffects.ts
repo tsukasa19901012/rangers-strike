@@ -3,6 +3,7 @@ import { applyXg2OnUnitRushed } from "./xg2/xg2Effects";
 import { openRm2MotoSharian } from "./rm/rm2Effects";
 import { openRm1OnUnitRushed } from "./rm/rm1Effects";
 import { consumeXg7NextCardCost, markXg7RushOrigin, openXg7BeforeOnRush, openXg7OnUnitRushed } from "./xg7/xg7Effects";
+import { openXg3OnUnitRushed } from "./xg3/xg3Effects";
 import { openRk8JaguarOnEnemyRush } from "./rk/rk8UnitEffects";
 import { openRk11UndeadMasterOnRush } from "./rk/rk11UnitEffects";
 import { openRk12NegatarosOnRush } from "./rk/rk12UnitEffects";
@@ -352,6 +353,8 @@ export function applyPassiveRushTriggers(
   state = openRm1OnUnitRushed(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // XG7-018【影武者】・XG7-020【影に向かいて影を斬り…】等（rules/xg7/xg7Effects.ts）。
   state = openXg7OnUnitRushed(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // クロスギャザー ザ・Wインパクト XG3 の「自分が…をラッシュしたとき」（XG3-008 の※等。rules/xg3/xg3Effects.ts）。
+  state = openXg3OnUnitRushed(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   const rsEnemyRush = tryRsCatchallOnEnemyRush(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   let next = tryDispatchOrderOnEnemyRush(rsEnemyRush.state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // RS-490 三の槍マンマルバ幼体【予言】（rules/legend1/set7NamedEffectsC.ts）。

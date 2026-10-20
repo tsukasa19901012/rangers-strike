@@ -25,12 +25,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-050::gigarancha",
-          "duration": "turn"
+          "keyword": "xg3::XG3-050::giga_launcher",
+          "duration": "permanent"
         }
       ]
     }

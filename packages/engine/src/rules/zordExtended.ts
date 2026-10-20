@@ -219,9 +219,11 @@ function hasSelfUnitOrCommandWithFeature(
   definitions: Record<string, CardDefinition>,
   feature: string,
 ): boolean {
+  // 「自軍コマンド」はコマンドゾーンのカードなら種類を問わない（XG3-027 スティラコサウルス「特徴「スティライザー」を持つ、自軍ユニットまたは
+  // 自軍コマンドがある」— コマンドゾーンのアバレマックス（ユニットカード）でもよい。atwiki/page-1901）。
   return (
     hasSelfUnitWithFeature(player, definitions, feature) ||
-    hasSelfCommandWithFeature(player, definitions, [feature])
+    player.command.some((card) => (getDefinition(definitions, card.cardId)?.features ?? []).includes(feature))
   );
 }
 

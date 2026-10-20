@@ -3,6 +3,7 @@ import { xg6BlocksStrike } from "./xg6/xg6Fields";
 import { tryRm3OnEnterBattle } from "./rm/rm3Effects";
 import { tryXg7OnEnterBattle } from "./xg7/xg7Effects";
 import { xg7BlocksStrike } from "./xg7/xg7Fields";
+import { tryXg3OnEnterBattle } from "./xg3/xg3Effects";
 import { tryRm2OnEnterBattle } from "./rm/rm2Effects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { tryRk9OnEnterBattle } from "./rk/rk9UnitEffects";
@@ -302,6 +303,8 @@ export function resolveEnterBattleEffectsImpl(
         nextState = tryXg7OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
         // XG6-008 炎神剣（コマンドゾーンから。OT の自軍 L ユニットがバトルエリアに出たとき。rules/xg6/xg6Hooks.ts）。
         nextState = tryXg6OnEnterBattle(nextState, playerId, battleCard);
+        // クロスギャザー ザ・Wインパクト XG3 の「バトルエリアに出たとき」「〜からコンビネーションするとき」（rules/xg3/xg3Effects.ts）。
+        nextState = tryXg3OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
         if (nextState.pendingEffectChoice) {
           return { state: nextState, logs, enterResumeFrom: resumeAt(1) };
         }

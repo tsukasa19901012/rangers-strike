@@ -2,6 +2,7 @@ import { applyXg5AttackWin } from "./xg5/xg5Core";
 import { xg5BattleUsesPrintedBp } from "./xg5/xg5Fields";
 import { rm2AfterBattle } from "./rm/rm2Effects";
 import { xg1aAfterBattle } from "./xg1/xg1aEffects";
+import { applyXg3OnBattleDestroy, openXg3BeforeBattle, openXg3StayOnLeave } from "./xg3/xg3Effects";
 import { isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "./rm/rm1Effects";
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
 import { isRk5BattleCounterCard, rk5BattleCounterConditionMet } from "./rk/rk5UnitEffects";
@@ -1392,6 +1393,9 @@ export function resolveBattlePendingCore(
   // XG2-010【龍星キック】ほか「アタックするとき、バトルの前に」（選んだあとこのバトルを解決し直す。rules/xg2/xg2Effects.ts）。
   const xg2Before = tryOpenXg2BattleChoice(state, pending);
   if (xg2Before) return { state: xg2Before, log: buildLogEntry(pending.attackerPlayerId, "battle", pending.attackerInstanceId, state.definitions, "xg2_before_battle") };
+  // XG3-091【パルセイバー】・XG3-097【キャプテンルーレット】: バトルの前の処理（済ませたらこのバトルを解決し直す。rules/xg3/xg3eEffects.ts）。
+  const xg3Before = openXg3BeforeBattle(state, pending);
+  if (xg3Before) return { state: xg3Before, log: buildLogEntry(pending.attackerPlayerId, "battle", pending.attackerInstanceId, state.definitions, "xg3_before_battle") };
 
   const attackerId = pending.attackerPlayerId;
   const defenderId = pending.defenderPlayerId;
@@ -1463,7 +1467,8 @@ export function resolveBattlePendingCore(
   }
 
   // RK-050【音撃斬・閻魔裁き】: 選んだ数字（必要パワー・ナンバー）でバトルする（rules/rk/rk3UnitEffects.ts）。
-  const rk3Values = rk3BattleValues(battleState, pending);
+  // XG3-097【キャプテンルーレット】で決めた数字（rules/xg3/xg3eEffects.ts）。
+  const rk3Values = rk3BattleValues(battleState, pending) ?? pending.xg3Values ?? null;
   const attackerBp = rk3Values ? rk3Values.attacker : battleAttackerBpBonus(battleState, pending);
   const defenderBp = rk3Values ? rk3Values.defender : battleDefenderBp(battleState, pending);
 
@@ -1722,6 +1727,8 @@ export function resolveBattlePendingCore(
         // RK-324【凄いのが来るぜ！】（rules/rk/rk16UnitEffects.ts）。
         withAttacker = rk16OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
         withAttacker = xg4OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+        // XG3-045【超電稲妻キック】等（rules/xg3/xg3Effects.ts）。
+        withAttacker = applyXg3OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId);
       }
       if (!withAttacker.pendingLeave && !withAttacker.pendingRegister) {
         // 撃破は済み、別の選択が開いている — RS-226（段階 1）を先に、RS-212（段階 4）は段階の順に処理する。
@@ -1767,6 +1774,8 @@ export function resolveBattlePendingCore(
     if (!finalDestroyAttacker) nextState = rk16OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
     // クロスギャザー ザ・ジェットアクセル XG4-010・XG4-017 等（rules/xg4/xg4Effects.ts）。
     if (!finalDestroyAttacker) nextState = xg4OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+    // XG3-045【超電稲妻キック】等（rules/xg3/xg3Effects.ts）。
+    if (!finalDestroyAttacker) nextState = applyXg3OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId);
 
     if (refreshedAttackerFound.card.cardId === "RS-065") {
       const fb = resolveFocusedBreakthroughDamage(
@@ -1839,6 +1848,7 @@ export function resolveBattlePendingCore(
       // RK-324【凄いのが来るぜ！】（アタックしてきたユニットを、ライドしているユニットがバトルで撃破したとき）。
       nextState = rk16OnBattleDestroy(nextState, defenderOwner, defenderInstanceId, attackerId, pending.attackerInstanceId, attackerBp);
       nextState = xg4OnBattleDestroy(nextState, defenderOwner, defenderInstanceId, attackerId, pending.attackerInstanceId, attackerBp);
+      nextState = applyXg3OnBattleDestroy(nextState, defenderOwner, defenderInstanceId, attackerId, pending.attackerInstanceId);
       nextState = openRaigekiZanChoice(
         nextState,
         defenderOwner,
@@ -2281,6 +2291,9 @@ export function tryLeaveField(
   // SK-004 仮面ライダークウガUF【凄まじき戦士】: 重ねたウラ向きのカードを1枚捨札にして留める（強制。rules/legend1/otherLinesNamedEffects.ts）。
   const kuugaStay = openKuugaStayOnLeave(state, intent);
   if (kuugaStay) return { state: kuugaStay, deferred: true };
+  // XG3-060【助ける仲間】で出したディスクアニマル: 本来の特徴「猛士」の自軍ユニットのかわりに捨札になる（強制。rules/xg3/xg3cEffects.ts）。
+  const xg3Stay = openXg3StayOnLeave(state, intent);
+  if (xg3Stay) return { state: xg3Stay, deferred: true };
   // RK-250 サバイブ: 重ねたユニットがユニットでなくなるとき、サバイブを捨札にしてその場に留める（rules/rk/rk12UnitEffects.ts）。
   const survive = openRk12SurviveStay(state, intent);
   if (survive) return { state: survive, deferred: true };

@@ -36,6 +36,7 @@ import { STACK_ONTO_LARGE_EFFECT_ID, beginStackOntoLarge, canActivateStackOntoLa
 import { isStackOntoLargeCard } from "./stackOntoLargeGrants";
 import { rk14CanHoldSelf, rk14HoldSelf, rk14IsVehicleUnitCard } from "./rk/rk14Fields";
 import { canActivateRk16Fuessle, isRk16FuessleCard, openRk16Fuessle } from "./rk/rk16UnitEffects";
+import { activateXg3FieldAbility, canActivateXg3FieldAbility, isXg3FieldAbilityCard } from "./xg3/xg3Effects";
 
 type FieldZone = "rush" | "battle";
 
@@ -567,6 +568,31 @@ ABILITIES.push({
   matches: (cardId) => isXg2FieldAbilityCard(cardId),
   canActivate: (state, playerId, card) => canActivateXg2FieldAbility(state, playerId, card),
   resolve: (state, playerId, card) => activateXg2FieldAbility(state, playerId, card),
+});
+
+// XG3-024 創造の使徒ミケラ【トリノイド創造】・XG3-025 無限の使徒ヴォッファ【ギガノイド創造】「これが自軍エリアにある間、自軍ラッシュフェイズを
+// 行うとき、かわりに次の効果を発動できる⇒…」（atwiki/page-1899・page-1900。rules/xg3/xg3bEffects.ts）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "xg3_field_ability",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  discardSelf: false,
+  matches: (cardId) => isXg3FieldAbilityCard(cardId),
+  // 1ターン1回（XG3-068「自軍ラッシュフェイズごとに1度だけ」等）。
+  canActivate: (state, playerId, card) => !fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId) && canActivateXg3FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg3FieldAbility(state, playerId, card),
+});
+// XG3-103 ライジンゴー【噛みつき】「自軍バトルフェイズ中、…」（rules/xg3/xg3eEffects.ts）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "xg3_field_ability_battle",
+  zones: ["rush"],
+  phase: "battle",
+  discardSelf: false,
+  matches: (cardId) => isXg3FieldAbilityCard(cardId, "battle"),
+  canActivate: (state, playerId, card) => !fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId) && canActivateXg3FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg3FieldAbility(state, playerId, card),
 });
 
 // 能力の当てはめはカード ID（とカードの文言）だけで決まるので、ID ごとに覚える。表に能力が足されたら捨てる。

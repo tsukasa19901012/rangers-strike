@@ -37,12 +37,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-053::fxunknowne58886",
-          "duration": "turn"
+          "keyword": "xg3::XG3-053::bunretsu",
+          "duration": "permanent"
         }
       ]
     }

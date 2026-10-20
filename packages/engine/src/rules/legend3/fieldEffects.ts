@@ -5,6 +5,7 @@ import { xg1EffectiveSp } from "../xg1/xg1Fields";
 import { xg6EffectiveSp } from "../xg6/xg6Fields";
 import { xg4EffectiveSp } from "../xg4/xg4Fields";
 import { xg2EffectiveSp } from "../xg2/xg2Fields";
+import { xg3EffectiveSp } from "../xg3/xg3Fields";
 import { rk8EffectiveSp } from "../rk/rk8UnitEffects";
 import { rk9EffectiveSp } from "../rk/rk9UnitEffects";
 import { rk10EffectiveSp } from "../rk/rk10UnitEffects";
@@ -303,6 +304,8 @@ function legend3EffectiveSpUncached(
   sp = xg4EffectiveSp(state, playerId, instance, sp, effectiveBp);
   // XG2-004 ファイブロボ【超次元ソード】（rules/xg2/xg2Fields.ts）。
   sp = xg2EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // クロスギャザー ザ・Wインパクト XG3（XG3-011【ジークブラスター】等。rules/xg3/xg3Fields.ts）。
+  sp = xg3EffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

@@ -171,6 +171,7 @@ import { isRm2ChoiceEffect, tryCompleteRm2HoldChoice, tryConfirmRm2Choice, tryRe
 import { isXg5ChoiceEffect, tryConfirmXg5Choice, tryResolveXg5Choice, trySkipXg5Choice } from "./xg5/xg5Effects";
 import { isRm3ChoiceEffect, tryCompleteRm3HoldChoice, tryConfirmRm3Choice, tryResolveRm3Choice, trySkipRm3Choice } from "./rm/rm3Effects";
 import { isXg7ChoiceEffect, tryConfirmXg7Choice, tryResolveXg7Choice, trySkipXg7Choice } from "./xg7/xg7Effects";
+import { isXg3ChoiceEffect, tryCompleteXg3HoldChoice, tryConfirmXg3Choice, tryResolveXg3Choice, trySkipXg3Choice } from "./xg3/xg3Effects";
 import { isBk1ChoiceEffect, tryResolveBk1Choice, trySkipBk1Choice } from "./bk/bk1Effects";
 import { isXg1ChoiceEffect, tryCompleteXg1HoldChoice, tryConfirmXg1Choice, tryResolveXg1Choice, trySkipXg1Choice } from "./xg1/xg1Effects";
 import { isXg2ChoiceEffect, tryCompleteXg2HoldChoice, tryConfirmXg2Choice, tryResolveXg2Choice, trySkipXg2Choice } from "./xg2/xg2Effects";
@@ -696,6 +697,7 @@ export function isValidEffectChoiceTarget(
     isRm3ChoiceEffect(pending.effectId) ||
     isXg5ChoiceEffect(pending.effectId) ||
     isXg7ChoiceEffect(pending.effectId) ||
+    isXg3ChoiceEffect(pending.effectId) ||
     isBk1ChoiceEffect(pending.effectId) ||
     isXg1ChoiceEffect(pending.effectId) ||
     isXg2ChoiceEffect(pending.effectId) ||
@@ -2102,6 +2104,8 @@ export function applyConfirmEffectChoice(
   if (xg1) return xg1;
   const xg2 = tryConfirmXg2Choice(state, playerId);
   if (xg2) return xg2;
+  const xg3 = tryConfirmXg3Choice(state, playerId);
+  if (xg3) return xg3;
   if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
     // RS-472【現場への搬送】: 「…まで好きな数選び」— 選んだところで確定し、山札をシャッフルする。
     return finishChoice(finishSiteTransportDeck(state, pending), pending, String(pending.selectedInstanceIds?.length ?? 0));
@@ -3040,6 +3044,9 @@ export function completeEffectHoldChoice(
   // クロスギャザー XG1: ホールドするコマンドを選んだあとの続き（rules/xg1/xg1Effects.ts）。
   const xg1Hold = tryCompleteXg1HoldChoice(state, playerId, commandInstanceIds);
   if (xg1Hold) return xg1Hold;
+  // クロスギャザー ザ・Wインパクト XG3: ホールドするコマンドを選んだあとの続き（rules/xg3/xg3Effects.ts）。
+  const xg3Hold = tryCompleteXg3HoldChoice(state, playerId, commandInstanceIds);
+  if (xg3Hold) return xg3Hold;
   const continued = applyPostHoldContinuation(state, pending);
   if (continued.done) return { state: continued.state };
   return finishChoice(
@@ -3125,6 +3132,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (xg5) return xg5;
   const xg7 = trySkipXg7Choice(state, playerId);
   if (xg7) return xg7;
+  const xg3 = trySkipXg3Choice(state, playerId);
+  if (xg3) return xg3;
   const bk1 = trySkipBk1Choice(state, playerId);
   if (bk1) return bk1;
   const xg1 = trySkipXg1Choice(state, playerId);
@@ -3473,6 +3482,8 @@ export function applyEffectChoiceSelect(
   if (xg5) return xg5;
   const xg7 = tryResolveXg7Choice(state, playerId, instanceId);
   if (xg7) return xg7;
+  const xg3 = tryResolveXg3Choice(state, playerId, instanceId);
+  if (xg3) return xg3;
   const bk1 = tryResolveBk1Choice(state, playerId, instanceId);
   if (bk1) return bk1;
   const xg1 = tryResolveXg1Choice(state, playerId, instanceId);

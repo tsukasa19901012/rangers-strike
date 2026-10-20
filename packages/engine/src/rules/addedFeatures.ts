@@ -7,6 +7,7 @@ import { xg7AddedFeatures } from "./xg7/xg7Fields";
  *   grnrngr/faq-card-4 RS-203 Q1/Q4）。手札のカードはユニットではないので対象外（同 Q5）。
  * - RS-206 シシレンジャー【天幻星・霧隠れ】: このターン、このユニットは選んだユニットの特徴が追加される（atwiki/page-117）。
  */
+import { xg3AddedFeatures } from "./xg3/xg3Fields";
 import { rk12AddedFeatures } from "./rk/rk12Fields";
 import { rm3GuruAddsInsect } from "./rm/rm3Fields";
 import { xg1AddedFeatures } from "./xg1/xg1Fields";
@@ -81,6 +82,8 @@ export function unitFeatures(
   extra.push(...battleAreaAddedFeatures(state, _ownerId, instance));
   // RK-001 改造人間（「男」「女」に「改造人間」を追加）・RK-013 Jパワー（「人型」を追加）（rules/rk/rk1Features.ts）。
   extra.push(...rk1AddedUnitFeatures(state, _ownerId, instance, base));
+  // XG3-029 魔導騎士ウルザード ※（自軍 M ビークルがあれば「人型」。rules/xg3/xg3Fields.ts）。
+  extra.push(...xg3AddedFeatures(state, instance));
   // RK-122 ホースオルフェノク格闘態【使途再生】（ホールド状態の自軍 S ユニットに「オルフェノク」。rules/rk/rk6Fields.ts）。
   extra.push(...rk6AddedFeatures(state, _ownerId, instance));
   // RK-250 サバイブ（「サバイブ」）・RK-242 クライマックス刑事（自軍のイマジンに「警察」）（rules/rk/rk12Fields.ts）。

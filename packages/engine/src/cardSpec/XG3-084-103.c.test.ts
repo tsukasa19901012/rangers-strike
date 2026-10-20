@@ -78,7 +78,7 @@ describe("XG3-098 ロボタック", () => {
 
   resistTests("XG3-098", "atwiki/page-1950");
 
-  it.fails("XG3-098:【ジシャックチェンジ】— 自軍バトルエリアからラッシュエリアに戻るとき、これをホールドして自軍山札の「スペシャルモード」のカード（XG3-099）を手札に加えられる（既知の不具合: CARD-XG3-098 発動の手がない）（出典: atwiki/page-1950「これをホールドして次の効果を発動できる⇒自軍山札から特徴「スペシャルモード」を持つカードを1枚選び、相手に見せてから手札に加える」）", () => {
+  it("XG3-098:【ジシャックチェンジ】— 自軍バトルエリアからラッシュエリアに戻るとき、これをホールドして自軍山札の「スペシャルモード」のカード（XG3-099）を手札に加えられる（出典: atwiki/page-1950「これをホールドして次の効果を発動できる⇒自軍山札から特徴「スペシャルモード」を持つカードを1枚選び、相手に見せてから手札に加える」）", () => {
     let s = st({ phase: "start", player1: { battle: [inst("XG3-098", "rt")], deck: [inst("TST-UNIT-0", "x"), inst("XG3-099", "sp"), ...deckCards(3)] }, player2: { deck: deckCards(3, "e") } }, EXTRA);
     s = act(s, legal(s).find((a) => a.type === "return_all_battle_to_rush")!);
     s = resolveAll(useRef(s, "XG3-098:rt"), ["XG3-099:sp"]);
@@ -125,13 +125,13 @@ describe("XG3-099 ロボタックSM", () => {
 
   const nc5 = () => line(["TST-UNIT-0:a", "TST-UNIT-0:b", "TST-UNIT-0:c", "TST-UNIT-0:d", "XG3-099:sm"], {}, { battle: [inst("SPEC-BP5", "b5"), inst("TST-UNIT-2", "m")], rush: [inst("TST-UNIT-0", "r")] });
 
-  it.fails("XG3-099:【RKバー】— 5番目に出たとき（NC5）、敵軍バトルエリアの S ユニットを1体選べる（M・ラッシュエリアは選べない。任意）（既知の不具合: CARD-XG3-099 選択が開かない）（出典: atwiki/page-2010「敵軍バトルエリアからSユニットを1体選んでもよい」）", () => {
+  it("XG3-099:【RKバー】— 5番目に出たとき（NC5）、敵軍バトルエリアの S ユニットを1体選べる（M・ラッシュエリアは選べない。任意）（出典: atwiki/page-2010「敵軍バトルエリアからSユニットを1体選んでもよい」）", () => {
     const s = nc5();
     expect(choiceIds(s)).toEqual(["SPEC-BP5:b5"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-099:【RKバー】— 選んだユニットは次の相手ターン、アタックもストライクもできない（既知の不具合: CARD-XG3-099）（出典: atwiki/page-2010「選んだユニットは、次の相手ターン、アタックもストライクもできない」）", () => {
+  it("XG3-099:【RKバー】— 選んだユニットは次の相手ターン、アタックもストライクもできない（出典: atwiki/page-2010「選んだユニットは、次の相手ターン、アタックもストライクもできない」）", () => {
     let s = resolveAll(nc5(), ["SPEC-BP5:b5"]);
     s = advanceToBattle(endTurn(s), "player2");
     s = enter(s, "SPEC-BP5:b5", "player2");
@@ -151,7 +151,7 @@ describe("XG3-100 少年同盟", () => {
     expectRarityIn("XG3-100", ["R"]);
   });
 
-  it.fails("XG3-100: 使うと、手札の S ビークル（カテゴリを問わない）と MA・RC の S ユニットを1枚ずつ自軍ラッシュエリアに出せる（RC のない MA ユニットは選べない）（既知の不具合: CARD-XG3-100 何も起きない）（出典: atwiki/page-2012「Sビークルのカードと、MAを持ちRCを持つSユニットのカードをそれぞれ1枚ずつ選び…自軍ラッシュエリアに出す」・コメント欄「ビークルの方はカテゴリも無視できる」）", () => {
+  it("XG3-100: 使うと、手札の S ビークル（カテゴリを問わない）と MA・RC の S ユニットを1枚ずつ自軍ラッシュエリアに出せる（RC のない MA ユニットは選べない）（出典: atwiki/page-2012「Sビークルのカードと、MAを持ちRCを持つSユニットのカードをそれぞれ1枚ずつ選び…自軍ラッシュエリアに出す」・コメント欄「ビークルの方はカテゴリも無視できる」）", () => {
     const s0 = board({ hand: [inst("XG3-100", "op"), inst("SPEC-SV", "v"), inst("SPEC-MA-RC", "u"), inst("SPEC-MA-NORC", "n")], power: powerCards(4), command: releasedCat("MA", 1) });
     const s = resolveAll(useCard(s0, "player1", "XG3-100:op"), ["SPEC-SV:v", "SPEC-MA-RC:u"]);
     expect(zoneOf(s, "player1", "SPEC-SV:v")).toBe("rush");
@@ -187,7 +187,7 @@ describe("XG3-101 イナズマン", () => {
 
   it.todo("XG3-101: ※ 敵軍ターン中にこれをラッシュしたとき、そのターンのバトルフェイズを飛ばす（敵軍ターン中にこれをラッシュする手順を用意できない。そのための XG3-102【チョーリキショーライ！】がエンジンにない）（出典: atwiki/page-1966「敵軍ターン中、これをラッシュしたとき、そのターンのバトルフェイズを飛ばす」）");
 
-  it.fails("XG3-101:【逆転チェスト】— RC した次の相手ターン、バトルで撃破されるとき、ホールドしてその場に留まり、BP4000 以下の敵軍ユニット（ラッシュエリアの BP1000）を撃破できる（既知の不具合: CARD-XG3-101 発動の手がない）（出典: atwiki/page-1966「これがユニットでなくなるとき、これをホールドしてその場に留めてもよい。そうしたとき、これのBP以下のBPを持つ敵軍ユニットを1体選び撃破する」）", () => {
+  it("XG3-101:【逆転チェスト】— RC した次の相手ターン、バトルで撃破されるとき、ホールドしてその場に留まり、BP4000 以下の敵軍ユニット（ラッシュエリアの BP1000）を撃破できる（出典: atwiki/page-1966「これがユニットでなくなるとき、これをホールドしてその場に留めてもよい。そうしたとき、これのBP以下のBPを持つ敵軍ユニットを1体選び撃破する」）", () => {
     let s = resolveAll(rcEnter("XG3-101:iz", { deck: deckCards(8) }, { battle: [inst("SPEC-BP5", "b5"), inst("TST-UNIT-0", "x")], deck: deckCards(8, "e") }, EXTRA));
     s = advanceToBattle(endTurn(s), "player2");
     s = attack(enter(s, "SPEC-BP5:b5", "player2"), "SPEC-BP5:b5", "XG3-101:iz", "player2");
@@ -218,13 +218,13 @@ describe("XG3-102 サナギマン", () => {
     return act(s, legal(s).find((a) => a.type === "use_register" && a.playerId === "player1")!);
   };
 
-  it.fails("XG3-102:【チョーリキショーライ！】— 敵軍ターン中にホールド状態になったとき、MA のコマンドをホールドしてこれをリリースできる（既知の不具合: CARD-XG3-102 発動の手がない）（出典: atwiki/page-1952「MAを持つ自軍コマンドを1つホールドして次の効果を発動できる⇒これをリリースするか」）", () => {
+  it("XG3-102:【チョーリキショーライ！】— 敵軍ターン中にホールド状態になったとき、MA のコマンドをホールドしてこれをリリースできる（出典: atwiki/page-1952「MAを持つ自軍コマンドを1つホールドして次の効果を発動できる⇒これをリリースするか」）", () => {
     const s = resolveAll(useRef(heldByResist(), "XG3-102:sg"), ["XG3-102:sg"]);
     expect(cardIn(s, "player1", "XG3-102:sg")?.commandHeld).toBeFalsy();
     expect(cardIn(s, "player1", "TST-OP-MA:cMA0")?.commandHeld).toBe(true);
   });
 
-  it.fails("XG3-102:【チョーリキショーライ！】— かわりに手札の「イナズマン」を、追加条件（このサナギマンを捨札）を満たして自軍ラッシュエリアに出せる（必要パワーは要らない）（既知の不具合: CARD-XG3-102）（出典: atwiki/page-1952「自分の手札から「イナズマン」のユニットカードを1枚選び、自軍ラッシュエリアに出す。ただし、追加条件は満たすこと」・コメント欄「必要パワーを満たすようにと書いてないし、追加条件だけでよし」）", () => {
+  it("XG3-102:【チョーリキショーライ！】— かわりに手札の「イナズマン」を、追加条件（このサナギマンを捨札）を満たして自軍ラッシュエリアに出せる（必要パワーは要らない）（出典: atwiki/page-1952「自分の手札から「イナズマン」のユニットカードを1枚選び、自軍ラッシュエリアに出す。ただし、追加条件は満たすこと」・コメント欄「必要パワーを満たすようにと書いてないし、追加条件だけでよし」）", () => {
     const s = resolveAll(useRef(heldByResist(), "XG3-102:sg"), ["XG3-101:iz", "XG3-102:sg"]);
     expect(zoneOf(s, "player1", "XG3-101:iz")).toBe("rush");
     expect(zoneOf(s, "player1", "XG3-102:sg")).toBe("discard");
@@ -248,7 +248,7 @@ describe("XG3-103 ライジンゴー", () => {
     expectRarityIn("XG3-103", ["N"]);
   });
 
-  it.fails("XG3-103:【噛みつき】— 自軍バトルフェイズ中、ラッシュエリアでライドされていなければ、自軍コマンドを1つホールドして、このターン BP2000 の S ユニットとしてバトルエリアに出られる（既知の不具合: CARD-XG3-103 起動の手がない）（出典: atwiki/page-1884「自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは本来のテキストを持たないSユニットとして扱い、次の情報とテキストが追加される⇒「BP2000」「SP空欄」「ウイング」」）", () => {
+  it("XG3-103:【噛みつき】— 自軍バトルフェイズ中、ラッシュエリアでライドされていなければ、自軍コマンドを1つホールドして、このターン BP2000 の S ユニットとしてバトルエリアに出られる（出典: atwiki/page-1884「自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは本来のテキストを持たないSユニットとして扱い、次の情報とテキストが追加される⇒「BP2000」「SP空欄」「ウイング」」）", () => {
     let s = battle({ rush: [inst("XG3-103", "rg")], command: releasedCat("ET", 1) });
     s = resolveAll(useRef(s, "XG3-103:rg"));
     expect(cardIn(s, "player1", "TST-OP-ET:cET0")?.commandHeld).toBe(true);

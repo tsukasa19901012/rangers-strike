@@ -46,25 +46,27 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_named_becomes::仮面ライダーディケイド::SP1",
+          "keyword": "xg3::XG3-077::decade_sp",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "fuainaruatakuraido",
       "name": "ファイナルアタックライド",
       "text": "これがライドされたままなら、このビークルからコンビネーションするSユニットは次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-077::fuainaruatakuraido",
+          "keyword": "xg3::XG3-077::final_attack_ride",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
