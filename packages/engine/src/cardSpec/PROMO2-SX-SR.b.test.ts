@@ -99,7 +99,7 @@ describe("SX-006 仮面ライダーG電王", () => {
     return resolveAll(r.state);
   };
 
-  it.fails("SX-006: 【時間警察の使者】ラッシュしたとき、必要パワーを満たしていない S ユニット・S ビークルを敵味方を問わずすべて捨札にする（出典: atwiki/page-2269「必要パワーを満たしていないSユニットとSビークルを可能な限りすべて選び、捨札にする」・カード評価「敵味方関係なくすべて捨札にする」）— 既知の不具合: CARD-SX-006 【時間警察の使者】が未実装（ラッシュしても何も捨札にならない）", () => {
+  it("SX-006: 【時間警察の使者】ラッシュしたとき、必要パワーを満たしていない S ユニット・S ビークルを敵味方を問わずすべて捨札にする（出典: atwiki/page-2269「必要パワーを満たしていないSユニットとSビークルを可能な限りすべて選び、捨札にする」・カード評価「敵味方関係なくすべて捨札にする」）", () => {
     const s = rushed();
     expect(zoneOf(s, "player1", "SPEC-C5:o5")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-C5:e5")).toBe("discard");
@@ -115,7 +115,7 @@ describe("SX-006 仮面ライダーG電王", () => {
     expect(zoneOf(s, "player2", "SPEC-L9:l9")).toBe("battle");
   });
 
-  it.fails("SX-006: 【時間警察の使者】「選び」なので、選ばれないユニット（敵軍のブレイカー SX-007 スーパーゴセイレッド、必要パワー7-）は残る（出典: atwiki/page-2269 コメント「「可能な限り」「選び」だから…場に残る」・R-KW-BREAKER-03）— 既知の不具合: CARD-SX-006 【時間警察の使者】が未実装（必要パワーを満たさないユニットが捨札にならない）", () => {
+  it("SX-006: 【時間警察の使者】「選び」なので、選ばれないユニット（敵軍のブレイカー SX-007 スーパーゴセイレッド、必要パワー7-）は残る（出典: atwiki/page-2269 コメント「「可能な限り」「選び」だから…場に残る」・R-KW-BREAKER-03）", () => {
     const s = rushed([inst("SX-007", "sg")]);
     expect(zoneOf(s, "player2", "SX-007:sg")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-C5:e5")).toBe("discard");
@@ -161,13 +161,13 @@ describe("SX-007 スーパーゴセイレッド", () => {
     expect(payableFor(s, "TST-OP-MA:op")).toContain("SX-007:sg");
   });
 
-  it.fails("SX-007: 【スーパースカイダイナミック】1番目に出たとき（CN1）、敵軍 S ユニットから1体選ぶ（L ユニットは選べない）（出典: atwiki/page-2356「敵軍Sユニットを1体選び」「CN：1」）— 既知の不具合: CARD-SX-007 【スーパースカイダイナミック】の選択肢に敵軍 L ユニットが入る", () => {
+  it("SX-007: 【スーパースカイダイナミック】1番目に出たとき（CN1）、敵軍 S ユニットから1体選ぶ（L ユニットは選べない）（出典: atwiki/page-2356「敵軍Sユニットを1体選び」「CN：1」）", () => {
     const s = enter(board({ rush: [inst("SX-007", "sg")] }, { battle: [inst("SPEC-E1000", "e"), inst("SPEC-L9", "l")] }), "SX-007:sg");
     expectChoiceFrom(s, "player1", "SX-007");
     expect(choiceIds(s)).toEqual(["SPEC-E1000:e"]);
   });
 
-  it.fails("SX-007: 【スーパースカイダイナミック】選んだユニットは持ち主のパワーゾーンにウラ向き（ダメージ）で置かれる（出典: atwiki/page-2356「持ち主のパワーゾーンにダメージにして置く」）— 既知の不具合: CARD-SX-007 【スーパースカイダイナミック】で置いたカードがオモテ向き（ダメージにならない）", () => {
+  it("SX-007: 【スーパースカイダイナミック】選んだユニットは持ち主のパワーゾーンにウラ向き（ダメージ）で置かれる（出典: atwiki/page-2356「持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(pick(enter(board({ rush: [inst("SX-007", "sg")] }, { battle: [inst("SPEC-E1000", "e")] }), "SX-007:sg"), "SPEC-E1000:e"));
     expect(zoneOf(s, "player2", "SPEC-E1000:e")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-E1000:e")?.faceDown).toBe(true);
@@ -223,7 +223,7 @@ describe("SX-008 超・電王トリロジー", () => {
     expect(payableFor(s, "SX-008:t")).toBeUndefined();
   });
 
-  it.fails("SX-008: WB のコマンドをホールドして使うと、敵軍 S ユニット（L は不可）を1体選びゲームから除外する。MA の効果（ドロー）は発動しない（出典: atwiki/page-2357「◎WBなら、敵軍Sユニットを１体選び、ゲームから除外する」「ホールドしたコマンドのカテゴリごとに」）— 既知の不具合: CARD-SX-008 効果が未実装（使っても何も起きずに解決する）", () => {
+  it("SX-008: WB のコマンドをホールドして使うと、敵軍 S ユニット（L は不可）を1体選びゲームから除外する。MA の効果（ドロー）は発動しない（出典: atwiki/page-2357「◎WBなら、敵軍Sユニットを１体選び、ゲームから除外する」「ホールドしたコマンドのカテゴリごとに」）", () => {
     let s = use(["TST-OP:cWB0"]);
     const handBefore = s.players.player1.hand.length;
     expectChoiceFrom(s, "player1", "SX-008");
@@ -233,14 +233,14 @@ describe("SX-008 超・電王トリロジー", () => {
     expect(s.players.player1.hand.length).toBe(handBefore);
   });
 
-  it.fails("SX-008: MA のコマンドをホールドして使うと、自分は3枚ドローする（敵軍ユニットは除外されない）（出典: atwiki/page-2357「◎MAなら、自分は３枚ドローする」）— 既知の不具合: CARD-SX-008 効果が未実装（使っても何も起きずに解決する）", () => {
+  it("SX-008: MA のコマンドをホールドして使うと、自分は3枚ドローする（敵軍ユニットは除外されない）（出典: atwiki/page-2357「◎MAなら、自分は３枚ドローする」）", () => {
     const s = resolveAll(use(["TST-OP-MA:cMA0"]));
     expect(s.players.player1.hand.length).toBe(3);
     expect(s.players.player1.deck.length).toBe(3);
     expect(zoneOf(s, "player2", "SPEC-E1000:e")).toBe("battle");
   });
 
-  it.fails("SX-008: OT のコマンドをホールドして使うと、自軍 S ユニットを1体選び、このターン「SP1」にする（出典: atwiki/page-2357「◎OTなら、自軍Sユニットを１体選ぶ。このターン、選んだユニットは「SP1」になる」）— 既知の不具合: CARD-SX-008 効果が未実装（使っても何も起きずに解決する）", () => {
+  it("SX-008: OT のコマンドをホールドして使うと、自軍 S ユニットを1体選び、このターン「SP1」にする（出典: atwiki/page-2357「◎OTなら、自軍Sユニットを１体選ぶ。このターン、選んだユニットは「SP1」になる」）", () => {
     let s = use(["TST-OP-OT:cOT0"]);
     expectChoiceFrom(s, "player1", "SX-008");
     expect(choiceIds(s)).toContain("SPEC-NOSP:own");
@@ -248,7 +248,7 @@ describe("SX-008 超・電王トリロジー", () => {
     expect(spOf(s, "player1", "SPEC-NOSP:own")).toBe(1);
   });
 
-  it.fails("SX-008: WB・OT・MA を持つコマンド1枚（コマンドゾーンの SX-008）をホールドして使うと、3つの効果をすべて発動できる（出典: atwiki/page-2357 カード評価「このカードか英雄タイタンをコマンドに置くと…3つのカテゴリ全ての効果を同時に発動できる」）— 既知の不具合: CARD-SX-008 効果が未実装（使っても何も起きずに解決する）", () => {
+  it("SX-008: WB・OT・MA を持つコマンド1枚（コマンドゾーンの SX-008）をホールドして使うと、3つの効果をすべて発動できる（出典: atwiki/page-2357 カード評価「このカードか英雄タイタンをコマンドに置くと…3つのカテゴリ全ての効果を同時に発動できる」）", () => {
     const s0 = use(["SX-008:cmd"], { command: [{ ...inst("SX-008", "cmd") }] });
     const s = resolveAll(s0, ["SPEC-E1000:e", "SPEC-NOSP:own"]);
     expect(exiled(s, "player2")).toEqual(["SPEC-E1000:e"]);
@@ -256,7 +256,7 @@ describe("SX-008 超・電王トリロジー", () => {
     expect(s.players.player1.hand.length).toBe(3);
   });
 
-  it.fails("SX-008: 公式Q&A — XG5-037 ゴセイレッド（WB・MA）のリードMA で使うと、MA と WB のコマンドをホールドしたとして扱われ、WB と MA の効果を発動する（出典: atwiki/page-2357 Q1「ＭＡとＷＢになります」・atwiki/page-2250 Q3）— 既知の不具合: CARD-SX-008 効果が未実装（使っても何も起きずに解決する）", () => {
+  it("SX-008: 公式Q&A — XG5-037 ゴセイレッド（WB・MA）のリードMA で使うと、MA と WB のコマンドをホールドしたとして扱われ、WB と MA の効果を発動する（出典: atwiki/page-2357 Q1「ＭＡとＷＢになります」・atwiki/page-2250 Q3）", () => {
     const s0 = use(["XG5-037:gr"], { rush: [inst("XG5-037", "gr")] });
     const s = resolveAll(s0, ["SPEC-E1000:e"]);
     expect(exiled(s, "player2")).toEqual(["SPEC-E1000:e"]);
@@ -304,11 +304,11 @@ describe("SX-009 ゴセイレッド×ゴーカイレッド", () => {
     );
   const batonAction = (s: GameState) => legal(s).find((a) => a.type === "activate_field_unit_ability" && a.unitInstanceId === "SX-009:x");
 
-  it.fails("SX-009: 【バトンタッチ】自軍ラッシュフェイズに起動できる（出典: atwiki/page-2457「自軍ラッシュフェイズごとに1度だけ、これ以外の自軍Sユニットを捨札にしてもよい」）— 既知の不具合: CARD-SX-009 【バトンタッチ】が未実装（起動の行動がない）", () => {
+  it("SX-009: 【バトンタッチ】自軍ラッシュフェイズに起動できる（出典: atwiki/page-2457「自軍ラッシュフェイズごとに1度だけ、これ以外の自軍Sユニットを捨札にしてもよい」）", () => {
     expect(batonAction(baton())).toBeDefined();
   });
 
-  it.fails("SX-009: 【バトンタッチ】ゴセイジャーのユニット（XG5-037）を捨札にしてゴーカイジャーのユニット（XG7-003）をラッシュエリアに出すと、敵軍 S ユニットを1体選び撃破する（出典: atwiki/page-2457「作品名が「天装戦隊ゴセイジャー」、ラッシュしたユニットの作品名が「海賊戦隊ゴーカイジャー」だったなら、敵軍Sユニットを1体選び撃破する」）— 既知の不具合: CARD-SX-009 【バトンタッチ】が未実装（起動の行動がない）", () => {
+  it("SX-009: 【バトンタッチ】ゴセイジャーのユニット（XG5-037）を捨札にしてゴーカイジャーのユニット（XG7-003）をラッシュエリアに出すと、敵軍 S ユニットを1体選び撃破する（出典: atwiki/page-2457「作品名が「天装戦隊ゴセイジャー」、ラッシュしたユニットの作品名が「海賊戦隊ゴーカイジャー」だったなら、敵軍Sユニットを1体選び撃破する」）", () => {
     const a = batonAction(baton());
     expect(a).toBeDefined();
     let s = act(baton(), a!);
@@ -356,14 +356,14 @@ describe("SX-010 仮面ライダーオーズ・タトバコンボ×仮面ライ�
     expect(canStrike(s, "SX-010:x")).toBe(true);
   });
 
-  it.fails("SX-010: 【MOVIE大戦】自軍捨札からクロスを持つカードだけを選べる（任意）（出典: atwiki/page-2459「自軍捨札からクロスを持つカードを1枚選び、…してもよい」）— 既知の不具合: CARD-SX-010 【MOVIE大戦】の後半（捨札のクロスを戻す・除外する）が未実装（選択が開かない）", () => {
+  it("SX-010: 【MOVIE大戦】自軍捨札からクロスを持つカードだけを選べる（任意）（出典: atwiki/page-2459「自軍捨札からクロスを持つカードを1枚選び、…してもよい」）", () => {
     const s = movie();
     expectChoiceFrom(s, "player1", "SX-010");
     expect(choiceIds(s)).toEqual(["SX-009:cr"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("SX-010: 【MOVIE大戦】選んだカードを山札の下に戻すと、このターン BP+4000（8000）（出典: atwiki/page-2459「山札の下に戻したなら、このターン、これはBP+4000される」）— 既知の不具合: CARD-SX-010 【MOVIE大戦】の後半が未実装（選択が開かない）", () => {
+  it("SX-010: 【MOVIE大戦】選んだカードを山札の下に戻すと、このターン BP+4000（8000）（出典: atwiki/page-2459「山札の下に戻したなら、このターン、これはBP+4000される」）", () => {
     const s0 = movie();
     expectChoiceFrom(s0, "player1", "SX-010");
     const s1 = pick(s0, "SX-009:cr");
@@ -372,7 +372,7 @@ describe("SX-010 仮面ライダーオーズ・タトバコンボ×仮面ライ�
     expect(bpOf(s!, "player1", "SX-010:x")).toBe(8000);
   });
 
-  it.fails("SX-010: 【MOVIE大戦】選んだカードをゲームから除外すると、敵軍 S ユニット1体か敵軍捨札1枚を選びゲームから除外する（出典: atwiki/page-2459「ゲームから除外したなら、敵軍Sユニット1体か敵軍捨札1枚を選びゲームから除外する」）— 既知の不具合: CARD-SX-010 【MOVIE大戦】の後半が未実装（選択が開かない）", () => {
+  it("SX-010: 【MOVIE大戦】選んだカードをゲームから除外すると、敵軍 S ユニット1体か敵軍捨札1枚を選びゲームから除外する（出典: atwiki/page-2459「ゲームから除外したなら、敵軍Sユニット1体か敵軍捨札1枚を選びゲームから除外する」）", () => {
     const s0 = movie();
     expectChoiceFrom(s0, "player1", "SX-010");
     const s1 = pick(s0, "SX-009:cr");

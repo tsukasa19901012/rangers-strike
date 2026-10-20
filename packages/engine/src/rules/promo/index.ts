@@ -4,6 +4,7 @@
 import "./xpEffects";
 import "./pkEffects";
 import "./xp2Effects";
+import "./promo2Effects";
 
 export { isPromoAttackedChoice, openPromoAttacked, resolvePromoAttacked, skipPromoAttacked } from "./xpEffects";
 
@@ -12,6 +13,7 @@ export {
   applyPromoAfterAction,
   canConfirmPromoChoice,
   isPromoChoiceEffect,
+  promoInterceptDeckReveal,
   tryConfirmPromoChoice,
   tryPromoCardEffect,
   tryResolvePromoChoice,

@@ -224,6 +224,27 @@ export function promoStayOnLeave(state: GameState, intent: PendingLeave): GameSt
   return null;
 }
 
+// 自軍山札の上のカードが1枚オモテになったとき、オモテにしたカードを効果の対象にする前に割り込む効果（SR-006【超忍法・分身魔球】）。
+// rules/pendingChoices.ts（RS-367【軍隊アリの遺伝子】）から呼ぶ。割り込んだら state、対象外なら null。
+type DeckRevealIntercept = (state: GameState, pending: PendingEffectChoice, topInstanceId: string) => GameState | null;
+
+function deckRevealIntercepts(): DeckRevealIntercept[] {
+  const holder = deckRevealIntercepts as unknown as { s?: DeckRevealIntercept[] };
+  return (holder.s ??= []);
+}
+
+export function registerPromoDeckRevealIntercept(hook: DeckRevealIntercept): void {
+  deckRevealIntercepts().push(hook);
+}
+
+export function promoInterceptDeckReveal(state: GameState, pending: PendingEffectChoice, topInstanceId: string): GameState | null {
+  for (const hook of deckRevealIntercepts()) {
+    const next = hook(state, pending, topInstanceId);
+    if (next) return next;
+  }
+  return null;
+}
+
 export { promoGrantsKeyword, registerPromoBpBonus, registerPromoKeywordGrant } from "./promoHooks";
 
 function blocked(state: GameState): boolean {

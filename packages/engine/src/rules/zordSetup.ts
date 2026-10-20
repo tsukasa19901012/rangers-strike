@@ -222,6 +222,9 @@ export function createZordSetup(
   if (!found) return null;
   const def = getDefinition(state.definitions, found.card.cardId);
   if (!def || (!isUnit(def) && !isVehicle(def))) return null;
+  // 「自軍捨札に「X」があるとき、…を捨札にする」— 前半の状態を満たさなければこの追加条件ではラッシュできない（SR-003 atwiki/page-46）。
+  const gate = def.rushAdditionalCondition?.text.match(/^自軍捨札に「([^」]+)」があるとき、/);
+  if (gate && !player.discard.some((c) => getDefinition(state.definitions, c.cardId)?.name === gate[1])) return null;
 
   if (needsZordDownPayment(found.card.cardId, def.powerCost, def)) {
     return createZordDownSetup(state, playerId, found.card);

@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SX-006::no8",
+          "keyword": "promo::SX-006::time_police",
           "duration": "turn"
         }
       ]

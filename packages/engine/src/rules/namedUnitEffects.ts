@@ -80,7 +80,7 @@ import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEff
 import { afterCommandCardsLeft } from "./commandLeaveRefill";
 import { attackerSuppressesAttackedCounters } from "./keywordGapRuntime";
 import { allyAttackedAuraBpBonus } from "../dsl/promotedKeywordBridge";
-import { promoAttackerBpBonus } from "./promo/promoHooks";
+import { promoAttackerBpBonus, promoDefenderBpBonus } from "./promo/promoHooks";
 
 export type NamedEffectOutcome = {
   state: GameState;
@@ -268,7 +268,9 @@ export function battleDefenderBp(
     // RK-052【音撃打・破砕細石】（rules/rk/rk3UnitEffects.ts）。
     rk3DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card) +
     // RM-030【ダイレオンレーザー】・RM-033 メタルダー ※（rules/rm/rm2Effects.ts）。
-    rm2DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card)
+    rm2DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card) +
+    // SX-003【アーム・ファング】等（rules/promo/promoHooks.ts）。
+    promoDefenderBpBonus(state, defenderOwner, defenderFound.card)
   );
 }
 

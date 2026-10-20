@@ -832,6 +832,9 @@ export function canRushUnitExceptCommandHold(
   zordMaterialInstanceIds?: string[],
   zordExtraCommandHoldInstanceIds?: string[],
 ): boolean {
+  // 「自軍捨札に「X」があるとき、…を捨札にする」— 前半の状態を満たさなければラッシュできない（SR-003 atwiki/page-46。rules/zordSetup.ts も同じ）。
+  const discardGate = unitDefinition.rushAdditionalCondition?.text.match(/^自軍捨札に「([^」]+)」があるとき、/);
+  if (discardGate && !player.discard.some((c) => getDefinition(definitions, c.cardId)?.name === discardGate[1])) return false;
   return evaluateRushPowerAndZord(
     player,
     definitions,

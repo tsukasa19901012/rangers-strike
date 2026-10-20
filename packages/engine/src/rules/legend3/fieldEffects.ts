@@ -38,6 +38,7 @@ import { set7DEffectiveSp } from "../legend1/set7NamedEffectsD";
 import { set8DEffectiveSp } from "../legend1/set8NamedEffectsD";
 import { set9CEffectiveSp } from "../legend1/set9NamedEffectsC";
 import { set9BEffectiveSp } from "../legend1/set9NamedEffectsB";
+import { promoSpFloor } from "../promo/promoHooks";
 import {
   sr003DiscardDinoBpBonus,
   sr003SpFloor,
@@ -302,6 +303,8 @@ function legend3EffectiveSpUncached(
 
   sp = Math.max(sp, sr003SpFloor(state, playerId, instance));
   sp = Math.max(sp, srBigBatonSpFloor(state, playerId, instance));
+  // SX-005 の DA 等（rules/promo/promoHooks.ts）。
+  sp = Math.max(sp, promoSpFloor(state, playerId, instance));
 
   // XG2-052 ユナイトベント「…BP10000ごとにSP+1される」（ユナイトベントを下に重ねたターゲット）。
   if ((instance.stackedCards ?? []).some((c) => c.cardId === "XG2-052" && !c.faceDown)) {

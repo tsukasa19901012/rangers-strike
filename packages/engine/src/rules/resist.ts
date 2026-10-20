@@ -18,7 +18,7 @@ import { finalizeLeavePending } from "./operationCounters";
 import { resolveDestroyedFactEffects } from "./leaveEffects";
 import { riddenVehicleGrantsResist } from "./legend1/set7NamedEffectsB";
 import { set8BGrantsResist } from "./legend1/set8NamedEffectsB";
-import { promoGrantsKeyword } from "./promo/promoHooks";
+import { promoGrantsKeyword, promoNegatesUnnamedText } from "./promo/promoHooks";
 import { stackOntoLargeGrantsKeyword } from "./stackOntoLargeGrants";
 import { rk9EnemyKeywordsNullified } from "./rk/rk9Fields";
 import { rk10AntlordGrantsResist } from "./rk/rk10Fields";
@@ -43,7 +43,12 @@ export function canOfferRegister(
     );
     if (card?.commandHeld) return false;
   }
-  if (cardHasRegisterKeyword(state, pending.leavingCardId)) return true;
+  if (
+    cardHasRegisterKeyword(state, pending.leavingCardId) &&
+    // SX-003 W・FJ の※: 効果名を持たないテキスト（※レジスト）が無効なユニット（rules/promo/promoHooks.ts）。
+    !(pending.ownerPlayerId && pending.instanceId && promoNegatesUnnamedText(state, pending.ownerPlayerId, pending.instanceId))
+  )
+    return true;
   // RK-278 仮面ライダーナイト（2nd）の※（自軍捨札に「女」のユニットカードがあればレジスト。rules/rk/rk14Fields.ts）。
   if (pending.ownerPlayerId && rk14GrantsRegister(state, pending.ownerPlayerId, pending.leavingCardId)) return true;
   // RS-466 ギンガレオン【炎の星獣】: ライドしている S ユニットはレジストを得る（rules/legend1/set7NamedEffectsB.ts）。

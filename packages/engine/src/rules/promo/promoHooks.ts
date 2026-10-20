@@ -80,3 +80,53 @@ export function promoBpBonus(state: GameState, playerId: PlayerId, unit: CardIns
   for (const bonus of bpBonuses()) total += bonus(state, playerId, unit);
   return total;
 }
+
+// ---------------------------------------------------------------------------
+// 小さな登録先（PROMO2: SX-002・SX-003・SX-005）。
+type UnitPredicate = (state: GameState, ownerId: PlayerId, unit: CardInstance) => boolean;
+type UnitNumber = (state: GameState, ownerId: PlayerId, unit: CardInstance) => number;
+
+function listOf<T>(key: string): T[] {
+  const holder = listOf as unknown as { s?: Record<string, unknown[]> };
+  const all = (holder.s ??= {});
+  return (all[key] ??= []) as T[];
+}
+
+/** 効果名を持たないテキスト（※）が無効な場のユニット（SX-003 W・FJ）。dsl/promotedKeywordBridge.ts・rules/resist.ts から呼ぶ。 */
+export function registerPromoUnnamedTextNegation(p: UnitPredicate): void {
+  listOf<UnitPredicate>("negate").push(p);
+}
+
+export function promoNegatesUnnamedText(state: GameState, ownerId: PlayerId, instanceId: string): boolean {
+  const ps = listOf<UnitPredicate>("negate");
+  if (ps.length === 0) return false;
+  const unit = state.players[ownerId].battle.find((c) => c.instanceId === instanceId);
+  return !!unit && ps.some((p) => p(state, ownerId, unit));
+}
+
+/** アタックかストライクを選ぶとき、可能ならアタックを選ぶユニット（SX-002 クウガRU）。core/legalActions.ts から呼ぶ。 */
+export function registerPromoForcesAttack(p: UnitPredicate): void {
+  listOf<UnitPredicate>("forceAttack").push(p);
+}
+
+export function promoForcesAttack(state: GameState, ownerId: PlayerId, unit: CardInstance): boolean {
+  return listOf<UnitPredicate>("forceAttack").some((p) => p(state, ownerId, unit));
+}
+
+/** アタックされたユニットのバトルの BP（SX-003【アーム・ファング】）。rules/namedUnitEffects.ts battleDefenderBp から呼ぶ。 */
+export function registerPromoDefenderBpBonus(b: UnitNumber): void {
+  listOf<UnitNumber>("defBp").push(b);
+}
+
+export function promoDefenderBpBonus(state: GameState, ownerId: PlayerId, unit: CardInstance): number {
+  return listOf<UnitNumber>("defBp").reduce((n, b) => n + b(state, ownerId, unit), 0);
+}
+
+/** 「SP○になる」の下限（SX-005 の DA）。rules/legend3/fieldEffects.ts から呼ぶ。 */
+export function registerPromoSpFloor(b: UnitNumber): void {
+  listOf<UnitNumber>("spFloor").push(b);
+}
+
+export function promoSpFloor(state: GameState, ownerId: PlayerId, unit: CardInstance): number {
+  return listOf<UnitNumber>("spFloor").reduce((n, b) => Math.max(n, b(state, ownerId, unit)), 0);
+}

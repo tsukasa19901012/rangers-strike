@@ -52,6 +52,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "promo::SX-010::movie_war",
+          "duration": "turn"
         }
       ]
     }

@@ -48,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SX-001::boisutazukiku",
+          "keyword": "promo::SX-001::voice_kick",
           "duration": "turn"
         }
       ]

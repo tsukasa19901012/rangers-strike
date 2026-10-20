@@ -165,7 +165,7 @@ import { isRk14ChoiceEffect, tryConfirmRk14Choice, tryResolveRk14Choice, trySkip
 import { isRk15ChoiceEffect, tryConfirmRk15Choice, tryResolveRk15Choice, trySkipRk15Choice } from "./rk/rk15UnitEffects";
 import { isRk16ChoiceEffect, tryConfirmRk16Choice, tryResolveRk16Choice, trySkipRk16Choice } from "./rk/rk16UnitEffects";
 import { isRm1ChoiceEffect, tryConfirmRm1Choice, tryResolveRm1Choice, trySkipRm1Choice } from "./rm/rm1Effects";
-import { isPromoChoiceEffect, tryConfirmPromoChoice, tryResolvePromoChoice, trySkipPromoChoice } from "./promo";
+import { isPromoChoiceEffect, promoInterceptDeckReveal, tryConfirmPromoChoice, tryResolvePromoChoice, trySkipPromoChoice } from "./promo";
 import { isRm2ChoiceEffect, tryCompleteRm2HoldChoice, tryConfirmRm2Choice, tryResolveRm2Choice, trySkipRm2Choice } from "./rm/rm2Effects";
 import { isRm3ChoiceEffect, tryCompleteRm3HoldChoice, tryConfirmRm3Choice, tryResolveRm3Choice, trySkipRm3Choice } from "./rm/rm3Effects";
 import { isBk1ChoiceEffect, tryResolveBk1Choice, trySkipBk1Choice } from "./bk/bk1Effects";
@@ -5633,6 +5633,9 @@ export function applyEffectChoiceSelect(
       if (pending.effectId === "arino" && instanceId === "reveal_top") {
         const top = state.players[pending.playerId].deck[0];
         if (!top) return finishChoice(state, pending, "empty_deck");
+        // SR-006【超忍法・分身魔球】: オモテにしたカードを効果の対象にする前に（rules/promo/promo2Effects.ts）。
+        const promoIntercepted = promoInterceptDeckReveal(state, pending, top.instanceId);
+        if (promoIntercepted) return { state: promoIntercepted };
         const zorobApplied = applyZorobTopDeckReveal(state, pending.playerId, top.instanceId);
         const nextState = recordReveal(zorobApplied, {
           playerId: pending.playerId,

@@ -131,7 +131,7 @@ describe("SR-002 スーパーフォーメーション", () => {
     expect(d.powerCost).toBe(6);
   });
 
-  it.fails("SR-002: レアリティはシークレットレア（SC）（出典: atwiki/page-388「レアリティ：シークレットレア」「収録：四雄の覚醒」。ノーマルは五龍の逆鱗スターターの RS-347）— 既知の不具合: CARD-SR-002 カタログのレアリティが N（ノーマルの RS-347 と同じ値になっている）", () => {
+  it("SR-002: レアリティはシークレットレア（SC）（出典: atwiki/page-388「レアリティ：シークレットレア」「収録：四雄の覚醒」。ノーマルは五龍の逆鱗スターターの RS-347）", () => {
     expectRarityIn("SR-002", ["SC"]);
   });
 
@@ -152,7 +152,7 @@ describe("SR-002 スーパーフォーメーション", () => {
     expect(canStartRush(victory(false), "player1", "RS-382:vr")).toBe(false);
   });
 
-  it.fails("SR-002: 使ったターン、自軍コマンドゾーンのリリース状態の同名カードで不足分（3体）を補ってビクトリーロボをラッシュでき、そのカードは捨札になる（出典: atwiki/page-388「自軍コマンドゾーンのリリース状態のカードから、合体ユニットに足りない分のユニットと同じ名前のカードを捨札にする」）— 既知の不具合: CARD-SR-002 効果が未実装（同じカードの RS-347 では補えるが、SR-002 を使っても補えずラッシュできない）", () => {
+  it("SR-002: 使ったターン、自軍コマンドゾーンのリリース状態の同名カードで不足分（3体）を補ってビクトリーロボをラッシュでき、そのカードは捨札になる（出典: atwiki/page-388「自軍コマンドゾーンのリリース状態のカードから、合体ユニットに足りない分のユニットと同じ名前のカードを捨札にする」）", () => {
     const u = playOp(victory(true), "player1", "SR-002:sf");
     expect(u.ok, u.error).toBe(true);
     const r = rushFromHand(resolveAll(u.state), "player1", "RS-382:vr");
@@ -185,7 +185,7 @@ describe("SR-003 アームドティラノレンジャー", () => {
     expect(zoneOf(r.state, "player1", "RS-081:ty")).toBe("discard");
   });
 
-  it.fails("SR-003: 追加条件 — 自軍捨札に「ドラゴンレンジャー」がなければ、ティラノレンジャーがいてもラッシュできない（出典: atwiki/page-46「自軍捨札に「ドラゴンレンジャー」があるとき」）— 既知の不具合: CARD-SR-003 追加条件の前半「自軍捨札に「ドラゴンレンジャー」があるとき」を見ていない（なくてもラッシュできる）", () => {
+  it("SR-003: 追加条件 — 自軍捨札に「ドラゴンレンジャー」がなければ、ティラノレンジャーがいてもラッシュできない（出典: atwiki/page-46「自軍捨札に「ドラゴンレンジャー」があるとき」）", () => {
     expect(canStartRush(rushPhase({ hand: [inst("SR-003", "at")], rush: [inst("RS-081", "ty")], power: powerCards(5), command: releasedCat("WB", 1) }), "player1", "SR-003:at")).toBe(false);
   });
 
@@ -351,11 +351,11 @@ describe("SR-006 シュリケンジャーFM", () => {
     return settle(t);
   };
 
-  it.fails("SR-006: 【超忍法・分身魔球】自軍山札の上がオモテになったとき（RS-367 ゾロー兵）、オモテのカードを手札に加え、手札のカードを1枚かわりに効果の対象にするかを選べる（出典: atwiki/page-811「オモテにしたカードを効果の対象にする前に次の効果を発動できる」）— 既知の不具合: CARD-SR-006 【超忍法・分身魔球】が未実装（選択が開かない）", () => {
+  it("SR-006: 【超忍法・分身魔球】自軍山札の上がオモテになったとき（RS-367 ゾロー兵）、オモテのカードを手札に加え、手札のカードを1枚かわりに効果の対象にするかを選べる（出典: atwiki/page-811「オモテにしたカードを効果の対象にする前に次の効果を発動できる」）", () => {
     expectChoiceFrom(zoro(), "player1", "SR-006");
   });
 
-  it.fails("SR-006: 【超忍法・分身魔球】オモテのカード（TST-OP）は手札に加わり、手札から見せたゾロー兵が効果の対象になってラッシュエリアに出る（出典: atwiki/page-811「オモテにしたカードを手札に加える。そして、自分の手札からカードを1枚選び相手に見せ、オモテにしたカードのかわりに効果の対象にする」・RS-367「オモテにしたカードが「ゾロー兵」なら自軍ラッシュエリアに出し」）— 既知の不具合: CARD-SR-006 【超忍法・分身魔球】が未実装（オモテのカードがそのまま捨札になる）", () => {
+  it("SR-006: 【超忍法・分身魔球】オモテのカード（TST-OP）は手札に加わり、手札から見せたゾロー兵が効果の対象になってラッシュエリアに出る（出典: atwiki/page-811「オモテにしたカードを手札に加える。そして、自分の手札からカードを1枚選び相手に見せ、オモテにしたカードのかわりに効果の対象にする」・RS-367「オモテにしたカードが「ゾロー兵」なら自軍ラッシュエリアに出し」）", () => {
     const s = resolveAll(zoro(), ["RS-367:z2"]);
     expect(zoneOf(s, "player1", "TST-OP:top")).toBe("hand");
     expect(zoneOf(s, "player1", "RS-367:z2")).toBe("rush");
@@ -413,13 +413,13 @@ describe("SR-007 大神龍", () => {
     expect(canReturn(s, "player2")).toBe(false);
   });
 
-  it.fails("SR-007: 【プラズマ衝撃波】そのかわりに、自軍スタートフェイズに自軍バトルエリアのユニットを好きな数選び撃破できる（出典: atwiki/page-1235「そのかわりに、自分自身のバトルエリアのユニットを好きな数選び撃破できる」）— 既知の不具合: CARD-SR-007 【プラズマ衝撃波】の「好きな数選び撃破できる」が未実装（選ぶ手段がない）", () => {
+  it("SR-007: 【プラズマ衝撃波】そのかわりに、自軍スタートフェイズに自軍バトルエリアのユニットを好きな数選び撃破できる（出典: atwiki/page-1235「そのかわりに、自分自身のバトルエリアのユニットを好きな数選び撃破できる」）", () => {
     const s = startOf({ rush: [inst("SR-007", "d")], battle: [inst("TST-UNIT-0", "b")] });
     const offered = s.pendingEffectChoice?.validInstanceIds.includes("TST-UNIT-0:b") || legal(s).some((a) => a.type !== "concede" && JSON.stringify(a).includes("TST-UNIT-0:b"));
     expect(offered).toBe(true);
   });
 
-  it.fails("SR-007: 【プラズマ衝撃波】スタートフェイズを終えるとき、自軍バトルエリアに大神龍以外のユニットがいなければ、大神龍は持ち主の山札に戻る（出典: atwiki/page-1235「自分自身のバトルエリアに「大神龍」以外のユニットが1体もなければ、これを持ち主の山札に戻してシャッフルする」）— 既知の不具合: CARD-SR-007 【プラズマ衝撃波】の「山札に戻してシャッフルする」が未実装（ラッシュエリアに残る）", () => {
+  it("SR-007: 【プラズマ衝撃波】スタートフェイズを終えるとき、自軍バトルエリアに大神龍以外のユニットがいなければ、大神龍は持ち主の山札に戻る（出典: atwiki/page-1235「自分自身のバトルエリアに「大神龍」以外のユニットが1体もなければ、これを持ち主の山札に戻してシャッフルする」）", () => {
     let s = startOf({ rush: [inst("SR-007", "d")] });
     const draw = legal(s).find((a) => a.type === "draw");
     if (draw) s = act(s, draw);
@@ -472,7 +472,7 @@ describe("SR-007 大神龍", () => {
     expect(spOf(s, "player1", "SPEC-MA-L:l")).toBe(2);
   });
 
-  it.fails("SR-007: 公式Q&A — 【プラズマ衝撃波】でバトルエリアに残ったユニットは、そのバトルフェイズにアタックもストライクもできない（出典: atwiki/page-1235 Q2「いいえ、それはできません」）— 既知の不具合: CARD-SR-007 バトルエリアに残ったユニットがそのバトルフェイズにアタックできてしまう", () => {
+  it("SR-007: 公式Q&A — 【プラズマ衝撃波】でバトルエリアに残ったユニットは、そのバトルフェイズにアタックもストライクもできない（出典: atwiki/page-1235 Q2「いいえ、それはできません」）", () => {
     const s = toOwnBattle(startOf({ rush: [inst("SR-007", "d")], battle: [inst("SPEC-E1000", "b")] }, { battle: [inst("SPEC-E1000-NS", "e")] }));
     expect(s.phase).toBe("battle");
     expect(zoneOf(s, "player1", "SPEC-E1000:b")).toBe("battle");
@@ -504,7 +504,7 @@ describe("SR-008 ビッグワン", () => {
     expect(spOf(field([inst("SPEC-F-NONE", "c")]), "player1", "SR-008:b1")).toBe(0);
   });
 
-  it.fails("SR-008: 特徴「レッド」のカードがあればレジストを得る（バトルで撃破されたときホールドして留められる）。なければ得ない（出典: atwiki/page-1524「特徴「レッド」があればレジストを得る」）— 既知の不具合: CARD-SR-008 【ビッグ・バトン】のレッド（レジスト）が未実装（グリーン・ピンクは効く）", () => {
+  it("SR-008: 特徴「レッド」のカードがあればレジストを得る（バトルで撃破されたときホールドして留められる）。なければ得ない（出典: atwiki/page-1524「特徴「レッド」があればレジストを得る」）", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("SR-008", "b1")], command: [inst("SPEC-F-RED", "c")] }, "SR-008:b1", {}, "TST-UNIT-7:atk", EXTRA))).toBe(true);
     expect(registerOffered(attackUntilRegister({ battle: [inst("SR-008", "b1")], command: [inst("SPEC-F-NONE", "c")] }, "SR-008:b1", {}, "TST-UNIT-7:atk", EXTRA))).toBe(false);
   });

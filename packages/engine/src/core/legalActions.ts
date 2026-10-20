@@ -148,6 +148,7 @@ import { canConfirmRk14Choice, isRk14ChoiceEffect } from "../rules/rk/rk14UnitEf
 import { canConfirmRk15Choice, isRk15ChoiceEffect } from "../rules/rk/rk15UnitEffects";
 import { canConfirmRk16Choice, isRk16ChoiceEffect } from "../rules/rk/rk16UnitEffects";
 import { canConfirmPromoChoice, isPromoChoiceEffect } from "../rules/promo";
+import { promoForcesAttack } from "../rules/promo/promoHooks";
 import { canConfirmRm1Choice, isRm1ActivatableResident, isRm1ChoiceEffect, isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "../rules/rm/rm1Effects";
 import { rm1ActsAsVehicle } from "../rules/rm/rm1Fields";
 import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "../rules/rm/rm2Effects";
@@ -1819,7 +1820,11 @@ function appendBattleEntryActions(
   // ルール: R-ATK-05 — ゴーマ宮で「可能ならアタックする」ユニットはアタックしなければならない。
   const forcedAttack = gomaPalaceForcesAttack(state, playerId, pending.instanceId);
   if (forcedAttack) return;
+  // SX-002【黒い瞳に映るもの】: アタックできるならストライクを選べない（何もしないことはできる。rules/promo/promoHooks.ts）。
+  const promoMustAttack =
+    actions.some((a) => a.type === "battle" && a.attackerInstanceId === pending.instanceId) && promoForcesAttack(state, playerId, unit);
   if (
+    !promoMustAttack &&
     canStrikeUnit(state.definitions, unit, state, playerId) &&
     !requiredDefenderId &&
     !battleActBlocked(player, unit, "strike") &&
