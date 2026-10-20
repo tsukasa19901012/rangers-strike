@@ -22,7 +22,9 @@ export type LogicalInput =
   /** Secondary button (□): deck builder removes a copy. */
   | { type: "alt" }
   /** GUI: direct pick of a visible tile (touch). `open` also opens its action menu. */
-  | { type: "focusTile"; row: number; slot: number; open?: boolean };
+  | { type: "focusTile"; row: number; slot: number; open?: boolean }
+  /** GUI: open the action menu of cards outside the board rows (power zone, 常駐), anchored at their pile. */
+  | { type: "openCards"; instanceIds: string[]; title: string; anchor: { x: number; y: number; w: number; h: number } };
 
 export const input = {
   prev: { type: "prev" } as LogicalInput,
@@ -40,6 +42,12 @@ export const input = {
   toggleLog: { type: "toggleLog" } as LogicalInput,
   alt: { type: "alt" } as LogicalInput,
   focusTile: (row: number, slot: number, open = false): LogicalInput => ({ type: "focusTile", row, slot, open }),
+  openCards: (instanceIds: string[], title: string, anchor: { x: number; y: number; w: number; h: number }): LogicalInput => ({
+    type: "openCards",
+    instanceIds,
+    title,
+    anchor,
+  }),
 };
 
 /** A scrolling cursor over `count` items with a visible window of `rows`. */

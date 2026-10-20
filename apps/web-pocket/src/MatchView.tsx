@@ -74,13 +74,13 @@ const CARD_RATIO = 190 / 130;
 /** Cards stacked on an operation card (クロックアップ: face down, ミラーワールド: face up). */
 type PileStack = { count: number; hidden: number; topId: string };
 /** `peek`: an operation card shows itself and the cards stacked on it when hovered or tapped. */
-export type PileCard = { cardId: string; hidden: boolean; rect: Box; stack?: PileStack; peek?: { title: string; cards: PeekCard[] } };
+export type PileCard = { cardId: string; hidden: boolean; rect: Box; stack?: PileStack; peek?: { title: string; cards: PeekCard[]; ids: string[] } };
 /** A card in the enlarged view; a caption says what is stacked on what. */
 export type PeekCard = { cardId: string; hidden: boolean; caption?: string };
-type PileSection = { title: string; label: string; tone: string; labelRect: Box; cards: PileCard[]; all: PeekCard[]; count: number };
-export type PileLayout = { narrow: boolean; deck: Box | null; discard: PileCard | null; counts: { text: string; rect: Box }[]; sections: PileSection[] };
-/** Cards shown enlarged together: a whole zone, so both cards of a tag operation are side by side. */
-export type PilePeek = { key: string; title: string; cards: PeekCard[]; anchor: Box };
+type PileSection = { title: string; label: string; tone: string; labelRect: Box; cards: PileCard[]; all: PeekCard[]; count: number; ids: string[] };
+export type PileLayout = { narrow: boolean; deck: Box | null; discard: PileCard | null; discardIds: string[]; counts: { text: string; rect: Box }[]; sections: PileSection[] };
+/** Cards shown enlarged together: a whole zone, so both cards of a tag operation are side by side. `ids`: the cards a tap can act on. */
+export type PilePeek = { key: string; title: string; cards: PeekCard[]; anchor: Box; ids: string[] };
 
 type ZoneCard = GameState["players"][PlayerId]["power"][number];
 
@@ -91,10 +91,10 @@ function pileStack(card: ZoneCard): PileStack | undefined {
   return { count: stacked.length, hidden: stacked.filter((c) => c.faceDown).length, topId: top.faceDown ? "back" : top.cardId };
 }
 
-function operationPeek(state: GameState, who: string, card: ZoneCard): { title: string; cards: PeekCard[] } {
+function operationPeek(state: GameState, who: string, card: ZoneCard): { title: string; cards: PeekCard[]; ids: string[] } {
   const name = state.definitions[card.cardId]?.name ?? card.cardId;
   const stacked = card.stackedCards?.length ?? 0;
-  return { title: `${who}の常駐：${name}${stacked ? `（重ね${stacked}枚）` : ""}`, cards: peekCards([card]) };
+  return { title: `${who}の常駐：${name}${stacked ? `（重ね${stacked}枚）` : ""}`, cards: peekCards([card]), ids: [card.instanceId] };
 }
 
 /**
@@ -140,7 +140,7 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
       counts.push({ text, rect: { x: rect.x, y, w: rect.w, h: 18 } });
       y += 18;
     }
-    sections.push({ title: `${who}のパワー`, label: `パワー ${p.power.length}`, tone: "text-xs text-amber-300 font-bold", labelRect: { x: rect.x, y, w: rect.w, h: 18 }, cards: [], all: all(p.power), count: p.power.length });
+    sections.push({ title: `${who}のパワー`, label: `パワー ${p.power.length}`, tone: "text-xs text-amber-300 font-bold", labelRect: { x: rect.x, y, w: rect.w, h: 18 }, cards: [], all: all(p.power), count: p.power.length, ids: p.power.map((c) => c.instanceId) });
     y += 22;
     if (p.operation.length) {
       const labelRect = { x: rect.x, y, w: rect.w, h: 18 };
@@ -149,9 +149,9 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
       const w = Math.min(availW - 4, Math.floor((bottom - y - 4 * (n - 1)) / n / CARD_RATIO));
       const h = Math.round(w * CARD_RATIO);
       const cards = p.operation.map((c, i) => ({ cardId: c.cardId, hidden: false, rect: { x: rect.x + Math.round((rect.w - w) / 2), y: y + i * (h + 4), w, h }, stack: pileStack(c), peek: operationPeek(state, who, c) }));
-      sections.push({ title: `${who}の常駐`, label: `常駐 ${n}`, tone: "text-xs text-violet-300 font-bold", labelRect, cards, all: all(p.operation), count: n });
+      sections.push({ title: `${who}の常駐`, label: `常駐 ${n}`, tone: "text-xs text-violet-300 font-bold", labelRect, cards, all: all(p.operation), count: n, ids: p.operation.map((c) => c.instanceId) });
     }
-    return { narrow, deck: null, discard: null, counts, sections };
+    return { narrow, deck: null, discard: null, discardIds: [], counts, sections };
   }
   const cardW = Math.min(64, Math.floor((rect.w - 18) / 2));
   const deckRect: Box = { x: x0, y: rect.y + 8, w: cardW, h: Math.round(cardW * CARD_RATIO) };
@@ -180,12 +180,14 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
       const step = n > 1 ? Math.min(w + 4, Math.floor((availW - w) / (n - 1))) : 0;
       zone.cards.forEach((c, i) => cards.push({ cardId: c.cardId, hidden: !!c.faceDown, rect: { x: x0 + i * step, y: fanTop, w, h }, stack: pileStack(c), peek: zone.operation ? operationPeek(state, who, c) : undefined }));
     }
-    sections.push({ title: zone.title, label: zone.label, tone: zone.tone, labelRect, cards, all: all(zone.cards), count: n });
+    sections.push({ title: zone.title, label: zone.label, tone: zone.tone, labelRect, cards, all: all(zone.cards), count: n, ids: zone.cards.map((c) => c.instanceId) });
   });
   return {
     narrow,
     deck: p.deck.length > 0 ? deckRect : null,
     discard: top ? { cardId: top.cardId, hidden: false, rect: discardRect } : null,
+    // A tap on the discard pile opens what its cards can do (self-rush from the discard, discard-paid commands).
+    discardIds: p.discard.map((c) => c.instanceId),
     counts,
     sections,
   };
@@ -195,17 +197,17 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
 export function pileHit(layouts: PileLayout[], point: { x: number; y: number }): PilePeek | null {
   for (const layout of layouts) {
     if (layout.discard && inside(layout.discard.rect, point)) {
-      return { key: `d:${layout.discard.rect.x}:${layout.discard.rect.y}`, title: "捨札の一番上", cards: [layout.discard], anchor: layout.discard.rect };
+      return { key: `d:${layout.discard.rect.x}:${layout.discard.rect.y}`, title: "捨札の一番上", cards: [layout.discard], anchor: layout.discard.rect, ids: layout.discardIds };
     }
     for (const section of layout.sections) {
       // The last card drawn is on top where cards overlap.
       const card = [...section.cards].reverse().find((c) => inside(c.rect, point));
       if (card?.peek) {
-        return { key: `${card.peek.title}:${card.rect.x}:${card.rect.y}`, title: card.peek.title, cards: card.peek.cards, anchor: card.rect };
+        return { key: `${card.peek.title}:${card.rect.x}:${card.rect.y}`, title: card.peek.title, cards: card.peek.cards, anchor: card.rect, ids: card.peek.ids };
       }
       const hit = inside(section.labelRect, point) ? section.labelRect : card?.rect;
       if (hit && section.all.length > 0) {
-        return { key: `${section.title}:${section.all.map((c) => c.caption ?? c.cardId).join(",")}`, title: `${section.title}（${section.count}枚）`, cards: section.all, anchor: hit };
+        return { key: `${section.title}:${section.all.map((c) => c.caption ?? c.cardId).join(",")}`, title: `${section.title}（${section.count}枚）`, cards: section.all, anchor: hit, ids: section.ids };
       }
     }
   }

@@ -159,8 +159,9 @@ export default function App() {
       }
     }
     if (e.kind === "move" || e.kind === "leave") {
+      const overlay = gui.list ?? gui.popup;
       const spot =
-        e.kind === "leave"
+        e.kind === "leave" || (overlay && inside(overlay.rect, p))
           ? null
           : inside(gui.endButton.rect, p)
             ? "end"
@@ -194,11 +195,23 @@ export default function App() {
     hoverKey = "";
     if (e.button === 2) return dispatch(input.cancel);
     if (e.button !== 0) return false;
-    // A tap on a pile zone shows its cards enlarged (phones have no hover); any other tap hides them.
+    // A tap on a pile zone opens what its cards can do (self-rush from the power zone, 常駐 effects);
+    // with nothing to do it shows them enlarged (phones have no hover). Any other tap hides them.
     const tapped = pileCard();
+    if (tapped && tapped.ids.length > 0) {
+      dispatch(input.openCards(tapped.ids, tapped.key.startsWith("d:") ? "捨札" : tapped.title, tapped.anchor));
+      if (controller.view().gui?.popup) {
+        setPeek(null);
+        peekPinned = false;
+        return true;
+      }
+    }
     setPeek(tapped);
     peekPinned = !!tapped;
     if (tapped) return true;
+    // An open popup can cover the buttons under the end button (全操作 / ログ): its rows come first.
+    const overlay = gui.list ?? gui.popup;
+    if (overlay && inside(overlay.rect, p)) return dispatch(hitTestGui(gui, p));
     if (inside(buttons.leave, p)) {
       if (leaving()) {
         setLeaving(false);

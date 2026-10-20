@@ -422,10 +422,14 @@ export class GuiMatch {
     return result;
   }
 
-  /** What the R button does: end the phase, or the only move there is (the draw, ending battle entry). */
+  /** What the R button does: end the phase or the battle entry, or the only move there is (the draw). */
   private primaryItem(): MenuItem | undefined {
     const items = this.allItems();
-    return items.find((item) => item.option.action.type === "end_phase") ?? (items.length === 1 ? items[0] : undefined);
+    return (
+      items.find((item) => item.option.action.type === "end_phase") ??
+      items.find((item) => item.option.action.type === "pass_battle_entry") ??
+      (items.length === 1 ? items[0] : undefined)
+    );
   }
 
   private endPhase(): StepResult | null {
@@ -495,6 +499,16 @@ export class GuiMatch {
         if (index >= row.tiles.length) break;
         this.setFocus(event.row, index);
         if (event.open) this.openCardPopup();
+        break;
+      }
+      case "openCards": {
+        const verbs = event.instanceIds.flatMap((id) => {
+          const name = this.instanceName(id);
+          const own = this.cardVerbs(id);
+          // One card: the title names it; several: each row keeps its card name.
+          return event.instanceIds.length === 1 ? own.map((verb) => ({ ...verb, label: verb.label.split(`: ${name}`).join("").trim() || verb.label })) : own;
+        });
+        if (verbs.length > 0) this.openPopup(event.title, event.anchor, verbs);
         break;
       }
       case "select":
