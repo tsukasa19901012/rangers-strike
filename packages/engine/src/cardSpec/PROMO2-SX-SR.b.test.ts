@@ -86,12 +86,13 @@ describe("SX-006 仮面ライダーG電王", () => {
    * 自軍パワー3・敵軍パワー4。自軍ラッシュエリア: 必要パワー5（満たさない）・2（満たす）。
    * 敵軍バトルエリア: 必要パワー5・7-（満たさない）・4（満たす）の S ユニット、必要パワー5 の S ビークル、必要パワー9 の L ユニット。
    */
-  const rushed = (p2extra: CardInstance[] = []) => {
+  const rushed = (p2extra: CardInstance[] = [], commands: { p1?: CardInstance[]; p2?: CardInstance[] } = {}) => {
     const s = rushPhase(
-      { hand: [inst("SX-006", "g")], rush: [inst("SPEC-C5", "o5"), inst("SPEC-C2", "o2")], power: powerCards(3), command: releasedCat("OT", 1) },
+      { hand: [inst("SX-006", "g")], rush: [inst("SPEC-C5", "o5"), inst("SPEC-C2", "o2")], power: powerCards(3), command: [...releasedCat("OT", 1), ...(commands.p1 ?? [])] },
       {
         battle: [inst("SPEC-C5", "e5"), inst("SPEC-C7M", "e7"), inst("SPEC-C4", "e4"), inst("SPEC-VC5", "v5"), inst("SPEC-L9", "l9"), ...p2extra],
         power: powerCards(4, "ep"),
+        command: commands.p2 ?? [],
       },
     );
     const r = rushFromHand(s, "player1", "SX-006:g");
@@ -113,6 +114,20 @@ describe("SX-006 仮面ライダーG電王", () => {
     expect(zoneOf(s, "player1", "SX-006:g")).toBe("rush");
     expect(zoneOf(s, "player2", "SPEC-C4:e4")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-L9:l9")).toBe("battle");
+  });
+
+  it("SX-006: 【時間警察の使者】持ち主のパワーには、相手のコマンドゾーンのマルチカテゴリのカードで増える分も数える — 自軍コマンドゾーンにマルチカテゴリ（XG2-043 ET／DA）1枚で敵軍パワー5になり、敵軍の必要パワー5のユニット・ビークルは残る（7- は捨札）（出典: 利用者の決定 2026-10-20・questions-all.md U-3「マルチカテゴリ等の考慮も追加」・R-POW-01）", () => {
+    const s = rushed([], { p1: [{ ...inst("XG2-043", "mc"), commandHeld: false }] });
+    expect(zoneOf(s, "player2", "SPEC-C5:e5")).toBe("battle");
+    expect(zoneOf(s, "player2", "SPEC-VC5:v5")).toBe("battle");
+    expect(zoneOf(s, "player2", "SPEC-C7M:e7")).toBe("discard");
+    expect(zoneOf(s, "player1", "SPEC-C5:o5")).toBe("discard");
+  });
+
+  it("SX-006: 【時間警察の使者】敵軍コマンドゾーンのマルチカテゴリ2枚で自軍パワー5になり、自軍の必要パワー5のユニットは残る（出典: 利用者の決定 2026-10-20・questions-all.md U-3・R-POW-01）", () => {
+    const s = rushed([], { p2: [{ ...inst("XG2-043", "m1"), commandHeld: false }, { ...inst("XG2-043", "m2"), commandHeld: false }] });
+    expect(zoneOf(s, "player1", "SPEC-C5:o5")).toBe("rush");
+    expect(zoneOf(s, "player2", "SPEC-C5:e5")).toBe("discard");
   });
 
   it("SX-006: 【時間警察の使者】「選び」なので、選ばれないユニット（敵軍のブレイカー SX-007 スーパーゴセイレッド、必要パワー7-）は残る（出典: atwiki/page-2269 コメント「「可能な限り」「選び」だから…場に残る」・R-KW-BREAKER-03）", () => {
