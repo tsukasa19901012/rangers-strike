@@ -787,6 +787,14 @@ CHOICE_RESOLVERS[J_CROSSER_EFFECT_ID] = (state, playerId, instanceId) => {
 };
 CHOICE_SKIPPERS[J_CROSSER_EFFECT_ID] = simpleSkip();
 
+/** XG6-037【振り切るぜ】で RK-179・RK-189 の効果名を持つテキストを追加したビークルがバトルエリアに出たとき（rules/xg6/xg6dEffects.ts）。 */
+export function openRk9Jungler(state: GameState, playerId: PlayerId, vehicleId: string): GameState {
+  return openJungler(state, playerId, vehicleId);
+}
+export function openRk9JCrosser(state: GameState, playerId: PlayerId, vehicleId: string): GameState {
+  return openJCrosser(state, playerId, vehicleId);
+}
+
 // ---------------------------------------------------------------------------
 // RK-180 モグラ獣人【神出鬼没】（NC）
 // 「敵軍ラッシュエリアからライドされていないSビークルを1体選んでもよい。そうしたとき、ライドしていない敵軍Sユニットを1体選び、選んだビークルにライドさせる。」

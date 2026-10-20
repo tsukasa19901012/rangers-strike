@@ -489,7 +489,8 @@ const XG2_SMILE_KEY = "smile";
 function applySmile(state: GameState, ctx: GrantKeywordContext): GrantKeywordResult {
   const ids = sortedIds(state.players[ctx.playerId].rush.filter((c) => isUnit(state, c.cardId) && rk1IsSmallNow(state, c) && unitFeatures(state, ctx.playerId, c).includes("警察")));
   if (ids.length === 0) return { state, detail: "xg2_073:no_targets" };
-  return { state: openAfter(state, selectOne(ctxBase(ctx), "XG2-073", SMILE_EFFECT_ID, ids, true)), detail: SMILE_EFFECT_ID };
+  // 同じカードの XP-009（cards reprints.ts）も同じ処理。選択の出どころは発動したカードにする。
+  return { state: openAfter(state, selectOne(ctxBase(ctx), ctx.sourceCardId || "XG2-073", SMILE_EFFECT_ID, ids, true)), detail: SMILE_EFFECT_ID };
 }
 
 registerXg2Choice(SMILE_EFFECT_ID, {
@@ -497,7 +498,7 @@ registerXg2Choice(SMILE_EFFECT_ID, {
     const pending = state.pendingEffectChoice!;
     let next = moveFieldUnit(close(state, pending), playerId, instanceId, pending.phasePlayerId, "hand");
     if (pending.sourceInstanceId) next = addTurnEntry(next, XG2_SMILE_KEY, playerId, pending.sourceInstanceId);
-    return { state: proceed(next, pending), log: logFor(state, playerId, "XG2-073", `${SMILE_EFFECT_ID}:${instanceId}`) };
+    return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId || "XG2-073", `${SMILE_EFFECT_ID}:${instanceId}`) };
   },
   skip: simpleSkipXg2(),
 });

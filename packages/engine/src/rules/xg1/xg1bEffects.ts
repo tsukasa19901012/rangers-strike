@@ -400,7 +400,7 @@ export function openXg1bSakanamaru(state: GameState, move: MoveRef): GameState |
   const ownerId = opponent(move.playerId);
   const gold = state.players[ownerId].rush.find((c) => isSameCardIdentity(c.cardId, "XG1-038"));
   if (!gold) return null;
-  const choice = confirmOptions({ playerId: ownerId, phasePlayerId: move.playerId, sourceInstanceId: gold.instanceId }, "XG1-038", SAKANAMARU_EFFECT_ID, ["accept"], true, {
+  const choice = confirmOptions({ playerId: ownerId, phasePlayerId: move.playerId, sourceInstanceId: gold.instanceId }, gold.cardId, SAKANAMARU_EFFECT_ID, ["accept"], true, {
     selectedInstanceIds: [move.instanceId],
     xg1Meta: { target: move.instanceId, ownerId: move.playerId },
   });
@@ -416,9 +416,10 @@ XG1_RESOLVERS[SAKANAMARU_EFFECT_ID] = (state, playerId) => {
     next = patchPlayer(next, playerId, (p) => drawOne({ ...p, rush: p.rush.filter((c) => c.instanceId !== goldId), battle: [...p.battle, stripForZone(gold)] }));
   }
   const ids = next.players[playerId].hand.map((c) => c.instanceId);
-  const log = logFor(state, playerId, "XG1-038", `${SAKANAMARU_EFFECT_ID}:enter`);
+  const log = logFor(state, playerId, pending.sourceCardId, `${SAKANAMARU_EFFECT_ID}:enter`);
   if (ids.length === 0) return { state: proceed(next, pending), log };
-  return { state: openNext(next, pending, pickOne(pendingCtx(pending), "XG1-038", SAKANAMARU_DISCARD_EFFECT_ID, ids, false, { kind: "select_hand", xg1Meta: pending.xg1Meta })), log };
+  // XP-012（同じカードのプロモ）でも選択の出どころはそのカードにする。
+  return { state: openNext(next, pending, pickOne(pendingCtx(pending), pending.sourceCardId, SAKANAMARU_DISCARD_EFFECT_ID, ids, false, { kind: "select_hand", xg1Meta: pending.xg1Meta })), log };
 };
 XG1_SKIPPERS[SAKANAMARU_EFFECT_ID] = simpleSkip();
 
@@ -438,11 +439,11 @@ XG1_RESOLVERS[SAKANAMARU_DISCARD_EFFECT_ID] = (state, playerId, instanceId) => {
       next = moveFieldUnit(next, enemyId, target.instanceId, pending.phasePlayerId, "power_damage");
       detail = "damage";
     } else if (shared === 1) {
-      next = destroyAll(next, pendingCtx(pending), "XG1-038", `${SAKANAMARU_DISCARD_EFFECT_ID}_destroy`, [target.instanceId]);
+      next = destroyAll(next, pendingCtx(pending), pending.sourceCardId, `${SAKANAMARU_DISCARD_EFFECT_ID}_destroy`, [target.instanceId]);
       detail = "destroy";
     }
   }
-  return { state: proceed(next, pending), log: logFor(state, playerId, "XG1-038", `${SAKANAMARU_DISCARD_EFFECT_ID}:${instanceId}:${detail}`) };
+  return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${SAKANAMARU_DISCARD_EFFECT_ID}:${instanceId}:${detail}`) };
 };
 
 // ---------------------------------------------------------------------------

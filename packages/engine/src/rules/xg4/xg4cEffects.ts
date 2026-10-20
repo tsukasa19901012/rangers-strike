@@ -32,6 +32,7 @@ import {
 import { XG4_CONFIRMERS, XG4_KEYWORDS, XG4_RESOLVERS, XG4_SKIPPERS, addTurnRecord, hasTurnRecordFor, isCard, noop } from "./xg4Common";
 import { XG4_PHOTON_RULE, XG4_RANDIC_RULE, XG4_STRAIGHT_RULE } from "./xg4Fields";
 import { damagePick, registerDamagePick } from "./xg4bEffects";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 function isUnit(state: Pick<GameState, "definitions">, cardId: string): boolean {
   return getDefinition(state.definitions, cardId)?.type === "unit";
@@ -126,7 +127,7 @@ const VULCAN_EFFECT_ID = "xg4050_vulcan";
 function rearVulcan(before: GameState, after: GameState): GameState {
   let next = after;
   for (const pid of ["player1", "player2"] as const) {
-    const wasInBattle = new Set(before.players[pid].battle.filter((c) => isCard(c.cardId, "XG4-050")).map((c) => c.instanceId));
+    const wasInBattle = new Set(before.players[pid].battle.filter((c) => isSameVehicleTextIdentity(c.cardId, "XG4-050")).map((c) => c.instanceId));
     if (wasInBattle.size === 0) continue;
     for (const v of after.players[pid].rush) {
       if (!wasInBattle.has(v.instanceId)) continue;

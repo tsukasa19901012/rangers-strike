@@ -12,6 +12,7 @@ import { vehicleMayBattleWithoutRide } from "./bkOperationTurnRules";
 import { xg4VehicleEntersWithoutRide } from "./xg4/xg4Fields";
 import { xg2VehicleMayEnterUnridden } from "./xg2/xg2Fields";
 import { xg3VehicleMayEnterAlone } from "./xg3/xg3Fields";
+import { xg6IsFurikiruVehicle } from "./xg6/xg6dFields";
 
 /** ラッシュ上でこのビークルにライドしているユニットがいるか。 */
 export function hasRiderInRush(
@@ -51,6 +52,8 @@ export function canVehicleEnterBattleFromRush(
   if (xg2VehicleMayEnterUnridden(state, playerId, vehicle)) return true;
   // XG3-078 マシンハードボイルダー【リモコン操作】（rules/xg3/xg3Fields.ts）。
   if (xg3VehicleMayEnterAlone(state, playerId, vehicle)) return true;
+  // XG6-037【振り切るぜ】で S ビークルとして扱っているこれ（rules/xg6/xg6dEffects.ts）。
+  if (xg6IsFurikiruVehicle(vehicle.cardId)) return true;
 
   const cardId = vehicle.cardId;
   const maySelfEnter =

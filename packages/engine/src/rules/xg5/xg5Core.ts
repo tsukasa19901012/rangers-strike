@@ -22,6 +22,14 @@ export type StrikeHook = (state: GameState, pending: PendingStrike) => GameState
 
 export const XG5_KEYWORD_PREFIX = "xg5::";
 
+/**
+ * XG5-064 コンファインベント（※カウンター 敵軍バトルフェイズ開始時に発動できる）の使用の窓（pendingEffectChoice の effectId）。
+ * 窓の間は手札のこれのカテゴリの支払い・play_counter と skip_effect_choice を出す（core/legalActions.ts。効果は rules/xg5/xg5dEffects.ts）。
+ */
+export const XG5_CONFINE_WINDOW_EFFECT_ID = "xg5_064_confine_window";
+/** XG5-064 で選んだユニット・ビークル（持ち主の turn スコープの restriction）。効果名を持つテキストは無効で発動もできない。 */
+export const XG5_CONFINE_RESTRICTION = "xg5_064_named_text_negated";
+
 export const CHOICE_RESOLVERS: Record<string, ChoiceResolver> = {};
 export const CHOICE_SKIPPERS: Record<string, ChoiceSkipper> = {};
 export const CHOICE_CONFIRMERS: Record<string, ChoiceSkipper> = {};

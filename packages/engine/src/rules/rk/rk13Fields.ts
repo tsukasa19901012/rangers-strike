@@ -10,6 +10,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 /** このターン、自分が「女」を持つ敵軍ユニットを撃破して捨札にした（payload: { cardId }。ターンのプレイヤーの記録。RK-258）。 */
 export const RK13_FEMALE_DESTROYED_RULE = "rk258_female_destroyed";
@@ -54,7 +55,7 @@ function tentoroRadarProtects(state: Pick<GameState, "players">, ownerId: Player
   if (!vehicleId) return false;
   const slots = battleSlots(state, ownerId);
   const i = slots.findIndex((c) => c.instanceId === vehicleId);
-  if (i <= 0 || !isSameCardIdentity(slots[i]!.cardId, "RK-257")) return false;
+  if (i <= 0 || !isSameVehicleTextIdentity(slots[i]!.cardId, "RK-257")) return false;
   const prev = slots[i - 1]!;
   return isSameCardIdentity(prev.cardId, "RK-256") && isRidden(state, ownerId, prev.instanceId);
 }

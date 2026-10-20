@@ -12,6 +12,7 @@ import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../typ
 import { getDefinition } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 export const RK9_CONTRACT_RULE = "rk171_contract";
 export const RK9_RIDER_KICK_RULE = "rk175_rider_kick";
@@ -60,7 +61,7 @@ export function rk9UsePrintedDefenderBp(state: Pick<GameState, "players">, pendi
   const vehicleId = attacker?.mountedOnInstanceId;
   if (!vehicleId) return false;
   const vehicle = [...p.battle, ...p.rush].find((c) => c.instanceId === vehicleId);
-  return !!vehicle && isSameCardIdentity(vehicle.cardId, "RK-182");
+  return !!vehicle && isSameVehicleTextIdentity(vehicle.cardId, "RK-182");
 }
 
 /** RK-173 鬼の鎧「このカードに重ねたユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。」（重ねた枚数分） */

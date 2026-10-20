@@ -135,6 +135,7 @@ import {
 } from "../rules/xg4/xg4Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
 import { activateXg5HandEffect, applyXg5AfterAction, applyXg5StrikeResolved, openXg5Attacked } from "../rules/xg5/xg5Effects";
+import { openXg5ConfineVentWindow, playXg5ConfineVent } from "../rules/xg5/xg5dEffects";
 import { openXg1aStrikeReplacement } from "../rules/xg1/xg1aEffects";
 import { openXg1bSakanamaru, xg1bOnAttackDeclared } from "../rules/xg1/xg1bEffects";
 import { xg1cBlackFangOnRide, xg1cOnAttackDeclared } from "../rules/xg1/xg1cEffects";
@@ -1223,6 +1224,8 @@ function applyActionWithRng(
       let afterPhase = advancePhase(cleared);
       if (afterPhase.phase === "battle") afterPhase = openChargeInsteadOfBattle(afterPhase, endingPlayer);
       if (afterPhase.phase === "battle") afterPhase = openXg2OnBattlePhaseStart(afterPhase, endingPlayer);
+      // XG5-064 コンファインベント（敵軍バトルフェイズ開始時に発動できる※カウンター。rules/xg5/xg5dEffects.ts）。
+      if (afterPhase.phase === "battle") afterPhase = openXg5ConfineVentWindow(afterPhase, endingPlayer);
       next = { ...afterPhase, log: [...afterPhase.log, buildSimpleLogEntry(endingPlayer, "end_phase", "rush")] };
     } else {
       next = cleared;
@@ -2821,6 +2824,11 @@ function applyActionCore(
       if (!canExecuteHandCounter(state, playerId, action.instanceId)) {
         return fail("command_not_held");
       }
+      // XG5-064 コンファインベント: 敵軍バトルフェイズ開始時の使用の窓（rules/xg5/xg5dEffects.ts）。
+      {
+        const confined = playXg5ConfineVent(state, playerId, action.instanceId);
+        if (confined) return ok(clearCounterHoldReady(confined.state, playerId), confined.log);
+      }
       // RK-011 第三の眼: 相手がカウンターを発動したとき、効果を解決する前に無効にするかを選ぶ（rules/rk/rk1NamedEffects.ts）。
       {
         const thirdEye = rk1ThirdEyeIntercept(state, playerId, action);
@@ -4201,6 +4209,8 @@ function applyActionCore(
       if (state.phase === "rush" && afterPhase.phase === "battle" && !afterPhase.pendingEffectChoice) afterPhase = openXg4BattlePhaseStart(afterPhase, playerId);
       // XG2-009 コンピュータードラゴン【行動予測】（敵軍バトルフェイズ開始時。rules/xg2/xg2Effects.ts）。
       if (state.phase === "rush" && afterPhase.phase === "battle") afterPhase = openXg2OnBattlePhaseStart(afterPhase, playerId);
+      // XG5-064 コンファインベント（敵軍バトルフェイズ開始時に発動できる※カウンター。rules/xg5/xg5dEffects.ts）。
+      if (state.phase === "rush" && afterPhase.phase === "battle") afterPhase = openXg5ConfineVentWindow(afterPhase, playerId);
       return ok(
         afterPhase,
         buildSimpleLogEntry(playerId, "end_phase", state.phase),

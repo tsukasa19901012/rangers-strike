@@ -42,9 +42,13 @@ import {
   HAND_ACTIVATIONS,
   NC_INTERCEPTS,
   NC_RESUME,
+  XG5_CONFINE_RESTRICTION,
+  XG5_CONFINE_WINDOW_EFFECT_ID,
   XG5_KEYWORDS,
   noop,
 } from "./xg5Core";
+import { canPlayHandCounter } from "../operationCounters";
+import { opponentInfiniteChainBlocks } from "../turnModifiers";
 import { printedCostNumber, xg5CostNumber, xg5Flags, xg5TurnPlayer } from "./xg5Fields";
 import { multiChoice, registerMulti } from "./xg5bEffects";
 import { addFlag, defOf, newBattleUnits, opp, patchXg5, printedCategories, printedFeatures, selectOne, setFieldHeld, sizeOf, xg5Busy } from "./xg5Shared";
@@ -158,6 +162,63 @@ CHOICE_RESOLVERS[RAPID] = (state, playerId, instanceId) => {
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG5-063", `${RAPID}:${instanceId}`) };
 };
 CHOICE_SKIPPERS[RAPID] = simpleSkip();
+
+// ---------------------------------------------------------------------------
+// XG5-064 コンファインベント（カウンター）
+// 「※カウンター 敵軍バトルフェイズ開始時に発動できる⇒敵軍ユニットまたは敵軍ビークルを1体選ぶ。このターン、そのユニットまたはビークルの
+//  効果名を持つテキストは無効になり、発動もできない。」（atwiki/page-2211）。
+// 敵軍がラッシュフェイズを終えてバトルフェイズに進んだとき（core/applyAction.ts end_phase）、手札のこれを使えるなら使用の窓
+// （XG5_CONFINE_WINDOW_EFFECT_ID）を開く。窓の間の合法手はこれのカテゴリの支払い・play_counter と見送り（skip_effect_choice。core/legalActions.ts）。
+// 無効は選んだカードの持ち主の turn スコープの restriction（XG5_CONFINE_RESTRICTION）で表し、効果名を持つテキストの無効の共通の判定
+// （rules/legend1/set6NamedEffects348.ts namedTextNegated）が見る。
+// 割り切り: RK-011 第三の眼はこの窓のカウンターに割り込まない（窓を退避する手順がない）。
+
+const CONFINE_PICK = "xg5_064_confine_pick";
+
+/** 敵軍（phasePlayerId）バトルフェイズ開始時: 相手の手札にこれがあり使えるなら、使用の窓を開く。 */
+export function openXg5ConfineVentWindow(state: GameState, phasePlayerId: PlayerId): GameState {
+  const ownerId = opp(phasePlayerId);
+  // XG5-062【ハート8－リフレクト】等で、このターン相手がカウンターを発動できない間は開かない。
+  if (opponentInfiniteChainBlocks(state, ownerId) || state.counterLockedPlayerId === ownerId) return state;
+  const ids = state.players[ownerId].hand
+    .filter((c) => isSameCardIdentity(c.cardId, "XG5-064") && canPlayHandCounter(state, ownerId, c.instanceId))
+    .map((c) => c.instanceId);
+  if (ids.length === 0) return state;
+  const window = { ...confirmChoice({ playerId: ownerId, phasePlayerId, sourceInstanceId: ids[0] }, "XG5-064", XG5_CONFINE_WINDOW_EFFECT_ID), validInstanceIds: ids, mayConfirm: false };
+  return openAfter(state, window);
+}
+
+/** 窓の間に手札のこれを使う（core/applyAction.ts play_counter）。窓でなければ null。 */
+export function playXg5ConfineVent(state: GameState, playerId: PlayerId, counterInstanceId: string): { state: GameState; log: string } | null {
+  const pending = state.pendingEffectChoice;
+  if (!pending || pending.effectId !== XG5_CONFINE_WINDOW_EFFECT_ID || pending.playerId !== playerId) return null;
+  const card = state.players[playerId].hand.find((c) => c.instanceId === counterInstanceId && isSameCardIdentity(c.cardId, "XG5-064"));
+  if (!card) return null;
+  const next = patch(close(state, pending), playerId, (p) => ({
+    ...p,
+    hand: p.hand.filter((c) => c.instanceId !== counterInstanceId),
+    discard: [...p.discard, stripForZone(card)],
+  }));
+  const enemyId = opp(playerId);
+  const ids = fieldCards(next, enemyId)
+    .filter((c) => {
+      const type = defOf(next, c.cardId)?.type;
+      return (type === "unit" || type === "vehicle") && selectableEnemy(next, playerId, card.cardId, c);
+    })
+    .map((c) => c.instanceId);
+  const log = logFor(state, playerId, card.cardId, `${XG5_CONFINE_WINDOW_EFFECT_ID}:play`);
+  if (ids.length === 0) return { state: proceed(next, pending), log };
+  return { state: openNext(next, pending, selectOne({ playerId, phasePlayerId: pending.phasePlayerId, sourceInstanceId: card.instanceId }, card.cardId, CONFINE_PICK, ids, false)), log };
+}
+
+CHOICE_RESOLVERS[XG5_CONFINE_WINDOW_EFFECT_ID] = () => ({ error: "invalid_target" });
+CHOICE_SKIPPERS[XG5_CONFINE_WINDOW_EFFECT_ID] = simpleSkip();
+CHOICE_RESOLVERS[CONFINE_PICK] = (state, playerId, instanceId) => {
+  const pending = state.pendingEffectChoice!;
+  const enemyId = opp(playerId);
+  const next = patch(close(state, pending), enemyId, (p) => addTurnRestrictionModifier(p, instanceId, XG5_CONFINE_RESTRICTION));
+  return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${CONFINE_PICK}:${instanceId}`) };
+};
 
 // ---------------------------------------------------------------------------
 // XG5-065 タイムベント（オペレーション）「追加条件を持たないユニットをすべて撃破する。」（atwiki/page-2261）。両軍・エリア・サイズを問わない。

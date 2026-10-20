@@ -169,11 +169,11 @@ describe("XG5-064 コンファインベント", () => {
   const enemyBattleStart = () =>
     settle(endPhase(st({ phase: "rush", activePlayer: "player2", player1: { hand: [inst("XG5-064", "cv")], command: releasedCat("WB", 1), deck: deckCards(5) }, player2: { rush: [inst("XG5-077", "kb"), inst("XG5-057", "rb")], deck: deckCards(5, "e") } }, EXTRA), "player2"));
 
-  it.fails("XG5-064: ※カウンター — 敵軍バトルフェイズ開始時に使える 既知の不具合: CARD-XG5-064 使えない（出典: atwiki/page-2211「敵軍バトルフェイズ開始時に発動できる」）", () => {
+  it("XG5-064: ※カウンター — 敵軍バトルフェイズ開始時に使える（出典: atwiki/page-2211「敵軍バトルフェイズ開始時に発動できる」）", () => {
     expect(canCounter(enemyBattleStart(), "XG5-064:cv")).toBe(true);
   });
 
-  it.fails("XG5-064: 敵軍ユニットか敵軍ビークルを1体選ぶ 既知の不具合: CARD-XG5-064 使えない（出典: atwiki/page-2211「敵軍ユニットまたは敵軍ビークルを1体選ぶ」）", () => {
+  it("XG5-064: 敵軍ユニットか敵軍ビークルを1体選ぶ（出典: atwiki/page-2211「敵軍ユニットまたは敵軍ビークルを1体選ぶ」）", () => {
     const s = useCounter(enemyBattleStart(), "XG5-064:cv");
     expectChoiceFrom(s, "player1", "XG5-064");
     expect([...choiceIds(s)].sort()).toEqual(["XG5-057:rb", "XG5-077:kb"]);

@@ -260,7 +260,7 @@ describe("XP-009 仮面ライダークウガ", () => {
   const smile = (p2: Partial<GameState["players"]["player2"]> = { battle: [inst("SPEC-E3", "e3")] }) =>
     rcBoard("XP-009:kg", { rush: [inst("RS-106", "pol"), inst("TST-UNIT-0", "x")], battle: [inst("RS-107", "pb")] }, p2, EXTRA);
 
-  it.fails("XP-009: 【笑顔の為に】RC — 自軍ラッシュエリアの特徴「警察」を持つ S ユニットから1体選べる（任意。警察でないユニット・バトルエリアのユニットは選べない）（出典: atwiki/page-1700「自軍ラッシュエリアから特徴「警察」を持つSユニットを1体選び、持ち主の手札に戻してもよい」） — 既知の不具合: CARD-XP-009 特徴「警察」を見ず、ラッシュエリアのどの S ユニットも選べる", () => {
+  it("XP-009: 【笑顔の為に】RC — 自軍ラッシュエリアの特徴「警察」を持つ S ユニットから1体選べる（任意。警察でないユニット・バトルエリアのユニットは選べない）（出典: atwiki/page-1700「自軍ラッシュエリアから特徴「警察」を持つSユニットを1体選び、持ち主の手札に戻してもよい」）", () => {
     const s = smile();
     expectChoiceFrom(s, "player1", "XP-009");
     expect(choiceIds(s)).toEqual(["RS-106:pol"]);
@@ -273,7 +273,7 @@ describe("XP-009 仮面ライダークウガ", () => {
     expect(zoneOf(s, "player1", "XP-009:kg")).toBe("battle");
   });
 
-  it.fails("XP-009: 【笑顔の為に】そうしたとき、このターンこれとバトルして撃破されたユニットは、持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-1700「これとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く」） — 既知の不具合: CARD-XP-009 バトルした相手を撃破したときダメージにする部分が未実装（捨札になる）", () => {
+  it("XP-009: 【笑顔の為に】そうしたとき、このターンこれとバトルして撃破されたユニットは、持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-1700「これとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く」）", () => {
     const enemy = { battle: [inst("TST-UNIT-0", "weak")] };
     let s = resolveAll(pick(smile(enemy), "RS-106:pol"));
     s = resolveAll(attack(s, "XP-009:kg", "TST-UNIT-0:weak"));

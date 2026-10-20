@@ -194,6 +194,17 @@ describe("XG7-051 仮面ライダーオーズ・ラトラーターコンボ", ()
     expect(legal(s).some((a) => a.type === "end_phase" && a.playerId === "player1")).toBe(false);
   });
 
+  it("XG7-051: ※ ほかのユニットを先にバトルエリアに出してもよい（出したあとも、これを出すまではバトルフェイズを終えられず、あとから出せる）（出典: 利用者の決定 2026-10-20・questions-all.md U-31）", () => {
+    let s = p1Battle({ rush: [inst("SPEC-PLAIN", "p"), inst("XG7-051", "rt")] }, {}, EXTRA);
+    expect(legal(s).some((a) => a.type === "move_to_battle" && a.instanceId === "SPEC-PLAIN:p")).toBe(true);
+    s = resolveAll(act(s, { type: "move_to_battle", playerId: "player1", instanceId: "SPEC-PLAIN:p" }));
+    expect(zoneOf(s, "player1", "SPEC-PLAIN:p")).toBe("battle");
+    if (s.pendingBattleEntry) s = act(s, { type: "pass_battle_entry", playerId: "player1" });
+    expect(legal(s).some((a) => a.type === "end_phase" && a.playerId === "player1")).toBe(false);
+    s = resolveAll(act(s, { type: "move_to_battle", playerId: "player1", instanceId: "XG7-051:rt" }));
+    expect(s.players.player1.battle.map((c) => c.instanceId)).toEqual(["SPEC-PLAIN:p", "XG7-051:rt"]);
+  });
+
   it("XG7-051: ※ BP3000 以上のユニットにはアタックされない（出典: atwiki/page-2397「※これはBP3000以上のユニットにアタックされない」）", () => {
     const s = st({ activePlayer: "player2", player1: { battle: [inst("XG7-051", "rt")], deck: deckCards(3) }, player2: { battle: [inst("SPEC-ATK3000", "a")], deck: deckCards(3, "e") } }, EXTRA);
     expect(targetsOf(s, "SPEC-ATK3000:a", "player2")).not.toContain("XG7-051:rt");

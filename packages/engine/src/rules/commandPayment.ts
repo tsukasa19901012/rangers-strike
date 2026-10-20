@@ -5,6 +5,7 @@ import {
   releaseEmergencyRequestCommands,
 } from "./legend1/set4NamedEffects";
 import { rk2RaiaDiscardCandidates } from "./rk/rk2UnitEffects";
+import { driverCommandRushIds } from "./driverCommandRush";
 import { shifuSubstituteAvailable } from "./legend1/set6NamedEffectsB";
 import { operationPaymentCategories } from "./legend1/set5NamedEffectsA";
 import type { Category } from "@rangers-strike/cards";
@@ -251,6 +252,11 @@ function getCategoryPaymentOptionsUncached(
     callLeadKind === "call"
       ? emergencyRequestEnemyCommandIds(state, playerId, options?.emergencyRushCardId ?? options?.rushingCardId)
       : [];
+  // XG7-045・XP-015 ※: 特徴を持つユニットのラッシュに、カテゴリを問わずホールドできるドライバー（rules/driverCommandRush.ts）。
+  const driverIds =
+    callLeadKind === "call"
+      ? driverCommandRushIds(state, playerId, options?.emergencyRushCardId ?? options?.rushingCardId)
+      : [];
   // ルール: R-KW-CALL-01 補足 — 単色のカードなら、コマンドゾーンにそのカテゴリがなくてもコール／リードで支払える。
   const singleCategoryCallLead =
     categories.length === 1 &&
@@ -264,6 +270,7 @@ function getCategoryPaymentOptionsUncached(
   if (
     !singleCategoryCallLead &&
     emergencyIds.length === 0 &&
+    driverIds.length === 0 &&
     !allCategoriesExistInCommandZone(player, state.definitions, categories)
   ) {
     return shifu ? { selectCount: 2, prismAvailable: false, prismSubstitute: false, shifuSubstitute: true } : null;
@@ -286,7 +293,7 @@ function getCategoryPaymentOptionsUncached(
     callLeadKind,
     options?.rushingCardId,
   );
-  if (matching.length >= 1 || emergencyIds.length >= 1) {
+  if (matching.length >= 1 || emergencyIds.length >= 1 || driverIds.length >= 1) {
     return { selectCount: 1, prismAvailable, prismSubstitute: false };
   }
 
@@ -333,9 +340,26 @@ export function buildCategoryPayment(
   categories: Category[],
   continuation: CommandPaymentContinuation,
   prismSubstitute: boolean,
-  options?: { perRushPayment?: boolean },
+  options?: { perRushPayment?: boolean; driverCommandInstanceId?: string },
 ): PendingCommandPayment | null {
   const callLeadKind = callLeadKindForContinuation(continuation);
+  if (options?.driverCommandInstanceId !== undefined) {
+    // XG7-045・XP-015 ※: そのドライバーだけをホールドしてラッシュする（rules/driverCommandRush.ts）。
+    if (continuation.type !== "rush" || prismSubstitute) return null;
+    if (!driverCommandRushIds(state, playerId, sourceCardId).includes(options.driverCommandInstanceId)) return null;
+    return {
+      playerId,
+      kind: "category_use",
+      sourceInstanceId,
+      sourceCardId,
+      categories,
+      prismSubstitute: false,
+      eligibleNeeded: 0,
+      totalNeeded: 1,
+      validInstanceIds: [options.driverCommandInstanceId],
+      continuation,
+    };
+  }
   const paymentOptions = getCategoryPaymentOptions(state, playerId, categories, {
     ...options,
     callLeadKind,
@@ -347,19 +371,24 @@ export function buildCategoryPayment(
   const useShifu = !usePrism && paymentOptions.shifuSubstitute === true;
   const selectCount = usePrism || useShifu ? 2 : paymentOptions.selectCount;
   const player = state.players[playerId];
+  const matchingIds = unheldPaymentSourcesMatchingCategory(
+    player,
+    state.definitions,
+    categories,
+    callLeadKind,
+    continuation.type === "rush" ? sourceCardId : undefined,
+  ).map((c) => c.instanceId);
   const validInstanceIds = usePrism || useShifu
     ? player.command.filter((c) => !c.commandHeld).map((c) => c.instanceId)
     : [
-        ...unheldPaymentSourcesMatchingCategory(
-          player,
-          state.definitions,
-          categories,
-          callLeadKind,
-          continuation.type === "rush" ? sourceCardId : undefined,
-        ).map((c) => c.instanceId),
+        ...matchingIds,
         // RS-223【緊急システム発動要請】: ホールド状態の敵軍コマンド（選ぶとリリースする）。
         ...(continuation.type === "rush"
           ? emergencyRequestEnemyCommandIds(state, playerId, sourceCardId)
+          : []),
+        // XG7-045・XP-015 ※: カテゴリを問わずホールドできるドライバー（カテゴリが合うものは上に入っている）。
+        ...(continuation.type === "rush"
+          ? driverCommandRushIds(state, playerId, sourceCardId).filter((id) => !matchingIds.includes(id))
           : []),
       ];
 
@@ -520,6 +549,14 @@ export function validatePaymentSelection(
     if (emergencyPicked.length > 1) return "invalid_command";
     if (emergencyPicked.length > 0) {
       // 敵軍コマンドのリリースで「ラッシュに必要な自軍コマンドを1つホールドした」ことにする。
+      return null;
+    }
+    if (
+      pending.continuation.type === "rush" &&
+      commandInstanceIds.length === 1 &&
+      driverCommandRushIds(state, pending.playerId, pending.sourceCardId).includes(commandInstanceIds[0]!)
+    ) {
+      // XG7-045・XP-015 ※: ドライバーをホールドしてラッシュする（カテゴリは問わない）。
       return null;
     }
     if (pending.shifuSubstitute) {
@@ -1159,7 +1196,7 @@ export function buildPaymentFromInitiateAction(
       categories,
       continuation,
       action.prismSubstitute ?? false,
-      { perRushPayment: true },
+      { perRushPayment: true, driverCommandInstanceId: action.driverCommandInstanceId },
     );
   }
 

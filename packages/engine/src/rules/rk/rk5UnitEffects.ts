@@ -31,6 +31,7 @@ import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
 import { rk1IsSmallNow } from "./rk1Features";
 import { recordReveal, revealedCards } from "../revealNotice";
 import { APOLLO_SP_RULE, BLAST_PEGASUS_RULE } from "./rk5Fields";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -962,7 +963,7 @@ export function applyRk5TurnEndDestroy(state: GameState, endingPlayerId: PlayerI
 export function collectRk5TurnEndQueue(state: GameState, endingPlayerId: PlayerId): string[] {
   const p = state.players[endingPlayerId];
   const hurricanes = p.battle
-    .filter((c) => isSameCardIdentity(c.cardId, "RK-095") && p.battle.some((u) => u.mountedOnInstanceId === c.instanceId))
+    .filter((c) => isSameVehicleTextIdentity(c.cardId, "RK-095") && p.battle.some((u) => u.mountedOnInstanceId === c.instanceId))
     .map((c) => c.instanceId);
   const pegasus = fieldUnits(state, endingPlayerId).filter((c) => isSameCardIdentity(c.cardId, "RK-103")).map((c) => c.instanceId);
   return [...hurricanes, ...pegasus];
@@ -975,7 +976,7 @@ function chouhenshinResident(state: GameState, playerId: PlayerId): CardInstance
 export function openRk5TurnEndEntry(state: GameState, endingPlayerId: PlayerId, entry: string): GameState {
   const p = state.players[endingPlayerId];
   const ctx = { playerId: endingPlayerId, phasePlayerId: endingPlayerId, sourceInstanceId: entry };
-  const vehicle = p.battle.find((c) => c.instanceId === entry && isSameCardIdentity(c.cardId, "RK-095"));
+  const vehicle = p.battle.find((c) => c.instanceId === entry && isSameVehicleTextIdentity(c.cardId, "RK-095"));
   if (vehicle) {
     if (!p.battle.some((u) => u.mountedOnInstanceId === entry)) return state;
     return openEffectChoice(state, confirmChoice(ctx, vehicle.cardId, HURRICANE_EFFECT_ID));

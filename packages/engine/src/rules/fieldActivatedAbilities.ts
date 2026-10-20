@@ -38,6 +38,7 @@ import { rk14CanHoldSelf, rk14HoldSelf, rk14IsVehicleUnitCard } from "./rk/rk14F
 import { canActivateRk16Fuessle, isRk16FuessleCard, openRk16Fuessle } from "./rk/rk16UnitEffects";
 import { activateXg3FieldAbility, canActivateXg3FieldAbility, isXg3FieldAbilityCard } from "./xg3/xg3Effects";
 import { promoFieldAbilityFor } from "./promo/promoRegistry";
+import { XG6_FURIKIRU_ACTIVATION } from "./xg6/xg6dFields";
 
 type FieldZone = "rush" | "battle";
 
@@ -594,6 +595,18 @@ ABILITIES.push({
   matches: (cardId) => isXg3FieldAbilityCard(cardId, "battle"),
   canActivate: (state, playerId, card) => !fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId) && canActivateXg3FieldAbility(state, playerId, card),
   resolve: (state, playerId, card) => activateXg3FieldAbility(state, playerId, card),
+});
+// XG6-037 仮面ライダーアクセル【振り切るぜ】「自軍バトルフェイズ中、これが自軍ラッシュエリアでライドしていなければ、Sビークルを1体選んでもよい。…」
+// （atwiki/page-2318。rules/xg6/xg6dEffects.ts）。使ったらビークルとして扱うので、このターンもう起動できない。
+ABILITIES.push({
+  cardId: "XG6-037",
+  effectId: "xg6037_furikiru",
+  zones: ["rush"],
+  phase: "battle",
+  discardSelf: false,
+  repeatable: true,
+  canActivate: (state, playerId, card) => XG6_FURIKIRU_ACTIVATION.canActivate?.(state, playerId, card) ?? false,
+  resolve: (state, playerId, card) => XG6_FURIKIRU_ACTIVATION.activate?.(state, playerId, card) ?? state,
 });
 
 // プロモーションカードの起動効果（XP-031【メダルと切符と40周年】「自軍ラッシュフェイズごとに1度だけ」。rules/promo/promoRegistry.ts）。

@@ -1,5 +1,6 @@
 import { canUseKyouryuumaru } from "../rules/legend1/otherLinesNamedEffects";
 import { isXg3ZordUpVehicle } from "../rules/xg3/xg3Fields";
+import { driverCommandRushIds } from "../rules/driverCommandRush";
 import { mirrorWorldChoiceAffordable } from "../rules/mirrorWorldSelection";
 import { lionArmorAvailable } from "../rules/legend1/set6NamedEffects348";
 import { runWithStateRng } from "./rng";
@@ -13,7 +14,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { isCostWindowSatisfied } from "./costWindow";
 import { COMMAND_ZONE_MAX } from "../types/game";
-import { hasAutoBattleEntryOnRushNote } from "@rangers-strike/cards";
+import { hasAutoBattleEntryOnRushNote, isSameCardIdentity } from "@rangers-strike/cards";
 import { canWingAttackFromRush, canHoldForWing, canCancelWingHold } from "../keywords/battleKeywords";
 import { canRiderMountVehicle, canMountRideIntoBattle } from "../keywords/ride";
 import {
@@ -159,6 +160,7 @@ import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
 import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
 import { canConfirmXg5Choice, isXg5ChoiceEffect, listXg5HandActivations } from "../rules/xg5/xg5Effects";
 import { xg5ForcesAttack } from "../rules/xg5/xg5Fields";
+import { XG5_CONFINE_WINDOW_EFFECT_ID } from "../rules/xg5/xg5Core";
 import { canConfirmXg7Choice, isXg7ActivatableResident, isXg7ChoiceEffect } from "../rules/xg7/xg7Effects";
 import { canConfirmXg3Choice, filterXg3LegalActions, isXg3ChoiceEffect } from "../rules/xg3/xg3Effects";
 import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
@@ -1123,6 +1125,15 @@ function appendRushCategoryPaymentActions(
     };
     if (isInitiateCommandPaymentLegal(state, action)) {
       actions.push(action);
+    }
+    if (prismSubstitute) return;
+    // XG7-045・XP-015 ※: コマンドゾーンのドライバーをホールドしてラッシュする宣言（rules/driverCommandRush.ts）。
+    const rushingCardId = player.hand.find((c) => c.instanceId === instanceId)?.cardId;
+    for (const driverCommandInstanceId of driverCommandRushIds(state, playerId, rushingCardId)) {
+      const viaDriver: GameAction = { ...action, driverCommandInstanceId };
+      if (isInitiateCommandPaymentLegal(state, viaDriver)) {
+        actions.push(viaDriver);
+      }
     }
   };
 
@@ -2277,6 +2288,16 @@ function getLegalActionsCore(state: GameState): GameAction[] {
 
   if (state.pendingEffectChoice) {
     const chooserId = state.pendingEffectChoice.playerId;
+    // XG5-064 コンファインベント（敵軍バトルフェイズ開始時に発動できる※カウンター）の使用の窓（rules/xg5/xg5dEffects.ts）。
+    if (state.pendingEffectChoice.effectId === XG5_CONFINE_WINDOW_EFFECT_ID) {
+      for (const card of state.players[chooserId].hand) {
+        if (!isSameCardIdentity(card.cardId, "XG5-064")) continue;
+        appendCounterCategoryPaymentActions(state, chooserId, card.instanceId, actions);
+        if (canExecuteHandCounter(state, chooserId, card.instanceId)) actions.push({ type: "play_counter", playerId: chooserId, instanceId: card.instanceId });
+      }
+      actions.push({ type: "skip_effect_choice", playerId: chooserId });
+      return actions;
+    }
     appendEffectChoiceActions(state, chooserId, actions);
     if (actions.length === 0 && state.pendingEffectChoice.optional) {
       actions.push({ type: "skip_effect_choice", playerId: chooserId });

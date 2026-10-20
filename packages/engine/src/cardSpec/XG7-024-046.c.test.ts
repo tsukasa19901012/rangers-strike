@@ -391,7 +391,7 @@ describe("XG7-045 ロストドライバー", () => {
   const lostBoard = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     rushPhaseOf({ command: [released("XG7-045", "ld")], hand: [inst("SPEC-LOST", "l")], power: powerCards(3), ...p1 }, {}, EXTRA);
 
-  it.fails("XG7-045: ※ 自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、これをホールドして手札の「ロストドライバー」のユニットカードをラッシュエリアに出せる（出典: atwiki/page-2399「これをホールドして、自分の手札から特徴「ロストドライバー」を持つユニットカードを1枚選び、自軍ラッシュエリアに出してもよい」） — 既知の不具合: CARD-XG7-045 コマンドゾーンからホールドして「ロストドライバー」のユニットを出す※が未実装", () => {
+  it("XG7-045: ※ 自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、これをホールドして手札の「ロストドライバー」のユニットカードをラッシュエリアに出せる（出典: atwiki/page-2399「これをホールドして、自分の手札から特徴「ロストドライバー」を持つユニットカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
     let s = lostBoard();
     const a = legal(s).find((x) => x.playerId === "player1" && JSON.stringify(x).includes("XG7-045:ld") && x.type !== "end_phase");
     expect(a).toBeDefined();

@@ -31,6 +31,7 @@ import { finalizeLeaveReaction, tryLeaveField } from "../operationCounters";
 import { emitUnitRushedAndFinalize } from "../../events/emitUnitRushed";
 import { rk1IsSmallNow, rk1ZoneCardFeatures } from "./rk1Features";
 import { recordReveal, revealedCards } from "../revealNotice";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -405,7 +406,7 @@ type Rk7Trigger = { kind: "rk129" | "rk132"; playerId: PlayerId; sourceInstanceI
 
 function riddenSpaders(state: GameState, playerId: PlayerId): CardInstance[] {
   const cards = fieldCards(state, playerId);
-  return cards.filter((c) => isSameCardIdentity(c.cardId, "RK-129") && cards.some((u) => u.mountedOnInstanceId === c.instanceId));
+  return cards.filter((c) => isSameVehicleTextIdentity(c.cardId, "RK-129") && cards.some((u) => u.mountedOnInstanceId === c.instanceId));
 }
 
 function heldEnemyUnitIds(state: GameState, playerId: PlayerId): string[] {

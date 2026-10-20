@@ -63,6 +63,7 @@ import {
   sizeOf,
   xg5Busy,
 } from "./xg5Shared";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 const PLAYERS: PlayerId[] = ["player1", "player2"];
 
@@ -496,7 +497,7 @@ AFTER_ACTION_HOOKS.push((before, after) => {
   let next = after;
   for (const pid of PLAYERS) {
     const field = fieldCards(after, pid);
-    const ridden = field.filter((v) => isSameCardIdentity(v.cardId, "XG5-057") && field.some((c) => c.mountedOnInstanceId === v.instanceId));
+    const ridden = field.filter((v) => isSameVehicleTextIdentity(v.cardId, "XG5-057") && field.some((c) => c.mountedOnInstanceId === v.instanceId));
     if (ridden.length === 0) continue;
     const hadInHand = new Set(before.players[pid].hand.map((c) => c.instanceId));
     const hadInDiscard = new Set(before.players[pid].discard.map((c) => c.instanceId));
