@@ -33,7 +33,7 @@ apps/vita              PocketJS シェル（このディレクトリ）
   src/GuiMatchView.tsx 対戦画面（ScreenView.gui）をコアが決めた座標に描く
   src/DeckBuilderView.tsx デッキ構築画面（ScreenView.deck）を描く
   src/cardTextures.ts  カード画像のテクスチャ（試合ごとに両デッキ分だけアップロード・解放）
-  src/platform.ts      Vita 用 Platform 実装（保存はメモリ、ブラウザ host では localStorage）
+  src/platform.ts      Vita 用 Platform 実装（保存は Vita の rsStore、ブラウザ host では localStorage）
   src/engine.ts        事前バンドル済みエンジンを EngineApi として渡す
   engine/entry.ts      エンジンのバンドル入口（使う関数だけ re-export）
   scripts/             エンジンのバンドル、PocketJS 呼び出し、QuickJS スモーク、ブラウザ確認
@@ -227,7 +227,7 @@ JS の評価を 5 秒、1 フレームを 250 ms で打ち切りますが、実�
   **GameState の直列化サイズ（`state≈`）を推定値として** 表示します。実プロセスの使用量ではありません。
 - ログ行（`cpu move=… think=…ms apply=…ms mem=…`、試合開始・終了）は `Platform.log` に出ます。
   ブラウザ host と QuickJS スモークでは標準出力／コンソールに出ます。**Vita では PocketJS 0.14 のホストに `console` の出力先がない** ため捨てられます。
-- 保存: Vita プロファイルに `data.fs`／`data.sqlite` がないので、設定と対戦記録はメモリのみ（終了で消えます）。ブラウザ host では localStorage に残ります。
+- 保存: PocketJS 0.14 の Vita プロファイルには `data.fs`／`data.sqlite` がないので、`scripts/patch-pocketjs-vita.mjs` がビルド時に `native/rs_store.rs` を Vita host に組み込み、`globalThis.rsStore` を追加します。設定・対戦記録・自作デッキはキーごとに `ux0:data/rangers-strike/<key>.json` へ書き込まれ、アプリを終了しても残ります（書き込みは `.tmp` を経由するので、途中で電源が切れても前の保存は残ります）。ブラウザ host では localStorage を使います。消したいときは VitaShell でこのフォルダを削除します。
 
 参考値（M1 Max、QuickJS 2026-06-04、`npm run smoke:qjs`。実機の値ではありません）:
 エンジン読み込み 0.19 秒（全カード版 0.37 秒）、QuickJS ヒープ使用 9.6 MB（全カード版のエンジン読み込みだけで 15.8 MB）、
@@ -273,6 +273,6 @@ Web 版の豊富な専用モーダル（ゾード・バトルダンス等）は�
   インターフェースと分割計画（`PER_DECK_CHUNKS`）まで用意してあります。
 - 16px の既定フォントスロットは PocketJS が常に焼き込むため、使わなくても pak に 1.6 MB 含まれます。
 - 選択肢はエンジンの合法手をそのまま並べるため、複数枚の支払い候補などで行数が多くなることがあります（左右キーでページ送り）。
-- デッキ構築で作ったデッキは `KeyValueStore` に保存します。Vita では保存先がないため、アプリを終了すると消えます（ブラウザ host では localStorage に残ります）。
+- デッキ構築で作ったデッキは `KeyValueStore` に保存し、Vita では `ux0:data/rangers-strike/rs.decks.v1.json` に残ります。
   デッキ名は自動で付けます（文字入力は未対応）。
 - 全カード版の pak は約 34MB（カード画像 30.4MB＋文字アトラス）で、VPK の実行ファイルに埋め込まれます。実機でのメモリと起動時間は未計測です。

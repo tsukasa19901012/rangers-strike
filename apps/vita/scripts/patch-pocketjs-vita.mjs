@@ -10,8 +10,9 @@
 // Limits (ms) can be overridden with POCKET_VITA_EVAL_MS / POCKET_VITA_FRAME_MS.
 // The patch is idempotent and re-applied on every build because the toolchain
 // lives in node_modules.
-import { readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { copyFileSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { FRAMEWORK_ROOT } from "./toolchain.mjs";
 
 const evalMs = Number(process.env.POCKET_VITA_EVAL_MS ?? 120_000);
@@ -34,5 +35,22 @@ if (!src.includes("rs-eval") || !src.includes("rs-frame")) {
   console.error("patch-pocketjs-vita: watchdog sites not found; PocketJS host changed?");
   process.exit(1);
 }
+// Save data: inject native/rs_store.rs as `globalThis.rsStore` (see that file).
+const here = dirname(fileURLToPath(import.meta.url));
+copyFileSync(join(here, "../native/rs_store.rs"), join(FRAMEWORK_ROOT, "hosts/vita/src/rs_store.rs"));
+if (!src.includes("mod rs_store;")) {
+  src = src.replace("pub mod ffi;\n", "pub mod ffi;\nmod rs_store;\n");
+}
+if (!src.includes("rs_store::register(")) {
+  src = src.replace(
+    "ffi::register(ctx, global, &textures, &sprites);\n",
+    "ffi::register(ctx, global, &textures, &sprites);\n        rs_store::register(ctx, global);\n",
+  );
+}
+if (!src.includes("mod rs_store;") || !src.includes("rs_store::register(")) {
+  console.error("patch-pocketjs-vita: rs_store injection sites not found; PocketJS host changed?");
+  process.exit(1);
+}
+
 if (src !== before) writeFileSync(file, src);
-console.log(`patch-pocketjs-vita: eval ${evalMs} ms, frame ${frameMs} ms`);
+console.log(`patch-pocketjs-vita: eval ${evalMs} ms, frame ${frameMs} ms, rsStore save data`);
