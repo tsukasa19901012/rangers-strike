@@ -115,6 +115,15 @@ describe("PM-001 ジライヤ", () => {
     expect(zoneOf(s, "player2", "SPEC-BEAST:b")).toBe("battle");
   });
 
+  it("PM-001: 【真っ向両断】敵軍パワーゾーンに特徴1「獣」のオモテ向きのユニットカードがなくても、後半（特徴2「人型」のユニットを手札に戻す）は行う（出典: 利用者の決定 2026-10-20・questions-all.md U-1「前半が発動できなくても後半は実施する」）", () => {
+    let s = slash(inst("SPEC-F2", "t"), { power: [faceUpPower("SPEC-HUMAN", "ph"), faceUpPower("TST-OP", "po")] });
+    expectChoiceFrom(s, "player1", "PM-001");
+    expect(choiceIds(s)).toEqual(["SPEC-HUMAN:h"]);
+    s = resolveAll(pick(s, "SPEC-HUMAN:h"));
+    expect(zoneOf(s, "player2", "SPEC-HUMAN:h")).toBe("hand");
+    expect(s.players.player2.power.every((c) => !c.faceDown)).toBe(true);
+  });
+
   it("PM-001: 【真っ向両断】は発動するかを選べる（「発動できる」）（出典: atwiki/page-743「次の効果を発動できる」）", () => {
     const s = slash(inst("SPEC-F2", "t"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("PM-001");

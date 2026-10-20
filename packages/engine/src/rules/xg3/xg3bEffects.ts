@@ -276,6 +276,8 @@ KEYWORDS["XG3-031::chuchuzan"] = (state, ctx) => {
 // XG3-032 ゲキイエロー【弾弾丸】（NC。atwiki/page-1905）
 // 「「SP1」 自分の手札から、特徴「激気」を持つMユニットのカードを1枚選び捨札にしてもよい。そうしたとき、敵軍ラッシュエリアにSユニットがあれば
 //  1体選び撃破する。その後、自分は1枚ドローする。」（「SP1」は DSL のまま）
+// 利用者の決定（2026-10-20、questions-all.md U-1）: 撃破できる敵軍ラッシュエリアの S ユニットがあるときだけ、捨札にするかを選べる。
+// 捨札にしたら撃破し、ドローは必ず行う。
 
 const DANDAN_EFFECT_ID = "xg3032_dandan";
 const DANDAN_PICK_EFFECT_ID = "xg3032_dandan_pick";
@@ -285,6 +287,9 @@ KEYWORDS["XG3-032::dandan"] = (state, ctx) => {
     .filter((c) => isUnitCard(state, c.cardId) && unitSizeOf(state.definitions, c) === "M" && printedFeatures(state, c.cardId).includes("激気"))
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: "xg3032:no_hand" };
+  const enemyId = opponent(ctx.playerId);
+  const hasTarget = state.players[enemyId].rush.some((c) => isUnitCard(state, c.cardId) && rk1IsSmallNow(state, c) && selectableEnemy(state, ctx.playerId, "XG3-032", c));
+  if (!hasTarget) return { state, detail: "xg3032:no_target" };
   return {
     state: openAfter(state, { ...base(ctxBase(ctx), "XG3-032"), effectId: DANDAN_EFFECT_ID, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional: true }),
     detail: DANDAN_EFFECT_ID,

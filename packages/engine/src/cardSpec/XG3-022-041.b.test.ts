@@ -242,10 +242,12 @@ describe("XG3-032 ゲキイエロー", () => {
     expect(s.players.player1.hand).toHaveLength(3);
   });
 
-  it("XG3-032:【弾弾丸】— 敵軍ラッシュエリアに S ユニットがいなくても、捨札にすれば1枚ドローする（出典: atwiki/page-1905「Sユニットがあれば1体選び撃破する。その後、自分は1枚ドローする」）", () => {
-    const s = resolveAll(nc([inst("TST-UNIT-2", "em")]), ["SPEC-GEKI-M:hm"]);
-    expect(zoneOf(s, "player1", "SPEC-GEKI-M:hm")).toBe("discard");
-    expect(s.players.player1.hand).toHaveLength(3);
+  it("XG3-032:【弾弾丸】— 敵軍ラッシュエリアに S ユニットがいなければ、捨札にするかの選択は開かず、撃破もドローもしない（出典: 利用者の決定 2026-10-20・questions-all.md U-1「撃破対象がある場合のみ捨て札にするか選択可能」）", () => {
+    const s = nc([inst("TST-UNIT-2", "em")]);
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG3-032");
+    const done = resolveAll(s);
+    expect(zoneOf(done, "player1", "SPEC-GEKI-M:hm")).toBe("hand");
+    expect(done.players.player1.hand).toHaveLength(3);
   });
 
   it("XG3-032:【弾弾丸】— 捨札にしなければ、撃破もドローもしない（出典: atwiki/page-1905「そうしたとき」）", () => {
