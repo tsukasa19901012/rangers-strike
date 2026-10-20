@@ -204,7 +204,12 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
   };
   const g = () => props.view.geometry;
   const portrait = () => isPortrait(g());
-  const endLines = () => v().endButton.lines.filter((line) => line && line !== "R" && line !== "×:操作");
+  // Several moves and none on a visible card (start phase: release commands or
+  // draw): the button opens the list of moves, so it must look pressable.
+  const choose = () =>
+    !v().endButton.enabled && v().endButton.lines.includes("×:操作") && !v().rows.some((row) => row.tiles.some((tile) => tile.actionable));
+  const endLines = () => (choose() ? ["操作を選ぶ"] : v().endButton.lines.filter((line) => line && line !== "R" && line !== "×:操作"));
+  const endLive = () => v().endButton.enabled || choose();
   const buttons = () => matchButtons(g());
   return (
     <View class="w-full h-full bg-gradient-to-b from-[#0b1426] to-[#04070d]">
@@ -336,6 +341,10 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
             ? props.hot === "end"
               ? "absolute flex-col items-center justify-center rounded-[14] bg-gradient-to-b from-sky-400 to-blue-600 border-[2] border-white shadow-lg"
               : "absolute flex-col items-center justify-center rounded-[14] bg-gradient-to-b from-sky-500 to-blue-700 border-[2] border-sky-300 shadow-lg"
+            : choose()
+              ? props.hot === "end"
+                ? "absolute flex-col items-center justify-center rounded-[14] bg-gradient-to-b from-amber-400 to-orange-600 border-[2] border-white shadow-lg"
+                : "absolute flex-col items-center justify-center rounded-[14] bg-gradient-to-b from-amber-500 to-orange-700 border-[2] border-amber-300 shadow-lg"
             : "absolute flex-col items-center justify-center rounded-[14] bg-[#111827] border border-[#1f2937]"
         }
         style={at(v().endButton.rect)}
@@ -345,15 +354,15 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
           fallback={
             <>
               <Index each={endLines()}>
-                {(text) => <Text class={v().endButton.enabled ? "text-base text-white font-bold" : "text-sm text-slate-500"}>{text()}</Text>}
+                {(text) => <Text class={endLive() ? "text-base text-white font-bold" : "text-sm text-slate-500"}>{text()}</Text>}
               </Index>
-              <Show when={v().endButton.enabled}>
+              <Show when={endLive()}>
                 <Text class="text-xs text-sky-100">Space</Text>
               </Show>
             </>
           }
         >
-          <Text class={v().endButton.enabled ? "text-base text-white font-bold" : "text-sm text-slate-500"}>{endLines().join("")}</Text>
+          <Text class={endLive() ? "text-base text-white font-bold" : "text-sm text-slate-500"}>{endLines().join("")}</Text>
         </Show>
       </View>
       <View
