@@ -4,7 +4,7 @@ import { input } from "../input/actions";
 import { hitTestGui } from "../input/devices";
 import { testPlatform } from "../testing/engine";
 import { measureText } from "../text/wrap";
-import type { GuiView } from "./guiMatch";
+import { variantLabels, type GuiView } from "./guiMatch";
 
 const VITA = { width: 480, height: 272 };
 
@@ -227,5 +227,20 @@ describe("GuiMatch card art", () => {
       expect(beside || below).toBe(true);
       expect(line.rect.y + line.rect.h).toBeLessThanOrEqual(d.y + d.h);
     }
+  });
+});
+
+describe("variantLabels", () => {
+  it("drops the start the variants share so the differing part stays visible", () => {
+    expect(
+      variantLabels([
+        "コマンドを支払って使う: ロボタックSM / ロボタック（種類:カテゴリ・捨札）",
+        "コマンドを支払って使う: ロボタックSM / ロボタック（種類:カテゴリ・コマンド）",
+      ]),
+    ).toEqual(["（種類:カテゴリ・捨札）", "（種類:カテゴリ・コマンド）"]);
+  });
+
+  it("keeps full labels when nothing sensible is shared", () => {
+    expect(variantLabels(["ドロー", "フェイズ終了"])).toEqual(["ドロー", "フェイズ終了"]);
   });
 });

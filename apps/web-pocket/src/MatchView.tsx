@@ -78,7 +78,7 @@ export type PileCard = { cardId: string; hidden: boolean; rect: Box; stack?: Pil
 /** A card in the enlarged view; a caption says what is stacked on what. */
 export type PeekCard = { cardId: string; hidden: boolean; caption?: string };
 type PileSection = { title: string; label: string; tone: string; labelRect: Box; cards: PileCard[]; all: PeekCard[]; count: number; ids: string[] };
-export type PileLayout = { narrow: boolean; deck: Box | null; discard: PileCard | null; discardIds: string[]; counts: { text: string; rect: Box }[]; sections: PileSection[] };
+export type PileLayout = { narrow: boolean; deck: Box | null; discard: PileCard | null; discardIds: string[]; discardTap: { rect: Box; top: PeekCard } | null; counts: { text: string; rect: Box }[]; sections: PileSection[] };
 /** Cards shown enlarged together: a whole zone, so both cards of a tag operation are side by side. `ids`: the cards a tap can act on. */
 export type PilePeek = { key: string; title: string; cards: PeekCard[]; anchor: Box; ids: string[] };
 
@@ -136,10 +136,15 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
   const sections: PileSection[] = [];
   if (narrow) {
     let y = rect.y + 6;
+    let discardRow: Box | null = null;
     for (const text of [`山札 ${p.deck.length}`, `捨札 ${p.discard.length}`]) {
       counts.push({ text, rect: { x: rect.x, y, w: rect.w, h: 18 } });
+      discardRow = { x: rect.x, y, w: rect.w, h: 18 };
       y += 18;
     }
+    const lastDiscard = p.discard[p.discard.length - 1];
+    // No room for the discard image: its count row takes the tap instead.
+    const discardTap = lastDiscard && discardRow ? { rect: discardRow, top: { cardId: lastDiscard.cardId, hidden: false } } : null;
     sections.push({ title: `${who}のパワー`, label: `パワー ${p.power.length}`, tone: "text-xs text-amber-300 font-bold", labelRect: { x: rect.x, y, w: rect.w, h: 18 }, cards: [], all: all(p.power), count: p.power.length, ids: p.power.map((c) => c.instanceId) });
     y += 22;
     if (p.operation.length) {
@@ -151,7 +156,7 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
       const cards = p.operation.map((c, i) => ({ cardId: c.cardId, hidden: false, rect: { x: rect.x + Math.round((rect.w - w) / 2), y: y + i * (h + 4), w, h }, stack: pileStack(c), peek: operationPeek(state, who, c) }));
       sections.push({ title: `${who}の常駐`, label: `常駐 ${n}`, tone: "text-xs text-violet-300 font-bold", labelRect, cards, all: all(p.operation), count: n, ids: p.operation.map((c) => c.instanceId) });
     }
-    return { narrow, deck: null, discard: null, discardIds: [], counts, sections };
+    return { narrow, deck: null, discard: null, discardIds: p.discard.map((c) => c.instanceId), discardTap, counts, sections };
   }
   const cardW = Math.min(64, Math.floor((rect.w - 18) / 2));
   const deckRect: Box = { x: x0, y: rect.y + 8, w: cardW, h: Math.round(cardW * CARD_RATIO) };
@@ -188,6 +193,7 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
     discard: top ? { cardId: top.cardId, hidden: false, rect: discardRect } : null,
     // A tap on the discard pile opens what its cards can do (self-rush from the discard, discard-paid commands).
     discardIds: p.discard.map((c) => c.instanceId),
+    discardTap: null,
     counts,
     sections,
   };
@@ -196,6 +202,10 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
 /** The zone under a point (a pile card or a zone label), as the cards to show enlarged. */
 export function pileHit(layouts: PileLayout[], point: { x: number; y: number }): PilePeek | null {
   for (const layout of layouts) {
+    if (layout.discardTap && inside(layout.discardTap.rect, point)) {
+      const tap = layout.discardTap;
+      return { key: `d:${tap.rect.x}:${tap.rect.y}`, title: "捨札の一番上", cards: [tap.top], anchor: tap.rect, ids: layout.discardIds };
+    }
     if (layout.discard && inside(layout.discard.rect, point)) {
       return { key: `d:${layout.discard.rect.x}:${layout.discard.rect.y}`, title: "捨札の一番上", cards: [layout.discard], anchor: layout.discard.rect, ids: layout.discardIds };
     }
