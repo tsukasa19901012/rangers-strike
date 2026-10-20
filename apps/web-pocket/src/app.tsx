@@ -20,14 +20,18 @@ import {
   hitTestGui,
   input,
   isPortrait,
+  CPU,
+  HUMAN,
+  webPileRect,
   type DeckBuilderView,
   type GuiView,
   type LogicalInput,
   type ScreenView,
+  type PlayerId,
 } from "@rangers-strike/client-core";
 import { webPlatform } from "./platform";
 import { pollCardArt } from "./cardArt";
-import { MatchView, matchButtons } from "./MatchView";
+import { MatchView, matchButtons, pileHit, pileLayout, type PilePeek } from "./MatchView";
 import { DeckView, deckButtons } from "./DeckView";
 import { TitleView } from "./TitleView";
 import { ResultView } from "./ResultView";
@@ -103,13 +107,21 @@ export default function App() {
   const [view, setView] = createSignal<ScreenView>(controller.view(), { equals: false });
   const [size, setSize] = createSignal(viewport);
   const [hot, setHot] = createSignal<string | null>(null);
+  // A pile zone (power, operation, top discard) shown enlarged: hovered, or tapped on a phone.
+  const [peek, setPeek] = createSignal<PilePeek | null>(null, { equals: (a, b) => a?.key === b?.key });
   // "Leave the match" asks for a second click within LEAVE_FRAMES.
   const LEAVE_FRAMES = 180;
   let leaveFrames = 0;
   const [leaving, setLeaving] = createSignal(false);
   const refresh = () => setView(controller.view());
   // For browser tests and debugging from the console.
-  (globalThis as unknown as { __rsApp?: unknown }).__rsApp = { controller };
+  (globalThis as unknown as { __rsApp?: unknown }).__rsApp = {
+    controller,
+    pile: (player: PlayerId) => {
+      const gui = controller.view().gui;
+      return gui && controller.session ? pileLayout(controller.session.state, player, webPileRect(gui.geometry, player)) : null;
+    },
+  };
   const repeater = new ButtonRepeater(BINDINGS);
 
   const pointerEvents: PointerEvent[] = [];
@@ -129,9 +141,23 @@ export default function App() {
     return true;
   };
 
+  let peekPinned = false;
   function onMatchPointer(e: PointerEvent, gui: GuiView): boolean {
     const p = { x: e.x, y: e.y };
     const buttons = matchButtons(gui.geometry);
+    const state = controller.session!.state;
+    const pileCard = () =>
+      gui.menuOpen ? null : pileHit([CPU, HUMAN].map((player) => pileLayout(state, player, webPileRect(gui.geometry, player))), p);
+    // A tapped zone stays open (a touch ends with a leave) until another tap or hovering another zone.
+    if (e.kind === "leave") {
+      if (!peekPinned) setPeek(null);
+    } else if (e.kind === "move") {
+      const hit = pileCard();
+      if (hit || !peekPinned) {
+        setPeek(hit);
+        peekPinned = false;
+      }
+    }
     if (e.kind === "move" || e.kind === "leave") {
       const spot =
         e.kind === "leave"
@@ -168,6 +194,11 @@ export default function App() {
     hoverKey = "";
     if (e.button === 2) return dispatch(input.cancel);
     if (e.button !== 0) return false;
+    // A tap on a pile zone shows its cards enlarged (phones have no hover); any other tap hides them.
+    const tapped = pileCard();
+    setPeek(tapped);
+    peekPinned = !!tapped;
+    if (tapped) return true;
     if (inside(buttons.leave, p)) {
       if (leaving()) {
         setLeaving(false);
@@ -281,7 +312,7 @@ export default function App() {
       fallback={<TitleView controller={controller} view={view} refresh={refresh} width={size().width} height={size().height} />}
     >
       <Match when={view().gui}>
-        {(gui) => <MatchView view={gui()} state={(gui(), controller.session!.state)} hot={hot()} footer={matchFooter(gui())} leaving={leaving()} />}
+        {(gui) => <MatchView view={gui()} state={(gui(), controller.session!.state)} hot={hot()} footer={matchFooter(gui())} leaving={leaving()} peek={peek()} />}
       </Match>
       <Match when={view().deck}>{(deck) => <DeckView view={deck()} hot={hot()} footer={isPortrait(deck().geometry) ? DECK_TOUCH_FOOTER : DECK_FOOTER} />}</Match>
       <Match when={view().screen === "result"}>

@@ -1,7 +1,7 @@
 // The match screen: draws GuiView (client-core) at the rectangles of the web
 // geometry (computeWebGuiGeometry). Every element sits where the core put it,
 // so the core's hit test (hitTestGui) matches what is on screen. No game logic.
-import { For, Index, Show } from "solid-js";
+import { Index, Show } from "solid-js";
 import { Text, View } from "@pocketjs/framework/solid/components";
 import {
   CPU,
@@ -18,7 +18,7 @@ import {
   type PanelTone,
   type PlayerId,
 } from "@rangers-strike/client-core";
-import { at, CardFace, type Box } from "./ui";
+import { at, CardFace, inside, type Box } from "./ui";
 
 const ROW_LABELS: Record<string, [string, string]> = {
   [`${CPU}:command`]: ["CPU", "コマンド"],
@@ -71,67 +71,182 @@ export function matchButtons(g: GuiGeometry): { all: Box; log: Box; leave: Box }
 
 const CARD_RATIO = 190 / 130;
 
+/** Cards stacked on an operation card (クロックアップ: face down, ミラーワールド: face up). */
+type PileStack = { count: number; hidden: number; topId: string };
+export type PileCard = { cardId: string; hidden: boolean; rect: Box; stack?: PileStack };
+/** A card in the enlarged view; a caption says what is stacked on what. */
+export type PeekCard = { cardId: string; hidden: boolean; caption?: string };
+type PileSection = { title: string; label: string; tone: string; labelRect: Box; cards: PileCard[]; all: PeekCard[]; count: number };
+export type PileLayout = { narrow: boolean; deck: Box | null; discard: PileCard | null; counts: { text: string; rect: Box }[]; sections: PileSection[] };
+/** Cards shown enlarged together: a whole zone, so both cards of a tag operation are side by side. */
+export type PilePeek = { key: string; title: string; count: number; cards: PeekCard[]; anchor: Box };
+
+type ZoneCard = GameState["players"][PlayerId]["power"][number];
+
+function pileStack(card: ZoneCard): PileStack | undefined {
+  const stacked = card.stackedCards ?? [];
+  if (stacked.length === 0) return undefined;
+  const top = stacked[stacked.length - 1]!;
+  return { count: stacked.length, hidden: stacked.filter((c) => c.faceDown).length, topId: top.faceDown ? "back" : top.cardId };
+}
+
 /**
- * Deck and discard as cards, the power zone as a fan of cards (face-down ones
- * show their back), the other hidden zones as counts. A narrow column (phone
- * portrait) shows only the deck and stacks the power cards downwards.
+ * A zone's cards for the enlarged view. Cards stacked on an operation follow
+ * it: face-up ones one by one, face-down ones as one back with their count
+ * (nobody looks at them).
  */
-function PilePanel(props: { state: GameState; player: PlayerId; rect: Box }) {
-  const p = () => props.state.players[props.player];
-  const narrow = () => props.rect.w < 110;
-  const cardW = () => (narrow() ? props.rect.w - 12 : Math.floor((props.rect.w - 18) / 2));
-  const card = (i: number): Box => ({ x: props.rect.x + 6 + i * (cardW() + 6), y: props.rect.y + 8, w: cardW(), h: Math.round(cardW() * CARD_RATIO) });
-  const topDiscard = () => p().discard[p().discard.length - 1];
-  const faceDown = () => p().power.filter((c) => c.faceDown).length;
-  const lines = () =>
-    narrow()
-      ? [`山札 ${p().deck.length}`, `捨札 ${p().discard.length}`, `パワー ${p().power.length}`]
-      : [`パワー ${p().power.length}${faceDown() ? `（裏${faceDown()}）` : ""}`, p().operation.length ? `常駐 ${p().operation.length}` : ""].filter(Boolean);
-  const linesTop = () => card(0).y + card(0).h + (narrow() ? 4 : 26);
-  const powerIndex = () => (narrow() ? 2 : 0);
-  // The power fan fills what is left of the column.
-  const fan = (): Box[] => {
-    const n = p().power.length;
-    if (n === 0) return [];
-    const top = linesTop() + lines().length * 18 + 4;
-    const availW = props.rect.w - 12;
-    const availH = props.rect.y + props.rect.h - 6 - top;
-    if (availH < 24) return [];
-    const x0 = props.rect.x + 6;
-    if (narrow()) {
-      const w = Math.min(availW, Math.floor(availH / CARD_RATIO));
-      const h = Math.round(w * CARD_RATIO);
-      const step = n > 1 ? Math.min(h + 4, Math.floor((availH - h) / (n - 1))) : 0;
-      return p().power.map((_, i) => ({ x: x0, y: top + i * step, w, h }));
+function peekCards(cards: readonly ZoneCard[]): PeekCard[] {
+  return cards.flatMap((card) => {
+    const stacked = card.stackedCards ?? [];
+    if (stacked.length === 0) return [{ cardId: card.cardId, hidden: !!card.faceDown }];
+    const down = stacked.filter((c) => c.faceDown).length;
+    return [
+      { cardId: card.cardId, hidden: false, caption: `重ね ${stacked.length}枚` },
+      ...stacked.filter((c) => !c.faceDown).map((c) => ({ cardId: c.cardId, hidden: false, caption: "↑表向きで重ね" })),
+      ...(down > 0 ? [{ cardId: "back", hidden: true, caption: `↑裏向き ${down}枚` }] : []),
+    ];
+  });
+}
+
+/**
+ * The pile column of one player: deck and top discard as cards, then the
+ * power zone (face-down cards show their back) and the operation zone (常駐)
+ * as small cards. The narrow column of a phone held upright has no room for
+ * the deck image or a power fan: it shows counts and the operation cards
+ * one under the other, never overlapping. Hovering or tapping a zone shows
+ * all of its cards enlarged (pileHit / PeekPanel).
+ */
+export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileLayout {
+  const p = state.players[player];
+  const who = player === HUMAN ? "自分" : "CPU";
+  const narrow = rect.w < 110;
+  const x0 = rect.x + 6;
+  const availW = rect.w - 12;
+  const counts: { text: string; rect: Box }[] = [];
+  const faceDown = p.power.filter((c) => c.faceDown).length;
+  const all = (cards: readonly ZoneCard[]) => peekCards(cards);
+  const bottom = rect.y + rect.h - 6;
+  const sections: PileSection[] = [];
+  if (narrow) {
+    let y = rect.y + 6;
+    for (const text of [`山札 ${p.deck.length}`, `捨札 ${p.discard.length}`]) {
+      counts.push({ text, rect: { x: rect.x, y, w: rect.w, h: 18 } });
+      y += 18;
     }
-    const w = Math.min(60, Math.floor(availH / CARD_RATIO));
-    const h = Math.round(w * CARD_RATIO);
-    const step = n > 1 ? Math.min(w + 4, Math.floor((availW - w) / (n - 1))) : 0;
-    return p().power.map((_, i) => ({ x: x0 + i * step, y: top, w, h }));
+    sections.push({ title: `${who}のパワー`, label: `パワー ${p.power.length}`, tone: "text-xs text-amber-300 font-bold", labelRect: { x: rect.x, y, w: rect.w, h: 18 }, cards: [], all: all(p.power), count: p.power.length });
+    y += 22;
+    if (p.operation.length) {
+      const labelRect = { x: rect.x, y, w: rect.w, h: 18 };
+      y += 18;
+      const n = p.operation.length;
+      const w = Math.min(availW - 4, Math.floor((bottom - y - 4 * (n - 1)) / n / CARD_RATIO));
+      const h = Math.round(w * CARD_RATIO);
+      const cards = p.operation.map((c, i) => ({ cardId: c.cardId, hidden: false, rect: { x: rect.x + Math.round((rect.w - w) / 2), y: y + i * (h + 4), w, h }, stack: pileStack(c) }));
+      sections.push({ title: `${who}の常駐`, label: `常駐 ${n}`, tone: "text-xs text-violet-300 font-bold", labelRect, cards, all: all(p.operation), count: n });
+    }
+    return { narrow, deck: null, discard: null, counts, sections };
+  }
+  const cardW = Math.min(64, Math.floor((rect.w - 18) / 2));
+  const deckRect: Box = { x: x0, y: rect.y + 8, w: cardW, h: Math.round(cardW * CARD_RATIO) };
+  const top = p.discard[p.discard.length - 1];
+  const discardRect: Box = { ...deckRect, x: rect.x + rect.w - 6 - cardW };
+  let y = deckRect.y + deckRect.h + 2;
+  counts.push({ text: `山札 ${p.deck.length}`, rect: { ...deckRect, y, h: 20 } });
+  counts.push({ text: `捨札 ${p.discard.length}`, rect: { ...discardRect, y, h: 20 } });
+  y += 22;
+  const zones = [
+    { title: `${who}のパワー`, label: `パワー ${p.power.length}${faceDown ? `（裏${faceDown}）` : ""}`, tone: "text-xs text-amber-300 font-bold", cards: p.power },
+    ...(p.operation.length ? [{ title: `${who}の常駐`, label: `常駐 ${p.operation.length}`, tone: "text-xs text-violet-300 font-bold", cards: p.operation }] : []),
+  ];
+  const share = Math.floor((bottom - y) / zones.length);
+  zones.forEach((zone, zi) => {
+    const sy = y + zi * share;
+    const labelRect: Box = { x: rect.x, y: sy, w: rect.w, h: 18 };
+    const fanTop = sy + 18;
+    const fanH = share - 22;
+    const n = zone.cards.length;
+    const cards: PileCard[] = [];
+    if (n > 0 && fanH >= 20) {
+      // Side by side while they fit (a tag operation's two cards), overlapping beyond that.
+      const w = Math.min(60, Math.floor(fanH / CARD_RATIO));
+      const h = Math.round(w * CARD_RATIO);
+      const step = n > 1 ? Math.min(w + 4, Math.floor((availW - w) / (n - 1))) : 0;
+      zone.cards.forEach((c, i) => cards.push({ cardId: c.cardId, hidden: !!c.faceDown, rect: { x: x0 + i * step, y: fanTop, w, h }, stack: pileStack(c) }));
+    }
+    sections.push({ title: zone.title, label: zone.label, tone: zone.tone, labelRect, cards, all: all(zone.cards), count: n });
+  });
+  return {
+    narrow,
+    deck: p.deck.length > 0 ? deckRect : null,
+    discard: top ? { cardId: top.cardId, hidden: false, rect: discardRect } : null,
+    counts,
+    sections,
   };
+}
+
+/** The zone under a point (a pile card or a zone label), as the cards to show enlarged. */
+export function pileHit(layouts: PileLayout[], point: { x: number; y: number }): PilePeek | null {
+  for (const layout of layouts) {
+    if (layout.discard && inside(layout.discard.rect, point)) {
+      return { key: `d:${layout.discard.rect.x}:${layout.discard.rect.y}`, title: "捨札の一番上", count: 1, cards: [layout.discard], anchor: layout.discard.rect };
+    }
+    for (const section of layout.sections) {
+      const hit = inside(section.labelRect, point) ? section.labelRect : section.cards.find((c) => inside(c.rect, point))?.rect;
+      if (hit && section.all.length > 0) {
+        return { key: `${section.title}:${section.all.map((c) => c.caption ?? c.cardId).join(",")}`, title: section.title, count: section.count, cards: section.all, anchor: hit };
+      }
+    }
+  }
+  return null;
+}
+
+function PilePanel(props: { state: GameState; player: PlayerId; rect: Box }) {
+  const layout = () => pileLayout(props.state, props.player, props.rect);
   return (
     <>
       <View class="absolute rounded-[8] bg-[#0b1220d0] border border-[#25324d]" style={at(props.rect)} />
-      <Show when={p().deck.length > 0}>
-        <CardFace cardId="back" hidden rect={card(0)} />
-      </Show>
-      <Show when={!narrow()}>
-        <Show when={topDiscard()}>{(top) => <CardFace cardId={top().cardId} rect={card(1)} />}</Show>
-        <View class="absolute flex-row items-center justify-center" style={at({ ...card(0), y: card(0).y + card(0).h + 2, h: 20 })}>
-          <Text class="text-xs text-slate-300">{`山札 ${p().deck.length}`}</Text>
-        </View>
-        <View class="absolute flex-row items-center justify-center" style={at({ ...card(1), y: card(1).y + card(1).h + 2, h: 20 })}>
-          <Text class="text-xs text-slate-300">{`捨札 ${p().discard.length}`}</Text>
-        </View>
-      </Show>
-      <Index each={lines()}>
-        {(line, i) => (
-          <View class={narrow() ? "absolute flex-row items-center justify-center" : "absolute flex-row items-center px-[8]"} style={at({ x: props.rect.x, y: linesTop() + i * 18, w: props.rect.w, h: 18 })}>
-            <Text class={i === powerIndex() ? "text-xs text-amber-300 font-bold" : "text-xs text-slate-300"}>{line()}</Text>
+      <Show when={layout().deck}>{(deck) => <CardFace cardId="back" hidden rect={deck()} />}</Show>
+      <Show when={layout().discard}>{(top) => <CardFace cardId={top().cardId} rect={top().rect} />}</Show>
+      <Index each={layout().counts}>
+        {(count) => (
+          <View class="absolute flex-row items-center justify-center" style={at(count().rect)}>
+            <Text class="text-xs text-slate-300">{count().text}</Text>
           </View>
         )}
       </Index>
-      <For each={fan()}>{(rect, i) => <CardFace cardId={p().power[i()]?.cardId ?? "back"} hidden={!!p().power[i()]?.faceDown} rect={rect} />}</For>
+      <Index each={layout().sections}>
+        {(section) => (
+          <>
+            <View class={layout().narrow ? "absolute flex-row items-center justify-center" : "absolute flex-row items-center px-[8]"} style={at(section().labelRect)}>
+              <Text class={section().tone}>{section().label}</Text>
+            </View>
+            <Index each={section().cards}>{(card) => <PileCardFace card={card()} />}</Index>
+          </>
+        )}
+      </Index>
+    </>
+  );
+}
+
+/** A pile card; one with cards stacked on it shows the top of the stack behind it and their count. */
+function PileCardFace(props: { card: PileCard }) {
+  const r = () => props.card.rect;
+  return (
+    <>
+      <Show when={props.card.stack}>
+        {(stack) => <CardFace cardId={stack().topId} hidden={stack().topId === "back"} rect={{ x: r().x + 3, y: r().y - 3, w: r().w, h: r().h }} />}
+      </Show>
+      <CardFace cardId={props.card.cardId} hidden={props.card.hidden} rect={r()} />
+      <Show when={props.card.stack}>
+        {(stack) => (
+          <View
+            class={stack().hidden === stack().count ? "absolute flex-row items-center justify-center rounded-[3] bg-[#1e1b4bf0] border border-violet-400" : "absolute flex-row items-center justify-center rounded-[3] bg-[#422006f0] border border-amber-400"}
+            style={at({ x: r().x + 1, y: r().y + r().h - 17, w: r().w - 2, h: 16 })}
+          >
+            <Text class="text-xs text-white font-bold">{`${stack().hidden === stack().count ? "裏" : "重"}${stack().count}`}</Text>
+          </View>
+        )}
+      </Show>
     </>
   );
 }
@@ -195,7 +310,54 @@ export function MenuBox(props: { box: GuiBox; accent: boolean }) {
   );
 }
 
-export function MatchView(props: { view: GuiView; state: GameState; hot: string | null; footer: string; leaving: boolean }) {
+/** A zone's cards enlarged in a row (wrapping): beside the pile column, or over the board on a phone. */
+function PeekPanel(props: { g: GuiGeometry; peek: PilePeek }) {
+  const layout = () => {
+    const g = props.g;
+    const n = props.peek.cards.length;
+    const portrait = isPortrait(g);
+    const maxW = portrait ? g.board.w - 16 : 420;
+    const cols = Math.min(n, portrait ? 3 : 4);
+    const gap = 8;
+    const cardW = Math.min(portrait ? 130 : 150, Math.floor((maxW - 16 - gap * (cols - 1)) / cols));
+    const cardH = Math.round(cardW * CARD_RATIO);
+    const rows = Math.ceil(n / cols);
+    const captionH = props.peek.cards.some((c) => c.caption) ? 18 : 0;
+    const rowH = cardH + captionH + gap;
+    const w = cols * cardW + gap * (cols - 1) + 16;
+    const h = 30 + rows * rowH + 4;
+    const pile = webPileRect(g, HUMAN);
+    const x = portrait ? Math.round((g.width - w) / 2) : pile.x - w - 12;
+    const y = portrait ? g.board.y + 8 : Math.max(g.board.y, Math.min(props.peek.anchor.y - 40, g.board.y + g.board.h - h));
+    const cards = props.peek.cards.map((card, i) => ({
+      ...card,
+      rect: { x: x + 8 + (i % cols) * (cardW + gap), y: y + 30 + Math.floor(i / cols) * rowH, w: cardW, h: cardH },
+    }));
+    return { panel: { x, y, w, h }, cards };
+  };
+  return (
+    <>
+      <View class="absolute rounded-[12] bg-[#0b1220f5] border-[2] border-amber-300 shadow-lg" style={at(layout().panel)} />
+      <View class="absolute flex-row items-center px-[10]" style={at({ ...layout().panel, h: 28 })}>
+        <Text class="text-sm text-amber-200 font-bold">{`${props.peek.title}（${props.peek.count}枚）`}</Text>
+      </View>
+      <Index each={layout().cards}>
+        {(card) => (
+          <>
+            <CardFace cardId={card().cardId} hidden={card().hidden} rect={card().rect} />
+            <Show when={card().caption}>
+              <View class="absolute flex-row items-center justify-center" style={at({ x: card().rect.x - 4, y: card().rect.y + card().rect.h + 1, w: card().rect.w + 8, h: 16 })}>
+                <Text class="text-xs text-violet-200">{card().caption}</Text>
+              </View>
+            </Show>
+          </>
+        )}
+      </Index>
+    </>
+  );
+}
+
+export function MatchView(props: { view: GuiView; state: GameState; hot: string | null; footer: string; leaving: boolean; peek: PilePeek | null }) {
   const v = () => props.view;
   // Where a selection-window card is ("自コマンド"), unclipped: the 12px caption fits the tile.
   const caption = (instanceId: string) => {
@@ -377,6 +539,9 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
       >
         <Text class="text-sm text-slate-100">ログ / 詳細</Text>
       </View>
+
+      {/* a pile zone enlarged: hovered, or tapped on a phone */}
+      <Show when={props.peek}>{(peek) => <PeekPanel g={g()} peek={peek()} />}</Show>
 
       {/* toast: over the top bar, or over the phase pills on a phone */}
       <Show when={v().toast}>
