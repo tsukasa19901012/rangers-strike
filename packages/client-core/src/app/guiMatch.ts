@@ -348,7 +348,7 @@ export class GuiMatch {
     if (items.length === 0) return;
     const cursor = new ListCursor();
     cursor.reset(items.length, LIST_ROWS);
-    const labels = items.map((i) => i.option.label);
+    const labels = this.placeDuplicates(items, items.map((i) => i.option.label));
     this.mode = { kind: "list", title, items, labels: variants ? variantLabels(labels) : labels, cursor };
   }
 
@@ -372,6 +372,36 @@ export class GuiMatch {
   }
 
   /** Runs a verb: one move applies, moves that differ only by target start targeting, others list variants. */
+  /**
+   * Rows that read the same (two copies of a card, オーラパワー on one of several CS-S1) get where
+   * the card they differ by is: "（自ラッシュ2）".
+   */
+  private placeDuplicates(items: MenuItem[], labels: string[]): string[] {
+    const state = this.state();
+    const groups = new Map<string, number[]>();
+    labels.forEach((label, i) => groups.set(label, [...(groups.get(label) ?? []), i]));
+    const where = (id: string) => {
+      const at = locateInstance(state, id);
+      if (!at) return null;
+      const zone = (state.players[at.player] as unknown as Record<string, { instanceId: string }[]>)[at.zone] ?? [];
+      return { place: `${at.player === HUMAN ? "自" : "敵"}${zoneLabel(at.zone)}`, position: zone.findIndex((c) => c.instanceId === id) + 1 };
+    };
+    return labels.map((label, i) => {
+      const group = groups.get(label)!;
+      if (group.length < 2) return label;
+      // The cards this row names and not every row of the group does (ゴードム: 2 of 3 戦闘員 → 「自ラッシュ2・3」).
+      const idSets = group.map((j) => new Set(actionInstanceIds(items[j]!.option.action)));
+      const own = actionInstanceIds(items[i]!.option.action).filter((id) => !idSets.every((set) => set.has(id)));
+      const places = own.map(where).filter((w): w is { place: string; position: number } => w !== null);
+      if (places.length === 0) return label;
+      const samePlace = places.every((w) => w.place === places[0]!.place);
+      const text = samePlace
+        ? `${places[0]!.place}${places.map((w) => w.position).join("・")}`
+        : places.map((w) => `${w.place}${w.position}`).join("・");
+      return `${label}（${text}）`;
+    });
+  }
+
   private runVerb(verb: Verb): StepResult | null {
     if (verb.items.length === 1) return this.execute(verb.items[0]!);
     // Moves that differ by their target pick it on the board. On the target's own popup
@@ -564,8 +594,8 @@ export class GuiMatch {
       default:
         break;
     }
-    // Keep the focused card inside the visible window of the card row.
-    const per = this.dialogCardsPerRow();
+    // Keep the focused card inside the visible window of the card rows.
+    const per = this.dialogVisibleCards(cards);
     if (this.dialogCursor < cards) {
       if (this.dialogCursor < this.dialogOffset) this.dialogOffset = this.dialogCursor;
       if (this.dialogCursor >= this.dialogOffset + per) this.dialogOffset = this.dialogCursor - per + 1;
@@ -707,6 +737,16 @@ export class GuiMatch {
     return { x: b.x + 4, y: b.y + 18, w: b.w - 8, h: 0 };
   }
 
+  /** Cards the selection window shows at once: rows of cards while the board has room (a phone shows few per row). */
+  private dialogVisibleCards(count: number): number {
+    const per = this.dialogCardsPerRow();
+    const g = this.geometry;
+    const rowH = g.tileH + g.lineHeight + 2;
+    const room = g.board.y + g.board.h - this.dialogRect().y - g.lineHeight * 6;
+    const rows = Math.max(1, Math.min(3, Math.ceil(count / per), Math.floor(room / rowH)));
+    return per * rows;
+  }
+
   private dialogCardsPerRow(): number {
     return Math.max(1, Math.floor((this.dialogRect().w - 8 + this.geometry.tileGap) / (this.geometry.tileW + this.geometry.tileGap)));
   }
@@ -809,15 +849,17 @@ export class GuiMatch {
       const cardItems = dialogItems.filter((i): i is Extract<DialogItem, { kind: "card" }> => i.kind === "card");
       const buttonItems = dialogItems.filter((i) => i.kind === "button");
       const per = this.dialogCardsPerRow();
+      const visible = this.dialogVisibleCards(cardItems.length);
       const cards: GuiDialogView["cards"] = [];
       const fitTile: WrapOptions = { fontPx: g.fontPx, maxWidthPx: g.tileW - 4 };
       if (cardItems.length > 0) {
         y += 2;
-        cardItems.slice(this.dialogOffset, this.dialogOffset + per).forEach((item, slot) => {
+        const shown = cardItems.slice(this.dialogOffset, this.dialogOffset + visible);
+        shown.forEach((item, slot) => {
           const at = locateInstance(state, item.id)!;
           const tile = cardTile(this.engine, state, at.player, at.zone, at.card, fitTile, true, false);
           const index = this.dialogOffset + slot;
-          const rect = { x: base.x + 4 + slot * (g.tileW + g.tileGap), y, w: g.tileW, h: g.tileH };
+          const rect = { x: base.x + 4 + (slot % per) * (g.tileW + g.tileGap), y: y + Math.floor(slot / per) * (g.tileH + g.lineHeight + 2), w: g.tileW, h: g.tileH };
           cards.push({
             ...tile,
             rect,
@@ -827,7 +869,7 @@ export class GuiMatch {
           });
           if (index === this.dialogCursor) detailCard = { cardId: tile.kind === "hidden" ? null : at.card.cardId, hidden: tile.kind === "hidden" };
         });
-        y += g.tileH + g.lineHeight + 2;
+        y += Math.ceil(shown.length / per) * (g.tileH + g.lineHeight + 2);
       }
       const cursor = new ListCursor();
       // As many buttons as the board has room for (a number choice can offer 0〜9 and 選ばない), at least DIALOG_BUTTONS.
@@ -853,7 +895,7 @@ export class GuiMatch {
         buttons,
         buttonOffset: cursor.offset,
         moreLeft: this.dialogOffset,
-        moreRight: Math.max(0, cardItems.length - this.dialogOffset - per),
+        moreRight: Math.max(0, cardItems.length - this.dialogOffset - visible),
       };
     }
 
