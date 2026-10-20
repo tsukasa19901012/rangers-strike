@@ -74,13 +74,13 @@ describe("XP-012 シンケンゴールド", () => {
       { type: "move_to_battle", playerId: "player2", instanceId: "RS-674:e" },
     );
 
-  it.fails("XP-012: 【サカナマル】相手が自分自身の S ユニットをバトルエリアに出すために選んだとき、これを自軍バトルエリアに出すかを選べる（任意）（出典: atwiki/page-1720「これを自軍バトルエリアに出してもよい」） — 既知の不具合: CARD-XP-012 【サカナマル】が未実装（相手がユニットを出しても選択が開かない）", () => {
+  it("XP-012: 【サカナマル】相手が自分自身の S ユニットをバトルエリアに出すために選んだとき、これを自軍バトルエリアに出すかを選べる（任意）（出典: atwiki/page-1720「これを自軍バトルエリアに出してもよい」）", () => {
     const s = enemyEnters();
     expectChoiceFrom(s, "player1", "XP-012");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XP-012: 【サカナマル】出すと、1枚ドローしてから手札を1枚選び捨札にする。捨札にしたカード（XG3-040。レッド／男／侍）と相手のユニットの同じ特徴が2つ以上なら、そのユニットは持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-1720） — 既知の不具合: CARD-XP-012 【サカナマル】が未実装", () => {
+  it("XP-012: 【サカナマル】出すと、1枚ドローしてから手札を1枚選び捨札にする。捨札にしたカード（XG3-040。レッド／男／侍）と相手のユニットの同じ特徴が2つ以上なら、そのユニットは持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-1720）", () => {
     let s = accept(enemyEnters());
     expect(zoneOf(s, "player1", "XP-012:sg")).toBe("battle");
     expect(zoneOf(s, "player1", "TST-OP:draw")).toBe("hand");
@@ -276,7 +276,7 @@ describe("XP-015 ダブルドライバー", () => {
   const inCommand = (power = 3, phase: GameState["phase"] = "rush") =>
     st({ phase, player1: { command: [released("XP-015", "dd")], hand: [inst("XG3-081", "ht"), inst("XG1-066", "fz")], power: powerCards(power), deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
 
-  it.fails("XP-015: ※ 自軍コマンドゾーンにある間、自軍ラッシュフェイズにこれをホールドして、手札の特徴「ダブルドライバー」を持つユニットカード（カテゴリが違う W・HT）をラッシュエリアに出せる（出典: atwiki/page-1880・カード評価「特徴「ダブルドライバー」持ちのユニットを何でもラッシュできる万能コマンド」） — 既知の不具合: CARD-XP-015 ※（コマンドゾーンからホールドして「ダブルドライバー」のユニットを出す）が未実装", () => {
+  it("XP-015: ※ 自軍コマンドゾーンにある間、自軍ラッシュフェイズにこれをホールドして、手札の特徴「ダブルドライバー」を持つユニットカード（カテゴリが違う W・HT）をラッシュエリアに出せる（出典: atwiki/page-1880・カード評価「特徴「ダブルドライバー」持ちのユニットを何でもラッシュできる万能コマンド」）", () => {
     const s = inCommand();
     const r = rushFromHand(s, "player1", "XG3-081:ht");
     expect(r.ok).toBe(true);

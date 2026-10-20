@@ -65,7 +65,8 @@ import { set5PassiveBpBonus } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower, effectivePowerCost, rushEffectivePowerCost } from "./power";
 import { rk11CounterCostReduction } from "../rules/rk/rk11Fields";
 import { rk12ResidentsNegated } from "../rules/rk/rk12Fields";
-import { xg1BpBonus, xg1YogosteinOnEitherField } from "../rules/xg1/xg1Fields";
+import { xg1BpBonus, xg1HandCardAddedCategories, xg1YogosteinOnEitherField } from "../rules/xg1/xg1Fields";
+import { actionContextState } from "../rules/zordFeatureContext";
 import { memoizePerCardInSearch } from "./searchCache";
 
 export function buildDefinitionMap(
@@ -494,6 +495,30 @@ export function unitEffectiveCategories(
   return xg6.length > 0 ? [...withGill, ...xg6] : withGill;
 }
 
+/**
+ * 手札のユニットカードの今のカテゴリ（効果で追加されたものを含む）。
+ * XG1-031 ゴーオンレッドの※（手札の炎神に WB）・XG6-035 の※（自軍コマンドゾーンにあるカテゴリが追加される。Q1「手札にある間も追加されます」）。
+ */
+export function handCardCategories(state: GameState, playerId: PlayerId, instance: CardInstance): Category[] {
+  const cats = [...cardCategories(getDefinition(state.definitions, instance.cardId))];
+  const added = [
+    ...(xg1HandCardAddedCategories(state, playerId, instance.cardId) as Category[]),
+    ...xg6AddedCategories<Category>(state, playerId, instance),
+  ];
+  for (const c of added) if (!cats.includes(c)) cats.push(c);
+  return cats;
+}
+
+/**
+ * XG7-055〜XG7-059「※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、○○が追加される。」で追加されるカテゴリ。
+ */
+const XG7_OWN_TURN_ADDED_CATEGORY: Readonly<Record<string, Category>> = {
+  "XG7-055": "ET",
+  "XG7-056": "MA",
+  "XG7-057": "WB",
+  "XG7-059": "OT",
+};
+
 function unitEffectiveCategoriesBase(
   state: GameState,
   playerId: PlayerId,
@@ -529,11 +554,7 @@ function unitEffectiveCategoriesBase(
   // RS-535: gains ドラゴン feature when in battle (handled via features, not here)
   // XG7-055 through XG7-059: gain category during own turn (also in command zone)
   if (state.activePlayer === playerId) {
-    let extra: Category | null = null;
-    if (instance.cardId === "XG7-055") extra = "ET";
-    else if (instance.cardId === "XG7-056") extra = "MA";
-    else if (instance.cardId === "XG7-057") extra = "WB";
-    else if (instance.cardId === "XG7-059") extra = "OT";
+    const extra: Category | null = XG7_OWN_TURN_ADDED_CATEGORY[instance.cardId] ?? null;
     if (extra !== null) {
       return cats.includes(extra) ? cats : [...cats, extra];
     }
@@ -542,6 +563,14 @@ function unitEffectiveCategoriesBase(
     return cats.includes("DA") ? cats : [...cats, "DA"];
   }
   return cats;
+}
+
+/** applyAction / getLegalActions の入口の状態で、playerId のターン中か（反応の窓で優先権が移っていてもターンのプレイヤーで見る）。 */
+function isTurnPlayerInActionContext(playerId: PlayerId): boolean {
+  const ctx = actionContextState();
+  if (!ctx) return false;
+  const turnPlayer = ctx.pendingRush?.phasePlayerId ?? ctx.pendingEffectChoice?.phasePlayerId ?? ctx.activePlayer;
+  return turnPlayer === playerId;
 }
 
 const YOGOSTEIN_CARD_ID = "XG1-033";
@@ -566,7 +595,11 @@ export function effectiveCommandCategories(
   const base = xg6CommandCategories(cardId, cardCategories(def));
   // XG6-060【カンドロイド】: このターン、選んだコマンドのカテゴリに追加する（rules/xg6/xg6Fields.ts）。
   const turnAdded = xg6TurnCommandCategories<Category>(player, cardId).filter((c) => !base.includes(c));
-  const printed = turnAdded.length > 0 ? [...base, ...turnAdded] : base;
+  const withTurn = turnAdded.length > 0 ? [...base, ...turnAdded] : base;
+  // XG7-055〜XG7-059 の※（自軍ゾーン＝コマンドゾーンにある間も、自軍ターン中はカテゴリが追加される）。
+  // コマンドのカテゴリはプレイヤー単位で判定するので、いまのターンは applyAction / getLegalActions の入口の状態で見る。
+  const ownTurnExtra = XG7_OWN_TURN_ADDED_CATEGORY[cardId];
+  const printed = ownTurnExtra && !withTurn.includes(ownTurnExtra) && isTurnPlayerInActionContext(player.id) ? [...withTurn, ownTurnExtra] : withTurn;
   if (!yogosteinGrantsDa(player)) return printed;
   if (printed.includes("DA")) return printed;
   if (parsePowerCost(def?.powerCost) > 3) return printed;

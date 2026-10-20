@@ -7,6 +7,7 @@
 import { expect, it } from "vitest";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
+import { handCardCategories, unitEffectiveCategories } from "../core/catalog";
 import {
   attackUntilRegister,
   canStartRush,
@@ -32,6 +33,17 @@ import {
 export * from "./XG6-001-022.helpers";
 
 type Cat = "WB" | "MA" | "OT" | "ET" | "DA";
+
+/** カードの今のカテゴリ（場のユニットは unitEffectiveCategories、手札のカードは handCardCategories。効果で追加されたものを含む）。 */
+export function categoriesOf(s: GameState, playerId: PlayerId, instanceId: string): string[] {
+  const p = s.players[playerId];
+  const inBattle = p.battle.find((c) => c.instanceId === instanceId);
+  const c = inBattle ?? p.rush.find((x) => x.instanceId === instanceId);
+  if (c) return [...unitEffectiveCategories(s, playerId, c, inBattle ? "battle" : "rush")].sort();
+  const h = p.hand.find((x) => x.instanceId === instanceId);
+  if (!h) throw new Error(`no card ${instanceId}`);
+  return [...handCardCategories(s, playerId, h)].sort();
+}
 
 /** 手札のカード（オペレーション・ユニット）を使う／ラッシュするときのコマンドの支払いで選べるもの。 */
 export function payableFor(s: GameState, sourceInstanceId: string, playerId: PlayerId = "player1"): string[] {

@@ -250,7 +250,7 @@ describe("XP-029 仮面ライダーW・CAX", () => {
     expect(choiceIds(s)).not.toContain("XP-029:w");
   });
 
-  it.fails("XP-029: ※ブレイカー — 本来のカード名が同じ自軍ユニットがあるとラッシュできない（ないときはできる）（出典: atwiki/page-2362・R-KW-BREAKER-02） — 既知の不具合: CARD-XP-029 追加条件（捨札にする）の支払いの経路でブレイカーの同名禁止を見ない（共通のブレイカーの修正は XG7 の担当。マージで直す）", () => {
+  it("XP-029: ※ブレイカー — 本来のカード名が同じ自軍ユニットがあるとラッシュできない（ないときはできる）（出典: atwiki/page-2362・R-KW-BREAKER-02）", () => {
     expect(canStartRush(rushBoard(["SPEC-WD"]), "player1", "XP-029:w")).toBe(true);
     const same = rushPhase({ hand: [inst("XP-029", "w")], rush: [inst("SPEC-WD", "p0")], battle: [inst("XP-029", "same")], command: releasedCat("ET", 1), power: powerCards(5) }, {}, EXTRA);
     expect(canStartRush(same, "player1", "XP-029:w")).toBe(false);

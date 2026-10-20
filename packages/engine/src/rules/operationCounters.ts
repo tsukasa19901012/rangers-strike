@@ -1,4 +1,4 @@
-import { applyXg5AttackWin } from "./xg5/xg5Core";
+import { applyXg5AttackWin, XG5_CONFINE_WINDOW_EFFECT_ID } from "./xg5/xg5Core";
 import { xg5BattleUsesPrintedBp } from "./xg5/xg5Fields";
 import { rm2AfterBattle } from "./rm/rm2Effects";
 import { xg1aAfterBattle } from "./xg1/xg1aEffects";
@@ -269,7 +269,9 @@ export function isCounterReactionActive(state: GameState): boolean {
     // ストライクの反応窓（RS-184 マジパンチ等。使えるカウンターは legalActions の appendStrikeReactionActions）。
     state.pendingStrike ||
     // RS-255 巨大化爆弾の使用の窓。
-    state.pendingGiantBomb
+    state.pendingGiantBomb ||
+    // XG5-064 コンファインベント（敵軍バトルフェイズ開始時）の使用の窓（rules/xg5/xg5dEffects.ts）。
+    state.pendingEffectChoice?.effectId === XG5_CONFINE_WINDOW_EFFECT_ID
   );
 }
 

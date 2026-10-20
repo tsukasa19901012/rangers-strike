@@ -332,6 +332,8 @@ export type InitiateCommandPaymentAction = {
   extraInstanceId?: string;
   /** RS-018 等: カウンター支払い後に適用する代替ユニット。 */
   substituteInstanceId?: string;
+  /** XG7-045・XP-015 ※: このドライバー（自軍コマンド）だけをホールドしてラッシュする（rules/driverCommandRush.ts）。 */
+  driverCommandInstanceId?: string;
 };
 
 export type ResolveCommandPaymentAction = {

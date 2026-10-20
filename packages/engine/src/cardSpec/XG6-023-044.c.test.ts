@@ -10,9 +10,10 @@
  * レアリティは atwiki の「ノーマル／レア／スーパーレア」を N／R／SR として照合する。
  */
 import { describe, expect, it } from "vitest";
-import type { CardInstance } from "../types/game";
+import type { CardInstance, GameState } from "../types/game";
 import {
   accept,
+  act,
   attackTargets,
   attackUntilRegister,
   beltUsed,
@@ -88,14 +89,57 @@ describe("XG6-037 仮面ライダーアクセル", () => {
     expect(legal(s).some((a) => a.type === "move_to_battle" && a.instanceId === "XG6-037:ac")).toBe(true);
   });
 
-  it.fails(
-    `XG6-037: 【振り切るぜ】自軍バトルフェイズ中、ライドしていないこれ（自軍ラッシュエリア）について、S ビークルを選んでビークルとして扱う行動がある（出典: ${PAGE}「Sビークルを1体選んでもよい。そうしたとき、このターン、これは本来のテキストをもたないSビークルとして扱い」）— 既知の不具合: CARD-XG6-037 【振り切るぜ】を使う手段がない`,
+  it(
+    `XG6-037: 【振り切るぜ】自軍バトルフェイズ中、ライドしていないこれ（自軍ラッシュエリア）について、S ビークルを選んでビークルとして扱う行動がある（出典: ${PAGE}「Sビークルを1体選んでもよい。そうしたとき、このターン、これは本来のテキストをもたないSビークルとして扱い」）`,
     () => {
       const s = p1Battle({ rush: [inst("XG6-037", "ac"), inst("SPEC-VEH", "v")] }, {}, EXTRA);
       const others = legal(s).filter((a) => a.playerId === "player1" && JSON.stringify(a).includes("XG6-037:ac") && !["move_to_battle", "mount_ride", "hold_for_wing"].includes(a.type));
       expect(others.length).toBeGreaterThan(0);
     },
   );
+
+  // U-30（利用者の決定 2026-10-20）: 選べるのは両軍の場（ラッシュエリア・バトルエリア）の S ビークルならどれでも。ライド中のものも選べる。M・L ビークルは選べない。
+  const U30 = "（出典: 利用者の決定 2026-10-20・questions-all.md U-30）";
+  const VEH_M = vehicleCard("SPEC-VEH-M", { size: "M" });
+  const U30_EXTRA = [...EXTRA, VEH_M];
+  /** 【振り切るぜ】を使う（XG6-037:ac を指す、ふつうの進入・ライド・ウイング以外の行動）。使う手段がなければ失敗する。 */
+  const furikiru = (s: GameState): GameState => {
+    const a = legal(s).find((x) => x.playerId === "player1" && JSON.stringify(x).includes("XG6-037:ac") && !["move_to_battle", "mount_ride", "hold_for_wing"].includes(x.type));
+    if (!a) throw new Error("XG6-037【振り切るぜ】を使う行動がない");
+    return act(s, a);
+  };
+  const u30Board = (): GameState =>
+    p1Battle(
+      { rush: [inst("XG6-037", "ac"), inst("SPEC-VEH", "v"), inst("SPEC-VEH-M", "m")] },
+      { rush: [inst("SPEC-VEH", "ev")], battle: [inst("SPEC-VEH", "rv"), { ...inst("TST-UNIT-0", "rr"), mountedOnInstanceId: "SPEC-VEH:rv" }] },
+      U30_EXTRA,
+    );
+
+  it(`XG6-037: 【振り切るぜ】選べる S ビークルに、自軍ラッシュエリアの S ビークルと敵軍ラッシュエリアの S ビークルが入る${U30}`, () => {
+    const ids = choiceIds(furikiru(u30Board()));
+    expect(ids).toContain("SPEC-VEH:v");
+    expect(ids).toContain("SPEC-VEH:ev");
+  });
+
+  it(`XG6-037: 【振り切るぜ】ライドされている S ビークル（敵軍バトルエリア）も選べる${U30}`, () => {
+    expect(choiceIds(furikiru(u30Board()))).toContain("SPEC-VEH:rv");
+  });
+
+  it(`XG6-037: 【振り切るぜ】M ビークルは選べない（S ビークルだけ）。これ自身も候補に入らない${U30}`, () => {
+    const ids = choiceIds(furikiru(u30Board()));
+    expect(ids.length).toBeGreaterThan(0);
+    expect(ids).not.toContain("SPEC-VEH-M:m");
+    expect(ids).not.toContain("XG6-037:ac");
+  });
+
+  it(`XG6-037: 【振り切るぜ】敵軍の S ビークル（RK-189【地空人の精霊パワー】）を選ぶと、その効果名のテキストが追加され、ライドされずにバトルエリアに出たとき自軍コマンドをリリースする選択が開く${U30}`, () => {
+    const heldCmd = (n: number) => Array.from({ length: n }, (_, i) => ({ ...inst("TST-OP", `h${i}`), commandHeld: true }));
+    let s = p1Battle({ rush: [inst("XG6-037", "ac")], command: heldCmd(3) }, { rush: [inst("RK-189", "ej")] }, U30_EXTRA);
+    s = pick(furikiru(s), "RK-189:ej");
+    s = enter(s, "XG6-037:ac");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    expect(choiceIds(s)).toEqual(["TST-OP:h0", "TST-OP:h1", "TST-OP:h2"]);
+  });
 });
 
 // ===========================================================================

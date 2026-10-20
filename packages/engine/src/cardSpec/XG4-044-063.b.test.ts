@@ -44,6 +44,7 @@ import {
   resolveAll,
   rushBoard,
   rushFromHand,
+  rushVia,
   settle,
   spOf,
   sUnit,
@@ -259,8 +260,9 @@ describe("XG4-056 ドラグランザー（バイク形態）", () => {
     expectRarityIn("XG4-056", ["N"]);
   });
 
-  it.fails("XG4-056: 追加条件 — 自軍「ドラグランザー」1体を手札に戻してラッシュできる（出典: atwiki/page-2080「追加条件：自軍「ドラグランザー」1体を手札に戻す」）（既知の不具合: CARD-XG4-056 「ドラグランザー」を手札に戻す追加条件でラッシュできない）", () => {
-    const r = rushFromHand(board({ hand: [inst("XG4-056", "bk")], rush: [inst("XG4-055", "dr")], command: releasedCat("WB", 1), power: powerCards(5) }), "player1", "XG4-056:bk");
+  it("XG4-056: 追加条件 — 自軍「ドラグランザー」1体を手札に戻してラッシュできる（出典: atwiki/page-2080「追加条件：自軍「ドラグランザー」1体を手札に戻す」）", () => {
+    // 手札に戻す素材を指定するラッシュの宣言を選ぶ（XG2-074・XG3-077 と同じ。rushFromHand は素材を指定しない宣言しか試さない）。
+    const r = rushVia(board({ hand: [inst("XG4-056", "bk")], rush: [inst("XG4-055", "dr")], command: releasedCat("WB", 1), power: powerCards(5) }), "player1", "XG4-056:bk", (a) => JSON.stringify(a).includes("XG4-055:dr"));
     expect(r.ok, r.error).toBe(true);
     const s = resolveAll(r.state);
     expect(zoneOf(s, "player1", "XG4-056:bk")).toBe("rush");

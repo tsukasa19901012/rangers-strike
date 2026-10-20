@@ -102,7 +102,7 @@ describe("XG7-055 サイクロン・ドーパント", () => {
     expect(categoriesOf(enemyTurn("XG7-055"), "player1", "XG7-055:x")).toEqual(["DA"]);
   });
 
-  it.fails("XG7-055: ※ 自軍ターン中、自軍コマンドゾーンにある間も ET のコマンドとして ET のオペレーションの支払いに使える（出典: atwiki/page-2423「自軍エリアまたは自軍ゾーンにある間」） — 既知の不具合: CARD-XG7-055 自軍コマンドゾーンにあるとき ET が追加されない（ET のコマンドとして払えない）", () => {
+  it("XG7-055: ※ 自軍ターン中、自軍コマンドゾーンにある間も ET のコマンドとして ET のオペレーションの支払いに使える（出典: atwiki/page-2423「自軍エリアまたは自軍ゾーンにある間」）", () => {
     const s = rushPhaseOf({ hand: [inst("TST-OP-ET", "op")], command: [released("XG7-055", "c")], power: powerCards(3) }, {}, EXTRA);
     expect(payableFor(s, "TST-OP-ET:op")).toContain("XG7-055:c");
   });

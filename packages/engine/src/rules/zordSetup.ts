@@ -22,6 +22,7 @@ import { rushPowerBudget } from "./rushDeclaration";
 import { countAvailablePower, effectivePowerCost } from "../core/power";
 import { findInZone } from "../core/helpers";
 import { xg1HoldSubstituteAvailable } from "./xg1/xg1Fields";
+import { breakerBlocksSameNameRush } from "../keywords/battleKeywords";
 import {
   buildCategoryPayment,
   buildMothershipHoldPayment,
@@ -75,6 +76,8 @@ export function hasLegalZordRush(
   if (!found) return false;
   const def = getDefinition(state.definitions, found.card.cardId);
   if (!def || (!isUnit(def) && !isVehicle(def))) return false;
+  // ルール: R-KW-BREAKER-02 — 同名の自軍ユニットがあればブレイカー持ちはラッシュできない（追加条件の素材を払う経路でも）。
+  if (breakerBlocksSameNameRush(player, state.definitions, found.card.cardId)) return false;
 
   if (requiresAllFusionPartners(found.card.cardId)) {
     return canRushUnit(
@@ -224,6 +227,8 @@ export function createZordSetup(
   if (!found) return null;
   const def = getDefinition(state.definitions, found.card.cardId);
   if (!def || (!isUnit(def) && !isVehicle(def))) return null;
+  // ルール: R-KW-BREAKER-02 — 同名の自軍ユニットがあればブレイカー持ちはラッシュできない（追加条件の素材を払う経路でも。XP-029・XG6-035 等）。
+  if (breakerBlocksSameNameRush(player, state.definitions, found.card.cardId)) return null;
   // 「自軍捨札に「X」があるとき、…を捨札にする」— 前半の状態を満たさなければこの追加条件ではラッシュできない（SR-003 atwiki/page-46）。
   const gate = def.rushAdditionalCondition?.text.match(/^自軍捨札に「([^」]+)」があるとき、/);
   if (gate && !player.discard.some((c) => getDefinition(state.definitions, c.cardId)?.name === gate[1])) return null;

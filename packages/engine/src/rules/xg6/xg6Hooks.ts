@@ -6,7 +6,7 @@
  * 各カードの効果は rules/xg6/xg6aEffects.ts（XG6-001〜022）等が rules/xg6/xg6Common.ts の表に登録する。
  * 継続効果・ほかの処理の場所から呼ぶ判定（BP・SP・負ける点数・アタックの制限等）は rules/xg6/xg6Fields.ts。
  */
-import type { GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import type { ChoiceOutcome } from "../rm/rm1Effects";
 import { CHOICE_CONFIRMERS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, XG6_DONE, XG6_KEYWORDS, XG6_KEYWORD_PREFIX } from "./xg6Common";
@@ -14,10 +14,17 @@ import "./xg6aEffects";
 import "./xg6bEffects";
 import { applyXg6AfterAction as applyXg6bAfterAction } from "./xg6bEffects";
 import { syncXg6ArkSize } from "./xg6cEffects";
+import { tryXg6OnEnterBattle as tryXg6aOnEnterBattle } from "./xg6aEffects";
+import { restoreXg6Furikiru, tryXg6FurikiruOnEnterBattle } from "./xg6dEffects";
 
-/** 各アクションの後（core/applyAction.ts）。XG6-053 の※のサイズを同期してから XG6-042 等を処理する。 */
+/** 各アクションの後（core/applyAction.ts）。XG6-053 の※のサイズを同期してから XG6-042 等を処理する。XG6-037【振り切るぜ】の期限が切れたら元に戻す。 */
 export function applyXg6AfterAction(state: GameState): GameState {
-  return applyXg6bAfterAction(syncXg6ArkSize(state));
+  return applyXg6bAfterAction(syncXg6ArkSize(restoreXg6Furikiru(state)));
+}
+
+/** バトルエリアに出たとき（rules/combo.ts）: XG6-008 炎神剣（rules/xg6/xg6aEffects.ts）・XG6-037【振り切るぜ】で追加したテキスト（rules/xg6/xg6dEffects.ts）。 */
+export function tryXg6OnEnterBattle(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
+  return tryXg6FurikiruOnEnterBattle(tryXg6aOnEnterBattle(state, playerId, card), playerId, card);
 }
 
 export {
@@ -28,7 +35,6 @@ export {
   openXg6OnStrike,
   xg6HandActivations,
   activateXg6HandEffect,
-  tryXg6OnEnterBattle,
 } from "./xg6aEffects";
 export {
   applyXg6StartPhaseBegin,

@@ -11,7 +11,8 @@ import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { cardName, effectiveBp, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { findInZone, opponent, updatePlayer } from "../../core/helpers";
-import { addNextTurnRuleModifier, addTurnRuleModifier, hasTurnRuleModifier } from "../../core/scopedModifiers";
+import { addNextTurnRuleModifier, addTurnRuleModifier, hasScopedRestriction, hasTurnRuleModifier } from "../../core/scopedModifiers";
+import { XG5_CONFINE_RESTRICTION } from "../xg5/xg5Core";
 import { grantSp1ToBattleUnit, hasBattleNcEffect, markBattleNcEffect } from "../namedUnitEffects";
 import { redRacerPowerCostBonus } from "../../core/power";
 import { strikeDamageFor } from "../combo";
@@ -698,6 +699,8 @@ export function namedTextNegated(state: Pick<GameState, "players" | "definitions
   if (set8DNamedTextNegated(state, card)) return true;
   // RK-334 仮面ライダー電王LF（2nd）の※（必要パワーの数字が2以下のユニット。rules/rk/rk16Fields.ts）。
   if (rk16NamedTextNegated(state, ownerId, card)) return true;
+  // XG5-064 コンファインベントで選ばれたユニット・ビークル（このターン。rules/xg5/xg5dEffects.ts）。
+  if (hasScopedRestriction(state.players[ownerId], card.instanceId, XG5_CONFINE_RESTRICTION)) return true;
   if (!hasTurnRuleModifier(state.players[opponent(ownerId)], THUNDER_ROAR_RULE)) return false;
   if (getDefinition(state.definitions, card.cardId)?.type !== "unit") return false;
   return unitFeatures(state, ownerId, card).includes("メカ");

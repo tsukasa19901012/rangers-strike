@@ -327,13 +327,13 @@ describe("XG6-035 仮面ライダーW・CJX", () => {
     expect(canStartRush(board([inst("TST-UNIT-0", "u")]), "player1", "XG6-035:w")).toBe(false);
   });
 
-  breakerTests("XG6-035", PAGE, "ET", EXTRA, { rush: [inst("SPEC-DD", "d")] }, "同名の自軍ユニットがバトルエリアにあってもラッシュを始められる");
+  breakerTests("XG6-035", PAGE, "ET", EXTRA, { rush: [inst("SPEC-DD", "d")] });
 
   const field = (command: CardInstance[]) => p1Battle({ battle: [inst("XG6-035", "w")], command }, { battle: [inst("SPEC-WB4", "e")] }, EXTRA);
   const three = () => [released("TST-OP", "c1"), released("TST-OP-MA", "c2"), released("TST-OP-DA", "c3")];
 
-  it.fails(
-    `XG6-035: ※ 自軍コマンドゾーンにあるカテゴリ（WB・MA・DA）が追加される（場でも手札でも）（出典: ${PAGE}「これは自軍コマンドゾーンにあるカテゴリが追加される」・Q1「はい、追加されます」）— 既知の不具合: CARD-XG6-035 カテゴリが ET のまま`,
+  it(
+    `XG6-035: ※ 自軍コマンドゾーンにあるカテゴリ（WB・MA・DA）が追加される（場でも手札でも）（出典: ${PAGE}「これは自軍コマンドゾーンにあるカテゴリが追加される」・Q1「はい、追加されます」）`,
     () => {
       expect([...categoriesOf(field(three()), "player1", "XG6-035:w")].sort()).toEqual(["DA", "ET", "MA", "WB"]);
       const h = rushBoard({ hand: [inst("XG6-035", "w")], command: [released("TST-OP-MA", "c")] }, {}, EXTRA);
