@@ -10,7 +10,7 @@
 // Every choice offered comes from GameSession.humanOptions() (the engine's
 // legal actions). The GUI only groups them, it never decides legality, and △
 // always lists every option so nothing the engine allows is unreachable.
-import type { EngineApi, GameState } from "../engineApi";
+import type { EngineApi, GameAction, GameState } from "../engineApi";
 import { CPU, HUMAN } from "../engineApi";
 import type { LogicalInput } from "../input/actions";
 import { ListCursor } from "../input/actions";
@@ -348,7 +348,7 @@ export class GuiMatch {
     if (items.length === 0) return;
     const cursor = new ListCursor();
     cursor.reset(items.length, LIST_ROWS);
-    const labels = items.map((i) => i.option.label);
+    const labels = this.placeDuplicates(items, items.map((i) => i.option.label));
     this.mode = { kind: "list", title, items, labels: variants ? variantLabels(labels) : labels, cursor };
   }
 
@@ -364,7 +364,7 @@ export class GuiMatch {
     if (tile && verbs.length > 0) {
       // The popup title already names the card, so drop it from each row.
       const name = this.cardName(tile.cardId);
-      const short = verbs.map((verb) => ({ ...verb, label: verb.label.split(`: ${name}`).join("").trim() || verb.label }));
+      const short = verbs.map((verb) => ({ ...verb, label: dropCardName(verb.label, name) }));
       this.openPopup(name, this.focusedRect(), short);
     } else {
       this.openPopup("全体の操作", this.geometry.endButton, this.globalVerbs());
@@ -372,40 +372,72 @@ export class GuiMatch {
   }
 
   /** Runs a verb: one move applies, moves that differ only by target start targeting, others list variants. */
+  /**
+   * Rows that read the same (two copies of a card, オーラパワー on one of several CS-S1) get where
+   * the card they differ by is: "（自ラッシュ2）".
+   */
+  private placeDuplicates(items: MenuItem[], labels: string[]): string[] {
+    const state = this.state();
+    const groups = new Map<string, number[]>();
+    labels.forEach((label, i) => groups.set(label, [...(groups.get(label) ?? []), i]));
+    const where = (id: string) => {
+      const at = locateInstance(state, id);
+      if (!at) return null;
+      const zone = (state.players[at.player] as unknown as Record<string, { instanceId: string }[]>)[at.zone] ?? [];
+      return { place: `${at.player === HUMAN ? "自" : "敵"}${zoneLabel(at.zone)}`, position: zone.findIndex((c) => c.instanceId === id) + 1 };
+    };
+    return labels.map((label, i) => {
+      const group = groups.get(label)!;
+      if (group.length < 2) return label;
+      // The cards this row names and not every row of the group does (ゴードム: 2 of 3 戦闘員 → 「自ラッシュ2・3」).
+      const idSets = group.map((j) => new Set(actionInstanceIds(items[j]!.option.action)));
+      const own = actionInstanceIds(items[i]!.option.action).filter((id) => !idSets.every((set) => set.has(id)));
+      const places = own.map(where).filter((w): w is { place: string; position: number } => w !== null);
+      if (places.length === 0) return label;
+      const samePlace = places.every((w) => w.place === places[0]!.place);
+      const text = samePlace
+        ? `${places[0]!.place}${places.map((w) => w.position).join("・")}`
+        : places.map((w) => `${w.place}${w.position}`).join("・");
+      return `${label}（${text}）`;
+    });
+  }
+
   private runVerb(verb: Verb): StepResult | null {
     if (verb.items.length === 1) return this.execute(verb.items[0]!);
-    const byTarget = new Map<string, MenuItem[]>();
-    let allTargeted = true;
-    for (const item of verb.items) {
-      const target = actionTargetId(item.option.action);
-      if (!target) {
-        allTargeted = false;
-        break;
-      }
-      const list = byTarget.get(target) ?? [];
-      list.push(item);
-      byTarget.set(target, list);
-    }
-    const targets: Target[] = [];
-    if (allTargeted) {
-      for (const [id, items] of byTarget) {
-        const at = this.findTile(id);
-        if (!at) {
-          allTargeted = false;
-          break;
-        }
-        targets.push({ id, row: at.row, index: at.index, items });
-      }
-    }
-    if (allTargeted && targets.length > 0) {
+    // Moves that differ by their target pick it on the board. On the target's own popup
+    // ("アタック（このカードへ）" with several attackers) they differ by their subject instead.
+    const type = verb.items[0]!.option.action.type;
+    const byTarget = this.boardTargets(verb.items, actionTargetId);
+    const bySubject = byTarget && byTarget.length === 1 ? this.boardTargets(verb.items, actionSubjectId) : null;
+    const targets = bySubject && bySubject.length > 1 ? bySubject : byTarget;
+    if (targets && targets.length > 0 && !(targets.length === 1 && targets[0]!.items.length > 1)) {
       targets.sort((a, b) => a.row - b.row || a.index - b.index);
-      const type = verb.items[0]!.option.action.type;
-      this.mode = { kind: "target", prompt: TARGET_PROMPTS[type] ?? `${verb.label}: 対象を選ぶ`, targets, cursor: 0 };
+      const prompt = targets === bySubject ? `${verb.label}: 使うカードを選ぶ` : (TARGET_PROMPTS[type] ?? `${verb.label}: 対象を選ぶ`);
+      this.mode = { kind: "target", prompt, targets, cursor: 0 };
       this.setFocus(targets[0]!.row, targets[0]!.index);
       return null;
     }
     this.openList(verb.label, verb.items, true);
     return null;
+  }
+
+  /** Items grouped by the board card `key` names, or null when one has no such card on the board. */
+  private boardTargets(items: MenuItem[], key: (action: GameAction) => string | undefined): Target[] | null {
+    const byId = new Map<string, MenuItem[]>();
+    for (const item of items) {
+      const id = key(item.option.action);
+      if (!id) return null;
+      const list = byId.get(id) ?? [];
+      list.push(item);
+      byId.set(id, list);
+    }
+    const targets: Target[] = [];
+    for (const [id, grouped] of byId) {
+      const at = this.findTile(id);
+      if (!at) return null;
+      targets.push({ id, row: at.row, index: at.index, items: grouped });
+    }
+    return targets;
   }
 
   private runItems(items: MenuItem[], title: string): StepResult | null {
@@ -508,7 +540,7 @@ export class GuiMatch {
           const name = this.instanceName(id);
           const own = this.cardVerbs(id);
           // One card: the title names it; several: each row keeps its card name.
-          return event.instanceIds.length === 1 ? own.map((verb) => ({ ...verb, label: verb.label.split(`: ${name}`).join("").trim() || verb.label })) : own;
+          return event.instanceIds.length === 1 ? own.map((verb) => ({ ...verb, label: dropCardName(verb.label, name) })) : own;
         });
         if (verbs.length > 0) this.openPopup(event.title, event.anchor, verbs);
         break;
@@ -562,8 +594,8 @@ export class GuiMatch {
       default:
         break;
     }
-    // Keep the focused card inside the visible window of the card row.
-    const per = this.dialogCardsPerRow();
+    // Keep the focused card inside the visible window of the card rows.
+    const per = this.dialogVisibleCards(cards);
     if (this.dialogCursor < cards) {
       if (this.dialogCursor < this.dialogOffset) this.dialogOffset = this.dialogCursor;
       if (this.dialogCursor >= this.dialogOffset + per) this.dialogOffset = this.dialogCursor - per + 1;
@@ -705,6 +737,16 @@ export class GuiMatch {
     return { x: b.x + 4, y: b.y + 18, w: b.w - 8, h: 0 };
   }
 
+  /** Cards the selection window shows at once: rows of cards while the board has room (a phone shows few per row). */
+  private dialogVisibleCards(count: number): number {
+    const per = this.dialogCardsPerRow();
+    const g = this.geometry;
+    const rowH = g.tileH + g.lineHeight + 2;
+    const room = g.board.y + g.board.h - this.dialogRect().y - g.lineHeight * 6;
+    const rows = Math.max(1, Math.min(3, Math.ceil(count / per), Math.floor(room / rowH)));
+    return per * rows;
+  }
+
   private dialogCardsPerRow(): number {
     return Math.max(1, Math.floor((this.dialogRect().w - 8 + this.geometry.tileGap) / (this.geometry.tileW + this.geometry.tileGap)));
   }
@@ -807,15 +849,17 @@ export class GuiMatch {
       const cardItems = dialogItems.filter((i): i is Extract<DialogItem, { kind: "card" }> => i.kind === "card");
       const buttonItems = dialogItems.filter((i) => i.kind === "button");
       const per = this.dialogCardsPerRow();
+      const visible = this.dialogVisibleCards(cardItems.length);
       const cards: GuiDialogView["cards"] = [];
       const fitTile: WrapOptions = { fontPx: g.fontPx, maxWidthPx: g.tileW - 4 };
       if (cardItems.length > 0) {
         y += 2;
-        cardItems.slice(this.dialogOffset, this.dialogOffset + per).forEach((item, slot) => {
+        const shown = cardItems.slice(this.dialogOffset, this.dialogOffset + visible);
+        shown.forEach((item, slot) => {
           const at = locateInstance(state, item.id)!;
           const tile = cardTile(this.engine, state, at.player, at.zone, at.card, fitTile, true, false);
           const index = this.dialogOffset + slot;
-          const rect = { x: base.x + 4 + slot * (g.tileW + g.tileGap), y, w: g.tileW, h: g.tileH };
+          const rect = { x: base.x + 4 + (slot % per) * (g.tileW + g.tileGap), y: y + Math.floor(slot / per) * (g.tileH + g.lineHeight + 2), w: g.tileW, h: g.tileH };
           cards.push({
             ...tile,
             rect,
@@ -825,10 +869,12 @@ export class GuiMatch {
           });
           if (index === this.dialogCursor) detailCard = { cardId: tile.kind === "hidden" ? null : at.card.cardId, hidden: tile.kind === "hidden" };
         });
-        y += g.tileH + g.lineHeight + 2;
+        y += Math.ceil(shown.length / per) * (g.tileH + g.lineHeight + 2);
       }
       const cursor = new ListCursor();
-      cursor.reset(buttonItems.length, DIALOG_BUTTONS);
+      // As many buttons as the board has room for (a number choice can offer 0〜9 and 選ばない), at least DIALOG_BUTTONS.
+      const board = this.geometry.board;
+      cursor.reset(buttonItems.length, Math.max(DIALOG_BUTTONS, Math.floor((board.y + board.h - y - 8) / g.lineHeight)));
       const buttonCursor = this.dialogCursor - cardItems.length;
       if (buttonCursor >= 0) {
         cursor.index = buttonCursor;
@@ -849,7 +895,7 @@ export class GuiMatch {
         buttons,
         buttonOffset: cursor.offset,
         moreLeft: this.dialogOffset,
-        moreRight: Math.max(0, cardItems.length - this.dialogOffset - per),
+        moreRight: Math.max(0, cardItems.length - this.dialogOffset - visible),
       };
     }
 
@@ -1017,4 +1063,16 @@ export function variantLabels(labels: string[]): string[] {
   if (cut <= 0) return labels;
   const short = labels.map((label) => label.slice(cut).trim());
   return short.some((label) => label.length === 0) || new Set(short).size < labels.length ? labels : short;
+}
+
+/**
+ * A popup row without the card name its title already shows. Only the whole
+ * name goes: "ラッシュ: アバレッドAM / アバレッド" on アバレッド's popup stays as is.
+ */
+export function dropCardName(label: string, name: string): string {
+  const at = label.indexOf(`: ${name}`);
+  if (at < 0) return label;
+  const end = at + 2 + name.length;
+  if (end < label.length && !/[\s（(→/]/.test(label[end]!)) return label;
+  return (label.slice(0, at) + label.slice(end)).trim() || label;
 }
