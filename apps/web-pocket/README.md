@@ -61,3 +61,15 @@ npm run web:dev      # dist/ をビルドして http://127.0.0.1:8140/ で配信
 
 `dist/` の主なサイズ: `app/main.pak` 12.4 MiB（gzip 1.7 MiB、日本語フォントアトラス）、
 `engine.js` 8.3 MiB（gzip 1.3 MiB）、`app/main.js` 0.35 MiB、カード画像 38 MiB。
+
+## Vercel で公開
+
+`vercel.json` に設定があります（Next.js 版の Vercel プロジェクトとは別のプロジェクトにします）。
+
+1. Vercel で **Add New → Project** から `rangers-strike` リポジトリを選ぶ
+2. **Root Directory** を `apps/web-pocket` にする（「Include files outside the root directory」は有効のまま）
+3. **Framework Preset** は `Other`。Build / Install / Output は `vercel.json` の値が使われるので空欄のまま
+4. Node.js は 20 以上（既定の 22 で可）
+
+ビルドはリポジトリ全体の `npm ci` → PocketJS ツールチェーンの `npm ci` → フォント取得 → `scripts/build.mjs` の順で、
+`dist/` を静的サイトとして配信します。
