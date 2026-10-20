@@ -11,6 +11,7 @@ import { PLAYER_LABELS } from "../text/labels";
 import { fitLine, wrapText, type WrapOptions } from "../text/wrap";
 import { boardLines, buildBoardView, buildPendingView, pendingLines } from "../view/board";
 import { computeLayout, type FontPx, type Layout, type Viewport } from "../view/layout";
+import { GuiMatch, type GuiView } from "./guiMatch";
 
 export type Row = { text: string; selected: boolean };
 
@@ -29,6 +30,8 @@ export type ScreenView = {
   busy: boolean;
   /** Increments on every visible change. */
   revision: number;
+  /** Graphical match screen (card tiles + action menu) when the controller runs with `gui`. */
+  gui?: GuiView;
 };
 
 export type ControllerOptions = {
@@ -40,6 +43,8 @@ export type ControllerOptions = {
   /** Seed source for new matches (defaults to the clock). */
   seed?: () => number;
   defaults?: Partial<Settings>;
+  /** Draw the match as card tiles with an action menu instead of the text list. */
+  gui?: boolean;
 };
 
 const MATCH_TABS = ["盤面:CPU", "盤面:自分", "ログ", "詳細"];
@@ -64,9 +69,14 @@ export class AppController {
   private revision = 0;
   private cachedView: ScreenView | null = null;
   private deckIds: string[] = [];
+  private viewport: Viewport;
+  private readonly guiEnabled: boolean;
+  private gui: GuiMatch | null = null;
 
   constructor(options: ControllerOptions) {
     this.platform = options.platform;
+    this.viewport = options.viewport;
+    this.guiEnabled = !!options.gui;
     this.fontPx = options.fontPx;
     this.layout = computeLayout(options.viewport, options.fontPx);
     this.cpuDelayFrames = options.cpuDelayFrames ?? 8;
@@ -100,7 +110,9 @@ export class AppController {
   }
 
   setViewport(viewport: Viewport): void {
+    this.viewport = viewport;
     this.layout = computeLayout(viewport, this.fontPx);
+    this.gui?.setViewport(viewport);
     this.touch();
   }
 
@@ -111,6 +123,11 @@ export class AppController {
   // ---------------------------------------------------------------- input
 
   dispatch(event: LogicalInput): void {
+    if (this.gui && this.screen === "match") {
+      if (this.gui.dispatch(event)) this.afterStateChange();
+      this.touch();
+      return;
+    }
     switch (event.type) {
       case "prev":
         this.cursor.move(-1);
@@ -130,7 +147,12 @@ export class AppController {
         this.tab = (this.tab + this.tabs().length - 1) % this.tabs().length;
         break;
       case "tabNext":
+      case "menu":
+      case "allActions":
         this.tab = (this.tab + 1) % this.tabs().length;
+        break;
+      case "toggleLog":
+        this.tab = (this.tab + this.tabs().length - 1) % this.tabs().length;
         break;
       case "selectTab":
         if (event.tab >= 0 && event.tab < this.tabs().length) this.tab = event.tab;
@@ -211,6 +233,7 @@ export class AppController {
         memory: this.platform.memory,
         log: this.platform.log,
       });
+      this.gui = this.guiEnabled ? new GuiMatch(engine, this.session, this.viewport) : null;
       this.screen = "match";
       this.tab = 1;
       this.message = "対戦開始";
@@ -242,6 +265,7 @@ export class AppController {
     this.framesSinceCpu = 0;
     const result = session.cpuStep();
     this.message = result.ok ? result.label : `CPUエラー: ${result.error}`;
+    if (this.gui) this.gui.message = this.message;
     this.afterStateChange();
     return true;
   }
@@ -451,6 +475,7 @@ export class AppController {
       rowsCaption: items.length ? `${this.cursor.index + 1}/${items.length}` : "",
       busy: this.session?.turnOwner() === "cpu",
       revision: this.revision,
+      gui: this.gui && this.screen === "match" ? this.gui.view() : undefined,
     };
     return this.cachedView;
   }

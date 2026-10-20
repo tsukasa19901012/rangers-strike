@@ -146,3 +146,17 @@ export function fitLine(line: string, options: WrapOptions): string {
     ? line
     : ellipsize(line, options);
 }
+
+/** Cuts one line to the width without an ellipsis (tiny labels where every glyph counts). */
+export function clipLine(line: string, options: WrapOptions): string {
+  const width = options.charWidth ?? defaultCharWidth;
+  let used = 0;
+  let out = "";
+  for (const ch of line) {
+    const w = width(ch, options.fontPx);
+    if (used + w > options.maxWidthPx) break;
+    used += w;
+    out += ch;
+  }
+  return out;
+}

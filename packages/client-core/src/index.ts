@@ -10,4 +10,6 @@ export * from "./platform/memory";
 export * from "./platform/settings";
 export * from "./data/split";
 export * from "./app/controller";
+export * from "./app/guiMatch";
+export * from "./view/gui";
 export * from "./input/devices";

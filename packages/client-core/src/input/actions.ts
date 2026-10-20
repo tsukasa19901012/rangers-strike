@@ -12,7 +12,15 @@ export type LogicalInput =
   | { type: "tabNext" }
   /** Direct pick of a visible row (touch/click). `confirm` applies it at once. */
   | { type: "select"; row: number; confirm?: boolean }
-  | { type: "selectTab"; tab: number };
+  | { type: "selectTab"; tab: number }
+  /** GUI: open the menu of actions that name no card on the board (phase end, pass, hidden-zone picks). */
+  | { type: "menu" }
+  /** GUI: open the menu of every legal action (always reaches everything the engine allows). */
+  | { type: "allActions" }
+  /** GUI: switch the side panel between card detail and the log. */
+  | { type: "toggleLog" }
+  /** GUI: direct pick of a visible tile (touch). `open` also opens its action menu. */
+  | { type: "focusTile"; row: number; slot: number; open?: boolean };
 
 export const input = {
   prev: { type: "prev" } as LogicalInput,
@@ -25,6 +33,10 @@ export const input = {
   tabNext: { type: "tabNext" } as LogicalInput,
   select: (row: number, confirm = false): LogicalInput => ({ type: "select", row, confirm }),
   selectTab: (tab: number): LogicalInput => ({ type: "selectTab", tab }),
+  menu: { type: "menu" } as LogicalInput,
+  allActions: { type: "allActions" } as LogicalInput,
+  toggleLog: { type: "toggleLog" } as LogicalInput,
+  focusTile: (row: number, slot: number, open = false): LogicalInput => ({ type: "focusTile", row, slot, open }),
 };
 
 /** A scrolling cursor over `count` items with a visible window of `rows`. */

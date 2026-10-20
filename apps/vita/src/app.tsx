@@ -1,8 +1,9 @@
 // Thin PocketJS view/input layer over @rangers-strike/client-core.
 // - input: Vita buttons -> logical inputs (ButtonRepeater), front touch ->
 //   TapRecognizer + hitTest. No game logic here.
-// - view: draws ScreenView; pane sizes come from the core layout.
-import { createSignal, Index } from "solid-js";
+// - view: draws ScreenView; pane sizes come from the core layout. The match is
+//   drawn as card tiles + action menu (GuiMatchView) from ScreenView.gui.
+import { createSignal, Index, Show } from "solid-js";
 import { Text, View } from "@pocketjs/framework/solid/components";
 import { onFrame } from "@pocketjs/framework/lifecycle";
 import { BTN, touches } from "@pocketjs/framework/input";
@@ -12,12 +13,18 @@ import {
   ButtonRepeater,
   TapRecognizer,
   hitTest,
+  hitTestGui,
   input,
   type ScreenView,
 } from "@rangers-strike/client-core";
 import { vitaPlatform } from "./platform";
+import { GuiMatchView } from "./GuiMatchView";
 
-/** Japanese layout: ○ = confirm, × = cancel. D-pad left/right page; L/R switch tabs. */
+/**
+ * Japanese layout: ○ = confirm, × = cancel/pass. Match screen: D-pad moves over
+ * cards, R = actions not tied to a card (phase end, pass), △ = every action,
+ * L = card detail / log. Title screen: L/R/△ switch tabs.
+ */
 const BINDINGS = [
   { mask: BTN.UP, input: input.prev, repeat: true },
   { mask: BTN.DOWN, input: input.next, repeat: true },
@@ -25,9 +32,9 @@ const BINDINGS = [
   { mask: BTN.RIGHT, input: input.pageNext, repeat: true },
   { mask: BTN.CIRCLE, input: input.confirm },
   { mask: BTN.CROSS, input: input.cancel },
-  { mask: BTN.LTRIGGER, input: input.tabPrev },
-  { mask: BTN.RTRIGGER, input: input.tabNext },
-  { mask: BTN.TRIANGLE, input: input.tabNext },
+  { mask: BTN.LTRIGGER, input: input.toggleLog },
+  { mask: BTN.RTRIGGER, input: input.menu },
+  { mask: BTN.TRIANGLE, input: input.allActions },
   { mask: BTN.START, input: input.confirm },
 ];
 
@@ -51,7 +58,7 @@ function readViewport(): { width: number; height: number } {
 
 export default function App() {
   let viewport = readViewport();
-  const controller = new AppController({ platform: vitaPlatform, viewport, fontPx: 12, cpuDelayFrames: 10 });
+  const controller = new AppController({ platform: vitaPlatform, viewport, fontPx: 12, cpuDelayFrames: 10, gui: true });
   const [view, setView] = createSignal<ScreenView>(controller.view(), { equals: false });
   const repeater = new ButtonRepeater(BINDINGS);
   const taps = new TapRecognizer();
@@ -66,7 +73,8 @@ export default function App() {
     const contact = touches()[0];
     const tap = taps.frame(contact ? { x: contact.x, y: contact.y } : null);
     if (tap) {
-      const event = hitTest(controller.view(), tap);
+      const current = controller.view();
+      const event = current.gui ? hitTestGui(current.gui, tap) : hitTest(current, tap);
       if (event) {
         controller.dispatch(event);
         changed = true;
@@ -84,6 +92,15 @@ export default function App() {
     if (changed) setView(controller.view());
   });
 
+  return (
+    <Show when={view().gui} fallback={<TextScreen view={view()} />}>
+      {(gui) => <GuiMatchView view={gui()} />}
+    </Show>
+  );
+}
+
+function TextScreen(props: { view: ScreenView }) {
+  const view = () => props.view;
   const L = () => view().layout;
   const T = () => TEXT[12];
   const line = () => ({ height: L().lineHeight });

@@ -2,6 +2,7 @@
 // (D-pad / keyboard) and a tap recognizer plus hit test (touch / mouse).
 import type { LogicalInput } from "./actions";
 import type { ScreenView } from "../app/controller";
+import type { GuiView } from "../app/guiMatch";
 
 export type ButtonBinding = { mask: number; input: LogicalInput; repeat?: boolean };
 
@@ -90,5 +91,27 @@ export function hitTest(view: ScreenView, point: Point): LogicalInput | null {
     if (row >= 0 && row < view.rows.length) return { type: "select", row, confirm: true };
     return null;
   }
+  return null;
+}
+
+/**
+ * Touch for the graphical match screen: a tile focuses it and opens its menu,
+ * a menu row picks and applies it, the top bar toggles the log panel.
+ * Uses the rectangles in GuiView, i.e. exactly what the renderer drew.
+ */
+export function hitTestGui(view: GuiView, point: Point): LogicalInput | null {
+  const inside = (r: { x: number; y: number; w: number; h: number }) =>
+    point.x >= r.x && point.x < r.x + r.w && point.y >= r.y && point.y < r.y + r.h;
+  for (let r = 0; r < view.menuRows.length; r++) {
+    if (inside(view.menuRows[r]!.rect)) return { type: "select", row: r, confirm: true };
+  }
+  for (let row = 0; row < view.rows.length; row++) {
+    const tiles = view.rows[row]!.tiles;
+    for (let slot = 0; slot < tiles.length; slot++) {
+      if (inside(tiles[slot]!.rect)) return { type: "focusTile", row, slot, open: true };
+    }
+  }
+  if (inside(view.geometry.topBar)) return { type: "toggleLog" };
+  if (inside(view.geometry.footer)) return { type: "menu" };
   return null;
 }
