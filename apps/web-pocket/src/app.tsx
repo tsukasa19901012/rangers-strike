@@ -19,6 +19,7 @@ import {
   hitTestDeck,
   hitTestGui,
   input,
+  isPortrait,
   type DeckBuilderView,
   type GuiView,
   type LogicalInput,
@@ -67,6 +68,7 @@ function hoverMatch(view: GuiView, point: { x: number; y: number }): LogicalInpu
 }
 
 function matchFooter(v: GuiView): string {
+  if (isPortrait(v.geometry)) return touchFooter(v);
   if (v.list || v.popup) return "クリック: 決定 / 右クリック・Esc: 閉じる / ホイール・↑↓: 選ぶ";
   if (v.dialog) return "カードかボタンをクリックして選ぶ / L・枠の外をクリック: 盤面を見る / Tab: すべての操作";
   if (v.footerAccent) return `${v.footer.replace(/（[^）]*）$/, "")}（クリック: 決定 / 右クリック・Esc: やめる）`;
@@ -75,6 +77,16 @@ function matchFooter(v: GuiView): string {
   return "カードにマウスを乗せると詳細 / クリック: そのカードの操作 / Space: フェイズ終了 / Tab: すべての操作 / L: ログ";
 }
 
+/** Phone (portrait) hints: no mouse, no keyboard. */
+function touchFooter(v: GuiView): string {
+  if (v.list || v.popup) return "タップ: 決定 / 枠の外: 閉じる";
+  if (v.dialog) return "カードかボタンをタップして選ぶ";
+  if (v.footerAccent) return v.footer.replace(/（[^）]*）$/, "");
+  if (v.footer === "CPU の手番") return "CPU の手番です…";
+  return "カードをタップ: 詳細と操作";
+}
+
+const DECK_TOUCH_FOOTER = "タップ: 1枚入れる / 下の枠: カードの詳細";
 const DECK_FOOTER = "クリック: 1枚入れる / 右クリック: 1枚抜く / マウスを乗せると詳細 / ホイール: スクロール / Esc: メニュー";
 
 export default function App() {
@@ -271,10 +283,11 @@ export default function App() {
       <Match when={view().gui}>
         {(gui) => <MatchView view={gui()} state={(gui(), controller.session!.state)} hot={hot()} footer={matchFooter(gui())} leaving={leaving()} />}
       </Match>
-      <Match when={view().deck}>{(deck) => <DeckView view={deck()} hot={hot()} footer={DECK_FOOTER} />}</Match>
+      <Match when={view().deck}>{(deck) => <DeckView view={deck()} hot={hot()} footer={isPortrait(deck().geometry) ? DECK_TOUCH_FOOTER : DECK_FOOTER} />}</Match>
       <Match when={view().screen === "result"}>
         <ResultView
           controller={controller}
+          width={size().width}
           onBack={() => {
             controller.backToTitle();
             refresh();

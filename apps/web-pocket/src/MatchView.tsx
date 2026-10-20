@@ -1,13 +1,14 @@
 // The match screen: draws GuiView (client-core) at the rectangles of the web
 // geometry (computeWebGuiGeometry). Every element sits where the core put it,
 // so the core's hit test (hitTestGui) matches what is on screen. No game logic.
-import { Index, Show } from "solid-js";
+import { For, Index, Show } from "solid-js";
 import { Text, View } from "@pocketjs/framework/solid/components";
 import {
   CPU,
   HUMAN,
+  isPortrait,
   locateInstance,
-  webPileWidth,
+  webPileRect,
   zoneLabel,
   type GameState,
   type GuiBox,
@@ -20,6 +21,7 @@ import {
 import { at, CardFace, type Box } from "./ui";
 
 const ROW_LABELS: Record<string, [string, string]> = {
+  [`${CPU}:command`]: ["CPU", "コマンド"],
   [`${CPU}:rush`]: ["CPU", "ラッシュ"],
   [`${CPU}:battle`]: ["CPU", "バトル"],
   "player1:battle": ["自分", "バトル"],
@@ -49,9 +51,17 @@ export const TONE: Record<PanelTone, string> = {
   accent: "text-sm text-amber-300 font-bold",
 };
 
-/** Buttons under the end-phase button (not part of GuiView; the app handles their clicks). */
+/** Buttons beside the end-phase button (not part of GuiView; the app handles their clicks). */
 export function matchButtons(g: GuiGeometry): { all: Box; log: Box; leave: Box } {
   const e = g.endButton;
+  if (isPortrait(g)) {
+    const w = Math.floor((e.x - 8 - 8 - 6) / 2);
+    return {
+      leave: { x: g.width - 116, y: 6, w: 108, h: 28 },
+      all: { x: 8, y: e.y, w, h: e.h },
+      log: { x: 8 + w + 6, y: e.y, w, h: e.h },
+    };
+  }
   return {
     leave: { x: g.width - 176, y: 7, w: 168, h: 30 },
     all: { x: e.x, y: e.y + e.h + 14, w: e.w, h: 36 },
@@ -59,45 +69,69 @@ export function matchButtons(g: GuiGeometry): { all: Box; log: Box; leave: Box }
   };
 }
 
-/** Pile column at the right end of a player's board rows. */
-export function pileRect(g: GuiGeometry, player: PlayerId): Box {
-  const [first, last] = player === CPU ? [g.rows[0]!, g.rows[1]!] : [g.rows[2]!, g.rows[5]!];
-  const x = first.x + first.w + 10;
-  return { x, y: first.y - 3, w: webPileWidth(g.tileW), h: last.y + last.h - first.y + 6 };
-}
+const CARD_RATIO = 190 / 130;
 
-/** Deck and discard as cards, the other hidden zones as counts. */
+/**
+ * Deck and discard as cards, the power zone as a fan of cards (face-down ones
+ * show their back), the other hidden zones as counts. A narrow column (phone
+ * portrait) shows only the deck and stacks the power cards downwards.
+ */
 function PilePanel(props: { state: GameState; player: PlayerId; rect: Box }) {
   const p = () => props.state.players[props.player];
-  const cardW = () => Math.floor((props.rect.w - 18) / 2);
-  const card = (i: number): Box => ({ x: props.rect.x + 6 + i * (cardW() + 6), y: props.rect.y + 8, w: cardW(), h: Math.round(cardW() * (190 / 130)) });
+  const narrow = () => props.rect.w < 110;
+  const cardW = () => (narrow() ? props.rect.w - 12 : Math.floor((props.rect.w - 18) / 2));
+  const card = (i: number): Box => ({ x: props.rect.x + 6 + i * (cardW() + 6), y: props.rect.y + 8, w: cardW(), h: Math.round(cardW() * CARD_RATIO) });
   const topDiscard = () => p().discard[p().discard.length - 1];
   const faceDown = () => p().power.filter((c) => c.faceDown).length;
-  const lines = () => [
-    `パワー ${p().power.length}${faceDown() ? `（裏${faceDown()}）` : ""}`,
-    props.player === CPU ? `コマンド ${p().command.length}` : "",
-    p().operation.length ? `常駐 ${p().operation.length}` : "",
-  ].filter(Boolean);
+  const lines = () =>
+    narrow()
+      ? [`山札 ${p().deck.length}`, `捨札 ${p().discard.length}`, `パワー ${p().power.length}`]
+      : [`パワー ${p().power.length}${faceDown() ? `（裏${faceDown()}）` : ""}`, p().operation.length ? `常駐 ${p().operation.length}` : ""].filter(Boolean);
+  const linesTop = () => card(0).y + card(0).h + (narrow() ? 4 : 26);
+  const powerIndex = () => (narrow() ? 2 : 0);
+  // The power fan fills what is left of the column.
+  const fan = (): Box[] => {
+    const n = p().power.length;
+    if (n === 0) return [];
+    const top = linesTop() + lines().length * 18 + 4;
+    const availW = props.rect.w - 12;
+    const availH = props.rect.y + props.rect.h - 6 - top;
+    if (availH < 24) return [];
+    const x0 = props.rect.x + 6;
+    if (narrow()) {
+      const w = Math.min(availW, Math.floor(availH / CARD_RATIO));
+      const h = Math.round(w * CARD_RATIO);
+      const step = n > 1 ? Math.min(h + 4, Math.floor((availH - h) / (n - 1))) : 0;
+      return p().power.map((_, i) => ({ x: x0, y: top + i * step, w, h }));
+    }
+    const w = Math.min(60, Math.floor(availH / CARD_RATIO));
+    const h = Math.round(w * CARD_RATIO);
+    const step = n > 1 ? Math.min(w + 4, Math.floor((availW - w) / (n - 1))) : 0;
+    return p().power.map((_, i) => ({ x: x0 + i * step, y: top, w, h }));
+  };
   return (
     <>
       <View class="absolute rounded-[8] bg-[#0b1220d0] border border-[#25324d]" style={at(props.rect)} />
       <Show when={p().deck.length > 0}>
         <CardFace cardId="back" hidden rect={card(0)} />
       </Show>
-      <Show when={topDiscard()}>{(top) => <CardFace cardId={top().cardId} rect={card(1)} />}</Show>
-      <View class="absolute flex-row items-center justify-center" style={at({ ...card(0), y: card(0).y + card(0).h + 2, h: 20 })}>
-        <Text class="text-xs text-slate-300">{`山札 ${p().deck.length}`}</Text>
-      </View>
-      <View class="absolute flex-row items-center justify-center" style={at({ ...card(1), y: card(1).y + card(1).h + 2, h: 20 })}>
-        <Text class="text-xs text-slate-300">{`捨札 ${p().discard.length}`}</Text>
-      </View>
+      <Show when={!narrow()}>
+        <Show when={topDiscard()}>{(top) => <CardFace cardId={top().cardId} rect={card(1)} />}</Show>
+        <View class="absolute flex-row items-center justify-center" style={at({ ...card(0), y: card(0).y + card(0).h + 2, h: 20 })}>
+          <Text class="text-xs text-slate-300">{`山札 ${p().deck.length}`}</Text>
+        </View>
+        <View class="absolute flex-row items-center justify-center" style={at({ ...card(1), y: card(1).y + card(1).h + 2, h: 20 })}>
+          <Text class="text-xs text-slate-300">{`捨札 ${p().discard.length}`}</Text>
+        </View>
+      </Show>
       <Index each={lines()}>
         {(line, i) => (
-          <View class="absolute flex-row items-center px-[8]" style={at({ x: props.rect.x, y: card(0).y + card(0).h + 26 + i * 20, w: props.rect.w, h: 20 })}>
-            <Text class={i === 0 ? "text-xs text-amber-300 font-bold" : "text-xs text-slate-300"}>{line()}</Text>
+          <View class={narrow() ? "absolute flex-row items-center justify-center" : "absolute flex-row items-center px-[8]"} style={at({ x: props.rect.x, y: linesTop() + i * 18, w: props.rect.w, h: 18 })}>
+            <Text class={i === powerIndex() ? "text-xs text-amber-300 font-bold" : "text-xs text-slate-300"}>{line()}</Text>
           </View>
         )}
       </Index>
+      <For each={fan()}>{(rect, i) => <CardFace cardId={p().power[i()]?.cardId ?? "back"} hidden={!!p().power[i()]?.faceDown} rect={rect} />}</For>
     </>
   );
 }
@@ -169,21 +203,15 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
     return where ? `${where.player === HUMAN ? "自" : "敵"}${zoneLabel(where.zone)}` : undefined;
   };
   const g = () => props.view.geometry;
+  const portrait = () => isPortrait(g());
+  const endLines = () => v().endButton.lines.filter((line) => line && line !== "R" && line !== "×:操作");
   const buttons = () => matchButtons(g());
   return (
     <View class="w-full h-full bg-gradient-to-b from-[#0b1426] to-[#04070d]">
-      {/* top bar: turn, toast */}
+      {/* top bar: turn */}
       <View class="absolute flex-row items-center px-[16] bg-[#0f172acc] border border-[#1e293b]" style={at(g().topBar)}>
         <Text class="text-base text-sky-300 font-bold">{v().topBar}</Text>
       </View>
-      <Show when={v().toast}>
-        <View
-          class="absolute flex-row items-center px-[14] rounded-[16] bg-gradient-to-r from-amber-600 to-orange-700 shadow-md"
-          style={at({ x: Math.round(g().width * 0.3), y: 8, w: Math.round(g().width * 0.45), h: 28 })}
-        >
-          <Text class="text-sm text-white font-bold">{v().toast}</Text>
-        </View>
-      </Show>
 
       <View
         class={
@@ -195,7 +223,7 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
         }
         style={at(buttons().leave)}
       >
-        <Text class={props.leaving ? "text-xs text-white font-bold" : "text-xs text-slate-300"}>{props.leaving ? "もう一度押すと退出" : "対戦をやめる"}</Text>
+        <Text class={props.leaving ? "text-xs text-white font-bold" : "text-xs text-slate-300"}>{props.leaving ? (portrait() ? "もう一度で退出" : "もう一度押すと退出") : "対戦をやめる"}</Text>
       </View>
 
       {/* left: card detail / log */}
@@ -213,14 +241,29 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
       <Index each={v().rows}>
         {(row) => {
           const label = () => ROW_LABELS[row().key] ?? ["", ""];
-          const panel = () => ({ x: row().rect.x - 70, y: row().rect.y - 3, w: row().rect.w + 76, h: row().rect.h + 6 });
+          // Portrait rows have no label column: the zone name sits at the
+          // right end of the row, under the cards when the row is full.
+          const panel = () =>
+            portrait()
+              ? { x: row().rect.x - 3, y: row().rect.y - 2, w: row().rect.w + 6, h: row().rect.h + 4 }
+              : { x: row().rect.x - 70, y: row().rect.y - 3, w: row().rect.w + 76, h: row().rect.h + 6 };
           return (
             <>
               <View class={ROW_BG[row().zone] ?? ROW_BG.hand!} style={at(panel())} />
-              <View class="absolute flex-col justify-center" style={at({ x: panel().x + 10, y: panel().y, w: 56, h: panel().h })}>
-                <Text class="text-xs text-slate-400">{label()[0]}</Text>
-                <Text class={ROW_LABEL_TEXT[row().zone] ?? ROW_LABEL_TEXT.hand!}>{label()[1]}</Text>
-              </View>
+              <Show
+                when={portrait()}
+                fallback={
+                  <View class="absolute flex-col justify-center" style={at({ x: panel().x + 10, y: panel().y, w: 56, h: panel().h })}>
+                    <Text class="text-xs text-slate-400">{label()[0]}</Text>
+                    <Text class={ROW_LABEL_TEXT[row().zone] ?? ROW_LABEL_TEXT.hand!}>{label()[1]}</Text>
+                  </View>
+                }
+              >
+                <View class="absolute flex-col items-end justify-end px-[6]" style={at({ x: panel().x, y: panel().y, w: panel().w, h: panel().h - 4 })}>
+                  <Text class="text-xs text-slate-500">{label()[0]}</Text>
+                  <Text class={ROW_LABEL_TEXT[row().zone] ?? ROW_LABEL_TEXT.hand!}>{label()[1]}</Text>
+                </View>
+              </Show>
               <Index each={row().tiles}>
                 {(tile) => (
                   <Tile
@@ -250,8 +293,8 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
           );
         }}
       </Index>
-      <PilePanel state={props.state} player={CPU} rect={pileRect(g(), CPU)} />
-      <PilePanel state={props.state} player={HUMAN} rect={pileRect(g(), HUMAN)} />
+      <PilePanel state={props.state} player={CPU} rect={webPileRect(g(), CPU)} />
+      <PilePanel state={props.state} player={HUMAN} rect={webPileRect(g(), HUMAN)} />
       <View class="absolute flex-row items-center px-[12] rounded-[6] bg-[#2a0b12d0]" style={at(g().strips[0])}>
         <Text class="text-sm text-rose-200 font-bold">{v().strips[0]}</Text>
       </View>
@@ -260,16 +303,29 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
       </View>
 
       {/* right: phases, phase end, every action, log */}
-      <View class="absolute flex-row items-center" style={at({ x: g().side.x, y: g().side.y, w: g().side.w, h: 24 })}>
-        <Text class="text-xs text-slate-400 font-bold">フェイズ</Text>
-      </View>
+
+      <Show when={!portrait()}>
+        <View class="absolute flex-row items-center" style={at({ x: g().side.x, y: g().side.y, w: g().side.w, h: 24 })}>
+          <Text class="text-xs text-slate-400 font-bold">フェイズ</Text>
+        </View>
+      </Show>
       <Index each={v().phases}>
         {(phase, i) => (
           <View
-            class={phase().active ? "absolute flex-row items-center px-[10] gap-2 rounded-[6] bg-gradient-to-r from-amber-500 to-orange-600" : "absolute flex-row items-center px-[10] gap-2 rounded-[6] bg-[#111827] border border-[#1f2937]"}
+            class={
+              portrait()
+                ? phase().active
+                  ? "absolute flex-row items-center justify-center rounded-[6] bg-gradient-to-r from-amber-500 to-orange-600"
+                  : "absolute flex-row items-center justify-center rounded-[6] bg-[#111827] border border-[#1f2937]"
+                : phase().active
+                  ? "absolute flex-row items-center px-[10] gap-2 rounded-[6] bg-gradient-to-r from-amber-500 to-orange-600"
+                  : "absolute flex-row items-center px-[10] gap-2 rounded-[6] bg-[#111827] border border-[#1f2937]"
+            }
             style={at(phase().rect)}
           >
-            <Text class={phase().active ? "text-xs text-white font-bold" : "text-xs text-slate-500"}>{String(i + 1)}</Text>
+            <Show when={!portrait()}>
+              <Text class={phase().active ? "text-xs text-white font-bold" : "text-xs text-slate-500"}>{String(i + 1)}</Text>
+            </Show>
             <Text class={phase().active ? "text-sm text-white font-bold" : "text-sm text-slate-400"}>{phase().label}</Text>
           </View>
         )}
@@ -284,11 +340,20 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
         }
         style={at(v().endButton.rect)}
       >
-        <Index each={v().endButton.lines.filter((line) => line && line !== "R" && line !== "×:操作")}>
-          {(text) => <Text class={v().endButton.enabled ? "text-base text-white font-bold" : "text-sm text-slate-500"}>{text()}</Text>}
-        </Index>
-        <Show when={v().endButton.enabled}>
-          <Text class="text-xs text-sky-100">Space</Text>
+        <Show
+          when={portrait()}
+          fallback={
+            <>
+              <Index each={endLines()}>
+                {(text) => <Text class={v().endButton.enabled ? "text-base text-white font-bold" : "text-sm text-slate-500"}>{text()}</Text>}
+              </Index>
+              <Show when={v().endButton.enabled}>
+                <Text class="text-xs text-sky-100">Space</Text>
+              </Show>
+            </>
+          }
+        >
+          <Text class={v().endButton.enabled ? "text-base text-white font-bold" : "text-sm text-slate-500"}>{endLines().join("")}</Text>
         </Show>
       </View>
       <View
@@ -303,6 +368,20 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
       >
         <Text class="text-sm text-slate-100">ログ / 詳細</Text>
       </View>
+
+      {/* toast: over the top bar, or over the phase pills on a phone */}
+      <Show when={v().toast}>
+        <View
+          class="absolute flex-row items-center px-[14] rounded-[16] bg-gradient-to-r from-amber-600 to-orange-700 shadow-md"
+          style={at(
+            portrait()
+              ? { x: 8, y: g().phaseRects[0]!.y, w: g().width - 16, h: g().phaseRects[0]!.h }
+              : { x: Math.round(g().width * 0.3), y: 8, w: Math.round(g().width * 0.45), h: 28 },
+          )}
+        >
+          <Text class="text-sm text-white font-bold">{v().toast}</Text>
+        </View>
+      </Show>
 
       {/* selection window */}
       <Show when={v().dialog}>

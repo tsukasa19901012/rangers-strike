@@ -26,6 +26,8 @@ import {
   buildGuiRows,
   cardTile,
   computeGuiGeometry,
+  detailArtWidth,
+  isWideDetail,
   locateInstance,
   PHASE_ORDER,
   playerStrip,
@@ -839,11 +841,13 @@ export class GuiMatch {
     const detailLines: PanelLine[] = [];
     let detailArt: GuiView["detailArt"];
     let lineY = g.detail.y + 3;
+    let textX = g.detail.x + 4;
+    let textW = g.detail.w - 6;
     const detailBottom = g.detail.y + g.detail.h - 2;
     const pushDetail = (tone: PanelTone, texts: string[]) => {
       for (const text of texts) {
         if (lineY + g.lineHeight > detailBottom) return;
-        detailLines.push({ text, tone, rect: { x: g.detail.x + 4, y: lineY, w: g.detail.w - 6, h: g.lineHeight } });
+        detailLines.push({ text, tone, rect: { x: textX, y: lineY, w: textW, h: g.lineHeight } });
         lineY += g.lineHeight;
       }
     };
@@ -854,23 +858,35 @@ export class GuiMatch {
     } else {
       const [name, stats, text] = this.detailFor(detailCard.cardId, detailCard.hidden);
       if (this.cardArt && (detailCard.cardId || detailCard.hidden)) {
-        // Card image on the left, its stats one per line beside it.
-        const artW = Math.round(g.detail.w * 0.5);
+        // Card image on the left, its stats one per line beside it. A wide,
+        // short panel (phone portrait) puts all of the text beside the image.
+        const beside = isWideDetail(g.detail);
+        const artW = beside ? detailArtWidth(g.detail) : Math.round(g.detail.w * 0.5);
         const rect = { x: g.detail.x + 4, y: g.detail.y + 4, w: artW, h: Math.round((artW * 190) / 130) };
         detailArt = { cardId: detailCard.cardId ?? "", hidden: detailCard.hidden, rect };
         const sideX = rect.x + rect.w + 4;
         const sideW = g.detail.x + g.detail.w - sideX - 2;
-        const tokens = stats ? stats.split(" ") : [];
-        tokens.slice(0, Math.floor(rect.h / g.lineHeight)).forEach((token, i) => {
-          detailLines.push({
-            text: fitLine(token, { fontPx: g.fontPx, maxWidthPx: sideW }),
-            tone: i === 0 ? "dim" : "body",
-            rect: { x: sideX, y: rect.y + i * g.lineHeight, w: sideW, h: g.lineHeight },
+        if (beside) {
+          textX = sideX;
+          textW = sideW;
+          lineY = rect.y;
+          const wrapSide: WrapOptions = { ...wrapDetail, maxWidthPx: sideW };
+          if (name) pushDetail("head", wrapText(name, { ...wrapSide, maxLines: 1 }));
+          if (stats) pushDetail("dim", wrapText(stats, { ...wrapSide, maxLines: 1 }));
+          if (text) pushDetail("body", wrapText(text, wrapSide));
+        } else {
+          const tokens = stats ? stats.split(" ") : [];
+          tokens.slice(0, Math.floor(rect.h / g.lineHeight)).forEach((token, i) => {
+            detailLines.push({
+              text: fitLine(token, { fontPx: g.fontPx, maxWidthPx: sideW }),
+              tone: i === 0 ? "dim" : "body",
+              rect: { x: sideX, y: rect.y + i * g.lineHeight, w: sideW, h: g.lineHeight },
+            });
           });
-        });
-        lineY = rect.y + rect.h + 3;
-        if (name) pushDetail("head", wrapText(name, { ...wrapDetail, maxLines: 2 }));
-        if (text) pushDetail("body", wrapText(text, wrapDetail));
+          lineY = rect.y + rect.h + 3;
+          if (name) pushDetail("head", wrapText(name, { ...wrapDetail, maxLines: 2 }));
+          if (text) pushDetail("body", wrapText(text, wrapDetail));
+        }
       } else {
         if (name) pushDetail("head", wrapText(name, { ...wrapDetail, maxLines: 2 }));
         if (stats) pushDetail("dim", wrapText(stats, { ...wrapDetail, maxLines: 2 }));

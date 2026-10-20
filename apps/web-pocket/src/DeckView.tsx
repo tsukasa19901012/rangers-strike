@@ -3,18 +3,19 @@
 // builder's logical inputs. No deck rules here.
 import { Index, Show } from "solid-js";
 import { Text, View } from "@pocketjs/framework/solid/components";
-import type { DeckBuilderView, DeckGeometry } from "@rangers-strike/client-core";
+import { isPortrait, type DeckBuilderView, type DeckGeometry } from "@rangers-strike/client-core";
 import { MenuBox, TONE } from "./MatchView";
 import { at, CardFace, type Box } from "./ui";
 
 /** Header and pager buttons (not part of DeckBuilderView; the app handles their clicks). */
 export function deckButtons(g: DeckGeometry): { menu: Box; prev: Box; next: Box; pager: Box } {
   const y = g.grid.y + g.grid.h + 6;
+  const pagerW = isPortrait(g) ? 96 : 120;
   return {
-    menu: { x: g.width - 168, y: 6, w: 160, h: 32 },
-    prev: { x: g.grid.x, y, w: 120, h: 30 },
-    next: { x: g.grid.x + g.grid.w - 120, y, w: 120, h: 30 },
-    pager: { x: g.grid.x + 130, y, w: g.grid.w - 260, h: 30 },
+    menu: isPortrait(g) ? { x: g.width - 104, y: 5, w: 96, h: 30 } : { x: g.width - 168, y: 6, w: 160, h: 32 },
+    prev: { x: g.grid.x, y, w: pagerW, h: 30 },
+    next: { x: g.grid.x + g.grid.w - pagerW, y, w: pagerW, h: 30 },
+    pager: { x: g.grid.x + pagerW + 10, y, w: g.grid.w - 2 * (pagerW + 10), h: 30 },
   };
 }
 
@@ -28,22 +29,25 @@ export function DeckView(props: { view: DeckBuilderView; hot: string | null; foo
   const v = () => props.view;
   const g = () => props.view.geometry;
   const b = () => deckButtons(g());
+  const portrait = () => isPortrait(g());
   return (
     <View class="w-full h-full bg-gradient-to-b from-[#0b1426] to-[#04070d]">
       <View class="absolute flex-row items-center px-[16] gap-4 bg-[#0f172acc] border border-[#1e293b]" style={at(g().topBar)}>
-        <Text class="text-base text-sky-300 font-bold">デッキ構築</Text>
+        <Show when={!portrait()}>
+          <Text class="text-base text-sky-300 font-bold">デッキ構築</Text>
+        </Show>
         <Text class={v().valid ? "text-sm text-emerald-300 font-bold" : "text-sm text-amber-300 font-bold"}>{v().topBar}</Text>
       </View>
       <Show when={v().toast}>
         <View
           class="absolute flex-row items-center px-[14] rounded-[16] bg-gradient-to-r from-emerald-600 to-teal-700 shadow-md"
-          style={at({ x: Math.round(g().width * 0.45), y: 8, w: Math.round(g().width * 0.32), h: 28 })}
+          style={at(portrait() ? { x: 8, y: 6, w: g().width - 120, h: 28 } : { x: Math.round(g().width * 0.45), y: 8, w: Math.round(g().width * 0.32), h: 28 })}
         >
           <Text class="text-sm text-white font-bold">{v().toast}</Text>
         </View>
       </Show>
       <View class={props.hot === "menu" ? BUTTON_HOT : BUTTON} style={at(b().menu)}>
-        <Text class="text-sm text-slate-100">保存・メニュー</Text>
+        <Text class="text-sm text-slate-100">{portrait() ? "メニュー" : "保存・メニュー"}</Text>
       </View>
 
       {/* detail */}
@@ -106,13 +110,13 @@ export function DeckView(props: { view: DeckBuilderView; hot: string | null; foo
         </View>
       </Show>
       <View class={props.hot === "prev" ? BUTTON_HOT : BUTTON} style={at(b().prev)}>
-        <Text class="text-sm text-slate-100">‹ 前のページ</Text>
+        <Text class="text-sm text-slate-100">{portrait() ? "‹ 前へ" : "‹ 前のページ"}</Text>
       </View>
       <View class="absolute flex-row items-center justify-center" style={at(b().pager)}>
         <Text class="text-sm text-slate-400">{v().pageText}</Text>
       </View>
       <View class={props.hot === "next" ? BUTTON_HOT : BUTTON} style={at(b().next)}>
-        <Text class="text-sm text-slate-100">次のページ ›</Text>
+        <Text class="text-sm text-slate-100">{portrait() ? "次へ ›" : "次のページ ›"}</Text>
       </View>
 
       <Show when={v().menu}>

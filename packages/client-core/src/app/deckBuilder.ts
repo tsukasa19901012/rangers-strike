@@ -10,6 +10,7 @@ import type { CardDefinition, DeckApi, DeckEntry, EngineApi } from "../engineApi
 import { ListCursor, type LogicalInput } from "../input/actions";
 import type { CustomDeck } from "../platform/settings";
 import { fitLine, wrapText, type WrapOptions } from "../text/wrap";
+import { detailArtWidth, isWideDetail } from "../view/gui";
 import type { Rect, Viewport } from "../view/layout";
 import { TYPE_LABELS, type GuiBox, type MenuRowView, type PanelLine, type PanelTone } from "./guiMatch";
 
@@ -424,7 +425,7 @@ export class DeckBuilder {
 
   view(): DeckBuilderView {
     const g = this.geometry;
-    const wrap: WrapOptions = { fontPx: g.fontPx, maxWidthPx: g.detail.w - 14 };
+    let wrap: WrapOptions = { fontPx: g.fontPx, maxWidthPx: g.detail.w - 14 };
     const list = this.list();
     const perPage = this.perPage();
     const pages = Math.max(1, Math.ceil(list.length / perPage));
@@ -454,11 +455,13 @@ export class DeckBuilder {
     const detailLines: PanelLine[] = [];
     let detailArt: DeckBuilderView["detailArt"];
     let y = g.detail.y + 4;
+    let textX = g.detail.x + 4;
+    let textW = g.detail.w - 6;
     const bottom = g.detail.y + g.detail.h - 2;
     const push = (tone: PanelTone, texts: string[]) => {
       for (const text of texts) {
         if (y + g.lineHeight > bottom) return;
-        detailLines.push({ text, tone, rect: { x: g.detail.x + 4, y, w: g.detail.w - 6, h: g.lineHeight } });
+        detailLines.push({ text, tone, rect: { x: textX, y, w: textW, h: g.lineHeight } });
         y += g.lineHeight;
       }
     };
@@ -471,7 +474,17 @@ export class DeckBuilder {
         card.bp !== undefined ? `BP${card.bp}` : "",
         this.deck.categories(card).join("/"),
       ].filter(Boolean);
-      if (this.cardArt) {
+      if (this.cardArt && isWideDetail(g.detail)) {
+        // Wide, short panel (phone portrait): every line beside the image.
+        const artW = detailArtWidth(g.detail);
+        const rect = { x: g.detail.x + 4, y, w: artW, h: Math.round(artW * CARD_ASPECT) };
+        detailArt = { cardId: card.id, hidden: false, rect };
+        textX = rect.x + rect.w + 6;
+        textW = g.detail.x + g.detail.w - textX - 2;
+        wrap = { ...wrap, maxWidthPx: textW };
+        push("head", wrapText(card.name, { ...wrap, maxLines: 1 }));
+        push("dim", wrapText(stats.join(" "), { ...wrap, maxLines: 1 }));
+      } else if (this.cardArt) {
         const artW = Math.round(g.detail.w * 0.5);
         const rect = { x: g.detail.x + 4, y, w: artW, h: Math.round(artW * CARD_ASPECT) };
         detailArt = { cardId: card.id, hidden: false, rect };

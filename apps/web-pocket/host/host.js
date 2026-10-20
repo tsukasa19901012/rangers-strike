@@ -3,7 +3,8 @@
 // The PocketJS dev host (hosts/web/engine.js) draws a fixed 480x272 canvas for
 // console apps. This host is the production page for a full-window app:
 //   - the logical viewport follows the window (at least 1024x640: smaller
-//     windows scale the canvas down) and the core rasterizes at density 2;
+//     windows scale the canvas down; portrait windows get a narrow phone
+//     viewport) and the core rasterizes at density 2;
 //   - mouse / pen / touch reach the guest over the "pocket.overlay" service
 //     channel (hover, press and the raw position for card hit tests);
 //   - keyboard keys map to the console buttons the app also understands;
@@ -19,6 +20,7 @@ const MIN_W = 1024;
 const MIN_H = 640;
 const MAX_W = 1680;
 const MAX_H = 1050;
+const PORTRAIT_W = [430, 600];
 const OVERLAY = "pocket.overlay";
 const PSM_8888 = 3;
 const IMG_FLAG_LINEAR = 2;
@@ -56,8 +58,17 @@ function fail(error) {
   setStatus(`起動できませんでした: ${error && error.message ? error.message : error}`);
 }
 
-/** Logical viewport for the window: CSS px, at least MIN, at most MAX (the canvas is CSS-scaled outside that range). */
+/**
+ * Logical viewport for the window. Landscape: CSS px, at least MIN, at most
+ * MAX (the canvas is CSS-scaled outside that range). Portrait (phones held
+ * upright): a narrow logical width, PORTRAIT_W[0]..[1], and the window's
+ * aspect; the app switches to its stacked phone layout.
+ */
 function viewportFor(cssW, cssH) {
+  if (cssW < cssH) {
+    const w = Math.max(PORTRAIT_W[0], Math.min(PORTRAIT_W[1], Math.round(cssW)));
+    return { w, h: Math.round((w * cssH) / cssW) };
+  }
   const up = Math.max(MIN_W / cssW, MIN_H / cssH, 1);
   let w = cssW * up;
   let h = cssH * up;

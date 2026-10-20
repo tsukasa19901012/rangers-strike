@@ -4,13 +4,21 @@ import { input } from "../input/actions";
 import { hitTestGui } from "../input/devices";
 import { testPlatform } from "../testing/engine";
 import type { Rect } from "./layout";
-import { computeWebDeckGeometry, computeWebGuiGeometry, webPileWidth, WEB_MIN_VIEWPORT } from "./webGui";
+import { CPU, HUMAN } from "../engineApi";
+import { computeWebDeckGeometry, computeWebGuiGeometry, isPortrait, webPileRect, WEB_GUI_ROWS, WEB_MIN_VIEWPORT } from "./webGui";
 
 const SIZES = [
   { width: 1024, height: 640 },
   { width: 1280, height: 720 },
   { width: 1440, height: 900 },
   { width: 1680, height: 1050 },
+];
+
+// Phones held upright (logical px as the host picks them).
+const PORTRAIT_SIZES = [
+  { width: 430, height: 736 },
+  { width: 430, height: 931 },
+  { width: 600, height: 800 },
 ];
 
 const within = (inner: Rect, outer: Rect) =>
@@ -27,11 +35,59 @@ describe("web geometry", () => {
         expect(within(row, g.board)).toBe(true);
         expect(g.tilesPerRow * (g.tileW + g.tileGap) - g.tileGap).toBeLessThanOrEqual(row.w);
         if (i > 0) expect(row.y).toBeGreaterThanOrEqual(g.rows[i - 1]!.y + g.rows[i - 1]!.h);
-        // The pile column sits between the row and the board's right edge.
-        expect(row.x + row.w + 10 + webPileWidth(g.tileW)).toBeLessThanOrEqual(g.board.x + g.board.w);
       }
+      // The pile columns sit between the rows and the board's right edge, CPU above the player.
+      const cpuPile = webPileRect(g, CPU);
+      const humanPile = webPileRect(g, HUMAN);
+      for (const pile of [cpuPile, humanPile]) {
+        expect(pile.x).toBeGreaterThan(g.rows[0]!.x + g.rows[0]!.w);
+        expect(pile.x + pile.w).toBeLessThanOrEqual(g.board.x + g.board.w);
+        expect(pile.w).toBeGreaterThanOrEqual(110);
+      }
+      expect(cpuPile.y + cpuPile.h).toBeLessThanOrEqual(humanPile.y);
       expect(g.tileH / g.tileW).toBeCloseTo(190 / 130, 1);
       expect(g.tilesPerRow).toBeGreaterThanOrEqual(7);
+    }
+  });
+
+  it("shows both command zones as card rows", () => {
+    const g = computeWebGuiGeometry(SIZES[1]!);
+    expect(g.rowDefs).toBe(WEB_GUI_ROWS);
+    expect(g.rows.length).toBe(WEB_GUI_ROWS.length);
+    expect(WEB_GUI_ROWS.filter((r) => r.zone === "command").map((r) => r.player)).toEqual([CPU, HUMAN]);
+  });
+
+  it("stacks the match screen on a phone held upright", () => {
+    for (const size of PORTRAIT_SIZES) {
+      const g = computeWebGuiGeometry(size);
+      expect(isPortrait(g)).toBe(true);
+      const screen = { x: 0, y: 0, w: size.width, h: size.height };
+      for (const r of [g.topBar, g.footer, g.detail, g.board, g.endButton, ...g.phaseRects, ...g.strips]) expect(within(r, screen)).toBe(true);
+      // Phases, board, detail, buttons and footer from top to bottom.
+      expect(g.phaseRects[0]!.y).toBeGreaterThanOrEqual(g.topBar.y + g.topBar.h);
+      expect(g.board.y).toBeGreaterThanOrEqual(g.phaseRects[0]!.y + g.phaseRects[0]!.h);
+      expect(g.detail.y).toBeGreaterThanOrEqual(g.board.y + g.board.h);
+      expect(g.endButton.y).toBeGreaterThanOrEqual(g.detail.y + g.detail.h);
+      expect(g.footer.y).toBeGreaterThanOrEqual(g.endButton.y + g.endButton.h);
+      for (const row of g.rows) {
+        expect(within(row, g.board)).toBe(true);
+        expect(g.tilesPerRow * (g.tileW + g.tileGap) - g.tileGap).toBeLessThanOrEqual(row.w);
+      }
+      // The pile panel overhangs its rows by a few px, like the row backgrounds.
+      const around = { x: g.board.x, y: g.board.y - 4, w: g.board.w, h: g.board.h + 8 };
+      for (const player of [CPU, HUMAN]) expect(within(webPileRect(g, player), around)).toBe(true);
+      expect(g.tilesPerRow).toBeGreaterThanOrEqual(5);
+      expect(g.tileH).toBeGreaterThanOrEqual(50);
+    }
+  });
+
+  it("fits the deck builder on a phone held upright", () => {
+    for (const size of PORTRAIT_SIZES) {
+      const g = computeWebDeckGeometry(size);
+      expect(g.cols * (g.tileW + g.gap) - g.gap).toBeLessThanOrEqual(g.grid.w);
+      expect(g.rows * (g.tileH + g.gap) - g.gap).toBeLessThanOrEqual(g.grid.h);
+      expect(g.grid.y + g.grid.h).toBeLessThanOrEqual(g.detail.y);
+      expect(g.cols * g.rows).toBeGreaterThanOrEqual(4);
     }
   });
 

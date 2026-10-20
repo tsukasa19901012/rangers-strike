@@ -14,8 +14,10 @@ export type GuiZone = "battle" | "rush" | "command" | "hand";
 
 export type GuiRowKey = `${PlayerId}:${GuiZone}`;
 
+export type GuiRowDef = { player: PlayerId; zone: GuiZone };
+
 /** Rows from top to bottom. CPU command / power / operation and both piles are shown as counts in the strips. */
-export const GUI_ROWS: readonly { player: PlayerId; zone: GuiZone }[] = [
+export const GUI_ROWS: readonly GuiRowDef[] = [
   { player: CPU, zone: "rush" },
   { player: CPU, zone: "battle" },
   { player: HUMAN, zone: "battle" },
@@ -63,6 +65,8 @@ export type GuiGeometry = {
   /** One strip per player, CPU first. */
   strips: [Rect, Rect];
   rows: Rect[];
+  /** Which zone each of `rows` shows; GUI_ROWS when absent. */
+  rowDefs?: readonly GuiRowDef[];
   tileW: number;
   tileH: number;
   tileGap: number;
@@ -72,6 +76,16 @@ export type GuiGeometry = {
   detailLines: number;
   detailTextWidth: number;
 };
+
+/** A detail panel much wider than tall (phone portrait) shows its text beside the card image. */
+export function isWideDetail(detail: Rect): boolean {
+  return detail.w > detail.h * 1.6;
+}
+
+/** Card image width in a wide detail panel: the image fills the panel height. */
+export function detailArtWidth(detail: Rect): number {
+  return Math.round(((detail.h - 8) * 130) / 190);
+}
 
 const FONT_PX = 12;
 const LINE_H = 15;
@@ -257,7 +271,7 @@ export function buildGuiRows(
   const actionable = new Set(humanActions.flatMap(actionInstanceIds));
   const selected = new Set(state.pendingEffectChoice?.selectedInstanceIds ?? []);
   const fit: WrapOptions = { fontPx: geometry.fontPx, maxWidthPx: geometry.tileW - 4 };
-  return GUI_ROWS.map((def) => ({
+  return (geometry.rowDefs ?? GUI_ROWS).map((def) => ({
     key: `${def.player}:${def.zone}` as GuiRowKey,
     player: def.player,
     zone: def.zone,

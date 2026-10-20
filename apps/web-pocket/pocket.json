@@ -16,7 +16,7 @@
     "output": "rangers-strike-web",
     "framework": "solid",
     "viewport": {
-      "dynamic": { "default": [1280, 720], "min": [1024, 640], "max": [1680, 1050] }
+      "dynamic": { "default": [1280, 720], "min": [400, 640], "max": [1680, 1050] }
     }
   }
 }
