@@ -37,13 +37,13 @@
       "name": "とっておきのお宝",
       "text": "これは、自軍「仮面ライダーディエンド」があれば「SP1/3」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-073::toteokinoo",
+          "keyword": "xg3::XG3-073::otakara",
           "duration": "permanent"
         }
       ]

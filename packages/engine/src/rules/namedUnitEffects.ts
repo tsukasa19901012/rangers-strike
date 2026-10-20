@@ -1,4 +1,5 @@
 import { rm2AttackerBattleBonus, rm2DefenderBattleBonus } from "./rm/rm2Effects";
+import { xg3AttackerBpBonus } from "./xg3/xg3Fields";
 import { rk9UsePrintedDefenderBp } from "./rk/rk9Fields";
 import { rk11UsePrintedDefenderBp } from "./rk/rk11Fields";
 import {
@@ -129,6 +130,8 @@ export function battleAttackerBpBonus(
   total += rk3AttackerBattleBonus(state, pending);
   // RM-033 メタルダー ※（rules/rm/rm2Effects.ts）。
   total += rm2AttackerBattleBonus(state, pending);
+  // XG3-070 ズ・ザイン・ダ【車両への憎悪】（rules/xg3/xg3Fields.ts）。
+  total += xg3AttackerBpBonus(state, pending);
 
   // RS-062【ボウケンジャベリン】・RS-241【デュアルクラッシャー・ドリルヘッド】（CN5）:
   // 特徴「メカ」を持つユニットにアタックするとき BP+4000（NC の効果は成立しているときだけ。R-CN-02）。

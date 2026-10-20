@@ -16,6 +16,7 @@ import { AFTER_ACTION_HOOKS, BATTLE_DESTROY_HOOKS, BEFORE_FLIP_HOOKS, FIELD_ABIL
 import "./xg3aEffects";
 import "./xg3bEffects";
 import "./xg3cEffects";
+import "./xg3dEffects";
 
 export function isXg3ChoiceEffect(effectId: string): boolean {
   return effectId in CHOICE_RESOLVERS;

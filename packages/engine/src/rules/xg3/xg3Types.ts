@@ -40,4 +40,6 @@ export type Xg3State = {
   rushPhaseReplaced?: { ownerId: PlayerId; turn: number };
   /** XG3-045【超電稲妻キック】を得たユニット（そのターン）。 */
   choudenKick?: Array<{ instanceId: string; turn: number }>;
+  /** XG3-067 インビジブル: 自軍ラッシュエリアに置いたこのカードと、重ねたユニット。 */
+  invisible?: Array<{ ownerId: PlayerId; cardInstanceId: string; unitInstanceId: string }>;
 };

@@ -49,8 +49,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-064::raidashuteingu",
-          "duration": "turn"
+          "keyword": "xg3::XG3-064::rider_shooting",
+          "duration": "permanent"
         }
       ]
     }

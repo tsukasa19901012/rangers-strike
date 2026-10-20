@@ -1,4 +1,5 @@
 import { canUseKyouryuumaru } from "../rules/legend1/otherLinesNamedEffects";
+import { isXg3ZordUpVehicle } from "../rules/xg3/xg3Fields";
 import { mirrorWorldChoiceAffordable } from "../rules/mirrorWorldSelection";
 import { lionArmorAvailable } from "../rules/legend1/set6NamedEffects348";
 import { runWithStateRng } from "./rng";
@@ -1110,7 +1111,8 @@ function appendRushCategoryPaymentActions(
     if (categories.length === 0) continue;
 
     if (
-      isUnit(definition) &&
+      // XG3-077 アギトトルネイダー（追加条件つきのビークル。rules/xg3/xg3Fields.ts）もユニットと同じ手順でラッシュする。
+      (isUnit(definition) || isXg3ZordUpVehicle(card.cardId)) &&
       isZordUpCost(definition.powerCost) &&
       (rushAdditionalConditionApplies(state, playerId, card.cardId) ||
         requiresAllFusionPartners(card.cardId))
@@ -2283,7 +2285,7 @@ function getLegalActionsCore(state: GameState): GameAction[] {
             });
           }
         } else if (
-          isUnit(definition) &&
+          (isUnit(definition) || isXg3ZordUpVehicle(card.cardId)) &&
           isZordUpCost(definition!.powerCost) &&
           (rushAdditionalConditionApplies(state, playerId, card.cardId) ||
             requiresAllFusionPartners(card.cardId))

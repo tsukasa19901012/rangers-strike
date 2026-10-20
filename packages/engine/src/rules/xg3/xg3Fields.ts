@@ -6,10 +6,11 @@
  * - `xg3FieldBpBonus`: BP の増減（rules/fieldAuras.ts）。
  */
 import { isSameCardIdentity } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { cardCategories, getDefinition, isVehicle, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
+import { logicalBattlePosition } from "../battleLine";
 
 export const IMOYOKAN_CARD_ID = "XG3-004";
 export const ZIEG_JENNE_CARD_ID = "XG3-010";
@@ -74,7 +75,62 @@ export function xg3DefenderBlocksAttack(
     const zone = state.players[attackerPlayerId].battle.some((c) => c.instanceId === attacker.instanceId) ? "battle" : "rush";
     if (!(unitEffectiveCategories(state, attackerPlayerId, attacker, zone) as string[]).includes("MA")) return true;
   }
+  // XG3-070 ズ・ザイン・ダ【車両への憎悪】敵軍バトルエリアに「車両」のユニット（ライドしているビークルを含む）があれば、そのユニットにアタックする。
+  if (isSameCardIdentity(attacker.cardId, "XG3-070") && !isCarTarget(state, defenderPlayerId, defender)) {
+    if (state.players[defenderPlayerId].battle.some((c) => isCarTarget(state, defenderPlayerId, c))) return true;
+  }
   return false;
+}
+
+/**
+ * アタックするユニットのバトルの BP（rules/namedUnitEffects.ts battleAttackerBpBonus）。
+ * - XG3-070 ズ・ザイン・ダ【車両への憎悪】「車両」のユニット（ライドしているビークルを含む）にアタックしたとき BP+2000（atwiki/page-1930）。
+ */
+export function xg3AttackerBpBonus(state: View, pending: PendingBattle): number {
+  const attacker = state.players[pending.attackerPlayerId].battle.find((c) => c.instanceId === pending.attackerInstanceId);
+  if (!attacker || !isSameCardIdentity(attacker.cardId, "XG3-070")) return 0;
+  const defender = state.players[pending.defenderPlayerId].battle.find((c) => c.instanceId === pending.defenderInstanceId);
+  return defender && isCarTarget(state, pending.defenderPlayerId, defender) ? 2000 : 0;
+}
+
+/** 特徴「車両」を持つユニットか、特徴「車両」を持つビークルにライドしているユニット（印刷の特徴。XG3-070）。 */
+function isCarTarget(state: View, ownerId: PlayerId, card: CardInstance): boolean {
+  const d = getDefinition(state.definitions, card.cardId);
+  if (d?.type !== "unit") return false;
+  if ((d.features ?? []).includes("車両")) return true;
+  if (!card.mountedOnInstanceId) return false;
+  const p = state.players[ownerId];
+  const vehicle = [...p.battle, ...p.rush].find((c) => c.instanceId === card.mountedOnInstanceId);
+  return !!vehicle && (getDefinition(state.definitions, vehicle.cardId)?.features ?? []).includes("車両");
+}
+
+/**
+ * 敵軍ラッシュエリアのユニットにアタックできる（rules/legend3/restrictions.ts）。
+ * - XG3-077 アギトトルネイダー【ファイナルアタックライド】ライドされたままのこれからコンビネーションする S ユニット（並びのすぐ後ろ）。
+ */
+export function xg3AttackerCanAttackRush(state: View, attackerPlayerId: PlayerId, attacker: CardInstance): boolean {
+  const battle = state.players[attackerPlayerId].battle;
+  const i = battle.findIndex((c) => c.instanceId === attacker.instanceId);
+  if (i <= 0 || attacker.mountedOnInstanceId || unitSizeOf(state.definitions, attacker) !== "S") return false;
+  const prev = battle[i - 1]!;
+  const vehicleId = isSameCardIdentity(prev.cardId, "XG3-077") ? prev.instanceId : prev.mountedOnInstanceId;
+  if (!vehicleId) return false;
+  const vehicle = battle.find((c) => c.instanceId === vehicleId);
+  if (!vehicle || !isSameCardIdentity(vehicle.cardId, "XG3-077")) return false;
+  return battle.some((c) => c.mountedOnInstanceId === vehicleId);
+}
+
+/**
+ * ライドされていなくてもバトルエリアに出られるビークル（rules/vehicleRules.ts）。
+ * - XG3-078 マシンハードボイルダー【リモコン操作】特徴「ダブルドライバー」を持つ自軍ユニットがあれば（印刷の特徴）。
+ */
+export function xg3VehicleMayEnterAlone(state: View, playerId: PlayerId, vehicle: CardInstance): boolean {
+  if (!isSameCardIdentity(vehicle.cardId, "XG3-078")) return false;
+  const p = state.players[playerId];
+  return [...p.battle, ...p.rush].some((c) => {
+    const d = getDefinition(state.definitions, c.cardId);
+    return d?.type === "unit" && (d.features ?? []).includes("ダブルドライバー");
+  });
 }
 
 type Def = NonNullable<ReturnType<typeof getDefinition>>;
@@ -95,6 +151,18 @@ function enemyUnitPrinted(state: View, playerId: PlayerId, pred: (d: Def) => boo
 export function xg3EffectiveSp(state: View, playerId: PlayerId, instance: CardInstance, sp: number): number {
   for (const b of turnBuffsOf(state, instance.instanceId)) if (b.sp !== undefined) sp = Math.max(sp, b.sp);
   if (gekiBlueApplies(state, playerId, instance)) sp = Math.max(sp, 1);
+  // XG3-073 仮面ライダーJジャンボフォーメーション【とっておきのお宝】自軍「仮面ライダーディエンド」があれば「SP1/3」（atwiki/page-1932）。
+  if (isSameCardIdentity(instance.cardId, "XG3-073")) {
+    const p = state.players[playerId];
+    const diend = [...p.battle, ...p.rush].some((c) => getDefinition(state.definitions, c.cardId)?.name === "仮面ライダーディエンド");
+    if (diend && logicalBattlePosition(p.battle, instance.instanceId) === 3) sp = Math.max(sp, 1);
+  }
+  // XG3-077 アギトトルネイダー ※「これにライドしているユニットは、「仮面ライダーディケイド」なら「SP1」になる」（atwiki/page-1935）。
+  if (instance.mountedOnInstanceId && getDefinition(state.definitions, instance.cardId)?.name === "仮面ライダーディケイド") {
+    const p = state.players[playerId];
+    const vehicle = [...p.battle, ...p.rush].find((c) => c.instanceId === instance.mountedOnInstanceId);
+    if (vehicle && isSameCardIdentity(vehicle.cardId, "XG3-077")) sp = Math.max(sp, 1);
+  }
   if (isSameCardIdentity(instance.cardId, JUMA_HUNTER_CARD_ID) && enemyUnitPrinted(state, playerId, (d) => (cardCategories(d) as string[]).includes("DA"))) {
     return Math.max(sp, 1);
   }
@@ -161,4 +229,12 @@ export function xg3AddedFeatures(state: Pick<GameState, "players" | "definitions
 /** XG3-037【烏賊墨砲】: このターン、そのユニットの「アタックされない」という記述のあるテキストは無効。 */
 export function xg3NoAttackTextDisabled(state: Partial<Pick<GameState, "xg3" | "turn">>, instanceId: string): boolean {
   return (state.xg3?.noAttackTextDisabled ?? []).some((d) => d.instanceId === instanceId && d.turn === state.turn);
+}
+
+/**
+ * 追加条件つきのラッシュをユニットと同じ手順で行うビークル（core/legalActions.ts）。
+ * - XG3-077 アギトトルネイダー「追加条件：自軍「仮面ライダーアギト」1体を手札に戻す」（atwiki/page-1935）。同じ形の XG2-074・XG4-056 は各シリーズの担当。
+ */
+export function isXg3ZordUpVehicle(cardId: string): boolean {
+  return cardId === "XG3-077";
 }

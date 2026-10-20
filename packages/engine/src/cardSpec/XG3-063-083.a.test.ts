@@ -158,14 +158,14 @@ describe("XG3-064 仮面ライダードレイクRF", () => {
   const entered = () =>
     enter(battle({ rush: [inst("XG3-064", "rf")], battle: [inst("SPEC-WOMAN", "w1")] }, { battle: [inst("SPEC-C1", "c1"), inst("SPEC-C2", "c2"), inst("SPEC-C3", "c3"), inst("XG3-030", "cond")], rush: [inst("SPEC-WOMAN", "w2")] }), "XG3-064:rf");
 
-  it.fails("XG3-064:【ライダーシューティング】— 自軍ターン中にバトルエリアに出たとき、「女」のユニットの数（両軍で2）以下の必要パワーの数字を持つ、追加条件のない敵軍ユニット（エリアを問わない）から選ぶ（数えるかは任意）（既知の不具合: CARD-XG3-064 候補が自軍の「女」のユニットになる）（出典: atwiki/page-1954「特徴「女」を持つユニットの数を数えてもよい。そうしたとき、その数以下の必要パワーの数字を持つ追加条件を持たない敵軍ユニットを1体選び、持ち主のパワーゾーンに送る」・R-TGT）", () => {
+  it("XG3-064:【ライダーシューティング】— 自軍ターン中にバトルエリアに出たとき、「女」のユニットの数（両軍で2）以下の必要パワーの数字を持つ、追加条件のない敵軍ユニット（エリアを問わない）から選ぶ（数えるかは任意）（出典: atwiki/page-1954「特徴「女」を持つユニットの数を数えてもよい。そうしたとき、その数以下の必要パワーの数字を持つ追加条件を持たない敵軍ユニットを1体選び、持ち主のパワーゾーンに送る」・R-TGT）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG3-064");
     expect(choiceIds(s).sort()).toEqual(["SPEC-C1:c1", "SPEC-C2:c2", "SPEC-WOMAN:w2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG3-064:【ライダーシューティング】— 選んだユニットを持ち主のパワーゾーンに送る（既知の不具合: CARD-XG3-064）（出典: atwiki/page-1954「持ち主のパワーゾーンに送る」）", () => {
+  it("XG3-064:【ライダーシューティング】— 選んだユニットを持ち主のパワーゾーンに送る（出典: atwiki/page-1954「持ち主のパワーゾーンに送る」）", () => {
     const s = resolveAll(entered(), ["SPEC-C2:c2"]);
     expect(zoneOf(s, "player2", "SPEC-C2:c2")).toBe("power");
   });
@@ -227,7 +227,7 @@ describe("XG3-067 インビジブル", () => {
 
   const used = () => useCard(board({ hand: [inst("XG3-067", "iv")], rush: [inst("TST-UNIT-0", "u"), inst("TST-UNIT-2", "m")], command: releasedCat("OT", 1), power: powerCards(2) }), "player1", "XG3-067:iv");
 
-  it.fails("XG3-067: 使うと自軍 S ユニット（M は選べない）を選び、このカードを自軍ラッシュエリアに置いてそのユニットを重ねる（既知の不具合: CARD-XG3-067 選択が開かず、このカードは捨札になる）（出典: atwiki/page-1929「自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる」）", () => {
+  it("XG3-067: 使うと自軍 S ユニット（M は選べない）を選び、このカードを自軍ラッシュエリアに置いてそのユニットを重ねる（出典: atwiki/page-1929「自軍Sユニットを1体選ぶ。そして、このカードを自軍ラッシュエリアに置き、選んだユニットをこのカードに重ねる」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "XG3-067");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:u"]);
@@ -235,7 +235,7 @@ describe("XG3-067 インビジブル", () => {
     expect(zoneOf(t, "player1", "XG3-067:iv")).toBe("rush");
   });
 
-  it.fails("XG3-067: 重ねたユニットが敵軍ターン中に撃破されて捨札になるときは、かわりに持ち主のパワーゾーンに送り、このカードは捨札になる（既知の不具合: CARD-XG3-067）（出典: atwiki/page-1929「敵軍ターン中、撃破されて捨札になるとき、かわりに持ち主のパワーゾーンに送る。このカードに重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）", () => {
+  it("XG3-067: 重ねたユニットが敵軍ターン中に撃破されて捨札になるときは、かわりに持ち主のパワーゾーンに送り、このカードは捨札になる（出典: atwiki/page-1929「敵軍ターン中、撃破されて捨札になるとき、かわりに持ち主のパワーゾーンに送る。このカードに重ねたユニットがユニットでなくなるとき、このカードは捨札になる」）", () => {
     let s = resolveAll(used(), ["TST-UNIT-0:u"]);
     expect(zoneOf(s, "player1", "XG3-067:iv")).toBe("rush");
     s = { ...s, phase: "battle", activePlayer: "player2", players: { ...s.players, player1: { ...s.players.player1, battle: s.players.player1.rush.filter((c) => c.instanceId === "TST-UNIT-0:u"), rush: s.players.player1.rush.filter((c) => c.instanceId !== "TST-UNIT-0:u") }, player2: { ...s.players.player2, battle: [inst("TST-UNIT-7", "atk")] } } };
@@ -263,14 +263,14 @@ describe("XG3-068 仮面ライダーディケイド", () => {
 
   const rushPhase = () => board({ rush: [inst("XG3-068", "d")], hand: [inst("TST-OP", "h")], deck: [inst("SPEC-FFR", "ffr"), inst("TST-UNIT-0", "u"), ...deckCards(3)] });
 
-  it.fails("XG3-068:【この世界でやるべきこと】— 自軍ラッシュフェイズ中、手札を1枚捨札にして、自軍山札の特徴「FFR」を持つカードを自軍ラッシュエリアに出せる（既知の不具合: CARD-XG3-068 起動がない）（出典: atwiki/page-2004「自分の手札を1枚選び捨札にしてもよい。そうしたとき、自軍山札を見て、特徴「FFR」を持つカードを1枚選び、自軍ラッシュエリアに出す」）", () => {
+  it("XG3-068:【この世界でやるべきこと】— 自軍ラッシュフェイズ中、手札を1枚捨札にして、自軍山札の特徴「FFR」を持つカードを自軍ラッシュエリアに出せる（出典: atwiki/page-2004「自分の手札を1枚選び捨札にしてもよい。そうしたとき、自軍山札を見て、特徴「FFR」を持つカードを1枚選び、自軍ラッシュエリアに出す」）", () => {
     const s = resolveAll(useRef(rushPhase(), "XG3-068:d"), ["TST-OP:h", "SPEC-FFR:ffr"]);
     expect(zoneOf(s, "player1", "TST-OP:h")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-FFR:ffr")).toBe("rush");
     expect(zoneOf(s, "player1", "TST-UNIT-0:u")).toBe("deck");
   });
 
-  it.fails("XG3-068:【この世界でやるべきこと】— 1回のラッシュフェイズに1度だけ（2度目は使えない）（既知の不具合: CARD-XG3-068）（出典: atwiki/page-2004「自軍ラッシュフェイズごとに1度だけ」）", () => {
+  it("XG3-068:【この世界でやるべきこと】— 1回のラッシュフェイズに1度だけ（2度目は使えない）（出典: atwiki/page-2004「自軍ラッシュフェイズごとに1度だけ」）", () => {
     const s0 = board({ rush: [inst("XG3-068", "d")], hand: [inst("TST-OP", "h"), inst("TST-OP", "h2")], deck: [inst("SPEC-FFR", "ffr"), inst("SPEC-FFR", "ffr2"), ...deckCards(3)] });
     const s = resolveAll(useRef(s0, "XG3-068:d"), ["TST-OP:h", "SPEC-FFR:ffr"]);
     expect(zoneOf(s, "player1", "SPEC-FFR:ffr")).toBe("rush");

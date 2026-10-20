@@ -482,7 +482,8 @@ ABILITIES.push({
   phase: "rush",
   discardSelf: false,
   matches: (cardId) => isXg3FieldAbilityCard(cardId),
-  canActivate: (state, playerId, card) => canActivateXg3FieldAbility(state, playerId, card),
+  // 1ターン1回（XG3-068「自軍ラッシュフェイズごとに1度だけ」等）。
+  canActivate: (state, playerId, card) => !fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId) && canActivateXg3FieldAbility(state, playerId, card),
   resolve: (state, playerId, card) => activateXg3FieldAbility(state, playerId, card),
 });
 

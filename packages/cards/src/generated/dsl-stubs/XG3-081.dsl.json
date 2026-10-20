@@ -42,12 +42,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-081::torigaekusupurojon",
-          "duration": "turn"
+          "keyword": "xg3::XG3-081::trigger_explosion",
+          "duration": "permanent"
         }
       ]
     }

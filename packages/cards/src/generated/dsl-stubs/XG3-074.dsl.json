@@ -41,13 +41,13 @@
       "name": "大ショッカーの巨大幹部",
       "text": "これが自分の手札にある間、自軍ラッシュフェイズ中、自軍Lユニットが1体もなければ次の効果を発動できる⇒自軍山札の上から7枚を捨札にしてから、これをラッシュエリアに出してもよい。ただし、必要パワーは満たす事。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-074::shokano",
+          "keyword": "xg3::XG3-074::kanbu",
           "duration": "permanent"
         }
       ]

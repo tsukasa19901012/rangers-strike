@@ -9,6 +9,7 @@ import {
 } from "../core/catalog";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { vehicleMayBattleWithoutRide } from "./bkOperationTurnRules";
+import { xg3VehicleMayEnterAlone } from "./xg3/xg3Fields";
 
 /** ラッシュ上でこのビークルにライドしているユニットがいるか。 */
 export function hasRiderInRush(
@@ -42,6 +43,8 @@ export function canVehicleEnterBattleFromRush(
   if (hasRiderInRush(player, vehicle.instanceId)) return false;
 
   if (vehicleMayBattleWithoutRide(player, vehicle.instanceId)) return true;
+  // XG3-078 マシンハードボイルダー【リモコン操作】（rules/xg3/xg3Fields.ts）。
+  if (xg3VehicleMayEnterAlone(state, playerId, vehicle)) return true;
 
   const cardId = vehicle.cardId;
   const maySelfEnter =
