@@ -16,7 +16,7 @@ import type { LogicalInput } from "../input/actions";
 import { ListCursor } from "../input/actions";
 import type { ActionOption, GameSession, StepResult } from "../session/session";
 import { ACTION_LABELS, PHASE_LABELS } from "../text/labels";
-import { clipLine, fitLine, measureText, wrapText, type WrapOptions } from "../text/wrap";
+import { clipLine, fitLine, fitLineKeepTail, measureText, wrapText, type WrapOptions } from "../text/wrap";
 import { buildPendingView } from "../view/board";
 import {
   actionExtrasKey,
@@ -774,7 +774,7 @@ export class GuiMatch {
       const index = cursor.rowToIndex(r);
       if (index < 0) break;
       rows.push({
-        text: fitLine(labels[index]!, wrap),
+        text: fitLineKeepTail(labels[index]!, wrap),
         selected: index === cursor.index,
         rect: { x, y: top + r * g.lineHeight, w, h: g.lineHeight },
       });
