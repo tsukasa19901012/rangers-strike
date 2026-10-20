@@ -4,7 +4,7 @@
   "name": "仮面ライダーレンゲル",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "※これはライドオフしたときストライクできない。 ※これが撃破されて捨札になるとき、かわりにダークアライアンスを持つ自軍Sユニットを1体選び捨札にしてもよい。 【レンゲルラウザー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、見せたカードがすべて、BPの下三桁が500の追加条件を持たないユニットカードなら、そのカードをすべて自軍ラッシュエリアに出す。",
@@ -36,16 +36,16 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが撃破されて捨札になるとき、かわりにダークアライアンスを持つ自軍Sユニットを1体選び捨札にしてもよい。",
       "trigger": {
-        "type": "riding_combo"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_substitute_on_destroy_feature_s::feature",
-          "duration": "turn"
+          "keyword": "rk7::RK-128::substitute",
+          "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     },
     {
       "id": "rengerurauza",
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-128::rengerurauza",
+          "keyword": "rk7::RK-128::rengel_rouzer",
           "duration": "turn"
         }
       ],

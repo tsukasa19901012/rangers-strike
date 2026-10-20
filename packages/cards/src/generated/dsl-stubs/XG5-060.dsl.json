@@ -7,7 +7,7 @@
     "WB",
     "DA"
   ],
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。 【ワイルド】これは、自軍の手札が1枚のとき次の能力を得る⇒自軍ターン中、これがバトルエリアに出たとき、相手に1点ダメージを与える。",
@@ -50,9 +50,9 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg5::XG5-060::wild",
+          "duration": "turn"
         }
       ]
     }

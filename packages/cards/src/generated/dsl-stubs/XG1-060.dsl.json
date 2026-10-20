@@ -35,13 +35,12 @@
       "name": "カード強奪",
       "text": "これがバトルエリアからラッシュエリアに戻るとき、相手の手札を見ないで1枚選んでもよい。そうしたとき、選んだカードを持ち主の山札に戻してシャッフルした後で、相手は1枚ドローする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-060::kado",
+          "keyword": "xg1::XG1-060::card_snatch",
           "duration": "permanent"
         }
       ]

@@ -4,7 +4,7 @@
   "name": "仮面ライダーBLACK RX",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "※レジスト ※モーフ 【リボルクラッシュ】敵軍バトルエリアのユニットがSユニット1体だけなら、そのユニットを持ち主のパワーゾーンにダメージにして置いてもよい。",
@@ -59,8 +59,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-048::riborukurashu",
-          "duration": "turn"
+          "keyword": "xg3::XG3-048::revol_crash",
+          "duration": "permanent"
         }
       ]
     }

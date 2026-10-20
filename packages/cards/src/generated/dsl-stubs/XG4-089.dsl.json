@@ -4,7 +4,7 @@
   "name": "仮面ライダーW・JJ",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "【切札の左半身】これがSユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたユニットよりもBPの低い敵軍ユニットを1体選び、撃破する。また、自軍バトルエリアに「仮面ライダーW・CC」があれば、これは「SP1」になる。",
@@ -25,14 +25,14 @@
       "name": "切札の左半身",
       "text": "これがSユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたユニットよりもBPの低い敵軍ユニットを1体選び、撃破する。また、自軍バトルエリアに「仮面ライダーW・CC」があれば、これは「SP1」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "joint_combo_r"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-089::noe58887",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-089::kirifuda",
+          "duration": "turn"
         }
       ]
     }

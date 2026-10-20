@@ -14,7 +14,8 @@
     ],
     "expectedDslKeywords": [
       "call_ET",
-      "SP1"
+      "SP1",
+      "xg2::XG2-001::five_blaster"
     ],
     "bp": 4000,
     "sp": "special",
@@ -34,7 +35,8 @@
       "【ツインフリスビー】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "SP1",
+      "xg2::XG2-002::twin_frisbee"
     ],
     "bp": 3000,
     "sp": "special",
@@ -54,7 +56,8 @@
       "【サークルピュータ】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "SP1",
+      "xg2::XG2-003::circle_computer"
     ],
     "bp": 2000,
     "sp": "special",
@@ -75,7 +78,7 @@
     ],
     "expectedDslKeywords": [
       "blast",
-      "effect_card::XG2-004::sodo"
+      "xg2::XG2-004::chojigen_sword"
     ],
     "bp": 12000,
     "sp": 1,
@@ -96,7 +99,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "effect_card::XG2-005::arufuareza"
+      "xg2::XG2-005::alpha_laser"
     ],
     "bp": 4000,
     "sp": null,
@@ -116,7 +119,7 @@
       "【ベータランチャー】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-006::betarancha"
+      "xg2::XG2-006::beta_launcher"
     ],
     "bp": 6000,
     "sp": null,
@@ -136,7 +139,7 @@
       "【ガンマカノン砲】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-007::ganmakanon"
+      "xg2::XG2-007::gamma_cannon"
     ],
     "bp": 4000,
     "sp": null,
@@ -170,7 +173,7 @@
       "【行動予測】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-009::fxunknowne8a18c"
+      "xg2::XG2-009::kodo_yosoku"
     ],
     "bp": 4000,
     "sp": null,
@@ -187,7 +190,8 @@
       "【龍星キック】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "SP1",
+      "xg2::XG2-010::ryusei_kick"
     ],
     "bp": 5000,
     "sp": "special",
@@ -204,7 +208,7 @@
       "【虎の子大秘術】"
     ],
     "expectedDslKeywords": [
-      "reveal_enemy_deck_1"
+      "xg2::XG2-011::tora_no_ko"
     ],
     "bp": 5000,
     "sp": null,
@@ -221,7 +225,7 @@
       "【飛翔剣・木端微塵】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-012::kene9a39b"
+      "xg2::XG2-012::hisho_ken"
     ],
     "bp": 13000,
     "sp": 1,
@@ -238,7 +242,8 @@
       "【白虎真剣】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "SP1",
+      "xg2::XG2-013::byakko_shinken"
     ],
     "bp": 1000,
     "sp": "special",
@@ -259,7 +264,8 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
-      "SP1"
+      "SP1",
+      "effect_card::XG2-014::chikara_chikara"
     ],
     "bp": 5000,
     "sp": "special",
@@ -277,7 +283,8 @@
     ],
     "expectedDslKeywords": [
       "call_MA",
-      "SP1"
+      "SP1",
+      "xg2::XG2-015::sekiryu_soryuken"
     ],
     "bp": 3000,
     "sp": "special",
@@ -295,7 +302,7 @@
     ],
     "expectedDslKeywords": [
       "note_card::XG2-016::konokadonohakado",
-      "effect_card::XG2-016::kaze"
+      "xg2::XG2-016::tenku_daifusha"
     ],
     "bp": 9000,
     "sp": null,
@@ -310,6 +317,9 @@
     "category": "MA",
     "textSnippets": [
       "【大王剣・疾風怒濤】"
+    ],
+    "expectedDslKeywords": [
+      "xg2::XG2-017::daiou_ken"
     ],
     "bp": 12000,
     "sp": 1,
@@ -327,6 +337,9 @@
     ],
     "textSnippets": [
       "【来来獣】"
+    ],
+    "expectedDslKeywords": [
+      "xg2::XG2-018::rairaiju"
     ],
     "bp": 4000,
     "sp": "1/2",
@@ -363,7 +376,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "effect_card::XG2-020::dane9878e"
+      "xg2::XG2-020::yagyu_eidan"
     ],
     "bp": 9000,
     "sp": 1,
@@ -381,7 +394,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "enter_battle_ignore_hold_requirement"
+      "xg2::XG2-021::kijou"
     ],
     "bp": 6000,
     "sp": "1/2",
@@ -399,7 +412,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "effect_card::XG2-022::fxunknown14"
+      "xg2::XG2-022::kiju_gekitotsu"
     ],
     "bp": 5000,
     "sp": null,
@@ -417,7 +430,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "effect_card::XG2-023::nogekie9bb92"
+      "xg2::XG2-023::kuro_no_ichigeki"
     ],
     "bp": 3000,
     "sp": "special",
@@ -434,7 +447,7 @@
       "【一騎打ち】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-024::chi"
+      "xg2::XG2-024::ikkiuchi"
     ],
     "bp": 5000,
     "sp": null,
@@ -455,7 +468,7 @@
     ],
     "expectedDslKeywords": [
       "stack_vehicle_on_rush",
-      "effect_card::XG2-025::fxunknowne4ba8c"
+      "xg2::XG2-025::nijin_issen"
     ],
     "bp": 3000,
     "sp": null,
@@ -476,7 +489,8 @@
     ],
     "expectedDslKeywords": [
       "stack_vehicle_on_rush",
-      "SP1"
+      "SP1",
+      "xg2::XG2-026::gekiryu_itto"
     ],
     "bp": 3000,
     "sp": "special",
@@ -497,7 +511,8 @@
     ],
     "expectedDslKeywords": [
       "stack_vehicle_on_rush",
-      "SP1"
+      "SP1",
+      "xg2::XG2-027::rai_issou"
     ],
     "bp": 500,
     "sp": "special",
@@ -514,7 +529,7 @@
       "【マイナスエネルギー吸収】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-028::mainasuenerugi"
+      "xg2::XG2-028::minus_energy"
     ],
     "bp": 8000,
     "sp": 1,
@@ -532,7 +547,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
-      "effect_card::XG2-029::matsuri"
+      "xg2::XG2-029::saima_tree"
     ],
     "bp": 6500,
     "sp": "special",
@@ -549,7 +564,7 @@
       "【宇宙警察のバックアップ】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-031::nobakuapue5ae87"
+      "xg2::XG2-031::backup"
     ],
     "bp": 6000,
     "sp": null,
@@ -566,7 +581,7 @@
       "【ジャイロワッパー】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-032::jairowapa"
+      "xg2::XG2-032::gyro_wapper"
     ],
     "bp": 17000,
     "sp": 1,
@@ -583,8 +598,8 @@
       "【防御拳バリアーフィスト】"
     ],
     "expectedDslKeywords": [
-      "note_card::XG2-033::koregapawazonnia",
-      "effect_card::XG2-033::kenbariafuisuto"
+      "xg2::XG2-033::power_guard",
+      "xg2::XG2-033::barrier_fist"
     ],
     "bp": 2000,
     "sp": null,
@@ -619,7 +634,7 @@
     ],
     "expectedDslKeywords": [
       "blast",
-      "effect_card::XG2-035::furuburasutorancha"
+      "xg2::XG2-035::full_blast_launcher"
     ],
     "bp": 20000,
     "sp": 2,
@@ -636,7 +651,7 @@
       "【虎ドリル突撃】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-036::toradorirugeki"
+      "xg2::XG2-036::tora_drill"
     ],
     "bp": 17500,
     "sp": null,
@@ -653,7 +668,8 @@
       "【スーパーシンケンマル】"
     ],
     "expectedDslKeywords": [
-      "on_destroy_reanimate_named_from_discard"
+      "on_destroy_reanimate_named_from_discard",
+      "xg2::XG2-037::super_shinkenmaru"
     ],
     "bp": 4500,
     "sp": 1,
@@ -671,7 +687,7 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_reanimate_named_from_discard",
-      "wing_attack_enemy_rush"
+      "xg2::XG2-038::shin_suiryu"
     ],
     "bp": 3500,
     "sp": null,
@@ -689,7 +705,8 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_reanimate_named_from_discard",
-      "SP1"
+      "SP1",
+      "xg2::XG2-039::shin_tenku"
     ],
     "bp": 2500,
     "sp": "special",
@@ -726,7 +743,7 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_reanimate_named_from_discard",
-      "effect_card::XG2-041::shintsuchinoi"
+      "other::XG2-041::shin_tsuchikemuri"
     ],
     "bp": 1500,
     "sp": null,
@@ -743,8 +760,8 @@
       "【ファイナルアタックライド】"
     ],
     "expectedDslKeywords": [
-      "register_stay_on_power_discard_raida",
-      "effect_card::XG2-042::fuainaruatakuraido"
+      "register_stay_on_power_discard_feat_e4bbaee99da2e383a9e382a4e38380e383bc",
+      "xg2::XG2-042::final_attack_ride"
     ],
     "bp": 6000,
     "sp": "1/4",
@@ -784,7 +801,7 @@
     "expectedDslKeywords": [
       "morph",
       "register",
-      "effect_card::XG2-044::metarushafuto"
+      "xg2::XG2-044::metal_shaft"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -805,7 +822,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "effect_card::XG2-045::torigamagunamu"
+      "xg2::XG2-045::trigger_magnum"
     ],
     "bp": 2000,
     "sp": null,
@@ -825,7 +842,7 @@
       "morph",
       "register",
       "require_command_hold_entry",
-      "effect_card::XG2-046::chikarae680aa"
+      "xg2::XG2-046::kairiki"
     ],
     "bp": 3000,
     "sp": null,
@@ -843,7 +860,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "effect_card::XG2-047::hihonoogasu"
+      "xg2::XG2-047::super_gas"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -861,7 +878,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "effect_card::XG2-048::redaai"
+      "xg2::XG2-048::radar_eye"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -879,7 +896,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "effect_card::XG2-049::demonzufuangukurasha"
+      "xg2::XG2-049::demons_fang"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -898,7 +915,7 @@
     "expectedDslKeywords": [
       "register",
       "on_destroy_reanimate_named_from_discard",
-      "effect_card::XG2-050::girususuteinga"
+      "xg2::XG2-050::gills_stinger"
     ],
     "bp": 3500,
     "sp": null,
@@ -915,7 +932,7 @@
       "【塵は塵に】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-051::hani"
+      "xg2::XG2-051::dust_to_dust"
     ],
     "bp": 6000,
     "sp": null,
@@ -930,9 +947,6 @@
     "category": "WB",
     "textSnippets": [
       "ライドしていない特徴「獣」を持つ自軍ユニットを1"
-    ],
-    "expectedDslKeywords": [
-      "note_card::XG2-052::raidoshiteinaiwo"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -951,7 +965,7 @@
       "【間違った英雄】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-053::ta"
+      "xg2::XG2-053::wrong_hero"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -969,7 +983,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "effect_card::XG2-054::tsuchikarano"
+      "xg2::XG2-054::ambush"
     ],
     "bp": 5000,
     "sp": null,
@@ -986,7 +1000,7 @@
       "自分の手札から特徴「男」または「女」を持つSユニ"
     ],
     "expectedDslKeywords": [
-      "note_card::XG2-055::nokaramatahawots"
+      "xg2::XG2-055::henshin_ippatsu"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1005,7 +1019,8 @@
       "【強化クリムゾンスマッシュ】"
     ],
     "expectedDslKeywords": [
-      "wing"
+      "wing",
+      "xg2::XG2-056::crimson_smash"
     ],
     "bp": 5000,
     "sp": 1,
@@ -1023,7 +1038,7 @@
     ],
     "expectedDslKeywords": [
       "call_DA",
-      "effect_card::XG2-057::rakikuroba"
+      "xg2::XG2-057::lucky_clover"
     ],
     "bp": 3000,
     "sp": null,
@@ -1040,8 +1055,8 @@
       "【種のための戦い】"
     ],
     "expectedDslKeywords": [
-      "note_card::XG2-058::koreganiaruraida",
-      "effect_card::XG2-058::notamenoi"
+      "xg2::XG2-058::rengel_bonus",
+      "xg2::XG2-058::species_battle"
     ],
     "bp": 2500,
     "sp": null,
@@ -1061,7 +1076,7 @@
       "【力の誇示】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-059::chikarano"
+      "xg2::XG2-059::show_of_power"
     ],
     "bp": 4000,
     "sp": "1/2",
@@ -1078,7 +1093,7 @@
       "【スペード10―タイム】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-060::supedo10taimu"
+      "xg2::XG2-060::spade_ten_time"
     ],
     "bp": 3500,
     "sp": null,
@@ -1095,7 +1110,7 @@
       "※カウンター"
     ],
     "expectedDslKeywords": [
-      "counter_note::kaunta_yunitoniataku"
+      "xg2::XG2-061::ryoku_oozaru"
     ],
     "operationKind": "counter",
     "expectedMechanisms": [
@@ -1114,7 +1129,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "effect_card::XG2-062::shine9acbc"
+      "xg2::XG2-062::kishin_kakusei"
     ],
     "bp": 6000,
     "sp": "1/3",
@@ -1132,7 +1147,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "effect_card::XG2-063::hie9acbc"
+      "xg2::XG2-063::onibi"
     ],
     "bp": 3000,
     "sp": null,
@@ -1168,7 +1183,7 @@
     ],
     "expectedDslKeywords": [
       "not_selectable_except_attack",
-      "effect_card::XG2-065::haipakurokuapu"
+      "xg2::XG2-065::hyper_clock_up"
     ],
     "bp": 4000,
     "sp": 1,
@@ -1204,8 +1219,8 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "note_card::XG2-067::konoyunitononiom",
-      "effect_card::XG2-067::masurunaragekitsuyo"
+      "xg2::XG2-067::ryutaros_sp",
+      "xg2::XG2-067::jama_suru_nara"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -1223,7 +1238,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "effect_card::XG2-068::fxunknowne68691"
+      "xg2::XG2-068::hyoui"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -1278,7 +1293,7 @@
     ],
     "expectedDslKeywords": [
       "no_attack_from_enemy_s",
-      "effect_card::XG2-071::deimenshonshuto"
+      "xg2::XG2-071::dimension_shoot"
     ],
     "bp": 1000,
     "sp": null,
@@ -1299,7 +1314,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_1500",
-      "effect_card::XG2-072::toraigouramuataku"
+      "xg2::XG2-072::trigouram_attack"
     ],
     "sp": null,
     "size": "S"
@@ -1315,7 +1330,8 @@
       "【笑顔の為に】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "xg2::XG2-073::egao_no_tame"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -1333,8 +1349,8 @@
     ],
     "expectedDslKeywords": [
       "on_ally_rush_named_return_self_to_hand",
-      "note_card::XG2-074::koreharaidadeike",
-      "effect_card::XG2-074::fuainaruatakuraido"
+      "xg2::XG2-074::decade_enter",
+      "xg2::XG2-074::final_attack_ride"
     ],
     "sp": null,
     "size": "S"
@@ -1348,6 +1364,9 @@
     "category": "WB",
     "textSnippets": [
       "【ブレイドブレード】"
+    ],
+    "expectedDslKeywords": [
+      "xg2::XG2-075::blade_blade"
     ],
     "bp": 3000,
     "sp": null,
@@ -1364,7 +1383,7 @@
       "【キバアロー】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-076::kibaaro"
+      "xg2::XG2-076::kiba_arrow"
     ],
     "bp": 3000,
     "sp": null,
@@ -1399,7 +1418,7 @@
       "【ファイズブラスター】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-078::fuaizuburasuta"
+      "xg2::XG2-078::faiz_blaster"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -1416,7 +1435,7 @@
       "【タイムベント】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-079::taimubento"
+      "xg2::XG2-079::time_vent"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -1434,7 +1453,7 @@
     ],
     "expectedDslKeywords": [
       "on_ally_rush_named_return_self_to_hand",
-      "effect_card::XG2-080::fuainaruatakuraido"
+      "xg2::XG2-080::final_attack_ride"
     ],
     "bp": 5000,
     "sp": null,
@@ -1451,7 +1470,7 @@
       "【俺の必殺技・ディケイドバージョン】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-081::nodeikeidobajon"
+      "xg2::XG2-081::ore_no_hissatsu"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -1468,9 +1487,10 @@
       "【ドルファイヤー】"
     ],
     "expectedDslKeywords": [
-      "note_card::XG2-082::korehaeriadehoru",
+      "xg2::XG2-082::vehicle_unit",
       "note_card::XG2-082::rashufueizukonoy",
-      "note_card::XG2-082::rashufueizukonob"
+      "note_card::XG2-082::rashufueizukonob",
+      "xg2::XG2-082::dol_fire"
     ],
     "bp": 5000,
     "sp": null,
@@ -1488,8 +1508,8 @@
     ],
     "expectedDslKeywords": [
       "chase",
-      "note_card::XG2-083::koregaerianiaruw",
-      "effect_card::XG2-083::patororu"
+      "xg2::XG2-083::uchu_keiji_bp",
+      "xg2::XG2-083::patrol"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -1507,7 +1527,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack_s",
-      "reveal_enemy_deck_1"
+      "xg2::XG2-084::babylos_laser"
     ],
     "bp": 4000,
     "sp": null,
@@ -1524,7 +1544,7 @@
       "【日本刀】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-085::toe697a5"
+      "xg2::XG2-085::nihonto"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -1546,7 +1566,7 @@
     "expectedDslKeywords": [
       "note_card::XG2-086::tankoretobatorus",
       "on_destroy_reanimate_named_from_discard",
-      "effect_card::XG2-086::doramuganfuaiya"
+      "xg2::XG2-086::drum_gun_fire"
     ],
     "bp": 4500,
     "sp": 1,
@@ -1564,7 +1584,7 @@
     ],
     "expectedDslKeywords": [
       "discard_on_end_turn_battle",
-      "effect_card::XG2-087::enerugi"
+      "xg2::XG2-087::energy"
     ],
     "bp": 3000,
     "sp": null,
@@ -1582,7 +1602,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
-      "effect_card::XG2-088::jibankira"
+      "xg2::XG2-088::jiban_killer"
     ],
     "bp": 4000,
     "sp": "special",
@@ -1600,7 +1620,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "effect_card::XG2-089::jibanendo"
+      "xg2::XG2-089::jiban_end"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -1617,7 +1637,7 @@
       "【第六世代コンピューター】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-090::konpyuta"
+      "xg2::XG2-090::computer"
     ],
     "sp": null,
     "size": "S"
@@ -1634,7 +1654,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "SP1"
+      "SP1",
+      "xg2::XG2-092::pile_tornado"
     ],
     "bp": 4000,
     "sp": "special",
@@ -1652,7 +1673,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack",
-      "effect_card::XG2-093::fxunknowne98193"
+      "xg2::XG2-093::road_block"
     ],
     "bp": 5000,
     "sp": null,
@@ -1672,7 +1693,8 @@
       "【スティンガービュート】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "xg2::XG2-095::stinger_whip"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -1713,7 +1735,7 @@
       "【ライトニングキャノン】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG2-097::raitoningukyanon"
+      "xg2::XG2-097::lightning_cannon"
     ],
     "bp": 3000,
     "sp": null,
@@ -1745,8 +1767,9 @@
       "【カメラズーカ】"
     ],
     "expectedDslKeywords": [
-      "on_destroy_deploy_named_to_rush::カメロック",
-      "SP1"
+      "xg2::XG2-099::kamerock_return",
+      "SP1",
+      "xg2::XG2-099::camera_zooka"
     ],
     "bp": 3500,
     "sp": "special",
@@ -1783,7 +1806,8 @@
     ],
     "expectedDslKeywords": [
       "note_card::XG2-101::mekawotsuyunitog",
-      "note_card::XG2-101::gatanwoerutokiko"
+      "note_card::XG2-101::gatanwoerutokiko",
+      "xg2::XG2-101::hakaider_shot"
     ],
     "bp": 5000,
     "sp": 1,
@@ -1801,7 +1825,7 @@
     ],
     "expectedDslKeywords": [
       "note_card::XG2-102::korehadawotsukom",
-      "effect_card::XG2-102::denjiendo"
+      "xg2::XG2-102::denji_end"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -1816,6 +1840,9 @@
     "category": "ET",
     "textSnippets": [
       "【ドリル攻撃】"
+    ],
+    "expectedDslKeywords": [
+      "xg2::XG2-103::drill"
     ],
     "sp": null,
     "size": "S"

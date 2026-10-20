@@ -93,14 +93,19 @@ export function beginAssaultVectorDestroy(
   const limit = assaultVectorDestroyLimit(state, params.effectOwnerId);
   if (limit <= 0) return null;
 
+  // 対象に自軍・敵軍の指定がないので、自軍のユニットも選べる（R-TGT-04）。
+  // 「ナンバー」には「RC」「L」「R」も含む（grnrngr/faq-card-4 RS-181 Q2）。
   const enemyId = opponent(params.effectOwnerId);
   const valid: string[] = [];
-  for (const zone of ["rush", "battle"] as const) {
-    for (const card of state.players[enemyId][zone]) {
-      const def = getDefinition(state.definitions, card.cardId);
-      if (!def || !isSmallUnit(state.definitions, card.cardId)) continue;
-      if (cardHasComboNumber(card.cardId)) continue;
-      valid.push(card.instanceId);
+  for (const pid of [enemyId, params.effectOwnerId] as const) {
+    for (const zone of ["rush", "battle"] as const) {
+      for (const card of state.players[pid][zone]) {
+        const def = getDefinition(state.definitions, card.cardId);
+        if (!def || !isSmallUnit(state.definitions, card)) continue;
+        if (cardHasComboNumber(card.cardId)) continue;
+        if (def.comboNumber != null) continue;
+        valid.push(card.instanceId);
+      }
     }
   }
   if (valid.length === 0) return null;
@@ -112,7 +117,7 @@ export function beginAssaultVectorDestroy(
     phasePlayerId: params.phasePlayerId,
     kind: "select_unit",
     validInstanceIds: valid,
-    selectCount: 1,
+    selectCount: Math.min(limit, valid.length),
     optional: true,
     unitDestination: "discard",
     zoneCategoryDestroyLimit: limit,

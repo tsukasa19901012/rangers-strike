@@ -1,3 +1,4 @@
+import { noteEngineSideEffect } from "../core/sideEffects";
 import type {
   EnterBattleResumeFrom,
   GameState,
@@ -34,6 +35,10 @@ export type UnitRushedEvent = GameEventBase & {
   rusherPlayerId: PlayerId;
   instanceId: string;
   cardId: string;
+  /** R-RUSH-24: 「このとき出したユニットの効果は発動しない」— 出たユニット自身の効果を止める。 */
+  selfEffectsSuppressed?: boolean;
+  /** 効果によるラッシュ（コマンドをホールドしての通常ラッシュではない）。 */
+  viaEffect?: boolean;
 };
 
 export type UnitEnteredBattleEvent = GameEventBase & {
@@ -74,6 +79,13 @@ export type UnitLeftZoneEvent = GameEventBase & {
   cardId: string;
   fromZone: "rush" | "battle";
   toZone: ZoneName;
+  /**
+   * ルール: R-DESTROY-01/02 — 撃破による移動か。省略時は toZone === "discard" を撃破とみなす。
+   * 撃破されて捨札以外（パワーゾーン等）へ置かれた場合は true を渡す。
+   */
+  destroyed?: boolean;
+  /** バトルによる撃破のとき、バトルの相手のユニット（RS-453【激怒斬り】）。 */
+  battleOpponentInstanceId?: string;
 };
 
 export type DamageAppliedEvent = GameEventBase & {
@@ -139,12 +151,13 @@ export function resetEventSeqForTests(): void {
 }
 
 export function nextEventSeqNumber(): number {
+  noteEngineSideEffect();
   nextEventSeq += 1;
   return nextEventSeq;
 }
 
 export function createEventId(prefix = "evt"): string {
-  return `${prefix}_${nextEventSeqNumber()}_${Date.now().toString(36)}`;
+  return `${prefix}_${nextEventSeqNumber()}`;
 }
 
 export function normalizeListenerResult(

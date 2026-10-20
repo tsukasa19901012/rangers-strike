@@ -1,12 +1,16 @@
-import type { EffectDefinition, EffectPrimitive } from "@rangers-strike/cards/dsl/types";
+import type { EffectDefinition, EffectPrimitive, PlayerRef } from "@rangers-strike/cards/dsl/types";
 import type { CardInstance, DslChoiceResume, GameState, PlayerId } from "../types/game";
 import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
-import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { COMMAND_ZONE_MAX } from "../types/game";
+import { rk6CommandHoldBlocked } from "../rules/rk/rk6Fields";
+import { findInZone, isInstancePlacedAnywhere, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { findOwnUnit } from "../core/modifiers";
 import { applyDamageToPlayer } from "../rules/damagePayment";
 import { requestDrawFromDeck } from "../rules/drawFromDeck";
-import { openEffectChoice } from "../rules/pendingChoices";
+import { applyUnitLeave, openEffectChoice } from "../rules/pendingChoices";
+import { getDslEffectById } from "./effectLookup";
 import { findCardInField } from "../rules/fieldLookup";
+import { tryLeaveField } from "../rules/operationCounters";
 import { canMoveCardToRushFromZone } from "../rules/rushFromHandOnly";
 import { applyGrantKeyword } from "./grantKeyword";
 import {
@@ -94,6 +98,9 @@ function moveCardToZone(
     nextOwner = { ...nextOwner, hand: [...nextOwner.hand, card] };
   } else if (toZone === "discard") {
     nextOwner = { ...nextOwner, discard: [...nextOwner.discard, card] };
+  } else if (toZone === "command" && nextOwner.command.length >= COMMAND_ZONE_MAX) {
+    // R-ZONE-08: 効果で5枚を超えて置かれるカードは捨札になる（例: RS-252「置けなければ捨札にする」）。
+    nextOwner = { ...nextOwner, discard: [...nextOwner.discard, { instanceId: card.instanceId, cardId: card.cardId }] };
   } else if (toZone === "command") {
     nextOwner = {
       ...nextOwner,
@@ -130,6 +137,27 @@ function applyModifyBp(
   };
 }
 
+/**
+ * DSL の PlayerRef を実プレイヤーに解決する。
+ * controller = 効果の使用者（ctx.playerId）、opponent = その相手、phase_player = ターンプレイヤー。
+ */
+export function resolvePlayerRef(
+  ctx: Pick<DslCardContext, "playerId" | "phasePlayerId">,
+  ref: PlayerRef,
+): PlayerId {
+  switch (ref) {
+    case "controller":
+      return ctx.playerId;
+    case "opponent":
+      return opponent(ctx.playerId);
+    case "phase_player":
+      return ctx.phasePlayerId;
+    case "player1":
+    case "player2":
+      return ref;
+  }
+}
+
 function applyPrimitive(
   state: GameState,
   ctx: DslCardContext,
@@ -137,14 +165,17 @@ function applyPrimitive(
 ): { state: GameState; detail?: string; pending?: boolean } {
   switch (primitive.type) {
     case "draw": {
-      const result = requestDrawFromDeck(state, ctx.playerId, ctx.phasePlayerId, {
+      // 「相手は1枚ドローしてもよい」等は player: "opponent"。省略時は効果の使用者（自分）。
+      const drawerId = resolvePlayerRef(ctx, primitive.player ?? "controller");
+      const result = requestDrawFromDeck(state, drawerId, ctx.phasePlayerId, {
         count: primitive.amount,
         sourceCardId: ctx.sourceCardId,
       });
       return { state: result.state, detail: "draw" };
     }
     case "deal_damage": {
-      const targetId = primitive.target === "controller" ? opponent(ctx.playerId) : ctx.playerId;
+      // 「相手にN点ダメージを与える」= opponent（効果の使用者の相手）、「自分はN点ダメージを受ける」= controller。
+      const targetId = resolvePlayerRef(ctx, primitive.target);
       const next = applyDamageToPlayer(state, targetId, primitive.amount, {
         kind: "none",
         activePlayer: ctx.phasePlayerId,
@@ -187,6 +218,23 @@ function applyPrimitive(
       }
       if (!instanceId) return { state };
       const toZone = primitive.to as ZoneKey | "deck";
+      // ルール: R-KW-CHASE-01, R-MOVE-01 — エリアのユニットをパワーゾーン・捨札へ送るのは「場を離れる」移動。
+      // チェイス・ダイノガッツ等の離場反応の機会を与えるため、離場処理を通す。
+      const deckTop = toZone === "deck" && primitive.position === "left";
+      if (toZone === "power" || toZone === "discard" || deckTop) {
+        const located = findCardInField(state, instanceId);
+        if (located && (located.zone === "rush" || located.zone === "battle")) {
+          const leave = tryLeaveField(state, {
+            ownerPlayerId: located.playerId,
+            instanceId,
+            fromZone: located.zone,
+            toZone: deckTop ? "deck_top" : (toZone as "power" | "discard"),
+            leavingCardId: located.card.cardId,
+            phasePlayerId: ctx.phasePlayerId,
+          });
+          return { state: leave.state, detail: primitive.to === "power" ? "place_in_power" : "move" };
+        }
+      }
       const next = moveCardToZone(state, instanceId, toZone, patch, primitive.position);
       if (!next) return { state };
       return { state: next, detail: primitive.to === "power" ? "place_in_power" : "move" };
@@ -238,6 +286,18 @@ function applyPrimitive(
         ctx.triggerSourceInstanceId,
       );
       if (!instanceId) return { state };
+      // 「選んで撃破する」の場合は撃破（離場パイプライン）として捨札にする。単に捨札へ移すと
+      // 「撃破されたとき」（RS-054 アバレッドの1点等）が発生しない。ルール: R-DESTROY-01
+      // 例: RS-050 アバレンオー【爆竜電撃ドリルスピン】（atwiki/page-77）
+      const located = findCardInField(state, instanceId);
+      if (
+        located &&
+        (located.zone === "rush" || located.zone === "battle") &&
+        /撃破(する|し)/.test(getDslEffectById(ctx.sourceCardId, ctx.effectId)?.text ?? "")
+      ) {
+        const leave = applyUnitLeave(state, instanceId, "discard", ctx.phasePlayerId);
+        if (!("error" in leave)) return { state: leave.state, detail: "destroy" };
+      }
       const next = moveCardToZone(state, instanceId, "discard");
       return next ? { state: next, detail: "discard" } : { state };
     }
@@ -250,6 +310,11 @@ function applyPrimitive(
         ctx.triggerSourceInstanceId,
       );
       if (!instanceId) return { state };
+      // RK-116 マグナギガ【そびえる巨体】: 敵軍ユニットの効果では、そのコマンドをホールドしない（rules/rk/rk6Fields.ts）。
+      const commandOwner = (["player1", "player2"] as const).find((pid) => state.players[pid].command.some((c) => c.instanceId === instanceId));
+      if (commandOwner && commandOwner !== ctx.playerId && rk6CommandHoldBlocked(state, commandOwner, ctx.sourceCardId)) {
+        return { state, detail: "rk116:blocked" };
+      }
       const next = moveCardToZone(state, instanceId, "command", {
         commandHeld: true,
       });
@@ -313,6 +378,7 @@ function applyPrimitive(
         ctx.playerId,
         validSelector,
         ctx.operationInstanceId,
+        ctx.sourceCardId,
       );
       let viewedInstanceIds: string[] | undefined;
       if (
@@ -443,6 +509,7 @@ export function tryResolveDslOperation(args: {
       args.playerId,
       first.valid,
       ctx.operationInstanceId,
+      ctx.sourceCardId,
     ).includes(args.targetInstanceId)
   ) {
     return interpretEffectPrimitives(args.state, ctx, first.then);
@@ -457,6 +524,8 @@ export function tryResolveDslLeaveCounter(args: {
   counterInstanceId: string;
   leavingCardId: string;
   sourceCardId: string;
+  /** 離場が起きているフェイズのプレイヤー（効果の選択を閉じたあとに手番を戻す先）。 */
+  phasePlayerId?: PlayerId;
 }): { state: GameState; detail: string; prevented: boolean } | null {
   const effect = getDslOperationEffect(args.sourceCardId, "counter");
   if (!effect || !isDslInterpretableEffect(effect)) return null;
@@ -479,7 +548,7 @@ export function tryResolveDslLeaveCounter(args: {
     effectId: effect.id,
     sourceCardId: args.sourceCardId,
     playerId: args.playerId,
-    phasePlayerId: args.playerId,
+    phasePlayerId: args.phasePlayerId ?? args.playerId,
     operationInstanceId: args.counterInstanceId,
     leavingCardId: args.leavingCardId,
     discardOperation: true,
@@ -522,7 +591,12 @@ export function continueDslAfterChoice(
   const outcome = interpretEffectPrimitives(withoutPending, ctx, resume.remaining);
   let nextState = outcome.state;
 
-  if (resume.operationCard && outcome.discardOperation !== false && !nextState.pendingEffectChoice) {
+  if (
+    resume.operationCard &&
+    outcome.discardOperation !== false &&
+    !nextState.pendingEffectChoice &&
+    !isInstancePlacedAnywhere(nextState, resume.operationCard.instanceId)
+  ) {
     const player = nextState.players[playerId];
     nextState = {
       ...nextState,

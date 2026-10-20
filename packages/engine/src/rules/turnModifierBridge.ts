@@ -6,6 +6,9 @@ import {
   hasTurnRuleModifier,
 } from "../core/scopedModifiers";
 import { RESTRICTION_IDS, TURN_RULE_IDS } from "../types/scopedModifiers";
+import type { CardInstance } from "../types/game";
+import { logicalBattlePosition } from "./battleLine";
+import { unitSizeOf } from "../core/catalog";
 
 export type SComboFinisher = "goren_storm" | "jacker_hurricane";
 
@@ -116,6 +119,36 @@ export function setGenericSComboFinisher(
   };
 }
 
+/**
+ * RS-001【ゴレンジャーストーム】／RS-002【ジャッカーハリケーン】型の「このターン、Sユニットだけで
+ * コンビネーションするとき、N番目のユニットは「SPx」「BPy」になる」。
+ *
+ * 値を「～になる」で上書きする（R-BP-01: BP を指定値にする効果が最優先で増減は計算しない。SP も同様に
+ * 加算ではなく指定値）。進入時に一度だけ書き込むのではなく、常に現在の並びで判定する
+ * （grnrngr/faq-card-1 RS-002 Q2「常にバトルエリアで４番目のユニットに対して有効」— 4番目でなくなれば失い、
+ * 新たに4番目になったユニットが得る）。
+ */
+export function sComboFinisherSetValues(
+  state: Pick<GameState, "players" | "definitions">,
+  playerId: PlayerId,
+  instance: CardInstance,
+): { bp: number; sp: number } | null {
+  const player = state.players[playerId];
+  const finisher = getSComboFinisher(player);
+  const generic = getGenericSComboFinisher(player);
+  if (!finisher && !generic) return null;
+  const battle = player.battle;
+  if (!battle.some((c) => c.instanceId === instance.instanceId)) return null;
+  // 「Sユニットだけでコンビネーションするとき」
+  if (!battle.every((c) => unitSizeOf(state.definitions, c) === "S")) return null;
+  const position = logicalBattlePosition(battle, instance.instanceId);
+  if (position === null) return null;
+  if (finisher === "goren_storm" && position === 5) return { bp: 12000, sp: 1 };
+  if (finisher === "jacker_hurricane" && position === 4) return { bp: 8000, sp: 1 };
+  if (generic && position === generic.position) return { bp: generic.bp, sp: generic.sp };
+  return null;
+}
+
 export function getAuraPowerInstanceId(player: PlayerState): string | undefined {
   return firstRulePayload<string>(player, TURN_RULE_IDS.AURA_POWER);
 }
@@ -214,12 +247,13 @@ export function shouldBattleDestroyToPower(
     ...getBattleDestroyToPowerInstanceIds(state.players.player1),
     ...getBattleDestroyToPowerInstanceIds(state.players.player2),
   ];
-  if (marked.includes(instanceId)) return true;
+  // 「選んだユニットとバトルしたユニット」— 選んだユニット自身ではなく、そのバトル相手（atwiki/page-379）。
   if (!pending) return false;
   const participants = [
     pending.attackerInstanceId,
     pending.substituteInstanceId ?? pending.defenderInstanceId,
   ];
   if (!participants.includes(instanceId)) return false;
-  return marked.some((m) => participants.includes(m));
+  const other = participants.find((id) => id !== instanceId);
+  return !!other && marked.includes(other);
 }

@@ -7,7 +7,7 @@
     "WB",
     "ET"
   ],
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※レジスト 【スティンガードリル】敵軍バトルエリアから、レジストを持つSユニットを1体選び撃破してもよい。（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
@@ -44,34 +44,14 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg3::XG3-089::stinger_drill",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

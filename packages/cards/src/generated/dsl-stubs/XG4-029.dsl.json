@@ -7,7 +7,7 @@
     "WB",
     "MA"
   ],
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "【天地転変打】「SP1」特徴「激気」を持つ自軍MユニットのBPを合計して、その合計以下のBPを持つ敵軍ユニットを敵軍バトルエリアから1体選び撃破する。",
@@ -33,6 +33,11 @@
         {
           "type": "grant_keyword",
           "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg4::XG4-029::tenchi",
           "duration": "turn"
         }
       ]

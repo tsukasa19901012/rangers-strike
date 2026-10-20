@@ -4,7 +4,7 @@
   "name": "デンライナーゴウカ",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "PR",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "【時の列車】これは必要パワーの数字に「－」のあるユニットにアタックするときBP+5000される。",
@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "no_e69982",
+      "id": "modo",
       "name": "時の列車",
       "text": "これは必要パワーの数字に「－」のあるユニットにアタックするときBP+5000される。",
       "trigger": {
@@ -30,14 +30,12 @@
       },
       "effects": [
         {
-          "type": "modify_bp",
-          "target": {
-            "type": "trigger_source"
-          },
-          "amount": 5000,
+          "type": "grant_keyword",
+          "keyword": "rk3::RK-060::sentou_mode",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

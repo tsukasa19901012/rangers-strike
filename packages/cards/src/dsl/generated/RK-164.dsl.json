@@ -4,7 +4,7 @@
   "name": "仮面ライダー1号（THE FIRST）",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【ライダーパンチ】このターン、これはBP+2000される。さらに、このユニットがホールド状態なら、このターン、これは「SP1」になる。",
@@ -47,6 +47,11 @@
             "type": "trigger_source"
           },
           "amount": 2000,
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "rk8::RK-164::rider_punch_sp1",
           "duration": "turn"
         }
       ]

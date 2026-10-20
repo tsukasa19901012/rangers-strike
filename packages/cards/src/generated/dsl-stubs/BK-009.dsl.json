@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_effect_branch",
+          "keyword": "bk1::BK-009::king_stone",
           "duration": "turn"
         }
       ],

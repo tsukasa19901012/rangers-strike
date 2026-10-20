@@ -4,7 +4,7 @@
   "name": "ギンガイオー",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "合体―ギンガレオン＋ギンガルコン＋ギンガリラ＋ギンガベリック＋ギンガット ※ブラスト 【ガルコンボーガン】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアからBP4000以下のユニットを1体選び撃破する。",
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-687::garukonbogan",
+          "keyword": "set9d::RS-687::garcon_bowgun",
           "duration": "turn"
         }
       ],

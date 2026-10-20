@@ -39,11 +39,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_kamen_to_rush",
+          "keyword": "rk2::RK-026::seigi_no_mikata",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

@@ -36,15 +36,16 @@
       "name": "1万人ライダー部隊",
       "text": "敵軍ターン中、これが撃破されて捨札になったとき、自軍捨札に「ライオトルーパー」のユニットカードが10枚以上あれば、それをすべて手札に加える。",
       "trigger": {
-        "type": "nc"
+        "type": "on_destroy"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "recruit_all_named_e383a9e382a4e382aae38388_10",
+          "keyword": "rk3::RK-044::ichiman_rider_butai",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

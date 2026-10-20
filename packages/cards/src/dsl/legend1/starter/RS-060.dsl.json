@@ -14,12 +14,27 @@
           "type": "choose",
           "kind": "select_unit",
           "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "any",
-            "filter": {
-              "maxBp": 3000
-            }
+            "type": "zones",
+            "zones": [
+              {
+                "type": "zone",
+                "zone": "rush",
+                "owner": "any",
+                "filter": {
+                  "cardType": "unit",
+                  "maxBp": 3000
+                }
+              },
+              {
+                "type": "zone",
+                "zone": "battle",
+                "owner": "any",
+                "filter": {
+                  "cardType": "unit",
+                  "maxBp": 3000
+                }
+              }
+            ]
           },
           "count": 1,
           "then": [

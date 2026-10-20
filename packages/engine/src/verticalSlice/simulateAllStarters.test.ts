@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { yieldToEventLoop } from "../testing/yieldToEventLoop";
 import type { Phase } from "../types/game";
 import { ALL_STARTER_DECK_IDS, createStarterGame } from "./createStarterGame";
 import { playStarterMatchUntilEnd } from "./playStarterMatch";
@@ -57,7 +58,7 @@ async function runSimulation(count: number): Promise<SimReport> {
         player1Starter: p1,
         player2Starter: p2,
       }),
-      { maxSteps: MAX_STEPS, cpuLevel: 3 },
+      { maxSteps: MAX_STEPS, cpuLevel: 2 },
     );
 
     for (const phase of result.trace.phasesSeen) {
@@ -72,7 +73,7 @@ async function runSimulation(count: number): Promise<SimReport> {
     else if (result.reason === "apply_failed") report.applyFailed += 1;
 
     // 長時間の同期ループで vitest ワーカー RPC が飢餓しないよう、1ゲームごとに譲る
-    await new Promise((resolve) => setImmediate(resolve));
+    await yieldToEventLoop();
   }
 
   return report;

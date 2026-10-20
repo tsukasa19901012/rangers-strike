@@ -4,7 +4,7 @@
   "name": "オルタナティブ",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 2,
   "text": "※これはライドオフしたときストライクできない。 【スラッシュダガー】敵軍バトルエリアからBPが本来のBPではないSユニットを1体選び撃破してもよい。",
@@ -40,34 +40,14 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk6::RK-112::slash_dagger",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

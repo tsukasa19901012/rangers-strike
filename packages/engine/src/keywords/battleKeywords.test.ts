@@ -8,10 +8,13 @@ import {
   applyCancelWingHold,
   canCancelWingHold,
   blastBypassesRushAdditionalCondition,
+  breakerBlocksEffectTarget,
   breakerBlocksSameNameRush,
+  cardHasBattleKeyword,
   canHoldForWing,
   canWingAttackFromRush,
-  crossAdjustedBattlePosition,
+  crossReducedNumber,
+  crossReductionFor,
   crossValueForCard,
   prepareWingUnitReturnedToRush,
   resetWingUnitForReuse,
@@ -27,14 +30,34 @@ import { wingCanAttackEnemyRush } from "./index";
 import { addTurnRestrictionModifier } from "../core/scopedModifiers";
 import { RESTRICTION_IDS } from "../types/scopedModifiers";
 import { applyAction, getLegalActions } from "../index";
+import { printedSpBase } from "../rules/fractionalSp";
+import { cardHasKeyword } from "./cardKeywords";
+import { isSelectableByOpponentEffect } from "./effectTargetability";
+import { fullPlayableCatalog, hasResist } from "@rangers-strike/cards";
 
 describe("cross1 keyword", () => {
-  it("shifts battle position for units to the right of cross holder", () => {
+  it("R-KW-CROSS-01: 右側ユニットの減少量は左側のクロス合計（並び順は変えない）", () => {
     const cross = inst("XG7-013", "c1");
     const follower = inst("TST-FOLLOW", "f1");
     const battle = [cross, follower];
     expect(crossValueForCard("XG7-013")).toBeGreaterThan(0);
-    expect(crossAdjustedBattlePosition(battle, follower.instanceId)).toBe(1);
+    expect(crossReductionFor(battle, follower.instanceId)).toBe(crossValueForCard("XG7-013"));
+    expect(crossReductionFor(battle, cross.instanceId)).toBe(0);
+    expect(crossReductionFor(battle, "not-in-battle")).toBe(0);
+  });
+
+  it("R-KW-CROSS-01: 数字は X 少なくなるが 2 より少なくならず、元が 2 未満なら変わらない", () => {
+    expect(crossReducedNumber(5, 2)).toBe(3);
+    expect(crossReducedNumber(3, 2)).toBe(2);
+    expect(crossReducedNumber(2, 1)).toBe(2);
+    expect(crossReducedNumber(1, 1)).toBe(1);
+    expect(crossReducedNumber(4, 0)).toBe(4);
+  });
+
+  it("R-KW-CROSS-01: 分数SPの分母も減る（1/3 は左にクロス1があれば2番目で SP1）", () => {
+    expect(printedSpBase("1/3", 2, 1)).toBe(1);
+    expect(printedSpBase("1/3", 3, 1)).toBe(0);
+    expect(printedSpBase("1/2", 2, 1)).toBe(1);
   });
 });
 
@@ -414,8 +437,8 @@ describe("wing keyword", () => {
 });
 
 describe("blast keyword", () => {
-  it("bypasses additional conditions at one face-up power remaining", () => {
-    const defs = buildDefinitionMap([
+  const blastDefs = () =>
+    buildDefinitionMap([
       [
         {
           id: "TST-BLAST",
@@ -429,68 +452,43 @@ describe("blast keyword", () => {
           size: "L",
           text: "※ブラスト",
         },
+        { id: "TST-L", name: "Big", type: "unit", category: "WB", rarity: "C", expansion: "test", powerCost: 5, bp: 9000, size: "L", text: "" },
+        { id: "TST-S", name: "Small", type: "unit", category: "WB", rarity: "C", expansion: "test", powerCost: 1, bp: 3000, size: "S", text: "" },
       ],
     ]);
 
-    const state = {
-      ...createTestState(defs),
-      definitions: defs,
-      players: {
-        ...createTestState(defs).players,
-        player1: {
-          ...createTestState(defs).players.player1,
-          power: [
-            { ...inst("TST-P1", "p1"), faceDown: true },
-            { ...inst("TST-P2", "p2"), faceDown: true },
-            { ...inst("TST-P3", "p3"), faceDown: true },
-            { ...inst("TST-P4", "p4"), faceDown: true },
-            { ...inst("TST-P5", "p5"), faceDown: true },
-            inst("TST-P6", "p6"),
-          ],
-        },
-      },
-    };
+  const stateWith = (damage: number, rush: ReturnType<typeof inst>[] = [], operation: ReturnType<typeof inst>[] = []) => {
+    const defs = blastDefs();
+    const state = createTestState(defs);
+    state.definitions = defs;
+    state.players.player1.damage = damage;
+    state.players.player1.rush = rush;
+    state.players.player1.operation = operation;
+    return state;
+  };
 
-    expect(blastBypassesRushAdditionalCondition(state, "player1", "TST-BLAST")).toBe(true);
+  it("R-KW-BLAST-01: 残りダメージ1点で自軍Lユニットがいなければ追加条件を免除する", () => {
+    expect(blastBypassesRushAdditionalCondition(stateWith(WIN_DAMAGE - 1), "player1", "TST-BLAST")).toBe(true);
+    expect(
+      blastBypassesRushAdditionalCondition(stateWith(WIN_DAMAGE - 1, [inst("TST-S", "s1")]), "player1", "TST-BLAST"),
+    ).toBe(true);
   });
 
-  it("bypasses additional conditions at WIN_DAMAGE-1", () => {
-    const defs = buildDefinitionMap([
-      [
-        {
-          id: "TST-BLAST",
-          name: "Blast Zord",
-          type: "unit",
-          category: "WB",
-          rarity: "SR",
-          expansion: "test",
-          powerCost: "7+",
-          bp: 12000,
-          size: "L",
-          text: "※ブラスト",
-        },
-      ],
-    ]);
+  it("R-KW-BLAST-01: 自軍にLユニットがいれば免除しない", () => {
+    expect(
+      blastBypassesRushAdditionalCondition(stateWith(WIN_DAMAGE - 1, [inst("TST-L", "l1")]), "player1", "TST-BLAST"),
+    ).toBe(false);
+  });
 
-    const state = {
-      ...createTestState(defs),
-      definitions: defs,
-      players: {
-        ...createTestState(defs).players,
-        player1: {
-          ...createTestState(defs).players.player1,
-          damage: WIN_DAMAGE - 1,
-          power: [
-            { ...inst("TST-P1", "p1"), faceDown: true },
-            { ...inst("TST-P2", "p2"), faceDown: true },
-            inst("TST-P3", "p3"),
-            inst("TST-P4", "p4"),
-          ],
-        },
-      },
-    };
+  it("R-KW-BLAST-01: 残りダメージが1点でなければ免除しない（オモテのパワー枚数は関係ない）", () => {
+    expect(blastBypassesRushAdditionalCondition(stateWith(WIN_DAMAGE - 2), "player1", "TST-BLAST")).toBe(false);
+    expect(blastBypassesRushAdditionalCondition(stateWith(0), "player1", "TST-BLAST")).toBe(false);
+  });
 
-    expect(blastBypassesRushAdditionalCondition(state, "player1", "TST-BLAST")).toBe(true);
+  it("R-KW-BLAST-02: 命の泉で敗北が9点になれば8点で免除する", () => {
+    const spring = [inst("RS-244", "spring")];
+    expect(blastBypassesRushAdditionalCondition(stateWith(8, [], spring), "player1", "TST-BLAST")).toBe(true);
+    expect(blastBypassesRushAdditionalCondition(stateWith(WIN_DAMAGE - 1, [], spring), "player1", "TST-BLAST")).toBe(false);
   });
 });
 
@@ -519,5 +517,140 @@ describe("breaker keyword", () => {
     };
 
     expect(breakerBlocksSameNameRush(player, defs, "TST-BREAKER")).toBe(true);
+  });
+});
+
+function breakerTestUnit(id: string, name: string, text?: string): CardDefinition {
+  return {
+    id,
+    name,
+    type: "unit",
+    category: "ET",
+    rarity: "SR",
+    expansion: "test",
+    powerCost: 5,
+    bp: 8000,
+    size: "L",
+    text,
+  };
+}
+
+describe("breaker keyword rules", () => {
+  const defs = buildDefinitionMap([
+    [
+      breakerTestUnit("BRK-A", "同名ユニット", "※ブレイカー ※このユニットはテスト用。"),
+      breakerTestUnit("PLAIN-A", "同名ユニット", "【テスト】これをラッシュしたとき、カードを1枚引く。"),
+      breakerTestUnit("ENEMY-UNIT", "敵ユニット", "【テスト】敵軍ユニットを1体選ぶ。"),
+      breakerTestUnit("ENEMY-BRK", "敵ブレイカー", "※ブレイカー"),
+      {
+        id: "ENEMY-OP",
+        name: "敵オペ",
+        type: "operation",
+        category: "ET",
+        rarity: "N",
+        expansion: "test",
+        powerCost: 1,
+        text: "敵軍ユニットを1体選び撃破する。",
+      },
+    ],
+  ]);
+
+  it("R-KW-BREAKER-02: 場の同名カードがブレイカーを持たなくてもブレイカー持ちはラッシュできない", () => {
+    const player = { ...createTestState(defs).players.player1, rush: [inst("PLAIN-A", "p")] };
+    expect(breakerBlocksSameNameRush(player, defs, "BRK-A")).toBe(true);
+  });
+
+  it("R-KW-BREAKER-02: ブレイカー持ちが場にいても、ブレイカーを持たない同名カードはラッシュできる", () => {
+    const player = { ...createTestState(defs).players.player1, battle: [inst("BRK-A", "b")] };
+    expect(breakerBlocksSameNameRush(player, defs, "PLAIN-A")).toBe(false);
+  });
+
+  it("R-KW-BREAKER-03: 敵軍ユニットの効果では選べないが、オペレーションとブレイカー持ちの効果では選べる", () => {
+    expect(breakerBlocksEffectTarget(defs, "BRK-A", "ENEMY-UNIT")).toBe(true);
+    expect(breakerBlocksEffectTarget(defs, "BRK-A", "ENEMY-OP")).toBe(false);
+    expect(breakerBlocksEffectTarget(defs, "BRK-A", "ENEMY-BRK")).toBe(false);
+  });
+
+  it("R-KW-BREAKER-03: 敵軍ユニットの効果で持ち主自身が選ぶ場合も選べない／自軍の効果なら選べる", () => {
+    const breaker = inst("BRK-A", "brk");
+    const state = createTestState({ player2: { battle: [breaker] } });
+    state.definitions = { ...state.definitions, ...defs };
+    // 敵軍（player1）のユニット効果で player2 自身が選ぶ
+    expect(
+      isSelectableByOpponentEffect(state, "player2", breaker.instanceId, "ENEMY-UNIT", "player1"),
+    ).toBe(false);
+    // 敵軍のオペレーションの効果なら相手が選べる
+    expect(isSelectableByOpponentEffect(state, "player1", breaker.instanceId, "ENEMY-OP")).toBe(
+      true,
+    );
+    // 敵軍ユニットの効果で相手が選ぶ
+    expect(isSelectableByOpponentEffect(state, "player1", breaker.instanceId, "ENEMY-UNIT")).toBe(
+      false,
+    );
+    // 自軍の効果で自分が選ぶ
+    expect(isSelectableByOpponentEffect(state, "player2", breaker.instanceId, "BRK-A")).toBe(true);
+  });
+});
+
+describe("R-KW-00: キーワードは「※キーワード」表記でだけ持つ", () => {
+  function unit(id: string, text: string, features?: string[]): CardDefinition {
+    return { ...breakerTestUnit(id, id, text), features };
+  }
+  const defs = buildDefinitionMap([
+    [
+      unit("MOS", "【モスブレイカー】相手は可能ならコマンドを1つホールドする。"),
+      unit("DARK", "【飛翔斬】「ダークウイング」からコンビネーションしたとき、BP+1000。"),
+      unit("WING-NAME", "【ウイングペンタクト】自軍ターン中、BP+1000。"),
+      unit("RESIST-REF", "【切断溶解】レジストを持つ敵軍Sユニットを1体選び撃破する。"),
+      unit(
+        "NULLIFY",
+        "【ライダーキック】このターン、敵軍ユニットのレジストとスクラムとチェイスの効果は無効になる。",
+      ),
+      unit("BLAST-NAME", "【ライトニングブラスト&バーニングスマッシュ】BP+3000。"),
+      unit("GRANT", "※特徴「女」を持つユニットは次の能力を得る⇒※レジスト（これがバトルで撃破されたとき…）"),
+      unit("FEATURE-WING", "【テスト】BP+1000。", ["ウイング"]),
+      unit("REAL", "※ウイング ※ブレイカー ※レジスト（これがバトルで撃破されたとき…） ※チェイス ※スクラム（これの…）"),
+      unit("REAL-BLAST", "※ブラスト 【フルブラストランチャー】これがバトルエリアに出たとき…"),
+      unit("REAL-TAXIS", "※タクスMA ※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき…）"),
+    ],
+  ]);
+
+  it("R-KW-00: 効果名・本文中の語ではキーワードを持たない", () => {
+    expect(cardHasBattleKeyword(defs, "MOS", "breaker")).toBe(false);
+    expect(cardHasKeyword(defs, "DARK", "wing")).toBe(false);
+    expect(cardHasKeyword(defs, "WING-NAME", "wing")).toBe(false);
+    expect(cardHasKeyword(defs, "RESIST-REF", "register")).toBe(false);
+    expect(hasResist(defs, "RESIST-REF")).toBe(false);
+    expect(cardHasKeyword(defs, "NULLIFY", "register")).toBe(false);
+    expect(cardHasKeyword(defs, "NULLIFY", "chase")).toBe(false);
+    expect(cardHasBattleKeyword(defs, "NULLIFY", "scrum")).toBe(false);
+    expect(cardHasBattleKeyword(defs, "BLAST-NAME", "blast")).toBe(false);
+  });
+
+  it("R-KW-00: 他のユニットに付与する「…を得る⇒※レジスト」や特徴の語ではキーワードを持たない", () => {
+    expect(cardHasKeyword(defs, "GRANT", "register")).toBe(false);
+    expect(hasResist(defs, "GRANT")).toBe(false);
+    expect(cardHasKeyword(defs, "FEATURE-WING", "wing")).toBe(false);
+  });
+
+  it("R-KW-00: 「※キーワード」表記があれば持つ", () => {
+    expect(cardHasKeyword(defs, "REAL", "wing")).toBe(true);
+    expect(cardHasBattleKeyword(defs, "REAL", "breaker")).toBe(true);
+    expect(cardHasKeyword(defs, "REAL", "register")).toBe(true);
+    expect(hasResist(defs, "REAL")).toBe(true);
+    expect(cardHasKeyword(defs, "REAL", "chase")).toBe(true);
+    expect(cardHasBattleKeyword(defs, "REAL", "scrum")).toBe(true);
+    expect(cardHasBattleKeyword(defs, "REAL-BLAST", "blast")).toBe(true);
+    expect(cardHasBattleKeyword(defs, "REAL-TAXIS", "taxis")).toBe(true);
+    expect(cardHasKeyword(defs, "REAL-TAXIS", "morph")).toBe(true);
+  });
+
+  it("R-KW-00: 実カード — RS-040【モスブレイカー】・RK-067「ダークウイング」は持たず、XG4-060 はウイングだけ持つ", () => {
+    const d = buildDefinitionMap([fullPlayableCatalog.cards]);
+    expect(cardHasBattleKeyword(d, "RS-040", "breaker")).toBe(false);
+    expect(cardHasKeyword(d, "RK-067", "wing")).toBe(false);
+    expect(cardHasKeyword(d, "RK-096", "register")).toBe(false);
+    expect(cardHasKeyword(d, "XG4-060", "wing")).toBe(true);
+    expect(cardHasBattleKeyword(d, "XG4-060", "breaker")).toBe(false);
   });
 });

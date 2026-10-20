@@ -14,7 +14,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run",
+    "test": "npm run test:unit && npm run test:sim",
+    "test:unit": "vitest run --exclude 'src/verticalSlice/**' --exclude src/monkey.test.ts --exclude src/rkBkMonkey.test.ts",
+    "test:sim": "vitest run src/verticalSlice src/monkey.test.ts src/rkBkMonkey.test.ts --no-file-parallelism",
     "test:monkey": "vitest run src/monkey.test.ts"
   },
   "dependencies": {

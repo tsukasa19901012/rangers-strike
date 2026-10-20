@@ -97,3 +97,37 @@ export async function fetchAtwikiEffectText(page) {
   const html = await fetchAtwikiPage(page);
   return extractEffectTextFromAtwikiHtml(html);
 }
+
+/** atwiki スナップショット（docs/wiki/sources/atwiki/page-N-*.md）の本文で効果文の終わりを示す見出し。 */
+const SOURCE_EFFECT_END_LABELS = [
+  "フレーバーテキスト",
+  // 表記ゆれ（atwiki/page-224 RK-052「フレーバテキスト」）。
+  "フレーバテキスト",
+  "イラストレーター",
+  "レアリティ",
+  "Q&A",
+  "関連カード",
+];
+
+/**
+ * 「テキスト」見出し。全角コロン「テキスト：」に加え、半角コロン「テキスト:」と
+ * コロンなしで行が終わる「テキスト」も受け付ける（E7: これらを取りこぼすと効果文が空になる）。
+ * 「フレーバーテキスト」「効果名を持つテキスト」などの本文中の語には一致させない。
+ */
+const SOURCE_EFFECT_LABEL =
+  /(?:^|\n)[ \t]*テキスト[ \t]*(?:[：:][ \t]*|(?=\r?\n))/;
+
+/**
+ * atwiki スナップショット本文（プレーンテキスト）から効果文を抽出する。
+ * 空行はまとめ、「テキスト」見出しがなければ空文字を返す。
+ */
+export function extractEffectTextFromAtwikiSource(body) {
+  const m = SOURCE_EFFECT_LABEL.exec(body);
+  if (!m) return "";
+  let chunk = body.slice(m.index + m[0].length).trimStart();
+  for (const end of SOURCE_EFFECT_END_LABELS) {
+    const i = chunk.indexOf(end);
+    if (i >= 0) chunk = chunk.slice(0, i);
+  }
+  return chunk.replace(/\n{2,}/g, "\n").trim();
+}

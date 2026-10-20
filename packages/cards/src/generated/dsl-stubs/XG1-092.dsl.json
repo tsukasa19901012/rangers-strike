@@ -4,7 +4,7 @@
   "name": "ソルブレイバー",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "【ケルベロスΔ（デルタ）】自軍ターン中、これがバトルエリアに出たとき、このターン、これは次の能力を得る⇒このターン中に自軍捨札から手札に加えたSユニットのカード1枚につきBP+2000される。",
@@ -24,12 +24,12 @@
       "name": "ケルベロスΔ（デルタ）",
       "text": "自軍ターン中、これがバトルエリアに出たとき、このターン、これは次の能力を得る⇒このターン中に自軍捨札から手札に加えたSユニットのカード1枚につきBP+2000される。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-092::keruberosu",
+          "keyword": "xg1::XG1-092::kerberos_delta",
           "duration": "turn"
         }
       ]

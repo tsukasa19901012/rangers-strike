@@ -1,3 +1,4 @@
+import { startEffectRush } from "../rules/effectRush";
 import { getCardEffect } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import {
@@ -11,6 +12,7 @@ import {
   isUnit,
   parsePowerCost,
   unitBp,
+  unitSizeOf,
 } from "../core/catalog";
 import {
   findInZone,
@@ -41,6 +43,7 @@ import { startDenjiMachineChoice } from "../rules/denjiMachine";
 import { tryResolveP0OperationEffect } from "./p0EffectBridge";
 import { recordSUnitRecoveredFromDiscardToHand } from "../rules/turnRecoveryTracking";
 import { startRocketBoosterChoice } from "../rules/rocketBooster";
+import { recordReveal } from "../rules/revealNotice";
 
 export type EffectContext = {
   state: GameState;
@@ -113,46 +116,34 @@ function resolveDenjiMachine(ctx: EffectContext): EffectOutcome {
 
 function resolveLandBalkan(ctx: EffectContext): EffectOutcome {
   const player = ctx.state.players[ctx.playerId];
-  const candidates = player.command.filter(
-    (card) =>
-      !card.commandHeld &&
-      isUnit(getDefinition(ctx.state.definitions, card.cardId)) &&
-      isSmallUnit(ctx.state.definitions, card.cardId),
-  );
+  const candidates = player.command
+    .filter(
+      (card) =>
+        !card.commandHeld &&
+        isUnit(getDefinition(ctx.state.definitions, card.cardId)) &&
+        isSmallUnit(ctx.state.definitions, card),
+    )
+    .map((card) => card.instanceId);
 
   if (candidates.length === 0) return fail(ctx.state, "no_command_units");
 
-  let nextPlayer = { ...player };
-  let rushed = 0;
-
-  for (const card of candidates.slice(0, 2)) {
-    const definition = getDefinition(ctx.state.definitions, card.cardId);
-    if (!definition || !isUnit(definition)) continue;
-
-    const cost = parsePowerCost(definition.powerCost);
-    const powerState = {
-      ...ctx.state,
-      players: { ...ctx.state.players, [ctx.playerId]: nextPlayer },
-    };
-    if (!payPowerCost(powerState, ctx.playerId, cost)) continue;
-
-    const found = findInZone(nextPlayer, "command", card.instanceId);
-    if (!found) continue;
-
-    const [, command] = removeAt(nextPlayer.command, found.index);
-    nextPlayer = {
-      ...nextPlayer,
-      command,
-      rush: [...nextPlayer.rush, found.card],
-    };
-    rushed += 1;
-  }
-
-  if (rushed === 0) return fail(ctx.state, "cannot_rush");
+  // ルール: R-RUSH-21 — 「ただし、ラッシュするための必要パワーと追加条件は満たすこと」。
+  // ルール: R-RUSH-23 — 2枚まで選んでから1枚ずつ出す（1枚ごとに誘発とカウンター窓、R-RUSH-22）。
+  const started = startEffectRush(ctx.state, {
+    playerId: ctx.playerId,
+    phasePlayerId: ctx.playerId,
+    effectId: "land_balkan",
+    sourceCardId: ctx.operationCardId,
+    fromZone: "command",
+    candidates,
+    maxCount: 2,
+    requireConditions: true,
+  });
+  if (started === ctx.state) return fail(ctx.state, "cannot_rush");
 
   return {
-    state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
-    detail: `land_balkan:${rushed}`,
+    state: started,
+    detail: "land_balkan",
     discardOperation: true,
   };
 }
@@ -166,12 +157,18 @@ function resolveCyberSRider(ctx: EffectContext): EffectOutcome {
   let nextPlayer = { ...player };
   let placed = 0;
 
+  let discarded = 0;
   for (const instanceId of uniqueIds) {
-    if (nextPlayer.command.length >= COMMAND_ZONE_MAX) break;
     const found = findInZone(nextPlayer, "hand", instanceId);
     if (!found) continue;
 
     const [, hand] = removeAt(nextPlayer.hand, found.index);
+    if (nextPlayer.command.length >= COMMAND_ZONE_MAX) {
+      // ルール: R-ZONE-08 — コマンドゾーンに5枚を越えて置かれるカードは捨札になる。
+      nextPlayer = { ...nextPlayer, hand, discard: [...nextPlayer.discard, found.card] };
+      discarded += 1;
+      continue;
+    }
     nextPlayer = {
       ...nextPlayer,
       hand,
@@ -183,7 +180,7 @@ function resolveCyberSRider(ctx: EffectContext): EffectOutcome {
     placed += 1;
   }
 
-  if (placed === 0) return fail(ctx.state, "invalid_target");
+  if (placed === 0 && discarded === 0) return fail(ctx.state, "invalid_target");
 
   return {
     state: { ...ctx.state, ...updatePlayer(ctx.state, ctx.playerId, nextPlayer) },
@@ -284,7 +281,7 @@ function resolvePowerBazooka(ctx: EffectContext): EffectOutcome {
   const enemy = ctx.state.players[enemyId];
   const found = findInZone(enemy, "battle", ctx.targetInstanceId);
   if (!found) return fail(ctx.state, "invalid_target");
-  if (!isLargeUnit(ctx.state.definitions, found.card.cardId)) {
+  if (!isLargeUnit(ctx.state.definitions, found.card)) {
     return fail(ctx.state, "invalid_target");
   }
 
@@ -347,7 +344,7 @@ function resolveJudgment(ctx: EffectContext): EffectOutcome {
   const restDeck = player.deck.slice(1);
   const revealedDef = getDefinition(ctx.state.definitions, revealed.cardId);
   const matches =
-    revealedDef?.type === "unit" && revealedDef.size === targetSize;
+    revealedDef?.type === "unit" && unitSizeOf(ctx.state.definitions, revealed) === targetSize;
 
   const targetName = cardName(ctx.state.definitions, targetFound.card.cardId);
   const revealedName = cardName(ctx.state.definitions, revealed.cardId);
@@ -359,6 +356,16 @@ function resolveJudgment(ctx: EffectContext): EffectOutcome {
       deck: [...restDeck, revealed],
     }),
   };
+  // オモテにしたカードは公開情報。同じサイズなら撃破し、どちらでもその後、山札の下に戻す。
+  nextState = recordReveal(nextState, {
+    playerId: ctx.playerId,
+    ownerId: ctx.playerId,
+    sourceCardId: ctx.operationCardId,
+    effectLabel: cardName(ctx.state.definitions, ctx.operationCardId),
+    from: "deck_top",
+    matched: matches,
+    cards: [{ instanceId: revealed.instanceId, cardId: revealed.cardId, destination: "deck_bottom" }],
+  });
 
   if (matches) {
     const leaveResult = tryLeaveField(nextState, {
@@ -393,8 +400,7 @@ function resolveJudgment(ctx: EffectContext): EffectOutcome {
 
 function resolveDraw(ctx: EffectContext): EffectOutcome {
   const player = ctx.state.players[ctx.playerId];
-  if (player.deck.length === 0) return fail(ctx.state, "empty_deck");
-
+  // ルール: R-START-05, R-WIN-03 — 山札が無くても効果は解決し、引けなければ敗北（applySuperBrainDraw が deckedOut を立てる）。
   const drawn = applySuperBrainDraw(
     ctx.state,
     ctx.playerId,
@@ -455,7 +461,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
     case "aura_power": {
       if (!ctx.targetInstanceId) return fail(ctx.state, "target_required");
       const found = findOwnUnit(player, ctx.targetInstanceId);
-      if (!found || !isSmallUnit(ctx.state.definitions, found.card.cardId)) {
+      if (!found || !isSmallUnit(ctx.state.definitions, found.card)) {
         return fail(ctx.state, "invalid_target");
       }
       const nextPlayer = setAuraPowerInstanceId(player, ctx.targetInstanceId, ctx.operationCardId);
@@ -499,7 +505,7 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
       if (!ctx.targetInstanceId) return fail(ctx.state, "target_required");
       const found = findInZone(player, "discard", ctx.targetInstanceId);
       if (!found) return fail(ctx.state, "invalid_target");
-      if (!isSmallUnit(ctx.state.definitions, found.card.cardId)) {
+      if (!isSmallUnit(ctx.state.definitions, found.card)) {
         return fail(ctx.state, "invalid_target");
       }
 
@@ -528,7 +534,8 @@ export function resolveOperationEffect(ctx: EffectContext): EffectOutcome {
       const found = findInZone(player, "discard", ctx.targetInstanceId);
       if (!found) return fail(ctx.state, "invalid_target");
       const def = getDefinition(ctx.state.definitions, found.card.cardId);
-      if (!def?.features?.includes("メカ")) return fail(ctx.state, "invalid_target");
+      // 「特徴「メカ」を持つユニットのカード」— ビークル等ユニット以外は不可（R-CARD-04）。
+      if (!isUnit(def) || !def.features?.includes("メカ")) return fail(ctx.state, "invalid_target");
 
       const [, discard] = removeAt(player.discard, found.index);
       const nextPlayer = {
@@ -665,7 +672,9 @@ function cardHasMechaFeature(
   definitions: GameState["definitions"],
   cardId: string,
 ): boolean {
-  return getDefinition(definitions, cardId)?.features?.includes("メカ") ?? false;
+  const def = getDefinition(definitions, cardId);
+  // RS-012「特徴「メカ」を持つユニットのカード」— ユニット以外（ビークル等）は含めない（R-CARD-04）。
+  return isUnit(def) && (def.features?.includes("メカ") ?? false);
 }
 
 export function isValidOperationTarget(
@@ -695,7 +704,7 @@ export function isValidOperationTarget(
       return (
         found !== null &&
         isUnit(getDefinition(state.definitions, found.card.cardId)) &&
-        isSmallUnit(state.definitions, found.card.cardId)
+        isSmallUnit(state.definitions, found.card)
       );
     }
     case "discard_any":
@@ -704,7 +713,7 @@ export function isValidOperationTarget(
       const found = findInZone(player, "discard", targetInstanceId);
       return (
         found !== null &&
-        isSmallUnit(state.definitions, found.card.cardId)
+        isSmallUnit(state.definitions, found.card)
       );
     }
     case "discard_mecha": {
@@ -718,7 +727,7 @@ export function isValidOperationTarget(
       const found = findInZone(enemy, "battle", targetInstanceId);
       return (
         found !== null &&
-        isLargeUnit(state.definitions, found.card.cardId) &&
+        isLargeUnit(state.definitions, found.card) &&
         isSelectableByOpponentEffect(
           state,
           playerId,
@@ -767,6 +776,8 @@ export function isValidOperationTarget(
       const owner = state.players[located.playerId];
       const found = findInZone(owner, located.zone, targetInstanceId);
       if (!found) return false;
+      // ルール: R-CARD-04 — 「ユニットを選ぶ」効果でビークルは選べない。
+      if (!isUnit(getDefinition(state.definitions, found.card.cardId))) return false;
       return effectiveBp(state, located.playerId, found.card) <= 8000;
     }
     default:

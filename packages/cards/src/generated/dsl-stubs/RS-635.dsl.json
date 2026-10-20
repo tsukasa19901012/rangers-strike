@@ -27,11 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-635::nejiaro",
-          "duration": "permanent"
+          "keyword": "set9b::RS-635::neji_destroy",
+          "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

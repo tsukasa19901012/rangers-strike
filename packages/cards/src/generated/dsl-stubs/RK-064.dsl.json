@@ -4,7 +4,7 @@
   "name": "仮面ライダーファイズ",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 3,
   "text": "【ファイズエッジ】敵軍バトルエリアから、BPの下三桁が500の敵軍Sユニットを1体選び撃破する。（この効果は「オートバジンBM」からコンビネーションするときはナンバーに関係なく発動する）",
@@ -27,40 +27,14 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk4::RK-064::faiz_edge",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

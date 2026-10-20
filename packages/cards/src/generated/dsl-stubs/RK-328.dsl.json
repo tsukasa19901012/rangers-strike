@@ -27,11 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-328::dogafuesuru",
-          "duration": "turn"
+          "keyword": "rk16::RK-328::fuessle",
+          "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

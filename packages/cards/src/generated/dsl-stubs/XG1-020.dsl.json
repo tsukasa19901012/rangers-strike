@@ -4,7 +4,7 @@
   "name": "ターボロボ",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "※これは、カテゴリを2つ以上持つ自軍コマンド1つにつきBP+1000される。 【高速剣ターボクラッシュ】 これはBP10000以上の時、次の能力を得る⇒SP1",
@@ -43,12 +43,12 @@
       "name": "高速剣ターボクラッシュ",
       "text": "これはBP10000以上の時、次の能力を得る⇒SP1",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-020::kentabokurashu",
+          "keyword": "xg1::XG1-020::turbo_crash",
           "duration": "permanent"
         }
       ]

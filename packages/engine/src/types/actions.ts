@@ -12,12 +12,14 @@ export type ChargeCommandAction = {
   instanceId: string;
 };
 
-export type ZordMaterialDestination = "command" | "discard";
+/** "hold": XG1-013【巨大要塞】で「捨札にする」かわりに素材の S ユニットをホールドする（rules/xg1/xg1Fields.ts）。 */
+export type ZordMaterialDestination = "command" | "discard" | "hold";
 
 export type SelfRushFromZoneAction = {
   type: "self_rush_from_zone";
   playerId: PlayerId;
-  zone: "command" | "power";
+  /** hand: 「※これが自分の手札にある間、自軍ラッシュフェイズ中、…あれば、これを自軍ラッシュエリアに出してもよい」（RS-455 等）。 */
+  zone: "command" | "power" | "hand" | "discard";
   instanceId: string;
 };
 
@@ -31,10 +33,17 @@ export type RushAction = {
   zordMaterialInstanceIds?: string[];
   /** RS-074/075/118-122: 破棄の代わりにSユニットをコマンドゾーンへ送る。 */
   zordMaterialDestination?: ZordMaterialDestination;
+  /** 「Sユニット2体をそれぞれコマンドゾーンに送るか捨札にする」: 素材ごとの行き先（zordMaterialInstanceIds と同じ順）。 */
+  zordMaterialDestinations?: ZordMaterialDestination[];
   /** RS-076 / RS-105 母艦: Sユニット追加コストの代わりにコマンドをホールド。 */
   zordMothershipHoldInstanceIds?: string[];
   /** hold_extra_command: 追加でホールドするコマンド。 */
   zordExtraCommandHoldInstanceIds?: string[];
+  /**
+   * RS-586 巨神ゴードム【魔神に不足する物】: 必要パワーに足りない数だけ捨札にする「戦闘員」のユニット（プレイヤーが選ぶ）。
+   * [] なら使わない。省略時は候補がちょうど足りない数のときだけ使う（rules/godomRushPay.ts）。
+   */
+  godomDiscardInstanceIds?: string[];
 };
 
 export type MoveToBattleAction = {
@@ -107,6 +116,16 @@ export type PlayOperationAction = {
   extraInstanceId?: string;
 };
 
+/** RS-325 天空勇者マジシャイン【マジチケット】: 自軍コマンドゾーンのオペレーションを、そのコマンドをホールドして発動する。 */
+export type UseMagiTicketAction = {
+  type: "use_magi_ticket";
+  playerId: PlayerId;
+  /** コマンドゾーンのオペレーションカード。 */
+  instanceId: string;
+  targetInstanceId?: string;
+  extraInstanceId?: string;
+};
+
 export type ShironLightAction = {
   type: "shiron_light";
   playerId: PlayerId;
@@ -153,9 +172,16 @@ export type ReleaseStartCommandsAction = {
   playerId: PlayerId;
 };
 
+/**
+ * スタートフェイズ: バトルエリアのユニットをラッシュエリアに戻す（R-START-01）。
+ * `instanceId` を指定するとそのユニット（ライドの組は一緒に）だけを戻す。
+ * 省略するとバトルエリアの並び順で1体ずつ戻し、誘発した効果の選択が開いたらそこで止まり、
+ * 解決後に残りを戻す。
+ */
 export type ReturnAllBattleToRushAction = {
   type: "return_all_battle_to_rush";
   playerId: PlayerId;
+  instanceId?: string;
 };
 
 export type PassStrikeReactionAction = {
@@ -216,6 +242,8 @@ export type PassChaseAction = {
 export type UseSuperShieldAction = {
   type: "use_super_shield";
   playerId: PlayerId;
+  /** RS-324 マジマザー【ジルマ・マジュナ】: かわりに捨札にするマジマザー（省略時は RS-052 の超シールド進化）。 */
+  substituteInstanceId?: string;
 };
 
 /** RS-106 ジュウクンドー — アタックの代わりに発動。 */
@@ -290,16 +318,22 @@ export type InitiateCommandPaymentAction = {
   kind: "battle_entry" | "category_use" | "effect_hold";
   sourceInstanceId: string;
   prismSubstitute?: boolean;
+  /** RK-036 仮面ライダーライア【運命への反抗】: コマンドをホールドせず、同じカテゴリのカードを自軍コマンドゾーンから捨札にしてカウンターを使う。 */
+  raiaDiscard?: boolean;
   rideOff?: boolean;
   zordMaterialInstanceId?: string;
   zordMaterialInstanceIds?: string[];
   zordMaterialDestination?: ZordMaterialDestination;
   zordMothershipHoldInstanceIds?: string[];
   zordExtraCommandHoldInstanceIds?: string[];
+  /** RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニット（RushAction と同じ）。 */
+  godomDiscardInstanceIds?: string[];
   targetInstanceId?: string;
   extraInstanceId?: string;
   /** RS-018 等: カウンター支払い後に適用する代替ユニット。 */
   substituteInstanceId?: string;
+  /** XG7-045・XP-015 ※: このドライバー（自軍コマンド）だけをホールドしてラッシュする（rules/driverCommandRush.ts）。 */
+  driverCommandInstanceId?: string;
 };
 
 export type ResolveCommandPaymentAction = {
@@ -317,6 +351,8 @@ export type BeginZordSetupAction = {
   type: "begin_zord_setup";
   playerId: PlayerId;
   zordInstanceId: string;
+  /** RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニット（RushAction と同じ。最後のラッシュに引き継ぐ）。 */
+  godomDiscardInstanceIds?: string[];
 };
 
 export type ResolveZordSetupAction = {
@@ -353,6 +389,7 @@ export type GameAction =
   | DrawAction
   | EndPhaseAction
   | PlayOperationAction
+  | UseMagiTicketAction
   | BonusDrawAction
   | SkipBonusDrawAction
   | ReleaseStartCommandsAction

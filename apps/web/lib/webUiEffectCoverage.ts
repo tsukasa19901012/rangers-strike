@@ -92,6 +92,11 @@ const KNOWN_EFFECT_IDS = new Set<string>([
   "end_turn_battle_to_rush",
   "rocket_booster",
   "simultaneous_order",
+  // RS-019 超力／RK-186【Jパンチ】: アタック時のホールド数選択（EffectChoiceModal の数字ボタン）。
+  "attack_hold_bonus",
+  // RS-284【スワンウィング】: 同時に出たユニットの処理順（select_unit の汎用ターゲット選択）。
+  "swan_wing_order",
+  "kuroko_memory",
   "super_geki_yellow_reanimate",
   "reorder_enemy_battle",
   // 仮面ライダー系 能動効果（riderKickEffects ランタイム）
@@ -103,9 +108,46 @@ const KNOWN_EFFECT_IDS = new Set<string>([
   "extend_rider_drop",
   "kamen_ride_deploy",
   "power_faceup_sp1_grant",
+  // 第4弾（legend1）の名前付き効果（engine: rules/legend1/set4NamedEffects.ts）。汎用ターゲット選択で操作する。
+  "baku_mirajunakuru_discard_to_damage",
+  "chikara_baton_opponent_pick_rush",
+  "shitakunarugasorin_deck_bottom",
+  "baku_desusuteinga_destroy_lower",
+  "furawakanibaru_hand_to_command",
+  "kanabiku_counter_to_damage",
+  "purobaidabesu_deck_top",
+  "suraida_ignore_entry_hold",
+  "toripururikidobonba_take",
+  // 第7弾 RS-474〜RS-494（engine: rules/legend1/set7NamedEffectsC.ts）の数字の選択（EffectChoiceModal の数字ボタン）。
+  "rs485_hamster_destroy_draw",
+  "rs493_quiz_declare",
+  // 第8弾 RS-588/RS-590（engine: rules/legend1/set8NamedEffectsD.ts）の NC／RC の選択（EffectChoiceModal の数字ボタン）。
+  "set8d_borrow_hand_combo_branch",
+  // ※タッグ（R-KW-TAG-01）: どの常駐の太字部分を実行するか（engine: rules/legend1/set8NamedEffectsA.ts）と、入れ替えた太字部分の選択。
+  "tag_bold_pick",
+  "tag_bold_rs519_male",
+  "tag_bold_rs519_female",
+  "tag_bold_rs521",
+  "tag_bold_rs522",
+  "tag_bold_rs524",
+  "tag_bold_rs525",
+  "tag_bold_rs608",
+  "tag_bold_rs609",
+  "tag_bold_rs609_destination",
+  "tag_bold_rk170",
+  "tag_bold_rk239",
+  "tag_bold_rk242",
+  "tag_bold_rk244",
+  "tag_bold_rk248",
+  // RS-623【翼合体】等「DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい」（engine: rules/stackOntoLargeUnit.ts）。
+  "stack_self_onto_l",
+  // RK-249 アドベント（engine: rules/rk/rk249Advent.ts）。
+  "rk249_advent",
 ]);
 
 export function isKnownEffectChoice(pending: PendingEffectChoice): boolean {
+  // 「～してもよい」の任意効果の確認（行う／行わない）は汎用モーダルで操作できる。
+  if (pending.mayConfirm) return true;
   if (
     KNOWN_EFFECT_IDS.has(pending.effectId) &&
     KNOWN_EFFECT_CHOICE_KINDS.has(pending.kind)

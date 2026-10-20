@@ -1,4 +1,7 @@
-import { findNamedEffectByEffectId } from "@rangers-strike/cards";
+import { getCardEffect } from "@rangers-strike/cards";
+import { activeNamedEffect } from "./ncGatedEffects";
+import { applySwanIllusionOnStrike } from "./legend1/set5NamedEffects";
+import { openEffectChoice } from "./pendingChoices";
 import type { GameState, PendingStrike, PlayerId, PlayerState } from "../types/game";
 import {
   cardName,
@@ -16,7 +19,15 @@ import {
   sanitizeUnitLeavingField,
 } from "../keywords/ride";
 import { buildLogEntry } from "../log/formatLog";
-import { tryDestroyStrikerForStrike } from "./operationCounters";
+import {
+  autoHoldForBattleEntry,
+  canMoveUnitToBattleWithHolds,
+  clearEffectBattleEntryWindows,
+} from "./restrictions";
+import { canPlayHandCounter, tryDestroyStrikerForStrike, tryLeaveField } from "./operationCounters";
+import { magiPunchCounterIds } from "./legend1/set4NamedEffects";
+import { set7AStrikeCounterIds } from "./legend1/set7NamedEffectsA";
+import { rk6RidesGuardChaserInRush } from "./rk/rk6Fields";
 
 export function earthForceActive(state: GameState): boolean {
   return (
@@ -34,11 +45,20 @@ export function collectFiveTechInterceptors(
     !playerHasOperationGrantKeyword(state, defenderId, "strike_intercept_with_s_unit") &&
     !hasOperationEffect(defender, "five_tech", state.definitions)
   ) {
-    return [];
+    // RS-373 ファイブレッドFT【ファイブテクター】: これが自軍ラッシュエリアにある間、ストライクされたとき、これをバトルエリアに出して
+    // ストライクしてきた敵軍ユニットとバトルしてもよい（そのストライクは無効）。出せるのはこのユニット自身だけ（atwiki/page-540）。
+    // RK-111 ガードチェイサー【非常警戒態勢】: これにライドしている S ユニットも同じ能力を得る（rules/rk/rk6Fields.ts）。
+    return defender.rush
+      .filter((card) => card.cardId === "RS-373" || rk6RidesGuardChaserInRush(state, defenderId, card))
+      .filter((card) => canMoveUnitToBattleWithHolds(state, defenderId, card))
+      .map((card) => card.instanceId);
   }
 
+  // ルール: R-BA-03 — 効果で出す場合も「出る制限」は出る直前に判定する。
+  // ルール: R-ADD-07 — ハリケンレオン等の「ホールドしなければ出られない」はホールドできなければ出せない（RS-014 Q2）。
   return defender.rush
-    .filter((card) => isSmallUnit(state.definitions, card.cardId))
+    .filter((card) => isSmallUnit(state.definitions, card))
+    .filter((card) => canMoveUnitToBattleWithHolds(state, defenderId, card))
     .map((card) => card.instanceId);
 }
 
@@ -122,9 +142,14 @@ export function applyPlasmaEnergyCounter(
 export function hasStrikeReactions(
   state: GameState,
   defenderId: PlayerId,
+  pending?: PendingStrike,
 ): boolean {
   if (collectFiveTechInterceptors(state, defenderId).length > 0) return true;
   if (canPlayPlasmaEnergyCounter(state, defenderId)) return true;
+  // RS-184 マジパンチ（BP8000以下の敵軍ユニットにストライクされたとき）。
+  if (pending && magiPunchCounterIds(state, defenderId, pending).length > 0) return true;
+  // RS-432 隠流マキビシ（ストライクされたとき。rules/legend1/set7NamedEffectsA.ts）。
+  if (pending && set7AStrikeCounterIds(state, defenderId, pending, canPlayHandCounter).length > 0) return true;
 
   return false;
 }
@@ -137,6 +162,10 @@ export function releaseOneHeldCommand(player: PlayerState): PlayerState {
   return { ...player, command };
 }
 
+/**
+ * RS-029【勇気の魔法】「自軍Sユニットがバトルエリアに出るたびに、自軍コマンドを1つリリースしてもよい」。
+ * 任意効果なので、ホールド状態の自軍コマンドから1つ選ぶ（または選ばない）選択を開く（出典: atwiki/page-245）。
+ */
 export function applyCourageMagicRelease(
   state: GameState,
   playerId: PlayerId,
@@ -150,26 +179,41 @@ export function applyCourageMagicRelease(
   if (!hasOperationEffect(player, "courage_magic", state.definitions)) {
     return { state };
   }
+  if (state.pendingEffectChoice) return { state };
 
-  if (!player.command.some((c) => c.commandHeld)) {
+  const heldIds = player.command.filter((c) => c.commandHeld).map((c) => c.instanceId);
+  if (heldIds.length === 0) {
     return { state };
   }
+  const source = player.operation.find(
+    (c) => getCardEffect(c.cardId)?.effectId === "courage_magic",
+  );
 
-  const nextPlayer = releaseOneHeldCommand(player);
   const log = buildLogEntry(
     playerId,
     "courage_magic",
-    "RS-029",
+    source?.cardId ?? "RS-029",
     state.definitions,
   );
 
   return {
-    state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+    state: openEffectChoice(state, {
+      playerId,
+      effectId: "courage_magic",
+      sourceCardId: source?.cardId ?? "RS-029",
+      sourceInstanceId: source?.instanceId,
+      phasePlayerId: state.activePlayer,
+      kind: "select_command",
+      validInstanceIds: heldIds,
+      selectCount: 1,
+      commandAction: "release",
+      optional: true,
+    }),
     log,
   };
 }
 
-function destroyStriker(
+export function destroyStriker(
   state: GameState,
   strikerPlayerId: PlayerId,
   strikerInstanceId: string,
@@ -215,7 +259,7 @@ export function applyFiveTechIntercept(
 ): { state: GameState; pending: PendingStrike; log: string } {
   const defender = state.players[defenderId];
   const interceptFound = findInZone(defender, "rush", interceptInstanceId);
-  if (!interceptFound || !isSmallUnit(state.definitions, interceptFound.card.cardId)) {
+  if (!interceptFound || !isSmallUnit(state.definitions, interceptFound.card)) {
     return {
       state,
       pending,
@@ -229,12 +273,24 @@ export function applyFiveTechIntercept(
     return { state, pending, log: buildSimpleFiveTechLog(defenderId, interceptFound.card.cardId, state, "failed") };
   }
 
-  const [, rush] = removeAt(defender.rush, interceptFound.index);
-  let nextDefender = {
-    ...defender,
-    rush,
-    battle: [...defender.battle, interceptFound.card],
-  };
+  // 「ホールドしなければ出られない」制限の分のコマンドをホールドしてから出す（RS-014 Q2・RS-097 Q7）。
+  const held = autoHoldForBattleEntry(state, defenderId, interceptFound.card);
+  if (!held) {
+    return { state, pending, log: buildSimpleFiveTechLog(defenderId, interceptFound.card.cardId, state, "failed") };
+  }
+  // ライドしているユニット（RK-111 ガードチェイサー等）は、ライドしたままビークルと一緒にバトルエリアに出る。
+  const vehicle = interceptFound.card.mountedOnInstanceId
+    ? held.rush.find((c) => c.instanceId === interceptFound.card.mountedOnInstanceId)
+    : undefined;
+  const moving = new Set([interceptFound.card.instanceId, ...(vehicle ? [vehicle.instanceId] : [])]);
+  const rush = held.rush.filter((c) => !moving.has(c.instanceId));
+  let nextDefender = clearEffectBattleEntryWindows(
+    {
+      ...held,
+      rush,
+      battle: [...held.battle, ...(vehicle ? [vehicle] : []), interceptFound.card],
+    },
+  );
 
   let nextState: GameState = {
     ...state,
@@ -252,11 +308,33 @@ export function applyFiveTechIntercept(
     `${cardName(state.definitions, interceptFound.card.cardId)}:${interceptorBp}vs${strikerBp}`,
   );
 
+  // ルール: R-STK-05 — ファイブテクターで出したユニットとバトルになり、敵軍のストライクは（勝敗に関わらず）無効になる。
+  nextPending.damageCancelled = true;
   if (strikerBp <= interceptorBp) {
     const destroyResult = destroyStrikerOrDeferLeave(nextState, pending, true);
     nextState = destroyResult.state;
-    nextPending.damageCancelled = true;
     if (destroyResult.deferred) {
+      return {
+        state: { ...nextState, pendingStrike: pending },
+        pending: nextPending,
+        log,
+      };
+    }
+  }
+  if (interceptorBp <= strikerBp) {
+    // BP の低い（同じ）ファイブテクターのユニットはバトルで撃破される（R-BP-02: BP0 でも先にバトルになる）。
+    const left = tryLeaveField(nextState, {
+      ownerPlayerId: defenderId,
+      instanceId: interceptFound.card.instanceId,
+      fromZone: "battle",
+      toZone: "discard",
+      leavingCardId: interceptFound.card.cardId,
+      phasePlayerId: pending.battlePhasePlayer,
+      registerEligible: true,
+      resumePendingStrike: { damageCancelled: true },
+    });
+    nextState = left.state;
+    if (left.deferred) {
       return {
         state: { ...nextState, pendingStrike: pending },
         pending: nextPending,
@@ -286,7 +364,7 @@ function sideKnuckleChoosingPlayer(
     "battle",
     pending.strikerInstanceId,
   );
-  if (!striker || !findNamedEffectByEffectId(striker.card.cardId, "side_knuckle")) {
+  if (!striker || !activeNamedEffect(striker.card, "side_knuckle")) {
     return undefined;
   }
   return pending.strikerPlayerId;
@@ -300,7 +378,8 @@ export function finalizeStrike(
 
   if (!pending.damageCancelled && pending.damage > 0 && !pending.damageApplied) {
     const withDamage = applyDamageToPlayer(
-      state,
+      // RS-320【スワンイリュージョン】: 敵軍 S ユニットにストライクされてダメージを受けたとき（rules/legend1/set5NamedEffects.ts）。
+      applySwanIllusionOnStrike(state, pending),
       defenderId,
       pending.damage,
       {

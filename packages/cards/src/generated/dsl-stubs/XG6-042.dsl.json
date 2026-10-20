@@ -4,7 +4,7 @@
   "name": "仮面ライダーゼロノスAF",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 2,
   "text": "※自分の手札が0枚のとき、これを撃破する。 【ゼロのスタート】これがストライクしてダメージを与えたとき、相手に1枚ドローさせてもよい。そうしたとき、次の相手ターンのスタートフェイズ中、相手は山札からカードをドローできない。",
@@ -20,13 +20,13 @@
       "id": "unnamed_e280bbe887aae58886e381ae",
       "text": "※自分の手札が0枚のとき、これを撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-042::noga0notokikorew",
+          "keyword": "xg6::XG6-042::zero_hand",
           "duration": "permanent"
         }
       ]
@@ -36,14 +36,14 @@
       "name": "ゼロのスタート",
       "text": "これがストライクしてダメージを与えたとき、相手に1枚ドローさせてもよい。そうしたとき、次の相手ターンのスタートフェイズ中、相手は山札からカードをドローできない。",
       "trigger": {
-        "type": "on_strike"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-042::zeronosutato",
-          "duration": "turn"
+          "keyword": "xg6::XG6-042::zero_start",
+          "duration": "permanent"
         }
       ]
     }

@@ -4,7 +4,7 @@
   "name": "グレートタイタン",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "6+",
   "text": "※ブレイカー 【タイタンノバ】自軍ターン中、これがバトルエリアに出たとき、カード名に「タイタン」を含む自軍コマンドか追加条件を持つオモテ向きの自軍パワーを、2枚まで選び捨札にしてもよい。そうしたとき、捨札にした枚数と同じ数だけ、相手にダメージを与える。",
@@ -42,12 +42,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-010::taitannoba",
-          "duration": "turn"
+          "keyword": "xg6::XG6-010::titan_nova",
+          "duration": "permanent"
         }
       ]
     }
@@ -56,5 +56,23 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "unnamedRules": [
+    {
+      "kind": "zord",
+      "text": "追加条件：自軍「フラッシュタイタン」１体と「タイタンボーイ」１体をパワーゾーンに送る",
+      "partnerCardIds": [
+        "XG6-012",
+        "XG6-011"
+      ],
+      "partnerSlotCardIds": [
+        [
+          "XG6-012"
+        ],
+        [
+          "XG6-011"
+        ]
+      ]
+    }
+  ]
 }

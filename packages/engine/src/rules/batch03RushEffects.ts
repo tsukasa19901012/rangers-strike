@@ -1,5 +1,5 @@
 import type { GameState, PlayerId } from "../types/game";
-import { getDefinition } from "../core/catalog";
+import { getDefinition, unitSizeOf } from "../core/catalog";
 import { updatePlayer } from "../core/helpers";
 
 function isUnriddenSVehicle(
@@ -11,7 +11,7 @@ function isUnriddenSVehicle(
   const card = player.rush.find((c) => c.instanceId === vehicleInstanceId);
   if (!card) return false;
   const def = getDefinition(state.definitions, card.cardId);
-  if (def?.type !== "vehicle" || def.size !== "S") return false;
+  if (def?.type !== "vehicle" || unitSizeOf(state.definitions, card) !== "S") return false;
   return !player.rush.some(
     (c) =>
       c.mountedOnInstanceId === vehicleInstanceId &&
@@ -51,7 +51,7 @@ export function releaseHeldSUnitCommands(
   let changed = false;
   const command = player.command.map((c) => {
     const def = getDefinition(state.definitions, c.cardId);
-    if (def?.type === "unit" && def.size === "S" && c.commandHeld) {
+    if (def?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && c.commandHeld) {
       changed = true;
       return { ...c, commandHeld: false };
     }

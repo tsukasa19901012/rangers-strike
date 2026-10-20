@@ -204,6 +204,49 @@ describe("operation counters", () => {
     expect(state.players.player2.discard.some((c) => c.instanceId === deckSecond.instanceId)).toBe(true);
     expect(state.players.player2.deck).toHaveLength(1);
   });
+
+  it("R-START-05: RS-027 は山札が足りなくても使え、ひけなければ敗北する（公式FAQ RS-027 Q4）", () => {
+    const attacker = inst("TST-UNIT-2", "a1");
+    const defender = inst("TST-UNIT-2", "d1");
+    const counter = inst("RS-027", "dg");
+    const onlyCard = inst("TST-OP", "deck1");
+    let state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      player1: { battle: [attacker] },
+      player2: {
+        battle: [defender],
+        hand: [counter],
+        command: [releasedWbCommand("cmd")],
+        deck: [onlyCard],
+      },
+    });
+    state.definitions["RS-027"] = def("RS-027");
+
+    state = unwrap(
+      applyAction(state, {
+        type: "battle",
+        playerId: "player1",
+        attackerInstanceId: attacker.instanceId,
+        defenderInstanceId: defender.instanceId,
+      }),
+    );
+    expect(state.pendingLeave).toBeDefined();
+
+    state = unwrap(
+      counterWithCategoryHold(
+        state,
+        "player2",
+        counter.instanceId,
+        releasedWbCommand("cmd").instanceId,
+      ),
+    );
+
+    expect(state.players.player2.discard.some((c) => c.instanceId === onlyCard.instanceId)).toBe(true);
+    expect(state.players.player2.deck).toHaveLength(0);
+    expect(state.players.player2.deckedOut).toBe(true);
+    expect(state.winner).toBe("player1");
+  });
 });
 
 describe("unit features in catalog", () => {

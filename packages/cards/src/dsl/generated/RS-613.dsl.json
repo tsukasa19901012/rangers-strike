@@ -4,7 +4,7 @@
   "name": "ダイヤジャック",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 2,
   "text": "※タクスET 【ダイヤソード】このターン、次に自軍バトルエリアのユニットがホールド状態になったとき、ホールドしたユニットのBP以下のBPを持つ敵軍ユニットを1体選び撃破してもよい。",
@@ -42,11 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_choose_enemy_konotannibatoruerianoyunitogahorudoninatatokihorudo",
+          "keyword": "set9a::RS-613::diamond_sword",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

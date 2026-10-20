@@ -4,7 +4,7 @@
   "name": "チャージアップストロンガー",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "7-",
   "text": "※これが自軍エリアにある間、自分がターンを終えるとき、自軍捨札の「仮面ライダーストロンガー」のカードとこれを置き換える。置き換えられなければこれを捨札にする。 【超電稲妻キック】このターン、これがSPが空欄ではないユニットをバトルで撃破したとき、相手に1点ダメージを与える。",
@@ -49,11 +49,12 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg3::XG3-045::chouden_kick",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

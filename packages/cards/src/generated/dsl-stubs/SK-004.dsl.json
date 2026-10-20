@@ -4,7 +4,7 @@
   "name": "仮面ライダークウガUF",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "SC",
   "expansion": "legend1",
   "powerCost": "7+",
   "text": "【凄まじき戦士】これをラッシュしたとき、この追加条件で捨札にしたカードを見て、DAを持たないカードをすべてこれの下に好きな順でウラ向きに重ねる。このとき、ウラ向きに4枚重ねなかったなら、「仮面ライダークウガUF」以外の自軍ユニットをすべて捨札にする。また、これがユニットでなくなるとき、これにウラ向きで重ねたカードをウラ向きのまま1枚選び捨札にして、これをその場に留める。",
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SK-004::majiki",
+          "keyword": "other::SK-004::majiki",
           "duration": "turn"
         }
       ]

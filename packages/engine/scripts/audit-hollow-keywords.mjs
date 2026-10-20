@@ -1,8 +1,12 @@
 // 全カードの grant_keyword がエンジン内で参照されているかの静的監査
 import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = "/Users/tsukasa_yamato/Projects/rangers-strike/packages";
+// packages/ ディレクトリ（このスクリプトからの相対位置で解決）
+const packagesRoot = join(dirname(fileURLToPath(import.meta.url)), "../..");
+
+const root = packagesRoot;
 const bundle = JSON.parse(readFileSync(join(root, "cards/src/generated/dsl-stubs/stubs-bundle.json"), "utf8"));
 
 // エンジンソースを全結合（generated 含む: specs にキーワードが載っていれば消費側とみなす候補）

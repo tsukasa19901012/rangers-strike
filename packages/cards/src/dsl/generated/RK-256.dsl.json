@@ -20,11 +20,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-256::kabutorosanda",
+          "keyword": "rk13::RK-256::kabutoro_thunder",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

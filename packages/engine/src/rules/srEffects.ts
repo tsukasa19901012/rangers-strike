@@ -1,5 +1,7 @@
+import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import type { Category } from "@rangers-strike/cards";
-import { findNamedEffectByEffectId } from "@rangers-strike/cards";
+import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
+import { activeNamedEffect } from "./ncGatedEffects";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId, PlayerState } from "../types/game";
 import type { GrantKeywordContext } from "../dsl/grantKeyword";
 import {
@@ -9,18 +11,14 @@ import {
   isSmallUnit,
   parsePowerCost,
 } from "../core/catalog";
+import { spBecomesInZone } from "./fractionalSp";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
-import { collectPowerIds, openEffectChoice } from "./pendingChoices";
+import { openEffectChoice } from "./pendingChoices";
 
 const BIG_BATON_FEATURES = ["レッド", "ブルー", "グリーン", "ピンク"] as const;
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
-  const next = [...deck];
-  for (let i = next.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [next[i], next[j]] = [next[j]!, next[i]!];
-  }
-  return next;
+  return shuffleDeckCards(deck);
 }
 
 function playerZones(player: GameState["players"][PlayerId]): CardInstance[] {
@@ -32,7 +30,7 @@ function opponentHasMaChikara(state: GameState, playerId: PlayerId): boolean {
   const enemyId = opponent(playerId);
   const enemy = state.players[enemyId];
   return [...enemy.rush, ...enemy.battle].some((c) =>
-    findNamedEffectByEffectId(c.cardId, "ma_chikara"),
+    activeNamedEffect(c, "ma_chikara"),
   );
 }
 
@@ -85,34 +83,63 @@ export function applyOpponentHoldOtEtOnCommandRelease(
   return { ...state, ...updatePlayer(state, playerId, { ...player, command }) };
 }
 
-/** SR-007: スタート終了時、大神龍以外がいなければ山札へ。 */
+/**
+ * SR-004 妖魔力: 相手が自分自身のコマンドゾーンに OT または ET のカードをリリース状態で置いたとき、そのカードをホールドする
+ * （チャージフェイズに置いたカードも含む。atwiki/page-578 Q1「リリース状態で置いた後、…ホールド状態になります」）。
+ */
+export function holdPlacedCommandUnderMaChikara(
+  state: GameState,
+  playerId: PlayerId,
+  instanceId: string,
+): GameState {
+  if (!opponentHasMaChikara(state, playerId)) return state;
+  const player = state.players[playerId];
+  const idx = player.command.findIndex((c) => c.instanceId === instanceId);
+  const card = player.command[idx];
+  if (!card || card.commandHeld) return state;
+  const cats = cardCategories(getDefinition(state.definitions, card.cardId));
+  if (!cats.includes("OT") && !cats.includes("ET")) return state;
+  const command = [...player.command];
+  command[idx] = { ...card, commandHeld: true, mothershipHold: false };
+  return { ...state, ...updatePlayer(state, playerId, { ...player, command }) };
+}
+
+/**
+ * SR-007【プラズマ衝撃波】「このスタートフェイズを終えるとき、自分自身のバトルエリアに「大神龍」以外のユニットが1体もなければ、
+ * これを持ち主の山札に戻してシャッフルする。」— playerId はスタートフェイズを終えるプレイヤー。「これ」は場（ラッシュエリア・
+ * バトルエリア）の大神龍で、持ち主の山札に戻す（atwiki/page-1235）。
+ */
 export function applyPlasmaShockwaveShuffleBack(
   state: GameState,
   playerId: PlayerId,
 ): GameState {
   if (!plasmaShockwaveActive(state)) return state;
 
-  const player = state.players[playerId];
-  const hasOtherUnits = player.battle.some((card) => {
-    const name = getDefinition(state.definitions, card.cardId)?.name;
-    return name !== "大神龍";
+  const hasOtherUnits = state.players[playerId].battle.some((card) => {
+    const def = getDefinition(state.definitions, card.cardId);
+    return def?.type === "unit" && def.name !== "大神龍";
   });
   if (hasOtherUnits) return state;
 
-  const toReturn = player.battle.filter((c) => c.cardId === "SR-007");
-  if (toReturn.length === 0) return state;
-
-  const remainingBattle = player.battle.filter((c) => c.cardId !== "SR-007");
-  const deck = shuffleDeck([...player.deck, ...toReturn]);
-
-  return {
-    ...state,
-    ...updatePlayer(state, playerId, {
-      ...player,
-      battle: remainingBattle,
-      deck,
-    }),
-  };
+  let next = state;
+  for (const owner of ["player1", "player2"] as const) {
+    const player = next.players[owner];
+    const isDragon = (c: CardInstance) => c.cardId === "SR-007";
+    const toReturn = [...player.rush, ...player.battle].filter(isDragon);
+    if (toReturn.length === 0) continue;
+    const ids = new Set(toReturn.map((c) => c.instanceId));
+    const unmount = (c: CardInstance) => (c.mountedOnInstanceId && ids.has(c.mountedOnInstanceId) ? { ...c, mountedOnInstanceId: undefined } : c);
+    next = {
+      ...next,
+      ...updatePlayer(next, owner, {
+        ...player,
+        rush: player.rush.filter((c) => !ids.has(c.instanceId)).map(unmount),
+        battle: player.battle.filter((c) => !ids.has(c.instanceId)).map(unmount),
+        deck: shuffleDeck([...player.deck, ...toReturn.map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }))]),
+      }),
+    };
+  }
+  return next;
 }
 
 /** SR-003 龍撃剣＆獣奏剣: 捨札の恐竜1枚につきBP+1000。 */
@@ -193,7 +220,7 @@ export function findEnemySWithPowerCost(
   const matches: CardInstance[] = [];
   for (const zone of ["rush", "battle"] as const) {
     for (const card of state.players[enemyId][zone]) {
-      if (!isSmallUnit(state.definitions, card.cardId)) continue;
+      if (!isSmallUnit(state.definitions, card)) continue;
       const cost = parsePowerCost(getDefinition(state.definitions, card.cardId)?.powerCost ?? 99);
       if (cost === powerCost) matches.push(card);
     }
@@ -209,13 +236,14 @@ export function grantSp1ToRushUnit(
   playerId: PlayerId,
   instanceId: string,
 ): GameState {
+  // ラッシュしたとき（ラッシュエリア）／NC（バトルエリアに出た直後）のどちらでも「SP1」になる。
   const player = state.players[playerId];
-  const rush = player.rush.map((c) =>
-    c.instanceId === instanceId
-      ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-      : c,
-  );
-  return { ...state, ...updatePlayer(state, playerId, { ...player, rush }) };
+  for (const zone of ["rush", "battle"] as const) {
+    if (player[zone].some((c) => c.instanceId === instanceId)) {
+      return spBecomesInZone(state, playerId, zone, instanceId, 1);
+    }
+  }
+  return state;
 }
 
 export function playerHasShurikenFm(state: GameState, playerId: PlayerId): boolean {
@@ -258,7 +286,9 @@ export function startDestroyPowerMatchOnRush(
   state: GameState,
   ctx: GrantKeywordContext,
 ): GameState | null {
-  const valid = collectPowerIds(state, ctx.playerId);
+  // XP-003・SR-005 デカレッドバトライザー【バトライズファイヤードライブ】は、ウラ向き（ダメージ）のカードも選べる
+  // （利用者の決定 2026-10-20、docs/verification/unverified/questions-all.md U-5）。
+  const valid = state.players[ctx.playerId].power.map((c) => c.instanceId);
   if (valid.length === 0) return null;
   return openEffectChoice(state, {
     playerId: ctx.playerId,
@@ -395,7 +425,7 @@ export function matchSrGrantKeyword(
     keyword === "opponent_must_hold_ot_et_on_command_release" ||
     keyword.startsWith("plasma_shockwave_start_phase") ||
     keyword === "big_baton_command_zone_features" ||
-    keyword === "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000" ||
+    keyword === FEATURE_KEYWORDS.bpPerDiscardDinosaur ||
     keyword === "destroy_on_win_vs_sp1" ||
     keyword === "attacked_bp_boost_5000" ||
     keyword === "cannot_attack"

@@ -484,7 +484,7 @@ const EFFECT_BUILDERS: Record<string, EffectBuilder> = {
     name: named.name,
     text: named.text,
     trigger: { type: "on_rush" },
-    effects: [{ type: "deal_damage", amount: 2, target: "controller" }],
+    effects: [{ type: "deal_damage", amount: 2, target: "opponent" }],
   }),
 };
 
@@ -503,9 +503,9 @@ const UNNAMED_KEYWORD_BUILDERS: Record<
 
 /** P0 effect_catalog エイリアス → primitives（M3 一般化） */
 const P0_ALIASES: Record<string, EffectPrimitive[]> = {
-  deal_damage_1: [{ type: "deal_damage", amount: 1, target: "controller" }],
-  deal_damage_2: [{ type: "deal_damage", amount: 2, target: "controller" }],
-  deal_damage: [{ type: "deal_damage", amount: 1, target: "controller" }],
+  deal_damage_1: [{ type: "deal_damage", amount: 1, target: "opponent" }],
+  deal_damage_2: [{ type: "deal_damage", amount: 2, target: "opponent" }],
+  deal_damage: [{ type: "deal_damage", amount: 1, target: "opponent" }],
   bp_boost_1000: [{ type: "modify_bp", target: { type: "trigger_source" }, amount: 1000, duration: "turn" }],
   bp_boost_2000: [{ type: "modify_bp", target: { type: "trigger_source" }, amount: 2000, duration: "turn" }],
   bp_boost_3000: [{ type: "modify_bp", target: { type: "trigger_source" }, amount: 3000, duration: "turn" }],

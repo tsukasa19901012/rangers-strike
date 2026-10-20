@@ -4,7 +4,7 @@
   "name": "ライナーボーイ",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "※自分が「マックスライナー」をラッシュしたとき、自軍エリアに「ライナーボーイ」があれば1体選んで手札に戻す。 【ライナーコンボ】これが特徴「人型」を持つLユニットまたはXLユニットからコンビネーションするとき、次の効果を発動できる⇒これは「SP1」になる。",
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "on_ally_rush_named_return_self_to_hand",
+          "keyword": "xg3::XG3-008::liner_return",
           "duration": "permanent"
         }
       ]
@@ -50,7 +50,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-008::rainakonbo",
+          "keyword": "xg3::XG3-008::liner_combo",
           "duration": "permanent"
         }
       ]

@@ -4,7 +4,7 @@
   "name": "タイムシャドウSM",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、自軍捨札の枚数がこれの必要パワーの数字以上あれば、これを自軍ラッシュエリアに出してもよい。 ※自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンからオモテ向きのカードを1枚選び捨札にする。 【ステルスモード】これは敵軍ユニットにアタックされない。",
@@ -39,25 +39,9 @@
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "power",
-            "owner": "self",
-            "filter": {
-              "faceDown": false
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "set7c::RS-474::time_shadow_discard",
+          "duration": "turn"
         }
       ],
       "optional": false

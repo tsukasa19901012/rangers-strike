@@ -55,11 +55,10 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-038::nosukaikupawa",
+          "keyword": "xg5::XG5-038::skyick",
           "duration": "permanent"
         }
       ]

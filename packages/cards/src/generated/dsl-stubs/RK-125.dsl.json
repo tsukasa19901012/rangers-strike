@@ -4,11 +4,11 @@
   "name": "仮面ライダーブレイド",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 3,
-  "text": "※これはライドオフしたときストライクできない。 【ブレイラウザー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの持つカテゴリがすべて同じなら、敵軍バトルエリアからSユニットを1体選び撃破する。 ※赤文字は公式発表のエラッタ修正の部分",
-  "rawText": "※これはライドオフしたときストライクできない。 【ブレイラウザー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの持つカテゴリがすべて同じなら、敵軍バトルエリアからSユニットを1体選び撃破する。 ※赤文字は公式発表のエラッタ修正の部分",
+  "text": "※これはライドオフしたときストライクできない。 【ブレイラウザー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの持つカテゴリがすべて同じなら、敵軍バトルエリアからSユニットを1体選び撃破する。",
+  "rawText": "※これはライドオフしたときストライクできない。 【ブレイラウザー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの持つカテゴリがすべて同じなら、敵軍バトルエリアからSユニットを1体選び撃破する。",
   "bp": 3000,
   "size": "S",
   "sp": "1/2",
@@ -39,49 +39,14 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      },
-      "effects": [
-        {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "unnamed_e280bbe8b5a4e69687e5ad97",
-      "text": "※赤文字は公式発表のエラッタ修正の部分",
-      "trigger": {
-        "type": "riding_combo"
-      },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::RK-125::hanoeratano",
-          "duration": "permanent"
+          "keyword": "effect_card::RK-125::bureirauza",
+          "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

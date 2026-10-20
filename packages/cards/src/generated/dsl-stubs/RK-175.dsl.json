@@ -4,7 +4,7 @@
   "name": "仮面ライダー新1号",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 5,
   "text": "※これは「仮面ライダー1号」としてつかえる。 【ライダーキック】このターン、敵軍ユニットのレジストとスクラムとチェイスの効果は無効になる。また、これがアタックしなかったとき、このユニットの次にコンビネーションするSユニットのBPは、このユニットのBPを「＋」した値になる。",
@@ -38,15 +38,16 @@
       "name": "ライダーキック",
       "text": "このターン、敵軍ユニットのレジストとスクラムとチェイスの効果は無効になる。また、これがアタックしなかったとき、このユニットの次にコンビネーションするSユニットのBPは、このユニットのBPを「＋」した値になる。",
       "trigger": {
-        "type": "on_attack"
+        "type": "riding_combo"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_bp_from_skipped_attack",
+          "keyword": "rk9::RK-175::rider_kick",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

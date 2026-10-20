@@ -1,4 +1,5 @@
 import { WIKI_OPERATION_TEXT } from "./wikiReference";
+import { normalizeCardIdentityText } from "./reprints";
 import { ERRATA_EFFECT_TEXT } from "./errata";
 import { inferCatalogTierForCardId, loadCardById } from "./dsl/loader";
 import type { OperationTiming } from "./dsl/types";
@@ -174,8 +175,56 @@ function resolveWiredEffectId(
   return doc.effectId ?? staticMeta?.effectId ?? block.id;
 }
 
-/** U4 — CardDocument 優先。静的 ALL_EFFECTS は target / 空テキスト・kind 補完用。 */
+let staticEffectByText: Map<string, CardEffectMeta> | null = null;
+
+/** 静的に実装済みの効果を本文で引く表（再録・プロモの同文カード用）。 */
+function staticEffectForText(text: string | undefined): CardEffectMeta | undefined {
+  const key = normalizeCardIdentityText(text);
+  if (!key) return undefined;
+  if (!staticEffectByText) {
+    staticEffectByText = new Map();
+    for (const meta of Object.values(ALL_EFFECTS)) {
+      const k = normalizeCardIdentityText(meta.text);
+      if (k && !staticEffectByText.has(k)) staticEffectByText.set(k, meta);
+    }
+  }
+  return staticEffectByText.get(key);
+}
+
+/**
+ * U4 — CardDocument 優先。静的 ALL_EFFECTS は target / 空テキスト・kind 補完用。
+ * 再録・プロモ（例: RS-253 ファイブテクター = RS-014）は、カード ID ではなく効果文の同一性で
+ * 実装済みの効果（effectId・kind・target）に結び付ける。
+ */
+const cardEffectCache = new Map<string, CardEffectMeta | undefined>();
+
 export function getCardEffect(cardId: string): CardEffectMeta | undefined {
+  // カードの文書（カタログ・DSL・人手修正）は対局中に変わらないので、ID ごとに結果を覚える（loadCardById は重い）。
+  // 呼び出し側が書き換えても表が汚れないよう、浅いコピーを返す。
+  let meta: CardEffectMeta | undefined;
+  if (cardEffectCache.has(cardId)) {
+    meta = cardEffectCache.get(cardId);
+  } else {
+    meta = getCardEffectUncached(cardId);
+    cardEffectCache.set(cardId, meta);
+  }
+  return meta ? { ...meta } : undefined;
+}
+
+function getCardEffectUncached(cardId: string): CardEffectMeta | undefined {
+  const own = getCardEffectByDocument(cardId);
+  if (ALL_EFFECTS[cardId]) return own;
+  const reprint = staticEffectForText(own?.text ?? ERRATA_EFFECT_TEXT[cardId]);
+  if (!reprint) return own;
+  return {
+    effectId: reprint.effectId,
+    text: own?.text || reprint.text,
+    kind: reprint.kind,
+    target: reprint.target,
+  };
+}
+
+function getCardEffectByDocument(cardId: string): CardEffectMeta | undefined {
   const staticMeta = ALL_EFFECTS[cardId];
   try {
     const doc = loadCardById(cardId, inferCatalogTierForCardId(cardId));
@@ -200,6 +249,16 @@ export function getCardEffect(cardId: string): CardEffectMeta | undefined {
     if (isPassivePermanentOperationDoc(doc)) {
       const passive = doc.effects?.find((effect) => effect.trigger.type === "while_in_field");
       const block = passive ?? { id: "unnamed_resident", text: doc.text ?? "" };
+      return {
+        effectId: resolveWiredEffectId(doc, block, staticMeta),
+        text: resolveEffectText(cardId, doc, block, staticMeta),
+        kind: "permanent",
+        target: staticMeta?.target,
+      };
+    }
+    // コマンダー（XG2-030 等）: デッキに入らないが、効果文は参照できるようにする。
+    if (doc.type === "commander" && doc.effects?.length) {
+      const block = firstEffectBlock(doc)!;
       return {
         effectId: resolveWiredEffectId(doc, block, staticMeta),
         text: resolveEffectText(cardId, doc, block, staticMeta),

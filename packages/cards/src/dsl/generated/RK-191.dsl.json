@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-191::garaisodo",
+          "keyword": "rk10::RK-191::garai_sword",
           "duration": "turn"
         }
       ],

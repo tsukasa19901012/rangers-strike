@@ -40,9 +40,6 @@
     "textSnippets": [
       "※常駐"
     ],
-    "expectedDslKeywords": [
-      "resident"
-    ],
     "operationKind": "permanent",
     "expectedMechanisms": [
       "operation_permanent_place",
@@ -59,6 +56,9 @@
     "textSnippets": [
       "【秘剣流れ十文字斬り】"
     ],
+    "expectedDslKeywords": [
+      "SP1"
+    ],
     "bp": 3000,
     "sp": "special",
     "size": "S"
@@ -74,7 +74,7 @@
       "【ジャスティスフラッシャー】"
     ],
     "expectedDslKeywords": [
-      "pr_fx::PR-005::justice_flasher"
+      "pay_power_discard_5_for_sp3"
     ],
     "bp": 19000,
     "sp": 2,
@@ -109,7 +109,8 @@
       "【レッドビュート】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "SP1",
+      "effect_card::RS-126::redboot"
     ],
     "bp": 4000,
     "sp": "special",
@@ -144,7 +145,7 @@
       "【オーロラプラズマ返し】"
     ],
     "expectedDslKeywords": [
-      "SP2"
+      "effect_card::RS-073::valshield"
     ],
     "bp": 9000,
     "sp": 1,
@@ -197,11 +198,12 @@
       "※カウンター"
     ],
     "expectedDslKeywords": [
-      "counter_redirect_attack"
+      "note_card::RS-018::yunitogaatakusar"
     ],
     "operationKind": "counter",
     "expectedMechanisms": [
-      "operation_counter_reaction"
+      "operation_counter_reaction",
+      "board_target_tap"
     ]
   },
   {
@@ -245,7 +247,12 @@
     "cardType": "unit",
     "powerCost": "6+",
     "category": "OT",
-    "textSnippets": [],
+    "textSnippets": [
+      "【バイオ粒子斬り】"
+    ],
+    "expectedDslKeywords": [
+      "effect_card::PR-015::bioparticleslash"
+    ],
     "bp": 11000,
     "sp": 1,
     "size": "L"
@@ -257,7 +264,14 @@
     "cardType": "unit",
     "powerCost": "7-",
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【アバレスラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "auto_battle_entry_each_turn",
+      "on_destroy_reanimate_named_from_discard",
+      "SP1"
+    ],
     "bp": 5500,
     "sp": "special",
     "size": "S"
@@ -359,7 +373,8 @@
     "expectedDslKeywords": [
       "auto_battle_entry_each_turn",
       "cannot_attack",
-      "SP1"
+      "SP1",
+      "set7d::RS-508::road_saber"
     ],
     "bp": 4000,
     "sp": "special",
@@ -409,6 +424,9 @@
     "textSnippets": [
       "自軍山札を見て、特徴「炎神」を持つMユニットのカ"
     ],
+    "expectedDslKeywords": [
+      "set8a::RS-526::super_highway_buster"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -424,6 +442,9 @@
     "category": "OT",
     "textSnippets": [
       "【ディーソードベガ】"
+    ],
+    "expectedDslKeywords": [
+      "set8c::RS-572::d_sword_vega"
     ],
     "bp": 6500,
     "sp": null,

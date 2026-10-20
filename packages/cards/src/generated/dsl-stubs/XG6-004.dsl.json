@@ -4,7 +4,7 @@
   "name": "フルブラスト・アクション",
   "type": "operation",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 8,
   "text": "自軍パワーゾーンのオモテ向きのカードを好きな枚数選びウラ向きにしてもよい。 ただし、自分がゲームに負ける点数以上ウラ向きにすることはできない。その後、自分の手札にあるBP16000以下のLユニットのカードは、このターン、ブラストを得る。",
@@ -17,11 +17,11 @@
         "type": "operation",
         "timing": "rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-004::pawazonnoomote_k",
+          "keyword": "xg6::XG6-004::full_blast",
           "duration": "permanent"
         }
       ]

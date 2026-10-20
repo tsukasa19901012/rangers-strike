@@ -1,5 +1,6 @@
 import type { GameState, PlayerId } from "../types/game";
-import { cardName, getDefinition } from "../core/catalog";
+import { cardName } from "../core/catalog";
+import { unitFeatures } from "./addedFeatures";
 import { findInZone } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { getCardDslDocument } from "../dsl/effectLookup";
@@ -29,8 +30,8 @@ export function tryFormationDeployOnRush(
   const rushed = findInZone(player, "rush", rushedInstanceId)?.card;
   if (!rushed) return { state, logs: [] };
 
-  const rushedDef = getDefinition(state.definitions, rushed.cardId);
-  if (!rushedDef?.features?.includes("航空機")) return { state, logs: [] };
+  // 効果で追加された特徴（RS-203【デウス遺伝子】の「航空機」等）も含める（faq-card-5 RS-296 Q4）。
+  if (!unitFeatures(state, rusherPlayerId, rushed).includes("航空機")) return { state, logs: [] };
 
   const rushedName = cardName(state.definitions, rushed.cardId);
   for (const carrier of player.rush) {

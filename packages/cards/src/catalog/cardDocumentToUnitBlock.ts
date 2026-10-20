@@ -7,6 +7,11 @@ import type {
 } from "../effectTaxonomy";
 import type { CardDocument, EffectDefinition, EffectTrigger } from "../dsl/types";
 import { canonicalCardName, fusionMaterialAliasNames } from "../cardName";
+
+/** カード名の照合キー（空白の全角／半角・有無の違いを吸収する。例: 本文の「怒りの鬼神 ガイ」とカード名「怒りの鬼神　ガイ」）。 */
+function nameKey(name: string): string {
+  return canonicalCardName(name).replace(/[\s\u3000]+/g, "");
+}
 import { corePlayableCatalog, fullPlayableCatalog } from "./unifiedCatalog";
 import { effectIdFromName } from "../pipeline/effectNameIds";
 import {
@@ -16,28 +21,54 @@ import {
 
 const CARD_NAME_TO_ID = new Map<string, string>();
 for (const card of fullPlayableCatalog.cards) {
-  const key = canonicalCardName(card.name);
+  const key = nameKey(card.name);
   if (!CARD_NAME_TO_ID.has(key)) CARD_NAME_TO_ID.set(key, card.id);
 }
 
 /** コアのみ — 同名エイリアスは低い id を優先（例: マジフェニックス → RS-057）。 */
 const CARD_ALIAS_TO_ID = new Map<string, string>();
 function registerAlias(alias: string, cardId: string): void {
+  alias = nameKey(alias);
   const existing = CARD_ALIAS_TO_ID.get(alias);
   if (!existing || cardId < existing) {
     CARD_ALIAS_TO_ID.set(alias, cardId);
   }
 }
 for (const card of corePlayableCatalog.cards) {
-  registerAlias(canonicalCardName(card.name), card.id);
+  registerAlias(nameKey(card.name), card.id);
   for (const alias of fusionMaterialAliasNames(card.text)) {
     registerAlias(alias, card.id);
   }
 }
 
 function resolveCardNameToId(name: string): string | undefined {
-  const key = canonicalCardName(name);
+  const key = nameKey(name);
   return CARD_ALIAS_TO_ID.get(key) ?? CARD_NAME_TO_ID.get(key);
+}
+
+/**
+ * 「X」からコンビネーション の X に当たるすべてのカード（同名の別収録・「X としてつかえる」カード）。
+ * 例: 「マジフェニックス」→ 本来のマジフェニックス（RS-576 等）とマジレッド（RS-057「これは「マジフェニックス」としてつかえる」）。
+ */
+const CARD_NAME_TO_ALL_IDS = new Map<string, Set<string>>();
+function registerAllIds(name: string, cardId: string): void {
+  name = nameKey(name);
+  const set = CARD_NAME_TO_ALL_IDS.get(name) ?? new Set<string>();
+  set.add(cardId);
+  CARD_NAME_TO_ALL_IDS.set(name, set);
+}
+for (const card of fullPlayableCatalog.cards) {
+  registerAllIds(nameKey(card.name), card.id);
+  for (const alias of fusionMaterialAliasNames(card.text)) {
+    registerAllIds(alias, card.id);
+  }
+}
+
+function resolveCardNameToAllIds(name: string): string[] {
+  const key = nameKey(name);
+  const primary = resolveCardNameToId(name);
+  const all = [...(CARD_NAME_TO_ALL_IDS.get(key) ?? [])].sort();
+  return primary ? [primary, ...all.filter((id) => id !== primary)] : all;
 }
 
 function extractComboFromPartnerIds(text: string): string[] {
@@ -47,9 +78,7 @@ function extractComboFromPartnerIds(text: string): string[] {
   const segment = text.slice(Math.max(0, comboIdx - 120), comboIdx);
   const partnerCardIds = [
     ...new Set(
-      [...segment.matchAll(/「([^」]+)」/g)]
-        .map((match) => resolveCardNameToId(match[1]!))
-        .filter((id): id is string => id !== undefined),
+      [...segment.matchAll(/「([^」]+)」/g)].flatMap((match) => resolveCardNameToAllIds(match[1]!)),
     ),
   ];
   return partnerCardIds;

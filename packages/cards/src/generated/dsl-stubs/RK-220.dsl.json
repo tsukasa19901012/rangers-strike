@@ -4,7 +4,7 @@
   "name": "アルビノジョーカー",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": "4+",
   "text": "※これは自軍ラッシュエリアの特徴「アンデッド」を持つユニットを1体捨札にしなければバトルエリアに出られない。 【アンデッドを従える者】これが自軍エリアにある間、自軍ラッシュフェイズ中、自軍｢アルビローチ｣をラッシュしたとき次の効果を発動できる⇒自軍「アルビローチ」の数を数えて、その数と同じ必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
@@ -36,16 +36,15 @@
       "name": "アンデッドを従える者",
       "text": "これが自軍エリアにある間、自軍ラッシュフェイズ中、自軍｢アルビローチ｣をラッシュしたとき次の効果を発動できる⇒自軍「アルビローチ」の数を数えて、その数と同じ必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
       "trigger": {
-        "type": "on_rush"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-220::andedowoeru",
+          "keyword": "rk11::RK-220::undead_master",
           "duration": "permanent"
         }
-      ],
-      "optional": false
+      ]
     }
   ],
   "implementation": {

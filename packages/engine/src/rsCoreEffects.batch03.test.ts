@@ -169,7 +169,8 @@ describe("RS-091..135 core effects batch03", () => {
   });
 
   it("RS-126 red_boot opens rush destroy choice after battle win", () => {
-    const akarenger = inst("RS-126", "aka");
+    // NC（CN5）成立済み（R-CN-02: 【レッドビュート】はナンバーの欄の効果）
+    const akarenger = { ...inst("RS-126", "aka"), activatedNcEffects: ["grant_sp1", "red_boot"] };
     const defender = inst("TST-UNIT-0", "def");
     const rushTarget = inst("TST-UNIT-0", "rush-t");
     const state = createTestState({

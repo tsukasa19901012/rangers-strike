@@ -4,7 +4,7 @@
   "name": "天空勇者マジシャイン",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "【マジランプバスター】 これをラッシュしたとき、自軍コマンドを好きな数選びホールドしてもよい。そうしたとき、ホールドしたコマンド1つにつきBP2000として、そのBPの合計以下のBPを持つ敵軍ユニットを1体選び撃破する。",
@@ -25,25 +25,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_command",
-          "valid": {
-            "type": "zone",
-            "zone": "command",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "hold_command",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg4::XG4-026::majiranpubasuta",
+          "duration": "turn"
         }
       ]
     }

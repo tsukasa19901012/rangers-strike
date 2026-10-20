@@ -1,8 +1,26 @@
-import {
-  findNamedEffectByEffectId,
-  getJointLNamedEffect,
-  hasUnnamedRule,
-} from "@rangers-strike/cards";
+import { rm3EffectiveSp } from "../rm/rm3Fields";
+import { xg5EffectiveSp } from "../xg5/xg5Fields";
+import { xg7EffectiveSp } from "../xg7/xg7Fields";
+import { xg1EffectiveSp } from "../xg1/xg1Fields";
+import { xg6EffectiveSp } from "../xg6/xg6Fields";
+import { xg4EffectiveSp } from "../xg4/xg4Fields";
+import { xg2EffectiveSp } from "../xg2/xg2Fields";
+import { xg3EffectiveSp } from "../xg3/xg3Fields";
+import { rk8EffectiveSp } from "../rk/rk8UnitEffects";
+import { rk9EffectiveSp } from "../rk/rk9UnitEffects";
+import { rk10EffectiveSp } from "../rk/rk10UnitEffects";
+import { rk11EffectiveSp } from "../rk/rk11Fields";
+import { rk12EffectiveSp } from "../rk/rk12Fields";
+import { rk14EffectiveSp } from "../rk/rk14Fields";
+import { rk15EffectiveSp } from "../rk/rk15Fields";
+import { rk16EffectiveSp } from "../rk/rk16Fields";
+import { unitFeatures } from "../addedFeatures";
+import { hasUnnamedRule } from "@rangers-strike/cards";
+import { rk5EffectiveSp } from "../rk/rk5Fields";
+import { set9AEffectiveSp } from "../legend1/set9NamedEffectsA";
+import { hellSaturnGrantCount } from "../hellSaturn";
+import { activeNamedEffect, namedEffectActive } from "../ncGatedEffects";
+import { countJointLGrant, jointLGrantSpPlus, jointRGrantActive } from "../jointComboGrants";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import {
   effectiveBp,
@@ -10,12 +28,24 @@ import {
   isMediumUnit,
   isSmallUnit,
   unitEffectiveCategories,
+  spSetValueOf,
 } from "../../core/catalog";
 import { countReleasedCommands } from "../restrictions";
 import { opponent } from "../../core/helpers";
+import { memoizePerCardInSearch } from "../../core/searchCache";
 import { promotedKeywordSpFloor } from "../../dsl/promotedKeywordBridge";
 import { legend2EffectiveSp } from "../legend2/fieldEffects";
 import { sameCardName } from "../../core/cardNames";
+import { set5AEffectiveSp } from "../legend1/set5NamedEffectsA";
+import { set6BEffectiveSp, turnPlayerOf } from "../legend1/set6NamedEffectsB";
+import { set7AEffectiveSp } from "../legend1/set7NamedEffectsA";
+import { set8AEffectiveSp } from "../legend1/set8NamedEffectsA";
+import { set7BEffectiveSp } from "../legend1/set7NamedEffectsB";
+import { set7DEffectiveSp } from "../legend1/set7NamedEffectsD";
+import { set8DEffectiveSp } from "../legend1/set8NamedEffectsD";
+import { set9CEffectiveSp } from "../legend1/set9NamedEffectsC";
+import { set9BEffectiveSp } from "../legend1/set9NamedEffectsB";
+import { promoSpFloor } from "../promo/promoHooks";
 import {
   sr003DiscardDinoBpBonus,
   sr003SpFloor,
@@ -32,42 +62,58 @@ export function legend3FieldBpBonus(
   const def = getDefinition(state.definitions, instance.cardId);
   if (!def) return 0;
 
-  if (findNamedEffectByEffectId(instance.cardId, "furious_shark_shot") ||
-      findNamedEffectByEffectId(instance.cardId, "heaven_earth_animal_heart")) {
+  if (activeNamedEffect(instance, "furious_shark_shot") ||
+      activeNamedEffect(instance, "heaven_earth_animal_heart")) {
     const wbMCount = state.players[playerId].battle.filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
-      return d?.category === "WB" && isMediumUnit(state.definitions, c.cardId);
+      return d?.category === "WB" && isMediumUnit(state.definitions, c);
     }).length;
     bonus += wbMCount * 2000;
   }
 
-  if (role === "attacking" || role === "general") {
-    if (findNamedEffectByEffectId(instance.cardId, "star_raiser") && state.activePlayer === playerId) {
+  // 自軍ターン中の常時の BP 補正は "general"（effectiveBp）でだけ数える（アタック時に重ねて数えない）。
+  // NC の効果は NC が成立していなければ有効にならない（R-CN-02、ncGatedEffects.namedEffectActive）。
+  if (role === "general") {
+    if (namedEffectActive(instance, "star_raiser") && state.activePlayer === playerId) {
       bonus += countReleasedCommands(state.players[playerId]) * 2000;
     }
     if (
       (instance.cardId === "SR-003" ||
-        findNamedEffectByEffectId(instance.cardId, "ryu_geki_ken_ken")) &&
+        activeNamedEffect(instance, "ryu_geki_ken_ken")) &&
       state.activePlayer === playerId
     ) {
       bonus += sr003DiscardDinoBpBonus(state, playerId);
     }
-    if (findNamedEffectByEffectId(instance.cardId, "iron_broken") && state.activePlayer === playerId) {
+    // RS-280 レッドホーク【ウィングガントレット】「SP1」自軍ターン中、これはBP＋2000される（NC。atwiki/page-468）。
+    if (
+      instance.cardId === "RS-280" &&
+      instance.activatedNcEffects?.includes("uingugantoreto") &&
+      state.activePlayer === playerId
+    ) {
+      bonus += 2000;
+    }
+    if (namedEffectActive(instance, "iron_broken") && state.activePlayer === playerId) {
       bonus += 3000;
     }
-    if (findNamedEffectByEffectId(instance.cardId, "blazing_fire") && state.activePlayer === playerId) {
+    if (namedEffectActive(instance, "blazing_fire") && state.activePlayer === playerId) {
       bonus += 2000;
+    }
+    // JC で得た能力「自軍ターン中、BP+4000され」（RS-157【悪鬼貫徹ネックスラスト】、RS-171【マキシマムペネトレーション】）。
+    if (state.activePlayer === playerId) {
+      bonus +=
+        4000 *
+        (countJointLGrant(instance, "oni_neck_last") + countJointLGrant(instance, "maximum_penetration"));
     }
   }
 
   if (role === "general" && state.activePlayer !== playerId) {
     const hasMoaLoader = state.players[playerId].rush.some(
-      (c) => findNamedEffectByEffectId(c.cardId, "super_moa_cannon"),
+      (c) => activeNamedEffect(c, "super_moa_cannon"),
     );
     if (
       hasMoaLoader &&
       instance.cardId !== "RS-147" &&
-      isMediumUnit(state.definitions, instance.cardId) &&
+      isMediumUnit(state.definitions, instance) &&
       unitEffectiveCategories(state, playerId, instance, "battle").includes("MA")
     ) {
       bonus += 1000;
@@ -82,7 +128,7 @@ export function isStealthUnit(state: GameState, instanceId: string): boolean {
     const player = state.players[pid];
     for (const zone of ["battle", "rush"] as const) {
       const found = player[zone].find((c) => c.instanceId === instanceId);
-      if (found && findNamedEffectByEffectId(found.cardId, "stealth")) {
+      if (found && activeNamedEffect(found, "stealth")) {
         return true;
       }
     }
@@ -95,7 +141,7 @@ function hasScorchingRoarOnField(state: GameState, playerId: PlayerId): boolean 
   for (const zone of ["rush", "battle"] as const) {
     if (
       player[zone].some((c) =>
-        findNamedEffectByEffectId(c.cardId, "scorching_roar"),
+        activeNamedEffect(c, "scorching_roar"),
       )
     ) {
       return true;
@@ -123,48 +169,39 @@ export function legend3EnemySComboDelta(state: GameState, playerId: PlayerId): n
   let delta = 0;
   const enemyId = playerId === "player1" ? "player2" : "player1";
   for (const card of state.players[enemyId].battle) {
-    if (findNamedEffectByEffectId(card.cardId, "data_analysis")) {
+    if (activeNamedEffect(card, "data_analysis")) {
       delta += 1;
     }
   }
   for (const card of state.players[enemyId].rush) {
-    if (findNamedEffectByEffectId(card.cardId, "data_analysis")) {
+    if (activeNamedEffect(card, "data_analysis")) {
       delta += 1;
     }
   }
   return delta;
 }
 
+/**
+ * RS-158【エレファントシールド】: 発動していて、コンビネーションが成立している間（相手の L ユニットが左隣）、
+ * 敵軍ユニットはこれ以外のユニットにアタックできない。アタックできるユニットの instanceId（なければ null）。
+ */
 export function elephantShieldMustTarget(
   state: GameState,
   defenderPlayerId: PlayerId,
 ): string | null {
   const player = state.players[defenderPlayerId];
-  for (let i = 0; i < player.battle.length; i++) {
-    const card = player.battle[i]!;
-    if (getDefinition(state.definitions, card.cardId)?.comboNumber !== "R") continue;
-    const partner = player.battle[i - 1];
-    if (!partner) continue;
-    const joint = findNamedEffectByEffectId(card.cardId, "elephant_shield");
-    if (joint) return card.instanceId;
+  for (const card of player.battle) {
+    if (jointRGrantActive(state, defenderPlayerId, card, "elephant_shield")) return card.instanceId;
   }
   return null;
 }
 
+/** RS-172【ショベルディフェンス】: 発動していてコンビネーションが成立している間、敵軍ユニットはストライクできない。 */
 export function shovelDefenseBlocksStrike(state: GameState, strikerPlayerId: PlayerId): boolean {
-  const enemyId = strikerPlayerId === "player1" ? "player2" : "player1";
-  const player = state.players[enemyId];
-  for (let i = 0; i < player.battle.length; i++) {
-    const card = player.battle[i]!;
-    if (getDefinition(state.definitions, card.cardId)?.comboNumber !== "R") continue;
-    if (findNamedEffectByEffectId(card.cardId, "shovel_defense")) {
-      const partner = player.battle[i - 1];
-      if (partner && getDefinition(state.definitions, partner.cardId)?.size === "L") {
-        return true;
-      }
-    }
-  }
-  return false;
+  const enemyId = opponent(strikerPlayerId);
+  return state.players[enemyId].battle.some((card) =>
+    jointRGrantActive(state, enemyId, card, "shovel_defense"),
+  );
 }
 
 export function cannotEnterBattleOwnTurn(
@@ -172,26 +209,25 @@ export function cannotEnterBattleOwnTurn(
   playerId: PlayerId,
   cardId: string,
 ): boolean {
-  if (state.activePlayer !== playerId) return false;
+  // 反応（ファイブテクター等）の間は activePlayer が防御側に移るので、ターンプレイヤーで判定する（RS-429/RS-430）。
+  if (turnPlayerOf(state) !== playerId) return false;
   return (
     hasUnnamedRule(cardId, "cannot_enter_battle_own_turn") ||
     hasUnnamedRule(cardId, "no_enter_battle_own_turn")
   );
 }
 
-function jointLEffectIdForUnit(
+/** RS-188【地球征服宣告書】の対象か（アチャとコチャが自軍エリアにあり、自軍パワーゾーン12枚以上、「メカ」の自軍 S ユニット）。 */
+export function earthConquestDeclarationActive(
   state: GameState,
   playerId: PlayerId,
   instance: CardInstance,
-): string | undefined {
+): boolean {
   const player = state.players[playerId];
-  const index = player.battle.findIndex((c) => c.instanceId === instance.instanceId);
-  if (index <= 0) return undefined;
-  const partner = player.battle[index - 1];
-  if (!partner || getDefinition(state.definitions, partner.cardId)?.size !== "L") {
-    return undefined;
-  }
-  return getJointLNamedEffect(partner.cardId)?.effectId;
+  if (player.power.length < 12) return false;
+  if (![...player.rush, ...player.battle].some((c) => c.cardId === "RS-188")) return false;
+  if (!isSmallUnit(state.definitions, instance)) return false;
+  return getDefinition(state.definitions, instance.cardId)?.features?.includes("メカ") ?? false;
 }
 
 /** RS-157 oni_neck_last: BP20000+ で自ターンにSP2付与。 */
@@ -200,11 +236,81 @@ export function legend3EffectiveSp(
   playerId: PlayerId,
   instance: CardInstance,
 ): number {
+  // CPU の探索の間は、同じ状態・同じカードの SP を使い回す（盤面評価で何度も調べる。core/searchCache.ts）。
+  return memoizePerCardInSearch(state, "sp", playerId, instance, () => legend3EffectiveSpUncached(state, playerId, instance));
+}
+
+function legend3EffectiveSpUncached(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+): number {
   let sp = legend2EffectiveSp(state, playerId, instance);
+  // JC で得た能力「SP+N」（RS-224【ロックドバスター】）。
+  sp += jointLGrantSpPlus(instance);
+  // RS-188 アチャとコチャ【地球征服宣告書】: これが自軍エリアにある間、自軍パワーゾーンが12枚以上なら、
+  // 特徴「メカ」を持つすべての自軍 S ユニットは「SP1」になる（atwiki/page-121）。
+  if (earthConquestDeclarationActive(state, playerId, instance)) sp = Math.max(sp, 1);
+  // RS-310 ゴウライビートル【カラクリ忍法・角変化】: BP8000以上のとき「SP1」になる（atwiki/page-480）。
+  if (instance.cardId === "RS-310" && effectiveBp(state, playerId, instance) >= 8000) sp = Math.max(sp, 1);
+  // RS-364 ヘルサターン総統【黒き太陽神への忠誠】: 効果を得た S ユニットは BP8000以上のとき「SP1」になる（faq-card-6 RS-364 Q1）。
+  if (hellSaturnGrantCount(state, playerId, instance) > 0 && effectiveBp(state, playerId, instance) >= 8000) {
+    sp = Math.max(sp, 1);
+  }
+  sp = set5AEffectiveSp(state, playerId, instance, sp);
+  sp = set6BEffectiveSp(state, playerId, instance, sp);
+  sp = set7AEffectiveSp(state, playerId, instance, sp);
+  // 第8弾 RS-527【反バイオ粒子砲】（rules/legend1/set8NamedEffectsA.ts）。
+  sp = set8AEffectiveSp(state, playerId, instance, sp);
+  sp = set7BEffectiveSp(state, playerId, instance, sp);
+  // 第7弾 RS-500【サイブレードカッター】等（rules/legend1/set7NamedEffectsD.ts）。
+  sp = set7DEffectiveSp(state, playerId, instance, sp);
+  // 第8弾 RS-584【闇を振り払う心】等（rules/legend1/set8NamedEffectsD.ts）。
+  sp = set8DEffectiveSp(state, playerId, instance, sp);
+  // 第9弾 RS-655【パトマグナム】（rules/legend1/set9NamedEffectsC.ts）。
+  sp = set9CEffectiveSp(state, playerId, instance, sp);
+  // 第9弾 RS-617【バードメーザー】・RS-615【ジャッカーコバック】（rules/legend1/set9NamedEffectsA.ts）。
+  sp = set9AEffectiveSp(state, playerId, instance, sp);
+  // 第9弾 RS-645 ビクトリーマーズ ※（rules/legend1/set9NamedEffectsB.ts）。
+  sp = set9BEffectiveSp(state, playerId, instance, sp);
+  // RK-091 ゾル大佐（BP3000 の「戦闘員」は「SP1」）・RK-099 アポロガイスト（rules/rk/rk5Fields.ts）。
+  sp = rk5EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // RK-152 仮面ライダー電王PF・RK-161 ショッカーライダー の※（rules/rk/rk8UnitEffects.ts）。
+  sp = rk8EffectiveSp(state, playerId, instance, sp);
+  // RK-181 仮面ライダーシン【ハイバイブネイル】の「SP1/5」（rules/rk/rk9UnitEffects.ts）。
+  sp = rk9EffectiveSp(state, playerId, instance, sp);
+  // RK-191 ガライ【ガライソード】の「このターン、これはSP1になる」（rules/rk/rk10UnitEffects.ts）。
+  sp = rk10EffectiveSp(state, playerId, instance, sp);
+  // RK-218【下級アンデッドを操る者】・RK-221【音撃打・火炎連打】・RK-222【音撃打・灼熱真紅の型】の「SP1」（rules/rk/rk11Fields.ts）。
+  sp = rk11EffectiveSp(state, playerId, instance, sp);
+  // RK-240 仮面ライダー電王CF（2nd）の※（特徴「仮面ライダー」を持つ自軍ユニットがホールドされたターン「SP1」。rules/rk/rk12Fields.ts）。
+  sp = rk12EffectiveSp(state, playerId, instance, sp);
+  // RK-281【ドラゴンファイヤーストーム】・RK-282【シザースアタック】・RK-292 の※（rules/rk/rk14Fields.ts）。
+  sp = rk14EffectiveSp(state, playerId, instance, sp, effectiveBp, unitFeatures);
+  // RK-295【頂点に立つ男】・RK-299【ダークライダーキック】の「SP1」（rules/rk/rk15Fields.ts）。
+  sp = rk15EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // RK-325 の※（ライドしている「仮面ライダーイクサBM」は「SP1」。rules/rk/rk16Fields.ts）。
+  sp = rk16EffectiveSp(state, playerId, instance, sp);
+  // RM-051 メガヘラクレス【メガビートフォーメーション】（自軍エリアに「ビートルーダー」があれば「SP1」。rules/rm/rm3Fields.ts）。
+  sp = rm3EffectiveSp(state, playerId, instance, sp);
+  // XG5-051 仮面ライダーカブトHF ※・XG5-054【歩く完全ライダー図鑑】の「SP1」（rules/xg5/xg5Fields.ts）。
+  sp = xg5EffectiveSp(state, playerId, instance, sp);
+  // XG7-007【龍撃剣＆獣奏剣】（BP8000以上のとき SP1。rules/xg7/xg7Fields.ts）。
+  sp = xg7EffectiveSp(state, playerId, instance, sp);
+  // XG1-011・XG1-012・XG1-020 の「SP1」になる継続効果（rules/xg1/xg1Fields.ts）。
+  sp = xg1EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // XG6-021【激臨剣】の能力（BP20000以上のとき「SP2」。rules/xg6/xg6Fields.ts）。
+  sp = xg6EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // クロスギャザー ザ・ジェットアクセル XG4-001【黒十字ハリケーン】等（rules/xg4/xg4Fields.ts）。
+  sp = xg4EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // XG2-004 ファイブロボ【超次元ソード】（rules/xg2/xg2Fields.ts）。
+  sp = xg2EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // クロスギャザー ザ・Wインパクト XG3（XG3-011【ジークブラスター】等。rules/xg3/xg3Fields.ts）。
+  sp = xg3EffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
-  const joint = jointLEffectIdForUnit(state, playerId, instance);
-  if (joint === "oni_neck_last") {
+  // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。
+  if (countJointLGrant(instance, "oni_neck_last") > 0) {
     const bp = effectiveBp(state, playerId, instance);
     if (bp >= 20000) {
       sp = Math.max(sp, 2);
@@ -218,12 +324,24 @@ export function legend3EffectiveSp(
 
   sp = Math.max(sp, sr003SpFloor(state, playerId, instance));
   sp = Math.max(sp, srBigBatonSpFloor(state, playerId, instance));
+  // SX-005 の DA 等（rules/promo/promoHooks.ts）。
+  sp = Math.max(sp, promoSpFloor(state, playerId, instance));
 
-  if (
-    instance.cardId === "RS-382" &&
-    instance.activatedNcEffects?.includes("victory_robo_strike")
-  ) {
+  // XG2-052 ユナイトベント「…BP10000ごとにSP+1される」（ユナイトベントを下に重ねたターゲット）。
+  // 2枚重ねたターゲットは BP10000 ごとに SP+2（atwiki/page-1761 Q7）。
+  const vents = (instance.stackedCards ?? []).filter((c) => c.cardId === "XG2-052" && !c.faceDown).length;
+  if (vents > 0) {
+    sp += vents * Math.floor(effectiveBp(state, playerId, instance) / 10000);
+  }
+  // RS-382 ビクトリーロボ【人の命は地球の未来】: このターン自軍捨札から手札に加えた S ユニットのカード1枚につき SP+1。
+  // ナンバーを持たないカードの効果で、NC の成立とは関係しない（atwiki/page-541）。
+  if (instance.cardId === "RS-382") {
     sp += state.players[playerId].sUnitsRecoveredFromDiscardThisTurn ?? 0;
+  }
+  // RS-388 ゴーレッド（2nd）【ブイランサー】「SP1」（この効果は、このターン自軍捨札から S ユニットのカードを手札に加えていれば、
+  // ナンバーに関係なく発動する）（atwiki/page-537）。
+  if (instance.cardId === "RS-388" && (state.players[playerId].sUnitsRecoveredFromDiscardThisTurn ?? 0) > 0) {
+    sp = Math.max(sp, 1);
   }
 
   // XG7-008: SP1 when in battle position 2 or 3 and own MA command present
@@ -241,7 +359,8 @@ export function legend3EffectiveSp(
   }
 
   // RS-281: SP1 if own rush has 2+ 女-featured units
-  if (instance.cardId === "RS-281") {
+  // 【俺に惚れろ！】は CN：3 の NC の効果。NC が成立していなければ発動しない（atwiki/page-469・R-CN-02）。
+  if (instance.cardId === "RS-281" && instance.activatedNcEffects?.includes("nirero")) {
     const femaleCount = state.players[playerId].rush.filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
       return d?.features?.includes("女");
@@ -268,7 +387,7 @@ export function legend3EffectiveSp(
     const enemyId = opponent(playerId);
     const enemyUnits = [...state.players[enemyId].rush, ...state.players[enemyId].battle];
     const allEnemyAreS = enemyUnits.length > 0 && enemyUnits.every((c) =>
-      isSmallUnit(state.definitions, c.cardId),
+      isSmallUnit(state.definitions, c),
     );
     if (allEnemyAreS) sp = Math.max(sp, 1);
   }
@@ -277,6 +396,10 @@ export function legend3EffectiveSp(
   if (instance.cardId === "XG4-008" && instance.mountedOnInstanceId) {
     sp = Math.max(sp, 1);
   }
+
+  // 「SP○になる」（RS-001/RS-002 等）は加算・下限より優先して指定値にする。
+  const setSp = spSetValueOf(state, playerId, instance);
+  if (setSp !== undefined) return setSp;
 
   return sp;
 }

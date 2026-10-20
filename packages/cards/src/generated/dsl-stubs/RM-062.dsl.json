@@ -23,11 +23,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-062::rinasuteki",
+          "keyword": "rm3::RM-062::lina_stick",
           "duration": "permanent"
         }
       ]

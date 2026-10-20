@@ -1,0 +1,6 @@
+{
+  "rushAdditionalCondition": {
+    "conditionId": "discard_all_hand",
+    "text": "これ以外の自分の手札を全て捨札にする"
+  }
+}

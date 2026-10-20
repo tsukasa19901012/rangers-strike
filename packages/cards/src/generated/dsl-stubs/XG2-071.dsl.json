@@ -4,7 +4,7 @@
   "name": "仮面ライダーディエンド",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※これは敵軍Sユニットにアタックされない。 【ディメンションシュート】自軍ターン中、これがバトルエリアに出たとき、これ以外の特徴「仮面ライダー」を持つ自軍ユニットを2体選び、パワーゾーンに送ってもよい。そうしたとき、本来のBPが8000以下の敵軍ユニットを1体選び撃破する。",
@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-071::deimenshonshuto",
-          "duration": "turn"
+          "keyword": "xg2::XG2-071::dimension_shoot",
+          "duration": "permanent"
         }
       ]
     }

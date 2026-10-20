@@ -28,13 +28,12 @@
       "name": "ガゼル脚",
       "text": "このユニットからコンビネーションする特徴「メカ」を持たないMユニットは、BP+3000され「SP1/2」になり、アタックかストライクを選ぶとき、可能なら敵軍ユニットにアタックする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-031::gazerukyaku",
+          "keyword": "xg5::XG5-031::gazelle_leg",
           "duration": "permanent"
         }
       ]

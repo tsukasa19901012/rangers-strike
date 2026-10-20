@@ -2,12 +2,14 @@ import { hasToPowerOnDestroyNote } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave } from "../types/game";
 import { updatePlayer } from "../core/helpers";
 import { emitUnitLeftZoneAndResolve } from "../events/emitUnitLeftZone";
+import { isDestructionLeave } from "./operationCounters";
 import { buildLogEntry } from "../log/formatLog";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
+import { recordVanishedToPower } from "./legend1/set8NamedEffectsC";
 
 export function shouldOfferToPowerOnDestroy(pending: PendingLeave): boolean {
   if (pending.toZone !== "discard") return false;
-  if (pending.fromZone !== "battle") return false;
+  // 「これが撃破されて捨札になったとき」にエリアの限定はない（ラッシュエリアで撃破されても置ける。R-TGT-01・RS-670/671 cardSpec）。
   if (pending.phasePlayerId === pending.ownerPlayerId) return false;
   return hasToPowerOnDestroyNote(pending.leavingCardId);
 }
@@ -18,6 +20,7 @@ export function startToPowerOnDestroyChoice(
   pending: PendingLeave,
   card: CardInstance,
   fromCards: CardInstance[],
+  via?: { cardId: string; instanceId: string },
 ): GameState {
   const owner = state.players[pending.ownerPlayerId];
   const nextOwner = {
@@ -30,8 +33,8 @@ export function startToPowerOnDestroyChoice(
     pendingEffectChoice: {
       playerId: pending.ownerPlayerId,
       effectId: "to_power_on_destroy",
-      sourceCardId: pending.leavingCardId,
-      sourceInstanceId: pending.instanceId,
+      sourceCardId: via?.cardId ?? pending.leavingCardId,
+      sourceInstanceId: via?.instanceId ?? pending.instanceId,
       kind: "confirm",
       phasePlayerId: pending.phasePlayerId,
       validInstanceIds: ["place_in_power"],
@@ -41,6 +44,7 @@ export function startToPowerOnDestroyChoice(
         card,
         fromZone: pending.fromZone,
         pendingLeave: pending,
+        ...(via ? { viaCardId: via.cardId } : {}),
       },
     },
     activePlayer: pending.ownerPlayerId,
@@ -89,9 +93,15 @@ export function completeToPowerOnDestroyChoice(
     fromZone: meta.fromZone,
     toZone,
     phasePlayerId: leave.phasePlayerId,
+    // ルール: R-DESTROY-02, R-REPL-02 — 撃破されてパワーゾーンに置いても撃破の事実は残る
+    destroyed: isDestructionLeave(leave),
   });
 
   let resolvedState = leaveFx.state;
+  // RS-567【消身の術】: 相手がそのターンを終えたとき、オモテ向きで残っていればラッシュエリアに出せる。
+  if (placeInPower && meta.viaCardId === "RS-567") {
+    resolvedState = recordVanishedToPower(resolvedState, leave.ownerPlayerId, leave.instanceId, leave.phasePlayerId);
+  }
   if (
     leave.fusionReturnOnDiscard === "battle" &&
     toZone === "discard" &&

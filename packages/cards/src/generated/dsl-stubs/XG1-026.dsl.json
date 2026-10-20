@@ -4,7 +4,7 @@
   "name": "ヤミマル",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "※これをラッシュしたとき、自軍ダメージが3点以下なら、1点ダメージを受ける。 【ヤミオノ】自軍ダメージが3点以下なら、これは次の能力を得る⇒「SP1」",
@@ -37,12 +37,12 @@
       "name": "ヤミオノ",
       "text": "自軍ダメージが3点以下なら、これは次の能力を得る⇒「SP1」",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-026::yamiono",
+          "keyword": "xg1::XG1-026::yamiono",
           "duration": "permanent"
         }
       ]

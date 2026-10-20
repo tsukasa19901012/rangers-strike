@@ -55,11 +55,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "opponent_must_nowonaide3madendemoyoisoushitatokindakadowooideru",
+          "keyword": "set8d::RS-594::gunpard_gun",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

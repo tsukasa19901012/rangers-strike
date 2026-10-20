@@ -1,3 +1,9 @@
+import { rm1DorugiranWaivesCondition } from "../rules/rm/rm1Fields";
+import { xg4OperationCostIncrease } from "../rules/xg4/xg4Fields";
+import { isAccelerateRushWaived } from "../rules/bkOperationTurnRules";
+import { isCostWindowSatisfied } from "./costWindow";
+import { set8AddedCategories } from "../rules/legend1/set8TurnGrants";
+import { operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
 import type { CardDefinition, UnitSize } from "@rangers-strike/cards";
 import {
   cardCategories,
@@ -18,8 +24,13 @@ import {
   rideMountedVehicleBpBonus,
 } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
+import { xg6AddedCategories, xg6BlocksRush, xg6CommandCategories, xg6TurnCommandCategories } from "../rules/xg6/xg6Fields";
+import { promoBpBonus, promoOperationCostReduction } from "../rules/promo/promoHooks";
 import { srBigBatonBpFloor } from "../rules/srEffects";
 import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
+import { unitFeatures } from "../rules/addedFeatures";
+import { rk5AddedCategories, rk5BpSetValue } from "../rules/rk/rk5Fields";
+import { xg5AddedCategories } from "../rules/xg5/xg5Fields";
 import { legend3EnemySComboDelta } from "../rules/legend3/fieldEffects";
 import { validateZordAdditionalPayment } from "../rules/mothership";
 import {
@@ -41,7 +52,7 @@ import {
 } from "../rules/zordExtended";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import { isShironLightRushTarget } from "../rules/shironLight";
-import { getAuraPowerInstanceId, getComboNumberDelta } from "../rules/turnModifierBridge";
+import { getAuraPowerInstanceId, getComboNumberDelta, sComboFinisherSetValues } from "../rules/turnModifierBridge";
 import { opponentInfiniteChainBlocks } from "../rules/turnModifiers";
 import { heldCallLeadMatchesCategories } from "../rules/callLead";
 import { heldUndeadCommandRushHoldMatches } from "../rules/undeadCommandRushHold";
@@ -50,8 +61,13 @@ import {
   breakerBlocksSameNameRush,
 } from "../keywords/battleKeywords";
 import { effectiveRushAdditionalCondition } from "../rules/rushAdditionalCondition";
-import { countHeldCommands } from "../rules/restrictions";
+import { set5PassiveBpBonus } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower, effectivePowerCost, rushEffectivePowerCost } from "./power";
+import { rk11CounterCostReduction } from "../rules/rk/rk11Fields";
+import { rk12ResidentsNegated } from "../rules/rk/rk12Fields";
+import { xg1BpBonus, xg1HandCardAddedCategories, xg1YogosteinOnEitherField } from "../rules/xg1/xg1Fields";
+import { actionContextState } from "../rules/zordFeatureContext";
+import { memoizePerCardInSearch } from "./searchCache";
 
 export function buildDefinitionMap(
   decks: CardDefinition[][],
@@ -128,19 +144,53 @@ export function getDefinition(
   return definitions[cardId];
 }
 
+/**
+ * サイズを判定するカード: カード ID（定義のサイズ）か、場のカードのインスタンス（効果で変わったサイズを含む）。
+ * 場のユニットは、インスタンスを渡すと次の効果を反映する（文字列の ID を渡すと定義のサイズのまま）。
+ * - RK-013 Jパワー・RS-255 巨大化爆弾を重ねたユニットは「Lユニット」（重ねたカードは stackedCards。atwiki/page-211・page-300）。
+ *   J パワーはエンジン全体で L 扱い（ユーザー決定 2026-10-19、docs/rules/README.md §5.7 p）。
+ * - RK-154【頭が高い！】で、このターン S ユニットになった M ユニット（sizeOverride）。
+ */
+export type SizedCard = string | (Pick<CardInstance, "cardId"> & Partial<Pick<CardInstance, "stackedCards" | "sizeOverride">>);
+
+/** 重ねたユニットを「Lユニット」にするカード（RK-013 Jパワー・RS-255 巨大化爆弾）。 */
+// XG5-012 ゴレムカード「このカードに重ねたユニットはLユニットになる」（atwiki/page-2192）。
+// XG3-004 芋長の芋ヨーカンも同じ（atwiki/page-1887）。
+const LARGE_STACK_CARD_IDS = ["RK-013", "RS-255", "XG5-012", "XG3-004"];
+
+/** インスタンスの効果によるサイズ（なければ undefined）。サイズの判定のたびに呼ばれるので、重ねたカードがなければすぐ返す。 */
+function instanceSizeOverride(card: SizedCard): UnitSize | undefined {
+  if (typeof card === "string") return undefined;
+  if (card.sizeOverride) return card.sizeOverride;
+  const stacked = card.stackedCards;
+  if (stacked === undefined || stacked.length === 0) return undefined;
+  for (const c of stacked) if (LARGE_STACK_CARD_IDS.includes(c.cardId)) return "L";
+  return undefined;
+}
+
+function sizedCardId(card: SizedCard): string {
+  return typeof card === "string" ? card : card.cardId;
+}
+
+/** いまのサイズ（場のインスタンスなら効果で変わったサイズ。SizedCard を参照）。 */
+export function unitSizeOf(definitions: Record<string, CardDefinition>, card: SizedCard): UnitSize | undefined {
+  return instanceSizeOverride(card) ?? getDefinition(definitions, sizedCardId(card))?.size;
+}
+
 /** ゲーム状態の定義にフィールドが欠けている場合、完全なカードカタログにフォールバック。 */
 export function resolveUnitSize(
   definitions: Record<string, CardDefinition>,
-  cardId: string,
+  card: SizedCard,
 ): UnitSize | undefined {
-  return getDefinition(definitions, cardId)?.size ?? getCardById(cardId)?.size;
+  const cardId = sizedCardId(card);
+  return instanceSizeOverride(card) ?? getDefinition(definitions, cardId)?.size ?? getCardById(cardId)?.size;
 }
 
 export function isMediumUnit(
   definitions: Record<string, CardDefinition>,
-  cardId: string,
+  card: SizedCard,
 ): boolean {
-  return resolveUnitSize(definitions, cardId) === "M";
+  return resolveUnitSize(definitions, card) === "M";
 }
 
 export function isUnit(
@@ -205,21 +255,23 @@ export function hasOperationEffect(
   if (context && opponentInfiniteChainBlocks(context.state, context.playerId)) {
     return false;
   }
+  // RK-248 パラダイス・ロスト: このターン、相手の常駐オペレーションは無効（rules/rk/rk12Fields.ts）。
+  if (context && rk12ResidentsNegated(context.state, context.playerId)) return false;
   return true;
 }
 
 export function isSmallUnit(
   definitions: Record<string, CardDefinition>,
-  cardId: string,
+  card: SizedCard,
 ): boolean {
-  return getDefinition(definitions, cardId)?.size === "S";
+  return unitSizeOf(definitions, card) === "S";
 }
 
 export function isLargeUnit(
   definitions: Record<string, CardDefinition>,
-  cardId: string,
+  card: SizedCard,
 ): boolean {
-  return getDefinition(definitions, cardId)?.size === "L";
+  return unitSizeOf(definitions, card) === "L";
 }
 
 /** RS-015 減少 + RS-140 データ解析（敵場のコロンで自軍SのCN+1）。 */
@@ -239,27 +291,50 @@ export function effectiveComboNumber(
 }
 
 /** 場の常駐オペレーションによるパッシブBPボーナス。 */
+/**
+ * XG2-052 ユナイトベント「ターゲットは、ウラ向きに重ねたカード1枚につきBP+2000され…」— ユナイトベント（オモテ向き）を下に重ねた
+ * ターゲット。ウラ向きのカードには白熱する実況（RS-437）で重ねたカードも含む（atwiki/page-1761 Q4）。
+ */
+export function uniteVentBpBonus(instance: Pick<CardInstance, "stackedCards">): number {
+  const stacked = instance.stackedCards ?? [];
+  // 2枚重ねたターゲットは効果が重複する（ウラ向きのカード1枚につき BP+4000。atwiki/page-1761 Q7）。
+  const vents = stacked.filter((c) => c.cardId === "XG2-052" && !c.faceDown).length;
+  return 2000 * vents * stacked.filter((c) => c.faceDown).length;
+}
+
 export function passiveBpBonus(
   state: GameState,
   playerId: PlayerId,
   instance: CardInstance,
 ): number {
   const player = state.players[playerId];
-  let bonus = 0;
+  // RS-340/343【ゲキヌンチャク】（rules/legend1/set5NamedEffects.ts）。
+  let bonus = set5PassiveBpBonus(state, playerId, instance);
 
-  if (
-    hasOperationEffect(player, "ki_power", state.definitions) &&
-    state.activePlayer !== playerId &&
-    isSmallUnit(state.definitions, instance.cardId)
-  ) {
-    const inField =
-      player.rush.some((c) => c.instanceId === instance.instanceId) ||
-      player.battle.some((c) => c.instanceId === instance.instanceId);
-    if (inField) {
-      const released = player.command.filter((c) => !c.commandHeld).length;
-      bonus += released * 1000;
+  const inField =
+    player.rush.some((c) => c.instanceId === instance.instanceId) ||
+    player.battle.some((c) => c.instanceId === instance.instanceId);
+  if (inField && isSmallUnit(state.definitions, instance.cardId)) {
+    // RS-203【デウス遺伝子】・RS-206【天幻星・霧隠れ】で追加された特徴も含める（rules/addedFeatures.ts）。
+    // 特徴は、特徴で決まるオーラの常駐オペレーションがあるときだけ求める。
+    let features: string[] | undefined;
+    for (const op of player.operation) {
+      const aura = permanentSUnitBpAura(state.definitions, op.cardId);
+      if (!aura) continue;
+      // RS-017／RS-246 気力（常駐）: 敵軍ターン中、リリース状態の自軍コマンド1つにつき BP＋（枚数分重複、R-CONT-01）。
+      if (aura.kind === "per_released_command_enemy_turn") {
+        if (state.activePlayer === playerId) continue;
+        const released = player.command.filter((c) => !c.commandHeld).length;
+        bonus += released * aura.amount;
+      } else if ((features ??= unitFeatures(state, playerId, instance)).includes(aura.feature)) {
+        // RS-179 恐竜やのカレー（常駐）: 特徴「イエロー」を持つ自軍SユニットはBP＋2000（枚数分重複、R-CONT-01）。
+        // ルール: R-RUSH-05 — 適用中の継続効果はラッシュの瞬間から反映される（最初から修正済みの状態でラッシュされた扱い）。
+        bonus += aura.amount;
+      }
     }
   }
+
+  bonus += uniteVentBpBonus(instance);
 
   const auraTarget = getAuraPowerInstanceId(player);
   if (
@@ -272,16 +347,92 @@ export function passiveBpBonus(
   return bonus;
 }
 
-/** RS-019: Sユニット攻撃時の任意BP上昇。 */
-export function superPowerAttackBonus(
-  state: GameState,
+/**
+ * ルール: R-BP-01 — 「BP○○になる」で指定された値（あれば）。増減の計算より優先される。
+ * カードに書き込まれた値（bpSetValue）と、並び順で決まる継続効果（RS-001/RS-002 等）の両方を見る。
+ */
+export function bpSetValueOf(
+  state: Pick<GameState, "players" | "definitions">,
   playerId: PlayerId,
-  attacker: CardInstance,
-): number {
-  const player = state.players[playerId];
-  if (!hasOperationEffect(player, "super_power", state.definitions)) return 0;
-  if (!isSmallUnit(state.definitions, attacker.cardId)) return 0;
-  return countHeldCommands(player) * 1000;
+  instance: CardInstance,
+): number | undefined {
+  const current = instance.bpSetValue !== undefined ? instance.bpSetValue : sComboFinisherSetValues(state, playerId, instance)?.bp;
+  // RK-091 ゾル大佐【戦闘員の統率】（rules/rk/rk5Fields.ts）。R-BP-01 — 「～になる」が複数あれば低い方を適用する。
+  const zol = rk5BpSetValue(state, playerId, instance);
+  if (zol === undefined) return current;
+  return current === undefined ? zol : Math.min(current, zol);
+}
+
+/** 「SP○になる」で指定された値（あれば）。加算ではなく上書き（RS-001/RS-002「「SP1」…になる」）。 */
+export function spSetValueOf(
+  state: Pick<GameState, "players" | "definitions">,
+  playerId: PlayerId,
+  instance: CardInstance,
+): number | undefined {
+  return sComboFinisherSetValues(state, playerId, instance)?.sp;
+}
+
+type PermanentSUnitBpAura =
+  | { kind: "per_released_command_enemy_turn"; amount: number }
+  | { kind: "feature"; feature: string; amount: number };
+
+const permanentAuraCache = new Map<string, PermanentSUnitBpAura | null>();
+
+/**
+ * 常駐オペレーションの「自軍Sユニットは BP＋される」効果を本文から読む（カード ID ではなく文言で判定。
+ * RS-017 と RS-246 の「気力」のように同じ本文のカードは同じ扱い）。
+ * - 「すべての自軍Sユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP＋n される」
+ * - 「特徴「X」を持つ自軍SユニットはBP＋n される」
+ */
+export function permanentSUnitBpAura(
+  definitions: Record<string, CardDefinition>,
+  cardId: string,
+): PermanentSUnitBpAura | null {
+  const cached = permanentAuraCache.get(cardId);
+  if (cached !== undefined) return cached;
+  const def = getDefinition(definitions, cardId);
+  let aura: PermanentSUnitBpAura | null = null;
+  if (def?.type === "operation") {
+    const text = (def.text ?? "").replace(/^※常駐（[^）]*）\s*/, "").trim();
+    const ki = text.match(/^すべての自軍Sユニットは、敵軍ターン中、リリース状態の自軍コマンド1つにつきBP[+＋](\d+)される/);
+    const feature = text.match(/^特徴「([^」]+)」を持つ自軍SユニットはBP[+＋](\d+)される。?$/);
+    if (ki) aura = { kind: "per_released_command_enemy_turn", amount: Number(ki[1]) };
+    else if (feature) aura = { kind: "feature", feature: feature[1]!, amount: Number(feature[2]) };
+  }
+  permanentAuraCache.set(cardId, aura);
+  return aura;
+}
+
+const BP_PLUS_INVERT_RE = /ナンバーを持つすべてのSユニットは、BPが「[+＋]」されるかわりにBPが「[-－]」される/;
+const bpInvertSourceCache = new Map<string, boolean>();
+
+function isBpPlusInvertSource(definitions: Record<string, CardDefinition>, cardId: string): boolean {
+  const cached = bpInvertSourceCache.get(cardId);
+  if (cached !== undefined) return cached;
+  const result = BP_PLUS_INVERT_RE.test(getDefinition(definitions, cardId)?.text ?? "");
+  bpInvertSourceCache.set(cardId, result);
+  return result;
+}
+
+/**
+ * 「これが自軍エリアにある間、ナンバーを持つすべてのSユニットは、BPが「＋」されるかわりにBPが「－」される」
+ * （RS-210 ゴーマ16世【大地動転の玉】）が、このユニットに及んでいるか。
+ * どちらのプレイヤーのエリア（ラッシュ・バトル）にあっても、敵味方を問わずナンバーを持つ S ユニットすべてに及ぶ。
+ * 出典: atwiki/page-107、grnrngr/faq-card-3 RS-179 Q1。
+ */
+export function bpPlusInvertedFor(
+  state: Pick<GameState, "players" | "definitions">,
+  instance: CardInstance,
+): boolean {
+  const def = getDefinition(state.definitions, instance.cardId);
+  if (def?.type !== "unit" || def.comboNumber == null) return false;
+  if (!isSmallUnit(state.definitions, instance.cardId)) return false;
+  for (const p of Object.values(state.players)) {
+    for (const c of [...p.rush, ...p.battle]) {
+      if (isBpPlusInvertSource(state.definitions, c.cardId)) return true;
+    }
+  }
+  return false;
 }
 
 export function effectiveBp(
@@ -289,12 +440,33 @@ export function effectiveBp(
   playerId: PlayerId,
   instance: CardInstance,
 ): number {
+  // CPU の探索の間は、同じ状態・同じカードの BP を使い回す（盤面評価・BP0 の撃破判定・候補の並べ替えで何度も調べる。
+  // core/searchCache.ts）。
+  return memoizePerCardInSearch(state, "bp", playerId, instance, () => effectiveBpUncached(state, playerId, instance));
+}
+
+function effectiveBpUncached(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+): number {
+  // ルール: R-BP-01 — 「BP○○になる」が最優先で、増減は計算しない。
+  const setValue = bpSetValueOf(state, playerId, instance);
+  if (setValue !== undefined) return setValue;
+  // 「BPが「＋」されるかわりにBPが「－」される」（RS-210【大地動転の玉】等）の下では、BP の増加分を減少として数える。
+  const invert = bpPlusInvertedFor(state, instance);
+  const signed = (delta: number) => (invert && delta > 0 ? -delta : delta);
   const base =
-    instanceBp(state.definitions, instance) +
-    passiveBpBonus(state, playerId, instance) +
-    passiveNamedFieldBpBonus(state, playerId, instance, "general") +
-    promotedKeywordBpBonus(state, playerId, instance) +
-    rideMountedVehicleBpBonus(state, playerId, instance);
+    unitBp(getDefinition(state.definitions, instance.cardId)) +
+    signed(instance.bpModifier ?? 0) +
+    signed(passiveBpBonus(state, playerId, instance)) +
+    signed(passiveNamedFieldBpBonus(state, playerId, instance, "general")) +
+    signed(promotedKeywordBpBonus(state, playerId, instance)) +
+    signed(rideMountedVehicleBpBonus(state, playerId, instance)) +
+    // XG1-040 虎折神【侍武装】・XG1-039【折神の結集】・XG1-058 の※（ライド中）（rules/xg1/xg1Fields.ts）。
+    signed(xg1BpBonus(state, playerId, instance)) +
+    // XP-020 護星天使 等（rules/promo/promoHooks.ts）。
+    signed(promoBpBonus(state, playerId, instance));
   const floor = srBigBatonBpFloor(state, playerId, instance);
   return floor > 0 ? Math.max(base, floor) : base;
 }
@@ -308,6 +480,53 @@ export function unitEffectiveCategories(
   instance: CardInstance,
   zone: "battle" | "rush",
 ): Category[] {
+  const base = unitEffectiveCategoriesBase(state, playerId, instance, zone);
+  // RS-524 呉越同舟「このターン、宣言したカテゴリを選んだユニットに追加する。」（rules/legend1/set8TurnGrants.ts）。
+  const declared = set8AddedCategories(state.players[playerId], instance).filter((c) => !base.includes(c));
+  const withDeclared = declared.length > 0 ? [...base, ...declared] : base;
+  // RK-092 狼男【狼作戦】（rules/rk/rk5Fields.ts）。既に持っているカテゴリは重ねて追加しない。
+  const wolf = rk5AddedCategories(state, playerId, instance).filter((c) => !withDeclared.includes(c));
+  const withWolf = wolf.length > 0 ? [...withDeclared, ...wolf] : withDeclared;
+  // XG5-096 ギルの笛の音 ※常駐（「メカ」と「人型」を持つユニットに DA を追加。rules/xg5/xg5Fields.ts）。
+  const gill = (xg5AddedCategories(state, instance) as Category[]).filter((c) => !withWolf.includes(c));
+  const withGill = gill.length > 0 ? [...withWolf, ...gill] : withWolf;
+  // XG6-035 の※（自軍コマンドゾーンにあるカテゴリが追加される。rules/xg6/xg6Fields.ts）。
+  const xg6 = xg6AddedCategories<Category>(state, playerId, instance).filter((c) => !withGill.includes(c));
+  return xg6.length > 0 ? [...withGill, ...xg6] : withGill;
+}
+
+/**
+ * 手札のユニットカードの今のカテゴリ（効果で追加されたものを含む）。
+ * XG1-031 ゴーオンレッドの※（手札の炎神に WB）・XG6-035 の※（自軍コマンドゾーンにあるカテゴリが追加される。Q1「手札にある間も追加されます」）。
+ */
+export function handCardCategories(state: GameState, playerId: PlayerId, instance: CardInstance): Category[] {
+  const cats = [...cardCategories(getDefinition(state.definitions, instance.cardId))];
+  const added = [
+    ...(xg1HandCardAddedCategories(state, playerId, instance.cardId) as Category[]),
+    ...xg6AddedCategories<Category>(state, playerId, instance),
+  ];
+  for (const c of added) if (!cats.includes(c)) cats.push(c);
+  return cats;
+}
+
+/**
+ * XG7-055〜XG7-059「※これは自軍エリアまたは自軍ゾーンにある間、自軍ターン中、○○が追加される。」で追加されるカテゴリ。
+ */
+const XG7_OWN_TURN_ADDED_CATEGORY: Readonly<Record<string, Category>> = {
+  "XG7-055": "ET",
+  "XG7-056": "MA",
+  "XG7-057": "WB",
+  "XG7-059": "OT",
+};
+
+function unitEffectiveCategoriesBase(
+  state: GameState,
+  playerId: PlayerId,
+  instance: CardInstance,
+  zone: "battle" | "rush",
+): Category[] {
+  // RS-350 暗黒の鎧を重ねたユニットは、カテゴリが DA になる（追加ではなく置きかえ）。
+  if ((instance.stackedCards ?? []).some((c) => c.cardId === "RS-350")) return ["DA"];
   const def = getDefinition(state.definitions, instance.cardId);
   const cats = cardCategories(def);
   if (zone === "battle" && hasUnnamedRule(instance.cardId, "battle_adds_ma_category")) {
@@ -335,11 +554,7 @@ export function unitEffectiveCategories(
   // RS-535: gains ドラゴン feature when in battle (handled via features, not here)
   // XG7-055 through XG7-059: gain category during own turn (also in command zone)
   if (state.activePlayer === playerId) {
-    let extra: Category | null = null;
-    if (instance.cardId === "XG7-055") extra = "ET";
-    else if (instance.cardId === "XG7-056") extra = "MA";
-    else if (instance.cardId === "XG7-057") extra = "WB";
-    else if (instance.cardId === "XG7-059") extra = "OT";
+    const extra: Category | null = XG7_OWN_TURN_ADDED_CATEGORY[instance.cardId] ?? null;
     if (extra !== null) {
       return cats.includes(extra) ? cats : [...cats, extra];
     }
@@ -350,12 +565,22 @@ export function unitEffectiveCategories(
   return cats;
 }
 
+/** applyAction / getLegalActions の入口の状態で、playerId のターン中か（反応の窓で優先権が移っていてもターンのプレイヤーで見る）。 */
+function isTurnPlayerInActionContext(playerId: PlayerId): boolean {
+  const ctx = actionContextState();
+  if (!ctx) return false;
+  const turnPlayer = ctx.pendingRush?.phasePlayerId ?? ctx.pendingEffectChoice?.phasePlayerId ?? ctx.activePlayer;
+  return turnPlayer === playerId;
+}
+
 const YOGOSTEIN_CARD_ID = "XG1-033";
 
 function yogosteinGrantsDa(player: PlayerState): boolean {
   return (
     player.rush.some((c) => c.cardId === YOGOSTEIN_CARD_ID) ||
-    player.battle.some((c) => c.cardId === YOGOSTEIN_CARD_ID)
+    player.battle.some((c) => c.cardId === YOGOSTEIN_CARD_ID) ||
+    // 敵軍エリアのヨゴシュタインも「コマンドゾーンにある」カードに DA を追加する（rules/xg1/xg1Fields.ts）。
+    xg1YogosteinOnEitherField()
   );
 }
 
@@ -366,7 +591,15 @@ export function effectiveCommandCategories(
   cardId: string,
 ): Category[] {
   const def = getDefinition(definitions, cardId);
-  const printed = cardCategories(def);
+  // XG6-013【未来の戦士達へ】: コマンドゾーンにある間、WB・MA・ET が追加される（rules/xg6/xg6Fields.ts）。
+  const base = xg6CommandCategories(cardId, cardCategories(def));
+  // XG6-060【カンドロイド】: このターン、選んだコマンドのカテゴリに追加する（rules/xg6/xg6Fields.ts）。
+  const turnAdded = xg6TurnCommandCategories<Category>(player, cardId).filter((c) => !base.includes(c));
+  const withTurn = turnAdded.length > 0 ? [...base, ...turnAdded] : base;
+  // XG7-055〜XG7-059 の※（自軍ゾーン＝コマンドゾーンにある間も、自軍ターン中はカテゴリが追加される）。
+  // コマンドのカテゴリはプレイヤー単位で判定するので、いまのターンは applyAction / getLegalActions の入口の状態で見る。
+  const ownTurnExtra = XG7_OWN_TURN_ADDED_CATEGORY[cardId];
+  const printed = ownTurnExtra && !withTurn.includes(ownTurnExtra) && isTurnPlayerInActionContext(player.id) ? [...withTurn, ownTurnExtra] : withTurn;
   if (!yogosteinGrantsDa(player)) return printed;
   if (printed.includes("DA")) return printed;
   if (parsePowerCost(def?.powerCost) > 3) return printed;
@@ -477,6 +710,8 @@ function evaluateRushPowerAndZord(
   zordMaterialInstanceIds?: string[],
   zordExtraCommandHoldInstanceIds?: string[],
 ): boolean {
+  // XG6-031 の※（本来の BP の下三桁が500でない自軍ユニットはラッシュできない。rules/xg6/xg6Fields.ts）。
+  if (powerContext && xg6BlocksRush(powerContext, powerContext.playerId, unitDefinition.id)) return false;
   const isZordDown = needsZordDownPayment(
     unitDefinition.id,
     unitDefinition.powerCost,
@@ -504,6 +739,9 @@ function evaluateRushPowerAndZord(
   if (!usedZordDown && budget < cost) {
     return false;
   }
+
+  // ルール: R-KW-BREAKER-01 — 同名の自軍ユニットがあればラッシュできない（追加条件の種類を問わない。下の早期 return より前に見る）。
+  if (breakerBlocksSameNameRush(player, definitions, unitDefinition.id)) return false;
 
   if (
     isZordDown &&
@@ -533,6 +771,11 @@ function evaluateRushPowerAndZord(
         unitDefinition,
       )
     : resolveRushAdditionalCondition(unitDefinition.id, unitDefinition);
+
+  // RM-019 超次元高速機ドルギラン: 自軍捨札にあれば、電子星獣ドル・ギラン円盤は追加条件を満たさなくてよい（rules/rm/rm1Fields.ts）。
+  if (powerContext && rm1DorugiranWaivesCondition(powerContext, powerContext.playerId, unitDefinition.id)) return true;
+  // BK-017 カブトゼクター◎2つ目: このターン、「加速」の BP2000 以下の S ユニットのカードは追加条件を満たさなくてよい（rules/bkOperationTurnRules.ts）。
+  if (powerContext && isAccelerateRushWaived(powerContext, powerContext.playerId, unitDefinition.id)) return true;
 
   if (needsZordStateGate(definitions, unitDefinition.id)) {
     if (!powerContext || !resolved) return false;
@@ -568,15 +811,16 @@ function evaluateRushPowerAndZord(
     );
   }
 
+  if (breakerBlocksSameNameRush(player, definitions, unitDefinition.id)) {
+    return false;
+  }
+
+  // ブラストが免除するのは追加条件だけ（ブレイカーの同名禁止は免除しない）。ルール: R-KW-BLAST-01
   if (
     powerContext &&
     blastBypassesRushAdditionalCondition(powerContext, powerContext.playerId, unitDefinition.id)
   ) {
     return true;
-  }
-
-  if (breakerBlocksSameNameRush(player, definitions, unitDefinition.id)) {
-    return false;
   }
 
   if (!needsZordMaterial(definitions, unitDefinition.id)) return true;
@@ -602,10 +846,12 @@ function evaluateRushPowerAndZord(
         rushingInstanceId,
         fieldIds,
         zordMaterialDestination,
+        (zordMothershipHoldInstanceIds?.length ?? 0) > 0,
       )
     ) {
       return false;
     }
+    // ルール: R-ADD-04 — 「2体をそれぞれ」は選んだ素材すべてで検証する（先頭1体だけではない）。
     return validateZordAdditionalPayment(
       player,
       definitions,
@@ -614,6 +860,7 @@ function evaluateRushPowerAndZord(
       fieldIds[0],
       zordMaterialDestination,
       zordMothershipHoldInstanceIds,
+      fieldIds,
     );
   }
 
@@ -644,6 +891,9 @@ export function canRushUnitExceptCommandHold(
   zordMaterialInstanceIds?: string[],
   zordExtraCommandHoldInstanceIds?: string[],
 ): boolean {
+  // 「自軍捨札に「X」があるとき、…を捨札にする」— 前半の状態を満たさなければラッシュできない（SR-003 atwiki/page-46。rules/zordSetup.ts も同じ）。
+  const discardGate = unitDefinition.rushAdditionalCondition?.text.match(/^自軍捨札に「([^」]+)」があるとき、/);
+  if (discardGate && !player.discard.some((c) => getDefinition(definitions, c.cardId)?.name === discardGate[1])) return false;
   return evaluateRushPowerAndZord(
     player,
     definitions,
@@ -664,7 +914,11 @@ export function canPlayOperationExceptCommandHold(
   playerId: PlayerId,
   definition: CardDefinition,
 ): boolean {
-  const cost = effectivePowerCost(state, playerId, parsePowerCost(definition.powerCost));
+  // RK-225 仮面ライダー朱鬼【陰陽術】: カウンターを持つオペレーションの必要パワーの数字は3少なくなる（rules/rk/rk11Fields.ts）。
+  // XG4-072 タブー・ドーパント【光弾】: すべてのオペレーションカードの必要パワーの数字が2増える（rules/xg4/xg4Fields.ts）。
+  // XP-021 等の必要パワーの減少（rules/promo/promoHooks.ts）。
+  const printed = Math.max(0, parsePowerCost(definition.powerCost) - rk11CounterCostReduction(state, definition) - promoOperationCostReduction(state, playerId, definition.id)) + xg4OperationCostIncrease(state);
+  const cost = effectivePowerCost(state, playerId, printed);
   return countAvailablePower(state, playerId) >= cost;
 }
 
@@ -677,7 +931,15 @@ export function canPlayOperation(
   if (!canPlayOperationExceptCommandHold(state, playerId, definition)) return false;
 
   const opCats = cardCategories(definition);
-  return hasCommandForCardUse(player, state.definitions, opCats, "lead");
+  if (opCats.length === 0) return true;
+  if (isCostWindowSatisfied(player, "operation_category")) {
+    // RS-292【虎の子大秘術】: どのカテゴリのコマンドのホールドでも使用できる。
+    return hasCommandForCardUse(player, state.definitions, operationPaymentCategories(state, playerId, definition), "lead");
+  }
+  // ルール: R-CMD-01 — 使用のたびにリリース状態のコマンドをホールドする。別のカードの使用のために
+  // 支払いでホールドしたコマンド（paymentHeld）は、このオペレーションの支払いに再利用できない。
+  const unspent = { ...player, command: player.command.filter((c) => !(c.paymentHeld && c.commandHeld)) };
+  return hasCommandForCardUse(unspent, state.definitions, opCats, "lead");
 }
 
 export { needsZordMaterial } from "../rules/zord";

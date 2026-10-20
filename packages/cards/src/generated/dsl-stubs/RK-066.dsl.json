@@ -4,7 +4,7 @@
   "name": "仮面ライダー電王SF",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 3,
   "text": "※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【俺の必殺技！】これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
@@ -42,34 +42,14 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk4::RK-066::ore_no_hissatsu",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

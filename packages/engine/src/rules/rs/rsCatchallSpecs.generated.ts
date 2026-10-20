@@ -109,7 +109,7 @@ export const RS_CATCHALL_SPECS: RsCatchallSpec[] = [
     "cardId": "RS-249",
     "effectId": "vkomanda",
     "pattern": "deck_search_rush_feature",
-    "keyword": "deck_search_rush_fx_unknown",
+    "keyword": "deck_search_rush_feat_e68190e7ab9c",
     "trigger": "operation",
     "text": "自軍山札を見て、特徴「恐竜」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、山札をシャッフルする。"
   },
@@ -1929,7 +1929,7 @@ export const RS_CATCHALL_BY_CARD: Record<string, RsCatchallSpec[]> = {
       "cardId": "RS-249",
       "effectId": "vkomanda",
       "pattern": "deck_search_rush_feature",
-      "keyword": "deck_search_rush_fx_unknown",
+      "keyword": "deck_search_rush_feat_e68190e7ab9c",
       "trigger": "operation",
       "text": "自軍山札を見て、特徴「恐竜」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、山札をシャッフルする。"
     }

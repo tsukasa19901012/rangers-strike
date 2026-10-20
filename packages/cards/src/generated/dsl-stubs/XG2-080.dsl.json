@@ -4,7 +4,7 @@
   "name": "リュウキドラグレッダー",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "※自分が「仮面ライダー龍騎」をラッシュしたとき、自軍エリアに「リュウキドラグレッダー」があれば1体選んで手札に戻す。 【ファイナルアタックライド】このユニットからコンビネーションする、「仮面ライダーディケイド」または「仮面ライダーディエンド」は、次の能力を得る⇒BP+3000",
@@ -43,12 +43,12 @@
       "name": "ファイナルアタックライド",
       "text": "このユニットからコンビネーションする、「仮面ライダーディケイド」または「仮面ライダーディエンド」は、次の能力を得る⇒BP+3000",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-080::fuainaruatakuraido",
+          "keyword": "xg2::XG2-080::final_attack_ride",
           "duration": "permanent"
         }
       ]

@@ -4,7 +4,7 @@
   "name": "仮面ライダーオーズ・タトバコンボ",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※モーフ ※ウイング ※リードET 【コンボチェンジ】カード名に「タトバ」を含まない、モーフと特徴「オーズドライバー」を持つユニットカードを自分の手札から1枚選び、これと置き換えてもよい。このとき出したユニットは、BP+2000され、ライドオフした直後のユニットとして扱い、RCの効果を持っていれば、その効果を発動する。",
@@ -72,8 +72,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-055::konbochienji",
-          "duration": "turn"
+          "keyword": "xg6::XG6-055::combo_change",
+          "duration": "permanent"
         }
       ]
     }

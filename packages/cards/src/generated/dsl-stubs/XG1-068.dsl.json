@@ -4,7 +4,7 @@
   "name": "ディケイド クウガMF",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※モーフ ※これは「仮面ライダークウガMF」としてつかえる。 【アタックライド】このターン、これは特徴「警察」を持つ自軍ユニット1体につきBP+1000される。",
@@ -54,11 +54,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-068::atakuraido",
+          "keyword": "xg1::XG1-068::attack_ride",
           "duration": "turn"
         }
       ]

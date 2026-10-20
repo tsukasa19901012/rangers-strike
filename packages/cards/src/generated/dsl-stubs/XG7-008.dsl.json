@@ -61,13 +61,13 @@
       "name": "アースの戦士",
       "text": "これは自軍ターン中、リリース状態の自軍コマンド1つにつきBP+1000される。また、BP7000以上のとき、次の能力を得る⇒これがバトルで敵軍ユニットを撃破したとき、捨札にするかわりにゲームから除外する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-008::asuno",
+          "keyword": "xg7::XG7-008::earth_warrior",
           "duration": "permanent"
         }
       ]

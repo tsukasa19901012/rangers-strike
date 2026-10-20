@@ -49,36 +49,16 @@
       "name": "ジックキャノン",
       "text": "これが特徴「メカ」と「警察」を持つSユニットからコンビネーションするとき、次の効果を発動できる⇒敵軍バトルエリアから、自軍コマンドゾーンにないカテゴリを持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
+        "type": "joint_combo_r"
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rm3::RM-046::jick_cannon",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

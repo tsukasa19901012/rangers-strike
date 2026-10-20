@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG1-078::syunitowo2bukono",
+          "keyword": "other::XG1-078::copy_vent",
           "duration": "permanent"
         }
       ]
@@ -31,5 +31,8 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "features": [
+    "アドベントカード"
+  ]
 }

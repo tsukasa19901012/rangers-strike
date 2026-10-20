@@ -4,7 +4,7 @@
   "name": "ビクトリーマーズ",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "7+",
   "text": "※これは敵軍常駐置き場のカード1枚につきSP+1される。 【マーズフレア】 自軍ターン中、これがバトルエリアに出たとき、相手は自分自身の常駐置き場からカードを1枚選び（ウラ向きのカードはウラ向きのまま選ぶ）、自分自身のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-645::mazufurea",
+          "keyword": "set9b::RS-645::mars_flare",
           "duration": "turn"
         }
       ],

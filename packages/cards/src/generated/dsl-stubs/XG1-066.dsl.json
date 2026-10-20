@@ -4,7 +4,7 @@
   "name": "ディケイド ファイズ",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※モーフ ※これは「仮面ライダーファイズ」としてつかえる。 【アタックライド】BPの下三桁が500の敵軍Sユニットを1体選び撃破する。",
@@ -54,11 +54,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-066::atakuraido",
+          "keyword": "xg1::XG1-066::attack_ride",
           "duration": "turn"
         }
       ]

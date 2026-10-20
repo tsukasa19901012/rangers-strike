@@ -127,7 +127,7 @@ function applyDestroyChooseEnemyS(
   const enemyId = opponent(ctx.playerId);
   const valid = state.players[enemyId].battle
     .concat(state.players[enemyId].rush)
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .filter((c) => isSelectableByOpponentEffect(state, ctx.playerId, c.instanceId))
     .filter((c) => {
       if (maxBp === undefined) return true;

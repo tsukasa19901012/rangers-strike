@@ -1,8 +1,13 @@
 import type { Category } from "@rangers-strike/cards";
+import { set9AGrantsCallLead } from "./legend1/set9NamedEffectsA";
+import { adventGrantsCall } from "./rk/rk249Advent";
+import { xg1GrantsCallLead } from "./xg1/xg1Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { effectiveCommandCategories, getDefinition, isUnit } from "../core/catalog";
+import { actionContextState } from "./zordFeatureContext";
+import { promoGrantsKeyword } from "./promo/promoHooks";
 
 export type CallLeadKind = "call" | "lead";
 
@@ -16,12 +21,79 @@ export function parseCallLeadKeyword(
   return { kind: match[1] as CallLeadKind, category: match[2] as Category };
 }
 
+/** owner はユニットの持ち主（渡せば、その常駐置き場の常駐で得た能力も見る）。 */
 export function unitHasCallLeadKeyword(
   cardId: string,
   kind: CallLeadKind,
   category: Category,
+  owner?: Pick<PlayerState, "operation">,
 ): boolean {
-  return cardHasGrantKeyword(cardId, `${kind}_${category}`);
+  return cardHasGrantKeyword(cardId, `${kind}_${category}`) || (!!owner && residentGrantsCallLead(owner, cardId, kind, category));
+}
+
+/**
+ * 「※常駐 MAを持つSPが空欄のSユニットは、次の能力を得る⇒コールET（…）」（RS-516 アースフォース。atwiki/page-1149）。
+ * 得るのは常駐させたプレイヤー（自軍）のユニットだけ（ユーザー決定 2026-10-19「自軍だけ」。docs/rules/README.md §5.7 n。
+ * atwiki/page-1149 コメント「敵軍にも適用されます」は採らない）。見るのはユニットの持ち主 owner の常駐置き場。
+ * 定義は applyAction / getLegalActions の入口で置いた状態（rules/zordFeatureContext.ts）から読む。
+ */
+const RESIDENT_CALL_LEAD_GRANT_RE =
+  /^※常駐\s*「?(WB|OT|ET|MA|DA)」?を持つSPが空欄のSユニットは、次の能力を得る⇒(コール|リード)「?(WB|OT|ET|MA|DA)」?/;
+
+const residentCallLeadGrantCache = new Map<string, RegExpMatchArray | null>();
+
+/** 常駐オペレーションの本文の RESIDENT_CALL_LEAD_GRANT_RE の一致（本文ごとに覚える。合法手の判定のたびに引かれる）。 */
+function residentCallLeadGrantMatch(text: string | undefined): RegExpMatchArray | null | undefined {
+  if (text === undefined) return undefined;
+  let m = residentCallLeadGrantCache.get(text);
+  if (m === undefined) {
+    m = text.match(RESIDENT_CALL_LEAD_GRANT_RE);
+    residentCallLeadGrantCache.set(text, m);
+  }
+  return m;
+}
+
+function residentGrantsCallLead(owner: Pick<PlayerState, "operation">, cardId: string, kind: CallLeadKind, category: Category): boolean {
+  if (owner.operation.length === 0) return false;
+  const state = actionContextState();
+  if (!state) return false;
+  const def = getDefinition(state.definitions, cardId);
+  if (!def || def.type !== "unit" || def.size !== "S" || (def.sp !== undefined && def.sp !== null)) return false;
+  const cats: string[] = Array.isArray(def.category) ? def.category : [def.category as string];
+  for (const op of owner.operation) {
+    const m = residentCallLeadGrantMatch(getDefinition(state.definitions, op.cardId)?.text);
+    if (!m) continue;
+    if ((m[2] === "コール" ? "call" : "lead") !== kind || m[3] !== category) continue;
+    if (cats.includes(m[1]!)) return true;
+  }
+  return false;
+}
+
+/** 場のユニットがコール／リードを持つか（カード自身の能力・効果で得た能力）。 */
+function fieldUnitHasCallLead(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  card: CardInstance,
+  kind: CallLeadKind,
+  category: Category,
+): boolean {
+  return (
+    unitHasCallLeadKeyword(card.cardId, kind, category, player) ||
+    set9AGrantsCallLead(player, definitions, card, kind, category) ||
+    // RK-249 アドベント「このターン、選んだユニットは次の能力を得る⇒※コールWB」（rules/rk/rk249Advent.ts）。
+    adventGrantsCall(player, card, kind, category) ||
+    // XG1-015 宇宙警察（OT の「警察」の S ユニットはコールOT。rules/xg1/xg1Fields.ts）。
+    xg1GrantsCallLead(player, definitions, card.cardId, kind, category) ||
+    // XP-020 護星天使 等（rules/promo/promoHooks.ts）。
+    promoGrantsCallLead(card, kind, category)
+  );
+}
+
+function promoGrantsCallLead(card: CardInstance, kind: CallLeadKind, category: Category): boolean {
+  const state = actionContextState();
+  if (!state) return false;
+  const owner = (["player1", "player2"] as const).find((pid) => state.players[pid].rush.some((c) => c.instanceId === card.instanceId) || state.players[pid].battle.some((c) => c.instanceId === card.instanceId));
+  return !!owner && promoGrantsKeyword(state, owner, card.instanceId, `${kind}_${category}`);
 }
 
 function fieldZonesForCallLead(kind: CallLeadKind): Array<"rush" | "battle"> {
@@ -40,7 +112,9 @@ export function collectCallLeadFieldUnits(
       if (card.commandHeld || card.mothershipHold) continue;
       const def = getDefinition(definitions, card.cardId);
       if (def && !isUnit(def)) continue;
-      const matches = categories.some((cat) => unitHasCallLeadKeyword(card.cardId, kind, cat));
+      const matches = categories.some(
+        (cat) => fieldUnitHasCallLead(player, definitions, card, kind, cat),
+      );
       if (matches) results.push(card);
     }
   }
@@ -58,7 +132,11 @@ export function heldCallLeadMatchesCategories(
       if (!card.commandHeld || card.mothershipHold) continue;
       const def = getDefinition(definitions, card.cardId);
       if (def && !isUnit(def)) continue;
-      if (categories.some((cat) => unitHasCallLeadKeyword(card.cardId, kind, cat))) {
+      if (
+        categories.some(
+          (cat) => fieldUnitHasCallLead(player, definitions, card, kind, cat),
+        )
+      ) {
         return true;
       }
     }
@@ -77,6 +155,8 @@ export function holdPaymentSource(
       ...command[commandIndex]!,
       commandHeld: true,
       mothershipHold: false,
+      // ルール: R-CMD-01 — 支払いに使ったホールドは消費済み（別の使用に再利用できない）。
+      paymentHeld: true,
     };
     return { ...player, command };
   }
@@ -112,7 +192,7 @@ export function playerHasAllyWithLeadOnField(
   const cats = categories ?? (["MA", "ET", "DA", "WB", "OT"] as Category[]);
   for (const zone of ["rush", "battle"] as const) {
     for (const card of player[zone]) {
-      if (cats.some((cat) => unitHasCallLeadKeyword(card.cardId, "lead", cat))) {
+      if (cats.some((cat) => unitHasCallLeadKeyword(card.cardId, "lead", cat, player))) {
         return true;
       }
     }
@@ -136,7 +216,9 @@ export function paymentSourceMatchesCategories(
   for (const zone of fieldZonesForCallLead(kind)) {
     const card = player[zone].find((c) => c.instanceId === instanceId);
     if (!card) continue;
-    return categories.some((cat) => unitHasCallLeadKeyword(card.cardId, kind, cat));
+    return categories.some(
+      (cat) => fieldUnitHasCallLead(player, definitions, card, kind, cat),
+    );
   }
 
   return false;

@@ -10,17 +10,22 @@ import {
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
 import { buildLogEntry } from "../../log/formatLog";
 import {
+  applyConfirmEffectChoice,
+  applyUnitLeave,
   collectCommandIds,
+  openEffectChoice,
   startSelectCommandChoice,
   startSelectUnitChoice,
 } from "../pendingChoices";
 import {
-  grantBpBoostToBattleUnit,
+  markBattleNcEffect,
   grantSp1ToBattleUnit,
 } from "../namedUnitEffects";
-import { addTurnRuleModifier } from "../../core/scopedModifiers";
+import { addNextTurnRuleModifier, addTurnRuleModifier } from "../../core/scopedModifiers";
+import { canBeDeployedToBattleByEffect } from "../restrictions";
 import { TURN_RULE_IDS } from "../../types/scopedModifiers";
 import type { ComboOutcome } from "../comboTypes";
+import { recordReveal } from "../revealNotice";
 
 function ncLog(
   playerId: PlayerId,
@@ -67,11 +72,25 @@ function applyCompetition(
     nextP2 = { ...p2, deck: [c2!, ...d2] };
   }
 
-  return {
-    state: {
-      ...state,
-      players: { ...state.players, [playerId]: nextP1, [enemyId]: nextP2 },
+  // お互いにオモテにした1枚ずつは公開情報。大きい方は手札、小さい方は山札の下、同じなら山札の上。
+  const dest = (mine: number, theirs: number) =>
+    mine > theirs ? "hand" : mine < theirs ? "deck_bottom" : "deck_top";
+  const revealedState = recordReveal(
+    { ...state, players: { ...state.players, [playerId]: nextP1, [enemyId]: nextP2 } },
+    {
+      playerId,
+      ownerId: playerId,
+      sourceCardId: card.cardId,
+      effectLabel: "競争",
+      from: "deck_top",
+      cards: [
+        { instanceId: c1!.instanceId, cardId: c1!.cardId, destination: dest(n1, n2), ownerId: playerId },
+        { instanceId: c2!.instanceId, cardId: c2!.cardId, destination: dest(n2, n1), ownerId: enemyId },
+      ],
     },
+  );
+  return {
+    state: revealedState,
     logs: [ncLog(playerId, card.cardId, state.definitions, "competition")],
   };
 }
@@ -81,27 +100,10 @@ function applyRyuuGekiKen(
   playerId: PlayerId,
   card: CardInstance,
 ): ComboOutcome {
-  const enemyId = opponent(playerId);
-  const heldCount = state.players[enemyId].command.filter((c) => c.commandHeld).length;
-  let nextState = state;
-  if (heldCount > 0) {
-    nextState = grantBpBoostToBattleUnit(nextState, playerId, card.instanceId, heldCount * 1000);
-  }
-  const unit = findInZone(nextState.players[playerId], "battle", card.instanceId);
-  if (!unit) {
-    return {
-      state: nextState,
-      logs: [ncLog(playerId, card.cardId, state.definitions, "ryuu_geki_ken")],
-    };
-  }
-  const bp =
-    unitBp(getDefinition(state.definitions, unit.card.cardId)) +
-    (unit.card.bpModifier ?? 0);
-  if (bp >= 5000) {
-    nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
-  }
+  // ルール: R-RES-05 — BP+1000×（ホールド状態の敵軍コマンド数）と「BP5000以上で SP1」は
+  // 固定値ではなく常に再計算する（legend2FieldBpBonus / legend2EffectiveSp で参照）。
   return {
-    state: nextState,
+    state: markBattleNcEffect(state, playerId, card.instanceId, "ryuu_geki_ken"),
     logs: [ncLog(playerId, card.cardId, state.definitions, "ryuu_geki_ken")],
   };
 }
@@ -127,21 +129,45 @@ function destroyAllEnemyAtBp(
     return { state, logs: [ncLog(playerId, card.cardId, state.definitions, `${effectId}:none`)] };
   }
 
-  let nextEnemy = { ...enemy };
-  for (const zone of ["rush", "battle"] as const) {
-    const kept = nextEnemy[zone].filter((c) => !destroyIds.has(c.instanceId));
-    const removed = nextEnemy[zone].filter((c) => destroyIds.has(c.instanceId));
-    nextEnemy = {
-      ...nextEnemy,
-      [zone]: kept,
-      discard: [...nextEnemy.discard, ...removed],
-    };
+  // 撃破は離場パイプライン（applyUnitLeave）を通す。直接捨札に移すと「撃破されたとき」の効果
+  // （RS-116 マンドラ坊や【鳴き声】等）が誘発しない（ルール: R-DESTROY-01、R-TIME-04）。
+  // 複数体の撃破・離場反応での中断／再開は select_units_bp_budget の確定処理を共用する。
+  if (state.pendingEffectChoice) {
+    // 別の選択が開いているときは、残りを順に撃破する（中断・再開の仕組みは使えない）。
+    let next = state;
+    for (const id of destroyIds) {
+      const leave = applyUnitLeave(next, id, "discard", playerId);
+      if (!("error" in leave)) next = leave.state;
+    }
+    return { state: next, logs: [ncLog(playerId, card.cardId, state.definitions, effectId)] };
   }
-
+  const opened = openEffectChoice(state, {
+    playerId,
+    effectId,
+    sourceCardId: card.cardId,
+    sourceInstanceId: card.instanceId,
+    phasePlayerId: playerId,
+    kind: "select_units_bp_budget",
+    validInstanceIds: [...destroyIds],
+    selectedInstanceIds: [...destroyIds],
+    optional: false,
+  });
+  const confirmed = applyConfirmEffectChoice(opened, playerId);
+  if ("error" in confirmed) {
+    return { state, logs: [ncLog(playerId, card.cardId, state.definitions, `${effectId}:none`)] };
+  }
   return {
-    state: { ...state, ...updatePlayer(state, enemyId, nextEnemy) },
+    state: confirmed.state,
     logs: [ncLog(playerId, card.cardId, state.definitions, effectId)],
   };
+}
+
+/** RS-108【グリーンクラッシュ】で出せる敵軍ラッシュエリアの S ユニット。 */
+export function greenCrushTargets(state: GameState, enemyId: PlayerId): string[] {
+  return state.players[enemyId].rush
+    .filter((c) => isSmallUnit(state.definitions, c))
+    .filter((c) => canBeDeployedToBattleByEffect(state, enemyId, c))
+    .map((c) => c.instanceId);
 }
 
 export function applyLegend2NcEffect(
@@ -193,7 +219,7 @@ export function applyLegend2NcEffect(
     }
     case "life_rescue": {
       const targets = state.players[playerId].discard
-        .filter((c) => isSmallUnit(state.definitions, c.cardId))
+        .filter((c) => isSmallUnit(state.definitions, c))
         .map((c) => c.instanceId);
       const withChoice = startSelectUnitChoice(state, {
         playerId,
@@ -211,8 +237,10 @@ export function applyLegend2NcEffect(
       };
     }
     case "super_ninpo_water_transform": {
+      // 出典: atwiki/page-319 — 「Sユニットを1体選んで手札に戻す」。バトルエリアに出られるかは関係しない
+      // （マンドラ坊やなど出られない S ユニットも戻す対象）。
       const targets = state.players[enemyId].rush
-        .filter((c) => isSmallUnit(state.definitions, c.cardId))
+        .filter((c) => isSmallUnit(state.definitions, c))
         .map((c) => c.instanceId);
       const withChoice = startSelectUnitChoice(state, {
         playerId: enemyId,
@@ -232,7 +260,9 @@ export function applyLegend2NcEffect(
       const enemy = state.players[enemyId];
       const powerTargets = enemy.power.filter((c) => !c.faceDown).map((c) => c.instanceId);
       const commandTargets = collectCommandIds(state, enemyId, "any");
-      if (powerTargets.length === 0 && commandTargets.length === 0) {
+      // 公式Q&A（faq-card-2 RS-102 Q1）: どちらか一方のゾーンにしか選べるカードが無ければ発動できない
+      // （「そうしたとき、選んだ2枚を捨札にする」— 2枚とも選べたときだけ捨札にする）。
+      if (powerTargets.length === 0 || commandTargets.length === 0) {
         return { state, logs: [ncLog(playerId, card.cardId, state.definitions, "dark_dual_blade:none")] };
       }
       const withChoice = startSelectCommandChoice(state, {
@@ -243,7 +273,7 @@ export function applyLegend2NcEffect(
         phasePlayerId: playerId,
         commandFilter: "any",
         commandAction: "discard",
-        validInstanceIds: powerTargets.length > 0 ? powerTargets : commandTargets,
+        validInstanceIds: powerTargets,
       });
       return {
         state: withChoice ?? state,
@@ -253,10 +283,9 @@ export function applyLegend2NcEffect(
     case "space_ninpo_rope_skull":
       return destroyAllEnemyAtBp(state, playerId, card, 3000, "space_ninpo_rope_skull");
     case "green_crush": {
-      const targets = state.players[enemyId].rush
-        .filter((c) => isSmallUnit(state.definitions, c.cardId))
-        .map((c) => c.instanceId)
-        .slice(0, 2);
+      // 出典: atwiki/page-307「Sユニットを2体まで選んで…（出す順番は自分が選ぶ）」— 候補は敵軍ラッシュエリアの
+      // S ユニットすべて。1体ずつ選んで出し、2体目は rules/pendingChoices.ts（continueGreenCrush）で続けて選ぶ。
+      const targets = greenCrushTargets(state, enemyId);
       const withChoice = startSelectUnitChoice(state, {
         playerId,
         effectId,
@@ -275,7 +304,7 @@ export function applyLegend2NcEffect(
     case "backup_request": {
       let nextState = grantSp1ToBattleUnit(state, playerId, card.instanceId);
       const targets = nextState.players[playerId].power
-        .filter((c) => !c.faceDown && isSmallUnit(state.definitions, c.cardId))
+        .filter((c) => !c.faceDown && isSmallUnit(state.definitions, c))
         .map((c) => c.instanceId);
       if (targets.length > 0) {
         const withChoice = startSelectUnitChoice(nextState, {
@@ -296,7 +325,11 @@ export function applyLegend2NcEffect(
       };
     }
     case "zenibomb": {
-      const enemy = addTurnRuleModifier(state.players[enemyId], TURN_RULE_IDS.ZENIBOMB, {
+      // ルール: R-RES-07 — 「次の相手ターン」の効果。デカピンクが撃破されても有効。
+      // 「次の相手ターン、新しくラッシュエリアに出たユニットは…バトルエリアに出られない」。
+      // レッドレーサーの「ラッシュするとき可能ならバトルエリアに置く」は直接バトルエリアへのラッシュで対象外
+      // （atwiki/page-308 Q2「（2010/10/25修正）」。rules/restrictions.ts の zenibombBlocksBattleEntry）。
+      const enemy = addNextTurnRuleModifier(state.players[enemyId], TURN_RULE_IDS.ZENIBOMB, {
         sourceCardId: card.cardId,
       });
       return {
@@ -314,25 +347,18 @@ export function applyLegend2NcEffect(
       };
     }
     case "super_ninpo_lion_dance": {
-      const deckCard = state.players[playerId].deck.find(
-        (c) => getDefinition(state.definitions, c.cardId)?.name === "ハリケンイエロー",
+      // ルール: R-ATK-05 — 「アタックするかわりに」発動する効果。CN を満たしてバトルエリアに出ても自動では
+      // 発動せず、発動できる状態になるだけ。バトルフェイズにプレイヤーが選ぶ
+      // （use_juu_kun_do アクション、rules/juuKunDo.ts の applyLionDance）。
+      const owner = state.players[playerId];
+      const battle = owner.battle.map((c) =>
+        c.instanceId === card.instanceId
+          ? { ...c, activatedNcEffects: [...(c.activatedNcEffects ?? []), "super_ninpo_lion_dance"] }
+          : c,
       );
-      if (!deckCard) {
-        return {
-          state,
-          logs: [ncLog(playerId, card.cardId, state.definitions, "super_ninpo_lion_dance:none")],
-        };
-      }
-      const player = state.players[playerId];
-      const deck = player.deck.filter((c) => c.instanceId !== deckCard.instanceId);
-      const nextPlayer = {
-        ...player,
-        deck,
-        battle: [...player.battle, deckCard],
-      };
       return {
-        state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-        logs: [ncLog(playerId, card.cardId, state.definitions, "super_ninpo_lion_dance")],
+        state: { ...state, ...updatePlayer(state, playerId, { ...owner, battle }) },
+        logs: [ncLog(playerId, card.cardId, state.definitions, "super_ninpo_lion_dance:available")],
       };
     }
     default:

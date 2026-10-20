@@ -4,7 +4,7 @@
   "name": "タイムベント",
   "type": "operation",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 8,
   "text": "追加条件を持たないユニットをすべて撃破する。",
@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-065::wotanaiyunitowos",
+          "keyword": "xg5::XG5-065::time_vent",
           "duration": "permanent"
         }
       ]

@@ -22,11 +22,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-090::konpyuta",
+          "keyword": "xg2::XG2-090::computer",
           "duration": "permanent"
         }
       ]

@@ -4,7 +4,7 @@
   "name": "ゴセイナイト",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※ウイング ※タクスMA ※レジスト ※これは「グランディオン」としてつかえる。 【ナイトダイナミック】「SP1」OTまたはETまたはDAを持つ敵軍Sユニットを1体選び撃破する。その後、自分の手札が1枚以下なら、これをリリースする。",
@@ -87,6 +87,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg6::XG6-024::knight_dynamic",
+          "duration": "permanent"
         }
       ]
     }

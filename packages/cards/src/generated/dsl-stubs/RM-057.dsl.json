@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-057::suteingapurazuma",
+          "keyword": "rm3::RM-057::stinger_plasma",
           "duration": "turn"
         }
       ]

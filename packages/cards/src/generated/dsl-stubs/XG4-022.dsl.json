@@ -4,7 +4,7 @@
   "name": "シュリケンジャー",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "【ニンジャミセン】これが自軍ラッシュエリアにある間、特徴「メカ」を持つ自軍ユニットがバトルエリアに出たとき、自軍コマンドを1つ選びリリースしてもよい。",
@@ -23,13 +23,13 @@
       "name": "ニンジャミセン",
       "text": "これが自軍ラッシュエリアにある間、特徴「メカ」を持つ自軍ユニットがバトルエリアに出たとき、自軍コマンドを1つ選びリリースしてもよい。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-022::ninjamisen",
+          "keyword": "xg4::XG4-022::ninjamisen",
           "duration": "turn"
         }
       ]

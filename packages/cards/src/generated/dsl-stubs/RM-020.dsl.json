@@ -4,7 +4,7 @@
   "name": "電子星獣ドル",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "4+",
   "text": "※これは、チェイスを持つ自軍ユニットがあるか、ライドされてる間、Lビークルとして扱う。 【ドルファイヤー】自軍ターン中、本来の特徴に「宇宙刑事」を持つユニットがこのビークルからライドオフしたとき、相手に1点ダメージを与える。",
@@ -42,13 +42,13 @@
       "name": "ドルファイヤー",
       "text": "自軍ターン中、本来の特徴に「宇宙刑事」を持つユニットがこのビークルからライドオフしたとき、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "rm1::RM-020::dol_fire",
+          "duration": "permanent"
         }
       ]
     }

@@ -4,7 +4,7 @@
   "name": "レッドレーサー（2nd）",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 1,
   "text": "※これが自軍エリアにある間、自分のユニットカードの必要パワーの数字は1増える。 【ツインソード・ツインカムクラッシュ】「SP1」 敵軍バトルエリアから、本来のBPが2000か、必要パワーの数字が2か、ナンバーが2のユニットを1体選び、撃破してもよい。",
@@ -45,6 +45,11 @@
         {
           "type": "grant_keyword",
           "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_card::RS-375::twin_cam_crash",
           "duration": "turn"
         }
       ]

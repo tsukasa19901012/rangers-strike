@@ -1,0 +1,19 @@
+{
+  "effects": [
+    {
+      "id": "bio_particle_slash",
+      "name": "バイオ粒子斬り",
+      "text": "自軍ターン中、これがバトルエリアに出るとき、「OT」の自軍コマンドを2つ選んでパワーゾーンに送ってもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP2」「BP＋3000」",
+      "trigger": {
+        "type": "enter_battle"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_card::PR-015::bioparticleslash",
+          "duration": "turn"
+        }
+      ]
+    }
+  ]
+}

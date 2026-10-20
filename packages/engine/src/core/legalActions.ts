@@ -1,9 +1,20 @@
+import { canUseKyouryuumaru } from "../rules/legend1/otherLinesNamedEffects";
+import { isXg3ZordUpVehicle } from "../rules/xg3/xg3Fields";
+import { driverCommandRushIds } from "../rules/driverCommandRush";
+import { mirrorWorldChoiceAffordable } from "../rules/mirrorWorldSelection";
+import { lionArmorAvailable } from "../rules/legend1/set6NamedEffects348";
+import { runWithStateRng } from "./rng";
+import { engineSideEffectCount } from "./sideEffects";
+import { activeSearchCache } from "./searchCache";
+import { listSet8BHandActivations } from "../rules/legend1/set8NamedEffectsB";
+import { hasTurnRuleModifier } from "./scopedModifiers";
+import { isHoldToActivateNc } from "../rules/holdToActivate";
 import type { GameAction, RushAction } from "../types/actions";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { isCostWindowSatisfied } from "./costWindow";
 import { COMMAND_ZONE_MAX } from "../types/game";
-import { hasAutoBattleEntryOnRushNote } from "@rangers-strike/cards";
+import { hasAutoBattleEntryOnRushNote, isSameCardIdentity } from "@rangers-strike/cards";
 import { canWingAttackFromRush, canHoldForWing, canCancelWingHold } from "../keywords/battleKeywords";
 import { canRiderMountVehicle, canMountRideIntoBattle } from "../keywords/ride";
 import {
@@ -28,17 +39,21 @@ import {
   isSmallUnit,
   isRushable,
   isUnit,
+  isVehicle,
   needsZordMaterial,
   parsePowerCost,
+  rushPowerCost,
 } from "./catalog";
+import { effectivePowerCost } from "./power";
+import { godomDiscardCandidates } from "../rules/godomRushPay";
 import {
   listZordDownRushPaymentVariants,
   needsZordDownPayment,
 } from "../rules/zordDown";
-import { findInZone, opponent, payPowerCost } from "./helpers";
+import { findInZone, opponent, payPowerCost, rushReactorId } from "./helpers";
 import { canStrikeUnit } from "../rules/combo";
 import { canAttackRushWithYellowThunder } from "../rules/namedUnitEffects";
-import { canUseJuuKunDo } from "../rules/juuKunDo";
+import { canUseJuuKunDo, canUseLionDance, gomaPalaceForcesAttack } from "../rules/juuKunDo";
 import {
   canMoveUnitToBattle,
   cannotAttackOrStrikeThisTurn,
@@ -60,6 +75,7 @@ import {
   isInitiateCommandPaymentLegal,
   isResolveCommandPaymentLegal,
   buildEffectHoldPayment,
+  getBattleEntryPaymentNeeds,
   needsEffectHoldPayment,
   validatePaymentSelection,
 } from "../rules/commandPayment";
@@ -68,15 +84,17 @@ import {
   canBeginZordSetup,
   listZordSetupResolveActions,
 } from "../rules/zordSetup";
-import { canToggleBpBudgetTarget, isValidEffectChoiceTarget } from "../rules/pendingChoices";
-import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart, isReleaseStepComplete } from "../rules/startPhase";
+import { canToggleBpBudgetTarget, FIRE_DANCE_EFFECT_ID, isValidEffectChoiceTarget } from "../rules/pendingChoices";
+import { canBonusDraw, canReleaseStartCommands, canReturnBattleAtStart, isReleaseStepComplete, listReturnableStartGroupIds } from "../rules/startPhase";
 import {
   listZordRushPaymentVariants,
   listZordUpRushPaymentVariants,
 } from "../rules/mothership";
 import { collectZordMaterials, requiresAllFusionPartners } from "../rules/zord";
+import { withZordFeatureContext } from "../rules/zordFeatureContext";
 import { isZordUpCost, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import { rushAdditionalConditionApplies } from "../rules/bkOperationTurnRules";
+import { operationFizzles } from "../rules/operationFizzle";
 import {
   canExecuteHandCounter,
   canInitiateCounterCategoryPayment,
@@ -85,23 +103,83 @@ import {
   canPlayMagLoadLeaveCounter,
   canPlaySageAelLeaveCounter,
   collectHiddenNinjaSubstitutes,
+  collectMechanicNinjaRecruits,
+  isMechanicNinjaCounter,
   getCounterEffectId,
+  canUseRushReactionCounter,
   hasPlayableDinoChronicleCounter,
   isCounterReactionActive,
   isHandCounterCard,
+  MUSIC_BOX_SKIP_BATTLE_RULE,
 } from "../rules/operationCounters";
 import {
   canPlayPlasmaEnergyCounter,
   collectFiveTechInterceptors,
 } from "../rules/strikeReactions";
-import { getValidDamagePowerTargets, damagePaymentChoosingPlayer } from "../rules/damagePayment";
+import { getDamagePaymentChoices, damagePaymentChoosingPlayer } from "../rules/damagePayment";
 import { getStackActorPlayerId, hasOpenReactionWindow, peekEffectStackTop } from "../rules/effectStack";
 import { getCardEffect } from "@rangers-strike/cards";
 import { isHidoraEggUsed } from "../rules/turnModifiers";
 import { listValidChaseVehicleIds } from "../keywords/chase";
-import { canDeclareRush } from "../rules/rushDeclaration";
+import { canDeclareRush, rushPowerBudget } from "../rules/rushDeclaration";
+import { jaryuInvasionAllowsRushWithoutHold } from "../rules/jaryuInvasion";
 import { listKamenRideAbilityUnits } from "../rules/riderKickEffects";
+import { SCRAMBLE_EFFECT_ID, listFieldActivatedAbilityCards } from "../rules/fieldActivatedAbilities";
+import { isErrataConfirmableChoice } from "../rules/errataCardEffects";
+import { isSet4ConfirmableChoice, magiPunchCounterIds } from "../rules/legend1/set4NamedEffects";
+import { giantBombCounterIds, isSet5AConfirmableChoice, operationPaymentCategories } from "../rules/legend1/set5NamedEffectsA";
+import { isSet6AuditConfirmableChoice } from "../rules/legend1/set6AuditFixes";
+import { isSet7AChoiceEffect, isSet7AConfirmableChoice, set7AStrikeCounterIds } from "../rules/legend1/set7NamedEffectsA";
+import { isSet8AChoiceEffect, isSet8AConfirmableChoice, isSet8AResident } from "../rules/legend1/set8NamedEffectsA";
+import { canConfirmSet8CChoice, isSet8CChoiceEffect } from "../rules/legend1/set8NamedEffectsC";
+import { canConfirmSet9CChoice, isSet9CChoiceEffect } from "../rules/legend1/set9NamedEffectsC";
+import { canActivateSet9AResident, canConfirmSet9AChoice, isSet9AChoiceEffect, isSet9AResidentCard } from "../rules/legend1/set9NamedEffectsA";
+import { isRk2ChoiceEffect, rk2RaiaDiscardCandidates } from "../rules/rk/rk2UnitEffects";
+import { canConfirmRk3Choice, isRk3ChoiceEffect } from "../rules/rk/rk3UnitEffects";
+import { canConfirmRk4Choice, isRk4ChoiceEffect, swapResidentFeature } from "../rules/rk/rk4UnitEffects";
+import { canConfirmRk5Choice, isRk5BattleCounterCard, isRk5ChoiceEffect, rk5BattleCounterConditionMet } from "../rules/rk/rk5UnitEffects";
+import { canConfirmRk6Choice, isRk6ChoiceEffect } from "../rules/rk/rk6UnitEffects";
+import { canConfirmRk7Choice, isRk7ChoiceEffect } from "../rules/rk/rk7UnitEffects";
+import { canConfirmRk8Choice, isRk8ChoiceEffect } from "../rules/rk/rk8UnitEffects";
+import { canConfirmRk9Choice, isRk9BattleCounterCard, isRk9ChoiceEffect, rk9BattleCounterConditionMet } from "../rules/rk/rk9UnitEffects";
+import { canConfirmRk10Choice, isRk10ChoiceEffect } from "../rules/rk/rk10UnitEffects";
+import { canConfirmRk11Choice, isRk11ChoiceEffect } from "../rules/rk/rk11UnitEffects";
+import { canConfirmRk12Choice, isRk12ChoiceEffect } from "../rules/rk/rk12UnitEffects";
+import { canConfirmRk13Choice, isRk13ChoiceEffect } from "../rules/rk/rk13UnitEffects";
+import { canConfirmRk14Choice, isRk14ChoiceEffect } from "../rules/rk/rk14UnitEffects";
+import { canConfirmRk15Choice, isRk15ChoiceEffect } from "../rules/rk/rk15UnitEffects";
+import { canConfirmRk16Choice, isRk16ChoiceEffect } from "../rules/rk/rk16UnitEffects";
+import { canConfirmXg6Choice, isXg6ChoiceEffect, xg6HandActivations } from "../rules/xg6/xg6Hooks";
+import { canConfirmPromoChoice, isPromoChoiceEffect } from "../rules/promo";
+import { promoForcesAttack } from "../rules/promo/promoHooks";
+import { canConfirmRm1Choice, isRm1ActivatableResident, isRm1ChoiceEffect, isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "../rules/rm/rm1Effects";
+import { canConfirmXg4Choice, isXg4BattleCounterCard, isXg4ChoiceEffect, xg4BattleCounterConditionMet } from "../rules/xg4/xg4Effects";
+import { rm1ActsAsVehicle } from "../rules/rm/rm1Fields";
+import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "../rules/rm/rm2Effects";
+import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
+import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
+import { canConfirmXg5Choice, isXg5ChoiceEffect, listXg5HandActivations } from "../rules/xg5/xg5Effects";
+import { xg5ForcesAttack } from "../rules/xg5/xg5Fields";
+import { XG5_CONFINE_WINDOW_EFFECT_ID } from "../rules/xg5/xg5Core";
+import { canConfirmXg7Choice, isXg7ActivatableResident, isXg7ChoiceEffect } from "../rules/xg7/xg7Effects";
+import { canConfirmXg3Choice, filterXg3LegalActions, isXg3ChoiceEffect } from "../rules/xg3/xg3Effects";
+import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
+import { canConfirmXg1Choice, isXg1ChoiceEffect } from "../rules/xg1/xg1Effects";
+import { xg1ForcedAttackFilter } from "../rules/xg1/xg1cEffects";
+import { canActivateXg2Resident, canConfirmXg2Choice, isXg2ActivatableResident, isXg2BattleCounterCard, isXg2ChoiceEffect, xg2BattleCounterConditionMet } from "../rules/xg2/xg2Effects";
+import { xg2ActsAsVehicle, xg2ReturnToRushBlocked } from "../rules/xg2/xg2Fields";
+import { cardHasKeyword } from "../keywords/cardKeywords";
+import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
+import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
+import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
+import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
+import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
+import { needsHoldExtraCommand, needsZordExtendedMaterial } from "../rules/zordExtended";
+import { isSet7BConfirmableChoice } from "../rules/legend1/set7NamedEffectsB";
+import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
+import { countAvailablePower } from "./power";
 import { battleActBlocked, canSelfRushFromZone } from "../rules/keywordGapRuntime";
+import { appendIcyRushActions, icyStateForAction } from "../rules/legend1/icyLastResort";
 import {
   getMorphReactionActorId,
   morphOrderChooserPlayerId,
@@ -155,6 +233,19 @@ function appendCounterCategoryPaymentActions(
       actions.push(action);
     }
   };
+
+  // RK-036 仮面ライダーライア【運命への反抗】: ホールドせず、同じカテゴリのカードを自軍コマンドゾーンから捨札にして使う（rules/rk/rk2UnitEffects.ts）。
+  if (rk2RaiaDiscardCandidates(state.players[playerId], state.definitions, categories).length > 0) {
+    const raia: GameAction = {
+      type: "initiate_command_payment",
+      playerId,
+      kind: "category_use",
+      sourceInstanceId: counterInstanceId,
+      raiaDiscard: true,
+      substituteInstanceId: options?.substituteInstanceId,
+    };
+    if (isInitiateCommandPaymentLegal(state, raia)) actions.push(raia);
+  }
 
   const paymentOptions = getCategoryPaymentOptions(state, playerId, categories, {
     perRushPayment: true,
@@ -216,6 +307,17 @@ function appendStrikeReactionActions(
     actions.push({ type: "use_plasma_energy", playerId: defenderId });
   }
 
+  // RS-184 マジパンチ（BP8000以下の敵軍ユニットにストライクされたとき）・RS-432 隠流マキビシ（ストライクされたとき）。
+  for (const counterId of [
+    ...magiPunchCounterIds(state, defenderId, pending),
+    ...set7AStrikeCounterIds(state, defenderId, pending, canPlayHandCounter),
+  ]) {
+    appendCounterCategoryPaymentActions(state, defenderId, counterId, actions);
+    if (canExecuteHandCounter(state, defenderId, counterId)) {
+      actions.push({ type: "play_counter", playerId: defenderId, instanceId: counterId });
+    }
+  }
+
   actions.push({ type: "pass_strike_reaction", playerId: defenderId });
 }
 
@@ -233,11 +335,69 @@ function appendBattleReactionActions(
   for (const card of defender.hand) {
     const effectId = getCounterEffectId(state, playerId, card.instanceId);
     if (effectId === "new_gymnastics") {
-      if (!defenderCard || !isSmallUnit(state.definitions, defenderCard.cardId)) continue;
+      if (!defenderCard || !isSmallUnit(state.definitions, defenderCard)) continue;
       appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
       if (canExecuteHandCounter(state, playerId, card.instanceId)) {
         actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
       }
+    }
+    if (isMechanicNinjaCounter(card.cardId)) {
+      if (!defenderCard || !isSmallUnit(state.definitions, defenderCard)) continue;
+      const recruits = collectMechanicNinjaRecruits(state, playerId);
+      const options: Array<string | undefined> = recruits.length > 0 ? recruits : [undefined];
+      for (const recruit of options) {
+        appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions, {
+          substituteInstanceId: recruit,
+        });
+        if (canExecuteHandCounter(state, playerId, card.instanceId)) {
+          actions.push({
+            type: "play_counter",
+            playerId,
+            instanceId: card.instanceId,
+            substituteInstanceId: recruit,
+          });
+        }
+      }
+      continue;
+    }
+    // RK-172 ルリオオカミ（自軍ユニットがアタックされたとき。rules/rk/rk9UnitEffects.ts）。
+    // XG2-061 リョクオオザル（敵軍ユニットにアタックされたとき。rules/xg2/xg2cEffects.ts）も同じ手順。
+    if (isRk9BattleCounterCard(card.cardId) || isXg2BattleCounterCard(card.cardId)) {
+      if (!rk9BattleCounterConditionMet(state, playerId, card.cardId, pending) && !xg2BattleCounterConditionMet(state, playerId, card.cardId, pending)) continue;
+      if (!canPlayHandCounter(state, playerId, card.instanceId)) continue;
+      appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
+      if (canExecuteHandCounter(state, playerId, card.instanceId)) {
+        actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
+      }
+      continue;
+    }
+    // RK-085 ガードベント（特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき。rules/rk/rk5UnitEffects.ts）。
+    if (isRk5BattleCounterCard(card.cardId)) {
+      if (!rk5BattleCounterConditionMet(state, playerId, card.cardId, pending)) continue;
+      if (!canPlayHandCounter(state, playerId, card.instanceId)) continue;
+      appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
+      if (canExecuteHandCounter(state, playerId, card.instanceId)) {
+        actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
+      }
+      continue;
+    }
+    // クロスギャザー ザ・ジェットアクセル XG4-021 カラクリマント等（rules/xg4/xg4Effects.ts）。
+    if (isXg4BattleCounterCard(card.cardId)) {
+      if (!xg4BattleCounterConditionMet(state, playerId, card.cardId, pending)) continue;
+      if (!canPlayHandCounter(state, playerId, card.instanceId)) continue;
+      appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
+      if (canExecuteHandCounter(state, playerId, card.instanceId)) actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
+      continue;
+    }
+    // RK-004 ギギの腕輪・RK-009 二人の世紀王（自軍Sユニットが敵軍Sユニットにアタックされたとき。rules/rk/rk1NamedEffects.ts）。
+    if (isRk1BattleCounterCard(card.cardId)) {
+      if (!rk1BattleCounterConditionMet(state, playerId, card.cardId, pending)) continue;
+      if (!canPlayHandCounter(state, playerId, card.instanceId)) continue;
+      appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
+      if (canExecuteHandCounter(state, playerId, card.instanceId)) {
+        actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
+      }
+      continue;
     }
     if (effectId === "hidden_ninja") {
       for (const sub of collectHiddenNinjaSubstitutes(state, [
@@ -300,12 +460,13 @@ function appendRushReactionActions(
 ): void {
   const pending = state.pendingRush;
   if (!pending) return;
-  const defenderId = opponent(pending.rusherPlayerId);
+  const defenderId = rushReactorId(pending);
   if (playerId !== defenderId) return;
 
   const defender = state.players[defenderId];
   for (const card of defender.hand) {
-    if (getCounterEffectId(state, defenderId, card.instanceId) !== "shippu_ninja") continue;
+    // 疾風流超忍法（RS-026／再録 RS-247）・宏のオルゴール時計（RK-012）。atwiki/page-424 Q12・Q15
+    if (!canUseRushReactionCounter(state, defenderId, card.instanceId, pending)) continue;
     appendCounterCategoryPaymentActions(state, defenderId, card.instanceId, actions);
     if (canExecuteHandCounter(state, defenderId, card.instanceId)) {
       actions.push({ type: "play_counter", playerId: defenderId, instanceId: card.instanceId });
@@ -326,7 +487,15 @@ function appendLeaveReactionActions(
   const owner = state.players[pending.ownerPlayerId];
   for (const card of owner.hand) {
     const effectId = getCounterEffectId(state, pending.ownerPlayerId, card.instanceId);
-    if (effectId === "dino_chronicle") {
+    if (isRk1LeaveCounterCard(card.cardId)) {
+      // RK-015 人類の進化（「男」「女」の自軍ユニットが撃破されて捨札になったとき。rules/rk/rk1NamedEffects.ts）。
+      if (!rk1LeaveCounterConditionMet(state, pending.ownerPlayerId, pending)) continue;
+      if (!canPlayHandCounter(state, pending.ownerPlayerId, card.instanceId)) continue;
+    } else if (isRm1LeaveCounterCard(card.cardId)) {
+      // RM-006 怒（いか）る！（RK-015 と同じ発動の条件。rules/rm/rm1Effects.ts）。
+      if (!rm1LeaveCounterConditionMet(state, pending.ownerPlayerId, pending)) continue;
+      if (!canPlayHandCounter(state, pending.ownerPlayerId, card.instanceId)) continue;
+    } else if (effectId === "dino_chronicle") {
       if (
         !hasPlayableDinoChronicleCounter(state, pending.ownerPlayerId, pending.leavingCardId, {
           requireEnemyTurn: false,
@@ -394,8 +563,66 @@ function appendLeaveReactionActions(
       playerId: pending.ownerPlayerId,
     });
   }
+  // RS-324 マジマザー【ジルマ・マジュナ】（rules/legend1/set5NamedEffects.ts）。
+  for (const substituteInstanceId of pending.magiMotherInstanceIds ?? []) {
+    actions.push({ type: "use_super_shield", playerId: pending.ownerPlayerId, substituteInstanceId });
+  }
 
   actions.push({ type: "pass_leave_reaction", playerId: pending.ownerPlayerId });
+}
+
+function combinationsOf<T>(items: T[], count: number): T[][] {
+  if (count <= 0) return [[]];
+  if (count > items.length) return [];
+  const [head, ...rest] = items;
+  return [...combinationsOf(rest, count - 1).map((c) => [head!, ...c]), ...combinationsOf(rest, count)];
+}
+
+/**
+ * RS-586 巨神ゴードム【魔神に不足する物】「必要パワーに足りない数だけ、特徴「戦闘員」を持つユニットを捨札にする」:
+ * 捨札にするユニットはプレイヤーが選ぶ。候補が足りない数より多ければ、ラッシュの宣言（rush / initiate_command_payment /
+ * begin_zord_setup）を選び方ごとに分ける（godomDiscardInstanceIds）。アブレラ【闇の取引】等の別の手段でも満たせるなら、
+ * ゴードムを使わない宣言（[]）も残す（「してもよい」）。
+ */
+function expandGodomRushVariants(state: GameState, playerId: PlayerId, actions: GameAction[]): void {
+  const player = state.players[playerId];
+  const expanded: GameAction[] = [];
+  let changed = false;
+  for (const action of actions) {
+    const sourceId =
+      action.type === "rush"
+        ? action.instanceId
+        : action.type === "initiate_command_payment" && action.kind === "category_use"
+          ? action.sourceInstanceId
+          : action.type === "begin_zord_setup"
+            ? action.zordInstanceId
+            : undefined;
+    const handCard = sourceId ? player.hand.find((c) => c.instanceId === sourceId) : undefined;
+    const def = handCard ? getDefinition(state.definitions, handCard.cardId) : undefined;
+    if (!handCard || !def || !isUnit(def) || "godomDiscardInstanceIds" in action && action.godomDiscardInstanceIds) {
+      expanded.push(action);
+      continue;
+    }
+    const zord = action as { zordMaterialInstanceId?: string; zordMaterialInstanceIds?: string[] };
+    const materials = new Set([...(zord.zordMaterialInstanceIds ?? []), ...(zord.zordMaterialInstanceId ? [zord.zordMaterialInstanceId] : [])]);
+    const cost = effectivePowerCost(state, playerId, rushPowerCost(state, playerId, def, zord));
+    const shortage = cost - countAvailablePower(state, playerId);
+    const candidates = shortage > 0 ? godomDiscardCandidates(state, playerId, player, def).filter((id) => !materials.has(id)) : [];
+    if (candidates.length < shortage || candidates.length === 0) {
+      expanded.push(action);
+      continue;
+    }
+    changed = true;
+    // 候補がちょうど足りない数なら選ぶ余地はない（1通り）。省略した宣言も同じ組を捨札にする。
+    for (const set of combinationsOf(candidates, shortage)) {
+      expanded.push({ ...action, godomDiscardInstanceIds: set } as GameAction);
+    }
+    if (darkDealRushPowerBudget(state, playerId, player, def) >= cost) {
+      expanded.push({ ...action, godomDiscardInstanceIds: [] } as GameAction);
+    }
+  }
+  if (!changed) return;
+  actions.splice(0, actions.length, ...expanded);
 }
 
 function appendZordSetupActions(
@@ -412,20 +639,48 @@ function appendZordSetupActions(
       definition.powerCost,
       definition,
     );
+    // RK-114 サイコローダー等、追加条件（「＋」）を持つビークルも同じ手順でラッシュする。
     if (
-      !isUnit(definition) ||
+      !(isUnit(definition) || isVehicle(definition)) ||
       (!needsZordMaterial(state.definitions, card.cardId) && !isZordDown)
     ) {
       continue;
     }
     if (requiresAllFusionPartners(card.cardId)) continue;
     if (findDirectZordRushAction(state, playerId, card.instanceId)) continue;
-    if (!canBeginZordSetup(state, playerId, card.instanceId)) continue;
+    if (!canBeginZordSetupInEnumeration(state, playerId, card.instanceId)) continue;
     actions.push({
       type: "begin_zord_setup",
       playerId,
       zordInstanceId: card.instanceId,
     });
+  }
+}
+
+/**
+ * RS-325【マジチケット】: 自軍コマンドゾーンのリリース状態のオペレーションを、手札から使うときと同じ選択肢で発動する
+ * （rules/legend1/set5NamedEffects.ts。必要パワーは印刷値）。
+ */
+function appendMagiTicketActions(state: GameState, playerId: PlayerId, actions: GameAction[]): void {
+  const player = state.players[playerId];
+  if (!player.rush.some((c) => c.cardId === "RS-325")) return;
+  const power = countAvailablePower(state, playerId);
+  for (const card of player.command) {
+    if (!magiTicketUsable(state, playerId, card, (id) => canPlayOperationCard(state.definitions, id), power)) continue;
+    const staged = stageMagiTicket(state, playerId, card.instanceId);
+    if (!staged) continue;
+    const viaHand: GameAction[] = [];
+    appendOperationActions(staged, playerId, viaHand);
+    for (const a of viaHand) {
+      if (a.type !== "play_operation" || a.instanceId !== card.instanceId) continue;
+      actions.push({
+        type: "use_magi_ticket",
+        playerId,
+        instanceId: card.instanceId,
+        ...(a.targetInstanceId ? { targetInstanceId: a.targetInstanceId } : {}),
+        ...(a.extraInstanceId ? { extraInstanceId: a.extraInstanceId } : {}),
+      });
+    }
   }
 }
 
@@ -443,6 +698,12 @@ function appendOperationActions(
 
     const effect = getCardEffect(card.cardId);
 
+    if (operationFizzles(state, playerId, card.instanceId, card.cardId)) {
+      // ルール: R-CARD-03, R-RES-04 — 対象がなくても空撃ちで使用できる（効果は発動しない）。
+      actions.push({ type: "play_operation", playerId, instanceId: card.instanceId });
+      continue;
+    }
+
     if (effect?.effectId === "cyber_s_rider") {
       const others = player.hand.filter((c) => c.instanceId !== card.instanceId);
       if (others.length === 0) continue;
@@ -454,7 +715,6 @@ function appendOperationActions(
           targetInstanceId: others[i]!.instanceId,
         });
         for (let j = i + 1; j < others.length; j += 1) {
-          if (player.command.length + 2 > COMMAND_ZONE_MAX) continue;
           actions.push({
             type: "play_operation",
             playerId,
@@ -480,6 +740,7 @@ function appendOperationActions(
         playerId,
         choose.valid,
         card.instanceId,
+        card.cardId,
       );
       if (choose.kind === "optional_deck_draw") {
         if (player.deck.length === 0 && targets.length === 0) continue;
@@ -511,8 +772,6 @@ function appendOperationActions(
           targetInstanceId,
         });
       }
-    } else if (effect?.effectId === "denji_machine" && player.deck.length < 3) {
-      continue;
     } else {
       actions.push({
         type: "play_operation",
@@ -558,14 +817,43 @@ function appendActivateResidentOperationActions(
   playerId: PlayerId,
   actions: GameAction[],
 ): void {
-  if (state.phase !== "rush") return;
   const player = state.players[playerId];
   for (const card of player.operation) {
+    // 第9弾 RS-608（自軍ラッシュフェイズ）・RS-609（自軍バトルフェイズ）（rules/legend1/set9NamedEffectsA.ts）。
+    if (isSet9AResidentCard(card.cardId)) {
+      if (canActivateSet9AResident(state, playerId, card.instanceId)) {
+        actions.push({ type: "activate_resident_operation", playerId, operationInstanceId: card.instanceId });
+      }
+      continue;
+    }
+    // 第8弾 RS-519・RS-522・RS-524・RS-525（RS-524 は自軍バトルフェイズ。rules/legend1/set8NamedEffectsA.ts）。
+    if (isSet8AResident(card.cardId)) {
+      if (canActivateResidentOperation(state, playerId, card.instanceId)) {
+        actions.push({ type: "activate_resident_operation", playerId, operationInstanceId: card.instanceId });
+      }
+      continue;
+    }
+    // XG2-019 知恵の樹モーク（自軍バトルフェイズ。rules/xg2/xg2Effects.ts）。
+    if (isXg2ActivatableResident(card.cardId)) {
+      if (canActivateXg2Resident(state, playerId, card)) actions.push({ type: "activate_resident_operation", playerId, operationInstanceId: card.instanceId });
+      continue;
+    }
+    if (state.phase !== "rush") continue;
     const wired = getCardEffect(card.cardId);
     if (wired?.effectId === "shiron_light" || wired?.effectId === "hidora_egg") {
       continue;
     }
-    if (listResidentActivationEffects(card.cardId).length === 0) continue;
+    if (
+      !swapResidentFeature(card.cardId) &&
+      card.cardId !== "RK-249" &&
+      !isRk1ActivatableResident(card.cardId) &&
+      !isRm1ActivatableResident(card.cardId) &&
+      // XG7-039 GOD SPEED LOVE（rules/xg7/xg7Effects.ts）。
+      !isXg7ActivatableResident(card.cardId) &&
+      listResidentActivationEffects(card.cardId).length === 0
+    ) {
+      continue;
+    }
     if (!canActivateResidentOperation(state, playerId, card.instanceId)) continue;
     actions.push({
       type: "activate_resident_operation",
@@ -587,6 +875,26 @@ function appendActivateFieldUnitAbilityActions(
       unitInstanceId,
     });
   }
+  // RK-043【突入】・XG4-102【ギンクロン発進】・RS-446【スクランブル】（このカードを捨札にして発動）。
+  for (const unitInstanceId of listFieldActivatedAbilityCards(state, playerId)) {
+    actions.push({
+      type: "activate_field_unit_ability",
+      playerId,
+      unitInstanceId,
+    });
+  }
+  // RS-559【パワーアロー】等: 手札からこのカードを捨札にして発動する（rules/legend1/set8NamedEffectsB.ts）。
+  for (const unitInstanceId of listSet8BHandActivations(state, playerId)) {
+    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+  }
+  // XG5-006 ゴーグルロボ ※: 手札からこれを捨札にして発動する（rules/xg5/xg5aEffects.ts）。
+  for (const unitInstanceId of listXg5HandActivations(state, playerId)) {
+    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+  }
+  // XG6-009（手札から捨札にして発動）・XG6-014【英雄の遺産】（パワーゾーンから。rules/xg6/xg6Hooks.ts）。
+  for (const unitInstanceId of xg6HandActivations(state, playerId)) {
+    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+  }
 }
 
 function appendBattleDanceActions(
@@ -597,12 +905,14 @@ function appendBattleDanceActions(
   if (state.phase !== "battle") return;
   const player = state.players[playerId];
   if (!hasOperationEffect(player, "battle_dance", state.definitions)) return;
+  // XG2-006 キャリアベータ【ベータランチャー】（rules/xg2/xg2Fields.ts）。
+  if (xg2ReturnToRushBlocked(state, playerId)) return;
 
   const released = player.command.filter((c) => !c.commandHeld);
   if (released.length < 2) return;
 
   const sUnits = player.battle.filter((card) =>
-    isSmallUnit(state.definitions, card.cardId),
+    isSmallUnit(state.definitions, card),
   );
   if (sUnits.length === 0) return;
 
@@ -650,7 +960,7 @@ export function findDirectZordRushAction(
     );
     for (const variant of variants) {
       if (
-        !canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId, variant)
+        !canDeclareRushInEnumeration(state, playerId, definition, card.instanceId, variant)
       ) {
         continue;
       }
@@ -682,7 +992,7 @@ export function findDirectZordRushAction(
   );
   for (const variant of variants) {
     if (
-      !canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId, variant)
+      !canDeclareRushInEnumeration(state, playerId, definition, card.instanceId, variant)
     ) {
       continue;
     }
@@ -734,7 +1044,8 @@ function appendOperationCategoryPaymentActions(
     if (canPlayOperation(state, playerId, definition)) continue;
     if (!canPlayOperationExceptCommandHold(state, playerId, definition)) continue;
 
-    const categories = cardCategories(definition);
+    // RS-292【虎の子大秘術】: 手札のオペレーションはどのカテゴリのコマンドをホールドしてもよい。
+    const categories = operationPaymentCategories(state, playerId, definition);
     if (categories.length === 0) continue;
 
     const options = getCategoryPaymentOptions(state, playerId, categories, {
@@ -750,16 +1061,34 @@ function appendOperationCategoryPaymentActions(
       for (let i = 0; i < others.length; i += 1) {
         pushPayment(card.instanceId, others[i]!.instanceId, undefined, options.prismSubstitute);
         for (let j = i + 1; j < others.length; j += 1) {
-          if (player.command.length + 2 > COMMAND_ZONE_MAX) continue;
           pushPayment(card.instanceId, others[i]!.instanceId, others[j]!.instanceId, options.prismSubstitute);
         }
       }
       continue;
     }
 
-    pushPayment(card.instanceId, undefined, undefined, options.prismSubstitute);
-    if (options.prismAvailable && !options.prismSubstitute) {
-      pushPayment(card.instanceId, undefined, undefined, true);
+    const dslEffect = getDslOperationEffect(card.cardId, "rush");
+    const dslChoose =
+      dslEffect &&
+      shouldUseDslOperation(card.cardId, dslEffect) &&
+      dslOperationOpensChoose(dslEffect);
+    // 対象を先に選ぶオペレーションは、対象ごとに支払いを開始する（空撃ちは対象なし）。
+    // DSL の choose は対象を指定しても、指定せず解決時に選んでもよい。
+    const fizzles = operationFizzles(state, playerId, card.instanceId, card.cardId);
+    let targets: Array<string | undefined> = [undefined];
+    if (!fizzles && dslChoose && dslEffect.effects[0]?.type === "choose") {
+      targets = [
+        ...collectTargetInstanceIds(state, playerId, dslEffect.effects[0].valid, card.instanceId, card.cardId),
+        undefined,
+      ];
+    } else if (!fizzles && needsOperationTarget(card.cardId) && !dslChoose) {
+      targets = collectOperationTargets(state, playerId, card.cardId);
+    }
+    for (const targetInstanceId of targets) {
+      pushPayment(card.instanceId, targetInstanceId, undefined, options.prismSubstitute);
+      if (options.prismAvailable && !options.prismSubstitute) {
+        pushPayment(card.instanceId, targetInstanceId, undefined, true);
+      }
     }
   }
 }
@@ -797,10 +1126,20 @@ function appendRushCategoryPaymentActions(
     if (isInitiateCommandPaymentLegal(state, action)) {
       actions.push(action);
     }
+    if (prismSubstitute) return;
+    // XG7-045・XP-015 ※: コマンドゾーンのドライバーをホールドしてラッシュする宣言（rules/driverCommandRush.ts）。
+    const rushingCardId = player.hand.find((c) => c.instanceId === instanceId)?.cardId;
+    for (const driverCommandInstanceId of driverCommandRushIds(state, playerId, rushingCardId)) {
+      const viaDriver: GameAction = { ...action, driverCommandInstanceId };
+      if (isInitiateCommandPaymentLegal(state, viaDriver)) {
+        actions.push(viaDriver);
+      }
+    }
   };
 
   // rush_from_discard_count_*: コマンド/パワーからの自己ラッシュ
-  for (const zone of ["command", "power"] as const) {
+  // discard: XG2-054【土中からの奇襲】（rules/xg2/xg2cEffects.ts）。
+  for (const zone of ["command", "power", "hand", "discard"] as const) {
     for (const card of player[zone]) {
       if (canSelfRushFromZone(state, playerId, zone, card.instanceId)) {
         actions.push({
@@ -821,13 +1160,14 @@ function appendRushCategoryPaymentActions(
     if (categories.length === 0) continue;
 
     if (
-      isUnit(definition) &&
+      // XG3-077 アギトトルネイダー（追加条件つきのビークル。rules/xg3/xg3Fields.ts）もユニットと同じ手順でラッシュする。
+      (isUnit(definition) || isXg3ZordUpVehicle(card.cardId) || (isVehicle(definition) && needsZordExtendedMaterial(state.definitions, card.cardId))) &&
       isZordUpCost(definition.powerCost) &&
       (rushAdditionalConditionApplies(state, playerId, card.cardId) ||
         requiresAllFusionPartners(card.cardId))
     ) {
       if (requiresAllFusionPartners(card.cardId)) {
-        if (canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId)) {
+        if (canDeclareRushInEnumeration(state, playerId, definition, card.instanceId)) {
           continue;
         }
         if (
@@ -839,7 +1179,8 @@ function appendRushCategoryPaymentActions(
             undefined,
             undefined,
             undefined,
-            undefined,
+            // RS-586【魔神に不足する物】・アブレラ【闇の取引】で必要パワーを補える分も含める。
+            rushPowerBudget(state, playerId, player, definition),
             { ...state, playerId },
           )
         ) {
@@ -848,6 +1189,7 @@ function appendRushCategoryPaymentActions(
         const options = getCategoryPaymentOptions(state, playerId, categories, {
           perRushPayment: true,
           callLeadKind: "call",
+          emergencyRushCardId: card.cardId,
         });
         if (!options) continue;
         pushPayment(card.instanceId, undefined, options.prismSubstitute);
@@ -855,7 +1197,7 @@ function appendRushCategoryPaymentActions(
           pushPayment(card.instanceId, undefined, true);
         }
       } else {
-        if (canBeginZordSetup(state, playerId, card.instanceId)) {
+        if (canBeginZordSetupInEnumeration(state, playerId, card.instanceId)) {
           continue;
         }
         const variants = listZordUpRushPaymentVariants(
@@ -865,7 +1207,7 @@ function appendRushCategoryPaymentActions(
           card.instanceId,
         );
         for (const variant of variants) {
-          if (canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId, variant)) {
+          if (canDeclareRushInEnumeration(state, playerId, definition, card.instanceId, variant)) {
             continue;
           }
           if (
@@ -877,7 +1219,8 @@ function appendRushCategoryPaymentActions(
               variant.zordMaterialInstanceId,
               variant.zordMothershipHoldInstanceIds,
               variant.zordMaterialDestination,
-              undefined,
+              // RS-586【魔神に不足する物】・アブレラ【闇の取引】で必要パワーを補える分も含める。
+              rushPowerBudget(state, playerId, player, definition),
               { ...state, playerId },
               variant.zordMaterialInstanceIds,
               variant.zordExtraCommandHoldInstanceIds,
@@ -888,6 +1231,7 @@ function appendRushCategoryPaymentActions(
           const options = getCategoryPaymentOptions(state, playerId, categories, {
             perRushPayment: true,
             callLeadKind: "call",
+            emergencyRushCardId: card.cardId,
           });
           if (!options) continue;
           pushPayment(card.instanceId, variant, options.prismSubstitute);
@@ -910,7 +1254,7 @@ function appendRushCategoryPaymentActions(
       ];
       for (const zord of zordVariants) {
         if (
-          canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId, zord)
+          canDeclareRushInEnumeration(state, playerId, definition, card.instanceId, zord)
         ) {
           continue;
         }
@@ -923,8 +1267,11 @@ function appendRushCategoryPaymentActions(
             zord.zordMaterialInstanceId,
             undefined,
             zord.zordMaterialDestination,
-            undefined,
+            // RS-586【魔神に不足する物】・アブレラ【闇の取引】で必要パワーを補える分も含める。
+            rushPowerBudget(state, playerId, player, definition),
             { ...state, playerId },
+            // 「必要パワーの数字が5以上の自軍パワーを4枚捨札にすれば」（zord_down_discard_power_cards。XG6-032）は複数の素材。
+            zord.zordMaterialInstanceIds,
           )
         ) {
           continue;
@@ -932,6 +1279,7 @@ function appendRushCategoryPaymentActions(
         const options = getCategoryPaymentOptions(state, playerId, categories, {
           perRushPayment: true,
           callLeadKind: "call",
+          emergencyRushCardId: card.cardId,
         });
         if (!options) continue;
         pushPayment(card.instanceId, zord, options.prismSubstitute);
@@ -940,7 +1288,11 @@ function appendRushCategoryPaymentActions(
         }
       }
     } else {
-      if (canDeclareRush(state, playerId, player, state.definitions, definition, card.instanceId)) {
+      if (
+        canDeclareRushInEnumeration(state, playerId, definition, card.instanceId) &&
+        // RS-242: ホールドせずにラッシュしてもよい（ホールドしてラッシュすることもできる）。
+        !jaryuInvasionAllowsRushWithoutHold(state, playerId, definition)
+      ) {
         continue;
       }
       if (
@@ -952,7 +1304,8 @@ function appendRushCategoryPaymentActions(
           undefined,
           undefined,
           undefined,
-          undefined,
+          // RS-586【魔神に不足する物】・アブレラ【闇の取引】で必要パワーを補える分も含める。
+          rushPowerBudget(state, playerId, player, definition),
           { ...state, playerId },
         )
       ) {
@@ -961,6 +1314,9 @@ function appendRushCategoryPaymentActions(
       const options = getCategoryPaymentOptions(state, playerId, categories, {
         perRushPayment: true,
         callLeadKind: "call",
+        emergencyRushCardId: card.cardId,
+        // ※特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる（XG6-050）は、ラッシュするユニットで決まる。
+        rushingCardId: isUnit(definition) ? card.cardId : undefined,
       });
       if (!options) continue;
       pushPayment(card.instanceId, undefined, options.prismSubstitute);
@@ -978,12 +1334,275 @@ function appendEffectChoiceActions(
 ): void {
   const pending = state.pendingEffectChoice;
   if (!pending || pending.playerId !== playerId) return;
+  // RK-016 ミラーワールド: ホールドするコマンドが足りない相手のユニットは選べない（rules/mirrorWorldSelection.ts）。
+  const choiceIds = pending.validInstanceIds.filter((id) => mirrorWorldChoiceAffordable(state, pending, id));
+  if (choiceIds.length === 0 && pending.validInstanceIds.length > 0 && !pending.mayConfirm) {
+    // 候補がすべて選べなくなった — 選ばずに終える。
+    actions.push({ type: "skip_effect_choice", playerId });
+    return;
+  }
 
   if (pending.optional || pending.effectId === "earth_force") {
     actions.push({ type: "skip_effect_choice", playerId });
   }
 
-  if (needsEffectHoldPayment(pending) && buildEffectHoldPayment(state)) {
+  // 「～してもよい」の任意効果の確認（rules/optionalEffects.ts）: 行う＝confirm、行わない＝skip。
+  if (pending.mayConfirm) {
+    actions.push({ type: "confirm_effect_choice", playerId });
+    // 「行う」を選択肢（validInstanceIds）として選んでもよい（confirm と同じ）。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    return;
+  }
+
+  if (isRk3ChoiceEffect(pending.effectId)) {
+    // ライダーEXP vol.1 RK-043〜RK-063 の選択（rules/rk/rk3UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk3Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg1ChoiceEffect(pending.effectId)) {
+    // クロスギャザー XG1-001〜XG1-100 の選択（rules/xg1/xg1Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    if (canConfirmXg1Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg2ChoiceEffect(pending.effectId)) {
+    // クロスギャザー XG2 の選択（rules/xg2/xg2Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg2Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    // 「これをホールドして発動できる」（XG2-075 ほか）はホールドの支払いでも発動できる。
+    if (needsEffectHoldPayment(pending, state) && buildEffectHoldPayment(state)) actions.push({ type: "initiate_command_payment", playerId, kind: "effect_hold", sourceInstanceId: pending.sourceInstanceId! });
+    return;
+  }
+
+  if (isBk1ChoiceEffect(pending.effectId)) {
+    // ベルトコレクション BK-001〜BK-019 の選択（rules/bk/bk1Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    return;
+  }
+
+  if (isXg5ChoiceEffect(pending.effectId)) {
+    // クロスギャザー XG5 の選択（rules/xg5/xg5Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg5Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg7ChoiceEffect(pending.effectId)) {
+    // クロスギャザー ザ・ベストパートナー XG7-001〜XG7-068 の選択（rules/xg7/xg7Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg7Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg3ChoiceEffect(pending.effectId)) {
+    // クロスギャザー ザ・Wインパクト XG3-002〜XG3-103 の選択（rules/xg3/xg3Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg3Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRm3ChoiceEffect(pending.effectId)) {
+    // スペシャルメタルエディション RM-043〜RM-062 の選択（rules/rm/rm3Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRm3Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRm2ChoiceEffect(pending.effectId)) {
+    // スペシャルメタルエディション RM-022〜RM-042 の選択（rules/rm/rm2Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRm2Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg6ChoiceEffect(pending.effectId)) {
+    // クロスギャザー ザ・ギガンティックタイタン XG6 の選択（rules/xg6/xg6Hooks.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg6Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg4ChoiceEffect(pending.effectId)) {
+    // クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 の選択（rules/xg4/xg4Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    if (canConfirmXg4Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isPromoChoiceEffect(pending.effectId)) {
+    // プロモーションカードの選択（rules/promo）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    if (canConfirmPromoChoice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRm1ChoiceEffect(pending.effectId)) {
+    // スペシャルメタルエディション RM-001〜RM-021 の選択（rules/rm/rm1Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRm1Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk16ChoiceEffect(pending.effectId)) {
+    // ザ・マスクドライダーEXP vol.4 RK-316〜RK-335 の選択（rules/rk/rk16UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk16Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk15ChoiceEffect(pending.effectId)) {
+    // ザ・マスクドライダーEXP vol.4 RK-295〜RK-315 の選択（rules/rk/rk15UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk15Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk14ChoiceEffect(pending.effectId)) {
+    // ザ・マスクドライダーEXP vol.4 RK-274〜RK-294 の選択（rules/rk/rk14UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk14Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk13ChoiceEffect(pending.effectId)) {
+    // ザ・マスクドライダーEXP vol.4 RK-253〜RK-273 の選択（rules/rk/rk13UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk13Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk12ChoiceEffect(pending.effectId)) {
+    // ザ・マスクドライダーEXP vol.3〜4 RK-232〜RK-252 の選択（rules/rk/rk12UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk12Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk11ChoiceEffect(pending.effectId)) {
+    // ザ・マスクドライダーEXP vol.3 RK-211〜RK-231 の選択（rules/rk/rk11UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk11Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk10ChoiceEffect(pending.effectId)) {
+    // ザ・マスクドライダーEXP vol.3 RK-190〜RK-210 の選択（rules/rk/rk10UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk10Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk9ChoiceEffect(pending.effectId)) {
+    // ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 の選択（rules/rk/rk9UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk9Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk8ChoiceEffect(pending.effectId)) {
+    // ライダーEXP vol.2 RK-148〜RK-168 の選択（rules/rk/rk8UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk8Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk7ChoiceEffect(pending.effectId)) {
+    // ライダーEXP vol.2 RK-127〜RK-147 の選択（rules/rk/rk7UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk7Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk6ChoiceEffect(pending.effectId)) {
+    // ライダーEXP vol.2 RK-106〜RK-126 の選択（rules/rk/rk6UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk6Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk5ChoiceEffect(pending.effectId)) {
+    // ライダーEXP vol.2 RK-085〜RK-105 の選択（rules/rk/rk5UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk5Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk4ChoiceEffect(pending.effectId)) {
+    // ライダーEXP RK-064〜RK-084 の選択（rules/rk/rk4UnitEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmRk4Choice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isRk1ChoiceEffect(pending.effectId) || isRk2ChoiceEffect(pending.effectId)) {
+    // ライダーEXP vol.1 RK-001〜RK-021 の選択（rules/rk/rk1NamedEffects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    return;
+  }
+
+  if (pending.effectId === FIRE_DANCE_EFFECT_ID) {
+    // RS-159【ファイヤーダンス】「敵軍ダメージの数まで選んで」— 1つずつ選び、少なくても確定できる。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (needsEffectHoldPayment(pending, state) && buildEffectHoldPayment(state)) {
     actions.push({
       type: "initiate_command_payment",
       playerId,
@@ -1011,14 +1630,117 @@ function appendEffectChoiceActions(
   }
 
   if (pending.kind === "declare_number") {
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     return;
   }
 
+  if (
+    isErrataConfirmableChoice(pending.effectId) ||
+    isSet4ConfirmableChoice(pending.effectId) ||
+    isSet5AConfirmableChoice(pending) ||
+    isSet6AuditConfirmableChoice(pending.effectId)
+  ) {
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isSet8AChoiceEffect(pending.effectId)) {
+    // 第8弾 RS-516〜RS-537 の選択（rules/legend1/set8NamedEffectsA.ts）。候補はモジュール側で絞り込み済み。
+    const selected = pending.selectedInstanceIds ?? [];
+    for (const instanceId of choiceIds) {
+      if (selected.includes(instanceId)) continue;
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (isSet8AConfirmableChoice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isSet9AChoiceEffect(pending.effectId)) {
+    // 第9弾 RS-605〜RS-626 の選択（rules/legend1/set9NamedEffectsA.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmSet9AChoice(state, pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isSet9BChoiceEffect(pending.effectId)) {
+    // 第9弾 RS-627〜RS-647 の選択（rules/legend1/set9NamedEffectsB.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmSet9BChoice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isSet8CChoiceEffect(pending.effectId)) {
+    // 第8弾 RS-560〜RS-581 の選択（rules/legend1/set8NamedEffectsC.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmSet8CChoice(state, pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isSet9CChoiceEffect(pending.effectId)) {
+    // 第9弾 RS-648〜RS-669 の選択（rules/legend1/set9NamedEffectsC.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmSet9CChoice(state, pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isSet7AChoiceEffect(pending.effectId)) {
+    // 第7弾 RS-432〜RS-452 の選択（rules/legend1/set7NamedEffectsA.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (isSet7AConfirmableChoice(pending)) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (pending.kind === "select_commands" && pending.effectId === SCRAMBLE_EFFECT_ID) {
+    // RS-446【スクランブル】「3枚まで」— 1枚以上選べば、少なくても確定できる。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if ((pending.selectedInstanceIds ?? []).length > 0) {
+      actions.push({ type: "confirm_effect_choice", playerId });
+    }
+    return;
+  }
+
+  // 第7弾（rules/legend1/set7NamedEffectsB.ts）の「…まで選ぶ」選択: 1つずつ選び、1つ以上選んだら確定できる。
+  if (isSet7BConfirmableChoice(pending)) {
+    const selected = pending.selectedInstanceIds ?? [];
+    for (const instanceId of choiceIds) {
+      if (selected.includes(instanceId)) continue;
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (selected.length > 0) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
+    // RS-472【現場への搬送】: 山札から1枚ずつ選んで置き、1枚以上置いたら確定できる（見送りは optional の skip）。
+    const selected = pending.selectedInstanceIds ?? [];
+    const deck = state.players[playerId].deck;
+    for (const instanceId of choiceIds) {
+      if (selected.includes(instanceId) || !deck.some((c) => c.instanceId === instanceId)) continue;
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (selected.length > 0) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
   if (pending.kind === "select_commands" && pending.siteTransportMeta?.step === "discard") {
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     actions.push({ type: "confirm_effect_choice", playerId });
@@ -1027,7 +1749,7 @@ function appendEffectChoiceActions(
 
   if (pending.kind === "shiron_light") {
     if (pending.shironLightMeta?.step === "pick") {
-      for (const instanceId of pending.validInstanceIds) {
+      for (const instanceId of choiceIds) {
         actions.push({ type: "resolve_effect_choice", playerId, instanceId });
       }
       return;
@@ -1045,7 +1767,7 @@ function appendEffectChoiceActions(
       return;
     }
     if (pending.denjiMachineMeta?.step === "order_bottom") {
-      for (const instanceId of pending.validInstanceIds) {
+      for (const instanceId of choiceIds) {
         actions.push({ type: "resolve_effect_choice", playerId, instanceId });
       }
       return;
@@ -1053,8 +1775,31 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (pending.effectId === "hi_honoo_ha" && pending.sourceCardId === "RS-205" && !pending.mayConfirm) {
+    // RS-205【天火星・稲妻炎上破】「好きな数ホールドしてもよい」— 1つずつ選び、少なくても確定できる。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if ((pending.selectedInstanceIds ?? []).length > 0) {
+      actions.push({ type: "confirm_effect_choice", playerId });
+    }
+    return;
+  }
+
+  if (pending.effectId === "assault_vector_destroy") {
+    // RS-181 破邪百獣剣「カテゴリの数まで好きな数選び」— 1体ずつ選び、少なくても確定できる。
+    for (const instanceId of choiceIds) {
+      if (!isValidEffectChoiceTarget(state, pending, instanceId)) continue;
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if ((pending.selectedInstanceIds ?? []).length > 0) {
+      actions.push({ type: "confirm_effect_choice", playerId });
+    }
+    return;
+  }
+
   if (pending.kind === "select_units_bp_budget") {
-    for (const instanceId of pending.validInstanceIds) {
+    for (const instanceId of choiceIds) {
       if (canToggleBpBudgetTarget(state, pending, instanceId)) {
         actions.push({ type: "resolve_effect_choice", playerId, instanceId });
       }
@@ -1063,7 +1808,7 @@ function appendEffectChoiceActions(
     return;
   }
 
-  for (const instanceId of pending.validInstanceIds) {
+  for (const instanceId of choiceIds) {
     if (!isValidEffectChoiceTarget(state, pending, instanceId)) continue;
     actions.push({ type: "resolve_effect_choice", playerId, instanceId });
   }
@@ -1083,6 +1828,15 @@ function appendEffectChoiceActions(
   }
 }
 
+/** RK-012 宏のオルゴール時計:「このターン、相手はバトルフェイズを飛ばす」をバトルフェイズ中に受けた。 */
+function battlePhaseSkippedThisTurn(state: GameState, playerId: PlayerId): boolean {
+  return (
+    state.phase === "battle" &&
+    state.activePlayer === playerId &&
+    hasTurnRuleModifier(state.players[playerId], MUSIC_BOX_SKIP_BATTLE_RULE)
+  );
+}
+
 function appendBattleEntryActions(
   state: GameState,
   playerId: PlayerId,
@@ -1091,28 +1845,52 @@ function appendBattleEntryActions(
   const pending = state.pendingBattleEntry;
   if (!pending || pending.playerId !== playerId) return;
 
+  // RS-379【雷の雄叫び】: NC が成立した直後（バトル進入の行動ウィンドウ）にも発動できる。
+  for (const unitInstanceId of listFieldActivatedAbilityCards(state, playerId)) {
+    const card = state.players[playerId].battle.find((c) => c.instanceId === unitInstanceId);
+    if (unitInstanceId === pending.instanceId && card?.cardId === "RS-379") {
+      actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+    }
+  }
+
   const player = state.players[playerId];
   const enemy = state.players[opponent(playerId)];
   const unit = player.battle.find((c) => c.instanceId === pending.instanceId);
-  if (!unit || unit.battleActed) {
+  if (!unit || unit.battleActed || battlePhaseSkippedThisTurn(state, playerId)) {
     actions.push({ type: "pass_battle_entry", playerId });
     return;
   }
 
+  // XG3-034【キョウリュウマル】で得た「アタックするかわりに」はルナジェル等の制限下でも発動できる（atwiki/page-1907 Q2）。
+  if (canUseKyouryuumaru(state, playerId, unit.instanceId)) {
+    actions.push({ type: "use_juu_kun_do", playerId, attackerInstanceId: unit.instanceId });
+  }
   if (cannotAttackOrStrikeThisTurn(player, unit, state, playerId)) {
     actions.push({ type: "pass_battle_entry", playerId });
     return;
   }
-  if (unitCannotInitiateAttack(unit.cardId)) {
-    actions.push({ type: "pass_battle_entry", playerId });
-    return;
-  }
+  // 「※これはアタックすることができない」— 禁止されるのはアタックだけで、ストライクはできる（RS-508 ゴーオンレッド。
+  // atwiki/page-740 カード評価「ストライクも同時にすることが可能」）。
+  const cannotAttack = unitCannotInitiateAttack(unit.cardId);
 
-  const requiredDefenderId = pending.requiredDefenderInstanceId;
-  const battleDefenders = requiredDefenderId
-    ? enemy.battle.filter((c) => c.instanceId === requiredDefenderId)
-    : enemy.battle;
-  const rushDefenders = requiredDefenderId ? [] : enemy.rush;
+  // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックできない。
+  const attackBlocked = cannotAttack || battleActBlocked(player, unit, "attack") || rk10WolfBlocks(state, playerId, "attack");
+  // RM-035 凱聖クールギン【ヨロイ軍団の統率】: アタックできる「ヨロイ軍団」のユニットがあれば、それにアタックしなければならない
+  // （atwiki/page-999 Q1。rules/rm/rm2Effects.ts）。
+  const rm2Required =
+    pending.requiredDefenderInstanceId || attackBlocked
+      ? []
+      : rm2RequiredDefenderIds(state, playerId, unit, (defenderId) =>
+          canAttackDefender(state, playerId, pending.instanceId, opponent(playerId), defenderId, canAttackRushWithYellowThunder),
+        );
+  const requiredDefenderId = pending.requiredDefenderInstanceId ?? (rm2Required.length > 0 ? rm2Required[0] : undefined);
+  const requiredSet = pending.requiredDefenderInstanceId ? [pending.requiredDefenderInstanceId] : rm2Required;
+  const battleDefenders = attackBlocked
+    ? []
+    : requiredDefenderId
+      ? [...enemy.battle, ...enemy.rush].filter((c) => requiredSet.includes(c.instanceId) && (pending.requiredDefenderInstanceId ? enemy.battle.includes(c) : true))
+      : enemy.battle;
+  const rushDefenders = requiredDefenderId || attackBlocked ? [] : enemy.rush;
 
   for (const defender of battleDefenders) {
     if (
@@ -1154,15 +1932,44 @@ function appendBattleEntryActions(
       defenderInstanceId: defender.instanceId,
     });
   }
-  if (canStrikeUnit(state.definitions, unit, state, playerId) && !requiredDefenderId) {
+  // ルール: R-ATK-05 — ゴーマ宮で「可能ならアタックする」ユニットはアタックしなければならない。
+  const forcedAttack =
+    gomaPalaceForcesAttack(state, playerId, pending.instanceId) ||
+    // XG5-031【ガゼル脚】: 可能なら敵軍ユニットにアタックする（rules/xg5/xg5Fields.ts）。
+    (xg5ForcesAttack(state, playerId, pending.instanceId) && actions.some((a) => a.type === "battle"));
+  if (forcedAttack) return;
+  // SX-002【黒い瞳に映るもの】: アタックできるならストライクを選べない（何もしないことはできる。rules/promo/promoHooks.ts）。
+  const promoMustAttack =
+    actions.some((a) => a.type === "battle" && a.attackerInstanceId === pending.instanceId) && promoForcesAttack(state, playerId, unit);
+  if (
+    !promoMustAttack &&
+    canStrikeUnit(state.definitions, unit, state, playerId) &&
+    !requiredDefenderId &&
+    !battleActBlocked(player, unit, "strike") &&
+    !rk10WolfBlocks(state, playerId, "strike")
+  ) {
     actions.push({ type: "strike", playerId, instanceId: pending.instanceId });
   }
-  if (canUseJuuKunDo(state, playerId, pending.instanceId) && !requiredDefenderId) {
+  if (
+    (canUseJuuKunDo(state, playerId, pending.instanceId) ||
+      canUseLionDance(state, playerId, pending.instanceId)) &&
+    !canUseKyouryuumaru(state, playerId, pending.instanceId) &&
+    !requiredDefenderId &&
+    !cannotAttack
+  ) {
     actions.push({
       type: "use_juu_kun_do",
       playerId,
       attackerInstanceId: pending.instanceId,
     });
+  }
+  // 「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる⇒…」（NC。rules/holdToActivate.ts）は
+  // 出た直後の行動ウィンドウで起動できる。
+  if (
+    isHoldToActivateNc(unit.cardId) &&
+    listFieldActivatedAbilityCards(state, playerId).includes(pending.instanceId)
+  ) {
+    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId: pending.instanceId });
   }
   if (!requiredDefenderId || actions.every((a) => a.type !== "battle")) {
     actions.push({ type: "pass_battle_entry", playerId });
@@ -1176,7 +1983,7 @@ function appendDamagePaymentActions(
 ): void {
   const pending = state.pendingDamagePayment;
   if (!pending || damagePaymentChoosingPlayer(pending) !== playerId) return;
-  for (const instanceId of getValidDamagePowerTargets(state, pending)) {
+  for (const instanceId of getDamagePaymentChoices(state, pending)) {
     actions.push({ type: "resolve_damage_payment", playerId, instanceId });
   }
 }
@@ -1202,8 +2009,97 @@ export function getActionPlayerId(state: GameState): PlayerId {
   );
 }
 
-export function getLegalActions(state: GameState): GameAction[] {
-  if (state.winner) return [];
+/**
+ * 同じ状態のオブジェクトに対する合法手の一覧の使い回し（CPU の探索は、同じ状態の合法手を探索と applyAction の合法判定で
+ * 何度も調べる）。core/searchCache.ts の表が有効な間（CPU の探索の間）だけ使う。
+ * 計算の間に乱数・applyAction・ID の採番などを一度も行わなかったときだけ覚える（そのときは状態だけで結果が決まる。
+ * core/sideEffects.ts）。使い回すアクションは書き換えられないよう凍結し、配列は呼び出しごとに新しく作る。
+ */
+function deepFreeze<T>(value: T): T {
+  if (value && typeof value === "object" && !Object.isFrozen(value)) {
+    Object.freeze(value);
+    for (const child of Object.values(value as Record<string, unknown>)) deepFreeze(child);
+  }
+  return value;
+}
+
+/**
+ * 1回の合法手の列挙の中で同じ引数で何度も呼ぶ判定の結果を、列挙の間だけ覚える（計算に乱数等を使ったときは覚えない）。
+ * - canBeginZordSetup（追加条件の手順を最後まで試す重い判定）: 手札のゾードをラッシュの支払いとゾードの手順の両方から調べる。
+ * - canDeclareRush: 手札のユニットをラッシュとラッシュのカテゴリ支払いの両方から調べる。
+ */
+let enumerationMemo: { state: GameState; results: Map<string, boolean> } | null = null;
+
+function memoizeInEnumeration(state: GameState, key: string, compute: () => boolean): boolean {
+  const memo = enumerationMemo;
+  if (!memo || memo.state !== state) return compute();
+  const hit = memo.results.get(key);
+  if (hit !== undefined) return hit;
+  const sideEffectsBefore = engineSideEffectCount();
+  const result = compute();
+  if (engineSideEffectCount() === sideEffectsBefore) memo.results.set(key, result);
+  return result;
+}
+
+function canBeginZordSetupInEnumeration(state: GameState, playerId: PlayerId, zordInstanceId: string): boolean {
+  return memoizeInEnumeration(state, `zord:${playerId}:${zordInstanceId}`, () =>
+    canBeginZordSetup(state, playerId, zordInstanceId),
+  );
+}
+
+type RushDeclarationZord = Parameters<typeof canDeclareRush>[6];
+
+function canDeclareRushInEnumeration(
+  state: GameState,
+  playerId: PlayerId,
+  definition: CardDefinition,
+  instanceId: string,
+  zord?: RushDeclarationZord,
+): boolean {
+  const player = state.players[playerId];
+  // canDeclareRush が見るゾードの指定だけをキーにする。
+  const key = zord
+    ? `rush:${playerId}:${instanceId}:${definition.id}:${zord.zordMaterialInstanceId ?? ""}:${(zord.zordMaterialInstanceIds ?? []).join(",")}:${(zord.zordMothershipHoldInstanceIds ?? []).join(",")}:${(zord.zordExtraCommandHoldInstanceIds ?? []).join(",")}:${zord.zordMaterialDestination ?? ""}:${zord.zordMaterialInstanceIds ? 1 : 0}${zord.zordMothershipHoldInstanceIds ? 1 : 0}${zord.zordExtraCommandHoldInstanceIds ? 1 : 0}`
+    : `rush:${playerId}:${instanceId}:${definition.id}`;
+  if (definition !== getDefinition(state.definitions, definition.id)) {
+    return canDeclareRush(state, playerId, player, state.definitions, definition, instanceId, zord);
+  }
+  return memoizeInEnumeration(state, key, () =>
+    canDeclareRush(state, playerId, player, state.definitions, definition, instanceId, zord),
+  );
+}
+
+function getLegalActionsCoreWithMemo(state: GameState): GameAction[] {
+  const previous = enumerationMemo;
+  enumerationMemo = { state, results: new Map() };
+  try {
+    return getLegalActionsCore(state);
+  } finally {
+    enumerationMemo = previous;
+  }
+}
+
+export function getLegalActions(input: GameState): GameAction[] {
+  if (input.winner) return [];
+  const cache = activeSearchCache()?.legalActions;
+  const cached = cache?.get(input);
+  if (cached) return [...cached];
+  const sideEffectsBefore = engineSideEffectCount();
+  // 「※このカードの追加条件は、…のとき、次のように変更される」を反映した定義で判定する（RS-440 等）。
+  const state = withEffectiveRushConditionDefinitions(input);
+  // 追加条件の素材の特徴（効果・フェイズで追加された特徴）はこの状態で判定する（rules/zordFeatureContext.ts）。
+  // 合法判定の中で乱数を使っても、状態の rngState から作るので決定的（core/rng.ts）。
+  // XG1-053【バーニングライダーパンチ】: 追加でアタックできる間は、そのアタックしか選べない（rules/xg1/xg1cEffects.ts）。
+  // XG3-024・XG3-025（ラッシュフェイズのかわりに発動した後）の絞り込み（rules/xg3/xg3Effects.ts）。
+  const actions = filterXg3LegalActions(state, xg1ForcedAttackFilter(state, runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCoreWithMemo(state))).value));
+  if (cache && engineSideEffectCount() === sideEffectsBefore) {
+    for (const action of actions) deepFreeze(action);
+    cache.set(input, [...actions]);
+  }
+  return actions;
+}
+
+function getLegalActionsCore(state: GameState): GameAction[] {
 
   const playerId = getActionPlayerId(state);
   const player = state.players[playerId];
@@ -1229,8 +2125,22 @@ export function getLegalActions(state: GameState): GameAction[] {
     return actions;
   }
 
+  // 進入効果のダメージ支払いが先に積まれていれば、ライドオフ選択より先に解決する
+  // （applyAction の pending_damage_payment ガードと同じ優先順）。
+  if (
+    state.pendingRideOffChoice &&
+    state.pendingDamagePayment &&
+    peekEffectStackTop(state)?.kind === "damage_payment"
+  ) {
+    appendDamagePaymentActions(state, playerId, actions);
+    return actions;
+  }
+
   if (state.pendingRideOffChoice) {
     const pending = state.pendingRideOffChoice;
+    if (lionArmorAvailable(state, pending.playerId)) {
+      actions.push({ type: "activate_field_unit_ability", playerId: pending.playerId, unitInstanceId: pending.vehicleInstanceId });
+    }
     actions.push({
       type: "resolve_ride_off_choice",
       playerId: pending.playerId,
@@ -1256,9 +2166,14 @@ export function getLegalActions(state: GameState): GameAction[] {
   if (state.pendingCommandPayment) {
     const pending = state.pendingCommandPayment;
     if (pending.playerId === playerId) {
-      const ids = pending.validInstanceIds.slice(0, pending.totalNeeded);
+      let ids = pending.validInstanceIds.slice(0, pending.totalNeeded);
+      // RS-429 代用の effect_hold: 少ない枚数（minNeeded）でも確定できる。先頭のコマンドだけで足りればそれを出す。
+      if (pending.minNeeded !== undefined) {
+        const fewer = pending.validInstanceIds.slice(0, pending.minNeeded);
+        if (validatePaymentSelection(state, pending, fewer) === null) ids = fewer;
+      }
       if (
-        ids.length >= pending.totalNeeded &&
+        ids.length >= (pending.minNeeded ?? pending.totalNeeded) &&
         validatePaymentSelection(state, pending, ids) === null &&
         isResolveCommandPaymentLegal(state, {
           playerId,
@@ -1301,7 +2216,7 @@ export function getLegalActions(state: GameState): GameAction[] {
       return actions;
     }
     if (topFrameId === "pendingRush" && state.pendingRush) {
-      appendRushReactionActions(state, opponent(state.pendingRush.rusherPlayerId), actions);
+      appendRushReactionActions(state, rushReactorId(state.pendingRush), actions);
       return actions;
     }
     // topFrameId === "pendingLeave" or no order set — fall through to pendingLeave below
@@ -1309,6 +2224,19 @@ export function getLegalActions(state: GameState): GameAction[] {
 
   if (state.pendingLeave) {
     appendLeaveReactionActions(state, state.pendingLeave.ownerPlayerId, actions);
+    return actions;
+  }
+
+  if (state.pendingGiantBomb && !state.pendingZordSetup) {
+    // RS-255 巨大化爆弾: 使う（カテゴリのホールド→使用）か見送る。
+    const ownerId = state.pendingGiantBomb.ownerId;
+    for (const counterId of giantBombCounterIds(state, ownerId)) {
+      appendCounterCategoryPaymentActions(state, ownerId, counterId, actions);
+      if (canExecuteHandCounter(state, ownerId, counterId)) {
+        actions.push({ type: "play_counter", playerId: ownerId, instanceId: counterId });
+      }
+    }
+    actions.push({ type: "pass_leave_reaction", playerId: ownerId });
     return actions;
   }
 
@@ -1352,7 +2280,7 @@ export function getLegalActions(state: GameState): GameAction[] {
   if (state.pendingRush) {
     appendRushReactionActions(
       state,
-      opponent(state.pendingRush.rusherPlayerId),
+      rushReactorId(state.pendingRush),
       actions,
     );
     return actions;
@@ -1360,6 +2288,16 @@ export function getLegalActions(state: GameState): GameAction[] {
 
   if (state.pendingEffectChoice) {
     const chooserId = state.pendingEffectChoice.playerId;
+    // XG5-064 コンファインベント（敵軍バトルフェイズ開始時に発動できる※カウンター）の使用の窓（rules/xg5/xg5dEffects.ts）。
+    if (state.pendingEffectChoice.effectId === XG5_CONFINE_WINDOW_EFFECT_ID) {
+      for (const card of state.players[chooserId].hand) {
+        if (!isSameCardIdentity(card.cardId, "XG5-064")) continue;
+        appendCounterCategoryPaymentActions(state, chooserId, card.instanceId, actions);
+        if (canExecuteHandCounter(state, chooserId, card.instanceId)) actions.push({ type: "play_counter", playerId: chooserId, instanceId: card.instanceId });
+      }
+      actions.push({ type: "skip_effect_choice", playerId: chooserId });
+      return actions;
+    }
     appendEffectChoiceActions(state, chooserId, actions);
     if (actions.length === 0 && state.pendingEffectChoice.optional) {
       actions.push({ type: "skip_effect_choice", playerId: chooserId });
@@ -1395,9 +2333,20 @@ export function getLegalActions(state: GameState): GameAction[] {
       }
       if (canReturnBattleAtStart(state, playerId)) {
         actions.push({ type: "return_all_battle_to_rush", playerId });
+        // ルール: R-START-01 — 戻す順は任意。2組以上あれば1体ずつ選んで戻せる。
+        const groups = listReturnableStartGroupIds(state, playerId);
+        if (groups.length >= 2) {
+          for (const instanceId of groups) {
+            actions.push({ type: "return_all_battle_to_rush", playerId, instanceId });
+          }
+        }
       }
       if (!player.hasDrawnThisStart) {
         actions.push({ type: "draw", playerId });
+      }
+      // RS-271【修復作業】等、自軍スタートフェイズ中に起動できる場のユニットの効果。
+      for (const unitInstanceId of listFieldActivatedAbilityCards(state, playerId)) {
+        actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
       }
       if (canBonusDraw(state, playerId)) {
         actions.push({ type: "bonus_draw", playerId });
@@ -1445,7 +2394,7 @@ export function getLegalActions(state: GameState): GameAction[] {
             card.instanceId,
           )) {
             if (
-              !canDeclareRush(state, playerId, player, state.definitions, definition!, card.instanceId, variant)
+              !canDeclareRushInEnumeration(state, playerId, definition!, card.instanceId, variant)
             ) {
               continue;
             }
@@ -1458,7 +2407,7 @@ export function getLegalActions(state: GameState): GameAction[] {
               zordMaterialDestination: variant.zordMaterialDestination,
             });
           }
-          if (canDeclareRush(state, playerId, player, state.definitions, definition!, card.instanceId)) {
+          if (canDeclareRushInEnumeration(state, playerId, definition!, card.instanceId)) {
             actions.push({
               type: "rush",
               playerId,
@@ -1466,7 +2415,9 @@ export function getLegalActions(state: GameState): GameAction[] {
             });
           }
         } else if (
-          isUnit(definition) &&
+          // 「自軍「X」1体を手札に戻す」等の追加条件を持つビークル（XG2-074 クウガゴウラム）も、ユニットと同じ支払いの組で列挙する。
+          (isUnit(definition) || (isVehicle(definition) && needsZordExtendedMaterial(state.definitions, card.cardId))) &&
+          (isUnit(definition) || isXg3ZordUpVehicle(card.cardId)) &&
           isZordUpCost(definition!.powerCost) &&
           (rushAdditionalConditionApplies(state, playerId, card.cardId) ||
             requiresAllFusionPartners(card.cardId))
@@ -1478,7 +2429,7 @@ export function getLegalActions(state: GameState): GameAction[] {
             card.instanceId,
           )) {
             if (
-              !canDeclareRush(state, playerId, player, state.definitions, definition!, card.instanceId, variant)
+              !canDeclareRushInEnumeration(state, playerId, definition!, card.instanceId, variant)
             ) {
               continue;
             }
@@ -1493,7 +2444,7 @@ export function getLegalActions(state: GameState): GameAction[] {
               zordExtraCommandHoldInstanceIds: variant.zordExtraCommandHoldInstanceIds,
             });
           }
-        } else if (canDeclareRush(state, playerId, player, state.definitions, definition!, card.instanceId)) {
+        } else if (canDeclareRushInEnumeration(state, playerId, definition!, card.instanceId)) {
           actions.push({
             type: "rush",
             playerId,
@@ -1503,17 +2454,34 @@ export function getLegalActions(state: GameState): GameAction[] {
       }
       appendRushCategoryPaymentActions(state, playerId, actions);
       appendZordSetupActions(state, playerId, actions);
+      // RS-359【最後の手段】: 山札の候補を加えればラッシュを始められるユニット（rules/legend1/icyLastResort.ts）。
+      appendIcyRushActions(state, playerId, actions, (virtual) => {
+        const viaIcy: GameAction[] = [];
+        appendRushCategoryPaymentActions(virtual, playerId, viaIcy);
+        appendZordSetupActions(virtual, playerId, viaIcy);
+        return viaIcy;
+      });
       appendOperationActions(state, playerId, actions);
+      appendMagiTicketActions(state, playerId, actions);
       appendOperationCategoryPaymentActions(state, playerId, actions);
       appendHidoraEggActions(state, playerId, actions);
       appendShironLightActions(state, playerId, actions);
       appendActivateResidentOperationActions(state, playerId, actions);
       appendActivateFieldUnitAbilityActions(state, playerId, actions);
+      expandGodomRushVariants(state, playerId, actions);
       actions.push({ type: "end_phase", playerId });
       break;
 
     case "battle": {
+      // RK-012 宏のオルゴール時計 — バトルフェイズ中に使われたら、そのバトルフェイズを終了する
+      // （grnrngr/faq-rider-1 RK-012「敵軍バトルフェイズ中であっても発動し、そのバトルフェイズを終了させることができますか？」「はい、できます」）。
+      if (battlePhaseSkippedThisTurn(state, playerId)) {
+        actions.push({ type: "end_phase", playerId });
+        break;
+      }
       const enemy = state.players[opponent(playerId)];
+      // RS-524 呉越同舟（自軍バトルフェイズ中に1度だけ。rules/legend1/set8NamedEffectsA.ts）。
+      appendActivateResidentOperationActions(state, playerId, actions);
 
       for (const card of player.rush) {
         if (!canMoveUnitToBattle(state, playerId, card, "rush")) continue;
@@ -1524,13 +2492,40 @@ export function getLegalActions(state: GameState): GameAction[] {
         });
       }
 
+      // ルール: R-BA-04 — 「可能なら出る」ユニットがホールドすれば出られるなら、出さなければならない。
+      // その進入（battle_entry 支払いの開始）を合法手に含める（バトルフェイズを終えられないため）。
+      // ルール: R-ADD-07 — 「自軍コマンドを1つホールドしなければバトルエリアに出られない」ユニット（RS-052・RS-305・RS-316 等）は、
+      // 任意の進入でもホールドして出る行動を合法手に含める（出ないこともできる）。
+      // 「可能なら出る」ユニット（findMandatoryBattleEntries）もこの中に含まれる。
+      for (const card of player.rush) {
+        if (canMoveUnitToBattle(state, playerId, card, "rush")) continue;
+        if (!getBattleEntryPaymentNeeds(state, playerId, card)) continue;
+        actions.push({
+          type: "initiate_command_payment",
+          playerId,
+          kind: "battle_entry",
+          sourceInstanceId: card.instanceId,
+        });
+      }
+
       for (const rider of player.rush) {
         const riderDef = getDefinition(state.definitions, rider.cardId);
         if (!riderDef || !isUnit(riderDef)) continue;
         for (const vehicle of player.rush) {
           if (vehicle.instanceId === rider.instanceId) continue;
           const vehicleDef = getDefinition(state.definitions, vehicle.cardId);
-          if (vehicleDef?.type !== "vehicle") continue;
+          // RK-280・RK-281: ホールド状態の間は S ビークルとして扱う（rules/rk/rk14Fields.ts）。
+          // RM-020 電子星獣ドル: チェイスを持つ自軍ユニットがあれば L ビークルとして扱う（rules/rm/rm1Fields.ts）。
+          if (
+            vehicleDef?.type !== "vehicle" &&
+            !rk14ActsAsVehicle(player, vehicle) &&
+            !rm1ActsAsVehicle(state, playerId, vehicle, (id) => cardHasKeyword(state.definitions, id, "chase")) &&
+            // RM-023 スクーパー: チェイスを持つ自軍ユニットがあれば S ビークルとして扱う（rules/rm/rm2Fields.ts）。
+            !rm2ActsAsVehicle(state, playerId, vehicle, (id) => cardHasKeyword(state.definitions, id, "chase")) &&
+            !xg2ActsAsVehicle(player, vehicle)
+          ) {
+            continue;
+          }
           if (
             canMountRideIntoBattle(
               state,
@@ -1611,8 +2606,15 @@ export function getLegalActions(state: GameState): GameAction[] {
         }
       }
 
+      // XG3-034【キョウリュウマル】で得た「アタックするかわりに」（ルナジェル等の制限下でも発動できる。atwiki/page-1907 Q2）。
+      for (const unit of player.battle) {
+        if (canUseKyouryuumaru(state, playerId, unit.instanceId)) {
+          actions.push({ type: "use_juu_kun_do", playerId, attackerInstanceId: unit.instanceId });
+        }
+      }
       for (const attacker of player.battle) {
         if (battleActBlocked(player, attacker, "attack")) continue;
+        if (rk10WolfBlocks(state, playerId, "attack")) continue;
         if (cannotAttackOrStrikeThisTurn(player, attacker, state, playerId)) continue;
         if (unitCannotInitiateAttack(attacker.cardId)) continue;
         for (const defender of enemy.battle) {
@@ -1655,7 +2657,12 @@ export function getLegalActions(state: GameState): GameAction[] {
           defenderInstanceId: defender.instanceId,
         });
         }
-        if (canUseJuuKunDo(state, playerId, attacker.instanceId)) {
+        if (
+          (canUseJuuKunDo(state, playerId, attacker.instanceId) ||
+            canUseLionDance(state, playerId, attacker.instanceId)) &&
+          !canUseKyouryuumaru(state, playerId, attacker.instanceId)
+        ) {
+          // 「アタックするかわりに」の効果（ジュウクンドー・超忍法・舞獅子）。ルール: R-ATK-05
           actions.push({
             type: "use_juu_kun_do",
             playerId,
@@ -1666,6 +2673,7 @@ export function getLegalActions(state: GameState): GameAction[] {
 
       for (const card of player.battle) {
         if (battleActBlocked(player, card, "strike")) continue;
+        if (rk10WolfBlocks(state, playerId, "strike")) continue;
         if (cannotAttackOrStrikeThisTurn(player, card, state, playerId)) continue;
         if (!canStrikeUnit(state.definitions, card, state, playerId)) continue;
         actions.push({
@@ -1675,6 +2683,10 @@ export function getLegalActions(state: GameState): GameAction[] {
         });
       }
 
+      // RS-042【ジャスティスフラッシャー】等、自軍バトルフェイズ中に起動できる場のユニットの効果。
+      for (const unitInstanceId of listFieldActivatedAbilityCards(state, playerId)) {
+        actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+      }
       appendBattleDanceActions(state, playerId, actions);
       if (!mustEnterBattleBeforePhaseEnd(state, playerId)) {
         actions.push({ type: "end_phase", playerId });
@@ -1691,6 +2703,13 @@ export function getLegalActions(state: GameState): GameAction[] {
 }
 
 export function isLegalAction(state: GameState, action: GameAction): boolean {
+  if (isLegalActionBase(state, action)) return true;
+  // RS-359【最後の手段】: 山札の候補を加えればラッシュを始められる（rules/legend1/icyLastResort.ts）。
+  return icyStateForAction(state, action, isLegalActionBase) !== null;
+}
+
+/** 【最後の手段】を考えない合法判定。 */
+export function isLegalActionBase(state: GameState, action: GameAction): boolean {
   if (state.winner) return false;
 
   if (action.type === "initiate_command_payment") {
@@ -1755,7 +2774,7 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
     return (
       !!pending &&
       damagePaymentChoosingPlayer(pending) === action.playerId &&
-      getValidDamagePowerTargets(state, pending).includes(action.instanceId)
+      getDamagePaymentChoices(state, pending).includes(action.instanceId)
     );
   }
 
@@ -1777,6 +2796,15 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
   }
 
   if (state.pendingRideOffChoice) {
+    // RS-381【獅子の装光】: ライドオフさせるかわりに発動する。
+    if (
+      action.type === "activate_field_unit_ability" &&
+      action.playerId === state.pendingRideOffChoice.playerId &&
+      action.unitInstanceId === state.pendingRideOffChoice.vehicleInstanceId &&
+      lionArmorAvailable(state, action.playerId)
+    ) {
+      return true;
+    }
     return (
       action.type === "resolve_ride_off_choice" &&
       action.playerId === state.pendingRideOffChoice.playerId
@@ -1799,6 +2827,10 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
   const reactionActor = getReactionChooserPlayerId(state);
   if (reactionActor && isReactionWindowAction(action)) {
     if (action.playerId !== reactionActor) return false;
+  } else if (state.pendingEffectChoice?.kind === "simultaneous_order") {
+    // 同時に開いた反応窓（離場・ストライク等）の処理順はターンプレイヤーが選ぶ（R-SIM-01）。
+    // 離場の持ち主より先にこの選択を受け付ける。
+    if (action.playerId !== state.pendingEffectChoice.playerId) return false;
   } else if (state.pendingLeave) {
     if (action.playerId !== state.pendingLeave.ownerPlayerId) return false;
   } else if (state.pendingEffectChoice) {
@@ -1850,6 +2882,11 @@ export function isLegalAction(state: GameState, action: GameAction): boolean {
   return getLegalActions(state).some((candidate) => actionsEqual(candidate, action));
 }
 
+/** RS-586【魔神に不足する物】の選び方の比較用（省略・使わない・選んだユニットを区別する）。 */
+function godomKey(ids: string[] | undefined): string {
+  return ids === undefined ? "auto" : [...ids].sort().join(",");
+}
+
 function actionsEqual(a: GameAction, b: GameAction): boolean {
   if (a.type !== b.type || a.playerId !== b.playerId) return false;
 
@@ -1873,7 +2910,8 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
       matsA === matsB &&
       (a.zordMaterialDestination ?? "") === (b.zordMaterialDestination ?? "") &&
       holdsA === holdsB &&
-      extraA === extraB
+      extraA === extraB &&
+      godomKey(a.godomDiscardInstanceIds) === godomKey(b.godomDiscardInstanceIds)
     );
   }
 
@@ -1918,7 +2956,7 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
   }
 
   if (a.type === "return_all_battle_to_rush" && b.type === "return_all_battle_to_rush") {
-    return a.playerId === b.playerId;
+    return a.playerId === b.playerId && a.instanceId === b.instanceId;
   }
 
   if (a.type === "shiron_light" && b.type === "shiron_light") {
@@ -1980,8 +3018,13 @@ function actionsEqual(a: GameAction, b: GameAction): boolean {
       holdsA === holdsB &&
       (a.targetInstanceId ?? "") === (b.targetInstanceId ?? "") &&
       (a.extraInstanceId ?? "") === (b.extraInstanceId ?? "") &&
-      (a.substituteInstanceId ?? "") === (b.substituteInstanceId ?? "")
+      (a.substituteInstanceId ?? "") === (b.substituteInstanceId ?? "") &&
+      godomKey(a.godomDiscardInstanceIds) === godomKey(b.godomDiscardInstanceIds)
     );
+  }
+
+  if (a.type === "begin_zord_setup" && b.type === "begin_zord_setup") {
+    return a.zordInstanceId === b.zordInstanceId && godomKey(a.godomDiscardInstanceIds) === godomKey(b.godomDiscardInstanceIds);
   }
 
   if (a.type === "skip_effect_choice" && b.type === "skip_effect_choice") {
@@ -2020,4 +3063,30 @@ export function getStrikeableInstanceIds(state: GameState, playerId: PlayerId): 
   return getLegalActions(state)
     .filter((a): a is Extract<typeof a, { type: "strike" }> => a.type === "strike")
     .map((a) => a.instanceId);
+}
+
+/**
+ * 手札からのラッシュの宣言（initiate_command_payment / rush）で、追加条件「追加で自軍コマンドをNつホールドする」の
+ * コマンド（zordExtraCommandHoldInstanceIds）が省かれていて、合法な組が1通りだけならそれを補う。
+ */
+export function withUniqueExtraCommandHolds(state: GameState, action: GameAction): GameAction {
+  if (action.type !== "initiate_command_payment" && action.type !== "rush") return action;
+  if (action.type === "initiate_command_payment" && action.kind !== "category_use") return action;
+  if (action.zordExtraCommandHoldInstanceIds?.length) return action;
+  const source = action.type === "rush" ? action.instanceId : action.sourceInstanceId;
+  const handCard = state.players[action.playerId]?.hand.find((c) => c.instanceId === source);
+  if (!handCard || !needsHoldExtraCommand(state.definitions, handCard.cardId)) return action;
+  const sets = new Set<string>();
+  let unique: string[] | undefined;
+  for (const candidate of getLegalActions(state)) {
+    if (candidate.type !== action.type || candidate.playerId !== action.playerId) continue;
+    const candidateSource = candidate.type === "rush" ? candidate.instanceId : (candidate as { sourceInstanceId?: string }).sourceInstanceId;
+    if (candidateSource !== source) continue;
+    const extra = (candidate as { zordExtraCommandHoldInstanceIds?: string[] }).zordExtraCommandHoldInstanceIds;
+    if (!extra?.length) return action;
+    sets.add([...extra].sort().join(","));
+    unique = extra;
+  }
+  if (sets.size !== 1 || !unique) return action;
+  return { ...action, zordExtraCommandHoldInstanceIds: [...unique] } as GameAction;
 }

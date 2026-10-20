@@ -48,13 +48,13 @@
       "name": "マスターヘッドの加護",
       "text": "これが自軍エリアにある間、自軍ラッシュフェイズを終えるとき、次の効果を発動できる⇒自軍エリアにSユニットが5体以上とLユニットが1体以上あれば、自分は1枚ドローする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "draw",
-          "amount": 1,
-          "player": "controller"
+          "type": "grant_keyword",
+          "keyword": "xg5::XG5-046::master_head",
+          "duration": "permanent"
         }
       ]
     }

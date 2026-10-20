@@ -1012,7 +1012,7 @@ describe("SR semantic grant_keyword rematch", () => {
       rematched?.some(
         (p) =>
           p.type === "grant_keyword" &&
-          p.keyword === "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000",
+          p.keyword === "bp_plus_per_discard_feature_feat_e68190e7ab9c_1000_sp_at_8000",
       ),
     ).toBe(true);
   });
@@ -1049,7 +1049,7 @@ describe("unnamed note grant_keyword rematch", () => {
     },
     {
       text: "※特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない",
-      keyword: "ally_raida_protects_from_enemy_s",
+      keyword: "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
     },
     {
       text: "※これはホールド状態の時SP1になる。",

@@ -4,7 +4,7 @@
   "name": "キカイダー01",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※これは特徴「男」または「女」を持つユニットにアタックすることができない。 ※これは自軍パワーゾーンにオモテ向きのカードが1枚もなければBP-5000される。 【ブラストエンド】SP1特徴「メカ」を持つかカテゴリにDAを持つ敵軍Sユニットを1体選び撃破してもよい。そうしたとき、このターン、これはストライクすることができない。",
@@ -22,13 +22,12 @@
       "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは特徴「男」または「女」を持つユニットにアタックすることができない。",
       "trigger": {
-        "type": "riding_combo"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-091::korehamatahawots",
+          "keyword": "xg5::XG5-091::no_gender_attack",
           "duration": "permanent"
         }
       ]
@@ -37,13 +36,12 @@
       "id": "unnamed_e280bbe38193e3828ce381af_korehapawazo",
       "text": "※これは自軍パワーゾーンにオモテ向きのカードが1枚もなければBP-5000される。",
       "trigger": {
-        "type": "riding_combo"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-091::korehapawazonnio",
+          "keyword": "xg5::XG5-091::no_face_up_power",
           "duration": "permanent"
         }
       ]
@@ -55,38 +53,11 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg5::XG5-091::blast_end",
+          "duration": "turn"
         }
       ]
     }

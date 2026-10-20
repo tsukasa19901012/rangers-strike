@@ -1,3 +1,6 @@
+import { readdirSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { fullPlayableCatalog } from "@rangers-strike/cards";
 import {
@@ -10,6 +13,17 @@ import {
   specsByPrefix,
 } from "./wikiTestSpecs/generated";
 import { WIKI_RULE_COMPLETE_SPECS } from "./wikiTestSpecs/ruleSpecs";
+
+const RULES_DIR = join(dirname(fileURLToPath(import.meta.url)), "../../../docs/rules");
+const RULEBOOK_IDS = new Set(
+  readdirSync(RULES_DIR)
+    .filter((f) => /^\d\d-.*\.md$/.test(f))
+    .flatMap((f) =>
+      [...readFileSync(join(RULES_DIR, f), "utf8").matchAll(/^#### (R-[A-Z0-9-]+)/gm)].map(
+        (m) => m[1]!,
+      ),
+    ),
+);
 
 describe("Wiki complete — all full-playable cards", () => {
   it("has a spec for every catalog card", () => {
@@ -57,9 +71,13 @@ describe("Wiki complete — rule spec registry", () => {
   });
 
   it.each(WIKI_RULE_COMPLETE_SPECS.map((s) => [s.ruleId, s] as const))(
-    "%s has wiki ref and assertions",
+    "%s cites rulebook IDs and has assertions",
     (_id, spec) => {
-      expect(spec.wikiRef.startsWith("docs/wiki/")).toBe(true);
+      const ids = spec.ruleRef.split(", ");
+      for (const id of ids) {
+        expect(id).toMatch(/^R-[A-Z]+(-[A-Z0-9]+)+$/);
+        expect(RULEBOOK_IDS.has(id), `${id} は docs/rules/ に存在しない`).toBe(true);
+      }
       expect(spec.assertions.length).toBeGreaterThan(0);
     },
   );

@@ -21,11 +21,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "operation_enemy_damage_reveal_beast_rush",
+          "keyword": "set9a::RS-607::falcon_summoner",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

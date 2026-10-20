@@ -7,7 +7,7 @@
     "ET",
     "DA"
   ],
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 2,
   "text": "※モーフ 【『お前の罪を数えろ』】これは自軍捨札にSユニットのカードが5枚以上あれば、次の相手ターン中、次の効果を得る⇒これ以外のSユニットがアタックされたとき、アタックされたユニットのかわりにこのユニットがバトルしてもよい。そうしたとき、そのバトル中、これはBP+3000される。",
@@ -42,11 +42,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-084::onowoero",
+          "keyword": "xg5::XG5-084::tsumi",
           "duration": "turn"
         }
       ]

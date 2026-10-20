@@ -31,26 +31,28 @@
       },
       "effects": [
         {
-          "type": "draw",
-          "amount": 1,
-          "player": "controller"
+          "type": "grant_keyword",
+          "keyword": "xg7::XG7-024::chopper_draw",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "chikara_hana",
       "name": "獣力開花",
       "text": "これが自軍エリアにある間、カード名に「サイダイ」を含まない、特徴「激気」を持つユニットは次の能力を得る⇒これがバトルエリアに出たとき、自分自身の手札から、これの必要パワーの数字よりも必要パワーの数字が小さいWBのMユニットのカードを1枚選び、自分自身のラッシュエリアに出してもよい。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-024::chikarahana",
-          "duration": "turn"
+          "keyword": "xg7::XG7-024::bloom",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

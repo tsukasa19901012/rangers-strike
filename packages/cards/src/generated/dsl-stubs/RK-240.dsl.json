@@ -4,7 +4,7 @@
   "name": "仮面ライダー電王CF（2nd）",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": "4+",
   "text": "※これは特徴「仮面ライダー」を持つ自軍ユニットがホールドされたターン「SP1」になる。 【俺達の必殺技】自軍ターン中、これがバトルエリアに出たとき、本来の特徴に「イマジン」を持つ自軍バトルエリアのユニットの数を数えてもよい。そうしたとき、その数以下の必要パワーを持つSユニットを、本来の特徴に「イマジン」を持つ自軍バトルエリアのユニットの数まで選び、持ち主のパワーゾーンに送る。",
@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "rk12::RK-240::sp1_hold_turn",
           "duration": "turn"
         }
       ]
@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-240::no_4",
+          "keyword": "rk12::RK-240::oretachi",
           "duration": "turn"
         }
       ],

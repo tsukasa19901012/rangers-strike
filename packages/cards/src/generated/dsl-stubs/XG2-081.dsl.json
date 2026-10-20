@@ -4,7 +4,7 @@
   "name": "デンオウモモタロス",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "3+",
   "text": "【俺の必殺技・ディケイドバージョン】自軍ターン中、これがバトルエリアに出たとき、自軍ラッシュエリアからホールド状態のSユニットを1体選んでもよい。そうしたとき、選んだユニットをパワーゾーンに送ってから、そのユニットのBP以下のBPを持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。",
@@ -28,12 +28,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-081::nodeikeidobajon",
-          "duration": "turn"
+          "keyword": "xg2::XG2-081::ore_no_hissatsu",
+          "duration": "permanent"
         }
       ]
     }

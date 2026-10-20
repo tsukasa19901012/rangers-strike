@@ -25,7 +25,7 @@
       ]
     },
     {
-      "id": "ride_without_rc_raida",
+      "id": "ride_without_rc_feat_e4bbaee99da2e383a9e382a4e38380e383bc",
       "text": "※特徴「仮面ライダー」を持つ自軍Sユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_raida",
+          "keyword": "ride_without_rc_feat_e4bbaee99da2e383a9e382a4e38380e383bc",
           "duration": "permanent"
         }
       ]

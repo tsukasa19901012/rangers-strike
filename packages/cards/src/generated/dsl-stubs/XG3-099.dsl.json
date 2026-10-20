@@ -4,7 +4,7 @@
   "name": "ロボタックSM",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "7-",
   "text": "※これが撃破されて捨札になったとき、自軍コマンドゾーンか自軍捨札から「ロボタック」のカードを1枚選び、自軍ラッシュエリアに出す。 【RKバー】 敵軍バトルエリアからSユニットを1体選んでもよい。そうしたとき、選んだユニットは、次の相手ターン、アタックもストライクもできない。",
@@ -47,11 +47,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-099::rkba",
+          "keyword": "xg3::XG3-099::rk_bar",
           "duration": "permanent"
         }
       ]

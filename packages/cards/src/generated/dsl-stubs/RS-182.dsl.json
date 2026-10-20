@@ -23,12 +23,25 @@
           "type": "choose",
           "kind": "select_unit",
           "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "self",
-            "filter": {
-              "size": "S"
-            }
+            "type": "zones",
+            "zones": [
+              {
+                "type": "zone",
+                "zone": "rush",
+                "owner": "self",
+                "filter": {
+                  "size": "S"
+                }
+              },
+              {
+                "type": "zone",
+                "zone": "battle",
+                "owner": "self",
+                "filter": {
+                  "size": "S"
+                }
+              }
+            ]
           },
           "count": 1,
           "then": [
@@ -44,12 +57,25 @@
       "condition": {
         "type": "has_target",
         "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "self",
-          "filter": {
-            "size": "S"
-          }
+          "type": "zones",
+          "zones": [
+            {
+              "type": "zone",
+              "zone": "rush",
+              "owner": "self",
+              "filter": {
+                "size": "S"
+              }
+            },
+            {
+              "type": "zone",
+              "zone": "battle",
+              "owner": "self",
+              "filter": {
+                "size": "S"
+              }
+            }
+          ]
         }
       }
     }

@@ -7,7 +7,7 @@
     "MA",
     "OT"
   ],
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 6,
   "text": "※これが自軍パワーゾーンでオモテ向きになっている間、自軍ラッシュフェイズ中、自軍捨札の枚数がこれの必要パワーの数字以上あれば、これを自軍ラッシュエリアに出してもよい。 【暗黒剣】これをラッシュしたとき、自軍捨札の枚数を数えてもよい。そうしたとき、その数以下の必要パワーの数字を持つ追加条件を持たない敵軍ユニットを1体選び、撃破する。",
@@ -46,8 +46,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-083::kene69a97",
-          "duration": "turn"
+          "keyword": "xg3::XG3-083::ankokuken",
+          "duration": "permanent"
         }
       ]
     }

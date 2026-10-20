@@ -54,13 +54,13 @@
       "name": "帽子が似合う男になれ",
       "text": "自軍バトルエリアのSユニットを1体選び、ラッシュエリアに戻してもよい。ただし、戻したユニットはこのターン、再びバトルエリアに出ることはできない。そうしたとき、このターン、このユニットのBPに戻したユニットのBPを「+」する。",
       "trigger": {
-        "type": "while_in_field"
+        "type": "riding_combo"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-054::gauninare",
+          "keyword": "xg6::XG6-054::hat",
           "duration": "permanent"
         }
       ]

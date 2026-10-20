@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_effect_branch",
+          "keyword": "bk1::BK-015::blay_buckle",
           "duration": "turn"
         }
       ],

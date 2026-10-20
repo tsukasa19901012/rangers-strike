@@ -4,7 +4,7 @@
   "name": "仮面ライダー龍騎",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "【タイムベント】敵軍ターン中、これが自軍エリアにある間、これ以外の自軍Sユニットがバトルで撃破されたとき、捨札にするかわりに手札から1枚選びゲームから除外してよい。そうしたとき、撃破されたユニットはその場に留まる。",
@@ -25,11 +25,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-079::taimubento",
+          "keyword": "xg2::XG2-079::time_vent",
           "duration": "permanent"
         }
       ]

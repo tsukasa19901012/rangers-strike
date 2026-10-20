@@ -4,7 +4,7 @@
   "name": "カブトライジャー",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※レジスト 【迅雷流剣技・カブト雷撃破】 敵軍バトルエリアから、DAを持つSユニットを1体選び撃破してもよい。そうして撃破したユニットが捨札になったとき、選んだユニットの本来のSPが1以上だったなら、敵軍捨札からカードを1枚選び、持ち主のパワーゾーンにダメージにして置く。",
@@ -38,32 +38,11 @@
       "trigger": {
         "type": "nc"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg3::XG3-021::kabuto_raigekiha",
+          "duration": "permanent"
         }
       ]
     }

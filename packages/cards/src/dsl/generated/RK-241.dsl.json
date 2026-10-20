@@ -4,7 +4,7 @@
   "name": "仮面ライダーミニ電王SF",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 2,
   "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。 【ムリヤリな変身】これが撃破されて捨札になったとき、自軍捨札から「モモタロス」のカードを1枚選び、自軍ラッシュエリアに出してもよい。",
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-241::muriyarina",
+          "keyword": "rk12::RK-241::muriyari",
           "duration": "turn"
         }
       ],

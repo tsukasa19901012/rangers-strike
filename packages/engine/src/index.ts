@@ -35,6 +35,7 @@ export * from "./rules/reanimate";
 export * from "./rules/commander";
 export * from "./rules/postDamageEffects";
 export * from "./rules/bounce";
+export * from "./rules/revealNotice";
 export {
   isDenjiRevealAudience,
   canActOnDenjiChoice,
@@ -72,15 +73,21 @@ export {
   applyOnRushUnitEffects,
 } from "./rules/onRushUnitEffects";
 export {
+  ATTACK_HOLD_BONUS_EFFECT_ID,
+  ATTACK_HOLD_BP_PER_COMMAND,
+  previewAttackHoldBp,
+} from "./rules/attackHoldBonus";
+export {
   getMorphReactionActorId,
   morphOrderChooserPlayerId,
   morphReplacementChooserPlayerId,
   morphUnitCanReact,
   MORPH_FIELD_ZONES,
   MORPH_REPLACEMENT_ZONES,
-  rushedCardBlocksMorphReaction,
+  rushMethodBlocksMorphReaction,
   shouldMorphOrderChooserAct,
 } from "./rules/morphProcedure";
+export type { RushMethod } from "./rules/morphProcedure";
 export {
   findJointComboTriggersOnEnter,
   isJointComboNumber,

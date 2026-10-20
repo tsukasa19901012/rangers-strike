@@ -22,7 +22,7 @@
       "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは、特徴「女」を持つ敵軍ユニットがあるときストライクできない（この制限は自軍ダメージが4点以上あれば無効になる）。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {

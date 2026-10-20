@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { legend1Catalog, legend2Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
+import { getNumberComboEffect } from "@rangers-strike/cards";
+import { applyNumberComboEffect, numberComboTriggers } from "./rules/numberComboEffects";
 import { canStrikeUnit } from "./rules/combo";
 import { cannotAttackOrStrikeThisTurn } from "./rules/restrictions";
 import {
@@ -105,7 +107,7 @@ describe("RS-051 Super Drill", () => {
     expect(entered.pendingEffectChoice?.kind).toBe("select_hand");
   });
 
-  it("only runs on own turn during battle phase", () => {
+  it("R-ERR-RS051: 自軍ターン中にバトルエリアに出たときだけ発動する", () => {
     expect(
       canRunEnterBattleConditionalEffect(
         createTestState({ phase: "battle", activePlayer: "player1" }),
@@ -126,7 +128,32 @@ describe("RS-051 Super Drill", () => {
         "player1",
         "super_drill",
       ),
+    ).toBe(true);
+    // RS-042【ジャスティスフラッシャー】はエラッタ対象外。従来どおりバトルフェイズ限定。
+    expect(
+      canRunEnterBattleConditionalEffect(
+        createTestState({ phase: "rush", activePlayer: "player1" }),
+        "player1",
+        "justice_flasher",
+      ),
     ).toBe(false);
+  });
+
+  it("R-ERR-RS043: 【ジャッジメントソード】は相手ターンには発動しない", () => {
+    expect(
+      canRunEnterBattleConditionalEffect(
+        createTestState({ phase: "battle", activePlayer: "player2" }),
+        "player1",
+        "judgment_sword",
+      ),
+    ).toBe(false);
+    expect(
+      canRunEnterBattleConditionalEffect(
+        createTestState({ phase: "battle", activePlayer: "player1" }),
+        "player1",
+        "judgment_sword",
+      ),
+    ).toBe(true);
   });
 });
 
@@ -173,7 +200,8 @@ describe("RS-052 Super Shield", () => {
 
 describe("RS-065 Focused Breakthrough", () => {
   it("deals 1 damage when RS-065 destroys SP1 unit", () => {
-    const focused = inst("RS-065", "fb");
+    // ルール: R-ERR-RS065 — 【一点突破】は NC 成立中のみ有効
+    const focused = { ...inst("RS-065", "fb"), activatedNcEffects: ["focused_breakthrough"] };
     const target = inst("TST-UNIT-0", "target");
     const state = createTestState({
       phase: "battle",
@@ -203,7 +231,8 @@ describe("RS-065 Focused Breakthrough", () => {
   });
 
   it("deals 1 damage when RS-065 destroys SP! unit", () => {
-    const focused = inst("RS-065", "fb");
+    // ルール: R-ERR-RS065 — 【一点突破】は NC 成立中のみ有効
+    const focused = { ...inst("RS-065", "fb"), activatedNcEffects: ["focused_breakthrough"] };
     const spBangDef: CardDefinition = {
       id: "TST-SP-BANG",
       name: "SP Bang",
@@ -243,8 +272,54 @@ describe("RS-065 Focused Breakthrough", () => {
     expect(next.players.player2.damage).toBe(1);
   });
 
-  it("does not deal damage when ally destroys non-SP target", () => {
+  it("R-ERR-RS065: NC が成立していなければ SP1 のユニットを撃破してもダメージを与えない", () => {
     const focused = inst("RS-065", "fb");
+    const target = inst("TST-UNIT-0", "target");
+    const state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      definitions: defs,
+      player1: {
+        battle: [focused],
+        command: [heldWbCommand("c1"), heldWbCommand("c2")],
+      },
+      player2: {
+        battle: [target],
+        command: [heldWbCommand("c2")],
+      },
+    });
+
+    const battle = getLegalActions(state).find(
+      (a) =>
+        a.type === "battle" &&
+        a.attackerInstanceId === focused.instanceId &&
+        a.defenderInstanceId === target.instanceId,
+    );
+    expect(battle).toBeDefined();
+    const next = unwrap(applyAction(state, battle!));
+    expect(next.players.player2.battle).toHaveLength(0);
+    expect(next.players.player2.damage).toBe(0);
+  });
+
+  it("R-ERR-RS065: CN3 の位置に出ると【一点突破】が NC として発動する", () => {
+    const focused = inst("RS-065", "fb");
+    const before = [inst("TST-UNIT-0", "a"), inst("TST-UNIT-0", "b")];
+    const state = createTestState({
+      phase: "battle",
+      activePlayer: "player1",
+      definitions: defs,
+      player1: { battle: [...before, focused] },
+    });
+    expect(getNumberComboEffect("RS-065")).toBe("focused_breakthrough");
+    const def = defs["RS-065"]!;
+    expect(numberComboTriggers(state, "player1", focused, def, 3, before)).toBe(true);
+    const after = applyNumberComboEffect(state, "player1", focused, "focused_breakthrough").state;
+    expect(after.players.player1.battle[2]?.activatedNcEffects).toContain("focused_breakthrough");
+  });
+
+  it("does not deal damage when ally destroys non-SP target", () => {
+    // ルール: R-ERR-RS065 — 【一点突破】は NC 成立中のみ有効
+    const focused = { ...inst("RS-065", "fb"), activatedNcEffects: ["focused_breakthrough"] };
     const striker = inst("TST-UNIT-2", "striker");
     const target: CardDefinition = {
       ...TEST_DEFINITIONS["TST-UNIT-2"]!,

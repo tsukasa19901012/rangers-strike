@@ -8,7 +8,7 @@
     "OT",
     "MA"
   ],
-  "rarity": "N",
+  "rarity": "SC",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "これを使用するためにホールドしたコマンドのカテゴリごとに、次の効果を発動できる→ ◎WBなら、敵軍Sユニットを１体選び、ゲームから除外する。 ◎OTなら、自軍Sユニットを１体選ぶ。このターン、選んだユニットは「SP1」になる。 ◎MAなら、自分は３枚ドローする。",
@@ -25,8 +25,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::SX-008::korewosurutameni",
-          "duration": "permanent"
+          "keyword": "promo::SX-008::trilogy",
+          "duration": "turn"
         }
       ]
     }

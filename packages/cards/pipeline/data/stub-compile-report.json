@@ -1,6 +1,6 @@
 {
   "summary": {
-    "generatedAt": "2026-06-29T15:57:08.119Z",
+    "generatedAt": "2026-10-10T07:54:52.408Z",
     "grades": [
       "A",
       "B",
@@ -9,9 +9,9 @@
       "E"
     ],
     "prefix": null,
-    "batchTargets": 797,
-    "batchCompiled": 797,
-    "batchValidationOk": 797,
+    "batchTargets": 9,
+    "batchCompiled": 9,
+    "batchValidationOk": 9,
     "totalEntries": 1670,
     "totalDslFiles": 1849,
     "validationOk": 1668,
@@ -454,18 +454,18 @@
     },
     {
       "id": "PR-015",
-      "grade": "A",
+      "grade": "C",
       "validationOk": true,
-      "effectCount": 0,
+      "effectCount": 1,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
     },
     {
       "id": "PR-016",
-      "grade": "A",
+      "grade": "C",
       "validationOk": true,
-      "effectCount": 0,
+      "effectCount": 3,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -9274,27 +9274,27 @@
     },
     {
       "id": "XG1-028",
-      "grade": "A",
+      "grade": "E",
       "validationOk": true,
-      "effectCount": 0,
+      "effectCount": 3,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
     },
     {
       "id": "XG1-029",
-      "grade": "A",
+      "grade": "C",
       "validationOk": true,
-      "effectCount": 0,
+      "effectCount": 2,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
     },
     {
       "id": "XG1-030",
-      "grade": "A",
+      "grade": "D",
       "validationOk": true,
-      "effectCount": 0,
+      "effectCount": 3,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -9456,7 +9456,7 @@
       "id": "XG1-048",
       "grade": "D",
       "validationOk": true,
-      "effectCount": 3,
+      "effectCount": 2,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -9580,9 +9580,9 @@
     },
     {
       "id": "XG1-062",
-      "grade": "A",
+      "grade": "C",
       "validationOk": true,
-      "effectCount": 0,
+      "effectCount": 2,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -10050,7 +10050,7 @@
       "id": "XG2-014",
       "grade": "D",
       "validationOk": true,
-      "effectCount": 3,
+      "effectCount": 2,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -10894,9 +10894,9 @@
     },
     {
       "id": "XG3-005",
-      "grade": "A",
+      "grade": "C",
       "validationOk": true,
-      "effectCount": 0,
+      "effectCount": 2,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -11814,7 +11814,7 @@
       "id": "XG4-004",
       "grade": "D",
       "validationOk": true,
-      "effectCount": 3,
+      "effectCount": 2,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -11985,7 +11985,7 @@
       "id": "XG4-023",
       "grade": "C",
       "validationOk": true,
-      "effectCount": 3,
+      "effectCount": 2,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -12820,9 +12820,9 @@
     },
     {
       "id": "XG5-014",
-      "grade": "A",
+      "grade": "E",
       "validationOk": true,
-      "effectCount": 0,
+      "effectCount": 3,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -13693,9 +13693,9 @@
     },
     {
       "id": "XG6-015",
-      "grade": "A",
+      "grade": "C",
       "validationOk": true,
-      "effectCount": 0,
+      "effectCount": 2,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true
@@ -13956,7 +13956,7 @@
       "id": "XG6-044",
       "grade": "D",
       "validationOk": true,
-      "effectCount": 4,
+      "effectCount": 3,
       "handler": "interpreter",
       "warnings": [],
       "wikiFound": true

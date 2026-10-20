@@ -1,4 +1,5 @@
 import type { EffectDefinition } from "../dsl/types";
+import { featureKeywordSlug } from "./featureSlug";
 import { canonicalCardName } from "../cardName";
 import type { ExtractedEffect, WikiEffectSegment } from "./types";
 import { slugifyEffectId, noteEffectIdFromBody } from "./metaMaps";
@@ -235,7 +236,7 @@ export const NOTE_BULK_PATTERNS: PatternMatch[] = [
         body,
       ),
     build: (body, segment) => {
-      const feature = slugifyEffectId(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
+      const feature = featureKeywordSlug(body.match(/特徴「([^」]+)」/)?.[1] ?? "feature");
       const holds = body.match(/コマンドを(\d+)つ/)?.[1] ?? "2";
       return noteKw(
         `feature_s_ride_vehicle_hold_${holds}_commands::${feature}`,

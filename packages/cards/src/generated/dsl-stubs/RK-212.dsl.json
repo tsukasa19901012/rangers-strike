@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-212::reibareto",
+          "keyword": "rk11::RK-212::ray_bullet",
           "duration": "turn"
         }
       ],

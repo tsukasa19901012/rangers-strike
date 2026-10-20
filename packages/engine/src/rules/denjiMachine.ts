@@ -99,7 +99,7 @@ export function startDenjiMachineChoice(
   const toBottomInstanceIds: string[] = [];
 
   for (const card of revealed) {
-    if (isSmallUnit(state.definitions, card.cardId)) {
+    if (isSmallUnit(state.definitions, card)) {
       toHandInstanceIds.push(card.instanceId);
     } else {
       toBottomInstanceIds.push(card.instanceId);

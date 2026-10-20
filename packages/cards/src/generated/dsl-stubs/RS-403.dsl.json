@@ -4,7 +4,7 @@
   "name": "デカレッド（2nd）",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "【ハイブリッドマグナム】敵軍ラッシュエリアから、BPの下三桁が500の敵軍Sユニットを1体選び、撃破してもよい。",
@@ -35,7 +35,8 @@
             "zone": "rush",
             "owner": "opponent",
             "filter": {
-              "size": "S"
+              "size": "S",
+              "bpLastThreeDigits": 500
             }
           },
           "count": 1,
@@ -57,7 +58,8 @@
           "zone": "rush",
           "owner": "opponent",
           "filter": {
-            "size": "S"
+            "size": "S",
+            "bpLastThreeDigits": 500
           }
         }
       }

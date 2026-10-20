@@ -4,7 +4,7 @@
   "name": "ジャンパーソン",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） ※これは特徴「男」または「女」を持つユニットにアタックできない。 【ジャンデジック】敵軍バトルエリアにある、特徴「男」または「女」を持たないSユニットを、すべて持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-044::jandejiku",
+          "keyword": "rm3::RM-044::jandejiku",
           "duration": "turn"
         }
       ]

@@ -4,7 +4,7 @@
   "name": "仮面ライダー斬鬼",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※自軍ラッシュフェイズ中、このユニットをホールドしてもよい。そうしたとき、このユニット以外の自軍Sユニットを1体選びリリースする。 【蘇る雷】これが自軍捨札にある間、自軍ラッシュフェイズ中、自分の手札から特徴「ディスクアニマル」を持つカードを1枚選び捨札にしてもよい。そうしたとき、これを自軍ラッシュエリアに出す。",
@@ -22,13 +22,13 @@
       "id": "unnamed_e280bbe887aae8bb8de383a9",
       "text": "※自軍ラッシュフェイズ中、このユニットをホールドしてもよい。そうしたとき、このユニット以外の自軍Sユニットを1体選びリリースする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG3-058::rashufueizukonoy",
+          "keyword": "xg3::XG3-058::zanki_note",
           "duration": "permanent"
         }
       ]
@@ -40,11 +40,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-058::rukami",
+          "keyword": "xg3::XG3-058::yomigaeru",
           "duration": "permanent"
         }
       ]

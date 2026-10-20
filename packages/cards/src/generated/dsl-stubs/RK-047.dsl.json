@@ -29,11 +29,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_hold_commands_then",
+          "keyword": "rk3::RK-047::raiden_gekishin",
           "duration": "turn"
         }
       ],
-      "optional": true,
+      "optional": false,
       "condition": {
         "type": "has_target",
         "target": {

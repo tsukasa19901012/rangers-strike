@@ -24,11 +24,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_hand_rush_deploy::daburudoraibawotsukomand",
+          "keyword": "xg3::XG3-078::hand_deploy",
           "duration": "permanent"
         }
       ]
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-078::rimokon",
+          "keyword": "xg3::XG3-078::rimokon",
           "duration": "permanent"
         }
       ]

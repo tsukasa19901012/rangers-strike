@@ -4,7 +4,7 @@
   "name": "シンクレッダー",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※レジスト ※これがリリース状態で自軍コマンドゾーンにある間、相手にストライクされたとき、これを捨札にしてそのストライクを無効にしてもよい。 【ヘビーサイクロン】SP1 （この効果は「ドラフトブルース」または「ドラフトキース」からコンビネーションするときはナンバーに関係なく発動する）",
@@ -60,8 +60,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-067::hebisaikuron",
-          "duration": "permanent"
+          "keyword": "SP1",
+          "duration": "turn"
         }
       ]
     }

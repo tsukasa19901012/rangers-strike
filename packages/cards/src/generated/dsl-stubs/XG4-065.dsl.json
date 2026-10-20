@@ -7,7 +7,7 @@
     "WB",
     "DA"
   ],
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※特徴「ダブルドライバー」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。 【飛行】これにライドしているユニットは次の能力を得る⇒「ウイング」",
@@ -38,15 +38,16 @@
       "name": "飛行",
       "text": "これにライドしているユニットは次の能力を得る⇒「ウイング」",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-065::fxunknowne9a39b",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-065::flight",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

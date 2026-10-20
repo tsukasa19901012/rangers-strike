@@ -311,8 +311,17 @@ describe("land balkan RS-005", () => {
     const result = applyAction(state, action!);
     expect(result.ok).toBe(true);
     if (!result.ok) return;
+    // 「出してもよい」— 候補が1枚でも出すカードを選ぶ（atwiki/page-249）。
+    expect(result.state.pendingEffectChoice?.validInstanceIds).toEqual([sCmd.instanceId]);
+    const picked = applyAction(result.state, {
+      type: "resolve_effect_choice",
+      playerId: "player1",
+      instanceId: sCmd.instanceId,
+    });
+    expect(picked.ok).toBe(true);
+    if (!picked.ok) return;
 
-    expect(result.state.players.player1.rush.some((c) => c.instanceId === sCmd.instanceId)).toBe(
+    expect(picked.state.players.player1.rush.some((c) => c.instanceId === sCmd.instanceId)).toBe(
       true,
     );
   });
@@ -576,11 +585,21 @@ describe("super brain RS-008", () => {
     });
     state.definitions["RS-008"] = def("RS-008");
 
-    const result = applyAction(state, { type: "draw", playerId: "player1" });
+    const drawn = applyAction(state, { type: "draw", playerId: "player1" });
+    expect(drawn.ok).toBe(true);
+    if (!drawn.ok) return;
+    // どちらを手札に残すかは自分で選ぶ（atwiki/page-275）。
+    expect(drawn.state.pendingEffectChoice?.validInstanceIds).toHaveLength(2);
+    const result = applyAction(drawn.state, {
+      type: "resolve_effect_choice",
+      playerId: "player1",
+      instanceId: drawn.state.pendingEffectChoice!.validInstanceIds[1]!,
+    });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
     expect(result.state.players.player1.hand).toHaveLength(1);
+    expect(result.state.players.player1.hand[0]!.instanceId).toBe(drawn.state.pendingEffectChoice!.validInstanceIds[1]);
     expect(result.state.players.player1.discard).toHaveLength(1);
     expect(result.state.players.player1.deck).toHaveLength(1);
   });

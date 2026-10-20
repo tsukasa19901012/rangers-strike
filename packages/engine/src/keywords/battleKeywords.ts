@@ -1,22 +1,33 @@
+import { xg6GrantsBlast } from "../rules/xg6/xg6Fields";
+import { rm1GrantsScrum } from "../rules/rm/rm1Fields";
+import { xg5BlocksOwnTurnHold, xg5GrantsScrum } from "../rules/xg5/xg5Fields";
+import { xg7RiderCross } from "../rules/xg7/xg7Fields";
 import type { Category } from "@rangers-strike/cards";
+import { rk9EnemyKeywordsNullified } from "../rules/rk/rk9Fields";
+import { set9ATaxisCategory } from "../rules/legend1/set9NamedEffectsA";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
-import { sameCanonicalCardName } from "@rangers-strike/cards";
+import { sameCanonicalCardName, textHasKeywordNotation } from "@rangers-strike/cards";
+import type { KeywordNotationLabel } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
-import { WIN_DAMAGE } from "../types/game";
 import { cardHasKeyword } from "./cardKeywords";
-import { getDefinition, isLargeUnit } from "../core/catalog";
+import { getDefinition, isLargeUnit, isSmallUnit, unitSizeOf } from "../core/catalog";
+import { loseDamageThreshold } from "../core/createGame";
 import {
   addTurnRestrictionModifier,
   clearTurnRestrictionModifiersForInstance,
 } from "../core/scopedModifiers";
 import { cardHasGrantKeyword, listCardGrantKeywords, stackedEquipmentGrantsWing } from "../dsl/promotedKeywordBridge";
 import { battlePositionOneBased } from "../rules/fractionalSp";
-import { logicalBattlePosition } from "../rules/battleLine";
 import { srBigBatonTaxisCategory } from "../rules/srEffects";
 import { isBattleBlocked, markBattleBlocked } from "../rules/turnModifiers";
 import { RESTRICTION_IDS } from "../types/scopedModifiers";
 import { findInZone, updatePlayer } from "../core/helpers";
+import { riddenVehicleGrantsScrum } from "../rules/legend1/set7NamedEffectsB";
+import { hasBakiBakiExtraAttack } from "../rules/turnModifierBridge";
+import { xg4RiddenVehicleGrantsWing } from "../rules/xg4/xg4Fields";
+import { unitFeatures } from "../rules/addedFeatures";
+import { featuresMatchKeywordSlug } from "../dsl/featureKeywords";
 
 const TAXIS_POSITION: Record<Category, number> = {
   WB: 1,
@@ -45,18 +56,17 @@ export function cardHasBattleKeyword(
     return crossValueForCard(cardId) > 0 || cardHasGrantKeyword(cardId, "cross1");
   }
   if (cardHasGrantKeyword(cardId, keyword)) return true;
-  const labels: Record<string, string[]> = {
-    blast: ["blast", "ブラスト"],
-    breaker: ["breaker", "ブレイカー"],
-    scrum: ["scrum", "スクラム"],
-    taxis: ["taxis", "タクス"],
+  // ルール: R-KW-00 — 本文の「※キーワード」表記だけを見る（【モスブレイカー】等の効果名は除外）。
+  const labels: Record<"blast" | "breaker" | "scrum" | "taxis", KeywordNotationLabel> = {
+    blast: "ブラスト",
+    breaker: "ブレイカー",
+    scrum: "スクラム",
+    taxis: "タクス",
   };
-  const def = definitions[cardId];
-  if (!def?.text) return false;
-  return labels[keyword]?.some((label) => def.text!.includes(label)) ?? false;
+  return textHasKeywordNotation(definitions[cardId]?.text, labels[keyword]);
 }
 
-/** 左側ユニットのクロス合計（以降ユニットの CN / 分数 SP 繰り上げ）。 */
+/** 左側ユニットのクロス合計。ルール: R-KW-CROSS-01, R-KW-CROSS-02 */
 export function crossShiftLeftOf(
   battle: CardInstance[],
   index: number,
@@ -64,20 +74,31 @@ export function crossShiftLeftOf(
   let shift = 0;
   for (let i = 0; i < index; i += 1) {
     shift += crossValueForCard(battle[i]!.cardId);
+    // このターン得たクロス（XG7-015【ボウケンジャーになれ】等。rules/xg7/xg7aEffects.ts）。
+    shift += battle[i]!.xg7Turn?.cross ?? 0;
+    // XG7-031 新サイクロン号にライドしている「仮面ライダー1号」「仮面ライダー2号」（rules/xg7/xg7Fields.ts）。
+    shift += xg7RiderCross(battle, i);
   }
   return shift;
 }
 
-export function crossAdjustedBattlePosition(
+/** バトルエリアのユニットに左側のクロスが与える減少量 X（バトルエリアにいなければ 0）。 */
+export function crossReductionFor(
   battle: CardInstance[],
   instanceId: string,
-): number | null {
+): number {
   const index = battle.findIndex((c) => c.instanceId === instanceId);
-  if (index < 0) return null;
-  const logical = logicalBattlePosition(battle, instanceId);
-  if (logical === null) return null;
-  const shift = crossShiftLeftOf(battle, index);
-  return Math.max(1, logical - shift);
+  if (index < 0) return 0;
+  return crossShiftLeftOf(battle, index);
+}
+
+/**
+ * クロス: ナンバーの数字と分数 SP の分母を X 少なくする。ただし 2 より少なくならない
+ * （元が 2 未満なら変えない）。並び順は変わらない。ルール: R-KW-CROSS-01
+ */
+export function crossReducedNumber(value: number, reduction: number): number {
+  if (reduction <= 0 || value < 2) return value;
+  return Math.max(2, value - reduction);
 }
 
 export function parseTaxisCategory(cardId: string): Category | null {
@@ -101,7 +122,9 @@ export function taxisSpFloor(
   const left = player.battle[index - 1]!;
   const taxisCategory =
     parseTaxisCategory(left.cardId) ??
-    srBigBatonTaxisCategory(state, playerId, left.cardId);
+    srBigBatonTaxisCategory(state, playerId, left.cardId) ??
+    // RS-610 秘伝ディスク: 特徴「侍」を持つユニットはタクスMA を得る（rules/legend1/set9NamedEffectsA.ts）。
+    set9ATaxisCategory(state, playerId, left);
   if (!taxisCategory) return 0;
 
   const holderPosition = index;
@@ -109,8 +132,29 @@ export function taxisSpFloor(
 
   const def = getDefinition(state.definitions, instance.cardId);
   if (!def || def.type !== "unit") return 0;
+  // ルール: R-KW-TAKUS-01 — 対象は指定カテゴリを持つ「S ユニット」だけ。
+  if (!isSmallUnit(state.definitions, instance)) return 0;
   if (!cardCategories(def).includes(taxisCategory)) return 0;
   return 1;
+}
+
+const FEATURE_POSITION_SP_RE = /^battle_position_sp_(.+)_pos2_sp1$/;
+
+/** battle_position_sp_<特徴 slug>_pos2_sp1（any 以外）: 特徴を持つ S ユニットがバトルエリアの2番目なら SP1。 */
+function featurePositionSpFloor(state: GameState, playerId: PlayerId, instance: CardInstance): number {
+  const index = state.players[playerId].battle.findIndex((c) => c.instanceId === instance.instanceId);
+  if (index !== 1) return 0;
+  const def = getDefinition(state.definitions, instance.cardId);
+  if (!def || def.type !== "unit" || unitSizeOf(state.definitions, instance) !== "S") return 0;
+  const features = unitFeatures(state, playerId, instance);
+  for (const source of [...state.players.player1.rush, ...state.players.player2.rush]) {
+    for (const keyword of listCardGrantKeywords(source.cardId)) {
+      const m = keyword.match(FEATURE_POSITION_SP_RE);
+      if (!m || m[1] === "any") continue;
+      if (featuresMatchKeywordSlug(features, m[1]!)) return 1;
+    }
+  }
+  return 0;
 }
 
 /**
@@ -123,7 +167,12 @@ export function fieldPositionSpFloor(
   instance: CardInstance,
 ): number {
   const player = state.players[playerId];
-  const hasSource = player.rush.some((c) =>
+  // RS-501 エレハン・キンポー【遊びの中に修行あり】: 「これが自軍ラッシュエリアにある間、特徴「イエロー」を持つすべての
+  // Sユニットは次の能力を得る⇒バトルエリアで2番目に並んだとき「SP1」になる。」（atwiki/page-742）— 特徴で絞る
+  // battle_position_sp_<特徴>_pos2_sp1。自軍・敵軍の限定はない。
+  if (featurePositionSpFloor(state, playerId, instance) > 0) return 1;
+  // 自軍と敵軍のラッシュエリアのロボタフが対象（faq-card-6 RS-430 Q3）。
+  const hasSource = [...state.players.player1.rush, ...state.players.player2.rush].some((c) =>
     cardHasGrantKeyword(c.cardId, "battle_position_sp_any_pos2_sp1"),
   );
   if (!hasSource) return 0;
@@ -133,7 +182,7 @@ export function fieldPositionSpFloor(
   if (index + 1 !== 2) return 0;
 
   const def = getDefinition(state.definitions, instance.cardId);
-  if (!def || def.type !== "unit" || def.size !== "S") return 0;
+  if (!def || def.type !== "unit" || unitSizeOf(state.definitions, instance) !== "S") return 0;
   if (!cardCategories(def).includes("WB")) return 0;
   if (def.rushAdditionalCondition) return 0;
   return 1;
@@ -153,12 +202,22 @@ export function scrumBlocksAttack(
   defenderPlayerId: PlayerId,
   defenderInstanceId: string,
 ): boolean {
+  // RK-175 新1号【ライダーキック】: このターン、敵軍ユニットのスクラムは無効（rules/rk/rk9Fields.ts）。
+  if (rk9EnemyKeywordsNullified(state, defenderPlayerId)) return false;
   const player = state.players[defenderPlayerId];
   const defenderIndex = player.battle.findIndex((c) => c.instanceId === defenderInstanceId);
   if (defenderIndex < 0) return false;
 
   const defender = player.battle[defenderIndex]!;
-  if (!cardHasBattleKeyword(state.definitions, defender.cardId, "scrum")) {
+  if (
+    !cardHasBattleKeyword(state.definitions, defender.cardId, "scrum") &&
+    // RS-467 ギンガルコン【風の星獣】: ライドしたユニットがある間、WB の自軍 S ユニットはスクラムを得る（rules/legend1/set7NamedEffectsB.ts）。
+    !riddenVehicleGrantsScrum(state, defenderPlayerId, defender) &&
+    // RM-013 BSフォーメーション: 特徴「ブルー」「スワット」を持つ自軍ユニットはスクラムを得る（rules/rm/rm1Fields.ts）。
+    !rm1GrantsScrum(state, defenderPlayerId, unitFeatures(state, defenderPlayerId, defender)) &&
+    // XG5-001 ゴーグルレッド ※・XG5-041 ゴセイイエロー【兄妹の絆】（rules/xg5/xg5Fields.ts）。
+    !xg5GrantsScrum(state, defenderPlayerId, defender)
+  ) {
     return false;
   }
 
@@ -174,16 +233,22 @@ export function scrumBlocksAttack(
   return rightCn === defenderCn + 1;
 }
 
-/** ブレイカー: 敵ユニット/ビークル効果の対象にならない（ブレイカー同士は可）。 */
+/**
+ * ブレイカー: 自軍エリアにある間、ブレイカーを持たない敵軍ユニット／敵軍ビークルの効果に選ばれない。
+ * オペレーションの効果では選べる（防ぐのはユニット／ビークルの効果だけ）。
+ * 発生源が不明な呼び出しは従来どおり敵軍ユニットの効果として扱う。
+ * ルール: R-KW-BREAKER-01, R-KW-BREAKER-03
+ */
 export function breakerBlocksEffectTarget(
   definitions: Record<string, CardDefinition>,
   targetCardId: string,
   sourceCardId?: string,
 ): boolean {
   if (!cardHasBattleKeyword(definitions, targetCardId, "breaker")) return false;
-  if (sourceCardId && cardHasBattleKeyword(definitions, sourceCardId, "breaker")) {
-    return false;
-  }
+  if (!sourceCardId) return true;
+  const sourceType = getDefinition(definitions, sourceCardId)?.type;
+  if (sourceType && sourceType !== "unit" && sourceType !== "vehicle") return false;
+  if (cardHasBattleKeyword(definitions, sourceCardId, "breaker")) return false;
   return true;
 }
 
@@ -191,7 +256,11 @@ export function cardHasNotSelectableExceptAttack(cardId: string): boolean {
   return cardHasGrantKeyword(cardId, "not_selectable_except_attack");
 }
 
-/** ブレイカー同名制限: ブレイカー持ち同名が場にいるとラッシュ不可。 */
+/**
+ * ブレイカー同名制限: 本来のカード名が同名の自軍ユニット／ビークルが場にあれば、ブレイカー持ちはラッシュできない。
+ * 場の同名カードがブレイカーを持つかどうかは問わない。逆にブレイカーを持たないカードは制限されない。
+ * ルール: R-KW-BREAKER-01, R-KW-BREAKER-02
+ */
 export function breakerBlocksSameNameRush(
   player: { rush: CardInstance[]; battle: CardInstance[] },
   definitions: Record<string, CardDefinition>,
@@ -205,34 +274,45 @@ export function breakerBlocksSameNameRush(
     for (const card of player[zone]) {
       const def = getDefinition(definitions, card.cardId);
       if (!def?.name || !sameCanonicalCardName(def.name, rushingName)) continue;
-      if (cardHasBattleKeyword(definitions, card.cardId, "breaker")) {
-        return true;
-      }
+      if (def.type === "unit" || def.type === "vehicle") return true;
     }
   }
   return false;
 }
 
-/** ブラスト: 敗北直前（ダメージ WIN-1）または表パワー≤1 で追加条件スキップ。 */
+/**
+ * ブラスト: 負けるまで残りダメージ1点で、自軍 L ユニットが1体もなければ追加条件を満たさなくてよい。
+ * ルール: R-KW-BLAST-01（敗北の閾値は命の泉等で変わる: R-KW-BLAST-02）
+ */
 export function blastBypassesRushAdditionalCondition(
   state: Pick<GameState, "players" | "definitions">,
   playerId: PlayerId,
   rushingCardId: string,
 ): boolean {
-  if (!cardHasBattleKeyword(state.definitions, rushingCardId, "blast")) return false;
+  // XG6-004 フルブラスト・アクション: このターン、手札の BP16000 以下の L ユニットのカードはブラストを得る（rules/xg6/xg6Fields.ts）。
+  if (!cardHasBattleKeyword(state.definitions, rushingCardId, "blast") && !xg6GrantsBlast(state, playerId, rushingCardId)) return false;
   const player = state.players[playerId];
-  if (player.damage >= WIN_DAMAGE - 1) return true;
-  const faceUp = player.power.filter((c) => !c.faceDown).length;
-  return faceUp <= 1;
+  const remaining = loseDamageThreshold(state, playerId) - player.damage;
+  // ルール: R-KW-BLAST-02 — XG2-034 ブラストバギーが（どちらかの）エリアにある間は残り1点または2点。
+  const maxRemaining = blastRuleChangedByBuggy(state) ? 2 : 1;
+  if (remaining < 1 || remaining > maxRemaining) return false;
+  return !playerHasAllyLargeUnit(state, playerId);
+}
+
+/** XG2-034 ブラストバギー（【奇襲】）がいずれかのプレイヤーのエリアにあるか。変更後のルールは敵軍にも適用される。 */
+function blastRuleChangedByBuggy(state: Pick<GameState, "players" | "definitions">): boolean {
+  return (["player1", "player2"] as const).some((pid) =>
+    [...state.players[pid].rush, ...state.players[pid].battle].some((c) => c.cardId === "XG2-034"),
+  );
 }
 
 export function playerHasAllyLargeUnit(
-  state: GameState,
+  state: Pick<GameState, "players" | "definitions">,
   playerId: PlayerId,
 ): boolean {
   const player = state.players[playerId];
   for (const zone of ["rush", "battle"] as const) {
-    if (player[zone].some((c) => isLargeUnit(state.definitions, c.cardId))) {
+    if (player[zone].some((c) => isLargeUnit(state.definitions, c))) {
       return true;
     }
   }
@@ -257,19 +337,21 @@ export function powerZoneHasMorphUnitCard(
   });
 }
 
+/** RK-294【ブラッドベセル】を NC で発動したプレイヤーの記録（このターン。rules/rk/rk14UnitEffects.ts が書く）。 */
+export const RK14_BLOOD_VESSEL_RULE = "rk294_blood_vessel";
+
+/**
+ * RK-294 仮面ライダーサソードMF【ブラッドベセル】（CN1 の NC）「このターン、自軍ユニットがストライクして、相手が自分自身のパワーゾーンのカードを
+ * ウラ向きにしてダメージにするとき、相手は自分自身のパワーゾーンにモーフを持つユニットカードがあれば、それを選びダメージにする。」（atwiki/page-1340）
+ * NC を発動したターンだけ（場にあるだけでは発動しない）。
+ */
 export function isBloodVesselStrikeActive(
   state: GameState,
   strikerOwnerId: PlayerId,
 ): boolean {
-  const player = state.players[strikerOwnerId];
-  for (const zone of ["rush", "battle"] as const) {
-    for (const card of player[zone]) {
-      if (cardHasGrantKeyword(card.cardId, "blood_vessel_on_strike")) {
-        return true;
-      }
-    }
-  }
-  return false;
+  return (state.players[strikerOwnerId].modifiers ?? []).some(
+    (m) => m.kind === "rule" && m.ruleId === RK14_BLOOD_VESSEL_RULE && m.scope === "turn",
+  );
 }
 
 export function canWingAttackFromRush(
@@ -280,12 +362,16 @@ export function canWingAttackFromRush(
   if (state.phase !== "battle") return false;
   if (
     !cardHasKeyword(state.definitions, unit.cardId, "wing", { state, playerId }) &&
-    !stackedEquipmentGrantsWing(unit)
+    !stackedEquipmentGrantsWing(unit) &&
+    !xg4RiddenVehicleGrantsWing(state, playerId, unit)
   ) {
     return false;
   }
-  if (unit.battleActed) return false;
+  // 「追加でアタックできる」（RS-167 と同じ記録。XG4-060【フォトンブレイカー】等）を得ていれば、アタックしたあとでもラッシュエリアからアタックできる。
+  if (unit.battleActed && !hasBakiBakiExtraAttack(state.players[playerId], unit.instanceId)) return false;
   if (!unit.commandHeld) return false;
+  // ルール: R-HOLD-03 — レジストのホールドはウイングのホールドの代わりにならない。
+  if (unit.registerHeld) return false;
   const inRush = state.players[playerId].rush.some((c) => c.instanceId === unit.instanceId);
   return inRush;
 }
@@ -298,13 +384,17 @@ export function canHoldForWing(
   if (state.phase !== "battle") return false;
   if (
     !cardHasKeyword(state.definitions, unit.cardId, "wing", { state, playerId }) &&
-    !stackedEquipmentGrantsWing(unit)
+    !stackedEquipmentGrantsWing(unit) &&
+    !xg4RiddenVehicleGrantsWing(state, playerId, unit)
   ) {
     return false;
   }
-  if (unit.battleActed) return false;
+  // ルール: R-KW-WING-02 — バトルエリアに出られない制限を受けていても発動できる。
+  // ルール: R-KW-WING-03 — ウイングでアタックした後もリリースされれば同じターンに再び発動できる
+  // （発動できるかはリリース状態かどうかだけで決まる）。
   if (unit.commandHeld) return false;
-  if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
+  // XG5-025【上空からの牽制】: 敵軍のこれがあれば、自分自身のターン中はホールドできない（rules/xg5/xg5Fields.ts）。
+  if (xg5BlocksOwnTurnHold(state, playerId)) return false;
   return state.players[playerId].rush.some((c) => c.instanceId === unit.instanceId);
 }
 
@@ -317,10 +407,19 @@ export function applyHoldForWing(
   const found = findInZone(player, "rush", instanceId);
   if (!found || !canHoldForWing(state, playerId, found.card)) return null;
 
-  const rush = player.rush.map((c) =>
-    c.instanceId === instanceId ? { ...c, commandHeld: true } : c,
-  );
+  const rush = player.rush.map((c) => {
+    if (c.instanceId !== instanceId) return c;
+    // 新たなウイングの発動ごとにアタックの権利を得る（R-KW-WING-03）。
+    const held = { ...c, commandHeld: true };
+    delete held.battleActed;
+    return held;
+  });
   let nextPlayer = markBattleBlocked({ ...player, rush }, instanceId);
+  if (nextPlayer.unitActionsThisTurn?.[instanceId]) {
+    const actions = { ...nextPlayer.unitActionsThisTurn };
+    delete actions[instanceId];
+    nextPlayer = { ...nextPlayer, unitActionsThisTurn: actions };
+  }
   nextPlayer = addTurnRestrictionModifier(
     nextPlayer,
     instanceId,
@@ -346,7 +445,7 @@ export function canCancelWingHold(
     cardHasKeyword(state.definitions, found.card.cardId, "wing", {
       state,
       playerId,
-    }) || stackedEquipmentGrantsWing(found.card)
+    }) || stackedEquipmentGrantsWing(found.card) || xg4RiddenVehicleGrantsWing(state, playerId, found.card)
   );
 }
 

@@ -57,11 +57,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-308::hakochiantahai",
+          "keyword": "rk15::RK-308::cat_not_you",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

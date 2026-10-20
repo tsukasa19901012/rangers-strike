@@ -4,7 +4,7 @@
   "name": "モウギュウダイオー",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "6+",
   "text": "【猛牛大回転砲】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒必要パワーの数字が2以下の敵軍Sユニットすべてを、持ち主の山札の下に好きな順で戻す。",
@@ -30,14 +30,17 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-038::fxunknown10",
+          "keyword": "xg4::XG4-038::mougyuu",
           "duration": "turn"
         }
-      ]
+      ],
+      "condition": {
+        "type": "controller_is_phase_player"
+      }
     }
   ],
   "implementation": {

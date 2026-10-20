@@ -31,9 +31,9 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg5::XG5-009::gogo_change",
+          "duration": "permanent"
         }
       ]
     }

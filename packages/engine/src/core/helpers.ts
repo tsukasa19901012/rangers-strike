@@ -1,7 +1,15 @@
-import type { CardInstance, PlayerId, PlayerState } from "../types/game";
+import type { CardInstance, GameState, PendingRush, PlayerId, PlayerState } from "../types/game";
 
 export function opponent(playerId: PlayerId): PlayerId {
   return playerId === "player1" ? "player2" : "player1";
+}
+
+/**
+ * ラッシュ反応窓（pendingRush）で応答するプレイヤー（ターンプレイヤーの相手。R-CTR-01）。
+ * 相手の効果で出された自軍ユニット（RS-284【スワンウィング】）には持ち主が応答する。
+ */
+export function rushReactorId(pending: PendingRush): PlayerId {
+  return pending.reactorPlayerId ?? opponent(pending.rusherPlayerId);
 }
 
 export function updatePlayer(
@@ -19,7 +27,7 @@ export function updatePlayer(
 
 export function findInZone(
   player: PlayerState,
-  zone: keyof Pick<PlayerState, "hand" | "power" | "command" | "rush" | "battle" | "discard" | "operation">,
+  zone: keyof Pick<PlayerState, "hand" | "power" | "command" | "rush" | "battle" | "discard" | "operation" | "deck">,
   instanceId: string,
 ) {
   const index = player[zone].findIndex((c) => c.instanceId === instanceId);
@@ -48,7 +56,7 @@ export function drawOne(player: PlayerState): PlayerState {
   return performDeckDraws(player, 1, "top");
 }
 
-/** 山札の上または下から手札へドロー（任意で2枚目の超脳カードを捨てる）。 */
+/** 山札の上または下から手札へドロー（超電子頭脳の2枚目が引けなくても敗北にしない）。 */
 export function performDeckDraws(
   player: PlayerState,
   count: number,
@@ -57,16 +65,36 @@ export function performDeckDraws(
 ): PlayerState {
   let next = player;
   for (let i = 0; i < count; i++) {
-    if (next.deck.length === 0) break;
+    if (next.deck.length === 0) {
+      // 引くべきときに引けなければ敗北（公式FAQ RS-027 Q4）。超電子頭脳の2枚目は本来のドローではない。
+      if (!(superBrainDiscardSecond && i === 1)) next = { ...next, deckedOut: true };
+      break;
+    }
     const index = from === "top" ? 0 : next.deck.length - 1;
     const [drawn, deck] = removeAt(next.deck, index);
-    if (superBrainDiscardSecond && i === 1) {
-      next = { ...next, deck, discard: [...next.discard, drawn] };
-    } else {
-      next = { ...next, deck, hand: [...next.hand, drawn] };
-    }
+    // 超電子頭脳の2枚目もいったん手札に入れ、どちらを残すかは呼び出し側の選択（super_brain_keep）で決める。
+    next = { ...next, deck, hand: [...next.hand, drawn] };
   }
   return next;
+}
+
+/**
+ * 山札の上から count 枚「ひく」（手札に加えないドロー以外の「ひく」も含む）。
+ * 足りなければ引けるだけ引き、引くべきときに引けなかったので敗北フラグを立てる。
+ * ルール: R-START-05, R-WIN-03（ダイノガッツ RS-027 のような「ひく」だけの効果でも敗北）
+ */
+export function takeFromDeckTop(
+  player: PlayerState,
+  count: number,
+): { player: PlayerState; taken: CardInstance[] } {
+  const want = Math.max(0, count);
+  const taken = player.deck.slice(0, want);
+  const deck = player.deck.slice(taken.length);
+  const short = taken.length < want;
+  return {
+    player: { ...player, deck, ...(short ? { deckedOut: true } : {}) },
+    taken,
+  };
 }
 
 export {
@@ -111,6 +139,21 @@ export function applyPlayerDamage(
     ...player,
     power,
     deck,
-    damage: player.damage + amount,
+    // ルール: R-DMG-01 ダメージはパワーゾーンのウラ向き枚数（独立カウンタとの乖離を防ぐ）
+    damage: Math.max(player.damage + amount, power.filter((c) => c.faceDown).length),
   };
+}
+
+/** instanceId のカードが、いずれかのゾーン（場のユニットの下に重ねたカードを含む）に置かれているか。 */
+export function isInstancePlacedAnywhere(state: Pick<GameState, "players">, instanceId: string): boolean {
+  for (const player of Object.values(state.players)) {
+    for (const zone of ["hand", "deck", "discard", "power", "command", "rush", "battle", "operation", "exile"] as const) {
+      const cards = (player as unknown as Record<string, CardInstance[] | undefined>)[zone] ?? [];
+      if (cards.some((c) => c.instanceId === instanceId)) return true;
+    }
+    for (const unit of [...player.rush, ...player.battle]) {
+      if ((unit.stackedCards ?? []).some((c) => c.instanceId === instanceId)) return true;
+    }
+  }
+  return false;
 }

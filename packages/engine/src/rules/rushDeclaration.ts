@@ -2,6 +2,7 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import { isZordUpCost } from "@rangers-strike/cards";
 import { isCostWindowSatisfied } from "../core/costWindow";
 import {
+  allCategoriesExistInCommandZone,
   canRushUnitExceptCommandHold,
   cardCategories,
   getDefinition,
@@ -11,9 +12,28 @@ import {
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { validateZordAdditionalPayment } from "./mothership";
 import { isShironLightRushTarget } from "./shironLight";
+import { isRideShooterRushTarget } from "./fieldActivatedAbilities";
+import { jaryuInvasionAllowsRushWithoutHold } from "./jaryuInvasion";
 import { darkDealRushPowerBudget } from "./legend3/restrictions";
 import { godomRushPowerBudget } from "./godomRushPay";
 import { requiresAllFusionPartners, hasAllRequiredFusionMaterials } from "./zord";
+import { rushAdditionalConditionApplies } from "./bkOperationTurnRules";
+
+/**
+ * 手札からのラッシュで必要パワーの判定に使える量（アブレラ【闇の取引】・ゴードム等の補填を含む）。
+ * ルール: R-RUSH-11 — 必要パワーは追加条件を実行する前の状態で確認する。
+ */
+export function rushPowerBudget(
+  state: GameState,
+  playerId: PlayerId,
+  player: PlayerState,
+  definition: CardDefinition,
+): number {
+  return Math.max(
+    darkDealRushPowerBudget(state, playerId, player, definition),
+    godomRushPowerBudget(state, playerId, player, definition),
+  );
+}
 
 /** カテゴリ支払い済み、またはカテゴリ不要なユニットのみ直接 rush 可能。 */
 export function canDeclareRush(
@@ -55,6 +75,17 @@ export function canDeclareRush(
   const categories = cardCategories(definition);
   if (categories.length === 0) return true;
   if (isShironLightRushTarget(player, instanceId)) return true;
+  // ルール: R-ERR-RK043 — 【突入】の後、次にラッシュするミラーライダーはコマンドをホールドせずにラッシュできる。
+  // ルール: R-CAT-02 — 通常のラッシュを補助する効果なので、マルチカテゴリのカードはコマンドゾーンに必要カテゴリが
+  // 揃っていなければラッシュできない（atwiki/page-1559「ライドシューターのような…この制限がかかる」）。
+  if (
+    isRideShooterRushTarget(state, playerId, definition.id) &&
+    (categories.length <= 1 || allCategoriesExistInCommandZone(player, definitions, categories))
+  ) {
+    return true;
+  }
+  // RS-242【ジャリュウ一族の侵攻】: 特徴「戦闘員」のユニットはコマンドをホールドせずにラッシュしてもよい。
+  if (jaryuInvasionAllowsRushWithoutHold(state, playerId, definition)) return true;
   if (isCostWindowSatisfied(player, "rush_category")) return true;
   return false;
 }
@@ -82,6 +113,11 @@ export function canCompleteRushAfterCommandPayment(
     !canDeclareRush(state, playerId, player, state.definitions, definition, sourceInstanceId, zord)
   ) {
     return false;
+  }
+
+  // 追加条件が免除されている（ブラスト等）なら素材は要らない。ルール: R-KW-BLAST-01
+  if (isZordUpCost(definition.powerCost) && !rushAdditionalConditionApplies(state, playerId, handCard.cardId)) {
+    return true;
   }
 
   if (isZordUpCost(definition.powerCost) && requiresAllFusionPartners(handCard.cardId)) {

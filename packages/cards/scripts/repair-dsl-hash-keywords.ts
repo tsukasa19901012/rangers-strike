@@ -2,6 +2,8 @@
  * grant_keyword の catchall スタブを extractEffects で再マッチする。
  *
  * Usage: npx tsx packages/cards/scripts/repair-dsl-hash-keywords.ts
+ *        npx tsx packages/cards/scripts/repair-dsl-hash-keywords.ts --ids PR-015,RS-230
+ *        （--ids 指定時は対象カードのみ修復し、全体レポートは上書きしない）
  */
 import { execSync } from "node:child_process";
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
@@ -9,6 +11,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { CardDocument, EffectPrimitive } from "../src/dsl/types";
 import { validateCardDocument } from "../src/dsl/validator";
+import { listCardOverrideIds } from "../src/dsl/overrides/loadCardOverrides";
 import { rematchExtractedEffect } from "../src/pipeline/extractEffects";
 import { isUnresolvedCatchallGrantKeyword } from "../src/pipeline/hashGrantKeywords";
 import { isEffectCardKeyword } from "../src/pipeline/effectCardKeywords";
@@ -148,7 +151,16 @@ function dedupeEffectIds(doc: CardDocument): void {
   }
 }
 
+function parseIdsArg(): Set<string> | undefined {
+  const i = process.argv.indexOf("--ids");
+  const raw = i >= 0 ? process.argv[i + 1] : undefined;
+  return raw ? new Set(raw.split(",").map((id) => id.trim()).filter(Boolean)) : undefined;
+}
+
 function main(): void {
+  const onlyIds = parseIdsArg();
+  // 人手修正（src/dsl/overrides）のあるカードは override が正なので再マッチしない。
+  const overrideIds = new Set(listCardOverrideIds());
   let scanned = 0;
   let scannedUnnamed = 0;
   let repaired = 0;
@@ -160,6 +172,9 @@ function main(): void {
 
   for (const file of readdirSync(dslDir)) {
     if (!file.endsWith(".dsl.json")) continue;
+    const fileCardId = file.slice(0, -".dsl.json".length);
+    if (onlyIds && !onlyIds.has(fileCardId)) continue;
+    if (overrideIds.has(fileCardId)) continue;
     const path = join(dslDir, file);
     const doc = JSON.parse(readFileSync(path, "utf8")) as CardDocument;
     let changed = false;
@@ -223,8 +238,10 @@ function main(): void {
     note: "Re-match catchall grant_keyword stubs and effect_card delegates via extractEffects PATTERNS.",
   };
 
-  mkdirSync(dirname(reportPath), { recursive: true });
-  writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`);
+  if (!onlyIds) {
+    mkdirSync(dirname(reportPath), { recursive: true });
+    writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`);
+  }
   console.log(
     JSON.stringify(
       { scanned, scannedUnnamed, scannedEffectCard, repaired, repairedUnnamed, repairedEffectCard, remaining },

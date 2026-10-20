@@ -4,7 +4,7 @@
   "name": "グリフォーザー",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "※ウイング 【グリフォカリバー4世】このユニットは、敵軍ラッシュエリアのユニットにアタックできる。",
@@ -34,13 +34,13 @@
       "name": "グリフォカリバー4世",
       "text": "このユニットは、敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "attack_rush_zone",
-          "duration": "turn"
+          "keyword": "set9a::RS-622::griffo_calibur",
+          "duration": "permanent"
         }
       ],
       "optional": false

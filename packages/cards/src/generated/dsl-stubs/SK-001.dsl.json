@@ -4,7 +4,7 @@
   "name": "シャドームーン",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "SC",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。 【サタンサーベル】敵軍バトルエリアからSビークルを1体選ぶ。選んだビークルにライドしているユニットがあれば、それを撃破する。その後、選んだビークルを捨札にする。",
@@ -40,11 +40,21 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": false,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SK-001::satansaberu",
+          "keyword": "destroy_vehicle_and_rider",
           "duration": "turn"
         }
       ]

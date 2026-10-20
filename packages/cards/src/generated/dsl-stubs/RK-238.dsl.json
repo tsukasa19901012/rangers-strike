@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-238::no_e9ad82",
+          "keyword": "rk12::RK-238::soul_capture",
           "duration": "permanent"
         }
       ],

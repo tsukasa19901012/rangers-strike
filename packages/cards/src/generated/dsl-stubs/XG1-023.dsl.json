@@ -7,7 +7,7 @@
     "MA",
     "ET"
   ],
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "【GTソード】「SP1」敵軍バトルエリアからBP4000以上のSユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ、持ち主のパワーゾーンにダメージにして置く。",
@@ -32,6 +32,11 @@
         {
           "type": "grant_keyword",
           "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg1::XG1-023::gt_sword",
           "duration": "turn"
         }
       ]

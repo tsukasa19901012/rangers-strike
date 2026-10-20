@@ -25,11 +25,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-024::chi",
+          "keyword": "xg2::XG2-024::ikkiuchi",
           "duration": "permanent"
         }
       ]

@@ -4,7 +4,7 @@
   "name": "宇宙刑事ギャバン",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "※チェイス （これがライド中にユニットでなくなるとき、かわりにこれがライドしているビークルを捨札にしてから、ライドされていない自軍ビークルにライドさせてもよい） ※自軍Sユニットがこれ以外にあれば、これはストライクできない。 【ギャバンダイナミック】本来のBPが4000以上の敵軍Sユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
@@ -59,7 +59,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-018::gyabandainamiku",
+          "keyword": "rm1::RM-018::gavan_dynamic",
           "duration": "turn"
         }
       ]

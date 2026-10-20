@@ -4,7 +4,7 @@
   "name": "仮面ライダーカブトMF",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 2,
   "text": "※これはアタックされるときBP+4000される。 【アバランチブレイク】敵軍Sユニットの数が自軍Sユニットの数より5体以上多いとき、自軍Sユニットと同じ数になるまで敵軍Sユニットを選び、選んだユニットを持ち主のパワーゾーンに送る",
@@ -43,10 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_s_count_balance",
+          "keyword": "rk4::RK-070::avalanche_break",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

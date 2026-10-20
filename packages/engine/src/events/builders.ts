@@ -31,6 +31,8 @@ export function buildUnitRushedEvent(
     rusherPlayerId: PlayerId;
     instanceId: string;
     cardId: string;
+    selfEffectsSuppressed?: boolean;
+    viaEffect?: boolean;
   },
 ): UnitRushedEvent {
   return {
@@ -39,6 +41,8 @@ export function buildUnitRushedEvent(
     rusherPlayerId: input.rusherPlayerId,
     instanceId: input.instanceId,
     cardId: input.cardId,
+    ...(input.selfEffectsSuppressed ? { selfEffectsSuppressed: true } : {}),
+    ...(input.viaEffect ? { viaEffect: true } : {}),
   };
 }
 
@@ -116,6 +120,8 @@ export function buildUnitLeftZoneEvent(
     cardId: string;
     fromZone: "rush" | "battle";
     toZone: UnitLeftZoneEvent["toZone"];
+    destroyed?: boolean;
+    battleOpponentInstanceId?: string;
   },
 ): UnitLeftZoneEvent {
   return {
@@ -126,6 +132,8 @@ export function buildUnitLeftZoneEvent(
     cardId: input.cardId,
     fromZone: input.fromZone,
     toZone: input.toZone,
+    ...(input.destroyed !== undefined ? { destroyed: input.destroyed } : {}),
+    ...(input.battleOpponentInstanceId ? { battleOpponentInstanceId: input.battleOpponentInstanceId } : {}),
   };
 }
 

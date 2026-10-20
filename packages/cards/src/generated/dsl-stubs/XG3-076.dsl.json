@@ -42,10 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
-          "duration": "turn"
+          "keyword": "xg3::XG3-076::kakusei",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

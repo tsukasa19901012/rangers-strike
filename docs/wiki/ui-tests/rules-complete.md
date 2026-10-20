@@ -1,6 +1,6 @@
 # 完成版ルールテストケース一覧
 
-出典: [core-rules.md](../core-rules.md) / [phases.md](../phases.md) / [rush.md](../rush.md) / [battle.md](../battle.md) / [damage.md](../damage.md) / [timing.md](../timing.md) / [keywords.md](../keywords.md)
+出典: [docs/rules/](../../rules/README.md)（ルールブック。各ケースの対応ルールIDは仕様データの `ruleRef` を参照）。下の見出しの括弧内は旧要約ドキュメント名（削除済み）。
 
 実装:
 - 仕様データ: `apps/web/lib/wikiTestSpecs/ruleSpecs.ts`

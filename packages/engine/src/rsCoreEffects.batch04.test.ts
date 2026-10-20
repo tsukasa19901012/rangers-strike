@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { legend3Catalog } from "@rangers-strike/cards";
+import { applyAction } from "./core/applyAction";
 import {
   applyAction,
   effectiveBp,
@@ -87,17 +88,25 @@ describe("RS-137 submerge", () => {
       "RS-137",
       "submerge",
     );
-    expect(result.state.players.player1.discard).toHaveLength(1);
-    expect(result.state.players.player1.deck).toHaveLength(3);
-    expect(result.state.players.player1.deck.slice(-2).every((c) => c.cardId === "RS-079")).toBe(
-      true,
-    );
+    // 「3枚まで選んで…好きな順で戻してもよい」— 1枚ずつ選ぶ（オペレーションは候補にならない）。
+    expect(result.state.pendingEffectChoice?.validInstanceIds).toEqual([d1.instanceId, d2.instanceId]);
+    let next = result.state;
+    for (const id of [d2.instanceId, d1.instanceId]) {
+      const r = applyAction(next, { type: "resolve_effect_choice", playerId: "player1", instanceId: id });
+      expect(r.ok).toBe(true);
+      if (!r.ok) return;
+      next = r.state;
+    }
+    expect(next.players.player1.discard).toHaveLength(1);
+    expect(next.players.player1.deck).toHaveLength(3);
+    expect(next.players.player1.deck.slice(-2).map((c) => c.instanceId)).toEqual([d2.instanceId, d1.instanceId]);
   });
 });
 
 describe("RS-138 jet_skateboard", () => {
   it("offers end-of-turn return from battle to rush", () => {
-    const jet = inst("RS-138", "jet");
+    // NC（CN5）成立済みのユニット（R-CN-02: ナンバーの欄の効果は NC 成立時だけ有効）
+    const jet = { ...inst("RS-138", "jet"), activatedNcEffects: ["jet_skateboard"] };
     const state = createTestState({
       definitions: defs,
       phase: "end",
@@ -146,7 +155,12 @@ describe("RS-142 crown_final_crush", () => {
       },
     });
     const result = resolveLegend3EnterBattle(state, "player1", "RS-142", "crown_final_crush");
-    expect(result.state.players.player1.command.every((c) => !c.commandHeld)).toBe(true);
+    // 「リリース状態に戻してもよい」（atwiki/page-368）— 行うかの確認を経てリリースする。
+    expect(result.state.pendingEffectChoice?.effectId).toBe("crown_final_crush");
+    const r = applyAction(result.state, { type: "confirm_effect_choice", playerId: "player1" });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.state.players.player1.command.every((c) => !c.commandHeld)).toBe(true);
   });
 });
 
@@ -175,7 +189,9 @@ describe("RS-144 taurus_dive", () => {
     expect(result.state.players.player2.hand.some((c) => c.cardId === "RS-138")).toBe(true);
   });
 
-  it("does not return rush-area S-units without SP", () => {
+  // atwiki/page-369「敵軍Sユニット」・faq-card-3 RS-144 Q1 — ラッシュエリアの「SP1」の S ユニットも戻す
+  // （SP を持たない・分数表記のユニットは戻さない。cardSpec/RS3-123-150.c.test.ts）。
+  it("also returns rush-area S-units with printed SP1", () => {
     const gran = inst("RS-144", "gran");
     const rushS = inst("TST-UNIT-0", "rush-s");
     const state = createTestState({
@@ -192,8 +208,8 @@ describe("RS-144 taurus_dive", () => {
       "RS-144",
       "taurus_dive",
     );
-    expect(result.state.players.player2.rush).toHaveLength(1);
-    expect(result.state.players.player2.hand).toHaveLength(0);
+    expect(result.state.players.player2.rush).toHaveLength(0);
+    expect(result.state.players.player2.hand).toHaveLength(1);
   });
 });
 
@@ -238,7 +254,8 @@ describe("RS-145 hyper_civilization_guard", () => {
 
 describe("RS-148 star_raiser", () => {
   it("adds BP per released command on own turn", () => {
-    const ored = inst("RS-148", "ored");
+    // NC 成立済み（R-CN-02）
+    const ored = { ...inst("RS-148", "ored"), activatedNcEffects: ["star_raiser"] };
     const state = createTestState({
       definitions: defs,
       phase: "battle",
@@ -269,7 +286,13 @@ describe("RS-150 bumper_bow", () => {
         command: [],
       },
     });
-    const result = applyLegend3NcEffect(state, "player1", pink, "bumper_bow");
+    const outcome = applyLegend3NcEffect(state, "player1", pink, "bumper_bow");
+    // 「1枚選んで」（atwiki/page-366）— 置くカードを選ぶ。
+    expect(outcome.state.pendingEffectChoice?.validInstanceIds).toEqual([powerCard.instanceId]);
+    const r = applyAction(outcome.state, { type: "resolve_effect_choice", playerId: "player1", instanceId: powerCard.instanceId });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    const result = r;
     expect(result.state.players.player2.power).toHaveLength(0);
     expect(
       result.state.players.player2.command.some(
@@ -341,7 +364,8 @@ describe("RS-159 fire_dance", () => {
 
 describe("RS-160 blazing_fire", () => {
   it("grants SP1 on NC without double-counting passive BP", () => {
-    const red = inst("RS-160", "red");
+    // NC 成立済み（R-CN-02）
+    const red = { ...inst("RS-160", "red"), activatedNcEffects: ["blazing_fire"] };
     const state = createTestState({
       definitions: defs,
       phase: "battle",
@@ -358,7 +382,8 @@ describe("RS-160 blazing_fire", () => {
 
 describe("RS-162 surging_chopper", () => {
   it("adds +5000 BP when attacking S-units on own turn", () => {
-    const blue = inst("RS-162", "blue");
+    // NC 成立済み（R-CN-02）
+    const blue = { ...inst("RS-162", "blue"), activatedNcEffects: ["surging_chopper"] };
     const enemyS = inst("RS-138", "enemy-s");
     const state = createTestState({
       definitions: defs,
@@ -381,7 +406,8 @@ describe("RS-162 surging_chopper", () => {
 
 describe("RS-163 iron_broken", () => {
   it("adds +3000 BP on own turn without NC modifier stacking", () => {
-    const black = inst("RS-163", "black");
+    // NC 成立済み（R-CN-02）
+    const black = { ...inst("RS-163", "black"), activatedNcEffects: ["iron_broken"] };
     const state = createTestState({
       definitions: defs,
       phase: "battle",
@@ -499,14 +525,20 @@ describe("RS-173 wall_shoot", () => {
       "wall_shoot",
       "player1",
     );
-    expect(result.state.players.player2.command).toHaveLength(1);
-    expect(result.state.players.player2.command[0]?.commandHeld).toBe(true);
-    expect(result.state.players.player2.deck.length).toBeGreaterThan(0);
+    // 「次の効果を発動できる」（atwiki/page-355）— 発動するかの確認を経て処理する。
+    expect(result.state.pendingEffectChoice?.effectId).toBe("wall_shoot");
+    const r = applyAction(result.state, { type: "confirm_effect_choice", playerId: "player1" });
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.state.players.player2.command).toHaveLength(1);
+    expect(r.state.players.player2.command[0]?.commandHeld).toBe(true);
+    expect(r.state.players.player2.deck).toHaveLength(2);
   });
 });
 
 describe("RS-175 nature_big_bang_final", () => {
-  it("offers optional destroy on enemy units with BP 20000 or less", () => {
+  // 「1体選んで撃破する」は強制（atwiki/page-348）。対象の選択を開く。
+  it("offers a destroy choice on enemy units with BP 20000 or less", () => {
     const gaonight = inst("RS-175", "gaonight");
     const target = inst("TST-UNIT-2", "target");
     const state = createTestState({

@@ -1,6 +1,7 @@
 import { getUnitEffectBlock, hasUnnamedRule } from "@rangers-strike/cards";
-import type { GameState, PlayerId } from "../../types/game";
-import { getDefinition, isSmallUnit } from "../../core/catalog";
+import type { GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import { getDefinition, isSmallUnit, unitSizeOf } from "../../core/catalog";
+import { crossReductionFor } from "../../keywords/battleKeywords";
 import {
   battlePositionOneBased,
   printedSpBase,
@@ -10,6 +11,7 @@ import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers
 import { buildLogEntry } from "../../log/formatLog";
 import {
   collectFieldUnitIds,
+  openEffectChoice,
   startDeckJointComboSearch,
   startSelectPowerChoice,
   startSelectUnitChoice,
@@ -78,21 +80,104 @@ export function isSuperRadarActive(state: GameState): boolean {
 }
 
 /** RS-124: Sラッシュ → 所有者がダメージ以外のパワーカード1枚を手札へ戻す。 */
+/** RS-124 超電子レーダーがこのラッシュで実際に処理されるか（S ユニットで、ダメージ以外のパワーがある）。 */
+export function superRadarAppliesOnRush(
+  state: GameState,
+  rusherPlayerId: PlayerId,
+  rushedInstanceId: string,
+): boolean {
+  if (!isSuperRadarActive(state)) return false;
+  const rusher = state.players[rusherPlayerId];
+  const found = findRushedUnit(rusher, rushedInstanceId);
+  if (!found || !isSmallUnit(state.definitions, found.card)) return false;
+  return rusher.power.some((c) => !c.faceDown);
+}
+
+/**
+ * ラッシュしたユニット（ラッシュエリア、またはラッシュエリアを経ずに直接バトルエリアに出たもの）。
+ * faq-card-3 RS-124 Q1/Q3 — 捨札・敵軍コマンドゾーンから直接バトルエリアに出した S ユニットもラッシュに含む。
+ */
+function findRushedUnit(player: GameState["players"][PlayerId], instanceId: string) {
+  return findInZone(player, "rush", instanceId) ?? findInZone(player, "battle", instanceId);
+}
+
+export const SUBMERGE_EFFECT_ID = "submerge";
+
+/** RS-137【潜航】: 選んだ捨札のユニットを山札の下に置き、3枚未満なら続けて選ばせる。 */
+export function resolveSubmergePick(
+  state: GameState,
+  pending: PendingEffectChoice,
+  instanceId: string,
+): GameState | null {
+  const player = state.players[pending.playerId];
+  const found = findInZone(player, "discard", instanceId);
+  if (!found) return null;
+  const [card, discard] = removeAt(player.discard, found.index);
+  const next: GameState = {
+    ...state,
+    ...updatePlayer(state, pending.playerId, { ...player, discard, deck: [...player.deck, card!] }),
+  };
+  const processed = [...(pending.processedInstanceIds ?? []), instanceId];
+  const remaining = pending.validInstanceIds.filter(
+    (id) => id !== instanceId && next.players[pending.playerId].discard.some((c) => c.instanceId === id),
+  );
+  if (processed.length >= 3 || remaining.length === 0) {
+    return { ...next, pendingEffectChoice: undefined, activePlayer: pending.phasePlayerId };
+  }
+  return {
+    ...next,
+    pendingEffectChoice: { ...pending, validInstanceIds: remaining, processedInstanceIds: processed },
+  };
+}
+
+export const SUPER_RADAR_RETURN_EFFECT_ID = "super_radar_return";
+
 export function applySuperRadarOnRush(
   state: GameState,
   rusherPlayerId: PlayerId,
   rushedInstanceId: string,
+  phasePlayerId: PlayerId = state.activePlayer,
+  options: { allowChoice?: boolean } = {},
 ): NamedEffectOutcome {
   if (!isSuperRadarActive(state)) return { state, logs: [] };
 
   const rusher = state.players[rusherPlayerId];
-  const found = findInZone(rusher, "rush", rushedInstanceId);
-  if (!found || !isSmallUnit(state.definitions, found.card.cardId)) {
+  const found = findRushedUnit(rusher, rushedInstanceId);
+  if (!found || !isSmallUnit(state.definitions, found.card)) {
     return { state, logs: [] };
   }
 
   const faceUpIndex = rusher.power.findIndex((c) => !c.faceDown);
   if (faceUpIndex < 0) return { state, logs: [] };
+
+  // atwiki/page-362「1枚選んで手札に戻す」— 選ぶのはユニットの持ち主。
+  // 候補が2枚以上あり、ほかの選択が開いていなければ選ばせる（開いていれば先頭を戻す）。
+  const faceUpIds = rusher.power.filter((c) => !c.faceDown).map((c) => c.instanceId);
+  if (faceUpIds.length > 1 && options.allowChoice !== false && !state.pendingEffectChoice) {
+    const withChoice = startSelectUnitChoice(state, {
+      playerId: rusherPlayerId,
+      effectId: SUPER_RADAR_RETURN_EFFECT_ID,
+      sourceCardId: "RS-124",
+      phasePlayerId,
+      validInstanceIds: faceUpIds,
+      unitDestination: "hand_from_power",
+      optional: false,
+    });
+    if (withChoice) {
+      return {
+        state: withChoice,
+        logs: [
+          buildLogEntry(
+            rusherPlayerId,
+            "rush_effect",
+            "RS-124",
+            state.definitions,
+            "super_radar_power_to_hand",
+          ),
+        ],
+      };
+    }
+  }
 
   const [card, restPower] = removeAt(rusher.power, faceUpIndex);
   const nextPlayer = {
@@ -129,12 +214,16 @@ export function resolveLegend3OnRushEffects(
 
   switch (effectId) {
     case "great_assault": {
+      // 「敵軍Lユニット」— バトルエリア・ラッシュエリアの L ユニット（atwiki/page-342）。
       const targets = collectFieldUnitIds(nextState, enemyId, Number.MAX_SAFE_INTEGER, [
         "battle",
+        "rush",
       ]).filter((id) => {
-        const inst = nextState.players[enemyId].battle.find((c) => c.instanceId === id);
+        const inst =
+          nextState.players[enemyId].battle.find((c) => c.instanceId === id) ??
+          nextState.players[enemyId].rush.find((c) => c.instanceId === id);
         if (!inst) return false;
-        return getDefinition(nextState.definitions, inst.cardId)?.size === "L";
+        return unitSizeOf(nextState.definitions, inst) === "L";
       });
       if (targets.length > 0) {
         const withChoice = startSelectUnitChoice(nextState, {
@@ -179,31 +268,44 @@ export function resolveLegend3OnRushEffects(
     }
     case "submerge": {
       const rusher = nextState.players[rusherPlayerId];
+      // 「ユニットのカードを3枚まで選んで、山札の下に好きな順で戻してもよい」（atwiki/page-352）。
+      // 1枚ずつ選び、選んだ順に山札の下へ置く（見送ればそこで終える）。
       const units = rusher.discard
         .filter((c) => getDefinition(nextState.definitions, c.cardId)?.type === "unit")
-        .slice(0, 3);
-      if (units.length > 0) {
-        const unitIds = new Set(units.map((c) => c.instanceId));
-        const nextPlayer = {
-          ...rusher,
-          discard: rusher.discard.filter((c) => !unitIds.has(c.instanceId)),
-          deck: [...rusher.deck, ...units],
-        };
-        nextState = { ...nextState, ...updatePlayer(nextState, rusherPlayerId, nextPlayer) };
+        .map((c) => c.instanceId);
+      if (units.length > 0 && !nextState.pendingEffectChoice) {
+        nextState = openEffectChoice(nextState, {
+          playerId: rusherPlayerId,
+          effectId: SUBMERGE_EFFECT_ID,
+          sourceCardId: cardId,
+          sourceInstanceId: rushedInstanceId,
+          kind: "select_unit",
+          phasePlayerId,
+          validInstanceIds: units,
+          selectCount: 1,
+          processedInstanceIds: [],
+          optional: true,
+        });
       }
       break;
     }
     case "taurus_dive": {
       const enemy = nextState.players[enemyId];
       const toReturn = [...enemy.battle, ...enemy.rush].filter((c) => {
-        if (!isSmallUnit(nextState.definitions, c.cardId)) return false;
+        if (!isSmallUnit(nextState.definitions, c)) return false;
         const def = getDefinition(nextState.definitions, c.cardId);
         const spValue = resolveInstanceSpValue(def, c);
         const inBattle = enemy.battle.some((u) => u.instanceId === c.instanceId);
-        if (spValue === "special") return inBattle;
-        if (!inBattle) return false;
+        // 「SP！」はラッシュエリアでも戻す（atwiki/page-369「敵軍Sユニット」）。
+        if (spValue === "special") return true;
+        if (!inBattle) {
+          // ラッシュエリアでは「SP1」以上の整数表記だけ（分数表記はラッシュエリアにある間は SP を得ない。faq-card-3 RS-144 Q1）。
+          return typeof spValue === "number" && spValue + (c.spModifier ?? 0) >= 1;
+        }
         const position = battlePositionOneBased(enemy.battle, c.instanceId);
-        const sp = (c.spModifier ?? 0) + printedSpBase(spValue, position);
+        const sp =
+          (c.spModifier ?? 0) +
+          printedSpBase(spValue, position, crossReductionFor(enemy.battle, c.instanceId));
         return sp >= 1;
       });
       if (toReturn.length > 0) {
@@ -241,7 +343,8 @@ export function resolveLegend3OnRushEffects(
           phasePlayerId,
           validInstanceIds: targets,
           unitDestination: "discard",
-          optional: true,
+          // 「1体選んで撃破する」— 対象がいれば強制（atwiki/page-348）。
+          optional: false,
         });
         if (withChoice) nextState = withChoice;
       }

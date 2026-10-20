@@ -25,13 +25,12 @@
       "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは、自軍エリアでホールド状態かライドされている間、Lビークルとして扱う。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-082::korehaeriadehoru",
+          "keyword": "xg2::XG2-082::vehicle_unit",
           "duration": "permanent"
         }
       ]
@@ -71,34 +70,13 @@
       "name": "ドルファイヤー",
       "text": "このビークルがチェイスの効果でライドされたとき、敵軍バトルエリアから本来のBPが5000以下のユニットを1体選び撃破してもよい。",
       "trigger": {
-        "type": "nc"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg2::XG2-082::dol_fire",
+          "duration": "permanent"
         }
       ]
     }

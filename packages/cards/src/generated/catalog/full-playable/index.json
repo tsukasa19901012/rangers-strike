@@ -3180,12 +3180,6 @@
     "PR-011": {
       "tier": "vanilla-promoted"
     },
-    "PR-015": {
-      "tier": "vanilla-promoted"
-    },
-    "PR-016": {
-      "tier": "vanilla-promoted"
-    },
     "PR-025": {
       "tier": "vanilla-promoted"
     },
@@ -3276,12 +3270,6 @@
     "XG1-028": {
       "tier": "vanilla-promoted"
     },
-    "XG1-029": {
-      "tier": "vanilla-promoted"
-    },
-    "XG1-030": {
-      "tier": "vanilla-promoted"
-    },
     "XG1-032": {
       "tier": "vanilla-promoted"
     },
@@ -3295,9 +3283,6 @@
       "tier": "vanilla-promoted"
     },
     "XG1-050": {
-      "tier": "vanilla-promoted"
-    },
-    "XG1-062": {
       "tier": "vanilla-promoted"
     },
     "XG1-064": {
@@ -3379,9 +3364,6 @@
       "tier": "vanilla-promoted"
     },
     "XG3-004": {
-      "tier": "vanilla-promoted"
-    },
-    "XG3-005": {
       "tier": "vanilla-promoted"
     },
     "XG3-021": {
@@ -3576,9 +3558,6 @@
     "XG6-008": {
       "tier": "vanilla-promoted"
     },
-    "XG6-015": {
-      "tier": "vanilla-promoted"
-    },
     "XG6-024": {
       "tier": "vanilla-promoted"
     },
@@ -3718,6 +3697,12 @@
       "tier": "complexity-promoted"
     },
     "PR-014": {
+      "tier": "complexity-promoted"
+    },
+    "PR-015": {
+      "tier": "complexity-promoted"
+    },
+    "PR-016": {
       "tier": "complexity-promoted"
     },
     "PR-017": {
@@ -3981,6 +3966,12 @@
     "XG1-027": {
       "tier": "complexity-promoted"
     },
+    "XG1-029": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-030": {
+      "tier": "complexity-promoted"
+    },
     "XG1-031": {
       "tier": "complexity-promoted"
     },
@@ -4057,6 +4048,9 @@
       "tier": "complexity-promoted"
     },
     "XG1-061": {
+      "tier": "complexity-promoted"
+    },
+    "XG1-062": {
       "tier": "complexity-promoted"
     },
     "XG1-063": {
@@ -4399,6 +4393,9 @@
       "tier": "complexity-promoted"
     },
     "XG3-003": {
+      "tier": "complexity-promoted"
+    },
+    "XG3-005": {
       "tier": "complexity-promoted"
     },
     "XG3-006": {
@@ -5122,6 +5119,9 @@
       "tier": "complexity-promoted"
     },
     "XG6-014": {
+      "tier": "complexity-promoted"
+    },
+    "XG6-015": {
       "tier": "complexity-promoted"
     },
     "XG6-016": {

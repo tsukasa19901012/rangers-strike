@@ -4,7 +4,7 @@
   "name": "ダイボウケン",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "合体―ゴーゴーダンプ＋ゴーゴーフォーミュラ＋ゴーゴージャイロ＋ゴーゴードーザー＋ゴーゴーマリン ※このカードの追加条件は、自軍捨札が7枚以上あるとき、次のように変更される→ 特徴「イエロー」を持つ自軍Sユニット1体を捨札にする 【奥の手】これが自軍バトルエリアにある間、敵軍ユニットがアタックまたはストライクをするとき、 これをホールドしてもよい。そうしたとき、そのアタックまたはストライクは無効になる。",
@@ -43,11 +43,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-019::noe5a5a5",
+          "keyword": "xg6::XG6-019::trump",
           "duration": "permanent"
         }
       ]

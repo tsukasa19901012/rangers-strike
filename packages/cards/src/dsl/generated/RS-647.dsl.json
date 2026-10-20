@@ -4,7 +4,7 @@
   "name": "ピヨちゃん",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※これは自軍ターン中バトルエリアに出られない。 【ソウルバード】自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒※レジスト",
@@ -32,32 +32,18 @@
     {
       "id": "sourubado",
       "name": "ソウルバード",
-      "text": "自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒",
-      "trigger": {
-        "type": "on_rush"
-      },
-      "optional": true,
-      "effects": [
-        {
-          "type": "grant_keyword",
-          "keyword": "stack_da_less_l_on_rush",
-          "duration": "permanent"
-        }
-      ]
-    },
-    {
-      "id": "unnamed_register",
-      "text": "※レジスト",
+      "text": "自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒※レジスト",
       "trigger": {
         "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "register",
+          "keyword": "set9b::RS-647::soul_bird",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [
@@ -65,11 +51,6 @@
       "kind": "note",
       "text": "※これは自軍ターン中バトルエリアに出られない。",
       "rule": "no_enter_battle_own_turn"
-    },
-    {
-      "kind": "note",
-      "text": "※レジスト",
-      "rule": "register"
     }
   ],
   "implementation": {

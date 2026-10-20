@@ -4,7 +4,7 @@
   "name": "スペードエース",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※タクスET 【スペードアーツ】敵軍バトルエリアと敵軍ラッシュエリアから、同じBPを持つSユニットを1体ずつ選んでもよい。そうしたとき、選んだユニットを持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
@@ -42,11 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_batorueriatorashueriakarajibpwotsusyunitowo1zutsunde",
+          "keyword": "set9d::RS-690::spade_arts",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

@@ -3,7 +3,7 @@ import type { GameState, PlayerId } from "../types/game";
 import { WIN_DAMAGE } from "../types/game";
 import { effectiveBp } from "../core/catalog";
 import { getLegalActions } from "../core/legalActions";
-import { opponent } from "../core/helpers";
+import { opponent, rushReactorId } from "../core/helpers";
 import { damagePaymentChoosingPlayer } from "../rules/damagePayment";
 import { strikeDamageFor } from "../rules/combo";
 import {
@@ -31,11 +31,14 @@ import {
   pickBestChase,
   pickRideOffChoice,
   pickCpuFallbackAction,
+  cpuWouldCancelProcedure,
+  chargeCandidates,
   pickSimpleReaction,
   pickStrikeReaction,
   pickWinningBattle,
 } from "./helpers";
-import { dedupeActions, pickBestBySearch, type SearchOptions } from "./simulation";
+import { planComboEntry } from "./comboOrder";
+import { dedupeActions, pickBestByRollout, pickBestBySearch, type SearchOptions } from "./simulation";
 
 export type PickCpuActionOptions = {
   /** false のとき相手応答シミュレーションをスキップ（再帰回避の内部用）。 */
@@ -44,6 +47,21 @@ export type PickCpuActionOptions = {
   maxResponseDepth?: number;
   simulationDepth?: number;
   searchPly?: number;
+  rolloutTopK?: number;
+  /** 0 より大きいと、チャージ・ラッシュ・バトル進入の決定を先まで進めて比べる（その試行回数）。 */
+  planSamples?: number;
+  /** 先まで進めて比べる決定（省略ですべて）。 */
+  planPhases?: Array<"charge" | "rush" | "entry">;
+  /** 先まで進める長さ（ターン数。1=このターンの終わり、2=相手の次のターンの終わり（既定）、3=自分の次のターンまで）。 */
+  planTurns?: number;
+  /** チャージの先読みで比べる、パワー・コマンドそれぞれの上位カード数（省略で全カード）。 */
+  planChargeTop?: number;
+  /** 先読みで進める最大の手数。 */
+  planMaxSteps?: number;
+  /** バトルフェイズで NC が成立する順番に出す（1: 今成立する手、2: 先出しも）。 */
+  comboOrder?: number;
+  /** 山札がこの枚数以下で相手より少ないとき、追加ドローをしない。 */
+  deckGuard?: number;
 };
 
 function tacticalSearchOptions(
@@ -100,7 +118,8 @@ function searchOptions(options: PickCpuActionOptions): SearchOptions | undefined
     options.maxCandidates === undefined &&
     options.maxResponseDepth === undefined &&
     options.simulationDepth === undefined &&
-    options.searchPly === undefined
+    options.searchPly === undefined &&
+    options.rolloutTopK === undefined
   ) {
     return undefined;
   }
@@ -109,6 +128,7 @@ function searchOptions(options: PickCpuActionOptions): SearchOptions | undefined
     maxResponseDepth: options.maxResponseDepth,
     simulationDepth: options.simulationDepth,
     searchPly: options.searchPly,
+    rolloutTopK: options.rolloutTopK,
   };
 }
 
@@ -183,14 +203,43 @@ function collectRushCandidates(
     }
   }
 
-  candidates.push(...actionsOfType(actions, "begin_zord_setup"));
+  candidates.push(
+    ...actionsOfType(actions, "begin_zord_setup").filter((a) => !cpuWouldCancelProcedure(state, playerId, a)),
+  );
   candidates.push(...actionsOfType(actions, "play_operation").slice(0, 3));
-  candidates.push(...actionsOfType(actions, "initiate_command_payment").slice(0, 4));
+  // RS-325【マジチケット】: コマンドゾーンのオペレーションの発動。
+  candidates.push(...actionsOfType(actions, "use_magi_ticket").slice(0, 3));
+  candidates.push(
+    ...actionsOfType(actions, "initiate_command_payment")
+      .filter((a) => !cpuWouldCancelProcedure(state, playerId, a))
+      .slice(0, 4),
+  );
 
   const end = endPhase(actions);
   if (end) candidates.push(end);
 
   return candidates;
+}
+
+/** 追加ドローで山札切れが早まるか。山札が少なく、相手より先に尽きそうなら引かない。 */
+function avoidBonusDraw(state: GameState, playerId: PlayerId, threshold: number): boolean {
+  const own = state.players[playerId].deck.length;
+  const enemy = state.players[playerId === "player1" ? "player2" : "player1"].deck.length;
+  return own <= threshold && own <= enemy + 1;
+}
+
+/** 手札の同じカードを置く手は結果が同じなので1つずつにする（読みの手間を減らす）。 */
+function sameCardOnce(state: GameState, playerId: PlayerId, actions: GameAction[]): GameAction[] {
+  const seen = new Set<string>();
+  const hand = state.players[playerId].hand;
+  return actions.filter((a) => {
+    if (a.type !== "charge_power" && a.type !== "charge_command") return true;
+    const cardId = hand.find((c) => c.instanceId === a.instanceId)?.cardId ?? a.instanceId;
+    const key = `${a.type}:${cardId}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function battleActionDelta(
@@ -210,14 +259,12 @@ function battleActionDelta(
   );
 }
 
+/** 呼び出し側（pickCpuActionInner のバトルフェイズ）で、出なければならないユニットが無いと確かめてから呼ぶ。 */
 function collectBattleCandidates(
   state: GameState,
   playerId: PlayerId,
   actions: GameAction[],
 ): GameAction[] {
-  const mandatory = pickMandatoryBattleMove(state, playerId, actions);
-  if (mandatory) return [mandatory];
-
   const candidates: GameAction[] = [
     ...actionsOfType(actions, "strike"),
     ...actionsOfType(actions, "battle")
@@ -268,6 +315,9 @@ function pickCpuActionInner(
   options: PickCpuActionOptions = {},
 ): GameAction | null {
   const enableSearch = options.enableSearch ?? (options.maxCandidates ?? 0) > 0;
+  // 読みの中（simulationDepth が入る）では行わない。
+  const planning = options.simulationDepth ? 0 : (options.planSamples ?? 0);
+  const plans = (kind: "charge" | "rush" | "entry") => (planning > 0 && (!options.planPhases || options.planPhases.includes(kind)) ? planning : 0);
   const simShallow = (): SearchOptions | undefined => tacticalSearchOptions(state, options);
   const simTactical = (actions: GameAction[]): SearchOptions | undefined =>
     deepSearchOptions(state, playerId, actions, options) ?? tacticalSearchOptions(state, options);
@@ -285,6 +335,13 @@ function pickCpuActionInner(
 
   if (state.pendingLeave) {
     if (playerId !== state.pendingLeave.ownerPlayerId) return null;
+    const actions = getLegalActions(state);
+    return pickReactionAction(state, playerId, actions, "pass_leave_reaction", enableSearch, options);
+  }
+
+  // RS-255 巨大化爆弾の使用の窓（使うか見送るか）。
+  if (state.pendingGiantBomb) {
+    if (playerId !== state.pendingGiantBomb.ownerId) return null;
     const actions = getLegalActions(state);
     return pickReactionAction(state, playerId, actions, "pass_leave_reaction", enableSearch, options);
   }
@@ -362,7 +419,7 @@ function pickCpuActionInner(
   }
 
   if (state.pendingRush) {
-    if (playerId !== opponent(state.pendingRush.rusherPlayerId)) return null;
+    if (playerId !== rushReactorId(state.pendingRush)) return null;
     const actions = getLegalActions(state);
     return pickReactionAction(state, playerId, actions, "pass_rush_reaction", enableSearch, options);
   }
@@ -384,6 +441,21 @@ function pickCpuActionInner(
     const actions = getLegalActions(state);
     const lethal = pickBestStrike(state, playerId, actions);
     if (lethal) return lethal;
+    // 出た直後に起動できる NC 効果（「「MA」の自軍コマンドを１つホールドして、次の効果を発動できる」等）は、
+    // アタック・ストライクの前に使う（1ターンに1回）。
+    const entryActivation = actions.find(
+      (a) => a.type === "activate_field_unit_ability" && a.unitInstanceId === state.pendingBattleEntry!.instanceId,
+    );
+    if (entryActivation) return entryActivation;
+
+    if (plans("entry")) {
+      const planned = pickBestByRollout(state, playerId, [
+        ...actionsOfType(actions, "strike"),
+        ...actionsOfType(actions, "battle"),
+        ...actions.filter((a) => a.type === "pass_battle_entry"),
+      ], plans("entry"), options.planTurns);
+      if (planned) return planned;
+    }
 
     if (enableSearch) {
       const candidates = [
@@ -412,8 +484,9 @@ function pickCpuActionInner(
     case "start": {
       const release = actions.find((action) => action.type === "release_start_commands");
       if (release) return release;
+      // 既定は並び順で1体ずつすべて戻す（instanceId なし）。
       const returnBattle = actions.find(
-        (action) => action.type === "return_all_battle_to_rush",
+        (action) => action.type === "return_all_battle_to_rush" && !action.instanceId,
       );
       if (returnBattle) return returnBattle;
       const draw = actions.find((action) => action.type === "draw");
@@ -421,18 +494,38 @@ function pickCpuActionInner(
       const upkeep = actions.find((action) => action.type === "resolve_effect_choice");
       if (upkeep) return upkeep;
       const bonus = actions.find((action) => action.type === "bonus_draw");
-      if (bonus) return bonus;
-      return null;
+      if (bonus && !(options.deckGuard && avoidBonusDraw(state, playerId, options.deckGuard))) return bonus;
+      return actions.find((action) => action.type === "skip_bonus_draw") ?? bonus ?? null;
     }
 
-    case "charge":
+    case "charge": {
+      if (plans("charge")) {
+        const planned = pickBestByRollout(
+          state,
+          playerId,
+          options.planChargeTop
+            ? chargeCandidates(state, playerId, actions, options.planChargeTop)
+            : sameCardOnce(state, playerId, actions.filter((a) => a.type === "charge_power" || a.type === "charge_command" || a.type === "end_phase")),
+          plans("charge"),
+          options.planTurns,
+          options.planMaxSteps,
+        );
+        if (planned) return planned;
+      }
       return pickChargeAction(state, playerId, actions) ?? endPhase(actions);
+    }
 
     case "rush": {
       const beginZord = pickBeginZordSetup(state, playerId, actions);
       if (beginZord && !enableSearch) return beginZord;
 
       const affordable = affordableRushes(state, playerId, actions);
+      if (plans("rush")) {
+        const candidates = collectRushCandidates(state, playerId, actions);
+        if (beginZord) candidates.unshift(beginZord);
+        const planned = pickBestByRollout(state, playerId, candidates, plans("rush"), options.planTurns);
+        if (planned) return planned;
+      }
       if (enableSearch) {
         let candidates = collectRushCandidates(state, playerId, actions);
         if (beginZord) candidates.unshift(beginZord);
@@ -483,7 +576,14 @@ function pickCpuActionInner(
         }
       }
 
+      // NC が成立する並べ方の最初の 1 体（comboOrder: 1 = 今成立する手だけ、2 = 後の NC のための先出しも）。
+      if (options.comboOrder) {
+        const plan = planComboEntry(state, playerId, actions);
+        if (plan && (plan.triggersNow || options.comboOrder >= 2)) return plan.move;
+      }
+
       if (enableSearch) {
+        // 出なければならないユニットは上の pickMandatoryBattleMove で見て無かった（同じ状態・同じ合法手なので調べ直さない）。
         let candidates = collectBattleCandidates(state, playerId, actions);
         const hasRushUnits = state.players[playerId].rush.length > 0;
         const hasCombat =
@@ -496,9 +596,10 @@ function pickCpuActionInner(
         if (best) return best;
       }
 
-      const player = state.players[playerId];
       const moveToBattle = actionsOfType(actions, "move_to_battle");
-      if (moveToBattle.length > 0 && player.battle.length === 0) {
+      // ストライクで点を取るには、出せるユニットはすべて出す（以前はバトルエリアが空のときだけで、
+      // 1ターンに1体しか出ず NC が成立しないまま山札切れで終わっていた）。
+      if (moveToBattle.length > 0) {
         return pickBestBattleEntry(state, playerId, actions);
       }
 
@@ -534,6 +635,9 @@ export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): bo
   if (state.pendingLeave) {
     return state.pendingLeave.ownerPlayerId === cpuPlayer;
   }
+  if (state.pendingGiantBomb) {
+    return state.pendingGiantBomb.ownerId === cpuPlayer;
+  }
   if (state.pendingRegister) {
     return state.pendingRegister.ownerPlayerId === cpuPlayer;
   }
@@ -544,7 +648,7 @@ export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): bo
     return state.pendingRideOffChoice.playerId === cpuPlayer;
   }
   if (state.pendingRush) {
-    const defenderId = opponent(state.pendingRush.rusherPlayerId);
+    const defenderId = rushReactorId(state.pendingRush);
     return state.activePlayer === defenderId && defenderId === cpuPlayer;
   }
   if (state.pendingBattle) {

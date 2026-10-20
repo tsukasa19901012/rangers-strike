@@ -9,6 +9,9 @@
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
     ],
+    "expectedDslKeywords": [
+      "bk1::BK-001::typhoon"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -24,6 +27,9 @@
     "category": "ET",
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "expectedDslKeywords": [
+      "bk1::BK-002::double_typhoon"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -41,6 +47,9 @@
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
     ],
+    "expectedDslKeywords": [
+      "bk1::BK-003::ridol"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -56,6 +65,9 @@
     "category": "WB",
     "textSnippets": [
       "自軍Sユニットを1体選ぶ。このターン、選んだユニ"
+    ],
+    "expectedDslKeywords": [
+      "bk1::BK-004::condorer"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -73,6 +85,9 @@
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
     ],
+    "expectedDslKeywords": [
+      "bk1::BK-005::electrer"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -88,6 +103,9 @@
     "category": "ET",
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "expectedDslKeywords": [
+      "bk1::BK-006::tornado"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -105,6 +123,9 @@
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
     ],
+    "expectedDslKeywords": [
+      "bk1::BK-007::cyclode"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -120,6 +141,9 @@
     "category": "ET",
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "expectedDslKeywords": [
+      "bk1::BK-008::zx_belt"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -138,7 +162,7 @@
       "次の効果から1つ選び発動する⇒ ◎自分の手札から"
     ],
     "expectedDslKeywords": [
-      "pick_effect_branch"
+      "bk1::BK-009::king_stone"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -157,7 +181,7 @@
       "次の効果から1つ選び発動する⇒ ◎自分の手札から"
     ],
     "expectedDslKeywords": [
-      "pick_effect_branch"
+      "bk1::BK-010::sunriser"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -176,13 +200,13 @@
       "自分の手札か、自軍常駐置き場でオモテ向きになって"
     ],
     "expectedDslKeywords": [
-      "hand_resident_rush_amadamu"
+      "bk1::BK-011::arcle"
     ],
-    "operationKind": "permanent",
+    "operationKind": "instant",
     "expectedMechanisms": [
-      "operation_permanent_place",
-      "passive_engine_only"
-    ]
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
   },
   {
     "cardId": "BK-012",
@@ -195,13 +219,13 @@
       "自分の手札か、自軍常駐置き場でオモテ向きになって"
     ],
     "expectedDslKeywords": [
-      "hand_resident_rush_no_seki"
+      "bk1::BK-012::altering"
     ],
-    "operationKind": "permanent",
+    "operationKind": "instant",
     "expectedMechanisms": [
-      "operation_permanent_place",
-      "passive_engine_only"
-    ]
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
   },
   {
     "cardId": "BK-013",
@@ -214,7 +238,7 @@
       "次の効果から1つ選び発動する。 ◎自分の手札から"
     ],
     "expectedDslKeywords": [
-      "pick_effect_branch"
+      "bk1::BK-013::v_buckle"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -231,6 +255,9 @@
     "category": "ET",
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "expectedDslKeywords": [
+      "bk1::BK-014::faiz_driver"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -249,7 +276,7 @@
       "次の効果から1つ選び発動する⇒ ◎自分の手札から"
     ],
     "expectedDslKeywords": [
-      "pick_effect_branch"
+      "bk1::BK-015::blay_buckle"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -266,6 +293,9 @@
     "category": "MA",
     "textSnippets": [
       "特徴「猛士」を持つ自軍ユニット2体につき1枚ドロ"
+    ],
+    "expectedDslKeywords": [
+      "bk1::BK-016::kaenko"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -284,7 +314,7 @@
       "次の効果から1つ選び発動する。 ◎自軍山札から「"
     ],
     "expectedDslKeywords": [
-      "pick_effect_branch"
+      "bk1::BK-017::kabuto_zecter"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -303,13 +333,13 @@
       "自軍山札か、自軍常駐置き場でオモテ向きになってい"
     ],
     "expectedDslKeywords": [
-      "recruit_den_o_deck_resident"
+      "bk1::BK-018::den_o_belt"
     ],
-    "operationKind": "permanent",
+    "operationKind": "instant",
     "expectedMechanisms": [
-      "operation_permanent_place",
-      "passive_engine_only"
-    ]
+      "operation_drag_direct"
+    ],
+    "expectedDropRoute": "direct_play"
   },
   {
     "cardId": "BK-019",
@@ -322,7 +352,7 @@
       "次の効果から1つ選び発動する。 ◎自分の手札から"
     ],
     "expectedDslKeywords": [
-      "pick_effect_branch"
+      "bk1::BK-019::kivat_belt"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [

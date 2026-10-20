@@ -4,7 +4,7 @@
   "name": "仮面ライダーディケイド",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※モーフ 【この世界でやるべきこと】これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、自分の手札を1枚選び捨札にしてもよい。そうしたとき、自軍山札を見て、特徴「FFR」を持つカードを1枚選び、自軍ラッシュエリアに出す。その後、山札をシャッフルする。",
@@ -37,13 +37,13 @@
       "name": "この世界でやるべきこと",
       "text": "これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、自分の手札を1枚選び捨札にしてもよい。そうしたとき、自軍山札を見て、特徴「FFR」を持つカードを1枚選び、自軍ラッシュエリアに出す。その後、山札をシャッフルする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-068::konodeyarubekikoto",
+          "keyword": "xg3::XG3-068::sekai",
           "duration": "permanent"
         }
       ]

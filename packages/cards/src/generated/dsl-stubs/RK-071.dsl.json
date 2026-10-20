@@ -4,7 +4,7 @@
   "name": "仮面ライダーキックホッパー",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "【ライダーキック】敵軍ラッシュエリアのSユニットの数を数えて、その数と同じ必要パワーの数字を持つ敵軍Sユニットがあれば1体選び、持ち主のパワーゾーンに送る。",
@@ -29,11 +29,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_rush_s_count_power_match_to_power",
+          "keyword": "rk4::RK-071::rider_kick",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

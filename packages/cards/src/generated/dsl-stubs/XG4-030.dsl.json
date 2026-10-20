@@ -7,7 +7,7 @@
     "WB",
     "MA"
   ],
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "※レジスト 【千千斬】自軍ラッシュエリアから、特徴「激気」を持つ自軍Mユニットを1体選びホールドしてもよい。そうしたとき、ホールドしたユニットの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを全て撃破する。",
@@ -43,12 +43,12 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-030::zan",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-030::senzan",
+          "duration": "turn"
         }
       ]
     }

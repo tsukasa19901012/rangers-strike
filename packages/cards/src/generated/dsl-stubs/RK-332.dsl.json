@@ -4,7 +4,7 @@
   "name": "仮面ライダー龍騎（2nd）",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 5,
   "text": "※これは特徴「ドラゴン」を持つ自軍ユニット1体につきBP+1000される。 【叶えたい願いを胸に】特徴「ドラゴン」を持つユニットからコンビネーションしたとき発動できる⇒敵軍バトルエリアから、これがコンビネーションしているユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "bp_plus_per_ally_feature_doragon_1000",
+          "keyword": "rk16::RK-332::dragon_bp",
           "duration": "permanent"
         }
       ],
@@ -41,34 +41,14 @@
       "trigger": {
         "type": "nc"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk16::RK-332::wish",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

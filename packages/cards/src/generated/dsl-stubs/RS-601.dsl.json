@@ -4,7 +4,7 @@
   "name": "ゴーオンゴールド",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※これはBP2000以下のユニットにアタックできない。 【ミッション6 フルパワー】「SP1」敵軍コマンドを3つまで選びリリースしてもよい。そうしたとき、リリースしたコマンドの数以下の必要パワーの数字を持つ敵軍ユニットを1体選び撃破する。",
@@ -44,8 +44,14 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "set8d::RS-601::full_power",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

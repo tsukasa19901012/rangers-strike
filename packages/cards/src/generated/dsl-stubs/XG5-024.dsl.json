@@ -4,7 +4,7 @@
   "name": "ボウケンピンク",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 1,
   "text": "※リードET 【プレシャスの確保】自軍山札の下から1枚ひいて、そのカードを自軍コマンドゾーンにホールド状態で置いてもよい（置けなければ手札に加える）。そうしたとき、相手も同じようにしてもよい。（この効果は、「ボウケンレッド」からコンビネーションするときはナンバーに関係なく発動する）",
@@ -38,11 +38,10 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_bottom_hold_command",
+          "keyword": "xg5::XG5-024::precious",
           "duration": "turn"
         }
       ]

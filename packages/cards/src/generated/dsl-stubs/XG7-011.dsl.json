@@ -39,11 +39,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-011::jairoken",
+          "keyword": "xg7::XG7-011::gyro_shuriken",
           "duration": "permanent"
         }
       ]

@@ -1,14 +1,20 @@
 import type { GameState, PlayerId } from "../../types/game";
 import {
+  bpPlusInvertedFor,
   effectiveBp,
   getDefinition,
   isSmallUnit,
   isMediumUnit,
 } from "../../core/catalog";
 import { playerHasFieldCard } from "./rsCatchallChoices";
+import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { sameCardName } from "../../core/cardNames";
+import { wasRushedThisTurn } from "../turnModifiers";
 
-/** RS-210: ナンバーSユニットのBP加算を減算に反転。 */
+/**
+ * RS-210: ナンバーSユニットのBP加算を減算に反転。
+ * 判定は core/catalog の bpPlusInvertedFor（本文の文言で判定し、effectiveBp に組み込み済み）。
+ */
 export function rs210BpInvertDelta(
   state: GameState,
   playerId: PlayerId,
@@ -16,50 +22,55 @@ export function rs210BpInvertDelta(
   delta: number,
 ): number {
   if (delta <= 0) return delta;
-  if (!playerHasFieldCard(state, playerId, "RS-210")) return delta;
   const player = state.players[playerId];
   const card = [...player.rush, ...player.battle].find((c) => c.instanceId === instanceId);
-  if (!card || !isSmallUnit(state.definitions, card.cardId)) return delta;
-  const def = getDefinition(state.definitions, card.cardId);
-  if (def?.comboNumber == null) return delta;
+  if (!card || !bpPlusInvertedFor(state, card)) return delta;
   return -delta;
 }
 
-/** RS-482: 航空機特徴なしMはアタック/ストライク不可。 */
+/**
+ * RS-482【カラクリ忍法・天空裂破】: 航空機特徴なしMはアタック/ストライク不可。
+ * 「特徴「航空機」を持たないMユニットは」に自軍・敵軍の指定がないので、どちらのエリアにあっても両軍の M ユニットが対象（R-TGT-04）。
+ */
 export function rs482BlocksAttackStrike(
   state: GameState,
   playerId: PlayerId,
   cardId: string,
 ): boolean {
-  if (!playerHasFieldCard(state, playerId, "RS-482")) return false;
+  const enemyId: PlayerId = playerId === "player1" ? "player2" : "player1";
+  if (!playerHasFieldCard(state, playerId, "RS-482") && !playerHasFieldCard(state, enemyId, "RS-482")) return false;
   if (!isMediumUnit(state.definitions, cardId)) return false;
   const def = getDefinition(state.definitions, cardId);
   return !(def?.features ?? []).includes("航空機");
 }
 
-/** RS-579: BP8000以下はラッシュターンにアタック/ストライク不可。 */
+/**
+ * RS-579 ルナジェル【ルジュナ】「これが自軍エリアにある間、BP8000以下のユニットは次の制限を受ける⇒ラッシュしたターンに
+ * ストライクもアタックもできない。」（atwiki/page-1194）— 自軍・敵軍の限定はない（R-TGT-04）。ラッシュしたターンは
+ * そのユニットがラッシュされたターン（wasRushedThisTurn）。
+ */
 export function rs579BlocksAttackStrikeOnRushTurn(
   state: GameState,
   playerId: PlayerId,
   instanceId: string,
 ): boolean {
-  if (!playerHasFieldCard(state, playerId, "RS-579")) return false;
+  const enemyId: PlayerId = playerId === "player1" ? "player2" : "player1";
+  if (!playerHasFieldCard(state, playerId, "RS-579") && !playerHasFieldCard(state, enemyId, "RS-579")) return false;
   const player = state.players[playerId];
   const card = [...player.rush, ...player.battle].find((c) => c.instanceId === instanceId);
   if (!card) return false;
-  const bp = effectiveBp(state, playerId, card);
-  if (bp > 8000) return false;
-  return player.rush.some((c) => c.instanceId === instanceId);
+  if (!wasRushedThisTurn(player, instanceId)) return false;
+  return effectiveBp(state, playerId, card) <= 8000;
 }
 
-/** RS-627: ラッシュBP1000以下は相手に選ばれない。 */
+/** RS-627【シールドシステム】: これが自軍エリア（ラッシュ・バトル）にある間、自軍ラッシュエリアの BP1000 以下は相手に選ばれない。 */
 export function rs627NotSelectable(
   state: GameState,
   ownerId: PlayerId,
   instanceId: string,
 ): boolean {
   const owner = state.players[ownerId];
-  if (!playerHasFieldCard(state, ownerId, "RS-627", ["rush"])) return false;
+  if (!playerHasFieldCard(state, ownerId, "RS-627")) return false;
   const card = owner.rush.find((c) => c.instanceId === instanceId);
   if (!card) return false;
   return effectiveBp(state, ownerId, card) <= 1000;
@@ -71,7 +82,14 @@ export function rs603BlocksVehicle(
   playerId: PlayerId,
   cardId: string,
 ): boolean {
-  if (!playerHasFieldCard(state, playerId, "RS-603")) return false;
+  // ルール: R-ERR-RS603 — 対象は「本来の特徴に「車両」を持つユニット」で、自軍・敵軍を問わない。
+  const enemyId: PlayerId = playerId === "player1" ? "player2" : "player1";
+  if (
+    !playerHasFieldCard(state, playerId, "RS-603") &&
+    !playerHasFieldCard(state, enemyId, "RS-603")
+  ) {
+    return false;
+  }
   const def = getDefinition(state.definitions, cardId);
   return (def?.features ?? []).includes("車両");
 }
@@ -82,7 +100,13 @@ export function rs339AddsDaCategory(
   playerId: PlayerId,
   cardId: string,
 ): boolean {
-  if (!playerHasFieldCard(state, playerId, "RS-339")) return false;
+  // 「特徴「男」を持つすべてのユニット」— 敵軍のユニットにも追加される（atwiki・grnrngr/faq-card-4 RS-205 Q3）。
+  if (
+    !playerHasFieldCard(state, playerId, "RS-339") &&
+    !playerHasFieldCard(state, playerId === "player1" ? "player2" : "player1", "RS-339")
+  ) {
+    return false;
+  }
   const def = getDefinition(state.definitions, cardId);
   return (def?.features ?? []).includes("男");
 }
@@ -113,7 +137,10 @@ export function rs619WingProtectedFromNonAircraft(
 ): boolean {
   if (!playerHasFieldCard(state, defenderId, "RS-619")) return false;
   const def = getDefinition(state.definitions, defenderCardId);
-  if (!(def?.features ?? []).includes("ウイング")) return false;
+  // ルール: R-KW-00 — ウイングはキーワード（特徴ではない）。
+  if (!def || !cardHasKeyword(state.definitions, defenderCardId, "wing", { state, playerId: defenderId })) {
+    return false;
+  }
   const attackerDef = getDefinition(state.definitions, attackerCardId);
   return !(attackerDef?.features ?? []).includes("航空機");
 }

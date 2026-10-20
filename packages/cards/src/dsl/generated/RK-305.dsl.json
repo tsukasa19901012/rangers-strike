@@ -4,7 +4,7 @@
   "name": "仮面ライダー電王SF",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選びこれと置き換えてもよい） 【俺の必殺技特別編】敵軍コマンドを2つ、1つずつ順番に選びリリースしてもよい。そうしたとき、本来のカテゴリが1つ目にリリースしたコマンドと同じで、本来の必要パワーが2つ目にリリースしたコマンドと同じ敵軍Sユニットをすべて撃破する。",
@@ -44,11 +44,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-305::no_2",
+          "keyword": "rk15::RK-305::special_edition",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

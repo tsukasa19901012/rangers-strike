@@ -4,7 +4,7 @@
   "name": "ブラックコンドル",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※自分がターンを終えるとき、特徴「女」を持つユニットが1体もなければ、このユニットを手札に戻す。 【俺に惚れろ！】自軍ラッシュエリアに特徴「女」を持つユニットが2体以上あれば、このターン、これは「SP1」になる。",
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "end_turn_return_hand_if_no_fx_unknown",
+          "keyword": "end_turn_return_hand_if_no_feat_e5a5b3",
           "duration": "permanent"
         }
       ],

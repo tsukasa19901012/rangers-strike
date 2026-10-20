@@ -4,7 +4,7 @@
   "name": "ゴーカイオー",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "PR",
   "expansion": "legend1",
   "powerCost": "6+",
   "text": "※これは、自軍パワーの数5につきBP+2000される。 【レジェンドを求めて】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒自軍山札を見て、Sユニット以外のユニットカードを1枚選び、自軍パワーゾーンに置いてもよい。その後、山札をシャッフルする。",
@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-032::rejiendowomete",
+          "keyword": "promo::XP-032::legend",
           "duration": "turn"
         }
       ]

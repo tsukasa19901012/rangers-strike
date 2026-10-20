@@ -1,3 +1,4 @@
+import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import { getDefinition } from "../core/catalog";
@@ -23,7 +24,11 @@ export function rkPassiveBpBonus(
 
     const perHeldEnemy = text.match(/ホールド状態の敵軍ユニット1体につきBP\+(\d+)/);
     if (perHeldEnemy) {
-      bonus += enemy.command.filter((c) => c.commandHeld).length * Number(perHeldEnemy[1]);
+      // RK-117 仮面ライダータイガ「※これはホールド状態の敵軍ユニット1体につきBP+1000される。」— 数えるのは敵軍の場（バトル・ラッシュ）の
+      // ホールド状態のユニット（エリア・サイズを問わない。atwiki/page-635 コメント欄）。ホールド状態のコマンドは数えない。
+      bonus +=
+        [...enemy.battle, ...enemy.rush].filter((c) => c.commandHeld && getDefinition(state.definitions, c.cardId)?.type === "unit").length *
+        Number(perHeldEnemy[1]);
     }
 
     const perEnemyHand = text.match(/相手の手札1枚につきBP\+(\d+)/);
@@ -49,7 +54,8 @@ export function rkPassiveBpBonus(
       if (selfCount >= min) bonus += amount;
     }
 
-    const perFeatureField = text.match(/特徴「([^」]+)」を持つ自軍ユニット1体につきBP\+(\d+)/);
+    // RK-332 龍騎（2nd）の※はここでは数えない（ビークルを除く・ゾーンでもオモテ向きなら有効。rules/rk/rk16Fields.ts rk16FieldBpBonus）。
+    const perFeatureField = isSameCardIdentity(instance.cardId, "RK-332") ? null : text.match(/特徴「([^」]+)」を持つ自軍ユニット1体につきBP\+(\d+)/);
     if (perFeatureField) {
       const feature = perFeatureField[1]!;
       const amount = Number(perFeatureField[2]);

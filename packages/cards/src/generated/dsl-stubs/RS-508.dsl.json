@@ -4,7 +4,7 @@
   "name": "ゴーオンレッド",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 1,
   "text": "※これは毎ターン、可能ならバトルエリアに出る。 ※これはアタックすることができない。 【ロードサーベル】「SP1」敵軍バトルエリアからユニットを1体選んでもよい。そうしたとき、このユニットと選んだユニットでバトルする。",
@@ -58,8 +58,14 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "set7d::RS-508::road_saber",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

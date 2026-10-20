@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { legend1Catalog } from "@rangers-strike/cards";
+import { legend1Catalog, legend3Catalog } from "@rangers-strike/cards";
 import { applyAction } from "../core/applyAction";
 import { isCpuTurn, pickCpuAction } from "./level1";
+import { pickCpuAction as pickCpuActionByLevel } from "./index";
 import { pickBestMoveToBattle } from "./helpers";
 import { dedupeActions } from "./simulation";
 import {
@@ -9,6 +10,8 @@ import {
   heldWbCommand,
   inst,
   releasedEtCommand,
+  releasedWbCommand,
+  MERGED_DEFINITIONS,
   WIN_DAMAGE,
   withCostWindow,
 } from "../testing/fixtures";
@@ -601,6 +604,21 @@ describe("CPU battle entry helpers", () => {
 
     const picked = pickBestMoveToBattle(state, "player2", [...actions]);
     expect(picked?.instanceId).toBe(strong.instanceId);
+  });
+  it("holds a command to send out a unit that cannot enter battle without one", () => {
+    // RS-153 ガオイーグル「自軍コマンドを1つホールドしなければバトルエリアに出られない」。
+    // 払うまで move_to_battle は合法手に無い（XG3 スターターB でラッシュエリアに置いたままだった）。
+    const eagle = inst("RS-153", "eagle");
+    const state = createTestState({
+      phase: "battle",
+      activePlayer: "player2",
+      player2: { rush: [eagle], command: [releasedWbCommand("c1")] },
+      definitions: { ...MERGED_DEFINITIONS, "RS-153": legend3Catalog.cards.find((c) => c.id === "RS-153")! },
+    });
+    for (const level of [1, 5] as const) {
+      const picked = pickCpuActionByLevel(state, "player2", level);
+      expect(picked).toMatchObject({ type: "initiate_command_payment", kind: "battle_entry", sourceInstanceId: eagle.instanceId });
+    }
   });
 });
 

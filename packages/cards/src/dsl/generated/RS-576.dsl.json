@@ -4,7 +4,7 @@
   "name": "マジフェニックス",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "7-",
   "text": "※これが撃破されて捨札になったとき、自軍捨札から「マジレッド」のカードを1枚選び、自軍ラッシュエリアに出す。 ※これをラッシュしたとき、ホールド状態の自軍Sユニットをすべてリリースしてもよい。 【フェニックススピンキック】「SP1」これがストライクしたとき、自分は1枚ドローする。",
@@ -75,12 +75,27 @@
       "name": "フェニックススピンキック",
       "text": "「SP1」これがストライクしたとき、自分は1枚ドローする。",
       "trigger": {
-        "type": "on_strike"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "SP1",
+          "duration": "turn"
+        }
+      ]
+    },
+    {
+      "id": "fuenikususupinkiku_draw",
+      "name": "フェニックススピンキック",
+      "text": "これがストライクしたとき、自分は1枚ドローする。",
+      "trigger": {
+        "type": "on_strike"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "set8c::RS-576::strike_draw",
           "duration": "turn"
         }
       ]

@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-199::zeruno",
+          "keyword": "rk10::RK-199::zeru_command",
           "duration": "permanent"
         }
       ],

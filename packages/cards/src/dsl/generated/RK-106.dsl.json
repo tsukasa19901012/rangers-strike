@@ -4,7 +4,7 @@
   "name": "仮面ライダーアギトFF",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 5,
   "text": "※これはライド中、「SP1/3」になる。 【セイバースラッシュ】敵軍バトルエリアから、ホールド状態のSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
@@ -23,13 +23,13 @@
       "id": "grant_sp_riding_1",
       "text": "※これはライド中、「SP1/3」になる。",
       "trigger": {
-        "type": "riding_combo"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
-          "duration": "turn"
+          "keyword": "rk6::RK-106::riding_sp",
+          "duration": "permanent"
         }
       ]
     },
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_battle_held_s_to_power",
+          "keyword": "rk6::RK-106::saber_slash",
           "duration": "turn"
         }
       ],

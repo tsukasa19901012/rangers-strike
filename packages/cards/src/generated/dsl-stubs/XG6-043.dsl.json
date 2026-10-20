@@ -4,7 +4,7 @@
   "name": "仮面ライダーゼロノスZF",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "0+",
   "text": "※特徴「女」を持つ自軍ユニットがあれば、これはレジストを得る。 【強き心と強き願い】自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンからオモテ向きのカードを1枚選びゲームから除外してよい。そうしたとき、これはBP+3000され、自分がゲームに負けるまで残り1点なら「SP2」になる。",
@@ -25,13 +25,13 @@
       "id": "unnamed_e280bbe789b9e5beb4e3808c",
       "text": "※特徴「女」を持つ自軍ユニットがあれば、これはレジストを得る。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-043::wotsuyunitogaare",
+          "keyword": "xg6::XG6-043::field",
           "duration": "permanent"
         }
       ]
@@ -43,12 +43,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-043::kitokii",
-          "duration": "turn"
+          "keyword": "xg6::XG6-043::strong_heart",
+          "duration": "permanent"
         }
       ]
     }

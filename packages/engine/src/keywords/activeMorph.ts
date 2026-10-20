@@ -1,8 +1,10 @@
+import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { getDefinition } from "../core/catalog";
 import { findInZone, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
+import { markFieldEntryHandled } from "../events/emitUnitRushed";
 import { openEffectChoice } from "../rules/pendingChoices";
 import { resolveRidingComboOnRideOff } from "../rules/ridingComboEffects";
 import {
@@ -140,7 +142,10 @@ function applyZoneMorphSwap(
   );
 
   return {
-    state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+    state: markFieldEntryHandled(
+      { ...state, ...updatePlayer(state, playerId, nextPlayer) },
+      [replacementFound.card.instanceId],
+    ),
     log,
   };
 }
@@ -165,10 +170,12 @@ export function applyActiveFeatureMorphSwap(
     return { error: "invalid_target" };
   }
 
+  // 能動的な置き換え効果（キーワードのモーフではない）は従来どおり手札・ラッシュも候補にする。
   const candidates = listMorphReplacementCandidates(
     player,
     state.definitions,
     fieldFound.card.cardId,
+    ["hand", "rush", "power", "command"],
   );
   if (!candidates.some((c) => c.instanceId === replacementInstanceId)) {
     return { error: "invalid_target" };
@@ -294,11 +301,18 @@ export function resolveKamenRideMorphChoice(
     };
   }
 
-  const rc = resolveRidingComboOnRideOff(swap.state, playerId, entering);
+  // 出したユニットの RC の効果が開いた選択は残す（XG2-077・XP-004 atwiki/page-1748「RCの効果を持っていれば、その効果を発動する」）。
+  const rc = resolveRidingComboOnRideOff({ ...swap.state, pendingEffectChoice: undefined }, playerId, entering);
+  // 置き換えでバトルエリアに出たので「バトルエリアに出たとき」の効果も発動する（atwiki/page-1748 Q2）。
+  const inBattle = findInZone(rc.state.players[playerId], "battle", entering.instanceId);
+  const entered =
+    inBattle && !rc.state.pendingEffectChoice
+      ? tryResolveDslTriggeredEffects({ state: rc.state, cardId: entering.cardId, instanceId: entering.instanceId, playerId, phasePlayerId: pending.phasePlayerId, triggerType: "enter_battle" })
+      : { state: rc.state, logs: [] as string[] };
   return {
-    state: { ...rc.state, pendingEffectChoice: undefined },
+    state: entered.state,
     log: swap.log,
-    extraLogs: rc.logs,
+    extraLogs: [...rc.logs, ...entered.logs],
   };
 }
 

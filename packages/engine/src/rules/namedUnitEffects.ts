@@ -1,22 +1,40 @@
+import { rm2AttackerBattleBonus, rm2DefenderBattleBonus } from "./rm/rm2Effects";
+import { xg7AttackerBattleBonus } from "./xg7/xg7Fields";
+import { xg4AttackerBattleBonus } from "./xg4/xg4Fields";
+import { unitFeatures as xg4UnitFeatures } from "./addedFeatures";
+import { xg2DefenderBattleBonus } from "./xg2/xg2Fields";
+import { xg3AttackerBpBonus } from "./xg3/xg3Fields";
+import { rk9UsePrintedDefenderBp } from "./rk/rk9Fields";
+import { rk11UsePrintedDefenderBp } from "./rk/rk11Fields";
+import { xg7UsePrintedDefenderBp } from "./xg7/xg7Fields";
 import {
   findNamedEffectByEffectId,
-  getOnAttackNamedEffect,
   getOnRushNamedEffect,
   hasDestroySelfDamageNote,
 } from "@rangers-strike/cards";
+import { rk2BlocksDefenderCounters, rk2UsePrintedDefenderBp } from "./rk/rk2UnitEffects";
+import { rk4UsePrintedDefenderBp } from "./rk/rk4UnitEffects";
+import { rk3AttackerBattleBonus, rk3DefenderBattleBonus } from "./rk/rk3UnitEffects";
+import { activeOnAttackNamedEffect, namedEffectActive } from "./ncGatedEffects";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../types/game";
 import {
+  bpSetValueOf,
+  cardCategories,
   cardName,
   effectiveBp,
   getDefinition,
   unitBp,
+  unitSizeOf,
 } from "../core/catalog";
+import { withSpBecomes } from "./fractionalSp";
+import { set7DUsePrintedDefenderBp } from "./legend1/set7NamedEffectsD";
 import {
   attackedBpBoostAmount,
   listCardGrantKeywords,
   rideAttackBpBoostAmount,
 } from "../dsl/promotedKeywordBridge";
 import { findMountedVehicle } from "../keywords/ride";
+import { cardNotSelectableByOpponent } from "../keywords/effectTargetability";
 import { getDslEffectById } from "../dsl/effectLookup";
 import { passiveNamedFieldBpBonus } from "./fieldAuras";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
@@ -27,6 +45,8 @@ import {
   tryStartLegend2ConditionalChoice,
 } from "./legend2/battleEffects";
 import { resolveLegend2OnRushEffects } from "./legend2/rushEffects";
+import { rk6CommandHoldBlocked } from "./rk/rk6Fields";
+import { rk7RiderKickEnabled } from "./rk/rk7UnitEffects";
 import {
   isLegend3OnRushEffect,
   resolveLegend3OnRushEffects,
@@ -41,7 +61,6 @@ import {
 } from "./legend3/battleEffects";
 import { legend2EffectiveSp } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
-import { canAttackEnemyRushS } from "./legend3/restrictions";
 import { findBattleAttacker, findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { applyDamageToPlayer } from "./damagePayment";
 import { buildLogEntry } from "../log/formatLog";
@@ -62,8 +81,12 @@ import {
   startTyrannoSonicChoice,
 } from "./pendingChoices";
 import { tryLeaveField } from "./operationCounters";
+import { set5AttackerBpBonus } from "./legend1/set5NamedEffects";
+import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEffects";
+import { afterCommandCardsLeft } from "./commandLeaveRefill";
 import { attackerSuppressesAttackedCounters } from "./keywordGapRuntime";
 import { allyAttackedAuraBpBonus } from "../dsl/promotedKeywordBridge";
+import { promoAttackerBpBonus, promoDefenderBpBonus } from "./promo/promoHooks";
 
 export type NamedEffectOutcome = {
   state: GameState;
@@ -109,8 +132,25 @@ export function battleAttackerBpBonus(
   );
   total += legend2AttackerBpBonus(state, pending);
   total += legend3AttackerBpBonus(state, pending);
+  // XP-030 等（rules/promo/promoHooks.ts）。
+  total += promoAttackerBpBonus(state, pending);
+  // RK-052【音撃打・破砕細石】（rules/rk/rk3UnitEffects.ts）。
+  total += rk3AttackerBattleBonus(state, pending);
+  // RM-033 メタルダー ※（rules/rm/rm2Effects.ts）。
+  total += rm2AttackerBattleBonus(state, pending);
+  // XG7-019【スカイコンビブレイク】等（rules/xg7/xg7Fields.ts）。
+  total += xg7AttackerBattleBonus(state, pending);
+  // クロスギャザー ザ・ジェットアクセル XG4-007【獣奏剣】等（rules/xg4/xg4Fields.ts）。
+  total += xg4AttackerBattleBonus(state, pending, xg4UnitFeatures);
+  // XG3-070 ズ・ザイン・ダ【車両への憎悪】（rules/xg3/xg3Fields.ts）。
+  total += xg3AttackerBpBonus(state, pending);
 
-  if (findNamedEffectByEffectId(attacker.card.cardId, "bouken_javelin")) {
+  // RS-062【ボウケンジャベリン】・RS-241【デュアルクラッシャー・ドリルヘッド】（CN5）:
+  // 特徴「メカ」を持つユニットにアタックするとき BP+4000（NC の効果は成立しているときだけ。R-CN-02）。
+  if (
+    namedEffectActive(attacker.card, "bouken_javelin") ||
+    namedEffectActive(attacker.card, "deyuarukurashadoriruhedo")
+  ) {
     const defenderZone = findInZone(
       state.players[pending.defenderPlayerId],
       "battle",
@@ -129,7 +169,20 @@ export function battleAttackerBpBonus(
     }
   }
 
-  if (findNamedEffectByEffectId(attacker.card.cardId, "red_fire")) {
+  // RS-342【ゲキロッド】・RS-344【ブレイジングストームスラッシュ】（rules/legend1/set5NamedEffects.ts）。
+  total += set5AttackerBpBonus(
+    state,
+    pending.attackerPlayerId,
+    attacker.card,
+    pending.defenderPlayerId,
+    pending.defenderInstanceId,
+    namedEffectActive,
+  );
+
+  // RS-232【アバレウィング】（CN3）: これがアタックするとき、これは BP+1000 される。
+  if (namedEffectActive(attacker.card, "abareuingu")) total += 1000;
+
+  if (namedEffectActive(attacker.card, "red_fire")) {
     const released = state.players[pending.attackerPlayerId].command.filter(
       (c) => !c.commandHeld,
     ).length;
@@ -146,6 +199,11 @@ export function battleAttackerBpBonus(
   if (mountedVehicle) {
     total += rideAttackBpBoostAmount(mountedVehicle.cardId);
   }
+
+  // ルール: R-BP-01 — 「指定の値になる」（ミラージュビーム・頭が高い！）が最も優先され、増減の計算は行わない。
+  if (mirageOverride !== undefined) return mirageOverride;
+  const attackerSet = bpSetValueOf(state, pending.attackerPlayerId, attacker.card);
+  if (attackerSet !== undefined) return attackerSet;
 
   return total;
 }
@@ -169,6 +227,9 @@ export function battleDefenderBp(
     pending.substituteInstanceId ?? pending.defenderInstanceId,
   );
   if (!defenderFound) return 0;
+  // ルール: R-BP-01 — 「BP○○になる」が最優先で、本来の値・増減の計算は行わない。
+  const defenderSet = bpSetValueOf(state, defenderOwner, defenderFound.card);
+  if (defenderSet !== undefined) return defenderSet;
 
   const attackerCard = findBattleAttacker(
     state.players[pending.attackerPlayerId],
@@ -179,15 +240,33 @@ export function battleDefenderBp(
     (hasBattleNcEffect(attackerCard, "shark_jaws") ||
       hasBattleNcEffect(attackerCard, "super_cutter") ||
       hasBattleNcEffect(attackerCard, "use_printed_bp_in_battle") ||
-      getOnAttackNamedEffect(attackerCard.cardId)?.effectId === "shark_jaws" ||
-      getOnAttackNamedEffect(attackerCard.cardId)?.effectId === "super_cutter" ||
-      getOnAttackNamedEffect(attackerCard.cardId)?.effectId === "raidakiku" ||
+      namedEffectActive(attackerCard, "abareuingu") ||
+      activeOnAttackNamedEffect(attackerCard)?.effectId === "shark_jaws" ||
+      activeOnAttackNamedEffect(attackerCard)?.effectId === "super_cutter" ||
+      // RK-134【ライダーキック】は RC を発動したターンだけ（rules/rk/rk7UnitEffects.ts）。
+      (activeOnAttackNamedEffect(attackerCard)?.effectId === "raidakiku" && rk7RiderKickEnabled(state, pending.attackerPlayerId, attackerCard)) ||
       legend2UsePrintedDefenderBp(state, pending) ||
-      legend3UsePrintedDefenderBp(state, pending));
+      legend3UsePrintedDefenderBp(state, pending) ||
+      // RS-503【シャッキーン！の中に修行あり】（rules/legend1/set7NamedEffectsD.ts）。
+      set7DUsePrintedDefenderBp(state, pending) ||
+      // RK-023【技の1号】（rules/rk/rk2UnitEffects.ts）。
+      rk2UsePrintedDefenderBp(state, pending) ||
+      // RK-067【飛翔斬】（rules/rk/rk4UnitEffects.ts）。
+      rk4UsePrintedDefenderBp(state, pending) ||
+      // RK-182【Zブリンガーアタック】（rules/rk/rk9Fields.ts）。
+      rk9UsePrintedDefenderBp(state, pending) ||
+      // RK-215【スペード2―スラッシュ】で得た能力（rules/rk/rk11Fields.ts）。
+      rk11UsePrintedDefenderBp(state, pending) ||
+      // XG7-032【ライダーダブルキック】（rules/xg7/xg7Fields.ts）。
+      xg7UsePrintedDefenderBp(state, pending));
 
-  const base = usePrintedBp
-    ? unitBp(getDefinition(state.definitions, defenderFound.card.cardId))
-    : effectiveBp(state, defenderOwner, defenderFound.card);
+  const mirageOverride = pending.substituteInstanceId ? undefined : pending.mirageBeamDefenderBpOverride;
+  const base =
+    mirageOverride !== undefined
+      ? mirageOverride + (defenderFound.card.bpModifier ?? 0)
+      : usePrintedBp
+        ? unitBp(getDefinition(state.definitions, defenderFound.card.cardId))
+        : effectiveBp(state, defenderOwner, defenderFound.card);
 
   if (usePrintedBp) {
     return base;
@@ -197,7 +276,17 @@ export function battleDefenderBp(
     base +
     passiveNamedFieldBpBonus(state, defenderOwner, defenderFound.card, "defending") +
     attackedBpBoostAmount(defenderFound.card.cardId) +
-    allyAttackedAuraBpBonus(state, defenderOwner, defenderFound.card)
+    allyAttackedAuraBpBonus(state, defenderOwner, defenderFound.card) +
+    // RK-004 ギギの腕輪・RK-009 二人の世紀王: 「このバトルの間、アタックされたユニットは BP+…」（かわりにバトルするユニットには付かない）。
+    (pending.substituteInstanceId ? 0 : (pending.defenderBpBonus ?? 0)) +
+    // RK-052【音撃打・破砕細石】（rules/rk/rk3UnitEffects.ts）。
+    rk3DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card) +
+    // RM-030【ダイレオンレーザー】・RM-033 メタルダー ※（rules/rm/rm2Effects.ts）。
+    rm2DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card) +
+    // XG2-007 ランドガンマ【ガンマカノン砲】（rules/xg2/xg2Fields.ts）。
+    xg2DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card) +
+    // SX-003【アーム・ファング】等（rules/promo/promoHooks.ts）。
+    promoDefenderBpBonus(state, defenderOwner, defenderFound.card)
   );
 }
 
@@ -238,9 +327,16 @@ export function attackerBlocksDefenderCounters(
   );
   if (!attacker) return legend2BlocksDefenderCounters(state, attackerPlayerId, attackerInstanceId);
   return (
+    // RK-023【技の1号】（rules/rk/rk2UnitEffects.ts）。
+    rk2BlocksDefenderCounters(state, attackerPlayerId, attackerInstanceId) ||
     hasBattleNcEffect(attacker.card, "panther_claw") ||
     hasBattleNcEffect(attacker.card, "cannot_counter_on_attack") ||
-    getOnAttackNamedEffect(attacker.card.cardId)?.effectId === "panther_claw" ||
+    activeOnAttackNamedEffect(attacker.card)?.effectId === "panther_claw" ||
+    // 「これがアタックするとき、相手はカウンターを発動できない」（RS-190【ミドメラン】等）— 文言で判定し、
+    // NC の効果なら NC が成立しているときだけ（activeOnAttackNamedEffect が NC ゲートを見る。R-CN-02）。
+    /これがアタックするとき、相手はカウンターを(?:発動|使用)できない/.test(
+      activeOnAttackNamedEffect(attacker.card)?.text ?? "",
+    ) ||
     attackerSuppressesAttackedCounters(attacker.card.cardId) ||
     legend2BlocksDefenderCounters(state, attackerPlayerId, attackerInstanceId)
   );
@@ -263,11 +359,22 @@ export function canAttackRushWithYellowThunder(
     hasBattleNcEffect(attacker.card, "attack_rush_zone") ||
     hasBattleNcEffect(attacker.card, "magi_yellow_bolt");
 
+  // ルール: R-ERR-RS575 — ユニゴルオンにライドしているユニットは敵軍ラッシュエリアのユニットにアタックできる。
+  const mountedId = attacker.card.mountedOnInstanceId;
+  const ridesUnigoruon =
+    !!mountedId &&
+    [...state.players[attackerPlayerId].battle, ...state.players[attackerPlayerId].rush].some(
+      (c) => c.instanceId === mountedId && c.cardId === "RS-575",
+    );
+
   return (
     yellowThunderActive ||
     attackRushZoneActive ||
-    canAttackRushWithMoonlightSonic(state, attackerPlayerId, attackerInstanceId) ||
-    canAttackEnemyRushS(state, attackerPlayerId, attackerInstanceId)
+    ridesUnigoruon ||
+    canAttackRushWithMoonlightSonic(state, attackerPlayerId, attackerInstanceId)
+    // RS-154 等「※これは敵軍ラッシュエリアのSユニットにアタックできる」は S ユニットだけが対象なので、
+    // ここ（ラッシュエリアのユニットすべてにアタックできる効果）には含めない。サイズの判定は
+    // legend3/restrictions.ts の can_attack_enemy_rush_s で行う（atwiki/page-89）。
   );
 }
 
@@ -411,22 +518,29 @@ export function resolveNamedOnRushEffects(
         effectId: "moss_blizzard",
         sourceCardId: found.card.cardId,
         phasePlayerId,
+        // ルール: R-ERR-RS036 — リリース状態のコマンドを2つ（1つしかなければ1つ）必ずホールドする。
         selectCount: 2,
         commandFilter: "released",
         commandAction: "hold",
-        optional: true,
+        optional: false,
       });
       if (withChoice) nextState = withChoice;
       break;
     }
     case "ptera_beam": {
+      // ルール: R-RES-01 — テキストに指定がなければ、効果の持ち主（ラッシュしたプレイヤー）が選ぶ。
       const withChoice = startSelectCommandChoice(nextState, {
-        playerId: enemyId,
+        playerId: rusherPlayerId,
         effectId: "ptera_beam",
         sourceCardId: found.card.cardId,
         phasePlayerId,
         commandFilter: "held",
         commandAction: "discard",
+        // 「相手に選ばれない」ユニットカード（ガタックRF 等）はホールド状態でも選べない（atwiki/page-81 Q2）。
+        validInstanceIds: collectCommandIds(nextState, enemyId, "held").filter((id) => {
+          const cmd = nextState.players[enemyId].command.find((c) => c.instanceId === id);
+          return !cmd || !cardNotSelectableByOpponent(cmd.cardId);
+        }),
       });
       if (withChoice) nextState = withChoice;
       break;
@@ -486,35 +600,76 @@ export function resolveNamedOnRushEffects(
   return { state: nextState, logs };
 }
 
-/** RS-070 天空魔法斬り — 戦闘進入時。 */
+function holdAllEnemyCommands(state: GameState, playerId: PlayerId, sourceCardId?: string): GameState {
+  const enemyId = opponent(playerId);
+  if (rk6CommandHoldBlocked(state, enemyId, sourceCardId)) return state;
+  const enemy = state.players[enemyId];
+  const command = enemy.command.map((c) => ({ ...c, commandHeld: true }));
+  return { ...state, ...updatePlayer(state, enemyId, { ...enemy, command }) };
+}
+
+/**
+ * RS-070【天空魔法斬り】／RS-111【ファントムイリュージョン】— 「これがバトルエリアに出たとき、
+ * 敵軍コマンドをすべてホールドしてもよい」。任意なので行うかどうかの確認を開く（出典: atwiki/page-24）。
+ * リリース状態の敵軍コマンドが無ければ何も変わらないので確認しない。
+ */
 export function resolveSkyMagicSlash(
   state: GameState,
   playerId: PlayerId,
   cardId: string,
+  sourceInstanceId?: string,
 ): NamedEffectOutcome {
-  const enemyId = opponent(playerId);
-  const enemy = state.players[enemyId];
-  const command = enemy.command.map((c) => ({ ...c, commandHeld: true }));
+  const enemy = state.players[opponent(playerId)];
+  if (!enemy.command.some((c) => !c.commandHeld)) return { state, logs: [] };
+  // RK-116 マグナギガ【そびえる巨体】: 敵軍バトルエリアにあれば、このユニットの効果ではホールドされない（atwiki/page-645。rules/rk/rk6Fields.ts）。
+  if (rk6CommandHoldBlocked(state, opponent(playerId), cardId)) return { state, logs: [] };
   return {
-    state: { ...state, ...updatePlayer(state, enemyId, { ...enemy, command }) },
+    state: openOptionalEffectConfirm(state, {
+      playerId,
+      effectId: "sky_magic_slash",
+      sourceCardId: cardId,
+      sourceInstanceId,
+      phasePlayerId: state.activePlayer,
+    }),
     logs: [
-      buildLogEntry(playerId, "enter_battle", cardId, state.definitions, "sky_magic_slash"),
+      buildLogEntry(playerId, "enter_battle", cardId, state.definitions, "choice:sky_magic_slash"),
     ],
   };
 }
 
-const OWN_TURN_BATTLE_ENTRY_EFFECTS = new Set([
-  "super_drill",
-  "judgment_sword",
-  "justice_flasher",
-]);
+registerOptionalEffect("sky_magic_slash", {
+  apply: (state, pending) => {
+    const next = holdAllEnemyCommands(state, pending.playerId, pending.sourceCardId);
+    return {
+      ...next,
+      log: [
+        ...next.log,
+        buildLogEntry(pending.playerId, "enter_battle", pending.sourceCardId, state.definitions, "sky_magic_slash"),
+      ],
+    };
+  },
+});
 
-/** RS-051 / RS-043 / RS-042 — 自軍ターンのバトルフェイズ中にバトル進入したときのみ。 */
+const OWN_TURN_BATTLE_ENTRY_EFFECTS = new Set(["justice_flasher"]);
+
+/**
+ * エラッタで「自軍ターン中、これがバトルエリアに出たとき」に限定された効果。
+ * ルール: R-ERR-RS043（【ジャッジメントソード】）、R-ERR-RS051（【超ドリル進化】）
+ */
+const ERRATA_OWN_TURN_ENTER_EFFECTS = new Set(["super_drill", "judgment_sword"]);
+
+/**
+ * RS-042 — 自軍ターンのバトルフェイズ中にバトル進入したときのみ。
+ * RS-051 / RS-043 — エラッタ後テキストどおり自軍ターン中にバトルエリアに出たときのみ。
+ */
 export function canRunEnterBattleConditionalEffect(
   state: GameState,
   ownerId: PlayerId,
   effectId: string,
 ): boolean {
+  if (ERRATA_OWN_TURN_ENTER_EFFECTS.has(effectId)) {
+    return state.activePlayer === ownerId;
+  }
   if (OWN_TURN_BATTLE_ENTRY_EFFECTS.has(effectId)) {
     return state.phase === "battle" && state.activePlayer === ownerId;
   }
@@ -621,11 +776,17 @@ export function resolveFocusedBreakthroughDamage(
   strikerInstanceId: string,
   defenderOwner: PlayerId,
   defender: CardInstance,
+  /** 撃破前（並びにある間）に判定した結果。省略時はこの state で判定する。 */
+  qualifiesBeforeLeave?: boolean,
 ): NamedEffectOutcome {
   const striker = state.players[strikerPlayerId];
   const strikerCard = striker.battle.find((c) => c.instanceId === strikerInstanceId);
   if (!strikerCard || strikerCard.cardId !== "RS-065") return { state, logs: [] };
-  if (!unitQualifiesForFocusedBreakthrough(state, defenderOwner, defender)) {
+  // ルール: R-ERR-RS065 — 【一点突破】は NC（CN3）が成立しているときだけ有効。
+  if (!hasBattleNcEffect(strikerCard, "focused_breakthrough")) return { state, logs: [] };
+  const qualifies =
+    qualifiesBeforeLeave ?? unitQualifiesForFocusedBreakthrough(state, defenderOwner, defender);
+  if (!qualifies) {
     return { state, logs: [] };
   }
 
@@ -677,9 +838,10 @@ export function applyShirubaOnRush(
     const rush = [...player.rush];
     const index = rush.findIndex((c) => c.instanceId === rushedInstanceId);
     if (index < 0) return player;
+    // 「次の能力を得る⇒BP+2000、「SP1」」— SP は加算ではなく SP1 になる。
+    const withSp = withSpBecomes(state.definitions, undefined, rush[index]!, 1);
     rush[index] = {
-      ...rush[index]!,
-      spModifier: (rush[index]!.spModifier ?? 0) + 1,
+      ...withSp,
       bpModifier: (rush[index]!.bpModifier ?? 0) + 2000,
     };
     return { ...player, rush };
@@ -711,7 +873,7 @@ export function collectBpLastThree500UnitIds(
     for (const card of player[zone]) {
       const def = getDefinition(state.definitions, card.cardId);
       if (!def || def.type !== "unit") continue;
-      if (options.size && def.size !== options.size) continue;
+      if (options.size && unitSizeOf(state.definitions, card) !== options.size) continue;
       if (bpLastThreeDigits(effectiveBp(state, targetPlayerId, card)) !== 500) continue;
       ids.push(card.instanceId);
     }
@@ -891,6 +1053,7 @@ export function tryStartMossBreakerChoice(
 export function blowKnuckleReturnReleasedCommands(state: GameState): NamedEffectOutcome {
   let nextState = state;
   const logs: string[] = [];
+  const leftCounts: Array<[PlayerId, number]> = [];
 
   for (const pid of ["player1", "player2"] as const) {
     const player = nextState.players[pid];
@@ -905,13 +1068,53 @@ export function blowKnuckleReturnReleasedCommands(state: GameState): NamedEffect
         hand: [...player.hand, ...released],
       }),
     };
+    leftCounts.push([pid, released.length]);
     logs.push(
       buildLogEntry(pid, "named_effect", "RS-064", state.definitions, "blow_knuckle"),
     );
   }
 
+  // コマンドゾーンを離れたときの誘発（RS-238【プロジェットカノン】等。離れた枚数だけ — RS-064 Q1）。
+  for (const [pid, count] of leftCounts) {
+    nextState = afterCommandCardsLeft(nextState, pid, count);
+    if (nextState.pendingEffectChoice) break;
+  }
+
   return { state: nextState, logs };
 }
+
+/**
+ * RS-064【ブロウナックル】「リリース状態の自軍コマンドをすべて手札に戻してもよい。そうしたとき、相手も同じようにする」。
+ * 任意なので確認を開く（atwiki/page-268）。自軍のリリース状態コマンドが0枚なら発動できない
+ * （grnrngr/faq-card-1 RS-064 Q3「いいえ、できません」）。
+ */
+export function tryStartBlowKnuckle(
+  state: GameState,
+  playerId: PlayerId,
+  sourceCardId: string,
+  sourceInstanceId: string,
+): GameState | null {
+  if (!state.players[playerId].command.some((c) => !c.commandHeld)) return null;
+  return openOptionalEffectConfirm(state, {
+    playerId,
+    effectId: "blow_knuckle",
+    sourceCardId,
+    sourceInstanceId,
+    phasePlayerId: state.activePlayer,
+  });
+}
+
+registerOptionalEffect("blow_knuckle", {
+  apply: (state, pending) => {
+    const blow = blowKnuckleReturnReleasedCommands(state);
+    return { ...blow.state, log: [...blow.state.log, ...blow.logs] };
+  },
+  // 相手の方がリリース状態のコマンドを多く失うときだけ行う。
+  cpuAccepts: (state, pending) => {
+    const count = (pid: PlayerId) => state.players[pid].command.filter((c) => !c.commandHeld).length;
+    return count(opponent(pending.playerId)) > count(pending.playerId);
+  },
+});
 
 export function grantSp1ToBattleUnit(
   state: GameState,
@@ -920,9 +1123,8 @@ export function grantSp1ToBattleUnit(
 ): GameState {
   const player = state.players[playerId];
   const battle = player.battle.map((c) =>
-    c.instanceId === instanceId
-      ? { ...c, spModifier: (c.spModifier ?? 0) + 1 }
-      : c,
+    // 「SP1」を得る＝SP1 になる（加算ではなく置き換え。rules/fractionalSp の withSpBecomes）。
+    c.instanceId === instanceId ? withSpBecomes(state.definitions, player.battle, c, 1) : c,
   );
   return { ...state, ...updatePlayer(state, playerId, { ...player, battle }) };
 }
@@ -960,4 +1162,44 @@ export function grantBpBoostToBattleUnit(
       : c,
   );
   return { ...state, ...updatePlayer(state, playerId, { ...player, battle }) };
+}
+
+/** RS-234 アバレキラー【ウイングペンタクト】の NC 記録名。 */
+export const WING_PENTACT_NC = "uingupentakuto";
+/** 【ウイングペンタクト】でアバレキラーからコンビネーションした「WB」の M ユニットの印（ターン終了時に撃破）。 */
+export const WING_PENTACT_COMBO_MARK = "wing_pentact_combo";
+
+/**
+ * RS-234 アバレキラー【ウイングペンタクト】（NC）: 自軍ターン中、このユニットからコンビネーションする「WB」の
+ * M ユニットは BP+3000 され、BP8000 以上のとき「SP1」になる。
+ * ルール: R-CN-05 — コンビネーションは直前に出たユニット（左隣）との間で成立する。
+ */
+export function applyWingPentactOnCombo(
+  state: GameState,
+  playerId: PlayerId,
+  card: CardInstance,
+  battleBeforeEnter: CardInstance[],
+): GameState {
+  if (state.phase !== "battle" || state.activePlayer !== playerId) return state;
+  const left = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
+  if (!left || !hasBattleNcEffect(left, WING_PENTACT_NC)) return state;
+  const def = getDefinition(state.definitions, card.cardId);
+  if (def?.type !== "unit" || unitSizeOf(state.definitions, card) !== "M" || !cardCategories(def).includes("WB")) return state;
+  let next = grantBpBoostToBattleUnit(state, playerId, card.instanceId, 3000);
+  next = markBattleNcEffect(next, playerId, card.instanceId, WING_PENTACT_COMBO_MARK);
+  const entered = next.players[playerId].battle.find((c) => c.instanceId === card.instanceId);
+  if (entered && effectiveBp(next, playerId, entered) >= 8000) {
+    next = grantSp1ToBattleUnit(next, playerId, card.instanceId);
+  }
+  return {
+    ...next,
+    log: [...next.log, buildLogEntry(playerId, "named_effect", left.cardId, state.definitions, "wing_pentact")],
+  };
+}
+
+/** 【ウイングペンタクト】自分がターンを終えるとき、アバレキラーからコンビネーションした「WB」の M ユニットは撃破される。 */
+export function wingPentactUnitsToDestroy(state: GameState, endingPlayerId: PlayerId): string[] {
+  return state.players[endingPlayerId].battle
+    .filter((c) => hasBattleNcEffect(c, WING_PENTACT_COMBO_MARK))
+    .map((c) => c.instanceId);
 }

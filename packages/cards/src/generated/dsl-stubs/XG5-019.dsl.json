@@ -4,7 +4,7 @@
   "name": "ダイボイジャー",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "6+",
   "text": "※これはDAを持たないユニットにアタックすることができない。 【アドベンチャーダブルスクリュー】自軍ターン中、これがバトルエリアに出たとき、相手は1点ダメージを受けるか、リリース状態の自分自身のコマンドが2つ以上あればすべて選び手札に戻すかを選ぶ。",
@@ -45,9 +45,9 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "controller"
+          "type": "grant_keyword",
+          "keyword": "xg5::XG5-019::double_screw",
+          "duration": "permanent"
         }
       ]
     }

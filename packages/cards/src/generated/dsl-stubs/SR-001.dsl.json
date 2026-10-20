@@ -55,7 +55,7 @@
   ],
   "effects": [
     {
-      "id": "heaven_earth_animal_heart",
+      "id": "furious_shark_shot",
       "name": "天地轟鳴アニマルハート",
       "text": "このユニットは、自軍バトルエリアにある「WB」のMユニット1体につきBP＋2000される。",
       "trigger": {
@@ -64,7 +64,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SR-001::heavenearthanimalheart",
+          "keyword": "effect_card::RS-151::furioussharkshot",
           "duration": "permanent"
         }
       ],

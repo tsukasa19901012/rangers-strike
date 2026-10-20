@@ -23,11 +23,10 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-062::hato8rifurekuto",
+          "keyword": "xg5::XG5-062::instead",
           "duration": "turn"
         }
       ]

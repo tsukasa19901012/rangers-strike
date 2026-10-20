@@ -1,9 +1,10 @@
-import { getOnAttackNamedEffect } from "@rangers-strike/cards";
+import { activeOnAttackNamedEffect } from "../ncGatedEffects";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
 import {
   getDefinition,
   isSmallUnit,
   unitBp,
+  unitSizeOf,
 } from "../../core/catalog";
 import { findBattleAttacker, findInZone, opponent } from "../../core/helpers";
 import { bounceAllFromZone } from "../bounce";
@@ -15,6 +16,7 @@ import {
 } from "../pendingChoices";
 import { defenderHasPowerCostMinus } from "../zordDown";
 import { resolveSkyMagicSlash } from "../namedUnitEffects";
+import { rk7RiderKickEnabled } from "../rk/rk7UnitEffects";
 import type { NamedEffectOutcome } from "../namedUnitEffects";
 import type { ComboOutcome } from "../comboTypes";
 
@@ -29,7 +31,7 @@ export function resolveManeHurricane(
     state,
     enemyId,
     "rush",
-    (card) => isSmallUnit(state.definitions, card.cardId),
+    (card) => isSmallUnit(state.definitions, card),
   );
   if (!bounced.bounced) {
     return { state, logs: [] };
@@ -53,7 +55,7 @@ export function resolveRuinExcavation(
   const targets = state.players[enemyId].command
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && (def.size === "S" || def.size === "M");
+      return def?.type === "unit" && (unitSizeOf(state.definitions, c) === "S" || unitSizeOf(state.definitions, c) === "M");
     })
     .map((c) => c.instanceId);
 
@@ -119,11 +121,12 @@ export function legend2AttackerBpBonus(
   const attacker = { card: attackerCard };
 
   let bonus = 0;
-  const atkEffect = getOnAttackNamedEffect(attacker.card.cardId);
+  const atkEffect = activeOnAttackNamedEffect(attacker.card);
 
   if (atkEffect?.effectId === "dump_punch") bonus += 2000;
   if (atkEffect?.effectId === "adventure_drive_sword") bonus += 4000;
-  if (atkEffect?.effectId === "raidakiku" && attacker.card.commandHeld) bonus += 2000;
+  // RK-134【ライダーキック】は RC を発動したターンだけ（rules/rk/rk7UnitEffects.ts）。
+  if (atkEffect?.effectId === "raidakiku" && attacker.card.commandHeld && rk7RiderKickEnabled(state, pending.attackerPlayerId, attacker.card)) bonus += 2000;
 
   if (
     atkEffect &&
@@ -162,11 +165,14 @@ export function legend2UsePrintedDefenderBp(
   );
   if (!attacker) return false;
 
-  const effect = getOnAttackNamedEffect(attacker.card.cardId);
+  const effect = activeOnAttackNamedEffect(attacker.card);
+  // RS-074 バルカン砲: 「自軍ラッシュエリアに「ブルバルカン」があるとき」だけ本来の BP で比べる。
+  if (effect?.effectId === "val_cannon") {
+    return state.players[pending.attackerPlayerId].rush.some((c) => c.cardId === "RS-075");
+  }
   return (
-    effect?.effectId === "val_cannon" ||
     effect?.effectId === "ptera_dagger" ||
-    effect?.effectId === "raidakiku"
+    (effect?.effectId === "raidakiku" && rk7RiderKickEnabled(state, pending.attackerPlayerId, attacker.card))
   );
 }
 
@@ -182,7 +188,7 @@ export function legend2BlocksDefenderCounters(
   );
   if (!attacker) return false;
 
-  const effect = getOnAttackNamedEffect(attacker.card.cardId);
+  const effect = activeOnAttackNamedEffect(attacker.card);
   if (effect?.effectId !== "val_cannon") return false;
 
   const player = state.players[attackerPlayerId];
@@ -200,7 +206,7 @@ export function tryStartLegend2ConditionalChoice(
     case "ghost_absorption": {
       const enemyId = opponent(playerId);
       const targets = state.players[enemyId].discard
-        .filter((c) => isSmallUnit(state.definitions, c.cardId))
+        .filter((c) => isSmallUnit(state.definitions, c))
         .map((c) => c.instanceId);
       if (targets.length === 0) return null;
       return startSelectUnitChoice(state, {
@@ -226,14 +232,16 @@ export function tryStartLegend2ConditionalChoice(
         commandFilter: "released",
         commandAction: "hold",
         optional: true,
-        validInstanceIds: targets.slice(0, 5),
+        // 出典: atwiki/page-293「自軍コマンドを5つホールドしてもよい」— どの5つかは自分が選ぶ。
+        validInstanceIds: targets,
+        selectCount: 5,
       });
     }
     case "precious_guardian": {
       const targets = state.players[playerId].battle
         .filter(
           (c) =>
-            isSmallUnit(state.definitions, c.cardId) &&
+            isSmallUnit(state.definitions, c) &&
             c.instanceId !== card.instanceId,
         )
         .map((c) => c.instanceId);

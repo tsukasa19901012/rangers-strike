@@ -4,7 +4,7 @@
   "name": "獣魔ハンター・ジーク",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "【ジークブラスター】このユニットは、本来のカテゴリにDAを持つ敵軍ユニットがあれば「SP1」になり、本来の特徴に「獣」を持つ敵軍ユニットがあればBP+2000される。",
@@ -22,13 +22,13 @@
       "name": "ジークブラスター",
       "text": "このユニットは、本来のカテゴリにDAを持つ敵軍ユニットがあれば「SP1」になり、本来の特徴に「獣」を持つ敵軍ユニットがあればBP+2000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-011::jikuburasuta",
+          "keyword": "xg3::XG3-011::zieg_blaster",
           "duration": "permanent"
         }
       ]

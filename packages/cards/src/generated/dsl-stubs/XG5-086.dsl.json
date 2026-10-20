@@ -4,7 +4,7 @@
   "name": "グランナスカ・コンバットフォーメーション",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "【ナックルボンバー】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからMユニットを1体選び、持ち主のパワーゾーンに送ってもよい。",
@@ -29,11 +29,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-086::nakurubonba",
+          "keyword": "xg5::XG5-086::knuckle_bomber",
           "duration": "turn"
         }
       ]

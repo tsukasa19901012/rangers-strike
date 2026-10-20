@@ -53,12 +53,12 @@
       "name": "兄妹の絆",
       "text": "これは次の相手ターン終了時まで、次の能力を得る⇒「BP+3000｣「スクラム」（自分の手札が1枚以下なら、追加で次の能力を得る⇒これはアタックされる以外では相手に選ばれない）",
       "trigger": {
-        "type": "on_turn_end"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-041::noe58584",
+          "keyword": "xg5::XG5-041::sibling_bond",
           "duration": "turn"
         }
       ]

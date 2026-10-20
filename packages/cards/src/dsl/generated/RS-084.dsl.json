@@ -63,7 +63,7 @@
         {
           "type": "deal_damage",
           "amount": 2,
-          "target": "controller"
+          "target": "opponent"
         }
       ]
     }

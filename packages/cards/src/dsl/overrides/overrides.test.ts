@@ -21,7 +21,7 @@ describe("card overrides", () => {
     const merged = applyCardOverride(base);
     const result = validateCardDocument(merged);
     expect(result.ok, result.issues.map((i) => i.message).join(", ")).toBe(true);
-    expect(merged.bp).toBe(0);
+    expect(merged.bp).toBe(500); // atwiki SK-000「BP:500」
     expect(merged.implementation?.handler).toBe("interpreter");
   });
 });

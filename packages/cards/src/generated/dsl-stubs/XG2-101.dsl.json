@@ -4,7 +4,7 @@
   "name": "ハカイダー",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "4+",
   "text": "※特徴「メカ」を持つ敵軍ユニットがあるとき、これはストライクできない。 ※自分がターンを終えるとき、このユニットがリリース状態ならホールドし、ホールド状態なら山札に戻してシャッフルする。 【ハカイダーショット】敵軍バトルエリアから、特徴「メカ」を持つ、SユニットまたはMユニットを1体選び撃破してもよい。",
@@ -60,34 +60,14 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg2::XG2-101::hakaider_shot",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

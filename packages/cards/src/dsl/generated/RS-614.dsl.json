@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_bp4000nosyunitowosubetechinokomandozonnihorudodeite",
+          "keyword": "set9a::RS-614::club_megaton",
           "duration": "turn"
         }
       ],

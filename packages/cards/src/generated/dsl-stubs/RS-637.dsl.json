@@ -4,7 +4,7 @@
   "name": "ネジレッド",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※ホールド状態のコマンドがあるとき、これはストライクできない。 【ネジセイバー】「SP1」特徴「レッド」を持つ敵軍Sユニットを1体選び、撃破してもよい。",
@@ -44,8 +44,14 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "set9b::RS-637::neji_destroy",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

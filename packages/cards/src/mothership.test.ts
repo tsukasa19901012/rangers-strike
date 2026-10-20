@@ -25,8 +25,11 @@ describe("mothership", () => {
   it("partial mothership holds after S material (Q7)", () => {
     expect(zordSlotsFilledByMaterial("RS-075", true, "command")).toBe(1);
     expect(zordSlotsFilledByMaterial("RS-075", true, "discard")).toBe(1);
-    expect(mothershipHoldsRequiredForRush("RS-075", 1)).toBe(0);
-    expect(mothershipHoldsRequiredForRush("RS-075", 0)).toBe(1);
+    // RS-075 の追加条件は「Sユニット2体をそれぞれ…」（atwiki/page-288）: S 1体＋母艦1つ（faq-card-2 RS-076 Q7）。
+    expect(mothershipHoldsRequiredForRush("RS-075", 1)).toBe(1);
+    expect(mothershipHoldsRequiredForRush("RS-075", 0)).toBe(2);
+    expect(mothershipHoldsRequiredForRush("RS-074", 1)).toBe(0);
+    expect(mothershipHoldsRequiredForRush("RS-074", 0)).toBe(1);
   });
 
   it("fusion discard material fills zord slot (promoted zord-up)", () => {

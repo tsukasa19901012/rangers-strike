@@ -4,7 +4,7 @@
   "name": "仮面ライダー新2号×仮面ライダー新1号",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "※クロス1 ※ブレイカー ※これは「仮面ライダー1号」または「仮面ライダー2号」としてつかえる。 【ライダーダブルキック】SP1 このターン、これはBP+2000される。また、これがアタックするとき、バトル相手のユニットのBPをカードに表記された本来の値としてバトルし、自分が次の行動を宣言するまで、すべての敵軍ユニットはホールドすることができない。",
@@ -71,9 +71,14 @@
       "name": "ライダーダブルキック",
       "text": "SP1 このターン、これはBP+2000される。また、これがアタックするとき、バトル相手のユニットのBPをカードに表記された本来の値としてバトルし、自分が次の行動を宣言するまで、すべての敵軍ユニットはホールドすることができない。",
       "trigger": {
-        "type": "on_attack"
+        "type": "riding_combo"
       },
       "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
         {
           "type": "modify_bp",
           "target": {
@@ -81,8 +86,14 @@
           },
           "amount": 2000,
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg7::XG7-032::double_kick",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

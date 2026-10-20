@@ -4,7 +4,7 @@
   "name": "ユガンデ",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※コールDA 【ダークサンダー】自軍ターン中、これがバトルエリアに出たとき、敵軍コマンドを1つ選びリリースしてもよい。そうしたとき、ホールド状態の敵軍Sユニットを1体選び撃破する。",
@@ -37,34 +37,14 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "command",
-          "owner": "opponent"
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_command",
-          "valid": {
-            "type": "zone",
-            "zone": "command",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "hold_command",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "set9b::RS-634::dark_thunder",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

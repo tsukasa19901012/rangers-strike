@@ -34,7 +34,7 @@ export function resolveLegend2OnDestroy(
           kind: "none",
           activePlayer: ownerId,
         });
-        if (nextState.pendingDamagePayment) break;
+        // 1人目の支払いで選択が発生しても、2人目のダメージは後回し（queuedDamagePayments）にして必ず受ける。
       }
       logs.push(
         buildLogEntry(ownerId, "named_effect", cardId, state.definitions, "tantrum"),
@@ -49,7 +49,7 @@ export function resolveLegend2OnDestroy(
         for (const card of player.rush) {
           const def = getDefinition(state.definitions, card.cardId);
           if (
-            isSmallUnit(state.definitions, card.cardId) &&
+            isSmallUnit(state.definitions, card) &&
             !def?.features?.includes("魔法")
           ) {
             toReturn.push(card);
@@ -62,7 +62,7 @@ export function resolveLegend2OnDestroy(
         for (const card of player.battle) {
           const def = getDefinition(state.definitions, card.cardId);
           if (
-            isSmallUnit(state.definitions, card.cardId) &&
+            isSmallUnit(state.definitions, card) &&
             !def?.features?.includes("魔法") &&
             card.cardId !== cardId
           ) {

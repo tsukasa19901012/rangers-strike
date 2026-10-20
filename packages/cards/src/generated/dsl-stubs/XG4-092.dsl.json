@@ -4,7 +4,7 @@
   "name": "ジャンパーソン",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※これは、カテゴリにDAを持たない、特徴「男」または「女」を持つユニットにアタックできない。 【JANPERSON FOR JUSTICE】これはカテゴリにDAを持つユニットにアタックするとき、BP+2000される。また、これがカテゴリにDAを持つユニットをバトルで撃破したとき、相手に1点ダメージを与える。",
@@ -23,14 +23,14 @@
       "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは、カテゴリにDAを持たない、特徴「男」または「女」を持つユニットにアタックできない。",
       "trigger": {
-        "type": "riding_combo"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG4-092::korehakategorini",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-092::note",
+          "duration": "turn"
         }
       ]
     },
@@ -39,13 +39,13 @@
       "name": "JANPERSON FOR JUSTICE",
       "text": "これはカテゴリにDAを持つユニットにアタックするとき、BP+2000される。また、これがカテゴリにDAを持つユニットをバトルで撃破したとき、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "on_attack"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg4::XG4-092::justice",
+          "duration": "turn"
         }
       ]
     }

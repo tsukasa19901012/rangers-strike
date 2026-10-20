@@ -2,7 +2,8 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import { describe, expect, it } from "vitest";
 import { legend1Catalog } from "@rangers-strike/cards";
 import { applyAction, getLegalActions } from "./index";
-import { effectiveBp, hasOperationEffect, superPowerAttackBonus } from "./core/catalog";
+import { effectiveBp, hasOperationEffect } from "./core/catalog";
+import { listAttackHoldSources, openAttackHoldChoice, resolveAttackHoldChoice } from "./rules/attackHoldBonus";
 import { battleAttackerBpBonus, battleDefenderBp } from "./rules/namedUnitEffects";
 import { passiveNamedFieldBpBonus } from "./rules/fieldAuras";
 import { collectHiddenNinjaSubstitutes, finalizeLeaveReaction } from "./rules/operationCounters";
@@ -156,7 +157,15 @@ describe("RS-005 Land Balkan", () => {
         command: [sCmd, heldEtCommand("held")],
       },
     });
-    expect(state.players.player1.rush.some((c) => c.instanceId === sCmd.instanceId)).toBe(true);
+    // 「出してもよい」— 候補が1枚でも出すカードを選ぶ（atwiki/page-249）。
+    const picked = applyAction(state, {
+      type: "resolve_effect_choice",
+      playerId: "player1",
+      instanceId: sCmd.instanceId,
+    });
+    expect(picked.ok).toBe(true);
+    if (!picked.ok) return;
+    expect(picked.state.players.player1.rush.some((c) => c.instanceId === sCmd.instanceId)).toBe(true);
   });
 });
 
@@ -218,8 +227,13 @@ describe("RS-008 Super Brain", () => {
         deck: [inst("TST-OP", "d1"), inst("TST-OP", "d2"), inst("TST-OP", "d3")],
       },
     });
-    const next = unwrap(applyAction(state, { type: "draw", playerId: "player1" }));
-    expect(next.players.player1.hand).toHaveLength(1);
+    const drawn = unwrap(applyAction(state, { type: "draw", playerId: "player1" }));
+    // どちらを手札に残すかは自分で選ぶ（atwiki/page-275）。
+    const keep = drawn.pendingEffectChoice!.validInstanceIds[0]!;
+    const next = unwrap(
+      applyAction(drawn, { type: "resolve_effect_choice", playerId: "player1", instanceId: keep }),
+    );
+    expect(next.players.player1.hand.map((c) => c.instanceId)).toEqual([keep]);
     expect(next.players.player1.discard).toHaveLength(1);
   });
 });
@@ -470,7 +484,7 @@ describe("RS-018 Hidden Ninja", () => {
 });
 
 describe("RS-019 Super Power", () => {
-  it("adds BP from held commands when S unit attacks", () => {
+  it("holds released commands when S unit attacks and adds BP per newly held command", () => {
     const attacker = inst("TST-UNIT-0", "atk");
     const state = createTestState({
       phase: "battle",
@@ -480,12 +494,36 @@ describe("RS-019 Super Power", () => {
         operation: [inst("RS-019", "sp")],
         battle: [attacker],
         command: [
-          { ...heldMaCommand("c1"), commandHeld: true },
-          { ...heldMaCommand("c2"), commandHeld: true },
+          { ...heldMaCommand("c1"), commandHeld: false },
+          { ...heldMaCommand("c2"), commandHeld: false },
+          { ...heldMaCommand("c3"), commandHeld: true },
         ],
       },
     });
-    expect(superPowerAttackBonus(state, "player1", attacker)).toBe(2000);
+    const battle = {
+      attackerPlayerId: "player1" as const,
+      attackerInstanceId: attacker.instanceId,
+      defenderPlayerId: "player2" as const,
+      defenderInstanceId: "none",
+      phasePlayerId: "player1" as const,
+    };
+    const opened = openAttackHoldChoice(state, {
+      battle,
+      wingAttackFromRush: false,
+      sources: listAttackHoldSources(state, "player1", attacker),
+    })!;
+    // リリース状態の 2 枚から 0〜2 を選べる（既にホールド状態の c3 は数えない）
+    expect(opened.pendingEffectChoice?.validInstanceIds).toEqual(["0", "1", "2"]);
+    const pick = (n: number) => {
+      const r = resolveAttackHoldChoice(opened, "player1", String(n));
+      if ("error" in r) throw new Error(r.error);
+      return r;
+    };
+    const all = pick(2);
+    expect(all.battle.attackerBpBonus).toBe(2000);
+    expect(all.state.players.player1.command.every((c) => c.commandHeld)).toBe(true);
+    expect(pick(1).battle.attackerBpBonus).toBe(1000);
+    expect(pick(0).battle.attackerBpBonus ?? 0).toBe(0);
   });
 });
 
@@ -672,6 +710,11 @@ describe("RS-029 Courage Magic", () => {
       },
     });
     state = moveToBattle(state, sUnit.instanceId);
+    // 「リリースしてもよい」— 任意なのでリリースするコマンドを選ぶ（atwiki/page-245）。
+    expect(state.pendingEffectChoice?.effectId).toBe("courage_magic");
+    state = unwrap(
+      applyAction(state, { type: "resolve_effect_choice", playerId: "player1", instanceId: held.instanceId }),
+    );
     expect(state.players.player1.command.some((c) => !c.commandHeld)).toBe(true);
   });
 });
@@ -732,7 +775,8 @@ describe("RS-032 Shark Jaws", () => {
       activePlayer: "player1",
       definitions: defs,
       player1: {
-        battle: [shark, inst("RS-031", "partner"), ...battleFillers(2)],
+        // バルイーグルからコンビネーションして出た（進入時に NC 効果の成立が記録される — R-CN-05）。
+        battle: [inst("RS-031", "partner"), { ...shark, activatedNcEffects: ["shark_jaws"] }, ...battleFillers(2)],
         command: [heldEtCommand("c1")],
       },
       player2: {
@@ -828,6 +872,24 @@ describe("RS-036 Moss Blizzard", () => {
     });
     const result = resolveNamedOnRushEffects(state, "player1", moss.instanceId, "player1");
     expect(result.state.pendingEffectChoice?.effectId).toBe("moss_blizzard");
+  });
+
+  it("R-ERR-RS036: リリース状態が1つしかなければ1つを必ずホールドする（スキップ不可）", () => {
+    const moss = inst("RS-036", "moss");
+    const state = createTestState({
+      phase: "rush",
+      definitions: defs,
+      player1: { rush: [moss] },
+      player2: {
+        command: [{ ...heldWbCommand("c1"), commandHeld: false }, heldWbCommand("c2")],
+      },
+    });
+    const result = resolveNamedOnRushEffects(state, "player1", moss.instanceId, "player1");
+    const choice = result.state.pendingEffectChoice;
+    expect(choice?.effectId).toBe("moss_blizzard");
+    expect(choice?.optional).toBe(false);
+    expect(choice?.selectCount).toBe(1);
+    expect(choice?.validInstanceIds).toHaveLength(1);
   });
 });
 

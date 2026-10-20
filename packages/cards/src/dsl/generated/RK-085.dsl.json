@@ -19,11 +19,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "counter_mirror_rider_cancel_battle",
-          "duration": "turn"
+          "keyword": "rk5::RK-085::guard_vent",
+          "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

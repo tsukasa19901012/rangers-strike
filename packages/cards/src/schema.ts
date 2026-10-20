@@ -4,7 +4,7 @@ export type UnitSize = "S" | "M" | "L" | "XL" | "SC";
 
 export type CardType = "unit" | "operation" | "vehicle" | "commander";
 
-export type Rarity = "N" | "R" | "SR" | "NR" | "SC" | "PR";
+export type Rarity = "N" | "R" | "SR" | "NR" | "SC" | "PR" | "MR" | "LR";
 
 /** SP分数（例: SP1/4） */
 export type SpFraction = `${number}/${number}`;

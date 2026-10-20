@@ -15,6 +15,7 @@ import {
   legend2Catalog,
   legend3Catalog,
   allCardsCatalog,
+  fullPlayableCatalog,
   starterDecks,
 } from "./index";
 
@@ -98,11 +99,15 @@ describe("legend3 catalog", () => {
   });
 
   it("merges into allCardsCatalog without duplicate ids", () => {
-    const expectedCount =
+    // 対戦カタログ = コア（legend1〜3）＋他シリーズ（XG・RM・XP 等）= full-playable。
+    const expectedCount = fullPlayableCatalog.cards.length;
+    const coreCount =
       legend1Catalog.cards.length +
       legend2Catalog.cards.length +
       legend3Catalog.cards.length;
+    expect(coreCount).toBe(1052);
     expect(allCardsCatalog.cards).toHaveLength(expectedCount);
+    expect(expectedCount).toBe(1832);
     const ids = new Set(allCardsCatalog.cards.map((card) => card.id));
     expect(ids.size).toBe(expectedCount);
     expect(getCardById("RS-123")?.name).toBe("スーパーダイナマイト");

@@ -39,11 +39,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-028::buru",
+          "keyword": "xg3::XG3-028::araburu",
           "duration": "permanent"
         }
       ]

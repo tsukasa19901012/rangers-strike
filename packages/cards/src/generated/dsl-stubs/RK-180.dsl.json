@@ -4,7 +4,7 @@
   "name": "モグラ獣人",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 1,
   "text": "※これはBP2000以上の敵軍Sユニットにアタックされない。 ※これが自分の手札にある間、自軍ラッシュフェイズ中、自軍「仮面ライダーアマゾン」があれば、これを自軍ラッシュエリアに出してもよい。 【神出鬼没】敵軍ラッシュエリアからライドされていないSビークルを1体選んでもよい。そうしたとき、ライドしていない敵軍Sユニットを1体選び、選んだビークルにライドさせる。",
@@ -57,7 +57,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-180::shin",
+          "keyword": "rk9::RK-180::shinshutsu_kibotsu",
           "duration": "turn"
         }
       ],

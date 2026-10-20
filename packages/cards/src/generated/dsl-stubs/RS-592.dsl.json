@@ -4,7 +4,7 @@
   "name": "エンジンオーG6",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "6+",
   "text": "合体―エンジンオー（またはスピードル＋バスオン＋ベアールV）＋ガンバルオー（またはバルカ＋ガンパード＋キャリゲーター） 【G6グランプリ】自軍ターン中、これがバトルエリアに出たとき、自軍パワーゾーンのカードの枚数が6枚になるように、自軍パワーゾーンのオモテ向きのカードを選び捨札にしてもよい。そうしたとき、捨札にした枚数と同じ数まで、BP6000以下の敵軍ユニットを選び撃破する。",
@@ -31,11 +31,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-592::g6guranpuri",
+          "keyword": "set8d::RS-592::g6_grand_prix",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {
@@ -49,7 +49,13 @@
       "text": "合体―エンジンオー（またはスピードル＋バスオン＋ベアールV）＋ガンバルオー（またはバルカ＋ガンパード＋キャリゲーター）",
       "partnerCardIds": [
         "RS-515",
-        "RS-591"
+        "RS-591",
+        "RS-505",
+        "RS-506",
+        "RS-507",
+        "RS-593",
+        "RS-594",
+        "RS-595"
       ],
       "partnerSlotCardIds": [
         [
@@ -58,6 +64,36 @@
         [
           "RS-591"
         ]
+      ],
+      "partnerSlotAlternatives": [
+        {
+          "slot": 0,
+          "slots": [
+            [
+              "RS-505"
+            ],
+            [
+              "RS-506"
+            ],
+            [
+              "RS-507"
+            ]
+          ]
+        },
+        {
+          "slot": 1,
+          "slots": [
+            [
+              "RS-593"
+            ],
+            [
+              "RS-594"
+            ],
+            [
+              "RS-595"
+            ]
+          ]
+        }
       ]
     }
   ],

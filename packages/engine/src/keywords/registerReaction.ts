@@ -4,6 +4,7 @@ import { findInZone } from "../core/helpers";
 import { cardHasDslGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { cardHasKeyword } from "./cardKeywords";
 import { srBigBatonRegisterActive } from "../rules/srEffects";
+import { rk14GrantsRegister } from "../rules/rk/rk14Fields";
 
 /** レジスト: 場に留まる（反撃不能・離場阻止等）。 */
 export function unitHasRegister(state: GameState, ownerId: PlayerId, instanceId: string): boolean {
@@ -20,6 +21,8 @@ export function cardHasRegisterKeyword(
   ownerId?: PlayerId,
 ): boolean {
   if (ownerId && srBigBatonRegisterActive(state, ownerId, cardId)) return true;
+  // RK-278 仮面ライダーナイト（2nd）の※（自軍捨札に「女」のユニットカードがあればレジスト。rules/rk/rk14Fields.ts）。
+  if (ownerId && rk14GrantsRegister(state, ownerId, cardId)) return true;
   return (
     cardHasDslGrantKeyword(cardId, "register") ||
     cardHasKeyword(state.definitions, cardId, "register") ||

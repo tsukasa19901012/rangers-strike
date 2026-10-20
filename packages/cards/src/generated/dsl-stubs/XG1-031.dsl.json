@@ -7,7 +7,7 @@
     "WB",
     "OT"
   ],
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※これが自軍エリアにある間、自軍バトルフェイズ中、自分の手札にある特徴「炎神」を持つユニットカードはカテゴリにWBが追加される。 【ドルドル弾】自軍ラッシュエリアから、特徴「炎神」を持ち、ナンバーに数字を持つMユニットを1体選び手札に戻してもよい。そうしたとき、戻したユニットのナンバーの数字を見て、その数字以下の必要パワーの数字を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
@@ -43,12 +43,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-031::dorudorudan",
-          "duration": "permanent"
+          "keyword": "xg1::XG1-031::dorudoru",
+          "duration": "turn"
         }
       ]
     }

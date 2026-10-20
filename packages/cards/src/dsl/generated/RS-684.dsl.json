@@ -27,11 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "pick_remaining_syunitoga6arebabpnoiyunitowo1bichinono",
+          "keyword": "set9d::RS-684::acrobatics",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

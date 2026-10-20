@@ -27,12 +27,12 @@
       },
       "effects": [
         {
-          "type": "draw",
-          "amount": 1,
-          "player": "opponent"
+          "type": "grant_keyword",
+          "keyword": "rk13::RK-259::tarot",
+          "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

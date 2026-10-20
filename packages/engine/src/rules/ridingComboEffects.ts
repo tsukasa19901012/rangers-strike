@@ -2,6 +2,7 @@ import {
   getRidingComboEffect,
   getRidingComboNamedEffect,
   isJointComboEffectImplemented,
+  isSameCardIdentity,
   type NumberComboEffectId,
 } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
@@ -11,6 +12,9 @@ import { resolveP0Alias } from "../effects/p0EffectBridge";
 import { applyLegacyNumberComboEffect } from "./numberComboEffects";
 import { grantBpBoostOnPlayer, grantSp1OnPlayer, patchPlayer } from "./playerPatches";
 import type { ComboOutcome } from "./comboTypes";
+import { getDefinition } from "../core/catalog";
+import { hasKamenRiderTitle } from "./rk/rk1Features";
+import { openRk13SplashBeforeRc } from "./rk/rk13UnitEffects";
 
 function ridingComboLog(
   playerId: PlayerId,
@@ -80,6 +84,22 @@ export function resolveRidingComboOnRideOff(
   playerId: PlayerId,
   card: CardInstance,
 ): ComboOutcome {
+  // RK-272【ライジングスプラッシュドラゴン】: 敵軍のクウガRD の持ち主が、この RC の効果を実行する前に無効にするかを選ぶ（rules/rk/rk13UnitEffects.ts）。
+  const splash = openRk13SplashBeforeRc(state, playerId, card);
+  if (splash) return { state: splash, logs: [ridingComboLog(playerId, card.cardId, state.definitions, "rk272_splash_window")] };
+  // RK-079 仮面ライダーの称号: ナンバーが RC になったユニットは、ライドオフでナンバーの欄の効果（DSL の nc）を発動する（atwiki/page-661）。
+  if (hasKamenRiderTitle(card) && getDefinition(state.definitions, card.cardId)?.comboNumber !== "RC") {
+    const nc = tryResolveDslTriggeredEffects({
+      state,
+      cardId: card.cardId,
+      instanceId: card.instanceId,
+      playerId,
+      phasePlayerId: playerId,
+      triggerType: "nc",
+      logAction: "riding_combo",
+    });
+    return { state: nc.state, logs: nc.logs };
+  }
   const effectId = resolveRidingEffectId(card.cardId);
   if (effectId) {
     const p0 = applyP0RidingEffect(state, playerId, card, effectId);
@@ -99,6 +119,13 @@ export function resolveRidingComboOnRideOff(
         ),
       };
     }
+  }
+
+  // XG4-101 バイクロッサー・ギン【ブレーザーカノン】「これがライドしていれば、相手に1点ダメージを与える。」（atwiki/page-2110）。
+  // ライドしたまま RC を発動したとき（RK-017 ミッションメモリー・RM-045 ガンギブソン等）だけダメージを与える。ふつうのライドオフでは
+  // 発動の時点でライドしていないので何もしない（利用者の決定 2026-10-20・questions-all.md U-24）。
+  if (isSameCardIdentity(card.cardId, "XG4-101") && !card.mountedOnInstanceId) {
+    return { state, logs: [ridingComboLog(playerId, card.cardId, state.definitions, "xg4_101:not_riding")] };
   }
 
   const dsl = tryResolveDslTriggeredEffects({

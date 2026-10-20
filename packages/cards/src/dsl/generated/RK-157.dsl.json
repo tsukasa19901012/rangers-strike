@@ -34,13 +34,13 @@
       "name": "契約者の望むもの",
       "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、自軍常駐置き場からカードを1枚選び、自分の手札に加えてもよい。ただし、ウラ向きのカードはウラ向きのまま選ぶ。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-157::nomumono",
-          "duration": "turn"
+          "keyword": "rk8::RK-157::contract_wish",
+          "duration": "permanent"
         }
       ],
       "optional": false

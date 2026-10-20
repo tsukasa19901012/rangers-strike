@@ -4,7 +4,7 @@
   "name": "仮面ライダースーパー1",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※モーフ 【赤心少林拳】BP1000またはBP3000またはBP5000の敵軍Sユニットを1体選び、撃破してもよい。また、MAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これはSP1になる。",
@@ -41,11 +41,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-047::kene8b5a4",
+          "keyword": "xg1::XG1-047::sekishin",
           "duration": "turn"
         }
       ]

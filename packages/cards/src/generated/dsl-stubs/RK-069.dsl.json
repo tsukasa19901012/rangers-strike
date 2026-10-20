@@ -4,7 +4,7 @@
   "name": "仮面ライダーファム",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "【ミスティースラッシュ】「ブランウイング」からコンビネーションしたとき発動できる⇒特徴「ミラーモンスター」を持つユニットにアタックしてバトルに勝つたび、追加でアタックできる（ストライクはできない）。",
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_extra_attack_no_strike",
+          "keyword": "rk4::RK-069::misty_slash",
           "duration": "turn"
         }
       ],

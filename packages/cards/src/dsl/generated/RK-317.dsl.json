@@ -40,11 +40,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-317::podobateingu",
+          "keyword": "rk16::RK-317::pod_batting",
           "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

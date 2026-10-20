@@ -33,13 +33,15 @@ describe("jaguar mothership (RS-076)", () => {
     const zord = inst("RS-075", "rush-zord");
     const mothership = inst("RS-076", "mothership");
     const etCmd = { ...inst("TST-OP-ET", "et-cmd"), commandHeld: false };
+    // RS-075 の追加条件は「Sユニット2体をそれぞれ…」なので、母艦で代えるホールドは2つ。
+    const etCmd2 = { ...inst("TST-OP-ET", "et-cmd2"), commandHeld: false };
     const state = createTestState({
       phase: "rush",
       player1: {
         hand: [zord],
         rush: [mothership],
         power: Array.from({ length: 5 }, (_, i) => inst("TST-P", `p${i}`)),
-        command: [heldEtCommand("held"), etCmd],
+        command: [heldEtCommand("held"), etCmd, etCmd2],
         ...withCostWindow("rush_category"),
       },
     });
@@ -49,7 +51,7 @@ describe("jaguar mothership (RS-076)", () => {
       type: "rush",
       playerId: "player1",
       instanceId: zord.instanceId,
-      zordMothershipHoldInstanceIds: [etCmd.instanceId],
+      zordMothershipHoldInstanceIds: [etCmd.instanceId, etCmd2.instanceId],
     });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -175,9 +177,10 @@ describe("jaguar mothership (RS-076)", () => {
     );
   });
 
-  it("Q7: S to command as material needs no extra mothership holds", () => {
+  it("Q7: one S unit to command as material leaves one mothership hold for RS-075 (2 units)", () => {
     expect(zordSlotsFilledByMaterial("RS-075", true, "command")).toBe(1);
-    expect(mothershipHoldsRequiredForRush("RS-075", 1)).toBe(0);
+    expect(mothershipHoldsRequiredForRush("RS-075", 1)).toBe(1);
+    expect(mothershipHoldsRequiredForRush("RS-074", 1)).toBe(0);
   });
 
   it("RS-010 prism cannot substitute mothership holds (Q2)", () => {

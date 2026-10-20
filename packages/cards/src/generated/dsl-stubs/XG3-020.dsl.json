@@ -4,7 +4,7 @@
   "name": "クワガライジャー",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 2,
   "text": "※タクスMA 【迅雷流剣技・雷牙一閃】 敵軍Sユニットを1体選び、カテゴリを1つ宣言する。このターン、宣言したカテゴリを選んだユニットに追加する。",
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-020::kamikenkamikiba",
+          "keyword": "xg3::XG3-020::raiga_issen",
           "duration": "permanent"
         }
       ]

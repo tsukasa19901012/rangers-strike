@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_s_on_self_rush",
-          "duration": "permanent"
+          "keyword": "rk5::RK-088::imagin_contract",
+          "duration": "turn"
         }
       ],
       "optional": false

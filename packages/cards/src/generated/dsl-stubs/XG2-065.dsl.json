@@ -4,7 +4,7 @@
   "name": "仮面ライダーカブトHF",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "7+",
   "text": "※これはアタックされる以外では相手に選ばれない。 【ハイパークロックアップ】これは、自軍常駐置き場にカードが5枚以上あるとき、次の能力を得る⇒特徴「加速」を持たないユニットにアタックされない。",
@@ -42,12 +42,12 @@
       "name": "ハイパークロックアップ",
       "text": "これは、自軍常駐置き場にカードが5枚以上あるとき、次の能力を得る⇒特徴「加速」を持たないユニットにアタックされない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-065::haipakurokuapu",
+          "keyword": "xg2::XG2-065::hyper_clock_up",
           "duration": "permanent"
         }
       ]

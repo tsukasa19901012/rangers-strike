@@ -1,8 +1,45 @@
+import { applyXg5AttackWin, XG5_CONFINE_WINDOW_EFFECT_ID } from "./xg5/xg5Core";
+import { xg5BattleUsesPrintedBp } from "./xg5/xg5Fields";
+import { rm2AfterBattle } from "./rm/rm2Effects";
+import { xg1aAfterBattle } from "./xg1/xg1aEffects";
+import { applyXg3OnBattleDestroy, openXg3BeforeBattle, openXg3StayOnLeave } from "./xg3/xg3Effects";
+import { isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "./rm/rm1Effects";
+import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
+import { isRk5BattleCounterCard, rk5BattleCounterConditionMet } from "./rk/rk5UnitEffects";
+import { applyRk6AfterUnitLeft, rk6IsNonCraneOrphnoch } from "./rk/rk6UnitEffects";
+import { openRk7RengelSubstitute } from "./rk/rk7UnitEffects";
+import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects";
+import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
+import { applyXg2AfterUnitLeft, openXg2LeaveStay, tryOpenXg2BattleChoice, xg2BattleCounterConditionMet } from "./xg2/xg2Effects";
+import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
+import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
+import { rk15WinButDestroyed } from "./rk/rk15UnitEffects";
+import { rk16OnBattleDestroy } from "./rk/rk16UnitEffects";
+import { applyXg4AfterUnitLeft, isXg4BattleCounterCard, xg4BattleCounterConditionMet, xg4DestroyedToDeckInstead, xg4OnAttackWin, xg4OnBattleDestroy, xg4ShuffleInto } from "./xg4/xg4Effects";
+import { rk13OnAttackWin, rk13OnBattleDestroy } from "./rk/rk13UnitEffects";
+import { openXg6StayOnLeave, xg6OnAttackWin } from "./xg6/xg6Hooks";
+import { xg6WinButDestroyed } from "./xg6/xg6Fields";
+import { rk13BattleUsesPrintedBp, rk13BlocksResist, rk13PrintedBp } from "./rk/rk13Fields";
+import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
+import { rk11KyosukeWinButDestroyed } from "./rk/rk11Fields";
+import { openRk12SurviveStay } from "./rk/rk12UnitEffects";
+import { isXg7RushCounterCard, openXg7AfterUnitLeft, openXg7LeaveStay, xg7OnAttackWin, xg7RushCounterConditionMet } from "./xg7/xg7Effects";
+import { xg7AdjustLeaveIntent, xg7BlocksResist } from "./xg7/xg7Fields";
+import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
+import { openKuugaStayOnLeave } from "./legend1/otherLinesNamedEffects";
+import {
+  openDeathStingerChoice,
+  reflectBarrierDestroysWinner,
+} from "./legend1/set4NamedEffects";
+import { applyProminenceShower, openDaiganganKen } from "./legend1/set6NamedEffectsB";
 import type { Category } from "@rangers-strike/cards";
+import { getConditionalNamedEffect } from "@rangers-strike/cards";
+import { startSagasSniperChoice } from "./pendingChoices";
 import { getCardEffect, winButDestroyedVsSp1 } from "@rangers-strike/cards";
 import type {
   CardInstance,
   GameState,
+  MutualDestructionMeta,
   PendingBattle,
   PendingLeave,
   PendingRush,
@@ -11,6 +48,9 @@ import type {
   PlayerState,
 } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
+import { unitFeatures } from "./addedFeatures";
+import { cardHasKeyword } from "../keywords/cardKeywords";
+import { addTurnRuleModifier } from "../core/scopedModifiers";
 import {
   allCategoriesExistInCommandZone,
   canPlayOperationExceptCommandHold,
@@ -25,21 +65,42 @@ import {
   parsePowerCost,
 } from "../core/catalog";
 import { countReleasedCommands } from "./restrictions";
-import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
+import { findInZone, opponent, removeAt, takeFromDeckTop, updatePlayer } from "../core/helpers";
+import { drawToDiscardFromDeck } from "./pendingChoices";
 import { emitUnitLeftZoneAndResolve } from "../events/emitUnitLeftZone";
-import { isCostWindowSatisfied } from "../core/costWindow";
+import { resolveDestroyedFactEffects } from "./leaveEffects";
+import {
+  beginDestroyTriggerHold,
+  drainDeferredDestroyTriggers,
+  endDestroyTriggerHold,
+  queueMirageKnuckle,
+} from "./destroyTriggerQueue";
+import { getCostWindowMetadata, isCostWindowSatisfied } from "../core/costWindow";
 import { buildLogEntry } from "../log/formatLog";
+import { resolveDestroyerDamageByText } from "./destroyerTextEffects";
+import {
+  applyRk1DestroyerDamage,
+  isRk1BattleCounterCard,
+  isRk1LeaveCounterCard,
+  rk1BattleCounterConditionMet,
+  rk1LeaveCounterConditionMet,
+  rk1WinButDestroyed,
+  rk1ZoneCardFeatures,
+} from "./rk/rk1NamedEffects";
 import { finishBattleEntryIf, restorePhaseActivePlayerUnlessBlocked } from "./battleEntry";
 import {
   attackerBlocksDefenderCounters,
   battleAttackerBpBonus,
   battleDefenderBp,
   resolveFocusedBreakthroughDamage,
+  unitQualifiesForFocusedBreakthrough,
   resolveBlackCondorDestroyDamage,
+  hasBattleNcEffect,
 } from "./namedUnitEffects";
 import { findCardOwner } from "./fieldLookup";
 import { canOfferRegister, toPendingRegister } from "./resist";
 import { canStrikeUnit } from "./combo";
+import { effectiveRushAdditionalCondition } from "./rushAdditionalCondition";
 import { opponentInfiniteChainBlocks } from "./turnModifiers";
 import { shouldBattleDestroyToPower } from "./turnModifierBridge";
 import { returnFusionPartnersFromDiscard } from "./fusionReturn";
@@ -58,6 +119,7 @@ import {
   sanitizeUnitLeavingField,
 } from "../keywords";
 import { findFieldInstanceByKeyword } from "../dsl/fieldKeywords";
+import { openCityGuardiansSubstitute } from "./legend1/set5NamedEffectsA";
 
 function findUnitInRushOrBattle(
   player: PlayerState,
@@ -84,7 +146,11 @@ function markUnitBattleActed(player: PlayerState, instanceId: string): PlayerSta
   return player;
 }
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
+import { magiMotherSubstitutes, openKasumoShieldChoice, openRaigekiZanChoice } from "./legend1/set5NamedEffects";
+import { openBatLeeChoice } from "./legend1/set7NamedEffectsD";
+import { applySet8BAfterUnitLeft } from "./legend1/set8NamedEffectsB";
 import { registerBattlePendingResolver } from "../events/listeners/battleDeclaredListener";
+import { promoOnBattleDestroy, promoStayOnLeave } from "./promo/promoRegistry";
 
 function isEnemyTurn(state: GameState, counterPlayerId: PlayerId): boolean {
   return state.activePlayer !== counterPlayerId;
@@ -108,45 +174,81 @@ function isWildBeastUnit(
 }
 
 /** 超シールド進化 — WB味方を撃破する代わりにシールドを捨てる。 */
+
+/**
+ * 「※これは敵軍ターン中、〜を持つユニットとバトルしたときバトルに勝っても撃破される」の相手側の条件。
+ * 通常は「SP1以上のユニット」（ストライクできるユニット）。RS-315 バクレンオーは
+ * 「特徴「人型」を持つユニット」で判定する（atwiki/page-440。SP は問わない）。
+ */
+function winDestroyOpponentQualifies(
+  state: GameState,
+  selfCardId: string,
+  opponentCard: CardInstance,
+  opponentOwner: PlayerId,
+): boolean {
+  const text = state.definitions[selfCardId]?.text ?? "";
+  const feature = text.match(/※これは敵軍ターン中、特徴「([^」]+)」を持つユニットとバトルしたとき/)?.[1];
+  if (feature) return unitFeatures(state, opponentOwner, opponentCard).includes(feature);
+  // 「※これは敵軍ターン中、ウイングを持つユニットとバトルしたとき…」（XG6-030）。
+  if (/※これは敵軍ターン中、ウイングを持つユニットとバトルしたとき/.test(text)) {
+    return cardHasKeyword(state.definitions, opponentCard.cardId, "wing", { state, playerId: opponentOwner });
+  }
+  return canStrikeUnit(state.definitions, opponentCard, state, opponentOwner);
+}
+
 export function findSuperShieldSubstitute(
   state: GameState,
   intent: LeaveIntent,
 ): string | undefined {
   if (intent.toZone !== "discard") return undefined;
+  if (intent.notDestruction) return undefined;
   if (!isWildBeastUnit(state.definitions, intent.leavingCardId)) return undefined;
 
+  // ルール: R-ERR-RS052 — ユニットとして場（ラッシュエリア・バトルエリア）にあるときだけ（faq-card-1 RS-052 Q5）。
   return findFieldInstanceByKeyword(
     state,
     intent.ownerPlayerId,
     "substitute_on_wb_destroy",
-    ["battle"],
+    ["battle", "rush"],
     intent.instanceId,
   );
 }
 
+/**
+ * RS-052【超シールド進化】: 守ったユニットの離場を止めたあと、かわりにトリケラを捨札にする。
+ * トリケラの捨札は撃破ではないが「場を離れる」ので、ダイノガッツ等の応答が開く（faq-card-1 RS-052 Q2・Q4）。
+ */
 export function applySuperShieldSubstitute(
   state: GameState,
   ownerId: PlayerId,
   shieldInstanceId: string,
-): { state: GameState; log: string } {
+  phasePlayerId: PlayerId,
+  resumePendingStrike?: PendingLeave["resumePendingStrike"],
+): { state: GameState; log: string; deferred: boolean } {
   const owner = state.players[ownerId];
-  const found = findInZone(owner, "battle", shieldInstanceId);
+  const zone = findInZone(owner, "battle", shieldInstanceId) ? "battle" : "rush";
+  const found = findInZone(owner, zone, shieldInstanceId);
   if (!found) {
     return {
       state,
       log: buildLogEntry(ownerId, "named_effect", "RS-052", state.definitions, "super_shield_failed"),
+      deferred: false,
     };
   }
 
-  const [, battle] = removeAt(owner.battle, found.index);
-  const nextOwner = {
-    ...owner,
-    battle,
-    discard: [...owner.discard, found.card],
-  };
+  const leave = tryLeaveField(state, {
+    ownerPlayerId: ownerId,
+    instanceId: shieldInstanceId,
+    fromZone: zone,
+    toZone: "discard",
+    leavingCardId: found.card.cardId,
+    phasePlayerId,
+    notDestruction: true,
+    ...(resumePendingStrike ? { resumePendingStrike } : {}),
+  });
 
   return {
-    state: { ...state, ...updatePlayer(state, ownerId, nextOwner) },
+    state: leave.state,
     log: buildLogEntry(
       ownerId,
       "named_effect",
@@ -154,11 +256,23 @@ export function applySuperShieldSubstitute(
       state.definitions,
       "super_shield",
     ),
+    deferred: leave.deferred,
   };
 }
 
 export function isCounterReactionActive(state: GameState): boolean {
-  return !!(state.pendingBattle || state.pendingRush || state.pendingLeave || state.pendingMorph);
+  return !!(
+    state.pendingBattle ||
+    state.pendingRush ||
+    state.pendingLeave ||
+    state.pendingMorph ||
+    // ストライクの反応窓（RS-184 マジパンチ等。使えるカウンターは legalActions の appendStrikeReactionActions）。
+    state.pendingStrike ||
+    // RS-255 巨大化爆弾の使用の窓。
+    state.pendingGiantBomb ||
+    // XG5-064 コンファインベント（敵軍バトルフェイズ開始時）の使用の窓（rules/xg5/xg5dEffects.ts）。
+    state.pendingEffectChoice?.effectId === XG5_CONFINE_WINDOW_EFFECT_ID
+  );
 }
 
 export function isHandCounterCard(
@@ -205,6 +319,8 @@ export function canPayCounterCategoryHold(
   categories: Category[],
 ): boolean {
   if (categories.length === 0) return true;
+  // RK-036 仮面ライダーライア【運命への反抗】: 同じカテゴリのカードを自軍コマンドゾーンから捨札にして使える（rules/rk/rk2UnitEffects.ts）。
+  if (rk2RaiaDiscardCandidates(player, definitions, categories).length > 0) return true;
   if (!allCategoriesExistInCommandZone(player, definitions, categories)) return false;
   if (hasReleasedCommandForCategories(player, definitions, categories)) return true;
   return (
@@ -222,6 +338,8 @@ export function canInitiateCounterCategoryPayment(
 
   const ctx = counterDefinition(state, playerId, instanceId);
   if (!ctx) return false;
+  // ルール: R-CTR-03 — パンサークロー等のアタック処理中は、撃破時のカウンター（ダイノガッツ等）も発動できない。
+  if (state.counterLockedPlayerId === playerId) return false;
   if (!canPlayOperationExceptCommandHold(state, playerId, ctx.definition)) {
     return false;
   }
@@ -252,7 +370,9 @@ export function canExecuteHandCounter(
 
   return (
     isCostWindowSatisfied(ctx.player, "counter_category") &&
-    hasHeldCommandForCategories(ctx.player, state.definitions, categories)
+    (hasHeldCommandForCategories(ctx.player, state.definitions, categories) ||
+      // RK-036: ホールドのかわりに捨札にして支払った（rules/rk/rk2UnitEffects.ts）。
+      getCostWindowMetadata(ctx.player, "counter_category")?.raiaDiscard === true)
   );
 }
 
@@ -315,19 +435,225 @@ export function hasBattleCounterReactions(
   if (opponentInfiniteChainBlocks(state, defenderId)) return false;
 
   const defender = state.players[defenderId];
-  const defenderCard = findInZone(defender, "battle", defenderInstanceId)?.card;
+  // ラッシュエリアのユニットがアタックされたとき（ガオシャーク等）もカウンターを使える（faq-card-1 RS-018 Q10）。
+  const defenderCard =
+    findInZone(defender, "battle", defenderInstanceId)?.card ??
+    findInZone(defender, "rush", defenderInstanceId)?.card;
   if (!defenderCard) return false;
 
   for (const card of defender.hand) {
     if (!canPlayHandCounter(state, defenderId, card.instanceId)) continue;
     const effectId = getCardEffect(card.cardId)?.effectId;
-    if (effectId === "new_gymnastics" && isSmallUnit(state.definitions, defenderCard.cardId)) {
+    if (effectId === "new_gymnastics" && isSmallUnit(state.definitions, defenderCard)) {
       return true;
     }
     if (effectId === "hidden_ninja") return true;
+    if (isMechanicNinjaCounter(card.cardId) && isSmallUnit(state.definitions, defenderCard)) {
+      return true;
+    }
+    // クロスギャザー ザ・ジェットアクセル XG4-021 カラクリマント等（rules/xg4/xg4Effects.ts）。
+    if (isXg4BattleCounterCard(card.cardId) && attackerPlayerId && attackerInstanceId && xg4BattleCounterConditionMet(state, defenderId, card.cardId, { attackerPlayerId, attackerInstanceId, defenderPlayerId: defenderId, defenderInstanceId })) return true;
+    // RK-085 ガードベント（特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき。rules/rk/rk5UnitEffects.ts）。
+    if (
+      isRk5BattleCounterCard(card.cardId) &&
+      attackerPlayerId &&
+      attackerInstanceId &&
+      rk5BattleCounterConditionMet(state, defenderId, card.cardId, {
+        attackerPlayerId,
+        attackerInstanceId,
+        defenderPlayerId: defenderId,
+        defenderInstanceId,
+      })
+    ) {
+      return true;
+    }
+    // RK-172 ルリオオカミ（自軍ユニットがアタックされたとき。rules/rk/rk9UnitEffects.ts）。
+    if (
+      isRk9BattleCounterCard(card.cardId) &&
+      attackerPlayerId &&
+      attackerInstanceId &&
+      rk9BattleCounterConditionMet(state, defenderId, card.cardId, {
+        attackerPlayerId,
+        attackerInstanceId,
+        defenderPlayerId: defenderId,
+        defenderInstanceId,
+      })
+    ) {
+      return true;
+    }
+    // XG2-061 リョクオオザル（敵軍ユニットにアタックされたとき。rules/xg2/xg2cEffects.ts）。
+    if (attackerPlayerId && attackerInstanceId && xg2BattleCounterConditionMet(state, defenderId, card.cardId, { attackerPlayerId, attackerInstanceId, defenderPlayerId: defenderId, defenderInstanceId })) return true;
+    // RK-004 ギギの腕輪・RK-009 二人の世紀王（自軍Sユニットが敵軍Sユニットにアタックされたとき）。
+    if (
+      isRk1BattleCounterCard(card.cardId) &&
+      attackerPlayerId &&
+      attackerInstanceId &&
+      rk1BattleCounterConditionMet(state, defenderId, card.cardId, {
+        attackerPlayerId,
+        attackerInstanceId,
+        defenderPlayerId: defenderId,
+        defenderInstanceId,
+        phasePlayerId: attackerPlayerId,
+      })
+    ) {
+      return true;
+    }
   }
 
   return false;
+}
+
+export const INAZUMA_TONFA_CHOICE_EFFECT_ID = "chikara_tonfua_command_to_damage";
+
+/**
+ * RS-211 オーブルー【稲妻超力トンファ】（NC）: 自軍ターン中、これがバトルでユニットを撃破したとき、
+ * 相手は自分自身のコマンドゾーンからカードを1枚選び、自分自身のパワーゾーンにダメージにして置く。
+ * 撃破したユニットの持ち主は問わない（隠流忍術で選ばれた自軍ユニットでもよい。faq-card-1 RS-018 Q4）。
+ */
+function openInazumaTonfaChoice(
+  state: GameState,
+  strikerPlayerId: PlayerId,
+  strikerInstanceId: string,
+): GameState {
+  // アタックしたユニット側の処理なので、常に自軍ターン中（アタックするのはターンプレイヤー）。
+  const striker = state.players[strikerPlayerId].battle.find((c) => c.instanceId === strikerInstanceId);
+  if (!striker || striker.cardId !== "RS-211" || !hasBattleNcEffect(striker, "chikara_tonfua")) return state;
+  const enemyId = opponent(strikerPlayerId);
+  const commandIds = state.players[enemyId].command.map((c) => c.instanceId);
+  if (commandIds.length === 0) return state;
+  return {
+    ...state,
+    pendingEffectChoice: {
+      playerId: enemyId,
+      effectId: INAZUMA_TONFA_CHOICE_EFFECT_ID,
+      sourceCardId: "RS-211",
+      sourceInstanceId: strikerInstanceId,
+      kind: "select_command",
+      phasePlayerId: strikerPlayerId,
+      validInstanceIds: commandIds,
+      selectedInstanceIds: [],
+      selectCount: 1,
+      optional: false,
+    },
+    activePlayer: enemyId,
+  };
+}
+
+export const MIRACLE_KIKOUDAN_RULE_ID = "rs_catchall::RS-214::hikari_mirakuru_dan";
+export const MIRACLE_KIKOUDAN_CHOICE_EFFECT_ID = "hikari_mirakuru_dan_release";
+
+/**
+ * RS-214 オーピンク【閃光ミラクル気功弾】（NC）: このターン、自軍 S ユニットがバトルでユニットを撃破するたび、
+ * 自軍コマンドを2つまで選び、リリースしてもよい。
+ * バトルに勝って撃破したときだけ（相手ユニット自身の「勝っても撃破される」効果での撃破は対象外。faq-card-4 RS-214 Q1）。
+ */
+export function openMiracleKikoudanChoice(
+  state: GameState,
+  killerPlayerId: PlayerId,
+  killerCardId: string,
+): GameState {
+  if (state.pendingEffectChoice) return state;
+  const player = state.players[killerPlayerId];
+  const copies = (player.modifiers ?? []).filter(
+    (m) => m.kind === "rule" && m.ruleId === MIRACLE_KIKOUDAN_RULE_ID && m.scope === "turn",
+  ).length;
+  if (copies === 0) return state;
+  if (!isSmallUnit(state.definitions, killerCardId)) return state;
+  const heldIds = player.command.filter((c) => c.commandHeld).map((c) => c.instanceId);
+  if (heldIds.length === 0) return state;
+  return {
+    ...state,
+    pendingEffectChoice: {
+      playerId: killerPlayerId,
+      effectId: MIRACLE_KIKOUDAN_CHOICE_EFFECT_ID,
+      sourceCardId: "RS-214",
+      kind: "select_commands",
+      phasePlayerId: state.activePlayer,
+      validInstanceIds: heldIds,
+      selectedInstanceIds: [],
+      selectCount: Math.min(2 * copies, heldIds.length),
+      commandFilter: "held",
+      commandAction: "release",
+      optional: true,
+    },
+    activePlayer: killerPlayerId,
+  };
+}
+
+/** RK-008 メカニック忍者（自軍Sユニットがアタックされたときのカウンター）。 */
+export function isMechanicNinjaCounter(cardId: string): boolean {
+  return cardId === "RK-008";
+}
+
+/** RK-008: 自軍コマンドゾーンの、追加条件を持たない特徴「改造人間」の S ユニットのカード。 */
+export function collectMechanicNinjaRecruits(state: GameState, playerId: PlayerId): string[] {
+  const player = state.players[playerId];
+  return player.command
+    .filter((c) => {
+      const def = state.definitions[c.cardId];
+      if (!def || def.type !== "unit") return false;
+      if (!isSmallUnit(state.definitions, c)) return false;
+      // RK-001 改造人間で追加された「改造人間」も含む（コマンドゾーンのユニットカード。atwiki/page-190）。
+      if (!rk1ZoneCardFeatures(state, playerId, c.cardId).includes("改造人間")) return false;
+      return !effectiveRushAdditionalCondition(state, playerId, c.cardId, def);
+    })
+    .map((c) => c.instanceId);
+}
+
+/**
+ * RK-008 メカニック忍者: 改造人間の S ユニットのカードをコマンドゾーンからラッシュエリアに出し、
+ * その後アタックされたユニットをコマンドゾーンにホールド状態で置く（このときバトルは行われない）。
+ * ルール: R-ZONE-08 — コマンドゾーンが5枚で置けないときはその場に留まり、バトルは通常通り行う。
+ */
+export function applyMechanicNinjaCounter(
+  state: GameState,
+  defenderId: PlayerId,
+  counterInstanceId: string,
+  recruitInstanceId: string | undefined,
+  pending: PendingBattle,
+): { state: GameState; log: string; battleCancelled: boolean } {
+  const discarded = discardHandCounter(state, defenderId, counterInstanceId);
+  if (!discarded) {
+    return {
+      state,
+      log: buildLogEntry(defenderId, "play_counter", "RK-008", state.definitions, "failed"),
+      battleCancelled: false,
+    };
+  }
+  let nextState = discarded.state;
+  let defender = nextState.players[defenderId];
+  if (recruitInstanceId && collectMechanicNinjaRecruits(nextState, defenderId).includes(recruitInstanceId)) {
+    const found = findInZone(defender, "command", recruitInstanceId);
+    if (found) {
+      const [, command] = removeAt(defender.command, found.index);
+      const recruit = { ...found.card };
+      delete recruit.commandHeld;
+      defender = { ...defender, command, rush: [...defender.rush, recruit] };
+    }
+  }
+  let battleCancelled = false;
+  const attacked = findInZone(defender, "battle", pending.defenderInstanceId);
+  if (attacked && defender.command.length < COMMAND_ZONE_MAX) {
+    const [, battle] = removeAt(defender.battle, attacked.index);
+    defender = {
+      ...defender,
+      battle,
+      command: [...defender.command, { instanceId: attacked.card.instanceId, cardId: attacked.card.cardId, commandHeld: true }],
+    };
+    battleCancelled = true;
+  }
+  nextState = { ...nextState, ...updatePlayer(nextState, defenderId, defender) };
+  return {
+    state: nextState,
+    log: buildLogEntry(
+      defenderId,
+      "play_counter",
+      "RK-008",
+      nextState.definitions,
+      battleCancelled ? "mechanic_ninja" : "mechanic_ninja:stay",
+    ),
+    battleCancelled,
+  };
 }
 
 export function hasRushCounterReactions(
@@ -335,28 +661,148 @@ export function hasRushCounterReactions(
   defenderId: PlayerId,
   rushedInstanceId: string,
   rusherId: PlayerId,
+  allowedCounterInstanceIds?: string[],
 ): boolean {
-  if (!isEnemyTurn(state, defenderId)) return false;
-  if (opponentInfiniteChainBlocks(state, defenderId)) return false;
+  return listUsableRushCounters(state, defenderId, rushedInstanceId, rusherId, allowedCounterInstanceIds).length > 0;
+}
 
-  const rusher = state.players[rusherId];
-  const rushed = findInZone(rusher, "rush", rushedInstanceId)?.card;
-  if (!rushed) return false;
-  if (effectiveBp(state, rusherId, rushed) > 8000) return false;
+/** 「ラッシュされたとき」にいま発動できるカウンター（手札の instanceId）。 */
+export function listUsableRushCounters(
+  state: GameState,
+  defenderId: PlayerId,
+  rushedInstanceId: string,
+  rusherId: PlayerId,
+  allowedCounterInstanceIds?: string[],
+): string[] {
+  if (!isEnemyTurn(state, defenderId)) return [];
+  if (opponentInfiniteChainBlocks(state, defenderId)) return [];
 
   const defender = state.players[defenderId];
+  const ids: string[] = [];
   for (const card of defender.hand) {
-    if (card.cardId !== "RS-026") continue;
-    if (canPlayHandCounter(state, defenderId, card.instanceId)) return true;
+    if (allowedCounterInstanceIds && !allowedCounterInstanceIds.includes(card.instanceId)) continue;
+    if (!isRushReactionCounterCard(state, card.cardId)) continue;
+    if (!rushCounterConditionMet(state, card.cardId, rushedInstanceId, rusherId, defenderId)) continue;
+    if (canPlayHandCounter(state, defenderId, card.instanceId)) ids.push(card.instanceId);
   }
+  return ids;
+}
 
+/** 疾風流超忍法（RS-026 と再録 RS-247 等、同名カード）。 */
+export function isShippuNinjaCard(state: GameState, cardId: string): boolean {
+  if (getCardEffect(cardId)?.effectId === "shippu_ninja") return true;
+  return getDefinition(state.definitions, cardId)?.name === "疾風流超忍法";
+}
+
+/** RK-012 宏のオルゴール時計（「BP4000以上のSユニットがラッシュされたとき」のカウンター）。 */
+export function isMusicBoxClockCard(state: GameState, cardId: string): boolean {
+  if (cardId === "RK-012") return true;
+  return getDefinition(state.definitions, cardId)?.name === "宏のオルゴール時計";
+}
+
+/** ラッシュ反応窓で使えるカウンター（疾風流超忍法・宏のオルゴール時計）。 */
+export function isRushReactionCounterCard(state: GameState, cardId: string): boolean {
+  // XG7-027 雷撃ディスク（rules/xg7/xg7Effects.ts）。
+  return isShippuNinjaCard(state, cardId) || isMusicBoxClockCard(state, cardId) || isXg7RushCounterCard(cardId);
+}
+
+/**
+ * ラッシュされたユニット（持ち主は問わない。相手に出された自軍ユニットもある。faq-card-1 RS-026 Q2）。
+ * 先のカウンターで場を離れていても、ラッシュされた事実は残る（同じラッシュに2枚目を使える。atwiki/page-424 Q12）。
+ */
+function findRushedUnit(
+  state: GameState,
+  rushedInstanceId: string,
+  rusherId: PlayerId,
+): { ownerId: PlayerId; card: CardInstance; onField: boolean } | null {
+  const located = findCardOwner(state, rushedInstanceId);
+  if (located) {
+    const card = findInZone(state.players[located.playerId], located.zone, rushedInstanceId)?.card;
+    if (card) return { ownerId: located.playerId, card, onField: true };
+  }
+  for (const pid of [rusherId, opponent(rusherId)] as const) {
+    const player = state.players[pid];
+    for (const zone of ["deck", "discard", "hand", "power", "command"] as const) {
+      const card = player[zone].find((c) => c.instanceId === rushedInstanceId);
+      if (card) return { ownerId: pid, card, onField: false };
+    }
+  }
+  return null;
+}
+
+function rushCounterConditionMet(
+  state: GameState,
+  counterCardId: string,
+  rushedInstanceId: string,
+  rusherId: PlayerId,
+  userId?: PlayerId,
+): boolean {
+  const rushed = findRushedUnit(state, rushedInstanceId, rusherId);
+  if (!rushed) return false;
+  const bp = rushed.onField
+    ? effectiveBp(state, rushed.ownerId, rushed.card)
+    : parseInt(String(getDefinition(state.definitions, rushed.card.cardId)?.bp ?? 0), 10);
+  // 「BP8000以下のユニットがラッシュされたとき」— ラッシュされた時点の BP で判定する。その後の
+  // 「ラッシュしたとき」で BP が上がっても使える（atwiki/page-424 Q11 ダイカイオーヒガシ）。
+  const snapshot = state.rushedBpSnapshot?.instanceId === rushedInstanceId ? state.rushedBpSnapshot.bp : undefined;
+  if (isShippuNinjaCard(state, counterCardId)) return (snapshot ?? bp) <= 8000;
+  if (isMusicBoxClockCard(state, counterCardId)) {
+    return isSmallUnit(state.definitions, rushed.card) && bp >= 4000;
+  }
+  // XG7-027 雷撃ディスク「敵軍Sユニットがラッシュされたとき」（rules/xg7/xg7Effects.ts）。
+  if (isXg7RushCounterCard(counterCardId)) return xg7RushCounterConditionMet(state, rushed.card, rushed.ownerId, rusherId, userId);
   return false;
+}
+
+/** ラッシュ反応窓で、このカウンターを今使えるか（条件のみ。コストは canPlayHandCounter）。 */
+export function canUseRushReactionCounter(
+  state: GameState,
+  defenderId: PlayerId,
+  counterInstanceId: string,
+  pending: PendingRush,
+): boolean {
+  // 反応窓では手番が使う側に移っているので、ターンプレイヤー（ラッシュした側のフェイズ）で判定する。
+  if (pending.phasePlayerId === defenderId) return false;
+  if (opponentInfiniteChainBlocks(state, defenderId)) return false;
+  // ルール: R-TIME-03 — モーフの解決に入る前に発動できたカウンターだけ（atwiki/page-1828）。
+  if (pending.allowedCounterInstanceIds && !pending.allowedCounterInstanceIds.includes(counterInstanceId)) return false;
+  const card = findInZone(state.players[defenderId], "hand", counterInstanceId)?.card;
+  if (!card || !isRushReactionCounterCard(state, card.cardId)) return false;
+  return rushCounterConditionMet(state, card.cardId, pending.rushedInstanceId, pending.rusherPlayerId, defenderId);
+}
+
+export const MUSIC_BOX_SKIP_BATTLE_RULE = "skip_battle_phase_this_turn";
+
+/** RK-012 宏のオルゴール時計: このターン、相手（ラッシュしたプレイヤー）はバトルフェイズを飛ばす。 */
+export function applyMusicBoxClockCounter(
+  state: GameState,
+  defenderId: PlayerId,
+  counterInstanceId: string,
+  _pending: PendingRush,
+): { state: GameState; log: string } {
+  const discarded = discardHandCounter(state, defenderId, counterInstanceId);
+  if (!discarded) {
+    return {
+      state,
+      log: buildLogEntry(defenderId, "play_counter", "RK-012", state.definitions, "failed"),
+    };
+  }
+  // 「相手」はカウンターの使用者から見た相手（＝ターンプレイヤー）。RS-284【スワンウィング】で使用者の
+  // ユニットが出されたときも、飛ばすのはスワンウィングを使った相手のバトルフェイズ。
+  const targetId = opponent(defenderId);
+  const target = addTurnRuleModifier(discarded.state.players[targetId], MUSIC_BOX_SKIP_BATTLE_RULE, {
+    sourceCardId: discarded.cardId,
+  });
+  return {
+    state: { ...discarded.state, ...updatePlayer(discarded.state, targetId, target) },
+    log: buildLogEntry(defenderId, "play_counter", discarded.cardId, state.definitions, "skip_battle_phase"),
+  };
 }
 
 export function canPlayDinoGutsLeaveCounter(
   state: GameState,
   ownerId: PlayerId,
-  leavingCardId: string,
+  _leavingCardId: string,
   counterInstanceId: string,
   options?: { requireEnemyTurn?: boolean },
 ): boolean {
@@ -366,9 +812,8 @@ export function canPlayDinoGutsLeaveCounter(
   if (!found || found.card.cardId !== "RS-027") return false;
   if (!canPlayHandCounter(state, ownerId, counterInstanceId)) return false;
 
-  const leavingDef = getDefinition(state.definitions, leavingCardId);
-  const drawCost = parsePowerCost(leavingDef?.powerCost ?? 0);
-  return state.players[ownerId].deck.length >= drawCost;
+  // ルール: R-WIN-04 — ダイノガッツは山札が足りなくても使える（途中でひけなければ敗北。公式FAQ RS-027）。
+  return true;
 }
 
 export function hasPlayableDinoChronicleCounter(
@@ -399,6 +844,11 @@ export function hasDinoChronicleLeaveReaction(
   leavingCardId: string,
 ): boolean {
   return hasPlayableDinoChronicleCounter(state, ownerId, leavingCardId);
+}
+
+/** R-CTR-03 — カウンターを発動できない間か（パンサークロー等のアタック処理中）。 */
+function counterLockedFor(state: GameState, playerId: PlayerId): boolean {
+  return state.counterLockedPlayerId === playerId || opponentInfiniteChainBlocks(state, playerId);
 }
 
 export function hasDinoGutsLeaveReaction(
@@ -574,7 +1024,7 @@ export function applyNewGymnasticsCounter(
   let nextState = discarded.state;
   const defender = nextState.players[defenderId];
   const found = findInZone(defender, "battle", pending.defenderInstanceId);
-  if (!found || !isSmallUnit(nextState.definitions, found.card.cardId)) {
+  if (!found || !isSmallUnit(nextState.definitions, found.card)) {
     return {
       state: nextState,
       log: buildLogEntry(defenderId, "play_counter", "RS-006", state.definitions, "failed"),
@@ -651,28 +1101,31 @@ export function applyShippuNinjaCounter(
     };
   }
 
-  const rusher = discarded.state.players[pending.rusherPlayerId];
-  const found = findInZone(rusher, "rush", pending.rushedInstanceId);
+  // 「そのユニットを持ち主の山札の上に戻す」— 持ち主はラッシュしたプレイヤーとは限らない（faq-card-1 RS-026 Q2）。
+  const located = findCardOwner(discarded.state, pending.rushedInstanceId);
+  const ownerId = located?.playerId ?? pending.rusherPlayerId;
+  const owner = discarded.state.players[ownerId];
+  const found = findInZone(owner, "rush", pending.rushedInstanceId);
   if (!found) {
     return {
       state: discarded.state,
-      log: buildLogEntry(defenderId, "play_counter", "RS-026", state.definitions, "failed"),
+      log: buildLogEntry(defenderId, "play_counter", discarded.cardId, state.definitions, "failed"),
     };
   }
 
-  const [, rush] = removeAt(rusher.rush, found.index);
-  const nextRusher = {
-    ...rusher,
+  const [, rush] = removeAt(owner.rush, found.index);
+  const nextOwner = {
+    ...owner,
     rush,
-    deck: [{ ...found.card, faceDown: true }, ...rusher.deck],
+    deck: [{ ...found.card, faceDown: true }, ...owner.deck],
   };
 
   return {
     state: {
       ...discarded.state,
-      ...updatePlayer(discarded.state, pending.rusherPlayerId, nextRusher),
+      ...updatePlayer(discarded.state, ownerId, nextOwner),
     },
-    log: buildLogEntry(defenderId, "play_counter", "RS-026", state.definitions, "shippu_ninja"),
+    log: buildLogEntry(defenderId, "play_counter", discarded.cardId, state.definitions, "shippu_ninja"),
   };
 }
 
@@ -681,6 +1134,7 @@ export function applyDinoGutsCounter(
   ownerId: PlayerId,
   counterInstanceId: string,
   leavingCardId: string,
+  phasePlayerId?: PlayerId,
 ): { state: GameState; log: string; prevented: boolean } {
   const discarded = discardHandCounter(state, ownerId, counterInstanceId);
   if (!discarded) {
@@ -693,17 +1147,10 @@ export function applyDinoGutsCounter(
 
   const leavingDef = getDefinition(discarded.state.definitions, leavingCardId);
   const drawCost = parsePowerCost(leavingDef?.powerCost ?? 0);
-  const owner = discarded.state.players[ownerId];
-  const drawn = owner.deck.slice(0, drawCost);
-  const restDeck = owner.deck.slice(drawCost);
-  const nextOwner = {
-    ...owner,
-    deck: restDeck,
-    discard: [...owner.discard, ...drawn],
-  };
-
+  // ルール: R-START-05, R-WIN-03 — ひくべきときにひけなければ敗北（公式FAQ RS-027 Q4）。
+  // RS-122【海底探査】があれば下からひくことを選べる（faq-card-2 RS-122 Q1）。
   return {
-    state: { ...discarded.state, ...updatePlayer(discarded.state, ownerId, nextOwner) },
+    state: drawToDiscardFromDeck(discarded.state, ownerId, phasePlayerId ?? state.activePlayer, drawCost),
     log: buildLogEntry(
       ownerId,
       "play_counter",
@@ -736,13 +1183,162 @@ export function applyDinoChronicleCounter(
   };
 }
 
+type MutualDestructionContext = MutualDestructionMeta;
+
+/**
+ * ルール: R-BTL-02, R-SIM-01 — 相打ちで撃破された 2 体を、firstInstanceId のユニットから順に処理する。
+ * 守り側を撃破したことによる攻撃側の効果（一点突破・ブラックコンドル）は処理順に依存しない。
+ */
+export function processMutualDestruction(
+  state: GameState,
+  ctx: MutualDestructionContext,
+  firstInstanceId: string,
+): { state: GameState; deferred: boolean } {
+  const defenderFirst = firstInstanceId !== ctx.attackerInstanceId;
+  const [first, second] = defenderFirst
+    ? [ctx.defenderIntent, ctx.attackerIntent]
+    : [ctx.attackerIntent, ctx.defenderIntent];
+  const applyDefenderDestroyedEffects = (base: GameState): GameState => {
+    let next = base;
+    if (ctx.attackerCardId === "RS-065") {
+      const fb = resolveFocusedBreakthroughDamage(
+        next,
+        ctx.attackerPlayerId,
+        ctx.attackerInstanceId,
+        ctx.defenderOwner,
+        ctx.defenderCard,
+        ctx.focusedBreakthroughQualifies,
+      );
+      next = { ...fb.state, log: [...fb.state.log, ...fb.logs] };
+    }
+    {
+      // RK-005 超電子ダイナモの能力（相打ちでも撃破した事実は残る。R-BTL-02）。
+      const dynamo = applyRk1DestroyerDamage(next, ctx.attackerPlayerId, ctx.attackerInstanceId, ctx.defenderCard.cardId);
+      next = { ...dynamo.state, log: [...dynamo.state.log, ...dynamo.logs] };
+    }
+    if (ctx.attackerCardId === "RS-685") {
+      const bc = resolveBlackCondorDestroyDamage(
+        next,
+        ctx.attackerPlayerId,
+        ctx.attackerInstanceId,
+        ctx.defenderOwner,
+        ctx.defenderCard,
+      );
+      next = { ...bc.state, log: [...bc.state.log, ...bc.logs] };
+    }
+    return next;
+  };
+
+  // 攻撃側が守り側を撃破した事実（R-BTL-02「互いに相手を撃破したことになる」）による効果は、
+  // 攻撃側がまだ並びにある時点で処理順に関係なく解決する。
+  const withDestroyFx = applyDefenderDestroyedEffects(state);
+  const r1 = tryLeaveField(withDestroyFx, { ...first, followUpAttackerLeave: second });
+  if (r1.deferred) return r1;
+  const r2 = tryLeaveField(r1.state, second);
+  if (r2.deferred) return r2;
+  const afterBoth = restoreHungerGodMutualPartner(r2.state, first, second);
+  const afterSniper = applySagasSniperOnMutualDestruction(afterBoth, ctx);
+  // RS-450 地帝忍オヨブー【皇帝への忠義】（お互いに撃破されて捨札になったとき。rules/legend1/set7NamedEffectsA.ts）。
+  return { state: openLoyaltyToEmperor(afterSniper, ctx), deferred: false };
+}
+
+/**
+ * RS-580 ン・マ の※（ユニットでなくなるとき捨札をすべて山札に戻す）と相討ち: 2体は同時に撃破されるので、
+ * ン・マのテキストを実行してから両方が捨札になる（faq-card-8 RS-580）。処理順でン・マを先に処理しても
+ * 相手のユニットは山札に戻らず捨札に置かれる。
+ */
+function restoreHungerGodMutualPartner(
+  state: GameState,
+  first: LeaveIntent,
+  second: LeaveIntent,
+): GameState {
+  if (first.leavingCardId !== "RS-580" && second.leavingCardId !== "RS-580") return state;
+  let next = state;
+  for (const intent of [first, second]) {
+    if (intent.leavingCardId === "RS-580" || intent.toZone !== "discard") continue;
+    const owner = next.players[intent.ownerPlayerId];
+    const deckIndex = owner.deck.findIndex((c) => c.instanceId === intent.instanceId);
+    if (deckIndex < 0) continue;
+    const inDeck = { index: deckIndex, card: owner.deck[deckIndex]! };
+    const [, deck] = removeAt(owner.deck, inDeck.index);
+    next = {
+      ...next,
+      ...updatePlayer(next, intent.ownerPlayerId, {
+        ...owner,
+        deck,
+        discard: [...owner.discard, inDeck.card],
+      }),
+    };
+  }
+  return next;
+}
+
+/**
+ * RS-178 シルバー【サガスナイパー】「自軍ターン中、これがユニットを撃破したとき」— 引き分けでお互いに撃破と
+ * なっても、ユニットを撃破したことには違いないので発動する（faq-card-3 RS-178 Q1・Q2）。
+ */
+function applySagasSniperOnMutualDestruction(state: GameState, ctx: MutualDestructionContext): GameState {
+  if (state.pendingEffectChoice || state.winner) return state;
+  if (state.activePlayer !== ctx.attackerPlayerId) return state;
+  if (getConditionalNamedEffect(ctx.attackerCardId)?.effectId !== "sagas_sniper") return state;
+  const destroyedCost = parsePowerCost(
+    getDefinition(state.definitions, ctx.defenderCard.cardId)?.powerCost ?? 99,
+  );
+  const withChoice = startSagasSniperChoice(state, {
+    playerId: ctx.attackerPlayerId,
+    sourceCardId: ctx.attackerCardId,
+    sourceInstanceId: ctx.attackerInstanceId,
+    phasePlayerId: ctx.attackerPlayerId,
+    maxPowerCost: destroyedCost,
+  });
+  if (withChoice?.pendingEffectChoice?.effectId !== "sagas_sniper") return state;
+  return {
+    ...withChoice,
+    log: [
+      ...withChoice.log,
+      buildLogEntry(ctx.attackerPlayerId, "named_effect", ctx.attackerCardId, state.definitions, "sagas_sniper"),
+    ],
+  };
+}
+
+function zoneFingerprint(state: GameState): string {
+  const zones = ["deck", "hand", "discard", "power", "command", "rush", "battle", "operation"] as const;
+  const parts: string[] = [String(state.winner)];
+  for (const playerId of Object.keys(state.players).sort() as PlayerId[]) {
+    const player = state.players[playerId];
+    parts.push(`${playerId}:dmg=${player.damage}`);
+    for (const zone of zones) {
+      const cards = (player[zone] ?? []) as CardInstance[];
+      parts.push(`${playerId}.${zone}=${cards.map((c) => `${c.instanceId}${c.faceDown ? "~" : ""}`).sort().join(",")}`);
+    }
+  }
+  return parts.join("|");
+}
+
+/**
+ * 相打ちの処理順で結果（各カードの置き場・ダメージ・勝敗）が変わるか。
+ * どちらかの順で離場の対応（反応窓・選択）が挟まる場合は、従来どおり守り側から処理する。
+ */
+function mutualDestructionOrderMatters(state: GameState, ctx: MutualDestructionContext): boolean {
+  const defenderFirst = processMutualDestruction(state, ctx, ctx.defenderIntent.instanceId);
+  const attackerFirst = processMutualDestruction(state, ctx, ctx.attackerInstanceId);
+  if (defenderFirst.deferred || attackerFirst.deferred) return false;
+  return zoneFingerprint(defenderFirst.state) !== zoneFingerprint(attackerFirst.state);
+}
+
 /** Event Listener から呼ばれるバトル解決の実装本体。 */
 export function resolveBattlePendingCore(
   state: GameState,
   pending: PendingBattle,
 ): { state: GameState; log: string } {
+  // RM-036 暴魂チューボ【剣の使い手】: バトルの解決の後で相手にダメージ（rules/rm/rm2Effects.ts rm2AfterBattle）。
+  let rm2Post: ((s: GameState) => GameState) | undefined;
+  // XG1-003【新飛羽返し】: バトルで撃破したとき（rules/xg1/xg1aEffects.ts xg1aAfterBattle）。
+  let xg1Post: ((s: GameState) => GameState) | undefined;
   const finish = (nextState: GameState, log: string) => {
     let resolved = nextState;
+    if (rm2Post) resolved = rm2Post(resolved);
+    if (xg1Post) resolved = xg1Post(resolved);
     if (pending.mirageBeamDiscard) {
       const player = resolved.players[pending.attackerPlayerId];
       resolved = {
@@ -753,14 +1349,25 @@ export function resolveBattlePendingCore(
         }),
       };
     }
+    if (pending.mirageBeamDefenderDiscard) {
+      const player = resolved.players[pending.defenderPlayerId];
+      resolved = {
+        ...resolved,
+        ...updatePlayer(resolved, pending.defenderPlayerId, {
+          ...player,
+          discard: [...player.discard, pending.mirageBeamDefenderDiscard],
+        }),
+      };
+    }
+    // RK-183【ZOキック】: バトルを終えるたび、このターン BP-1000（rules/rk/rk9UnitEffects.ts）。
+    if (!pending.battleCancelled) resolved = rk9AfterBattle(resolved, pending);
+    const restored = restorePhaseActivePlayerUnlessBlocked(
+      { ...resolved, pendingBattle: undefined },
+      pending.phasePlayerId,
+    );
     return {
-      state: finishBattleEntryIf(
-        restorePhaseActivePlayerUnlessBlocked(
-          { ...resolved, pendingBattle: undefined },
-          pending.phasePlayerId,
-        ),
-        pending.attackerInstanceId,
-      ),
+      // 効果でのバトル（effectBattle）はアタックではないので、バトル進入の手番（アタック／ストライク／パス）は終えない。
+      state: pending.effectBattle ? restored : finishBattleEntryIf(restored, pending.attackerInstanceId),
       log,
     };
   };
@@ -782,6 +1389,16 @@ export function resolveBattlePendingCore(
       ),
     );
   }
+
+  // RK-050【音撃斬・閻魔裁き】: 裁鬼のアタックなら、解決の直前に数字を選ぶ（選んだあとこのバトルを解決し直す）。
+  const sabaki = tryOpenRk3BattleChoice(state, pending);
+  if (sabaki) return { state: sabaki, log: buildLogEntry(pending.attackerPlayerId, "battle", pending.attackerInstanceId, state.definitions, "rk050_choose_number") };
+  // XG2-010【龍星キック】ほか「アタックするとき、バトルの前に」（選んだあとこのバトルを解決し直す。rules/xg2/xg2Effects.ts）。
+  const xg2Before = tryOpenXg2BattleChoice(state, pending);
+  if (xg2Before) return { state: xg2Before, log: buildLogEntry(pending.attackerPlayerId, "battle", pending.attackerInstanceId, state.definitions, "xg2_before_battle") };
+  // XG3-091【パルセイバー】・XG3-097【キャプテンルーレット】: バトルの前の処理（済ませたらこのバトルを解決し直す。rules/xg3/xg3eEffects.ts）。
+  const xg3Before = openXg3BeforeBattle(state, pending);
+  if (xg3Before) return { state: xg3Before, log: buildLogEntry(pending.attackerPlayerId, "battle", pending.attackerInstanceId, state.definitions, "xg3_before_battle") };
 
   const attackerId = pending.attackerPlayerId;
   const defenderId = pending.defenderPlayerId;
@@ -809,7 +1426,8 @@ export function resolveBattlePendingCore(
     findInZone(attacker, "rush", pending.attackerInstanceId);
   const defenderFound = findInZone(defenderPlayer, defenderZone, defenderInstanceId);
 
-  if (attackerFound) {
+  // ルール: R-TIME-01 — 通常のアタックでは「アタックされたとき」の反応より前に解決済み（core/applyAction.ts）。
+  if (attackerFound && !pending.onAttackResolved && !pending.effectBattle) {
     battleState = tryResolveDslTriggeredEffects({
       state: battleState,
       cardId: attackerFound.card.cardId,
@@ -834,7 +1452,7 @@ export function resolveBattlePendingCore(
 
   if (!refreshedAttackerFound || !refreshedDefenderFound) {
     const markAttackerActedOnFail = (base: GameState): GameState => {
-      if (!refreshedAttackerFound) return base;
+      if (!refreshedAttackerFound || pending.effectBattle) return base;
       const currentAttacker = base.players[attackerId];
       return {
         ...base,
@@ -851,32 +1469,88 @@ export function resolveBattlePendingCore(
     );
   }
 
-  const attackerBp = battleAttackerBpBonus(battleState, pending);
-  const defenderBp = battleDefenderBp(battleState, pending);
+  // RK-050【音撃斬・閻魔裁き】: 選んだ数字（必要パワー・ナンバー）でバトルする（rules/rk/rk3UnitEffects.ts）。
+  // XG3-097【キャプテンルーレット】で決めた数字（rules/xg3/xg3eEffects.ts）。
+  const rk3Values = rk3BattleValues(battleState, pending) ?? pending.xg3Values ?? null;
+  const attackerBp = rk3Values ? rk3Values.attacker : battleAttackerBpBonus(battleState, pending);
+  const defenderBp = rk3Values ? rk3Values.defender : battleDefenderBp(battleState, pending);
 
-  const destroyAttacker = attackerBp <= defenderBp;
-  const destroyDefender = defenderBp <= attackerBp;
+  // RK-268 デスガロン【分析能力】: バトルの勝ち負けは本来の BP で決める（BP の変動そのものは無効にしない。atwiki/page-1349 Q2。rules/rk/rk13Fields.ts）。
+  // XG5-088 カバドス【力まかせ】（これがバトルするとき。rules/xg5/xg5Fields.ts）。
+  const printedBattle = !rk3Values && (rk13BattleUsesPrintedBp(battleState) || xg5BattleUsesPrintedBp(refreshedAttackerFound.card.cardId, refreshedDefenderFound.card.cardId));
+  const compareAttackerBp = printedBattle ? rk13PrintedBp(battleState, refreshedAttackerFound.card.cardId) : attackerBp;
+  const compareDefenderBp = printedBattle ? rk13PrintedBp(battleState, refreshedDefenderFound.card.cardId) : defenderBp;
+  const destroyAttacker = compareAttackerBp <= compareDefenderBp;
+  const destroyDefender = compareDefenderBp <= compareAttackerBp;
 
   const winButSelfDestruct =
-    !destroyAttacker &&
+    (!destroyAttacker &&
     destroyDefender &&
     battleState.activePlayer !== attackerId &&
-    winButDestroyedVsSp1(refreshedAttackerFound.card.cardId) &&
-    canStrikeUnit(battleState.definitions, refreshedDefenderFound.card, battleState, defenderOwner);
+    (winButDestroyedVsSp1(refreshedAttackerFound.card.cardId) ||
+      rk1WinButDestroyed(battleState, attackerId, pending.attackerInstanceId) ||
+      // RK-224 京介変身体【サポート】（rules/rk/rk11Fields.ts）。
+      rk11KyosukeWinButDestroyed(battleState, attackerId, pending.attackerInstanceId)) &&
+    winDestroyOpponentQualifies(
+      battleState,
+      refreshedAttackerFound.card.cardId,
+      refreshedDefenderFound.card,
+      defenderOwner,
+    )) ||
+    // XG6-049 ※: ウイングを持つユニットとバトルしたとき、バトルに勝っても撃破される（自軍ターンも含む。rules/xg6/xg6Fields.ts）。
+    (!destroyAttacker && destroyDefender && xg6WinButDestroyed(battleState, refreshedAttackerFound.card, refreshedDefenderFound.card, defenderOwner));
 
   const winButDefenderSelfDestruct =
-    destroyAttacker &&
+    (destroyAttacker &&
     !destroyDefender &&
     battleState.activePlayer !== defenderOwner &&
-    winButDestroyedVsSp1(refreshedDefenderFound.card.cardId) &&
-    canStrikeUnit(
-      battleState.definitions,
+    (winButDestroyedVsSp1(refreshedDefenderFound.card.cardId) ||
+      // RK-019 音撃で「…バトルに勝っても撃破される」と書かれているかのように扱うユニット（rules/rk/rk1NamedEffects.ts）。
+      rk1WinButDestroyed(battleState, defenderOwner, defenderInstanceId) ||
+      rk11KyosukeWinButDestroyed(battleState, defenderOwner, defenderInstanceId)) &&
+    winDestroyOpponentQualifies(
+      battleState,
+      refreshedDefenderFound.card.cardId,
       refreshedAttackerFound.card,
+      attackerId,
+    )) ||
+    (destroyAttacker && !destroyDefender && xg6WinButDestroyed(battleState, refreshedDefenderFound.card, refreshedAttackerFound.card, attackerId));
+
+  // RS-220【反射バリア】: 自軍 S ユニットとバトルした敵軍 S ユニットは、バトルに勝っても撃破される。
+  const reflectBarrierDefender =
+    destroyAttacker &&
+    !destroyDefender &&
+    reflectBarrierDestroysWinner(
+      battleState,
+      defenderOwner,
+      refreshedDefenderFound.card.cardId,
+      refreshedAttackerFound.card.cardId,
+    );
+  const reflectBarrierAttacker =
+    !destroyAttacker &&
+    destroyDefender &&
+    reflectBarrierDestroysWinner(
       battleState,
       attackerId,
+      refreshedAttackerFound.card.cardId,
+      refreshedDefenderFound.card.cardId,
     );
 
-  const finalDestroyDefender = destroyDefender || winButDefenderSelfDestruct;
+  // RK-040 ベノスネーカー【毒液】: 敵軍ターン中、これとバトルした「男」「女」のユニットはバトルに勝っても撃破される（rules/rk/rk2UnitEffects.ts）。
+  // RK-181【ハイバイブネイル】「これとバトルしたSユニットは、バトルに勝っても撃破される」も同じ扱い（rules/rk/rk9UnitEffects.ts）。
+  const venomDefender =
+    !destroyDefender &&
+    (rk2VenomDestroys(battleState, defenderOwner, refreshedDefenderFound.card, refreshedAttackerFound.card) ||
+      rk9WinButDestroyed(battleState, defenderOwner, refreshedDefenderFound.card, refreshedAttackerFound.card) ||
+      // RK-310 モモタロス（2nd）の※（「女」とバトルしたとき、バトルに勝っても撃破される。rules/rk/rk15UnitEffects.ts）。
+      rk15WinButDestroyed(battleState, defenderOwner, refreshedDefenderFound.card, refreshedAttackerFound.card));
+  const venomAttacker =
+    !destroyAttacker &&
+    (rk2VenomDestroys(battleState, attackerId, refreshedAttackerFound.card, refreshedDefenderFound.card) ||
+      rk9WinButDestroyed(battleState, attackerId, refreshedAttackerFound.card, refreshedDefenderFound.card) ||
+      rk15WinButDestroyed(battleState, attackerId, refreshedAttackerFound.card, refreshedDefenderFound.card));
+
+  const finalDestroyDefender = destroyDefender || winButDefenderSelfDestruct || reflectBarrierDefender || venomDefender;
 
   // XG2-086: during enemy turn (attacker's turn), units that win are also destroyed
   // XG3-087: same but only for S-units
@@ -887,12 +1561,31 @@ export function resolveBattlePendingCore(
     (() => {
       const defCardId = refreshedDefenderFound.card.cardId;
       if (defCardId === "XG2-086") return true;
-      if (defCardId === "XG3-087") return isSmallUnit(battleState.definitions, refreshedAttackerFound.card.cardId);
+      if (defCardId === "XG3-087") return isSmallUnit(battleState.definitions, refreshedAttackerFound.card);
       return false;
     })();
 
-  const finalDestroyAttacker = destroyAttacker || winButSelfDestruct || defenderCausesWinnerDestruction;
-  const detail = `${cardName(battleState.definitions, refreshedDefenderFound.card.cardId)}:${attackerBp}vs${defenderBp}`;
+  const finalDestroyAttacker =
+    destroyAttacker || winButSelfDestruct || defenderCausesWinnerDestruction || reflectBarrierAttacker || venomAttacker;
+  rm2Post = rm2AfterBattle(battleState, pending, {
+    attacker: refreshedAttackerFound.card,
+    defender: refreshedDefenderFound.card,
+    defenderOwner,
+    attackerBp,
+    defenderBp,
+    attackerDestroyed: finalDestroyAttacker,
+    defenderDestroyed: finalDestroyDefender,
+  });
+  xg1Post = xg1aAfterBattle(battleState, pending, {
+    attacker: refreshedAttackerFound.card,
+    defender: refreshedDefenderFound.card,
+    defenderOwner,
+    attackerBp,
+    defenderBp,
+    attackerDestroyed: finalDestroyAttacker,
+    defenderDestroyed: finalDestroyDefender,
+  });
+  const detail = `${cardName(battleState.definitions, refreshedDefenderFound.card.cardId)}:${compareAttackerBp}vs${compareDefenderBp}`;
   const log = buildLogEntry(
     attackerId,
     "battle",
@@ -902,6 +1595,7 @@ export function resolveBattlePendingCore(
   );
 
   const markAttackerActed = (base: GameState): GameState => {
+    if (pending.effectBattle) return base;
     const currentAttacker = base.players[attackerId];
     return {
       ...base,
@@ -913,20 +1607,11 @@ export function resolveBattlePendingCore(
   };
 
   const attackerZone = refreshedAttackerFound.zone;
-  const defenderLeaveZone = shouldBattleDestroyToPower(
-    battleState,
-    pending,
-    defenderInstanceId,
-  )
-    ? "power"
-    : "discard";
-  const attackerLeaveZone = shouldBattleDestroyToPower(
-    battleState,
-    pending,
-    pending.attackerInstanceId,
-  )
-    ? "power"
-    : "discard";
+  // RS-182 ジャイアントローラー: 捨札になったときにダメージにする（置き先は捨札のまま。置換・カウンターの窓を開く）。
+  const defenderAsDamage = shouldBattleDestroyToPower(battleState, pending, defenderInstanceId);
+  const attackerAsDamage = shouldBattleDestroyToPower(battleState, pending, pending.attackerInstanceId);
+  const defenderLeaveZone = "discard" as const;
+  const attackerLeaveZone = "discard" as const;
   const attackerLeaveIntent: LeaveIntent = {
     ownerPlayerId: attackerId,
     instanceId: pending.attackerInstanceId,
@@ -934,29 +1619,170 @@ export function resolveBattlePendingCore(
     toZone: attackerLeaveZone,
     leavingCardId: refreshedAttackerFound.card.cardId,
     phasePlayerId: pending.phasePlayerId,
+    discardAsDamage: attackerAsDamage || undefined,
+    // ルール: R-KW-RESIST-03 — 「バトルに勝っても撃破される」効果での撃破はレジスト不可。
     registerEligible:
-      finalDestroyAttacker && !winButSelfDestruct && attackerZone === "battle",
+      finalDestroyAttacker &&
+      !winButSelfDestruct &&
+      !defenderCausesWinnerDestruction &&
+      !reflectBarrierAttacker &&
+      !venomAttacker &&
+      attackerZone === "battle" &&
+      // RK-267【怪魔稲妻剣】: これとバトルして撃破された敵軍ユニットはレジストを発動できない（rules/rk/rk13Fields.ts）。
+      !rk13BlocksResist(refreshedDefenderFound.card.cardId),
+    battleOpponentInstanceId: defenderInstanceId,
   };
 
   let nextState = battleState;
   let extraLogs: string[] = [];
+  // ルール: R-ERR-RS065 — 分数SPは並びにある間の値で判定する（撃破されて並びから外れる前に判定）。
+  const focusedBreakthroughQualifies =
+    refreshedAttackerFound.card.cardId === "RS-065" &&
+    unitQualifiesForFocusedBreakthrough(battleState, defenderOwner, refreshedDefenderFound.card);
+
+  const defenderLeaveIntent: LeaveIntent = {
+    ownerPlayerId: defenderOwner,
+    instanceId: defenderInstanceId,
+    fromZone: defenderZone,
+    toZone: defenderLeaveZone,
+    leavingCardId: refreshedDefenderFound.card.cardId,
+    phasePlayerId: pending.phasePlayerId,
+    discardAsDamage: defenderAsDamage || undefined,
+    // ルール: R-KW-RESIST-03 — 防御側も「勝っても撃破」で倒された場合はレジスト不可（BP で負けたときだけ可）。
+    registerEligible:
+      destroyDefender &&
+      !winButDefenderSelfDestruct &&
+      !reflectBarrierDefender &&
+      !venomDefender &&
+      defenderZone === "battle" &&
+      // RK-267【怪魔稲妻剣】（rules/rk/rk13Fields.ts）。
+      !rk13BlocksResist(refreshedAttackerFound.card.cardId) &&
+      // XG7-032【ライダーダブルキック】（rules/xg7/xg7Fields.ts）。
+      !xg7BlocksResist(battleState, pending),
+    battleOpponentInstanceId: pending.attackerInstanceId,
+  };
+
+  if (finalDestroyDefender && finalDestroyAttacker) {
+    // ルール: R-BTL-02, R-SIM-01 — 相打ちの 2 体は同時に撃破された扱い。その後の処理順は
+    // ターンプレイヤーが決める。順番で結果が変わるときだけ選択を開く（例: プテラノドンと
+    // レスキューファイター。faq-card-1 RS-018 Q12）。
+    const ctx: MutualDestructionContext = {
+      attackerPlayerId: attackerId,
+      attackerInstanceId: pending.attackerInstanceId,
+      attackerCardId: refreshedAttackerFound.card.cardId,
+      defenderOwner,
+      defenderCard: refreshedDefenderFound.card,
+      defenderIntent: defenderLeaveIntent,
+      attackerIntent: attackerLeaveIntent,
+      focusedBreakthroughQualifies,
+    };
+    const chooser = pending.phasePlayerId;
+    if (mutualDestructionOrderMatters(nextState, ctx)) {
+      const withChoice: GameState = {
+        ...nextState,
+        pendingEffectChoice: {
+          playerId: chooser,
+          effectId: "simultaneous_order",
+          sourceCardId: "engine",
+          kind: "simultaneous_order",
+          phasePlayerId: chooser,
+          validInstanceIds: [defenderInstanceId, pending.attackerInstanceId],
+          selectedInstanceIds: [],
+          optional: false,
+          mutualDestructionMeta: ctx,
+        },
+        activePlayer: chooser,
+      };
+      return finish(withChoice, log);
+    }
+    const processed = processMutualDestruction(nextState, ctx, defenderInstanceId);
+    // RS-408【プロミネンス・シャワー】: 「バトルに勝っても撃破される」で撃破された敵軍ユニットの持ち主にダメージ。
+    let processedState = processed.state;
+    if (winButSelfDestruct) processedState = applyProminenceShower(processedState, attackerId);
+    if (winButDefenderSelfDestruct) processedState = applyProminenceShower(processedState, defenderOwner);
+    return finish(processedState, log);
+  }
 
   if (finalDestroyDefender) {
-    const leaveResult = tryLeaveField(nextState, {
-      ownerPlayerId: defenderOwner,
-      instanceId: defenderInstanceId,
-      fromZone: defenderZone,
-      toZone: defenderLeaveZone,
-      leavingCardId: refreshedDefenderFound.card.cardId,
-      phasePlayerId: pending.phasePlayerId,
-      registerEligible: defenderZone === "battle",
-      followUpAttackerLeave: finalDestroyAttacker ? attackerLeaveIntent : undefined,
-    });
+    // ルール: R-TIME-01 — 撃破された側の誘発（段階 2「撃破されたとき」・段階 4「撃破されて捨札になったとき」）は、
+    // 撃破した側の段階 1「撃破したとき」（自動処理・選択とも）を解決し終えるまで待たせる（rules/destroyTriggerQueue.ts）。
+    const leaveResult = tryLeaveField(beginDestroyTriggerHold(nextState), defenderLeaveIntent);
     if (leaveResult.deferred) {
-      const withAttacker = finalDestroyAttacker ? leaveResult.state : markAttackerActed(leaveResult.state);
+      const released = endDestroyTriggerHold(leaveResult.state);
+      let withAttacker = finalDestroyAttacker ? released : markAttackerActed(released);
+      if (
+        withAttacker.pendingLeave &&
+        withAttacker.pendingLeave.instanceId === defenderInstanceId &&
+        !withAttacker.pendingLeave.notDestruction
+      ) {
+        // 離場の応答（ダイノガッツ等）を待つ: 実際に撃破されたら「撃破したとき」を開く（finalizeLeaveReaction）。
+        withAttacker = {
+          ...withAttacker,
+          pendingLeave: {
+            ...withAttacker.pendingLeave,
+            destroyedByInBattle: { ownerPlayerId: attackerId, instanceId: pending.attackerInstanceId },
+          },
+        };
+      }
+      // RK-271【ライジングマイティキック】: バトルで撃破したとき（レジストの選択中でも撃破は済んでいる。rules/rk/rk13UnitEffects.ts）。
+      if (!withAttacker.pendingLeave && !finalDestroyAttacker) {
+        withAttacker = rk13OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
+        // RK-324【凄いのが来るぜ！】（rules/rk/rk16UnitEffects.ts）。
+        withAttacker = rk16OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+        withAttacker = xg4OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+        // XG3-045【超電稲妻キック】等（rules/xg3/xg3Effects.ts）。
+        withAttacker = applyXg3OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId);
+        // PM-001【真っ向両断】等（rules/promo）。
+        withAttacker = promoOnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, refreshedDefenderFound.card.cardId);
+      }
+      if (!withAttacker.pendingLeave && !withAttacker.pendingRegister) {
+        // 撃破は済み、別の選択が開いている — RS-226（段階 1）を先に、RS-212（段階 4）は段階の順に処理する。
+        withAttacker = queueMirageKnuckle(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+        withAttacker = openDeathStingerChoice(
+          withAttacker,
+          attackerId,
+          pending.attackerInstanceId,
+          defenderBp,
+          pending.phasePlayerId,
+        );
+        withAttacker = openRaigekiZanChoice(
+          withAttacker,
+          attackerId,
+          pending.attackerInstanceId,
+          refreshedDefenderFound.card,
+          pending.phasePlayerId,
+        );
+        // RK-069【ミスティースラッシュ】（rules/rk/rk4UnitEffects.ts）。
+        if (!finalDestroyAttacker && !pending.effectBattle) {
+          withAttacker = rk4OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, refreshedDefenderFound.card, defenderOwner);
+          // RK-183【ZOキック】（rules/rk/rk9UnitEffects.ts）。
+          withAttacker = rk9OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId);
+          // RK-203【アクセルモード】（rules/rk/rk10UnitEffects.ts）。
+          withAttacker = rk10OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+          // RK-269【シャドーセイバー】（rules/rk/rk13UnitEffects.ts）。
+          withAttacker = rk13OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+          // XG5-029・XG5-034（rules/xg5/xg5bEffects.ts）。
+          withAttacker = applyXg5AttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId, refreshedDefenderFound.card.instanceId);
+          // XG7-025【正義のツバサ】・XG7-037 ※（rules/xg7/xg7Effects.ts）。
+          withAttacker = xg7OnAttackWin(withAttacker, battleState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+          // XG6-035【ビッカーチャージブレイク】（rules/xg6/xg6bEffects.ts）。
+          withAttacker = xg6OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId);
+        }
+        withAttacker = drainDeferredDestroyTriggers(withAttacker);
+      }
       return finish(withAttacker, log);
     }
-    nextState = leaveResult.state;
+    nextState = endDestroyTriggerHold(leaveResult.state);
+    // RK-271【ライジングマイティキック】（rules/rk/rk13UnitEffects.ts）。
+    if (!finalDestroyAttacker) nextState = rk13OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
+    // RK-324【凄いのが来るぜ！】: ライドしているユニットが BP4000 以上の敵軍 S ユニットをバトルで撃破して捨札にしたとき（rules/rk/rk16UnitEffects.ts）。
+    if (!finalDestroyAttacker) nextState = rk16OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+    // クロスギャザー ザ・ジェットアクセル XG4-010・XG4-017 等（rules/xg4/xg4Effects.ts）。
+    if (!finalDestroyAttacker) nextState = xg4OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+    // XG3-045【超電稲妻キック】等（rules/xg3/xg3Effects.ts）。
+    if (!finalDestroyAttacker) nextState = applyXg3OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId);
+    // PM-001【真っ向両断】等（rules/promo）。
+    if (!finalDestroyAttacker) nextState = promoOnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, refreshedDefenderFound.card.cardId);
 
     if (refreshedAttackerFound.card.cardId === "RS-065") {
       const fb = resolveFocusedBreakthroughDamage(
@@ -965,9 +1791,46 @@ export function resolveBattlePendingCore(
         pending.attackerInstanceId,
         defenderOwner,
         refreshedDefenderFound.card,
+        focusedBreakthroughQualifies,
       );
       nextState = fb.state;
       extraLogs = fb.logs;
+    }
+    nextState = openInazumaTonfaChoice(nextState, attackerId, pending.attackerInstanceId);
+    if (destroyDefender) {
+      nextState = openMiracleKikoudanChoice(nextState, attackerId, refreshedAttackerFound.card.cardId);
+    }
+    // RS-212【爆烈ミラージュナックル】（「捨札にしたあとで選ぶ」— 段階 4）は段階の順に解決する待ち行列へ。
+    // RS-226【爆竜必殺デススティンガー】（撃破したとき — 段階 1）は今開く。
+    nextState = queueMirageKnuckle(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+    nextState = openDeathStingerChoice(
+      nextState,
+      attackerId,
+      pending.attackerInstanceId,
+      defenderBp,
+      pending.phasePlayerId,
+    );
+    nextState = openRaigekiZanChoice(
+      nextState,
+      attackerId,
+      pending.attackerInstanceId,
+      refreshedDefenderFound.card,
+      pending.phasePlayerId,
+    );
+    {
+      // 「これが（L）ユニットを撃破したとき、相手に N 点ダメージ」（本文の文言で判断。RS-346 等）。
+      const dd = resolveDestroyerDamageByText(
+        nextState,
+        attackerId,
+        refreshedAttackerFound.card.cardId,
+        refreshedDefenderFound.card.cardId,
+      );
+      nextState = dd.state;
+      extraLogs = [...extraLogs, ...dd.logs];
+      // RK-005 超電子ダイナモの能力（SP が空欄ではないユニットを撃破したとき、相手に1点ダメージ。rules/rk/rk1NamedEffects.ts）。
+      const dynamo = applyRk1DestroyerDamage(nextState, attackerId, pending.attackerInstanceId, refreshedDefenderFound.card.cardId);
+      nextState = dynamo.state;
+      extraLogs = [...extraLogs, ...dynamo.logs];
     }
     if (refreshedAttackerFound.card.cardId === "RS-685") {
       const bc = resolveBlackCondorDestroyDamage(
@@ -988,6 +1851,28 @@ export function resolveBattlePendingCore(
       return finish(leaveResult.state, log);
     }
     nextState = leaveResult.state;
+    if (!finalDestroyDefender) {
+      // RK-324【凄いのが来るぜ！】（アタックしてきたユニットを、ライドしているユニットがバトルで撃破したとき）。
+      nextState = rk16OnBattleDestroy(nextState, defenderOwner, defenderInstanceId, attackerId, pending.attackerInstanceId, attackerBp);
+      nextState = xg4OnBattleDestroy(nextState, defenderOwner, defenderInstanceId, attackerId, pending.attackerInstanceId, attackerBp);
+      nextState = applyXg3OnBattleDestroy(nextState, defenderOwner, defenderInstanceId, attackerId, pending.attackerInstanceId);
+      nextState = openRaigekiZanChoice(
+        nextState,
+        defenderOwner,
+        defenderInstanceId,
+        refreshedAttackerFound.card,
+        pending.phasePlayerId,
+      );
+      // アタックしてきたユニットをバトルで撃破した側の「撃破したとき、相手に N 点ダメージ」（RS-346 等）。
+      const dd = resolveDestroyerDamageByText(
+        nextState,
+        defenderOwner,
+        refreshedDefenderFound.card.cardId,
+        refreshedAttackerFound.card.cardId,
+      );
+      nextState = dd.state;
+      extraLogs = [...extraLogs, ...dd.logs];
+    }
   } else if (destroyDefender) {
     const winFx = resolveLegend3OnBattleWin(
       nextState,
@@ -1003,10 +1888,36 @@ export function resolveBattlePendingCore(
     if (!winFx.skipMarkAttackerActed) {
       nextState = markAttackerActed(nextState);
     }
+    // RS-422【大頑頑拳】: アタックしてバトルに勝つたび、敵軍コマンドをホールドして追加でアタックできる。
+    if (!pending.effectBattle) nextState = openDaiganganKen(nextState, attackerId, pending.attackerInstanceId);
+    // RK-069【ミスティースラッシュ】: 「ミラーモンスター」にアタックしてバトルに勝つたび、追加でアタックできる（rules/rk/rk4UnitEffects.ts）。
+    if (!pending.effectBattle) nextState = rk4OnAttackWin(nextState, attackerId, pending.attackerInstanceId, refreshedDefenderFound.card, defenderOwner);
+    // RK-183【ZOキック】: アタックしてバトルに勝つたび、追加でアタックできる（rules/rk/rk9UnitEffects.ts）。
+    if (!pending.effectBattle) nextState = rk9OnAttackWin(nextState, attackerId, pending.attackerInstanceId);
+    // RK-203【アクセルモード】: 自軍ターン中、アタックしてバトルに勝ったとき（rules/rk/rk10UnitEffects.ts）。
+    if (!pending.effectBattle) nextState = rk10OnAttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+    // RK-269【シャドーセイバー】: 自軍ターン中、アタックしてバトルに勝ったとき（rules/rk/rk13UnitEffects.ts）。
+    if (!pending.effectBattle) nextState = rk13OnAttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
+    // XG5-029【頑頑ナックル落とし】・XG5-034【二刀流烈火大斬刀】（rules/xg5/xg5bEffects.ts）。
+    if (!pending.effectBattle) nextState = applyXg5AttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId, refreshedDefenderFound.card.instanceId);
+    // XG7-025【正義のツバサ】・XG7-037 ※: アタックして敵軍ユニットを撃破したとき（rules/xg7/xg7Effects.ts）。
+    if (!pending.effectBattle) nextState = xg7OnAttackWin(nextState, battleState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+    // XG6-035【ビッカーチャージブレイク】: アタックして敵軍ユニットを撃破したとき（rules/xg6/xg6bEffects.ts）。
+    if (!pending.effectBattle) nextState = xg6OnAttackWin(nextState, attackerId, pending.attackerInstanceId);
+    // XG4-060【フォトンブレイカー】: BP の下三桁が500のユニットにアタックしてバトルに勝ったとき（rules/xg4/xg4Effects.ts）。
+    if (!pending.effectBattle) nextState = xg4OnAttackWin(nextState, pending, defenderBp);
   } else {
     nextState = markAttackerActed(nextState);
   }
 
+  // RS-408【プロミネンス・シャワー】: 「バトルに勝っても撃破される」で撃破された敵軍ユニットの持ち主にダメージ。
+  if (winButSelfDestruct) nextState = applyProminenceShower(nextState, attackerId);
+  if (winButDefenderSelfDestruct) nextState = applyProminenceShower(nextState, defenderOwner);
+
+  // 撃破した側の段階 1（上の RS-226 等と、バトルに勝ったときの RS-126【レッドビュート】等）を処理し終えた:
+  // 撃破された側の段階 2・4 と RS-212 を段階の順に解決する（R-TIME-01）。
+  // 段階 1 の選択が開いていれば、その解決後（core/applyAction.ts の後処理）に続きを解決する。
+  nextState = drainDeferredDestroyTriggers(nextState);
   let finishedState: GameState = {
     ...nextState,
     log: [...nextState.log, ...extraLogs],
@@ -1039,17 +1950,34 @@ export function finalizeRushPending(state: GameState, pending: PendingRush): Gam
   };
 }
 
+/**
+ * この離場が撃破によるものか。
+ * ルール: R-DESTROY-01 — 離場パイプラインで捨札へ送るのは撃破。バトルの BP 比較による撃破
+ * （registerEligible）は置き先がパワーゾーンでも撃破。効果でパワー／コマンドゾーンに置くのは撃破ではない。
+ */
+export function isDestructionLeave(
+  pending: Pick<PendingLeave, "toZone" | "registerEligible" | "notDestruction">,
+): boolean {
+  if (pending.notDestruction) return false;
+  return pending.toZone === "discard" || pending.registerEligible === true;
+}
+
 export function finalizeLeavePending(
   state: GameState,
   pending: PendingLeave,
   prevented: boolean,
 ): GameState {
   if (prevented) {
-    return {
+    const base: GameState = {
       ...state,
       pendingLeave: undefined,
       activePlayer: pending.phasePlayerId,
     };
+    // ルール: R-DESTROY-02 — 置換・カウンターで場に留まっても「撃破された」事実は残り、
+    // 「撃破されたとき」の効果は発動する（「撃破されて捨札になったとき」は発動しない）。
+    if (!isDestructionLeave(pending)) return base;
+    const fact = resolveDestroyedFactEffects(base, pending.ownerPlayerId, pending.leavingCardId);
+    return fact.logs.length > 0 ? { ...fact.state, log: [...fact.state.log, ...fact.logs] } : fact.state;
   }
 
   if (canOfferRegister(state, pending)) {
@@ -1070,31 +1998,82 @@ export function finalizeLeavePending(
     };
   }
 
+  if (pending.toZone === "battle") {
+    // ルール: R-MOVE-01 — ラッシュエリア→バトルエリアの移動（ピットインダイブ等）。撃破ではない。
+    const [, rest] = removeAt(owner[pending.fromZone], found.index);
+    const moved = {
+      ...owner,
+      [pending.fromZone]: rest,
+      battle: [...(pending.fromZone === "battle" ? rest : owner.battle), found.card],
+    };
+    return {
+      ...state,
+      pendingLeave: undefined,
+      activePlayer: pending.phasePlayerId,
+      ...updatePlayer(state, pending.ownerPlayerId, moved),
+    };
+  }
+
   const [, fromCards] = removeAt(owner[pending.fromZone], found.index);
   const leavingCard = sanitizeUnitLeavingField(
     found.card,
     pending.fromZone,
-    pending.toZone,
+    pending.toZone === "deck_top" || pending.toZone === "deck_bottom" ? "deck" : pending.toZone,
   );
   let nextOwner: typeof owner;
+  let medicalRescueToPower = false;
+  let triConcordId: string | null = null;
+  let discardAsDamage = false;
+  let xg7Exiled = false;
+  let toDeckInstead = false;
 
-  if (pending.toZone === "command") {
-    if (owner.command.length < COMMAND_ZONE_MAX) {
-      nextOwner = {
-        ...owner,
-        [pending.fromZone]: fromCards,
-        command: [...owner.command, { ...leavingCard, commandHeld: true }],
-      };
-    } else {
-      nextOwner = {
-        ...owner,
-        [pending.fromZone]: fromCards,
-        discard: [...owner.discard, leavingCard],
-      };
-    }
+  if (pending.toZone === "deck_top") {
+    // ルール: R-MOVE-01 — 山札に戻すのも「場を離れる」移動（ウラ向きで山札の上へ）。
+    nextOwner = {
+      ...owner,
+      [pending.fromZone]: fromCards,
+      deck: [{ instanceId: leavingCard.instanceId, cardId: leavingCard.cardId }, ...owner.deck],
+    };
+  } else if (pending.toZone === "deck_bottom") {
+    // ルール: R-MOVE-01 — 山札の下に戻すのも「場を離れる」移動（ウラ向きで山札の下へ）。下に重ねていたカードは捨札になり、
+    // これに乗っていたユニットはライドしていない状態になる。
+    const unmount = (cards: typeof fromCards) =>
+      cards.map((c) => {
+        if (c.mountedOnInstanceId !== leavingCard.instanceId) return c;
+        const { mountedOnInstanceId: _m, ...rest } = c;
+        return rest as typeof c;
+      });
+    const stacked = (found.card.stackedCards ?? []).map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }));
+    nextOwner = {
+      ...owner,
+      rush: unmount(pending.fromZone === "rush" ? fromCards : owner.rush),
+      battle: unmount(pending.fromZone === "battle" ? fromCards : owner.battle),
+      deck: [...owner.deck, { instanceId: leavingCard.instanceId, cardId: leavingCard.cardId }],
+      discard: [...owner.discard, ...stacked],
+    };
+  } else if (pending.toZone === "command") {
+    // 持ち主のコマンドゾーンにホールド状態で置く（置けなければ捨札。R-ZONE-08）。場の状態は持ち込まない。下に重ねていたカードは
+    // 捨札になり、これにライドしていたユニットはライドしていない状態になる（rules/fieldLeaveQueue.ts。R-KW-CHASE-01）。
+    const unmount = (cards: typeof fromCards) =>
+      cards.map((c) => {
+        if (c.mountedOnInstanceId !== leavingCard.instanceId) return c;
+        const { mountedOnInstanceId: _m, ...rest } = c;
+        return rest as typeof c;
+      });
+    const plain = { instanceId: leavingCard.instanceId, cardId: leavingCard.cardId };
+    const stacked = (found.card.stackedCards ?? []).map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }));
+    const toCommand = owner.command.length < COMMAND_ZONE_MAX;
+    nextOwner = {
+      ...owner,
+      rush: unmount(pending.fromZone === "rush" ? fromCards : owner.rush),
+      battle: unmount(pending.fromZone === "battle" ? fromCards : owner.battle),
+      command: toCommand ? [...owner.command, { ...plain, commandHeld: true }] : owner.command,
+      discard: [...owner.discard, ...(toCommand ? [] : [plain]), ...stacked],
+    };
   } else if (
     pending.toZone === "discard" &&
-    shouldMedicalRescueToPower(state, pending.ownerPlayerId, found.card.cardId)
+    !pending.notDestruction &&
+    (medicalRescueToPower = shouldMedicalRescueToPower(state, pending.ownerPlayerId, found.card.cardId))
   ) {
     nextOwner = {
       ...owner,
@@ -1103,9 +2082,45 @@ export function finalizeLeavePending(
     };
   } else if (
     pending.toZone === "discard" &&
+    !pending.notDestruction &&
     shouldOfferToPowerOnDestroy(pending)
   ) {
     return startToPowerOnDestroyChoice(state, pending, leavingCard, fromCards);
+  } else if (
+    pending.toZone === "discard" &&
+    !pending.notDestruction &&
+    (triConcordId = triConcordVanishSource(state, pending))
+  ) {
+    // RS-567 トライコンドル【カラクリ忍法・消身の術】（rules/legend1/set8NamedEffectsC.ts）。
+    return startToPowerOnDestroyChoice(state, pending, leavingCard, fromCards, { cardId: "RS-567", instanceId: triConcordId });
+  } else if (pending.toZone === "discard" && pending.xg7Exile) {
+    // XG7-008【アースの戦士】: 捨札にするかわりにゲームから除外する（rules/xg7/xg7Fields.ts）。
+    xg7Exiled = true;
+    nextOwner = {
+      ...owner,
+      [pending.fromZone]: fromCards,
+      exile: [...(owner.exile ?? []), leavingCard],
+    };
+  } else if (
+    pending.toZone === "discard" &&
+    !pending.notDestruction &&
+    (toDeckInstead = xg4DestroyedToDeckInstead(found.card.cardId, pending.ownerPlayerId, pending.phasePlayerId))
+  ) {
+    // XG4-070【不死身のドーパント】: 敵軍ターン中に撃破されて捨札になるとき、かわりに持ち主の山札に戻してシャッフルする（rules/xg4/xg4dEffects.ts）。
+    nextOwner = {
+      ...owner,
+      [pending.fromZone]: fromCards,
+      deck: xg4ShuffleInto(owner.deck, leavingCard),
+    };
+  } else if (pending.toZone === "discard" && pending.discardAsDamage && !pending.notDestruction) {
+    // RS-182 ジャイアントローラー: 撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く。
+    discardAsDamage = true;
+    nextOwner = {
+      ...owner,
+      [pending.fromZone]: fromCards,
+      power: [...owner.power, { ...leavingCard, faceDown: true }],
+      damage: owner.damage + 1,
+    };
   } else if (pending.toZone === "discard") {
     nextOwner = {
       ...owner,
@@ -1135,10 +2150,17 @@ export function finalizeLeavePending(
     ...updatePlayer(state, pending.ownerPlayerId, nextOwner),
   };
 
-  const effectiveToZone =
-    pending.toZone === "command" && owner.command.length >= COMMAND_ZONE_MAX
+  const effectiveToZone = xg7Exiled
+    ? "exile"
+    : toDeckInstead
+    ? "deck"
+    : medicalRescueToPower || discardAsDamage
+    ? "power" // ルール: R-REPL-02 — 捨札を経由しないので「撃破されて捨札になったとき」は発動しない
+    : pending.toZone === "command" && owner.command.length >= COMMAND_ZONE_MAX
       ? "discard"
-      : pending.toZone;
+      : pending.toZone === "deck_top" || pending.toZone === "deck_bottom"
+        ? "deck"
+        : pending.toZone;
 
   const leaveFx = emitUnitLeftZoneAndResolve(nextStateBase, {
     ownerPlayerId: pending.ownerPlayerId,
@@ -1147,9 +2169,38 @@ export function finalizeLeavePending(
     fromZone: pending.fromZone,
     toZone: effectiveToZone,
     phasePlayerId: pending.phasePlayerId,
+    // ルール: R-DESTROY-01/02 — 撃破による離場か（置き先が捨札でなくても撃破の事実は残る）
+    destroyed: isDestructionLeave(pending),
+    battleOpponentInstanceId: pending.battleOpponentInstanceId,
   });
 
   let resolvedState = leaveFx.state;
+  // RS-538【頼れる指揮官】: ホールド状態の自軍ユニットが撃破されて捨札になったとき（rules/legend1/set8NamedEffectsB.ts）。
+  resolvedState = applySet8BAfterUnitLeft(resolvedState, {
+    ownerPlayerId: pending.ownerPlayerId,
+    card: found.card,
+    toZone: effectiveToZone,
+    destroyed: isDestructionLeave(pending),
+  });
+  // RK-123 クレインオルフェノク【制裁する光の翼】（「オルフェノク」かは場にあったときの特徴で見る。rules/rk/rk6UnitEffects.ts）。
+  resolvedState = applyRk6AfterUnitLeft(resolvedState, {
+    ownerPlayerId: pending.ownerPlayerId,
+    card: found.card,
+    toZone: effectiveToZone,
+    destroyed: isDestructionLeave(pending),
+    phasePlayerId: pending.phasePlayerId,
+    wasNonCraneOrphnoch: rk6IsNonCraneOrphnoch(state, pending.ownerPlayerId, found.card),
+  });
+  // XG7-043【地獄の兄弟】（rules/xg7/xg7Effects.ts）。
+  resolvedState = openXg7AfterUnitLeft(resolvedState, state, pending, found.card, effectiveToZone, isDestructionLeave(pending));
+  // XG4-071 ナスカ・ドーパントの※（ほかの「怪人」の自軍ユニットが撃破されたとき手札に戻る。rules/xg4/xg4dEffects.ts）。
+  resolvedState = applyXg4AfterUnitLeft(state, resolvedState, {
+    ownerPlayerId: pending.ownerPlayerId,
+    card: found.card,
+    destroyed: isDestructionLeave(pending),
+  });
+  // XG2-028・XG2-029: ユニットでなくなるとき、下に重ねたウラ向きのカード（rules/xg2/xg2bEffects.ts）。
+  resolvedState = applyXg2AfterUnitLeft(resolvedState, { ownerPlayerId: pending.ownerPlayerId, card: found.card, phasePlayerId: pending.phasePlayerId });
   if (
     pending.fusionReturnOnDiscard === "battle" &&
     effectiveToZone === "discard" &&
@@ -1192,7 +2243,22 @@ export function finalizeLeaveReaction(
         pendingStrike: state.pendingStrike,
       };
     }
+    // 場に留まったのはこのユニットだけ: 同時に場を離れる続きのユニット（相打ちの攻撃側、RS-489 の2体目等）は続けて処理する。
+    if (pending.followUpAttackerLeave) {
+      return tryLeaveField(nextState, { ...pending.followUpAttackerLeave }).state;
+    }
     return nextState;
+  }
+
+  if (pending.destroyedByInBattle) {
+    const by = pending.destroyedByInBattle;
+    nextState = openRaigekiZanChoice(
+      nextState,
+      by.ownerPlayerId,
+      by.instanceId,
+      { instanceId: pending.instanceId, cardId: pending.leavingCardId },
+      pending.phasePlayerId,
+    );
   }
 
   if (pending.followUpAttackerLeave) {
@@ -1211,6 +2277,45 @@ export function tryLeaveField(
   state: GameState,
   intent: LeaveIntent,
 ): { state: GameState; deferred: boolean } {
+  // XG7-008【アースの戦士】（撃破したユニットを捨札にするかわりに除外する。rules/xg7/xg7Fields.ts）。
+  intent = xg7AdjustLeaveIntent(state, intent);
+  // RS-303【シティガーディアンズ隊長】: 撃破されたとき、「戦闘員」2体をかわりに捨札にしてもよい。
+  const cityGuardians = openCityGuardiansSubstitute(state, intent);
+  if (cityGuardians) return { state: cityGuardians, deferred: true };
+  // XG6-031 ジョーカーアンデッド ※: ユニットでなくなるとき、自軍捨札を3枚除外すればその場に留まる（rules/xg6/xg6bEffects.ts）。
+  const xg6Stay = openXg6StayOnLeave(state, intent);
+  if (xg6Stay) return { state: xg6Stay, deferred: true };
+  // RK-128 仮面ライダーレンゲル ※: 撃破されて捨札になるとき、かわりに DA の自軍 S ユニットを捨札にするか（rules/rk/rk7UnitEffects.ts）。
+  const rengel = openRk7RengelSubstitute(state, intent);
+  if (rengel) return { state: rengel, deferred: true };
+  // RS-502【忘我の中に修行あり】: ブルーの S ユニットが撃破されて捨札になるとき、かわりに手札のユニットカードを捨札にするか
+  // （rules/legend1/set7NamedEffectsD.ts）。
+  const batLee = openBatLeeChoice(state, intent);
+  if (batLee) return { state: batLee, deferred: true };
+  // RS-317【超シールド進化】: DA の自軍ユニットが撃破されるとき、かわりに恐竜2体を捨札にするかの選択（rules/legend1/set5NamedEffects.ts）。
+  const kasumo = openKasumoShieldChoice(state, intent);
+  if (kasumo) return { state: kasumo, deferred: true };
+  // SK-004 仮面ライダークウガUF【凄まじき戦士】: 重ねたウラ向きのカードを1枚捨札にして留める（強制。rules/legend1/otherLinesNamedEffects.ts）。
+  const kuugaStay = openKuugaStayOnLeave(state, intent);
+  if (kuugaStay) return { state: kuugaStay, deferred: true };
+  // XG3-060【助ける仲間】で出したディスクアニマル: 本来の特徴「猛士」の自軍ユニットのかわりに捨札になる（強制。rules/xg3/xg3cEffects.ts）。
+  const xg3Stay = openXg3StayOnLeave(state, intent);
+  if (xg3Stay) return { state: xg3Stay, deferred: true };
+  // RK-250 サバイブ: 重ねたユニットがユニットでなくなるとき、サバイブを捨札にしてその場に留める（rules/rk/rk12UnitEffects.ts）。
+  const survive = openRk12SurviveStay(state, intent);
+  if (survive) return { state: survive, deferred: true };
+  // XG7-005【モバイレーツ】・XG7-012【荒ぶるダイノガッツ】等（rules/xg7/xg7Effects.ts）。
+  const xg7Stay = openXg7LeaveStay(state, intent);
+  if (xg7Stay) return { state: xg7Stay, deferred: true };
+  // XP-027 ダイノミッション: 重ねたユニットがユニットでなくなるとき、このカードを捨札にしてその場に留める（rules/promo/xp2Effects.ts）。
+  const promoStay = promoStayOnLeave(state, intent);
+  if (promoStay) return { state: promoStay, deferred: true };
+  // RS-437 白熱する実況: 下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる（rules/legend1/set7NamedEffectsA.ts）。
+  const liveCommentary = openLiveCommentaryStay(state, intent);
+  if (liveCommentary) return { state: liveCommentary, deferred: true };
+  // XG2-042 仮面ライダーディケイドCF の※ ほか（その場に留まる。rules/xg2/xg2cEffects.ts）。
+  const xg2Stay = openXg2LeaveStay(state, intent);
+  if (xg2Stay) return { state: xg2Stay, deferred: true };
   const superShieldInstanceId = findSuperShieldSubstitute(state, intent);
   const dinoChronicle = hasDinoChronicleLeaveReaction(
     state,
@@ -1235,7 +2340,24 @@ export function tryLeaveField(
     intent.fromZone,
   );
 
-  if (!dinoChronicle && !dinoGuts && !superShieldInstanceId && !sageAel && !magLoad) {
+  const magiMotherInstanceIds = magiMotherSubstitutes(state, intent);
+  // RK-015 人類の進化（「男」「女」の自軍ユニットが撃破されて捨札になったとき。rules/rk/rk1NamedEffects.ts）。
+  const humanEvolution =
+    !counterLockedFor(state, intent.ownerPlayerId) &&
+    rk1LeaveCounterConditionMet(state, intent.ownerPlayerId, intent) &&
+    state.players[intent.ownerPlayerId].hand.some(
+      (c) => isRk1LeaveCounterCard(c.cardId) && canPlayHandCounter(state, intent.ownerPlayerId, c.instanceId),
+    );
+
+  // RM-006 怒（いか）る！（RK-015 と同じ発動の条件。rules/rm/rm1Effects.ts）。
+  const ikaru =
+    !counterLockedFor(state, intent.ownerPlayerId) &&
+    rm1LeaveCounterConditionMet(state, intent.ownerPlayerId, intent) &&
+    state.players[intent.ownerPlayerId].hand.some(
+      (c) => isRm1LeaveCounterCard(c.cardId) && canPlayHandCounter(state, intent.ownerPlayerId, c.instanceId),
+    );
+
+  if (!dinoChronicle && !dinoGuts && !humanEvolution && !ikaru && !superShieldInstanceId && !sageAel && !magLoad && magiMotherInstanceIds.length === 0) {
     const owner = state.players[intent.ownerPlayerId];
     const found = findInZone(owner, intent.fromZone, intent.instanceId);
 
@@ -1281,6 +2403,7 @@ export function tryLeaveField(
       pendingLeave: {
         ...intent,
         superShieldInstanceId,
+        ...(magiMotherInstanceIds.length > 0 ? { magiMotherInstanceIds } : {}),
       },
       activePlayer: intent.ownerPlayerId,
     },

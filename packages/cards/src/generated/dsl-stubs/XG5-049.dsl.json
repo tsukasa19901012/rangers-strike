@@ -4,7 +4,7 @@
   "name": "再生アポロガイスト",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "※レジスト 【アポロマグナム】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、これは次の相手ターン終了時まで次の能力を得る⇒BP+4000",
@@ -48,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-049::aporomagunamu",
+          "keyword": "xg5::XG5-049::apollo_magnum",
           "duration": "turn"
         }
       ]

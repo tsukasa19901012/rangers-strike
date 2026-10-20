@@ -1,6 +1,6 @@
 /**
  * Auto-generated promoted interpreter smoke (M14/M15)
- * grant_keyword: 40 | interpret_effect: 0 | action_primitive: 40
+ * grant_keyword: 40 | interpret_effect: 0 | action_primitive: 32
  */
 import { describe, it, expect } from "vitest";
 import * as cardDsl from "@rangers-strike/cards/dsl";
@@ -52,43 +52,10 @@ const GRANT_KEYWORD_IDS = [
 ] as const;
 const INTERPRET_EFFECT_IDS = [] as const;
 const ACTION_PRIMITIVE_IDS = [
-  "BK-001",
-  "BK-002",
-  "BK-003",
-  "BK-004",
-  "BK-005",
-  "BK-006",
-  "BK-007",
-  "BK-008",
-  "BK-014",
-  "BK-016",
-  "PK-013",
-  "PR-025",
-  "RK-005",
-  "RK-020",
-  "RK-096",
-  "RK-097",
-  "RK-102",
-  "RK-134",
-  "RK-162",
-  "RK-169",
-  "RK-174",
-  "RK-178",
-  "RK-198",
   "RK-222",
-  "RK-226",
-  "RK-245",
-  "RK-252",
-  "RK-254",
-  "RK-278",
   "RK-313",
-  "RK-322",
   "RK-331",
-  "RM-009",
-  "RM-010",
-  "RS-349",
-  "RS-438",
-  "RS-523"
+  "RS-438"
 ] as const;
 
 function toDefinition(doc: NonNullable<ReturnType<typeof cardDsl.createFullPlayableRegistry>["getCard"]>): CardDefinition {

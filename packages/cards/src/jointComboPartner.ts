@@ -23,7 +23,13 @@ export type JointRPartnerSpec =
   | { kind: "l_size_same_category" }
   | { kind: "s_features"; features: string[]; requireAll: boolean }
   | { kind: "named_card"; cardName: string }
-  | { kind: "feature_unit"; features: string[] };
+  | { kind: "feature_unit"; features: string[]; size?: "S" | "M" | "L" }
+  /** 「これがカード名に「X」または「Y」を含むユニットからコンビネーションするとき」（RS-672 ゴローダーGT）。 */
+  | { kind: "name_contains"; names: string[] }
+  /** 「これが「X」か、特徴「Y」を持つLユニットからコンビネーションするとき」— どれか1つを満たせばよい（RS-651）。 */
+  | { kind: "any_of"; specs: JointRPartnerSpec[] }
+  /** 「これがSユニットからコンビネーションするとき」（XG4-089 仮面ライダーW・JJ【切札の左半身】atwiki/page-2101）。 */
+  | { kind: "s_unit" };
 
 const CATEGORY_TOKEN = /^(DA|WB|ET|OT|MA)$/;
 
@@ -135,9 +141,32 @@ function parseJointLPartnerFromText(text: string): JointLPartnerSpec | null {
   return null;
 }
 
+/** R ナンバー側の条件の1項目（「「X」」「特徴「Y」を持つLユニット」「同カテゴリのLユニット」）。 */
+function parseJointRPartnerTerm(term: string): JointRPartnerSpec | null {
+  if (term === "同カテゴリのLユニット") return { kind: "l_size_same_category" };
+  const named = term.match(/^「([^」]+)」$/);
+  if (named?.[1]) return { kind: "named_card", cardName: named[1] };
+  const feature = term.match(/^特徴「([^」]+)」を持つ([SML])?ユニット$/);
+  if (feature?.[1]) {
+    return { kind: "feature_unit", features: [feature[1]], ...(feature[2] ? { size: feature[2] as "S" | "M" | "L" } : {}) };
+  }
+  return null;
+}
+
 function parseJointRPartnerFromText(text: string): JointRPartnerSpec | null {
+  // 「これがAか、Bからコンビネーションするとき」— 選択肢のどれかから（RS-651 ガオマジロ【体当たり】atwiki/page-1472）。
+  const alternatives = text.match(/^これが(.+?)からコンビネーションする/)?.[1];
+  if (alternatives && /か、/.test(alternatives)) {
+    const specs = alternatives.split(/か、/).map(parseJointRPartnerTerm);
+    if (specs.every((spec): spec is JointRPartnerSpec => spec !== null)) return { kind: "any_of", specs };
+  }
+
   if (/これが同カテゴリのLユニットからコンビネーション/.test(text)) {
     return { kind: "l_size_same_category" };
+  }
+
+  if (/これがSユニットからコンビネーション/.test(text)) {
+    return { kind: "s_unit" };
   }
 
   const dualFeatS = text.match(/これが特徴「([^」]+)」と「([^」]+)」を持つSユニットから/);
@@ -147,6 +176,11 @@ function parseJointRPartnerFromText(text: string): JointRPartnerSpec | null {
       features: [dualFeatS[1], dualFeatS[2]],
       requireAll: true,
     };
+  }
+
+  const nameContains = text.match(/これがカード名に((?:「[^」]+」(?:または)?)+)を含むユニットからコンビネーション/);
+  if (nameContains?.[1]) {
+    return { kind: "name_contains", names: [...nameContains[1].matchAll(/「([^」]+)」/g)].map((m) => m[1]!) };
   }
 
   const featS = text.match(/これが特徴「([^」]+)」を持つ.+ユニットからコンビネーション/);
@@ -232,7 +266,13 @@ export function matchesJointRPartnerSpec(
     case "named_card":
       return cardNameMatches(leftPartner, spec.cardName);
     case "feature_unit":
-      return cardHasAllFeatures(leftPartner, spec.features);
+      return (!spec.size || leftPartner.size === spec.size) && cardHasAllFeatures(leftPartner, spec.features);
+    case "name_contains":
+      return leftPartner.type === "unit" && spec.names.some((n) => (leftPartner.name ?? "").includes(n));
+    case "any_of":
+      return spec.specs.some((inner) => matchesJointRPartnerSpec(inner, rUnit, leftPartner));
+    case "s_unit":
+      return leftPartner.type === "unit" && leftPartner.size === "S";
     default:
       return false;
   }

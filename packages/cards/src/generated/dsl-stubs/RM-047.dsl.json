@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "ride_without_rc_fx_unknown",
+      "id": "ride_without_rc_feat_e8ada6e5af9f",
       "text": "※特徴「警察」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -24,7 +24,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_fx_unknown",
+          "keyword": "ride_without_rc_feat_e8ada6e5af9f",
           "duration": "permanent"
         }
       ]
@@ -34,14 +34,13 @@
       "name": "ビッグキャノン",
       "text": "自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアから、ライドされていないSビークルを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-047::bigukyanon",
-          "duration": "turn"
+          "keyword": "rm3::RM-047::big_cannon",
+          "duration": "permanent"
         }
       ]
     }

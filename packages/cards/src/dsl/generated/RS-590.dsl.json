@@ -4,7 +4,7 @@
   "name": "クエスター・レイ",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "【グレイボンバー】相手の手札を見てもよい。そうしたとき、ＮＣかＲＣを持つSユニットのカードを1枚選び、そのNCまたはRCの効果を、このユニットの効果として発動する。（この効果は「クエスター・ガイ」からコンビネーションするときはナンバーに関係なく発動する）",
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_action_nowotemoyoisoushitatokikawotsusyunitonokadowo1bisononcma",
+          "keyword": "set8d::RS-590::gray_bomber",
           "duration": "turn"
         }
       ],

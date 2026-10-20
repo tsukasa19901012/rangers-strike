@@ -7,7 +7,7 @@
     "OT",
     "ET"
   ],
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※コールET 【ファイブラスター】「SP1」特徴「メカ」を持つ敵軍Sユニットを1体選び、持ち主のゾーンに置いてもよい。",
@@ -47,6 +47,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg2::XG2-001::five_blaster",
+          "duration": "permanent"
         }
       ]
     }

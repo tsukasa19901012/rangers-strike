@@ -7,7 +7,7 @@
     "WB",
     "DA"
   ],
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※リードWB ※これは、自分がターンを終えるときバトルエリアにあれば捨札になる。 【鏡像の戦士】これが自分の手札か自軍捨札にある間、自軍ラッシュフェイズごとに1度だけ、自軍常駐置き場にあるカードを1枚選び捨札にしてよい。そうしたとき、これを自軍ラッシュエリアに出す。",
@@ -56,11 +56,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-048::noe98fa1",
+          "keyword": "xg6::XG6-048::mirror",
           "duration": "permanent"
         }
       ]

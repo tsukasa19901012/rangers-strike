@@ -291,8 +291,9 @@ describe("RS-216 暴走皇帝エグゾス turn-end return to deck", () => {
 // ---------------------------------------------------------------------------
 
 describe("RS-281 ブラックコンドル conditional SP1", () => {
-  it("has SP1 when own rush contains 2+ female units", () => {
-    const condor = inst("RS-281", "condor");
+  it("has SP1 when own rush contains 2+ female units (NC established)", () => {
+    // 【俺に惚れろ！】は CN：3 の NC の効果（atwiki/page-469）。NC 成立済みの状態で検証する。
+    const condor = { ...inst("RS-281", "condor"), activatedNcEffects: ["nirero"] };
     // RS-201 and RS-202 both have features: ["女"]
     const female1 = inst("RS-201", "f1");
     const female2 = inst("RS-202", "f2");
@@ -412,7 +413,11 @@ describe("RS-231 destroy recruit", () => {
       pendingLeave,
       player1: { battle: [am], discard: [base], rush: [] },
     });
-    const after = finalizeLeaveReaction(state, pendingLeave, false);
+    let after = finalizeLeaveReaction(state, pendingLeave, false);
+    // 「※…1枚選び、自軍ラッシュエリアに出す」は強制の選択（断れない）。
+    expect(after.pendingEffectChoice?.validInstanceIds).toEqual([base.instanceId]);
+    expect(after.pendingEffectChoice?.optional).toBe(false);
+    after = applyAction(after, { type: "resolve_effect_choice", playerId: "player1", instanceId: base.instanceId }).state;
     expect(after.players.player1.rush.some((c) => c.cardId === "RS-055")).toBe(true);
   });
 });
@@ -434,7 +439,11 @@ describe("RS-335 destroy recruit", () => {
       pendingLeave,
       player1: { battle: [legend], discard: [base], rush: [] },
     });
-    const after = finalizeLeaveReaction(state, pendingLeave, false);
+    let after = finalizeLeaveReaction(state, pendingLeave, false);
+    // 「※…1枚選び、自軍ラッシュエリアに出す」は強制の選択（断れない）。
+    expect(after.pendingEffectChoice?.validInstanceIds).toEqual([base.instanceId]);
+    expect(after.pendingEffectChoice?.optional).toBe(false);
+    after = applyAction(after, { type: "resolve_effect_choice", playerId: "player1", instanceId: base.instanceId }).state;
     expect(after.players.player1.rush.some((c) => c.cardId === "RS-059")).toBe(true);
   });
 });

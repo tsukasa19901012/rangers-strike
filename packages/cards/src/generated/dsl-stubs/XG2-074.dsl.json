@@ -4,7 +4,7 @@
   "name": "クウガゴウラム",
   "type": "vehicle",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "※自分が「仮面ライダークウガ」をラッシュしたとき、自軍エリアに「クウガゴウラム」があれば1体選んで手札に戻す。 ※これは、自軍「仮面ライダーディケイド」があれば、ライドされていなくてもバトルエリアに出ることができる。 【ファイナルアタックライド 】自軍ターン中、これがバトルエリアに出たとき、BP4000以上の敵軍Sユニットを1体選び撃破してもよい。",
@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-074::koreharaidadeike",
+          "keyword": "xg2::XG2-074::decade_enter",
           "duration": "permanent"
         }
       ]
@@ -59,12 +59,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-074::fuainaruatakuraido",
-          "duration": "turn"
+          "keyword": "xg2::XG2-074::final_attack_ride",
+          "duration": "permanent"
         }
       ]
     }

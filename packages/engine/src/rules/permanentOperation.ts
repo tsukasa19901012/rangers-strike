@@ -1,4 +1,8 @@
+import { activateRm1Resident, canActivateRm1Resident, isRm1ActivatableResident } from "./rm/rm1Effects";
+import { activateXg7Resident, canActivateXg7Resident, isXg7ActivatableResident } from "./xg7/xg7Effects";
+import { activateXg2Resident, canActivateXg2Resident, isXg2ActivatableResident } from "./xg2/xg2Effects";
 import { getCardEffect, type CardDefinition } from "@rangers-strike/cards";
+import { activateSet8AResident, canActivateSet8AResident, isSet8AResident } from "./legend1/set8NamedEffectsA";
 import type { EffectDefinition } from "@rangers-strike/cards/dsl/types";
 import { rematchExtractedEffect } from "@rangers-strike/cards/pipeline/extractEffects";
 import {
@@ -17,6 +21,11 @@ import { evaluateDslCondition } from "../dsl/dslCatalog";
 import { canInitiateShironLight } from "./shironLight";
 import { isHidoraEggUsed } from "./turnModifiers";
 import { operationCardsToDiscardWithStack } from "./operationProcedure";
+import { activateRk1Resident, canActivateRk1Resident, isRk1ActivatableResident, rk1ResidentLeaving } from "./rk/rk1NamedEffects";
+import { afterResidentOperationsLeft } from "./legend1/set7NamedEffectsA";
+import { beginRiderPass, canActivateRiderPass } from "./errataCardEffects";
+import { swapResidentFeature } from "./rk/rk4UnitEffects";
+import { ADVENT_CARD_ID, beginAdvent, canActivateAdvent } from "./rk/rk249Advent";
 
 const RUSH_ACTIVATION_TEXT =
   /(?:自軍|自分(?:の|自身の)?)ラッシュフェイズ(?:ごとに)?1度|自分のラッシュフェイズごとに1度/;
@@ -105,6 +114,13 @@ export function canActivateResidentOperation(
   playerId: PlayerId,
   operationInstanceId: string,
 ): boolean {
+  // 第8弾 RS-519・RS-522・RS-524・RS-525 の太字部分（RS-524 は自軍バトルフェイズ。rules/legend1/set8NamedEffectsA.ts）。
+  const set8a = canActivateSet8AResident(state, playerId, operationInstanceId);
+  if (set8a !== null) return set8a;
+  // XG2-019 知恵の樹モーク（自軍バトルフェイズ。rules/xg2/xg2Effects.ts）。
+  const xg2Op = state.players[playerId].operation.find((card) => card.instanceId === operationInstanceId);
+  const xg2 = xg2Op ? canActivateXg2Resident(state, playerId, xg2Op) : null;
+  if (xg2 !== null) return xg2;
   if (state.phase !== "rush") return false;
   if (state.pendingEffectChoice || state.pendingCommandPayment || state.pendingZordSetup) {
     return false;
@@ -113,6 +129,15 @@ export function canActivateResidentOperation(
   const player = state.players[playerId];
   const op = player.operation.find((card) => card.instanceId === operationInstanceId);
   if (!op) return false;
+  // RK-016 ミラーワールド: 自軍ラッシュフェイズに何度でも重ねられる（rules/rk/rk1NamedEffects.ts）。
+  const rk1 = canActivateRk1Resident(state, playerId, op);
+  if (rk1 !== null) return rk1;
+  // RM-012 JPカード（自軍ラッシュフェイズごとに1度だけ。rules/rm/rm1Effects.ts）。
+  const rm1 = canActivateRm1Resident(state, playerId, op);
+  if (rm1 !== null) return rm1;
+  // XG7-039 GOD SPEED LOVE（rules/xg7/xg7Effects.ts）。
+  const xg7 = canActivateXg7Resident(state, playerId, op);
+  if (xg7 !== null) return xg7;
   if (isResidentActivatedThisRush(op)) return false;
 
   const wired = getCardEffect(op.cardId);
@@ -126,6 +151,12 @@ export function canActivateResidentOperation(
       player.deck.length > 0
     );
   }
+
+  // RK-022 ライダーパス: 重ねたカードと「DEN-O」の自軍ユニットの置き換え（何度でも。atwiki/page-128 Q6）。
+  // RK-080 超変身・RK-082 オルタフォースも同じ置き換え（rules/rk/rk4UnitEffects.ts swapResidentFeature）。
+  if (swapResidentFeature(op.cardId)) return canActivateRiderPass(state, playerId, op);
+  // RK-249 アドベント: ミラーライダーのユニットに、このターン ※コールWB を与える（rules/rk/rk249Advent.ts）。
+  if (op.cardId === ADVENT_CARD_ID) return canActivateAdvent(state, playerId, op);
 
   const activationEffects = listResidentActivationEffects(op.cardId);
   if (activationEffects.length === 0) return false;
@@ -170,6 +201,29 @@ export function applyActivateResidentOperation(
   const wired = getCardEffect(op.cardId);
   if (wired?.effectId === "shiron_light" || wired?.effectId === "hidora_egg") {
     return { ok: false, error: "use_dedicated_action" };
+  }
+
+  if (swapResidentFeature(op.cardId)) {
+    return { ok: true, state: beginRiderPass(state, playerId, op) };
+  }
+  if (isRk1ActivatableResident(op.cardId)) {
+    return { ok: true, state: activateRk1Resident(state, playerId, op) };
+  }
+  if (isRm1ActivatableResident(op.cardId)) {
+    return { ok: true, state: activateRm1Resident(state, playerId, op) };
+  }
+  if (isXg7ActivatableResident(op.cardId)) {
+    return { ok: true, state: activateXg7Resident(state, playerId, op) };
+  }
+  if (isXg2ActivatableResident(op.cardId)) {
+    return { ok: true, state: activateXg2Resident(state, playerId, op) };
+  }
+  if (op.cardId === ADVENT_CARD_ID) {
+    const opened = beginAdvent(state, playerId, op);
+    return { ok: true, state: { ...opened, ...updatePlayer(opened, playerId, markResidentActivatedThisRush(opened.players[playerId], operationInstanceId)) } };
+  }
+  if (isSet8AResident(op.cardId)) {
+    return { ok: true, state: activateSet8AResident(state, playerId, operationInstanceId) };
   }
 
   const activationEffects = listResidentActivationEffects(op.cardId);
@@ -237,20 +291,34 @@ export function placePermanentOperation(
   const limit = permanentOperationSlotLimit(state.definitions, player, card.cardId);
   let operation = [...player.operation];
   let discard = [...player.discard];
+  const left: CardInstance[] = [];
 
+  let hand = [...player.hand];
   while (operation.length >= limit) {
     const [removed, ...rest] = operation;
     if (!removed) break;
+    // RK-016 ミラーワールド「これが常駐置き場を離れるとき、重ねたカードはすべて手札に加える。」（rules/rk/rk1NamedEffects.ts）。
+    const mirror = rk1ResidentLeaving(removed);
+    if (mirror) {
+      discard = [...discard, ...mirror.toDiscard];
+      hand = [...hand, ...mirror.toHand];
+      left.push(removed);
+      operation = rest;
+      continue;
+    }
     discard = [...discard, ...operationCardsToDiscardWithStack(removed)];
+    left.push(removed);
     operation = rest;
   }
 
   operation.push(card);
 
-  return {
+  const placed: GameState = {
     ...state,
-    ...updatePlayer(state, playerId, { ...player, operation, discard }),
+    ...updatePlayer(state, playerId, { ...player, operation, discard, hand }),
   };
+  // 「これが常駐置き場を離れるとき」（RS-435 アレ・RS-437 白熱する実況。rules/legend1/set7NamedEffectsA.ts）。
+  return left.length > 0 ? afterResidentOperationsLeft(placed, playerId, left) : placed;
 }
 
 export function isPermanentOperationCard(

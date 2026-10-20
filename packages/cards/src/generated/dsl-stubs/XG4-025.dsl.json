@@ -4,7 +4,7 @@
   "name": "デカブレイク",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "【必殺拳ソニックハンマー】 オモテ向きの自軍パワーの枚数を数えてもよい。そうしたき、敵軍バトルエリアから、その数以下の必要パワーの数字を持つ敵軍ユニットを１体選び持ち主のパワーゾーンに送る。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
@@ -26,12 +26,12 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": false,
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-025::kensonikuhanma",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-025::sonic_hammer",
+          "duration": "turn"
         }
       ]
     }

@@ -13,7 +13,7 @@
     {
       "id": "discard_to_hand",
       "name": "RS-068",
-      "text": "自軍捨札からカード1枚を選び、手札に加える。",
+      "text": "自軍捨札からカードを1枚選んで手札に加える。",
       "trigger": {
         "type": "operation",
         "timing": "rush"
@@ -23,7 +23,10 @@
         "target": {
           "type": "zone",
           "zone": "discard",
-          "owner": "self"
+          "owner": "self",
+          "filter": {
+            "cardType": "any"
+          }
         }
       },
       "effects": [
@@ -33,7 +36,10 @@
           "valid": {
             "type": "zone",
             "zone": "discard",
-            "owner": "self"
+            "owner": "self",
+            "filter": {
+              "cardType": "any"
+            }
           },
           "count": 1,
           "then": [
@@ -54,6 +60,6 @@
     "handler": "interpreter",
     "testGenerated": true
   },
-  "text": "自軍捨札からカード1枚を選び、手札に加える。",
-  "rawText": "自軍捨札からカード1枚を選び、手札に加える。"
+  "text": "自軍捨札からカードを1枚選んで手札に加える。",
+  "rawText": "自軍捨札からカードを1枚選んで手札に加える。"
 }

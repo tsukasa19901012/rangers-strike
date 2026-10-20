@@ -4,7 +4,7 @@
   "name": "仮面ライダーキバDF",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "※これは自軍コマンドを2つホールドしなければバトルエリアに出られない。 【ドッガ・サンダースラップ】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、敵軍バトルエリアから、自分の手札の枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。",
@@ -38,34 +38,14 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk15::RK-312::dogga_thunder_slap",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

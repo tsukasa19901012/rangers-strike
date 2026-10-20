@@ -4,7 +4,7 @@
   "name": "ハサミジャガー",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "【切断溶解】レジストを持つ敵軍Sユニットを1体選び撃破する。",
@@ -26,40 +26,14 @@
       "trigger": {
         "type": "nc"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk5::RK-096::cut_melt",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

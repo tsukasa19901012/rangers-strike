@@ -1,3 +1,4 @@
+import { isSameCardIdentity } from "@rangers-strike/cards";
 import {
   addTurnRestrictionModifier,
   clearRushPhaseScopedModifiers,
@@ -7,6 +8,7 @@ import {
 } from "../core/scopedModifiers";
 import { RESTRICTION_IDS, RUSH_PHASE_RULE_IDS, TURN_RULE_IDS } from "../types/scopedModifiers";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
+import { unitSizeOf } from "../core/catalog";
 
 export function isBattleBlocked(player: PlayerState, instanceId: string): boolean {
   return hasScopedRestriction(player, instanceId, RESTRICTION_IDS.CANNOT_ENTER_BATTLE, "turn");
@@ -41,6 +43,12 @@ export function resetRushPhaseFlags(player: PlayerState): PlayerState {
 }
 
 export function markRushedThisTurn(player: PlayerState, instanceId: string): PlayerState {
+  // 場を離れて再びラッシュしたカードは別のユニット（そのターンのアタック・ストライクの記録は引き継がない。
+  // XG2-041【真・土煙の舞い】で手札に戻して出し直したユニットは再びアタックできる: atwiki/page-1758 Q1）。
+  if (player.unitActionsThisTurn?.[instanceId]) {
+    const { [instanceId]: _dropped, ...restActions } = player.unitActionsThisTurn;
+    player = { ...player, unitActionsThisTurn: restActions };
+  }
   if (wasRushedThisTurn(player, instanceId)) return player;
   return addTurnRestrictionModifier(
     player,
@@ -72,7 +80,7 @@ export function opponentInfiniteChainBlocks(
 export function countAdventureReturns(state: GameState): number {
   let count = 0;
   for (const pid of ["player1", "player2"] as const) {
-    if (state.players[pid].operation.some((c) => c.cardId === "RS-030")) {
+    if (state.players[pid].operation.some((c) => isSameCardIdentity(c.cardId, "RS-030"))) {
       count += 1;
     }
   }
@@ -113,6 +121,6 @@ export function isSOnlyComboLine(
   if (battle.length === 0) return false;
   return battle.every((card) => {
     const def = definitions[card.cardId];
-    return def?.size === "S";
+    return unitSizeOf(definitions, card) === "S";
   });
 }

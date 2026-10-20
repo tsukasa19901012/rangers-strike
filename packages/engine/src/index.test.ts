@@ -17,6 +17,7 @@ import {
 import type { GameState } from "./index";
 import { createTestState, heldWbCommand, inst } from "./testing/fixtures";
 import { rushWithCategoryHold } from "./testing/rushPayment";
+import { requestDrawFromDeck } from "./rules/drawFromDeck";
 
 function unwrap(result: ReturnType<typeof applyAction>): GameState {
   expect(result.ok).toBe(true);
@@ -391,6 +392,29 @@ describe("checkWinner", () => {
       player2: { deck: [], hand: [inst("TST-OP", "h1")] },
     });
     expect(checkWinner(state)).toBeNull();
+  });
+
+  it("gives the win to the turn player when both reach losing damage simultaneously (FAQ RS-054)", () => {
+    for (const activePlayer of ["player1", "player2"] as const) {
+      const state = createTestState({ activePlayer });
+      state.players.player1.damage = WIN_DAMAGE;
+      state.players.player2.damage = WIN_DAMAGE;
+      expect(checkWinner(state)).toBe(activePlayer);
+    }
+  });
+
+  it("declares deck-out when an effect draw finds an empty deck (FAQ RS-027 Q4)", () => {
+    const state = createTestState({ player2: { deck: [] } });
+    const result = requestDrawFromDeck(state, "player2", "player1", { count: 1 });
+    expect(result.drawn).toBe(false);
+    expect(checkWinner(result.state)).toBe("player1");
+  });
+
+  it("declares deck-out when an effect draws more cards than the deck holds", () => {
+    const state = createTestState({ player1: { deck: [inst("TST-OP", "only")] } });
+    const result = requestDrawFromDeck(state, "player1", "player1", { count: 2 });
+    expect(result.state.players.player1.hand).toHaveLength(1);
+    expect(checkWinner(result.state)).toBe("player2");
   });
 
   it("declares deck-out when mandatory draw fails", () => {

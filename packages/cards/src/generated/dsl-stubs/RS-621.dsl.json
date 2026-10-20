@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-621::daiyaburizado",
+          "keyword": "set9a::RS-621::diamond_blizzard",
           "duration": "turn"
         }
       ],

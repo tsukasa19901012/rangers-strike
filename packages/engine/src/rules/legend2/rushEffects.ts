@@ -1,3 +1,4 @@
+import { releasedCommandUnitIds, startEffectRush } from "../effectRush";
 import type { GameState, PlayerId } from "../../types/game";
 import { getDefinition } from "../../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
@@ -9,6 +10,7 @@ import {
   startSelectUnitChoice,
 } from "../pendingChoices";
 import type { NamedEffectOutcome } from "../namedUnitEffects";
+import { startDismantling, startFirefighting } from "./damageCardEffects";
 
 /** Legend2 ラッシュ時効果ハンドラ。 */
 export function resolveLegend2OnRushEffects(
@@ -56,41 +58,18 @@ export function resolveLegend2OnRushEffects(
       break;
     }
     case "firefighting": {
-      const powerTargets = rusher.power.filter((c) => c.faceDown).map((c) => c.instanceId);
-      if (powerTargets.length > 0) {
-        const player = nextState.players[rusherPlayerId];
-        const idx = player.power.findIndex((c) => c.instanceId === powerTargets[0]);
-        if (idx >= 0) {
-          const power = [...player.power];
-          power[idx] = { ...power[idx]!, faceDown: false };
-          nextState = {
-            ...nextState,
-            ...updatePlayer(nextState, rusherPlayerId, { ...player, power }),
-          };
-        }
-      }
+      // ルール: R-RES-02 — テキストの順に「自分がダメージ1枚をオモテにしてもよい」→「そうしたとき、相手も同じようにしてもよい」。
+      // ルール: R-RES-06 — 「そうしたとき」以降は条件ではないので、相手にダメージがなくても自分の分は行える。
+      // 自分・相手とも「してもよい」なので、それぞれ選択（skip で行わない）にする（rules/legend2/damageCardEffects.ts）。
+      nextState = startFirefighting(nextState, rusherPlayerId, cardId, phasePlayerId);
       logs.push(
         buildLogEntry(rusherPlayerId, "named_effect", cardId, state.definitions, effectId),
       );
       break;
     }
     case "dismantling": {
-      const player = nextState.players[rusherPlayerId];
-      const powerIdx = player.power.findIndex((c) => c.faceDown);
-      if (powerIdx >= 0 && player.hand.length > 0) {
-        const power = [...player.power];
-        const [fromPower] = power.splice(powerIdx, 1);
-        const hand = [...player.hand];
-        const [toPower] = hand.splice(0, 1);
-        nextState = {
-          ...nextState,
-          ...updatePlayer(nextState, rusherPlayerId, {
-            ...player,
-            power: [...power, { ...toPower!, faceDown: true }],
-            hand: [...hand, fromPower!],
-          }),
-        };
-      }
+      // 「手札に加えてもよい。そうしたとき、手札から1枚選んで…ウラ向きに置く」（rules/legend2/damageCardEffects.ts）。
+      nextState = startDismantling(nextState, rusherPlayerId, cardId, phasePlayerId);
       logs.push(
         buildLogEntry(rusherPlayerId, "named_effect", cardId, state.definitions, effectId),
       );
@@ -105,7 +84,8 @@ export function resolveLegend2OnRushEffects(
           ...nextState,
           ...updatePlayer(nextState, pid, {
             ...player,
-            power: [...faceDown, ...player.hand.map((c) => ({ ...c, faceDown: true }))],
+            // 「手札をすべてパワーゾーンに置く」— ダメージ（ウラ向き）ではなくオモテ向きのパワー（R-ZONE-07）。
+            power: [...faceDown, ...player.hand.map((c) => ({ ...c, faceDown: false }))],
             discard: [...player.discard, ...toDiscard],
             hand: [],
           }),
@@ -130,24 +110,19 @@ export function resolveLegend2OnRushEffects(
       break;
     }
     case "air_transport": {
-      const targets = rusher.command
-        .filter((c) => {
-          if (c.commandHeld) return false;
-          const def = getDefinition(state.definitions, c.cardId);
-          return def?.type === "unit" && def.size === "M";
-        })
-        .map((c) => c.instanceId);
-      const withChoice = startSelectCommandChoice(nextState, {
+      // ルール: R-RUSH-21 — 「ただしラッシュのための必要パワーと追加条件は満たすこと」。
+      // ルール: R-RUSH-22 — 出したMユニットにも「ラッシュしたとき」誘発と窓がある。
+      nextState = startEffectRush(nextState, {
         playerId: rusherPlayerId,
+        phasePlayerId,
         effectId,
         sourceCardId: cardId,
-        phasePlayerId,
-        commandFilter: "released",
-        commandAction: "rush",
-        optional: true,
-        validInstanceIds: targets,
+        fromZone: "command",
+        candidates: releasedCommandUnitIds(nextState, rusherPlayerId, "M"),
+        maxCount: 1,
+        requireConditions: true,
+        alwaysAsk: true,
       });
-      if (withChoice) nextState = withChoice;
       break;
     }
   }

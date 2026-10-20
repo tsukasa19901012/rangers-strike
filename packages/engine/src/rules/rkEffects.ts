@@ -1,11 +1,12 @@
 import type { GameState, PlayerId } from "../types/game";
 import type { GrantKeywordContext } from "../dsl/grantKeyword";
 import { addTurnRuleModifier } from "../core/scopedModifiers";
-import { getDefinition, isSmallUnit, parsePowerCost } from "../core/catalog";
+import { cardName, getDefinition, isSmallUnit, parsePowerCost, unitSizeOf } from "../core/catalog";
 import { findInZone, opponent, updatePlayer } from "../core/helpers";
 import { isSelectableByOpponentEffect } from "../keywords/effectTargetability";
 import { openEffectChoice, startSelectCommandChoice } from "./pendingChoices";
 import { applyRkFxKeyword } from "./rkResolvedEffects";
+import { recordReveal, revealedCards } from "./revealNotice";
 
 function parsePayload(keyword: string, prefix: string): string | null {
   const marker = `${prefix}::`;
@@ -36,7 +37,7 @@ function openChoice(
 function collectEnemyBattleHeldS(state: GameState, playerId: PlayerId): string[] {
   const enemyId = opponent(playerId);
   return state.players[enemyId].battle
-    .filter((c) => c.commandHeld && isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => c.commandHeld && isSmallUnit(state.definitions, c))
     .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId))
     .map((c) => c.instanceId);
 }
@@ -44,7 +45,7 @@ function collectEnemyBattleHeldS(state: GameState, playerId: PlayerId): string[]
 function collectEnemyBattleS(state: GameState, playerId: PlayerId): string[] {
   const enemyId = opponent(playerId);
   return state.players[enemyId].battle
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .filter((c) => isSelectableByOpponentEffect(state, playerId, c.instanceId))
     .map((c) => c.instanceId);
 }
@@ -59,7 +60,7 @@ function collectReleasedCommandFeatureS(
     .filter((c) => {
       if (c.commandHeld) return false;
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "unit" && def.size === "S" && (def.features ?? []).includes(feature);
+      return def?.type === "unit" && unitSizeOf(state.definitions, c) === "S" && (def.features ?? []).includes(feature);
     })
     .map((c) => c.instanceId);
 }
@@ -139,12 +140,23 @@ export function applyRevealTop3AllFeatureToRush(
     .filter((c) => (getDefinition(state.definitions, c.cardId)?.features ?? []).includes(feature))
     .map((c) => c.instanceId);
   if (valid.length === 0) return null;
-  return openChoice(state, ctx, {
+  const opened = openChoice(state, ctx, {
     kind: "scry_keep_one",
     viewedInstanceIds: viewed,
     validInstanceIds: valid,
     selectCount: valid.length,
     unitDestination: "rush",
+  });
+  if (!opened) return null;
+  // オモテにした3枚は公開情報（相手にも見せる）。特徴を持つカードはラッシュ、それ以外はこの選択の解決で山札に戻してシャッフルする。
+  const validSet = new Set(valid);
+  return recordReveal(opened, {
+    playerId: ctx.playerId,
+    ownerId: ctx.playerId,
+    sourceCardId: ctx.sourceCardId,
+    effectLabel: cardName(state.definitions, ctx.sourceCardId),
+    from: "deck_top",
+    cards: revealedCards(player.deck.slice(0, 3), (c) => (validSet.has(c.instanceId) ? "rush" : "deck_shuffle")),
   });
 }
 

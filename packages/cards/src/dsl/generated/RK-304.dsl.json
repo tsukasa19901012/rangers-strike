@@ -4,7 +4,7 @@
   "name": "仮面ライダー電王RF",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 3,
   "text": "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選びこれと置き換えてもよい） 【ソリッドアタック】ホールド状態の敵軍Ｓユニットを1体選び、持ち主のパワーゾーンに送っても良い。",
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-304::soridoataku",
+          "keyword": "rk15::RK-304::solid_attack",
           "duration": "turn"
         }
       ],

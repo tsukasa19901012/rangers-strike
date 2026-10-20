@@ -17,7 +17,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_can_ride_vehicle_ryo",
+      "id": "unnamed_can_ride_vehicle_feat_e8bb8ae4b8a1",
       "text": "※これは特徴「車両」を持つビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -25,7 +25,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "can_ride_vehicle_ryo",
+          "keyword": "can_ride_vehicle_feat_e8bb8ae4b8a1",
           "duration": "permanent"
         }
       ]
@@ -35,13 +35,13 @@
       "name": "マッハ全開！",
       "text": "自軍ターン中、これがバトルエリアに出るとき、これがライドしていなければ、次の効果を発動できる⇒自分の手札から特徴「車両」を持ち追加条件を持たないビークルカードを1枚選び自軍ラッシュエリアに出してから、これをライドさせる。そうしたとき、このターン、これはライドオフできない。",
       "trigger": {
-        "type": "while_in_field"
+        "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-017::maha",
+          "keyword": "xg7::XG7-017::mach_zenkai",
           "duration": "permanent"
         }
       ]

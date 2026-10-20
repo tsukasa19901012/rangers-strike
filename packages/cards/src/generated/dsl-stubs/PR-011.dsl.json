@@ -4,7 +4,7 @@
   "name": "ボウケンレッド",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "PR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "【サバイバスター】「SP1」これは特徴「メカ」をもつユニットにアタックするとき、BP＋4000される。",
@@ -19,11 +19,11 @@
   ],
   "effects": [
     {
-      "id": "sabaibasuta",
+      "id": "bouken_javelin",
       "name": "サバイバスター",
       "text": "「SP1」これは特徴「メカ」をもつユニットにアタックするとき、BP＋4000される。",
       "trigger": {
-        "type": "on_attack"
+        "type": "nc"
       },
       "effects": [
         {
@@ -36,7 +36,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  }
+    "handler": "interpreter"
+  },
+  "unnamedRules": []
 }

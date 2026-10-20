@@ -53,14 +53,18 @@ export function openRushCounterWindow(
   rusherPlayerId: PlayerId,
   rushedInstanceId: string,
   phasePlayerId: PlayerId,
+  allowedCounterInstanceIds?: string[],
 ): GameState {
-  const defenderId = opponent(rusherPlayerId);
+  // ルール: R-CTR-01 — カウンターは敵軍ターン中にのみ使えるので、応答できるのはターンプレイヤーの相手。
+  // 相手の効果で自軍ユニットが出されたとき（RS-284【スワンウィング】）はその持ち主が応答する（faq-card-1 RS-026 Q2）。
+  const defenderId = opponent(phasePlayerId);
   if (
     !hasRushCounterReactions(
       state,
       defenderId,
       rushedInstanceId,
       rusherPlayerId,
+      allowedCounterInstanceIds,
     )
   ) {
     return state;
@@ -72,6 +76,8 @@ export function openRushCounterWindow(
       rusherPlayerId,
       rushedInstanceId,
       phasePlayerId,
+      reactorPlayerId: defenderId,
+      ...(allowedCounterInstanceIds ? { allowedCounterInstanceIds } : {}),
     },
     activePlayer: defenderId,
   };
@@ -100,3 +106,4 @@ export function categoriesOverlap(
   const catsB = Array.isArray(b) ? b : [b];
   return catsA.some((c) => catsB.includes(c));
 }
+

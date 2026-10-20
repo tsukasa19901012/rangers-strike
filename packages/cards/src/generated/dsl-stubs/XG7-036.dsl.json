@@ -4,7 +4,7 @@
   "name": "仮面ライダーナイト×仮面ライダー龍騎",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "4+",
   "text": "※これは「仮面ライダー龍騎」または「仮面ライダーナイト」としてつかえる。 【戦わなければ生き残れない】これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、SP1/2、コールWB、リードWB、クロス1のどれか1つを宣言してもよい。そうしたとき、このターン、これは宣言した能力を得る。",
@@ -44,11 +44,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-036::wanakerebakirenai",
+          "keyword": "xg7::XG7-036::declare",
           "duration": "permanent"
         }
       ]

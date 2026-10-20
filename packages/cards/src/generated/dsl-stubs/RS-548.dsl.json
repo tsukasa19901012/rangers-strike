@@ -4,7 +4,7 @@
   "name": "ティラノレンジャー（2nd）",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※レジスト ※このユニットのナンバーの数字は、ホールド状態のユニット1体につき1増える。 【龍撃剣】「SP1」",
@@ -49,7 +49,7 @@
       "optional": false
     },
     {
-      "id": "ryuu_geki_ken",
+      "id": "ryuu_geki_ken_2nd",
       "name": "龍撃剣",
       "text": "「SP1」",
       "trigger": {

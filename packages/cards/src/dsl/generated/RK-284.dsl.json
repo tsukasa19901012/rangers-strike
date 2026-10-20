@@ -4,7 +4,7 @@
   "name": "仮面ライダーベルデ",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 2,
   "text": "【デスバニッシュ】「バイオグリーザ」からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、BP4000以下のSユニットを1体選び撃破する。そうしたとき、撃破したユニットのBPがこのユニットのBPよりも低ければ、相手は自分自身のコマンドゾーンからカードを1枚選び捨札にする。",
@@ -23,12 +23,12 @@
       "name": "デスバニッシュ",
       "text": "「バイオグリーザ」からコンビネーションしたとき発動できる⇒敵軍バトルエリアから、BP4000以下のSユニットを1体選び撃破する。そうしたとき、撃破したユニットのBPがこのユニットのBPよりも低ければ、相手は自分自身のコマンドゾーンからカードを1枚選び捨札にする。",
       "trigger": {
-        "type": "nc"
+        "type": "enter_battle"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-284::desubanishu",
+          "keyword": "rk14::RK-284::death_vanish",
           "duration": "turn"
         }
       ],

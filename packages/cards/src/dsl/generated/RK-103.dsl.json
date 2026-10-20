@@ -4,7 +4,7 @@
   "name": "仮面ライダークウガPF",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 2,
   "text": "※自分がターンを終えるとき、自軍常駐置き場に配置されている「超変身」の上に、このユニットを重ねて置いてもよい。 【ブラストペガサス】これは、特徴「警察」を持つ自軍ユニットからコンビネーションするときBP+3000され、敵軍ラッシュエリアのユニットにアタックできる。",
@@ -22,13 +22,13 @@
       "id": "end_turn_stack_on_resident",
       "text": "※自分がターンを終えるとき、自軍常駐置き場に配置されている「超変身」の上に、このユニットを重ねて置いてもよい。",
       "trigger": {
-        "type": "on_turn_end"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "end_turn_stack_on_resident",
+          "keyword": "rk5::RK-103::stack_on_chouhenshin",
           "duration": "permanent"
         }
       ]
@@ -38,13 +38,13 @@
       "name": "ブラストペガサス",
       "text": "これは、特徴「警察」を持つ自軍ユニットからコンビネーションするときBP+3000され、敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_feature_bp_attack_rush::警察::3000",
-          "duration": "turn"
+          "keyword": "rk5::RK-103::blast_pegasus",
+          "duration": "permanent"
         }
       ],
       "optional": false

@@ -55,13 +55,13 @@
       "name": "ビッグマグナム",
       "text": "これが自軍エリアにある間、特徴「宇宙刑事」を持つ自軍ユニットがバトルエリアに出たとき、これをホールドして次の効果を発動できる⇒敵軍バトルエリアから、BP8000以下のユニットを1体選び、持ち主のパワーゾーンに送る。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-095::bigumagunamu",
+          "keyword": "xg4::XG4-095::magnum",
           "duration": "turn"
         }
       ]

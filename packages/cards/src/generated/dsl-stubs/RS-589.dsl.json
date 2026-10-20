@@ -4,7 +4,7 @@
   "name": "クエスター・ガイ",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "4+",
   "text": "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。 【グレイブラスター】これ以外の自軍Sユニットを1体選びホールドしてもよい。そうしたとき、相手は自分自身のユニットを1体選び撃破する。",
@@ -43,11 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-589::gureiburasuta",
-          "duration": "permanent"
+          "keyword": "set8d::RS-589::gray_blaster",
+          "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

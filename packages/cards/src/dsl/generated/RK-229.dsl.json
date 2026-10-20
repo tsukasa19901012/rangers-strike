@@ -41,18 +41,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-229::geki_baku",
+          "keyword": "rk11::RK-229::keicho_fubaku",
           "duration": "turn"
         }
       ],
       "optional": true
-    }
-  ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※スクラム（これのＣＮより1多いＣＮを持つユニットがこれの次に並んでいる間、これはアタックされない）",
-      "rule": "scrum"
     }
   ],
   "implementation": {

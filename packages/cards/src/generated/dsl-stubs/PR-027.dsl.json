@@ -4,7 +4,7 @@
   "name": "黒獅子リオ",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "PR",
   "expansion": "legend1",
   "powerCost": 1,
   "text": "※これはラッシュしたターンにバトルエリアに出られない。 ※これは自軍コマンドが１つ以上あるときストライクできない。 【剛勇吼波】これは敵軍Sユニット1体につきBP+1000される。",
@@ -18,7 +18,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_e280bbe38193e3828ce381af",
+      "id": "unnamed_no_battle_rush_turn",
       "text": "※これはラッシュしたターンにバトルエリアに出られない。",
       "trigger": {
         "type": "while_in_field"

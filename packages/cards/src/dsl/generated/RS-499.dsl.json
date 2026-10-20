@@ -4,7 +4,7 @@
   "name": "ゲキバイオレット",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) ※このユニットは、自軍ラッシュフェイズ中、特徴に「レッド」「ブルー」「イエロー」を追加される。 【狼狼蹴】「SP1」このユニットをホールドしてもよい。そうしたとき、敵軍バトルエリアのユニットを必要パワーの数字の合計が2になるまで好きな数選び、撃破する。",
@@ -37,7 +37,7 @@
       "id": "unnamed_e280bbe38193e381aee383a6",
       "text": "※このユニットは、自軍ラッシュフェイズ中、特徴に「レッド」「ブルー」「イエロー」を追加される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
@@ -60,8 +60,14 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "set7d::RS-499::rourou_kick",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "unnamedRules": [

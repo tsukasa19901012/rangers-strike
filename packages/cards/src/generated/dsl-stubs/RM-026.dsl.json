@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-026::fx_unknown_e58f8e",
+          "keyword": "rm2::RM-026::shuyou",
           "duration": "turn"
         }
       ]

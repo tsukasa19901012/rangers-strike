@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-087::sukaikiku",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-087::skykick",
+          "duration": "turn"
         }
       ]
     }

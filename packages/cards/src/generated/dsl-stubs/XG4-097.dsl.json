@@ -22,13 +22,13 @@
       "name": "ヘレンカッター",
       "text": "これは、BP5000以上の、OTを持ち特徴「男」を持つSユニットと隣り合っている間、次の能力を得る⇒SP1",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-097::herenkata",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-097::helen",
+          "duration": "turn"
         }
       ]
     }

@@ -4,10 +4,15 @@
  * DSL スタブが「resident」マーカーのみのカード（wiki テキストに実処理があるもの）を
  * ここで実装する。配置時 / 自軍ユニット被アタック時などのフックを提供する。
  */
+import { applyXg2ResidentPlaced } from "./xg2/xg2Effects";
+import { rk12ResidentsNegated } from "./rk/rk12Fields";
+import { applyRk2ResidentPlaced } from "./rk/rk2UnitEffects";
 import type { CardDefinition } from "@rangers-strike/cards";
-import type { CardInstance, GameState, PendingBattle, PlayerId } from "../types/game";
+import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../types/game";
+import { isSameCardIdentity } from "@rangers-strike/cards";
+import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEffects";
 import { getDefinition } from "../core/catalog";
-import { updatePlayer } from "../core/helpers";
+import { takeFromDeckTop, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 
 export type ResidentOpAttackedResult = {
@@ -56,14 +61,12 @@ const CLOCK_UP: ResidentOpRuntime = {
     const player = state.players[ownerId];
     const count = player.power.length;
     if (count <= 0) return state;
-    const taken = player.deck.slice(0, count).map((card) => ({
-      ...card,
-      faceDown: true,
-    }));
-    const deck = player.deck.slice(taken.length);
+    // ルール: R-START-05, R-WIN-03 — 「ひいて」重ねる。ひけなければ敗北。
+    const { player: afterTake, taken: takenCards } = takeFromDeckTop(player, count);
+    const taken = takenCards.map((card) => ({ ...card, faceDown: true }));
     const withDeck = {
       ...state,
-      ...updatePlayer(state, ownerId, { ...player, deck }),
+      ...updatePlayer(state, ownerId, afterTake),
     };
     return updateOperationCard(withDeck, ownerId, opInstanceId, (card) => ({
       ...card,
@@ -111,25 +114,54 @@ const GEGERU: ResidentOpRuntime = {
 
 const RESIDENT_OP_RUNTIMES: readonly ResidentOpRuntime[] = [CLOCK_UP, GEGERU];
 
-/** RK-081 ゲゲル: 自軍バトルフェイズに敵軍ユニットを撃破したとき山札の上を1枚重ねる。 */
+/**
+ * RK-081 ゲゲル「自軍バトルフェイズに敵軍ユニットを1体撃破するたび、自軍山札の上から1枚ひいて、ウラ向きのままこれに重ねてもよい。」
+ * （atwiki/page-709）。重ねるかを確認する（任意）。オモテは見ない（grnrngr/faq-rider-2 RK-081 Q）。
+ * 別の選択が開いていれば、その後に確認する。
+ */
+export const GEGERU_STACK_EFFECT_ID = "rk081_gegeru_stack";
+
 export function applyGegeruOnEnemyDestroyed(
   state: GameState,
   destroyerPlayerId: PlayerId,
 ): GameState {
   if (state.phase !== "battle" || state.activePlayer !== destroyerPlayerId) return state;
   const player = state.players[destroyerPlayerId];
-  const op = player.operation.find((c) => c.cardId === "RK-081");
+  const op = player.operation.find((c) => isSameCardIdentity(c.cardId, "RK-081"));
   if (!op || player.deck.length === 0) return state;
-  const [top, ...deck] = player.deck;
-  const withDeck = {
-    ...state,
-    ...updatePlayer(state, destroyerPlayerId, { ...player, deck }),
+  const confirm: PendingEffectChoice = {
+    playerId: destroyerPlayerId,
+    phasePlayerId: destroyerPlayerId,
+    effectId: GEGERU_STACK_EFFECT_ID,
+    sourceCardId: op.cardId,
+    sourceInstanceId: op.instanceId,
+    kind: "confirm",
+    validInstanceIds: [],
+    selectedInstanceIds: [],
+    optional: true,
+    mayConfirm: true,
   };
-  return updateOperationCard(withDeck, destroyerPlayerId, op.instanceId, (card) => ({
-    ...card,
-    stackedCards: [...(card.stackedCards ?? []), { ...top!, faceDown: true }],
-  }));
+  if (state.pendingEffectChoice) {
+    const append = (c: PendingEffectChoice): PendingEffectChoice => ({ ...c, resumeChoice: c.resumeChoice ? append(c.resumeChoice) : confirm });
+    return { ...state, pendingEffectChoice: append(state.pendingEffectChoice) };
+  }
+  return openOptionalEffectConfirm(state, confirm);
 }
+
+registerOptionalEffect(GEGERU_STACK_EFFECT_ID, {
+  apply: (state, pending) => {
+    const playerId = pending.playerId;
+    const player = state.players[playerId];
+    const op = player.operation.find((c) => c.instanceId === pending.sourceInstanceId);
+    if (!op || player.deck.length === 0) return state;
+    const [top, ...deck] = player.deck;
+    const withDeck = { ...state, ...updatePlayer(state, playerId, { ...player, deck }) };
+    return updateOperationCard(withDeck, playerId, op.instanceId, (card) => ({
+      ...card,
+      stackedCards: [...(card.stackedCards ?? []), { instanceId: top!.instanceId, cardId: top!.cardId, faceDown: true }],
+    }));
+  },
+});
 
 /** RK-081 ゲゲル: スタート時に重ね10枚以上→このターン自軍S全員SP1、ターン終了時に捨札。 */
 export function applyGegeruStartPhase(
@@ -212,6 +244,11 @@ export function applyResidentOpOnPlace(
   opInstanceId: string,
   cardId: string,
 ): GameState {
+  // RK-022 ライダーパス: 配置するとき山札の「DEN-O」を4枚まで重ねる（rules/rk/rk2UnitEffects.ts）。
+  if (cardId === "RK-022") return applyRk2ResidentPlaced(state, ownerId, opInstanceId, cardId);
+  // XG2-070 ライドブッカー・ブックモード: 配置するとき山札のモーフを持つユニットカードを3枚まで重ねる（rules/xg2/xg2dEffects.ts）。
+  const xg2Placed = applyXg2ResidentPlaced(state, ownerId, opInstanceId, cardId);
+  if (xg2Placed) return xg2Placed;
   const runtime = runtimeForCard(cardId);
   if (!runtime?.onPlace) return state;
   return runtime.onPlace(state, ownerId, opInstanceId);
@@ -232,6 +269,8 @@ export function applyResidentOpsOnAllyAttacked(
     player.rush.find((c) => c.instanceId === pending.defenderInstanceId);
   if (!defender) return null;
   const defenderDef = getDefinition(state.definitions, defender.cardId);
+  // RK-248 パラダイス・ロスト: このターン、相手の常駐オペレーションは無効（rules/rk/rk12Fields.ts）。
+  if (rk12ResidentsNegated(state, ownerId)) return null;
 
   for (const op of player.operation) {
     const runtime = runtimeForCard(op.cardId);

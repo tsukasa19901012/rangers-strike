@@ -2,6 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
+import { yieldToEventLoop } from "../testing/yieldToEventLoop";
 import { createFullPromotedGame } from "./createPromotedGame";
 import {
   mergeEffectResolutionTraces,
@@ -35,7 +36,7 @@ function mulberry32(seed: number): () => number {
 describe("vertical slice — full promoted deck simulation (M18)", () => {
   it(
     `runs ${GAME_COUNT} CPU vs CPU games with 40-card promoted-only decks`,
-    () => {
+    async () => {
       let winner = 0;
       let applyFailed = 0;
       let withBattleAction = 0;
@@ -45,6 +46,8 @@ describe("vertical slice — full promoted deck simulation (M18)", () => {
       const effectTraces: EffectResolutionTrace[] = [];
 
       for (let seed = 1; seed <= GAME_COUNT; seed += 1) {
+        // 長い同期ループで vitest ワーカーの RPC（onTaskUpdate）が待たされないよう、1ゲームごとに譲る。
+        await yieldToEventLoop();
         const result = playStarterMatchUntilEnd(
           createFullPromotedGame({
             rng: mulberry32(seed),

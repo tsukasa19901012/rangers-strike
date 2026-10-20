@@ -17,26 +17,12 @@
         "type": "operation",
         "timing": "rush"
       },
-      "optional": false,
+      "optional": true,
       "effects": [
         {
-          "type": "choose",
-          "kind": "optional_deck_draw",
-          "valid": {
-            "type": "zone",
-            "zone": "deck",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "hand"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "bk1::BK-006::tornado",
+          "duration": "turn"
         }
       ]
     }

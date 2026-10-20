@@ -4,7 +4,7 @@
   "name": "ダイカイオーヒガシ",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "※モーフ 【海老ばさみ本手返し】これをラッシュしたとき、そのターン中、これは、BP+3000される。",
@@ -49,7 +49,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-036::basamishi",
+          "keyword": "other::XG3-036::ebi_basami",
           "duration": "turn"
         }
       ]

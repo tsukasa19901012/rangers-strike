@@ -45,7 +45,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-023::fx_unknown_e59cb0",
+          "keyword": "rm2::RM-023::chichu_senko",
           "duration": "turn"
         }
       ]

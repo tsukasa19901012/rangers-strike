@@ -4,7 +4,7 @@
   "name": "デカウイングキャノン",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "7+",
   "text": "※これはバトルエリアに出られない。 【オールスターアルティメットバスター】これが自軍エリアにある間、自軍ラッシュフェイズ中、特徴「人型」を持つBP6000以上の自軍ユニットをラッシュしたとき、そのBP以下のBPを持つ敵軍ユニットを1体選び撃破する。さらに、このときラッシュしたユニットがXLユニットだったなら、相手に1点ダメージを与える。",
@@ -34,13 +34,13 @@
       "name": "オールスターアルティメットバスター",
       "text": "これが自軍エリアにある間、自軍ラッシュフェイズ中、特徴「人型」を持つBP6000以上の自軍ユニットをラッシュしたとき、そのBP以下のBPを持つ敵軍ユニットを1体選び撃破する。さらに、このときラッシュしたユニットがXLユニットだったなら、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "on_rush"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "set9c::RS-656::all_star_buster",
+          "duration": "permanent"
         }
       ]
     }

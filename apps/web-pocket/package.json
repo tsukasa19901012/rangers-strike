@@ -1,0 +1,21 @@
+{
+  "name": "@rangers-strike/web-pocket",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Browser app on PocketJS (Solid) over @rangers-strike/client-core: the planned replacement for the Next.js web app. Uses the PocketJS toolchain installed in apps/vita/toolchain.",
+  "scripts": {
+    "setup": "npm ci --prefix ../vita/toolchain --no-audit --no-fund && node scripts/fetch-fonts.mjs",
+    "web:build": "node scripts/build.mjs",
+    "web:build:app": "node scripts/build.mjs --app-only",
+    "web:serve": "node scripts/serve.mjs",
+    "web:dev": "node scripts/build.mjs && node scripts/serve.mjs",
+    "pocket:check": "node scripts/pocket-check.mjs"
+  },
+  "dependencies": {
+    "@rangers-strike/client-core": "*"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.3"
+  }
+}

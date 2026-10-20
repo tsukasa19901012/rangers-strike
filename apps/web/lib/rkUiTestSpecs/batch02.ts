@@ -34,7 +34,7 @@ export const RK_BATCH_02: RkUiTestSpec[] = [
     textSnippets: ["Lユニット", "重ねる"],
     expectedMechanisms: ["operation_drag_direct", "effect_choice_modal"],
     expectedDropRoute: "direct_play",
-    expectedDslKeywords: ["stack_s_on_self_rush"],
+    expectedDslKeywords: ["rk1::RK-013::j_power"],
   },
   {
     cardId: "RK-014",
@@ -79,7 +79,7 @@ export const RK_BATCH_02: RkUiTestSpec[] = [
     textSnippets: ["ＲＣ", "ライドオフ", "ホールド状態"],
     expectedMechanisms: ["operation_drag_direct", "effect_choice_modal"],
     expectedDropRoute: "direct_play",
-    expectedDslKeywords: ["rc_hold_skip_rideoff"],
+    expectedDslKeywords: ["rk1::RK-017::mission_memory"],
   },
   {
     cardId: "RK-018",
@@ -91,7 +91,7 @@ export const RK_BATCH_02: RkUiTestSpec[] = [
     textSnippets: ["ラッシュエリア", "捨札", "BP"],
     expectedMechanisms: ["operation_drag_direct", "effect_choice_modal"],
     expectedDropRoute: "direct_play",
-    expectedDslKeywords: ["dual_bp_rush_discard_combine"],
+    expectedDslKeywords: ["rk1::RK-018::rouse_card"],
   },
   {
     cardId: "RK-019",
@@ -103,7 +103,7 @@ export const RK_BATCH_02: RkUiTestSpec[] = [
     textSnippets: ["メカ", "撃破される"],
     expectedMechanisms: ["operation_drag_direct", "effect_choice_modal"],
     expectedDropRoute: "direct_play",
-    expectedDslKeywords: ["impose_destroy_rule_on_enemy"],
+    expectedDslKeywords: ["rk1::RK-019::ongeki"],
   },
   {
     cardId: "RK-020",
@@ -115,5 +115,6 @@ export const RK_BATCH_02: RkUiTestSpec[] = [
     textSnippets: ["仮面ライダー", "2体選ぶ", "BP8000"],
     expectedMechanisms: ["operation_drag_direct", "effect_choice_modal"],
     expectedDropRoute: "direct_play",
+    expectedDslKeywords: ["rk1::RK-020::double_rider_kick"],
   },
 ];

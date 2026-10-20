@@ -29,7 +29,7 @@
       "自分の手札から合体を必要とするユニットカードを1"
     ],
     "expectedDslKeywords": [
-      "note_card::XG6-002::nokarawotosuruyu"
+      "xg6::XG6-002::trinity"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -50,7 +50,7 @@
     "expectedDslKeywords": [
       "breaker",
       "wing",
-      "effect_card::XG6-003::bakumaruchikonbain"
+      "xg6::XG6-003::multi_combine"
     ],
     "bp": 16000,
     "sp": 2,
@@ -67,7 +67,7 @@
       "自軍パワーゾーンのオモテ向きのカードを好きな枚数"
     ],
     "expectedDslKeywords": [
-      "note_card::XG6-004::pawazonnoomote_k"
+      "xg6::XG6-004::full_blast"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -86,7 +86,7 @@
       "【マジカルショータイム】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG6-005::majikarushotaimu"
+      "xg6::XG6-005::magical_showtime"
     ],
     "bp": 6000,
     "sp": 1,
@@ -104,7 +104,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "effect_card::XG6-006::boukenfurashu"
+      "xg6::XG6-006::bouken_flash"
     ],
     "bp": 8000,
     "sp": null,
@@ -125,7 +125,7 @@
     ],
     "expectedDslKeywords": [
       "note_card::XG6-007::konokadonoyunito",
-      "effect_card::XG6-007::zane6bf80"
+      "xg6::XG6-007::zan"
     ],
     "bp": 14000,
     "sp": 1,
@@ -142,7 +142,7 @@
       "お互いに山札の上から１枚をオモテにし、必要パワー"
     ],
     "expectedDslKeywords": [
-      "note_card::XG6-008::oininokarawoomot"
+      "xg6::XG6-008::enjinken"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -162,7 +162,7 @@
     ],
     "expectedDslKeywords": [
       "blast",
-      "effect_card::XG6-009::kyouryuumarue382ad"
+      "xg6::XG6-009::tenchi_issen"
     ],
     "bp": 18000,
     "sp": 1,
@@ -180,7 +180,7 @@
     ],
     "expectedDslKeywords": [
       "breaker",
-      "effect_card::XG6-010::taitannoba"
+      "xg6::XG6-010::titan_nova"
     ],
     "bp": 16000,
     "sp": null,
@@ -197,7 +197,7 @@
       "【ラジアルボンバー】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG6-011::rajiarubonba"
+      "xg6::XG6-011::radial_bomber"
     ],
     "bp": 8000,
     "sp": "1/4",
@@ -215,7 +215,7 @@
     ],
     "expectedDslKeywords": [
       "note_card::XG6-012::taitanboigaaruto",
-      "effect_card::XG6-012::furashutan"
+      "xg6::XG6-012::flash_turn"
     ],
     "bp": 6000,
     "sp": null,
@@ -233,7 +233,7 @@
     ],
     "expectedDslKeywords": [
       "note_card::XG6-013::korehaotnokatego",
-      "effect_card::XG6-013::nohe"
+      "xg6::XG6-013::mirai"
     ],
     "bp": 5000,
     "sp": null,
@@ -250,7 +250,7 @@
       "【英雄の遺産】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG6-014::noe88bb1"
+      "xg6::XG6-014::heritage"
     ],
     "bp": 3000,
     "sp": null,
@@ -263,7 +263,13 @@
     "cardType": "unit",
     "powerCost": 5,
     "category": "WB",
-    "textSnippets": [],
+    "textSnippets": [
+      "【爆竜必殺チョキチョキシザース】"
+    ],
+    "expectedDslKeywords": [
+      "require_command_hold_entry",
+      "effect_card::XG6-015::baku_chokichokishizasu"
+    ],
     "bp": 3000,
     "sp": null,
     "size": "M"
@@ -280,7 +286,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "effect_card::XG6-016::bakudaburutorunedo"
+      "xg6::XG6-016::double_tornado"
     ],
     "bp": 5000,
     "sp": "1/2",
@@ -298,7 +304,7 @@
     ],
     "expectedDslKeywords": [
       "while_in_hand_rush_deploy::ieromatahahowaitowotsuyu",
-      "effect_card::XG6-017::dokonidemogaru"
+      "xg6::XG6-017::phone"
     ],
     "bp": 1000,
     "sp": null,
@@ -316,7 +322,8 @@
     ],
     "expectedDslKeywords": [
       "note_card::XG6-018::lyunitoganakereb",
-      "SP1"
+      "SP1",
+      "xg6::XG6-018::game_over"
     ],
     "bp": 4000,
     "sp": "special",
@@ -334,7 +341,7 @@
     ],
     "expectedDslKeywords": [
       "note_card::XG6-019::konokadonohaga7a",
-      "effect_card::XG6-019::noe5a5a5"
+      "xg6::XG6-019::trump"
     ],
     "bp": 9000,
     "sp": 1,
@@ -352,7 +359,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "effect_card::XG6-020::noe7a9b6"
+      "xg6::XG6-020::ultimate"
     ],
     "bp": 24000,
     "sp": 3,
@@ -370,7 +377,7 @@
     ],
     "expectedDslKeywords": [
       "category_wb_battle_phase",
-      "effect_card::XG6-021::kene6bf80"
+      "xg6::XG6-021::gekirinken"
     ],
     "bp": 6500,
     "sp": "1/2",
@@ -389,7 +396,7 @@
     "expectedDslKeywords": [
       "category_wb_battle_phase",
       "enemy_cannot_attack",
-      "effect_card::XG6-022::ringiganjigatame"
+      "xg6::XG6-022::ganjigarame"
     ],
     "bp": 2500,
     "sp": null,
@@ -407,7 +414,7 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_reanimate_named_from_discard",
-      "effect_card::XG6-023::haipapanchi"
+      "xg6::XG6-023::hyper_punch"
     ],
     "bp": 3500,
     "sp": "1/3",
@@ -428,7 +435,8 @@
       "taxis_MA",
       "register",
       "alias_gurandeion",
-      "SP1"
+      "SP1",
+      "xg6::XG6-024::knight_dynamic"
     ],
     "bp": 3000,
     "sp": "special",
@@ -446,7 +454,7 @@
     ],
     "expectedDslKeywords": [
       "lead_MA",
-      "effect_card::XG6-025::kokokarahanotanda"
+      "xg6::XG6-025::my_turn"
     ],
     "bp": 9000,
     "sp": 1,
@@ -465,7 +473,7 @@
     "expectedDslKeywords": [
       "register",
       "lead_MA",
-      "effect_card::XG6-026::gurandeionireiza"
+      "xg6::XG6-026::eraser"
     ],
     "bp": 5500,
     "sp": null,
@@ -483,7 +491,7 @@
     ],
     "expectedDslKeywords": [
       "taxis_MA",
-      "effect_card::XG6-027::kinoshie99d92"
+      "xg6::XG6-027::sea_lion"
     ],
     "bp": 3000,
     "sp": null,
@@ -501,7 +509,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "effect_card::XG6-028::kinoshi"
+      "xg6::XG6-028::sky_lion"
     ],
     "bp": 3000,
     "sp": null,
@@ -520,8 +528,8 @@
     "expectedDslKeywords": [
       "wing",
       "alias_sukairaida",
-      "note_card::XG6-029::koreharaidawotsu",
-      "effect_card::XG6-029::sukaikikue5a4a7"
+      "xg6::XG6-029::field",
+      "xg6::XG6-029::sky_kick"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -540,7 +548,7 @@
     "expectedDslKeywords": [
       "require_command_hold_entry",
       "destroy_on_win_vs_sp1",
-      "effect_card::XG6-030::noe594af"
+      "xg6::XG6-030::weak_point"
     ],
     "bp": 4000,
     "sp": 1,
@@ -558,9 +566,8 @@
     ],
     "expectedDslKeywords": [
       "rush_from_hand_only",
-      "note_card::XG6-031::koregayunitodena",
-      "note_card::XG6-031::koregaerianiarun",
-      "SP3"
+      "xg6::XG6-031::field",
+      "xg6::XG6-031::eradication"
     ],
     "bp": 6500,
     "sp": 1,
@@ -577,8 +584,8 @@
       "【絶対的な最強の力】"
     ],
     "expectedDslKeywords": [
-      "note_card::XG6-032::koreworashushita",
-      "effect_card::XG6-032::nanochikara"
+      "xg6::XG6-032::stack",
+      "xg6::XG6-032::strongest"
     ],
     "bp": 8000,
     "sp": 1,
@@ -631,8 +638,9 @@
     ],
     "expectedDslKeywords": [
       "breaker",
-      "note_card::XG6-035::korehakomandozon",
-      "rush_from_hand_only"
+      "xg6::XG6-035::field",
+      "rush_from_hand_only",
+      "xg6::XG6-035::vicker"
     ],
     "bp": 3000,
     "sp": 1,
@@ -650,7 +658,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "effect_card::XG6-036::memorichienji"
+      "xg6::XG6-036::memory_change"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -685,7 +693,7 @@
     ],
     "expectedDslKeywords": [
       "not_selectable_except_attack",
-      "effect_card::XG6-038::mashingansupaiku"
+      "xg6::XG6-038::spike"
     ],
     "bp": 2500,
     "sp": 1,
@@ -702,7 +710,7 @@
       "自軍コマンドゾーンのカードを1枚選び手札に加える"
     ],
     "expectedDslKeywords": [
-      "note_card::XG6-039::komandozonnokado"
+      "xg6::XG6-039::stag_phone"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -722,7 +730,7 @@
     ],
     "expectedDslKeywords": [
       "lead_ET",
-      "effect_card::XG6-040::raidakiku"
+      "xg6::XG6-040::rider_kick"
     ],
     "bp": 4000,
     "sp": "special",
@@ -741,7 +749,7 @@
     "expectedDslKeywords": [
       "breaker",
       "lead_DA",
-      "effect_card::XG6-041::shinnopateitaimuda"
+      "xg6::XG6-041::party_time"
     ],
     "bp": 5000,
     "sp": null,
@@ -758,8 +766,8 @@
       "【ゼロのスタート】"
     ],
     "expectedDslKeywords": [
-      "note_card::XG6-042::noga0notokikorew",
-      "effect_card::XG6-042::zeronosutato"
+      "xg6::XG6-042::zero_hand",
+      "xg6::XG6-042::zero_start"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -776,8 +784,8 @@
       "【強き心と強き願い】"
     ],
     "expectedDslKeywords": [
-      "note_card::XG6-043::wotsuyunitogaare",
-      "effect_card::XG6-043::kitokii"
+      "xg6::XG6-043::field",
+      "xg6::XG6-043::strong_heart"
     ],
     "bp": 6000,
     "sp": 1,
@@ -796,7 +804,7 @@
     "expectedDslKeywords": [
       "note_card::XG6-044::koreworashushita",
       "sp_at_bp5000_sp1",
-      "deck_reveal_position_destroy_s"
+      "effect_card::XG6-044::kauntasutoraiku"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -813,8 +821,8 @@
       "【危険の排除】"
     ],
     "expectedDslKeywords": [
-      "note_card::XG6-045::konoyunitokarako",
-      "effect_card::XG6-045::noe58db1"
+      "xg6::XG6-045::field",
+      "xg6::XG6-045::danger"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -832,8 +840,8 @@
     ],
     "expectedDslKeywords": [
       "lead_OT",
-      "note_card::XG6-046::koreharaidawotsu",
-      "effect_card::XG6-046::gekijouban"
+      "xg6::XG6-046::field",
+      "xg6::XG6-046::gekijouban"
     ],
     "bp": 2000,
     "sp": 1,
@@ -853,8 +861,8 @@
       "【ギガント】"
     ],
     "expectedDslKeywords": [
-      "note_card::XG6-047::koreganiarurashu",
-      "effect_card::XG6-047::giganto"
+      "xg6::XG6-047::discard_rush",
+      "xg6::XG6-047::giganto"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -876,7 +884,7 @@
     "expectedDslKeywords": [
       "lead_WB",
       "discard_on_end_turn_battle",
-      "effect_card::XG6-048::noe98fa1"
+      "xg6::XG6-048::mirror"
     ],
     "bp": 6000,
     "sp": "1/2",
@@ -896,8 +904,8 @@
       "【オルフェノクの帝王】"
     ],
     "expectedDslKeywords": [
-      "note_card::XG6-049::korehauinguwotsu",
-      "effect_card::XG6-049::orufuenokunoou"
+      "xg6::XG6-049::field",
+      "xg6::XG6-049::orphnoch"
     ],
     "bp": 7000,
     "sp": null,
@@ -918,7 +926,8 @@
     ],
     "expectedDslKeywords": [
       "undead_command_rush_hold",
-      "SP1"
+      "SP1",
+      "xg6::XG6-050::try"
     ],
     "bp": 4000,
     "sp": "special",
@@ -941,7 +950,7 @@
       "register",
       "lead_MA",
       "call_DA",
-      "effect_card::XG6-051::heno"
+      "xg6::XG6-051::despair"
     ],
     "bp": 2000,
     "sp": "1/3",
@@ -962,7 +971,7 @@
     ],
     "expectedDslKeywords": [
       "not_selectable",
-      "effect_card::XG6-052::haipakurokuapu"
+      "xg6::XG6-052::clock_up"
     ],
     "bp": 5000,
     "sp": null,
@@ -983,8 +992,8 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
-      "note_card::XG6-053::korenoyunitogasy",
-      "effect_card::XG6-053::gotouheru"
+      "xg6::XG6-053::field",
+      "xg6::XG6-053::go_to_hell"
     ],
     "bp": 7000,
     "sp": null,
@@ -1006,7 +1015,7 @@
     "expectedDslKeywords": [
       "register",
       "taxis_ET",
-      "effect_card::XG6-054::gauninare"
+      "xg6::XG6-054::hat"
     ],
     "bp": 1000,
     "sp": null,
@@ -1026,7 +1035,7 @@
       "morph",
       "wing",
       "lead_ET",
-      "effect_card::XG6-055::konbochienji"
+      "xg6::XG6-055::combo_change"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -1045,7 +1054,7 @@
     "expectedDslKeywords": [
       "morph",
       "lead_ET",
-      "effect_card::XG6-056::baseta"
+      "xg6::XG6-056::scythe"
     ],
     "bp": 4000,
     "sp": null,
@@ -1065,7 +1074,7 @@
       "morph",
       "auto_battle_entry_each_turn",
       "no_attack_from_bp3000",
-      "effect_card::XG6-057::torakuro"
+      "xg6::XG6-057::tora_claw"
     ],
     "bp": 2000,
     "sp": "1/2",
@@ -1084,7 +1093,7 @@
     "expectedDslKeywords": [
       "morph",
       "wing",
-      "effect_card::XG6-058::yoriu"
+      "xg6::XG6-058::void_scythe"
     ],
     "bp": 2000,
     "sp": null,
@@ -1121,7 +1130,7 @@
       "※これが自軍コマンドゾーンに置かれたとき、これを"
     ],
     "expectedDslKeywords": [
-      "note_card::XG6-060::koregakomandozon"
+      "xg6::XG6-060::candroid"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1141,7 +1150,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_1000",
-      "effect_card::XG6-061::bendamodo"
+      "xg6::XG6-061::vendor"
     ],
     "sp": null,
     "size": "S"
@@ -1157,8 +1166,8 @@
       "【グラビトン攻撃】"
     ],
     "expectedDslKeywords": [
-      "note_card::XG6-062::koregayunitodena",
-      "effect_card::XG6-062::gurabitongeki"
+      "xg6::XG6-062::fortress",
+      "xg6::XG6-062::graviton"
     ],
     "bp": 8000,
     "sp": 1,
@@ -1178,8 +1187,8 @@
       "【全弾発射】"
     ],
     "expectedDslKeywords": [
-      "note_card::XG6-063::korehadawotsukom",
-      "effect_card::XG6-063::dan"
+      "xg6::XG6-063::field",
+      "xg6::XG6-063::full_fire"
     ],
     "bp": 8000,
     "sp": "special",
@@ -1198,7 +1207,7 @@
     "expectedDslKeywords": [
       "wing",
       "cannot_enter_battle",
-      "effect_card::XG6-064::chikarae8a681"
+      "xg6::XG6-064::fortress_ability"
     ],
     "bp": 5000,
     "sp": null,
@@ -1216,7 +1225,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "effect_card::XG6-065::noe58f8b"
+      "xg6::XG6-065::friendship"
     ],
     "bp": 1000,
     "sp": null,

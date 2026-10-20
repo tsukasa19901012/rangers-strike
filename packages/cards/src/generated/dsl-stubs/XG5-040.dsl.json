@@ -7,7 +7,7 @@
     "WB",
     "MA"
   ],
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※レジスト ※リードMA 【スネークバレット】「SP1」自軍コマンドゾーンにないカテゴリを持つ敵軍Sユニットを1体選び撃破する。（自分の手札が1枚以下なら、敵軍Sユニットを選ぶとき、自軍コマンドゾーンにあるカテゴリを持つ敵軍Sユニットを選んでもよい）",
@@ -60,6 +60,11 @@
         {
           "type": "grant_keyword",
           "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg5::XG5-040::snake_bullet",
           "duration": "turn"
         }
       ]

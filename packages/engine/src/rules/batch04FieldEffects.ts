@@ -1,6 +1,9 @@
-import type { CardInstance, GameState, PlayerId } from "../types/game";
+import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
+import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../types/game";
+import { registerChoiceRefresher } from "./choiceRefreshers";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { cardName, getDefinition } from "../core/catalog";
+import { sameCardName } from "../core/cardNames";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import {
@@ -10,14 +13,7 @@ import {
 } from "./pendingChoices";
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
-  const copy = [...deck];
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const tmp = copy[i]!;
-    copy[i] = copy[j]!;
-    copy[j] = tmp;
-  }
-  return copy;
+  return shuffleDeckCards(deck);
 }
 
 function cardHasKeyword(cardId: string, keyword: string): boolean {
@@ -49,52 +45,93 @@ export function tryMereChameleonOnAllyEnterBattle(
 ): GameState {
   if (entering.cardId === "RS-504") return state;
   const name = cardName(state.definitions, entering.cardId);
-  if (name === "獣人メレ" || name === "メレ") return state;
+  // ルール: R-ERR-RS504 — 「メレ」は「獣人メレ」の読み替え。除外は「獣人メレ」（同名カード）だけ。
+  if (sameCardName(name, "獣人メレ")) return state;
 
   const sourceCardId = playerHasMereChameleonOnField(state, playerId);
   if (!sourceCardId) return state;
 
-  const withChoice = startMereChameleonChoice(state, {
+  // ルール: R-CONT-01 — 獣人メレが2体以上あれば、それぞれの【臨獣カメレオン拳】が発動する。2体目からは、前の効果を
+  // 解決したあとで（コマンドゾーンの状態に合わせて）選択を作り直す（refreshOnOpen）。
+  const params = {
     playerId,
     effectId: "kamereon_ken",
     sourceCardId,
     sourceInstanceId: entering.instanceId,
     phasePlayerId,
-  });
-  return withChoice ?? state;
+  };
+  const sources = countMereChameleonSources(state, playerId);
+  const withChoice = startMereChameleonChoice(state, params);
+  if (!withChoice?.pendingEffectChoice || sources < 2) return withChoice ?? state;
+  let resume: PendingEffectChoice | undefined;
+  for (let i = 1; i < sources; i += 1) {
+    resume = {
+      ...params,
+      kind: "select_command",
+      validInstanceIds: [],
+      optional: true,
+      refreshOnOpen: { key: MERE_CHAMELEON_REFRESH_KEY },
+      resumeChoice: resume,
+    };
+  }
+  return { ...withChoice, pendingEffectChoice: { ...withChoice.pendingEffectChoice, resumeChoice: resume } };
 }
 
-/** RS-633: スタート終了時コマンドのホールド⇔捨札。 */
+const MERE_CHAMELEON_REFRESH_KEY = "mere_chameleon_again";
+
+function countMereChameleonSources(state: GameState, playerId: PlayerId): number {
+  const player = state.players[playerId];
+  return [...player.rush, ...player.battle].filter((card) =>
+    cardHasKeyword(card.cardId, "while_in_field_ally_enter_mere_chameleon"),
+  ).length;
+}
+
+registerChoiceRefresher(MERE_CHAMELEON_REFRESH_KEY, (state, choice) => {
+  const opened = startMereChameleonChoice(state, {
+    playerId: choice.playerId,
+    effectId: "kamereon_ken",
+    sourceCardId: choice.sourceCardId,
+    sourceInstanceId: choice.sourceInstanceId,
+    phasePlayerId: choice.phasePlayerId,
+  });
+  if (!opened?.pendingEffectChoice) return null;
+  return { ...opened.pendingEffectChoice, resumeChoice: choice.resumeChoice };
+});
+
+/**
+ * RS-633: ※自軍スタートフェイズを終えるとき、このユニットがリリース状態ならホールドし、ホールド状態なら捨札にする。
+ * ルール: R-ERR-RS633 — 対象は場（ラッシュ／バトルエリア）のこのユニット。終える時点の状態で1回だけ判定する
+ * （ホールドした同じスタートフェイズ中に捨札にはならない: atwiki/page-1529 Q1）。
+ */
 export function applyMegaSilverStartEndToggle(
   state: GameState,
   playerId: PlayerId,
 ): GameState {
-  let next = state;
-  const player = next.players[playerId];
-  let command = [...player.command];
-  let discard = [...player.discard];
+  const player = state.players[playerId];
+  const isTarget = (card: CardInstance) =>
+    card.cardId === "RS-633" || cardHasKeyword(card.cardId, "start_end_command_toggle_hold_discard");
+  const discarded: CardInstance[] = [];
   let changed = false;
-
-  for (let i = 0; i < command.length; i += 1) {
-    const card = command[i]!;
-    if (card.cardId !== "RS-633" && !cardHasKeyword(card.cardId, "start_end_command_toggle_hold_discard")) {
-      continue;
-    }
-    if (!card.commandHeld) {
-      command[i] = { ...card, commandHeld: true, mothershipHold: false };
+  const toggle = (zone: CardInstance[]): CardInstance[] =>
+    zone.flatMap((card) => {
+      if (!isTarget(card)) return [card];
       changed = true;
-    } else {
-      const [removed] = command.splice(i, 1);
-      if (removed) discard.push(removed);
-      i -= 1;
-      changed = true;
-    }
-  }
-
+      if (!card.commandHeld) return [{ ...card, commandHeld: true, mothershipHold: false }];
+      const { commandHeld: _h, mothershipHold: _m, mountedOnInstanceId: _r, ...rest } = card;
+      discarded.push(rest as CardInstance);
+      return [];
+    });
+  const rush = toggle(player.rush);
+  const battle = toggle(player.battle);
   if (!changed) return state;
   return {
-    ...next,
-    ...updatePlayer(next, playerId, { ...player, command, discard }),
+    ...state,
+    ...updatePlayer(state, playerId, {
+      ...player,
+      rush,
+      battle,
+      discard: [...player.discard, ...discarded],
+    }),
   };
 }
 
@@ -133,18 +170,27 @@ export function applyHungerGodOnRush(
   return next;
 }
 
-/** RS-580: ユニットでなくなるとき、各プレイヤー捨札を山札に戻してシャッフル。 */
-export function applyHungerGodCeaseShuffle(state: GameState): GameState {
+/**
+ * RS-580: ユニットでなくなるとき、各プレイヤー捨札を山札に戻してシャッフル。
+ * ※はユニットでなくなる「とき」に実行するので、捨札になる途中のン・マ自身（keepInstanceIds）は山札に戻さず
+ * 捨札に残る（faq-card-8 RS-580: テキストを実行してから捨札になる）。
+ */
+export function applyHungerGodCeaseShuffle(
+  state: GameState,
+  keepInstanceIds: readonly string[] = [],
+): GameState {
   let next = state;
   for (const playerId of ["player1", "player2"] as const) {
     const player = next.players[playerId];
-    if (player.discard.length === 0) continue;
+    const kept = player.discard.filter((c) => keepInstanceIds.includes(c.instanceId));
+    const returned = player.discard.filter((c) => !keepInstanceIds.includes(c.instanceId));
+    if (returned.length === 0) continue;
     next = {
       ...next,
       ...updatePlayer(next, playerId, {
         ...player,
-        deck: shuffleDeck([...player.deck, ...player.discard]),
-        discard: [],
+        deck: shuffleDeck([...player.deck, ...returned]),
+        discard: kept,
       }),
     };
   }

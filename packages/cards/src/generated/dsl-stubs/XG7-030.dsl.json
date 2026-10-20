@@ -17,13 +17,14 @@
       "id": "unnamed_e382a6e382a4e383b3e382b0",
       "text": "ウイング、タクス、レジスト、リードのどれかを持つ自軍ユニットを1体選ぶ。このターン、選んだユニットはBP+1000され、ホールド状態ならリリースする。（これが自軍コマンドゾーンにある間、カード名に「ゴセイ」を含む自軍ユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する）",
       "trigger": {
-        "type": "enter_battle"
+        "type": "operation",
+        "timing": "rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-030::uingutakusurejis",
+          "keyword": "xg7::XG7-030::header",
           "duration": "permanent"
         }
       ]

@@ -114,6 +114,7 @@
     "audit:rollout-status": "tsx scripts/audit-rollout-status.ts",
     "audit:implementation-gaps": "tsx scripts/audit-implementation-gaps.ts",
     "audit:rs-release": "tsx scripts/audit-rs-release-readiness.ts",
+    "audit:source-effect-coverage": "tsx scripts/audit-source-effect-coverage.ts",
     "enrich-rs-operation-dsl": "tsx scripts/enrich-rs-operation-dsl.ts",
     "metrics:full-playable": "tsx scripts/generate-full-playable-metrics.ts",
     "verify-wiki-effects": "tsx scripts/verify-wiki-effects.ts",

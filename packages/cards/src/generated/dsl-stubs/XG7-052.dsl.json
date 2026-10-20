@@ -4,7 +4,7 @@
   "name": "仮面ライダーオーズ・タジャドルコンボ",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "7-",
   "text": "※ブレイカー ※ウイング ※これは、ウイングでアタックするときBP+2000される。 【タジャスピナー】これが自軍エリアにある間、WBを持つ自軍コマンドが3つ以上あれば、自軍バトルフェイズごとに1度だけ、敵軍Sユニットを1体選び、これとバトルさせてもよい。（敵軍捨札が7枚以上あれば、敵軍Sユニットを1体選ぶかわりに、敵軍ユニットを1体選んでもよい）",
@@ -56,13 +56,13 @@
       "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは、ウイングでアタックするときBP+2000される。",
       "trigger": {
-        "type": "on_attack"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-052::korehauingudeata",
+          "keyword": "xg7::XG7-052::wing_bonus",
           "duration": "permanent"
         }
       ]
@@ -74,11 +74,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-052::tajasupina",
+          "keyword": "xg7::XG7-052::taja_spinner",
           "duration": "permanent"
         }
       ]

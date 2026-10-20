@@ -64,7 +64,8 @@
       "【俺の必殺技・パートⅡ】"
     ],
     "expectedDslKeywords": [
-      "no_strike_if_enemy_battle"
+      "no_strike_if_enemy_battle",
+      "rk4::RK-066::ore_no_hissatsu"
     ],
     "bp": 3000,
     "sp": 1,
@@ -79,6 +80,9 @@
     "category": "OT",
     "textSnippets": [
       "【時の列車】"
+    ],
+    "expectedDslKeywords": [
+      "rk3::RK-060::sentou_mode"
     ],
     "bp": 6000,
     "sp": null,
@@ -114,7 +118,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -131,8 +135,8 @@
       "【カギ爪アーム】"
     ],
     "expectedDslKeywords": [
-      "ally_raida_protects_from_enemy_s",
-      "return_rush_deploy_enemy_s"
+      "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
+      "rk4::RK-074::kagizume_arm"
     ],
     "bp": 1000,
     "sp": "1/5",
@@ -150,7 +154,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hold_named_riders_rc_copy"
+      "promo::PK-009::double_typhoon"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -208,7 +212,7 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_reanimate_named_from_discard",
-      "destroy_advent_power_sum"
+      "rk16::RK-333::drag_visor_zwei"
     ],
     "bp": 6500,
     "sp": "1/2",
@@ -223,6 +227,9 @@
     "category": "MA",
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自分の手札から"
+    ],
+    "expectedDslKeywords": [
+      "rk12::RK-252::onkaku"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -242,7 +249,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hand_rush_ma_chikara_s_on_battle"
+      "rk15::RK-314::monster_fever"
     ],
     "bp": 5000,
     "sp": "1/3",

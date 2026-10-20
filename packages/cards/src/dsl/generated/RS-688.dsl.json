@@ -4,7 +4,7 @@
   "name": "ギガフェニックス",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "※ウイング 【ギガニックブーメラン】これをラッシュしたとき、レジストまたはウイングを持つ敵軍ユニットをすべてホールドしてもよい。",
@@ -42,11 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_enemy_unit_koreworashushitatokirejisutomatahauinguwotsuyunitowosube",
+          "keyword": "set9d::RS-688::giganic_boomerang",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

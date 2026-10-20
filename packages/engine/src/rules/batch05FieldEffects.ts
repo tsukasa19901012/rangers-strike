@@ -1,13 +1,14 @@
+import { xg2CommandZoneProtected } from "./xg2/xg2Fields";
 import type { Category } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
-import { cardCategories, cardName, getDefinition, isSmallUnit, parsePowerCost } from "../core/catalog";
+import { cardCategories, cardName, getDefinition, isSmallUnit, parsePowerCost, unitSizeOf } from "../core/catalog";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { sameCardName } from "../core/cardNames";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import { markBattleNcEffect } from "./namedUnitEffects";
+import { openBeastRod } from "./legend1/set8NamedEffectsA";
 import {
   openEffectChoice,
-  startBeastRodChoice,
   startClimberBallChoice,
   startFireGeneralChoice,
   startAkaRedSoulChoice,
@@ -19,14 +20,8 @@ export function applyBeastRodOperation(
   operationInstanceId: string,
   phasePlayerId: PlayerId,
 ): GameState {
-  const withChoice = startBeastRodChoice(state, {
-    playerId,
-    effectId: "geki_e78da3",
-    sourceCardId: "RS-518",
-    sourceInstanceId: operationInstanceId,
-    phasePlayerId,
-  });
-  return withChoice ?? state;
+  // 「敵軍Sユニットを1体選ぶ。」— 使用者が場の S ユニットを選ぶ（rules/legend1/set8NamedEffectsA.ts）。
+  return openBeastRod(state, playerId, operationInstanceId, phasePlayerId);
 }
 
 export function applyAkaRedSoulEnterBattle(
@@ -80,36 +75,6 @@ export function applyFireGeneralEnterBattle(
   return withChoice ?? state;
 }
 
-/** RS-518: 敵コマンドSをホールドなら撃破、リリースならホールド。 */
-export function applyBeastRodToEnemyCommand(
-  state: GameState,
-  enemyId: PlayerId,
-  instanceId: string,
-): GameState | null {
-  const enemy = state.players[enemyId];
-  const found = findInZone(enemy, "command", instanceId);
-  if (!found || !isSmallUnit(state.definitions, found.card.cardId)) return null;
-
-  if (found.card.commandHeld || found.card.mothershipHold) {
-    const [, command] = removeAt(enemy.command, found.index);
-    return {
-      ...state,
-      ...updatePlayer(state, enemyId, {
-        ...enemy,
-        command,
-        discard: [...enemy.discard, found.card],
-      }),
-    };
-  }
-
-  const command = [...enemy.command];
-  command[found.index] = { ...found.card, commandHeld: true, mothershipHold: false };
-  return {
-    ...state,
-    ...updatePlayer(state, enemyId, { ...enemy, command }),
-  };
-}
-
 /** RS-421 ソウル降臨: ホールド後にストライク不可。 */
 export function applyAkaRedSoulHold(
   state: GameState,
@@ -148,6 +113,8 @@ export function collectEnemyCommandsMatchingPower(
 ): string[] {
   const enemy = state.players[enemyId];
   const ids: string[] = [];
+  // XG2-093 ソルドーザー【道路封鎖】: 自軍コマンドゾーンのカードは相手の効果で選ばれない（rules/xg2/xg2Fields.ts）。
+  if (xg2CommandZoneProtected(state, enemyId)) return [];
   for (const card of enemy.command) {
     const def = getDefinition(state.definitions, card.cardId);
     if (!def) continue;
@@ -173,6 +140,8 @@ export function collectOwnRedNcCommands(state: GameState, playerId: PlayerId): s
   const player = state.players[playerId];
   const ids: string[] = [];
   for (const card of player.command) {
+    // すでにホールド状態のカードはホールドできない（atwiki/page-574「選びホールドしてもよい」）。
+    if (card.commandHeld) continue;
     const def = getDefinition(state.definitions, card.cardId);
     if (def?.type !== "unit") continue;
     if (!(def.features ?? []).includes("レッド")) continue;
@@ -195,13 +164,6 @@ export function collectOwnRushByName(
   return valid.length >= count ? valid : [];
 }
 
-export function collectEnemyCommandSmallUnits(state: GameState, enemyId: PlayerId): string[] {
-  const enemy = state.players[enemyId];
-  return enemy.command
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
-    .map((c) => c.instanceId);
-}
-
 export function collectEnemyBattleCategoryM(
   state: GameState,
   enemyId: PlayerId,
@@ -211,7 +173,7 @@ export function collectEnemyBattleCategoryM(
   const ids: string[] = [];
   for (const card of player.battle) {
     const def = getDefinition(state.definitions, card.cardId);
-    if (def?.type === "unit" && def.size === "M" && cardCategories(def).includes(category)) {
+    if (def?.type === "unit" && unitSizeOf(state.definitions, card) === "M" && cardCategories(def).includes(category)) {
       ids.push(card.instanceId);
     }
   }

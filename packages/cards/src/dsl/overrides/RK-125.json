@@ -1,0 +1,36 @@
+{
+  "text": "※これはライドオフしたときストライクできない。 【ブレイラウザー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの持つカテゴリがすべて同じなら、敵軍バトルエリアからSユニットを1体選び撃破する。",
+  "rawText": "※これはライドオフしたときストライクできない。 【ブレイラウザー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの持つカテゴリがすべて同じなら、敵軍バトルエリアからSユニットを1体選び撃破する。",
+  "effects": [
+    {
+      "id": "unnamed_no_strike_after_rideoff",
+      "text": "※これはライドオフしたときストライクできない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "no_strike_after_rideoff",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "bureirauza",
+      "name": "ブレイラウザー",
+      "text": "自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの持つカテゴリがすべて同じなら、敵軍バトルエリアからSユニットを1体選び撃破する。",
+      "trigger": {
+        "type": "riding_combo"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_card::RK-125::bureirauza",
+          "duration": "turn"
+        }
+      ],
+      "optional": true
+    }
+  ]
+}

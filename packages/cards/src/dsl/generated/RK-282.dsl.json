@@ -38,13 +38,13 @@
       "name": "シザースアタック",
       "text": "自軍ラッシュエリアに「ボルキャンサー」があれば、このユニットは「SP1/2」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "scissors_attack",
-          "duration": "turn"
+          "keyword": "rk14::RK-282::scissors_attack",
+          "duration": "permanent"
         }
       ],
       "optional": false

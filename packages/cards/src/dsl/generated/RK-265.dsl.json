@@ -34,11 +34,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-265::raideinguaro",
+          "keyword": "rk13::RK-265::riding_arrow",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

@@ -4,7 +4,7 @@
   "name": "仮面ライダーイクサBM",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "※これをラッシュしたとき、自軍コマンドゾーンのカードを１枚選び捨札にしてもよい。そうしたとき、自軍山札を見て、必要パワーの数字が「1」か「9」か「3」のカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい。その後、山札をシャッフルする。 【イクサ・ジャッジメント】敵軍バトルエリアから、BPが本来のBPでないユニットを１体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
@@ -28,11 +28,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::RK-319::koreworashushita",
+          "keyword": "rk16::RK-319::command_swap",
           "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     },
     {
       "id": "ikusajajimento",
@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-319::ikusajajimento",
-          "duration": "turn"
+          "keyword": "rk16::RK-319::ixa_judgment",
+          "duration": "permanent"
         }
       ],
       "optional": false

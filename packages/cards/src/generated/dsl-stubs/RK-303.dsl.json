@@ -40,11 +40,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-303::no_e693ac",
+          "keyword": "rk15::RK-303::mimic_release",
           "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

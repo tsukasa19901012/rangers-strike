@@ -4,7 +4,7 @@
   "name": "仮面ライダー2号",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "PR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※レジスト ※これは自軍ターン中、バトルするとき、BP+2000される。 【力の2号】BP4000以上の敵軍Sユニットを1体選び、このユニットと選んだユニットでバトルしてもよい。そうしたとき、このターン、これはアタックする事ができない。",
@@ -57,13 +57,27 @@
       "condition": {
         "type": "has_target",
         "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S",
-            "minBp": 4000
-          }
+          "type": "zones",
+          "zones": [
+            {
+              "type": "zone",
+              "zone": "battle",
+              "owner": "opponent",
+              "filter": {
+                "size": "S",
+                "minBp": 4000
+              }
+            },
+            {
+              "type": "zone",
+              "zone": "rush",
+              "owner": "opponent",
+              "filter": {
+                "size": "S",
+                "minBp": 4000
+              }
+            }
+          ]
         }
       },
       "optional": true,
@@ -72,13 +86,27 @@
           "type": "choose",
           "kind": "select_unit",
           "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S",
-              "minBp": 4000
-            }
+            "type": "zones",
+            "zones": [
+              {
+                "type": "zone",
+                "zone": "battle",
+                "owner": "opponent",
+                "filter": {
+                  "size": "S",
+                  "minBp": 4000
+                }
+              },
+              {
+                "type": "zone",
+                "zone": "rush",
+                "owner": "opponent",
+                "filter": {
+                  "size": "S",
+                  "minBp": 4000
+                }
+              }
+            ]
           },
           "count": 1,
           "then": [

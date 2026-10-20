@@ -21,11 +21,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "operation_release_wing_then_enemy_battle_bp_le_to_power",
+          "keyword": "set9a::RS-606::hikarimaru",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

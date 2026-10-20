@@ -4,7 +4,7 @@
   "name": "仮面ライダーカイザ",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 3,
   "text": "※これは、これ以外の自軍Sユニットを１体ホールドしなければバトルエリアに出られない。 【カイザブレイガン】BPの下三桁が500の敵軍Sユニットを1体選び撃破する。（この効果は「サイドバッシャーBM」からコンビネーションするときはナンバーに関係なく発動する）",
@@ -22,13 +22,13 @@
       "id": "require_hold_other_s_entry",
       "text": "※これは、これ以外の自軍Sユニットを１体ホールドしなければバトルエリアに出られない。",
       "trigger": {
-        "type": "while_in_field"
+        "type": "enter_battle"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "require_hold_other_s_entry",
-          "duration": "permanent"
+          "keyword": "rk8::RK-167::entry_hold",
+          "duration": "turn"
         }
       ]
     },
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-167::kaizabureigan",
+          "keyword": "rk8::RK-167::kaiser_blaygun",
           "duration": "turn"
         }
       ],

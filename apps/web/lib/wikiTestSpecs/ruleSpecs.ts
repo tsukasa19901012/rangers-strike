@@ -1,14 +1,13 @@
 import type { WikiRuleCompleteSpec } from "./types";
 
 /**
- * 完成版ルール E2E テスト仕様 — docs/wiki/*.md 各セクションに対応。
+ * 完成版ルール E2E テスト仕様 — docs/rules/ 準拠。ruleRef は docs/rules/*.md のルールID（例: "R-WIN-01"、複数は ", " 区切り）。
  * 実装: packages/engine/src/wikiRulesComplete.test.ts
  */
 export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
-  // core-rules.md
   {
     ruleId: "RULE-CORE-01",
-    wikiRef: "docs/wiki/core-rules.md#ゲーム概要",
+    ruleRef: "R-SETUP-07, R-TURN-03",
     title: "先攻1ターン目はスタート省略・チャージから開始",
     assertions: [
       "createGame 後 firstPlayer の phase は charge",
@@ -17,7 +16,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-CORE-02",
-    wikiRef: "docs/wiki/core-rules.md#勝利条件",
+    ruleRef: "R-WIN-01, R-WIN-03, R-START-05",
     title: "7ダメージまたは必須ドロー失敗で勝敗",
     assertions: [
       "damage が 7 で winner 確定",
@@ -28,7 +27,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-CORE-03",
-    wikiRef: "docs/wiki/core-rules.md#デッキ構築",
+    ruleRef: "R-DECK-01, R-DECK-02, R-DECK-03",
     title: "デッキ40枚以上・同名3枚まで",
     assertions: [
       "DECK_MIN_SIZE = 40",
@@ -37,7 +36,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-CORE-04",
-    wikiRef: "docs/wiki/core-rules.md#ゾーン定義",
+    ruleRef: "R-ZONE-08, R-ZONE-07, R-DMG-01",
     title: "コマンドゾーン最大5枚・超過は捨札",
     assertions: [
       "command ゾーンが5枚を超えると捨札へ",
@@ -45,10 +44,9 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
     ],
     fixtureCardIds: ["RS-030", "RS-064"],
   },
-  // phases.md
   {
     ruleId: "RULE-PHASE-01",
-    wikiRef: "docs/wiki/phases.md#1-スタートフェイズ",
+    ruleRef: "R-START-01",
     title: "スタート3行程を好きな順に実行",
     assertions: [
       "release_all_commands でホールド解除",
@@ -59,7 +57,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-PHASE-02",
-    wikiRef: "docs/wiki/phases.md#2-チャージフェイズ",
+    ruleRef: "R-CHARGE-01, R-CHARGE-02",
     title: "チャージ1ターン1枚・スキップ可",
     assertions: [
       "charge で手札→power/command（オモテ）",
@@ -68,7 +66,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-PHASE-03",
-    wikiRef: "docs/wiki/phases.md#3-ラッシュフェイズ",
+    ruleRef: "R-RUSH-11, R-POW-02, R-RUSH-30",
     title: "ラッシュ手順: パワー→追加条件→ホールド→実行→ラッシュ",
     assertions: [
       "必要パワー未達ではラッシュ不可",
@@ -79,7 +77,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-PHASE-04",
-    wikiRef: "docs/wiki/phases.md#4-バトルフェイズ",
+    ruleRef: "R-BATTLEPH-01, R-BA-02, R-BA-04, R-CN-02",
     title: "バトル進入後アタック/ストライク/パス選択",
     assertions: [
       "move_to_battle 後 pendingBattleEntry",
@@ -90,7 +88,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-PHASE-05",
-    wikiRef: "docs/wiki/phases.md#5-エンドフェイズ",
+    ruleRef: "R-END-01, R-TURN-04",
     title: "ターン終了時 TurnModifiers クリア",
     assertions: [
       "end_phase で相手ターンへ",
@@ -98,10 +96,9 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
       "ターン終了効果は end フェイズで解決",
     ],
   },
-  // rush.md
   {
     ruleId: "RULE-RUSH-01",
-    wikiRef: "docs/wiki/rush.md#基本ラッシュ",
+    ruleRef: "R-RUSH-20, R-CMD-02, R-RUSH-22",
     title: "効果ラッシュは特記なき限りコマンド不要",
     assertions: [
       "効果による recruit は initiate_command_payment 不要",
@@ -110,7 +107,8 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-RUSH-02",
-    wikiRef: "docs/wiki/rush.md#ゾードアップ",
+    // ルール: R-ADD-06（ゾードアップ固有の項目は未収載。最も近い章: docs/rules/04-rush.md）
+    ruleRef: "R-ADD-06",
     title: "ゾードアップは全融合パートナー必要",
     assertions: [
       "融合パートナー未揃いではラッシュ不可",
@@ -118,10 +116,9 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
     ],
     fixtureCardIds: ["RS-050", "RS-051", "RS-052"],
   },
-  // battle.md
   {
     ruleId: "RULE-BATTLE-01",
-    wikiRef: "docs/wiki/battle.md#アタック（バトル）",
+    ruleRef: "R-BTL-01, R-BTL-02, R-ATK-01",
     title: "低BP撃破・同BP相討ち",
     assertions: [
       "attack で BP 比較",
@@ -132,7 +129,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-BATTLE-02",
-    wikiRef: "docs/wiki/battle.md#相打ち",
+    ruleRef: "R-BTL-02, R-KW-RESIST-02",
     title: "相討ちは同時撃破・レジストは個別選択可",
     assertions: [
       "同BPバトルで両者 leave",
@@ -141,7 +138,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-BATTLE-03",
-    wikiRef: "docs/wiki/battle.md#ナンバーコンビネーション（NC）",
+    ruleRef: "R-CN-01, R-CN-02, R-CN-03, R-BA-02",
     title: "バトル左からN番目で comboNumber=N 発動",
     assertions: [
       "battlePosition 左1始まり",
@@ -152,7 +149,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-BATTLE-04",
-    wikiRef: "docs/wiki/battle.md#レジスト",
+    ruleRef: "R-KW-RESIST-01, R-KW-RESIST-02, R-KW-RESIST-04",
     title: "バトル撃破時のみレジスト可",
     assertions: [
       "PendingRegister で use_register / pass_register",
@@ -162,7 +159,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-BATTLE-05",
-    wikiRef: "docs/wiki/battle.md#ウイング",
+    ruleRef: "R-KW-WING-01, R-KW-WING-02",
     title: "ラッシュからホールドアタック・当ターンBA/ストライク不可",
     assertions: [
       "canWingAttackFromRush でラッシュからアタック",
@@ -172,7 +169,8 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-BATTLE-06",
-    wikiRef: "docs/wiki/battle.md#代用・バトルキャンセル",
+    // ルール: R-ATK-04, R-ERR-RS018（RS-006 のバトル不成立は個別ルールなし。最も近い章: docs/rules/05-battle-strike-damage.md）
+    ruleRef: "R-ATK-04, R-ERR-RS018",
     title: "カウンターによるバトル形状変更",
     assertions: [
       "RS-006: アタック対象ラッシュ戻しでバトル不成立",
@@ -180,10 +178,10 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
     ],
     fixtureCardIds: ["RS-006", "RS-018"],
   },
-  // damage.md
   {
     ruleId: "RULE-DMG-01",
-    wikiRef: "docs/wiki/damage.md#ストライクダメージ",
+    // ルール: R-STK-01 ではダメージ量は SP の値（タイトルの「1ダメージ」は SP1 の場合）。
+    ruleRef: "R-STK-01, R-STK-05",
     title: "ストライク1ダメージ・pendingStrike 窓",
     assertions: [
       "strike → PendingStrike",
@@ -194,36 +192,36 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-DMG-02",
-    wikiRef: "docs/wiki/damage.md#ダメージ支払い",
+    ruleRef: "R-DMG-01, R-DMG-02",
     title: "パワー裏返しでダメージ支払い",
     assertions: [
       "pendingDamagePayment で支払い選択",
       "faceDown power と damage 同期",
     ],
   },
-  // timing.md
   {
     ruleId: "RULE-TIME-01",
-    wikiRef: "docs/wiki/timing.md#効果スタック優先度",
-    title: "反応窓優先度: 離場→レジスト→ストライク→バトル→ラッシュ",
+    // ルール: R-PRI-02 — 種類別の固定優先順位はない。同時に開いた反応窓はターンプレイヤーが順番を選び、
+    // それ以外は入れ子（R-TIME-04）の順に解決する。
+    ruleRef: "R-PRI-02, R-SIM-01, R-TIME-04",
+    title: "反応窓の順序: 同時ならターンプレイヤーが選択、それ以外は入れ子順",
     assertions: [
-      "buildEffectStack の priority 順",
+      "buildEffectStack は reactionResolutionOrder（ターンプレイヤーの選択）→入れ子順",
       "hasOpenReactionWindow 中はフェイズ行動制限",
     ],
   },
   {
     ruleId: "RULE-TIME-02",
-    wikiRef: "docs/wiki/timing.md#効果の解決",
+    ruleRef: "R-RES-04, R-SIM-01",
     title: "空撃ち可・強制効果は対象あれば必ず選択",
     assertions: [
       "対象なし効果はスキップ",
       "同一タイミングはターンプレイヤーが順序決定",
     ],
   },
-  // keywords.md
   {
     ruleId: "RULE-KW-01",
-    wikiRef: "docs/wiki/keywords.md#カテゴリ",
+    ruleRef: "R-CAT-02",
     title: "マルチカテゴリ: 全カテゴリコマンド存在+いずれかホールド",
     assertions: [
       "cardCategories() で複数カテゴリ参照",
@@ -232,7 +230,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-KW-02",
-    wikiRef: "docs/wiki/keywords.md#常駐オペレーション",
+    ruleRef: "R-KW-PERM-01, R-ZONE-12",
     title: "常駐は各プレイヤー1枚・上書き可",
     assertions: [
       "operation ゾーンに配置",
@@ -243,7 +241,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-KW-03",
-    wikiRef: "docs/wiki/keywords.md#カウンター",
+    ruleRef: "R-CTR-01, R-RUSH-30",
     title: "カウンターは敵軍ターン中のみ",
     assertions: [
       "isHandCounterCard で手札判定",
@@ -254,7 +252,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-KW-04",
-    wikiRef: "docs/wiki/keywords.md#チェイス",
+    ruleRef: "R-KW-CHASE-01, R-KW-CHASE-02",
     title: "ライド中ユニット離場時ビークル切替",
     assertions: [
       "ユニットでなくなる時にライド先ビークル捨て",
@@ -264,7 +262,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-KW-05",
-    wikiRef: "docs/wiki/keywords.md#ウイング",
+    ruleRef: "R-KW-WING-03, R-KW-WING-04",
     title: "ウイング完全動作（複数回・BA戻り再ウイング含む）",
     assertions: [
       "BA出場→ラッシュ戻り→同一ターン再ウイング可",
@@ -273,7 +271,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-KW-06",
-    wikiRef: "docs/wiki/keywords.md#スクラム",
+    ruleRef: "R-KW-SCRUM-01",
     title: "右隣CNが自CN+1の間アタックされない",
     assertions: [
       "scrumBlocksAttack: 右隣 comboNumber === 自CN + 1",
@@ -281,7 +279,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-KW-07",
-    wikiRef: "docs/wiki/keywords.md#否定優先・リファレンス",
+    ruleRef: "R-PRI-01",
     title: "できない > 可能なら〜",
     assertions: [
       "cannotEnterBattle 等の否定が優先",
@@ -291,7 +289,7 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-KW-08",
-    wikiRef: "docs/wiki/glossary/ride.md",
+    ruleRef: "R-KW-RIDE-01, R-KW-RIDE-05, R-KW-RC-01",
     title: "ライド: ビークル上にユニット配置",
     assertions: [
       "ライド中BP修飾子適用",
@@ -301,19 +299,22 @@ export const WIKI_RULE_COMPLETE_SPECS: WikiRuleCompleteSpec[] = [
   },
   {
     ruleId: "RULE-KW-09",
-    wikiRef: "docs/wiki/glossary/p1294.md",
+    // ルール: R-KW-MORPH-01（判定はラッシュの手段）、R-KW-MORPH-02（置き換え先はコマンド・パワーゾーンのみ、状態と位置を引き継ぐ）
+    ruleRef: "R-KW-MORPH-01, R-KW-MORPH-02, R-KW-MORPH-03",
     title: "敵ラッシュ時に特徴一致でモーフ置換",
     assertions: [
       "emitUnitRushed 後 pendingMorph / morph_replacement",
-      "置換先は hand/rush/power/command のオモテユニット",
-      "モーフキーワード持ちのラッシュには反応不可",
+      "置換先は自軍コマンドゾーン・パワーゾーンのオモテ向きユニットカードのみ（手札・ラッシュは不可）",
+      "モーフ以外の手段でのラッシュに反応（ラッシュされたカードがモーフ持ちでも反応可）",
+      "置き換えでホールド／リリース状態と位置を引き継ぐ",
       "複数モーフ時はターンプレイヤーが順序決定",
       "pass_morph_reaction でスキップ可",
     ],
   },
   {
     ruleId: "RULE-KW-10",
-    wikiRef: "docs/wiki/glossary/p266.md",
+    // ルール: R-CN-01, R-CN-05（ジョイントコンビネーション専用の項目は未収載。最も近い章: docs/rules/05-battle-strike-damage.md）
+    ruleRef: "R-CN-01, R-CN-05",
     title: "L/Rナンバーはバトル進入時に隣接LサイズとJC発動",
     assertions: [
       "Lは右隣Lサイズに効果付与",

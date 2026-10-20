@@ -4,7 +4,7 @@
   "name": "ドラス",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": "4+",
   "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） ※これはホールド状態の時SP1になる。 【生命維持プール】これが自軍エリアにある間、これがホールド状態になったとき、自軍常駐置き場からカードを1枚選び捨札にしてもよい（ウラ向きのカードはウラ向きのまま選ぶ）。そうしたとき、これをリリースする。",
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-184::puru",
+          "keyword": "rk9::RK-184::life_pool",
           "duration": "permanent"
         }
       ],

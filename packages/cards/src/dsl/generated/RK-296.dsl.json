@@ -4,7 +4,7 @@
   "name": "仮面ライダーキックホッパー",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "【ライダーキック】敵軍バトルエリアのユニットを、必要パワーの数字の合計が2になるまで好きな数選んでもよい（自軍Sユニットが「仮面ライダーキックホッパー」と「仮面ライダーパンチホッパー」だけなら、4になるまで好きな数選んでもよい）。そうしたとき、選んだユニットを持ち主のパワーゾーンに送る。",
@@ -30,11 +30,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-296::raidakiku",
+          "keyword": "rk15::RK-296::rider_kick",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

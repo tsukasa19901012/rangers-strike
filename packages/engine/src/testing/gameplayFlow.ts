@@ -111,6 +111,27 @@ function buildRushZone(
   }
 
   if (isSendSUnitZordCondition(condition)) {
+    // 「自軍「X」1体をパワーゾーンに送る」（RK-054 等）は X という名前の S ユニットが要る（rules/zord.ts）。
+    const named = /^自軍[「｢]([^」｣]+)[」｣]1体をパワーゾーンに送る。?$/.exec(
+      (resolveRushAdditionalCondition(zordCardId, definitions[zordCardId])?.text ?? "").normalize("NFKC").trim(),
+    )?.[1];
+    if (condition === "send_s_unit_to_power" && named) {
+      const namedId = `TST-ZORD-MAT-${zordCardId}`;
+      if (!definitions[namedId]) {
+        definitions[namedId] = {
+          id: namedId,
+          name: named,
+          type: "unit",
+          category: "WB",
+          rarity: "N",
+          expansion: "test",
+          powerCost: 1,
+          bp: 1000,
+          size: "S",
+        };
+      }
+      return [inst(namedId, "s-material")];
+    }
     const materialId = definitions[DEFAULT_S_MATERIAL]
       ? DEFAULT_S_MATERIAL
       : "TST-UNIT-0";

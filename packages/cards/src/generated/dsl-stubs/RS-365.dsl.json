@@ -4,7 +4,7 @@
   "name": "イナズマギンガー",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "0+",
   "text": "【帝国の掌握】自軍ターン中、これがバトルエリアに出たとき、自分の手札をすべて相手に見せる。そして、見せた手札と同じカード名の敵軍ユニットを全て撃破する。その後、自分の手札をすべて捨札にし、この効果で撃破した敵軍ユニット1体につき、 このターン、これはSP+1される。",
@@ -41,7 +41,7 @@
   },
   "rushAdditionalCondition": {
     "conditionId": "discard_all_hand",
-    "text": "自分の手札を全て捨札にする"
+    "text": "これ以外の自分の手札を全て捨札にする"
   },
   "imageUrl": "/cards/promoted/RS-365.jpg",
   "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-365.jpg"

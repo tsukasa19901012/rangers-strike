@@ -9,6 +9,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
+import { yieldToEventLoop } from "./testing/yieldToEventLoop";
 import { fullPlayableCatalog, type CardDefinition } from "@rangers-strike/cards";
 import { isCatchallGrantKeyword } from "./dsl/hashGrantKeywordStub";
 import { applyAction, createGame, getLegalActions } from "./index";
@@ -177,12 +178,14 @@ describe("RK/BK monkey test (random legal actions, RK/BK-only decks)", () => {
   it(
     `completes ${MONKEY_GAMES} games without engine errors`,
     { timeout: 180_000 },
-    () => {
+    async () => {
       const failures: MonkeyFailure[] = [];
       let finished = 0;
       let timedOut = 0;
 
       for (let seed = 1; seed <= MONKEY_GAMES; seed += 1) {
+        // 長い同期ループで vitest ワーカーの RPC（onTaskUpdate）が待たされないよう、1ゲームごとに譲る。
+        await yieldToEventLoop();
         const failure = runRkBkMonkeyGame(seed);
         if (!failure) {
           finished += 1;
@@ -216,13 +219,14 @@ describe("RK/BK CPU simulation (hybrid promoted, unresolved audit)", () => {
   it(
     `${SIM_GAMES} games with zero interpret_effect_unresolved on RK/BK cards`,
     { timeout: 300_000 },
-    () => {
+    async () => {
       const traces = [];
       let applyFailed = 0;
       let noLegal = 0;
       let winners = 0;
 
       for (let seed = 1; seed <= SIM_GAMES; seed += 1) {
+        await yieldToEventLoop();
         const rng = mulberry32(seed);
         const initial = createFullPromotedGame({
           rng,

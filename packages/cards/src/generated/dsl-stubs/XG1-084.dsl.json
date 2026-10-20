@@ -4,7 +4,7 @@
   "name": "マッドギャラン",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "【人質と脅迫】これが自軍バトルエリアにある間、相手は次の制限を受ける⇒自分自身のバトルエリアにあるホールド状態のSユニットはラッシュエリアに戻せない。また、自分自身の手札を1枚選び捨札にしなければ、このユニットにアタックすることができない。",
@@ -22,11 +22,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-084::to",
+          "keyword": "xg1::XG1-084::hostage",
           "duration": "permanent"
         }
       ]

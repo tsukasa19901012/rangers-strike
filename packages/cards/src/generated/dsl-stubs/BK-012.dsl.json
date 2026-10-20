@@ -16,15 +16,16 @@
       "text": "自分の手札か、自軍常駐置き場でオモテ向きになっているカードの中から、本来の特徴に「賢者の石」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、手札から選んだ場合は1枚ドローする。",
       "trigger": {
         "type": "operation",
-        "timing": "resident"
+        "timing": "rush"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_resident_rush_no_seki",
+          "keyword": "bk1::BK-012::altering",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

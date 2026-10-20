@@ -4,7 +4,7 @@
   "name": "レッドホーク（2nd）",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※レジスト ※ウイング 【バードブラスター】このターン、ホールド状態の敵軍SユニットはBP-2500される。（BP0以下になったユニットは撃破される）",
@@ -56,8 +56,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-689::badoburasuta",
-          "duration": "permanent"
+          "keyword": "set9d::RS-689::bird_blaster",
+          "duration": "turn"
         }
       ],
       "optional": false

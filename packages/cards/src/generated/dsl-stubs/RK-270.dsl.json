@@ -40,11 +40,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_enemy_deck_1",
+          "keyword": "rk13::RK-270::scout",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

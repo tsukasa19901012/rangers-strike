@@ -10,7 +10,7 @@
       "【天地轟鳴アニマルハート】"
     ],
     "expectedDslKeywords": [
-      "effect_card::SR-001::heavenearthanimalheart"
+      "effect_card::RS-151::furioussharkshot"
     ],
     "bp": 14000,
     "sp": 1,
@@ -27,7 +27,7 @@
       "このターン、5体以上の合体ユニットを必要とする特"
     ],
     "expectedDslKeywords": [
-      "mecha_fusion_command_substitute"
+      "promo::SR-002::super_formation"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -46,7 +46,7 @@
       "【龍撃剣＆獣奏剣】"
     ],
     "expectedDslKeywords": [
-      "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000"
+      "bp_plus_per_discard_feature_feat_e68190e7ab9c_1000_sp_at_8000"
     ],
     "bp": 4000,
     "sp": "special",

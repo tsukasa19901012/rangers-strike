@@ -1,0 +1,34 @@
+{
+  "effects": [
+    {
+      "id": "require_command_hold_entry",
+      "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "require_command_hold_entry",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "baku_chokichokishizasu",
+      "name": "爆竜必殺チョキチョキシザース",
+      "text": "これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒相手は可能なら、自分自身のゾーンのオモテ向きのカードか手札を1枚選び捨札にする。",
+      "trigger": {
+        "type": "joint_combo_r"
+      },
+      "optional": true,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_card::XG6-015::baku_chokichokishizasu",
+          "duration": "turn"
+        }
+      ]
+    }
+  ]
+}

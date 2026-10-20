@@ -7,7 +7,7 @@
     "ET",
     "DA"
   ],
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※これはウイングを持つユニットとバトルしたときバトルに勝っても撃破される。 【オルフェノクの帝王】自分の手札を1枚選び自軍コマンドゾーンにホールド状態で置いてもよい。そうしたとき、そのカードの必要パワーの数字以下の必要パワーを持つ敵軍バトルエリアのSユニットを好きな数選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
@@ -25,13 +25,13 @@
       "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはウイングを持つユニットとバトルしたときバトルに勝っても撃破される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-049::korehauinguwotsu",
+          "keyword": "xg6::XG6-049::field",
           "duration": "permanent"
         }
       ]
@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-049::orufuenokunoou",
+          "keyword": "xg6::XG6-049::orphnoch",
           "duration": "permanent"
         }
       ]

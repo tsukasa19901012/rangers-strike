@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ignore_rule_text_koregaerianiarunowosuruomegazerunoreiyouwotsu",
+          "keyword": "rk10::RK-199::zeru_command",
           "duration": "turn"
         }
       ]

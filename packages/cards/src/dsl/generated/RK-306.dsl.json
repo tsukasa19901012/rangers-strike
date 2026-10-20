@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-306::dainamikuchopu",
+          "keyword": "rk15::RK-306::dynamic_chop",
           "duration": "turn"
         }
       ],

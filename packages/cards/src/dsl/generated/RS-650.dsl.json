@@ -34,13 +34,12 @@
       "name": "強蹴一閃ライノシュート",
       "text": "自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい。これは、ユニットが重ねられている間カードとして扱い、重ねたユニットがユニットでなくなるとき捨札になる。このカードに重ねたユニットは、次の能力を得る⇒このユニットからコンビネーションする「ガオマジロ」はBP+5000される。",
       "trigger": {
-        "type": "on_rush"
+        "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_da_less_l_on_rush",
+          "keyword": "set9c::RS-650::rhino_shoot",
           "duration": "permanent"
         }
       ]

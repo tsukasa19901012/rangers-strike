@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-605::karanotsubasa",
+          "keyword": "set9a::RS-605::wing_from_deck",
           "duration": "turn"
         }
       ],

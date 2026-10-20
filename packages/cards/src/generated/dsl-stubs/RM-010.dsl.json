@@ -4,7 +4,7 @@
   "name": "ソルインジケーター",
   "type": "operation",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "MR",
   "expansion": "legend1",
   "powerCost": 2,
   "text": "自軍山札からビークルカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
@@ -20,23 +20,9 @@
       "optional": false,
       "effects": [
         {
-          "type": "choose",
-          "kind": "optional_deck_draw",
-          "valid": {
-            "type": "zone",
-            "zone": "deck",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "hand"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rm1::RM-010::sol_indicator",
+          "duration": "turn"
         }
       ]
     }

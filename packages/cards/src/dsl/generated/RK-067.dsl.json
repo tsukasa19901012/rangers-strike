@@ -4,7 +4,7 @@
   "name": "仮面ライダーナイト",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 5,
   "text": "※これは自軍捨札に特徴「女」を持つユニットカードがなければ、特徴「男」または「女」を持つユニットにアタックすることができない。 【飛翔斬】「ダークウイング」からコンビネーションしたとき発動できる⇒これは敵軍ユニットのBPをカードに表記された本来の値としてバトルする",
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "combo_from_partner_original_bp",
+          "keyword": "rk4::RK-067::hishouzan",
           "duration": "turn"
         }
       ],

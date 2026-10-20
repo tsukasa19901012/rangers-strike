@@ -1,9 +1,13 @@
 import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
 import { canonicalCardName } from "@rangers-strike/cards";
-import { rematchEffectPrimitives, splitChoiceBranches } from "@rangers-strike/cards/pipeline/extractEffects";
+import {
+  decodeFeatureKeywordSlug,
+  rematchEffectPrimitives,
+  splitChoiceBranches,
+} from "@rangers-strike/cards/pipeline/extractEffects";
 import { isCatchallGrantKeyword } from "../dsl/hashGrantKeywordStub";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
-import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
+import { cardName, getDefinition, isSmallUnit, unitSizeOf } from "../core/catalog";
 import { findInZone, updatePlayer } from "../core/helpers";
 import { getDslEffectById } from "../dsl/effectLookup";
 import { interpretEffectPrimitives } from "../dsl/cardInterpreter";
@@ -58,7 +62,7 @@ function collectOwnSVehicles(state: GameState, playerId: PlayerId): string[] {
   return player.rush
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      return def?.type === "vehicle" && def.size === "S";
+      return def?.type === "vehicle" && unitSizeOf(state.definitions, c) === "S";
     })
     .map((c) => c.instanceId);
 }
@@ -66,7 +70,7 @@ function collectOwnSVehicles(state: GameState, playerId: PlayerId): string[] {
 function collectOwnSUnitsInCommand(state: GameState, playerId: PlayerId): string[] {
   const player = state.players[playerId];
   return player.command
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .map((c) => c.instanceId);
 }
 
@@ -157,12 +161,13 @@ export function applyDrawThenHandToDeckTop(
   ctx: GrantKeywordContext,
 ): GameState | null {
   const player = state.players[ctx.playerId];
-  if (player.deck.length === 0 || player.hand.length >= 6) return null;
+  if (player.hand.length >= 6) return null;
+  // ルール: R-START-05, R-WIN-03 — 山札が無ければドローできずに敗北（requestDrawFromDeck が deckedOut を立てる）。
   const drawn = requestDrawFromDeck(state, ctx.playerId, ctx.phasePlayerId, {
     count: 1,
     sourceCardId: ctx.sourceCardId,
   });
-  if (drawn.pending) return drawn.state;
+  if (drawn.pending || drawn.drawn === false) return drawn.state;
   const afterDraw = drawn.state;
   const handIds = afterDraw.players[ctx.playerId].hand.map((c) => c.instanceId);
   if (handIds.length === 0) return null;
@@ -330,6 +335,8 @@ export function applyPickEffectBranch(
 }
 
 function decodeFeatureSlug(slug: string): string | null {
+  const decoded = decodeFeatureKeywordSlug(slug);
+  if (decoded) return decoded;
   if (slug === "amadamu") return "アマダム";
   if (slug === "no_seki") return "賢者の石";
   if (slug === "den_o") return "DEN-O";

@@ -4,7 +4,7 @@
   "name": "仮面ライダーカイザ×仮面ライダーファイズ",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "3+",
   "text": "※クロス1 ※これがアタックして、BPの下三桁が500の敵軍Sユニットを撃破したとき、相手に1点ダメージを与える。 【紅と金】自軍ターン中、これがバトルエリアに出たとき、次の効果を2回まで発動できる⇒自分の手札を1枚選び、自軍コマンドゾーンにホールド状態で置く。そうしたとき、敵軍ユニットを1体選び、このターン、BP-1500する。",
@@ -39,15 +39,16 @@
       "id": "deal_damage_1",
       "text": "※これがアタックして、BPの下三桁が500の敵軍Sユニットを撃破したとき、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg7::XG7-037::kaixa_damage",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     },
     {
       "id": "to_e7b485",
@@ -60,8 +61,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-037::toe7b485",
-          "duration": "turn"
+          "keyword": "xg7::XG7-037::red_gold",
+          "duration": "permanent"
         }
       ]
     }

@@ -40,11 +40,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rush_block_discard_power",
-          "duration": "permanent"
+          "keyword": "rk3::RK-053::gatack_vulcan",
+          "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

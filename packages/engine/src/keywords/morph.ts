@@ -1,11 +1,23 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { getDefinition } from "../core/catalog";
-import { cardHasMorphKeyword } from "./battleKeywords";
 import { cardHasKeyword } from "./cardKeywords";
+import { ryuseioBlocksMove } from "../rules/restrictions";
+import { rushFromHandOnly } from "../rules/rushFromHandOnly";
+import { rk16CanMorphFromDiscard, rk16MorphDiscardCost, rk16MorphEntryHolds, rk16ReleasedCommands } from "../rules/rk/rk16Fields";
+import { xg2MorphStackCandidates } from "../rules/xg2/xg2Effects";
+
+/**
+ * モーフの置き換え先を探すゾーン。「自軍ゾーン」はコマンドゾーンとパワーゾーンだけ
+ * （手札・ラッシュエリアは含まない）。ルール: R-KW-MORPH-02
+ */
+export const MORPH_REPLACEMENT_ZONES = ["power", "command"] as const;
+
+/** 置き換え元ゾーン（モーフ以外の置き換え効果は手札・ラッシュも使う）。 */
+export type ReplacementSourceZone = "hand" | "rush" | "power" | "command" | "discard";
 
 export type MorphReplacementCandidate = {
-  zone: "hand" | "rush" | "power" | "command";
+  zone: ReplacementSourceZone;
   instanceId: string;
   card: CardInstance;
 };
@@ -32,15 +44,17 @@ export function listMorphReplacementCandidates(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
   morphUnitCardId: string,
+  zones: readonly ReplacementSourceZone[] = MORPH_REPLACEMENT_ZONES,
 ): MorphReplacementCandidate[] {
   const morphFeatures = unitFeatures(getDefinition(definitions, morphUnitCardId));
   if (morphFeatures.length === 0) return [];
 
   const results: MorphReplacementCandidate[] = [];
-  const zones = ["hand", "rush", "power", "command"] as const;
   for (const zone of zones) {
     for (const card of player[zone]) {
       if (!isFaceUpMorphUnitCard(definitions, card)) continue;
+      // 「※これは手札からしかラッシュできない」（XP-017 等）はモーフの置き換え先にできない（atwiki/page-1981 カード評価）。
+      if (rushFromHandOnly(card.cardId)) continue;
       const features = unitFeatures(getDefinition(definitions, card.cardId));
       if (featuresExactlyMatch(features, morphFeatures)) {
         results.push({ zone, instanceId: card.instanceId, card });
@@ -50,19 +64,57 @@ export function listMorphReplacementCandidates(
   return results;
 }
 
-/** 敵ラッシュ（モーフ以外）に対し、モーフ置換候補があるか。 */
+/**
+ * モーフで置き換えて、モーフ持ちユニットのいたエリアに出られる置き換え先。
+ * バトルエリアのモーフ持ちユニットと置き換えるカードは、バトルエリアに出られなければ選べない
+ * （RS-290 龍星王【飛竜棍・大風車】＋RS-339 闇のヤイバで DA の S ユニットになるクウガRD:
+ *  atwiki/page-474 Q2・Q4、atwiki/page-439 Q3・Q4「実行できないことが明確であれば、それを実行することはできません」）。
+ */
+export function listPlaceableMorphReplacementCandidates(
+  state: GameState,
+  defenderId: PlayerId,
+  morphUnit: CardInstance,
+): MorphReplacementCandidate[] {
+  const defender = state.players[defenderId];
+  let candidates = listMorphReplacementCandidates(defender, state.definitions, morphUnit.cardId);
+  // RK-317 シュードラン【ポッドバッティング】: DA のコマンドをホールドすれば、かわりに自軍捨札から選べる（rules/rk/rk16Fields.ts）。
+  if (rk16CanMorphFromDiscard(state, defenderId)) {
+    candidates = [...candidates, ...listMorphReplacementCandidates(defender, state.definitions, morphUnit.cardId, ["discard"])];
+  }
+  // XG2-070 ライドブッカー・ブックモード: これに重ねたカードからも選べる（rules/xg2/xg2dEffects.ts）。
+  candidates = [...candidates, ...xg2MorphStackCandidates(state, defenderId, morphUnit.cardId)];
+  const inBattle = defender.battle.some((c) => c.instanceId === morphUnit.instanceId);
+  if (!inBattle) return candidates;
+  return candidates.filter((c) => !ryuseioBlocksMove(state, defenderId, c.card) && morphEntryHoldsPayable(state, defenderId, c));
+}
+
+/**
+ * 「※これは自軍コマンドをNつホールドしなければバトルエリアに出られない」ユニットは、モーフでバトルエリアに出るときもホールドする
+ * （atwiki/page-1365 Q2・page-1346 Q1）。リリース状態のコマンドが足りなければ選べない。「（モーフで出るときは除く）」（RK-330）は要らない。
+ */
+function morphEntryHoldsPayable(state: GameState, defenderId: PlayerId, candidate: MorphReplacementCandidate): boolean {
+  const holds = rk16MorphEntryHolds(state, candidate.card.cardId);
+  if (holds <= 0) return true;
+  const extra = candidate.zone === "discard" ? (rk16MorphDiscardCost(state, defenderId) ?? 0) : 0;
+  return rk16ReleasedCommands(state, defenderId, [candidate.instanceId]).length >= holds + extra;
+}
+
+/**
+ * 敵ラッシュ（モーフ以外の手段）に対し、モーフ置換候補があるか。
+ * ルール: R-KW-MORPH-01 — 判定はラッシュの手段。ラッシュされたカードがモーフを持っていても反応できる。
+ */
 export function defenderCanMorphAgainstRush(
   state: GameState,
   defenderId: PlayerId,
-  rushedCardId: string,
+  rushMethod: "normal" | "effect" | "morph" = "normal",
 ): boolean {
-  if (cardHasMorphKeyword(state.definitions, rushedCardId)) return false;
+  if (rushMethod === "morph") return false;
 
   const defender = state.players[defenderId];
   for (const zone of ["rush", "battle"] as const) {
     for (const morphUnit of defender[zone]) {
-      if (!cardHasKeyword(state.definitions, morphUnit.cardId, "morph")) continue;
-      if (listMorphReplacementCandidates(defender, state.definitions, morphUnit.cardId).length > 0) {
+      if (!cardHasKeyword(state.definitions, morphUnit.cardId, "morph", { state, playerId: defenderId })) continue;
+      if (listPlaceableMorphReplacementCandidates(state, defenderId, morphUnit).length > 0) {
         return true;
       }
     }

@@ -121,7 +121,7 @@ const STABLE_GRANT_KEYWORD_EXACT = new Set([
   "opponent_must_hold_ot_et_on_command_release",
   "on_deck_reveal_swap_effect_target",
   "combo_l_repeat_attack_strike_after_combo",
-  "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000",
+  "bp_plus_per_discard_feature_feat_e68190e7ab9c_1000_sp_at_8000",
 ]);
 
 const STABLE_GRANT_KEYWORD_PATTERNS: RegExp[] = [

@@ -1,0 +1,14 @@
+{
+  "name": "rangers-strike-vita-toolchain",
+  "private": true,
+  "description": "Isolated PocketJS toolchain for apps/vita (not an npm workspace).",
+  "devDependencies": {
+    "@babel/core": "7.29.7",
+    "@babel/preset-typescript": "7.29.7",
+    "@pocketjs/cli": "0.14.0",
+    "@pocketjs/framework": "0.14.0",
+    "babel-preset-solid": "1.9.16",
+    "bun": "1.4.3",
+    "opentype.js": "1.3.5"
+  }
+}

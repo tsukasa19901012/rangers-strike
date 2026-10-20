@@ -26,11 +26,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-092::toma",
+          "keyword": "xg5::XG5-092::angel_devil",
           "duration": "turn"
         }
       ]

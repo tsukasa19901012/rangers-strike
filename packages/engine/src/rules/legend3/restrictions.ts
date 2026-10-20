@@ -1,14 +1,37 @@
+import { xg6AttackerBlocked, xg6BlocksAttack, xg6DefenderBlocksAttack } from "../xg6/xg6Fields";
+import { xg3AttackerCanAttackRush, xg3DefenderBlocksAttack } from "../xg3/xg3Fields";
+import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
+import { rk5AttackerCanAttackRush } from "../rk/rk5Fields";
+import { rk11AttackerCanAttackRush, rk11EntryDiscardFeature } from "../rk/rk11Fields";
+import { rk10UnitHasResist } from "../rk/rk10Fields";
+import { rk6SnakeBlocksSelection } from "../rk/rk6Fields";
+import { set9AAttackerCanAttackRush, set9ADefenderBlocksAttack } from "../legend1/set9NamedEffectsA";
+import { set7DDefenderBlocksAttack } from "../legend1/set7NamedEffectsD";
+import { set8ADefenderBlocksAttack } from "../legend1/set8NamedEffectsA";
+import { set8DDefenderBlocksAttack } from "../legend1/set8NamedEffectsD";
+import { rk1DefenderBlocksAttack } from "../rk/rk1NamedEffects";
+import { rk2DefenderBlocksAttack, rk2KamenRiderRushDiscardable, rk2NeedsKamenRiderRushDiscard } from "../rk/rk2UnitEffects";
+import { set9DAllowsRushAttack } from "../legend1/set9NamedEffectsD";
+import { xg2AllowsRushAttack } from "../xg2/xg2Fields";
+import { set8CAllowsRushAttack, set8CDefenderBlocksAttack } from "../legend1/set8NamedEffectsC";
+import { set8BDefenderBlocksAttack } from "../legend1/set8NamedEffectsB";
+import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
+import { set5ADefenderBlocksAttack } from "../legend1/set5NamedEffectsA";
+import { kibaGakureBlocksAttack, magiMergeAllowsRushAttack } from "../legend1/set5NamedEffects";
 import {
   getBattleEntryHandDiscardCount,
   hasUnnamedRule,
   needsBattleEntryHandDiscard,
 } from "@rangers-strike/cards";
+import { elephantShieldMustTarget } from "./fieldEffects";
+import { activeNamedEffect } from "../ncGatedEffects";
+import { unitFeatures } from "../addedFeatures";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { isCostWindowSatisfied } from "../../core/costWindow";
-import { COMMAND_ZONE_MAX } from "../../types/game";
 import {
   cardCategories,
+  effectiveBp,
   getDefinition,
   isSmallUnit,
   isVehicle,
@@ -23,19 +46,27 @@ import { scrumBlocksAttack } from "../../keywords";
 import { canWingAttackFromRush } from "../../keywords/battleKeywords";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { countAvailablePower, effectivePowerCost } from "../../core/power";
-import { findInZone, opponent, removeAt, updatePlayer } from "../../core/helpers";
+import { findInZone, opponent } from "../../core/helpers";
 import { countReleasedCommands } from "../restrictions";
+import { sendFieldCardsToCommandHeld } from "../fieldLeaveQueue";
 import { getBattleEntryPowerDiscardCount } from "../batch07FieldEffects";
 import {
+  canEffectPutRushUnitIntoBattle,
   collectFieldUnitIds,
   startSelectUnitChoice,
 } from "../pendingChoices";
-import { findNamedEffectByEffectId } from "@rangers-strike/cards";
 import { keywordAllowsAttackIntoRush } from "../keywordGapRuntime";
+import { rk13AttackerCanAttackRush, rk13DefenderBlocksAttack } from "../rk/rk13Fields";
+import { xg5AttackForbidden } from "../xg5/xg5Fields";
+import { rk15DefenderBlocksAttack } from "../rk/rk15Fields";
+import { rk16DefenderBlocksAttack } from "../rk/rk16Fields";
+import { xg7DefenderBlocksAttack } from "../xg7/xg7Fields";
+import { xg1AttackerCanAttackRush, xg1DefenderBlocksAttack } from "../xg1/xg1Fields";
+import { xg4DefenderBlocksAttack } from "../xg4/xg4Fields";
 
 export function hasDarkDealInRush(state: GameState, playerId: PlayerId): boolean {
   return state.players[playerId].rush.some(
-    (c) => findNamedEffectByEffectId(c.cardId, "dark_deal"),
+    (c) => activeNamedEffect(c, "dark_deal"),
   );
 }
 
@@ -75,12 +106,39 @@ export function needsBattleEntryRushDiscard(cardId: string): boolean {
   return (
     hasUnnamedRule(cardId, "battle_entry_discard_s_from_rush") ||
     // RS-242 / RS-416: ※自軍ラッシュエリアのSユニットを1体捨札にしなければバトルエリアに出られない
-    cardHasGrantKeyword(cardId, "require_discard_rush_s_entry")
+    cardHasGrantKeyword(cardId, "require_discard_rush_s_entry") ||
+    // RK-032 アナザーアギト: ※自軍ラッシュエリアの特徴「仮面ライダー」を持つユニットを1体捨札にしなければバトルエリアに出られない
+    rk2NeedsKamenRiderRushDiscard(cardId) ||
+    // RK-220 アルビノジョーカー: ※自軍ラッシュエリアの特徴「アンデッド」を持つユニットを1体捨札にしなければバトルエリアに出られない
+    rk11EntryDiscardFeature(cardId) !== undefined
   );
 }
 
-export function canPayBattleEntryRushDiscard(player: PlayerState, definitions: GameState["definitions"]): boolean {
-  return player.rush.some((c) => isSmallUnit(definitions, c.cardId));
+/** 進入するユニット（enteringCardId）の※で捨札にできる自軍ラッシュエリアのユニットか。 */
+function isBattleEntryRushDiscardable(
+  definitions: GameState["definitions"],
+  cardId: string,
+  enteringCardId: string | undefined,
+): boolean {
+  // RK-032: 「特徴「仮面ライダー」を持つユニット」（サイズを問わない。rules/rk/rk2UnitEffects.ts）。
+  if (enteringCardId && rk2NeedsKamenRiderRushDiscard(enteringCardId)) {
+    return rk2KamenRiderRushDiscardable(definitions, cardId);
+  }
+  // RK-220: 「特徴「アンデッド」を持つユニット」（サイズを問わない。rules/rk/rk11Fields.ts）。
+  const feature = enteringCardId ? rk11EntryDiscardFeature(enteringCardId) : undefined;
+  if (feature) {
+    const def = getDefinition(definitions, cardId);
+    return def?.type === "unit" && (def.features ?? []).includes(feature);
+  }
+  return isSmallUnit(definitions, cardId);
+}
+
+export function canPayBattleEntryRushDiscard(
+  player: PlayerState,
+  definitions: GameState["definitions"],
+  enteringCardId?: string,
+): boolean {
+  return player.rush.some((c) => isBattleEntryRushDiscardable(definitions, c.cardId, enteringCardId));
 }
 
 /** 戦闘進入時に捨てる別の自軍S（進入ユニット自身は不可）。 */
@@ -89,8 +147,9 @@ export function hasBattleEntryRushDiscardTarget(
   definitions: GameState["definitions"],
   enteringInstanceId: string,
 ): boolean {
+  const enteringCardId = player.rush.find((c) => c.instanceId === enteringInstanceId)?.cardId;
   return player.rush.some(
-    (c) => isSmallUnit(definitions, c.cardId) && c.instanceId !== enteringInstanceId,
+    (c) => isBattleEntryRushDiscardable(definitions, c.cardId, enteringCardId) && c.instanceId !== enteringInstanceId,
   );
 }
 
@@ -199,8 +258,9 @@ export function tryStartBattleEntryRushDiscard(
   entering: CardInstance,
 ): GameState | null {
   const player = state.players[playerId];
+  // 捨札にするのは出るユニット以外の自軍 S ユニット（RS-242 ※「自軍ラッシュエリアのSユニットを1体」）。
   const targets = player.rush
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isBattleEntryRushDiscardable(state.definitions, c.cardId, entering.cardId) && c.instanceId !== entering.instanceId)
     .map((c) => c.instanceId);
   if (targets.length === 0) return null;
 
@@ -311,10 +371,11 @@ function noteOtherNcAttackRestriction(
     if (defFeatures.includes("獣")) return true;
   }
 
-  // RK-311: can't attack if own unit count > enemy unit count
+  // RK-311: can't attack if own unit count > enemy unit count（ビークルはユニットに数えない。atwiki/page-1281「自軍ユニットの数」）
   if (atkId === "RK-311") {
-    const ownCount = atkPlayer.rush.length + atkPlayer.battle.length;
-    const enemyCount = defPlayer.rush.length + defPlayer.battle.length;
+    const units = (cards: CardInstance[]) => cards.filter((c) => getDefinition(state.definitions, c.cardId)?.type === "unit").length;
+    const ownCount = units([...atkPlayer.rush, ...atkPlayer.battle]);
+    const enemyCount = units([...defPlayer.rush, ...defPlayer.battle]);
     if (ownCount > enemyCount) return true;
   }
 
@@ -369,6 +430,18 @@ function noteOtherNcAttackRestriction(
   return false;
 }
 
+function timeJetRearGuardBlocksAttack(
+  state: GameState,
+  defenderPlayerId: PlayerId,
+  defenderInstanceId: string,
+): boolean {
+  const battle = state.players[defenderPlayerId].battle;
+  if (battle.at(-1)?.cardId !== "RS-401") return false;
+  const defender = battle.find((c) => c.instanceId === defenderInstanceId);
+  if (!defender) return false;
+  return unitFeatures(state, defenderPlayerId, defender).includes("航空機");
+}
+
 export function canAttackDefender(
   state: GameState,
   attackerPlayerId: PlayerId,
@@ -388,6 +461,25 @@ export function canAttackDefender(
   if (!attacker) return false;
 
   if (isVehicle(getDefinition(state.definitions, attacker.card.cardId))) return false;
+  // XG6-012 フラッシュタイタンの※（自軍「タイタンボーイ」があるときアタックできない。rules/xg6/xg6Fields.ts）。
+  if (xg6BlocksAttack(state, attackerPlayerId, attacker.card.cardId)) return false;
+  // XG6-056【スキュラサイズ】の対象・XG6-063 の※（rules/xg6/xg6Fields.ts）。
+  if (xg6AttackerBlocked(state, attackerPlayerId, attacker.card)) return false;
+  // XG6-030【唯一の弱点】（自軍コマンドがすべてホールド状態なら敵軍 S ユニットにアタックされない。rules/xg6/xg6Fields.ts）。
+  if (xg6DefenderBlocksAttack(state, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
+
+  // RS-158【エレファントシールド】: コンビネーションが成立している間、敵軍ユニットはこれ以外にアタックできない。
+  const mustTarget = elephantShieldMustTarget(state, defenderPlayerId);
+  if (mustTarget && mustTarget !== defenderInstanceId) return false;
+  // RS-297【変形】: 自軍コマンドがすべてリリース状態なら、「航空機」を持たないユニットにアタックされない。
+  if (set5ADefenderBlocksAttack(state, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
+  // RS-401 タイムジェット5【最後尾からの警戒】: これが自軍バトルエリアの最後に並んでいる間、自軍バトルエリアの
+  // 特徴「航空機」を持つユニットは敵軍ユニットにアタックされない（atwiki/page-559）。
+  if (timeJetRearGuardBlocksAttack(state, defenderPlayerId, defenderInstanceId)) return false;
+  // RS-619 ジェットマシン【航空戦力の奇襲】（rules/legend1/set9NamedEffectsA.ts）。
+  if (set9ADefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
+  // XG5-091 キカイダー01 ※（「男」「女」を持つユニットにアタックできない。rules/xg5/xg5Fields.ts）。
+  if (xg5AttackForbidden(state, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
 
   const attackerInRush = findInZone(attackerPlayer, "rush", attackerInstanceId);
   if (
@@ -400,6 +492,50 @@ export function canAttackDefender(
   const enemy = state.players[defenderPlayerId];
   const inBattle = findInZone(enemy, "battle", defenderInstanceId);
   const inRush = findInZone(enemy, "rush", defenderInstanceId);
+
+  // RS-311【カラクリ忍法・牙がくれ】（rules/legend1/set5NamedEffects.ts）。
+  const defenderCard = (inBattle ?? inRush)?.card;
+  if (defenderCard && kibaGakureBlocksAttack(state, attackerPlayerId, attackerInstanceId, defenderCard)) return false;
+  // RS-350 暗黒の鎧（「SP1」以上のユニット以外にはアタックされない）・RS-385 グリーンホバーの※（rules/legend1/set6NamedEffects348.ts）。
+  if (defenderCard && set6LowDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
+  // XG1-096 ビーファイタークワガー ※（NC も RC も発動していない S ユニットにアタックされない。rules/legend1/set7NamedEffectsD.ts）。
+  if (defenderCard && set7DDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
+  // RS-517 バードニック反応炉（スクラムのユニットカードと同じ CN の BP2000 以下の S ユニット。rules/legend1/set8NamedEffectsA.ts）。
+  if (defenderCard && set8ADefenderBlocksAttack(state, defenderPlayerId, defenderCard)) return false;
+  // ※「これはBP3000以下のユニットにアタックされない。」（RS-587・RS-588 等。rules/legend1/set8NamedEffectsD.ts）。
+  if (defenderCard && set8DDefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderCard)) return false;
+  // RS-578 レジェンドマジグリーンRA【岩の装甲】（rules/legend1/set8NamedEffectsC.ts）。
+  if (defenderCard && set8CDefenderBlocksAttack(state, attackerPlayerId, defenderPlayerId, defenderCard)) return false;
+  // RS-553 ゴッドサルダー ※（自軍バトルエリアにこれ以外の同名ユニットがあればアタックされない。rules/legend1/set8NamedEffectsB.ts）。
+  if (defenderCard && set8BDefenderBlocksAttack(state, defenderPlayerId, defenderCard)) return false;
+  // RK-006 セイリングジャンプ・RK-014 共同戦線・RK-016 ミラーワールド（rules/rk/rk1NamedEffects.ts）。
+  if (defenderCard && rk1DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
+  // RK-029 ※・RK-037【グライディング】（rules/rk/rk2UnitEffects.ts）。
+  if (defenderCard && rk2DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
+  // RK-257 テントロー【高性能レーダー】・RK-263 バイオライダー【液化】（rules/rk/rk13Fields.ts）。
+  if (defenderCard && rk13DefenderBlocksAttack(state, attackerPlayerId, defenderPlayerId, defenderCard)) return false;
+  // RK-124 スネークオルフェノク【人を守る決意】（rules/rk/rk6Fields.ts）。
+  if (defenderCard && rk6SnakeBlocksSelection(state, attackerPlayerId, defenderPlayerId, defenderCard, unitFeatures)) return false;
+  // RK-300 カブトエクステンダー【クロックアップ】（rules/rk/rk15Fields.ts）。
+  if (defenderCard && rk15DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard, unitFeatures)) return false;
+  // RK-327 の※（ホールド状態のとき敵軍ユニットにアタックされない。rules/rk/rk16Fields.ts）。
+  if (defenderCard && rk16DefenderBlocksAttack(defenderCard)) return false;
+  // XG7-009【受け継いだもの】等（rules/xg7/xg7Fields.ts）。
+  if (defenderCard && xg7DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
+  // XG1-017【許可なき戦いへの介入】・XG1-018【治安維持】（rules/xg1/xg1Fields.ts）。
+  if (defenderCard && xg1DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
+  // クロスギャザー ザ・ジェットアクセル XG4-013 の※等（rules/xg4/xg4Fields.ts）。
+  if (
+    defenderCard &&
+    xg4DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard, (c) => cardHasKeyword(state.definitions, c.cardId, "wing", { state, playerId: attackerPlayerId }), {
+      hasResist: (c) => cardHasKeyword(state.definitions, c.cardId, "register", { state, playerId: defenderPlayerId }),
+      bpOf: (c) => effectiveBp(state, defenderPlayerId, c),
+    })
+  ) {
+    return false;
+  }
+  // クロスギャザー ザ・Wインパクト XG3（XG3-007【マックスシャトル】等。rules/xg3/xg3Fields.ts）。
+  if (defenderCard && xg3DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;
@@ -427,19 +563,46 @@ export function canAttackDefender(
     if (cardHasGrantKeyword(attacker.card.cardId, "wing_attack_enemy_rush")) {
       return true;
     }
+    // RS-622 グリフォーザー【グリフォカリバー4世】（rules/legend1/set9NamedEffectsA.ts）。
+    if (set9AAttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
+    // RK-262 ロボライダー【ボルティックシューター】（RC を発動したターン。rules/rk/rk13Fields.ts）。
+    if (rk13AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
+    // XG1-021 ブルーターボ【Jガン】（rules/xg1/xg1Fields.ts）。
+    if (xg1AttackerCanAttackRush(state, attackerPlayerId, attacker.card, inRush.card)) return true;
+    // RK-103 仮面ライダークウガPF【ブラストペガサス】（rules/rk/rk5Fields.ts）。
+    if (rk5AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
+    // XG3-077 アギトトルネイダー【ファイナルアタックライド】（rules/xg3/xg3Fields.ts）。
+    if (xg3AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
+    // RK-217 イーグルアンデッド【滑空攻撃】（敵軍ラッシュエリアのレジストを持つユニット。rules/rk/rk11Fields.ts）。
+    if (rk11AttackerCanAttackRush(attacker.card, () => rk10UnitHasResist(state, defenderPlayerId, inRush.card))) return true;
+    // RS-213【炸裂超力バトン】（相手が選んだユニット）・RS-225【大回転獅子爆裂弾】で得た能力。
+    if (
+      chikaraBatonAllowsAttack(state, attackerPlayerId, attackerInstanceId, defenderInstanceId) ||
+      lionBlastAllowsRushAttack(attacker.card) ||
+      magiMergeAllowsRushAttack(state, attackerPlayerId, attackerInstanceId) ||
+      // RS-562 ガオソーシャークの※・RS-573【バリランサー】（rules/legend1/set8NamedEffectsC.ts）。
+      set8CAllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, inRush.card) ||
+      // RS-675【ウォーターアロー】（NC。rules/legend1/set9NamedEffectsD.ts）。
+      set9DAllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId) ||
+      // XG2-038【真・水流の舞い】（NC。rules/xg2/xg2Fields.ts）。
+      xg2AllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId)
+    ) {
+      return true;
+    }
     if (
       keywordAllowsAttackIntoRush(
         state,
         attacker.card.cardId,
         defenderPlayerId,
         defenderInstanceId,
+        attacker.card,
       )
     ) {
       return true;
     }
     if (
       hasUnnamedRule(attacker.card.cardId, "can_attack_enemy_rush_s") &&
-      isSmallUnit(state.definitions, inRush.card.cardId)
+      isSmallUnit(state.definitions, inRush.card)
     ) {
       return true;
     }
@@ -484,14 +647,15 @@ export function canAttackDefender(
 
   if (
     cannotAttackEnemyBattleS(attacker.card.cardId) &&
-    isSmallUnit(state.definitions, inBattle.card.cardId)
+    isSmallUnit(state.definitions, inBattle.card)
   ) {
     return false;
   }
 
   if (
     defenderRequiresAircraftAttacker(inBattle.card.cardId) &&
-    !attackerHasAircraftFeature(state.definitions, attacker.card.cardId)
+    // 効果で追加された特徴（RS-505【滑空突撃】の「航空機」等）も含める。
+    !unitFeatures(state, attackerPlayerId, attacker.card).includes("航空機")
   ) {
     return false;
   }
@@ -505,10 +669,13 @@ export function tryLegend3BattleToRush(
   card: CardInstance,
   phasePlayerId: PlayerId,
 ): GameState {
-  if (!findNamedEffectByEffectId(card.cardId, "falcon_claw")) return state;
+  if (!activeNamedEffect(card, "falcon_claw")) return state;
 
   const enemyId = opponent(playerId);
-  const targets = collectFieldUnitIds(state, enemyId, Number.MAX_SAFE_INTEGER, ["rush"]);
+  // バトルエリアに出られない（※の出場制限を満たせない）ユニットは選べない。
+  const targets = collectFieldUnitIds(state, enemyId, Number.MAX_SAFE_INTEGER, ["rush"]).filter((id) =>
+    canEffectPutRushUnitIntoBattle(state, enemyId, id),
+  );
   if (targets.length === 0) return state;
 
   const withChoice = startSelectUnitChoice(state, {
@@ -524,29 +691,16 @@ export function tryLegend3BattleToRush(
   return withChoice ?? state;
 }
 
+/**
+ * 敵軍バトルエリアのユニットを持ち主のコマンドゾーンにホールド状態で置く（置けなければ捨札。unitDestination "enemy_command"）。
+ * 離場の処理を通す（チェイスの機会を出す。R-KW-CHASE-01・rules/fieldLeaveQueue.ts）。
+ */
 export function applyAssaultToCommandHold(
   state: GameState,
   ownerId: PlayerId,
   instanceId: string,
+  phasePlayerId: PlayerId,
 ): GameState {
-  const owner = state.players[ownerId];
-  const found = findInZone(owner, "battle", instanceId);
-  if (!found) return state;
-
-  const [, battle] = removeAt(owner.battle, found.index);
-  let nextOwner: PlayerState;
-  if (owner.command.length < COMMAND_ZONE_MAX) {
-    nextOwner = {
-      ...owner,
-      battle,
-      command: [...owner.command, { ...found.card, commandHeld: true }],
-    };
-  } else {
-    nextOwner = {
-      ...owner,
-      battle,
-      discard: [...owner.discard, found.card],
-    };
-  }
-  return { ...state, ...updatePlayer(state, ownerId, nextOwner) };
+  if (!findInZone(state.players[ownerId], "battle", instanceId)) return state;
+  return sendFieldCardsToCommandHeld(state, ownerId, [instanceId], phasePlayerId);
 }

@@ -11,10 +11,13 @@ import { listCoreCardIds } from "../src/catalog/unifiedCatalog";
 import { inferCategoryFromWikiLabels } from "../src/pipeline/metaMaps";
 import { parseWikiMarkdown } from "../src/pipeline/parseWiki";
 import type { CardDefinition } from "../src/schema";
+import { loadAtwikiRarityIndex } from "./shared/atwikiRarityIndex";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 const wikiDir = join(root, "../../docs/wiki/cards");
+/** レアリティは atwiki のカードページ（「レアリティ：…」）から読む（既定値 "N" で埋めない）。 */
+const atwikiDir = join(root, "../../docs/wiki/sources/atwiki");
 const classificationPath = join(root, "pipeline/data/card-classification.json");
 const outputPath = join(root, "pipeline/data/wiki-catalog-stubs.json");
 const catalogShardPath = join(root, "src/generated/catalog/wiki-stubs/cards.json");
@@ -57,6 +60,7 @@ function main(): void {
     readFileSync(classificationPath, "utf8"),
   ) as ClassificationFile;
   const gradeById = new Map(classification.cards.map((c) => [c.id, c.grade]));
+  const rarityById = loadAtwikiRarityIndex(atwikiDir);
 
   const wikiFiles = readdirSync(wikiDir).filter((f) => f.endsWith(".md"));
   const stubs: WikiCatalogStub[] = [];
@@ -69,7 +73,7 @@ function main(): void {
     let name = cardId;
     let type: CardDefinition["type"] = "unit";
     let category: CardDefinition["category"] = "OT";
-    let rarity: CardDefinition["rarity"] = "N";
+    const rarity: CardDefinition["rarity"] = rarityById.get(cardId)?.[0] ?? "N";
     let powerCost: number | string = 0;
 
     try {

@@ -4,7 +4,7 @@
   "name": "ファイナルカメンアタックフォームライド",
   "type": "operation",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "LR",
   "expansion": "legend1",
   "powerCost": 25,
   "text": "※これは特徴「仮面ライダー」を持つユニット1体ごとと、特徴「仮面ライダー」を持つゾーンのオモテ向きのカード1枚ごとと、特徴「仮面ライダー」を持つ捨札1枚ごとにつき、必要パワーの数字が1減る。 ◎敵軍ユニットを1体選び撃破する。",
@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XP-021::koreharaidawotsu",
-          "duration": "permanent"
+          "keyword": "promo::XP-021::final_attack",
+          "duration": "turn"
         }
       ]
     }

@@ -7,7 +7,7 @@
     "MA",
     "ET"
   ],
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "7+",
   "text": "【スーパーサーティーセンタイソウル】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動できる⇒作品名に「戦隊」を含む、DAを持たない自軍捨札の枚数を数え、その数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
@@ -33,11 +33,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-028::supasateisentaisouru",
+          "keyword": "xg5::XG5-028::thirty_sentai_soul",
           "duration": "turn"
         }
       ]

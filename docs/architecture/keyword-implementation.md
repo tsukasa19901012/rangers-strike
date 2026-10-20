@@ -1,7 +1,7 @@
 # キーワード実装状況（Wiki 参照 × エンジン）
 
 **更新:** 2026-06-11  
-**Wiki 一次ソース:** `docs/wiki/glossary/*`, `docs/wiki/sources/atwiki/page-*.md`  
+**ルール:** `docs/rules/07-keywords.md`（正）。出典スナップショット: `docs/wiki/sources/atwiki/page-*.md`。旧 `docs/wiki/glossary/` は削除済み（下表の「用語集 md」列は削除前のファイル名）。  
 **エンジン:** `packages/engine/src/keywords/`, `packages/engine/src/rules/resist.ts`, `packages/engine/src/rules/combo.ts`
 
 ---
@@ -212,7 +212,7 @@
 | **KW-P2-02** | ブラスト条件 | ✅ ADR + `damage >= WIN-1` OR 表パワー≤1 |
 | **KW-P2-03** | 能動モーフパターン | ✅ `activeMorph.ts`（カメンライド primitive） |
 | **KW-P2-04** | キーワード回帰テスト | ✅ `keyword.integration.test.ts` |
-| **KW-P2-05** | glossary 自動同期 | ✅ `sync-glossary-keyword-maturity.ts` |
+| **KW-P2-05** | glossary 自動同期 | 廃止（glossary 削除に伴い sync-glossary-keyword-maturity.ts も削除） |
 
 ---
 
@@ -242,8 +242,8 @@ packages/engine/src/
 
 | 文書 | 役割 |
 |------|------|
-| [keywords.md](../wiki/keywords.md) | Wiki ルール索引 |
-| [battle.md](../wiki/battle.md) | レジスト・アタック |
+| [docs/rules/07-keywords.md](../rules/07-keywords.md) | キーワードのルール（ルールブック） |
+| [docs/rules/05-battle-strike-damage.md](../rules/05-battle-strike-damage.md) | アタック・バトル（ルールブック） |
 | [engine-gaps.md](../wiki/engine-gaps.md) | 意図的未実装 |
 | [implementation-roadmap.md](./implementation-roadmap.md) | Tier 3 スケジュール |
 | [implementation-inventory.md](./implementation-inventory.md) | 開発バックログ入口 |

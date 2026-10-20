@@ -30,6 +30,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg2::XG2-013::byakko_shinken",
+          "duration": "permanent"
         }
       ]
     }

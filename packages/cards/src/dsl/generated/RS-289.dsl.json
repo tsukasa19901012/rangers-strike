@@ -4,7 +4,7 @@
   "name": "ドラゴンレンジャー",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない。 ※自分がターンを終えるとき、ゲームに負けるまでの自軍ダメージが残り3点以下なら、これを撃破する。 【獣奏剣】これが自軍エリアにある間、特徴「恐竜」を持つすべての自軍ユニットはBP＋1000される。",
@@ -47,7 +47,7 @@
       ]
     },
     {
-      "id": "ally_fx_unknown_bp_1000",
+      "id": "ally_feat_e68190e7ab9c_bp_1000",
       "text": "これが自軍エリアにある間、特徴「恐竜」を持つすべての自軍ユニットはBP＋1000される。",
       "trigger": {
         "type": "nc"
@@ -55,7 +55,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ally_fx_unknown_bp_boost_1000",
+          "keyword": "ally_feat_e68190e7ab9c_bp_boost_1000",
           "duration": "permanent"
         }
       ]

@@ -3,6 +3,7 @@ export type CostWindowKind =
   | "battle_entry_hold"
   | "rush_category"
   | "counter_category"
+  | "operation_category"
   | "battle_entry_rush_discard"
   | "battle_entry_hand_discard"
   | "battle_entry_power_discard";
@@ -10,6 +11,8 @@ export type CostWindowKind =
 export type CostWindowMetadata = {
   /** RS-132: 捨札した S ユニット cardId（反バイオ粒子砲判定用）。 */
   discardedCardId?: string;
+  /** RK-036 仮面ライダーライア【運命への反抗】: ホールドのかわりに同じカテゴリのカードをコマンドゾーンから捨札にして支払った。 */
+  raiaDiscard?: boolean;
 };
 
 export type CostWindow = {

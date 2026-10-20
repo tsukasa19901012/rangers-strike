@@ -4,7 +4,7 @@
   "name": "ディケイド 電王SF",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※モーフ ※これは「仮面ライダー電王SF」としてつかえる。 ※敵軍バトルエリアにユニットがあるとき、これはストライクできない。 【アタックライド】「SP1」これがストライクして相手がパワーゾーンのカードをウラ返すとき、ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する。",
@@ -72,6 +72,11 @@
         {
           "type": "grant_keyword",
           "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg1::XG1-071::attack_ride",
           "duration": "turn"
         }
       ]

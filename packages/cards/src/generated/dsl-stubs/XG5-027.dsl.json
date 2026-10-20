@@ -4,7 +4,7 @@
   "name": "ボウケンピンクAT",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "7-",
   "text": "※レジスト ※これが撃破されて捨札になったとき、自軍捨札から「ボウケンピンク」のカードを1枚選び、自軍ラッシュエリアに出す。 【デュアルクラッシャー・コンビネーションクラッシュ】このターン、次に敵軍ユニットがホールド状態になったとき、そのユニットを撃破する。",
@@ -60,11 +60,10 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-027::deyuarukurashakonbinesho",
+          "keyword": "xg5::XG5-027::dual_crusher",
           "duration": "permanent"
         }
       ]

@@ -4,7 +4,7 @@
   "name": "ダブルライダーキック",
   "type": "operation",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "MR",
   "expansion": "legend2",
   "powerCost": 6,
   "text": "自軍ラッシュエリアから特徴「仮面ライダー」を持つ自軍ユニットを2体選ぶ。このターン、選んだ2体のユニットが自軍バトルエリアで隣り合ったとき、敵軍バトルエリアからBP8000以下の敵軍ユニットを1体選び撃破する。",
@@ -20,38 +20,11 @@
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "maxBp": 8000
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk1::RK-020::double_rider_kick",
+          "duration": "turn"
         }
-      ],
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "maxBp": 8000
-          }
-        }
-      }
+      ]
     }
   ],
   "implementation": {

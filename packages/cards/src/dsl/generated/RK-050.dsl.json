@@ -24,15 +24,16 @@
       "name": "音撃斬・閻魔裁き",
       "text": "「SP1」これがアタックするとき、「BP」「必要パワーの数字」「ナンバーの数字」のうちどれか1つを選び、お互いにその数字でバトルする。ただし、ナンバーの数字は相手のユニットがナンバーに数字を持っていなければ選べない。",
       "trigger": {
-        "type": "on_attack"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "rk3::RK-050::enma_sabaki",
           "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

@@ -4,7 +4,7 @@
   "name": "仮面ライダーオーガ",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "【オーガ・ストラッシュ】これが自軍エリアにある間、敵軍ターン中、ストライク以外の方法でダメージを受けたなら、ダメージを受けた後、DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、相手に1点ダメージを与える。",
@@ -23,13 +23,13 @@
       "name": "オーガ・ストラッシュ",
       "text": "これが自軍エリアにある間、敵軍ターン中、ストライク以外の方法でダメージを受けたなら、ダメージを受けた後、DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "rk10::RK-204::ogre_strash",
+          "duration": "turn"
         }
       ]
     }

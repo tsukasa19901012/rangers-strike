@@ -4,7 +4,7 @@
   "name": "ネオショッカー大首領",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは敵軍ターン中、ウイングを持つユニットとバトルしたときバトルに勝っても撃破される。 【唯一の弱点】これは自軍コマンドがすべてホールド状態なら、敵軍Sユニットにアタックされない。",
@@ -51,13 +51,13 @@
       "name": "唯一の弱点",
       "text": "これは自軍コマンドがすべてホールド状態なら、敵軍Sユニットにアタックされない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-030::noe594af",
+          "keyword": "xg6::XG6-030::weak_point",
           "duration": "permanent"
         }
       ]

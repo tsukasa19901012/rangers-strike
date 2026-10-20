@@ -4,9 +4,14 @@ import type { CardDefinition } from "@rangers-strike/cards";
 import { resolvePlayableCard } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "@rangers-strike/engine";
 import {
+  attackHoldOptionLabel,
+  confirmOptionLabel,
   effectChoiceHint,
   effectChoiceTitle,
+  isBlindHandChoice,
+  SET9A_DONE_CHOICE,
   sagasSniperDeckCardMeta,
+  SIMULTANEOUS_FRAME_LABELS,
 } from "@/lib/effectChoiceHint";
 import {
   cardTargetMetaLine,
@@ -205,6 +210,38 @@ export function EffectChoiceModal({
             </div>
           )}
 
+          {!isGenericFallback && pending.kind === "simultaneous_order" && !readOnly && (
+            <div className="effect-action-modal__targets">
+              {pending.battleDestroyOrderMeta &&
+                pending.validInstanceIds.map((id) => {
+                  const meta = pending.battleDestroyOrderMeta!;
+                  const cardId = id === meta.existingId ? meta.existing.sourceCardId : meta.own.sourceCardId;
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      className="btn effect-action-modal__target"
+                      onClick={() => onSelect(id)}
+                    >
+                      {`${state.definitions[cardId]?.name ?? cardId}の効果を先に処理`}
+                    </button>
+                  );
+                })}
+              {pending.validInstanceIds
+                .filter((id) => SIMULTANEOUS_FRAME_LABELS[id])
+                .map((id) => (
+                  <button
+                    key={id}
+                    type="button"
+                    className="btn effect-action-modal__target"
+                    onClick={() => onSelect(id)}
+                  >
+                    {SIMULTANEOUS_FRAME_LABELS[id]}
+                  </button>
+                ))}
+            </div>
+          )}
+
           {!isGenericFallback && pending.kind === "declare_number" && !readOnly && (
             <div className="effect-action-modal__section">
               <div className="effect-action-modal__targets effect-action-modal__targets--numbers">
@@ -215,10 +252,31 @@ export function EffectChoiceModal({
                     className="btn effect-action-modal__target effect-action-modal__target--number"
                     onClick={() => onSelect(value)}
                   >
-                    {value}
+                    {pending.effectId === "attack_hold_bonus"
+                      ? attackHoldOptionLabel(state, pending, value)
+                      : value.startsWith("draw:")
+                        ? `${value.slice("draw:".length)}枚ドロー`
+                        : value}
                   </button>
                 ))}
               </div>
+            </div>
+          )}
+
+          {!isGenericFallback && pending.validInstanceIds.includes(SET9A_DONE_CHOICE) && !readOnly && (
+            // 第9弾 RS-612【スカイコンテナ】等「好きな数選び」: 選び終える（rules/legend1/set9NamedEffectsA.ts SET9A_DONE）。
+            <div className="effect-action-modal__actions">
+              <button type="button" className="btn btn--primary" onClick={() => onSelect(SET9A_DONE_CHOICE)}>
+                選び終える
+              </button>
+            </div>
+          )}
+
+          {!isGenericFallback && pending.kind === "confirm" && pending.mayConfirm && !readOnly && (
+            <div className="effect-action-modal__actions">
+              <button type="button" className="btn btn--primary" onClick={onConfirmEffectChoice}>
+                効果を使う
+              </button>
             </div>
           )}
 
@@ -232,7 +290,7 @@ export function EffectChoiceModal({
                     className="btn effect-action-modal__target"
                     onClick={() => onSelect(name)}
                   >
-                    {name}
+                    {confirmOptionLabel(state, pending, name)}
                   </button>
                 ))}
               </div>
@@ -453,7 +511,33 @@ export function EffectChoiceModal({
             pending.kind !== "optional_deck_draw" &&
             pending.kind !== "denji_machine" &&
             pending.kind !== "select_units_bp_budget" &&
-            pending.kind !== "scry_keep_one" && (
+            pending.kind !== "scry_keep_one" &&
+            isBlindHandChoice(pending) &&
+            !readOnly && (
+              // 相手の手札を見ないで選ぶ（RS-594【ガンパードガン】）: カードの中身は見せない。
+              <div className="effect-action-modal__targets">
+                {targets.map((target) => (
+                  <button
+                    key={target.instanceId}
+                    type="button"
+                    className="btn effect-action-modal__target"
+                    onClick={() => onSelect(target.instanceId)}
+                  >
+                    {`相手の手札（${state.players[target.playerId].hand.findIndex((c) => c.instanceId === target.instanceId) + 1}枚目）`}
+                  </button>
+                ))}
+              </div>
+            )}
+
+          {!isGenericFallback &&
+            targets.length > 0 &&
+            pending.kind !== "deck_top_or_bottom" &&
+            pending.kind !== "seabed_draw" &&
+            pending.kind !== "optional_deck_draw" &&
+            pending.kind !== "denji_machine" &&
+            pending.kind !== "select_units_bp_budget" &&
+            pending.kind !== "scry_keep_one" &&
+            !isBlindHandChoice(pending) && (
               <div className="effect-action-modal__targets">
                 {targets.map((target) => (
                   <TargetButton

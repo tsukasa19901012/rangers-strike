@@ -29,7 +29,10 @@
         "target": {
           "type": "zone",
           "zone": "command",
-          "owner": "opponent"
+          "owner": "opponent",
+          "filter": {
+            "commandHeld": true
+          }
         }
       },
       "effects": [
@@ -39,19 +42,24 @@
           "valid": {
             "type": "zone",
             "zone": "command",
-            "owner": "opponent"
+            "owner": "opponent",
+            "filter": {
+              "commandHeld": true
+            }
           },
           "count": 1,
           "then": [
             {
-              "type": "hold_command",
+              "type": "move",
               "target": {
                 "type": "trigger_source"
-              }
+              },
+              "to": "power"
             }
           ]
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

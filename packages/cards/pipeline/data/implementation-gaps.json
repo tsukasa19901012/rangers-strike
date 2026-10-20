@@ -32,7 +32,7 @@
       "impact": "基盤配線済み。複雑な同時発動シナリオの網羅は継続。",
       "refs": [
         "packages/engine/src/types/game.ts (simultaneousGroupId)",
-        "docs/wiki/timing.md"
+        "docs/rules/06-effects-timing.md (R-SIM-01)"
       ]
     },
     {

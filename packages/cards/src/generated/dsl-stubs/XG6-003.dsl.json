@@ -4,7 +4,7 @@
   "name": "キラーアバレンオー",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "7+",
   "text": "合体―アバレンオー（または爆竜ティラノサウルス＋爆竜トリケラトプス＋爆竜プテラノドン）+キラーオー（または爆竜トップゲイラー+爆竜ステゴスライドン） ※ブレイカー ※ウイング 【爆竜マルチコンバイン】自軍ターン中、これがバトルエリアに出たとき、自分の手札から ナンバーに「L」または「R」を持つカードを1枚選び、相手に見せてもよい。そうしたとき、これが見せたカードのJCの対象として適切なら、これとコンビネーションしたかのように、そのJCの効果を発動する。",
@@ -60,8 +60,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-003::bakumaruchikonbain",
-          "duration": "turn"
+          "keyword": "xg6::XG6-003::multi_combine",
+          "duration": "permanent"
         }
       ]
     }
@@ -81,6 +81,33 @@
         [
           "RS-226"
         ]
+      ],
+      "partnerSlotAlternatives": [
+        {
+          "slot": 0,
+          "slots": [
+            [
+              "RS-051"
+            ],
+            [
+              "RS-052"
+            ],
+            [
+              "RS-053"
+            ]
+          ]
+        },
+        {
+          "slot": 1,
+          "slots": [
+            [
+              "RS-227"
+            ],
+            [
+              "RS-228"
+            ]
+          ]
+        }
       ]
     }
   ],

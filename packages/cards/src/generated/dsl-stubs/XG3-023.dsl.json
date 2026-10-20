@@ -4,7 +4,7 @@
   "name": "アバレマックス",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "6+",
   "text": "※レジスト 【大気爆裂マックスフィールド】自軍バトルエリアのユニットがこのユニット1体だけなら、次の効果が有効になる⇒自軍バトルエリアのユニットはBP+2000され、敵軍バトルエリアのユニットはBP-2000される。（BP0以下になったユニットは撃破される）",
@@ -43,13 +43,13 @@
       "name": "大気爆裂マックスフィールド",
       "text": "自軍バトルエリアのユニットがこのユニット1体だけなら、次の効果が有効になる⇒自軍バトルエリアのユニットはBP+2000され、敵軍バトルエリアのユニットはBP-2000される。（BP0以下になったユニットは撃破される）",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-023::bakumakusufuirudo",
+          "keyword": "xg3::XG3-023::max_field",
           "duration": "permanent"
         }
       ]

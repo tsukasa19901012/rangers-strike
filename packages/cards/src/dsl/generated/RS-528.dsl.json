@@ -4,7 +4,7 @@
   "name": "バイオハンター・シルバ",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※レジスト 【バイオ粒子反応アリ！】これが自軍エリアにある間、OTを持つ敵軍ユニットがラッシュされたとき、これをリリースしてもよい。そうしたとき、相手はラッシュしたユニットを撃破するか、1点ダメージを受けるかを選ぶ。ダメージを受けることを選んだ場合、OTを持つ自軍ユニットがあれば、自分も1点ダメージを受ける。",
@@ -42,7 +42,7 @@
         {
           "type": "deal_damage",
           "amount": 1,
-          "target": "controller"
+          "target": "opponent"
         }
       ]
     }

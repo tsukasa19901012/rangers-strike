@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-021::bikuru",
+          "keyword": "rm1::RM-021::vehicle_launch",
           "duration": "turn"
         }
       ]

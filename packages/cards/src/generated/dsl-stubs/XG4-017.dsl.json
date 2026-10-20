@@ -4,7 +4,7 @@
   "name": "ガオシルバー",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "【ガオハスラーロッド・スナイパーモード】これがバトルで敵軍ユニットを撃破したとき、これが撃破したユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍コマンドを1つ選び捨札にしてもよい。（この効果は、ライドオフしたときナンバーに関係なく発動する）",
@@ -25,12 +25,12 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-017::gaohasurarodosunaipamodo",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-017::sniper_mode",
+          "duration": "turn"
         }
       ]
     }

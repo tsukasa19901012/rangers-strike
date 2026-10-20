@@ -4,7 +4,7 @@
   "name": "ゴーオンシルバー×ゴーオンゴールド",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "4+",
   "text": "※クロス1 ※ウイング ※このユニットのナンバーの数字は、リリース状態の自軍コマンド1つにつき1少なくなる。 【正義のツバサ】これがアタックして敵軍ユニットを撃破したとき、そのユニットと隣り合うSユニットを1体選び撃破してもよい。（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）",
@@ -56,13 +56,13 @@
       "id": "unnamed_e280bbe38193e381aee383a6",
       "text": "※このユニットのナンバーの数字は、リリース状態の自軍コマンド1つにつき1少なくなる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-025::konoyunitononanb",
+          "keyword": "xg7::XG7-025::number_reduction",
           "duration": "permanent"
         }
       ]
@@ -72,14 +72,29 @@
       "name": "正義のツバサ",
       "text": "これがアタックして敵軍ユニットを撃破したとき、そのユニットと隣り合うSユニットを1体選び撃破してもよい。（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）",
       "trigger": {
-        "type": "on_attack"
+        "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-025::notsubasa",
-          "duration": "turn"
+          "keyword": "xg7::XG7-025::wings",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "notsubasa_wing",
+      "text": "（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）",
+      "trigger": {
+        "type": "on_attack"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "xg7::XG7-025::wings_wing",
+          "duration": "permanent"
         }
       ]
     }

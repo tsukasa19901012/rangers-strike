@@ -1,6 +1,7 @@
 import type { GameState, PlayerId } from "../types/game";
 import { getDefinition } from "../core/catalog";
-import { listDslEffectsForTrigger } from "./effectLookup";
+import { getCardDslDocument, listDslEffectsForTrigger } from "./effectLookup";
+import { namedTextNegated } from "../rules/legend1/set6NamedEffects348";
 
 type FieldZone = "rush" | "battle" | "operation";
 
@@ -27,6 +28,20 @@ function legacyCardIdsForKeyword(keyword: string): string[] {
   }
 }
 
+/** そのキーワードを与える効果が効果名を持つか（旧来の対応表のカードは名前つき効果）。 */
+function keywordEffectIsNamed(cardId: string, keyword: string): boolean {
+  if (legacyCardIdsForKeyword(keyword).includes(cardId)) return true;
+  const effect = getCardDslDocument(cardId)?.effects?.find((e) =>
+    e.effects.some((p) => p.type === "grant_keyword" && p.keyword === keyword),
+  );
+  return !!effect?.name;
+}
+
+/** RS-379【雷の雄叫び】等で、このカードのそのキーワード（効果名を持つテキスト）が無効か。 */
+function keywordNegated(state: GameState, playerId: PlayerId, card: { cardId: string; instanceId: string }, keyword: string): boolean {
+  return namedTextNegated(state, playerId, card) && keywordEffectIsNamed(card.cardId, keyword);
+}
+
 export function findFieldInstanceByKeyword(
   state: GameState,
   playerId: PlayerId,
@@ -38,6 +53,7 @@ export function findFieldInstanceByKeyword(
   for (const zone of zones) {
     for (const card of player[zone]) {
       if (excludeInstanceId && card.instanceId === excludeInstanceId) continue;
+      if (keywordNegated(state, playerId, card, keyword)) continue;
       if (
         cardHasWhileInFieldKeyword(card.cardId, keyword) ||
         legacyCardIdsForKeyword(keyword).includes(card.cardId)
@@ -58,11 +74,35 @@ export function playerHasActiveFieldKeyword(
   const player = state.players[playerId];
   for (const zone of zones) {
     for (const card of player[zone]) {
+      if (keywordNegated(state, playerId, card, keyword)) continue;
       if (cardHasWhileInFieldKeyword(card.cardId, keyword)) return true;
       if (legacyCardIdsForKeyword(keyword).includes(card.cardId)) return true;
     }
   }
   return false;
+}
+
+/** 同じキーワードを持つ場のカードの枚数（ルール: R-CONT-01 同じ継続効果は枚数分重複する）。 */
+export function countActiveFieldKeyword(
+  state: GameState,
+  playerId: PlayerId,
+  keyword: string,
+  zones: FieldZone[] = ["rush", "battle", "operation"],
+): number {
+  const player = state.players[playerId];
+  let count = 0;
+  for (const zone of zones) {
+    for (const card of player[zone]) {
+      if (keywordNegated(state, playerId, card, keyword)) continue;
+      if (
+        cardHasWhileInFieldKeyword(card.cardId, keyword) ||
+        legacyCardIdsForKeyword(keyword).includes(card.cardId)
+      ) {
+        count += 1;
+      }
+    }
+  }
+  return count;
 }
 
 export function anyPlayerHasActiveFieldKeyword(
@@ -85,6 +125,7 @@ export function findFieldCardByKeyword(
     const player = state.players[playerId];
     for (const zone of zones) {
       for (const card of player[zone]) {
+        if (keywordNegated(state, playerId, card, keyword)) continue;
         if (
           cardHasWhileInFieldKeyword(card.cardId, keyword) ||
           legacyCardIdsForKeyword(keyword).includes(card.cardId)

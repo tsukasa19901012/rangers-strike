@@ -1,6 +1,5 @@
 import type { CardInstance, GameState, PlayerId, PlayerState, ZoneName } from "../types/game";
 import { findInZone, removeAt, updatePlayer } from "../core/helpers";
-import { canMoveCardToRushFromZone } from "./rushFromHandOnly";
 
 type FieldZone = "hand" | "rush" | "battle" | "command" | "power" | "discard" | "operation";
 
@@ -36,30 +35,17 @@ export function moveToExile(
   };
 }
 
-/** 除外ゾーンから指定ゾーンへ戻す。 */
+/**
+ * 除外ゾーンから指定ゾーンへ戻す操作。
+ * ルール: R-ZONE-11 — 除外されたカードはそのゲーム中再びプレイに使えないため、常に何もしない。
+ */
 export function moveFromExile(
   state: GameState,
-  playerId: PlayerId,
-  instanceId: string,
-  toZone: Exclude<ZoneName, "deck" | "exile" | "commander">,
+  _playerId: PlayerId,
+  _instanceId: string,
+  _toZone: Exclude<ZoneName, "deck" | "exile" | "commander">,
 ): GameState {
-  const player = state.players[playerId];
-  const exile = player.exile ?? [];
-  const index = exile.findIndex((c) => c.instanceId === instanceId);
-  if (index < 0) return state;
-
-  const [card, rest] = removeAt(exile, index);
-  if (toZone === "rush" && !canMoveCardToRushFromZone(card.cardId, "discard")) {
-    return state;
-  }
-  return {
-    ...state,
-    ...updatePlayer(state, playerId, {
-      ...player,
-      exile: rest,
-      [toZone]: [...player[toZone], card],
-    }),
-  };
+  return state;
 }
 
 export function findInExile(

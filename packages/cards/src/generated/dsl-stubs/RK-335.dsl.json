@@ -4,7 +4,7 @@
   "name": "モモタロス（2nd）",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 3,
   "text": "※レジスト ※これは特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される。 【最後までクライマックスだぜ！】「SP1」",
@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "destroy_on_win_vs_fx_unknown",
+      "id": "destroy_on_win_vs_feat_e5a5b3",
       "text": "※これは特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される。",
       "trigger": {
         "type": "while_in_field"
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_on_win_vs_fx_unknown",
+          "keyword": "destroy_on_win_vs_feat_e5a5b3",
           "duration": "permanent"
         }
       ]

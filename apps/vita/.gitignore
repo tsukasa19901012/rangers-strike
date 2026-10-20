@@ -1,0 +1,9 @@
+# PocketJS toolchain install (npm ci --prefix toolchain) and helper links
+toolchain/node_modules/
+toolchain/.bin/
+# build outputs
+.cache/
+.pocket/
+dist/
+src/generated/
+src/pak.json

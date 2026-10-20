@@ -67,11 +67,12 @@ describe("RK hash stub DSL", () => {
     });
   });
 
-  it("RK-326 uses rk_fx exact keyword", () => {
+  // RK-326【ガルルフエッスル】は cardSpec RK16-316-335 の照合で rk16:: の固有キーワードにした（rules/rk/rk16UnitEffects.ts）。
+  it("RK-326 uses its exact (non-catchall) keyword", () => {
     const effect = docs.find((d) => d.id === "RK-326")?.effects?.[0];
     expect(effect?.effects?.[0]).toMatchObject({
       type: "grant_keyword",
-      keyword: "rk_fx::RK-326::garurufuesuru",
+      keyword: "rk16::RK-326::fuessle",
     });
   });
 });

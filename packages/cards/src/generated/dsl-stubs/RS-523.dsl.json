@@ -19,9 +19,9 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "set8a::RS-523::rinki",
+          "duration": "turn"
         }
       ]
     }

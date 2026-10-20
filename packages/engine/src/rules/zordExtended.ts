@@ -10,7 +10,9 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 
 type StateGateContext = Pick<GameState, "players" | "definitions">;
 import { COMMAND_ZONE_MAX } from "../types/game";
+import { xg1HoldSubstituteAvailable } from "./xg1/xg1Fields";
 import {
+  cardName,
   getDefinition,
   isLargeUnit,
   isOperation,
@@ -42,6 +44,16 @@ function normalizeName(value: string): string {
 function matchesPartnerName(def: CardDefinition | undefined, partnerName: string): boolean {
   if (!def) return false;
   return normalizeName(def.name).includes(normalizeName(partnerName));
+}
+
+/**
+ * 「自軍「A」「B」「C」をそれぞれ1体ずつ自分の手札に戻す」（RK-190 フォッグマザー。atwiki/page-911）— 名前ごとに1体ずつ要る。
+ * 「それぞれ」がなければ undefined（従来どおり partnerName の1体）。
+ */
+function eachNamedPartners(condition: RushAdditionalCondition): string[] | undefined {
+  if (condition.conditionId !== "return_named_to_hand" || !condition.text?.includes("それぞれ")) return undefined;
+  const names = [...condition.text.matchAll(/「([^」]+)」/g)].map((m) => m[1]!).filter(Boolean);
+  return names.length > 1 ? names : undefined;
 }
 
 function resolveCondition(
@@ -150,7 +162,7 @@ function hasSelfUnitWithFeature(
     for (const card of player[zone]) {
       const def = getDefinition(definitions, card.cardId);
       if (!def || !isUnit(def)) continue;
-      if (size === "S" && !isSmallUnit(definitions, card.cardId)) continue;
+      if (size === "S" && !isSmallUnit(definitions, card)) continue;
       if ((def.features ?? []).includes(feature)) return true;
     }
   }
@@ -163,8 +175,9 @@ function hasSelfCommandWithFeature(
   features: string[],
 ): boolean {
   return player.command.some((card) => {
+    // コマンドゾーンのカードは種類を問わずコマンド（ビークル RS-570 デカバイクも。XG2-044 atwiki/page-1815）。
     const def = getDefinition(definitions, card.cardId);
-    if (!def || !isOperation(def)) return false;
+    if (!def) return false;
     return features.some((feature) => (def.features ?? []).includes(feature));
   });
 }
@@ -206,9 +219,11 @@ function hasSelfUnitOrCommandWithFeature(
   definitions: Record<string, CardDefinition>,
   feature: string,
 ): boolean {
+  // 「自軍コマンド」はコマンドゾーンのカードなら種類を問わない（XG3-027 スティラコサウルス「特徴「スティライザー」を持つ、自軍ユニットまたは
+  // 自軍コマンドがある」— コマンドゾーンのアバレマックス（ユニットカード）でもよい。atwiki/page-1901）。
   return (
     hasSelfUnitWithFeature(player, definitions, feature) ||
-    hasSelfCommandWithFeature(player, definitions, [feature])
+    player.command.some((card) => (getDefinition(definitions, card.cardId)?.features ?? []).includes(feature))
   );
 }
 
@@ -231,6 +246,25 @@ export function evaluateStateGate(
     const total =
       state.players.player1.discard.length + state.players.player2.discard.length;
     return total >= Number(discardTotalMatch[1]);
+  }
+
+  // 「自軍捨札が5枚以上ある」（XG6-031・XG6-043）。
+  const ownDiscardMatch = text.match(/^自軍捨札が(\d+)枚以上ある$/);
+  if (ownDiscardMatch) return player.discard.length >= Number(ownDiscardMatch[1]);
+  // XP-016「特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚以上ある」（捨札にはしない。atwiki/page-1982）。
+  const featureDiscardTotalMatch = text.match(/特徴[「｢]([^」｣]+)[」｣]を持つ捨札が自軍と敵軍で合計(\d+)枚以上ある/);
+  if (featureDiscardTotalMatch) {
+    const feature = featureDiscardTotalMatch[1]!;
+    const total = [...state.players.player1.discard, ...state.players.player2.discard].filter((c) =>
+      (getDefinition(state.definitions, c.cardId)?.features ?? []).includes(feature),
+    ).length;
+    return total >= Number(featureDiscardTotalMatch[2]);
+  }
+
+  const namedDiscardMatch = text.match(/^自軍捨札に[「｢]([^」｣]+)[」｣]がある$/);
+  if (namedDiscardMatch) {
+    // RS-327: 自軍捨札にその名前のカードがあること（捨札にはしない。atwiki/page-488）。
+    return player.discard.some((c) => cardName(state.definitions, c.cardId) === namedDiscardMatch[1]);
   }
 
   const namedAreaMatch = text.match(/自軍エリアに[「｢]([^」｣]+)[」｣]がある/);
@@ -269,6 +303,18 @@ export function evaluateStateGate(
     return hasSelfCommandWithFeature(player, state.definitions, features);
   }
 
+  // 「特徴「臨気」と「男」を持つ自軍ユニットがある」（XG6-021・XG6-022）— 両方の特徴を持つ1体。
+  const twoFeatureUnitMatch = text.match(/特徴[「｢]([^」｣]+)[」｣]と[「｢]([^」｣]+)[」｣]を持つ自軍ユニットがある/);
+  if (twoFeatureUnitMatch) {
+    const [, a, b] = twoFeatureUnitMatch;
+    return FIELD_ZONES.some((zone) =>
+      player[zone].some((card) => {
+        const def = getDefinition(state.definitions, card.cardId);
+        return !!def && isUnit(def) && (def.features ?? []).includes(a!) && (def.features ?? []).includes(b!);
+      }),
+    );
+  }
+
   const featureUnitMatch = text.match(/特徴[「｢]([^」｣]+)[」｣]を持つ自軍ユニットがある/);
   if (featureUnitMatch) {
     return hasSelfUnitWithFeature(player, state.definitions, featureUnitMatch[1]!);
@@ -277,6 +323,16 @@ export function evaluateStateGate(
   const enemyFeatureMatch = text.match(/特徴[「｢]([^」｣]+)[」｣]を持つ敵軍ユニットがある/);
   if (enemyFeatureMatch) {
     return hasOpponentUnitWithFeature(state, playerId, enemyFeatureMatch[1]!);
+  }
+
+  // 「カード名に「スター」または「SM」を含む自軍パワーがある」（XG7-060・XG7-061）。オモテ向きのカードだけ数える
+  // （利用者の決定 2026-10-20、docs/verification/unverified/questions-all.md U-5）。
+  const powerNameMatch = text.match(
+    /カード名に[「｢]([^」｣]+)[」｣](?:または[「｢]([^」｣]+)[」｣])?を含む自軍パワーがある/,
+  );
+  if (powerNameMatch) {
+    const parts = [powerNameMatch[1]!, powerNameMatch[2]].filter(Boolean) as string[];
+    return player.power.some((c) => !c.faceDown && parts.some((part) => cardName(state.definitions, c.cardId).includes(part)));
   }
 
   const nameContainsMatch = text.match(
@@ -301,11 +357,20 @@ function isValidCategoryLUnit(
   requiredCategory?: string,
 ): boolean {
   const def = getDefinition(definitions, card.cardId);
-  if (!def || !isLargeUnit(definitions, card.cardId)) return false;
+  if (!def || !isLargeUnit(definitions, card)) return false;
   if (!requiredCategory) return true;
-  if (cardHasCategory(def, requiredCategory as never)) return true;
-  return normalizeName(requiredCategory).length > 0;
+  // 「ダークアライアンスを持つ自軍Lユニット」（RS-580 絶対神ン・マ atwiki/page-1219）— 正式名・略号のどちらでも照合する。
+  const category = CATEGORY_FULL_NAMES[normalizeName(requiredCategory)] ?? requiredCategory;
+  return cardHasCategory(def, category as never);
 }
+
+const CATEGORY_FULL_NAMES: Record<string, string> = {
+  ワイルドビースト: "WB",
+  ミスティックアームズ: "MA",
+  オーバーテクノロジー: "OT",
+  アーステクノロジー: "ET",
+  ダークアライアンス: "DA",
+};
 
 export function isValidExtendedZordMaterial(
   definitions: Record<string, CardDefinition>,
@@ -323,6 +388,10 @@ export function isValidExtendedZordMaterial(
 
   switch (condition.conditionId) {
     case "discard_command_card":
+      // 「自軍ゾーンのオモテ向きのカードからSユニットのカードを1枚選び捨札にする」（XG1-019 の変更後の追加条件。rules/rushAdditionalCondition.ts）。
+      if (condition.text.startsWith("自軍ゾーンのオモテ向きのカードから")) {
+        return (zone === "command" || (zone === "power" && !card.faceDown)) && isUnit(def) && (!condition.requiredSize || def.size === condition.requiredSize);
+      }
       return zone === "command" || (zone === "hand" && isOperation(def));
     case "discard_hand_card":
       return zone === "hand";
@@ -339,12 +408,12 @@ export function isValidExtendedZordMaterial(
         (zone === "rush" || zone === "battle") &&
         isValidCategoryLUnit(definitions, card, condition.requiredCategory)
       );
-    case "return_named_to_hand":
-      return (
-        (zone === "rush" || zone === "battle") &&
-        !!condition.partnerName &&
-        matchesPartnerName(def, condition.partnerName)
-      );
+    case "return_named_to_hand": {
+      if (zone !== "rush" && zone !== "battle") return false;
+      const each = eachNamedPartners(condition);
+      if (each) return each.some((name) => normalizeName(def.name) === normalizeName(name));
+      return !!condition.partnerName && matchesPartnerName(def, condition.partnerName);
+    }
     default:
       return false;
   }
@@ -373,6 +442,13 @@ export function collectExtendedZordMaterials(
 
   const zones: ExtendedZordZone[] = ["hand", "command", "operation", "power", "rush", "battle"];
   const found: Array<{ zone: ExtendedZordZone; card: CardInstance }> = [];
+  if (condition.conditionId === "discard_operation_cards") {
+    // 「常駐置き場のカード」には常駐オペレーションに重ねたカードも含む（ウラ向きのカードはウラ向きのまま。
+    // RK-277 ン・ダグバ・ゼバ — atwiki/page-1254 Q1・page-753 Q1）。重ねたカードを先に並べる。
+    for (const op of player.operation) {
+      for (const stacked of op.stackedCards ?? []) found.push({ zone: "operation", card: stacked });
+    }
+  }
   for (const zone of zones) {
     for (const card of player[zone]) {
       if (
@@ -434,6 +510,17 @@ export function listExtendedZordRushVariants(
     return [{ zordMaterialInstanceIds: materials.map((m) => m.card.instanceId) }];
   }
 
+  const each = eachNamedPartners(condition);
+  if (each) {
+    // 名前ごとに1体ずつ選ぶ組み合わせ（同じカードを2つの名前に使わない）。
+    let sets: string[][] = [[]];
+    for (const name of each) {
+      const options = materials.filter((m) => normalizeName(getDefinition(definitions, m.card.cardId)?.name ?? "") === normalizeName(name));
+      sets = sets.flatMap((set) => options.filter((m) => !set.includes(m.card.instanceId)).map((m) => [...set, m.card.instanceId]));
+    }
+    return sets.map((ids) => ({ zordMaterialInstanceIds: ids }));
+  }
+
   const needed = condition.unitCount ?? 1;
   if (needed === 1) {
     return materials.map((material) => ({
@@ -470,7 +557,28 @@ function findExtendedMaterial(
     }
     return { zone, index: found.index, card: found.card };
   }
+  // 常駐オペレーションに重ねたカード（index -1 で表す。RK-277）。
+  if (resolveCondition(definitions, rushingCardId)?.conditionId === "discard_operation_cards") {
+    for (const op of player.operation) {
+      const stacked = op.stackedCards?.find((c) => c.instanceId === materialInstanceId);
+      if (stacked) return { zone: "operation", index: -1, card: stacked };
+    }
+  }
   return null;
+}
+
+/** 常駐オペレーションに重ねたカードを取り除く（RK-277 の追加条件の素材）。 */
+function removeStackedOperationCard(player: PlayerState, instanceId: string): PlayerState {
+  return {
+    ...player,
+    operation: player.operation.map((op) => {
+      if (!op.stackedCards?.some((c) => c.instanceId === instanceId)) return op;
+      const rest = op.stackedCards.filter((c) => c.instanceId !== instanceId);
+      if (rest.length > 0) return { ...op, stackedCards: rest };
+      const { stackedCards: _s, ...without } = op;
+      return without as CardInstance;
+    }),
+  };
 }
 
 export function validateExtendedZordPayment(
@@ -495,6 +603,17 @@ export function validateExtendedZordPayment(
     if (faceUp.length === 0) return false;
     const ids = new Set(materialInstanceIds);
     return faceUp.every((card) => ids.has(card.instanceId)) && ids.size === faceUp.length;
+  }
+
+  const each = eachNamedPartners(condition);
+  if (each) {
+    // 名前ごとにちょうど1体ずつ（RK-190）。
+    if (materialInstanceIds.length !== each.length || new Set(materialInstanceIds).size !== each.length) return false;
+    const names = materialInstanceIds.map((id) => {
+      const m = findExtendedMaterial(player, definitions, rushingCardId, rushingInstanceId, id);
+      return m ? normalizeName(getDefinition(definitions, m.card.cardId)?.name ?? "") : null;
+    });
+    return each.every((name) => names.includes(normalizeName(name)));
   }
 
   const needed = condition.unitCount ?? 1;
@@ -538,7 +657,10 @@ export function applyExtendedZordPayment(
   if (!condition) return null;
 
   let nextPlayer = player;
-  for (const materialId of materialInstanceIds) {
+  // 重ねたカードを先に取り除く（重ねていたオペレーションも素材なら、その後で捨札にする）。
+  const isStacked = (id: string) => player.operation.some((op) => op.stackedCards?.some((c) => c.instanceId === id));
+  const ordered = [...materialInstanceIds.filter(isStacked), ...materialInstanceIds.filter((id) => !isStacked(id))];
+  for (const materialId of ordered) {
     const material = findExtendedMaterial(
       nextPlayer,
       definitions,
@@ -548,8 +670,16 @@ export function applyExtendedZordPayment(
     );
     if (!material) return null;
 
-    const [, zoneCards] = removeAt(nextPlayer[material.zone], material.index);
-    nextPlayer = { ...nextPlayer, [material.zone]: zoneCards };
+    if (material.index < 0) {
+      nextPlayer = removeStackedOperationCard(nextPlayer, materialId);
+    } else {
+      const [, zoneCards] = removeAt(nextPlayer[material.zone], material.index);
+      nextPlayer = { ...nextPlayer, [material.zone]: zoneCards };
+      if (material.zone === "operation" && material.card.stackedCards?.length) {
+        // 常駐置き場を離れたオペレーションに重ねていたカードは捨札になる。
+        nextPlayer = { ...nextPlayer, discard: [...nextPlayer.discard, ...material.card.stackedCards] };
+      }
+    }
 
     if (condition.conditionId === "return_named_to_hand") {
       nextPlayer = {
@@ -557,9 +687,10 @@ export function applyExtendedZordPayment(
         hand: [...nextPlayer.hand, material.card],
       };
     } else {
+      const { stackedCards: _stack, ...discarded } = material.card;
       nextPlayer = {
         ...nextPlayer,
-        discard: [...nextPlayer.discard, material.card],
+        discard: [...nextPlayer.discard, discarded as CardInstance],
       };
     }
   }
@@ -655,6 +786,8 @@ export function validateFieldZordMaterials(
   rushingInstanceId: string,
   materialInstanceIds: string[],
   materialDestination?: ZordMaterialDestination,
+  /** 残りの体数を【母艦】ホールドで代えるとき、必要体数より少ない素材を許す（faq-card-2 RS-076 Q7）。 */
+  allowFewerForMothership = false,
 ): boolean {
   const condition = resolveCondition(definitions, rushingCardId);
   if (!condition || !isSendSUnitZordCondition(condition.conditionId)) {
@@ -679,7 +812,12 @@ export function validateFieldZordMaterials(
   }
 
   const needed = condition.unitCount ?? 1;
-  if (materialInstanceIds.length !== needed) return false;
+  if (
+    materialInstanceIds.length !== needed &&
+    !(allowFewerForMothership && materialInstanceIds.length < needed)
+  ) {
+    return false;
+  }
   const used = new Set<string>();
   for (const id of materialInstanceIds) {
     if (used.has(id)) return false;
@@ -700,7 +838,11 @@ export function validateFieldZordMaterials(
   if (
     condition.conditionId === "send_s_unit_to_command_or_discard" &&
     materialDestination === "command" &&
-    player.command.length >= COMMAND_ZONE_MAX
+    // 「それぞれ」の無い条件（RS-531・RS-532）は同じ行き先に送る素材すべてが入る空きが要る（atwiki/page-1158 Q1）。
+    // 「それぞれ」（RS-075 等）は1体ごとに行き先を選ぶので、空きが1つあればよい（残りは捨札。faq-card-4 RS-196 Q2）。
+    player.command.length +
+      (/それぞれ/.test(condition.text ?? "") ? 1 : materialInstanceIds.length) >
+      COMMAND_ZONE_MAX
   ) {
     return false;
   }
@@ -714,17 +856,17 @@ export function applyMultipleFieldZordMaterials(
   rushingCardId: string,
   rushingInstanceId: string,
   materialInstanceIds: string[],
-  destination?: ZordMaterialDestination,
+  destination?: ZordMaterialDestination | ZordMaterialDestination[],
 ): PlayerState | null {
   let nextPlayer = player;
-  for (const materialId of materialInstanceIds) {
+  for (const [index, materialId] of materialInstanceIds.entries()) {
     const applied = applyZordMaterial(
       nextPlayer,
       definitions,
       rushingCardId,
       rushingInstanceId,
       materialId,
-      destination,
+      Array.isArray(destination) ? destination[index] : destination,
     );
     if (!applied) return null;
     nextPlayer = applied;
@@ -773,7 +915,10 @@ export function listFieldZordRushVariants(
         ...materialRef,
         zordMaterialDestination: "discard",
       });
-      if (commandZoneHasSpace) {
+      if (
+        commandZoneHasSpace &&
+        (/それぞれ/.test(condition.text ?? "") || player.command.length + ids.length <= COMMAND_ZONE_MAX)
+      ) {
         variants.push({
           ...materialRef,
           zordMaterialDestination: "command",
@@ -787,6 +932,10 @@ export function listFieldZordRushVariants(
         variants.push({ ...materialRef, zordMaterialDestination: "discard" });
       } else {
         variants.push(materialRef);
+      }
+      // XG1-013【巨大要塞】捨札にするかわりにホールドする（rules/xg1/xg1Fields.ts）。
+      if (!set[0]!.commandHeld && xg1HoldSubstituteAvailable(player, definitions, rushingCardId)) {
+        variants.push({ ...materialRef, zordMaterialDestination: "hold" });
       }
     } else {
       const ids = set.map((c) => c.instanceId);

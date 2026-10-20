@@ -7,7 +7,7 @@
     "OT",
     "DA"
   ],
-  "rarity": "N",
+  "rarity": "PR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※これは手札からしかラッシュできない。 【世界の破壊者】自分と相手のパワーゾーンのカードの枚数をくらべ、枚数が多いパワーゾーンの持ち主は次のようにする⇒自分自身のパワーゾーンのカードの枚数が対戦相手と同じになるまで、自分自身のオモテ向きのパワーを可能な限り選び捨札にする。",
@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-017::nohakai",
+          "keyword": "promo::XP-017::world_destroyer",
           "duration": "turn"
         }
       ]

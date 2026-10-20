@@ -4,7 +4,7 @@
   "name": "仮面ライダー電王CF",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※モーフ ※これは毎ターン可能ならバトルエリアに出る。 【俺達の必殺技】自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、撃破したユニットを捨札にするかわりに持ち主のパワーゾーンに送ってもよい。そうしたとき、相手に1点ダメージを与える。",
@@ -50,13 +50,13 @@
       "name": "俺達の必殺技",
       "text": "自軍ターン中、これがバトルで敵軍ユニットを撃破したとき、撃破したユニットを捨札にするかわりに持ち主のパワーゾーンに送ってもよい。そうしたとき、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg5::XG5-052::oretachi",
+          "duration": "permanent"
         }
       ]
     }

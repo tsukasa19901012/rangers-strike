@@ -4,7 +4,7 @@
   "name": "仮面ライダーライジングイクサ",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": "5+",
   "text": "※これが自軍コマンドゾーンにある間、自軍ラッシュフェイズ中、必要パワーの数字が「1」「9」「3」の自軍コマンドがそれぞれあれば、これを自軍ラッシュエリアに出してもよい。 【ファイナルライジングブラスト】これが自軍バトルエリアにある間、敵軍ターン中、ストライクを2回以上されてダメージを受けたとき、これをラッシュエリアに戻してもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
@@ -33,11 +33,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_in_command_rush_deploy::koregakomandozonniar",
+          "keyword": "rk16::RK-320::command_deploy",
           "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     },
     {
       "id": "fuainaruraijinguburasuto",
@@ -48,39 +48,12 @@
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "hold_command",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk16::RK-320::final_rising_blast",
+          "duration": "permanent"
         }
       ],
-      "optional": true,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      }
+      "optional": false
     }
   ],
   "implementation": {

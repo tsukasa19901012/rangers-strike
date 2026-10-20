@@ -178,7 +178,7 @@ npm run build
 | 内容 | ファイル / コマンド |
 |------|---------------------|
 | コア 1,052 枚 | `src/generated/catalog/core-playable/cards.json` |
-| フルプレイアブル 1,832 枚 | `src/generated/catalog/full-playable/cards.json` |
+| フルプレイアブル 1,832 枚（対戦・デッキ構築で使う `allCardsCatalog`。コマンダー除外） | `src/generated/catalog/full-playable/cards.json` |
 | カタログ API | `src/catalog/unifiedCatalog.ts`（`loadCards` / `loadCardById` は `src/dsl/loader.ts`） |
 | 後方互換 re-export | `src/extendedCatalog.ts`（`fullPlayableCatalog` 等） |
 | promoted シャード | `generated/catalog/*-promoted/`（vanilla / complexity 等） |

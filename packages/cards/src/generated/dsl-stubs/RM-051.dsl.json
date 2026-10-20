@@ -4,7 +4,7 @@
   "name": "メガヘラクレス",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【メガビートフォーメーション】これは、自軍エリアに「ビートルーダー」があれば「SP1」になり、「スタッガータンク」があればBP+3000され、「レッドジャイロ」があればレジストを得る。",
@@ -36,14 +36,13 @@
       "name": "メガビートフォーメーション",
       "text": "これは、自軍エリアに「ビートルーダー」があれば「SP1」になり、「スタッガータンク」があればBP+3000され、「レッドジャイロ」があればレジストを得る。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-051::megabitofuomeshon",
-          "duration": "turn"
+          "keyword": "rm3::RM-051::mega_beet",
+          "duration": "permanent"
         }
       ]
     }

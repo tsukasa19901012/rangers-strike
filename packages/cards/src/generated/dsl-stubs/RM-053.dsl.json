@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "ride_command_without_rc_fx_unknown",
+      "id": "ride_command_without_rc_feat_e69886e899ab",
       "text": "※特徴「昆虫」を持つSユニットは、自軍コマンドを1つホールドすれば、ＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -24,7 +24,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_command_without_rc_fx_unknown",
+          "keyword": "ride_command_without_rc_feat_e69886e899ab",
           "duration": "permanent"
         }
       ]
@@ -34,14 +34,13 @@
       "name": "ドリルアタッチメント",
       "text": "自軍ターン中、これがバトルエリアに出たとき、自軍エリアに「ビートルーダー」があれば、次の効果を発動できる⇒特徴「メカ」を持つ敵軍Mユニットを1体選びホールドする。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-053::doriruatachimento",
-          "duration": "turn"
+          "keyword": "rm3::RM-053::drill_attachment",
+          "duration": "permanent"
         }
       ]
     }

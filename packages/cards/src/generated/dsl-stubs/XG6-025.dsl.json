@@ -4,7 +4,7 @@
   "name": "ゴセイグランド",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "合体―グランディオン＋シーレオン＋スカイオン ※リードMA 【ここからは私のターンだ】これが自軍バトルエリアにある間、敵軍バトルフェイズ中、自分がダメージを受けたとき、自分の手札が1枚以上あればすべて捨札にしてもよい。そうしたとき、そのバトルフェイズを終了する。",
@@ -43,11 +43,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-025::kokokarahanotanda",
+          "keyword": "xg6::XG6-025::my_turn",
           "duration": "permanent"
         }
       ]

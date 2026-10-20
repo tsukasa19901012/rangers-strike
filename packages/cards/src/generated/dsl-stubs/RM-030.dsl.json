@@ -37,11 +37,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-030::daireonreza",
+          "keyword": "rm2::RM-030::daileon_laser",
           "duration": "permanent"
         }
       ]

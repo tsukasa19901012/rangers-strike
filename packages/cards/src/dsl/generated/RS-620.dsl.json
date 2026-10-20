@@ -4,7 +4,7 @@
   "name": "ジェットガルーダ",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "7+",
   "text": "【ガルーダクロー】これをラッシュしたとき、敵軍パワーゾーンからダメージ以外のカードを1枚選び、持ち主の山札の上に戻してもよい。",
@@ -28,11 +28,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "damage_action_koreworashushitatokipawazonkaradamejinokadowo1bichino",
+          "keyword": "set9a::RS-620::garuda_claw",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

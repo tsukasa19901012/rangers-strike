@@ -17,11 +17,11 @@
         "type": "operation",
         "timing": "rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG3-049::niarusutorenjibe",
+          "keyword": "xg3::XG3-049::strange_vent",
           "duration": "permanent"
         }
       ]
@@ -31,5 +31,8 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "features": [
+    "アドベントカード"
+  ]
 }

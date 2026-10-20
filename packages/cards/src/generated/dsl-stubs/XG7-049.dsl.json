@@ -35,13 +35,13 @@
       "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これはカード名に「ガタ」を含む自軍ユニット1体につきBP+500される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-049::korehakadonigata",
+          "keyword": "xg7::XG7-049::gata_count",
           "duration": "permanent"
         }
       ]
@@ -57,8 +57,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-049::fxunknown3",
-          "duration": "turn"
+          "keyword": "xg7::XG7-049::split",
+          "duration": "permanent"
         }
       ]
     }

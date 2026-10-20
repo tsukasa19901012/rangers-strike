@@ -4,7 +4,7 @@
   "name": "要塞ワンセブン",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "※ウイング ※これはバトルエリアに出られない。 【要塞能力】これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、自分の手札を1枚捨札にしてもよい。そうしたとき、捨札にしたカードの必要パワーの数字以下の必要パワーの数字を持ち、特徴「メカ」を持つカードを自軍捨札から1枚選び手札に加える。",
@@ -51,11 +51,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-064::chikarae8a681",
+          "keyword": "xg6::XG6-064::fortress_ability",
           "duration": "permanent"
         }
       ]

@@ -4,7 +4,7 @@
   "name": "ロイヤルストレートフラッシュ",
   "type": "operation",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 6,
   "text": "自軍山札の上から5枚をオモテにする。そうしたとき、オモテにしたユニットカードのBPの合計以下のBPを持つ敵軍ユニットを1体選び、ゲームから除外する（この効果で選ばれたユニットがゲームから除外されるまで、選ばれたユニットが持つ効果名を持たないテキストは無効になり、発動もできない）。その後、オモテにしたカードはすべて捨札になる。",
@@ -17,12 +17,11 @@
         "type": "operation",
         "timing": "rush"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-058::nokara5woomoteni",
-          "duration": "permanent"
+          "keyword": "xg5::XG5-058::royal_straight_flash",
+          "duration": "turn"
         }
       ]
     }

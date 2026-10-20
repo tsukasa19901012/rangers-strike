@@ -49,13 +49,13 @@
       "name": "冷凍光線",
       "text": "「ガオベアー」か特徴「人型」を持つLユニットがこのユニットからコンビネーションするとき、次の効果を発動できる⇒コンビネーションしたユニットのBP以下のBPを持つ敵軍ユニットを1体選びホールドする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-013::hikarie586b7",
+          "keyword": "xg3::XG3-013::reito_kosen",
           "duration": "permanent"
         }
       ]

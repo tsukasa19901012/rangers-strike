@@ -10,10 +10,21 @@ export const DECK_MIN_SIZE = 40;
 /** デッキ1枚あたりの同名カード枚数上限（既定）。 */
 export const DECK_NAME_COPY_LIMIT = 3;
 
-/** デッキビルダー UI で無制限枚数カードの上限。 */
-export const DECK_UNLIMITED_COPY_CAP = 40;
+/**
+ * 無制限枚数カードの上限（上限なし）。
+ * ルール: R-DECK-03 — 「好きな枚数入れてもよい」カードは41枚以上でもよい（デッキ枚数自体にも上限はない）。
+ */
+export const DECK_UNLIMITED_COPY_CAP = Number.POSITIVE_INFINITY;
 
-const UNLIMITED_DECK_NOTE = "デッキに3枚以上入れてもよい";
+/**
+ * 3枚制限の例外を示すカード本文の注記。
+ * ルール: R-DECK-03 — 「※このカードはデッキに好きな枚数入れてもよい。」が標準。
+ * 最初期の RS-080 だけ「※このカードはデッキに3枚以上入れてもよい。」。
+ */
+const UNLIMITED_DECK_NOTES = [
+  "デッキに好きな枚数入れてもよい",
+  "デッキに3枚以上入れてもよい",
+] as const;
 
 const EXCLUDED_DECK_TYPES = new Set<string>(PLAYABLE_EXCLUDED_CARD_TYPES);
 
@@ -36,12 +47,13 @@ export type DeckValidationResult = {
   errors: string[];
 };
 
-/** 通常3枚制限を超えてよいカード（例: 戦闘員）。 */
+/**
+ * 通常3枚制限を超えてよいカード。
+ * ルール: R-DECK-03 — 例外はカード本文の注記だけで決まる（特徴「戦闘員」の有無では決まらない）。
+ */
 export function deckCopyUnlimited(card: CardDefinition): boolean {
-  if (card.features?.includes("戦闘員")) {
-    return true;
-  }
-  if (card.text?.includes(UNLIMITED_DECK_NOTE)) {
+  const text = card.text ?? "";
+  if (UNLIMITED_DECK_NOTES.some((note) => text.includes(note))) {
     return true;
   }
   if (hasUnnamedRule(card.id, "deck_copy_unlimited")) {
@@ -97,7 +109,12 @@ export function validateDeckEntries(
   const minSize = options?.minSize ?? DECK_MIN_SIZE;
   const errors: string[] = [];
   const byId = new Map(catalog.cards.map((card) => [card.id, card]));
-  const total = entries.reduce((sum, entry) => sum + entry.count, 0);
+  // デッキに入れられないカード（コマンダー・カタログ外）は枚数に数えない。ルール: R-DECK-01, R-DECK-07
+  const total = entries.reduce((sum, entry) => {
+    const card = byId.get(entry.cardId);
+    if (!card || EXCLUDED_DECK_TYPES.has(card.type) || entry.count <= 0) return sum;
+    return sum + entry.count;
+  }, 0);
 
   if (total < minSize) {
     const shortfall = minSize - total;

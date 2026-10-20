@@ -4,7 +4,7 @@
   "name": "仮面ライダーG3",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 2,
   "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) ※これはホールド状態のときビークルにライドできない。 【GM-01】ホールド状態の敵軍Sユニットを1体選び、持ち主のコマンドゾーンにホールド状態で置く（置けなければこの効果は発動できない)。",
@@ -57,39 +57,12 @@
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "hold_command",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk8::RK-166::gm01",
+          "duration": "turn"
         }
       ],
-      "optional": false,
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      }
+      "optional": false
     }
   ],
   "implementation": {

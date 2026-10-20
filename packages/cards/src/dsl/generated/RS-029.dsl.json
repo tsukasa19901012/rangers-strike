@@ -3,7 +3,7 @@
   "name": "勇気の魔法",
   "type": "operation",
   "category": "MA",
-  "rarity": "R",
+  "rarity": "N",
   "expansion": "legend1",
   "powerCost": 1,
   "effectId": "courage_magic",
@@ -35,6 +35,6 @@
     "handler": "interpreter",
     "testGenerated": true
   },
-  "text": "自軍Sユニットがバトルエリアに出るたび、コマンドを1つリリースできる（常駐）。",
-  "rawText": "自軍Sユニットがバトルエリアに出るたび、コマンドを1つリリースできる（常駐）。"
+  "text": "※常駐 自軍Sユニットがバトルエリアに出るたびに、自軍コマンドを1つリリースしてもよい。",
+  "rawText": "※常駐 自軍Sユニットがバトルエリアに出るたびに、自軍コマンドを1つリリースしてもよい。"
 }

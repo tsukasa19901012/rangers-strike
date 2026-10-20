@@ -128,7 +128,8 @@ describe("super shield RS-052", () => {
 
 describe("focused breakthrough RS-065", () => {
   it("deals 1 damage when RS-065 destroys SP1+ unit", () => {
-    const focused = inst("RS-065", "fb");
+    // ルール: R-ERR-RS065 — 【一点突破】は NC 成立中のみ有効
+    const focused = { ...inst("RS-065", "fb"), activatedNcEffects: ["focused_breakthrough"] };
     const target = inst("TST-UNIT-0", "target");
     const state = createTestState({
       phase: "battle",

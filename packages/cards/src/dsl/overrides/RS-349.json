@@ -1,0 +1,22 @@
+{
+  "text": "自軍山札を見て、追加条件を持たずDAを持たないSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+  "rawText": "自軍山札を見て、追加条件を持たずDAを持たないSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+  "effects": [
+    {
+      "id": "deck_to_hand",
+      "text": "自軍山札を見て、追加条件を持たずDAを持たないSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "effect_card::RS-349::deck_to_hand",
+          "duration": "turn"
+        }
+      ]
+    }
+  ]
+}

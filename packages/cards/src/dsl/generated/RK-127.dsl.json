@@ -4,7 +4,7 @@
   "name": "仮面ライダーカリス",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 2,
   "text": "※これはライドオフしたときストライクできない。 ※これは相手の手札1枚につきBP+2000される。 【カリスアロー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、見せたカードの必要パワーの数字がすべて同じなら、敵軍コマンドゾーンからホールド状態のカードを1枚選び捨札にする。",
@@ -55,34 +55,14 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "command",
-          "owner": "opponent"
-        }
-      },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_command",
-          "valid": {
-            "type": "zone",
-            "zone": "command",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "hold_command",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk7::RK-127::chalice_arrow",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

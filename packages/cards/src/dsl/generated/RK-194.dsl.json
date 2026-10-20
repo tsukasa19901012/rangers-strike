@@ -4,7 +4,7 @@
   "name": "仮面ライダーG3-X",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 3,
   "text": "※レジスト（これがバトルで撃破されたとき、捨て札にするかわりにこれをホールドしてその場に留めてもよい） ※これが自軍エリアにある間、自軍ラッシュエリアのSPが空欄のユニットは相手に選ばれない。 【GX-05】ホールド状態の自軍ユニットの数を数えて、その数以下の必要パワーの数字を持つSユニットを敵軍バトルエリアから1体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければこの効果は発動できない。",
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "not_selectable_ally_rush_sp_blank",
+          "keyword": "rk10::RK-194::g3x_protect",
           "duration": "permanent"
         }
       ]
@@ -58,7 +58,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-194::gx05",
+          "keyword": "rk10::RK-194::gx05",
           "duration": "turn"
         }
       ],

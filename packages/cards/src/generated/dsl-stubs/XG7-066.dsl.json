@@ -40,11 +40,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-066::haidoranda",
+          "keyword": "xg7::XG7-066::hydrander",
           "duration": "permanent"
         }
       ]

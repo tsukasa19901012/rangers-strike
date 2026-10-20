@@ -4,7 +4,7 @@
   "name": "仮面ライダークウガRU・レッドアイ",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "PR",
   "expansion": "legend1",
   "powerCost": "7+",
   "text": "※レジスト 【赤い瞳に宿るもの】これが自軍エリアにある間、このユニットよりBPの低い自軍ユニットがアタックされたとき、アタックされたユニットをホールドしてもよい。そうしたとき、アタックしてきたユニットは、ホールドしたユニットのかわりに、このユニットとバトルする。このバトル中、自軍エリアに「仮面ライダーディケイド」があれば、これはBP+2000される。",
@@ -19,10 +19,8 @@
     "ライジング"
   ],
   "rushAdditionalCondition": {
-    "conditionId": "discard_named_unit",
-    "text": "特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚以上ある",
-    "partnerName": "仮面ライダー",
-    "unitCount": 8
+    "conditionId": "state_gate",
+    "text": "特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚以上ある"
   },
   "effects": [
     {
@@ -50,8 +48,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-016::inirumono",
-          "duration": "permanent"
+          "keyword": "promo::XP-016::red_eye",
+          "duration": "turn"
         }
       ]
     }

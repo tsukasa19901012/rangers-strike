@@ -1,3 +1,4 @@
+import { recordNcEstablishedThisTurn } from "./set7NamedEffectsA";
 import type { CardInstance, GameState, PlayerId, ScopedModifier } from "../../types/game";
 import {
   cardName,
@@ -204,8 +205,9 @@ export function applyCoreGapNcEffect(
       nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
       const commands = collectCommandIds(nextState, enemyId, "any");
       if (commands.length > 0) {
+        // 選ぶのは自分（敵軍コマンドゾーンから。リリース・ホールドどちらも。atwiki/page-498）。
         const withChoice = startSelectCommandChoice(nextState, {
-          playerId: enemyId,
+          playerId,
           effectId,
           sourceCardId: card.cardId,
           phasePlayerId: playerId,
@@ -222,11 +224,12 @@ export function applyCoreGapNcEffect(
     case "new_red_beet": {
       nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
       const targets = nextState.players[enemyId].command
-        .filter((c) => isSmallUnit(state.definitions, c.cardId))
+        .filter((c) => isSmallUnit(state.definitions, c))
         .map((c) => c.instanceId);
       if (targets.length > 0) {
+        // 「選び、…出してもよい」— 選ぶのも出すかを決めるのも効果を使う自分（atwiki/page-538）。
         const withChoice = startSelectCommandChoice(nextState, {
-          playerId: enemyId,
+          playerId,
           effectId,
           sourceCardId: card.cardId,
           phasePlayerId: playerId,
@@ -270,7 +273,8 @@ export function applyCoreGapNcEffect(
         sourceCardId: card.cardId,
         kind: "declare_number",
         phasePlayerId: playerId,
-        validInstanceIds: Array.from({ length: 13 }, (_, n) => String(n)),
+        // 2桁以上の数字も宣言できる（atwiki/page-823 Q1/A1「「10」や「100」等を…2桁以上であっても宣言できます」）。
+        validInstanceIds: Array.from({ length: 101 }, (_, n) => String(n)),
         optional: true,
       });
       if (withChoice) nextState = withChoice;
@@ -280,6 +284,8 @@ export function applyCoreGapNcEffect(
     case "disco_dance": {
       nextState = grantSp1ToBattleUnit(nextState, playerId, card.instanceId);
       nextState = markBattleNcEffect(nextState, playerId, card.instanceId, effectId);
+      // 発動元が撃破されても、ターンを終えるときの処理は行う（R-CN-06。rules/legend1/set7NamedEffectsA.ts）。
+      nextState = recordNcEstablishedThisTurn(nextState, playerId, card, effectId);
       logs.push(ncLog(playerId, card.cardId, state.definitions, effectId));
       break;
     }

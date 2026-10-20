@@ -1,6 +1,6 @@
 import { canonicalCardName } from "@rangers-strike/cards";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
-import { cardName, getDefinition } from "../core/catalog";
+import { cardName, getDefinition, unitSizeOf } from "../core/catalog";
 import { findInZone } from "../core/helpers";
 import type { GrantKeywordContext } from "../dsl/grantKeyword";
 import { findCardOwner } from "./fieldLookup";
@@ -14,7 +14,7 @@ export function collectMurphyChaseUnitTargets(state: GameState): string[] {
     for (const zone of ["rush", "battle"] as const) {
       for (const card of state.players[playerId][zone]) {
         const def = getDefinition(state.definitions, card.cardId);
-        if (def?.type !== "unit" || def.size !== "S") continue;
+        if (def?.type !== "unit" || unitSizeOf(state.definitions, card) !== "S") continue;
         if ((def.features ?? []).includes("メカ")) continue;
         ids.push(card.instanceId);
       }

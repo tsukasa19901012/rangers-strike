@@ -1,10 +1,11 @@
 import type { GameState, PlayerId } from "../types/game";
 import { openEffectChoice } from "./pendingChoices";
 
-let nextGroupSeq = 1;
-
-export function newSimultaneousGroupId(): string {
-  return `simul_${nextGroupSeq++}`;
+/**
+ * 同時解決グループの ID。モジュールの通し番号（ワーカーごとに変わる）ではなく状態から作り、決定的にする。
+ */
+export function newSimultaneousGroupId(state: Pick<GameState, "turn" | "log">): string {
+  return `simul_${state.turn}_${state.log.length}`;
 }
 
 /** 同時解決候補の反応フレーム ID（公式優先度とは別にターンプレイヤーが順序を選ぶ）。 */
@@ -45,7 +46,7 @@ export function ensureSimultaneousReactionGroup(state: GameState): GameState {
   ) {
     return state;
   }
-  return { ...state, activeSimultaneousGroupId: newSimultaneousGroupId() };
+  return { ...state, activeSimultaneousGroupId: newSimultaneousGroupId(state) };
 }
 
 /** 同時解決グループが 2 件以上あるとき、ターンプレイヤーに順序選択を開く。 */

@@ -7,6 +7,9 @@ import { godomDiscardPowerBonus } from "../rules/godomRushPay";
 import { flowerBombPowerCostOverride } from "../rules/legend1/coreGapEffects";
 import { cityGuardRushPowerSurcharge } from "../rules/batch06FieldEffects";
 import { hasTurnRuleModifier } from "./scopedModifiers";
+import { xg7NextCardCostReduction } from "../rules/xg7/xg7Fields";
+import { xg6CommandPowerBonus } from "../rules/xg6/xg6Fields";
+import { isRideShooterRushTarget } from "../rules/fieldActivatedAbilities";
 import {
   countMirrorMonstersOnField,
   hasMirrorRiderPowerMinusRule,
@@ -29,7 +32,10 @@ export function countOpponentMultiCategoryCommands(
   const enemy = state.players[opponent(playerId)];
   let count = 0;
   for (const cmd of enemy.command) {
-    if (isMultiCategoryCommand(state.definitions, cmd.cardId)) count += 1;
+    // XG6-013【未来の戦士達へ】: カテゴリが追加されてマルチカテゴリになり、敵軍パワーは追加で2増える（rules/xg6/xg6Fields.ts）。
+    const xg6 = xg6CommandPowerBonus(cmd.cardId);
+    if (xg6 > 0) count += xg6;
+    else if (isMultiCategoryCommand(state.definitions, cmd.cardId)) count += 1;
   }
   return count;
 }
@@ -69,8 +75,49 @@ export function effectivePowerCost(
   playerId: PlayerId,
   rawCost: number,
 ): number {
-  const reduced = rawCost - enemyPowerCostReduction(state, playerId);
+  // XG7-054 ◎2「このターン、次に自分が手札から使用するカードの必要パワーの数字は、3少なくなる。」（rules/xg7/xg7Fields.ts）。
+  const reduced = rawCost - enemyPowerCostReduction(state, playerId) - xg7NextCardCostReduction(state, playerId);
   return Math.max(0, reduced);
+}
+
+const RESIDENT_STACK_COST_RE = /自軍ラッシュフェイズ中、自分のユニットカードの必要パワーの数字は、これに重ねたカード1枚につき1少なくなる/;
+
+/**
+ * RS-435 アレ（※常駐）「自軍ラッシュフェイズ中、自分のユニットカードの必要パワーの数字は、これに重ねたカード1枚につき1少なくなる。」
+ * （atwiki/page-753。「必要パワーを満たしているかの確認」→「追加条件を実行」の順なので、追加条件で重ねたカードを捨札にしても
+ * 確認の時点の軽減で判定する。page-1254 Q1）。文言で判定する。
+ */
+export function residentStackPowerCostReduction(
+  state: Pick<GameState, "players" | "definitions" | "activePlayer">,
+  ownerId: PlayerId,
+  cardId: string,
+): number {
+  const phase = (state as { phase?: GameState["phase"] }).phase;
+  if (phase !== "rush" || state.activePlayer !== ownerId) return 0;
+  if (getDefinition(state.definitions, cardId)?.type !== "unit") return 0;
+  let reduction = 0;
+  for (const op of state.players[ownerId].operation) {
+    const stacked = op.stackedCards?.length ?? 0;
+    if (stacked === 0) continue;
+    const text = (getDefinition(state.definitions, op.cardId)?.text ?? "").normalize("NFKC").replace(/\s+/g, "");
+    if (RESIDENT_STACK_COST_RE.test(text)) reduction += stacked;
+  }
+  return reduction;
+}
+
+/**
+ * RS-375 レッドレーサー（2nd）の※「これが自軍エリアにある間、自分のユニットカードの必要パワーの数字は1増える。」（atwiki/page-552）
+ * 対象はユニット「カード」（手札・山札・パワーゾーン・コマンドゾーン等）で、場のユニットには及ばない（faq-card-6 RS-375 Q2/Q4/Q5）。
+ * 複数あれば重複する（R-CONT-01）。
+ */
+export function redRacerPowerCostBonus(
+  state: Pick<GameState, "players" | "definitions">,
+  ownerId: PlayerId,
+  cardId: string,
+): number {
+  if (getDefinition(state.definitions, cardId)?.type !== "unit") return 0;
+  const owner = state.players[ownerId];
+  return [...owner.battle, ...owner.rush].filter((c) => c.cardId === "RS-375").length;
 }
 
 export function rushEffectivePowerCost(
@@ -81,11 +128,17 @@ export function rushEffectivePowerCost(
 ): number {
   if (cardId) {
     const def = getDefinition(state.definitions, cardId);
+    rawCost += redRacerPowerCostBonus(state, playerId, cardId);
+    rawCost = Math.max(0, rawCost - residentStackPowerCostReduction(state, playerId, cardId));
+    // ルール: R-ERR-RK043 — 【突入】の後、次にラッシュするミラーライダーの必要パワーは3少なくなる。
+    if (isRideShooterRushTarget(state, playerId, cardId)) {
+      rawCost = Math.max(0, rawCost - 3);
+    }
     if (
       (def?.features ?? []).includes("ミラーライダー") &&
       hasMirrorRiderPowerMinusRule(state.players[playerId])
     ) {
-      const reduction = countMirrorMonstersOnField(state as GameState, state.players[playerId]);
+      const reduction = countMirrorMonstersOnField(state as GameState, state.players[playerId], playerId);
       return Math.max(0, effectivePowerCost(state, playerId, rawCost) - reduction);
     }
     const flowerBomb = flowerBombPowerCostOverride(state, playerId, cardId);

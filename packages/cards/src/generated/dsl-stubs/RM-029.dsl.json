@@ -4,7 +4,7 @@
   "name": "ジャスピオン",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 2,
   "text": "※SPが空欄ではない自軍Sユニットがあれば、これはバトルエリアに出られない。 【コズミックハーレー】敵軍山札の上から1枚をオモテにする。オモテにしたカードがWBを持つユニットカードなら、それを持ち主のラッシュエリアに出す。違うなら、そのカードを持ち主のパワーゾーンに送ってから、相手に1点ダメージを与える。",
@@ -21,14 +21,13 @@
       "id": "note_e280bb5350e3818ce7a9bae6",
       "text": "※SPが空欄ではない自軍Sユニットがあれば、これはバトルエリアに出られない。",
       "trigger": {
-        "type": "riding_combo"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-029::note_e280bb5350e3818ce7a9bae6",
-          "duration": "turn"
+          "keyword": "rm2::RM-029::no_entry",
+          "duration": "permanent"
         }
       ]
     },
@@ -41,11 +40,12 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "rm2::RM-029::cosmic_harley",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

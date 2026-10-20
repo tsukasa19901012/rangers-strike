@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG4-021::kaunta_lyunitoga",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-021::karakuri_mantle",
+          "duration": "turn"
         }
       ]
     }
@@ -31,5 +31,8 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "features": [
+    "カラクリボール"
+  ]
 }

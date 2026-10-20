@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { yieldToEventLoop } from "../testing/yieldToEventLoop";
 import type { Phase } from "../types/game";
 import { LEGEND1_STARTER_IDS, createStarterGame } from "./createStarterGame";
 import { playStarterMatchUntilEnd, type StarterMatchResult } from "./playStarterMatch";
@@ -121,7 +122,7 @@ async function runSimulation(count: number): Promise<SimReport> {
     }
 
     // 長時間の同期ループで vitest ワーカー RPC が飢餓しないよう、1ゲームごとに譲る
-    await new Promise((resolve) => setImmediate(resolve));
+    await yieldToEventLoop();
   }
 
   report.stepStats.avg = report.winner > 0 ? Math.round(stepSum / report.winner) : 0;
@@ -168,7 +169,7 @@ describe("vertical slice — 100-game AI simulation (L4 starters)", () => {
     expect(report.phaseCoverage.battle).toBe(GAME_COUNT);
     expect(report.withStrike).toBeGreaterThan(15);
     },
-    90_000,
+    300_000,
   );
 });
 

@@ -4,7 +4,7 @@
   "name": "仮面ライダーオーズ・サゴーゾコンボ",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "PR",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "※モーフ ※レジスト ※これはホールド状態なら、アタックするときBP+2000される。 【打ち抜く剛腕】自軍ターン中、これをラッシュしたとき、敵軍コマンドを1つ選びホールドしてもよい。",
@@ -94,7 +94,8 @@
             }
           ]
         }
-      ]
+      ],
+      "optional": true
     }
   ],
   "implementation": {

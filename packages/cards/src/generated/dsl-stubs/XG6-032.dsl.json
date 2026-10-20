@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-032::koreworashushita",
+          "keyword": "xg6::XG6-032::stack",
           "duration": "permanent"
         }
       ]
@@ -42,15 +42,16 @@
       "name": "絶対的な最強の力",
       "text": "このユニットの下にウラ向きで重ねたカードがあれば、これは次の能力を得る⇒敵軍ユニット1体につきBP+1000され、BP12000以上のときSP2になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-032::nanochikara",
+          "keyword": "xg6::XG6-032::strongest",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

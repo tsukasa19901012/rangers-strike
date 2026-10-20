@@ -4,14 +4,14 @@
   "name": "ハリケンウィンガー",
   "type": "vehicle",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 1,
   "text": "※特徴「忍者」を持つ自軍SユニットはＲＣを持っていなくてもこのビークルにライドできる。 【滑空】これにライドしているSユニットは次の能力を得る⇒これはSユニットにアタックされない。",
   "rawText": "※特徴「忍者」を持つ自軍SユニットはＲＣを持っていなくてもこのビークルにライドできる。 【滑空】これにライドしているSユニットは次の能力を得る⇒これはSユニットにアタックされない。",
   "effects": [
     {
-      "id": "ride_without_rc_fx_unknown",
+      "id": "ride_without_rc_feat_e5bf8de88085",
       "text": "※特徴「忍者」を持つ自軍SユニットはＲＣを持っていなくてもこのビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -19,7 +19,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "ride_without_rc_fx_unknown",
+          "keyword": "ride_without_rc_feat_e5bf8de88085",
           "duration": "permanent"
         }
       ]

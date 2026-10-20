@@ -4,7 +4,7 @@
   "name": "仮面ライダーBLACK",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "※これはライド中、BP+1000される。 【ライダーキック】自軍も敵軍もSユニットが1体しかいなければ、敵軍Sユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
@@ -43,40 +43,12 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      },
       "optional": false,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "power"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk2::RK-027::rider_kick",
+          "duration": "turn"
         }
       ]
     }

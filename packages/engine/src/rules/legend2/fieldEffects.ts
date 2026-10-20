@@ -1,17 +1,19 @@
 import {
-  findNamedEffectByEffectId,
   playerHasNamedEffectInZones,
+  isSameCardIdentity,
 } from "@rangers-strike/cards";
+import { rk3SpFloor } from "../rk/rk3UnitEffects";
+import { activeNamedEffect } from "../ncGatedEffects";
 import type { Category } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
-import { getDefinition, isSmallUnit, unitBp } from "../../core/catalog";
+import { effectiveBp, getDefinition, isSmallUnit, spSetValueOf, unitBp, unitSizeOf } from "../../core/catalog";
 import {
   battlePositionOneBased,
   printedSpBase,
   resolveInstanceSpValue,
 } from "../fractionalSp";
 import {
-  crossAdjustedBattlePosition,
+  crossReductionFor,
   taxisSpFloor,
   fieldPositionSpFloor,
 } from "../../keywords/battleKeywords";
@@ -33,7 +35,7 @@ function findControllerOfNamedEffect(
     const player = state.players[playerId];
     for (const zone of zones) {
       for (const card of player[zone]) {
-        if (findNamedEffectByEffectId(card.cardId, effectId)) {
+        if (activeNamedEffect(card, effectId)) {
           return { playerId, cardId: card.cardId };
         }
       }
@@ -54,22 +56,28 @@ export function legend2FieldBpBonus(
 
   let bonus = 0;
 
-  if (findNamedEffectByEffectId(instance.cardId, "bio_buster")) {
-    const enemyId = playerId === "player1" ? "player2" : "player1";
-    const otHeld = state.players[enemyId].command.filter((c) => {
-      if (!c.commandHeld) return false;
-      const cmdDef = getDefinition(state.definitions, c.cardId);
-      return cmdDef && categoriesInclude(cmdDef.category, "OT");
-    }).length;
-    bonus += otHeld * 1000;
-  }
+  // RS-079【バイバスター】の BP 加算は DSL（bp_per_enemy_command_…）がリリース・ホールドを問わず数える。
+  // ここで重ねて数えない（atwiki/page-15「OTのコマンド1つにつきBP+1000」）。
 
-  if (findNamedEffectByEffectId(instance.cardId, "fire_spin_blade")) {
+  if (activeNamedEffect(instance, "fire_spin_blade")) {
     const released = state.players[playerId].command.filter((c) => !c.commandHeld).length;
     bonus += released * 1000;
   }
 
+  if (role === "general") bonus += ryuuGekiKenBpBonus(state, playerId, instance);
+
   return bonus;
+}
+
+/**
+ * RS-081【龍撃剣】: このターン、ホールド状態の敵軍コマンド1つにつき BP+1000。
+ * ルール: R-RES-05 — 参照は即時更新（発動後に相手がホールドした分も加算される。faq-card-2 RS-081 Q1）。
+ */
+function ryuuGekiKenBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
+  if (!instance.activatedNcEffects?.includes("ryuu_geki_ken")) return 0;
+  if (!state.players[playerId].battle.some((c) => c.instanceId === instance.instanceId)) return 0;
+  const enemyId = playerId === "player1" ? "player2" : "player1";
+  return state.players[enemyId].command.filter((c) => c.commandHeld).length * 1000;
 }
 
 export function legend2EffectiveSp(
@@ -80,27 +88,33 @@ export function legend2EffectiveSp(
   const def = getDefinition(state.definitions, instance.cardId);
   const modifier = instance.spModifier ?? 0;
   const battle = state.players[playerId].battle;
-  const battlePosition = crossAdjustedBattlePosition(battle, instance.instanceId)
-    ?? battlePositionOneBased(battle, instance.instanceId);
+  const battlePosition = battlePositionOneBased(battle, instance.instanceId);
   const printed = resolveInstanceSpValue(def, instance);
-  let sp = printedSpBase(printed, battlePosition) + modifier;
+  // 「SP！」のユニットの「SPN」（spModifier）は「SPN になる」効果で、加算ではない。
+  // 「SP2」になる等の上書き（spOverride）と重なっても足し合わせない（RS-259 アカレンジャーの「SP2」＋【レッドビュート】「SP1」は SP2。R-STK-02/04）。
+  const overrideOnSpecial = typeof instance.spOverride === "number" && def?.sp === "special";
+  let sp = overrideOnSpecial
+    ? Math.max(instance.spOverride as number, modifier)
+    : printedSpBase(printed, battlePosition, crossReductionFor(battle, instance.instanceId)) + modifier;
   sp = Math.max(sp, taxisSpFloor(state, playerId, instance));
   sp = Math.max(sp, fieldPositionSpFloor(state, playerId, instance));
+  // RK-056 仮面ライダーザビーMF【ZECT隊長】（rules/rk/rk3UnitEffects.ts）。
+  sp = Math.max(sp, rk3SpFloor(state, playerId, instance));
   // RK-081 ゲゲル: 発動ターン中は自軍 S ユニットすべて SP1
   if (
     instance.activatedNcEffects?.includes("gegeru_sp1") &&
-    isSmallUnit(state.definitions, instance.cardId)
+    isSmallUnit(state.definitions, instance)
   ) {
     sp = Math.max(sp, 1);
   }
 
   /** RS-073 バルシールド: 自軍ダメージ6点で SP2。 */
-  if (instance.cardId === "RS-073" && state.players[playerId].damage >= 6) {
+  if (isSameCardIdentity(instance.cardId, "RS-073") && state.players[playerId].damage === 6) {
     sp = Math.max(sp, 2);
   }
 
   /** RS-078 闇の舞: 敵にレッドがいれば SP1。 */
-  if (instance.cardId === "RS-078") {
+  if (isSameCardIdentity(instance.cardId, "RS-078")) {
     const enemyId = playerId === "player1" ? "player2" : "player1";
     const hasRed = [...state.players[enemyId].rush, ...state.players[enemyId].battle].some(
       (c) => getDefinition(state.definitions, c.cardId)?.features?.includes("レッド"),
@@ -111,18 +125,21 @@ export function legend2EffectiveSp(
   }
 
   if (
-    findNamedEffectByEffectId(instance.cardId, "bio_buster") ||
-    findNamedEffectByEffectId(instance.cardId, "fire_spin_blade")
+    activeNamedEffect(instance, "bio_buster") ||
+    activeNamedEffect(instance, "fire_spin_blade") ||
+    instance.activatedNcEffects?.includes("ryuu_geki_ken")
   ) {
-    const bp =
-      unitBp(def) +
-      (instance.bpModifier ?? 0) +
-      legend2FieldBpBonus(state, playerId, instance, "general");
-    const threshold = findNamedEffectByEffectId(instance.cardId, "fire_spin_blade") ? 10000 : 5000;
+    // 「BP○○以上のとき「SP1」」の判定は、外部の効果（RS-364 ヘルサターン総統の BP+3000 等）を含む
+    // そのときの BP で行う（faq-card-6 RS-364 Q1）。
+    const bp = effectiveBp(state, playerId, instance);
+    const threshold = activeNamedEffect(instance, "fire_spin_blade") ? 10000 : 5000;
     if (bp >= threshold) {
       sp = Math.max(sp, 1);
     }
   }
+
+  const setSp = spSetValueOf(state, playerId, instance);
+  if (setSp !== undefined) return setSp;
 
   return sp;
 }
@@ -149,29 +166,32 @@ export function trafficControlRequiresSameSize(
 ): boolean {
   const controller = findControllerOfNamedEffect(state, "traffic_control", ["battle"]);
   if (!controller || controller.playerId === playerId) return false;
-  const battle = state.players[playerId].battle;
-  if (battle.length === 0) return false;
-  const firstSize = getDefinition(state.definitions, battle[0]!.cardId)?.size;
-  return unitSize !== firstSize;
+  // 「並べるユニットはすべて同じサイズ」— 既にサイズが混在していれば、どのサイズも出せない（faq-card-2 RS-086 Q1）。
+  return state.players[playerId].battle.some(
+    (c) => unitSizeOf(state.definitions, c) !== unitSize,
+  );
 }
 
-/** RS-097 連獅子: SP1+ または ! の敵ユニットは戦闘進入にホールドが必要。 */
-export function karakuriLionChainBlocksEntry(
+/**
+ * RS-097 連獅子: SP1 以上または「！」の敵軍ユニットがバトルエリアに出るために
+ * ホールドしなければならないコマンドの数（敵軍バトルエリアのハリケンレオンの数だけ重複）。
+ * ルール: R-ADD-07 — 同じ継続効果は枚数分重複する（RS-097 Q7）。
+ */
+export function karakuriLionChainHoldCount(
   state: GameState,
   defenderId: PlayerId,
   unit: CardInstance,
-  heldCount: number,
-): boolean {
-  const controller = findControllerOfNamedEffect(state, "karakuri_lion_chain", ["battle"]);
-  if (!controller || controller.playerId === defenderId) return false;
+): number {
+  const enemyId: PlayerId = defenderId === "player1" ? "player2" : "player1";
+  const chains = state.players[enemyId].battle.filter((c) =>
+    activeNamedEffect(c, "karakuri_lion_chain"),
+  ).length;
+  if (chains === 0) return 0;
 
   const def = getDefinition(state.definitions, unit.cardId);
   const hasBang = def?.sp === "special" || def?.features?.includes("!");
   const effectiveSp = legend2EffectiveSp(state, defenderId, unit);
-  if (effectiveSp >= 1 || hasBang) {
-    return heldCount < 1;
-  }
-  return false;
+  return effectiveSp >= 1 || hasBang ? chains : 0;
 }
 
 export function findLegend2NamedEffectOnField(

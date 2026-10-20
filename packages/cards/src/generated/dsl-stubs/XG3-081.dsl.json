@@ -7,7 +7,7 @@
     "WB",
     "OT"
   ],
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※モーフ 【トリガー・エクスプロージョン】これをラッシュしたとき、ホールド状態の敵軍Sユニットを1体選んでもよい。そうしたとき、相手は選んだユニットを捨札にするか、自分自身のパワーゾーンのオモテ向きのカードを1枚捨札にするかを選ぶ。",
@@ -42,12 +42,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-081::torigaekusupurojon",
-          "duration": "turn"
+          "keyword": "xg3::XG3-081::trigger_explosion",
+          "duration": "permanent"
         }
       ]
     }

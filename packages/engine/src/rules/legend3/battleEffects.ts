@@ -1,6 +1,8 @@
-import { getOnAttackNamedEffect, getJointLNamedEffect } from "@rangers-strike/cards";
+import { canonicalCardName, getJointLNamedEffect } from "@rangers-strike/cards";
+import { openOptionalEffectConfirm, registerOptionalEffect } from "../optionalEffects";
+import { activeOnAttackNamedEffect } from "../ncGatedEffects";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
-import { getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
+import { cardCategories, getDefinition, isSmallUnit, parsePowerCost } from "../../core/catalog";
 import { getCostWindowMetadata } from "../../core/costWindow";
 import { hasTurnRuleModifier } from "../../core/scopedModifiers";
 import { findBattleAttacker, findInZone, opponent, updatePlayer } from "../../core/helpers";
@@ -13,6 +15,7 @@ import {
   startSelectUnitChoice,
 } from "../pendingChoices";
 import type { ComboOutcome } from "../comboTypes";
+import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
 
 export function legend3AttackerBpBonus(
   state: GameState,
@@ -25,7 +28,7 @@ export function legend3AttackerBpBonus(
   if (!attackerCard) return 0;
   const attacker = { card: attackerCard };
 
-  const effect = getOnAttackNamedEffect(attacker.card.cardId);
+  const effect = activeOnAttackNamedEffect(attacker.card);
   let bonus = 0;
   if (effect?.effectId === "super_live_crush") bonus += 4000;
   if (effect?.effectId === "surging_chopper" && state.activePlayer === pending.attackerPlayerId) {
@@ -41,34 +44,13 @@ export function legend3AttackerBpBonus(
       defenderZone,
       pending.defenderInstanceId,
     );
-    if (defender && isSmallUnit(state.definitions, defender.card.cardId)) {
+    if (defender && isSmallUnit(state.definitions, defender.card)) {
       bonus += 5000;
     }
   }
 
-  return bonus + legend3JointComboBpBonus(state, pending.attackerPlayerId, attacker.card);
-}
-
-function legend3JointComboBpBonus(
-  state: GameState,
-  playerId: PlayerId,
-  card: CardInstance,
-): number {
-  const player = state.players[playerId];
-  const index = player.battle.findIndex((c) => c.instanceId === card.instanceId);
-  if (index <= 0) return 0;
-  const partner = player.battle[index - 1];
-  if (!partner || getDefinition(state.definitions, partner.cardId)?.size !== "L") return 0;
-
-  const joint = getJointLNamedEffect(partner.cardId);
-  if (
-    joint?.effectId !== "oni_neck_last" &&
-    joint?.effectId !== "maximum_penetration"
-  ) {
-    return 0;
-  }
-  if (state.activePlayer !== playerId) return 0;
-  return 4000;
+  // JC で得た BP+4000（RS-157 / RS-171）は常時の補正として legend3FieldBpBonus（effectiveBp）で数える。
+  return bonus;
 }
 
 export function canAttackRushWithMoonlightSonic(
@@ -81,7 +63,7 @@ export function canAttackRushWithMoonlightSonic(
     "battle",
     attackerInstanceId,
   );
-  return getOnAttackNamedEffect(attacker?.card.cardId ?? "")?.effectId === "moonlight_sonic";
+  return (attacker ? activeOnAttackNamedEffect(attacker.card) : undefined)?.effectId === "moonlight_sonic";
 }
 
 export function legend3UsePrintedDefenderBp(
@@ -93,7 +75,7 @@ export function legend3UsePrintedDefenderBp(
     "battle",
     pending.attackerInstanceId,
   );
-  if (!attacker || !isSmallUnit(state.definitions, attacker.card.cardId)) return false;
+  if (!attacker || !isSmallUnit(state.definitions, attacker.card)) return false;
   return hasTurnRuleModifier(
     state.players[pending.attackerPlayerId],
     TURN_RULE_IDS.SUPER_DYNAMITE,
@@ -105,6 +87,7 @@ export function resolveLegend3EnterBattle(
   playerId: PlayerId,
   cardId: string,
   effectId: string,
+  sourceInstanceId?: string,
 ): ComboOutcome {
   const enemyId = opponent(playerId);
 
@@ -113,7 +96,11 @@ export function resolveLegend3EnterBattle(
       const discarded =
         getCostWindowMetadata(state.players[playerId], "battle_entry_rush_discard")
           ?.discardedCardId;
-      if (discarded !== "RS-079") return { state, logs: [] };
+      // 「捨札にしたのが「バイオハンター・シルバ」なら」— カード名で判定（PR-008 等の同名カードも含む。atwiki/page-40）。
+      const discardedDef = discarded ? getDefinition(state.definitions, discarded) : undefined;
+      if (!discardedDef || canonicalCardName(discardedDef.name) !== "バイオハンター・シルバ") {
+        return { state, logs: [] };
+      }
       const player = state.players[playerId];
       const battle = player.battle.map((c) =>
         c.cardId === cardId
@@ -136,14 +123,17 @@ export function resolveLegend3EnterBattle(
       if (damage === 0) return { state, logs: [] };
       const held = collectCommandIds(state, enemyId, "released");
       if (held.length === 0) return { state, logs: [] };
+      // 「敵軍コマンドを敵軍ダメージの数まで選んでホールドする」— 選ぶのはガオコングの持ち主で、
+      // 「数まで」なので少なく選んで確定（confirm_effect_choice）してもよい（atwiki/page-93）。
       const withChoice = startMultiCommandChoice(state, {
-        playerId: enemyId,
+        playerId,
         effectId,
         sourceCardId: cardId,
         phasePlayerId: playerId,
         selectCount: Math.min(damage, held.length),
         commandFilter: "released",
         commandAction: "hold",
+        validInstanceIds: held,
         optional: false,
       });
       return {
@@ -154,16 +144,18 @@ export function resolveLegend3EnterBattle(
       };
     }
     case "crown_final_crush": {
-      const player = state.players[playerId];
-      const nextPlayer = {
-        ...player,
-        command: player.command.map((c) => ({ ...c, commandHeld: false })),
-      };
+      // 「自軍コマンドをすべてリリース状態に戻してもよい」（atwiki/page-368）— 行うかを選ぶ。
+      if (!state.players[playerId].command.some((c) => c.commandHeld)) return { state, logs: [] };
+      const opened = openOptionalEffectConfirm(state, {
+        playerId,
+        effectId: CROWN_FINAL_CRUSH_EFFECT_ID,
+        sourceCardId: cardId,
+        sourceInstanceId,
+        phasePlayerId: playerId,
+      });
       return {
-        state: { ...state, ...updatePlayer(state, playerId, nextPlayer) },
-        logs: [
-          buildLogEntry(playerId, "enter_battle", cardId, state.definitions, effectId),
-        ],
+        state: { ...opened, pendingEffectChoice: { ...opened.pendingEffectChoice!, validInstanceIds: ["accept"] } },
+        logs: [buildLogEntry(playerId, "enter_battle", cardId, state.definitions, effectId)],
       };
     }
     case "hyper_civilization_guard": {
@@ -191,7 +183,9 @@ export function resolveLegend3EnterBattle(
           const n = typeof cost === "number" ? cost : parsePowerCost(cost);
           return n <= maxBp;
         })
-        .map((c) => c.instanceId);
+        .map((c) => c.instanceId)
+        // ブレイカー・「相手に選ばれない」（XG7-009【受け継いだもの】等）の敵軍ユニットは選べない。
+        .filter((id) => isSelectableByOpponentEffect(state, playerId, id, cardId));
       if (targets.length === 0) return { state, logs: [] };
       const withChoice = startSelectUnitChoice(state, {
         playerId,
@@ -210,22 +204,25 @@ export function resolveLegend3EnterBattle(
       };
     }
     case "bio_particle_slash": {
+      // RS-127 / PR-015【バイオ粒子斬り】自軍ターン中、これがバトルエリアに出るとき、「OT」の自軍コマンドを
+      // 2つ選んでパワーゾーンに送ってもよい。そうしたとき、このターン、これは「SP2」「BP＋3000」。
+      if (state.activePlayer !== playerId) return { state, logs: [] };
+      // ピンクフラッシュ【プリズムブーツ】で「OT」になったホールド状態のコマンドも数える（faq-card-3 RS-127 Q1）。
       const otCommands = state.players[playerId].command
-        .filter((c) => {
-          const def = getDefinition(state.definitions, c.cardId);
-          return def?.category === "OT";
-        })
+        .filter((c) => commandCategoriesNow(state, c).includes("OT"))
         .map((c) => c.instanceId);
       if (otCommands.length < 2) return { state, logs: [] };
       const withChoice = startMultiCommandChoice(state, {
         playerId,
         effectId,
         sourceCardId: cardId,
+        sourceInstanceId,
         phasePlayerId: playerId,
         selectCount: 2,
         commandFilter: "any",
         commandAction: "power",
         validInstanceIds: otCommands,
+        optional: true,
       });
       return {
         state: withChoice ?? state,
@@ -305,3 +302,36 @@ export function isLegend3EnterBattleEffect(effectId: string): boolean {
     "anti_bio_cannon",
   ].includes(effectId);
 }
+
+/**
+ * コマンドゾーンのカードの現在のカテゴリ。RS-270 ピンクフラッシュ【プリズムブーツ】
+ * 「このターン、自分と相手のコマンドゾーンにあるホールド状態のコマンドのカテゴリは、すべて「OT」になる」を反映する。
+ */
+export function commandCategoriesNow(state: GameState, card: CardInstance): string[] {
+  const def = getDefinition(state.definitions, card.cardId);
+  const printed = def ? cardCategories(def) : [];
+  if (!card.commandHeld) return printed;
+  for (const pid of ["player1", "player2"] as const) {
+    for (const category of ["OT", "ET", "MA", "WB", "DA"]) {
+      if (hasTurnRuleModifier(state.players[pid], `rs_category_modify_all_held::${category}`)) {
+        return [category];
+      }
+    }
+  }
+  return printed;
+}
+
+const CROWN_FINAL_CRUSH_EFFECT_ID = "crown_final_crush";
+
+registerOptionalEffect(CROWN_FINAL_CRUSH_EFFECT_ID, {
+  apply: (state, pending) => {
+    const player = state.players[pending.playerId];
+    return {
+      ...state,
+      ...updatePlayer(state, pending.playerId, {
+        ...player,
+        command: player.command.map((c) => ({ ...c, commandHeld: false })),
+      }),
+    };
+  },
+});

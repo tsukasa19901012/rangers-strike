@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-012::karawotanaidanos",
+          "keyword": "xg5::XG5-012::golem_card",
           "duration": "permanent"
         }
       ]

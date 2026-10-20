@@ -26,6 +26,33 @@ const starterDecks: DeckDefinition[] = [
   silverAdventurerDeck,
 ];
 
+describe("commander cards are not allowed", () => {
+  // コマンダーカードは今回の実装に採用しない（ユーザー決定 2026-10-10）。ルール: R-DECK-07
+  const commander = {
+    id: "TST-CMD",
+    name: "Test Commander",
+    type: "commander",
+    category: "WB",
+    rarity: "SR",
+    expansion: "test",
+  } as unknown as (typeof fullPlayableCatalog.cards)[number];
+  const catalog = { ...fullPlayableCatalog, cards: [...fullPlayableCatalog.cards, commander] };
+  const filler = fullPlayableCatalog.cards.filter((c) => c.type === "unit").slice(0, 13);
+
+  it("R-DECK-07: コマンダーカードを入れたデッキはエラーになる", () => {
+    const entries = [...filler.map((c) => ({ cardId: c.id, count: 3 })), { cardId: "TST-CMD", count: 1 }];
+    const result = validateDeckEntries(entries, catalog);
+    expect(result.ok).toBe(false);
+    expect(result.errors.some((e) => e.includes("コマンダーカードはデッキに入れられません"))).toBe(true);
+  });
+
+  it("R-DECK-07: コマンダーカードはデッキ枚数に数えない（39枚＋コマンダーは40枚にならない）", () => {
+    const entries = [...filler.map((c) => ({ cardId: c.id, count: 3 })), { cardId: "TST-CMD", count: 1 }];
+    const result = validateDeckEntries(entries, catalog);
+    expect(result.total).toBe(39);
+  });
+});
+
 describe("deck build rules", () => {
   it("allows up to 3 copies of SR cards such as RS-050", () => {
     const card = getCardById("RS-050");
@@ -41,7 +68,46 @@ describe("deck build rules", () => {
     expect(four.errors.some((e) => e.includes("アバレンオー"))).toBe(true);
   });
 
-  it("treats 戦闘員 and deck-note cards as unlimited", () => {
+  it("R-DECK-03: 「好きな枚数入れてもよい」注記のカードは戦闘員でなくても枚数無制限", () => {
+    const freeCountIds = [
+      "RK-043",
+      "RK-119",
+      "RK-137",
+      "RK-161",
+      "RK-197",
+      "RK-200",
+      "RK-219",
+      "RK-303",
+      "RM-043",
+      "RM-061",
+      "RS-261",
+      "RS-297",
+      "XG3-053",
+      "XG7-049",
+    ];
+    for (const id of freeCountIds) {
+      const card = getFullPlayableCardById(id);
+      expect(card, id).toBeDefined();
+      expect(card!.features ?? []).not.toContain("戦闘員");
+      expect(card!.text).toContain("※このカードはデッキに好きな枚数入れてもよい。");
+      expect(deckCopyUnlimited(card!), id).toBe(true);
+    }
+    const many = validateDeckEntries([{ cardId: "RK-137", count: 8 }], fullPlayableCatalog, {
+      minSize: 0,
+    });
+    expect(many.errors.filter((e) => e.includes("枚まで") || e.includes("同名"))).toHaveLength(0);
+  });
+
+  it("R-DECK-03: 注記がなければ特徴「戦闘員」だけでは無制限にならない", () => {
+    const base = getCardById("RS-050")!;
+    const fake = { ...base, features: ["戦闘員"], text: "ラッシュしたとき、カードを1枚引く。" };
+    expect(deckCopyUnlimited(fake)).toBe(false);
+    expect(deckCopyUnlimited({ ...fake, text: "※このカードはデッキに好きな枚数入れてもよい。" })).toBe(
+      true,
+    );
+  });
+
+  it("R-DECK-03: RS-080 の「3枚以上入れてもよい」注記も無制限", () => {
     const hidora = getCardById("RS-080");
     expect(hidora).toBeDefined();
     expect(deckCopyUnlimited(hidora!)).toBe(true);

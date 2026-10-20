@@ -4,11 +4,11 @@
   "name": "マックスビクトリーロボBV",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "6+",
-  "text": "",
-  "rawText": "",
+  "text": "※レジスト ※自軍捨札にSユニットのカードが1枚もなければ、これは「SP1」になる。 【マックスビクトリープロミネンス】このユニットは自軍ターン中、自軍ラッシュエリアのSユニット1体につきBP+1000される。",
+  "rawText": "※レジスト ※自軍捨札にSユニットのカードが1枚もなければ、これは「SP1」になる。 【マックスビクトリープロミネンス】このユニットは自軍ターン中、自軍ラッシュエリアのSユニット1体につきBP+1000される。",
   "bp": 8000,
   "size": "L",
   "sp": "special",
@@ -21,6 +21,53 @@
     "text": "自軍Sユニットを1体コマンドゾーンに送るか捨札にする",
     "unitCount": 1
   },
+  "effects": [
+    {
+      "id": "unnamed_register",
+      "text": "※レジスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "register",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "unnamed_e280bbe887aae8bb8de68da8",
+      "text": "※自軍捨札にSユニットのカードが1枚もなければ、これは「SP1」になる。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "sp1_if_no_own_discard_s_unit",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "makusubikutoripurominensu",
+      "name": "マックスビクトリープロミネンス",
+      "text": "このユニットは自軍ターン中、自軍ラッシュエリアのSユニット1体につきBP+1000される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "bp_per_own_rush_s_1000_own_turn",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",

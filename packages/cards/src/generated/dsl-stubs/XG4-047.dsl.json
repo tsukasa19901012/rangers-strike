@@ -4,7 +4,7 @@
   "name": "シンケンレッド",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※レジスト 【車上の赤き侍】ライドしている敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。（この効果はライドしている自軍ユニットからコンビネーションするときはナンバーに関係なく発動する）",
@@ -43,8 +43,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-047::noki",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-047::shajou",
+          "duration": "turn"
         }
       ]
     }

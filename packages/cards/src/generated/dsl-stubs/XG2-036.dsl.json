@@ -33,8 +33,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-036::toradorirugeki",
-          "duration": "turn"
+          "keyword": "xg2::XG2-036::tora_drill",
+          "duration": "permanent"
         }
       ]
     }

@@ -5,7 +5,7 @@
 export type Category = "ET" | "WB" | "OT" | "MA" | "DA";
 export type UnitSize = "S" | "M" | "L" | "XL" | "SC";
 export type CardType = "unit" | "operation" | "vehicle" | "commander";
-export type Rarity = "N" | "R" | "SR" | "NR" | "SC" | "PR";
+export type Rarity = "N" | "R" | "SR" | "NR" | "SC" | "PR" | "MR" | "LR";
 export type ZoneName =
   | "deck"
   | "hand"
@@ -71,7 +71,7 @@ export type TargetSelector =
       owner: "self" | "opponent" | "any";
       filter?: {
         size?: UnitSize;
-        cardType?: "unit" | "operation";
+        cardType?: "unit" | "operation" | "any";
         category?: string;
         categoryExcept?: string;
         faceDown?: boolean;
@@ -80,6 +80,13 @@ export type TargetSelector =
         minBp?: number;
         maxPowerCost?: number;
         noRushAdditionalCondition?: boolean;
+        /** 特徴「X」を持つ（requireFeature）／持たない（excludeFeature）ユニット。 */
+        requireFeature?: string;
+        excludeFeature?: string;
+        /** 「BPの下三桁が500」— そのときの BP を1000で割った余り。 */
+        bpLastThreeDigits?: number;
+        /** 「ライドしていない」ユニット。 */
+        notRiding?: boolean;
       };
     }
   | {
@@ -89,13 +96,15 @@ export type TargetSelector =
         owner: "self" | "opponent" | "any";
         filter?: {
           size?: UnitSize;
-          cardType?: "unit" | "operation";
+          cardType?: "unit" | "operation" | "any";
           category?: string;
           faceDown?: boolean;
           commandHeld?: boolean;
           maxBp?: number;
           minBp?: number;
           maxPowerCost?: number;
+          requireFeature?: string;
+          notRiding?: boolean;
         };
       }>;
     };
@@ -169,6 +178,10 @@ export type UnnamedRuleEntry = {
   partnerCardIds?: string[];
   /** 合体―行の各枠ごとに使える cardId。 */
   partnerSlotCardIds?: string[][];
+  /**
+   * 「X（または、A＋B＋…）」— 枠 slot は、かわりに slots の全枠（A・B…）をそろえても満たせる（RS-236 スーパーダイボウケン）。
+   */
+  partnerSlotAlternatives?: { slot: number; slots: string[][] }[];
 };
 
 import type { RushAdditionalCondition } from "../effectTaxonomy";

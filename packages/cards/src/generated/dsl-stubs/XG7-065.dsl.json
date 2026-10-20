@@ -40,11 +40,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-065::toraikyanon",
+          "keyword": "xg7::XG7-065::tri_cannon",
           "duration": "permanent"
         }
       ]

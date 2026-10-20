@@ -4,7 +4,7 @@
   "name": "マグナギガ",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "※これはアタックすることができない。 ※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 【そびえる巨体】これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは敵軍ユニットの効果によってホールドされない。",
@@ -54,7 +54,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_command_hold_immune",
+          "keyword": "rk6::RK-116::towering_body",
           "duration": "permanent"
         }
       ],

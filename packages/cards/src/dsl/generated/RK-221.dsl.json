@@ -4,7 +4,7 @@
   "name": "仮面ライダー響鬼",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "※レジスト（これがバトルで撃破されたとき、捨て札にするかわりにこれをホールドしてその場に留めてもよい） 【音撃打・火炎連打】自分の手札からオペレーションカードを1枚選び、捨札にしてもよい。そうしたとき、このターン、これは次の能力を得る⇒「SP1」になり、このターンを終えるときホールド状態なら、リリースしてもよい。",
@@ -43,18 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-221::ongekida_hi_honoo",
+          "keyword": "rk11::RK-221::kaen_renda",
           "duration": "turn"
         }
       ],
       "optional": true
-    }
-  ],
-  "unnamedRules": [
-    {
-      "kind": "note",
-      "text": "※レジスト（これがバトルで撃破されたとき、捨て札にするかわりにこれをホールドしてその場に留めてもよい）",
-      "rule": "register"
     }
   ],
   "implementation": {

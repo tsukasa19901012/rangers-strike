@@ -4,7 +4,7 @@
   "name": "ダイカイオーニシ",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "※モーフ 【風の電子モヂカラ】これが自軍バトルエリアにある間、これ以外のLユニットとMユニットは、敵軍ユニットにアタックされない。",
@@ -48,8 +48,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-034::kazenomojikara",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-034::kaze",
+          "duration": "turn"
         }
       ]
     }

@@ -4,7 +4,7 @@
   "name": "シンケンブルー",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 0,
   "text": "【ウォーターアロー】これは敵軍ラッシュエリアのユニットにアタックできる。",
@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "wing_attack_enemy_rush",
-          "duration": "permanent"
+          "keyword": "set9d::RS-675::water_arrow",
+          "duration": "turn"
         }
       ]
     }

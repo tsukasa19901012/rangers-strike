@@ -20,14 +20,14 @@
       "name": "衝撃波",
       "text": "これがライドされている間、敵軍Sユニットは次の制限を受ける⇒ライドしてバトルエリアに出たとき、ホールド状態になる。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-057::gekinami",
-          "duration": "turn"
+          "keyword": "xg1::XG1-057::shockwave",
+          "duration": "permanent"
         }
       ]
     }

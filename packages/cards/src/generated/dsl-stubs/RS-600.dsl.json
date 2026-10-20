@@ -4,7 +4,7 @@
   "name": "ゴーオンシルバー",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※コールOT（このユニットはOTのユニットをラッシュするためのコマンドとしてホールドできる） 【ミッション1 バーニング】このターン、このユニットの次にコンビネーションするCN4を持つ自軍Sユニットは、そのＮＣの効果を発動する。ただし、ストライクはできない。",
@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-600::mishon1baningu",
-          "duration": "permanent"
+          "keyword": "set8d::RS-600::mission1_burning",
+          "duration": "turn"
         }
       ],
       "optional": false

@@ -4,7 +4,7 @@
   "name": "英雄タイタン",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 0,
   "text": "※これは、「OT」以外のカテゴリを持つコマンド1つにつきBP-1000される。 【未来の戦士達へ】これが自軍コマンドゾーンにある間、このカードはカテゴリにWB、MA、ETが追加され、敵軍パワーは追加で2増える。",
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-013::nohe",
+          "keyword": "xg6::XG6-013::mirai",
           "duration": "permanent"
         }
       ]

@@ -31,7 +31,7 @@ const PASSIVE_KEYWORD_RUNTIME_HOOKS: Array<{
   { pattern: /^attacked_bp_boost_\d+$/, hook: "attackedBpBoostAmount/battleDefenderBp" },
   { pattern: /^power_faceup_bp_per_\d+$/, hook: "promotedKeywordBpBonus" },
   { pattern: /^sp_at_bp\d+_sp\d+$/, hook: "promotedKeywordSpFloor" },
-  { pattern: /^cross\d+$/, hook: "crossAdjustedBattlePosition" },
+  { pattern: /^cross\d+$/, hook: "crossReductionFor/crossReducedNumber" },
 ];
 
 function collectStubGrantKeywords(): Map<string, string[]> {

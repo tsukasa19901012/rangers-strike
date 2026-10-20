@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-209::karatareta",
+          "keyword": "rk10::RK-209::unleashed",
           "duration": "turn"
         }
       ],

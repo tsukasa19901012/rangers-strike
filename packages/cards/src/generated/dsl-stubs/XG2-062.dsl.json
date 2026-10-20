@@ -4,7 +4,7 @@
   "name": "仮面ライダー装甲響鬼",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "6+",
   "text": "※レジスト 【鬼神覚声】自軍ターン中、これがバトルエリアに出たとき、これをホールドするかリリースしてもよい。そうしたとき、必要パワーの数字が4以下の敵軍ユニットを１体選び、持ち主のパワーゾーンへダメージにして置く。",
@@ -46,12 +46,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-062::shine9acbc",
-          "duration": "turn"
+          "keyword": "xg2::XG2-062::kishin_kakusei",
+          "duration": "permanent"
         }
       ]
     }

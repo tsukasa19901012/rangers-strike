@@ -37,12 +37,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-087::enerugi",
-          "duration": "turn"
+          "keyword": "xg2::XG2-087::energy",
+          "duration": "permanent"
         }
       ]
     }

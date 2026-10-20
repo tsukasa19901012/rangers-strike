@@ -34,14 +34,13 @@
       "name": "待ち伏せ",
       "text": "敵軍ターン中、これがSユニットとのバトルで撃破されて捨札になったとき、これとバトルしたユニットを、持ち主の山札の下に戻してもよい。",
       "trigger": {
-        "type": "on_destroy"
+        "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-069::chise",
-          "duration": "turn"
+          "keyword": "xg5::XG5-069::ambush",
+          "duration": "permanent"
         }
       ]
     }

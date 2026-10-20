@@ -4,7 +4,7 @@
   "name": "狼男",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": "5+",
   "text": "【狼作戦】これが自軍エリアにある間、特徴「男」を持つ自軍SユニットはカテゴリにWBが追加される。",
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_feature_s_add_category::男::WB",
+          "keyword": "rk5::RK-092::wolf_operation",
           "duration": "permanent"
         }
       ],

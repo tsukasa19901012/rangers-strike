@@ -25,11 +25,11 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "on_rush_swap_from_power_except_named::ゴーカイブルー",
+          "keyword": "xg7::XG7-004::gokai_swap",
           "duration": "permanent"
         }
       ]
@@ -41,11 +41,16 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-004::gokaisaberu",
+          "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg7::XG7-004::gokai_saber",
           "duration": "permanent"
         }
       ]

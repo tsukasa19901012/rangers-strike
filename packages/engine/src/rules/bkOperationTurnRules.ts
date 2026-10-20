@@ -1,7 +1,10 @@
+import { rm1DorugiranWaivesCondition } from "./rm/rm1Fields";
+import { blastBypassesRushAdditionalCondition } from "../keywords/battleKeywords";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { GameState, PlayerId, PlayerState } from "../types/game";
 import { getDefinition } from "../core/catalog";
 import { getPlayerModifiers } from "../core/scopedModifiers";
+import { unitFeatures } from "./addedFeatures";
 
 const MIRROR_RIDER_RULE = "mirror_rider_power_minus";
 const ACCELERATE_WAIVE_RULE = "accelerate_s_rush_waive";
@@ -80,7 +83,7 @@ export function vehicleMayBattleWithoutRide(player: PlayerState, instanceId: str
 }
 
 export function isAccelerateRushWaived(
-  state: GameState,
+  state: Pick<GameState, "players" | "definitions">,
   playerId: PlayerId,
   cardId: string,
 ): boolean {
@@ -99,16 +102,22 @@ export function rushAdditionalConditionApplies(
 ): boolean {
   const definition = getDefinition(state.definitions, cardId);
   if (!definition || !resolveRushAdditionalCondition(cardId, definition)) return false;
+  // ブラスト: 負けるまで残り1点で自軍 L ユニットがなければ追加条件を満たさなくてよい。ルール: R-KW-BLAST-01
+  if (blastBypassesRushAdditionalCondition(state, playerId, cardId)) return false;
+  // RM-019 超次元高速機ドルギラン: 自軍捨札にあれば、電子星獣ドル・ギラン円盤は追加条件を満たさなくてよい（rules/rm/rm1Fields.ts）。
+  if (rm1DorugiranWaivesCondition(state, playerId, cardId)) return false;
   return !isAccelerateRushWaived(state, playerId, cardId);
 }
 
-export function countMirrorMonstersOnField(state: GameState, player: PlayerState): number {
+/**
+ * BK-013 Vバックル（龍騎）◎2つ目: 「自軍エリアにある特徴「ミラーモンスター」を持つユニット1体につき1少なくなる」（atwiki/page-713）。
+ * 自軍エリア（ラッシュエリア・バトルエリア）のユニットだけを数える（コマンドゾーンのカード・ビークルは数えない）。特徴はいまの特徴で見る。
+ */
+export function countMirrorMonstersOnField(state: GameState, player: PlayerState, ownerId: PlayerId): number {
   let count = 0;
-  for (const zone of ["rush", "battle", "command"] as const) {
-    for (const card of player[zone]) {
-      const def = getDefinition(state.definitions, card.cardId);
-      if ((def?.features ?? []).includes("ミラーモンスター")) count += 1;
-    }
+  for (const card of [...player.rush, ...player.battle]) {
+    if (getDefinition(state.definitions, card.cardId)?.type !== "unit") continue;
+    if (unitFeatures(state, ownerId, card).includes("ミラーモンスター")) count += 1;
   }
   return count;
 }

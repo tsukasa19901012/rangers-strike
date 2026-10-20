@@ -89,10 +89,11 @@ import { EffectChoiceModal } from "./EffectChoiceModal";
 import { DamagePaymentModal } from "./DamagePaymentModal";
 import { damagePaymentHint } from "@/lib/damagePaymentHint";
 import { EffectNoticeModal } from "./EffectNoticeModal";
+import { RevealNoticeModal } from "./RevealNoticeModal";
 import { CommandPaymentBanner } from "./CommandPaymentBanner";
 import {
   buildCommandPaymentView,
-  canConfirmCommandPayment,
+  canConfirmCommandPaymentFor,
   resolveCommandPaymentSelectedCards,
   toggleCommandPaymentSelection,
 } from "@/lib/commandPaymentUi";
@@ -111,6 +112,8 @@ import { OperationPromptModal } from "./OperationPromptModal";
 import { PermanentOperationModal } from "./PermanentOperationModal";
 import { ShironLightModal } from "./ShironLightModal";
 import { CyberSRiderModal } from "./CyberSRiderModal";
+import { GodomDiscardModal } from "./GodomDiscardModal";
+import { godomChoiceNeeded, listGodomRushVariants, type GodomRushVariant } from "../lib/godomRushUi";
 import { BattleDanceModal } from "./BattleDanceModal";
 import { LightningGravityHoldModal } from "./LightningGravityHoldModal";
 import { ReactionModal } from "./ReactionModal";
@@ -128,6 +131,7 @@ import {
   formatEffectLogNotice,
   shouldShowEffectLogNotice,
 } from "@/lib/effectLogNotice";
+import { buildRevealNoticeView, pickNewReveal } from "@/lib/revealNoticeUi";
 import { useCompactGameViewport } from "@/lib/compactViewport";
 import { useViewportBoardFit } from "@/lib/useViewportBoardFit";
 import {
@@ -187,6 +191,7 @@ function hasReactionWindow(game: GameState): boolean {
     game.pendingBattle ||
     game.pendingRush ||
     game.pendingLeave ||
+    game.pendingGiantBomb ||
     game.pendingEffectChoice ||
     game.pendingBattleEntry ||
     game.pendingCommandPayment ||
@@ -209,6 +214,8 @@ export function GameApp() {
   const [previewCard, setPreviewCard] = useState<CardDefinition | null>(null);
   const [pileView, setPileView] = useState<PileView | null>(null);
   const [pendingOp, setPendingOp] = useState<PendingOperation | null>(null);
+  // RS-586【魔神に不足する物】: 捨札にする「戦闘員」のユニットを選ぶラッシュ（lib/godomRushUi.ts）。
+  const [pendingGodomRush, setPendingGodomRush] = useState<{ cardId: string; variants: GodomRushVariant[] } | null>(null);
   const [pendingCyberSRider, setPendingCyberSRider] = useState<{
     instanceId: string;
     cardId: string;
@@ -243,6 +250,9 @@ export function GameApp() {
   const [turnNotice, setTurnNotice] = useState<PlayerId | null>(null);
   const [phaseNotice, setPhaseNotice] = useState<Phase | null>(null);
   const [effectNotice, setEffectNotice] = useState<string | null>(null);
+  /** 効果でオモテにした（公開した）カード。OK を押すまで表示し、その間 CPU は待つ。 */
+  const [revealNotice, setRevealNotice] = useState<GameState["lastReveal"] | null>(null);
+  const prevRevealSeqRef = useRef(0);
   const [commandPaymentSelection, setCommandPaymentSelection] = useState<string[]>([]);
   const prevLogLenRef = useRef(0);
   const prevActivePlayerRef = useRef<PlayerId | null>(null);
@@ -335,6 +345,7 @@ export function GameApp() {
       setStartError(null);
       setPendingOp(null);
       setPendingCyberSRider(null);
+      setPendingGodomRush(null);
       setPendingBattleDance(null);
       setPendingHiddenNinja(null);
       setPreviewCard(null);
@@ -346,6 +357,8 @@ export function GameApp() {
       setTurnNotice(game.activePlayer);
       setPhaseNotice(null);
       setEffectNotice(null);
+      setRevealNotice(null);
+      prevRevealSeqRef.current = game.lastReveal?.seq ?? 0;
       prevLogLenRef.current = 0;
       prevPhaseRef.current = game.phase;
     } catch (error) {
@@ -363,6 +376,7 @@ export function GameApp() {
     setEditingDeckId(null);
     setPendingOp(null);
     setPendingCyberSRider(null);
+    setPendingGodomRush(null);
     setPendingBattleDance(null);
     setPendingHiddenNinja(null);
     setPreviewCard(null);
@@ -390,7 +404,7 @@ export function GameApp() {
   }, [state?.phase, state?.activePlayer, state?.pendingStrike, state?.pendingBattle, state?.pendingRush, state?.pendingLeave, state?.pendingEffectChoice, state?.pendingBattleEntry]);
 
   useEffect(() => {
-    if (!state || !isCpuTurn(state, CPU_PLAYER)) return;
+    if (!state || revealNotice || !isCpuTurn(state, CPU_PLAYER)) return;
 
     const timer = window.setTimeout(() => {
       const action =
@@ -419,7 +433,20 @@ export function GameApp() {
     }, 550);
 
     return () => window.clearTimeout(timer);
-  }, [state, cpuLevel]);
+  }, [state, cpuLevel, revealNotice]);
+
+  useEffect(() => {
+    if (!state) return;
+    const seq = state.lastReveal?.seq ?? 0;
+    if (seq < prevRevealSeqRef.current) {
+      prevRevealSeqRef.current = seq;
+      return;
+    }
+    const reveal = pickNewReveal(state, prevRevealSeqRef.current);
+    if (!reveal) return;
+    prevRevealSeqRef.current = reveal.seq;
+    setRevealNotice(reveal);
+  }, [state, state?.lastReveal]);
 
   const legalActions = useMemo(
     () => (state ? getLegalActions(state) : []),
@@ -498,6 +525,7 @@ export function GameApp() {
       ) {
         setPendingOp(null);
         setPendingCyberSRider(null);
+        setPendingGodomRush(null);
         setPendingBattleDance(null);
       }
       setPendingHiddenNinja(null);
@@ -770,6 +798,17 @@ export function GameApp() {
             a.type === "begin_zord_setup" && a.zordInstanceId === payload.instanceId,
         );
 
+        // RS-586【魔神に不足する物】: 捨札にする「戦闘員」のユニットはプレイヤーが選ぶ。
+        const godomVariants = listGodomRushVariants(legalActions, payload.instanceId);
+        if (godomVariants.length > 0) {
+          if (godomChoiceNeeded(godomVariants)) {
+            setPendingGodomRush({ cardId: payload.cardId, variants: godomVariants });
+          } else {
+            apply(godomVariants[0]!);
+          }
+          return;
+        }
+
         if (needsZord) {
           const readyRush =
             findDirectZordRushAction(state, HUMAN_PLAYER, payload.instanceId) ??
@@ -1024,6 +1063,7 @@ export function GameApp() {
           zordMaterialInstanceId: cont.zordMaterialInstanceId,
           zordMaterialDestination: cont.zordMaterialDestination,
           zordMothershipHoldInstanceIds: cont.zordMothershipHoldInstanceIds,
+          godomDiscardInstanceIds: cont.godomDiscardInstanceIds,
         };
       } else if (cont.type === "play_operation") {
         initiateAction = {
@@ -1523,8 +1563,15 @@ export function GameApp() {
         (c) => c.instanceId === pending.vehicleInstanceId,
       );
     const vehicleCard = vehicle ? resolvePlayableCard(vehicle.cardId) : undefined;
-    return { riderCard, vehicleCard };
-  }, [isHumanRideOffChoice, state]);
+    // RS-381【獅子の装光】等、ライドオフさせるかわりに発動できる効果（ビークルを対象にした起動）。
+    const alternative = legalActions.find(
+      (a) =>
+        a.type === "activate_field_unit_ability" &&
+        a.playerId === HUMAN_PLAYER &&
+        a.unitInstanceId === pending.vehicleInstanceId,
+    );
+    return { riderCard, vehicleCard, alternative };
+  }, [isHumanRideOffChoice, state, legalActions]);
 
   const handleRideOffConfirm = useCallback(() => {
     apply({
@@ -1632,6 +1679,7 @@ export function GameApp() {
     !state.pendingBattleEntry &&
     !pendingOp &&
     !pendingCyberSRider &&
+    !pendingGodomRush &&
     !pendingBattleDance &&
     !pendingHiddenNinja &&
     !wingPromptAttackerId &&
@@ -1741,6 +1789,19 @@ export function GameApp() {
             onSelect: () => handleZoneDrop("rush", payload),
           });
         }
+        // RS-559【パワーアロー】等「自分の手札からこのカードを捨札にして発動できる」効果。
+        const handEffect = legalActions.find(
+          (a) => a.type === "activate_field_unit_ability" && a.unitInstanceId === card.instanceId,
+        );
+        if (handEffect) {
+          actions.push({
+            id: "hand-effect",
+            label: "捨札にして効果を発動する",
+            detail: "手札からこのカードを捨札にして発動",
+            variant: "primary",
+            onSelect: () => apply(handEffect),
+          });
+        }
       }
     } else if (fromZone === "battle" && state.phase === "battle") {
       const strikeAction = legalActions.find(
@@ -1805,7 +1866,10 @@ export function GameApp() {
       }
     }
 
-    if ((fromZone === "rush" || fromZone === "battle") && state.phase === "rush") {
+    if (
+      (fromZone === "rush" || fromZone === "battle") &&
+      (state.phase === "rush" || state.phase === "battle")
+    ) {
       const fieldAbility = legalActions.find(
         (a) =>
           a.type === "activate_field_unit_ability" &&
@@ -1815,14 +1879,14 @@ export function GameApp() {
         actions.push({
           id: "field-ability",
           label: "効果を発動する",
-          detail: "ラッシュフェイズに1度",
+          detail: state.phase === "battle" ? "バトルフェイズ中に発動" : "ラッシュフェイズに1度",
           variant: "primary",
           onSelect: () => apply(fieldAbility),
         });
       }
     }
 
-    if (fromZone === "command" || fromZone === "power") {
+    if (fromZone === "command" || fromZone === "power" || fromZone === "hand") {
       const selfRush = legalActions.find(
         (a) =>
           a.type === "self_rush_from_zone" &&
@@ -1833,7 +1897,7 @@ export function GameApp() {
         actions.push({
           id: "self-rush",
           label: "ラッシュエリアに出す",
-          detail: "捨札条件を満たしています",
+          detail: fromZone === "hand" ? "カードの条件を満たしています（ホールド不要）" : "捨札条件を満たしています",
           variant: "primary",
           onSelect: () => apply(selfRush),
         });
@@ -2073,6 +2137,7 @@ export function GameApp() {
       (state.pendingLeave && state.activePlayer === HUMAN_PLAYER) ||
       !!pendingOp ||
       !!pendingCyberSRider ||
+      !!pendingGodomRush ||
       !!pendingBattleDance ||
       !!pendingHiddenNinja);
 
@@ -2202,6 +2267,7 @@ export function GameApp() {
 
   const showEffectNotice =
     !!effectNotice &&
+    !revealNotice &&
     !showReactionModal &&
     !showDenjiRevealModal &&
     !showOperationModal &&
@@ -2302,6 +2368,14 @@ export function GameApp() {
     state,
     HUMAN_PLAYER,
   );
+  // RS-223【緊急システム発動要請】: ラッシュの支払いで敵軍（CPU）のホールド状態のコマンドを選べる。
+  const cpuCommandPaymentTargets = (() => {
+    if (!boardCommandPaymentTargets) return undefined;
+    const ids = state.players[CPU_PLAYER].command
+      .map((c) => c.instanceId)
+      .filter((id) => boardCommandPaymentTargets.has(id));
+    return ids.length > 0 ? new Set(ids) : undefined;
+  })();
 
   const commandPaymentSelectedIds = showCommandPaymentModal
     ? new Set(commandPaymentSelection)
@@ -2317,9 +2391,10 @@ export function GameApp() {
 
   const canConfirmCommandPaymentSelection =
     showCommandPaymentModal &&
-    canConfirmCommandPayment(
+    canConfirmCommandPaymentFor(
+      state,
+      state.pendingCommandPayment!,
       commandPaymentSelection,
-      state.pendingCommandPayment!.totalNeeded,
     );
 
   const pendingDamage = state.pendingDamagePayment;
@@ -2486,6 +2561,7 @@ export function GameApp() {
           vehicleCard={rideOffModal.vehicleCard}
           onRideOff={handleRideOffConfirm}
           onStayMounted={handleRideOffStay}
+          onAlternative={rideOffModal.alternative ? () => apply(rideOffModal.alternative!) : undefined}
         />
       )}
       {showRegisterModal && registerModal && (
@@ -2693,6 +2769,20 @@ export function GameApp() {
           onCancel={() => setPendingOp(null)}
         />
       )}
+      {humanCanAct && pendingGodomRush && (
+        <GodomDiscardModal
+          state={state}
+          playerId={HUMAN_PLAYER}
+          rushCardId={pendingGodomRush.cardId}
+          variants={pendingGodomRush.variants}
+          onConfirm={(action) => {
+            setPendingGodomRush(null);
+            apply(action);
+          }}
+          onCancel={() => setPendingGodomRush(null)}
+          onPreview={(cardId) => setPreviewCard(resolvePlayableCard(cardId) ?? null)}
+        />
+      )}
       {showCyberSRiderModal && pendingCyberSRider && (
         <CyberSRiderModal
           state={state}
@@ -2721,6 +2811,16 @@ export function GameApp() {
         <LightningGravityHoldModal
           notice={lightningGravityNotice}
           onClose={() => setLightningGravityNotice(null)}
+        />
+      )}
+      {revealNotice && state && (
+        <RevealNoticeModal
+          view={buildRevealNoticeView(revealNotice, state.definitions, HUMAN_PLAYER)}
+          onClose={() => setRevealNotice(null)}
+          onPreview={(cardId) => {
+            const card = resolvePlayableCard(cardId);
+            if (card) setPreviewCard(card);
+          }}
         />
       )}
       {showEffectNotice && effectNotice && (
@@ -2756,6 +2856,9 @@ export function GameApp() {
           }
           onReturnAllBattle={() =>
             apply({ type: "return_all_battle_to_rush", playerId: HUMAN_PLAYER })
+          }
+          onReturnBattleUnit={(instanceId) =>
+            apply({ type: "return_all_battle_to_rush", playerId: HUMAN_PLAYER, instanceId })
           }
           onDraw={() => apply({ type: "draw", playerId: HUMAN_PLAYER })}
           onBonusDraw={() => apply({ type: "bonus_draw", playerId: HUMAN_PLAYER })}
@@ -2911,6 +3014,10 @@ export function GameApp() {
                   ? handleDamagePaymentSelect
                   : handleEffectChoiceSelect
             }
+            pendingCommandPaymentTargets={cpuCommandPaymentTargets}
+            commandPaymentSelectedIds={cpuCommandPaymentTargets ? commandPaymentSelectedIds : undefined}
+            onCommandPaymentToggle={handleCommandPaymentToggle}
+            commandPaymentHighlightCommand={showCommandPaymentModal && !!cpuCommandPaymentTargets}
             effectChoiceHighlightCommand={boardTapEffectChoice?.opponent.command}
             effectChoiceHighlightPower={boardTapEffectChoice?.opponent.power}
             effectChoiceHighlightRush={boardTapEffectChoice?.opponent.rush}

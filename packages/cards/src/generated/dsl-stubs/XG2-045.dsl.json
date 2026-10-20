@@ -7,7 +7,7 @@
     "MA",
     "OT"
   ],
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※モーフ 【トリガーマグナム】自軍ターン中、これがバトルエリアに出たとき、敵軍ラッシュエリアからホールド状態のSユニットを1体選び、持ち主のパワーゾーンにダメージにして置いてもよい。",
@@ -45,8 +45,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-045::torigamagunamu",
-          "duration": "turn"
+          "keyword": "xg2::XG2-045::trigger_magnum",
+          "duration": "permanent"
         }
       ]
     }

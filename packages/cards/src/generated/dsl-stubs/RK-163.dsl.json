@@ -4,7 +4,7 @@
   "name": "オルタナティブ・ゼロ",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 5,
   "text": "※これはライドオフしたときストライクできない。 ※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【無意識の記憶力】敵軍捨札からユニットカードを1枚選んでもよい。そうしたとき、選んだカードと同じカード名の敵軍ユニットを1体選び、撃破する。",
@@ -57,11 +57,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-163::no_chikara_e784a1",
+          "keyword": "rk8::RK-163::unconscious_memory",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

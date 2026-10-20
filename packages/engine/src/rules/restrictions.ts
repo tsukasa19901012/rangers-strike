@@ -1,9 +1,29 @@
+import { rm2BlocksBattleEntry } from "./rm/rm2Fields";
+import { xg6BlocksBattleEntry } from "./xg6/xg6Fields";
+import { xg4BlocksBattleEntry } from "./xg4/xg4Fields";
+import { xg2BlocksBattleEntry } from "./xg2/xg2Fields";
+import { xg2KijouReplacesEntryHold, xg2RequiresBattleEntry } from "./xg2/xg2Fields";
+import { filthyAirActive } from "./legend1/otherLinesNamedEffects";
+import { rk3BattleEntryBlocked } from "./rk/rk3UnitEffects";
+import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
+import { set9CBlocksBattleEntry } from "./legend1/set9NamedEffectsC";
+import { enteredRushAreaUnderZenibomb } from "./rushAreaEntries";
+import { ownAutoBattleEntryNegated } from "./legend1/set8NamedEffectsD";
+import { set8BRequiresBattleEntry } from "./legend1/set8NamedEffectsB";
+import { sliderEvolutionIgnoresEntryHold } from "./legend1/set4NamedEffects";
+import { set6BBattleEntryBlocked } from "./legend1/set6NamedEffectsB";
+import { riddenVehicleGrantsEntryHold } from "./legend1/set7NamedEffectsB";
+import { beastSwordIgnoresEntryHold } from "./legend1/set5NamedEffectsA";
+import { rushAreaEntryBlockedThisTurn } from "./legend1/set5NamedEffects";
+import { hellSaturnGrantCount } from "./hellSaturn";
+import { errataBattleEntryBlocked, isDivingOrochi } from "./errataCardEffects";
 import {
   battleHasComboPartner,
   cannotEnterBattle,
   countLightningGravityPermanents,
   getBattleEntryComboFromOwnTurnPartnerIds,
   getBattleEntryComboFromPartnerIds,
+  getBattleEntryHandDiscardCount,
   getBattleEntryHoldCount,
   hasAutoBattleEntryEachTurnNote,
   needsAllySInBattle,
@@ -28,14 +48,22 @@ import {
   isSmallUnit,
   isUnit,
   isVehicle,
+  unitEffectiveCategories,
+  unitSizeOf,
 } from "../core/catalog";
 import {
   heldCallLeadMatchesCategories,
   type CallLeadKind,
 } from "./callLead";
-import { isCostWindowSatisfied, satisfyCostWindow as satisfyCostWindowBridge } from "../core/costWindow";
-import { hasTurnRuleModifier } from "../core/scopedModifiers";
+import {
+  clearCostWindow as clearCostWindowBridge,
+  isCostWindowSatisfied,
+  satisfyCostWindow as satisfyCostWindowBridge,
+} from "../core/costWindow";
+import { hasScopedRestriction, hasTurnRuleModifier } from "../core/scopedModifiers";
 import { findInZone, opponent } from "../core/helpers";
+import { memoizeInSearchWithContext } from "../core/searchCache";
+import { actionContextState } from "./zordFeatureContext";
 import { TURN_RULE_IDS } from "../types/scopedModifiers";
 import { earthForceActive } from "./strikeReactions";
 import { effectiveBattleEntryHoldCount } from "./rushAdditionalCondition";
@@ -47,7 +75,7 @@ import {
 } from "./turnModifiers";
 import {
   findLegend2NamedEffectOnField,
-  karakuriLionChainBlocksEntry,
+  karakuriLionChainHoldCount,
   trafficControlRequiresSameSize,
 } from "./legend2/fieldEffects";
 import {
@@ -71,11 +99,40 @@ import {
 } from "./legend3/restrictions";
 import { getBattleEntryPowerDiscardCount } from "./batch07FieldEffects";
 import { damageGateBlocksEntry } from "./keywordGapRuntime";
+import { rk6BlocksBattleEntry } from "./rk/rk6Fields";
+import { rk14NeedsEntryHold } from "./rk/rk14Fields";
+import { rk15BlocksAttackStrike, rk15RequiresBattleEntry } from "./rk/rk15Fields";
+import { xg5RequiresBattleEntry } from "./xg5/xg5Fields";
+import { rk8BlocksBattleEntry } from "./rk/rk8UnitEffects";
+import { rk9BlocksBattleEntry } from "./rk/rk9Fields";
+import { rk10BlocksBattleEntry, rk10ElasmoHoldReduction, rk10OmegaIgnoresEntryHold } from "./rk/rk10Fields";
+import { rk12BlocksBattleEntry, rk12RequiresBattleEntry, rk12ResidentsNegated } from "./rk/rk12Fields";
+import { unitFeatures as rk12UnitFeatures } from "./addedFeatures";
+import { promoBlocksAttackStrike } from "./promo/promoRegistry";
 import {
   rs482BlocksAttackStrike,
   rs579BlocksAttackStrikeOnRushTurn,
   rs603BlocksVehicle,
 } from "./rs/rsCatchallField";
+
+
+/** 「可能ならバトルエリアに置く」で直接バトルエリアにラッシュしたユニットに付ける（このターン有効）。 */
+export const DIRECT_BATTLE_RUSH_RESTRICTION = "direct_battle_rush";
+
+/**
+ * RS-110【ゼニボム】:「次の相手ターン、新しくラッシュエリアに出たユニットは、ターンが終わるまでバトルエリアに出られない」。
+ * 「ラッシュするとき可能ならバトルエリアに置く」（RS-090 レッドレーサー）はバトルエリアに直接ラッシュする効果で、
+ * 「新しくラッシュエリアに出たユニット」にあたらない（atwiki/page-308 Q2・page-303 Q1「（2010/10/25修正）」。
+ * docs/rules/README.md §1.2 例外2・§5.7 e）。
+ * 「新しくラッシュエリアに出たユニット」は手段を問わず、場の外からそのターンに相手のラッシュエリアに出たユニット
+ * （ユーザー決定 2026-10-19、docs/rules/README.md §5.7。判定は rules/rushAreaEntries.ts trackZenibombEntries）。
+ * バトルエリアからラッシュエリアに戻ったユニットは含まない。
+ */
+export function zenibombBlocksBattleEntry(player: PlayerState, instanceId: string): boolean {
+  if (!hasTurnRuleModifier(player, TURN_RULE_IDS.ZENIBOMB)) return false;
+  if (!enteredRushAreaUnderZenibomb(player, instanceId)) return false;
+  return !hasScopedRestriction(player, instanceId, DIRECT_BATTLE_RUSH_RESTRICTION);
+}
 
 export function countLightningGravityOperations(state: GameState): number {
   return countLightningGravityPermanents(
@@ -90,6 +147,8 @@ export function countActiveLightningGravity(state: GameState): number {
   for (const playerId of ["player1", "player2"] as const) {
     const player = state.players[playerId];
     if (opponentInfiniteChainBlocks(state, playerId)) continue;
+    // RK-248 パラダイス・ロスト: このターン、相手の常駐オペレーションは無効（rules/rk/rk12Fields.ts）。
+    if (rk12ResidentsNegated(state, playerId)) continue;
     for (const card of player.operation) {
       if (getCardEffect(card.cardId)?.effectId === "lightning_gravity") {
         count += 1;
@@ -126,7 +185,7 @@ export function getLightningGravityHoldNotice(
   unit: CardInstance,
 ): LightningGravityHoldNotice | null {
   if (!lightningGravityActive(state)) return null;
-  if (!isMediumUnit(state.definitions, unit.cardId)) return null;
+  if (!isMediumUnit(state.definitions, unit)) return null;
   if (canMoveUnitToBattle(state, playerId, unit, "rush")) return null;
 
   const lgCount = countActiveLightningGravity(state);
@@ -154,13 +213,75 @@ export function requiredBattleEntryHolds(
   unit: CardInstance,
 ): number {
   let unitHold = unitBattleEntryHoldCount(state, playerId, unit.cardId);
+  // RS-364【黒き太陽神への忠誠】:「これは自軍コマンドを1つホールドしなければバトルエリアに出られない。」と書かれているかのように扱う
+  // （複数あっても 1 つ — faq-card-6 RS-364 Q5。獣奏剣で無効にできる — 同 Q4）。
+  if (hellSaturnGrantCount(state, playerId, unit) > 0) unitHold = Math.max(unitHold, 1);
+  // RK-280 ダークレイダー・RK-281 ドラグランザー: ユニットの間は「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」
+  // （rules/rk/rk14Fields.ts）。
+  if (rk14NeedsEntryHold(state, playerId, unit)) unitHold = Math.max(unitHold, 1);
+  // RS-468 ギンガリラ【水の星獣】: 特徴「車両」を持つユニットは「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と
+  // 書かれているかのように扱う（rules/legend1/set7NamedEffectsB.ts）。
+  if (riddenVehicleGrantsEntryHold(state, playerId, unit)) unitHold = Math.max(unitHold, 1);
   if (unitHold > 0 && scorchingRoarBypassesHold(unit.cardId, state, playerId)) {
     unitHold = 0;
   }
-  const lgHold = isMediumUnit(state.definitions, unit.cardId)
+  // RS-228【超スライダー進化】: このターン、「1つホールドしなければ出られない」テキストを無効にしたユニット。
+  if (unitHold > 0 && sliderEvolutionIgnoresEntryHold(state, playerId, unit.instanceId)) {
+    unitHold = 0;
+  }
+  // RS-243【獣奏剣】: このターン、すべての自軍ユニットの「1つホールドしなければ出られない」を無効にする。
+  if (unitHold > 0 && beastSwordIgnoresEntryHold(state, playerId)) {
+    unitHold = 0;
+  }
+  // RK-199 オメガゼール【ゼール種の統率】: 「オメガゼール」以外の「レイヨウ型」の自軍ユニットの「1つホールドしなければ出られない」は無効。
+  if (unitHold > 0 && rk10OmegaIgnoresEntryHold(state, playerId, unit)) unitHold = 0;
+  // RK-209 エラスモテリウムオルフェノク ※: ホールドする数は相手の手札1枚につき1少なくなる（rules/rk/rk10Fields.ts）。
+  if (unitHold > 0) unitHold = Math.max(0, unitHold - rk10ElasmoHoldReduction(state, playerId, unit));
+  // XG2-021 重騎士【騎乗】で選んだユニット（ホールドするかわりに相手がホールドする。rules/xg2/xg2Fields.ts）。
+  if (unitHold > 0 && xg2KijouReplacesEntryHold(state, playerId, unit)) unitHold -= 1;
+  const lgHold = isMediumUnit(state.definitions, unit)
     ? countActiveLightningGravity(state)
     : 0;
-  return unitHold + lgHold;
+  // ルール: R-ADD-07 — 「〜しなければバトルエリアに出られない」制限は1つずつ別々に満たす
+  // （ハリケンレオンは体数分重複）。
+  const lionHold = karakuriLionChainHoldCount(state, playerId, unit);
+  return unitHold + lgHold + lionHold + accelMemoryHoldCount(state, playerId, unit);
+}
+
+/**
+ * XG4-062【アクセルメモリ】: ライドされているこのビークルがバトルエリアにある間、特徴「加速」を持たない
+ * 敵軍Sユニットは自分自身のコマンドを1つホールドしなければバトルエリアに出られない。
+ * ルール: R-ERR-XG4-062 — 「自軍コマンド」は制限を受ける側（敵軍プレイヤー）にとっての自軍コマンド。
+ */
+export function accelMemoryHoldCount(
+  state: GameState,
+  playerId: PlayerId,
+  unit: CardInstance,
+): number {
+  const def = getDefinition(state.definitions, unit.cardId);
+  if (!def || def.type !== "unit" || unitSizeOf(state.definitions, unit) !== "S") return 0;
+  if ((def.features ?? []).includes("加速")) return 0;
+  const enemy = state.players[opponent(playerId)];
+  const riders = [...enemy.battle, ...enemy.rush];
+  return enemy.battle.filter(
+    (c) =>
+      c.cardId === "XG4-062" && riders.some((r) => r.mountedOnInstanceId === c.instanceId),
+  ).length;
+}
+
+/**
+ * RS-290 龍星王【飛竜棍・大風車】: これが自軍バトルエリアにある間、「DA」の敵軍Sユニットはバトルエリアに出られない
+ * （atwiki/page-474）。効果で DA が追加されたユニットも含む（faq-card-5 RS-290 Q1・RS-339 Q1）。
+ * ライドして L ユニットになれば対象外（atwiki/page-474 Q3。ここではラッシュエリアの S ユニットだけを判定）。
+ */
+export function ryuseioBlocksMove(state: GameState, playerId: PlayerId, unit: CardInstance): boolean {
+  const enemy = state.players[opponent(playerId)];
+  if (!enemy.battle.some((c) => c.cardId === "RS-290")) return false;
+  // ビークルにライドして出るなら L ユニットとして扱い、対象外（atwiki/page-474 Q3）。
+  if (unit.mountedOnInstanceId) return false;
+  const def = getDefinition(state.definitions, unit.cardId);
+  if (def?.type !== "unit" || unitSizeOf(state.definitions, unit) !== "S") return false;
+  return unitEffectiveCategories(state, playerId, unit, "rush").includes("DA");
 }
 
 /** RS-047 Pat Signer: BP>=5000 のMユニットの戦闘進入をブロック。 */
@@ -170,7 +291,7 @@ export function patSignerBlocksMove(
   unit: CardInstance,
 ): boolean {
   const def = getDefinition(state.definitions, unit.cardId);
-  if (def?.size !== "M") return false;
+  if (unitSizeOf(state.definitions, unit) !== "M") return false;
 
   const bp = effectiveBp(state, playerId, unit);
   if (bp < 5000) return false;
@@ -230,11 +351,36 @@ function noteOtherNcBattleEntryBlock(
   return false;
 }
 
+/**
+ * 「※これはラッシュしたターンにバトルエリアに出られない」（RS-106 等の unnamed rule、RS-208・RS-295 の DSL キーワード）。
+ */
+export function noEntryOnRushTurn(cardId: string): boolean {
+  return noBattleEntryTurnRushed(cardId) || cardHasGrantKeyword(cardId, "no_battle_rush_turn");
+}
+
+/** 無条件の「※これはバトルエリアに出られない。」（定義テキストからも判定する）。 */
+export function unconditionalNoEntryText(def: CardDefinition): boolean {
+  return /(^|\s)※これはバトルエリアに出られない。/.test(def.text ?? "");
+}
+
 export function canMoveUnitToBattle(
   state: GameState,
   playerId: PlayerId,
   unit: CardInstance,
   fromZone: "rush" | "hand" = "rush",
+): boolean {
+  // CPU の探索の間は、同じ状態・同じユニットの判定を使い回す（合法手の列挙・出なければならないユニットの判定・
+  // ホールドの支払いの判定で何度も調べる。判定は applyAction / getLegalActions の入口の状態も読むので、それも区別する）。
+  return memoizeInSearchWithContext(state, actionContextState(), unit, `${playerId}:${fromZone}`, () =>
+    canMoveUnitToBattleUncached(state, playerId, unit, fromZone),
+  );
+}
+
+function canMoveUnitToBattleUncached(
+  state: GameState,
+  playerId: PlayerId,
+  unit: CardInstance,
+  fromZone: "rush" | "hand",
 ): boolean {
   const def = getDefinition(state.definitions, unit.cardId);
   if (!def || !canEnterBattleFromRush(def)) return false;
@@ -244,19 +390,38 @@ export function canMoveUnitToBattle(
     if (!canVehicleEnterBattleFromRush(state, playerId, unit)) return false;
   }
 
-  if (unit.registerHeld) return false;
+  // ルール: R-HOLD-03 — ホールド状態のユニットもバトルエリアに出られる（レジスト後のホールドも同じ）。
 
   if (fromZone === "hand") {
     return false;
   }
 
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
+  if (def.type === "unit" && ryuseioBlocksMove(state, playerId, unit)) return false;
 
-  if (cannotEnterBattle(unit.cardId)) return false;
+  if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
+  // RK-122 ホースオルフェノク格闘態 ※（自軍パワーゾーンに6枚以上カードが無ければ出られない。rules/rk/rk6Fields.ts）。
+  if (def.type === "unit" && rk6BlocksBattleEntry(state, playerId, unit)) return false;
+  // RK-153 仮面ライダーガオウ・RK-167 仮面ライダーカイザ の※（rules/rk/rk8UnitEffects.ts）。
+  if (def.type === "unit" && rk8BlocksBattleEntry(state, playerId, unit)) return false;
+  // RK-177 蜂女【催眠音波】でホールドしなかったユニット（rules/rk/rk9Fields.ts）。
+  if (def.type === "unit" && rk9BlocksBattleEntry(state, playerId, unit)) return false;
+  if (def.type === "unit" && rk10BlocksBattleEntry(state, playerId, unit)) return false;
+  // RK-247 仮面ライダーネガ電王の※（自軍ユニットがホールドされたターンにしか出られない。rules/rk/rk12Fields.ts）。
+  if (def.type === "unit" && rk12BlocksBattleEntry(state, playerId, unit)) return false;
+  // RM-029 ジャスピオン ※（SP が空欄ではない自軍 S ユニットがあれば出られない。rules/rm/rm2Fields.ts）。
+  if (def.type === "unit" && rm2BlocksBattleEntry(state, playerId, unit)) return false;
+  // XG6-029【大反転スカイキック】の「このターン、これはバトルエリアに出られない」（rules/xg6/xg6Fields.ts）。
+  if (xg6BlocksBattleEntry(state, playerId, unit)) return false;
+  // クロスギャザー ザ・ジェットアクセル XG4-007 の※等（rules/xg4/xg4Fields.ts）。
+  if (def.type === "unit" && xg4BlocksBattleEntry(state, playerId, unit)) return false;
+  if (def.type === "unit" && (rm2BlocksBattleEntry(state, playerId, unit) || xg2BlocksBattleEntry(state, playerId, unit))) return false;
+  // RS-289 / XP-023「※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない」（atwiki/page-416）。
+  if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (needsAllySInBattle(unit.cardId)) {
     const hasAllyS = state.players[playerId].battle.some((c) =>
-      isSmallUnit(state.definitions, c.cardId),
+      isSmallUnit(state.definitions, c),
     );
     if (!hasAllyS) return false;
   }
@@ -278,32 +443,43 @@ export function canMoveUnitToBattle(
     }
   }
 
-  if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
+  if (noEntryOnRushTurn(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return false;
   }
 
-  if (hasTurnRuleModifier(player, TURN_RULE_IDS.ZENIBOMB) && wasRushedThisTurn(player, unit.instanceId)) {
+  // RS-320【スワンイリュージョン】・RS-324 マジマザー: このターン、ラッシュエリアのユニットはバトルエリアに出られない。
+  if (rushAreaEntryBlockedThisTurn(state, playerId)) return false;
+  // RS-660【SPインカム】: 新しくラッシュエリアに出たユニットとホールド状態のユニットは出られない（rules/legend1/set9NamedEffectsC.ts）。
+  if (set9CBlocksBattleEntry(state, playerId, unit)) return false;
+  // RS-356 デンジイエロー【ハンマーパンチ】: このターン、必要パワーの数字が3以下のユニットは出られない。
+  if (hammerPunchBlocksEntry(state, playerId, unit)) return false;
+
+  if (zenibombBlocksBattleEntry(player, unit.instanceId)) {
     return false;
   }
 
   if (trafficControlRequiresSameSize(state, playerId, def.size)) return false;
-
-  if (
-    karakuriLionChainBlocksEntry(
-      state,
-      playerId,
-      unit,
-      countHeldCommands(state.players[playerId]),
-    )
-  ) {
-    return false;
-  }
 
   if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
 
   if (cannotEnterBattleOwnTurn(state, playerId, unit.cardId)) return false;
 
   if (noteOtherNcBattleEntryBlock(state, playerId, player, unit)) return false;
+  // 第6弾 RS-419 聖剣ズバーン ※ 等（rules/legend1/set6NamedEffectsB.ts）。
+  if (set6BBattleEntryBlocked(state, playerId, unit)) return false;
+  // RK-140 / RK-334 のロック、RS-288 の「獣奏剣」ホールド要件（rules/errataCardEffects.ts）。
+  if (errataBattleEntryBlocked(state, playerId, unit)) return false;
+  // RK-059 ゼクトルーパー【フォーメーションα】（rules/rk/rk3UnitEffects.ts）。
+  if (rk3BattleEntryBlocked(state, playerId, unit)) return false;
+
+  // RS-242 / RS-416 等「自軍ラッシュエリアのSユニットを1体捨札にしなければ出られない」— 自身は数えない。
+  if (
+    needsBattleEntryRushDiscard(unit.cardId) &&
+    !battleEntryRushDiscardSatisfied(player, unit.cardId) &&
+    !hasBattleEntryRushDiscardTarget(player, state.definitions, unit.instanceId)
+  ) {
+    return false;
+  }
 
   if (
     needsBattleEntryHandDiscard(unit.cardId) &&
@@ -315,6 +491,8 @@ export function canMoveUnitToBattle(
 
   if (
     needsBattleEntryPowerDiscard(unit.cardId) &&
+    // XG1-034【汚い大気】で※（パワーゾーンのカードを捨札にしなければ出られない）は無効（atwiki/page-1582 Q5）。
+    !filthyAirActive(state) &&
     !battleEntryPowerDiscardSatisfied(player, unit.cardId) &&
     !canPayBattleEntryPowerDiscard(player, unit.cardId)
   ) {
@@ -334,8 +512,17 @@ export function cannotAttackOrStrikeThisTurn(
     if (rs482BlocksAttackStrike(state, playerId, unit.cardId)) return true;
     if (rs579BlocksAttackStrikeOnRushTurn(state, playerId, unit.instanceId)) return true;
     if (rs603BlocksVehicle(state, playerId, unit.cardId)) return true;
+    // RK-295 の※（1番目でなければ）・RK-302【ワームの頂点に立つ男】（rules/rk/rk15Fields.ts）。
+    if (rk15BlocksAttackStrike(state, playerId, unit, rk12UnitFeatures)) return true;
+    // SK-003【復讐の女詐欺師】等（rules/promo）。
+    if (promoBlocksAttackStrike(state, playerId, unit)) return true;
   }
   if (unit.activatedNcEffects?.includes("optional_battle_no_attack")) return true;
+  // RK-231 オロチ【潜水】: ホールド状態のときアタックもストライクもできない（ルール: R-ERR-RK231）。
+  if (isDivingOrochi(unit)) return true;
+  // ルール: R-HOLD-03 — ホールド中のユニットがアタック・ストライクできるかは [未確定]。
+  // 確定するまでレジストでホールド中のユニットは従来どおりアタック・ストライク不可とする。
+  if (unit.registerHeld) return true;
   return (
     noAttackOrStrikeTurnRushed(unit.cardId) &&
     wasRushedThisTurn(player, unit.instanceId)
@@ -364,12 +551,28 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   if (fromZone === "hand") return false;
   if (def.type === "unit" && patSignerBlocksMove(state, playerId, unit)) return false;
-  if (cannotEnterBattle(unit.cardId)) return false;
+  if (def.type === "unit" && ryuseioBlocksMove(state, playerId, unit)) return false;
+  if (cannotEnterBattle(unit.cardId) || unconditionalNoEntryText(def)) return false;
+  // RK-122 ホースオルフェノク格闘態 ※（自軍パワーゾーンに6枚以上カードが無ければ出られない。rules/rk/rk6Fields.ts）。
+  if (def.type === "unit" && rk6BlocksBattleEntry(state, playerId, unit)) return false;
+  // RK-153 仮面ライダーガオウ・RK-167 仮面ライダーカイザ の※（rules/rk/rk8UnitEffects.ts）。
+  if (def.type === "unit" && rk8BlocksBattleEntry(state, playerId, unit)) return false;
+  // RK-177 蜂女【催眠音波】でホールドしなかったユニット（rules/rk/rk9Fields.ts）。
+  if (def.type === "unit" && rk9BlocksBattleEntry(state, playerId, unit)) return false;
+  if (def.type === "unit" && rk10BlocksBattleEntry(state, playerId, unit)) return false;
+  if (def.type === "unit" && rk12BlocksBattleEntry(state, playerId, unit)) return false;
+  // RM-029 ジャスピオン ※（SP が空欄ではない自軍 S ユニットがあれば出られない。rules/rm/rm2Fields.ts）。
+  if (def.type === "unit" && rm2BlocksBattleEntry(state, playerId, unit)) return false;
+  // XG6-029【大反転スカイキック】の「このターン、これはバトルエリアに出られない」（rules/xg6/xg6Fields.ts）。
+  if (xg6BlocksBattleEntry(state, playerId, unit)) return false;
+  // クロスギャザー ザ・ジェットアクセル XG4-007 の※等（rules/xg4/xg4Fields.ts）。
+  if (def.type === "unit" && xg4BlocksBattleEntry(state, playerId, unit)) return false;
+  if (def.type === "unit" && (rm2BlocksBattleEntry(state, playerId, unit) || xg2BlocksBattleEntry(state, playerId, unit))) return false;
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {
     const hasAllyS = state.players[playerId].battle.some((c) =>
-      isSmallUnit(state.definitions, c.cardId),
+      isSmallUnit(state.definitions, c),
     );
     if (!hasAllyS) return false;
   }
@@ -391,33 +594,37 @@ export function canMoveUnitToBattleExceptHoldRequirements(
     }
   }
 
-  if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
+  if (noEntryOnRushTurn(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return false;
   }
 
-  if (hasTurnRuleModifier(player, TURN_RULE_IDS.ZENIBOMB) && wasRushedThisTurn(player, unit.instanceId)) {
+  // RS-320【スワンイリュージョン】・RS-324 マジマザー: このターン、ラッシュエリアのユニットはバトルエリアに出られない。
+  if (rushAreaEntryBlockedThisTurn(state, playerId)) return false;
+  // RS-660【SPインカム】: 新しくラッシュエリアに出たユニットとホールド状態のユニットは出られない（rules/legend1/set9NamedEffectsC.ts）。
+  if (set9CBlocksBattleEntry(state, playerId, unit)) return false;
+  // RS-356 デンジイエロー【ハンマーパンチ】: このターン、必要パワーの数字が3以下のユニットは出られない。
+  if (hammerPunchBlocksEntry(state, playerId, unit)) return false;
+
+  if (zenibombBlocksBattleEntry(player, unit.instanceId)) {
     return false;
   }
 
   if (trafficControlRequiresSameSize(state, playerId, def.size)) return false;
 
-  if (
-    karakuriLionChainBlocksEntry(
-      state,
-      playerId,
-      unit,
-      countHeldCommands(state.players[playerId]),
-    )
-  ) {
-    return false;
-  }
-
   if (isBattleBlocked(state.players[playerId], unit.instanceId)) return false;
 
   if (cannotEnterBattleOwnTurn(state, playerId, unit.cardId)) return false;
 
+  // canMoveUnitToBattle と同じ、ホールドでは解けない進入禁止（RK-140 / RK-334 のロック、RS-419 等）。
+  // ここで弾かないと battle_entry 支払いが開けるのに、支払い後の move_to_battle が illegal_action になる。
+  if (noteOtherNcBattleEntryBlock(state, playerId, player, unit)) return false;
+  if (set6BBattleEntryBlocked(state, playerId, unit)) return false;
+  if (errataBattleEntryBlocked(state, playerId, unit)) return false;
+  // RK-059 ゼクトルーパー【フォーメーションα】（rules/rk/rk3UnitEffects.ts）。
+  if (rk3BattleEntryBlocked(state, playerId, unit)) return false;
+
   if (needsBattleEntryRushDiscard(unit.cardId)) {
-    if (!canPayBattleEntryRushDiscard(player, state.definitions)) return false;
+    if (!canPayBattleEntryRushDiscard(player, state.definitions, unit.cardId)) return false;
     if (!battleEntryRushDiscardSatisfied(player, unit.cardId)) {
       if (!hasBattleEntryRushDiscardTarget(player, state.definitions, unit.instanceId)) {
         return false;
@@ -429,6 +636,8 @@ export function canMoveUnitToBattleExceptHoldRequirements(
 
   if (
     needsBattleEntryPowerDiscard(unit.cardId) &&
+    // XG1-034【汚い大気】で※（パワーゾーンのカードを捨札にしなければ出られない）は無効（atwiki/page-1582 Q5）。
+    !filthyAirActive(state) &&
     !battleEntryPowerDiscardSatisfied(player, unit.cardId) &&
     !canPayBattleEntryPowerDiscard(player, unit.cardId)
   ) {
@@ -444,39 +653,99 @@ export function countReleasedCommands(player: PlayerState): number {
 }
 
 /**
- * 効果など支払いUIなしで※進入するとき、リリース中のコマンドを1枚ホールドする。
- * プレイヤー操作の進入は initiate_command_payment を使う。
+ * 効果でバトルエリアに出すとき、「ホールドしなければ出られない」制限の分だけ
+ * リリース状態のコマンドをホールドする（左から自動選択）。ホールドできなければ null。
+ * ルール: R-ADD-07 — 効果で出す場合も1体ごとに制限を満たす（RS-009 Q3、RS-097 Q2・Q6）。
+ * プレイヤー操作の進入は initiate_command_payment（battle_entry）を使う。
  */
-/** 効果/自動進入: ※用ホールドが既に揃っているとき支払い済みフラグを立てる。 */
-export function markBattleEntryHoldReadyIfNoteSatisfied(
-  player: PlayerState,
+export function autoHoldForBattleEntry(
+  state: GameState,
+  playerId: PlayerId,
   unit: CardInstance,
-): PlayerState {
-  const unitHold = getBattleEntryHoldCount(unit.cardId);
-  if (unitHold > 0 && countBattleEntryEligibleHolds(player) >= unitHold) {
-    return satisfyCostWindowBridge(player, "battle_entry_hold");
+  options: { freshHold?: boolean } = {},
+): PlayerState | null {
+  let player = state.players[playerId];
+
+  // ルール: R-BA-04 — 「手札を2枚捨てなければ出られない」（狼鬼）も、効果で出すときに満たせるなら満たして出る
+  // （RS-108 Q2）。捨てるカードは手札の先頭から選ぶ。
+  if (
+    needsBattleEntryHandDiscard(unit.cardId) &&
+    !battleEntryHandDiscardSatisfied(player, unit.cardId)
+  ) {
+    const count = getBattleEntryHandDiscardCount(unit.cardId);
+    if (player.hand.length < count) return null;
+    const discarded = player.hand.slice(0, count);
+    player = satisfyCostWindowBridge(
+      {
+        ...player,
+        hand: player.hand.slice(count),
+        discard: [...player.discard, ...discarded],
+      },
+      "battle_entry_hand_discard",
+    );
   }
-  return player;
+
+  const required = requiredBattleEntryHolds(
+    { ...state, players: { ...state.players, [playerId]: player } },
+    playerId,
+    unit,
+  );
+  if (required <= 0) return player;
+  if (countReleasedCommands(player) < required) return null;
+
+  let remaining = required;
+  const command = player.command.map((c) => {
+    if (remaining > 0 && !c.commandHeld) {
+      remaining -= 1;
+      return { ...c, commandHeld: true, mothershipHold: false };
+    }
+    return c;
+  });
+  return satisfyCostWindowBridge({ ...player, command }, "battle_entry_hold");
 }
 
-export function autoHoldForBattleEntry(
-  player: PlayerState,
-  unit: CardInstance,
-): PlayerState | null {
-  const unitHold = getBattleEntryHoldCount(unit.cardId);
-  if (unitHold <= 0) return player;
-
-  if (countBattleEntryEligibleHolds(player) >= unitHold) {
-    return player;
-  }
-
-  const idx = player.command.findIndex((c) => !c.commandHeld);
-  if (idx < 0) return null;
-
-  const command = player.command.map((c, i) =>
-    i === idx ? { ...c, commandHeld: true, mothershipHold: false } : c,
+/** 効果でバトルエリアに出し終えたら、出るための支払い済み記録を消す。 */
+export function clearEffectBattleEntryWindows(player: PlayerState): PlayerState {
+  return clearCostWindowBridge(
+    clearCostWindowBridge(player, "battle_entry_hold"),
+    "battle_entry_hand_discard",
   );
-  return satisfyCostWindowBridge({ ...player, command }, "battle_entry_hold");
+}
+
+/**
+ * バトルエリアに出すために必要なホールドを満たせるか（リリース状態のコマンドが足りるか）。
+ * ルール: R-BA-04 — 「可能なら出る」はホールドが必要なユニットも、ホールドできれば出る。
+ */
+export function canMoveUnitToBattleWithHolds(
+  state: GameState,
+  playerId: PlayerId,
+  unit: CardInstance,
+): boolean {
+  if (canMoveUnitToBattle(state, playerId, unit, "rush")) return true;
+  if (!canMoveUnitToBattleExceptHoldRequirements(state, playerId, unit, "rush")) return false;
+  const prepared = autoHoldForBattleEntry(state, playerId, unit);
+  if (!prepared) return false;
+  return canMoveUnitToBattle(
+    { ...state, players: { ...state.players, [playerId]: prepared } },
+    playerId,
+    unit,
+    "rush",
+  );
+}
+
+/**
+ * 効果で（ラッシュエリアから）バトルエリアに出されるユニットが、持ち主が条件を満たした上で出られるか。
+ * ルール: R-KW-WRECKER-01 — 「出られない」ユニットは出せず、「～しなければ出られない」は持ち主が満たせるときだけ出せる。
+ */
+export function canBeDeployedToBattleByEffect(
+  state: GameState,
+  ownerId: PlayerId,
+  unit: CardInstance,
+): boolean {
+  const prepared = autoHoldForBattleEntry(state, ownerId, unit);
+  if (!prepared) return false;
+  const withPrepared: GameState = { ...state, players: { ...state.players, [ownerId]: prepared } };
+  return canMoveUnitToBattle(withPrepared, ownerId, unit, "rush");
 }
 
 function passesBattleEntryHoldRequirements(
@@ -485,29 +754,21 @@ function passesBattleEntryHoldRequirements(
   player: PlayerState,
   unit: CardInstance,
 ): boolean {
-  let unitHold = unitBattleEntryHoldCount(state, playerId, unit.cardId);
-  if (unitHold > 0 && scorchingRoarBypassesHold(unit.cardId, state, playerId)) {
-    unitHold = 0;
-  }
-  const lgHold = isMediumUnit(state.definitions, unit.cardId)
-    ? countActiveLightningGravity(state)
-    : 0;
-  const requiredTotal = unitHold + lgHold;
+  const requiredTotal = requiredBattleEntryHolds(state, playerId, unit);
 
-  if (requiredTotal === 0 && !needsVCommanderHold(state, playerId, unit)) {
-    return true;
-  }
-
+  // RS-301 / RS-302 ※: リリース状態の「Vコマンダー」をホールドして出る（既にホールド状態のものでは満たせない。R-ADD-07）。
   if (needsVCommanderHold(state, playerId, unit)) {
-    if (!hasHeldVCommanderCommand(player, state.definitions)) return false;
+    if (!releasedVCommanderCommand(player, state.definitions)) return false;
   }
 
-  if (unitHold > 0) {
-    if (countBattleEntryEligibleHolds(player) < unitHold) return false;
-    if (!isCostWindowSatisfied(player, "battle_entry_hold")) return false;
+  // ルール: R-ADD-07 — 「コマンドをホールドしなければ出られない」制限は、出る直前に制限ごとに
+  // リリース状態のコマンドを新たにホールドして満たす（既にホールド済みのコマンドでは満たせない）。
+  // ホールドは battle_entry 支払い（または効果進入の autoHoldForBattleEntry）で行い、
+  // 済んだことを battle_entry_hold コスト窓で表す。
+  if (requiredTotal > 0) {
+    return isCostWindowSatisfied(player, "battle_entry_hold");
   }
-
-  return countHeldCommands(player) >= requiredTotal;
+  return true;
 }
 
 function allyHasVCommanderFeature(
@@ -523,14 +784,41 @@ function allyHasVCommanderFeature(
   });
 }
 
-function hasHeldVCommanderCommand(
+function releasedVCommanderCommand(
   player: PlayerState,
   definitions: GameState["definitions"],
-): boolean {
-  return player.command.some((c) => {
-    if (!c.commandHeld) return false;
-    return getDefinition(definitions, c.cardId)?.name === "Vコマンダー";
-  });
+): CardInstance | undefined {
+  return player.command.find(
+    (c) => !c.commandHeld && getDefinition(definitions, c.cardId)?.name === "Vコマンダー",
+  );
+}
+
+/**
+ * RS-301 / RS-302「※これは、特徴「Vコマンダー」を持つ自軍ユニットがないとき、自軍コマンドゾーンの
+ * 「Vコマンダー」をホールドしなければバトルエリアに出られない」— 出たときにリリース状態の「Vコマンダー」を
+ * ホールドする（atwiki/page-444, page-445）。
+ */
+export function applyVCommanderHoldOnEnter(
+  state: GameState,
+  playerId: PlayerId,
+  entering: CardInstance,
+): GameState {
+  if (!needsVCommanderHold(state, playerId, entering)) return state;
+  const player = state.players[playerId];
+  const vc = releasedVCommanderCommand(player, state.definitions);
+  if (!vc) return state;
+  return {
+    ...state,
+    players: {
+      ...state.players,
+      [playerId]: {
+        ...player,
+        command: player.command.map((c) =>
+          c.instanceId === vc.instanceId ? { ...c, commandHeld: true, mothershipHold: false } : c,
+        ),
+      },
+    },
+  };
 }
 
 function needsVCommanderHold(
@@ -630,21 +918,29 @@ export function explainCannotEnterBattle(
   if (!battleEntryHandDiscardSatisfied(player, unit.cardId)) {
     return `「${unitName}」をバトルエリアに出すには、手札から2枚選んで捨札してください。`;
   }
-  if (!canPayBattleEntryPowerDiscard(player, unit.cardId)) {
+  if (!filthyAirActive(state) && !canPayBattleEntryPowerDiscard(player, unit.cardId)) {
     const need = getBattleEntryPowerDiscardCount(unit.cardId);
     const have = player.power.filter((c) => !c.faceDown).length;
     return `「${unitName}」をバトルエリアに出すには、パワーからダメージ以外を${need}枚捨札する必要があります（対象${have}枚）。`;
   }
-  if (!battleEntryPowerDiscardSatisfied(player, unit.cardId)) {
+  if (!filthyAirActive(state) && !battleEntryPowerDiscardSatisfied(player, unit.cardId)) {
     return `「${unitName}」をバトルエリアに出すには、パワーからダメージ以外を選んで捨札してください。`;
   }
 
-  if (noBattleEntryTurnRushed(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
+  if (noEntryOnRushTurn(unit.cardId) && wasRushedThisTurn(player, unit.instanceId)) {
     return `「${unitName}」はラッシュしたターンはバトルエリアに出せません。`;
   }
 
-  if (hasTurnRuleModifier(player, TURN_RULE_IDS.ZENIBOMB) && wasRushedThisTurn(player, unit.instanceId)) {
-    return "相手の【ゼニボム】の効果で、このターンにラッシュしたユニットはバトルエリアに出せません。";
+  if (rushAreaEntryBlockedThisTurn(state, playerId)) {
+    return `このターン、ラッシュエリアのユニットはバトルエリアに出せません。`;
+  }
+
+  if (hammerPunchBlocksEntry(state, playerId, unit)) {
+    return `相手の【ハンマーパンチ】の効果で、このターン、必要パワーの数字が3以下のユニットはバトルエリアに出せません。`;
+  }
+
+  if (zenibombBlocksBattleEntry(player, unit.instanceId)) {
+    return "相手の【ゼニボム】の効果で、このターン新しくラッシュエリアに出たユニットはバトルエリアに出せません。";
   }
 
   if (trafficControlRequiresSameSize(state, playerId, def?.size)) {
@@ -658,49 +954,16 @@ export function explainCannotEnterBattle(
     return `${who}の「${controllerName}」の【交通整理】の効果で、先にバトルエリアへ入ったユニット（${requiredSize}）と同じサイズのユニットしか出せません。`;
   }
 
-  if (
-    karakuriLionChainBlocksEntry(
-      state,
-      playerId,
-      unit,
-      countHeldCommands(player),
-    )
-  ) {
-    const chain = findLegend2NamedEffectOnField(state, "karakuri_lion_chain", ["battle"]);
-    const who = chain?.playerId === playerId ? "自軍" : "敵軍";
-    const chainName = chain ? cardName(state.definitions, chain.cardId) : "ハリケンレオン";
-    return `${who}の「${chainName}」の【カラクリ忍法・連獅子】の効果で、SP1以上または「!」のユニットはコマンドを1枚ホールドしないとバトルエリアに出せません。`;
-  }
-
   if (isBattleBlocked(player, unit.instanceId)) {
     return "【バトルダンス】でラッシュエリアに戻したユニットは、このターンはバトルエリアに出せません。";
   }
 
   const unitHolds = unitBattleEntryHoldCount(state, playerId, unit.cardId);
-  const lgCount = countActiveLightningGravity(state);
-  const requiredTotal = unitHolds + lgCount;
-  const held = countHeldCommands(player);
+  const lgCount = isMediumUnit(state.definitions, unit) ? countActiveLightningGravity(state) : 0;
+  const lionCount = karakuriLionChainHoldCount(state, playerId, unit);
+  const requiredTotal = requiredBattleEntryHolds(state, playerId, unit);
   const released = countReleasedCommands(player);
-  const battleEntryHeld = countBattleEntryEligibleHolds(player);
-  if (unitHolds > 0 && !isCostWindowSatisfied(player, "battle_entry_hold")) {
-    if (released < unitHolds) {
-      if (held > battleEntryHeld) {
-        return `「${unitName}」をバトルエリアに出すには、リリース状態の自軍コマンドを${unitHolds}枚ホールドする必要があります（母艦のホールドはバトル進入の条件になりません）。`;
-      }
-      return `「${unitName}」をバトルエリアに出すには、リリース状態の自軍コマンドが${unitHolds}枚以上必要です（リリース${released}枚）。`;
-    }
-    if (battleEntryHeld < unitHolds) {
-      return `「${unitName}」をバトルエリアに出すには、リリース状態のコマンドを${unitHolds}枚選んでホールドしてください。`;
-    }
-    return `「${unitName}」をバトルエリアに出すには、※のコマンドホールド支払いを完了してください。`;
-  }
-  if (unitHolds > 0 && battleEntryHeld < unitHolds) {
-    if (held > battleEntryHeld) {
-      return `「${unitName}」をバトルエリアに出すには、リリース状態の自軍コマンドを${unitHolds}枚ホールドする必要があります（母艦のホールドはバトル進入の条件になりません）。`;
-    }
-    return `「${unitName}」をバトルエリアに出すには、リリース状態のコマンドを${unitHolds}枚選んでホールドしてください。`;
-  }
-  if (requiredTotal > 0 && held < requiredTotal) {
+  if (requiredTotal > 0 && !isCostWindowSatisfied(player, "battle_entry_hold")) {
     const parts: string[] = [];
     if (unitHolds > 0) {
       parts.push(`「${unitName}」の能力によりコマンドを${unitHolds}枚ホールド`);
@@ -708,8 +971,14 @@ export function explainCannotEnterBattle(
     if (lgCount > 0) {
       parts.push(`【稲妻重力エネルギー】の効果によりコマンドを${lgCount}枚ホールド`);
     }
+    if (lionCount > 0) {
+      parts.push(`【カラクリ忍法・連獅子】の効果によりコマンドを${lionCount}枚ホールド`);
+    }
     const requirement = parts.length > 0 ? parts.join("、") : "コマンドをホールド";
-    return `${requirement}する必要があります（現在${held}枚 / 必要${requiredTotal}枚）。`;
+    if (released < requiredTotal) {
+      return `${requirement}する必要があります（リリース状態のコマンド${released}枚 / 必要${requiredTotal}枚。ホールド済みのコマンド（母艦のホールドを含む）では満たせません）。`;
+    }
+    return `${requirement}してください（バトルエリアに出る直前に新たにホールドします）。`;
   }
 
   return `「${unitName}」はバトルエリアに出せません。`;
@@ -728,16 +997,50 @@ export function findMandatoryBattleEntries(
   if (state.phase !== "battle") return [];
   const player = state.players[playerId];
   const mandatory: CardInstance[] = [];
+  // RS-198 帝王アトン【帝王剣の呪い】: これが自軍エリアにある間、すべての敵軍 S ユニットは、毎ターン、
+  // 可能ならバトルエリアに出る（atwiki/page-382）。
+  const enemy = state.players[opponent(playerId)];
+  const emperorCurse = [...enemy.rush, ...enemy.battle].some((c) => c.cardId === "RS-198");
 
   for (const card of player.rush) {
     if (wingTurnBlocksStrike(player, card.instanceId)) continue;
-    if (!canMoveUnitToBattle(state, playerId, card, "rush")) continue;
-    if (hasAutoBattleEntryEachTurnNote(card.cardId) || earthForceRequiresBattleEntry(state)) {
+    // ルール: R-BA-04 — ホールドが必要なユニットも、ホールドできるなら「可能なら出る」に含む。
+    if (!canMoveUnitToBattleWithHolds(state, playerId, card)) continue;
+    if (
+      // RS-595【頼もしい背中】: 「炎神」の自軍ユニット自身の「可能ならバトルエリアに出る」は無効（rules/legend1/set8NamedEffectsD.ts）。
+      (hasAutoBattleEntryEachTurnNote(card.cardId) && !ownAutoBattleEntryNegated(state, playerId, card)) ||
+      earthForceRequiresBattleEntry(state) ||
+      (emperorCurse && isSmallUnit(state.definitions, card)) ||
+      highwayPlanRequiresBattleEntry(state, card.cardId) ||
+      // RS-557 ビンボーガミ【札束の誘惑】（rules/legend1/set8NamedEffectsB.ts）。
+      set8BRequiresBattleEntry(state, playerId, card) ||
+      // RK-247 仮面ライダーネガ電王【不敵な挑発】（特徴「警察」を持つユニット。rules/rk/rk12Fields.ts）。
+      rk12RequiresBattleEntry(state, rk12UnitFeatures(state, playerId, card)) ||
+      // RK-308 リュウタロス（2nd）の※（敵軍バトルエリアにユニットがあれば。rules/rk/rk15Fields.ts）。
+      rk15RequiresBattleEntry(state, playerId, card) ||
+      // XG5-059 仮面ライダーカリス【暴走する本能】（手札が1枚以下のとき。rules/xg5/xg5Fields.ts）。
+      xg5RequiresBattleEntry(state, playerId, card) ||
+      // XG2-068 リュウタロス【憑依】で重ねたユニットが敵軍バトルエリアにある（rules/xg2/xg2Fields.ts）。
+      xg2RequiresBattleEntry(state, playerId, card)
+    ) {
       mandatory.push(card);
     }
   }
 
   return mandatory;
+}
+
+/**
+ * RS-216 暴走皇帝エグゾス【大宇宙ハイウェイ計画】: これが自軍エリアにある間、特徴「車両」を持つすべてのユニットは、
+ * 毎ターン、可能ならバトルエリアに出る（敵軍の車両ユニットも対象）。
+ */
+function highwayPlanRequiresBattleEntry(state: GameState, cardId: string): boolean {
+  const def = getDefinition(state.definitions, cardId);
+  if (def?.type !== "unit" || !(def.features ?? []).includes("車両")) return false;
+  return (["player1", "player2"] as const).some((pid) => {
+    const p = state.players[pid];
+    return [...p.rush, ...p.battle].some((c) => c.cardId === "RS-216");
+  });
 }
 
 export function mustEnterBattleBeforePhaseEnd(

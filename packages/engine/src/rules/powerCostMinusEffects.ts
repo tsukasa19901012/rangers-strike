@@ -7,6 +7,7 @@ import {
   getDefinition,
   isSmallUnit,
   isUnit,
+  unitSizeOf,
 } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { startSelectUnitChoice } from "./pendingChoices";
@@ -38,7 +39,7 @@ export function collectPowerCostMinusUnitIds(
       const def = getDefinition(state.definitions, card.cardId);
       if (!def || !isUnit(def)) continue;
       if (!matchesPowerCostMinus(state.definitions, card.cardId)) continue;
-      if (options.size && def.size !== options.size) continue;
+      if (options.size && unitSizeOf(state.definitions, card) !== options.size) continue;
       if (effectiveBp(state, targetPlayerId, card) > maxBp) continue;
       ids.push(card.instanceId);
     }
@@ -55,14 +56,18 @@ export function tryStartDestroyPowerCostMinusChoice(
   options: {
     effectId: string;
     enemyOnly?: boolean;
+    /** 「ユニットを1体選び」— 敵軍に限らず自軍のユニットも候補にする（RS-278【バイソンロッド】）。 */
+    anyOwner?: boolean;
     size?: UnitSize;
     optional?: boolean;
   },
 ): GameState | null {
-  const targetPlayerId = options.enemyOnly === false ? playerId : opponent(playerId);
-  const targets = collectPowerCostMinusUnitIds(state, targetPlayerId, {
-    size: options.size,
-  });
+  const targetPlayerIds: PlayerId[] = options.anyOwner
+    ? [playerId, opponent(playerId)]
+    : [options.enemyOnly === false ? playerId : opponent(playerId)];
+  const targets = targetPlayerIds.flatMap((targetPlayerId) =>
+    collectPowerCostMinusUnitIds(state, targetPlayerId, { size: options.size }),
+  );
   if (targets.length === 0) return null;
 
   return startSelectUnitChoice(state, {
@@ -96,7 +101,7 @@ export function isEnemySmallPowerCostMinus(
     return (
       !!def &&
       isUnit(def) &&
-      isSmallUnit(state.definitions, card.cardId) &&
+      isSmallUnit(state.definitions, card) &&
       matchesPowerCostMinus(state.definitions, card.cardId)
     );
   }

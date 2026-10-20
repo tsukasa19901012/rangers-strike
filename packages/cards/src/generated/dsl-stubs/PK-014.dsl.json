@@ -4,7 +4,7 @@
   "name": "仮面ライダーキバEF",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "PR",
   "expansion": "legend1",
   "powerCost": "6+",
   "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【モンスターフィーバー】自軍ターン中、これがバトルエリアに出るとき、自分の手札から特徴「魔皇力」を持つ、追加条件を持たないSユニットのカードを1枚選び相手に見せてもよい。そうしたとき、そのユニットの効果名を持つ効果を、このユニットの効果として発動する。",
@@ -45,11 +45,11 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_rush_ma_chikara_s_on_battle",
+          "keyword": "rk15::RK-314::monster_fever",
           "duration": "turn"
         }
       ]

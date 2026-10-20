@@ -15,13 +15,13 @@
       "name": "Zブリンガーアタック",
       "text": "これにライドしているユニットがアタックするとき、敵軍ユニットのBPをカードに表記された本来の値としてバトルする。",
       "trigger": {
-        "type": "on_attack"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-182::zburingaataku",
-          "duration": "turn"
+          "keyword": "rk9::RK-182::z_bringer_attack",
+          "duration": "permanent"
         }
       ],
       "optional": false

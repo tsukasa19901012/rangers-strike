@@ -40,10 +40,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_if_no_ride_end_turn",
+          "keyword": "rk5::RK-094::bike_unit",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "unnamedRules": [

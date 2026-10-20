@@ -4,7 +4,7 @@
   "name": "仮面ライダーヘラクス",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 3,
   "text": "【アバランチクラッシュ】敵軍Sユニットの数が自軍Sユニットの数より3体以上多いとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る。",
@@ -29,7 +29,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-235::abaranchikurashu",
+          "keyword": "rk12::RK-235::avalanche_crash",
           "duration": "turn"
         }
       ],

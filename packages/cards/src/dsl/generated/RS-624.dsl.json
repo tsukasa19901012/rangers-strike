@@ -4,7 +4,7 @@
   "name": "メガウインガー・ファイターモード",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "6+",
   "text": "【ウインガーキャノン】 自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアのユニットが4体なら、次の効果を発動できる⇒敵軍バトルエリアの追加条件を持たないユニットをすべて持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
@@ -27,11 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "grant_effect_tankoregabatoruerianitatokibatoruerianoyunitoga4narano",
+          "keyword": "set9a::RS-624::winger_cannon",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

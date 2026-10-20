@@ -10,9 +10,12 @@
  *  - senko_sosa                   : 数字宣言→山札下公開→一致で手札（RK-135 等）
  *  - extend_rider_drop            : 指定ビークルからのコンビで本来 BP 8000 以下の敵をパワー送り（RK-301 等）
  */
+import { recordReveal } from "./revealNotice";
+import { openImaginPowerChoice } from "./errataCardEffects";
+import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../dsl/grantKeyword";
-import { cardName, getDefinition, parsePowerCost } from "../core/catalog";
+import { cardCategories, cardName, getDefinition, parsePowerCost, unitSizeOf } from "../core/catalog";
 import { opponent, updatePlayer } from "../core/helpers";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import { openEffectChoice } from "./pendingChoices";
@@ -22,7 +25,7 @@ function enemyStackUnits(state: GameState, playerId: PlayerId) {
   const enemy = state.players[opponent(playerId)];
   return [...enemy.battle, ...enemy.rush].filter((c) => {
     const d = getDefinition(state.definitions, c.cardId);
-    return d?.type === "unit" && d.size === "S";
+    return d?.type === "unit" && unitSizeOf(state.definitions, c) === "S";
   });
 }
 
@@ -44,6 +47,11 @@ function hasPowerOneTwoThree(state: GameState, playerId: PlayerId): boolean {
 
 // ---- RK-065 系: OT コマンドを N ホールド → SP 付与 ----
 
+function commandIsOt(state: GameState, cardId: string): boolean {
+  const def = getDefinition(state.definitions, cardId);
+  return !!def && cardCategories(def).includes("OT");
+}
+
 const HOLD_SP_RE = /^hold_(\d+)_ot_commands_then_sp(\d+)$/;
 
 function beginHoldOtCommandsThenSp(
@@ -53,8 +61,12 @@ function beginHoldOtCommandsThenSp(
 ): GameState | null {
   const selfId = ctx.triggerSourceInstanceId;
   if (!selfId) return null;
+  // 「自軍ターン中、…OTの自軍コマンドを3つホールドしてもよい」（RK-065 atwiki/page-163）— OT のリリース状態のコマンドだけ。
+  if (state.activePlayer !== ctx.playerId) return null;
   const player = state.players[ctx.playerId];
-  const released = player.command.filter((c) => !c.commandHeld).map((c) => c.instanceId);
+  const released = player.command
+    .filter((c) => !c.commandHeld && commandIsOt(state, c.cardId))
+    .map((c) => c.instanceId);
   if (released.length < holdCount) return null;
   return openEffectChoice(state, {
     playerId: ctx.playerId,
@@ -103,7 +115,7 @@ function beginRiderKickSendPower(state: GameState, ctx: GrantKeywordContext): Ga
   const enemy = state.players[opponent(ctx.playerId)];
   const targets = enemy.battle.filter((c) => {
     const d = getDefinition(state.definitions, c.cardId);
-    return d?.type === "unit" && d.size === "S";
+    return d?.type === "unit" && unitSizeOf(state.definitions, c) === "S";
   });
   if (targets.length === 0) return null;
   return openEffectChoice(state, {
@@ -177,22 +189,40 @@ export function resolveSenkoSosa(
   const def = getDefinition(state.definitions, bottom.cardId);
   const digit = parsePowerCost(def?.powerCost);
   const revealedName = cardName(state.definitions, bottom.cardId);
-  if (digit === declared) {
-    return {
-      ...state,
-      ...updatePlayer(state, pending.playerId, {
-        ...player,
-        deck: rest,
-        hand: [...player.hand, bottom],
-      }),
-      log: [...state.log, `潜行捜索: ${revealedName} を公開（宣言 ${declared}）→ 手札へ`],
-    };
-  }
-  return {
-    ...state,
-    ...updatePlayer(state, pending.playerId, { ...player, deck: [bottom, ...rest] }),
-    log: [...state.log, `潜行捜索: ${revealedName} を公開（宣言 ${declared}）→ 山札の下へ`],
-  };
+  const matched = digit === declared;
+  const moved: GameState = matched
+    ? {
+        ...state,
+        ...updatePlayer(state, pending.playerId, {
+          ...player,
+          deck: rest,
+          hand: [...player.hand, bottom],
+        }),
+        log: [...state.log, `潜行捜索: ${revealedName} を公開（宣言 ${declared}）→ 手札へ`],
+      }
+    : // 違えば山札の下に戻す（山札の並びは変わらない。atwiki/page-632「それ以外なら山札の下に戻す」）。
+      {
+        ...state,
+        ...updatePlayer(state, pending.playerId, { ...player, deck: [...rest, bottom] }),
+        log: [...state.log, `潜行捜索: ${revealedName} を公開（宣言 ${declared}）→ 山札の下へ`],
+      };
+  // オモテにしたカードは公開情報。両プレイヤーの UI が見られるよう記録する。
+  return recordReveal(moved, {
+    playerId: pending.playerId,
+    ownerId: pending.playerId,
+    sourceCardId: pending.sourceCardId,
+    effectLabel: "潜行捜索",
+    from: "deck_bottom",
+    declaredNumber: declared,
+    matched,
+    cards: [
+      {
+        instanceId: bottom.instanceId,
+        cardId: bottom.cardId,
+        destination: matched ? "hand" : "deck_bottom",
+      },
+    ],
+  });
 }
 
 // ---- RK-301 系: ライドされている指定ビークルからのコンビで本来 BP 8000 以下の敵をパワー送り ----
@@ -365,7 +395,7 @@ export function applyTempDiscardAtTurnEnd(
 
 // ---- RK-142 系: パワーゾーンでオモテ向きの常駐が、味方仮面ライダー進入に反応 ----
 
-const POWER_FACEUP_RAIDA_KEYWORD = "power_faceup_raida_enter_battle";
+const POWER_FACEUP_RAIDA_KEYWORD = FEATURE_KEYWORDS.powerFaceupKamenRiderEnterBattle;
 
 function cardHasKeyword(cardId: string, keyword: string): boolean {
   const doc = getCardDslDocument(cardId);
@@ -489,17 +519,6 @@ export function tryPowerFaceupRaidaOnAllyEnter(
   const powerIds = faceUpPowerFaceupRaidaIds(state, playerId);
   if (powerIds.length === 0) return state;
 
-  return (
-    openEffectChoice(state, {
-      playerId,
-      effectId: "power_faceup_sp1_grant",
-      sourceCardId: "RK-142",
-      sourceInstanceId: entering.instanceId,
-      phasePlayerId,
-      kind: "select_power",
-      validInstanceIds: powerIds,
-      selectCount: 1,
-      optional: true,
-    }) ?? state
-  );
+  // RK-142〜145 は各カードの効果（SP1 / 送る / BP+3000 / 撃破）。RK-168 電王CF は捨札にせずに発動。
+  return openImaginPowerChoice(state, playerId, entering, phasePlayerId, powerIds) ?? state;
 }

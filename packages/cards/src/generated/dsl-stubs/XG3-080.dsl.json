@@ -7,7 +7,7 @@
     "WB",
     "DA"
   ],
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※モーフ 【ジョーカーグレネイト】敵軍バトルエリアから、Sユニットを1体選び撃破してもよい。そうしたとき、撃破したユニットのSPが1以上だったなら、相手に1点ダメージを与える。",
@@ -45,11 +45,12 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg3::XG3-080::joker_grenade",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

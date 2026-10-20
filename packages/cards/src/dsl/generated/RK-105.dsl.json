@@ -4,7 +4,7 @@
   "name": "仮面ライダーアギトSF",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "※これはライド中、BP+1000される。 【ハルバードスピン】敵軍ユニットを、必要パワーの数字の合計が3になるまで好きな数選び、持ち主の山札に戻してシャッフルしてもよい。",
@@ -43,11 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_enemy_power_sum_shuffle::3",
+          "keyword": "rk5::RK-105::halberd_spin",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

@@ -4,7 +4,7 @@
   "name": "蜂女",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 2,
   "text": "【催眠音波】これが自軍エリアにある間、自分も相手も次の制限を受ける⇒自分自身のラッシュフェイズを終えるとき、そのターン中にラッシュした自分自身のSユニットをホールドするかしないかを選ぶ。ホールドしないことを選んだとき、そのユニットはそのターン中、バトルエリアに出られない。",
@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-177::nami",
+          "keyword": "rk9::RK-177::hypnotic_wave",
           "duration": "permanent"
         }
       ],

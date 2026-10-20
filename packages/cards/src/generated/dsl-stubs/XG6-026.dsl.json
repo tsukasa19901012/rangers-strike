@@ -4,7 +4,7 @@
   "name": "グランディオン",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "7-",
   "text": "※レジスト ※リードMA 【グランディオンイレイザー】自軍コマンドを1つ選び捨札にしてもよい。そうしたとき、敵軍コマンドを1つ選び、持ち主のパワーゾーンにダメージにして置く。",
@@ -58,11 +58,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-026::gurandeionireiza",
+          "keyword": "xg6::XG6-026::eraser",
           "duration": "permanent"
         }
       ]

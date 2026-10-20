@@ -4,7 +4,7 @@
   "name": "仮面ライダーネガ電王",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": "7-",
   "text": "※これが撃破されて捨札になったとき、自軍捨札から｢ネガタロス｣のカードを1枚選びラッシュエリアに出す。 ※これは自軍ユニットがホールドされたターンにしかバトルエリアに出られない。 【不敵な挑発】これが自軍エリアにある間、次の効果を発動する⇒特徴「警察」を持つユニットは、可能なら毎ターンバトルエリアに出る。",
@@ -63,7 +63,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_turn_only_entry",
+          "keyword": "rk12::RK-247::hold_turn_entry",
           "duration": "permanent"
         }
       ]
@@ -78,7 +78,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-247::na_e4b88d",
+          "keyword": "rk12::RK-247::provocation",
           "duration": "permanent"
         }
       ],

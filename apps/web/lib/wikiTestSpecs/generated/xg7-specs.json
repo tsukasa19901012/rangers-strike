@@ -10,8 +10,8 @@
       "【レンジャーキー】"
     ],
     "expectedDslKeywords": [
-      "on_rush_swap_from_power_except_named::ゴーカイピンク",
-      "effect_card::XG7-001::renjaki"
+      "xg7::XG7-001::gokai_swap",
+      "xg7::XG7-001::ranger_key"
     ],
     "bp": 1000,
     "sp": null,
@@ -28,8 +28,8 @@
       "【ゴーカイガン】"
     ],
     "expectedDslKeywords": [
-      "on_rush_swap_from_power_except_named::ゴーカイグリーン",
-      "effect_card::XG7-002::gokaigan"
+      "xg7::XG7-002::gokai_swap",
+      "xg7::XG7-002::gokai_gun"
     ],
     "bp": 3000,
     "sp": null,
@@ -46,7 +46,8 @@
       "【赤きレジェンド】"
     ],
     "expectedDslKeywords": [
-      "on_rush_swap_from_power_except_named::ゴーカイレッド"
+      "xg7::XG7-003::gokai_swap",
+      "xg7::XG7-003::red_legend"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -63,8 +64,9 @@
       "【ゴーカイサーベル】"
     ],
     "expectedDslKeywords": [
-      "on_rush_swap_from_power_except_named::ゴーカイブルー",
-      "effect_card::XG7-004::gokaisaberu"
+      "xg7::XG7-004::gokai_swap",
+      "SP1",
+      "xg7::XG7-004::gokai_saber"
     ],
     "bp": 2000,
     "sp": "special",
@@ -81,8 +83,8 @@
       "【モバイレーツ】"
     ],
     "expectedDslKeywords": [
-      "on_rush_swap_from_power_except_named::ゴーカイイエロー",
-      "effect_card::XG7-005::mobairetsu"
+      "xg7::XG7-005::gokai_swap",
+      "xg7::XG7-005::mobirates"
     ],
     "bp": 2000,
     "sp": null,
@@ -119,8 +121,8 @@
     "expectedDslKeywords": [
       "cross1",
       "call_WB",
-      "note_card::XG7-007::koreganiaruwotsu",
-      "effect_card::XG7-007::ryugekikenken"
+      "xg7::XG7-007::dino_discard_aura",
+      "xg7::XG7-007::ryugeki_juso"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -142,7 +144,7 @@
     "expectedDslKeywords": [
       "cross1",
       "note_card::XG7-008::korehamanokomand",
-      "effect_card::XG7-008::asuno"
+      "xg7::XG7-008::earth_warrior"
     ],
     "bp": 5000,
     "sp": "special",
@@ -159,8 +161,8 @@
       "【受け継いだもの】"
     ],
     "expectedDslKeywords": [
-      "note_card::XG7-009::koreworashushita",
-      "effect_card::XG7-009::keidamono"
+      "xg7::XG7-009::v_commander",
+      "xg7::XG7-009::inherited"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -196,7 +198,7 @@
     ],
     "expectedDslKeywords": [
       "wing",
-      "effect_card::XG7-011::jairoken"
+      "xg7::XG7-011::gyro_shuriken"
     ],
     "bp": 3000,
     "sp": null,
@@ -215,7 +217,7 @@
     "expectedDslKeywords": [
       "cross1",
       "alias_baku_teiranosaurusu",
-      "effect_card::XG7-012::burudainogatsu"
+      "xg7::XG7-012::dino_guts"
     ],
     "bp": 5000,
     "sp": null,
@@ -252,7 +254,8 @@
     "expectedDslKeywords": [
       "call_MA",
       "alias_majifuenikusu",
-      "SP1"
+      "SP1",
+      "xg7::XG7-014::jiruma_majiro"
     ],
     "bp": 2000,
     "sp": "special",
@@ -270,7 +273,7 @@
     ],
     "expectedDslKeywords": [
       "taxis_ET",
-      "effect_card::XG7-015::boukenjaninare"
+      "xg7::XG7-015::boukenger"
     ],
     "bp": 4000,
     "sp": null,
@@ -292,8 +295,8 @@
     "expectedDslKeywords": [
       "cross1",
       "call_WB",
-      "note_card::XG7-016::lyunitogakerebak",
-      "effect_card::XG7-016::no5"
+      "xg7::XG7-016::geki_red_alias",
+      "xg7::XG7-016::our_road"
     ],
     "bp": 5000,
     "sp": "1/2",
@@ -310,8 +313,8 @@
       "【マッハ全開！】"
     ],
     "expectedDslKeywords": [
-      "can_ride_vehicle_ryo",
-      "effect_card::XG7-017::maha"
+      "can_ride_vehicle_feat_e8bb8ae4b8a1",
+      "xg7::XG7-017::mach_zenkai"
     ],
     "bp": 3000,
     "sp": null,
@@ -329,7 +332,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "effect_card::XG7-018::fxunknowne5bdb1"
+      "xg7::XG7-018::kagemusha"
     ],
     "bp": 4000,
     "sp": "1/3",
@@ -348,7 +351,8 @@
     "expectedDslKeywords": [
       "cross1",
       "wing",
-      "effect_card::XG7-019::sukaikonbibureiku"
+      "xg7::XG7-019::sky_combi",
+      "xg7::XG7-019::sky_combi_wing"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -367,7 +371,7 @@
     "expectedDslKeywords": [
       "cross1",
       "taxis_MA",
-      "effect_card::XG7-020::nikokaitewozanrihikarini"
+      "xg7::XG7-020::shadow"
     ],
     "bp": 3000,
     "sp": null,
@@ -385,7 +389,8 @@
     ],
     "expectedDslKeywords": [
       "cross1",
-      "effect_card::XG7-021::garuzuintoraburu"
+      "SP1",
+      "xg7::XG7-021::girls_in_trouble"
     ],
     "bp": 2000,
     "sp": "special",
@@ -404,7 +409,8 @@
     "expectedDslKeywords": [
       "cross1",
       "alias_majimameidomajifueari",
-      "effect_card::XG7-022::touinkuruiryujon"
+      "SP1",
+      "xg7::XG7-022::twinkle_illusion"
     ],
     "bp": 3000,
     "sp": "special",
@@ -425,7 +431,7 @@
     ],
     "expectedDslKeywords": [
       "breaker",
-      "effect_card::XG7-023::zane5a4a7"
+      "xg7::XG7-023::daidai_saidaizan"
     ],
     "bp": 13000,
     "sp": 1,
@@ -445,7 +451,8 @@
       "【獣力開花】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG7-024::chikarahana"
+      "xg7::XG7-024::chopper_draw",
+      "xg7::XG7-024::bloom"
     ],
     "bp": 6000,
     "sp": null,
@@ -464,8 +471,9 @@
     "expectedDslKeywords": [
       "cross1",
       "wing",
-      "note_card::XG7-025::konoyunitononanb",
-      "effect_card::XG7-025::notsubasa"
+      "xg7::XG7-025::number_reduction",
+      "xg7::XG7-025::wings",
+      "xg7::XG7-025::wings_wing"
     ],
     "bp": 6000,
     "sp": null,
@@ -484,7 +492,7 @@
     "expectedDslKeywords": [
       "cross1",
       "register",
-      "effect_card::XG7-026::randokonbiataku"
+      "xg7::XG7-026::land_combi"
     ],
     "bp": 4000,
     "sp": null,
@@ -520,7 +528,7 @@
     ],
     "expectedDslKeywords": [
       "lead_MA",
-      "effect_card::XG7-028::aruteimetosutoraiku"
+      "xg7::XG7-028::ultimate_strike"
     ],
     "bp": 9000,
     "sp": null,
@@ -539,7 +547,7 @@
     "expectedDslKeywords": [
       "wing",
       "enemy_cannot_attack",
-      "effect_card::XG7-029::aruteimetoguretosutoraik"
+      "xg7::XG7-029::great_strike"
     ],
     "bp": 3000,
     "sp": null,
@@ -559,7 +567,7 @@
       "ウイング、タクス、レジスト、リードのどれかを持つ"
     ],
     "expectedDslKeywords": [
-      "note_card::XG7-030::uingutakusurejis"
+      "xg7::XG7-030::header"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -579,8 +587,7 @@
     ],
     "expectedDslKeywords": [
       "breaker",
-      "note_card::XG7-031::koreniraidoshite",
-      "effect_card::XG7-031::saikuronataku"
+      "xg7::XG7-031::cyclone"
     ],
     "sp": null,
     "size": "S"
@@ -598,7 +605,9 @@
     "expectedDslKeywords": [
       "cross1",
       "breaker",
-      "dual_name_alias::仮面ライダー1号_or_仮面ライダー2号"
+      "dual_name_alias::仮面ライダー1号_or_仮面ライダー2号",
+      "SP1",
+      "xg7::XG7-032::double_kick"
     ],
     "bp": 6000,
     "sp": "1/5",
@@ -617,7 +626,7 @@
     "expectedDslKeywords": [
       "cross1",
       "register",
-      "effect_card::XG7-033::notenitamono"
+      "xg7::XG7-033::revenge"
     ],
     "bp": 5000,
     "sp": "1/5",
@@ -636,7 +645,7 @@
     "expectedDslKeywords": [
       "cross1",
       "can_ride_vehicle",
-      "effect_card::XG7-034::gabugabugabu"
+      "xg7::XG7-034::heaven_earth_man"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -653,7 +662,7 @@
       "【結束するデルザー改造魔人】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG7-035::suruderuzama"
+      "xg7::XG7-035::delzer"
     ],
     "bp": 3000,
     "sp": null,
@@ -671,7 +680,7 @@
     ],
     "expectedDslKeywords": [
       "dual_name_alias::仮面ライダー龍騎_or_仮面ライダーナイト",
-      "effect_card::XG7-036::wanakerebakirenai"
+      "xg7::XG7-036::declare"
     ],
     "bp": 4000,
     "sp": "special",
@@ -689,7 +698,8 @@
     ],
     "expectedDslKeywords": [
       "cross1",
-      "effect_card::XG7-037::toe7b485"
+      "xg7::XG7-037::kaixa_damage",
+      "xg7::XG7-037::red_gold"
     ],
     "bp": 5000,
     "sp": null,
@@ -708,7 +718,7 @@
     "expectedDslKeywords": [
       "cross1",
       "can_ride_vehicle",
-      "effect_card::XG7-038::raitoninguburasutobaning"
+      "xg7::XG7-038::blast"
     ],
     "bp": 3000,
     "sp": null,
@@ -746,7 +756,7 @@
     ],
     "expectedDslKeywords": [
       "cross1",
-      "effect_card::XG7-040::daburuakushon"
+      "xg7::XG7-040::double_action"
     ],
     "bp": 6000,
     "sp": "1/4",
@@ -763,8 +773,8 @@
       "【黄金の希望】"
     ],
     "expectedDslKeywords": [
-      "note_card::XG7-041::koregaerianiarug",
-      "effect_card::XG7-041::no9"
+      "xg7::XG7-041::exile_at_end",
+      "xg7::XG7-041::golden_hope"
     ],
     "bp": 9000,
     "sp": 1,
@@ -786,7 +796,7 @@
     "expectedDslKeywords": [
       "cross1",
       "dual_name_alias::仮面ライダーディケイド_or_仮面ライダークウガ",
-      "effect_card::XG7-042::raidano"
+      "xg7::XG7-042::rider_war"
     ],
     "bp": 4000,
     "sp": null,
@@ -805,8 +815,8 @@
     "expectedDslKeywords": [
       "cross1",
       "not_selectable_except_attack",
-      "note_card::XG7-043::korenoyunitogaar",
-      "effect_card::XG7-043::noe59cb0"
+      "xg7::XG7-043::static",
+      "xg7::XG7-043::hell_brothers"
     ],
     "bp": 7000,
     "sp": 1,
@@ -842,7 +852,8 @@
       "※これが自軍コマンドゾーンにある間、自軍ラッシュ"
     ],
     "expectedDslKeywords": [
-      "note_card::XG7-045::koregakomandozon"
+      "note_card::XG7-045::koregakomandozon",
+      "xg7::XG7-045::lost_search"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -863,7 +874,7 @@
     "expectedDslKeywords": [
       "morph",
       "register",
-      "effect_card::XG7-046::goribagon"
+      "xg7::XG7-046::goribagon"
     ],
     "bp": 4000,
     "sp": null,
@@ -881,7 +892,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "effect_card::XG7-047::kamakirisodo"
+      "xg7::XG7-047::kamakiri_sword"
     ],
     "bp": 500,
     "sp": null,
@@ -917,8 +928,8 @@
     ],
     "expectedDslKeywords": [
       "deck_unlimited",
-      "note_card::XG7-049::korehakadonigata",
-      "effect_card::XG7-049::fxunknown3"
+      "xg7::XG7-049::gata_count",
+      "xg7::XG7-049::split"
     ],
     "bp": 500,
     "sp": null,
@@ -960,7 +971,7 @@
       "morph",
       "auto_battle_entry_each_turn",
       "no_attack_from_bp3000",
-      "effect_card::XG7-051::raiodeiasu"
+      "xg7::XG7-051::lion"
     ],
     "bp": 2000,
     "sp": "1/2",
@@ -979,8 +990,8 @@
     "expectedDslKeywords": [
       "breaker",
       "wing",
-      "note_card::XG7-052::korehauingudeata",
-      "effect_card::XG7-052::tajasupina"
+      "xg7::XG7-052::wing_bonus",
+      "xg7::XG7-052::taja_spinner"
     ],
     "bp": 4500,
     "sp": "1/2",
@@ -999,8 +1010,8 @@
     "expectedDslKeywords": [
       "morph",
       "lead_ET",
-      "note_card::XG7-053::korehatono1nitsu",
-      "effect_card::XG7-053::mizukarano"
+      "xg7::XG7-053::hand_count",
+      "xg7::XG7-053::assault"
     ],
     "bp": 500,
     "sp": null,
@@ -1017,7 +1028,7 @@
       "次の効果から1つ選び発動する⇒ ◎自分の手札から"
     ],
     "expectedDslKeywords": [
-      "note_card::XG7-054::nokara1tsubisuru"
+      "xg7::XG7-054::ooo_driver"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1038,7 +1049,7 @@
     "expectedDslKeywords": [
       "note_card::XG7-055::korehaeriamataha",
       "lead_ET",
-      "effect_card::XG7-055::shinnokaze"
+      "xg7::XG7-055::cyclone_gale"
     ],
     "bp": 3000,
     "sp": null,
@@ -1056,7 +1067,7 @@
     ],
     "expectedDslKeywords": [
       "note_card::XG7-056::korehaeriamataha",
-      "effect_card::XG7-056::ijinaiwa"
+      "xg7::XG7-056::luna"
     ],
     "bp": 3000,
     "sp": null,
@@ -1074,7 +1085,8 @@
     ],
     "expectedDslKeywords": [
       "note_card::XG7-057::korehaeriamataha",
-      "effect_card::XG7-057::taifuaiyagaru"
+      "xg7::XG7-057::fire_girl_sp",
+      "xg7::XG7-057::fire_girl_exile"
     ],
     "bp": 3000,
     "sp": "special",
@@ -1092,7 +1104,7 @@
     ],
     "expectedDslKeywords": [
       "note_card::XG7-058::korehaeriamataha",
-      "effect_card::XG7-058::nomachobodei"
+      "xg7::XG7-058::macho_body"
     ],
     "bp": 3000,
     "sp": null,
@@ -1110,7 +1122,7 @@
     ],
     "expectedDslKeywords": [
       "note_card::XG7-059::korehaeriamataha",
-      "effect_card::XG7-059::gemusutato"
+      "xg7::XG7-059::game_start"
     ],
     "bp": 3000,
     "sp": null,
@@ -1130,7 +1142,7 @@
       "【射手座のスターピース】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG7-060::nosutapisu"
+      "xg7::XG7-060::sagittarius"
     ],
     "bp": 7000,
     "sp": null,
@@ -1150,7 +1162,7 @@
       "【蠍座のスターピース】"
     ],
     "expectedDslKeywords": [
-      "effect_card::XG7-061::nosutapisue8a08d"
+      "xg7::XG7-061::scorpio"
     ],
     "bp": 7000,
     "sp": null,
@@ -1165,6 +1177,9 @@
     "category": "ET",
     "textSnippets": [
       "【シャーブラシ】"
+    ],
+    "expectedDslKeywords": [
+      "xg7::XG7-062::shark_brush"
     ],
     "bp": 3000,
     "sp": null,
@@ -1182,7 +1197,7 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_deploy_named_to_rush::シャークラー",
-      "effect_card::XG7-063::kobunzame"
+      "xg7::XG7-063::kobunzame"
     ],
     "bp": 5500,
     "sp": "1/5",
@@ -1200,7 +1215,7 @@
     ],
     "expectedDslKeywords": [
       "scrum",
-      "effect_card::XG7-064::riborubakug3"
+      "xg7::XG7-064::revolver"
     ],
     "bp": 3000,
     "sp": null,
@@ -1218,7 +1233,7 @@
     ],
     "expectedDslKeywords": [
       "scrum",
-      "effect_card::XG7-065::toraikyanon"
+      "xg7::XG7-065::tri_cannon"
     ],
     "bp": 2000,
     "sp": null,
@@ -1236,7 +1251,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "effect_card::XG7-066::haidoranda"
+      "xg7::XG7-066::hydrander"
     ],
     "bp": 2000,
     "sp": null,
@@ -1255,7 +1270,7 @@
     "expectedDslKeywords": [
       "register",
       "note_card::XG7-067::koregaririsudeko",
-      "effect_card::XG7-067::hebisaikuron"
+      "SP1"
     ],
     "bp": 4000,
     "sp": "special",
@@ -1273,10 +1288,10 @@
     ],
     "expectedDslKeywords": [
       "breaker",
-      "note_card::XG7-068::kurosu2",
+      "cross2",
       "chase",
       "can_ride_vehicle",
-      "effect_card::XG7-068::fxunknown13"
+      "xg7::XG7-068::jouchaku"
     ],
     "bp": 7000,
     "sp": 1,

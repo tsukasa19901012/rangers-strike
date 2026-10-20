@@ -4,7 +4,7 @@
   "name": "ガンツ先生",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 2,
   "text": "※これは自軍ターン中、バトルエリアに出られない。 【採点】これが自軍エリアにある間、自軍バトルフェイズ中、次の効果を発動できる⇒Sユニットを1体選んでから、自軍コマンドを1つホールドする。このターン、選んだユニットの必要パワーの数字は、ホールドした自軍コマンドの必要パワーの数字になる。",
@@ -35,13 +35,12 @@
       "name": "採点",
       "text": "これが自軍エリアにある間、自軍バトルフェイズ中、次の効果を発動できる⇒Sユニットを1体選んでから、自軍コマンドを1つホールドする。このターン、選んだユニットの必要パワーの数字は、ホールドした自軍コマンドの必要パワーの数字になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-099::fxunknowne68ea1",
+          "keyword": "xg1::XG1-099::saiten",
           "duration": "permanent"
         }
       ]

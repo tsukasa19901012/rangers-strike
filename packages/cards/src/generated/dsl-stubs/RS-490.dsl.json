@@ -4,7 +4,7 @@
   "name": "三の槍マンマルバ幼体",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "【予言】これが自軍エリアにある間、敵軍ターン中、敵軍ユニットがラッシュされたとき、自軍ユニットの数が敵軍ユニットの数より少なければ、次の効果を発動できる⇒自軍山札の上から1枚オモテにする。オモテにしたカードが、ラッシュされた敵軍ユニットと同じ特徴を1つ以上持つユニットカードなら、自軍ラッシュエリアに出す。（ただし追加条件は満たすこと）。出せなかった場合は、捨札にする。",
@@ -28,7 +28,7 @@
         {
           "type": "grant_keyword",
           "keyword": "effect_card::RS-490::fxunknowne4ba88",
-          "duration": "permanent"
+          "duration": "turn"
         }
       ],
       "optional": true

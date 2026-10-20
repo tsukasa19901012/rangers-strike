@@ -4,7 +4,7 @@
   "name": "仮面ライダーW・CM",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "PR",
   "expansion": "legend1",
   "powerCost": "2+",
   "text": "※モーフ ※レジスト 【メタルシャフト】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからホールド状態のＳユニットを１体選び、持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする。",
@@ -60,7 +60,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-014::metarushafuto",
+          "keyword": "promo::XP-014::metal_shaft",
           "duration": "turn"
         }
       ]

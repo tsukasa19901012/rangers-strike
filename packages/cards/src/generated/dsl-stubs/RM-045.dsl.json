@@ -4,7 +4,7 @@
   "name": "ガンギブソン",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※このユニットからコンビネーションする特徴「メカ」を持つSユニットは、ライドオフしなくてもＲＣの効果を発動できる。 【ホーミングブリッド】敵軍Sユニットの中から1体を、相手に選ばせてもよい（相手が選ぶたび、まだ相手に選ばれてない敵軍Sユニットがあれば、その中から選びなおさせてもよい。ただし、自軍コマンドを1つホールドすること）。その後、相手が最終的に選んだ1体を撃破する。",
@@ -21,14 +21,14 @@
       "id": "note_e280bbe38193e381aee383a6",
       "text": "※このユニットからコンビネーションする特徴「メカ」を持つSユニットは、ライドオフしなくてもＲＣの効果を発動できる。",
       "trigger": {
-        "type": "riding_combo"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-045::note_e280bbe38193e381aee383a6",
-          "duration": "turn"
+          "keyword": "rm3::RM-045::gun_gibson",
+          "duration": "permanent"
         }
       ]
     },
@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-045::hominguburido",
+          "keyword": "rm3::RM-045::homing_bullet",
           "duration": "turn"
         }
       ]

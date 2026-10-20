@@ -29,7 +29,8 @@ describe("unitEffectCatalog wiring", () => {
   });
 
   it("lists conditional battle-entry effects excluding super_shield", () => {
-    expect(conditional.map((entry) => entry.effectId).sort()).toEqual(
+    // PR-005・PR-007 は RS-042・RS-126 の再録で、同じ効果 ID を持つ。
+    expect([...new Set(conditional.map((entry) => entry.effectId))].sort()).toEqual(
       [...IMPLEMENTED_CONDITIONAL_EFFECT_IDS].sort(),
     );
     expect(conditional.some((entry) => entry.effectId === "super_shield")).toBe(false);

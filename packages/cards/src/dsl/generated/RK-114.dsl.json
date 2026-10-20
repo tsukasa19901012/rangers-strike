@@ -15,16 +15,16 @@
       "name": "デッドエンド",
       "text": "自軍ターン中、これがバトルエリアに出たとき、ライドされていない敵軍Sビークルを1体選び、捨札にしてもよい。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enter_battle_destroy_enemy_unridden_s_vehicle",
-          "duration": "turn"
+          "keyword": "rk6::RK-114::dead_end",
+          "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

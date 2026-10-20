@@ -7,7 +7,7 @@
     "WB",
     "MA"
   ],
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 2,
   "text": "※これをラッシュしたとき、ライドされていない自軍ビークルを1体選び、これの下に重ねてもよい。 【二刃一閃】自分も相手も次のようにする⇒自分自身のエリアに同名ユニットが2体以上あれば、1体選びゲームから除外する",
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-025::fxunknowne4ba8c",
+          "keyword": "xg2::XG2-025::nijin_issen",
           "duration": "permanent"
         }
       ]

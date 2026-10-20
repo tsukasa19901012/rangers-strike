@@ -4,7 +4,7 @@
   "name": "シンケンレッド（志葉 薫）",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※これはラッシュしたターンにバトルエリアに出られない。 【封印のモヂカラ】 自軍ターン中、これがバトルエリアに出たとき、自分の手札を1枚選び相手に見せてもよい。そうしたとき、見せたカードの必要パワーの数字と同じ必要パワーの数字を持つ、追加条件を持たない敵軍ユニットを1体選び、持ち主の山札の下に戻す。（選んだユニットがDAを持つなら、山札の下に戻すかわりにゲームから除外する）",
@@ -38,11 +38,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-033::nomojikara",
+          "keyword": "xg5::XG5-033::fuuin",
           "duration": "turn"
         }
       ]

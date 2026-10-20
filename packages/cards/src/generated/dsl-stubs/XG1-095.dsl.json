@@ -7,7 +7,7 @@
     "WB",
     "ET"
   ],
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※レジスト 【カブトランサー】これがバトルで敵軍ユニットを撃破したとき、これが撃破したユニットと同じ特徴を1つ以上持つ敵軍コマンドを1つ選び捨札にしてもよい。（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
@@ -43,11 +43,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-095::kabutoransa",
+          "keyword": "xg1::XG1-095::kabuto_lancer",
           "duration": "turn"
         }
       ]

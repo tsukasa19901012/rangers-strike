@@ -4,7 +4,7 @@
   "name": "仮面ライダーW・CJ",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 2,
   "text": "※モーフ 【メモリチェンジ】カード名に「CJ」を含まない、モーフと特徴「ダブルドライバー」を持つユニットカードを自軍コマンドゾーンから1枚選び、これと置き換えてもよい。このとき出したユニットは、ライドオフした直後のユニットとして扱い、RCの効果を持っていれば、その効果を発動する。",
@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-036::memorichienji",
-          "duration": "turn"
+          "keyword": "xg6::XG6-036::memory_change",
+          "duration": "permanent"
         }
       ]
     }

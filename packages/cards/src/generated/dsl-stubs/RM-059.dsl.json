@@ -21,13 +21,13 @@
       "name": "トランクの中身",
       "text": "これが自軍ラッシュエリアにある間、WBを持つ自軍Sユニットがバトルエリアに出たとき、常駐している自軍オペレーションに重ねたカードがあれば、その中から1枚選び、自分の手札に加えてもよい（ウラ向きのカードはウラ向きのまま選ぶ）。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-059::torankuno",
+          "keyword": "rm3::RM-059::trunk",
           "duration": "permanent"
         }
       ]

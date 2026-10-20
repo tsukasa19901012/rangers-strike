@@ -4,7 +4,7 @@
   "name": "仮面ライダーブレイド",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "【ブレイドブレード】自軍バトルフェイズ中、このユニットからSユニットがコンビネーションするとき、これをホールドして次の効果を発動できる⇒敵軍バトルエリアからSユニットを1体選び撃破する。（コンビネーションしたSユニットが「仮面ライダーディケイド」または「仮面ライダーディエンド」なら、撃破するかわりにゲームから除外する）",
@@ -22,34 +22,13 @@
       "name": "ブレイドブレード",
       "text": "自軍バトルフェイズ中、このユニットからSユニットがコンビネーションするとき、これをホールドして次の効果を発動できる⇒敵軍バトルエリアからSユニットを1体選び撃破する。（コンビネーションしたSユニットが「仮面ライダーディケイド」または「仮面ライダーディエンド」なら、撃破するかわりにゲームから除外する）",
       "trigger": {
-        "type": "nc"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg2::XG2-075::blade_blade",
+          "duration": "permanent"
         }
       ]
     }

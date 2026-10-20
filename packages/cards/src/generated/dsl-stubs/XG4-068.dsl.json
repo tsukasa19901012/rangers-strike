@@ -7,7 +7,7 @@
     "ET",
     "OT"
   ],
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※モーフ 【トリガーマグナム】自軍ターン中、これがバトルエリアに出たとき、必要パワーの数字が3以下の常駐しているオペレーションを1つ選び、持ち主のゾーンに送ってもよい。",
@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-068::torigamagunamu",
+          "keyword": "xg4::XG4-068::magnum",
           "duration": "turn"
         }
       ]

@@ -4,7 +4,7 @@
   "name": "仮面ライダーオーディン",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": "6+",
   "text": "※これが撃破されて捨札になるとき、かわりに自軍ラッシュエリアにある特徴「男」を持つユニット1体を捨札にすれば、これはその場に留まる。 【戦いのリセット】これをラッシュしたとき、次の効果を自分、相手の順に行う⇒自分自身のパワーゾーンのカード枚数を見て、その枚数よりも必要パワーの数字が大きい自分自身のユニットをすべて撃破する。",
@@ -23,16 +23,16 @@
       "id": "note_e280bbe38193e3828ce3818c",
       "text": "※これが撃破されて捨札になるとき、かわりに自軍ラッシュエリアにある特徴「男」を持つユニット1体を捨札にすれば、これはその場に留まる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_substitute_on_destroy_rush_feature::男",
-          "duration": "turn"
+          "keyword": "rk14::RK-286::substitute_male",
+          "duration": "permanent"
         }
       ],
-      "optional": true
+      "optional": false
     },
     {
       "id": "inoriseto",
@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-286::inoriseto",
+          "keyword": "rk14::RK-286::battle_reset",
           "duration": "turn"
         }
       ],

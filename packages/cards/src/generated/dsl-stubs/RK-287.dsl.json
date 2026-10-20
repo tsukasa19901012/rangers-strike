@@ -4,7 +4,7 @@
   "name": "ゴルトフェニックス",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 6,
   "text": "※これは自軍コマンドを1つホールドしなければバトルエリアに出られない。 ※これは特徴「仮面ライダー」を持つユニット以外にアタックする事ができない。 【瞬間の悪夢】 これをラッシュしたとき、敵軍コマンドゾーンから、モーフを持つユニットカードを1枚選び捨札にしてもよい。",
@@ -55,11 +55,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-287::no_e79eac",
+          "keyword": "rk14::RK-287::instant_nightmare",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

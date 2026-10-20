@@ -5,6 +5,7 @@ import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { hasTurnRuleModifier } from "../core/scopedModifiers";
 import { buildLogEntry } from "../log/formatLog";
 import { tryLeaveField } from "./operationCounters";
+import { rk5ImaginContractSuppresses } from "./rk/rk5Fields";
 
 /** RK-242 タッグ等: イマジンの撃破テキスト無効化（将来の常駐効果用）。 */
 export const IMAGIN_DESTROY_ON_ENTER_SUPPRESSED = "imagin_destroy_on_enter_suppressed";
@@ -17,7 +18,11 @@ function isDestroyOnEnterBattleSuppressed(
   state: GameState,
   playerId: PlayerId,
   cardId: string,
+  instanceId: string,
 ): boolean {
+  // RK-088 イマジンとの契約（重ねたユニットが自軍エリアにある間。rules/rk/rk5Fields.ts）。
+  const entering = findInZone(state.players[playerId], "battle", instanceId)?.card;
+  if (entering && rk5ImaginContractSuppresses(state, playerId, entering)) return true;
   const def = getDefinition(state.definitions, cardId);
   if (!def?.features?.includes("イマジン")) return false;
   return hasTurnRuleModifier(
@@ -41,7 +46,7 @@ export function applyDestroyOnEnterBattle(
     return { state, logs: [] };
   }
 
-  if (isDestroyOnEnterBattleSuppressed(state, playerId, found.card.cardId)) {
+  if (isDestroyOnEnterBattleSuppressed(state, playerId, found.card.cardId, instanceId)) {
     return { state, logs: [] };
   }
 

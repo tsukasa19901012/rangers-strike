@@ -13,7 +13,13 @@ describe("returnFusionPartnersFromDiscard", () => {
       player2: {
         battle: [],
         discard: [fusion1, fusion2, inst("RS-053", "f3")],
-        command: [heldWbCommand("c1"), { ...inst("RS-007", "c2"), commandHeld: false }],
+        // ルール: R-ADD-07 — ※ホールド要件の素材は1体ごとに新たにホールドする（RS-009 Q3、R-ERR-RS009）。
+        command: [
+          heldWbCommand("c1"),
+          { ...inst("RS-007", "c2"), commandHeld: false },
+          { ...inst("RS-007", "c3"), commandHeld: false },
+          { ...inst("RS-007", "c4"), commandHeld: false },
+        ],
       },
     });
 

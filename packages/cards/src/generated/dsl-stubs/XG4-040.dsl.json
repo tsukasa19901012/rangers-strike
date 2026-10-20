@@ -7,7 +7,7 @@
     "WB",
     "MA"
   ],
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "6+",
   "text": "合体―ゴセイドラゴン（またはゴセイレッド）＋ゴセイフェニックス（またはゴセイピンク）＋ゴセイスネーク（またはゴセイブラック）＋ゴセイタイガー（またはゴセイイエロー）＋ゴセイシャーク（またはゴセイブルー） ※ウイング ※ブラスト 【天装合体】これをラッシュしたとき、ウイングを持たない敵軍ユニットを1体選び持ち主のパワーゾーンにダメージにして置く。",
@@ -64,7 +64,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-040::fxunknown6",
+          "keyword": "xg4::XG4-040::tensou",
           "duration": "turn"
         }
       ]

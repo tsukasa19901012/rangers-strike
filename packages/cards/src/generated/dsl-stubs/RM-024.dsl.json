@@ -23,11 +23,11 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": false,
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rm_fx::RM-024::fx_unknown_e690ad",
+          "keyword": "rm2::RM-024::tousai",
           "duration": "turn"
         }
       ]

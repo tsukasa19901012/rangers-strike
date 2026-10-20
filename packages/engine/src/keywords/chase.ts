@@ -1,4 +1,5 @@
 import type { CardInstance, GameState, PendingChase, PlayerId } from "../types/game";
+import { rk9EnemyKeywordsNullified } from "../rules/rk/rk9Fields";
 import { getDefinition } from "../core/catalog";
 import { buildSimpleLogEntry } from "../log/formatLog";
 import { findInZone, updatePlayer } from "../core/helpers";
@@ -9,6 +10,11 @@ import {
 import { cardHasKeyword, playerHasChaseUnitInField } from "./cardKeywords";
 import { prepareWingUnitReturnedToRush } from "./battleKeywords";
 import { canRiderMountVehicle, findRiddenVehicleInField } from "./ride";
+import { rmChaseVehicleCandidate } from "../rules/rm/rm2Fields";
+
+function chaseVehicleCandidate(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  return rmChaseVehicleCandidate(state, playerId, card, (id) => cardHasKeyword(state.definitions, id, "chase"));
+}
 
 export function listValidChaseVehicleIds(
   state: GameState,
@@ -145,6 +151,8 @@ export function buildPendingChaseOnVehicleDestroyed(
   if (def?.type !== "vehicle" || intent.toZone !== "discard" || intent.fromZone !== "rush") {
     return null;
   }
+  // RK-175 新1号【ライダーキック】: このターン、敵軍ユニットのチェイスは無効（rules/rk/rk9Fields.ts）。
+  if (rk9EnemyKeywordsNullified(state, intent.ownerPlayerId)) return null;
   if (!playerHasChaseUnitInField(state, intent.ownerPlayerId)) return null;
 
   const rider = findChaseRiderOnVehicle(state, intent.ownerPlayerId, intent.instanceId);
@@ -154,7 +162,7 @@ export function buildPendingChaseOnVehicleDestroyed(
   const validVehicleInstanceIds = player.rush
     .filter(
       (c) =>
-        getDefinition(state.definitions, c.cardId)?.type === "vehicle" &&
+        chaseVehicleCandidate(state, intent.ownerPlayerId, c) &&
         c.instanceId !== intent.instanceId,
     )
     .map((c) => c.instanceId);
@@ -262,6 +270,8 @@ export function buildPendingChaseFromIntent(
   state: GameState,
   intent: LeaveIntent,
 ): PendingChase | null {
+  // RK-175 新1号【ライダーキック】: このターン、敵軍ユニットのチェイスは無効（rules/rk/rk9Fields.ts）。
+  if (rk9EnemyKeywordsNullified(state, intent.ownerPlayerId)) return null;
   const owner = state.players[intent.ownerPlayerId];
   const found = findInZone(owner, intent.fromZone, intent.instanceId);
   if (!found?.card.mountedOnInstanceId) return null;
@@ -269,7 +279,7 @@ export function buildPendingChaseFromIntent(
   const validVehicleInstanceIds = owner.rush
     .filter(
       (c) =>
-        state.definitions[c.cardId]?.type === "vehicle" &&
+        chaseVehicleCandidate(state, intent.ownerPlayerId, c) &&
         c.instanceId !== found.card.mountedOnInstanceId,
     )
     .map((c) => c.instanceId);

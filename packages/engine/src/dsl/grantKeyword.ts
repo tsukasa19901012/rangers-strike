@@ -1,3 +1,17 @@
+import { releasedCommandUnitIds, startEffectRush } from "../rules/effectRush";
+import { FEATURE_KEYWORDS } from "./featureKeywords";
+import {
+  INAZUMA_HOLD_EFFECT_ID,
+  KIRIGAKURE_EFFECT_ID,
+  openHolography,
+  openInazumaEnjouha,
+  openKirigakure,
+  openTenmaKick,
+  openTimeReturn,
+  TENMA_EFFECT_ID,
+} from "../rules/rs4NcEffects";
+import { openSuperElectronEar, SUPER_ELECTRON_EAR_EFFECT_ID } from "../rules/powerFlipEffects";
+import { startHououTornado } from "../rules/hououTornado";
 import type { Category } from "@rangers-strike/cards";
 import type { GameState, PendingBattle, PlayerId } from "../types/game";
 import {
@@ -6,10 +20,13 @@ import {
   isSmallUnit,
   isUnit,
   parsePowerCost,
+  unitSizeOf,
 } from "../core/catalog";
-import { findInZone, opponent, updatePlayer } from "../core/helpers";
+import { findInZone, opponent, takeFromDeckTop, updatePlayer } from "../core/helpers";
+import { recordReveal } from "../rules/revealNotice";
 import { findOwnUnit } from "../core/modifiers";
 import { tryLeaveField } from "../rules/operationCounters";
+import { startKurokoMemory } from "../rules/kurokoMemory";
 import {
   grantSp1ToBattleUnit,
   markBattleNcEffect,
@@ -32,6 +49,8 @@ import {
   startTimeJetProtectChoice,
   startTimeJetCategoryProtectChoice,
   startPhoenixMereDestroyChoice,
+  startBeatHammerChoice,
+  drawToDiscardFromDeck,
 } from "../rules/pendingChoices";
 import { applyFalconSummonerOperation } from "../rules/falconSummoner";
 import {
@@ -77,6 +96,55 @@ import {
 } from "../rules/batch06FieldEffects";
 import { beginCastoffOnRush } from "../rules/castoff";
 import { tryReportedRiderEffect } from "../rules/riderKickEffects";
+import { tryErrataCardEffect } from "../rules/errataCardEffects";
+import { trySet4CardEffect } from "../rules/legend1/set4NamedEffects";
+import { trySet5ACardEffect } from "../rules/legend1/set5NamedEffectsA";
+import { applySet5GrantSideEffects, trySet5CardEffect } from "../rules/legend1/set5NamedEffects";
+import { trySet5AuditCardEffect } from "../rules/legend1/set5AuditFixes";
+import { trySet6BCardEffect } from "../rules/legend1/set6NamedEffectsB";
+import { trySet7ACardEffect } from "../rules/legend1/set7NamedEffectsA";
+import { trySet7CCardEffect } from "../rules/legend1/set7NamedEffectsC";
+import { trySet8CCardEffect } from "../rules/legend1/set8NamedEffectsC";
+import { trySet9CCardEffect } from "../rules/legend1/set9NamedEffectsC";
+import { trySet7DCardEffect } from "../rules/legend1/set7NamedEffectsD";
+import { trySet8ACardEffect } from "../rules/legend1/set8NamedEffectsA";
+import { trySet8DCardEffect } from "../rules/legend1/set8NamedEffectsD";
+import { trySet9DCardEffect } from "../rules/legend1/set9NamedEffectsD";
+import { tryRk1CardEffect } from "../rules/rk/rk1NamedEffects";
+import { tryRk2CardEffect } from "../rules/rk/rk2UnitEffects";
+import { tryRk3CardEffect } from "../rules/rk/rk3UnitEffects";
+import { tryRk4CardEffect } from "../rules/rk/rk4UnitEffects";
+import { rk6CommandHoldBlocked } from "../rules/rk/rk6Fields";
+import { tryRk5CardEffect } from "../rules/rk/rk5UnitEffects";
+import { tryRk6CardEffect } from "../rules/rk/rk6UnitEffects";
+import { tryRk7CardEffect } from "../rules/rk/rk7UnitEffects";
+import { tryRk8CardEffect } from "../rules/rk/rk8UnitEffects";
+import { tryRk9CardEffect } from "../rules/rk/rk9UnitEffects";
+import { tryRk10CardEffect } from "../rules/rk/rk10UnitEffects";
+import { tryRk11CardEffect } from "../rules/rk/rk11UnitEffects";
+import { tryRk12CardEffect } from "../rules/rk/rk12UnitEffects";
+import { tryRk13CardEffect } from "../rules/rk/rk13UnitEffects";
+import { tryRk14CardEffect } from "../rules/rk/rk14UnitEffects";
+import { tryRk15CardEffect } from "../rules/rk/rk15UnitEffects";
+import { tryRk16CardEffect } from "../rules/rk/rk16UnitEffects";
+import { tryRm1CardEffect } from "../rules/rm/rm1Effects";
+import { tryXg6CardEffect } from "../rules/xg6/xg6Hooks";
+import { tryXg4CardEffect } from "../rules/xg4/xg4Effects";
+import { tryPromoCardEffect } from "../rules/promo";
+import { tryRm2CardEffect } from "../rules/rm/rm2Effects";
+import { tryRm3CardEffect } from "../rules/rm/rm3Effects";
+import { tryXg5CardEffect } from "../rules/xg5/xg5Effects";
+import { tryXg7CardEffect } from "../rules/xg7/xg7Effects";
+import { tryXg3CardEffect } from "../rules/xg3/xg3Effects";
+import { tryBk1CardEffect } from "../rules/bk/bk1Effects";
+import { tryXg1CardEffect } from "../rules/xg1/xg1Effects";
+import { tryXg2CardEffect } from "../rules/xg2/xg2Effects";
+import { tryOtherLinesCardEffect } from "../rules/legend1/otherLinesNamedEffects";
+import { trySet9BCardEffect } from "../rules/legend1/set9NamedEffectsB";
+import { trySet8BCardEffect } from "../rules/legend1/set8NamedEffectsB";
+import { trySet9ACardEffect } from "../rules/legend1/set9NamedEffectsA";
+import { trySet6LowCardEffect } from "../rules/legend1/set6NamedEffects348";
+import { trySet6AuditCardEffect } from "../rules/legend1/set6AuditFixes";
 import { tryGenericTextFallback } from "./genericTextFallback";
 import {
   beginDeclareNumberDeckReveal,
@@ -84,7 +152,6 @@ import {
   beginEnemyResidentPick,
   beginFlipEnemyPowerDamage,
   beginHoldEntryDestroy,
-  beginStackSelfOntoL,
   beginStackVehicleUnderSelf,
 } from "../rules/keywordChoiceRuntime";
 import {
@@ -103,8 +170,8 @@ import { effectDelegateSlot } from "./effectDelegateSlot";
 import { isEngineNativeGrantKeyword } from "./promotedKeywordBridge";
 import { isCatchallGrantKeyword } from "./hashGrantKeywordStub";
 import { isStableCardDelegateKeyword } from "./effectCardGrantKeywordBridge";
+import { startSwanWingChoice } from "../rules/swanWing";
 import { setGenericSComboFinisher, setBattleDestroyToPower, addComboNumberDelta } from "../rules/turnModifierBridge";
-import { superPowerAttackBonus } from "../core/catalog";
 import { matchRkGrantKeyword } from "../rules/rkEffects";
 import { matchSrGrantKeyword } from "../rules/srEffects";
 import { tryRkBkGrantKeywordFromEffect } from "../rules/rk/rkBkCatchallRuntime";
@@ -173,7 +240,7 @@ export const PASSIVE_GRANT_KEYWORDS = new Set([
   "while_command_hold_immune",
   "on_deck_reveal_swap_effect_target",
   "combo_l_repeat_attack_strike_after_combo",
-  "bp_plus_per_discard_feature_fx_unknown_1000_sp_at_8000",
+  FEATURE_KEYWORDS.bpPerDiscardDinosaur,
   "while_riding_stagger_tank_block_return_held_mecha",
 ]);
 
@@ -207,7 +274,7 @@ export const SUPPORTED_GRANT_KEYWORDS = new Set([
   "enemy_resident_pick_hold",
   "declare_number_deck_reveal_destroy",
   "destroy_vehicle_and_rider",
-  "hold_entry_destroy_fx_unknown",
+  FEATURE_KEYWORDS.holdEntryDestroyMale,
   "stack_da_less_l_on_rush",
   "stack_vehicle_on_rush",
   "battle_original_bp_combo_pinku",
@@ -293,7 +360,7 @@ function resolveJudgmentKeyword(
   const revealed = player.deck[0]!;
   const restDeck = player.deck.slice(1);
   const revealedDef = getDefinition(state.definitions, revealed.cardId);
-  const matches = revealedDef?.type === "unit" && revealedDef.size === targetSize;
+  const matches = revealedDef?.type === "unit" && unitSizeOf(state.definitions, revealed) === targetSize;
 
   const targetName = cardName(state.definitions, targetFound.card.cardId);
   const revealedName = cardName(state.definitions, revealed.cardId);
@@ -305,6 +372,16 @@ function resolveJudgmentKeyword(
       deck: [...restDeck, revealed],
     }),
   };
+  // オモテにしたカードは公開情報。同じサイズなら撃破し、どちらでもその後、山札の下に戻す。
+  nextState = recordReveal(nextState, {
+    playerId: ctx.playerId,
+    ownerId: ctx.playerId,
+    sourceCardId: ctx.sourceCardId,
+    effectLabel: cardName(state.definitions, ctx.sourceCardId),
+    from: "deck_top",
+    matched: matches,
+    cards: [{ instanceId: revealed.instanceId, cardId: revealed.cardId, destination: "deck_bottom" }],
+  });
 
   if (matches) {
     const leaveResult = tryLeaveField(nextState, {
@@ -370,10 +447,155 @@ export function applyGrantKeyword(
   ctx: GrantKeywordContext,
   keyword: string,
 ): GrantKeywordResult {
+  // ライダーEXP vol.1 RK-001〜RK-021 のカード固有の効果（`rk1::` キーワード。rules/rk/rk1NamedEffects.ts）。
+  const rk1 = tryRk1CardEffect(state, ctx, keyword);
+  if (rk1) return rk1;
+  // ライダーEXP vol.1 RK-022〜RK-042 のカード固有の効果（`rk2::` キーワード。rules/rk/rk2UnitEffects.ts）。
+  const rk2 = tryRk2CardEffect(state, ctx, keyword);
+  if (rk2) return rk2;
+  // ライダーEXP vol.1 RK-043〜RK-063 のカード固有の効果（`rk3::` キーワード。rules/rk/rk3UnitEffects.ts）。
+  const rk3 = tryRk3CardEffect(state, ctx, keyword);
+  if (rk3) return rk3;
+  // ライダーEXP vol.1・vol.2 RK-064〜RK-084 のカード固有の効果（`rk4::` キーワード。rules/rk/rk4UnitEffects.ts）。
+  const rk4 = tryRk4CardEffect(state, ctx, keyword);
+  if (rk4) return rk4;
+  // ライダーEXP vol.2 RK-085〜RK-105 のカード固有の効果（`rk5::` キーワード。rules/rk/rk5UnitEffects.ts）。
+  const rk5 = tryRk5CardEffect(state, ctx, keyword);
+  if (rk5) return rk5;
+  // ライダーEXP vol.2 RK-106〜RK-126 のカード固有の効果（`rk6::` キーワード。rules/rk/rk6UnitEffects.ts）。
+  const rk6 = tryRk6CardEffect(state, ctx, keyword);
+  if (rk6) return rk6;
+  // ライダーEXP vol.2 RK-127〜RK-147 のカード固有の効果（`rk7::` キーワード。rules/rk/rk7UnitEffects.ts）。
+  const rk7 = tryRk7CardEffect(state, ctx, keyword);
+  if (rk7) return rk7;
+  // ライダーEXP vol.2 RK-148〜RK-168 のカード固有の効果（`rk8::` キーワード。rules/rk/rk8UnitEffects.ts）。
+  const rk8 = tryRk8CardEffect(state, ctx, keyword);
+  if (rk8) return rk8;
+  // ザ・マスクドライダーEXP vol.2〜3 RK-169〜RK-189 のカード固有の効果（`rk9::` キーワード。rules/rk/rk9UnitEffects.ts）。
+  const rk9 = tryRk9CardEffect(state, ctx, keyword);
+  if (rk9) return rk9;
+  // ザ・マスクドライダーEXP vol.3 RK-190〜RK-210 のカード固有の効果（`rk10::` キーワード。rules/rk/rk10UnitEffects.ts）。
+  const rk10 = tryRk10CardEffect(state, ctx, keyword);
+  if (rk10) return rk10;
+  // ザ・マスクドライダーEXP vol.3 RK-211〜RK-231 のカード固有の効果（`rk11::` キーワード。rules/rk/rk11UnitEffects.ts）。
+  const rk11 = tryRk11CardEffect(state, ctx, keyword);
+  if (rk11) return rk11;
+  // ザ・マスクドライダーEXP vol.3〜4 RK-232〜RK-252 のカード固有の効果（`rk12::` キーワード。rules/rk/rk12UnitEffects.ts）。
+  const rk12 = tryRk12CardEffect(state, ctx, keyword);
+  if (rk12) return rk12;
+  // ザ・マスクドライダーEXP vol.4 RK-253〜RK-273 のカード固有の効果（`rk13::` キーワード。rules/rk/rk13UnitEffects.ts）。
+  const rk13 = tryRk13CardEffect(state, ctx, keyword);
+  if (rk13) return rk13;
+  // ザ・マスクドライダーEXP vol.4 RK-274〜RK-294 のカード固有の効果（`rk14::` キーワード。rules/rk/rk14UnitEffects.ts）。
+  const rk14 = tryRk14CardEffect(state, ctx, keyword);
+  if (rk14) return rk14;
+  // ザ・マスクドライダーEXP vol.4 RK-295〜RK-315 のカード固有の効果（`rk15::` キーワード。rules/rk/rk15UnitEffects.ts）。
+  const rk15 = tryRk15CardEffect(state, ctx, keyword);
+  if (rk15) return rk15;
+  const rk16 = tryRk16CardEffect(state, ctx, keyword);
+  if (rk16) return rk16;
+  // スペシャルメタルエディション RM-001〜RM-021 のカード固有の効果（`rm1::` キーワード。rules/rm/rm1Effects.ts）。
+  const rm1 = tryRm1CardEffect(state, ctx, keyword);
+  if (rm1) return rm1;
+  // クロスギャザー ザ・ギガンティックタイタン XG6 のカード固有の効果（`xg6::` キーワード。rules/xg6/xg6Hooks.ts）。
+  const xg6 = tryXg6CardEffect(state, ctx, keyword);
+  if (xg6) return xg6;
+  // クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 のカード固有の効果（`xg4::` キーワード。rules/xg4/xg4Effects.ts）。
+  const xg4 = tryXg4CardEffect(state, ctx, keyword);
+  if (xg4) return xg4;
+  // プロモーションカードのカード固有の効果（`promo::` キーワード。rules/promo）。
+  const promo = tryPromoCardEffect(state, ctx, keyword);
+  if (promo) return promo;
+  // スペシャルメタルエディション RM-022〜RM-042 のカード固有の効果（`rm2::` キーワード。rules/rm/rm2Effects.ts）。
+  const rm2 = tryRm2CardEffect(state, ctx, keyword);
+  if (rm2) return rm2;
+  // スペシャルメタルエディション RM-043〜RM-062 のカード固有の効果（`rm3::` キーワード。rules/rm/rm3Effects.ts）。
+  const rm3 = tryRm3CardEffect(state, ctx, keyword);
+  if (rm3) return rm3;
+  // クロスギャザー XG5-001〜XG5-096 のカード固有の効果（`xg5::` キーワード。rules/xg5/xg5Effects.ts）。
+  const xg5 = tryXg5CardEffect(state, ctx, keyword);
+  if (xg5) return xg5;
+  // クロスギャザー ザ・ベストパートナー XG7-001〜XG7-068 のカード固有の効果（`xg7::` キーワード。rules/xg7/xg7Effects.ts）。
+  const xg7 = tryXg7CardEffect(state, ctx, keyword);
+  if (xg7) return xg7;
+  // クロスギャザー ザ・Wインパクト XG3-002〜XG3-103 のカード固有の効果（`xg3::` キーワード。rules/xg3/xg3Effects.ts）。
+  const xg3 = tryXg3CardEffect(state, ctx, keyword);
+  if (xg3) return xg3;
+  // ベルトコレクション BK-001〜BK-019 のカード固有の効果（`bk1::` キーワード。rules/bk/bk1Effects.ts）。
+  const bk1 = tryBk1CardEffect(state, ctx, keyword);
+  if (bk1) return bk1;
+  // クロスギャザー XG1-001〜XG1-100 のカード固有の効果（`xg1::` キーワード。rules/xg1/xg1Effects.ts）。
+  const xg1 = tryXg1CardEffect(state, ctx, keyword);
+  if (xg1) return xg1;
+  // クロスギャザー XG2 のカード固有の効果（`xg2::` キーワード。rules/xg2/xg2Effects.ts）。
+  const xg2 = tryXg2CardEffect(state, ctx, keyword);
+  if (xg2) return xg2;
+  // 第8弾 RS-560〜RS-581 のカード固有の名前付き効果（`set8c::` と一部の既存キーワード。rules/legend1/set8NamedEffectsC.ts）。
+  const set8c = trySet8CCardEffect(state, ctx, keyword);
+  if (set8c) return set8c;
+  // 第9弾 RS-648〜RS-669 のカード固有の名前付き効果（`set9c::` と一部の既存キーワード。rules/legend1/set9NamedEffectsC.ts）。
+  const set9c = trySet9CCardEffect(state, ctx, keyword);
+  if (set9c) return set9c;
+  // 第9弾 RS-605〜RS-626 のカード固有の名前付き効果（`set9a::`。rules/legend1/set9NamedEffectsA.ts）。
+  const set9a = trySet9ACardEffect(state, ctx, keyword);
+  if (set9a) return set9a;
+  // 第7弾 RS-495〜RS-515 のカード固有の名前付き効果（`set7d::` と一部の effect_card キーワード。rules/legend1/set7NamedEffectsD.ts）。
+  const set7d = trySet7DCardEffect(state, ctx, keyword);
+  if (set7d) return set7d;
+  // 第8弾 RS-516〜RS-537 のカード固有の効果（rules/legend1/set8NamedEffectsA.ts）。
+  const set8a = trySet8ACardEffect(state, ctx, keyword);
+  if (set8a) return set8a;
+  // 第8弾 RS-582〜RS-604 のカード固有の名前付き効果（`set8d::` キーワード。rules/legend1/set8NamedEffectsD.ts）。
+  const set8d = trySet8DCardEffect(state, ctx, keyword);
+  if (set8d) return set8d;
+  // 第9弾 RS-670〜RS-690 のカード固有の名前付き効果（`set9d::` キーワード。rules/legend1/set9NamedEffectsD.ts）。
+  const set9d = trySet9DCardEffect(state, ctx, keyword);
+  if (set9d) return set9d;
+  // RS 以外のライン（XG・XP・RM・SK …）のカード固有の名前付き効果（`other::` キーワード。rules/legend1/otherLinesNamedEffects.ts）。
+  const other = tryOtherLinesCardEffect(state, ctx, keyword);
+  if (other) return other;
+  // 第9弾 RS-627〜RS-647 のカード固有の名前付き効果（`set9b::` キーワード。rules/legend1/set9NamedEffectsB.ts）。
+  const set9b = trySet9BCardEffect(state, ctx, keyword);
+  if (set9b) return set9b;
+  // 第8弾 RS-538〜RS-559 のカード固有の名前付き効果（`set8b::` と一部の effect_card キーワード。rules/legend1/set8NamedEffectsB.ts）。
+  const set8b = trySet8BCardEffect(state, ctx, keyword);
+  if (set8b) return set8b;
+  // 第6弾監査のカード固有の修正（rules/legend1/set6AuditFixes.ts）。
+  const set6Audit = trySet6AuditCardEffect(state, ctx, keyword);
+  if (set6Audit) return set6Audit;
   // 「選択を伴う能動効果」で従来はパターン照合で受動扱い（不発）だったカードを
   // cardId::effectId で正確に解決する。effect_card 委譲より前に置く。
   const reported = tryReportedRiderEffect(state, ctx, keyword);
   if (reported) return reported;
+  // エラッタ・公式回答に合わせたカード固有効果（docs/rules/08-errata.md）。
+  // 第6弾 RS-390〜RS-431 のカード固有の名前付き効果（`set6b::` キーワード。rules/legend1/set6NamedEffectsB.ts）。
+  const set6b = trySet6BCardEffect(state, ctx, keyword);
+  if (set6b) return set6b;
+  // 第7弾 RS-432〜RS-452 のカード固有の効果（`set7a::` キーワード。rules/legend1/set7NamedEffectsA.ts）。
+  const set7a = trySet7ACardEffect(state, ctx, keyword);
+  if (set7a) return set7a;
+  // 第7弾 RS-474〜RS-494 のカード固有の名前付き効果（`set7c::` キーワード。rules/legend1/set7NamedEffectsC.ts）。
+  const set7c = trySet7CCardEffect(state, ctx, keyword);
+  if (set7c) return set7c;
+  const errata = tryErrataCardEffect(state, ctx, keyword);
+  if (errata) return errata;
+  // RS-340/343【ゲキヌンチャク】の BP+2000 の記録など、通常処理に付随する第5弾の処理。
+  state = applySet5GrantSideEffects(state, ctx);
+  // 第4弾（legend1）のカード固有の名前付き効果（rules/legend1/set4NamedEffects.ts）。
+  const set4 = trySet4CardEffect(state, ctx, keyword);
+  if (set4) return set4;
+  // 第5弾 RS-243〜RS-305 のカード固有の名前付き効果（rules/legend1/set5NamedEffectsA.ts）。
+  const set5a = trySet5ACardEffect(state, ctx, keyword);
+  if (set5a) return set5a;
+  // 第5弾（legend1）のカード固有の名前付き効果（rules/legend1/set5NamedEffects.ts）。
+  const set5 = trySet5CardEffect(state, ctx, keyword);
+  if (set5) return set5;
+  // 第5弾監査のカード固有の修正（rules/legend1/set5AuditFixes.ts）。
+  const set5Audit = trySet5AuditCardEffect(state, ctx, keyword);
+  if (set5Audit) return set5Audit;
+  // 第6弾 RS-348〜RS-389 のカード固有の名前付き効果（rules/legend1/set6NamedEffects348.ts）。
+  const set6Low = trySet6LowCardEffect(state, ctx, keyword);
+  if (set6Low) return set6Low;
 
   if (keyword.startsWith("hand_named_to_rush::")) {
     const withChoice = applyHandNamedToRush(state, ctx, keyword);
@@ -402,6 +624,44 @@ export function applyGrantKeyword(
 
   const sr = matchSrGrantKeyword(state, ctx, keyword);
   if (sr) return sr;
+
+  if (keyword === "deck_search_operation_to_power" && ctx.sourceCardId === "RS-201") {
+    // RS-201【超電子ホログラフィー】（rules/rs4NcEffects.ts）。
+    return {
+      state: openHolography(state, ctx.playerId, ctx.phasePlayerId, ctx.triggerSourceInstanceId),
+      detail: keyword,
+    };
+  }
+  if (keyword === "return_all_bp2000_hand" && ctx.sourceCardId === "RS-208") {
+    // RS-208【天時星・時間返し】（任意）。
+    return {
+      state: openTimeReturn(state, ctx.playerId, ctx.phasePlayerId, ctx.triggerSourceInstanceId),
+      detail: keyword,
+    };
+  }
+
+  if (keyword === "effect_card::RS-284::suwanuingu") {
+    // RS-284 ホワイトスワン【スワンウィング】（NC）。rules/swanWing.ts
+    const withChoice = startSwanWingChoice(state, {
+      playerId: ctx.playerId,
+      phasePlayerId: ctx.phasePlayerId,
+      sourceCardId: ctx.sourceCardId,
+      sourceInstanceId: ctx.triggerSourceInstanceId,
+    });
+    return { state: withChoice ?? state, detail: withChoice ? keyword : `${keyword}:no_targets` };
+  }
+
+  if (keyword === "effect_card::RS-209::houou_tornado") {
+    // RS-209 ホウオウレンジャー【天風星・一文字竜巻】（NC）。rules/hououTornado.ts
+    const withChoice = startHououTornado(
+      state,
+      ctx.playerId,
+      ctx.sourceCardId,
+      ctx.triggerSourceInstanceId,
+      ctx.phasePlayerId,
+    );
+    return { state: withChoice ?? state, detail: withChoice ? keyword : `${keyword}:no_targets` };
+  }
 
   if (isStableCardDelegateKeyword(keyword)) {
     const resolved = effectDelegateSlot.resolver?.(state, ctx, keyword);
@@ -456,7 +716,7 @@ export function applyGrantKeyword(
       );
       const allEnemyBattleAreS =
         enemyBattle.length > 0 &&
-        enemyBattle.every((c) => isSmallUnit(state.definitions, c.cardId));
+        enemyBattle.every((c) => isSmallUnit(state.definitions, c));
       if (!allEnemyBattleAreS) return { state, detail: `${keyword}:unmet` };
       return {
         state: grantSp1ToBattleUnit(state, ctx.playerId, instanceId),
@@ -482,8 +742,22 @@ export function applyGrantKeyword(
     case "SP1": {
       const instanceId = ctx.triggerSourceInstanceId;
       if (!instanceId) return { state };
+      let granted = grantSpLevel(state, ctx.playerId, instanceId, 1);
+      if (ctx.sourceCardId === "RS-200" && ctx.effectId === SUPER_ELECTRON_EAR_EFFECT_ID) {
+        // RS-200【超電子イヤー】: 「SP1」に続けてダメージの入れ替え（任意）。
+        granted = openSuperElectronEar(granted, ctx.playerId, instanceId, ctx.phasePlayerId);
+      } else if (ctx.sourceCardId === "RS-205" && ctx.effectId === INAZUMA_HOLD_EFFECT_ID) {
+        // RS-205【天火星・稲妻炎上破】（rules/rs4NcEffects.ts）。
+        granted = openInazumaEnjouha(granted, ctx.playerId, ctx.phasePlayerId, instanceId);
+      } else if (ctx.sourceCardId === "RS-206" && ctx.effectId === KIRIGAKURE_EFFECT_ID) {
+        // RS-206【天幻星・霧隠れ】。
+        granted = openKirigakure(granted, ctx.playerId, ctx.phasePlayerId, instanceId);
+      } else if (ctx.sourceCardId === "RS-207" && ctx.effectId === TENMA_EFFECT_ID) {
+        // RS-207【天重星・天馬回転蹴り】。
+        granted = openTenmaKick(granted, ctx.playerId, ctx.phasePlayerId, instanceId);
+      }
       return {
-        state: grantSpLevel(state, ctx.playerId, instanceId, 1),
+        state: granted,
         detail: "sp1",
       };
     }
@@ -792,6 +1066,7 @@ export function applyGrantKeyword(
         sourceCardId: ctx.sourceCardId,
         phasePlayerId: ctx.phasePlayerId,
         partnerName,
+        optional: ctx.optional === true,
       });
       if (!withChoice) return { state, detail: `${ctx.effectId}:no_targets` };
       return { state: withChoice, detail: ctx.effectId };
@@ -994,6 +1269,8 @@ export function applyGrantKeyword(
     }
     case "hold_all_enemy_commands": {
       const enemyId = opponent(ctx.playerId);
+      // RK-116 マグナギガ【そびえる巨体】（rules/rk/rk6Fields.ts）。
+      if (rk6CommandHoldBlocked(state, enemyId, ctx.sourceCardId)) return { state, detail: "rk116:blocked" };
       const enemy = state.players[enemyId];
       const command = enemy.command.map((c) => ({ ...c, commandHeld: true }));
       return {
@@ -1038,16 +1315,16 @@ export function applyGrantKeyword(
       if (!withChoice) return { state, detail: `${keyword}:no_targets` };
       return { state: withChoice, detail: keyword };
     }
-    case "hold_entry_destroy_fx_unknown": {
+    case FEATURE_KEYWORDS.holdEntryDestroyMale: {
       const withChoice = beginHoldEntryDestroy(state, ctx);
       if (!withChoice) return { state, detail: `${keyword}:no_targets` };
       return { state: withChoice, detail: keyword };
     }
-    case "stack_da_less_l_on_rush": {
-      const withChoice = beginStackSelfOntoL(state, ctx);
-      if (!withChoice) return { state, detail: `${keyword}:no_targets` };
-      return { state: withChoice, detail: keyword };
-    }
+    case "stack_da_less_l_on_rush":
+      // 「自軍ラッシュフェイズ中、DAを持たない自軍Lユニットを1体選び、このユニットに重ねてもよい」は起動効果
+      // （自軍ラッシュフェイズ中ならいつでも。rules/stackOntoLargeUnit.ts・rules/fieldActivatedAbilities.ts）。
+      // 「ラッシュしたとき」等の誘発としては何もしない。
+      return { state, detail: `${keyword}:activated_ability` };
     case "stack_vehicle_on_rush": {
       const withChoice = beginStackVehicleUnderSelf(state, ctx);
       if (!withChoice) return { state, detail: `${keyword}:no_targets` };
@@ -1125,16 +1402,10 @@ export function applyGrantKeyword(
       if (!ctx.leavingCardId) return { state };
       const leavingDef = getDefinition(state.definitions, ctx.leavingCardId);
       const drawCost = parsePowerCost(leavingDef?.powerCost ?? 0);
-      const owner = state.players[ctx.playerId];
-      const drawn = owner.deck.slice(0, drawCost);
-      const restDeck = owner.deck.slice(drawCost);
-      const nextOwner = {
-        ...owner,
-        deck: restDeck,
-        discard: [...owner.discard, ...drawn],
-      };
+      // ルール: R-START-05, R-WIN-03 — ひくべきときにひけなければ敗北（RS-027 Q4）。
+      // RS-122【海底探査】があれば下からひくことを選べる（faq-card-2 RS-122 Q1）。
       return {
-        state: { ...state, ...updatePlayer(state, ctx.playerId, nextOwner) },
+        state: drawToDiscardFromDeck(state, ctx.playerId, ctx.phasePlayerId, drawCost),
         detail: `dino_guts:${drawCost}`,
       };
     }
@@ -1176,13 +1447,14 @@ export function applyGrantKeyword(
             "optional_battle_no_attack",
           );
         }
+        // ルール: R-BTL-01 — 効果による「バトルしてもよい」はアタックではないので、「アタックするとき」の
+        // 超力（RS-019）等は発動しない。
         const pending: PendingBattle = {
           attackerPlayerId: ctx.playerId,
           attackerInstanceId: attacker.instanceId,
           defenderPlayerId: enemyId,
           defenderInstanceId,
           phasePlayerId: ctx.phasePlayerId,
-          attackerBpBonus: superPowerAttackBonus(nextState, ctx.playerId, attacker),
         };
         return {
           state: { ...nextState, pendingBattle: pending },
@@ -1211,6 +1483,57 @@ export function applyGrantKeyword(
         };
       }
 
+      if (keyword === "release_m_command_to_rush") {
+        // RS-197 ダイナギャリー【パーツキャリアー】。
+        // ルール: R-RUSH-21 — 必要パワーと追加条件を満たして出す（コマンドのホールドは不要）。
+        // ルール: R-RUSH-22 — 出したユニットの「ラッシュしたとき」も発動する（RS-197 Q1・Q3）。
+        const started = startEffectRush(state, {
+          playerId: ctx.playerId,
+          phasePlayerId: ctx.phasePlayerId,
+          effectId: "parts_carrier",
+          sourceCardId: ctx.sourceCardId,
+          sourceInstanceId: ctx.triggerSourceInstanceId,
+          fromZone: "command",
+          candidates: releasedCommandUnitIds(state, ctx.playerId, "M"),
+          maxCount: 1,
+          requireConditions: true,
+          alwaysAsk: true,
+        });
+        return { state: started, detail: keyword };
+      }
+
+      if (keyword === "alternating_draw_3_mill") {
+        // RS-183 黒子ロボの記憶操作。ルール: R-WIN-04
+        return {
+          state: startKurokoMemory(state, ctx.playerId, ctx.phasePlayerId, ctx.sourceCardId),
+          detail: keyword,
+        };
+      }
+
+      if (keyword === "deploy_enemy_command_silent") {
+        // RS-194 ダイナロボ【ビートハンマー】（自軍ターン中、これがバトルエリアに出たとき）。
+        if (ctx.phasePlayerId !== ctx.playerId) return { state, detail: keyword };
+        const withChoice = startBeatHammerChoice(
+          state,
+          ctx.playerId,
+          ctx.phasePlayerId,
+          ctx.sourceCardId,
+          ctx.triggerSourceInstanceId,
+        );
+        return { state: withChoice ?? state, detail: keyword };
+      }
+
+      if (keyword === "combo_wb_m_bp3000_sp1_destroy_end") {
+        // RS-234【ウイングペンタクト】: NC 成立を記録し、続いてコンビネーションする「WB」の M ユニットに
+        // rules/combo.ts（applyWingPentactOnCombo）で BP+3000／SP1 を与える。
+        const instanceId = ctx.triggerSourceInstanceId;
+        if (!instanceId) return { state, detail: keyword };
+        return {
+          state: markBattleNcEffect(state, ctx.playerId, instanceId, "uingupentakuto"),
+          detail: keyword,
+        };
+      }
+
       if (
         keyword.startsWith("power_zone_min_") ||
         (keyword.startsWith("all_") && keyword.endsWith("_auto_battle_entry")) ||
@@ -1220,7 +1543,6 @@ export function applyGrantKeyword(
         keyword.startsWith("end_turn_return_hand_if_no_") ||
         keyword.startsWith("attack_bp_plus_vs_") ||
         keyword === "ignore_rule_hold_command_entry" ||
-        keyword === "combo_wb_m_bp3000_sp1_destroy_end" ||
         keyword === "deck_search_minus_power_rush" ||
         keyword === "opponent_rush_s_to_hand" ||
         keyword === "opponent_rush_s_to_battle" ||
@@ -1229,9 +1551,6 @@ export function applyGrantKeyword(
         keyword.startsWith("hold_all_enemy_bp") ||
         keyword === "opponent_hand_counter_to_power" ||
         keyword === "deck_search_operation_to_power" ||
-        keyword === "alternating_draw_3_mill" ||
-        keyword === "deploy_enemy_command_silent" ||
-        keyword === "release_m_command_to_rush" ||
         keyword === "draw_deck_to_command_or_hand" ||
         (keyword.startsWith("return_") && keyword.endsWith("_battle_to_deck_bottom"))
       ) {

@@ -4,7 +4,7 @@
   "name": "ホースオルフェノク格闘態",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 3,
   "text": "※これは自軍パワーゾーンに6枚以上カードが無ければバトルエリアに出られない。 【使途再生】これが自軍エリアにある間、ホールド状態の自軍Sユニットは特徴「オルフェノク」が追加される。",
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "power_min_6_entry",
+          "keyword": "rk6::RK-122::power_six_entry",
           "duration": "permanent"
         }
       ]
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "while_hold_s_add_feature::オルフェノク",
+          "keyword": "rk6::RK-122::apostle_regeneration",
           "duration": "permanent"
         }
       ],

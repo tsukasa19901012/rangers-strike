@@ -4,7 +4,7 @@
   "name": "ドラグランザー",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 6,
   "text": "※これは、自軍エリアでホールド状態かライドされている間、Sビークルとして扱う。 ※これはユニットの間、次のテキストを得る⇒これは自軍コマンドを1つホールドしなければバトルエリアに出られない。また、自軍ラッシュフェイズ中、これをホールドしてもよい。 【ドラゴンファイヤーストーム】これにライドしている特徴「サバイブ」を持つユニットは「SP1」になる。",
@@ -51,13 +51,13 @@
       "name": "ドラゴンファイヤーストーム",
       "text": "これにライドしている特徴「サバイブ」を持つユニットは「SP1」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-281::doragonfuaiyasutomu",
-          "duration": "turn"
+          "keyword": "rk14::RK-281::dragon_fire_storm",
+          "duration": "permanent"
         }
       ],
       "optional": false

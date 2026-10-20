@@ -4,7 +4,7 @@
   "name": "仮面ライダーNEW電王SF",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※これをラッシュしたとき、自軍パワーゾーンから「テディ」のカードを1枚選び自軍ラッシュエリアに出してもよい。 ※これはBP5000以上のとき「SP1」になる 【カウンターストライク】自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードの必要パワーの数字を見て、その数字と同じ並びにある敵軍Sユニット、またはライドされていない敵軍Sビークルがあれば1体選び捨札にする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。 ※これをラッシュしたとき、自軍パワーゾーンから「テディ」のカードを1枚選び自軍ラッシュエリアに出してもよい。 ※これはBP5000以上のとき「SP1」になる 【カウンターストライク】自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードの必要パワーの数字を見て、その数字と同じ並びにある敵軍Sユニット、またはライドされていない敵軍Sビークルがあれば1体選び捨札にする。その後、オモテにしたカードは山札の下に戻す。",
@@ -25,11 +25,11 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-044::koreworashushita",
+          "keyword": "xg6::XG6-044::teddy",
           "duration": "permanent"
         }
       ]
@@ -51,22 +51,6 @@
     {
       "id": "kauntasutoraiku",
       "name": "カウンターストライク",
-      "text": "自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードの必要パワーの数字を見て、その数字と同じ並びにある敵軍Sユニット、またはライドされていない敵軍Sビークルがあれば1体選び捨札にする。 ・このテキストは公式ＨＰで読み替えが推奨されています。修正後は以下。",
-      "trigger": {
-        "type": "riding_combo"
-      },
-      "optional": true,
-      "effects": [
-        {
-          "type": "grant_keyword",
-          "keyword": "deck_reveal_position_destroy_s",
-          "duration": "turn"
-        }
-      ]
-    },
-    {
-      "id": "kauntasutoraiku_2",
-      "name": "カウンターストライク",
       "text": "自軍山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードの必要パワーの数字を見て、その数字と同じ並びにある敵軍Sユニット、またはライドされていない敵軍Sビークルがあれば1体選び捨札にする。その後、オモテにしたカードは山札の下に戻す。",
       "trigger": {
         "type": "riding_combo"
@@ -75,7 +59,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "deck_reveal_position_destroy_s",
+          "keyword": "effect_card::XG6-044::kauntasutoraiku",
           "duration": "turn"
         }
       ]

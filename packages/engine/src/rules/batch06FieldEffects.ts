@@ -1,12 +1,16 @@
+import { rk15RequiredDefender } from "./rk/rk15UnitEffects";
 import type { GameState, PendingBattleEntry, PlayerId } from "../types/game";
+import { openZubazubanKick } from "./legend1/set6NamedEffectsB";
 import {
   cardCategories,
   cardName,
   effectiveBp,
   getDefinition,
   isSmallUnit,
+  unitSizeOf,
 } from "../core/catalog";
 import { cardHasKeyword } from "../keywords/cardKeywords";
+import { listZordFusionPartnerIds, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
 import { getCardDslDocument } from "../dsl/effectLookup";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -22,7 +26,6 @@ import {
   startSuperGekiFantasticChoice,
   startFuasutokurasunaChoice,
   startZorobAntGeneChoice,
-  startZubazubanDestroyChoice,
 } from "./pendingChoices";
 
 export function collectOwnWingCommands(state: GameState, playerId: PlayerId): string[] {
@@ -50,7 +53,7 @@ export function collectEnemyBattleAtMostBp(
 
 export function collectDiscardSmallUnits(state: GameState, playerId: PlayerId): string[] {
   return state.players[playerId].discard
-    .filter((c) => isSmallUnit(state.definitions, c.cardId))
+    .filter((c) => isSmallUnit(state.definitions, c))
     .map((c) => c.instanceId);
 }
 
@@ -59,7 +62,7 @@ export function collectHandMediumWithAdditional(state: GameState, playerId: Play
   return player.hand
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (def?.type !== "unit" || def.size !== "M") return false;
+      if (def?.type !== "unit" || unitSizeOf(state.definitions, c) !== "M") return false;
       const doc = getCardDslDocument(c.cardId);
       return !!doc?.rushAdditionalCondition;
     })
@@ -71,7 +74,7 @@ export function collectRushWbMWithOnRush(state: GameState, playerId: PlayerId): 
   return player.rush
     .filter((c) => {
       const def = getDefinition(state.definitions, c.cardId);
-      if (def?.type !== "unit" || def.size !== "M") return false;
+      if (def?.type !== "unit" || unitSizeOf(state.definitions, c) !== "M") return false;
       if (!cardCategories(def).includes("WB")) return false;
       const doc = getCardDslDocument(c.cardId);
       return doc?.effects?.some((e) => e.trigger?.type === "on_rush") ?? false;
@@ -106,7 +109,7 @@ function cardHasDslKeyword(cardId: string, keyword: string): boolean {
 export function countOwnFieldSmallUnits(state: GameState, playerId: PlayerId): number {
   const player = state.players[playerId];
   return [...player.rush, ...player.battle].filter((c) =>
-    isSmallUnit(state.definitions, c.cardId),
+    isSmallUnit(state.definitions, c),
   ).length;
 }
 
@@ -313,21 +316,26 @@ export function tryZubazubanOnAllyRush(
   const found = findInZone(rusher, "rush", rushedInstanceId);
   if (!found) return state;
   const def = getDefinition(state.definitions, found.card.cardId);
-  if (def?.size !== "L" || !(def.features ?? []).includes("メカ")) return state;
-  const withChoice = startZubazubanDestroyChoice(state, {
-    playerId: rusherPlayerId,
-    effectId: "zubazubankiku",
-    sourceCardId: "RS-420",
-    sourceInstanceId: rushedInstanceId,
-    phasePlayerId,
-  });
-  return withChoice ?? state;
+  if (unitSizeOf(state.definitions, found.card) !== "L" || !(def?.features ?? []).includes("メカ")) return state;
+  // 「その追加条件を満たすために捨札にした合体ユニット」— 追加条件が「自軍合体ユニットを捨札にする」のユニットだけ
+  // （faq-card-6 RS-420 Q1: トラベリオンエクスプレスを捨札にしたトラベリオンでは発動しない）。
+  if (resolveRushAdditionalCondition(found.card.cardId, def)?.conditionId !== "discard_fusion_unit") return state;
+  // 「捨札にした合体ユニット1体につき」1体ずつ選んで撃破する（rules/legend1/set6NamedEffectsB.ts）。
+  const count = Math.max(1, listZordFusionPartnerIds(found.card.cardId).length);
+  return openZubazubanKick(state, rusherPlayerId, rushedInstanceId, phasePlayerId, count);
 }
 
+/**
+ * RS-374 魔女バンドーラ【ドーラ魔法】: 相手がコマンドをホールドして「魔法」「恐竜」のユニットをラッシュしたとき、
+ * そのホールドしたコマンドを捨札にする。
+ * ルール: R-KW-CALL-01 — コールでホールドしたユニットも「ホールドしたコマンド」として捨札になる（page-1293 Q2）。
+ * 捨札にするのはこのラッシュのためにホールドしたものだけ。
+ */
 export function applyBandoraHeldCommandDiscard(
   state: GameState,
   rusherPlayerId: PlayerId,
   cardId: string,
+  rushedInstanceId?: string,
 ): GameState {
   const def = getDefinition(state.definitions, cardId);
   const features = def?.features ?? [];
@@ -335,16 +343,32 @@ export function applyBandoraHeldCommandDiscard(
   const ownerId = opponent(rusherPlayerId);
   if (!playerHasRs374OnRush(state, ownerId)) return state;
   const player = state.players[rusherPlayerId];
-  const held = player.command.filter((c) => c.commandHeld || c.mothershipHold);
-  if (held.length === 0) return state;
-  const heldIds = new Set(held.map((c) => c.instanceId));
-  const command = player.command.filter((c) => !heldIds.has(c.instanceId));
+  const payment =
+    rushedInstanceId && player.lastRushPayment?.rushedInstanceId === rushedInstanceId
+      ? player.lastRushPayment
+      : undefined;
+  if (!payment || payment.holdInstanceIds.length === 0) return state;
+  const heldIds = new Set(payment.holdInstanceIds);
+  const discarded: typeof player.command = [];
+  const take = (cards: typeof player.command) =>
+    cards.filter((c) => {
+      if (!heldIds.has(c.instanceId)) return true;
+      discarded.push({ instanceId: c.instanceId, cardId: c.cardId });
+      return false;
+    });
+  const command = take(player.command);
+  const rush = take(player.rush);
+  const battle = take(player.battle);
+  if (discarded.length === 0) return state;
   return {
     ...state,
     ...updatePlayer(state, rusherPlayerId, {
       ...player,
       command,
-      discard: [...player.discard, ...held],
+      rush,
+      battle,
+      discard: [...player.discard, ...discarded],
+      lastRushPayment: undefined,
     }),
   };
 }
@@ -402,13 +426,18 @@ export function applyShinobiBallRequiredDefender(
   if (state.activePlayer !== enteringPlayerId) return entry;
   const shinobiOwnerId = opponent(enteringPlayerId);
   const shinobiId = findShinobiBallOnBattle(state, shinobiOwnerId);
-  if (!shinobiId) return entry;
+  if (!shinobiId) {
+    // RK-311 キンタロス（2nd）【俺の強さにお前が泣いた】（次の相手ターン。rules/rk/rk15UnitEffects.ts）。
+    return rk15RequiredDefender(state, enteringPlayerId, entry, (defenderId) =>
+      canAttackDefender(state, enteringPlayerId, entry.instanceId, shinobiOwnerId, defenderId, canAttackRushWithYellowThunder),
+    );
+  }
   const unit = state.players[enteringPlayerId].battle.find(
     (c) => c.instanceId === entry.instanceId,
   );
   if (!unit) return entry;
   const def = getDefinition(state.definitions, unit.cardId);
-  if (def?.size !== "S") return entry;
+  if (unitSizeOf(state.definitions, unit) !== "S") return entry;
   if (
     !canAttackDefender(
       state,
@@ -436,7 +465,7 @@ export function applyMegasuringuEnemyRushSBpDebuff(
   let changed = false;
 
   for (const unit of enemy.rush) {
-    if (!isSmallUnit(state.definitions, unit.cardId)) {
+    if (!isSmallUnit(state.definitions, unit)) {
       kept.push(unit);
       continue;
     }

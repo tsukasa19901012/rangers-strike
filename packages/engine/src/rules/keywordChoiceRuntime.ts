@@ -2,12 +2,14 @@
  * 選択（pendingEffectChoice）を伴う未消費キーワードのランタイム。
  * dsl/grantKeyword.ts のディスパッチから呼ばれる。
  */
+import { recordReveal } from "./revealNotice";
 import type { Category } from "@rangers-strike/cards";
 import { cardCategories } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
 import type { GrantKeywordContext } from "../dsl/grantKeyword";
-import { cardName, getDefinition, isSmallUnit } from "../core/catalog";
-import { opponent, updatePlayer } from "../core/helpers";
+import { cardName, getDefinition, isSmallUnit, unitSizeOf } from "../core/catalog";
+import { applyPlayerDamage, opponent, updatePlayer } from "../core/helpers";
+import { meditationActive } from "../core/createGame";
 import { openEffectChoice, applyUnitLeave } from "./pendingChoices";
 
 /** RS-496 / XP-010: 敵ダメージ1枚をオモテに→敵オモテ向きパワー1枚をダメージに。 */
@@ -155,20 +157,36 @@ export function resolveDeclareNumberDeckReveal(
   const topCost =
     typeof def?.powerCost === "number" ? def.powerCost : parseInt(String(def?.powerCost ?? ""), 10);
   // オモテにして山札の下へ
-  const withBottom = {
-    ...state,
-    ...updatePlayer(state, pending.playerId, { ...player, deck: [...rest, top] }),
-    log: [
-      ...state.log,
-      `${cardName(state.definitions, top.cardId)} を公開（宣言: ${declared}）`,
-    ],
-  };
-  if (!Number.isFinite(topCost) || topCost < declared) return withBottom;
+  const matched = Number.isFinite(topCost) && topCost >= declared;
+  const withBottom = recordReveal(
+    {
+      ...state,
+      ...updatePlayer(state, pending.playerId, { ...player, deck: [...rest, top] }),
+      log: [
+        ...state.log,
+        `${cardName(state.definitions, top.cardId)} を公開（宣言: ${declared}）`,
+      ],
+    },
+    {
+      playerId: pending.playerId,
+      ownerId: pending.playerId,
+      sourceCardId: pending.sourceCardId,
+      effectLabel: pending.sourceCardId
+        ? `${cardName(state.definitions, pending.sourceCardId)}の効果`
+        : "数字宣言",
+      from: "deck_top",
+      declaredNumber: declared,
+      matched,
+      cards: [{ instanceId: top.instanceId, cardId: top.cardId, destination: "deck_bottom" }],
+    },
+  );
+  if (!matched) return withBottom;
   const enemyId = opponent(pending.playerId);
   const enemy = withBottom.players[enemyId];
   const targets = [...enemy.battle, ...enemy.rush].filter((c) => {
     const d = getDefinition(withBottom.definitions, c.cardId);
-    const cost = typeof d?.powerCost === "number" ? d.powerCost : NaN;
+    // 「7+」「7-」は数字7（XG2-069・XP-007 atwiki/page-1723「必要パワーの数字」）。
+    const cost = typeof d?.powerCost === "number" ? d.powerCost : parseInt(String(d?.powerCost ?? ""), 10);
     return cost === declared;
   });
   if (targets.length === 0) return withBottom;
@@ -196,7 +214,7 @@ export function beginDestroyVehicleAndRider(
   const enemyId = opponent(ctx.playerId);
   const vehicles = state.players[enemyId].battle.filter((c) => {
     const d = getDefinition(state.definitions, c.cardId);
-    return d?.type === "vehicle" && d.size === "S";
+    return d?.type === "vehicle" && unitSizeOf(state.definitions, c) === "S";
   });
   if (vehicles.length === 0) return null;
   return openEffectChoice(state, {
@@ -294,67 +312,16 @@ export function resolveHoldEntryDestroy(
     return fs.size === targetFeatures.size && [...fs].every((f) => targetFeatures.has(f));
   });
   if (matchIdx >= 0) {
+    // ルール: R-ERR-XG3-072 — ウラ向きにしたカードは「ダメージにする」（相手は1点受ける）。
     const power = enemy.power.map((c, i) => (i === matchIdx ? { ...c, faceDown: true } : c));
-    nextState = { ...nextState, ...updatePlayer(nextState, enemyId, { ...enemy, power }) };
+    let damaged = { ...enemy, power, damage: enemy.damage + 1 };
+    // atwiki/page-1963 Q1: RS-348 メディテーションの追加ダメージも受ける（追加分に追加はない）。
+    if (meditationActive(nextState, enemyId)) {
+      damaged = applyPlayerDamage(damaged, 1);
+    }
+    nextState = { ...nextState, ...updatePlayer(nextState, enemyId, damaged) };
   }
   return nextState;
-}
-
-/** RS-623 等 翼合体: DA なし自軍 L に自身を重ね、L に ※ウイング と BP を付与。 */
-export function beginStackSelfOntoL(
-  state: GameState,
-  ctx: GrantKeywordContext,
-): GameState | null {
-  const selfId = ctx.triggerSourceInstanceId;
-  if (!selfId) return null;
-  const player = state.players[ctx.playerId];
-  const targets = [...player.rush, ...player.battle].filter((c) => {
-    if (c.instanceId === selfId) return false;
-    const d = getDefinition(state.definitions, c.cardId);
-    return d?.type === "unit" && d.size === "L" && !cardCategories(d).includes("DA" as Category);
-  });
-  if (targets.length === 0) return null;
-  return openEffectChoice(state, {
-    playerId: ctx.playerId,
-    effectId: "stack_self_onto_l",
-    sourceCardId: ctx.sourceCardId,
-    sourceInstanceId: selfId,
-    phasePlayerId: ctx.phasePlayerId,
-    kind: "select_unit",
-    validInstanceIds: targets.map((c) => c.instanceId),
-    selectCount: 1,
-    optional: true,
-  });
-}
-
-export function resolveStackSelfOntoL(
-  state: GameState,
-  pending: NonNullable<GameState["pendingEffectChoice"]>,
-  hostInstanceId: string,
-): GameState | null {
-  const selfId = pending.sourceInstanceId;
-  if (!selfId) return null;
-  const player = state.players[pending.playerId];
-  const self =
-    player.rush.find((c) => c.instanceId === selfId) ??
-    player.battle.find((c) => c.instanceId === selfId);
-  if (!self) return null;
-  const { stackedCards: _sc, ...selfClean } = self;
-
-  const attach = (cards: readonly (typeof self)[]) =>
-    cards
-      .filter((c) => c.instanceId !== selfId)
-      .map((c) =>
-        c.instanceId === hostInstanceId
-          ? { ...c, stackedCards: [...(c.stackedCards ?? []), selfClean] }
-          : c,
-      );
-  const cleanPlayer = {
-    ...player,
-    rush: attach(player.rush),
-    battle: attach(player.battle),
-  };
-  return { ...state, ...updatePlayer(state, pending.playerId, cleanPlayer) };
 }
 
 /** XG2-025 等: ライドされていない自軍ビークルを自身の下に重ねる。 */
@@ -365,6 +332,8 @@ export function beginStackVehicleUnderSelf(
   const selfId = ctx.triggerSourceInstanceId;
   if (!selfId) return null;
   const player = state.players[ctx.playerId];
+  // すでにビークルにライドして出た（XG4-009【緊急出動】）なら、ビークルを重ねられない（atwiki/page-1233 Q2・page-2083 Q1）。
+  if (player.rush.concat(player.battle).some((c) => c.instanceId === selfId && c.mountedOnInstanceId)) return null;
   const ridden = new Set(
     player.rush.concat(player.battle).map((c) => c.mountedOnInstanceId).filter(Boolean),
   );

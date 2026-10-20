@@ -26,19 +26,28 @@ export type EmitPromotedOptions = {
   manifestName: string;
 };
 
-function loadExistingImageFields(
-  outputPath: string,
-): Map<string, Pick<CardDefinition, "imageUrl" | "imageSourceUrl">> {
-  if (!existsSync(outputPath)) return new Map();
-  const file = JSON.parse(readFileSync(outputPath, "utf8")) as { cards: CardDefinition[] };
-  return new Map(
-    file.cards
-      .filter((card) => card.imageUrl)
-      .map((card) => [
-        card.id,
-        { imageUrl: card.imageUrl, imageSourceUrl: card.imageSourceUrl },
-      ]),
-  );
+type ImageFields = Pick<CardDefinition, "imageUrl" | "imageSourceUrl">;
+
+function loadImageFieldsFrom(path: string, into: Map<string, ImageFields>): void {
+  if (!existsSync(path)) return;
+  const file = JSON.parse(readFileSync(path, "utf8")) as { cards: CardDefinition[] };
+  for (const card of file.cards) {
+    if (!card.imageUrl || into.has(card.id)) continue;
+    into.set(card.id, { imageUrl: card.imageUrl, imageSourceUrl: card.imageSourceUrl });
+  }
+}
+
+/**
+ * 既存の画像フィールド。自 tier の出力を優先し、グレード変更で tier を移るカード
+ * （例: E7 で効果文が補われ A→C になったカード）の画像も落とさないよう他の promoted tier も参照する。
+ */
+function loadExistingImageFields(root: string, outputPath: string): Map<string, ImageFields> {
+  const images = new Map<string, ImageFields>();
+  loadImageFieldsFrom(outputPath, images);
+  for (const tier of ["vanilla-promoted", "complexity-promoted", "full-playable"]) {
+    loadImageFieldsFrom(join(root, "src/generated/catalog", tier, "cards.json"), images);
+  }
+  return images;
 }
 
 export function emitPromotedCatalog(options: EmitPromotedOptions): {
@@ -52,7 +61,7 @@ export function emitPromotedCatalog(options: EmitPromotedOptions): {
 
   const playableIds = listCoreCardIds();
   const stubsFile = JSON.parse(readFileSync(stubsPath, "utf8")) as StubsFile;
-  const existingImages = loadExistingImageFields(outputPath);
+  const existingImages = loadExistingImageFields(options.root, outputPath);
 
   const excludedTypes = new Set<string>(PLAYABLE_EXCLUDED_CARD_TYPES);
   const promoted = stubsFile.stubs

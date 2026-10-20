@@ -4,7 +4,7 @@
   "name": "仮面ライダーディエンドCF",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 8,
   "text": "※リードOT ※これは特徴｢仮面ライダー｣を持つ自軍ユニット1体につきBP+1000される｡ 【ゲキジョウバン】これを手札からラッシュした時、自軍山札の上から8枚までオモテにして､その中から特徴｢仮面ライダー｣を持つDAのユニットカードを自軍ラッシュエリアに出してもよい。ただし、同名のカードは2枚以上出せない。その後、残りのカードを山札に戻してシャッフルする。この効果で出したユニットは、このターン、ストライクできず、このターンを終えるとき、自軍エリアにあれば捨札になる。",
@@ -36,13 +36,13 @@
       "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは特徴｢仮面ライダー｣を持つ自軍ユニット1体につきBP+1000される｡",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-046::koreharaidawotsu",
+          "keyword": "xg6::XG6-046::field",
           "duration": "permanent"
         }
       ]
@@ -52,13 +52,13 @@
       "name": "ゲキジョウバン",
       "text": "これを手札からラッシュした時、自軍山札の上から8枚までオモテにして､その中から特徴｢仮面ライダー｣を持つDAのユニットカードを自軍ラッシュエリアに出してもよい。ただし、同名のカードは2枚以上出せない。その後、残りのカードを山札に戻してシャッフルする。この効果で出したユニットは、このターン、ストライクできず、このターンを終えるとき、自軍エリアにあれば捨札になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-046::gekijouban",
+          "keyword": "xg6::XG6-046::gekijouban",
           "duration": "permanent"
         }
       ]

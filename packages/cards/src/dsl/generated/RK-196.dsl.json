@@ -4,7 +4,7 @@
   "name": "クイーンアントロード",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 5,
   "text": "※レジストを持つ敵軍ユニットがなければ、これはバトルエリアに出られない。 【黄泉の鐙】自軍ターン中、これがバトルエリアに出たとき、レジストを持つユニットを1体選んでもよい。そうしたとき、相手は選ばれたユニットを撃破するか、1点ダメージを受けるか選ぶ。",
@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "register",
+          "keyword": "rk10::RK-196::entry_gate",
           "duration": "permanent"
         }
       ]
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-196::no_e9bb84",
+          "keyword": "rk10::RK-196::yomi_no_abumi",
           "duration": "turn"
         }
       ],

@@ -1,4 +1,13 @@
 import type { Category } from "@rangers-strike/cards";
+import { pickSet8BCpuChoice } from "../rules/legend1/set8NamedEffectsB";
+import { cpuAcceptsOptionalEffect } from "../rules/optionalEffects";
+import { pickSet7DCpuChoice } from "../rules/legend1/set7NamedEffectsD";
+import { pickSet8DCpuChoice } from "../rules/legend1/set8NamedEffectsD";
+import { pickSet9ACpuChoice } from "../rules/legend1/set9NamedEffectsA";
+import { pickSet9DCpuChoice } from "../rules/legend1/set9NamedEffectsD";
+import { pickOtherLinesCpuChoice } from "../rules/legend1/otherLinesNamedEffects";
+import { pickSet9BCpuChoice } from "../rules/legend1/set9NamedEffectsB";
+import { ATTACK_HOLD_BONUS_EFFECT_ID, pickAttackHoldCount } from "../rules/attackHoldBonus";
 import { getCardEffect, listZordFusionPartnerIds } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
@@ -33,10 +42,13 @@ import {
 } from "../rules/zordSetup";
 import {
   canToggleBpBudgetTarget,
-  printedBpForInstance,
+  budgetBpForInstance,
 } from "../rules/pendingChoices";
 import { COMMAND_ZONE_MAX, WIN_DAMAGE } from "../types/game";
 import { evaluateState } from "./scoring";
+import { isSet7CChoiceEffect, QUIZ_DECLARE_EFFECT_ID, REVOLVER_PICK_EFFECT_ID } from "../rules/legend1/set7NamedEffectsC";
+import { isSet8CChoiceEffect } from "../rules/legend1/set8NamedEffectsC";
+import { isSet9CChoiceEffect } from "../rules/legend1/set9NamedEffectsC";
 import {
   getBattleEntryPaymentNeeds,
   getCategoryPaymentOptions,
@@ -205,7 +217,8 @@ export function scoreRushAction(
   const lethalBonus = enemy.damage + sp >= WIN_DAMAGE ? 50_000 : 0;
   const deckLeft = player.deck.length;
   const deckPenalty = deckLeft < 10 ? (10 - deckLeft) * 400 : 0;
-  let score = bp + sp * 3_000 + lethalBonus - deckPenalty;
+  // RS-586【魔神に不足する物】: 捨札にする「戦闘員」のユニットの損失。
+  let score = bp + sp * 3_000 + lethalBonus - deckPenalty - godomDiscardPenalty(state, playerId, action.godomDiscardInstanceIds);
 
   if (requiresAllFusionPartners(card.cardId)) {
     if (
@@ -323,6 +336,23 @@ function pickBestChargeAction(
   }
 
   return best;
+}
+
+/** 先読みで比べるチャージの候補: パワー・コマンドそれぞれ評価の高いカード perMode 枚と、チャージしない。 */
+export function chargeCandidates(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+  perMode: number,
+): GameAction[] {
+  const top = (mode: "command" | "power") =>
+    actionsOfType(actions, mode === "power" ? "charge_power" : "charge_command")
+      .map((action) => ({ action, score: scoreChargeCard(state, playerId, action.instanceId, mode) }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, perMode)
+      .map((e) => e.action);
+  const end = endPhase(actions);
+  return [...top("power"), ...top("command"), ...(end ? [end] : [])];
 }
 
 /** チャージフェイズで charge_power と charge_command のどちらを選ぶか。 */
@@ -566,7 +596,22 @@ export function pickHoldBeforeBattle(
       };
     }
   }
-  return null;
+  // 「自軍コマンドを1つホールドしなければバトルエリアに出られない」ユニット（ガオイーグル等）は、
+  // 払うまで move_to_battle が合法手に無く、battle_entry の支払いの開始だけが並ぶ。
+  // 上のループでは見つからず、ラッシュエリアに置いたまま出さずにいた（XG3 スターターB、2026-10-20）。
+  let best: GameAction | null = null;
+  let bestBp = Number.NEGATIVE_INFINITY;
+  for (const action of actionsOfType(actions, "initiate_command_payment")) {
+    if (action.kind !== "battle_entry" || action.playerId !== playerId) continue;
+    const card = state.players[playerId].rush.find((c) => c.instanceId === action.sourceInstanceId);
+    if (!card) continue;
+    const bp = effectiveBp(state, playerId, card);
+    if (bp > bestBp) {
+      bestBp = bp;
+      best = action;
+    }
+  }
+  return best;
 }
 
 /** このターンユニットがラッシュできるようカテゴリホールドを支払う。 */
@@ -593,10 +638,12 @@ export function pickRushCategoryPayment(
         a.playerId === playerId &&
         a.instanceId === action.sourceInstanceId,
     );
-    const score = rushAction
-      ? scoreRushAction(state, rushAction)
-      : effectiveBp(state, playerId, card) +
-        strikeDamageFor(state.definitions, card, state, playerId) * 3_000;
+    const score =
+      (rushAction
+        ? scoreRushAction(state, rushAction)
+        : effectiveBp(state, playerId, card) +
+          strikeDamageFor(state.definitions, card, state, playerId) * 3_000) -
+      godomDiscardPenalty(state, playerId, action.godomDiscardInstanceIds);
     if (score > bestScore) {
       bestScore = score;
       best = action;
@@ -646,7 +693,40 @@ export function pickHoldBeforeRush(
     zordMaterialInstanceId: rushAction.zordMaterialInstanceId,
     zordMaterialDestination: rushAction.zordMaterialDestination,
     zordMothershipHoldInstanceIds: rushAction.zordMothershipHoldInstanceIds,
+    godomDiscardInstanceIds: rushAction.godomDiscardInstanceIds,
   };
+}
+
+/**
+ * RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニットの損失（BP の低いユニットを捨札にする組を選ぶ）。
+ * 選ぶ組ごとに分かれたラッシュの宣言の比較に使う。
+ */
+export function godomDiscardPenalty(state: GameState, playerId: PlayerId, ids: string[] | undefined): number {
+  if (!ids || ids.length === 0) return 0;
+  const player = state.players[playerId];
+  return ids.reduce((sum, id) => {
+    const card = [...player.rush, ...player.battle].find((c) => c.instanceId === id);
+    return sum + 1_000 + (card ? effectiveBp(state, playerId, card) : 0);
+  }, 0);
+}
+
+/**
+ * 始めても CPU 自身が途中で取り消す手順（支払えない合体・コマンドの支払い）か。
+ * 取り消すと元の状態に戻るので、選び続けると同じ手を永久に繰り返す（2026-10-20 対戦台で確認）。
+ */
+export function cpuWouldCancelProcedure(state: GameState, playerId: PlayerId, action: GameAction): boolean {
+  const first = applyAction(state, action);
+  if (!first.ok) return true;
+  let current = first.state;
+  for (let i = 0; i < 12; i++) {
+    const step = pickZordSetupStep(current, playerId) ?? pickCommandPaymentResolve(current, playerId);
+    if (!step) return false;
+    if (step.type === "cancel_command_payment" || step.type === "cancel_zord_setup") return true;
+    const next = applyAction(current, step);
+    if (!next.ok) return true;
+    current = next.state;
+  }
+  return false;
 }
 
 export function pickBeginZordSetup(
@@ -661,6 +741,7 @@ export function pickBeginZordSetup(
     if (action.type !== "begin_zord_setup" || action.playerId !== playerId) continue;
     if (!canBeginZordSetup(state, playerId, action.zordInstanceId)) continue;
     if (findDirectZordRushAction(state, playerId, action.zordInstanceId)) continue;
+    if (cpuWouldCancelProcedure(state, playerId, action)) continue;
 
     const card = state.players[playerId].hand.find(
       (c) => c.instanceId === action.zordInstanceId,
@@ -671,7 +752,9 @@ export function pickBeginZordSetup(
         type: "rush",
         playerId,
         instanceId: action.zordInstanceId,
-      }) + 25_000;
+      }) +
+      25_000 -
+      godomDiscardPenalty(state, playerId, action.godomDiscardInstanceIds);
     if (score > bestScore) {
       bestScore = score;
       best = action;
@@ -710,10 +793,12 @@ export function pickCommandPaymentResolve(
     return { type: "cancel_command_payment", playerId };
   }
 
-  const candidates: string[][] = [
-    valid.slice(0, needed),
-    valid.slice(-needed),
-  ];
+  const candidates: string[][] = [];
+  // RS-429 代用の effect_hold（minNeeded）: 少ない枚数で足りるならそちらを優先する（MA のコマンド1つ）。
+  if (pending.minNeeded !== undefined && pending.minNeeded < needed) {
+    for (const id of valid) candidates.push([id]);
+  }
+  candidates.push(valid.slice(0, needed), valid.slice(-needed));
   for (let i = 0; i <= valid.length - needed; i += 1) {
     candidates.push(valid.slice(i, i + needed));
   }
@@ -1090,13 +1175,16 @@ function pickSelectHandChoice(
 
   let best: GameAction | null = null;
   let bestPriority = Number.POSITIVE_INFINITY;
+  // 超電子頭脳（RS-008）は「手札に残す1枚」を選ぶので、捨てる優先度が最も低いカードを選ぶ。
+  const keepChoice = pending.effectId === "super_brain_keep";
 
   for (const action of actions) {
     if (action.type !== "resolve_effect_choice") continue;
     if (selected.has(action.instanceId)) continue;
     const found = findInZone(state.players[playerId], "hand", action.instanceId);
     if (!found) continue;
-    const priority = handDiscardPriority(state.definitions, found.card.cardId);
+    const raw = handDiscardPriority(state.definitions, found.card.cardId);
+    const priority = keepChoice ? -raw : raw;
     if (priority < bestPriority) {
       bestPriority = priority;
       best = action;
@@ -1111,7 +1199,7 @@ function pickSelectCommandsChoice(
   pending: PendingEffectChoice,
   actions: GameAction[],
 ): GameAction | null {
-  if (needsEffectHoldPayment(pending)) {
+  if (needsEffectHoldPayment(pending, state)) {
     const initiate = actions.find(
       (a) =>
         a.type === "initiate_command_payment" &&
@@ -1180,6 +1268,66 @@ export function pickEffectChoice(
   const playerId = pending.playerId;
   const skip = actions.find((a) => a.type === "skip_effect_choice");
 
+  // 第7弾 RS-474〜RS-494 の選択（rules/legend1/set7NamedEffectsC.ts）。
+  if (isSet7CChoiceEffect(pending.effectId)) {
+    const picked = pickSet7CEffectChoice(state, pending, actions);
+    if (picked) return picked;
+  }
+  // 第9弾 RS-605〜RS-626 の選択（rules/legend1/set9NamedEffectsA.ts）。
+  const set9a = pickSet9ACpuChoice(state, pending, actions);
+  if (set9a) return set9a;
+  // 第8弾 RS-560〜RS-581 の選択（rules/legend1/set8NamedEffectsC.ts）。
+  if (isSet8CChoiceEffect(pending.effectId)) {
+    const picked = pickSet8CEffectChoice(state, pending, actions);
+    if (picked) return picked;
+  }
+  // 第9弾 RS-648〜RS-669 の選択（rules/legend1/set9NamedEffectsC.ts）。行動ごとに局面を評価して選ぶ。
+  if (isSet9CChoiceEffect(pending.effectId)) {
+    const picked = pickSet8CEffectChoice(state, pending, actions);
+    if (picked) return picked;
+  }
+  // 第7弾 RS-495〜RS-515 の選択（rules/legend1/set7NamedEffectsD.ts）。
+  const set7d = pickSet7DCpuChoice(state, pending, actions);
+  if (set7d) return set7d;
+  // 第8弾 RS-582〜RS-604 の選択（rules/legend1/set8NamedEffectsD.ts）。
+  const set8d = pickSet8DCpuChoice(state, pending, actions);
+  if (set8d) return set8d;
+  // 第9弾 RS-670〜RS-690 の選択（rules/legend1/set9NamedEffectsD.ts）。
+  const set9d = pickSet9DCpuChoice(state, pending, actions);
+  if (set9d) return set9d;
+  // RS 以外のライン（XG・XP・RM・SK …）の選択（rules/legend1/otherLinesNamedEffects.ts）。
+  const otherLines = pickOtherLinesCpuChoice(state, pending, actions);
+  if (otherLines) return otherLines;
+  // 第9弾 RS-627〜RS-647 の選択（rules/legend1/set9NamedEffectsB.ts）。
+  const set9b = pickSet9BCpuChoice(state, pending, actions);
+  if (set9b) return set9b;
+  // 第8弾 RS-538〜RS-559 の選択（rules/legend1/set8NamedEffectsB.ts）。
+  const set8b = pickSet8BCpuChoice(state, pending, actions);
+  if (set8b) return set8b;
+
+  // 「～してもよい」の任意効果の確認（rules/optionalEffects.ts）。
+  if (pending.mayConfirm) {
+    const confirm = actions.find((a) => a.type === "confirm_effect_choice");
+    return (cpuAcceptsOptionalEffect(state, pending) ? confirm : skip) ?? skip ?? confirm ?? null;
+  }
+
+  if (pending.kind === "simultaneous_order" && (pending.mutualDestructionMeta || pending.battleDestroyOrderMeta)) {
+    // ルール: R-BTL-02, R-SIM-01 — 相打ちの処理順: 各順で処理した結果を評価し、自分に有利な順を選ぶ。
+    let best: GameAction | null = null;
+    let bestScore = -Infinity;
+    for (const action of actions) {
+      if (action.type !== "resolve_effect_choice") continue;
+      const result = applyAction(state, action);
+      if (!result.ok) continue;
+      const score = evaluateState(result.state, playerId);
+      if (score > bestScore) {
+        bestScore = score;
+        best = action;
+      }
+    }
+    return best;
+  }
+
   if (pending.kind === "simultaneous_order") {
     const prefer =
       pending.validInstanceIds.find((id) => id === "pendingLeave") ??
@@ -1203,6 +1351,16 @@ export function pickEffectChoice(
     return skip ?? null;
   }
 
+  if (pending.kind === "declare_number" && pending.effectId === ATTACK_HOLD_BONUS_EFFECT_ID) {
+    // RS-019 超力／RK-186【Jパンチ】: バトルに勝てる最小のホールド数（勝てなければ 0）。
+    const count = pickAttackHoldCount(state, playerId);
+    return (
+      actions.find((a) => a.type === "resolve_effect_choice" && a.instanceId === count) ??
+      actions.find((a) => a.type === "resolve_effect_choice") ??
+      null
+    );
+  }
+
   if (pending.kind === "declare_number") {
     if (pending.optional && skip) return skip;
     return (
@@ -1219,10 +1377,11 @@ export function pickEffectChoice(
     const selected = pending.selectedInstanceIds ?? [];
     const budget = pending.bpBudget ?? 3000;
     const enemyId = opponent(pending.playerId);
-    const candidates = state.players[enemyId].rush
+    const candidates = [...state.players[enemyId].rush, ...state.players[enemyId].battle]
+      .filter((c) => pending.validInstanceIds.includes(c.instanceId))
       .map((c) => ({
         instanceId: c.instanceId,
-        bp: printedBpForInstance(state, c.instanceId) ?? 0,
+        bp: budgetBpForInstance(state, c.instanceId, pending) ?? 0,
       }))
       .filter((c) => c.bp > 0)
       .sort((a, b) => b.bp - a.bp);
@@ -1403,7 +1562,12 @@ export function pickEffectChoice(
     return pickWeakestEffectTarget(state, actions);
   }
 
-  if (needsEffectHoldPayment(pending)) {
+  // RS-029【勇気の魔法】「リリースしてもよい」— ホールド状態のコマンドのリリースは常に得なのでする。
+  if (pending.effectId === "courage_magic") {
+    return actions.find((a) => a.type === "resolve_effect_choice") ?? skip ?? null;
+  }
+
+  if (needsEffectHoldPayment(pending, state)) {
     const initiate = actions.find(
       (a) =>
         a.type === "initiate_command_payment" &&
@@ -1414,6 +1578,64 @@ export function pickEffectChoice(
   }
 
   return skip ?? actions.find((a) => a.type === "resolve_effect_choice") ?? null;
+}
+
+/**
+ * 第7弾 RS-474〜RS-494 の選択: 候補の行動（解決・見送り）をそれぞれ適用して局面を評価し、最も良いものを選ぶ。
+ * 隠れた情報を当てる選択（RS-475 ウラ向きの捨札から選ぶ・RS-493 必要パワーの数字の宣言）は結果を先読みしない。
+ */
+function pickSet7CEffectChoice(
+  state: GameState,
+  pending: PendingEffectChoice,
+  actions: GameAction[],
+): GameAction | null {
+  const candidates = actions.filter((a) => a.type === "resolve_effect_choice" || a.type === "skip_effect_choice");
+  if (candidates.length === 0) return null;
+  if (pending.effectId === REVOLVER_PICK_EFFECT_ID) {
+    return candidates.find((a) => a.type === "resolve_effect_choice") ?? null;
+  }
+  if (pending.effectId === QUIZ_DECLARE_EFFECT_ID) {
+    return candidates.find((a) => a.type === "resolve_effect_choice" && a.instanceId === "3") ?? candidates[0] ?? null;
+  }
+  let best: GameAction | null = null;
+  let bestScore = -Infinity;
+  for (const action of candidates) {
+    const result = applyAction(state, action);
+    if (!result.ok) continue;
+    const score = evaluateState(result.state, pending.playerId);
+    if (score > bestScore) {
+      bestScore = score;
+      best = action;
+    }
+  }
+  return best ?? candidates[0] ?? null;
+}
+
+/**
+ * 第8弾 RS-560〜RS-581 の選択: 候補の行動（解決・確定・見送り）をそれぞれ適用して局面を評価し、最も良いものを選ぶ。
+ * 1枚ずつ選んで確定する選択（RS-568・RS-569）は、確定できるならその局面も比べる（選び続けるより悪くなければ確定する）。
+ */
+function pickSet8CEffectChoice(
+  state: GameState,
+  pending: PendingEffectChoice,
+  actions: GameAction[],
+): GameAction | null {
+  const candidates = actions.filter(
+    (a) => a.type === "resolve_effect_choice" || a.type === "skip_effect_choice" || a.type === "confirm_effect_choice",
+  );
+  if (candidates.length === 0) return null;
+  let best: GameAction | null = null;
+  let bestScore = -Infinity;
+  for (const action of candidates) {
+    const result = applyAction(state, action);
+    if (!result.ok) continue;
+    const score = evaluateState(result.state, pending.playerId);
+    if (score > bestScore) {
+      bestScore = score;
+      best = action;
+    }
+  }
+  return best ?? candidates[0] ?? null;
 }
 
 function maxSelfStrikeThreat(state: GameState, playerId: PlayerId): number {

@@ -80,4 +80,16 @@ describe("splitEffectSegments", () => {
     expect(segs[0].kind).toBe("note");
     expect(segs[1].name).toBe("未来予知");
   });
+
+  it("keeps a granted 「⇒※キーワード」 in the granting segment (RS-657)", () => {
+    const segs = splitEffectSegments(
+      "※このカードの追加条件は、…変更される⇒追加で自軍コマンドを2つホールドする 【航空戦力との連携】これが自軍エリアにある間、特徴「航空機」を持つユニットは次の能力を得る⇒※ウイング",
+    );
+    expect(segs).toHaveLength(2);
+    expect(segs[1]).toMatchObject({
+      kind: "named",
+      name: "航空戦力との連携",
+      body: "これが自軍エリアにある間、特徴「航空機」を持つユニットは次の能力を得る⇒※ウイング",
+    });
+  });
 });

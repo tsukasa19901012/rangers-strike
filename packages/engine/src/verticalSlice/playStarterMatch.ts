@@ -1,4 +1,5 @@
 import { applyAction } from "../core/applyAction";
+import { withSearchCache } from "../core/searchCache";
 import { getActionPlayerId, getLegalActions, isLegalAction } from "../core/legalActions";
 import { pickCpuAction, type CpuLevel } from "../ai/index";
 import type { GameAction } from "../types/actions";
@@ -124,10 +125,24 @@ function pickNonBattleEntryStallAction(
  */
 export function playStarterMatchUntilEnd(
   initial: GameState,
-  options: { maxSteps?: number; cpuLevel?: CpuLevel } = {},
+  options: StarterMatchOptions = {},
 ): StarterMatchResult {
+  // 対局の間、状態は書き換えないので、CPU の読み（合法手・アクションの適用結果）を手番をまたいで使い回す
+  // （選んだ手の適用結果は探索の中で計算済み。core/searchCache.ts）。
+  return withSearchCache(() => playStarterMatchLoop(initial, options));
+}
+
+type StarterMatchOptions = {
+  maxSteps?: number;
+  cpuLevel?: CpuLevel;
+  /** 各ステップの開始時の状態を受け取る（不変条件テスト用。状態を書き換えないこと）。 */
+  onState?: (state: GameState) => void;
+};
+
+function playStarterMatchLoop(initial: GameState, options: StarterMatchOptions): StarterMatchResult {
   const maxSteps = options.maxSteps ?? 12_000;
-  const cpuLevel = options.cpuLevel ?? 4;
+  // エンジンの通り道を確かめるシミュレーション用。Lv3 以上は先読みで 1 手が重いので、既定は Lv2。
+  const cpuLevel = options.cpuLevel ?? 2;
   let state = initial;
   const phasesSeen = new Set<Phase>();
   const actionCounts: Record<string, number> = {};
@@ -150,6 +165,7 @@ export function playStarterMatchUntilEnd(
   let sameFingerprintCount = 0;
 
   for (let steps = 0; steps < maxSteps; steps += 1) {
+    options.onState?.(state);
     phasesSeen.add(state.phase);
 
     if (state.winner) {

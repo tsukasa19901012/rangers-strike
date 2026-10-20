@@ -29,7 +29,7 @@
       "自軍山札の上から3枚を見て、そのカードを山札の上"
     ],
     "expectedDslKeywords": [
-      "deck_scry_three_reorder"
+      "rk1::RK-002::v3_hopper"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -84,6 +84,9 @@
     "textSnippets": [
       "特徴「改造人間」を持つ自軍Sユニットを1体選ぶ。"
     ],
+    "expectedDslKeywords": [
+      "rk1::RK-005::dynamo"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -120,7 +123,7 @@
       "自軍コマンドゾーンからリリース状態のSユニットの"
     ],
     "expectedDslKeywords": [
-      "command_return_then_recruit_discard"
+      "rk1::RK-007::maintenance"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -231,7 +234,7 @@
       "自軍Sユニットを1体選ぶ。そして、このカードを自"
     ],
     "expectedDslKeywords": [
-      "stack_s_on_self_rush"
+      "rk1::RK-013::j_power"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -306,7 +309,7 @@
       "ＲＣを持つ自軍Sユニットを1体選ぶ。選んだユニッ"
     ],
     "expectedDslKeywords": [
-      "rc_hold_skip_rideoff"
+      "rk1::RK-017::mission_memory"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -325,7 +328,7 @@
       "自軍ラッシュエリアからSユニットを1体選ぶ。そし"
     ],
     "expectedDslKeywords": [
-      "dual_bp_rush_discard_combine"
+      "rk1::RK-018::rouse_card"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -344,7 +347,7 @@
       "特徴「メカ」を持たない敵軍ユニットを1体選ぶ。そ"
     ],
     "expectedDslKeywords": [
-      "impose_destroy_rule_on_enemy"
+      "rk1::RK-019::ongeki"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -361,6 +364,9 @@
     "category": "ET",
     "textSnippets": [
       "自軍ラッシュエリアから特徴「仮面ライダー」を持つ"
+    ],
+    "expectedDslKeywords": [
+      "rk1::RK-020::double_rider_kick"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -417,7 +423,7 @@
       "【技の1号】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "rk2::RK-023::waza_no_ichigo"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -434,7 +440,8 @@
       "【サイクロンクラッシャー】"
     ],
     "expectedDslKeywords": [
-      "ride_bp_boost_1000"
+      "ride_bp_boost_1000",
+      "rk2::RK-024::cyclone_crusher"
     ],
     "sp": null,
     "size": "S"
@@ -450,7 +457,7 @@
       "【電波投げ】"
     ],
     "expectedDslKeywords": [
-      "reveal_enemy_deck_hold_2"
+      "rk2::RK-025::denpa_nage"
     ],
     "bp": 1000,
     "sp": "1/5",
@@ -468,7 +475,7 @@
     ],
     "expectedDslKeywords": [
       "no_attack_from_enemy_s_bp2000",
-      "return_kamen_to_rush"
+      "rk2::RK-026::seigi_no_mikata"
     ],
     "bp": 500,
     "sp": null,
@@ -485,7 +492,8 @@
       "【ライダーキック】"
     ],
     "expectedDslKeywords": [
-      "ride_bp_boost_1000"
+      "ride_bp_boost_1000",
+      "rk2::RK-027::rider_kick"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -502,7 +510,8 @@
       "【ダイナミックスマッシュ】"
     ],
     "expectedDslKeywords": [
-      "can_enter_battle_without_ride"
+      "can_enter_battle_without_ride",
+      "rk2::RK-028::dynamic_smash"
     ],
     "sp": null,
     "size": "S"
@@ -519,7 +528,7 @@
     ],
     "expectedDslKeywords": [
       "no_attack_while_riding_enemy_s",
-      "per_ally_fx_unknown_bp_1000"
+      "per_ally_feat_e8ada6e5af9f_bp_1000"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -537,7 +546,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_1000",
-      "deck_scry_one"
+      "rk2::RK-030::musen_tsushin"
     ],
     "sp": null,
     "size": "S"
@@ -551,6 +560,9 @@
     "category": "ET",
     "textSnippets": [
       "【バッテリー交換】"
+    ],
+    "expectedDslKeywords": [
+      "rk2::RK-031::battery_koukan"
     ],
     "bp": 500,
     "sp": null,
@@ -567,7 +579,8 @@
       "【アナザーパンチ】"
     ],
     "expectedDslKeywords": [
-      "require_discard_rush_feature_to_battle"
+      "require_discard_rush_feature_to_battle",
+      "rk2::RK-032::another_punch"
     ],
     "bp": 5000,
     "sp": "1/3",
@@ -673,7 +686,7 @@
       "【ヘビープレッシャー】"
     ],
     "expectedDslKeywords": [
-      "combo_destroy_damage_gate"
+      "rk2::RK-038::heavy_pressure"
     ],
     "bp": 2000,
     "sp": "1/2",
@@ -691,7 +704,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rideoff_enemy_s_on_enter"
+      "rk2::RK-039::tosshin"
     ],
     "bp": 4000,
     "sp": null,
@@ -779,7 +792,7 @@
     ],
     "expectedDslKeywords": [
       "deck_unlimited",
-      "recruit_all_named_e383a9e382a4e382aae38388_10"
+      "rk3::RK-044::ichiman_rider_butai"
     ],
     "bp": 500,
     "sp": null,
@@ -830,7 +843,7 @@
       "【音撃斬・雷電激震】"
     ],
     "expectedDslKeywords": [
-      "destroy_hold_commands_then"
+      "rk3::RK-047::raiden_gekishin"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -864,7 +877,7 @@
       "【風牙】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "rk3::RK-049::fuga"
     ],
     "bp": 3000,
     "sp": "special",
@@ -881,7 +894,7 @@
       "【音撃斬・閻魔裁き】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "rk3::RK-050::enma_sabaki"
     ],
     "bp": 2000,
     "sp": "special",
@@ -896,6 +909,9 @@
     "category": "MA",
     "textSnippets": [
       "【音撃打・必殺必中】"
+    ],
+    "expectedDslKeywords": [
+      "rk3::RK-051::hissatsu_hicchu"
     ],
     "bp": 2000,
     "sp": null,
@@ -912,7 +928,7 @@
       "【音撃打・破砕細石】"
     ],
     "expectedDslKeywords": [
-      "bp_if_no_enemy_named_e383a1e382ab_5000"
+      "rk3::RK-052::hasai_sazare"
     ],
     "bp": 500,
     "sp": null,
@@ -930,7 +946,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_3000",
-      "rush_block_discard_power"
+      "rk3::RK-053::gatack_vulcan"
     ],
     "bp": 2000,
     "sp": null,
@@ -948,7 +964,7 @@
     ],
     "expectedDslKeywords": [
       "not_selectable_except_attack",
-      "destroy_adjacent_s_bp_6000"
+      "rk3::RK-054::rider_cutting"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -965,7 +981,7 @@
       "【ライダーパンチ】"
     ],
     "expectedDslKeywords": [
-      "return_enemy_s_to_rush_any"
+      "rk3::RK-055::rider_punch"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -983,7 +999,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_5000",
-      "battle_position_sp_fx_unknown_pos4_sp1"
+      "battle_position_sp_feat_e688a6e99798e593a1_pos4_sp1"
     ],
     "bp": 1000,
     "sp": null,
@@ -1001,7 +1017,7 @@
     ],
     "expectedDslKeywords": [
       "not_selectable_except_attack",
-      "rush_enemy_s_to_power_bp4000"
+      "rk3::RK-057::rider_sting"
     ],
     "bp": 1000,
     "sp": "1/4",
@@ -1019,7 +1035,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_500",
-      "ride_without_rc_raida"
+      "ride_without_rc_feat_e4bbaee99da2e383a9e382a4e38380e383bc"
     ],
     "sp": null,
     "size": "S"
@@ -1036,7 +1052,7 @@
     ],
     "expectedDslKeywords": [
       "deck_unlimited",
-      "block_enemy_number_match_entry"
+      "rk3::RK-059::formation_alpha"
     ],
     "bp": 500,
     "sp": null,
@@ -1051,6 +1067,9 @@
     "category": "OT",
     "textSnippets": [
       "【戦闘モード】"
+    ],
+    "expectedDslKeywords": [
+      "rk3::RK-060::sentou_mode"
     ],
     "bp": 6000,
     "sp": null,
@@ -1067,7 +1086,7 @@
       "【一本釣り】"
     ],
     "expectedDslKeywords": [
-      "enemy_s_from_power_to_battle"
+      "rk3::RK-061::ippon_zuri"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -1118,6 +1137,9 @@
     "textSnippets": [
       "【ファイズエッジ】"
     ],
+    "expectedDslKeywords": [
+      "rk4::RK-064::faiz_edge"
+    ],
     "bp": 3000,
     "sp": "1/5",
     "size": "S"
@@ -1151,7 +1173,8 @@
       "【俺の必殺技！】"
     ],
     "expectedDslKeywords": [
-      "no_strike_if_enemy_battle"
+      "no_strike_if_enemy_battle",
+      "rk4::RK-066::ore_no_hissatsu"
     ],
     "bp": 3000,
     "sp": 1,
@@ -1169,7 +1192,7 @@
     ],
     "expectedDslKeywords": [
       "note_attack_require_discard_feature::女",
-      "combo_from_partner_original_bp"
+      "rk4::RK-067::hishouzan"
     ],
     "bp": 5000,
     "sp": "1/2",
@@ -1187,7 +1210,7 @@
     ],
     "expectedDslKeywords": [
       "no_strike_if_enemy_battle",
-      "combo_named_discard_enemy_command::ベノスネーカー"
+      "rk4::RK-068::veno_crash"
     ],
     "bp": 3000,
     "sp": 1,
@@ -1204,7 +1227,7 @@
       "【ミスティースラッシュ】"
     ],
     "expectedDslKeywords": [
-      "combo_extra_attack_no_strike"
+      "rk4::RK-069::misty_slash"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -1222,7 +1245,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_4000",
-      "enemy_s_count_balance"
+      "rk4::RK-070::avalanche_break"
     ],
     "bp": 1000,
     "sp": null,
@@ -1239,7 +1262,7 @@
       "【ライダーキック】"
     ],
     "expectedDslKeywords": [
-      "enemy_rush_s_count_power_match_to_power"
+      "rk4::RK-071::rider_kick"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -1287,8 +1310,8 @@
       "【カギ爪アーム】"
     ],
     "expectedDslKeywords": [
-      "ally_raida_protects_from_enemy_s",
-      "return_rush_deploy_enemy_s"
+      "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
+      "rk4::RK-074::kagizume_arm"
     ],
     "bp": 1000,
     "sp": "1/5",
@@ -1324,7 +1347,7 @@
       "ＲＣを持つ自軍Sユニットを1体選ぶ。選んだユニッ"
     ],
     "expectedDslKeywords": [
-      "rc_hold_skip_rideoff"
+      "rk1::RK-017::mission_memory"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1343,7 +1366,7 @@
       "自軍ラッシュエリアからSユニットを1体選ぶ。そし"
     ],
     "expectedDslKeywords": [
-      "dual_bp_rush_discard_combine"
+      "rk1::RK-018::rouse_card"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1381,7 +1404,7 @@
       "ナンバーに数字を持つ自軍Sユニットを1体選ぶ。そ"
     ],
     "expectedDslKeywords": [
-      "stack_s_on_self_rush"
+      "rk4::RK-079::kamen_rider_title"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1476,7 +1499,7 @@
       "自軍山札の上から3枚をオモテにする。その中から特"
     ],
     "expectedDslKeywords": [
-      "reveal_top3_all_feature_to_rush::ミラーライダー"
+      "rk4::RK-084::trick_vent"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1495,7 +1518,7 @@
       "※カウンター"
     ],
     "expectedDslKeywords": [
-      "counter_mirror_rider_cancel_battle"
+      "rk5::RK-085::guard_vent"
     ],
     "operationKind": "counter",
     "expectedMechanisms": [
@@ -1528,7 +1551,7 @@
       "敵軍ラッシュエリアにあるすべてのSユニットをバト"
     ],
     "expectedDslKeywords": [
-      "force_enemy_s_rush_to_battle_reorder"
+      "rk5::RK-087::zectmizer"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1547,7 +1570,7 @@
       "特徴「イマジン」を持たない自軍Sユニットを1体選"
     ],
     "expectedDslKeywords": [
-      "stack_s_on_self_rush"
+      "rk5::RK-088::imagin_contract"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1566,7 +1589,7 @@
       "次の効果を、相手、自分の順に行う。 自分自身の山"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-089::fx_unknown_e4b997"
+      "rk5::RK-089::boarding_refusal"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -1602,7 +1625,7 @@
       "【戦闘員の統率】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-091::no_e688a6"
+      "rk5::RK-091::grunt_command"
     ],
     "bp": 3000,
     "sp": null,
@@ -1619,7 +1642,7 @@
       "【狼作戦】"
     ],
     "expectedDslKeywords": [
-      "while_feature_s_add_category::男::WB"
+      "rk5::RK-092::wolf_operation"
     ],
     "bp": 6000,
     "sp": 1,
@@ -1636,7 +1659,7 @@
       "【要人の暗殺】"
     ],
     "expectedDslKeywords": [
-      "destroy_enemy_cannot_enter_battle_text"
+      "rk5::RK-093::assassination"
     ],
     "bp": 2000,
     "sp": null,
@@ -1654,7 +1677,7 @@
     ],
     "expectedDslKeywords": [
       "deck_unlimited",
-      "destroy_if_no_ride_end_turn"
+      "rk5::RK-094::bike_unit"
     ],
     "bp": 1500,
     "sp": null,
@@ -1671,7 +1694,7 @@
       "【ハリケーンダッシュ】"
     ],
     "expectedDslKeywords": [
-      "return_rider_to_rush_end_turn"
+      "rk5::RK-095::hurricane_dash"
     ],
     "sp": null,
     "size": "S"
@@ -1685,6 +1708,9 @@
     "category": "DA",
     "textSnippets": [
       "【切断溶解】"
+    ],
+    "expectedDslKeywords": [
+      "rk5::RK-096::cut_melt"
     ],
     "bp": 1000,
     "sp": null,
@@ -1701,7 +1727,8 @@
       "【ライドルスティック】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk5::RK-097::ridol_stick"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -1719,7 +1746,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_1000",
-      "deck_bottom_hold_command"
+      "rk5::RK-098::underwater"
     ],
     "sp": null,
     "size": "S"
@@ -1736,7 +1763,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "while_feature_bp_plus::怪人::1000"
+      "rk5::RK-099::kaijin_watch"
     ],
     "bp": 4000,
     "sp": "special",
@@ -1753,7 +1780,7 @@
       "【虚像投影装置】"
     ],
     "expectedDslKeywords": [
-      "release_command_feature_s_to_rush::改造人間"
+      "rk5::RK-100::projector"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -1770,7 +1797,7 @@
       "【タイガーボンバー】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-101::taigabonba"
+      "rk5::RK-101::tiger_bomber"
     ],
     "bp": 500,
     "sp": null,
@@ -1787,7 +1814,8 @@
       "【スプラッシュドラゴン】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk5::RK-102::splash_dragon"
     ],
     "bp": 2000,
     "sp": "1/3",
@@ -1804,8 +1832,8 @@
       "【ブラストペガサス】"
     ],
     "expectedDslKeywords": [
-      "end_turn_stack_on_resident",
-      "combo_feature_bp_attack_rush::警察::3000"
+      "rk5::RK-103::stack_on_chouhenshin",
+      "rk5::RK-103::blast_pegasus"
     ],
     "bp": 500,
     "sp": "1/3",
@@ -1841,7 +1869,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_1000",
-      "return_enemy_power_sum_shuffle::3"
+      "rk5::RK-105::halberd_spin"
     ],
     "bp": 2000,
     "sp": "1/3",
@@ -1858,8 +1886,8 @@
       "【セイバースラッシュ】"
     ],
     "expectedDslKeywords": [
-      "SP1",
-      "enemy_battle_held_s_to_power"
+      "rk6::RK-106::riding_sp",
+      "rk6::RK-106::saber_slash"
     ],
     "bp": 4000,
     "sp": "special",
@@ -1876,7 +1904,7 @@
       "【硬化装甲】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-107::ko"
+      "rk6::RK-107::hardened_armor"
     ],
     "sp": null,
     "size": "S"
@@ -1893,7 +1921,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hold_self_enemy_battle_s_to_power"
+      "rk6::RK-108::gills_heel_claw"
     ],
     "bp": 3000,
     "sp": null,
@@ -1911,7 +1939,7 @@
     ],
     "expectedDslKeywords": [
       "can_enter_battle_without_ride",
-      "ride_release_on_mount"
+      "rk6::RK-109::self_repair"
     ],
     "sp": null,
     "size": "S"
@@ -1927,7 +1955,7 @@
       "【性能の限界】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-110::no_e680a7"
+      "rk6::RK-110::performance_limit"
     ],
     "bp": 500,
     "sp": "1/5",
@@ -1944,8 +1972,8 @@
       "【非常警戒態勢】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
-      "rk_fx::RK-111::fx_unknown_e99d9e"
+      "ride_without_rc_feat_e8ada6e5af9f",
+      "rk6::RK-111::emergency_alert"
     ],
     "sp": null,
     "size": "S"
@@ -1961,7 +1989,8 @@
       "【スラッシュダガー】"
     ],
     "expectedDslKeywords": [
-      "no_strike_after_rideoff"
+      "no_strike_after_rideoff",
+      "rk6::RK-112::slash_dagger"
     ],
     "bp": 1000,
     "sp": "1/2",
@@ -1979,7 +2008,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "on_rush_enemy_s_ride_off"
+      "rk6::RK-113::scatter_shot"
     ],
     "bp": 500,
     "sp": "1/2",
@@ -1996,7 +2025,7 @@
       "【デッドエンド】"
     ],
     "expectedDslKeywords": [
-      "enter_battle_destroy_enemy_unridden_s_vehicle"
+      "rk6::RK-114::dead_end"
     ],
     "sp": null,
     "size": "S"
@@ -2012,7 +2041,7 @@
       "【エンドオブワールド】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-115::endoobuwarudo"
+      "rk6::RK-115::end_of_world"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -2031,7 +2060,7 @@
     "expectedDslKeywords": [
       "cannot_attack",
       "require_command_hold_entry",
-      "while_command_hold_immune"
+      "rk6::RK-116::towering_body"
     ],
     "bp": 6000,
     "sp": null,
@@ -2048,7 +2077,8 @@
       "【クリスタルブレイク】"
     ],
     "expectedDslKeywords": [
-      "bp_plus_per_held_enemy_unit_1000"
+      "rk6::RK-117::held_enemy_bp",
+      "rk6::RK-117::crystal_break"
     ],
     "bp": 1000,
     "sp": "1/2",
@@ -2066,7 +2096,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "hold_on_enter_enemy_s_no_resist"
+      "rk6::RK-118::claw"
     ],
     "bp": 4000,
     "sp": null,
@@ -2102,7 +2132,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_1000",
-      "rk_fx::RK-120::nirashatoru"
+      "rk6::RK-120::kneeler_shuttle"
     ],
     "sp": null,
     "size": "S"
@@ -2118,7 +2148,7 @@
       "【エクザップバスター】"
     ],
     "expectedDslKeywords": [
-      "rush_turn_enemy_s_bp_minus::500"
+      "rk6::RK-121::exa_buster"
     ],
     "bp": 5000,
     "sp": "1/5",
@@ -2135,8 +2165,8 @@
       "【使途再生】"
     ],
     "expectedDslKeywords": [
-      "power_min_6_entry",
-      "while_hold_s_add_feature::オルフェノク"
+      "rk6::RK-122::power_six_entry",
+      "rk6::RK-122::apostle_regeneration"
     ],
     "bp": 4000,
     "sp": 1,
@@ -2153,7 +2183,7 @@
       "【制裁する光の翼】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-123::suru_hikari_no_tsubasa"
+      "rk6::RK-123::punishing_wings"
     ],
     "bp": 2000,
     "sp": null,
@@ -2170,7 +2200,7 @@
       "【人を守る決意】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-124::wo_mamoru_ru"
+      "rk6::RK-124::resolve_to_protect"
     ],
     "bp": 4000,
     "sp": null,
@@ -2188,7 +2218,7 @@
     ],
     "expectedDslKeywords": [
       "no_strike_after_rideoff",
-      "note_card::RK-125::hanoeratano"
+      "effect_card::RK-125::bureirauza"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -2206,7 +2236,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-126::gyarenrauza"
+      "rk6::RK-126::garren_rouzer"
     ],
     "bp": 3000,
     "sp": null,
@@ -2224,7 +2254,8 @@
     ],
     "expectedDslKeywords": [
       "no_strike_after_rideoff",
-      "bp_plus_per_enemy_hand_card_2000"
+      "bp_plus_per_enemy_hand_card_2000",
+      "rk7::RK-127::chalice_arrow"
     ],
     "bp": 1000,
     "sp": "1/2",
@@ -2242,8 +2273,8 @@
     ],
     "expectedDslKeywords": [
       "no_strike_after_rideoff",
-      "note_substitute_on_destroy_feature_s::feature",
-      "rk_fx::RK-128::rengerurauza"
+      "rk7::RK-128::substitute",
+      "rk7::RK-128::rengel_rouzer"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -2260,7 +2291,7 @@
       "【サンダースペイダー】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-129::sandasupeida"
+      "rk7::RK-129::thunder_spader"
     ],
     "sp": null,
     "size": "S"
@@ -2276,7 +2307,7 @@
       "【スペード5－キック】"
     ],
     "expectedDslKeywords": [
-      "replace_rush_kamen_rider"
+      "rk7::RK-130::spade5_kick"
     ],
     "bp": 1500,
     "sp": null,
@@ -2293,7 +2324,7 @@
       "【音響打・豪腕無双】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-131::fx_unknown_e99fb3"
+      "rk7::RK-131::gouki"
     ],
     "bp": 4000,
     "sp": "1/3",
@@ -2311,7 +2342,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-132::nobakuapu"
+      "rk7::RK-132::family_backup"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -2346,7 +2377,9 @@
       "【ライダーキック】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk7::RK-134::rider_kick_attack",
+      "rk7::RK-134::rider_kick"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -2382,7 +2415,7 @@
     ],
     "expectedDslKeywords": [
       "not_selectable_except_attack",
-      "rk_fx::RK-136::raidashuteingu"
+      "rk7::RK-136::rider_shooting"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -2417,7 +2450,7 @@
     ],
     "expectedDslKeywords": [
       "no_battle_rush_turn",
-      "rk_fx::RK-138::na"
+      "rk7::RK-138::unstable_mimicry"
     ],
     "bp": 2000,
     "sp": 1,
@@ -2434,7 +2467,7 @@
       "【俺はかーなーり強い】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-139::hakanarii"
+      "rk7::RK-139::kanari_tsuyoi"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -2447,7 +2480,13 @@
     "cardType": "unit",
     "powerCost": "5+",
     "category": "OT",
-    "textSnippets": [],
+    "textSnippets": [
+      "【電車斬り】"
+    ],
+    "expectedDslKeywords": [
+      "note_card::RK-140::koregaerianiarup",
+      "effect_card::RK-140::zan_ri"
+    ],
     "bp": 6000,
     "sp": "1/4",
     "size": "S"
@@ -2463,7 +2502,7 @@
       "【デネビックバスター】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-141::denebikubasuta"
+      "rk7::RK-141::denebic_buster"
     ],
     "bp": 5000,
     "sp": 1,
@@ -2481,7 +2520,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -2499,7 +2538,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -2517,7 +2556,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 5000,
     "sp": null,
@@ -2535,7 +2574,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "power_faceup_raida_enter_battle"
+      "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -2552,8 +2591,7 @@
       "【デネブキャンディー】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-146::denebukyandei",
-      "rk_fx::RK-146::denebukyandei_koreworashus"
+      "effect_card::RK-146::denebukyandei"
     ],
     "bp": 1000,
     "sp": "1/4",
@@ -2588,7 +2626,7 @@
       "【フロントアックス】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-148::furontoakusu"
+      "rk8::RK-148::front_axe"
     ],
     "bp": 5000,
     "sp": null,
@@ -2605,7 +2643,7 @@
       "【巨龍形態】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-149::ryu"
+      "rk8::RK-149::giant_dragon"
     ],
     "bp": 6000,
     "sp": null,
@@ -2622,7 +2660,7 @@
       "【掘削】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-150::fx_unknown_e68e98"
+      "rk8::RK-150::drill"
     ],
     "bp": 4000,
     "sp": null,
@@ -2670,7 +2708,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_win_only_turn_entry",
-      "rk_fx::RK-153::ryo_e8bb8a"
+      "rk8::RK-153::vehicle_seize"
     ],
     "bp": 5000,
     "sp": 1,
@@ -2688,7 +2726,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "rk_fx::RK-154::gai"
+      "rk8::RK-154::head_held_high"
     ],
     "bp": 1000,
     "sp": "1/4",
@@ -2706,7 +2744,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_4000",
-      "rk_fx::RK-155::ryo_noto"
+      "rk8::RK-155::store"
     ],
     "bp": 5000,
     "sp": null,
@@ -2721,6 +2759,9 @@
     "category": "OT",
     "textSnippets": [
       "【デンライナー搭乗】"
+    ],
+    "expectedDslKeywords": [
+      "rk8::RK-156::denliner_board"
     ],
     "sp": null,
     "size": "S"
@@ -2737,7 +2778,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_enter_battle",
-      "rk_fx::RK-157::nomumono"
+      "rk8::RK-157::contract_wish"
     ],
     "bp": 4000,
     "sp": null,
@@ -2769,7 +2810,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-159::v3kiku"
+      "rk8::RK-159::v3_kick"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -2786,7 +2827,7 @@
       "【ナノロボット散布実験】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-160::nanoroboto"
+      "rk8::RK-160::nano_robot"
     ],
     "bp": 2000,
     "sp": null,
@@ -2821,7 +2862,8 @@
       "【ライダーキック】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk8::RK-162::rider_kick"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -2840,7 +2882,7 @@
     "expectedDslKeywords": [
       "no_strike_after_rideoff",
       "register",
-      "rk_fx::RK-163::no_chikara_e784a1"
+      "rk8::RK-163::unconscious_memory"
     ],
     "bp": 2000,
     "sp": "1/2",
@@ -2857,7 +2899,8 @@
       "【ライダーパンチ】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk8::RK-164::rider_punch_sp1"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -2874,7 +2917,7 @@
       "【恩返し】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-165::shi_e681a9"
+      "rk8::RK-165::ongaeshi"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -2892,7 +2935,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "no_ride_while_held"
+      "no_ride_while_held",
+      "rk8::RK-166::gm01"
     ],
     "bp": 1000,
     "sp": "1/5",
@@ -2909,8 +2953,8 @@
       "【カイザブレイガン】"
     ],
     "expectedDslKeywords": [
-      "require_hold_other_s_entry",
-      "rk_fx::RK-167::kaizabureigan"
+      "rk8::RK-167::entry_hold",
+      "rk8::RK-167::kaiser_blaygun"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -2928,7 +2972,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-168::tenkomoridaze"
+      "effect_card::RK-168::tenkomoridaze"
     ],
     "bp": 5000,
     "sp": "1/4",
@@ -2945,7 +2989,8 @@
       "【グランドストライク】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk9::RK-169::grand_strike"
     ],
     "bp": 6000,
     "sp": 1,
@@ -2982,7 +3027,7 @@
       "本来の特徴に「ミラーライダー」を持つ自軍ユニット"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-171::kontorakuto"
+      "rk9::RK-171::contract"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -3001,7 +3046,7 @@
       "※カウンター"
     ],
     "expectedDslKeywords": [
-      "counter_note::kaunta_korehayunitog"
+      "rk9::RK-172::ruri_ookami"
     ],
     "operationKind": "counter",
     "expectedMechanisms": [
@@ -3019,7 +3064,7 @@
       "自軍Sユニットを選ぶ。そして、このカードを自軍ラ"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-173::no_e9acbc"
+      "rk9::RK-173::oni_armor"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -3036,6 +3081,9 @@
     "category": "OT",
     "textSnippets": [
       "カード名に「RF（ライダーフォーム）」を含む自軍"
+    ],
+    "expectedDslKeywords": [
+      "rk9::RK-174::put_on"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -3055,7 +3103,7 @@
     ],
     "expectedDslKeywords": [
       "alias_raida1_go",
-      "combo_bp_from_skipped_attack"
+      "rk9::RK-175::rider_kick"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -3072,7 +3120,8 @@
       "【ライダーキック】"
     ],
     "expectedDslKeywords": [
-      "alias_raida2_go"
+      "alias_raida2_go",
+      "rk9::RK-176::rider_kick"
     ],
     "bp": 5000,
     "sp": "1/5",
@@ -3089,7 +3138,7 @@
       "【催眠音波】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-177::nami"
+      "rk9::RK-177::hypnotic_wave"
     ],
     "bp": 3000,
     "sp": null,
@@ -3107,7 +3156,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "no_strike_after_rideoff"
+      "no_strike_after_rideoff",
+      "rk9::RK-178::daisetsudan"
     ],
     "bp": 2000,
     "sp": "1/2",
@@ -3124,7 +3174,7 @@
       "【体当たり攻撃】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-179::tari_geki"
+      "rk9::RK-179::body_blow"
     ],
     "sp": null,
     "size": "S"
@@ -3142,7 +3192,7 @@
     "expectedDslKeywords": [
       "no_attack_from_enemy_s_bp2000",
       "while_in_hand_rush_deploy::raidaamazongaareba",
-      "rk_fx::RK-180::shin"
+      "rk9::RK-180::shinshutsu_kibotsu"
     ],
     "bp": 500,
     "sp": null,
@@ -3160,7 +3210,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-181::haibaibuneiru"
+      "rk9::RK-181::high_vibe_nail"
     ],
     "bp": 3000,
     "sp": "special",
@@ -3177,7 +3227,7 @@
       "【Zブリンガーアタック】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-182::zburingaataku"
+      "rk9::RK-182::z_bringer_attack"
     ],
     "sp": null,
     "size": "S"
@@ -3193,7 +3243,7 @@
       "【ZOキック】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-183::zokiku"
+      "rk9::RK-183::zo_kick"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -3212,7 +3262,7 @@
     "expectedDslKeywords": [
       "register",
       "sp1_while_held",
-      "rk_fx::RK-184::puru"
+      "rk9::RK-184::life_pool"
     ],
     "bp": 5000,
     "sp": "special",
@@ -3229,8 +3279,8 @@
       "【合体吸収】"
     ],
     "expectedDslKeywords": [
-      "on_rush_return_enemy_feature_s_to_deck_bottom::仮面ライダー",
-      "rk_fx::RK-185::fx_unknown_e59088"
+      "rk9::RK-185::deck_bottom",
+      "rk9::RK-185::absorb"
     ],
     "bp": 6000,
     "sp": "special",
@@ -3265,7 +3315,7 @@
       "【ジャンボライダーキック】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-187::janboraidakiku"
+      "rk9::RK-187::jumbo_rider_kick"
     ],
     "bp": 5500,
     "sp": null,
@@ -3282,7 +3332,7 @@
       "【地空人のエージェント】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-188::noejiento"
+      "rk9::RK-188::agent"
     ],
     "bp": 500,
     "sp": null,
@@ -3299,7 +3349,7 @@
       "【地空人の精霊パワー】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-189::nopawa"
+      "rk9::RK-189::spirit_power"
     ],
     "sp": null,
     "size": "S"
@@ -3315,7 +3365,7 @@
       "【孵化を迎える厄災】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-190::woeru"
+      "rk10::RK-190::fog_mother"
     ],
     "bp": 7000,
     "sp": 1,
@@ -3333,7 +3383,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-191::garaisodo"
+      "rk10::RK-191::garai_sword"
     ],
     "bp": 5000,
     "sp": "special",
@@ -3350,7 +3400,7 @@
       "【アギトファング】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-192::agitofuangu"
+      "rk10::RK-192::agito_fang"
     ],
     "bp": 4000,
     "sp": null,
@@ -3367,7 +3417,7 @@
       "【バームニードル】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-193::bamunidoru"
+      "rk10::RK-193::balm_needle"
     ],
     "bp": 2000,
     "sp": null,
@@ -3385,8 +3435,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "not_selectable_ally_rush_sp_blank",
-      "rk_fx::RK-194::gx05"
+      "rk10::RK-194::g3x_protect",
+      "rk10::RK-194::gx05"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -3404,7 +3454,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-195::to_e5868d"
+      "rk10::RK-195::reboot"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -3421,8 +3471,8 @@
       "【黄泉の鐙】"
     ],
     "expectedDslKeywords": [
-      "register",
-      "rk_fx::RK-196::no_e9bb84"
+      "rk10::RK-196::entry_gate",
+      "rk10::RK-196::yomi_no_abumi"
     ],
     "bp": 4000,
     "sp": null,
@@ -3441,7 +3491,7 @@
     "expectedDslKeywords": [
       "deck_unlimited",
       "while_in_hand_rush_deploy::mawotsusyunitogaareba",
-      "rk_fx::RK-197::ou_no"
+      "rk10::RK-197::queen_servant"
     ],
     "bp": 500,
     "sp": null,
@@ -3458,8 +3508,9 @@
       "【ドライブディバイダー】"
     ],
     "expectedDslKeywords": [
-      "ally_reiyou_protects_from_enemy_s",
-      "rk_fx::RK-198::doraibudeibaida"
+      "rk10::RK-198::opponent_draw",
+      "ally_feat_e383ace382a4e383a8e382a6e59e8b_protects_from_enemy_s",
+      "rk10::RK-198::drive_divider"
     ],
     "bp": 1000,
     "sp": "1/2",
@@ -3477,7 +3528,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rk_fx::RK-199::zeruno"
+      "rk10::RK-199::zeru_command"
     ],
     "bp": 3000,
     "sp": null,
@@ -3496,7 +3547,7 @@
     "expectedDslKeywords": [
       "require_command_hold_entry",
       "deck_unlimited",
-      "rk_fx::RK-200::reno_geki"
+      "rk10::RK-200::herd_raid"
     ],
     "bp": 500,
     "sp": "1/2",
@@ -3514,7 +3565,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rk_fx::RK-201::doraguburesu"
+      "rk10::RK-201::drag_breath"
     ],
     "bp": 3000,
     "sp": null,
@@ -3543,7 +3594,7 @@
       "【アクセルモード】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-203::akuserumodo"
+      "rk10::RK-203::accel_mode"
     ],
     "bp": 4500,
     "sp": 1,
@@ -3558,6 +3609,9 @@
     "category": "ET",
     "textSnippets": [
       "【オーガ・ストラッシュ】"
+    ],
+    "expectedDslKeywords": [
+      "rk10::RK-204::ogre_strash"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -3574,8 +3628,8 @@
       "【フライングアタッカー】"
     ],
     "expectedDslKeywords": [
-      "end_turn_return_hand_from_rush",
-      "rk_fx::RK-205::furainguataka"
+      "rk10::RK-205::return_hand",
+      "rk10::RK-205::flying_attacker"
     ],
     "bp": 3000,
     "sp": "1/5",
@@ -3593,7 +3647,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack",
-      "rk_fx::RK-206::manaii"
+      "rk10::RK-206::unwanted_fight"
     ],
     "bp": 6500,
     "sp": "1/3",
@@ -3608,6 +3662,9 @@
     "category": "DA",
     "textSnippets": [
       "【悲哀と絶望】"
+    ],
+    "expectedDslKeywords": [
+      "rk10::RK-207::sorrow_despair"
     ],
     "bp": 5500,
     "sp": null,
@@ -3624,7 +3681,7 @@
       "【迎撃の毒矢】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-208::geki_no"
+      "rk10::RK-208::crane_arrow"
     ],
     "bp": 4500,
     "sp": null,
@@ -3642,7 +3699,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rk_fx::RK-209::karatareta"
+      "rk10::RK-209::unleashed"
     ],
     "bp": 7500,
     "sp": 1,
@@ -3659,7 +3716,7 @@
       "【バーニングショット】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-210::baningushoto"
+      "rk10::RK-210::burning_shot"
     ],
     "bp": 4500,
     "sp": "1/2",
@@ -3676,7 +3733,7 @@
       "【ライトニングスラッシュ】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-211::raitoningusurashu"
+      "rk11::RK-211::lightning_slash"
     ],
     "bp": 5500,
     "sp": "1/2",
@@ -3694,7 +3751,7 @@
     ],
     "expectedDslKeywords": [
       "scrum",
-      "rk_fx::RK-212::reibareto"
+      "rk11::RK-212::ray_bullet"
     ],
     "bp": 500,
     "sp": "1/2",
@@ -3712,7 +3769,8 @@
     ],
     "expectedDslKeywords": [
       "scrum",
-      "SP1"
+      "SP1",
+      "rk11::RK-213::gravity_slash"
     ],
     "bp": 2000,
     "sp": "special",
@@ -3730,7 +3788,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-214::inpakutosutabu"
+      "rk11::RK-214::impact_stab"
     ],
     "bp": 1000,
     "sp": null,
@@ -3747,7 +3805,7 @@
       "【スペード2―スラッシュ】"
     ],
     "expectedDslKeywords": [
-      "replace_rush_kamen_rider"
+      "rk11::RK-215::spade2_slash"
     ],
     "bp": 3500,
     "sp": null,
@@ -3764,7 +3822,7 @@
       "【ハート4―フロート】"
     ],
     "expectedDslKeywords": [
-      "replace_rush_kamen_rider"
+      "rk11::RK-216::heart4_float"
     ],
     "bp": 1500,
     "sp": null,
@@ -3781,8 +3839,8 @@
       "【滑空攻撃】"
     ],
     "expectedDslKeywords": [
-      "rush_discard_substitute_for_named::仮面ライダーブレイドJF",
-      "rk_fx::RK-217::geki_e6bb91"
+      "rk11::RK-217::substitute",
+      "rk11::RK-217::glide"
     ],
     "bp": 4500,
     "sp": null,
@@ -3799,8 +3857,8 @@
       "【下級アンデッドを操る者】"
     ],
     "expectedDslKeywords": [
-      "rush_discard_substitute_for_named::仮面ライダーギャレンJF",
-      "rk_fx::RK-218::andedoworu"
+      "rk11::RK-218::substitute",
+      "rk11::RK-218::peacock"
     ],
     "bp": 3500,
     "sp": null,
@@ -3835,7 +3893,7 @@
     ],
     "expectedDslKeywords": [
       "require_discard_rush_feature_to_battle",
-      "rk_fx::RK-220::andedowoeru"
+      "rk11::RK-220::undead_master"
     ],
     "bp": 6500,
     "sp": 1,
@@ -3853,7 +3911,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-221::ongekida_hi_honoo"
+      "rk11::RK-221::kaen_renda"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -3871,7 +3929,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-222::sound_strike_scorching_form"
+      "rk11::RK-222::shakunetsu"
     ],
     "bp": 4500,
     "sp": "1/3",
@@ -3888,7 +3946,7 @@
       "【音撃射・疾風一閃】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-223::geki_kaze_e99fb3"
+      "rk11::RK-223::shippu_issen"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -3905,7 +3963,7 @@
       "【サポート】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-224::sapoto"
+      "rk11::RK-224::support"
     ],
     "bp": 500,
     "sp": null,
@@ -3923,7 +3981,7 @@
     ],
     "expectedDslKeywords": [
       "no_battle_rush_turn",
-      "counter_cost_reduce_3"
+      "rk11::RK-225::onmyojutsu"
     ],
     "bp": 500,
     "sp": "1/3",
@@ -3940,7 +3998,8 @@
       "【音撃打・業火絢爛】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk11::RK-226::goka_kenran"
     ],
     "bp": 1000,
     "sp": null,
@@ -3958,7 +4017,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-227::geki_geki"
+      "rk11::RK-227::ichigeki_doto"
     ],
     "bp": 4000,
     "sp": null,
@@ -3976,7 +4035,7 @@
     ],
     "expectedDslKeywords": [
       "scrum",
-      "rk_fx::RK-228::geki_kaze"
+      "rk11::RK-228::senpu_issen"
     ],
     "bp": 500,
     "sp": "1/3",
@@ -3994,7 +4053,7 @@
     ],
     "expectedDslKeywords": [
       "scrum",
-      "rk_fx::RK-229::geki_baku"
+      "rk11::RK-229::keicho_fubaku"
     ],
     "bp": 3000,
     "sp": null,
@@ -4012,7 +4071,7 @@
     ],
     "expectedDslKeywords": [
       "scrum",
-      "rk_fx::RK-230::geki_3"
+      "rk11::RK-230::irasshai"
     ],
     "bp": 2000,
     "sp": "1/3",
@@ -4048,7 +4107,7 @@
       "※これが自軍捨札にある間、自軍スタートフェイズ中"
     ],
     "expectedDslKeywords": [
-      "note_card::RK-232::koreganiarusutat"
+      "rk12::RK-232::kaen"
     ],
     "bp": 500,
     "sp": null,
@@ -4065,7 +4124,7 @@
       "【ハイパーライダーキック】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-233::haiparaidakiku"
+      "rk12::RK-233::hyper_rider_kick"
     ],
     "bp": 4000,
     "sp": "1/4",
@@ -4082,7 +4141,7 @@
       "【ショルダータックル】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-234::shorudatakuru"
+      "rk12::RK-234::shoulder_tackle"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -4099,7 +4158,7 @@
       "【アバランチクラッシュ】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-235::abaranchikurashu"
+      "rk12::RK-235::avalanche_crash"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -4116,7 +4175,7 @@
       "【ネガタロス軍団（仮）結成の野望】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-236::negatarosu"
+      "rk12::RK-236::negataros"
     ],
     "bp": 4000,
     "sp": null,
@@ -4133,7 +4192,7 @@
       "【バッシャー・アクアトルネード】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-237::bashaakuatorunedo"
+      "rk12::RK-237::aqua_tornado"
     ],
     "bp": 2000,
     "sp": "1/3",
@@ -4151,7 +4210,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rk_fx::RK-238::no_e9ad82"
+      "rk12::RK-238::soul_capture"
     ],
     "bp": 4000,
     "sp": null,
@@ -4188,8 +4247,8 @@
       "【俺達の必殺技】"
     ],
     "expectedDslKeywords": [
-      "SP1",
-      "rk_fx::RK-240::no_4"
+      "rk12::RK-240::sp1_hold_turn",
+      "rk12::RK-240::oretachi"
     ],
     "bp": 5000,
     "sp": "1/4",
@@ -4207,7 +4266,7 @@
     ],
     "expectedDslKeywords": [
       "no_attack_from_enemy_s_bp2000",
-      "rk_fx::RK-241::muriyarina"
+      "rk12::RK-241::muriyari"
     ],
     "bp": 500,
     "sp": "1/4",
@@ -4242,6 +4301,9 @@
     "category": "WB",
     "textSnippets": [
       "【ドラゴンライダーキック】"
+    ],
+    "expectedDslKeywords": [
+      "rk12::RK-243::dragon_rider_kick"
     ],
     "bp": 4000,
     "sp": "1/2",
@@ -4279,7 +4341,8 @@
     ],
     "expectedDslKeywords": [
       "rush_prefer_hold",
-      "register"
+      "register",
+      "rk12::RK-245::darkness_moon_break"
     ],
     "bp": 3000,
     "sp": null,
@@ -4296,8 +4359,8 @@
       "【ガルル・ハウリングスラッシュ】"
     ],
     "expectedDslKeywords": [
-      "power_faceup_bp_per_1000",
-      "rk_fx::RK-246::garuruhauringusurashu"
+      "rk12::RK-246::faceup_bp",
+      "rk12::RK-246::garulu_howling_slash"
     ],
     "bp": 500,
     "sp": "1/3",
@@ -4314,8 +4377,8 @@
       "【不敵な挑発】"
     ],
     "expectedDslKeywords": [
-      "hold_turn_only_entry",
-      "rk_fx::RK-247::na_e4b88d"
+      "rk12::RK-247::hold_turn_entry",
+      "rk12::RK-247::provocation"
     ],
     "bp": 4500,
     "sp": 1,
@@ -4352,8 +4415,7 @@
       "※常駐"
     ],
     "expectedDslKeywords": [
-      "resident",
-      "call_WB"
+      "resident"
     ],
     "operationKind": "permanent",
     "expectedMechanisms": [
@@ -4372,7 +4434,7 @@
       "WBを持ち、特徴「サバイブ」を持たない自軍Sユニ"
     ],
     "expectedDslKeywords": [
-      "stack_s_on_self_rush"
+      "rk12::RK-250::survive"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -4391,7 +4453,7 @@
       "※カウンター"
     ],
     "expectedDslKeywords": [
-      "counter_op_interrupt"
+      "rk12::RK-251::gorgom"
     ],
     "operationKind": "counter",
     "expectedMechanisms": [
@@ -4407,6 +4469,9 @@
     "category": "MA",
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自分の手札から"
+    ],
+    "expectedDslKeywords": [
+      "rk12::RK-252::onkaku"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -4445,7 +4510,8 @@
       "【ストロンガー電キック】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk13::RK-254::stronger_kick"
     ],
     "bp": 4000,
     "sp": "special",
@@ -4462,8 +4528,8 @@
       "【ウルトラサイクロン】"
     ],
     "expectedDslKeywords": [
-      "ally_raida_protects_from_enemy_s",
-      "rk_fx::RK-255::urutorasaikuron"
+      "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
+      "rk13::RK-255::ultra_cyclone"
     ],
     "bp": 1000,
     "sp": "1/5",
@@ -4480,7 +4546,7 @@
       "【カブトローサンダー】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-256::kabutorosanda"
+      "rk13::RK-256::kabutoro_thunder"
     ],
     "sp": null,
     "size": "S"
@@ -4496,9 +4562,9 @@
       "【高性能レーダー】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e5a5b3",
       "ride_bp_boost_500",
-      "rk_fx::RK-257::reda"
+      "rk13::RK-257::radar"
     ],
     "sp": null,
     "size": "S"
@@ -4514,7 +4580,7 @@
       "【猛毒腐食液】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-258::fx_unknown_e78c9b"
+      "rk13::RK-258::poison"
     ],
     "bp": 2000,
     "sp": null,
@@ -4529,6 +4595,9 @@
     "category": "DA",
     "textSnippets": [
       "【トランプ占い】"
+    ],
+    "expectedDslKeywords": [
+      "rk13::RK-259::tarot"
     ],
     "bp": 4000,
     "sp": "special",
@@ -4545,7 +4614,7 @@
       "【体内マグマ】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-260::maguma"
+      "rk13::RK-260::magma"
     ],
     "bp": 1000,
     "sp": null,
@@ -4563,7 +4632,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "rk_fx::RK-261::riborukein"
+      "rk13::RK-261::revolcane"
     ],
     "bp": 3000,
     "sp": "1/3",
@@ -4582,7 +4651,7 @@
     "expectedDslKeywords": [
       "morph",
       "register",
-      "wing_attack_enemy_rush"
+      "rk13::RK-262::voltic_shooter"
     ],
     "bp": 4000,
     "sp": null,
@@ -4601,7 +4670,7 @@
     "expectedDslKeywords": [
       "morph",
       "register",
-      "rk_fx::RK-263::fx_unknown_e6b6b2"
+      "rk13::RK-263::liquefy"
     ],
     "bp": 500,
     "sp": "1/3",
@@ -4619,7 +4688,7 @@
     ],
     "expectedDslKeywords": [
       "can_enter_battle_without_ride",
-      "rk_fx::RK-264::akurobatoban"
+      "rk13::RK-264::acrobat_burn"
     ],
     "sp": null,
     "size": "S"
@@ -4636,7 +4705,7 @@
     ],
     "expectedDslKeywords": [
       "can_enter_battle_without_ride",
-      "rk_fx::RK-265::raideinguaro"
+      "rk13::RK-265::riding_arrow"
     ],
     "sp": null,
     "size": "S"
@@ -4652,7 +4721,7 @@
       "【ショットガン】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-266::shotogan"
+      "rk13::RK-266::shotgun"
     ],
     "bp": 2000,
     "sp": null,
@@ -4670,7 +4739,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack_bp2000_or_less",
-      "rk_fx::RK-267::ma_ken"
+      "rk13::RK-267::kaima_inazuma"
     ],
     "bp": 4000,
     "sp": null,
@@ -4687,8 +4756,8 @@
       "【分析能力】"
     ],
     "expectedDslKeywords": [
-      "note_card::RK-268::tankoregabatorud",
-      "rk_fx::RK-268::chikara_e58886"
+      "rk13::RK-268::battled_to_zone",
+      "rk13::RK-268::analysis"
     ],
     "bp": 2000,
     "sp": null,
@@ -4707,7 +4776,7 @@
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
       "no_strike_if_enemy_battle",
-      "extra_attack_on_battle_win"
+      "rk13::RK-269::shadow_saber"
     ],
     "bp": 5000,
     "sp": 1,
@@ -4725,7 +4794,7 @@
     ],
     "expectedDslKeywords": [
       "deck_unlimited",
-      "reveal_enemy_deck_1"
+      "rk13::RK-270::scout"
     ],
     "bp": 500,
     "sp": null,
@@ -4743,7 +4812,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "rk_fx::RK-271::raijingumaiteikiku"
+      "rk13::RK-271::rising_mighty_kick"
     ],
     "bp": 4500,
     "sp": "1/3",
@@ -4761,7 +4830,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "rk_fx::RK-272::raijingusupurashudoragon"
+      "rk13::RK-272::rising_splash_dragon"
     ],
     "bp": 3500,
     "sp": "1/3",
@@ -4779,7 +4848,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "rk_fx::RK-273::raijinguburasutopegasasu"
+      "rk13::RK-273::rising_blast_pegasus"
     ],
     "bp": 2500,
     "sp": null,
@@ -4797,7 +4866,7 @@
     ],
     "expectedDslKeywords": [
       "ride_bp_boost_500",
-      "rk_fx::RK-274::nyumashinno"
+      "rk14::RK-274::new_machine"
     ],
     "sp": null,
     "size": "S"
@@ -4813,7 +4882,7 @@
       "【ザバギンバシグラ】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-275::zabaginbashigura"
+      "rk14::RK-275::zabaginbashigura"
     ],
     "bp": 5000,
     "sp": null,
@@ -4830,7 +4899,7 @@
       "【キョクギンジャンママ】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-276::kyokuginjanmama"
+      "rk14::RK-276::kyokuginjanmama"
     ],
     "bp": 500,
     "sp": null,
@@ -4847,7 +4916,7 @@
       "【究極の闇をもたらす者】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-277::no_yami_womotarasu"
+      "rk14::RK-277::ultimate_darkness"
     ],
     "bp": 5000,
     "sp": 1,
@@ -4864,7 +4933,8 @@
       "【飛翔斬】"
     ],
     "expectedDslKeywords": [
-      "register_if_discard_has_feature_fx_unknown"
+      "register_if_discard_has_feature_feat_e5a5b3",
+      "rk14::RK-278::hishouzan"
     ],
     "bp": 4000,
     "sp": "1/2",
@@ -4882,7 +4952,7 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_reanimate_named_from_discard",
-      "rk_fx::RK-279::dakubaizatsubai"
+      "rk14::RK-279::dark_visor_zwei"
     ],
     "bp": 5500,
     "sp": "1/2",
@@ -4901,7 +4971,7 @@
     "expectedDslKeywords": [
       "treat_as_s_vehicle_while_held",
       "hold_entry_and_rush_hold",
-      "rk_fx::RK-280::kaze_dan"
+      "rk14::RK-280::shippuu_dan"
     ],
     "bp": 4000,
     "sp": null,
@@ -4920,7 +4990,7 @@
     "expectedDslKeywords": [
       "treat_as_s_vehicle_while_held",
       "hold_entry_and_rush_hold",
-      "rk_fx::RK-281::doragonfuaiyasutomu"
+      "rk14::RK-281::dragon_fire_storm"
     ],
     "bp": 5000,
     "sp": "1/2",
@@ -4938,7 +5008,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "scissors_attack"
+      "rk14::RK-282::scissors_attack"
     ],
     "bp": 500,
     "sp": "special",
@@ -4956,7 +5026,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rk_fx::RK-283::no_e5a591"
+      "rk14::RK-283::contract_prey"
     ],
     "bp": 500,
     "sp": null,
@@ -4973,7 +5043,7 @@
       "【デスバニッシュ】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-284::desubanishu"
+      "rk14::RK-284::death_vanish"
     ],
     "bp": 2000,
     "sp": "1/2",
@@ -5008,8 +5078,8 @@
       "【戦いのリセット】"
     ],
     "expectedDslKeywords": [
-      "note_substitute_on_destroy_rush_feature::男",
-      "rk_fx::RK-286::inoriseto"
+      "rk14::RK-286::substitute_male",
+      "rk14::RK-286::battle_reset"
     ],
     "bp": 5000,
     "sp": 1,
@@ -5028,7 +5098,7 @@
     "expectedDslKeywords": [
       "require_command_hold_entry",
       "cannot_attack_except_feature_仮面ライダー",
-      "rk_fx::RK-287::no_e79eac"
+      "rk14::RK-287::instant_nightmare"
     ],
     "bp": 8000,
     "sp": null,
@@ -5046,7 +5116,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-288::derutamuba"
+      "rk14::RK-288::delta_mover"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -5063,7 +5133,7 @@
       "【ジェットエンジン噴射】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-289::jietoenjin"
+      "rk14::RK-289::jet_engine"
     ],
     "sp": null,
     "size": "S"
@@ -5079,7 +5149,7 @@
       "【末期の酒】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-290::no_e69cab"
+      "rk14::RK-290::last_champagne"
     ],
     "bp": 1000,
     "sp": null,
@@ -5098,7 +5168,7 @@
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
       "no_battle_rush_turn",
-      "rk_fx::RK-291::ma_no_chikara"
+      "rk14::RK-291::majin_power"
     ],
     "bp": 4000,
     "sp": null,
@@ -5117,7 +5187,7 @@
     "expectedDslKeywords": [
       "bp_plus_per_discard_named_kurokodairuorufuenoku_3000",
       "sp_at_bp5000_sp1",
-      "rk_fx::RK-292::tsuno"
+      "rk14::RK-292::three_souls"
     ],
     "bp": 500,
     "sp": "special",
@@ -5134,7 +5204,7 @@
       "【捕縛する鞭】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-293::suru_e68d95"
+      "rk14::RK-293::binding_whip"
     ],
     "bp": 2000,
     "sp": null,
@@ -5152,7 +5222,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_4000",
-      "blood_vessel_on_strike"
+      "rk14::RK-294::blood_vessel"
     ],
     "bp": 2000,
     "sp": null,
@@ -5171,7 +5241,7 @@
     "expectedDslKeywords": [
       "no_attack_strike_unless_battle_slot_1",
       "not_selectable_except_attack",
-      "rk_fx::RK-295::nitsu"
+      "rk15::RK-295::apex"
     ],
     "bp": 2000,
     "sp": "special",
@@ -5188,7 +5258,7 @@
       "【ライダーキック】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-296::raidakiku"
+      "rk15::RK-296::rider_kick"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -5205,7 +5275,7 @@
       "【ライダーパンチ】"
     ],
     "expectedDslKeywords": [
-      "raidapanchi_discard_enemy_power_faceup"
+      "rk15::RK-297::rider_punch"
     ],
     "bp": 2000,
     "sp": null,
@@ -5223,7 +5293,7 @@
     ],
     "expectedDslKeywords": [
       "attacked_bp_boost_3000",
-      "rk_fx::RK-298::mukishino"
+      "rk15::RK-298::naked_intent"
     ],
     "bp": 2000,
     "sp": null,
@@ -5241,7 +5311,7 @@
     ],
     "expectedDslKeywords": [
       "not_selectable_except_attack",
-      "rk_fx::RK-299::dakuraidakiku"
+      "rk15::RK-299::dark_rider_kick"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -5258,9 +5328,9 @@
       "【クロックアップ】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e58aa0e9809f",
       "ride_bp_boost_500",
-      "rk_fx::RK-300::kurokuapu"
+      "rk15::RK-300::clock_up"
     ],
     "sp": null,
     "size": "S"
@@ -5276,9 +5346,9 @@
       "【エクステンドライダー落とし】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_fx_unknown",
+      "ride_without_rc_feat_e58aa0e9809f",
       "ride_bp_boost_500",
-      "rk_fx::RK-301::ekusutendoraidatoshi"
+      "rk15::RK-301::extend_rider_drop"
     ],
     "sp": null,
     "size": "S"
@@ -5294,7 +5364,7 @@
       "【ワームの頂点に立つ男】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-302::wamunonitsu"
+      "rk15::RK-302::worm_apex"
     ],
     "bp": 4000,
     "sp": null,
@@ -5312,7 +5382,7 @@
     ],
     "expectedDslKeywords": [
       "deck_unlimited",
-      "rk_fx::RK-303::no_e693ac"
+      "rk15::RK-303::mimic_release"
     ],
     "bp": 500,
     "sp": null,
@@ -5330,7 +5400,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "rk_fx::RK-304::soridoataku"
+      "rk15::RK-304::solid_attack"
     ],
     "bp": 2000,
     "sp": "1/4",
@@ -5348,7 +5418,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "rk_fx::RK-305::no_2"
+      "rk15::RK-305::special_edition"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -5366,7 +5436,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "rk_fx::RK-306::dainamikuchopu"
+      "rk15::RK-306::dynamic_chop"
     ],
     "bp": 4000,
     "sp": null,
@@ -5384,7 +5454,7 @@
     ],
     "expectedDslKeywords": [
       "morph",
-      "rk_fx::RK-307::wairudoshoto"
+      "rk15::RK-307::wild_shot"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -5403,7 +5473,7 @@
     "expectedDslKeywords": [
       "cannot_attack_feature_獣",
       "auto_battle_entry_if_enemy_battle",
-      "rk_fx::RK-308::hakochiantahai"
+      "rk15::RK-308::cat_not_you"
     ],
     "bp": 3000,
     "sp": "1/4",
@@ -5420,7 +5490,7 @@
       "【僕に釣られてみる？】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-309::niraretemiru"
+      "rk15::RK-309::fishing"
     ],
     "bp": 1000,
     "sp": "1/4",
@@ -5438,7 +5508,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "destroy_on_win_vs_fx_unknown",
+      "destroy_on_win_vs_feat_e5a5b3",
       "SP1"
     ],
     "bp": 4000,
@@ -5457,7 +5527,7 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack_if_own_unit_count_exceeds_enemy",
-      "rk_fx::RK-311::nosaniogaita"
+      "rk15::RK-311::tears"
     ],
     "bp": 5000,
     "sp": null,
@@ -5474,7 +5544,8 @@
       "【ドッガ・サンダースラップ】"
     ],
     "expectedDslKeywords": [
-      "require_command_hold_entry"
+      "require_command_hold_entry",
+      "rk15::RK-312::dogga_thunder_slap"
     ],
     "bp": 5000,
     "sp": null,
@@ -5491,7 +5562,8 @@
       "【ダークネスムーンブレイク】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "rk15::RK-313::darkness_moon_break"
     ],
     "bp": 4500,
     "sp": "1/3",
@@ -5509,7 +5581,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hand_rush_ma_chikara_s_on_battle"
+      "rk15::RK-314::monster_fever"
     ],
     "bp": 5000,
     "sp": "1/3",
@@ -5543,8 +5615,7 @@
       "【フエッスル】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-316::fuesuru",
-      "morph"
+      "rk16::RK-316::fuessle"
     ],
     "bp": 500,
     "sp": null,
@@ -5562,7 +5633,7 @@
     ],
     "expectedDslKeywords": [
       "require_command_hold_entry",
-      "rk_fx::RK-317::podobateingu"
+      "rk16::RK-317::pod_batting"
     ],
     "bp": 3000,
     "sp": null,
@@ -5579,7 +5650,7 @@
       "【ブロウクン・ファング】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-318::buroukunfuangu"
+      "rk16::RK-318::broken_fang"
     ],
     "bp": 500,
     "sp": "1/5",
@@ -5596,8 +5667,8 @@
       "【イクサ・ジャッジメント】"
     ],
     "expectedDslKeywords": [
-      "note_card::RK-319::koreworashushita",
-      "rk_fx::RK-319::ikusajajimento"
+      "rk16::RK-319::command_swap",
+      "rk16::RK-319::ixa_judgment"
     ],
     "bp": 2000,
     "sp": "1/5",
@@ -5614,7 +5685,8 @@
       "【ファイナルライジングブラスト】"
     ],
     "expectedDslKeywords": [
-      "while_in_command_rush_deploy::koregakomandozonniar"
+      "rk16::RK-320::command_deploy",
+      "rk16::RK-320::final_rising_blast"
     ],
     "bp": 6000,
     "sp": 1,
@@ -5632,7 +5704,7 @@
     ],
     "expectedDslKeywords": [
       "rush_prefer_hold",
-      "rk_fx::RK-321::sunekingudesubureiku"
+      "rk16::RK-321::snaking_death_break"
     ],
     "bp": 4000,
     "sp": "1/3",
@@ -5649,7 +5721,8 @@
       "【ブリザードクロー・エクスキュージョン】"
     ],
     "expectedDslKeywords": [
-      "register"
+      "register",
+      "set9a::RK-322::blizzard_claw"
     ],
     "bp": 3000,
     "sp": null,
@@ -5666,8 +5739,8 @@
       "【シャドウベール】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_ma_chikara",
-      "rk_fx::RK-323::shadouberu"
+      "ride_without_rc_feat_e9ad94e79a87e58a9b",
+      "rk16::RK-323::shadow_veil"
     ],
     "sp": null,
     "size": "S"
@@ -5683,8 +5756,8 @@
       "【凄いのが来るぜ！】"
     ],
     "expectedDslKeywords": [
-      "ride_without_rc_ma_chikara",
-      "rk_fx::RK-324::inogaruze"
+      "ride_without_rc_feat_e9ad94e79a87e58a9b",
+      "rk16::RK-324::bron_boost"
     ],
     "sp": null,
     "size": "S"
@@ -5700,8 +5773,8 @@
       "【イクサポッド】"
     ],
     "expectedDslKeywords": [
-      "ride_named_becomes::仮面ライダーイクサBM::SP1",
-      "rk_fx::RK-325::ikusapodo"
+      "rk16::RK-325::ixa_bm_sp1",
+      "rk16::RK-325::ixa_pod"
     ],
     "sp": null,
     "size": "S"
@@ -5717,7 +5790,7 @@
       "【ガルルフエッスル】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-326::garurufuesuru"
+      "rk16::RK-326::fuessle"
     ],
     "bp": 3000,
     "sp": null,
@@ -5734,8 +5807,8 @@
       "【バッシャーフエッスル】"
     ],
     "expectedDslKeywords": [
-      "not_attacked_while_held",
-      "rk_fx::RK-327::bashafuesuru"
+      "rk16::RK-327::not_attacked_while_held",
+      "rk16::RK-327::fuessle"
     ],
     "bp": 3000,
     "sp": null,
@@ -5752,7 +5825,7 @@
       "【ドッガフエッスル】"
     ],
     "expectedDslKeywords": [
-      "rk_fx::RK-328::dogafuesuru"
+      "rk16::RK-328::fuessle"
     ],
     "bp": 4000,
     "sp": null,
@@ -5771,7 +5844,7 @@
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
       "sp1_if_enemy_units_all_s",
-      "rk_fx::RK-329::no_e5b7a8"
+      "rk16::RK-329::giant_press"
     ],
     "bp": 6000,
     "sp": "special",
@@ -5808,7 +5881,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "rk_fx::RK-331::ameijingumaiteikiku"
+      "rk16::RK-331::amazing_mighty_kick"
     ],
     "bp": 5500,
     "sp": "1/3",
@@ -5825,7 +5898,8 @@
       "【叶えたい願いを胸に】"
     ],
     "expectedDslKeywords": [
-      "bp_plus_per_ally_feature_doragon_1000"
+      "rk16::RK-332::dragon_bp",
+      "rk16::RK-332::wish"
     ],
     "bp": 3000,
     "sp": "1/2",
@@ -5843,7 +5917,7 @@
     ],
     "expectedDslKeywords": [
       "on_destroy_reanimate_named_from_discard",
-      "destroy_advent_power_sum"
+      "rk16::RK-333::drag_visor_zwei"
     ],
     "bp": 6500,
     "sp": "1/2",
@@ -5856,7 +5930,13 @@
     "cardType": "unit",
     "powerCost": "7-",
     "category": "OT",
-    "textSnippets": [],
+    "textSnippets": [
+      "【電車斬り】"
+    ],
+    "expectedDslKeywords": [
+      "rk16::RK-334::lock",
+      "effect_card::RK-334::zan_ri"
+    ],
     "bp": 4500,
     "sp": "special",
     "size": "S"
@@ -5873,7 +5953,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "destroy_on_win_vs_fx_unknown",
+      "destroy_on_win_vs_feat_e5a5b3",
       "SP1"
     ],
     "bp": 4000,

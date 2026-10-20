@@ -7,7 +7,7 @@
     "WB",
     "DA"
   ],
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 1,
   "text": "※このユニットは特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる。 【試させてもらいますよ】「SP1」お互いの手札が1枚以上あれば、次の効果を発動できる⇒自分の手札を1～3枚選び相手に見せてから、その必要パワーの数字を合計する。そうしたとき、相手も同じようにして、合計した数字が低い方に1点ダメージを与える。",
@@ -47,8 +47,14 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg6::XG6-050::try",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

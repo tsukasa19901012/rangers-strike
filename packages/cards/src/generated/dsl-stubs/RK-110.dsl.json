@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-110::no_e680a7",
-          "duration": "turn"
+          "keyword": "rk6::RK-110::performance_limit",
+          "duration": "permanent"
         }
       ],
       "optional": false

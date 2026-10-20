@@ -7,7 +7,7 @@
     "WB",
     "MA"
   ],
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※スクラム 【宙宙斬】 このターン、自軍バトルエリアの2番目に並ぶ、特徴「激気」を持つMユニットは次の能力を得る⇒「SP1」",
@@ -46,10 +46,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-031::zane5ae99",
+          "keyword": "xg3::XG3-031::chuchuzan",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

@@ -29,11 +29,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "return_enemy_s_to_rush_any",
+          "keyword": "rk3::RK-055::rider_punch",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

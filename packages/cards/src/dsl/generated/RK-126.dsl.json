@@ -4,7 +4,7 @@
   "name": "仮面ライダーギャレン",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": 2,
   "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【ギャレンラウザー】自分の手札を3枚選び、相手に見せてもよい。そうしたとき、敵軍Sユニットを1体選びホールドする。その後、見せたカードの必要パワーの数字が番号順（例：0、1、2や3、4、5など）に揃うなら、敵軍Sユニットを1体選び撃破する。",
@@ -41,11 +41,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hand_pick_show_nowo3binisetemoyoisoushitatokisyunitowo1bihoru",
+          "keyword": "rk6::RK-126::garren_rouzer",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

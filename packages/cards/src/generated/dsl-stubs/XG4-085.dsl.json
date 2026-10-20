@@ -4,7 +4,7 @@
   "name": "仮面ライダー幽汽SF",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※これが撃破されて捨札になるとき、かわりに特徴「男」を持つ自軍ユニット1体を捨札にすれば、これはその場にとどまる。 【ターミネイトフラッシュ】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアからホールド状態の敵軍Sユニットを自軍ダメージの数まで選び、撃破する。",
@@ -20,14 +20,14 @@
       "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これが撃破されて捨札になるとき、かわりに特徴「男」を持つ自軍ユニット1体を捨札にすれば、これはその場にとどまる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG4-085::korega_geki_ha_s",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-085::note",
+          "duration": "turn"
         }
       ]
     },
@@ -42,7 +42,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-085::tamineitofurashu",
+          "keyword": "xg4::XG4-085::terminate",
           "duration": "turn"
         }
       ]

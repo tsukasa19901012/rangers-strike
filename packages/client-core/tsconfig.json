@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    // No DOM and no Node globals: the core must run unchanged in QuickJS
+    // (PocketJS on Vita), browsers and mobile JS runtimes.
+    "lib": ["ES2022"],
+    "types": []
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.test.ts", "src/testing/**"]
+}

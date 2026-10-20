@@ -40,11 +40,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_on_enter_enemy_s_no_resist",
+          "keyword": "rk6::RK-118::claw",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

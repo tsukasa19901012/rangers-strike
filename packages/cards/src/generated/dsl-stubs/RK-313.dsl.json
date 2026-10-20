@@ -4,7 +4,7 @@
   "name": "仮面ライダーキバDGBKF",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend2",
   "powerCost": "7-",
   "text": "※これが撃破されて捨札になったとき、自軍捨札から「仮面ライダーキバ」を1体選び、自軍ラッシュエリアに出す。 ※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【ダークネスムーンブレイク】自軍ターン中、これがバトルエリアに出たとき、このユニットをホールドしてもよい。そうしたとき、敵軍Sユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
@@ -76,40 +76,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "power"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk15::RK-313::darkness_moon_break",
+          "duration": "turn"
         }
       ]
     }

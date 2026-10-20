@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG3-096::koreworashushita",
+          "keyword": "xg3::XG3-096::hold_ally",
           "duration": "permanent"
         }
       ]
@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-096::sabisu",
-          "duration": "turn"
+          "keyword": "xg3::XG3-096::repair_service",
+          "duration": "permanent"
         }
       ]
     }

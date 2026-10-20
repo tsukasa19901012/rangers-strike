@@ -4,7 +4,7 @@
   "name": "仮面ライダーW・CJGX",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "6+",
   "text": "※これが自軍エリアにある間、自分がターンを終えるとき、これをゲームから除外する。 【黄金の希望】これを手札からラッシュしたとき、自軍コマンドをすべて捨札にする。そうしたとき、捨札にしたコマンドと同じカテゴリを持つ敵軍Sユニットをすべて撃破する。その後、自軍捨札が敵軍捨札より多ければ、これはSP2になる。",
@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-041::koregaerianiarug",
+          "keyword": "xg7::XG7-041::exile_at_end",
           "duration": "permanent"
         }
       ]
@@ -51,8 +51,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-041::no9",
-          "duration": "turn"
+          "keyword": "xg7::XG7-041::golden_hope",
+          "duration": "permanent"
         }
       ]
     }

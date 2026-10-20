@@ -7,7 +7,7 @@
     "OT",
     "ET"
   ],
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "【射手座のスターピース】これをラッシュしたとき、自軍パワーゾーンからウラ向きのカードを1枚選び、捨札にしてもよい。そうしたとき、捨札にしたカードがオペレーションカードなら、自軍パワーゾーンにオモテ向きで置き直してもよい。",
@@ -30,12 +30,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-060::nosutapisu",
-          "duration": "turn"
+          "keyword": "xg7::XG7-060::sagittarius",
+          "duration": "permanent"
         }
       ]
     }

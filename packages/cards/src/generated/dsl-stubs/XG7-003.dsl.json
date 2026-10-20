@@ -4,7 +4,7 @@
   "name": "ゴーカイレッド",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "※これをラッシュしたとき、「ゴーカイレッド」以外のオモテ向きの自軍パワーから、追加条件を持たない特徴「レッド」を持つSユニットのカードを1枚選び、これと置き換えてもよい。 【赤きレジェンド】オモテ向きの自軍パワーから、特徴「レッド」を持つカードを1枚選び捨札にしてもよい。そうしたとき、相手に1点ダメージを与える。",
@@ -25,11 +25,11 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "on_rush_swap_from_power_except_named::ゴーカイレッド",
+          "keyword": "xg7::XG7-003::gokai_swap",
           "duration": "permanent"
         }
       ]
@@ -43,11 +43,12 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg7::XG7-003::red_legend",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

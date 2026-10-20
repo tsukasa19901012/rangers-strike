@@ -4,7 +4,7 @@
   "name": "仮面ライダー幽汽HF",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 5,
   "text": "※コールDA ※これは自軍ユニットがホールドされたターンにしかバトルエリアに出られない。 【乱れ独楽】これが自軍ラッシュエリアにある間、自軍エンドフェイズ中、次の効果を好きなだけ発動できる⇒自分の手札を1枚選び捨札にする。そうしたとき、敵軍バトルエリアからSユニットを1体選び撃破する。",
@@ -50,36 +50,16 @@
       "name": "乱れ独楽",
       "text": "これが自軍ラッシュエリアにある間、自軍エンドフェイズ中、次の効果を好きなだけ発動できる⇒自分の手札を1枚選び捨札にする。そうしたとき、敵軍バトルエリアからSユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "discard",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg4::XG4-084::midare",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

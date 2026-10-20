@@ -4,7 +4,7 @@
   "name": "黒騎士ブルブラック",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 4,
   "text": "※レジスト 【黒の一撃】敵軍バトルエリアからナンバーを持たないSユニットを1体選び、撃破してもよい。また、DAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは「SP1」になる。",
@@ -39,11 +39,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-023::nogekie9bb92",
+          "keyword": "xg2::XG2-023::kuro_no_ichigeki",
           "duration": "permanent"
         }
       ]

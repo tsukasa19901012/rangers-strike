@@ -69,7 +69,13 @@ export function applyRuntimeGrantKeyword(
       return { state: result.state, detail: effectId };
     }
     if (isLegend3EnterBattleEffect(effectId)) {
-      const result = resolveLegend3EnterBattle(state, ctx.playerId, ctx.sourceCardId, effectId);
+      const result = resolveLegend3EnterBattle(
+        state,
+        ctx.playerId,
+        ctx.sourceCardId,
+        effectId,
+        ctx.triggerSourceInstanceId,
+      );
       return { state: result.state, detail: effectId };
     }
   }

@@ -4,7 +4,7 @@
   "name": "ゴーゴーボイジャー",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "※これはDAを持たないユニットにアタックすることができない 【アンドック】これが自軍コマンドゾーンにある間、敵軍ターン中、自軍ユニットがユニットでなくなり、自軍ユニットが1体もなくなったとき、これを自軍ラッシュエリアに出してもよい。ただし、必要パワーは満たすこと。（この効果でラッシュできる「ゴーゴーボイジャー」は、1つのタイミングにつき 1枚までとする）",
@@ -42,11 +42,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-018::andoku",
+          "keyword": "xg5::XG5-018::undock",
           "duration": "permanent"
         }
       ]

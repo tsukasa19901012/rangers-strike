@@ -4,7 +4,7 @@
   "name": "大甲神カブテリオス",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "6+",
   "text": "※レジスト 【ビッグフレア】自軍ターン中、これがバトルエリアに出たとき、WBを持つ自軍コマンドを1つ選びホールドしてもよい。そうしたとき、本来のBPが5000以下の敵軍ユニットを1体選び撃破する。",
@@ -45,12 +45,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-084::bigufurea",
-          "duration": "turn"
+          "keyword": "xg3::XG3-084::big_flare",
+          "duration": "permanent"
         }
       ]
     }

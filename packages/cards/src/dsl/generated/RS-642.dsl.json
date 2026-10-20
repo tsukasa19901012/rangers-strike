@@ -4,7 +4,7 @@
   "name": "ギガライノス",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "※レジスト 【ギガンティスバスター】自軍ターン中、これがバトルエリアに出たとき、ホールド状態の敵軍ユニットを1体選び撃破してもよい。",
@@ -42,11 +42,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "destroy_enter_battle_tankoregabatoruerianitatokihorudonoyunitowo1bi_geki",
+          "keyword": "set9b::RS-642::gigantis_buster",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "unnamedRules": [

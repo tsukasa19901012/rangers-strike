@@ -1,5 +1,6 @@
 /** 修飾子の有効スコープ。ターン終了 / ラッシュフェイズ終了でフィルタする。 */
-export type ModifierScope = "turn" | "rush_phase" | "permanent";
+/** next_turn: 次のターン（ターン終了の処理で turn に繰り上がる。例: ゼニボム「次の相手ターン」）。 */
+export type ModifierScope = "turn" | "rush_phase" | "permanent" | "next_turn";
 
 export type ScopedModifier =
   | {
@@ -8,6 +9,8 @@ export type ScopedModifier =
       scope: ModifierScope;
       sourceCardId?: string;
       payload?: unknown;
+      /** next_turn から繰り上がった（直前のターンに発動した「次の相手ターン」の効果。RS-427【オネスト・ハート】）。 */
+      fromNextTurn?: boolean;
     }
   | {
       kind: "stat";
@@ -34,6 +37,8 @@ export const TURN_RULE_IDS = {
   GENERIC_S_COMBO_FINISHER: "generic_s_combo_finisher",
   AURA_POWER: "aura_power",
   BATTLE_DESTROY_TO_POWER: "battle_destroy_to_power",
+  /** RS-470 ギンガット【花の星獣】: このターン、バトルフェイズのかわりにチャージフェイズを行っている。 */
+  CHARGE_INSTEAD_OF_BATTLE: "charge_instead_of_battle",
 } as const;
 
 export type TurnRuleId = (typeof TURN_RULE_IDS)[keyof typeof TURN_RULE_IDS];

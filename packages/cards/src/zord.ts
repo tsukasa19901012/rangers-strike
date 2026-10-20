@@ -1,6 +1,7 @@
 import { allCardsCatalog } from "./catalog";
 import type { RushAdditionalCondition, ZordConditionId } from "./effectTaxonomy";
 import { isFusionMaterialForPartners } from "./fusionMaterial";
+import { parseFeatureDiscardCondition } from "./featureDiscardCondition";
 import type { CardDefinition } from "./schema";
 import { isZordDownCost, isZordUpCost } from "./powerCost";
 
@@ -148,13 +149,34 @@ export function getRushAdditionalCondition(
 /** registry / CardDocument を優先し、なければ ZORD_CONDITIONS のデフォルト。 */
 export function resolveRushAdditionalCondition(
   cardId: string,
-  card?: { rushAdditionalCondition?: RushAdditionalCondition },
+  card?: {
+    rushAdditionalCondition?: RushAdditionalCondition;
+    /**
+     * ゲームの状態で変わった追加条件（「※このカードの追加条件は、…のとき、次のように変更される」。RS-440 等）。
+     * エンジンが評価中の定義に付ける（packages/engine rules/rushAdditionalCondition.ts）。
+     */
+    rushAdditionalConditionOverride?: RushAdditionalCondition;
+  },
 ): RushAdditionalCondition | undefined {
+  if (card?.rushAdditionalConditionOverride) return card.rushAdditionalConditionOverride;
   const fromBlock = getUnitEffectBlock(cardId)?.rushAdditionalCondition;
-  if (fromBlock) return fromBlock;
-  if (card?.rushAdditionalCondition) return card.rushAdditionalCondition;
-  return getRushAdditionalCondition(cardId);
+  const resolved = fromBlock ?? card?.rushAdditionalCondition ?? getRushAdditionalCondition(cardId);
+  return resolved ? normalizeDiscardPresenceCondition(resolved) : undefined;
 }
+
+/**
+ * 「追加条件：自軍捨札に「X」がある」（RS-327 天空聖者ブレイジェル）は捨札にする支払いではなく状態の条件。
+ * 取り込みデータは discard_named_unit になっているので、ここで state_gate として扱う（atwiki/page-488）。
+ */
+function normalizeDiscardPresenceCondition(condition: RushAdditionalCondition): RushAdditionalCondition {
+  if (condition.conditionId === "discard_named_unit" && /^自軍捨札に「[^」]+」がある$/.test(condition.text)) {
+    return { conditionId: "state_gate", text: condition.text };
+  }
+  const features = parseFeatureDiscardCondition(condition.text);
+  if (features && condition.conditionId !== "discard_feature_unit") return { ...features, unitCount: condition.unitCount ?? features.unitCount };
+  return condition;
+}
+
 
 export function getZordCondition(cardId: string): ZordConditionId | undefined {
   const legacy = ZORD_CONDITIONS[cardId];

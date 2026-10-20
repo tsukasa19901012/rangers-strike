@@ -14,12 +14,12 @@
       "id": "unnamed_counter_note_kaunta_korehayunitog",
       "text": "※カウンター これは自軍ユニットがアタックされたとき発動できる⇒自軍山札の上から3枚オモテにする。そして、オモテにしたカードの中から、アタックしてきたユニットの必要パワーの数字以上の必要パワーの数字を持つカードをすべて自分の手札に加え、それ以外は山札に戻してシャッフルする。この効果で1枚以上のカードを手札に加えたなら、そのバトルは行われない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "counter_note::kaunta_korehayunitog",
+          "keyword": "rk9::RK-172::ruri_ookami",
           "duration": "permanent"
         }
       ],

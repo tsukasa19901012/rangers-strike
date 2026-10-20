@@ -29,11 +29,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "raidapanchi_discard_enemy_power_faceup",
+          "keyword": "rk15::RK-297::rider_punch",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

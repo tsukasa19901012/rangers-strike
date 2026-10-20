@@ -4,7 +4,7 @@
   "name": "イカダイカイオー",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": "7+",
   "text": "合体―ダイカイオーヒガシ+烏賊折神 【槍烏賊突貫】これをラッシュしたとき、BP5000以下の敵軍ユニットを1体選び、持ち主の手札に戻してもよい。そうしたとき、相手は自分自身の手札を1枚選び捨札にする。",
@@ -29,34 +29,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "hand"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg3::XG3-038::yariika",
+          "duration": "permanent"
         }
       ]
     }

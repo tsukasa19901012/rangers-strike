@@ -4,7 +4,7 @@
   "name": "デカレンジャーロボ",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "7+",
   "text": "【ジャイロワッパー】これが敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のパワーゾーンに送ってもよい。",
@@ -27,14 +27,14 @@
       "name": "ジャイロワッパー",
       "text": "これが敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のパワーゾーンに送ってもよい。",
       "trigger": {
-        "type": "on_attack"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-032::jairowapa",
-          "duration": "turn"
+          "keyword": "xg2::XG2-032::gyro_wapper",
+          "duration": "permanent"
         }
       ]
     }

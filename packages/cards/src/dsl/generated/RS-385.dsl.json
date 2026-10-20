@@ -22,7 +22,7 @@
   },
   "effects": [
     {
-      "id": "no_attack_without_fx_unknown",
+      "id": "no_attack_without_feat_e888aae7a9bae6a99f",
       "text": "※これは、特徴「航空機」を持たないユニットにアタックされない。",
       "trigger": {
         "type": "nc"
@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "no_attack_without_fx_unknown",
+          "keyword": "no_attack_without_feat_e888aae7a9bae6a99f",
           "duration": "permanent"
         }
       ]

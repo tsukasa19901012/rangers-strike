@@ -7,7 +7,7 @@
     "WB",
     "MA"
   ],
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "5+",
   "text": "※タクスMA 【シーイックストライク】自軍ターン中、これがバトルエリアに出たとき、次の効果を発動する⇒自軍捨札にあるタクスを持つカードの枚数を数え、その数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンにダメージにして置く。",
@@ -48,11 +48,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-043::shiikusutoraiku",
+          "keyword": "xg5::XG5-043::great_strike",
           "duration": "turn"
         }
       ]

@@ -4,7 +4,7 @@
   "name": "仮面ライダーイクサBM",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": 3,
   "text": "【ダブル・ブロウクン・ファング】これが特徴「女」を持つ自軍ユニットからコンビネーションするとき、次の効果を発動できる⇒自軍コマンドの枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。",
@@ -23,13 +23,12 @@
       "name": "ダブル・ブロウクン・ファング",
       "text": "これが特徴「女」を持つ自軍ユニットからコンビネーションするとき、次の効果を発動できる⇒自軍コマンドの枚数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-076::daburuburoukunfuangu",
+          "keyword": "xg5::XG5-076::fang",
           "duration": "permanent"
         }
       ]

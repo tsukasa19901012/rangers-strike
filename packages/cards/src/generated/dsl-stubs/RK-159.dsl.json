@@ -4,7 +4,7 @@
   "name": "仮面ライダーV3（THE NEXT）",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "※レジスト(これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい) 【V3キック】必要パワーの数字に「－」のある敵軍Sユニットを1体選び撃破してもよい。",
@@ -43,11 +43,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-159::v3kiku",
+          "keyword": "rk8::RK-159::v3_kick",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

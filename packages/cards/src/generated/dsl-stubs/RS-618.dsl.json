@@ -4,7 +4,7 @@
   "name": "ジェットイカロス",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend1",
   "powerCost": "6+",
   "text": "【ジェットランサー】 これは、自軍捨札にあるウイングを持つユニットカード1体につきBP+1000される。",
@@ -22,12 +22,12 @@
       "name": "ジェットランサー",
       "text": "これは、自軍捨札にあるウイングを持つユニットカード1体につきBP+1000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::RS-618::jietoransa",
+          "keyword": "set9a::RS-618::jet_lancer",
           "duration": "permanent"
         }
       ],

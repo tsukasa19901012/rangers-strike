@@ -16,7 +16,7 @@
   ],
   "effects": [
     {
-      "id": "unnamed_can_ride_vehicle_ryo",
+      "id": "unnamed_can_ride_vehicle_feat_e8bb8ae4b8a1",
       "text": "※これは特徴「車両」を持つビークルにライドできる。",
       "trigger": {
         "type": "nc"
@@ -24,29 +24,13 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "can_ride_vehicle_ryo",
+          "keyword": "can_ride_vehicle_feat_e8bb8ae4b8a1",
           "duration": "permanent"
         }
       ]
     },
     {
       "id": "wanpano",
-      "name": "ワンパーの壺",
-      "text": "これをラッシュしたとき、自軍山札を見て特徴「戦闘員」を持つカードを2枚まで選び、自軍ラッシュエリアに出してもよい。そうしたとき、山札をシャッフルする。 ・このテキストは修正されています。修正後は以下。",
-      "trigger": {
-        "type": "on_rush"
-      },
-      "optional": true,
-      "effects": [
-        {
-          "type": "grant_keyword",
-          "keyword": "effect_card::XG4-004::wanpano",
-          "duration": "turn"
-        }
-      ]
-    },
-    {
-      "id": "wanpano_koreworashus",
       "name": "ワンパーの壺",
       "text": "これをラッシュしたとき、次の効果を発動できる⇒自軍山札を見て特徴「戦闘員」を持つカードを2枚まで選び、自軍ラッシュエリアに出してもよい。その後、山札をシャッフルする。",
       "trigger": {
@@ -56,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-004::wanpanokoreworashus",
+          "keyword": "effect_card::XG4-004::wanpano",
           "duration": "turn"
         }
       ]

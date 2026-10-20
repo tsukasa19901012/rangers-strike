@@ -4,7 +4,7 @@
   "name": "キカイダー",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend1",
   "powerCost": 1,
   "text": "※これは、DAを持つ自軍コマンドがないとき、特徴「男」または「女」を持つユニットにアタックできない。 【デンジエンド】特徴「メカ」または「人型」を持つ敵軍Sユニットを1体選び撃破してもよい。",
@@ -40,12 +40,12 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-102::denjiendo",
-          "duration": "turn"
+          "keyword": "xg2::XG2-102::denji_end",
+          "duration": "permanent"
         }
       ]
     }

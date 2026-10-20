@@ -1,0 +1,33 @@
+{
+  "effects": [
+    {
+      "id": "unnamed_e280bbe38396e383a9e382b9",
+      "text": "※ブラスト",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "blast",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "makusunoba",
+      "name": "マックスノバ",
+      "text": "このユニットは、自軍捨札6枚につき「SP+1」される。",
+      "trigger": {
+        "type": "while_in_field"
+      },
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "sp_plus1_per_own_discard_6",
+          "duration": "permanent"
+        }
+      ]
+    }
+  ]
+}

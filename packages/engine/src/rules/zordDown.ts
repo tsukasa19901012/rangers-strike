@@ -1,6 +1,7 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import {
   FUSION_UNIT_IDS,
+  fusionMaterialAliasNames,
   getZordDownCondition,
   hasPowerCostMinusSuffix,
   isZordDownCost,
@@ -32,6 +33,9 @@ import type { CardInstance, PlayerState } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { findInZone, removeAt } from "../core/helpers";
 import { getDefinition } from "../core/catalog";
+import { rk11IsHandSubstitute } from "./rk/rk11Fields";
+import { collectRequiredFusionMaterials } from "./zord";
+import { resolveZordFusionPartnerIds } from "../dsl/zordBridge";
 
 /** ゾードダウン素材を取れるゾーン（手札・捨札・フィールド）。 */
 export type ZordDownMaterialZone = "hand" | "discard" | "rush" | "battle";
@@ -52,11 +56,26 @@ function normalizeName(value: string): string {
 function matchesPartnerName(def: CardDefinition | undefined, partnerName: string): boolean {
   if (!def) return false;
   const target = normalizeName(partnerName);
-  return normalizeName(def.name).includes(target);
+  // 「※これは「X」としてつかえる」（XG1-064 等。atwiki/page-1668 Q1「全ての場にあるとき常に有効」）。
+  return normalizeName(def.name).includes(target) || fusionMaterialAliasNames(def.text).some((n) => normalizeName(n).includes(target));
 }
 
 function isValidZordDownFusionMaterial(cardId: string): boolean {
   return FUSION_UNIT_IDS.has(cardId);
+}
+
+/**
+ * 「自軍合体ユニットを捨札にすれば必要パワー0になる」で、合体―行があるカードの素材（表記された合体ユニットすべて）。
+ * 合体―行がなければ undefined、そろわなければ null。
+ */
+function requiredFusionDownMaterials(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+  rushingInstanceId: string,
+) {
+  if (resolveZordFusionPartnerIds(rushingCardId).length === 0) return undefined;
+  return collectRequiredFusionMaterials(player, definitions, rushingCardId, rushingInstanceId);
 }
 
 export function isValidZordDownMaterial(
@@ -73,9 +92,16 @@ export function isValidZordDownMaterial(
   const def = getDefinition(definitions, card.cardId);
   if (!def || def.type !== "unit") return false;
 
+  // RK-217 イーグルアンデッド・RK-218 ピーコックアンデッドの※: 手札のこれを捨札にすれば、指定の名前のユニットを捨札にしたことにできる（rules/rk/rk11Fields.ts）。
+  if (condition.conditionId === "zord_down_discard_named" && rk11IsHandSubstitute({ definitions }, player.hand, card, rushingCardId)) return true;
+
   switch (condition.conditionId) {
-    case "zord_down_discard_fusion":
+    case "zord_down_discard_fusion": {
+      // 合体―行があれば、表記された合体ユニットすべてが素材（XP-008 NEW電王VF「合体―仮面ライダーNEW電王SF＋デネブ」・XG2-086）。
+      const required = requiredFusionDownMaterials(player, definitions, rushingCardId, rushingInstanceId);
+      if (required !== undefined) return required !== null && required.some((m) => m.card.instanceId === card.instanceId);
       return isValidZordDownFusionMaterial(card.cardId);
+    }
     case "zord_down_discard_named":
     case "zord_down_send_to_power":
     case "zord_down_send_to_command_or_discard":
@@ -96,6 +122,24 @@ export function isValidZordDownMaterial(
     default:
       return false;
   }
+}
+
+/**
+ * 「必要パワーの数字がN以上の自軍パワーをM枚捨札にすれば必要パワー0になる」（zord_down_discard_power_cards。XG6-032）の
+ * 素材にできる自軍パワーと必要な枚数。この追加条件でなければ null。
+ */
+export function zordDownPowerCardMaterials(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+): { ids: string[]; needed: number } | null {
+  const condition = getZordDownCondition(rushingCardId, getDefinition(definitions, rushingCardId));
+  if (condition?.conditionId !== "zord_down_discard_power_cards") return null;
+  const minCost = condition.minPrintedPowerCost ?? 0;
+  const ids = player.power
+    .filter((card) => printedPowerCostNumber(getDefinition(definitions, card.cardId)?.powerCost) >= minCost)
+    .map((card) => card.instanceId);
+  return { ids, needed: condition.unitCount ?? 1 };
 }
 
 export function collectZordDownMaterials(
@@ -150,16 +194,23 @@ export function findZordDownMaterial(
   return null;
 }
 
+/**
+ * 素材をコマンドゾーンに送るか捨札にするかを選べる追加条件。zord_down_send_to_command_or_discard のほか、
+ * 「「X」を１体コマンドゾーンに送るか捨て札にすれば必要パワー0になる」（zord_down_discard_named。XG6-038）。
+ */
+function zordDownOffersCommand(condition: { conditionId: string; text?: string } | undefined): boolean {
+  if (!condition) return false;
+  if (condition.conditionId === "zord_down_send_to_command_or_discard") return true;
+  return condition.conditionId === "zord_down_discard_named" && /コマンドゾーンに送るか捨て?札/.test(condition.text ?? "");
+}
+
 export function needsZordDownDestinationChoice(
   rushingCardId: string,
   definitions: Record<string, CardDefinition>,
   commandZoneHasSpace: boolean,
 ): boolean {
   const condition = getZordDownCondition(rushingCardId, getDefinition(definitions, rushingCardId));
-  return (
-    condition?.conditionId === "zord_down_send_to_command_or_discard" &&
-    commandZoneHasSpace
-  );
+  return zordDownOffersCommand(condition) && commandZoneHasSpace;
 }
 
 export function validateZordDownPayment(
@@ -177,7 +228,8 @@ export function validateZordDownPayment(
   const multiIds =
     materialInstanceIds ?? (materialInstanceId ? [materialInstanceId] : []);
   const neededCount = condition.unitCount ?? 1;
-  if (multiIds.length > 1 || (neededCount > 1 && multiIds.length > 0)) {
+  // パワーカードの素材（zord_down_discard_power_cards）は下の専用の判定で見る（素材はパワーゾーンのカード）。
+  if (condition.conditionId !== "zord_down_discard_power_cards" && (multiIds.length > 1 || (neededCount > 1 && multiIds.length > 0))) {
     if (multiIds.length !== neededCount) return false;
     const used = new Set<string>();
     for (const id of multiIds) {
@@ -222,7 +274,7 @@ export function validateZordDownPayment(
   );
   if (!material) return false;
 
-  if (condition.conditionId === "zord_down_send_to_command_or_discard") {
+  if (zordDownOffersCommand(condition)) {
     if (materialDestination === "command") {
       return player.command.length < COMMAND_ZONE_MAX;
     }
@@ -253,10 +305,21 @@ export function applyZordDownMaterial(
   );
   if (!material) return null;
 
+  if (condition.conditionId === "zord_down_discard_fusion") {
+    const required = requiredFusionDownMaterials(player, definitions, rushingCardId, rushingInstanceId);
+    if (required === null) return null;
+    if (required) {
+      let next: PlayerState = player;
+      for (const m of required) next = { ...next, [m.zone]: next[m.zone].filter((c) => c.instanceId !== m.card.instanceId) };
+      return { ...next, discard: [...next.discard, ...required.map((m) => m.card)] };
+    }
+  }
+
   const [, zoneCards] = removeAt(player[material.zone], material.index);
   let nextPlayer: PlayerState = { ...player, [material.zone]: zoneCards };
 
-  switch (condition.conditionId) {
+  const conditionId = zordDownOffersCommand(condition) ? "zord_down_send_to_command_or_discard" : condition.conditionId;
+  switch (conditionId) {
     case "zord_down_discard_fusion":
     case "zord_down_discard_named":
     case "zord_down_discard_feature":

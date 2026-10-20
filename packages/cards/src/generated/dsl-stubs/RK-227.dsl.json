@@ -41,11 +41,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-227::geki_geki",
+          "keyword": "rk11::RK-227::ichigeki_doto",
           "duration": "turn"
         }
       ],
-      "optional": false
+      "optional": true
     }
   ],
   "implementation": {

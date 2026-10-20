@@ -1,5 +1,6 @@
 import type { Category, ComboNumber, CardDefinition } from "./schema";
 import { ALL_CARDS_BY_ID } from "./catalog";
+import { lookupByCardIdentity, reprintSiblingIds } from "./reprints";
 import {
   getEnterBattleNamedEffect,
   getJointLNamedEffect,
@@ -64,7 +65,9 @@ export type NumberComboEffectId =
   | "dolphin_arrow"
   | "bumper_bow"
   | "side_knuckle"
-  | "star_raiser";
+  | "star_raiser"
+  /** RS-065【一点突破】— NC 成立中だけ有効（ルール: R-ERR-RS065）。 */
+  | "focused_breakthrough";
 
 /** エンジン実装済み NC 効果 id（numberComboEffects.ts の switch と一致必須）。 */
 export const IMPLEMENTED_NC_EFFECT_IDS = [
@@ -103,6 +106,7 @@ export const IMPLEMENTED_NC_EFFECT_IDS = [
   "bumper_bow",
   "side_knuckle",
   "star_raiser",
+  "focused_breakthrough",
 ] as const satisfies readonly NumberComboEffectId[];
 
 const IMPLEMENTED_NC_IDS = new Set<string>(IMPLEMENTED_NC_EFFECT_IDS);
@@ -300,11 +304,18 @@ export function getEnterBattleEffect(cardId: string): EnterBattleEffectId | unde
 }
 
 export function getNumberComboEffect(cardId: string): NumberComboEffectId | undefined {
-  return NUMBER_COMBO_EFFECTS[cardId];
+  // 再録・プロモ（効果名だけ違う PR-004 = RS-031 等）は元カードの NC 効果を引く。
+  return lookupByCardIdentity(NUMBER_COMBO_EFFECTS, cardId);
 }
 
 export function getAltNumberComboPartners(cardId: string): string[] {
-  return listAltNcPartnerIds(cardId);
+  const own = listAltNcPartnerIds(cardId);
+  if (own.length > 0) return own;
+  for (const id of reprintSiblingIds(cardId)) {
+    const sibling = listAltNcPartnerIds(id);
+    if (sibling.length > 0) return sibling;
+  }
+  return own;
 }
 
 export function getJointLEffect(cardId: string): JointComboLEffectId | undefined {
@@ -404,7 +415,11 @@ export function cardHasComboNumber(cardId: string): boolean {
   return isNumericComboNumber(card?.comboNumber);
 }
 
-/** マルチカテゴリは双方が持つ全カテゴリを満たすときのみ同一（atwiki 1559）。 */
+/**
+ * ジョイントコンビネーションの「同カテゴリ」: 双方が共通のカテゴリを持てば同カテゴリ。
+ * 公式 Q&A（grnrngr/faq-card-3 RS-166 Q1）: バトルエリアで DA と MA を持つ「RS-166 ガインガイン」は、MA の
+ * 「RS-224 トータスハンマー」からコンビネーションさせると「SP1」になる（全カテゴリの一致は求めない）。
+ */
 export function partnerCategoryMatches(
   unitCategory: Category | Category[],
   partnerCategory: Category | Category[],
@@ -413,8 +428,5 @@ export function partnerCategoryMatches(
   const partnerCats = Array.isArray(partnerCategory)
     ? partnerCategory
     : [partnerCategory];
-  return (
-    unitCats.every((c) => partnerCats.includes(c)) &&
-    partnerCats.every((c) => unitCats.includes(c))
-  );
+  return unitCats.some((c) => partnerCats.includes(c));
 }

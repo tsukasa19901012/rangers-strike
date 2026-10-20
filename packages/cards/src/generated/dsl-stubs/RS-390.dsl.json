@@ -30,6 +30,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "set6b::RS-390::five_laser",
+          "duration": "turn"
         }
       ]
     }

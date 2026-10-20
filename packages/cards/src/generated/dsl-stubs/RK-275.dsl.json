@@ -4,7 +4,7 @@
   "name": "ゴ・ガドル・バ",
   "type": "unit",
   "category": "DA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 5,
   "text": "【ザバギンバシグラ】自軍ターン中、これがバトルエリアに出たとき、敵軍パワーゾーンのダメージ以外のカードから、Sユニットのカードを1枚選び、敵軍ラッシュエリアに出してもよい。そうしたとき、相手は自分自身の山札の上から1枚ひいて、自分自身のパワーゾーンに置いてもよい。",
@@ -27,11 +27,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-275::zabaginbashigura",
+          "keyword": "rk14::RK-275::zabaginbashigura",
           "duration": "turn"
         }
       ],
-      "optional": true
+      "optional": false
     }
   ],
   "implementation": {

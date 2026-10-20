@@ -4,7 +4,7 @@
   "name": "仮面ライダーダークカブトMF",
   "type": "unit",
   "category": "OT",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 3,
   "text": "※これはアタックされるときBP+3000される。 【むき出しの殺意】自軍ターン中、これがバトルエリアに出たとき、敵軍バトルエリアのユニットがSユニット1体だけなら、そのユニットを持ち主のパワーゾーンに送ってもよい。",
@@ -40,7 +40,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-298::mukishino",
+          "keyword": "rk15::RK-298::naked_intent",
           "duration": "turn"
         }
       ],

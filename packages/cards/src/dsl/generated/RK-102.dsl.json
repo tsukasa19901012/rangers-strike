@@ -4,7 +4,7 @@
   "name": "仮面ライダークウガDF",
   "type": "unit",
   "category": "MA",
-  "rarity": "N",
+  "rarity": "NR",
   "expansion": "legend2",
   "powerCost": 3,
   "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【スプラッシュドラゴン】敵軍常駐置き場のカード枚数以下の必要パワーの数字を持つ敵軍ユニットを1体選び、持ち主の手札に戻してもよい（敵軍常駐置き場にカードが1枚も無ければ0と数える）。",
@@ -40,34 +40,12 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "hand"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "rk5::RK-102::splash_dragon",
+          "duration": "turn"
         }
       ]
     }

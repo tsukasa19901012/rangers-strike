@@ -4,7 +4,7 @@
   "name": "仮面ライダーストロンガー",
   "type": "unit",
   "category": "ET",
-  "rarity": "N",
+  "rarity": "SR",
   "expansion": "legend2",
   "powerCost": 4,
   "text": "※レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい） 【ストロンガー電キック】このターン、これはBP+2000される。さらに、このユニットのBPがすべてのユニットのBPとくらべて一番高ければ、このターン、これはSP1になる。",
@@ -42,11 +42,8 @@
       },
       "effects": [
         {
-          "type": "modify_bp",
-          "target": {
-            "type": "trigger_source"
-          },
-          "amount": 2000,
+          "type": "grant_keyword",
+          "keyword": "rk13::RK-254::stronger_kick",
           "duration": "turn"
         }
       ]

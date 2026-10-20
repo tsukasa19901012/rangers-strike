@@ -337,7 +337,7 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   {
     "cardId": "BK-012",
     "effectId": "orutaringu",
-    "keyword": "hand_resident_rush_no_seki",
+    "keyword": "hand_resident_rush_feat_e8b3a2e88085e381aee79fb3",
     "pattern": "hand_or_resident_rush_feature",
     "text": "自分の手札か、自軍常駐置き場でオモテ向きになっているカードの中から、本来の特徴に「賢者の石」を持つユニットカードを1枚選び、ラッシュエリアに出す。ただし、追加条件は満たすこと（必要パワーは満たさなくてもよい）。その後、手札から選んだ場合は1枚ドローする。"
   },
@@ -567,8 +567,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-029",
-    "effectId": "per_ally_fx_unknown_bp_1000",
-    "keyword": "per_ally_fx_unknown_bp_1000",
+    "effectId": "per_ally_feat_e8ada6e5af9f_bp_1000",
+    "keyword": "per_ally_feat_e8ada6e5af9f_bp_1000",
     "pattern": "per_ally_feature_bp_in_battle",
     "text": "自軍ターン中、これは自軍バトルエリアにある特徴「警察」を持つユニット1体につきBP+1000される。"
   },
@@ -801,7 +801,7 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
     "effectId": "bp_if_no_named_e383a1e382ab_5000",
     "keyword": "bp_if_no_enemy_named_e383a1e382ab_5000",
     "pattern": "bp_boost_if_no_enemy_feature",
-    "text": "敵軍バトルエリアに特徴「メカ」を持つユニットがなければ、これはBP4000以上のSユニットとバトルするとき、BP+5000される フレーバテキスト 相手が強いほど弾け甲斐があるもんだ。…もっとも、ハジかれるのは貴様の方だがな！"
+    "text": "敵軍バトルエリアに特徴「メカ」を持つユニットがなければ、これはBP4000以上のSユニットとバトルするとき、BP+5000される"
   },
   {
     "cardId": "RK-053",
@@ -848,7 +848,7 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   {
     "cardId": "RK-056",
     "effectId": "zect",
-    "keyword": "battle_position_sp_fx_unknown_pos4_sp1",
+    "keyword": "battle_position_sp_feat_e688a6e99798e593a1_pos4_sp1",
     "pattern": "while_field_battle_position_sp",
     "text": "これが自軍バトルエリアにある間、自軍ターン中、特徴「戦闘員」を持つ自軍ユニットは、バトルエリアで4番目に並んだとき「SP1」になる。"
   },
@@ -868,8 +868,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-058",
-    "effectId": "ride_without_rc_raida",
-    "keyword": "ride_without_rc_raida",
+    "effectId": "ride_without_rc_feat_e4bbaee99da2e383a9e382a4e38380e383bc",
+    "keyword": "ride_without_rc_feat_e4bbaee99da2e383a9e382a4e38380e383bc",
     "pattern": "ride_without_rc_feature",
     "text": "※特徴「仮面ライダー」を持つ自軍Sユニットは、ＲＣを持っていなくてもこのビークルにライドできる。"
   },
@@ -1001,8 +1001,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-074",
-    "effectId": "ally_raida_protects_from_enemy_s",
-    "keyword": "ally_raida_protects_from_enemy_s",
+    "effectId": "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
+    "keyword": "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
     "pattern": "ally_rider_protects_from_enemy_s",
     "text": "※これ以外の特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。"
   },
@@ -1323,8 +1323,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-111",
-    "effectId": "ride_without_rc_fx_unknown",
-    "keyword": "ride_without_rc_fx_unknown",
+    "effectId": "ride_without_rc_feat_e8ada6e5af9f",
+    "keyword": "ride_without_rc_feat_e8ada6e5af9f",
     "pattern": "ride_without_rc_feature",
     "text": "※特徴「警察」を持つSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。"
   },
@@ -1652,8 +1652,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-142",
-    "effectId": "power_faceup_raida_on_enter",
-    "keyword": "power_faceup_raida_enter_battle",
+    "effectId": "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_on_enter",
+    "keyword": "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle",
     "pattern": "power_faceup_feature_enter_battle",
     "text": "これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、このターン、そのユニットは「SP1」になる。"
   },
@@ -1666,8 +1666,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-143",
-    "effectId": "power_faceup_raida_on_enter",
-    "keyword": "power_faceup_raida_enter_battle",
+    "effectId": "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_on_enter",
+    "keyword": "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle",
     "pattern": "power_faceup_feature_enter_battle",
     "text": "これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、特徴「女」を持つ敵軍ユニットを1体選び、持ち主のパワーゾーンに送る。"
   },
@@ -1680,8 +1680,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-144",
-    "effectId": "power_faceup_raida_on_enter",
-    "keyword": "power_faceup_raida_enter_battle",
+    "effectId": "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_on_enter",
+    "keyword": "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle",
     "pattern": "power_faceup_feature_enter_battle",
     "text": "これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、そのユニットはBP+3000される。"
   },
@@ -1694,8 +1694,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-145",
-    "effectId": "power_faceup_raida_on_enter",
-    "keyword": "power_faceup_raida_enter_battle",
+    "effectId": "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_on_enter",
+    "keyword": "power_faceup_feat_e4bbaee99da2e383a9e382a4e38380e383bc_enter_battle",
     "pattern": "power_faceup_feature_enter_battle",
     "text": "これが自軍パワーゾーンでオモテ向きになっている間、自軍バトルフェイズ中、特徴「仮面ライダー」を持つ自軍ユニットがバトルエリアに出たとき、これを捨札にしてもよい。そうしたとき、自軍捨札にある特徴「獣」を持つユニットカードの枚数以下の必要パワーの数字を持つ敵軍ユニットを1体撃破する。"
   },
@@ -2268,8 +2268,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-198",
-    "effectId": "unnamed_ally_reiyou_protects_s",
-    "keyword": "ally_reiyou_protects_from_enemy_s",
+    "effectId": "unnamed_ally_feat_e383ace382a4e383a8e382a6e59e8b_protects_s",
+    "keyword": "ally_feat_e383ace382a4e383a8e382a6e59e8b_protects_from_enemy_s",
     "pattern": "ally_feature_protects_enemy_s_note",
     "text": "※これは特徴「レイヨウ型」を持つユニットが自軍バトルエリアにあれば敵軍Sユニットにアタックされない。"
   },
@@ -2821,17 +2821,10 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-249",
-    "effectId": "unnamed_call_wb",
-    "keyword": "call_WB",
-    "pattern": "call_category_note",
-    "text": "※コールWB（このユニットはWBのユニットをラッシュするためのコマンドとしてホールドできる）"
-  },
-  {
-    "cardId": "RK-249",
     "effectId": "unnamed_resident",
     "keyword": "resident",
     "pattern": "resident_note",
-    "text": "※常駐 自軍ラッシュフェイズごとに1度だけ、特徴「ミラーライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒"
+    "text": "※常駐 自軍ラッシュフェイズごとに1度だけ、特徴「ミラーライダー」を持つ自軍ユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは次の能力を得る⇒※コールWB（このユニットはWBのユニットをラッシュするためのコマンドとしてホールドできる）"
   },
   {
     "cardId": "RK-250",
@@ -2870,8 +2863,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-255",
-    "effectId": "unnamed_ally_raida_protects_s",
-    "keyword": "ally_raida_protects_from_enemy_s",
+    "effectId": "unnamed_ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_s",
+    "keyword": "ally_feat_e4bbaee99da2e383a9e382a4e38380e383bc_protects_from_enemy_s",
     "pattern": "ally_feature_protects_enemy_s_note",
     "text": "※特徴「仮面ライダー」を持つユニットが自軍バトルエリアにあれば、これは敵軍Sユニットにアタックされない。"
   },
@@ -2898,8 +2891,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-257",
-    "effectId": "ride_without_rc_fx_unknown",
-    "keyword": "ride_without_rc_fx_unknown",
+    "effectId": "ride_without_rc_feat_e5a5b3",
+    "keyword": "ride_without_rc_feat_e5a5b3",
     "pattern": "ride_without_rc_feature",
     "text": "※特徴「女」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。"
   },
@@ -3157,8 +3150,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-278",
-    "effectId": "unnamed_register_if_discard_has_feature_fx_unknown",
-    "keyword": "register_if_discard_has_feature_fx_unknown",
+    "effectId": "unnamed_register_if_discard_has_feature_feat_e5a5b3",
+    "keyword": "register_if_discard_has_feature_feat_e5a5b3",
     "pattern": "register_if_discard_has_feature_note",
     "text": "※これは自軍捨札に特徴「女」を持つユニットカードがあれば次の能力を得る⇒レジスト（これがバトルで撃破されたとき、捨札にするかわりにこれをホールドしてその場に留めてもよい）"
   },
@@ -3458,8 +3451,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-300",
-    "effectId": "ride_without_rc_fx_unknown",
-    "keyword": "ride_without_rc_fx_unknown",
+    "effectId": "ride_without_rc_feat_e58aa0e9809f",
+    "keyword": "ride_without_rc_feat_e58aa0e9809f",
     "pattern": "ride_without_rc_feature",
     "text": "※特徴「加速」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。"
   },
@@ -3479,8 +3472,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-301",
-    "effectId": "ride_without_rc_fx_unknown",
-    "keyword": "ride_without_rc_fx_unknown",
+    "effectId": "ride_without_rc_feat_e58aa0e9809f",
+    "keyword": "ride_without_rc_feat_e58aa0e9809f",
     "pattern": "ride_without_rc_feature",
     "text": "※特徴「加速」を持つSユニットは、RCを持っていなくてもこのビークルにライドできる。"
   },
@@ -3598,8 +3591,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-310",
-    "effectId": "destroy_on_win_vs_fx_unknown",
-    "keyword": "destroy_on_win_vs_fx_unknown",
+    "effectId": "destroy_on_win_vs_feat_e5a5b3",
+    "keyword": "destroy_on_win_vs_feat_e5a5b3",
     "pattern": "destroy_on_win_vs_feature",
     "text": "※これは特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される。"
   },
@@ -3648,7 +3641,7 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   {
     "cardId": "RK-314",
     "effectId": "monsutafuiba",
-    "keyword": "hand_rush_ma_chikara_s_on_battle",
+    "keyword": "hand_rush_feat_e9ad94e79a87e58a9b_s_on_battle",
     "pattern": "hand_rush_feature_s_on_battle",
     "text": "自軍ターン中、これがバトルエリアに出るとき、自分の手札から特徴「魔皇力」を持つ、追加条件を持たないSユニットのカードを1枚選び相手に見せてもよい。そうしたとき、そのユニットカードの効果名を持つ効果を、このユニットの効果として発動する。"
   },
@@ -3671,14 +3664,7 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
     "effectId": "fuesuru",
     "keyword": "rk_fx::RK-316::fuesuru",
     "pattern": "rk_exact_RK_316_fuesuru",
-    "text": "これが自軍エリアにある間、特徴「魔皇力」を持つ自軍Sユニットは、次の能力を得る⇒"
-  },
-  {
-    "cardId": "RK-316",
-    "effectId": "unnamed_morph",
-    "keyword": "morph",
-    "pattern": "morph_note",
-    "text": "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選びこれと置き換えてもよい）"
+    "text": "これが自軍エリアにある間、特徴「魔皇力」を持つ自軍Sユニットは、次の能力を得る⇒※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選びこれと置き換えてもよい）"
   },
   {
     "cardId": "RK-317",
@@ -3745,8 +3731,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-323",
-    "effectId": "ride_without_rc_ma_chikara",
-    "keyword": "ride_without_rc_ma_chikara",
+    "effectId": "ride_without_rc_feat_e9ad94e79a87e58a9b",
+    "keyword": "ride_without_rc_feat_e9ad94e79a87e58a9b",
     "pattern": "ride_without_rc_feature",
     "text": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。"
   },
@@ -3766,8 +3752,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-324",
-    "effectId": "ride_without_rc_ma_chikara",
-    "keyword": "ride_without_rc_ma_chikara",
+    "effectId": "ride_without_rc_feat_e9ad94e79a87e58a9b",
+    "keyword": "ride_without_rc_feat_e9ad94e79a87e58a9b",
     "pattern": "ride_without_rc_feature",
     "text": "※特徴「魔皇力」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドできる。"
   },
@@ -3885,8 +3871,8 @@ export const RK_BK_CATCHALL_SPECS: RkBkCatchallSpec[] = [
   },
   {
     "cardId": "RK-335",
-    "effectId": "destroy_on_win_vs_fx_unknown",
-    "keyword": "destroy_on_win_vs_fx_unknown",
+    "effectId": "destroy_on_win_vs_feat_e5a5b3",
+    "keyword": "destroy_on_win_vs_feat_e5a5b3",
     "pattern": "destroy_on_win_vs_feature",
     "text": "※これは特徴「女」を持つユニットとバトルしたとき、バトルに勝っても撃破される。"
   },

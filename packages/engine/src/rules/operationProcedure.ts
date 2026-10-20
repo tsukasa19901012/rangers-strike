@@ -12,6 +12,8 @@ import {
 } from "../core/catalog";
 import { countAvailablePower, effectivePowerCost } from "../core/helpers";
 import { hasCommandForCardUse } from "./restrictions";
+import { xg4OperationCostIncrease } from "./xg4/xg4Fields";
+import { promoOperationCostReduction } from "./promo/promoHooks";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 
 /** wiki p581: 通常/常駐オペは自軍ラッシュフェイズのみ。 */
@@ -25,8 +27,9 @@ export function isCounterPlayPhase(state: GameState, playerId: PlayerId): boolea
 }
 
 export function operationCardsToDiscardWithStack(card: CardInstance): CardInstance[] {
-  const stacked = card.stackedCards ?? [];
-  return [card, ...stacked.map((stackedCard) => ({ ...stackedCard, stackedCards: undefined }))];
+  // 重ねたカードは別々のカードとして捨札に置く（元のカードに stackedCards を残すと同じカードが二重に存在する）。
+  const { stackedCards: stacked = [], ...base } = card;
+  return [base, ...stacked.map(({ stackedCards: _nested, ...stackedCard }) => stackedCard)];
 }
 
 export function canPayOperationPowerCost(
@@ -34,7 +37,9 @@ export function canPayOperationPowerCost(
   playerId: PlayerId,
   definition: CardDefinition,
 ): boolean {
-  const cost = effectivePowerCost(state, playerId, parsePowerCost(definition.powerCost));
+  // XP-021 等の必要パワーの減少（rules/promo/promoHooks.ts）。
+  const printed = parsePowerCost(definition.powerCost) - promoOperationCostReduction(state, playerId, definition.id);
+  const cost = effectivePowerCost(state, playerId, Math.max(0, printed) + xg4OperationCostIncrease(state));
   return countAvailablePower(state, playerId) >= cost;
 }
 

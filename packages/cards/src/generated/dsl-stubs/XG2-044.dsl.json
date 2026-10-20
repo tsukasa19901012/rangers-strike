@@ -4,7 +4,7 @@
   "name": "仮面ライダーW・HM",
   "type": "unit",
   "category": "WB",
-  "rarity": "N",
+  "rarity": "R",
   "expansion": "legend1",
   "powerCost": "3+",
   "text": "※モーフ ※レジスト 【メタルシャフト】自軍ターン中、これがバトルエリアに出たとき、BP5000以下の敵軍ユニットを1体選びホールドしてもよい。",
@@ -57,12 +57,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-044::metarushafuto",
-          "duration": "turn"
+          "keyword": "xg2::XG2-044::metal_shaft",
+          "duration": "permanent"
         }
       ]
     }
