@@ -134,6 +134,16 @@ describe("RK-274 ビートチェイサー", () => {
     expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:dk1", "TST-OP:dk2", "TST-OP:dk3", "TST-OP:dk4", "TST-OP:dk0"]);
   });
 
+  it("RK-274: 見たカードが選択の間に山札を離れていても、残りの選択を終えて効果を終える（CPU が選択で止まらない）", () => {
+    let s = chase();
+    s = place(s, "TST-OP:dk0", "deck_bottom");
+    const p1 = s.players.player1;
+    s = { ...s, players: { ...s.players, player1: { ...p1, deck: p1.deck.filter((c) => c.instanceId !== "TST-OP:dk1") } } };
+    s = place(s, "TST-OP:dk1", "deck_top");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-274");
+    expect(zoneIds(s, "player1", "deck")).toEqual(["TST-OP:dk2", "TST-OP:dk3", "TST-OP:dk4", "TST-OP:dk0"]);
+  });
+
   it("RK-274: 2枚とも山札の上に好きな順で戻せる（後から戻したものが上）（出典: atwiki/page-1371「好きな順で戻す」）", () => {
     let s = chase();
     s = place(s, "TST-OP:dk0", "deck_top");

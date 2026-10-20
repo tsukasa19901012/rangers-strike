@@ -319,12 +319,15 @@ CHOICE_SKIPPERS[BEAT_PICK_EFFECT_ID] = simpleSkip();
 CHOICE_RESOLVERS[BEAT_PLACE_EFFECT_ID] = (state, playerId, where) => {
   const pending = state.pendingEffectChoice!;
   const pickedId = pending.rk14Meta?.picked;
+  if (!pickedId) return { error: "invalid_target" };
+  // 見たカードが選択の間に山札を離れていたら（選択が後回しになり、その間にひいた等）、そのカードは戻さずに続ける。
   const card = state.players[playerId].deck.find((c) => c.instanceId === pickedId);
-  if (!card || !pickedId) return { error: "invalid_target" };
-  const placed = patchPlayer(state, playerId, (p) => {
-    const rest = p.deck.filter((c) => c.instanceId !== pickedId);
-    return { ...p, deck: where === DECK_TOP ? [card, ...rest] : [...rest, card] };
-  });
+  const placed = card
+    ? patchPlayer(state, playerId, (p) => {
+        const rest = p.deck.filter((c) => c.instanceId !== pickedId);
+        return { ...p, deck: where === DECK_TOP ? [card, ...rest] : [...rest, card] };
+      })
+    : state;
   const rest = (pending.rk14Meta?.remainingIds ?? []).filter((id) => id !== pickedId);
   const log = logFor(state, playerId, "RK-274", `${BEAT_PLACE_EFFECT_ID}:${where}`);
   if (rest.length > 0) {
