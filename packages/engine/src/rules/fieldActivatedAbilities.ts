@@ -486,6 +486,17 @@ ABILITIES.push({
   canActivate: (state, playerId, card) => !fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId) && canActivateXg3FieldAbility(state, playerId, card),
   resolve: (state, playerId, card) => activateXg3FieldAbility(state, playerId, card),
 });
+// XG3-103 ライジンゴー【噛みつき】「自軍バトルフェイズ中、…」（rules/xg3/xg3eEffects.ts）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "xg3_field_ability_battle",
+  zones: ["rush"],
+  phase: "battle",
+  discardSelf: false,
+  matches: (cardId) => isXg3FieldAbilityCard(cardId, "battle"),
+  canActivate: (state, playerId, card) => !fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId) && canActivateXg3FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg3FieldAbility(state, playerId, card),
+});
 
 // 能力の当てはめはカード ID（とカードの文言）だけで決まるので、ID ごとに覚える。表に能力が足されたら捨てる。
 const abilityForCache = new Map<string, FieldActivatedAbility | undefined>();

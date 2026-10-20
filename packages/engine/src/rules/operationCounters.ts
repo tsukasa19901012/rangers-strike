@@ -1,5 +1,5 @@
 import { rm2AfterBattle } from "./rm/rm2Effects";
-import { applyXg3OnBattleDestroy, openXg3StayOnLeave } from "./xg3/xg3Effects";
+import { applyXg3OnBattleDestroy, openXg3BeforeBattle, openXg3StayOnLeave } from "./xg3/xg3Effects";
 import { isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "./rm/rm1Effects";
 import { triConcordVanishSource } from "./legend1/set8NamedEffectsC";
 import { isRk5BattleCounterCard, rk5BattleCounterConditionMet } from "./rk/rk5UnitEffects";
@@ -1365,6 +1365,9 @@ export function resolveBattlePendingCore(
   // RK-050【音撃斬・閻魔裁き】: 裁鬼のアタックなら、解決の直前に数字を選ぶ（選んだあとこのバトルを解決し直す）。
   const sabaki = tryOpenRk3BattleChoice(state, pending);
   if (sabaki) return { state: sabaki, log: buildLogEntry(pending.attackerPlayerId, "battle", pending.attackerInstanceId, state.definitions, "rk050_choose_number") };
+  // XG3-091【パルセイバー】・XG3-097【キャプテンルーレット】: バトルの前の処理（済ませたらこのバトルを解決し直す。rules/xg3/xg3eEffects.ts）。
+  const xg3Before = openXg3BeforeBattle(state, pending);
+  if (xg3Before) return { state: xg3Before, log: buildLogEntry(pending.attackerPlayerId, "battle", pending.attackerInstanceId, state.definitions, "xg3_before_battle") };
 
   const attackerId = pending.attackerPlayerId;
   const defenderId = pending.defenderPlayerId;
@@ -1436,7 +1439,8 @@ export function resolveBattlePendingCore(
   }
 
   // RK-050【音撃斬・閻魔裁き】: 選んだ数字（必要パワー・ナンバー）でバトルする（rules/rk/rk3UnitEffects.ts）。
-  const rk3Values = rk3BattleValues(battleState, pending);
+  // XG3-097【キャプテンルーレット】で決めた数字（rules/xg3/xg3eEffects.ts）。
+  const rk3Values = rk3BattleValues(battleState, pending) ?? pending.xg3Values ?? null;
   const attackerBp = rk3Values ? rk3Values.attacker : battleAttackerBpBonus(battleState, pending);
   const defenderBp = rk3Values ? rk3Values.defender : battleDefenderBp(battleState, pending);
 

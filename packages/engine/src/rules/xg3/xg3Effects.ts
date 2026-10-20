@@ -7,16 +7,17 @@
  * - `applyXg3AfterAction`: applyAction の後処理（core/applyAction.ts）。
  * カードごとの処理はバッチのファイル（xg3aEffects.ts＝XG3-002〜021 等）、継続効果の判定は xg3Fields.ts。
  */
-import type { CardInstance, DeferredPowerFlip, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
+import type { CardInstance, DeferredPowerFlip, GameState, PendingBattle, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import type { GameAction } from "../../types/actions";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { type ChoiceOutcome, close, logFor } from "../rm/rm1Effects";
 import { patchPlayer } from "../playerPatches";
-import { AFTER_ACTION_HOOKS, BATTLE_DESTROY_HOOKS, BEFORE_FLIP_HOOKS, FIELD_ABILITIES, LEAVE_STAY_HOOKS, ENTER_BATTLE_HOOKS, START_PHASE_HOOKS, STRIKE_HOOKS, UNIT_RUSHED_HOOKS, TURN_END_HOOKS, ZONE_ACTIVATIONS, CHOICE_CONFIRMERS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, HOLD_COMPLETERS, KEYWORDS, XG3_KEYWORD_PREFIX } from "./xg3Registry";
+import { AFTER_ACTION_HOOKS, BATTLE_DESTROY_HOOKS, BEFORE_BATTLE_HOOKS, BEFORE_FLIP_HOOKS, FIELD_ABILITIES, LEAVE_STAY_HOOKS, ENTER_BATTLE_HOOKS, START_PHASE_HOOKS, STRIKE_HOOKS, UNIT_RUSHED_HOOKS, TURN_END_HOOKS, ZONE_ACTIVATIONS, CHOICE_CONFIRMERS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, HOLD_COMPLETERS, KEYWORDS, XG3_KEYWORD_PREFIX } from "./xg3Registry";
 import "./xg3aEffects";
 import "./xg3bEffects";
 import "./xg3cEffects";
 import "./xg3dEffects";
+import "./xg3eEffects";
 
 export function isXg3ChoiceEffect(effectId: string): boolean {
   return effectId in CHOICE_RESOLVERS;
@@ -138,8 +139,8 @@ export function openXg3StartPhaseBegin(state: GameState, playerId: PlayerId): Ga
 }
 
 /** 場のユニットの起動（rules/fieldActivatedAbilities.ts）。 */
-export function isXg3FieldAbilityCard(cardId: string): boolean {
-  return FIELD_ABILITIES.some((a) => a.matches(cardId));
+export function isXg3FieldAbilityCard(cardId: string, phase: "rush" | "battle" = "rush"): boolean {
+  return FIELD_ABILITIES.some((a) => (a.phase ?? "rush") === phase && a.matches(cardId));
 }
 
 export function canActivateXg3FieldAbility(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
@@ -178,6 +179,15 @@ export function applyXg3OnBattleDestroy(state: GameState, winnerId: PlayerId, wi
   let next = state;
   for (const hook of BATTLE_DESTROY_HOOKS) next = hook(next, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
   return next;
+}
+
+/** バトルの解決の直前（rules/operationCounters.ts）。処理しなければ null。 */
+export function openXg3BeforeBattle(state: GameState, pending: PendingBattle): GameState | null {
+  for (const hook of BEFORE_BATTLE_HOOKS) {
+    const done = hook(state, pending);
+    if (done) return done;
+  }
+  return null;
 }
 
 /** 場を離れるユニットをかわりにその場に留める（rules/operationCounters.ts tryLeaveField）。対象外なら null。 */

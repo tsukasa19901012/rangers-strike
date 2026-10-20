@@ -48,6 +48,8 @@ export const START_PHASE_HOOKS: Array<(state: GameState, playerId: PlayerId) => 
 export const STRIKE_HOOKS: Array<(state: GameState, strikerPlayerId: PlayerId, striker: CardInstance) => GameState> = [];
 /** 場のユニットの起動（activate_field_unit_ability。rules/fieldActivatedAbilities.ts）。 */
 export const FIELD_ABILITIES: Array<{
+  /** 起動できるフェイズ（省略時はラッシュフェイズ）。 */
+  phase?: "rush" | "battle";
   matches: (cardId: string) => boolean;
   canActivate: (state: GameState, playerId: PlayerId, card: CardInstance) => boolean;
   resolve: (state: GameState, playerId: PlayerId, card: CardInstance) => GameState;
@@ -55,4 +57,6 @@ export const FIELD_ABILITIES: Array<{
 /** ユニットがバトルで敵軍ユニットを撃破したとき（rules/operationCounters.ts。RK-324 と同じ場所）。 */
 export const BATTLE_DESTROY_HOOKS: Array<(state: GameState, winnerId: PlayerId, winnerInstanceId: string, defeatedOwnerId: PlayerId, defeatedInstanceId: string) => GameState> = [];
 /** 自軍ユニットが場を離れるとき、かわりにその場に留める（rules/operationCounters.ts tryLeaveField）。処理したら state、対象外なら null。 */
+/** バトルの解決の直前（rules/operationCounters.ts。RK-050 と同じ場所）。処理したら state（バトルは解決し直す）、対象外なら null。 */
+export const BEFORE_BATTLE_HOOKS: Array<(state: GameState, pending: import("../../types/game").PendingBattle) => GameState | null> = [];
 export const LEAVE_STAY_HOOKS: Array<(state: GameState, intent: PendingLeave) => GameState | null> = [];

@@ -138,7 +138,7 @@ AFTER_ACTION_HOOKS.push((_before, after) => settleMounts(after));
 // - XG3-003 ラジエッカーロボ【チーキュでは1分間しかもたない】（X＝ラジエッカー。atwiki/page-1886）
 // - XG3-045 チャージアップストロンガーの※（X＝仮面ライダーストロンガー。atwiki/page-1909）
 // - XG3-095 カブタックSMの※（自軍コマンドゾーンか自軍捨札の「カブタック」。atwiki/page-1958）
-// 置き換えは R-REPL-04（2枚の配置を入れ替える）: X のカードがこれのいた場所（バトルエリアならバトルエリアの同じ位置）に入り、これは捨札に行く
+// 置き換えは R-REPL-04（2枚の配置を入れ替える）: X のカードがこれのいた場所（バトルエリアならバトルエリアの同じ位置）に入り、これは X のいた場所（捨札・コマンドゾーン）に行く
 // （撃破ではない）。候補が2枚以上なら選ぶ（強制）。
 
 type TurnEndSwap = { cardId: string; partner: string; zones: Array<"discard" | "command"> };
@@ -159,7 +159,7 @@ function swapPartners(state: GameState, playerId: PlayerId, swap: TurnEndSwap): 
   return swap.zones.flatMap((z) => p[z].filter((c) => nameIs(state, c.cardId, swap.partner)).map((c) => c.instanceId));
 }
 
-/** 場の fieldId と、自軍の捨札・コマンドゾーンの partnerId を置き換える（fieldId は捨札へ）。 */
+/** 場の fieldId と、自軍の捨札・コマンドゾーンの partnerId を置き換える（fieldId は partnerId のいた場所へ。捨札・コマンドゾーン）。 */
 export function swapFieldWithZoneCard(state: GameState, playerId: PlayerId, fieldId: string, partnerId: string, phasePlayerId: PlayerId): GameState {
   const zone = zoneOfField(state, playerId, fieldId);
   const p = state.players[playerId];
@@ -169,6 +169,16 @@ export function swapFieldWithZoneCard(state: GameState, playerId: PlayerId, fiel
   if (!zone || !found || !partnerZone || !partner) return state;
   const moved = patchPlayer(state, playerId, (pl) => {
     const replaced = pl[zone].map((c) => (c.instanceId === fieldId ? stripForZone(partner) : c.mountedOnInstanceId === fieldId ? { ...c, mountedOnInstanceId: undefined } : c));
+    // コマンドゾーンの X と置き換えたときは、これが X のいた場所（コマンドゾーン。X のリリース／ホールドの状態のまま）に入る（XG3-095）。
+    if (partnerZone === "command") {
+      const into: CardInstance = { ...stripForZone(found), ...(partner.commandHeld ? { commandHeld: true } : {}) };
+      return {
+        ...pl,
+        command: pl.command.map((c) => (c.instanceId === partnerId ? into : c)),
+        [zone]: replaced,
+        discard: [...pl.discard, ...(found.stackedCards ?? []).map(stripForZone)],
+      };
+    }
     const withoutPartner = { ...pl, [partnerZone]: pl[partnerZone].filter((c) => c.instanceId !== partnerId) };
     return {
       ...withoutPartner,
@@ -176,7 +186,8 @@ export function swapFieldWithZoneCard(state: GameState, playerId: PlayerId, fiel
       discard: [...withoutPartner.discard, stripForZone(found), ...(found.stackedCards ?? []).map(stripForZone)],
     };
   });
-  const left = emitUnitLeftZoneAndResolve(moved, { ownerPlayerId: playerId, instanceId: fieldId, cardId: found.cardId, fromZone: zone, toZone: "discard", phasePlayerId, destroyed: false });
+  const toZone = partnerZone === "command" ? "command" : "discard";
+  const left = emitUnitLeftZoneAndResolve(moved, { ownerPlayerId: playerId, instanceId: fieldId, cardId: found.cardId, fromZone: zone, toZone, phasePlayerId, destroyed: false });
   return { ...left.state, log: [...left.state.log, ...left.logs] };
 }
 

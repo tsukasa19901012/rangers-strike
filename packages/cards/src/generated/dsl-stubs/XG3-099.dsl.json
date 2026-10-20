@@ -47,11 +47,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-099::rkba",
+          "keyword": "xg3::XG3-099::rk_bar",
           "duration": "permanent"
         }
       ]

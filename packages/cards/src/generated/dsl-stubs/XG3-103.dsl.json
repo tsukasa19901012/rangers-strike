@@ -22,13 +22,13 @@
       "name": "噛みつき",
       "text": "自軍バトルフェイズ中、このビークルが自軍ラッシュエリアでライドされていなければ、自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これは本来のテキストを持たないSユニットとして扱い、次の情報とテキストが追加される⇒「BP2000」「SP空欄」「ウイング」",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-103::mitsuki",
+          "keyword": "xg3::XG3-103::kamitsuki",
           "duration": "permanent"
         }
       ]

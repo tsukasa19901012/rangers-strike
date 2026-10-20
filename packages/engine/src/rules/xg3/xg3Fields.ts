@@ -8,7 +8,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
-import { cardCategories, getDefinition, isVehicle, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
+import { cardCategories, effectiveCommandCategories, getDefinition, isVehicle, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { logicalBattlePosition } from "../battleLine";
 
@@ -18,6 +18,11 @@ export const MAX_LINER_CARD_ID = "XG3-007";
 export const JUMA_HUNTER_CARD_ID = "XG3-011";
 
 type View = Pick<GameState, "players" | "definitions" | "activePlayer"> & Partial<Pick<GameState, "xg3" | "turn">>;
+
+/** XG3-103 ライジンゴー【噛みつき】で、このターン S ユニットとして扱うか。 */
+export function isXg3RaijingoUnit(state: View, card: Pick<CardInstance, "cardId" | "instanceId">): boolean {
+  return isSameCardIdentity(card.cardId, "XG3-103") && (state.xg3?.raijingo ?? []).some((r) => r.instanceId === card.instanceId && r.turn === state.turn);
+}
 
 /** ユニットの下に重ね、重ねたユニットがユニットでなくなるとき捨札になるカード。 */
 export function isXg3StackedUnderUnitCard(cardId: string): boolean {
@@ -48,6 +53,20 @@ export function xg3FieldBpBonus(state: View, playerId: PlayerId, instance: CardI
     }
     // XG3-052 オックスオルフェノク【強力無双の怪腕】自軍ターン中 BP+2000（atwiki/page-1916）。
     if (isSameCardIdentity(instance.cardId, "XG3-052") && state.activePlayer === playerId) bonus += 2000;
+    // XG3-085 邪甲神クワガタイタン【タイタニックフレア】自軍ターン中、WB を持つ自軍コマンド1つにつき BP+1000（リリース・ホールドを問わない。atwiki/page-1940）。
+    if (isSameCardIdentity(instance.cardId, "XG3-085") && state.activePlayer === playerId) {
+      const p = state.players[playerId];
+      bonus += 1000 * p.command.filter((c) => (effectiveCommandCategories(p, state.definitions, c.cardId) as string[]).includes("WB")).length;
+    }
+    // XG3-094 カブタック【友情】これ以外の自軍バトルエリアの S ユニット1体につき BP+1000（atwiki/page-1947）。
+    if (isSameCardIdentity(instance.cardId, "XG3-094")) {
+      const p = state.players[playerId];
+      if (p.battle.some((c) => c.instanceId === instance.instanceId)) {
+        bonus += 1000 * p.battle.filter((c) => c.instanceId !== instance.instanceId && getDefinition(state.definitions, c.cardId)?.type === "unit" && unitSizeOf(state.definitions, c) === "S").length;
+      }
+    }
+    // XG3-103 ライジンゴー【噛みつき】このターン「BP2000」の S ユニットとして扱う（ビークルの BP は 0）。
+    if (isXg3RaijingoUnit(state, instance)) bonus += 2000;
   }
   void state;
   void playerId;
@@ -125,6 +144,8 @@ export function xg3AttackerCanAttackRush(state: View, attackerPlayerId: PlayerId
  * - XG3-078 マシンハードボイルダー【リモコン操作】特徴「ダブルドライバー」を持つ自軍ユニットがあれば（印刷の特徴）。
  */
 export function xg3VehicleMayEnterAlone(state: View, playerId: PlayerId, vehicle: CardInstance): boolean {
+  // XG3-103 ライジンゴー【噛みつき】このターン S ユニットとして扱う（rules/xg3/xg3eEffects.ts）。
+  if (isXg3RaijingoUnit(state, vehicle)) return true;
   if (!isSameCardIdentity(vehicle.cardId, "XG3-078")) return false;
   const p = state.players[playerId];
   return [...p.battle, ...p.rush].some((c) => {

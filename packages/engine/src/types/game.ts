@@ -225,6 +225,11 @@ export type PendingBattle = {
   attackerBpBonus?: number;
   /** このバトルの間だけ、アタックされたユニットの BP に加える値（RK-004 ギギの腕輪・RK-009 二人の世紀王）。 */
   defenderBpBonus?: number;
+  /** XG3-091【パルセイバー】・XG3-097【キャプテンルーレット】のバトルの前の処理を済ませた（rules/xg3/xg3eEffects.ts）。 */
+  xg3PulseDone?: boolean;
+  xg3RouletteDone?: boolean;
+  /** XG3-097【キャプテンルーレット】: お互いにこの数字でバトルする。 */
+  xg3Values?: { attacker: number; defender: number };
   /** RS-006: バトルキャンセル、守り側はラッシュに戻る */
   battleCancelled?: boolean;
   /** RK-101【タイガーボンバー】の BP-3000 をこのバトルに適用済み（rules/rk/rk5UnitEffects.ts）。 */

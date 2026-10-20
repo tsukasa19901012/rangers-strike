@@ -3,7 +3,7 @@ import { cardName, getDefinition, unitSizeOf } from "../core/catalog";
 import { opponent, removeAt, updatePlayer } from "../core/helpers";
 import { buildLogEntry } from "../log/formatLog";
 import { applyDamageToPlayer } from "./damagePayment";
-import { startSelectCommandChoice, startSelectPowerChoice, startSelectUnitChoice } from "./pendingChoices";
+import { startSelectPowerChoice, startSelectUnitChoice } from "./pendingChoices";
 import { releaseHeldSUnitCommands } from "./batch03RushEffects";
 import type { NamedEffectOutcome } from "./namedUnitEffects";
 import { resolveRushAdditionalCondition } from "@rangers-strike/cards";
@@ -88,37 +88,7 @@ export function resolveNoteOtherOnRushEffects(
     }
   }
 
-  // XG3-096 (ミミーナ): on rush → select 1 released own S-unit (not ミミーナ) and hold it
-  if (cardId === "XG3-096") {
-    const player = nextState.players[rusherPlayerId];
-    const validIds = player.command
-      .filter((c) => {
-        if (c.commandHeld) return false;
-        const def = getDefinition(nextState.definitions, c.cardId);
-        return (
-          def?.type === "unit" &&
-          unitSizeOf(nextState.definitions, c) === "S" &&
-          cardName(nextState.definitions, c.cardId) !== "ミミーナ"
-        );
-      })
-      .map((c) => c.instanceId);
-    if (validIds.length > 0) {
-      const withChoice = startSelectCommandChoice(nextState, {
-        playerId: rusherPlayerId,
-        effectId: "mimina_hold",
-        sourceCardId: cardId,
-        phasePlayerId,
-        commandFilter: "released",
-        commandAction: "hold",
-        validInstanceIds: validIds,
-        optional: false,
-      });
-      if (withChoice) {
-        nextState = withChoice;
-        logs.push(buildLogEntry(rusherPlayerId, "rush_effect", cardId, nextState.definitions, "mimina_hold"));
-      }
-    }
-  }
+  // XG3-096 (ミミーナ) の※は rules/xg3/xg3eEffects.ts（xg3:: キーワード）。
 
   // XG6-044 (仮面ライダーNEW電王SF): on rush → may bring テディ from power to rush (auto-yes)
   if (cardId === "XG6-044") {

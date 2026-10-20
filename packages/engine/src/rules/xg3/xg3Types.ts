@@ -1,7 +1,7 @@
 /**
  * クロスギャザー ザ・Wインパクト（XG3）の状態の型（types/game.ts の GameState.xg3・PendingEffectChoice.xg3Meta）。
  */
-import type { PlayerId } from "../../types/game";
+import type { PendingLeave, PlayerId } from "../../types/game";
 
 /** 選択の続きに持たせる値。 */
 export type Xg3ChoiceMeta = {
@@ -15,6 +15,10 @@ export type Xg3ChoiceMeta = {
   ownerId?: PlayerId;
   /** 途中の段階。 */
   step?: string;
+  /** 場を離れる処理の続き（XG3-101【逆転チェスト】）。 */
+  leave?: PendingLeave;
+  /** バトルの続き（XG3-091【パルセイバー】）。 */
+  battle?: import("../../types/game").PendingBattle;
 };
 
 /** ラッシュエリアに出たユニットを、ビークルにライドさせる処理待ち（XG3-002【宇宙を走る車】）。 */
@@ -42,4 +46,12 @@ export type Xg3State = {
   choudenKick?: Array<{ instanceId: string; turn: number }>;
   /** XG3-067 インビジブル: 自軍ラッシュエリアに置いたこのカードと、重ねたユニット。 */
   invisible?: Array<{ ownerId: PlayerId; cardInstanceId: string; unitInstanceId: string }>;
+  /** XG3-091: RC か「昆虫」からのコンビネーションで出たターン（そのターン【パルセイバー】を発動できる）。 */
+  pulseSaber?: Array<{ instanceId: string; turn: number }>;
+  /** XG3-099【RKバー】で選んだ敵軍ユニット（持ち主の次のターン、アタックもストライクもできない）。 */
+  rkBar?: Array<{ ownerId: PlayerId; instanceId: string; turn: number }>;
+  /** XG3-101【逆転チェスト】: RC したターン（次の相手ターン中に1度だけ発動できる）。 */
+  chest?: Array<{ ownerId: PlayerId; instanceId: string; turn: number; used?: boolean }>;
+  /** XG3-103【噛みつき】で S ユニットとして扱うターン。 */
+  raijingo?: Array<{ instanceId: string; turn: number }>;
 };
