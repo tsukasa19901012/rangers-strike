@@ -2186,6 +2186,8 @@ function getLegalActionsCore(state: GameState): GameAction[] {
           commandInstanceIds: ids,
         });
       }
+      // プレイヤーはホールドするコマンドを選べる（RS-440 等）。違うカードを含む選び方も出す（同じカードの入れ替えは同じ手なので1つだけ）。
+      appendCommandPaymentChoices(state, pending, actions);
       actions.push({ type: "cancel_command_payment", playerId });
     }
     return actions;
@@ -3089,4 +3091,58 @@ export function withUniqueExtraCommandHolds(state: GameState, action: GameAction
   }
   if (sets.size !== 1 || !unique) return action;
   return { ...action, zordExtraCommandHoldInstanceIds: [...unique] } as GameAction;
+}
+
+/** 支払いの選び方の上限（候補が多くても合法手の列挙を重くしない）。 */
+const COMMAND_PAYMENT_CHOICE_LIMIT = 24;
+
+/**
+ * 保留中のコマンド支払いで、先頭から順に選ぶ以外の選び方を加える。同じカード（cardId と裏表が同じ）の
+ * 入れ替えだけの選び方は同じ手とみなして出さない。枚数は minNeeded〜totalNeeded の両端。
+ */
+function appendCommandPaymentChoices(
+  state: GameState,
+  pending: NonNullable<GameState["pendingCommandPayment"]>,
+  actions: GameAction[],
+): void {
+  const valid = pending.validInstanceIds;
+  const signature = new Map<string, string>();
+  for (const player of Object.values(state.players)) {
+    for (const zone of Object.values(player)) {
+      if (!Array.isArray(zone)) continue;
+      for (const card of zone as { instanceId?: string; cardId?: string; faceDown?: boolean }[]) {
+        if (card?.instanceId && valid.includes(card.instanceId)) signature.set(card.instanceId, `${card.cardId}|${card.faceDown ? 1 : 0}`);
+      }
+    }
+  }
+  const keyOf = (ids: readonly string[]) => ids.map((id) => signature.get(id) ?? id).sort().join(",");
+  const seen = new Set(
+    actions.filter((a) => a.type === "resolve_command_payment").map((a) => keyOf((a as { commandInstanceIds: string[] }).commandInstanceIds)),
+  );
+  const sizes = [...new Set([pending.minNeeded ?? pending.totalNeeded, pending.totalNeeded])].filter((n) => n > 0 && n <= valid.length);
+  let added = 0;
+  let visits = 0;
+  for (const size of sizes) {
+    const pick: string[] = [];
+    const walk = (from: number): void => {
+      if (added >= COMMAND_PAYMENT_CHOICE_LIMIT || ++visits > 4000) return;
+      if (pick.length === size) {
+        const key = keyOf(pick);
+        if (seen.has(key)) return;
+        seen.add(key);
+        const ids = [...pick];
+        if (validatePaymentSelection(state, pending, ids) !== null) return;
+        if (!isResolveCommandPaymentLegal(state, { playerId: pending.playerId, commandInstanceIds: ids })) return;
+        actions.push({ type: "resolve_command_payment", playerId: pending.playerId, commandInstanceIds: ids });
+        added++;
+        return;
+      }
+      for (let i = from; i < valid.length; i++) {
+        pick.push(valid[i]!);
+        walk(i + 1);
+        pick.pop();
+      }
+    };
+    walk(0);
+  }
 }

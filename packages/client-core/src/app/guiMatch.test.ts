@@ -4,7 +4,7 @@ import { input } from "../input/actions";
 import { hitTestGui } from "../input/devices";
 import { testPlatform } from "../testing/engine";
 import { measureText } from "../text/wrap";
-import { variantLabels, type GuiView } from "./guiMatch";
+import { dropCardName, variantLabels, type GuiView } from "./guiMatch";
 
 const VITA = { width: 480, height: 272 };
 
@@ -242,5 +242,16 @@ describe("variantLabels", () => {
 
   it("keeps full labels when nothing sensible is shared", () => {
     expect(variantLabels(["ドロー", "フェイズ終了"])).toEqual(["ドロー", "フェイズ終了"]);
+  });
+});
+
+describe("dropCardName", () => {
+  it("drops the card's own name", () => {
+    expect(dropCardName("アタック: アバレッド → アバレッド", "アバレッド")).toBe("アタック → アバレッド");
+    expect(dropCardName("コマンドを支払って使う: 芋長の芋ヨーカン（種類:カテゴリ）", "芋長の芋ヨーカン")).toBe("コマンドを支払って使う（種類:カテゴリ）");
+  });
+
+  it("keeps a longer name that starts with it", () => {
+    expect(dropCardName("ラッシュ: アバレッドAM / アバレッド", "アバレッド")).toBe("ラッシュ: アバレッドAM / アバレッド");
   });
 });
