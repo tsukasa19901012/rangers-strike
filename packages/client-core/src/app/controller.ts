@@ -259,7 +259,9 @@ export class AppController {
       this.finishMatch();
       return true;
     }
-    if (session.turnOwner() !== "cpu") return false;
+    const toastChanged = this.gui?.frame() ?? false;
+    if (toastChanged) this.touch();
+    if (session.turnOwner() !== "cpu") return toastChanged;
     this.framesSinceCpu++;
     if (this.framesSinceCpu < this.cpuDelayFrames) return false;
     this.framesSinceCpu = 0;

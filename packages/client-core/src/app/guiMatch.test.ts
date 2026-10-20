@@ -4,93 +4,208 @@ import { input } from "../input/actions";
 import { hitTestGui } from "../input/devices";
 import { testPlatform } from "../testing/engine";
 import { measureText } from "../text/wrap";
+import type { GuiView } from "./guiMatch";
 
 const VITA = { width: 480, height: 272 };
 
-function startGui(seed: number): AppController {
-  const app = new AppController({ platform: testPlatform(), viewport: VITA, cpuDelayFrames: 0, seed: () => seed, gui: true });
+function startGui(seed: number, humanDeck?: string): AppController {
+  const app = new AppController({
+    platform: testPlatform(),
+    viewport: VITA,
+    cpuDelayFrames: 0,
+    seed: () => seed,
+    gui: true,
+    defaults: humanDeck ? { humanDeck } : undefined,
+  });
   app.dispatch(input.select(3, true));
   return app;
 }
 
-describe("GUI match", () => {
-  it("plays a whole match with GUI input only (tile menus, R menu, × pass)", () => {
-    const app = startGui(5);
-    expect(app.view().gui).toBeDefined();
-    let humanMoves = 0;
-    for (let frame = 0; frame < 30000 && app.currentScreen === "match"; frame++) {
-      if (app.tick()) continue;
-      const gui = app.view().gui!;
-      // Prefer the focused tile's first action; fall back to the global menu, then to all actions.
-      app.dispatch(input.confirm);
-      if (!app.view().gui?.menuOpen) app.dispatch(input.menu);
-      if (!app.view().gui?.menuOpen) app.dispatch(input.allActions);
-      if (app.view().gui?.menuOpen) {
-        // Walk to a pass-like option every few moves so phases advance.
-        if (frame % 3 === 0) {
-          app.dispatch(input.cancel);
-          app.dispatch(input.cancel);
+function humanTurn(app: AppController): boolean {
+  return app.currentScreen === "match" && app.session!.turnOwner() === "human";
+}
+
+/** Drives one human decision the way a player would: pick a card, ○ through popup / targeting / list, R now and then. */
+function playOneStep(app: AppController, step: number): void {
+  const before = app.session!.version;
+  const gui = app.view().gui!;
+  if (step % 5 === 4 && !gui.dialog) app.dispatch(input.menu);
+  if (app.session!.version !== before) return;
+  if (!gui.dialog) {
+    const actionable = gui.rows.flatMap((r, row) => r.tiles.map((t, slot) => ({ t, row, slot }))).filter((x) => x.t.actionable);
+    const pick = actionable[(step * 7) % Math.max(1, actionable.length)];
+    if (pick) app.dispatch(input.focusTile(pick.row, pick.slot));
+  }
+  app.dispatch(input.confirm);
+  for (let n = 0; n < step % 3; n++) app.dispatch(input.next);
+  for (let i = 0; i < 4 && app.session!.version === before; i++) app.dispatch(input.confirm);
+  if (app.session!.version === before) {
+    // Nothing applied through the card popup: fall back to the full list.
+    app.dispatch(input.cancel);
+    app.dispatch(input.cancel);
+    app.dispatch(input.allActions);
+    app.dispatch(input.confirm);
+  }
+}
+
+describe("GUI match (commercial-style controls)", () => {
+  it("plays whole matches with GUI input only", () => {
+    for (const seed of [5, 17]) {
+      const app = startGui(seed);
+      let humanSteps = 0;
+      for (let frame = 0; frame < 40000 && app.currentScreen === "match"; frame++) {
+        if (!humanTurn(app)) {
+          app.tick();
+          continue;
         }
-        if (app.view().gui?.menuOpen) {
-          app.dispatch(input.confirm);
-          humanMoves++;
-        }
-      } else {
-        expect(gui.panelLines.length).toBeGreaterThan(0);
+        playOneStep(app, humanSteps++);
       }
+      expect(app.currentScreen).toBe("result");
+      expect(humanSteps).toBeGreaterThan(10);
     }
-    expect(app.currentScreen).toBe("result");
-    expect(humanMoves).toBeGreaterThan(5);
   });
 
-  it("lists every legal human action in the △ menu", () => {
+  it("lists every legal human action in the △ list", () => {
     const app = startGui(9);
-    for (let i = 0; i < 200 && app.currentScreen === "match"; i++) {
-      if (app.tick()) continue;
+    let checked = 0;
+    for (let i = 0; i < 400 && app.currentScreen === "match"; i++) {
+      if (!humanTurn(app)) {
+        app.tick();
+        continue;
+      }
       const options = app.session!.humanOptions();
-      if (options.length === 0) continue;
       app.dispatch(input.allActions);
       const view = app.view().gui!;
-      expect(view.menuTitle).toContain(`/${options.length}`);
+      expect(view.list?.title).toContain(`/${options.length}`);
+      checked++;
       app.dispatch(input.confirm);
     }
+    expect(checked).toBeGreaterThan(5);
   });
 
-  it("keeps tiles, strips and panel text inside the 480x272 screen", () => {
-    const app = startGui(11);
-    for (let i = 0; i < 120 && app.currentScreen === "match"; i++) {
-      if (!app.tick()) {
+  it("enters targeting for an attack and applies it on the chosen defender", () => {
+    let found = false;
+    for (const seed of [1, 2, 3, 4, 5, 6, 7, 8]) {
+      const app = startGui(seed);
+      for (let i = 0; i < 6000 && app.currentScreen === "match" && !found; i++) {
+        if (!humanTurn(app)) {
+          app.tick();
+          continue;
+        }
+        const options = app.session!.humanOptions();
+        const battles = options.filter((o) => o.action.type === "battle");
+        const attackers = new Set(battles.map((o) => (o.action as { attackerInstanceId: string }).attackerInstanceId));
+        const attacker = [...attackers].find(
+          (id) => battles.filter((o) => (o.action as { attackerInstanceId: string }).attackerInstanceId === id).length > 1,
+        );
+        if (!attacker) {
+          playOneStep(app, i);
+          continue;
+        }
+        // Tap the attacker, choose the attack verb, then the second target.
+        const gui = app.view().gui!;
+        const row = gui.rows.findIndex((r) => r.tiles.some((t) => t.instanceId === attacker));
+        const slot = gui.rows[row]!.tiles.findIndex((t) => t.instanceId === attacker);
+        app.dispatch(input.focusTile(row, slot, true));
+        const popup = app.view().gui!.popup!;
+        const attackRow = popup.rows.findIndex((r) => r.text.startsWith("アタック"));
+        expect(attackRow).toBeGreaterThanOrEqual(0);
+        app.dispatch(input.select(attackRow, true));
+        const targeting = app.view().gui!;
+        expect(targeting.footer).toContain("アタックする相手");
+        const targets = targeting.rows.flatMap((r) => r.tiles.filter((t) => t.targetable));
+        expect(targets.length).toBeGreaterThan(1);
+        expect(targeting.rows.flatMap((r) => r.tiles).some((t) => t.dimmed)).toBe(true);
+        const version = app.session!.version;
+        app.dispatch(input.next);
         app.dispatch(input.confirm);
-        app.dispatch(input.confirm);
+        if (app.view().gui?.list) app.dispatch(input.confirm);
+        expect(app.session!.version).toBeGreaterThan(version);
+        found = true;
       }
-      const gui = app.view().gui;
-      if (!gui) break;
+      if (found) break;
+    }
+    expect(found).toBe(true);
+  });
+
+  it("opens a selection window for pending decisions and resolves it", () => {
+    let seen = 0;
+    for (const seed of [3, 11, 21]) {
+      const app = startGui(seed);
+      for (let i = 0; i < 8000 && app.currentScreen === "match" && seen < 3; i++) {
+        if (!humanTurn(app)) {
+          app.tick();
+          continue;
+        }
+        const gui = app.view().gui!;
+        if (gui.dialog) {
+          seen++;
+          expect(gui.dialog.titleLines.length).toBeGreaterThan(0);
+          expect(gui.dialog.cards.length + gui.dialog.buttons.length).toBeGreaterThan(0);
+          // L peeks at the board, × returns to the window.
+          app.dispatch(input.toggleLog);
+          expect(app.view().gui!.dialog).toBeUndefined();
+          app.dispatch(input.cancel);
+          expect(app.view().gui!.dialog).toBeDefined();
+        }
+        playOneStep(app, i);
+      }
+    }
+    expect(seen).toBeGreaterThan(0);
+  });
+
+  it("keeps everything inside the 480x272 screen", () => {
+    const app = startGui(11);
+    const within = (view: GuiView, r: { x: number; y: number; w: number; h: number }) => {
+      expect(r.x).toBeGreaterThanOrEqual(0);
+      expect(r.y).toBeGreaterThanOrEqual(-4);
+      expect(r.x + r.w).toBeLessThanOrEqual(view.geometry.width);
+      expect(r.y + r.h).toBeLessThanOrEqual(view.geometry.height);
+    };
+    for (let i = 0; i < 600 && app.currentScreen === "match"; i++) {
+      if (!humanTurn(app)) {
+        app.tick();
+        continue;
+      }
+      app.dispatch(input.confirm);
+      const gui = app.view().gui!;
       const g = gui.geometry;
       for (const row of gui.rows) {
         expect(row.tiles.length).toBeLessThanOrEqual(g.tilesPerRow);
         for (const tile of row.tiles) {
-          expect(tile.rect.x + tile.rect.w).toBeLessThanOrEqual(g.panel.x);
-          expect(tile.rect.y + tile.rect.h).toBeLessThanOrEqual(g.footer.y);
+          within(gui, tile.rect);
+          expect(tile.rect.x + tile.rect.w).toBeLessThanOrEqual(g.side.x);
           expect(measureText(tile.name, g.fontPx)).toBeLessThanOrEqual(tile.rect.w - 4);
         }
       }
-      for (const line of [...gui.panelLines, ...gui.menuRows]) {
+      for (const line of gui.detailLines) {
         expect(line.rect.y + line.rect.h).toBeLessThanOrEqual(g.footer.y + 1);
-        expect(measureText(line.text, g.fontPx)).toBeLessThanOrEqual(g.panelTextWidth);
+        expect(measureText(line.text, g.fontPx)).toBeLessThanOrEqual(g.detailTextWidth);
       }
+      for (const box of [gui.popup, gui.list]) if (box) [box.rect, ...box.rows.map((r) => r.rect)].forEach((r) => within(gui, r));
+      if (gui.dialog) [gui.dialog.rect, ...gui.dialog.cards.map((c) => c.rect)].forEach((r) => within(gui, r));
+      playOneStep(app, i);
     }
   });
 
-  it("maps a tap on a tile to that tile and opens its menu", () => {
+  it("maps taps to tiles, popup rows and the end button", () => {
     const app = startGui(3);
-    for (let i = 0; i < 50 && app.session!.turnOwner() !== "human"; i++) app.tick();
+    for (let i = 0; i < 200 && !(humanTurn(app) && !app.view().gui!.dialog); i++) {
+      if (humanTurn(app)) playOneStep(app, i);
+      else app.tick();
+    }
     const gui = app.view().gui!;
-    const hand = gui.rows[gui.rows.length - 1]!;
-    const tile = hand.tiles[1]!;
-    const event = hitTestGui(gui, { x: tile.rect.x + 2, y: tile.rect.y + 2 });
-    expect(event).toEqual({ type: "focusTile", row: gui.rows.length - 1, slot: 1, open: true });
+    const handRow = gui.rows.length - 1;
+    const tile = gui.rows[handRow]!.tiles[1]!;
+    const event = hitTestGui(gui, { x: tile.rect.x + 2, y: tile.rect.y + 4 });
+    expect(event).toEqual({ type: "focusTile", row: handRow, slot: 1, open: true });
+    expect(hitTestGui(gui, { x: gui.endButton.rect.x + 2, y: gui.endButton.rect.y + 2 })).toEqual({ type: "menu" });
     app.dispatch(event!);
     const after = app.view().gui!;
-    expect(after.rows[after.rows.length - 1]!.tiles[1]!.focused).toBe(true);
+    if (after.popup) {
+      const r = after.popup.rows[0]!.rect;
+      expect(hitTestGui(after, { x: r.x + 2, y: r.y + 2 })).toEqual({ type: "select", row: 0, confirm: true });
+      expect(hitTestGui(after, { x: 1, y: 1 })).toEqual({ type: "cancel" });
+    }
   });
 });

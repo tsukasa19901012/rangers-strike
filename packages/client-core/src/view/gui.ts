@@ -1,10 +1,13 @@
 // Graphical board view model (card tiles in zone rows) and its fixed geometry.
-// Renderers place every tile and menu row at the rectangles computed here, and
+// Renderers place every element at the rectangles computed here, and
 // hitTestGui uses the same rectangles, so touch always matches what is drawn.
+//
+// Screen (480x272 logical, Vita draws it at 2x):
+//   [detail 118] [board: CPU rush/battle, own battle/rush/command, hand] [phase + end button 50]
 import type { CardInstance, EngineApi, GameAction, GameState, PlayerId } from "../engineApi";
 import { CPU, HUMAN } from "../engineApi";
 import { PHASE_LABELS, PLAYER_LABELS } from "../text/labels";
-import { clipLine, fitLine, type WrapOptions } from "../text/wrap";
+import { clipLine, type WrapOptions } from "../text/wrap";
 import type { Rect, Viewport } from "./layout";
 
 export type GuiZone = "battle" | "rush" | "command" | "hand";
@@ -12,21 +15,23 @@ export type GuiZone = "battle" | "rush" | "command" | "hand";
 export type GuiRowKey = `${PlayerId}:${GuiZone}`;
 
 /** Rows from top to bottom. CPU command / power / operation and both piles are shown as counts in the strips. */
-export const GUI_ROWS: readonly { player: PlayerId; zone: GuiZone; label: string }[] = [
-  { player: CPU, zone: "rush", label: "ラ" },
-  { player: CPU, zone: "battle", label: "バ" },
-  { player: HUMAN, zone: "battle", label: "バ" },
-  { player: HUMAN, zone: "rush", label: "ラ" },
-  { player: HUMAN, zone: "command", label: "コ" },
-  { player: HUMAN, zone: "hand", label: "手" },
+export const GUI_ROWS: readonly { player: PlayerId; zone: GuiZone }[] = [
+  { player: CPU, zone: "rush" },
+  { player: CPU, zone: "battle" },
+  { player: HUMAN, zone: "battle" },
+  { player: HUMAN, zone: "rush" },
+  { player: HUMAN, zone: "command" },
+  { player: HUMAN, zone: "hand" },
 ];
+
+export const PHASE_ORDER = ["start", "charge", "rush", "battle", "end"] as const;
 
 export type GuiTileKind = "unit" | "command" | "operation" | "other" | "hidden";
 
 export type GuiTile = {
   instanceId: string;
   cardId: string;
-  /** Name fitted to the tile width (empty for hidden cards). */
+  /** Name clipped to the tile width (empty for hidden cards). */
   name: string;
   /** Second line: BP for units, a short type tag otherwise. */
   sub: string;
@@ -42,47 +47,51 @@ export type GuiRow = {
   key: GuiRowKey;
   player: PlayerId;
   zone: GuiZone;
-  label: string;
   tiles: GuiTile[];
 };
 
 export type GuiGeometry = {
+  width: number;
+  height: number;
   fontPx: number;
   lineHeight: number;
   topBar: Rect;
   footer: Rect;
+  detail: Rect;
+  board: Rect;
+  side: Rect;
   /** One strip per player, CPU first. */
   strips: [Rect, Rect];
   rows: Rect[];
-  /** Left edge of the first tile in a row and the tile pitch. */
-  tileX: number;
   tileW: number;
   tileH: number;
   tileGap: number;
   tilesPerRow: number;
-  panel: Rect;
-  panelLines: number;
-  panelTextWidth: number;
+  phaseRects: Rect[];
+  endButton: Rect;
+  detailLines: number;
+  detailTextWidth: number;
 };
 
 const FONT_PX = 12;
 const LINE_H = 15;
 const TILE_H = 32;
 const ROW_GAP = 2;
-const LABEL_W = 14;
 
 export function computeGuiGeometry(viewport: Viewport): GuiGeometry {
   const width = Math.max(400, Math.floor(viewport.width));
   const height = Math.max(240, Math.floor(viewport.height));
-  const panelW = Math.max(150, Math.round(width * 0.37));
-  const boardW = width - panelW;
+  const detailW = Math.round(width * 0.245);
+  const sideW = Math.max(52, Math.round(width * 0.115));
   const topBar: Rect = { x: 0, y: 0, w: width, h: LINE_H };
   const footer: Rect = { x: 0, y: height - LINE_H, w: width, h: LINE_H };
-  const rowH = TILE_H + ROW_GAP;
+  const board: Rect = { x: detailW + 2, y: topBar.h, w: width - detailW - sideW - 4, h: footer.y - topBar.h };
+  const detail: Rect = { x: 0, y: topBar.h, w: detailW, h: footer.y - topBar.h };
+  const side: Rect = { x: width - sideW, y: topBar.h, w: sideW, h: footer.y - topBar.h };
   const rows: Rect[] = [];
-  let y = topBar.h;
+  let y = board.y;
   const strip = (): Rect => {
-    const r = { x: 0, y, w: boardW, h: LINE_H - 1 };
+    const r = { x: board.x, y, w: board.w, h: LINE_H - 1 };
     y += LINE_H - 1;
     return r;
   };
@@ -93,32 +102,59 @@ export function computeGuiGeometry(viewport: Viewport): GuiGeometry {
       y += 2;
       humanStrip = strip();
     }
-    rows.push({ x: 0, y, w: boardW, h: TILE_H });
-    y += rowH;
+    rows.push({ x: board.x, y, w: board.w, h: TILE_H });
+    y += TILE_H + ROW_GAP;
   }
   const tileGap = 2;
-  // Fit the tile pitch to the board: at least 54px so 4 kana of the name fit.
-  const usable = boardW - LABEL_W - 2;
-  const tilesPerRow = Math.max(3, Math.floor((usable + tileGap) / (54 + tileGap)));
-  const tileW = Math.floor((usable + tileGap) / tilesPerRow) - tileGap;
-  const panel: Rect = { x: boardW, y: topBar.h, w: panelW, h: footer.y - topBar.h };
+  const tilesPerRow = Math.max(3, Math.floor((board.w + tileGap) / (56 + tileGap)));
+  const tileW = Math.floor((board.w + tileGap) / tilesPerRow) - tileGap;
+  const phaseRects = PHASE_ORDER.map((_, i) => ({ x: side.x + 2, y: side.y + 2 + i * (LINE_H + 1), w: side.w - 4, h: LINE_H }));
+  const endTop = phaseRects[phaseRects.length - 1]!.y + LINE_H + 8;
+  const endButton: Rect = { x: side.x + 2, y: endTop, w: side.w - 4, h: LINE_H * 3 + 6 };
   return {
+    width,
+    height,
     fontPx: FONT_PX,
     lineHeight: LINE_H,
     topBar,
     footer,
+    detail,
+    board,
+    side,
     strips: [cpuStrip, humanStrip],
     rows,
-    tileX: LABEL_W + 2,
     tileW,
     tileH: TILE_H,
     tileGap,
     tilesPerRow,
-    panel,
-    panelLines: Math.max(4, Math.floor((panel.h - 4) / LINE_H)),
-    panelTextWidth: panel.w - 8,
+    phaseRects,
+    endButton,
+    detailLines: Math.max(4, Math.floor((detail.h - 6) / LINE_H)),
+    detailTextWidth: detail.w - 8,
   };
 }
+
+const SUBJECT_KEYS = [
+  "instanceId",
+  "attackerInstanceId",
+  "riderInstanceId",
+  "operationInstanceId",
+  "unitInstanceId",
+  "interceptInstanceId",
+  "morphUnitInstanceId",
+  "zordInstanceId",
+  "sourceInstanceId",
+  "battleInstanceId",
+  "materialInstanceId",
+];
+const TARGET_KEYS = [
+  "defenderInstanceId",
+  "targetInstanceId",
+  "vehicleInstanceId",
+  "newVehicleInstanceId",
+  "extraInstanceId",
+  "substituteInstanceId",
+];
 
 /** Every card instance id a legal action names (instanceId, attackerInstanceId, selectedInstanceIds...). */
 export function actionInstanceIds(action: GameAction): string[] {
@@ -131,23 +167,49 @@ export function actionInstanceIds(action: GameAction): string[] {
   return ids;
 }
 
+/** The card that performs the action (the one you "pick up"), if any. */
+export function actionSubjectId(action: GameAction): string | undefined {
+  const record = action as unknown as Record<string, unknown>;
+  for (const key of SUBJECT_KEYS) if (typeof record[key] === "string") return record[key] as string;
+  return undefined;
+}
+
+/** The single card the action points at (attack defender, operation target, vehicle...), if any. */
+export function actionTargetId(action: GameAction): string | undefined {
+  const record = action as unknown as Record<string, unknown>;
+  for (const key of TARGET_KEYS) if (typeof record[key] === "string") return record[key] as string;
+  return undefined;
+}
+
+/** Fields other than type/player/subject/target, as a stable string (variants of the same move differ here). */
+export function actionExtrasKey(action: GameAction): string {
+  const record = action as unknown as Record<string, unknown>;
+  const skip = new Set(["type", "playerId", ...SUBJECT_KEYS, ...TARGET_KEYS]);
+  return Object.keys(record)
+    .filter((k) => !skip.has(k) && record[k] !== undefined)
+    .sort()
+    .map((k) => `${k}=${JSON.stringify(record[k])}`)
+    .join("&");
+}
+
 function zoneCards(state: GameState, player: PlayerId, zone: GuiZone): CardInstance[] {
   const p = state.players[player];
   return zone === "hand" ? p.hand : p[zone];
 }
 
-function tileFor(
+/** Tile for any card instance (board rows, dialogs). */
+export function cardTile(
   engine: EngineApi,
   state: GameState,
   player: PlayerId,
-  zone: GuiZone,
+  zone: string,
   card: CardInstance,
-  actionable: ReadonlySet<string>,
-  selected: ReadonlySet<string>,
   fit: WrapOptions,
+  actionable = false,
+  selected = false,
 ): GuiTile {
   const def = state.definitions[card.cardId];
-  const hidden = player !== HUMAN && zone === "hand";
+  const hidden = player !== HUMAN && (zone === "hand" || zone === "deck");
   let kind: GuiTileKind = hidden ? "hidden" : "other";
   let sub = "";
   if (!hidden && def) {
@@ -157,10 +219,12 @@ function tileFor(
     } else if (def.type === "unit") {
       kind = "unit";
       let bp: number | undefined = def.bp;
-      try {
-        bp = engine.effectiveBp(state, player, card);
-      } catch {
-        // keep printed BP
+      if (zone === "battle" || zone === "rush") {
+        try {
+          bp = engine.effectiveBp(state, player, card);
+        } catch {
+          // keep printed BP
+        }
       }
       sub = bp !== undefined ? String(bp) : "";
     } else if (def.type === "operation") {
@@ -171,15 +235,16 @@ function tileFor(
     }
   }
   if (card.commandHeld) sub = "ホールド";
+  if (zone === "power") sub = card.faceDown ? "パワー裏" : "パワー";
   return {
     instanceId: card.instanceId,
     cardId: card.cardId,
     name: hidden ? "" : clipLine(def?.name ?? card.cardId, fit),
-    sub: fitLine(sub, fit),
+    sub: clipLine(sub, fit),
     kind,
     held: !!card.commandHeld,
-    actionable: actionable.has(card.instanceId),
-    selected: selected.has(card.instanceId),
+    actionable,
+    selected,
   };
 }
 
@@ -196,19 +261,51 @@ export function buildGuiRows(
     key: `${def.player}:${def.zone}` as GuiRowKey,
     player: def.player,
     zone: def.zone,
-    label: def.label,
     tiles: zoneCards(state, def.player, def.zone).map((card) =>
-      tileFor(engine, state, def.player, def.zone, card, actionable, selected, fit),
+      cardTile(engine, state, def.player, def.zone, card, fit, actionable.has(card.instanceId), selected.has(card.instanceId)),
     ),
   }));
 }
 
-/** "CPU D2/7 手5 山30 捨3 P4(裏1) C3" — the zones not drawn as rows. */
+/** Where a card instance currently is (any zone of either player). */
+export function locateInstance(
+  state: GameState,
+  instanceId: string,
+): { player: PlayerId; zone: string; card: CardInstance } | null {
+  for (const player of [HUMAN, CPU] as PlayerId[]) {
+    const p = state.players[player] as unknown as Record<string, unknown>;
+    for (const [zone, cards] of Object.entries(p)) {
+      if (!Array.isArray(cards)) continue;
+      const card = (cards as CardInstance[]).find((c) => c && typeof c === "object" && c.instanceId === instanceId);
+      if (card) return { player, zone, card };
+    }
+  }
+  return null;
+}
+
+const ZONE_LABELS: Record<string, string> = {
+  hand: "手札",
+  deck: "山札",
+  discard: "捨札",
+  power: "パワー",
+  command: "コマンド",
+  rush: "ラッシュ",
+  battle: "バトル",
+  operation: "常駐",
+  exile: "除外",
+  commander: "コマンダー",
+};
+
+export function zoneLabel(zone: string): string {
+  return ZONE_LABELS[zone] ?? zone;
+}
+
+/** "CPU ダメージ2/7 手5 山30 捨3 P4(裏1) C3" — the zones not drawn as rows. */
 export function playerStrip(engine: EngineApi, state: GameState, player: PlayerId): string {
   const p = state.players[player];
   const faceDown = p.power.filter((c) => c.faceDown).length;
   const parts = [
-    `${PLAYER_LABELS[player]} D${p.damage}/${engine.WIN_DAMAGE}`,
+    `${PLAYER_LABELS[player]} ダメージ${p.damage}/${engine.WIN_DAMAGE}`,
     player === HUMAN ? "" : `手${p.hand.length}`,
     `山${p.deck.length}`,
     `捨${p.discard.length}`,
@@ -221,15 +318,14 @@ export function playerStrip(engine: EngineApi, state: GameState, player: PlayerI
 
 export function topBarText(state: GameState): string {
   if (state.winner) return `決着: ${PLAYER_LABELS[state.winner]}の勝利`;
-  const phase = PHASE_LABELS[state.phase] ?? state.phase;
-  return `ターン${state.turn} ${PLAYER_LABELS[state.activePlayer]}の${phase}フェイズ`;
+  return `ターン${state.turn} ${PLAYER_LABELS[state.activePlayer]}の番`;
 }
 
 /** Tile rectangle for slot `slot` (0-based within the visible window) of row `row`. */
 export function tileRect(geometry: GuiGeometry, row: number, slot: number): Rect {
   const r = geometry.rows[row]!;
   return {
-    x: r.x + geometry.tileX + slot * (geometry.tileW + geometry.tileGap),
+    x: r.x + slot * (geometry.tileW + geometry.tileGap),
     y: r.y,
     w: geometry.tileW,
     h: geometry.tileH,

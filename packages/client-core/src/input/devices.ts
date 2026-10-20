@@ -95,15 +95,34 @@ export function hitTest(view: ScreenView, point: Point): LogicalInput | null {
 }
 
 /**
- * Touch for the graphical match screen: a tile focuses it and opens its menu,
- * a menu row picks and applies it, the top bar toggles the log panel.
- * Uses the rectangles in GuiView, i.e. exactly what the renderer drew.
+ * Touch for the graphical match screen, using the rectangles in GuiView (what
+ * the renderer drew). Overlays take precedence: list / popup rows pick and
+ * apply, a tap outside a popup closes it; selection-window cards and buttons
+ * share one index (cards first); board tiles focus and open their popup.
  */
 export function hitTestGui(view: GuiView, point: Point): LogicalInput | null {
   const inside = (r: { x: number; y: number; w: number; h: number }) =>
     point.x >= r.x && point.x < r.x + r.w && point.y >= r.y && point.y < r.y + r.h;
-  for (let r = 0; r < view.menuRows.length; r++) {
-    if (inside(view.menuRows[r]!.rect)) return { type: "select", row: r, confirm: true };
+  const box = view.list ?? view.popup;
+  if (box) {
+    for (let r = 0; r < box.rows.length; r++) if (inside(box.rows[r]!.rect)) return { type: "select", row: r, confirm: true };
+    if (view.popup && !view.list) {
+      for (let row = 0; row < view.rows.length; row++) {
+        const tiles = view.rows[row]!.tiles;
+        for (let slot = 0; slot < tiles.length; slot++) if (inside(tiles[slot]!.rect)) return { type: "focusTile", row, slot, open: true };
+      }
+    }
+    return inside(box.rect) ? null : { type: "cancel" };
+  }
+  if (view.dialog) {
+    const d = view.dialog;
+    for (let i = 0; i < d.cards.length; i++) if (inside(d.cards[i]!.rect)) return { type: "select", row: d.moreLeft + i, confirm: true };
+    const cardCount = d.moreLeft + d.cards.length + d.moreRight;
+    for (let i = 0; i < d.buttons.length; i++) {
+      if (inside(d.buttons[i]!.rect)) return { type: "select", row: cardCount + d.buttonOffset + i, confirm: true };
+    }
+    if (!inside(d.rect)) return { type: "toggleLog" };
+    return null;
   }
   for (let row = 0; row < view.rows.length; row++) {
     const tiles = view.rows[row]!.tiles;
@@ -111,7 +130,7 @@ export function hitTestGui(view: GuiView, point: Point): LogicalInput | null {
       if (inside(tiles[slot]!.rect)) return { type: "focusTile", row, slot, open: true };
     }
   }
-  if (inside(view.geometry.topBar)) return { type: "toggleLog" };
-  if (inside(view.geometry.footer)) return { type: "menu" };
+  if (inside(view.endButton.rect)) return { type: "menu" };
+  if (inside(view.geometry.topBar) || inside(view.geometry.detail)) return { type: "toggleLog" };
   return null;
 }
