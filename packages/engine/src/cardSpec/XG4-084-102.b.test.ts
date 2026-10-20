@@ -80,14 +80,14 @@ describe("XG4-091 ガンギブソン", () => {
 
   const ready = () => board({ rush: [inst("XG4-091", "gg")] }, { battle: [inst("SPEC-E-S", "a")], rush: [inst("SPEC-E-M", "m")], deck: deckCards(3, "e") });
 
-  it.fails("XG4-091:【スピンドルキャノン】— リリース状態のこれをホールドして発動でき、相手が自分自身のユニット（どのエリア・サイズでも）を1体選ぶ（出典: atwiki/page-2118「これをホールドすれば、次の効果を発動できる⇒相手は自分自身のユニットを1体選び」・カード評価「エリア・サイズを問わず相手ユニットを除去出来る」）（既知の不具合: CARD-XG4-091 【スピンドルキャノン】を起動できない）", () => {
+  it("XG4-091:【スピンドルキャノン】— リリース状態のこれをホールドして発動でき、相手が自分自身のユニット（どのエリア・サイズでも）を1体選ぶ（出典: atwiki/page-2118「これをホールドすれば、次の効果を発動できる⇒相手は自分自身のユニットを1体選び」・カード評価「エリア・サイズを問わず相手ユニットを除去出来る」）", () => {
     expect(canActivate(ready(), "XG4-091:gg")).toBe(true);
     const s = activate(ready(), "XG4-091:gg");
     expect(choicePlayer(s)).toBe("player2");
     expect(choiceIds(s)).toEqual(["SPEC-E-M:m", "SPEC-E-S:a"]);
   });
 
-  it.fails("XG4-091:【スピンドルキャノン】— 相手が選んだユニットは相手のコマンドゾーンにホールド状態で置かれ、これはホールド状態になる（出典: atwiki/page-2118「可能なら自軍コマンドゾーンにホールド状態で置く」）（既知の不具合: CARD-XG4-091 【スピンドルキャノン】を起動できない）", () => {
+  it("XG4-091:【スピンドルキャノン】— 相手が選んだユニットは相手のコマンドゾーンにホールド状態で置かれ、これはホールド状態になる（出典: atwiki/page-2118「可能なら自軍コマンドゾーンにホールド状態で置く」）", () => {
     let s = activate(ready(), "XG4-091:gg");
     s = resolveAll(pickAs(s, "player2", "SPEC-E-M:m"));
     expect(zoneOf(s, "player2", "SPEC-E-M:m")).toBe("command");
@@ -111,19 +111,19 @@ describe("XG4-092 ジャンパーソン", () => {
     expectRarityIn("XG4-092", ["SR"]);
   });
 
-  it.fails("XG4-092: ※ — DA を持たず「男」「女」を持つユニットにはアタックできない（DA の「男」、「男」「女」を持たないユニットにはアタックできる）（出典: atwiki/page-2140「カテゴリにDAを持たない、特徴「男」または「女」を持つユニットにアタックできない」）（既知の不具合: CARD-XG4-092 「男」「女」を持つ DA 以外のユニットにもアタックできてしまう）", () => {
+  it("XG4-092: ※ — DA を持たず「男」「女」を持つユニットにはアタックできない（DA の「男」、「男」「女」を持たないユニットにはアタックできる）（出典: atwiki/page-2140「カテゴリにDAを持たない、特徴「男」または「女」を持つユニットにアタックできない」）", () => {
     const s = battle({ battle: [inst("XG4-092", "jp")] }, { battle: [inst("SPEC-E-MAN", "m"), inst("SPEC-E-DA-MAN", "d"), inst("SPEC-E-NOFEAT", "n")] });
     expect(targetsOf(s, "XG4-092:jp")).toEqual(["SPEC-E-DA-MAN:d", "SPEC-E-NOFEAT:n"]);
   });
 
-  it.fails("XG4-092:【JANPERSON FOR JUSTICE】— DA を持つユニットにアタックするとき BP+2000（BP7000 で BP6000 の DA に勝ち）、撃破すると相手に1点ダメージ（出典: atwiki/page-2140「BP+2000される。また…撃破したとき、相手に1点ダメージを与える」）（既知の不具合: CARD-XG4-092 【JANPERSON FOR JUSTICE】の BP+2000 が働かず、DA 以外を撃破してもダメージを与える）", () => {
+  it("XG4-092:【JANPERSON FOR JUSTICE】— DA を持つユニットにアタックするとき BP+2000（BP7000 で BP6000 の DA に勝ち）、撃破すると相手に1点ダメージ（出典: atwiki/page-2140「BP+2000される。また…撃破したとき、相手に1点ダメージを与える」）", () => {
     const s = resolveAll(settle(attack(battle({ battle: [inst("XG4-092", "jp")] }, { battle: [inst("SPEC-E-DA-MAN", "d")], deck: deckCards(3, "e") }), "XG4-092:jp", "SPEC-E-DA-MAN:d")));
     expect(lastBattleBps(s)?.attacker).toBe(7000);
     expect(zoneOf(s, "player2", "SPEC-E-DA-MAN:d")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(1);
   });
 
-  it.fails("XG4-092:【JANPERSON FOR JUSTICE】— DA を持たないユニットにアタックするときは BP も上がらず、撃破してもダメージはない（出典: atwiki/page-2140「カテゴリにDAを持つユニットに」）（既知の不具合: CARD-XG4-092 【JANPERSON FOR JUSTICE】の BP+2000 が働かず、DA 以外を撃破してもダメージを与える）", () => {
+  it("XG4-092:【JANPERSON FOR JUSTICE】— DA を持たないユニットにアタックするときは BP も上がらず、撃破してもダメージはない（出典: atwiki/page-2140「カテゴリにDAを持つユニットに」）", () => {
     const s = resolveAll(settle(attack(battle({ battle: [inst("XG4-092", "jp")] }, { battle: [inst("SPEC-E-NOFEAT", "n")], deck: deckCards(3, "e") }), "XG4-092:jp", "SPEC-E-NOFEAT:n")));
     expect(lastBattleBps(s)?.attacker).toBe(5000);
     expect(damageOf(s, "player2")).toBe(0);
@@ -143,7 +143,7 @@ describe("XG4-093 ビルゴルディ", () => {
   const entered = (power: ReturnType<typeof inst>[]) =>
     settle(enterNow(battle({ rush: [inst("XG4-093", "bg")], power, command: [released("SPEC-DA-CARD", "c")] }, { battle: [inst("SPEC-E-5000", "a"), inst("SPEC-E-6000", "b")], rush: [inst("SPEC-E-M", "m")], deck: deckCards(3, "e") }), "XG4-093:bg"));
 
-  it.fails("XG4-093:【BILLGOLDY FOR EVIL】— 自軍ゾーンのオモテ向きのカードがすべて DA なら、本来の BP が5000以下の敵軍ユニット（どのエリア・サイズでも）を1体選ぶ（BP6000 は選べない。任意ではない）（出典: atwiki/page-2152「本来のBPが5000以下の敵軍ユニットを1体選び撃破する」・カード評価「エリア・サイズを問わない除去効果」）（既知の不具合: CARD-XG4-093 【BILLGOLDY FOR EVIL】の候補がバトルエリアの BP だけで選ばれ（本来の BP・エリアを見ない）、DA 以外のオモテ向きのカードがあっても発動する）", () => {
+  it("XG4-093:【BILLGOLDY FOR EVIL】— 自軍ゾーンのオモテ向きのカードがすべて DA なら、本来の BP が5000以下の敵軍ユニット（どのエリア・サイズでも）を1体選ぶ（BP6000 は選べない。任意ではない）（出典: atwiki/page-2152「本来のBPが5000以下の敵軍ユニットを1体選び撃破する」・カード評価「エリア・サイズを問わない除去効果」）", () => {
     const s = entered([faceUp("SPEC-DA-CARD", "p1"), faceUp("SPEC-DA-CARD", "p2")]);
     expectChoiceFrom(s, "player1", "XG4-093");
     expect(choiceIds(s)).toEqual(["SPEC-E-5000:a", "SPEC-E-M:m"]);
@@ -157,7 +157,7 @@ describe("XG4-093 ビルゴルディ", () => {
     expect(zoneOf(s, "player2", "SPEC-E-5000:a")).toBe("discard");
   });
 
-  it.fails("XG4-093:【BILLGOLDY FOR EVIL】— DA を持たないオモテ向きのカード（WB のパワー）があれば発動しない（出典: atwiki/page-2152「自軍ゾーンのオモテ向きのカードがすべてDAを持つなら」）（既知の不具合: CARD-XG4-093 【BILLGOLDY FOR EVIL】の候補がバトルエリアの BP だけで選ばれ（本来の BP・エリアを見ない）、DA 以外のオモテ向きのカードがあっても発動する）", () => {
+  it("XG4-093:【BILLGOLDY FOR EVIL】— DA を持たないオモテ向きのカード（WB のパワー）があれば発動しない（出典: atwiki/page-2152「自軍ゾーンのオモテ向きのカードがすべてDAを持つなら」）", () => {
     const s = entered([faceUp("SPEC-DA-CARD", "p1"), faceUp("SPEC-WB-CARD", "p2")]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG4-093");
   });
@@ -182,14 +182,14 @@ describe("XG4-094 宇宙刑事シャイダー（XG4）", () => {
       ),
     );
 
-  it.fails("XG4-094: RC【ビデオビームガン】— ライドオフしたとき、ホールド状態の敵軍コマンドを1つ選んでリリースできる（任意）（出典: atwiki/page-2144「敵軍コマンドを1つ選びリリースしてもよい」）（既知の不具合: CARD-XG4-094 RC【ビデオビームガン】の選択が開かない）", () => {
+  it("XG4-094: RC【ビデオビームガン】— ライドオフしたとき、ホールド状態の敵軍コマンドを1つ選んでリリースできる（任意）（出典: atwiki/page-2144「敵軍コマンドを1つ選びリリースしてもよい」）", () => {
     const s = rodeOff();
     expectChoiceFrom(s, "player1", "XG4-094");
     expect(choiceIds(s)).toContain("SPEC-WB-CARD:hc");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-094: RC — リリースすると、そのカードと同じカテゴリ（WB）の敵軍 S ユニットを1体撃破する（MA は選べない）（出典: atwiki/page-2144「リリースしたカードと同じカテゴリを持つ敵軍Sユニットを1体選び撃破する」）（既知の不具合: CARD-XG4-094 RC【ビデオビームガン】の選択が開かない）", () => {
+  it("XG4-094: RC — リリースすると、そのカードと同じカテゴリ（WB）の敵軍 S ユニットを1体撃破する（MA は選べない）（出典: atwiki/page-2144「リリースしたカードと同じカテゴリを持つ敵軍Sユニットを1体選び撃破する」）", () => {
     let s = rodeOff();
     expectChoiceFrom(s, "player1", "XG4-094");
     s = pick(s, "SPEC-WB-CARD:hc");
@@ -240,13 +240,13 @@ describe("XG4-095 バビロスSF", () => {
   const keijiEnters = () =>
     settle(enterNow(battle({ rush: [inst("XG4-095", "sf"), inst("SPEC-KEIJI", "k")] }, { battle: [inst("SPEC-E-8000", "a"), inst("SPEC-E-9000", "b")], rush: [inst("SPEC-E-S", "r")], deck: deckCards(3, "e") }), "SPEC-KEIJI:k"));
 
-  it.fails("XG4-095:【ビッグマグナム】— 特徴「宇宙刑事」を持つ自軍ユニットがバトルエリアに出たとき、これをホールドして発動できる（任意）（出典: atwiki/page-2121「これをホールドして次の効果を発動できる」）（既知の不具合: CARD-XG4-095 【ビッグマグナム】の選択が開かない）", () => {
+  it("XG4-095:【ビッグマグナム】— 特徴「宇宙刑事」を持つ自軍ユニットがバトルエリアに出たとき、これをホールドして発動できる（任意）（出典: atwiki/page-2121「これをホールドして次の効果を発動できる」）", () => {
     const s = keijiEnters();
     expectChoiceFrom(s, "player1", "XG4-095");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-095:【ビッグマグナム】— 発動すると、敵軍バトルエリアの BP8000 以下のユニットを1体選び、持ち主のパワーゾーンに送る（BP9000・ラッシュエリアは選べない）（出典: atwiki/page-2121「敵軍バトルエリアから、BP8000以下のユニットを1体選び、持ち主のパワーゾーンに送る」）（既知の不具合: CARD-XG4-095 【ビッグマグナム】の選択が開かない）", () => {
+  it("XG4-095:【ビッグマグナム】— 発動すると、敵軍バトルエリアの BP8000 以下のユニットを1体選び、持ち主のパワーゾーンに送る（BP9000・ラッシュエリアは選べない）（出典: atwiki/page-2121「敵軍バトルエリアから、BP8000以下のユニットを1体選び、持ち主のパワーゾーンに送る」）", () => {
     let s = keijiEnters();
     expectChoiceFrom(s, "player1", "XG4-095");
     s = resolveAll(pickThrough(s, "XG4-095", ["SPEC-E-8000:a"]));
@@ -283,14 +283,14 @@ describe("XG4-096 バビロスBF", () => {
     expect(zoneOf(s, "player1", "XG2-084:bb")).toBe("hand");
   });
 
-  it.fails("XG4-096:【バビロスファイヤー】— ラッシュしたとき、敵軍パワーゾーンのカードを1枚選んで捨札にできる（任意）（出典: atwiki/page-2122「敵軍パワーゾーンからカードを1枚選び捨札にしてもよい」）（既知の不具合: CARD-XG4-096 【バビロスファイヤー】の選択が開かない）", () => {
+  it("XG4-096:【バビロスファイヤー】— ラッシュしたとき、敵軍パワーゾーンのカードを1枚選んで捨札にできる（任意）（出典: atwiki/page-2122「敵軍パワーゾーンからカードを1枚選び捨札にしてもよい」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "XG4-096");
     expect(choiceIds(s)).toContain("SPEC-WB-CARD:ep");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-096:【バビロスファイヤー】— 捨札にすると、敵軍捨札のカードを1枚選び敵軍パワーゾーンにオモテ向きで置く（出典: atwiki/page-2122「敵軍捨札からカードを1枚選び敵軍パワーゾーンにオモテ向きで置く」）（既知の不具合: CARD-XG4-096 【バビロスファイヤー】の選択が開かない）", () => {
+  it("XG4-096:【バビロスファイヤー】— 捨札にすると、敵軍捨札のカードを1枚選び敵軍パワーゾーンにオモテ向きで置く（出典: atwiki/page-2122「敵軍捨札からカードを1枚選び敵軍パワーゾーンにオモテ向きで置く」）", () => {
     let s = rushed();
     expectChoiceFrom(s, "player1", "XG4-096");
     s = resolveAll(pickThrough(pick(s, "SPEC-WB-CARD:ep"), "XG4-096", ["SPEC-DA-CARD:ed"]));

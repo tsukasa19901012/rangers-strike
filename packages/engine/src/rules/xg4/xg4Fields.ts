@@ -9,10 +9,13 @@
  * - `xg4BlocksBattleEntry`: バトルエリアに出られない（rules/restrictions.ts）。
  * - `xg4IsHandSubstituteMaterial` / `xg4HoldForHandSubstitute`: 手札のカードを追加条件のユニットにする（rules/zord.ts）。
  */
-import { isSameCardIdentity, type CardDefinition } from "@rangers-strike/cards";
+import { cardCategories, isSameCardIdentity, type CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PlayerId, PlayerState } from "../../types/game";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { isCostWindowSatisfied } from "../../core/costWindow";
+import { isSmallUnit } from "../../core/catalog";
+import { cardHasKeyword } from "../../keywords/cardKeywords";
+import { rk12UnitHeldThisTurn } from "../rk/rk12Fields";
 
 type View = Pick<GameState, "players" | "definitions">;
 
@@ -60,6 +63,29 @@ function isUnit(state: Pick<GameState, "definitions">, cardId: string): boolean 
   return state.definitions[cardId]?.type === "unit";
 }
 
+function printedCategoriesOf(state: Pick<GameState, "definitions">, cardId: string): string[] {
+  return cardCategories(state.definitions[cardId]) as string[];
+}
+
+function printedFeaturesOf(state: Pick<GameState, "definitions">, cardId: string): string[] {
+  return (state.definitions[cardId] as { features?: string[] } | undefined)?.features ?? [];
+}
+
+/** 場のユニットがウイングを持つか（効果で得たウイングを含む。XG4-087）。 */
+function fieldUnitHasWing(state: View, playerId: PlayerId, instance: CardInstance): boolean {
+  return cardHasKeyword(state.definitions, instance.cardId, "wing", { state: state as GameState, playerId }) || xg4RiddenVehicleGrantsWing(state, playerId, instance);
+}
+
+/**
+ * XG4-098【トリプルボンバー】「このユニットの両隣に特徴「女」を持つ自軍ユニットが並んでいる間」（バトルエリア。印刷の特徴）。
+ */
+export function xg4FlankedByWomen(state: View, playerId: PlayerId, instanceId: string): boolean {
+  const battle = state.players[playerId].battle;
+  const idx = battle.findIndex((c) => c.instanceId === instanceId);
+  if (idx <= 0 || idx >= battle.length - 1) return false;
+  return [battle[idx - 1]!, battle[idx + 1]!].every((c) => isUnit(state, c.cardId) && printedFeaturesOf(state, c.cardId).includes("女"));
+}
+
 /** XG4-006 ドラゴンアーマーを重ねたユニットか。 */
 export function hasDragonArmor(card: Pick<CardInstance, "stackedCards"> | undefined): number {
   return (card?.stackedCards ?? []).filter((c) => isSameCardIdentity(c.cardId, DRAGON_ARMOR_CARD_ID)).length;
@@ -85,6 +111,14 @@ export function xg4FieldBpBonus(state: View, playerId: PlayerId, instance: CardI
   if (isSameCardIdentity(instance.cardId, "XG4-046") && instance.commandHeld) bonus -= 3000;
   // XG4-081【ライトニングスラッシュ】「見せたカードの必要パワーの数字が「2」と「6」なら、このターン、このユニットのBPを+3000する。」（atwiki/page-2072）。
   if (isSameCardIdentity(instance.cardId, "XG4-081") && hasTurnRecord(state, playerId, XG4_LIGHTNING_RULE, instance.instanceId)) bonus += 3000;
+  // XG4-087【スカイキック】「これが自軍エリアにある間、ウイングを持たないSユニットはBP-500される。」（atwiki/page-2063）。敵軍・自軍の S ユニット。
+  // スカイライダーは1枚につき（どちらの場にあっても）。
+  if (isUnit(state, instance.cardId) && isSmallUnit(state.definitions, instance)) {
+    const skyriders = (["player1", "player2"] as const).reduce((n, pid) => n + fieldOf(state, pid).filter((c) => isSameCardIdentity(c.cardId, "XG4-087")).length, 0);
+    if (skyriders > 0 && !fieldUnitHasWing(state, playerId, instance)) bonus -= skyriders * 500;
+  }
+  // XG4-098【トリプルボンバー】「このユニットの両隣に特徴「女」を持つ自軍ユニットが並んでいる間、このユニットはBP+2000され」（atwiki/page-2119）。
+  if (isSameCardIdentity(instance.cardId, "XG4-098") && xg4FlankedByWomen(state, playerId, instance.instanceId)) bonus += 2000;
   return bonus;
 }
 
@@ -106,6 +140,22 @@ export function xg4EffectiveSp(
   if (isSameCardIdentity(instance.cardId, "XG4-057") && (["player1", "player2"] as const).every((pid) => (state.players[pid].operation ?? []).length === 0)) {
     sp = Math.max(sp, 1);
   }
+  // XG4-097【ヘレンカッター】「これは、BP5000以上の、OTを持ち特徴「男」を持つSユニットと隣り合っている間、次の能力を得る⇒SP1」（atwiki/page-2058）。
+  // 隣り合うのはバトルエリアの自軍ユニット。BP はいまの BP、カテゴリ・特徴は印刷のもの。
+  if (isSameCardIdentity(instance.cardId, "XG4-097")) {
+    const battle = state.players[playerId].battle;
+    const idx = battle.findIndex((c) => c.instanceId === instance.instanceId);
+    const neighbors = idx < 0 ? [] : [battle[idx - 1], battle[idx + 1]].filter((c): c is CardInstance => !!c);
+    const partner = neighbors.some(
+      (c) =>
+        isUnit(state, c.cardId) &&
+        isSmallUnit(state.definitions, c) &&
+        printedCategoriesOf(state, c.cardId).includes("OT") &&
+        printedFeaturesOf(state, c.cardId).includes("男") &&
+        bpOf(state, playerId, c) >= 5000,
+    );
+    if (partner) sp = Math.max(sp, 1);
+  }
   return sp;
 }
 
@@ -118,7 +168,11 @@ export function xg4AddedFeatures(state: View, ownerId: PlayerId, instance: Pick<
 }
 
 /** アタックするときの BP（rules/namedUnitEffects.ts）。featuresOf はいまの特徴。 */
-export function xg4AttackerBattleBonus(state: View, pending: Pick<PendingBattle, "attackerPlayerId" | "attackerInstanceId">, featuresOf: FeaturesOf): number {
+export function xg4AttackerBattleBonus(
+  state: View,
+  pending: Pick<PendingBattle, "attackerPlayerId" | "attackerInstanceId"> & Partial<Pick<PendingBattle, "defenderPlayerId" | "defenderInstanceId">>,
+  featuresOf: FeaturesOf,
+): number {
   const attacker = findOnField(state, pending.attackerPlayerId, pending.attackerInstanceId);
   if (!attacker) return 0;
   let bonus = 0;
@@ -133,6 +187,11 @@ export function xg4AttackerBattleBonus(state: View, pending: Pick<PendingBattle,
     }).length;
     if (sCards >= 5) bonus += 3000;
   }
+  // XG4-092【JANPERSON FOR JUSTICE】「これはカテゴリにDAを持つユニットにアタックするとき、BP+2000される。」（atwiki/page-2140。印刷のカテゴリ）。
+  if (isSameCardIdentity(attacker.cardId, "XG4-092") && pending.defenderPlayerId && pending.defenderInstanceId) {
+    const defender = findOnField(state, pending.defenderPlayerId, pending.defenderInstanceId);
+    if (defender && printedCategoriesOf(state, defender.cardId).includes("DA")) bonus += 2000;
+  }
   return bonus;
 }
 
@@ -140,6 +199,8 @@ export function xg4AttackerBattleBonus(state: View, pending: Pick<PendingBattle,
 export function xg4BlocksBattleEntry(state: View, playerId: PlayerId, unit: Pick<CardInstance, "cardId" | "instanceId">): boolean {
   // XG4-007「※これはラッシュフェイズ中に自分のカードが捨札に置かれたターンにしかバトルエリアに出られない。」（atwiki/page-2132）。
   if (isSameCardIdentity(unit.cardId, "XG4-007") && !hasTurnRecord(state, playerId, XG4_RUSH_DISCARD_RULE)) return true;
+  // XG4-084「※これは自軍ユニットがホールドされたターンにしかバトルエリアに出られない。」（atwiki/page-2150。RK-247 と同じ記録。rules/rk/rk12Fields.ts）。
+  if (isSameCardIdentity(unit.cardId, "XG4-084") && !rk12UnitHeldThisTurn(state, playerId)) return true;
   return false;
 }
 
@@ -156,6 +217,11 @@ export function xg4DefenderBlocksAttack(
   info?: { hasResist: (card: CardInstance) => boolean; bpOf: (card: CardInstance) => number },
 ): boolean {
   if (attackerPlayerId === defenderPlayerId) return false;
+  // XG4-092「※これは、カテゴリにDAを持たない、特徴「男」または「女」を持つユニットにアタックできない。」（atwiki/page-2140。印刷のカテゴリ・特徴）。
+  if (isSameCardIdentity(attacker.cardId, "XG4-092") && !printedCategoriesOf(state, defender.cardId).includes("DA")) {
+    const feats = printedFeaturesOf(state, defender.cardId);
+    if (feats.includes("男") || feats.includes("女")) return true;
+  }
   // XG4-046「※これはレジストを持たないBP3000以下のユニットにアタックできない。」（atwiki/page-2149）。いまの BP。
   if (info && isSameCardIdentity(attacker.cardId, "XG4-046") && !info.hasResist(defender) && info.bpOf(defender) <= 3000) return true;
   // XG4-013「※これはライド中、ウイングを持たないユニットにアタックされない。」（atwiki/page-2092）。
@@ -277,4 +343,15 @@ export function xg4RiddenVehicleGrantsWing(state: Pick<GameState, "players">, pl
  */
 export function xg4OperationCostIncrease(state: Pick<GameState, "players">): number {
   return (["player1", "player2"] as const).some((pid) => fieldOf(state, pid).some((c) => isSameCardIdentity(c.cardId, "XG4-072"))) ? 2 : 0;
+}
+
+/**
+ * レジストを得るか（rules/resist.ts canOfferRegister）。
+ * XG4-099【バリア】「これにライドしている特徴「メカ」を持つユニットは、次の能力を得る⇒「レジスト」」（atwiki/page-2120。印刷の特徴）。
+ */
+export function xg4GrantsResist(state: Pick<GameState, "players" | "definitions">, ownerId: PlayerId, instanceId: string): boolean {
+  const unit = findOnField(state, ownerId, instanceId);
+  if (!unit?.mountedOnInstanceId || !printedFeaturesOf(state, unit.cardId).includes("メカ")) return false;
+  const vehicle = findOnField(state, ownerId, unit.mountedOnInstanceId);
+  return !!vehicle && isSameCardIdentity(vehicle.cardId, "XG4-099");
 }

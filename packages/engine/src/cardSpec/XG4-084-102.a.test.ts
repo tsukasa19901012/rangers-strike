@@ -9,13 +9,18 @@
 import { describe, expect, it } from "vitest";
 import type { GameState } from "../types/game";
 import {
+  act,
   activate,
   attack,
+  attackTargets,
   bpsOf,
   callTests,
   canActivate,
   canEnter,
   canSkip,
+  canStrike,
+  canWing,
+  cardIn,
   choiceIds,
   deckCards,
   destroyedInEnemyBattle,
@@ -39,9 +44,9 @@ import {
   rushFromHand,
   settle,
   spOf,
+  st,
   sUnit,
   vehicleCard,
-  wingTests,
   zoneOf,
 } from "./XG4-084-102.helpers";
 
@@ -75,7 +80,7 @@ describe("XG4-084 仮面ライダー幽汽HF", () => {
 
   callTests("XG4-084", "DA", "atwiki/page-2150");
 
-  it.fails("XG4-084: ※ — 自軍ユニットがホールドされていないターンはバトルエリアに出られない（出典: atwiki/page-2150「これは自軍ユニットがホールドされたターンにしかバトルエリアに出られない」）（既知の不具合: CARD-XG4-084 自軍ユニットがホールドされていないターンでもバトルエリアに出られる）", () => {
+  it("XG4-084: ※ — 自軍ユニットがホールドされていないターンはバトルエリアに出られない（出典: atwiki/page-2150「これは自軍ユニットがホールドされたターンにしかバトルエリアに出られない」）", () => {
     expect(canEnter(battle({ rush: [inst("XG4-084", "hf")] }), "XG4-084:hf")).toBe(false);
   });
 
@@ -90,7 +95,7 @@ describe("XG4-084 仮面ライダー幽汽HF", () => {
   const endPhase = (hand: ReturnType<typeof inst>[]) =>
     settle(nextPhase(battle({ rush: [inst("XG4-084", "hf")], hand }, { battle: [inst("SPEC-E-S", "a"), inst("SPEC-E-M", "m")], rush: [inst("SPEC-E-S", "r")], deck: deckCards(3, "e") })));
 
-  it.fails("XG4-084:【乱れ独楽】— 自軍エンドフェイズ中、ラッシュエリアにあれば、手札を1枚捨札にして敵軍バトルエリアの S ユニットを1体撃破できる（出典: atwiki/page-2150「自分の手札を1枚選び捨札にする。そうしたとき、敵軍バトルエリアからSユニットを1体選び撃破する」）（既知の不具合: CARD-XG4-084 自軍エンドフェイズで止まらず、【乱れ独楽】を発動できない）", () => {
+  it("XG4-084:【乱れ独楽】— 自軍エンドフェイズ中、ラッシュエリアにあれば、手札を1枚捨札にして敵軍バトルエリアの S ユニットを1体撃破できる（出典: atwiki/page-2150「自分の手札を1枚選び捨札にする。そうしたとき、敵軍バトルエリアからSユニットを1体選び撃破する」）", () => {
     let s = endPhase([inst("TST-UNIT-0", "h1")]);
     expect(s.phase).toBe("end");
     if (s.pendingEffectChoice?.sourceCardId !== "XG4-084") {
@@ -118,14 +123,14 @@ describe("XG4-085 仮面ライダー幽汽SF", () => {
 
   const destroyed = (others: ReturnType<typeof inst>[]) => settle(destroyedInEnemyBattle(inst("XG4-085", "sf"), { rush: others }, {}, EXTRA));
 
-  it.fails("XG4-085: ※ — 撃破されて捨札になるとき、特徴「男」を持つ自軍ユニットを1体捨札にするかを選べる（「男」でないユニットは選べない。任意）（出典: atwiki/page-2151「かわりに特徴「男」を持つ自軍ユニット1体を捨札にすれば」）（既知の不具合: CARD-XG4-085 撃破されるときの「男」のユニットで代える選択が開かない）", () => {
+  it("XG4-085: ※ — 撃破されて捨札になるとき、特徴「男」を持つ自軍ユニットを1体捨札にするかを選べる（「男」でないユニットは選べない。任意）（出典: atwiki/page-2151「かわりに特徴「男」を持つ自軍ユニット1体を捨札にすれば」）", () => {
     const s = destroyed([inst("SPEC-MAN", "m"), inst("SPEC-WOMAN", "w")]);
     expectChoiceFrom(s, "player1", "XG4-085");
     expect(choiceIds(s)).toEqual(["SPEC-MAN:m"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-085: ※ — 捨札にすれば、これはその場にとどまる（出典: atwiki/page-2151「これはその場にとどまる」）（既知の不具合: CARD-XG4-085 撃破されるときの「男」のユニットで代える選択が開かない）", () => {
+  it("XG4-085: ※ — 捨札にすれば、これはその場にとどまる（出典: atwiki/page-2151「これはその場にとどまる」）", () => {
     let s = destroyed([inst("SPEC-MAN", "m")]);
     expectChoiceFrom(s, "player1", "XG4-085");
     s = resolveAll(pick(s, "SPEC-MAN:m"));
@@ -141,7 +146,7 @@ describe("XG4-085 仮面ライダー幽汽SF", () => {
       ),
     );
 
-  it.fails("XG4-085:【ターミネイトフラッシュ】— 自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアのホールド状態の S ユニットから選ぶ（リリース状態・ラッシュエリアのユニットは選べない）（出典: atwiki/page-2151「敵軍バトルエリアからホールド状態の敵軍Sユニットを自軍ダメージの数まで選び、撃破する」）（既知の不具合: CARD-XG4-085 【ターミネイトフラッシュ】の候補にリリース状態のユニットが入り、自軍ダメージ0点でも撃破する）", () => {
+  it("XG4-085:【ターミネイトフラッシュ】— 自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアのホールド状態の S ユニットから選ぶ（リリース状態・ラッシュエリアのユニットは選べない）（出典: atwiki/page-2151「敵軍バトルエリアからホールド状態の敵軍Sユニットを自軍ダメージの数まで選び、撃破する」）", () => {
     const s = entered(1);
     expectChoiceFrom(s, "player1", "XG4-085");
     expect(choiceIds(s)).toEqual(["SPEC-E-S:h1", "SPEC-E-S:h2"]);
@@ -155,7 +160,7 @@ describe("XG4-085 仮面ライダー幽汽SF", () => {
     expect(gone).toEqual(["SPEC-E-S:h1"]);
   });
 
-  it.fails("XG4-085:【ターミネイトフラッシュ】— 自軍ダメージが0点なら何も撃破しない（出典: atwiki/page-2151「自軍ダメージの数まで」）（既知の不具合: CARD-XG4-085 【ターミネイトフラッシュ】の候補にリリース状態のユニットが入り、自軍ダメージ0点でも撃破する）", () => {
+  it("XG4-085:【ターミネイトフラッシュ】— 自軍ダメージが0点なら何も撃破しない（出典: atwiki/page-2151「自軍ダメージの数まで」）", () => {
     const s = resolveAll(entered(0));
     expect(zoneOf(s, "player2", "SPEC-E-S:h1")).toBe("battle");
     expect(zoneOf(s, "player2", "SPEC-E-S:h2")).toBe("battle");
@@ -175,14 +180,14 @@ describe("XG4-086 仮面ライダーイクサBM", () => {
   const rodeOff = () =>
     settle(rcRideOff(battle({ rush: [inst("XG4-086", "ix"), inst("SPEC-BIKE", "bk")] }, { battle: [inst("SPEC-E-S", "a")], rush: [inst("XG4-043", "w")], deck: deckCards(3, "e") }), "XG4-086:ix", "SPEC-BIKE:bk"));
 
-  it.fails("XG4-086: RC【イクサカリバー・ガンモード】— ライドオフしたとき、ウイングを持つ敵軍 S ユニット（どのエリアでも）を1体選ぶ（ウイングを持たないユニットは選べない。任意ではない）（出典: atwiki/page-2064「ウイングを持つ敵軍Sユニットを1体選び撃破する」）（既知の不具合: CARD-XG4-086 RC【イクサカリバー・ガンモード】の候補がウイングを持たないユニットになっている）", () => {
+  it("XG4-086: RC【イクサカリバー・ガンモード】— ライドオフしたとき、ウイングを持つ敵軍 S ユニット（どのエリアでも）を1体選ぶ（ウイングを持たないユニットは選べない。任意ではない）（出典: atwiki/page-2064「ウイングを持つ敵軍Sユニットを1体選び撃破する」）", () => {
     const s = rodeOff();
     expectChoiceFrom(s, "player1", "XG4-086");
     expect(choiceIds(s)).toEqual(["XG4-043:w"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG4-086: RC — 選んだユニットは撃破される（出典: atwiki/page-2064「撃破する」）（既知の不具合: CARD-XG4-086 RC【イクサカリバー・ガンモード】の候補がウイングを持たないユニットになっている）", () => {
+  it("XG4-086: RC — 選んだユニットは撃破される（出典: atwiki/page-2064「撃破する」）", () => {
     let s = rodeOff();
     expectChoiceFrom(s, "player1", "XG4-086");
     s = resolveAll(pick(s, "XG4-043:w"));
@@ -200,15 +205,49 @@ describe("XG4-087 スカイライダー（XG4）", () => {
     expectRarityIn("XG4-087", ["N"]);
   });
 
-  wingTests("XG4-087", "atwiki/page-2063");
+  // ※ウイングの共通テスト（RK1-001-021.helpers.ts wingTests）は敵が BP500 の S ユニットで、【スカイキック】の BP-500 で BP0 になり撃破されてしまう。
+  // 同じ手順を BP1000 の敵（【スカイキック】で BP500）で行う。
+  const WING_ENEMY = sUnit("SPEC-WING-ENEMY", { bp: 1000, sp: undefined });
+  const wingBoard = (phase: GameState["phase"] = "battle") =>
+    st({ phase, player1: { rush: [inst("XG4-087", "w")], deck: deckCards(3) }, player2: { battle: [inst("SPEC-WING-ENEMY", "e")], deck: deckCards(3, "e") } }, [WING_ENEMY]);
 
-  it.fails("XG4-087:【スカイキック】— ウイングを持たない S ユニット（敵軍・自軍）は BP-500。ウイングを持つユニット・M ユニット・これ自身は変わらない（出典: atwiki/page-2063「ウイングを持たないSユニットはBP-500される」・同 Q1「常に効果を発揮し続ける効果」）（既知の不具合: CARD-XG4-087 【スカイキック】の BP-500 が働かない）", () => {
+  it("XG4-087: ※ウイング — 自軍バトルフェイズにラッシュエリアでホールドし、ラッシュエリアから敵軍ユニットにアタックできる（出典: atwiki/page-2063、grnrngr/faq-card-9 ウイング A1・R-KW-WING-01）", () => {
+    let s = wingBoard();
+    expect(canWing(s, "XG4-087:w")).toBe(true);
+    s = act(s, { type: "hold_for_wing", playerId: "player1", instanceId: "XG4-087:w" });
+    expect(cardIn(s, "player1", "XG4-087:w")?.commandHeld).toBe(true);
+    expect(attackTargets(s, "XG4-087:w")).toContain("SPEC-WING-ENEMY:e");
+    s = settle(attack(s, "XG4-087:w", "SPEC-WING-ENEMY:e"));
+    expect(zoneOf(s, "player2", "SPEC-WING-ENEMY:e")).toBe("discard");
+    expect(zoneOf(s, "player1", "XG4-087:w")).toBe("rush");
+  });
+
+  it("XG4-087: ※ウイング — 発動したターンはバトルエリアに出られない（出典: grnrngr/faq-card-9 ウイング Q4「いいえ、できません」）", () => {
+    const s = act(wingBoard(), { type: "hold_for_wing", playerId: "player1", instanceId: "XG4-087:w" });
+    expect(canEnter(s, "XG4-087:w")).toBe(false);
+  });
+
+  it("XG4-087: ※ウイング — 自軍バトルフェイズ以外（ラッシュフェイズ）には発動できない（出典: grnrngr/faq-card-9 ウイング Q3「いいえ、できません」）", () => {
+    expect(canWing(wingBoard("rush"), "XG4-087:w")).toBe(false);
+  });
+
+  it("XG4-087: ※ウイング — ラッシュエリア以外（バトルエリア）からは発動できない（出典: grnrngr/faq-card-9 ウイング Q5）", () => {
+    const s = st({ player1: { battle: [inst("XG4-087", "w")], deck: deckCards(3) }, player2: { battle: [inst("SPEC-WING-ENEMY", "e")] } }, [WING_ENEMY]);
+    expect(canWing(s, "XG4-087:w")).toBe(false);
+  });
+
+  it("XG4-087: ※ウイング — ホールドしてもストライクはできない（出典: grnrngr/faq-card-9 ウイング Q6「いいえ、できません」）", () => {
+    const s = act(wingBoard(), { type: "hold_for_wing", playerId: "player1", instanceId: "XG4-087:w" });
+    expect(canStrike(s, "XG4-087:w")).toBe(false);
+  });
+
+  it("XG4-087:【スカイキック】— ウイングを持たない S ユニット（敵軍・自軍）は BP-500。ウイングを持つユニット・M ユニット・これ自身は変わらない（出典: atwiki/page-2063「ウイングを持たないSユニットはBP-500される」・同 Q1「常に効果を発揮し続ける効果」）", () => {
     const s = battle({ rush: [inst("XG4-087", "sk"), inst("SPEC-S3000", "own")] }, { battle: [inst("SPEC-E-S", "a"), inst("XG4-043", "w"), inst("SPEC-E-M", "m")] });
     expect(bpsOf(s, "player2", ["SPEC-E-S:a", "XG4-043:w", "SPEC-E-M:m"])).toEqual([500, 3000, 1000]);
     expect(bpsOf(s, "player1", ["SPEC-S3000:own", "XG4-087:sk"])).toEqual([2500, 2000]);
   });
 
-  it.fails("XG4-087:【スカイキック】— BP0以下になったユニットは撃破される（BP500 の S ユニットがいる場にスカイライダーが出る）（出典: atwiki/page-2063「（BP0以下になったユニットは撃破される）」）（既知の不具合: CARD-XG4-087 【スカイキック】の BP-500 が働かない）", () => {
+  it("XG4-087:【スカイキック】— BP0以下になったユニットは撃破される（BP500 の S ユニットがいる場にスカイライダーが出る）（出典: atwiki/page-2063「（BP0以下になったユニットは撃破される）」）", () => {
     const s = resolveAll(settle(enter(battle({ rush: [inst("XG4-087", "sk")] }, { battle: [inst("SPEC-E-500", "a")], deck: deckCards(3, "e") }), "XG4-087:sk")));
     expect(zoneOf(s, "player2", "SPEC-E-500:a")).toBe("discard");
   });
@@ -242,21 +281,21 @@ describe("XG4-089 仮面ライダーW・JJ", () => {
   const jc = (left: ReturnType<typeof inst>[]) =>
     settle(enterNow(battle({ battle: left, rush: [inst("XG4-089", "jj")] }, { battle: [inst("SPEC-E-2000", "a"), inst("SPEC-E-3000", "b")], rush: [inst("SPEC-E-S", "r")], deck: deckCards(3, "e") }), "XG4-089:jj"));
 
-  it.fails("XG4-089:【切札の左半身】JC（R）— S ユニットの右に出ると、そのユニット（BP3000）より BP の低い敵軍ユニット（どのエリアでも）を1体選べる（BP3000 は選べない。任意）（出典: atwiki/page-2101「コンビネーションしたユニットよりもBPの低い敵軍ユニットを1体選び、撃破する」）（既知の不具合: CARD-XG4-089 JC（R）【切札の左半身】が発動しない）", () => {
+  it("XG4-089:【切札の左半身】JC（R）— S ユニットの右に出ると、そのユニット（BP3000）より BP の低い敵軍ユニット（どのエリアでも）を1体選べる（BP3000 は選べない。任意）（出典: atwiki/page-2101「コンビネーションしたユニットよりもBPの低い敵軍ユニットを1体選び、撃破する」）", () => {
     const s = jc([inst("SPEC-S3000", "s")]);
     expectChoiceFrom(s, "player1", "XG4-089");
     expect(choiceIds(s)).toEqual(["SPEC-E-2000:a", "SPEC-E-S:r"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-089: JC — 選んだユニットは撃破される（出典: atwiki/page-2101「撃破する」）（既知の不具合: CARD-XG4-089 JC（R）【切札の左半身】が発動しない）", () => {
+  it("XG4-089: JC — 選んだユニットは撃破される（出典: atwiki/page-2101「撃破する」）", () => {
     let s = jc([inst("SPEC-S3000", "s")]);
     expectChoiceFrom(s, "player1", "XG4-089");
     s = resolveAll(pick(s, "SPEC-E-2000:a"));
     expect(zoneOf(s, "player2", "SPEC-E-2000:a")).toBe("discard");
   });
 
-  it.fails("XG4-089: JC — 自軍バトルエリアに「仮面ライダーW・CC」があれば「SP1」になる（出典: atwiki/page-2101「自軍バトルエリアに「仮面ライダーW・CC」があれば、これは「SP1」になる」）（既知の不具合: CARD-XG4-089 JC（R）【切札の左半身】が発動しない）", () => {
+  it("XG4-089: JC — 自軍バトルエリアに「仮面ライダーW・CC」があれば「SP1」になる（出典: atwiki/page-2101「自軍バトルエリアに「仮面ライダーW・CC」があれば、これは「SP1」になる」）", () => {
     let s = jc([inst("XG4-088", "cc"), inst("SPEC-S3000", "s")]);
     expectChoiceFrom(s, "player1", "XG4-089");
     s = resolveAll(pick(s, "SPEC-E-2000:a"));

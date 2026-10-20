@@ -1,3 +1,4 @@
+import { xg4GrantsResist } from "./xg4/xg4Fields";
 import { rm3GrantsResist } from "./rm/rm3Fields";
 import { rk14GrantsRegister } from "./rk/rk14Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
@@ -54,6 +55,8 @@ export function canOfferRegister(
   if (rm3GrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
   // RK-197 アントロード【女王の僕】: 特徴「女」を持つ自軍ユニットはレジストを得る（自軍だけ。rules/rk/rk10Fields.ts）。
   if (rk10AntlordGrantsResist(state, pending.ownerPlayerId, { cardId: pending.leavingCardId })) return true;
+  // XG4-099 ホバリアン【バリア】: ライドしている「メカ」のユニットはレジストを得る（rules/xg4/xg4Fields.ts）。
+  if (xg4GrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
   // RS-647 ピヨちゃん【ソウルバード】「このカードに重ねたユニットは、次の能力を得る⇒※レジスト」（rules/stackOntoLargeUnit.ts）。
   const host = state.players[pending.ownerPlayerId].battle.find((c) => c.instanceId === pending.instanceId);
   return !!host && stackOntoLargeGrantsKeyword(host, "register");

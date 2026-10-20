@@ -59,7 +59,7 @@ describe("XG4-097 ヘレンレディ", () => {
 
   const sp = (neighbor: string) => spOf(battle({ battle: [inst("XG4-097", "hl"), inst(neighbor, "n")] }), "player1", "XG4-097:hl");
 
-  it.fails("XG4-097:【ヘレンカッター】— BP5000 以上・OT・「男」の S ユニットと隣り合っている間「SP1」（1番目でも SP1）（出典: atwiki/page-2058「隣り合っている間、次の能力を得る⇒SP1」）（既知の不具合: CARD-XG4-097 【ヘレンカッター】の SP1 が付かない）", () => {
+  it("XG4-097:【ヘレンカッター】— BP5000 以上・OT・「男」の S ユニットと隣り合っている間「SP1」（1番目でも SP1）（出典: atwiki/page-2058「隣り合っている間、次の能力を得る⇒SP1」）", () => {
     expect(sp("SPEC-OT-MAN-5000")).toBe(1);
   });
 
@@ -83,7 +83,7 @@ describe("XG4-098 スピルバン", () => {
   const line = (left: string, right: string) =>
     battle({ battle: [inst(left, "l"), inst("XG4-098", "sb"), inst(right, "r")] }, { battle: [inst("SPEC-E-6000", "a"), inst("SPEC-E-7000", "b")], deck: deckCards(3, "e") });
 
-  it.fails("XG4-098:【トリプルボンバー】— 両隣に「女」の自軍ユニットが並んでいる間 BP+2000（BP6000）（出典: atwiki/page-2119「このユニットはBP+2000され」）（既知の不具合: CARD-XG4-098 【トリプルボンバー】の BP+2000 とターン終了時の効果が働かない）", () => {
+  it("XG4-098:【トリプルボンバー】— 両隣に「女」の自軍ユニットが並んでいる間 BP+2000（BP6000）（出典: atwiki/page-2119「このユニットはBP+2000され」）", () => {
     expect(bpOf(line("SPEC-WOMAN", "SPEC-WOMAN"), "player1", "XG4-098:sb")).toBe(6000);
   });
 
@@ -91,7 +91,7 @@ describe("XG4-098 スピルバン", () => {
     expect(bpOf(line("SPEC-WOMAN", "SPEC-MAN"), "player1", "XG4-098:sb")).toBe(4000);
   });
 
-  it.fails("XG4-098:【トリプルボンバー】— 自分がターンを終えるとき、これの BP（6000）以下の敵軍ユニットを1体選び、持ち主のパワーゾーンに送る（BP7000 は選べない）（出典: atwiki/page-2119「このユニットのBP以下のBPを持つ敵軍ユニットを1体選び持ち主のパワーゾーンに送る」）（既知の不具合: CARD-XG4-098 【トリプルボンバー】の BP+2000 とターン終了時の効果が働かない）", () => {
+  it("XG4-098:【トリプルボンバー】— 自分がターンを終えるとき、これの BP（6000）以下の敵軍ユニットを1体選び、持ち主のパワーゾーンに送る（BP7000 は選べない）（出典: atwiki/page-2119「このユニットのBP以下のBPを持つ敵軍ユニットを1体選び持ち主のパワーゾーンに送る」）", () => {
     let s = endTurnKeep(line("SPEC-WOMAN", "SPEC-WOMAN"));
     expectChoiceFrom(s, "player1", "XG4-098");
     expect(choiceIds(s)).toEqual(["SPEC-E-6000:a"]);
@@ -118,7 +118,7 @@ describe("XG4-099 ホバリアン", () => {
     expect(canMount(noCmd, "SPEC-MECHA:m", "XG4-099:hv")).toBe(false);
   });
 
-  it.fails("XG4-099:【バリア】— ライドしている「メカ」のユニットは「レジスト」を得る（バトルで撃破されたときホールドして留められる）（出典: atwiki/page-2120「これにライドしている特徴「メカ」を持つユニットは、次の能力を得る⇒「レジスト」」）（既知の不具合: CARD-XG4-099 ライドしている「メカ」のユニットが「レジスト」を得ない）", () => {
+  it("XG4-099:【バリア】— ライドしている「メカ」のユニットは「レジスト」を得る（バトルで撃破されたときホールドして留められる）（出典: atwiki/page-2120「これにライドしている特徴「メカ」を持つユニットは、次の能力を得る⇒「レジスト」」）", () => {
     expect(registerOffered(attackUntilRegister({ battle: ridingPair("SPEC-MECHA", "m", "XG4-099", "hv") }, "SPEC-MECHA:m", {}, "TST-UNIT-7:atk", EXTRA))).toBe(true);
   });
 });

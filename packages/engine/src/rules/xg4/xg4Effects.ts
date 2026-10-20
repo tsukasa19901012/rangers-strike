@@ -35,6 +35,16 @@ import {
   skipXg4dBeforeBattle,
   xg4dOnBattleDestroy,
 } from "./xg4dEffects";
+import {
+  activateXg4eFieldAbility,
+  applyXg4eAfterAction,
+  canActivateXg4eFieldAbility,
+  collectXg4eTurnEndQueue,
+  isXg4eFieldAbilityCard,
+  openXg4eEndPhaseChoice,
+  openXg4eTurnEndEntry,
+  xg4eOnBattleDestroy,
+} from "./xg4eEffects";
 import { isXg4BeforeBattleChoice as isXg4bBeforeBattleChoice, openXg4BeforeBattle as openXg4bBeforeBattle, resolveXg4BeforeBattle as resolveXg4bBeforeBattle, skipXg4BeforeBattle as skipXg4bBeforeBattle } from "./xg4bEffects";
 import { isCard } from "./xg4Common";
 
@@ -87,14 +97,15 @@ export function applyXg4AfterUnitLeft(before: GameState, state: GameState, ctx: 
 }
 
 export function applyXg4AfterAction(before: GameState, after: GameState): GameState {
-  return applyXg4cAfterAction(before, applyXg4bAfterAction(before, applyXg4aAfterAction(before, after)));
+  return applyXg4eAfterAction(before, applyXg4cAfterAction(before, applyXg4bAfterAction(before, applyXg4aAfterAction(before, after))));
 }
 
 export function xg4OnBattleDestroy(state: GameState, winnerId: PlayerId, winnerInstanceId: string, defeatedOwnerId: PlayerId, defeatedInstanceId: string, defeatedBp?: number): GameState {
   const next = xg4aOnBattleDestroy(state, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
   const b = next.pendingEffectChoice ? next : xg4bOnBattleDestroy(next, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
   const c = xg4cOnBattleDestroy(b, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
-  return xg4dOnBattleDestroy(c, winnerId, winnerInstanceId, defeatedOwnerId, defeatedBp);
+  const d = xg4dOnBattleDestroy(c, winnerId, winnerInstanceId, defeatedOwnerId, defeatedBp);
+  return xg4eOnBattleDestroy(d, winnerId, winnerInstanceId, defeatedOwnerId, defeatedInstanceId);
 }
 
 export function isXg4BattleCounterCard(cardId: string): boolean {
@@ -138,23 +149,31 @@ export function resolveXg4DiscardSelfAbility(state: GameState, playerId: PlayerI
 
 /** ターン終了時の処理の列（rules/turnEndingEffects.ts）。 */
 export function collectXg4TurnEndQueue(state: GameState, endingPlayerId: PlayerId): string[] {
-  return [...collectXg4bTurnEndQueue(state, endingPlayerId), ...collectXg4dTurnEndQueue(state, endingPlayerId)];
+  return [...collectXg4bTurnEndQueue(state, endingPlayerId), ...collectXg4dTurnEndQueue(state, endingPlayerId), ...collectXg4eTurnEndQueue(state, endingPlayerId)];
 }
 
 export function openXg4TurnEndEntry(state: GameState, endingPlayerId: PlayerId, entry: string): GameState {
   if (entry.startsWith("apollo:")) return openXg4dTurnEndEntry(state, endingPlayerId, entry);
+  if (entry.startsWith("spielban:")) return openXg4eTurnEndEntry(state, endingPlayerId, entry);
   return openXg4bTurnEndEntry(state, endingPlayerId, entry);
 }
 
 /** フィールドで起動する効果（rules/fieldActivatedAbilities.ts）。 */
 export function isXg4FieldAbilityCard(cardId: string): boolean {
-  return isXg4bFieldAbilityCard(cardId);
+  return isXg4bFieldAbilityCard(cardId) || isXg4eFieldAbilityCard(cardId);
 }
 
 export function canActivateXg4FieldAbility(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
+  if (isXg4eFieldAbilityCard(card.cardId)) return canActivateXg4eFieldAbility(state, playerId, card);
   return canActivateXg4bFieldAbility(state, playerId, card);
 }
 
 export function activateXg4FieldAbility(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
+  if (isXg4eFieldAbilityCard(card.cardId)) return activateXg4eFieldAbility(state, playerId, card);
   return activateXg4bFieldAbility(state, playerId, card);
+}
+
+/** 自軍エンドフェイズ中に発動できる効果（rules/legend3/endTurnEffects.ts。ほかの効果の一覧がないとき）。開かなければ null。 */
+export function openXg4EndPhaseChoice(state: GameState, playerId: PlayerId): GameState | null {
+  return openXg4eEndPhaseChoice(state, playerId);
 }
