@@ -1276,6 +1276,11 @@ export type GameState = {
   phase: Phase;
   /** エンドフェイズ内ステップ: 任意効果 → 確定。 */
   endPhaseStep?: "end_effects" | "finalize";
+  /**
+   * エンドフェイズの「ターン終了時にバトルエリアからラッシュエリアへ戻せる」効果（RS-138【ジェットスケボー】等）を
+   * そのターンに見送ったユニット。見送ったユニットをメニューに出し直すと、同じ選択が永久に繰り返される。
+   */
+  endTurnEffectsDeclined?: { turn: number; instanceIds: string[] };
   /** 同時解決中の反応窓グループ ID（RULE-02）。 */
   activeSimultaneousGroupId?: string;
   /**

@@ -20,7 +20,10 @@ export function collectEndTurnEffectInstanceIds(
   state: GameState,
   playerId: PlayerId,
 ): string[] {
+  const declined =
+    state.endTurnEffectsDeclined?.turn === state.turn ? state.endTurnEffectsDeclined.instanceIds : [];
   return state.players[playerId].battle
+    .filter((c) => !declined.includes(c.instanceId))
     .filter((c) =>
       END_TURN_EFFECT_IDS.some((effectId) => hasEndTurnBattleEffect(c, effectId)),
     )

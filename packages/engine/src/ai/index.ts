@@ -6,10 +6,10 @@ import { pickCpuAction as pickCpuActionLevel1, isCpuTurn } from "./level1";
 import { withSearchCache } from "../core/searchCache";
 
 export type { CpuLevel, CpuLevelConfig } from "./types";
-export { CPU_LEVELS, getCpuLevelConfig } from "./types";
+export { CPU_LEVELS, getCpuLevelConfig, setCpuLevelOverrides } from "./types";
 export { isCpuTurn } from "./level1";
 export { pickCpuFallbackAction } from "./helpers";
-export { evaluateState } from "./scoring";
+export { evaluateState, setEvalWeights, DEFAULT_EVAL_WEIGHTS, type EvalWeights } from "./scoring";
 
 export function pickCpuAction(
   state: GameState,

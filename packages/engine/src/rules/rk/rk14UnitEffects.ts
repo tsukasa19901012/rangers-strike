@@ -721,7 +721,17 @@ export function applyRk14OnUnitLeft(state: GameState, event: Rk14LeaveEvent): Ga
 CHOICE_RESOLVERS[CANCER_EFFECT_ID] = (state, playerId, commandId) => {
   const pending = state.pendingEffectChoice!;
   const cmd = state.players[playerId].command.find((c) => c.instanceId === commandId);
-  if (!cmd) return { error: "invalid_target" };
+  if (!cmd) {
+    // 選択が順番待ちの間に候補のカードがコマンドゾーンを離れていた（2026-10-20 対戦台で、唯一の候補が解決できず進行不能になった）。
+    // 今ある候補で選び直す（このプレイヤーに無ければ次の人へ、誰にも無ければ何もしない）。
+    if (!pending.validInstanceIds?.includes(commandId)) return { error: "invalid_target" };
+    const players = [playerId, ...((pending.rk14Meta?.remainingIds ?? []) as PlayerId[])];
+    const closed = close(state, pending);
+    const retry = cancerChoice(closed, players, pending.rk14Meta?.budget ?? Number.NaN, pending.phasePlayerId, pending.sourceInstanceId);
+    const log = logFor(state, playerId, "RK-283", `${CANCER_EFFECT_ID}:gone`);
+    if (retry) return { state: openNext(closed, pending, retry), log };
+    return { state: proceed(closed, pending), log };
+  }
   const next = patchPlayer(close(state, pending), playerId, (p) => ({
     ...p,
     command: p.command.filter((c) => c.instanceId !== commandId),

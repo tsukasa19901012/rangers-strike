@@ -31,6 +31,7 @@ import {
   pickBestChase,
   pickRideOffChoice,
   pickCpuFallbackAction,
+  cpuWouldCancelProcedure,
   pickSimpleReaction,
   pickStrikeReaction,
   pickWinningBattle,
@@ -44,6 +45,7 @@ export type PickCpuActionOptions = {
   maxResponseDepth?: number;
   simulationDepth?: number;
   searchPly?: number;
+  rolloutTopK?: number;
 };
 
 function tacticalSearchOptions(
@@ -100,7 +102,8 @@ function searchOptions(options: PickCpuActionOptions): SearchOptions | undefined
     options.maxCandidates === undefined &&
     options.maxResponseDepth === undefined &&
     options.simulationDepth === undefined &&
-    options.searchPly === undefined
+    options.searchPly === undefined &&
+    options.rolloutTopK === undefined
   ) {
     return undefined;
   }
@@ -109,6 +112,7 @@ function searchOptions(options: PickCpuActionOptions): SearchOptions | undefined
     maxResponseDepth: options.maxResponseDepth,
     simulationDepth: options.simulationDepth,
     searchPly: options.searchPly,
+    rolloutTopK: options.rolloutTopK,
   };
 }
 
@@ -183,11 +187,17 @@ function collectRushCandidates(
     }
   }
 
-  candidates.push(...actionsOfType(actions, "begin_zord_setup"));
+  candidates.push(
+    ...actionsOfType(actions, "begin_zord_setup").filter((a) => !cpuWouldCancelProcedure(state, playerId, a)),
+  );
   candidates.push(...actionsOfType(actions, "play_operation").slice(0, 3));
   // RS-325【マジチケット】: コマンドゾーンのオペレーションの発動。
   candidates.push(...actionsOfType(actions, "use_magi_ticket").slice(0, 3));
-  candidates.push(...actionsOfType(actions, "initiate_command_payment").slice(0, 4));
+  candidates.push(
+    ...actionsOfType(actions, "initiate_command_payment")
+      .filter((a) => !cpuWouldCancelProcedure(state, playerId, a))
+      .slice(0, 4),
+  );
 
   const end = endPhase(actions);
   if (end) candidates.push(end);

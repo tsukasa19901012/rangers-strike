@@ -5,6 +5,9 @@ import { CPU, HUMAN } from "../engineApi";
 import { describeAction, humanizeLogEntry, indexInstances, PLAYER_LABELS } from "../text/labels";
 import type { Clock, LogSink, MemoryProbe, MemorySample } from "../platform/interfaces";
 
+/** A normal turn takes well under 100 CPU moves; far more means the CPU is looping. */
+const CPU_MOVES_PER_TURN_LIMIT = 400;
+
 export type ActionOption = { label: string; action: GameAction };
 
 export type MoveMetrics = {
@@ -116,6 +119,28 @@ export class GameSession {
     return { ok: true, label: option.label };
   }
 
+  private turnMoves = { turn: -1, count: 0 };
+
+  /**
+   * Safety net against a CPU that repeats a cancelled procedure forever (the
+   * game would hang on the device): after too many CPU moves in one turn,
+   * take a legal action that moves the game on (end the phase, skip, pass).
+   */
+  private loopBreakAction(actor: PlayerId): GameAction | null {
+    if (this.turnMoves.turn !== this.state.turn) this.turnMoves = { turn: this.state.turn, count: 0 };
+    this.turnMoves.count++;
+    if (this.turnMoves.count <= CPU_MOVES_PER_TURN_LIMIT) return null;
+    const legal = this.engine.getLegalActions(this.state).filter((a) => (a as { playerId?: PlayerId }).playerId === actor);
+    const rank = (a: GameAction) =>
+      a.type === "end_phase" ? 0 : a.type.startsWith("skip_") ? 1 : a.type.startsWith("pass_") ? 2 : 3;
+    const pick = [...legal].sort((a, b) => rank(a) - rank(b))[0];
+    if (pick && rank(pick) < 3) {
+      this.options.log?.(`cpu loop guard: ${this.turnMoves.count} moves in turn ${this.state.turn}, forcing ${pick.type}`);
+      return pick;
+    }
+    return null;
+  }
+
   /** Performs one CPU move (or an auto-resolved step). Timed with the injected clock. */
   cpuStep(): StepResult {
     if (this.state.winner) return { ok: false, error: "game_over" };
@@ -123,6 +148,7 @@ export class GameSession {
     const actor = engine.isCpuTurn(this.state, CPU) ? CPU : engine.getActionPlayerId(this.state);
     const t0 = this.options.clock();
     let action =
+      this.loopBreakAction(actor) ??
       engine.pickCpuAction(this.state, actor, this.options.cpuLevel) ??
       engine.pickCpuFallbackAction(this.state, actor);
     const t1 = this.options.clock();

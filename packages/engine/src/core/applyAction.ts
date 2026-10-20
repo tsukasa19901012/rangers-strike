@@ -3439,8 +3439,7 @@ function applyActionCore(
       if (
         nextState.phase === "end" &&
         !nextState.pendingEffectChoice &&
-        pending?.effectId === "jet_skateboard" ||
-        pending?.effectId === "end_turn_battle_to_rush"
+        (pending?.effectId === "jet_skateboard" || pending?.effectId === "end_turn_battle_to_rush")
       ) {
         nextState = tryOpenEndTurnEffectsMenu(nextState, playerId) ?? nextState;
       }
@@ -3570,9 +3569,16 @@ function applyActionCore(
       if (
         afterSkip.phase === "end" &&
         !afterSkip.pendingEffectChoice &&
-        pending?.effectId === "jet_skateboard" ||
-        pending?.effectId === "end_turn_battle_to_rush"
+        (pending?.effectId === "jet_skateboard" || pending?.effectId === "end_turn_battle_to_rush")
       ) {
+        const prior =
+          afterSkip.endTurnEffectsDeclined?.turn === afterSkip.turn ? afterSkip.endTurnEffectsDeclined.instanceIds : [];
+        if (pending.sourceInstanceId) {
+          afterSkip = {
+            ...afterSkip,
+            endTurnEffectsDeclined: { turn: afterSkip.turn, instanceIds: [...prior, pending.sourceInstanceId] },
+          };
+        }
         afterSkip = tryOpenEndTurnEffectsMenu(afterSkip, playerId) ?? afterSkip;
       }
       if (afterSkip.phase === "end" && !afterSkip.pendingEffectChoice && isSet4EndTurnEffect(pending?.effectId)) {

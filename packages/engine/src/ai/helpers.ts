@@ -678,6 +678,25 @@ export function godomDiscardPenalty(state: GameState, playerId: PlayerId, ids: s
   }, 0);
 }
 
+/**
+ * 始めても CPU 自身が途中で取り消す手順（支払えない合体・コマンドの支払い）か。
+ * 取り消すと元の状態に戻るので、選び続けると同じ手を永久に繰り返す（2026-10-20 対戦台で確認）。
+ */
+export function cpuWouldCancelProcedure(state: GameState, playerId: PlayerId, action: GameAction): boolean {
+  const first = applyAction(state, action);
+  if (!first.ok) return true;
+  let current = first.state;
+  for (let i = 0; i < 12; i++) {
+    const step = pickZordSetupStep(current, playerId) ?? pickCommandPaymentResolve(current, playerId);
+    if (!step) return false;
+    if (step.type === "cancel_command_payment" || step.type === "cancel_zord_setup") return true;
+    const next = applyAction(current, step);
+    if (!next.ok) return true;
+    current = next.state;
+  }
+  return false;
+}
+
 export function pickBeginZordSetup(
   state: GameState,
   playerId: PlayerId,
@@ -690,6 +709,7 @@ export function pickBeginZordSetup(
     if (action.type !== "begin_zord_setup" || action.playerId !== playerId) continue;
     if (!canBeginZordSetup(state, playerId, action.zordInstanceId)) continue;
     if (findDirectZordRushAction(state, playerId, action.zordInstanceId)) continue;
+    if (cpuWouldCancelProcedure(state, playerId, action)) continue;
 
     const card = state.players[playerId].hand.find(
       (c) => c.instanceId === action.zordInstanceId,

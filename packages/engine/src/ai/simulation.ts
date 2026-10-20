@@ -15,7 +15,66 @@ export type SearchOptions = {
   simulationDepth?: number;
   /** 2以上で相手の次手まで読む（ルートのみ）。 */
   searchPly?: number;
+  /**
+   * ルートで評価の高い上位この数の手だけ、その後を簡易 CPU（探索なし）で
+   * 相手の次のターンの終わりまで進めてから評価し直す（0／省略で行わない）。
+   */
+  rolloutTopK?: number;
 };
+
+const ROLLOUT_MAX_STEPS = 400;
+
+function mix(seed: number): () => number {
+  let s = seed >>> 0;
+  return () => {
+    s = (s + 0x6d2b79f5) >>> 0;
+    let t = s;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/**
+ * 山札の並びは CPU には見えないので、読みの中では両者の山札を混ぜ直す
+ * （本物の並びを使うと、これから引くカードを知っている読みになる）。
+ */
+function hideDeckOrder(state: GameState): GameState {
+  const rng = mix((state.turn * 7919 + state.log.length) | 0);
+  const shuffled = (deck: GameState["players"]["player1"]["deck"]) => {
+    const out = [...deck];
+    for (let i = out.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [out[i], out[j]] = [out[j]!, out[i]!];
+    }
+    return out;
+  };
+  return {
+    ...state,
+    players: {
+      player1: { ...state.players.player1, deck: shuffled(state.players.player1.deck) },
+      player2: { ...state.players.player2, deck: shuffled(state.players.player2.deck) },
+    },
+  };
+}
+
+/** 探索なしの CPU で、相手の次のターンが終わるまで（または決着まで）進める。 */
+function rollout(state: GameState, playerId: PlayerId, startTurn: number): GameState {
+  let current = hideDeckOrder(state);
+  // 自分のターン中なら、残りと相手の次のターン。相手のターン中ならそのターンの終わりまで。
+  const endTurn = state.activePlayer === playerId ? startTurn + 2 : startTurn + 1;
+  for (let i = 0; i < ROLLOUT_MAX_STEPS; i++) {
+    if (current.winner || current.turn >= endTurn) break;
+    const legal = getLegalActions(current);
+    const actor = legal[0]?.playerId;
+    if (!actor) break;
+    const action = pickCpuAction(current, actor, { enableSearch: false }) ?? legal[0]!;
+    const result = applyAction(current, action);
+    if (!result.ok) break;
+    current = result.state;
+  }
+  return current;
+}
 
 const DEFAULT_MAX_CANDIDATES = 64;
 const DEFAULT_MAX_RESPONSE_DEPTH = 28;
@@ -251,14 +310,32 @@ export function pickBestBySearch(
   const unique = rankCandidatesForSearch(state, playerId, candidates, options);
   let best: GameAction | null = null;
   let bestScore = Number.NEGATIVE_INFINITY;
+  const scored: { action: GameAction; score: number }[] = [];
 
   for (const action of unique) {
     const score = scoreAction(state, playerId, action, options);
+    scored.push({ action, score });
     if (score > bestScore) {
       bestScore = score;
       best = action;
     }
   }
 
-  return best;
+  const topK = options?.rolloutTopK ?? 0;
+  if (topK <= 0 || (options?.simulationDepth ?? 0) > 0 || scored.length < 2) return best;
+  if (bestScore >= 100_000) return best;
+
+  // 上位の手だけ先まで進めて比べ直す。
+  let rolloutBest = best;
+  let rolloutScore = Number.NEGATIVE_INFINITY;
+  for (const { action } of scored.sort((a, b) => b.score - a.score).slice(0, topK)) {
+    const after = scoreAfterAction(state, playerId, action, options);
+    if (!after.ok) continue;
+    const score = evaluateState(rollout(after.state, playerId, state.turn), playerId);
+    if (score > rolloutScore) {
+      rolloutScore = score;
+      rolloutBest = action;
+    }
+  }
+  return rolloutBest;
 }

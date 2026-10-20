@@ -53,6 +53,59 @@ function totalStrikePotential(
   return total;
 }
 
+/** 盤面評価の重み。CPU の調整（scripts/cpu-arena.ts）で差し替えられる。 */
+export const DEFAULT_EVAL_WEIGHTS = {
+  enemyDamage: 1400,
+  selfDamage: 1100,
+  enemyDamageSq: 150,
+  enemyNearWin2: 7000,
+  enemyNearWin1: 12000,
+  selfNearLoss1: 5500,
+  leadAhead: 280,
+  leadBehind: 180,
+  selfFieldDiv: 5,
+  enemyFieldDiv: 5,
+  selfBattle: 150,
+  enemyBattle: 110,
+  selfRush: 260,
+  enemyRush: 190,
+  selfPower: 200,
+  enemyPower: 140,
+  selfCommand: 65,
+  heldCommand: 100,
+  selfOperation: 550,
+  selfHand: 22,
+  enemyHand: 20,
+  selfTotalStrike: 220,
+  selfMaxStrike: 520,
+  lethalMax: 8000,
+  lethalTotal: 4000,
+  battleSelfStrike: 280,
+  battleActive: 650,
+  battleLethal: 6000,
+  battleIdleRush: 520,
+  battleInactive: 250,
+  selfDeck: 12,
+  enemyDeck: 10,
+  selfDeckLow5: 1500,
+  selfDeckLow10: 450,
+  enemyDeckLow8: 900,
+  enemyStrikeThreat: 420,
+  enemyLethalThreat: 5500,
+  rushHeldCommand: 55,
+  rushActive: 350,
+  chargeActive: 200,
+  battleWidth: 110,
+};
+export type EvalWeights = typeof DEFAULT_EVAL_WEIGHTS;
+
+let W: EvalWeights = DEFAULT_EVAL_WEIGHTS;
+
+/** 評価の重みを差し替える（省略で既定値に戻す）。対戦台での比較用。 */
+export function setEvalWeights(weights?: Partial<EvalWeights>): void {
+  W = weights ? { ...DEFAULT_EVAL_WEIGHTS, ...weights } : DEFAULT_EVAL_WEIGHTS;
+}
+
 /** 指定プレイヤー視点でのヒューリスティック盤面評価。 */
 export function evaluateState(state: GameState, playerId: PlayerId): number {
   if (state.winner === playerId) return 100_000;
@@ -64,82 +117,82 @@ export function evaluateState(state: GameState, playerId: PlayerId): number {
 
   let score = 0;
 
-  score += enemy.damage * 1_400;
-  score -= self.damage * 1_100;
-  score += enemy.damage * enemy.damage * 150;
+  score += enemy.damage * W.enemyDamage;
+  score -= self.damage * W.selfDamage;
+  score += enemy.damage * enemy.damage * W.enemyDamageSq;
 
-  if (enemy.damage >= WIN_DAMAGE - 2) score += 7_000;
-  if (enemy.damage >= WIN_DAMAGE - 1) score += 12_000;
-  if (self.damage >= WIN_DAMAGE - 1) score -= 5_500;
+  if (enemy.damage >= WIN_DAMAGE - 2) score += W.enemyNearWin2;
+  if (enemy.damage >= WIN_DAMAGE - 1) score += W.enemyNearWin1;
+  if (self.damage >= WIN_DAMAGE - 1) score -= W.selfNearLoss1;
 
   const damageLead = enemy.damage - self.damage;
-  if (damageLead > 0) score += damageLead * 280;
-  if (damageLead < 0) score += damageLead * 180;
+  if (damageLead > 0) score += damageLead * W.leadAhead;
+  if (damageLead < 0) score += damageLead * W.leadBehind;
 
   const selfField = fieldPower(state, playerId);
   const enemyField = fieldPower(state, enemyId);
-  score += selfField / 5;
-  score -= enemyField / 5;
+  score += selfField / W.selfFieldDiv;
+  score -= enemyField / W.enemyFieldDiv;
 
-  score += self.battle.length * 150;
-  score -= enemy.battle.length * 110;
-  score += self.rush.length * 260;
-  score -= enemy.rush.length * 190;
+  score += self.battle.length * W.selfBattle;
+  score -= enemy.battle.length * W.enemyBattle;
+  score += self.rush.length * W.selfRush;
+  score -= enemy.rush.length * W.enemyRush;
 
-  score += self.power.length * 200;
-  score -= enemy.power.length * 140;
-  score += self.command.length * 65;
+  score += self.power.length * W.selfPower;
+  score -= enemy.power.length * W.enemyPower;
+  score += self.command.length * W.selfCommand;
   const heldCommands = self.command.filter((c) => c.commandHeld).length;
-  score += heldCommands * 100;
-  score += self.operation.length * 550;
+  score += heldCommands * W.heldCommand;
+  score += self.operation.length * W.selfOperation;
 
-  score -= self.hand.length * 22;
-  score += enemy.hand.length * 20;
+  score -= self.hand.length * W.selfHand;
+  score += enemy.hand.length * W.enemyHand;
 
   const selfTotalStrike = totalStrikePotential(state, playerId);
-  score += selfTotalStrike * 220;
+  score += selfTotalStrike * W.selfTotalStrike;
 
   const selfStrike = maxSelfStrikePotential(state, playerId);
-  score += selfStrike * 520;
+  score += selfStrike * W.selfMaxStrike;
   if (enemy.damage + selfStrike >= WIN_DAMAGE) {
-    score += 8_000;
+    score += W.lethalMax;
   }
   if (enemy.damage + selfTotalStrike >= WIN_DAMAGE) {
-    score += 4_000;
+    score += W.lethalTotal;
   }
 
   if (state.phase === "battle") {
-    score += selfStrike * 280;
+    score += selfStrike * W.battleSelfStrike;
     if (state.activePlayer === playerId) {
-      score += 650;
-      if (enemy.damage + selfStrike >= WIN_DAMAGE) score += 6_000;
-      if (self.rush.length > 0) score -= self.rush.length * 520;
+      score += W.battleActive;
+      if (enemy.damage + selfStrike >= WIN_DAMAGE) score += W.battleLethal;
+      if (self.rush.length > 0) score -= self.rush.length * W.battleIdleRush;
     } else {
-      score -= 250;
+      score -= W.battleInactive;
     }
   }
 
-  score += self.deck.length * 12;
-  score -= enemy.deck.length * 10;
-  if (self.deck.length <= 5) score -= 1_500;
-  if (self.deck.length <= 10) score -= 450;
-  if (enemy.deck.length <= 8) score += 900;
+  score += self.deck.length * W.selfDeck;
+  score -= enemy.deck.length * W.enemyDeck;
+  if (self.deck.length <= 5) score -= W.selfDeckLow5;
+  if (self.deck.length <= 10) score -= W.selfDeckLow10;
+  if (enemy.deck.length <= 8) score += W.enemyDeckLow8;
 
   const strikeThreat = maxEnemyStrikeThreat(state, playerId);
-  score -= strikeThreat * 420;
+  score -= strikeThreat * W.enemyStrikeThreat;
   if (self.damage + strikeThreat >= WIN_DAMAGE) {
-    score -= 5_500;
+    score -= W.enemyLethalThreat;
   }
 
   if (state.phase === "rush") {
-    score += heldCommands * 55;
-    if (state.activePlayer === playerId) score += 350;
+    score += heldCommands * W.rushHeldCommand;
+    if (state.activePlayer === playerId) score += W.rushActive;
   }
   if (state.phase === "charge" && state.activePlayer === playerId) {
-    score += 200;
+    score += W.chargeActive;
   }
   if (state.phase === "battle" && self.battle.length > enemy.battle.length) {
-    score += (self.battle.length - enemy.battle.length) * 110;
+    score += (self.battle.length - enemy.battle.length) * W.battleWidth;
   }
 
   return score;

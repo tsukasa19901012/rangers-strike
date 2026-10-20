@@ -8,7 +8,15 @@ export type CpuLevelConfig = {
   maxResponseDepth: number;
   /** 1=手応答のみ、2+=相手の次手まで読む negamax 深さ */
   searchPly: number;
+  /** ルートの上位何手を、相手の次のターンの終わりまで進めて評価し直すか（0で行わない）。 */
+  rolloutTopK?: number;
 };
+
+let overrides: Partial<Record<CpuLevel, Partial<CpuLevelConfig>>> = {};
+/** 対戦台（scripts/cpu-arena.ts）でレベルの設定を試しに変える。 */
+export function setCpuLevelOverrides(next: Partial<Record<CpuLevel, Partial<CpuLevelConfig>>>): void {
+  overrides = next;
+}
 
 const LEVEL_CONFIG: Record<CpuLevel, CpuLevelConfig> = {
   1: { enableSearch: false, maxCandidates: 0, maxResponseDepth: 0, searchPly: 0 },
@@ -19,5 +27,6 @@ const LEVEL_CONFIG: Record<CpuLevel, CpuLevelConfig> = {
 };
 
 export function getCpuLevelConfig(level: CpuLevel): CpuLevelConfig {
-  return LEVEL_CONFIG[level];
+  const extra = overrides[level];
+  return extra ? { ...LEVEL_CONFIG[level], ...extra } : LEVEL_CONFIG[level];
 }
