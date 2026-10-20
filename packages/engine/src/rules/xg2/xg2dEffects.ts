@@ -227,21 +227,48 @@ function hyouiHosts(state: GameState, playerId: PlayerId, self: CardInstance): s
   return sortedIds(fieldUnits(state, playerId).filter((c) => c.instanceId !== self.instanceId && !c.mountedOnInstanceId && rk1IsSmallNow(state, c)));
 }
 
+/** 自軍ラッシュフェイズの場の起動効果（rules/fieldActivatedAbilities.ts）。カードごとに登録する（XG2-068【憑依】・XG2-082 のホールド／リリース）。 */
+type Xg2FieldAbility = {
+  canActivate: (state: GameState, playerId: PlayerId, card: CardInstance) => boolean;
+  activate: (state: GameState, playerId: PlayerId, card: CardInstance) => GameState;
+};
+const FIELD_ABILITIES: Record<string, Xg2FieldAbility> = {};
+
+export function registerXg2FieldAbility(cardId: string, ability: Xg2FieldAbility): void {
+  FIELD_ABILITIES[cardId] = ability;
+}
+
+function fieldAbilityOf(cardId: string): Xg2FieldAbility | undefined {
+  const id = Object.keys(FIELD_ABILITIES).find((k) => isSameCardIdentity(cardId, k));
+  return id ? FIELD_ABILITIES[id] : undefined;
+}
+
 export function isXg2FieldAbilityCard(cardId: string): boolean {
-  return isSameCardIdentity(cardId, "XG2-068");
+  return fieldAbilityOf(cardId) !== undefined;
 }
 
 export function canActivateXg2FieldAbility(state: GameState, playerId: PlayerId, card: CardInstance): boolean {
-  if (!isXg2FieldAbilityCard(card.cardId) || state.phase !== "rush" || card.mountedOnInstanceId) return false;
-  if (!state.players[playerId].rush.some((c) => c.instanceId === card.instanceId)) return false;
-  return hyouiHosts(state, playerId, card).length > 0;
+  const ability = fieldAbilityOf(card.cardId);
+  if (!ability || state.phase !== "rush" || state.activePlayer !== playerId) return false;
+  return ability.canActivate(state, playerId, card);
 }
 
 export function activateXg2FieldAbility(state: GameState, playerId: PlayerId, card: CardInstance): GameState {
-  const ids = hyouiHosts(state, playerId, card);
-  if (ids.length === 0) return state;
-  return openEffectChoice(state, selectOne({ playerId, phasePlayerId: playerId, sourceInstanceId: card.instanceId }, "XG2-068", HYOUI_EFFECT_ID, ids, true));
+  return fieldAbilityOf(card.cardId)?.activate(state, playerId, card) ?? state;
 }
+
+registerXg2FieldAbility("XG2-068", {
+  canActivate: (state, playerId, card) => {
+    if (card.mountedOnInstanceId) return false;
+    if (!state.players[playerId].rush.some((c) => c.instanceId === card.instanceId)) return false;
+    return hyouiHosts(state, playerId, card).length > 0;
+  },
+  activate: (state, playerId, card) => {
+    const ids = hyouiHosts(state, playerId, card);
+    if (ids.length === 0) return state;
+    return openEffectChoice(state, selectOne({ playerId, phasePlayerId: playerId, sourceInstanceId: card.instanceId }, "XG2-068", HYOUI_EFFECT_ID, ids, true));
+  },
+});
 
 registerXg2Choice(HYOUI_EFFECT_ID, {
   resolve: (state, playerId, instanceId) => {
@@ -512,6 +539,10 @@ const MOUNTED_VEHICLE_ENTER: Record<string, (state: GameState, ctx: GrantKeyword
   "XG2-072": applyTrigouram,
   "XG2-074": applyGouram,
 };
+
+export function registerXg2MountedVehicleEnter(cardId: string, apply: (state: GameState, ctx: GrantKeywordContext) => GrantKeywordResult): void {
+  MOUNTED_VEHICLE_ENTER[cardId] = apply;
+}
 
 function mountedVehicleCardId(cardId: string): string | undefined {
   return Object.keys(MOUNTED_VEHICLE_ENTER).find((id) => isSameCardIdentity(cardId, id));

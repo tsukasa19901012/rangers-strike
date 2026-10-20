@@ -37,6 +37,8 @@ import {
   mount,
   ncEnter,
   p1Battle,
+  passEntry,
+  toPhase,
   pick,
   playOp,
   powerCards,
@@ -101,7 +103,7 @@ describe("XG2-099 カメロックSM", () => {
     expect(canStartRush(board([], 6), "player1", "XG2-099:sm")).toBe(false);
   });
 
-  it.fails("XG2-099: ※ 撃破されて捨札になったとき、自軍コマンドゾーンか自軍捨札の「カメロック」のカードを1枚選ぶ（必ず。どちらのゾーンからでも選べる）（出典: atwiki/page-1785「自軍コマンドゾーンか自軍捨札から「カメロック」のカードを1枚選び、自軍ラッシュエリアに出す」） 既知の不具合: CARD-XG2-099 ※ の候補が2枚あっても選択が開かず、自動で1枚（捨札のもの）を出す", () => {
+  it("XG2-099: ※ 撃破されて捨札になったとき、自軍コマンドゾーンか自軍捨札の「カメロック」のカードを1枚選ぶ（必ず。どちらのゾーンからでも選べる）（出典: atwiki/page-1785「自軍コマンドゾーンか自軍捨札から「カメロック」のカードを1枚選び、自軍ラッシュエリアに出す」）", () => {
     const s = attackedInEnemyTurn({ battle: [inst("XG2-099", "sm")], command: [released("XG2-098", "kc")], discard: [inst("XG2-098", "kd"), inst("TST-UNIT-0", "x")] }, "XG2-099:sm");
     expectChoiceFrom(s, "player1", "XG2-099");
     expect(choiceIds(s).sort()).toEqual(["XG2-098:kc", "XG2-098:kd"]);
@@ -121,17 +123,19 @@ describe("XG2-099 カメロックSM", () => {
   /** 敵軍コマンドゾーン: ホールド状態の S ユニットのカード、ホールド状態のオペレーション。 */
   const zooka = () => ncEnter("XG2-099:sm", 4, {}, { command: [held("TST-UNIT-0", "cu"), held("TST-OP", "co")] });
 
-  it.fails("XG2-099: 【カメラズーカ】NC — 敵軍コマンドゾーンの S ユニットのカードを1枚選べる（任意。オペレーションは選べない）（出典: atwiki/page-1785「敵軍コマンドゾーンから、Sユニットのカードを1枚選んでもよい」） 既知の不具合: CARD-XG2-099 【カメラズーカ】の選択が開かない", () => {
+  it("XG2-099: 【カメラズーカ】NC — 敵軍コマンドゾーンの S ユニットのカードを1枚選べる（任意。オペレーションは選べない）（出典: atwiki/page-1785「敵軍コマンドゾーンから、Sユニットのカードを1枚選んでもよい」）", () => {
     const s = zooka();
     expectChoiceFrom(s, "player1", "XG2-099");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:cu"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-099: 【カメラズーカ】選んだカードは次の相手のターン、リリースできない（相手のスタートフェイズに、ほかのコマンドはリリースされても選んだカードはホールド状態のまま）（出典: atwiki/page-1785「次の相手のターン、選んだカードはリリースできない」） 既知の不具合: CARD-XG2-099 【カメラズーカ】の選択が開かない", () => {
+  it("XG2-099: 【カメラズーカ】選んだカードは次の相手のターン、リリースできない（相手のスタートフェイズに、ほかのコマンドはリリースされても選んだカードはホールド状態のまま）（出典: atwiki/page-1785「次の相手のターン、選んだカードはリリースできない」）", () => {
     let s = resolveAll(pick(zooka(), "TST-UNIT-0:cu"));
-    s = endTurn(s);
-    s = resolveAll(s);
+    // カメロックSM のバトル進入の行動ウィンドウをパスしてからターンを終える（パスしないとエンドできない）。
+    s = endTurn(passEntry(s));
+    // 相手のスタートフェイズのリリース（release_start_commands）を行う。resolveAll だけではリリースの手を打たない。
+    s = toPhase(resolveAll(s), "player2", "charge");
     expect(s.activePlayer).toBe("player2");
     expect(isHeld(s, "player2", "TST-UNIT-0:cu")).toBe(true);
     expect(isHeld(s, "player2", "TST-OP:co")).toBe(false);
@@ -159,7 +163,7 @@ describe("XG2-100 善と悪", () => {
   const entered = (top: ReturnType<typeof inst>) =>
     enter(p1Battle({ rush: [inst("XG2-089", "jb")], operation: [resident("XG2-100", "zk")], deck: [top, ...deckCards(3)] }, { battle: [inst("XG2-085", "man"), inst("XG2-098", "mecha")] }), "XG2-089:jb");
 
-  it.fails("XG2-100: 「メカ」を持つ自軍ユニットが自分のターンにバトルエリアに出ると、山札の上をオモテにし、ユニットカードなら「男」「女」を持つユニットにアタックできない。オモテにしたカードは山札の下に戻る（出典: atwiki/page-52「オモテにしたカードがユニットカードなら、このターン、これは特徴「男」または「女」を持つユニットにアタックできない。その後、オモテにしたカードは、山札の下に戻す」・カード評価「自軍ユニットも対象になってしまうのが難点」） 既知の不具合: CARD-XG2-100 常駐の効果がなく、山札の上がそのままで「男」のユニットにもアタックできる", () => {
+  it("XG2-100: 「メカ」を持つ自軍ユニットが自分のターンにバトルエリアに出ると、山札の上をオモテにし、ユニットカードなら「男」「女」を持つユニットにアタックできない。オモテにしたカードは山札の下に戻る（出典: atwiki/page-52「オモテにしたカードがユニットカードなら、このターン、これは特徴「男」または「女」を持つユニットにアタックできない。その後、オモテにしたカードは、山札の下に戻す」・カード評価「自軍ユニットも対象になってしまうのが難点」）", () => {
     const s = entered(inst("TST-UNIT-0", "top"));
     expect(attackTargets(s, "XG2-089:jb")).toEqual(["XG2-098:mecha"]);
     expect(s.players.player1.deck.at(-1)?.instanceId).toBe("TST-UNIT-0:top");
@@ -205,7 +209,7 @@ describe("XG2-101 ハカイダー", () => {
   const shot = () =>
     rcBoard("XG2-101:hk", {}, { battle: [inst("XG2-098", "ms"), { ...inst("TST-UNIT-2", "mm") }, inst("TST-UNIT-0", "nm")], rush: [inst("XG2-098", "mr")] }, EXTRA);
 
-  it.fails("XG2-101: 【ハカイダーショット】RC — 敵軍バトルエリアの、特徴「メカ」を持つ S か M ユニットを1体選べる（任意。「メカ」を持たないユニット・ラッシュエリアのユニットは選べない）（出典: atwiki/page-1817「敵軍バトルエリアから、特徴「メカ」を持つ、SユニットまたはMユニットを1体選び撃破してもよい」） 既知の不具合: CARD-XG2-101 【ハカイダーショット】が特徴「メカ」を見ず、選ぶのも強制になっている", () => {
+  it("XG2-101: 【ハカイダーショット】RC — 敵軍バトルエリアの、特徴「メカ」を持つ S か M ユニットを1体選べる（任意。「メカ」を持たないユニット・ラッシュエリアのユニットは選べない）（出典: atwiki/page-1817「敵軍バトルエリアから、特徴「メカ」を持つ、SユニットまたはMユニットを1体選び撃破してもよい」）", () => {
     const s = shot();
     expectChoiceFrom(s, "player1", "XG2-101");
     expect(choiceIds(s)).toEqual(["XG2-098:ms"]);
@@ -232,7 +236,7 @@ describe("XG2-102 キカイダー", () => {
   const targets = (command: ReturnType<typeof inst>[]) =>
     attackTargets(enter(p1Battle({ rush: [inst("XG2-102", "kk")], command }, { battle: [inst("XG2-085", "man"), inst("TST-UNIT-0", "x")] }), "XG2-102:kk"), "XG2-102:kk").sort();
 
-  it.fails("XG2-102: ※ DA を持つ自軍コマンドがないとき、特徴「男」か「女」を持つユニット（XG2-085 ショウ）にはアタックできない（出典: atwiki/page-1816「DAを持つ自軍コマンドがないとき、特徴「男」または「女」を持つユニットにアタックできない」・カード評価「黒のコマンドがないと男または女にアタックできないデメリット」） 既知の不具合: CARD-XG2-102 ※ のアタック制限がなく、DA のコマンドがなくても「男」のユニットにアタックできる", () => {
+  it("XG2-102: ※ DA を持つ自軍コマンドがないとき、特徴「男」か「女」を持つユニット（XG2-085 ショウ）にはアタックできない（出典: atwiki/page-1816「DAを持つ自軍コマンドがないとき、特徴「男」または「女」を持つユニットにアタックできない」・カード評価「黒のコマンドがないと男または女にアタックできないデメリット」）", () => {
     expect(targets([])).toEqual(["TST-UNIT-0:x"]);
   });
 
@@ -242,7 +246,7 @@ describe("XG2-102 キカイダー", () => {
 
   const end = () => rcBoard("XG2-102:kk", {}, { battle: [inst("XG2-098", "ms"), inst("XG2-087", "hg"), inst("TST-UNIT-0", "nm"), { ...inst("TST-UNIT-2", "m") }], rush: [inst("XG2-098", "mr")] }, EXTRA);
 
-  it.fails("XG2-102: 【デンジエンド】RC — 特徴「メカ」か「人型」を持つ敵軍 S ユニット（ラッシュエリアも）を1体選べる（任意。どちらも持たないユニットは選べない）（出典: atwiki/page-1816「特徴「メカ」または「人型」を持つ敵軍Sユニットを1体選び撃破してもよい」・カード評価「ラッシュエリアも射程に入り」） 既知の不具合: CARD-XG2-102 【デンジエンド】が特徴を見ずに敵軍バトルエリアのユニットを候補にし、ラッシュエリアのユニットを選べない", () => {
+  it("XG2-102: 【デンジエンド】RC — 特徴「メカ」か「人型」を持つ敵軍 S ユニット（ラッシュエリアも）を1体選べる（任意。どちらも持たないユニットは選べない）（出典: atwiki/page-1816「特徴「メカ」または「人型」を持つ敵軍Sユニットを1体選び撃破してもよい」・カード評価「ラッシュエリアも射程に入り」）", () => {
     const s = end();
     expectChoiceFrom(s, "player1", "XG2-102");
     expect(choiceIds(s).sort()).toEqual(["XG2-087:hg", "XG2-098:mr", "XG2-098:ms"]);
@@ -270,14 +274,14 @@ describe("XG2-103 サイドマシーン", () => {
   const drill = (p2: Partial<GameState["players"]["player2"]> = {}) =>
     rideOff(mount(p1Battle({ rush: [inst("SPEC-RIDER", "r"), inst("XG2-103", "sm")] }, { battle: [inst("XG2-062", "f4"), inst("XG2-089", "f3")], rush: [inst("XG2-086", "f4r")], ...p2 }, EXTRA), "SPEC-RIDER:r", "XG2-103:sm"), false);
 
-  it.fails("XG2-103: 【ドリル攻撃】自軍ターン中にバトルエリアに出たとき、特徴を4つ以上持つ敵軍 S ユニット（ラッシュエリアも）を1体選ぶ（必ず。特徴3つのユニットは選べない）（出典: atwiki/page-1812「特徴を4つ以上持つ敵軍Sユニットを1体選び」・カード評価「除去がラッシュエリアまで届く」「仮面ライダー装甲響鬼やハイパーショウなど…対象になりやすい」） 既知の不具合: CARD-XG2-103 【ドリル攻撃】がなく、バトルエリアに出ても選択が開かない", () => {
+  it("XG2-103: 【ドリル攻撃】自軍ターン中にバトルエリアに出たとき、特徴を4つ以上持つ敵軍 S ユニット（ラッシュエリアも）を1体選ぶ（必ず。特徴3つのユニットは選べない）（出典: atwiki/page-1812「特徴を4つ以上持つ敵軍Sユニットを1体選び」・カード評価「除去がラッシュエリアまで届く」「仮面ライダー装甲響鬼やハイパーショウなど…対象になりやすい」）", () => {
     const s = drill();
     expectChoiceFrom(s, "player1", "XG2-103");
     expect(choiceIds(s).sort()).toEqual(["XG2-062:f4", "XG2-086:f4r"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG2-103: 【ドリル攻撃】選んだユニットを持ち主のコマンドゾーンにホールド状態で置く。コマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-1812「持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする」・R-ZONE-08） 既知の不具合: CARD-XG2-103 【ドリル攻撃】がなく、バトルエリアに出ても選択が開かない", () => {
+  it("XG2-103: 【ドリル攻撃】選んだユニットを持ち主のコマンドゾーンにホールド状態で置く。コマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-1812「持ち主のコマンドゾーンにホールド状態で置く。置けなければ捨札にする」・R-ZONE-08）", () => {
     const a = resolveAll(drill(), ["XG2-086:f4r"]);
     expect(zoneOf(a, "player2", "XG2-086:f4r")).toBe("command");
     expect(isHeld(a, "player2", "XG2-086:f4r")).toBe(true);

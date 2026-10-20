@@ -1080,6 +1080,11 @@ CHOICE_RESOLVERS[MISSION_MEMORY_EFFECT_ID] = (state, playerId, instanceId) => {
   return { state: proceed(next, pending), log: logFor(state, playerId, pending.sourceCardId, `${MISSION_MEMORY_EFFECT_ID}:${instanceId}`) };
 };
 
+/** このターン、選んだユニットがライドオフしなくても RC の効果を発動できるようにする（ミッションメモリーと同じ記録。XG2-083 も使う）。 */
+export function rk1GrantRcWithoutRideOff(state: GameState, playerId: PlayerId, sourceCardId: string, instanceId: string): GameState {
+  return addTurnPayload(state, playerId, MISSION_MEMORY_RULE, sourceCardId, { instanceId });
+}
+
 /** このターン、ライドオフしなくても RC の効果を発動できるユニットか。 */
 export function rk1RcWithoutRideOff(state: Pick<GameState, "players">, playerId: PlayerId, instanceId: string): boolean {
   return turnPayloads<{ instanceId: string }>(state.players[playerId], MISSION_MEMORY_RULE).some((p) => p.instanceId === instanceId);

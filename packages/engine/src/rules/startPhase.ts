@@ -7,6 +7,7 @@ import { applyRk2StartPhaseEnd } from "./rk/rk2UnitEffects";
 import { collectRk12KaenQueue, isRk12KaenQueueEntry, openRk12KaenOnReturn } from "./rk/rk12UnitEffects";
 import { applyRk4StartPhaseEnd, isRk4BattleToRushTrigger, tryRk4BattleToRush } from "./rk/rk4UnitEffects";
 import { getCardEffect } from "@rangers-strike/cards";
+import { xg2BlocksRelease } from "./xg2/xg2Fields";
 import { gorgonBlocksRelease, isSet6BBattleToRushTrigger, trySet6BBattleToRush } from "./legend1/set6NamedEffectsB";
 import { darkLawStackPending, openDarkLawStackIfNeeded } from "./legend1/set5NamedEffectsA";
 import { activeNamedEffect } from "./ncGatedEffects";
@@ -34,7 +35,7 @@ export function releaseAllCommands(state: GameState, playerId: PlayerId): GameSt
   const player = state.players[playerId];
   const command = player.command.map((c) =>
     // RS-413 冥府神ゴーゴン【もの言わぬ石と化せ】: 制限を受けているプレイヤーのコマンドゾーンの S ユニットのカードはリリースできない。
-    c.commandHeld && !gorgonBlocksRelease(state, playerId, c) ? { ...c, commandHeld: false, mothershipHold: false } : c,
+    c.commandHeld && !gorgonBlocksRelease(state, playerId, c) && !xg2BlocksRelease(state, playerId, c) ? { ...c, commandHeld: false, mothershipHold: false } : c,
   );
   let nextState: GameState = {
     ...state,

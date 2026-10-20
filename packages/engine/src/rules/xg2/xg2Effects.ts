@@ -6,6 +6,7 @@ import "./xg2aEffects";
 import "./xg2bEffects";
 import "./xg2cEffects";
 import "./xg2dEffects";
+import "./xg2eEffects";
 
 export {
   activateXg2Resident,

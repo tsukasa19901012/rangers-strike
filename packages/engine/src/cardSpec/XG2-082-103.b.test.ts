@@ -80,19 +80,19 @@ describe("XG2-089 機動刑事ジバン", () => {
   const end = (p2: Partial<GameState["players"]["player2"]> = {}) =>
     rcBoard("XG2-089:jb", {}, { battle: [inst("SPEC-DA-S", "da"), inst("TST-UNIT-0", "wb")], rush: [inst("SPEC-DA-S", "dr"), inst("SPEC-DA-M", "dm")], ...p2 }, EXTRA);
 
-  it.fails("XG2-089: 【ジバンエンド】RC — DA を持つ敵軍 S ユニット（エリアを問わない）を1体選ぶ（必ず。WB のユニット・M ユニットは選べない）（出典: atwiki/page-134「DAを持つ敵軍Sユニットを1体選び」） 既知の不具合: CARD-XG2-089 【ジバンエンド】の選択が開かない", () => {
+  it("XG2-089: 【ジバンエンド】RC — DA を持つ敵軍 S ユニット（エリアを問わない）を1体選ぶ（必ず。WB のユニット・M ユニットは選べない）（出典: atwiki/page-134「DAを持つ敵軍Sユニットを1体選び」）", () => {
     const s = end();
     expectChoiceFrom(s, "player1", "XG2-089");
     expect(choiceIds(s).sort()).toEqual(["SPEC-DA-S:da", "SPEC-DA-S:dr"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG2-089: 【ジバンエンド】選んだユニットは持ち主のコマンドゾーンに置かれる（出典: atwiki/page-134「持ち主のコマンドゾーンに置く」） 既知の不具合: CARD-XG2-089 【ジバンエンド】の選択が開かない", () => {
+  it("XG2-089: 【ジバンエンド】選んだユニットは持ち主のコマンドゾーンに置かれる（出典: atwiki/page-134「持ち主のコマンドゾーンに置く」）", () => {
     const s = resolveAll(end(), ["SPEC-DA-S:dr"]);
     expect(zoneOf(s, "player2", "SPEC-DA-S:dr")).toBe("command");
   });
 
-  it.fails("XG2-089: 【ジバンエンド】敵軍コマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-134「置けなければ捨札にする」・R-ZONE-08） 既知の不具合: CARD-XG2-089 【ジバンエンド】の選択が開かない", () => {
+  it("XG2-089: 【ジバンエンド】敵軍コマンドゾーンが5枚で置けなければ捨札にする（出典: atwiki/page-134「置けなければ捨札にする」・R-ZONE-08）", () => {
     const s = resolveAll(rcBoard("XG2-089:jb", {}, { battle: [inst("SPEC-DA-S", "da")], command: releasedN(5, "TST-OP", "ec") }, EXTRA), ["SPEC-DA-S:da"]);
     expect(zoneOf(s, "player2", "SPEC-DA-S:da")).toBe("discard");
   });
@@ -109,14 +109,14 @@ describe("XG2-090 レゾン", () => {
     expectRarityIn("XG2-090", ["N"]);
   });
 
-  it.fails("XG2-090: 【第六世代コンピューター】敵軍ターン中、自軍バトルエリアの RC を持つ S ユニット（XG2-089 ジバン）がレジストでホールド状態になったとき、これにライドさせるかを選べる（任意）（出典: atwiki/page-1811「自軍バトルエリアのSユニットがホールド状態になったとき、そのユニットをこのビークルにライドさせてから、ラッシュエリアに戻してもよい」・カード評価「レジストを持つRCユニットの生存率を高めてくれる」） 既知の不具合: CARD-XG2-090 【第六世代コンピューター】がなく、ホールド状態になっても選択が開かない", () => {
+  it("XG2-090: 【第六世代コンピューター】敵軍ターン中、自軍バトルエリアの RC を持つ S ユニット（XG2-089 ジバン）がレジストでホールド状態になったとき、これにライドさせるかを選べる（任意）（出典: atwiki/page-1811「自軍バトルエリアのSユニットがホールド状態になったとき、そのユニットをこのビークルにライドさせてから、ラッシュエリアに戻してもよい」・カード評価「レジストを持つRCユニットの生存率を高めてくれる」）", () => {
     const s = registered({ battle: [inst("XG2-090", "rz"), inst("XG2-089", "jb")] }, "XG2-089:jb");
     expect(isHeld(s, "player1", "XG2-089:jb")).toBe(true);
     expectChoiceFrom(s, "player1", "XG2-090");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-090: 【第六世代コンピューター】ライドさせると、ユニットはこれにライドしたまま自軍ラッシュエリアに戻る（出典: atwiki/page-1811「そのユニットをこのビークルにライドさせてから、ラッシュエリアに戻してもよい」） 既知の不具合: CARD-XG2-090 【第六世代コンピューター】がなく、ホールド状態になっても選択が開かない", () => {
+  it("XG2-090: 【第六世代コンピューター】ライドさせると、ユニットはこれにライドしたまま自軍ラッシュエリアに戻る（出典: atwiki/page-1811「そのユニットをこのビークルにライドさせてから、ラッシュエリアに戻してもよい」）", () => {
     const s = resolveAll(registered({ battle: [inst("XG2-090", "rz"), inst("XG2-089", "jb")] }, "XG2-089:jb"), ["XG2-090:rz", "XG2-089:jb"]);
     expect(zoneOf(s, "player1", "XG2-089:jb")).toBe("rush");
     expect(ridesOn(s, "player1", "XG2-089:jb", "XG2-090:rz")).toBe(true);
@@ -151,20 +151,20 @@ describe("XG2-092 ナイトファイヤー", () => {
     expect(spOf(ncEnter("XG2-092:nf", 2, {}, enemy(), EXTRA), "player1", "XG2-092:nf")).toBe(0);
   });
 
-  it.fails("XG2-092: 【パイルトルネード】NC で、相手が自分自身のユニット（サイズ・エリアを問わない）を1体選ぶ（必ず）（出典: atwiki/page-132「相手は自分自身のユニットを1体選び」・カード評価「サイズとエリアを問わない除去効果」） 既知の不具合: CARD-XG2-092 【パイルトルネード】の相手が選ぶ効果がなく、選択が開かない", () => {
+  it("XG2-092: 【パイルトルネード】NC で、相手が自分自身のユニット（サイズ・エリアを問わない）を1体選ぶ（必ず）（出典: atwiki/page-132「相手は自分自身のユニットを1体選び」・カード評価「サイズとエリアを問わない除去効果」）", () => {
     const s = ncEnter("XG2-092:nf", 4, {}, enemy(), EXTRA);
     expectChoiceFrom(s, "player2", "XG2-092");
     expect(choiceIds(s).sort()).toEqual(["SPEC-DA-S:r", "TST-UNIT-0:e", "TST-UNIT-2:m"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG2-092: 【パイルトルネード】選んだユニットは相手のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-132「自分自身のコマンドゾーンにホールド状態で置く」） 既知の不具合: CARD-XG2-092 【パイルトルネード】の相手が選ぶ効果がなく、選択が開かない", () => {
+  it("XG2-092: 【パイルトルネード】選んだユニットは相手のコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-132「自分自身のコマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(pickAs(ncEnter("XG2-092:nf", 4, {}, enemy(), EXTRA), "player2", "TST-UNIT-2:m"));
     expect(zoneOf(s, "player2", "TST-UNIT-2:m")).toBe("command");
     expect(isHeld(s, "player2", "TST-UNIT-2:m")).toBe(true);
   });
 
-  it.fails("XG2-092: 【パイルトルネード】（）書き — RS-406 マシンボクサー（「警察」を持つ S ユニットがライドできる）からライドオフしたときは、ナンバーに関係なく（1番目でも）発動する（出典: atwiki/page-132「（この効果は、ライドオフしたときナンバーに関係なく発動する）」・カード評価「警察ならばライド出来るマシンボクサーやガードチェイサーと併用したい」） 既知の不具合: CARD-XG2-092 【パイルトルネード】の相手が選ぶ効果がなく、ライドオフしても選択が開かない", () => {
+  it("XG2-092: 【パイルトルネード】（）書き — RS-406 マシンボクサー（「警察」を持つ S ユニットがライドできる）からライドオフしたときは、ナンバーに関係なく（1番目でも）発動する（出典: atwiki/page-132「（この効果は、ライドオフしたときナンバーに関係なく発動する）」・カード評価「警察ならばライド出来るマシンボクサーやガードチェイサーと併用したい」）", () => {
     let s = p1Battle({ rush: [inst("XG2-092", "nf"), inst("RS-406", "mb")] }, enemy(), EXTRA);
     s = rideOff(mount(s, "XG2-092:nf", "RS-406:mb"), true);
     expect(spOf(s, "player1", "XG2-092:nf")).toBe(1);
@@ -195,7 +195,7 @@ describe("XG2-093 ソルドーザー", () => {
     expect(choiceIds(meleEnters({}))).toEqual(["TST-OP:mc"]);
   });
 
-  it.fails("XG2-093: 【道路封鎖】これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは相手の効果（鳳凰メレ【火将危願】）に選ばれない（出典: atwiki/page-1809「これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは相手に選ばれない」・カード評価「守護獣プテラノドンのようなコマンド除去…を防ぐことができる」） 既知の不具合: CARD-XG2-093 【道路封鎖】がなく、自軍コマンドが相手の効果に選ばれる", () => {
+  it("XG2-093: 【道路封鎖】これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは相手の効果（鳳凰メレ【火将危願】）に選ばれない（出典: atwiki/page-1809「これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは相手に選ばれない」・カード評価「守護獣プテラノドンのようなコマンド除去…を防ぐことができる」）", () => {
     const s = meleEnters({ battle: [inst("XG2-093", "sd")] });
     expect(choiceIds(s)).toEqual([]);
   });
@@ -224,20 +224,20 @@ describe("XG2-095 ブラックビート", () => {
   const sting = () =>
     ncEnter("XG2-095:bk", 2, {}, { battle: [inst("TST-UNIT-2", "low1"), inst("RS-284", "sw"), inst("TST-UNIT-7", "big")], rush: [inst("TST-UNIT-0", "r")] }, EXTRA);
 
-  it.fails("XG2-095: 【スティンガービュート】NC（3番目）— 敵軍バトルエリアの、BP・必要パワーの数字・ナンバーの数字のどれかがこれより低いユニットを選べる（任意。どれも低くない TST-UNIT-7・ラッシュエリアのユニットは選べない）（出典: atwiki/page-152「3つのうちのいずれかの値が、このユニットよりも低いユニットを1体選び撃破してもよい」・コメント欄「ナンバーがなくても、BPかパワーが低ければ撃破できる」） 既知の不具合: CARD-XG2-095 【スティンガービュート】の選択が開かない", () => {
+  it("XG2-095: 【スティンガービュート】NC（3番目）— 敵軍バトルエリアの、BP・必要パワーの数字・ナンバーの数字のどれかがこれより低いユニットを選べる（任意。どれも低くない TST-UNIT-7・ラッシュエリアのユニットは選べない）（出典: atwiki/page-152「3つのうちのいずれかの値が、このユニットよりも低いユニットを1体選び撃破してもよい」・コメント欄「ナンバーがなくても、BPかパワーが低ければ撃破できる」）", () => {
     const s = sting();
     expectChoiceFrom(s, "player1", "XG2-095");
     expect(choiceIds(s).sort()).toEqual(["RS-284:sw", "TST-UNIT-2:low1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-095: 【スティンガービュート】撃破したユニット（ナンバーのない TST-UNIT-2）の3つの値がすべて低いとは言えなければ、ダメージは与えない（出典: atwiki/page-152「3つの値すべてがこのユニットよりも低かったなら」・コメント欄「ナンバーがない相手はダメージに関する効果が狙えない」） 既知の不具合: CARD-XG2-095 【スティンガービュート】の選択が開かない", () => {
+  it("XG2-095: 【スティンガービュート】撃破したユニット（ナンバーのない TST-UNIT-2）の3つの値がすべて低いとは言えなければ、ダメージは与えない（出典: atwiki/page-152「3つの値すべてがこのユニットよりも低かったなら」・コメント欄「ナンバーがない相手はダメージに関する効果が狙えない」）", () => {
     const s = resolveAll(pick(sting(), "TST-UNIT-2:low1"));
     expect(zoneOf(s, "player2", "TST-UNIT-2:low1")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(0);
   });
 
-  it.fails("XG2-095: 【スティンガービュート】撃破したユニットの BP（1000）・必要パワーの数字（1）・ナンバーの数字（1）がすべてこれより低ければ、相手に1点ダメージを与える（出典: atwiki/page-152「そうして撃破したユニットの3つの値すべてがこのユニットよりも低かったなら、相手に1点ダメージを与える」） 既知の不具合: CARD-XG2-095 【スティンガービュート】の選択が開かない", () => {
+  it("XG2-095: 【スティンガービュート】撃破したユニットの BP（1000）・必要パワーの数字（1）・ナンバーの数字（1）がすべてこれより低ければ、相手に1点ダメージを与える（出典: atwiki/page-152「そうして撃破したユニットの3つの値すべてがこのユニットよりも低かったなら、相手に1点ダメージを与える」）", () => {
     const s0 = ncEnter("XG2-095:bk", 2, {}, { battle: [inst("SPEC-LOW3", "all")] }, EXTRA);
     const s = resolveAll(pick(s0, "SPEC-LOW3:all"));
     expect(zoneOf(s, "player2", "SPEC-LOW3:all")).toBe("discard");
@@ -285,14 +285,14 @@ describe("XG2-097 ビーファイターゲンジ", () => {
       EXTRA,
     );
 
-  it.fails("XG2-097: 【ライトニングキャノン】NC（3番目）— 自軍コマンドゾーンのカテゴリを2つ以上持つカードを1枚選び、手札に戻せる（任意。カテゴリが1つのカードは選べない）（出典: atwiki/page-1783「自軍コマンドゾーンから、カテゴリを2つ以上持つカードを1枚選び、自分の手札に戻してもよい」） 既知の不具合: CARD-XG2-097 【ライトニングキャノン】の選択が開かない", () => {
+  it("XG2-097: 【ライトニングキャノン】NC（3番目）— 自軍コマンドゾーンのカテゴリを2つ以上持つカードを1枚選び、手札に戻せる（任意。カテゴリが1つのカードは選べない）（出典: atwiki/page-1783「自軍コマンドゾーンから、カテゴリを2つ以上持つカードを1枚選び、自分の手札に戻してもよい」）", () => {
     const s = cannon();
     expectChoiceFrom(s, "player1", "XG2-097");
     expect(choiceIds(s)).toEqual(["TST-OP-WB-ET:mc"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-097: 【ライトニングキャノン】戻したら、戻したカードと同じカテゴリ（WB か ET）を持つ敵軍 S ユニット（エリアを問わない）を1体選び撃破する（OT の S ユニット・M ユニットは選べない）（出典: atwiki/page-1783「戻したカードの持つカテゴリと同じカテゴリを1つ以上持つ敵軍Sユニットを1体選び撃破する」） 既知の不具合: CARD-XG2-097 【ライトニングキャノン】の選択が開かない", () => {
+  it("XG2-097: 【ライトニングキャノン】戻したら、戻したカードと同じカテゴリ（WB か ET）を持つ敵軍 S ユニット（エリアを問わない）を1体選び撃破する（OT の S ユニット・M ユニットは選べない）（出典: atwiki/page-1783「戻したカードの持つカテゴリと同じカテゴリを1つ以上持つ敵軍Sユニットを1体選び撃破する」）", () => {
     let s = pick(cannon(), "TST-OP-WB-ET:mc");
     expect(zoneOf(s, "player1", "TST-OP-WB-ET:mc")).toBe("hand");
     expect(choiceIds(s).sort()).toEqual(["TST-UNIT-0:wb", "TST-UNIT-WB-ET:r"]);

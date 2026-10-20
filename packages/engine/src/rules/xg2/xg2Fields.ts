@@ -53,6 +53,8 @@ export function xg2EffectiveSp(
   if (isSameCardIdentity(instance.cardId, "XG2-028")) return sp + xg2FaceDownStacked(instance).length;
   // XG2-067 仮面ライダー電王GF「※このユニットの下にオモテ向きの「リュウタロス」のカードが重なっている間、これは「SP1」になる。」（atwiki/page-1772）。
   if (isSameCardIdentity(instance.cardId, "XG2-067") && (instance.stackedCards ?? []).some((c) => !c.faceDown && cardName(state.definitions, c.cardId) === "リュウタロス")) return 1;
+  // XG2-088 マッド・ガルボ【ジバンキラー】「本来の特徴に「メカ」または「警察」を持つ敵軍Sユニットがあるとき、次の能力を得る⇒BP+2000、SP1」（atwiki/page-244）。
+  if (isSameCardIdentity(instance.cardId, "XG2-088")) return xg2JibanKillerActive(state, playerId) ? Math.max(sp, 1) : sp;
   if (isSameCardIdentity(instance.cardId, "XG2-029") && bpOf) {
     return bpOf(state as GameState, playerId, instance) >= 8000 ? Math.max(sp, 1) : sp;
   }
@@ -90,7 +92,105 @@ export function xg2FieldBpBonus(state: Board & Partial<Pick<GameState, "activePl
     const features = getDefinition(state.definitions, instance.cardId)?.features ?? [];
     if (features.includes("警察")) bonus += 1000 * machines;
   }
+  if (isSameCardIdentity(instance.cardId, "XG2-088") && xg2JibanKillerActive(state, playerId)) bonus += 2000;
+  bonus += xg2NihontoPenalty(state, playerId, instance);
   return bonus;
+}
+
+// ---------------------------------------------------------------------------
+// XG2-082〜103（rules/xg2/xg2eEffects.ts）
+
+/** その場の効果で記録した、ターン限定の記録（XG2-085【日本刀】・XG2-099【カメラズーカ】・XG2-100 善と悪）。 */
+export const XG2_NIHONTO_KEY = "nihonto";
+export const XG2_ZOOKA_KEY = "zooka";
+export const XG2_ZENTOAKU_KEY = "zentoaku";
+
+function turnEntries(state: Partial<Pick<GameState, "xg2" | "turn">>, key: string): Xg2TurnEntry[] {
+  return ((state.xg2?.[key] as Xg2TurnEntry[] | undefined) ?? []).filter((e) => e.turn === state.turn);
+}
+
+function otherPlayer(playerId: PlayerId): PlayerId {
+  return playerId === "player1" ? "player2" : "player1";
+}
+
+function isSUnit(state: Board, card: CardInstance): boolean {
+  return getDefinition(state.definitions, card.cardId)?.type === "unit" && unitSizeOf(state.definitions, card) === "S";
+}
+
+function printedFeatures(state: Board, cardId: string): string[] {
+  return getDefinition(state.definitions, cardId)?.features ?? [];
+}
+
+/**
+ * XG2-085 隊員コード153 ショウ【日本刀】（NC）「このターン、OTまたはDAを持つすべての敵軍SユニットはBP-1000される。」（atwiki/page-1780）。
+ * 使った回数分。使ったプレイヤーから見た敵軍の S ユニット（エリアを問わない）。カテゴリは印刷されたもの。
+ */
+function xg2NihontoPenalty(state: Board & Partial<Pick<GameState, "turn" | "xg2">>, playerId: PlayerId, instance: CardInstance): number {
+  const uses = turnEntries(state, XG2_NIHONTO_KEY).filter((e) => e.ownerId === otherPlayer(playerId)).length;
+  if (uses === 0 || !isSUnit(state, instance)) return 0;
+  const cats = printedCategories(state, instance.cardId);
+  return cats.includes("OT") || cats.includes("DA") ? -1000 * uses : 0;
+}
+
+/** XG2-088【ジバンキラー】の条件: 本来の特徴に「メカ」か「警察」を持つ敵軍 S ユニット（エリアを問わない）がある。 */
+function xg2JibanKillerActive(state: Board, playerId: PlayerId): boolean {
+  return areaCards(state, otherPlayer(playerId)).some((c) => {
+    if (!isSUnit(state, c)) return false;
+    const f = printedFeatures(state, c.cardId);
+    return f.includes("メカ") || f.includes("警察");
+  });
+}
+
+/**
+ * XG2-082 電子星獣ドル「※これは、自軍エリアでホールド状態かライドされている間、Lビークルとして扱う。」（atwiki/page-1807）。
+ * チェイスの乗り換え先（rules/rm/rm2Fields.ts rmChaseVehicleCandidate）・ライドの先（core/legalActions.ts）・バトルエリアに出られない（rules/restrictions.ts）。
+ */
+export function xg2ActsAsVehicle(player: Pick<GameState["players"]["player1"], "battle" | "rush">, card: Pick<CardInstance, "cardId" | "instanceId" | "commandHeld">): boolean {
+  if (!isSameCardIdentity(card.cardId, "XG2-082")) return false;
+  const field = [...player.battle, ...player.rush];
+  const self = field.find((c) => c.instanceId === card.instanceId);
+  if (!self) return false;
+  return self.commandHeld === true || field.some((c) => c.mountedOnInstanceId === card.instanceId && c.instanceId !== card.instanceId);
+}
+
+/** ビークルとして扱う XG2-082 は、ライドされずにバトルエリアに出られない（rules/restrictions.ts）。 */
+export function xg2BlocksBattleEntry(state: Board, playerId: PlayerId, unit: Pick<CardInstance, "cardId" | "instanceId">): boolean {
+  return isSameCardIdentity(unit.cardId, "XG2-082") && xg2ActsAsVehicle(state.players[playerId], unit);
+}
+
+/**
+ * XG2-083 宇宙刑事ギャバン「※これが自軍エリアにある間、特徴「宇宙刑事」を持つ自軍ユニットは、アタックされるとき、BP+1000される」（atwiki/page-981）。
+ * ギャバンが何枚あっても1回分（同じ能力を重ねて得ない）。かわりにバトルするユニットはアタックされていないので上がらない。
+ */
+function xg2GavanDefenderBonus(state: GameState, owner: PlayerId, defender: CardInstance): number {
+  if (!hasInArea(state, owner, "XG2-083")) return 0;
+  if (getDefinition(state.definitions, defender.cardId)?.type !== "unit") return 0;
+  return printedFeatures(state, defender.cardId).includes("宇宙刑事") ? 1000 : 0;
+}
+
+/** XG2-093 ソルドーザー【道路封鎖】「これが自軍バトルエリアにある間、自軍コマンドゾーンのカードは、相手の効果で選ばれない。」（keywords/effectTargetability.ts）。 */
+export function xg2CommandZoneProtected(state: Board, owner: PlayerId): boolean {
+  return state.players[owner].battle.some((c) => isSameCardIdentity(c.cardId, "XG2-093"));
+}
+
+/** XG2-099【カメラズーカ】で選んだ敵軍コマンドは、次の相手のターン、リリースできない（rules/startPhase.ts releaseAllCommands）。 */
+export function xg2BlocksRelease(state: Partial<Pick<GameState, "xg2" | "turn">>, playerId: PlayerId, card: Pick<CardInstance, "instanceId">): boolean {
+  return turnEntries(state, XG2_ZOOKA_KEY).some((e) => e.ownerId === playerId && e.instanceId === card.instanceId);
+}
+
+function hasManOrWoman(state: Board, card: CardInstance): boolean {
+  const f = printedFeatures(state, card.cardId);
+  return f.includes("男") || f.includes("女");
+}
+
+/**
+ * XG2-102 キカイダー「※これは、DAを持つ自軍コマンドがないとき、特徴「男」または「女」を持つユニットにアタックできない。」（atwiki/page-1816）・
+ * XG2-100 善と悪で「男」「女」にアタックできなくなったユニット（このターン）。
+ */
+function xg2AttackerBlockedByGender(state: Board & Partial<Pick<GameState, "xg2" | "turn">>, attackerPlayerId: PlayerId, attacker: CardInstance, defender: CardInstance): boolean {
+  if (!hasManOrWoman(state, defender)) return false;
+  if (isSameCardIdentity(attacker.cardId, "XG2-102") && !state.players[attackerPlayerId].command.some((c) => printedCategories(state, c.cardId).includes("DA"))) return true;
+  return turnEntries(state, XG2_ZENTOAKU_KEY).some((e) => e.ownerId === attackerPlayerId && e.instanceId === attacker.instanceId);
 }
 
 /** XG2-038【真・水流の舞い】（NC）で敵軍ラッシュエリアのユニットにアタックできるか（rules/legend3/restrictions.ts）。 */
@@ -129,6 +229,10 @@ export function xg2ReturnToRushBlocked(state: Pick<GameState, "players" | "defin
  */
 export function xg2DefenderBattleBonus(state: GameState, pending: PendingBattle, owner: PlayerId, defender: CardInstance): number {
   if (pending.substituteInstanceId && pending.substituteInstanceId === defender.instanceId) return 0;
+  return xg2LandGammaBonus(state, owner, defender) + xg2GavanDefenderBonus(state, owner, defender);
+}
+
+function xg2LandGammaBonus(state: GameState, owner: PlayerId, defender: CardInstance): number {
   if (!hasInArea(state, owner, "XG2-007")) return 0;
   if (getDefinition(state.definitions, defender.cardId)?.type !== "unit" || unitSizeOf(state.definitions, defender) !== "M") return 0;
   const zone = state.players[owner].rush.some((c) => c.instanceId === defender.instanceId) ? "rush" : "battle";
@@ -236,8 +340,8 @@ function residentZoneCount(state: Board, playerId: PlayerId): number {
  * 特徴「加速」を持たないユニットにアタックされない。」（atwiki/page-895）。
  */
 export function xg2DefenderBlocksAttack(state: Board, attackerPlayerId: PlayerId, attacker: CardInstance, defenderPlayerId: PlayerId, defender: CardInstance): boolean {
+  if (xg2AttackerBlockedByGender(state as Board & Partial<Pick<GameState, "xg2" | "turn">>, attackerPlayerId, attacker, defender)) return true;
   if (!isSameCardIdentity(defender.cardId, "XG2-065") || residentZoneCount(state, defenderPlayerId) < 5) return false;
-  void attackerPlayerId;
   return !(getDefinition(state.definitions, attacker.cardId)?.features ?? []).includes("加速");
 }
 

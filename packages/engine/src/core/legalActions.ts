@@ -154,7 +154,7 @@ import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
 import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
 import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
 import { canActivateXg2Resident, canConfirmXg2Choice, isXg2ActivatableResident, isXg2BattleCounterCard, isXg2ChoiceEffect, xg2BattleCounterConditionMet } from "../rules/xg2/xg2Effects";
-import { xg2ReturnToRushBlocked } from "../rules/xg2/xg2Fields";
+import { xg2ActsAsVehicle, xg2ReturnToRushBlocked } from "../rules/xg2/xg2Fields";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
@@ -2399,7 +2399,8 @@ function getLegalActionsCore(state: GameState): GameAction[] {
             !rk14ActsAsVehicle(player, vehicle) &&
             !rm1ActsAsVehicle(state, playerId, vehicle, (id) => cardHasKeyword(state.definitions, id, "chase")) &&
             // RM-023 スクーパー: チェイスを持つ自軍ユニットがあれば S ビークルとして扱う（rules/rm/rm2Fields.ts）。
-            !rm2ActsAsVehicle(state, playerId, vehicle, (id) => cardHasKeyword(state.definitions, id, "chase"))
+            !rm2ActsAsVehicle(state, playerId, vehicle, (id) => cardHasKeyword(state.definitions, id, "chase")) &&
+            !xg2ActsAsVehicle(player, vehicle)
           ) {
             continue;
           }

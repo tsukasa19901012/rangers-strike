@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-083::koregaerianiaruw",
+          "keyword": "xg2::XG2-083::uchu_keiji_bp",
           "duration": "permanent"
         }
       ]
@@ -53,14 +53,14 @@
       "name": "銀河パトロール隊隊長",
       "text": "自軍ラッシュエリアから、RCを持つユニットを1体選んでもよい。そうしたとき、このターン、選んだユニットは、バトルエリアに出たとき、ライドオフしなくてもその効果を発動できる。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "riding_combo"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-083::patororu",
-          "duration": "turn"
+          "keyword": "xg2::XG2-083::patrol",
+          "duration": "permanent"
         }
       ]
     }
