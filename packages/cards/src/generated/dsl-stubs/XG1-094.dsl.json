@@ -44,11 +44,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-094::tentousupia",
+          "keyword": "xg1::XG1-094::tentou_spear",
           "duration": "turn"
         }
       ]

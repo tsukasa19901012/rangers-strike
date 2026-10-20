@@ -43,12 +43,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-031::dorudorudan",
-          "duration": "permanent"
+          "keyword": "xg1::XG1-031::dorudoru",
+          "duration": "turn"
         }
       ]
     }

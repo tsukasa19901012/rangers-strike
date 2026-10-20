@@ -10,6 +10,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 
 type StateGateContext = Pick<GameState, "players" | "definitions">;
 import { COMMAND_ZONE_MAX } from "../types/game";
+import { xg1HoldSubstituteAvailable } from "./xg1/xg1Fields";
 import {
   cardName,
   getDefinition,
@@ -358,6 +359,10 @@ export function isValidExtendedZordMaterial(
 
   switch (condition.conditionId) {
     case "discard_command_card":
+      // 「自軍ゾーンのオモテ向きのカードからSユニットのカードを1枚選び捨札にする」（XG1-019 の変更後の追加条件。rules/rushAdditionalCondition.ts）。
+      if (condition.text.startsWith("自軍ゾーンのオモテ向きのカードから")) {
+        return (zone === "command" || (zone === "power" && !card.faceDown)) && isUnit(def) && (!condition.requiredSize || def.size === condition.requiredSize);
+      }
       return zone === "command" || (zone === "hand" && isOperation(def));
     case "discard_hand_card":
       return zone === "hand";
@@ -898,6 +903,10 @@ export function listFieldZordRushVariants(
         variants.push({ ...materialRef, zordMaterialDestination: "discard" });
       } else {
         variants.push(materialRef);
+      }
+      // XG1-013【巨大要塞】捨札にするかわりにホールドする（rules/xg1/xg1Fields.ts）。
+      if (!set[0]!.commandHeld && xg1HoldSubstituteAvailable(player, definitions, rushingCardId, condition.conditionId, condition.unitCount)) {
+        variants.push({ ...materialRef, zordMaterialDestination: "hold" });
       }
     } else {
       const ids = set.map((c) => c.instanceId);

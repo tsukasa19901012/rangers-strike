@@ -31,11 +31,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-059::roiyarusutoretofurashu",
+          "keyword": "xg1::XG1-059::royal_straight_flush",
           "duration": "turn"
         }
       ]

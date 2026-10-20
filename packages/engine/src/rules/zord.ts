@@ -211,6 +211,28 @@ function discardThresholdFusionMaterial(
   return null;
 }
 
+const NAMED_OR_FUSION_RE = /^自軍[「｢]([^」｣]+)[」｣]1体または自軍合体ユニットを捨札にする$/;
+
+function namedOrFusionMaterial(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+  rushingInstanceId: string,
+): FusionMaterialFound[] | null {
+  const m = getDefinition(definitions, rushingCardId)?.rushAdditionalCondition?.text?.match(NAMED_OR_FUSION_RE);
+  if (!m) return null;
+  const name = canonicalCardName(m[1]!);
+  for (const zone of ZORD_MATERIAL_ZONES) {
+    for (let index = 0; index < player[zone].length; index++) {
+      const card = player[zone][index]!;
+      if (card.instanceId === rushingInstanceId) continue;
+      const def = getDefinition(definitions, card.cardId);
+      if (def?.type === "unit" && canonicalCardName(def.name) === name) return [{ zone, index, card }];
+    }
+  }
+  return null;
+}
+
 /** ゾードカードに列挙された全合体パートナー（例: RS-050 → 051/052/053）。 */
 export function collectRequiredFusionMaterials(
   player: PlayerState,
@@ -222,6 +244,9 @@ export function collectRequiredFusionMaterials(
   if (threshold !== undefined) return threshold;
   const plain = collectRequiredFusionMaterialsWith(player, definitions, rushingCardId, rushingInstanceId, null);
   if (plain) return plain;
+  // 「自軍「X」1体または自軍合体ユニットを捨札にする」（XG1-039 テンクウシンケンオー。atwiki/page-1589）— 合体の素材のかわりに「X」1体。
+  const namedOr = namedOrFusionMaterial(player, definitions, rushingCardId, rushingInstanceId);
+  if (namedOr) return namedOr;
   // 1枚で複数の合体ユニットとしてつかえるカード（XG3-006「ブルースローワー＋イエローアーマー＋ピンクエイダー」。
   // atwiki/page-388 Q1）で、その名前の枠をまとめて満たす。
   const slots = resolveZordFusionPartnerSlots(rushingCardId);
@@ -475,6 +500,11 @@ function singleNamedPowerPartner(text: string | undefined): string | undefined {
   return m?.[1];
 }
 
+function singleFeaturedPowerPartner(text: string | undefined): string | undefined {
+  const m = /^特徴[「｢]([^」｣]+)[」｣]を持つ自軍Sユニット(?:を1体|1体を)パワーゾーンに送る。?$/.exec((text ?? "").normalize("NFKC").trim());
+  return m?.[1];
+}
+
 export function isValidZordUpMaterial(
   definitions: Record<string, CardDefinition>,
   rushingCardId: string,
@@ -514,9 +544,12 @@ export function isValidZordUpMaterial(
         // 「ホールド状態の自軍「X」1体」はホールド状態のものだけ（XG5-049 atwiki/page-2271）。
         (!/^ホールド状態の/.test((condition.text ?? "").normalize("NFKC")) || card.commandHeld === true) &&
         // 「自軍「A」、または自軍「B」1体を捨札にする」はどちらの名前でもよい（RS-655・RS-656 atwiki/page-1528・1474）。
-        namedUnitPartnerNames(condition).some((name) =>
-          // RS-602【汚染された水】で変わったカード名で判定する。
-          normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(name)),
+        namedUnitPartnerNames(condition).some(
+          (name) =>
+            // RS-602【汚染された水】で変わったカード名で判定する。
+            normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(name)) ||
+            // 「※これは「X」としてつかえる」（XG1-067 等。atwiki/page-1668 Q1「全ての場にあるとき常に有効」）。
+            fusionMaterialAliasNames(def.text).some((n) => normalizeName(n).includes(normalizeName(name))),
         )
       );
     case "discard_feature_unit": {
@@ -551,6 +584,9 @@ export function isValidZordUpMaterial(
             normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(named))
           );
         }
+        // 「特徴「X」を持つ自軍Sユニットを1体パワーゾーンに送る」はその特徴を持つ S ユニットだけ（XG1-018 サイレンダーPM atwiki/page-1585）。
+        const featured = condition.conditionId === "send_s_unit_to_power" ? singleFeaturedPowerPartner(condition.text) : undefined;
+        if (featured) return isValidPowerMaterial(definitions, card, rushingInstanceId) && zordMaterialFeatures(def, card).includes(featured);
         return isValidPowerMaterial(definitions, card, rushingInstanceId);
       }
       return false;
@@ -656,6 +692,14 @@ export function applyZordMaterial(
   const resolved = resolveZordUpCondition(definitions, rushingCardId);
   const conditionId = resolved?.conditionId ?? getZordCondition(rushingCardId);
   if (!conditionId) return null;
+
+  if (destination === "hold") {
+    // XG1-013【巨大要塞】「自軍Sユニットを1体捨札にするかわりに、自軍Sユニットを1体ホールドする」（rules/xg1/xg1Fields.ts）。
+    if (conditionId !== "send_s_unit_to_discard" || (material.zone !== "rush" && material.zone !== "battle") || material.card.commandHeld) return null;
+    const cards = [...player[material.zone]];
+    cards[material.index] = { ...material.card, commandHeld: true };
+    return { ...player, [material.zone]: cards };
+  }
 
   const [, zoneCards] = removeAt(player[material.zone], material.index);
   let nextPlayer: PlayerState = { ...player, [material.zone]: zoneCards };

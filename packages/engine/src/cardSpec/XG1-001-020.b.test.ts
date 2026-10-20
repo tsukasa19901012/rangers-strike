@@ -83,14 +83,14 @@ describe("XG1-008 レッドフラッシュ", () => {
     expect(spOf(nc(), "player1", "XG1-008:rf")).toBe(1);
   });
 
-  it.fails("XG1-008: 【レッドバル】NC — 自軍パワーゾーンのユニットカードから1枚選び手札に戻せる（オペレーションのカードは選べない。任意）（既知の不具合: CARD-XG1-008 【レッドバル】の選択が開かない）（出典: atwiki/page-1609「自軍パワーゾーンからユニットカードを1枚選び手札に戻してもよい」）", () => {
+  it("XG1-008: 【レッドバル】NC — 自軍パワーゾーンのユニットカードから1枚選び手札に戻せる（オペレーションのカードは選べない。任意）（既知の不具合: CARD-XG1-008 【レッドバル】の選択が開かない）（出典: atwiki/page-1609「自軍パワーゾーンからユニットカードを1枚選び手札に戻してもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG1-008");
     expect(choiceIds(s)).toEqual(["SPEC-C2:pw"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-008: 戻すと、戻したカードと同じ必要パワーの数字（2）の敵軍 S ユニット（エリアを問わない。M・数字の違うユニットは対象外）から1体を選ぶ（見送れない）（既知の不具合: CARD-XG1-008）（出典: atwiki/page-1609「同じ必要パワーの数字を持つ敵軍Sユニットを1体選び」・カード評価「除去効果は強制的に発動する」）", () => {
+  it("XG1-008: 戻すと、戻したカードと同じ必要パワーの数字（2）の敵軍 S ユニット（エリアを問わない。M・数字の違うユニットは対象外）から1体を選ぶ（見送れない）（既知の不具合: CARD-XG1-008）（出典: atwiki/page-1609「同じ必要パワーの数字を持つ敵軍Sユニットを1体選び」・カード評価「除去効果は強制的に発動する」）", () => {
     const s = pick(nc(), "SPEC-C2:pw");
     expect(zoneOf(s, "player1", "SPEC-C2:pw")).toBe("hand");
     expectChoiceFrom(s, "player1", "XG1-008");
@@ -98,7 +98,7 @@ describe("XG1-008 レッドフラッシュ", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG1-008: 選んだ敵軍ユニットは持ち主のパワーゾーンに送られる（既知の不具合: CARD-XG1-008）（出典: atwiki/page-1609「持ち主のパワーゾーンに送る」）", () => {
+  it("XG1-008: 選んだ敵軍ユニットは持ち主のパワーゾーンに送られる（既知の不具合: CARD-XG1-008）（出典: atwiki/page-1609「持ち主のパワーゾーンに送る」）", () => {
     const s = resolveAll(nc(), ["SPEC-C2:pw", "SPEC-C2:r"]);
     expect(zoneOf(s, "player2", "SPEC-C2:r")).toBe("power");
     expect(zoneOf(s, "player2", "SPEC-C2:b")).toBe("battle");
@@ -119,11 +119,11 @@ describe("XG1-009 レッドマスク", () => {
 
   const nc = () => ncAt("XG1-009:rm", 3, {}, { discard: [inst("SPEC-C2", "d1"), inst("TST-OP", "d2")], power: powerCards(2, "ep") }, EXTRA);
 
-  it.fails("XG1-009: 「SP1」— 3番目に並んで NC が成立すると SP1 になる（既知の不具合: CARD-XG1-009 NC が成立しても SP を持たずストライクできない）（出典: atwiki/page-1596「SP：！」「【マスキークラッシュ】SP1」）", () => {
+  it("XG1-009: 「SP1」— 3番目に並んで NC が成立すると SP1 になる（既知の不具合: CARD-XG1-009 NC が成立しても SP を持たずストライクできない）（出典: atwiki/page-1596「SP：！」「【マスキークラッシュ】SP1」）", () => {
     expect(spOf(nc(), "player1", "XG1-009:rm")).toBe(1);
   });
 
-  it.fails("XG1-009: NC — ストライクしてダメージを与えるとき、かわりに敵軍捨札のカードを1枚選び、持ち主のパワーゾーンにダメージ（ウラ向き）として置ける（パワーゾーンのカードはウラ返らない）（既知の不具合: CARD-XG1-009）（出典: atwiki/page-1596「かわりに敵軍捨札を1枚選び持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
+  it("XG1-009: NC — ストライクしてダメージを与えるとき、かわりに敵軍捨札のカードを1枚選び、持ち主のパワーゾーンにダメージ（ウラ向き）として置ける（パワーゾーンのカードはウラ返らない）（既知の不具合: CARD-XG1-009）（出典: atwiki/page-1596「かわりに敵軍捨札を1枚選び持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
     const s = resolveAll(strike(nc(), "XG1-009:rm"), ["TST-OP:d2"]);
     expect(zoneOf(s, "player2", "TST-OP:d2")).toBe("power");
     expect(isDamageCard(s, "player2", "TST-OP:d2")).toBe(true);
@@ -152,19 +152,19 @@ describe("XG1-010 レッドファルコン", () => {
     expect(spOf(nc(), "player1", "XG1-010:rf")).toBe(1);
   });
 
-  it.fails("XG1-010: 【ライブラスター】NC — カテゴリを1つ宣言するかを選べる（任意）（既知の不具合: CARD-XG1-010 カテゴリの宣言が開かない）（出典: atwiki/page-1599「カテゴリを1つ宣言してもよい」）", () => {
+  it("XG1-010: 【ライブラスター】NC — カテゴリを1つ宣言するかを選べる（任意）（既知の不具合: CARD-XG1-010 カテゴリの宣言が開かない）（出典: atwiki/page-1599「カテゴリを1つ宣言してもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG1-010");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-010: 宣言すると、宣言したカテゴリ（OT）を持つ S ユニット（自軍のユニットも含む）の中から相手が1体選ぶ（既知の不具合: CARD-XG1-010）（出典: atwiki/page-1599「宣言したカテゴリを持つSユニットを相手に1枚選ばせ」・カード評価「【ライブラスター】は自軍も選べる」）", () => {
+  it("XG1-010: 宣言すると、宣言したカテゴリ（OT）を持つ S ユニット（自軍のユニットも含む）の中から相手が1体選ぶ（既知の不具合: CARD-XG1-010）（出典: atwiki/page-1599「宣言したカテゴリを持つSユニットを相手に1枚選ばせ」・カード評価「【ライブラスター】は自軍も選べる」）", () => {
     const s = pick(nc(), "OT");
     expectChoiceFrom(s, "player2", "XG1-010");
     expect(choiceIds(s)).toEqual(["SPEC-OT-S:eb", "SPEC-OT-S:er", "SPEC-OT-S:own"]);
   });
 
-  it.fails("XG1-010: 相手が選んだユニットは持ち主のコマンドゾーンに（リリース状態で）置かれ、5枚で置けなければ捨札になる（既知の不具合: CARD-XG1-010）（出典: atwiki/page-1599「持ち主のコマンドゾーンに置く。置けなければ捨札にする」）", () => {
+  it("XG1-010: 相手が選んだユニットは持ち主のコマンドゾーンに（リリース状態で）置かれ、5枚で置けなければ捨札になる（既知の不具合: CARD-XG1-010）（出典: atwiki/page-1599「持ち主のコマンドゾーンに置く。置けなければ捨札にする」）", () => {
     const s = resolveAll(nc(), ["OT", "SPEC-OT-S:er"]);
     expect(zoneOf(s, "player2", "SPEC-OT-S:er")).toBe("command");
     expect(isHeldCard(s, "player2", "SPEC-OT-S:er")).toBe(false);
@@ -202,11 +202,11 @@ describe("XG1-011 巨大バッカスフンド", () => {
   const field = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
     p1Battle({ battle: [inst("XG1-011", "bf")], ...p1 }, p2, EXTRA);
 
-  it.fails("XG1-011: 【スペースメタルの魔剣】自軍パワーゾーンに OT のカードがオモテ向きであれば「SP1」になる（既知の不具合: CARD-XG1-011 SP を持たない）（出典: atwiki/page-1644「自軍ゾーンか敵軍ゾーンに、OTを持つカードがオモテ向きであれば、これは「SP1」になる」・R-ZONE-01）", () => {
+  it("XG1-011: 【スペースメタルの魔剣】自軍パワーゾーンに OT のカードがオモテ向きであれば「SP1」になる（既知の不具合: CARD-XG1-011 SP を持たない）（出典: atwiki/page-1644「自軍ゾーンか敵軍ゾーンに、OTを持つカードがオモテ向きであれば、これは「SP1」になる」・R-ZONE-01）", () => {
     expect(spOf(field({ power: [faceUp("TST-OP-OT", "ot")] }), "player1", "XG1-011:bf")).toBe(1);
   });
 
-  it.fails("XG1-011: 敵軍コマンドゾーンの OT のカードでも「SP1」になる（既知の不具合: CARD-XG1-011）（出典: atwiki/page-1644「自軍ゾーンか敵軍ゾーンに」・R-ZONE-01）", () => {
+  it("XG1-011: 敵軍コマンドゾーンの OT のカードでも「SP1」になる（既知の不具合: CARD-XG1-011）（出典: atwiki/page-1644「自軍ゾーンか敵軍ゾーンに」・R-ZONE-01）", () => {
     expect(spOf(field({}, { command: releasedCat("OT", 1) }), "player1", "XG1-011:bf")).toBe(1);
   });
 
@@ -228,11 +228,11 @@ describe("XG1-012 レッドパンチャー", () => {
 
   const field = (command = releasedCat("ET", 3)) => p1Battle({ battle: [inst("XG1-012", "rp")], command }, {}, EXTRA);
 
-  it.fails("XG1-012: ※ 自軍コマンドがすべてリリース状態なら「SP1」になる（既知の不具合: CARD-XG1-012 SP を持たない）（出典: atwiki/page-1615「※これは自軍コマンドがすべてリリース状態なら「SP1」になる」）", () => {
+  it("XG1-012: ※ 自軍コマンドがすべてリリース状態なら「SP1」になる（既知の不具合: CARD-XG1-012 SP を持たない）（出典: atwiki/page-1615「※これは自軍コマンドがすべてリリース状態なら「SP1」になる」）", () => {
     expect(spOf(field(), "player1", "XG1-012:rp")).toBe(1);
   });
 
-  it.fails("XG1-012: ※ 自軍コマンドが1つだけでも、それがリリース状態なら「SP1」（既知の不具合: CARD-XG1-012）（出典: atwiki/page-1615 コメント欄「はい、自軍コマンドがすべてリリース状態なのでSP1になります」）", () => {
+  it("XG1-012: ※ 自軍コマンドが1つだけでも、それがリリース状態なら「SP1」（既知の不具合: CARD-XG1-012）（出典: atwiki/page-1615 コメント欄「はい、自軍コマンドがすべてリリース状態なのでSP1になります」）", () => {
     expect(spOf(field(releasedCat("ET", 1)), "player1", "XG1-012:rp")).toBe(1);
   });
 
@@ -240,7 +240,7 @@ describe("XG1-012 レッドパンチャー", () => {
     expect(spOf(field([...releasedCat("ET", 2), ...heldN(1)]), "player1", "XG1-012:rp")).toBe(0);
   });
 
-  it.fails("XG1-012: 【ボクシングスタイル】自軍バトルフェイズ中、自軍バトルエリアにあれば、ET の自軍コマンドを3つホールドしてラッシュエリアに戻れる（既知の不具合: CARD-XG1-012 起動の手がない）（出典: atwiki/page-1615「ETを持つ自軍コマンドを3つホールドしてもよい。そうしたとき、これをラッシュエリアに戻す」・カード評価「コマンドをリリースする手段が有れば何度でもバトルエリアに出てストライクできる」）", () => {
+  it("XG1-012: 【ボクシングスタイル】自軍バトルフェイズ中、自軍バトルエリアにあれば、ET の自軍コマンドを3つホールドしてラッシュエリアに戻れる（既知の不具合: CARD-XG1-012 起動の手がない）（出典: atwiki/page-1615「ETを持つ自軍コマンドを3つホールドしてもよい。そうしたとき、これをラッシュエリアに戻す」・カード評価「コマンドをリリースする手段が有れば何度でもバトルエリアに出てストライクできる」）", () => {
     const s0 = field();
     expect(canActivate(s0, "XG1-012:rp")).toBe(true);
     const s = resolveAll(activate(s0, "XG1-012:rp"));
@@ -277,7 +277,7 @@ describe("XG1-013 キングピラミッダーPF", () => {
       EXTRA,
     );
 
-  it.fails("XG1-013: 【巨大要塞】自軍ラッシュエリアにあれば、L ユニットの追加条件の「自軍Sユニットを1体捨札にする」かわりに、自軍 S ユニットを1体ホールドしてラッシュできる（既知の不具合: CARD-XG1-013 置きかえの選び方がない）（出典: atwiki/page-1642「自軍Sユニットを1体捨札にするかわりに、自軍Sユニットを1体ホールドする」・カード評価「MAのユニットでなくても追加条件を置き換えることができる」）", () => {
+  it("XG1-013: 【巨大要塞】自軍ラッシュエリアにあれば、L ユニットの追加条件の「自軍Sユニットを1体捨札にする」かわりに、自軍 S ユニットを1体ホールドしてラッシュできる（既知の不具合: CARD-XG1-013 置きかえの選び方がない）（出典: atwiki/page-1642「自軍Sユニットを1体捨札にするかわりに、自軍Sユニットを1体ホールドする」・カード評価「MAのユニットでなくても追加条件を置き換えることができる」）", () => {
     const held = rushResults(board(true), "player1", "XG1-012:h").filter(
       (r) => zoneOf(r, "player1", "XG1-012:h") === "rush" && zoneOf(r, "player1", "TST-UNIT-0:s") === "rush" && isHeldCard(r, "player1", "TST-UNIT-0:s"),
     );
@@ -315,7 +315,7 @@ describe("XG1-014 キングレンジャー", () => {
       EXTRA,
     );
 
-  it.fails("XG1-014: 【キングスティック】自軍ラッシュフェイズ中に起動でき、ホールド状態の DA を持たない S ユニット（自軍・敵軍を問わない）から1体選ぶ（DA・M・リリース状態は対象外）（既知の不具合: CARD-XG1-014 起動の手がない）（出典: atwiki/page-1675「ホールド状態のDAを持たないSユニットを1体選び」・カード評価「自軍と敵軍問わずユニットをリリースする能力」）", () => {
+  it("XG1-014: 【キングスティック】自軍ラッシュフェイズ中に起動でき、ホールド状態の DA を持たない S ユニット（自軍・敵軍を問わない）から1体選ぶ（DA・M・リリース状態は対象外）（既知の不具合: CARD-XG1-014 起動の手がない）（出典: atwiki/page-1675「ホールド状態のDAを持たないSユニットを1体選び」・カード評価「自軍と敵軍問わずユニットをリリースする能力」）", () => {
     const s0 = rushBoard();
     expect(canActivate(s0, "XG1-014:kr")).toBe(true);
     const s = activate(s0, "XG1-014:kr");
@@ -323,13 +323,13 @@ describe("XG1-014 キングレンジャー", () => {
     expect(choiceIds(s)).toEqual(["SPEC-ET-S:et", "SPEC-OT-S:own", "XG1-003:wing"]);
   });
 
-  it.fails("XG1-014: 自軍コマンドを2つホールドすると、選んだユニットをリリースする（既知の不具合: CARD-XG1-014）（出典: atwiki/page-1675「自軍コマンドを2つ…ホールドしてもよい。そうしたとき、選んだユニットをリリースする」）", () => {
+  it("XG1-014: 自軍コマンドを2つホールドすると、選んだユニットをリリースする（既知の不具合: CARD-XG1-014）（出典: atwiki/page-1675「自軍コマンドを2つ…ホールドしてもよい。そうしたとき、選んだユニットをリリースする」）", () => {
     const s = resolveAll(activate(rushBoard(), "XG1-014:kr"), ["SPEC-ET-S:et"]);
     expect(isHeldCard(s, "player2", "SPEC-ET-S:et")).toBe(false);
     expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(2);
   });
 
-  it.fails("XG1-014: 選んだユニットがウイングを持つなら、自軍コマンドを4つホールドしてリリースする（既知の不具合: CARD-XG1-014）（出典: atwiki/page-1675「（選んだユニットがウイングを持つなら4つ）」）", () => {
+  it("XG1-014: 選んだユニットがウイングを持つなら、自軍コマンドを4つホールドしてリリースする（既知の不具合: CARD-XG1-014）（出典: atwiki/page-1675「（選んだユニットがウイングを持つなら4つ）」）", () => {
     const s = resolveAll(activate(rushBoard(), "XG1-014:kr"), ["XG1-003:wing"]);
     expect(isHeldCard(s, "player2", "XG1-003:wing")).toBe(false);
     expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(4);

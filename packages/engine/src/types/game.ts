@@ -172,6 +172,8 @@ export type PendingStrike = {
   damageApplied?: boolean;
   /** RS-184 マジパンチを使った（ストライクしたユニットは手札に戻った）。続けて同じストライクに使える。 */
   magiPunchApplied?: boolean;
+  /** XG1-009【マスキークラッシュ】のダメージの置きかえを選ぶ機会を出した（rules/xg1/xg1aEffects.ts）。 */
+  xg1StrikeReplaceOffered?: boolean;
 };
 
 export type DamagePaymentResume =
@@ -239,6 +241,8 @@ export type PendingBattle = {
   rm3TentrinaOffered?: boolean;
   /** XG7-055【神出鬼没の疾風】の選択を出した（rules/xg7/xg7cEffects.ts）。 */
   xg7AttackedOffered?: boolean;
+  /** XG1-084【人質と脅迫】・XG1-087【瞬間移動】の「アタックされたとき」の選択を出した（rules/xg1/xg1eEffects.ts）。 */
+  xg1eAttackedOffered?: boolean;
   /** RS-414【ディオネを守る壁】の選択を出したか。 */
   dioneWallOffered?: boolean;
   /** RS-583【災いを受け止める覚悟】の「代わりに選ばれたことにする」選択をこのアタックで既に出したか。 */
@@ -775,6 +779,20 @@ export type PendingEffectChoice = {
   };
   /** クロスギャザー XG5 の選択の続き（rules/xg5/xg5Types.ts）。 */
   xg5Meta?: import("../rules/xg5/xg5Types").Xg5ChoiceMeta;
+  /** クロスギャザー XG1 の選択の続き（rules/xg1/xg1Effects.ts）。 */
+  xg1Meta?: {
+    /** 選んだユニット・カード（続きの処理の対象）。 */
+    target?: string;
+    /** 対象の持ち主。 */
+    ownerId?: PlayerId;
+    /** 選べる数・数え上げた数。 */
+    count?: number;
+    /** まだ処理していない段（カードごとの文字列）。 */
+    steps?: string[];
+    /** 保留しているバトル（アタックの途中で開いた選択）。 */
+    battle?: PendingBattle;
+    wingAttackFromRush?: boolean;
+  };
   /** スペシャルメタルエディション RM-001〜RM-021 の選択の続き（rules/rm/rm1Effects.ts）。 */
   rm1Meta?: {
     /** RM-006: 選べる数（「メカ」「人型」の自軍ユニットの数）。 */
@@ -1083,8 +1101,8 @@ export type CommandPaymentContinuation =
       type: "rush";
       zordMaterialInstanceId?: string;
       zordMaterialInstanceIds?: string[];
-      zordMaterialDestination?: "command" | "discard";
-      zordMaterialDestinations?: Array<"command" | "discard">;
+      zordMaterialDestination?: ZordMaterialDestination;
+      zordMaterialDestinations?: ZordMaterialDestination[];
       zordMothershipHoldInstanceIds?: string[];
       zordExtraCommandHoldInstanceIds?: string[];
       /** RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニット（RushAction と同じ）。 */
@@ -1250,6 +1268,10 @@ export type GameState = {
   rk12ResumeOperation?: { playerId: PlayerId; instanceId: string; targetInstanceId?: string; extraInstanceId?: string };
   /** RK-251 の選択を済ませたオペレーション（同じ使用で2度は尋ねない）。 */
   rk12GorgomPassedOp?: string;
+  /** XG1-038【サカナマル】の選択の後で続ける相手の move_to_battle（core/applyAction.ts の後処理。rules/xg1/xg1bEffects.ts）。 */
+  xg1ResumeMove?: { playerId: PlayerId; instanceId: string; vehicleInstanceId?: string; rideOff?: boolean };
+  /** XG1-038【サカナマル】を尋ね終えた相手のユニット（続ける move_to_battle で2度は尋ねない）。 */
+  xg1SakanamaruDone?: string;
   /** RK-272【ライジングスプラッシュドラゴン】: NC の効果を無効にするかの答え（rules/rk/rk13UnitEffects.ts）。 */
   rk13NcNegation?: { instanceId: string; negate: boolean };
   /** RK-272: 無効にしなかった RC の効果を実行している（同じ RC で2度は尋ねない）。 */
@@ -1539,6 +1561,8 @@ export type TurnEndProgress = {
   rk16Queue?: string[];
   /** XG7-041・XG7-042 の「自分がターンを終えるとき」（rules/xg7/xg7Effects.ts）。 */
   xg7Queue?: string[];
+  /** XG1-052【ファイヤーストームアタック】・XG1-053 の撃破（rules/xg1/xg1cEffects.ts）。 */
+  xg1Queue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

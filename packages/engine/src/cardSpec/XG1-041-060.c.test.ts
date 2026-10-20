@@ -74,14 +74,14 @@ describe("XG1-055 マンティスロード", () => {
 
   const rushed = (rusher: string) => enemyRushes({ hand: [inst("XG1-055", "ml")], command: releasedCat("DA", 1) }, rusher, EXTRA);
 
-  it.fails("XG1-055: 【血に飢えた予言者】必要パワーに「＋」を持つ敵軍 S ユニットがラッシュされたとき、手札のこれを出すかを選べる（任意）（既知の不具合: CARD-XG1-055 反応の機会がない）（出典: atwiki/page-1572「…ラッシュされたとき、DAを持つ自軍コマンドを1つホールドしてからこれを自軍ラッシュエリアに出してもよい」）", () => {
+  it("XG1-055: 【血に飢えた予言者】必要パワーに「＋」を持つ敵軍 S ユニットがラッシュされたとき、手札のこれを出すかを選べる（任意）（既知の不具合: CARD-XG1-055 反応の機会がない）（出典: atwiki/page-1572「…ラッシュされたとき、DAを持つ自軍コマンドを1つホールドしてからこれを自軍ラッシュエリアに出してもよい」）", () => {
     const s = rushed("SPEC-PLUS:p");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XG1-055");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-055: 出すと、DA の自軍コマンドが1つホールドされ、これは自軍ラッシュエリアに出て、ラッシュされた敵軍ユニットは撃破される（既知の不具合: CARD-XG1-055）（出典: atwiki/page-1572「そうしたとき、ラッシュされた敵軍ユニットを撃破する」・カード評価「カウンターのように使える除去」）", () => {
+  it("XG1-055: 出すと、DA の自軍コマンドが1つホールドされ、これは自軍ラッシュエリアに出て、ラッシュされた敵軍ユニットは撃破される（既知の不具合: CARD-XG1-055）（出典: atwiki/page-1572「そうしたとき、ラッシュされた敵軍ユニットを撃破する」・カード評価「カウンターのように使える除去」）", () => {
     const s = resolveAll(rushed("SPEC-PLUS:p"), ["accept", "XG1-055:ml", "TST-OP-DA:cDA0"]);
     expect(isHeldCard(s, "player1", "TST-OP-DA:cDA0")).toBe(true);
     expect(zoneOf(s, "player1", "XG1-055:ml")).toBe("rush");
@@ -124,7 +124,7 @@ describe("XG1-056 水のエル", () => {
     expect(zoneOf(resolveAll(s, ["SPEC-MAS:mr"]), "player2", "SPEC-MAS:mr")).toBe("discard");
   });
 
-  it.fails("XG1-056: 候補は MA を持つ敵軍の S ユニットで、バトルエリアのものも選べ、M ユニットは選べない（既知の不具合: CARD-XG1-056 ラッシュエリアのユニットしか候補にならず、M ユニットも候補になる）（出典: atwiki/page-1573「カテゴリにMAを持つ敵軍Sユニット」にエリアの限定がない・カード評価「いるだけで厄介なMAのSユニットを撃破できる」）", () => {
+  it("XG1-056: 候補は MA を持つ敵軍の S ユニットで、バトルエリアのものも選べ、M ユニットは選べない（既知の不具合: CARD-XG1-056 ラッシュエリアのユニットしか候補にならず、M ユニットも候補になる）（出典: atwiki/page-1573「カテゴリにMAを持つ敵軍Sユニット」にエリアの限定がない・カード評価「いるだけで厄介なMAのSユニットを撃破できる」）", () => {
     expect([...choiceIds(rushed())].sort()).toEqual(["SPEC-MAS:m", "SPEC-MAS:mr"]);
   });
 });
@@ -143,7 +143,7 @@ describe("XG1-057 ブラックファング", () => {
   const ride = (enemyRush: CardInstance[]) =>
     mount(p1Battle({ rush: [inst("SPEC-VEHICLE", "v"), inst("SPEC-RCU", "u")] }, { rush: enemyRush }, EXTRA), "SPEC-RCU:u", "SPEC-VEHICLE:v");
 
-  it.fails("XG1-057: 【衝撃波】敵軍のこれがライドされている間、ライドしてバトルエリアに出た S ユニットはホールド状態になる（既知の不具合: CARD-XG1-057 ホールドされない）（出典: atwiki/page-1564「ライドしてバトルエリアに出たとき、ホールド状態になる」）", () => {
+  it("XG1-057: 【衝撃波】敵軍のこれがライドされている間、ライドしてバトルエリアに出た S ユニットはホールド状態になる（既知の不具合: CARD-XG1-057 ホールドされない）（出典: atwiki/page-1564「ライドしてバトルエリアに出たとき、ホールド状態になる」）", () => {
     const s = ride([inst("XG1-057", "bf"), { ...inst("TST-UNIT-0", "r"), mountedOnInstanceId: "XG1-057:bf" }]);
     expect(isHeldCard(s, "player1", "SPEC-RCU:u")).toBe(true);
   });
@@ -168,7 +168,7 @@ describe("XG1-058 ウルフアンデッド", () => {
     expectRarityIn("XG1-058", ["N"]);
   });
 
-  it.fails("XG1-058: ※ ライド中は BP+1000（3500）（既知の不具合: CARD-XG1-058 BP2500 のまま）（出典: atwiki/page-1565「※これはライド中、BP+1000される」）", () => {
+  it("XG1-058: ※ ライド中は BP+1000（3500）（既知の不具合: CARD-XG1-058 BP2500 のまま）（出典: atwiki/page-1565「※これはライド中、BP+1000される」）", () => {
     const s = p1Battle({ rush: [inst("SPEC-VEHICLE", "v"), { ...inst("XG1-058", "w"), mountedOnInstanceId: "SPEC-VEHICLE:v" }] }, {}, EXTRA);
     expect(bpOf(s, "player1", "XG1-058:w")).toBe(3500);
   });
@@ -180,7 +180,7 @@ describe("XG1-058 ウルフアンデッド", () => {
   const rc = () =>
     rcAt("XG1-058:w", { rush: [heldUnit("SPEC-MAN", "own")] }, { rush: [heldUnit("SPEC-THING", "big"), inst("TST-UNIT-0", "rel")], battle: [heldUnit("SPEC-MAN", "em")] }, EXTRA);
 
-  it.fails("XG1-058: 【ワーウルフ化】RC — ホールド状態の S ユニット（自軍・敵軍、エリアを問わない）を選ぶ選択が開く（リリース状態は選べない。任意）（既知の不具合: CARD-XG1-058 選択が開かない）（出典: atwiki/page-1565「ホールド状態のSユニットを2体選んでもよい」・カード評価「エリア、自軍か敵軍かを問わない」）", () => {
+  it("XG1-058: 【ワーウルフ化】RC — ホールド状態の S ユニット（自軍・敵軍、エリアを問わない）を選ぶ選択が開く（リリース状態は選べない。任意）（既知の不具合: CARD-XG1-058 選択が開かない）（出典: atwiki/page-1565「ホールド状態のSユニットを2体選んでもよい」・カード評価「エリア、自軍か敵軍かを問わない」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "XG1-058");
     expect(choiceIds(s)).not.toContain("TST-UNIT-0:rel");
@@ -189,7 +189,7 @@ describe("XG1-058 ウルフアンデッド", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-058: 選んだ2体（「男」の敵軍ユニットと BP6000 の敵軍ユニット）でバトルさせ、負けたほうが撃破される（既知の不具合: CARD-XG1-058）（出典: atwiki/page-1565「選んだ2体でバトルさせる。ただし、特徴「男」を持つユニットを必ず1体選ぶこと」）", () => {
+  it("XG1-058: 選んだ2体（「男」の敵軍ユニットと BP6000 の敵軍ユニット）でバトルさせ、負けたほうが撃破される（既知の不具合: CARD-XG1-058）（出典: atwiki/page-1565「選んだ2体でバトルさせる。ただし、特徴「男」を持つユニットを必ず1体選ぶこと」）", () => {
     const s = resolveAll(rc(), ["SPEC-MAN:em", "SPEC-THING:big"]);
     expect(zoneOf(s, "player2", "SPEC-MAN:em")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-THING:big")).toBe("rush");
@@ -221,33 +221,40 @@ describe("XG1-059 仮面ライダーブレイドKF", () => {
       { type: "move_to_battle", playerId: "player1", instanceId: "XG1-059:kf" },
     );
 
-  it.fails("XG1-059: 【ロイヤルストレートフラッシュ】自軍ターンにバトルエリアに出たとき、手札を5枚見せるかを選べる（任意）（既知の不具合: CARD-XG1-059 選択が開かない）（出典: atwiki/page-1546「自分の手札を5枚選び、相手に見せてもよい」）", () => {
+  it("XG1-059: 【ロイヤルストレートフラッシュ】自軍ターンにバトルエリアに出たとき、手札を5枚見せるかを選べる（任意）（既知の不具合: CARD-XG1-059 選択が開かない）（出典: atwiki/page-1546「自分の手札を5枚選び、相手に見せてもよい」）", () => {
     const s = entered();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XG1-059");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-059: 見せたとき、本来の BP8000 以下の敵軍ユニットを1体撃破できる（BP9000 は選べない）（既知の不具合: CARD-XG1-059）（出典: atwiki/page-1546「本来のBPが8000以下の敵軍ユニットを1体選び撃破できる」）", () => {
-    const s = resolveAll(entered(), ["accept", "TST-OP:a", "TST-OP:b", "TST-OP:c", "TST-OP:d", "TST-OP:e", "SPEC-L8:l8"]);
+  it("XG1-059: 見せたとき、本来の BP8000 以下の敵軍ユニットを1体撃破できる（BP9000 は選べない）（既知の不具合: CARD-XG1-059）（出典: atwiki/page-1546「本来のBPが8000以下の敵軍ユニットを1体選び撃破できる」）", () => {
+    // 撃破した L8 も敵軍捨札のカードとして除外の候補になるので、除外の選択では TST-OP:ed を先に選ぶ（XG1-judgments.md）。
+    const s = resolveAll(entered(), ["accept", "TST-OP:a", "TST-OP:b", "TST-OP:c", "TST-OP:d", "TST-OP:e", "TST-OP:ed", "SPEC-L8:l8"]);
     expect(zoneOf(s, "player2", "SPEC-L8:l8")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-L9:l9")).toBe("battle");
   });
 
-  it.fails("XG1-059: 見せた5枚のカテゴリがすべて同じなら、敵軍捨札のカードを1枚ゲームから除外できる（既知の不具合: CARD-XG1-059）（出典: atwiki/page-1546「見せたカードのカテゴリがすべて同じなら、敵軍捨札からカードを1枚選び、ゲームから除外してもよい」）", () => {
-    const s = resolveAll(entered(), ["accept", "TST-OP:a", "TST-OP:b", "TST-OP:c", "TST-OP:d", "TST-OP:e", "SPEC-L8:l8", "TST-OP:ed"]);
+  it("XG1-059: 見せた5枚のカテゴリがすべて同じなら、敵軍捨札のカードを1枚ゲームから除外できる（既知の不具合: CARD-XG1-059）（出典: atwiki/page-1546「見せたカードのカテゴリがすべて同じなら、敵軍捨札からカードを1枚選び、ゲームから除外してもよい」）", () => {
+    // 撃破した L8 も敵軍捨札のカードとして除外の候補になるので、除外の選択では TST-OP:ed を先に選ぶ（XG1-judgments.md）。
+    const s = resolveAll(entered(), ["accept", "TST-OP:a", "TST-OP:b", "TST-OP:c", "TST-OP:d", "TST-OP:e", "TST-OP:ed", "SPEC-L8:l8"]);
     expect(zoneOf(s, "player2", "TST-OP:ed")).toBeNull();
   });
 
-  it.fails("XG1-059: Q&A — 除外するカードに、敵軍捨札の「アタックされる以外では相手に選ばれない」仮面ライダーザビーRF（RK-057）は選べない（既知の不具合: CARD-XG1-059）（出典: atwiki/page-1546 Q1「敵軍プレイヤーは「RK-057 仮面ライダーザビーRF」を選ぶことは出来ません」）", () => {
-    let s = resolveAll(entered(), ["accept", "TST-OP:a", "TST-OP:b", "TST-OP:c", "TST-OP:d", "TST-OP:e", "SPEC-L8:l8"]);
-    for (let i = 0; i < 4 && s.pendingEffectChoice?.sourceCardId === "XG1-059" && !choiceIds(s).includes("TST-OP:ed"); i += 1) s = pick(s, choiceIds(s)[0]!);
+  it("XG1-059: Q&A — 除外するカードに、敵軍捨札の「アタックされる以外では相手に選ばれない」仮面ライダーザビーRF（RK-057）は選べない（既知の不具合: CARD-XG1-059）（出典: atwiki/page-1546 Q1「敵軍プレイヤーは「RK-057 仮面ライダーザビーRF」を選ぶことは出来ません」）", () => {
+    // resolveAll は除外の選択まで答えてしまうので、1つずつ選んで除外の選択の候補を見る（XG1-judgments.md）。
+    let s = pick(entered(), "accept");
+    for (let i = 0; i < 8 && s.pendingEffectChoice?.sourceCardId === "XG1-059" && !choiceIds(s).includes("TST-OP:ed"); i += 1) {
+      const ids = choiceIds(s);
+      s = pick(s, ids.includes("SPEC-L8:l8") ? "SPEC-L8:l8" : ids[0]!);
+    }
     expect(choiceIds(s)).toContain("TST-OP:ed");
     expect(choiceIds(s)).not.toContain("RK-057:zb");
   });
 
-  it.fails("XG1-059: Q&A — 見せたカードにマルチカテゴリ（WB／MA の仮面ライダーアマゾン XG1-041）が含まれていても、同じカテゴリ（WB）を含んでいれば「すべて同じ」として除外できる（既知の不具合: CARD-XG1-059）（出典: atwiki/page-1546 Q2「同じカテゴリを1つ以上含んでいれば、それは同じカテゴリのカードとして扱われます」）", () => {
+  it("XG1-059: Q&A — 見せたカードにマルチカテゴリ（WB／MA の仮面ライダーアマゾン XG1-041）が含まれていても、同じカテゴリ（WB）を含んでいれば「すべて同じ」として除外できる（既知の不具合: CARD-XG1-059）（出典: atwiki/page-1546 Q2「同じカテゴリを1つ以上含んでいれば、それは同じカテゴリのカードとして扱われます」）", () => {
     const h = [inst("TST-OP", "a"), inst("TST-OP", "b"), inst("TST-OP", "c"), inst("TST-OP", "d"), inst("XG1-041", "am")];
-    const s = resolveAll(entered(h), ["accept", "TST-OP:a", "TST-OP:b", "TST-OP:c", "TST-OP:d", "XG1-041:am", "SPEC-L8:l8", "TST-OP:ed"]);
+    // 撃破した L8 も敵軍捨札のカードとして除外の候補になるので、除外の選択では TST-OP:ed を先に選ぶ（XG1-judgments.md）。
+    const s = resolveAll(entered(h), ["accept", "TST-OP:a", "TST-OP:b", "TST-OP:c", "TST-OP:d", "XG1-041:am", "TST-OP:ed", "SPEC-L8:l8"]);
     expect(zoneOf(s, "player2", "TST-OP:ed")).toBeNull();
   });
 });
@@ -279,13 +286,13 @@ describe("XG1-060 コーカサスビートルアンデッド", () => {
     return stepPrefer(s, "player1", ["return_all_battle_to_rush"]) ?? s;
   };
 
-  it.fails("XG1-060: 【カード強奪】バトルエリアからラッシュエリアに戻るとき、相手の手札を見ないで1枚選ぶかを選べる（任意）（既知の不具合: CARD-XG1-060 選択が開かない）（出典: atwiki/page-1580「これがバトルエリアからラッシュエリアに戻るとき、相手の手札を見ないで1枚選んでもよい」）", () => {
+  it("XG1-060: 【カード強奪】バトルエリアからラッシュエリアに戻るとき、相手の手札を見ないで1枚選ぶかを選べる（任意）（既知の不具合: CARD-XG1-060 選択が開かない）（出典: atwiki/page-1580「これがバトルエリアからラッシュエリアに戻るとき、相手の手札を見ないで1枚選んでもよい」）", () => {
     const s = returned();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XG1-060");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-060: 選んだカードは持ち主の山札に戻ってシャッフルされ、相手は1枚ドローする（手札の枚数は変わらない）（既知の不具合: CARD-XG1-060）（出典: atwiki/page-1580「選んだカードを持ち主の山札に戻してシャッフルした後で、相手は1枚ドローする」）", () => {
+  it("XG1-060: 選んだカードは持ち主の山札に戻ってシャッフルされ、相手は1枚ドローする（手札の枚数は変わらない）（既知の不具合: CARD-XG1-060）（出典: atwiki/page-1580「選んだカードを持ち主の山札に戻してシャッフルした後で、相手は1枚ドローする」）", () => {
     const s = resolveAll(returned(), ["accept", "TST-OP:h1"]);
     expect(s.players.player2.hand).toHaveLength(2);
     expect(s.players.player2.deck).toHaveLength(3);

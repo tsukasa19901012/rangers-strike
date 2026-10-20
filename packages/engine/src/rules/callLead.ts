@@ -1,6 +1,7 @@
 import type { Category } from "@rangers-strike/cards";
 import { set9AGrantsCallLead } from "./legend1/set9NamedEffectsA";
 import { adventGrantsCall } from "./rk/rk249Advent";
+import { xg1GrantsCallLead } from "./xg1/xg1Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
@@ -79,7 +80,9 @@ function fieldUnitHasCallLead(
     unitHasCallLeadKeyword(card.cardId, kind, category, player) ||
     set9AGrantsCallLead(player, definitions, card, kind, category) ||
     // RK-249 アドベント「このターン、選んだユニットは次の能力を得る⇒※コールWB」（rules/rk/rk249Advent.ts）。
-    adventGrantsCall(player, card, kind, category)
+    adventGrantsCall(player, card, kind, category) ||
+    // XG1-015 宇宙警察（OT の「警察」の S ユニットはコールOT。rules/xg1/xg1Fields.ts）。
+    xg1GrantsCallLead(player, definitions, card.cardId, kind, category)
   );
 }
 

@@ -38,11 +38,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-079::nomizu",
+          "keyword": "xg1::XG1-079::high_pressure",
           "duration": "turn"
         }
       ]

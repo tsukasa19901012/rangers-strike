@@ -65,7 +65,7 @@ describe("XG1-021 ブルーターボ", () => {
     expectRarityIn("XG1-021", ["N"]);
   });
 
-  it.fails("XG1-021: 【Jガン】敵軍ラッシュエリアのホールド状態のユニットにアタックできる（既知の不具合: CARD-XG1-021 ラッシュエリアのホールド状態のユニットがアタック先に出ない）（リリース状態のラッシュエリアのユニットにはできない）（出典: atwiki/page-1574「これは敵軍ラッシュエリアのホールド状態のユニットにアタックできる」・カード評価「ほぼウイング対策」）", () => {
+  it("XG1-021: 【Jガン】敵軍ラッシュエリアのホールド状態のユニットにアタックできる（既知の不具合: CARD-XG1-021 ラッシュエリアのホールド状態のユニットがアタック先に出ない）（リリース状態のラッシュエリアのユニットにはできない）（出典: atwiki/page-1574「これは敵軍ラッシュエリアのホールド状態のユニットにアタックできる」・カード評価「ほぼウイング対策」）", () => {
     const s = p1Battle({ battle: [inst("XG1-021", "bt")] }, { rush: [heldUnit("SPEC-E4000", "h"), inst("SPEC-E3500", "r")], battle: [inst("SPEC-E4000M", "b")] }, EXTRA);
     expect([...targetsOf(s, "XG1-021:bt")].sort()).toEqual(["SPEC-E4000:h", "SPEC-E4000M:b"]);
   });
@@ -88,7 +88,7 @@ describe("XG1-022 ピンクターボ", () => {
 
   const nc = (commands: number) => ncAt("XG1-022:pt", 2, {}, { command: fullCommand(commands), discard: [inst("TST-OP", "d1"), inst("SPEC-E4000", "d2")] }, EXTRA);
 
-  it.fails("XG1-022: 【Wステッキ】NC — 敵軍コマンドが5つなら、1枚ドローするかを選べ（任意）、ドローすれば手札が1枚増える（既知の不具合: CARD-XG1-022 ドローのかわりに敵軍コマンドを選ぶ選択が開く）（出典: atwiki/page-1575「敵軍コマンドが5つあれば、自分は1枚ドローしてもよい」）", () => {
+  it("XG1-022: 【Wステッキ】NC — 敵軍コマンドが5つなら、1枚ドローするかを選べ（任意）、ドローすれば手札が1枚増える（既知の不具合: CARD-XG1-022 ドローのかわりに敵軍コマンドを選ぶ選択が開く）（出典: atwiki/page-1575「敵軍コマンドが5つあれば、自分は1枚ドローしてもよい」）", () => {
     const s0 = nc(5);
     expectChoiceFrom(s0, "player1", "XG1-022");
     expect(canSkip(s0)).toBe(true);
@@ -98,14 +98,14 @@ describe("XG1-022 ピンクターボ", () => {
     expect(s.players.player1.deck).toHaveLength(4);
   });
 
-  it.fails("XG1-022: 敵軍コマンドが4つ以下なら、敵軍捨札のカードから1枚選べる（任意）（既知の不具合: CARD-XG1-022 敵軍コマンドの選択が開く）（出典: atwiki/page-1575「敵軍コマンドが4つ以下なら、敵軍捨札からカードを1枚選び…置いてもよい」）", () => {
+  it("XG1-022: 敵軍コマンドが4つ以下なら、敵軍捨札のカードから1枚選べる（任意）（既知の不具合: CARD-XG1-022 敵軍コマンドの選択が開く）（出典: atwiki/page-1575「敵軍コマンドが4つ以下なら、敵軍捨札からカードを1枚選び…置いてもよい」）", () => {
     const s = nc(3);
     expectChoiceFrom(s, "player1", "XG1-022");
     expect(choiceIds(s)).toEqual(["SPEC-E4000:d2", "TST-OP:d1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-022: 選んだ敵軍捨札のカードは持ち主のコマンドゾーンにホールド状態で置かれる（ドローはしない）（既知の不具合: CARD-XG1-022）（出典: atwiki/page-1575「持ち主のコマンドゾーンにホールド状態で置いてもよい」・カード評価「捨札に送られたマルチカテゴリをコマンドに送ってパワー加速」）", () => {
+  it("XG1-022: 選んだ敵軍捨札のカードは持ち主のコマンドゾーンにホールド状態で置かれる（ドローはしない）（既知の不具合: CARD-XG1-022）（出典: atwiki/page-1575「持ち主のコマンドゾーンにホールド状態で置いてもよい」・カード評価「捨札に送られたマルチカテゴリをコマンドに送ってパワー加速」）", () => {
     const s = resolveAll(pick(nc(3), "SPEC-E4000:d2"));
     expect(zoneOf(s, "player2", "SPEC-E4000:d2")).toBe("command");
     expect(isHeldCard(s, "player2", "SPEC-E4000:d2")).toBe(true);
@@ -131,20 +131,20 @@ describe("XG1-023 レッドターボ", () => {
     expect(spOf(nc(), "player1", "XG1-023:rt")).toBe(1);
   });
 
-  it.fails("XG1-023: 【GTソード】NC — 敵軍バトルエリアの BP4000 以上の S ユニットから1体選ぶ（ラッシュエリア・BP3500・M は対象外。見送れない）（既知の不具合: CARD-XG1-023 【GTソード】の選択が開かない）（出典: atwiki/page-1660「敵軍バトルエリアからBP4000以上のSユニットを1体選び」）", () => {
+  it("XG1-023: 【GTソード】NC — 敵軍バトルエリアの BP4000 以上の S ユニットから1体選ぶ（ラッシュエリア・BP3500・M は対象外。見送れない）（既知の不具合: CARD-XG1-023 【GTソード】の選択が開かない）（出典: atwiki/page-1660「敵軍バトルエリアからBP4000以上のSユニットを1体選び」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG1-023");
     expect(choiceIds(s)).toEqual(["SPEC-E4000:a"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG1-023: 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（既知の不具合: CARD-XG1-023）（出典: atwiki/page-1660「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("XG1-023: 選んだユニットは持ち主のコマンドゾーンにホールド状態で置かれる（既知の不具合: CARD-XG1-023）（出典: atwiki/page-1660「持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = resolveAll(nc(), ["SPEC-E4000:a"]);
     expect(zoneOf(s, "player2", "SPEC-E4000:a")).toBe("command");
     expect(isHeldCard(s, "player2", "SPEC-E4000:a")).toBe(true);
   });
 
-  it.fails("XG1-023: 敵軍コマンドゾーンが5枚で置けなければ、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（既知の不具合: CARD-XG1-023）（出典: atwiki/page-1660「置けなければ、持ち主のパワーゾーンにダメージにして置く」・カード評価「ダメージを狙うには相手のコマンドを増やしておく必要がある」）", () => {
+  it("XG1-023: 敵軍コマンドゾーンが5枚で置けなければ、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（既知の不具合: CARD-XG1-023）（出典: atwiki/page-1660「置けなければ、持ち主のパワーゾーンにダメージにして置く」・カード評価「ダメージを狙うには相手のコマンドを増やしておく必要がある」）", () => {
     const s = resolveAll(nc({ command: fullCommand(5) }), ["SPEC-E4000:a"]);
     expect(zoneOf(s, "player2", "SPEC-E4000:a")).toBe("power");
     expect(isDamageCard(s, "player2", "SPEC-E4000:a")).toBe(true);
@@ -193,7 +193,7 @@ describe("XG1-024 イエローターボ", () => {
     expect(choiceIds(s)).not.toContain("TST-OP:r");
   });
 
-  it.fails("XG1-024: 【Bボーガン】の候補はホールド状態の「カード」すべて（ユニットに限らずオペレーションも選べる。リリース状態は選べない）（既知の不具合: CARD-XG1-024 ホールド状態のユニットしか候補にならない）（出典: atwiki/page-1576「ホールド状態のカードを1枚選び」）", () => {
+  it("XG1-024: 【Bボーガン】の候補はホールド状態の「カード」すべて（ユニットに限らずオペレーションも選べる。リリース状態は選べない）（既知の不具合: CARD-XG1-024 ホールド状態のユニットしか候補にならない）（出典: atwiki/page-1576「ホールド状態のカードを1枚選び」）", () => {
     expect([...choiceIds(nc())].sort()).toEqual(["SPEC-E4000:h2", "TST-OP:h1"]);
   });
 
@@ -202,7 +202,7 @@ describe("XG1-024 イエローターボ", () => {
     expect(zoneOf(s, "player2", "SPEC-E4000:h2")).toBe("hand");
   });
 
-  it.fails("XG1-024: 選んだカードは、手札に戻すかわりに持ち主のパワーゾーンに送ることも選べる（既知の不具合: CARD-XG1-024 送り先を選べず必ず手札に戻る）（出典: atwiki/page-1576「持ち主のパワーゾーンに送るか、持ち主の手札に戻してもよい」・カード評価「パワー送るか手札に戻すか選択することができる」）", () => {
+  it("XG1-024: 選んだカードは、手札に戻すかわりに持ち主のパワーゾーンに送ることも選べる（既知の不具合: CARD-XG1-024 送り先を選べず必ず手札に戻る）（出典: atwiki/page-1576「持ち主のパワーゾーンに送るか、持ち主の手札に戻してもよい」・カード評価「パワー送るか手札に戻すか選択することができる」）", () => {
     const s = resolveAll(nc(), ["SPEC-E4000:h2", "power", "to_power", "power_zone"]);
     expect(zoneOf(s, "player2", "SPEC-E4000:h2")).toBe("power");
   });
@@ -256,7 +256,7 @@ describe("XG1-026 ヤミマル", () => {
     expect(damageOf(settle(r.state), "player1")).toBe(4);
   });
 
-  it.fails("XG1-026: 【ヤミオノ】自軍ダメージが3点以下なら「SP1」を得る（既知の不具合: CARD-XG1-026 SP を持たない）（出典: atwiki/page-1676「自軍ダメージが3点以下なら、これは次の能力を得る⇒「SP1」」・コメント欄「自軍ダメージが3点以下なら常時SP1ですよ」）", () => {
+  it("XG1-026: 【ヤミオノ】自軍ダメージが3点以下なら「SP1」を得る（既知の不具合: CARD-XG1-026 SP を持たない）（出典: atwiki/page-1676「自軍ダメージが3点以下なら、これは次の能力を得る⇒「SP1」」・コメント欄「自軍ダメージが3点以下なら常時SP1ですよ」）", () => {
     expect(spOf(p1Battle({ battle: [inst("XG1-026", "ym")], ...damaged(3) }, {}, EXTRA), "player1", "XG1-026:ym")).toBe(1);
   });
 

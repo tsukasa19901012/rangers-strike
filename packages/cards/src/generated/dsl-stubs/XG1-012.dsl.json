@@ -26,13 +26,13 @@
       "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは自軍コマンドがすべてリリース状態なら「SP1」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG1-012::korehakomandogas",
+          "keyword": "xg1::XG1-012::all_released_sp1",
           "duration": "permanent"
         }
       ]
@@ -48,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-012::bokushingusutairu",
+          "keyword": "xg1::XG1-012::boxing_style",
           "duration": "permanent"
         }
       ]

@@ -13,11 +13,18 @@
  * 重ねたあとのユニットは、RS9-605-626.c と同じく stackedCards 付きのユニットとして盤面に置いて確かめる（フェイズをまたいで組み直すため）。
  */
 import { describe, expect, it } from "vitest";
-import type { CardInstance } from "../types/game";
+import type { CardInstance, GameState } from "../types/game";
 import {
   act,
   attack,
   attackedInEnemyTurn,
+  attackTargets,
+  canEnter,
+  canStrike,
+  canWing,
+  cardIn,
+  settle,
+  st,
   bpOf,
   canActivate,
   canSkip,
@@ -114,7 +121,7 @@ describe("XG1-035 兜折神", () => {
 
   gateTests("XG1-035", 4, inst("RS-674", "red"), inst("RS-675", "blue"), "特徴「レッド」を持つ自軍Sユニット", "atwiki/page-1591");
 
-  it.fails("XG1-035: ※ ラッシュしたとき、DA を持つ S ユニット（自軍・敵軍、ラッシュエリア・バトルエリアを問わない）を1体選び撃破する（見送れない）（既知の不具合: CARD-XG1-035 選択が開かず何も撃破されない）（出典: atwiki/page-1591「DAを持つSユニットを1体選び撃破する」）", () => {
+  it("XG1-035: ※ ラッシュしたとき、DA を持つ S ユニット（自軍・敵軍、ラッシュエリア・バトルエリアを問わない）を1体選び撃破する（見送れない）（既知の不具合: CARD-XG1-035 選択が開かず何も撃破されない）（出典: atwiki/page-1591「DAを持つSユニットを1体選び撃破する」）", () => {
     const s0 = rushPhaseBoard({ hand: [inst("XG1-035", "kb")], rush: [inst("RS-674", "red")], command: releasedCat("MA", 1), power: powerCards(4) }, { rush: [inst("SPEC-SDA", "d")], battle: [inst("SPEC-SDA", "db"), inst("SPEC-LDA", "l")] }, EXTRA);
     const r = rushFromHand(s0, "player1", "XG1-035:kb");
     expect(r.ok).toBe(true);
@@ -126,7 +133,7 @@ describe("XG1-035 兜折神", () => {
 
   samuraiArmorTests("XG1-035", "atwiki/page-1591");
 
-  it.fails("XG1-035: 【侍武装】を重ねたユニットは、敵軍ラッシュエリアのユニット（ホールド・リリースとも）にアタックできる（既知の不具合: CARD-XG1-035 付与された能力がなくバトルエリアにしかアタックできない）（出典: atwiki/page-1591「このカードに重ねたユニットは、次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる」）", () => {
+  it("XG1-035: 【侍武装】を重ねたユニットは、敵軍ラッシュエリアのユニット（ホールド・リリースとも）にアタックできる（既知の不具合: CARD-XG1-035 付与された能力がなくバトルエリアにしかアタックできない）（出典: atwiki/page-1591「このカードに重ねたユニットは、次の能力を得る⇒これは敵軍ラッシュエリアのユニットにアタックできる」）", () => {
     const s = p1Battle({ battle: [withStack(inst("RS-679", "sko"), "XG1-035", "kb")] }, { rush: [inst("TST-UNIT-0", "r"), heldUnit("TST-UNIT-0", "h")], battle: [inst("TST-UNIT-0", "b")] }, EXTRA);
     expect([...targetsOf(s, "RS-679:sko")].sort()).toEqual(["TST-UNIT-0:b", "TST-UNIT-0:h", "TST-UNIT-0:r"]);
   });
@@ -144,7 +151,7 @@ describe("XG1-036 舵木折神", () => {
 
   gateTests("XG1-036", 5, inst("RS-675", "blue"), inst("RS-674", "red"), "特徴「ブルー」を持つ自軍Sユニット", "atwiki/page-1592");
 
-  it.fails("XG1-036: ※ ラッシュしたとき、ホールド状態の S ユニットをすべて（自軍・敵軍とも）リリースする（M はそのまま）（既知の不具合: CARD-XG1-036 何もリリースされない）（出典: atwiki/page-1592「Sユニットをすべてリリースする」）", () => {
+  it("XG1-036: ※ ラッシュしたとき、ホールド状態の S ユニットをすべて（自軍・敵軍とも）リリースする（M はそのまま）（既知の不具合: CARD-XG1-036 何もリリースされない）（出典: atwiki/page-1592「Sユニットをすべてリリースする」）", () => {
     const s0 = rushPhaseBoard({ hand: [inst("XG1-036", "kj")], rush: [inst("RS-675", "blue"), heldUnit("TST-UNIT-0", "h"), heldUnit("RS-680", "hm")], command: releasedCat("MA", 1), power: powerCards(5) }, { rush: [heldUnit("TST-UNIT-0", "eh")] }, EXTRA);
     const r = rushFromHand(s0, "player1", "XG1-036:kj");
     expect(r.ok).toBe(true);
@@ -156,7 +163,7 @@ describe("XG1-036 舵木折神", () => {
 
   samuraiArmorTests("XG1-036", "atwiki/page-1592");
 
-  it.fails("XG1-036: 【侍武装】を重ねたユニットが自軍ターンにバトルエリアに出たとき、ホールドしてもよく、そうしたとき敵軍コマンドを1つ選び持ち主のパワーゾーンにダメージとして置く（既知の不具合: CARD-XG1-036 付与された能力がなく何も起きない）（出典: atwiki/page-1592「自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、敵軍コマンドを1つ選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("XG1-036: 【侍武装】を重ねたユニットが自軍ターンにバトルエリアに出たとき、ホールドしてもよく、そうしたとき敵軍コマンドを1つ選び持ち主のパワーゾーンにダメージとして置く（既知の不具合: CARD-XG1-036 付与された能力がなく何も起きない）（出典: atwiki/page-1592「自軍ターン中、これがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、敵軍コマンドを1つ選び、持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s0 = p1Battle({ rush: [withStack(inst("RS-679", "sko"), "XG1-036", "kj")] }, { command: [inst("TST-OP", "c1"), heldUnit("TST-OP", "c2")] }, EXTRA);
     const s = act(s0, { type: "move_to_battle", playerId: "player1", instanceId: "RS-679:sko" });
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
@@ -167,6 +174,51 @@ describe("XG1-036 舵木折神", () => {
     expect(isDamageCard(t, "player2", "TST-OP:c1")).toBe(true);
   });
 });
+
+/** XG1-037 用の ※ウイング の共通テスト（RK1-001-021.helpers.ts wingTests の写し。撃破した敵軍ユニットの行き先だけ【虚空からの一撃】に合わせる）。 */
+function kokuuWingTests(page: string) {
+  const id = "XG1-037";
+  const ENEMY = sUnit("SPEC-WING-ENEMY", { bp: 500, sp: undefined });
+  const board = (phase: GameState["phase"] = "battle") =>
+    st(
+      {
+        phase,
+        player1: { rush: [inst(id, "w")], deck: deckCards(3) },
+        player2: { battle: [inst("SPEC-WING-ENEMY", "e")], deck: deckCards(3, "e") },
+      },
+      [ENEMY],
+    );
+
+  it(`${id}: ※ウイング — 自軍バトルフェイズにラッシュエリアでホールドし、ラッシュエリアから敵軍ユニットにアタックできる（撃破したユニットは【虚空からの一撃】でダメージになる）（出典: ${page}、grnrngr/faq-card-9 ウイング A1・R-KW-WING-01）`, () => {
+    let s = board();
+    expect(canWing(s, `${id}:w`)).toBe(true);
+    s = act(s, { type: "hold_for_wing", playerId: "player1", instanceId: `${id}:w` });
+    expect(cardIn(s, "player1", `${id}:w`)?.commandHeld).toBe(true);
+    expect(attackTargets(s, `${id}:w`)).toContain("SPEC-WING-ENEMY:e");
+    s = settle(attack(s, `${id}:w`, "SPEC-WING-ENEMY:e"));
+    expect(zoneOf(s, "player2", "SPEC-WING-ENEMY:e")).toBe("power");
+    expect(zoneOf(s, "player1", `${id}:w`)).toBe("rush");
+  });
+
+  it(`${id}: ※ウイング — 発動したターンはバトルエリアに出られない（出典: grnrngr/faq-card-9 ウイング Q4「いいえ、できません」）`, () => {
+    const s = act(board(), { type: "hold_for_wing", playerId: "player1", instanceId: `${id}:w` });
+    expect(canEnter(s, `${id}:w`)).toBe(false);
+  });
+
+  it(`${id}: ※ウイング — 自軍バトルフェイズ以外（ラッシュフェイズ）には発動できない（出典: grnrngr/faq-card-9 ウイング Q3「いいえ、できません」）`, () => {
+    expect(canWing(board("rush"), `${id}:w`)).toBe(false);
+  });
+
+  it(`${id}: ※ウイング — ラッシュエリア以外（バトルエリア）からは発動できない（出典: grnrngr/faq-card-9 ウイング Q5）`, () => {
+    const s = st({ player1: { battle: [inst(id, "w")], deck: deckCards(3) }, player2: { battle: [inst("SPEC-WING-ENEMY", "e")] } }, [ENEMY]);
+    expect(canWing(s, `${id}:w`)).toBe(false);
+  });
+
+  it(`${id}: ※ウイング — ホールドしてもストライクはできない（出典: grnrngr/faq-card-9 ウイング Q6「いいえ、できません」）`, () => {
+    const s = act(board(), { type: "hold_for_wing", playerId: "player1", instanceId: `${id}:w` });
+    expect(canStrike(s, `${id}:w`)).toBe(false);
+  });
+}
 
 // ===========================================================================
 describe("XG1-037 ダイテンクウ", () => {
@@ -192,9 +244,11 @@ describe("XG1-037 ダイテンクウ", () => {
     expect(canStartRush(s, "player1", "XG1-037:dt")).toBe(false);
   });
 
-  wingTests("XG1-037", "atwiki/page-1641");
+  // 共通の wingTests は撃破した敵軍ユニットが捨札に置かれることを確かめるが、ダイテンクウは【虚空からの一撃】でウイングで撃破したユニットを
+  // パワーゾーンにダメージにして置くので、その1件だけ期待値を本文に合わせた写し（XG1-judgments.md「実装で決めたこと（XG1-021〜040）」）。
+  kokuuWingTests("atwiki/page-1641");
 
-  it.fails("XG1-037: 【虚空からの一撃】ウイングでアタックして撃破した敵軍ユニットのカードは、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（既知の不具合: CARD-XG1-037 捨札に置かれたまま）（出典: atwiki/page-1641「撃破されて捨札になったとき、そのユニットカードを持ち主のパワーゾーンにダメージにして置く」）", () => {
+  it("XG1-037: 【虚空からの一撃】ウイングでアタックして撃破した敵軍ユニットのカードは、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（既知の不具合: CARD-XG1-037 捨札に置かれたまま）（出典: atwiki/page-1641「撃破されて捨札になったとき、そのユニットカードを持ち主のパワーゾーンにダメージにして置く」）", () => {
     let s = p1Battle({ rush: [inst("XG1-037", "dt")] }, { battle: [inst("SPEC-N6", "e")] }, EXTRA);
     s = act(s, { type: "hold_for_wing", playerId: "player1", instanceId: "XG1-037:dt" });
     s = resolveAll(attack(s, "XG1-037:dt", "SPEC-N6:e"));
@@ -226,14 +280,14 @@ describe("XG1-038 シンケンゴールド", () => {
       { type: "move_to_battle", playerId: "player2", instanceId: enemy.instanceId },
     );
 
-  it.fails("XG1-038: 【サカナマル】相手が S ユニットをバトルエリアに出すために選んだとき、これを自軍バトルエリアに出すかを選べる（任意）（既知の不具合: CARD-XG1-038 反応の機会がない）（出典: atwiki/page-1634「相手が自分自身のSユニットをバトルエリアに出すために選んだとき、これを自軍バトルエリアに出してもよい」）", () => {
+  it("XG1-038: 【サカナマル】相手が S ユニットをバトルエリアに出すために選んだとき、これを自軍バトルエリアに出すかを選べる（任意）（既知の不具合: CARD-XG1-038 反応の機会がない）（出典: atwiki/page-1634「相手が自分自身のSユニットをバトルエリアに出すために選んだとき、これを自軍バトルエリアに出してもよい」）", () => {
     const s = enemyEnters(inst("RS-674", "e"));
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XG1-038");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-038: 出したとき 1枚ドローしてから手札を1枚捨て、捨てたカードと相手のユニットに同じ特徴が2つ以上あれば、そのユニットを持ち主のパワーゾーンにダメージにして置く（既知の不具合: CARD-XG1-038）（出典: atwiki/page-1634「同じ特徴が2つ以上あれば、そのユニットを持ち主のパワーゾーンにダメージにして置き」）", () => {
+  it("XG1-038: 出したとき 1枚ドローしてから手札を1枚捨て、捨てたカードと相手のユニットに同じ特徴が2つ以上あれば、そのユニットを持ち主のパワーゾーンにダメージにして置く（既知の不具合: CARD-XG1-038）（出典: atwiki/page-1634「同じ特徴が2つ以上あれば、そのユニットを持ち主のパワーゾーンにダメージにして置き」）", () => {
     // シンケンレッド（レッド／男／侍）に、シンケンブルー（ブルー／男／侍）を捨てる → 「男」「侍」の2つが同じ
     const s = resolveAll(enemyEnters(inst("RS-674", "e"), [inst("RS-675", "x")]), ["accept", "XG1-038:sg", "RS-675:x"]);
     expect(zoneOf(s, "player1", "XG1-038:sg")).toBe("battle");
@@ -243,14 +297,14 @@ describe("XG1-038 シンケンゴールド", () => {
     expect(isDamageCard(s, "player2", "RS-674:e")).toBe(true);
   });
 
-  it.fails("XG1-038: 同じ特徴が1つだけなら、相手のユニットを撃破する（既知の不具合: CARD-XG1-038）（出典: atwiki/page-1634「1つだけならそのユニットを撃破する」）", () => {
+  it("XG1-038: 同じ特徴が1つだけなら、相手のユニットを撃破する（既知の不具合: CARD-XG1-038）（出典: atwiki/page-1634「1つだけならそのユニットを撃破する」）", () => {
     // シンケンレッド（レッド／男／侍）に、シンケンピンク（ピンク／女／侍）を捨てる → 「侍」の1つだけ
     const s = resolveAll(enemyEnters(inst("RS-674", "e"), [inst("RS-676", "x")]), ["accept", "XG1-038:sg", "RS-676:x"]);
     expect(zoneOf(s, "player1", "XG1-038:sg")).toBe("battle");
     expect(zoneOf(s, "player2", "RS-674:e")).toBe("discard");
   });
 
-  it.fails("XG1-038: Q&A — 相手の選んだユニットが「アタックされる以外では相手に選ばれない」仮面ライダーカブトRF（RK-065）でも【サカナマル】を発動できる（既知の不具合: CARD-XG1-038）（出典: atwiki/page-1634 Q1「はい、できます。【サカナマル】の効果はユニットを選んで発動するのではなく、特定のタイミングに対して発動するからです」）", () => {
+  it("XG1-038: Q&A — 相手の選んだユニットが「アタックされる以外では相手に選ばれない」仮面ライダーカブトRF（RK-065）でも【サカナマル】を発動できる（既知の不具合: CARD-XG1-038）（出典: atwiki/page-1634 Q1「はい、できます。【サカナマル】の効果はユニットを選んで発動するのではなく、特定のタイミングに対して発動するからです」）", () => {
     const s = enemyEnters(inst("RK-065", "e"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XG1-038");
   });
@@ -282,13 +336,13 @@ describe("XG1-039 テンクウシンケンオー", () => {
     expect(zoneOf(r.state, "player1", "XG1-037:dt")).toBe("discard");
   });
 
-  it.fails("XG1-039: 合体 — ダイテンクウのかわりに兜折神・舵木折神・虎折神を素材にしてもラッシュできる（既知の不具合: CARD-XG1-039 かっこ内の素材の組ではラッシュの手がない）（出典: atwiki/page-1589「（または兜折神＋舵木折神＋虎折神）」）", () => {
+  it("XG1-039: 合体 — ダイテンクウのかわりに兜折神・舵木折神・虎折神を素材にしてもラッシュできる（既知の不具合: CARD-XG1-039 かっこ内の素材の組ではラッシュの手がない）（出典: atwiki/page-1589「（または兜折神＋舵木折神＋虎折神）」）", () => {
     const r = rushFromHand(rushBoard([...ORIGAMI5(), inst("XG1-035", "kb"), inst("XG1-036", "kj"), inst("XG1-040", "tr")]), "player1", "XG1-039:ts");
     expect(r.ok).toBe(true);
     expect(zoneOf(r.state, "player1", "XG1-039:ts")).toBe("rush");
   });
 
-  it.fails("XG1-039: 追加条件 — 自軍「シンケンオー」（RS-679）1体を捨札にしてもラッシュできる（既知の不具合: CARD-XG1-039 シンケンオー1体ではラッシュの手がない）（出典: atwiki/page-1589「追加条件：自軍「シンケンオー」1体または自軍合体ユニットを捨札にする」）", () => {
+  it("XG1-039: 追加条件 — 自軍「シンケンオー」（RS-679）1体を捨札にしてもラッシュできる（既知の不具合: CARD-XG1-039 シンケンオー1体ではラッシュの手がない）（出典: atwiki/page-1589「追加条件：自軍「シンケンオー」1体または自軍合体ユニットを捨札にする」）", () => {
     const results = rushResults(rushBoard([inst("RS-679", "sko")]), "player1", "XG1-039:ts");
     const ok = results.filter((r) => zoneOf(r, "player1", "XG1-039:ts") === "rush");
     expect(ok.length).toBeGreaterThan(0);
@@ -307,17 +361,17 @@ describe("XG1-039 テンクウシンケンオー", () => {
     expect(spOf(s, "player1", "XG1-039:ts")).toBe(2);
   });
 
-  it.fails("XG1-039: 【折神の結集】自軍捨札の兜折神の【侍武装】が働き、敵軍ラッシュエリアのユニットにアタックできる（既知の不具合: CARD-XG1-039 捨札の侍武装が働かない）（出典: atwiki/page-1589「自軍捨札にある効果名「侍武装」を持つユニットカードは、このユニットが重ねられているかのように効果を発動する」）", () => {
+  it("XG1-039: 【折神の結集】自軍捨札の兜折神の【侍武装】が働き、敵軍ラッシュエリアのユニットにアタックできる（既知の不具合: CARD-XG1-039 捨札の侍武装が働かない）（出典: atwiki/page-1589「自軍捨札にある効果名「侍武装」を持つユニットカードは、このユニットが重ねられているかのように効果を発動する」）", () => {
     const s = p1Battle({ battle: [inst("XG1-039", "ts")], discard: [inst("XG1-035", "kb")] }, { rush: [inst("TST-UNIT-0", "r")] }, EXTRA);
     expect(targetsOf(s, "XG1-039:ts")).toContain("TST-UNIT-0:r");
   });
 
-  it.fails("XG1-039: 【折神の結集】自軍捨札の虎折神の【侍武装】で、合体に必要なユニットの最大数（8体）×1000 の BP+8000 になる（既知の不具合: CARD-XG1-039）（出典: atwiki/page-1589「このユニットが重ねられているかのように」・atwiki/page-1593「このユニットの合体に必要なユニットの最大数を数えて、1体につきBP+1000」）", () => {
+  it("XG1-039: 【折神の結集】自軍捨札の虎折神の【侍武装】で、合体に必要なユニットの最大数（8体）×1000 の BP+8000 になる（既知の不具合: CARD-XG1-039）（出典: atwiki/page-1589「このユニットが重ねられているかのように」・atwiki/page-1593「このユニットの合体に必要なユニットの最大数を数えて、1体につきBP+1000」）", () => {
     const s = p1Battle({ battle: [inst("XG1-039", "ts")], discard: [inst("XG1-040", "tr")] }, {}, EXTRA);
     expect(bpOf(s, "player1", "XG1-039:ts")).toBe(28000);
   });
 
-  it.fails("XG1-039: 【折神の結集】同じカード名（虎折神2枚）の効果は重複しない（BP+8000 は1回だけ）（既知の不具合: CARD-XG1-039）（出典: atwiki/page-1589「ただし、同じカード名の効果は重複して発動しない」）", () => {
+  it("XG1-039: 【折神の結集】同じカード名（虎折神2枚）の効果は重複しない（BP+8000 は1回だけ）（既知の不具合: CARD-XG1-039）（出典: atwiki/page-1589「ただし、同じカード名の効果は重複して発動しない」）", () => {
     const s = p1Battle({ battle: [inst("XG1-039", "ts")], discard: [inst("XG1-040", "tr"), inst("XG1-040", "tr2")] }, {}, EXTRA);
     expect(bpOf(s, "player1", "XG1-039:ts")).toBe(28000);
   });
@@ -352,7 +406,7 @@ describe("XG1-040 虎折神", () => {
     expect(isHeldCard(s, "player1", "TST-OP-MA:m")).toBe(true);
   });
 
-  it.fails("XG1-040: ※ 敵軍の MA を持たないコマンドもリリースされる（「コマンドをすべて」）（既知の不具合: CARD-XG1-040 自軍のコマンドしかリリースされない）（出典: atwiki/page-1593「MAを持たないコマンドをすべてリリースする」）", () => {
+  it("XG1-040: ※ 敵軍の MA を持たないコマンドもリリースされる（「コマンドをすべて」）（既知の不具合: CARD-XG1-040 自軍のコマンドしかリリースされない）（出典: atwiki/page-1593「MAを持たないコマンドをすべてリリースする」）", () => {
     const s = rushed();
     expect(isHeldCard(s, "player2", "TST-OP:ew")).toBe(false);
     expect(isHeldCard(s, "player2", "TST-OP-MA:em")).toBe(true);
@@ -360,7 +414,7 @@ describe("XG1-040 虎折神", () => {
 
   samuraiArmorTests("XG1-040", "atwiki/page-1593");
 
-  it.fails("XG1-040: 【侍武装】を重ねたシンケンオー（合体に5体）は BP+5000 で 22000 になる（既知の不具合: CARD-XG1-040 BP が変わらない）（出典: atwiki/page-1593「このユニットの合体に必要なユニットの最大数を数えて、1体につきBP+1000される」）", () => {
+  it("XG1-040: 【侍武装】を重ねたシンケンオー（合体に5体）は BP+5000 で 22000 になる（既知の不具合: CARD-XG1-040 BP が変わらない）（出典: atwiki/page-1593「このユニットの合体に必要なユニットの最大数を数えて、1体につきBP+1000される」）", () => {
     const s = p1Battle({ battle: [withStack(inst("RS-679", "sko"), "XG1-040", "tr")] }, {}, EXTRA);
     expect(bpOf(s, "player1", "RS-679:sko")).toBe(22000);
   });

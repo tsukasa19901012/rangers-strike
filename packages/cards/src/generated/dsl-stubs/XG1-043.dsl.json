@@ -37,13 +37,13 @@
       "name": "砲撃",
       "text": "このユニットは、ホールド状態のとき敵軍ラッシュエリアのユニットにアタックできる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-043::gekie7a0b2",
+          "keyword": "xg1::XG1-043::hougeki",
           "duration": "permanent"
         }
       ]

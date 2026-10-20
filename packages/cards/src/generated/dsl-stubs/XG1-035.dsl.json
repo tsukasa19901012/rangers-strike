@@ -30,8 +30,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG1-035::koreworashushita",
-          "duration": "permanent"
+          "keyword": "xg1::XG1-035::on_rush",
+          "duration": "turn"
         }
       ]
     },

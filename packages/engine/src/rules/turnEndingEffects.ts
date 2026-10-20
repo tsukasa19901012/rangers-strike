@@ -1,3 +1,4 @@
+import { collectXg1TurnEndQueue, openXg1TurnEndEntry } from "./xg1/xg1cEffects";
 import { clearRk8SeizedFor, collectRk8TurnEndQueue, openRk8TurnEndEntry } from "./rk/rk8UnitEffects";
 import { collectRk10TurnEndQueue, openRk10TurnEndEntry } from "./rk/rk10UnitEffects";
 import { collectRk11TurnEndQueue, openRk11TurnEndEntry } from "./rk/rk11UnitEffects";
@@ -382,6 +383,14 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.xg7Queue!;
     progress = { ...progress, xg7Queue: rest };
     nextState = openXg7TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // XG1-052【ファイヤーストームアタック】（相手がターンを終えるとき）・XG1-053（自分がターンを終えるとき BP6000 以上なら撃破）（rules/xg1/xg1cEffects.ts）。
+  if (!progress.xg1Queue) progress = { ...progress, xg1Queue: collectXg1TurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.xg1Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.xg1Queue!;
+    progress = { ...progress, xg1Queue: rest };
+    nextState = openXg1TurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {

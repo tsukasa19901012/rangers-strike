@@ -85,7 +85,7 @@ describe("XG1-041 仮面ライダーアマゾン", () => {
     expect(spOf(p1Battle({ battle: [...fill(2), inst("XG1-041", "am")] }), "player1", "XG1-041:am")).toBe(0);
   });
 
-  it.fails("XG1-041: 【ガガの腕輪】RC — ホールド状態でバトルエリアに出ても（敵軍のブラックファングでホールドされた）、ライドオフするとリリースされる（既知の不具合: CARD-XG1-057 ブラックファングでホールド状態にならず、前提の状態を作れない）（出典: atwiki/page-1543「【ガガの腕輪】これをリリースする」・カード評価「ウエイクアップ！などのホールド要員」・atwiki/page-1564「ライドしてバトルエリアに出たとき、ホールド状態になる」）", () => {
+  it("XG1-041: 【ガガの腕輪】RC — ホールド状態でバトルエリアに出ても（敵軍のブラックファングでホールドされた）、ライドオフするとリリースされる（既知の不具合: CARD-XG1-057 ブラックファングでホールド状態にならず、前提の状態を作れない）（出典: atwiki/page-1543「【ガガの腕輪】これをリリースする」・カード評価「ウエイクアップ！などのホールド要員」・atwiki/page-1564「ライドしてバトルエリアに出たとき、ホールド状態になる」）", () => {
     let s = p1Battle(
       { rush: [inst("SPEC-VEHICLE", "v"), inst("XG1-041", "am")] },
       { rush: [inst("XG1-057", "bf"), { ...inst("TST-UNIT-0", "r"), mountedOnInstanceId: "XG1-057:bf" }] },
@@ -117,7 +117,7 @@ describe("XG1-042 十面鬼ゴルゴス", () => {
   const kill = (target: string) =>
     settle(attack(p1Battle({ rush: [inst("XG1-042", "gg")], battle: [inst("SPEC-KAIJIN", "k")] }, { battle: [inst(target, "t")] }, EXTRA), "SPEC-KAIJIN:k", `${target}:t`));
 
-  it.fails("XG1-042: 【吸血】自軍ターンに特徴「怪人」の自軍ユニットが特徴「男」の敵軍ユニットを撃破すると、このターン「SP1」になる（既知の不具合: CARD-XG1-042 SP1 にならない）（出典: atwiki/page-1586「特徴「男」または「女」を持つ敵軍ユニットを撃破したとき、このターン、これは「SP1」になる」）", () => {
+  it("XG1-042: 【吸血】自軍ターンに特徴「怪人」の自軍ユニットが特徴「男」の敵軍ユニットを撃破すると、このターン「SP1」になる（既知の不具合: CARD-XG1-042 SP1 にならない）（出典: atwiki/page-1586「特徴「男」または「女」を持つ敵軍ユニットを撃破したとき、このターン、これは「SP1」になる」）", () => {
     const s = kill("SPEC-MAN");
     expect(zoneOf(s, "player2", "SPEC-MAN:t")).toBe("discard");
     expect(spOf(s, "player1", "XG1-042:gg")).toBe(1);
@@ -146,7 +146,7 @@ describe("XG1-043 カメバズーカ", () => {
 
   const enemy = { rush: [inst("TST-UNIT-0", "r")], battle: [inst("TST-UNIT-0", "b")] };
 
-  it.fails("XG1-043: 【砲撃】ホールド状態のとき、敵軍ラッシュエリアのユニットにもアタックできる（既知の不具合: CARD-XG1-043 ラッシュエリアのユニットがアタック先に出ない）（出典: atwiki/page-1612「ホールド状態のとき敵軍ラッシュエリアのユニットにアタックできる」）", () => {
+  it("XG1-043: 【砲撃】ホールド状態のとき、敵軍ラッシュエリアのユニットにもアタックできる（既知の不具合: CARD-XG1-043 ラッシュエリアのユニットがアタック先に出ない）（出典: atwiki/page-1612「ホールド状態のとき敵軍ラッシュエリアのユニットにアタックできる」）", () => {
     expect([...targetsOf(p1Battle({ battle: [heldUnit("XG1-043", "kb")] }, enemy), "XG1-043:kb")].sort()).toEqual(["TST-UNIT-0:b", "TST-UNIT-0:r"]);
   });
 
@@ -175,7 +175,7 @@ describe("XG1-044 仮面ライダーV3", () => {
   const selfRushActions = (s: ReturnType<typeof fromCommand>) =>
     legal(s).filter((a) => a.playerId === "player1" && "instanceId" in a && a.instanceId === "XG1-044:v3");
 
-  it.fails("XG1-044: ※ 自軍捨札に仮面ライダー1号（RK-023）と2号（RK-073）があれば、自軍ラッシュフェイズにコマンドゾーンから自軍ラッシュエリアに出せる（既知の不具合: CARD-XG1-044 出す手がない）（出典: atwiki/page-1619「これを自軍ラッシュエリアに出してもよい」・カード評価「コマンドから直接ラッシュできる」）", () => {
+  it("XG1-044: ※ 自軍捨札に仮面ライダー1号（RK-023）と2号（RK-073）があれば、自軍ラッシュフェイズにコマンドゾーンから自軍ラッシュエリアに出せる（既知の不具合: CARD-XG1-044 出す手がない）（出典: atwiki/page-1619「これを自軍ラッシュエリアに出してもよい」・カード評価「コマンドから直接ラッシュできる」）", () => {
     const s = fromCommand([inst("RK-023", "g1"), inst("RK-073", "g2")]);
     const a = selfRushActions(s)[0];
     expect(a).toBeDefined();
@@ -188,21 +188,21 @@ describe("XG1-044 仮面ライダーV3", () => {
 
   const rc = () => rcAt("XG1-044:v3", {}, { battle: [inst("SPEC-S1", "s1"), inst("SPEC-S0", "s0")], rush: [inst("TST-UNIT-0", "r")] }, EXTRA);
 
-  it.fails("XG1-044: 【V3反転キック】RC — 敵軍バトルエリアの S ユニットから1体選べる（ラッシュエリアは対象外。任意）（既知の不具合: CARD-XG1-044 選択が開かない）（出典: atwiki/page-1619「敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンに置いてもよい」）", () => {
+  it("XG1-044: 【V3反転キック】RC — 敵軍バトルエリアの S ユニットから1体選べる（ラッシュエリアは対象外。任意）（既知の不具合: CARD-XG1-044 選択が開かない）（出典: atwiki/page-1619「敵軍バトルエリアからSユニットを1体選び、持ち主のコマンドゾーンに置いてもよい」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "XG1-044");
     expect([...choiceIds(s)].sort()).toEqual(["SPEC-S0:s0", "SPEC-S1:s1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-044: 選んだ SP1 のユニットは持ち主のコマンドゾーンにリリース状態で置かれ、これは SP1 になる（既知の不具合: CARD-XG1-044）（出典: atwiki/page-1619「このとき選んだユニットのSPが1以上だったなら、これはSP1になる」・カード評価「リリース状態で置かれる」）", () => {
+  it("XG1-044: 選んだ SP1 のユニットは持ち主のコマンドゾーンにリリース状態で置かれ、これは SP1 になる（既知の不具合: CARD-XG1-044）（出典: atwiki/page-1619「このとき選んだユニットのSPが1以上だったなら、これはSP1になる」・カード評価「リリース状態で置かれる」）", () => {
     const s = resolveAll(rc(), ["SPEC-S1:s1"]);
     expect(zoneOf(s, "player2", "SPEC-S1:s1")).toBe("command");
     expect(isHeldCard(s, "player2", "SPEC-S1:s1")).toBe(false);
     expect(spOf(s, "player1", "XG1-044:v3")).toBe(1);
   });
 
-  it.fails("XG1-044: Q&A — 敵軍コマンドゾーンが5枚で置けなくても（捨札になる）、選んだユニットの SP が1以上なら SP1 になる（既知の不具合: CARD-XG1-044）（出典: atwiki/page-1619 Q1「コマンドゾーンに送る、または捨札にすることができなくても、選ぶだけでSP1になります」・本文「置けなければ捨札にする」）", () => {
+  it("XG1-044: Q&A — 敵軍コマンドゾーンが5枚で置けなくても（捨札になる）、選んだユニットの SP が1以上なら SP1 になる（既知の不具合: CARD-XG1-044）（出典: atwiki/page-1619 Q1「コマンドゾーンに送る、または捨札にすることができなくても、選ぶだけでSP1になります」・本文「置けなければ捨札にする」）", () => {
     const s = resolveAll(rcAt("XG1-044:v3", {}, { battle: [inst("SPEC-S1", "s1")], command: releasedCat("WB", 5, "fc") }, EXTRA), ["SPEC-S1:s1"]);
     expect(zoneOf(s, "player2", "SPEC-S1:s1")).toBe("discard");
     expect(spOf(s, "player1", "XG1-044:v3")).toBe(1);
@@ -228,11 +228,11 @@ describe("XG1-045 イカファイア", () => {
   /** 敵軍（player2）バトルフェイズ。自軍バトルエリアにイカファイア、敵軍の山札の上は top。 */
   const board = (top: string) => enemyBoard({ battle: [inst("XG1-045", "ik")] }, { battle: [inst("TST-UNIT-0", "a")], deck: [inst(top, "top"), ...deckCards(3, "e")] }, EXTRA);
 
-  it.fails("XG1-045: 【墨攻撃】敵軍バトルエリアのユニットに特徴「ブラック」が追加される（既知の不具合: CARD-XG1-045 特徴が追加されない）（出典: atwiki/page-1614「敵軍バトルエリアのユニットは特徴「ブラック」を追加され」）", () => {
+  it("XG1-045: 【墨攻撃】敵軍バトルエリアのユニットに特徴「ブラック」が追加される（既知の不具合: CARD-XG1-045 特徴が追加されない）（出典: atwiki/page-1614「敵軍バトルエリアのユニットは特徴「ブラック」を追加され」）", () => {
     expect(featuresOf(board("TST-OP"), "player2", "TST-UNIT-0:a")).toContain("ブラック");
   });
 
-  it.fails("XG1-045: 【墨攻撃】敵軍ユニットがアタックするとき山札の上が必要パワー3 のカードなら、バトルは行われず、そのカードは山札の下に戻る（既知の不具合: CARD-XG1-045 山札を見ずにバトルが行われる）（出典: atwiki/page-1614「そのカードの必要パワーの数字が3以下なら、バトルは行われない。その後、オモテにしたカードは山札の下に戻す」）", () => {
+  it("XG1-045: 【墨攻撃】敵軍ユニットがアタックするとき山札の上が必要パワー3 のカードなら、バトルは行われず、そのカードは山札の下に戻る（既知の不具合: CARD-XG1-045 山札を見ずにバトルが行われる）（出典: atwiki/page-1614「そのカードの必要パワーの数字が3以下なら、バトルは行われない。その後、オモテにしたカードは山札の下に戻す」）", () => {
     const s = settle(attack(board("TST-OP"), "TST-UNIT-0:a", "XG1-045:ik", "player2"));
     expect(zoneOf(s, "player1", "XG1-045:ik")).toBe("battle");
     expect(zoneOf(s, "player2", "TST-UNIT-0:a")).toBe("battle");
@@ -259,7 +259,7 @@ describe("XG1-046 Vマシーン（Vジェット）", () => {
   const morphing = (vehicle: string) =>
     enemyRushes({ battle: [inst(vehicle, "vj"), { ...inst("XG1-047", "s1"), mountedOnInstanceId: `${vehicle}:vj` }], power: [inst("XG1-048", "eh")] }, "TST-UNIT-0:x", EXTRA);
 
-  it.fails("XG1-046: 【Vジェット】ライドしているユニットがモーフで置き換えられたとき、ライドしているユニット（とビークル）をラッシュエリアに戻せる（既知の不具合: CARD-XG1-046 戻すかの選択がなくバトルエリアに残る）（出典: atwiki/page-1607「このビークルにライドしているユニットをラッシュエリアに戻してもよい」・カード評価「ラッシュエリアに戻すことでライドしているユニットを守る」）", () => {
+  it("XG1-046: 【Vジェット】ライドしているユニットがモーフで置き換えられたとき、ライドしているユニット（とビークル）をラッシュエリアに戻せる（既知の不具合: CARD-XG1-046 戻すかの選択がなくバトルエリアに残る）（出典: atwiki/page-1607「このビークルにライドしているユニットをラッシュエリアに戻してもよい」・カード評価「ラッシュエリアに戻すことでライドしているユニットを守る」）", () => {
     const s = resolveAll(morphing("XG1-046"), ["XG1-048:eh", "accept"]);
     expect(zoneOf(s, "player1", "XG1-048:eh")).toBe("rush");
     expect(zoneOf(s, "player1", "XG1-046:vj")).toBe("rush");
@@ -296,16 +296,16 @@ describe("XG1-047 仮面ライダースーパー1", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-047: 候補は BP1000・3000・5000 の敵軍 S ユニットだけ（BP2000・L は選べない）（既知の不具合: CARD-XG1-047 BP2000 の S・L ユニットも候補になる）（出典: atwiki/page-1635「BP1000またはBP3000またはBP5000の敵軍Sユニット」）", () => {
+  it("XG1-047: 候補は BP1000・3000・5000 の敵軍 S ユニットだけ（BP2000・L は選べない）（既知の不具合: CARD-XG1-047 BP2000 の S・L ユニットも候補になる）（出典: atwiki/page-1635「BP1000またはBP3000またはBP5000の敵軍Sユニット」）", () => {
     expect([...choiceIds(rc())].sort()).toEqual(["SPEC-B5:b5", "TST-UNIT-0:b1"]);
   });
 
-  it.fails("XG1-047: 選んだユニットは撃破されて捨札になる（既知の不具合: CARD-XG1-047 撃破ではなく敵軍コマンドゾーンに置かれる）（出典: atwiki/page-1635「撃破してもよい」）", () => {
+  it("XG1-047: 選んだユニットは撃破されて捨札になる（既知の不具合: CARD-XG1-047 撃破ではなく敵軍コマンドゾーンに置かれる）（出典: atwiki/page-1635「撃破してもよい」）", () => {
     const s = pick(rc(), "TST-UNIT-0:b1");
     expect(zoneOf(s, "player2", "TST-UNIT-0:b1")).toBe("discard");
   });
 
-  it.fails("XG1-047: MA を持つ自軍コマンドを1つホールドすれば、このターン SP1 になる（既知の不具合: CARD-XG1-047 コマンドはホールドされず SP を持たない）（出典: atwiki/page-1635「MAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これはSP1になる」・カード評価「並び順に関係なくお手軽にストライク」）", () => {
+  it("XG1-047: MA を持つ自軍コマンドを1つホールドすれば、このターン SP1 になる（既知の不具合: CARD-XG1-047 コマンドはホールドされず SP を持たない）（出典: atwiki/page-1635「MAを持つ自軍コマンドを1つホールドしてもよい。そうしたとき、このターン、これはSP1になる」・カード評価「並び順に関係なくお手軽にストライク」）", () => {
     const s = resolveAll(rc(), ["TST-UNIT-0:b1", "TST-OP-MA:cMA0", "hold_command"]);
     expect(isHeldCard(s, "player1", "TST-OP-MA:cMA0")).toBe(true);
     expect(spOf(s, "player1", "XG1-047:s1")).toBe(1);

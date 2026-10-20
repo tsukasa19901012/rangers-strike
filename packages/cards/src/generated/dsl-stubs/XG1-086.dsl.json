@@ -39,11 +39,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-086::akuinparusu",
+          "keyword": "xg1::XG1-086::arc_impulse",
           "duration": "turn"
         }
       ]

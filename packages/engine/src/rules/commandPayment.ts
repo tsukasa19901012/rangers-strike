@@ -764,7 +764,7 @@ export function buildMothershipHoldPayment(
   if (!kind) return null;
 
   const slotsFilled = materialInstanceId
-    ? zordSlotsFilledByMaterial(setup.zordCardId, true, materialDestination)
+    ? zordSlotsFilledByMaterial(setup.zordCardId, true, materialDestination === "hold" ? "discard" : materialDestination) // XG1-013 hold は捨札のかわり
     : 0;
   const holdsRequired = mothershipHoldsRequiredForRush(setup.zordCardId, slotsFilled);
   if (holdsRequired <= 0) return null;
@@ -835,7 +835,7 @@ function mothershipPaymentHoldsRequired(pending: PendingCommandPayment): number 
     cont.type === "rush" && cont.zordMaterialInstanceIds && materialIds.length > 0
       ? materialIds.length
       : cont.type === "rush" && cont.zordMaterialInstanceId
-        ? zordSlotsFilledByMaterial(pending.sourceCardId, true, cont.zordMaterialDestination)
+        ? zordSlotsFilledByMaterial(pending.sourceCardId, true, cont.zordMaterialDestination === "hold" ? "discard" : cont.zordMaterialDestination)
         : 0;
   return mothershipHoldsRequiredForRush(pending.sourceCardId, slotsFilled);
 }

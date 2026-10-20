@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG1-050::noniraidawotsuyu",
-          "duration": "permanent"
+          "keyword": "xg1::XG1-050::rider_syndrome",
+          "duration": "turn"
         }
       ]
     }

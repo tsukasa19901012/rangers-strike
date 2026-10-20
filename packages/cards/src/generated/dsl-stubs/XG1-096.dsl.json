@@ -44,11 +44,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-096::kuwagachopa",
+          "keyword": "xg1::XG1-096::kuwaga_chopper",
           "duration": "turn"
         }
       ]

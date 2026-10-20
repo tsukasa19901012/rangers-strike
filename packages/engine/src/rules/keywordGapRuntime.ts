@@ -179,6 +179,8 @@ export function canSelfRushFromZone(
   if (zone === "power" && xg7CanDeployFromPower(state, playerId, card)) return true;
   // RK-320 仮面ライダーライジングイクサの※（必要パワー1・9・3の自軍コマンドがそれぞれあれば。rules/rk/rk16Fields.ts）。
   if (zone === "command" && rk16CanDeployFromCommand(state, playerId, card)) return true;
+  // XG1-044 仮面ライダーV3 の※（自軍捨札に1号・2号があれば。rules/xg1/xg1Fields.ts）。
+  if (zone === "command" && xg1CanDeployFromCommand(state, playerId, card)) return true;
   // 「これが自軍コマンドゾーンにある間」— リリース／ホールドの状態は問わない（RS-447・XG4-077。atwiki/page-786）。
   const keyword =
     zone === "command" ? "rush_from_discard_count_command" : "rush_from_discard_count_power";
@@ -261,6 +263,7 @@ import type { PlayerState } from "../types/game";
 import { hasBakiBakiExtraAttack } from "./turnModifierBridge";
 import { markTurnBattleAct } from "./rk/rk10Fields";
 import { rk16CanDeployFromCommand } from "./rk/rk16Fields";
+import { xg1CanDeployFromCommand } from "./xg1/xg1Fields";
 
 /**
  * battleActed 済みでも「アタックとストライクを1度ずつ」持ちなら

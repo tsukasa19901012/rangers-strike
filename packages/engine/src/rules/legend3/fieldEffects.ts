@@ -1,6 +1,7 @@
 import { rm3EffectiveSp } from "../rm/rm3Fields";
 import { xg5EffectiveSp } from "../xg5/xg5Fields";
 import { xg7EffectiveSp } from "../xg7/xg7Fields";
+import { xg1EffectiveSp } from "../xg1/xg1Fields";
 import { rk8EffectiveSp } from "../rk/rk8UnitEffects";
 import { rk9EffectiveSp } from "../rk/rk9UnitEffects";
 import { rk10EffectiveSp } from "../rk/rk10UnitEffects";
@@ -291,6 +292,8 @@ function legend3EffectiveSpUncached(
   sp = xg5EffectiveSp(state, playerId, instance, sp);
   // XG7-007【龍撃剣＆獣奏剣】（BP8000以上のとき SP1。rules/xg7/xg7Fields.ts）。
   sp = xg7EffectiveSp(state, playerId, instance, sp);
+  // XG1-011・XG1-012・XG1-020 の「SP1」になる継続効果（rules/xg1/xg1Fields.ts）。
+  sp = xg1EffectiveSp(state, playerId, instance, sp, effectiveBp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

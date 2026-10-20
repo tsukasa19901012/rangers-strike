@@ -79,7 +79,7 @@ describe("XG1-061 仮面ライダーカリス", () => {
     expect(canStrike(enteredFromRush("XG1-061:ka", { battle: fill(1) }), "XG1-061:ka")).toBe(true);
   });
 
-  it.fails("XG1-061: 【スピニングウェーブ】RC — 手札を2枚見せるかを選べ（任意）、見せると敵軍コマンドがすべてホールドされる（既知の不具合: CARD-XG1-061 手札を見せる選択がなく、敵軍コマンドもホールドされない）（出典: atwiki/page-1639「自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍コマンドをすべてホールドする」）", () => {
+  it("XG1-061: 【スピニングウェーブ】RC — 手札を2枚見せるかを選べ（任意）、見せると敵軍コマンドがすべてホールドされる（既知の不具合: CARD-XG1-061 手札を見せる選択がなく、敵軍コマンドもホールドされない）（出典: atwiki/page-1639「自分の手札を2枚選び、相手に見せてもよい。そうしたとき、敵軍コマンドをすべてホールドする」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "XG1-061");
     expect(canSkip(s)).toBe(true);
@@ -89,7 +89,7 @@ describe("XG1-061 仮面ライダーカリス", () => {
     expect(isHeldCard(t, "player2", "TST-OP:ec1")).toBe(true);
   });
 
-  it.fails("XG1-061: 見せた2枚の必要パワーが「3」と「6」でなければ、敵軍ユニットは撃破されない（既知の不具合: CARD-XG1-061 条件を見ずに撃破の選択が開く）（出典: atwiki/page-1639「見せたカードの必要パワーの数字が「3」と「6」なら」）", () => {
+  it("XG1-061: 見せた2枚の必要パワーが「3」と「6」でなければ、敵軍ユニットは撃破されない（既知の不具合: CARD-XG1-061 条件を見ずに撃破の選択が開く）（出典: atwiki/page-1639「見せたカードの必要パワーの数字が「3」と「6」なら」）", () => {
     const s = resolveAll(rc([inst("SPEC-C3", "h3"), inst("TST-OP", "x"), inst("TST-OP", "y")]), ["SPEC-C3:h3", "TST-OP:x", "TST-UNIT-0:b"]);
     expect(zoneOf(s, "player2", "TST-UNIT-0:b")).toBe("battle");
   });
@@ -150,7 +150,7 @@ describe("XG1-063 シャドーチェイサー", () => {
   const discarded = (rush: ReturnType<typeof inst>[]) =>
     ncAt("RK-221:hb", 1, { rush, hand: [inst("TST-OP", "op")] }, { command: releasedCat("WB", 1, "ec") }, EXTRA);
 
-  it.fails("XG1-063: 【トルネードチェイサー】ライドしたユニットがある間に手札のカードが捨札に置かれると、敵軍コマンドを1つホールドする効果を発動できる（既知の不具合: CARD-XG1-063 発動の機会がない）（出典: atwiki/page-1606「自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒敵軍コマンドを1つ選びホールドする」）", () => {
+  it("XG1-063: 【トルネードチェイサー】ライドしたユニットがある間に手札のカードが捨札に置かれると、敵軍コマンドを1つホールドする効果を発動できる（既知の不具合: CARD-XG1-063 発動の機会がない）（出典: atwiki/page-1606「自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒敵軍コマンドを1つ選びホールドする」）", () => {
     const s = resolveAll(discarded([inst("XG1-063", "sc"), { ...inst("XG1-061", "ka"), mountedOnInstanceId: "XG1-063:sc" }]), ["TST-OP:op", "accept", "TST-OP:ec0"]);
     expect(zoneOf(s, "player1", "TST-OP:op")).toBe("discard");
     expect(isHeldCard(s, "player2", "TST-OP:ec0")).toBe(true);
@@ -177,7 +177,7 @@ describe("XG1-064 ディケイド アギトGF", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("XG1-064", "dg")] }, "XG1-064:dg"))).toBe(true);
   });
 
-  it.fails("XG1-064: ※「仮面ライダーアギトGF」としてつかえる — アギトTF（XG1-052）の追加条件「自軍「仮面ライダーアギトGF」1体を捨札にすれば必要パワー0」の素材にできる（既知の不具合: CARD-XG1-064 素材の候補にならない）（出典: atwiki/page-1603「これは「仮面ライダーアギトGF」としてつかえる」・atwiki/page-1668 Q1「全ての場にあるとき常に有効であり、特定のカード名を指定する効果の対象として選ぶことが出来ます」）", () => {
+  it("XG1-064: ※「仮面ライダーアギトGF」としてつかえる — アギトTF（XG1-052）の追加条件「自軍「仮面ライダーアギトGF」1体を捨札にすれば必要パワー0」の素材にできる（既知の不具合: CARD-XG1-064 素材の候補にならない）（出典: atwiki/page-1603「これは「仮面ライダーアギトGF」としてつかえる」・atwiki/page-1668 Q1「全ての場にあるとき常に有効であり、特定のカード名を指定する効果の対象として選ぶことが出来ます」）", () => {
     const r = rushVia(rushPhaseBoard({ hand: [inst("XG1-052", "tf")], rush: [inst("XG1-064", "dg")], command: releasedCat("MA", 1) }), "player1", "XG1-052:tf", (a) => a.zordMaterialInstanceId === "XG1-064:dg");
     expect(r.ok).toBe(true);
   });
@@ -191,7 +191,7 @@ describe("XG1-064 ディケイド アギトGF", () => {
     expect(zoneOf(pick(s, "SPEC-DAS:d"), "player2", "SPEC-DAS:d")).toBe("discard");
   });
 
-  it.fails("XG1-064: 候補は DA を持つ敵軍 S ユニットだけ（WB のユニットは選べない）（既知の不具合: CARD-XG1-064 DA を持たないユニットも候補になる）（出典: atwiki/page-1603「DAを持つ敵軍Sユニット」）", () => {
+  it("XG1-064: 候補は DA を持つ敵軍 S ユニットだけ（WB のユニットは選べない）（既知の不具合: CARD-XG1-064 DA を持たないユニットも候補になる）（出典: atwiki/page-1603「DAを持つ敵軍Sユニット」）", () => {
     expect([...choiceIds(rc())].sort()).toEqual(["SPEC-DAS:d", "SPEC-DAS:dr"]);
   });
 });
@@ -206,7 +206,7 @@ describe("XG1-065 ディケイド 龍騎", () => {
     expectRarityIn("XG1-065", ["NR"]);
   });
 
-  it.fails("XG1-065: 【アタックライド】特徴「ドラゴン」のユニットの次に（3番目に）並ぶと、このターン SP1 を得る（既知の不具合: CARD-XG1-065 SP を得ない）（出典: atwiki/page-1636「特徴「ドラゴン」を持つユニットからコンビネーションするとき…「SP1」」）", () => {
+  it("XG1-065: 【アタックライド】特徴「ドラゴン」のユニットの次に（3番目に）並ぶと、このターン SP1 を得る（既知の不具合: CARD-XG1-065 SP を得ない）（出典: atwiki/page-1636「特徴「ドラゴン」を持つユニットからコンビネーションするとき…「SP1」」）", () => {
     const s = enteredFromRush("XG1-065:ry", { battle: [...fill(1), inst("SPEC-DRG", "dr")] }, {}, EXTRA);
     expect(spOf(s, "player1", "XG1-065:ry")).toBe(1);
   });
@@ -236,7 +236,7 @@ describe("XG1-066 ディケイド ファイズ", () => {
     expect(zoneOf(pick(s, "SPEC-B15:b"), "player2", "SPEC-B15:b")).toBe("discard");
   });
 
-  it.fails("XG1-066: 候補は BP の下三桁が500 の S ユニット（BP4500・1500。敵軍ラッシュエリアも含む）だけで、BP1000 は選べない（既知の不具合: CARD-XG1-066 BP1000 が候補に入り、ラッシュエリアのユニットが入らない）（出典: atwiki/page-1626「敵軍Sユニット」・RK-064 の「敵軍バトルエリアから」の限定がない）", () => {
+  it("XG1-066: 候補は BP の下三桁が500 の S ユニット（BP4500・1500。敵軍ラッシュエリアも含む）だけで、BP1000 は選べない（既知の不具合: CARD-XG1-066 BP1000 が候補に入り、ラッシュエリアのユニットが入らない）（出典: atwiki/page-1626「敵軍Sユニット」・RK-064 の「敵軍バトルエリアから」の限定がない）", () => {
     expect([...choiceIds(rc())].sort()).toEqual(["SPEC-B15:b", "SPEC-B45:a", "SPEC-B45:r"]);
   });
 });
@@ -252,7 +252,7 @@ describe("XG1-067 ディケイド ブレイド", () => {
     expectRarityIn("XG1-067", ["N"]);
   });
 
-  it.fails("XG1-067: ※「仮面ライダーブレイド」としてつかえる — ブレイドKF（XG1-059）の追加条件「自軍「仮面ライダーブレイド」1体を捨札にする」の素材にできる（既知の不具合: CARD-XG1-067 ラッシュできない）（出典: atwiki/page-1605・atwiki/page-1546 カード評価「ディケイド ブレイドでも代用可能」・atwiki/page-1668 Q1）", () => {
+  it("XG1-067: ※「仮面ライダーブレイド」としてつかえる — ブレイドKF（XG1-059）の追加条件「自軍「仮面ライダーブレイド」1体を捨札にする」の素材にできる（既知の不具合: CARD-XG1-067 ラッシュできない）（出典: atwiki/page-1605・atwiki/page-1546 カード評価「ディケイド ブレイドでも代用可能」・atwiki/page-1668 Q1）", () => {
     const r = rushFromHand(rushPhaseBoard({ hand: [inst("XG1-059", "kf")], rush: [inst("XG1-067", "bl")], command: releasedCat("WB", 1), power: powerCards(6) }), "player1", "XG1-059:kf");
     expect(r.ok).toBe(true);
     expect(zoneOf(r.state, "player1", "XG1-067:bl")).toBe("discard");
@@ -261,14 +261,14 @@ describe("XG1-067 ディケイド ブレイド", () => {
   const rc = () =>
     rcAt("XG1-067:bl", { hand: [inst("TST-OP", "a"), inst("TST-OP", "b"), inst("TST-OP", "c"), inst("TST-OP-ET", "d")] }, { battle: [inst("TST-UNIT-0", "a"), inst("TST-UNIT-0", "b")], rush: [inst("TST-UNIT-0", "r")] }, EXTRA);
 
-  it.fails("XG1-067: 【アタックライド】RC — 手札を3枚見せるかを選べる（任意）（既知の不具合: CARD-XG1-067 見せる選択がなく、すぐに敵軍ユニットの選択が開く）（出典: atwiki/page-1605「自分の手札を3枚選び、相手に見せてもよい」）", () => {
+  it("XG1-067: 【アタックライド】RC — 手札を3枚見せるかを選べる（任意）（既知の不具合: CARD-XG1-067 見せる選択がなく、すぐに敵軍ユニットの選択が開く）（出典: atwiki/page-1605「自分の手札を3枚選び、相手に見せてもよい」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "XG1-067");
     expect(canSkip(s)).toBe(true);
     expect(choiceIds(s)).toContain("TST-OP:a");
   });
 
-  it.fails("XG1-067: 見せたとき、敵軍 S ユニット（ラッシュエリアも含む）を1体ホールドし、3枚のカテゴリがすべて同じなら敵軍バトルエリアの S ユニットを1体撃破する（既知の不具合: CARD-XG1-067）（出典: atwiki/page-1605「敵軍Sユニットを1体選びホールドする。その後、見せたカードの持つカテゴリがすべて同じなら…撃破する」）", () => {
+  it("XG1-067: 見せたとき、敵軍 S ユニット（ラッシュエリアも含む）を1体ホールドし、3枚のカテゴリがすべて同じなら敵軍バトルエリアの S ユニットを1体撃破する（既知の不具合: CARD-XG1-067）（出典: atwiki/page-1605「敵軍Sユニットを1体選びホールドする。その後、見せたカードの持つカテゴリがすべて同じなら…撃破する」）", () => {
     const s = resolveAll(rc(), ["TST-OP:a", "TST-OP:b", "TST-OP:c", "TST-UNIT-0:r", "TST-UNIT-0:a"]);
     expect(isHeldCard(s, "player2", "TST-UNIT-0:r")).toBe(true);
     expect(zoneOf(s, "player2", "TST-UNIT-0:a")).toBe("discard");

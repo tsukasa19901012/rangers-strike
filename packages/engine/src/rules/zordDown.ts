@@ -1,6 +1,7 @@
 import type { CardDefinition } from "@rangers-strike/cards";
 import {
   FUSION_UNIT_IDS,
+  fusionMaterialAliasNames,
   getZordDownCondition,
   hasPowerCostMinusSuffix,
   isZordDownCost,
@@ -53,7 +54,8 @@ function normalizeName(value: string): string {
 function matchesPartnerName(def: CardDefinition | undefined, partnerName: string): boolean {
   if (!def) return false;
   const target = normalizeName(partnerName);
-  return normalizeName(def.name).includes(target);
+  // 「※これは「X」としてつかえる」（XG1-064 等。atwiki/page-1668 Q1「全ての場にあるとき常に有効」）。
+  return normalizeName(def.name).includes(target) || fusionMaterialAliasNames(def.text).some((n) => normalizeName(n).includes(target));
 }
 
 function isValidZordDownFusionMaterial(cardId: string): boolean {

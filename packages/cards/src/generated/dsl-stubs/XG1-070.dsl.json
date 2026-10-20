@@ -67,11 +67,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_3_ot_commands_then_sp1",
+          "keyword": "xg1::XG1-070::attack_ride",
           "duration": "turn"
         }
       ]

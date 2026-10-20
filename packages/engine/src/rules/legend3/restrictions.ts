@@ -57,6 +57,7 @@ import { xg5AttackForbidden } from "../xg5/xg5Fields";
 import { rk15DefenderBlocksAttack } from "../rk/rk15Fields";
 import { rk16DefenderBlocksAttack } from "../rk/rk16Fields";
 import { xg7DefenderBlocksAttack } from "../xg7/xg7Fields";
+import { xg1AttackerCanAttackRush, xg1DefenderBlocksAttack } from "../xg1/xg1Fields";
 
 export function hasDarkDealInRush(state: GameState, playerId: PlayerId): boolean {
   return state.players[playerId].rush.some(
@@ -510,6 +511,8 @@ export function canAttackDefender(
   if (defenderCard && rk16DefenderBlocksAttack(defenderCard)) return false;
   // XG7-009【受け継いだもの】等（rules/xg7/xg7Fields.ts）。
   if (defenderCard && xg7DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
+  // XG1-017【許可なき戦いへの介入】・XG1-018【治安維持】（rules/xg1/xg1Fields.ts）。
+  if (defenderCard && xg1DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;
@@ -541,6 +544,8 @@ export function canAttackDefender(
     if (set9AAttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
     // RK-262 ロボライダー【ボルティックシューター】（RC を発動したターン。rules/rk/rk13Fields.ts）。
     if (rk13AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
+    // XG1-021 ブルーターボ【Jガン】（rules/xg1/xg1Fields.ts）。
+    if (xg1AttackerCanAttackRush(state, attackerPlayerId, attacker.card, inRush.card)) return true;
     // RK-103 仮面ライダークウガPF【ブラストペガサス】（rules/rk/rk5Fields.ts）。
     if (rk5AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
     // RK-217 イーグルアンデッド【滑空攻撃】（敵軍ラッシュエリアのレジストを持つユニット。rules/rk/rk11Fields.ts）。

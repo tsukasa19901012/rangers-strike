@@ -8,7 +8,7 @@ import { hellSaturnGrantCount } from "./hellSaturn";
 import { activeNamedEffect } from "./ncGatedEffects";
 import { countActiveFieldKeyword } from "../dsl/fieldKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { getDefinition, cardName, unitSizeOf } from "../core/catalog";
+import { effectiveCommandCategories, getDefinition, cardName, unitSizeOf } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
@@ -150,12 +150,8 @@ function noteOtherNcBpBonus(
 
   // XG1-020: BP+1000 per own command with 2+ categories
   if (cardId === "XG1-020") {
-    bonus += own.command.filter((c) => {
-      const def = getDefinition(state.definitions, c.cardId);
-      if (!def) return false;
-      const cats = Array.isArray(def.category) ? def.category : [def.category];
-      return cats.length >= 2;
-    }).length * 1000;
+    // 効果で追加されたカテゴリ（XG1-033【汚れた大地】の DA）も数える（atwiki/page-1581 Q1「マルチカテゴリのコマンドとして扱います」）。
+    bonus += own.command.filter((c) => effectiveCommandCategories(own, state.definitions, c.cardId).length >= 2).length * 1000;
   }
 
   // RS-558 (ガンマジン): BP+4000 if any L-unit on field (own or enemy)

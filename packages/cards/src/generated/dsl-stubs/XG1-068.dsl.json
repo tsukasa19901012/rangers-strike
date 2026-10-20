@@ -54,11 +54,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-068::atakuraido",
+          "keyword": "xg1::XG1-068::attack_ride",
           "duration": "turn"
         }
       ]

@@ -41,11 +41,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-083::shaidaburufurashu",
+          "keyword": "xg1::XG1-083::blue_flash",
           "duration": "turn"
         }
       ]

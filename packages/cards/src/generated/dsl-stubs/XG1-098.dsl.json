@@ -26,11 +26,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-098::poizunanka",
+          "keyword": "xg1::XG1-098::poison_anchor",
           "duration": "permanent"
         }
       ]

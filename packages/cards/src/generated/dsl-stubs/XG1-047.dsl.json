@@ -41,11 +41,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-047::kene8b5a4",
+          "keyword": "xg1::XG1-047::sekishin",
           "duration": "turn"
         }
       ]

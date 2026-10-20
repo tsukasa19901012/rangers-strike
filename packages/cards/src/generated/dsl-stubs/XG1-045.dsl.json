@@ -23,14 +23,14 @@
       "name": "墨攻撃",
       "text": "これが自軍バトルエリアにある間、敵軍バトルエリアのユニットは特徴「ブラック」を追加され、次の制限を受ける⇒アタックするとき、バトルの前に自分自身の山札の上から1枚をオモテにする。そして、そのカードの必要パワーの数字が3以下なら、バトルは行われない。その後、オモテにしたカードは山札の下に戻す。",
       "trigger": {
-        "type": "on_attack"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-045::geki",
-          "duration": "turn"
+          "keyword": "xg1::XG1-045::sumi",
+          "duration": "permanent"
         }
       ]
     }

@@ -9,6 +9,7 @@ import { xg7AddedFeatures } from "./xg7/xg7Fields";
  */
 import { rk12AddedFeatures } from "./rk/rk12Fields";
 import { rm3GuruAddsInsect } from "./rm/rm3Fields";
+import { xg1AddedFeatures } from "./xg1/xg1Fields";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { getPlayerModifiers } from "../core/scopedModifiers";
 import { rk1AddedUnitFeatures } from "./rk/rk1Features";
@@ -88,6 +89,8 @@ export function unitFeatures(
   if (rm3GuruAddsInsect(state, _ownerId, instance.cardId, [...base, ...extra])) extra.push("昆虫");
   // XG7-058 メタル・ドーパント ※（自軍ターン中、「メカ」。rules/xg7/xg7Fields.ts）。
   extra.push(...xg7AddedFeatures(state as Partial<Pick<GameState, "activePlayer">>, _ownerId, instance));
+  // XG1-015 宇宙警察（OT の「警察」の自軍 S ユニットに「宇宙刑事」）・XG1-045【墨攻撃】（「ブラック」）（rules/xg1/xg1Fields.ts）。
+  extra.push(...xg1AddedFeatures(state, _ownerId, instance.cardId, [...base, ...extra], instance.instanceId));
   if (extra.length === 0) return base;
   return [...new Set([...base, ...extra])];
 }

@@ -23,6 +23,8 @@ import { openRk11UndeadReplace } from "../rules/rk/rk11UnitEffects";
 import { rk11IsHandSubstitute } from "../rules/rk/rk11Fields";
 import { rk12PlacesHeldOnRush } from "../rules/rk/rk12Fields";
 import { openRk12GorgomWindow, trackRk12UnitHolds } from "../rules/rk/rk12UnitEffects";
+import { xg1dTrackHandDiscards } from "../rules/xg1/xg1dEffects";
+import { isXg1eAttackedChoice, openXg1eAttacked, resolveXg1eAttacked, skipXg1eAttacked, xg1eAfterAction } from "../rules/xg1/xg1eEffects";
 import { applyRk13AfterAction } from "../rules/rk/rk13UnitEffects";
 import { applyRk8AfterAction } from "../rules/rk/rk8UnitEffects";
 import { applyRk10AfterAction, rk10CraneDeclined, rk10CraneIntercept, runRk10OnRush } from "../rules/rk/rk10UnitEffects";
@@ -116,6 +118,9 @@ import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
 import { activateXg5HandEffect, applyXg5AfterAction, applyXg5StrikeResolved, openXg5Attacked } from "../rules/xg5/xg5Effects";
+import { openXg1aStrikeReplacement } from "../rules/xg1/xg1aEffects";
+import { openXg1bSakanamaru, xg1bOnAttackDeclared } from "../rules/xg1/xg1bEffects";
+import { xg1cBlackFangOnRide, xg1cOnAttackDeclared } from "../rules/xg1/xg1cEffects";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -552,6 +557,12 @@ function continueAttackAfterDeclaration(
     const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...xg7Attacked, pendingBattleEntry: undefined } : xg7Attacked;
     return ok(parked, buildSimpleLogEntry(playerId, "xg7055_cyclone_gale_choice"));
   }
+  // XG1-084【人質と脅迫】（アタックした相手が手札を1枚捨札にする）・XG1-087【瞬間移動】（rules/xg1/xg1eEffects.ts）。
+  const xg1eAttacked = openXg1eAttacked(battleState, pending, wingAttackFromRush);
+  if (xg1eAttacked) {
+    const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...xg1eAttacked, pendingBattleEntry: undefined } : xg1eAttacked;
+    return ok(parked, buildSimpleLogEntry(playerId, "xg1e_attacked_choice"));
+  }
   // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
   const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
   // RS-414【ディオネを守る壁】: 冥府神の自軍ユニットがアタックされたとき、常駐を捨札にしてバトルを行わなくてもよい。
@@ -820,6 +831,9 @@ function continueDeferredPowerFlip(state: GameState): GameState {
 }
 
 function completeStrike(state: GameState, pending: PendingStrike, extraLogs: string[] = []): ActionResult {
+  // XG1-009【マスキークラッシュ】: ダメージを与えるかわりに敵軍捨札のカードをダメージにするかを選ぶ（rules/xg1/xg1aEffects.ts）。
+  const xg1Replace = openXg1aStrikeReplacement(state, pending);
+  if (xg1Replace) return ok(xg1Replace, buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending", String(pending.damage)));
   const nextState = finalizeStrike(state, pending);
   if (nextState.pendingDamagePayment || nextState.deferredPowerFlip) {
     return ok(nextState, buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending_damage"));
@@ -841,6 +855,8 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
   ) {
     return false;
   }
+  // クロスギャザー XG1（`xg1::`）のカード固有の効果も、使ったあとで対象を選ぶ（rules/xg1/xg1Effects.ts）。
+  if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslEffect.effects.some((p) => p.type === "grant_keyword" && p.keyword.startsWith("xg1::"))) return false;
   return needsOperationTarget(cardId);
 }
 
@@ -1059,6 +1075,10 @@ function applyActionWithRng(
   next = trackZenibombEntries(state, next);
   // RK-240・RK-247: このターン、ユニットがホールドされたかを記録する（rules/rk/rk12UnitEffects.ts）。
   next = trackRk12UnitHolds(state, next);
+  // XG1-063【トルネードチェイサー】: 手札のカードが捨札に置かれたか（いちばん外側のアクションの前後で見る。rules/xg1/xg1dEffects.ts）。
+  if (applyActionDepth === 0) next = xg1dTrackHandDiscards(state, next, action);
+  // XG1-082【戦士シャイダーの遺産】（捨札になったとき）・XG1-092 の数え上げ（rules/xg1/xg1eEffects.ts）。
+  if (applyActionDepth === 0) next = xg1eAfterAction(state, next, action);
   // RK-251 ゴルゴムの仕業を使わなかった: オペレーションの使用（効果の実行）を続ける（rules/rk/rk12UnitEffects.ts）。
   if (next.rk12ResumeOperation && !next.pendingEffectChoice) {
     const op = next.rk12ResumeOperation;
@@ -1066,6 +1086,14 @@ function applyActionWithRng(
     next = resumed.ok
       ? { ...resumed.state, rk12GorgomPassedOp: undefined }
       : { ...next, rk12ResumeOperation: undefined, rk12GorgomPassedOp: undefined };
+  }
+  // XG1-038【サカナマル】の選択の後: 相手のユニットがまだラッシュエリアにあれば move_to_battle を続ける（rules/xg1/xg1bEffects.ts）。
+  if (next.xg1ResumeMove && !next.pendingEffectChoice) {
+    const mv = next.xg1ResumeMove;
+    const cleared: GameState = { ...next, xg1ResumeMove: undefined, activePlayer: mv.playerId };
+    const stillInRush = cleared.players[mv.playerId].rush.some((c) => c.instanceId === mv.instanceId);
+    const resumed = stillInRush ? applyAction(cleared, { type: "move_to_battle", ...mv }, { trustLegality: true }) : null;
+    next = resumed?.ok ? { ...resumed.state, xg1SakanamaruDone: undefined } : { ...cleared, xg1SakanamaruDone: undefined };
   }
   // 第9弾 RS-607 の続き・RS-613 のホールド待ち（rules/legend1/set9NamedEffectsA.ts）。
   if (applyActionDepth === 0) next = settleSet9AAfterAction(state, next);
@@ -2471,6 +2499,10 @@ function applyActionCore(
         );
       }
 
+      // XG1-038【サカナマル】: 相手が S ユニットをバトルエリアに出すために選んだとき（rules/xg1/xg1bEffects.ts）。
+      const sakanamaru = openXg1bSakanamaru(state, { playerId, instanceId: action.instanceId, vehicleInstanceId: action.vehicleInstanceId, rideOff: action.rideOff });
+      if (sakanamaru) return ok(sakanamaru, buildSimpleLogEntry(playerId, "battle_entry_reaction_pending"));
+
       // ライドして出るときは、ライドした状態で出られるかを判定する（例: RS-290 の対象外になる。atwiki/page-474 Q3）。
       const enteringCard = action.vehicleInstanceId
         ? { ...found.card, mountedOnInstanceId: action.vehicleInstanceId }
@@ -3221,6 +3253,11 @@ function applyActionCore(
         if ("error" in picked) return fail(picked.error);
         return completeStrike(picked.state, picked.strike, [picked.log]);
       }
+      if (isXg1eAttackedChoice(pending)) {
+        const picked = resolveXg1eAttacked(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
+      }
       if (pending?.effectId === DIONE_WALL_EFFECT_ID && pending.machineEmpireMeta) {
         const picked = resolveDioneWallPick(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
@@ -3357,6 +3394,11 @@ function applyActionCore(
           return ok({ ...skipped.state, pendingStrike: skipped.strike, activePlayer: playerId }, buildSimpleLogEntry(playerId, "skip_effect_choice"));
         }
         return completeStrike(skipped.state, skipped.strike);
+      }
+      if (isXg1eAttackedChoice(pending)) {
+        const skipped = skipXg1eAttacked(state, playerId);
+        if (!skipped) return fail("invalid_target");
+        return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
       }
       if ((pending?.effectId === MACHINE_EMPIRE_EFFECT_ID || pending?.effectId === DIONE_WALL_EFFECT_ID) && pending.machineEmpireMeta) {
         const skipped = skipMachineEmpireChoice(state, playerId);
@@ -3654,7 +3696,9 @@ function applyActionCore(
       );
       if (!mounted.ok) return mounted;
       // RS-381 ガレオパルサー: RC を持たない「レッド」の S ユニットは自軍コマンドを1つホールドしてライドする。
-      const held = holdCommandForGaleoPulsarRide(mounted.state, playerId, action.riderInstanceId, action.vehicleInstanceId);
+      let held = holdCommandForGaleoPulsarRide(mounted.state, playerId, action.riderInstanceId, action.vehicleInstanceId);
+      // XG1-057 ブラックファング【衝撃波】: 敵軍のライドされているブラックファングがあれば、ライドして出た S ユニットはホールド状態になる。
+      held = xg1cBlackFangOnRide(held, playerId, action.riderInstanceId);
       return held === mounted.state ? mounted : { ...mounted, state: held };
     }
 
@@ -3795,6 +3839,11 @@ function applyActionCore(
       battleState = rk1PayAttackCommandCost(battleState, playerId, enemyId, action.defenderInstanceId);
       // RK-124【人を守る決意】: アタックの対象として「スネークオルフェノク」を選んだことを記録する（rules/rk/rk6Fields.ts）。
       battleState = rk6RecordSnakeSelected(battleState, playerId, action.defenderInstanceId);
+      // XG1-030【キラークロー】ウイングでアタックするとき（rules/xg1/xg1bEffects.ts）。
+      battleState = xg1bOnAttackDeclared(battleState, playerId, action.attackerInstanceId, wingAttackFromRush);
+      // XG1-045【墨攻撃】: アタックするとき、バトルの前に山札の上をオモテにする（rules/xg1/xg1cEffects.ts）。
+      const sumi = xg1cOnAttackDeclared(battleState, playerId, action.attackerInstanceId, wingAttackFromRush);
+      battleState = sumi.state;
       // ルール: R-CTR-03 — 「アタックするとき、相手はカウンターを発動できない」はアタック処理の終わりまで続く。
       if (attackerBlocksDefenderCounters(battleState, playerId, action.attackerInstanceId)) {
         battleState = { ...battleState, counterLockedPlayerId: enemyId };
@@ -3810,6 +3859,7 @@ function applyActionCore(
         mirageBeamDiscard: miragePrep.revealedCard,
         mirageBeamDefenderBpOverride: defenderMirage.bpOverride,
         mirageBeamDefenderDiscard: defenderMirage.revealedCard,
+        ...(sumi.cancel ? { battleCancelled: true } : {}),
       };
 
       // ルール: RS-019 超力／RK-186【Jパンチ】 — アタックするとき、ホールドするコマンドの数をアタックした

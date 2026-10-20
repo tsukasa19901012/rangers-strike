@@ -22,11 +22,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-084::to",
+          "keyword": "xg1::XG1-084::hostage",
           "duration": "permanent"
         }
       ]

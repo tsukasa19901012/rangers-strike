@@ -212,7 +212,7 @@ describe("XG1-030 アバレキラーAM", () => {
     expect(bpOf(s, "player1", "XG1-030:ak")).toBe(4500);
   });
 
-  it.fails("XG1-030: ウイングでアタックするときはナンバーに関係なく【キラークロー】が発動し、BP6500 で BP6000 のユニットに勝つ（既知の不具合: CARD-XG1-030 ウイングでのアタックでは発動せず BP4500 で負ける）（出典: atwiki/page-1666「（この効果はこれがウイングでアタックするときはナンバーに関係なく発動する）」・カード評価「ウイングから発動できる」）", () => {
+  it("XG1-030: ウイングでアタックするときはナンバーに関係なく【キラークロー】が発動し、BP6500 で BP6000 のユニットに勝つ（既知の不具合: CARD-XG1-030 ウイングでのアタックでは発動せず BP4500 で負ける）（出典: atwiki/page-1666「（この効果はこれがウイングでアタックするときはナンバーに関係なく発動する）」・カード評価「ウイングから発動できる」）", () => {
     let s = p1Battle({ rush: [inst("XG1-030", "ak")] }, { battle: [inst("SPEC-N6", "e")] }, EXTRA);
     s = act(s, { type: "hold_for_wing", playerId: "player1", instanceId: "XG1-030:ak" });
     s = settle(attack(s, "XG1-030:ak", "SPEC-N6:e"));
@@ -245,7 +245,7 @@ describe("XG1-031 ゴーオンレッド", () => {
       { type: "move_to_battle", playerId: "player1", instanceId: "SPEC-GS:x" },
     );
 
-  it.fails("XG1-031: ※ これが自軍エリアにある間、自軍バトルフェイズ中は手札の炎神のユニットカードに WB が追加される（激気〈RS-436〉で OT の炎神 M を出せる）（既知の不具合: CARD-XG1-031 手札の炎神に WB が追加されず激気の候補にならない）（出典: atwiki/page-1638「自分の手札にある特徴「炎神」を持つユニットカードはカテゴリにWBが追加される」・カード評価「自身の効果のおかげで炎神も激気に対応している」）", () => {
+  it("XG1-031: ※ これが自軍エリアにある間、自軍バトルフェイズ中は手札の炎神のユニットカードに WB が追加される（激気〈RS-436〉で OT の炎神 M を出せる）（既知の不具合: CARD-XG1-031 手札の炎神に WB が追加されず激気の候補にならない）（出典: atwiki/page-1638「自分の手札にある特徴「炎神」を持つユニットカードはカテゴリにWBが追加される」・カード評価「自身の効果のおかげで炎神も激気に対応している」）", () => {
     const s = gekiEntered([inst("XG1-031", "gr")]);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-436");
     expect(choiceIds(s)).toContain("SPEC-ENM1:m1");
@@ -266,16 +266,16 @@ describe("XG1-031 ゴーオンレッド", () => {
     expect(choiceIds(s)).toContain("SPEC-EN3:m3");
   });
 
-  it.fails("XG1-031: 候補は特徴「炎神」を持ちナンバーに数字を持つ M ユニットだけ（ナンバーなしの炎神・炎神でない M は選べない）（既知の不具合: CARD-XG1-031 ナンバーなし・炎神でない M も候補になる）（出典: atwiki/page-1638「特徴「炎神」を持ち、ナンバーに数字を持つMユニット」）", () => {
+  it("XG1-031: 候補は特徴「炎神」を持ちナンバーに数字を持つ M ユニットだけ（ナンバーなしの炎神・炎神でない M は選べない）（既知の不具合: CARD-XG1-031 ナンバーなし・炎神でない M も候補になる）（出典: atwiki/page-1638「特徴「炎神」を持ち、ナンバーに数字を持つMユニット」）", () => {
     expect(choiceIds(nc())).toEqual(["SPEC-EN3:m3"]);
   });
 
-  it.fails("XG1-031: 選んだ炎神は自軍の手札に戻る（既知の不具合: CARD-XG1-031 手札ではなく自軍パワーゾーンに置かれる）（出典: atwiki/page-1638「手札に戻してもよい」）", () => {
+  it("XG1-031: 選んだ炎神は自軍の手札に戻る（既知の不具合: CARD-XG1-031 手札ではなく自軍パワーゾーンに置かれる）（出典: atwiki/page-1638「手札に戻してもよい」）", () => {
     const s = pick(nc(), "SPEC-EN3:m3");
     expect(zoneOf(s, "player1", "SPEC-EN3:m3")).toBe("hand");
   });
 
-  it.fails("XG1-031: 戻したユニットのナンバー（3）以下の必要パワーを持つ敵軍 S ユニットを選び、持ち主のパワーゾーンに送る（必要パワー4 は選べない）（既知の不具合: CARD-XG1-031 敵軍ユニットを選べず何も送られない）（出典: atwiki/page-1638「その数字以下の必要パワーの数字を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る」）", () => {
+  it("XG1-031: 戻したユニットのナンバー（3）以下の必要パワーを持つ敵軍 S ユニットを選び、持ち主のパワーゾーンに送る（必要パワー4 は選べない）（既知の不具合: CARD-XG1-031 敵軍ユニットを選べず何も送られない）（出典: atwiki/page-1638「その数字以下の必要パワーの数字を持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送る」）", () => {
     const s = pick(nc(), "SPEC-EN3:m3");
     expectChoiceFrom(s, "player1", "XG1-031");
     expect(choiceIds(s)).not.toContain("SPEC-C4:c4");
@@ -315,14 +315,14 @@ describe("XG1-032 ゲキレッド", () => {
   const nc = () =>
     ncAt("XG1-032:gk", 2, { rush: [inst("SPEC-GK", "gk"), inst("SPEC-ENX", "mx")] }, { battle: [inst("SPEC-B4", "b4"), inst("SPEC-B45", "b45")] }, EXTRA);
 
-  it.fails("XG1-032: 【咆咆弾】NC — 自軍ラッシュエリアの特徴「激気」を持つ M ユニットから1体選べる（任意）（既知の不具合: CARD-XG1-032 選択が開かない）（出典: atwiki/page-1640「自軍ラッシュエリアから、特徴「激気」を持つMユニットを1体選び手札に戻してもよい」）", () => {
+  it("XG1-032: 【咆咆弾】NC — 自軍ラッシュエリアの特徴「激気」を持つ M ユニットから1体選べる（任意）（既知の不具合: CARD-XG1-032 選択が開かない）（出典: atwiki/page-1640「自軍ラッシュエリアから、特徴「激気」を持つMユニットを1体選び手札に戻してもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG1-032");
     expect(choiceIds(s)).toEqual(["SPEC-GK:gk"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-032: 戻したユニット（BP4000）以下の BP を持つ敵軍バトルエリアのユニットを1体選び撃破する（BP4500 は選べない）（既知の不具合: CARD-XG1-032）（出典: atwiki/page-1640「戻したユニットのBP以下のBPを持つユニットを、敵軍バトルエリアから1体選び撃破する」）", () => {
+  it("XG1-032: 戻したユニット（BP4000）以下の BP を持つ敵軍バトルエリアのユニットを1体選び撃破する（BP4500 は選べない）（既知の不具合: CARD-XG1-032）（出典: atwiki/page-1640「戻したユニットのBP以下のBPを持つユニットを、敵軍バトルエリアから1体選び撃破する」）", () => {
     const s = pick(nc(), "SPEC-GK:gk");
     expect(zoneOf(s, "player1", "SPEC-GK:gk")).toBe("hand");
     expect(choiceIds(s)).toEqual(["SPEC-B4:b4"]);
@@ -372,17 +372,17 @@ describe("XG1-033 害地大臣ヨゴシュタイン", () => {
     expect(canStartRush(daRush([released("SPEC-C4", "c")]), "player1", "SPEC-DA0:d")).toBe(false);
   });
 
-  it.fails("XG1-033: 【汚れた大地】敵軍のコマンドゾーンのカードにも DA が追加される（相手も DA のユニットのラッシュに使える）（既知の不具合: CARD-XG1-033 自軍のコマンドにしか追加されない）（出典: atwiki/page-1581「コマンドゾーンにある…カードは」・カード評価「敵軍コマンドを汚染できれば」「逆に相手に使われそうな場合は」）", () => {
+  it("XG1-033: 【汚れた大地】敵軍のコマンドゾーンのカードにも DA が追加される（相手も DA のユニットのラッシュに使える）（既知の不具合: CARD-XG1-033 自軍のコマンドにしか追加されない）（出典: atwiki/page-1581「コマンドゾーンにある…カードは」・カード評価「敵軍コマンドを汚染できれば」「逆に相手に使われそうな場合は」）", () => {
     const s = enemyBoard({ rush: [inst("XG1-033", "yg")] }, { hand: [inst("SPEC-DA0", "d")], command: [released("TST-OP", "c")] }, EXTRA, "rush");
     expect(canStartRush(s, "player2", "SPEC-DA0:d")).toBe(true);
   });
 
-  it.fails("XG1-033: Q&A — DA が追加されたコマンドはマルチカテゴリとして扱う（ターボロボ〈XG1-020〉の BP が +1000 される）（既知の不具合: CARD-XG1-033 追加された DA がターボロボのマルチカテゴリの数に入らず BP8000 のまま）（出典: atwiki/page-1581 Q1「はい、マルチカテゴリのコマンドとして扱います」）", () => {
+  it("XG1-033: Q&A — DA が追加されたコマンドはマルチカテゴリとして扱う（ターボロボ〈XG1-020〉の BP が +1000 される）（既知の不具合: CARD-XG1-033 追加された DA がターボロボのマルチカテゴリの数に入らず BP8000 のまま）（出典: atwiki/page-1581 Q1「はい、マルチカテゴリのコマンドとして扱います」）", () => {
     const s = p1Battle({ battle: [inst("XG1-020", "tr")], rush: [inst("XG1-033", "yg")], command: [released("TST-OP-ET", "c")] }, {}, EXTRA);
     expect(bpOf(s, "player1", "XG1-020:tr")).toBe(9000);
   });
 
-  it.fails("XG1-033: （この効果は重複しない）— ヨゴシュタインが2体いても、追加される DA は1つでターボロボの BP は +1000 のまま（既知の不具合: CARD-XG1-033 上と同じく BP に反映されず観測できない）（出典: atwiki/page-1581「（この効果は重複しない）」）", () => {
+  it("XG1-033: （この効果は重複しない）— ヨゴシュタインが2体いても、追加される DA は1つでターボロボの BP は +1000 のまま（既知の不具合: CARD-XG1-033 上と同じく BP に反映されず観測できない）（出典: atwiki/page-1581「（この効果は重複しない）」）", () => {
     const s = p1Battle({ battle: [inst("XG1-020", "tr")], rush: [inst("XG1-033", "yg"), inst("XG1-033", "yg2")], command: [released("TST-OP-ET", "c")] }, {}, EXTRA);
     expect(bpOf(s, "player1", "XG1-020:tr")).toBe(9000);
   });

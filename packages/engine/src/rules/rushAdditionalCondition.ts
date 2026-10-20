@@ -75,6 +75,19 @@ function rushConditionGateMet(
     return count >= Number(min);
   }
 
+  // 「自軍捨札にカテゴリを2つ以上持つSユニットのカードが5枚以上ある」（XG1-019 ターボマシン atwiki/page-1647）。
+  const multiCategoryDiscard = gateText.match(/^自軍捨札にカテゴリを(\d+)つ以上持つ(S|M|L)?ユニットのカードが(\d+)枚以上(?:ある)?$/);
+  if (multiCategoryDiscard) {
+    const [, minCats, size, min] = multiCategoryDiscard;
+    const count = countDiscardUnitCardsMatching(player, state.definitions, (cardId) => {
+      const def = state.definitions[cardId];
+      if (size && def?.size !== size) return false;
+      const cats = Array.isArray(def?.category) ? def.category : def?.category ? [def.category] : [];
+      return cats.length >= Number(minCats);
+    });
+    return count >= Number(min);
+  }
+
   // 「特徴「炎神」を持つオモテ向きの自軍パワーが12枚以上ある」（RS-663・RS-664 atwiki/page-1502・1494）。
   const faceUpPowerFeature = gateText.match(/^特徴「([^」]+)」を持つオモテ向きの自軍パワーが(\d+)枚以上(?:ある)?$/);
   if (faceUpPowerFeature) {
@@ -120,6 +133,18 @@ function parseAlternateConditionText(text: string): RushAdditionalCondition | un
       requiredFeature: originalFeatureDiscard[1],
       ...(originalFeatureDiscard[2] ? { requiredSize: originalFeatureDiscard[2] as "S" | "M" | "L" } : {}),
       unitCount: Number(originalFeatureDiscard[3]),
+    };
+  }
+
+  // 「自軍ゾーンのオモテ向きのカードからSユニットのカードを1枚選び捨札にする」（XG1-019 ターボマシン atwiki/page-1647）。
+  // ゾーン（パワーゾーン・コマンドゾーン）のカードを捨札にする型（discard_command_card。rules/zordExtended.ts が文言で絞る）。
+  const zoneFaceUpDiscard = text.match(/^自軍ゾーンのオモテ向きのカードから(S|M|L)?ユニットのカードを(\d+)枚選び捨札にする$/);
+  if (zoneFaceUpDiscard) {
+    return {
+      conditionId: "discard_command_card",
+      text,
+      ...(zoneFaceUpDiscard[1] ? { requiredSize: zoneFaceUpDiscard[1] as "S" | "M" | "L" } : {}),
+      unitCount: Number(zoneFaceUpDiscard[2]),
     };
   }
 

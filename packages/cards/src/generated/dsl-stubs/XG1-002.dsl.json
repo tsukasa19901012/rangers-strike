@@ -28,7 +28,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_resident_pick_to_power",
+          "keyword": "xg1::XG1-002::denji_stick",
           "duration": "turn"
         }
       ]

@@ -59,7 +59,7 @@ describe("XG1-088 バイクル", () => {
 
   const p1 = { command: [inst("TST-OP", "c1")], deck: [inst("TST-UNIT-0", "top"), ...deckCards(3)] };
 
-  it.fails("XG1-088: 【避難経路の確保】RC — 自軍コマンドを1つ手札に戻すかを選べ（任意）、戻すと山札の上から1枚引いて自軍コマンドゾーンにホールド状態で置く（既知の不具合: CARD-XG1-088 選択が開かず何も起きない）（出典: atwiki/page-1578「自軍コマンドを1つ選び、自分の手札に戻してもよい。そうしたとき、自軍山札の上から1枚引いて、自軍コマンドゾーンにホールド状態で置く」）", () => {
+  it("XG1-088: 【避難経路の確保】RC — 自軍コマンドを1つ手札に戻すかを選べ（任意）、戻すと山札の上から1枚引いて自軍コマンドゾーンにホールド状態で置く（既知の不具合: CARD-XG1-088 選択が開かず何も起きない）（出典: atwiki/page-1578「自軍コマンドを1つ選び、自分の手札に戻してもよい。そうしたとき、自軍山札の上から1枚引いて、自軍コマンドゾーンにホールド状態で置く」）", () => {
     const s = rcAt("XG1-088:bk", p1, {}, EXTRA);
     expectChoiceFrom(s, "player1", "XG1-088");
     expect(canSkip(s)).toBe(true);
@@ -69,7 +69,7 @@ describe("XG1-088 バイクル", () => {
     expect(isHeldCard(t, "player1", "TST-UNIT-0:top")).toBe(true);
   });
 
-  it.fails("XG1-088: 「ファイヤー」（XG1-089）からコンビネーションするときは、ライドオフしなくても発動する（既知の不具合: CARD-XG1-088 発動しない）（出典: atwiki/page-1578「（この効果は「ファイヤー」または「ウォルター」からコンビネーションするときはナンバーに関係なく発動する）」）", () => {
+  it("XG1-088: 「ファイヤー」（XG1-089）からコンビネーションするときは、ライドオフしなくても発動する（既知の不具合: CARD-XG1-088 発動しない）（出典: atwiki/page-1578「（この効果は「ファイヤー」または「ウォルター」からコンビネーションするときはナンバーに関係なく発動する）」）", () => {
     expectChoiceFrom(enteredFromRush("XG1-088:bk", { ...p1, battle: [inst("XG1-089", "fi")] }, {}, EXTRA), "player1", "XG1-088");
   });
 
@@ -105,7 +105,7 @@ describe("XG1-089 ファイヤー", () => {
     expect(spOf(s, "player1", "XG1-089:fi")).toBe(1);
   });
 
-  it.fails("XG1-089: 自軍捨札の「警察」を持たない S ユニットのカードを選べ（任意。「警察」のユニット・オペレーションは選べない）、自軍コマンドゾーンにホールド状態で置く（既知の不具合: CARD-XG1-089 選択が開かない）（出典: atwiki/page-1664「特徴「警察」を持たないSユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
+  it("XG1-089: 自軍捨札の「警察」を持たない S ユニットのカードを選べ（任意。「警察」のユニット・オペレーションは選べない）、自軍コマンドゾーンにホールド状態で置く（既知の不具合: CARD-XG1-089 選択が開かない）（出典: atwiki/page-1664「特徴「警察」を持たないSユニットのカードを1枚選び、自軍コマンドゾーンにホールド状態で置いてもよい」）", () => {
     const s = ncAt("XG1-089:fi", 5, { discard }, {}, EXTRA);
     expectChoiceFrom(s, "player1", "XG1-089");
     expect(canSkip(s)).toBe(true);
@@ -115,7 +115,7 @@ describe("XG1-089 ファイヤー", () => {
     expect(isHeldCard(t, "player1", "TST-UNIT-0:d")).toBe(true);
   });
 
-  it.fails("XG1-089: 自軍コマンドゾーンが5枚で置けなければ、選んだカードを手札に加える（既知の不具合: CARD-XG1-089 選択が開かない）（出典: atwiki/page-1664「置けなければ手札に加える」）", () => {
+  it("XG1-089: 自軍コマンドゾーンが5枚で置けなければ、選んだカードを手札に加える（既知の不具合: CARD-XG1-089 選択が開かない）（出典: atwiki/page-1664「置けなければ手札に加える」）", () => {
     const s = resolveAll(ncAt("XG1-089:fi", 5, { discard, command: FULL5 }, {}, EXTRA), ["TST-UNIT-0:d"]);
     expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("hand");
   });
@@ -139,7 +139,7 @@ describe("XG1-090 ウォルター", () => {
 
   const discard = [inst("TST-UNIT-0", "d"), inst("TST-OP", "o")];
 
-  it.fails("XG1-090: 【救助と安全確保】NC2 — 自軍捨札の S ユニットのカードを選び（任意。オペレーションは選べない）、自軍山札の上に置く（既知の不具合: CARD-XG1-090 選択が開かない）（出典: atwiki/page-1579「自軍捨札からSユニットのカードを1枚選び、自軍山札の上に置いてもよい」）", () => {
+  it("XG1-090: 【救助と安全確保】NC2 — 自軍捨札の S ユニットのカードを選び（任意。オペレーションは選べない）、自軍山札の上に置く（既知の不具合: CARD-XG1-090 選択が開かない）（出典: atwiki/page-1579「自軍捨札からSユニットのカードを1枚選び、自軍山札の上に置いてもよい」）", () => {
     const s = ncAt("XG1-090:wl", 2, { discard }, {}, EXTRA);
     expectChoiceFrom(s, "player1", "XG1-090");
     expect(canSkip(s)).toBe(true);
@@ -147,7 +147,7 @@ describe("XG1-090 ウォルター", () => {
     expect(deckIds(resolveAll(s, ["TST-UNIT-0:d"]))[0]).toBe("TST-UNIT-0:d");
   });
 
-  it.fails("XG1-090: 「バイクル」（XG1-088）からコンビネーションするときは、3番目でも発動する（既知の不具合: CARD-XG1-090 発動しない）（出典: atwiki/page-1579「（この効果は「ファイヤー」または「バイクル」からコンビネーションするときはナンバーに関係なく発動する）」）", () => {
+  it("XG1-090: 「バイクル」（XG1-088）からコンビネーションするときは、3番目でも発動する（既知の不具合: CARD-XG1-090 発動しない）（出典: atwiki/page-1579「（この効果は「ファイヤー」または「バイクル」からコンビネーションするときはナンバーに関係なく発動する）」）", () => {
     const s = enteredFromRush("XG1-090:wl", { battle: [...fill(1), inst("XG1-088", "bk")], discard }, {}, EXTRA);
     expectChoiceFrom(s, "player1", "XG1-090");
   });
@@ -176,7 +176,7 @@ describe("XG1-091 ブライアン", () => {
     expect(zoneOf(resolveAll(pick(s, "XG1-086:x")), "player2", "XG1-086:x")).toBe("discard");
   });
 
-  it.fails("XG1-091: 候補は敵軍バトルエリアの RC を持つ S ユニットだけ（RC を持たないユニット・ラッシュエリアのユニットは選べない）で、見送れる（既知の不具合: CARD-XG1-091 RC を持たないユニットも候補に入り、見送れない）（出典: atwiki/page-1678「敵軍バトルエリアからナンバーにＲＣを持つSユニット」「撃破してもよい」）", () => {
+  it("XG1-091: 候補は敵軍バトルエリアの RC を持つ S ユニットだけ（RC を持たないユニット・ラッシュエリアのユニットは選べない）で、見送れる（既知の不具合: CARD-XG1-091 RC を持たないユニットも候補に入り、見送れない）（出典: atwiki/page-1678「敵軍バトルエリアからナンバーにＲＣを持つSユニット」「撃破してもよい」）", () => {
     const s = entered();
     expect(choiceIds(s)).toEqual(["XG1-086:x"]);
     expect(canSkip(s)).toBe(true);
@@ -200,7 +200,7 @@ describe("XG1-092 ソルブレイバー", () => {
     return resolveAll(act(passEntry(s), { type: "move_to_battle", playerId: "player1", instanceId: "XG1-092:sb" }));
   };
 
-  it.fails("XG1-092: 公式Q&A — 【ケルベロスΔ】は CN2 で発動し、このターンに捨札から手札に加えた S ユニットのカード1枚につき BP+2000（1枚で BP6000）（既知の不具合: CARD-XG1-092 BP が上がらない）（出典: atwiki/page-1679 Q1「CN2で発動するという意図でデザインしております」・カード評価「ソルジャンヌの回収能力で+2000」）", () => {
+  it("XG1-092: 公式Q&A — 【ケルベロスΔ】は CN2 で発動し、このターンに捨札から手札に加えた S ユニットのカード1枚につき BP+2000（1枚で BP6000）（既知の不具合: CARD-XG1-092 BP が上がらない）（出典: atwiki/page-1679 Q1「CN2で発動するという意図でデザインしております」・カード評価「ソルジャンヌの回収能力で+2000」）", () => {
     const s = afterRecover();
     expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("hand");
     expect(bpOf(s, "player1", "XG1-092:sb")).toBe(6000);
@@ -223,14 +223,14 @@ describe("XG1-093 ソルジャンヌ", () => {
 
   const nc = () => ncAt("XG1-093:sj", 1, { hand: [inst("TST-OP", "h")], discard: [inst("TST-UNIT-0", "d"), inst("TST-OP", "o")] }, {}, EXTRA);
 
-  it.fails("XG1-093: 【メディカルパック】NC1 — まず手札を1枚捨札にするかを選ぶ（任意）（既知の不具合: CARD-XG1-093 手札を捨てる段がなく、見送れない）（出典: atwiki/page-1610「自分の手札から1枚選び捨札にしてもよい」）", () => {
+  it("XG1-093: 【メディカルパック】NC1 — まず手札を1枚捨札にするかを選ぶ（任意）（既知の不具合: CARD-XG1-093 手札を捨てる段がなく、見送れない）（出典: atwiki/page-1610「自分の手札から1枚選び捨札にしてもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG1-093");
     expect(canSkip(s)).toBe(true);
     expect(choiceIds(s)).toContain("TST-OP:h");
   });
 
-  it.fails("XG1-093: 手札を捨札にすると、自軍捨札の S ユニットのカードを1枚手札に加える（オペレーションは選べない）（既知の不具合: CARD-XG1-093 手札を捨てずに回収する）（出典: atwiki/page-1610「そうしたとき、自軍捨札からSユニットのカードを1枚選び、手札に加える」）", () => {
+  it("XG1-093: 手札を捨札にすると、自軍捨札の S ユニットのカードを1枚手札に加える（オペレーションは選べない）（既知の不具合: CARD-XG1-093 手札を捨てずに回収する）（出典: atwiki/page-1610「そうしたとき、自軍捨札からSユニットのカードを1枚選び、手札に加える」）", () => {
     const s = resolveAll(nc(), ["TST-OP:h", "TST-UNIT-0:d"]);
     expect(zoneOf(s, "player1", "TST-OP:h")).toBe("discard");
     expect(zoneOf(s, "player1", "TST-UNIT-0:d")).toBe("hand");
@@ -262,7 +262,7 @@ describe("XG1-094 ビーファイターテントウ", () => {
 
   const enemyDeck = [inst("TST-UNIT-0", "top"), ...deckCards(3, "e")];
 
-  it.fails("XG1-094: 【テントウスピアー】RC — 敵軍山札の上の1枚をオモテにするかを選べ（任意）、敵軍コマンドゾーンにホールド状態で置ける（既知の不具合: CARD-XG1-094 選択が開かず何も起きない）（出典: atwiki/page-1645「オモテにしたカードを持ち主の山札の上に戻すか、持ち主のコマンドゾーンにホールド状態で置く」）", () => {
+  it("XG1-094: 【テントウスピアー】RC — 敵軍山札の上の1枚をオモテにするかを選べ（任意）、敵軍コマンドゾーンにホールド状態で置ける（既知の不具合: CARD-XG1-094 選択が開かず何も起きない）（出典: atwiki/page-1645「オモテにしたカードを持ち主の山札の上に戻すか、持ち主のコマンドゾーンにホールド状態で置く」）", () => {
     const s = rcAt("XG1-094:tt", {}, { deck: enemyDeck }, EXTRA);
     expectChoiceFrom(s, "player1", "XG1-094");
     expect(canSkip(s)).toBe(true);
@@ -271,7 +271,7 @@ describe("XG1-094 ビーファイターテントウ", () => {
     expect(isHeldCard(t, "player2", "TST-UNIT-0:top")).toBe(true);
   });
 
-  it.fails("XG1-094: 公式Q&A — 敵軍コマンドゾーンが5枚のときは、オモテにしたカードを必ず山札の上に戻す（捨札にはできない）（既知の不具合: CARD-XG1-094 選択が開かない）（出典: atwiki/page-1645 Q1「必ず「持ち主の山札の上に戻す」を選択することになります」）", () => {
+  it("XG1-094: 公式Q&A — 敵軍コマンドゾーンが5枚のときは、オモテにしたカードを必ず山札の上に戻す（捨札にはできない）（既知の不具合: CARD-XG1-094 選択が開かない）（出典: atwiki/page-1645 Q1「必ず「持ち主の山札の上に戻す」を選択することになります」）", () => {
     const s = rcAt("XG1-094:tt", {}, { deck: enemyDeck, command: FULL5 }, EXTRA);
     expectChoiceFrom(s, "player1", "XG1-094");
     const t = resolveAll(s, ["accept", "command"]);
@@ -279,7 +279,7 @@ describe("XG1-094 ビーファイターテントウ", () => {
     expect(zoneOf(t, "player2", "TST-UNIT-0:top")).toBe("deck");
   });
 
-  it.fails("XG1-094: 特徴「昆虫」を持つユニットからコンビネーションするときは、ライドオフしなくても発動する（既知の不具合: CARD-XG1-094 発動しない）（出典: atwiki/page-1645「（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）」）", () => {
+  it("XG1-094: 特徴「昆虫」を持つユニットからコンビネーションするときは、ライドオフしなくても発動する（既知の不具合: CARD-XG1-094 発動しない）（出典: atwiki/page-1645「（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）」）", () => {
     expectChoiceFrom(enteredFromRush("XG1-094:tt", { battle: [inst("SPEC-INS", "i")] }, { deck: enemyDeck }, EXTRA), "player1", "XG1-094");
   });
 });

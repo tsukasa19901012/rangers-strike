@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-004::redorubimuchi",
-          "duration": "permanent"
+          "keyword": "xg1::XG1-004::red_rubeamchi",
+          "duration": "turn"
         }
       ]
     }

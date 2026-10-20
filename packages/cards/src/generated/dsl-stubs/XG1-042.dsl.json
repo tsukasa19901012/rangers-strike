@@ -43,7 +43,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-042::fxunknowne590b8",
+          "keyword": "xg1::XG1-042::vampire",
           "duration": "permanent"
         }
       ]

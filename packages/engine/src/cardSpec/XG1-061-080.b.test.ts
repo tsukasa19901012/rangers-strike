@@ -24,6 +24,7 @@ import {
   enemyBoard,
   enteredFromRush,
   expectCatalogText,
+  holdOnField,
   expectChoiceFrom,
   expectRarityIn,
   expectUnitStats,
@@ -75,7 +76,7 @@ describe("XG1-068 ディケイド クウガMF", () => {
     expectRarityIn("XG1-068", ["R"]);
   });
 
-  it.fails("XG1-068: 【アタックライド】RC — 特徴「警察」を持つ自軍ユニット（ラッシュエリア1体・バトルエリア1体）1体につき BP+1000 され、BP5000 になる（既知の不具合: CARD-XG1-068 BP が上がらない）（出典: atwiki/page-1668「特徴「警察」を持つ自軍ユニット1体につきBP+1000される」・カード評価「エリアを問わず警察持ちの自軍ユニットがいれば」）", () => {
+  it("XG1-068: 【アタックライド】RC — 特徴「警察」を持つ自軍ユニット（ラッシュエリア1体・バトルエリア1体）1体につき BP+1000 され、BP5000 になる（既知の不具合: CARD-XG1-068 BP が上がらない）（出典: atwiki/page-1668「特徴「警察」を持つ自軍ユニット1体につきBP+1000される」・カード評価「エリアを問わず警察持ちの自軍ユニットがいれば」）", () => {
     const s = resolveAll(rcAt("XG1-068:kg", { rush: [inst("SPEC-POL", "r")], battle: [inst("SPEC-POL", "b")] }, {}, EXTRA));
     expect(bpOf(s, "player1", "XG1-068:kg")).toBe(5000);
   });
@@ -123,17 +124,18 @@ describe("XG1-069 ディケイド 響鬼", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-069: 手札のオペレーションを捨札にすると「SP1」になる（ユニットカードは捨てられない）（既知の不具合: CARD-XG1-069 受けても何も捨札にならず SP も得ない）（出典: atwiki/page-1604「オペレーションカードを1枚選び、捨札にしてもよい。そうしたとき…「SP1」になり」）", () => {
+  it("XG1-069: 手札のオペレーションを捨札にすると「SP1」になる（ユニットカードは捨てられない）（既知の不具合: CARD-XG1-069 受けても何も捨札にならず SP も得ない）（出典: atwiki/page-1604「オペレーションカードを1枚選び、捨札にしてもよい。そうしたとき…「SP1」になり」）", () => {
     const s = resolveAll(confirm(nc()), ["TST-OP:op"]);
     expect(zoneOf(s, "player1", "TST-OP:op")).toBe("discard");
     expect(zoneOf(s, "player1", "TST-UNIT-0:u")).toBe("hand");
     expect(spOf(s, "player1", "XG1-069:hb")).toBe(1);
   });
 
-  it.fails("XG1-069: 捨札にしたターン、ストライクしてホールド状態でターンを終えるとき、リリースしてもよい（既知の不具合: CARD-XG1-069 前提の捨札が動かず、リリースの機会もない）（出典: atwiki/page-1604「このターンを終えるときホールド状態なら、リリースしてもよい」）", () => {
+  it("XG1-069: 捨札にしたターン、ストライクしてホールド状態でターンを終えるとき、リリースしてもよい（既知の不具合: CARD-XG1-069 前提の捨札が動かず、リリースの機会もない）（出典: atwiki/page-1604「このターンを終えるときホールド状態なら、リリースしてもよい」）", () => {
     const s = resolveAll(confirm(nc()), ["TST-OP:op"]);
     expect(canStrike(s, "XG1-069:hb")).toBe(true);
-    const t = toTurnEnd(settleStrike(s), "XG1-069");
+    // ストライクしてもホールド状態にはならない（R-HOLD-03）ので、ホールド状態にしてからターンを終える（XG1-judgments.md）。
+    const t = toTurnEnd(holdOnField(settleStrike(s), "player1", "XG1-069:hb"), "XG1-069");
     expectChoiceFrom(t, "player1", "XG1-069");
   });
 
@@ -192,7 +194,7 @@ describe("XG1-070 ディケイド カブトRF", () => {
     expect(spOf(resolveAll(s), "player1", "XG1-070:kb")).toBe(0);
   });
 
-  it.fails("XG1-070: ホールドするコマンドのカテゴリは問わない（WB のコマンド3つでも SP1 になる）（既知の不具合: CARD-XG1-070 OT のコマンドしか選べない）（出典: atwiki/page-1602「自軍コマンドを3つ」・カード評価「能力で使用するコマンドもOT以外のカテゴリでも良くなる」）", () => {
+  it("XG1-070: ホールドするコマンドのカテゴリは問わない（WB のコマンド3つでも SP1 になる）（既知の不具合: CARD-XG1-070 OT のコマンドしか選べない）（出典: atwiki/page-1602「自軍コマンドを3つ」・カード評価「能力で使用するコマンドもOT以外のカテゴリでも良くなる」）", () => {
     const s = enteredFromRush("XG1-070:kb", { command: releasedCat("WB", 3) }, {}, EXTRA);
     expectChoiceFrom(s, "player1", "XG1-070");
     expect(spOf(payCommands(s), "player1", "XG1-070:kb")).toBe(1);
@@ -233,7 +235,7 @@ describe("XG1-071 ディケイド 電王SF", () => {
     expect(spOf(enteredFromRush("XG1-071:dn", {}, {}, EXTRA), "player1", "XG1-071:dn")).toBe(0);
   });
 
-  it.fails("XG1-071: ストライクで相手が必要パワー3のカードをウラ返すと、必要パワー3の敵軍ユニット（ラッシュエリア）を撃破する（既知の不具合: CARD-XG1-071 撃破されない）（出典: atwiki/page-1600「ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する」）", () => {
+  it("XG1-071: ストライクで相手が必要パワー3のカードをウラ返すと、必要パワー3の敵軍ユニット（ラッシュエリア）を撃破する（既知の不具合: CARD-XG1-071 撃破されない）（出典: atwiki/page-1600「ウラ返すカードと必要パワーの数字が同じ敵軍ユニットを1体選び撃破する」）", () => {
     const s = resolveAll(strikeFlipping(resolveAll(rc()), "XG1-071:dn", "SPEC-C3:p3"), ["SPEC-C3:r3"]);
     expect(zoneOf(s, "player2", "SPEC-C3:r3")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-UNIT-0:r0")).toBe("rush");
@@ -259,14 +261,15 @@ describe("XG1-072 ディケイド キバ", () => {
 
   const entered = () => enteredFromRush("XG1-072:kv", {}, { battle: [inst("TST-UNIT-0", "a")], rush: [inst("TST-UNIT-0", "r")] }, EXTRA);
 
-  it.fails("XG1-072: 【アタックライド】自軍ターンにバトルエリアに出たとき、これをホールドするかを選べる（任意）（既知の不具合: CARD-XG1-072 選択が開かない）（出典: atwiki/page-1601「これをホールドしてもよい」）", () => {
+  it("XG1-072: 【アタックライド】自軍ターンにバトルエリアに出たとき、これをホールドするかを選べる（任意）（既知の不具合: CARD-XG1-072 選択が開かない）（出典: atwiki/page-1601「これをホールドしてもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG1-072");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-072: ホールドすると、敵軍バトルエリアの S ユニットを1体（ラッシュエリアは選べない）持ち主のパワーゾーンにダメージにして置く（既知の不具合: CARD-XG1-072）（出典: atwiki/page-1601「敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」・カード評価「効果の対象は本家とは違いバトルエリア限定」）", () => {
-    let s = resolveAll(entered(), ["accept"]);
+  it("XG1-072: ホールドすると、敵軍バトルエリアの S ユニットを1体（ラッシュエリアは選べない）持ち主のパワーゾーンにダメージにして置く（既知の不具合: CARD-XG1-072）（出典: atwiki/page-1601「敵軍バトルエリアからSユニットを1体選び、持ち主のパワーゾーンにダメージにして置く」・カード評価「効果の対象は本家とは違いバトルエリア限定」）", () => {
+    // resolveAll は続く対象の選択まで答えてしまうので、「ホールドする」だけを選んで対象の選択の候補を見る（XG1-judgments.md）。
+    let s = pick(entered(), "accept");
     expect(isHeldCard(s, "player1", "XG1-072:kv")).toBe(true);
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:a"]);
     s = resolveAll(pick(s, "TST-UNIT-0:a"));
@@ -320,7 +323,7 @@ describe("XG1-074 仮面ライダーザビーRF", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("XG1-074", "zr")] }, "XG1-074:zr"))).toBe(true);
   });
 
-  it.fails("XG1-074: ※ アタックされる以外では相手に選ばれない（敵軍 XG1-048 の RC【エレキ光線】の候補に入らない）（既知の不具合: CARD-XG1-074 候補に入る）（出典: atwiki/page-1570「※これはアタックされる以外では相手に選ばれない」）", () => {
+  it("XG1-074: ※ アタックされる以外では相手に選ばれない（敵軍 XG1-048 の RC【エレキ光線】の候補に入らない）（既知の不具合: CARD-XG1-074 候補に入る）（出典: atwiki/page-1570「※これはアタックされる以外では相手に選ばれない」）", () => {
     const s = rcAt("XG1-048:s1", {}, { battle: [inst("XG1-074", "zr"), inst("TST-UNIT-0", "o")] }, EXTRA);
     expectChoiceFrom(s, "player1", "XG1-048");
     expect(choiceIds(s)).not.toContain("XG1-074:zr");
