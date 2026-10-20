@@ -12,6 +12,7 @@ import { rk15WinButDestroyed } from "./rk/rk15UnitEffects";
 import { rk16OnBattleDestroy } from "./rk/rk16UnitEffects";
 import { rk13OnAttackWin, rk13OnBattleDestroy } from "./rk/rk13UnitEffects";
 import { openXg6StayOnLeave, xg6OnAttackWin } from "./xg6/xg6Hooks";
+import { xg6WinButDestroyed } from "./xg6/xg6Fields";
 import { rk13BattleUsesPrintedBp, rk13BlocksResist, rk13PrintedBp } from "./rk/rk13Fields";
 import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
 import { rk11KyosukeWinButDestroyed } from "./rk/rk11Fields";
@@ -1453,7 +1454,7 @@ export function resolveBattlePendingCore(
   const destroyDefender = compareDefenderBp <= compareAttackerBp;
 
   const winButSelfDestruct =
-    !destroyAttacker &&
+    (!destroyAttacker &&
     destroyDefender &&
     battleState.activePlayer !== attackerId &&
     (winButDestroyedVsSp1(refreshedAttackerFound.card.cardId) ||
@@ -1465,10 +1466,12 @@ export function resolveBattlePendingCore(
       refreshedAttackerFound.card.cardId,
       refreshedDefenderFound.card,
       defenderOwner,
-    );
+    )) ||
+    // XG6-049 ※: ウイングを持つユニットとバトルしたとき、バトルに勝っても撃破される（自軍ターンも含む。rules/xg6/xg6Fields.ts）。
+    (!destroyAttacker && destroyDefender && xg6WinButDestroyed(battleState, refreshedAttackerFound.card, refreshedDefenderFound.card, defenderOwner));
 
   const winButDefenderSelfDestruct =
-    destroyAttacker &&
+    (destroyAttacker &&
     !destroyDefender &&
     battleState.activePlayer !== defenderOwner &&
     (winButDestroyedVsSp1(refreshedDefenderFound.card.cardId) ||
@@ -1480,7 +1483,8 @@ export function resolveBattlePendingCore(
       refreshedDefenderFound.card.cardId,
       refreshedAttackerFound.card,
       attackerId,
-    );
+    )) ||
+    (destroyAttacker && !destroyDefender && xg6WinButDestroyed(battleState, refreshedDefenderFound.card, refreshedAttackerFound.card, attackerId));
 
   // RS-220【反射バリア】: 自軍 S ユニットとバトルした敵軍 S ユニットは、バトルに勝っても撃破される。
   const reflectBarrierDefender =

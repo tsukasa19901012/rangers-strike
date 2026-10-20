@@ -1,4 +1,4 @@
-import { activateXg6HandEffect, applyXg6AfterAction, applyXg6StrikeDamageTriggers, endXg6BattlePhase, openXg6OnAttacked, openXg6OnStrike, takeXg6BattlePhaseEnd } from "../rules/xg6/xg6Hooks";
+import { activateXg6HandEffect, applyXg6AfterAction, applyXg6OnBattleStart, openXg6OnCharged, applyXg6StrikeDamageTriggers, endXg6BattlePhase, openXg6OnAttacked, openXg6OnStrike, takeXg6BattlePhaseEnd } from "../rules/xg6/xg6Hooks";
 import { noteEngineSideEffect } from "./sideEffects";
 import { payMirrorWorldSelection } from "../rules/mirrorWorldSelection";
 import { memoizeInSearch } from "./searchCache";
@@ -527,6 +527,8 @@ function continueAttackAfterDeclaration(
     return ok(parked, buildSimpleLogEntry(playerId, "rm062_lina_stick_choice"));
   }
   // XG6-019【奥の手】・XG6-005【マジカルショータイム】（アタックするとき・アタックされたとき。rules/xg6/xg6Hooks.ts）。
+  // XG6-051【絶望の進化】: バトル開始時（rules/xg6/xg6cEffects.ts）。
+  battleState = applyXg6OnBattleStart(battleState, pending);
   const xg6Attacked = openXg6OnAttacked(battleState, pending, wingAttackFromRush);
   if (xg6Attacked) return ok(xg6Attacked, buildSimpleLogEntry(playerId, "battle_pending"));
   // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
@@ -1572,12 +1574,17 @@ function applyActionCore(
       return {
         ok: true,
         // RS-473【ブルームーンスラッシュ】: パワーゾーンにカードを置かずにチャージフェイズを終えた（rules/legend1/set7NamedEffectsB.ts）。
-        state: openBlueMoonSlash(
-          advanceFromCharge(
-            chargedState,
-            buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
+        // XG6-060【カンドロイド】: チャージしたとき（rules/xg6/xg6cEffects.ts）。
+        state: openXg6OnCharged(
+          openBlueMoonSlash(
+            advanceFromCharge(
+              chargedState,
+              buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
+            ),
+            playerId,
           ),
           playerId,
+          commandCard.instanceId,
         ),
       };
     }
@@ -3911,12 +3918,18 @@ function applyActionCore(
         if (!handCard || !fromHand) {
           // XG6-009（手札から）・XG6-014【英雄の遺産】（パワーゾーンから。rules/xg6/xg6Hooks.ts）。
           const xg6 = activateXg6HandEffect(state, playerId, action.unitInstanceId);
-          const xg6Card = player.hand.find((c) => c.instanceId === action.unitInstanceId) ?? player.power.find((c) => c.instanceId === action.unitInstanceId);
+          const xg6Card =
+            player.hand.find((c) => c.instanceId === action.unitInstanceId) ??
+            player.power.find((c) => c.instanceId === action.unitInstanceId) ??
+            player.discard.find((c) => c.instanceId === action.unitInstanceId);
           if (xg6 && xg6Card) return ok(xg6, buildLogEntry(playerId, "activate_field_unit_ability", xg6Card.cardId, state.definitions, "xg6"));
           return fail("illegal_action");
         }
         return ok(fromHand, buildLogEntry(playerId, "activate_field_unit_ability", handCard.cardId, state.definitions, "from_hand"));
       }
+      // XG6-061【ベンダーモード】・XG6-064【要塞能力】（rules/xg6/xg6cEffects.ts）。
+      const xg6Field = activateXg6HandEffect(state, playerId, action.unitInstanceId);
+      if (xg6Field) return ok(xg6Field, buildLogEntry(playerId, "activate_field_unit_ability", unit.cardId, state.definitions, "xg6"));
       const activated = activateFieldAbility(state, playerId, action.unitInstanceId);
       if (activated) {
         return ok(

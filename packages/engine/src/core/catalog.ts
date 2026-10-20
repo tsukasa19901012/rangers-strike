@@ -23,7 +23,7 @@ import {
   rideMountedVehicleBpBonus,
 } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
-import { xg6AddedCategories, xg6BlocksRush, xg6CommandCategories } from "../rules/xg6/xg6Fields";
+import { xg6AddedCategories, xg6BlocksRush, xg6CommandCategories, xg6TurnCommandCategories } from "../rules/xg6/xg6Fields";
 import { srBigBatonBpFloor } from "../rules/srEffects";
 import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
 import { unitFeatures } from "../rules/addedFeatures";
@@ -547,7 +547,10 @@ export function effectiveCommandCategories(
 ): Category[] {
   const def = getDefinition(definitions, cardId);
   // XG6-013【未来の戦士達へ】: コマンドゾーンにある間、WB・MA・ET が追加される（rules/xg6/xg6Fields.ts）。
-  const printed = xg6CommandCategories(cardId, cardCategories(def));
+  const base = xg6CommandCategories(cardId, cardCategories(def));
+  // XG6-060【カンドロイド】: このターン、選んだコマンドのカテゴリに追加する（rules/xg6/xg6Fields.ts）。
+  const turnAdded = xg6TurnCommandCategories<Category>(player, cardId).filter((c) => !base.includes(c));
+  const printed = turnAdded.length > 0 ? [...base, ...turnAdded] : base;
   if (!yogosteinGrantsDa(player)) return printed;
   if (printed.includes("DA")) return printed;
   if (parsePowerCost(def?.powerCost) > 3) return printed;

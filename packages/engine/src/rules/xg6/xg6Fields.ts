@@ -11,7 +11,8 @@
  */
 import { cardCategories, isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
-import { hasTurnRuleModifier } from "../../core/scopedModifiers";
+import { getPlayerModifiers, hasTurnRuleModifier } from "../../core/scopedModifiers";
+import { cardHasKeyword } from "../../keywords/cardKeywords";
 
 type Marks = NonNullable<NonNullable<GameState["xg6"]>["marks"]>;
 type Mark = Marks[number];
@@ -73,7 +74,7 @@ export function xg6FieldBpBonus(state: GameState, playerId: PlayerId, instance: 
   }
   // XG6-021【激臨剣】「これは、自軍捨札にあるカテゴリを2つ以上持つカード1枚につきBP+2000され」（atwiki/page-2351）
   if (hasGekirinken(state, playerId, instance.instanceId)) bonus += 2000 * xg6MultiCategoryDiscardCount(state, playerId);
-  return bonus + xg6bFieldBpBonus(state, playerId, instance);
+  return bonus + xg6bFieldBpBonus(state, playerId, instance) + xg6cFieldBpBonus(state, playerId, instance);
 }
 
 // ---------------------------------------------------------------------------
@@ -142,6 +143,8 @@ export function xg6DefenderBlocksAttack(
   defenderInstanceId: string,
 ): boolean {
   const defender = fieldOf(state.players[defenderPlayerId]).find((c) => c.instanceId === defenderInstanceId);
+  // XG6-065 サブマシーン【友情の証】「これは自軍Lユニットがあれば、敵軍ユニットにアタックされない。」（エリアを問わない）
+  if (defender && isCardId(defender.cardId, "XG6-065")) return fieldUnitsOf(state, defenderPlayerId).some((c) => sizeOf(state, c) === "L");
   if (!defender || !isCardId(defender.cardId, "XG6-030")) return false;
   if (state.definitions[attacker.cardId]?.size !== "S") return false;
   const command = state.players[defenderPlayerId].command;
@@ -159,7 +162,8 @@ export function xg6BlocksRush(state: Pick<GameState, "players" | "definitions">,
 
 /** XG6-029【大反転スカイキック】「その後、このターン、これはバトルエリアに出られない。」（このターンの記録） */
 export function xg6BlocksBattleEntry(state: Pick<GameState, "xg6" | "turn">, playerId: PlayerId, unit: CardInstance): boolean {
-  return hasXg6Mark(state, "XG6-029:no_entry", playerId, unit.instanceId);
+  // XG6-054【帽子が似合う男になれ】「戻したユニットはこのターン、再びバトルエリアに出ることはできない。」も同じ記録の形。
+  return hasXg6Mark(state, "XG6-029:no_entry", playerId, unit.instanceId) || hasXg6Mark(state, "XG6-054:no_entry", playerId, unit.instanceId);
 }
 
 /** XG6-041「含んだアルファベットが3文字以上あれば次の制限を受ける→これはストライクすることができない。」 */
@@ -210,7 +214,7 @@ export function xg6EffectiveSp(
 ): number {
   // XG6-021【激臨剣】「BP20000以上のとき「SP2」になる」
   if (hasGekirinken(state, playerId, instance.instanceId) && bpOf(state, playerId, instance) >= 20000) sp = Math.max(sp, 2);
-  return xg6bEffectiveSp(state, playerId, instance, sp, bpOf);
+  return xg6cEffectiveSp(state, playerId, instance, xg6bEffectiveSp(state, playerId, instance, sp, bpOf));
 }
 
 /** XG6-013【未来の戦士達へ】「これが自軍コマンドゾーンにある間、このカードはカテゴリにWB、MA、ETが追加され」 */
@@ -244,4 +248,114 @@ export function xg6GrantsBlast(state: Pick<GameState, "players" | "definitions">
   if (!hasTurnRuleModifier(player, XG6_BLAST_RULE_ID)) return false;
   const def = state.definitions[cardId];
   return def?.type === "unit" && def.size === "L" && typeof def.bp === "number" && def.bp <= 16000;
+}
+
+// ---------------------------------------------------------------------------
+// XG6-045〜XG6-065 の継続効果
+
+function sizeOf(state: Pick<GameState, "definitions">, card: CardInstance): string | undefined {
+  return card.sizeOverride ?? state.definitions[card.cardId]?.size;
+}
+
+/** バトルエリアで、card の組（ライドしていればビークルから）の1つ前のユニット。 */
+function previousInBattle(state: Pick<GameState, "players" | "definitions">, playerId: PlayerId, instanceId: string): CardInstance | undefined {
+  const battle = state.players[playerId].battle;
+  const idx = battle.findIndex((c) => c.instanceId === instanceId);
+  const unit = battle[idx];
+  if (!unit) return undefined;
+  const start = unit.mountedOnInstanceId && battle[idx - 1]?.instanceId === unit.mountedOnInstanceId ? idx - 1 : idx;
+  const prev = battle[start - 1];
+  return prev && isUnitCardId(state, prev.cardId) ? prev : undefined;
+}
+
+/** XG6-045 テディ「このユニットからコンビネーションする「仮面ライダーNEW電王SF」」（バトルエリアでテディの次に並んだ XG6-044）。 */
+export function xg6TeddyCombo(state: Pick<GameState, "players" | "definitions">, playerId: PlayerId, instanceId: string): boolean {
+  const unit = state.players[playerId].battle.find((c) => c.instanceId === instanceId);
+  if (!unit || !isCardId(unit.cardId, "XG6-044")) return false;
+  const prev = previousInBattle(state, playerId, instanceId);
+  return !!prev && isCardId(prev.cardId, "XG6-045");
+}
+
+/** XG6-053 仮面ライダーアーク「※これ以外のユニットがSユニットだけなら、これはLユニットになり」（両軍の場のユニット。Q1） */
+export function xg6ArkIsLarge(state: Pick<GameState, "players" | "definitions">, playerId: PlayerId, instance: CardInstance): boolean {
+  if (!isCardId(instance.cardId, "XG6-053")) return false;
+  if (!fieldOf(state.players[playerId]).some((c) => c.instanceId === instance.instanceId)) return false;
+  const others = [...fieldUnitsOf(state, "player1"), ...fieldUnitsOf(state, "player2")].filter((c) => c.instanceId !== instance.instanceId);
+  return others.every((c) => sizeOf(state, c) === "S");
+}
+
+function xg6cFieldBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
+  let bonus = 0;
+  // XG6-045「このコンビネーションが成立している間BP+2000される。」（XG6-044 のほう）
+  if (xg6TeddyCombo(state, playerId, instance.instanceId)) bonus += 2000;
+  // XG6-046 仮面ライダーディエンドCF「※これは特徴｢仮面ライダー｣を持つ自軍ユニット1体につきBP+1000される｡」（これ自身も数える）
+  if (isCardId(instance.cardId, "XG6-046")) {
+    bonus += 1000 * fieldUnitsOf(state, playerId).filter((c) => (state.definitions[c.cardId]?.features ?? []).includes("仮面ライダー")).length;
+  }
+  // XG6-053「これはLユニットになり、BP+2000される。」
+  if (xg6ArkIsLarge(state, playerId, instance)) bonus += 2000;
+  // XG6-054【帽子が似合う男になれ】「このユニットのBPに戻したユニットのBPを「+」する。」・XG6-055「出したユニットは、BP+2000され」
+  for (const m of xg6Marks(state, "XG6-054:bp", playerId, instance.instanceId)) bonus += m.value ?? 0;
+  if (hasXg6Mark(state, "XG6-055:bp", playerId, instance.instanceId)) bonus += 2000;
+  // XG6-065【友情の証】「このユニットと隣り合うETを持つLユニットはBP+1000される。」（自軍バトルエリアの左右）
+  if (sizeOf(state, instance) === "L" && printedCategories(state, instance.cardId).includes("ET")) {
+    const battle = state.players[playerId].battle;
+    const idx = battle.findIndex((c) => c.instanceId === instance.instanceId);
+    if (idx >= 0) bonus += 1000 * [battle[idx - 1], battle[idx + 1]].filter((c) => c && isCardId(c.cardId, "XG6-065")).length;
+  }
+  return bonus;
+}
+
+function xg6cEffectiveSp(state: GameState, playerId: PlayerId, instance: CardInstance, sp: number): number {
+  // XG6-063 ワンエイト【全弾発射】「このターン、これはSP1/5になり、…1と8だったなら、SP1になる。」
+  if (hasXg6Mark(state, "XG6-063:sp1", playerId, instance.instanceId)) sp = Math.max(sp, 1);
+  if (hasXg6Mark(state, "XG6-063:sp1_5", playerId, instance.instanceId)) {
+    const pos = state.players[playerId].battle.findIndex((c) => c.instanceId === instance.instanceId) + 1;
+    if (pos >= 5) sp = Math.max(sp, 1);
+  }
+  return sp;
+}
+
+/** XG6-060 カンドロイド◎「このターン、宣言したカテゴリを選んだコマンドに追加する。」（持ち主のこのターンの記録） */
+export const XG6_CANDROID_RULE_ID = "xg6_060_candroid_category";
+
+export function xg6TurnCommandCategories<T extends string>(player: PlayerState, cardId: string): T[] {
+  return getPlayerModifiers(player)
+    .filter((m) => m.kind === "rule" && m.ruleId === XG6_CANDROID_RULE_ID && m.scope === "turn")
+    .map((m) => (m as { payload?: { cardId?: string; category?: string } }).payload)
+    .filter((p) => !!p && p.cardId === cardId && !!p.category)
+    .map((p) => p!.category as T);
+}
+
+function commandHasDa(state: Pick<GameState, "players" | "definitions">, pid: PlayerId): boolean {
+  const player = state.players[pid];
+  return player.command.some((c) => [...xg6CommandCategories(c.cardId, printedCategories(state, c.cardId)), ...xg6TurnCommandCategories(player, c.cardId)].includes("DA"));
+}
+
+/**
+ * アタックできないユニット（rules/legend3/restrictions.ts）。
+ * - XG6-056【忍ばせた大鎌】「そうしたとき、このターン、これはアタックすることができない。」（このターンの記録）
+ * - XG6-063「※これはDAを持つコマンドがないとき、アタックすることができない。」（両軍のコマンド）
+ */
+export function xg6AttackerBlocked(state: Pick<GameState, "players" | "definitions" | "xg6" | "turn">, playerId: PlayerId, attacker: CardInstance): boolean {
+  if (hasXg6Mark(state, "XG6-056:no_attack", playerId, attacker.instanceId)) return true;
+  if (isCardId(attacker.cardId, "XG6-063")) return !commandHasDa(state, "player1") && !commandHasDa(state, "player2");
+  return false;
+}
+
+/** XG6-049 仮面ライダーオーガ「※これはウイングを持つユニットとバトルしたときバトルに勝っても撃破される。」（自軍ターンでも。カード評価） */
+export function xg6WinButDestroyed(state: GameState, selfCard: CardInstance, opponentCard: CardInstance, opponentOwner: PlayerId): boolean {
+  if (!isCardId(selfCard.cardId, "XG6-049")) return false;
+  return cardHasKeyword(state.definitions, opponentCard.cardId, "wing", { state, playerId: opponentOwner });
+}
+
+/**
+ * XG6-052 仮面ライダーコーカサス【ハイパークロックアップ】「自軍ターン中、これが自軍バトルエリアにある間、敵軍バトルエリアにあるSユニットの
+ * 効果名を持たないテキストは無効になり、発動もできない。」— card（ownerId の場）の※が無効か。
+ */
+export function xg6NegatesUnnamedText(state: Pick<GameState, "players" | "definitions" | "activePlayer">, ownerId: PlayerId, card: CardInstance): boolean {
+  const enemyId = enemyOf(ownerId);
+  if (state.activePlayer !== enemyId) return false;
+  if (!state.players[ownerId].battle.some((c) => c.instanceId === card.instanceId) || sizeOf(state, card) !== "S") return false;
+  return state.players[enemyId].battle.some((c) => isCardId(c.cardId, "XG6-052"));
 }

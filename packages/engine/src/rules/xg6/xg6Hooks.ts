@@ -12,6 +12,13 @@ import type { ChoiceOutcome } from "../rm/rm1Effects";
 import { CHOICE_CONFIRMERS, CHOICE_RESOLVERS, CHOICE_SKIPPERS, XG6_DONE, XG6_KEYWORDS, XG6_KEYWORD_PREFIX } from "./xg6Common";
 import "./xg6aEffects";
 import "./xg6bEffects";
+import { applyXg6AfterAction as applyXg6bAfterAction } from "./xg6bEffects";
+import { syncXg6ArkSize } from "./xg6cEffects";
+
+/** 各アクションの後（core/applyAction.ts）。XG6-053 の※のサイズを同期してから XG6-042 等を処理する。 */
+export function applyXg6AfterAction(state: GameState): GameState {
+  return applyXg6bAfterAction(syncXg6ArkSize(state));
+}
 
 export {
   applyXg6OnUnitLeft,
@@ -24,7 +31,6 @@ export {
   tryXg6OnEnterBattle,
 } from "./xg6aEffects";
 export {
-  applyXg6AfterAction,
   applyXg6StartPhaseBegin,
   applyXg6StrikeDamageTriggers,
   endXg6BattlePhase,
@@ -33,6 +39,13 @@ export {
   takeXg6BattlePhaseEnd,
   xg6OnAttackWin,
 } from "./xg6bEffects";
+export {
+  applyXg6OnBattleStart,
+  openXg6OnCharged,
+  openXg6OnHandRush,
+  xg6SummonedNoStrike,
+  xg6TeddyComboOnEntry,
+} from "./xg6cEffects";
 
 export function isXg6ChoiceEffect(effectId: string): boolean {
   return effectId in CHOICE_RESOLVERS;

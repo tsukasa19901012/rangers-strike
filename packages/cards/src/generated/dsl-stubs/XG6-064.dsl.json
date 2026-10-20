@@ -51,11 +51,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-064::chikarae8a681",
+          "keyword": "xg6::XG6-064::fortress_ability",
           "duration": "permanent"
         }
       ]

@@ -1268,6 +1268,8 @@ function appendRushCategoryPaymentActions(
         perRushPayment: true,
         callLeadKind: "call",
         emergencyRushCardId: card.cardId,
+        // ※特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる（XG6-050）は、ラッシュするユニットで決まる。
+        rushingCardId: isUnit(definition) ? card.cardId : undefined,
       });
       if (!options) continue;
       pushPayment(card.instanceId, undefined, options.prismSubstitute);

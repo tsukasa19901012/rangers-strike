@@ -54,7 +54,10 @@ import {
   CHOICE_CONFIRMERS,
   CHOICE_RESOLVERS,
   CHOICE_SKIPPERS,
+  XG6_ACTIVATIONS,
   XG6_KEYWORDS,
+  XG6_TURN_END,
+  XG6_UNIT_LEFT,
   costNumber,
   finish,
   isCard,
@@ -232,6 +235,11 @@ const FIRE_MOUNTAIN_PICK = "xg6001_fire_mountain_pick";
 type LeaveEvent = { ownerPlayerId: PlayerId; instanceId: string; cardId: string; fromZone: string; toZone: string; destroyed?: boolean; phasePlayerId?: PlayerId };
 
 export function applyXg6OnUnitLeft(state: GameState, event: LeaveEvent): GameState {
+  const others = XG6_UNIT_LEFT.reduce((s, f) => f(s, event), state);
+  return applyFireMountainOnUnitLeft(others, event);
+}
+
+function applyFireMountainOnUnitLeft(state: GameState, event: LeaveEvent): GameState {
   if (event.toZone !== "discard" || event.destroyed === false || (event.fromZone !== "battle" && event.fromZone !== "rush")) return state;
   const owner = event.ownerPlayerId;
   const tp = event.phasePlayerId ?? turnPlayer(state);
@@ -842,6 +850,7 @@ export function collectXg6TurnEndQueue(state: GameState, endingPlayerId: PlayerI
     if (m.instanceId && findField(state, m.playerId, m.instanceId)) entries.push(`showtime:${m.playerId}:${m.instanceId}`);
   }
   for (const c of state.players[endingPlayerId].battle.filter((x) => isCard(x.cardId, "XG6-011"))) entries.push(`radial:${endingPlayerId}:${c.instanceId}`);
+  for (const h of XG6_TURN_END) entries.push(...h.collect(state, endingPlayerId));
   return entries;
 }
 
@@ -863,6 +872,10 @@ export function openXg6TurnEndEntry(state: GameState, endingPlayerId: PlayerId, 
   if (kind === "radial") {
     if (!state.players[owner].battle.some((c) => c.instanceId === id)) return state;
     return openEffectChoice(state, confirmChoice({ playerId: owner, phasePlayerId: endingPlayerId, sourceInstanceId: id }, "XG6-011", RADIAL));
+  }
+  for (const h of XG6_TURN_END) {
+    const opened = h.open(state, endingPlayerId, entry);
+    if (opened) return opened;
   }
   return state;
 }
@@ -991,7 +1004,9 @@ export function xg6HandActivations(state: GameState, playerId: PlayerId): string
   return [
     ...p.hand.filter((c) => handActivationAvailable(state, playerId, c, "hand")),
     ...p.power.filter((c) => handActivationAvailable(state, playerId, c, "power")),
-  ].map((c) => c.instanceId);
+  ]
+    .map((c) => c.instanceId)
+    .concat(XG6_ACTIVATIONS.flatMap((a) => a.list(state, playerId)));
 }
 
 /** 手札・パワーゾーンのこのカードの効果を発動する（core/applyAction.ts activate_field_unit_ability から呼ぶ）。対象外なら null。 */
@@ -1004,6 +1019,11 @@ export function activateXg6HandEffect(state: GameState, playerId: PlayerId, inst
   }
   const inPower = p.power.find((c) => c.instanceId === instanceId);
   if (inPower && handActivationAvailable(state, playerId, inPower, "power")) return activateHeritage(state, playerId, instanceId);
+  for (const a of XG6_ACTIVATIONS) {
+    if (!a.list(state, playerId).includes(instanceId)) continue;
+    const activated = a.activate(state, playerId, instanceId);
+    if (activated) return activated;
+  }
   return null;
 }
 

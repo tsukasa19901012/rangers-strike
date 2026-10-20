@@ -24,6 +24,27 @@ export const CHOICE_SKIPPERS: Record<string, ChoiceSkipper> = {};
 export const CHOICE_CONFIRMERS: Record<string, ChoiceSkipper> = {};
 export const XG6_KEYWORDS: Record<string, KeywordHandler> = {};
 
+/**
+ * 手札・捨札・パワーゾーン・場のカードから起動する効果（activate_field_unit_ability。XG6-047・048・061・064 等）。
+ * list は起動できるカードの instanceId、activate は起動した後の状態（対象外なら null）。
+ */
+export type ZoneActivation = {
+  list: (state: GameState, playerId: PlayerId) => string[];
+  activate: (state: GameState, playerId: PlayerId, instanceId: string) => GameState | null;
+};
+export const XG6_ACTIVATIONS: ZoneActivation[] = [];
+
+/** 「自分がターンを終えるとき」の効果（rules/turnEndingEffects.ts の XG6 の列）。entry は collect が返した文字列。 */
+export type TurnEndHandler = {
+  collect: (state: GameState, endingPlayerId: PlayerId) => string[];
+  open: (state: GameState, endingPlayerId: PlayerId, entry: string) => GameState | null;
+};
+export const XG6_TURN_END: TurnEndHandler[] = [];
+
+/** 場のユニットが場を離れたとき（events/listeners/unitLeftZoneListener.ts の XG6 の入口）。 */
+export type UnitLeftEvent = { ownerPlayerId: PlayerId; instanceId: string; cardId: string; fromZone: string; toZone: string; destroyed?: boolean; phasePlayerId?: PlayerId };
+export const XG6_UNIT_LEFT: Array<(state: GameState, event: UnitLeftEvent) => GameState> = [];
+
 export const XG6_KEYWORD_PREFIX = "xg6::";
 
 /** 「好きな数（まで）選ぶ」の選択で、選び終えることを表す候補（1枚以上選んだ後の候補の先頭）。 */
