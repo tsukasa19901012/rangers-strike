@@ -4582,7 +4582,13 @@ export function applyEffectChoiceSelect(
             }),
           };
           const enemyId = opponent(pending.playerId);
-          const enemyTargets = nextState.players[enemyId].rush.map((c) => c.instanceId);
+          // 出られないユニット（ホールドできない等）は候補にしない。選べないまま強制の選択が開くと進行できない（2026-10-20 対戦台）。
+          const enemyTargets = nextState.players[enemyId].rush
+            .filter((c) => {
+              const ready = autoHoldForBattleEntry(nextState, enemyId, c);
+              return !!ready && canMoveUnitToBattle({ ...nextState, ...updatePlayer(nextState, enemyId, ready) }, enemyId, c, "rush");
+            })
+            .map((c) => c.instanceId);
           if (enemyTargets.length === 0) {
             return finishChoice(nextState, pending, cardName(state.definitions, found.card.cardId));
           }

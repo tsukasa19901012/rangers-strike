@@ -338,6 +338,23 @@ function pickBestChargeAction(
   return best;
 }
 
+/** 先読みで比べるチャージの候補: パワー・コマンドそれぞれ評価の高いカード perMode 枚と、チャージしない。 */
+export function chargeCandidates(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+  perMode: number,
+): GameAction[] {
+  const top = (mode: "command" | "power") =>
+    actionsOfType(actions, mode === "power" ? "charge_power" : "charge_command")
+      .map((action) => ({ action, score: scoreChargeCard(state, playerId, action.instanceId, mode) }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, perMode)
+      .map((e) => e.action);
+  const end = endPhase(actions);
+  return [...top("power"), ...top("command"), ...(end ? [end] : [])];
+}
+
 /** チャージフェイズで charge_power と charge_command のどちらを選ぶか。 */
 export function pickChargeAction(
   state: GameState,

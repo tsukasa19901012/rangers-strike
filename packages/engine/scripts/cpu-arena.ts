@@ -42,6 +42,8 @@ const shard = Number(arg("shard", "0"));
 const shards = Number(arg("shards", "1"));
 
 const MAX_STEPS = 6_000;
+const maxMs = { A: 0, B: 0 };
+const moves = { A: 0, B: 0 };
 
 function play(seed: number, deck1: string, deck2: string, aSeat: PlayerId): { winner: "A" | "B" | null; steps: number; ms: Record<"A" | "B", number> } {
   let state = createStarterGame({
@@ -61,10 +63,17 @@ function play(seed: number, deck1: string, deck2: string, aSeat: PlayerId): { wi
     setEvalWeights(side === "A" ? weightsA : weightsB);
     setCpuLevelOverrides(side === "A" ? { [levelA]: overA } : { [levelB]: overB });
     const picked = side === "A" ? pickA(state, actor, levelA) : pickB(state, actor, levelB);
-    ms[side] += performance.now() - t;
-    const action = picked && isLegalAction(state, picked) ? picked : actions[0]!;
-    const result = applyAction(state, action);
-    if (!result.ok) break;
+    const dt = performance.now() - t;
+    ms[side] += dt;
+    maxMs[side] = Math.max(maxMs[side], dt);
+    moves[side]++;
+    // アプリ（client-core の session）と同じく、選んだ手が適用できなければ他の合法手を順に試す。
+    let result = picked && isLegalAction(state, picked) ? applyAction(state, picked) : null;
+    for (const candidate of actions) {
+      if (result?.ok) break;
+      if (candidate.playerId === actor) result = applyAction(state, candidate);
+    }
+    if (!result?.ok) break;
     state = result.state;
   }
   return { winner: null, steps: MAX_STEPS, ms };
@@ -98,7 +107,7 @@ const n = a + b;
 const rate = n ? a / n : 0;
 const se = n ? Math.sqrt((rate * (1 - rate)) / n) : 0;
 if (process.argv.includes("--json")) {
-  console.log(JSON.stringify({ a, b, draws, msA: ms.A, msB: ms.B }));
+  console.log(JSON.stringify({ a, b, draws, msA: ms.A, msB: ms.B, maxA: maxMs.A, maxB: maxMs.B, movesA: moves.A, movesB: moves.B }));
   process.exit(0);
 }
 console.log(

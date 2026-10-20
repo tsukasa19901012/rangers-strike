@@ -229,6 +229,8 @@ JS の評価を 5 秒、1 フレームを 250 ms で打ち切りますが、実�
   ブラウザ host と QuickJS スモークでは標準出力／コンソールに出ます。**Vita では PocketJS 0.14 のホストに `console` の出力先がない** ため捨てられます。
 - 保存: PocketJS 0.14 の Vita プロファイルには `data.fs`／`data.sqlite` がないので、`scripts/patch-pocketjs-vita.mjs` がビルド時に `native/rs_store.rs` を Vita host に組み込み、`globalThis.rsStore` を追加します。設定・対戦記録・自作デッキはキーごとに `ux0:data/rangers-strike/<key>.json` へ書き込まれ、アプリを終了しても残ります（書き込みは `.tmp` を経由するので、途中で電源が切れても前の保存は残ります）。ブラウザ host では localStorage を使います。消したいときは VitaShell でこのフォルダを削除します。
 
+- 自動対戦（計測用）: `ux0:data/rangers-strike/rs.autoplay.v1.json` に `{"games":3,"humanLevel":2,"cpuLevel":5}` を置いてアプリを起動すると、タイトル画面から CPU 同士の対戦を `games` 回続けて行い、1試合ごとに `rs.records.v1.json` へ記録します（`maxThinkMs`・`cpuLevel`・`autoLevel` 付き。思考時間は相手側 CPU のもの）。`games` は試合ごとに減り、0 で止まります。ブラウザ host では localStorage の同じキーで動きます。
+
 参考値（M1 Max、QuickJS 2026-06-04、`npm run smoke:qjs`。実機の値ではありません）:
 エンジン読み込み 0.19 秒（全カード版 0.37 秒）、QuickJS ヒープ使用 9.6 MB（全カード版のエンジン読み込みだけで 15.8 MB）、
 プロセス最大 RSS 32 MB、CPU（Lv2）1 手の思考 平均 4.0〜8.8 ms・最大 110 ms。

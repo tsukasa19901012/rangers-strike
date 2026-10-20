@@ -14,6 +14,23 @@ export type MatchRecord = {
   turns: number;
   cpuMoves: number;
   avgThinkMs: number;
+  maxThinkMs?: number;
+  cpuLevel?: number;
+  /** Set when the human side was played by the CPU (autoplay) at this level. */
+  autoLevel?: number;
+};
+
+/**
+ * Autoplay request (`rs.autoplay.v1`), written from outside the app (for example over FTP to
+ * ux0:data/rangers-strike/rs.autoplay.v1.json on the Vita). The app plays `games` CPU-vs-CPU
+ * matches from the title screen and records each one; `games` counts down as they finish.
+ */
+export type AutoplayRequest = {
+  games: number;
+  /** Level of the CPU on the human side (default 2). */
+  humanLevel?: number;
+  /** Level of the CPU opponent (default: the saved setting). */
+  cpuLevel?: number;
 };
 
 /** A deck made in the deck builder. Deck ids for settings are `custom:<id>`. */
@@ -29,6 +46,7 @@ export const CUSTOM_DECK_PREFIX = "custom:";
 const SETTINGS_KEY = "rs.settings.v1";
 const DECKS_KEY = "rs.decks.v1";
 const RECORDS_KEY = "rs.records.v1";
+const AUTOPLAY_KEY = "rs.autoplay.v1";
 
 export class SettingsStore {
   constructor(private readonly store: KeyValueStore) {}
@@ -63,6 +81,19 @@ export class SettingsStore {
     } catch {
       return [];
     }
+  }
+
+  autoplay(): AutoplayRequest | null {
+    try {
+      const parsed = JSON.parse(this.store.get(AUTOPLAY_KEY) ?? "null") as AutoplayRequest | null;
+      return parsed && typeof parsed.games === "number" && parsed.games > 0 ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+
+  saveAutoplay(request: AutoplayRequest): void {
+    this.store.set(AUTOPLAY_KEY, JSON.stringify(request));
   }
 
   addRecord(record: MatchRecord, keep = 20): void {

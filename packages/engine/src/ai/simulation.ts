@@ -39,8 +39,8 @@ function mix(seed: number): () => number {
  * 山札の並びは CPU には見えないので、読みの中では両者の山札を混ぜ直す
  * （本物の並びを使うと、これから引くカードを知っている読みになる）。
  */
-function hideDeckOrder(state: GameState): GameState {
-  const rng = mix((state.turn * 7919 + state.log.length) | 0);
+function hideDeckOrder(state: GameState, sample = 0): GameState {
+  const rng = mix((state.turn * 7919 + state.log.length + sample * 104_729) | 0);
   const shuffled = (deck: GameState["players"]["player1"]["deck"]) => {
     const out = [...deck];
     for (let i = out.length - 1; i > 0; i--) {
@@ -59,11 +59,11 @@ function hideDeckOrder(state: GameState): GameState {
 }
 
 /** 探索なしの CPU で、相手の次のターンが終わるまで（または決着まで）進める。 */
-function rollout(state: GameState, playerId: PlayerId, startTurn: number): GameState {
-  let current = hideDeckOrder(state);
-  // 自分のターン中なら、残りと相手の次のターン。相手のターン中ならそのターンの終わりまで。
-  const endTurn = state.activePlayer === playerId ? startTurn + 2 : startTurn + 1;
-  for (let i = 0; i < ROLLOUT_MAX_STEPS; i++) {
+function rollout(state: GameState, playerId: PlayerId, startTurn: number, sample = 0, turns = 2, maxSteps = ROLLOUT_MAX_STEPS): GameState {
+  let current = hideDeckOrder(state, sample);
+  // turns=2: 自分のターン中なら、残りと相手の次のターン。相手のターン中ならそのターンの終わりまで。
+  const endTurn = startTurn + (state.activePlayer === playerId ? turns : Math.max(1, turns - 1));
+  for (let i = 0; i < maxSteps; i++) {
     if (current.winner || current.turn >= endTurn) break;
     const legal = getLegalActions(current);
     const actor = legal[0]?.playerId;
@@ -338,4 +338,36 @@ export function pickBestBySearch(
     }
   }
   return rolloutBest;
+}
+
+/**
+ * 手番の大きな決定（チャージ・ラッシュ・バトルへの進入後の行動）を、それぞれの手のあと
+ * 探索なしの CPU で相手の次のターンの終わりまで進めて（山札の並びは伏せて samples 通り）比べる。
+ */
+export function pickBestByRollout(
+  state: GameState,
+  playerId: PlayerId,
+  candidates: GameAction[],
+  samples: number,
+  turns = 2,
+  maxSteps = ROLLOUT_MAX_STEPS,
+): GameAction | null {
+  const unique = dedupeActions(candidates).filter((a) => a.playerId === playerId);
+  if (unique.length <= 1) return unique[0] ?? null;
+  let best: GameAction | null = null;
+  let bestScore = Number.NEGATIVE_INFINITY;
+  for (const action of unique) {
+    const result = applyAction(state, action);
+    if (!result.ok) continue;
+    let total = 0;
+    for (let i = 0; i < samples; i++) {
+      total += evaluateState(rollout(result.state, playerId, state.turn, i, turns, maxSteps), playerId);
+    }
+    const score = total / samples;
+    if (score > bestScore) {
+      bestScore = score;
+      best = action;
+    }
+  }
+  return best;
 }
