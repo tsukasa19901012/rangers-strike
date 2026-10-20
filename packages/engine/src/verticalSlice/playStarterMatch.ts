@@ -141,7 +141,8 @@ type StarterMatchOptions = {
 
 function playStarterMatchLoop(initial: GameState, options: StarterMatchOptions): StarterMatchResult {
   const maxSteps = options.maxSteps ?? 12_000;
-  const cpuLevel = options.cpuLevel ?? 4;
+  // エンジンの通り道を確かめるシミュレーション用。Lv3 以上は先読みで 1 手が重いので、既定は Lv2。
+  const cpuLevel = options.cpuLevel ?? 2;
   let state = initial;
   const phasesSeen = new Set<Phase>();
   const actionCounts: Record<string, number> = {};
