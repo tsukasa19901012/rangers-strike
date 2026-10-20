@@ -195,7 +195,27 @@ describe("SX-007 スーパーゴセイレッド", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("SX-007");
   });
 
-  it.todo("SX-007: 【スーパースカイダイナミック】「そうしたとき、これをリリースしてもよい」— これがホールド状態のままナンバーコンビネーションが成立する場面を公開 API で作れない（ホールド状態のユニットはバトルエリアに出られない）。PROMO-questions.md SX-007");
+  it("SX-007: 【スーパースカイダイナミック】ホールド状態のままバトルエリアに出ても NC で発動し、置いたあと、これをリリースするかを選べる（任意）（出典: atwiki/page-2356「そうしたとき、これをリリースしてもよい」・R-HOLD-03「ホールド状態でも…バトルエリアに出る」）", () => {
+    let s = enter(board({ rush: [{ ...inst("SX-007", "sg"), commandHeld: true }] }, { battle: [inst("SPEC-E1000", "e")] }), "SX-007:sg");
+    expectChoiceFrom(s, "player1", "SX-007");
+    s = pick(s, "SPEC-E1000:e");
+    expect(s.pendingEffectChoice?.sourceCardId).toBe("SX-007");
+    expect(canSkip(s)).toBe(true);
+    s = resolveAll(act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "release" }));
+    expect(cardIn(s, "player1", "SX-007:sg")?.commandHeld ?? false).toBe(false);
+  });
+
+  it("SX-007: 【スーパースカイダイナミック】リリースしないことも選べる（ホールド状態のまま）（出典: atwiki/page-2356「リリースしてもよい」）", () => {
+    let s = pick(enter(board({ rush: [{ ...inst("SX-007", "sg"), commandHeld: true }] }, { battle: [inst("SPEC-E1000", "e")] }), "SX-007:sg"), "SPEC-E1000:e");
+    s = resolveAll(skip(s));
+    expect(cardIn(s, "player1", "SX-007:sg")?.commandHeld).toBe(true);
+    expect(zoneOf(s, "player2", "SPEC-E1000:e")).toBe("power");
+  });
+
+  it("SX-007: 【スーパースカイダイナミック】リリース状態で出たときは、リリースの選択は開かない（出典: atwiki/page-2356「これをリリースしてもよい」）", () => {
+    const s = pick(enter(board({ rush: [inst("SX-007", "sg")] }, { battle: [inst("SPEC-E1000", "e")] }), "SX-007:sg"), "SPEC-E1000:e");
+    expect(s.pendingEffectChoice?.sourceCardId).not.toBe("SX-007");
+  });
 });
 
 // ===========================================================================
