@@ -348,8 +348,8 @@ export class GuiMatch {
     if (items.length === 0) return;
     const cursor = new ListCursor();
     cursor.reset(items.length, LIST_ROWS);
-    const labels = this.placeDuplicates(items, items.map((i) => i.option.label));
-    this.mode = { kind: "list", title, items, labels: variants ? variantLabels(labels) : labels, cursor };
+    const labels = items.map((i) => i.option.label);
+    this.mode = { kind: "list", title, items, labels: this.placeDuplicates(items, labels, variants ? variantLabels(labels) : labels), cursor };
   }
 
   private focusedRect(): Rect {
@@ -376,7 +376,7 @@ export class GuiMatch {
    * Rows that read the same (two copies of a card, オーラパワー on one of several CS-S1) get where
    * the card they differ by is: "（自ラッシュ2）".
    */
-  private placeDuplicates(items: MenuItem[], labels: string[]): string[] {
+  private placeDuplicates(items: MenuItem[], labels: string[], shown: string[]): string[] {
     const state = this.state();
     const groups = new Map<string, number[]>();
     labels.forEach((label, i) => groups.set(label, [...(groups.get(label) ?? []), i]));
@@ -388,17 +388,17 @@ export class GuiMatch {
     };
     return labels.map((label, i) => {
       const group = groups.get(label)!;
-      if (group.length < 2) return label;
+      if (group.length < 2) return shown[i]!;
       // The cards this row names and not every row of the group does (ゴードム: 2 of 3 戦闘員 → 「自ラッシュ2・3」).
       const idSets = group.map((j) => new Set(actionInstanceIds(items[j]!.option.action)));
       const own = actionInstanceIds(items[i]!.option.action).filter((id) => !idSets.every((set) => set.has(id)));
       const places = own.map(where).filter((w): w is { place: string; position: number } => w !== null);
-      if (places.length === 0) return label;
+      if (places.length === 0) return shown[i]!;
       const samePlace = places.every((w) => w.place === places[0]!.place);
       const text = samePlace
         ? `${places[0]!.place}${places.map((w) => w.position).join("・")}`
         : places.map((w) => `${w.place}${w.position}`).join("・");
-      return `${label}（${text}）`;
+      return `${shown[i]}（${text}）`;
     });
   }
 
@@ -1062,7 +1062,8 @@ export function variantLabels(labels: string[]): string[] {
   const cut = Math.max(at("（", 0), at(": ", 1), at(" / ", 2));
   if (cut <= 0) return labels;
   const short = labels.map((label) => label.slice(cut).trim());
-  return short.some((label) => label.length === 0) || new Set(short).size < labels.length ? labels : short;
+  // Rows that still read the same get their cards' places added (placeDuplicates).
+  return short.some((label) => label.length === 0) || new Set(short).size < new Set(labels).size ? labels : short;
 }
 
 /**
