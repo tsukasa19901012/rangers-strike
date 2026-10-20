@@ -22,13 +22,13 @@
       "name": "トリプルボンバー",
       "text": "このユニットの両隣に特徴「女」を持つ自軍ユニットが並んでいる間、このユニットはBP+2000され、次の能力を得る⇒自分がターンを終えるとき、このユニットのBP以下のBPを持つ敵軍ユニットを1体選び持ち主のパワーゾーンに送る。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-098::toripurubonba",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-098::bomber",
+          "duration": "turn"
         }
       ]
     }

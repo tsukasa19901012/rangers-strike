@@ -121,7 +121,7 @@ describe("XG4-015 血祭ドウコク", () => {
     expect(zoneOf(s, "player1", "XG4-015:dk")).toBe("battle");
   });
 
-  it.fails("XG4-015:【三途の川の御大将】— 自軍ターン中にバトルエリアに出ると、お互いの捨札の S ユニットのカードをすべて除外する（M ユニット・オペレーションは残る）（出典: atwiki/page-2081「お互いの捨札にあるSユニットのカードをすべてゲームから除外する」）（既知の不具合: CARD-XG4-015 【三途の川の御大将】でお互いの捨札の S ユニットのカードを除外しない）", () => {
+  it("XG4-015:【三途の川の御大将】— 自軍ターン中にバトルエリアに出ると、お互いの捨札の S ユニットのカードをすべて除外する（M ユニット・オペレーションは残る）（出典: atwiki/page-2081「お互いの捨札にあるSユニットのカードをすべてゲームから除外する」）", () => {
     const own = [inst("SPEC-NOSP", "o1"), inst("SPEC-PLAIN-M", "o2"), ...deckCards(3, "d")];
     let s = battle({ rush: [inst("XG4-015", "dk")], discard: own }, { discard: [inst("SPEC-NOSP", "e1"), inst("TST-OP", "e2")] });
     s = resolveAll(yes(enter1(s, "XG4-015:dk")));
@@ -147,25 +147,25 @@ describe("XG4-016 タイムファイヤー（XG4）", () => {
   const entered = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     enter1(battle({ rush: [inst("XG4-016", "tf"), inst("SPEC-L-OWN", "l7"), inst("SPEC-L-OWN5", "l5")], ...p1 }, { ...ENEMY, power: [] }), "XG4-016:tf");
 
-  it.fails("XG4-016:【DVディフェンダー】— 自軍ターン中にバトルエリアに出ると、自軍 L ユニットから1体選べる（任意）（出典: atwiki/page-2141「自軍Lユニットを1体選んでもよい」）（既知の不具合: CARD-XG4-016 【DVディフェンダー】の候補が自軍 L ユニットにならない（これ自身が候補に出る））", () => {
+  it("XG4-016:【DVディフェンダー】— 自軍ターン中にバトルエリアに出ると、自軍 L ユニットから1体選べる（任意）（出典: atwiki/page-2141「自軍Lユニットを1体選んでもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG4-016");
     expect(choiceIds(s)).toEqual(["SPEC-L-OWN5:l5", "SPEC-L-OWN:l7"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-016:【DVディフェンダー】— 選んだ L ユニットの必要パワーの数字（「7+」は7）以下の、敵軍バトルエリアのユニットから1体選ぶ（ラッシュエリア・数字が大きいものは選べない）（出典: atwiki/page-2141「敵軍バトルエリアから、選んだユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び」）（既知の不具合: CARD-XG4-016 【DVディフェンダー】の候補が自軍 L ユニットにならない（これ自身が候補に出る））", () => {
+  it("XG4-016:【DVディフェンダー】— 選んだ L ユニットの必要パワーの数字（「7+」は7）以下の、敵軍バトルエリアのユニットから1体選ぶ（ラッシュエリア・数字が大きいものは選べない）（出典: atwiki/page-2141「敵軍バトルエリアから、選んだユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍ユニットを1体選び」）", () => {
     const s = pick(entered(), "SPEC-L-OWN:l7");
     expectChoiceFrom(s, "player1", "XG4-016");
     expect(choiceIds(s)).toEqual(["SPEC-C3:c3", "SPEC-C7:c7"]);
   });
 
-  it.fails("XG4-016:【DVディフェンダー】— 選んだ敵軍ユニットは持ち主のパワーゾーンに送られる（出典: atwiki/page-2141「持ち主のパワーゾーンに送る」）（既知の不具合: CARD-XG4-016 【DVディフェンダー】の候補が自軍 L ユニットにならない（これ自身が候補に出る））", () => {
+  it("XG4-016:【DVディフェンダー】— 選んだ敵軍ユニットは持ち主のパワーゾーンに送られる（出典: atwiki/page-2141「持ち主のパワーゾーンに送る」）", () => {
     const s = resolveAll(pick(pick(entered(), "SPEC-L-OWN:l7"), "SPEC-C7:c7"));
     expect(zoneOf(s, "player2", "SPEC-C7:c7")).toBe("power");
   });
 
-  it.fails("XG4-016:【DVディフェンダー】— 「5+」の L ユニットを選べば、必要パワー5以下の敵軍ユニットだけ選べる（出典: atwiki/page-2141）（既知の不具合: CARD-XG4-016 【DVディフェンダー】の候補が自軍 L ユニットにならない（これ自身が候補に出る））", () => {
+  it("XG4-016:【DVディフェンダー】— 「5+」の L ユニットを選べば、必要パワー5以下の敵軍ユニットだけ選べる（出典: atwiki/page-2141）", () => {
     const s = pick(entered(), "SPEC-L-OWN5:l5");
     expect(choiceIds(s)).toEqual(["SPEC-C3:c3"]);
   });
@@ -193,14 +193,14 @@ describe("XG4-017 ガオシルバー（XG4）", () => {
     return settle(attack(s, "XG4-017:gs", "SPEC-E-C2:t"));
   };
 
-  it.fails("XG4-017: NC — 3番目に出てバトルで敵軍ユニットを撃破すると、撃破したユニットの必要パワーの数字以下の敵軍コマンドから1つ選べる（任意）（出典: atwiki/page-2133「これが撃破したユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍コマンドを1つ選び捨札にしてもよい」）（既知の不具合: CARD-XG4-017 【ガオハスラーロッド・スナイパーモード】の敵軍コマンドを選ぶ選択が開かない（NC・ライドオフとも））", () => {
+  it("XG4-017: NC — 3番目に出てバトルで敵軍ユニットを撃破すると、撃破したユニットの必要パワーの数字以下の敵軍コマンドから1つ選べる（任意）（出典: atwiki/page-2133「これが撃破したユニットの必要パワーの数字以下の必要パワーの数字を持つ敵軍コマンドを1つ選び捨札にしてもよい」）", () => {
     const s = ncAttack();
     expectChoiceFrom(s, "player1", "XG4-017");
     expect(choiceIds(s)).toEqual(["SPEC-OP2:c2", "TST-OP-DA:c1"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-017: NC — 選んだ敵軍コマンドは捨札になる（出典: atwiki/page-2133「捨札にしてもよい」）（既知の不具合: CARD-XG4-017 【ガオハスラーロッド・スナイパーモード】の敵軍コマンドを選ぶ選択が開かない（NC・ライドオフとも））", () => {
+  it("XG4-017: NC — 選んだ敵軍コマンドは捨札になる（出典: atwiki/page-2133「捨札にしてもよい」）", () => {
     const s = resolveAll(pick(ncAttack(), "SPEC-OP2:c2"));
     expect(zoneOf(s, "player2", "SPEC-OP2:c2")).toBe("discard");
     expect(zoneOf(s, "player2", "TST-OP-DA:c1")).toBe("command");
@@ -213,7 +213,7 @@ describe("XG4-017 ガオシルバー（XG4）", () => {
     expect(s.players.player2.command).toHaveLength(4);
   });
 
-  it.fails("XG4-017: ライドオフしたとき — ナンバーに関係なく発動する（XG4-009 オートスライダーにライドして出てライドオフ、1番目でも撃破で発動）（出典: atwiki/page-2133「（この効果は、ライドオフしたときナンバーに関係なく発動する）」・カード評価「ライドオフすればナンバー無視で効果を発動できる」）（既知の不具合: CARD-XG4-017 【ガオハスラーロッド・スナイパーモード】の敵軍コマンドを選ぶ選択が開かない（NC・ライドオフとも））", () => {
+  it("XG4-017: ライドオフしたとき — ナンバーに関係なく発動する（XG4-009 オートスライダーにライドして出てライドオフ、1番目でも撃破で発動）（出典: atwiki/page-2133「（この効果は、ライドオフしたときナンバーに関係なく発動する）」・カード評価「ライドオフすればナンバー無視で効果を発動できる」）", () => {
     let s = battle({ rush: [inst("XG4-017", "gs"), inst("XG4-009", "as")] }, ENEMY());
     expect(canMount(s, "XG4-017:gs", "XG4-009:as")).toBe(true);
     s = mountAndRideOff(s, "XG4-017:gs", "XG4-009:as");
@@ -235,7 +235,7 @@ describe("XG4-018 ウルフローダー", () => {
     expectRarityIn("XG4-018", ["N"]);
   });
 
-  it.fails("XG4-018: ※ — WB を持つ S ユニットは、自軍コマンドを1つホールドすれば RC がなくてもライドできる（ホールドしたコマンドが1つ増える）（出典: atwiki/page-2098「自軍コマンドを1つホールドすればRCを持っていなくてもこのビークルにライドできる」）（既知の不具合: CARD-XG4-018 ※「WB を持つ S ユニットはコマンドを1つホールドすればライドできる」が使えない）", () => {
+  it("XG4-018: ※ — WB を持つ S ユニットは、自軍コマンドを1つホールドすれば RC がなくてもライドできる（ホールドしたコマンドが1つ増える）（出典: atwiki/page-2098「自軍コマンドを1つホールドすればRCを持っていなくてもこのビークルにライドできる」）", () => {
     let s = battle({ rush: [inst("XG4-018", "wl"), inst("SPEC-WB-S", "w")], command: releasedN(1) });
     expect(canMount(s, "SPEC-WB-S:w", "XG4-018:wl")).toBe(true);
     s = mount(s, "SPEC-WB-S:w", "XG4-018:wl");
@@ -257,14 +257,14 @@ describe("XG4-018 ウルフローダー", () => {
     return s;
   };
 
-  it.fails("XG4-018:【白銀の疾風】— 自軍ターン中にバトルエリアに出ると、特徴「獣」の自軍ユニットの数（ビークルのこれ自身は数えない）以下の必要パワーの数字を持つ敵軍 S ユニット（エリアを問わない）から1体選べる（任意）（出典: atwiki/page-2098「特徴「獣」を持つ自軍ユニットの数を数え、その数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破してもよい」・R-CARD-04（ビークルはユニットではない）・カード評価「エリアを問わず除去できる」）（既知の不具合: CARD-XG4-018 ※ のライドができないため【白銀の疾風】を確かめられない（ライドの合法手がない））", () => {
+  it("XG4-018:【白銀の疾風】— 自軍ターン中にバトルエリアに出ると、特徴「獣」の自軍ユニットの数（ビークルのこれ自身は数えない）以下の必要パワーの数字を持つ敵軍 S ユニット（エリアを問わない）から1体選べる（任意）（出典: atwiki/page-2098「特徴「獣」を持つ自軍ユニットの数を数え、その数以下の必要パワーの数字を持つ敵軍Sユニットを1体選び撃破してもよい」・R-CARD-04（ビークルはユニットではない）・カード評価「エリアを問わず除去できる」）", () => {
     const s = ridden(2);
     expectChoiceFrom(s, "player1", "XG4-018");
     expect(choiceIds(s)).toEqual(["SPEC-E-C0:c0", "SPEC-E-C2:c2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-018:【白銀の疾風】— 選んだ敵軍 S ユニットは撃破される（出典: atwiki/page-2098「撃破してもよい」）（既知の不具合: CARD-XG4-018 ※ のライドができないため【白銀の疾風】を確かめられない（ライドの合法手がない））", () => {
+  it("XG4-018:【白銀の疾風】— 選んだ敵軍 S ユニットは撃破される（出典: atwiki/page-2098「撃破してもよい」）", () => {
     const s = resolveAll(pick(ridden(3), "SPEC-E-C3:c3"));
     expect(zoneOf(s, "player2", "SPEC-E-C3:c3")).toBe("discard");
   });
@@ -288,13 +288,13 @@ describe("XG4-019 ピタットヒトデ", () => {
 
   const jc = (left: string) => enter1(battle({ battle: [inst(left, "l")], rush: [inst("XG4-019", "ph")] }, { command: [released("TST-OP", "c1"), { ...inst("TST-OP-DA", "c2"), commandHeld: true }] }), "XG4-019:ph");
 
-  it.fails("XG4-019:【スターライトニードロップ】— MA の L ユニットの右に出て JC が成立すると、敵軍コマンドゾーンのカード（ホールド状態を含む）から1枚選べる（出典: atwiki/page-2089「これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒敵軍コマンドゾーンからカードを1枚選び」・atwiki/page-266（「R」は右に並べる））（既知の不具合: CARD-XG4-019 【スターライトニードロップ】が MA の L ユニットからの JC で発動しない）", () => {
+  it("XG4-019:【スターライトニードロップ】— MA の L ユニットの右に出て JC が成立すると、敵軍コマンドゾーンのカード（ホールド状態を含む）から1枚選べる（出典: atwiki/page-2089「これが同カテゴリのLユニットからコンビネーションするとき、次の効果を発動できる⇒敵軍コマンドゾーンからカードを1枚選び」・atwiki/page-266（「R」は右に並べる））", () => {
     const s = yes(jc("SPEC-MA-L"));
     expectChoiceFrom(s, "player1", "XG4-019");
     expect(choiceIds(s)).toEqual(["TST-OP-DA:c2", "TST-OP:c1"]);
   });
 
-  it.fails("XG4-019:【スターライトニードロップ】— 選んだカードは持ち主（相手）の手札に戻る（出典: atwiki/page-2089「持ち主の手札に戻す」）（既知の不具合: CARD-XG4-019 【スターライトニードロップ】が MA の L ユニットからの JC で発動しない）", () => {
+  it("XG4-019:【スターライトニードロップ】— 選んだカードは持ち主（相手）の手札に戻る（出典: atwiki/page-2089「持ち主の手札に戻す」）", () => {
     const s = resolveAll(pick(yes(jc("SPEC-MA-L")), "TST-OP:c1"));
     expect(zoneOf(s, "player2", "TST-OP:c1")).toBe("hand");
     expect(zoneOf(s, "player2", "TST-OP-DA:c2")).toBe("command");
@@ -337,7 +337,7 @@ describe("XG4-020 リボルバーマンモス", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-020:【カラクリボール発射】— オモテにしたカードが MA の M ユニットなら、追加条件を持たない敵軍ユニット（エリア・サイズを問わない）から1体選び持ち主の手札に戻し、オモテにしたカードを手札に加える（出典: atwiki/page-2106「追加条件を持たない敵軍ユニットを1体選び、持ち主の手札に戻す。その後、オモテにしたカードを手札に加える」・コメント欄「サイズ・エリアを問わない除去」）（既知の不具合: CARD-XG4-020 【カラクリボール発射】の候補が違う（追加条件を持つユニットを含み、ラッシュエリアのユニットを含まない））", () => {
+  it("XG4-020:【カラクリボール発射】— オモテにしたカードが MA の M ユニットなら、追加条件を持たない敵軍ユニット（エリア・サイズを問わない）から1体選び持ち主の手札に戻し、オモテにしたカードを手札に加える（出典: atwiki/page-2106「追加条件を持たない敵軍ユニットを1体選び、持ち主の手札に戻す。その後、オモテにしたカードを手札に加える」・コメント欄「サイズ・エリアを問わない除去」）", () => {
     let s = yes(entered(inst("SPEC-MA-M", "top")));
     expectChoiceFrom(s, "player1", "XG4-020");
     expect(choiceIds(s)).toEqual(["SPEC-E-M:m", "SPEC-E-PLAIN:p"]);
@@ -346,7 +346,7 @@ describe("XG4-020 リボルバーマンモス", () => {
     expect(zoneOf(s, "player1", "SPEC-MA-M:top")).toBe("hand");
   });
 
-  it.fails("XG4-020:【カラクリボール発射】— MA の M ユニットでなくても、オモテにしたカードは手札に加える（敵軍ユニットは戻さない）（出典: atwiki/page-2106「その後、オモテにしたカードを手札に加える」・コメント欄「「その後」だからできる」）（既知の不具合: CARD-XG4-020 【カラクリボール発射】でオモテにしたカードを手札に加えない（MA の M ユニット以外のとき山札に残る））", () => {
+  it("XG4-020:【カラクリボール発射】— MA の M ユニットでなくても、オモテにしたカードは手札に加える（敵軍ユニットは戻さない）（出典: atwiki/page-2106「その後、オモテにしたカードを手札に加える」・コメント欄「「その後」だからできる」）", () => {
     const s = resolveAll(yes(entered(inst("SPEC-MA-S", "top"))));
     expect(zoneOf(s, "player1", "SPEC-MA-S:top")).toBe("hand");
     expect(zoneOf(s, "player2", "SPEC-E-PLAIN:p")).toBe("battle");
@@ -370,7 +370,7 @@ describe("XG4-021 カラクリマント", () => {
     expectRarityIn("XG4-021", ["N"]);
   });
 
-  it.fails("XG4-021: カタログの特徴 — オペレーションだが特徴「カラクリボール」を持つ（出典: atwiki/page-2054「特徴：カラクリボール」）（既知の不具合: CARD-XG4-021 カタログ: オペレーションの特徴「カラクリボール」が入っていない）", () => {
+  it("XG4-021: カタログの特徴 — オペレーションだが特徴「カラクリボール」を持つ（出典: atwiki/page-2054「特徴：カラクリボール」）", () => {
     expect(DEFS["XG4-021"]?.features ?? []).toEqual(["カラクリボール"]);
   });
 
@@ -383,12 +383,12 @@ describe("XG4-021 カラクリマント", () => {
     return attack(s, "TST-UNIT-7:atk", target, "player2");
   };
 
-  it.fails("XG4-021: 自軍 L ユニットがアタックされたとき使える（S ユニットのときは使えない）（出典: atwiki/page-2054「自軍Lユニットがアタックされたとき発動できる」）（既知の不具合: CARD-XG4-021 自軍 L ユニットがアタックされてもカウンターとして使えない（反応ウィンドウが開かない））", () => {
+  it("XG4-021: 自軍 L ユニットがアタックされたとき使える（S ユニットのときは使えない）（出典: atwiki/page-2054「自軍Lユニットがアタックされたとき発動できる」）", () => {
     expect(canCounter(attacked("SPEC-MA-L:l"), "XG4-021:op")).toBe(true);
     expect(canCounter(attacked("SPEC-MA-S:s"), "XG4-021:op")).toBe(false);
   });
 
-  it.fails("XG4-021: アタックしてきたユニットは持ち主のパワーゾーンにダメージ（ウラ向き）で置かれ、バトルは行われない（L ユニットは残る）（出典: atwiki/page-2054「アタックしてきたユニットを持ち主のパワーゾーンにダメージにして置く。このとき、バトルは行われない」）（既知の不具合: CARD-XG4-021 自軍 L ユニットがアタックされてもカウンターとして使えない（反応ウィンドウが開かない））", () => {
+  it("XG4-021: アタックしてきたユニットは持ち主のパワーゾーンにダメージ（ウラ向き）で置かれ、バトルは行われない（L ユニットは残る）（出典: atwiki/page-2054「アタックしてきたユニットを持ち主のパワーゾーンにダメージにして置く。このとき、バトルは行われない」）", () => {
     const s = resolveAll(useCounter(attacked("SPEC-MA-L:l"), "XG4-021:op"));
     expect(zoneOf(s, "player2", "TST-UNIT-7:atk")).toBe("power");
     expect(cardIn(s, "player2", "TST-UNIT-7:atk")?.faceDown).toBe(true);

@@ -2,6 +2,7 @@ import { activateRm2FieldAbility, canActivateRm2FieldAbility, isRm2FieldAbilityC
 import { activateXg7FieldAbility, canActivateXg7FieldAbility, isXg7BattleFieldAbilityCard, isXg7FieldAbilityCard } from "./xg7/xg7Effects";
 import { activateXg1aFieldAbility, canActivateXg1aFieldAbility, isXg1aFieldAbilityCard } from "./xg1/xg1aEffects";
 import { activateXg1eFieldAbility, canActivateXg1eFieldAbility } from "./xg1/xg1eEffects";
+import { activateXg4FieldAbility, canActivateXg4FieldAbility, isXg4FieldAbilityCard, resolveXg4DiscardSelfAbility } from "./xg4/xg4Effects";
 import { tryLeaveField } from "./operationCounters";
 import { liveCommentaryStayAvailable } from "./legend1/set7NamedEffectsA";
 import { kuugaStayCandidates } from "./legend1/otherLinesNamedEffects";
@@ -527,6 +528,30 @@ ABILITIES.push({
   repeatable: true,
   canActivate: (state, playerId, card) => canActivateXg1eFieldAbility(state, playerId, card),
   resolve: (state, playerId, card) => activateXg1eFieldAbility(state, playerId, card),
+});
+
+// XG4-035 シンケンゴールド【モヂカラのプログラム】「これが自軍エリアにある間、自軍ラッシュフェイズ中、ETを持つ自軍コマンドを1つホールドしてもよい。…」
+// （atwiki/page-2044。rules/xg4/xg4bEffects.ts）。回数の制限はない（RM-038 と同じ）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "xg4035_program",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  discardSelf: false,
+  repeatable: true,
+  matches: (cardId) => isXg4FieldAbilityCard(cardId),
+  canActivate: (state, playerId, card) => canActivateXg4FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg4FieldAbility(state, playerId, card),
+});
+
+// XG4-051 マックジャバー【液化】「自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、自分は1枚ドローする。」（atwiki/page-2056。
+// rules/xg4/xg4cEffects.ts）。
+ABILITIES.push({
+  cardId: "XG4-051",
+  effectId: "xg4051_ekika",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  resolve: (state, playerId, card) => resolveXg4DiscardSelfAbility(state, playerId, card),
 });
 
 // 能力の当てはめはカード ID（とカードの文言）だけで決まるので、ID ごとに覚える。表に能力が足されたら捨てる。

@@ -26,12 +26,12 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": false,
+      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-025::kensonikuhanma",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-025::sonic_hammer",
+          "duration": "turn"
         }
       ]
     }

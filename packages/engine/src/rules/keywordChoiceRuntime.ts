@@ -331,6 +331,8 @@ export function beginStackVehicleUnderSelf(
   const selfId = ctx.triggerSourceInstanceId;
   if (!selfId) return null;
   const player = state.players[ctx.playerId];
+  // すでにビークルにライドして出た（XG4-009【緊急出動】）なら、ビークルを重ねられない（atwiki/page-1233 Q2・page-2083 Q1）。
+  if (player.rush.concat(player.battle).some((c) => c.instanceId === selfId && c.mountedOnInstanceId)) return null;
   const ridden = new Set(
     player.rush.concat(player.battle).map((c) => c.mountedOnInstanceId).filter(Boolean),
   );

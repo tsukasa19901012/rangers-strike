@@ -6,6 +6,7 @@ import { getDefinition, isSmallUnit } from "../../core/catalog";
 import { findInZone, updatePlayer } from "../../core/helpers";
 import { openEffectChoice, startSelectUnitChoice } from "../pendingChoices";
 import { tryOpenSet4EndTurnChoice } from "../legend1/set4NamedEffects";
+import { openXg4EndPhaseChoice } from "../xg4/xg4Effects";
 
 const END_TURN_EFFECT_IDS = ["jet_skateboard", "end_turn_battle_to_rush"] as const;
 
@@ -71,7 +72,8 @@ export function tryOpenEndTurnEffectsMenu(
   if (discoChoice) return discoChoice;
 
   const instanceIds = collectEndTurnEffectInstanceIds(state, playerId);
-  if (instanceIds.length === 0) return null;
+  // XG4-084【乱れ独楽】（自軍エンドフェイズ中に発動できる。rules/xg4/xg4eEffects.ts）。
+  if (instanceIds.length === 0) return openXg4EndPhaseChoice(state, playerId);
 
   const first = findInZone(state.players[playerId], "battle", instanceIds[0]!);
   return openEffectChoice(state, {

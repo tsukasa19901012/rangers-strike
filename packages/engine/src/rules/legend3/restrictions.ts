@@ -29,6 +29,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types
 import { isCostWindowSatisfied } from "../../core/costWindow";
 import {
   cardCategories,
+  effectiveBp,
   getDefinition,
   isSmallUnit,
   isVehicle,
@@ -59,6 +60,7 @@ import { rk15DefenderBlocksAttack } from "../rk/rk15Fields";
 import { rk16DefenderBlocksAttack } from "../rk/rk16Fields";
 import { xg7DefenderBlocksAttack } from "../xg7/xg7Fields";
 import { xg1AttackerCanAttackRush, xg1DefenderBlocksAttack } from "../xg1/xg1Fields";
+import { xg4DefenderBlocksAttack } from "../xg4/xg4Fields";
 
 export function hasDarkDealInRush(state: GameState, playerId: PlayerId): boolean {
   return state.players[playerId].rush.some(
@@ -520,6 +522,16 @@ export function canAttackDefender(
   if (defenderCard && xg7DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
   // XG1-017【許可なき戦いへの介入】・XG1-018【治安維持】（rules/xg1/xg1Fields.ts）。
   if (defenderCard && xg1DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
+  // クロスギャザー ザ・ジェットアクセル XG4-013 の※等（rules/xg4/xg4Fields.ts）。
+  if (
+    defenderCard &&
+    xg4DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard, (c) => cardHasKeyword(state.definitions, c.cardId, "wing", { state, playerId: attackerPlayerId }), {
+      hasResist: (c) => cardHasKeyword(state.definitions, c.cardId, "register", { state, playerId: defenderPlayerId }),
+      bpOf: (c) => effectiveBp(state, defenderPlayerId, c),
+    })
+  ) {
+    return false;
+  }
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;

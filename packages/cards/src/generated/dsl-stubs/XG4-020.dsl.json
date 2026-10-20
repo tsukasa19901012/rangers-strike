@@ -37,34 +37,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      },
       "optional": true,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "hand"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg4::XG4-020::karakuri_ball",
+          "duration": "turn"
         }
       ]
     }

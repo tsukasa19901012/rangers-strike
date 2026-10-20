@@ -29550,6 +29550,9 @@
       "rarity": "N",
       "expansion": "complexity-promoted",
       "powerCost": 5,
+      "features": [
+        "カラクリボール"
+      ],
       "imageUrl": "/cards/promoted/XG4-021.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG4-021-RS.jpg",
       "text": "※カウンター 自軍Lユニットがアタックされたとき発動できる⇒アタックしてきたユニットを持ち主のパワーゾーンにダメージにして置く。このとき、バトルは行われない。"

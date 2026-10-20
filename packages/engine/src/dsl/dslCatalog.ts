@@ -179,6 +179,8 @@ export function shouldUseDslOperation(
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rm1::"))) return true;
   // クロスギャザー ザ・ギガンティックタイタン XG6（xg6::。rules/xg6/xg6Hooks.ts）。
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("xg6::"))) return true;
+  // クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102（xg4:: のカード固有の効果。rules/xg4/xg4Effects.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("xg4::"))) return true;
   // RM-022〜RM-042（rm2::。rules/rm/rm2Effects.ts）。
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rm2::"))) return true;
   // RM-043〜RM-062（rm3::。rules/rm/rm3Effects.ts）。

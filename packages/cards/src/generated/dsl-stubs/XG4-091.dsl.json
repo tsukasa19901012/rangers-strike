@@ -38,13 +38,13 @@
       "name": "スピンドルキャノン",
       "text": "これをホールドすれば、次の効果を発動できる⇒相手は自分自身のユニットを1体選び、可能なら自軍コマンドゾーンにホールド状態で置く。",
       "trigger": {
-        "type": "riding_combo"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-091::supindorukyanon",
+          "keyword": "xg4::XG4-091::spindle",
           "duration": "turn"
         }
       ]

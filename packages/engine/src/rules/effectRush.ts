@@ -404,6 +404,8 @@ export type StartEffectRushInput = {
   blockBattleEntryThisTurn?: boolean;
   /** 「1枚選び、…出す」（任意でない）: 選択・追加条件の素材の選択を見送れない（RS-605）。 */
   forced?: boolean;
+  /** 出したユニットを、このビークルにライドした状態で出す（XG4-009【緊急出動】）。 */
+  mountOnInstanceId?: string;
 };
 
 /**
@@ -432,6 +434,7 @@ export function startEffectRush(state: GameState, input: StartEffectRushInput): 
     ignorePowerCost: input.ignorePowerCost,
     blockBattleEntryThisTurn: input.blockBattleEntryThisTurn,
     ...(input.forced ? { forced: true } : {}),
+    ...(input.mountOnInstanceId ? { mountOnInstanceId: input.mountOnInstanceId } : {}),
     queue: [],
   };
 
@@ -504,6 +507,8 @@ function placeUnit(state: GameState, instanceId: string): GameState {
     // RK-245 等「※これはラッシュするとき、可能ならホールド状態で置く。」— 効果のラッシュでも（atwiki/page-876 Q2）。
     rush: [...owner.rush, rk12PlacesHeldOnRush(state, found.card.cardId) ? { ...stripCommandFlags(found.card), commandHeld: true } : stripCommandFlags(found.card)],
   };
+  // XG4-009【緊急出動】: ビークルにライドした状態で出す（rules/xg4/xg4aEffects.ts）。
+  if (pending.mountOnInstanceId) nextOwner = { ...nextOwner, rush: nextOwner.rush.map((c) => (c.instanceId === instanceId ? { ...c, mountedOnInstanceId: pending.mountOnInstanceId } : c)) };
   if (pending.blockBattleEntryThisTurn) nextOwner = markBattleBlocked(nextOwner, instanceId);
   const placed = { ...state, ...updatePlayer(state, pending.playerId, nextOwner) };
   // ルール: R-RUSH-24 — 「このとき出したユニットの効果は発動しない」（RS-371【マスキーリボン】等）なら自身の効果を止める。

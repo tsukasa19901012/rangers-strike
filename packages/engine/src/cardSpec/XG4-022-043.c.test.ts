@@ -83,13 +83,13 @@ describe("XG4-038 モウギュウダイオー", () => {
   });
   const entered = () => settle(enterNow(battle({ rush: [inst("XG4-038", "mg")] }, ENEMY()), "XG4-038:mg"));
 
-  it.fails("XG4-038:【猛牛大回転砲】— 自軍ターン中にバトルエリアに出たとき、発動するかを選べる（任意）（出典: atwiki/page-2147「次の効果を発動できる」）（既知の不具合: CARD-XG4-038 【猛牛大回転砲】の選択が開かない（敵軍 S ユニットが山札の下に戻らない））", () => {
+  it("XG4-038:【猛牛大回転砲】— 自軍ターン中にバトルエリアに出たとき、発動するかを選べる（任意）（出典: atwiki/page-2147「次の効果を発動できる」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG4-038");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-038:【猛牛大回転砲】— 発動すると、必要パワーの数字が2以下の敵軍 S ユニットすべて（どのエリアでも。2+ も含む）が持ち主の山札の下に戻る。3 の S ユニットと M ユニットは残る（出典: atwiki/page-2147「必要パワーの数字が2以下の敵軍Sユニットすべてを、持ち主の山札の下に好きな順で戻す」）（既知の不具合: CARD-XG4-038 【猛牛大回転砲】の選択が開かない（敵軍 S ユニットが山札の下に戻らない））", () => {
+  it("XG4-038:【猛牛大回転砲】— 発動すると、必要パワーの数字が2以下の敵軍 S ユニットすべて（どのエリアでも。2+ も含む）が持ち主の山札の下に戻る。3 の S ユニットと M ユニットは残る（出典: atwiki/page-2147「必要パワーの数字が2以下の敵軍Sユニットすべてを、持ち主の山札の下に好きな順で戻す」）", () => {
     let s = entered();
     expectChoiceFrom(s, "player1", "XG4-038");
     s = resolveAll(confirm(s));
@@ -135,7 +135,7 @@ describe("XG4-039 サムライハオー", () => {
     expect(canStartRush(rb(parts(["RS-682"])), "player1", "XG4-039:sh")).toBe(false);
   });
 
-  it.fails("XG4-039: ※ — 自軍捨札に亀折神と同名のカードがあれば、亀折神は場になくてもラッシュできる（出典: atwiki/page-2125「自軍捨札に合体ユニットと同名のカードがあれば、そのユニットは捨札にしなくてもよい」）（既知の不具合: CARD-XG4-039 捨札の同名カードで合体素材を代えられず、【モヂカラ大弾円】もターン終了時に働かない）", () => {
+  it("XG4-039: ※ — 自軍捨札に亀折神と同名のカードがあれば、亀折神は場になくてもラッシュできる（出典: atwiki/page-2125「自軍捨札に合体ユニットと同名のカードがあれば、そのユニットは捨札にしなくてもよい」）", () => {
     const s = rb(parts(["RS-682"]), [inst("RS-682", "dk")]);
     expect(canStartRush(s, "player1", "XG4-039:sh")).toBe(true);
     const r = rushFromHand(s, "player1", "XG4-039:sh");
@@ -151,14 +151,14 @@ describe("XG4-039 サムライハオー", () => {
   const ending = () =>
     endTurnKeep(battle({ rush: [inst("XG4-039", "sh")] }, { battle: [inst("SPEC-E-C3", "b")], rush: [inst("SPEC-E-M2", "r")], deck: deckCards(3, "e") }));
 
-  it.fails("XG4-039:【モヂカラ大弾円】— 自分がターンを終えるとき、敵軍ユニット（どのエリアでも）を1体選ぶ（任意ではない）（出典: atwiki/page-2125「自分がターンを終えるとき、敵軍ユニットを1体選び」）（既知の不具合: CARD-XG4-039 捨札の同名カードで合体素材を代えられず、【モヂカラ大弾円】もターン終了時に働かない）", () => {
+  it("XG4-039:【モヂカラ大弾円】— 自分がターンを終えるとき、敵軍ユニット（どのエリアでも）を1体選ぶ（任意ではない）（出典: atwiki/page-2125「自分がターンを終えるとき、敵軍ユニットを1体選び」）", () => {
     const s = ending();
     expectChoiceFrom(s, "player1", "XG4-039");
     expect(choiceIds(s)).toEqual(["SPEC-E-C3:b", "SPEC-E-M2:r"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG4-039:【モヂカラ大弾円】— 選んだユニットは持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-2125「持ち主のパワーゾーンにダメージにして置く」）（既知の不具合: CARD-XG4-039 捨札の同名カードで合体素材を代えられず、【モヂカラ大弾円】もターン終了時に働かない）", () => {
+  it("XG4-039:【モヂカラ大弾円】— 選んだユニットは持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-2125「持ち主のパワーゾーンにダメージにして置く」）", () => {
     let s = ending();
     expectChoiceFrom(s, "player1", "XG4-039");
     s = resolveAll(pick(s, "SPEC-E-M2:r"));
@@ -209,7 +209,7 @@ describe("XG4-040 ゴセイグレート", () => {
 
   wingTests("XG4-040", "atwiki/page-2107");
 
-  it.fails("XG4-040:【天装合体】— ラッシュしたとき、ウイングを持たない敵軍ユニット（どのエリア・サイズでも）を1体選ぶ（ウイングを持つユニットは選べない。任意ではない）（出典: atwiki/page-2107「ウイングを持たない敵軍ユニットを1体選び」・カード評価「エリアやサイズを問わない」）（既知の不具合: CARD-XG4-040 【天装合体】の候補がラッシュエリアのユニットだけで、ウイングを持つユニットも入る（バトルエリアのユニットを選べない））", () => {
+  it("XG4-040:【天装合体】— ラッシュしたとき、ウイングを持たない敵軍ユニット（どのエリア・サイズでも）を1体選ぶ（ウイングを持つユニットは選べない。任意ではない）（出典: atwiki/page-2107「ウイングを持たない敵軍ユニットを1体選び」・カード評価「エリアやサイズを問わない」）", () => {
     const r = rushFromHand(rb(), "player1", "XG4-040:gg");
     expect(r.ok, r.error).toBe(true);
     const s = r.state;
@@ -218,7 +218,7 @@ describe("XG4-040 ゴセイグレート", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG4-040:【天装合体】— 選んだユニットは持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-2107「持ち主のパワーゾーンにダメージにして置く」）（既知の不具合: CARD-XG4-040 【天装合体】の候補がラッシュエリアのユニットだけで、ウイングを持つユニットも入る（バトルエリアのユニットを選べない））", () => {
+  it("XG4-040:【天装合体】— 選んだユニットは持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-2107「持ち主のパワーゾーンにダメージにして置く」）", () => {
     const r = rushFromHand(rb(), "player1", "XG4-040:gg");
     expect(r.ok, r.error).toBe(true);
     let s = r.state;
@@ -245,7 +245,7 @@ describe("XG4-041 ゴセイイエロー（XG4）", () => {
 
   const nc = () => settle(ncEnter("XG4-041:gy", 0, { hand: [inst("TST-UNIT-0", "h1")], deck: [inst("TST-UNIT-0", "top"), ...deckCards(3)] }, {}, EXTRA));
 
-  it.fails("XG4-041: NC【ソウテンダー】— 1番目に出ると1枚ドローし、その後ドローしたカードを含む手札から1枚選ぶ（任意ではない）（出典: atwiki/page-2047「自分は1枚ドローしてから、自分の手札を1枚選び捨札にする」）（既知の不具合: CARD-XG4-041 NC【ソウテンダー】がログに出るだけでドロー・捨札をしない）", () => {
+  it("XG4-041: NC【ソウテンダー】— 1番目に出ると1枚ドローし、その後ドローしたカードを含む手札から1枚選ぶ（任意ではない）（出典: atwiki/page-2047「自分は1枚ドローしてから、自分の手札を1枚選び捨札にする」）", () => {
     const s = nc();
     expect(zoneOf(s, "player1", "TST-UNIT-0:top")).toBe("hand");
     expectChoiceFrom(s, "player1", "XG4-041");
@@ -253,7 +253,7 @@ describe("XG4-041 ゴセイイエロー（XG4）", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG4-041: NC — 選んだ手札は捨札になり（出典: atwiki/page-2047「捨札にする」）（既知の不具合: CARD-XG4-041 NC【ソウテンダー】がログに出るだけでドロー・捨札をしない）", () => {
+  it("XG4-041: NC — 選んだ手札は捨札になり（出典: atwiki/page-2047「捨札にする」）", () => {
     let s = nc();
     expectChoiceFrom(s, "player1", "XG4-041");
     s = resolveAll(pick(s, "TST-UNIT-0:h1"));

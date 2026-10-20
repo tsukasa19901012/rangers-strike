@@ -28,6 +28,7 @@ import { applyRocketBoosterEndTurnRushReturn } from "./rocketBooster";
 import { applyKeywordTurnEndEffects, clearEnemyTurnDamageFlag } from "./keywordGapRuntime";
 import { applyGegeruTurnEnd } from "./residentOps";
 import { applyTempDiscardAtTurnEnd } from "./riderKickEffects";
+import { collectXg4TurnEndQueue, openXg4TurnEndEntry } from "./xg4/xg4Effects";
 import {
   applyDragonHarleyTurnEnd,
   applyElectroBeamTurnEnd,
@@ -400,6 +401,14 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.xg6Queue!;
     progress = { ...progress, xg6Queue: rest };
     nextState = openXg6TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // クロスギャザー ザ・ジェットアクセル XG4-031・XG4-039 の「自分がターンを終えるとき」（rules/xg4/xg4Effects.ts）。
+  if (!progress.xg4Queue) progress = { ...progress, xg4Queue: collectXg4TurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.xg4Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.xg4Queue!;
+    progress = { ...progress, xg4Queue: rest };
+    nextState = openXg4TurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {

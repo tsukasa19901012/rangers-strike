@@ -95,18 +95,18 @@ describe("XG4-001 牛靴仮面", () => {
     );
   };
 
-  it.fails("XG4-001: NC【黒十字ハリケーン】— バトルエリアの5番目に出ると、特徴「戦闘員」を持つ自軍ユニット（ラッシュエリアを含む）1体につき BP+1000（出典: atwiki/page-2102「特徴「戦闘員」を持つ自軍ユニット1体につきBP+1000され」・R-CN-02）（既知の不具合: CARD-XG4-001 NC【黒十字ハリケーン】の BP 上昇・SP2 が働かない（NC は成立するが効果がない））", () => {
+  it("XG4-001: NC【黒十字ハリケーン】— バトルエリアの5番目に出ると、特徴「戦闘員」を持つ自軍ユニット（ラッシュエリアを含む）1体につき BP+1000（出典: atwiki/page-2102「特徴「戦闘員」を持つ自軍ユニット1体につきBP+1000され」・R-CN-02）", () => {
     const s = nc(4, 2, 1);
     expect(bpOf(s, "player1", "XG4-001:u")).toBe(2000 + 3000);
   });
 
-  it.fails("XG4-001: NC — BP8000 未満なら SP を持たない（印刷の SP は「！」）（出典: atwiki/page-2102「BP8000以上のときSP2になる」）（既知の不具合: CARD-XG4-001 NC【黒十字ハリケーン】の BP 上昇・SP2 が働かない（NC は成立するが効果がない））", () => {
+  it("XG4-001: NC — BP8000 未満なら SP を持たない（印刷の SP は「！」）（出典: atwiki/page-2102「BP8000以上のときSP2になる」）", () => {
     const s = nc(4, 4, 1);
     expect(bpOf(s, "player1", "XG4-001:u")).toBe(7000);
     expect(spOf(s, "player1", "XG4-001:u")).toBe(0);
   });
 
-  it.fails("XG4-001: NC — BP8000 以上なら SP2 になる（出典: atwiki/page-2102「BP8000以上のときSP2になる」）（既知の不具合: CARD-XG4-001 NC【黒十字ハリケーン】の BP 上昇・SP2 が働かない（NC は成立するが効果がない））", () => {
+  it("XG4-001: NC — BP8000 以上なら SP2 になる（出典: atwiki/page-2102「BP8000以上のときSP2になる」）", () => {
     const s = nc(4, 4, 2);
     expect(bpOf(s, "player1", "XG4-001:u")).toBe(8000);
     expect(spOf(s, "player1", "XG4-001:u")).toBe(2);
@@ -125,7 +125,8 @@ describe("XG4-001 牛靴仮面", () => {
   });
 
   it("XG4-001: NC — BP の上昇はこのターンだけ（ターンを終えると印刷の BP に戻る）（出典: atwiki/page-2102「このターン」）", () => {
-    const s = endTurn(nc(4, 4, 2));
+    // SP2 になるとバトルエリアに出たときストライクを選べるので、ストライクせずに進めてからターンを終える。
+    const s = endTurn(act(nc(4, 4, 2), { type: "pass_battle_entry", playerId: "player1" }));
     expect(bpOf(s, "player1", "XG4-001:u")).toBe(2000);
   });
 });
@@ -145,32 +146,33 @@ describe("XG4-002 テレビ仮面", () => {
   const nc = (top: ReturnType<typeof inst>, p2: Partial<GameState["players"]["player2"]> = {}) =>
     resolveAll(ncEnter("XG4-002:tv", 0, { deck: [top, ...deckCards(3)] }, { battle: [inst("SPEC-E-WEAK", "e")], ...p2 }, EXTRA));
 
-  it.fails("XG4-002: NC【TV受像機】— 1番目に出ると自軍山札の一番上をオモテにし、S ユニットのカードなら自軍ラッシュエリアに出す（出典: atwiki/page-2093「オモテにしたカードがSユニットのカードなら自軍ラッシュエリアに出す」）（既知の不具合: CARD-XG4-002 NC【TV受像機】でオモテにしたカードが動かない（S ユニットをラッシュエリアに出さず、それ以外も捨札にしない））", () => {
+  it("XG4-002: NC【TV受像機】— 1番目に出ると自軍山札の一番上をオモテにし、S ユニットのカードなら自軍ラッシュエリアに出す（出典: atwiki/page-2093「オモテにしたカードがSユニットのカードなら自軍ラッシュエリアに出す」）", () => {
     const s = nc(inst("SPEC-PLAIN", "top"));
     expect(zoneOf(s, "player1", "SPEC-PLAIN:top")).toBe("rush");
     expect(s.players.player1.deck).toHaveLength(3);
   });
 
-  it.fails("XG4-002: NC — S ユニット以外（M ユニット・オペレーション）なら捨札にする（出典: atwiki/page-2093「それ以外なら捨札にする」）（既知の不具合: CARD-XG4-002 NC【TV受像機】でオモテにしたカードが動かない（S ユニットをラッシュエリアに出さず、それ以外も捨札にしない））", () => {
+  it("XG4-002: NC — S ユニット以外（M ユニット・オペレーション）なら捨札にする（出典: atwiki/page-2093「それ以外なら捨札にする」）", () => {
     expect(zoneOf(nc(inst("SPEC-PLAIN-M", "top")), "player1", "SPEC-PLAIN-M:top")).toBe("discard");
     expect(zoneOf(nc(inst("TST-OP", "top")), "player1", "TST-OP:top")).toBe("discard");
   });
 
-  it.fails("XG4-002: NC — 出したユニットの「ラッシュしたとき」の効果は発動しない（XG4-004 副長ゼルモダ【ワンパーの壺】が開かない）（出典: atwiki/page-2093「このとき、出したユニットの効果は発動しない」）（既知の不具合: CARD-XG4-002 NC【TV受像機】でオモテにしたカードが動かない（S ユニットをラッシュエリアに出さず、それ以外も捨札にしない））", () => {
+  it("XG4-002: NC — 出したユニットの「ラッシュしたとき」の効果は発動しない（XG4-004 副長ゼルモダ【ワンパーの壺】が開かない）（出典: atwiki/page-2093「このとき、出したユニットの効果は発動しない」）", () => {
     const s = ncEnter("XG4-002:tv", 0, { deck: [inst("XG4-004", "top"), inst("SPEC-GRUNT", "g"), ...deckCards(3)] }, {}, EXTRA);
     expect(zoneOf(s, "player1", "XG4-004:top")).toBe("rush");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG4-004");
   });
 
-  it.fails("XG4-002: NC — 出したユニットはこのターン、バトルエリアに出てもアタックもストライクもできない（出典: atwiki/page-2093「この効果で出したユニットは、このターン、アタックもストライクもできず」）（既知の不具合: CARD-XG4-002 NC【TV受像機】でオモテにしたカードが動かない（S ユニットをラッシュエリアに出さず、それ以外も捨札にしない））", () => {
+  it("XG4-002: NC — 出したユニットはこのターン、バトルエリアに出てもアタックもストライクもできない（出典: atwiki/page-2093「この効果で出したユニットは、このターン、アタックもストライクもできず」）", () => {
     const s = enterKeep(nc(inst("SPEC-PLAIN", "top")), ["SPEC-PLAIN:top"]);
     expect(zoneOf(s, "player1", "SPEC-PLAIN:top")).toBe("battle");
     expect(targetsOf(s, "SPEC-PLAIN:top")).toEqual([]);
     expect(canStrike(s, "SPEC-PLAIN:top")).toBe(false);
   });
 
-  it.fails("XG4-002: NC — 出したユニットは、このターンを終えるとき自軍エリアにあれば捨札になる（出典: atwiki/page-2093「このターンを終えるとき、自軍エリアにあれば捨札にする」）（既知の不具合: CARD-XG4-002 NC【TV受像機】でオモテにしたカードが動かない（S ユニットをラッシュエリアに出さず、それ以外も捨札にしない））", () => {
-    const s = endTurn(nc(inst("SPEC-PLAIN", "top")));
+  it("XG4-002: NC — 出したユニットは、このターンを終えるとき自軍エリアにあれば捨札になる（出典: atwiki/page-2093「このターンを終えるとき、自軍エリアにあれば捨札にする」）", () => {
+    // テレビ仮面はバトルエリアに出たところでアタックを選べるので、アタックせずに進めてからターンを終える。
+    const s = endTurn(act(nc(inst("SPEC-PLAIN", "top")), { type: "pass_battle_entry", playerId: "player1" }));
     expect(zoneOf(s, "player1", "SPEC-PLAIN:top")).toBe("discard");
     expect(zoneOf(s, "player1", "XG4-002:tv")).not.toBe("discard");
   });
@@ -254,20 +256,20 @@ describe("XG4-005 バギバギルガー－", () => {
     return r.state;
   };
 
-  it.fails("XG4-005:【バキバキビックサンダー】— ラッシュしたとき、必要パワーの数字が3以下の敵軍ユニット（エリアを問わない。「3+」は3）から1体選べる（任意）（出典: atwiki/page-2087「必要パワーの数字が3以下の敵軍ユニットを1体選びホールドしてもよい」・カード評価「サイズ･エリアを問わない」）（既知の不具合: CARD-XG4-005 【バキバキビックサンダー】が選択を開かず、敵軍ユニットをホールドしない）", () => {
+  it("XG4-005:【バキバキビックサンダー】— ラッシュしたとき、必要パワーの数字が3以下の敵軍ユニット（エリアを問わない。「3+」は3）から1体選べる（任意）（出典: atwiki/page-2087「必要パワーの数字が3以下の敵軍ユニットを1体選びホールドしてもよい」・カード評価「サイズ･エリアを問わない」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "XG4-005");
     expect(choiceIds(s)).toEqual(["SPEC-COST-0:a", "SPEC-COST-2:b", "SPEC-COST-3:c", "SPEC-COST-3p:p"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-005:【バキバキビックサンダー】— 選んだ敵軍ユニットはホールド状態になる（出典: atwiki/page-2087「ホールドしてもよい」）（既知の不具合: CARD-XG4-005 【バキバキビックサンダー】が選択を開かず、敵軍ユニットをホールドしない）", () => {
+  it("XG4-005:【バキバキビックサンダー】— 選んだ敵軍ユニットはホールド状態になる（出典: atwiki/page-2087「ホールドしてもよい」）", () => {
     const s = resolveAll(pick(rushed(), "SPEC-COST-3:c"));
     expect(cardIn(s, "player2", "SPEC-COST-3:c")?.commandHeld).toBe(true);
     expect(cardIn(s, "player2", "SPEC-COST-2:b")?.commandHeld ?? false).toBe(false);
   });
 
-  it.fails("XG4-005:【バキバキビックサンダー】— 見送れば何もホールドしない（出典: atwiki/page-2087「してもよい」）（既知の不具合: CARD-XG4-005 【バキバキビックサンダー】が選択を開かず、敵軍ユニットをホールドしない）", () => {
+  it("XG4-005:【バキバキビックサンダー】— 見送れば何もホールドしない（出典: atwiki/page-2087「してもよい」）", () => {
     const s = resolveAll(skip(rushed()));
     for (const c of [...s.players.player2.rush, ...s.players.player2.battle]) expect(c.commandHeld ?? false).toBe(false);
   });
@@ -287,30 +289,31 @@ describe("XG4-006 ドラゴンアーマー", () => {
   const used = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) => opUsed("XG4-006", "WB", 5, p1, p2, EXTRA);
   const P1 = () => ({ rush: [inst("SPEC-WB-S", "w"), inst("SPEC-WB-M", "wm"), inst("SPEC-MA-S", "m")], battle: [inst("SPEC-WBMA-S", "wm2")] });
 
-  it.fails("XG4-006: 選べるのはカテゴリに WB を持つ自軍 S ユニット（マルチカテゴリを含む）だけ。M ユニット・ほかのカテゴリ・敵軍のユニットは選べない（出典: atwiki/page-2061「カテゴリにWBを持つ自軍Sユニットを1体選ぶ」）（既知の不具合: CARD-XG4-006 使っても選択が開かず、ユニットを重ねない（BP+1000・特徴「獣奏剣」・手札に戻る処理がない））", () => {
+  it("XG4-006: 選べるのはカテゴリに WB を持つ自軍 S ユニット（マルチカテゴリを含む）だけ。M ユニット・ほかのカテゴリ・敵軍のユニットは選べない（出典: atwiki/page-2061「カテゴリにWBを持つ自軍Sユニットを1体選ぶ」）", () => {
     const s = used(P1(), { rush: [inst("SPEC-WB-S", "e")] });
     expectChoiceFrom(s, "player1", "XG4-006");
     expect(choiceIds(s)).toEqual(["SPEC-WB-S:w", "SPEC-WBMA-S:wm2"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG4-006: 重ねたユニットは BP+1000 され、特徴「獣奏剣」が追加される（このカードは捨札にならない）（出典: atwiki/page-2061「このカードに重ねたユニットはBP+1000され、特徴「獣奏剣」が追加される」）（既知の不具合: CARD-XG4-006 使っても選択が開かず、ユニットを重ねない（BP+1000・特徴「獣奏剣」・手札に戻る処理がない））", () => {
+  it("XG4-006: 重ねたユニットは BP+1000 され、特徴「獣奏剣」が追加される（このカードは捨札にならない）（出典: atwiki/page-2061「このカードに重ねたユニットはBP+1000され、特徴「獣奏剣」が追加される」）", () => {
     const s = resolveAll(pick(used(P1()), "SPEC-WB-S:w"));
     expect(bpOf(s, "player1", "SPEC-WB-S:w")).toBe(3000);
     expect(featuresOf(s, "player1", "SPEC-WB-S:w")).toContain("獣奏剣");
     expect(zoneOf(s, "player1", "XG4-006:op")).not.toBe("discard");
   });
 
-  it.fails("XG4-006: BP+1000・「獣奏剣」は次のターン以降も続く（ターンの限定がない）（出典: atwiki/page-2061）（既知の不具合: CARD-XG4-006 使っても選択が開かず、ユニットを重ねない（BP+1000・特徴「獣奏剣」・手札に戻る処理がない））", () => {
+  it("XG4-006: BP+1000・「獣奏剣」は次のターン以降も続く（ターンの限定がない）（出典: atwiki/page-2061）", () => {
     const s = endTurn(resolveAll(pick(used(P1()), "SPEC-WB-S:w")));
     expect(bpOf(s, "player1", "SPEC-WB-S:w")).toBe(3000);
     expect(featuresOf(s, "player1", "SPEC-WB-S:w")).toContain("獣奏剣");
   });
 
-  it.fails("XG4-006: 重ねたユニットが撃破されてユニットでなくなるとき、このカードは持ち主の手札に戻る（出典: atwiki/page-2061「重ねたユニットがユニットでなくなるとき、このカードを持ち主の手札に戻す」）（既知の不具合: CARD-XG4-006 使っても選択が開かず、ユニットを重ねない（BP+1000・特徴「獣奏剣」・手札に戻る処理がない））", () => {
+  it("XG4-006: 重ねたユニットが撃破されてユニットでなくなるとき、このカードは持ち主の手札に戻る（出典: atwiki/page-2061「重ねたユニットがユニットでなくなるとき、このカードを持ち主の手札に戻す」）", () => {
     let s = resolveAll(pick(used({ battle: [inst("SPEC-WB-S", "w")] }, { rush: [inst("TST-UNIT-7", "atk")] }), "SPEC-WB-S:w"));
     s = advanceToBattle(endTurn(s), "player2");
-    s = enterSeq(s, ["TST-UNIT-7:atk"], "player2");
+    // 出たところでアタックする（enterSeq は出たあとアタックせずに進めるので、アタックできなくなる）。
+    s = enterKeep(s, ["TST-UNIT-7:atk"], "player2");
     s = resolveAll(attack(s, "TST-UNIT-7:atk", "SPEC-WB-S:w", "player2"));
     expect(zoneOf(s, "player1", "SPEC-WB-S:w")).toBe("discard");
     expect(zoneOf(s, "player1", "XG4-006:op")).toBe("hand");
@@ -333,7 +336,7 @@ describe("XG4-007 ドラゴンレンジャー（XG4）", () => {
     expectRarityIn("XG4-007", ["SR"]);
   });
 
-  it.fails("XG4-007: ※ — ラッシュフェイズ中に自分のカードが捨札に置かれていないターンは、バトルエリアに出られない（出典: atwiki/page-2132「ラッシュフェイズ中に自分のカードが捨札に置かれたターンにしかバトルエリアに出られない」）（既知の不具合: CARD-XG4-007 ※「ラッシュフェイズ中に自分のカードが捨札に置かれたターンにしかバトルエリアに出られない」の制限がない）", () => {
+  it("XG4-007: ※ — ラッシュフェイズ中に自分のカードが捨札に置かれていないターンは、バトルエリアに出られない（出典: atwiki/page-2132「ラッシュフェイズ中に自分のカードが捨札に置かれたターンにしかバトルエリアに出られない」）", () => {
     const s = nextPhase(rushBoard({ rush: [inst("XG4-007", "dr")] }, {}, EXTRA));
     expect(s.phase).toBe("battle");
     expect(canEnter(s, "XG4-007:dr")).toBe(false);
@@ -364,7 +367,7 @@ describe("XG4-007 ドラゴンレンジャー（XG4）", () => {
     expect(zoneOf(s, "player1", "XG4-007:dr")).toBe("battle");
   });
 
-  it.fails("XG4-007:【獣奏剣】— これが自軍エリア（ラッシュエリアでもよい）にある間、特徴「恐竜」を持つ自軍ユニットはアタックするとき BP+2000（出典: atwiki/page-2132「特徴「恐竜」を持つすべての自軍ユニットは、アタックするときBP+2000される」）（既知の不具合: CARD-XG4-007 【獣奏剣】の「恐竜」のアタック時 BP+2000 が働かない）", () => {
+  it("XG4-007:【獣奏剣】— これが自軍エリア（ラッシュエリアでもよい）にある間、特徴「恐竜」を持つ自軍ユニットはアタックするとき BP+2000（出典: atwiki/page-2132「特徴「恐竜」を持つすべての自軍ユニットは、アタックするときBP+2000される」）", () => {
     let s = p1Battle({ rush: [inst("XG4-007", "dr")], battle: [inst("SPEC-DINO", "d")] }, { battle: [inst("TST-UNIT-2", "e")] }, EXTRA);
     s = settle(attack(s, "SPEC-DINO:d", "TST-UNIT-2:e"));
     expect(lastBattleBps(s)?.attacker).toBe(5000);

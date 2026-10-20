@@ -149,6 +149,7 @@ import { canConfirmRk15Choice, isRk15ChoiceEffect } from "../rules/rk/rk15UnitEf
 import { canConfirmRk16Choice, isRk16ChoiceEffect } from "../rules/rk/rk16UnitEffects";
 import { canConfirmXg6Choice, isXg6ChoiceEffect, xg6HandActivations } from "../rules/xg6/xg6Hooks";
 import { canConfirmRm1Choice, isRm1ActivatableResident, isRm1ChoiceEffect, isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "../rules/rm/rm1Effects";
+import { canConfirmXg4Choice, isXg4BattleCounterCard, isXg4ChoiceEffect, xg4BattleCounterConditionMet } from "../rules/xg4/xg4Effects";
 import { rm1ActsAsVehicle } from "../rules/rm/rm1Fields";
 import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "../rules/rm/rm2Effects";
 import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
@@ -369,6 +370,14 @@ function appendBattleReactionActions(
       if (canExecuteHandCounter(state, playerId, card.instanceId)) {
         actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
       }
+      continue;
+    }
+    // クロスギャザー ザ・ジェットアクセル XG4-021 カラクリマント等（rules/xg4/xg4Effects.ts）。
+    if (isXg4BattleCounterCard(card.cardId)) {
+      if (!xg4BattleCounterConditionMet(state, playerId, card.cardId, pending)) continue;
+      if (!canPlayHandCounter(state, playerId, card.instanceId)) continue;
+      appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
+      if (canExecuteHandCounter(state, playerId, card.instanceId)) actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
       continue;
     }
     // RK-004 ギギの腕輪・RK-009 二人の世紀王（自軍Sユニットが敵軍Sユニットにアタックされたとき。rules/rk/rk1NamedEffects.ts）。
@@ -1386,6 +1395,13 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmXg6Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg4ChoiceEffect(pending.effectId)) {
+    // クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 の選択（rules/xg4/xg4Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    if (canConfirmXg4Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

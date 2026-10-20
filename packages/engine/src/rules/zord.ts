@@ -23,6 +23,7 @@ import { findInZone, removeAt } from "../core/helpers";
 import { hasTurnRuleModifier } from "../core/scopedModifiers";
 import { actionContextState, zordMaterialAlteredName, zordMaterialFeatures } from "./zordFeatureContext";
 import { rk11IsHandSubstitute } from "./rk/rk11Fields";
+import { xg4FusionSlotWaived, xg4HoldForHandSubstitute, xg4IsHandSubstituteMaterial } from "./xg4/xg4Fields";
 
 /** ゾードアップ素材を取れるゾーン（フィールドのみ、手札不可）。 */
 export type ZordMaterialZone = "rush" | "battle" | "hand";
@@ -39,7 +40,11 @@ function isHandSubstituteMaterial(
   rushingCardId: string,
   card: CardInstance,
 ): boolean {
-  return resolveZordUpCondition(definitions, rushingCardId)?.conditionId === "discard_named_unit" && rk11IsHandSubstitute({ definitions }, player.hand, card, rushingCardId);
+  return (
+    (resolveZordUpCondition(definitions, rushingCardId)?.conditionId === "discard_named_unit" && rk11IsHandSubstitute({ definitions }, player.hand, card, rushingCardId)) ||
+    // XG4-008【I.N.E.T.特別開発班チーフ】（rules/xg4/xg4Fields.ts）。
+    xg4IsHandSubstituteMaterial(player, definitions, rushingCardId, card, (c) => isValidZordUpMaterial(definitions, rushingCardId, "", c))
+  );
 }
 
 const NON_FIELD_ZORD_UP_CONDITIONS = new Set([
@@ -415,6 +420,8 @@ function matchFusionCombination(
     }
     for (const part of parts) {
       const match = matchSlot(part);
+      // XG4-039 の※（自軍捨札に同名のカードがあれば、その素材は捨札にしなくてよい。rules/xg4/xg4Fields.ts）。
+      if (!match && xg4FusionSlotWaived(player, rushingInstanceId, part, (c, id) => fieldCardMatchesPartner(definitions, c, id))) continue;
       if (!match) return null;
       usedInstanceIds.add(match.card.instanceId);
       found.push(match);
@@ -776,6 +783,10 @@ export function applyZordMaterial(
 
   const [, zoneCards] = removeAt(player[material.zone], material.index);
   let nextPlayer: PlayerState = { ...player, [material.zone]: zoneCards };
+  // XG4-008【I.N.E.T.特別開発班チーフ】で手札のカードを素材にしたときは、ET の自軍コマンドを1つホールドする（rules/xg4/xg4Fields.ts）。
+  if (material.zone === "hand" && !rk11IsHandSubstitute({ definitions }, player.hand, material.card, rushingCardId)) {
+    nextPlayer = xg4HoldForHandSubstitute(nextPlayer, definitions);
+  }
 
   if (conditionId === "discard_fusion_unit" && fusionMaterialsGoToPower(definitions, rushingCardId)) {
     // 「自軍合体ユニットをパワーゾーンに送る」（RS-592 エンジンオーG6。faq-card-8 RS-569 Q1「合体ユニットをパワー送りにする」）。

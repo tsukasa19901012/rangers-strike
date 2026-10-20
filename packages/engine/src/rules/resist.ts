@@ -1,3 +1,4 @@
+import { xg4GrantsResist } from "./xg4/xg4Fields";
 import { rm3GrantsResist } from "./rm/rm3Fields";
 import { xg6GrantsRegister } from "./xg6/xg6Fields";
 import { unitFeatures } from "./addedFeatures";
@@ -58,6 +59,8 @@ export function canOfferRegister(
   if (rk10AntlordGrantsResist(state, pending.ownerPlayerId, { cardId: pending.leavingCardId })) return true;
   // XG6-043 仮面ライダーゼロノスZF の※（特徴「女」を持つ自軍ユニットがあればレジスト。rules/xg6/xg6Fields.ts）。
   if (xg6GrantsRegister(state, pending.ownerPlayerId, pending.instanceId, (c) => unitFeatures(state, pending.ownerPlayerId!, c))) return true;
+  // XG4-099 ホバリアン【バリア】: ライドしている「メカ」のユニットはレジストを得る（rules/xg4/xg4Fields.ts）。
+  if (xg4GrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
   // RS-647 ピヨちゃん【ソウルバード】「このカードに重ねたユニットは、次の能力を得る⇒※レジスト」（rules/stackOntoLargeUnit.ts）。
   const host = state.players[pending.ownerPlayerId].battle.find((c) => c.instanceId === pending.instanceId);
   return !!host && stackOntoLargeGrantsKeyword(host, "register");

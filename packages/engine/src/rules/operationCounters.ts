@@ -13,6 +13,7 @@ import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
 import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
 import { rk15WinButDestroyed } from "./rk/rk15UnitEffects";
 import { rk16OnBattleDestroy } from "./rk/rk16UnitEffects";
+import { applyXg4AfterUnitLeft, isXg4BattleCounterCard, xg4BattleCounterConditionMet, xg4DestroyedToDeckInstead, xg4OnAttackWin, xg4OnBattleDestroy, xg4ShuffleInto } from "./xg4/xg4Effects";
 import { rk13OnAttackWin, rk13OnBattleDestroy } from "./rk/rk13UnitEffects";
 import { openXg6StayOnLeave, xg6OnAttackWin } from "./xg6/xg6Hooks";
 import { xg6WinButDestroyed } from "./xg6/xg6Fields";
@@ -445,6 +446,8 @@ export function hasBattleCounterReactions(
     if (isMechanicNinjaCounter(card.cardId) && isSmallUnit(state.definitions, defenderCard)) {
       return true;
     }
+    // クロスギャザー ザ・ジェットアクセル XG4-021 カラクリマント等（rules/xg4/xg4Effects.ts）。
+    if (isXg4BattleCounterCard(card.cardId) && attackerPlayerId && attackerInstanceId && xg4BattleCounterConditionMet(state, defenderId, card.cardId, { attackerPlayerId, attackerInstanceId, defenderPlayerId: defenderId, defenderInstanceId })) return true;
     // RK-085 ガードベント（特徴「ミラーライダー」を持つ自軍ユニットがアタックされたとき。rules/rk/rk5UnitEffects.ts）。
     if (
       isRk5BattleCounterCard(card.cardId) &&
@@ -1712,6 +1715,7 @@ export function resolveBattlePendingCore(
         withAttacker = rk13OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
         // RK-324【凄いのが来るぜ！】（rules/rk/rk16UnitEffects.ts）。
         withAttacker = rk16OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+        withAttacker = xg4OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
       }
       if (!withAttacker.pendingLeave && !withAttacker.pendingRegister) {
         // 撃破は済み、別の選択が開いている — RS-226（段階 1）を先に、RS-212（段階 4）は段階の順に処理する。
@@ -1755,6 +1759,8 @@ export function resolveBattlePendingCore(
     if (!finalDestroyAttacker) nextState = rk13OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderInstanceId, defenderBp);
     // RK-324【凄いのが来るぜ！】: ライドしているユニットが BP4000 以上の敵軍 S ユニットをバトルで撃破して捨札にしたとき（rules/rk/rk16UnitEffects.ts）。
     if (!finalDestroyAttacker) nextState = rk16OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+    // クロスギャザー ザ・ジェットアクセル XG4-010・XG4-017 等（rules/xg4/xg4Effects.ts）。
+    if (!finalDestroyAttacker) nextState = xg4OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
 
     if (refreshedAttackerFound.card.cardId === "RS-065") {
       const fb = resolveFocusedBreakthroughDamage(
@@ -1826,6 +1832,7 @@ export function resolveBattlePendingCore(
     if (!finalDestroyDefender) {
       // RK-324【凄いのが来るぜ！】（アタックしてきたユニットを、ライドしているユニットがバトルで撃破したとき）。
       nextState = rk16OnBattleDestroy(nextState, defenderOwner, defenderInstanceId, attackerId, pending.attackerInstanceId, attackerBp);
+      nextState = xg4OnBattleDestroy(nextState, defenderOwner, defenderInstanceId, attackerId, pending.attackerInstanceId, attackerBp);
       nextState = openRaigekiZanChoice(
         nextState,
         defenderOwner,
@@ -1874,6 +1881,8 @@ export function resolveBattlePendingCore(
     if (!pending.effectBattle) nextState = xg7OnAttackWin(nextState, battleState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
     // XG6-035【ビッカーチャージブレイク】: アタックして敵軍ユニットを撃破したとき（rules/xg6/xg6bEffects.ts）。
     if (!pending.effectBattle) nextState = xg6OnAttackWin(nextState, attackerId, pending.attackerInstanceId);
+    // XG4-060【フォトンブレイカー】: BP の下三桁が500のユニットにアタックしてバトルに勝ったとき（rules/xg4/xg4Effects.ts）。
+    if (!pending.effectBattle) nextState = xg4OnAttackWin(nextState, pending, defenderBp);
   } else {
     nextState = markAttackerActed(nextState);
   }
@@ -1993,6 +2002,7 @@ export function finalizeLeavePending(
   let triConcordId: string | null = null;
   let discardAsDamage = false;
   let xg7Exiled = false;
+  let toDeckInstead = false;
 
   if (pending.toZone === "deck_top") {
     // ルール: R-MOVE-01 — 山札に戻すのも「場を離れる」移動（ウラ向きで山札の上へ）。
@@ -2068,6 +2078,17 @@ export function finalizeLeavePending(
       [pending.fromZone]: fromCards,
       exile: [...(owner.exile ?? []), leavingCard],
     };
+  } else if (
+    pending.toZone === "discard" &&
+    !pending.notDestruction &&
+    (toDeckInstead = xg4DestroyedToDeckInstead(found.card.cardId, pending.ownerPlayerId, pending.phasePlayerId))
+  ) {
+    // XG4-070【不死身のドーパント】: 敵軍ターン中に撃破されて捨札になるとき、かわりに持ち主の山札に戻してシャッフルする（rules/xg4/xg4dEffects.ts）。
+    nextOwner = {
+      ...owner,
+      [pending.fromZone]: fromCards,
+      deck: xg4ShuffleInto(owner.deck, leavingCard),
+    };
   } else if (pending.toZone === "discard" && pending.discardAsDamage && !pending.notDestruction) {
     // RS-182 ジャイアントローラー: 撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く。
     discardAsDamage = true;
@@ -2108,6 +2129,8 @@ export function finalizeLeavePending(
 
   const effectiveToZone = xg7Exiled
     ? "exile"
+    : toDeckInstead
+    ? "deck"
     : medicalRescueToPower || discardAsDamage
     ? "power" // ルール: R-REPL-02 — 捨札を経由しないので「撃破されて捨札になったとき」は発動しない
     : pending.toZone === "command" && owner.command.length >= COMMAND_ZONE_MAX
@@ -2147,6 +2170,12 @@ export function finalizeLeavePending(
   });
   // XG7-043【地獄の兄弟】（rules/xg7/xg7Effects.ts）。
   resolvedState = openXg7AfterUnitLeft(resolvedState, state, pending, found.card, effectiveToZone, isDestructionLeave(pending));
+  // XG4-071 ナスカ・ドーパントの※（ほかの「怪人」の自軍ユニットが撃破されたとき手札に戻る。rules/xg4/xg4dEffects.ts）。
+  resolvedState = applyXg4AfterUnitLeft(state, resolvedState, {
+    ownerPlayerId: pending.ownerPlayerId,
+    card: found.card,
+    destroyed: isDestructionLeave(pending),
+  });
   if (
     pending.fusionReturnOnDiscard === "battle" &&
     effectiveToZone === "discard" &&

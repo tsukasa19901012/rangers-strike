@@ -250,6 +250,10 @@ export type PendingBattle = {
   xg7AttackedOffered?: boolean;
   /** XG1-084【人質と脅迫】・XG1-087【瞬間移動】の「アタックされたとき」の選択を出した（rules/xg1/xg1eEffects.ts）。 */
   xg1eAttackedOffered?: boolean;
+  /** XG4-033【フリージングダガー】の選択を出したアタック（rules/xg4/xg4bEffects.ts）。 */
+  xg4FreezeOffered?: boolean;
+  /** XG4-073・XG4-074 のバトルの前の選択を出したカード（instanceId。rules/xg4/xg4dEffects.ts）。 */
+  xg4BeforeBattleOffered?: string[];
   /** RS-414【ディオネを守る壁】の選択を出したか。 */
   dioneWallOffered?: boolean;
   /** RS-583【災いを受け止める覚悟】の「代わりに選ばれたことにする」選択をこのアタックで既に出したか。 */
@@ -804,6 +808,8 @@ export type PendingEffectChoice = {
   };
   /** クロスギャザー ザ・ギガンティックタイタン XG6 の選択の続き（rules/xg6/）。 */
   xg6Meta?: Xg6ChoiceMeta;
+  /** クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 の選択の続き（rules/xg4/xg4Common.ts）。 */
+  xg4Meta?: Record<string, unknown>;
   /** スペシャルメタルエディション RM-001〜RM-021 の選択の続き（rules/rm/rm1Effects.ts）。 */
   rm1Meta?: {
     /** RM-006: 選べる数（「メカ」「人型」の自軍ユニットの数）。 */
@@ -1516,6 +1522,8 @@ export type PendingEffectRush = {
   blockBattleEntryThisTurn?: boolean;
   /** 「1枚選び、…出す」（任意でない）: 選択・追加条件の素材の選択を見送れない（RS-605 異次元からの翼）。 */
   forced?: boolean;
+  /** 出したユニットを、このビークルにライドした状態で出す（XG4-009【緊急出動】。rules/xg4/xg4aEffects.ts）。 */
+  mountOnInstanceId?: string;
   /** 選び終えて、まだ出していないユニット（1体ずつ出す）。 */
   queue: string[];
   /** 選ぶ段階: 候補とあと何枚選べるか。 */
@@ -1601,6 +1609,8 @@ export type TurnEndProgress = {
   xg7Queue?: string[];
   /** XG1-052【ファイヤーストームアタック】・XG1-053 の撃破（rules/xg1/xg1cEffects.ts）。 */
   xg1Queue?: string[];
+  /** クロスギャザー ザ・ジェットアクセル XG4 の「ターンを終えるとき」（rules/xg4/xg4Effects.ts）。 */
+  xg4Queue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

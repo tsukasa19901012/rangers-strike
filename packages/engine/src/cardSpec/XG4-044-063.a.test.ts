@@ -78,7 +78,7 @@ describe("XG4-044 ゴセイブラック（XG4）", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("XG4-044", "gb")] }, "XG4-044:gb"))).toBe(true);
   });
 
-  it.fails("XG4-044: NC【ランディックアックス】— 4番目に出ると、リリース状態の自軍コマンド1つにつき BP+1000（3つで BP6000。ホールド状態のコマンドは数えない）（出典: atwiki/page-2096「リリース状態の自軍コマンド1つにつきBP+1000される」）（既知の不具合: CARD-XG4-044 NC【ランディックアックス】がログに出るだけで BP が上がらない）", () => {
+  it("XG4-044: NC【ランディックアックス】— 4番目に出ると、リリース状態の自軍コマンド1つにつき BP+1000（3つで BP6000。ホールド状態のコマンドは数えない）（出典: atwiki/page-2096「リリース状態の自軍コマンド1つにつきBP+1000される」）", () => {
     const s = settle(ncEnter("XG4-044:gb", 3, { command: [...releasedCat("MA", 2), released("TST-OP-ET", "et"), { ...released("TST-OP-WB", "h"), commandHeld: true }] }, {}, EXTRA));
     expect(bpOf(s, "player1", "XG4-044:gb")).toBe(6000);
   });
@@ -120,7 +120,7 @@ describe("XG4-045 ゴセイピンク（XG4）", () => {
   const nc = () =>
     settle(ncEnter("XG4-045:gp", 4, { rush: [inst("SPEC-OWN-S", "own")] }, { battle: [inst("SPEC-E-S", "eb"), inst("SPEC-E-M", "em")], rush: [inst("SPEC-E-S", "er")], deck: deckCards(3, "e") }, EXTRA));
 
-  it.fails("XG4-045: NC【スカイックショット】— 5番目に出ると、S ユニット（敵軍・自軍、どのエリアでも）を1体選ぶ。M ユニットは選べない（任意ではない）（出典: atwiki/page-2050「Sユニットを1体選び」・カード評価「Sユニットなら何でも戻すことができるが、BPの低いMユニット等は戻せなくなっている」）（既知の不具合: CARD-XG4-045 NC【スカイックショット】がログに出るだけで選択が開かない）", () => {
+  it("XG4-045: NC【スカイックショット】— 5番目に出ると、S ユニット（敵軍・自軍、どのエリアでも）を1体選ぶ。M ユニットは選べない（任意ではない）（出典: atwiki/page-2050「Sユニットを1体選び」・カード評価「Sユニットなら何でも戻すことができるが、BPの低いMユニット等は戻せなくなっている」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG4-045");
     const c = choiceIds(s);
@@ -129,7 +129,7 @@ describe("XG4-045 ゴセイピンク（XG4）", () => {
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG4-045: NC — 選んだユニットは持ち主の山札の一番上に戻る（出典: atwiki/page-2050「持ち主の山札の上に戻す」）（既知の不具合: CARD-XG4-045 NC【スカイックショット】がログに出るだけで選択が開かない）", () => {
+  it("XG4-045: NC — 選んだユニットは持ち主の山札の一番上に戻る（出典: atwiki/page-2050「持ち主の山札の上に戻す」）", () => {
     let s = nc();
     expectChoiceFrom(s, "player1", "XG4-045");
     s = resolveAll(pick(s, "SPEC-E-S:er"));
@@ -151,17 +151,17 @@ describe("XG4-046 腑破十臓", () => {
   const board = () =>
     battle({ battle: [inst("XG4-046", "jz")] }, { battle: [inst("SPEC-E-3000", "a"), inst("SPEC-E-3500", "b"), inst("SPEC-E-3000R", "c")] });
 
-  it.fails("XG4-046: ※ — レジストを持たない BP3000 以下のユニットにはアタックできない（BP3500・レジストを持つ BP3000 にはアタックできる）（出典: atwiki/page-2149「これはレジストを持たないBP3000以下のユニットにアタックできない」・コメント「敵軍ユニットがレジストを持っていればBP3000以下のユニットでもアタック出来ますよね?」「可能です」）（既知の不具合: CARD-XG4-046 レジストを持たない BP3000 以下のユニットにもアタックできてしまう）", () => {
+  it("XG4-046: ※ — レジストを持たない BP3000 以下のユニットにはアタックできない（BP3500・レジストを持つ BP3000 にはアタックできる）（出典: atwiki/page-2149「これはレジストを持たないBP3000以下のユニットにアタックできない」・コメント「敵軍ユニットがレジストを持っていればBP3000以下のユニットでもアタック出来ますよね?」「可能です」）", () => {
     expect(targetsOf(board(), "XG4-046:jz")).toEqual(["SPEC-E-3000R:c", "SPEC-E-3500:b"]);
   });
 
-  it.fails("XG4-046: ※ — ホールド状態のとき BP-3000（BP3000）（出典: atwiki/page-2149「これはホールド状態のときBP-3000される」）（既知の不具合: CARD-XG4-046 ホールド状態の BP-3000 が働かない）", () => {
+  it("XG4-046: ※ — ホールド状態のとき BP-3000（BP3000）（出典: atwiki/page-2149「これはホールド状態のときBP-3000される」）", () => {
     const s = battle({ battle: [{ ...inst("XG4-046", "jz"), commandHeld: true }] });
     expect(bpOf(s, "player1", "XG4-046:jz")).toBe(3000);
     expect(bpOf(battle({ battle: [inst("XG4-046", "jz")] }), "player1", "XG4-046:jz")).toBe(6000);
   });
 
-  it.fails("XG4-046:【妖刀・裏正】— SP1 以上の敵軍ユニットをバトルで撃破すると、相手に1点ダメージを与える（出典: atwiki/page-2149「撃破したユニットのSPが1以上だったなら、相手に1点ダメージを与える」）（既知の不具合: CARD-XG4-046 【妖刀・裏正】のダメージが入らない）", () => {
+  it("XG4-046:【妖刀・裏正】— SP1 以上の敵軍ユニットをバトルで撃破すると、相手に1点ダメージを与える（出典: atwiki/page-2149「撃破したユニットのSPが1以上だったなら、相手に1点ダメージを与える」）", () => {
     const s = settle(attack(battle({ battle: [inst("XG4-046", "jz")] }, { battle: [inst("SPEC-E-SP1", "t")], deck: deckCards(3, "e") }), "XG4-046:jz", "SPEC-E-SP1:t"));
     expect(zoneOf(s, "player2", "SPEC-E-SP1:t")).toBe("discard");
     expect(damageOf(s, "player2")).toBe(1);
@@ -194,14 +194,14 @@ describe("XG4-047 シンケンレッド（XG4）", () => {
   const nc = () =>
     settle(ncEnter("XG4-047:sr", 3, {}, { battle: [...ridingPair("SPEC-E-S", "rd", "SPEC-BIKE", "bk"), inst("SPEC-E-S", "nr")], deck: deckCards(3, "e") }, EXTRA));
 
-  it.fails("XG4-047: NC【車上の赤き侍】— 4番目に出ると、ライドしている敵軍 S ユニットから1体選べる（ライドしていないユニットは選べない。任意）（出典: atwiki/page-2108「ライドしている敵軍Sユニットを1体選び…置いてもよい」）（既知の不具合: CARD-XG4-047 NC【車上の赤き侍】の候補にライドしていないユニットが入る）", () => {
+  it("XG4-047: NC【車上の赤き侍】— 4番目に出ると、ライドしている敵軍 S ユニットから1体選べる（ライドしていないユニットは選べない。任意）（出典: atwiki/page-2108「ライドしている敵軍Sユニットを1体選び…置いてもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG4-047");
     expect(choiceIds(s)).toEqual(["SPEC-E-S:rd"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-047: NC — 選んだユニットは持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-2108「持ち主のパワーゾーンにダメージにして置いてもよい」）（既知の不具合: CARD-XG4-047 選んだユニットがダメージ（ウラ向き）として数えられない）", () => {
+  it("XG4-047: NC — 選んだユニットは持ち主のパワーゾーンにダメージとして置かれる（出典: atwiki/page-2108「持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
     let s = nc();
     expectChoiceFrom(s, "player1", "XG4-047");
     s = resolveAll(pick(s, "SPEC-E-S:rd"));
@@ -225,13 +225,13 @@ describe("XG4-048 ウガッツバイク", () => {
 
   it.todo("XG4-048: ※ — デッキに好きな枚数入れてもよい（出典: atwiki/page-2070「このカードはデッキに好きな枚数入れてもよい」）（未対応の理由: デッキ構築の枚数制限は createTestState / applyAction / getLegalActions では確かめられない）");
 
-  it.fails("XG4-048: ※ — 特徴「戦闘員」を持つユニットは RC がなくてもライドできる（「戦闘員」も RC も持たないユニットはライドできない）（出典: atwiki/page-2070「特徴「戦闘員」を持つユニットはＲＣがなくてもこのビークルにライドでき」）（既知の不具合: CARD-XG4-048 「戦闘員」を持つユニットが RC なしでライドできない（BP+500 も確かめられない））", () => {
+  it("XG4-048: ※ — 特徴「戦闘員」を持つユニットは RC がなくてもライドできる（「戦闘員」も RC も持たないユニットはライドできない）（出典: atwiki/page-2070「特徴「戦闘員」を持つユニットはＲＣがなくてもこのビークルにライドでき」）", () => {
     const s = battle({ rush: [inst("XG4-048", "ub"), inst("SPEC-GRUNT", "g"), inst("SPEC-PLAIN", "p")] });
     expect(canMount(s, "SPEC-GRUNT:g", "XG4-048:ub")).toBe(true);
     expect(canMount(s, "SPEC-PLAIN:p", "XG4-048:ub")).toBe(false);
   });
 
-  it.fails("XG4-048: ※ — ライドしている間 BP+500（BP1000 の戦闘員が BP1500）（出典: atwiki/page-2070「これにライドしている間BP+500される」）（既知の不具合: CARD-XG4-048 「戦闘員」を持つユニットが RC なしでライドできない（BP+500 も確かめられない））", () => {
+  it("XG4-048: ※ — ライドしている間 BP+500（BP1000 の戦闘員が BP1500）（出典: atwiki/page-2070「これにライドしている間BP+500される」）", () => {
     const s = settle(mount(battle({ rush: [inst("XG4-048", "ub"), inst("SPEC-GRUNT", "g")] }), "SPEC-GRUNT:g", "XG4-048:ub"));
     expect(bpOf(s, "player1", "SPEC-GRUNT:g")).toBe(1500);
   });
@@ -255,7 +255,7 @@ describe("XG4-049 アクロバッター（XG4）", () => {
     expect(bpOf(s, "player1", "SPEC-RC:r")).toBe(1500);
   });
 
-  it.fails("XG4-049:【光機動生命体】— ライドされていなくてもバトルエリアに出られる（出典: atwiki/page-2076「これはライドされていなくてもバトルエリアに出ることができる」）（既知の不具合: CARD-XG4-049 ライドされていないビークルがバトルエリアに出られない）", () => {
+  it("XG4-049:【光機動生命体】— ライドされていなくてもバトルエリアに出られる（出典: atwiki/page-2076「これはライドされていなくてもバトルエリアに出ることができる」）", () => {
     const s0 = battle({ rush: [inst("XG4-049", "ab")] });
     expect(canEnter(s0, "XG4-049:ab")).toBe(true);
     expect(zoneOf(settle(enter(s0, "XG4-049:ab")), "player1", "XG4-049:ab")).toBe("battle");
@@ -284,14 +284,14 @@ describe("XG4-050 ロボイザー", () => {
       EXTRA,
     );
 
-  it.fails("XG4-050:【後部バルカン砲】— ライドされたままバトルエリアからラッシュエリアに戻るとき、敵軍バトルエリアの BP3000 の S ユニットから1体選べる（ラッシュエリア・BP4000 は選べない。任意）（出典: atwiki/page-2075「敵軍バトルエリアからBP3000のSユニットを1体選び、撃破してもよい」）（既知の不具合: CARD-XG4-050 ライドされたまま戻っても【後部バルカン砲】の選択が開かない）", () => {
+  it("XG4-050:【後部バルカン砲】— ライドされたままバトルエリアからラッシュエリアに戻るとき、敵軍バトルエリアの BP3000 の S ユニットから1体選べる（ラッシュエリア・BP4000 は選べない。任意）（出典: atwiki/page-2075「敵軍バトルエリアからBP3000のSユニットを1体選び、撃破してもよい」）", () => {
     const s = returning();
     expectChoiceFrom(s, "player1", "XG4-050");
     expect(choiceIds(s)).toEqual(["SPEC-E-3000:a"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-050:【後部バルカン砲】— 選んだユニットは撃破される（出典: atwiki/page-2075「撃破してもよい」）（既知の不具合: CARD-XG4-050 ライドされたまま戻っても【後部バルカン砲】の選択が開かない）", () => {
+  it("XG4-050:【後部バルカン砲】— 選んだユニットは撃破される（出典: atwiki/page-2075「撃破してもよい」）", () => {
     let s = returning();
     expectChoiceFrom(s, "player1", "XG4-050");
     s = resolveAll(pick(s, "SPEC-E-3000:a"));

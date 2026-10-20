@@ -110,7 +110,7 @@ describe("XG4-008 メガシルバー（XG4）", () => {
   const lBoard = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     board({ hand: [inst("RS-624", "fm"), inst("RS-625", "fly")], command: releasedCat("ET", 2), power: powerCards(6), rush: [inst("XG4-008", "ms")], ...p1 });
 
-  it.fails("XG4-008:【I.N.E.T.特別開発班チーフ】— 自軍エリアにこれがあり自軍 L ユニットがなければ、ET のコマンドを1つホールドし、手札の「メガウインガー・フライヤーモード」を捨札にして、追加条件を満たしたことにしてラッシュできる（出典: atwiki/page-2137【I.N.E.T.特別開発班チーフ】・カード評価「通常では出しにくいユニットも格段にラッシュしやすくなる」）（既知の不具合: CARD-XG4-008 【I.N.E.T.特別開発班チーフ】で手札のカードを追加条件のユニットとして捨札にするラッシュの手段がない）", () => {
+  it("XG4-008:【I.N.E.T.特別開発班チーフ】— 自軍エリアにこれがあり自軍 L ユニットがなければ、ET のコマンドを1つホールドし、手札の「メガウインガー・フライヤーモード」を捨札にして、追加条件を満たしたことにしてラッシュできる（出典: atwiki/page-2137【I.N.E.T.特別開発班チーフ】・カード評価「通常では出しにくいユニットも格段にラッシュしやすくなる」）", () => {
     const s = lBoard();
     expect(canStartRush(s, "player1", "RS-624:fm")).toBe(true);
     const r = rushFromHand(s, "player1", "RS-624:fm", { materials: ["RS-625:fly"] });
@@ -166,21 +166,21 @@ describe("XG4-009 オートスライダー", () => {
     return s;
   };
 
-  it.fails("XG4-009:【緊急出動】— ラッシュしたとき、自軍コマンドゾーンのリリース状態の S ユニットのカードのうち、必要パワーを満たすものから選べる（ホールド状態・M ユニット・オペレーション・必要パワーが足りないものは選べない。任意）（出典: atwiki/page-2083「自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び…ただし、必要パワーと追加条件は満たすこと」）（既知の不具合: CARD-XG4-009 【緊急出動】が選択を開かず、コマンドゾーンの S ユニットをライドさせて出せない）", () => {
+  it("XG4-009:【緊急出動】— ラッシュしたとき、自軍コマンドゾーンのリリース状態の S ユニットのカードのうち、必要パワーを満たすものから選べる（ホールド状態・M ユニット・オペレーション・必要パワーが足りないものは選べない。任意）（出典: atwiki/page-2083「自軍コマンドゾーンからリリース状態のSユニットのカードを1枚選び…ただし、必要パワーと追加条件は満たすこと」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "XG4-009");
     expect(choiceIds(s)).toEqual(["SPEC-CMD-S4:c4"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-009:【緊急出動】— 選んだカードはこれにライドした状態で自軍ラッシュエリアに出る（ライドしているので BP+1000）（出典: atwiki/page-2083「これの上に重ねて自軍ラッシュエリアに出してもよい」・カード評価「これにライドした状態でラッシュされる」）（既知の不具合: CARD-XG4-009 【緊急出動】が選択を開かず、コマンドゾーンの S ユニットをライドさせて出せない）", () => {
+  it("XG4-009:【緊急出動】— 選んだカードはこれにライドした状態で自軍ラッシュエリアに出る（ライドしているので BP+1000）（出典: atwiki/page-2083「これの上に重ねて自軍ラッシュエリアに出してもよい」・カード評価「これにライドした状態でラッシュされる」）", () => {
     const s = resolveAll(pick(rushed(), "SPEC-CMD-S4:c4"));
     expect(zoneOf(s, "player1", "SPEC-CMD-S4:c4")).toBe("rush");
     expect(mountedOn(s, "player1", "SPEC-CMD-S4:c4")).toBe("XG4-009:as");
     expect(bpOf(s, "player1", "SPEC-CMD-S4:c4")).toBe(3000);
   });
 
-  it.fails("XG4-009: 公式Q&A —【緊急出動】で XG2-025 ギンガレッドを重ねても、ギンガレッドの「ライドされていない自軍ビークルを1体選び、これの下に重ねてもよい」でビークルを重ねることはできない（出典: atwiki/page-2083 Q1）（既知の不具合: CARD-XG4-009 【緊急出動】が選択を開かず、コマンドゾーンの S ユニットをライドさせて出せない）", () => {
+  it("XG4-009: 公式Q&A —【緊急出動】で XG2-025 ギンガレッドを重ねても、ギンガレッドの「ライドされていない自軍ビークルを1体選び、これの下に重ねてもよい」でビークルを重ねることはできない（出典: atwiki/page-2083 Q1）", () => {
     let s = rushed([released("XG2-025", "gr")]);
     s = pick(s, "XG2-025:gr");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG2-025");
@@ -203,11 +203,11 @@ describe("XG4-010 獣装光ギンガブルー", () => {
 
   const nc = (p1: Partial<GameState["players"]["player1"]> = {}) => resolveAllKeep(ncEnter("XG4-010:gb", 1, p1, { battle: [inst("SPEC-E-WEAK", "e")], deck: deckCards(5, "e") }, EXTRA));
 
-  it.fails("XG4-010: NC【閃光星獣剣】— 2番目に出ると「SP1」を得る（出典: atwiki/page-2103「「SP1」」）（既知の不具合: CARD-XG4-010 NC【閃光星獣剣】の「SP1」と、撃破したユニットを除外して1枚ドローする効果が働かない）", () => {
+  it("XG4-010: NC【閃光星獣剣】— 2番目に出ると「SP1」を得る（出典: atwiki/page-2103「「SP1」」）", () => {
     expect(spOf(nc(), "player1", "XG4-010:gb")).toBe(1);
   });
 
-  it.fails("XG4-010: NC — 敵軍ユニットをバトルで撃破したとき、捨札にするかわりにゲームから除外するかを選べ、除外すれば1枚ドローする（出典: atwiki/page-2103「撃破したユニットを捨札にする代わりにゲームから除外してもよい。そうしたとき、自分は1枚ドローする」）（既知の不具合: CARD-XG4-010 NC【閃光星獣剣】の「SP1」と、撃破したユニットを除外して1枚ドローする効果が働かない）", () => {
+  it("XG4-010: NC — 敵軍ユニットをバトルで撃破したとき、捨札にするかわりにゲームから除外するかを選べ、除外すれば1枚ドローする（出典: atwiki/page-2103「撃破したユニットを捨札にする代わりにゲームから除外してもよい。そうしたとき、自分は1枚ドローする」）", () => {
     let s = attack(nc(), "XG4-010:gb", "SPEC-E-WEAK:e");
     s = settleUntilChoice(s, "XG4-010");
     expectChoiceFrom(s, "player1", "XG4-010");
@@ -219,7 +219,7 @@ describe("XG4-010 獣装光ギンガブルー", () => {
     expect(s.players.player1.hand).toHaveLength(hand + 1);
   });
 
-  it.fails("XG4-010: NC — 除外しなければ撃破したユニットは捨札になり、ドローしない（出典: atwiki/page-2103「してもよい」）（既知の不具合: CARD-XG4-010 NC【閃光星獣剣】の「SP1」と、撃破したユニットを除外して1枚ドローする効果が働かない）", () => {
+  it("XG4-010: NC — 除外しなければ撃破したユニットは捨札になり、ドローしない（出典: atwiki/page-2103「してもよい」）", () => {
     let s = attack(nc(), "XG4-010:gb", "SPEC-E-WEAK:e");
     s = settleUntilChoice(s, "XG4-010");
     const hand = s.players.player1.hand.length;
@@ -282,7 +282,7 @@ describe("XG4-011 獣装光ギンガグリーン", () => {
       ),
     );
 
-  it.fails("XG4-011: NC【銀河の戦光】— 5番目に出て、本来の特徴に「ギンガの光」を持つユニットがこれを含め5体以上あれば、敵軍バトルエリアのユニットをすべて除外する（ラッシュエリアのユニットは残る）（出典: atwiki/page-2099「本来の特徴に「ギンガの光」を持つユニットが5体以上あれば、敵軍バトルエリアのユニットをすべてゲームから除外する」）（既知の不具合: CARD-XG4-011 NC【銀河の戦光】で敵軍バトルエリアのユニットを除外しない）", () => {
+  it("XG4-011: NC【銀河の戦光】— 5番目に出て、本来の特徴に「ギンガの光」を持つユニットがこれを含め5体以上あれば、敵軍バトルエリアのユニットをすべて除外する（ラッシュエリアのユニットは残る）（出典: atwiki/page-2099「本来の特徴に「ギンガの光」を持つユニットが5体以上あれば、敵軍バトルエリアのユニットをすべてゲームから除外する」）", () => {
     const s = nc(4);
     expect(isExiled(s, "player2", "SPEC-E-PLAIN:b1")).toBe(true);
     expect(isExiled(s, "player2", "SPEC-E-MECHA-M:b2")).toBe(true);
@@ -294,7 +294,7 @@ describe("XG4-011 獣装光ギンガグリーン", () => {
     expect(zoneOf(s, "player2", "SPEC-E-PLAIN:b1")).toBe("battle");
   });
 
-  it.fails("XG4-011: NC — 敵軍の「ギンガの光」のユニットも数える（自軍の限定がない）（出典: atwiki/page-2099「本来の特徴に「ギンガの光」を持つユニット」・コメント欄「相手の場にいるやつでもおk」）（既知の不具合: CARD-XG4-011 NC【銀河の戦光】で敵軍バトルエリアのユニットを除外しない）", () => {
+  it("XG4-011: NC — 敵軍の「ギンガの光」のユニットも数える（自軍の限定がない）（出典: atwiki/page-2099「本来の特徴に「ギンガの光」を持つユニット」・コメント欄「相手の場にいるやつでもおk」）", () => {
     const s = nc(3, { rush: [inst("SPEC-E-PLAIN", "r1"), inst("SPEC-GINGA", "eg")] });
     expect(isExiled(s, "player2", "SPEC-E-PLAIN:b1")).toBe(true);
   });
@@ -324,14 +324,14 @@ describe("XG4-012 獣装光ギンガイエロー", () => {
     expect(spOf(settle(s), "player1", "XG4-012:gy")).toBe(1);
   });
 
-  it.fails("XG4-012: NC — 自軍捨札のカードを1枚選んで除外してもよい（任意）（出典: atwiki/page-2097「自軍捨札を1枚選びゲームから除外してもよい」）（既知の不具合: CARD-XG4-012 NC【閃光星獣剣】の自軍捨札の除外・ホールド状態の「メカ」の除外の選択が開かない）", () => {
+  it("XG4-012: NC — 自軍捨札のカードを1枚選んで除外してもよい（任意）（出典: atwiki/page-2097「自軍捨札を1枚選びゲームから除外してもよい」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG4-012");
     expect(choiceIds(s)).toEqual(["TST-OP:d1", "TST-UNIT-0:d2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-012: NC — 除外したとき、敵軍バトルエリアの特徴「メカ」を持つホールド状態のユニット（サイズを問わない）から1体選び除外する（リリース状態・「メカ」なし・ラッシュエリアは選べない）（出典: atwiki/page-2097「敵軍バトルエリアから、特徴「メカ」を持つホールド状態のユニットを1体選び、ゲームから除外する」・カード評価「サイズを問わない」）（既知の不具合: CARD-XG4-012 NC【閃光星獣剣】の自軍捨札の除外・ホールド状態の「メカ」の除外の選択が開かない）", () => {
+  it("XG4-012: NC — 除外したとき、敵軍バトルエリアの特徴「メカ」を持つホールド状態のユニット（サイズを問わない）から1体選び除外する（リリース状態・「メカ」なし・ラッシュエリアは選べない）（出典: atwiki/page-2097「敵軍バトルエリアから、特徴「メカ」を持つホールド状態のユニットを1体選び、ゲームから除外する」・カード評価「サイズを問わない」）", () => {
     let s = pick(nc(), "TST-OP:d1");
     expect(isExiled(s, "player1", "TST-OP:d1")).toBe(true);
     expectChoiceFrom(s, "player1", "XG4-012");
@@ -341,7 +341,7 @@ describe("XG4-012 獣装光ギンガイエロー", () => {
     expect(zoneOf(s, "player2", "SPEC-E-MECHA:hm")).toBe("battle");
   });
 
-  it.fails("XG4-012: NC — 自軍捨札を除外しなければ、敵軍ユニットは除外しない（出典: atwiki/page-2097「そうしたとき」）（既知の不具合: CARD-XG4-012 NC【閃光星獣剣】の自軍捨札の除外・ホールド状態の「メカ」の除外の選択が開かない）", () => {
+  it("XG4-012: NC — 自軍捨札を除外しなければ、敵軍ユニットは除外しない（出典: atwiki/page-2097「そうしたとき」）", () => {
     const s = resolveAll(skip(nc()));
     expect(zoneOf(s, "player1", "TST-OP:d1")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-E-MECHA:hm")).toBe("battle");
@@ -369,7 +369,7 @@ function stackVehicleTests(id: string, cost: number, page: string) {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails(`${id}: ※ — 選んだビークルはこれの下に重なり、これはそのビークルにライドした状態になる（バトルエリアに出るときライドオフを選べる）（出典: ${page}「これの下に重ねてもよい」・atwiki/page-1233 XG2-025 Q1「「ライド」ではなく「重ねる」」・同カード評価「ビークルを重ねることでライドすることができる。そこからライドオフして」・atwiki/page-2083 Q1）（既知の不具合: CARD-${id} ※ 重ねたビークルにライドした状態にならない（stackedCards に入るだけでライドオフできない））`, () => {
+  it(`${id}: ※ — 選んだビークルはこれの下に重なり、これはそのビークルにライドした状態になる（バトルエリアに出るときライドオフを選べる）（出典: ${page}「これの下に重ねてもよい」・atwiki/page-1233 XG2-025 Q1「「ライド」ではなく「重ねる」」・同カード評価「ビークルを重ねることでライドすることができる。そこからライドオフして」・atwiki/page-2083 Q1）`, () => {
     let s = resolveAll(pick(rushed(), "SPEC-OWN-V:v1"));
     expect(zoneOf(s, "player1", "SPEC-OWN-V:v1")).not.toBe("discard");
     s = act(nextPhase(s), { type: "move_to_battle", playerId: "player1", instanceId: `${id}:u` });
@@ -395,7 +395,7 @@ describe("XG4-013 ギンガグリーン（XG4）", () => {
 
   stackVehicleTests("XG4-013", 3, "atwiki/page-2092");
 
-  it.fails("XG4-013: ※ — ライド中は、ウイングを持たないユニットにアタックされない（出典: atwiki/page-2092「※これはライド中、ウイングを持たないユニットにアタックされない」）（既知の不具合: CARD-XG4-013 ※「ライド中、ウイングを持たないユニットにアタックされない」が働かない）", () => {
+  it("XG4-013: ※ — ライド中は、ウイングを持たないユニットにアタックされない（出典: atwiki/page-2092「※これはライド中、ウイングを持たないユニットにアタックされない」）", () => {
     const s = enemyTurn({ battle: [...ridingPair("XG4-013", "gg", "SPEC-OWN-V", "v")] }, { battle: [inst("SPEC-E-STRONG", "a")] }, EXTRA);
     expect(attackersOf(s, "XG4-013:gg")).toEqual([]);
   });
@@ -408,14 +408,14 @@ describe("XG4-013 ギンガグリーン（XG4）", () => {
   const ENEMY = () => ({ deck: [inst("TST-OP", "top"), ...deckCards(4, "e")], command: [released("TST-OP", "c1"), released("TST-OP-DA", "c2"), heldN(1, "TST-OP", "eh")[0]!] });
   const nc = (p2 = ENEMY()) => ncEnter("XG4-013:gg", 4, {}, p2, EXTRA);
 
-  it.fails("XG4-013: NC【疾風一陣】— 5番目に出ると、相手が「山札の上から1枚を捨札」か「コマンドを2つ手札に戻す」かを選ぶ（出典: atwiki/page-2092「相手は…を選ぶ」）（既知の不具合: CARD-XG4-013 NC【疾風一陣】で相手が「山札の上を捨札」か「コマンド2つを手札に戻す」かを選ぶ選択が開かない）", () => {
+  it("XG4-013: NC【疾風一陣】— 5番目に出ると、相手が「山札の上から1枚を捨札」か「コマンドを2つ手札に戻す」かを選ぶ（出典: atwiki/page-2092「相手は…を選ぶ」）", () => {
     const s = nc();
     expect(choicePlayer(s)).toBe("player2");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XG4-013");
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG4-013: NC — 相手が山札を選べば、相手の山札の一番上が捨札になる（出典: atwiki/page-2092「自分自身の山札の上から1枚を捨札にする」）（既知の不具合: CARD-XG4-013 NC【疾風一陣】で相手が「山札の上を捨札」か「コマンド2つを手札に戻す」かを選ぶ選択が開かない）", () => {
+  it("XG4-013: NC — 相手が山札を選べば、相手の山札の一番上が捨札になる（出典: atwiki/page-2092「自分自身の山札の上から1枚を捨札にする」）", () => {
     let s = nc();
     const deckOpt = choiceIds(s).find((x) => /deck|mill|top/.test(x)) ?? choiceIds(s)[0]!;
     s = resolveAll(pickAs(s, "player2", deckOpt));
@@ -423,7 +423,7 @@ describe("XG4-013 ギンガグリーン（XG4）", () => {
     expect(s.players.player2.command).toHaveLength(3);
   });
 
-  it.fails("XG4-013: NC — 相手がコマンドを選べば、相手は自分のコマンドを2つ選び手札に戻す（ホールド状態のコマンドも選べる）（出典: atwiki/page-2092「自分自身のコマンドを2つ選び手札に戻す」）（既知の不具合: CARD-XG4-013 NC【疾風一陣】で相手が「山札の上を捨札」か「コマンド2つを手札に戻す」かを選ぶ選択が開かない）", () => {
+  it("XG4-013: NC — 相手がコマンドを選べば、相手は自分のコマンドを2つ選び手札に戻す（ホールド状態のコマンドも選べる）（出典: atwiki/page-2092「自分自身のコマンドを2つ選び手札に戻す」）", () => {
     let s = nc();
     const cmdOpt = choiceIds(s).find((x) => /command|cmd/.test(x));
     expect(cmdOpt).toBeDefined();
@@ -454,14 +454,14 @@ describe("XG4-014 ギンガピンク（XG4）", () => {
   const ENEMY = { battle: [inst("SPEC-E-4000", "a"), inst("SPEC-E-4500", "b")], rush: [inst("SPEC-E-4000-M", "m")] };
   const nc = () => ncEnter("XG4-014:gp", 3, {}, { ...ENEMY, deck: deckCards(4, "e") }, EXTRA);
 
-  it.fails("XG4-014: NC【キバアロー】— 4番目に出ると、BP4000 以下の敵軍ユニット（エリア・サイズを問わない）から1体選べる（任意）（出典: atwiki/page-2091「BP4000以下の敵軍ユニットを1体選んでもよい」・コメント欄「効果対象のサイズ指定が無い」）（既知の不具合: CARD-XG4-014 NC【キバアロー】の選択が開かない（BP4000以下の敵軍ユニットを選べず、相手のホールド／山札の上の選択もない））", () => {
+  it("XG4-014: NC【キバアロー】— 4番目に出ると、BP4000 以下の敵軍ユニット（エリア・サイズを問わない）から1体選べる（任意）（出典: atwiki/page-2091「BP4000以下の敵軍ユニットを1体選んでもよい」・コメント欄「効果対象のサイズ指定が無い」）", () => {
     const s = nc();
     expectChoiceFrom(s, "player1", "XG4-014");
     expect(choiceIds(s)).toEqual(["SPEC-E-4000-M:m", "SPEC-E-4000:a"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG4-014: NC — 選ぶと、相手がホールドか山札の上に戻すかを選ぶ。山札の上を選べば、そのユニットは持ち主の山札の一番上に戻る（出典: atwiki/page-2091「相手はそのユニットをホールドするか自分自身の山札の上に戻すかを選ぶ」）（既知の不具合: CARD-XG4-014 NC【キバアロー】の選択が開かない（BP4000以下の敵軍ユニットを選べず、相手のホールド／山札の上の選択もない））", () => {
+  it("XG4-014: NC — 選ぶと、相手がホールドか山札の上に戻すかを選ぶ。山札の上を選べば、そのユニットは持ち主の山札の一番上に戻る（出典: atwiki/page-2091「相手はそのユニットをホールドするか自分自身の山札の上に戻すかを選ぶ」）", () => {
     let s = pick(nc(), "SPEC-E-4000:a");
     expect(choicePlayer(s)).toBe("player2");
     const top = choiceIds(s).find((x) => /deck|top/.test(x));
@@ -470,7 +470,7 @@ describe("XG4-014 ギンガピンク（XG4）", () => {
     expect(s.players.player2.deck[0]?.instanceId).toBe("SPEC-E-4000:a");
   });
 
-  it.fails("XG4-014: NC — 相手がホールドを選べば、そのユニットはホールド状態でその場に残る（出典: atwiki/page-2091「ホールドする」）（既知の不具合: CARD-XG4-014 NC【キバアロー】の選択が開かない（BP4000以下の敵軍ユニットを選べず、相手のホールド／山札の上の選択もない））", () => {
+  it("XG4-014: NC — 相手がホールドを選べば、そのユニットはホールド状態でその場に残る（出典: atwiki/page-2091「ホールドする」）", () => {
     let s = pick(nc(), "SPEC-E-4000:a");
     const hold = choiceIds(s).find((x) => /hold/.test(x));
     expect(hold).toBeDefined();

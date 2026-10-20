@@ -31,8 +31,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_vehicle_on_rush",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-014::stack_vehicle",
+          "duration": "turn"
         }
       ]
     },
@@ -47,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-014::kibaaro",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-014::kiba_arrow",
+          "duration": "turn"
         }
       ]
     }

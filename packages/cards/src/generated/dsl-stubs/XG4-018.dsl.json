@@ -19,14 +19,14 @@
       "id": "unnamed_e280bb5742e38292e68c81e3",
       "text": "※WBを持つSユニットは、自軍コマンドを1つホールドすればRCを持っていなくてもこのビークルにライドできる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG4-018::wbwotsusyunitoha",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-018::hold_ride",
+          "duration": "turn"
         }
       ]
     },
@@ -41,7 +41,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-018::nokaze",
+          "keyword": "xg4::XG4-018::hakugin",
           "duration": "turn"
         }
       ]
