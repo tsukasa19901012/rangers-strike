@@ -141,7 +141,9 @@ type StarterMatchOptions = {
 
 function playStarterMatchLoop(initial: GameState, options: StarterMatchOptions): StarterMatchResult {
   const maxSteps = options.maxSteps ?? 12_000;
-  // エンジンの通り道を確かめるシミュレーション用。Lv3 以上は先読みで 1 手が重いので、既定は Lv2。
+  // エンジンの通し確認（勝敗が付くか・適用に失敗しないか）なので Lv2 を使う。Lv3 以上はチャージの判断を
+  // 先読みで比べるようになり（ai/types.ts）、1手が約3.5倍遅く、シミュレーションのテストが時間切れになる。
+  // 先読みを入れる前の Lv4 は Lv2 と同じ手を選んでいた。
   const cpuLevel = options.cpuLevel ?? 2;
   let state = initial;
   const phasesSeen = new Set<Phase>();
