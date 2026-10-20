@@ -37,14 +37,14 @@
       "name": "ゲームスタート……",
       "text": "これが自軍パワーゾーンでオモテ向きになっている間、効果に「ラッシュしたとき」とある敵軍ユニットがその効果を発動するとき、それを実行する前に、これを自軍ラッシュエリアに出してもよい。そうしたとき、その効果は無効になる。",
       "trigger": {
-        "type": "on_rush"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-059::gemusutato",
-          "duration": "turn"
+          "keyword": "xg7::XG7-059::game_start",
+          "duration": "permanent"
         }
       ]
     }

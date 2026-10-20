@@ -43,12 +43,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-028::aruteimetosutoraiku",
-          "duration": "turn"
+          "keyword": "xg7::XG7-028::ultimate_strike",
+          "duration": "permanent"
         }
       ]
     }

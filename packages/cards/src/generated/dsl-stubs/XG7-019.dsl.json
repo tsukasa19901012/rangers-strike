@@ -58,14 +58,29 @@
       "name": "スカイコンビブレイク",
       "text": "このターン、自軍ユニットは、ウイングでアタックしたとき、そのバトル中、BP+2000される。（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）",
       "trigger": {
+        "type": "nc"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "xg7::XG7-019::sky_combi",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "sukaikonbibureiku_wing",
+      "text": "（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）",
+      "trigger": {
         "type": "on_attack"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-019::sukaikonbibureiku",
-          "duration": "turn"
+          "keyword": "xg7::XG7-019::sky_combi_wing",
+          "duration": "permanent"
         }
       ]
     }

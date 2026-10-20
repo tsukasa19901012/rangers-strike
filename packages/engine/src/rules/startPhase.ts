@@ -1,4 +1,5 @@
 import { rm3StaysInBattleAtStart } from "./rm/rm3Fields";
+import { isXg7BattleToRushTrigger, tryXg7BattleToRush } from "./xg7/xg7Effects";
 import { unitFeatures } from "./addedFeatures";
 import { isRk8BattleToRushTrigger, rk8StaysInBattleAtStart, tryRk8BattleToRush } from "./rk/rk8UnitEffects";
 import { isOtherLinesBattleToRushTrigger, tryOtherLinesBattleToRush } from "./legend1/otherLinesNamedEffects";
@@ -53,7 +54,9 @@ function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
         // RK-074 ライダーマン【カギ爪アーム】（rules/rk/rk4UnitEffects.ts）。
         isRk4BattleToRushTrigger(card) ||
         // RK-155 キングライナー・RK-156 マシンデンバード・RK-157 バットイマジン（rules/rk/rk8UnitEffects.ts）。
-        isRk8BattleToRushTrigger(card),
+        isRk8BattleToRushTrigger(card) ||
+        // XG7-033【復讐の果てに得たもの】（rules/xg7/xg7Effects.ts）。
+        isXg7BattleToRushTrigger(card),
     )
     .map((card) => card.instanceId);
 }
@@ -153,6 +156,8 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
     if (!withChoice.pendingEffectChoice) withChoice = tryRk4BattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     // RK-155・RK-156・RK-157（rules/rk/rk8UnitEffects.ts）。
     if (!withChoice.pendingEffectChoice) withChoice = tryRk8BattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
+    // XG7-033【復讐の果てに得たもの】（rules/xg7/xg7Effects.ts）。
+    if (!withChoice.pendingEffectChoice) withChoice = tryXg7BattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     return continueBattleToRushEffectQueue({ ...withChoice, pendingBattleToRushQueue: rest });
   }
 

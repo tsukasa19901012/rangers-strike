@@ -1,5 +1,6 @@
 import { rm1GrantsScrum } from "../rules/rm/rm1Fields";
 import { xg5BlocksOwnTurnHold, xg5GrantsScrum } from "../rules/xg5/xg5Fields";
+import { xg7RiderCross } from "../rules/xg7/xg7Fields";
 import type { Category } from "@rangers-strike/cards";
 import { rk9EnemyKeywordsNullified } from "../rules/rk/rk9Fields";
 import { set9ATaxisCategory } from "../rules/legend1/set9NamedEffectsA";
@@ -70,6 +71,10 @@ export function crossShiftLeftOf(
   let shift = 0;
   for (let i = 0; i < index; i += 1) {
     shift += crossValueForCard(battle[i]!.cardId);
+    // このターン得たクロス（XG7-015【ボウケンジャーになれ】等。rules/xg7/xg7aEffects.ts）。
+    shift += battle[i]!.xg7Turn?.cross ?? 0;
+    // XG7-031 新サイクロン号にライドしている「仮面ライダー1号」「仮面ライダー2号」（rules/xg7/xg7Fields.ts）。
+    shift += xg7RiderCross(battle, i);
   }
   return shift;
 }

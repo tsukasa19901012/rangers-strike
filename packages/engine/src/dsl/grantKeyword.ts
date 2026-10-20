@@ -131,6 +131,7 @@ import { tryRm1CardEffect } from "../rules/rm/rm1Effects";
 import { tryRm2CardEffect } from "../rules/rm/rm2Effects";
 import { tryRm3CardEffect } from "../rules/rm/rm3Effects";
 import { tryXg5CardEffect } from "../rules/xg5/xg5Effects";
+import { tryXg7CardEffect } from "../rules/xg7/xg7Effects";
 import { tryBk1CardEffect } from "../rules/bk/bk1Effects";
 import { tryOtherLinesCardEffect } from "../rules/legend1/otherLinesNamedEffects";
 import { trySet9BCardEffect } from "../rules/legend1/set9NamedEffectsB";
@@ -499,6 +500,9 @@ export function applyGrantKeyword(
   // クロスギャザー XG5-001〜XG5-096 のカード固有の効果（`xg5::` キーワード。rules/xg5/xg5Effects.ts）。
   const xg5 = tryXg5CardEffect(state, ctx, keyword);
   if (xg5) return xg5;
+  // クロスギャザー ザ・ベストパートナー XG7-001〜XG7-068 のカード固有の効果（`xg7::` キーワード。rules/xg7/xg7Effects.ts）。
+  const xg7 = tryXg7CardEffect(state, ctx, keyword);
+  if (xg7) return xg7;
   // ベルトコレクション BK-001〜BK-019 のカード固有の効果（`bk1::` キーワード。rules/bk/bk1Effects.ts）。
   const bk1 = tryBk1CardEffect(state, ctx, keyword);
   if (bk1) return bk1;

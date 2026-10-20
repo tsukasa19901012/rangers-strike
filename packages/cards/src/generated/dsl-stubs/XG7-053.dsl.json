@@ -49,13 +49,13 @@
       "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは、自分と相手の手札1枚につきBP+500される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-053::korehatono1nitsu",
+          "keyword": "xg7::XG7-053::hand_count",
           "duration": "permanent"
         }
       ]
@@ -67,12 +67,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-053::mizukarano",
-          "duration": "turn"
+          "keyword": "xg7::XG7-053::assault",
+          "duration": "permanent"
         }
       ]
     }

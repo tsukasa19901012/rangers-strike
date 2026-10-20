@@ -44,11 +44,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-036::wanakerebakirenai",
+          "keyword": "xg7::XG7-036::declare",
           "duration": "permanent"
         }
       ]

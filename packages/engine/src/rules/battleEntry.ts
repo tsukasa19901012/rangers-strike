@@ -23,6 +23,8 @@ export function shouldPromptRideOffChoice(
     (c) => c.instanceId === entry.instanceId,
   );
   if (!unit?.mountedOnInstanceId) return false;
+  // XG7-017【マッハ全開！】: このターン、これはライドオフできない（rules/xg7/xg7aEffects.ts）。
+  if (unit.xg7Turn?.noRideOff) return false;
   // RS-506【バスオンミサイル】: 次の相手ターン、敵軍ユニットはライドオフできない（ライドしたまま進む）。
   return !rideOffBlockedBySet7D(state, entry.playerId);
 }

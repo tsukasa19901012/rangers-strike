@@ -1,5 +1,6 @@
 import { rm3FieldBpBonus } from "./rm/rm3Fields";
 import { xg5FieldBpBonus } from "./xg5/xg5Fields";
+import { xg7FieldBpBonus } from "./xg7/xg7Fields";
 import type { Category } from "@rangers-strike/cards";
 import { set9AFieldBpBonus } from "./legend1/set9NamedEffectsA";
 import { changePowerBpBonus } from "./legend1/set6NamedEffects348";
@@ -284,6 +285,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += rm3FieldBpBonus(state, playerId, instance);
   // XG5-034 シンケンレッド ※（自軍ターン中、これ以外の「侍」の S ユニット1体につき BP+2000。rules/xg5/xg5Fields.ts）。
   if (role === "general") bonus += xg5FieldBpBonus(state, playerId, instance);
+  // XG7-007【龍撃剣＆獣奏剣】・XG7-008【アースの戦士】等（rules/xg7/xg7Fields.ts）。
+  bonus += xg7FieldBpBonus(state, playerId, instance, role);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

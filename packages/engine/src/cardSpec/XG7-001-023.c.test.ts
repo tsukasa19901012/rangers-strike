@@ -93,14 +93,14 @@ describe("XG7-017 ゴーオンレッド", () => {
 
   const mach = () => enter(p1Battle({ rush: [inst("XG7-017", "r")], hand: [inst("SPEC-CAR", "h"), inst("SPEC-CAR-COND", "hc"), inst("SPEC-MECHA-V", "hm")] }, {}, EXTRA), "XG7-017:r");
 
-  it.fails("XG7-017: 【マッハ全開！】自軍ターン中、ライドせずにバトルエリアに出るとき、手札の特徴「車両」を持ち追加条件を持たないビークルカードから1枚選べる（任意）（出典: atwiki/page-2417「自分の手札から特徴「車両」を持ち追加条件を持たないビークルカードを1枚選び」） — 既知の不具合: CARD-XG7-017 【マッハ全開！】が未実装（バトルエリアに出るとき手札のビークルを出してライドする選択が開かない）", () => {
+  it("XG7-017: 【マッハ全開！】自軍ターン中、ライドせずにバトルエリアに出るとき、手札の特徴「車両」を持ち追加条件を持たないビークルカードから1枚選べる（任意）（出典: atwiki/page-2417「自分の手札から特徴「車両」を持ち追加条件を持たないビークルカードを1枚選び」）", () => {
     const s = mach();
     expectChoiceFrom(s, "player1", "XG7-017");
     expect(choiceIds(s)).toEqual(["SPEC-CAR:h"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-017: 【マッハ全開！】選んだビークルを出し、これをライドさせる（出典: atwiki/page-2417「自軍ラッシュエリアに出してから、これをライドさせる」） — 既知の不具合: CARD-XG7-017 【マッハ全開！】が未実装（バトルエリアに出るとき手札のビークルを出してライドする選択が開かない）", () => {
+  it("XG7-017: 【マッハ全開！】選んだビークルを出し、これをライドさせる（出典: atwiki/page-2417「自軍ラッシュエリアに出してから、これをライドさせる」）", () => {
     const s = resolveAll(mach(), ["SPEC-CAR:h"]);
     expect(zoneOf(s, "player1", "SPEC-CAR:h")).not.toBe("hand");
     expect(mountedOn(s, "player1", "XG7-017:r")).toBe("SPEC-CAR:h");
@@ -138,11 +138,11 @@ describe("XG7-018 シンケンレッド", () => {
     return resolveAll(r.state);
   };
 
-  it.fails("XG7-018: 【影武者】これが自軍エリアにある間、特徴「レッド」を持つユニットがラッシュされたとき、これを捨札にする（出典: atwiki/page-2403「これを捨札にする」） — 既知の不具合: CARD-XG7-018 【影武者】が未実装（「レッド」のユニットがラッシュされても捨札にならない）", () => {
+  it("XG7-018: 【影武者】これが自軍エリアにある間、特徴「レッド」を持つユニットがラッシュされたとき、これを捨札にする（出典: atwiki/page-2403「これを捨札にする」）", () => {
     expect(zoneOf(rushedBy("SPEC-RED-WB"), "player1", "XG7-018:sk")).toBe("discard");
   });
 
-  it.fails("XG7-018: 【影武者】相手が特徴「レッド」を持つユニットをラッシュしたときも捨札になる（出典: atwiki/page-2403「特徴「レッド」を持つユニットが」（自軍・敵軍の限定がない）・カード評価「相手が特徴「レッド」持ちをラッシュしても除去されてしまう」） — 既知の不具合: CARD-XG7-018 【影武者】が未実装（「レッド」のユニットがラッシュされても捨札にならない）", () => {
+  it("XG7-018: 【影武者】相手が特徴「レッド」を持つユニットをラッシュしたときも捨札になる（出典: atwiki/page-2403「特徴「レッド」を持つユニットが」（自軍・敵軍の限定がない）・カード評価「相手が特徴「レッド」持ちをラッシュしても除去されてしまう」）", () => {
     expect(zoneOf(rushedBy("SPEC-RED-WB", "player2"), "player1", "XG7-018:sk")).toBe("discard");
   });
 
@@ -178,7 +178,7 @@ describe("XG7-019 ゴセイレッド×ゴセイピンク", () => {
     return lastBattleBps(s)?.attacker;
   };
 
-  it.fails("XG7-019: 【スカイコンビブレイク】NC（1番目）— このターン、自軍ユニット（XG7-011 ハリケンレッド）はウイングでアタックしたバトル中 BP+2000（3000→5000）（出典: atwiki/page-2385「このターン、自軍ユニットは、ウイングでアタックしたとき、そのバトル中、BP+2000される」） — 既知の不具合: CARD-XG7-019 【スカイコンビブレイク】が未実装（ウイングでアタックしたときの BP+2000 が付かない）", () => {
+  it("XG7-019: 【スカイコンビブレイク】NC（1番目）— このターン、自軍ユニット（XG7-011 ハリケンレッド）はウイングでアタックしたバトル中 BP+2000（3000→5000）（出典: atwiki/page-2385「このターン、自軍ユニットは、ウイングでアタックしたとき、そのバトル中、BP+2000される」）", () => {
     expect(wingAttack(nc("XG7-019:gs", 0, { rush: [inst("XG7-011", "w")] }, { battle: [inst("SPEC-ENEMY", "e")] }), "XG7-011:w")).toBe(5000);
   });
 
@@ -186,7 +186,7 @@ describe("XG7-019 ゴセイレッド×ゴセイピンク", () => {
     expect(wingAttack(nc("XG7-019:gs", 1, { rush: [inst("XG7-011", "w")] }, { battle: [inst("SPEC-ENEMY", "e")] }), "XG7-011:w")).toBe(3000);
   });
 
-  it.fails("XG7-019: 【スカイコンビブレイク】これ自身がウイングでアタックするときはナンバーに関係なく発動し、BP5000 でバトルする（出典: atwiki/page-2385「（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）」・カード評価「これ自身がウイングでアタックする際のBPは【スカイコンビブレイク】の修正を受けた値になる」） — 既知の不具合: CARD-XG7-019 【スカイコンビブレイク】が未実装（ウイングでアタックしたときの BP+2000 が付かない）", () => {
+  it("XG7-019: 【スカイコンビブレイク】これ自身がウイングでアタックするときはナンバーに関係なく発動し、BP5000 でバトルする（出典: atwiki/page-2385「（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）」・カード評価「これ自身がウイングでアタックする際のBPは【スカイコンビブレイク】の修正を受けた値になる」）", () => {
     expect(wingAttack(p1Battle({ rush: [inst("XG7-019", "gs")] }, { battle: [inst("SPEC-ENEMY", "e")] }, EXTRA), "XG7-019:gs")).toBe(5000);
   });
 });
@@ -218,12 +218,12 @@ describe("XG7-020 クワガライジャー×カブトライジャー", () => {
   const offers = (s: GameState) =>
     legal(s).filter((a) => a.playerId === "player1" && JSON.stringify(a).includes("XG7-020:kk"));
 
-  it.fails("XG7-020: 【影に向かいて…】手札にある間、クロスを持たない特徴「忍者」の敵軍 S ユニットがラッシュされたとき、これを自軍ラッシュエリアに出せる（任意）（出典: atwiki/page-2435「これを自軍ラッシュエリアに出してもよい」） — 既知の不具合: CARD-XG7-020 【影に向かいて影を斬り…】が未実装（敵軍の「忍者」がラッシュされても手札から出す手段がない）", () => {
+  it("XG7-020: 【影に向かいて…】手札にある間、クロスを持たない特徴「忍者」の敵軍 S ユニットがラッシュされたとき、これを自軍ラッシュエリアに出せる（任意）（出典: atwiki/page-2435「これを自軍ラッシュエリアに出してもよい」）", () => {
     const s = enemyRushes("SPEC-NINJA");
     expect(offers(s).length > 0 || s.pendingEffectChoice?.sourceCardId === "XG7-020").toBe(true);
   });
 
-  it.fails("XG7-020: 【影に向かいて…】出したとき、そのユニットを持ち主の山札に戻す（出典: atwiki/page-2435「そうしたとき、そのユニットを持ち主の山札に戻してシャッフルする」） — 既知の不具合: CARD-XG7-020 【影に向かいて影を斬り…】が未実装（敵軍の「忍者」がラッシュされても手札から出す手段がない）", () => {
+  it("XG7-020: 【影に向かいて…】出したとき、そのユニットを持ち主の山札に戻す（出典: atwiki/page-2435「そうしたとき、そのユニットを持ち主の山札に戻してシャッフルする」）", () => {
     let s = enemyRushes("SPEC-NINJA");
     const o = offers(s)[0];
     if (o) s = act(s, o);
@@ -264,18 +264,18 @@ describe("XG7-021 デカピンク×デカイエロー", () => {
   const girls = () =>
     nc("XG7-021:dk", 3, { power: [inst("SPEC-C2", "own2"), inst("SPEC-C2M", "ownm"), ...powerCards(2)] }, { power: [inst("SPEC-C2", "e2"), inst("SPEC-C3", "e3"), inst("SPEC-C2M", "em"), ...powerCards(1, "ep")] });
 
-  it.fails("XG7-021: 【ガールズ・イン・トラブル！】「SP1」— NC（4番目）で SP1（出典: atwiki/page-2389「SP：！」「SP1」） — 既知の不具合: CARD-XG7-021 【ガールズ・イン・トラブル！】が未実装（NC で SP1 にならず、選択も開かない）", () => {
+  it("XG7-021: 【ガールズ・イン・トラブル！】「SP1」— NC（4番目）で SP1（出典: atwiki/page-2389「SP：！」「SP1」）", () => {
     expect(spOf(resolveAll(girls()), "player1", "XG7-021:dk")).toBe(1);
   });
 
-  it.fails("XG7-021: 【ガールズ・イン・トラブル！】NC — 自軍パワーゾーンの S ユニットのカードから1枚選べる（任意。M・ユニット以外は選べない）（出典: atwiki/page-2389「自軍パワーゾーンからSユニットのカードを1枚選び、手札に加えてもよい」） — 既知の不具合: CARD-XG7-021 【ガールズ・イン・トラブル！】が未実装（NC で SP1 にならず、選択も開かない）", () => {
+  it("XG7-021: 【ガールズ・イン・トラブル！】NC — 自軍パワーゾーンの S ユニットのカードから1枚選べる（任意。M・ユニット以外は選べない）（出典: atwiki/page-2389「自軍パワーゾーンからSユニットのカードを1枚選び、手札に加えてもよい」）", () => {
     const s = girls();
     expectChoiceFrom(s, "player1", "XG7-021");
     expect(choiceIds(s)).toEqual(["SPEC-C2:own2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-021: 【ガールズ・イン・トラブル！】選んだカードは手札へ。相手は自分のパワーゾーンの、同じ必要パワーの数字（2）を持つ S ユニットのカードを1枚選び手札に加える（見送れない）（出典: atwiki/page-2389「相手は、自分自身のパワーゾーンから、そのカードと同じ必要パワーの数字を持つSユニットのカードを1枚選び、手札に加える」） — 既知の不具合: CARD-XG7-021 【ガールズ・イン・トラブル！】が未実装（NC で SP1 にならず、選択も開かない）", () => {
+  it("XG7-021: 【ガールズ・イン・トラブル！】選んだカードは手札へ。相手は自分のパワーゾーンの、同じ必要パワーの数字（2）を持つ S ユニットのカードを1枚選び手札に加える（見送れない）（出典: atwiki/page-2389「相手は、自分自身のパワーゾーンから、そのカードと同じ必要パワーの数字を持つSユニットのカードを1枚選び、手札に加える」）", () => {
     let s = pick(girls(), "SPEC-C2:own2");
     expect(zoneOf(s, "player1", "SPEC-C2:own2")).toBe("hand");
     expectChoiceFrom(s, "player2", "XG7-021");
@@ -312,11 +312,11 @@ describe("XG7-022 マジピンク×マジブルー", () => {
   const twinkle = (top: CardInstance) =>
     nc("XG7-022:mp", 2, { deck: [top, ...deckCards(3)] }, { battle: [inst("SPEC-C2", "b2"), inst("SPEC-C3", "b3"), inst("SPEC-C2M", "m2")], rush: [inst("SPEC-C2", "r2")], deck: deckCards(3, "e") });
 
-  it.fails("XG7-022: 【トゥインクルイリュージョン】「SP1」— NC（3番目）で SP1（出典: atwiki/page-2390「SP：！」「SP1」） — 既知の不具合: CARD-XG7-022 【トゥインクルイリュージョン】が未実装（NC で SP1 にならず、山札の上を手札に加えない）", () => {
+  it("XG7-022: 【トゥインクルイリュージョン】「SP1」— NC（3番目）で SP1（出典: atwiki/page-2390「SP：！」「SP1」）", () => {
     expect(spOf(resolveAll(twinkle(inst("SPEC-C2", "top"))), "player1", "XG7-022:mp")).toBe(1);
   });
 
-  it.fails("XG7-022: 【トゥインクルイリュージョン】山札の上の1枚をオモテにして手札に加え、同じ必要パワー（2）の敵軍 S ユニット（エリアを問わない。M は選べない）から1体選べる（任意）（出典: atwiki/page-2390「自軍山札の上から1枚をオモテにしてから手札に加える。そうしたとき、そのカードと同じ必要パワーを持つ敵軍Sユニットを1体選び、持ち主の山札の上に戻してもよい」） — 既知の不具合: CARD-XG7-022 【トゥインクルイリュージョン】が未実装（NC で SP1 にならず、山札の上を手札に加えない）", () => {
+  it("XG7-022: 【トゥインクルイリュージョン】山札の上の1枚をオモテにして手札に加え、同じ必要パワー（2）の敵軍 S ユニット（エリアを問わない。M は選べない）から1体選べる（任意）（出典: atwiki/page-2390「自軍山札の上から1枚をオモテにしてから手札に加える。そうしたとき、そのカードと同じ必要パワーを持つ敵軍Sユニットを1体選び、持ち主の山札の上に戻してもよい」）", () => {
     const s = twinkle(inst("SPEC-C2", "top"));
     expect(zoneOf(s, "player1", "SPEC-C2:top")).toBe("hand");
     expectChoiceFrom(s, "player1", "XG7-022");
@@ -324,7 +324,7 @@ describe("XG7-022 マジピンク×マジブルー", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-022: 【トゥインクルイリュージョン】選んだユニットを持ち主の山札の上に戻す（出典: atwiki/page-2390） — 既知の不具合: CARD-XG7-022 【トゥインクルイリュージョン】が未実装（NC で SP1 にならず、山札の上を手札に加えない）", () => {
+  it("XG7-022: 【トゥインクルイリュージョン】選んだユニットを持ち主の山札の上に戻す（出典: atwiki/page-2390）", () => {
     const s = resolveAll(twinkle(inst("SPEC-C2", "top")), ["SPEC-C2:b2"]);
     expect(deckOf(s, "player2")[0]).toBe("SPEC-C2:b2");
   });
@@ -341,7 +341,7 @@ describe("XG7-023 獣拳巨神サイダイオー", () => {
     expectRarityIn("XG7-023", ["SR"]);
   });
 
-  breakerTests("XG7-023", "atwiki/page-2453", EXTRA, { breaker_select: "ブレイカーを持たない敵軍ユニットの効果（RS-155【鋼の角】）の候補から外れない" });
+  breakerTests("XG7-023", "atwiki/page-2453", EXTRA);
 
   it("XG7-023: 追加条件 — 自軍「獣拳神サイダイン」1体を捨札にしてラッシュする（出典: atwiki/page-2453「追加条件：自軍「獣拳神サイダイン」1体を捨札にする」）", () => {
     const s = rushPhaseOf({ hand: [inst("XG7-023", "sd")], rush: [inst("XG7-024", "sn")], command: [...releasedCat("WB", 1), ...releasedCat("MA", 1)], power: powerCards(5) }, {}, EXTRA);
@@ -365,13 +365,13 @@ describe("XG7-023 獣拳巨神サイダイオー", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-023: 【大大砕大斬】選んだユニットがリリース状態ならホールドし、その後このユニットとバトルする（BP13000 で撃破）（出典: atwiki/page-2453「選んだユニットがリリース状態ならホールドする。その後、選んだユニットとこのユニットでバトルする」） — 既知の不具合: CARD-XG7-023 【大大砕大斬】が選んだユニットをコマンドゾーンへ送り（「ホールドする」を hold_command として処理）、バトルしない", () => {
+  it("XG7-023: 【大大砕大斬】選んだユニットがリリース状態ならホールドし、その後このユニットとバトルする（BP13000 で撃破）（出典: atwiki/page-2453「選んだユニットがリリース状態ならホールドする。その後、選んだユニットとこのユニットでバトルする」）", () => {
     const s = resolveAll(enterSd([inst("SPEC-ENEMY", "e")]), ["SPEC-ENEMY:e"]);
     expect(lastBattleBps(s)).toEqual({ attacker: 13000, defender: 1000 });
     expect(zoneOf(s, "player2", "SPEC-ENEMY:e")).toBe("discard");
   });
 
-  it.fails("XG7-023: 【大大砕大斬】ホールドされた敵軍ユニット（※レジストを持つ RK-214）はレジストでその場に留められず撃破される（出典: atwiki/page-2453 カード評価「【大大砕大斬】はレジストを潰してからバトルできる」・R-KW-RESIST） — 既知の不具合: CARD-XG7-023 【大大砕大斬】が選んだユニットをコマンドゾーンへ送り、バトルしない", () => {
+  it("XG7-023: 【大大砕大斬】ホールドされた敵軍ユニット（※レジストを持つ RK-214）はレジストでその場に留められず撃破される（出典: atwiki/page-2453 カード評価「【大大砕大斬】はレジストを潰してからバトルできる」・R-KW-RESIST）", () => {
     let s = enterSd([inst("RK-214", "ln")]);
     if (s.pendingEffectChoice?.sourceCardId === "XG7-023") s = pick(s, "RK-214:ln");
     let offered = false;

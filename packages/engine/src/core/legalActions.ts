@@ -154,6 +154,7 @@ import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
 import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
 import { canConfirmXg5Choice, isXg5ChoiceEffect, listXg5HandActivations } from "../rules/xg5/xg5Effects";
 import { xg5ForcesAttack } from "../rules/xg5/xg5Fields";
+import { canConfirmXg7Choice, isXg7ActivatableResident, isXg7ChoiceEffect } from "../rules/xg7/xg7Effects";
 import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
@@ -821,6 +822,8 @@ function appendActivateResidentOperationActions(
       card.cardId !== "RK-249" &&
       !isRk1ActivatableResident(card.cardId) &&
       !isRm1ActivatableResident(card.cardId) &&
+      // XG7-039 GOD SPEED LOVE（rules/xg7/xg7Effects.ts）。
+      !isXg7ActivatableResident(card.cardId) &&
       listResidentActivationEffects(card.cardId).length === 0
     ) {
       continue;
@@ -1329,6 +1332,15 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmXg5Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg7ChoiceEffect(pending.effectId)) {
+    // クロスギャザー ザ・ベストパートナー XG7-001〜XG7-068 の選択（rules/xg7/xg7Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg7Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

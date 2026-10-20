@@ -17,6 +17,8 @@ import { rk13BattleUsesPrintedBp, rk13BlocksResist, rk13PrintedBp } from "./rk/r
 import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
 import { rk11KyosukeWinButDestroyed } from "./rk/rk11Fields";
 import { openRk12SurviveStay } from "./rk/rk12UnitEffects";
+import { isXg7RushCounterCard, openXg7AfterUnitLeft, openXg7LeaveStay, xg7OnAttackWin, xg7RushCounterConditionMet } from "./xg7/xg7Effects";
+import { xg7AdjustLeaveIntent, xg7BlocksResist } from "./xg7/xg7Fields";
 import { openLiveCommentaryStay, openLoyaltyToEmperor } from "./legend1/set7NamedEffectsA";
 import { openKuugaStayOnLeave } from "./legend1/otherLinesNamedEffects";
 import {
@@ -662,7 +664,7 @@ export function listUsableRushCounters(
   for (const card of defender.hand) {
     if (allowedCounterInstanceIds && !allowedCounterInstanceIds.includes(card.instanceId)) continue;
     if (!isRushReactionCounterCard(state, card.cardId)) continue;
-    if (!rushCounterConditionMet(state, card.cardId, rushedInstanceId, rusherId)) continue;
+    if (!rushCounterConditionMet(state, card.cardId, rushedInstanceId, rusherId, defenderId)) continue;
     if (canPlayHandCounter(state, defenderId, card.instanceId)) ids.push(card.instanceId);
   }
   return ids;
@@ -682,7 +684,8 @@ export function isMusicBoxClockCard(state: GameState, cardId: string): boolean {
 
 /** ラッシュ反応窓で使えるカウンター（疾風流超忍法・宏のオルゴール時計）。 */
 export function isRushReactionCounterCard(state: GameState, cardId: string): boolean {
-  return isShippuNinjaCard(state, cardId) || isMusicBoxClockCard(state, cardId);
+  // XG7-027 雷撃ディスク（rules/xg7/xg7Effects.ts）。
+  return isShippuNinjaCard(state, cardId) || isMusicBoxClockCard(state, cardId) || isXg7RushCounterCard(cardId);
 }
 
 /**
@@ -714,6 +717,7 @@ function rushCounterConditionMet(
   counterCardId: string,
   rushedInstanceId: string,
   rusherId: PlayerId,
+  userId?: PlayerId,
 ): boolean {
   const rushed = findRushedUnit(state, rushedInstanceId, rusherId);
   if (!rushed) return false;
@@ -727,6 +731,8 @@ function rushCounterConditionMet(
   if (isMusicBoxClockCard(state, counterCardId)) {
     return isSmallUnit(state.definitions, rushed.card) && bp >= 4000;
   }
+  // XG7-027 雷撃ディスク「敵軍Sユニットがラッシュされたとき」（rules/xg7/xg7Effects.ts）。
+  if (isXg7RushCounterCard(counterCardId)) return xg7RushCounterConditionMet(state, rushed.card, rushed.ownerId, rusherId, userId);
   return false;
 }
 
@@ -744,7 +750,7 @@ export function canUseRushReactionCounter(
   if (pending.allowedCounterInstanceIds && !pending.allowedCounterInstanceIds.includes(counterInstanceId)) return false;
   const card = findInZone(state.players[defenderId], "hand", counterInstanceId)?.card;
   if (!card || !isRushReactionCounterCard(state, card.cardId)) return false;
-  return rushCounterConditionMet(state, card.cardId, pending.rushedInstanceId, pending.rusherPlayerId);
+  return rushCounterConditionMet(state, card.cardId, pending.rushedInstanceId, pending.rusherPlayerId, defenderId);
 }
 
 export const MUSIC_BOX_SKIP_BATTLE_RULE = "skip_battle_phase_this_turn";
@@ -1610,7 +1616,9 @@ export function resolveBattlePendingCore(
       !venomDefender &&
       defenderZone === "battle" &&
       // RK-267【怪魔稲妻剣】（rules/rk/rk13Fields.ts）。
-      !rk13BlocksResist(refreshedAttackerFound.card.cardId),
+      !rk13BlocksResist(refreshedAttackerFound.card.cardId) &&
+      // XG7-032【ライダーダブルキック】（rules/xg7/xg7Fields.ts）。
+      !xg7BlocksResist(battleState, pending),
     battleOpponentInstanceId: pending.attackerInstanceId,
   };
 
@@ -1710,6 +1718,8 @@ export function resolveBattlePendingCore(
           withAttacker = rk13OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
           // XG5-029・XG5-034（rules/xg5/xg5bEffects.ts）。
           withAttacker = applyXg5AttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId, refreshedDefenderFound.card.instanceId);
+          // XG7-025【正義のツバサ】・XG7-037 ※（rules/xg7/xg7Effects.ts）。
+          withAttacker = xg7OnAttackWin(withAttacker, battleState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
         }
         withAttacker = drainDeferredDestroyTriggers(withAttacker);
       }
@@ -1835,6 +1845,8 @@ export function resolveBattlePendingCore(
     if (!pending.effectBattle) nextState = rk13OnAttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId);
     // XG5-029【頑頑ナックル落とし】・XG5-034【二刀流烈火大斬刀】（rules/xg5/xg5bEffects.ts）。
     if (!pending.effectBattle) nextState = applyXg5AttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId, refreshedDefenderFound.card.instanceId);
+    // XG7-025【正義のツバサ】・XG7-037 ※: アタックして敵軍ユニットを撃破したとき（rules/xg7/xg7Effects.ts）。
+    if (!pending.effectBattle) nextState = xg7OnAttackWin(nextState, battleState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
   } else {
     nextState = markAttackerActed(nextState);
   }
@@ -1953,6 +1965,7 @@ export function finalizeLeavePending(
   let medicalRescueToPower = false;
   let triConcordId: string | null = null;
   let discardAsDamage = false;
+  let xg7Exiled = false;
 
   if (pending.toZone === "deck_top") {
     // ルール: R-MOVE-01 — 山札に戻すのも「場を離れる」移動（ウラ向きで山札の上へ）。
@@ -2020,6 +2033,14 @@ export function finalizeLeavePending(
   ) {
     // RS-567 トライコンドル【カラクリ忍法・消身の術】（rules/legend1/set8NamedEffectsC.ts）。
     return startToPowerOnDestroyChoice(state, pending, leavingCard, fromCards, { cardId: "RS-567", instanceId: triConcordId });
+  } else if (pending.toZone === "discard" && pending.xg7Exile) {
+    // XG7-008【アースの戦士】: 捨札にするかわりにゲームから除外する（rules/xg7/xg7Fields.ts）。
+    xg7Exiled = true;
+    nextOwner = {
+      ...owner,
+      [pending.fromZone]: fromCards,
+      exile: [...(owner.exile ?? []), leavingCard],
+    };
   } else if (pending.toZone === "discard" && pending.discardAsDamage && !pending.notDestruction) {
     // RS-182 ジャイアントローラー: 撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く。
     discardAsDamage = true;
@@ -2058,7 +2079,9 @@ export function finalizeLeavePending(
     ...updatePlayer(state, pending.ownerPlayerId, nextOwner),
   };
 
-  const effectiveToZone = medicalRescueToPower || discardAsDamage
+  const effectiveToZone = xg7Exiled
+    ? "exile"
+    : medicalRescueToPower || discardAsDamage
     ? "power" // ルール: R-REPL-02 — 捨札を経由しないので「撃破されて捨札になったとき」は発動しない
     : pending.toZone === "command" && owner.command.length >= COMMAND_ZONE_MAX
       ? "discard"
@@ -2095,6 +2118,8 @@ export function finalizeLeavePending(
     phasePlayerId: pending.phasePlayerId,
     wasNonCraneOrphnoch: rk6IsNonCraneOrphnoch(state, pending.ownerPlayerId, found.card),
   });
+  // XG7-043【地獄の兄弟】（rules/xg7/xg7Effects.ts）。
+  resolvedState = openXg7AfterUnitLeft(resolvedState, state, pending, found.card, effectiveToZone, isDestructionLeave(pending));
   if (
     pending.fusionReturnOnDiscard === "battle" &&
     effectiveToZone === "discard" &&
@@ -2171,6 +2196,8 @@ export function tryLeaveField(
   state: GameState,
   intent: LeaveIntent,
 ): { state: GameState; deferred: boolean } {
+  // XG7-008【アースの戦士】（撃破したユニットを捨札にするかわりに除外する。rules/xg7/xg7Fields.ts）。
+  intent = xg7AdjustLeaveIntent(state, intent);
   // RS-303【シティガーディアンズ隊長】: 撃破されたとき、「戦闘員」2体をかわりに捨札にしてもよい。
   const cityGuardians = openCityGuardiansSubstitute(state, intent);
   if (cityGuardians) return { state: cityGuardians, deferred: true };
@@ -2190,6 +2217,9 @@ export function tryLeaveField(
   // RK-250 サバイブ: 重ねたユニットがユニットでなくなるとき、サバイブを捨札にしてその場に留める（rules/rk/rk12UnitEffects.ts）。
   const survive = openRk12SurviveStay(state, intent);
   if (survive) return { state: survive, deferred: true };
+  // XG7-005【モバイレーツ】・XG7-012【荒ぶるダイノガッツ】等（rules/xg7/xg7Effects.ts）。
+  const xg7Stay = openXg7LeaveStay(state, intent);
+  if (xg7Stay) return { state: xg7Stay, deferred: true };
   // RS-437 白熱する実況: 下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる（rules/legend1/set7NamedEffectsA.ts）。
   const liveCommentary = openLiveCommentaryStay(state, intent);
   if (liveCommentary) return { state: liveCommentary, deferred: true };

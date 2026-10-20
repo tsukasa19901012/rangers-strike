@@ -25,11 +25,11 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-009::koreworashushita",
+          "keyword": "xg7::XG7-009::v_commander",
           "duration": "permanent"
         }
       ]
@@ -39,13 +39,13 @@
       "name": "受け継いだもの",
       "text": "これは自軍Lユニットがあれば、敵軍ユニットにアタックされない。また、このユニットと隣り合うOTを持つLユニットはアタックされる以外では相手に選ばれない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-009::keidamono",
+          "keyword": "xg7::XG7-009::inherited",
           "duration": "permanent"
         }
       ]

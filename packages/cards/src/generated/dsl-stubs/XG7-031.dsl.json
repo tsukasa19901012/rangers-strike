@@ -33,13 +33,13 @@
       "id": "unnamed_e280bbe38193e3828ce381ab",
       "text": "※これにライドしているユニットは、「仮面ライダー1号」または「仮面ライダー2号」ならクロス1を得る。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-031::koreniraidoshite",
+          "keyword": "xg7::XG7-031::cyclone",
           "duration": "permanent"
         }
       ]
@@ -49,13 +49,13 @@
       "name": "サイクロンアタック",
       "text": "これにライドしているユニットはBP+1000され、敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-031::saikuronataku",
+          "keyword": "xg7::XG7-031::cyclone",
           "duration": "permanent"
         }
       ]

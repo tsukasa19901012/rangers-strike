@@ -1,6 +1,8 @@
 import { rm2AttackerBattleBonus, rm2DefenderBattleBonus } from "./rm/rm2Effects";
+import { xg7AttackerBattleBonus } from "./xg7/xg7Fields";
 import { rk9UsePrintedDefenderBp } from "./rk/rk9Fields";
 import { rk11UsePrintedDefenderBp } from "./rk/rk11Fields";
+import { xg7UsePrintedDefenderBp } from "./xg7/xg7Fields";
 import {
   findNamedEffectByEffectId,
   getOnRushNamedEffect,
@@ -129,6 +131,8 @@ export function battleAttackerBpBonus(
   total += rk3AttackerBattleBonus(state, pending);
   // RM-033 メタルダー ※（rules/rm/rm2Effects.ts）。
   total += rm2AttackerBattleBonus(state, pending);
+  // XG7-019【スカイコンビブレイク】等（rules/xg7/xg7Fields.ts）。
+  total += xg7AttackerBattleBonus(state, pending);
 
   // RS-062【ボウケンジャベリン】・RS-241【デュアルクラッシャー・ドリルヘッド】（CN5）:
   // 特徴「メカ」を持つユニットにアタックするとき BP+4000（NC の効果は成立しているときだけ。R-CN-02）。
@@ -241,7 +245,9 @@ export function battleDefenderBp(
       // RK-182【Zブリンガーアタック】（rules/rk/rk9Fields.ts）。
       rk9UsePrintedDefenderBp(state, pending) ||
       // RK-215【スペード2―スラッシュ】で得た能力（rules/rk/rk11Fields.ts）。
-      rk11UsePrintedDefenderBp(state, pending));
+      rk11UsePrintedDefenderBp(state, pending) ||
+      // XG7-032【ライダーダブルキック】（rules/xg7/xg7Fields.ts）。
+      xg7UsePrintedDefenderBp(state, pending));
 
   const mirageOverride = pending.substituteInstanceId ? undefined : pending.mirageBeamDefenderBpOverride;
   const base =

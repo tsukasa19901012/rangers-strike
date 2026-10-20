@@ -23,6 +23,22 @@
           "duration": "permanent"
         }
       ]
+    },
+    {
+      "id": "lost_search",
+      "text": "◎自軍山札を見て、これを使用するためにホールドしたコマンドと同じ必要パワーを持つSユニットのカードを1枚選び、相手に見せてから手札に加えてもよい。その後、山札をシャッフルする。",
+      "trigger": {
+        "type": "operation",
+        "timing": "rush"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "xg7::XG7-045::lost_search",
+          "duration": "permanent"
+        }
+      ]
     }
   ],
   "implementation": {

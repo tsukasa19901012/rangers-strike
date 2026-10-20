@@ -296,6 +296,15 @@ export function evaluateStateGate(
     return hasOpponentUnitWithFeature(state, playerId, enemyFeatureMatch[1]!);
   }
 
+  // 「カード名に「スター」または「SM」を含む自軍パワーがある」（XG7-060・XG7-061。オモテ向き・ウラ向きを問わない）。
+  const powerNameMatch = text.match(
+    /カード名に[「｢]([^」｣]+)[」｣](?:または[「｢]([^」｣]+)[」｣])?を含む自軍パワーがある/,
+  );
+  if (powerNameMatch) {
+    const parts = [powerNameMatch[1]!, powerNameMatch[2]].filter(Boolean) as string[];
+    return player.power.some((c) => parts.some((part) => cardName(state.definitions, c.cardId).includes(part)));
+  }
+
   const nameContainsMatch = text.match(
     /カード名に[「｢]([^」｣]+)[」｣](?:または[「｢]([^」｣]+)[」｣])?を含む自軍ユニットがある/,
   );

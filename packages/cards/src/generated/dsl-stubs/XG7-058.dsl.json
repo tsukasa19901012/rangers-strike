@@ -37,14 +37,14 @@
       "name": "鋼鉄のマッチョボディ",
       "text": "これがユニットでなくなるとき、これをホールドしてその場に留めてもよい。また、これはホールド状態なら、アタックするときBP+2000される。",
       "trigger": {
-        "type": "on_attack"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-058::nomachobodei",
-          "duration": "turn"
+          "keyword": "xg7::XG7-058::macho_body",
+          "duration": "permanent"
         }
       ]
     }

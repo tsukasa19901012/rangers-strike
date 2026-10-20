@@ -1,5 +1,6 @@
 import { rm3EffectiveSp } from "../rm/rm3Fields";
 import { xg5EffectiveSp } from "../xg5/xg5Fields";
+import { xg7EffectiveSp } from "../xg7/xg7Fields";
 import { rk8EffectiveSp } from "../rk/rk8UnitEffects";
 import { rk9EffectiveSp } from "../rk/rk9UnitEffects";
 import { rk10EffectiveSp } from "../rk/rk10UnitEffects";
@@ -288,6 +289,8 @@ function legend3EffectiveSpUncached(
   sp = rm3EffectiveSp(state, playerId, instance, sp);
   // XG5-051 仮面ライダーカブトHF ※・XG5-054【歩く完全ライダー図鑑】の「SP1」（rules/xg5/xg5Fields.ts）。
   sp = xg5EffectiveSp(state, playerId, instance, sp);
+  // XG7-007【龍撃剣＆獣奏剣】（BP8000以上のとき SP1。rules/xg7/xg7Fields.ts）。
+  sp = xg7EffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。

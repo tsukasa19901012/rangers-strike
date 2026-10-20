@@ -55,14 +55,14 @@
       "name": "荒ぶるダイノガッツ",
       "text": "これが自軍バトルエリアにある間、1ターンごとに1度だけ、次の効果を発動できる⇒自軍ユニットが撃破されたとき、そのユニットを捨札にするかわりに、自軍山札の上からそのユニットの必要パワーの数字と同じ枚数を捨札にして、その場に留めてもよい。",
       "trigger": {
-        "type": "on_destroy"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-012::burudainogatsu",
-          "duration": "turn"
+          "keyword": "xg7::XG7-012::dino_guts",
+          "duration": "permanent"
         }
       ]
     }

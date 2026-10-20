@@ -76,7 +76,7 @@ describe("XG7-047 仮面ライダーオーズ・タカキリーター", () => {
 
   const hit = (target: string) => settle(attack(p1Battle({ battle: [inst("XG7-047", "tk")] }, { battle: [inst(target, "e")] }, EXTRA), "XG7-047:tk", `${target}:e`));
 
-  it.fails("XG7-047: 【カマキリソード】敵軍 S ユニットにアタックするとき BP+5000（5500）（出典: atwiki/page-2422「敵軍Sユニットにアタックするとき、BP+5000される」） — 既知の不具合: CARD-XG7-047 【カマキリソード】（敵軍 S ユニットへのアタックで BP+5000）が未実装", () => {
+  it("XG7-047: 【カマキリソード】敵軍 S ユニットにアタックするとき BP+5000（5500）（出典: atwiki/page-2422「敵軍Sユニットにアタックするとき、BP+5000される」）", () => {
     const s = hit("SPEC-E-S");
     expect(lastBattleBps(s)?.attacker).toBe(5500);
     expect(zoneOf(s, "player2", "SPEC-E-S:e")).toBe("discard");
@@ -133,25 +133,25 @@ describe("XG7-049 仮面ライダーオーズ・ガタキリバコンボ", () =>
 
   it.todo("XG7-049: ※ デッキに好きな枚数入れてよい（XG6-056 が1枚でも入っていれば同名は3枚まで — atwiki/page-2398 Q1）— デッキ構築の枚数チェックは公開エンジン API（createTestState / applyAction / getLegalActions）の外で、ここでは確かめられない");
 
-  it.fails("XG7-049: ※「ガタ」を含む自軍ユニット1体につき BP+500 — これだけなら自身を数えて BP1000（出典: atwiki/page-2398「カード名に「ガタ」を含む自軍ユニット1体につきBP+500される」・カード評価「自身の効果で実質BP1000になる」） — 既知の不具合: CARD-XG7-049 「ガタ」を含む自軍ユニットの数による BP+500 が未実装", () => {
+  it("XG7-049: ※「ガタ」を含む自軍ユニット1体につき BP+500 — これだけなら自身を数えて BP1000（出典: atwiki/page-2398「カード名に「ガタ」を含む自軍ユニット1体につきBP+500される」・カード評価「自身の効果で実質BP1000になる」）", () => {
     expect(bpOf(p1Battle({ battle: [inst("XG7-049", "g")] }, {}, EXTRA), "player1", "XG7-049:g")).toBe(1000);
   });
 
-  it.fails("XG7-049: ※ ラッシュエリアの XG7-048 ガタトラバも数える（BP1500。「ガタ」を含まない SPEC-PLAIN は数えない）（出典: atwiki/page-2398・関連カード（カード名に「ガタ」を含むユニット）仮面ライダーオーズ・ガタトラバ） — 既知の不具合: CARD-XG7-049 「ガタ」を含む自軍ユニットの数による BP+500 が未実装", () => {
+  it("XG7-049: ※ ラッシュエリアの XG7-048 ガタトラバも数える（BP1500。「ガタ」を含まない SPEC-PLAIN は数えない）（出典: atwiki/page-2398・関連カード（カード名に「ガタ」を含むユニット）仮面ライダーオーズ・ガタトラバ）", () => {
     expect(bpOf(p1Battle({ battle: [inst("XG7-049", "g")], rush: [inst("XG7-048", "gt"), inst("SPEC-PLAIN", "p")] }, {}, EXTRA), "player1", "XG7-049:g")).toBe(1500);
   });
 
   const split = (deck = [inst("XG7-049", "d1"), inst("TST-OP", "d2"), inst("XG7-049", "d3")]) =>
     resolveAll(rushFromHand(rushPhaseOf({ hand: [inst("XG7-049", "g")], command: releasedCat("WB", 1), power: powerCards(4), deck }, {}, EXTRA), "player1", "XG7-049:g").state);
 
-  it.fails("XG7-049: 【分身体】手札からラッシュしたとき、山札の上から2枚のうち「ガタキリバコンボ」をすべてラッシュエリアに出し、それ以外は捨札（3枚目は山札に残る）（出典: atwiki/page-2398「その中から「仮面ライダーオーズ・ガタキリバコンボ」のカードをすべて自軍ラッシュエリアに出し、それ以外は捨札にする」） — 既知の不具合: CARD-XG7-049 【分身体】が本文と違う（山札の上2枚から選ばせ、「ガタキリバコンボ」を出さない）", () => {
+  it("XG7-049: 【分身体】手札からラッシュしたとき、山札の上から2枚のうち「ガタキリバコンボ」をすべてラッシュエリアに出し、それ以外は捨札（3枚目は山札に残る）（出典: atwiki/page-2398「その中から「仮面ライダーオーズ・ガタキリバコンボ」のカードをすべて自軍ラッシュエリアに出し、それ以外は捨札にする」）", () => {
     const s = split();
     expect(zoneOf(s, "player1", "XG7-049:d1")).toBe("rush");
     expect(zoneOf(s, "player1", "TST-OP:d2")).toBe("discard");
     expect(zoneOf(s, "player1", "XG7-049:d3")).toBe("deck");
   });
 
-  it.fails("XG7-049: 【分身体】2枚とも「ガタキリバコンボ」なら2枚とも出る（出典: atwiki/page-2398「すべて」） — 既知の不具合: CARD-XG7-049 【分身体】が本文と違う（山札の上2枚から選ばせ、「ガタキリバコンボ」を出さない）", () => {
+  it("XG7-049: 【分身体】2枚とも「ガタキリバコンボ」なら2枚とも出る（出典: atwiki/page-2398「すべて」）", () => {
     const s = split([inst("XG7-049", "d1"), inst("XG7-049", "d2"), inst("TST-OP", "d3")]);
     expect(zoneOf(s, "player1", "XG7-049:d1")).toBe("rush");
     expect(zoneOf(s, "player1", "XG7-049:d2")).toBe("rush");
@@ -211,14 +211,14 @@ describe("XG7-051 仮面ライダーオーズ・ラトラーターコンボ", ()
       "XG7-051:rt",
     ).state;
 
-  it.fails("XG7-051: 【ライオディアス】ラッシュしたとき、自軍捨札を好きな枚数選んで除外できる（任意）（出典: atwiki/page-2397「自軍捨札を好きな枚数選びゲームから除外してもよい」） — 既知の不具合: CARD-XG7-051 【ライオディアス】（両者の捨札の除外）が未実装", () => {
+  it("XG7-051: 【ライオディアス】ラッシュしたとき、自軍捨札を好きな枚数選んで除外できる（任意）（出典: atwiki/page-2397「自軍捨札を好きな枚数選びゲームから除外してもよい」）", () => {
     const s = lion();
     expectChoiceFrom(s, "player1", "XG7-051");
     expect(choiceIds(s)).toEqual(["TST-OP:m0", "TST-OP:m1", "TST-OP:m2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-051: 【ライオディアス】2枚除外したとき、相手は自分自身の捨札を2枚選んで除外する（出典: atwiki/page-2397「選んだ枚数と同じ数だけ相手は自分自身の捨札を選びゲームから除外する」・カード評価「除外するカードはそれぞれの持ち主が決める」） — 既知の不具合: CARD-XG7-051 【ライオディアス】（両者の捨札の除外）が未実装", () => {
+  it("XG7-051: 【ライオディアス】2枚除外したとき、相手は自分自身の捨札を2枚選んで除外する（出典: atwiki/page-2397「選んだ枚数と同じ数だけ相手は自分自身の捨札を選びゲームから除外する」・カード評価「除外するカードはそれぞれの持ち主が決める」）", () => {
     const s = resolveAll(lion(), ["TST-OP:m0", "TST-OP:m1", "confirm", "TST-OP:e0", "TST-OP:e1"]);
     expect((s.players.player1.exile ?? []).map((c) => c.instanceId).sort()).toEqual(["TST-OP:m0", "TST-OP:m1"]);
     expect((s.players.player2.exile ?? []).length).toBe(2);
@@ -237,7 +237,7 @@ describe("XG7-052 仮面ライダーオーズ・タジャドルコンボ", () =>
     expectRarityIn("XG7-052", ["SR"]);
   });
 
-  breakerTests("XG7-052", "atwiki/page-2426", EXTRA, { breaker_name: "※ブレイカーの同名ラッシュ制限が効かない" });
+  breakerTests("XG7-052", "atwiki/page-2426", EXTRA);
   wingTests("XG7-052", "atwiki/page-2426");
 
   it("XG7-052: 追加条件 — 特徴「オーズドライバー」を持つ自軍ユニット1体を捨札にすれば必要パワー0でラッシュできる（出典: atwiki/page-2426「追加条件：特徴「オーズドライバー」を持つ自軍ユニット1体を捨札にすれば必要パワー0になる」）", () => {
@@ -254,7 +254,7 @@ describe("XG7-052 仮面ライダーオーズ・タジャドルコンボ", () =>
     expect(canStartRush(s, "player1", "XG7-052:tj")).toBe(false);
   });
 
-  it.fails("XG7-052: ※ ウイングでアタックするとき BP+2000（6500 で BP6000 の敵軍ユニットを撃破）（出典: atwiki/page-2426「ウイングでアタックするときBP+2000される」） — 既知の不具合: CARD-XG7-052 ウイングでアタックするときの BP+2000 が未実装", () => {
+  it("XG7-052: ※ ウイングでアタックするとき BP+2000（6500 で BP6000 の敵軍ユニットを撃破）（出典: atwiki/page-2426「ウイングでアタックするときBP+2000される」）", () => {
     let s = p1Battle({ rush: [inst("XG7-052", "tj")] }, { battle: [inst("SPEC-E-BIG", "e")] }, EXTRA);
     s = act(s, { type: "hold_for_wing", playerId: "player1", instanceId: "XG7-052:tj" });
     s = settle(attack(s, "XG7-052:tj", "SPEC-E-BIG:e"));
@@ -267,7 +267,7 @@ describe("XG7-052 仮面ライダーオーズ・タジャドルコンボ", () =>
     expect(lastBattleBps(s)?.attacker).toBe(4500);
   });
 
-  it.fails("XG7-052: 【タジャスピナー】WB の自軍コマンドが3つ以上あれば、自軍バトルフェイズに起動できる（出典: atwiki/page-2426「WBを持つ自軍コマンドが3つ以上あれば、自軍バトルフェイズごとに1度だけ」） — 既知の不具合: CARD-XG7-052 【タジャスピナー】（起動してバトルさせる）が未実装", () => {
+  it("XG7-052: 【タジャスピナー】WB の自軍コマンドが3つ以上あれば、自軍バトルフェイズに起動できる（出典: atwiki/page-2426「WBを持つ自軍コマンドが3つ以上あれば、自軍バトルフェイズごとに1度だけ」）", () => {
     const s = p1Battle({ rush: [inst("XG7-052", "tj")], command: releasedCat("WB", 3, "w") }, { rush: [inst("SPEC-E-S", "e")] }, EXTRA);
     expect(canActivate(s, "XG7-052:tj")).toBe(true);
   });
@@ -292,7 +292,7 @@ describe("XG7-053 仮面ライダーオーズ・シャウタコンボ", () => {
   morphTests("XG7-053", "atwiki/page-2431");
   leadTests("XG7-053", "ET", "atwiki/page-2431");
 
-  it.fails("XG7-053: ※ 自分と相手の手札1枚につき BP+500（自分2枚＋相手3枚で 3000）（出典: atwiki/page-2431「自分と相手の手札1枚につきBP+500される」） — 既知の不具合: CARD-XG7-053 手札の枚数による BP+500 が未実装", () => {
+  it("XG7-053: ※ 自分と相手の手札1枚につき BP+500（自分2枚＋相手3枚で 3000）（出典: atwiki/page-2431「自分と相手の手札1枚につきBP+500される」）", () => {
     const s = p1Battle({ battle: [inst("XG7-053", "sh")], hand: [inst("TST-OP", "h0"), inst("TST-OP", "h1")] }, { hand: [inst("TST-OP", "e0"), inst("TST-OP", "e1"), inst("TST-OP", "e2")] }, EXTRA);
     expect(bpOf(s, "player1", "XG7-053:sh")).toBe(3000);
   });
@@ -300,14 +300,14 @@ describe("XG7-053 仮面ライダーオーズ・シャウタコンボ", () => {
   const assault = () =>
     rushFromHand(rushPhaseOf({ hand: [inst("XG7-053", "sh")], command: releasedCat("WB", 1), power: powerCards(5), discard: [inst("XG7-032", "rc"), inst("SPEC-PLAIN", "p")] }, {}, EXTRA), "player1", "XG7-053:sh").state;
 
-  it.fails("XG7-053: 【水中からの強襲】自軍ターン中、ラッシュしたとき、自軍捨札からナンバーに RC を持つカードを1枚選んで除外できる（任意）（出典: atwiki/page-2431「自軍捨札からナンバーにRCを持つカードを1枚選び、ゲームから除外してもよい」） — 既知の不具合: CARD-XG7-053 【水中からの強襲】（捨札の RC カードの効果を使う）が未実装", () => {
+  it("XG7-053: 【水中からの強襲】自軍ターン中、ラッシュしたとき、自軍捨札からナンバーに RC を持つカードを1枚選んで除外できる（任意）（出典: atwiki/page-2431「自軍捨札からナンバーにRCを持つカードを1枚選び、ゲームから除外してもよい」）", () => {
     const s = assault();
     expectChoiceFrom(s, "player1", "XG7-053");
     expect(choiceIds(s)).toEqual(["XG7-032:rc"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG7-053: 【水中からの強襲】除外したとき、そのカード（XG7-032【ライダーダブルキック】）の RC の効果をこれの効果として発動する（このターン BP+2000）（出典: atwiki/page-2431「そのカードのRCの効果を、このユニットの効果として発動する」） — 既知の不具合: CARD-XG7-053 【水中からの強襲】（捨札の RC カードの効果を使う）が未実装", () => {
+  it("XG7-053: 【水中からの強襲】除外したとき、そのカード（XG7-032【ライダーダブルキック】）の RC の効果をこれの効果として発動する（このターン BP+2000）（出典: atwiki/page-2431「そのカードのRCの効果を、このユニットの効果として発動する」）", () => {
     const s = resolveAll(assault(), ["XG7-032:rc"]);
     expect((s.players.player1.exile ?? []).map((c) => c.instanceId)).toContain("XG7-032:rc");
     // 手札0枚・相手手札0枚なので本来は BP500。+2000 で 2500。
@@ -333,20 +333,20 @@ describe("XG7-054 オーズドライバー", () => {
   const used = (hand = [inst("XG7-047", "tk"), inst("XG7-053", "sh")]) =>
     played(rushPhaseOf({ hand: [inst("XG7-054", "od"), ...hand], command: releasedCat("WB", 2), power: powerCards(3) }, {}, EXTRA), "XG7-054:od");
 
-  it.fails("XG7-054: 使うと、2つの効果から1つを選ぶ（出典: atwiki/page-2404「次の効果から1つ選び発動する」） — 既知の不具合: CARD-XG7-054 効果の選択（◎1 手札から出す・◎2 必要パワー-3）が未実装（使っても何も起きない）", () => {
+  it("XG7-054: 使うと、2つの効果から1つを選ぶ（出典: atwiki/page-2404「次の効果から1つ選び発動する」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "XG7-054");
     expect(choiceIds(s).length).toBe(2);
   });
 
-  it.fails("XG7-054: ◎1 手札の本来の特徴に「オーズドライバー」を持つカード（必要パワー5の XG7-053）を、パワー3でも自軍ラッシュエリアに出せる（出典: atwiki/page-2404「自分の手札から本来の特徴に「オーズドライバー」を持つカードを1枚選び、自軍ラッシュエリアに出してもよい」） — 既知の不具合: CARD-XG7-054 効果の選択（◎1 手札から出す・◎2 必要パワー-3）が未実装（使っても何も起きない）", () => {
+  it("XG7-054: ◎1 手札の本来の特徴に「オーズドライバー」を持つカード（必要パワー5の XG7-053）を、パワー3でも自軍ラッシュエリアに出せる（出典: atwiki/page-2404「自分の手札から本来の特徴に「オーズドライバー」を持つカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
     let s = used();
     const first = choiceIds(s)[0];
     if (first) s = resolveAll(s, [first, "XG7-053:sh"]);
     expect(zoneOf(s, "player1", "XG7-053:sh")).toBe("rush");
   });
 
-  it.fails("XG7-054: ◎2 このターン、次に手札から使うカードの必要パワーが3少なくなる（パワー3で必要パワー5の XG7-053 をラッシュできる）（出典: atwiki/page-2404「次に自分が手札から使用するカードの必要パワーの数字は、3少なくなる」） — 既知の不具合: CARD-XG7-054 効果の選択（◎1 手札から出す・◎2 必要パワー-3）が未実装（使っても何も起きない）", () => {
+  it("XG7-054: ◎2 このターン、次に手札から使うカードの必要パワーが3少なくなる（パワー3で必要パワー5の XG7-053 をラッシュできる）（出典: atwiki/page-2404「次に自分が手札から使用するカードの必要パワーの数字は、3少なくなる」）", () => {
     let s = used();
     const second = choiceIds(s)[1];
     if (second) s = resolveAll(s, [second]);

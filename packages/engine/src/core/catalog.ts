@@ -686,6 +686,11 @@ function evaluateRushPowerAndZord(
     return false;
   }
 
+  // ルール: R-KW-BREAKER-01 — 同名の自軍ユニットがあればラッシュできない（追加条件の種類を問わない。下の早期 return より前に見る）。
+  // いまは XG7 のカードだけに当てる: ほかのシリーズ（PROMO2 SX-007 等）にも同じ不具合があり、この確認で直るが、
+  // そのスペック（it.fails）はそのシリーズの担当で直す（docs/verification/unverified/XG7-judgments.md）。
+  if (unitDefinition.id.startsWith("XG7-") && breakerBlocksSameNameRush(player, definitions, unitDefinition.id)) return false;
+
   if (
     isZordDown &&
     usedZordDown &&

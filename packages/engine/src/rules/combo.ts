@@ -1,4 +1,6 @@
 import { tryRm3OnEnterBattle } from "./rm/rm3Effects";
+import { tryXg7OnEnterBattle } from "./xg7/xg7Effects";
+import { xg7BlocksStrike } from "./xg7/xg7Fields";
 import { tryRm2OnEnterBattle } from "./rm/rm2Effects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { tryRk9OnEnterBattle } from "./rk/rk9UnitEffects";
@@ -289,6 +291,8 @@ export function resolveEnterBattleEffectsImpl(
         nextState = tryRm2OnEnterBattle(nextState, playerId, battleCard);
         // RM-047 ダークジェイカー・RM-053 スタッガータンク・RM-054 レッドジャイロ（ライドされて一緒に出たビークルの効果。rules/rm/rm3Effects.ts）。
         nextState = tryRm3OnEnterBattle(nextState, playerId, battleCard);
+        // XG7-024【獣力開花】・XG7-029・XG7-030（コマンドゾーン）・XG7-040（手札）（rules/xg7/xg7Effects.ts）。
+        nextState = tryXg7OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
         if (nextState.pendingEffectChoice) {
           return { state: nextState, logs, enterResumeFrom: resumeAt(1) };
         }
@@ -845,6 +849,8 @@ export function canStrikeUnit(
     if (set8ABlocksStrike(state, playerId, instance)) {
       return false;
     }
+    // XG7-043 ※「これ以外の自軍ユニットがあれば、…ストライクできない。」（rules/xg7/xg7Fields.ts）。
+    if (xg7BlocksStrike(state, playerId, instance)) return false;
     if (instance.activatedNcEffects?.includes("souru_no_strike")) {
       return false;
     }
