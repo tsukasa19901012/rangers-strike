@@ -37,6 +37,7 @@ import {
   pickStrikeReaction,
   pickWinningBattle,
 } from "./helpers";
+import { planComboEntry } from "./comboOrder";
 import { dedupeActions, pickBestByRollout, pickBestBySearch, type SearchOptions } from "./simulation";
 
 export type PickCpuActionOptions = {
@@ -57,6 +58,10 @@ export type PickCpuActionOptions = {
   planChargeTop?: number;
   /** 先読みで進める最大の手数。 */
   planMaxSteps?: number;
+  /** バトルフェイズで NC が成立する順番に出す（1: 今成立する手、2: 先出しも）。 */
+  comboOrder?: number;
+  /** 山札がこの枚数以下で相手より少ないとき、追加ドローをしない。 */
+  deckGuard?: number;
 };
 
 function tacticalSearchOptions(
@@ -214,6 +219,13 @@ function collectRushCandidates(
   if (end) candidates.push(end);
 
   return candidates;
+}
+
+/** 追加ドローで山札切れが早まるか。山札が少なく、相手より先に尽きそうなら引かない。 */
+function avoidBonusDraw(state: GameState, playerId: PlayerId, threshold: number): boolean {
+  const own = state.players[playerId].deck.length;
+  const enemy = state.players[playerId === "player1" ? "player2" : "player1"].deck.length;
+  return own <= threshold && own <= enemy + 1;
 }
 
 /** 手札の同じカードを置く手は結果が同じなので1つずつにする（読みの手間を減らす）。 */
@@ -482,8 +494,8 @@ function pickCpuActionInner(
       const upkeep = actions.find((action) => action.type === "resolve_effect_choice");
       if (upkeep) return upkeep;
       const bonus = actions.find((action) => action.type === "bonus_draw");
-      if (bonus) return bonus;
-      return null;
+      if (bonus && !(options.deckGuard && avoidBonusDraw(state, playerId, options.deckGuard))) return bonus;
+      return actions.find((action) => action.type === "skip_bonus_draw") ?? bonus ?? null;
     }
 
     case "charge": {
@@ -564,6 +576,12 @@ function pickCpuActionInner(
         }
       }
 
+      // NC が成立する並べ方の最初の 1 体（comboOrder: 1 = 今成立する手だけ、2 = 後の NC のための先出しも）。
+      if (options.comboOrder) {
+        const plan = planComboEntry(state, playerId, actions);
+        if (plan && (plan.triggersNow || options.comboOrder >= 2)) return plan.move;
+      }
+
       if (enableSearch) {
         // 出なければならないユニットは上の pickMandatoryBattleMove で見て無かった（同じ状態・同じ合法手なので調べ直さない）。
         let candidates = collectBattleCandidates(state, playerId, actions);
@@ -578,9 +596,10 @@ function pickCpuActionInner(
         if (best) return best;
       }
 
-      const player = state.players[playerId];
       const moveToBattle = actionsOfType(actions, "move_to_battle");
-      if (moveToBattle.length > 0 && player.battle.length === 0) {
+      // ストライクで点を取るには、出せるユニットはすべて出す（以前はバトルエリアが空のときだけで、
+      // 1ターンに1体しか出ず NC が成立しないまま山札切れで終わっていた）。
+      if (moveToBattle.length > 0) {
         return pickBestBattleEntry(state, playerId, actions);
       }
 
