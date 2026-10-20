@@ -31,6 +31,21 @@ describe("AppController", () => {
     expect(logs.some((l) => l.startsWith("cpu move="))).toBe(true);
   });
 
+  it("plays CPU-vs-CPU matches on its own when an autoplay request is stored", () => {
+    const platform = testPlatform();
+    platform.storage.set("rs.autoplay.v1", JSON.stringify({ games: 2, humanLevel: 1, cpuLevel: 2 }));
+    const app = new AppController({ platform, viewport: { width: 480, height: 272 }, cpuDelayFrames: 0, seed: () => 7 });
+    for (let frame = 0; frame < 60000; frame++) {
+      app.tick();
+      if (JSON.parse(platform.storage.get("rs.autoplay.v1")!).games === 0 && app.currentScreen === "result") break;
+    }
+    const records = JSON.parse(platform.storage.get("rs.records.v1")!);
+    expect(records).toHaveLength(2);
+    expect(records[0]).toMatchObject({ autoLevel: 1, cpuLevel: 2 });
+    expect(records[0].maxThinkMs).toBeGreaterThan(0);
+    expect(JSON.parse(platform.storage.get("rs.autoplay.v1")!).games).toBe(0);
+  });
+
   it("keeps every rendered line inside its pane width", () => {
     const app = new AppController({ platform: testPlatform(), viewport: { width: 480, height: 272 }, cpuDelayFrames: 0, seed: () => 9 });
     app.dispatch(input.select(3, true));

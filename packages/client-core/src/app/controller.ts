@@ -5,7 +5,7 @@ import type { CpuLevel, EngineApi } from "../engineApi";
 import { HUMAN } from "../engineApi";
 import { ListCursor, type LogicalInput } from "../input/actions";
 import type { Platform } from "../platform/interfaces";
-import { SettingsStore, type Settings } from "../platform/settings";
+import { SettingsStore, type AutoplayRequest, type Settings } from "../platform/settings";
 import { GameSession } from "../session/session";
 import { PLAYER_LABELS } from "../text/labels";
 import { fitLine, wrapText, type WrapOptions } from "../text/wrap";
@@ -80,6 +80,8 @@ export class AppController {
   private readonly cardArt: boolean;
   private gui: GuiMatch | null = null;
   private builder: DeckBuilder | null = null;
+  private autoplay: AutoplayRequest | null = null;
+  private autoplayWait = 0;
 
   constructor(options: ControllerOptions) {
     this.platform = options.platform;
@@ -108,6 +110,8 @@ export class AppController {
     } else {
       this.setEngine(loaded);
     }
+    // Read once at boot: storage reads can be slow on the device.
+    this.autoplay = this.settingsStore.autoplay();
     this.resetCursor();
   }
 
@@ -296,7 +300,8 @@ export class AppController {
         humanCards: human.cards,
         cpuCards: cpu.cards,
         seed: this.seed(),
-        cpuLevel: this.settings.cpuLevel as CpuLevel,
+        cpuLevel: (this.autoplay?.cpuLevel ?? this.settings.cpuLevel) as CpuLevel,
+        humanLevel: this.autoplay ? ((this.autoplay.humanLevel ?? 2) as CpuLevel) : undefined,
         clock: this.platform.clock,
         memory: this.platform.memory,
         log: this.platform.log,
@@ -321,6 +326,14 @@ export class AppController {
 
   /** Call once per frame. Runs at most one CPU move per call. Returns true if the view changed. */
   tick(): boolean {
+    if (this.screen === "title" || this.screen === "result") {
+      // Autoplay (measurement): start the next CPU-vs-CPU match on its own.
+      if (this.autoplay && this.engine && ++this.autoplayWait > 60) {
+        this.autoplayWait = 0;
+        this.startMatch();
+        return true;
+      }
+    }
     if (this.builder && this.screen === "deck") {
       const changed = this.builder.frame();
       if (changed) this.touch();
@@ -356,7 +369,15 @@ export class AppController {
       turns: session.state.turn,
       cpuMoves: session.metrics.moves,
       avgThinkMs: Math.round(session.metrics.avgThinkMs * 10) / 10,
+      maxThinkMs: Math.round(session.metrics.maxThinkMs),
+      cpuLevel: session.options.cpuLevel,
+      ...(session.options.humanLevel ? { autoLevel: session.options.humanLevel } : {}),
     });
+    if (session.options.humanLevel) {
+      const request = this.settingsStore.autoplay();
+      if (request) this.settingsStore.saveAutoplay({ ...request, games: request.games - 1 });
+      this.autoplay = this.settingsStore.autoplay();
+    }
     this.tab = 1;
     this.resetCursor();
     this.touch();

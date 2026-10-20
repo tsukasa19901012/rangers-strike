@@ -29,6 +29,8 @@ export type SessionOptions = {
   cpuDeck: string;
   seed: number;
   cpuLevel: CpuLevel;
+  /** Autoplay (measurement): the human side is played by the CPU at this level. */
+  humanLevel?: CpuLevel;
   /** Card lists of custom decks; when set they replace the starter ids above. */
   humanCards?: GameState["definitions"][string][];
   cpuCards?: GameState["definitions"][string][];
@@ -87,6 +89,7 @@ export class GameSession {
   turnOwner(): "human" | "cpu" | "none" {
     if (this.state.winner) return "none";
     if (this.engine.isCpuTurn(this.state, CPU)) return "cpu";
+    if (this.options.humanLevel) return this.engine.getLegalActions(this.state).length > 0 ? "cpu" : "none";
     if (this.humanOptions().length > 0) return "human";
     // Engine has legal actions but none belongs to the human: let the CPU
     // policy resolve the step for whoever acts (keeps the match moving).
@@ -149,7 +152,7 @@ export class GameSession {
     const t0 = this.options.clock();
     let action =
       this.loopBreakAction(actor) ??
-      engine.pickCpuAction(this.state, actor, this.options.cpuLevel) ??
+      engine.pickCpuAction(this.state, actor, actor === HUMAN && this.options.humanLevel ? this.options.humanLevel : this.options.cpuLevel) ??
       engine.pickCpuFallbackAction(this.state, actor);
     const t1 = this.options.clock();
     let result = action ? engine.applyAction(this.state, action) : null;
@@ -179,6 +182,11 @@ export class GameSession {
     const label = describeAction(this.state, action);
     const think = t1 - t0;
     const m = this.metrics;
+    if (actor === HUMAN && this.options.humanLevel) {
+      // Autoplay: only the CPU side's thinking is measured.
+      this.commit(result.state);
+      return { ok: true, label: `${PLAYER_LABELS[actor]}: ${label}` };
+    }
     m.moves++;
     m.lastThinkMs = think;
     m.lastApplyMs = t2 - t1;
