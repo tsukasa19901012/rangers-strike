@@ -13,7 +13,7 @@ import {
 } from "../core/catalog";
 import { spBecomesInZone } from "./fractionalSp";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
-import { collectPowerIds, openEffectChoice } from "./pendingChoices";
+import { openEffectChoice } from "./pendingChoices";
 
 const BIG_BATON_FEATURES = ["レッド", "ブルー", "グリーン", "ピンク"] as const;
 
@@ -286,7 +286,9 @@ export function startDestroyPowerMatchOnRush(
   state: GameState,
   ctx: GrantKeywordContext,
 ): GameState | null {
-  const valid = collectPowerIds(state, ctx.playerId);
+  // XP-003・SR-005 デカレッドバトライザー【バトライズファイヤードライブ】は、ウラ向き（ダメージ）のカードも選べる
+  // （利用者の決定 2026-10-20、docs/verification/unverified/questions-all.md U-5）。
+  const valid = state.players[ctx.playerId].power.map((c) => c.instanceId);
   if (valid.length === 0) return null;
   return openEffectChoice(state, {
     playerId: ctx.playerId,

@@ -57,8 +57,9 @@ const OOO = sUnit("SPEC-OOO", { category: "WB", bp: 1000, features: ["仮面ラ�
 const RIDER_D = sUnit("SPEC-RIDER-D", { category: "WB", bp: 1000, features: ["ミラーライダー"] });
 const MULTI_CMD = sUnit("SPEC-MULTI-CMD", { category: ["WB", "OT"] as never, bp: 1000 });
 const MA_MULTI = sUnit("SPEC-MA-MULTI", { category: ["MA", "WB"] as never, bp: 1000 });
+const MA_OT_MULTI = sUnit("SPEC-MA-OT", { category: ["MA", "OT"] as never, bp: 1000 });
 const L_UNIT = sUnit("SPEC-L", { size: "L", bp: 9000 } as never);
-const EXTRA = [ENEMY0, E55, E45, WD, PIRATE, RED, OOO, RIDER_D, MULTI_CMD, MA_MULTI, L_UNIT];
+const EXTRA = [ENEMY0, E55, E45, WD, PIRATE, RED, OOO, RIDER_D, MULTI_CMD, MA_MULTI, MA_OT_MULTI, L_UNIT];
 
 // ===========================================================================
 describe("XP-027 ダイノミッション", () => {
@@ -184,6 +185,22 @@ describe("XP-028 ワンダーゴセイグレート", () => {
 
   it("XP-028: 公式Q&A — MA だけを持つコマンドと、MA を含むマルチカテゴリのコマンドをホールドして発動できる（出典: atwiki/page-2369 Q1「はい、できます。」。atwiki の注釈は公式コラム vol44 により発動できないとする — XP-questions.md）", () => {
     expect(summonOffered(afterEnemyOp("TST-OP", [...releasedCat("MA", 1), released("SPEC-MA-MULTI", "mm")]))).toBe(true);
+  });
+
+  it("XP-028: 【サモン・ワンダーパワー】MA と OT のコマンド（1つずつ）で発動できる（出典: atwiki/page-2369「MAとMA以外の自軍コマンドを1つずつ」）", () => {
+    expect(summonOffered(afterEnemyOp("TST-OP", [...releasedCat("MA", 1), ...releasedCat("OT", 1)]))).toBe(true);
+  });
+
+  it("XP-028: 【サモン・ワンダーパワー】WB と OT のコマンドだけ（MA がない）なら発動できない（出典: atwiki/page-2369「MAとMA以外の自軍コマンド」）", () => {
+    expect(summonOffered(afterEnemyOp("TST-OP", [...releasedCat("WB", 1), ...releasedCat("OT", 1)]))).toBe(false);
+  });
+
+  it("XP-028: 【サモン・ワンダーパワー】MA／OT のマルチカテゴリ1枚と OT のコマンドで発動できる（マルチカテゴリを MA として数える）（出典: atwiki/page-2369 Q1）", () => {
+    expect(summonOffered(afterEnemyOp("TST-OP", [released("SPEC-MA-OT", "mo"), ...releasedCat("OT", 1)]))).toBe(true);
+  });
+
+  it("XP-028: 【サモン・ワンダーパワー】MA／OT のマルチカテゴリ1枚だけでは発動できない（コマンドを「1つずつ」、2つホールドする）（出典: atwiki/page-2369「1つずつホールドして」）", () => {
+    expect(summonOffered(afterEnemyOp("TST-OP", [released("SPEC-MA-OT", "mo")]))).toBe(false);
   });
 
   it.todo("XP-028: 【サモン・ワンダーパワー】そうしたとき、敵軍捨札からオペレーションを1枚選び、持ち主のパワーゾーンにダメージにして置いてもよい（出典: atwiki/page-2369）— 発動そのものが合法手に出ない（既知の不具合 CARD-XP-028）ため、その後の手順を組めない");

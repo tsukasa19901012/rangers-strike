@@ -241,6 +241,22 @@ describe("XP-003 デカレッドバトライザー", () => {
     expect(canSkip(s)).toBe(true);
   });
 
+  it("XP-003: 【バトライズファイヤードライブ】自軍パワーゾーンのウラ向きのカード（ダメージ）も選べ、捨札にすればダメージが1減り、その必要パワーの数字（1）の敵軍 S ユニットを撃破できる（出典: 利用者の決定 2026-10-20・questions-all.md U-5「XP-003 だけは裏向きも選べる」）", () => {
+    const r = rushFromHand(rushBoardOf({ power: [faceUpPower("RS-106", "p3"), { ...inst("RS-107", "dn"), faceDown: true }, ...powerCards(3)], damage: 1 }, { rush: [inst("RS-106", "e3"), inst("RS-107", "e1")] }), "player1", "XP-003:bz", { materials: ["RS-106:red", "RS-404:k9"] });
+    expect(r.ok).toBe(true);
+    let s = settle(r.state);
+    expectChoiceFrom(s, "player1", "XP-003");
+    expect(choiceIds(s)).toContain("RS-106:p3");
+    expect(choiceIds(s)).toContain("RS-107:dn");
+    const damageBefore = s.players.player1.damage;
+    s = pick(s, "RS-107:dn");
+    expect(zoneOf(s, "player1", "RS-107:dn")).toBe("discard");
+    expect(s.players.player1.damage).toBe(damageBefore - 1);
+    expect(choiceIds(s)).toEqual(["RS-107:e1"]);
+    s = resolveAll(pick(s, "RS-107:e1"));
+    expect(zoneOf(s, "player2", "RS-107:e1")).toBe("discard");
+  });
+
   it("XP-003: 【バトライズファイヤードライブ】捨札にしたカード（必要パワー3）と同じ必要パワーの数字の敵軍 S ユニットだけを選び、撃破する（出典: atwiki/page-1539「捨札にしたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍Sユニットを1体選び、撃破する」）", () => {
     let s = pick(fired(), "RS-106:p3");
     expect(zoneOf(s, "player1", "RS-106:p3")).toBe("discard");

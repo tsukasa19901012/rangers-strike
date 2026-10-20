@@ -148,6 +148,18 @@ describe("XG1-002 デンジレッド", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG1-002");
   });
 
+  it("XG1-002: 常駐1枚＋それに重ねた1枚で「常駐置き場にカードが2枚」となり発動する（重ねたカードも数える。どちらも選べる）（出典: 利用者の決定 2026-10-20・questions-all.md U-8「常駐1枚＋重ねた1枚を「2枚」と数える」）", () => {
+    const s = nc([resident("TST-OP", "res", [inst("TST-OP", "st")])]);
+    expectChoiceFrom(s, "player1", "XG1-002");
+    expect(choiceIds(s).sort()).toEqual(["TST-OP:res", "TST-OP:st"].sort());
+  });
+
+  it("XG1-002: タッグの常駐も常駐置き場のカードとして数える — タッグ2枚（RK-242・PK-011 クライマックス刑事）で2枚になり発動する（出典: 利用者の決定 2026-10-20・questions-all.md U-8「タッグ常駐も数える」・R-KW-TAG-01）", () => {
+    const s = nc([inst("RK-242", "t1"), inst("PK-011", "t2")]);
+    expectChoiceFrom(s, "player1", "XG1-002");
+    expect(choiceIds(s).sort()).toEqual(["PK-011:t2", "RK-242:t1"].sort());
+  });
+
   it("XG1-002: 常駐に重ねられたウラ向きのカードも「常駐置き場のカード」としてウラ向きのまま選べ、選べば持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（既知の不具合: CARD-XG1-002 重ねたウラ向きのカードが候補にない）（出典: atwiki/page-1597「（ウラ向きのカードはウラ向きのまま選ぶ）」「選んだカードがウラ向きだったなら、ダメージにして置く」・カード評価「カードをウラ向きで重ねる常駐オペレーションは闇の戒律やゲゲル、クロックアップなど」）", () => {
     const s0 = nc([resident("TST-OP", "res", [faceDown("TST-OP", "fd")]), inst("XG1-015", "o1")]);
     expect(choiceIds(s0)).toContain("TST-OP:fd");

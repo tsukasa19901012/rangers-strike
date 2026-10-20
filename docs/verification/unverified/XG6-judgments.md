@@ -209,3 +209,9 @@ XG6 のカードは grnrngr の公式 FAQ に項がありません（同名の�
 - rules/legend1/set8NamedEffectsD.ts: 「アタックされない」の BP 制限の判定で XG6-052 の無効化を見る。
 - core/catalog.ts effectiveCommandCategories: このターンに追加されたカテゴリ（XG6-060）を足す。
 - rules/battleEntry.ts・rules/onRushUnitEffects.ts・core/applyAction.ts・rules/legend3/restrictions.ts・rules/operationCounters.ts: XG6 の入口を足した（ほかのカードの動きは変えない）。
+
+## 利用者の回答の反映（2026-10-20、questions-all.md U-5）
+
+| カード | 問い | 決めたこと | 理由 | 別の案 |
+|---|---|---|---|---|
+| XG6-044 | パワーゾーンのウラ向きの「テディ」を出せるか | 出せない（テストを足した。処理は前から同じ） | 利用者の回答（U-5） | ウラ向きも選べる |

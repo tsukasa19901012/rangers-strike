@@ -275,6 +275,18 @@ describe("XG7-021 デカピンク×デカイエロー", () => {
     expect(canSkip(s)).toBe(true);
   });
 
+  it("XG7-021: 【ガールズ・イン・トラブル！】自軍パワーゾーンのウラ向きの S ユニットのカードは選べない（出典: 利用者の決定 2026-10-20・questions-all.md U-5「オモテ向きのカード前提」）", () => {
+    const s = nc("XG7-021:dk", 3, { power: [inst("SPEC-C2", "own2"), { ...inst("SPEC-C2", "down"), faceDown: true }, ...powerCards(2)] }, { power: [inst("SPEC-C2", "e2"), ...powerCards(1, "ep")] });
+    expectChoiceFrom(s, "player1", "XG7-021");
+    expect(choiceIds(s)).toEqual(["SPEC-C2:own2"]);
+  });
+
+  it("XG7-021: 【ガールズ・イン・トラブル！】相手も、自分のパワーゾーンのウラ向きのカードは選べない（出典: 利用者の決定 2026-10-20・questions-all.md U-5「オモテ向きのカード前提」）", () => {
+    const s = resolveAll(pick(nc("XG7-021:dk", 3, { power: [inst("SPEC-C2", "own2"), ...powerCards(2)] }, { power: [{ ...inst("SPEC-C2", "edown"), faceDown: true }, inst("SPEC-C2", "e2"), ...powerCards(1, "ep")] }), "SPEC-C2:own2"), ["SPEC-C2:e2"]);
+    expect(zoneOf(s, "player2", "SPEC-C2:edown")).toBe("power");
+    expect(zoneOf(s, "player2", "SPEC-C2:e2")).toBe("hand");
+  });
+
   it("XG7-021: 【ガールズ・イン・トラブル！】選んだカードは手札へ。相手は自分のパワーゾーンの、同じ必要パワーの数字（2）を持つ S ユニットのカードを1枚選び手札に加える（見送れない）（出典: atwiki/page-2389「相手は、自分自身のパワーゾーンから、そのカードと同じ必要パワーの数字を持つSユニットのカードを1枚選び、手札に加える」）", () => {
     let s = pick(girls(), "SPEC-C2:own2");
     expect(zoneOf(s, "player1", "SPEC-C2:own2")).toBe("hand");

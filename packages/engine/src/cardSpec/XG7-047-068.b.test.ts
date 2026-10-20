@@ -303,6 +303,10 @@ describe("XG7-060 ドデカブタック", () => {
     expect(canStartRush(board(powerCards(5)), "player1", "XG7-060:dk")).toBe(false);
   });
 
+  it("XG7-060: 追加条件 — カード名に「SM」を含む自軍パワーがウラ向き（ダメージ）だけなら満たさない（出典: 利用者の決定 2026-10-20・questions-all.md U-5「オモテ向きのカード前提」）", () => {
+    expect(canStartRush(board([{ ...inst("XG7-063", "smd"), faceDown: true }, ...powerCards(5)]), "player1", "XG7-060:dk")).toBe(false);
+  });
+
   const piece = () =>
     rushFromHand(board([SM, { ...inst("TST-OP", "dop"), faceDown: true }, { ...inst("SPEC-PLAIN", "dun"), faceDown: true }, ...powerCards(2)]), "player1", "XG7-060:dk").state;
 
@@ -351,6 +355,10 @@ describe("XG7-061 トンデモジョーズ", () => {
 
   const piece = () =>
     rushFromHand(board([SM, ...powerCards(5)], { power: [inst("TST-OP", "eop"), inst("SPEC-PLAIN", "eun"), { ...inst("TST-OP", "edn"), faceDown: true }] }), "player1", "XG7-061:tj").state;
+
+  it("XG7-061: 追加条件 — カード名に「SM」を含む自軍パワーがウラ向き（ダメージ）だけなら満たさない（出典: 利用者の決定 2026-10-20・questions-all.md U-5「オモテ向きのカード前提」）", () => {
+    expect(canStartRush(board([{ ...inst("XG7-063", "smd"), faceDown: true }, ...powerCards(5)]), "player1", "XG7-061:tj")).toBe(false);
+  });
 
   it("XG7-061: 【蠍座のスターピース】ラッシュしたとき、敵軍パワーゾーンのオモテ向きのカードから1枚選べる（任意。ウラ向きは選べない）（出典: atwiki/page-2410「敵軍パワーゾーンからオモテ向きのカードを1枚選び、捨札にしてもよい」）", () => {
     const s = piece();

@@ -393,6 +393,13 @@ describe("XG6-044 仮面ライダーNEW電王SF", () => {
     expect(zoneOf(s, "player1", "XG6-045:td")).toBe("rush");
   });
 
+  it(`XG6-044: ※ 自軍パワーゾーンのウラ向きの「テディ」は選べない（出典: 利用者の決定 2026-10-20・questions-all.md U-5「オモテ向きのカード前提」）`, () => {
+    const r = rushFromHand(rushBoard({ hand: [inst("XG6-044", "sf")], command: releasedCat("OT", 1), power: [{ ...inst("XG6-045", "td"), faceDown: true }, ...powerCards(3)] }, {}, EXTRA), "player1", "XG6-044:sf");
+    expect(r.ok, r.error).toBe(true);
+    const s = resolveAll(r.state);
+    expect(zoneOf(s, "player1", "XG6-045:td")).toBe("power");
+  });
+
   it(
     `XG6-044: ※ 「テディ」を出すかは選べる（出さない選び方がある）（出典: ${PAGE}「出してもよい」）`,
     () => {

@@ -283,3 +283,9 @@ XG2 のカードには grnrngr の公式 FAQ の項がありません（XG2 の�
 - rules/rk/rk1NamedEffects.ts: rk1GrantRcWithoutRideOff を足しただけ（RK-017 の動きは変わらない）。
 - rules/xg2/xg2dEffects.ts: 場の起動効果をカードごとに登録する形にした（XG2-068 の動きは同じ。自軍ラッシュフェイズのターンプレイヤーだけ）。
 - 新しい xg2 の判定を1行ずつ: rules/rm/rm2Fields.ts・core/legalActions.ts（XG2-082 をビークルとして扱う）、rules/restrictions.ts（XG2-082 はライドされずに出られない）、rules/startPhase.ts（XG2-099）。
+
+## 利用者の回答の反映（2026-10-20、questions-all.md U-8）
+
+| カード | 問い | 決めたこと | 理由 | 別の案 |
+|---|---|---|---|---|
+| XG2-065 | 常駐置き場の枚数にタッグの常駐を数えるか | 数える（タッグ2枚＋重ねた3枚で5枚）。テストを足した。処理は前から同じ | 利用者の回答（U-8） | — |

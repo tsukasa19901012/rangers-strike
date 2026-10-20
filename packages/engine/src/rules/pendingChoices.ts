@@ -5148,7 +5148,9 @@ export function applyEffectChoiceSelect(
       let nextPlayer = {
         ...player,
         power: player.power.filter((c) => !discardIds.has(c.instanceId)),
-        discard: [...player.discard, ...toDiscard],
+        discard: [...player.discard, ...toDiscard.map(({ faceDown: _faceDown, ...card }) => card)],
+        // ウラ向き（ダメージ）のカードが捨札になれば、ダメージはその分減る。
+        damage: Math.max(0, player.damage - toDiscard.filter((c) => c.faceDown).length),
       };
 
       if (pending.effectId === "battle_entry_power_discard") {

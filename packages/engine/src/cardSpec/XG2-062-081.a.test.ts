@@ -283,6 +283,11 @@ describe("XG2-065 仮面ライダーカブトHF", () => {
   it("XG2-065: 【ハイパークロックアップ】常駐オペレーションに重ねたカードも常駐置き場のカードとして数える（常駐1枚＋重ねた4枚で5枚）（出典: atwiki/page-895 カード評価「クロックアップで重ねるカードを稼ぎやすい」・XG2-questions Q6）", () => {
     expect(attacked([resident("TST-OP", "res", [inst("TST-OP", "a"), inst("TST-OP", "b"), inst("TST-OP", "c"), inst("TST-OP", "d")])])).toEqual([]);
   });
+
+  it("XG2-065: 【ハイパークロックアップ】タッグの常駐も数える — タッグ2枚（RK-242・PK-011）＋重ねた3枚で5枚ならアタックされず、重ねたのが2枚（4枚）ならアタックされる（出典: 利用者の決定 2026-10-20・questions-all.md U-8「タッグ常駐も数える」・R-KW-TAG-01）", () => {
+    expect(attacked([resident("RK-242", "t1", [inst("TST-OP", "a"), inst("TST-OP", "b")]), resident("PK-011", "t2", [inst("TST-OP", "c")])])).toEqual([]);
+    expect(attacked([resident("RK-242", "t1", [inst("TST-OP", "a")]), resident("PK-011", "t2", [inst("TST-OP", "c")])])).toEqual(["XG2-065:hf"]);
+  });
 });
 
 // ===========================================================================
