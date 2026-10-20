@@ -59,6 +59,14 @@ import {
   zordDownTests,
   zoneOf,
   choicePlayer,
+  attack,
+  canWing,
+  mount,
+  passEntry,
+  rcUnit,
+  rideOff,
+  ridingPair,
+  settle,
 } from "./XG6-023-044.helpers";
 
 const VEH = vehicleCard("SPEC-VEH");
@@ -139,6 +147,203 @@ describe("XG6-037 仮面ライダーアクセル", () => {
     s = enter(s, "XG6-037:ac");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
     expect(choiceIds(s)).toEqual(["TST-OP:h0", "TST-OP:h1", "TST-OP:h2"]);
+  });
+
+  // 利用者の依頼（2026-10-20・XG6-037_写せるSビークル効果.md の A）: 写したビークルの効果名を持つテキストのうち、使ったターンに意味があるものも働く。
+  // これは選んだビークルとして、そのビークルの効果名を持つテキストの判定に一致する（rules/xg6/xg6dFields.ts isSameVehicleTextIdentity）。
+  const REQ = "（出典: 利用者の依頼 2026-10-20・XG6-037_写せるSビークル効果.md）";
+  const RC37 = rcUnit("SPEC-RC37", { bp: 2000, features: ["仮面ライダー"] });
+  const RC50 = rcUnit("SPEC-RC50", { bp: 5000 });
+  const MECHA37 = rcUnit("SPEC-MECHA37", { bp: 1000, features: ["メカ"] });
+  const E_DEFS = [
+    sUnit("SPEC-E2000", { bp: 2000 }),
+    sUnit("SPEC-E4000", { bp: 4000 }),
+    sUnit("SPEC-E13000", { bp: 13000 }),
+    sUnit("SPEC-E1", { bp: 1000, powerCost: 1 }),
+  ];
+  const REQ_EXTRA = [...EXTRA, RC37, RC50, MECHA37, ...E_DEFS];
+  /**
+   * ラッシュエリアの src（写すビークル。既定は敵軍。ownSrc なら自軍）を【振り切るぜ】で選び、rider をこれにライドさせてバトルエリアに出す（ライドオフしない）。
+   * ※ブレイカーを持つビークル（XG7-031）は敵軍の効果に選ばれないので、自軍のものを写す。
+   */
+  const ridingCopy = (
+    src: string,
+    rider: CardInstance,
+    p1: Partial<GameState["players"]["player1"]> = {},
+    p2: Partial<GameState["players"]["player2"]> = {},
+    ownSrc = false,
+  ): GameState => {
+    const source = inst(src, "src");
+    let s = p1Battle(
+      { ...p1, rush: [inst("XG6-037", "ac"), rider, ...(p1.rush ?? []), ...(ownSrc ? [source] : [])] },
+      { ...p2, rush: [...(ownSrc ? [] : [source]), ...(p2.rush ?? [])] },
+      REQ_EXTRA,
+    );
+    s = pick(furikiru(s), `${src}:src`);
+    s = mount(s, rider.instanceId, "XG6-037:ac");
+    if (s.pendingEffectChoice) s = resolveAll(s);
+    return rideOff(s, false);
+  };
+
+  it(`XG6-037: 【振り切るぜ】XG7-031【サイクロンアタック】を写すと、これにライドしているユニットは BP+1000 される（※のクロス・※ブレイカーは写さない）${REQ}`, () => {
+    const s = ridingCopy("XG7-031", inst("SPEC-RC37", "r"), {}, {}, true);
+    expect(zoneOf(s, "player1", "SPEC-RC37:r")).toBe("battle");
+    expect(bpOf(s, "player1", "SPEC-RC37:r")).toBe(3000);
+  });
+
+  it(`XG6-037: 【振り切るぜ】写したテキストは、ライドしているユニットだけに働く（ライドしていない自軍ユニットは BP そのまま）${REQ}`, () => {
+    let s = p1Battle({ rush: [inst("XG6-037", "ac"), inst("SPEC-RC37", "r"), inst("XG7-031", "src")] }, {}, REQ_EXTRA);
+    s = pick(furikiru(s), "XG7-031:src");
+    s = enter(s, "XG6-037:ac");
+    s = resolveAll(s);
+    s = enter(passEntry(s), "SPEC-RC37:r");
+    expect(bpOf(s, "player1", "SPEC-RC37:r")).toBe(2000);
+  });
+
+  it(`XG6-037: 【振り切るぜ】RS-393【アタッカーポッド】を写すと、ライドされたままのこれからコンビネーションする CN5 のゴーグリーンは2番目で NC が成立する${REQ}`, () => {
+    let s = ridingCopy("RS-393", inst("SPEC-RC37", "r"), { rush: [inst("RS-390", "n")] });
+    s = enter(passEntry(s), "RS-390:n");
+    expect(spOf(s, "player1", "RS-390:n")).toBe(1);
+  });
+
+  it(`XG6-037: 【振り切るぜ】XG3-077【ファイナルアタックライド】を写すと、ライドされたままのこれからコンビネーションする S ユニットは敵軍ラッシュエリアのユニットにアタックできる${REQ}`, () => {
+    let s = ridingCopy("XG3-077", inst("SPEC-RC37", "r"), { rush: [inst("TST-UNIT-0", "nx")] }, { battle: [inst("TST-UNIT-0", "e")], rush: [inst("TST-UNIT-0", "er")] });
+    s = enter(passEntry(s), "TST-UNIT-0:nx");
+    expect(attackTargets(s, "TST-UNIT-0:nx")).toContain("TST-UNIT-0:er");
+  });
+
+  it(`XG6-037: 【振り切るぜ】XG1-063【トルネードチェイサー】を写すと、ライドしたユニットがある間に手札のカードが捨札に置かれたとき、敵軍コマンドを1つホールドできる${REQ}`, () => {
+    let s = ridingCopy("XG1-063", inst("SPEC-RC37", "r"), { rush: [inst("RS-165", "rk")], hand: [inst("TST-OP", "h1"), inst("TST-OP", "h2")] }, { command: releasedCat("WB", 2, "ec") });
+    s = enter(passEntry(s), "RS-165:rk");
+    s = resolveAll(s, ["TST-OP:h1", "TST-OP:h2", "accept", "TST-OP:ec0", "TST-OP:ec1"]);
+    expect(zoneOf(s, "player1", "TST-OP:h1")).toBe("discard");
+    expect(s.players.player2.command.filter((c) => c.commandHeld).length).toBeGreaterThan(0);
+  });
+
+  it(`XG6-037: 【振り切るぜ】XG4-050【後部バルカン砲】を写すと、ライドされたままバトルエリアからラッシュエリアに戻るとき（RK-026 がんがんじいで戻す）、敵軍バトルエリアの BP3000 の S ユニットを撃破できる${REQ}`, () => {
+    let s = ridingCopy("XG4-050", inst("SPEC-RC37", "r"), { rush: [inst("RK-026", "gg")] }, { battle: [inst("SPEC-ABC", "e3")] });
+    s = enter(passEntry(s), "RK-026:gg");
+    s = pick(s, "SPEC-RC37:r");
+    expect(zoneOf(s, "player1", "XG6-037:ac")).toBe("rush");
+    expectChoiceFrom(s, "player1", "XG4-050");
+    expect(choiceIds(s)).toEqual(["SPEC-ABC:e3"]);
+    s = resolveAll(pick(s, "SPEC-ABC:e3"));
+    expect(zoneOf(s, "player2", "SPEC-ABC:e3")).toBe("discard");
+  });
+
+  it(`XG6-037: 【振り切るぜ】RK-109【自己修復能力】を写すと、ホールド状態のユニットがこれにライドするとき、そのユニットをリリースできる${REQ}`, () => {
+    let s = p1Battle({ rush: [inst("XG6-037", "ac"), { ...inst("SPEC-RC37", "h"), commandHeld: true }] }, { rush: [inst("RK-109", "src")] }, REQ_EXTRA);
+    s = pick(furikiru(s), "RK-109:src");
+    s = mount(s, "SPEC-RC37:h", "XG6-037:ac");
+    expectChoiceFrom(s, "player1", "RK-109");
+    s = accept(s);
+    expect(s.players.player1.battle.find((c) => c.instanceId === "SPEC-RC37:h")?.commandHeld ?? false).toBe(false);
+  });
+
+  it(`XG6-037: 【振り切るぜ】RK-182【Zブリンガーアタック】を写すと、これにライドしているユニットがアタックするとき、敵軍ユニットの BP を本来の値としてバトルする${REQ}`, () => {
+    let s = ridingCopy("RK-182", inst("SPEC-RC50", "r"), {}, { battle: [{ ...inst("SPEC-E2000", "boost"), bpModifier: 4000 }] });
+    expect(bpOf(s, "player2", "SPEC-E2000:boost")).toBe(6000);
+    s = resolveAll(attack(settle(s), "SPEC-RC50:r", "SPEC-E2000:boost"));
+    expect(zoneOf(s, "player2", "SPEC-E2000:boost")).toBe("discard");
+  });
+
+  it(`XG6-037: 【振り切るぜ】XG4-065【飛行】を写すと、これにライドしているユニットは「ウイング」を得る（ラッシュエリアでライドしている間）${REQ}`, () => {
+    let s = p1Battle({ rush: [inst("XG6-037", "ac"), inst("SPEC-RC37", "r")] }, { rush: [inst("XG4-065", "src")], battle: [inst("SPEC-E1", "e")] }, REQ_EXTRA);
+    s = pick(furikiru(s), "XG4-065:src");
+    expect(canWing(s, "SPEC-RC37:r")).toBe(false);
+    s = { ...s, players: { ...s.players, player1: { ...s.players.player1, rush: s.players.player1.rush.map((c) => (c.instanceId === "SPEC-RC37:r" ? { ...c, mountedOnInstanceId: "XG6-037:ac" } : c)) } } };
+    expect(canWing(s, "SPEC-RC37:r")).toBe(true);
+  });
+
+  it(`XG6-037: 【振り切るぜ】XG4-099【バリア】を写すと、これにライドしている「メカ」のユニットは「レジスト」を得る（自軍ターンのバトルで撃破されたとき）${REQ}`, () => {
+    let s = ridingCopy("XG4-099", inst("SPEC-MECHA37", "m"), {}, { battle: [inst("SPEC-E13000", "big")] });
+    s = attack(settle(s), "SPEC-MECHA37:m", "SPEC-E13000:big");
+    for (let i = 0; i < 6 && !registerOffered(s); i++) {
+      const pass = legal(s).find((a) => a.type === "pass_battle_reaction" || a.type === "pass_leave_reaction");
+      if (!pass) break;
+      s = act(s, pass);
+    }
+    expect(registerOffered(s)).toBe(true);
+  });
+
+  it(`XG6-037: 【振り切るぜ】RK-120【ニーラーシャトル】を写すと、ライドされたままのこれからコンビネーションする RC のユニット（RK-105）は、ライドオフしなくても RC の効果を発動できる${REQ}`, () => {
+    let s = ridingCopy("RK-120", inst("SPEC-RC37", "r"), { rush: [inst("RK-105", "sf")] }, { battle: [inst("SPEC-E1", "e")] });
+    s = enter(passEntry(s), "RK-105:sf");
+    expectChoiceFrom(s, "player1", "RK-105");
+  });
+
+  it(`XG6-037: 【振り切るぜ】RK-301【エクステンドライダー落とし】を写すと、ライドされている「カブトエクステンダー」からこれがコンビネーションしたとき、本来の BP が8000以下の敵軍ユニットを選べる${REQ}`, () => {
+    let s = p1Battle(
+      { battle: ridingPair("SPEC-RC37", "r1", "RK-300", "ke"), rush: [inst("XG6-037", "ac"), inst("SPEC-RC50", "r2")] },
+      { rush: [inst("RK-301", "src")], battle: [inst("SPEC-E2000", "e")] },
+      REQ_EXTRA,
+    );
+    s = pick(furikiru(s), "RK-301:src");
+    s = mount(s, "SPEC-RC50:r2", "XG6-037:ac");
+    expectChoiceFrom(s, "player1", "RK-301");
+    expect(choiceIds(s)).toContain("SPEC-E2000:e");
+    s = resolveAll(pick(s, "SPEC-E2000:e"));
+    expect(zoneOf(s, "player2", "SPEC-E2000:e")).toBe("power");
+  });
+
+  it(`XG6-037: 【振り切るぜ】RK-129【サンダースペイダー】を写すと、ライドしたユニットがある間に手札のカードが捨札に置かれたとき、ホールド状態の敵軍ユニットを撃破できる${REQ}`, () => {
+    let s = ridingCopy(
+      "RK-129",
+      inst("SPEC-RC37", "r"),
+      { rush: [inst("RS-165", "rk")], hand: [inst("TST-OP", "h1"), inst("TST-OP", "h2")] },
+      { battle: [{ ...inst("SPEC-E2000", "he"), commandHeld: true }] },
+    );
+    s = enter(passEntry(s), "RS-165:rk");
+    s = resolveAll(s, ["TST-OP:h1", "TST-OP:h2", "SPEC-E2000:he"]);
+    expect(zoneOf(s, "player1", "TST-OP:h1")).toBe("discard");
+    expect(zoneOf(s, "player2", "SPEC-E2000:he")).toBe("discard");
+  });
+
+  it(`XG6-037: 【振り切るぜ】XG5-057【ファイアランバス】を写すと、ライドしたユニットがある間に手札のカードが捨札に置かれたとき、同じ必要パワーの敵軍捨札を除外できる${REQ}`, () => {
+    let s = ridingCopy(
+      "XG5-057",
+      inst("SPEC-RC37", "r"),
+      { rush: [inst("RS-165", "rk")], hand: [inst("TST-OP", "h1"), inst("TST-OP", "h2")] },
+      { discard: [inst("SPEC-C3", "e3")] },
+    );
+    s = enter(passEntry(s), "RS-165:rk");
+    s = resolveAll(s, ["TST-OP:h1", "TST-OP:h2", "SPEC-C3:e3"]);
+    expect(zoneOf(s, "player1", "TST-OP:h1")).toBe("discard");
+    expect((s.players.player2.exile ?? []).map((c) => c.instanceId)).toContain("SPEC-C3:e3");
+  });
+
+  it(`XG6-037: 【振り切るぜ】RK-324【凄いのが来るぜ！】を写すと、これにライドしているユニットが BP4000 以上の敵軍 S ユニットを撃破したとき、ダメージにして置くかを選べる${REQ}`, () => {
+    let s = ridingCopy("RK-324", inst("SPEC-RC50", "r"), {}, { battle: [inst("SPEC-E4000", "e")] });
+    s = resolveAll(attack(settle(s), "SPEC-RC50:r", "SPEC-E4000:e"), [], 0);
+    expectChoiceFrom(s, "player1", "RK-324");
+    s = resolveAll(accept(s));
+    expect(zoneOf(s, "player2", "SPEC-E4000:e")).toBe("power");
+  });
+
+  it(`XG6-037: 【振り切るぜ】RS-381【獅子の装光】を写すと、ライドしたユニットをライドオフさせるかわりに、ライドされていない敵軍 S ビークルを捨札にできる${REQ}`, () => {
+    let s = p1Battle({ rush: [inst("XG6-037", "ac"), inst("SPEC-RC37", "r")] }, { rush: [inst("RS-381", "src")] }, REQ_EXTRA);
+    s = pick(furikiru(s), "RS-381:src");
+    s = mount(s, "SPEC-RC37:r", "XG6-037:ac");
+    const alt = legal(s).find((a) => a.playerId === "player1" && a.type !== "resolve_ride_off_choice" && Object.values(a).includes("XG6-037:ac"));
+    expect(alt).toBeDefined();
+    s = resolveAll(act(s, alt!), ["RS-381:src"]);
+    expect(zoneOf(s, "player2", "RS-381:src")).toBe("discard");
+  });
+
+  it(`XG6-037: 【振り切るぜ】XG4-027【魔法の絨毯】を写すと、ライドされたままバトルエリアからラッシュエリアに戻るとき（RK-026 で戻す）、ライドしているユニットを手札に戻せる${REQ}`, () => {
+    let s = ridingCopy("XG4-027", inst("SPEC-RC37", "r"), { rush: [inst("RK-026", "gg")] });
+    s = enter(passEntry(s), "RK-026:gg");
+    s = pick(s, "SPEC-RC37:r");
+    expectChoiceFrom(s, "player1", "XG4-027");
+    s = resolveAll(pick(s, "SPEC-RC37:r"));
+    expect(zoneOf(s, "player1", "SPEC-RC37:r")).toBe("hand");
+  });
+
+  it(`XG6-037: 【振り切るぜ】写しても、これのカード名は「仮面ライダーアクセル」のまま（写したビークルの名前にはならない）${REQ}`, () => {
+    let s = p1Battle({ rush: [inst("XG6-037", "ac")] }, { rush: [inst("XG4-050", "src")] }, REQ_EXTRA);
+    s = pick(furikiru(s), "XG4-050:src");
+    const card = s.players.player1.rush.find((c) => c.instanceId === "XG6-037:ac")!;
+    expect(s.definitions[card.cardId]?.name).toBe("仮面ライダーアクセル");
   });
 });
 

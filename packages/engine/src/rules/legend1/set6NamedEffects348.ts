@@ -29,6 +29,7 @@ import { afterEnterBattle, promoteDeferredBattleEntry } from "../battleEntry";
 import { applyUnitLeave, openEffectChoice, type ChoiceOutcome } from "../pendingChoices";
 import { registerOptionalEffect } from "../optionalEffects";
 import { rk16NamedTextNegated } from "../rk/rk16Fields";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 type ChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
 type ChoiceSkipper = (state: GameState, playerId: PlayerId) => ChoiceOutcome;
@@ -731,7 +732,7 @@ export function lionArmorAvailable(state: GameState, playerId: PlayerId): boolea
   const pending = state.pendingRideOffChoice;
   if (!pending || pending.playerId !== playerId || state.activePlayer !== playerId) return false;
   const vehicle = [...state.players[playerId].battle, ...state.players[playerId].rush].find((c) => c.instanceId === pending.vehicleInstanceId);
-  if (vehicle?.cardId !== "RS-381") return false;
+  if (!vehicle || !isSameVehicleTextIdentity(vehicle.cardId, "RS-381")) return false;
   return unriddenEnemySVehicles(state, playerId).length > 0;
 }
 

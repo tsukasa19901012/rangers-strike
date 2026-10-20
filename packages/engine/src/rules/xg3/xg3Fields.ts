@@ -11,6 +11,7 @@ import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { cardCategories, effectiveCommandCategories, getDefinition, isVehicle, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { logicalBattlePosition } from "../battleLine";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 export const IMOYOKAN_CARD_ID = "XG3-004";
 export const ZIEG_JENNE_CARD_ID = "XG3-010";
@@ -132,10 +133,10 @@ export function xg3AttackerCanAttackRush(state: View, attackerPlayerId: PlayerId
   const i = battle.findIndex((c) => c.instanceId === attacker.instanceId);
   if (i <= 0 || attacker.mountedOnInstanceId || unitSizeOf(state.definitions, attacker) !== "S") return false;
   const prev = battle[i - 1]!;
-  const vehicleId = isSameCardIdentity(prev.cardId, "XG3-077") ? prev.instanceId : prev.mountedOnInstanceId;
+  const vehicleId = isSameVehicleTextIdentity(prev.cardId, "XG3-077") ? prev.instanceId : prev.mountedOnInstanceId;
   if (!vehicleId) return false;
   const vehicle = battle.find((c) => c.instanceId === vehicleId);
-  if (!vehicle || !isSameCardIdentity(vehicle.cardId, "XG3-077")) return false;
+  if (!vehicle || !isSameVehicleTextIdentity(vehicle.cardId, "XG3-077")) return false;
   return battle.some((c) => c.mountedOnInstanceId === vehicleId);
 }
 

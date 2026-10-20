@@ -29,6 +29,7 @@ import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
 import { RIDE_OFF_RC_MARK } from "../legend1/set7NamedEffectsD";
 import { rk1IsSmallNow } from "./rk1Features";
 import { EXA_BUSTER_RULE } from "./rk6Fields";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -540,7 +541,7 @@ export function tryRk6OnEnterBattle(state: GameState, playerId: PlayerId, card: 
   const ctx: BaseCtx = { playerId, phasePlayerId: playerId };
   const vehicle = card.mountedOnInstanceId ? state.players[playerId].battle.find((c) => c.instanceId === card.mountedOnInstanceId) : undefined;
   let next = state;
-  if (vehicle && isSameCardIdentity(vehicle.cardId, "RK-109") && card.commandHeld) {
+  if (vehicle && isSameVehicleTextIdentity(vehicle.cardId, "RK-109") && card.commandHeld) {
     next = openOrQueue(next, confirmChoice({ ...ctx, sourceInstanceId: vehicle.instanceId }, "RK-109", SELF_REPAIR_EFFECT_ID, { rk6Meta: { riderInstanceId: card.instanceId } }));
   }
   if (vehicle && isSameCardIdentity(vehicle.cardId, "RK-114") && state.activePlayer === playerId) {
@@ -600,7 +601,7 @@ function comesFromRiddenSideBasher(battle: CardInstance[], unit: CardInstance): 
   const prevRider = battle[start - 1];
   const prevVehicle = battle[start - 2];
   if (!prevRider || !prevVehicle) return false;
-  return isSameCardIdentity(prevVehicle.cardId, "RK-120") && prevRider.mountedOnInstanceId === prevVehicle.instanceId;
+  return isSameVehicleTextIdentity(prevVehicle.cardId, "RK-120") && prevRider.mountedOnInstanceId === prevVehicle.instanceId;
 }
 
 /** 対象なら RC の効果を発動した state、対象外なら null。 */

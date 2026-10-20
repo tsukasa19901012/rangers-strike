@@ -3,6 +3,7 @@
  * rules/fieldActivatedAbilities.ts から呼ぶ）。効果の本体は rules/xg6/xg6dEffects.ts（読み込みの循環を避けるため、起動の処理はそちらが
  * XG6_FURIKIRU_ACTIVATION に登録する）。
  */
+import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 
 /** 【振り切るぜ】の起動（rules/xg6/xg6dEffects.ts が登録する）。 */
@@ -29,4 +30,14 @@ export function xg6FurikiruOriginalCardId(cardId: string): string {
 export function xg6FurikiruCopiedCardId(cardId: string): string | undefined {
   const i = cardId.indexOf(XG6_FURIKIRU_MARK);
   return i < 0 ? undefined : cardId.slice(i + XG6_FURIKIRU_MARK.length);
+}
+
+/**
+ * ビークルの効果名を持つテキストを、どのビークルのものとして扱うかの同一性（`isSameCardIdentity` に【振り切るぜ】の読み替えを足したもの）。
+ * 【振り切るぜ】で S ビークルとして扱っているこれ（`<本来の cardId>@xg6-037:<選んだビークル>`）は、選んだビークル（と同じカード）として一致する。
+ * 「これにライドしているユニットは…」等、ビークルの効果名を持つテキストの判定にだけ使う。カード名（同名・ブレイカー・名前の指定）や
+ * ※（効果名を持たないテキスト）の判定には使わない（これのカード名は本来の「仮面ライダーアクセル」のまま。追加されるのは効果名を持つテキストだけ）。
+ */
+export function isSameVehicleTextIdentity(vehicleCardId: string, id: string): boolean {
+  return isSameCardIdentity(xg6FurikiruCopiedCardId(vehicleCardId) ?? vehicleCardId, id);
 }

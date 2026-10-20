@@ -19,6 +19,7 @@ import { opponent } from "../../core/helpers";
 import { sameCardName } from "../../core/cardNames";
 import { unitFeatures } from "../addedFeatures";
 import { hasFlag } from "./xg7Registry";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 type Defs = Pick<GameState, "definitions">;
 
@@ -248,7 +249,7 @@ function ridingOn(state: Pick<GameState, "players">, playerId: PlayerId, instanc
   const mounted = instance.mountedOnInstanceId;
   if (!mounted) return false;
   const vehicle = areaCards(state, playerId).find((c) => c.instanceId === mounted);
-  return !!vehicle && isId(vehicle.cardId, vehicleId);
+  return !!vehicle && isSameVehicleTextIdentity(vehicle.cardId, vehicleId);
 }
 
 /** XG7-043 ※「これ以外の自軍ユニットがあれば、これはBP-6000されストライクできない。」 */

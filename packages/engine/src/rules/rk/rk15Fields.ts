@@ -13,6 +13,7 @@ import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { battlePositionOneBased } from "../fractionalSp";
 import { unitSizeOf } from "../../core/catalog";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 /** RK-295【頂点に立つ男】の NC が成立した（payload: { instanceId }。このターン）。 */
 export const RK15_APEX_RULE = "rk295_apex";
@@ -109,7 +110,7 @@ export function rk15DefenderBlocksAttack(
   if (attackerPlayerId === defenderPlayerId || !defender.mountedOnInstanceId) return false;
   const dp = state.players[defenderPlayerId];
   const vehicle = [...dp.battle, ...dp.rush].find((c) => c.instanceId === defender.mountedOnInstanceId);
-  if (!vehicle || !isSameCardIdentity(vehicle.cardId, "RK-300")) return false;
+  if (!vehicle || !isSameVehicleTextIdentity(vehicle.cardId, "RK-300")) return false;
   if (!isUnit(state, attacker) || !isSmall(state, attacker)) return false;
   return !featuresOf(state, attackerPlayerId, attacker).includes("加速");
 }

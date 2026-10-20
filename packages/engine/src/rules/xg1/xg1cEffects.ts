@@ -69,6 +69,7 @@ import {
   residentsGuarded,
   unitCatsNow,
 } from "./xg1Shared";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 function pickOne(ctx: BaseCtx, sourceCardId: string, effectId: string, ids: string[], optional: boolean, extra: Partial<PendingEffectChoice> = {}): PendingEffectChoice {
   return { ...base(ctx, sourceCardId), effectId, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional, ...extra };
@@ -231,7 +232,7 @@ export function xg1cOnMorphSwap(state: GameState, ownerId: PlayerId, enteredInst
   const entered = state.players[ownerId].battle.find((c) => c.instanceId === enteredInstanceId);
   if (!entered?.mountedOnInstanceId) return state;
   const vehicle = state.players[ownerId].battle.find((c) => c.instanceId === entered.mountedOnInstanceId);
-  if (!vehicle || !isSameCardIdentity(vehicle.cardId, "XG1-046")) return state;
+  if (!vehicle || !isSameVehicleTextIdentity(vehicle.cardId, "XG1-046")) return state;
   return openAfter(state, confirmOptions({ playerId: ownerId, phasePlayerId, sourceInstanceId: vehicle.instanceId }, "XG1-046", V_JET_EFFECT_ID, ["accept"], true, { xg1Meta: { target: enteredInstanceId } }));
 }
 

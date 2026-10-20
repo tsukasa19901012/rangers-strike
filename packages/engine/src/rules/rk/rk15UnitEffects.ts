@@ -33,6 +33,7 @@ import { rk1IsSmallNow, rk1ZoneCardFeatures } from "./rk1Features";
 import { rk14ActsAsVehicle } from "./rk14Fields";
 import { applySelfHold, isRk12SelfHoldCard, openRk12SelfHold } from "./rk12UnitEffects";
 import { RK15_APEX_RULE, RK15_DARK_KICK_RULE, RK15_KINTAROS_RULE, rk15IsWormPupa } from "./rk15Fields";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -856,7 +857,7 @@ export function tryRk15OnEnterBattle(state: GameState, playerId: PlayerId, card:
   // RK-301（ライドして一緒に出たガタックエクステンダー）。
   if (card.mountedOnInstanceId) {
     const vehicle = next.players[playerId].battle.find((c) => c.instanceId === card.mountedOnInstanceId);
-    if (vehicle && isSameCardIdentity(vehicle.cardId, "RK-301")) {
+    if (vehicle && isSameVehicleTextIdentity(vehicle.cardId, "RK-301")) {
       const before = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId && c.instanceId !== vehicle.instanceId);
       if (previousIsRiddenKabutoExtender(next, before)) next = openExtendDrop(next, playerId, vehicle);
     }

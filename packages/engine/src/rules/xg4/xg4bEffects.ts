@@ -38,6 +38,7 @@ import {
 } from "../rm/rm1Effects";
 import { unitFeatures } from "../addedFeatures";
 import { XG4_CONFIRMERS, XG4_KEYWORDS, XG4_RESOLVERS, XG4_SKIPPERS, addTurnRecord, hasTurnRecordFor, isCard, noop } from "./xg4Common";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 function costNumber(state: GameState, cardId: string): number {
   return rm1CostNumber(state, cardId);
@@ -194,7 +195,7 @@ const CARPET_EFFECT_ID = "xg4027_magic_carpet";
 function magicCarpet(before: GameState, after: GameState): GameState {
   let next = after;
   for (const pid of ["player1", "player2"] as const) {
-    const wasInBattle = new Set(before.players[pid].battle.filter((c) => isCard(c.cardId, "XG4-027")).map((c) => c.instanceId));
+    const wasInBattle = new Set(before.players[pid].battle.filter((c) => isSameVehicleTextIdentity(c.cardId, "XG4-027")).map((c) => c.instanceId));
     if (wasInBattle.size === 0) continue;
     for (const v of after.players[pid].rush) {
       if (!wasInBattle.has(v.instanceId)) continue;

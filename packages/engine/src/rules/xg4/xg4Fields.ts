@@ -16,6 +16,7 @@ import { isCostWindowSatisfied } from "../../core/costWindow";
 import { isSmallUnit } from "../../core/catalog";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
 import { rk12UnitHeldThisTurn } from "../rk/rk12Fields";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 type View = Pick<GameState, "players" | "definitions">;
 
@@ -345,7 +346,7 @@ export function xg4RiddenVehicleGrantsWing(state: Pick<GameState, "players">, pl
   const vehicleId = unit.mountedOnInstanceId;
   if (!vehicleId) return false;
   const vehicle = findOnField(state, playerId, vehicleId);
-  return !!vehicle && isSameCardIdentity(vehicle.cardId, "XG4-065");
+  return !!vehicle && isSameVehicleTextIdentity(vehicle.cardId, "XG4-065");
 }
 
 /**
@@ -364,5 +365,5 @@ export function xg4GrantsResist(state: Pick<GameState, "players" | "definitions"
   const unit = findOnField(state, ownerId, instanceId);
   if (!unit?.mountedOnInstanceId || !printedFeaturesOf(state, unit.cardId).includes("メカ")) return false;
   const vehicle = findOnField(state, ownerId, unit.mountedOnInstanceId);
-  return !!vehicle && isSameCardIdentity(vehicle.cardId, "XG4-099");
+  return !!vehicle && isSameVehicleTextIdentity(vehicle.cardId, "XG4-099");
 }

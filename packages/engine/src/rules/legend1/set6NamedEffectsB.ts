@@ -26,6 +26,7 @@ import { fireAkaRedSoulNc } from "./set6AuditFixes";
 import { baseLargeNow, hasBecomesLIfAnyLText } from "./set8NamedEffectsB";
 import { rk6CommandHoldBlocked } from "../rk/rk6Fields";
 import { canonicalCardIdAmong } from "../promo/cardIdentity";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -457,9 +458,9 @@ function comboFromRiddenAttacker(state: GameState, playerId: PlayerId, card: Car
   const before = index >= 0 ? battle.slice(0, index) : battle;
   const left = before.at(-1);
   if (!left) return false;
-  if (left.cardId === "RS-393") return battle.some((c) => c.mountedOnInstanceId === left.instanceId);
+  if (isSameVehicleTextIdentity(left.cardId, "RS-393")) return battle.some((c) => c.mountedOnInstanceId === left.instanceId);
   if (!left.mountedOnInstanceId) return false;
-  return battle.some((c) => c.instanceId === left.mountedOnInstanceId && c.cardId === "RS-393");
+  return battle.some((c) => c.instanceId === left.mountedOnInstanceId && isSameVehicleTextIdentity(c.cardId, "RS-393"));
 }
 
 /** NC 判定用のナンバーに【アタッカーポッド】の減少を適用する（rules/numberComboEffects.ts ncEffectiveNumber から呼ぶ）。 */

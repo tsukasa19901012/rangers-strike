@@ -32,6 +32,7 @@ import { namedTextNegated } from "../legend1/set6NamedEffects348";
 import { rk1IsSmallNow } from "./rk1Features";
 import { rk14ActsAsVehicle } from "./rk14Fields";
 import { rk16CostNumber, rk16StrikesReceived } from "./rk16Fields";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 // ---------------------------------------------------------------------------
 // 共通
@@ -535,7 +536,7 @@ function riderOf(state: GameState, playerId: PlayerId, vehicleId: string): CardI
 
 export function collectRk16TurnEndQueue(state: GameState, endingPlayerId: PlayerId): string[] {
   return fieldCards(state, endingPlayerId)
-    .filter((c) => isSameCardIdentity(c.cardId, "RK-323") && riderOf(state, endingPlayerId, c.instanceId)?.commandHeld === true)
+    .filter((c) => isSameVehicleTextIdentity(c.cardId, "RK-323") && riderOf(state, endingPlayerId, c.instanceId)?.commandHeld === true)
     .map((c) => `veil:${c.instanceId}`);
 }
 
@@ -578,7 +579,7 @@ export function rk16OnBattleDestroy(
   const winner = findField(state, winnerId, winnerInstanceId);
   const vehicleId = winner?.mountedOnInstanceId;
   const vehicle = vehicleId ? findField(state, winnerId, vehicleId) : undefined;
-  if (!vehicle || !isSameCardIdentity(vehicle.cardId, "RK-324")) return state;
+  if (!vehicle || !isSameVehicleTextIdentity(vehicle.cardId, "RK-324")) return state;
   const defeated = state.players[defeatedOwnerId].discard.find((c) => c.instanceId === defeatedInstanceId);
   if (!defeated || unitSizeOf(state.definitions, defeated) !== "S") return state;
   return openOrQueue(state, {

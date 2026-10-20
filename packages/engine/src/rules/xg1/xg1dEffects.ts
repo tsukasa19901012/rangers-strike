@@ -46,6 +46,7 @@ import {
 import { XG1_068_KUUGA_RULE } from "./xg1Fields";
 import { XG1_CONFIRMERS, XG1_KEYWORDS, XG1_RESOLVERS, XG1_SKIPPERS, noop } from "./xg1Core";
 import { addTurnMark, costNumber, enemySUnits, hasTurnMark, holdCommands, isUnitDef, printedFeatures, releasedCommands, unitCatsNow } from "./xg1Shared";
+import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
 
 function pickOne(ctx: BaseCtx, sourceCardId: string, effectId: string, ids: string[], optional: boolean, extra: Partial<PendingEffectChoice> = {}): PendingEffectChoice {
   return { ...base(ctx, sourceCardId), effectId, kind: "select_unit", validInstanceIds: ids, selectCount: 1, optional, ...extra };
@@ -157,7 +158,7 @@ XG1_KEYWORDS["XG1-063::tornado_chaser"] = noop("xg1_063:hand_discard");
 
 function shadowChaserRidden(state: GameState, ownerId: PlayerId): string | undefined {
   const field = [...state.players[ownerId].rush, ...state.players[ownerId].battle];
-  return field.find((v) => isSameCardIdentity(v.cardId, "XG1-063") && field.some((c) => c.mountedOnInstanceId === v.instanceId))?.instanceId;
+  return field.find((v) => isSameVehicleTextIdentity(v.cardId, "XG1-063") && field.some((c) => c.mountedOnInstanceId === v.instanceId))?.instanceId;
 }
 
 function usedOperationId(before: GameState, action: GameAction): string | undefined {
