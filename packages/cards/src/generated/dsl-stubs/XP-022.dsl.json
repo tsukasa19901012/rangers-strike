@@ -55,34 +55,12 @@
       "trigger": {
         "type": "nc"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent"
-        }
-      },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "hand"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "promo::XP-022::red_break",
+          "duration": "turn"
         }
       ]
     }

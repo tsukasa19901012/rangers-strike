@@ -28,7 +28,8 @@ import { bounceAllFromZone } from "../bounce";
 import { shuffleCards } from "../errataCardEffects";
 import { addSet8Category, addSet8NumberDelta } from "./set8TurnGrants";
 import type { ComboOutcome } from "../comboTypes";
-import { listZordFusionPartnerIds } from "@rangers-strike/cards";
+import { listZordFusionPartnerIds, lookupByCardIdentity } from "@rangers-strike/cards";
+import { canonicalCardIdAmong } from "../promo/cardIdentity";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -1086,7 +1087,7 @@ const SET8A_RESIDENT_PHASE: Record<string, "rush" | "battle"> = {
 const RESIDENT_USED_RULE = "set8a_resident_bold_used";
 
 export function isSet8AResident(cardId: string): boolean {
-  return cardId in SET8A_RESIDENT_PHASE;
+  return lookupByCardIdentity(SET8A_RESIDENT_PHASE, cardId) !== undefined;
 }
 
 /** このターン、この常駐（この1枚）の太字部分の効果を使ったか。同名の別の常駐を使っても使用済みにならない（README §5.7 i）。 */
@@ -1262,16 +1263,16 @@ function tagSwapOptions(state: GameState, playerId: PlayerId, hostOpId: string):
     .filter(
       (op) =>
         op.instanceId !== hostOpId &&
-        (tagResidents()[op.cardId]?.boldAvailable(state, playerId) ||
-          foreignTagBolds()[op.cardId]?.available(state, playerId) ||
-          (LENDING_BOLDS[op.cardId]?.candidates(state, playerId).length ?? 0) > 0),
+        (lookupByCardIdentity(tagResidents(), op.cardId)?.boldAvailable(state, playerId) ||
+          lookupByCardIdentity(foreignTagBolds(), op.cardId)?.available(state, playerId) ||
+          (lookupByCardIdentity(LENDING_BOLDS, op.cardId)?.candidates(state, playerId).length ?? 0) > 0),
     )
     .map((op) => op.instanceId);
 }
 
 /** 常駐 op の太字部分（自分の、または入れ替えた他の常駐の）を実行できるか。 */
 export function tagBoldExecutable(state: GameState, playerId: PlayerId, op: CardInstance): boolean {
-  const own = tagResidents()[op.cardId];
+  const own = lookupByCardIdentity(tagResidents(), op.cardId);
   if (!own) return false;
   return own.boldAvailable(state, playerId) || tagSwapOptions(state, playerId, op.instanceId).length > 0;
 }
@@ -1296,7 +1297,7 @@ function frameFor(state: GameState, playerId: PlayerId, op: CardInstance, meta: 
  * なければ自分の太字部分の選択。どちらも実行できなければ undefined。
  */
 export function tagEntryChoice(state: GameState, playerId: PlayerId, op: CardInstance, meta: TagChoiceMeta): PendingEffectChoice | undefined {
-  const own = tagResidents()[op.cardId];
+  const own = lookupByCardIdentity(tagResidents(), op.cardId);
   if (!own) return undefined;
   const ownOk = own.boldAvailable(state, playerId);
   const others = tagSwapOptions(state, playerId, op.instanceId);
@@ -1311,7 +1312,7 @@ export function tagEntryChoice(state: GameState, playerId: PlayerId, op: CardIns
 
 /** 太字部分の実行を始める（選択を開く）。 */
 export function beginTagBold(state: GameState, playerId: PlayerId, op: CardInstance, meta: TagChoiceMeta, resume?: PendingEffectChoice): GameState {
-  const own = tagResidents()[op.cardId];
+  const own = lookupByCardIdentity(tagResidents(), op.cardId);
   if (own?.directBegin && tagSwapOptions(state, playerId, op.instanceId).length === 0 && own.boldAvailable(state, playerId)) {
     return own.ownBold({ ...state, pendingEffectChoice: undefined }, playerId, { ...frameFor(state, playerId, op, meta), resumeChoice: resume });
   }
@@ -1333,7 +1334,7 @@ function afterForeignBold(state: GameState, playerId: PlayerId, pending: Pending
     selectedInstanceIds: [],
     tagMeta: { ...meta, picked: undefined },
   };
-  const outcome = tagResidents()[meta.hostCardId]!.after({ ...state, pendingEffectChoice: frame }, playerId, frame);
+  const outcome = lookupByCardIdentity(tagResidents(), meta.hostCardId)!.after({ ...state, pendingEffectChoice: frame }, playerId, frame);
   if ("error" in outcome) return outcome;
   return { state: outcome.state, log: [log, outcome.log].filter(Boolean).join("\n") || undefined };
 }
@@ -1351,11 +1352,11 @@ register(
     if (!op) return { error: "invalid_target" };
     const log = logFor(state, playerId, meta.hostCardId, `${TAG_PICK_EFFECT_ID}:${cardName(state.definitions, op.cardId)}`);
     if (opId === meta.hostOpId) {
-      return { state: tagResidents()[meta.hostCardId]!.ownBold(state, playerId, pending), log };
+      return { state: lookupByCardIdentity(tagResidents(), meta.hostCardId)!.ownBold(state, playerId, pending), log };
     }
     const next: PendingEffectChoice = { ...pending, sourceCardId: op.cardId, sourceInstanceId: op.instanceId, tagMeta: { ...meta, boldCardId: op.cardId, boldOpId: op.instanceId } };
     const base = { ...next, selectCount: 1, optional: false, selectedInstanceIds: [] as string[] };
-    switch (op.cardId) {
+    switch (canonicalCardIdAmong(op.cardId, ["RS-519", "RS-521", "RS-522", "RS-524", "RS-525", "RS-608", "RS-609"])) {
       case "RS-519":
         return { state: reopen(state, pending, { ...base, effectId: TAG_BOLD_RS519_MALE, kind: "select_unit", validInstanceIds: malesWithFemalePartner(state, playerId) }), log };
       case "RS-521":
@@ -1371,9 +1372,9 @@ register(
       case "RS-609":
         return { state: reopen(state, pending, { ...base, effectId: TAG_BOLD_RS609, kind: "select_unit", validInstanceIds: rushAreaSmallUnits(state, playerId) }), log };
       default: {
-        const foreign = foreignTagBolds()[op.cardId];
+        const foreign = lookupByCardIdentity(foreignTagBolds(), op.cardId);
         if (foreign) return { state: foreign.begin(state, playerId, base), log };
-        const lending = LENDING_BOLDS[op.cardId];
+        const lending = lookupByCardIdentity(LENDING_BOLDS, op.cardId);
         if (!lending) return { error: "invalid_target" };
         return { state: reopen(state, pending, { ...base, effectId: lending.effectId, kind: lending.kind, validInstanceIds: lending.candidates(state, playerId) }), log };
       }
@@ -1593,7 +1594,7 @@ registerTagResident("RS-525", {
 export function canActivateSet8AResident(state: GameState, playerId: PlayerId, operationInstanceId: string): boolean | null {
   const op = state.players[playerId].operation.find((c) => c.instanceId === operationInstanceId);
   if (!op || !isSet8AResident(op.cardId)) return null;
-  if (state.phase !== SET8A_RESIDENT_PHASE[op.cardId] || state.activePlayer !== playerId) return false;
+  if (state.phase !== lookupByCardIdentity(SET8A_RESIDENT_PHASE, op.cardId) || state.activePlayer !== playerId) return false;
   if (state.pendingEffectChoice || state.pendingCommandPayment || state.pendingZordSetup || state.pendingBattle || state.pendingStrike) {
     return false;
   }

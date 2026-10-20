@@ -1,0 +1,286 @@
+/**
+ * プロモーションカード（PK・PM・SM・SK・SX・SR・XP・PR）のカード固有の効果の登録先（`promo::` キーワード・選択の解決）。
+ *
+ * 中央のファイル（dsl/grantKeyword.ts・rules/pendingChoices.ts・core/legalActions.ts）は rules/promo/index.ts の
+ * `tryPromoCardEffect` / `tryResolvePromoChoice` / `trySkipPromoChoice` / `tryConfirmPromoChoice` / `isPromoChoiceEffect` だけを呼ぶ。
+ * カードごとの実装（rules/promo/xp*.ts・promo*.ts）は registerPromoKeyword / registerPromoChoice で登録する。
+ * 登録先は関数の中に持つ（循環 import でカードのモジュールが先に評価されても登録できる。rules/legend1/set8NamedEffectsA.ts tagResidents と同じ）。
+ * 選択の組み立ての部品は rules/rm/rm1Effects.ts のもの（openAfter・close・proceed・simpleSkip 等）を使う。
+ */
+import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
+import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
+import type { ChoiceOutcome } from "../rm/rm1Effects";
+import { openEffectChoice } from "../pendingChoices";
+
+export type PromoChoiceResolver = (state: GameState, playerId: PlayerId, instanceId: string) => ChoiceOutcome;
+export type PromoChoiceSkipper = (state: GameState, playerId: PlayerId) => ChoiceOutcome;
+export type PromoKeywordHandler = (state: GameState, ctx: GrantKeywordContext) => GrantKeywordResult;
+
+export const PROMO_KEYWORD_PREFIX = "promo::";
+
+type Store = {
+  resolvers: Record<string, PromoChoiceResolver>;
+  skippers: Record<string, PromoChoiceSkipper>;
+  confirmers: Record<string, PromoChoiceSkipper>;
+  keywords: Record<string, PromoKeywordHandler>;
+};
+
+function store(): Store {
+  const holder = store as unknown as { s?: Store };
+  return (holder.s ??= { resolvers: {}, skippers: {}, confirmers: {}, keywords: {} });
+}
+
+/** `promo::<name>` の grant_keyword の処理を登録する。 */
+export function registerPromoKeyword(name: string, handler: PromoKeywordHandler): void {
+  store().keywords[name] = handler;
+}
+
+/** このモジュール群が開く選択（effectId）の解決・見送り・確定を登録する。 */
+export function registerPromoChoice(
+  effectId: string,
+  resolver: PromoChoiceResolver,
+  skipper?: PromoChoiceSkipper,
+  confirmer?: PromoChoiceSkipper,
+): void {
+  const s = store();
+  s.resolvers[effectId] = resolver;
+  if (skipper) s.skippers[effectId] = skipper;
+  if (confirmer) s.confirmers[effectId] = confirmer;
+}
+
+export function tryPromoCardEffect(state: GameState, ctx: GrantKeywordContext, keyword: string): GrantKeywordResult | null {
+  if (!keyword.startsWith(PROMO_KEYWORD_PREFIX)) return null;
+  const handler = store().keywords[keyword.slice(PROMO_KEYWORD_PREFIX.length)];
+  return handler ? handler(state, ctx) : { state, detail: keyword };
+}
+
+export function isPromoChoiceEffect(effectId: string): boolean {
+  return effectId in store().resolvers;
+}
+
+export function tryResolvePromoChoice(state: GameState, playerId: PlayerId, instanceId: string): ChoiceOutcome | null {
+  const pending = state.pendingEffectChoice;
+  if (!pending || pending.playerId !== playerId) return null;
+  const resolver = store().resolvers[pending.effectId];
+  if (!resolver) return null;
+  if (!pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
+  return resolver(state, playerId, instanceId);
+}
+
+export function trySkipPromoChoice(state: GameState, playerId: PlayerId): ChoiceOutcome | null {
+  const pending = state.pendingEffectChoice;
+  if (!pending || pending.playerId !== playerId) return null;
+  if (!(pending.effectId in store().resolvers)) return null;
+  const skipper = store().skippers[pending.effectId];
+  if (!skipper || !pending.optional) return { error: "not_optional" };
+  return skipper(state, playerId);
+}
+
+export function canConfirmPromoChoice(pending: PendingEffectChoice): boolean {
+  if (!(pending.effectId in store().confirmers)) return false;
+  return pending.kind === "confirm" || (pending.mayConfirm === true && (pending.selectedInstanceIds?.length ?? 0) > 0);
+}
+
+export function tryConfirmPromoChoice(state: GameState, playerId: PlayerId): ChoiceOutcome | null {
+  const pending = state.pendingEffectChoice;
+  if (!pending || pending.playerId !== playerId) return null;
+  const confirmer = store().confirmers[pending.effectId];
+  if (!confirmer) return null;
+  if (!canConfirmPromoChoice(pending)) return { error: "no_selection" };
+  return confirmer(state, playerId);
+}
+
+// ---------------------------------------------------------------------------
+// applyAction の後処理（depth 0）: 前後の状態を比べて発動する効果（XP-013【キョウリュウマル】等）。
+// 発動はキューに積み（GameState.promoPendingTriggers）、ほかの処理の途中でなければ1つずつ選択を開く（rules/rm/rm1Effects.ts applyRm1AfterAction と同じ）。
+
+export type PromoTrigger = NonNullable<GameState["promoPendingTriggers"]>[number];
+type TriggerDetector = (before: GameState, after: GameState) => PromoTrigger[];
+type TriggerOpener = (state: GameState, trigger: PromoTrigger) => PendingEffectChoice | null;
+type TriggerStore = { detectors: TriggerDetector[]; openers: Record<string, TriggerOpener> };
+
+function triggerStore(): TriggerStore {
+  const holder = triggerStore as unknown as { s?: TriggerStore };
+  return (holder.s ??= { detectors: [], openers: {} });
+}
+
+export function registerPromoAfterAction(kind: string, detect: TriggerDetector, open: TriggerOpener): void {
+  const s = triggerStore();
+  s.detectors.push(detect);
+  s.openers[kind] = open;
+}
+
+// バトルで撃破したとき（rules/operationCounters.ts のバトルの解決。RK-271 rk13OnBattleDestroy と同じ場所）: 発動をキューに積み、
+// applyPromoAfterAction で選択を開く。
+export type PromoBattleDestroyed = { ownerId: PlayerId; instanceId: string; cardId: string };
+type BattleDestroyHook = (state: GameState, winnerId: PlayerId, winnerInstanceId: string, defeated: PromoBattleDestroyed) => PromoTrigger[];
+
+function battleDestroyHooks(): BattleDestroyHook[] {
+  const holder = battleDestroyHooks as unknown as { s?: BattleDestroyHook[] };
+  return (holder.s ??= []);
+}
+
+export function registerPromoBattleDestroy(kind: string, hook: BattleDestroyHook, open: TriggerOpener): void {
+  battleDestroyHooks().push(hook);
+  triggerStore().openers[kind] = open;
+}
+
+export function promoOnBattleDestroy(
+  state: GameState,
+  winnerId: PlayerId,
+  winnerInstanceId: string,
+  defeatedOwner: PlayerId,
+  defeatedInstanceId: string,
+  defeatedCardId: string,
+): GameState {
+  const defeated: PromoBattleDestroyed = { ownerId: defeatedOwner, instanceId: defeatedInstanceId, cardId: defeatedCardId };
+  const queued = battleDestroyHooks().flatMap((hook) => hook(state, winnerId, winnerInstanceId, defeated));
+  if (queued.length === 0) return state;
+  return { ...state, promoPendingTriggers: [...(state.promoPendingTriggers ?? []), ...queued] };
+}
+
+// アタックもストライクもできない制限（rules/restrictions.ts cannotAttackOrStrikeThisTurn から呼ぶ。SK-003【復讐の女詐欺師】等）。
+type AttackStrikeBlock = (state: GameState, playerId: PlayerId, unit: CardInstance) => boolean;
+
+function attackStrikeBlocks(): AttackStrikeBlock[] {
+  const holder = attackStrikeBlocks as unknown as { s?: AttackStrikeBlock[] };
+  return (holder.s ??= []);
+}
+
+export function registerPromoAttackStrikeBlock(block: AttackStrikeBlock): void {
+  attackStrikeBlocks().push(block);
+}
+
+export function promoBlocksAttackStrike(state: GameState, playerId: PlayerId, unit: CardInstance): boolean {
+  return attackStrikeBlocks().some((block) => block(state, playerId, unit));
+}
+
+// 能力の付与・BP の増減は rules/promo/promoHooks.ts（core からも呼ぶので import を持たない）。
+// 「ターンを終えるとき」（XP-029【まだよ…】）。rules/turnEndingEffects.ts が終えるプレイヤーごとに集めて1件ずつ開く。
+// entry は `<kind>|<instanceId>`。開いた選択・ダメージの支払いで止まり、解決後に残りを続ける。
+type TurnEndHook = {
+  collect: (state: GameState, endingPlayerId: PlayerId) => string[];
+  open: (state: GameState, endingPlayerId: PlayerId, instanceId: string) => GameState;
+};
+
+function turnEndHooks(): Record<string, TurnEndHook> {
+  const holder = turnEndHooks as unknown as { s?: Record<string, TurnEndHook> };
+  return (holder.s ??= {});
+}
+
+export function registerPromoTurnEnd(kind: string, hook: TurnEndHook): void {
+  turnEndHooks()[kind] = hook;
+}
+
+export function collectPromoTurnEndQueue(state: GameState, endingPlayerId: PlayerId): string[] {
+  return Object.entries(turnEndHooks()).flatMap(([kind, hook]) => hook.collect(state, endingPlayerId).map((id) => `${kind}|${id}`));
+}
+
+export function openPromoTurnEndEntry(state: GameState, endingPlayerId: PlayerId, entry: string): GameState {
+  const sep = entry.indexOf("|");
+  const hook = turnEndHooks()[entry.slice(0, sep)];
+  return hook ? hook.open(state, endingPlayerId, entry.slice(sep + 1)) : state;
+}
+
+// 自軍ラッシュフェイズの起動効果（XP-031【メダルと切符と40周年】）。rules/fieldActivatedAbilities.ts の表の1行から呼ぶ
+// （このカードは捨札にしない・自軍ターンに1度だけ）。
+export type PromoFieldAbility = {
+  matches: (cardId: string) => boolean;
+  canActivate: (state: GameState, playerId: PlayerId, card: CardInstance) => boolean;
+  resolve: (state: GameState, playerId: PlayerId, card: CardInstance) => GameState;
+};
+
+function fieldAbilities(): PromoFieldAbility[] {
+  const holder = fieldAbilities as unknown as { s?: PromoFieldAbility[] };
+  return (holder.s ??= []);
+}
+
+export function registerPromoFieldAbility(ability: PromoFieldAbility): void {
+  fieldAbilities().push(ability);
+}
+
+export function promoFieldAbilityFor(cardId: string): PromoFieldAbility | undefined {
+  return fieldAbilities().find((a) => a.matches(cardId));
+}
+
+// 場を離れるときの置き換え（XP-027「重ねたユニットがユニットでなくなるとき、このカードを捨札にしてその場に留める」）。
+// rules/operationCounters.ts tryLeaveField から呼ぶ。処理したら state、対象外なら null。
+type StayOnLeave = (state: GameState, intent: PendingLeave) => GameState | null;
+
+function stayOnLeaveHooks(): StayOnLeave[] {
+  const holder = stayOnLeaveHooks as unknown as { s?: StayOnLeave[] };
+  return (holder.s ??= []);
+}
+
+export function registerPromoStayOnLeave(hook: StayOnLeave): void {
+  stayOnLeaveHooks().push(hook);
+}
+
+export function promoStayOnLeave(state: GameState, intent: PendingLeave): GameState | null {
+  for (const hook of stayOnLeaveHooks()) {
+    const next = hook(state, intent);
+    if (next) return next;
+  }
+  return null;
+}
+
+// 自軍山札の上のカードが1枚オモテになったとき、オモテにしたカードを効果の対象にする前に割り込む効果（SR-006【超忍法・分身魔球】）。
+// rules/pendingChoices.ts（RS-367【軍隊アリの遺伝子】）から呼ぶ。割り込んだら state、対象外なら null。
+type DeckRevealIntercept = (state: GameState, pending: PendingEffectChoice, topInstanceId: string) => GameState | null;
+
+function deckRevealIntercepts(): DeckRevealIntercept[] {
+  const holder = deckRevealIntercepts as unknown as { s?: DeckRevealIntercept[] };
+  return (holder.s ??= []);
+}
+
+export function registerPromoDeckRevealIntercept(hook: DeckRevealIntercept): void {
+  deckRevealIntercepts().push(hook);
+}
+
+export function promoInterceptDeckReveal(state: GameState, pending: PendingEffectChoice, topInstanceId: string): GameState | null {
+  for (const hook of deckRevealIntercepts()) {
+    const next = hook(state, pending, topInstanceId);
+    if (next) return next;
+  }
+  return null;
+}
+
+export { promoGrantsKeyword, registerPromoBpBonus, registerPromoKeywordGrant } from "./promoHooks";
+
+function blocked(state: GameState): boolean {
+  return !!(
+    state.pendingStrike ||
+    state.pendingBattle ||
+    state.pendingRush ||
+    state.pendingMorph ||
+    state.pendingLeave ||
+    state.pendingChase ||
+    state.pendingRideOffChoice ||
+    state.pendingRegister ||
+    state.pendingCommandPayment ||
+    state.pendingZordSetup ||
+    state.pendingDamagePayment ||
+    state.pendingScry ||
+    state.pendingEffectRush
+  );
+}
+
+export function applyPromoAfterAction(before: GameState, after: GameState): GameState {
+  const s = triggerStore();
+  const queue = [...(after.promoPendingTriggers ?? [])];
+  for (const detect of s.detectors) queue.push(...detect(before, after));
+  if (queue.length === 0) return after.promoPendingTriggers ? { ...after, promoPendingTriggers: undefined } : after;
+  let next: GameState = after;
+  if (blocked(next) || next.winner) return { ...next, promoPendingTriggers: queue };
+  while (queue.length > 0) {
+    const trigger = queue.shift()!;
+    const choice = s.openers[trigger.kind]?.(next, trigger);
+    if (!choice) continue;
+    const existing = next.pendingEffectChoice;
+    next = existing
+      ? { ...next, pendingEffectChoice: { ...choice, resumeChoice: existing }, activePlayer: choice.playerId }
+      : openEffectChoice(next, choice);
+    break;
+  }
+  return { ...next, promoPendingTriggers: queue.length > 0 ? queue : undefined };
+}

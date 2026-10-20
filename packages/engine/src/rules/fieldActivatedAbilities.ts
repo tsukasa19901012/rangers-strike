@@ -37,6 +37,7 @@ import { isStackOntoLargeCard } from "./stackOntoLargeGrants";
 import { rk14CanHoldSelf, rk14HoldSelf, rk14IsVehicleUnitCard } from "./rk/rk14Fields";
 import { canActivateRk16Fuessle, isRk16FuessleCard, openRk16Fuessle } from "./rk/rk16UnitEffects";
 import { activateXg3FieldAbility, canActivateXg3FieldAbility, isXg3FieldAbilityCard } from "./xg3/xg3Effects";
+import { promoFieldAbilityFor } from "./promo/promoRegistry";
 
 type FieldZone = "rush" | "battle";
 
@@ -593,6 +594,19 @@ ABILITIES.push({
   matches: (cardId) => isXg3FieldAbilityCard(cardId, "battle"),
   canActivate: (state, playerId, card) => !fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId) && canActivateXg3FieldAbility(state, playerId, card),
   resolve: (state, playerId, card) => activateXg3FieldAbility(state, playerId, card),
+});
+
+// プロモーションカードの起動効果（XP-031【メダルと切符と40周年】「自軍ラッシュフェイズごとに1度だけ」。rules/promo/promoRegistry.ts）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "promo_field_ability",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  discardSelf: false,
+  matches: (cardId) => !!promoFieldAbilityFor(cardId),
+  canActivate: (state, playerId, card) =>
+    !fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId) && !!promoFieldAbilityFor(card.cardId)?.canActivate(state, playerId, card),
+  resolve: (state, playerId, card) => promoFieldAbilityFor(card.cardId)?.resolve(state, playerId, card) ?? state,
 });
 
 // 能力の当てはめはカード ID（とカードの文言）だけで決まるので、ID ごとに覚える。表に能力が足されたら捨てる。

@@ -214,7 +214,7 @@ describe("PR-004 バルイーグル", () => {
 
   const eagleAfter = (battle: CardInstance[]) => enter(st({ player1: { rush: [inst("PR-004", "eagle")], battle } }), "PR-004:eagle");
 
-  it.fails("PR-004: 5番目に出ると SP1 になり、このターン BP＋2000（出典: atwiki/page-998・R-CN-02） — 既知の不具合: CARD-PR-004 再録（RS-031）の【秘剣流れ十文字斬り】（「SP1」・BP+2000・バルシャーク／バルパンサーからのコンビネーション）が未実装", () => {
+  it("PR-004: 5番目に出ると SP1 になり、このターン BP＋2000（出典: atwiki/page-998・R-CN-02）", () => {
     const s = eagleAfter(fillers(4));
     expect(canStrike(s, "PR-004:eagle")).toBe(true);
     expect(bpOf(s, "player1", "PR-004:eagle")).toBe(5000);
@@ -226,13 +226,13 @@ describe("PR-004 バルイーグル", () => {
     expect(bpOf(s, "player1", "PR-004:eagle")).toBe(3000);
   });
 
-  it.fails("PR-004: バルシャークからコンビネーションすると番号に関係なく発動する（2番目）（出典: atwiki/page-998「ナンバーに関係なく発動する」） — 既知の不具合: CARD-PR-004 再録（RS-031）の【秘剣流れ十文字斬り】（「SP1」・BP+2000・バルシャーク／バルパンサーからのコンビネーション）が未実装", () => {
+  it("PR-004: バルシャークからコンビネーションすると番号に関係なく発動する（2番目）（出典: atwiki/page-998「ナンバーに関係なく発動する」）", () => {
     const s = eagleAfter([inst("RS-032", "shark")]);
     expect(canStrike(s, "PR-004:eagle")).toBe(true);
     expect(bpOf(s, "player1", "PR-004:eagle")).toBe(5000);
   });
 
-  it.fails("PR-004: バルパンサーからコンビネーションしても番号に関係なく発動する（3番目）（出典: atwiki/page-998） — 既知の不具合: CARD-PR-004 再録（RS-031）の【秘剣流れ十文字斬り】（「SP1」・BP+2000・バルシャーク／バルパンサーからのコンビネーション）が未実装", () => {
+  it("PR-004: バルパンサーからコンビネーションしても番号に関係なく発動する（3番目）（出典: atwiki/page-998）", () => {
     expect(canStrike(eagleAfter([inst("TST-UNIT-0", "x"), inst("RS-033", "panther")]), "PR-004:eagle")).toBe(true);
   });
 

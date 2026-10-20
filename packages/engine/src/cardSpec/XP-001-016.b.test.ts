@@ -82,27 +82,27 @@ describe("XP-006 侍合体", () => {
     expectOp("XP-006", { name: "侍合体", category: "MA", powerCost: 7, rarity: "PR" });
   });
 
-  it.fails("XP-006: 手札から、合体が必要な L ユニットのカードを1枚選ぶ（合体のいらない L ユニットは選べない）（出典: atwiki/page-1556「自分の手札から、合体が必要なLユニットのカードを1枚選び相手に見せる」） — 既知の不具合: CARD-XP-006 効果が「相手が1枚ドロー」だけになっていて、手札の L ユニットを選ぶ処理がない", () => {
+  it("XP-006: 手札から、合体が必要な L ユニットのカードを1枚選ぶ（合体のいらない L ユニットは選べない）（出典: atwiki/page-1556「自分の手札から、合体が必要なLユニットのカードを1枚選び相手に見せる」）", () => {
     const s = used([inst("XG3-006", "vw"), inst("SPEC-BIG4", "b")]);
     expectChoiceFrom(s, "player1", "XP-006");
     expect(choiceIds(s)).toEqual(["RS-382:vr"]);
   });
 
-  it.fails("XP-006: 公式Q&A — 自軍エリアに XG3-006 ビクトリーウォーカー（「ブルースローワー＋イエローアーマー＋ピンクエイダー」として使える）と BP4000 以上のユニットがあれば、自軍ユニットをすべて捨札にしてビクトリーロボを出せる（本来の BP の合計 8000＋4000＝12000）（出典: atwiki/page-1556 Q1「はい、できます」） — 既知の不具合: CARD-XP-006 本文の処理が未実装", () => {
+  it("XP-006: 公式Q&A — 自軍エリアに XG3-006 ビクトリーウォーカー（「ブルースローワー＋イエローアーマー＋ピンクエイダー」として使える）と BP4000 以上のユニットがあれば、自軍ユニットをすべて捨札にしてビクトリーロボを出せる（本来の BP の合計 8000＋4000＝12000）（出典: atwiki/page-1556 Q1「はい、できます」）", () => {
     const s = resolveAll(pick(used([inst("XG3-006", "vw"), inst("SPEC-BIG4", "b")]), "RS-382:vr"));
     expect(zoneOf(s, "player1", "XG3-006:vw")).toBe("discard");
     expect(zoneOf(s, "player1", "SPEC-BIG4:b")).toBe("discard");
     expect(zoneOf(s, "player1", "RS-382:vr")).toBe("rush");
   });
 
-  it.fails("XP-006: 表記された合体ユニットが自軍エリアに3体未満（同名は1体と数える）なら何もしない（自軍ユニットは捨札にならない）（出典: atwiki/page-1556「3体以上（同名ユニットは1体と数える）あれば」） — 既知の不具合: CARD-XP-006 本文の処理が未実装", () => {
+  it("XP-006: 表記された合体ユニットが自軍エリアに3体未満（同名は1体と数える）なら何もしない（自軍ユニットは捨札にならない）（出典: atwiki/page-1556「3体以上（同名ユニットは1体と数える）あれば」）", () => {
     const s = resolveAll(pick(used([inst("RS-383", "rl"), inst("RS-383", "rl2"), inst("RS-384", "bs"), inst("SPEC-BIG4", "b")]), "RS-382:vr"));
     expect(zoneOf(s, "player1", "RS-383:rl")).toBe("rush");
     expect(zoneOf(s, "player1", "SPEC-BIG4:b")).toBe("rush");
     expect(zoneOf(s, "player1", "RS-382:vr")).toBe("hand");
   });
 
-  it.fails("XP-006: 合体ユニットが3体あっても、捨札にしたユニットの本来の BP の合計が見せたカードの BP 未満なら、捨札にするだけで出さない（出典: atwiki/page-1556「捨札にしたユニットの本来のBPの合計が見せたカードのBP以上あれば」） — 既知の不具合: CARD-XP-006 本文の処理が未実装", () => {
+  it("XP-006: 合体ユニットが3体あっても、捨札にしたユニットの本来の BP の合計が見せたカードの BP 未満なら、捨札にするだけで出さない（出典: atwiki/page-1556「捨札にしたユニットの本来のBPの合計が見せたカードのBP以上あれば」）", () => {
     // レッドラダー4000＋ブルースローワー4000＋グリーンホバー2000＝10000 < 12000
     const s = resolveAll(pick(used([inst("RS-383", "rl"), inst("RS-384", "bs"), inst("RS-385", "gh")]), "RS-382:vr"));
     expect(zoneOf(s, "player1", "RS-383:rl")).toBe("discard");
@@ -110,7 +110,7 @@ describe("XP-006 侍合体", () => {
     expect(zoneOf(s, "player1", "RS-382:vr")).toBe("hand");
   });
 
-  it.fails("XP-006: 合体ユニット以外の自軍ユニットを2体捨札にするたび、相手は1枚ドローしてもよい（2体で1回）（出典: atwiki/page-1556「合体ユニット以外の自軍ユニットを2体捨札にするたび、相手は1枚ドローしてもよい」） — 既知の不具合: CARD-XP-006 本文の処理が未実装", () => {
+  it("XP-006: 合体ユニット以外の自軍ユニットを2体捨札にするたび、相手は1枚ドローしてもよい（2体で1回）（出典: atwiki/page-1556「合体ユニット以外の自軍ユニットを2体捨札にするたび、相手は1枚ドローしてもよい」）", () => {
     let s = pick(used([inst("RS-383", "rl"), inst("RS-384", "bs"), inst("RS-385", "gh"), inst("SPEC-BIG4", "b1"), inst("SPEC-BIG4", "b2")]), "RS-382:vr");
     s = settle(s);
     expect(s.pendingEffectChoice?.playerId).toBe("player2");

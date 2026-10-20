@@ -94,12 +94,12 @@ describe("XP-017 仮面ライダーディケイド激情態", () => {
     expect(zoneOf(r.state, "player1", "XP-017:gj")).toBe("rush");
   });
 
-  it.fails("XP-017: ※ 手札からしかラッシュできない — モーフの置き換え先に選べない（特徴が完全一致するディケイド ファイズは選べる）（出典: atwiki/page-1981「※これは手札からしかラッシュできない」・カード評価「他の特徴「ディケイドライバー」持ちユニットからのモーフ…はできない」） — 既知の不具合: CARD-XP-017 ※（手札からしかラッシュできない）が未実装で、モーフの置き換え先の候補に出る", () => {
+  it("XP-017: ※ 手札からしかラッシュできない — モーフの置き換え先に選べない（特徴が完全一致するディケイド ファイズは選べる）（出典: atwiki/page-1981「※これは手札からしかラッシュできない」・カード評価「他の特徴「ディケイドライバー」持ちユニットからのモーフ…はできない」）", () => {
     const s = enemyRushes({ battle: [inst("XP-004", "dc")], command: [released("XP-017", "gj"), released("XG1-066", "fz")] }, "SPEC-ENEMY0:e", EXTRA);
     expect(morphCandidates(s)).toEqual(["XG1-066:fz"]);
   });
 
-  it.fails("XP-017: 【世界の破壊者】RC — 相手のパワーゾーンの枚数（6）が多ければ、相手はオモテ向きのパワーを捨札にして自分（3）と同じ枚数にする（出典: atwiki/page-1981） — 既知の不具合: CARD-XP-017 【世界の破壊者】が未実装（ライドオフしても何も起きない）", () => {
+  it("XP-017: 【世界の破壊者】RC — 相手のパワーゾーンの枚数（6）が多ければ、相手はオモテ向きのパワーを捨札にして自分（3）と同じ枚数にする（出典: atwiki/page-1981）", () => {
     const s = resolveAll(rcBoard("XP-017:gj", { power: powerCards(3) }, { power: [...powerCards(4, "ep"), ...damageCards(2, "ed")], damage: 2 }));
     expect(s.players.player2.power).toHaveLength(3);
     expect(s.players.player2.power.filter((c) => c.faceDown)).toHaveLength(2);
@@ -107,13 +107,13 @@ describe("XP-017 仮面ライダーディケイド激情態", () => {
     expect(s.players.player1.power).toHaveLength(3);
   });
 
-  it.fails("XP-017: 【世界の破壊者】「可能な限り」— オモテ向きのパワーが足りなければ、オモテ向きをすべて捨札にしてそこで終わる（ダメージは捨札にしない）（出典: atwiki/page-1981「自分自身のオモテ向きのパワーを可能な限り選び捨札にする」） — 既知の不具合: CARD-XP-017 【世界の破壊者】が未実装", () => {
+  it("XP-017: 【世界の破壊者】「可能な限り」— オモテ向きのパワーが足りなければ、オモテ向きをすべて捨札にしてそこで終わる（ダメージは捨札にしない）（出典: atwiki/page-1981「自分自身のオモテ向きのパワーを可能な限り選び捨札にする」）", () => {
     const s = resolveAll(rcBoard("XP-017:gj", { power: powerCards(1) }, { power: [...powerCards(1, "ep"), ...damageCards(4, "ed")], damage: 4 }));
     expect(s.players.player2.power).toHaveLength(4);
     expect(s.players.player2.power.every((c) => c.faceDown)).toBe(true);
   });
 
-  it.fails("XP-017: 【世界の破壊者】自分のパワーゾーンのほうが多ければ、自分が捨札にする（出典: atwiki/page-1981「枚数が多いパワーゾーンの持ち主は」） — 既知の不具合: CARD-XP-017 【世界の破壊者】が未実装", () => {
+  it("XP-017: 【世界の破壊者】自分のパワーゾーンのほうが多ければ、自分が捨札にする（出典: atwiki/page-1981「枚数が多いパワーゾーンの持ち主は」）", () => {
     const s = resolveAll(rcBoard("XP-017:gj", { power: powerCards(5) }, { power: powerCards(2, "ep") }));
     expect(s.players.player1.power).toHaveLength(2);
     expect(s.players.player2.power).toHaveLength(2);
@@ -146,11 +146,11 @@ describe("XP-018 ゴールド寿司", () => {
   const attackedSushi = (target: string, command = releasedCat("WB", 1)) =>
     attackUntilRegister({ battle: [inst(target.split(":")[0]!, target.split(":")[1]!)], operation: [inst("XP-018", "gs")], command }, target, {}, "TST-UNIT-7:atk", EXTRA);
 
-  it.fails("XP-018: 自軍コマンドゾーンに WB があれば、特徴「侍」の自軍 S ユニット（XP-012 シンケンゴールド。レジストなし）はレジストを得る（出典: atwiki/page-2130「WBがあればレジストを得る」） — 既知の不具合: CARD-XP-018 常駐の能力付与（レジスト等）が未実装", () => {
+  it("XP-018: 自軍コマンドゾーンに WB があれば、特徴「侍」の自軍 S ユニット（XP-012 シンケンゴールド。レジストなし）はレジストを得る（出典: atwiki/page-2130「WBがあればレジストを得る」）", () => {
     expect(registerOffered(attackedSushi("XP-012:sg"))).toBe(true);
   });
 
-  it.fails("XP-018: 特徴「シルバー」の自軍 S ユニットもレジストを得る（出典: atwiki/page-2130「特徴に「シルバー」または「ゴールド」または「侍」を持つ」） — 既知の不具合: CARD-XP-018 常駐の能力付与が未実装", () => {
+  it("XP-018: 特徴「シルバー」の自軍 S ユニットもレジストを得る（出典: atwiki/page-2130「特徴に「シルバー」または「ゴールド」または「侍」を持つ」）", () => {
     expect(registerOffered(attackedSushi("SPEC-SILVER:s"))).toBe(true);
   });
 
@@ -237,12 +237,12 @@ describe("XP-020 護星天使", () => {
     expect(zoneOf(resolveAll(r.state), "player1", "XP-020:gt")).toBe("operation");
   });
 
-  it.fails("XP-020: 敵軍ターン中、MA を含むマルチカテゴリの自軍 S ユニットは BP+1000（2000→3000）（出典: atwiki/page-2127「このユニットは敵軍ターン中BP+1000され」） — 既知の不具合: CARD-XP-020 常駐の BP+1000 が未実装", () => {
+  it("XP-020: 敵軍ターン中、MA を含むマルチカテゴリの自軍 S ユニットは BP+1000（2000→3000）（出典: atwiki/page-2127「このユニットは敵軍ターン中BP+1000され」）", () => {
     const s = enemyTurnBoard({ battle: [inst("SPEC-WB-MA", "m")], operation: [inst("XP-020", "gt")] }, {}, EXTRA);
     expect(bpOf(s, "player1", "SPEC-WB-MA:m")).toBe(3000);
   });
 
-  it.fails("XP-020: 自分も相手も対象 — 相手の常駐でも、自軍の MA マルチカテゴリ S ユニットは敵軍ターン中 BP+1000（出典: atwiki/page-2127 カード評価「自分だけでなく相手も効果の対象になっている」） — 既知の不具合: CARD-XP-020 常駐の BP+1000 が未実装", () => {
+  it("XP-020: 自分も相手も対象 — 相手の常駐でも、自軍の MA マルチカテゴリ S ユニットは敵軍ターン中 BP+1000（出典: atwiki/page-2127 カード評価「自分だけでなく相手も効果の対象になっている」）", () => {
     const s = enemyTurnBoard({ battle: [inst("SPEC-WB-MA", "m")] }, { operation: [inst("XP-020", "gt")] }, EXTRA);
     expect(bpOf(s, "player1", "SPEC-WB-MA:m")).toBe(3000);
   });
@@ -258,7 +258,7 @@ describe("XP-020 護星天使", () => {
     expect(bpOf(s, "player1", "SPEC-WB-ET:b")).toBe(2000);
   });
 
-    it.fails("XP-020: MA マルチカテゴリの自軍 S ユニットを、MA のオペレーション（2枚目の護星天使）を使うためのコマンドとしてホールドできる（自軍ターン中も。BP の増加とは独立）（出典: atwiki/page-2127「MAのオペレーションカードを使用するためのコマンドとしてホールドできる」・カード評価「独立した効果である事が公式のコラムで明言されている」・R-KW-READ-01） — 既知の不具合: CARD-XP-020 MA マルチカテゴリ S ユニットをコマンドとしてホールドできる常駐効果が未実装", () => {
+    it("XP-020: MA マルチカテゴリの自軍 S ユニットを、MA のオペレーション（2枚目の護星天使）を使うためのコマンドとしてホールドできる（自軍ターン中も。BP の増加とは独立）（出典: atwiki/page-2127「MAのオペレーションカードを使用するためのコマンドとしてホールドできる」・カード評価「独立した効果である事が公式のコラムで明言されている」・R-KW-READ-01）", () => {
     const s = rushPhase({ hand: [inst("XP-020", "gt2")], rush: [inst("SPEC-WB-MA", "m")], command: [released("TST-OP-MA", "c")], operation: [inst("XP-020", "gt")], power: powerCards(2) }, {}, EXTRA);
     expect(payableFor(s, "XP-020:gt2")).toContain("SPEC-WB-MA:m");
   });
@@ -297,7 +297,7 @@ describe("XP-021 ファイナルカメンアタックフォームライド", () 
     expect(canUseCard(board(0, 24), "player1", "XP-021:far")).toBe(false);
   });
 
-  it.fails("XP-021: ※ お互いのエリアのユニット・ゾーンのオモテ向きのカード・捨札の「仮面ライダー」1枚ごとに必要パワーが1減る（20枚で25→5。パワー5で使える）（出典: atwiki/page-2078・カード評価「お互いのエリア・ゾーン・捨札にある仮面ライダーの数だけ必要パワーは減る」） — 既知の不具合: CARD-XP-021 ※ 必要パワーの減少が未実装", () => {
+  it("XP-021: ※ お互いのエリアのユニット・ゾーンのオモテ向きのカード・捨札の「仮面ライダー」1枚ごとに必要パワーが1減る（20枚で25→5。パワー5で使える）（出典: atwiki/page-2078・カード評価「お互いのエリア・ゾーン・捨札にある仮面ライダーの数だけ必要パワーは減る」）", () => {
     expect(canUseCard(board(5, 5), "player1", "XP-021:far")).toBe(true);
   });
 
@@ -305,7 +305,7 @@ describe("XP-021 ファイナルカメンアタックフォームライド", () 
     expect(canUseCard(board(5, 4), "player1", "XP-021:far")).toBe(false);
   });
 
-  it.fails("XP-021: ◎ 敵軍ユニットを1体選び撃破する（サイズ・エリアを問わない。強制）（出典: atwiki/page-2078「敵軍ユニットを1体選び撃破する」・カード評価「エリアやサイズを問わない非常に汎用的な除去」） — 既知の不具合: CARD-XP-021 ◎ が未実装（使っても何も起きない）", () => {
+  it("XP-021: ◎ 敵軍ユニットを1体選び撃破する（サイズ・エリアを問わない。強制）（出典: atwiki/page-2078「敵軍ユニットを1体選び撃破する」・カード評価「エリアやサイズを問わない非常に汎用的な除去」）", () => {
     const r = playOp(board(0, 25), "player1", "XP-021:far");
     expect(r.ok).toBe(true);
     let s = r.state;

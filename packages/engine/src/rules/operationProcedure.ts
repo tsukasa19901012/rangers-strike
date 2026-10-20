@@ -13,6 +13,7 @@ import {
 import { countAvailablePower, effectivePowerCost } from "../core/helpers";
 import { hasCommandForCardUse } from "./restrictions";
 import { xg4OperationCostIncrease } from "./xg4/xg4Fields";
+import { promoOperationCostReduction } from "./promo/promoHooks";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
 
 /** wiki p581: 通常/常駐オペは自軍ラッシュフェイズのみ。 */
@@ -36,7 +37,9 @@ export function canPayOperationPowerCost(
   playerId: PlayerId,
   definition: CardDefinition,
 ): boolean {
-  const cost = effectivePowerCost(state, playerId, parsePowerCost(definition.powerCost) + xg4OperationCostIncrease(state));
+  // XP-021 等の必要パワーの減少（rules/promo/promoHooks.ts）。
+  const printed = parsePowerCost(definition.powerCost) - promoOperationCostReduction(state, playerId, definition.id);
+  const cost = effectivePowerCost(state, playerId, Math.max(0, printed) + xg4OperationCostIncrease(state));
   return countAvailablePower(state, playerId) >= cost;
 }
 

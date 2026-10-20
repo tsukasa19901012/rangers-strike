@@ -44,7 +44,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "hold_named_riders_rc_copy",
+          "keyword": "promo::PK-009::double_typhoon",
           "duration": "turn"
         }
       ]

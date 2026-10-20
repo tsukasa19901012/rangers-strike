@@ -1315,7 +1315,7 @@ function applyOnkaku(state: GameState, ctx: GrantKeywordContext): GrantKeywordRe
   const paid = state.rk12OpPaid && state.rk12OpPaid.instanceId === ctx.operationInstanceId ? state.rk12OpPaid.commandIds : [];
   return {
     state: openOrQueue(state, {
-      ...base({ playerId: ctx.playerId, phasePlayerId: ctx.phasePlayerId, sourceInstanceId: ctx.operationInstanceId }, "RK-252"),
+      ...base({ playerId: ctx.playerId, phasePlayerId: ctx.phasePlayerId, sourceInstanceId: ctx.operationInstanceId }, ctx.sourceCardId),
       effectId: ONKAKU_EFFECT_ID,
       kind: "confirm",
       validInstanceIds: ONKAKU_MODES,

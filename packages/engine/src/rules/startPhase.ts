@@ -422,9 +422,8 @@ export function transitionStartToChargePhase(
   }
 
   nextState = applyMegaSilverStartEndToggle(nextState, playerId);
-  for (const pid of ["player1", "player2"] as const) {
-    nextState = applyPlasmaShockwaveShuffleBack(nextState, pid);
-  }
+  // SR-007【プラズマ衝撃波】: 見るのはこのスタートフェイズを終えるプレイヤーのバトルエリア（rules/srEffects.ts）。
+  nextState = applyPlasmaShockwaveShuffleBack(nextState, playerId);
 
   const resetPlayer = {
     ...nextState.players[playerId],

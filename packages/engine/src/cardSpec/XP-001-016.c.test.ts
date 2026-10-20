@@ -91,12 +91,12 @@ describe("XP-012 シンケンゴールド", () => {
     expect(cardIn(s, "player2", "RS-674:e")?.faceDown).toBe(true);
   });
 
-  it.fails("XP-012: 【サカナマル】同じ特徴が1つだけ（RS-318 ドギー・クルーガー。男）なら、そのユニットを撃破する（出典: atwiki/page-1720「1つだけならそのユニットを撃破する」） — 既知の不具合: CARD-XP-012 【サカナマル】が未実装", () => {
+  it("XP-012: 【サカナマル】同じ特徴が1つだけ（RS-318 ドギー・クルーガー。男）なら、そのユニットを撃破する（出典: atwiki/page-1720「1つだけならそのユニットを撃破する」）", () => {
     const s = resolveAll(pick(accept(enemyEnters()), "RS-318:man"));
     expect(zoneOf(s, "player2", "RS-674:e")).toBe("discard");
   });
 
-  it.fails("XP-012: 【サカナマル】出さないことを選べば、ラッシュエリアに残り何も起きない（出典: atwiki/page-1720「出してもよい」） — 既知の不具合: CARD-XP-012 【サカナマル】が未実装（選択が開かない）", () => {
+  it("XP-012: 【サカナマル】出さないことを選べば、ラッシュエリアに残り何も起きない（出典: atwiki/page-1720「出してもよい」）", () => {
     const s = resolveAll(skip(enemyEnters()));
     expect(zoneOf(s, "player1", "XP-012:sg")).toBe("rush");
     expect(zoneOf(s, "player2", "RS-674:e")).toBe("battle");
@@ -146,14 +146,14 @@ describe("XP-013 ハイパーシンケンレッド", () => {
       { type: "hold_for_wing", playerId: "player1", instanceId: "XP-022:w" },
     );
 
-  it.fails("XP-013: 【キョウリュウマル】自軍ターン中に自軍 S ユニットがホールド状態になったとき、敵軍ゾーンのオモテ向きの、追加条件を持つ S ユニットのカードから選べる（任意）（出典: atwiki/page-1882「敵軍ゾーンのオモテ向きのカードから、追加条件を持つSユニットのカードを1枚選び、…戻してもよい」） — 既知の不具合: CARD-XP-013 【キョウリュウマル】が未実装（ウイングでホールドしても選択が開かない）", () => {
+  it("XP-013: 【キョウリュウマル】自軍ターン中に自軍 S ユニットがホールド状態になったとき、敵軍ゾーンのオモテ向きの、追加条件を持つ S ユニットのカードから選べる（任意）（出典: atwiki/page-1882「敵軍ゾーンのオモテ向きのカードから、追加条件を持つSユニットのカードを1枚選び、…戻してもよい」）", () => {
     const s = held();
     expectChoiceFrom(s, "player1", "XP-013");
     expect(choiceIds(s)).toEqual(["XP-010:c", "XP-011:p"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XP-013: 【キョウリュウマル】選んだカードは持ち主（相手）の山札の一番下に戻る（出典: atwiki/page-1882「持ち主の山札の下に戻して」） — 既知の不具合: CARD-XP-013 【キョウリュウマル】が未実装", () => {
+  it("XP-013: 【キョウリュウマル】選んだカードは持ち主（相手）の山札の一番下に戻る（出典: atwiki/page-1882「持ち主の山札の下に戻して」）", () => {
     const s = resolveAll(pick(held(), "XP-011:p"));
     expect(s.players.player2.deck.at(-1)?.instanceId).toBe("XP-011:p");
   });
@@ -182,7 +182,7 @@ describe("XP-014 仮面ライダーW・CM", () => {
   const rushBoardOf = (command: CardInstance[]) =>
     st({ phase: "rush", player1: { hand: [inst("XP-014", "cm")], command, power: powerCards(2), deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
 
-  it.fails("XP-014: 追加条件 — 特徴「メカ」を持つ自軍コマンド（XP-015 ダブルドライバー。ET／DA で特徴「メカ」）があればラッシュできる（出典: atwiki/page-1883「追加条件：特徴「メカ」を持つ自軍コマンドがある」・atwiki/page-1880 カード評価「これ自体が特徴「メカ」を持つため、仮面ライダーW・HMなどもそのままラッシュ可能」） — 既知の不具合: CARD-XP-014 追加条件「特徴「メカ」を持つ自軍コマンドがある」を満たしてもラッシュの合法手が出ない", () => {
+  it("XP-014: 追加条件 — 特徴「メカ」を持つ自軍コマンド（XP-015 ダブルドライバー。ET／DA で特徴「メカ」）があればラッシュできる（出典: atwiki/page-1883「追加条件：特徴「メカ」を持つ自軍コマンドがある」・atwiki/page-1880 カード評価「これ自体が特徴「メカ」を持つため、仮面ライダーW・HMなどもそのままラッシュ可能」）", () => {
     const r = rushFromHand(rushBoardOf([released("XP-015", "dd")]), "player1", "XP-014:cm");
     expect(r.ok).toBe(true);
     expect(zoneOf(r.state, "player1", "XP-014:cm")).toBe("rush");
@@ -216,7 +216,7 @@ describe("XP-014 仮面ライダーW・CM", () => {
       "XP-014:cm",
     );
 
-  it.fails("XP-014: 【メタルシャフト】自軍ターンにバトルエリアに出たとき、敵軍バトルエリアのホールド状態の S ユニットだけから1体選ぶ（強制）（出典: atwiki/page-1883「敵軍バトルエリアからホールド状態のＳユニットを１体選び」） — 既知の不具合: CARD-XP-014 候補がホールド状態・S ユニットに絞られていない（リリース状態の S・ホールド状態の M も選べる）", () => {
+  it("XP-014: 【メタルシャフト】自軍ターンにバトルエリアに出たとき、敵軍バトルエリアのホールド状態の S ユニットだけから1体選ぶ（強制）（出典: atwiki/page-1883「敵軍バトルエリアからホールド状態のＳユニットを１体選び」）", () => {
     const s = metalShaft();
     expectChoiceFrom(s, "player1", "XP-014");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:h"]);
@@ -258,14 +258,14 @@ describe("XP-015 ダブルドライバー", () => {
     return r.state;
   };
 
-  it.fails("XP-015: ◎ 自軍山札の特徴「ダブルドライバー」を持つユニットカードから1枚選べる（任意。ほかのライダーは選べない）（出典: atwiki/page-1880「自軍山札を見て、特徴「ダブルドライバー」を持つユニットカードを1枚選び、…手札に加えてもよい」） — 既知の不具合: CARD-XP-015 ◎ の山札サーチが未実装（使っても何も起きない）", () => {
+  it("XP-015: ◎ 自軍山札の特徴「ダブルドライバー」を持つユニットカードから1枚選べる（任意。ほかのライダーは選べない）（出典: atwiki/page-1880「自軍山札を見て、特徴「ダブルドライバー」を持つユニットカードを1枚選び、…手札に加えてもよい」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "XP-015");
     expect(choiceIds(s)).toEqual(["XG2-043:cj", "XP-014:cm"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XP-015: ◎ 選んだカードは相手に見せてから手札に加わる（出典: atwiki/page-1880「相手に見せてから手札に加えて」） — 既知の不具合: CARD-XP-015 ◎ が未実装", () => {
+  it("XP-015: ◎ 選んだカードは相手に見せてから手札に加わる（出典: atwiki/page-1880「相手に見せてから手札に加えて」）", () => {
     const s = resolveAll(pick(used(), "XP-014:cm"));
     expect(zoneOf(s, "player1", "XP-014:cm")).toBe("hand");
     expect(zoneOf(s, "player1", "XG2-043:cj")).toBe("deck");
@@ -319,7 +319,7 @@ describe("XP-016 仮面ライダークウガRU・レッドアイ", () => {
   const rushBoardOf = (own: number, enemy: number) =>
     st({ phase: "rush", player1: { hand: [inst("XP-016", "ru")], command: releasedCat("MA", 1), power: powerCards(7), discard: riders("a", own), deck: deckCards(3) }, player2: { discard: riders("b", enemy), deck: deckCards(3, "e") } });
 
-  it.fails("XP-016: 追加条件 — 特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚（4＋4）あればラッシュでき、捨札はそのまま残る（出典: atwiki/page-1982「追加条件：特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚以上ある」） — 既知の不具合: CARD-XP-016 追加条件が「捨札の枚数」の状態条件として扱われず、ラッシュの合法手が出ない（カタログの conditionId が discard_named_unit）", () => {
+  it("XP-016: 追加条件 — 特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚（4＋4）あればラッシュでき、捨札はそのまま残る（出典: atwiki/page-1982「追加条件：特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚以上ある」）", () => {
     const r = rushFromHand(rushBoardOf(4, 4), "player1", "XP-016:ru");
     expect(r.ok).toBe(true);
     expect(zoneOf(r.state, "player1", "XP-016:ru")).toBe("rush");
@@ -346,20 +346,20 @@ describe("XP-016 仮面ライダークウガRU・レッドアイ", () => {
       ),
     );
 
-  it.fails("XP-016: 【赤い瞳に宿るもの】これより BP の低い自軍ユニットがアタックされたとき、そのユニットをホールドするかを選べる（任意）（出典: atwiki/page-1982「アタックされたユニットをホールドしてもよい」） — 既知の不具合: CARD-XP-016 【赤い瞳に宿るもの】が未実装", () => {
+  it("XP-016: 【赤い瞳に宿るもの】これより BP の低い自軍ユニットがアタックされたとき、そのユニットをホールドするかを選べる（任意）（出典: atwiki/page-1982「アタックされたユニットをホールドしてもよい」）", () => {
     const s = attacked();
     expectChoiceFrom(s, "player1", "XP-016");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XP-016: 【赤い瞳に宿るもの】ホールドすると、アタックしてきたユニットはかわりにこのユニットとバトルする（BP6000 は BP7000 に負ける。アタックされたユニットはホールド状態で残る）（出典: atwiki/page-1982「アタックしてきたユニットは、ホールドしたユニットのかわりに、このユニットとバトルする」） — 既知の不具合: CARD-XP-016 【赤い瞳に宿るもの】が未実装", () => {
+  it("XP-016: 【赤い瞳に宿るもの】ホールドすると、アタックしてきたユニットはかわりにこのユニットとバトルする（BP6000 は BP7000 に負ける。アタックされたユニットはホールド状態で残る）（出典: atwiki/page-1982「アタックしてきたユニットは、ホールドしたユニットのかわりに、このユニットとバトルする」）", () => {
     const s = resolveAll(accept(attacked()));
     expect(cardIn(s, "player1", "TST-UNIT-0:w")?.commandHeld).toBe(true);
     expect(zoneOf(s, "player1", "TST-UNIT-0:w")).toBe("battle");
     expect(zoneOf(s, "player1", "XP-016:ru")).toBe("discard");
   });
 
-  it.fails("XP-016: 【赤い瞳に宿るもの】自軍エリアに「仮面ライダーディケイド」（XP-004）があれば、このバトル中 BP+2000（BP8000）で BP7000 に勝つ（出典: atwiki/page-1982「このバトル中、自軍エリアに「仮面ライダーディケイド」があれば、これはBP+2000される」） — 既知の不具合: CARD-XP-016 【赤い瞳に宿るもの】が未実装", () => {
+  it("XP-016: 【赤い瞳に宿るもの】自軍エリアに「仮面ライダーディケイド」（XP-004）があれば、このバトル中 BP+2000（BP8000）で BP7000 に勝つ（出典: atwiki/page-1982「このバトル中、自軍エリアに「仮面ライダーディケイド」があれば、これはBP+2000される」）", () => {
     const s = resolveAll(accept(attacked({ rush: [inst("XP-004", "dc")] })));
     expect(zoneOf(s, "player1", "XP-016:ru")).toBe("rush");
     expect(zoneOf(s, "player2", "SPEC-7000:a")).toBe("discard");

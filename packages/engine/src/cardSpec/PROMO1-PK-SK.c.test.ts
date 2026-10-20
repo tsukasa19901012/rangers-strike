@@ -98,14 +98,14 @@ describe("PM-001 ジライヤ", () => {
       ),
     );
 
-  it.fails("PM-001: 【真っ向両断】自軍ターン中、本来の特徴が2つ（獣／人型）のユニットを撃破したとき、敵軍パワーゾーンのオモテ向きのカードから特徴1「獣」を持つユニットカードを1枚選べる（「人型」だけのカード・オペレーションは選べない）（出典: atwiki/page-743「特徴1と同じ特徴を持つユニットカードを1枚選び」）— 既知の不具合: CARD-PM-001 【真っ向両断】が未実装（撃破しても何も起きない）", () => {
+  it("PM-001: 【真っ向両断】自軍ターン中、本来の特徴が2つ（獣／人型）のユニットを撃破したとき、敵軍パワーゾーンのオモテ向きのカードから特徴1「獣」を持つユニットカードを1枚選べる（「人型」だけのカード・オペレーションは選べない）（出典: atwiki/page-743「特徴1と同じ特徴を持つユニットカードを1枚選び」）", () => {
     const s = slash(inst("SPEC-F2", "t"));
     expect(zoneOf(s, "player2", "SPEC-F2:t")).toBe("discard");
     expectChoiceFrom(s, "player1", "PM-001");
     expect(choiceIds(s)).toEqual(["SPEC-BEAST:pb"]);
   });
 
-  it.fails("PM-001: 【真っ向両断】選んだカードはウラ向きのダメージになり、続けて敵軍バトルエリアの特徴2「人型」を持つユニットを1体選び、持ち主の手札に戻す（出典: atwiki/page-743「ウラ向きにしてダメージにする。そして、敵軍バトルエリアから、特徴2と同じ特徴を持つユニットを1体選び、持ち主の手札に戻す」）— 既知の不具合: CARD-PM-001 【真っ向両断】が未実装", () => {
+  it("PM-001: 【真っ向両断】選んだカードはウラ向きのダメージになり、続けて敵軍バトルエリアの特徴2「人型」を持つユニットを1体選び、持ち主の手札に戻す（出典: atwiki/page-743「ウラ向きにしてダメージにする。そして、敵軍バトルエリアから、特徴2と同じ特徴を持つユニットを1体選び、持ち主の手札に戻す」）", () => {
     let s = pick(slash(inst("SPEC-F2", "t")), "SPEC-BEAST:pb");
     expect(cardIn(s, "player2", "SPEC-BEAST:pb")?.faceDown).toBe(true);
     expectChoiceFrom(s, "player1", "PM-001");
@@ -115,7 +115,7 @@ describe("PM-001 ジライヤ", () => {
     expect(zoneOf(s, "player2", "SPEC-BEAST:b")).toBe("battle");
   });
 
-  it.fails("PM-001: 【真っ向両断】は発動するかを選べる（「発動できる」）（出典: atwiki/page-743「次の効果を発動できる」）— 既知の不具合: CARD-PM-001 【真っ向両断】が未実装", () => {
+  it("PM-001: 【真っ向両断】は発動するかを選べる（「発動できる」）（出典: atwiki/page-743「次の効果を発動できる」）", () => {
     const s = slash(inst("SPEC-F2", "t"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("PM-001");
     expect(canSkip(s)).toBe(true);
@@ -153,14 +153,14 @@ describe("SM-001 3人の宇宙刑事", () => {
   const used = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     played(rushPhase({ hand: [inst("SM-001", "op")], command: releasedCat("OT", 1), power: powerCards(7), deck: DECK(), ...p1 }), "SM-001:op");
 
-  it.fails("SM-001: 自軍に「宇宙刑事」のユニットがなければ、自軍山札の特徴「宇宙刑事」を持つユニットカードから選べる（任意。宇宙刑事でないカードは選べない）（出典: atwiki/page-898「自軍山札を見て、特徴「宇宙刑事」を持つユニットカードを3枚まで選び、…出してもよい」）— 既知の不具合: CARD-SM-001 効果が未実装（使っても何も起きない）", () => {
+  it("SM-001: 自軍に「宇宙刑事」のユニットがなければ、自軍山札の特徴「宇宙刑事」を持つユニットカードから選べる（任意。宇宙刑事でないカードは選べない）（出典: atwiki/page-898「自軍山札を見て、特徴「宇宙刑事」を持つユニットカードを3枚まで選び、…出してもよい」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "SM-001");
     expect(choiceIds(s)).toEqual(["RM-018:g1", "RM-025:sh", "XG1-083:sd", "XG2-083:g2", "XG7-068:x"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("SM-001: 選んだカード（3枚まで）は自軍ラッシュエリアに出る（出典: atwiki/page-898「選んだカードを自軍ラッシュエリアに出してもよい」・カード評価「追加条件を無視して宇宙刑事シャリバン×ギャバン×シャイダーをラッシュできる」）— 既知の不具合: CARD-SM-001 効果が未実装", () => {
+  it("SM-001: 選んだカード（3枚まで）は自軍ラッシュエリアに出る（出典: atwiki/page-898「選んだカードを自軍ラッシュエリアに出してもよい」・カード評価「追加条件を無視して宇宙刑事シャリバン×ギャバン×シャイダーをラッシュできる」）", () => {
     let s = used();
     for (const id of ["RM-018:g1", "RM-025:sh", "XG7-068:x"]) if (s.pendingEffectChoice?.validInstanceIds.includes(id)) s = pick(s, id);
     s = resolveAll(s);
@@ -170,7 +170,7 @@ describe("SM-001 3人の宇宙刑事", () => {
     expect(s.players.player1.deck).toHaveLength(DECK().length - 3);
   });
 
-  it.fails("SM-001: 同じカード名のユニットカードを2枚以上選べない（「宇宙刑事ギャバン」RM-018 を選んだら XG2-083 は選べない）（出典: atwiki/page-898「同じカード名のユニットカードを2枚以上選ぶことはできない」）— 既知の不具合: CARD-SM-001 効果が未実装", () => {
+  it("SM-001: 同じカード名のユニットカードを2枚以上選べない（「宇宙刑事ギャバン」RM-018 を選んだら XG2-083 は選べない）（出典: atwiki/page-898「同じカード名のユニットカードを2枚以上選ぶことはできない」）", () => {
     const s = pick(used(), "RM-018:g1");
     expect(choiceIds(s)).not.toContain("XG2-083:g2");
     expect(choiceIds(s)).toContain("RM-025:sh");
@@ -204,9 +204,7 @@ describe("SK-001 シャドームーン", () => {
     "SK-001",
     "atwiki/page-43",
     "SC",
-    "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。 【サタンサーベル】敵軍バトルエリアからSビークルを1体選ぶ。選んだビークルにライドしているユニットがあれば、それを撃破する。その後、選んだビークルを捨札にする。",
-    "【サタンサーベル】が発動しない（同じ本文の PK-006 は同じ盤面で発動する）",
-  );
+    "※これは敵軍ターン中、「SP1」以上のユニットとバトルしたときバトルに勝っても撃破される。 【サタンサーベル】敵軍バトルエリアからSビークルを1体選ぶ。選んだビークルにライドしているユニットがあれば、それを撃破する。その後、選んだビークルを捨札にする。",  );
 });
 
 // ===========================================================================
@@ -234,7 +232,7 @@ describe("SK-003 仮面ライダーファム", () => {
   const locked = (p1: Partial<GameState["players"]["player1"]> = { battle: [inst("SK-003", "fm")] }, enemyCommand: CardInstance[] = heldN(1, "TST-OP", "eh")) =>
     enemyTurn(p1, { battle: [inst("SPEC-MALE", "m"), inst("SPEC-MALE-M", "mm"), inst("SPEC-FEMALE", "f")], command: enemyCommand });
 
-  it.fails("SK-003: 【復讐の女詐欺師】ホールド状態の敵軍コマンドがあれば、特徴「男」を持つ敵軍 S ユニットはアタックもストライクもできない（出典: atwiki/page-1083「特徴「男」を持つ敵軍Sユニットは、…アタックもストライクもすることができない」）— 既知の不具合: CARD-SK-003 【復讐の女詐欺師】が未実装（男の S ユニットがアタック・ストライクできる）", () => {
+  it("SK-003: 【復讐の女詐欺師】ホールド状態の敵軍コマンドがあれば、特徴「男」を持つ敵軍 S ユニットはアタックもストライクもできない（出典: atwiki/page-1083「特徴「男」を持つ敵軍Sユニットは、…アタックもストライクもすることができない」）", () => {
     const s = locked();
     expect(attackTargets(s, "SPEC-MALE:m", "player2")).toEqual([]);
     expect(canStrike(s, "SPEC-MALE:m", "player2")).toBe(false);
@@ -315,11 +313,14 @@ describe("SK-004 仮面ライダークウガUF", () => {
   });
 
   // atwiki/page-1411 Q1「「追加条件で捨札にしたカード」を0枚として参照し、処理を続行してください。」
-  it.fails("SK-004: 公式Q&A — 敵軍ターン中、敵軍ユニット（RK-275 ゴ・ガドル・バ【ザバギンバシグラ】）の効果で自軍パワーゾーンから自軍ラッシュエリアに出たときは、追加条件で捨札にしたカードを0枚として処理を続ける（4枚重ねなかったので、ほかの自軍ユニットはすべて捨札）（出典: atwiki/page-1411 Q1）— 既知の不具合: CARD-SK-004 効果で自軍ラッシュエリアに出たとき【凄まじき戦士】の前半が発動せず、ほかの自軍ユニットが捨札にならない", () => {
+  it("SK-004: 公式Q&A — 敵軍ターン中、敵軍ユニット（RK-275 ゴ・ガドル・バ【ザバギンバシグラ】）の効果で自軍パワーゾーンから自軍ラッシュエリアに出たときは、追加条件で捨札にしたカードを0枚として処理を続ける（4枚重ねなかったので、ほかの自軍ユニットはすべて捨札）（出典: atwiki/page-1411 Q1）", () => {
     let s = enemyTurn({ power: [faceUpPower("SK-004", "uf")], battle: [inst("SPEC-C1", "b")] }, { rush: [inst("RK-275", "gd")] });
     s = act(s, { type: "move_to_battle", playerId: "player2", instanceId: "RK-275:gd" });
     expectChoiceFrom(s, "player2", "RK-275");
-    s = resolveAll(pick(s, "SK-004:uf"));
+    s = pick(s, "SK-004:uf");
+    // RK-275 の後半「相手は…パワーゾーンに置いてもよい」は自分（player1）の確認。置かない（PROMO-judgments.md「実装」）。
+    expectChoiceFrom(s, "player1", "RK-275");
+    s = resolveAll(skip(s));
     expect(zoneOf(s, "player1", "SK-004:uf")).toBe("rush");
     expect(stacked(s)).toEqual([]);
     expect(zoneOf(s, "player1", "SPEC-C1:b")).toBe("discard");

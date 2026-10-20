@@ -149,6 +149,8 @@ import { canConfirmRk14Choice, isRk14ChoiceEffect } from "../rules/rk/rk14UnitEf
 import { canConfirmRk15Choice, isRk15ChoiceEffect } from "../rules/rk/rk15UnitEffects";
 import { canConfirmRk16Choice, isRk16ChoiceEffect } from "../rules/rk/rk16UnitEffects";
 import { canConfirmXg6Choice, isXg6ChoiceEffect, xg6HandActivations } from "../rules/xg6/xg6Hooks";
+import { canConfirmPromoChoice, isPromoChoiceEffect } from "../rules/promo";
+import { promoForcesAttack } from "../rules/promo/promoHooks";
 import { canConfirmRm1Choice, isRm1ActivatableResident, isRm1ChoiceEffect, isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "../rules/rm/rm1Effects";
 import { canConfirmXg4Choice, isXg4BattleCounterCard, isXg4ChoiceEffect, xg4BattleCounterConditionMet } from "../rules/xg4/xg4Effects";
 import { rm1ActsAsVehicle } from "../rules/rm/rm1Fields";
@@ -1439,6 +1441,13 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (isPromoChoiceEffect(pending.effectId)) {
+    // プロモーションカードの選択（rules/promo）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    if (canConfirmPromoChoice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
   if (isRm1ChoiceEffect(pending.effectId)) {
     // スペシャルメタルエディション RM-001〜RM-021 の選択（rules/rm/rm1Effects.ts）。候補はモジュール側で絞り込み済み。
     for (const instanceId of choiceIds) {
@@ -1918,7 +1927,11 @@ function appendBattleEntryActions(
     // XG5-031【ガゼル脚】: 可能なら敵軍ユニットにアタックする（rules/xg5/xg5Fields.ts）。
     (xg5ForcesAttack(state, playerId, pending.instanceId) && actions.some((a) => a.type === "battle"));
   if (forcedAttack) return;
+  // SX-002【黒い瞳に映るもの】: アタックできるならストライクを選べない（何もしないことはできる。rules/promo/promoHooks.ts）。
+  const promoMustAttack =
+    actions.some((a) => a.type === "battle" && a.attackerInstanceId === pending.instanceId) && promoForcesAttack(state, playerId, unit);
   if (
+    !promoMustAttack &&
     canStrikeUnit(state.definitions, unit, state, playerId) &&
     !requiredDefenderId &&
     !battleActBlocked(player, unit, "strike") &&

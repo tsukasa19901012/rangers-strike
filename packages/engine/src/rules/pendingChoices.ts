@@ -167,6 +167,7 @@ import { isRk16ChoiceEffect, tryConfirmRk16Choice, tryResolveRk16Choice, trySkip
 import { isRm1ChoiceEffect, tryConfirmRm1Choice, tryResolveRm1Choice, trySkipRm1Choice } from "./rm/rm1Effects";
 import { isXg6ChoiceEffect, tryConfirmXg6Choice, tryResolveXg6Choice, trySkipXg6Choice } from "./xg6/xg6Hooks";
 import { isXg4ChoiceEffect, tryConfirmXg4Choice, tryResolveXg4Choice, trySkipXg4Choice } from "./xg4/xg4Effects";
+import { isPromoChoiceEffect, promoInterceptDeckReveal, tryConfirmPromoChoice, tryResolvePromoChoice, trySkipPromoChoice } from "./promo";
 import { isRm2ChoiceEffect, tryCompleteRm2HoldChoice, tryConfirmRm2Choice, tryResolveRm2Choice, trySkipRm2Choice } from "./rm/rm2Effects";
 import { isXg5ChoiceEffect, tryConfirmXg5Choice, tryResolveXg5Choice, trySkipXg5Choice } from "./xg5/xg5Effects";
 import { isRm3ChoiceEffect, tryCompleteRm3HoldChoice, tryConfirmRm3Choice, tryResolveRm3Choice, trySkipRm3Choice } from "./rm/rm3Effects";
@@ -693,6 +694,7 @@ export function isValidEffectChoiceTarget(
     isRm1ChoiceEffect(pending.effectId) ||
     isXg6ChoiceEffect(pending.effectId) ||
     isXg4ChoiceEffect(pending.effectId) ||
+    isPromoChoiceEffect(pending.effectId) ||
     isRm2ChoiceEffect(pending.effectId) ||
     isRm3ChoiceEffect(pending.effectId) ||
     isXg5ChoiceEffect(pending.effectId) ||
@@ -2092,6 +2094,8 @@ export function applyConfirmEffectChoice(
   if (xg6) return xg6;
   const xg4 = tryConfirmXg4Choice(state, playerId);
   if (xg4) return xg4;
+  const promo = tryConfirmPromoChoice(state, playerId);
+  if (promo) return promo;
   const rm2 = tryConfirmRm2Choice(state, playerId);
   if (rm2) return rm2;
   const rm3 = tryConfirmRm3Choice(state, playerId);
@@ -3124,6 +3128,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (xg6) return xg6;
   const xg4 = trySkipXg4Choice(state, playerId);
   if (xg4) return xg4;
+  const promo = trySkipPromoChoice(state, playerId);
+  if (promo) return promo;
   const rm2 = trySkipRm2Choice(state, playerId);
   if (rm2) return rm2;
   const rm3 = trySkipRm3Choice(state, playerId);
@@ -3474,6 +3480,8 @@ export function applyEffectChoiceSelect(
   if (xg6) return xg6;
   const xg4 = tryResolveXg4Choice(state, playerId, instanceId);
   if (xg4) return xg4;
+  const promo = tryResolvePromoChoice(state, playerId, instanceId);
+  if (promo) return promo;
   const rm2 = tryResolveRm2Choice(state, playerId, instanceId);
   if (rm2) return rm2;
   const rm3 = tryResolveRm3Choice(state, playerId, instanceId);
@@ -5692,6 +5700,9 @@ export function applyEffectChoiceSelect(
       if (pending.effectId === "arino" && instanceId === "reveal_top") {
         const top = state.players[pending.playerId].deck[0];
         if (!top) return finishChoice(state, pending, "empty_deck");
+        // SR-006【超忍法・分身魔球】: オモテにしたカードを効果の対象にする前に（rules/promo/promo2Effects.ts）。
+        const promoIntercepted = promoInterceptDeckReveal(state, pending, top.instanceId);
+        if (promoIntercepted) return { state: promoIntercepted };
         const zorobApplied = applyZorobTopDeckReveal(state, pending.playerId, top.instanceId);
         const nextState = recordReveal(zorobApplied, {
           playerId: pending.playerId,

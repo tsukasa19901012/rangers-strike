@@ -11,6 +11,7 @@ import { lastBattleProtectsOtherS } from "../rules/promotedNcEffects";
 import { getCardDslDocument } from "./effectLookup";
 import { stackOntoLargeBpBonus, stackOntoLargeGrantsKeyword } from "../rules/stackOntoLargeGrants";
 import { unitFeatures } from "../rules/addedFeatures";
+import { promoNegatesUnnamedText } from "../rules/promo/promoHooks";
 import { decodeFeatureKeywordSlug, featuresMatchKeywordSlug } from "./featureKeywords";
 
 /** rematch 不可の D/E 区分キーワード（grant_keyword マーカー）。 */
@@ -673,7 +674,11 @@ export function promotedDefenderBlocksAttack(
 
   const attackerBp = quickBpForAttackCheck(state, attackerPlayerId, attacker.card);
   // XG3-037【烏賊墨砲】で「アタックされない」テキストが無効になったユニット（rules/xg3/xg3Fields.ts）。
-  const keywords = xg3NoAttackTextDisabled(state, defender.card.instanceId) ? [] : cachedCardGrantKeywords(defender.card.cardId);
+  // SX-003 W・FJ の※: 効果名を持たないテキストが無効なユニットの※は働かない（rules/promo/promoHooks.ts）。
+  const keywords =
+    xg3NoAttackTextDisabled(state, defender.card.instanceId) || promoNegatesUnnamedText(state, defenderPlayerId, defender.card.instanceId)
+      ? []
+      : cachedCardGrantKeywords(defender.card.cardId);
 
   for (const keyword of keywords) {
     if (keyword === "enemy_cannot_attack") return true;

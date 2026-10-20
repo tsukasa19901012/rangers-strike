@@ -25,6 +25,7 @@ import {
 } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
 import { xg6AddedCategories, xg6BlocksRush, xg6CommandCategories, xg6TurnCommandCategories } from "../rules/xg6/xg6Fields";
+import { promoBpBonus, promoOperationCostReduction } from "../rules/promo/promoHooks";
 import { srBigBatonBpFloor } from "../rules/srEffects";
 import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
 import { unitFeatures } from "../rules/addedFeatures";
@@ -462,7 +463,9 @@ function effectiveBpUncached(
     signed(promotedKeywordBpBonus(state, playerId, instance)) +
     signed(rideMountedVehicleBpBonus(state, playerId, instance)) +
     // XG1-040 虎折神【侍武装】・XG1-039【折神の結集】・XG1-058 の※（ライド中）（rules/xg1/xg1Fields.ts）。
-    signed(xg1BpBonus(state, playerId, instance));
+    signed(xg1BpBonus(state, playerId, instance)) +
+    // XP-020 護星天使 等（rules/promo/promoHooks.ts）。
+    signed(promoBpBonus(state, playerId, instance));
   const floor = srBigBatonBpFloor(state, playerId, instance);
   return floor > 0 ? Math.max(base, floor) : base;
 }
@@ -705,9 +708,7 @@ function evaluateRushPowerAndZord(
   }
 
   // ルール: R-KW-BREAKER-01 — 同名の自軍ユニットがあればラッシュできない（追加条件の種類を問わない。下の早期 return より前に見る）。
-  // いまは XG7 のカードだけに当てる: ほかのシリーズ（PROMO2 SX-007 等）にも同じ不具合があり、この確認で直るが、
-  // そのスペック（it.fails）はそのシリーズの担当で直す（docs/verification/unverified/XG7-judgments.md）。
-  if (unitDefinition.id.startsWith("XG7-") && breakerBlocksSameNameRush(player, definitions, unitDefinition.id)) return false;
+  if (breakerBlocksSameNameRush(player, definitions, unitDefinition.id)) return false;
 
   if (
     isZordDown &&
@@ -857,6 +858,9 @@ export function canRushUnitExceptCommandHold(
   zordMaterialInstanceIds?: string[],
   zordExtraCommandHoldInstanceIds?: string[],
 ): boolean {
+  // 「自軍捨札に「X」があるとき、…を捨札にする」— 前半の状態を満たさなければラッシュできない（SR-003 atwiki/page-46。rules/zordSetup.ts も同じ）。
+  const discardGate = unitDefinition.rushAdditionalCondition?.text.match(/^自軍捨札に「([^」]+)」があるとき、/);
+  if (discardGate && !player.discard.some((c) => getDefinition(definitions, c.cardId)?.name === discardGate[1])) return false;
   return evaluateRushPowerAndZord(
     player,
     definitions,
@@ -879,7 +883,8 @@ export function canPlayOperationExceptCommandHold(
 ): boolean {
   // RK-225 仮面ライダー朱鬼【陰陽術】: カウンターを持つオペレーションの必要パワーの数字は3少なくなる（rules/rk/rk11Fields.ts）。
   // XG4-072 タブー・ドーパント【光弾】: すべてのオペレーションカードの必要パワーの数字が2増える（rules/xg4/xg4Fields.ts）。
-  const printed = Math.max(0, parsePowerCost(definition.powerCost) - rk11CounterCostReduction(state, definition)) + xg4OperationCostIncrease(state);
+  // XP-021 等の必要パワーの減少（rules/promo/promoHooks.ts）。
+  const printed = Math.max(0, parsePowerCost(definition.powerCost) - rk11CounterCostReduction(state, definition) - promoOperationCostReduction(state, playerId, definition.id)) + xg4OperationCostIncrease(state);
   const cost = effectivePowerCost(state, playerId, printed);
   return countAvailablePower(state, playerId) >= cost;
 }

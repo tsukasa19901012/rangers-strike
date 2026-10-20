@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::SM-001::wotsuyunitoga1mo",
-          "duration": "permanent"
+          "keyword": "promo::SM-001::space_sheriffs",
+          "duration": "turn"
         }
       ]
     }

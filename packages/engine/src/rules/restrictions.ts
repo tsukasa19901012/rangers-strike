@@ -108,6 +108,7 @@ import { rk9BlocksBattleEntry } from "./rk/rk9Fields";
 import { rk10BlocksBattleEntry, rk10ElasmoHoldReduction, rk10OmegaIgnoresEntryHold } from "./rk/rk10Fields";
 import { rk12BlocksBattleEntry, rk12RequiresBattleEntry, rk12ResidentsNegated } from "./rk/rk12Fields";
 import { unitFeatures as rk12UnitFeatures } from "./addedFeatures";
+import { promoBlocksAttackStrike } from "./promo/promoRegistry";
 import {
   rs482BlocksAttackStrike,
   rs579BlocksAttackStrikeOnRushTurn,
@@ -513,6 +514,8 @@ export function cannotAttackOrStrikeThisTurn(
     if (rs603BlocksVehicle(state, playerId, unit.cardId)) return true;
     // RK-295 の※（1番目でなければ）・RK-302【ワームの頂点に立つ男】（rules/rk/rk15Fields.ts）。
     if (rk15BlocksAttackStrike(state, playerId, unit, rk12UnitFeatures)) return true;
+    // SK-003【復讐の女詐欺師】等（rules/promo）。
+    if (promoBlocksAttackStrike(state, playerId, unit)) return true;
   }
   if (unit.activatedNcEffects?.includes("optional_battle_no_attack")) return true;
   // RK-231 オロチ【潜水】: ホールド状態のときアタックもストライクもできない（ルール: R-ERR-RK231）。

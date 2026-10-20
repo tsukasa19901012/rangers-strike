@@ -150,6 +150,7 @@ import { magiMotherSubstitutes, openKasumoShieldChoice, openRaigekiZanChoice } f
 import { openBatLeeChoice } from "./legend1/set7NamedEffectsD";
 import { applySet8BAfterUnitLeft } from "./legend1/set8NamedEffectsB";
 import { registerBattlePendingResolver } from "../events/listeners/battleDeclaredListener";
+import { promoOnBattleDestroy, promoStayOnLeave } from "./promo/promoRegistry";
 
 function isEnemyTurn(state: GameState, counterPlayerId: PlayerId): boolean {
   return state.activePlayer !== counterPlayerId;
@@ -1729,6 +1730,8 @@ export function resolveBattlePendingCore(
         withAttacker = xg4OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
         // XG3-045【超電稲妻キック】等（rules/xg3/xg3Effects.ts）。
         withAttacker = applyXg3OnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId);
+        // PM-001【真っ向両断】等（rules/promo）。
+        withAttacker = promoOnBattleDestroy(withAttacker, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, refreshedDefenderFound.card.cardId);
       }
       if (!withAttacker.pendingLeave && !withAttacker.pendingRegister) {
         // 撃破は済み、別の選択が開いている — RS-226（段階 1）を先に、RS-212（段階 4）は段階の順に処理する。
@@ -1776,6 +1779,8 @@ export function resolveBattlePendingCore(
     if (!finalDestroyAttacker) nextState = xg4OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
     // XG3-045【超電稲妻キック】等（rules/xg3/xg3Effects.ts）。
     if (!finalDestroyAttacker) nextState = applyXg3OnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId);
+    // PM-001【真っ向両断】等（rules/promo）。
+    if (!finalDestroyAttacker) nextState = promoOnBattleDestroy(nextState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, refreshedDefenderFound.card.cardId);
 
     if (refreshedAttackerFound.card.cardId === "RS-065") {
       const fb = resolveFocusedBreakthroughDamage(
@@ -2300,6 +2305,9 @@ export function tryLeaveField(
   // XG7-005【モバイレーツ】・XG7-012【荒ぶるダイノガッツ】等（rules/xg7/xg7Effects.ts）。
   const xg7Stay = openXg7LeaveStay(state, intent);
   if (xg7Stay) return { state: xg7Stay, deferred: true };
+  // XP-027 ダイノミッション: 重ねたユニットがユニットでなくなるとき、このカードを捨札にしてその場に留める（rules/promo/xp2Effects.ts）。
+  const promoStay = promoStayOnLeave(state, intent);
+  if (promoStay) return { state: promoStay, deferred: true };
   // RS-437 白熱する実況: 下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる（rules/legend1/set7NamedEffectsA.ts）。
   const liveCommentary = openLiveCommentaryStay(state, intent);
   if (liveCommentary) return { state: liveCommentary, deferred: true };

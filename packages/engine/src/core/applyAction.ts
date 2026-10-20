@@ -117,6 +117,8 @@ import { drainQueuedFieldLeaves } from "../rules/fieldLeaveQueue";
 import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
 import { applyXg2AfterAction, applyXg2BattleCounter, applyXg2BattlePhaseEnd, applyXg2StrikeDamageTriggers, isXg2ActivatableResident, isXg2BattleCounterCard, openXg2OnBattlePhaseStart, xg2RejectsOperationTarget } from "../rules/xg2/xg2Effects";
+import { promoOperationCostReduction } from "../rules/promo/promoHooks";
+import { applyPromoAfterAction, isPromoAttackedChoice, openPromoAttacked, resolvePromoAttacked, skipPromoAttacked } from "../rules/promo";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import {
   applyXg4AfterAction,
@@ -590,6 +592,12 @@ function continueAttackAfterDeclaration(
   battleState = applyXg6OnBattleStart(battleState, pending);
   const xg6Attacked = openXg6OnAttacked(battleState, pending, wingAttackFromRush);
   if (xg6Attacked) return ok(xg6Attacked, buildSimpleLogEntry(playerId, "battle_pending"));
+  // XP-016【赤い瞳に宿るもの】: これより BP の低い自軍ユニットがアタックされたとき（rules/promo/xpEffects.ts）。
+  const redEye = openPromoAttacked(battleState, pending, wingAttackFromRush);
+  if (redEye) {
+    const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...redEye, pendingBattleEntry: undefined } : redEye;
+    return ok(parked, buildSimpleLogEntry(playerId, "xp016_red_eye_choice"));
+  }
   // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
   const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
   // RS-414【ディオネを守る壁】: 冥府神の自軍ユニットがアタックされたとき、常駐を捨札にしてバトルを行わなくてもよい。
@@ -888,7 +896,7 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
   if (
     dslEffect &&
     shouldUseDslOperation(cardId, dslEffect) &&
-    dslEffect.effects.some((p) => p.type === "grant_keyword" && (p.keyword.startsWith("rm1::") || p.keyword.startsWith("bk1::") || p.keyword.startsWith("xg5::") || p.keyword.startsWith("xg2::") || p.keyword.startsWith("xg3::")))
+    dslEffect.effects.some((p) => p.type === "grant_keyword" && (p.keyword.startsWith("rm1::") || p.keyword.startsWith("bk1::") || p.keyword.startsWith("xg5::") || p.keyword.startsWith("xg2::") || p.keyword.startsWith("xg3::") || p.keyword.startsWith("promo::")))
   ) {
     return false;
   }
@@ -1189,6 +1197,8 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRm1AfterAction(state, next);
   // クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 の後処理（rules/xg4/xg4Effects.ts）。
   if (applyActionDepth === 0) next = applyXg4AfterAction(state, next);
+  // プロモーションカードの、前後の状態を比べて発動する効果（XP-013【キョウリュウマル】等。rules/promo）。
+  if (applyActionDepth === 0) next = applyPromoAfterAction(state, next);
   // RM-026 グランドバース【収容】: チェイス等の選択の後で、選んだビークルをパワーゾーンに送る（rules/rm/rm2Effects.ts）。
   if (applyActionDepth === 0) next = applyRm2AfterAction(next);
   // RM-059 異次元調達屋カブト（WB の自軍 S ユニットがバトルエリアに出たとき。rules/rm/rm3Effects.ts）。
@@ -1982,7 +1992,8 @@ function applyActionCore(
         return fail("command_not_held");
       }
 
-      const cost = parsePowerCost(definition.powerCost);
+      // XP-021 等の必要パワーの減少（rules/promo/promoHooks.ts）。
+      const cost = Math.max(0, parsePowerCost(definition.powerCost) - promoOperationCostReduction(state, playerId, definition.id));
       if (!payPowerCost(state, playerId, cost)) return fail("insufficient_power");
       // XG7-054 ◎2（次に手札から使うカードの必要パワー-3）は、手札からオペレーションを使ったら消える（rules/xg7/xg7Effects.ts）。
       state = consumeXg7NextCardCost(state, playerId);
@@ -3347,6 +3358,11 @@ function applyActionCore(
         if ("error" in picked) return fail(picked.error);
         return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
       }
+      if (isPromoAttackedChoice(pending)) {
+        const picked = resolvePromoAttacked(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
+      }
       if (pending?.effectId === DIONE_WALL_EFFECT_ID && pending.machineEmpireMeta) {
         const picked = resolveDioneWallPick(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
@@ -3491,6 +3507,11 @@ function applyActionCore(
       }
       if (isXg1eAttackedChoice(pending)) {
         const skipped = skipXg1eAttacked(state, playerId);
+        if (!skipped) return fail("invalid_target");
+        return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
+      }
+      if (isPromoAttackedChoice(pending)) {
+        const skipped = skipPromoAttacked(state, playerId);
         if (!skipped) return fail("invalid_target");
         return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
       }

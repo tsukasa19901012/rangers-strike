@@ -37,6 +37,7 @@ import {
   applyOrochiTurnEnd,
 } from "./errataCardEffects";
 import { applyUnitLeave } from "./pendingChoices";
+import { collectPromoTurnEndQueue, openPromoTurnEndEntry } from "./promo/promoRegistry";
 import { wingPentactUnitsToDestroy } from "./namedUnitEffects";
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
@@ -425,6 +426,14 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.xg3Queue!;
     progress = { ...progress, xg3Queue: rest };
     nextState = openXg3TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // プロモーションカードの「ターンを終えるとき」（XP-029【まだよ…】。rules/promo/promoRegistry.ts）。
+  if (!progress.promoQueue) progress = { ...progress, promoQueue: collectPromoTurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.promoQueue ?? []).length > 0) {
+    const [entry, ...rest] = progress.promoQueue!;
+    progress = { ...progress, promoQueue: rest };
+    nextState = openPromoTurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {

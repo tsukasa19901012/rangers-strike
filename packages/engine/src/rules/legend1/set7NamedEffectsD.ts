@@ -561,7 +561,7 @@ function applyRoadSaber(state: GameState, ctx: GrantKeywordContext): GrantKeywor
     .map((c) => c.instanceId);
   if (ids.length === 0 || !ctx.triggerSourceInstanceId) return { state, detail: `${ROAD_SABER_EFFECT_ID}:no_targets` };
   return {
-    state: openChoice(state, { ...ctx, sourceCardId: "RS-508", sourceInstanceId: ctx.triggerSourceInstanceId }, {
+    state: openChoice(state, { ...ctx, sourceInstanceId: ctx.triggerSourceInstanceId }, {
       effectId: ROAD_SABER_EFFECT_ID,
       kind: "select_unit",
       validInstanceIds: ids,

@@ -6,7 +6,7 @@
  * - 他の処理から呼ぶ誘発の起点（NC の発動前・ストライクしたとき・ラッシュされたとき・ターンを終えるとき・撃破時など）。
  * 構成は rules/legend1/set6NamedEffectsB.ts と同じ。
  */
-import { fusionPartnerReturnCount, requiresFusionPartnerReturn } from "@rangers-strike/cards";
+import { fusionPartnerReturnCount, isSameCardIdentity, requiresFusionPartnerReturn } from "@rangers-strike/cards";
 import { engineRandomInt } from "../../core/rng";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { tryLeaveField } from "../operationCounters";
@@ -1340,7 +1340,7 @@ const SET7C_SPEC_KEYWORDS: Record<string, string> = {
 export function trySet7CCardEffect(state: GameState, ctx: GrantKeywordContext, keyword: string): GrantKeywordResult | null {
   const mapped = SET7C_SPEC_KEYWORDS[keyword];
   // copy_nc_from_rush_s は RS-483 のキーワード（他のカードが持っても割り当てない）。
-  if (mapped && keyword === "copy_nc_from_rush_s" && ctx.sourceCardId !== "RS-483") return null;
+  if (mapped && keyword === "copy_nc_from_rush_s" && !isSameCardIdentity(ctx.sourceCardId, "RS-483")) return null;
   if (!mapped && !keyword.startsWith(SET7C_KEYWORD_PREFIX)) return null;
   switch (mapped ?? keyword.slice(SET7C_KEYWORD_PREFIX.length)) {
     case "RS-474::time_shadow_discard":

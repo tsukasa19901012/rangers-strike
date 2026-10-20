@@ -82,8 +82,9 @@ describe("XP-022 ゴセイレッド", () => {
 
   wingTests("XP-022", "atwiki/page-2234");
 
-  it.fails("XP-022: ※リードMA — MA のオペレーションを使うためのコマンドとして、ラッシュエリアのこれをホールドできる（出典: atwiki/page-2234「※リードMA」・R-KW-READ-01） — 既知の不具合: CARD-XP-022 リードMA でユニットをコマンドとしてホールドできない", () => {
-    const s = rushPhase({ hand: [inst("TST-OP-MA", "op")], rush: [inst("XP-022", "gr")], command: [released("TST-OP", "c")], power: powerCards(3) });
+  it("XP-022: ※リードMA — MA のオペレーションを使うためのコマンドとして、ラッシュエリアのこれをホールドできる（出典: atwiki/page-2234「※リードMA」・R-KW-READ-01）", () => {
+    // コール・リードで使うときも、コマンドゾーンに MA が要る（R-CAT-02・atwiki/page-1559。XP-judgments.md「実装」）。
+    const s = rushPhase({ hand: [inst("TST-OP-MA", "op")], rush: [inst("XP-022", "gr")], command: [released("TST-OP-MA", "c")], power: powerCards(3) });
     expect(payableFor(s, "TST-OP-MA:op")).toContain("XP-022:gr");
   });
 
@@ -101,16 +102,17 @@ describe("XP-022 ゴセイレッド", () => {
   });
 
   it("XP-022: 【レッドブレイク】ラッシュエリアの敵軍 S ユニットも選べる（出典: atwiki/page-2234「敵軍Sユニット」）", () => {
-    const s = enter(st({ player1: { rush: [inst("XP-022", "gr")], deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-0", "e")], rush: [inst("TST-UNIT-7", "r")], deck: deckCards(3, "e") } }), "XP-022:gr");
-    expect(choiceIds(s)).toContain("TST-UNIT-7:r");
+    // ラッシュエリアの S ユニット（TST-UNIT-0）で確かめる（TST-UNIT-7 は L ユニット。XP-judgments.md「実装」）。
+    const s = enter(st({ player1: { rush: [inst("XP-022", "gr")], deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-0", "e")], rush: [inst("TST-UNIT-0", "r")], deck: deckCards(3, "e") } }), "XP-022:gr");
+    expect(choiceIds(s)).toContain("TST-UNIT-0:r");
   });
 
-  it.fails("XP-022: 【レッドブレイク】敵軍 M ユニットは選べない（出典: atwiki/page-2234「敵軍Sユニット」） — 既知の不具合: CARD-XP-022 【レッドブレイク】の候補に S 以外のユニットが入る", () => {
+  it("XP-022: 【レッドブレイク】敵軍 M ユニットは選べない（出典: atwiki/page-2234「敵軍Sユニット」）", () => {
     const s = enter(st({ player1: { rush: [inst("XP-022", "gr")], deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-0", "e")], rush: [inst("SPEC-E-M", "m")], deck: deckCards(3, "e") } }, EXTRA), "XP-022:gr");
     expect(choiceIds(s)).not.toContain("SPEC-E-M:m");
   });
 
-  it.fails("XP-022: 【レッドブレイク】自分の手札が1枚以下なら、手札に戻すかわりに持ち主のパワーゾーンにダメージ（ウラ）にして置ける（出典: atwiki/page-2234「（自分の手札が1枚以下なら…ダメージにして置いてもよい）」） — 既知の不具合: CARD-XP-022 手札1枚以下のとき「ダメージにして置く」方を選べない（必ず手札に戻る）", () => {
+  it("XP-022: 【レッドブレイク】自分の手札が1枚以下なら、手札に戻すかわりに持ち主のパワーゾーンにダメージ（ウラ）にして置ける（出典: atwiki/page-2234「（自分の手札が1枚以下なら…ダメージにして置いてもよい）」）", () => {
     let s = enter(st({ player1: { rush: [inst("XP-022", "gr")], deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-0", "e")], deck: deckCards(3, "e") } }), "XP-022:gr");
     s = settle(pick(s, "TST-UNIT-0:e"));
     // 「かわりに…置いてもよい」— 手札に戻すか、ダメージにして置くかを選ぶ場面がある（すぐに手札へ戻らない）。
@@ -266,7 +268,7 @@ describe("XP-024 仮面ライダー2号", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XP-024: 【力の2号】エリアを問わない — ラッシュエリアの BP4000 以上の敵軍 S ユニットも選べる（出典: atwiki/page-2255 カード評価「エリアを問わないため…ラッシュエリアに篭りがちなシステムユニットを狙える」） — 既知の不具合: CARD-XP-024 【力の2号】の候補が敵軍バトルエリアだけ", () => {
+  it("XP-024: 【力の2号】エリアを問わない — ラッシュエリアの BP4000 以上の敵軍 S ユニットも選べる（出典: atwiki/page-2255 カード評価「エリアを問わないため…ラッシュエリアに篭りがちなシステムユニットを狙える」）", () => {
     const s = rcBoard("XP-024:n2", {}, { battle: [inst("SPEC-E4", "a")], rush: [inst("SPEC-E45", "r")] }, EXTRA);
     expect(choiceIds(s)).toContain("SPEC-E45:r");
   });
@@ -332,7 +334,7 @@ describe("XP-025 ダイカイシンケンオー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:a")).toBe("hand");
   });
 
-  it.fails("XP-025: 【二天一流乱れ斬り】2体まで — 2体を選んで両方とも手札に戻せる（出典: atwiki/page-2256「2体まで選び」） — 既知の不具合: CARD-XP-025 「2体まで」なのに1体選ぶと効果が終わる", () => {
+  it("XP-025: 【二天一流乱れ斬り】2体まで — 2体を選んで両方とも手札に戻せる（出典: atwiki/page-2256「2体まで選び」）", () => {
     let s = entered({ battle: [inst("TST-UNIT-0", "a"), inst("TST-UNIT-7", "b")] });
     s = pick(s, "TST-UNIT-0:a");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XP-025");
@@ -341,12 +343,12 @@ describe("XP-025 ダイカイシンケンオー", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-7:b")).toBe("hand");
   });
 
-  it.fails("XP-025: 【二天一流乱れ斬り】追加条件を持つ敵軍ユニット（XP-010 デカブルーSWAT）は選べない（出典: atwiki/page-2256「追加条件を持たない敵軍ユニット」） — 既知の不具合: CARD-XP-025 候補から追加条件を持つユニットが除かれない", () => {
+  it("XP-025: 【二天一流乱れ斬り】追加条件を持つ敵軍ユニット（XP-010 デカブルーSWAT）は選べない（出典: atwiki/page-2256「追加条件を持たない敵軍ユニット」）", () => {
     const s = entered({ battle: [inst("TST-UNIT-0", "a"), inst("XP-010", "sw")] });
     expect(choiceIds(s)).not.toContain("XP-010:sw");
   });
 
-  it.fails("XP-025: 【二天一流乱れ斬り】ラッシュエリアの敵軍ユニットも選べる（出典: atwiki/page-2256「敵軍ユニット」） — 既知の不具合: CARD-XP-025 候補が敵軍バトルエリアだけ", () => {
+  it("XP-025: 【二天一流乱れ斬り】ラッシュエリアの敵軍ユニットも選べる（出典: atwiki/page-2256「敵軍ユニット」）", () => {
     const s = entered({ battle: [inst("TST-UNIT-0", "a")], rush: [inst("TST-UNIT-7", "r")] });
     expect(choiceIds(s)).toContain("TST-UNIT-7:r");
   });

@@ -75,7 +75,7 @@ describe("PR-020 タイムレッド", () => {
     expect(s.players.player2.damage).toBe(1);
   });
 
-  it.fails("PR-020: 【アサルトベクター】相手のダメージ以外のパワーが ET×2・MA・DA なら、相手が選んで1カテゴリになるまで捨札にする（ダメージはそのまま）（出典: atwiki/page-980） — 既知の不具合: CARD-PR-020 再録（RS-218）の【アサルトベクター】の捨札（カテゴリを1つにする）が未実装（「SP1」は働く）", () => {
+  it("PR-020: 【アサルトベクター】相手のダメージ以外のパワーが ET×2・MA・DA なら、相手が選んで1カテゴリになるまで捨札にする（ダメージはそのまま）（出典: atwiki/page-980）", () => {
     let s = timeRed(4, MIXED());
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     s = drain(s, "player2", ["TST-OP-MA:ma", "TST-OP-DA:da"]);
@@ -119,25 +119,25 @@ describe("PR-021 激気", () => {
       { type: "move_to_battle", playerId: "player1", instanceId: `${unit}:x` },
     );
 
-  it.fails("PR-021: 自軍バトルフェイズに特徴「激気」の自軍 S ユニットが出たとき、それより必要パワーの小さい WB の M ユニットのカードだけを手札から選べる（出典: atwiki/page-979） — 既知の不具合: CARD-PR-021 再録（RS-436）の常駐（激気の S ユニットが出たとき手札の WB M ユニットを出す）が働かない", () => {
+  it("PR-021: 自軍バトルフェイズに特徴「激気」の自軍 S ユニットが出たとき、それより必要パワーの小さい WB の M ユニットのカードだけを手札から選べる（出典: atwiki/page-979）", () => {
     const s = entered();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("PR-021");
     expect(choiceIds(s)).toEqual(["RS-425:gj", "SPEC-WBM3:m3"]);
   });
 
-  it.fails("PR-021: 選んだ WB の M ユニットは自軍ラッシュエリアに出る（発動しないことも選べる）（出典: atwiki/page-979「次の効果を発動できる」「自軍ラッシュエリアに出す」） — 既知の不具合: CARD-PR-021 再録（RS-436）の常駐（激気の S ユニットが出たとき手札の WB M ユニットを出す）が働かない", () => {
+  it("PR-021: 選んだ WB の M ユニットは自軍ラッシュエリアに出る（発動しないことも選べる）（出典: atwiki/page-979「次の効果を発動できる」「自軍ラッシュエリアに出す」）", () => {
     const s = entered();
     expect(canSkip(s)).toBe(true);
     expect(zoneOf(resolveAll(pick(s, "SPEC-WBM3:m3")), "player1", "SPEC-WBM3:m3")).toBe("rush");
   });
 
-  it.fails("PR-021: 公式Q&A（RS-436 と同じ本文）— この効果で出すとき、M ユニットの追加条件を満たす必要はない（ゲキジャガーを捨札なしで出せる）（出典: grnrngr/faq-card-7 RS-436 Q1） — 既知の不具合: CARD-PR-021 再録（RS-436）の常駐（激気の S ユニットが出たとき手札の WB M ユニットを出す）が働かない", () => {
+  it("PR-021: 公式Q&A（RS-436 と同じ本文）— この効果で出すとき、M ユニットの追加条件を満たす必要はない（ゲキジャガーを捨札なしで出せる）（出典: grnrngr/faq-card-7 RS-436 Q1）", () => {
     const s = resolveAll(pick(entered("SPEC-GEKI", { battle: [inst("TST-UNIT-0", "e0")], damage: 3, power: powerCards(3, "ep").map((c) => ({ ...c, faceDown: true })) }), "RS-425:gj"), []);
     expect(zoneOf(s, "player1", "RS-425:gj")).toBe("rush");
     expect(s.players.player1.discard).toHaveLength(0);
   });
 
-  it.fails("PR-021: 公式Q&A（RS-436 と同じ本文）— この効果で出した M ユニットの「ラッシュしたとき」の効果は発動する（ゲキジャガー【転転弾】）（出典: grnrngr/faq-card-7 RS-436 Q2） — 既知の不具合: CARD-PR-021 再録（RS-436）の常駐（激気の S ユニットが出たとき手札の WB M ユニットを出す）が働かない", () => {
+  it("PR-021: 公式Q&A（RS-436 と同じ本文）— この効果で出した M ユニットの「ラッシュしたとき」の効果は発動する（ゲキジャガー【転転弾】）（出典: grnrngr/faq-card-7 RS-436 Q2）", () => {
     const s = pick(entered("SPEC-GEKI", { battle: [inst("TST-UNIT-0", "e0")], damage: 3, power: powerCards(3, "ep").map((c) => ({ ...c, faceDown: true })) }), "RS-425:gj");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("RS-425");
   });
@@ -181,7 +181,7 @@ describe("PR-022 ゴーオンレッド", () => {
     expect(canStrike(s, `${ID}:x`)).toBe(true);
   });
 
-  it.fails("PR-022: 【ロードサーベル】敵軍バトルエリアのユニット（ラッシュエリアは選べない）を1体選び、このユニットとバトルする（BP4000 対 BP1000 で撃破）（出典: atwiki/page-976） — 既知の不具合: CARD-PR-022 再録（RS-508）の【ロードサーベル】のバトルが未実装（「SP1」は働く）", () => {
+  it("PR-022: 【ロードサーベル】敵軍バトルエリアのユニット（ラッシュエリアは選べない）を1体選び、このユニットとバトルする（BP4000 対 BP1000 で撃破）（出典: atwiki/page-976）", () => {
     let s = at(4, { battle: [inst("TST-UNIT-0", "e1")], rush: [inst("TST-UNIT-0", "er")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe(ID);
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e1"]);
@@ -190,7 +190,7 @@ describe("PR-022 ゴーオンレッド", () => {
     expect(zoneOf(s, "player1", `${ID}:x`)).toBe("battle");
   });
 
-  it.fails("PR-022: 【ロードサーベル】BP6000 のユニットを選んでバトルすると、ゴーオンレッドが撃破される（出典: atwiki/page-976・R-BTL-01） — 既知の不具合: CARD-PR-022 再録（RS-508）の【ロードサーベル】のバトルが未実装（「SP1」は働く）", () => {
+  it("PR-022: 【ロードサーベル】BP6000 のユニットを選んでバトルすると、ゴーオンレッドが撃破される（出典: atwiki/page-976・R-BTL-01）", () => {
     let s = at(4, { battle: [inst("SPEC-6000", "e6")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe(ID);
     s = resolveAll(pick(s, "SPEC-6000:e6"));
@@ -204,7 +204,7 @@ describe("PR-022 ゴーオンレッド", () => {
     expect(canStrike(s, `${ID}:x`)).toBe(true);
   });
 
-  it.fails("PR-022: 【ロードサーベル】「選んでもよい」— 見送れる／1番目（NC 不成立）ならバトルの選択も SP もない（出典: atwiki/page-976・R-CN-02） — 既知の不具合: CARD-PR-022 再録（RS-508）の【ロードサーベル】のバトルが未実装（「SP1」は働く）", () => {
+  it("PR-022: 【ロードサーベル】「選んでもよい」— 見送れる／1番目（NC 不成立）ならバトルの選択も SP もない（出典: atwiki/page-976・R-CN-02）", () => {
     const s = at(4, { battle: [inst("TST-UNIT-0", "e1")] });
     expect(s.pendingEffectChoice?.sourceCardId).toBe(ID);
     expect(canSkip(s)).toBe(true);
@@ -240,19 +240,19 @@ describe("PR-023 シュリケンジャー", () => {
     return activePlayer === "player1" ? enter(s0, "PR-023:sj") : enterBattleByEffect(s0, "player1", "PR-023:sj");
   };
 
-  it.fails("PR-023: 【宇宙統一忍者流】敵軍ラッシュエリアの、ナンバーに数字を持つ S ユニットだけを選べる（出典: atwiki/page-1139） — 既知の不具合: CARD-PR-023 再録（RS-483）の【宇宙統一忍者流】が未実装", () => {
+  it("PR-023: 【宇宙統一忍者流】敵軍ラッシュエリアの、ナンバーに数字を持つ S ユニットだけを選べる（出典: atwiki/page-1139）", () => {
     const s = shuri();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("PR-023");
     expect(choiceIds(s)).toEqual(["RS-059:blue", "RS-099:red"]);
   });
 
-  it.fails("PR-023: 【宇宙統一忍者流】選んだユニットの NC 効果をこのユニットの効果として発動する（マジブルー → 自分が1枚ドロー）（出典: atwiki/page-1139） — 既知の不具合: CARD-PR-023 再録（RS-483）の【宇宙統一忍者流】が未実装", () => {
+  it("PR-023: 【宇宙統一忍者流】選んだユニットの NC 効果をこのユニットの効果として発動する（マジブルー → 自分が1枚ドロー）（出典: atwiki/page-1139）", () => {
     const s = resolveAll(pick(shuri(), "RS-059:blue"));
     expect(s.players.player1.hand).toHaveLength(1);
     expect(s.players.player2.hand).toHaveLength(0);
   });
 
-  it.fails("PR-023: 【宇宙統一忍者流】「選んでも良い」— 選ばなければ何も起きない（出典: atwiki/page-1139） — 既知の不具合: CARD-PR-023 再録（RS-483）の【宇宙統一忍者流】が未実装", () => {
+  it("PR-023: 【宇宙統一忍者流】「選んでも良い」— 選ばなければ何も起きない（出典: atwiki/page-1139）", () => {
     let s = shuri();
     expect(s.pendingEffectChoice?.sourceCardId).toBe("PR-023");
     expect(canSkip(s)).toBe(true);

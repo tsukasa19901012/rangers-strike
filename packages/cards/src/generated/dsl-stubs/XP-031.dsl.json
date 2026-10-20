@@ -51,8 +51,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-031::medarutoto40",
-          "duration": "permanent"
+          "keyword": "promo::XP-031::medal_ticket",
+          "duration": "turn"
         }
       ]
     }

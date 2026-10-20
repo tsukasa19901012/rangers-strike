@@ -107,13 +107,13 @@ describe("SX-001 仮面ライダー電王超CF", () => {
   const kick = (power: CardInstance[] = [faceUp("TST-P", "u1"), faceUp("TST-P", "u2"), faceDown("TST-P", "d1")]) =>
     enter(board({ rush: [inst("SX-001", "cf")], power }), "SX-001:cf");
 
-  it.fails("SX-001: 【超ボイスターズキック】自軍ターン中にバトルエリアに出たとき、自軍パワーゾーンのオモテ向きとウラ向きのカードを1枚ずつ選んで捨札にするかを選べる（任意）（出典: atwiki/page-1681「オモテ向きのカードとウラ向きのカードをそれぞれ1枚ずつ選び捨札にしてもよい」）— 既知の不具合: CARD-SX-001 【超ボイスターズキック】が未実装（出たときに選択が開かない）", () => {
+  it("SX-001: 【超ボイスターズキック】自軍ターン中にバトルエリアに出たとき、自軍パワーゾーンのオモテ向きとウラ向きのカードを1枚ずつ選んで捨札にするかを選べる（任意）（出典: atwiki/page-1681「オモテ向きのカードとウラ向きのカードをそれぞれ1枚ずつ選び捨札にしてもよい」）", () => {
     const s = kick();
     expectChoiceFrom(s, "player1", "SX-001");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("SX-001: 【超ボイスターズキック】1枚ずつ捨札にすると、このターン「SP1」になる（1番目でもストライクで1点）（出典: atwiki/page-1681「そうしたとき、このターン、これは「SP1」になる」・カード評価「ストライクとダメージ回復を同時に行える」）— 既知の不具合: CARD-SX-001 【超ボイスターズキック】が未実装（捨札にできず SP1 にならない）", () => {
+  it("SX-001: 【超ボイスターズキック】1枚ずつ捨札にすると、このターン「SP1」になる（1番目でもストライクで1点）（出典: atwiki/page-1681「そうしたとき、このターン、これは「SP1」になる」・カード評価「ストライクとダメージ回復を同時に行える」）", () => {
     let s = kick();
     for (const id of ["TST-P:u1", "TST-P:d1"]) if (s.pendingEffectChoice?.validInstanceIds.includes(id)) s = pick(s, id);
     s = resolveAll(s);
@@ -168,7 +168,7 @@ describe("SX-002 仮面ライダークウガRU", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("SX-002", "ru")] }, "SX-002:ru", { battle: [{ instanceId: "TST-UNIT-7:atk", cardId: "TST-UNIT-7", bpModifier: 1000 }] }))).toBe(true);
   });
 
-  it.fails("SX-002: 【黒い瞳に映るもの】自軍バトルエリアにあれば、特徴「仮面ライダー」を持つ自軍ユニットはアタックできるときストライクを選べない（出典: atwiki/page-1831「可能ならアタックを選ぶ」・カード評価「仮面ライダー限定でストライクを強制的にアタックに変更する」）— 既知の不具合: CARD-SX-002 【黒い瞳に映るもの】が未実装（仮面ライダーがストライクを選べる）", () => {
+  it("SX-002: 【黒い瞳に映るもの】自軍バトルエリアにあれば、特徴「仮面ライダー」を持つ自軍ユニットはアタックできるときストライクを選べない（出典: atwiki/page-1831「可能ならアタックを選ぶ」・カード評価「仮面ライダー限定でストライクを強制的にアタックに変更する」）", () => {
     const s = enter(board({ battle: [inst("SX-002", "ru")], rush: [inst("SPEC-KAMEN", "k")] }, { battle: [inst("SPEC-E1000", "e")] }), "SPEC-KAMEN:k");
     expect(attackTargets(s, "SPEC-KAMEN:k")).toContain("SPEC-E1000:e");
     expect(canStrike(s, "SPEC-KAMEN:k")).toBe(false);
@@ -189,7 +189,7 @@ describe("SX-002 仮面ライダークウガRU", () => {
     expect(canStrike(s, "SPEC-KAMEN:k")).toBe(true);
   });
 
-  it.fails("SX-002: 【黒い瞳に映るもの】敵軍の仮面ライダーにも効く（敵軍ターン中、敵軍の仮面ライダーは自軍ユニットにアタックできるときストライクを選べない）（出典: atwiki/page-1831「特徴「仮面ライダー」を持つユニットは」（自軍・敵軍の限定がない））— 既知の不具合: CARD-SX-002 【黒い瞳に映るもの】が未実装（敵軍の仮面ライダーもストライクを選べる）", () => {
+  it("SX-002: 【黒い瞳に映るもの】敵軍の仮面ライダーにも効く（敵軍ターン中、敵軍の仮面ライダーは自軍ユニットにアタックできるときストライクを選べない）（出典: atwiki/page-1831「特徴「仮面ライダー」を持つユニットは」（自軍・敵軍の限定がない））", () => {
     const s = enter(enemyTurn({ battle: [inst("SX-002", "ru")] }, { rush: [inst("SPEC-KAMEN", "k")] }), "SPEC-KAMEN:k", "player2");
     expect(attackTargets(s, "SPEC-KAMEN:k", "player2")).toContain("SX-002:ru");
     expect(canStrike(s, "SPEC-KAMEN:k", "player2")).toBe(false);
@@ -220,7 +220,7 @@ describe("SX-003 仮面ライダーW・FJ", () => {
     expect(canStartRush(mk([...releasedCat("DA", 2)]), "player1", "SX-003:fj")).toBe(false);
   });
 
-  it.fails("SX-003: ※ 自軍ターン中、敵軍バトルエリアのユニットの効果名を持たないテキスト（RK-074 ライダーマンの「敵軍Sユニットにアタックされない」）は無効になる（出典: atwiki/page-2017・カード評価「レジストやスクラム、各種MF・RFの能力…まで無力化する」）— 既知の不具合: CARD-SX-003 ※（敵軍バトルエリアの効果名のないテキストを無効にする）が未実装", () => {
+  it("SX-003: ※ 自軍ターン中、敵軍バトルエリアのユニットの効果名を持たないテキスト（RK-074 ライダーマンの「敵軍Sユニットにアタックされない」）は無効になる（出典: atwiki/page-2017・カード評価「レジストやスクラム、各種MF・RFの能力…まで無力化する」）", () => {
     const enemy = { battle: [inst("RK-074", "rm"), inst("SPEC-KAMEN", "k")] };
     const without = enter(board({ rush: [inst("SPEC-E5000", "a")] }, enemy), "SPEC-E5000:a");
     expect(attackTargets(without, "SPEC-E5000:a")).not.toContain("RK-074:rm");
@@ -228,7 +228,7 @@ describe("SX-003 仮面ライダーW・FJ", () => {
     expect(attackTargets(withFj, "SPEC-E5000:a")).toContain("RK-074:rm");
   });
 
-  it.fails("SX-003: ※ 自軍ターン中、敵軍バトルエリアのユニットの※レジストは無効になり、バトルで撃破されてもレジストできない（出典: atwiki/page-2017・Q1「敵軍バトルエリアのレジストは無効になっています」）— 既知の不具合: CARD-SX-003 ※（敵軍バトルエリアのレジストを無効にする）が未実装", () => {
+  it("SX-003: ※ 自軍ターン中、敵軍バトルエリアのユニットの※レジストは無効になり、バトルで撃破されてもレジストできない（出典: atwiki/page-2017・Q1「敵軍バトルエリアのレジストは無効になっています」）", () => {
     let s = board({ battle: [inst("SX-003", "fj"), inst("SPEC-E9000", "a")] }, { battle: [inst("SK-002", "v3")] });
     s = attack(s, "SPEC-E9000:a", "SK-002:v3");
     for (let i = 0; i < 4 && !registerOfferedTo(s, "player2"); i++) {
@@ -257,14 +257,14 @@ describe("SX-003 仮面ライダーW・FJ", () => {
     expect(registerOfferedTo(s, "player2")).toBe(true);
   });
 
-  it.fails("SX-003: 【アーム・ファング】アタックしてバトルするとき BP+3000（6000対5000で勝つ）（出典: atwiki/page-2017「これはバトルするとき、BP+3000される」）— 既知の不具合: CARD-SX-003 【アーム・ファング】が未実装（BP3000 のまま）", () => {
+  it("SX-003: 【アーム・ファング】アタックしてバトルするとき BP+3000（6000対5000で勝つ）（出典: atwiki/page-2017「これはバトルするとき、BP+3000される」）", () => {
     const s = resolveAll(attack(board({ battle: [inst("SX-003", "fj")] }, { battle: [inst("SPEC-E5000", "e")] }), "SX-003:fj", "SPEC-E5000:e"));
     expect(lastBattleBps(s)?.attacker).toBe(6000);
     expect(zoneOf(s, "player2", "SPEC-E5000:e")).toBe("discard");
     expect(zoneOf(s, "player1", "SX-003:fj")).toBe("battle");
   });
 
-  it.fails("SX-003: 【アーム・ファング】アタックされてバトルするときも BP+3000（出典: atwiki/page-2017「バトルするとき」）— 既知の不具合: CARD-SX-003 【アーム・ファング】が未実装（BP3000 のまま）", () => {
+  it("SX-003: 【アーム・ファング】アタックされてバトルするときも BP+3000（出典: atwiki/page-2017「バトルするとき」）", () => {
     const s = resolveAll(attack(enemyTurn({ battle: [inst("SX-003", "fj")] }, { battle: [inst("SPEC-E5000", "e")] }), "SPEC-E5000:e", "SX-003:fj", "player2"));
     expect(lastBattleBps(s)?.defender).toBe(6000);
     expect(zoneOf(s, "player1", "SX-003:fj")).toBe("battle");
@@ -312,19 +312,19 @@ describe("SX-004 ハイパーゴーオンレッド", () => {
   });
   const rideOffed = () => settle(rcRideOff(board({ rush: [inst("SX-004", "hr"), inst("SPEC-CAR", "car")] }, enemy()), "SX-004:hr", "SPEC-CAR:car"));
 
-  it.fails("SX-004: 【音速の赤き侍】ライドオフしたとき（ナンバーに関係なく）、敵軍バトルエリアのライドされている敵軍ビークル（サイズを問わない）から1体選ぶ（出典: atwiki/page-2157「（この効果は、ライドオフしたときナンバーに関係なく発動する）」・カード評価「対象となるビークルのサイズは問わない」）— 既知の不具合: CARD-SX-004 【音速の赤き侍】が未実装（ライドオフしても選択が開かない）", () => {
+  it("SX-004: 【音速の赤き侍】ライドオフしたとき（ナンバーに関係なく）、敵軍バトルエリアのライドされている敵軍ビークル（サイズを問わない）から1体選ぶ（出典: atwiki/page-2157「（この効果は、ライドオフしたときナンバーに関係なく発動する）」・カード評価「対象となるビークルのサイズは問わない」）", () => {
     const s = rideOffed();
     expectChoiceFrom(s, "player1", "SX-004");
     expect(choiceIds(s)).toEqual(["SPEC-VEH-L:vl", "SPEC-VEHICLE:v1"]);
   });
 
-  it.fails("SX-004: 【音速の赤き侍】選んだビークルは持ち主（敵軍）のパワーゾーンに送られ、これは「SP1」を得る（出典: atwiki/page-2157「持ち主のパワーゾーンに送る」「「SP1」」）— 既知の不具合: CARD-SX-004 【音速の赤き侍】が未実装（ビークルを送れず SP1 を得ない）", () => {
+  it("SX-004: 【音速の赤き侍】選んだビークルは持ち主（敵軍）のパワーゾーンに送られ、これは「SP1」を得る（出典: atwiki/page-2157「持ち主のパワーゾーンに送る」「「SP1」」）", () => {
     const s = resolveAll(pick(rideOffed(), "SPEC-VEH-L:vl"));
     expect(zoneOf(s, "player2", "SPEC-VEH-L:vl")).toBe("power");
     expect(spOf(s, "player1", "SX-004:hr")).toBe(1);
   });
 
-  it.fails("SX-004: 【音速の赤き侍】ナンバーコンビネーション（4番目に出たとき）でも発動し「SP1」を得る（出典: atwiki/page-2157「CN：4」）— 既知の不具合: CARD-SX-004 【音速の赤き侍】が未実装（4番目に出ても選択が開かない）", () => {
+  it("SX-004: 【音速の赤き侍】ナンバーコンビネーション（4番目に出たとき）でも発動し「SP1」を得る（出典: atwiki/page-2157「CN：4」）", () => {
     let s = board({ rush: [inst("SX-004", "hr"), ...fill(3)] }, enemy());
     s = enterSeq(s, fill(3).map((c) => c.instanceId));
     s = enter(s, "SX-004:hr");
@@ -362,7 +362,7 @@ describe("SX-005 仮面ライダーW・CJX", () => {
 
   const field = (command: CardInstance[]) => board({ battle: [inst("SX-005", "x")], command });
 
-  it.fails("SX-005: 自軍コマンドゾーンに ET（WB・MA・DA なし）だけなら BP+3000（7000）で、SP はない（出典: atwiki/page-2267「ETがあればBP+3000される」「SP：！」）— 既知の不具合: CARD-SX-005 【ビッカーファイナリュージョン】が未実装（ET で BP+3000 されない）", () => {
+  it("SX-005: 自軍コマンドゾーンに ET（WB・MA・DA なし）だけなら BP+3000（7000）で、SP はない（出典: atwiki/page-2267「ETがあればBP+3000される」「SP：！」）", () => {
     const s = field(releasedCat("ET", 1));
     expect(bpOf(s, "player1", "SX-005:x")).toBe(7000);
     expect(spOf(s, "player1", "SX-005:x")).toBe(0);
@@ -372,16 +372,16 @@ describe("SX-005 仮面ライダーW・CJX", () => {
     expect(bpOf(field(releasedCat("OT", 1)), "player1", "SX-005:x")).toBe(4000);
   });
 
-  it.fails("SX-005: 自軍コマンドゾーンに DA があれば「SP1」になる（出典: atwiki/page-2267「DAがあれば「SP1」になる」）— 既知の不具合: CARD-SX-005 【ビッカーファイナリュージョン】が未実装（DA で SP1 にならない）", () => {
+  it("SX-005: 自軍コマンドゾーンに DA があれば「SP1」になる（出典: atwiki/page-2267「DAがあれば「SP1」になる」）", () => {
     expect(spOf(field(releasedCat("DA", 1)), "player1", "SX-005:x")).toBe(1);
   });
 
-  it.fails("SX-005: 自軍コマンドゾーンに WB があればレジストを得る（バトルで撃破されたときホールドして留められる）（出典: atwiki/page-2267「WBがあればレジストを得る」）— 既知の不具合: CARD-SX-005 【ビッカーファイナリュージョン】が未実装（WB でレジストを得ない）", () => {
+  it("SX-005: 自軍コマンドゾーンに WB があればレジストを得る（バトルで撃破されたときホールドして留められる）（出典: atwiki/page-2267「WBがあればレジストを得る」）", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("SX-005", "x")], command: releasedCat("WB", 1) }, "SX-005:x"))).toBe(true);
     expect(registerOffered(attackUntilRegister({ battle: [inst("SX-005", "x")], command: releasedCat("OT", 1) }, "SX-005:x"))).toBe(false);
   });
 
-  it.fails("SX-005: 自軍コマンドゾーンに MA があれば、敵軍ユニットをバトルで撃破したとき、捨札にするかわりに持ち主のパワーゾーンにダメージとして置ける（任意）（出典: atwiki/page-2267「MAがあれば、…持ち主のパワーゾーンにダメージにして置いてもよい」）— 既知の不具合: CARD-SX-005 【ビッカーファイナリュージョン】が未実装（MA でダメージにする選択が開かない）", () => {
+  it("SX-005: 自軍コマンドゾーンに MA があれば、敵軍ユニットをバトルで撃破したとき、捨札にするかわりに持ち主のパワーゾーンにダメージとして置ける（任意）（出典: atwiki/page-2267「MAがあれば、…持ち主のパワーゾーンにダメージにして置いてもよい」）", () => {
     let s = attack(board({ battle: [inst("SX-005", "x")], command: [...releasedCat("MA", 1), ...releasedCat("ET", 1)] }, { battle: [inst("SPEC-E5000", "e")] }), "SX-005:x", "SPEC-E5000:e");
     s = settle(s);
     expectChoiceFrom(s, "player1", "SX-005");
@@ -391,7 +391,7 @@ describe("SX-005 仮面ライダーW・CJX", () => {
     expect(cardIn(s, "player2", "SPEC-E5000:e")?.faceDown).toBe(true);
   });
 
-  it.fails("SX-005: マルチカテゴリのコマンド1枚（ET と DA を持つ XG2-043）で ET と DA の両方の能力を得る（出典: atwiki/page-2267「自軍コマンドゾーンにあるカードのカテゴリごとに」）— 既知の不具合: CARD-SX-005 【ビッカーファイナリュージョン】が未実装（BP・SP が変わらない）", () => {
+  it("SX-005: マルチカテゴリのコマンド1枚（ET と DA を持つ XG2-043）で ET と DA の両方の能力を得る（出典: atwiki/page-2267「自軍コマンドゾーンにあるカードのカテゴリごとに」）", () => {
     const s = field([inst("XG2-043", "cmd")]);
     expect(bpOf(s, "player1", "SX-005:x")).toBe(7000);
     expect(spOf(s, "player1", "SX-005:x")).toBe(1);

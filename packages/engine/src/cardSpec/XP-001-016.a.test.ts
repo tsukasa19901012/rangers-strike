@@ -79,7 +79,7 @@ describe("XP-001 五色の戦士", () => {
     expect(zoneOf(resolveAll(r.state), "player1", "XP-001:op")).toBe("operation");
   });
 
-  it.fails("XP-001: 自軍ラッシュフェイズに WB の自軍コマンドがリリース状態なら起動できる（出典: atwiki/page-1532「『WBを持つ自軍コマンドを1つホールドする』を実行してもよい」） — 既知の不具合: CARD-XP-001 再録の XP-001 は常駐の起動（activate_resident_operation）が合法手に出ない（同じ本文の RS-608 は起動できる）", () => {
+  it("XP-001: 自軍ラッシュフェイズに WB の自軍コマンドがリリース状態なら起動できる（出典: atwiki/page-1532「『WBを持つ自軍コマンドを1つホールドする』を実行してもよい」）", () => {
     expect(canActivateResident(placed(), "XP-001:op")).toBe(true);
   });
 
@@ -91,8 +91,9 @@ describe("XP-001 五色の戦士", () => {
     expect(canActivateResident(placed({}, "battle"), "XP-001:op")).toBe(false);
   });
 
-  it.fails("XP-001: 起動すると WB のコマンドが1つホールドされ、自軍 S ユニットを選び、宣言できる特徴は5つだけ（出典: atwiki/page-1532「特徴「レッド」「イエロー」「ブルー」「ブラック」「ホワイト」のうちどれか1つを宣言する」） — 既知の不具合: CARD-XP-001 起動できない", () => {
-    let s = activateResident(placed(), "XP-001:op");
+  it("XP-001: 起動すると WB のコマンドが1つホールドされ、自軍 S ユニットを選び、宣言できる特徴は5つだけ（出典: atwiki/page-1532「特徴「レッド」「イエロー」「ブルー」「ブラック」「ホワイト」のうちどれか1つを宣言する」）", () => {
+    // ホールドする WB のコマンドは自分が選ぶ（RS-608 と同じ。XP-judgments.md「実装」）。
+    let s = pick(activateResident(placed(), "XP-001:op"), "TST-OP:cWB0");
     expect(s.players.player1.command.filter((c) => c.commandHeld)).toHaveLength(1);
     expectChoiceFrom(s, "player1", "XP-001");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:s"]);
@@ -100,20 +101,20 @@ describe("XP-001 五色の戦士", () => {
     expect(s.pendingEffectChoice?.validInstanceIds).toEqual(["レッド", "イエロー", "ブルー", "ブラック", "ホワイト"]);
   });
 
-  it.fails("XP-001: 宣言した特徴（ブルー）がこのターン選んだユニットに追加され、ターンの終わりに消える（出典: atwiki/page-1532「このターン、宣言した特徴を選んだユニットに追加する」） — 既知の不具合: CARD-XP-001 起動できない", () => {
-    let s = activateResident(placed(), "XP-001:op");
+  it("XP-001: 宣言した特徴（ブルー）がこのターン選んだユニットに追加され、ターンの終わりに消える（出典: atwiki/page-1532「このターン、宣言した特徴を選んだユニットに追加する」）", () => {
+    let s = pick(activateResident(placed(), "XP-001:op"), "TST-OP:cWB0");
     s = resolveAll(pick(pick(s, "TST-UNIT-0:s"), "ブルー"));
     expect(featuresOf(s, "player1", "TST-UNIT-0:s")).toEqual(["ブルー"]);
   });
 
-  it.fails("XP-001: 自軍ラッシュフェイズごとに1度だけ（2回目は起動できない）（出典: atwiki/page-1532「自軍ラッシュフェイズごとに1度だけ」） — 既知の不具合: CARD-XP-001 起動できない", () => {
+  it("XP-001: 自軍ラッシュフェイズごとに1度だけ（2回目は起動できない）（出典: atwiki/page-1532「自軍ラッシュフェイズごとに1度だけ」）", () => {
     let s = activateResident(placed(), "XP-001:op");
     s = resolveAll(s, ["TST-UNIT-0:s"]);
     expect(s.pendingEffectChoice).toBeUndefined();
     expect(canActivateResident(s, "XP-001:op")).toBe(false);
   });
 
-  it.fails("XP-001: 同名の常駐（RS-608 五色の戦士）と2枚並べれば、それぞれ1度ずつ起動できる（出典: ユーザー決定 2026-10-19・docs/rules/README.md §5.7 i） — 既知の不具合: CARD-XP-001 起動できない", () => {
+  it("XP-001: 同名の常駐（RS-608 五色の戦士）と2枚並べれば、それぞれ1度ずつ起動できる（出典: ユーザー決定 2026-10-19・docs/rules/README.md §5.7 i）", () => {
     let s = activateResident(placed({ operation: [inst("XP-001", "op"), inst("RS-608", "op2")] }), "XP-001:op");
     if (s.pendingEffectChoice?.effectId === "tag_bold_pick") s = pick(s, "XP-001:op");
     s = resolveAll(s, ["TST-UNIT-0:s"]);
@@ -146,7 +147,7 @@ describe("XP-002 戦士の魂", () => {
     expect(zoneOf(resolveAll(r.state), "player1", "XP-002:op")).toBe("operation");
   });
 
-  it.fails("XP-002: 自軍バトルフェイズに、自軍ラッシュエリアの S ユニットをコマンドゾーンに送るか捨札にして起動できる（出典: atwiki/page-1533） — 既知の不具合: CARD-XP-002 再録の XP-002 は常駐の起動が合法手に出ない（同じ本文の RS-609 は起動できる）", () => {
+  it("XP-002: 自軍バトルフェイズに、自軍ラッシュエリアの S ユニットをコマンドゾーンに送るか捨札にして起動できる（出典: atwiki/page-1533）", () => {
     expect(canActivateResident(placed(), "XP-002:op")).toBe(true);
   });
 
@@ -154,7 +155,7 @@ describe("XP-002 戦士の魂", () => {
     expect(canActivateResident({ ...placed(), phase: "rush" }, "XP-002:op")).toBe(false);
   });
 
-  it.fails("XP-002: ラッシュエリアから選んだユニット（クローバーキング）が NC を発動するとき、バトルエリアから選んだユニット（マジブルー）の NC（1枚ドロー）を代わりに発動できる（出典: atwiki/page-1533） — 既知の不具合: CARD-XP-002 起動できない", () => {
+  it("XP-002: ラッシュエリアから選んだユニット（クローバーキング）が NC を発動するとき、バトルエリアから選んだユニット（マジブルー）の NC（1枚ドロー）を代わりに発動できる（出典: atwiki/page-1533）", () => {
     let s = activateResident(placed(), "XP-002:op");
     s = resolveAll(s, ["TST-UNIT-0:cost", "RS-059:blue", "RS-614:king"]);
     const hand = s.players.player1.hand.length;
@@ -397,14 +398,14 @@ describe("XP-005 仮面ライダーディケイドCF", () => {
       { type: "move_to_battle", playerId: "player1", instanceId: "XP-005:cf" },
     );
 
-  it.fails("XP-005: 【全てを集めた先にあるもの】自軍ターンにバトルエリアに出たとき、オモテ向きの自軍パワーの「アタックライド」を持つカードから選べる（任意）（出典: atwiki/page-1557「オモテ向きの自軍パワーから効果名「アタックライド」を持つカードを1枚選んでもよい」） — 既知の不具合: CARD-XP-005 【全てを集めた先にあるもの】が未実装", () => {
+  it("XP-005: 【全てを集めた先にあるもの】自軍ターンにバトルエリアに出たとき、オモテ向きの自軍パワーの「アタックライド」を持つカードから選べる（任意）（出典: atwiki/page-1557「オモテ向きの自軍パワーから効果名「アタックライド」を持つカードを1枚選んでもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XP-005");
     expect(choiceIds(s)).toEqual(["XG1-064:agito"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XP-005: 【全てを集めた先にあるもの】選んだカード（アギトGF）の【アタックライド】をこのユニットの効果として発動する（DA の敵軍 S ユニットを撃破。選んだカードはパワーゾーンに残る）（出典: atwiki/page-1557「選んだカードの「アタックライド」の効果を、このユニットの効果としてナンバーに関係なく発動する」） — 既知の不具合: CARD-XP-005 【全てを集めた先にあるもの】が未実装", () => {
+  it("XP-005: 【全てを集めた先にあるもの】選んだカード（アギトGF）の【アタックライド】をこのユニットの効果として発動する（DA の敵軍 S ユニットを撃破。選んだカードはパワーゾーンに残る）（出典: atwiki/page-1557「選んだカードの「アタックライド」の効果を、このユニットの効果としてナンバーに関係なく発動する」）", () => {
     const s = resolveAll(pick(entered(), "XG1-064:agito"), ["SPEC-DA-S:da"]);
     expect(zoneOf(s, "player2", "SPEC-DA-S:da")).toBe("discard");
     expect(zoneOf(s, "player1", "XG1-064:agito")).toBe("power");

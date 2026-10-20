@@ -231,7 +231,7 @@ describe("PR-017 ゲキレッド", () => {
     expect(canStrike(enterNext(ID, fillers(2)), `${ID}:x`)).toBe(false);
   });
 
-  it.fails("PR-017: 【咆咆弾】特徴「獣」を持つユニット（ギガゼール）からコンビネーションしたとき、このターン BP+2000 され、次のターンには元に戻る（出典: atwiki/page-987） — 既知の不具合: CARD-PR-017 再録（RS-340）の【咆咆弾】の BP+2000（特徴「獣」からのコンビネーション）が未実装（「SP1」は働く）", () => {
+  it("PR-017: 【咆咆弾】特徴「獣」を持つユニット（ギガゼール）からコンビネーションしたとき、このターン BP+2000 され、次のターンには元に戻る（出典: atwiki/page-987）", () => {
     let s = enterNext(ID, [inst("RK-119", "beast")], { battle: [inst("TST-UNIT-2", "e")] });
     expect(bpOf(s, "player1", `${ID}:x`)).toBe(5000);
     s = settle(attack(s, `${ID}:x`, "TST-UNIT-2:e"));
@@ -289,7 +289,7 @@ describe("PR-018 ゲキトージャ", () => {
   const battleState = (p2: Partial<GameState["players"]["player2"]> = {}) =>
     st({ player1: { battle: [inst("PR-018", "gt")], deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2")], command: [released("TST-OP", "c1"), held("TST-OP", "c2")], deck: deckCards(3, "e"), ...p2 } });
 
-  it.fails("PR-018: 【大頑頑拳】アタックしてバトルに勝ったとき、敵軍コマンドを1つホールドすれば追加でアタックできる（ストライクはできない）（出典: atwiki/page-986） — 既知の不具合: CARD-PR-018 再録（RS-422）の【大頑頑拳】（勝つたびにホールドして追加でアタック）が未実装", () => {
+  it("PR-018: 【大頑頑拳】アタックしてバトルに勝ったとき、敵軍コマンドを1つホールドすれば追加でアタックできる（ストライクはできない）（出典: atwiki/page-986）", () => {
     let s = settle(attack(battleState(), "PR-018:gt", "TST-UNIT-0:e1"));
     expect(s.pendingEffectChoice?.sourceCardId).toBe("PR-018");
     expect(choiceIds(s)).toContain("TST-OP:c1");
@@ -314,7 +314,7 @@ describe("PR-018 ゲキトージャ", () => {
     expect(s.players.player2.command.find((c) => c.instanceId === "TST-OP:c1")?.commandHeld).toBe(false);
   });
 
-  it.fails("PR-018: 【大頑頑拳】「勝つたび」— 追加のアタックでも勝てば、もう一度ホールドして追加でアタックできる（出典: atwiki/page-986「バトルに勝つたび」） — 既知の不具合: CARD-PR-018 再録（RS-422）の【大頑頑拳】（勝つたびにホールドして追加でアタック）が未実装", () => {
+  it("PR-018: 【大頑頑拳】「勝つたび」— 追加のアタックでも勝てば、もう一度ホールドして追加でアタックできる（出典: atwiki/page-986「バトルに勝つたび」）", () => {
     let s = battleState({ battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-0", "e2"), inst("TST-UNIT-0", "e3")], command: [released("TST-OP", "c1"), released("TST-OP", "c3")] });
     s = settle(pick(settle(attack(s, "PR-018:gt", "TST-UNIT-0:e1")), "TST-OP:c1"));
     s = settle(attack(s, "PR-018:gt", "TST-UNIT-0:e2"));

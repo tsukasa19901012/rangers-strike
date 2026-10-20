@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-017::nohakai",
+          "keyword": "promo::XP-017::world_destroyer",
           "duration": "turn"
         }
       ]

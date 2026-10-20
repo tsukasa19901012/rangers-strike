@@ -40,11 +40,21 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": false,
+      "condition": {
+        "type": "has_target",
+        "target": {
+          "type": "zone",
+          "zone": "battle",
+          "owner": "opponent",
+          "filter": {
+            "size": "S"
+          }
+        }
+      },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SK-001::satansaberu",
+          "keyword": "destroy_vehicle_and_rider",
           "duration": "turn"
         }
       ]

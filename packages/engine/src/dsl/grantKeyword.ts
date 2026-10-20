@@ -130,6 +130,7 @@ import { tryRk16CardEffect } from "../rules/rk/rk16UnitEffects";
 import { tryRm1CardEffect } from "../rules/rm/rm1Effects";
 import { tryXg6CardEffect } from "../rules/xg6/xg6Hooks";
 import { tryXg4CardEffect } from "../rules/xg4/xg4Effects";
+import { tryPromoCardEffect } from "../rules/promo";
 import { tryRm2CardEffect } from "../rules/rm/rm2Effects";
 import { tryRm3CardEffect } from "../rules/rm/rm3Effects";
 import { tryXg5CardEffect } from "../rules/xg5/xg5Effects";
@@ -502,6 +503,9 @@ export function applyGrantKeyword(
   // クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 のカード固有の効果（`xg4::` キーワード。rules/xg4/xg4Effects.ts）。
   const xg4 = tryXg4CardEffect(state, ctx, keyword);
   if (xg4) return xg4;
+  // プロモーションカードのカード固有の効果（`promo::` キーワード。rules/promo）。
+  const promo = tryPromoCardEffect(state, ctx, keyword);
+  if (promo) return promo;
   // スペシャルメタルエディション RM-022〜RM-042 のカード固有の効果（`rm2::` キーワード。rules/rm/rm2Effects.ts）。
   const rm2 = tryRm2CardEffect(state, ctx, keyword);
   if (rm2) return rm2;

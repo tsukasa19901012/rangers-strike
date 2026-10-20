@@ -20,6 +20,7 @@ import type { ZordMaterialDestination } from "../types/actions";
 import type { CardInstance, PlayerState } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { getDefinition, isSmallUnit, unitSizeOf } from "../core/catalog";
+import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { findInZone, removeAt } from "../core/helpers";
 import { hasTurnRuleModifier } from "../core/scopedModifiers";
 import { actionContextState, zordMaterialAlteredName, zordMaterialFeatures } from "./zordFeatureContext";
@@ -674,7 +675,7 @@ export function isValidZordUpMaterial(
       return (
         def.type === "unit" &&
         !!condition.requiredFeature &&
-        features.includes(condition.requiredFeature) &&
+        (anyOfFeatures(condition)?.some((f) => features.includes(f)) ?? features.includes(condition.requiredFeature)) &&
         (condition.requiredFeatures ?? []).every((f) => features.includes(f)) &&
         (!condition.requiredSize || def.size === condition.requiredSize)
       );
@@ -691,6 +692,13 @@ export function isValidZordUpMaterial(
       return isValidPowerMaterial(definitions, card, rushingInstanceId);
     default:
       if (isSendSUnitZordCondition(condition.conditionId)) {
+        // 「リードを持つ自軍Sユニット1体を捨札にする」（XP-028 ワンダーゴセイグレート atwiki/page-2369）— リード（どのカテゴリでも）を持つ S ユニットだけ。
+        if (/^リードを持つ/.test(condition.text)) {
+          return (
+            isValidPowerMaterial(definitions, card, rushingInstanceId) &&
+            (["MA", "ET", "OT", "WB", "DA"] as const).some((cat) => cardHasGrantKeyword(card.cardId, `lead_${cat}`))
+          );
+        }
         // 「自軍「X」1体をパワーゾーンに送る」はその名前の S ユニットだけ（RK-054「仮面ライダーガタックMF」・RK-057「仮面ライダーザビーMF」
         // atwiki/page-171・161）。
         const named = condition.conditionId === "send_s_unit_to_power" ? (singleNamedPowerPartner(condition.text) ?? xg2NamedPowerPartner(condition.text)) : undefined;
@@ -718,6 +726,11 @@ export function isValidZordUpMaterial(
  * 「自軍「X」1体をコマンドゾーンに送るか捨札にする」のように、捨札にする型の追加条件で行き先（コマンドゾーンか捨札）を選べるか
  * （RK-046 オートバジンBM「自軍「オートバジンVM」1体をコマンドゾーンに送るか捨札にする」atwiki/page-206 等）。
  */
+/** 「特徴「A」か「B」を持つ…」のどれか1つでよい特徴（@rangers-strike/cards parseFeatureDiscardCondition。XP-029・XP-032）。 */
+function anyOfFeatures(condition: object): string[] | undefined {
+  return (condition as { anyOfFeatures?: string[] }).anyOfFeatures;
+}
+
 export function zordOffersCommandOrDiscard(zordCardId: string, conditionId: string | undefined): boolean {
   if (conditionId === "send_s_unit_to_command_or_discard") return true;
   // XG2-005〜007「自軍Sユニット…を自軍ゾーンに送る」— 「ゾーン」はパワーゾーンとコマンドゾーンの総称（atwiki/page-1517 Q1）。

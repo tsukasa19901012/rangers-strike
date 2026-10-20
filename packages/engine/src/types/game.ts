@@ -264,6 +264,8 @@ export type PendingBattle = {
   xg4FreezeOffered?: boolean;
   /** XG4-073・XG4-074 のバトルの前の選択を出したカード（instanceId。rules/xg4/xg4dEffects.ts）。 */
   xg4BeforeBattleOffered?: string[];
+  /** プロモーションカードの「アタックされたとき」の選択を出した（XP-016【赤い瞳に宿るもの】等。rules/promo）。 */
+  promoAttackedOffered?: boolean;
   /** RS-414【ディオネを守る壁】の選択を出したか。 */
   dioneWallOffered?: boolean;
   /** RS-583【災いを受け止める覚悟】の「代わりに選ばれたことにする」選択をこのアタックで既に出したか。 */
@@ -828,6 +830,8 @@ export type PendingEffectChoice = {
   xg4Meta?: Record<string, unknown>;
   /** クロスギャザー XG2 の選択の続き（rules/xg2。中身はカードごとの効果が決める）。 */
   xg2Meta?: Xg2Meta;
+  /** プロモーションカードの選択の続き（rules/promo。カードごとの値をモジュール側で読む）。 */
+  promoMeta?: Readonly<Record<string, unknown>>;
   /** スペシャルメタルエディション RM-001〜RM-021 の選択の続き（rules/rm/rm1Effects.ts）。 */
   rm1Meta?: {
     /** RM-006: 選べる数（「メカ」「人型」の自軍ユニットの数）。 */
@@ -1489,6 +1493,8 @@ export type GameState = {
   rm1PendingTriggers?: Array<{ kind: "rm017"; playerId: PlayerId; sourceInstanceId: string; unitCardId: string }>;
   /** クロスギャザー XG5 の継続中の効果・まだ開いていない発動（rules/xg5/xg5Types.ts）。 */
   xg5?: import("../rules/xg5/xg5Types").Xg5State;
+  /** プロモーションカードの、まだ開いていない発動（XP-013【キョウリュウマル】等。rules/promo/promoAfterAction.ts）。 */
+  promoPendingTriggers?: Array<{ kind: string; playerId: PlayerId; sourceInstanceId: string; phasePlayerId: PlayerId; data?: Readonly<Record<string, unknown>> }>;
   /** RK-153【車両強奪】で選ばれたユニット（次の相手のスタートフェイズに戻せない。rules/rk/rk8UnitEffects.ts）。 */
   rk8Seized?: Array<{ playerId: PlayerId; instanceId: string }>;
   /** RK-011 第三の眼: 無効にしなかったカウンターの使用をもう一度処理する（core/applyAction.ts の後処理）。 */
@@ -1637,6 +1643,8 @@ export type TurnEndProgress = {
   xg4Queue?: string[];
   /** クロスギャザー ザ・Wインパクト XG3 の「自分がターンを終えるとき」（rules/xg3/xg3Effects.ts）。 */
   xg3Queue?: string[];
+  /** プロモーションカードの「ターンを終えるとき」（XP-029【まだよ…】。rules/promo/promoRegistry.ts）のうち未処理のもの。 */
+  promoQueue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

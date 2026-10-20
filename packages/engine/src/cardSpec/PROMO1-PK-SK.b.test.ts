@@ -131,7 +131,7 @@ describe("PK-008 ライダーマン", () => {
     return act(s, ret!);
   };
 
-  it.fails("PK-008: 【カギ爪アーム】自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアの S ユニットを1体選べる（M は対象外。任意）（出典: atwiki/page-973）— 既知の不具合: CARD-PK-008 【カギ爪アーム】が発動しない（同じ盤面で RK-074 は発動する）", () => {
+  it("PK-008: 【カギ爪アーム】自軍バトルエリアからラッシュエリアに戻るとき、敵軍ラッシュエリアの S ユニットを1体選べる（M は対象外。任意）（出典: atwiki/page-973）", () => {
     const s = returned({ rush: [inst("SPEC-E2000", "a"), inst("SPEC-EM3000", "m")] });
     expect(zoneOf(s, "player1", "PK-008:rm")).toBe("rush");
     expectChoiceFrom(s, "player1", "PK-008");
@@ -139,12 +139,12 @@ describe("PK-008 ライダーマン", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("PK-008: 【カギ爪アーム】選んだユニットは敵軍バトルエリアに出る（出典: atwiki/page-973「可能ならバトルエリアに出してもよい」）— 既知の不具合: CARD-PK-008 【カギ爪アーム】が発動しない（同じ盤面で RK-074 は発動する）", () => {
+  it("PK-008: 【カギ爪アーム】選んだユニットは敵軍バトルエリアに出る（出典: atwiki/page-973「可能ならバトルエリアに出してもよい」）", () => {
     const s = settle(pick(returned({ rush: [inst("SPEC-E2000", "a")] }), "SPEC-E2000:a"));
     expect(zoneOf(s, "player2", "SPEC-E2000:a")).toBe("battle");
   });
 
-  it.fails("PK-008: 【カギ爪アーム】出さなくてもよい（出典: atwiki/page-973「出してもよい」）— 既知の不具合: CARD-PK-008 【カギ爪アーム】が発動しない（同じ盤面で RK-074 は発動する）", () => {
+  it("PK-008: 【カギ爪アーム】出さなくてもよい（出典: atwiki/page-973「出してもよい」）", () => {
     const s = settle(skip(returned({ rush: [inst("SPEC-E2000", "a")] })));
     expect(zoneOf(s, "player2", "SPEC-E2000:a")).toBe("rush");
   });
@@ -174,7 +174,7 @@ describe("PK-010 ウエイクアップ！", () => {
   const wake = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     enter(board({ operation: [resident("PK-010", "wu")], rush: [heldUnit("SPEC-KAMEN", "h"), inst("SPEC-C1", "r"), inst("SPEC-M2", "m")], battle: [inst("SPEC-C2", "b")], ...p1 }), "SPEC-KAMEN:h");
 
-  it.fails("PK-010: 自軍バトルフェイズ中、ホールド状態の自軍 S ユニットがバトルエリアに出たとき、太字部分『自軍Sユニットを1体選びホールドする』を実行するかを選べる（任意。リリース状態の自軍 S ユニットから選ぶ。M は対象外）（出典: atwiki/page-983）— 既知の不具合: CARD-PK-010 ホールド状態の自軍 S ユニットが出ても発動しない（同じ盤面で RK-239 は発動する）", () => {
+  it("PK-010: 自軍バトルフェイズ中、ホールド状態の自軍 S ユニットがバトルエリアに出たとき、太字部分『自軍Sユニットを1体選びホールドする』を実行するかを選べる（任意。リリース状態の自軍 S ユニットから選ぶ。M は対象外）（出典: atwiki/page-983）", () => {
     const s = wake();
     expect(zoneOf(s, "player1", "SPEC-KAMEN:h")).toBe("battle");
     expectChoiceFrom(s, "player1", "PK-010");
@@ -182,18 +182,18 @@ describe("PK-010 ウエイクアップ！", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("PK-010: 選んだユニットをホールドし、バトルエリアに出たユニットをリリースする（出典: atwiki/page-983「そうしたとき、バトルエリアに出たユニットをリリースする」）— 既知の不具合: CARD-PK-010 発動しない", () => {
+  it("PK-010: 選んだユニットをホールドし、バトルエリアに出たユニットをリリースする（出典: atwiki/page-983「そうしたとき、バトルエリアに出たユニットをリリースする」）", () => {
     const s = resolveAll(pick(wake(), "SPEC-C1:r"));
     expect(cardIn(s, "player1", "SPEC-C1:r")?.commandHeld).toBe(true);
     expect(cardIn(s, "player1", "SPEC-KAMEN:h")?.commandHeld ?? false).toBe(false);
   });
 
-  it.fails("PK-010: 実行しなければ、出たユニットはホールド状態のまま（出典: atwiki/page-983「実行してもよい」）— 既知の不具合: CARD-PK-010 発動しない（選択が開かない）", () => {
+  it("PK-010: 実行しなければ、出たユニットはホールド状態のまま（出典: atwiki/page-983「実行してもよい」）", () => {
     const s = resolveAll(skip(wake()));
     expect(cardIn(s, "player1", "SPEC-KAMEN:h")?.commandHeld).toBe(true);
   });
 
-  it.fails("PK-010: ※タッグ — 太字部分のかわりに、他の自軍のタッグの常駐（PK-011 クライマックス刑事）の太字部分『オモテ向きの自軍パワーを1枚選び、自軍山札の上に戻す』を実行して、出たユニットをリリースできる（出典: atwiki/page-983「太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる」・R-KW-TAG-01）— 既知の不具合: CARD-PK-010 発動しない", () => {
+  it("PK-010: ※タッグ — 太字部分のかわりに、他の自軍のタッグの常駐（PK-011 クライマックス刑事）の太字部分『オモテ向きの自軍パワーを1枚選び、自軍山札の上に戻す』を実行して、出たユニットをリリースできる（出典: atwiki/page-983「太字部分を実行するかわりに、他の自軍常駐の太字部分を実行できる」・R-KW-TAG-01）", () => {
     let s = wake({ operation: [resident("PK-010", "wu"), resident("PK-011", "cx")], power: [faceUp("TST-P", "pw0")] });
     expectChoiceFrom(s, "player1", "PK-010");
     expect(choiceIds(s)).toEqual(["PK-010:wu", "PK-011:cx"]);
@@ -238,7 +238,7 @@ describe("PK-011 クライマックス刑事", () => {
   const used = () => resolveAll(pick(activateResident(cxBoard(), "PK-011:cx"), "TST-P:up"));
   const pickOwnBold = (s: GameState, opId: string) => (s.pendingEffectChoice?.effectId === "tag_bold_pick" ? pick(s, opId) : s);
 
-  it.fails("PK-011: 自軍ラッシュフェイズに、太字部分『オモテ向きの自軍パワーを1枚選び、自軍山札の上に戻す』を実行できる（任意。ウラ向きのカードは選べない）（出典: atwiki/page-984「自軍ラッシュフェイズごとに1度だけ、…を実行してもよい」）— 既知の不具合: CARD-PK-011 常駐から起動できない（同じ盤面で RK-242 は起動できる）", () => {
+  it("PK-011: 自軍ラッシュフェイズに、太字部分『オモテ向きの自軍パワーを1枚選び、自軍山札の上に戻す』を実行できる（任意。ウラ向きのカードは選べない）（出典: atwiki/page-984「自軍ラッシュフェイズごとに1度だけ、…を実行してもよい」）", () => {
     const s0 = cxBoard();
     expect(canActivateResident(s0, "PK-011:cx")).toBe(true);
     const s = activateResident(s0, "PK-011:cx");
@@ -246,19 +246,19 @@ describe("PK-011 クライマックス刑事", () => {
     expect(choiceIds(s)).toEqual(["TST-P:up"]);
   });
 
-  it.fails("PK-011: 選んだオモテ向きのパワーは自軍山札の上に戻る（出典: atwiki/page-984）— 既知の不具合: CARD-PK-011 常駐から起動できない", () => {
+  it("PK-011: 選んだオモテ向きのパワーは自軍山札の上に戻る（出典: atwiki/page-984）", () => {
     const s = used();
     expect(s.players.player1.deck[0]?.instanceId).toBe("TST-P:up");
   });
 
-  it.fails("PK-011: そうしたとき、このターン、特徴「イマジン」を持つ自軍ユニットに特徴「警察」が追加される（敵軍のイマジンには追加されない）（出典: atwiki/page-984「特徴「警察」を追加される」）— 既知の不具合: CARD-PK-011 常駐から起動できない", () => {
+  it("PK-011: そうしたとき、このターン、特徴「イマジン」を持つ自軍ユニットに特徴「警察」が追加される（敵軍のイマジンには追加されない）（出典: atwiki/page-984「特徴「警察」を追加される」）", () => {
     const s = used();
     expect(featuresOf(s, "player1", "SPEC-IMAGIN:im")).toContain("警察");
     expect(featuresOf(s, "player1", "SPEC-C1:c")).not.toContain("警察");
     expect(featuresOf(s, "player2", "SPEC-IMAGIN:eim")).not.toContain("警察");
   });
 
-  it.fails("PK-011: そうしたとき、このターン、自軍のイマジンの「これはバトルエリアに出たとき撃破される」は無効になる（PK-007 モモタロスがバトルエリアに残る）（出典: atwiki/page-984「そのテキストは無効になり」）— 既知の不具合: CARD-PK-011 常駐から起動できない", () => {
+  it("PK-011: そうしたとき、このターン、自軍のイマジンの「これはバトルエリアに出たとき撃破される」は無効になる（PK-007 モモタロスがバトルエリアに残る）（出典: atwiki/page-984「そのテキストは無効になり」）", () => {
     const s = enter(nextPhase(used()), "PK-007:mo");
     expect(zoneOf(s, "player1", "PK-007:mo")).toBe("battle");
   });
@@ -268,7 +268,7 @@ describe("PK-011 クライマックス刑事", () => {
     expect(zoneOf(s, "player1", "PK-007:mo")).toBe("discard");
   });
 
-  it.fails("PK-011: 自軍ラッシュフェイズごとに1度だけ（同じラッシュフェイズに2回目は実行できない）。自軍バトルフェイズには実行できない（出典: atwiki/page-984「自軍ラッシュフェイズごとに1度だけ」）— 既知の不具合: CARD-PK-011 常駐から起動できない", () => {
+  it("PK-011: 自軍ラッシュフェイズごとに1度だけ（同じラッシュフェイズに2回目は実行できない）。自軍バトルフェイズには実行できない（出典: atwiki/page-984「自軍ラッシュフェイズごとに1度だけ」）", () => {
     const s = used();
     expect(canActivateResident(s, "PK-011:cx")).toBe(false);
     expect(canActivateResident(nextPhase(cxBoard()), "PK-011:cx")).toBe(false);
@@ -280,7 +280,7 @@ describe("PK-011 クライマックス刑事", () => {
 
   // atwiki/page-762 RK-242 Q1「同名のタッグオペレーションカードである「RK-242 クライマックス刑事」と「PK-011 クライマックス刑事」を２枚同時に常駐させていれば、
   // 両方の効果をそれぞれ発動することができます。(2010/10/25修正)」・ユーザー決定（2026-10-19。README §5.7 i）
-  it.fails("PK-011: 公式Q&A — RK-242 と PK-011（同名のタッグ）を2枚同時に常駐させていれば、1度のラッシュフェイズに両方の太字部分の効果をそれぞれ発動できる（出典: atwiki/page-762 Q1（2010/10/25修正）・ユーザー決定 2026-10-19「両方の効果をそれぞれ発動することができる」）— 既知の不具合: CARD-PK-011 PK-011 を常駐から起動できない（RK-242 は起動できる）", () => {
+  it("PK-011: 公式Q&A — RK-242 と PK-011（同名のタッグ）を2枚同時に常駐させていれば、1度のラッシュフェイズに両方の太字部分の効果をそれぞれ発動できる（出典: atwiki/page-762 Q1（2010/10/25修正）・ユーザー決定 2026-10-19「両方の効果をそれぞれ発動することができる」）", () => {
     let s = cxBoard({ operation: [resident("RK-242", "rk"), resident("PK-011", "cx")], power: [faceUp("TST-P", "up"), faceUp("TST-P", "up2")] });
     s = resolveAll(pick(pickOwnBold(activateResident(s, "RK-242:rk"), "RK-242:rk"), "TST-P:up"));
     expect(canActivateResident(s, "RK-242:rk")).toBe(false);
@@ -310,14 +310,14 @@ describe("PK-012 仮面ライダー龍騎サバイブ", () => {
   const visor = (discard = [inst("SPEC-ADV2", "a2"), inst("SPEC-ADV3", "a3"), inst("SPEC-OP4", "o4")]) =>
     rcRideOff(board({ rush: [inst("PK-012", "sv"), inst("SPEC-VEHICLE", "v")], discard }, enemy), "PK-012:sv", "SPEC-VEHICLE:v");
 
-  it.fails("PK-012: 【ドラグバイザーツバイ】RC — 自軍捨札の特徴「アドベントカード」を持つカードを選べる（任意）（出典: atwiki/page-1140「自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい」）— 既知の不具合: CARD-PK-012 【ドラグバイザーツバイ】が発動しない（同じ盤面で RK-333 は発動する）", () => {
+  it("PK-012: 【ドラグバイザーツバイ】RC — 自軍捨札の特徴「アドベントカード」を持つカードを選べる（任意）（出典: atwiki/page-1140「自軍捨札から特徴「アドベントカード」を持つカードを2枚まで選んでもよい」）", () => {
     const s = visor();
     expectChoiceFrom(s, "player1", "PK-012");
     expect(choiceIds(s)).toEqual(["SPEC-ADV2:a2", "SPEC-ADV3:a3"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("PK-012: 2枚選ぶと必要パワーの合計（5）以下の敵軍ユニット（エリア・サイズを問わない）から1体選び撃破する（強制）（出典: atwiki/page-1140「その合計以下の必要パワーの数字を持つ敵軍ユニットを1体撃破する」）— 既知の不具合: CARD-PK-012 【ドラグバイザーツバイ】が発動しない", () => {
+  it("PK-012: 2枚選ぶと必要パワーの合計（5）以下の敵軍ユニット（エリア・サイズを問わない）から1体選び撃破する（強制）（出典: atwiki/page-1140「その合計以下の必要パワーの数字を持つ敵軍ユニットを1体撃破する」）", () => {
     let s = pick(pick(visor(), "SPEC-ADV2:a2"), "SPEC-ADV3:a3");
     expectChoiceFrom(s, "player1", "PK-012");
     expect(choiceIds(s)).toEqual(["SPEC-C2:r2", "SPEC-C4:c4", "SPEC-C5:c5", "SPEC-M5:m5"]);
@@ -356,13 +356,13 @@ describe("PK-013 変身音叉 音角", () => {
   const used = (command: CardInstance[] = releasedCat("MA", 1)) =>
     played(rushPhase({ hand: [inst("PK-013", "ok"), ...HAND], command, power: powerCards(2) }), "PK-013:ok");
 
-  it.fails("PK-013: 使うと、2つの効果のどちらを発動するかを選ぶ（出典: atwiki/page-1093「次の効果から1つ選び発動する」）— 既知の不具合: CARD-PK-013 効果の選択が開かない（同じ盤面で RK-252 は開く。本文の言い回しが RK-252 と違う）", () => {
+  it("PK-013: 使うと、2つの効果のどちらを発動するかを選ぶ（出典: atwiki/page-1093「次の効果から1つ選び発動する」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "PK-013");
     expect(choiceIds(s)).toEqual(["hibiki_rush", "reveal_draw"]);
   });
 
-  it.fails("PK-013: ◎1つ目 — 手札の「仮面ライダー響鬼」のカード（RK-221・XG2-063。響鬼紅は対象外）から1枚選べる（任意）（出典: atwiki/page-1093「自分の手札から、｢仮面ライダー響鬼｣のカードを1枚選び、自軍ラッシュエリアに出してもよい」）— 既知の不具合: CARD-PK-013 効果の選択が開かない", () => {
+  it("PK-013: ◎1つ目 — 手札の「仮面ライダー響鬼」のカード（RK-221・XG2-063。響鬼紅は対象外）から1枚選べる（任意）（出典: atwiki/page-1093「自分の手札から、｢仮面ライダー響鬼｣のカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
     const s = pick(used(), "hibiki_rush");
     expectChoiceFrom(s, "player1", "PK-013");
     expect(choiceIds(s)).toEqual(["RK-221:hb", "XG2-063:hb2"]);
@@ -416,7 +416,7 @@ describe("PK-014 仮面ライダーキバEF", () => {
   const fever = (hand = [inst("RK-245", "kb"), inst("RK-246", "gf"), inst("RK-313", "dg"), inst("RK-315", "hs"), inst("SPEC-C1", "x")]) =>
     enter(board({ rush: [inst("PK-014", "ef")], hand }, enemy), "PK-014:ef");
 
-  it.fails("PK-014: 【モンスターフィーバー】自軍ターン中に出るとき、手札の特徴「魔皇力」を持つ、追加条件を持たない S ユニットのカードを1枚選べる（任意。必要パワーに「+」「-」のあるキバDGBKF・飛翔態は対象外）（出典: atwiki/page-1395「自分の手札から特徴「魔皇力」を持つ、追加条件を持たないSユニットのカードを1枚選び相手に見せてもよい」）— 既知の不具合: CARD-PK-014 【モンスターフィーバー】が発動しない（同じ盤面で RK-314 は発動する）", () => {
+  it("PK-014: 【モンスターフィーバー】自軍ターン中に出るとき、手札の特徴「魔皇力」を持つ、追加条件を持たない S ユニットのカードを1枚選べる（任意。必要パワーに「+」「-」のあるキバDGBKF・飛翔態は対象外）（出典: atwiki/page-1395「自分の手札から特徴「魔皇力」を持つ、追加条件を持たないSユニットのカードを1枚選び相手に見せてもよい」）", () => {
     const s = fever();
     expectChoiceFrom(s, "player1", "PK-014");
     expect(choiceIds(s)).toEqual(["RK-245:kb", "RK-246:gf"]);

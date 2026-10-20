@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XP-021::koreharaidawotsu",
-          "duration": "permanent"
+          "keyword": "promo::XP-021::final_attack",
+          "duration": "turn"
         }
       ]
     }

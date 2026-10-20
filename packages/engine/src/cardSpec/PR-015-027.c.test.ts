@@ -203,7 +203,7 @@ describe("PR-027 黒獅子リオ", () => {
     expect(canEnter(st({ player1: { rush: [inst(ID, "ri")], deck: deckCards(3) } }), `${ID}:ri`)).toBe(true);
   });
 
-  it.fails("PR-027: ※ 自軍コマンドが1つ以上あるとき（リリース状態でも）ストライクできない／なければ SP1 でストライクできる（出典: atwiki/page-1397） — 既知の不具合: CARD-PR-027 再録（RS-431）の※（自軍コマンドがあるとストライク不可）と【剛勇吼波】が未実装", () => {
+  it("PR-027: ※ 自軍コマンドが1つ以上あるとき（リリース状態でも）ストライクできない／なければ SP1 でストライクできる（出典: atwiki/page-1397）", () => {
     const withCmd = st({ player1: { battle: [inst(ID, "ri")], command: [released("TST-OP", "c")], deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-0", "e1")], deck: deckCards(3, "e") } });
     expect(canStrike(withCmd, `${ID}:ri`)).toBe(false);
     const none = st({ player1: { battle: [inst(ID, "ri")], deck: deckCards(3) }, player2: { battle: [inst("TST-UNIT-0", "e1")], deck: deckCards(3, "e") } });
@@ -211,7 +211,7 @@ describe("PR-027 黒獅子リオ", () => {
     expect(spOf(none, "player1", `${ID}:ri`)).toBe(1);
   });
 
-  it.fails("PR-027: 【剛勇吼波】敵軍 S ユニット（バトル・ラッシュエリア）1体につき BP+1000（L・M ユニット・自軍 S ユニットは数えない）（出典: atwiki/page-1397） — 既知の不具合: CARD-PR-027 再録（RS-431）の※（自軍コマンドがあるとストライク不可）と【剛勇吼波】が未実装", () => {
+  it("PR-027: 【剛勇吼波】敵軍 S ユニット（バトル・ラッシュエリア）1体につき BP+1000（L・M ユニット・自軍 S ユニットは数えない）（出典: atwiki/page-1397）", () => {
     const s = st({
       player1: { battle: [inst(ID, "ri"), inst("TST-UNIT-0", "mine")], deck: deckCards(3) },
       player2: { battle: [inst("TST-UNIT-0", "e1"), inst("TST-UNIT-7", "el")], rush: [inst("RS-341", "e2"), inst("TST-UNIT-2", "em")], deck: deckCards(3, "e") },

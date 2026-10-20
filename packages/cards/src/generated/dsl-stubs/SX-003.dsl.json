@@ -61,8 +61,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::SX-003::amufuangu",
-          "duration": "permanent"
+          "keyword": "promo::SX-003::arm_fang",
+          "duration": "turn"
         }
       ]
     }
