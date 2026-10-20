@@ -10,6 +10,10 @@ export type CpuLevelConfig = {
   searchPly: number;
   /** ルートの上位何手を、相手の次のターンの終わりまで進めて評価し直すか（0で行わない）。 */
   rolloutTopK?: number;
+  /** チャージ・ラッシュ・バトル進入の決定を先まで進めて比べる試行回数（0／省略で行わない）。 */
+  planSamples?: number;
+  planPhases?: Array<"charge" | "rush" | "entry">;
+  planTurns?: number;
 };
 
 let overrides: Partial<Record<CpuLevel, Partial<CpuLevelConfig>>> = {};

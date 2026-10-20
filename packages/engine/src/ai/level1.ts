@@ -36,7 +36,7 @@ import {
   pickStrikeReaction,
   pickWinningBattle,
 } from "./helpers";
-import { dedupeActions, pickBestBySearch, type SearchOptions } from "./simulation";
+import { dedupeActions, pickBestByRollout, pickBestBySearch, type SearchOptions } from "./simulation";
 
 export type PickCpuActionOptions = {
   /** false のとき相手応答シミュレーションをスキップ（再帰回避の内部用）。 */
@@ -46,6 +46,12 @@ export type PickCpuActionOptions = {
   simulationDepth?: number;
   searchPly?: number;
   rolloutTopK?: number;
+  /** 0 より大きいと、チャージ・ラッシュ・バトル進入の決定を先まで進めて比べる（その試行回数）。 */
+  planSamples?: number;
+  /** 先まで進めて比べる決定（省略ですべて）。 */
+  planPhases?: Array<"charge" | "rush" | "entry">;
+  /** 先まで進める長さ（ターン数。1=このターンの終わり、2=相手の次のターンの終わり（既定）、3=自分の次のターンまで）。 */
+  planTurns?: number;
 };
 
 function tacticalSearchOptions(
@@ -205,6 +211,20 @@ function collectRushCandidates(
   return candidates;
 }
 
+/** 手札の同じカードを置く手は結果が同じなので1つずつにする（読みの手間を減らす）。 */
+function sameCardOnce(state: GameState, playerId: PlayerId, actions: GameAction[]): GameAction[] {
+  const seen = new Set<string>();
+  const hand = state.players[playerId].hand;
+  return actions.filter((a) => {
+    if (a.type !== "charge_power" && a.type !== "charge_command") return true;
+    const cardId = hand.find((c) => c.instanceId === a.instanceId)?.cardId ?? a.instanceId;
+    const key = `${a.type}:${cardId}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function battleActionDelta(
   state: GameState,
   action: Extract<GameAction, { type: "battle" }>,
@@ -278,6 +298,9 @@ function pickCpuActionInner(
   options: PickCpuActionOptions = {},
 ): GameAction | null {
   const enableSearch = options.enableSearch ?? (options.maxCandidates ?? 0) > 0;
+  // 読みの中（simulationDepth が入る）では行わない。
+  const planning = options.simulationDepth ? 0 : (options.planSamples ?? 0);
+  const plans = (kind: "charge" | "rush" | "entry") => (planning > 0 && (!options.planPhases || options.planPhases.includes(kind)) ? planning : 0);
   const simShallow = (): SearchOptions | undefined => tacticalSearchOptions(state, options);
   const simTactical = (actions: GameAction[]): SearchOptions | undefined =>
     deepSearchOptions(state, playerId, actions, options) ?? tacticalSearchOptions(state, options);
@@ -408,6 +431,15 @@ function pickCpuActionInner(
     );
     if (entryActivation) return entryActivation;
 
+    if (plans("entry")) {
+      const planned = pickBestByRollout(state, playerId, [
+        ...actionsOfType(actions, "strike"),
+        ...actionsOfType(actions, "battle"),
+        ...actions.filter((a) => a.type === "pass_battle_entry"),
+      ], plans("entry"), options.planTurns);
+      if (planned) return planned;
+    }
+
     if (enableSearch) {
       const candidates = [
         ...actionsOfType(actions, "strike"),
@@ -449,14 +481,31 @@ function pickCpuActionInner(
       return null;
     }
 
-    case "charge":
+    case "charge": {
+      if (plans("charge")) {
+        const planned = pickBestByRollout(
+          state,
+          playerId,
+          sameCardOnce(state, playerId, actions.filter((a) => a.type === "charge_power" || a.type === "charge_command" || a.type === "end_phase")),
+          plans("charge"),
+          options.planTurns,
+        );
+        if (planned) return planned;
+      }
       return pickChargeAction(state, playerId, actions) ?? endPhase(actions);
+    }
 
     case "rush": {
       const beginZord = pickBeginZordSetup(state, playerId, actions);
       if (beginZord && !enableSearch) return beginZord;
 
       const affordable = affordableRushes(state, playerId, actions);
+      if (plans("rush")) {
+        const candidates = collectRushCandidates(state, playerId, actions);
+        if (beginZord) candidates.unshift(beginZord);
+        const planned = pickBestByRollout(state, playerId, candidates, plans("rush"), options.planTurns);
+        if (planned) return planned;
+      }
       if (enableSearch) {
         let candidates = collectRushCandidates(state, playerId, actions);
         if (beginZord) candidates.unshift(beginZord);
