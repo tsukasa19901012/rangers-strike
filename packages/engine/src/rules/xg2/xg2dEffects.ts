@@ -192,6 +192,21 @@ function applyJama(state: GameState, ctx: GrantKeywordContext): GrantKeywordResu
   return { state: openAfter(state, selectOne(ctxBase(ctx), "XG2-067", JAMA_EFFECT_ID, ids, false)), detail: JAMA_EFFECT_ID };
 }
 
+// モーフの置き換えでバトルエリアに出たときも「バトルエリアに出た」（R-REPL-04）。DSL の enter_battle はモーフの置き換えでは発火しないので、
+// 置き換えの選択を解決したアクションのあとに発動する（コメント欄「効果はターンを問わないならモーフで出たときに使ってもいい」）。
+xg2Hook("afterAction", (before, after) => {
+  if (before.pendingEffectChoice?.effectId !== "morph_replacement") return after;
+  let next = after;
+  for (const playerId of ["player1", "player2"] as const) {
+    const wasInBattle = new Set(before.players[playerId].battle.map((c) => c.instanceId));
+    for (const card of after.players[playerId].battle) {
+      if (wasInBattle.has(card.instanceId) || !isSameCardIdentity(card.cardId, "XG2-067")) continue;
+      next = applyJama(next, { playerId, phasePlayerId: next.activePlayer, sourceCardId: "XG2-067", effectId: `${JAMA_EFFECT_ID}:morph`, triggerSourceInstanceId: card.instanceId }).state;
+    }
+  }
+  return next;
+});
+
 registerXg2Choice(JAMA_EFFECT_ID, {
   resolve: (state, playerId, instanceId) => {
     const pending = state.pendingEffectChoice!;
@@ -488,6 +503,41 @@ registerXg2Choice(GOURAM_EFFECT_ID, {
     return { state: proceed(next, pending), log: logFor(state, playerId, "XG2-074", `${GOURAM_EFFECT_ID}:${instanceId}`) };
   },
   skip: simpleSkipXg2(),
+});
+
+// ライドしたユニットと一緒にビークル（XG2-072・XG2-074）がバトルエリアに出たとき、ビークルの「これがバトルエリアに出たとき」を発動する
+// （DSL の enter_battle はバトルエリアに出たユニット＝ライドした側にだけ発火するため。RK-024 等と同じ扱い。rules/rk/rk2UnitEffects.ts tryRk2OnEnterBattle）。
+// ライドオフの選択があるときは、その選択のあと（ライドオフしたときも、これはバトルエリアに出ている。カード評価「RCを発動しても乗せっぱなしでも強い」）。
+const MOUNTED_VEHICLE_ENTER: Record<string, (state: GameState, ctx: GrantKeywordContext) => GrantKeywordResult> = {
+  "XG2-072": applyTrigouram,
+  "XG2-074": applyGouram,
+};
+
+function mountedVehicleCardId(cardId: string): string | undefined {
+  return Object.keys(MOUNTED_VEHICLE_ENTER).find((id) => isSameCardIdentity(cardId, id));
+}
+
+function fireMountedVehicleEnter(state: GameState, playerId: PlayerId, vehicleInstanceId: string): GameState {
+  const vehicle = state.players[playerId].battle.find((c) => c.instanceId === vehicleInstanceId);
+  const vehicleCardId = vehicle ? mountedVehicleCardId(vehicle.cardId) : undefined;
+  if (!vehicle || !vehicleCardId) return state;
+  const ctx: GrantKeywordContext = { playerId, phasePlayerId: state.activePlayer, sourceCardId: vehicleCardId, effectId: `${vehicleCardId}:mounted_enter`, triggerSourceInstanceId: vehicle.instanceId };
+  return MOUNTED_VEHICLE_ENTER[vehicleCardId]!(state, ctx).state;
+}
+
+xg2Hook("afterAction", (before, after) => {
+  if (after.pendingRideOffChoice) return after;
+  const resolved = before.pendingRideOffChoice;
+  if (resolved) return fireMountedVehicleEnter(after, resolved.playerId, resolved.vehicleInstanceId);
+  let next = after;
+  for (const playerId of ["player1", "player2"] as const) {
+    const wasInBattle = new Set(before.players[playerId].battle.map((c) => c.instanceId));
+    for (const rider of after.players[playerId].battle) {
+      if (!rider.mountedOnInstanceId || wasInBattle.has(rider.instanceId) || wasInBattle.has(rider.mountedOnInstanceId)) continue;
+      next = fireMountedVehicleEnter(next, playerId, rider.mountedOnInstanceId);
+    }
+  }
+  return next;
 });
 
 // ---------------------------------------------------------------------------

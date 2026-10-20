@@ -3594,9 +3594,10 @@ export function applyEffectChoiceSelect(
   if (pending.effectId === "kamen_ride_morph") {
     const result = resolveKamenRideMorphChoice(state, playerId, instanceId);
     if ("error" in result) return { error: result.error };
-    let nextState = promoteDeferredBattleEntry(
-      clearChoice(result.state, pending.phasePlayerId),
-    );
+    // 出したユニットの RC・「バトルエリアに出たとき」が開いた選択は残す（XG2-077・XP-004 atwiki/page-1748）。
+    let nextState = result.state.pendingEffectChoice
+      ? result.state
+      : promoteDeferredBattleEntry(clearChoice(result.state, pending.phasePlayerId));
     if (result.extraLogs?.length) {
       nextState = { ...nextState, log: [...nextState.log, ...result.extraLogs] };
     }

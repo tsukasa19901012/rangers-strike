@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-074::koreharaidadeike",
+          "keyword": "xg2::XG2-074::decade_enter",
           "duration": "permanent"
         }
       ]
@@ -59,12 +59,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-074::fuainaruatakuraido",
-          "duration": "turn"
+          "keyword": "xg2::XG2-074::final_attack_ride",
+          "duration": "permanent"
         }
       ]
     }

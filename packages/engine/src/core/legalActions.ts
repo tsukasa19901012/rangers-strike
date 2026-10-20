@@ -161,7 +161,7 @@ import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
 import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
 import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
-import { needsHoldExtraCommand } from "../rules/zordExtended";
+import { needsHoldExtraCommand, needsZordExtendedMaterial } from "../rules/zordExtended";
 import { isSet7BConfirmableChoice } from "../rules/legend1/set7NamedEffectsB";
 import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower } from "./power";
@@ -1120,7 +1120,7 @@ function appendRushCategoryPaymentActions(
     if (categories.length === 0) continue;
 
     if (
-      isUnit(definition) &&
+      (isUnit(definition) || (isVehicle(definition) && needsZordExtendedMaterial(state.definitions, card.cardId))) &&
       isZordUpCost(definition.powerCost) &&
       (rushAdditionalConditionApplies(state, playerId, card.cardId) ||
         requiresAllFusionPartners(card.cardId))
@@ -2294,7 +2294,8 @@ function getLegalActionsCore(state: GameState): GameAction[] {
             });
           }
         } else if (
-          isUnit(definition) &&
+          // 「自軍「X」1体を手札に戻す」等の追加条件を持つビークル（XG2-074 クウガゴウラム）も、ユニットと同じ支払いの組で列挙する。
+          (isUnit(definition) || (isVehicle(definition) && needsZordExtendedMaterial(state.definitions, card.cardId))) &&
           isZordUpCost(definition!.powerCost) &&
           (rushAdditionalConditionApplies(state, playerId, card.cardId) ||
             requiresAllFusionPartners(card.cardId))

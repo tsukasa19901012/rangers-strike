@@ -36,13 +36,12 @@
       "id": "unnamed_e280bbe38193e381aee383a6",
       "text": "※このユニットの下にオモテ向きの「リュウタロス」のカードが重なっている間、これは「SP1」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-067::konoyunitononiom",
+          "keyword": "xg2::XG2-067::ryutaros_sp",
           "duration": "permanent"
         }
       ]
@@ -58,8 +57,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-067::masurunaragekitsuyo",
-          "duration": "turn"
+          "keyword": "xg2::XG2-067::jama_suru_nara",
+          "duration": "permanent"
         }
       ]
     }

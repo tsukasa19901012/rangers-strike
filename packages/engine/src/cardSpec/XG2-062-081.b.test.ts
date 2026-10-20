@@ -56,6 +56,7 @@ import {
   rideOff,
   rushBoard,
   rushFromHand,
+  rushVia,
   settle,
   skip,
   st,
@@ -118,7 +119,7 @@ describe("XG2-069 仮面ライダーNEW電王SF", () => {
     expect(s.players.player1.deck.at(-1)?.instanceId).toBe("SPEC-E3:top");
   });
 
-  it.fails("XG2-069: 【カウント】必要パワー「7+」の敵軍ユニットは数字7として選べる（オモテにしたカードも「7+」）（出典: atwiki/page-1723「必要パワーの数字」・カード評価「高めのパワーのカードを積んでいれば、Lユニットなども除去してくれる」） 既知の不具合: CARD-XG2-069 必要パワー「7+」を数字7として扱わず、7を宣言しても候補が出ない", () => {
+  it("XG2-069: 【カウント】必要パワー「7+」の敵軍ユニットは数字7として選べる（オモテにしたカードも「7+」）（出典: atwiki/page-1723「必要パワーの数字」・カード評価「高めのパワーのカードを積んでいれば、Lユニットなども除去してくれる」）", () => {
     expect(choiceIds(pick(count(inst("TST-UNIT-7", "top7")), "7"))).toEqual(["TST-UNIT-7:big"]);
   });
 });
@@ -146,13 +147,13 @@ describe("XG2-070 ライドブッカー・ブックモード", () => {
     expect(zoneOf(resolveAll(placed()), "player1", "XG2-070:rb")).toBe("operation");
   });
 
-  it.fails("XG2-070: 配置するとき、自軍山札のモーフを持つユニットカードから選べる（モーフを持たない XG2-066 は選べない）（出典: atwiki/page-1774「自軍山札からモーフを持つユニットカードを3枚まで選び」・カード評価「モーフ対象を一気にサーチ」） 既知の不具合: CARD-XG2-070 配置するときの選択が開かず、山札のカードを重ねられない", () => {
+  it("XG2-070: 配置するとき、自軍山札のモーフを持つユニットカードから選べる（モーフを持たない XG2-066 は選べない）（出典: atwiki/page-1774「自軍山札からモーフを持つユニットカードを3枚まで選び」・カード評価「モーフ対象を一気にサーチ」）", () => {
     const s = placed();
     expectChoiceFrom(s, "player1", "XG2-070");
     expect(choiceIds(s).sort()).toEqual(["XG2-043:m1", "XG2-044:m2", "XG2-045:m3", "XG2-077:m4"]);
   });
 
-  it.fails("XG2-070: 選んだカード（3枚まで）はこれに重ねて置かれ、山札から抜ける（出典: atwiki/page-1774「これに重ねて置いた後、山札をシャッフルする」） 既知の不具合: CARD-XG2-070 配置するときの選択が開かず、山札のカードを重ねられない", () => {
+  it("XG2-070: 選んだカード（3枚まで）はこれに重ねて置かれ、山札から抜ける（出典: atwiki/page-1774「これに重ねて置いた後、山札をシャッフルする」）", () => {
     const s = resolveAll(placed(), ["XG2-043:m1", "XG2-044:m2", "XG2-045:m3"]);
     expect(stackedOn(s, "player1", "XG2-070:rb").sort()).toEqual(["XG2-043:m1", "XG2-044:m2", "XG2-045:m3"]);
     expect(zoneOf(s, "player1", "XG2-077:m4")).toBe("deck");
@@ -160,11 +161,12 @@ describe("XG2-070 ライドブッカー・ブックモード", () => {
 
   const morphed = () => morphRush({ battle: [inst("XG2-043", "me")], operation: [resident("XG2-070", "rb", [inst("XG2-049", "st0"), inst("XG2-045", "st1"), inst("XG2-044", "st2")])] });
 
-  it.fails("XG2-070: これが常駐置き場にある間、モーフの置き換え先を、これに重ねたカード（特徴が完全一致する XG2-045）から選べる（出典: atwiki/page-1774「かわりにこれに重ねたカードから選んでもよい」・R-KW-MORPH-03） 既知の不具合: CARD-XG2-070 モーフの置き換え先に、これに重ねたカードが出ない", () => {
-    expect(morphCandidates(morphed())).toEqual(["XG2-045:st1"]);
+  it("XG2-070: これが常駐置き場にある間、モーフの置き換え先を、これに重ねたカード（特徴が完全一致する XG2-045・XG2-044。特徴の違う XG2-049 は選べない）から選べる（出典: atwiki/page-1774「かわりにこれに重ねたカードから選んでもよい」・R-KW-MORPH-03）", () => {
+    // XG2-044 の特徴も「仮面ライダー」「男」「ダブルドライバー」で XG2-043 と完全一致する（XG2-042-061 の XG2-044 のスペック）。
+    expect(morphCandidates(morphed())).toEqual(["XG2-044:st2", "XG2-045:st1"]);
   });
 
-  it.fails("XG2-070: 公式Q&A — 重ねたカードとモーフすると、そのカードがバトルエリアに出て、モーフしたユニットは常駐置き場の同じ位置（上から2番目）に重なる（出典: atwiki/page-1774 Q1「ユニットは常駐置き場に置かれ、常駐置き場のカードがラッシュされます」・Q2「置き換えたカードと同じ位置…に置いてください」） 既知の不具合: CARD-XG2-070 モーフの置き換え先に、これに重ねたカードが出ない", () => {
+  it("XG2-070: 公式Q&A — 重ねたカードとモーフすると、そのカードがバトルエリアに出て、モーフしたユニットは常駐置き場の同じ位置（上から2番目）に重なる（出典: atwiki/page-1774 Q1「ユニットは常駐置き場に置かれ、常駐置き場のカードがラッシュされます」・Q2「置き換えたカードと同じ位置…に置いてください」）", () => {
     const s = settle(pickAs(morphed(), "player1", "XG2-045:st1"));
     expect(zoneOf(s, "player1", "XG2-045:st1")).toBe("battle");
     expect(stackedOn(s, "player1", "XG2-070:rb")).toEqual(["XG2-049:st0", "XG2-043:me", "XG2-044:st2"]);
@@ -200,14 +202,14 @@ describe("XG2-071 仮面ライダーディエンド", () => {
       EXTRA,
     );
 
-  it.fails("XG2-071: 【ディメンションシュート】まず、これ以外の特徴「仮面ライダー」を持つ自軍ユニット（エリアを問わない）を2体選ぶ（任意。「仮面ライダー」を持たないユニットは選べない）（出典: atwiki/page-1819「これ以外の特徴「仮面ライダー」を持つ自軍ユニットを2体選び、パワーゾーンに送ってもよい」・カード評価「コストでパワーゾーンに送るユニットの居る場所は問わない」） 既知の不具合: CARD-XG2-071 自軍ユニットを2体パワーゾーンに送る手順がなく、すぐに敵軍ユニットを選ばせる", () => {
+  it("XG2-071: 【ディメンションシュート】まず、これ以外の特徴「仮面ライダー」を持つ自軍ユニット（エリアを問わない）を2体選ぶ（任意。「仮面ライダー」を持たないユニットは選べない）（出典: atwiki/page-1819「これ以外の特徴「仮面ライダー」を持つ自軍ユニットを2体選び、パワーゾーンに送ってもよい」・カード評価「コストでパワーゾーンに送るユニットの居る場所は問わない」）", () => {
     const s = shoot();
     expectChoiceFrom(s, "player1", "XG2-071");
     expect(choiceIds(s).sort()).toEqual(["XG2-063:k1", "XG2-073:k2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-071: 【ディメンションシュート】2体をパワーゾーンに送ったら、本来の BP が8000以下の敵軍ユニット（ラッシュエリアも）を1体選び撃破する。BP9000 は選べない（出典: atwiki/page-1819「そうしたとき、本来のBPが8000以下の敵軍ユニットを1体選び撃破する」・カード評価「サイズ・エリアを問わず本来のBPが8000以下のユニットを除去できる」） 既知の不具合: CARD-XG2-071 自軍ユニットを2体パワーゾーンに送る手順がなく、敵軍バトルエリアのユニットだけを、本来の BP を見ずに候補にする", () => {
+  it("XG2-071: 【ディメンションシュート】2体をパワーゾーンに送ったら、本来の BP が8000以下の敵軍ユニット（ラッシュエリアも）を1体選び撃破する。BP9000 は選べない（出典: atwiki/page-1819「そうしたとき、本来のBPが8000以下の敵軍ユニットを1体選び撃破する」・カード評価「サイズ・エリアを問わず本来のBPが8000以下のユニットを除去できる」）", () => {
     let s = resolveAll(shoot(), ["XG2-063:k1", "XG2-073:k2"]);
     expect(zoneOf(s, "player1", "XG2-063:k1")).toBe("power");
     expect(zoneOf(s, "player1", "XG2-073:k2")).toBe("power");
@@ -218,7 +220,7 @@ describe("XG2-071 仮面ライダーディエンド", () => {
     expect(zoneOf(s, "player2", "SPEC-B8000:r8")).toBe("discard");
   });
 
-  it.fails("XG2-071: 【ディメンションシュート】送らないことを選んだとき・「仮面ライダー」を持つ自軍ユニットが2体いないときは、敵軍ユニットを撃破しない（出典: atwiki/page-1819「そうしたとき、」） 既知の不具合: CARD-XG2-071 自軍ユニットを送らなくても敵軍ユニットを撃破できる", () => {
+  it("XG2-071: 【ディメンションシュート】送らないことを選んだとき・「仮面ライダー」を持つ自軍ユニットが2体いないときは、敵軍ユニットを撃破しない（出典: atwiki/page-1819「そうしたとき、」）", () => {
     const s = resolveAll(shoot(false), ["SPEC-B8000:b8"]);
     expect(zoneOf(s, "player2", "SPEC-B8000:b8")).toBe("battle");
   });
@@ -267,20 +269,20 @@ describe("XG2-072 トライゴウラム", () => {
     expect(bpOf(rideOff(mounted(), false), "player1", "SPEC-RIDER:r")).toBe(3500);
   });
 
-  it.fails("XG2-072: 【トライゴウラムアタック】自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアの S ユニットを選ぶ（必ず。M ユニットは選べない）（出典: atwiki/page-1810「敵軍バトルエリアからSユニットを1体選び」） 既知の不具合: CARD-XG2-072 【トライゴウラムアタック】がなく、バトルエリアに出ても選択が開かない", () => {
+  it("XG2-072: 【トライゴウラムアタック】自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアの S ユニットを選ぶ（必ず。M ユニットは選べない）（出典: atwiki/page-1810「敵軍バトルエリアからSユニットを1体選び」）", () => {
     const s = rideOff(mounted(), false);
     expectChoiceFrom(s, "player1", "XG2-072");
     expect(choiceIds(s)).toEqual(["TST-UNIT-0:e"]);
     expect(canSkip(s)).toBe(false);
   });
 
-  it.fails("XG2-072: 【トライゴウラムアタック】選んだユニットを持ち主のコマンドゾーンにホールド状態で置く（ライドオフしたときも、これはバトルエリアに出ている）（出典: atwiki/page-1810「持ち主のコマンドゾーンにホールド状態で置く」・カード評価「RCを発動しても乗せっぱなしでも強い」） 既知の不具合: CARD-XG2-072 【トライゴウラムアタック】がなく、バトルエリアに出ても選択が開かない", () => {
+  it("XG2-072: 【トライゴウラムアタック】選んだユニットを持ち主のコマンドゾーンにホールド状態で置く（ライドオフしたときも、これはバトルエリアに出ている）（出典: atwiki/page-1810「持ち主のコマンドゾーンにホールド状態で置く」・カード評価「RCを発動しても乗せっぱなしでも強い」）", () => {
     const s = resolveAll(rideOff(mounted(), true), ["TST-UNIT-0:e"]);
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("command");
     expect(isHeld(s, "player2", "TST-UNIT-0:e")).toBe(true);
   });
 
-  it.fails("XG2-072: 【トライゴウラムアタック】敵軍コマンドゾーンが5枚で置けなければ、持ち主のパワーゾーンにダメージ（ウラ向き）にして置く（出典: atwiki/page-1810「置けなければ、持ち主のパワーゾーンにダメージにして置く」・R-ZONE-08） 既知の不具合: CARD-XG2-072 【トライゴウラムアタック】がなく、バトルエリアに出ても選択が開かない", () => {
+  it("XG2-072: 【トライゴウラムアタック】敵軍コマンドゾーンが5枚で置けなければ、持ち主のパワーゾーンにダメージ（ウラ向き）にして置く（出典: atwiki/page-1810「置けなければ、持ち主のパワーゾーンにダメージにして置く」・R-ZONE-08）", () => {
     const s = resolveAll(rideOff(mounted({ battle: [inst("TST-UNIT-0", "e")], command: releasedN(5, "TST-OP", "ec") }), false), ["TST-UNIT-0:e"]);
     expect(isDamageIn(s, "player2", "TST-UNIT-0:e")).toBe(true);
   });
@@ -303,7 +305,7 @@ describe("XG2-073 仮面ライダークウガ", () => {
 
   const smile = () => rcBoard("XG2-073:kg", { rush: [inst("SPEC-POLICE", "pol"), inst("TST-UNIT-0", "np")] }, { battle: [inst("TST-UNIT-0", "e")] }, EXTRA);
 
-  it.fails("XG2-073: 【笑顔の為に】RC — 自軍ラッシュエリアの特徴「警察」を持つ S ユニットから選べる（任意。「警察」を持たないユニットは選べない）（出典: atwiki/page-1743「自軍ラッシュエリアから特徴「警察」を持つSユニットを1体選び、持ち主の手札に戻してもよい」） 既知の不具合: CARD-XG2-073 特徴「警察」を見ず、自軍ラッシュエリアのどの S ユニットでも選べる", () => {
+  it("XG2-073: 【笑顔の為に】RC — 自軍ラッシュエリアの特徴「警察」を持つ S ユニットから選べる（任意。「警察」を持たないユニットは選べない）（出典: atwiki/page-1743「自軍ラッシュエリアから特徴「警察」を持つSユニットを1体選び、持ち主の手札に戻してもよい」）", () => {
     const s = smile();
     expectChoiceFrom(s, "player1", "XG2-073");
     expect(choiceIds(s)).toEqual(["SPEC-POLICE:pol"]);
@@ -315,7 +317,7 @@ describe("XG2-073 仮面ライダークウガ", () => {
     expect(zoneOf(s, "player1", "SPEC-POLICE:pol")).toBe("hand");
   });
 
-  it.fails("XG2-073: 【笑顔の為に】戻したターン、これとバトルして撃破され捨札になったユニットは、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-1743「このターン、これとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く」） 既知の不具合: CARD-XG2-073 【笑顔の為に】の後半がなく、これとバトルして撃破されたユニットは捨札のまま", () => {
+  it("XG2-073: 【笑顔の為に】戻したターン、これとバトルして撃破され捨札になったユニットは、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-1743「このターン、これとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く」）", () => {
     let s = resolveAll(pick(smile(), "SPEC-POLICE:pol"));
     s = resolveAll(settle(attack(s, "XG2-073:kg", "TST-UNIT-0:e")));
     expect(isDamageIn(s, "player2", "TST-UNIT-0:e")).toBe(true);
@@ -341,8 +343,9 @@ describe("XG2-074 クウガゴウラム", () => {
 
   const board = (rush: ReturnType<typeof inst>[], power = 5) => rushBoard({ hand: [inst("XG2-074", "kg")], rush, power: powerCards(power), command: releasedCat("MA", 1) });
 
-  it.fails("XG2-074: 追加条件 — 自軍「仮面ライダークウガ」（XG2-073）1体を手札に戻し、パワー5でラッシュできる（出典: atwiki/page-1775「必要パワー：5+」「追加条件：自軍「仮面ライダークウガ」1体を手札に戻す」・カード評価「本編を再現して、仮面ライダーからゾードアップする珍しいビークル」） 既知の不具合: CARD-XG2-074 「仮面ライダークウガ」がいても、これをラッシュする手がない", () => {
-    const r = rushFromHand(board([inst("XG2-073", "ku")]), "player1", "XG2-074:kg");
+  it("XG2-074: 追加条件 — 自軍「仮面ライダークウガ」（XG2-073）1体を手札に戻し、パワー5でラッシュできる（出典: atwiki/page-1775「必要パワー：5+」「追加条件：自軍「仮面ライダークウガ」1体を手札に戻す」・カード評価「本編を再現して、仮面ライダーからゾードアップする珍しいビークル」）", () => {
+    // 手札に戻す素材を指定するラッシュの宣言を選ぶ（XG2-080 と同じ。rushFromHand は素材を指定しない宣言しか試さない）。
+    const r = rushVia(board([inst("XG2-073", "ku")]), "player1", "XG2-074:kg", (a) => JSON.stringify(a).includes("XG2-073:ku"));
     expect(r.ok, r.error).toBe(true);
     const s = resolveAll(r.state);
     expect(zoneOf(s, "player1", "XG2-074:kg")).toBe("rush");
@@ -361,7 +364,7 @@ describe("XG2-074 クウガゴウラム", () => {
     expect(zoneOf(resolveAll(r.state), "player1", "XG2-074:kg")).toBe("hand");
   });
 
-  it.fails("XG2-074: ※2つ目 — 自軍に「仮面ライダーディケイド」（XG2-077）があれば、ライドされていなくてもバトルエリアに出られる（出典: atwiki/page-1775「自軍「仮面ライダーディケイド」があれば、ライドされていなくてもバトルエリアに出ることができる」・コメント欄「『仮面ライダーディケイド』が自軍ラッシュエリアにいて…クウガゴウラムだけで出られる」） 既知の不具合: CARD-XG2-074 自軍に「仮面ライダーディケイド」があっても、ライドされずにバトルエリアに出られない", () => {
+  it("XG2-074: ※2つ目 — 自軍に「仮面ライダーディケイド」（XG2-077）があれば、ライドされていなくてもバトルエリアに出られる（出典: atwiki/page-1775「自軍「仮面ライダーディケイド」があれば、ライドされていなくてもバトルエリアに出ることができる」・コメント欄「『仮面ライダーディケイド』が自軍ラッシュエリアにいて…クウガゴウラムだけで出られる」）", () => {
     expect(canEnter(p1Battle({ rush: [inst("XG2-074", "kg"), inst("XG2-077", "dc")] }), "XG2-074:kg")).toBe(true);
   });
 
@@ -372,14 +375,14 @@ describe("XG2-074 クウガゴウラム", () => {
   const far = () =>
     rideOff(mount(p1Battle({ rush: [inst("SPEC-RIDER", "r"), inst("XG2-074", "kg")] }, { battle: [inst("SPEC-B4000", "b4"), inst("SPEC-B3000", "b3"), inst("TST-UNIT-2", "m")] }, EXTRA), "SPEC-RIDER:r", "XG2-074:kg"), false);
 
-  it.fails("XG2-074: 【ファイナルアタックライド】自軍ターン中にバトルエリアに出たとき、BP4000 以上の敵軍 S ユニットを1体選べる（任意。BP3000・M ユニットは選べない）（出典: atwiki/page-1775「BP4000以上の敵軍Sユニットを1体選び撃破してもよい」） 既知の不具合: CARD-XG2-074 【ファイナルアタックライド】がなく、バトルエリアに出ても選択が開かない", () => {
+  it("XG2-074: 【ファイナルアタックライド】自軍ターン中にバトルエリアに出たとき、BP4000 以上の敵軍 S ユニットを1体選べる（任意。BP3000・M ユニットは選べない）（出典: atwiki/page-1775「BP4000以上の敵軍Sユニットを1体選び撃破してもよい」）", () => {
     const s = far();
     expectChoiceFrom(s, "player1", "XG2-074");
     expect(choiceIds(s)).toEqual(["SPEC-B4000:b4"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-074: 【ファイナルアタックライド】選んだユニットを撃破する（出典: atwiki/page-1775） 既知の不具合: CARD-XG2-074 【ファイナルアタックライド】がなく、バトルエリアに出ても選択が開かない", () => {
+  it("XG2-074: 【ファイナルアタックライド】選んだユニットを撃破する（出典: atwiki/page-1775）", () => {
     const s = resolveAll(far(), ["SPEC-B4000:b4"]);
     expect(zoneOf(s, "player2", "SPEC-B4000:b4")).toBe("discard");
   });

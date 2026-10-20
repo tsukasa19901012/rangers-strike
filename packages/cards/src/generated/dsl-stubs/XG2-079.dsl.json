@@ -25,11 +25,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-079::taimubento",
+          "keyword": "xg2::XG2-079::time_vent",
           "duration": "permanent"
         }
       ]
