@@ -106,7 +106,7 @@ type Mode =
   | { kind: "board" }
   | { kind: "popup"; title: string; anchor: Rect; verbs: Verb[]; cursor: ListCursor }
   | { kind: "target"; prompt: string; targets: Target[]; cursor: number }
-  | { kind: "list"; title: string; items: MenuItem[]; cursor: ListCursor };
+  | { kind: "list"; title: string; items: MenuItem[]; labels: string[]; cursor: ListCursor };
 
 type DialogItem = { kind: "card"; id: string; items: MenuItem[] } | { kind: "button"; items: MenuItem[] };
 
@@ -343,11 +343,13 @@ export class GuiMatch {
     this.mode = { kind: "popup", title, anchor, verbs, cursor };
   }
 
-  private openList(title: string, items: MenuItem[]): void {
+  /** `variants`: the moves of one verb; rows drop the start they share, so a narrow screen still shows what differs. */
+  private openList(title: string, items: MenuItem[], variants = false): void {
     if (items.length === 0) return;
     const cursor = new ListCursor();
     cursor.reset(items.length, LIST_ROWS);
-    this.mode = { kind: "list", title, items, cursor };
+    const labels = items.map((i) => i.option.label);
+    this.mode = { kind: "list", title, items, labels: variants ? variantLabels(labels) : labels, cursor };
   }
 
   private focusedRect(): Rect {
@@ -402,7 +404,7 @@ export class GuiMatch {
       this.setFocus(targets[0]!.row, targets[0]!.index);
       return null;
     }
-    this.openList(verb.label, verb.items);
+    this.openList(verb.label, verb.items, true);
     return null;
   }
 
@@ -411,7 +413,7 @@ export class GuiMatch {
     // Variants that differ only in extra fields (material, substitute...) are listed by their full labels.
     const distinct = new Set(items.map((i) => actionExtrasKey(i.option.action)));
     if (distinct.size <= 1) return this.execute(items[0]!);
-    this.openList(title, items);
+    this.openList(title, items, true);
     return null;
   }
 
@@ -422,10 +424,14 @@ export class GuiMatch {
     return result;
   }
 
-  /** What the R button does: end the phase, or the only move there is (the draw, ending battle entry). */
+  /** What the R button does: end the phase or the battle entry, or the only move there is (the draw). */
   private primaryItem(): MenuItem | undefined {
     const items = this.allItems();
-    return items.find((item) => item.option.action.type === "end_phase") ?? (items.length === 1 ? items[0] : undefined);
+    return (
+      items.find((item) => item.option.action.type === "end_phase") ??
+      items.find((item) => item.option.action.type === "pass_battle_entry") ??
+      (items.length === 1 ? items[0] : undefined)
+    );
   }
 
   private endPhase(): StepResult | null {
@@ -495,6 +501,16 @@ export class GuiMatch {
         if (index >= row.tiles.length) break;
         this.setFocus(event.row, index);
         if (event.open) this.openCardPopup();
+        break;
+      }
+      case "openCards": {
+        const verbs = event.instanceIds.flatMap((id) => {
+          const name = this.instanceName(id);
+          const own = this.cardVerbs(id);
+          // One card: the title names it; several: each row keeps its card name.
+          return event.instanceIds.length === 1 ? own.map((verb) => ({ ...verb, label: verb.label.split(`: ${name}`).join("").trim() || verb.label })) : own;
+        });
+        if (verbs.length > 0) this.openPopup(event.title, event.anchor, verbs);
         break;
       }
       case "select":
@@ -925,7 +941,7 @@ export class GuiMatch {
         rect,
         title: fitLine(`${mode.title} ${mode.cursor.index + 1}/${mode.items.length}`, wrap),
         titleRect: { x: rect.x + 4, y: rect.y + 3, w: rect.w - 8, h: g.lineHeight },
-        rows: this.boxRows(mode.cursor, mode.items.map((i) => i.option.label), rect.y + 3 + g.lineHeight, rect.x + 4, rect.w - 8, wrap),
+        rows: this.boxRows(mode.cursor, mode.labels, rect.y + 3 + g.lineHeight, rect.x + 4, rect.w - 8, wrap),
       };
     }
 
@@ -978,4 +994,27 @@ export class GuiMatch {
       menuOpen: mode.kind !== "board" || dialogShown,
     };
   }
+}
+
+/**
+ * Labels of a verb's variants without the start they all share (card name,
+ * verb), cut at the last bracket or separator inside it:
+ * "コマンドを支払って使う: A / B（種類:カテゴリ・捨札）" → "（種類:カテゴリ・捨札）".
+ */
+export function variantLabels(labels: string[]): string[] {
+  if (labels.length < 2) return labels;
+  let common = labels[0]!;
+  for (const label of labels) {
+    let n = 0;
+    while (n < common.length && n < label.length && common[n] === label[n]) n++;
+    common = common.slice(0, n);
+  }
+  const at = (sep: string, skip: number) => {
+    const i = common.lastIndexOf(sep);
+    return i < 0 ? -1 : i + skip;
+  };
+  const cut = Math.max(at("（", 0), at(": ", 1), at(" / ", 2));
+  if (cut <= 0) return labels;
+  const short = labels.map((label) => label.slice(cut).trim());
+  return short.some((label) => label.length === 0) || new Set(short).size < labels.length ? labels : short;
 }
