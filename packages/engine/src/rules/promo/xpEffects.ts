@@ -72,7 +72,7 @@ function multiAliasNames(state: GameState, cardId: string): string[] {
 }
 
 /** 場のユニット card が合体―行の枠 slot（使える ID の並び）を埋めるか。 */
-function fillsSlot(state: GameState, playerId: PlayerId, card: CardInstance, slot: string[]): boolean {
+export function fillsSlot(state: GameState, playerId: PlayerId, card: CardInstance, slot: string[]): boolean {
   const player = state.players[playerId];
   if (slot.some((id) => fieldCardMatchesPartner(state.definitions, card, id, player))) return true;
   const aliases = multiAliasNames(state, card.cardId);

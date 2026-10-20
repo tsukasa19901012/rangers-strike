@@ -139,7 +139,7 @@ import { magiMotherSubstitutes, openKasumoShieldChoice, openRaigekiZanChoice } f
 import { openBatLeeChoice } from "./legend1/set7NamedEffectsD";
 import { applySet8BAfterUnitLeft } from "./legend1/set8NamedEffectsB";
 import { registerBattlePendingResolver } from "../events/listeners/battleDeclaredListener";
-import { promoOnBattleDestroy } from "./promo/promoRegistry";
+import { promoOnBattleDestroy, promoStayOnLeave } from "./promo/promoRegistry";
 
 function isEnemyTurn(state: GameState, counterPlayerId: PlayerId): boolean {
   return state.activePlayer !== counterPlayerId;
@@ -2188,6 +2188,9 @@ export function tryLeaveField(
   // RK-250 サバイブ: 重ねたユニットがユニットでなくなるとき、サバイブを捨札にしてその場に留める（rules/rk/rk12UnitEffects.ts）。
   const survive = openRk12SurviveStay(state, intent);
   if (survive) return { state: survive, deferred: true };
+  // XP-027 ダイノミッション: 重ねたユニットがユニットでなくなるとき、このカードを捨札にしてその場に留める（rules/promo/xp2Effects.ts）。
+  const promoStay = promoStayOnLeave(state, intent);
+  if (promoStay) return { state: promoStay, deferred: true };
   // RS-437 白熱する実況: 下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる（rules/legend1/set7NamedEffectsA.ts）。
   const liveCommentary = openLiveCommentaryStay(state, intent);
   if (liveCommentary) return { state: liveCommentary, deferred: true };

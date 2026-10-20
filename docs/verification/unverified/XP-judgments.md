@@ -72,3 +72,26 @@ XP（XP-001〜032）のカード照合で、カード本文・公式 Q&A（grnrn
 | XP-016 | 選択の場所 | アタックの「アタックされたとき」（RM-062・RK-188 と同じ）に任意の確認を開き、ホールドするとバトルの相手をこのユニットに替える。BP は今の BP で比べる | 本文 | — |
 | XP-005【全てを集めた先にあるもの】 | 発動する効果 | 選んだパワーのカードの【アタックライド】（DSL の riding_combo）を、CF のインスタンスに選んだカードの ID を借りて実行する（RS-421 の借り方と同じ）。選んだカードはパワーゾーンに残る | 本文「このユニットの効果として」 | — |
 | XP-008（共通の修正） | 「自軍合体」の追加条件 | 合体―行のあるカードは合体の相手全員を必要とし、全員を捨札にする（rules/zordDown.ts。XG2-086 も同じ修正で直る） | 本文「合体」 | 1体だけ捨札 |
+
+## 実装（XP-017〜032）
+
+| カード | 問い | 決めたこと | 理由 | 別の案 |
+|---|---|---|---|---|
+| XP-017（共通の修正） | ※「手札からしかラッシュできない」とモーフ | モーフの置き換え先の候補から rush_from_hand_only のカードを外す（keywords/morph.ts listMorphReplacementCandidates）。同じ※を持つ XG6-031・XG6-035 にも効く | R-KW-MORPH・本文 | カードごとに外す |
+| XP-017【世界の破壊者】 | 選ぶ人 | 枚数が多いパワーゾーンの持ち主。オモテ向きが捨てる枚数より多いときだけ選び、足りなければオモテ向きを全部捨てる | 本文 | — |
+| XP-018・XP-020 | 能力の付与 | rules/promo/promoHooks.ts の registerPromoKeywordGrant（rules/resist.ts canOfferRegister・rules/callLead.ts から呼ぶ）。XP-020 の BP+1000 は core/catalog.ts effectiveBp の promoBpBonus | 中央のファイルへの追加を1行ずつにする | — |
+| XP-021 | ※の必要パワー-1 | core/applyAction.ts・rules/operationProcedure.ts・core/catalog.ts の必要パワーから promoOperationCostReduction を引く（0未満にしない）。◎は強制の撃破 | 本文 | — |
+| XP-022 | テストの修正（リードMA） | テストのコマンドを WB（TST-OP）から MA（TST-OP-MA）にした。リードで払うときも、コマンドゾーンに MA を持つカードが要る | R-CAT-02・atwiki/page-1559 | — |
+| XP-022 | テストの修正（ラッシュエリアの候補） | TST-UNIT-7 は L ユニットなので S ユニットの TST-UNIT-0 に替え、期待値を "TST-UNIT-0:r" にした | 本文「敵軍Sユニット」 | — |
+| XP-022【レッドブレイク】 | 手札1枚以下のとき | 選んだあと、手札に戻すかダメージにするかの確認（hand / damage）を開く | 本文 | — |
+| XP-025 | 「2体まで」 | 1体ずつ選んでその場で手札に戻し、2体目は見送れる | テストが1体選んで終える手順 | 2体まとめて選ぶ |
+| XP-027 ダイノミッション | 重ねて出す・その場に留める | 効果のラッシュ（必要パワー・追加条件なし）で出したユニットの下に XP-027 を重ねる。場を離れるときは rules/operationCounters.ts tryLeaveField の promoStayOnLeave で XP-027 を捨札にして留める（RK-250 サバイブと同じ） | 本文・カード評価 | — |
+| XP-027 | 捨札にするユニット | 1体ずつ選ぶ（見送れば終わり、選べるものがなくなっても終わり）。捨札は撃破ではない | 本文「好きな数選び捨札に」 | — |
+| XP-028（共通の修正） | 追加条件「リードを持つ自軍Sユニット」 | 素材はリード（どのカテゴリでも）を持つ S ユニットだけ（rules/zord.ts の S ユニット送付の判定。この文はこのカードだけ） | 本文 | — |
+| XP-028【サモン・ワンダーパワー】 | 発生の判定 | applyAction の後処理で、相手の手札（または使用中）のオペレーションが相手の捨札に置かれたとき（常駐は常駐置き場なので外れる）。1つ目のコマンドを選ぶことが発動。2つの組は「一方が MA・他方が MA 以外のカテゴリを持つ」（Q1 のマルチカテゴリも可） | 本文・公式 Q&A Q1 | — |
+| XP-029・XP-032（共通の修正） | 「特徴「A」か（または）「B」を持つ自軍ユニット」の追加条件 | packages/cards/src/featureDiscardCondition.ts で anyOfFeatures として読み、rules/zord.ts の discard_feature_unit でどれか1つを持てばよいとした（この文型はこの2枚だけ） | 本文 | カタログを書き換える |
+| XP-029 | ※ブレイカーと追加条件 | 直さずに it.fails のまま残した（追加条件の支払いの経路 rules/zordSetup.ts で同名禁止を見ない）。共通のブレイカーの判定は XG7 の担当が直し、マージで全カードに広げる（コーディネーターの指示） | 共通の処理の衝突を避ける | ここで直す |
+| XP-029【まだよ…】 | 処理の場所 | rules/turnEndingEffects.ts の「ターンを終えるとき」の列（promoQueue。rules/promo/promoRegistry.ts registerPromoTurnEnd）。BP は※の BP+1000 を含むその時点の値。撃破は自軍のどのユニットでもよい（これ自身も） | 本文 | — |
+| XP-030 | ※ホールド状態ならアタックするとき BP+2000 | バトルのアタック側の BP（rules/namedUnitEffects.ts battleAttackerBpBonus → promoAttackerBpBonus） | バトルの解決時には pendingBattle が残らない | effectiveBp で足す |
+| XP-031 | 起動 | rules/fieldActivatedAbilities.ts の表に promo の行を1つ足した（このカードは捨札にしない・1ターンに1度） | 本文「自軍ラッシュフェイズごとに1度だけ」 | — |
+| XP-032【レジェンドを求めて】 | 見送ったとき | 見送っても山札はシャッフルする | 本文「その後、山札をシャッフルする」 | — |

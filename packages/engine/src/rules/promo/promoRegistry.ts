@@ -7,7 +7,7 @@
  * 登録先は関数の中に持つ（循環 import でカードのモジュールが先に評価されても登録できる。rules/legend1/set8NamedEffectsA.ts tagResidents と同じ）。
  * 選択の組み立ての部品は rules/rm/rm1Effects.ts のもの（openAfter・close・proceed・simpleSkip 等）を使う。
  */
-import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
+import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import type { ChoiceOutcome } from "../rm/rm1Effects";
 import { openEffectChoice } from "../pendingChoices";
@@ -154,6 +154,77 @@ export function registerPromoAttackStrikeBlock(block: AttackStrikeBlock): void {
 export function promoBlocksAttackStrike(state: GameState, playerId: PlayerId, unit: CardInstance): boolean {
   return attackStrikeBlocks().some((block) => block(state, playerId, unit));
 }
+
+// 能力の付与・BP の増減は rules/promo/promoHooks.ts（core からも呼ぶので import を持たない）。
+// 「ターンを終えるとき」（XP-029【まだよ…】）。rules/turnEndingEffects.ts が終えるプレイヤーごとに集めて1件ずつ開く。
+// entry は `<kind>|<instanceId>`。開いた選択・ダメージの支払いで止まり、解決後に残りを続ける。
+type TurnEndHook = {
+  collect: (state: GameState, endingPlayerId: PlayerId) => string[];
+  open: (state: GameState, endingPlayerId: PlayerId, instanceId: string) => GameState;
+};
+
+function turnEndHooks(): Record<string, TurnEndHook> {
+  const holder = turnEndHooks as unknown as { s?: Record<string, TurnEndHook> };
+  return (holder.s ??= {});
+}
+
+export function registerPromoTurnEnd(kind: string, hook: TurnEndHook): void {
+  turnEndHooks()[kind] = hook;
+}
+
+export function collectPromoTurnEndQueue(state: GameState, endingPlayerId: PlayerId): string[] {
+  return Object.entries(turnEndHooks()).flatMap(([kind, hook]) => hook.collect(state, endingPlayerId).map((id) => `${kind}|${id}`));
+}
+
+export function openPromoTurnEndEntry(state: GameState, endingPlayerId: PlayerId, entry: string): GameState {
+  const sep = entry.indexOf("|");
+  const hook = turnEndHooks()[entry.slice(0, sep)];
+  return hook ? hook.open(state, endingPlayerId, entry.slice(sep + 1)) : state;
+}
+
+// 自軍ラッシュフェイズの起動効果（XP-031【メダルと切符と40周年】）。rules/fieldActivatedAbilities.ts の表の1行から呼ぶ
+// （このカードは捨札にしない・自軍ターンに1度だけ）。
+export type PromoFieldAbility = {
+  matches: (cardId: string) => boolean;
+  canActivate: (state: GameState, playerId: PlayerId, card: CardInstance) => boolean;
+  resolve: (state: GameState, playerId: PlayerId, card: CardInstance) => GameState;
+};
+
+function fieldAbilities(): PromoFieldAbility[] {
+  const holder = fieldAbilities as unknown as { s?: PromoFieldAbility[] };
+  return (holder.s ??= []);
+}
+
+export function registerPromoFieldAbility(ability: PromoFieldAbility): void {
+  fieldAbilities().push(ability);
+}
+
+export function promoFieldAbilityFor(cardId: string): PromoFieldAbility | undefined {
+  return fieldAbilities().find((a) => a.matches(cardId));
+}
+
+// 場を離れるときの置き換え（XP-027「重ねたユニットがユニットでなくなるとき、このカードを捨札にしてその場に留める」）。
+// rules/operationCounters.ts tryLeaveField から呼ぶ。処理したら state、対象外なら null。
+type StayOnLeave = (state: GameState, intent: PendingLeave) => GameState | null;
+
+function stayOnLeaveHooks(): StayOnLeave[] {
+  const holder = stayOnLeaveHooks as unknown as { s?: StayOnLeave[] };
+  return (holder.s ??= []);
+}
+
+export function registerPromoStayOnLeave(hook: StayOnLeave): void {
+  stayOnLeaveHooks().push(hook);
+}
+
+export function promoStayOnLeave(state: GameState, intent: PendingLeave): GameState | null {
+  for (const hook of stayOnLeaveHooks()) {
+    const next = hook(state, intent);
+    if (next) return next;
+  }
+  return null;
+}
+
+export { promoGrantsKeyword, registerPromoBpBonus, registerPromoKeywordGrant } from "./promoHooks";
 
 function blocked(state: GameState): boolean {
   return !!(

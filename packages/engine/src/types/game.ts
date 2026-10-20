@@ -1528,6 +1528,8 @@ export type TurnEndProgress = {
   rk13Queue?: string[];
   /** RK-323【シャドウベール】（rules/rk/rk16UnitEffects.ts）。 */
   rk16Queue?: string[];
+  /** プロモーションカードの「ターンを終えるとき」（XP-029【まだよ…】。rules/promo/promoRegistry.ts）のうち未処理のもの。 */
+  promoQueue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

@@ -99,6 +99,7 @@ import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
 import { drainQueuedFieldLeaves } from "../rules/fieldLeaveQueue";
 import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
+import { promoOperationCostReduction } from "../rules/promo/promoHooks";
 import { applyPromoAfterAction, isPromoAttackedChoice, openPromoAttacked, resolvePromoAttacked, skipPromoAttacked } from "../rules/promo";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
@@ -1871,7 +1872,8 @@ function applyActionCore(
         return fail("command_not_held");
       }
 
-      const cost = parsePowerCost(definition.powerCost);
+      // XP-021 等の必要パワーの減少（rules/promo/promoHooks.ts）。
+      const cost = Math.max(0, parsePowerCost(definition.powerCost) - promoOperationCostReduction(state, playerId, definition.id));
       if (!payPowerCost(state, playerId, cost)) return fail("insufficient_power");
 
       // RK-251 ゴルゴムの仕業: 相手が通常のオペレーションを使用したとき、その効果を実行する前（rules/rk/rk12UnitEffects.ts）。

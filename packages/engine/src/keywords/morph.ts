@@ -3,6 +3,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 import { getDefinition } from "../core/catalog";
 import { cardHasKeyword } from "./cardKeywords";
 import { ryuseioBlocksMove } from "../rules/restrictions";
+import { rushFromHandOnly } from "../rules/rushFromHandOnly";
 import { rk16CanMorphFromDiscard, rk16MorphDiscardCost, rk16MorphEntryHolds, rk16ReleasedCommands } from "../rules/rk/rk16Fields";
 
 /**
@@ -51,6 +52,8 @@ export function listMorphReplacementCandidates(
   for (const zone of zones) {
     for (const card of player[zone]) {
       if (!isFaceUpMorphUnitCard(definitions, card)) continue;
+      // 「※これは手札からしかラッシュできない」（XP-017 等）はモーフの置き換え先にできない（atwiki/page-1981 カード評価）。
+      if (rushFromHandOnly(card.cardId)) continue;
       const features = unitFeatures(getDefinition(definitions, card.cardId));
       if (featuresExactlyMatch(features, morphFeatures)) {
         results.push({ zone, instanceId: card.instanceId, card });

@@ -47,7 +47,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-025::rezanri",
+          "keyword": "promo::XP-025::niten_ichiryu",
           "duration": "turn"
         }
       ]

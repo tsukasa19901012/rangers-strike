@@ -86,14 +86,14 @@ describe("XP-027 ダイノミッション", () => {
     expect(r.ok, r.error).toBe(true);
   });
 
-  it.fails("XP-027: 合体が必要な自軍ユニットがなければ、「メカ」を持たない5体以上の合体が必要な手札（大獣神）を選んで見せる — メカのデカレンジャーロボは選べない（出典: atwiki/page-2370） — 既知の不具合: CARD-XP-027 効果が未実装（使っても何も起きない）", () => {
+  it("XP-027: 合体が必要な自軍ユニットがなければ、「メカ」を持たない5体以上の合体が必要な手札（大獣神）を選んで見せる — メカのデカレンジャーロボは選べない（出典: atwiki/page-2370）", () => {
     const r = playOp(board(), "player1", "XP-027:dm");
     expect(r.state.pendingEffectChoice?.sourceCardId).toBe("XP-027");
     expect(choiceIds(r.state)).toContain("RS-286:dj");
     expect(choiceIds(r.state)).not.toContain("RS-042:dr");
   });
 
-  it.fails("XP-027: 自軍ユニットを好きな数捨札にした後、合体に必要な5体が捨札にすべてあれば、大獣神をこのカードに重ねてラッシュエリアに出す（必要パワーは問わない）（出典: atwiki/page-2370・カード評価「必要パワーも無視できる」） — 既知の不具合: CARD-XP-027 効果が未実装（使っても何も起きない）", () => {
+  it("XP-027: 自軍ユニットを好きな数捨札にした後、合体に必要な5体が捨札にすべてあれば、大獣神をこのカードに重ねてラッシュエリアに出す（必要パワーは問わない）（出典: atwiki/page-2370・カード評価「必要パワーも無視できる」）", () => {
     let s = playOp(board(), "player1", "XP-027:dm").state;
     s = pick(s, "RS-286:dj");
     for (const id of ["RS-035:t", "RS-036:m"]) if (choiceIds(s).includes(id)) s = pick(s, id);
@@ -110,7 +110,7 @@ describe("XP-027 ダイノミッション", () => {
     expect(zoneOf(s, "player1", "RS-286:dj")).toBe("hand");
   });
 
-  it.fails("XP-027: 重ねたユニットがユニットでなくなるとき、かわりにこのカードを捨札にしてその場に留まる（出典: atwiki/page-2370「重ねたユニットがユニットでなくなるとき、このカードを捨札にしてその場に留める」・カード評価「1回分の除去耐性」） — 既知の不具合: CARD-XP-027 効果が未実装（重ねて出す処理がない）", () => {
+  it("XP-027: 重ねたユニットがユニットでなくなるとき、かわりにこのカードを捨札にしてその場に留まる（出典: atwiki/page-2370「重ねたユニットがユニットでなくなるとき、このカードを捨札にしてその場に留める」・カード評価「1回分の除去耐性」）", () => {
     let s = playOp(board(), "player1", "XP-027:dm").state;
     s = pick(s, "RS-286:dj");
     for (const id of ["RS-035:t", "RS-036:m"]) if (choiceIds(s).includes(id)) s = pick(s, id);
@@ -147,7 +147,7 @@ describe("XP-028 ワンダーゴセイグレート", () => {
     expect(canStartRush(s, "player1", "XP-028:wg")).toBe(true);
   });
 
-  it.fails("XP-028: 追加条件 — リードを持たない S ユニットしかいなければラッシュできない（出典: atwiki/page-2369「リードを持つ自軍Sユニット」） — 既知の不具合: CARD-XP-028 追加条件の「リードを持つ」を見ない（どの S ユニットでもラッシュできる）", () => {
+  it("XP-028: 追加条件 — リードを持たない S ユニットしかいなければラッシュできない（出典: atwiki/page-2369「リードを持つ自軍Sユニット」）", () => {
     const s = rushPhase({ hand: [inst("XP-028", "wg")], rush: [inst("TST-UNIT-0", "p")], command: releasedCat("MA", 1), power: powerCards(4) });
     expect(canStartRush(s, "player1", "XP-028:wg")).toBe(false);
   });
@@ -170,7 +170,7 @@ describe("XP-028 ワンダーゴセイグレート", () => {
   const summonOffered = (s: GameState) =>
     s.pendingEffectChoice?.sourceCardId === "XP-028" || legal(s).some((a) => a.playerId === "player1" && JSON.stringify(a).includes("XP-028:wg"));
 
-  it.fails("XP-028: 【サモン・ワンダーパワー】相手が常駐以外のオペレーションを使い終えたとき、MA と MA 以外の自軍コマンドを1つずつホールドして手札のこれをラッシュエリアに出せる（出典: atwiki/page-2369） — 既知の不具合: CARD-XP-028 【サモン・ワンダーパワー】が未実装（発動の機会が出ない）", () => {
+  it("XP-028: 【サモン・ワンダーパワー】相手が常駐以外のオペレーションを使い終えたとき、MA と MA 以外の自軍コマンドを1つずつホールドして手札のこれをラッシュエリアに出せる（出典: atwiki/page-2369）", () => {
     expect(summonOffered(afterEnemyOp("TST-OP"))).toBe(true);
   });
 
@@ -182,7 +182,7 @@ describe("XP-028 ワンダーゴセイグレート", () => {
     expect(summonOffered(afterEnemyOp("XP-020"))).toBe(false);
   });
 
-  it.fails("XP-028: 公式Q&A — MA だけを持つコマンドと、MA を含むマルチカテゴリのコマンドをホールドして発動できる（出典: atwiki/page-2369 Q1「はい、できます。」。atwiki の注釈は公式コラム vol44 により発動できないとする — XP-questions.md） — 既知の不具合: CARD-XP-028 【サモン・ワンダーパワー】が未実装（発動の機会が出ない）", () => {
+  it("XP-028: 公式Q&A — MA だけを持つコマンドと、MA を含むマルチカテゴリのコマンドをホールドして発動できる（出典: atwiki/page-2369 Q1「はい、できます。」。atwiki の注釈は公式コラム vol44 により発動できないとする — XP-questions.md）", () => {
     expect(summonOffered(afterEnemyOp("TST-OP", [...releasedCat("MA", 1), released("SPEC-MA-MULTI", "mm")]))).toBe(true);
   });
 
@@ -213,13 +213,13 @@ describe("XP-029 仮面ライダーW・CAX", () => {
   const rushBoard = (partner: string[]) =>
     rushPhase({ hand: [inst("XP-029", "w")], rush: partner.map((p, i) => inst(p, `p${i}`)), command: releasedCat("ET", 1), power: powerCards(5) }, {}, EXTRA);
 
-  it.fails("XP-029: 追加条件 — 特徴「ダブルドライバー」の自軍ユニットを捨札にしてラッシュできる（出典: atwiki/page-2362） — 既知の不具合: CARD-XP-029 追加条件（特徴「ダブルドライバー」か「アクセルドライバー」のユニット1体を捨札）でラッシュできない", () => {
+  it("XP-029: 追加条件 — 特徴「ダブルドライバー」の自軍ユニットを捨札にしてラッシュできる（出典: atwiki/page-2362）", () => {
     const r = rushFromHand(rushBoard(["SPEC-WD"]), "player1", "XP-029:w");
     expect(r.ok, r.error).toBe(true);
     expect(zoneOf(settle(r.state), "player1", "SPEC-WD:p0")).toBe("discard");
   });
 
-  it.fails("XP-029: 追加条件 — 特徴「アクセルドライバー」の自軍ユニット（XP-026 仮面ライダーアクセル）でもラッシュできる（出典: atwiki/page-2362「か「アクセルドライバー」」） — 既知の不具合: CARD-XP-029 追加条件（特徴「ダブルドライバー」か「アクセルドライバー」のユニット1体を捨札）でラッシュできない", () => {
+  it("XP-029: 追加条件 — 特徴「アクセルドライバー」の自軍ユニット（XP-026 仮面ライダーアクセル）でもラッシュできる（出典: atwiki/page-2362「か「アクセルドライバー」」）", () => {
     expect(canStartRush(rushBoard(["XP-026"]), "player1", "XP-029:w")).toBe(true);
   });
 
@@ -233,7 +233,7 @@ describe("XP-029 仮面ライダーW・CAX", () => {
     expect(choiceIds(s)).not.toContain("XP-029:w");
   });
 
-  it.fails("XP-029: ※ブレイカー — 本来のカード名が同じ自軍ユニットがあるとラッシュできない（ないときはできる）（出典: atwiki/page-2362・R-KW-BREAKER-02） — 既知の不具合: CARD-XP-029 追加条件でラッシュできない（ないときの側が確かめられない）", () => {
+  it.fails("XP-029: ※ブレイカー — 本来のカード名が同じ自軍ユニットがあるとラッシュできない（ないときはできる）（出典: atwiki/page-2362・R-KW-BREAKER-02） — 既知の不具合: CARD-XP-029 追加条件（捨札にする）の支払いの経路でブレイカーの同名禁止を見ない（共通のブレイカーの修正は XG7 の担当。マージで直す）", () => {
     expect(canStartRush(rushBoard(["SPEC-WD"]), "player1", "XP-029:w")).toBe(true);
     const same = rushPhase({ hand: [inst("XP-029", "w")], rush: [inst("SPEC-WD", "p0")], battle: [inst("XP-029", "same")], command: releasedCat("ET", 1), power: powerCards(5) }, {}, EXTRA);
     expect(canStartRush(same, "player1", "XP-029:w")).toBe(false);
@@ -245,7 +245,7 @@ describe("XP-029 仮面ライダーW・CAX", () => {
     expect(legal(s).some((a) => a.type === "end_phase" && a.playerId === "player1")).toBe(false);
   });
 
-  it.fails("XP-029: ※ ホールド状態のコマンド1つにつき BP+1000 — 自軍2つ・敵軍1つで BP6000（敵軍のコマンドも数える）（出典: atwiki/page-2362・カード評価「BP上昇効果は敵軍コマンドも数える」） — 既知の不具合: CARD-XP-029 ※の BP+1000 が未実装", () => {
+  it("XP-029: ※ ホールド状態のコマンド1つにつき BP+1000 — 自軍2つ・敵軍1つで BP6000（敵軍のコマンドも数える）（出典: atwiki/page-2362・カード評価「BP上昇効果は敵軍コマンドも数える」）", () => {
     const s = st({ player1: { battle: [inst("XP-029", "w")], command: [...releasedCat("ET", 2).map((c) => ({ ...c, commandHeld: true })), ...releasedCat("WB", 1)] }, player2: { command: releasedCat("WB", 1).map((c) => ({ ...c, commandHeld: true })) } });
     expect(bpOf(s, "player1", "XP-029:w")).toBe(6000);
   });
@@ -256,12 +256,12 @@ describe("XP-029 仮面ライダーW・CAX", () => {
     return act(s, legal(s).find((a) => a.type === "end_phase" && a.playerId === "player2")!);
   };
 
-  it.fails("XP-029: 【まだよ…】相手がターンを終えるとき BP9000 以上（ホールド6つ）なら、相手に1点ダメージ（出典: atwiki/page-2362） — 既知の不具合: CARD-XP-029 ※の BP+1000 と【まだよ…】が未実装", () => {
+  it("XP-029: 【まだよ…】相手がターンを終えるとき BP9000 以上（ホールド6つ）なら、相手に1点ダメージ（出典: atwiki/page-2362）", () => {
     const s = settle(enemyEnds(6));
     expect(s.players.player2.damage).toBe(1);
   });
 
-  it.fails("XP-029: 【まだよ…】BP8500 以下なら、自分は1点ダメージを受けるか自軍ユニット1体を撃破するかを選ぶ（出典: atwiki/page-2362） — 既知の不具合: CARD-XP-029 【まだよ…】が未実装", () => {
+  it("XP-029: 【まだよ…】BP8500 以下なら、自分は1点ダメージを受けるか自軍ユニット1体を撃破するかを選ぶ（出典: atwiki/page-2362）", () => {
     const s = enemyEnds(0);
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XP-029");
     expect(s.pendingEffectChoice?.playerId).toBe("player1");
@@ -303,7 +303,7 @@ describe("XP-030 仮面ライダーオーズ・サゴーゾコンボ", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("XP-030", "sg")] }, "XP-030:sg", {}, "TST-UNIT-7:atk", EXTRA))).toBe(true);
   });
 
-  it.fails("XP-030: ※ ホールド状態ならアタックするとき BP+2000 — BP5500 の敵軍ユニットに BP6000 で勝つ（出典: atwiki/page-2368） — 既知の不具合: CARD-XP-030 ※（ホールド状態ならアタック時 BP+2000）が未実装", () => {
+  it("XP-030: ※ ホールド状態ならアタックするとき BP+2000 — BP5500 の敵軍ユニットに BP6000 で勝つ（出典: atwiki/page-2368）", () => {
     const s = st({ player1: { battle: [{ ...inst("XP-030", "sg"), commandHeld: true }], deck: deckCards(3) }, player2: { battle: [inst("SPEC-E55", "e")], deck: deckCards(3, "e") } }, EXTRA);
     const r = settle(attack(s, "XP-030:sg", "SPEC-E55:e"));
     expect(zoneOf(r, "player2", "SPEC-E55:e")).toBe("discard");
@@ -325,7 +325,7 @@ describe("XP-030 仮面ライダーオーズ・サゴーゾコンボ", () => {
     expect(s.players.player2.command.find((c) => c.instanceId === "TST-OP:ec")?.commandHeld).toBe(true);
   });
 
-  it.fails("XP-030: 【打ち抜く剛腕】は任意（「ホールドしてもよい」）— 選ばずに済ませられる（出典: atwiki/page-2368「ホールドしてもよい」） — 既知の不具合: CARD-XP-030 【打ち抜く剛腕】の選択が見送れない（強制になっている）", () => {
+  it("XP-030: 【打ち抜く剛腕】は任意（「ホールドしてもよい」）— 選ばずに済ませられる（出典: atwiki/page-2368「ホールドしてもよい」）", () => {
     expect(canSkip(rushed().state)).toBe(true);
   });
 });
@@ -369,7 +369,7 @@ describe("XP-031 仮面ライダーオーズ・タトバコンボ×仮面ライ�
   const medalBoard = () =>
     rushPhase({ rush: [inst("XP-031", "tt")], discard: [inst("XP-026", "ac"), inst("TST-UNIT-0", "x")], deck: [inst("TST-UNIT-7", "d1"), inst("TST-OP", "d2"), inst("TST-UNIT-0", "d3"), ...deckCards(3)] });
 
-  it.fails("XP-031: 【メダルと切符と40周年】自軍ラッシュフェイズに、特徴に「ライダー」を含む自軍捨札（XP-026）を除外できる（ほかの捨札は選べない）（出典: atwiki/page-2446） — 既知の不具合: CARD-XP-031 【メダルと切符と40周年】が未実装（起動が合法手に出ない）", () => {
+  it("XP-031: 【メダルと切符と40周年】自軍ラッシュフェイズに、特徴に「ライダー」を含む自軍捨札（XP-026）を除外できる（ほかの捨札は選べない）（出典: atwiki/page-2446）", () => {
     let s = medalBoard();
     expect(canActivateUnit(s, "XP-031:tt")).toBe(true);
     const a = legal(s).find((x) => x.playerId === "player1" && JSON.stringify(x).includes("XP-031:tt"))!;
@@ -377,7 +377,7 @@ describe("XP-031 仮面ライダーオーズ・タトバコンボ×仮面ライ�
     expect(choiceIds(s)).toEqual(["XP-026:ac"]);
   });
 
-  it.fails("XP-031: 【メダルと切符と40周年】除外したとき、山札の上から3枚をオモテにして1枚を手札に加え、残りは山札の下へ（出典: atwiki/page-2446） — 既知の不具合: CARD-XP-031 【メダルと切符と40周年】が未実装（起動が合法手に出ない）", () => {
+  it("XP-031: 【メダルと切符と40周年】除外したとき、山札の上から3枚をオモテにして1枚を手札に加え、残りは山札の下へ（出典: atwiki/page-2446）", () => {
     let s = medalBoard();
     const a = legal(s).find((x) => x.playerId === "player1" && JSON.stringify(x).includes("XP-031:tt"))!;
     s = pick(act(s, a), "XP-026:ac");
@@ -419,13 +419,13 @@ describe("XP-032 ゴーカイオー", () => {
     expect(zoneOf(settle(r.state), "player1", "RS-674:p")).toBe("discard");
   });
 
-  it.fails("XP-032: 追加条件 — カード名に「レッド」を含まない、特徴「レッド」だけの自軍ユニットでもラッシュできる（出典: atwiki/page-2444「特徴「レッド」」） — 既知の不具合: CARD-XP-032 追加条件をカード名で見ていて、特徴「レッド」を見ない", () => {
+  it("XP-032: 追加条件 — カード名に「レッド」を含まない、特徴「レッド」だけの自軍ユニットでもラッシュできる（出典: atwiki/page-2444「特徴「レッド」」）", () => {
     const r = rushFromHand(rushBoard("SPEC-RED"), "player1", "XP-032:gk");
     expect(r.ok, r.error).toBe(true);
     expect(zoneOf(settle(r.state), "player1", "SPEC-RED:p")).toBe("discard");
   });
 
-  it.fails("XP-032: 追加条件 — 特徴「宇宙海賊」の自軍ユニットでもラッシュできる（出典: atwiki/page-2444「または「宇宙海賊」」） — 既知の不具合: CARD-XP-032 追加条件が「レッド」だけを見る（カタログの partnerName も「レッド」だけ）", () => {
+  it("XP-032: 追加条件 — 特徴「宇宙海賊」の自軍ユニットでもラッシュできる（出典: atwiki/page-2444「または「宇宙海賊」」）", () => {
     expect(canStartRush(rushBoard("SPEC-PIRATE"), "player1", "XP-032:gk")).toBe(true);
   });
 
@@ -436,7 +436,7 @@ describe("XP-032 ゴーカイオー", () => {
   const bp = (p1: Partial<GameState["players"]["player1"]>, p2: Partial<GameState["players"]["player2"]> = {}) =>
     bpOf(st({ player1: { battle: [inst("XP-032", "gk")], deck: deckCards(3), ...p1 }, player2: { deck: deckCards(3, "e"), ...p2 } }, EXTRA), "player1", "XP-032:gk");
 
-  it.fails("XP-032: ※ 自軍パワーの数5につき BP+2000 — パワー5で9000、10で11000（出典: atwiki/page-2444） — 既知の不具合: CARD-XP-032 ※（パワー5につき BP+2000）が未実装", () => {
+  it("XP-032: ※ 自軍パワーの数5につき BP+2000 — パワー5で9000、10で11000（出典: atwiki/page-2444）", () => {
     expect(bp({ power: powerCards(5) })).toBe(9000);
     expect(bp({ power: powerCards(10) })).toBe(11000);
   });
@@ -445,11 +445,11 @@ describe("XP-032 ゴーカイオー", () => {
     expect(bp({ power: powerCards(4) })).toBe(7000);
   });
 
-  it.fails("XP-032: ※ 「パワーの数」は敵軍コマンドゾーンのマルチカテゴリも数える — パワーゾーン4枚＋敵軍マルチカテゴリのコマンド1枚で9000（出典: atwiki/page-2444 カード評価「マルチカテゴリのパワー増加分を含み」・R-POW-01） — 既知の不具合: CARD-XP-032 ※（パワー5につき BP+2000）が未実装", () => {
+  it("XP-032: ※ 「パワーの数」は敵軍コマンドゾーンのマルチカテゴリも数える — パワーゾーン4枚＋敵軍マルチカテゴリのコマンド1枚で9000（出典: atwiki/page-2444 カード評価「マルチカテゴリのパワー増加分を含み」・R-POW-01）", () => {
     expect(bp({ power: powerCards(4) }, { command: [released("SPEC-MULTI-CMD", "mc")] })).toBe(9000);
   });
 
-  it.fails("XP-032: 【レジェンドを求めて】自軍ターン中にバトルエリアに出たとき、山札から S ユニット以外のユニットカードを1枚選びパワーゾーンに置ける（S ユニットは選べない。任意）（出典: atwiki/page-2444） — 既知の不具合: CARD-XP-032 【レジェンドを求めて】が未実装（出たとき何も起きない）", () => {
+  it("XP-032: 【レジェンドを求めて】自軍ターン中にバトルエリアに出たとき、山札から S ユニット以外のユニットカードを1枚選びパワーゾーンに置ける（S ユニットは選べない。任意）（出典: atwiki/page-2444）", () => {
     let s = enter(st({ player1: { rush: [inst("XP-032", "gk")], deck: [inst("SPEC-L", "big"), inst("TST-UNIT-0", "small"), ...deckCards(3)] }, player2: { deck: deckCards(3, "e") } }, EXTRA), "XP-032:gk");
     expect(s.pendingEffectChoice?.sourceCardId).toBe("XP-032");
     expect(choiceIds(s)).toContain("SPEC-L:big");

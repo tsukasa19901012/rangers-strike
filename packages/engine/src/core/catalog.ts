@@ -23,6 +23,7 @@ import {
   rideMountedVehicleBpBonus,
 } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
+import { promoBpBonus, promoOperationCostReduction } from "../rules/promo/promoHooks";
 import { srBigBatonBpFloor } from "../rules/srEffects";
 import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
 import { unitFeatures } from "../rules/addedFeatures";
@@ -453,7 +454,9 @@ function effectiveBpUncached(
     signed(passiveBpBonus(state, playerId, instance)) +
     signed(passiveNamedFieldBpBonus(state, playerId, instance, "general")) +
     signed(promotedKeywordBpBonus(state, playerId, instance)) +
-    signed(rideMountedVehicleBpBonus(state, playerId, instance));
+    signed(rideMountedVehicleBpBonus(state, playerId, instance)) +
+    // XP-020 護星天使 等（rules/promo/promoHooks.ts）。
+    signed(promoBpBonus(state, playerId, instance));
   const floor = srBigBatonBpFloor(state, playerId, instance);
   return floor > 0 ? Math.max(base, floor) : base;
 }
@@ -850,7 +853,8 @@ export function canPlayOperationExceptCommandHold(
   definition: CardDefinition,
 ): boolean {
   // RK-225 仮面ライダー朱鬼【陰陽術】: カウンターを持つオペレーションの必要パワーの数字は3少なくなる（rules/rk/rk11Fields.ts）。
-  const printed = Math.max(0, parsePowerCost(definition.powerCost) - rk11CounterCostReduction(state, definition));
+  // XP-021 等の必要パワーの減少（rules/promo/promoHooks.ts）。
+  const printed = Math.max(0, parsePowerCost(definition.powerCost) - rk11CounterCostReduction(state, definition) - promoOperationCostReduction(state, playerId, definition.id));
   const cost = effectivePowerCost(state, playerId, printed);
   return countAvailablePower(state, playerId) >= cost;
 }

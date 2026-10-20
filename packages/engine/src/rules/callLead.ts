@@ -6,6 +6,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { effectiveCommandCategories, getDefinition, isUnit } from "../core/catalog";
 import { actionContextState } from "./zordFeatureContext";
+import { promoGrantsKeyword } from "./promo/promoHooks";
 
 export type CallLeadKind = "call" | "lead";
 
@@ -79,8 +80,17 @@ function fieldUnitHasCallLead(
     unitHasCallLeadKeyword(card.cardId, kind, category, player) ||
     set9AGrantsCallLead(player, definitions, card, kind, category) ||
     // RK-249 アドベント「このターン、選んだユニットは次の能力を得る⇒※コールWB」（rules/rk/rk249Advent.ts）。
-    adventGrantsCall(player, card, kind, category)
+    adventGrantsCall(player, card, kind, category) ||
+    // XP-020 護星天使 等（rules/promo/promoHooks.ts）。
+    promoGrantsCallLead(card, kind, category)
   );
+}
+
+function promoGrantsCallLead(card: CardInstance, kind: CallLeadKind, category: Category): boolean {
+  const state = actionContextState();
+  if (!state) return false;
+  const owner = (["player1", "player2"] as const).find((pid) => state.players[pid].rush.some((c) => c.instanceId === card.instanceId) || state.players[pid].battle.some((c) => c.instanceId === card.instanceId));
+  return !!owner && promoGrantsKeyword(state, owner, card.instanceId, `${kind}_${category}`);
 }
 
 function fieldZonesForCallLead(kind: CallLeadKind): Array<"rush" | "battle"> {

@@ -3,6 +3,7 @@
  */
 import "./xpEffects";
 import "./pkEffects";
+import "./xp2Effects";
 
 export { isPromoAttackedChoice, openPromoAttacked, resolvePromoAttacked, skipPromoAttacked } from "./xpEffects";
 

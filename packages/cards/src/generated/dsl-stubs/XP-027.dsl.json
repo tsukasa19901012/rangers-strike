@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XP-027::ganayunitogamona",
-          "duration": "permanent"
+          "keyword": "promo::XP-027::dino_mission",
+          "duration": "turn"
         }
       ]
     }

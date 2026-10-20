@@ -80,6 +80,7 @@ import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEff
 import { afterCommandCardsLeft } from "./commandLeaveRefill";
 import { attackerSuppressesAttackedCounters } from "./keywordGapRuntime";
 import { allyAttackedAuraBpBonus } from "../dsl/promotedKeywordBridge";
+import { promoAttackerBpBonus } from "./promo/promoHooks";
 
 export type NamedEffectOutcome = {
   state: GameState;
@@ -125,6 +126,8 @@ export function battleAttackerBpBonus(
   );
   total += legend2AttackerBpBonus(state, pending);
   total += legend3AttackerBpBonus(state, pending);
+  // XP-030 等（rules/promo/promoHooks.ts）。
+  total += promoAttackerBpBonus(state, pending);
   // RK-052【音撃打・破砕細石】（rules/rk/rk3UnitEffects.ts）。
   total += rk3AttackerBattleBonus(state, pending);
   // RM-033 メタルダー ※（rules/rm/rm2Effects.ts）。
