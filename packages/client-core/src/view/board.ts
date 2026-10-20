@@ -113,7 +113,17 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
   const index = indexInstances(state);
   const who = (p: PlayerId | undefined) => (p ? PLAYER_LABELS[p] : "?");
   const sourceText = (cardId: string | undefined) => (cardId ? state.definitions[cardId]?.text : undefined);
+  const morph = state.pendingMorph;
   const choice = state.pendingEffectChoice;
+  if (morph && choice) {
+    const unitId = morph.activeMorphUnitInstanceId ?? morph.morphUnitInstanceIds[0];
+    return {
+      actor: who(choice.playerId),
+      title: `モーフ: ${who(morph.rusherPlayerId)}が「${instanceName(state, morph.rushedInstanceId, index)}」をラッシュ。「${unitId ? instanceName(state, unitId, index) : "?"}」と置き換えるカードを選ぶ（任意）`,
+      source: cardName(state, choice.sourceCardId),
+      detail: sourceText(choice.sourceCardId),
+    };
+  }
   if (choice) {
     const selected = choice.selectedInstanceIds?.length ?? 0;
     const count = choice.selectCount ? ` ${selected}/${choice.selectCount}` : "";
@@ -150,7 +160,13 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
     };
   }
   if (state.pendingStrike) return { actor: "", title: "ストライクへの反応" };
-  if (state.pendingBattle) return { actor: "", title: "アタックへの反応" };
+  const battle = state.pendingBattle;
+  if (battle) {
+    return {
+      actor: "",
+      title: `アタックへの反応: 「${instanceName(state, battle.attackerInstanceId, index)}」→「${instanceName(state, battle.defenderInstanceId, index)}」`,
+    };
+  }
   if (state.pendingRush) return { actor: "", title: "ラッシュへの反応" };
   if (state.pendingLeave) return { actor: who(state.pendingLeave.ownerPlayerId), title: "離れるユニットへの反応" };
   if (state.pendingBattleEntry) {

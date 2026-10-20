@@ -332,7 +332,21 @@ export function playerStrip(engine: EngineApi, state: GameState, player: PlayerI
 
 export function topBarText(state: GameState): string {
   if (state.winner) return `決着: ${PLAYER_LABELS[state.winner]}の勝利`;
-  return `ターン${state.turn} ${PLAYER_LABELS[state.activePlayer]}の番`;
+  return `ターン${state.turn} ${PLAYER_LABELS[turnPlayer(state)]}の番`;
+}
+
+/**
+ * Whose turn it is. activePlayer is whoever must act, which is the other
+ * player while they answer an attack, a rush or an effect; the open
+ * window's phasePlayerId names the turn's player.
+ */
+function turnPlayer(state: GameState): PlayerId {
+  for (const [key, value] of Object.entries(state)) {
+    if (!key.startsWith("pending") || !value || typeof value !== "object") continue;
+    const phasePlayer = (value as { phasePlayerId?: PlayerId }).phasePlayerId;
+    if (phasePlayer) return phasePlayer;
+  }
+  return state.activePlayer;
 }
 
 /** Tile rectangle for slot `slot` (0-based within the visible window) of row `row`. */
