@@ -11,9 +11,22 @@ import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { cardCategories, getDefinition, parsePowerCost, unitSizeOf } from "../core/catalog";
 import { unitFeatures } from "./addedFeatures";
 import { startEffectRush } from "./effectRush";
+import { xg1HandCardAddedCategories } from "./xg1/xg1Fields";
 
 const RESIDENT_ALLY_ENTER_RUSH_RE =
   /自軍バトルフェイズ中、特徴「([^」]+)」を持つ自軍(S|M|L)ユニットがバトルエリアに出たとき、次の効果を発動できる\s*⇒\s*バトルエリアに出たユニットの必要パワーの数字よりも、必要パワーの数字が小さい([A-Z]{2})の(S|M|L)ユニットのカードを、自分の手札から1枚選び、自軍ラッシュエリアに出す/;
+
+const CATEGORY_LONG_NAMES: Readonly<Record<string, Category>> = {
+  アーステクノロジー: "ET",
+  ワイルドビースト: "WB",
+  オーバーテクノロジー: "OT",
+  ミスティックアームズ: "MA",
+  ダークアライアンス: "DA",
+};
+
+function normalizeCategoryNames(text: string): string {
+  return text.replace(/(アーステクノロジー|ワイルドビースト|オーバーテクノロジー|ミスティックアームズ|ダークアライアンス)の/g, (_, n: string) => `${CATEGORY_LONG_NAMES[n]}の`);
+}
 
 type Parsed = { feature: string; enteringSize: string; category: Category; size: string };
 
@@ -22,7 +35,8 @@ const parsedCache = new Map<string, Parsed | null>();
 function parse(state: GameState, cardId: string): Parsed | null {
   if (parsedCache.has(cardId)) return parsedCache.get(cardId)!;
   const def = getDefinition(state.definitions, cardId);
-  const text = def?.type === "operation" ? (def.text ?? "") : "";
+  // 再録（PR-021）の「ワイルドビースト」「Ｓユニット」の表記も同じに読む。
+  const text = def?.type === "operation" ? normalizeCategoryNames((def.text ?? "").normalize("NFKC")) : "";
   const m = /^※常駐/.test(text) ? text.match(RESIDENT_ALLY_ENTER_RUSH_RE) : null;
   const parsed = m ? { feature: m[1]!, enteringSize: m[2]!, category: m[3] as Category, size: m[4]! } : null;
   parsedCache.set(cardId, parsed);
@@ -52,7 +66,8 @@ export function tryResidentRushOnAllyEnterBattle(
         return (
           def?.type === "unit" &&
           unitSizeOf(state.definitions, c) === parsed.size &&
-          cardCategories(def).includes(parsed.category) &&
+          // XG1-031 ゴーオンレッドの※（手札の炎神に WB。rules/xg1/xg1Fields.ts）。
+          (cardCategories(def).includes(parsed.category) || xg1HandCardAddedCategories(state, playerId, c.cardId).includes(parsed.category)) &&
           parsePowerCost(def.powerCost ?? 99) < enteringCost
         );
       })

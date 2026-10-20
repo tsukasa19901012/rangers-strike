@@ -1,3 +1,4 @@
+import { xg7UsableAsName } from "./xg7/xg7Fields";
 import type { GameState, PlayerId } from "../types/game";
 import { openSet9ADestroyedEffects } from "./legend1/set9NamedEffectsA";
 import { applySet7AAfterDiscard } from "./legend1/set7NamedEffectsA";
@@ -340,12 +341,7 @@ export function resolveAfterDiscardDestroyEffects(
     if (result.log) logs.push(result.log);
   }
 
-  // XG5-089: destroyed → bring カバドス from command or discard to rush
-  if (ctx.cardId === "XG5-089") {
-    const result = reanimateNamedToRush(nextState, ctx, "カバドス", "kabados_reanimate");
-    nextState = result.state;
-    if (result.log) logs.push(result.log);
-  }
+  // XG5-089: 撃破されて捨札になったときの「カバドス」の選択は rules/xg5/xg5eEffects.ts（DSL on_destroy の xg5:: キーワード。候補を選ばせる）。
 
   // XG7-063: destroyed → bring シャークラー from command or discard to rush
   if (ctx.cardId === "XG7-063") {
@@ -378,7 +374,7 @@ export function resolveAfterDiscardDestroyEffects(
       (c) => cardName(nextState.definitions, c.cardId) === "スーパーゲキレッド",
     );
     const baseInDiscard = player.discard.filter(
-      (c) => cardName(nextState.definitions, c.cardId) === "ゲキレッド",
+      (c) => cardName(nextState.definitions, c.cardId) === "ゲキレッド" || xg7UsableAsName(nextState, ctx.ownerPlayerId, c.cardId, "ゲキレッド"),
     );
     if (superInHand.length === 0 && baseInDiscard.length > 0) {
       // Only discard option: reanimate ゲキレッド

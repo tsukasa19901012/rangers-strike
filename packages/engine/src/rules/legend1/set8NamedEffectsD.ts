@@ -36,6 +36,7 @@ import {
 import { getCardDslDocument } from "../../dsl/effectLookup";
 import { applyNumberComboEffect } from "../numberComboEffects";
 import { resolveRidingComboOnRideOff } from "../ridingComboEffects";
+import { xg6NegatesUnnamedText } from "../xg6/xg6Fields";
 
 
 import { unitFeatures } from "../addedFeatures";
@@ -155,6 +156,8 @@ export function set8DDefenderBlocksAttack(
   attacker: CardInstance,
   defender: CardInstance,
 ): boolean {
+  // XG6-052 ※: 自軍ターン中、バトルエリアの敵軍 S ユニットの効果名のないテキストは無効（rules/xg6/xg6Fields.ts）。
+  if (xg6NegatesUnnamedText(state, opponent(attackerPlayerId), defender)) return false;
   const text = (getDefinition(state.definitions, defender.cardId)?.text ?? "").normalize("NFKC");
   const m = text.match(BP_LIMIT_ATTACKED_RE);
   if (!m) return false;

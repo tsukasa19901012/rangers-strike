@@ -128,9 +128,17 @@ import { tryRk14CardEffect } from "../rules/rk/rk14UnitEffects";
 import { tryRk15CardEffect } from "../rules/rk/rk15UnitEffects";
 import { tryRk16CardEffect } from "../rules/rk/rk16UnitEffects";
 import { tryRm1CardEffect } from "../rules/rm/rm1Effects";
+import { tryXg6CardEffect } from "../rules/xg6/xg6Hooks";
+import { tryXg4CardEffect } from "../rules/xg4/xg4Effects";
+import { tryPromoCardEffect } from "../rules/promo";
 import { tryRm2CardEffect } from "../rules/rm/rm2Effects";
 import { tryRm3CardEffect } from "../rules/rm/rm3Effects";
+import { tryXg5CardEffect } from "../rules/xg5/xg5Effects";
+import { tryXg7CardEffect } from "../rules/xg7/xg7Effects";
+import { tryXg3CardEffect } from "../rules/xg3/xg3Effects";
 import { tryBk1CardEffect } from "../rules/bk/bk1Effects";
+import { tryXg1CardEffect } from "../rules/xg1/xg1Effects";
+import { tryXg2CardEffect } from "../rules/xg2/xg2Effects";
 import { tryOtherLinesCardEffect } from "../rules/legend1/otherLinesNamedEffects";
 import { trySet9BCardEffect } from "../rules/legend1/set9NamedEffectsB";
 import { trySet8BCardEffect } from "../rules/legend1/set8NamedEffectsB";
@@ -489,15 +497,39 @@ export function applyGrantKeyword(
   // スペシャルメタルエディション RM-001〜RM-021 のカード固有の効果（`rm1::` キーワード。rules/rm/rm1Effects.ts）。
   const rm1 = tryRm1CardEffect(state, ctx, keyword);
   if (rm1) return rm1;
+  // クロスギャザー ザ・ギガンティックタイタン XG6 のカード固有の効果（`xg6::` キーワード。rules/xg6/xg6Hooks.ts）。
+  const xg6 = tryXg6CardEffect(state, ctx, keyword);
+  if (xg6) return xg6;
+  // クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 のカード固有の効果（`xg4::` キーワード。rules/xg4/xg4Effects.ts）。
+  const xg4 = tryXg4CardEffect(state, ctx, keyword);
+  if (xg4) return xg4;
+  // プロモーションカードのカード固有の効果（`promo::` キーワード。rules/promo）。
+  const promo = tryPromoCardEffect(state, ctx, keyword);
+  if (promo) return promo;
   // スペシャルメタルエディション RM-022〜RM-042 のカード固有の効果（`rm2::` キーワード。rules/rm/rm2Effects.ts）。
   const rm2 = tryRm2CardEffect(state, ctx, keyword);
   if (rm2) return rm2;
   // スペシャルメタルエディション RM-043〜RM-062 のカード固有の効果（`rm3::` キーワード。rules/rm/rm3Effects.ts）。
   const rm3 = tryRm3CardEffect(state, ctx, keyword);
   if (rm3) return rm3;
+  // クロスギャザー XG5-001〜XG5-096 のカード固有の効果（`xg5::` キーワード。rules/xg5/xg5Effects.ts）。
+  const xg5 = tryXg5CardEffect(state, ctx, keyword);
+  if (xg5) return xg5;
+  // クロスギャザー ザ・ベストパートナー XG7-001〜XG7-068 のカード固有の効果（`xg7::` キーワード。rules/xg7/xg7Effects.ts）。
+  const xg7 = tryXg7CardEffect(state, ctx, keyword);
+  if (xg7) return xg7;
+  // クロスギャザー ザ・Wインパクト XG3-002〜XG3-103 のカード固有の効果（`xg3::` キーワード。rules/xg3/xg3Effects.ts）。
+  const xg3 = tryXg3CardEffect(state, ctx, keyword);
+  if (xg3) return xg3;
   // ベルトコレクション BK-001〜BK-019 のカード固有の効果（`bk1::` キーワード。rules/bk/bk1Effects.ts）。
   const bk1 = tryBk1CardEffect(state, ctx, keyword);
   if (bk1) return bk1;
+  // クロスギャザー XG1-001〜XG1-100 のカード固有の効果（`xg1::` キーワード。rules/xg1/xg1Effects.ts）。
+  const xg1 = tryXg1CardEffect(state, ctx, keyword);
+  if (xg1) return xg1;
+  // クロスギャザー XG2 のカード固有の効果（`xg2::` キーワード。rules/xg2/xg2Effects.ts）。
+  const xg2 = tryXg2CardEffect(state, ctx, keyword);
+  if (xg2) return xg2;
   // 第8弾 RS-560〜RS-581 のカード固有の名前付き効果（`set8c::` と一部の既存キーワード。rules/legend1/set8NamedEffectsC.ts）。
   const set8c = trySet8CCardEffect(state, ctx, keyword);
   if (set8c) return set8c;

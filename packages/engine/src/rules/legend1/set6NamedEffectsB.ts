@@ -1,3 +1,4 @@
+import { isSameCardIdentity } from "@rangers-strike/cards";
 /**
  * 第6弾「紅き六戦士の帰還」（legend1）RS-390〜RS-431 のカード固有の名前付き効果（set-6 監査で未実装だったもの）。
  *
@@ -6,6 +7,7 @@
  * - 継続効果・制限の参照関数（BP/SP 補正、ストライク・バトル進入の制限など）。
  * 構成は rules/legend1/set5NamedEffects.ts と同じ。
  */
+import { xg3SizeNow } from "../xg3/xg3Fields";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardName, effectiveBp, getDefinition, isSmallUnit, unitSizeOf } from "../../core/catalog";
@@ -23,6 +25,7 @@ import { cardHasGrantKeyword } from "../../dsl/promotedKeywordBridge";
 import { fireAkaRedSoulNc } from "./set6AuditFixes";
 import { baseLargeNow, hasBecomesLIfAnyLText } from "./set8NamedEffectsB";
 import { rk6CommandHoldBlocked } from "../rk/rk6Fields";
+import { canonicalCardIdAmong } from "../promo/cardIdentity";
 
 // ---------------------------------------------------------------------------
 // 共通（選択の解決）
@@ -113,6 +116,8 @@ export function turnPlayerOf(state: GameState): PlayerId {
 // ---------------------------------------------------------------------------
 // BP・SP の継続効果
 
+const SET6B_FIELD_BP_IDS = ["RS-409", "RS-415", "RS-431"] as const;
+
 /**
  * 効果による BP の継続修正（rules/fieldAuras.ts passiveNamedFieldBpBonus の general から呼ぶ）。
  * - RS-409 冥府神スレイプニル【フレンジー・スピア・クラッシュ】: 自軍と敵軍の常駐置き場のカード1枚につき BP+1000。
@@ -120,7 +125,7 @@ export function turnPlayerOf(state: GameState): PlayerId {
  * - RS-431 黒獅子リオ【剛勇吼波】: 敵軍 S ユニット1体につき BP+1000。
  */
 export function set6BFieldBpBonus(state: GameState, playerId: PlayerId, instance: CardInstance): number {
-  switch (instance.cardId) {
+  switch (canonicalCardIdAmong(instance.cardId, SET6B_FIELD_BP_IDS)) {
     case "RS-409": {
       if (!inField(state, playerId, instance.instanceId)) return 0;
       const count = state.players.player1.operation.length + state.players.player2.operation.length;
@@ -163,7 +168,7 @@ export function set6BEffectiveSp(state: GameState, playerId: PlayerId, instance:
  * - RS-431 ※「これは自軍コマンドが１つ以上あるときストライクできない」（リリース・ホールドを問わない）。
  */
 export function set6BBlocksStrike(state: GameState, playerId: PlayerId, instance: CardInstance): boolean {
-  if (instance.cardId === "RS-431") return state.players[playerId].command.length > 0;
+  if (isSameCardIdentity(instance.cardId, "RS-431")) return state.players[playerId].command.length > 0;
   return false;
 }
 
@@ -199,6 +204,8 @@ export function zubaanIsLarge(state: GameState, instance: CardInstance): boolean
 /** 現在 S ユニットか（RS-420 が L ユニットになっていれば S ではない）。 */
 export function isSmallUnitNow(state: GameState, _playerId: PlayerId, instance: CardInstance): boolean {
   if (!isSmallUnit(state.definitions, instance)) return false;
+  // XG3-029 ※（自軍 M ビークルがあれば M ユニット。rules/xg3/xg3Fields.ts）。
+  if (xg3SizeNow(state, instance)) return false;
   return !zubaanIsLarge(state, instance);
 }
 
@@ -999,7 +1006,7 @@ export const DAIGANGAN_EFFECT_ID = "rs422_daigangan_ken";
 export function openDaiganganKen(state: GameState, attackerId: PlayerId, attackerInstanceId: string): GameState {
   if (state.pendingEffectChoice || state.pendingLeave) return state;
   const attacker = state.players[attackerId].battle.find((c) => c.instanceId === attackerInstanceId);
-  if (!attacker || attacker.cardId !== "RS-422") return state;
+  if (!attacker || !isSameCardIdentity(attacker.cardId, "RS-422")) return state;
   // RK-116 マグナギガ【そびえる巨体】: 敵軍バトルエリアにあれば、このユニットの効果ではホールドされない（atwiki/page-645。rules/rk/rk6Fields.ts）。
   // ホールドできなければ「そうしたとき」の追加アタックも得ない。
   if (rk6CommandHoldBlocked(state, opponent(attackerId), "RS-422")) return state;
@@ -1008,7 +1015,7 @@ export function openDaiganganKen(state: GameState, attackerId: PlayerId, attacke
   return openEffectChoice(state, {
     playerId: attackerId,
     effectId: DAIGANGAN_EFFECT_ID,
-    sourceCardId: "RS-422",
+    sourceCardId: attacker.cardId,
     sourceInstanceId: attackerInstanceId,
     kind: "select_command",
     commandFilter: "released",

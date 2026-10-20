@@ -20,34 +20,13 @@
       "name": "トルネードチェイサー",
       "text": "これにライドしたユニットがある間、自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒敵軍コマンドを1つ選びホールドする。",
       "trigger": {
-        "type": "nc"
-      },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "command",
-          "owner": "opponent"
-        }
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_command",
-          "valid": {
-            "type": "zone",
-            "zone": "command",
-            "owner": "opponent"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "hold_command",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg1::XG1-063::tornado_chaser",
+          "duration": "permanent"
         }
       ]
     }

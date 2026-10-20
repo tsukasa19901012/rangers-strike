@@ -1,4 +1,5 @@
 import { rm3GuruInsectRide } from "../rules/rm/rm3Fields";
+import { xg4HoldRideAllowed } from "../rules/xg4/xg4Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { FEATURE_KEYWORDS } from "../dsl/featureKeywords";
 import type { CardInstance, GameState, PlayerId, PlayerState, ZoneName } from "../types/game";
@@ -228,6 +229,8 @@ export function canRiderMountVehicle(
   }
 
   if (riderHasRc(riderDef, rider)) return true;
+  // クロスギャザー ザ・ジェットアクセル XG4-018 ウルフローダー等「自軍コマンドを1つホールドすれば…ライドできる」（rules/xg4/xg4Fields.ts）。
+  if (xg4HoldRideAllowed(state, vehicle.card.cardId, rider, unitSizeOf(state.definitions, rider))) return player.command.some((cmd) => !cmd.commandHeld);
 
   // 「※ETのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。」（RS-393 コマンドアタッカー、atwiki/page-539）
   // 「※DAのSユニットは、ＲＣを持っていなくてもこのビークルにライドできる。」（RS-492 炎の騎馬、atwiki/page-815）
@@ -289,6 +292,7 @@ export function rideNeedsCommandHold(
   const riderDef = getDefinition(state.definitions, rider.cardId);
   if (!riderDef || riderHasRc(riderDef, rider)) return false;
   if (riderKeywordAllowsRide(rider.cardId, getDefinition(state.definitions, vehicleCardId))) return false;
+  if (xg4HoldRideAllowed(state, vehicleCardId, rider, unitSizeOf(state.definitions, rider))) return true;
   return vehicleRideWithoutRcNeedsHold(vehicleCardId);
 }
 

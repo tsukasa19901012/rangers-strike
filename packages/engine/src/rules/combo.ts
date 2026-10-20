@@ -1,4 +1,9 @@
+import { tryXg6OnEnterBattle } from "./xg6/xg6Hooks";
+import { xg6BlocksStrike } from "./xg6/xg6Fields";
 import { tryRm3OnEnterBattle } from "./rm/rm3Effects";
+import { tryXg7OnEnterBattle } from "./xg7/xg7Effects";
+import { xg7BlocksStrike } from "./xg7/xg7Fields";
+import { tryXg3OnEnterBattle } from "./xg3/xg3Effects";
 import { tryRm2OnEnterBattle } from "./rm/rm2Effects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { tryRk9OnEnterBattle } from "./rk/rk9UnitEffects";
@@ -10,6 +15,8 @@ import { tryRk15OnEnterBattle } from "./rk/rk15UnitEffects";
 import { tryRk16OnEnterBattle } from "./rk/rk16UnitEffects";
 import { openWarriorSoulNcChoice } from "./legend1/set9NamedEffectsA";
 import { tryResidentRushOnAllyEnterBattle } from "./residentAllyEnterRush";
+import { xg1bOnEnterBattle } from "./xg1/xg1bEffects";
+import { xg1eOnEnterTail } from "./xg1/xg1eEffects";
 import { listNcColumnNamedEffects, getNumberComboEffect } from "@rangers-strike/cards";
 import { registerBattleCommandHooks, tryOpenBattleCommand } from "./battleCommand";
 import { applyGorengerHurricaneOnEnter } from "./legend3/gorengerHurricane";
@@ -97,6 +104,7 @@ import { set8ABlocksStrike, trySet8AOnEnterBattle } from "./legend1/set8NamedEff
 import { clearWolfRoarDecision, openWolfRoarBeforeNc } from "./legend1/set7NamedEffectsC";
 import { emitUnitEnteredBattleEffects } from "../events/emitUnitEnteredBattle";
 import { registerEnterBattleEffectsImpl } from "../events/listeners/unitEnteredBattleListener";
+import { applyXg2OnComboEnter } from "./xg2/xg2Effects";
 
 export type { ComboOutcome } from "./comboTypes";
 
@@ -242,6 +250,8 @@ export function resolveEnterBattleEffectsImpl(
     nextState = applyWingPentactOnCombo(nextState, playerId, card, battleBeforeEnter);
     // RS-273〜276 ファイブマン（NC）: アタックしなかったファイブマンの次にコンビネーションする S ユニット。
     nextState = applyFivemanOnCombo(nextState, playerId, card, battleBeforeEnter);
+    // XG2-016 天空気殿【天空大風車】: これからコンビネーションする「人型」の M ユニット（rules/xg2/xg2Effects.ts）。
+    nextState = applyXg2OnComboEnter(nextState, playerId, card, battleBeforeEnter);
     // RK-239 ウエイクアップ！: ホールド状態で出たかを、出たときに記録する（rules/rk/rk12UnitEffects.ts）。
     nextState = rk12MarkHeldEntry(nextState, playerId, card);
   }
@@ -289,6 +299,12 @@ export function resolveEnterBattleEffectsImpl(
         nextState = tryRm2OnEnterBattle(nextState, playerId, battleCard);
         // RM-047 ダークジェイカー・RM-053 スタッガータンク・RM-054 レッドジャイロ（ライドされて一緒に出たビークルの効果。rules/rm/rm3Effects.ts）。
         nextState = tryRm3OnEnterBattle(nextState, playerId, battleCard);
+        // XG7-024【獣力開花】・XG7-029・XG7-030（コマンドゾーン）・XG7-040（手札）（rules/xg7/xg7Effects.ts）。
+        nextState = tryXg7OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+        // XG6-008 炎神剣（コマンドゾーンから。OT の自軍 L ユニットがバトルエリアに出たとき。rules/xg6/xg6Hooks.ts）。
+        nextState = tryXg6OnEnterBattle(nextState, playerId, battleCard);
+        // クロスギャザー ザ・Wインパクト XG3 の「バトルエリアに出たとき」「〜からコンビネーションするとき」（rules/xg3/xg3Effects.ts）。
+        nextState = tryXg3OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
         if (nextState.pendingEffectChoice) {
           return { state: nextState, logs, enterResumeFrom: resumeAt(1) };
         }
@@ -436,6 +452,8 @@ export function resolveEnterBattleEffectsImpl(
           battleCard,
           playerId,
         );
+        // XG1-036 舵木折神【侍武装】で得た「これがバトルエリアに出たとき」（rules/xg1/xg1bEffects.ts）。
+        nextState = xg1bOnEnterBattle(nextState, playerId, battleCard);
         if (nextState.pendingEffectChoice) {
           return { state: nextState, logs, enterResumeFrom: resumeAt(17) };
         }
@@ -710,6 +728,12 @@ export function resolveEnterBattleEffectsImpl(
     nextState = jointResult.state;
     logs.push(...jointResult.logs);
 
+    // XG1-085【レディスナイパー】・「○○からコンビネーションするときはナンバーに関係なく発動する」RC（XG1-088・094〜096。rules/xg1/xg1eEffects.ts）。
+    if (isOwnBattlePhase(nextState, playerId)) {
+      const xg1e = xg1eOnEnterTail(nextState, playerId, card, battleBeforeEnter, !!options?.rideOff);
+      nextState = xg1e.state;
+      logs.push(...xg1e.logs);
+    }
     if (options?.rideOff) {
       const rcResult = resolveRidingComboOnRideOff(nextState, playerId, card);
       nextState = rcResult.state;
@@ -803,6 +827,8 @@ export function canStrikeUnit(
   // XG1-028 アバレンオージ: ※これはホールド状態のときストライクできない（出典: atwiki/page-1665）。
   if (instance.cardId === "XG1-028" && instance.commandHeld) return false;
   if (state && playerId) {
+    // XG6-041【死神のパーティータイムだ】（アルファベットを3文字以上含むユニットはストライクできない。rules/xg6/xg6Fields.ts）。
+    if (xg6BlocksStrike(state, instance)) return false;
     if (hasBakiBakiExtraAttackOnly(state, playerId, instance.instanceId)) {
       return false;
     }
@@ -845,6 +871,8 @@ export function canStrikeUnit(
     if (set8ABlocksStrike(state, playerId, instance)) {
       return false;
     }
+    // XG7-043 ※「これ以外の自軍ユニットがあれば、…ストライクできない。」（rules/xg7/xg7Fields.ts）。
+    if (xg7BlocksStrike(state, playerId, instance)) return false;
     if (instance.activatedNcEffects?.includes("souru_no_strike")) {
       return false;
     }

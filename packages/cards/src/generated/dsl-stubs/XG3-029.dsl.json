@@ -24,13 +24,13 @@
       "id": "unnamed_e280bbe887aae8bb8d4de383",
       "text": "※自軍Mビークルがあれば、これはMユニットになり、特徴「人型」が追加される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG3-029::mbikurugaarebako",
+          "keyword": "xg3::XG3-029::urzard_note",
           "duration": "permanent"
         }
       ]
@@ -42,12 +42,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-029::urusaberu",
-          "duration": "turn"
+          "keyword": "xg3::XG3-029::ursaber",
+          "duration": "permanent"
         }
       ]
     }

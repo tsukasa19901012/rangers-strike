@@ -24,11 +24,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-077::sonikusutabu",
+          "keyword": "xg5::XG5-077::sonic_stab",
           "duration": "turn"
         }
       ]

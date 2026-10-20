@@ -11,7 +11,7 @@
   "rawText": "※カウンター（これは敵軍ターン中にのみ使用できる） 自軍ユニットがアタックされたとき発動できる⇒アタックしてきたユニット以外のユニットをすべての場からユニットを1体選んで、かわりにバトルさせる。",
   "effects": [
     {
-      "id": "note_e280bbe382abe382a6e383b3",
+      "id": "unnamed_e887aae8bb8de383a6e3838b",
       "text": "※カウンター（これは敵軍ターン中にのみ使用できる） 自軍ユニットがアタックされたとき発動できる⇒アタックしてきたユニット以外のユニットをすべての場からユニットを1体選んで、かわりにバトルさせる。",
       "trigger": {
         "type": "operation",
@@ -20,15 +20,20 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "counter_redirect_attack",
+          "keyword": "note_card::RS-018::yunitogaatakusar",
           "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "effectId": "hidden_ninja",
+  "tags": [
+    "カウンター"
+  ]
 }

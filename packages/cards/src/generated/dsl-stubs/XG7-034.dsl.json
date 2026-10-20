@@ -57,14 +57,14 @@
       "name": "天が呼ぶ、地が呼ぶ、人が呼ぶ",
       "text": "これは、DAを持つかSPが空欄ではないユニットにアタックするとき、BP+2000される。",
       "trigger": {
-        "type": "on_attack"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-034::gabugabugabu",
-          "duration": "turn"
+          "keyword": "xg7::XG7-034::heaven_earth_man",
+          "duration": "permanent"
         }
       ]
     }

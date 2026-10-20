@@ -41,8 +41,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-028::kinoshi",
-          "duration": "turn"
+          "keyword": "xg6::XG6-028::sky_lion",
+          "duration": "permanent"
         }
       ]
     }

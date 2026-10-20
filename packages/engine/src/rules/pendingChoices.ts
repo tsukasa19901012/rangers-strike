@@ -165,9 +165,17 @@ import { isRk14ChoiceEffect, tryConfirmRk14Choice, tryResolveRk14Choice, trySkip
 import { isRk15ChoiceEffect, tryConfirmRk15Choice, tryResolveRk15Choice, trySkipRk15Choice } from "./rk/rk15UnitEffects";
 import { isRk16ChoiceEffect, tryConfirmRk16Choice, tryResolveRk16Choice, trySkipRk16Choice } from "./rk/rk16UnitEffects";
 import { isRm1ChoiceEffect, tryConfirmRm1Choice, tryResolveRm1Choice, trySkipRm1Choice } from "./rm/rm1Effects";
+import { isXg6ChoiceEffect, tryConfirmXg6Choice, tryResolveXg6Choice, trySkipXg6Choice } from "./xg6/xg6Hooks";
+import { isXg4ChoiceEffect, tryConfirmXg4Choice, tryResolveXg4Choice, trySkipXg4Choice } from "./xg4/xg4Effects";
+import { isPromoChoiceEffect, promoInterceptDeckReveal, tryConfirmPromoChoice, tryResolvePromoChoice, trySkipPromoChoice } from "./promo";
 import { isRm2ChoiceEffect, tryCompleteRm2HoldChoice, tryConfirmRm2Choice, tryResolveRm2Choice, trySkipRm2Choice } from "./rm/rm2Effects";
+import { isXg5ChoiceEffect, tryConfirmXg5Choice, tryResolveXg5Choice, trySkipXg5Choice } from "./xg5/xg5Effects";
 import { isRm3ChoiceEffect, tryCompleteRm3HoldChoice, tryConfirmRm3Choice, tryResolveRm3Choice, trySkipRm3Choice } from "./rm/rm3Effects";
+import { isXg7ChoiceEffect, tryConfirmXg7Choice, tryResolveXg7Choice, trySkipXg7Choice } from "./xg7/xg7Effects";
+import { isXg3ChoiceEffect, tryCompleteXg3HoldChoice, tryConfirmXg3Choice, tryResolveXg3Choice, trySkipXg3Choice } from "./xg3/xg3Effects";
 import { isBk1ChoiceEffect, tryResolveBk1Choice, trySkipBk1Choice } from "./bk/bk1Effects";
+import { isXg1ChoiceEffect, tryCompleteXg1HoldChoice, tryConfirmXg1Choice, tryResolveXg1Choice, trySkipXg1Choice } from "./xg1/xg1Effects";
+import { isXg2ChoiceEffect, tryCompleteXg2HoldChoice, tryConfirmXg2Choice, tryResolveXg2Choice, trySkipXg2Choice } from "./xg2/xg2Effects";
 import { filthyAirActive, isOtherLinesChoiceEffect, tryOtherLinesBattleToRush, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
@@ -684,9 +692,17 @@ export function isValidEffectChoiceTarget(
     isRk15ChoiceEffect(pending.effectId) ||
     isRk16ChoiceEffect(pending.effectId) ||
     isRm1ChoiceEffect(pending.effectId) ||
+    isXg6ChoiceEffect(pending.effectId) ||
+    isXg4ChoiceEffect(pending.effectId) ||
+    isPromoChoiceEffect(pending.effectId) ||
     isRm2ChoiceEffect(pending.effectId) ||
     isRm3ChoiceEffect(pending.effectId) ||
+    isXg5ChoiceEffect(pending.effectId) ||
+    isXg7ChoiceEffect(pending.effectId) ||
+    isXg3ChoiceEffect(pending.effectId) ||
     isBk1ChoiceEffect(pending.effectId) ||
+    isXg1ChoiceEffect(pending.effectId) ||
+    isXg2ChoiceEffect(pending.effectId) ||
     isOtherLinesChoiceEffect(pending.effectId) ||
     isSet9BChoiceEffect(pending.effectId) ||
     isSet8BChoiceEffect(pending.effectId) ||
@@ -2074,10 +2090,26 @@ export function applyConfirmEffectChoice(
   if (rk16) return rk16;
   const rm1 = tryConfirmRm1Choice(state, playerId);
   if (rm1) return rm1;
+  const xg6 = tryConfirmXg6Choice(state, playerId);
+  if (xg6) return xg6;
+  const xg4 = tryConfirmXg4Choice(state, playerId);
+  if (xg4) return xg4;
+  const promo = tryConfirmPromoChoice(state, playerId);
+  if (promo) return promo;
   const rm2 = tryConfirmRm2Choice(state, playerId);
   if (rm2) return rm2;
   const rm3 = tryConfirmRm3Choice(state, playerId);
   if (rm3) return rm3;
+  const xg5 = tryConfirmXg5Choice(state, playerId);
+  if (xg5) return xg5;
+  const xg7 = tryConfirmXg7Choice(state, playerId);
+  if (xg7) return xg7;
+  const xg1 = tryConfirmXg1Choice(state, playerId);
+  if (xg1) return xg1;
+  const xg2 = tryConfirmXg2Choice(state, playerId);
+  if (xg2) return xg2;
+  const xg3 = tryConfirmXg3Choice(state, playerId);
+  if (xg3) return xg3;
   if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
     // RS-472【現場への搬送】: 「…まで好きな数選び」— 選んだところで確定し、山札をシャッフルする。
     return finishChoice(finishSiteTransportDeck(state, pending), pending, String(pending.selectedInstanceIds?.length ?? 0));
@@ -2150,6 +2182,7 @@ export function applyConfirmEffectChoice(
         instanceId,
         "discard",
         pending.phasePlayerId,
+        { discardAsDamage: pending.discardAsDamageInstanceIds?.includes(instanceId) },
       );
       if ("error" in leave) return leave;
       nextState = leave.state;
@@ -2592,6 +2625,7 @@ export function applyUnitLeave(
   instanceId: string,
   destination: "power" | "discard" | "deck_top",
   phasePlayerId: PlayerId,
+  opts: { discardAsDamage?: boolean } = {},
 ): ChoiceOutcome {
   {
     const stayed = tryRegisterStayOnLeave(state, instanceId);
@@ -2629,6 +2663,7 @@ export function applyUnitLeave(
     toZone,
     leavingCardId: found.card.cardId,
     phasePlayerId,
+    ...(opts.discardAsDamage && toZone === "discard" ? { discardAsDamage: true } : {}),
   });
 
   if (leaveResult.deferred) {
@@ -3004,12 +3039,21 @@ export function completeEffectHoldChoice(
   // 第7弾 RS-440【武器換装】・RS-441【コサックダンス】: ホールドするコマンドを選んだあとの続き（rules/legend1/set7NamedEffectsA.ts）。
   const set7aHold = tryCompleteSet7AHoldChoice(state, playerId, commandInstanceIds);
   if (set7aHold) return set7aHold;
+  // XG2-075・076・078: これ自身をホールドしたあとの続き（rules/xg2/xg2dEffects.ts）。
+  const xg2Hold = tryCompleteXg2HoldChoice(state, playerId, commandInstanceIds);
+  if (xg2Hold) return xg2Hold;
   // RM-022 サイバリアン・RM-038 凱聖バルスキー: ホールドするコマンドを選んだあとの続き（rules/rm/rm2Effects.ts）。
   const rm2Hold = tryCompleteRm2HoldChoice(state, playerId, commandInstanceIds);
   if (rm2Hold) return rm2Hold;
   // RM-045 ガンギブソン【ホーミングブリッド】: 選びなおさせるためにホールドするコマンドを選んだあとの続き（rules/rm/rm3Effects.ts）。
   const rm3Hold = tryCompleteRm3HoldChoice(state, playerId, commandInstanceIds);
   if (rm3Hold) return rm3Hold;
+  // クロスギャザー XG1: ホールドするコマンドを選んだあとの続き（rules/xg1/xg1Effects.ts）。
+  const xg1Hold = tryCompleteXg1HoldChoice(state, playerId, commandInstanceIds);
+  if (xg1Hold) return xg1Hold;
+  // クロスギャザー ザ・Wインパクト XG3: ホールドするコマンドを選んだあとの続き（rules/xg3/xg3Effects.ts）。
+  const xg3Hold = tryCompleteXg3HoldChoice(state, playerId, commandInstanceIds);
+  if (xg3Hold) return xg3Hold;
   const continued = applyPostHoldContinuation(state, pending);
   if (continued.done) return { state: continued.state };
   return finishChoice(
@@ -3083,12 +3127,28 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (rk16) return rk16;
   const rm1 = trySkipRm1Choice(state, playerId);
   if (rm1) return rm1;
+  const xg6 = trySkipXg6Choice(state, playerId);
+  if (xg6) return xg6;
+  const xg4 = trySkipXg4Choice(state, playerId);
+  if (xg4) return xg4;
+  const promo = trySkipPromoChoice(state, playerId);
+  if (promo) return promo;
   const rm2 = trySkipRm2Choice(state, playerId);
   if (rm2) return rm2;
   const rm3 = trySkipRm3Choice(state, playerId);
   if (rm3) return rm3;
+  const xg5 = trySkipXg5Choice(state, playerId);
+  if (xg5) return xg5;
+  const xg7 = trySkipXg7Choice(state, playerId);
+  if (xg7) return xg7;
+  const xg3 = trySkipXg3Choice(state, playerId);
+  if (xg3) return xg3;
   const bk1 = trySkipBk1Choice(state, playerId);
   if (bk1) return bk1;
+  const xg1 = trySkipXg1Choice(state, playerId);
+  if (xg1) return xg1;
+  const xg2 = trySkipXg2Choice(state, playerId);
+  if (xg2) return xg2;
   const otherLines = trySkipOtherLinesChoice(state, playerId);
   if (otherLines) return otherLines;
   const abduction = skipAbductionChoice(state, playerId);
@@ -3276,7 +3336,8 @@ export function suppressesDeployedUnitEffects(pending: Pick<PendingEffectChoice,
   return DEPLOYED_EFFECTS_SUPPRESSED_RE.test(text);
 }
 
-const DEPLOYED_EFFECTS_SUPPRESSED_RE = /(このとき|この効果で)出したユニットの効果は発動しない/;
+// 「このとき、出したユニットの効果は発動しない」（XG4-002【TV受像機】）のように読点が入る本文も同じ。
+const DEPLOYED_EFFECTS_SUPPRESSED_RE = /(このとき|この効果で)、?出したユニットの効果は発動しない/;
 
 /**
  * 敵軍の zone で隣り合う size ユニット2体のうち、BP（そのときの値）の合計が bpSum になる組に入るユニット。
@@ -3418,12 +3479,28 @@ export function applyEffectChoiceSelect(
   if (rk16) return rk16;
   const rm1 = tryResolveRm1Choice(state, playerId, instanceId);
   if (rm1) return rm1;
+  const xg6 = tryResolveXg6Choice(state, playerId, instanceId);
+  if (xg6) return xg6;
+  const xg4 = tryResolveXg4Choice(state, playerId, instanceId);
+  if (xg4) return xg4;
+  const promo = tryResolvePromoChoice(state, playerId, instanceId);
+  if (promo) return promo;
   const rm2 = tryResolveRm2Choice(state, playerId, instanceId);
   if (rm2) return rm2;
   const rm3 = tryResolveRm3Choice(state, playerId, instanceId);
   if (rm3) return rm3;
+  const xg5 = tryResolveXg5Choice(state, playerId, instanceId);
+  if (xg5) return xg5;
+  const xg7 = tryResolveXg7Choice(state, playerId, instanceId);
+  if (xg7) return xg7;
+  const xg3 = tryResolveXg3Choice(state, playerId, instanceId);
+  if (xg3) return xg3;
   const bk1 = tryResolveBk1Choice(state, playerId, instanceId);
   if (bk1) return bk1;
+  const xg1 = tryResolveXg1Choice(state, playerId, instanceId);
+  if (xg1) return xg1;
+  const xg2 = tryResolveXg2Choice(state, playerId, instanceId);
+  if (xg2) return xg2;
   const otherLines = tryResolveOtherLinesChoice(state, playerId, instanceId);
   if (otherLines) return otherLines;
   const set9b = tryResolveSet9BChoice(state, playerId, instanceId);
@@ -3583,9 +3660,10 @@ export function applyEffectChoiceSelect(
   if (pending.effectId === "kamen_ride_morph") {
     const result = resolveKamenRideMorphChoice(state, playerId, instanceId);
     if ("error" in result) return { error: result.error };
-    let nextState = promoteDeferredBattleEntry(
-      clearChoice(result.state, pending.phasePlayerId),
-    );
+    // 出したユニットの RC・「バトルエリアに出たとき」が開いた選択は残す（XG2-077・XP-004 atwiki/page-1748）。
+    let nextState = result.state.pendingEffectChoice
+      ? result.state
+      : promoteDeferredBattleEntry(clearChoice(result.state, pending.phasePlayerId));
     if (result.extraLogs?.length) {
       nextState = { ...nextState, log: [...nextState.log, ...result.extraLogs] };
     }
@@ -5073,7 +5151,9 @@ export function applyEffectChoiceSelect(
       let nextPlayer = {
         ...player,
         power: player.power.filter((c) => !discardIds.has(c.instanceId)),
-        discard: [...player.discard, ...toDiscard],
+        discard: [...player.discard, ...toDiscard.map(({ faceDown: _faceDown, ...card }) => card)],
+        // ウラ向き（ダメージ）のカードが捨札になれば、ダメージはその分減る。
+        damage: Math.max(0, player.damage - toDiscard.filter((c) => c.faceDown).length),
       };
 
       if (pending.effectId === "battle_entry_power_discard") {
@@ -5625,6 +5705,9 @@ export function applyEffectChoiceSelect(
       if (pending.effectId === "arino" && instanceId === "reveal_top") {
         const top = state.players[pending.playerId].deck[0];
         if (!top) return finishChoice(state, pending, "empty_deck");
+        // SR-006【超忍法・分身魔球】: オモテにしたカードを効果の対象にする前に（rules/promo/promo2Effects.ts）。
+        const promoIntercepted = promoInterceptDeckReveal(state, pending, top.instanceId);
+        if (promoIntercepted) return { state: promoIntercepted };
         const zorobApplied = applyZorobTopDeckReveal(state, pending.playerId, top.instanceId);
         const nextState = recordReveal(zorobApplied, {
           playerId: pending.playerId,

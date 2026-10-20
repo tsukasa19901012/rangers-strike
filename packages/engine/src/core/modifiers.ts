@@ -11,7 +11,8 @@ export function clearTurnModifiers(player: PlayerState): PlayerState {
         card.battleActed === undefined &&
         card.activatedNcEffects === undefined &&
         card.bpSetValue === undefined &&
-        card.sizeOverride === undefined
+        card.sizeOverride === undefined &&
+        card.xg7Turn === undefined
       ) {
         return card;
       }
@@ -23,6 +24,7 @@ export function clearTurnModifiers(player: PlayerState): PlayerState {
       delete next.activatedNcEffects;
       delete next.bpSetValue;
       delete next.sizeOverride;
+      delete next.xg7Turn;
       return next;
     });
 

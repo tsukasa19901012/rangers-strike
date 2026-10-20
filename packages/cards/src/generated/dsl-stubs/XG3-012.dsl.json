@@ -53,8 +53,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-012::hikariken",
-          "duration": "turn"
+          "keyword": "xg3::XG3-012::senko_seijuken",
+          "duration": "permanent"
         }
       ]
     }

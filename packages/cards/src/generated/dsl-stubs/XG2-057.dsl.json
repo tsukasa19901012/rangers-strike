@@ -38,11 +38,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-057::rakikuroba",
+          "keyword": "xg2::XG2-057::lucky_clover",
           "duration": "permanent"
         }
       ]

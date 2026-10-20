@@ -3,7 +3,9 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 import { getDefinition } from "../core/catalog";
 import { cardHasKeyword } from "./cardKeywords";
 import { ryuseioBlocksMove } from "../rules/restrictions";
+import { rushFromHandOnly } from "../rules/rushFromHandOnly";
 import { rk16CanMorphFromDiscard, rk16MorphDiscardCost, rk16MorphEntryHolds, rk16ReleasedCommands } from "../rules/rk/rk16Fields";
+import { xg2MorphStackCandidates } from "../rules/xg2/xg2Effects";
 
 /**
  * モーフの置き換え先を探すゾーン。「自軍ゾーン」はコマンドゾーンとパワーゾーンだけ
@@ -51,6 +53,8 @@ export function listMorphReplacementCandidates(
   for (const zone of zones) {
     for (const card of player[zone]) {
       if (!isFaceUpMorphUnitCard(definitions, card)) continue;
+      // 「※これは手札からしかラッシュできない」（XP-017 等）はモーフの置き換え先にできない（atwiki/page-1981 カード評価）。
+      if (rushFromHandOnly(card.cardId)) continue;
       const features = unitFeatures(getDefinition(definitions, card.cardId));
       if (featuresExactlyMatch(features, morphFeatures)) {
         results.push({ zone, instanceId: card.instanceId, card });
@@ -77,6 +81,8 @@ export function listPlaceableMorphReplacementCandidates(
   if (rk16CanMorphFromDiscard(state, defenderId)) {
     candidates = [...candidates, ...listMorphReplacementCandidates(defender, state.definitions, morphUnit.cardId, ["discard"])];
   }
+  // XG2-070 ライドブッカー・ブックモード: これに重ねたカードからも選べる（rules/xg2/xg2dEffects.ts）。
+  candidates = [...candidates, ...xg2MorphStackCandidates(state, defenderId, morphUnit.cardId)];
   const inBattle = defender.battle.some((c) => c.instanceId === morphUnit.instanceId);
   if (!inBattle) return candidates;
   return candidates.filter((c) => !ryuseioBlocksMove(state, defenderId, c.card) && morphEntryHoldsPayable(state, defenderId, c));

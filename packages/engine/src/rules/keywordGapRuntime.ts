@@ -1,4 +1,7 @@
+import { xg7CanDeployFromPower, xg7HandDeployCondition } from "./xg7/xg7Fields";
 import { hasScopedRestriction } from "../core/scopedModifiers";
+import { xg2CanDeployFromDiscard, xg2DeployFromDiscard } from "./xg2/xg2Effects";
+import { XG2_NO_STRIKE_RESTRICTION } from "./xg2/xg2Fields";
 import { sameCardName } from "../core/cardNames";
 /**
  * 監査で検出された「付与のみで未消費」キーワードのランタイム実装。
@@ -9,6 +12,7 @@ import type { CardInstance, GameState, PlayerId } from "../types/game";
 import { grantKeywordActiveOnCard } from "./ncGatedEffects";
 import { getDefinition, isSmallUnit, unitEffectiveCategories } from "../core/catalog";
 import { rk1IsSmallNow } from "./rk/rk1Features";
+import { unitFeatures } from "./addedFeatures";
 import { updatePlayer } from "../core/helpers";
 import { cardHasGrantKeyword, listCardGrantKeywords } from "../dsl/promotedKeywordBridge";
 import { applyUnitLeave, openEffectChoice } from "./pendingChoices";
@@ -165,17 +169,28 @@ export function attackerSuppressesAttackedCounters(attackerCardId: string): bool
 export function canSelfRushFromZone(
   state: GameState,
   playerId: PlayerId,
-  zone: "command" | "power" | "hand",
+  zone: "command" | "power" | "hand" | "discard",
   instanceId: string,
 ): boolean {
   if (state.phase !== "rush" || state.activePlayer !== playerId) return false;
   const player = state.players[playerId];
   const card = player[zone].find((c) => c.instanceId === instanceId);
   if (!card) return false;
+  // XG2-054 アビスハンマー【土中からの奇襲】（自軍捨札から。rules/xg2/xg2cEffects.ts）。
+  if (zone === "discard" && xg2CanDeployFromDiscard(state, playerId, card)) return true;
+  // クロスギャザー ザ・Wインパクト XG3 の、自軍ゾーンから起動する効果（XG3-002【宇宙を走る車】等。rules/xg3/xg3Effects.ts）。
+  const xg3 = canActivateXg3FromZone(state, playerId, zone, instanceId);
+  if (xg3 !== null) return xg3;
+  // 自軍捨札から出すのは XG3 のカードだけ（XG3-058【蘇る雷】）。
+  if (zone === "discard") return false;
   if (zone === "hand") return handDeployConditionMet(state, playerId, card.cardId);
   if (zone === "power" && card.faceDown) return false;
+  // XG7-068【蒸着・赤射・焼結】（rules/xg7/xg7Fields.ts）。
+  if (zone === "power" && xg7CanDeployFromPower(state, playerId, card)) return true;
   // RK-320 仮面ライダーライジングイクサの※（必要パワー1・9・3の自軍コマンドがそれぞれあれば。rules/rk/rk16Fields.ts）。
   if (zone === "command" && rk16CanDeployFromCommand(state, playerId, card)) return true;
+  // XG1-044 仮面ライダーV3 の※（自軍捨札に1号・2号があれば。rules/xg1/xg1Fields.ts）。
+  if (zone === "command" && xg1CanDeployFromCommand(state, playerId, card)) return true;
   // 「これが自軍コマンドゾーンにある間」— リリース／ホールドの状態は問わない（RS-447・XG4-077。atwiki/page-786）。
   const keyword =
     zone === "command" ? "rush_from_discard_count_command" : "rush_from_discard_count_power";
@@ -194,6 +209,9 @@ export function canSelfRushFromZone(
  */
 function handDeployConditionMet(state: GameState, playerId: PlayerId, cardId: string): boolean {
   if (!listCardGrantKeywords(cardId).some((k) => k.startsWith("while_in_hand_rush_deploy::"))) return false;
+  // XG7-006 ギンガピンク等（rules/xg7/xg7Fields.ts）。
+  const xg7 = xg7HandDeployCondition(state, playerId, cardId);
+  if (xg7 !== null) return xg7;
   const def = getDefinition(state.definitions, cardId);
   const text = def?.text ?? "";
   if (/自軍ダメージの数がこれの必要パワーの数字以上あれば/.test(text)) {
@@ -211,6 +229,15 @@ function handDeployConditionMet(state: GameState, playerId: PlayerId, cardId: st
       if (d?.type !== "unit" || !rk1IsSmallNow(state, c)) return false;
       return unitEffectiveCategories(state, enemyId, c, enemy.battle.some((b) => b.instanceId === c.instanceId) ? "battle" : "rush").includes(catEnemy[1] as never);
     });
+  }
+  // 「特徴「X」または「Y」を持つ自軍ユニットがあれば」（XG6-017 ヤツデンワニ。atwiki/page-2290）— 自軍エリアにその特徴のユニットがあるとき。
+  const featured = text.match(/特徴「([^」]+)」または「([^」]+)」を持つ自軍ユニットがあれば、これを自軍ラッシュエリアに出してもよい/);
+  if (featured?.[1] && featured[2]) {
+    const wants = [featured[1], featured[2]];
+    const p = state.players[playerId];
+    return [...p.battle, ...p.rush].some(
+      (c) => getDefinition(state.definitions, c.cardId)?.type === "unit" && unitFeatures(state, playerId, c).some((f) => wants.includes(f)),
+    );
   }
   // 「自軍「X」があれば」（RK-180 モグラ獣人「自軍「仮面ライダーアマゾン」があれば」。atwiki/page-910）— 自軍エリアにそのカード名のユニット
   // （「これは「X」として使える」を含む）があるとき。
@@ -232,10 +259,13 @@ function handDeployConditionMet(state: GameState, playerId: PlayerId, cardId: st
 export function applySelfRushFromZone(
   state: GameState,
   playerId: PlayerId,
-  zone: "command" | "power" | "hand",
+  zone: "command" | "power" | "hand" | "discard",
   instanceId: string,
 ): GameState | null {
   if (!canSelfRushFromZone(state, playerId, zone, instanceId)) return null;
+  const xg3 = activateXg3FromZone(state, playerId, zone, instanceId);
+  if (xg3) return xg3;
+  if (zone === "discard") return xg2DeployFromDiscard(state, playerId, instanceId);
   const player = state.players[playerId];
   const card = player[zone].find((c) => c.instanceId === instanceId);
   if (!card) return null;
@@ -255,6 +285,8 @@ import type { PlayerState } from "../types/game";
 import { hasBakiBakiExtraAttack } from "./turnModifierBridge";
 import { markTurnBattleAct } from "./rk/rk10Fields";
 import { rk16CanDeployFromCommand } from "./rk/rk16Fields";
+import { xg1CanDeployFromCommand } from "./xg1/xg1Fields";
+import { activateXg3FromZone, canActivateXg3FromZone } from "./xg3/xg3Effects";
 
 /**
  * battleActed 済みでも「アタックとストライクを1度ずつ」持ちなら
@@ -262,19 +294,25 @@ import { rk16CanDeployFromCommand } from "./rk/rk16Fields";
  */
 export function battleActBlocked(
   player: PlayerState,
-  card: { cardId: string; instanceId: string; battleActed?: boolean; activatedNcEffects?: string[] },
+  card: { cardId: string; instanceId: string; battleActed?: boolean; activatedNcEffects?: string[]; commandHeld?: boolean },
   action: "attack" | "strike",
 ): boolean {
   // RS-326【究極奥義・猫だまし】で出したユニットはアタックもストライクもできない（atwiki/page-487）。
   if (hasScopedRestriction(player, card.instanceId, "neko_damashi_no_attack_strike", "turn")) return true;
   // RK-048【音撃斬・雷電斬震】で撃破したとき「これはアタックすることができない」。
   if (action === "attack" && hasScopedRestriction(player, card.instanceId, "no_attack_this_turn", "turn")) return true;
+  // XG5-091【ブラストエンド】で撃破したとき「このターン、これはストライクすることができない」（rules/xg5/xg5eEffects.ts）。
+  if (action === "strike" && hasScopedRestriction(player, card.instanceId, "xg5_no_strike_this_turn", "turn")) return true;
+  // XG2-009【行動予測】で「ストライク」を宣言されたユニット（rules/xg2/xg2Fields.ts）。
+  if (action === "strike" && hasScopedRestriction(player, card.instanceId, XG2_NO_STRIKE_RESTRICTION, "turn")) return true;
   // RS-167【爆竜必殺バキバキパンチ】で得た「アタックしてバトルに勝つたび、追加でアタックできる」。
   if (action === "attack" && hasBakiBakiExtraAttack(player, card.instanceId)) return false;
   // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックする権利を失っている。
   if (action === "attack" && player.unitActionsThisTurn?.[card.instanceId]?.attacked) return true;
   if (!card.battleActed) return false;
-  if (!cardHasGrantKeyword(card.cardId, "attack_and_strike_once") && !ncAttackAndStrikeOnce(card)) return true;
+  // XG5-063【ダイヤ4－ラピッド】で得た「アタックとストライクを1度ずつ行ってもよい」（rules/xg5/xg5dEffects.ts）。
+  const xg5Rapid = hasScopedRestriction(player, card.instanceId, "xg5_attack_and_strike_once", "turn");
+  if (!cardHasGrantKeyword(card.cardId, "attack_and_strike_once") && !ncAttackAndStrikeOnce(card) && !xg5Rapid) return true;
   const rec = player.unitActionsThisTurn?.[card.instanceId];
   return action === "attack" ? !!rec?.attacked : !!rec?.struck;
 }
@@ -283,7 +321,9 @@ export function battleActBlocked(
  * NC の効果として「アタックとストライクを1度ずつ行ってもよい」を持ち、NC が成立しているか。
  * RS-191 ダイナレッド【ダイナ剣・夢の翼】（atwiki/page-393。NC 不成立なら1回だけ — faq-rider-2 RS-191）。
  */
-function ncAttackAndStrikeOnce(card: { cardId: string; activatedNcEffects?: string[] }): boolean {
+function ncAttackAndStrikeOnce(card: { cardId: string; activatedNcEffects?: string[]; commandHeld?: boolean }): boolean {
+  // XG3-059 仮面ライダー轟鬼【轟く二刀】「このユニットがリリース状態なら、このターン、これはアタックとストライクを1度ずつ行ってもよい」（atwiki/page-1923）。
+  if (card.cardId === "XG3-059" && !!card.activatedNcEffects?.includes("ku_to") && !card.commandHeld) return true;
   return card.cardId === "RS-191" && !!card.activatedNcEffects?.includes("daina_ken_no_tsubasa");
 }
 

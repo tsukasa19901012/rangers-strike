@@ -47,12 +47,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-075::fuainarukamenatakufuomur",
-          "duration": "turn"
+          "keyword": "xg3::XG3-075::final_kamen",
+          "duration": "permanent"
         }
       ]
     }

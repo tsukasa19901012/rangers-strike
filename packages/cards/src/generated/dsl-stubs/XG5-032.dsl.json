@@ -41,13 +41,12 @@
       "name": "ジェットボード",
       "text": "自分がターンを終えるとき、このユニットがバトルエリアにあれば、自軍ラッシュエリアに戻してもよい。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-032::jetboard",
+          "keyword": "xg5::XG5-032::jet_board",
           "duration": "permanent"
         }
       ]

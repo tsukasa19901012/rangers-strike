@@ -1,4 +1,7 @@
+import { xg6GrantsBlast } from "../rules/xg6/xg6Fields";
 import { rm1GrantsScrum } from "../rules/rm/rm1Fields";
+import { xg5BlocksOwnTurnHold, xg5GrantsScrum } from "../rules/xg5/xg5Fields";
+import { xg7RiderCross } from "../rules/xg7/xg7Fields";
 import type { Category } from "@rangers-strike/cards";
 import { rk9EnemyKeywordsNullified } from "../rules/rk/rk9Fields";
 import { set9ATaxisCategory } from "../rules/legend1/set9NamedEffectsA";
@@ -21,6 +24,8 @@ import { isBattleBlocked, markBattleBlocked } from "../rules/turnModifiers";
 import { RESTRICTION_IDS } from "../types/scopedModifiers";
 import { findInZone, updatePlayer } from "../core/helpers";
 import { riddenVehicleGrantsScrum } from "../rules/legend1/set7NamedEffectsB";
+import { hasBakiBakiExtraAttack } from "../rules/turnModifierBridge";
+import { xg4RiddenVehicleGrantsWing } from "../rules/xg4/xg4Fields";
 import { unitFeatures } from "../rules/addedFeatures";
 import { featuresMatchKeywordSlug } from "../dsl/featureKeywords";
 
@@ -69,6 +74,10 @@ export function crossShiftLeftOf(
   let shift = 0;
   for (let i = 0; i < index; i += 1) {
     shift += crossValueForCard(battle[i]!.cardId);
+    // このターン得たクロス（XG7-015【ボウケンジャーになれ】等。rules/xg7/xg7aEffects.ts）。
+    shift += battle[i]!.xg7Turn?.cross ?? 0;
+    // XG7-031 新サイクロン号にライドしている「仮面ライダー1号」「仮面ライダー2号」（rules/xg7/xg7Fields.ts）。
+    shift += xg7RiderCross(battle, i);
   }
   return shift;
 }
@@ -205,7 +214,9 @@ export function scrumBlocksAttack(
     // RS-467 ギンガルコン【風の星獣】: ライドしたユニットがある間、WB の自軍 S ユニットはスクラムを得る（rules/legend1/set7NamedEffectsB.ts）。
     !riddenVehicleGrantsScrum(state, defenderPlayerId, defender) &&
     // RM-013 BSフォーメーション: 特徴「ブルー」「スワット」を持つ自軍ユニットはスクラムを得る（rules/rm/rm1Fields.ts）。
-    !rm1GrantsScrum(state, defenderPlayerId, unitFeatures(state, defenderPlayerId, defender))
+    !rm1GrantsScrum(state, defenderPlayerId, unitFeatures(state, defenderPlayerId, defender)) &&
+    // XG5-001 ゴーグルレッド ※・XG5-041 ゴセイイエロー【兄妹の絆】（rules/xg5/xg5Fields.ts）。
+    !xg5GrantsScrum(state, defenderPlayerId, defender)
   ) {
     return false;
   }
@@ -278,7 +289,8 @@ export function blastBypassesRushAdditionalCondition(
   playerId: PlayerId,
   rushingCardId: string,
 ): boolean {
-  if (!cardHasBattleKeyword(state.definitions, rushingCardId, "blast")) return false;
+  // XG6-004 フルブラスト・アクション: このターン、手札の BP16000 以下の L ユニットのカードはブラストを得る（rules/xg6/xg6Fields.ts）。
+  if (!cardHasBattleKeyword(state.definitions, rushingCardId, "blast") && !xg6GrantsBlast(state, playerId, rushingCardId)) return false;
   const player = state.players[playerId];
   const remaining = loseDamageThreshold(state, playerId) - player.damage;
   // ルール: R-KW-BLAST-02 — XG2-034 ブラストバギーが（どちらかの）エリアにある間は残り1点または2点。
@@ -350,11 +362,13 @@ export function canWingAttackFromRush(
   if (state.phase !== "battle") return false;
   if (
     !cardHasKeyword(state.definitions, unit.cardId, "wing", { state, playerId }) &&
-    !stackedEquipmentGrantsWing(unit)
+    !stackedEquipmentGrantsWing(unit) &&
+    !xg4RiddenVehicleGrantsWing(state, playerId, unit)
   ) {
     return false;
   }
-  if (unit.battleActed) return false;
+  // 「追加でアタックできる」（RS-167 と同じ記録。XG4-060【フォトンブレイカー】等）を得ていれば、アタックしたあとでもラッシュエリアからアタックできる。
+  if (unit.battleActed && !hasBakiBakiExtraAttack(state.players[playerId], unit.instanceId)) return false;
   if (!unit.commandHeld) return false;
   // ルール: R-HOLD-03 — レジストのホールドはウイングのホールドの代わりにならない。
   if (unit.registerHeld) return false;
@@ -370,7 +384,8 @@ export function canHoldForWing(
   if (state.phase !== "battle") return false;
   if (
     !cardHasKeyword(state.definitions, unit.cardId, "wing", { state, playerId }) &&
-    !stackedEquipmentGrantsWing(unit)
+    !stackedEquipmentGrantsWing(unit) &&
+    !xg4RiddenVehicleGrantsWing(state, playerId, unit)
   ) {
     return false;
   }
@@ -378,6 +393,8 @@ export function canHoldForWing(
   // ルール: R-KW-WING-03 — ウイングでアタックした後もリリースされれば同じターンに再び発動できる
   // （発動できるかはリリース状態かどうかだけで決まる）。
   if (unit.commandHeld) return false;
+  // XG5-025【上空からの牽制】: 敵軍のこれがあれば、自分自身のターン中はホールドできない（rules/xg5/xg5Fields.ts）。
+  if (xg5BlocksOwnTurnHold(state, playerId)) return false;
   return state.players[playerId].rush.some((c) => c.instanceId === unit.instanceId);
 }
 
@@ -428,7 +445,7 @@ export function canCancelWingHold(
     cardHasKeyword(state.definitions, found.card.cardId, "wing", {
       state,
       playerId,
-    }) || stackedEquipmentGrantsWing(found.card)
+    }) || stackedEquipmentGrantsWing(found.card) || xg4RiddenVehicleGrantsWing(state, playerId, found.card)
   );
 }
 

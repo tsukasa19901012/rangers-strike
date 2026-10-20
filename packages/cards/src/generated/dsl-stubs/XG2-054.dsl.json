@@ -37,11 +37,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-054::tsuchikarano",
+          "keyword": "xg2::XG2-054::ambush",
           "duration": "permanent"
         }
       ]

@@ -37,13 +37,12 @@
       "name": "歩く完全ライダー図鑑",
       "text": "これは、自軍パワーゾーンのオモテ向きのカードに、特徴「仮面ライダー」を持つ同名のカードが3枚以上あれば、「SP1」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-054::kuraida",
+          "keyword": "xg5::XG5-054::rider_zukan",
           "duration": "permanent"
         }
       ]

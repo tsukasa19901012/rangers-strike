@@ -15,6 +15,7 @@ import {
   startSelectUnitChoice,
 } from "../pendingChoices";
 import type { ComboOutcome } from "../comboTypes";
+import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
 
 export function legend3AttackerBpBonus(
   state: GameState,
@@ -182,7 +183,9 @@ export function resolveLegend3EnterBattle(
           const n = typeof cost === "number" ? cost : parsePowerCost(cost);
           return n <= maxBp;
         })
-        .map((c) => c.instanceId);
+        .map((c) => c.instanceId)
+        // ブレイカー・「相手に選ばれない」（XG7-009【受け継いだもの】等）の敵軍ユニットは選べない。
+        .filter((id) => isSelectableByOpponentEffect(state, playerId, id, cardId));
       if (targets.length === 0) return { state, logs: [] };
       const withChoice = startSelectUnitChoice(state, {
         playerId,

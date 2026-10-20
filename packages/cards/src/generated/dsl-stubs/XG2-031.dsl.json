@@ -33,7 +33,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-031::nobakuapue5ae87",
+          "keyword": "xg2::XG2-031::backup",
           "duration": "permanent"
         }
       ]

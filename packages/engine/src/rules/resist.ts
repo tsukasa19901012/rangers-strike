@@ -1,4 +1,7 @@
+import { xg4GrantsResist } from "./xg4/xg4Fields";
 import { rm3GrantsResist } from "./rm/rm3Fields";
+import { xg6GrantsRegister } from "./xg6/xg6Fields";
+import { unitFeatures } from "./addedFeatures";
 import { rk14GrantsRegister } from "./rk/rk14Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { hasResist } from "@rangers-strike/cards";
@@ -18,6 +21,7 @@ import { finalizeLeavePending } from "./operationCounters";
 import { resolveDestroyedFactEffects } from "./leaveEffects";
 import { riddenVehicleGrantsResist } from "./legend1/set7NamedEffectsB";
 import { set8BGrantsResist } from "./legend1/set8NamedEffectsB";
+import { promoGrantsKeyword, promoNegatesUnnamedText } from "./promo/promoHooks";
 import { stackOntoLargeGrantsKeyword } from "./stackOntoLargeGrants";
 import { rk9EnemyKeywordsNullified } from "./rk/rk9Fields";
 import { rk10AntlordGrantsResist } from "./rk/rk10Fields";
@@ -42,7 +46,12 @@ export function canOfferRegister(
     );
     if (card?.commandHeld) return false;
   }
-  if (cardHasRegisterKeyword(state, pending.leavingCardId)) return true;
+  if (
+    cardHasRegisterKeyword(state, pending.leavingCardId) &&
+    // SX-003 W・FJ の※: 効果名を持たないテキスト（※レジスト）が無効なユニット（rules/promo/promoHooks.ts）。
+    !(pending.ownerPlayerId && pending.instanceId && promoNegatesUnnamedText(state, pending.ownerPlayerId, pending.instanceId))
+  )
+    return true;
   // RK-278 仮面ライダーナイト（2nd）の※（自軍捨札に「女」のユニットカードがあればレジスト。rules/rk/rk14Fields.ts）。
   if (pending.ownerPlayerId && rk14GrantsRegister(state, pending.ownerPlayerId, pending.leavingCardId)) return true;
   // RS-466 ギンガレオン【炎の星獣】: ライドしている S ユニットはレジストを得る（rules/legend1/set7NamedEffectsB.ts）。
@@ -50,10 +59,16 @@ export function canOfferRegister(
   if (riddenVehicleGrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
   // RS-547【守護獣の使徒】: WB を持つ自軍 M ユニットはレジストを得る（rules/legend1/set8NamedEffectsB.ts）。
   if (set8BGrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
+  // XP-018 ゴールド寿司 等（rules/promo）。
+  if (promoGrantsKeyword(state, pending.ownerPlayerId, pending.instanceId, "register")) return true;
   // RM-051 メガヘラクレス【メガビートフォーメーション】（自軍エリアに「レッドジャイロ」があればレジスト。rules/rm/rm3Fields.ts）。
   if (rm3GrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
   // RK-197 アントロード【女王の僕】: 特徴「女」を持つ自軍ユニットはレジストを得る（自軍だけ。rules/rk/rk10Fields.ts）。
   if (rk10AntlordGrantsResist(state, pending.ownerPlayerId, { cardId: pending.leavingCardId })) return true;
+  // XG6-043 仮面ライダーゼロノスZF の※（特徴「女」を持つ自軍ユニットがあればレジスト。rules/xg6/xg6Fields.ts）。
+  if (xg6GrantsRegister(state, pending.ownerPlayerId, pending.instanceId, (c) => unitFeatures(state, pending.ownerPlayerId!, c))) return true;
+  // XG4-099 ホバリアン【バリア】: ライドしている「メカ」のユニットはレジストを得る（rules/xg4/xg4Fields.ts）。
+  if (xg4GrantsResist(state, pending.ownerPlayerId, pending.instanceId)) return true;
   // RS-647 ピヨちゃん【ソウルバード】「このカードに重ねたユニットは、次の能力を得る⇒※レジスト」（rules/stackOntoLargeUnit.ts）。
   const host = state.players[pending.ownerPlayerId].battle.find((c) => c.instanceId === pending.instanceId);
   return !!host && stackOntoLargeGrantsKeyword(host, "register");

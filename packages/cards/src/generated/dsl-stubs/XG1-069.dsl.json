@@ -68,11 +68,10 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "rk_fx::RK-221::ongekida_hi_honoo",
+          "keyword": "xg1::XG1-069::attack_ride",
           "duration": "turn"
         }
       ]

@@ -27,14 +27,29 @@
       "name": "パルセイバー",
       "text": "これが敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットのBPを-2000してもよい。（BP0以下になったユニットは撃破される）（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）",
       "trigger": {
-        "type": "on_attack"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-091::paruseiba",
-          "duration": "turn"
+          "keyword": "xg3::XG3-091::pulse_saber",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "xg3_rc_mark",
+      "text": "（CN：RC）",
+      "trigger": {
+        "type": "riding_combo"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "xg3::XG3-091::rc_mark",
+          "duration": "permanent"
         }
       ]
     }

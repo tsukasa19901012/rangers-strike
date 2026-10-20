@@ -43,14 +43,14 @@
       "name": "ダブルアクション",
       "text": "これが自分の手札にある間、敵軍ユニットがバトルエリアに出たとき、自軍ユニットが1体もなければ、OTの自軍コマンドを2つホールドしてから、これを自軍バトルエリアに出してもよい。そうしたとき、敵軍バトルエリアのSユニットをすべて持ち主のパワーゾーンに送る。",
       "trigger": {
-        "type": "enter_battle"
+        "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-040::daburuakushon",
-          "duration": "turn"
+          "keyword": "xg7::XG7-040::double_action",
+          "duration": "permanent"
         }
       ]
     }

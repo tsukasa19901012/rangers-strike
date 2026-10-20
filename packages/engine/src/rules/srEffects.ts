@@ -13,7 +13,7 @@ import {
 } from "../core/catalog";
 import { spBecomesInZone } from "./fractionalSp";
 import { findInZone, opponent, removeAt, updatePlayer } from "../core/helpers";
-import { collectPowerIds, openEffectChoice } from "./pendingChoices";
+import { openEffectChoice } from "./pendingChoices";
 
 const BIG_BATON_FEATURES = ["レッド", "ブルー", "グリーン", "ピンク"] as const;
 
@@ -104,34 +104,42 @@ export function holdPlacedCommandUnderMaChikara(
   return { ...state, ...updatePlayer(state, playerId, { ...player, command }) };
 }
 
-/** SR-007: スタート終了時、大神龍以外がいなければ山札へ。 */
+/**
+ * SR-007【プラズマ衝撃波】「このスタートフェイズを終えるとき、自分自身のバトルエリアに「大神龍」以外のユニットが1体もなければ、
+ * これを持ち主の山札に戻してシャッフルする。」— playerId はスタートフェイズを終えるプレイヤー。「これ」は場（ラッシュエリア・
+ * バトルエリア）の大神龍で、持ち主の山札に戻す（atwiki/page-1235）。
+ */
 export function applyPlasmaShockwaveShuffleBack(
   state: GameState,
   playerId: PlayerId,
 ): GameState {
   if (!plasmaShockwaveActive(state)) return state;
 
-  const player = state.players[playerId];
-  const hasOtherUnits = player.battle.some((card) => {
-    const name = getDefinition(state.definitions, card.cardId)?.name;
-    return name !== "大神龍";
+  const hasOtherUnits = state.players[playerId].battle.some((card) => {
+    const def = getDefinition(state.definitions, card.cardId);
+    return def?.type === "unit" && def.name !== "大神龍";
   });
   if (hasOtherUnits) return state;
 
-  const toReturn = player.battle.filter((c) => c.cardId === "SR-007");
-  if (toReturn.length === 0) return state;
-
-  const remainingBattle = player.battle.filter((c) => c.cardId !== "SR-007");
-  const deck = shuffleDeck([...player.deck, ...toReturn]);
-
-  return {
-    ...state,
-    ...updatePlayer(state, playerId, {
-      ...player,
-      battle: remainingBattle,
-      deck,
-    }),
-  };
+  let next = state;
+  for (const owner of ["player1", "player2"] as const) {
+    const player = next.players[owner];
+    const isDragon = (c: CardInstance) => c.cardId === "SR-007";
+    const toReturn = [...player.rush, ...player.battle].filter(isDragon);
+    if (toReturn.length === 0) continue;
+    const ids = new Set(toReturn.map((c) => c.instanceId));
+    const unmount = (c: CardInstance) => (c.mountedOnInstanceId && ids.has(c.mountedOnInstanceId) ? { ...c, mountedOnInstanceId: undefined } : c);
+    next = {
+      ...next,
+      ...updatePlayer(next, owner, {
+        ...player,
+        rush: player.rush.filter((c) => !ids.has(c.instanceId)).map(unmount),
+        battle: player.battle.filter((c) => !ids.has(c.instanceId)).map(unmount),
+        deck: shuffleDeck([...player.deck, ...toReturn.map((c) => ({ instanceId: c.instanceId, cardId: c.cardId }))]),
+      }),
+    };
+  }
+  return next;
 }
 
 /** SR-003 龍撃剣＆獣奏剣: 捨札の恐竜1枚につきBP+1000。 */
@@ -278,7 +286,9 @@ export function startDestroyPowerMatchOnRush(
   state: GameState,
   ctx: GrantKeywordContext,
 ): GameState | null {
-  const valid = collectPowerIds(state, ctx.playerId);
+  // XP-003・SR-005 デカレッドバトライザー【バトライズファイヤードライブ】は、ウラ向き（ダメージ）のカードも選べる
+  // （利用者の決定 2026-10-20、docs/verification/unverified/questions-all.md U-5）。
+  const valid = state.players[ctx.playerId].power.map((c) => c.instanceId);
   if (valid.length === 0) return null;
   return openEffectChoice(state, {
     playerId: ctx.playerId,

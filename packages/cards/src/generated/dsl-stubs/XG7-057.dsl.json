@@ -37,7 +37,22 @@
     {
       "id": "taifuaiyagaru",
       "name": "冷たいファイヤーガール",
-      "text": "「SP1/2」 これがアタックしたとき、相手は自分自身の捨札を1枚選び、ゲームから除外する。",
+      "text": "「SP1/2」",
+      "trigger": {
+        "type": "riding_combo"
+      },
+      "optional": false,
+      "effects": [
+        {
+          "type": "grant_keyword",
+          "keyword": "xg7::XG7-057::fire_girl_sp",
+          "duration": "permanent"
+        }
+      ]
+    },
+    {
+      "id": "taifuaiyagaru_attack",
+      "text": "これがアタックしたとき、相手は自分自身の捨札を1枚選び、ゲームから除外する。",
       "trigger": {
         "type": "on_attack"
       },
@@ -45,8 +60,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-057::taifuaiyagaru",
-          "duration": "turn"
+          "keyword": "xg7::XG7-057::fire_girl_exile",
+          "duration": "permanent"
         }
       ]
     }

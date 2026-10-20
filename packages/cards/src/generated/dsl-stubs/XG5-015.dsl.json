@@ -17,11 +17,10 @@
         "type": "operation",
         "timing": "rush"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_s_on_self_rush",
+          "keyword": "xg5::XG5-015::styrizer",
           "duration": "permanent"
         }
       ]

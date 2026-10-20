@@ -57,13 +57,27 @@
       "condition": {
         "type": "has_target",
         "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S",
-            "minBp": 4000
-          }
+          "type": "zones",
+          "zones": [
+            {
+              "type": "zone",
+              "zone": "battle",
+              "owner": "opponent",
+              "filter": {
+                "size": "S",
+                "minBp": 4000
+              }
+            },
+            {
+              "type": "zone",
+              "zone": "rush",
+              "owner": "opponent",
+              "filter": {
+                "size": "S",
+                "minBp": 4000
+              }
+            }
+          ]
         }
       },
       "optional": true,
@@ -72,13 +86,27 @@
           "type": "choose",
           "kind": "select_unit",
           "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S",
-              "minBp": 4000
-            }
+            "type": "zones",
+            "zones": [
+              {
+                "type": "zone",
+                "zone": "battle",
+                "owner": "opponent",
+                "filter": {
+                  "size": "S",
+                  "minBp": 4000
+                }
+              },
+              {
+                "type": "zone",
+                "zone": "rush",
+                "owner": "opponent",
+                "filter": {
+                  "size": "S",
+                  "minBp": 4000
+                }
+              }
+            ]
           },
           "count": 1,
           "then": [

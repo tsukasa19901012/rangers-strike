@@ -290,13 +290,20 @@ export const ODIN_SUBSTITUTE_EFFECT_ID = "rk286_odin_substitute";
 
 // RK-286 仮面ライダーオーディンの※「これが撃破されて捨札になるとき、かわりに自軍ラッシュエリアにある特徴「男」を持つユニット1体を捨札にすれば、
 // これはその場に留まる。」（atwiki/page-1276）も同じ手続き（選ぶのは自軍ラッシュエリアの「男」のユニット。サイズを問わない）。
-const SUBSTITUTE_CARD_IDS = ["RK-128", "RK-286"];
+// XG4-085 仮面ライダー幽汽SF の※「これが撃破されて捨札になるとき、かわりに特徴「男」を持つ自軍ユニット1体を捨札にすれば、これはその場にとどまる。」
+// （atwiki/page-2151）も同じ手続き（選ぶのは自軍の場の「男」のユニット。エリア・サイズを問わない。これ以外）。
+const SUBSTITUTE_CARD_IDS = ["RK-128", "RK-286", "XG4-085"];
 
 function substituteCardOf(cardId: string): string | undefined {
   return SUBSTITUTE_CARD_IDS.find((id) => isSameCardIdentity(cardId, id));
 }
 
 function rengelSubstituteIds(state: GameState, ownerId: PlayerId, selfId: string, sourceCardId = "RK-128"): string[] {
+  if (sourceCardId === "XG4-085") {
+    return fieldUnits(state, ownerId)
+      .filter((c) => c.instanceId !== selfId && isUnitCard(state, c.cardId) && unitFeatures(state, ownerId, c).includes("男"))
+      .map((c) => c.instanceId);
+  }
   if (sourceCardId === "RK-286") {
     return state.players[ownerId].rush
       .filter((c) => c.instanceId !== selfId && isUnitCard(state, c.cardId) && unitFeatures(state, ownerId, c).includes("男"))
@@ -320,7 +327,7 @@ export function openRk7RengelSubstitute(state: GameState, intent: PendingLeave):
   if (ids.length === 0) return null;
   return openEffectChoice(state, {
     ...base({ playerId: intent.ownerPlayerId, phasePlayerId: intent.phasePlayerId, sourceInstanceId: intent.instanceId }, sourceCardId),
-    effectId: sourceCardId === "RK-286" ? ODIN_SUBSTITUTE_EFFECT_ID : RENGEL_SUBSTITUTE_EFFECT_ID,
+    effectId: sourceCardId === "RK-128" ? RENGEL_SUBSTITUTE_EFFECT_ID : ODIN_SUBSTITUTE_EFFECT_ID,
     kind: "select_unit",
     validInstanceIds: ids,
     selectCount: 1,

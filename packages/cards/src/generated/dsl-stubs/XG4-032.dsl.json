@@ -37,12 +37,17 @@
       "name": "バーニングダガー",
       "text": "「SP1」これが敵軍ユニットをバトルで撃破したとき、撃破したユニットと同じカテゴリを持つオモテ向きの敵軍パワーを1枚選び捨札にしてもよい。（この効果はこれがウイングでアタックするときナンバーに関係なく発動する）",
       "trigger": {
-        "type": "on_attack"
+        "type": "nc"
       },
       "effects": [
         {
           "type": "grant_keyword",
           "keyword": "SP1",
+          "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg4::XG4-032::burning_dagger",
           "duration": "turn"
         }
       ]

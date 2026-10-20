@@ -1,3 +1,4 @@
+import { isXg2SelfHoldPayment } from "./xg2/xg2Effects";
 import { rm1SonicFlapExtraHolds } from "./rm/rm1Fields";
 import {
   emergencyRequestEnemyCommandIds,
@@ -713,6 +714,8 @@ export function needsEffectHoldPayment(
   // （RS-082【トリケランス】等）は resolve_effect_choice で選ぶ。
   if (!state) return true;
   const own = state.players[pending.playerId].command;
+  // XG2-075・076・078「これをホールドして次の効果を発動できる」（場のこのユニット自身。rules/xg2/xg2Core.ts）。
+  if (isXg2SelfHoldPayment(state, pending)) return true;
   return pending.validInstanceIds.every((id) => own.some((c) => c.instanceId === id));
 }
 
@@ -764,7 +767,7 @@ export function buildMothershipHoldPayment(
   if (!kind) return null;
 
   const slotsFilled = materialInstanceId
-    ? zordSlotsFilledByMaterial(setup.zordCardId, true, materialDestination)
+    ? zordSlotsFilledByMaterial(setup.zordCardId, true, materialDestination === "hold" ? "discard" : materialDestination) // XG1-013 hold は捨札のかわり
     : 0;
   const holdsRequired = mothershipHoldsRequiredForRush(setup.zordCardId, slotsFilled);
   if (holdsRequired <= 0) return null;
@@ -835,7 +838,7 @@ function mothershipPaymentHoldsRequired(pending: PendingCommandPayment): number 
     cont.type === "rush" && cont.zordMaterialInstanceIds && materialIds.length > 0
       ? materialIds.length
       : cont.type === "rush" && cont.zordMaterialInstanceId
-        ? zordSlotsFilledByMaterial(pending.sourceCardId, true, cont.zordMaterialDestination)
+        ? zordSlotsFilledByMaterial(pending.sourceCardId, true, cont.zordMaterialDestination === "hold" ? "discard" : cont.zordMaterialDestination)
         : 0;
   return mothershipHoldsRequiredForRush(pending.sourceCardId, slotsFilled);
 }

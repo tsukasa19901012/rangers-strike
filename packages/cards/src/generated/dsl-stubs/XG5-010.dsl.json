@@ -14,13 +14,13 @@
       "id": "unnamed_e887aae8bb8de383a9e38383",
       "text": "自軍ラッシュエリアから、効果に｢ラッシュしたとき｣とあるWBのMユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する。（これが自軍コマンドゾーンにある間、WBを持つ自軍Lユニットがバトルエリアに出たとき、これをホールドしてもよい。そうしたとき、このカードの効果を発動する）",
       "trigger": {
-        "type": "enter_battle"
+        "type": "operation",
+        "timing": "rush"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-010::rashueriakaranir",
+          "keyword": "xg5::XG5-010::god_horn",
           "duration": "permanent"
         }
       ]

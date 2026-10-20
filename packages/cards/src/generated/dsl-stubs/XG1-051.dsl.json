@@ -28,11 +28,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enemy_resident_pick_hold",
+          "keyword": "xg1::XG1-051::zx_kick",
           "duration": "turn"
         }
       ]

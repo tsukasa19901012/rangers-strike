@@ -17,7 +17,8 @@ import {
   moveToBattle,
 } from "./testing/battleEntry";
 
-const standardNcCards = listStandardNcCards(getCardById);
+// 再録・プロモ（PR など）は legendDefinitions にないので、カード別スペック（cardSpec/PR-*）で確かめる。
+const standardNcCards = listStandardNcCards(getCardById).filter((entry) => legendDefinitions[entry.cardId] !== undefined);
 
 function enterAtCn(
   cardId: string,

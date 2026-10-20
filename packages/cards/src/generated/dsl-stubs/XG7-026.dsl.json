@@ -63,7 +63,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-026::randokonbiataku",
+          "keyword": "xg7::XG7-026::land_combi",
           "duration": "permanent"
         }
       ]

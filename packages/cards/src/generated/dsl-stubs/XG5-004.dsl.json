@@ -24,11 +24,10 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-004::ieroboru",
+          "keyword": "xg5::XG5-004::yellow_ball",
           "duration": "permanent"
         }
       ]

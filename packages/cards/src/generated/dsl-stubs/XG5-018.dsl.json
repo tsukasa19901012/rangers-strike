@@ -42,11 +42,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-018::andoku",
+          "keyword": "xg5::XG5-018::undock",
           "duration": "permanent"
         }
       ]

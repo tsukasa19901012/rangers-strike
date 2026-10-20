@@ -67,12 +67,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-051::raiodeiasu",
-          "duration": "turn"
+          "keyword": "xg7::XG7-051::lion",
+          "duration": "permanent"
         }
       ]
     }

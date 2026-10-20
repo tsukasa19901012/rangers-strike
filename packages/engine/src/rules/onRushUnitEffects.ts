@@ -1,5 +1,9 @@
+import { openXg1cMantisOnEnemyRush } from "./xg1/xg1cEffects";
+import { applyXg2OnUnitRushed } from "./xg2/xg2Effects";
 import { openRm2MotoSharian } from "./rm/rm2Effects";
 import { openRm1OnUnitRushed } from "./rm/rm1Effects";
+import { consumeXg7NextCardCost, markXg7RushOrigin, openXg7BeforeOnRush, openXg7OnUnitRushed } from "./xg7/xg7Effects";
+import { openXg3OnUnitRushed } from "./xg3/xg3Effects";
 import { openRk8JaguarOnEnemyRush } from "./rk/rk8UnitEffects";
 import { openRk11UndeadMasterOnRush } from "./rk/rk11UnitEffects";
 import { openRk12NegatarosOnRush } from "./rk/rk12UnitEffects";
@@ -26,6 +30,7 @@ import {
   superRadarAppliesOnRush,
 } from "./legend3/rushEffects";
 import { ON_RUSH_EFFECTS } from "./rushEffects";
+import { openXg6OnHandRush } from "./xg6/xg6Hooks";
 import {
   resolveNoteOtherOnRushEffects,
 } from "./noteOtherRushEffects";
@@ -196,7 +201,14 @@ export function applyOnRushUnitEffects(
   if (craneOn && !nextState.pendingEffectChoice) {
     const window = rk10CraneBeforeOnRush(nextState, ownerPlayerId, instanceId, found.card.cardId, phasePlayerId);
     if (window) return { state: window, logs };
+    // XG7-059【ゲームスタート……】（実行する前に出して無効にする。rules/xg7/xg7Effects.ts）。
+    const xg7Window = openXg7BeforeOnRush(nextState, ownerPlayerId, instanceId, found.card.cardId, phasePlayerId);
+    if (xg7Window) return { state: xg7Window, logs };
   }
+  // XG7-054 ◎2（次に手札から使うカードの必要パワー-3）は手札からラッシュしたら消える（rules/xg7/xg7Effects.ts）。
+  if (options.fromHandRush === true && zone === "rush") nextState = consumeXg7NextCardCost(nextState, ownerPlayerId);
+  // 「手札からラッシュしたとき」の判定のため、効果で出たユニットに印を付ける（rules/xg7/xg7Effects.ts）。
+  nextState = markXg7RushOrigin(nextState, instanceId, options.viaEffect === true);
   const beforeDslRush = nextState;
   const dslRush = suppressSelf
     ? { state: nextState, logs: [] as string[], handled: true }
@@ -209,7 +221,7 @@ export function applyOnRushUnitEffects(
         triggerType: "on_rush",
         logAction: "named_effect",
       });
-  nextState = dslRush.state;
+  nextState = markXg7RushOrigin(dslRush.state, instanceId, false);
   logs.push(...dslRush.logs);
   // RK-208: 任意の「ラッシュしたとき」の最初の選択に、答えたら（発動を宣言したら）クレインの窓を開く印を付ける。
   if (craneOn) nextState = rk10CraneWatch(beforeDslRush, nextState, ownerPlayerId, instanceId, found.card.cardId);
@@ -300,6 +312,11 @@ export function applyOnRushUnitEffects(
     nextState = applySet7AOnRush(nextState, ownerPlayerId, instanceId, phasePlayerId);
   }
 
+  // XG6-046【ゲキジョウバン】: 手札からラッシュしたとき（rules/xg6/xg6cEffects.ts）。
+  if (options.fromHandRush === true && !suppressSelf && zone === "rush") {
+    nextState = openXg6OnHandRush(nextState, ownerPlayerId, instanceId, phasePlayerId);
+  }
+
   // RS-124 超電子レーダー（「ラッシュしたとき」。戻すパワーを持ち主が選ぶ選択を開くことがあるので最後に処理する）。
   if (options.rushTriggerOrder !== "super_radar_first") {
     const radar = applySuperRadarOnRush(nextState, ownerPlayerId, instanceId, phasePlayerId);
@@ -334,6 +351,10 @@ export function applyPassiveRushTriggers(
   state = trySet9COnUnitRushed(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // RM-007 世界忍者戦（自軍ラッシュフェイズ中、自軍ユニットをラッシュしたとき。rules/rm/rm1Effects.ts）。
   state = openRm1OnUnitRushed(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // XG7-018【影武者】・XG7-020【影に向かいて影を斬り…】等（rules/xg7/xg7Effects.ts）。
+  state = openXg7OnUnitRushed(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // クロスギャザー ザ・Wインパクト XG3 の「自分が…をラッシュしたとき」（XG3-008 の※等。rules/xg3/xg3Effects.ts）。
+  state = openXg3OnUnitRushed(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   const rsEnemyRush = tryRsCatchallOnEnemyRush(state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   let next = tryDispatchOrderOnEnemyRush(rsEnemyRush.state, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // RS-490 三の槍マンマルバ幼体【予言】（rules/legend1/set7NamedEffectsC.ts）。
@@ -350,6 +371,10 @@ export function applyPassiveRushTriggers(
   next = openRk12NegatarosOnRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   // RK-293 センチピードオルフェノク【捕縛する鞭】（敵軍ターン中、敵軍ユニットがラッシュされたとき。rules/rk/rk14UnitEffects.ts）。
   next = openRk14WhipOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // XG1-055 マンティスロード【血に飢えた予言者】（手札にある間。rules/xg1/xg1cEffects.ts）。
+  next = openXg1cMantisOnEnemyRush(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
+  // XG2-063 仮面ライダー響鬼【鬼幻術・鬼火】（自軍バトルフェイズ中、敵軍ユニットがラッシュされたとき。rules/xg2/xg2dEffects.ts）。
+  next = applyXg2OnUnitRushed(next, rusherPlayerId, rushedInstanceId, phasePlayerId);
   return { state: next, logs: rsEnemyRush.logs };
 }
 

@@ -1,8 +1,13 @@
+import { collectXg1TurnEndQueue, openXg1TurnEndEntry } from "./xg1/xg1cEffects";
+import { collectXg6TurnEndQueue, openXg6TurnEndEntry } from "./xg6/xg6Hooks";
 import { clearRk8SeizedFor, collectRk8TurnEndQueue, openRk8TurnEndEntry } from "./rk/rk8UnitEffects";
+import { applyXg2TurnEnd } from "./xg2/xg2Effects";
 import { collectRk10TurnEndQueue, openRk10TurnEndEntry } from "./rk/rk10UnitEffects";
 import { collectRk11TurnEndQueue, openRk11TurnEndEntry } from "./rk/rk11UnitEffects";
 import { collectRk13TurnEndQueue, openRk13TurnEndEntry } from "./rk/rk13UnitEffects";
 import { collectRk16TurnEndQueue, openRk16TurnEndEntry } from "./rk/rk16UnitEffects";
+import { collectXg7TurnEndQueue, openXg7TurnEndEntry } from "./xg7/xg7Effects";
+import { collectXg3TurnEndQueue, openXg3TurnEndEntry } from "./xg3/xg3Effects";
 import { collectOtherLinesTurnEndQueue, openOtherLinesTurnEndEntry } from "./legend1/otherLinesNamedEffects";
 import { applyRk5TurnEndDestroy, collectRk5TurnEndQueue, openRk5TurnEndEntry } from "./rk/rk5UnitEffects";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
@@ -25,12 +30,14 @@ import { applyRocketBoosterEndTurnRushReturn } from "./rocketBooster";
 import { applyKeywordTurnEndEffects, clearEnemyTurnDamageFlag } from "./keywordGapRuntime";
 import { applyGegeruTurnEnd } from "./residentOps";
 import { applyTempDiscardAtTurnEnd } from "./riderKickEffects";
+import { collectXg4TurnEndQueue, openXg4TurnEndEntry } from "./xg4/xg4Effects";
 import {
   applyDragonHarleyTurnEnd,
   applyElectroBeamTurnEnd,
   applyOrochiTurnEnd,
 } from "./errataCardEffects";
 import { applyUnitLeave } from "./pendingChoices";
+import { collectPromoTurnEndQueue, openPromoTurnEndEntry } from "./promo/promoRegistry";
 import { wingPentactUnitsToDestroy } from "./namedUnitEffects";
 
 function shuffleDeck(deck: CardInstance[]): CardInstance[] {
@@ -373,6 +380,60 @@ export function resolveTurnEndingEffectsImpl(
     const [entry, ...rest] = progress.rk16Queue!;
     progress = { ...progress, rk16Queue: rest };
     nextState = openRk16TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // XG7-041 ※（除外）・XG7-042【ライダー大戦の世界】の「自分がターンを終えるとき」（rules/xg7/xg7Effects.ts）。
+  if (!progress.xg7Queue) progress = { ...progress, xg7Queue: collectXg7TurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.xg7Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.xg7Queue!;
+    progress = { ...progress, xg7Queue: rest };
+    nextState = openXg7TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // XG1-052【ファイヤーストームアタック】（相手がターンを終えるとき）・XG1-053（自分がターンを終えるとき BP6000 以上なら撃破）（rules/xg1/xg1cEffects.ts）。
+  if (!progress.xg1Queue) progress = { ...progress, xg1Queue: collectXg1TurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.xg1Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.xg1Queue!;
+    progress = { ...progress, xg1Queue: rest };
+    nextState = openXg1TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // クロスギャザー ザ・ギガンティックタイタン XG6-005・XG6-011 の「ターン終了時」「ターンを終えるとき」（rules/xg6/xg6Hooks.ts）。
+  if (!progress.xg6Queue) progress = { ...progress, xg6Queue: collectXg6TurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.xg6Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.xg6Queue!;
+    progress = { ...progress, xg6Queue: rest };
+    nextState = openXg6TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // クロスギャザー ザ・ジェットアクセル XG4-031・XG4-039 の「自分がターンを終えるとき」（rules/xg4/xg4Effects.ts）。
+  if (!progress.xg4Queue) progress = { ...progress, xg4Queue: collectXg4TurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.xg4Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.xg4Queue!;
+    progress = { ...progress, xg4Queue: rest };
+    nextState = openXg4TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // XG2-042【ファイナルアタックライド】・XG2-055 変身一発で出したユニット（rules/xg2/xg2cEffects.ts）。
+  if (!progress.xg2Done) {
+    progress = { ...progress, xg2Done: true };
+    nextState = applyXg2TurnEnd(nextState, endingPlayerId);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // クロスギャザー ザ・Wインパクト XG3 の「自分がターンを終えるとき」（XG3-003・XG3-045・XG3-095 の置き換え等。rules/xg3/xg3Effects.ts）。
+  if (!progress.xg3Queue) progress = { ...progress, xg3Queue: collectXg3TurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.xg3Queue ?? []).length > 0) {
+    const [entry, ...rest] = progress.xg3Queue!;
+    progress = { ...progress, xg3Queue: rest };
+    nextState = openXg3TurnEndEntry(nextState, endingPlayerId, entry!);
+    if (turnEndBlocked(nextState)) return save(nextState);
+  }
+  // プロモーションカードの「ターンを終えるとき」（XP-029【まだよ…】。rules/promo/promoRegistry.ts）。
+  if (!progress.promoQueue) progress = { ...progress, promoQueue: collectPromoTurnEndQueue(nextState, endingPlayerId) };
+  while ((progress.promoQueue ?? []).length > 0) {
+    const [entry, ...rest] = progress.promoQueue!;
+    progress = { ...progress, promoQueue: rest };
+    nextState = openPromoTurnEndEntry(nextState, endingPlayerId, entry!);
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   if (!progress.exodusOrderAsked) {

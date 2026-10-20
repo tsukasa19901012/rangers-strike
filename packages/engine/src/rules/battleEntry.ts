@@ -9,6 +9,7 @@ import { rk8KaiserBmOnEntry } from "./rk/rk8UnitEffects";
 import { rk9NewNigoOnEntry } from "./rk/rk9UnitEffects";
 import { rk11IbukiOnEntry } from "./rk/rk11UnitEffects";
 import { rm3GunGibsonOnEntry } from "./rm/rm3Effects";
+import { xg6TeddyComboOnEntry } from "./xg6/xg6Hooks";
 
 export function riderHasRidingComboOnRideOff(cardId: string): boolean {
   return !!getRidingComboEffect(cardId);
@@ -23,6 +24,8 @@ export function shouldPromptRideOffChoice(
     (c) => c.instanceId === entry.instanceId,
   );
   if (!unit?.mountedOnInstanceId) return false;
+  // XG7-017【マッハ全開！】: このターン、これはライドオフできない（rules/xg7/xg7aEffects.ts）。
+  if (unit.xg7Turn?.noRideOff) return false;
   // RS-506【バスオンミサイル】: 次の相手ターン、敵軍ユニットはライドオフできない（ライドしたまま進む）。
   return !rideOffBlockedBySet7D(state, entry.playerId);
 }
@@ -90,7 +93,9 @@ export function openBattleEntryOrRideOffChoice(
       rk11IbukiOnEntry(state, entry.playerId, entry.instanceId) ??
       // RM-045 ガンギブソン ※: これからコンビネーションする「メカ」の RC の S ユニットは、ライドせずに出ても RC の効果を発動する
       // （ユーザー決定 2026-10-19。rules/rm/rm3Effects.ts）。
-      rm3GunGibsonOnEntry(state, entry.playerId, entry.instanceId);
+      rm3GunGibsonOnEntry(state, entry.playerId, entry.instanceId) ??
+      // XG6-045 テディ ※: これからコンビネーションする「仮面ライダーNEW電王SF」は、ライドオフしなくても RC を発動する（rules/xg6/xg6cEffects.ts）。
+      xg6TeddyComboOnEntry(state, entry.playerId, entry.instanceId);
     if (rc) return afterEnterBattle(rc, entry);
   }
   if (shouldPromptRideOffChoice(state, entry)) {

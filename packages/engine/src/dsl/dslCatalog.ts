@@ -177,12 +177,28 @@ export function shouldUseDslOperation(
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rk9::"))) return true;
   // スペシャルメタルエディション RM-001〜RM-021（rm1:: のカード固有の効果。本文の再録から読む既存の効果より優先。rules/rm/rm1Effects.ts）。
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rm1::"))) return true;
+  // クロスギャザー ザ・ギガンティックタイタン XG6（xg6::。rules/xg6/xg6Hooks.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("xg6::"))) return true;
+  // クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102（xg4:: のカード固有の効果。rules/xg4/xg4Effects.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("xg4::"))) return true;
+  // プロモーションカード（promo::。rules/promo）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("promo::"))) return true;
   // RM-022〜RM-042（rm2::。rules/rm/rm2Effects.ts）。
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rm2::"))) return true;
   // RM-043〜RM-062（rm3::。rules/rm/rm3Effects.ts）。
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("rm3::"))) return true;
+  // クロスギャザー XG5-001〜XG5-096（xg5::。rules/xg5/xg5Effects.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("xg5::"))) return true;
+  // XG7-001〜XG7-068（xg7::。rules/xg7/xg7Effects.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("xg7::"))) return true;
+  // クロスギャザー ザ・Wインパクト XG3-002〜XG3-103（xg3::。rules/xg3/xg3Effects.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("xg3::"))) return true;
   // ベルトコレクション BK-001〜BK-019（bk1::。rules/bk/bk1Effects.ts）。
   if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("bk1::"))) return true;
+  // クロスギャザー XG1-001〜XG1-100（xg1::。rules/xg1/xg1Effects.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("xg1::"))) return true;
+  // クロスギャザー XG2（xg2::。rules/xg2/xg2Effects.ts）。
+  if (effect.effects?.some((p) => p.type === "grant_keyword" && typeof p.keyword === "string" && p.keyword.startsWith("xg2::"))) return true;
   const wiredId = getCardEffect(cardId)?.effectId;
   if (wiredId && isOperationImplemented(wiredId)) return false;
   return true;

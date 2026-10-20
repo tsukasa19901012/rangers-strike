@@ -72,8 +72,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-055::konbochienji",
-          "duration": "turn"
+          "keyword": "xg6::XG6-055::combo_change",
+          "duration": "permanent"
         }
       ]
     }

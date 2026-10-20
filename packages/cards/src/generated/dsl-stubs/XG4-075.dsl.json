@@ -40,8 +40,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG4-075::koregaerianiarug",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-075::note",
+          "duration": "turn"
         }
       ]
     },
@@ -56,7 +56,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-075::noe7949f",
+          "keyword": "xg4::XG4-075::life",
           "duration": "turn"
         }
       ]

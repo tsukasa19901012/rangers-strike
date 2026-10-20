@@ -6,6 +6,7 @@ import { isSmallUnit } from "../core/catalog";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { playerHasAllyWithLeadOnField } from "./callLead";
+import { xg2FusionOrNamedCondition, xg2HasFusionOrNamedCondition, xg2NameContainsGate } from "./xg2/xg2Fields";
 
 const CONDITION_CHANGE =
   /※このカードの追加条件は、(.+?)の?とき、次のように変更される(?:⇒|→)\s*(.+?)(?:。|\s*【|$)/;
@@ -75,6 +76,19 @@ function rushConditionGateMet(
     return count >= Number(min);
   }
 
+  // 「自軍捨札にカテゴリを2つ以上持つSユニットのカードが5枚以上ある」（XG1-019 ターボマシン atwiki/page-1647）。
+  const multiCategoryDiscard = gateText.match(/^自軍捨札にカテゴリを(\d+)つ以上持つ(S|M|L)?ユニットのカードが(\d+)枚以上(?:ある)?$/);
+  if (multiCategoryDiscard) {
+    const [, minCats, size, min] = multiCategoryDiscard;
+    const count = countDiscardUnitCardsMatching(player, state.definitions, (cardId) => {
+      const def = state.definitions[cardId];
+      if (size && def?.size !== size) return false;
+      const cats = Array.isArray(def?.category) ? def.category : def?.category ? [def.category] : [];
+      return cats.length >= Number(minCats);
+    });
+    return count >= Number(min);
+  }
+
   // 「特徴「炎神」を持つオモテ向きの自軍パワーが12枚以上ある」（RS-663・RS-664 atwiki/page-1502・1494）。
   const faceUpPowerFeature = gateText.match(/^特徴「([^」]+)」を持つオモテ向きの自軍パワーが(\d+)枚以上(?:ある)?$/);
   if (faceUpPowerFeature) {
@@ -84,6 +98,10 @@ function rushConditionGateMet(
     ).length;
     return count >= Number(min);
   }
+
+  // 「カード名に「気伝武人」を含む自軍ユニットがある」（XG2-016 天空気殿 atwiki/page-1792。rules/xg2/xg2Fields.ts）。
+  const xg2Gate = xg2NameContainsGate(state, playerId, gateText);
+  if (xg2Gate !== null) return xg2Gate;
 
   return false;
 }
@@ -100,14 +118,15 @@ function parseAlternateConditionText(text: string): RushAdditionalCondition | un
   }
 
   // 「特徴「母艦」を持つ自軍ユニットを1体捨札にする」（RS-440 バトルフィーバーロボ（2nd）atwiki/page-780）。
-  const featureDiscard = text.match(/^特徴「([^」]+)」を持つ自軍(S|M|L)?ユニットを(\d+)体捨札にする$/);
+  // 「特徴「イエロー」を持つ自軍Sユニット1体を捨札にする」（XG6-019 ダイボウケン atwiki/page-2328）も同じ。
+  const featureDiscard = text.match(/^特徴「([^」]+)」を持つ自軍(S|M|L)?ユニット(?:を(\d+)体|(\d+)体を)捨札にする$/);
   if (featureDiscard) {
     return {
       conditionId: "discard_feature_unit",
       text,
       requiredFeature: featureDiscard[1],
       ...(featureDiscard[2] ? { requiredSize: featureDiscard[2] as "S" | "M" | "L" } : {}),
-      unitCount: Number(featureDiscard[3]),
+      unitCount: Number(featureDiscard[3] ?? featureDiscard[4]),
     };
   }
 
@@ -120,6 +139,18 @@ function parseAlternateConditionText(text: string): RushAdditionalCondition | un
       requiredFeature: originalFeatureDiscard[1],
       ...(originalFeatureDiscard[2] ? { requiredSize: originalFeatureDiscard[2] as "S" | "M" | "L" } : {}),
       unitCount: Number(originalFeatureDiscard[3]),
+    };
+  }
+
+  // 「自軍ゾーンのオモテ向きのカードからSユニットのカードを1枚選び捨札にする」（XG1-019 ターボマシン atwiki/page-1647）。
+  // ゾーン（パワーゾーン・コマンドゾーン）のカードを捨札にする型（discard_command_card。rules/zordExtended.ts が文言で絞る）。
+  const zoneFaceUpDiscard = text.match(/^自軍ゾーンのオモテ向きのカードから(S|M|L)?ユニットのカードを(\d+)枚選び捨札にする$/);
+  if (zoneFaceUpDiscard) {
+    return {
+      conditionId: "discard_command_card",
+      text,
+      ...(zoneFaceUpDiscard[1] ? { requiredSize: zoneFaceUpDiscard[1] as "S" | "M" | "L" } : {}),
+      unitCount: Number(zoneFaceUpDiscard[2]),
     };
   }
 
@@ -174,10 +205,14 @@ export function withEffectiveRushConditionDefinitions(state: GameState): GameSta
   for (const pid of order) {
     for (const card of state.players[pid].hand) {
       const current = state.definitions[card.cardId] as OverridableDefinition | undefined;
-      if (!current?.text || !hasConditionChangeText(current.text)) continue;
+      // XG2-012・XG2-017「自軍合体ユニットまたは自軍「X」1体を捨札にする」（rules/xg2/xg2Fields.ts）。
+      const xg2Alt = !!current && xg2HasFusionOrNamedCondition(current);
+      if (!current?.text || (!hasConditionChangeText(current.text) && !xg2Alt)) continue;
       const { rushAdditionalConditionOverride: previous, ...original } = current;
       const base = resolveRushAdditionalCondition(card.cardId, original as CardDefinition);
-      const effective = effectiveRushAdditionalCondition(state, pid, card.cardId, original as CardDefinition);
+      const effective = xg2Alt
+        ? (xg2FusionOrNamedCondition(state, pid, card, original as CardDefinition) ?? base)
+        : effectiveRushAdditionalCondition(state, pid, card.cardId, original as CardDefinition);
       const desired = effective && JSON.stringify(effective) !== JSON.stringify(base) ? effective : undefined;
       if (JSON.stringify(desired) === JSON.stringify(previous)) continue;
       patched ??= { ...state.definitions };

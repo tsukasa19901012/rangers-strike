@@ -29,11 +29,10 @@
       "trigger": {
         "type": "on_destroy"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "on_destroy_deploy_named_to_rush::カバドス",
+          "keyword": "xg5::XG5-089::kabados",
           "duration": "permanent"
         }
       ]
@@ -43,13 +42,12 @@
       "name": "マサカリホーク",
       "text": "自軍ターン中、このユニットはBP+3000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-089::masakarihoku",
+          "keyword": "xg5::XG5-089::masakari_hawk",
           "duration": "permanent"
         }
       ]

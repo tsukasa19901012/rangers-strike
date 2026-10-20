@@ -27,7 +27,9 @@ export type JointRPartnerSpec =
   /** 「これがカード名に「X」または「Y」を含むユニットからコンビネーションするとき」（RS-672 ゴローダーGT）。 */
   | { kind: "name_contains"; names: string[] }
   /** 「これが「X」か、特徴「Y」を持つLユニットからコンビネーションするとき」— どれか1つを満たせばよい（RS-651）。 */
-  | { kind: "any_of"; specs: JointRPartnerSpec[] };
+  | { kind: "any_of"; specs: JointRPartnerSpec[] }
+  /** 「これがSユニットからコンビネーションするとき」（XG4-089 仮面ライダーW・JJ【切札の左半身】atwiki/page-2101）。 */
+  | { kind: "s_unit" };
 
 const CATEGORY_TOKEN = /^(DA|WB|ET|OT|MA)$/;
 
@@ -163,6 +165,10 @@ function parseJointRPartnerFromText(text: string): JointRPartnerSpec | null {
     return { kind: "l_size_same_category" };
   }
 
+  if (/これがSユニットからコンビネーション/.test(text)) {
+    return { kind: "s_unit" };
+  }
+
   const dualFeatS = text.match(/これが特徴「([^」]+)」と「([^」]+)」を持つSユニットから/);
   if (dualFeatS?.[1] && dualFeatS[2]) {
     return {
@@ -265,6 +271,8 @@ export function matchesJointRPartnerSpec(
       return leftPartner.type === "unit" && spec.names.some((n) => (leftPartner.name ?? "").includes(n));
     case "any_of":
       return spec.specs.some((inner) => matchesJointRPartnerSpec(inner, rUnit, leftPartner));
+    case "s_unit":
+      return leftPartner.type === "unit" && leftPartner.size === "S";
     default:
       return false;
   }

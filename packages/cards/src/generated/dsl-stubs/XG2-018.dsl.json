@@ -32,12 +32,9 @@
       },
       "effects": [
         {
-          "type": "modify_bp",
-          "target": {
-            "type": "trigger_source"
-          },
-          "amount": 3000,
-          "duration": "turn"
+          "type": "grant_keyword",
+          "keyword": "xg2::XG2-018::rairaiju",
+          "duration": "permanent"
         }
       ]
     }

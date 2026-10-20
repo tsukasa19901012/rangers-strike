@@ -22,13 +22,13 @@
       "name": "バーニングライダーパンチ",
       "text": "これは、アタックしてバトルに勝つたび、可能なら追加でアタックする。ただし、これはバトルを終えるたび、このターン、BP+500され、自分がターンを終えるときBP6000以上なら撃破される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-053::baninguraidapanchi",
+          "keyword": "xg1::XG1-053::burning_rider_punch",
           "duration": "permanent"
         }
       ]

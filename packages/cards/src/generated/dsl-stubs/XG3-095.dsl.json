@@ -49,8 +49,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-095::biritoshoku",
-          "duration": "turn"
+          "keyword": "xg3::XG3-095::billit_shock",
+          "duration": "permanent"
         }
       ]
     }

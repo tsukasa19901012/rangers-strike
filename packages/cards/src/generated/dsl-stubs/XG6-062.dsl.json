@@ -27,13 +27,13 @@
       "id": "unnamed_e280bbe38193e3828ce3818c",
       "text": "※これがユニットでなくなったとき、自軍捨札から「要塞ワンセブン」のカードを１枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-062::koregayunitodena",
+          "keyword": "xg6::XG6-062::fortress",
           "duration": "permanent"
         }
       ]
@@ -45,11 +45,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-062::gurabitongeki",
+          "keyword": "xg6::XG6-062::graviton",
           "duration": "permanent"
         }
       ]

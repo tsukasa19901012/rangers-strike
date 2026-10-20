@@ -52,12 +52,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-046::goribagon",
-          "duration": "turn"
+          "keyword": "xg7::XG7-046::goribagon",
+          "duration": "permanent"
         }
       ]
     }

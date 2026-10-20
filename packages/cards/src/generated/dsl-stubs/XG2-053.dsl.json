@@ -25,12 +25,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-053::ta",
-          "duration": "turn"
+          "keyword": "xg2::XG2-053::wrong_hero",
+          "duration": "permanent"
         }
       ]
     }

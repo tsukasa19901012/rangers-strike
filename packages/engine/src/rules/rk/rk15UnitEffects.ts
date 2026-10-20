@@ -827,7 +827,7 @@ function openMonsterFever(state: GameState, playerId: PlayerId, self: CardInstan
     .map((c) => c.instanceId);
   if (ids.length === 0) return state;
   return openOrQueue(state, {
-    ...base({ playerId, phasePlayerId: playerId, sourceInstanceId: self.instanceId }, "RK-314"),
+    ...base({ playerId, phasePlayerId: playerId, sourceInstanceId: self.instanceId }, self.cardId),
     effectId: FEVER_EFFECT_ID,
     kind: "select_hand",
     validInstanceIds: ids,

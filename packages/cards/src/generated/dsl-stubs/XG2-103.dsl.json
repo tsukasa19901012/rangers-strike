@@ -22,39 +22,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "condition": {
-        "type": "has_target",
-        "target": {
-          "type": "zone",
-          "zone": "battle",
-          "owner": "opponent",
-          "filter": {
-            "size": "S"
-          }
-        }
-      },
       "optional": false,
       "effects": [
         {
-          "type": "choose",
-          "kind": "select_unit",
-          "valid": {
-            "type": "zone",
-            "zone": "battle",
-            "owner": "opponent",
-            "filter": {
-              "size": "S"
-            }
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "hold_command",
-              "target": {
-                "type": "trigger_source"
-              }
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg2::XG2-103::drill",
+          "duration": "permanent"
         }
       ]
     }

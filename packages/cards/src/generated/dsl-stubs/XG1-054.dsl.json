@@ -31,11 +31,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-054::shainingukariba",
+          "keyword": "xg1::XG1-054::shining_calibur",
           "duration": "turn"
         }
       ]

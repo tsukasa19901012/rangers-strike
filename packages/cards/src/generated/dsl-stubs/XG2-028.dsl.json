@@ -36,7 +36,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-028::mainasuenerugi",
+          "keyword": "xg2::XG2-028::minus_energy",
           "duration": "permanent"
         }
       ]

@@ -55,11 +55,10 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-039::buruchieku",
+          "keyword": "xg5::XG5-039::blue_check",
           "duration": "permanent"
         }
       ]

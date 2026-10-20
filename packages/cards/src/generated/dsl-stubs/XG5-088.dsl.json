@@ -20,13 +20,12 @@
       "name": "力まかせ",
       "text": "これがバトルするとき、そのバトルは本来のBPで行う。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-088::chikaramakase",
+          "keyword": "xg5::XG5-088::chikara_makase",
           "duration": "permanent"
         }
       ]

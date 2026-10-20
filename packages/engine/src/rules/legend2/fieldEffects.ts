@@ -1,5 +1,6 @@
 import {
   playerHasNamedEffectInZones,
+  isSameCardIdentity,
 } from "@rangers-strike/cards";
 import { rk3SpFloor } from "../rk/rk3UnitEffects";
 import { activeNamedEffect } from "../ncGatedEffects";
@@ -108,12 +109,12 @@ export function legend2EffectiveSp(
   }
 
   /** RS-073 バルシールド: 自軍ダメージ6点で SP2。 */
-  if (instance.cardId === "RS-073" && state.players[playerId].damage === 6) {
+  if (isSameCardIdentity(instance.cardId, "RS-073") && state.players[playerId].damage === 6) {
     sp = Math.max(sp, 2);
   }
 
   /** RS-078 闇の舞: 敵にレッドがいれば SP1。 */
-  if (instance.cardId === "RS-078") {
+  if (isSameCardIdentity(instance.cardId, "RS-078")) {
     const enemyId = playerId === "player1" ? "player2" : "player1";
     const hasRed = [...state.players[enemyId].rush, ...state.players[enemyId].battle].some(
       (c) => getDefinition(state.definitions, c.cardId)?.features?.includes("レッド"),

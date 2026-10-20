@@ -34,7 +34,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-007::ganmakanon",
+          "keyword": "xg2::XG2-007::gamma_cannon",
           "duration": "permanent"
         }
       ]

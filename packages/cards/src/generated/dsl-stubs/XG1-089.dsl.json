@@ -32,6 +32,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg1::XG1-089::police_rescue",
+          "duration": "turn"
         }
       ]
     }

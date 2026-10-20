@@ -20,13 +20,13 @@
       "id": "unnamed_e280bbe38193e381aee383a6",
       "text": "※このユニットからコンビネーションする「仮面ライダーNEW電王SF」は、ナンバーにRCを持っていればライドオフしなくてもその効果を発動できる。また、このコンビネーションが成立している間BP+2000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-045::konoyunitokarako",
+          "keyword": "xg6::XG6-045::field",
           "duration": "permanent"
         }
       ]
@@ -42,8 +42,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-045::noe58db1",
-          "duration": "turn"
+          "keyword": "xg6::XG6-045::danger",
+          "duration": "permanent"
         }
       ]
     }

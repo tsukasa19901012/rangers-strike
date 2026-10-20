@@ -40,10 +40,10 @@ describe("PR hash stub DSL", () => {
     expect(dslCatchallCardIds(docs)).toEqual([]);
   });
 
-  it("PR-005 uses rm/pr_fx or stable grant keyword", () => {
+  it("PR-005 uses the same grant keyword as RS-042 (reprint)", () => {
     const effect = docs.find((d) => d.id === "PR-005")?.effects?.[0];
     const kw = effect?.effects?.find((p) => p.type === "grant_keyword")?.keyword;
-    expect(kw).toMatch(/^pr_fx::PR-005::/);
+    expect(kw).toBe("pay_power_discard_5_for_sp3");
   });
 });
 

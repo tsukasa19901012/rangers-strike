@@ -40,11 +40,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-088::hadokushoka",
+          "keyword": "xg3::XG3-088::hardock_shocker",
           "duration": "permanent"
         }
       ]

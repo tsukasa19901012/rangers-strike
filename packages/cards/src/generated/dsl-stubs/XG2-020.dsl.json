@@ -42,12 +42,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-020::dane9878e",
-          "duration": "turn"
+          "keyword": "xg2::XG2-020::yagyu_eidan",
+          "duration": "permanent"
         }
       ]
     }

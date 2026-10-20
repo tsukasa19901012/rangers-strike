@@ -22,17 +22,17 @@
   },
   "effects": [
     {
-      "id": "ororapurazumashi",
+      "id": "val_shield",
       "name": "オーロラプラズマ返し",
       "text": "自軍ダメージが6点のとき、このユニットは次の能力を得る。⇒SP2",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "SP2",
-          "duration": "turn"
+          "keyword": "effect_card::RS-073::valshield",
+          "duration": "permanent"
         }
       ]
     }

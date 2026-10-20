@@ -1,4 +1,11 @@
 import { rm3EffectiveSp } from "../rm/rm3Fields";
+import { xg5EffectiveSp } from "../xg5/xg5Fields";
+import { xg7EffectiveSp } from "../xg7/xg7Fields";
+import { xg1EffectiveSp } from "../xg1/xg1Fields";
+import { xg6EffectiveSp } from "../xg6/xg6Fields";
+import { xg4EffectiveSp } from "../xg4/xg4Fields";
+import { xg2EffectiveSp } from "../xg2/xg2Fields";
+import { xg3EffectiveSp } from "../xg3/xg3Fields";
 import { rk8EffectiveSp } from "../rk/rk8UnitEffects";
 import { rk9EffectiveSp } from "../rk/rk9UnitEffects";
 import { rk10EffectiveSp } from "../rk/rk10UnitEffects";
@@ -38,6 +45,7 @@ import { set7DEffectiveSp } from "../legend1/set7NamedEffectsD";
 import { set8DEffectiveSp } from "../legend1/set8NamedEffectsD";
 import { set9CEffectiveSp } from "../legend1/set9NamedEffectsC";
 import { set9BEffectiveSp } from "../legend1/set9NamedEffectsB";
+import { promoSpFloor } from "../promo/promoHooks";
 import {
   sr003DiscardDinoBpBonus,
   sr003SpFloor,
@@ -285,6 +293,20 @@ function legend3EffectiveSpUncached(
   sp = rk16EffectiveSp(state, playerId, instance, sp);
   // RM-051 メガヘラクレス【メガビートフォーメーション】（自軍エリアに「ビートルーダー」があれば「SP1」。rules/rm/rm3Fields.ts）。
   sp = rm3EffectiveSp(state, playerId, instance, sp);
+  // XG5-051 仮面ライダーカブトHF ※・XG5-054【歩く完全ライダー図鑑】の「SP1」（rules/xg5/xg5Fields.ts）。
+  sp = xg5EffectiveSp(state, playerId, instance, sp);
+  // XG7-007【龍撃剣＆獣奏剣】（BP8000以上のとき SP1。rules/xg7/xg7Fields.ts）。
+  sp = xg7EffectiveSp(state, playerId, instance, sp);
+  // XG1-011・XG1-012・XG1-020 の「SP1」になる継続効果（rules/xg1/xg1Fields.ts）。
+  sp = xg1EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // XG6-021【激臨剣】の能力（BP20000以上のとき「SP2」。rules/xg6/xg6Fields.ts）。
+  sp = xg6EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // クロスギャザー ザ・ジェットアクセル XG4-001【黒十字ハリケーン】等（rules/xg4/xg4Fields.ts）。
+  sp = xg4EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // XG2-004 ファイブロボ【超次元ソード】（rules/xg2/xg2Fields.ts）。
+  sp = xg2EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // クロスギャザー ザ・Wインパクト XG3（XG3-011【ジークブラスター】等。rules/xg3/xg3Fields.ts）。
+  sp = xg3EffectiveSp(state, playerId, instance, sp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。
@@ -302,10 +324,14 @@ function legend3EffectiveSpUncached(
 
   sp = Math.max(sp, sr003SpFloor(state, playerId, instance));
   sp = Math.max(sp, srBigBatonSpFloor(state, playerId, instance));
+  // SX-005 の DA 等（rules/promo/promoHooks.ts）。
+  sp = Math.max(sp, promoSpFloor(state, playerId, instance));
 
   // XG2-052 ユナイトベント「…BP10000ごとにSP+1される」（ユナイトベントを下に重ねたターゲット）。
-  if ((instance.stackedCards ?? []).some((c) => c.cardId === "XG2-052" && !c.faceDown)) {
-    sp += Math.floor(effectiveBp(state, playerId, instance) / 10000);
+  // 2枚重ねたターゲットは BP10000 ごとに SP+2（atwiki/page-1761 Q7）。
+  const vents = (instance.stackedCards ?? []).filter((c) => c.cardId === "XG2-052" && !c.faceDown).length;
+  if (vents > 0) {
+    sp += vents * Math.floor(effectiveBp(state, playerId, instance) / 10000);
   }
   // RS-382 ビクトリーロボ【人の命は地球の未来】: このターン自軍捨札から手札に加えた S ユニットのカード1枚につき SP+1。
   // ナンバーを持たないカードの効果で、NC の成立とは関係しない（atwiki/page-541）。

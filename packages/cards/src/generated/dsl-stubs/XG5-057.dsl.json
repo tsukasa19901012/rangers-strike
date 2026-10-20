@@ -20,12 +20,12 @@
       "name": "ファイアランバス",
       "text": "これにライドしたユニットがある間、自分の手札からカードが1枚捨札に置かれるたび、次の効果を発動できる⇒捨札に置かれたカードの必要パワーの数字と同じ必要パワーの数字を持つ敵軍捨札を1枚選びゲームから除外する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-057::fuaiaranbasu",
+          "keyword": "xg5::XG5-057::fire_lambus",
           "duration": "permanent"
         }
       ]

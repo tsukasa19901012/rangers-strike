@@ -42,13 +42,18 @@
       "id": "unnamed_e280bbe789b9e5beb4e3808c",
       "text": "※特徴「サバイブ」を持つ自軍Sユニットは、RCを持っていなくてもこのビークルにライドすることができ、ライド中BP＋1500される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG4-056::sabaibuwotsusyun",
+          "keyword": "ride_without_rc_survive",
+          "duration": "permanent"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_bp_boost_1500",
           "duration": "permanent"
         }
       ]

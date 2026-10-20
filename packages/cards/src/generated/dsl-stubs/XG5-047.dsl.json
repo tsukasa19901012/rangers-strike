@@ -17,12 +17,11 @@
         "type": "operation",
         "timing": "rush"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-047::pawazonnodamejin",
-          "duration": "permanent"
+          "keyword": "xg5::XG5-047::kyuyu_soul",
+          "duration": "turn"
         }
       ]
     }

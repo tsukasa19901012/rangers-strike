@@ -20,13 +20,12 @@
       "name": "Vジェット",
       "text": "このビークルにライドしているユニットがモーフで置き換えられたとき、このビークルにライドしているユニットをラッシュエリアに戻してもよい。（ライドオフしない限り、ユニットとビークルは重ねたまま扱う）",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-046::vjieto",
+          "keyword": "xg1::XG1-046::v_jet",
           "duration": "permanent"
         }
       ]

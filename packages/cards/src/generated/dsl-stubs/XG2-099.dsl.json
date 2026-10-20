@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "on_destroy_deploy_named_to_rush::カメロック",
+          "keyword": "xg2::XG2-099::kamerock_return",
           "duration": "permanent"
         }
       ]
@@ -52,6 +52,11 @@
           "type": "grant_keyword",
           "keyword": "SP1",
           "duration": "turn"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "xg2::XG2-099::camera_zooka",
+          "duration": "permanent"
         }
       ]
     }

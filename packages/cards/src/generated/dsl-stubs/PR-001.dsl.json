@@ -19,11 +19,11 @@
   ],
   "effects": [
     {
-      "id": "akuserura",
+      "id": "bouken_javelin",
       "name": "アクセルラー",
       "text": "「SP1」これは特徴「メカ」をもつユニットにアタックするとき、BP＋4000される。",
       "trigger": {
-        "type": "on_attack"
+        "type": "nc"
       },
       "effects": [
         {
@@ -36,7 +36,7 @@
   ],
   "implementation": {
     "source": "dsl",
-    "handler": "interpreter",
-    "testGenerated": true
-  }
+    "handler": "interpreter"
+  },
+  "unnamedRules": []
 }

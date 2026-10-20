@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-060::koregakomandozon",
+          "keyword": "xg6::XG6-060::candroid",
           "duration": "permanent"
         }
       ]

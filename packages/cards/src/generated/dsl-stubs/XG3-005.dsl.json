@@ -58,7 +58,12 @@
       "partnerCardIds": [
         "RS-382",
         "XG3-008",
-        "XG3-007"
+        "XG3-007",
+        "RS-383",
+        "RS-384",
+        "RS-385",
+        "RS-386",
+        "RS-387"
       ],
       "partnerSlotCardIds": [
         [
@@ -68,6 +73,28 @@
           "XG3-008",
           "XG3-007"
         ]
+      ],
+      "partnerSlotAlternatives": [
+        {
+          "slot": 0,
+          "slots": [
+            [
+              "RS-383"
+            ],
+            [
+              "RS-384"
+            ],
+            [
+              "RS-385"
+            ],
+            [
+              "RS-386"
+            ],
+            [
+              "RS-387"
+            ]
+          ]
+        }
       ]
     }
   ],

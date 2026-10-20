@@ -47,8 +47,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-009::kyouryuumarue382ad",
-          "duration": "turn"
+          "keyword": "xg6::XG6-009::tenchi_issen",
+          "duration": "permanent"
         }
       ]
     }
@@ -68,6 +68,28 @@
         [
           "XG3-034"
         ]
+      ],
+      "partnerSlotAlternatives": [
+        {
+          "slot": 0,
+          "slots": [
+            [
+              "RS-680"
+            ],
+            [
+              "RS-681"
+            ],
+            [
+              "RS-682"
+            ],
+            [
+              "RS-683"
+            ],
+            [
+              "RS-684"
+            ]
+          ]
+        }
       ]
     }
   ],

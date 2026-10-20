@@ -71,8 +71,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-057::torakuro",
-          "duration": "turn"
+          "keyword": "xg6::XG6-057::tora_claw",
+          "duration": "permanent"
         }
       ]
     }

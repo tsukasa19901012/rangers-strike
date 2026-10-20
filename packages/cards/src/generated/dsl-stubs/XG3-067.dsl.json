@@ -21,7 +21,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_s_on_self_rush",
+          "keyword": "xg3::XG3-067::invisible",
           "duration": "permanent"
         }
       ]

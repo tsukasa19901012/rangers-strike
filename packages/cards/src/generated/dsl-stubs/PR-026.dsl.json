@@ -24,7 +24,7 @@
   },
   "effects": [
     {
-      "id": "recruit_dogikuruga_on_destroy",
+      "id": "recruit_named_e38389e382aee383bce383bb_on_destroy",
       "text": "※これが撃破されて捨札になったとき、自軍捨札に「ドギー・クルーガー」のカードがあれば1枚選び、自軍ラッシュエリアに出す。",
       "trigger": {
         "type": "nc"
@@ -69,9 +69,9 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "set8c::RS-572::d_sword_vega",
+          "duration": "turn"
         }
       ]
     }

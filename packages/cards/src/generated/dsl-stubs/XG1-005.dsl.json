@@ -28,8 +28,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-005::dorimugyarakushi",
-          "duration": "permanent"
+          "keyword": "xg1::XG1-005::dream_galaxy",
+          "duration": "turn"
         }
       ]
     }

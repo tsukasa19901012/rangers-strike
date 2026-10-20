@@ -36,14 +36,14 @@
       "name": "忠実な愛機",
       "text": "これが自軍バトルエリアの最後に並んでいる間、これ以外の自軍Sユニットはアタックされない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-058::nae5bfa0",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-058::aiki",
+          "duration": "turn"
         }
       ]
     }

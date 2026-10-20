@@ -35,13 +35,13 @@
       "name": "バリア",
       "text": "これにライドしている特徴「メカ」を持つユニットは、次の能力を得る⇒「レジスト」",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-099::baria",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-099::barrier",
+          "duration": "turn"
         }
       ]
     }

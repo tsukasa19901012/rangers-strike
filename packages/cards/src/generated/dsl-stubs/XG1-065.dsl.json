@@ -51,17 +51,12 @@
       "name": "アタックライド",
       "text": "特徴「ドラゴン」を持つユニットからコンビネーションするとき、このターン、これは次の能力を得る⇒「SP1」",
       "trigger": {
-        "type": "nc"
+        "type": "enter_battle"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "feature_combo_sp_doragon_sp1",
-          "duration": "turn"
-        },
-        {
-          "type": "grant_keyword",
-          "keyword": "SP1",
+          "keyword": "xg1::XG1-065::attack_ride",
           "duration": "turn"
         }
       ]

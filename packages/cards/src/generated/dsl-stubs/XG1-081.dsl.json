@@ -34,11 +34,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-081::pakonomamorugoshin",
+          "keyword": "xg1::XG1-081::paco_guardian",
           "duration": "permanent"
         }
       ]

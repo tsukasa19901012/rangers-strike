@@ -17,12 +17,11 @@
         "type": "operation",
         "timing": "rush"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-058::nokara5woomoteni",
-          "duration": "permanent"
+          "keyword": "xg5::XG5-058::royal_straight_flash",
+          "duration": "turn"
         }
       ]
     }

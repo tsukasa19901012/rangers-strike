@@ -41,11 +41,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-075::kingusubasutoendo",
+          "keyword": "xg1::XG1-075::kings_burst_end",
           "duration": "turn"
         }
       ]

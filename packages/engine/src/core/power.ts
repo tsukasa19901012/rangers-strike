@@ -7,6 +7,8 @@ import { godomDiscardPowerBonus } from "../rules/godomRushPay";
 import { flowerBombPowerCostOverride } from "../rules/legend1/coreGapEffects";
 import { cityGuardRushPowerSurcharge } from "../rules/batch06FieldEffects";
 import { hasTurnRuleModifier } from "./scopedModifiers";
+import { xg7NextCardCostReduction } from "../rules/xg7/xg7Fields";
+import { xg6CommandPowerBonus } from "../rules/xg6/xg6Fields";
 import { isRideShooterRushTarget } from "../rules/fieldActivatedAbilities";
 import {
   countMirrorMonstersOnField,
@@ -30,7 +32,10 @@ export function countOpponentMultiCategoryCommands(
   const enemy = state.players[opponent(playerId)];
   let count = 0;
   for (const cmd of enemy.command) {
-    if (isMultiCategoryCommand(state.definitions, cmd.cardId)) count += 1;
+    // XG6-013【未来の戦士達へ】: カテゴリが追加されてマルチカテゴリになり、敵軍パワーは追加で2増える（rules/xg6/xg6Fields.ts）。
+    const xg6 = xg6CommandPowerBonus(cmd.cardId);
+    if (xg6 > 0) count += xg6;
+    else if (isMultiCategoryCommand(state.definitions, cmd.cardId)) count += 1;
   }
   return count;
 }
@@ -70,7 +75,8 @@ export function effectivePowerCost(
   playerId: PlayerId,
   rawCost: number,
 ): number {
-  const reduced = rawCost - enemyPowerCostReduction(state, playerId);
+  // XG7-054 ◎2「このターン、次に自分が手札から使用するカードの必要パワーの数字は、3少なくなる。」（rules/xg7/xg7Fields.ts）。
+  const reduced = rawCost - enemyPowerCostReduction(state, playerId) - xg7NextCardCostReduction(state, playerId);
   return Math.max(0, reduced);
 }
 

@@ -1,3 +1,4 @@
+import { xg1cOnMorphSwap } from "../rules/xg1/xg1cEffects";
 import { filthyAirActive } from "../rules/legend1/otherLinesNamedEffects";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingMorph, PlayerId, PlayerState } from "../types/game";
@@ -24,6 +25,7 @@ import {
 } from "../rules/morphProcedure";
 import { applyOnRushUnitEffects, applyPassiveRushTriggers } from "../rules/onRushUnitEffects";
 import { rk16MorphDiscardCost, rk16MorphEntryHolds } from "../rules/rk/rk16Fields";
+import { xg2MorphSwapFromStack } from "../rules/xg2/xg2Effects";
 
 type FieldZone = "rush" | "battle";
 
@@ -121,6 +123,8 @@ export function applyMorphSwap(
   const player = state.players[defenderId];
   const morphFound = findMorphUnit(player, morphUnitInstanceId);
   const replacementFound = findReplacement(player, replacementInstanceId);
+  // XG2-070 ライドブッカー・ブックモードに重ねたカードと置き換える（rules/xg2/xg2dEffects.ts）。
+  if (morphFound && !replacementFound) return xg2MorphSwapFromStack(state, defenderId, morphUnitInstanceId, replacementInstanceId) ?? { error: "invalid_target" };
   if (!morphFound || !replacementFound) return { error: "invalid_target" };
 
   const morphDef = getDefinition(state.definitions, morphFound.card.cardId);
@@ -420,6 +424,8 @@ export function resolveMorphReplacementChoice(
     );
     nextState = rushEffects.state;
     extraLogs.push(...rushEffects.logs);
+    // XG1-046【Vジェット】: ライドしているユニットがモーフで置き換えられたとき（rules/xg1/xg1cEffects.ts）。
+    nextState = xg1cOnMorphSwap(nextState, defenderId, replacementInstanceId, morphPending.phasePlayerId);
   }
   const continuation = {
     pending: resolvedPending,

@@ -21,8 +21,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "stack_s_on_self_rush",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-006::dragon_armor",
+          "duration": "turn"
         }
       ]
     }

@@ -33,11 +33,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-028::supasateisentaisouru",
+          "keyword": "xg5::XG5-028::thirty_sentai_soul",
           "duration": "turn"
         }
       ]

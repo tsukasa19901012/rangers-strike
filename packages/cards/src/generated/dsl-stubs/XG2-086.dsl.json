@@ -68,7 +68,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-086::doramuganfuaiya",
+          "keyword": "xg2::XG2-086::drum_gun_fire",
           "duration": "permanent"
         }
       ]

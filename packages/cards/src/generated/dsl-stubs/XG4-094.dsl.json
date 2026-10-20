@@ -41,11 +41,11 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-094::bideobimugan",
+          "keyword": "xg4::XG4-094::video",
           "duration": "turn"
         }
       ]

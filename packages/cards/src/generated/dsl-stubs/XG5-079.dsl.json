@@ -39,11 +39,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-079::raidakado",
+          "keyword": "xg5::XG5-079::rider_card",
           "duration": "turn"
         }
       ]

@@ -58,12 +58,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-050::girususuteinga",
-          "duration": "turn"
+          "keyword": "xg2::XG2-050::gills_stinger",
+          "duration": "permanent"
         }
       ]
     }

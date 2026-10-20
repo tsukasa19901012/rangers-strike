@@ -1,4 +1,5 @@
 import { canUseKyouryuumaru } from "../rules/legend1/otherLinesNamedEffects";
+import { isXg3ZordUpVehicle } from "../rules/xg3/xg3Fields";
 import { mirrorWorldChoiceAffordable } from "../rules/mirrorWorldSelection";
 import { lionArmorAvailable } from "../rules/legend1/set6NamedEffects348";
 import { runWithStateRng } from "./rng";
@@ -147,19 +148,31 @@ import { canConfirmRk13Choice, isRk13ChoiceEffect } from "../rules/rk/rk13UnitEf
 import { canConfirmRk14Choice, isRk14ChoiceEffect } from "../rules/rk/rk14UnitEffects";
 import { canConfirmRk15Choice, isRk15ChoiceEffect } from "../rules/rk/rk15UnitEffects";
 import { canConfirmRk16Choice, isRk16ChoiceEffect } from "../rules/rk/rk16UnitEffects";
+import { canConfirmXg6Choice, isXg6ChoiceEffect, xg6HandActivations } from "../rules/xg6/xg6Hooks";
+import { canConfirmPromoChoice, isPromoChoiceEffect } from "../rules/promo";
+import { promoForcesAttack } from "../rules/promo/promoHooks";
 import { canConfirmRm1Choice, isRm1ActivatableResident, isRm1ChoiceEffect, isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "../rules/rm/rm1Effects";
+import { canConfirmXg4Choice, isXg4BattleCounterCard, isXg4ChoiceEffect, xg4BattleCounterConditionMet } from "../rules/xg4/xg4Effects";
 import { rm1ActsAsVehicle } from "../rules/rm/rm1Fields";
 import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "../rules/rm/rm2Effects";
 import { rm2ActsAsVehicle } from "../rules/rm/rm2Fields";
 import { canConfirmRm3Choice, isRm3ChoiceEffect } from "../rules/rm/rm3Effects";
+import { canConfirmXg5Choice, isXg5ChoiceEffect, listXg5HandActivations } from "../rules/xg5/xg5Effects";
+import { xg5ForcesAttack } from "../rules/xg5/xg5Fields";
+import { canConfirmXg7Choice, isXg7ActivatableResident, isXg7ChoiceEffect } from "../rules/xg7/xg7Effects";
+import { canConfirmXg3Choice, filterXg3LegalActions, isXg3ChoiceEffect } from "../rules/xg3/xg3Effects";
 import { isBk1ChoiceEffect } from "../rules/bk/bk1Effects";
+import { canConfirmXg1Choice, isXg1ChoiceEffect } from "../rules/xg1/xg1Effects";
+import { xg1ForcedAttackFilter } from "../rules/xg1/xg1cEffects";
+import { canActivateXg2Resident, canConfirmXg2Choice, isXg2ActivatableResident, isXg2BattleCounterCard, isXg2ChoiceEffect, xg2BattleCounterConditionMet } from "../rules/xg2/xg2Effects";
+import { xg2ActsAsVehicle, xg2ReturnToRushBlocked } from "../rules/xg2/xg2Fields";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { rk14ActsAsVehicle } from "../rules/rk/rk14Fields";
 import { rk10WolfBlocks } from "../rules/rk/rk10Fields";
 import { isRk1ActivatableResident, isRk1BattleCounterCard, isRk1ChoiceEffect, isRk1LeaveCounterCard, rk1BattleCounterConditionMet, rk1LeaveCounterConditionMet } from "../rules/rk/rk1NamedEffects";
 import { canConfirmSet9BChoice, isSet9BChoiceEffect } from "../rules/legend1/set9NamedEffectsB";
 import { withEffectiveRushConditionDefinitions } from "../rules/rushAdditionalCondition";
-import { needsHoldExtraCommand } from "../rules/zordExtended";
+import { needsHoldExtraCommand, needsZordExtendedMaterial } from "../rules/zordExtended";
 import { isSet7BConfirmableChoice } from "../rules/legend1/set7NamedEffectsB";
 import { magiTicketUsable, stageMagiTicket } from "../rules/legend1/set5NamedEffects";
 import { countAvailablePower } from "./power";
@@ -346,8 +359,9 @@ function appendBattleReactionActions(
       continue;
     }
     // RK-172 ルリオオカミ（自軍ユニットがアタックされたとき。rules/rk/rk9UnitEffects.ts）。
-    if (isRk9BattleCounterCard(card.cardId)) {
-      if (!rk9BattleCounterConditionMet(state, playerId, card.cardId, pending)) continue;
+    // XG2-061 リョクオオザル（敵軍ユニットにアタックされたとき。rules/xg2/xg2cEffects.ts）も同じ手順。
+    if (isRk9BattleCounterCard(card.cardId) || isXg2BattleCounterCard(card.cardId)) {
+      if (!rk9BattleCounterConditionMet(state, playerId, card.cardId, pending) && !xg2BattleCounterConditionMet(state, playerId, card.cardId, pending)) continue;
       if (!canPlayHandCounter(state, playerId, card.instanceId)) continue;
       appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
       if (canExecuteHandCounter(state, playerId, card.instanceId)) {
@@ -363,6 +377,14 @@ function appendBattleReactionActions(
       if (canExecuteHandCounter(state, playerId, card.instanceId)) {
         actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
       }
+      continue;
+    }
+    // クロスギャザー ザ・ジェットアクセル XG4-021 カラクリマント等（rules/xg4/xg4Effects.ts）。
+    if (isXg4BattleCounterCard(card.cardId)) {
+      if (!xg4BattleCounterConditionMet(state, playerId, card.cardId, pending)) continue;
+      if (!canPlayHandCounter(state, playerId, card.instanceId)) continue;
+      appendCounterCategoryPaymentActions(state, playerId, card.instanceId, actions);
+      if (canExecuteHandCounter(state, playerId, card.instanceId)) actions.push({ type: "play_counter", playerId, instanceId: card.instanceId });
       continue;
     }
     // RK-004 ギギの腕輪・RK-009 二人の世紀王（自軍Sユニットが敵軍Sユニットにアタックされたとき。rules/rk/rk1NamedEffects.ts）。
@@ -809,6 +831,11 @@ function appendActivateResidentOperationActions(
       }
       continue;
     }
+    // XG2-019 知恵の樹モーク（自軍バトルフェイズ。rules/xg2/xg2Effects.ts）。
+    if (isXg2ActivatableResident(card.cardId)) {
+      if (canActivateXg2Resident(state, playerId, card)) actions.push({ type: "activate_resident_operation", playerId, operationInstanceId: card.instanceId });
+      continue;
+    }
     if (state.phase !== "rush") continue;
     const wired = getCardEffect(card.cardId);
     if (wired?.effectId === "shiron_light" || wired?.effectId === "hidora_egg") {
@@ -819,6 +846,8 @@ function appendActivateResidentOperationActions(
       card.cardId !== "RK-249" &&
       !isRk1ActivatableResident(card.cardId) &&
       !isRm1ActivatableResident(card.cardId) &&
+      // XG7-039 GOD SPEED LOVE（rules/xg7/xg7Effects.ts）。
+      !isXg7ActivatableResident(card.cardId) &&
       listResidentActivationEffects(card.cardId).length === 0
     ) {
       continue;
@@ -856,6 +885,14 @@ function appendActivateFieldUnitAbilityActions(
   for (const unitInstanceId of listSet8BHandActivations(state, playerId)) {
     actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
   }
+  // XG5-006 ゴーグルロボ ※: 手札からこれを捨札にして発動する（rules/xg5/xg5aEffects.ts）。
+  for (const unitInstanceId of listXg5HandActivations(state, playerId)) {
+    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+  }
+  // XG6-009（手札から捨札にして発動）・XG6-014【英雄の遺産】（パワーゾーンから。rules/xg6/xg6Hooks.ts）。
+  for (const unitInstanceId of xg6HandActivations(state, playerId)) {
+    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+  }
 }
 
 function appendBattleDanceActions(
@@ -866,6 +903,8 @@ function appendBattleDanceActions(
   if (state.phase !== "battle") return;
   const player = state.players[playerId];
   if (!hasOperationEffect(player, "battle_dance", state.definitions)) return;
+  // XG2-006 キャリアベータ【ベータランチャー】（rules/xg2/xg2Fields.ts）。
+  if (xg2ReturnToRushBlocked(state, playerId)) return;
 
   const released = player.command.filter((c) => !c.commandHeld);
   if (released.length < 2) return;
@@ -1088,7 +1127,8 @@ function appendRushCategoryPaymentActions(
   };
 
   // rush_from_discard_count_*: コマンド/パワーからの自己ラッシュ
-  for (const zone of ["command", "power", "hand"] as const) {
+  // discard: XG2-054【土中からの奇襲】（rules/xg2/xg2cEffects.ts）。
+  for (const zone of ["command", "power", "hand", "discard"] as const) {
     for (const card of player[zone]) {
       if (canSelfRushFromZone(state, playerId, zone, card.instanceId)) {
         actions.push({
@@ -1109,7 +1149,8 @@ function appendRushCategoryPaymentActions(
     if (categories.length === 0) continue;
 
     if (
-      isUnit(definition) &&
+      // XG3-077 アギトトルネイダー（追加条件つきのビークル。rules/xg3/xg3Fields.ts）もユニットと同じ手順でラッシュする。
+      (isUnit(definition) || isXg3ZordUpVehicle(card.cardId) || (isVehicle(definition) && needsZordExtendedMaterial(state.definitions, card.cardId))) &&
       isZordUpCost(definition.powerCost) &&
       (rushAdditionalConditionApplies(state, playerId, card.cardId) ||
         requiresAllFusionPartners(card.cardId))
@@ -1218,6 +1259,8 @@ function appendRushCategoryPaymentActions(
             // RS-586【魔神に不足する物】・アブレラ【闇の取引】で必要パワーを補える分も含める。
             rushPowerBudget(state, playerId, player, definition),
             { ...state, playerId },
+            // 「必要パワーの数字が5以上の自軍パワーを4枚捨札にすれば」（zord_down_discard_power_cards。XG6-032）は複数の素材。
+            zord.zordMaterialInstanceIds,
           )
         ) {
           continue;
@@ -1261,6 +1304,8 @@ function appendRushCategoryPaymentActions(
         perRushPayment: true,
         callLeadKind: "call",
         emergencyRushCardId: card.cardId,
+        // ※特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる（XG6-050）は、ラッシュするユニットで決まる。
+        rushingCardId: isUnit(definition) ? card.cardId : undefined,
       });
       if (!options) continue;
       pushPayment(card.instanceId, undefined, options.prismSubstitute);
@@ -1309,11 +1354,56 @@ function appendEffectChoiceActions(
     return;
   }
 
+  if (isXg1ChoiceEffect(pending.effectId)) {
+    // クロスギャザー XG1-001〜XG1-100 の選択（rules/xg1/xg1Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    if (canConfirmXg1Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg2ChoiceEffect(pending.effectId)) {
+    // クロスギャザー XG2 の選択（rules/xg2/xg2Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg2Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    // 「これをホールドして発動できる」（XG2-075 ほか）はホールドの支払いでも発動できる。
+    if (needsEffectHoldPayment(pending, state) && buildEffectHoldPayment(state)) actions.push({ type: "initiate_command_payment", playerId, kind: "effect_hold", sourceInstanceId: pending.sourceInstanceId! });
+    return;
+  }
+
   if (isBk1ChoiceEffect(pending.effectId)) {
     // ベルトコレクション BK-001〜BK-019 の選択（rules/bk/bk1Effects.ts）。候補はモジュール側で絞り込み済み。
     for (const instanceId of choiceIds) {
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
+    return;
+  }
+
+  if (isXg5ChoiceEffect(pending.effectId)) {
+    // クロスギャザー XG5 の選択（rules/xg5/xg5Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg5Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg7ChoiceEffect(pending.effectId)) {
+    // クロスギャザー ザ・ベストパートナー XG7-001〜XG7-068 の選択（rules/xg7/xg7Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg7Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg3ChoiceEffect(pending.effectId)) {
+    // クロスギャザー ザ・Wインパクト XG3-002〜XG3-103 の選択（rules/xg3/xg3Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg3Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 
@@ -1332,6 +1422,29 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRm2Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg6ChoiceEffect(pending.effectId)) {
+    // クロスギャザー ザ・ギガンティックタイタン XG6 の選択（rules/xg6/xg6Hooks.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg6Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg4ChoiceEffect(pending.effectId)) {
+    // クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 の選択（rules/xg4/xg4Effects.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of pending.validInstanceIds) actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    if (canConfirmXg4Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isPromoChoiceEffect(pending.effectId)) {
+    // プロモーションカードの選択（rules/promo）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    if (canConfirmPromoChoice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 
@@ -1809,9 +1922,16 @@ function appendBattleEntryActions(
     });
   }
   // ルール: R-ATK-05 — ゴーマ宮で「可能ならアタックする」ユニットはアタックしなければならない。
-  const forcedAttack = gomaPalaceForcesAttack(state, playerId, pending.instanceId);
+  const forcedAttack =
+    gomaPalaceForcesAttack(state, playerId, pending.instanceId) ||
+    // XG5-031【ガゼル脚】: 可能なら敵軍ユニットにアタックする（rules/xg5/xg5Fields.ts）。
+    (xg5ForcesAttack(state, playerId, pending.instanceId) && actions.some((a) => a.type === "battle"));
   if (forcedAttack) return;
+  // SX-002【黒い瞳に映るもの】: アタックできるならストライクを選べない（何もしないことはできる。rules/promo/promoHooks.ts）。
+  const promoMustAttack =
+    actions.some((a) => a.type === "battle" && a.attackerInstanceId === pending.instanceId) && promoForcesAttack(state, playerId, unit);
   if (
+    !promoMustAttack &&
     canStrikeUnit(state.definitions, unit, state, playerId) &&
     !requiredDefenderId &&
     !battleActBlocked(player, unit, "strike") &&
@@ -1958,7 +2078,9 @@ export function getLegalActions(input: GameState): GameAction[] {
   const state = withEffectiveRushConditionDefinitions(input);
   // 追加条件の素材の特徴（効果・フェイズで追加された特徴）はこの状態で判定する（rules/zordFeatureContext.ts）。
   // 合法判定の中で乱数を使っても、状態の rngState から作るので決定的（core/rng.ts）。
-  const actions = runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCoreWithMemo(state))).value;
+  // XG1-053【バーニングライダーパンチ】: 追加でアタックできる間は、そのアタックしか選べない（rules/xg1/xg1cEffects.ts）。
+  // XG3-024・XG3-025（ラッシュフェイズのかわりに発動した後）の絞り込み（rules/xg3/xg3Effects.ts）。
+  const actions = filterXg3LegalActions(state, xg1ForcedAttackFilter(state, runWithStateRng(input, () => withZordFeatureContext(state, () => getLegalActionsCoreWithMemo(state))).value));
   if (cache && engineSideEffectCount() === sideEffectsBefore) {
     for (const action of actions) deepFreeze(action);
     cache.set(input, [...actions]);
@@ -2272,7 +2394,9 @@ function getLegalActionsCore(state: GameState): GameAction[] {
             });
           }
         } else if (
-          isUnit(definition) &&
+          // 「自軍「X」1体を手札に戻す」等の追加条件を持つビークル（XG2-074 クウガゴウラム）も、ユニットと同じ支払いの組で列挙する。
+          (isUnit(definition) || (isVehicle(definition) && needsZordExtendedMaterial(state.definitions, card.cardId))) &&
+          (isUnit(definition) || isXg3ZordUpVehicle(card.cardId)) &&
           isZordUpCost(definition!.powerCost) &&
           (rushAdditionalConditionApplies(state, playerId, card.cardId) ||
             requiresAllFusionPartners(card.cardId))
@@ -2376,7 +2500,8 @@ function getLegalActionsCore(state: GameState): GameAction[] {
             !rk14ActsAsVehicle(player, vehicle) &&
             !rm1ActsAsVehicle(state, playerId, vehicle, (id) => cardHasKeyword(state.definitions, id, "chase")) &&
             // RM-023 スクーパー: チェイスを持つ自軍ユニットがあれば S ビークルとして扱う（rules/rm/rm2Fields.ts）。
-            !rm2ActsAsVehicle(state, playerId, vehicle, (id) => cardHasKeyword(state.definitions, id, "chase"))
+            !rm2ActsAsVehicle(state, playerId, vehicle, (id) => cardHasKeyword(state.definitions, id, "chase")) &&
+            !xg2ActsAsVehicle(player, vehicle)
           ) {
             continue;
           }

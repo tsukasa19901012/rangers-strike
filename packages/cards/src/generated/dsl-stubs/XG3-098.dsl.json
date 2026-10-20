@@ -34,28 +34,14 @@
       "name": "ジシャックチェンジ",
       "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、これをホールドして次の効果を発動できる⇒自軍山札から特徴「スペシャルモード」を持つカードを1枚選び、相手に見せてから手札に加える。その後、山札をシャッフルする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
-          "type": "choose",
-          "kind": "optional_deck_draw",
-          "valid": {
-            "type": "zone",
-            "zone": "deck",
-            "owner": "self"
-          },
-          "count": 1,
-          "then": [
-            {
-              "type": "move",
-              "target": {
-                "type": "trigger_source"
-              },
-              "to": "hand"
-            }
-          ]
+          "type": "grant_keyword",
+          "keyword": "xg3::XG3-098::jishaku_change",
+          "duration": "permanent"
         }
       ]
     }

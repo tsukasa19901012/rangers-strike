@@ -29,11 +29,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-086::nakurubonba",
+          "keyword": "xg5::XG5-086::knuckle_bomber",
           "duration": "turn"
         }
       ]

@@ -27,7 +27,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG5-001::koregaerianiarun",
+          "keyword": "xg5::XG5-001::scrum_aura",
           "duration": "permanent"
         }
       ]
@@ -37,7 +37,7 @@
       "name": "レッドロープ",
       "text": "「SP1」これがストライクしたとき、その処理をすべて終えてから、このバトルフェイズを終える。",
       "trigger": {
-        "type": "on_strike"
+        "type": "nc"
       },
       "effects": [
         {

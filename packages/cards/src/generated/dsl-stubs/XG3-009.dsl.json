@@ -34,14 +34,14 @@
       "name": "戦いの記録",
       "text": "自軍スタートフェイズ開始時、このユニットを捨札にして次の効果を発動できる⇒自軍ラッシュエリアから、効果名を持つテキストに「これをラッシュしたとき」と書かれたユニットを1体選んでもよい。そうしたとき、そのラッシュしたときの効果を発動する。",
       "trigger": {
-        "type": "on_rush"
+        "type": "while_in_field"
       },
       "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-009::ino",
-          "duration": "turn"
+          "keyword": "xg3::XG3-009::battle_record",
+          "duration": "permanent"
         }
       ]
     }

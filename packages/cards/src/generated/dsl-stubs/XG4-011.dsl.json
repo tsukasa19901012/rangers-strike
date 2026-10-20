@@ -54,8 +54,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-011::nohikari",
-          "duration": "permanent"
+          "keyword": "xg4::XG4-011::ginga_no_senko",
+          "duration": "turn"
         }
       ]
     }

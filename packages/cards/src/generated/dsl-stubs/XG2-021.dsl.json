@@ -48,10 +48,11 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "enter_battle_ignore_hold_requirement",
-          "duration": "turn"
+          "keyword": "xg2::XG2-021::kijou",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

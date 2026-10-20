@@ -1,4 +1,7 @@
+import { xg7ComboNumberDelta, xg7NcAnyNumberAt } from "./xg7/xg7Fields";
+import { xg4NcAnyNumberFromLeft } from "./xg4/xg4Fields";
 import { rm1ComboNumber } from "./rm/rm1Fields";
+import { xg2ComboNumberOverride } from "./xg2/xg2Fields";
 import type { CardDefinition } from "@rangers-strike/cards";
 import { falconBreakTriggers } from "./rs4NcEffects";
 import {
@@ -57,6 +60,7 @@ import { isSet8ANcCard, trySet8ANumberCombo } from "./legend1/set8NamedEffectsA"
 import { set8NumberDelta } from "./legend1/set8TurnGrants";
 import { trySet7BNcEffect } from "./legend1/set7NamedEffectsB";
 import type { ComboOutcome } from "./comboTypes";
+import { NC_RESUME, tryXg5InterceptNc } from "./xg5/xg5Core";
 import { hasKamenRiderTitle } from "./rk/rk1Features";
 
 function ncLog(
@@ -76,6 +80,9 @@ export function ncEffectiveNumber(
   definition: CardDefinition,
 ): number {
   if (typeof definition.comboNumber !== "number") return -1;
+  // XG2-042【ファイナルアタックライド】で出したユニットは、このターン「2」（rules/xg2/xg2Fields.ts）。
+  const xg2Number = xg2ComboNumberOverride(state, playerId, card);
+  if (xg2Number !== undefined) return xg2Number;
   // RK-079 仮面ライダーの称号を重ねたユニットのナンバーは RC（数字ではない。R-KW-RC-01・atwiki/page-661）。
   if (hasKamenRiderTitle(card)) return -1;
   // RS-495【宇宙忍法・重力無秩序】: SP が空欄のユニットのナンバーは必要パワーの数字になる（rules/legend1/set7NamedEffectsD.ts）。
@@ -86,6 +93,8 @@ export function ncEffectiveNumber(
     card,
     (gravityComboNumber(state, card, definition) ?? definition.comboNumber) +
       set8NumberDelta(state.players[playerId], card) +
+      // XG7-025 ※（リリース状態の自軍コマンド1つにつき1少なくなる。rules/xg7/xg7Fields.ts）。
+      xg7ComboNumberDelta(state, playerId, card) +
       set8BComboNumberBonus(state, definition),
   );
   return crossReducedNumber(
@@ -148,6 +157,10 @@ export function numberComboTriggers(
   if (missionBurningForcesNc(state, playerId, card, definition, battleBeforeEnter)) return true;
   // RS-204 レッドファルコン【ファルコンブレイク】: BP が一番低ければナンバーに関係なく発動する。
   if (falconBreakTriggers(state, playerId, card)) return true;
+  // XG7-013・XG7-016（2番目ならナンバーに関係なく発動する。rules/xg7/xg7Fields.ts）。
+  if (xg7NcAnyNumberAt(card.cardId, battlePosition, state, battleBeforeEnter)) return true;
+  // XG4-047（ライドしている自軍ユニットからコンビネーションするときはナンバーに関係なく発動する。rules/xg4/xg4Fields.ts）。
+  if (xg4NcAnyNumberFromLeft(state, card.cardId, battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId))) return true;
   const effectiveNumber = ncEffectiveNumber(state, playerId, card, definition);
   const position = battlePosition;
 
@@ -263,6 +276,8 @@ export function markNcColumnEffectsOnEnter(
   const missionBurning = missionBurningForcesNc(state, playerId, card, definition, battleBeforeEnter);
   const numberMatches =
     missionBurning ||
+    xg7NcAnyNumberAt(card.cardId, battlePosition, state, battleBeforeEnter) ||
+    xg4NcAnyNumberFromLeft(state, card.cardId, battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId)) ||
     (typeof definition.comboNumber === "number" &&
       ncEffectiveNumber(state, playerId, card, definition) === battlePosition);
   const leftNeighbor = battleBeforeEnter.filter((c) => c.instanceId !== card.instanceId).at(-1);
@@ -303,6 +318,9 @@ export function applyNumberComboEffect(
   card: CardInstance,
   effectId: ReturnType<typeof getNumberComboEffect>,
 ): ComboOutcome {
+  // XG5-070【偵察】: 敵軍 S ユニットの NC の効果を実行する前に割り込む（rules/xg5/xg5dEffects.ts）。
+  const xg5 = tryXg5InterceptNc(state, playerId, card, effectId);
+  if (xg5) return xg5;
   // 第7弾 RS-441〜RS-449 の NC（rules/legend1/set7NamedEffectsA.ts）。
   const set7 = trySet7ANumberCombo(state, playerId, card);
   if (set7) return set7;
@@ -505,3 +523,5 @@ export function battleUnitAfterNc(
 ): CardInstance | undefined {
   return findBattleUnit(state.players[playerId], instanceId);
 }
+
+NC_RESUME.fn = (state, playerId, card, effectId) => applyNumberComboEffect(state, playerId, card, effectId as ReturnType<typeof getNumberComboEffect>);

@@ -42,13 +42,13 @@
       "id": "unnamed_e280bbe38193e3828ce381af",
       "text": "※これは自軍コマンドゾーンにあるカテゴリが追加される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-035::korehakomandozon",
+          "keyword": "xg6::XG6-035::field",
           "duration": "permanent"
         }
       ]
@@ -72,15 +72,16 @@
       "name": "ビッカーチャージブレイク",
       "text": "このユニットは、これが持っているカテゴリ１つにつきBP＋2000される。また、これがアタックして敵軍ユニットを撃破したとき、これのBPが11000以上なら相手に1点ダメージを与える。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg6::XG6-035::vicker",
+          "duration": "permanent"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

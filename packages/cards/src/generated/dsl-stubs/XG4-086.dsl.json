@@ -30,7 +30,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-086::ikusakaribaganmodo",
+          "keyword": "xg4::XG4-086::ixa",
           "duration": "turn"
         }
       ]

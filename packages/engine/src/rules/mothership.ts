@@ -340,7 +340,7 @@ export function validateZordAdditionalPayment(
   const slotsFilled =
     hasMaterial && condition && isSendSUnitZordCondition(condition)
       ? materialIds.length
-      : zordSlotsFilledByMaterial(rushingCardId, hasMaterial, materialDestination);
+      : zordSlotsFilledByMaterial(rushingCardId, hasMaterial, materialDestination === "hold" ? "discard" : materialDestination); // XG1-013 hold は捨札のかわり
 
   if (
     kind?.kind === "jaguar" &&
@@ -352,7 +352,7 @@ export function validateZordAdditionalPayment(
   }
 
   const holdsRequired =
-    kind && hasMaterial && !jaguarMothershipAllowedWithMaterial(rushingCardId, materialDestination)
+    kind && hasMaterial && !jaguarMothershipAllowedWithMaterial(rushingCardId, materialDestination === "hold" ? "discard" : materialDestination)
       ? 0
       : kind
         ? mothershipHoldsRequiredForRush(rushingCardId, slotsFilled)

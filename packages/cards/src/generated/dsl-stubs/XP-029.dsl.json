@@ -76,9 +76,9 @@
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "promo::XP-029::madayo",
+          "duration": "turn"
         }
       ]
     }

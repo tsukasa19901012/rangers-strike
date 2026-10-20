@@ -1,4 +1,6 @@
 import { activateRm1Resident, canActivateRm1Resident, isRm1ActivatableResident } from "./rm/rm1Effects";
+import { activateXg7Resident, canActivateXg7Resident, isXg7ActivatableResident } from "./xg7/xg7Effects";
+import { activateXg2Resident, canActivateXg2Resident, isXg2ActivatableResident } from "./xg2/xg2Effects";
 import { getCardEffect, type CardDefinition } from "@rangers-strike/cards";
 import { activateSet8AResident, canActivateSet8AResident, isSet8AResident } from "./legend1/set8NamedEffectsA";
 import type { EffectDefinition } from "@rangers-strike/cards/dsl/types";
@@ -115,6 +117,10 @@ export function canActivateResidentOperation(
   // 第8弾 RS-519・RS-522・RS-524・RS-525 の太字部分（RS-524 は自軍バトルフェイズ。rules/legend1/set8NamedEffectsA.ts）。
   const set8a = canActivateSet8AResident(state, playerId, operationInstanceId);
   if (set8a !== null) return set8a;
+  // XG2-019 知恵の樹モーク（自軍バトルフェイズ。rules/xg2/xg2Effects.ts）。
+  const xg2Op = state.players[playerId].operation.find((card) => card.instanceId === operationInstanceId);
+  const xg2 = xg2Op ? canActivateXg2Resident(state, playerId, xg2Op) : null;
+  if (xg2 !== null) return xg2;
   if (state.phase !== "rush") return false;
   if (state.pendingEffectChoice || state.pendingCommandPayment || state.pendingZordSetup) {
     return false;
@@ -129,6 +135,9 @@ export function canActivateResidentOperation(
   // RM-012 JPカード（自軍ラッシュフェイズごとに1度だけ。rules/rm/rm1Effects.ts）。
   const rm1 = canActivateRm1Resident(state, playerId, op);
   if (rm1 !== null) return rm1;
+  // XG7-039 GOD SPEED LOVE（rules/xg7/xg7Effects.ts）。
+  const xg7 = canActivateXg7Resident(state, playerId, op);
+  if (xg7 !== null) return xg7;
   if (isResidentActivatedThisRush(op)) return false;
 
   const wired = getCardEffect(op.cardId);
@@ -202,6 +211,12 @@ export function applyActivateResidentOperation(
   }
   if (isRm1ActivatableResident(op.cardId)) {
     return { ok: true, state: activateRm1Resident(state, playerId, op) };
+  }
+  if (isXg7ActivatableResident(op.cardId)) {
+    return { ok: true, state: activateXg7Resident(state, playerId, op) };
+  }
+  if (isXg2ActivatableResident(op.cardId)) {
+    return { ok: true, state: activateXg2Resident(state, playerId, op) };
   }
   if (op.cardId === ADVENT_CARD_ID) {
     const opened = beginAdvent(state, playerId, op);

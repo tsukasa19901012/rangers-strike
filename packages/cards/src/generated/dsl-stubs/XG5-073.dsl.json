@@ -54,11 +54,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-073::noe4bfba",
+          "keyword": "xg5::XG5-073::ore_no_hissatsu",
           "duration": "turn"
         }
       ]

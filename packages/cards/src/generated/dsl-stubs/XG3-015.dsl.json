@@ -50,13 +50,13 @@
       "name": "氷牙炎滅ベアーストライク",
       "text": "これが、「ガオポーラー」か特徴「人型」を持つLユニットからコンビネーションするとき、次の効果を発動できる⇒ホールド状態の敵軍ユニットを1体選び撃破する。また、自軍バトルエリアに「ガオポーラー」と特徴「人型」を持つLユニットがあれば、これは「SP1」になる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-015::kibahonoobeasutoraiku",
+          "keyword": "xg3::XG3-015::bear_strike",
           "duration": "permanent"
         }
       ]

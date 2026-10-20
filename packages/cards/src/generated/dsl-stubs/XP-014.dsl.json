@@ -60,7 +60,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XP-014::metarushafuto",
+          "keyword": "promo::XP-014::metal_shaft",
           "duration": "turn"
         }
       ]

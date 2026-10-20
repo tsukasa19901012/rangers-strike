@@ -14,13 +14,14 @@
       "id": "unnamed_e280bbe382abe382a6e383b3",
       "text": "※カウンター 敵軍ユニットにアタックされたとき発動できる⇒このターン、すべての自軍ユニットは、カテゴリを2つ以上持つ自軍コマンド1つにつきBP+1000される。",
       "trigger": {
-        "type": "nc"
+        "type": "operation",
+        "timing": "counter"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "counter_note::kaunta_yunitoniataku",
+          "keyword": "xg2::XG2-061::ryoku_oozaru",
           "duration": "permanent"
         }
       ]
@@ -30,5 +31,8 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "features": [
+    "ディスクアニマル"
+  ]
 }

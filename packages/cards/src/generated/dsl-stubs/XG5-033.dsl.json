@@ -38,11 +38,10 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG5-033::nomojikara",
+          "keyword": "xg5::XG5-033::fuuin",
           "duration": "turn"
         }
       ]

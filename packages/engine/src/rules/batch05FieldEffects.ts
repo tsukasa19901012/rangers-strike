@@ -1,3 +1,4 @@
+import { xg2CommandZoneProtected } from "./xg2/xg2Fields";
 import type { Category } from "@rangers-strike/cards";
 import type { GameState, PlayerId } from "../types/game";
 import { cardCategories, cardName, getDefinition, isSmallUnit, parsePowerCost, unitSizeOf } from "../core/catalog";
@@ -112,6 +113,8 @@ export function collectEnemyCommandsMatchingPower(
 ): string[] {
   const enemy = state.players[enemyId];
   const ids: string[] = [];
+  // XG2-093 ソルドーザー【道路封鎖】: 自軍コマンドゾーンのカードは相手の効果で選ばれない（rules/xg2/xg2Fields.ts）。
+  if (xg2CommandZoneProtected(state, enemyId)) return [];
   for (const card of enemy.command) {
     const def = getDefinition(state.definitions, card.cardId);
     if (!def) continue;

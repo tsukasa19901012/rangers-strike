@@ -21,6 +21,7 @@ import { isShironLightRushTarget } from "./shironLight";
 import { rushPowerBudget } from "./rushDeclaration";
 import { countAvailablePower, effectivePowerCost } from "../core/power";
 import { findInZone } from "../core/helpers";
+import { xg1HoldSubstituteAvailable } from "./xg1/xg1Fields";
 import {
   buildCategoryPayment,
   buildMothershipHoldPayment,
@@ -41,6 +42,7 @@ import {
   collectZordDownMaterials,
   needsZordDownDestinationChoice,
   needsZordDownPayment,
+  zordDownPowerCardMaterials,
 } from "./zordDown";
 import {
   collectZordMaterials,
@@ -154,7 +156,7 @@ function listZordSetupResolveSteps(
   };
 
   if (setup.step === "destination") {
-    for (const destination of ["command", "discard"] as const) {
+    for (const destination of ["command", "discard", "hold"] as const) {
       tryInput({ destination }, { type: "resolve_zord_setup", playerId, destination });
     }
     if ((setup.chosenMaterialIds?.length ?? 0) > 0) {
@@ -222,6 +224,9 @@ export function createZordSetup(
   if (!found) return null;
   const def = getDefinition(state.definitions, found.card.cardId);
   if (!def || (!isUnit(def) && !isVehicle(def))) return null;
+  // 「自軍捨札に「X」があるとき、…を捨札にする」— 前半の状態を満たさなければこの追加条件ではラッシュできない（SR-003 atwiki/page-46）。
+  const gate = def.rushAdditionalCondition?.text.match(/^自軍捨札に「([^」]+)」があるとき、/);
+  if (gate && !player.discard.some((c) => getDefinition(state.definitions, c.cardId)?.name === gate[1])) return null;
 
   if (needsZordDownPayment(found.card.cardId, def.powerCost, def)) {
     return createZordDownSetup(state, playerId, found.card);
@@ -266,7 +271,7 @@ export function createZordSetup(
       state.definitions,
       found.card.cardId,
     );
-    if (needsDestinationChoice(found.card.cardId, commandZoneHasSpace)) {
+    if (needsDestinationChoice(found.card.cardId, commandZoneHasSpace) || xg1HoldOffered(state, playerId, found.card.cardId)) {
       return {
         playerId,
         zordInstanceId,
@@ -329,6 +334,11 @@ function commandZoneFitsMaterials(state: GameState, commandCount: number, zordCa
   return commandCount + Math.max(1, zordMaterialUnitCount(state, zordCardId)) <= COMMAND_ZONE_MAX;
 }
 
+/** XG1-013【巨大要塞】で素材をホールドに置きかえられるか（rules/xg1/xg1Fields.ts）。 */
+function xg1HoldOffered(state: GameState, playerId: PlayerId, zordCardId: string): boolean {
+  return xg1HoldSubstituteAvailable(state.players[playerId], state.definitions, zordCardId);
+}
+
 function needsDestinationChoice(
   zordCardId: string,
   commandZoneHasSpace: boolean,
@@ -342,6 +352,21 @@ function createZordDownSetup(
   rushingCard: { cardId: string; instanceId: string },
 ): PendingZordSetup | null {
   const player = state.players[playerId];
+  // パワーカードを素材にする追加条件（XG6-032）: 1枚ずつ必要な枚数を選ぶ（行き先は捨札）。
+  const powerMaterials = zordDownPowerCardMaterials(player, state.definitions, rushingCard.cardId);
+  if (powerMaterials) {
+    if (powerMaterials.ids.length < powerMaterials.needed) return null;
+    return {
+      playerId,
+      zordInstanceId: rushingCard.instanceId,
+      zordCardId: rushingCard.cardId,
+      direction: "down",
+      validInstanceIds: powerMaterials.ids,
+      mothershipAvailable: false,
+      step: "material",
+      materialDestination: "discard",
+    };
+  }
   const materials = collectZordDownMaterials(
     player,
     state.definitions,
@@ -394,8 +419,19 @@ export function advanceZordSetup(
       return advanceZordSetup(state, { ...setup, step: "material", materialDestination: prev }, input);
     }
     const dest = input.destination;
+    // XG1-013【巨大要塞】: 行き先「hold」（捨札にするかわりにホールド）。この置きかえだけで行き先を選ぶときはコマンドゾーンは選べない。
+    const xg1Hold = setup.direction !== "down" && xg1HoldOffered(state, playerId, setup.zordCardId);
+    if (dest === "hold" && xg1Hold) {
+      const holdIds = setup.validInstanceIds.filter((id) => [...player.rush, ...player.battle].some((c) => c.instanceId === id && !c.commandHeld));
+      if (holdIds.length === 0) return { kind: "error", error: "invalid_material" };
+      return { kind: "continue", setup: { ...setup, step: "material", materialDestination: "hold", validInstanceIds: holdIds } };
+    }
     if (dest !== "command" && dest !== "discard") {
       return { kind: "error", error: "invalid_destination" };
+    }
+    if (xg1Hold && !needsDestinationChoice(setup.zordCardId, true)) {
+      if (dest !== "discard") return { kind: "error", error: "invalid_destination" };
+      return { kind: "continue", setup: { ...setup, step: "material", materialDestination: undefined } };
     }
     if (
       dest === "command" &&
@@ -443,6 +479,16 @@ export function advanceZordSetup(
       const materialId = input.materialInstanceId;
       if (!materialId || !setup.validInstanceIds.includes(materialId)) {
         return { kind: "error", error: "invalid_material" };
+      }
+      const powerMaterials = zordDownPowerCardMaterials(player, state.definitions, setup.zordCardId);
+      if (powerMaterials) {
+        const chosen = [...(setup.chosenMaterialIds ?? []), materialId];
+        if (chosen.length < powerMaterials.needed) {
+          const remaining = setup.validInstanceIds.filter((id) => !chosen.includes(id));
+          if (remaining.length < powerMaterials.needed - chosen.length) return { kind: "error", error: "invalid_material" };
+          return { kind: "continue", setup: { ...setup, chosenMaterialIds: chosen, validInstanceIds: remaining } };
+        }
+        return completeZordDownPayment(state, setup, chosen[0]!, "discard", chosen);
       }
       const destination =
         setup.materialDestination ??
@@ -495,7 +541,13 @@ export function advanceZordSetup(
 
     const commandZoneHasSpace = commandZoneFitsMaterials(state, player.command.length, setup.zordCardId);
     const condition = getZordCondition(setup.zordCardId);
+    // XG1-013【巨大要塞】: ホールドに置きかえるのは自軍エリアのリリース状態の S ユニットだけ。
+    const xg1Hold = xg1HoldOffered(state, playerId, setup.zordCardId);
+    if (setup.materialDestination === "hold" && !(xg1Hold && [...player.rush, ...player.battle].some((c) => c.instanceId === materialId && !c.commandHeld))) {
+      return { kind: "error", error: "invalid_material" };
+    }
     const destination =
+      (xg1Hold && zordMaterialUnitCount(state, setup.zordCardId) > 1 ? (setup.materialDestination ?? "discard") : undefined) ??
       setup.materialDestination ??
       (needsDestinationChoice(setup.zordCardId, commandZoneHasSpace)
         ? undefined
@@ -518,14 +570,20 @@ export function advanceZordSetup(
     if (needed > 1) {
       const chosen = [...(setup.chosenMaterialIds ?? []), materialId];
       // 「それぞれ」— 行き先は1体ごとに選ぶ（grnrngr/faq-card-4 RS-196 Q2）。
+      // XG1-013【巨大要塞】で置きかえられる「自軍Sユニットを N 体捨札にする」も、1体ごとに捨札かホールドかを選ぶ（利用者の決定 2026-10-20・questions-all.md U-10）。
       const perUnitDestination =
-        needsDestinationChoice(setup.zordCardId, commandZoneHasSpace) && destinationPerUnit(state, setup.zordCardId);
+        xg1Hold || (needsDestinationChoice(setup.zordCardId, commandZoneHasSpace) && destinationPerUnit(state, setup.zordCardId));
       const chosenDestinations =
         destination && (perUnitDestination || (setup.chosenMaterialDestinations?.length ?? 0) > 0)
           ? [...(setup.chosenMaterialDestinations ?? []), destination]
           : setup.chosenMaterialDestinations;
       if (chosen.length < needed) {
-        const remaining = setup.validInstanceIds.filter((id) => !chosen.includes(id));
+        // XG1-013: 行き先「hold」で絞った候補ではなく、素材の候補すべてから残りを選ぶ。
+        const remaining = (
+          xg1Hold
+            ? collectZordMaterials(player, state.definitions, setup.zordCardId, setup.zordInstanceId).map((c) => c.instanceId)
+            : setup.validInstanceIds
+        ).filter((id) => !chosen.includes(id));
         if (
           remaining.length < needed - chosen.length &&
           partialMothershipStep(state, { ...setup, chosenMaterialIds: chosen, materialDestination: destination })
@@ -537,7 +595,7 @@ export function advanceZordSetup(
         const askNextDestination =
           perUnitDestination &&
           remaining.length > 0 &&
-          player.command.length + commandCount < COMMAND_ZONE_MAX;
+          (xg1Hold || player.command.length + commandCount < COMMAND_ZONE_MAX);
         return {
           kind: "continue",
           setup: {
@@ -749,35 +807,42 @@ function completeZordDownPayment(
   setup: PendingZordSetup,
   materialInstanceId: string,
   materialDestination: ZordMaterialDestination | undefined,
+  /** 複数の素材（パワーカードを素材にする追加条件。XG6-032）。 */
+  materialInstanceIds?: string[],
 ): ZordSetupAdvanceResult {
   const playerId = setup.playerId;
   const player = state.players[playerId];
   const def = getDefinition(state.definitions, setup.zordCardId);
   if (!def) return { kind: "error", error: "invalid_card" };
+  const single = materialInstanceIds ? undefined : materialInstanceId;
 
   const shironRush = isShironLightRushTarget(player, setup.zordInstanceId);
-  const canRush = shironRush
+  // 複数の素材（XG6-032）・素材をコマンドゾーンに送る選び方（XG6-038）はこの後にカテゴリの支払いを開くので、
+  // コマンドのホールドはまだ問わない（支払えなければ buildCategoryPayment が null）。
+  const canRush = shironRush || materialInstanceIds || materialDestination === "command"
     ? canRushUnitExceptCommandHold(
         player,
         state.definitions,
         def,
         setup.zordInstanceId,
-        materialInstanceId,
+        single,
         undefined,
         materialDestination,
         rushPowerBudget(state, playerId, player, def!),
         { ...state, playerId },
+        materialInstanceIds,
       )
     : canRushUnit(
         player,
         state.definitions,
         def,
         setup.zordInstanceId,
-        materialInstanceId,
+        single,
         undefined,
         materialDestination,
         rushPowerBudget(state, playerId, player, def!),
         { ...state, playerId },
+        materialInstanceIds,
       );
 
   if (!canRush) return { kind: "error", error: "cannot_complete_zord" };
@@ -789,7 +854,8 @@ function completeZordDownPayment(
         type: "rush",
         playerId,
         instanceId: setup.zordInstanceId,
-        zordMaterialInstanceId: materialInstanceId,
+        zordMaterialInstanceId: single,
+        zordMaterialInstanceIds: materialInstanceIds,
         zordMaterialDestination: materialDestination,
       },
     };
@@ -804,7 +870,8 @@ function completeZordDownPayment(
     categories,
     {
       type: "rush",
-      zordMaterialInstanceId: materialInstanceId,
+      zordMaterialInstanceId: single,
+      zordMaterialInstanceIds: materialInstanceIds,
       zordMaterialDestination: materialDestination,
     },
     false,

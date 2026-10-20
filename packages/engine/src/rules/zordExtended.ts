@@ -10,6 +10,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 
 type StateGateContext = Pick<GameState, "players" | "definitions">;
 import { COMMAND_ZONE_MAX } from "../types/game";
+import { xg1HoldSubstituteAvailable } from "./xg1/xg1Fields";
 import {
   cardName,
   getDefinition,
@@ -174,8 +175,9 @@ function hasSelfCommandWithFeature(
   features: string[],
 ): boolean {
   return player.command.some((card) => {
+    // コマンドゾーンのカードは種類を問わずコマンド（ビークル RS-570 デカバイクも。XG2-044 atwiki/page-1815）。
     const def = getDefinition(definitions, card.cardId);
-    if (!def || !isOperation(def)) return false;
+    if (!def) return false;
     return features.some((feature) => (def.features ?? []).includes(feature));
   });
 }
@@ -217,9 +219,11 @@ function hasSelfUnitOrCommandWithFeature(
   definitions: Record<string, CardDefinition>,
   feature: string,
 ): boolean {
+  // 「自軍コマンド」はコマンドゾーンのカードなら種類を問わない（XG3-027 スティラコサウルス「特徴「スティライザー」を持つ、自軍ユニットまたは
+  // 自軍コマンドがある」— コマンドゾーンのアバレマックス（ユニットカード）でもよい。atwiki/page-1901）。
   return (
     hasSelfUnitWithFeature(player, definitions, feature) ||
-    hasSelfCommandWithFeature(player, definitions, [feature])
+    player.command.some((card) => (getDefinition(definitions, card.cardId)?.features ?? []).includes(feature))
   );
 }
 
@@ -242,6 +246,19 @@ export function evaluateStateGate(
     const total =
       state.players.player1.discard.length + state.players.player2.discard.length;
     return total >= Number(discardTotalMatch[1]);
+  }
+
+  // 「自軍捨札が5枚以上ある」（XG6-031・XG6-043）。
+  const ownDiscardMatch = text.match(/^自軍捨札が(\d+)枚以上ある$/);
+  if (ownDiscardMatch) return player.discard.length >= Number(ownDiscardMatch[1]);
+  // XP-016「特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚以上ある」（捨札にはしない。atwiki/page-1982）。
+  const featureDiscardTotalMatch = text.match(/特徴[「｢]([^」｣]+)[」｣]を持つ捨札が自軍と敵軍で合計(\d+)枚以上ある/);
+  if (featureDiscardTotalMatch) {
+    const feature = featureDiscardTotalMatch[1]!;
+    const total = [...state.players.player1.discard, ...state.players.player2.discard].filter((c) =>
+      (getDefinition(state.definitions, c.cardId)?.features ?? []).includes(feature),
+    ).length;
+    return total >= Number(featureDiscardTotalMatch[2]);
   }
 
   const namedDiscardMatch = text.match(/^自軍捨札に[「｢]([^」｣]+)[」｣]がある$/);
@@ -286,6 +303,18 @@ export function evaluateStateGate(
     return hasSelfCommandWithFeature(player, state.definitions, features);
   }
 
+  // 「特徴「臨気」と「男」を持つ自軍ユニットがある」（XG6-021・XG6-022）— 両方の特徴を持つ1体。
+  const twoFeatureUnitMatch = text.match(/特徴[「｢]([^」｣]+)[」｣]と[「｢]([^」｣]+)[」｣]を持つ自軍ユニットがある/);
+  if (twoFeatureUnitMatch) {
+    const [, a, b] = twoFeatureUnitMatch;
+    return FIELD_ZONES.some((zone) =>
+      player[zone].some((card) => {
+        const def = getDefinition(state.definitions, card.cardId);
+        return !!def && isUnit(def) && (def.features ?? []).includes(a!) && (def.features ?? []).includes(b!);
+      }),
+    );
+  }
+
   const featureUnitMatch = text.match(/特徴[「｢]([^」｣]+)[」｣]を持つ自軍ユニットがある/);
   if (featureUnitMatch) {
     return hasSelfUnitWithFeature(player, state.definitions, featureUnitMatch[1]!);
@@ -294,6 +323,16 @@ export function evaluateStateGate(
   const enemyFeatureMatch = text.match(/特徴[「｢]([^」｣]+)[」｣]を持つ敵軍ユニットがある/);
   if (enemyFeatureMatch) {
     return hasOpponentUnitWithFeature(state, playerId, enemyFeatureMatch[1]!);
+  }
+
+  // 「カード名に「スター」または「SM」を含む自軍パワーがある」（XG7-060・XG7-061）。オモテ向きのカードだけ数える
+  // （利用者の決定 2026-10-20、docs/verification/unverified/questions-all.md U-5）。
+  const powerNameMatch = text.match(
+    /カード名に[「｢]([^」｣]+)[」｣](?:または[「｢]([^」｣]+)[」｣])?を含む自軍パワーがある/,
+  );
+  if (powerNameMatch) {
+    const parts = [powerNameMatch[1]!, powerNameMatch[2]].filter(Boolean) as string[];
+    return player.power.some((c) => !c.faceDown && parts.some((part) => cardName(state.definitions, c.cardId).includes(part)));
   }
 
   const nameContainsMatch = text.match(
@@ -349,6 +388,10 @@ export function isValidExtendedZordMaterial(
 
   switch (condition.conditionId) {
     case "discard_command_card":
+      // 「自軍ゾーンのオモテ向きのカードからSユニットのカードを1枚選び捨札にする」（XG1-019 の変更後の追加条件。rules/rushAdditionalCondition.ts）。
+      if (condition.text.startsWith("自軍ゾーンのオモテ向きのカードから")) {
+        return (zone === "command" || (zone === "power" && !card.faceDown)) && isUnit(def) && (!condition.requiredSize || def.size === condition.requiredSize);
+      }
       return zone === "command" || (zone === "hand" && isOperation(def));
     case "discard_hand_card":
       return zone === "hand";
@@ -889,6 +932,10 @@ export function listFieldZordRushVariants(
         variants.push({ ...materialRef, zordMaterialDestination: "discard" });
       } else {
         variants.push(materialRef);
+      }
+      // XG1-013【巨大要塞】捨札にするかわりにホールドする（rules/xg1/xg1Fields.ts）。
+      if (!set[0]!.commandHeld && xg1HoldSubstituteAvailable(player, definitions, rushingCardId)) {
+        variants.push({ ...materialRef, zordMaterialDestination: "hold" });
       }
     } else {
       const ids = set.map((c) => c.instanceId);

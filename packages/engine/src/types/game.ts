@@ -96,10 +96,15 @@ export type CardInstance = {
    * ルール: R-BP-01 — 指定の値になる効果が最優先で、増減の計算は行わない。
    */
   bpSetValue?: number;
-  /** このターン「Sユニットになる」（RK-154【頭が高い！】で選んだ M ユニット）。ターン終了時にクリア。 */
-  sizeOverride?: "S";
+  /**
+   * このターン「Sユニットになる」（RK-154【頭が高い！】で選んだ M ユニット）。ターン終了時にクリア。
+   * "L" は XG6-053 仮面ライダーアーク の※「これはLユニットになり」（条件を満たす間。rules/xg6/xg6cEffects.ts が行動の後に合わせる）。
+   */
+  sizeOverride?: "S" | "L";
   /** XG1-048【エレキ光線】で選ばれたターン番号（そのターンを終えるとき隣のユニットが撃破される）。 */
   electroBeamTurn?: number;
+  /** XG7-001〜XG7-068 のこのターンだけの付与（クロス・ライドオフ不可。rules/xg7/xg7Types.ts）。 */
+  xg7Turn?: import("../rules/xg7/xg7Types").Xg7CardTurn;
   /** RK-010 ハイブリッドエネルギー: 自分がターンを終えるときにオモテにした山札の上のカード（rules/rk/rk1NamedEffects.ts）。 */
   hybridRevealed?: boolean;
 };
@@ -161,6 +166,8 @@ export type PlayerState = {
 };
 
 export type PendingStrike = {
+  /** XG6 の「ストライクをするとき」の選択を出したカード（rules/xg6/）。 */
+  xg6Offered?: string[];
   strikerPlayerId: PlayerId;
   strikerInstanceId: string;
   damage: number;
@@ -170,6 +177,8 @@ export type PendingStrike = {
   damageApplied?: boolean;
   /** RS-184 マジパンチを使った（ストライクしたユニットは手札に戻った）。続けて同じストライクに使える。 */
   magiPunchApplied?: boolean;
+  /** XG1-009【マスキークラッシュ】のダメージの置きかえを選ぶ機会を出した（rules/xg1/xg1aEffects.ts）。 */
+  xg1StrikeReplaceOffered?: boolean;
 };
 
 export type DamagePaymentResume =
@@ -216,7 +225,14 @@ export type PendingDamagePayment = {
   replacedDamage?: number;
 };
 
+/** クロスギャザー XG2 の選択の続き（rules/xg2。カードごとの効果が型を決める）。 */
+export type Xg2Meta = Record<string, unknown>;
+/** クロスギャザー XG2 のカード固有の効果の状態（rules/xg2/xg2Core.ts）。 */
+export type Xg2State = Record<string, unknown>;
+
 export type PendingBattle = {
+  /** XG6 の「アタックされたとき」等の選択を出したカード（rules/xg6/）。 */
+  xg6Offered?: string[];
   attackerPlayerId: PlayerId;
   attackerInstanceId: string;
   defenderPlayerId: PlayerId;
@@ -225,6 +241,11 @@ export type PendingBattle = {
   attackerBpBonus?: number;
   /** このバトルの間だけ、アタックされたユニットの BP に加える値（RK-004 ギギの腕輪・RK-009 二人の世紀王）。 */
   defenderBpBonus?: number;
+  /** XG3-091【パルセイバー】・XG3-097【キャプテンルーレット】のバトルの前の処理を済ませた（rules/xg3/xg3eEffects.ts）。 */
+  xg3PulseDone?: boolean;
+  xg3RouletteDone?: boolean;
+  /** XG3-097【キャプテンルーレット】: お互いにこの数字でバトルする。 */
+  xg3Values?: { attacker: number; defender: number };
   /** RS-006: バトルキャンセル、守り側はラッシュに戻る */
   battleCancelled?: boolean;
   /** RK-101【タイガーボンバー】の BP-3000 をこのバトルに適用済み（rules/rk/rk5UnitEffects.ts）。 */
@@ -235,6 +256,16 @@ export type PendingBattle = {
   rk9BerryOffered?: boolean;
   /** RM-062 テントリーナ【リーナステッキ】の選択を出した（rules/rm/rm3Effects.ts）。 */
   rm3TentrinaOffered?: boolean;
+  /** XG7-055【神出鬼没の疾風】の選択を出した（rules/xg7/xg7cEffects.ts）。 */
+  xg7AttackedOffered?: boolean;
+  /** XG1-084【人質と脅迫】・XG1-087【瞬間移動】の「アタックされたとき」の選択を出した（rules/xg1/xg1eEffects.ts）。 */
+  xg1eAttackedOffered?: boolean;
+  /** XG4-033【フリージングダガー】の選択を出したアタック（rules/xg4/xg4bEffects.ts）。 */
+  xg4FreezeOffered?: boolean;
+  /** XG4-073・XG4-074 のバトルの前の選択を出したカード（instanceId。rules/xg4/xg4dEffects.ts）。 */
+  xg4BeforeBattleOffered?: string[];
+  /** プロモーションカードの「アタックされたとき」の選択を出した（XP-016【赤い瞳に宿るもの】等。rules/promo）。 */
+  promoAttackedOffered?: boolean;
   /** RS-414【ディオネを守る壁】の選択を出したか。 */
   dioneWallOffered?: boolean;
   /** RS-583【災いを受け止める覚悟】の「代わりに選ばれたことにする」選択をこのアタックで既に出したか。 */
@@ -262,6 +293,8 @@ export type PendingBattle = {
   effectBattle?: boolean;
   /** RK-050 仮面ライダー裁鬼【音撃斬・閻魔裁き】: お互いにバトルする数字（rules/rk/rk3UnitEffects.ts）。 */
   rk050Mode?: "bp" | "power_cost" | "number";
+  /** クロスギャザー XG2: バトルの前に発動を確かめ終えた効果（rules/xg2/xg2Core.ts tryOpenXg2BattleChoice）。 */
+  xg2Asked?: string[];
 };
 
 export type PendingRush = {
@@ -315,6 +348,11 @@ export type Rk7ChoiceMeta = {
 export type PendingLeave = {
   /** RS-303【シティガーディアンズ隊長】の「かわりに捨札にしてもよい」を見送った（再度は尋ねない）。 */
   cityGuardiansDeclined?: boolean;
+  /** XG7-001〜XG7-068 の離場の置換で見送ったもの・捨札のかわりに除外する（rules/xg7/xg7Effects.ts）。 */
+  xg7Declined?: string[];
+  xg7Exile?: boolean;
+  /** XG6-031 ジョーカーアンデッドの※「自軍捨札を3枚選びゲームから除外すれば、その場に留まる」を見送った（rules/xg6/）。 */
+  xg6StayDeclined?: boolean;
   /** RK-128 仮面ライダーレンゲルの※「かわりに…捨札にしてもよい」を見送った（再度は尋ねない）。 */
   rk7SubstituteDeclined?: boolean;
   ownerPlayerId: PlayerId;
@@ -363,6 +401,8 @@ export type PendingLeave = {
   batLeeDeclined?: boolean;
   /** RS-437 白熱する実況「下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる」を見送った。 */
   liveCommentaryDeclined?: boolean;
+  /** XG2 の「その場に留まる」を見送った効果（rules/xg2/xg2cEffects.ts。再度は尋ねない）。 */
+  xg2Declined?: string[];
   /**
    * RS-182 ジャイアントローラー: 撃破されて捨札になったとき、持ち主のパワーゾーンにダメージ（ウラ向き）にして置く。
    * 置換・カウンターで捨札にならなければ置かれない（faq-card-4 RS-182 Q1〜Q3）。
@@ -749,7 +789,11 @@ export type PendingEffectChoice = {
     /** BK-006: 選んだ敵軍の「航空機」の M ユニット。 */
     enemy?: string;
   };
+  /** クロスギャザー ザ・Wインパクト XG3 の選択の続き（rules/xg3/xg3Types.ts）。 */
+  xg3Meta?: import("../rules/xg3/xg3Types").Xg3ChoiceMeta;
   /** スペシャルメタルエディション RM-043〜RM-062 の選択の続き（rules/rm/rm3Effects.ts）。 */
+  /** クロスギャザー ザ・ベストパートナー XG7-001〜XG7-068 の選択の続き（rules/xg7/xg7Effects.ts）。 */
+  xg7Meta?: import("../rules/xg7/xg7Types").Xg7ChoiceMeta;
   rm3Meta?: {
     /** RM-045: 相手がこれまでに選んだ敵軍 S ユニット。 */
     chosen?: string[];
@@ -764,6 +808,30 @@ export type PendingEffectChoice = {
     /** RM-037: 相手の手札から選んだカード。 */
     handInstanceId?: string;
   };
+  /** クロスギャザー XG5 の選択の続き（rules/xg5/xg5Types.ts）。 */
+  xg5Meta?: import("../rules/xg5/xg5Types").Xg5ChoiceMeta;
+  /** クロスギャザー XG1 の選択の続き（rules/xg1/xg1Effects.ts）。 */
+  xg1Meta?: {
+    /** 選んだユニット・カード（続きの処理の対象）。 */
+    target?: string;
+    /** 対象の持ち主。 */
+    ownerId?: PlayerId;
+    /** 選べる数・数え上げた数。 */
+    count?: number;
+    /** まだ処理していない段（カードごとの文字列）。 */
+    steps?: string[];
+    /** 保留しているバトル（アタックの途中で開いた選択）。 */
+    battle?: PendingBattle;
+    wingAttackFromRush?: boolean;
+  };
+  /** クロスギャザー ザ・ギガンティックタイタン XG6 の選択の続き（rules/xg6/）。 */
+  xg6Meta?: Xg6ChoiceMeta;
+  /** クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 の選択の続き（rules/xg4/xg4Common.ts）。 */
+  xg4Meta?: Record<string, unknown>;
+  /** クロスギャザー XG2 の選択の続き（rules/xg2。中身はカードごとの効果が決める）。 */
+  xg2Meta?: Xg2Meta;
+  /** プロモーションカードの選択の続き（rules/promo。カードごとの値をモジュール側で読む）。 */
+  promoMeta?: Readonly<Record<string, unknown>>;
   /** スペシャルメタルエディション RM-001〜RM-021 の選択の続き（rules/rm/rm1Effects.ts）。 */
   rm1Meta?: {
     /** RM-006: 選べる数（「メカ」「人型」の自軍ユニットの数）。 */
@@ -815,6 +883,11 @@ export type PendingEffectChoice = {
   resumeChoice?: PendingEffectChoice;
   /** 複数対象の撃破で処理済みの対象（離場反応で中断→再開したときに同じユニットを再び処理しない。R-TGT-03）。 */
   processedInstanceIds?: string[];
+  /**
+   * 複数対象の撃破（select_units_bp_budget）で、捨札になるかわりに持ち主のパワーゾーンにダメージにして置く対象
+   * （効果のバトルで RS-182 ジャイアントローラーの選んだユニットとバトルした側。rules/xg1/xg1cEffects.ts XG1-058）。
+   */
+  discardAsDamageInstanceIds?: string[];
   optional?: boolean;
   maxBp?: number;
   /** RS-178 sagas_sniper: デッキサーチ用の破壊ユニットパワーコスト上限。 */
@@ -1072,8 +1145,8 @@ export type CommandPaymentContinuation =
       type: "rush";
       zordMaterialInstanceId?: string;
       zordMaterialInstanceIds?: string[];
-      zordMaterialDestination?: "command" | "discard";
-      zordMaterialDestinations?: Array<"command" | "discard">;
+      zordMaterialDestination?: ZordMaterialDestination;
+      zordMaterialDestinations?: ZordMaterialDestination[];
       zordMothershipHoldInstanceIds?: string[];
       zordExtraCommandHoldInstanceIds?: string[];
       /** RS-586【魔神に不足する物】で捨札にする「戦闘員」のユニット（RushAction と同じ）。 */
@@ -1194,6 +1267,8 @@ export type EffectStack = {
 };
 
 export type GameState = {
+  /** クロスギャザー ザ・Wインパクト XG3 の、ターンをまたぐ記録・処理待ち（rules/xg3/xg3Types.ts）。 */
+  xg3?: import("../rules/xg3/xg3Types").Xg3State;
   turn: number;
   activePlayer: PlayerId;
   /** 先攻プレイヤー（先攻）。 */
@@ -1239,6 +1314,10 @@ export type GameState = {
   rk12ResumeOperation?: { playerId: PlayerId; instanceId: string; targetInstanceId?: string; extraInstanceId?: string };
   /** RK-251 の選択を済ませたオペレーション（同じ使用で2度は尋ねない）。 */
   rk12GorgomPassedOp?: string;
+  /** XG1-038【サカナマル】の選択の後で続ける相手の move_to_battle（core/applyAction.ts の後処理。rules/xg1/xg1bEffects.ts）。 */
+  xg1ResumeMove?: { playerId: PlayerId; instanceId: string; vehicleInstanceId?: string; rideOff?: boolean };
+  /** XG1-038【サカナマル】を尋ね終えた相手のユニット（続ける move_to_battle で2度は尋ねない）。 */
+  xg1SakanamaruDone?: string;
   /** RK-272【ライジングスプラッシュドラゴン】: NC の効果を無効にするかの答え（rules/rk/rk13UnitEffects.ts）。 */
   rk13NcNegation?: { instanceId: string; negate: boolean };
   /** RK-272: 無効にしなかった RC の効果を実行している（同じ RC で2度は尋ねない）。 */
@@ -1401,6 +1480,8 @@ export type GameState = {
   /** RK-129【サンダースペイダー】・RK-132【妻子のバックアップ】の、まだ開いていない発動（rules/rk/rk7UnitEffects.ts）。 */
   rk7PendingTriggers?: Array<{ kind: "rk129" | "rk132"; playerId: PlayerId; sourceInstanceId: string }>;
   /** RM-059 異次元調達屋カブト【トランクの中身】の、まだ開いていない発動（rules/rm/rm3Effects.ts applyRm3AfterAction）。 */
+  /** XG7-001〜XG7-068 のターンを限った記録（rules/xg7/xg7Types.ts）。 */
+  xg7?: import("../rules/xg7/xg7Types").Xg7State;
   rm3PendingTriggers?: Array<{ kind: "rm059"; playerId: PlayerId; sourceInstanceId: string }>;
   /**
    * 効果で場のカードを撃破ではなく別のゾーンへ移す処理のうち、チェイス等の離場の応答を待っている残り（rules/fieldLeaveQueue.ts。
@@ -1409,8 +1490,16 @@ export type GameState = {
   queuedFieldLeaves?: PendingLeave[];
   /** RM-026 グランドバース【収容】の、チェイス等の選択を待っている「その後、選んだビークルをパワーゾーンに送る」（rules/rm/rm2Effects.ts applyRm2AfterAction）。 */
   rm2PendingTriggers?: Array<{ kind: "rm026_vehicle"; playerId: PlayerId; instanceId: string; phasePlayerId: PlayerId }>;
+  /** クロスギャザー ザ・ギガンティックタイタン XG6 のターン中の記録（rules/xg6/）。 */
+  xg6?: Xg6Records;
+  /** クロスギャザー XG2 のカード固有の効果の状態（ターン中の記録など。rules/xg2/xg2Core.ts）。 */
+  xg2?: Xg2State;
   /** RM-017 オメデトロフィーの、まだ開いていない発動（rules/rm/rm1Effects.ts applyRm1AfterAction）。 */
   rm1PendingTriggers?: Array<{ kind: "rm017"; playerId: PlayerId; sourceInstanceId: string; unitCardId: string }>;
+  /** クロスギャザー XG5 の継続中の効果・まだ開いていない発動（rules/xg5/xg5Types.ts）。 */
+  xg5?: import("../rules/xg5/xg5Types").Xg5State;
+  /** プロモーションカードの、まだ開いていない発動（XP-013【キョウリュウマル】等。rules/promo/promoAfterAction.ts）。 */
+  promoPendingTriggers?: Array<{ kind: string; playerId: PlayerId; sourceInstanceId: string; phasePlayerId: PlayerId; data?: Readonly<Record<string, unknown>> }>;
   /** RK-153【車両強奪】で選ばれたユニット（次の相手のスタートフェイズに戻せない。rules/rk/rk8UnitEffects.ts）。 */
   rk8Seized?: Array<{ playerId: PlayerId; instanceId: string }>;
   /** RK-011 第三の眼: 無効にしなかったカウンターの使用をもう一度処理する（core/applyAction.ts の後処理）。 */
@@ -1466,6 +1555,8 @@ export type PendingEffectRush = {
   blockBattleEntryThisTurn?: boolean;
   /** 「1枚選び、…出す」（任意でない）: 選択・追加条件の素材の選択を見送れない（RS-605 異次元からの翼）。 */
   forced?: boolean;
+  /** 出したユニットを、このビークルにライドした状態で出す（XG4-009【緊急出動】。rules/xg4/xg4aEffects.ts）。 */
+  mountOnInstanceId?: string;
   /** 選び終えて、まだ出していないユニット（1体ずつ出す）。 */
   queue: string[];
   /** 選ぶ段階: 候補とあと何枚選べるか。 */
@@ -1487,6 +1578,29 @@ export type PendingEffectRush = {
   };
 };
 
+/** クロスギャザー ザ・ギガンティックタイタン XG6 の選択の続き（rules/xg6/）。 */
+export type Xg6ChoiceMeta = {
+  /** 選んだ（見せた・オモテにした）カード等。 */
+  ids?: string[];
+  /** 数の上限・数。 */
+  limit?: number;
+  /** 状態の名前（段階）。 */
+  step?: string;
+  /** 対象のプレイヤー。 */
+  targetPlayerId?: PlayerId;
+  /** カテゴリ等の文字列。 */
+  tags?: string[];
+};
+
+/** クロスギャザー ザ・ギガンティックタイタン XG6 のターン中の記録（rules/xg6/）。key はカードと効果の名前。 */
+export type Xg6Records = {
+  marks?: Array<{ key: string; playerId: PlayerId; instanceId?: string; turn: number; value?: number; ref?: string }>;
+  /** XG6-025【ここからは私のターンだ】: このプレイヤーのバトルフェイズを終了する（core/applyAction.ts の後処理）。 */
+  endBattlePhase?: PlayerId;
+  /** XG6-042【ゼロのスタート】: 次のスタートフェイズにドローできないプレイヤーと、記録したターン。 */
+  noStartDraw?: Array<{ playerId: PlayerId; turn: number }>;
+};
+
 export type TurnEndProgress = {
   endingPlayerId: PlayerId;
   /** まだ処理していない「ターンを終えるとき」の常駐（持ち主と instanceId）。 */
@@ -1499,6 +1613,8 @@ export type TurnEndProgress = {
    */
   exodusOrderAsked?: boolean;
   exodusFirst?: boolean;
+  /** XG2 の「自分がターンを終えるとき」を処理済みか（rules/xg2/xg2cEffects.ts）。 */
+  xg2Done?: boolean;
   /** 第6弾の「ターンを終えるとき」の選択（RS-398【時間漂流者の送還】・RS-413 のコマンド捨札）のうち未処理のもの。 */
   set6bQueue?: string[];
   /** 第7弾 RS-484【ハリーアップ！】の「ターンを終えるとき」の選択のうち未処理のもの（rules/legend1/set7NamedEffectsC.ts）。 */
@@ -1520,8 +1636,20 @@ export type TurnEndProgress = {
   rk11Queue?: string[];
   /** RK-258・RK-260 の「自分がターンを終えるとき」（rules/rk/rk13UnitEffects.ts）。 */
   rk13Queue?: string[];
+  /** クロスギャザー ザ・ギガンティックタイタン XG6 の「ターンを終えるとき」（rules/xg6/）。 */
+  xg6Queue?: string[];
   /** RK-323【シャドウベール】（rules/rk/rk16UnitEffects.ts）。 */
   rk16Queue?: string[];
+  /** XG7-041・XG7-042 の「自分がターンを終えるとき」（rules/xg7/xg7Effects.ts）。 */
+  xg7Queue?: string[];
+  /** XG1-052【ファイヤーストームアタック】・XG1-053 の撃破（rules/xg1/xg1cEffects.ts）。 */
+  xg1Queue?: string[];
+  /** クロスギャザー ザ・ジェットアクセル XG4 の「ターンを終えるとき」（rules/xg4/xg4Effects.ts）。 */
+  xg4Queue?: string[];
+  /** クロスギャザー ザ・Wインパクト XG3 の「自分がターンを終えるとき」（rules/xg3/xg3Effects.ts）。 */
+  xg3Queue?: string[];
+  /** プロモーションカードの「ターンを終えるとき」（XP-029【まだよ…】。rules/promo/promoRegistry.ts）のうち未処理のもの。 */
+  promoQueue?: string[];
 };
 
 /** 第9弾 RS-648〜RS-669 のカード固有の効果が使う記録（rules/legend1/set9NamedEffectsC.ts）。 */

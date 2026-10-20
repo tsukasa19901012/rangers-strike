@@ -34,13 +34,18 @@
       "id": "unnamed_e280bbe789b9e5beb4e3808c",
       "text": "※特徴「戦闘員」を持つユニットはＲＣがなくてもこのビークルにライドでき、これにライドしている間BP+500される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG4-048::wotsuyunitohagan",
+          "keyword": "ride_without_rc_sentouin",
+          "duration": "permanent"
+        },
+        {
+          "type": "grant_keyword",
+          "keyword": "ride_bp_boost_500",
           "duration": "permanent"
         }
       ]

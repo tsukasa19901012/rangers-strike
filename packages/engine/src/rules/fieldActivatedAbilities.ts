@@ -1,4 +1,9 @@
 import { activateRm2FieldAbility, canActivateRm2FieldAbility, isRm2FieldAbilityCard } from "./rm/rm2Effects";
+import { activateXg7FieldAbility, canActivateXg7FieldAbility, isXg7BattleFieldAbilityCard, isXg7FieldAbilityCard } from "./xg7/xg7Effects";
+import { activateXg1aFieldAbility, canActivateXg1aFieldAbility, isXg1aFieldAbilityCard } from "./xg1/xg1aEffects";
+import { activateXg1eFieldAbility, canActivateXg1eFieldAbility } from "./xg1/xg1eEffects";
+import { activateXg4FieldAbility, canActivateXg4FieldAbility, isXg4FieldAbilityCard, resolveXg4DiscardSelfAbility } from "./xg4/xg4Effects";
+import { activateXg2FieldAbility, canActivateXg2FieldAbility, isXg2FieldAbilityCard } from "./xg2/xg2Effects";
 import { tryLeaveField } from "./operationCounters";
 import { liveCommentaryStayAvailable } from "./legend1/set7NamedEffectsA";
 import { kuugaStayCandidates } from "./legend1/otherLinesNamedEffects";
@@ -31,6 +36,8 @@ import { STACK_ONTO_LARGE_EFFECT_ID, beginStackOntoLarge, canActivateStackOntoLa
 import { isStackOntoLargeCard } from "./stackOntoLargeGrants";
 import { rk14CanHoldSelf, rk14HoldSelf, rk14IsVehicleUnitCard } from "./rk/rk14Fields";
 import { canActivateRk16Fuessle, isRk16FuessleCard, openRk16Fuessle } from "./rk/rk16UnitEffects";
+import { activateXg3FieldAbility, canActivateXg3FieldAbility, isXg3FieldAbilityCard } from "./xg3/xg3Effects";
+import { promoFieldAbilityFor } from "./promo/promoRegistry";
 
 type FieldZone = "rush" | "battle";
 
@@ -470,6 +477,136 @@ ABILITIES.push({
   matches: (cardId) => isRm2FieldAbilityCard(cardId),
   canActivate: (state, playerId, card) => canActivateRm2FieldAbility(state, playerId, card),
   resolve: (state, playerId, card) => activateRm2FieldAbility(state, playerId, card),
+});
+
+// XG7-036【戦わなければ生き残れない】「これが自軍エリアにある間、自軍ラッシュフェイズごとに1度だけ、…どれか1つを宣言してもよい。」（rules/xg7/xg7Effects.ts）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "xg7036_declare",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  discardSelf: false,
+  matches: (cardId) => isXg7FieldAbilityCard(cardId),
+  canActivate: (state, playerId, card) => canActivateXg7FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg7FieldAbility(state, playerId, card),
+});
+
+// XG7-052【タジャスピナー】「自軍バトルフェイズごとに1度だけ、敵軍Sユニットを1体選び、これとバトルさせてもよい。」（rules/xg7/xg7Effects.ts）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "xg7052_taja_spinner",
+  zones: ["rush", "battle"],
+  phase: "battle",
+  discardSelf: false,
+  matches: (cardId) => isXg7BattleFieldAbilityCard(cardId),
+  canActivate: (state, playerId, card) => canActivateXg7FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg7FieldAbility(state, playerId, card),
+});
+
+// XG1-012 レッドパンチャー【ボクシングスタイル】（自軍バトルフェイズ・バトルエリア）・XG1-014 キングレンジャー【キングスティック】
+// （自軍ラッシュフェイズ）（rules/xg1/xg1aEffects.ts）。回数の制限はない。
+for (const [effectId, phase, zones] of [
+  ["xg1_012_boxing_style", "battle", ["battle"]],
+  ["xg1_014_king_stick", "rush", ["rush", "battle"]],
+] as const) {
+  ABILITIES.push({
+    cardId: effectId === "xg1_012_boxing_style" ? "XG1-012" : "XG1-014",
+    effectId,
+    zones: [...zones],
+    phase,
+    discardSelf: false,
+    repeatable: true,
+    canActivate: (state, playerId, card) => canActivateXg1aFieldAbility(state, playerId, card),
+    resolve: (state, playerId, card) => activateXg1aFieldAbility(state, playerId, card),
+  });
+}
+
+// XG1-099 ガンツ先生【採点】（自軍バトルフェイズ・自軍エリア）（rules/xg1/xg1eEffects.ts）。回数の制限はない。
+ABILITIES.push({
+  cardId: "XG1-099",
+  effectId: "xg1_099_saiten",
+  zones: ["rush", "battle"],
+  phase: "battle",
+  discardSelf: false,
+  repeatable: true,
+  canActivate: (state, playerId, card) => canActivateXg1eFieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg1eFieldAbility(state, playerId, card),
+});
+
+// XG4-035 シンケンゴールド【モヂカラのプログラム】「これが自軍エリアにある間、自軍ラッシュフェイズ中、ETを持つ自軍コマンドを1つホールドしてもよい。…」
+// （atwiki/page-2044。rules/xg4/xg4bEffects.ts）。回数の制限はない（RM-038 と同じ）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "xg4035_program",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  discardSelf: false,
+  repeatable: true,
+  matches: (cardId) => isXg4FieldAbilityCard(cardId),
+  canActivate: (state, playerId, card) => canActivateXg4FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg4FieldAbility(state, playerId, card),
+});
+
+// XG4-051 マックジャバー【液化】「自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、自分は1枚ドローする。」（atwiki/page-2056。
+// rules/xg4/xg4cEffects.ts）。
+ABILITIES.push({
+  cardId: "XG4-051",
+  effectId: "xg4051_ekika",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  resolve: (state, playerId, card) => resolveXg4DiscardSelfAbility(state, playerId, card),
+});
+
+// XG2-068 リュウタロス【憑依】「自軍ラッシュフェイズ中、ライドしていない自軍Sユニットを1体選び、このユニットに重ねてもよい。…」（atwiki/page-1773。
+// rules/xg2/xg2dEffects.ts）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "xg2_068_hyoui",
+  zones: ["rush"],
+  phase: "rush",
+  discardSelf: false,
+  repeatable: true,
+  matches: (cardId) => isXg2FieldAbilityCard(cardId),
+  canActivate: (state, playerId, card) => canActivateXg2FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg2FieldAbility(state, playerId, card),
+});
+
+// XG3-024 創造の使徒ミケラ【トリノイド創造】・XG3-025 無限の使徒ヴォッファ【ギガノイド創造】「これが自軍エリアにある間、自軍ラッシュフェイズを
+// 行うとき、かわりに次の効果を発動できる⇒…」（atwiki/page-1899・page-1900。rules/xg3/xg3bEffects.ts）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "xg3_field_ability",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  discardSelf: false,
+  matches: (cardId) => isXg3FieldAbilityCard(cardId),
+  // 1ターン1回（XG3-068「自軍ラッシュフェイズごとに1度だけ」等）。
+  canActivate: (state, playerId, card) => !fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId) && canActivateXg3FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg3FieldAbility(state, playerId, card),
+});
+// XG3-103 ライジンゴー【噛みつき】「自軍バトルフェイズ中、…」（rules/xg3/xg3eEffects.ts）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "xg3_field_ability_battle",
+  zones: ["rush"],
+  phase: "battle",
+  discardSelf: false,
+  matches: (cardId) => isXg3FieldAbilityCard(cardId, "battle"),
+  canActivate: (state, playerId, card) => !fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId) && canActivateXg3FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg3FieldAbility(state, playerId, card),
+});
+
+// プロモーションカードの起動効果（XP-031【メダルと切符と40周年】「自軍ラッシュフェイズごとに1度だけ」。rules/promo/promoRegistry.ts）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "promo_field_ability",
+  zones: ["rush", "battle"],
+  phase: "rush",
+  discardSelf: false,
+  matches: (cardId) => !!promoFieldAbilityFor(cardId),
+  canActivate: (state, playerId, card) =>
+    !fieldAbilityUsedThisTurn(state.players[playerId], card.instanceId) && !!promoFieldAbilityFor(card.cardId)?.canActivate(state, playerId, card),
+  resolve: (state, playerId, card) => promoFieldAbilityFor(card.cardId)?.resolve(state, playerId, card) ?? state,
 });
 
 // 能力の当てはめはカード ID（とカードの文言）だけで決まるので、ID ごとに覚える。表に能力が足されたら捨てる。

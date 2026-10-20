@@ -22,12 +22,12 @@
       "name": "レディスナイパー",
       "text": "このユニットからコンビネーションするOTを持ち特徴「男」を持つSユニットは、このターン、次の能力を得る⇒BP+2000され、ナンバーにＲＣを持っていれば、ライドオフしなくてもその効果を発動できる。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-085::redeisunaipa",
+          "keyword": "xg1::XG1-085::lady_sniper",
           "duration": "permanent"
         }
       ]

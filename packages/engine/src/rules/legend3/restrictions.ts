@@ -1,3 +1,5 @@
+import { xg6AttackerBlocked, xg6BlocksAttack, xg6DefenderBlocksAttack } from "../xg6/xg6Fields";
+import { xg3AttackerCanAttackRush, xg3DefenderBlocksAttack } from "../xg3/xg3Fields";
 import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
 import { rk5AttackerCanAttackRush } from "../rk/rk5Fields";
 import { rk11AttackerCanAttackRush, rk11EntryDiscardFeature } from "../rk/rk11Fields";
@@ -10,6 +12,7 @@ import { set8DDefenderBlocksAttack } from "../legend1/set8NamedEffectsD";
 import { rk1DefenderBlocksAttack } from "../rk/rk1NamedEffects";
 import { rk2DefenderBlocksAttack, rk2KamenRiderRushDiscardable, rk2NeedsKamenRiderRushDiscard } from "../rk/rk2UnitEffects";
 import { set9DAllowsRushAttack } from "../legend1/set9NamedEffectsD";
+import { xg2AllowsRushAttack } from "../xg2/xg2Fields";
 import { set8CAllowsRushAttack, set8CDefenderBlocksAttack } from "../legend1/set8NamedEffectsC";
 import { set8BDefenderBlocksAttack } from "../legend1/set8NamedEffectsB";
 import { chikaraBatonAllowsAttack, lionBlastAllowsRushAttack } from "../legend1/set4NamedEffects";
@@ -28,6 +31,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types
 import { isCostWindowSatisfied } from "../../core/costWindow";
 import {
   cardCategories,
+  effectiveBp,
   getDefinition,
   isSmallUnit,
   isVehicle,
@@ -53,8 +57,12 @@ import {
 } from "../pendingChoices";
 import { keywordAllowsAttackIntoRush } from "../keywordGapRuntime";
 import { rk13AttackerCanAttackRush, rk13DefenderBlocksAttack } from "../rk/rk13Fields";
+import { xg5AttackForbidden } from "../xg5/xg5Fields";
 import { rk15DefenderBlocksAttack } from "../rk/rk15Fields";
 import { rk16DefenderBlocksAttack } from "../rk/rk16Fields";
+import { xg7DefenderBlocksAttack } from "../xg7/xg7Fields";
+import { xg1AttackerCanAttackRush, xg1DefenderBlocksAttack } from "../xg1/xg1Fields";
+import { xg4DefenderBlocksAttack } from "../xg4/xg4Fields";
 
 export function hasDarkDealInRush(state: GameState, playerId: PlayerId): boolean {
   return state.players[playerId].rush.some(
@@ -453,6 +461,12 @@ export function canAttackDefender(
   if (!attacker) return false;
 
   if (isVehicle(getDefinition(state.definitions, attacker.card.cardId))) return false;
+  // XG6-012 フラッシュタイタンの※（自軍「タイタンボーイ」があるときアタックできない。rules/xg6/xg6Fields.ts）。
+  if (xg6BlocksAttack(state, attackerPlayerId, attacker.card.cardId)) return false;
+  // XG6-056【スキュラサイズ】の対象・XG6-063 の※（rules/xg6/xg6Fields.ts）。
+  if (xg6AttackerBlocked(state, attackerPlayerId, attacker.card)) return false;
+  // XG6-030【唯一の弱点】（自軍コマンドがすべてホールド状態なら敵軍 S ユニットにアタックされない。rules/xg6/xg6Fields.ts）。
+  if (xg6DefenderBlocksAttack(state, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
 
   // RS-158【エレファントシールド】: コンビネーションが成立している間、敵軍ユニットはこれ以外にアタックできない。
   const mustTarget = elephantShieldMustTarget(state, defenderPlayerId);
@@ -464,6 +478,8 @@ export function canAttackDefender(
   if (timeJetRearGuardBlocksAttack(state, defenderPlayerId, defenderInstanceId)) return false;
   // RS-619 ジェットマシン【航空戦力の奇襲】（rules/legend1/set9NamedEffectsA.ts）。
   if (set9ADefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
+  // XG5-091 キカイダー01 ※（「男」「女」を持つユニットにアタックできない。rules/xg5/xg5Fields.ts）。
+  if (xg5AttackForbidden(state, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
 
   const attackerInRush = findInZone(attackerPlayer, "rush", attackerInstanceId);
   if (
@@ -504,6 +520,22 @@ export function canAttackDefender(
   if (defenderCard && rk15DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard, unitFeatures)) return false;
   // RK-327 の※（ホールド状態のとき敵軍ユニットにアタックされない。rules/rk/rk16Fields.ts）。
   if (defenderCard && rk16DefenderBlocksAttack(defenderCard)) return false;
+  // XG7-009【受け継いだもの】等（rules/xg7/xg7Fields.ts）。
+  if (defenderCard && xg7DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
+  // XG1-017【許可なき戦いへの介入】・XG1-018【治安維持】（rules/xg1/xg1Fields.ts）。
+  if (defenderCard && xg1DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
+  // クロスギャザー ザ・ジェットアクセル XG4-013 の※等（rules/xg4/xg4Fields.ts）。
+  if (
+    defenderCard &&
+    xg4DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard, (c) => cardHasKeyword(state.definitions, c.cardId, "wing", { state, playerId: attackerPlayerId }), {
+      hasResist: (c) => cardHasKeyword(state.definitions, c.cardId, "register", { state, playerId: defenderPlayerId }),
+      bpOf: (c) => effectiveBp(state, defenderPlayerId, c),
+    })
+  ) {
+    return false;
+  }
+  // クロスギャザー ザ・Wインパクト XG3（XG3-007【マックスシャトル】等。rules/xg3/xg3Fields.ts）。
+  if (defenderCard && xg3DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defenderCard)) return false;
 
   if (inRush) {
     if (isVehicle(getDefinition(state.definitions, inRush.card.cardId))) return false;
@@ -535,8 +567,12 @@ export function canAttackDefender(
     if (set9AAttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
     // RK-262 ロボライダー【ボルティックシューター】（RC を発動したターン。rules/rk/rk13Fields.ts）。
     if (rk13AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
+    // XG1-021 ブルーターボ【Jガン】（rules/xg1/xg1Fields.ts）。
+    if (xg1AttackerCanAttackRush(state, attackerPlayerId, attacker.card, inRush.card)) return true;
     // RK-103 仮面ライダークウガPF【ブラストペガサス】（rules/rk/rk5Fields.ts）。
     if (rk5AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
+    // XG3-077 アギトトルネイダー【ファイナルアタックライド】（rules/xg3/xg3Fields.ts）。
+    if (xg3AttackerCanAttackRush(state, attackerPlayerId, attacker.card)) return true;
     // RK-217 イーグルアンデッド【滑空攻撃】（敵軍ラッシュエリアのレジストを持つユニット。rules/rk/rk11Fields.ts）。
     if (rk11AttackerCanAttackRush(attacker.card, () => rk10UnitHasResist(state, defenderPlayerId, inRush.card))) return true;
     // RS-213【炸裂超力バトン】（相手が選んだユニット）・RS-225【大回転獅子爆裂弾】で得た能力。
@@ -547,7 +583,9 @@ export function canAttackDefender(
       // RS-562 ガオソーシャークの※・RS-573【バリランサー】（rules/legend1/set8NamedEffectsC.ts）。
       set8CAllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, inRush.card) ||
       // RS-675【ウォーターアロー】（NC。rules/legend1/set9NamedEffectsD.ts）。
-      set9DAllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId)
+      set9DAllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId) ||
+      // XG2-038【真・水流の舞い】（NC。rules/xg2/xg2Fields.ts）。
+      xg2AllowsRushAttack(state, attackerPlayerId, attacker.card, defenderPlayerId)
     ) {
       return true;
     }

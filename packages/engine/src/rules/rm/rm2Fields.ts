@@ -11,6 +11,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId } from "../../types/game";
 import { rm1ActsAsVehicle } from "./rm1Fields";
+import { xg2ActsAsVehicle } from "../xg2/xg2Fields";
 import { unitSizeOf } from "../../core/catalog";
 
 export const SCOOPER_CARD_ID = "RM-023";
@@ -70,5 +71,5 @@ export function rmChaseVehicleCandidate(
   hasChase: (cardId: string) => boolean,
 ): boolean {
   if (state.definitions[card.cardId]?.type === "vehicle") return true;
-  return rm1ActsAsVehicle(state, playerId, card, hasChase) || rm2ActsAsVehicle(state, playerId, card, hasChase);
+  return rm1ActsAsVehicle(state, playerId, card, hasChase) || rm2ActsAsVehicle(state, playerId, card, hasChase) || xg2ActsAsVehicle(state.players[playerId], card);
 }

@@ -17,12 +17,12 @@
         "type": "operation",
         "timing": "rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
-          "type": "draw",
-          "amount": 1,
-          "player": "opponent"
+          "type": "grant_keyword",
+          "keyword": "promo::XP-006::samurai_gattai",
+          "duration": "turn"
         }
       ]
     }

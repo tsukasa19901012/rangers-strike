@@ -54,11 +54,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-077::raidobuka",
+          "keyword": "xg1::XG1-077::ride_booker",
           "duration": "turn"
         }
       ]

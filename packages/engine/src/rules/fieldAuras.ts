@@ -1,4 +1,10 @@
 import { rm3FieldBpBonus } from "./rm/rm3Fields";
+import { xg5FieldBpBonus } from "./xg5/xg5Fields";
+import { xg7FieldBpBonus } from "./xg7/xg7Fields";
+import { xg6FieldBpBonus } from "./xg6/xg6Fields";
+import { xg4FieldBpBonus } from "./xg4/xg4Fields";
+import { xg2FieldBpBonus } from "./xg2/xg2Fields";
+import { xg3FieldBpBonus } from "./xg3/xg3Fields";
 import type { Category } from "@rangers-strike/cards";
 import { set9AFieldBpBonus } from "./legend1/set9NamedEffectsA";
 import { changePowerBpBonus } from "./legend1/set6NamedEffects348";
@@ -6,7 +12,7 @@ import { hellSaturnGrantCount } from "./hellSaturn";
 import { activeNamedEffect } from "./ncGatedEffects";
 import { countActiveFieldKeyword } from "../dsl/fieldKeywords";
 import type { CardInstance, GameState, PlayerId } from "../types/game";
-import { getDefinition, cardName, unitSizeOf } from "../core/catalog";
+import { effectiveCommandCategories, getDefinition, cardName, unitSizeOf } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { legend2FieldBpBonus } from "./legend2/fieldEffects";
 import { legend3FieldBpBonus } from "./legend3/fieldEffects";
@@ -148,12 +154,8 @@ function noteOtherNcBpBonus(
 
   // XG1-020: BP+1000 per own command with 2+ categories
   if (cardId === "XG1-020") {
-    bonus += own.command.filter((c) => {
-      const def = getDefinition(state.definitions, c.cardId);
-      if (!def) return false;
-      const cats = Array.isArray(def.category) ? def.category : [def.category];
-      return cats.length >= 2;
-    }).length * 1000;
+    // 効果で追加されたカテゴリ（XG1-033【汚れた大地】の DA）も数える（atwiki/page-1581 Q1「マルチカテゴリのコマンドとして扱います」）。
+    bonus += own.command.filter((c) => effectiveCommandCategories(own, state.definitions, c.cardId).length >= 2).length * 1000;
   }
 
   // RS-558 (ガンマジン): BP+4000 if any L-unit on field (own or enemy)
@@ -281,6 +283,18 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += rk15FieldBpBonus(state, playerId, instance);
   // RM-051 メガヘラクレス【メガビートフォーメーション】（自軍エリアに「スタッガータンク」があれば BP+3000。rules/rm/rm3Fields.ts）。
   if (role === "general") bonus += rm3FieldBpBonus(state, playerId, instance);
+  // XG5-034 シンケンレッド ※（自軍ターン中、これ以外の「侍」の S ユニット1体につき BP+2000。rules/xg5/xg5Fields.ts）。
+  if (role === "general") bonus += xg5FieldBpBonus(state, playerId, instance);
+  // XG7-007【龍撃剣＆獣奏剣】・XG7-008【アースの戦士】等（rules/xg7/xg7Fields.ts）。
+  bonus += xg7FieldBpBonus(state, playerId, instance, role);
+  // クロスギャザー ザ・ギガンティックタイタン XG6-013 の※・XG6-021【激臨剣】（rules/xg6/xg6Fields.ts）。
+  if (role === "general") bonus += xg6FieldBpBonus(state, playerId, instance);
+  // クロスギャザー ザ・ジェットアクセル XG4-001【黒十字ハリケーン】・XG4-006 ドラゴンアーマー等（rules/xg4/xg4Fields.ts）。
+  if (role === "general") bonus += xg4FieldBpBonus(state, playerId, instance, unitFeatures);
+  // XG2-029【災魔ツリー】・XG2-031【宇宙警察のバックアップ】（rules/xg2/xg2Fields.ts）。
+  if (role === "general") bonus += xg2FieldBpBonus(state, playerId, instance);
+  // クロスギャザー ザ・Wインパクト XG3（rules/xg3/xg3Fields.ts）。
+  bonus += xg3FieldBpBonus(state, playerId, instance, role);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

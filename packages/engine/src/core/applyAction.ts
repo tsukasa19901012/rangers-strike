@@ -1,4 +1,19 @@
+import { activateXg6HandEffect, applyXg6AfterAction, applyXg6OnBattleStart, openXg6OnCharged, applyXg6StrikeDamageTriggers, endXg6BattlePhase, openXg6OnAttacked, openXg6OnStrike, takeXg6BattlePhaseEnd } from "../rules/xg6/xg6Hooks";
 import { noteEngineSideEffect } from "./sideEffects";
+import {
+  applyXg7RushCounter,
+  consumeXg7NextCardCost,
+  isXg7AttackedChoice,
+  isXg7RushCounterCard,
+  isXg7StrikeChoice,
+  openXg7OnAttacked,
+  openXg7OnSelfRushFromZone,
+  openXg7OnStrike,
+  resolveXg7Attacked,
+  resolveXg7Strike,
+  skipXg7Attacked,
+  skipXg7Strike,
+} from "../rules/xg7/xg7Effects";
 import { payMirrorWorldSelection } from "../rules/mirrorWorldSelection";
 import { memoizeInSearch } from "./searchCache";
 import { isInstancePlacedAnywhere } from "./helpers";
@@ -9,6 +24,8 @@ import { openRk11UndeadReplace } from "../rules/rk/rk11UnitEffects";
 import { rk11IsHandSubstitute } from "../rules/rk/rk11Fields";
 import { rk12PlacesHeldOnRush } from "../rules/rk/rk12Fields";
 import { openRk12GorgomWindow, trackRk12UnitHolds } from "../rules/rk/rk12UnitEffects";
+import { xg1dTrackHandDiscards } from "../rules/xg1/xg1dEffects";
+import { isXg1eAttackedChoice, openXg1eAttacked, resolveXg1eAttacked, skipXg1eAttacked, xg1eAfterAction } from "../rules/xg1/xg1eEffects";
 import { applyRk13AfterAction } from "../rules/rk/rk13UnitEffects";
 import { applyRk8AfterAction } from "../rules/rk/rk8UnitEffects";
 import { applyRk10AfterAction, rk10CraneDeclined, rk10CraneIntercept, runRk10OnRush } from "../rules/rk/rk10UnitEffects";
@@ -99,8 +116,29 @@ import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
 import { drainQueuedFieldLeaves } from "../rules/fieldLeaveQueue";
 import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
+import { applyXg2AfterAction, applyXg2BattleCounter, applyXg2BattlePhaseEnd, applyXg2StrikeDamageTriggers, isXg2ActivatableResident, isXg2BattleCounterCard, openXg2OnBattlePhaseStart, xg2RejectsOperationTarget } from "../rules/xg2/xg2Effects";
+import { promoOperationCostReduction } from "../rules/promo/promoHooks";
+import { applyPromoAfterAction, isPromoAttackedChoice, openPromoAttacked, resolvePromoAttacked, skipPromoAttacked } from "../rules/promo";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
+import {
+  applyXg4AfterAction,
+  applyXg4BattleCounter,
+  applyXg4RideOff,
+  isXg4BattleCounterCard,
+  isXg4BeforeBattleChoice,
+  confirmXg4BeforeBattle,
+  openXg4OnStrike,
+  openXg4BattlePhaseStart,
+  openXg4BeforeBattle,
+  resolveXg4BeforeBattle,
+  skipXg4BeforeBattle,
+} from "../rules/xg4/xg4Effects";
 import { applyRm2AfterAction, rm2CyberianOnEntry } from "../rules/rm/rm2Effects";
+import { activateXg5HandEffect, applyXg5AfterAction, applyXg5StrikeResolved, openXg5Attacked } from "../rules/xg5/xg5Effects";
+import { openXg1aStrikeReplacement } from "../rules/xg1/xg1aEffects";
+import { openXg1bSakanamaru, xg1bOnAttackDeclared } from "../rules/xg1/xg1bEffects";
+import { xg1cBlackFangOnRide, xg1cOnAttackDeclared } from "../rules/xg1/xg1cEffects";
+import { applyXg3AfterAction } from "../rules/xg3/xg3Effects";
 import { applyRm3AfterAction, isRm3TentrinaChoice, openRm3Tentrina, resolveRm3Tentrina, rm3GunGibsonOnEntry, skipRm3Tentrina } from "../rules/rm/rm3Effects";
 import { rk16NoteStrike } from "../rules/rk/rk16Fields";
 import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
@@ -511,8 +549,20 @@ function continueAttackAfterDeclaration(
     }
     return continueAttackAfterDeclaration(afterOnAttack, marked, wingAttackFromRush);
   }
+  // XG5-056【捨て身の一撃】: 敵軍 S ユニットにアタックされたとき（rules/xg5/xg5cEffects.ts）。続きは deferredAttack で待たせる。
+  const xg5Attacked = openXg5Attacked(battleState, pending, wingAttackFromRush);
+  if (xg5Attacked) {
+    const parked = xg5Attacked.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...xg5Attacked, pendingBattleEntry: undefined } : xg5Attacked;
+    return ok(parked, buildSimpleLogEntry(playerId, "xg5_attacked_choice"));
+  }
   // RK-175【ライダーキック】の「これがアタックしなかったとき」のためのアタックの記録（rules/rk/rk9UnitEffects.ts）。
   battleState = rk9RecordAttack(battleState, pending);
+  // XG4-033【フリージングダガー】: アタックするとき、バトルの前にバトル相手を持ち主のパワーゾーンに送ってもよい（rules/xg4/xg4bEffects.ts）。
+  const xg4Before = openXg4BeforeBattle(battleState, pending, wingAttackFromRush);
+  if (xg4Before) {
+    const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...xg4Before, pendingBattleEntry: undefined } : xg4Before;
+    return ok(parked, buildSimpleLogEntry(playerId, "xg4033_freezing_dagger_choice"));
+  }
   // RK-188 ベリー【地空人のエージェント】: 敵軍ターン中、自軍 S ユニットがアタックされたとき（rules/rk/rk9UnitEffects.ts）。
   const berry = openRk9Berry(battleState, pending, wingAttackFromRush);
   if (berry) {
@@ -524,6 +574,29 @@ function continueAttackAfterDeclaration(
   if (tentrina) {
     const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...tentrina, pendingBattleEntry: undefined } : tentrina;
     return ok(parked, buildSimpleLogEntry(playerId, "rm062_lina_stick_choice"));
+  }
+  // XG7-055【神出鬼没の疾風】: 敵軍ターン中、自軍 S ユニットがアタックされたとき、コマンドゾーンのこれと置き換える（rules/xg7/xg7Effects.ts）。
+  const xg7Attacked = openXg7OnAttacked(battleState, pending, wingAttackFromRush);
+  if (xg7Attacked) {
+    const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...xg7Attacked, pendingBattleEntry: undefined } : xg7Attacked;
+    return ok(parked, buildSimpleLogEntry(playerId, "xg7055_cyclone_gale_choice"));
+  }
+  // XG1-084【人質と脅迫】（アタックした相手が手札を1枚捨札にする）・XG1-087【瞬間移動】（rules/xg1/xg1eEffects.ts）。
+  const xg1eAttacked = openXg1eAttacked(battleState, pending, wingAttackFromRush);
+  if (xg1eAttacked) {
+    const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...xg1eAttacked, pendingBattleEntry: undefined } : xg1eAttacked;
+    return ok(parked, buildSimpleLogEntry(playerId, "xg1e_attacked_choice"));
+  }
+  // XG6-019【奥の手】・XG6-005【マジカルショータイム】（アタックするとき・アタックされたとき。rules/xg6/xg6Hooks.ts）。
+  // XG6-051【絶望の進化】: バトル開始時（rules/xg6/xg6cEffects.ts）。
+  battleState = applyXg6OnBattleStart(battleState, pending);
+  const xg6Attacked = openXg6OnAttacked(battleState, pending, wingAttackFromRush);
+  if (xg6Attacked) return ok(xg6Attacked, buildSimpleLogEntry(playerId, "battle_pending"));
+  // XP-016【赤い瞳に宿るもの】: これより BP の低い自軍ユニットがアタックされたとき（rules/promo/xpEffects.ts）。
+  const redEye = openPromoAttacked(battleState, pending, wingAttackFromRush);
+  if (redEye) {
+    const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...redEye, pendingBattleEntry: undefined } : redEye;
+    return ok(parked, buildSimpleLogEntry(playerId, "xp016_red_eye_choice"));
   }
   // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
   const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
@@ -677,6 +750,12 @@ function finishStrikeResolution(
   resolved = applyRk16StrikeDamageTriggers(resolved, pending);
   // RM-009 マルチパック（重ねたユニットがストライクしてダメージを与えたとき。rules/rm/rm1Effects.ts）。
   resolved = applyRm1StrikeDamageTriggers(resolved, pending);
+  // クロスギャザー XG5 のストライクしたときの効果（rules/xg5/xg5Effects.ts）。
+  resolved = applyXg5StrikeResolved(resolved, pending);
+  // XG6-025【ここからは私のターンだ】・XG6-042【ゼロのスタート】（rules/xg6/xg6bEffects.ts）。
+  resolved = applyXg6StrikeDamageTriggers(resolved, pending);
+  // XG2-016 天空気殿【天空大風車】で得た能力（rules/xg2/xg2Effects.ts）。
+  resolved = applyXg2StrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -709,8 +788,15 @@ function continueStrikeAfterDeclaration(
 ): ActionResult {
   const playerId = pending.strikerPlayerId;
   const damage = pending.damage;
+  // XG6-019【奥の手】（敵軍ユニットがストライクをするとき。rules/xg6/xg6Hooks.ts）。
+  const xg6Strike = openXg6OnStrike(nextState, pending);
+  if (xg6Strike) {
+    const parked = state.pendingBattleEntry?.instanceId === strikerInstanceId ? { ...xg6Strike, pendingBattleEntry: undefined } : xg6Strike;
+    return ok(parked, buildSimpleLogEntry(playerId, "strike_pending", String(damage)));
+  }
   // RS-196 ダイナモビル【迎撃モビルミサイル】: ストライクされたとき発動できる（任意）。
-  const mobil = openMobilMissileChoice(nextState, pending);
+  // XG7-067 シンクレッダー ※（コマンドゾーンのこれを捨札にしてストライクを無効にする。rules/xg7/xg7Effects.ts）。
+  const mobil = openMobilMissileChoice(nextState, pending) ?? openXg7OnStrike(nextState, pending);
   if (mobil) {
     const cleared =
       state.pendingBattleEntry?.instanceId === strikerInstanceId ? { ...mobil, pendingBattleEntry: undefined } : mobil;
@@ -790,6 +876,9 @@ function continueDeferredPowerFlip(state: GameState): GameState {
 }
 
 function completeStrike(state: GameState, pending: PendingStrike, extraLogs: string[] = []): ActionResult {
+  // XG1-009【マスキークラッシュ】: ダメージを与えるかわりに敵軍捨札のカードをダメージにするかを選ぶ（rules/xg1/xg1aEffects.ts）。
+  const xg1Replace = openXg1aStrikeReplacement(state, pending);
+  if (xg1Replace) return ok(xg1Replace, buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending", String(pending.damage)));
   const nextState = finalizeStrike(state, pending);
   if (nextState.pendingDamagePayment || nextState.deferredPowerFlip) {
     return ok(nextState, buildSimpleLogEntry(pending.strikerPlayerId, "strike_pending_damage"));
@@ -803,14 +892,20 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
     return false;
   }
   // スペシャルメタルエディション（`rm1::`）・ベルトコレクション（`bk1::`）のカード固有の効果は、使ったあとで対象を選ぶ
-  // （rules/rm/rm1Effects.ts・rules/bk/bk1Effects.ts）。
+  // （rules/rm/rm1Effects.ts・rules/bk/bk1Effects.ts）。クロスギャザー ザ・Wインパクト（`xg3::`）も同じ（rules/xg3/xg3Effects.ts）。
   if (
     dslEffect &&
     shouldUseDslOperation(cardId, dslEffect) &&
-    dslEffect.effects.some((p) => p.type === "grant_keyword" && (p.keyword.startsWith("rm1::") || p.keyword.startsWith("bk1::")))
+    dslEffect.effects.some((p) => p.type === "grant_keyword" && (p.keyword.startsWith("rm1::") || p.keyword.startsWith("bk1::") || p.keyword.startsWith("xg5::") || p.keyword.startsWith("xg2::") || p.keyword.startsWith("xg3::") || p.keyword.startsWith("promo::")))
   ) {
     return false;
   }
+  // クロスギャザー XG1（`xg1::`）のカード固有の効果も、使ったあとで対象を選ぶ（rules/xg1/xg1Effects.ts）。
+  if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslEffect.effects.some((p) => p.type === "grant_keyword" && p.keyword.startsWith("xg1::"))) return false;
+  // クロスギャザー ザ・ギガンティックタイタン XG6（`xg6::`。rules/xg6/xg6Hooks.ts）も、使ったあとで対象を選ぶ。
+  if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslEffect.effects.some((p) => p.type === "grant_keyword" && p.keyword.startsWith("xg6::"))) return false;
+  // クロスギャザー ザ・ジェットアクセル（`xg4::`）のカード固有の効果も、使ったあとで対象を選ぶ（rules/xg4/xg4Effects.ts）。
+  if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslEffect.effects.some((p) => p.type === "grant_keyword" && p.keyword.startsWith("xg4::"))) return false;
   return needsOperationTarget(cardId);
 }
 
@@ -1029,6 +1124,10 @@ function applyActionWithRng(
   next = trackZenibombEntries(state, next);
   // RK-240・RK-247: このターン、ユニットがホールドされたかを記録する（rules/rk/rk12UnitEffects.ts）。
   next = trackRk12UnitHolds(state, next);
+  // XG1-063【トルネードチェイサー】: 手札のカードが捨札に置かれたか（いちばん外側のアクションの前後で見る。rules/xg1/xg1dEffects.ts）。
+  if (applyActionDepth === 0) next = xg1dTrackHandDiscards(state, next, action);
+  // XG1-082【戦士シャイダーの遺産】（捨札になったとき）・XG1-092 の数え上げ（rules/xg1/xg1eEffects.ts）。
+  if (applyActionDepth === 0) next = xg1eAfterAction(state, next, action);
   // RK-251 ゴルゴムの仕業を使わなかった: オペレーションの使用（効果の実行）を続ける（rules/rk/rk12UnitEffects.ts）。
   if (next.rk12ResumeOperation && !next.pendingEffectChoice) {
     const op = next.rk12ResumeOperation;
@@ -1036,6 +1135,14 @@ function applyActionWithRng(
     next = resumed.ok
       ? { ...resumed.state, rk12GorgomPassedOp: undefined }
       : { ...next, rk12ResumeOperation: undefined, rk12GorgomPassedOp: undefined };
+  }
+  // XG1-038【サカナマル】の選択の後: 相手のユニットがまだラッシュエリアにあれば move_to_battle を続ける（rules/xg1/xg1bEffects.ts）。
+  if (next.xg1ResumeMove && !next.pendingEffectChoice) {
+    const mv = next.xg1ResumeMove;
+    const cleared: GameState = { ...next, xg1ResumeMove: undefined, activePlayer: mv.playerId };
+    const stillInRush = cleared.players[mv.playerId].rush.some((c) => c.instanceId === mv.instanceId);
+    const resumed = stillInRush ? applyAction(cleared, { type: "move_to_battle", ...mv }, { trustLegality: true }) : null;
+    next = resumed?.ok ? { ...resumed.state, xg1SakanamaruDone: undefined } : { ...cleared, xg1SakanamaruDone: undefined };
   }
   // 第9弾 RS-607 の続き・RS-613 のホールド待ち（rules/legend1/set9NamedEffectsA.ts）。
   if (applyActionDepth === 0) next = settleSet9AAfterAction(state, next);
@@ -1088,10 +1195,26 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRk13AfterAction(state, next);
   // RM-017 オメデトロフィー（自軍ユニットがバトルエリアに出たとき。rules/rm/rm1Effects.ts）。
   if (applyActionDepth === 0) next = applyRm1AfterAction(state, next);
+  // クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 の後処理（rules/xg4/xg4Effects.ts）。
+  if (applyActionDepth === 0) next = applyXg4AfterAction(state, next);
+  // プロモーションカードの、前後の状態を比べて発動する効果（XP-013【キョウリュウマル】等。rules/promo）。
+  if (applyActionDepth === 0) next = applyPromoAfterAction(state, next);
   // RM-026 グランドバース【収容】: チェイス等の選択の後で、選んだビークルをパワーゾーンに送る（rules/rm/rm2Effects.ts）。
   if (applyActionDepth === 0) next = applyRm2AfterAction(next);
   // RM-059 異次元調達屋カブト（WB の自軍 S ユニットがバトルエリアに出たとき。rules/rm/rm3Effects.ts）。
   if (applyActionDepth === 0) next = applyRm3AfterAction(state, next);
+  // クロスギャザー XG5 の後処理（rules/xg5/xg5Effects.ts）。
+  if (applyActionDepth === 0) next = applyXg5AfterAction(state, next, applyAction);
+  // XG6-042 の※（手札が0枚のとき撃破）・XG6-025【ここからは私のターンだ】のバトルフェイズの終了（rules/xg6/xg6bEffects.ts）。
+  if (applyActionDepth === 0) next = applyXg6AfterAction(next);
+  if (applyActionDepth === 0 && next.xg6?.endBattlePhase && !hasBlockingInteraction(next) && !next.winner) {
+    const ending = takeXg6BattlePhaseEnd(next);
+    if (ending) next = ending.playerId && ending.state.activePlayer === ending.playerId ? endXg6BattlePhase(ending.state, ending.playerId) : ending.state;
+  }
+  // XG2-019 知恵の樹モーク（ターンが変わったら M ユニットとして扱うのをやめる。rules/xg2/xg2Effects.ts）。
+  if (applyActionDepth === 0) next = applyXg2AfterAction(state, next);
+  // クロスギャザー ザ・Wインパクト XG3-002〜XG3-103 の後処理（rules/xg3/xg3Effects.ts）。
+  if (applyActionDepth === 0) next = applyXg3AfterAction(state, next);
   // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
   if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
     const endingPlayer = next.rk9RushEndAdvance;
@@ -1099,6 +1222,7 @@ function applyActionWithRng(
     if (cleared.phase === "rush" && cleared.activePlayer === endingPlayer) {
       let afterPhase = advancePhase(cleared);
       if (afterPhase.phase === "battle") afterPhase = openChargeInsteadOfBattle(afterPhase, endingPlayer);
+      if (afterPhase.phase === "battle") afterPhase = openXg2OnBattlePhaseStart(afterPhase, endingPlayer);
       next = { ...afterPhase, log: [...afterPhase.log, buildSimpleLogEntry(endingPlayer, "end_phase", "rush")] };
     } else {
       next = cleared;
@@ -1552,12 +1676,17 @@ function applyActionCore(
       return {
         ok: true,
         // RS-473【ブルームーンスラッシュ】: パワーゾーンにカードを置かずにチャージフェイズを終えた（rules/legend1/set7NamedEffectsB.ts）。
-        state: openBlueMoonSlash(
-          advanceFromCharge(
-            chargedState,
-            buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
+        // XG6-060【カンドロイド】: チャージしたとき（rules/xg6/xg6cEffects.ts）。
+        state: openXg6OnCharged(
+          openBlueMoonSlash(
+            advanceFromCharge(
+              chargedState,
+              buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
+            ),
+            playerId,
           ),
           playerId,
+          commandCard.instanceId,
         ),
       };
     }
@@ -1849,6 +1978,7 @@ function applyActionCore(
       if (!fizzle && operationNeedsUpfrontTarget(found.card.cardId) && !action.targetInstanceId) {
         return fail("target_required");
       }
+      if (xg2RejectsOperationTarget(state, playerId, found.card, action.targetInstanceId)) return fail("invalid_target");
 
       if (
         !fizzle &&
@@ -1862,8 +1992,11 @@ function applyActionCore(
         return fail("command_not_held");
       }
 
-      const cost = parsePowerCost(definition.powerCost);
+      // XP-021 等の必要パワーの減少（rules/promo/promoHooks.ts）。
+      const cost = Math.max(0, parsePowerCost(definition.powerCost) - promoOperationCostReduction(state, playerId, definition.id));
       if (!payPowerCost(state, playerId, cost)) return fail("insufficient_power");
+      // XG7-054 ◎2（次に手札から使うカードの必要パワー-3）は、手札からオペレーションを使ったら消える（rules/xg7/xg7Effects.ts）。
+      state = consumeXg7NextCardCost(state, playerId);
 
       // RK-251 ゴルゴムの仕業: 相手が通常のオペレーションを使用したとき、その効果を実行する前（rules/rk/rk12UnitEffects.ts）。
       {
@@ -2437,6 +2570,10 @@ function applyActionCore(
         );
       }
 
+      // XG1-038【サカナマル】: 相手が S ユニットをバトルエリアに出すために選んだとき（rules/xg1/xg1bEffects.ts）。
+      const sakanamaru = openXg1bSakanamaru(state, { playerId, instanceId: action.instanceId, vehicleInstanceId: action.vehicleInstanceId, rideOff: action.rideOff });
+      if (sakanamaru) return ok(sakanamaru, buildSimpleLogEntry(playerId, "battle_entry_reaction_pending"));
+
       // ライドして出るときは、ライドした状態で出られるかを判定する（例: RS-290 の対象外になる。atwiki/page-474 Q3）。
       const enteringCard = action.vehicleInstanceId
         ? { ...found.card, mountedOnInstanceId: action.vehicleInstanceId }
@@ -2596,8 +2733,10 @@ function applyActionCore(
     case "self_rush_from_zone": {
       const applied = applySelfRushFromZone(state, playerId, action.zone, action.instanceId);
       if (!applied) return fail("illegal_action");
+      // XG7-044【風都の護り手】（相手の手札以外からラッシュされたとき。rules/xg7/xg7Effects.ts）。
+      const rushedFromZone = openXg7OnSelfRushFromZone(applied, playerId, action.zone, action.instanceId);
       return ok(
-        applied,
+        rushedFromZone,
         buildLogEntry(playerId, "rush", 
           state.players[playerId][action.zone].find((c) => c.instanceId === action.instanceId)?.cardId ?? action.instanceId,
           state.definitions,
@@ -2642,6 +2781,8 @@ function applyActionCore(
         battlePhasePlayer: playerId,
       };
       nextState = emitStrikeDeclared(nextState, pending);
+      // XG4-080【ハードショット】: ストライクしてダメージを与えるとき、かわりに敵軍ラッシュエリアの S ユニットをダメージにしてもよい（rules/xg4/xg4Effects.ts）。
+      nextState = openXg4OnStrike(nextState, pending);
 
       if (nextState.pendingEffectChoice) {
         // ルール: R-TIME-01 — 「ストライクしたとき」の効果の選択をすべて解決してから、「ストライクされたとき」
@@ -2892,7 +3033,8 @@ function applyActionCore(
         }
         // RK-172 ルリオオカミ: 山札の上から3枚のうち、アタックしてきたユニットの必要パワー以上のカードを手札へ。1枚以上なら、そのバトルは行われない
         // （rules/rk/rk9UnitEffects.ts）。
-        if (counterCardId && isRk9BattleCounterCard(counterCardId)) {
+        // XG2-061 リョクオオザル（このターン BP 修正。バトルは行われる。rules/xg2/xg2cEffects.ts）も同じ手順。
+        if (counterCardId && (isRk9BattleCounterCard(counterCardId) || isXg2BattleCounterCard(counterCardId))) {
           const used: GameState = {
             ...state,
             ...updatePlayer(state, playerId, {
@@ -2901,7 +3043,7 @@ function applyActionCore(
               discard: [...player.discard, { instanceId: action.instanceId, cardId: counterCardId }],
             }),
           };
-          const result = applyRk9RuriOokami(used, playerId, pending);
+          const result = isXg2BattleCounterCard(counterCardId) ? applyXg2BattleCounter(used, playerId, action.instanceId) : applyRk9RuriOokami(used, playerId, pending);
           const log = buildLogEntry(playerId, "play_counter", counterCardId, state.definitions, result.detail);
           const nextPending: PendingBattle = result.cancel ? { ...pending, battleCancelled: true } : pending;
           if (
@@ -2940,6 +3082,21 @@ function applyActionCore(
             ok: true,
             state: { ...opened, log: [...opened.log, log, resolved.log], winner: checkWinner(opened) },
           };
+        }
+        // クロスギャザー ザ・ジェットアクセル XG4-021 カラクリマント等（rules/xg4/xg4Effects.ts）。
+        if (counterCardId && isXg4BattleCounterCard(counterCardId)) {
+          const used: GameState = {
+            ...state,
+            ...updatePlayer(state, playerId, {
+              ...player,
+              hand: player.hand.filter((c) => c.instanceId !== action.instanceId),
+              discard: [...player.discard, { instanceId: action.instanceId, cardId: counterCardId }],
+            }),
+          };
+          const result = applyXg4BattleCounter(used, playerId, counterCardId, pending);
+          const log = buildLogEntry(playerId, "play_counter", counterCardId, state.definitions, result.detail);
+          const resolved = emitBattleDeclaredAndResolve(clearCounterHoldReady(result.state, playerId), result.pending);
+          return { ok: true, state: { ...resolved.state, log: [...resolved.state.log, log, resolved.log], winner: checkWinner(resolved.state) } };
         }
         // RK-004 ギギの腕輪・RK-009 二人の世紀王（rules/rk/rk1NamedEffects.ts）。
         if (counterCardId && isRk1BattleCounterCard(counterCardId)) {
@@ -2989,7 +3146,10 @@ function applyActionCore(
           return fail("invalid_counter");
         }
         const counterCardId = findInZone(state.players[playerId], "hand", action.instanceId)!.card.cardId;
-        const result = isShippuNinjaCard(state, counterCardId)
+        // XG7-027 雷撃ディスク（rules/xg7/xg7Effects.ts）。
+        const result = isXg7RushCounterCard(counterCardId)
+          ? applyXg7RushCounter(state, playerId, action.instanceId, pending)
+          : isShippuNinjaCard(state, counterCardId)
           ? applyShippuNinjaCounter(state, playerId, action.instanceId, pending)
           : applyMusicBoxClockCounter(state, playerId, action.instanceId, pending);
         // 同じラッシュに対して続けて別のカウンターを使える（atwiki/page-424 Q12・Q15）。
@@ -3104,6 +3264,11 @@ function applyActionCore(
         const crane = rk10CraneIntercept(state, playerId, action);
         if (crane) return ok(crane, buildSimpleLogEntry(playerId, "confirm_effect_choice"));
       }
+      // XG4-074【ライドルスティック】: バトルの前の確認（rules/xg4/xg4dEffects.ts）。
+      if (isXg4BeforeBattleChoice(state.pendingEffectChoice)) {
+        const confirmed = confirmXg4BeforeBattle(state, playerId);
+        if (confirmed) return continueAttackAfterDeclaration(confirmed.state, confirmed.battle, confirmed.wingAttackFromRush);
+      }
       const confirming = state.pendingEffectChoice;
       const result = applyConfirmEffectChoice(state, playerId);
       if ("error" in result) return fail(result.error);
@@ -3167,8 +3332,34 @@ function applyActionCore(
         if ("error" in picked) return fail(picked.error);
         return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
       }
+      if (isXg4BeforeBattleChoice(pending)) {
+        const picked = resolveXg4BeforeBattle(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        if ("partial" in picked) return ok(picked.partial, buildSimpleLogEntry(playerId, "resolve_effect_choice", action.instanceId));
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
+      }
       if (isRm3TentrinaChoice(pending)) {
         const picked = resolveRm3Tentrina(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
+      }
+      if (isXg7AttackedChoice(pending)) {
+        const picked = resolveXg7Attacked(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
+      }
+      if (isXg7StrikeChoice(pending)) {
+        const picked = resolveXg7Strike(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return completeStrike(picked.state, picked.strike, [picked.log]);
+      }
+      if (isXg1eAttackedChoice(pending)) {
+        const picked = resolveXg1eAttacked(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
+      }
+      if (isPromoAttackedChoice(pending)) {
+        const picked = resolvePromoAttacked(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
         return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
       }
@@ -3290,8 +3481,37 @@ function applyActionCore(
         if (!skipped) return fail("invalid_target");
         return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
       }
+      if (isXg4BeforeBattleChoice(pending)) {
+        const skipped = skipXg4BeforeBattle(state, playerId);
+        if (!skipped) return fail("invalid_target");
+        return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
+      }
       if (isRm3TentrinaChoice(pending)) {
         const skipped = skipRm3Tentrina(state, playerId);
+        if (!skipped) return fail("invalid_target");
+        return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
+      }
+      if (isXg7AttackedChoice(pending)) {
+        const skipped = skipXg7Attacked(state, playerId);
+        if (!skipped) return fail("invalid_target");
+        return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
+      }
+      if (isXg7StrikeChoice(pending)) {
+        // 発動しない — ストライクは通常どおり（ほかのストライクへの応答があれば開く）。
+        const skipped = skipXg7Strike(state, playerId);
+        if (!skipped) return fail("invalid_target");
+        if (hasStrikeReactions(skipped.state, playerId, skipped.strike)) {
+          return ok({ ...skipped.state, pendingStrike: skipped.strike, activePlayer: playerId }, buildSimpleLogEntry(playerId, "skip_effect_choice"));
+        }
+        return completeStrike(skipped.state, skipped.strike);
+      }
+      if (isXg1eAttackedChoice(pending)) {
+        const skipped = skipXg1eAttacked(state, playerId);
+        if (!skipped) return fail("invalid_target");
+        return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
+      }
+      if (isPromoAttackedChoice(pending)) {
+        const skipped = skipPromoAttacked(state, playerId);
         if (!skipped) return fail("invalid_target");
         return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
       }
@@ -3591,7 +3811,9 @@ function applyActionCore(
       );
       if (!mounted.ok) return mounted;
       // RS-381 ガレオパルサー: RC を持たない「レッド」の S ユニットは自軍コマンドを1つホールドしてライドする。
-      const held = holdCommandForGaleoPulsarRide(mounted.state, playerId, action.riderInstanceId, action.vehicleInstanceId);
+      let held = holdCommandForGaleoPulsarRide(mounted.state, playerId, action.riderInstanceId, action.vehicleInstanceId);
+      // XG1-057 ブラックファング【衝撃波】: 敵軍のライドされているブラックファングがあれば、ライドして出た S ユニットはホールド状態になる。
+      held = xg1cBlackFangOnRide(held, playerId, action.riderInstanceId);
       return held === mounted.state ? mounted : { ...mounted, state: held };
     }
 
@@ -3625,6 +3847,8 @@ function applyActionCore(
         };
         // RM-020【ドルファイヤー】: 自軍ターン中、「宇宙刑事」のユニットが電子星獣ドルからライドオフしたとき（rules/rm/rm1Effects.ts）。
         nextState = applyRm1DolFire(nextState, playerId, rider);
+        // クロスギャザー ザ・ジェットアクセル XG4-017 等「ライドオフしたとき」（rules/xg4/xg4Effects.ts）。
+        nextState = applyXg4RideOff(nextState, playerId, unmounted);
       }
 
       // RK-017 ミッションメモリー: ライドしたまま進むことを選んでも、RC の効果を発動する（rules/rk/rk1NamedEffects.ts）。
@@ -3732,6 +3956,11 @@ function applyActionCore(
       battleState = rk1PayAttackCommandCost(battleState, playerId, enemyId, action.defenderInstanceId);
       // RK-124【人を守る決意】: アタックの対象として「スネークオルフェノク」を選んだことを記録する（rules/rk/rk6Fields.ts）。
       battleState = rk6RecordSnakeSelected(battleState, playerId, action.defenderInstanceId);
+      // XG1-030【キラークロー】ウイングでアタックするとき（rules/xg1/xg1bEffects.ts）。
+      battleState = xg1bOnAttackDeclared(battleState, playerId, action.attackerInstanceId, wingAttackFromRush);
+      // XG1-045【墨攻撃】: アタックするとき、バトルの前に山札の上をオモテにする（rules/xg1/xg1cEffects.ts）。
+      const sumi = xg1cOnAttackDeclared(battleState, playerId, action.attackerInstanceId, wingAttackFromRush);
+      battleState = sumi.state;
       // ルール: R-CTR-03 — 「アタックするとき、相手はカウンターを発動できない」はアタック処理の終わりまで続く。
       if (attackerBlocksDefenderCounters(battleState, playerId, action.attackerInstanceId)) {
         battleState = { ...battleState, counterLockedPlayerId: enemyId };
@@ -3747,6 +3976,7 @@ function applyActionCore(
         mirageBeamDiscard: miragePrep.revealedCard,
         mirageBeamDefenderBpOverride: defenderMirage.bpOverride,
         mirageBeamDefenderDiscard: defenderMirage.revealedCard,
+        ...(sumi.cancel ? { battleCancelled: true } : {}),
       };
 
       // ルール: RS-019 超力／RK-186【Jパンチ】 — アタックするとき、ホールドするコマンドの数をアタックした
@@ -3853,7 +4083,7 @@ function applyActionCore(
         return ok(activated, buildLogEntry(playerId, "activate_resident_operation", op.cardId, state.definitions));
       }
       // RS-524 呉越同舟は自軍バトルフェイズ中（rules/legend1/set8NamedEffectsA.ts）。それ以外の常駐はラッシュフェイズ。
-      if (state.phase !== "rush" && !(op && isSet8AResident(op.cardId))) return fail("wrong_phase");
+      if (state.phase !== "rush" && !(op && (isSet8AResident(op.cardId) || isXg2ActivatableResident(op.cardId)))) return fail("wrong_phase");
       if (!op) return fail("illegal_action");
       const result = applyActivateResidentOperation(
         state,
@@ -3887,10 +4117,25 @@ function applyActionCore(
       if (!unit) {
         // RS-559【パワーアロー】等「自分の手札からこのカードを捨札にして発動できる」（rules/legend1/set8NamedEffectsB.ts）。
         const handCard = player.hand.find((c) => c.instanceId === action.unitInstanceId);
-        const fromHand = handCard ? activateSet8BHandEffect(state, playerId, action.unitInstanceId) : null;
-        if (!handCard || !fromHand) return fail("illegal_action");
+        const fromHand = handCard ? (activateXg5HandEffect(state, playerId, action.unitInstanceId) ?? activateSet8BHandEffect(state, playerId, action.unitInstanceId)) : null;
+        if (!handCard || !fromHand) {
+          // XG6-009（手札から）・XG6-014【英雄の遺産】（パワーゾーンから。rules/xg6/xg6Hooks.ts）。
+          const xg6 = activateXg6HandEffect(state, playerId, action.unitInstanceId);
+          const xg6Card =
+            player.hand.find((c) => c.instanceId === action.unitInstanceId) ??
+            player.power.find((c) => c.instanceId === action.unitInstanceId) ??
+            player.discard.find((c) => c.instanceId === action.unitInstanceId);
+          if (xg6 && xg6Card) return ok(xg6, buildLogEntry(playerId, "activate_field_unit_ability", xg6Card.cardId, state.definitions, "xg6"));
+          return fail("illegal_action");
+        }
         return ok(fromHand, buildLogEntry(playerId, "activate_field_unit_ability", handCard.cardId, state.definitions, "from_hand"));
       }
+      // XG5-042 ゴセイマシン【天装合体】等、場のこのカードから発動する XG5 の効果（rules/xg5/xg5cEffects.ts）。
+      const xg5Field = activateXg5HandEffect(state, playerId, action.unitInstanceId);
+      if (xg5Field) return ok(xg5Field, buildLogEntry(playerId, "activate_field_unit_ability", unit.cardId, state.definitions));
+      // XG6-061【ベンダーモード】・XG6-064【要塞能力】（rules/xg6/xg6cEffects.ts）。
+      const xg6Field = activateXg6HandEffect(state, playerId, action.unitInstanceId);
+      if (xg6Field) return ok(xg6Field, buildLogEntry(playerId, "activate_field_unit_ability", unit.cardId, state.definitions, "xg6"));
       const activated = activateFieldAbility(state, playerId, action.unitInstanceId);
       if (activated) {
         return ok(
@@ -3921,10 +4166,15 @@ function applyActionCore(
         const hachi = openRk9HachiAtRushEnd(state, playerId);
         if (hachi) return ok(hachi, buildSimpleLogEntry(playerId, "rk177_hypnotic_wave"));
       }
-      const nextState: GameState = {
+      let nextState: GameState = {
         ...advancePhase(state),
         endPhaseStep: advancePhase(state).phase === "end" ? "end_effects" : undefined,
       };
+      // XG2-024【一騎打ち】・XG2-028【マイナスエネルギー吸収】（自軍バトルフェイズを終えるとき。rules/xg2/xg2Effects.ts）。
+      if (state.phase === "battle") nextState = applyXg2BattlePhaseEnd(nextState, playerId);
+      if (nextState.phase === "end" && nextState.pendingEffectChoice && !state.pendingEffectChoice) {
+        return ok({ ...nextState, endPhaseStep: "end_effects" }, buildSimpleLogEntry(playerId, "end_phase", state.phase));
+      }
       if (nextState.phase === "end") {
         const withMenu = tryOpenEndTurnEffectsMenu(nextState, playerId);
         if (withMenu) {
@@ -3947,6 +4197,10 @@ function applyActionCore(
       if (state.phase === "charge") afterPhase = openBlueMoonSlash(afterPhase, playerId);
       // RS-470 ギンガット【花の星獣】: バトルフェイズを行うとき、かわりにチャージフェイズを行ってもよい（同上）。
       if (state.phase === "rush" && afterPhase.phase === "battle") afterPhase = openChargeInsteadOfBattle(afterPhase, playerId);
+      // クロスギャザー ザ・ジェットアクセル XG4-059【自律変形】等「敵軍バトルフェイズ開始時」（rules/xg4/xg4Effects.ts）。
+      if (state.phase === "rush" && afterPhase.phase === "battle" && !afterPhase.pendingEffectChoice) afterPhase = openXg4BattlePhaseStart(afterPhase, playerId);
+      // XG2-009 コンピュータードラゴン【行動予測】（敵軍バトルフェイズ開始時。rules/xg2/xg2Effects.ts）。
+      if (state.phase === "rush" && afterPhase.phase === "battle") afterPhase = openXg2OnBattlePhaseStart(afterPhase, playerId);
       return ok(
         afterPhase,
         buildSimpleLogEntry(playerId, "end_phase", state.phase),

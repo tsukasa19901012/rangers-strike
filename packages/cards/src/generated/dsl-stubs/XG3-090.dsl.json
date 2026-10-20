@@ -64,12 +64,12 @@
       "trigger": {
         "type": "on_rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-090::supafuainaruburo",
-          "duration": "turn"
+          "keyword": "xg3::XG3-090::super_final_blow",
+          "duration": "permanent"
         }
       ]
     }

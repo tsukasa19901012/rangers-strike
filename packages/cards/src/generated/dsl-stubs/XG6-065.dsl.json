@@ -36,13 +36,13 @@
       "name": "友情の証",
       "text": "これは自軍Lユニットがあれば、敵軍ユニットにアタックされない。また、このユニットと隣り合うETを持つLユニットはBP+1000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-065::noe58f8b",
+          "keyword": "xg6::XG6-065::friendship",
           "duration": "permanent"
         }
       ]

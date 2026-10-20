@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-006::betarancha",
+          "keyword": "xg2::XG2-006::beta_launcher",
           "duration": "permanent"
         }
       ]

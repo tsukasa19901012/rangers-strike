@@ -185,7 +185,8 @@ export function resolveDeclareNumberDeckReveal(
   const enemy = withBottom.players[enemyId];
   const targets = [...enemy.battle, ...enemy.rush].filter((c) => {
     const d = getDefinition(withBottom.definitions, c.cardId);
-    const cost = typeof d?.powerCost === "number" ? d.powerCost : NaN;
+    // 「7+」「7-」は数字7（XG2-069・XP-007 atwiki/page-1723「必要パワーの数字」）。
+    const cost = typeof d?.powerCost === "number" ? d.powerCost : parseInt(String(d?.powerCost ?? ""), 10);
     return cost === declared;
   });
   if (targets.length === 0) return withBottom;
@@ -331,6 +332,8 @@ export function beginStackVehicleUnderSelf(
   const selfId = ctx.triggerSourceInstanceId;
   if (!selfId) return null;
   const player = state.players[ctx.playerId];
+  // すでにビークルにライドして出た（XG4-009【緊急出動】）なら、ビークルを重ねられない（atwiki/page-1233 Q2・page-2083 Q1）。
+  if (player.rush.concat(player.battle).some((c) => c.instanceId === selfId && c.mountedOnInstanceId)) return null;
   const ridden = new Set(
     player.rush.concat(player.battle).map((c) => c.mountedOnInstanceId).filter(Boolean),
   );

@@ -37,12 +37,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "reveal_enemy_deck_1",
-          "duration": "turn"
+          "keyword": "xg2::XG2-084::babylos_laser",
+          "duration": "permanent"
         }
       ]
     }

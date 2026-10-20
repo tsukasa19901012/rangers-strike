@@ -43,13 +43,13 @@
       "name": "タイタニックフレア",
       "text": "自軍ターン中、このユニットは、WBを持つ自軍コマンド1つにつきBP+1000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG3-085::taitanikufurea",
+          "keyword": "xg3::XG3-085::titanic_flare",
           "duration": "permanent"
         }
       ]

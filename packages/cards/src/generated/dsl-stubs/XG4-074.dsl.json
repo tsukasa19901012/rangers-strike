@@ -24,13 +24,13 @@
       "name": "ライドルスティック",
       "text": "これが敵軍Sユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のコマンドゾーンに送ってもよい。置けなければ捨札にする。",
       "trigger": {
-        "type": "on_attack"
+        "type": "riding_combo"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-074::raidorusuteiku",
+          "keyword": "xg4::XG4-074::ridol",
           "duration": "turn"
         }
       ]

@@ -1,4 +1,6 @@
+import { xg2DefenderBlocksAttack } from "../rules/xg2/xg2Fields";
 import { rk8SkipsPromotedSpFloor } from "../rules/rk/rk8UnitEffects";
+import { xg3NoAttackTextDisabled } from "../rules/xg3/xg3Fields";
 import { isDivingOrochi } from "../rules/errataCardEffects";
 import { cardCategories } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
@@ -9,6 +11,7 @@ import { lastBattleProtectsOtherS } from "../rules/promotedNcEffects";
 import { getCardDslDocument } from "./effectLookup";
 import { stackOntoLargeBpBonus, stackOntoLargeGrantsKeyword } from "../rules/stackOntoLargeGrants";
 import { unitFeatures } from "../rules/addedFeatures";
+import { promoNegatesUnnamedText } from "../rules/promo/promoHooks";
 import { decodeFeatureKeywordSlug, featuresMatchKeywordSlug } from "./featureKeywords";
 
 /** rematch 不可の D/E 区分キーワード（grant_keyword マーカー）。 */
@@ -393,9 +396,9 @@ export function promotedKeywordSpFloor(
   const keywords = cachedCardGrantKeywords(instance.cardId);
   if (keywords.length === 0) return 0;
 
+  // instanceBp は bpModifier を含む（二重に足さない。XG6-044 の BP4500 で SP1 にならない）。
   const bp =
     instanceBp(state.definitions, instance) +
-    (instance.bpModifier ?? 0) +
     promotedKeywordBpBonus(state, playerId, instance);
 
   let floor = 0;
@@ -646,6 +649,9 @@ export function promotedDefenderBlocksAttack(
     return true;
   }
 
+  // XG2-065 仮面ライダーカブトHF【ハイパークロックアップ】（rules/xg2/xg2Fields.ts）。
+  if (xg2DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defender.card)) return true;
+
   if (
     isSmallUnit(state.definitions, attacker.card) &&
     lastBattleProtectsOtherS(state, defenderPlayerId, defender.card.instanceId)
@@ -667,7 +673,12 @@ export function promotedDefenderBlocksAttack(
   }
 
   const attackerBp = quickBpForAttackCheck(state, attackerPlayerId, attacker.card);
-  const keywords = cachedCardGrantKeywords(defender.card.cardId);
+  // XG3-037【烏賊墨砲】で「アタックされない」テキストが無効になったユニット（rules/xg3/xg3Fields.ts）。
+  // SX-003 W・FJ の※: 効果名を持たないテキストが無効なユニットの※は働かない（rules/promo/promoHooks.ts）。
+  const keywords =
+    xg3NoAttackTextDisabled(state, defender.card.instanceId) || promoNegatesUnnamedText(state, defenderPlayerId, defender.card.instanceId)
+      ? []
+      : cachedCardGrantKeywords(defender.card.cardId);
 
   for (const keyword of keywords) {
     if (keyword === "enemy_cannot_attack") return true;

@@ -35,15 +35,16 @@
       "name": "液化",
       "text": "自軍ラッシュフェイズ中、このビークルを捨札にしてもよい。そうしたとき、自分は1枚ドローする。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "draw",
-          "amount": 1,
-          "player": "controller"
+          "type": "grant_keyword",
+          "keyword": "xg4::XG4-051::ekika",
+          "duration": "turn"
         }
-      ]
+      ],
+      "optional": false
     }
   ],
   "implementation": {

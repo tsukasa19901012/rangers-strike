@@ -35,7 +35,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG7-041::koregaerianiarug",
+          "keyword": "xg7::XG7-041::exile_at_end",
           "duration": "permanent"
         }
       ]
@@ -51,8 +51,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG7-041::no9",
-          "duration": "turn"
+          "keyword": "xg7::XG7-041::golden_hope",
+          "duration": "permanent"
         }
       ]
     }

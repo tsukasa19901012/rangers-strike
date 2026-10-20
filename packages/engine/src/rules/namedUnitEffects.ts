@@ -1,6 +1,12 @@
 import { rm2AttackerBattleBonus, rm2DefenderBattleBonus } from "./rm/rm2Effects";
+import { xg7AttackerBattleBonus } from "./xg7/xg7Fields";
+import { xg4AttackerBattleBonus } from "./xg4/xg4Fields";
+import { unitFeatures as xg4UnitFeatures } from "./addedFeatures";
+import { xg2DefenderBattleBonus } from "./xg2/xg2Fields";
+import { xg3AttackerBpBonus } from "./xg3/xg3Fields";
 import { rk9UsePrintedDefenderBp } from "./rk/rk9Fields";
 import { rk11UsePrintedDefenderBp } from "./rk/rk11Fields";
+import { xg7UsePrintedDefenderBp } from "./xg7/xg7Fields";
 import {
   findNamedEffectByEffectId,
   getOnRushNamedEffect,
@@ -80,6 +86,7 @@ import { openOptionalEffectConfirm, registerOptionalEffect } from "./optionalEff
 import { afterCommandCardsLeft } from "./commandLeaveRefill";
 import { attackerSuppressesAttackedCounters } from "./keywordGapRuntime";
 import { allyAttackedAuraBpBonus } from "../dsl/promotedKeywordBridge";
+import { promoAttackerBpBonus, promoDefenderBpBonus } from "./promo/promoHooks";
 
 export type NamedEffectOutcome = {
   state: GameState;
@@ -125,10 +132,18 @@ export function battleAttackerBpBonus(
   );
   total += legend2AttackerBpBonus(state, pending);
   total += legend3AttackerBpBonus(state, pending);
+  // XP-030 等（rules/promo/promoHooks.ts）。
+  total += promoAttackerBpBonus(state, pending);
   // RK-052【音撃打・破砕細石】（rules/rk/rk3UnitEffects.ts）。
   total += rk3AttackerBattleBonus(state, pending);
   // RM-033 メタルダー ※（rules/rm/rm2Effects.ts）。
   total += rm2AttackerBattleBonus(state, pending);
+  // XG7-019【スカイコンビブレイク】等（rules/xg7/xg7Fields.ts）。
+  total += xg7AttackerBattleBonus(state, pending);
+  // クロスギャザー ザ・ジェットアクセル XG4-007【獣奏剣】等（rules/xg4/xg4Fields.ts）。
+  total += xg4AttackerBattleBonus(state, pending, xg4UnitFeatures);
+  // XG3-070 ズ・ザイン・ダ【車両への憎悪】（rules/xg3/xg3Fields.ts）。
+  total += xg3AttackerBpBonus(state, pending);
 
   // RS-062【ボウケンジャベリン】・RS-241【デュアルクラッシャー・ドリルヘッド】（CN5）:
   // 特徴「メカ」を持つユニットにアタックするとき BP+4000（NC の効果は成立しているときだけ。R-CN-02）。
@@ -241,7 +256,9 @@ export function battleDefenderBp(
       // RK-182【Zブリンガーアタック】（rules/rk/rk9Fields.ts）。
       rk9UsePrintedDefenderBp(state, pending) ||
       // RK-215【スペード2―スラッシュ】で得た能力（rules/rk/rk11Fields.ts）。
-      rk11UsePrintedDefenderBp(state, pending));
+      rk11UsePrintedDefenderBp(state, pending) ||
+      // XG7-032【ライダーダブルキック】（rules/xg7/xg7Fields.ts）。
+      xg7UsePrintedDefenderBp(state, pending));
 
   const mirageOverride = pending.substituteInstanceId ? undefined : pending.mirageBeamDefenderBpOverride;
   const base =
@@ -265,7 +282,11 @@ export function battleDefenderBp(
     // RK-052【音撃打・破砕細石】（rules/rk/rk3UnitEffects.ts）。
     rk3DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card) +
     // RM-030【ダイレオンレーザー】・RM-033 メタルダー ※（rules/rm/rm2Effects.ts）。
-    rm2DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card)
+    rm2DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card) +
+    // XG2-007 ランドガンマ【ガンマカノン砲】（rules/xg2/xg2Fields.ts）。
+    xg2DefenderBattleBonus(state, pending, defenderOwner, defenderFound.card) +
+    // SX-003【アーム・ファング】等（rules/promo/promoHooks.ts）。
+    promoDefenderBpBonus(state, defenderOwner, defenderFound.card)
   );
 }
 

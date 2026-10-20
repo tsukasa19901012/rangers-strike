@@ -50,13 +50,13 @@
       "name": "フリージングダガー",
       "text": "これが敵軍Sユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のパワーゾーンに送ってもよい。（この効果はこれがウイングでアタックするときはナンバーに関係なく発動する）",
       "trigger": {
-        "type": "on_attack"
+        "type": "nc"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG4-033::furijingudaga",
+          "keyword": "xg4::XG4-033::freezing_nc",
           "duration": "turn"
         }
       ]
