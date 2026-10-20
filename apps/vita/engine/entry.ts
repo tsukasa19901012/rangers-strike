@@ -16,3 +16,12 @@ export {
   WIN_DAMAGE,
 } from "../../../packages/engine/src/index";
 export { getEffectLabel, starterDecks } from "../../../packages/cards/src/index";
+// Deck-builder rules over the full playable pool (wrapped by client-core's createDeckApi).
+export {
+  fullPlayableCatalog,
+  validateDeckEntries,
+  normalizeSameCardName,
+  maxCopiesForCard,
+  cardCategories,
+  expandDeck,
+} from "../../../packages/cards/src/index";

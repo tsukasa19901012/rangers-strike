@@ -110,7 +110,7 @@ type DialogItem = { kind: "card"; id: string; items: MenuItem[] } | { kind: "but
 
 const BOARD_MOVES = new Set(["battle", "strike", "pass_battle_entry", "move_to_battle", "end_phase", "charge_power", "rush"]);
 const PASS_LIKE = /^(pass_|skip_|cancel_|end_phase$)/;
-const TYPE_LABELS: Record<string, string> = {
+export const TYPE_LABELS: Record<string, string> = {
   unit: "ユニット",
   operation: "オペレーション",
   vehicle: "ビークル",

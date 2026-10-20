@@ -26,6 +26,9 @@ export type SessionOptions = {
   cpuDeck: string;
   seed: number;
   cpuLevel: CpuLevel;
+  /** Card lists of custom decks; when set they replace the starter ids above. */
+  humanCards?: GameState["definitions"][string][];
+  cpuCards?: GameState["definitions"][string][];
   clock: Clock;
   memory?: MemoryProbe;
   log?: LogSink;
@@ -64,6 +67,8 @@ export class GameSession {
     this.state = options.engine.createStarterGame({
       player1Starter: options.humanDeck,
       player2Starter: options.cpuDeck,
+      player1Deck: options.humanCards,
+      player2Deck: options.cpuCards,
       seed: options.seed,
     });
     this.syncLog();

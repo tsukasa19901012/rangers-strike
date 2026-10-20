@@ -7,8 +7,8 @@
   "scripts": {
     "setup": "npm ci --prefix toolchain --no-audit --no-fund && node scripts/fetch-font.mjs",
     "build:engine": "tsx scripts/build-engine.ts",
-    "build:engine:full": "tsx scripts/build-engine.ts --full",
-    "verify:prune": "tsx scripts/build-engine.ts && tsx scripts/build-engine.ts --full && node scripts/verify-engine-prune.mjs",
+    "build:engine:starter": "tsx scripts/build-engine.ts --starter",
+    "verify:prune": "tsx scripts/build-engine.ts && tsx scripts/build-engine.ts --starter && node scripts/verify-engine-prune.mjs",
     "smoke:qjs": "tsx scripts/build-engine.ts && node scripts/smoke-qjs.mjs",
     "pocket:check": "tsx scripts/build-engine.ts && node scripts/pocket.mjs check",
     "pocket:compile": "tsx scripts/build-engine.ts && node scripts/pocket.mjs compile",

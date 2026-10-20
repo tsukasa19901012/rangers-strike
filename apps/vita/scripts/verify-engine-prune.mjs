@@ -15,15 +15,15 @@ const opt = (name, fallback) => {
   return hit ? hit.slice(name.length + 3) : fallback;
 };
 if (args.includes("--build")) {
-  execFileSync(process.execPath, [join(APP_ROOT, "scripts/build-engine.mjs")], { stdio: "inherit" });
-  execFileSync(process.execPath, [join(APP_ROOT, "scripts/build-engine.mjs"), "--full"], { stdio: "inherit" });
+  execFileSync("npx", ["tsx", join(APP_ROOT, "scripts/build-engine.ts")], { stdio: "inherit" });
+  execFileSync("npx", ["tsx", join(APP_ROOT, "scripts/build-engine.ts"), "--starter"], { stdio: "inherit" });
 }
 const matches = Number(opt("matches", "56"));
 const level = Number(opt("level", "2"));
 const maxSteps = 4000;
 
-const pruned = await import(pathToFileURL(join(APP_ROOT, "src/generated/engine.js")).href);
-const full = await import(pathToFileURL(join(APP_ROOT, ".cache/engine-full.js")).href);
+const pruned = await import(pathToFileURL(join(APP_ROOT, ".cache/engine-starter.js")).href);
+const full = await import(pathToFileURL(join(APP_ROOT, "src/generated/engine.js")).href);
 
 function play(E, p1, p2, seed) {
   let state = E.createStarterGame({ player1Starter: p1, player2Starter: p2, seed });

@@ -2,8 +2,8 @@
 // PocketJS guest, and prunes the card data down to the cards a starter-deck
 // match can reference.
 //
-//   tsx scripts/build-engine.ts            # pruned -> src/generated/engine.js
-//   tsx scripts/build-engine.ts --full     # unpruned -> .cache/engine-full.js
+//   tsx scripts/build-engine.ts            # every playable card -> src/generated/engine.js
+//   tsx scripts/build-engine.ts --starter  # pruned to the starter decks -> .cache/engine-starter.js
 //   tsx scripts/build-engine.ts --out=path --no-minify
 //
 // Pruning is build-only: esbuild's onLoad replaces the large generated JSON
@@ -29,12 +29,14 @@ const REPO = resolve(APP_ROOT, "../..");
 const CARDS_SRC = join(REPO, "packages/cards/src");
 
 const args = process.argv.slice(2);
-const full = args.includes("--full");
+// The Vita build carries every playable card. --starter keeps the pruned
+// starter-deck bundle (scripts/verify-engine-prune.mjs compares the two).
+const full = !args.includes("--starter");
 const minify = !args.includes("--no-minify");
 const outArg = args.find((a) => a.startsWith("--out="));
 const out = outArg
   ? resolve(outArg.slice("--out=".length))
-  : join(APP_ROOT, full ? ".cache/engine-full.js" : "src/generated/engine.js");
+  : join(APP_ROOT, full ? "src/generated/engine.js" : ".cache/engine-starter.js");
 
 // The engine imports @rangers-strike/cards and a few subpaths; resolve them to
 // TypeScript sources (same mapping as packages/engine/vitest.config.ts).
@@ -68,6 +70,14 @@ function loadStarterDecks(): DeckLike[] {
 
 const decks = loadStarterDecks();
 const keep = collectDeckCardIds(decks);
+/** Card ids the full bundle can play: the full-playable catalog plus the starter decks. */
+function playableCardIds(): Set<string> {
+  const catalog = JSON.parse(readFileSync(join(CARDS_SRC, "generated/catalog/full-playable/cards.json"), "utf8")) as {
+    cards: { id: string }[];
+  };
+  return new Set([...keep, ...catalog.cards.map((c) => c.id)]);
+}
+const bundled = full ? playableCardIds() : keep;
 const pruneStats: [string, number, number][] = [];
 
 const plugins: Plugin[] = [
@@ -130,11 +140,11 @@ const meta = {
   prune: pruneStats.map(([file, before, after]) => ({ file, before, after })),
 };
 writeFileSync(out.replace(/\.js$/, ".meta.json"), JSON.stringify(meta, null, 2) + "\n");
-if (!full && !outArg) {
+if (full && !outArg) {
   // Chunk manifest for the Vita AssetLoader: one chunk baked into the bundle,
   // plus the per-deck chunk plan a lazy-loading shell would use.
   const manifest = {
-    baked: { id: "starter-decks", cardIds: [...keep].sort(), bytes },
+    baked: { id: "full-playable", cardIds: [...bundled].sort(), bytes },
     perDeck: buildDeckChunks(decks).map((c) => ({ id: c.id, cards: c.cardIds.length })),
   };
   writeFileSync(
@@ -144,7 +154,7 @@ if (!full && !outArg) {
       `export const PER_DECK_CHUNKS = ${JSON.stringify(manifest.perDeck)};\n`,
   );
 }
-if (!full && !outArg) {
+if (full && !outArg) {
   // Glyph coverage for the baked font atlas: every non-ASCII character the
   // guest can draw — card names/texts and engine log strings (from the pruned
   // bundle) plus UI strings in client-core and the Vita shell. PocketJS reads
@@ -172,7 +182,7 @@ if (!full && !outArg) {
   writeFileSync(join(APP_ROOT, "src/generated/chars.txt"), sorted.join(""));
   console.log(`glyphs: ${sorted.length} non-ASCII characters -> src/generated/chars.txt`);
 }
-if (!full && !outArg && !args.includes("--no-images")) await bakeCardImages(APP_ROOT, REPO, keep);
+if (full && !outArg && !args.includes("--no-images")) await bakeCardImages(APP_ROOT, REPO, bundled);
 console.log(
   `engine: ${relative(APP_ROOT, out)} ${(bytes / 1024 / 1024).toFixed(2)} MiB` +
     `${full ? " (full card data)" : ` (pruned to ${keep.size} cards from ${decks.length} starter decks)`}` +

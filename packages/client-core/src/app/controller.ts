@@ -12,11 +12,13 @@ import { fitLine, wrapText, type WrapOptions } from "../text/wrap";
 import { boardLines, buildBoardView, buildPendingView, pendingLines } from "../view/board";
 import { computeLayout, type FontPx, type Layout, type Viewport } from "../view/layout";
 import { GuiMatch, type GuiView } from "./guiMatch";
+import { DeckBuilder, type DeckBuilderView } from "./deckBuilder";
+import { CUSTOM_DECK_PREFIX } from "../platform/settings";
 
 export type Row = { text: string; selected: boolean };
 
 export type ScreenView = {
-  screen: "title" | "loading" | "match" | "result";
+  screen: "title" | "loading" | "match" | "result" | "deck";
   layout: Layout;
   header: string;
   footer: string;
@@ -32,6 +34,8 @@ export type ScreenView = {
   revision: number;
   /** Graphical match screen (card tiles + action menu) when the controller runs with `gui`. */
   gui?: GuiView;
+  /** Deck builder screen (always graphical). */
+  deck?: DeckBuilderView;
 };
 
 export type ControllerOptions = {
@@ -75,6 +79,7 @@ export class AppController {
   private readonly guiEnabled: boolean;
   private readonly cardArt: boolean;
   private gui: GuiMatch | null = null;
+  private builder: DeckBuilder | null = null;
 
   constructor(options: ControllerOptions) {
     this.platform = options.platform;
@@ -108,7 +113,14 @@ export class AppController {
 
   private setEngine(engine: EngineApi): void {
     this.engine = engine;
-    this.deckIds = [...engine.ALL_STARTER_DECK_IDS];
+    this.refreshDeckIds();
+    if (!this.deckIds.includes(this.settings.humanDeck)) this.settings.humanDeck = this.deckIds[0] ?? "";
+    if (!this.deckIds.includes(this.settings.cpuDeck)) this.settings.cpuDeck = this.deckIds[1] ?? "";
+  }
+
+  private refreshDeckIds(): void {
+    const custom = this.settingsStore.customDecks().map((d) => `${CUSTOM_DECK_PREFIX}${d.id}`);
+    this.deckIds = [...custom, ...(this.engine?.ALL_STARTER_DECK_IDS ?? [])];
     if (!this.deckIds.includes(this.settings.humanDeck)) this.settings.humanDeck = this.deckIds[0] ?? "";
     if (!this.deckIds.includes(this.settings.cpuDeck)) this.settings.cpuDeck = this.deckIds[1] ?? "";
   }
@@ -117,6 +129,7 @@ export class AppController {
     this.viewport = viewport;
     this.layout = computeLayout(viewport, this.fontPx);
     this.gui?.setViewport(viewport);
+    this.builder?.setViewport(viewport);
     this.touch();
   }
 
@@ -127,6 +140,12 @@ export class AppController {
   // ---------------------------------------------------------------- input
 
   dispatch(event: LogicalInput): void {
+    if (this.builder && this.screen === "deck") {
+      this.builder.dispatch(event);
+      this.afterBuilder();
+      this.touch();
+      return;
+    }
     if (this.gui && this.screen === "match") {
       if (this.gui.dispatch(event)) this.afterStateChange();
       this.touch();
@@ -181,6 +200,7 @@ export class AppController {
   private confirm(): void {
     if (this.screen === "title") {
       if (this.cursor.index === 3) this.startMatch();
+      else if (this.cursor.index === 4) this.openDeckBuilder();
       else this.adjustTitleRow(1);
       return;
     }
@@ -221,16 +241,60 @@ export class AppController {
     this.settingsStore.save(this.settings);
   }
 
+  openDeckBuilder(): void {
+    if (!this.engine) return;
+    this.builder = new DeckBuilder(this.engine, this.viewport, () => this.settingsStore.customDecks(), this.cardArt);
+    this.screen = "deck";
+    this.message = "";
+  }
+
+  private afterBuilder(): void {
+    const result = this.builder?.result;
+    if (!result) return;
+    if (result.kind === "saved") {
+      this.settingsStore.saveCustomDeck(result.deck);
+      this.settings.humanDeck = `${CUSTOM_DECK_PREFIX}${result.deck.id}`;
+      this.message = `保存しました: ${result.deck.name}`;
+    } else if (result.kind === "deleted") {
+      this.settingsStore.deleteCustomDeck(result.id);
+      this.message = "デッキを削除しました";
+    }
+    this.builder = null;
+    this.screen = "title";
+    this.refreshDeckIds();
+    this.settingsStore.save(this.settings);
+    this.resetCursor();
+  }
+
+  /** Card list for a custom deck id, or undefined for a starter id. */
+  private customCards(engine: EngineApi, deckId: string): { cards?: GameSession["state"]["definitions"][string][]; error?: string } {
+    if (!deckId.startsWith(CUSTOM_DECK_PREFIX)) return {};
+    const deck = this.settingsStore.customDecks().find((d) => `${CUSTOM_DECK_PREFIX}${d.id}` === deckId);
+    if (!deck) return { error: "デッキが見つかりません" };
+    const check = engine.deckApi.validate(deck.entries);
+    if (!check.ok) return { error: `${deck.name}: ${check.errors[0] ?? "デッキが不正です"}` };
+    return { cards: engine.deckApi.build(deck.entries) };
+  }
+
   startMatch(): void {
     const loaded = this.platform.assets.loadMatchData({
       decks: [this.settings.humanDeck, this.settings.cpuDeck],
     });
     const begin = (engine: EngineApi) => {
       this.engine = engine;
+      const human = this.customCards(engine, this.settings.humanDeck);
+      const cpu = this.customCards(engine, this.settings.cpuDeck);
+      if (human.error || cpu.error) {
+        this.screen = "title";
+        this.message = human.error ?? cpu.error ?? "";
+        return;
+      }
       this.session = new GameSession({
         engine,
         humanDeck: this.settings.humanDeck,
         cpuDeck: this.settings.cpuDeck,
+        humanCards: human.cards,
+        cpuCards: cpu.cards,
         seed: this.seed(),
         cpuLevel: this.settings.cpuLevel as CpuLevel,
         clock: this.platform.clock,
@@ -257,6 +321,11 @@ export class AppController {
 
   /** Call once per frame. Runs at most one CPU move per call. Returns true if the view changed. */
   tick(): boolean {
+    if (this.builder && this.screen === "deck") {
+      const changed = this.builder.frame();
+      if (changed) this.touch();
+      return changed;
+    }
     const session = this.session;
     if (this.screen !== "match" || !session) return false;
     if (session.winner) {
@@ -326,6 +395,10 @@ export class AppController {
   }
 
   private deckName(id: string): string {
+    if (id.startsWith(CUSTOM_DECK_PREFIX)) {
+      const deck = this.settingsStore.customDecks().find((d) => `${CUSTOM_DECK_PREFIX}${d.id}` === id);
+      return deck ? `自作: ${deck.name}` : id;
+    }
     return this.engine?.starterDecks[id]?.name ?? id;
   }
 
@@ -336,6 +409,7 @@ export class AppController {
         `CPU: ${this.deckName(this.settings.cpuDeck)}`,
         `CPUレベル: Lv${this.settings.cpuLevel}`,
         "▶ 対戦開始",
+        "デッキ構築（全カード）",
       ];
     }
     if (this.screen === "result") return ["タイトルへ戻る"];
@@ -482,6 +556,7 @@ export class AppController {
       busy: this.session?.turnOwner() === "cpu",
       revision: this.revision,
       gui: this.gui && this.screen === "match" ? this.gui.view() : undefined,
+      deck: this.builder && this.screen === "deck" ? this.builder.view() : undefined,
     };
     return this.cachedView;
   }

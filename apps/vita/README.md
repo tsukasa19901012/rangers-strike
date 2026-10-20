@@ -31,6 +31,7 @@ packages/client-core   プラットフォーム非依存（DOM / Node / PocketJS
 apps/vita              PocketJS シェル（このディレクトリ）
   src/app.tsx          ScreenView を描くだけ。Vita ボタン/タッチ → 論理入力
   src/GuiMatchView.tsx 対戦画面（ScreenView.gui）をコアが決めた座標に描く
+  src/DeckBuilderView.tsx デッキ構築画面（ScreenView.deck）を描く
   src/cardTextures.ts  カード画像のテクスチャ（試合ごとに両デッキ分だけアップロード・解放）
   src/platform.ts      Vita 用 Platform 実装（保存はメモリ、ブラウザ host では localStorage）
   src/engine.ts        事前バンドル済みエンジンを EngineApi として渡す
@@ -40,26 +41,26 @@ apps/vita              PocketJS シェル（このディレクトリ）
 ```
 
 エンジン（`packages/engine`）の挙動は変更していません。エンジンのソースは esbuild で 1 ファイルに束ね、
-**ビルド時にカードデータを 28 種のスターターデッキに含まれる 405 枚へ刈り込みます**
-（`scripts/build-engine.ts`、ルールは `client-core/src/data/split.ts`）。
-刈り込み前後で同じ乱数種の CPU 対 CPU 56 試合（全 28 デッキ）を再生し、ログが完全一致することを
-`scripts/verify-engine-prune.mjs` で確認しています。
+**全プレイアブルカード（1,832 枚＋スターターの 1 枚、計 1,833 枚）** を入れます（`scripts/build-engine.ts`）。
+`--starter` を付けると、28 種のスターターデッキに含まれる 405 枚へ刈り込んだ版を `.cache/engine-starter.js` に作ります
+（ルールは `client-core/src/data/split.ts`）。刈り込み版と全カード版で同じ乱数種の CPU 対 CPU 56 試合を再生し、
+ログが完全一致することを `npm run verify:prune` で確認できます。
 
 **カード画像**も同じビルド手順で焼き込みます（`scripts/bake-card-images.ts`、リポジトリ直下の `npm install` で入る sharp を使用）。
-`apps/web/public/cards` の JPEG（130×190）を、スターター 405 枚と裏面だけ 128×128・256 色（CLUT8、1 枚 17KB）の
-PocketJS IMG エントリに変換し、`src/pak.json` 経由で pak に入れます（計 6.7MB。生成物は gitignore 済み、2 回目以降は差分だけ）。
+`apps/web/public/cards` の JPEG（130×190）を、全 1,833 枚と裏面を 128×128・256 色（CLUT8、1 枚 17KB）の
+PocketJS IMG エントリに変換し、`src/pak.json` 経由で pak に入れます（計 30.4MB。初回の変換は約 2 分、生成物は gitignore 済みで 2 回目以降は差分だけ）。
 キーは `app:card.<カードID>` で、起動時には読み込みません。試合が始まると両デッキのカード（多くて 80 枚前後、約 1.4MB）だけを
 テクスチャにアップロードし、デッキ外から出たカードはその場で読み、対戦画面を閉じると全部解放します。
+デッキ構築画面では表示中のページの分だけを読み、最大 96 枚（約 1.6MB）を超えると古いものから解放します。
 sharp がない環境では画像なしでビルドし、従来の文字タイルで表示します。
 
 | バンドル | サイズ |
 |---|---|
-| エンジン（全カード、minify） | 7.32 MiB |
-| エンジン（スターター 405 枚に刈り込み、minify） | 2.79 MiB |
-| Vita 用 JS（エンジン＋client-core＋PocketJS＋Solid） | 3.46 MiB |
-| Vita 用 pak（12px/12px 太字/16px 既定スロットの文字アトラス、各 1,264 字） | 3.38 MiB |
+| エンジン（全カード、minify） | 8.33 MiB |
+| Vita 用 JS（エンジン＋client-core＋PocketJS＋Solid） | 9.63 MiB |
+| Vita 用 pak（カード画像 1,834 枚 30.4 MiB＋12px/12px 太字/16px 既定スロットの文字アトラス 各 1,359 字） | 34.2 MiB |
 
-日本語の文字は `src/generated/chars.txt`（ビルド時に、刈り込み後エンジンと UI ソースに現れる非 ASCII 文字 約 1,170 字を収集）を
+日本語の文字は `src/generated/chars.txt`（ビルド時に、エンジン（カード名・本文を含む）と UI ソースに現れる非 ASCII 文字 約 1,260 字を収集）を
 `src/fonts.json` の `characterFiles` で指定し、Noto Sans JP（npm `@expo-google-fonts/noto-sans-jp`、SIL OFL）を
 フォールバック書体としてアトラスに焼き込みます。PocketJS には日本語の自動改行がないため、改行は client-core が行います。
 
@@ -81,8 +82,8 @@ npm の install-script 承認設定で `bun` の postinstall が止まっても�
 ## 3. Vita 実機・エミュレータなしで確認する
 
 ```sh
-npm run smoke:qjs        # QuickJS（qjs）で client-core＋刈り込み済みエンジンを動かし 3 試合を最後まで進める
-npm run verify:prune     # 刈り込み前後のエンジンで 56 試合を再生し一致を確認（約 90 秒）
+npm run smoke:qjs        # QuickJS（qjs）で client-core＋全カード版エンジンを動かし 3 試合を最後まで進める
+npm run verify:prune     # スターター刈り込み版と全カード版で 56 試合を再生し一致を確認（約 90 秒）
 npm run pocket:check     # PocketJS の型検査（Vita プロファイル）
 npm run pocket:compile   # Vita 用 JS と pak を dist/ に出力（VitaSDK 不要）
 npm run web:preview      # PocketJS のブラウザ host（WASM）で起動 → http://127.0.0.1:8130/ で "main" を選ぶ
@@ -200,8 +201,24 @@ JS の評価を 5 秒、1 フレームを 250 ms で打ち切りますが、実�
 | すべての合法手 | △ | — |
 | ログ／選択ウィンドウ中に盤面を見る | L | 上端・左パネルをタップ |
 
+### デッキ構築
+
+タイトルの「デッキ構築（全カード）」で開きます。始め方（空のデッキ・スターターを元にする・保存済みの編集）を選ぶと、
+左に選んでいるカードの画像と本文、右に全カードの一覧（1 ページ 24 枚）が出ます。カードの右下は「デッキに入っている枚数/上限」です。
+上端に枚数と、対戦できるか（40 枚以上・同名 3 枚まで。ルールは `@rangers-strike/cards` の `validateDeckEntries`）を出します。
+保存したデッキはタイトルで「自作: 名前」として自分と CPU のどちらにも選べます。
+
+| 操作 | Vita | タッチ |
+|---|---|---|
+| カードを選ぶ | 十字キー（端でページが変わる） | カードをタップ |
+| 1 枚入れる／抜く | ○ ／ □ | 選んでいるカードをもう一度タップで 1 枚入れる |
+| 一覧とデッキの切替 | L | 上の左のボタン |
+| 種類で絞る（全種類・ユニット・オペレーション・ビークル） | △ | 上の中央のボタン |
+| カテゴリで絞る（ET・WB・OT・MA・DA） | R | 上の右のボタン |
+| メニュー（保存して戻る・保存せずに戻る・別のデッキ・削除） | × | 上端をタップ |
+
 タイトル・結果画面は従来どおりテキストの一覧です（上下で選択、左右で値の変更、L／R／△でタブ切替）。
-ブラウザ host のキー: 矢印＝十字、Enter／Z＝○、X＝×、S＝△、Q＝L、E＝R。
+ブラウザ host のキー: 矢印＝十字、Enter／Z＝○、X＝×、A＝□、S＝△、Q＝L、E＝R。
 
 ## 9. 計測と記録
 
@@ -252,8 +269,10 @@ Web 版の豊富な専用モーダル（ゾード・バトルダンス等）は�
 - VitaSDK・cargo-vita・Rust nightly・Vita3K はこの試作の作業環境に入っていないため、**VPK の生成と Vita3K／実機での起動は未確認** です（`pocket build` は `VITASDK` 未設定で止まるところまで確認）。
   PocketJS の Vita ホストの Cargo マニフェストが npm 版パッケージ内で解決できることは `cargo metadata --offline` で確認しています。
 - ブラウザ host（WASM コア＋ブラウザの JS エンジン）とホスト側 QuickJS では最後まで対戦できますが、Vita の QuickJS 上での実行速度とメモリは未計測です。
-- 刈り込みはスターターデッキ 28 種の和集合（405 枚）単位です。実行時にデッキごとのチャンクを読み込む仕組み（`AssetLoader.loadMatchData` の非同期版）は
-  インターフェースと分割計画（`PER_DECK_CHUNKS`）まで用意し、Vita では 1 チャンクをバンドルに焼き込んでいます。
+- カードデータは全カードを 1 チャンクとしてバンドルに焼き込んでいます。実行時にデッキごとのチャンクを読み込む仕組み（`AssetLoader.loadMatchData` の非同期版）は
+  インターフェースと分割計画（`PER_DECK_CHUNKS`）まで用意してあります。
 - 16px の既定フォントスロットは PocketJS が常に焼き込むため、使わなくても pak に 1.6 MB 含まれます。
 - 選択肢はエンジンの合法手をそのまま並べるため、複数枚の支払い候補などで行数が多くなることがあります（左右キーでページ送り）。
-- カスタムデッキ（デッキ構築）は対象外です。保存インターフェース（`KeyValueStore`）は用意済みです。
+- デッキ構築で作ったデッキは `KeyValueStore` に保存します。Vita では保存先がないため、アプリを終了すると消えます（ブラウザ host では localStorage に残ります）。
+  デッキ名は自動で付けます（文字入力は未対応）。
+- 全カード版の pak は約 34MB（カード画像 30.4MB＋文字アトラス）で、VPK の実行ファイルに埋め込まれます。実機でのメモリと起動時間は未計測です。

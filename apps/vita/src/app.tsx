@@ -13,13 +13,18 @@ import {
   ButtonRepeater,
   TapRecognizer,
   hitTest,
+  hitTestDeck,
   hitTestGui,
   input,
   type ScreenView,
 } from "@rangers-strike/client-core";
 import { vitaPlatform } from "./platform";
 import { GuiMatchView } from "./GuiMatchView";
-import { hasCardArt, preloadCards, releaseCards } from "./cardTextures";
+import { DeckBuilderView } from "./DeckBuilderView";
+import { hasCardArt, preloadCards, releaseCards, setCardCacheLimit } from "./cardTextures";
+
+/** Card textures kept while paging through the deck builder (~17 KiB each). */
+const DECK_TEXTURE_CACHE = 96;
 
 /** Every card id in both players' zones: at match start, the two decks. */
 function matchCardIds(state: { players: Record<string, Record<string, unknown>> }): Set<string> {
@@ -36,7 +41,8 @@ function matchCardIds(state: { players: Record<string, Record<string, unknown>> 
 /**
  * Japanese layout: ○ = confirm, × = cancel/pass. Match screen: D-pad moves over
  * cards, R = actions not tied to a card (phase end, pass), △ = every action,
- * L = card detail / log. Title screen: L/R/△ switch tabs.
+ * L = card detail / log. Deck builder: ○ add, □ remove, L catalog/deck,
+ * △ type filter, R category filter, × menu. Title screen: L/R/△ switch tabs.
  */
 const BINDINGS = [
   { mask: BTN.UP, input: input.prev, repeat: true },
@@ -48,6 +54,7 @@ const BINDINGS = [
   { mask: BTN.LTRIGGER, input: input.toggleLog },
   { mask: BTN.RTRIGGER, input: input.menu },
   { mask: BTN.TRIANGLE, input: input.allActions },
+  { mask: BTN.SQUARE, input: input.alt },
   { mask: BTN.START, input: input.confirm },
 ];
 
@@ -89,7 +96,7 @@ export default function App() {
     const tap = taps.frame(contact ? { x: contact.x, y: contact.y } : null);
     if (tap) {
       const current = controller.view();
-      const event = current.gui ? hitTestGui(current.gui, tap) : hitTest(current, tap);
+      const event = current.gui ? hitTestGui(current.gui, tap) : current.deck ? hitTestDeck(current.deck, tap) : hitTest(current, tap);
       if (event) {
         controller.dispatch(event);
         changed = true;
@@ -101,6 +108,7 @@ export default function App() {
     const session = controller.currentScreen === "match" ? controller.session : null;
     if (cardArt && session !== loadedFor) {
       releaseCards();
+      setCardCacheLimit(session ? Infinity : DECK_TEXTURE_CACHE);
       if (session) {
         const count = preloadCards(matchCardIds(session.state as never));
         vitaPlatform.log?.(`card textures: ${count} uploaded`);
@@ -120,7 +128,7 @@ export default function App() {
   });
 
   return (
-    <Show when={view().gui} fallback={<TextScreen view={view()} />}>
+    <Show when={view().gui} fallback={<Show when={view().deck} fallback={<TextScreen view={view()} />}>{(deck) => <DeckBuilderView view={deck()} />}</Show>}>
       {(gui) => <GuiMatchView view={gui()} />}
     </Show>
   );

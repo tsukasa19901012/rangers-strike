@@ -19,6 +19,8 @@ export type LogicalInput =
   | { type: "allActions" }
   /** GUI: switch the side panel between card detail and the log. */
   | { type: "toggleLog" }
+  /** Secondary button (□): deck builder removes a copy. */
+  | { type: "alt" }
   /** GUI: direct pick of a visible tile (touch). `open` also opens its action menu. */
   | { type: "focusTile"; row: number; slot: number; open?: boolean };
 
@@ -36,6 +38,7 @@ export const input = {
   menu: { type: "menu" } as LogicalInput,
   allActions: { type: "allActions" } as LogicalInput,
   toggleLog: { type: "toggleLog" } as LogicalInput,
+  alt: { type: "alt" } as LogicalInput,
   focusTile: (row: number, slot: number, open = false): LogicalInput => ({ type: "focusTile", row, slot, open }),
 };
 

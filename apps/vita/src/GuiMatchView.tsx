@@ -8,7 +8,7 @@ import type { GuiBox, GuiTile, GuiView, PanelTone } from "@rangers-strike/client
 import { cardTexture } from "./cardTextures";
 
 type Box = { x: number; y: number; w: number; h: number };
-const at = (r: Box) => ({ insetL: r.x, insetT: r.y, width: r.w, height: r.h });
+export const at = (r: Box) => ({ insetL: r.x, insetT: r.y, width: r.w, height: r.h });
 const LINE = { height: 15 };
 
 // Class literals must be complete strings (PocketJS bakes them at build time).
@@ -32,7 +32,7 @@ const RING_FOCUS = "absolute border-[2] border-white rounded-[3]";
 const RING_TARGET = "absolute border-[2] border-rose-400 rounded-[3]";
 const RING_ACTION = "absolute border-amber-400 rounded-[3]";
 
-const TONE: Record<PanelTone, string> = {
+export const TONE: Record<PanelTone, string> = {
   head: "text-xs text-white font-bold",
   body: "text-xs text-slate-100",
   dim: "text-xs text-slate-400",
@@ -43,7 +43,7 @@ const TONE: Record<PanelTone, string> = {
 // card's 130:190 aspect. A tile shows the art band (about 10-50% of the card).
 const CARD_ASPECT = 190 / 130;
 
-function CardImage(props: { texture: number; style: Record<string, number> }) {
+export function CardImage(props: { texture: number; style: Record<string, number> }) {
   let node: NodeMirror | undefined;
   // Create the node first: the effect must see it on its first run.
   const image = <Image ref={(n: NodeMirror) => (node = n)} style={props.style} />;
@@ -129,7 +129,7 @@ function TextTile(props: TileProps) {
 }
 
 /** Popup next to a card, or the centred list (variants / every action). */
-function MenuBox(props: { box: GuiBox; accent: boolean }) {
+export function MenuBox(props: { box: GuiBox; accent: boolean }) {
   return (
     <>
       <View class="absolute bg-slate-950 border-sky-500 rounded-[4] shadow-md" style={at(props.box.rect)} />

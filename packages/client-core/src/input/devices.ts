@@ -3,6 +3,7 @@
 import type { LogicalInput } from "./actions";
 import type { ScreenView } from "../app/controller";
 import type { GuiView } from "../app/guiMatch";
+import type { DeckBuilderView } from "../app/deckBuilder";
 
 export type ButtonBinding = { mask: number; input: LogicalInput; repeat?: boolean };
 
@@ -132,5 +133,25 @@ export function hitTestGui(view: GuiView, point: Point): LogicalInput | null {
   }
   if (inside(view.endButton.rect)) return { type: "menu" };
   if (inside(view.geometry.topBar) || inside(view.geometry.detail)) return { type: "toggleLog" };
+  return null;
+}
+
+/** Touch on the deck builder: menu rows, the filter chips, and grid tiles (tap a focused tile to add a copy). */
+export function hitTestDeck(view: DeckBuilderView, point: Point): LogicalInput | null {
+  const inside = (r: { x: number; y: number; w: number; h: number }) =>
+    point.x >= r.x && point.x < r.x + r.w && point.y >= r.y && point.y < r.y + r.h;
+  if (view.menu) {
+    const row = view.menu.rows.findIndex((r) => inside(r.rect));
+    if (row >= 0) return { type: "select", row, confirm: true };
+    return inside(view.menu.rect) ? null : { type: "cancel" };
+  }
+  const chip = view.chips.findIndex((c) => inside(c.rect));
+  if (chip >= 0) return { type: "selectTab", tab: chip };
+  const tile = view.tiles.findIndex((t) => inside(t.rect));
+  if (tile >= 0) {
+    const cols = view.geometry.cols;
+    return { type: "focusTile", row: Math.floor(tile / cols), slot: tile % cols, open: true };
+  }
+  if (inside(view.geometry.topBar)) return { type: "cancel" };
   return null;
 }

@@ -13,6 +13,25 @@ import type {
 
 export type { ActionResult, CardInstance, CpuLevel, GameAction, GameState, PlayerId };
 
+export type CardDefinition = GameState["definitions"][string];
+
+export type DeckEntry = { cardId: string; count: number };
+
+/** Deck building over the full card pool (rules from @rangers-strike/cards). */
+export interface DeckApi {
+  /** Cards that may go into a deck (commanders excluded), in catalog order. */
+  readonly cards: readonly CardDefinition[];
+  validate(entries: readonly DeckEntry[]): { ok: boolean; total: number; errors: string[] };
+  /** Same-name key for the copy limit (variants of one card share it). */
+  sameNameKey(card: CardDefinition): string;
+  /** Copy limit per same name (Infinity for "any number" cards). */
+  maxCopies(card: CardDefinition): number;
+  /** Category codes of a card (ET, WB, OT, MA, DA). */
+  categories(card: CardDefinition): string[];
+  /** Card definitions for a match, one per copy. */
+  build(entries: readonly DeckEntry[]): CardDefinition[];
+}
+
 export type StarterDeckInfo = {
   id: string;
   name: string;
@@ -23,6 +42,9 @@ export interface EngineApi {
   createStarterGame(options: {
     player1Starter?: string;
     player2Starter?: string;
+    /** Custom decks (deck builder) take precedence over the starter ids. */
+    player1Deck?: CardDefinition[];
+    player2Deck?: CardDefinition[];
     seed?: number;
     firstPlayer?: PlayerId;
   }): GameState;
@@ -39,6 +61,7 @@ export interface EngineApi {
   readonly starterDecks: Readonly<Record<string, StarterDeckInfo>>;
   readonly ALL_STARTER_DECK_IDS: readonly string[];
   readonly WIN_DAMAGE: number;
+  readonly deckApi: DeckApi;
 }
 
 export const HUMAN: PlayerId = "player1";

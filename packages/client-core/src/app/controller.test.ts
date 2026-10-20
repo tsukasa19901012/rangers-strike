@@ -10,7 +10,7 @@ describe("AppController", () => {
     const app = new AppController({ platform: testPlatform(logs), viewport: { width: 480, height: 272 }, cpuDelayFrames: 0, seed: () => 5 });
     let view = app.view();
     expect(view.screen).toBe("title");
-    expect(view.rows).toHaveLength(4);
+    expect(view.rows).toHaveLength(5);
     // Change the CPU deck with pageNext, then start.
     app.dispatch(input.next);
     const before = app.view().rows[1]!.text;
