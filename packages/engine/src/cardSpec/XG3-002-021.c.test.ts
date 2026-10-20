@@ -55,7 +55,9 @@ const DA_M = sUnit("SPEC-DA-M", { category: "DA", bp: 3000, size: "M" });
 const M3000 = sUnit("SPEC-M3000", { bp: 3000, size: "M" });
 const BEAST_S = sUnit("SPEC-BEAST-S", { bp: 2000, features: ["獣"] });
 const BEAST_BIG = sUnit("SPEC-BEAST-BIG", { bp: 6000, size: "M", features: ["獣"] });
-const EXTRA = [MA_L, WB_L, MA_S, WB_S, DA_S, DA_S0, DA_M, M3000, BEAST_S, BEAST_BIG, PLAIN_VEHICLE];
+const DA_S14 = sUnit("SPEC-DA-S14", { category: "DA", bp: 1000, sp: "1/4" as never });
+const DA_SX = sUnit("SPEC-DA-SX", { category: "DA", bp: 1000, sp: "special" as never });
+const EXTRA = [MA_L, WB_L, MA_S, WB_S, DA_S, DA_S0, DA_M, M3000, BEAST_S, BEAST_BIG, PLAIN_VEHICLE, DA_S14, DA_SX];
 
 const battle = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
   st({ player1: { deck: deckCards(5), ...p1 }, player2: { deck: deckCards(5, "e"), ...p2 } }, EXTRA);
@@ -283,6 +285,15 @@ describe("XG3-021 カブトライジャー", () => {
     const s = resolveAll(nc([inst("SPEC-DA-S0", "e0")]), ["SPEC-DA-S0:e0", "TST-OP:ed"]);
     expect(zoneOf(s, "player2", "SPEC-DA-S0:e0")).toBe("discard");
     expect(s.players.player2.power.filter((c) => c.faceDown)).toEqual([]);
+  });
+
+  it("XG3-021:【迅雷流剣技・カブト雷撃破】— 撃破したユニットの本来の SP が分数（「1/4」）や「SP！」なら「1以上」ではなく、ダメージは置かない（出典: 利用者の決定 2026-10-20・questions-all.md U-18）", () => {
+    for (const id of ["SPEC-DA-S14", "SPEC-DA-SX"]) {
+      const s = resolveAll(nc([inst(id, "e")]), [`${id}:e`, "TST-OP:ed"]);
+      expect(zoneOf(s, "player2", `${id}:e`)).toBe("discard");
+      expect(zoneOf(s, "player2", "TST-OP:ed")).toBe("discard");
+      expect(s.players.player2.power.filter((c) => c.faceDown)).toEqual([]);
+    }
   });
 
   it("XG3-021:【迅雷流剣技・カブト雷撃破】— 敵軍バトルエリアに DA の S ユニットがいなければ何もしない（出典: atwiki/page-1960）", () => {

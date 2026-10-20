@@ -25,6 +25,7 @@ import { findInZone, removeAt } from "../core/helpers";
 import { hasTurnRuleModifier } from "../core/scopedModifiers";
 import { actionContextState, zordMaterialAlteredName, zordMaterialFeatures } from "./zordFeatureContext";
 import { rk11IsHandSubstitute } from "./rk/rk11Fields";
+import { xg1HoldSubstituteAvailable } from "./xg1/xg1Fields";
 import { xg4FusionSlotWaived, xg4HoldForHandSubstitute, xg4IsHandSubstituteMaterial } from "./xg4/xg4Fields";
 
 /** ゾードアップ素材を取れるゾーン（フィールドのみ、手札不可）。 */
@@ -832,7 +833,7 @@ export function applyZordMaterial(
 
   if (destination === "hold") {
     // XG1-013【巨大要塞】「自軍Sユニットを1体捨札にするかわりに、自軍Sユニットを1体ホールドする」（rules/xg1/xg1Fields.ts）。
-    if (conditionId !== "send_s_unit_to_discard" || (material.zone !== "rush" && material.zone !== "battle") || material.card.commandHeld) return null;
+    if (conditionId !== "send_s_unit_to_discard" || !xg1HoldSubstituteAvailable(player, definitions, rushingCardId) || (material.zone !== "rush" && material.zone !== "battle") || material.card.commandHeld) return null;
     const cards = [...player[material.zone]];
     cards[material.index] = { ...material.card, commandHeld: true };
     return { ...player, [material.zone]: cards };

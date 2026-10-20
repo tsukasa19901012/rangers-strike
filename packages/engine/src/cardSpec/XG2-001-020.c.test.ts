@@ -335,6 +335,29 @@ describe("XG2-019 知恵の樹モーク", () => {
     expect(legal(s).some((a) => a.type === "pass_rush_reaction")).toBe(false);
   });
 
+  it("XG2-019: 1ターンに何度でも使える — 同じターンに2回起動し、ギンガレオンとギンガリラの両方をテキストを持たない M ユニットとして扱う（出典: 利用者の決定 2026-10-20・questions-all.md U-14）", () => {
+    const s1 = resolveAll(pick(activateResident(board(), "XG2-019:mk"), "RS-466:leo"));
+    expect(canActivateResident(s1, "XG2-019:mk")).toBe(true);
+    const s2 = activateResident(s1, "XG2-019:mk");
+    expectChoiceFrom(s2, "player1", "XG2-019");
+    expect(choiceIds(s2)).toEqual(["RS-468:gor"]);
+    const s = resolveAll(pick(s2, "RS-468:gor"));
+    for (const id of ["RS-466:leo", "RS-468:gor"]) {
+      const def = s.definitions[cardIn(s, "player1", id)!.cardId];
+      expect(def?.type).toBe("unit");
+      expect(def?.text).toBe("");
+      expect(bpOf(s, "player1", id)).toBe(3000);
+      expect(canEnter(s, id)).toBe(true);
+    }
+  });
+
+  it("XG2-019: すでに M ユニットとして扱っているビークルは、もう選べない（候補がなくなれば起動できない）（出典: 利用者の決定 2026-10-20・questions-all.md U-14）", () => {
+    const s1 = resolveAll(pick(activateResident(board(), "XG2-019:mk"), "RS-466:leo"));
+    expect(choiceIds(activateResident(s1, "XG2-019:mk"))).not.toContain("RS-466:leo");
+    const s = resolveAll(pick(activateResident(s1, "XG2-019:mk"), "RS-468:gor"));
+    expect(canActivateResident(s, "XG2-019:mk")).toBe(false);
+  });
+
   it.todo(
     "XG2-019: 公式Q&A — 本来の BP を3000として扱い、BP を「＋」「－」する効果を受ける（Q3）・RS-234 アバレキラーからコンビネーションさせると、ターンを終えるときに【ウイングペンタクト】で撃破される（Q4）（出典: atwiki/page-1751 Q3・Q4）— モークの起動そのものが合法手にない（gaps.md CARD-XG2-019）ので、BP 修正・ターン終了時の撃破を確かめる盤面に進めない",
   );

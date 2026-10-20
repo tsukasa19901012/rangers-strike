@@ -59,6 +59,7 @@ const OWN_L = sUnit("SPEC-OWN-L", { category: "WB", bp: 8000, size: "L", powerCo
 const OT_L = sUnit("SPEC-OT-L", { category: "OT", bp: 8000, size: "L", powerCost: 5 });
 const OT_L2 = sUnit("SPEC-OT-L2", { category: "OT", bp: 8000, size: "L", powerCost: 5 });
 const C2 = sUnit("SPEC-C2", { category: "WB", bp: 1000, powerCost: 2 });
+const C0 = sUnit("SPEC-C0", { category: "WB", bp: 1000, powerCost: 0 });
 const C5 = sUnit("SPEC-C5", { category: "WB", bp: 1000, powerCost: 5 });
 const C6 = sUnit("SPEC-C6", { category: "WB", bp: 1000, powerCost: 6 });
 const C2M = sUnit("SPEC-C2M", { category: "WB", bp: 3000, powerCost: 2, size: "M" });
@@ -80,7 +81,7 @@ const WB_M4P = sUnit("SPEC-WB-M4P", { category: "WB", bp: 5000, size: "M", power
 const WB_M6 = sUnit("SPEC-WB-M6", { category: "WB", bp: 6000, size: "M", powerCost: 6 });
 const WB_S3 = sUnit("SPEC-WB-S3", { category: "WB", bp: 3000, powerCost: 3 });
 const MA_M3 = sUnit("SPEC-MA-M3", { category: "MA", bp: 5000, size: "M", powerCost: 3 });
-const EXTRA = [ENEMY, BIG, OWN_L, OT_L, OT_L2, C2, C5, C6, C2M, C3, NINJA, E_S, E_M, E1000, E2000, E3000, E4000, E9000M, S_WB3000, S_DA2000, S_WBDA, M_WB5000, WB_M5, WB_M4P, WB_M6, WB_S3, MA_M3];
+const EXTRA = [C0, ENEMY, BIG, OWN_L, OT_L, OT_L2, C2, C5, C6, C2M, C3, NINJA, E_S, E_M, E1000, E2000, E3000, E4000, E9000M, S_WB3000, S_DA2000, S_WBDA, M_WB5000, WB_M5, WB_M4P, WB_M6, WB_S3, MA_M3];
 
 const nc = (id: string, fillers: number, p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
   ncBoard(id, fillers, p1, p2, EXTRA);
@@ -262,6 +263,14 @@ describe("XG7-012 アバレッド×爆竜ティラノサウルス", () => {
     expect(zoneOf(s, "player1", "SPEC-C2:u")).toBe("battle");
     expect(s.players.player1.deck).toHaveLength(3);
     expect(s.players.player1.discard.map((c) => c.instanceId).sort()).toEqual(["TST-OP:dk0", "TST-OP:dk1"]);
+  });
+
+  it("XG7-012: 【荒ぶるダイノガッツ】必要パワー0のユニットは、山札を0枚捨札にしてその場に留まれる（山札が0枚でもよい）（出典: 利用者の決定 2026-10-20・questions-all.md U-9「一旦0枚捨てて留まる」）", () => {
+    const s0 = attackedInEnemyTurn({ battle: [inst("XG7-012", "ab"), inst("SPEC-C0", "u0")], deck: [] }, "SPEC-C0:u0", {}, "TST-UNIT-7:atk", EXTRA);
+    expectChoiceFrom(s0, "player1", "XG7-012");
+    const s = resolveAll(s0);
+    expect(zoneOf(s, "player1", "SPEC-C0:u0")).toBe("battle");
+    expect(s.players.player1.discard.filter((c) => c.instanceId.startsWith("TST-OP:dk"))).toHaveLength(0);
   });
 
   it("XG7-012: 【荒ぶるダイノガッツ】1ターンに1度だけ — 同じターンに2体目が撃破されたときは発動できない（出典: atwiki/page-2387「1ターンごとに1度だけ」）", () => {

@@ -436,6 +436,31 @@ describe("XG4-013 ギンガグリーン（XG4）", () => {
     expect(zoneOf(s, "player2", "TST-OP-DA:c2")).toBe("command");
     expect(zoneOf(s, "player2", "TST-OP:top")).toBe("deck");
   });
+
+  it("XG4-013: NC — 相手のコマンドが1つ以下なら「コマンドを2つ戻す」は選べず、選ばせずに山札の上から1枚が捨札になる（出典: 利用者の決定 2026-10-20・questions-all.md U-15）", () => {
+    const s = resolveAll(nc({ deck: [inst("TST-OP", "top"), ...deckCards(4, "e")], command: [released("TST-OP", "c1")] }));
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(zoneOf(s, "player2", "TST-OP:top")).toBe("discard");
+    expect(zoneOf(s, "player2", "TST-OP:c1")).toBe("command");
+  });
+
+  it("XG4-013: NC — 相手の山札がなくコマンドが2つ以上なら、コマンドを2つ戻す方に決まる（山札かコマンドかは選ばせない）（出典: 利用者の決定 2026-10-20・questions-all.md U-15）", () => {
+    let s = nc({ deck: [], command: [released("TST-OP", "c1"), released("TST-OP-DA", "c2"), heldN(1, "TST-OP", "eh")[0]!] });
+    expect(choicePlayer(s)).toBe("player2");
+    expect(choiceIds(s)).toEqual(["TST-OP-DA:c2", "TST-OP:c1", "TST-OP:eh0"]);
+    expect(canSkip(s)).toBe(false);
+    s = resolveAll(pickAs(pickAs(s, "player2", "TST-OP:c1"), "player2", "TST-OP-DA:c2"));
+    expect(zoneOf(s, "player2", "TST-OP:c1")).toBe("hand");
+    expect(zoneOf(s, "player2", "TST-OP-DA:c2")).toBe("hand");
+    expect(zoneOf(s, "player2", "TST-OP:eh0")).toBe("command");
+  });
+
+  it("XG4-013: NC — 相手の山札がなくコマンドも1つ以下なら、何も起きない（出典: 利用者の決定 2026-10-20・questions-all.md U-15）", () => {
+    const s = resolveAll(nc({ deck: [], command: [released("TST-OP", "c1")] }));
+    expect(s.pendingEffectChoice).toBeUndefined();
+    expect(zoneOf(s, "player2", "TST-OP:c1")).toBe("command");
+    expect(s.players.player2.hand.some((c) => c.instanceId === "TST-OP:c1")).toBe(false);
+  });
 });
 
 // ===========================================================================

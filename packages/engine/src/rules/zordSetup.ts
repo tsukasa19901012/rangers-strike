@@ -336,7 +336,7 @@ function commandZoneFitsMaterials(state: GameState, commandCount: number, zordCa
 
 /** XG1-013【巨大要塞】で素材をホールドに置きかえられるか（rules/xg1/xg1Fields.ts）。 */
 function xg1HoldOffered(state: GameState, playerId: PlayerId, zordCardId: string): boolean {
-  return xg1HoldSubstituteAvailable(state.players[playerId], state.definitions, zordCardId, getZordCondition(zordCardId), zordMaterialUnitCount(state, zordCardId));
+  return xg1HoldSubstituteAvailable(state.players[playerId], state.definitions, zordCardId);
 }
 
 function needsDestinationChoice(
@@ -541,7 +541,13 @@ export function advanceZordSetup(
 
     const commandZoneHasSpace = commandZoneFitsMaterials(state, player.command.length, setup.zordCardId);
     const condition = getZordCondition(setup.zordCardId);
+    // XG1-013【巨大要塞】: ホールドに置きかえるのは自軍エリアのリリース状態の S ユニットだけ。
+    const xg1Hold = xg1HoldOffered(state, playerId, setup.zordCardId);
+    if (setup.materialDestination === "hold" && !(xg1Hold && [...player.rush, ...player.battle].some((c) => c.instanceId === materialId && !c.commandHeld))) {
+      return { kind: "error", error: "invalid_material" };
+    }
     const destination =
+      (xg1Hold && zordMaterialUnitCount(state, setup.zordCardId) > 1 ? (setup.materialDestination ?? "discard") : undefined) ??
       setup.materialDestination ??
       (needsDestinationChoice(setup.zordCardId, commandZoneHasSpace)
         ? undefined
@@ -564,14 +570,20 @@ export function advanceZordSetup(
     if (needed > 1) {
       const chosen = [...(setup.chosenMaterialIds ?? []), materialId];
       // 「それぞれ」— 行き先は1体ごとに選ぶ（grnrngr/faq-card-4 RS-196 Q2）。
+      // XG1-013【巨大要塞】で置きかえられる「自軍Sユニットを N 体捨札にする」も、1体ごとに捨札かホールドかを選ぶ（利用者の決定 2026-10-20・questions-all.md U-10）。
       const perUnitDestination =
-        needsDestinationChoice(setup.zordCardId, commandZoneHasSpace) && destinationPerUnit(state, setup.zordCardId);
+        xg1Hold || (needsDestinationChoice(setup.zordCardId, commandZoneHasSpace) && destinationPerUnit(state, setup.zordCardId));
       const chosenDestinations =
         destination && (perUnitDestination || (setup.chosenMaterialDestinations?.length ?? 0) > 0)
           ? [...(setup.chosenMaterialDestinations ?? []), destination]
           : setup.chosenMaterialDestinations;
       if (chosen.length < needed) {
-        const remaining = setup.validInstanceIds.filter((id) => !chosen.includes(id));
+        // XG1-013: 行き先「hold」で絞った候補ではなく、素材の候補すべてから残りを選ぶ。
+        const remaining = (
+          xg1Hold
+            ? collectZordMaterials(player, state.definitions, setup.zordCardId, setup.zordInstanceId).map((c) => c.instanceId)
+            : setup.validInstanceIds
+        ).filter((id) => !chosen.includes(id));
         if (
           remaining.length < needed - chosen.length &&
           partialMothershipStep(state, { ...setup, chosenMaterialIds: chosen, materialDestination: destination })
@@ -583,7 +595,7 @@ export function advanceZordSetup(
         const askNextDestination =
           perUnitDestination &&
           remaining.length > 0 &&
-          player.command.length + commandCount < COMMAND_ZONE_MAX;
+          (xg1Hold || player.command.length + commandCount < COMMAND_ZONE_MAX);
         return {
           kind: "continue",
           setup: {

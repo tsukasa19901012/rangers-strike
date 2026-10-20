@@ -31,7 +31,7 @@ import { openEffectChoice } from "../pendingChoices";
 import { rk1IsSmallNow } from "../rk/rk1Features";
 import { RK12_UNIT_HELD_RULE, rk12TurnPayloads } from "../rk/rk12Fields";
 import { grantSp1ToRushUnit } from "../srEffects";
-import { addBakiBakiExtraAttack } from "../turnModifierBridge";
+import { addBakiBakiExtraAttack, getBattleDestroyToPowerInstanceIds } from "../turnModifierBridge";
 import { strikeDamageFor } from "../combo";
 import {
   type BaseCtx,
@@ -592,7 +592,11 @@ export function xg1cBlackFangOnRide(state: GameState, playerId: PlayerId, riderI
 // ---------------------------------------------------------------------------
 // XG1-058 ウルフアンデッド【ワーウルフ化】（RC）
 // 「ホールド状態のSユニットを2体選んでもよい。そうしたとき、選んだ2体でバトルさせる。ただし、特徴「男」を持つユニットを必ず1体選ぶこと。」
-// （atwiki/page-1565）。自軍・敵軍、エリアを問わない（カード評価）。バトルはいまの BP を比べ、低いほうを撃破する（同じなら両方。アタックではない）。
+// （atwiki/page-1565）。自軍・敵軍、エリアを問わない（カード評価）。バトルはいまの BP を比べ、低いほうを撃破する（同じなら両方。R-BTL-02）。
+// 直接のバトルで、どちらもアタックした・アタックされたユニットではない（利用者の決定 2026-10-20・questions-all.md U-11）:
+// 「アタックするとき／アタックされるとき」の BP 補正（XG1-060 ※ 等）は働かず、いまの BP（effectiveBp）だけで比べる。
+// RS-182 ジャイアントローラー「選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く」は
+// アタックかどうかを見ないので、このバトルでも働く（撃破された相手が捨札になるとき、ダメージにして置く）。
 // ※（ライド中 BP+1000）は rules/xg1/xg1Fields.ts。
 
 const WEREWOLF_EFFECT_ID = "xg1_058_werewolf";
@@ -650,7 +654,10 @@ XG1_RESOLVERS[WEREWOLF_SECOND_EFFECT_ID] = (state, playerId, instanceId) => {
   const bpA = effectiveBp(next, a, findField(next, a, firstId)!);
   const bpB = effectiveBp(next, b, findField(next, b, instanceId)!);
   const losers = bpA === bpB ? [firstId, instanceId] : bpA < bpB ? [firstId] : [instanceId];
-  next = destroyAll(next, pendingBase(pending), "XG1-058", `${WEREWOLF_EFFECT_ID}_battle`, losers);
+  // RS-182 ジャイアントローラーで選ばれたユニットとバトルした側（turnModifierBridge の BATTLE_DESTROY_TO_POWER）。
+  const marked = [...getBattleDestroyToPowerInstanceIds(next.players.player1), ...getBattleDestroyToPowerInstanceIds(next.players.player2)];
+  const asDamage = losers.filter((id) => marked.includes(id === firstId ? instanceId : firstId));
+  next = destroyAll(next, pendingBase(pending), "XG1-058", `${WEREWOLF_EFFECT_ID}_battle`, losers, { discardAsDamageInstanceIds: asDamage });
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG1-058", `${WEREWOLF_EFFECT_ID}_battle:${bpA}:${bpB}`) };
 };
 

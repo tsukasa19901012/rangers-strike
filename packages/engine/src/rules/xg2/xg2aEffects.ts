@@ -523,7 +523,8 @@ registerXg2Choice(RAIRAI_EFFECT_ID, {
 // XG2-019 知恵の樹モーク（※常駐）
 // 「自軍バトルフェイズ中、自軍ラッシュエリアから、ライドされていない特徴「獣」を持つMビークルを1体選んでもよい。そうしたとき、選んだビークルは、
 //  このターン、テキストを持たないMユニットとして扱い、次の情報が追加される⇒「BP3000」「SP空欄」」（atwiki/page-1751）。
-// 起動（activate_resident_operation）で選ぶ（見送れる）。1ターンに1度（コピーごと。questions U-14 (a)）。選んだビークルは、このターンの間、
+// 起動（activate_resident_operation）で選ぶ（見送れる）。1ターンに何度でも使える（利用者の決定 2026-10-20・questions U-14。すでに M ユニットとして
+// 扱っているビークルはビークルではないので、もう候補にならない）。選んだビークルは、このターンの間、
 // テキストを持たない M ユニットの定義（`<cardId>@xg2-019`。BP3000・SP 空欄・本来の特徴とカテゴリ）として扱う（本来の BP は3000。Q3）。
 // 「ラッシュした」ことにはならない（Q1・Q2）。ターンが変わるか、場を離れたら元のカードに戻す（applyAction の後処理）。
 
@@ -554,24 +555,16 @@ function mokeCandidates(state: GameState, playerId: PlayerId): string[] {
     .map((c) => c.instanceId);
 }
 
-function mokeUsedThisTurn(state: GameState, op: CardInstance): boolean {
-  const used = (state.xg2?.mokeUsed as Array<{ instanceId: string; turn: number }> | undefined) ?? [];
-  return used.some((u) => u.instanceId === op.instanceId && u.turn === state.turn);
-}
-
 xg2Hook("residents", {
   matches: (cardId) => isSameCardIdentity(cardId, "XG2-019"),
-  canActivate: (state, playerId, op) =>
+  canActivate: (state, playerId) =>
     state.phase === "battle" &&
     state.activePlayer === playerId &&
     !state.pendingBattle &&
     rm1ResidentActive(state, playerId, "XG2-019") &&
-    !mokeUsedThisTurn(state, op) &&
     mokeCandidates(state, playerId).length > 0,
   activate: (state, playerId, op) => {
-    const used = ((state.xg2?.mokeUsed as Array<{ instanceId: string; turn: number }> | undefined) ?? []).filter((u) => u.turn === state.turn);
-    const marked: GameState = { ...state, xg2: { ...(state.xg2 ?? {}), mokeUsed: [...used, { instanceId: op.instanceId, turn: state.turn }] } };
-    return openEffectChoice(marked, selectOne({ playerId, phasePlayerId: playerId, sourceInstanceId: op.instanceId }, "XG2-019", MOKE_EFFECT_ID, mokeCandidates(state, playerId), true));
+    return openEffectChoice(state, selectOne({ playerId, phasePlayerId: playerId, sourceInstanceId: op.instanceId }, "XG2-019", MOKE_EFFECT_ID, mokeCandidates(state, playerId), true));
   },
 });
 

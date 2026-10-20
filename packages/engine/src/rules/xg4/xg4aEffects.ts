@@ -368,8 +368,36 @@ const SHIPPU_COMMAND_EFFECT_ID = "xg4013_shippu_command";
 const SHIPPU_MILL = "deck_top_to_discard";
 const SHIPPU_COMMAND = "command_to_hand";
 
+// 相手のコマンドが2つ未満なら「コマンドを2つ戻す」は選べず、山札の上から1枚を捨札にする方に決まる（選ばせない）。山札がなくコマンドが2つ以上なら
+// コマンドを2つ戻す方に決まる。どちらもできなければ何もしない（利用者の決定 2026-10-20・questions-all.md U-15。RS-572 デカマスターと同じ扱い）。
+
+function shippuMill(state: GameState, playerId: PlayerId): GameState {
+  return patchPlayer(state, playerId, (p) => (p.deck.length === 0 ? p : { ...p, deck: p.deck.slice(1), discard: [...p.discard, stripForZone(p.deck[0]!)] }));
+}
+
 XG4_KEYWORDS["XG4-013::shippu"] = (state, ctx) => {
   const enemyId = opponent(ctx.playerId);
+  const canMill = state.players[enemyId].deck.length > 0;
+  const commandIds = state.players[enemyId].command.map((c) => c.instanceId);
+  const canReturn = commandIds.length >= 2;
+  if (!canMill && !canReturn) return { state, detail: "xg4013:nothing_possible" };
+  if (!canReturn) {
+    return { state: shippuMill(state, enemyId), detail: `${SHIPPU_MODE_EFFECT_ID}:${SHIPPU_MILL}` };
+  }
+  if (!canMill) {
+    return {
+      state: openAfter(state, {
+        ...base({ playerId: enemyId, phasePlayerId: ctx.phasePlayerId, sourceInstanceId: ctx.triggerSourceInstanceId }, "XG4-013"),
+        effectId: SHIPPU_COMMAND_EFFECT_ID,
+        kind: "select_command",
+        validInstanceIds: commandIds,
+        selectedInstanceIds: [],
+        selectCount: 2,
+        optional: false,
+      }),
+      detail: `${SHIPPU_MODE_EFFECT_ID}:${SHIPPU_COMMAND}`,
+    };
+  }
   return {
     state: openAfter(state, {
       ...base({ playerId: enemyId, phasePlayerId: ctx.phasePlayerId, sourceInstanceId: ctx.triggerSourceInstanceId }, "XG4-013"),
@@ -388,8 +416,7 @@ XG4_RESOLVERS[SHIPPU_MODE_EFFECT_ID] = (state, playerId, mode) => {
   const next = close(state, pending);
   const log = logFor(state, playerId, "XG4-013", `${SHIPPU_MODE_EFFECT_ID}:${mode}`);
   if (mode === SHIPPU_MILL) {
-    const milled = patchPlayer(next, playerId, (p) => (p.deck.length === 0 ? p : { ...p, deck: p.deck.slice(1), discard: [...p.discard, stripForZone(p.deck[0]!)] }));
-    return { state: proceed(milled, pending), log };
+    return { state: proceed(shippuMill(next, playerId), pending), log };
   }
   const ids = next.players[playerId].command.map((c) => c.instanceId);
   if (ids.length === 0) return { state: proceed(next, pending), log };

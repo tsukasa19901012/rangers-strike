@@ -184,6 +184,12 @@ describe("XG3-086 冷血鎧将ムカデリンガー", () => {
     expect(cardIn(s, "player2", "SPEC-C3:e3")?.commandHeld).toBe(true);
   });
 
+  it("XG3-086:【ハンドレットフィーラー】— ホールドされたユニットは、ホールド状態のままバトルエリアに出る（ラッシュエリアに残らない）（出典: 利用者の決定 2026-10-20・questions-all.md U-20）", () => {
+    const s = resolveAll(enemyEnters([inst("SPEC-C3", "d3")]), ["SPEC-C3:d3"]);
+    expect(zoneOf(s, "player2", "SPEC-C3:e3")).toBe("battle");
+    expect(cardIn(s, "player2", "SPEC-C3:e3")?.commandHeld).toBe(true);
+  });
+
   it("XG3-086:【ハンドレットフィーラー】— 自軍捨札に同じ必要パワーのカードがなければ何も起きない（出典: atwiki/page-1941「同じ必要パワーの数字を持つカード」）", () => {
     const s = enemyEnters([inst("TST-UNIT-2", "d2")]);
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG3-086");

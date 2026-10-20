@@ -2,7 +2,7 @@
  * クロスギャザー XG1 の継続効果の判定（低水準。SP・アタックの制限・特徴やキーワードの付与など）。
  * 選択を開く処理（rules/xg1/xg1Effects.ts）からは独立させ、core/catalog.ts・rules/legend3/fieldEffects.ts 等から循環なく読めるようにする。
  */
-import { isSameCardIdentity } from "@rangers-strike/cards";
+import { isSameCardIdentity, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
 import { rm1ResidentCount } from "../rm/rm1Fields";
@@ -56,7 +56,8 @@ export function xg1EffectiveSp(
 ): number {
   const id = instance.cardId;
   if (isSameCardIdentity(id, "XG1-011") && otFaceUpInZones(state)) return Math.max(sp, 1);
-  if (isSameCardIdentity(id, "XG1-012") && state.players[playerId].command.every((c) => !c.commandHeld)) return Math.max(sp, 1);
+  // XG1-012: コマンドが0枚なら「すべてリリース状態」にならない（利用者の決定 2026-10-20、docs/verification/unverified/questions-all.md U-9）。
+  if (isSameCardIdentity(id, "XG1-012") && state.players[playerId].command.length > 0 && state.players[playerId].command.every((c) => !c.commandHeld)) return Math.max(sp, 1);
   if (isSameCardIdentity(id, "XG1-026") && state.players[playerId].damage <= 3) return Math.max(sp, 1);
   if (isSameCardIdentity(id, "XG1-020") && effectiveBp(state, playerId, instance) >= 10000) return Math.max(sp, 1);
   // XG1-086 スピルバン ※「これはBP5000以上のとき「SP1」になる。」（atwiki/page-1674）
@@ -175,19 +176,29 @@ export function xg1GrantsChase(state: GameState | null, playerId: PlayerId | und
 // XG1-013 キングピラミッダーPF【巨大要塞】
 // 「これが自軍ラッシュエリアにある間、自分がラッシュするMユニットまたはLユニットの追加条件を満たすために次のようにしてもよい⇒
 //   自軍Sユニットを1体捨札にするかわりに、自軍Sユニットを1体ホールドする。」（atwiki/page-1642）
-// 置きかえるのは「自軍Sユニットを1体捨札にする」（conditionId send_s_unit_to_discard・1体）だけ。素材の行き先 "hold" で表す。
+// 置きかえられるのは、名前や特徴の指定のない「自軍Sユニットを N 体捨札にする」（N は1以上）だけ。名前・特徴を指定する追加条件
+// （XP-028「リードを持つ自軍Sユニット1体を捨札にする」・XG3-084「特徴「昆虫」を持つ…」等）には使えない。複数体を捨札にする追加条件
+// （RS-621「自軍Sユニットを3体捨札にする」等）では、捨札にする1体ごとにホールドに置きかえてよい（ホールドと捨札の混在も可）
+// （利用者の決定 2026-10-20・docs/verification/unverified/questions-all.md U-10。atwiki/page-1642 カード評価「Sユニットを複数捨てる必要のあるユニットにも使える」）。
+// 素材の行き先 "hold" で表す。
 
-/** ラッシュする rushingCardId の追加条件を【巨大要塞】でホールドに置きかえられるか。 */
+const PLAIN_S_DISCARD = /^自軍Sユニットを[0-9]+体捨札にする。?$/;
+
+/** 追加条件の文が、名前・特徴の指定のない「自軍Sユニットを N 体捨札にする」か。 */
+export function xg1IsPlainSDiscardCondition(text: string | undefined): boolean {
+  return PLAIN_S_DISCARD.test((text ?? "").normalize("NFKC").replace(/\s+/g, ""));
+}
+
+/** ラッシュする rushingCardId の追加条件を【巨大要塞】でホールドに置きかえられるか（いまの追加条件で判定する）。 */
 export function xg1HoldSubstituteAvailable(
   player: Pick<PlayerState, "rush">,
   definitions: GameState["definitions"],
   rushingCardId: string,
-  conditionId: string | undefined,
-  unitCount: number | undefined,
 ): boolean {
-  if (conditionId !== "send_s_unit_to_discard" || (unitCount ?? 1) !== 1) return false;
-  const size = definitions[rushingCardId]?.size;
-  if (size !== "M" && size !== "L") return false;
+  const d = definitions[rushingCardId];
+  if (!d || (d.size !== "M" && d.size !== "L")) return false;
+  const condition = resolveRushAdditionalCondition(rushingCardId, d);
+  if (!condition || condition.conditionId !== "send_s_unit_to_discard" || !xg1IsPlainSDiscardCondition(condition.text)) return false;
   return player.rush.some((c) => isSameCardIdentity(c.cardId, "XG1-013"));
 }
 

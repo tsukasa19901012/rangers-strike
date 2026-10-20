@@ -239,6 +239,34 @@ describe("XG4-068 仮面ライダーW・CT", () => {
     s = resolveAll(pickThrough(pick(s, "RK-075:en"), "XG4-068", ["power"]));
     expect(["power", "command"]).toContain(zoneOf(s, "player2", "RK-075:en"));
   });
+
+  it("XG4-068:【トリガーマグナム】— 送り先（持ち主のパワーゾーンかコマンドゾーン）は効果を使った側（自軍）が選ぶ。パワーゾーンならオモテ向き、コマンドゾーンならリリース状態で敵軍のゾーンに送られる（出典: 利用者の決定 2026-10-20・questions-all.md U-13）", () => {
+    const s = pick(entered(), "RK-075:en");
+    expectChoiceFrom(s, "player1", "XG4-068");
+    expect(choiceIds(s)).toEqual(["command", "power"]);
+    const p = resolveAll(pick(s, "power"));
+    expect(zoneOf(p, "player2", "RK-075:en")).toBe("power");
+    expect(p.players.player2.power.find((c) => c.instanceId === "RK-075:en")?.faceDown).not.toBe(true);
+    const c = resolveAll(pick(s, "command"));
+    expect(zoneOf(c, "player2", "RK-075:en")).toBe("command");
+    expect(c.players.player2.command.find((x) => x.instanceId === "RK-075:en")?.commandHeld).not.toBe(true);
+  });
+
+  it("XG4-068:【トリガーマグナム】— 持ち主（敵軍）のコマンドゾーンが5枚なら、送り先はパワーゾーンだけ（オモテ向き）（出典: 利用者の決定 2026-10-20・questions-all.md U-13）", () => {
+    let s = settle(
+      enterNow(
+        battle({ rush: [inst("XG4-068", "ct")] }, { operation: [resident("RK-075", "en")], command: Array.from({ length: 5 }, (_, i) => released("TST-OP", `fc${i}`)), deck: deckCards(3, "e") }),
+        "XG4-068:ct",
+      ),
+    );
+    s = pick(s, "RK-075:en");
+    expectChoiceFrom(s, "player1", "XG4-068");
+    expect(choiceIds(s)).toEqual(["power"]);
+    s = resolveAll(pick(s, "power"));
+    expect(zoneOf(s, "player2", "RK-075:en")).toBe("power");
+    expect(s.players.player2.power.find((c) => c.instanceId === "RK-075:en")?.faceDown).not.toBe(true);
+    expect(s.players.player2.command).toHaveLength(5);
+  });
 });
 
 // ===========================================================================

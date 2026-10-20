@@ -69,10 +69,11 @@ const KANA_S = sUnit("SPEC-KANA-S", { bp: 1000, features: ["ファイブハン�
 const NUM_M = sUnit("SPEC-NUM-M", { bp: 3000, size: "M", features: ["2nd"] });
 const ET_S = sUnit("SPEC-ET-S", { category: "ET", bp: 1000, powerCost: 1 });
 const C2 = sUnit("SPEC-C2", { bp: 1000, powerCost: 2 });
+const C0 = sUnit("SPEC-C0", { bp: 1000, powerCost: 0 });
 const C4 = sUnit("SPEC-C4", { bp: 1000, powerCost: 4 });
 const C3M = sUnit("SPEC-C3M", { bp: 3000, size: "M", powerCost: "3+" as never });
 const MONO_M = sUnit("SPEC-MONO-M", { category: "OT", bp: 4000, size: "M" });
-const EXTRA = [MECHA_S, MECHA_M, BEAST_S, INSECT_S, BEAST_M, PLAIN_S, NUM_S, KANJI_S, KANA_S, NUM_M, ET_S, C2, C4, C3M, MONO_M];
+const EXTRA = [C0, MECHA_S, MECHA_M, BEAST_S, INSECT_S, BEAST_M, PLAIN_S, NUM_S, KANJI_S, KANA_S, NUM_M, ET_S, C2, C4, C3M, MONO_M];
 
 /** カテゴリを2つ以上持つコマンド（TST-OP-WB-ET）。 */
 const multiCmd = (n: number, prefix = "mc") => Array.from({ length: n }, (_, i) => released("TST-OP-WB-ET", `${prefix}${i}`));
@@ -105,6 +106,31 @@ function fiveTests(opts: { id: string; page: string; effect: string; yes: string
     const target = yesIds[0]!;
     const s = resolveZone(pick(entered(), target));
     expect(inOwnersZone(s, "player2", target)).toBe(true);
+  });
+
+  it(`${id}: NC【${effect}】— 行き先（持ち主のパワーゾーンかコマンドゾーン）は効果を使った側（自軍）が選ぶ。パワーゾーンを選べば敵軍のパワーゾーンにオモテ向き、コマンドゾーンを選べば敵軍のコマンドゾーンにリリース状態で置かれる（出典: 利用者の決定 2026-10-20・questions-all.md U-13）`, () => {
+    const target = yesIds[0]!;
+    const s = pick(entered(), target);
+    expectChoiceFrom(s, "player1", id);
+    expect(s.pendingEffectChoice?.effectId).toBe("xg2_owner_zone");
+    expect(choiceIds(s)).toEqual(["command", "power"]);
+    const p = resolveAll(pick(s, "power"));
+    expect(zoneOf(p, "player2", target)).toBe("power");
+    expect(cardIn(p, "player2", target)?.faceDown).not.toBe(true);
+    const c = resolveAll(pick(s, "command"));
+    expect(zoneOf(c, "player2", target)).toBe("command");
+    expect(cardIn(c, "player2", target)?.commandHeld).not.toBe(true);
+  });
+
+  it(`${id}: NC【${effect}】— 持ち主（敵軍）のコマンドゾーンが5枚なら行き先は選ばず、パワーゾーンにオモテ向きで置かれる（出典: 利用者の決定 2026-10-20・questions-all.md U-13）`, () => {
+    const target = yesIds[0]!;
+    const full = ncEnter(`${id}:f`, 4, {}, { ...enemy(), command: Array.from({ length: 5 }, (_, i) => released("TST-OP", `fc${i}`)) }, EXTRA);
+    const s = pick(full, target);
+    expect(s.pendingEffectChoice?.effectId).not.toBe("xg2_owner_zone");
+    const t = resolveAll(s);
+    expect(zoneOf(t, "player2", target)).toBe("power");
+    expect(cardIn(t, "player2", target)?.faceDown).not.toBe(true);
+    expect(t.players.player2.command).toHaveLength(5);
   });
 
   it(`${id}: NC【${effect}】— 置かなくてもよい（敵軍のユニットはそのまま）（出典: ${page}「置いてもよい」）`, () => {
@@ -317,6 +343,43 @@ describe("XG2-005 スカイアルファー", () => {
   it("XG2-005: 【アルファーレーザー】選んだユニットは持ち主のゾーンに置かれる（出典: atwiki/page-1787「持ち主のゾーンに置く」）", () => {
     const s = resolveZone(pick(accept(entered()), "SPEC-C3M:m3"));
     expect(inOwnersZone(s, "player2", "SPEC-C3M:m3")).toBe(true);
+  });
+
+  it("XG2-005: 【アルファーレーザー】行き先（持ち主のパワーゾーンかコマンドゾーン）は効果を使った側（自軍）が選ぶ。パワーゾーンならオモテ向き、コマンドゾーンならリリース状態で敵軍のゾーンに置かれる。敵軍のコマンドゾーンが5枚ならパワーゾーンに置かれる（出典: 利用者の決定 2026-10-20・questions-all.md U-13）", () => {
+    const s = pick(accept(entered()), "SPEC-C3M:m3");
+    expectChoiceFrom(s, "player1", "XG2-005");
+    expect(s.pendingEffectChoice?.effectId).toBe("xg2_owner_zone");
+    expect(choiceIds(s)).toEqual(["command", "power"]);
+    const p = resolveAll(pick(s, "power"));
+    expect(zoneOf(p, "player2", "SPEC-C3M:m3")).toBe("power");
+    expect(cardIn(p, "player2", "SPEC-C3M:m3")?.faceDown).not.toBe(true);
+    const c = resolveAll(pick(s, "command"));
+    expect(zoneOf(c, "player2", "SPEC-C3M:m3")).toBe("command");
+    expect(cardIn(c, "player2", "SPEC-C3M:m3")?.commandHeld).not.toBe(true);
+    // 敵軍のコマンドは5枚（ホールド状態4・リリース状態1）。リリースした4枚以下の必要パワーのユニットを選ぶと、行き先は選ばずパワーゾーン。
+    const full = enter(
+      p1Battle({ rush: [inst("XG2-005", "a")] }, { command: [...heldN(4, "TST-OP", "eh"), released("TST-OP", "er")], battle: [inst("SPEC-C3M", "m3")] }, EXTRA),
+      "XG2-005:a",
+    );
+    const f = pick(accept(full), "SPEC-C3M:m3");
+    expect(f.pendingEffectChoice?.effectId).not.toBe("xg2_owner_zone");
+    const t = resolveAll(f);
+    expect(zoneOf(t, "player2", "SPEC-C3M:m3")).toBe("power");
+    expect(cardIn(t, "player2", "SPEC-C3M:m3")?.faceDown).not.toBe(true);
+    expect(t.players.player2.command).toHaveLength(5);
+  });
+
+  it("XG2-005: 【アルファーレーザー】ホールド状態の敵軍コマンドが0枚でもリリースを選べ、0枚リリースしたなら必要パワー0の敵軍ユニットを選べる（必要パワー2は選べない）（出典: 利用者の決定 2026-10-20・questions-all.md U-9「0枚なら必要パワー0を対象にできる」）", () => {
+    let s = enter(
+      p1Battle({ rush: [inst("XG2-005", "a")] }, { command: [released("TST-OP", "er")], rush: [inst("SPEC-C0", "c0"), inst("SPEC-C2", "c2")] }, EXTRA),
+      "XG2-005:a",
+    );
+    expectChoiceFrom(s, "player1", "XG2-005");
+    s = accept(s);
+    expectChoiceFrom(s, "player1", "XG2-005");
+    expect(choiceIds(s)).toEqual(["SPEC-C0:c0"]);
+    s = resolveZone(pick(s, "SPEC-C0:c0"));
+    expect(inOwnersZone(s, "player2", "SPEC-C0:c0")).toBe(true);
   });
 
   it("XG2-005: 【アルファーレーザー】リリースしなければ、敵軍のコマンドはホールド状態のまま（出典: atwiki/page-1787「リリースしてもよい」）", () => {

@@ -38,6 +38,7 @@ import {
   registerOffered,
   resolveAll,
   returnedAtStart,
+  skip,
   sUnit,
   targetsOf,
   zoneOf,
@@ -109,6 +110,22 @@ describe("XG1-096 ビーファイタークワガー", () => {
     s = act(s, { type: "move_to_battle", playerId: "player2", instanceId: "XG1-089:fi" });
     s = resolveAll(s);
     expect(targetsOf(s, "XG1-089:fi", "player2")).toContain("XG1-096:kw");
+  });
+
+  it("XG1-096: NC を満たして並べば、「してもよい」の効果を見送っても NC を発動したとみなし、アタックできる（1番目に出て【アタックライド】を見送ったディケイド 響鬼 XG1-069）（出典: 利用者の決定 2026-10-20・questions-all.md U-12）", () => {
+    let s = enemyBoard({ battle: [inst("XG1-096", "kw"), inst("TST-UNIT-0", "o")] }, { rush: [inst("XG1-069", "hb")], hand: [inst("TST-OP", "op")] }, EXTRA);
+    s = act(s, { type: "move_to_battle", playerId: "player2", instanceId: "XG1-069:hb" });
+    expect(canSkip(s)).toBe(true);
+    s = resolveAll(skip(s));
+    expect(zoneOf(s, "player2", "TST-OP:op")).toBe("hand");
+    expect(targetsOf(s, "XG1-069:hb", "player2")).toContain("XG1-096:kw");
+  });
+
+  it("XG1-096: ナンバーを満たさずに並んだ（2番目に出た CN1 の XG1-069）ユニットはアタックできない（出典: atwiki/page-1661・利用者の決定 2026-10-20・questions-all.md U-12）", () => {
+    let s = enemyBoard({ battle: [inst("XG1-096", "kw"), inst("TST-UNIT-0", "o")] }, { battle: [inst("TST-UNIT-7", "z")], rush: [inst("XG1-069", "hb")], hand: [inst("TST-OP", "op")] }, EXTRA);
+    s = act(s, { type: "move_to_battle", playerId: "player2", instanceId: "XG1-069:hb" });
+    s = resolveAll(s);
+    expect(targetsOf(s, "XG1-069:hb", "player2")).not.toContain("XG1-096:kw");
   });
 
   const rc = () => rcAt("XG1-096:kw", {}, { battle: [inst("SPEC-B3", "a"), inst("SPEC-B45", "b"), heldUnit("TST-UNIT-0", "h")], rush: [inst("TST-UNIT-0", "r")] }, EXTRA);

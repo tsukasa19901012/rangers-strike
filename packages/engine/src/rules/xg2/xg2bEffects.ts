@@ -120,7 +120,8 @@ function multiChoice(ctx: BaseCtx, sourceCardId: string, effectId: string, ids: 
 // 「「これは自軍コマンドを1つホールドしなければバトルエリアに出られない」と書かれている自軍ユニットを1体選んでもよい。このターン、選んだユニットを
 //  バトルエリアに出すとき、自軍コマンドを1つホールドするかわりに、相手は自分自身のコマンドを1つ選びホールドする。」（atwiki/page-1192）。
 // 選んだユニットは、このターン、出るときのホールドが1つ少なくなる（rules/restrictions.ts requiredBattleEntryHolds。rules/xg2/xg2Fields.ts）。
-// 出たら相手がリリース状態の自分のコマンドを1つ選びホールドする（なければ何もしない。questions U-15 (a)）。
+// 出たら相手がリリース状態の自分のコマンドを1つ選びホールドする。相手にリリース状態のコマンドがなければ置き換えは起きず、ふつうに自軍コマンドを
+// ホールドして出る（利用者の決定 2026-10-20・questions-all.md U-15。rules/xg2/xg2Fields.ts xg2KijouReplacesEntryHold）。
 
 const KIJOU_EFFECT_ID = "xg2_021_kijou";
 const KIJOU_HOLD_EFFECT_ID = "xg2_021_kijou_enemy_hold";

@@ -12,7 +12,8 @@
  * 既存の照合と重なるもの: BK1-001-019.c.test.ts（XG1-059 を手札の「ブレイド」として使う）。
  */
 import { describe, expect, it } from "vitest";
-import type { CardInstance } from "../types/game";
+import type { CardInstance, PlayerState } from "../types/game";
+import { setBattleDestroyToPower } from "../rules/turnModifierBridge";
 import {
   PLAIN_VEHICLE,
   act,
@@ -54,12 +55,13 @@ const PLUS = sUnit("SPEC-PLUS", { powerCost: "0+" });
 const MAS = sUnit("SPEC-MAS", { category: "MA" });
 const MAM = sUnit("SPEC-MAM", { category: "MA", size: "M" });
 const MAN = sUnit("SPEC-MAN", { bp: 1000, features: ["男"] });
+const MAN5 = sUnit("SPEC-MAN5", { bp: 5000, features: ["男"] });
 const THING = sUnit("SPEC-THING", { bp: 6000, features: ["メカ"] });
 const S0 = sUnit("SPEC-S0", { bp: 2000, sp: undefined });
 const L8 = sUnit("SPEC-L8", { bp: 8000, size: "L" });
 const L9 = sUnit("SPEC-L9", { bp: 9000, size: "L" });
 const RCU = rcUnit("SPEC-RCU");
-const EXTRA = [PLAIN_VEHICLE, PLUS, MAS, MAM, MAN, THING, S0, L8, L9, RCU];
+const EXTRA = [PLAIN_VEHICLE, PLUS, MAS, MAM, MAN, MAN5, THING, S0, L8, L9, RCU];
 
 // ===========================================================================
 describe("XG1-055 マンティスロード", () => {
@@ -168,7 +170,7 @@ describe("XG1-058 ウルフアンデッド", () => {
     expectRarityIn("XG1-058", ["N"]);
   });
 
-  it("XG1-058: ※ ライド中は BP+1000（3500）（既知の不具合: CARD-XG1-058 BP2500 のまま）（出典: atwiki/page-1565「※これはライド中、BP+1000される」）", () => {
+  it("XG1-058: ※ ライド中は BP+1000（3500）（出典: atwiki/page-1565「※これはライド中、BP+1000される」）", () => {
     const s = p1Battle({ rush: [inst("SPEC-VEHICLE", "v"), { ...inst("XG1-058", "w"), mountedOnInstanceId: "SPEC-VEHICLE:v" }] }, {}, EXTRA);
     expect(bpOf(s, "player1", "XG1-058:w")).toBe(3500);
   });
@@ -180,7 +182,7 @@ describe("XG1-058 ウルフアンデッド", () => {
   const rc = () =>
     rcAt("XG1-058:w", { rush: [heldUnit("SPEC-MAN", "own")] }, { rush: [heldUnit("SPEC-THING", "big"), inst("TST-UNIT-0", "rel")], battle: [heldUnit("SPEC-MAN", "em")] }, EXTRA);
 
-  it("XG1-058: 【ワーウルフ化】RC — ホールド状態の S ユニット（自軍・敵軍、エリアを問わない）を選ぶ選択が開く（リリース状態は選べない。任意）（既知の不具合: CARD-XG1-058 選択が開かない）（出典: atwiki/page-1565「ホールド状態のSユニットを2体選んでもよい」・カード評価「エリア、自軍か敵軍かを問わない」）", () => {
+  it("XG1-058: 【ワーウルフ化】RC — ホールド状態の S ユニット（自軍・敵軍、エリアを問わない）を選ぶ選択が開く（リリース状態は選べない。任意）（出典: atwiki/page-1565「ホールド状態のSユニットを2体選んでもよい」・カード評価「エリア、自軍か敵軍かを問わない」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "XG1-058");
     expect(choiceIds(s)).not.toContain("TST-UNIT-0:rel");
@@ -189,10 +191,56 @@ describe("XG1-058 ウルフアンデッド", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it("XG1-058: 選んだ2体（「男」の敵軍ユニットと BP6000 の敵軍ユニット）でバトルさせ、負けたほうが撃破される（既知の不具合: CARD-XG1-058）（出典: atwiki/page-1565「選んだ2体でバトルさせる。ただし、特徴「男」を持つユニットを必ず1体選ぶこと」）", () => {
+  it("XG1-058: 選んだ2体（「男」の敵軍ユニットと BP6000 の敵軍ユニット）でバトルさせ、負けたほうが撃破される（出典: atwiki/page-1565「選んだ2体でバトルさせる。ただし、特徴「男」を持つユニットを必ず1体選ぶこと」）", () => {
     const s = resolveAll(rc(), ["SPEC-MAN:em", "SPEC-THING:big"]);
     expect(zoneOf(s, "player2", "SPEC-MAN:em")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-THING:big")).toBe("rush");
+  });
+
+  // R-BTL-02「BP が同じなら両方とも撃破される」。直接のバトルでも同じ（利用者の決定 2026-10-20）。
+  it("XG1-058: 選んだ2体の BP が同じなら両方とも撃破される（出典: atwiki/page-1565「選んだ2体でバトルさせる」・R-BTL-02・利用者の決定 2026-10-20・questions-all.md U-11）", () => {
+    const s = resolveAll(rcAt("XG1-058:w", { rush: [heldUnit("SPEC-MAN", "own")] }, { battle: [heldUnit("SPEC-MAN", "em")] }, EXTRA), ["SPEC-MAN:own", "SPEC-MAN:em"]);
+    expect(zoneOf(s, "player1", "SPEC-MAN:own")).toBe("discard");
+    expect(zoneOf(s, "player2", "SPEC-MAN:em")).toBe("discard");
+  });
+
+  // 直接のバトルで、どちらもアタックした・アタックされたユニットではない。XG1-060 ※「アタックされるときBP+2000」は働かない。
+  it("XG1-058: 選んだ2体はどちらもアタックされていないので、XG1-060 の「アタックされるときBP+2000」は働かず、BP4500 の XG1-060 が BP5000 の「男」に負ける（出典: 利用者の決定 2026-10-20・questions-all.md U-11「どちらもアタックしていない（アタックした・されたを見る効果は働かない）」・atwiki/page-1580）", () => {
+    const s = resolveAll(rcAt("XG1-058:w", { rush: [heldUnit("SPEC-MAN5", "own")] }, { battle: [heldUnit("XG1-060", "cb")] }, EXTRA), ["XG1-060:cb", "SPEC-MAN5:own"]);
+    expect(zoneOf(s, "player2", "XG1-060:cb")).toBe("discard");
+    expect(zoneOf(s, "player1", "SPEC-MAN5:own")).toBe("rush");
+  });
+
+  // RS-182 ジャイアントローラーの本文はアタックした側かどうかを見ない（「選んだユニットとバトルしたユニットは」）。
+  // XG1-058 のバトルも「バトル」なので働き、選んだユニットとバトルして撃破された相手は、捨札になるときダメージになる。
+  const rolledMark = (id: string) => setBattleDestroyToPower({ modifiers: [] } as unknown as PlayerState, id, "RS-182").modifiers;
+
+  it("XG1-058 × RS-182: ジャイアントローラーで選んだ自軍ユニットと【ワーウルフ化】でバトルして負けた敵軍ユニットは、持ち主のパワーゾーンにダメージ（ウラ向き）として置かれる（出典: atwiki/page-379「このターン、選んだユニットとバトルしたユニットは、撃破されて捨札になったとき、持ち主のパワーゾーンにダメージにして置く」— アタックかどうかを問わない・利用者の決定 2026-10-20・questions-all.md U-11）", () => {
+    const s = resolveAll(
+      rcAt("XG1-058:w", { rush: [heldUnit("SPEC-THING", "own")], modifiers: rolledMark("SPEC-THING:own") }, { battle: [heldUnit("SPEC-MAN", "em")] }, EXTRA),
+      ["SPEC-MAN:em", "SPEC-THING:own"],
+    );
+    expect(zoneOf(s, "player2", "SPEC-MAN:em")).toBe("power");
+    expect(s.players.player2.power.find((c) => c.instanceId === "SPEC-MAN:em")?.faceDown).toBe(true);
+    expect(s.players.player2.damage).toBe(1);
+    expect(zoneOf(s, "player1", "SPEC-THING:own")).toBe("rush");
+  });
+
+  it("XG1-058 × RS-182: BP が同じで両方撃破されたとき、ジャイアントローラーで選んだユニットの相手はダメージになり、選んだユニット自身は通常どおり捨札になる（出典: atwiki/page-379「選んだユニットとバトルしたユニットは」・R-BTL-02・利用者の決定 2026-10-20・questions-all.md U-11）", () => {
+    const s = resolveAll(
+      rcAt("XG1-058:w", { rush: [heldUnit("SPEC-MAN", "own")], modifiers: rolledMark("SPEC-MAN:own") }, { battle: [heldUnit("SPEC-MAN", "em")] }, EXTRA),
+      ["SPEC-MAN:own", "SPEC-MAN:em"],
+    );
+    expect(zoneOf(s, "player2", "SPEC-MAN:em")).toBe("power");
+    expect(s.players.player2.damage).toBe(1);
+    expect(zoneOf(s, "player1", "SPEC-MAN:own")).toBe("discard");
+    expect(s.players.player1.damage).toBe(0);
+  });
+
+  it("XG1-058: ジャイアントローラーを使っていなければ、負けたユニットは通常どおり捨札になる（出典: atwiki/page-1565・atwiki/page-379）", () => {
+    const s = resolveAll(rcAt("XG1-058:w", { rush: [heldUnit("SPEC-THING", "own")] }, { battle: [heldUnit("SPEC-MAN", "em")] }, EXTRA), ["SPEC-MAN:em", "SPEC-THING:own"]);
+    expect(zoneOf(s, "player2", "SPEC-MAN:em")).toBe("discard");
+    expect(s.players.player2.damage).toBe(0);
   });
 });
 

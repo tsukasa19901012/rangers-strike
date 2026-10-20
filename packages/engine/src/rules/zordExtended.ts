@@ -934,7 +934,7 @@ export function listFieldZordRushVariants(
         variants.push(materialRef);
       }
       // XG1-013【巨大要塞】捨札にするかわりにホールドする（rules/xg1/xg1Fields.ts）。
-      if (!set[0]!.commandHeld && xg1HoldSubstituteAvailable(player, definitions, rushingCardId, condition.conditionId, condition.unitCount)) {
+      if (!set[0]!.commandHeld && xg1HoldSubstituteAvailable(player, definitions, rushingCardId)) {
         variants.push({ ...materialRef, zordMaterialDestination: "hold" });
       }
     } else {

@@ -236,6 +236,10 @@ describe("XG1-012 レッドパンチャー", () => {
     expect(spOf(field(releasedCat("ET", 1)), "player1", "XG1-012:rp")).toBe(1);
   });
 
+  it("XG1-012: ※ 自軍コマンドが0枚なら、リリース状態のコマンドがないので「SP1」にならない（出典: 利用者の決定 2026-10-20・questions-all.md U-9「コマンド0枚ならリリース状態のコマンドなしとして SP1 にならない」）", () => {
+    expect(spOf(field([]), "player1", "XG1-012:rp")).toBe(0);
+  });
+
   it("XG1-012: ※ ホールド状態の自軍コマンドが1つでもあれば SP を持たない（出典: atwiki/page-1615「すべてリリース状態なら」）", () => {
     expect(spOf(field([...releasedCat("ET", 2), ...heldN(1)]), "player1", "XG1-012:rp")).toBe(0);
   });
@@ -288,6 +292,58 @@ describe("XG1-013 キングピラミッダーPF", () => {
     const results = rushResults(board(false), "player1", "XG1-012:h").filter((r) => zoneOf(r, "player1", "XG1-012:h") === "rush");
     expect(results.length).toBeGreaterThan(0);
     expect(results.every((r) => zoneOf(r, "player1", "TST-UNIT-0:s") === "discard")).toBe(true);
+  });
+
+  // 利用者の決定 2026-10-20（questions-all.md U-10）: 名前・特徴の指定のない「自軍Sユニットを N 体捨札にする」は複数体でも置きかえられ、
+  // 捨札にする1体ごとにホールドにしてよい。名前・特徴を指定する追加条件には使えない。
+  const S3 = ["s1", "s2", "s3"].map((k) => `TST-UNIT-0:${k}`);
+  // RS-621 バードガルーダ（L・OT・必要パワー6+、追加条件「自軍Sユニットを3体捨札にする」）。
+  const garudaBoard = () =>
+    rushPhaseBoard(
+      { hand: [inst("RS-621", "h")], rush: [inst("XG1-013", "kp"), ...S3.map((id) => inst("TST-UNIT-0", id.split(":")[1]!))], command: releasedCat("OT", 2), power: powerCards(6) },
+      {},
+      EXTRA,
+    );
+  const garudaRushed = (r: GameState) => zoneOf(r, "player1", "RS-621:h") === "rush";
+
+  it("XG1-013: 【巨大要塞】RS-621 バードガルーダの「自軍Sユニットを3体捨札にする」は、3体ともホールドに置きかえてラッシュできる（捨札にする S ユニットはない）（出典: 利用者の決定 2026-10-20・questions-all.md U-10、atwiki/page-1642 カード評価「Sユニットを複数捨てる必要のあるユニットにも使える」）", () => {
+    const allHeld = rushResults(garudaBoard(), "player1", "RS-621:h", 12).filter(
+      (r) => garudaRushed(r) && S3.every((id) => zoneOf(r, "player1", id) === "rush" && isHeldCard(r, "player1", id)),
+    );
+    expect(allHeld.length).toBeGreaterThan(0);
+  });
+
+  it("XG1-013: 【巨大要塞】RS-621 の3体は1体ごとに選べる — 2体をホールドし、1体を捨札にしてラッシュすることもできる（出典: 利用者の決定 2026-10-20・questions-all.md U-10）", () => {
+    const mixed = rushResults(garudaBoard(), "player1", "RS-621:h", 12).filter((r) => {
+      if (!garudaRushed(r)) return false;
+      const held = S3.filter((id) => zoneOf(r, "player1", id) === "rush" && isHeldCard(r, "player1", id)).length;
+      const discarded = S3.filter((id) => zoneOf(r, "player1", id) === "discard").length;
+      return held === 2 && discarded === 1;
+    });
+    expect(mixed.length).toBeGreaterThan(0);
+  });
+
+  it("XG1-013: 【巨大要塞】特徴を指定する追加条件（XG3-084 大甲神カブテリオス「特徴「昆虫」を持つ自軍Sユニット1体を捨札にする」）には使えない — 昆虫の S ユニットは捨札になる（出典: 利用者の決定 2026-10-20・questions-all.md U-10）", () => {
+    const INSECT = sUnit("SPEC-INSECT-S", { features: ["昆虫"] });
+    const s = rushPhaseBoard(
+      { hand: [inst("XG3-084", "h")], rush: [inst("XG1-013", "kp"), inst("SPEC-INSECT-S", "ins")], command: releasedCat("MA", 2), power: powerCards(6) },
+      {},
+      [...EXTRA, INSECT],
+    );
+    const results = rushResults(s, "player1", "XG3-084:h").filter((r) => zoneOf(r, "player1", "XG3-084:h") === "rush");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.every((r) => zoneOf(r, "player1", "SPEC-INSECT-S:ins") === "discard")).toBe(true);
+  });
+
+  it("XG1-013: 【巨大要塞】名前・特徴を指定する追加条件（XP-028 ワンダーゴセイグレート「リードを持つ自軍Sユニット1体を捨札にする」）には使えない — リードを持つ XP-022 ゴセイレッドは捨札になる（出典: 利用者の決定 2026-10-20・questions-all.md U-10）", () => {
+    const s = rushPhaseBoard(
+      { hand: [inst("XP-028", "h")], rush: [inst("XG1-013", "kp"), inst("XP-022", "gr")], command: releasedCat("MA", 2), power: powerCards(4) },
+      {},
+      EXTRA,
+    );
+    const results = rushResults(s, "player1", "XP-028:h").filter((r) => zoneOf(r, "player1", "XP-028:h") === "rush");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.every((r) => zoneOf(r, "player1", "XP-022:gr") === "discard")).toBe(true);
   });
 });
 

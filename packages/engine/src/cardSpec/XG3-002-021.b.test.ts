@@ -64,7 +64,10 @@ const E5000 = sUnit("SPEC-E5000", { bp: 5000 });
 const E20000 = sUnit("SPEC-E20000", { bp: 20000, size: "L" });
 const DA_E = sUnit("SPEC-DA-E", { category: "DA", bp: 1000 });
 const BEAST_E = sUnit("SPEC-BEAST-E", { category: "WB", bp: 1000, features: ["獣"] });
-const EXTRA = [HUMAN_L, HUMAN_L2, MECHA_L, DA_L, M3000, E4000, E5000, E20000, DA_E, BEAST_E];
+const CN_RC = sUnit("SPEC-CN-RC", { comboNumber: "RC" as never });
+const CN_L = sUnit("SPEC-CN-L", { comboNumber: "L" as never });
+const CN_R = sUnit("SPEC-CN-R", { comboNumber: "R" as never });
+const EXTRA = [HUMAN_L, HUMAN_L2, MECHA_L, DA_L, M3000, E4000, E5000, E20000, DA_E, BEAST_E, CN_RC, CN_L, CN_R];
 
 const board = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) => rushBoard(p1, p2, EXTRA);
 const battle = (p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) =>
@@ -266,6 +269,12 @@ describe("XG3-012 獣装光ギンガレッド", () => {
     expectChoiceFrom(s, "player1", "XG3-012");
     expect(choiceIds(s)).toEqual(["SPEC-E4000:e2", "TST-UNIT-0:e"]);
     expect(canSkip(s)).toBe(false);
+  });
+
+  it("XG3-012:【閃光星獣剣】— CN が「RC」「L」「R」の S ユニットも「ナンバーを持つ」とみなし、選べない（出典: 利用者の決定 2026-10-20・questions-all.md U-17）", () => {
+    const s = enter(battle({ rush: [inst("XG3-012", "g")] }, { battle: [inst("TST-UNIT-0", "e"), inst("SPEC-CN-RC", "rc"), inst("SPEC-CN-L", "l"), inst("SPEC-CN-R", "r")] }), "XG3-012:g");
+    expectChoiceFrom(s, "player1", "XG3-012");
+    expect(choiceIds(s)).toEqual(["TST-UNIT-0:e"]);
   });
 
   it("XG3-012:【閃光星獣剣】— 選んだユニットをゲームから除外する（捨札にも置かれない）（出典: atwiki/page-2011「ゲームから除外する」・コメント欄「捨札の再利用を許さない」）", () => {

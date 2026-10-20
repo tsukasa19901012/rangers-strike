@@ -206,10 +206,16 @@ export function xg2AllowsRushAttack(_state: Board, attackerPlayerId: PlayerId, a
 export const XG2_KIJOU_KEY = "kijou";
 export type Xg2KijouEntry = { ownerId: PlayerId; instanceId: string; turn: number };
 
-/** 【騎乗】で選んだユニットは、このターン、バトルエリアに出るとき自軍コマンドをホールドしない（rules/restrictions.ts requiredBattleEntryHolds）。 */
+/**
+ * 【騎乗】で選んだユニットは、このターン、バトルエリアに出るとき自軍コマンドをホールドしない（rules/restrictions.ts requiredBattleEntryHolds）。
+ * 相手にリリース状態のコマンドがなければ「かわりに相手がホールドする」ことができないので置き換えず、ふつうに自軍コマンドをホールドする
+ * （利用者の決定 2026-10-20・questions-all.md U-15。RS-572 デカマスターと同じく、できる方に決まる）。
+ */
 export function xg2KijouReplacesEntryHold(state: GameState, playerId: PlayerId, unit: CardInstance): boolean {
   const entries = (state.xg2?.[XG2_KIJOU_KEY] as Xg2KijouEntry[] | undefined) ?? [];
-  return entries.some((e) => e.ownerId === playerId && e.instanceId === unit.instanceId && e.turn === state.turn);
+  if (!entries.some((e) => e.ownerId === playerId && e.instanceId === unit.instanceId && e.turn === state.turn)) return false;
+  const enemyId: PlayerId = playerId === "player1" ? "player2" : "player1";
+  return state.players[enemyId].command.some((c) => !c.commandHeld);
 }
 
 /**

@@ -116,6 +116,29 @@ describe("XG2-021 重騎士", () => {
     expect(heldCount(s, "player1")).toBe(0);
     expect(heldCount(s, "player2")).toBe(1);
   });
+
+  const kijouChosen = (own: ReturnType<typeof inst>[], enemy: ReturnType<typeof inst>[]) => {
+    let s = enter(p1Battle({ rush: [inst("XG2-021", "k"), inst("XG2-022", "g")], command: own }, { command: enemy }), "XG2-021:k");
+    s = resolveAll(pick(s, "XG2-022:g"));
+    return passEntry(s);
+  };
+
+  it("XG2-021: 【騎乗】相手にリリース状態のコマンドがなければ、かわりに相手がホールドすることはできないので、選んだユニットはふつうに自軍コマンドを1つホールドして出る（ホールドなしでは出られない）（出典: 利用者の決定 2026-10-20・questions-all.md U-15）", () => {
+    // 相手のコマンドは0（ホールド状態のコマンドもないので XG2-022【騎獣激突】は起きない）。
+    let s = kijouChosen(releasedCat("WB", 2), []);
+    expect(legal(s).some((a) => a.type === "move_to_battle" && a.playerId === "player1" && a.instanceId === "XG2-022:g")).toBe(false);
+    s = resolveAll(enterWithHold(s, "XG2-022:g", ["TST-OP:cWB0"]));
+    expect(zoneOf(s, "player1", "XG2-022:g")).toBe("battle");
+    expect(cardIn(s, "player1", "TST-OP:cWB0")?.commandHeld).toBe(true);
+    expect(heldCount(s, "player1")).toBe(1);
+    expect(s.pendingEffectChoice).toBeUndefined();
+  });
+
+  it("XG2-021: 【騎乗】相手にリリース状態のコマンドがなく、自軍にもリリース状態のコマンドがなければ、選んだユニットはバトルエリアに出られない（出典: 利用者の決定 2026-10-20・questions-all.md U-15）", () => {
+    const s = kijouChosen([held("TST-OP", "ph")], [held("TST-OP", "eh")]);
+    expect(legal(s).some((a) => a.type === "move_to_battle" && a.playerId === "player1" && a.instanceId === "XG2-022:g")).toBe(false);
+    expect(canEnter(s, "XG2-022:g")).toBe(false);
+  });
 });
 
 // ===========================================================================

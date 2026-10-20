@@ -284,6 +284,26 @@ describe("XG2-086 ハイパーショウ", () => {
     const s = resolveZone(drum(), ["SPEC-OT-L:otl"]);
     expect(inOwnersZone(s, "player2", "SPEC-OT-L:otl")).toBe(true);
   });
+
+  it("XG2-086: 【ドラムガンファイヤー】行き先（持ち主のパワーゾーンかコマンドゾーン）は効果を使った側（自軍）が選ぶ。パワーゾーンならオモテ向き、コマンドゾーンならリリース状態で敵軍のゾーンに置かれる。敵軍のコマンドゾーンが5枚ならパワーゾーンに置かれる（出典: 利用者の決定 2026-10-20・questions-all.md U-13）", () => {
+    const s = pick(drum(), "SPEC-OT-L:otl");
+    expectChoiceFrom(s, "player1", "XG2-086");
+    expect(s.pendingEffectChoice?.effectId).toBe("xg2_owner_zone");
+    expect(choiceIds(s)).toEqual(["command", "power"]);
+    const p = resolveAll(pick(s, "power"));
+    expect(zoneOf(p, "player2", "SPEC-OT-L:otl")).toBe("power");
+    expect(p.players.player2.power.find((c) => c.instanceId === "SPEC-OT-L:otl")?.faceDown).not.toBe(true);
+    const c = resolveAll(pick(s, "command"));
+    expect(zoneOf(c, "player2", "SPEC-OT-L:otl")).toBe("command");
+    expect(c.players.player2.command.find((x) => x.instanceId === "SPEC-OT-L:otl")?.commandHeld).not.toBe(true);
+    const full = ncEnter("XG2-086:hs", 0, {}, { battle: [inst("SPEC-OT-L", "otl")], command: releasedCat("OT", 5, "fc") }, EXTRA);
+    const f = pick(full, "SPEC-OT-L:otl");
+    expect(f.pendingEffectChoice?.effectId).not.toBe("xg2_owner_zone");
+    const t = resolveAll(f);
+    expect(zoneOf(t, "player2", "SPEC-OT-L:otl")).toBe("power");
+    expect(t.players.player2.power.find((x) => x.instanceId === "SPEC-OT-L:otl")?.faceDown).not.toBe(true);
+    expect(t.players.player2.command).toHaveLength(5);
+  });
 });
 
 // ===========================================================================

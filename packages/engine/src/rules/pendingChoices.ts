@@ -2182,6 +2182,7 @@ export function applyConfirmEffectChoice(
         instanceId,
         "discard",
         pending.phasePlayerId,
+        { discardAsDamage: pending.discardAsDamageInstanceIds?.includes(instanceId) },
       );
       if ("error" in leave) return leave;
       nextState = leave.state;
@@ -2624,6 +2625,7 @@ export function applyUnitLeave(
   instanceId: string,
   destination: "power" | "discard" | "deck_top",
   phasePlayerId: PlayerId,
+  opts: { discardAsDamage?: boolean } = {},
 ): ChoiceOutcome {
   {
     const stayed = tryRegisterStayOnLeave(state, instanceId);
@@ -2661,6 +2663,7 @@ export function applyUnitLeave(
     toZone,
     leavingCardId: found.card.cardId,
     phasePlayerId,
+    ...(opts.discardAsDamage && toZone === "discard" ? { discardAsDamage: true } : {}),
   });
 
   if (leaveResult.deferred) {
