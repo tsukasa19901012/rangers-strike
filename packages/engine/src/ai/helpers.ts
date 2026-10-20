@@ -596,7 +596,22 @@ export function pickHoldBeforeBattle(
       };
     }
   }
-  return null;
+  // 「自軍コマンドを1つホールドしなければバトルエリアに出られない」ユニット（ガオイーグル等）は、
+  // 払うまで move_to_battle が合法手に無く、battle_entry の支払いの開始だけが並ぶ。
+  // 上のループでは見つからず、ラッシュエリアに置いたまま出さずにいた（XG3 スターターB、2026-10-20）。
+  let best: GameAction | null = null;
+  let bestBp = Number.NEGATIVE_INFINITY;
+  for (const action of actionsOfType(actions, "initiate_command_payment")) {
+    if (action.kind !== "battle_entry" || action.playerId !== playerId) continue;
+    const card = state.players[playerId].rush.find((c) => c.instanceId === action.sourceInstanceId);
+    if (!card) continue;
+    const bp = effectiveBp(state, playerId, card);
+    if (bp > bestBp) {
+      bestBp = bp;
+      best = action;
+    }
+  }
+  return best;
 }
 
 /** このターンユニットがラッシュできるようカテゴリホールドを支払う。 */
