@@ -41,12 +41,12 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-047::hihonoogasu",
-          "duration": "turn"
+          "keyword": "xg2::XG2-047::super_gas",
+          "duration": "permanent"
         }
       ]
     }

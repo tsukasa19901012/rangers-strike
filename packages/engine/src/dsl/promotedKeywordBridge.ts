@@ -1,3 +1,4 @@
+import { xg2DefenderBlocksAttack } from "../rules/xg2/xg2Fields";
 import { rk8SkipsPromotedSpFloor } from "../rules/rk/rk8UnitEffects";
 import { isDivingOrochi } from "../rules/errataCardEffects";
 import { cardCategories } from "@rangers-strike/cards";
@@ -645,6 +646,9 @@ export function promotedDefenderBlocksAttack(
   ) {
     return true;
   }
+
+  // XG2-065 仮面ライダーカブトHF【ハイパークロックアップ】（rules/xg2/xg2Fields.ts）。
+  if (xg2DefenderBlocksAttack(state, attackerPlayerId, attacker.card, defenderPlayerId, defender.card)) return true;
 
   if (
     isSmallUnit(state.definitions, attacker.card) &&

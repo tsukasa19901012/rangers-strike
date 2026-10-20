@@ -38,6 +38,7 @@ import {
   legal,
   ncEnter,
   p1Battle,
+  passEntry,
   pick,
   PLAIN_VEHICLE,
   powerCards,
@@ -85,17 +86,17 @@ describe("XG2-082 電子星獣ドル", () => {
     expect(canStartRush(board([inst("XG2-083", "gv")], 4), "player1", "XG2-082:dol")).toBe(false);
   });
 
-  it.fails("XG2-082: ※2つ目 — 自軍ラッシュフェイズ中、これをホールドする手がある（任意）（出典: atwiki/page-1807「自軍ラッシュフェイズ中、このユニットをホールドしてもよい」・カード評価「任意でユニットにもビークルにもなれる」） 既知の不具合: CARD-XG2-082 ラッシュフェイズにこれをホールドする合法手がない", () => {
+  it("XG2-082: ※2つ目 — 自軍ラッシュフェイズ中、これをホールドする手がある（任意）（出典: atwiki/page-1807「自軍ラッシュフェイズ中、このユニットをホールドしてもよい」・カード評価「任意でユニットにもビークルにもなれる」）", () => {
     const s = rushBoard({ rush: [inst("XG2-082", "dol")] }, {}, EXTRA);
     expect(legal(s).some((a) => a.playerId === "player1" && JSON.stringify(a).includes("XG2-082:dol"))).toBe(true);
   });
 
-  it.fails("XG2-082: ※3つ目 — 自軍ラッシュフェイズ中、ライドされていないホールド状態のこれをリリースする手がある（任意）（出典: atwiki/page-1807「このビークルがライドされていないなら、リリースしてもよい」・Q1〜Q3） 既知の不具合: CARD-XG2-082 ラッシュフェイズにこれをリリースする合法手がない", () => {
+  it("XG2-082: ※3つ目 — 自軍ラッシュフェイズ中、ライドされていないホールド状態のこれをリリースする手がある（任意）（出典: atwiki/page-1807「このビークルがライドされていないなら、リリースしてもよい」・Q1〜Q3）", () => {
     const s = rushBoard({ rush: [heldUnit("XG2-082", "dol")] }, {}, EXTRA);
     expect(legal(s).some((a) => a.playerId === "player1" && JSON.stringify(a).includes("XG2-082:dol"))).toBe(true);
   });
 
-  it.fails("XG2-082: ※1つ目 — ホールド状態の間は L ビークルとして扱うので、ライドされずにバトルエリアに出られない（出典: atwiki/page-1807「自軍エリアでホールド状態かライドされている間、Lビークルとして扱う」） 既知の不具合: CARD-XG2-082 ホールド状態でもユニットとして扱い、ライドされずにバトルエリアに出られる", () => {
+  it("XG2-082: ※1つ目 — ホールド状態の間は L ビークルとして扱うので、ライドされずにバトルエリアに出られない（出典: atwiki/page-1807「自軍エリアでホールド状態かライドされている間、Lビークルとして扱う」）", () => {
     expect(canEnter(p1Battle({ rush: [heldUnit("XG2-082", "dol")] }, {}, EXTRA), "XG2-082:dol")).toBe(false);
   });
 
@@ -109,11 +110,11 @@ describe("XG2-082 電子星獣ドル", () => {
       EXTRA,
     );
 
-  it.fails("XG2-082: ※1つ目 — ホールド状態のこれ（L ビークル）は、チェイスの乗り換え先にできる（出典: atwiki/page-1807・カード評価「チェイスによってライドされることで、本来のBP5000以下を対象にした強力な除去を狙える」・R-KW-CHASE-01） 既知の不具合: CARD-XG2-082 ホールド状態でもビークルとして扱わず、チェイスの乗り換え先に出ない", () => {
+  it("XG2-082: ※1つ目 — ホールド状態のこれ（L ビークル）は、チェイスの乗り換え先にできる（出典: atwiki/page-1807・カード評価「チェイスによってライドされることで、本来のBP5000以下を対象にした強力な除去を狙える」・R-KW-CHASE-01）", () => {
     expect(chaseTargets(chased(), "player1")).toEqual(["XG2-082:dol"]);
   });
 
-  it.fails("XG2-082: 【ドルファイヤー】チェイスの効果でライドされたとき、敵軍バトルエリアの本来の BP が5000以下のユニットを1体選べる（任意。BP6000・ラッシュエリアのユニットは選べない）（出典: atwiki/page-1807「このビークルがチェイスの効果でライドされたとき、敵軍バトルエリアから本来のBPが5000以下のユニットを1体選び撃破してもよい」） 既知の不具合: CARD-XG2-082 ホールド状態でもビークルとして扱わず、チェイスの乗り換え先に出ない", () => {
+  it("XG2-082: 【ドルファイヤー】チェイスの効果でライドされたとき、敵軍バトルエリアの本来の BP が5000以下のユニットを1体選べる（任意。BP6000・ラッシュエリアのユニットは選べない）（出典: atwiki/page-1807「このビークルがチェイスの効果でライドされたとき、敵軍バトルエリアから本来のBPが5000以下のユニットを1体選び撃破してもよい」）", () => {
     let s = act(chased(), { type: "resolve_chase", playerId: "player1", newVehicleInstanceId: "XG2-082:dol" });
     expectChoiceFrom(s, "player1", "XG2-082");
     expect(choiceIds(s)).toEqual(["SPEC-B5000:e5"]);
@@ -144,23 +145,24 @@ describe("XG2-083 宇宙刑事ギャバン", () => {
     return resolveAll(settle(attack(s, "SPEC-B5000:atk", target, "player2")));
   };
 
-  it.fails("XG2-083: ※2つ目 — これが自軍エリアにある間、特徴「宇宙刑事」を持つ自軍ユニットはアタックされるとき BP+1000 される（BP1000→2000。これ自身も 4000→5000）（出典: atwiki/page-981「特徴「宇宙刑事」を持つ自軍ユニットは、アタックされるとき、BP+1000される」・カード評価「複数体いれば、各種MF並みの上昇幅」） 既知の不具合: CARD-XG2-083 アタックされるときの BP+1000 がない", () => {
+  it("XG2-083: ※2つ目 — これが自軍エリアにある間、特徴「宇宙刑事」を持つ自軍ユニットはアタックされるとき BP+1000 される（BP1000→2000。これ自身も 4000→5000）（出典: atwiki/page-981「特徴「宇宙刑事」を持つ自軍ユニットは、アタックされるとき、BP+1000される」・カード評価「複数体いれば、各種MF並みの上昇幅」）", () => {
     expect(lastBattleBps(attacked("SPEC-UCHU:u"))?.defender).toBe(2000);
     expect(lastBattleBps(attacked("XG2-083:gv"))?.defender).toBe(5000);
   });
 
   const patrol = () => rcBoard("XG2-083:gv", { rush: [inst("XG2-089", "jb"), inst("TST-UNIT-0", "nr")] }, { battle: [inst("SPEC-DA-S", "da")] }, EXTRA);
 
-  it.fails("XG2-083: 【銀河パトロール隊隊長】RC — 自軍ラッシュエリアの RC を持つユニット（XG2-089 ジバン）から選べる（任意。RC を持たないユニットは選べない）（出典: atwiki/page-981「自軍ラッシュエリアから、RCを持つユニットを1体選んでもよい」） 既知の不具合: CARD-XG2-083 【銀河パトロール隊隊長】の選択が開かない", () => {
+  it("XG2-083: 【銀河パトロール隊隊長】RC — 自軍ラッシュエリアの RC を持つユニット（XG2-089 ジバン）から選べる（任意。RC を持たないユニットは選べない）（出典: atwiki/page-981「自軍ラッシュエリアから、RCを持つユニットを1体選んでもよい」）", () => {
     const s = patrol();
     expectChoiceFrom(s, "player1", "XG2-083");
     expect(choiceIds(s)).toEqual(["XG2-089:jb"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-083: 【銀河パトロール隊隊長】選んだユニットは、このターン、ライドオフせずにバトルエリアに出ても RC の効果（ジバン【ジバンエンド】）を発動できる（出典: atwiki/page-981「このターン、選んだユニットは、バトルエリアに出たとき、ライドオフしなくてもその効果を発動できる」・カード評価「ミッションメモリーに似た能力」） 既知の不具合: CARD-XG2-083 【銀河パトロール隊隊長】の選択が開かない", () => {
+  it("XG2-083: 【銀河パトロール隊隊長】選んだユニットは、このターン、ライドオフせずにバトルエリアに出ても RC の効果（ジバン【ジバンエンド】）を発動できる（出典: atwiki/page-981「このターン、選んだユニットは、バトルエリアに出たとき、ライドオフしなくてもその効果を発動できる」・カード評価「ミッションメモリーに似た能力」）", () => {
     let s = resolveAll(pick(patrol(), "XG2-089:jb"));
-    s = enter(resolveAll(settle(s)), "XG2-089:jb");
+    // ギャバンのバトル進入の行動ウィンドウをパスしてから、ジバンを出す（パスしないと次のユニットを出せない）。
+    s = enter(passEntry(resolveAll(settle(s))), "XG2-089:jb");
     expectChoiceFrom(s, "player1", "XG2-089");
   });
 });
@@ -183,13 +185,13 @@ describe("XG2-084 バビロス", () => {
     expect(attackTargets(resolveAll(lasered()), "XG2-084:bb")).toEqual(["TST-UNIT-2:m"]);
   });
 
-  it.fails("XG2-084: 【バビロスレーザー】自軍ターン中にバトルエリアに出たとき、敵軍山札の上から1枚をオモテにするかを選べる（任意）（出典: atwiki/page-1808「敵軍山札の上から1枚をオモテにしてもよい」） 既知の不具合: CARD-XG2-084 【バビロスレーザー】の選択が開かず、何も撃破されない", () => {
+  it("XG2-084: 【バビロスレーザー】自軍ターン中にバトルエリアに出たとき、敵軍山札の上から1枚をオモテにするかを選べる（任意）（出典: atwiki/page-1808「敵軍山札の上から1枚をオモテにしてもよい」）", () => {
     const s = lasered();
     expectChoiceFrom(s, "player1", "XG2-084");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-084: 【バビロスレーザー】オモテにしたカードと同じカード名の敵軍ユニットを（エリアを問わず）すべて撃破し、オモテにしたカードは山札の下に戻す（出典: atwiki/page-1808「同じカード名の敵軍ユニットをすべて撃破する。その後、オモテにしたカードは山札の下に戻す」） 既知の不具合: CARD-XG2-084 【バビロスレーザー】の選択が開かず、何も撃破されない", () => {
+  it("XG2-084: 【バビロスレーザー】オモテにしたカードと同じカード名の敵軍ユニットを（エリアを問わず）すべて撃破し、オモテにしたカードは山札の下に戻す（出典: atwiki/page-1808「同じカード名の敵軍ユニットをすべて撃破する。その後、オモテにしたカードは山札の下に戻す」）", () => {
     const s = resolveAll(lasered());
     expect(zoneOf(s, "player2", "SPEC-B5000:e1")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-B5000:e3")).toBe("discard");
@@ -210,7 +212,7 @@ describe("XG2-085 隊員コード153 ショウ", () => {
 
   const enemy = { battle: [inst("SPEC-OT-S", "ot"), inst("SPEC-DA-S", "da"), inst("TST-UNIT-0", "wb"), inst("SPEC-DA-M", "dm")], rush: [inst("SPEC-DA-S", "dr")] };
 
-  it.fails("XG2-085: 【日本刀】NC（1番目）— このターン、OT か DA を持つ敵軍 S ユニット（ラッシュエリアも）は BP-1000。WB の S ユニット・M ユニットは変わらない（出典: atwiki/page-1780「OTまたはDAを持つすべての敵軍SユニットはBP-1000される」・コメント欄「ラッシュまで届く」） 既知の不具合: CARD-XG2-085 【日本刀】がなく、敵軍 S ユニットの BP が下がらない", () => {
+  it("XG2-085: 【日本刀】NC（1番目）— このターン、OT か DA を持つ敵軍 S ユニット（ラッシュエリアも）は BP-1000。WB の S ユニット・M ユニットは変わらない（出典: atwiki/page-1780「OTまたはDAを持つすべての敵軍SユニットはBP-1000される」・コメント欄「ラッシュまで届く」）", () => {
     const s = resolveAll(ncEnter("XG2-085:sho", 0, {}, enemy, EXTRA));
     expect(bpOf(s, "player2", "SPEC-DA-S:da")).toBe(1000);
     expect(bpOf(s, "player2", "SPEC-DA-S:dr")).toBe(1000);
@@ -218,7 +220,7 @@ describe("XG2-085 隊員コード153 ショウ", () => {
     expect(bpOf(s, "player2", "SPEC-DA-M:dm")).toBe(3000);
   });
 
-  it.fails("XG2-085: 【日本刀】BP0 以下になった敵軍ユニット（OT・BP1000）は撃破される（出典: atwiki/page-1780「（BP0以下になったユニットは撃破される）」・カード評価「アタックで撃破しづらい低ＢＰのユニットの除去」） 既知の不具合: CARD-XG2-085 【日本刀】がなく、敵軍 S ユニットの BP が下がらない", () => {
+  it("XG2-085: 【日本刀】BP0 以下になった敵軍ユニット（OT・BP1000）は撃破される（出典: atwiki/page-1780「（BP0以下になったユニットは撃破される）」・カード評価「アタックで撃破しづらい低ＢＰのユニットの除去」）", () => {
     const s = resolveAll(ncEnter("XG2-085:sho", 0, {}, enemy, EXTRA));
     expect(zoneOf(s, "player2", "SPEC-OT-S:ot")).toBe("discard");
   });
@@ -242,7 +244,7 @@ describe("XG2-086 ハイパーショウ", () => {
 
   const board = (rush: ReturnType<typeof inst>[], power = 0) => rushBoard({ hand: [inst("XG2-086", "hs")], rush, power: powerCards(power), command: [...releasedCat("OT", 1), ...releasedCat("ET", 1)] });
 
-  it.fails("XG2-086: 追加条件 — 自軍の「隊員コード153 ショウ」と「ゴールドプラチナム」を両方捨札にすれば必要パワー0でラッシュできる（出典: atwiki/page-97「合体―隊員コード153 ショウ＋ゴールドプラチナム」「追加条件：自軍合体ユニットを捨札にすれば必要パワー0になる」・R-ADD-06） 既知の不具合: CARD-XG2-086 合体ユニットの片方（ショウ）だけを捨札にしてラッシュでき、ゴールドプラチナムが残る", () => {
+  it("XG2-086: 追加条件 — 自軍の「隊員コード153 ショウ」と「ゴールドプラチナム」を両方捨札にすれば必要パワー0でラッシュできる（出典: atwiki/page-97「合体―隊員コード153 ショウ＋ゴールドプラチナム」「追加条件：自軍合体ユニットを捨札にすれば必要パワー0になる」・R-ADD-06）", () => {
     const r = rushVia(board([inst("XG2-085", "sh"), inst("XG2-087", "gp")]), "player1", "XG2-086:hs", (a) => a.zordMaterialInstanceId === "XG2-085:sh");
     expect(r.ok, r.error).toBe(true);
     const s = resolveAll(r.state);
@@ -271,14 +273,14 @@ describe("XG2-086 ハイパーショウ", () => {
 
   const drum = () => ncEnter("XG2-086:hs", 0, {}, { battle: [inst("SPEC-OT-S", "ot"), inst("SPEC-OT-L", "otl"), inst("TST-UNIT-0", "wb")], rush: [inst("SPEC-DA-S", "dr")] }, EXTRA);
 
-  it.fails("XG2-086: 【ドラムガンファイヤー】NC（1番目）— 敵軍バトルエリアの OT か DA を持つユニット（サイズを問わない）を1体選べる（任意。WB のユニット・ラッシュエリアのユニットは選べない）（出典: atwiki/page-97「敵軍バトルエリアから、OTまたはDAを持つユニットを1体選び、持ち主のゾーンに置いてもよい」・カード評価「サイズやBPに関係なくユニットを除去できる」） 既知の不具合: CARD-XG2-086 【ドラムガンファイヤー】の選択が開かない", () => {
+  it("XG2-086: 【ドラムガンファイヤー】NC（1番目）— 敵軍バトルエリアの OT か DA を持つユニット（サイズを問わない）を1体選べる（任意。WB のユニット・ラッシュエリアのユニットは選べない）（出典: atwiki/page-97「敵軍バトルエリアから、OTまたはDAを持つユニットを1体選び、持ち主のゾーンに置いてもよい」・カード評価「サイズやBPに関係なくユニットを除去できる」）", () => {
     const s = drum();
     expectChoiceFrom(s, "player1", "XG2-086");
     expect(choiceIds(s).sort()).toEqual(["SPEC-OT-L:otl", "SPEC-OT-S:ot"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-086: 【ドラムガンファイヤー】選んだユニットは持ち主のゾーン（パワーゾーンかコマンドゾーン）に置かれる（出典: atwiki/page-97「持ち主のゾーンに置いてもよい」・XG2-questions Q1） 既知の不具合: CARD-XG2-086 【ドラムガンファイヤー】の選択が開かない", () => {
+  it("XG2-086: 【ドラムガンファイヤー】選んだユニットは持ち主のゾーン（パワーゾーンかコマンドゾーン）に置かれる（出典: atwiki/page-97「持ち主のゾーンに置いてもよい」・XG2-questions Q1）", () => {
     const s = resolveZone(drum(), ["SPEC-OT-L:otl"]);
     expect(inOwnersZone(s, "player2", "SPEC-OT-L:otl")).toBe(true);
   });
@@ -308,7 +310,7 @@ describe("XG2-087 ゴールドプラチナム", () => {
       "XG2-087:gp",
     ).state;
 
-  it.fails("XG2-087: 【エネルギー照射】ラッシュしたとき、自軍山札のカテゴリを2つ以上持つ S ユニットのカードから選べる（任意。カテゴリが1つのカードは選べない）（出典: atwiki/page-1781「自軍山札を見て、カテゴリを2つ以上持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい」） 既知の不具合: CARD-XG2-087 【エネルギー照射】の選択が開かない", () => {
+  it("XG2-087: 【エネルギー照射】ラッシュしたとき、自軍山札のカテゴリを2つ以上持つ S ユニットのカードから選べる（任意。カテゴリが1つのカードは選べない）（出典: atwiki/page-1781「自軍山札を見て、カテゴリを2つ以上持つSユニットのカードを1枚選び、自軍ラッシュエリアに出してもよい」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "XG2-087");
     expect(choiceIds(s)).toContain("XG2-096:ym");
@@ -316,7 +318,7 @@ describe("XG2-087 ゴールドプラチナム", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-087: 【エネルギー照射】選んだカード（ヤンマ）は必要パワーを満たして自軍ラッシュエリアに出る。ショウがいればハイパーショウも合体の追加条件で出せる（出典: atwiki/page-1781「ただし、必要パワーと追加条件は満たすこと」・カード評価「隊員コード153 ショウが場に出ていれば…ハイパーショウを自身の効果で山札から直接ラッシュできる」） 既知の不具合: CARD-XG2-087 【エネルギー照射】の選択が開かない", () => {
+  it("XG2-087: 【エネルギー照射】選んだカード（ヤンマ）は必要パワーを満たして自軍ラッシュエリアに出る。ショウがいればハイパーショウも合体の追加条件で出せる（出典: atwiki/page-1781「ただし、必要パワーと追加条件は満たすこと」・カード評価「隊員コード153 ショウが場に出ていれば…ハイパーショウを自身の効果で山札から直接ラッシュできる」）", () => {
     const s = resolveAll(pick(rushed(), "XG2-096:ym"));
     expect(zoneOf(s, "player1", "XG2-096:ym")).toBe("rush");
     expect(zoneOf(s, "player1", "TST-UNIT-0:u")).toBe("deck");
@@ -340,7 +342,7 @@ describe("XG2-088 マッド・ガルボ", () => {
     expect(zoneOf(s, "player2", "TST-UNIT-0:atk")).toBe("discard");
   });
 
-  it.fails("XG2-088: 【ジバンキラー】本来の特徴に「メカ」か「警察」を持つ敵軍 S ユニット（XG2-089 ジバン。ラッシュエリアでもよい）があれば BP+2000（6000）・「SP1」（出典: atwiki/page-244「本来の特徴に「メカ」または「警察」を持つ敵軍Sユニットがあるとき、次の能力を得る⇒BP+2000、SP1」・カード評価「メカか警察どちらかを持つ敵Sユニットが1体でもいれば良い」） 既知の不具合: CARD-XG2-088 【ジバンキラー】がなく、BP も SP も変わらない", () => {
+  it("XG2-088: 【ジバンキラー】本来の特徴に「メカ」か「警察」を持つ敵軍 S ユニット（XG2-089 ジバン。ラッシュエリアでもよい）があれば BP+2000（6000）・「SP1」（出典: atwiki/page-244「本来の特徴に「メカ」または「警察」を持つ敵軍Sユニットがあるとき、次の能力を得る⇒BP+2000、SP1」・カード評価「メカか警察どちらかを持つ敵Sユニットが1体でもいれば良い」）", () => {
     const s = p1Battle({ battle: [inst("XG2-088", "mg")] }, { rush: [inst("XG2-089", "jb")] });
     expect(bpOf(s, "player1", "XG2-088:mg")).toBe(6000);
     expect(spOf(s, "player1", "XG2-088:mg")).toBe(1);

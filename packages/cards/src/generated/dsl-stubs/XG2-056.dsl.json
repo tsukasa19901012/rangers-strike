@@ -43,13 +43,13 @@
       "name": "強化クリムゾンスマッシュ",
       "text": "これが、BPが本来のBPでない敵軍ユニットにアタックするとき、バトルの前にバトル相手のユニットを持ち主のコマンドゾーンに置いてもよい。置けなければ捨札にする。そうしたとき、バトル相手のユニットのBPの下三桁が500だったなら、相手に1点ダメージを与える。",
       "trigger": {
-        "type": "on_attack"
+        "type": "while_in_field"
       },
       "effects": [
         {
-          "type": "deal_damage",
-          "amount": 1,
-          "target": "opponent"
+          "type": "grant_keyword",
+          "keyword": "xg2::XG2-056::crimson_smash",
+          "duration": "permanent"
         }
       ]
     }

@@ -175,8 +175,9 @@ function hasSelfCommandWithFeature(
   features: string[],
 ): boolean {
   return player.command.some((card) => {
+    // コマンドゾーンのカードは種類を問わずコマンド（ビークル RS-570 デカバイクも。XG2-044 atwiki/page-1815）。
     const def = getDefinition(definitions, card.cardId);
-    if (!def || !isOperation(def)) return false;
+    if (!def) return false;
     return features.some((feature) => (def.features ?? []).includes(feature));
   });
 }

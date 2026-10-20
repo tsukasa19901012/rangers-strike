@@ -46,12 +46,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-062::shine9acbc",
-          "duration": "turn"
+          "keyword": "xg2::XG2-062::kishin_kakusei",
+          "duration": "permanent"
         }
       ]
     }

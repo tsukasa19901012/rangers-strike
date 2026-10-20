@@ -38,11 +38,10 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-093::fxunknowne98193",
+          "keyword": "xg2::XG2-093::road_block",
           "duration": "permanent"
         }
       ]

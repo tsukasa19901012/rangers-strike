@@ -116,6 +116,7 @@ import { drainDeferredDestroyTriggers } from "../rules/destroyTriggerQueue";
 import { drainQueuedFieldLeaves } from "../rules/fieldLeaveQueue";
 import { applyStrikeDamageDealtDslTriggers } from "../rules/strikeDamageTriggers";
 import { applyRk16StrikeDamageTriggers } from "../rules/rk/rk16UnitEffects";
+import { applyXg2AfterAction, applyXg2BattleCounter, applyXg2BattlePhaseEnd, applyXg2StrikeDamageTriggers, isXg2ActivatableResident, isXg2BattleCounterCard, openXg2OnBattlePhaseStart, xg2RejectsOperationTarget } from "../rules/xg2/xg2Effects";
 import { applyRm1AfterAction, applyRm1DolFire, applyRm1LeaveCounter, applyRm1StrikeDamageTriggers, isRm1LeaveCounterCard } from "../rules/rm/rm1Effects";
 import {
   applyXg4AfterAction,
@@ -744,6 +745,8 @@ function finishStrikeResolution(
   resolved = applyXg5StrikeResolved(resolved, pending);
   // XG6-025【ここからは私のターンだ】・XG6-042【ゼロのスタート】（rules/xg6/xg6bEffects.ts）。
   resolved = applyXg6StrikeDamageTriggers(resolved, pending);
+  // XG2-016 天空気殿【天空大風車】で得た能力（rules/xg2/xg2Effects.ts）。
+  resolved = applyXg2StrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -884,7 +887,7 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
   if (
     dslEffect &&
     shouldUseDslOperation(cardId, dslEffect) &&
-    dslEffect.effects.some((p) => p.type === "grant_keyword" && (p.keyword.startsWith("rm1::") || p.keyword.startsWith("bk1::") || p.keyword.startsWith("xg5::")))
+    dslEffect.effects.some((p) => p.type === "grant_keyword" && (p.keyword.startsWith("rm1::") || p.keyword.startsWith("bk1::") || p.keyword.startsWith("xg5::") || p.keyword.startsWith("xg2::")))
   ) {
     return false;
   }
@@ -1197,6 +1200,8 @@ function applyActionWithRng(
     const ending = takeXg6BattlePhaseEnd(next);
     if (ending) next = ending.playerId && ending.state.activePlayer === ending.playerId ? endXg6BattlePhase(ending.state, ending.playerId) : ending.state;
   }
+  // XG2-019 知恵の樹モーク（ターンが変わったら M ユニットとして扱うのをやめる。rules/xg2/xg2Effects.ts）。
+  if (applyActionDepth === 0) next = applyXg2AfterAction(state, next);
   // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
   if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
     const endingPlayer = next.rk9RushEndAdvance;
@@ -1204,6 +1209,7 @@ function applyActionWithRng(
     if (cleared.phase === "rush" && cleared.activePlayer === endingPlayer) {
       let afterPhase = advancePhase(cleared);
       if (afterPhase.phase === "battle") afterPhase = openChargeInsteadOfBattle(afterPhase, endingPlayer);
+      if (afterPhase.phase === "battle") afterPhase = openXg2OnBattlePhaseStart(afterPhase, endingPlayer);
       next = { ...afterPhase, log: [...afterPhase.log, buildSimpleLogEntry(endingPlayer, "end_phase", "rush")] };
     } else {
       next = cleared;
@@ -1959,6 +1965,7 @@ function applyActionCore(
       if (!fizzle && operationNeedsUpfrontTarget(found.card.cardId) && !action.targetInstanceId) {
         return fail("target_required");
       }
+      if (xg2RejectsOperationTarget(state, playerId, found.card, action.targetInstanceId)) return fail("invalid_target");
 
       if (
         !fizzle &&
@@ -3012,7 +3019,8 @@ function applyActionCore(
         }
         // RK-172 ルリオオカミ: 山札の上から3枚のうち、アタックしてきたユニットの必要パワー以上のカードを手札へ。1枚以上なら、そのバトルは行われない
         // （rules/rk/rk9UnitEffects.ts）。
-        if (counterCardId && isRk9BattleCounterCard(counterCardId)) {
+        // XG2-061 リョクオオザル（このターン BP 修正。バトルは行われる。rules/xg2/xg2cEffects.ts）も同じ手順。
+        if (counterCardId && (isRk9BattleCounterCard(counterCardId) || isXg2BattleCounterCard(counterCardId))) {
           const used: GameState = {
             ...state,
             ...updatePlayer(state, playerId, {
@@ -3021,7 +3029,7 @@ function applyActionCore(
               discard: [...player.discard, { instanceId: action.instanceId, cardId: counterCardId }],
             }),
           };
-          const result = applyRk9RuriOokami(used, playerId, pending);
+          const result = isXg2BattleCounterCard(counterCardId) ? applyXg2BattleCounter(used, playerId, action.instanceId) : applyRk9RuriOokami(used, playerId, pending);
           const log = buildLogEntry(playerId, "play_counter", counterCardId, state.definitions, result.detail);
           const nextPending: PendingBattle = result.cancel ? { ...pending, battleCancelled: true } : pending;
           if (
@@ -4051,7 +4059,7 @@ function applyActionCore(
         return ok(activated, buildLogEntry(playerId, "activate_resident_operation", op.cardId, state.definitions));
       }
       // RS-524 呉越同舟は自軍バトルフェイズ中（rules/legend1/set8NamedEffectsA.ts）。それ以外の常駐はラッシュフェイズ。
-      if (state.phase !== "rush" && !(op && isSet8AResident(op.cardId))) return fail("wrong_phase");
+      if (state.phase !== "rush" && !(op && (isSet8AResident(op.cardId) || isXg2ActivatableResident(op.cardId)))) return fail("wrong_phase");
       if (!op) return fail("illegal_action");
       const result = applyActivateResidentOperation(
         state,
@@ -4134,10 +4142,15 @@ function applyActionCore(
         const hachi = openRk9HachiAtRushEnd(state, playerId);
         if (hachi) return ok(hachi, buildSimpleLogEntry(playerId, "rk177_hypnotic_wave"));
       }
-      const nextState: GameState = {
+      let nextState: GameState = {
         ...advancePhase(state),
         endPhaseStep: advancePhase(state).phase === "end" ? "end_effects" : undefined,
       };
+      // XG2-024【一騎打ち】・XG2-028【マイナスエネルギー吸収】（自軍バトルフェイズを終えるとき。rules/xg2/xg2Effects.ts）。
+      if (state.phase === "battle") nextState = applyXg2BattlePhaseEnd(nextState, playerId);
+      if (nextState.phase === "end" && nextState.pendingEffectChoice && !state.pendingEffectChoice) {
+        return ok({ ...nextState, endPhaseStep: "end_effects" }, buildSimpleLogEntry(playerId, "end_phase", state.phase));
+      }
       if (nextState.phase === "end") {
         const withMenu = tryOpenEndTurnEffectsMenu(nextState, playerId);
         if (withMenu) {
@@ -4162,6 +4175,8 @@ function applyActionCore(
       if (state.phase === "rush" && afterPhase.phase === "battle") afterPhase = openChargeInsteadOfBattle(afterPhase, playerId);
       // クロスギャザー ザ・ジェットアクセル XG4-059【自律変形】等「敵軍バトルフェイズ開始時」（rules/xg4/xg4Effects.ts）。
       if (state.phase === "rush" && afterPhase.phase === "battle" && !afterPhase.pendingEffectChoice) afterPhase = openXg4BattlePhaseStart(afterPhase, playerId);
+      // XG2-009 コンピュータードラゴン【行動予測】（敵軍バトルフェイズ開始時。rules/xg2/xg2Effects.ts）。
+      if (state.phase === "rush" && afterPhase.phase === "battle") afterPhase = openXg2OnBattlePhaseStart(afterPhase, playerId);
       return ok(
         afterPhase,
         buildSimpleLogEntry(playerId, "end_phase", state.phase),

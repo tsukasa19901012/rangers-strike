@@ -45,8 +45,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-045::torigamagunamu",
-          "duration": "turn"
+          "keyword": "xg2::XG2-045::trigger_magnum",
+          "duration": "permanent"
         }
       ]
     }

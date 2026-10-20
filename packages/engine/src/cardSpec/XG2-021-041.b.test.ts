@@ -89,14 +89,14 @@ describe("XG2-028 サラマンデスドラゴン", () => {
   const endBattle = (where: "rush" | "battle") =>
     settle(nextPhase(p1Battle({ [where]: [inst("XG2-028", "d")], discard: [inst("XG2-029", "minus"), inst("XG2-036", "minus2"), inst("RS-674", "plain"), inst("RS-679", "plus")] })));
 
-  it.fails("XG2-028: 【マイナスエネルギー吸収】自軍ラッシュエリアにある間、自軍バトルフェイズを終えるとき、自軍捨札の必要パワーに「－」を持つカード（「7-」「14-」）から1枚選べる。「－」のない必要パワー（3・5+）のカードは選べない。任意（出典: atwiki/page-1797「自軍捨札から必要パワーに「－」を持つカードを1枚選び、これの下にウラ向きで重ねてもよい」） 既知の不具合: CARD-XG2-028 【マイナスエネルギー吸収】の選択が開かない", () => {
+  it("XG2-028: 【マイナスエネルギー吸収】自軍ラッシュエリアにある間、自軍バトルフェイズを終えるとき、自軍捨札の必要パワーに「－」を持つカード（「7-」「14-」）から1枚選べる。「－」のない必要パワー（3・5+）のカードは選べない。任意（出典: atwiki/page-1797「自軍捨札から必要パワーに「－」を持つカードを1枚選び、これの下にウラ向きで重ねてもよい」）", () => {
     const s = endBattle("rush");
     expectChoiceFrom(s, "player1", "XG2-028");
     expect(choiceIds(s)).toEqual(["XG2-029:minus", "XG2-036:minus2"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-028: 【マイナスエネルギー吸収】選んだカードをこれの下にウラ向きで重ね、これは「SP+1」される（SP2）（出典: atwiki/page-1797「これは下に重なっているウラ向きのカード1枚につき「SP+1」される」） 既知の不具合: CARD-XG2-028 【マイナスエネルギー吸収】がなく、捨札のカードを重ねられない", () => {
+  it("XG2-028: 【マイナスエネルギー吸収】選んだカードをこれの下にウラ向きで重ね、これは「SP+1」される（SP2）（出典: atwiki/page-1797「これは下に重なっているウラ向きのカード1枚につき「SP+1」される」）", () => {
     const s = settle(pick(endBattle("rush"), "XG2-029:minus"));
     expect(zoneOf(s, "player1", "XG2-029:minus")).toBeNull();
     const d = cardIn(s, "player1", "XG2-028:d");
@@ -110,12 +110,12 @@ describe("XG2-028 サラマンデスドラゴン", () => {
     expect(zoneOf(s, "player1", "XG2-029:minus")).toBe("discard");
   });
 
-  it.fails("XG2-028: 【マイナスエネルギー吸収】下にウラ向きのカードが2枚あれば SP3 になる（出典: atwiki/page-1797・カード評価「5枚下に重ねれば…SP7になることも可能」） 既知の不具合: CARD-XG2-028 下に重なったウラ向きのカードで SP が上がらない", () => {
+  it("XG2-028: 【マイナスエネルギー吸収】下にウラ向きのカードが2枚あれば SP3 になる（出典: atwiki/page-1797・カード評価「5枚下に重ねれば…SP7になることも可能」）", () => {
     const s = p1Battle({ battle: [withStacked(inst("XG2-028", "d"), [faceDown("XG2-029", "s1"), faceDown("XG2-036", "s2")])] });
     expect(spOf(s, "player1", "XG2-028:d")).toBe(3);
   });
 
-  it.fails("XG2-028: 【マイナスエネルギー吸収】撃破されてユニットでなくなるとき、下に重ねたウラ向きのカードをすべて捨札にする（出典: atwiki/page-1797「これがユニットでなくなるとき、この下に重ねたウラ向きのカードをすべて捨札にする」） 既知の不具合: CARD-XG2-028 撃破されても下に重ねたカードが捨札にならない", () => {
+  it("XG2-028: 【マイナスエネルギー吸収】撃破されてユニットでなくなるとき、下に重ねたウラ向きのカードをすべて捨札にする（出典: atwiki/page-1797「これがユニットでなくなるとき、この下に重ねたウラ向きのカードをすべて捨札にする」）", () => {
     const s = resolveAll(attackedInEnemyTurn({ battle: [withStacked(inst("XG2-028", "d"), [faceDown("XG2-029", "s1"), faceDown("XG2-036", "s2")])] }, "XG2-028:d"));
     expect(zoneOf(s, "player1", "XG2-028:d")).toBe("discard");
     expect(zoneOf(s, "player1", "XG2-029:s1")).toBe("discard");
@@ -150,20 +150,20 @@ describe("XG2-029 幽魔王サラマンデス", () => {
   const killEnemy = () =>
     settle(attack(p1Battle({ battle: [inst("TST-UNIT-7", "big")], rush: [inst("XG2-029", "y")], deck: [inst("TST-OP", "top"), inst("TST-OP", "next")] }, { battle: [inst("TST-UNIT-0", "e")] }), "TST-UNIT-7:big", "TST-UNIT-0:e"));
 
-  it.fails("XG2-029: 【災魔ツリー】自軍エリア（ラッシュエリア）にある間、敵軍ユニットが撃破されたとき、自軍山札の上から1枚をこれの下にウラ向きで重ねるかを選べる（任意）（出典: atwiki/page-1798「敵軍ユニットが撃破されたとき、自軍山札の上から1枚ひいて、これの下にウラ向きで重ねてもよい」） 既知の不具合: CARD-XG2-029 【災魔ツリー】の選択が開かない", () => {
+  it("XG2-029: 【災魔ツリー】自軍エリア（ラッシュエリア）にある間、敵軍ユニットが撃破されたとき、自軍山札の上から1枚をこれの下にウラ向きで重ねるかを選べる（任意）（出典: atwiki/page-1798「敵軍ユニットが撃破されたとき、自軍山札の上から1枚ひいて、これの下にウラ向きで重ねてもよい」）", () => {
     const s = killEnemy();
     expect(zoneOf(s, "player2", "TST-UNIT-0:e")).toBe("discard");
     expectChoiceFrom(s, "player1", "XG2-029");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-029: 【災魔ツリー】重ねると、山札の一番上のカードがこれの下にウラ向きで重なり、BP+500（7000）される（出典: atwiki/page-1798「下に重なっているウラ向きのカード1枚につきBP+500され」） 既知の不具合: CARD-XG2-029 【災魔ツリー】がなく、山札のカードを重ねられない", () => {
+  it("XG2-029: 【災魔ツリー】重ねると、山札の一番上のカードがこれの下にウラ向きで重なり、BP+500（7000）される（出典: atwiki/page-1798「下に重なっているウラ向きのカード1枚につきBP+500され」）", () => {
     const s = settle(accept(killEnemy()));
     expect(cardIn(s, "player1", "XG2-029:y")?.stackedCards?.map((c) => c.instanceId)).toEqual(["TST-OP:top"]);
     expect(bpOf(s, "player1", "XG2-029:y")).toBe(7000);
   });
 
-  it.fails("XG2-029: 【災魔ツリー】下にウラ向きのカードが1枚なら BP7000、3枚なら BP8000 になり、SP1 を得る（出典: atwiki/page-1798「BP8000以上のとき、LユニットになりSP1を得る」） 既知の不具合: CARD-XG2-029 下に重なったウラ向きのカードで BP が上がらず、SP1 も得ない", () => {
+  it("XG2-029: 【災魔ツリー】下にウラ向きのカードが1枚なら BP7000、3枚なら BP8000 になり、SP1 を得る（出典: atwiki/page-1798「BP8000以上のとき、LユニットになりSP1を得る」）", () => {
     const one = p1Battle({ battle: [withStacked(inst("XG2-029", "y"), [faceDown("TST-OP", "s0")])] });
     expect(bpOf(one, "player1", "XG2-029:y")).toBe(7000);
     expect(spOf(one, "player1", "XG2-029:y")).toBe(0);
@@ -174,7 +174,7 @@ describe("XG2-029 幽魔王サラマンデス", () => {
 
   it.todo("XG2-029: 公式Q&A Q1（【災魔ツリー】以外の効果で BP8000 以上になっても L ユニットになり SP1 を得る）・Q2（RS-364 ヘルサターン総統とのループはターンプレイヤーが優先する効果を選ぶ）— 【災魔ツリー】の L ユニット化・SP1 がエンジンになく（上の it.fails）、効果の優先順を選ぶ合法手もないため、盤面を進められない（出典: atwiki/page-1798 Q1・Q2）");
 
-  it.fails("XG2-029: 【災魔ツリー】撃破されてユニットでなくなるとき、下のウラ向きのカードから1枚選び（ウラ向きのまま）手札に加え、残りを捨札にする（出典: atwiki/page-1798「この下に重ねたウラ向きのカードから、ウラ向きのまま1枚選び手札に加えて、残りを捨札にする」） 既知の不具合: CARD-XG2-029 撃破されても下に重ねたカードを手札に加える選択がない", () => {
+  it("XG2-029: 【災魔ツリー】撃破されてユニットでなくなるとき、下のウラ向きのカードから1枚選び（ウラ向きのまま）手札に加え、残りを捨札にする（出典: atwiki/page-1798「この下に重ねたウラ向きのカードから、ウラ向きのまま1枚選び手札に加えて、残りを捨札にする」）", () => {
     const s = resolveAll(attackedInEnemyTurn({ battle: [withStacked(inst("XG2-029", "y"), [faceDown("XG2-036", "s1"), faceDown("RS-674", "s2")])] }, "XG2-029:y"), ["RS-674:s2"]);
     expect(zoneOf(s, "player1", "XG2-029:y")).toBe("discard");
     expect(zoneOf(s, "player1", "RS-674:s2")).toBe("hand");
@@ -210,11 +210,11 @@ describe("XG2-031 デカマシン", () => {
   const backup = () =>
     p1Battle({ rush: [inst("XG2-031", "dm")], battle: [inst("SPEC-POLICE-S", "p"), inst("TST-UNIT-0", "n")] }, { battle: [inst("SPEC-POLICE-S", "ep"), inst("XG2-033", "edb")] }, EXTRA);
 
-  it.fails("XG2-031: 【宇宙警察のバックアップ】自軍エリア（ラッシュエリア）にある間、特徴「警察」を持つ自軍ユニットは BP+1000 される（出典: atwiki/page-1799） 既知の不具合: CARD-XG2-031 【宇宙警察のバックアップ】がなく、「警察」のユニットの BP が上がらない", () => {
+  it("XG2-031: 【宇宙警察のバックアップ】自軍エリア（ラッシュエリア）にある間、特徴「警察」を持つ自軍ユニットは BP+1000 される（出典: atwiki/page-1799）", () => {
     expect(bpOf(backup(), "player1", "SPEC-POLICE-S:p")).toBe(2000);
   });
 
-  it.fails("XG2-031: 【宇宙警察のバックアップ】「自軍ユニット」の限定がないので、特徴「警察」を持つ敵軍ユニット（XG2-033 デカブライト等）も BP+1000 される（出典: atwiki/page-1799・カード評価「自軍敵軍の区別がないため、敵軍ユニットまでパンプしてしまう」・コメント「敵軍の特徴：警察持ちユニットにも適応される」） 既知の不具合: CARD-XG2-031 【宇宙警察のバックアップ】がなく、「警察」のユニットの BP が上がらない", () => {
+  it("XG2-031: 【宇宙警察のバックアップ】「自軍ユニット」の限定がないので、特徴「警察」を持つ敵軍ユニット（XG2-033 デカブライト等）も BP+1000 される（出典: atwiki/page-1799・カード評価「自軍敵軍の区別がないため、敵軍ユニットまでパンプしてしまう」・コメント「敵軍の特徴：警察持ちユニットにも適応される」）", () => {
     const s = backup();
     expect(bpOf(s, "player2", "SPEC-POLICE-S:ep")).toBe(2000);
     expect(bpOf(s, "player2", "XG2-033:edb")).toBe(3000);
@@ -237,7 +237,7 @@ describe("XG2-032 デカレンジャーロボ", () => {
 
   const board = (rush: CardInstance[], power = 7) => rushBoard({ hand: [inst("XG2-032", "h")], rush, power: powerCards(power), command: releasedCat("OT", 1) });
 
-  it.fails("XG2-032: 追加条件 — 自軍「デカマシン」（XG2-031。SC ユニット）1体をパワーゾーンに送ってパワー7でラッシュできる（出典: atwiki/page-1800「追加条件：自軍「デカマシン」1体をパワーゾーンに送る」・カード評価「合体パーツがSCユニット１種で済む」） 既知の不具合: CARD-XG2-032 追加条件の「デカマシン」を素材に選べず、ラッシュできない", () => {
+  it("XG2-032: 追加条件 — 自軍「デカマシン」（XG2-031。SC ユニット）1体をパワーゾーンに送ってパワー7でラッシュできる（出典: atwiki/page-1800「追加条件：自軍「デカマシン」1体をパワーゾーンに送る」・カード評価「合体パーツがSCユニット１種で済む」）", () => {
     const r = rushFromHand(board([inst("XG2-031", "dm")]), "player1", "XG2-032:h");
     expect(r.ok, r.error).toBe(true);
     expect(zoneOf(r.state, "player1", "XG2-031:dm")).toBe("power");
@@ -251,26 +251,26 @@ describe("XG2-032 デカレンジャーロボ", () => {
   const attacking = (defender = "SPEC-BIG-L:e") =>
     attack(p1Battle({ battle: [inst("XG2-032", "r")] }, { battle: [inst("SPEC-BIG-L", "e"), inst("TST-UNIT-0", "e2")] }, EXTRA), "XG2-032:r", defender);
 
-  it.fails("XG2-032: 【ジャイロワッパー】敵軍ユニットにアタックするとき、バトルの前にバトル相手を持ち主のパワーゾーンに送るかを選べる（任意）（出典: atwiki/page-1800「バトルの前にバトル相手のユニットを持ち主のパワーゾーンに送ってもよい」） 既知の不具合: CARD-XG2-032 【ジャイロワッパー】の選択がこれ自身を候補にし、見送れない", () => {
+  it("XG2-032: 【ジャイロワッパー】敵軍ユニットにアタックするとき、バトルの前にバトル相手を持ち主のパワーゾーンに送るかを選べる（任意）（出典: atwiki/page-1800「バトルの前にバトル相手のユニットを持ち主のパワーゾーンに送ってもよい」）", () => {
     const s = attacking();
     expectChoiceFrom(s, "player1", "XG2-032");
     expect(choiceIds(s)).toEqual(["SPEC-BIG-L:e"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-032: 【ジャイロワッパー】送ると、バトル相手（BP20000 の L ユニットでも）は持ち主のパワーゾーンにオモテ向きで置かれ、これはバトルエリアに残る（出典: atwiki/page-1800・カード評価「敵軍ユニットへのアタックにおいては絶対に敗北しない」） 既知の不具合: CARD-XG2-032 【ジャイロワッパー】でバトル相手をパワーゾーンに送れない", () => {
+  it("XG2-032: 【ジャイロワッパー】送ると、バトル相手（BP20000 の L ユニットでも）は持ち主のパワーゾーンにオモテ向きで置かれ、これはバトルエリアに残る（出典: atwiki/page-1800・カード評価「敵軍ユニットへのアタックにおいては絶対に敗北しない」）", () => {
     const s = resolveAll(pick(attacking(), "SPEC-BIG-L:e"));
     expect(zoneOf(s, "player2", "SPEC-BIG-L:e")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-BIG-L:e")?.faceDown ?? false).toBe(false);
     expect(zoneOf(s, "player1", "XG2-032:r")).toBe("battle");
   });
 
-  it.fails("XG2-032: 【ジャイロワッパー】送らなければ通常のバトルをする（BP1000 の相手は撃破される）（出典: atwiki/page-1800「送ってもよい」・Q1「通常のバトルを選択することは可能です」） 既知の不具合: CARD-XG2-032 【ジャイロワッパー】を見送れない", () => {
+  it("XG2-032: 【ジャイロワッパー】送らなければ通常のバトルをする（BP1000 の相手は撃破される）（出典: atwiki/page-1800「送ってもよい」・Q1「通常のバトルを選択することは可能です」）", () => {
     const s = resolveAll(skip(attacking("TST-UNIT-0:e2")));
     expect(zoneOf(s, "player2", "TST-UNIT-0:e2")).toBe("discard");
   });
 
-  it.fails("XG2-032: 公式Q&A — 相手が RS-018 隠流忍術でバトル相手を変えたときは、変わったバトル相手をパワーゾーンに送る（出典: atwiki/page-1800 Q1「「RS-018 隠流忍術」の効果で変更されたバトル相手のユニットを、パワーゾーンに送ることになります」） 既知の不具合: CARD-XG2-032 【ジャイロワッパー】の選択がアタックしたときにこれ自身を候補にして開き、見送れず、変わったバトル相手も送れない", () => {
+  it("XG2-032: 公式Q&A — 相手が RS-018 隠流忍術でバトル相手を変えたときは、変わったバトル相手をパワーゾーンに送る（出典: atwiki/page-1800 Q1「「RS-018 隠流忍術」の効果で変更されたバトル相手のユニットを、パワーゾーンに送ることになります」）", () => {
     let s = attack(
       p1Battle({ battle: [inst("XG2-032", "r")] }, { battle: [inst("SPEC-BIG-L", "e"), inst("TST-UNIT-0", "sub")], hand: [inst("RS-018", "c")], command: releasedCat("MA", 2), power: powerCards(5, "ep") }, EXTRA),
       "XG2-032:r",
@@ -306,7 +306,7 @@ describe("XG2-033 デカブライト", () => {
     expect(choiceIds(s)).toEqual(["TST-P:pw0", "TST-P:pw1"]);
   });
 
-  it.fails("XG2-033: ※ 自軍パワーゾーンにある間、「デカブライト」以外の自軍パワーゾーンのカードは相手に選ばれない（デカブライト自身は選ばれる）（出典: atwiki/page-133 ※・コメント「モモタロスなどのパワーゾーンにあってナンボのカードをシャイダーやゴーオンブラックから保護できる」） 既知の不具合: CARD-XG2-033 ※ がなく、相手の効果で「デカブライト」以外の自軍パワーゾーンのカードも選ばれる", () => {
+  it("XG2-033: ※ 自軍パワーゾーンにある間、「デカブライト」以外の自軍パワーゾーンのカードは相手に選ばれない（デカブライト自身は選ばれる）（出典: atwiki/page-133 ※・コメント「モモタロスなどのパワーゾーンにあってナンボのカードをシャイダーやゴーオンブラックから保護できる」）", () => {
     const s = saagain([inst("XG2-033", "db"), ...powerCards(2)]);
     expectChoiceFrom(s, "player2", "RS-102");
     expect(choiceIds(s)).toEqual(["XG2-033:db"]);
@@ -314,13 +314,13 @@ describe("XG2-033 デカブライト", () => {
 
   const damaged = () => settle(strike(enemyTurn({ rush: [inst("XG2-033", "b")], power: powerCards(3) }, { battle: [inst("TST-UNIT-0", "e"), inst("TST-UNIT-0", "e2")] }), "TST-UNIT-0:e", "player2"));
 
-  it.fails("XG2-033: 【防御拳バリアーフィスト】自軍ラッシュエリアにある間、敵軍ターン中に自分がダメージを受けたとき、これをホールドするかを選べる（任意）（出典: atwiki/page-133「自分がダメージを受けたとき、このユニットを ホールドしてもよい」） 既知の不具合: CARD-XG2-033 【防御拳バリアーフィスト】の選択が開かない", () => {
+  it("XG2-033: 【防御拳バリアーフィスト】自軍ラッシュエリアにある間、敵軍ターン中に自分がダメージを受けたとき、これをホールドするかを選べる（任意）（出典: atwiki/page-133「自分がダメージを受けたとき、このユニットを ホールドしてもよい」）", () => {
     const s = damaged();
     expectChoiceFrom(s, "player1", "XG2-033");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-033: 【防御拳バリアーフィスト】ホールドすると、そのターン中、敵軍 S ユニットはストライクできない（出典: atwiki/page-133「そうしたとき、そのターン中、敵軍Sユニットはストライクすることができない」） 既知の不具合: CARD-XG2-033 【防御拳バリアーフィスト】がなく、ホールドできず、敵軍 S ユニットのストライクも止まらない", () => {
+  it("XG2-033: 【防御拳バリアーフィスト】ホールドすると、そのターン中、敵軍 S ユニットはストライクできない（出典: atwiki/page-133「そうしたとき、そのターン中、敵軍Sユニットはストライクすることができない」）", () => {
     const s = settle(accept(damaged()));
     expect(cardIn(s, "player1", "XG2-033:b")?.commandHeld).toBe(true);
     expect(canStrike(s, "TST-UNIT-0:e2", "player2")).toBe(false);

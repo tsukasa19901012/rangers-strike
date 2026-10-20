@@ -176,7 +176,7 @@ describe("XG4-067 仮面ライダーW・LM", () => {
     expectRarityIn("XG4-067", ["NR"]);
   });
 
-  it.fails("XG4-067: 追加条件 — 特徴「メカ」を持つ自軍コマンドがあればラッシュできる（なければできない）（出典: atwiki/page-2117「追加条件：特徴「メカ」を持つ自軍コマンドがある」）（既知の不具合: CARD-XG4-067 追加条件「特徴「メカ」を持つ自軍コマンドがある」がオペレーションカードしか数えず、ユニットカードのコマンドではラッシュできない）", () => {
+  it("XG4-067: 追加条件 — 特徴「メカ」を持つ自軍コマンドがあればラッシュできる（なければできない）（出典: atwiki/page-2117「追加条件：特徴「メカ」を持つ自軍コマンドがある」）（既知の不具合: CARD-XG4-067 追加条件「特徴「メカ」を持つ自軍コマンドがある」がオペレーションカードしか数えず、ユニットカードのコマンドではラッシュできない）", () => {
     const mk = (withMecha: boolean) =>
       board({ hand: [inst("XG4-067", "lm")], command: [...releasedCat("MA", 1), ...(withMecha ? [released("XG4-064", "mc")] : [])], power: powerCards(3) });
     expect(canStartRush(mk(false), "player1", "XG4-067:lm")).toBe(false);
@@ -252,7 +252,7 @@ describe("XG4-069 仮面ライダーW・FJ（XG4）", () => {
     expectRarityIn("XG4-069", ["R"]);
   });
 
-  it.fails("XG4-069: 追加条件 — 特徴「獣」または「恐竜」を持つ自軍コマンドがあればラッシュできる（なければできない）（出典: atwiki/page-2043「追加条件：特徴「獣」または「恐竜」を持つ自軍コマンドがある」）（既知の不具合: CARD-XG4-069 追加条件「特徴「獣」または「恐竜」を持つ自軍コマンドがある」がオペレーションカードしか数えず、ユニットカードのコマンドではラッシュできない）", () => {
+  it("XG4-069: 追加条件 — 特徴「獣」または「恐竜」を持つ自軍コマンドがあればラッシュできる（なければできない）（出典: atwiki/page-2043「追加条件：特徴「獣」または「恐竜」を持つ自軍コマンドがある」）（既知の不具合: CARD-XG4-069 追加条件「特徴「獣」または「恐竜」を持つ自軍コマンドがある」がオペレーションカードしか数えず、ユニットカードのコマンドではラッシュできない）", () => {
     const mk = (withBeast: boolean) =>
       board({ hand: [inst("XG4-069", "fj")], command: [...releasedCat("DA", 1), ...(withBeast ? [released("SPEC-BEAST", "bc")] : [])], power: powerCards(3) });
     expect(canStartRush(mk(false), "player1", "XG4-069:fj")).toBe(false);

@@ -8,6 +8,7 @@ import { openRk12CastleDoranDraw } from "../../rules/rk/rk12UnitEffects";
 import { applyRk13OnUnitLeft } from "../../rules/rk/rk13UnitEffects";
 import { applyRk14OnUnitLeft } from "../../rules/rk/rk14UnitEffects";
 import { applyRk15OnUnitLeft } from "../../rules/rk/rk15UnitEffects";
+import { applyXg2OnUnitLeftZone } from "../../rules/xg2/xg2Effects";
 
 export const unitLeftZoneListener: EventListener = (event, state) => {
   const leaveEvent = event as UnitLeftZoneEvent;
@@ -41,6 +42,8 @@ export const unitLeftZoneListener: EventListener = (event, state) => {
     nextState = applyRk15OnUnitLeft(nextState, leaveEvent);
     // XG6-001 火の山、吠える（※常駐。rules/xg6/xg6Hooks.ts）。
     nextState = applyXg6OnUnitLeft(nextState, leaveEvent);
+    // XG2-026【激流一刀】・XG2-029【災魔ツリー】（rules/xg2/xg2bEffects.ts）。
+    nextState = applyXg2OnUnitLeftZone(nextState, leaveEvent);
   }
   return {
     state: nextState,

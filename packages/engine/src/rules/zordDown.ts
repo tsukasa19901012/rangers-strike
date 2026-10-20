@@ -34,6 +34,8 @@ import { COMMAND_ZONE_MAX } from "../types/game";
 import { findInZone, removeAt } from "../core/helpers";
 import { getDefinition } from "../core/catalog";
 import { rk11IsHandSubstitute } from "./rk/rk11Fields";
+import { collectRequiredFusionMaterials } from "./zord";
+import { resolveZordFusionPartnerIds } from "../dsl/zordBridge";
 
 /** ゾードダウン素材を取れるゾーン（手札・捨札・フィールド）。 */
 export type ZordDownMaterialZone = "hand" | "discard" | "rush" | "battle";
@@ -62,6 +64,20 @@ function isValidZordDownFusionMaterial(cardId: string): boolean {
   return FUSION_UNIT_IDS.has(cardId);
 }
 
+/**
+ * 「自軍合体ユニットを捨札にすれば必要パワー0になる」で、合体―行があるカードの素材（表記された合体ユニットすべて）。
+ * 合体―行がなければ undefined、そろわなければ null。
+ */
+function requiredFusionDownMaterials(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+  rushingInstanceId: string,
+) {
+  if (resolveZordFusionPartnerIds(rushingCardId).length === 0) return undefined;
+  return collectRequiredFusionMaterials(player, definitions, rushingCardId, rushingInstanceId);
+}
+
 export function isValidZordDownMaterial(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
@@ -80,8 +96,12 @@ export function isValidZordDownMaterial(
   if (condition.conditionId === "zord_down_discard_named" && rk11IsHandSubstitute({ definitions }, player.hand, card, rushingCardId)) return true;
 
   switch (condition.conditionId) {
-    case "zord_down_discard_fusion":
+    case "zord_down_discard_fusion": {
+      // 合体―行があれば、表記された合体ユニットすべてが素材（XP-008 NEW電王VF「合体―仮面ライダーNEW電王SF＋デネブ」・XG2-086）。
+      const required = requiredFusionDownMaterials(player, definitions, rushingCardId, rushingInstanceId);
+      if (required !== undefined) return required !== null && required.some((m) => m.card.instanceId === card.instanceId);
       return isValidZordDownFusionMaterial(card.cardId);
+    }
     case "zord_down_discard_named":
     case "zord_down_send_to_power":
     case "zord_down_send_to_command_or_discard":
@@ -284,6 +304,16 @@ export function applyZordDownMaterial(
     materialInstanceId,
   );
   if (!material) return null;
+
+  if (condition.conditionId === "zord_down_discard_fusion") {
+    const required = requiredFusionDownMaterials(player, definitions, rushingCardId, rushingInstanceId);
+    if (required === null) return null;
+    if (required) {
+      let next: PlayerState = player;
+      for (const m of required) next = { ...next, [m.zone]: next[m.zone].filter((c) => c.instanceId !== m.card.instanceId) };
+      return { ...next, discard: [...next.discard, ...required.map((m) => m.card)] };
+    }
+  }
 
   const [, zoneCards] = removeAt(player[material.zone], material.index);
   let nextPlayer: PlayerState = { ...player, [material.zone]: zoneCards };

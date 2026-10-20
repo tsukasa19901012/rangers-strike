@@ -49,8 +49,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-072::toraigouramuataku",
-          "duration": "turn"
+          "keyword": "xg2::XG2-072::trigouram_attack",
+          "duration": "permanent"
         }
       ]
     }

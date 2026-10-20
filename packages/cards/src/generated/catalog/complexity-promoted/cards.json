@@ -4558,7 +4558,13 @@
       "powerCost": 0,
       "imageUrl": "/cards/promoted/XG2-061.jpg",
       "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/XG2-061-RK.jpg",
-      "text": "※カウンター 敵軍ユニットにアタックされたとき発動できる⇒このターン、すべての自軍ユニットは、カテゴリを2つ以上持つ自軍コマンド1つにつきBP+1000される。"
+      "text": "※カウンター 敵軍ユニットにアタックされたとき発動できる⇒このターン、すべての自軍ユニットは、カテゴリを2つ以上持つ自軍コマンド1つにつきBP+1000される。",
+      "features": [
+        "ディスクアニマル"
+      ],
+      "tags": [
+        "カウンター"
+      ]
     },
     {
       "id": "XG2-064",

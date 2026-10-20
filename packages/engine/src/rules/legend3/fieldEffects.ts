@@ -4,6 +4,7 @@ import { xg7EffectiveSp } from "../xg7/xg7Fields";
 import { xg1EffectiveSp } from "../xg1/xg1Fields";
 import { xg6EffectiveSp } from "../xg6/xg6Fields";
 import { xg4EffectiveSp } from "../xg4/xg4Fields";
+import { xg2EffectiveSp } from "../xg2/xg2Fields";
 import { rk8EffectiveSp } from "../rk/rk8UnitEffects";
 import { rk9EffectiveSp } from "../rk/rk9UnitEffects";
 import { rk10EffectiveSp } from "../rk/rk10UnitEffects";
@@ -300,6 +301,8 @@ function legend3EffectiveSpUncached(
   sp = xg6EffectiveSp(state, playerId, instance, sp, effectiveBp);
   // クロスギャザー ザ・ジェットアクセル XG4-001【黒十字ハリケーン】等（rules/xg4/xg4Fields.ts）。
   sp = xg4EffectiveSp(state, playerId, instance, sp, effectiveBp);
+  // XG2-004 ファイブロボ【超次元ソード】（rules/xg2/xg2Fields.ts）。
+  sp = xg2EffectiveSp(state, playerId, instance, sp, effectiveBp);
   if (state.activePlayer !== playerId) return sp;
 
   // JC で得た能力「自軍ターン中、…BP20000以上のとき「SP2」になる」（RS-157）。
@@ -319,8 +322,10 @@ function legend3EffectiveSpUncached(
   sp = Math.max(sp, srBigBatonSpFloor(state, playerId, instance));
 
   // XG2-052 ユナイトベント「…BP10000ごとにSP+1される」（ユナイトベントを下に重ねたターゲット）。
-  if ((instance.stackedCards ?? []).some((c) => c.cardId === "XG2-052" && !c.faceDown)) {
-    sp += Math.floor(effectiveBp(state, playerId, instance) / 10000);
+  // 2枚重ねたターゲットは BP10000 ごとに SP+2（atwiki/page-1761 Q7）。
+  const vents = (instance.stackedCards ?? []).filter((c) => c.cardId === "XG2-052" && !c.faceDown).length;
+  if (vents > 0) {
+    sp += vents * Math.floor(effectiveBp(state, playerId, instance) / 10000);
   }
   // RS-382 ビクトリーロボ【人の命は地球の未来】: このターン自軍捨札から手札に加えた S ユニットのカード1枚につき SP+1。
   // ナンバーを持たないカードの効果で、NC の成立とは関係しない（atwiki/page-541）。

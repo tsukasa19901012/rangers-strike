@@ -318,7 +318,7 @@ describe("XG3-027 スティラコサウルス", () => {
     expect(zoneOf(r.state, "player1", "XG3-023:am")).toBe("rush");
   });
 
-  it.fails("XG3-027: 追加条件 — 特徴「スティライザー」を持つ自軍コマンド（コマンドゾーンのアバレマックス）があってもラッシュできる（既知の不具合: CARD-XG3-027 自軍コマンドの「スティライザー」を数えない）（出典: atwiki/page-1901「自軍ユニットまたは自軍コマンドがある」）", () => {
+  it("XG3-027: 追加条件 — 特徴「スティライザー」を持つ自軍コマンド（コマンドゾーンのアバレマックス）があってもラッシュできる（既知の不具合: CARD-XG3-027 自軍コマンドの「スティライザー」を数えない）（出典: atwiki/page-1901「自軍ユニットまたは自軍コマンドがある」）", () => {
     const r2 = rushOf({ command: [...releasedCat("WB", 1), inst("XG3-023", "cmd")] });
     expect(r2.ok, r2.error).toBe(true);
     expect(zoneOf(r2.state, "player1", "XG3-027:st")).toBe("rush");

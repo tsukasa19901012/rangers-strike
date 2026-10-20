@@ -3,6 +3,7 @@ import { activateXg7FieldAbility, canActivateXg7FieldAbility, isXg7BattleFieldAb
 import { activateXg1aFieldAbility, canActivateXg1aFieldAbility, isXg1aFieldAbilityCard } from "./xg1/xg1aEffects";
 import { activateXg1eFieldAbility, canActivateXg1eFieldAbility } from "./xg1/xg1eEffects";
 import { activateXg4FieldAbility, canActivateXg4FieldAbility, isXg4FieldAbilityCard, resolveXg4DiscardSelfAbility } from "./xg4/xg4Effects";
+import { activateXg2FieldAbility, canActivateXg2FieldAbility, isXg2FieldAbilityCard } from "./xg2/xg2Effects";
 import { tryLeaveField } from "./operationCounters";
 import { liveCommentaryStayAvailable } from "./legend1/set7NamedEffectsA";
 import { kuugaStayCandidates } from "./legend1/otherLinesNamedEffects";
@@ -552,6 +553,20 @@ ABILITIES.push({
   zones: ["rush", "battle"],
   phase: "rush",
   resolve: (state, playerId, card) => resolveXg4DiscardSelfAbility(state, playerId, card),
+});
+
+// XG2-068 リュウタロス【憑依】「自軍ラッシュフェイズ中、ライドしていない自軍Sユニットを1体選び、このユニットに重ねてもよい。…」（atwiki/page-1773。
+// rules/xg2/xg2dEffects.ts）。
+ABILITIES.push({
+  cardId: "",
+  effectId: "xg2_068_hyoui",
+  zones: ["rush"],
+  phase: "rush",
+  discardSelf: false,
+  repeatable: true,
+  matches: (cardId) => isXg2FieldAbilityCard(cardId),
+  canActivate: (state, playerId, card) => canActivateXg2FieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg2FieldAbility(state, playerId, card),
 });
 
 // 能力の当てはめはカード ID（とカードの文言）だけで決まるので、ID ごとに覚える。表に能力が足されたら捨てる。

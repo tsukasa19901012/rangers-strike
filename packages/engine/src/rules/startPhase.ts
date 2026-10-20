@@ -4,6 +4,7 @@ import { xg1eBattleToRush } from "./xg1/xg1eEffects";
 import { xg1HostageStaysAtStart } from "./xg1/xg1Fields";
 import { rm3StaysInBattleAtStart } from "./rm/rm3Fields";
 import { isXg7BattleToRushTrigger, tryXg7BattleToRush } from "./xg7/xg7Effects";
+import { applyXg2BattleToRush, applyXg2StartPhaseEnd, isXg2BattleToRushTrigger } from "./xg2/xg2Effects";
 import { unitFeatures } from "./addedFeatures";
 import { isRk8BattleToRushTrigger, rk8StaysInBattleAtStart, tryRk8BattleToRush } from "./rk/rk8UnitEffects";
 import { isOtherLinesBattleToRushTrigger, tryOtherLinesBattleToRush } from "./legend1/otherLinesNamedEffects";
@@ -11,6 +12,7 @@ import { applyRk2StartPhaseEnd } from "./rk/rk2UnitEffects";
 import { collectRk12KaenQueue, isRk12KaenQueueEntry, openRk12KaenOnReturn } from "./rk/rk12UnitEffects";
 import { applyRk4StartPhaseEnd, isRk4BattleToRushTrigger, tryRk4BattleToRush } from "./rk/rk4UnitEffects";
 import { getCardEffect } from "@rangers-strike/cards";
+import { xg2BlocksRelease } from "./xg2/xg2Fields";
 import { gorgonBlocksRelease, isSet6BBattleToRushTrigger, trySet6BBattleToRush } from "./legend1/set6NamedEffectsB";
 import { darkLawStackPending, openDarkLawStackIfNeeded } from "./legend1/set5NamedEffectsA";
 import { activeNamedEffect } from "./ncGatedEffects";
@@ -38,7 +40,7 @@ export function releaseAllCommands(state: GameState, playerId: PlayerId): GameSt
   const player = state.players[playerId];
   const command = player.command.map((c) =>
     // RS-413 冥府神ゴーゴン【もの言わぬ石と化せ】: 制限を受けているプレイヤーのコマンドゾーンの S ユニットのカードはリリースできない。
-    c.commandHeld && !gorgonBlocksRelease(state, playerId, c) ? { ...c, commandHeld: false, mothershipHold: false } : c,
+    c.commandHeld && !gorgonBlocksRelease(state, playerId, c) && !xg2BlocksRelease(state, playerId, c) ? { ...c, commandHeld: false, mothershipHold: false } : c,
   );
   let nextState: GameState = {
     ...state,
@@ -64,7 +66,9 @@ function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
         // XG1-060 コーカサスビートルアンデッド【カード強奪】（rules/xg1/xg1cEffects.ts）。
         isSameCardIdentity(card.cardId, "XG1-060") ||
         // XG1-100 ロボコン【お手伝いロボット】（rules/xg1/xg1eEffects.ts）。
-        isSameCardIdentity(card.cardId, "XG1-100"),
+        isSameCardIdentity(card.cardId, "XG1-100") ||
+        // XG2-048 仮面ライダースーパー1・RH【レーダーアイ】（rules/xg2/xg2cEffects.ts）。
+        isXg2BattleToRushTrigger(card),
     )
     .map((card) => card.instanceId);
 }
@@ -170,6 +174,8 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
     if (!withChoice.pendingEffectChoice) withChoice = xg1cBattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     // XG1-100【お手伝いロボット】（rules/xg1/xg1eEffects.ts）。
     if (!withChoice.pendingEffectChoice) withChoice = xg1eBattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
+    // XG2-048【レーダーアイ】（rules/xg2/xg2cEffects.ts）。
+    if (!withChoice.pendingEffectChoice) withChoice = applyXg2BattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     return continueBattleToRushEffectQueue({ ...withChoice, pendingBattleToRushQueue: rest });
   }
 
@@ -438,6 +444,8 @@ export function transitionStartToChargePhase(
   nextState = applyRk2StartPhaseEnd(nextState, playerId);
   // RK-080 超変身・RK-082 オルタフォース「自軍スタートフェイズを終えるとき、一度だけ…」（rules/rk/rk4UnitEffects.ts）。
   nextState = applyRk4StartPhaseEnd(nextState, playerId);
+  // XG2-057【ラッキークローバー招集】（rules/xg2/xg2cEffects.ts）。
+  nextState = applyXg2StartPhaseEnd(nextState, playerId);
 
   return {
     ...nextState,

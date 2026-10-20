@@ -136,6 +136,7 @@ import { tryXg5CardEffect } from "../rules/xg5/xg5Effects";
 import { tryXg7CardEffect } from "../rules/xg7/xg7Effects";
 import { tryBk1CardEffect } from "../rules/bk/bk1Effects";
 import { tryXg1CardEffect } from "../rules/xg1/xg1Effects";
+import { tryXg2CardEffect } from "../rules/xg2/xg2Effects";
 import { tryOtherLinesCardEffect } from "../rules/legend1/otherLinesNamedEffects";
 import { trySet9BCardEffect } from "../rules/legend1/set9NamedEffectsB";
 import { trySet8BCardEffect } from "../rules/legend1/set8NamedEffectsB";
@@ -518,6 +519,9 @@ export function applyGrantKeyword(
   // クロスギャザー XG1-001〜XG1-100 のカード固有の効果（`xg1::` キーワード。rules/xg1/xg1Effects.ts）。
   const xg1 = tryXg1CardEffect(state, ctx, keyword);
   if (xg1) return xg1;
+  // クロスギャザー XG2 のカード固有の効果（`xg2::` キーワード。rules/xg2/xg2Effects.ts）。
+  const xg2 = tryXg2CardEffect(state, ctx, keyword);
+  if (xg2) return xg2;
   // 第8弾 RS-560〜RS-581 のカード固有の名前付き効果（`set8c::` と一部の既存キーワード。rules/legend1/set8NamedEffectsC.ts）。
   const set8c = trySet8CCardEffect(state, ctx, keyword);
   if (set8c) return set8c;

@@ -1,6 +1,8 @@
 import { rm2BlocksBattleEntry } from "./rm/rm2Fields";
 import { xg6BlocksBattleEntry } from "./xg6/xg6Fields";
 import { xg4BlocksBattleEntry } from "./xg4/xg4Fields";
+import { xg2BlocksBattleEntry } from "./xg2/xg2Fields";
+import { xg2KijouReplacesEntryHold, xg2RequiresBattleEntry } from "./xg2/xg2Fields";
 import { filthyAirActive } from "./legend1/otherLinesNamedEffects";
 import { rk3BattleEntryBlocked } from "./rk/rk3UnitEffects";
 import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
@@ -234,6 +236,8 @@ export function requiredBattleEntryHolds(
   if (unitHold > 0 && rk10OmegaIgnoresEntryHold(state, playerId, unit)) unitHold = 0;
   // RK-209 エラスモテリウムオルフェノク ※: ホールドする数は相手の手札1枚につき1少なくなる（rules/rk/rk10Fields.ts）。
   if (unitHold > 0) unitHold = Math.max(0, unitHold - rk10ElasmoHoldReduction(state, playerId, unit));
+  // XG2-021 重騎士【騎乗】で選んだユニット（ホールドするかわりに相手がホールドする。rules/xg2/xg2Fields.ts）。
+  if (unitHold > 0 && xg2KijouReplacesEntryHold(state, playerId, unit)) unitHold -= 1;
   const lgHold = isMediumUnit(state.definitions, unit)
     ? countActiveLightningGravity(state)
     : 0;
@@ -410,6 +414,7 @@ function canMoveUnitToBattleUncached(
   if (xg6BlocksBattleEntry(state, playerId, unit)) return false;
   // クロスギャザー ザ・ジェットアクセル XG4-007 の※等（rules/xg4/xg4Fields.ts）。
   if (def.type === "unit" && xg4BlocksBattleEntry(state, playerId, unit)) return false;
+  if (def.type === "unit" && (rm2BlocksBattleEntry(state, playerId, unit) || xg2BlocksBattleEntry(state, playerId, unit))) return false;
   // RS-289 / XP-023「※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない」（atwiki/page-416）。
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
@@ -559,6 +564,7 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   if (xg6BlocksBattleEntry(state, playerId, unit)) return false;
   // クロスギャザー ザ・ジェットアクセル XG4-007 の※等（rules/xg4/xg4Fields.ts）。
   if (def.type === "unit" && xg4BlocksBattleEntry(state, playerId, unit)) return false;
+  if (def.type === "unit" && (rm2BlocksBattleEntry(state, playerId, unit) || xg2BlocksBattleEntry(state, playerId, unit))) return false;
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {
@@ -1010,7 +1016,9 @@ export function findMandatoryBattleEntries(
       // RK-308 リュウタロス（2nd）の※（敵軍バトルエリアにユニットがあれば。rules/rk/rk15Fields.ts）。
       rk15RequiresBattleEntry(state, playerId, card) ||
       // XG5-059 仮面ライダーカリス【暴走する本能】（手札が1枚以下のとき。rules/xg5/xg5Fields.ts）。
-      xg5RequiresBattleEntry(state, playerId, card)
+      xg5RequiresBattleEntry(state, playerId, card) ||
+      // XG2-068 リュウタロス【憑依】で重ねたユニットが敵軍バトルエリアにある（rules/xg2/xg2Fields.ts）。
+      xg2RequiresBattleEntry(state, playerId, card)
     ) {
       mandatory.push(card);
     }

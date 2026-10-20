@@ -10,6 +10,7 @@ import {
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { vehicleMayBattleWithoutRide } from "./bkOperationTurnRules";
 import { xg4VehicleEntersWithoutRide } from "./xg4/xg4Fields";
+import { xg2VehicleMayEnterUnridden } from "./xg2/xg2Fields";
 
 /** ラッシュ上でこのビークルにライドしているユニットがいるか。 */
 export function hasRiderInRush(
@@ -45,6 +46,8 @@ export function canVehicleEnterBattleFromRush(
   if (vehicleMayBattleWithoutRide(player, vehicle.instanceId)) return true;
   // クロスギャザー ザ・ジェットアクセル XG4-049・XG4-062（条件なし。rules/xg4/xg4Fields.ts）。
   if (xg4VehicleEntersWithoutRide(vehicle.cardId)) return true;
+  // XG2-074 クウガゴウラム（自軍「仮面ライダーディケイド」があれば。rules/xg2/xg2Fields.ts）。
+  if (xg2VehicleMayEnterUnridden(state, playerId, vehicle)) return true;
 
   const cardId = vehicle.cardId;
   const maySelfEnter =

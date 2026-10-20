@@ -294,8 +294,9 @@ export function effectiveComboNumber(
  */
 export function uniteVentBpBonus(instance: Pick<CardInstance, "stackedCards">): number {
   const stacked = instance.stackedCards ?? [];
-  if (!stacked.some((c) => c.cardId === "XG2-052" && !c.faceDown)) return 0;
-  return 2000 * stacked.filter((c) => c.faceDown).length;
+  // 2枚重ねたターゲットは効果が重複する（ウラ向きのカード1枚につき BP+4000。atwiki/page-1761 Q7）。
+  const vents = stacked.filter((c) => c.cardId === "XG2-052" && !c.faceDown).length;
+  return 2000 * vents * stacked.filter((c) => c.faceDown).length;
 }
 
 export function passiveBpBonus(

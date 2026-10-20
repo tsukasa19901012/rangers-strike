@@ -178,7 +178,7 @@ describe("XP-007 仮面ライダーNEW電王SF", () => {
     expect(s.players.player1.deck.at(-1)?.instanceId).toBe("SPEC-E3:top");
   });
 
-  it.fails("XP-007: 【カウント】必要パワー「7+」の敵軍ユニットは数字7として選べる（出典: atwiki/page-1688「必要パワーの数字」） — 既知の不具合: CARD-XP-007 敵軍ユニットの必要パワー「7+」を数字7として扱わない（候補に出ない）", () => {
+  it("XP-007: 【カウント】必要パワー「7+」の敵軍ユニットは数字7として選べる（出典: atwiki/page-1688「必要パワーの数字」）", () => {
     const s = pick(count(inst("TST-UNIT-7", "top7")), "7");
     expect(choiceIds(s)).toEqual(["TST-UNIT-7:big"]);
   });
@@ -207,7 +207,7 @@ describe("XP-008 仮面ライダーNEW電王VF", () => {
   const rushBoardOf = (p1: Partial<GameState["players"]["player1"]> = {}) =>
     st({ phase: "rush", player1: { hand: [inst("XP-008", "vf")], command: releasedCat("OT", 1), power: [], deck: deckCards(3), ...p1 }, player2: { deck: deckCards(3, "e") } });
 
-  it.fails("XP-008: 追加条件 — 自軍の仮面ライダーNEW電王SF とデネブを捨札にすれば必要パワー0でラッシュできる（出典: atwiki/page-1719「合体―仮面ライダーNEW電王SF＋デネブ」「追加条件：自軍合体ユニットを捨札にすれば必要パワー0になる」） — 既知の不具合: CARD-XP-008 合体ユニットの1体（NEW電王SF）だけを捨札にして必要パワー0でラッシュできてしまう（デネブが場に残る）", () => {
+  it("XP-008: 追加条件 — 自軍の仮面ライダーNEW電王SF とデネブを捨札にすれば必要パワー0でラッシュできる（出典: atwiki/page-1719「合体―仮面ライダーNEW電王SF＋デネブ」「追加条件：自軍合体ユニットを捨札にすれば必要パワー0になる」）", () => {
     const r = rushVia(rushBoardOf({ rush: [inst("XP-007", "sf"), inst("RK-146", "dn")] }), "player1", "XP-008:vf", (a) => a.zordMaterialInstanceId === "XP-007:sf");
     expect(r.ok).toBe(true);
     const s = resolveAll(r.state);

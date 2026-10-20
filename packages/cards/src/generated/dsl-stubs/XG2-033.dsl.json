@@ -26,7 +26,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG2-033::koregapawazonnia",
+          "keyword": "xg2::XG2-033::power_guard",
           "duration": "permanent"
         }
       ]
@@ -38,11 +38,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-033::kenbariafuisuto",
+          "keyword": "xg2::XG2-033::barrier_fist",
           "duration": "permanent"
         }
       ]

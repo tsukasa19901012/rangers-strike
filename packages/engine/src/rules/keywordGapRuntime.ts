@@ -1,5 +1,7 @@
 import { xg7CanDeployFromPower, xg7HandDeployCondition } from "./xg7/xg7Fields";
 import { hasScopedRestriction } from "../core/scopedModifiers";
+import { xg2CanDeployFromDiscard, xg2DeployFromDiscard } from "./xg2/xg2Effects";
+import { XG2_NO_STRIKE_RESTRICTION } from "./xg2/xg2Fields";
 import { sameCardName } from "../core/cardNames";
 /**
  * 監査で検出された「付与のみで未消費」キーワードのランタイム実装。
@@ -167,13 +169,15 @@ export function attackerSuppressesAttackedCounters(attackerCardId: string): bool
 export function canSelfRushFromZone(
   state: GameState,
   playerId: PlayerId,
-  zone: "command" | "power" | "hand",
+  zone: "command" | "power" | "hand" | "discard",
   instanceId: string,
 ): boolean {
   if (state.phase !== "rush" || state.activePlayer !== playerId) return false;
   const player = state.players[playerId];
   const card = player[zone].find((c) => c.instanceId === instanceId);
   if (!card) return false;
+  // XG2-054 アビスハンマー【土中からの奇襲】（自軍捨札から。rules/xg2/xg2cEffects.ts）。
+  if (zone === "discard") return xg2CanDeployFromDiscard(state, playerId, card);
   if (zone === "hand") return handDeployConditionMet(state, playerId, card.cardId);
   if (zone === "power" && card.faceDown) return false;
   // XG7-068【蒸着・赤射・焼結】（rules/xg7/xg7Fields.ts）。
@@ -250,10 +254,11 @@ function handDeployConditionMet(state: GameState, playerId: PlayerId, cardId: st
 export function applySelfRushFromZone(
   state: GameState,
   playerId: PlayerId,
-  zone: "command" | "power" | "hand",
+  zone: "command" | "power" | "hand" | "discard",
   instanceId: string,
 ): GameState | null {
   if (!canSelfRushFromZone(state, playerId, zone, instanceId)) return null;
+  if (zone === "discard") return xg2DeployFromDiscard(state, playerId, instanceId);
   const player = state.players[playerId];
   const card = player[zone].find((c) => c.instanceId === instanceId);
   if (!card) return null;
@@ -290,6 +295,8 @@ export function battleActBlocked(
   if (action === "attack" && hasScopedRestriction(player, card.instanceId, "no_attack_this_turn", "turn")) return true;
   // XG5-091【ブラストエンド】で撃破したとき「このターン、これはストライクすることができない」（rules/xg5/xg5eEffects.ts）。
   if (action === "strike" && hasScopedRestriction(player, card.instanceId, "xg5_no_strike_this_turn", "turn")) return true;
+  // XG2-009【行動予測】で「ストライク」を宣言されたユニット（rules/xg2/xg2Fields.ts）。
+  if (action === "strike" && hasScopedRestriction(player, card.instanceId, XG2_NO_STRIKE_RESTRICTION, "turn")) return true;
   // RS-167【爆竜必殺バキバキパンチ】で得た「アタックしてバトルに勝つたび、追加でアタックできる」。
   if (action === "attack" && hasBakiBakiExtraAttack(player, card.instanceId)) return false;
   // ルール: R-REPL-03 — 「アタックするかわりに」効果を発動したユニットはアタックする権利を失っている。

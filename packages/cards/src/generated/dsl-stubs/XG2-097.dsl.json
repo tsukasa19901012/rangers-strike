@@ -28,11 +28,11 @@
       "trigger": {
         "type": "nc"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-097::raitoningukyanon",
+          "keyword": "xg2::XG2-097::lightning_cannon",
           "duration": "permanent"
         }
       ]

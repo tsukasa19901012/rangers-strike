@@ -1,3 +1,4 @@
+import { tryResolveDslTriggeredEffects } from "../dsl/triggerResolver";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
 import { getDefinition } from "../core/catalog";
@@ -300,11 +301,18 @@ export function resolveKamenRideMorphChoice(
     };
   }
 
-  const rc = resolveRidingComboOnRideOff(swap.state, playerId, entering);
+  // 出したユニットの RC の効果が開いた選択は残す（XG2-077・XP-004 atwiki/page-1748「RCの効果を持っていれば、その効果を発動する」）。
+  const rc = resolveRidingComboOnRideOff({ ...swap.state, pendingEffectChoice: undefined }, playerId, entering);
+  // 置き換えでバトルエリアに出たので「バトルエリアに出たとき」の効果も発動する（atwiki/page-1748 Q2）。
+  const inBattle = findInZone(rc.state.players[playerId], "battle", entering.instanceId);
+  const entered =
+    inBattle && !rc.state.pendingEffectChoice
+      ? tryResolveDslTriggeredEffects({ state: rc.state, cardId: entering.cardId, instanceId: entering.instanceId, playerId, phasePlayerId: pending.phasePlayerId, triggerType: "enter_battle" })
+      : { state: rc.state, logs: [] as string[] };
   return {
-    state: { ...rc.state, pendingEffectChoice: undefined },
+    state: entered.state,
     log: swap.log,
-    extraLogs: rc.logs,
+    extraLogs: [...rc.logs, ...entered.logs],
   };
 }
 

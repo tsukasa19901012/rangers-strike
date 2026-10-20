@@ -38,13 +38,12 @@
       "name": "レーダーアイ",
       "text": "これが自軍バトルエリアからラッシュエリアに戻るとき、お互いの山札の上から1枚をオモテにしてもよい。そうしたとき、オモテにしたカードを、それぞれ持ち主の山札の上に戻すか下に戻すか選択する。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-048::redaai",
+          "keyword": "xg2::XG2-048::radar_eye",
           "duration": "permanent"
         }
       ]

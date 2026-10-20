@@ -14,6 +14,7 @@ import { rk10G3xProtects } from "../rules/rk/rk10Fields";
 import { xg7NotSelectable } from "../rules/xg7/xg7Fields";
 import { unitFeatures } from "../rules/addedFeatures";
 import { xg5NotSelectable } from "../rules/xg5/xg5Fields";
+import { xg2CommandZoneProtected } from "../rules/xg2/xg2Fields";
 
 /**
  * 場以外（コマンドゾーン等）にあるカードが「相手に選ばれない」能力（not_selectable／アタックされる以外では
@@ -52,6 +53,8 @@ export function isSelectableByOpponentEffect(
     return false;
   }
   if (found.playerId === selectorPlayerId) return true;
+  // XG2-093 ソルドーザー【道路封鎖】（rules/xg2/xg2Fields.ts）。
+  if (found.zone === "command" && xg2CommandZoneProtected(state, found.playerId)) return false;
 
   if (cardHasGrantKeyword(found.card.cardId, "not_selectable")) return false;
   if (cardHasNotSelectableExceptAttack(found.card.cardId)) return false;

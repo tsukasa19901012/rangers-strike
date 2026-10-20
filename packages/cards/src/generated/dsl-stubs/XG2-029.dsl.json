@@ -48,7 +48,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-029::matsuri",
+          "keyword": "xg2::XG2-029::saima_tree",
           "duration": "permanent"
         }
       ]

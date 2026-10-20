@@ -9,6 +9,7 @@ import { applyRk6AfterUnitLeft, rk6IsNonCraneOrphnoch } from "./rk/rk6UnitEffect
 import { openRk7RengelSubstitute } from "./rk/rk7UnitEffects";
 import { rk2RaiaDiscardCandidates, rk2VenomDestroys } from "./rk/rk2UnitEffects";
 import { rk3BattleValues, tryOpenRk3BattleChoice } from "./rk/rk3UnitEffects";
+import { applyXg2AfterUnitLeft, openXg2LeaveStay, tryOpenXg2BattleChoice, xg2BattleCounterConditionMet } from "./xg2/xg2Effects";
 import { rk4OnAttackWin } from "./rk/rk4UnitEffects";
 import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, rk9OnAttackWin, rk9WinButDestroyed } from "./rk/rk9UnitEffects";
 import { rk15WinButDestroyed } from "./rk/rk15UnitEffects";
@@ -476,6 +477,8 @@ export function hasBattleCounterReactions(
     ) {
       return true;
     }
+    // XG2-061 リョクオオザル（敵軍ユニットにアタックされたとき。rules/xg2/xg2cEffects.ts）。
+    if (attackerPlayerId && attackerInstanceId && xg2BattleCounterConditionMet(state, defenderId, card.cardId, { attackerPlayerId, attackerInstanceId, defenderPlayerId: defenderId, defenderInstanceId })) return true;
     // RK-004 ギギの腕輪・RK-009 二人の世紀王（自軍Sユニットが敵軍Sユニットにアタックされたとき）。
     if (
       isRk1BattleCounterCard(card.cardId) &&
@@ -1386,6 +1389,9 @@ export function resolveBattlePendingCore(
   // RK-050【音撃斬・閻魔裁き】: 裁鬼のアタックなら、解決の直前に数字を選ぶ（選んだあとこのバトルを解決し直す）。
   const sabaki = tryOpenRk3BattleChoice(state, pending);
   if (sabaki) return { state: sabaki, log: buildLogEntry(pending.attackerPlayerId, "battle", pending.attackerInstanceId, state.definitions, "rk050_choose_number") };
+  // XG2-010【龍星キック】ほか「アタックするとき、バトルの前に」（選んだあとこのバトルを解決し直す。rules/xg2/xg2Effects.ts）。
+  const xg2Before = tryOpenXg2BattleChoice(state, pending);
+  if (xg2Before) return { state: xg2Before, log: buildLogEntry(pending.attackerPlayerId, "battle", pending.attackerInstanceId, state.definitions, "xg2_before_battle") };
 
   const attackerId = pending.attackerPlayerId;
   const defenderId = pending.defenderPlayerId;
@@ -2176,6 +2182,8 @@ export function finalizeLeavePending(
     card: found.card,
     destroyed: isDestructionLeave(pending),
   });
+  // XG2-028・XG2-029: ユニットでなくなるとき、下に重ねたウラ向きのカード（rules/xg2/xg2bEffects.ts）。
+  resolvedState = applyXg2AfterUnitLeft(resolvedState, { ownerPlayerId: pending.ownerPlayerId, card: found.card, phasePlayerId: pending.phasePlayerId });
   if (
     pending.fusionReturnOnDiscard === "battle" &&
     effectiveToZone === "discard" &&
@@ -2282,6 +2290,9 @@ export function tryLeaveField(
   // RS-437 白熱する実況: 下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる（rules/legend1/set7NamedEffectsA.ts）。
   const liveCommentary = openLiveCommentaryStay(state, intent);
   if (liveCommentary) return { state: liveCommentary, deferred: true };
+  // XG2-042 仮面ライダーディケイドCF の※ ほか（その場に留まる。rules/xg2/xg2cEffects.ts）。
+  const xg2Stay = openXg2LeaveStay(state, intent);
+  if (xg2Stay) return { state: xg2Stay, deferred: true };
   const superShieldInstanceId = findSuperShieldSubstitute(state, intent);
   const dinoChronicle = hasDinoChronicleLeaveReaction(
     state,

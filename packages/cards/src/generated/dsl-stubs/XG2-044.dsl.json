@@ -57,12 +57,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-044::metarushafuto",
-          "duration": "turn"
+          "keyword": "xg2::XG2-044::metal_shaft",
+          "duration": "permanent"
         }
       ]
     }

@@ -6,6 +6,7 @@ import { isSmallUnit } from "../core/catalog";
 import { cardHasGrantKeyword } from "../dsl/promotedKeywordBridge";
 import { cardHasKeyword } from "../keywords/cardKeywords";
 import { playerHasAllyWithLeadOnField } from "./callLead";
+import { xg2FusionOrNamedCondition, xg2HasFusionOrNamedCondition, xg2NameContainsGate } from "./xg2/xg2Fields";
 
 const CONDITION_CHANGE =
   /※このカードの追加条件は、(.+?)の?とき、次のように変更される(?:⇒|→)\s*(.+?)(?:。|\s*【|$)/;
@@ -97,6 +98,10 @@ function rushConditionGateMet(
     ).length;
     return count >= Number(min);
   }
+
+  // 「カード名に「気伝武人」を含む自軍ユニットがある」（XG2-016 天空気殿 atwiki/page-1792。rules/xg2/xg2Fields.ts）。
+  const xg2Gate = xg2NameContainsGate(state, playerId, gateText);
+  if (xg2Gate !== null) return xg2Gate;
 
   return false;
 }
@@ -200,10 +205,14 @@ export function withEffectiveRushConditionDefinitions(state: GameState): GameSta
   for (const pid of order) {
     for (const card of state.players[pid].hand) {
       const current = state.definitions[card.cardId] as OverridableDefinition | undefined;
-      if (!current?.text || !hasConditionChangeText(current.text)) continue;
+      // XG2-012・XG2-017「自軍合体ユニットまたは自軍「X」1体を捨札にする」（rules/xg2/xg2Fields.ts）。
+      const xg2Alt = !!current && xg2HasFusionOrNamedCondition(current);
+      if (!current?.text || (!hasConditionChangeText(current.text) && !xg2Alt)) continue;
       const { rushAdditionalConditionOverride: previous, ...original } = current;
       const base = resolveRushAdditionalCondition(card.cardId, original as CardDefinition);
-      const effective = effectiveRushAdditionalCondition(state, pid, card.cardId, original as CardDefinition);
+      const effective = xg2Alt
+        ? (xg2FusionOrNamedCondition(state, pid, card, original as CardDefinition) ?? base)
+        : effectiveRushAdditionalCondition(state, pid, card.cardId, original as CardDefinition);
       const desired = effective && JSON.stringify(effective) !== JSON.stringify(base) ? effective : undefined;
       if (JSON.stringify(desired) === JSON.stringify(previous)) continue;
       patched ??= { ...state.definitions };

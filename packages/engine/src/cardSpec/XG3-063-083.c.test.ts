@@ -90,7 +90,7 @@ describe("XG3-077 アギトトルネイダー", () => {
     expectRarityIn("XG3-077", ["N"]);
   });
 
-  it.fails("XG3-077: 追加条件 — 自軍「仮面ライダーアギト」1体を手札に戻し、パワー4でラッシュできる（既知の不具合: CARD-XG3-077 追加条件つきのラッシュが提示されない）（出典: atwiki/page-1935「必要パワー：4+」「追加条件：自軍「仮面ライダーアギト」1体を手札に戻す」）", () => {
+  it("XG3-077: 追加条件 — 自軍「仮面ライダーアギト」1体を手札に戻し、パワー4でラッシュできる（既知の不具合: CARD-XG3-077 追加条件つきのラッシュが提示されない）（出典: atwiki/page-1935「必要パワー：4+」「追加条件：自軍「仮面ライダーアギト」1体を手札に戻す」）", () => {
     const r = rushVia(board({ hand: [inst("XG3-077", "t")], rush: [inst("XG3-076", "ag")], power: powerCards(4), command: releasedCat("MA", 1) }), "player1", "XG3-077:t");
     expect(r.ok, r.error).toBe(true);
     const s = resolveAll(r.state, ["XG3-076:ag"]);

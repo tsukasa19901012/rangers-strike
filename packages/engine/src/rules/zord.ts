@@ -1,4 +1,5 @@
 import type { CardDefinition } from "@rangers-strike/cards";
+import { xg2NamedPowerPartner, xg2PowerPartnerFeature } from "./xg2/xg2Fields";
 import {
   canonicalCardName,
   fusionMaterialAliasNames,
@@ -564,6 +565,9 @@ function namedUnitPartnerNames(condition: { text?: string; partnerName?: string 
     : // 「自軍「A」または「B」1体」（XG5-043〜045 atwiki/page-2242 等）。
       /自軍[「｢][^」｣]+[」｣]または[「｢]/.test(text)
       ? [...text.matchAll(/(?:自軍|または)[「｢]([^」｣]+)[」｣]/g)].map((m) => m[1]!)
+    : // 「自軍「A」か「B」1体を…」（XG2-010・XG2-011）。
+      /^自軍[「｢][^」｣]+[」｣]か[「｢]/.test(text)
+      ? [...text.matchAll(/[「｢]([^」｣]+)[」｣]/g)].map((m) => m[1]!)
       : [];
   if (condition.partnerName && !names.includes(condition.partnerName)) names.push(condition.partnerName);
   return names;
@@ -657,10 +661,15 @@ export function isValidZordUpMaterial(
       if (isSendSUnitZordCondition(condition.conditionId)) {
         // 「自軍「X」1体をパワーゾーンに送る」はその名前の S ユニットだけ（RK-054「仮面ライダーガタックMF」・RK-057「仮面ライダーザビーMF」
         // atwiki/page-171・161）。
-        const named = condition.conditionId === "send_s_unit_to_power" ? singleNamedPowerPartner(condition.text) : undefined;
+        const named = condition.conditionId === "send_s_unit_to_power" ? (singleNamedPowerPartner(condition.text) ?? xg2NamedPowerPartner(condition.text)) : undefined;
+        // 「特徴「X」を持つ自軍ユニット1体をパワーゾーンに送る」（XG2-042・XP-005。rules/xg2/xg2Fields.ts）。
+        const feature = condition.conditionId === "send_s_unit_to_power" ? xg2PowerPartnerFeature(condition.text) : undefined;
+        if (feature) return card.instanceId !== rushingInstanceId && def.type === "unit" && (def.features ?? []).includes(feature);
         if (named) {
+          // 名前で指定されたユニットは大きさを問わない（XG2-032「自軍「デカマシン」（SC）1体をパワーゾーンに送る」atwiki/page-1800）。
           return (
-            isValidPowerMaterial(definitions, card, rushingInstanceId) &&
+            card.instanceId !== rushingInstanceId &&
+            def.type === "unit" &&
             normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(named))
           );
         }
@@ -679,6 +688,9 @@ export function isValidZordUpMaterial(
  */
 export function zordOffersCommandOrDiscard(zordCardId: string, conditionId: string | undefined): boolean {
   if (conditionId === "send_s_unit_to_command_or_discard") return true;
+  // XG2-005〜007「自軍Sユニット…を自軍ゾーンに送る」— 「ゾーン」はパワーゾーンとコマンドゾーンの総称（atwiki/page-1517 Q1）。
+  // 行き先の "command" はコマンドゾーン（リリース状態）、"discard" はパワーゾーン（applyZordMaterial の既定の行き先）。
+  if (conditionId === "send_s_units_to_zones") return true;
   if (conditionId !== "discard_named_unit" && conditionId !== "discard_feature_unit" && conditionId !== "discard_vehicle_unit") return false;
   return /コマンドゾーンに送るか捨札にする/.test((resolveRushAdditionalCondition(zordCardId)?.text ?? "").normalize("NFKC"));
 }

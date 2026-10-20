@@ -225,6 +225,11 @@ export type PendingDamagePayment = {
   replacedDamage?: number;
 };
 
+/** クロスギャザー XG2 の選択の続き（rules/xg2。カードごとの効果が型を決める）。 */
+export type Xg2Meta = Record<string, unknown>;
+/** クロスギャザー XG2 のカード固有の効果の状態（rules/xg2/xg2Core.ts）。 */
+export type Xg2State = Record<string, unknown>;
+
 export type PendingBattle = {
   /** XG6 の「アタックされたとき」等の選択を出したカード（rules/xg6/）。 */
   xg6Offered?: string[];
@@ -281,6 +286,8 @@ export type PendingBattle = {
   effectBattle?: boolean;
   /** RK-050 仮面ライダー裁鬼【音撃斬・閻魔裁き】: お互いにバトルする数字（rules/rk/rk3UnitEffects.ts）。 */
   rk050Mode?: "bp" | "power_cost" | "number";
+  /** クロスギャザー XG2: バトルの前に発動を確かめ終えた効果（rules/xg2/xg2Core.ts tryOpenXg2BattleChoice）。 */
+  xg2Asked?: string[];
 };
 
 export type PendingRush = {
@@ -387,6 +394,8 @@ export type PendingLeave = {
   batLeeDeclined?: boolean;
   /** RS-437 白熱する実況「下に重ねたウラ向きのカードを1枚捨札にすれば、その場に留まる」を見送った。 */
   liveCommentaryDeclined?: boolean;
+  /** XG2 の「その場に留まる」を見送った効果（rules/xg2/xg2cEffects.ts。再度は尋ねない）。 */
+  xg2Declined?: string[];
   /**
    * RS-182 ジャイアントローラー: 撃破されて捨札になったとき、持ち主のパワーゾーンにダメージ（ウラ向き）にして置く。
    * 置換・カウンターで捨札にならなければ置かれない（faq-card-4 RS-182 Q1〜Q3）。
@@ -810,6 +819,8 @@ export type PendingEffectChoice = {
   xg6Meta?: Xg6ChoiceMeta;
   /** クロスギャザー ザ・ジェットアクセル XG4-001〜XG4-102 の選択の続き（rules/xg4/xg4Common.ts）。 */
   xg4Meta?: Record<string, unknown>;
+  /** クロスギャザー XG2 の選択の続き（rules/xg2。中身はカードごとの効果が決める）。 */
+  xg2Meta?: Xg2Meta;
   /** スペシャルメタルエディション RM-001〜RM-021 の選択の続き（rules/rm/rm1Effects.ts）。 */
   rm1Meta?: {
     /** RM-006: 選べる数（「メカ」「人型」の自軍ユニットの数）。 */
@@ -1463,6 +1474,8 @@ export type GameState = {
   rm2PendingTriggers?: Array<{ kind: "rm026_vehicle"; playerId: PlayerId; instanceId: string; phasePlayerId: PlayerId }>;
   /** クロスギャザー ザ・ギガンティックタイタン XG6 のターン中の記録（rules/xg6/）。 */
   xg6?: Xg6Records;
+  /** クロスギャザー XG2 のカード固有の効果の状態（ターン中の記録など。rules/xg2/xg2Core.ts）。 */
+  xg2?: Xg2State;
   /** RM-017 オメデトロフィーの、まだ開いていない発動（rules/rm/rm1Effects.ts applyRm1AfterAction）。 */
   rm1PendingTriggers?: Array<{ kind: "rm017"; playerId: PlayerId; sourceInstanceId: string; unitCardId: string }>;
   /** クロスギャザー XG5 の継続中の効果・まだ開いていない発動（rules/xg5/xg5Types.ts）。 */
@@ -1580,6 +1593,8 @@ export type TurnEndProgress = {
    */
   exodusOrderAsked?: boolean;
   exodusFirst?: boolean;
+  /** XG2 の「自分がターンを終えるとき」を処理済みか（rules/xg2/xg2cEffects.ts）。 */
+  xg2Done?: boolean;
   /** 第6弾の「ターンを終えるとき」の選択（RS-398【時間漂流者の送還】・RS-413 のコマンド捨札）のうち未処理のもの。 */
   set6bQueue?: string[];
   /** 第7弾 RS-484【ハリーアップ！】の「ターンを終えるとき」の選択のうち未処理のもの（rules/legend1/set7NamedEffectsC.ts）。 */

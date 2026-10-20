@@ -65,13 +65,12 @@
       "name": "怪力",
       "text": "自軍ターン中、これはBP+5000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
-      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG2-046::chikarae680aa",
+          "keyword": "xg2::XG2-046::kairiki",
           "duration": "permanent"
         }
       ]

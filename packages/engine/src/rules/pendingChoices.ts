@@ -173,6 +173,7 @@ import { isRm3ChoiceEffect, tryCompleteRm3HoldChoice, tryConfirmRm3Choice, tryRe
 import { isXg7ChoiceEffect, tryConfirmXg7Choice, tryResolveXg7Choice, trySkipXg7Choice } from "./xg7/xg7Effects";
 import { isBk1ChoiceEffect, tryResolveBk1Choice, trySkipBk1Choice } from "./bk/bk1Effects";
 import { isXg1ChoiceEffect, tryCompleteXg1HoldChoice, tryConfirmXg1Choice, tryResolveXg1Choice, trySkipXg1Choice } from "./xg1/xg1Effects";
+import { isXg2ChoiceEffect, tryCompleteXg2HoldChoice, tryConfirmXg2Choice, tryResolveXg2Choice, trySkipXg2Choice } from "./xg2/xg2Effects";
 import { filthyAirActive, isOtherLinesChoiceEffect, tryOtherLinesBattleToRush, tryResolveOtherLinesChoice, trySkipOtherLinesChoice } from "./legend1/otherLinesNamedEffects";
 import { isSet9BChoiceEffect, tryConfirmSet9BChoice, tryResolveSet9BChoice, trySkipSet9BChoice } from "./legend1/set9NamedEffectsB";
 import { isSet8BChoiceEffect, tryResolveSet8BChoice, trySkipSet8BChoice } from "./legend1/set8NamedEffectsB";
@@ -697,6 +698,7 @@ export function isValidEffectChoiceTarget(
     isXg7ChoiceEffect(pending.effectId) ||
     isBk1ChoiceEffect(pending.effectId) ||
     isXg1ChoiceEffect(pending.effectId) ||
+    isXg2ChoiceEffect(pending.effectId) ||
     isOtherLinesChoiceEffect(pending.effectId) ||
     isSet9BChoiceEffect(pending.effectId) ||
     isSet8BChoiceEffect(pending.effectId) ||
@@ -2098,6 +2100,8 @@ export function applyConfirmEffectChoice(
   if (xg7) return xg7;
   const xg1 = tryConfirmXg1Choice(state, playerId);
   if (xg1) return xg1;
+  const xg2 = tryConfirmXg2Choice(state, playerId);
+  if (xg2) return xg2;
   if (pending.kind === "scry_keep_one" && pending.siteTransportMeta?.step === "deck") {
     // RS-472【現場への搬送】: 「…まで好きな数選び」— 選んだところで確定し、山札をシャッフルする。
     return finishChoice(finishSiteTransportDeck(state, pending), pending, String(pending.selectedInstanceIds?.length ?? 0));
@@ -3024,6 +3028,9 @@ export function completeEffectHoldChoice(
   // 第7弾 RS-440【武器換装】・RS-441【コサックダンス】: ホールドするコマンドを選んだあとの続き（rules/legend1/set7NamedEffectsA.ts）。
   const set7aHold = tryCompleteSet7AHoldChoice(state, playerId, commandInstanceIds);
   if (set7aHold) return set7aHold;
+  // XG2-075・076・078: これ自身をホールドしたあとの続き（rules/xg2/xg2dEffects.ts）。
+  const xg2Hold = tryCompleteXg2HoldChoice(state, playerId, commandInstanceIds);
+  if (xg2Hold) return xg2Hold;
   // RM-022 サイバリアン・RM-038 凱聖バルスキー: ホールドするコマンドを選んだあとの続き（rules/rm/rm2Effects.ts）。
   const rm2Hold = tryCompleteRm2HoldChoice(state, playerId, commandInstanceIds);
   if (rm2Hold) return rm2Hold;
@@ -3122,6 +3129,8 @@ export function skipEffectChoice(state: GameState, playerId: PlayerId): ChoiceOu
   if (bk1) return bk1;
   const xg1 = trySkipXg1Choice(state, playerId);
   if (xg1) return xg1;
+  const xg2 = trySkipXg2Choice(state, playerId);
+  if (xg2) return xg2;
   const otherLines = trySkipOtherLinesChoice(state, playerId);
   if (otherLines) return otherLines;
   const abduction = skipAbductionChoice(state, playerId);
@@ -3468,6 +3477,8 @@ export function applyEffectChoiceSelect(
   if (bk1) return bk1;
   const xg1 = tryResolveXg1Choice(state, playerId, instanceId);
   if (xg1) return xg1;
+  const xg2 = tryResolveXg2Choice(state, playerId, instanceId);
+  if (xg2) return xg2;
   const otherLines = tryResolveOtherLinesChoice(state, playerId, instanceId);
   if (otherLines) return otherLines;
   const set9b = tryResolveSet9BChoice(state, playerId, instanceId);
@@ -3627,9 +3638,10 @@ export function applyEffectChoiceSelect(
   if (pending.effectId === "kamen_ride_morph") {
     const result = resolveKamenRideMorphChoice(state, playerId, instanceId);
     if ("error" in result) return { error: result.error };
-    let nextState = promoteDeferredBattleEntry(
-      clearChoice(result.state, pending.phasePlayerId),
-    );
+    // 出したユニットの RC・「バトルエリアに出たとき」が開いた選択は残す（XG2-077・XP-004 atwiki/page-1748）。
+    let nextState = result.state.pendingEffectChoice
+      ? result.state
+      : promoteDeferredBattleEntry(clearChoice(result.state, pending.phasePlayerId));
     if (result.extraLogs?.length) {
       nextState = { ...nextState, log: [...nextState.log, ...result.extraLogs] };
     }

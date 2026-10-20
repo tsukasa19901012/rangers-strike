@@ -212,7 +212,7 @@ describe("SX-003 仮面ライダーW・FJ", () => {
     expectRarityIn("SX-003", ["SC"]);
   });
 
-  it.fails("SX-003: 追加条件 — 特徴「獣」または「恐竜」を持つ自軍コマンドがあればラッシュでき、なければラッシュできない（出典: atwiki/page-2017「特徴「獣」または「恐竜」を持つ自軍コマンドがある」）— 既知の不具合: CARD-SX-003 追加条件の「自軍コマンド」をオペレーションのカードに限って数えるので、ユニットのコマンドでは満たせない", () => {
+  it("SX-003: 追加条件 — 特徴「獣」または「恐竜」を持つ自軍コマンドがあればラッシュでき、なければラッシュできない（出典: atwiki/page-2017「特徴「獣」または「恐竜」を持つ自軍コマンドがある」）", () => {
     const mk = (command: CardInstance[]) => rushPhase({ hand: [inst("SX-003", "fj")], power: powerCards(4), command });
     const r = rushFromHand(mk([...releasedCat("DA", 1), inst("SPEC-DINO", "cmd")]), "player1", "SX-003:fj");
     expect(r.ok, r.error).toBe(true);

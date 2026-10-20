@@ -295,7 +295,7 @@ describe("XP-004 仮面ライダーディケイド", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XP-004: 【カメンライド】置き換えて出たユニット（ディケイド アギトGF・RC）はライドオフした直後として RC の【アタックライド】を発動する（DA の敵軍 S ユニットを撃破）（出典: atwiki/page-1538「ライドオフした直後のユニットとして扱い、RCの効果を持っていれば、その効果を発動する」・XG1-064 本文） — 既知の不具合: CARD-XP-004 置き換えはするが、出たユニットの RC の効果が発動しない", () => {
+  it("XP-004: 【カメンライド】置き換えて出たユニット（ディケイド アギトGF・RC）はライドオフした直後として RC の【アタックライド】を発動する（DA の敵軍 S ユニットを撃破）（出典: atwiki/page-1538「ライドオフした直後のユニットとして扱い、RCの効果を持っていれば、その効果を発動する」・XG1-064 本文）", () => {
     let s = pick(kamenRide(), "XG1-064:agito");
     expect(zoneOf(s, "player1", "XG1-064:agito")).toBe("battle");
     expect(zoneOf(s, "player1", "XP-004:dc")).toBe("command");
@@ -310,7 +310,7 @@ describe("XP-004 仮面ライダーディケイド", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG1-069");
   });
 
-  it.fails("XP-004: 公式Q&A — 置き換えでバトルエリアに出た XG1-072 ディケイド キバは「バトルエリアに出たとき」の【アタックライド】を使える（出典: atwiki/page-1538 Q2） — 既知の不具合: CARD-XP-004 置き換えで出たユニットの「バトルエリアに出たとき」の効果が発動しない", () => {
+  it("XP-004: 公式Q&A — 置き換えでバトルエリアに出た XG1-072 ディケイド キバは「バトルエリアに出たとき」の【アタックライド】を使える（出典: atwiki/page-1538 Q2）", () => {
     let s = kamenRide({ command: [released("XG1-072", "kiba")] }, { battle: [inst("SPEC-DA-S", "da")] });
     s = pick(s, "XG1-072:kiba");
     expect(zoneOf(s, "player1", "XG1-072:kiba")).toBe("battle");
@@ -353,7 +353,7 @@ describe("XP-005 仮面ライダーディケイドCF", () => {
     expect(zoneOf(s, "player1", "XP-004:dc")).toBe("power");
   });
 
-  it.fails("XP-005: 追加条件 — 「ディケイドライバー」の自軍ユニットがいなければラッシュできない（出典: atwiki/page-1557） — 既知の不具合: CARD-XP-005 追加条件の「特徴「ディケイドライバー」を持つ」を見ず、どの自軍ユニットでもパワーゾーンに送ってラッシュできる", () => {
+  it("XP-005: 追加条件 — 「ディケイドライバー」の自軍ユニットがいなければラッシュできない（出典: atwiki/page-1557）", () => {
     const s0 = st({ phase: "rush", player1: { hand: [inst("XP-005", "cf")], rush: [inst("TST-UNIT-0", "x")], command: releasedCat("OT", 1), power: powerCards(6), deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
     expect(canStartRush(s0, "player1", "XP-005:cf")).toBe(false);
   });
@@ -365,20 +365,20 @@ describe("XP-005 仮面ライダーディケイドCF", () => {
       "XP-005:cf",
     );
 
-  it.fails("XP-005: ※ ユニットでなくなるとき、オモテ向きの自軍パワーの特徴「仮面ライダー」のカードを選べる（任意。ウラ向き・ライダー以外は選べない）（出典: atwiki/page-1557「オモテ向きの自軍パワーから特徴「仮面ライダー」を持つカードを1枚選び捨札にすれば」） — 既知の不具合: CARD-XP-005 ※（パワーの「仮面ライダー」を捨札にして場に留まる）が未実装", () => {
+  it("XP-005: ※ ユニットでなくなるとき、オモテ向きの自軍パワーの特徴「仮面ライダー」のカードを選べる（任意。ウラ向き・ライダー以外は選べない）（出典: atwiki/page-1557「オモテ向きの自軍パワーから特徴「仮面ライダー」を持つカードを1枚選び捨札にすれば」）", () => {
     const s = destroyed();
     expectChoiceFrom(s, "player1", "XP-005");
     expect(choiceIds(s)).toEqual(["XG1-066:rider"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XP-005: ※ 選んだカードを捨札にすれば、その場に留まる（出典: atwiki/page-1557「その場に留まる」） — 既知の不具合: CARD-XP-005 ※ が未実装", () => {
+  it("XP-005: ※ 選んだカードを捨札にすれば、その場に留まる（出典: atwiki/page-1557「その場に留まる」）", () => {
     const s = resolveAll(pick(destroyed(), "XG1-066:rider"));
     expect(zoneOf(s, "player1", "XG1-066:rider")).toBe("discard");
     expect(zoneOf(s, "player1", "XP-005:cf")).toBe("battle");
   });
 
-  it.fails("XP-005: ※ 捨札にしなければ撃破される（出典: atwiki/page-1557） — 既知の不具合: CARD-XP-005 ※ が未実装（選択が開かない）", () => {
+  it("XP-005: ※ 捨札にしなければ撃破される（出典: atwiki/page-1557）", () => {
     const s = resolveAll(skip(destroyed()));
     expect(zoneOf(s, "player1", "XP-005:cf")).toBe("discard");
     expect(zoneOf(s, "player1", "XG1-066:rider")).toBe("power");

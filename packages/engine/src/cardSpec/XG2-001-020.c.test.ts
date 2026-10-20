@@ -104,14 +104,14 @@ describe("XG2-015 リュウレンジャー", () => {
     expect(spOf(settle(s), "player1", "XG2-015:r")).toBe(1);
   });
 
-  it.fails("XG2-015: NC【赤龍双竜剣】— 敵軍バトルエリアの、効果名を持たないテキスト（※）にその文が書かれたユニット（サイズを問わない。「「SP1」」の表記ゆれも同じ）から1体選べる。効果名つきのテキスト（RK-224【サポート】）にだけ書かれたユニット・ラッシュエリアのユニットは選べない。任意（出典: atwiki/page-1791・カード評価「サイズに制限がないため、冥府神ドレイクなども対象」） 既知の不具合: CARD-XG2-015 【赤龍双竜剣】がなく、NC で選択が開かない（「SP1」だけ得る）", () => {
+  it("XG2-015: NC【赤龍双竜剣】— 敵軍バトルエリアの、効果名を持たないテキスト（※）にその文が書かれたユニット（サイズを問わない。「「SP1」」の表記ゆれも同じ）から1体選べる。効果名つきのテキスト（RK-224【サポート】）にだけ書かれたユニット・ラッシュエリアのユニットは選べない。任意（出典: atwiki/page-1791・カード評価「サイズに制限がないため、冥府神ドレイクなども対象」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG2-015");
     expect(choiceIds(s)).toEqual(["RS-285:m", "RS-339:y", "XG2-014:t"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-015: NC【赤龍双竜剣】— 選んだユニットを撃破する（出典: atwiki/page-1791「撃破してもよい」） 既知の不具合: CARD-XG2-015 【赤龍双竜剣】がなく、撃破できない", () => {
+  it("XG2-015: NC【赤龍双竜剣】— 選んだユニットを撃破する（出典: atwiki/page-1791「撃破してもよい」）", () => {
     const s = resolveAll(pick(entered(), "RS-285:m"));
     expect(zoneOf(s, "player2", "RS-285:m")).toBe("discard");
   });
@@ -139,7 +139,7 @@ describe("XG2-016 天空気殿", () => {
     expect(canStartRush(board(sUnits(3)), "player1", "XG2-016:h")).toBe(false);
   });
 
-  it.fails("XG2-016: ※ カード名に「気伝武人」を含む自軍ユニットがあれば、追加条件は「追加で自軍コマンドを2つホールドする」に変わる（S ユニットを捨札にせず、コマンドを計3つホールドしてラッシュ）（出典: atwiki/page-1792「次のように変更される⇒追加で自軍コマンドを2つホールドする」） 既知の不具合: CARD-XG2-016 追加条件の変更（追加で自軍コマンドを2つホールドする）がなく、S ユニット4体がなければラッシュできない", () => {
+  it("XG2-016: ※ カード名に「気伝武人」を含む自軍ユニットがあれば、追加条件は「追加で自軍コマンドを2つホールドする」に変わる（S ユニットを捨札にせず、コマンドを計3つホールドしてラッシュ）（出典: atwiki/page-1792「次のように変更される⇒追加で自軍コマンドを2つホールドする」）", () => {
     const r = rushFromHand(board([inst("XG2-010", "kb")], 3), "player1", "XG2-016:h");
     expect(r.ok, r.error).toBe(true);
     const s = resolveAll(r.state);
@@ -161,7 +161,7 @@ describe("XG2-016 天空気殿", () => {
     return settle(strike(s, next));
   };
 
-  it.fails("XG2-016: 【天空大風車】これからコンビネーションする「人型」の M ユニット（SP1）は、ストライクしてダメージを与えたとき DA を持つ敵軍ユニット（エリア・サイズを問わない）を1体選び撃破できる（任意）（出典: atwiki/page-1792） 既知の不具合: CARD-XG2-016 【天空大風車】がなく、次の「人型」の M ユニットがストライクしてダメージを与えても選択が開かない", () => {
+  it("XG2-016: 【天空大風車】これからコンビネーションする「人型」の M ユニット（SP1）は、ストライクしてダメージを与えたとき DA を持つ敵軍ユニット（エリア・サイズを問わない）を1体選び撃破できる（任意）（出典: atwiki/page-1792）", () => {
     const s = struck("SPEC-HUMANOID-M:h");
     expect(damageOf(s, "player2")).toBeGreaterThan(0);
     expectChoiceFrom(s, "player1", "XG2-016");
@@ -204,7 +204,7 @@ describe("XG2-017 大連王", () => {
     expect(zoneOf(r.state, "player1", "RS-291:r")).toBe("discard");
   });
 
-  it.fails("XG2-017: 追加条件 — 自軍「牙大王」1体を捨札にしてもラッシュできる（出典: atwiki/page-1824「自軍合体ユニットまたは自軍「牙大王」1体を捨て札にする」） 既知の不具合: CARD-XG2-017 追加条件の「自軍「牙大王」1体を捨札にする」が使えず、合体でしかラッシュできない", () => {
+  it("XG2-017: 追加条件 — 自軍「牙大王」1体を捨札にしてもラッシュできる（出典: atwiki/page-1824「自軍合体ユニットまたは自軍「牙大王」1体を捨て札にする」）", () => {
     const r = rushFromHand(board([inst("XG2-012", "k")]), "player1", "XG2-017:h");
     expect(r.ok, r.error).toBe(true);
     expect(zoneOf(r.state, "player1", "XG2-012:k")).toBe("discard");
@@ -213,7 +213,7 @@ describe("XG2-017 大連王", () => {
   const entered = (p2: Partial<GameState["players"]["player2"]> = {}) =>
     enter(p1Battle({ rush: [inst("XG2-017", "d")] }, { battle: [inst("SPEC-DA-S", "s"), inst("SPEC-DA-L", "l"), inst("SPEC-WB-S", "w")], rush: [inst("SPEC-DA-S", "r")], ...p2 }, EXTRA), "XG2-017:d");
 
-  it.fails("XG2-017: 【大王剣・疾風怒濤】自軍ターン中に自軍バトルエリアに出たとき、敵軍バトルエリアの DA を持つ敵軍ユニット（サイズを問わない）から1体選べる。ラッシュエリアのユニット・DA を持たないユニットは選べない（任意）（出典: atwiki/page-1824「敵軍バトルエリアからDAを持つ敵軍ユニットを1体選び撃破してもよい」） 既知の不具合: CARD-XG2-017 【大王剣・疾風怒濤】の候補が DA で絞られない（DA を持たない敵軍ユニットも選べる）", () => {
+  it("XG2-017: 【大王剣・疾風怒濤】自軍ターン中に自軍バトルエリアに出たとき、敵軍バトルエリアの DA を持つ敵軍ユニット（サイズを問わない）から1体選べる。ラッシュエリアのユニット・DA を持たないユニットは選べない（任意）（出典: atwiki/page-1824「敵軍バトルエリアからDAを持つ敵軍ユニットを1体選び撃破してもよい」）", () => {
     const s = entered();
     expectChoiceFrom(s, "player1", "XG2-017");
     expect(choiceIds(s)).toEqual(["SPEC-DA-L:l", "SPEC-DA-S:s"]);
@@ -226,7 +226,7 @@ describe("XG2-017 大連王", () => {
     expect(damageOf(s, "player2")).toBe(0);
   });
 
-  it.fails("XG2-017: 【大王剣・疾風怒濤】撃破したユニットが L ユニットなら、捨札にするかわりに持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-1824「捨札にするかわりに持ち主のパワーゾーンにダメージにして置く」） 既知の不具合: CARD-XG2-017 【大王剣・疾風怒濤】で L ユニットを撃破しても捨札になり、ダメージにならない", () => {
+  it("XG2-017: 【大王剣・疾風怒濤】撃破したユニットが L ユニットなら、捨札にするかわりに持ち主のパワーゾーンにダメージとして置く（出典: atwiki/page-1824「捨札にするかわりに持ち主のパワーゾーンにダメージにして置く」）", () => {
     const s = resolveAll(pick(entered(), "SPEC-DA-L:l"));
     expect(zoneOf(s, "player2", "SPEC-DA-L:l")).toBe("power");
     expect(cardIn(s, "player2", "SPEC-DA-L:l")?.faceDown).toBe(true);
@@ -266,20 +266,20 @@ describe("XG2-018 ゲキタイガー", () => {
     return r.state;
   };
 
-  it.fails("XG2-018: 【来来獣】ラッシュしたとき、「レッド」を持つ自軍ユニットから1体選んでホールドするかを選べる（任意）（出典: atwiki/page-1793「特徴「レッド」を持つ自軍ユニットを1体選びホールドしてもよい」） 既知の不具合: CARD-XG2-018 【来来獣】で「レッド」のユニットを選ぶ選択が開かない（ホールドせずに BP+3000 だけ付く）", () => {
+  it("XG2-018: 【来来獣】ラッシュしたとき、「レッド」を持つ自軍ユニットから1体選んでホールドするかを選べる（任意）（出典: atwiki/page-1793「特徴「レッド」を持つ自軍ユニットを1体選びホールドしてもよい」）", () => {
     const s = rushed();
     expectChoiceFrom(s, "player1", "XG2-018");
     expect(choiceIds(s)).toEqual(["SPEC-RED-S:red"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-018: 【来来獣】ホールドすると、このターン BP+3000（4000→7000）（出典: atwiki/page-1793「そうしたとき、このターン、これはBP＋3000される」） 既知の不具合: CARD-XG2-018 【来来獣】で「レッド」のユニットをホールドできない", () => {
+  it("XG2-018: 【来来獣】ホールドすると、このターン BP+3000（4000→7000）（出典: atwiki/page-1793「そうしたとき、このターン、これはBP＋3000される」）", () => {
     const s = resolveAll(pick(rushed(), "SPEC-RED-S:red"));
     expect(cardIn(s, "player1", "SPEC-RED-S:red")?.commandHeld).toBe(true);
     expect(bpOf(s, "player1", "XG2-018:g")).toBe(7000);
   });
 
-  it.fails("XG2-018: 【来来獣】ホールドしなければ BP は上がらない（出典: atwiki/page-1793「ホールドしてもよい。そうしたとき」） 既知の不具合: CARD-XG2-018 【来来獣】がホールドしなくても BP+3000 を付ける", () => {
+  it("XG2-018: 【来来獣】ホールドしなければ BP は上がらない（出典: atwiki/page-1793「ホールドしてもよい。そうしたとき」）", () => {
     const s0 = rushed();
     const s = resolveAll(s0.pendingEffectChoice?.sourceCardId === "XG2-018" ? skip(s0) : s0);
     expect(cardIn(s, "player1", "SPEC-RED-S:red")?.commandHeld ?? false).toBe(false);
@@ -307,7 +307,7 @@ describe("XG2-019 知恵の樹モーク", () => {
     return phase === "battle" ? p1Battle(p1, {}, EXTRA) : rushBoard(p1, {}, EXTRA);
   };
 
-  it.fails("XG2-019: ※常駐 — 自軍バトルフェイズ中に起動でき、ライドされていない「獣」の M ビークルから1体選べる（ライドされたビークルは選べない。任意）（出典: atwiki/page-1751） 既知の不具合: CARD-XG2-019 常駐の起動（activate_resident_operation）が合法手にない", () => {
+  it("XG2-019: ※常駐 — 自軍バトルフェイズ中に起動でき、ライドされていない「獣」の M ビークルから1体選べる（ライドされたビークルは選べない。任意）（出典: atwiki/page-1751）", () => {
     const s0 = board();
     expect(canActivateResident(s0, "XG2-019:mk")).toBe(true);
     const s = activateResident(s0, "XG2-019:mk");
@@ -316,7 +316,7 @@ describe("XG2-019 知恵の樹モーク", () => {
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-019: 選んだビークルは、このターン、BP3000・SP 空欄の M ユニットとして扱い、バトルエリアに出られる（出典: atwiki/page-1751「テキストを持たないMユニットとして扱い…「BP3000」「SP空欄」」・カード評価「星獣たちをアタッカーとして運用」） 既知の不具合: CARD-XG2-019 常駐を起動できず、ビークルを M ユニットとして扱えない", () => {
+  it("XG2-019: 選んだビークルは、このターン、BP3000・SP 空欄の M ユニットとして扱い、バトルエリアに出られる（出典: atwiki/page-1751「テキストを持たないMユニットとして扱い…「BP3000」「SP空欄」」・カード評価「星獣たちをアタッカーとして運用」）", () => {
     const s = resolveAll(pick(activateResident(board(), "XG2-019:mk"), "RS-466:leo"));
     expect(bpOf(s, "player1", "RS-466:leo")).toBe(3000);
     expect(canEnter(s, "RS-466:leo")).toBe(true);
@@ -329,7 +329,7 @@ describe("XG2-019 知恵の樹モーク", () => {
     expect(canActivateResident(board("rush"), "XG2-019:mk")).toBe(false);
   });
 
-  it.fails("XG2-019: 公式Q&A — ユニットとして扱われても「ラッシュされた」ことにはならない（相手は RS-026 疾風流超忍法などを使えない）（出典: atwiki/page-1751 Q1・Q2「ラッシュされたことにはなりませんので」） 既知の不具合: CARD-XG2-019 常駐を起動できない", () => {
+  it("XG2-019: 公式Q&A — ユニットとして扱われても「ラッシュされた」ことにはならない（相手は RS-026 疾風流超忍法などを使えない）（出典: atwiki/page-1751 Q1・Q2「ラッシュされたことにはなりませんので」）", () => {
     const s = resolveAll(pick(activateResident(board(), "XG2-019:mk"), "RS-466:leo"));
     expect(s.pendingRush).toBeUndefined();
     expect(legal(s).some((a) => a.type === "pass_rush_reaction")).toBe(false);
@@ -374,14 +374,14 @@ describe("XG2-020 合身獣士・ブルタウラス", () => {
       "XG2-020:b",
     );
 
-  it.fails("XG2-020: 【野牛鋭断】自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアの S ユニットから選べる（M ユニット・ラッシュエリアのユニットは選べない。任意）（出典: atwiki/page-1823「敵軍バトルエリアのSユニットを好きな数選び撃破してもよい」） 既知の不具合: CARD-XG2-020 【野牛鋭断】の候補に M ユニットが入る", () => {
+  it("XG2-020: 【野牛鋭断】自軍ターン中にバトルエリアに出たとき、敵軍バトルエリアの S ユニットから選べる（M ユニット・ラッシュエリアのユニットは選べない。任意）（出典: atwiki/page-1823「敵軍バトルエリアのSユニットを好きな数選び撃破してもよい」）", () => {
     const s = entered(2);
     expectChoiceFrom(s, "player1", "XG2-020");
     expect(choiceIds(s)).toEqual(["SPEC-ES:e1", "SPEC-ES:e2", "SPEC-ES:e3"]);
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG2-020: 【野牛鋭断】敵軍ダメージが2点なら2体まで選んで撃破できる（出典: atwiki/page-1823「選べるユニットの数は、敵軍ダメージの点数と同じ数までとする」） 既知の不具合: CARD-XG2-020 【野牛鋭断】で1体しか選べない（敵軍ダメージの点数まで選べない）", () => {
+  it("XG2-020: 【野牛鋭断】敵軍ダメージが2点なら2体まで選んで撃破できる（出典: atwiki/page-1823「選べるユニットの数は、敵軍ダメージの点数と同じ数までとする」）", () => {
     let s = pickAll(entered(2), ["SPEC-ES:e1", "SPEC-ES:e2"]);
     if (s.pendingEffectChoice?.sourceCardId === "XG2-020" && legal(s).some((a) => a.type === "confirm_effect_choice")) s = accept(s);
     s = resolveAll(s);
@@ -390,7 +390,7 @@ describe("XG2-020 合身獣士・ブルタウラス", () => {
     expect(zoneOf(s, "player2", "SPEC-ES:e3")).toBe("battle");
   });
 
-  it.fails("XG2-020: 【野牛鋭断】敵軍ダメージが0点なら1体も選べない（出典: atwiki/page-1823「敵軍ダメージの点数と同じ数まで」） 既知の不具合: CARD-XG2-020 【野牛鋭断】が敵軍ダメージ0点でも選択を開く", () => {
+  it("XG2-020: 【野牛鋭断】敵軍ダメージが0点なら1体も選べない（出典: atwiki/page-1823「敵軍ダメージの点数と同じ数まで」）", () => {
     const s = entered(0);
     if (s.pendingEffectChoice?.sourceCardId === "XG2-020") expect(choiceIds(s)).toEqual([]);
   });
