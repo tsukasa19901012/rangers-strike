@@ -327,6 +327,17 @@ describe("XG5-074 仮面ライダーキバ", () => {
     return resolveAll(paid.state);
   };
 
+  it("XG5-074: 支払いの合法手に「これをホールドする」選び方がある（先頭のコマンドだけを出すと、画面からはこれを選べない）", () => {
+    const s0 = rushBoard({ hand: [inst("SPEC-DA-NOSP", "u")], rush: [inst("XG5-074", "kv"), ...fill(2)], command: releasedCat("DA", 1), power: powerCards(3) }, {}, EXTRA);
+    const start = tryAct(s0, { type: "initiate_command_payment", playerId: "player1", kind: "category_use", sourceInstanceId: "SPEC-DA-NOSP:u" } as never);
+    expect(start.ok, start.error).toBe(true);
+    const choices = legal(start.state)
+      .filter((a) => a.type === "resolve_command_payment")
+      .map((a) => (a as { commandInstanceIds: string[] }).commandInstanceIds.join(","));
+    expect(choices).toContain("XG5-074:kv");
+    expect(choices.length).toBeGreaterThanOrEqual(2);
+  });
+
   it("XG5-074:【ファンガイアの王】— これをホールドして DA のユニットをラッシュしたとき、このターン、そのユニットは BP+3000（出典: atwiki/page-2245「そのユニットは次の効果を得る⇒BP+3000され」）", () => {
     const s = rushedWithKiva("SPEC-DA-NOSP");
     expect(cardIn(s, "player1", "XG5-074:kv")?.commandHeld).toBe(true);

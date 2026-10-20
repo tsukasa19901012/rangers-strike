@@ -182,7 +182,7 @@ export default function App() {
       return dispatch(hover) || true;
     }
     if (e.kind === "wheel") {
-      if (gui.popup || gui.list) return dispatch((e.dy ?? 0) > 0 ? input.next : input.prev);
+      if (gui.popup || gui.list || gui.dialog) return dispatch((e.dy ?? 0) > 0 ? input.next : input.prev);
       return false;
     }
     if (e.kind === "down") {

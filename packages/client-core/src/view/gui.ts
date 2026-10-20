@@ -198,7 +198,11 @@ export function actionTargetId(action: GameAction): string | undefined {
 /** Fields other than type/player/subject/target, as a stable string (variants of the same move differ here). */
 export function actionExtrasKey(action: GameAction): string {
   const record = action as unknown as Record<string, unknown>;
-  const skip = new Set(["type", "playerId", ...SUBJECT_KEYS, ...TARGET_KEYS]);
+  // Only the subject and the target the menus already picked: a second card (extraInstanceId next to
+  // targetInstanceId, RS-021 サイバースライダー) still tells the variants apart.
+  const subject = SUBJECT_KEYS.find((k) => typeof record[k] === "string");
+  const target = TARGET_KEYS.find((k) => typeof record[k] === "string");
+  const skip = new Set(["type", "playerId", subject, target]);
   return Object.keys(record)
     .filter((k) => !skip.has(k) && record[k] !== undefined)
     .sort()
