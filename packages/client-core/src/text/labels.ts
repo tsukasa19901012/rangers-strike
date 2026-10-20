@@ -165,7 +165,10 @@ function formatValue(
   if (/InstanceIds?$/.test(key) || key === "instanceId") {
     const ids = Array.isArray(value) ? value : [value];
     if (ids.length === 0) return "なし";
-    return ids.map((id) => instanceName(state, String(id), index)).join("・");
+    // The engine also passes option tokens in instanceId (e.g. "deck_top" for RK-002).
+    return ids
+      .map((id) => (index.has(String(id)) ? instanceName(state, String(id), index) : (VALUE_LABELS[String(id)] ?? instanceName(state, String(id), index))))
+      .join("・");
   }
   if (typeof value === "boolean") return value ? (FIELD_LABELS[key] ?? key) : null;
   if (typeof value === "string" || typeof value === "number") {

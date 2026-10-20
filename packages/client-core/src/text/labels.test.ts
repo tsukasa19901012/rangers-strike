@@ -36,3 +36,11 @@ describe("describeAction", () => {
     expect(describeAction(state, { type: "future_action", playerId: "player1" } as never)).toBe("future_action");
   });
 });
+
+describe("describeAction option tokens", () => {
+  it("labels option tokens the engine passes in instanceId", () => {
+    const state = { players: {}, definitions: {} } as unknown as Parameters<typeof describeAction>[0];
+    const action = { type: "resolve_effect_choice", playerId: "player1", instanceId: "deck_top" } as unknown as Parameters<typeof describeAction>[1];
+    expect(describeAction(state, action, new Map())).toBe("選ぶ: 山札の上");
+  });
+});
