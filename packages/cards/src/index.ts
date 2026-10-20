@@ -26,6 +26,9 @@ import riderExp3BDeck from "./rider-exp-3/decks/rider-exp-3-b.json";
 import riderExp41Deck from "./rider-exp-4/decks/rider-exp-4-1.json";
 import riderExp42Deck from "./rider-exp-4/decks/rider-exp-4-2.json";
 import riderExp43Deck from "./rider-exp-4/decks/rider-exp-4-3.json";
+import wImpactADeck from "./xg3/decks/w-impact-a.json";
+import wImpactBDeck from "./xg3/decks/w-impact-b.json";
+import wImpactCDeck from "./xg3/decks/w-impact-c.json";
 import type { DeckDefinition } from "./schema";
 import { validateDeckEntries } from "./deckRules";
 import {
@@ -137,6 +140,9 @@ export const starterDecks = {
   "rider-exp-4-1": riderExp41Deck as DeckDefinition,
   "rider-exp-4-2": riderExp42Deck as DeckDefinition,
   "rider-exp-4-3": riderExp43Deck as DeckDefinition,
+  "w-impact-a": wImpactADeck as DeckDefinition,
+  "w-impact-b": wImpactBDeck as DeckDefinition,
+  "w-impact-c": wImpactCDeck as DeckDefinition,
 } as const;
 
 export type StarterDeckId = keyof typeof starterDecks;

@@ -1,0 +1,27 @@
+{
+  "id": "w-impact-a",
+  "name": "ザ・Wインパクト スターター（type A：仮面ライダーWデッキ）",
+  "starterType": "A",
+  "expansion": "xg3",
+  "source": "https://w.atwiki.jp/renst/pages/1862.html",
+  "entries": [
+    { "cardId": "XG3-080", "count": 1 },
+    { "cardId": "XG3-072", "count": 2 },
+    { "cardId": "XG3-081", "count": 3 },
+    { "cardId": "XG3-051", "count": 2 },
+    { "cardId": "XG3-050", "count": 3 },
+    { "cardId": "XG3-086", "count": 3 },
+    { "cardId": "XG3-087", "count": 3 },
+    { "cardId": "RS-256", "count": 1 },
+    { "cardId": "RK-153", "count": 3 },
+    { "cardId": "XG2-044", "count": 2 },
+    { "cardId": "RS-492", "count": 1 },
+    { "cardId": "RS-410", "count": 1 },
+    { "cardId": "RK-038", "count": 3 },
+    { "cardId": "RK-039", "count": 3 },
+    { "cardId": "RM-059", "count": 2 },
+    { "cardId": "RS-587", "count": 3 },
+    { "cardId": "RK-266", "count": 2 },
+    { "cardId": "RK-268", "count": 2 }
+  ]
+}

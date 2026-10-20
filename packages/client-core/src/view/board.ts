@@ -101,6 +101,13 @@ export type PendingView = {
   detail?: string;
 };
 
+/** An effect's name; effects without one (only an internal id such as "rs518_beast_rod") take their card's name. */
+function effectLabel(engine: EngineApi, state: GameState, effectId: string, sourceCardId: string | undefined): string {
+  const label = engine.getEffectLabel(effectId);
+  if (label !== effectId && !/^[a-z0-9_]+$/.test(label)) return label;
+  return (sourceCardId && cardName(state, sourceCardId)) || label;
+}
+
 /** Describes the pending choice or reaction window, if any. */
 export function buildPendingView(engine: EngineApi, state: GameState): PendingView | null {
   const index = indexInstances(state);
@@ -112,7 +119,7 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
     const count = choice.selectCount ? ` ${selected}/${choice.selectCount}` : "";
     return {
       actor: who(choice.playerId),
-      title: `効果の選択「${engine.getEffectLabel(choice.effectId)}」${count}${choice.optional ? "（任意）" : ""}`,
+      title: `効果の選択「${effectLabel(engine, state, choice.effectId, choice.sourceCardId)}」${count}${choice.optional ? "（任意）" : ""}`,
       source: cardName(state, choice.sourceCardId),
       detail: sourceText(choice.sourceCardId),
     };

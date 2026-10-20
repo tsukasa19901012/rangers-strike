@@ -1,0 +1,27 @@
+{
+  "id": "w-impact-c",
+  "name": "ザ・Wインパクト スターター（type C：インセクトライドデッキ）",
+  "starterType": "C",
+  "expansion": "xg3",
+  "source": "https://w.atwiki.jp/renst/pages/1862.html",
+  "entries": [
+    { "cardId": "XG3-090", "count": 1 },
+    { "cardId": "XG3-089", "count": 2 },
+    { "cardId": "XG3-044", "count": 2 },
+    { "cardId": "XG3-043", "count": 3 },
+    { "cardId": "XG3-092", "count": 3 },
+    { "cardId": "XG3-091", "count": 3 },
+    { "cardId": "XG3-093", "count": 3 },
+    { "cardId": "RM-015", "count": 1 },
+    { "cardId": "RK-288", "count": 3 },
+    { "cardId": "XG1-096", "count": 2 },
+    { "cardId": "RS-253", "count": 1 },
+    { "cardId": "RK-322", "count": 1 },
+    { "cardId": "XG1-094", "count": 2 },
+    { "cardId": "RS-383", "count": 2 },
+    { "cardId": "RS-385", "count": 2 },
+    { "cardId": "RK-024", "count": 3 },
+    { "cardId": "RK-274", "count": 3 },
+    { "cardId": "XG1-097", "count": 3 }
+  ]
+}

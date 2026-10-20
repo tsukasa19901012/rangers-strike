@@ -1,0 +1,27 @@
+{
+  "id": "w-impact-b",
+  "name": "ザ・Wインパクト スターター（type B：アニマルジョイントデッキ）",
+  "starterType": "B",
+  "expansion": "xg3",
+  "source": "https://w.atwiki.jp/renst/pages/1862.html",
+  "entries": [
+    { "cardId": "XG3-023", "count": 1 },
+    { "cardId": "XG3-014", "count": 2 },
+    { "cardId": "XG3-022", "count": 2 },
+    { "cardId": "XG3-013", "count": 3 },
+    { "cardId": "XG3-015", "count": 3 },
+    { "cardId": "XG3-016", "count": 3 },
+    { "cardId": "XG3-019", "count": 3 },
+    { "cardId": "RS-457", "count": 3 },
+    { "cardId": "RS-407", "count": 1 },
+    { "cardId": "RK-013", "count": 2 },
+    { "cardId": "RS-558", "count": 2 },
+    { "cardId": "RS-486", "count": 1 },
+    { "cardId": "RS-487", "count": 1 },
+    { "cardId": "RS-524", "count": 2 },
+    { "cardId": "RS-153", "count": 3 },
+    { "cardId": "RS-155", "count": 3 },
+    { "cardId": "RS-055", "count": 3 },
+    { "cardId": "RS-224", "count": 2 }
+  ]
+}
