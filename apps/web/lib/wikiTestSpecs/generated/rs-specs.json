@@ -111,7 +111,9 @@
     "cardType": "operation",
     "powerCost": 6,
     "category": "ET",
-    "textSnippets": [],
+    "textSnippets": [
+      "BP8000以下の敵軍ユニットを1体選ぶ。選んだ"
+    ],
     "expectedDslKeywords": [
       "note_card::RS-007::bp8000noyunitowo"
     ],
@@ -353,7 +355,9 @@
     "cardType": "operation",
     "powerCost": 0,
     "category": "ET",
-    "textSnippets": [],
+    "textSnippets": [
+      "自分の手札からカードを2枚まで選んで、自軍コマン"
+    ],
     "expectedDslKeywords": [
       "note_card::RS-021::nokarakadowo2mad"
     ],
@@ -371,7 +375,7 @@
     "powerCost": 6,
     "category": "WB",
     "textSnippets": [
-      "すべてのユニットは可能なら毎ターンバトルエリア"
+      "※常駐"
     ],
     "expectedDslKeywords": [
       "auto_battle_entry_from_rush"
@@ -492,7 +496,7 @@
     "powerCost": 1,
     "category": "MA",
     "textSnippets": [
-      "自軍Sユニットがバトルエリアに出るたびに、自軍コマンド"
+      "※常駐"
     ],
     "expectedDslKeywords": [
       "release_command_on_s_battle_entry"
@@ -1173,7 +1177,7 @@
     "powerCost": 4,
     "category": "ET",
     "textSnippets": [
-      "すべてのMユニットは、コマンドを1つホールドしな"
+      "※常駐"
     ],
     "expectedDslKeywords": [
       "m_battle_entry_requires_hold"
@@ -3550,7 +3554,8 @@
       "【天風星・一文字竜巻】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "SP1",
+      "effect_card::RS-209::houou_tornado"
     ],
     "bp": 2000,
     "sp": "special",
@@ -4092,6 +4097,7 @@
       "【デュアルクラッシャー・ドリルヘッド】"
     ],
     "expectedDslKeywords": [
+      "on_destroy_reanimate_named_from_discard",
       "attack_bp_plus_vs_meka_4000"
     ],
     "bp": 4500,
@@ -6202,7 +6208,8 @@
       "【パンサークロー】"
     ],
     "expectedDslKeywords": [
-      "category_wb_in_battle"
+      "category_wb_in_battle",
+      "effect_card::RS-363::panther_claw"
     ],
     "bp": 3000,
     "sp": null,
@@ -6411,7 +6418,8 @@
     ],
     "expectedDslKeywords": [
       "note_card::RS-375::koregaerianiarun",
-      "SP1"
+      "SP1",
+      "effect_card::RS-375::twin_cam_crash"
     ],
     "bp": 4000,
     "sp": "special",
@@ -6560,6 +6568,9 @@
     "textSnippets": [
       "【放水作業】"
     ],
+    "expectedDslKeywords": [
+      "effect_card::RS-384::mizu"
+    ],
     "bp": 4000,
     "sp": null,
     "size": "M"
@@ -6662,7 +6673,8 @@
       "【ファイブレイザー】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "SP1",
+      "set6b::RS-390::five_laser"
     ],
     "bp": 2000,
     "sp": "special",
@@ -6679,7 +6691,8 @@
       "【番田流牛乳竜巻落とし】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "SP1",
+      "set6b::RS-391::milk_tornado"
     ],
     "bp": 2000,
     "sp": "special",
@@ -6694,6 +6707,9 @@
     "category": "ET",
     "textSnippets": [
       "【救急医療】"
+    ],
+    "expectedDslKeywords": [
+      "set6b::RS-392::first_aid"
     ],
     "bp": 1000,
     "sp": null,
@@ -7103,7 +7119,8 @@
       "【魂のコレクション】"
     ],
     "expectedDslKeywords": [
-      "require_discard_rush_s_entry"
+      "require_discard_rush_s_entry",
+      "effect_card::RS-416::nokorekushon"
     ],
     "bp": 5000,
     "sp": null,
@@ -7510,6 +7527,9 @@
     "category": "ET",
     "textSnippets": [
       "【万能戦艦】"
+    ],
+    "expectedDslKeywords": [
+      "set7a::RS-439::bannou_senkan"
     ],
     "bp": 5000,
     "sp": null,
@@ -8125,6 +8145,7 @@
     ],
     "expectedDslKeywords": [
       "rush_from_discard_count_power",
+      "set7c::RS-474::time_shadow_discard",
       "enemy_cannot_attack"
     ],
     "bp": 3000,
@@ -8232,7 +8253,8 @@
       "【邪気玉砕】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "SP1",
+      "set7c::RS-480::jaki_gyokusai"
     ],
     "bp": 3000,
     "sp": "special",
@@ -8319,7 +8341,8 @@
     ],
     "expectedDslKeywords": [
       "cannot_enter_battle",
-      "effect_card::RS-485::kazenoe796be"
+      "effect_card::RS-485::kazenoe796be",
+      "set7c::RS-485::destroy_draw"
     ],
     "bp": 500,
     "sp": null,
@@ -8457,6 +8480,9 @@
     "textSnippets": [
       "【正解の無いクイズ】"
     ],
+    "expectedDslKeywords": [
+      "set7c::RS-493::quiz"
+    ],
     "bp": 4000,
     "sp": null,
     "size": "S"
@@ -8561,7 +8587,8 @@
     "expectedDslKeywords": [
       "register",
       "note_card::RS-499::konoyunitoharash",
-      "SP1"
+      "SP1",
+      "set7d::RS-499::rourou_kick"
     ],
     "bp": 2000,
     "sp": "special",
@@ -8670,7 +8697,8 @@
     "expectedDslKeywords": [
       "auto_battle_entry_each_turn",
       "to_power_on_destroy",
-      "SP1"
+      "SP1",
+      "set7d::RS-505::glide_assault"
     ],
     "bp": 500,
     "sp": "special",
@@ -8727,7 +8755,8 @@
     "expectedDslKeywords": [
       "auto_battle_entry_each_turn",
       "cannot_attack",
-      "SP1"
+      "SP1",
+      "set7d::RS-508::road_saber"
     ],
     "bp": 4000,
     "sp": "special",
@@ -8999,6 +9028,9 @@
     "textSnippets": [
       "本来のSPが1以上のDAを持つ自軍ユニットを1体"
     ],
+    "expectedDslKeywords": [
+      "set8a::RS-523::rinki"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -9054,6 +9086,9 @@
     "category": "OT",
     "textSnippets": [
       "自軍山札を見て、特徴「炎神」を持つMユニットのカ"
+    ],
+    "expectedDslKeywords": [
+      "set8a::RS-526::super_highway_buster"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -9461,7 +9496,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "SP1"
+      "SP1",
+      "set8b::RS-549::tricera_lance"
     ],
     "bp": 1000,
     "sp": "special",
@@ -9582,7 +9618,8 @@
       "【サルダークロー】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "SP1",
+      "set8b::RS-556::salda_claw"
     ],
     "bp": 4500,
     "sp": "special",
@@ -9863,6 +9900,9 @@
     "textSnippets": [
       "【ディーソードベガ】"
     ],
+    "expectedDslKeywords": [
+      "set8c::RS-572::d_sword_vega"
+    ],
     "bp": 6500,
     "sp": null,
     "size": "S"
@@ -9933,7 +9973,8 @@
     ],
     "expectedDslKeywords": [
       "on_rush_release_held_s_units",
-      "SP1"
+      "SP1",
+      "set8c::RS-576::strike_draw"
     ],
     "bp": 4500,
     "sp": "special",
@@ -9952,7 +9993,8 @@
     "expectedDslKeywords": [
       "alias_majifuenikusu",
       "register",
-      "SP1"
+      "SP1",
+      "set8c::RS-577::strike_draw"
     ],
     "bp": 2000,
     "sp": "special",
@@ -10231,7 +10273,8 @@
     "expectedDslKeywords": [
       "auto_battle_entry_each_turn",
       "to_power_on_destroy",
-      "SP1"
+      "SP1",
+      "set8d::RS-593::balcutter"
     ],
     "bp": 1000,
     "sp": "special",
@@ -10378,7 +10421,8 @@
     ],
     "expectedDslKeywords": [
       "cannot_attack_bp2000_or_less",
-      "SP1"
+      "SP1",
+      "set8d::RS-601::full_power"
     ],
     "bp": 4000,
     "sp": "special",
@@ -10578,7 +10622,8 @@
       "【スカイコンテナ】"
     ],
     "expectedDslKeywords": [
-      "note_card::RS-612::korehamekawotsuk"
+      "note_card::RS-612::korehamekawotsuk",
+      "set9a::RS-612::sky_container"
     ],
     "bp": 4000,
     "sp": "special",
@@ -11174,6 +11219,9 @@
     "textSnippets": [
       "※これが撃破されて捨札になったとき、自軍捨札から"
     ],
+    "expectedDslKeywords": [
+      "set9b::RS-646::mars_recover"
+    ],
     "bp": 4000,
     "sp": null,
     "size": "SC"
@@ -11352,7 +11400,8 @@
       "【オールスターアルティメットバスター】"
     ],
     "expectedDslKeywords": [
-      "cannot_enter_battle"
+      "cannot_enter_battle",
+      "set9c::RS-656::all_star_buster"
     ],
     "bp": 17000,
     "sp": null,
@@ -11670,7 +11719,8 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "SP1"
+      "SP1",
+      "set9d::RS-674::rekka_daizanto"
     ],
     "bp": 2000,
     "sp": "special",
@@ -11704,7 +11754,8 @@
       "【ヘブンファン】"
     ],
     "expectedDslKeywords": [
-      "SP1"
+      "SP1",
+      "set9d::RS-676::heaven_fan"
     ],
     "bp": 500,
     "sp": "special",

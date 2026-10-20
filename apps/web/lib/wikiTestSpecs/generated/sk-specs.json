@@ -23,7 +23,7 @@
     ],
     "expectedDslKeywords": [
       "destroy_on_win_vs_sp1",
-      "effect_card::SK-001::satansaberu"
+      "destroy_vehicle_and_rider"
     ],
     "bp": 5000,
     "sp": 1,
@@ -41,7 +41,7 @@
     ],
     "expectedDslKeywords": [
       "register",
-      "hold_named_riders_rc_copy"
+      "promo::PK-009::double_typhoon"
     ],
     "bp": 4000,
     "sp": "1/5",
@@ -58,7 +58,7 @@
       "【復讐の女詐欺師】"
     ],
     "expectedDslKeywords": [
-      "effect_card::SK-003::noe5bea9"
+      "promo::SK-003::famme"
     ],
     "bp": 2000,
     "sp": "1/2",

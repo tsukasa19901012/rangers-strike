@@ -9,6 +9,9 @@
     "textSnippets": [
       "【真っ向両断】"
     ],
+    "expectedDslKeywords": [
+      "promo::PM-001::makko"
+    ],
     "bp": 4000,
     "sp": "1/3",
     "size": "S"
