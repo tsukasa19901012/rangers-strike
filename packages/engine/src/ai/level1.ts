@@ -32,6 +32,7 @@ import {
   pickRideOffChoice,
   pickCpuFallbackAction,
   cpuWouldCancelProcedure,
+  chargeCandidates,
   pickSimpleReaction,
   pickStrikeReaction,
   pickWinningBattle,
@@ -52,6 +53,10 @@ export type PickCpuActionOptions = {
   planPhases?: Array<"charge" | "rush" | "entry">;
   /** 先まで進める長さ（ターン数。1=このターンの終わり、2=相手の次のターンの終わり（既定）、3=自分の次のターンまで）。 */
   planTurns?: number;
+  /** チャージの先読みで比べる、パワー・コマンドそれぞれの上位カード数（省略で全カード）。 */
+  planChargeTop?: number;
+  /** 先読みで進める最大の手数。 */
+  planMaxSteps?: number;
 };
 
 function tacticalSearchOptions(
@@ -486,9 +491,12 @@ function pickCpuActionInner(
         const planned = pickBestByRollout(
           state,
           playerId,
-          sameCardOnce(state, playerId, actions.filter((a) => a.type === "charge_power" || a.type === "charge_command" || a.type === "end_phase")),
+          options.planChargeTop
+            ? chargeCandidates(state, playerId, actions, options.planChargeTop)
+            : sameCardOnce(state, playerId, actions.filter((a) => a.type === "charge_power" || a.type === "charge_command" || a.type === "end_phase")),
           plans("charge"),
           options.planTurns,
+          options.planMaxSteps,
         );
         if (planned) return planned;
       }

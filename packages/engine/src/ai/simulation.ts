@@ -59,11 +59,11 @@ function hideDeckOrder(state: GameState, sample = 0): GameState {
 }
 
 /** 探索なしの CPU で、相手の次のターンが終わるまで（または決着まで）進める。 */
-function rollout(state: GameState, playerId: PlayerId, startTurn: number, sample = 0, turns = 2): GameState {
+function rollout(state: GameState, playerId: PlayerId, startTurn: number, sample = 0, turns = 2, maxSteps = ROLLOUT_MAX_STEPS): GameState {
   let current = hideDeckOrder(state, sample);
   // turns=2: 自分のターン中なら、残りと相手の次のターン。相手のターン中ならそのターンの終わりまで。
   const endTurn = startTurn + (state.activePlayer === playerId ? turns : Math.max(1, turns - 1));
-  for (let i = 0; i < ROLLOUT_MAX_STEPS; i++) {
+  for (let i = 0; i < maxSteps; i++) {
     if (current.winner || current.turn >= endTurn) break;
     const legal = getLegalActions(current);
     const actor = legal[0]?.playerId;
@@ -350,6 +350,7 @@ export function pickBestByRollout(
   candidates: GameAction[],
   samples: number,
   turns = 2,
+  maxSteps = ROLLOUT_MAX_STEPS,
 ): GameAction | null {
   const unique = dedupeActions(candidates).filter((a) => a.playerId === playerId);
   if (unique.length <= 1) return unique[0] ?? null;
@@ -360,7 +361,7 @@ export function pickBestByRollout(
     if (!result.ok) continue;
     let total = 0;
     for (let i = 0; i < samples; i++) {
-      total += evaluateState(rollout(result.state, playerId, state.turn, i, turns), playerId);
+      total += evaluateState(rollout(result.state, playerId, state.turn, i, turns, maxSteps), playerId);
     }
     const score = total / samples;
     if (score > bestScore) {
