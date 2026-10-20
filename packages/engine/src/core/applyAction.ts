@@ -1,3 +1,4 @@
+import { activateXg6HandEffect, applyXg6AfterAction, applyXg6OnBattleStart, openXg6OnCharged, applyXg6StrikeDamageTriggers, endXg6BattlePhase, openXg6OnAttacked, openXg6OnStrike, takeXg6BattlePhaseEnd } from "../rules/xg6/xg6Hooks";
 import { noteEngineSideEffect } from "./sideEffects";
 import {
   applyXg7RushCounter,
@@ -563,6 +564,11 @@ function continueAttackAfterDeclaration(
     const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...xg1eAttacked, pendingBattleEntry: undefined } : xg1eAttacked;
     return ok(parked, buildSimpleLogEntry(playerId, "xg1e_attacked_choice"));
   }
+  // XG6-019【奥の手】・XG6-005【マジカルショータイム】（アタックするとき・アタックされたとき。rules/xg6/xg6Hooks.ts）。
+  // XG6-051【絶望の進化】: バトル開始時（rules/xg6/xg6cEffects.ts）。
+  battleState = applyXg6OnBattleStart(battleState, pending);
+  const xg6Attacked = openXg6OnAttacked(battleState, pending, wingAttackFromRush);
+  if (xg6Attacked) return ok(xg6Attacked, buildSimpleLogEntry(playerId, "battle_pending"));
   // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
   const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
   // RS-414【ディオネを守る壁】: 冥府神の自軍ユニットがアタックされたとき、常駐を捨札にしてバトルを行わなくてもよい。
@@ -717,6 +723,8 @@ function finishStrikeResolution(
   resolved = applyRm1StrikeDamageTriggers(resolved, pending);
   // クロスギャザー XG5 のストライクしたときの効果（rules/xg5/xg5Effects.ts）。
   resolved = applyXg5StrikeResolved(resolved, pending);
+  // XG6-025【ここからは私のターンだ】・XG6-042【ゼロのスタート】（rules/xg6/xg6bEffects.ts）。
+  resolved = applyXg6StrikeDamageTriggers(resolved, pending);
 
   const striker = state.players[pending.strikerPlayerId];
   const strikerFound = findInZone(striker, "battle", pending.strikerInstanceId);
@@ -749,6 +757,12 @@ function continueStrikeAfterDeclaration(
 ): ActionResult {
   const playerId = pending.strikerPlayerId;
   const damage = pending.damage;
+  // XG6-019【奥の手】（敵軍ユニットがストライクをするとき。rules/xg6/xg6Hooks.ts）。
+  const xg6Strike = openXg6OnStrike(nextState, pending);
+  if (xg6Strike) {
+    const parked = state.pendingBattleEntry?.instanceId === strikerInstanceId ? { ...xg6Strike, pendingBattleEntry: undefined } : xg6Strike;
+    return ok(parked, buildSimpleLogEntry(playerId, "strike_pending", String(damage)));
+  }
   // RS-196 ダイナモビル【迎撃モビルミサイル】: ストライクされたとき発動できる（任意）。
   // XG7-067 シンクレッダー ※（コマンドゾーンのこれを捨札にしてストライクを無効にする。rules/xg7/xg7Effects.ts）。
   const mobil = openMobilMissileChoice(nextState, pending) ?? openXg7OnStrike(nextState, pending);
@@ -857,6 +871,8 @@ function operationNeedsUpfrontTarget(cardId: string): boolean {
   }
   // クロスギャザー XG1（`xg1::`）のカード固有の効果も、使ったあとで対象を選ぶ（rules/xg1/xg1Effects.ts）。
   if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslEffect.effects.some((p) => p.type === "grant_keyword" && p.keyword.startsWith("xg1::"))) return false;
+  // クロスギャザー ザ・ギガンティックタイタン XG6（`xg6::`。rules/xg6/xg6Hooks.ts）も、使ったあとで対象を選ぶ。
+  if (dslEffect && shouldUseDslOperation(cardId, dslEffect) && dslEffect.effects.some((p) => p.type === "grant_keyword" && p.keyword.startsWith("xg6::"))) return false;
   return needsOperationTarget(cardId);
 }
 
@@ -1152,6 +1168,12 @@ function applyActionWithRng(
   if (applyActionDepth === 0) next = applyRm3AfterAction(state, next);
   // クロスギャザー XG5 の後処理（rules/xg5/xg5Effects.ts）。
   if (applyActionDepth === 0) next = applyXg5AfterAction(state, next, applyAction);
+  // XG6-042 の※（手札が0枚のとき撃破）・XG6-025【ここからは私のターンだ】のバトルフェイズの終了（rules/xg6/xg6bEffects.ts）。
+  if (applyActionDepth === 0) next = applyXg6AfterAction(next);
+  if (applyActionDepth === 0 && next.xg6?.endBattlePhase && !hasBlockingInteraction(next) && !next.winner) {
+    const ending = takeXg6BattlePhaseEnd(next);
+    if (ending) next = ending.playerId && ending.state.activePlayer === ending.playerId ? endXg6BattlePhase(ending.state, ending.playerId) : ending.state;
+  }
   // RK-177【催眠音波】の選択を終えたら、ラッシュフェイズを終える。
   if (applyActionDepth === 0 && next.rk9RushEndAdvance && !next.pendingEffectChoice && !hasBlockingInteraction(next)) {
     const endingPlayer = next.rk9RushEndAdvance;
@@ -1612,12 +1634,17 @@ function applyActionCore(
       return {
         ok: true,
         // RS-473【ブルームーンスラッシュ】: パワーゾーンにカードを置かずにチャージフェイズを終えた（rules/legend1/set7NamedEffectsB.ts）。
-        state: openBlueMoonSlash(
-          advanceFromCharge(
-            chargedState,
-            buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
+        // XG6-060【カンドロイド】: チャージしたとき（rules/xg6/xg6cEffects.ts）。
+        state: openXg6OnCharged(
+          openBlueMoonSlash(
+            advanceFromCharge(
+              chargedState,
+              buildLogEntry(playerId, "charge_command", found.card.cardId, state.definitions),
+            ),
+            playerId,
           ),
           playerId,
+          commandCard.instanceId,
         ),
       };
     }
@@ -4001,12 +4028,24 @@ function applyActionCore(
         // RS-559【パワーアロー】等「自分の手札からこのカードを捨札にして発動できる」（rules/legend1/set8NamedEffectsB.ts）。
         const handCard = player.hand.find((c) => c.instanceId === action.unitInstanceId);
         const fromHand = handCard ? (activateXg5HandEffect(state, playerId, action.unitInstanceId) ?? activateSet8BHandEffect(state, playerId, action.unitInstanceId)) : null;
-        if (!handCard || !fromHand) return fail("illegal_action");
+        if (!handCard || !fromHand) {
+          // XG6-009（手札から）・XG6-014【英雄の遺産】（パワーゾーンから。rules/xg6/xg6Hooks.ts）。
+          const xg6 = activateXg6HandEffect(state, playerId, action.unitInstanceId);
+          const xg6Card =
+            player.hand.find((c) => c.instanceId === action.unitInstanceId) ??
+            player.power.find((c) => c.instanceId === action.unitInstanceId) ??
+            player.discard.find((c) => c.instanceId === action.unitInstanceId);
+          if (xg6 && xg6Card) return ok(xg6, buildLogEntry(playerId, "activate_field_unit_ability", xg6Card.cardId, state.definitions, "xg6"));
+          return fail("illegal_action");
+        }
         return ok(fromHand, buildLogEntry(playerId, "activate_field_unit_ability", handCard.cardId, state.definitions, "from_hand"));
       }
       // XG5-042 ゴセイマシン【天装合体】等、場のこのカードから発動する XG5 の効果（rules/xg5/xg5cEffects.ts）。
       const xg5Field = activateXg5HandEffect(state, playerId, action.unitInstanceId);
       if (xg5Field) return ok(xg5Field, buildLogEntry(playerId, "activate_field_unit_ability", unit.cardId, state.definitions));
+      // XG6-061【ベンダーモード】・XG6-064【要塞能力】（rules/xg6/xg6cEffects.ts）。
+      const xg6Field = activateXg6HandEffect(state, playerId, action.unitInstanceId);
+      if (xg6Field) return ok(xg6Field, buildLogEntry(playerId, "activate_field_unit_ability", unit.cardId, state.definitions, "xg6"));
       const activated = activateFieldAbility(state, playerId, action.unitInstanceId);
       if (activated) {
         return ok(

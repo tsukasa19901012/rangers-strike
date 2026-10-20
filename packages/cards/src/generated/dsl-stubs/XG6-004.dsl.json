@@ -17,11 +17,11 @@
         "type": "operation",
         "timing": "rush"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-004::pawazonnoomote_k",
+          "keyword": "xg6::XG6-004::full_blast",
           "duration": "permanent"
         }
       ]

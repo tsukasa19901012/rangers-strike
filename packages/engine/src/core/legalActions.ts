@@ -147,6 +147,7 @@ import { canConfirmRk13Choice, isRk13ChoiceEffect } from "../rules/rk/rk13UnitEf
 import { canConfirmRk14Choice, isRk14ChoiceEffect } from "../rules/rk/rk14UnitEffects";
 import { canConfirmRk15Choice, isRk15ChoiceEffect } from "../rules/rk/rk15UnitEffects";
 import { canConfirmRk16Choice, isRk16ChoiceEffect } from "../rules/rk/rk16UnitEffects";
+import { canConfirmXg6Choice, isXg6ChoiceEffect, xg6HandActivations } from "../rules/xg6/xg6Hooks";
 import { canConfirmRm1Choice, isRm1ActivatableResident, isRm1ChoiceEffect, isRm1LeaveCounterCard, rm1LeaveCounterConditionMet } from "../rules/rm/rm1Effects";
 import { rm1ActsAsVehicle } from "../rules/rm/rm1Fields";
 import { canConfirmRm2Choice, isRm2ChoiceEffect, rm2RequiredDefenderIds } from "../rules/rm/rm2Effects";
@@ -867,6 +868,10 @@ function appendActivateFieldUnitAbilityActions(
   for (const unitInstanceId of listXg5HandActivations(state, playerId)) {
     actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
   }
+  // XG6-009（手札から捨札にして発動）・XG6-014【英雄の遺産】（パワーゾーンから。rules/xg6/xg6Hooks.ts）。
+  for (const unitInstanceId of xg6HandActivations(state, playerId)) {
+    actions.push({ type: "activate_field_unit_ability", playerId, unitInstanceId });
+  }
 }
 
 function appendBattleDanceActions(
@@ -1229,6 +1234,8 @@ function appendRushCategoryPaymentActions(
             // RS-586【魔神に不足する物】・アブレラ【闇の取引】で必要パワーを補える分も含める。
             rushPowerBudget(state, playerId, player, definition),
             { ...state, playerId },
+            // 「必要パワーの数字が5以上の自軍パワーを4枚捨札にすれば」（zord_down_discard_power_cards。XG6-032）は複数の素材。
+            zord.zordMaterialInstanceIds,
           )
         ) {
           continue;
@@ -1272,6 +1279,8 @@ function appendRushCategoryPaymentActions(
         perRushPayment: true,
         callLeadKind: "call",
         emergencyRushCardId: card.cardId,
+        // ※特徴「アンデッド」を持つユニットをラッシュするためのコマンドとしてホールドできる（XG6-050）は、ラッシュするユニットで決まる。
+        rushingCardId: isUnit(definition) ? card.cardId : undefined,
       });
       if (!options) continue;
       pushPayment(card.instanceId, undefined, options.prismSubstitute);
@@ -1368,6 +1377,15 @@ function appendEffectChoiceActions(
       actions.push({ type: "resolve_effect_choice", playerId, instanceId });
     }
     if (canConfirmRm2Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
+    return;
+  }
+
+  if (isXg6ChoiceEffect(pending.effectId)) {
+    // クロスギャザー ザ・ギガンティックタイタン XG6 の選択（rules/xg6/xg6Hooks.ts）。候補はモジュール側で絞り込み済み。
+    for (const instanceId of choiceIds) {
+      actions.push({ type: "resolve_effect_choice", playerId, instanceId });
+    }
+    if (canConfirmXg6Choice(pending) && !actions.some((a) => a.type === "confirm_effect_choice")) actions.push({ type: "confirm_effect_choice", playerId });
     return;
   }
 

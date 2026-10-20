@@ -1,3 +1,4 @@
+import { xg6AttackerBlocked, xg6BlocksAttack, xg6DefenderBlocksAttack } from "../xg6/xg6Fields";
 import { set6LowDefenderBlocksAttack } from "../legend1/set6NamedEffects348";
 import { rk5AttackerCanAttackRush } from "../rk/rk5Fields";
 import { rk11AttackerCanAttackRush, rk11EntryDiscardFeature } from "../rk/rk11Fields";
@@ -456,6 +457,12 @@ export function canAttackDefender(
   if (!attacker) return false;
 
   if (isVehicle(getDefinition(state.definitions, attacker.card.cardId))) return false;
+  // XG6-012 フラッシュタイタンの※（自軍「タイタンボーイ」があるときアタックできない。rules/xg6/xg6Fields.ts）。
+  if (xg6BlocksAttack(state, attackerPlayerId, attacker.card.cardId)) return false;
+  // XG6-056【スキュラサイズ】の対象・XG6-063 の※（rules/xg6/xg6Fields.ts）。
+  if (xg6AttackerBlocked(state, attackerPlayerId, attacker.card)) return false;
+  // XG6-030【唯一の弱点】（自軍コマンドがすべてホールド状態なら敵軍 S ユニットにアタックされない。rules/xg6/xg6Fields.ts）。
+  if (xg6DefenderBlocksAttack(state, attacker.card, defenderPlayerId, defenderInstanceId)) return false;
 
   // RS-158【エレファントシールド】: コンビネーションが成立している間、敵軍ユニットはこれ以外にアタックできない。
   const mustTarget = elephantShieldMustTarget(state, defenderPlayerId);

@@ -23,6 +23,7 @@ import {
   rideMountedVehicleBpBonus,
 } from "../dsl/promotedKeywordBridge";
 import { passiveNamedFieldBpBonus } from "../rules/fieldAuras";
+import { xg6AddedCategories, xg6BlocksRush, xg6CommandCategories, xg6TurnCommandCategories } from "../rules/xg6/xg6Fields";
 import { srBigBatonBpFloor } from "../rules/srEffects";
 import { rs339AddsDaCategory } from "../rules/rs/rsCatchallField";
 import { unitFeatures } from "../rules/addedFeatures";
@@ -481,7 +482,10 @@ export function unitEffectiveCategories(
   const withWolf = wolf.length > 0 ? [...withDeclared, ...wolf] : withDeclared;
   // XG5-096 ギルの笛の音 ※常駐（「メカ」と「人型」を持つユニットに DA を追加。rules/xg5/xg5Fields.ts）。
   const gill = (xg5AddedCategories(state, instance) as Category[]).filter((c) => !withWolf.includes(c));
-  return gill.length > 0 ? [...withWolf, ...gill] : withWolf;
+  const withGill = gill.length > 0 ? [...withWolf, ...gill] : withWolf;
+  // XG6-035 の※（自軍コマンドゾーンにあるカテゴリが追加される。rules/xg6/xg6Fields.ts）。
+  const xg6 = xg6AddedCategories<Category>(state, playerId, instance).filter((c) => !withGill.includes(c));
+  return xg6.length > 0 ? [...withGill, ...xg6] : withGill;
 }
 
 function unitEffectiveCategoriesBase(
@@ -552,7 +556,11 @@ export function effectiveCommandCategories(
   cardId: string,
 ): Category[] {
   const def = getDefinition(definitions, cardId);
-  const printed = cardCategories(def);
+  // XG6-013【未来の戦士達へ】: コマンドゾーンにある間、WB・MA・ET が追加される（rules/xg6/xg6Fields.ts）。
+  const base = xg6CommandCategories(cardId, cardCategories(def));
+  // XG6-060【カンドロイド】: このターン、選んだコマンドのカテゴリに追加する（rules/xg6/xg6Fields.ts）。
+  const turnAdded = xg6TurnCommandCategories<Category>(player, cardId).filter((c) => !base.includes(c));
+  const printed = turnAdded.length > 0 ? [...base, ...turnAdded] : base;
   if (!yogosteinGrantsDa(player)) return printed;
   if (printed.includes("DA")) return printed;
   if (parsePowerCost(def?.powerCost) > 3) return printed;
@@ -663,6 +671,8 @@ function evaluateRushPowerAndZord(
   zordMaterialInstanceIds?: string[],
   zordExtraCommandHoldInstanceIds?: string[],
 ): boolean {
+  // XG6-031 の※（本来の BP の下三桁が500でない自軍ユニットはラッシュできない。rules/xg6/xg6Fields.ts）。
+  if (powerContext && xg6BlocksRush(powerContext, powerContext.playerId, unitDefinition.id)) return false;
   const isZordDown = needsZordDownPayment(
     unitDefinition.id,
     unitDefinition.powerCost,

@@ -1,4 +1,5 @@
 import { rm2BlocksBattleEntry } from "./rm/rm2Fields";
+import { xg6BlocksBattleEntry } from "./xg6/xg6Fields";
 import { filthyAirActive } from "./legend1/otherLinesNamedEffects";
 import { rk3BattleEntryBlocked } from "./rk/rk3UnitEffects";
 import { hammerPunchBlocksEntry } from "./legend1/set6NamedEffects348";
@@ -404,6 +405,8 @@ function canMoveUnitToBattleUncached(
   if (def.type === "unit" && rk12BlocksBattleEntry(state, playerId, unit)) return false;
   // RM-029 ジャスピオン ※（SP が空欄ではない自軍 S ユニットがあれば出られない。rules/rm/rm2Fields.ts）。
   if (def.type === "unit" && rm2BlocksBattleEntry(state, playerId, unit)) return false;
+  // XG6-029【大反転スカイキック】の「このターン、これはバトルエリアに出られない」（rules/xg6/xg6Fields.ts）。
+  if (xg6BlocksBattleEntry(state, playerId, unit)) return false;
   // RS-289 / XP-023「※これはダメージを受けた敵軍ターンの次の自軍ターンにしかバトルエリアに出られない」（atwiki/page-416）。
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
@@ -549,6 +552,8 @@ export function canMoveUnitToBattleExceptHoldRequirements(
   if (def.type === "unit" && rk12BlocksBattleEntry(state, playerId, unit)) return false;
   // RM-029 ジャスピオン ※（SP が空欄ではない自軍 S ユニットがあれば出られない。rules/rm/rm2Fields.ts）。
   if (def.type === "unit" && rm2BlocksBattleEntry(state, playerId, unit)) return false;
+  // XG6-029【大反転スカイキック】の「このターン、これはバトルエリアに出られない」（rules/xg6/xg6Fields.ts）。
+  if (xg6BlocksBattleEntry(state, playerId, unit)) return false;
   if (damageGateBlocksEntry(state, playerId, unit.cardId)) return false;
 
   if (def.type === "unit" && needsAllySInBattle(unit.cardId)) {

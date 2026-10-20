@@ -43,11 +43,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-025::kokokarahanotanda",
+          "keyword": "xg6::XG6-025::my_turn",
           "duration": "permanent"
         }
       ]

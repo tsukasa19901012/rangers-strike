@@ -1,6 +1,7 @@
 import { rm3FieldBpBonus } from "./rm/rm3Fields";
 import { xg5FieldBpBonus } from "./xg5/xg5Fields";
 import { xg7FieldBpBonus } from "./xg7/xg7Fields";
+import { xg6FieldBpBonus } from "./xg6/xg6Fields";
 import type { Category } from "@rangers-strike/cards";
 import { set9AFieldBpBonus } from "./legend1/set9NamedEffectsA";
 import { changePowerBpBonus } from "./legend1/set6NamedEffects348";
@@ -283,6 +284,8 @@ export function passiveNamedFieldBpBonus(
   if (role === "general") bonus += xg5FieldBpBonus(state, playerId, instance);
   // XG7-007【龍撃剣＆獣奏剣】・XG7-008【アースの戦士】等（rules/xg7/xg7Fields.ts）。
   bonus += xg7FieldBpBonus(state, playerId, instance, role);
+  // クロスギャザー ザ・ギガンティックタイタン XG6-013 の※・XG6-021【激臨剣】（rules/xg6/xg6Fields.ts）。
+  if (role === "general") bonus += xg6FieldBpBonus(state, playerId, instance);
   bonus += legend2FieldBpBonus(state, playerId, instance, role);
   bonus += legend3FieldBpBonus(state, playerId, instance, role);
 

@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-020::noe7a9b6",
+          "keyword": "xg6::XG6-020::ultimate",
           "duration": "permanent"
         }
       ]
@@ -73,6 +73,48 @@
           "RS-176",
           "XG6-006"
         ]
+      ],
+      "partnerSlotAlternatives": [
+        {
+          "slot": 0,
+          "slots": [
+            [
+              "RS-118"
+            ],
+            [
+              "RS-119"
+            ],
+            [
+              "RS-120"
+            ],
+            [
+              "RS-121"
+            ],
+            [
+              "RS-122"
+            ]
+          ]
+        },
+        {
+          "slot": 1,
+          "slots": [
+            [
+              "RS-171"
+            ],
+            [
+              "RS-172"
+            ],
+            [
+              "RS-173"
+            ],
+            [
+              "RS-174"
+            ],
+            [
+              "RS-177"
+            ]
+          ]
+        }
       ]
     }
   ],

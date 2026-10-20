@@ -245,6 +245,10 @@ export function evaluateStateGate(
     return total >= Number(discardTotalMatch[1]);
   }
 
+  // 「自軍捨札が5枚以上ある」（XG6-031・XG6-043）。
+  const ownDiscardMatch = text.match(/^自軍捨札が(\d+)枚以上ある$/);
+  if (ownDiscardMatch) return player.discard.length >= Number(ownDiscardMatch[1]);
+
   const namedDiscardMatch = text.match(/^自軍捨札に[「｢]([^」｣]+)[」｣]がある$/);
   if (namedDiscardMatch) {
     // RS-327: 自軍捨札にその名前のカードがあること（捨札にはしない。atwiki/page-488）。
@@ -285,6 +289,18 @@ export function evaluateStateGate(
       Boolean,
     ) as string[];
     return hasSelfCommandWithFeature(player, state.definitions, features);
+  }
+
+  // 「特徴「臨気」と「男」を持つ自軍ユニットがある」（XG6-021・XG6-022）— 両方の特徴を持つ1体。
+  const twoFeatureUnitMatch = text.match(/特徴[「｢]([^」｣]+)[」｣]と[「｢]([^」｣]+)[」｣]を持つ自軍ユニットがある/);
+  if (twoFeatureUnitMatch) {
+    const [, a, b] = twoFeatureUnitMatch;
+    return FIELD_ZONES.some((zone) =>
+      player[zone].some((card) => {
+        const def = getDefinition(state.definitions, card.cardId);
+        return !!def && isUnit(def) && (def.features ?? []).includes(a!) && (def.features ?? []).includes(b!);
+      }),
+    );
   }
 
   const featureUnitMatch = text.match(/特徴[「｢]([^」｣]+)[」｣]を持つ自軍ユニットがある/);

@@ -51,13 +51,13 @@
       "name": "唯一の弱点",
       "text": "これは自軍コマンドがすべてホールド状態なら、敵軍Sユニットにアタックされない。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-030::noe594af",
+          "keyword": "xg6::XG6-030::weak_point",
           "duration": "permanent"
         }
       ]

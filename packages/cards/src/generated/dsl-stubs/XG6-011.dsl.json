@@ -32,7 +32,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-011::rajiarubonba",
+          "keyword": "xg6::XG6-011::radial_bomber",
           "duration": "permanent"
         }
       ]

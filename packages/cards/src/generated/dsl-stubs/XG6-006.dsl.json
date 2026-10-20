@@ -43,12 +43,12 @@
       "trigger": {
         "type": "enter_battle"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-006::boukenfurashu",
-          "duration": "turn"
+          "keyword": "xg6::XG6-006::bouken_flash",
+          "duration": "permanent"
         }
       ]
     }

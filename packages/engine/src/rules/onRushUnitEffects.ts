@@ -28,6 +28,7 @@ import {
   superRadarAppliesOnRush,
 } from "./legend3/rushEffects";
 import { ON_RUSH_EFFECTS } from "./rushEffects";
+import { openXg6OnHandRush } from "./xg6/xg6Hooks";
 import {
   resolveNoteOtherOnRushEffects,
 } from "./noteOtherRushEffects";
@@ -307,6 +308,11 @@ export function applyOnRushUnitEffects(
   // 第7弾 RS-433 ネコマル（※常駐）等（rules/legend1/set7NamedEffectsA.ts）。
   if (!nextState.pendingEffectChoice) {
     nextState = applySet7AOnRush(nextState, ownerPlayerId, instanceId, phasePlayerId);
+  }
+
+  // XG6-046【ゲキジョウバン】: 手札からラッシュしたとき（rules/xg6/xg6cEffects.ts）。
+  if (options.fromHandRush === true && !suppressSelf && zone === "rush") {
+    nextState = openXg6OnHandRush(nextState, ownerPlayerId, instanceId, phasePlayerId);
   }
 
   // RS-124 超電子レーダー（「ラッシュしたとき」。戻すパワーを持ち主が選ぶ選択を開くことがあるので最後に処理する）。

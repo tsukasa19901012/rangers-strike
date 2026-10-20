@@ -1,3 +1,5 @@
+import { tryXg6OnEnterBattle } from "./xg6/xg6Hooks";
+import { xg6BlocksStrike } from "./xg6/xg6Fields";
 import { tryRm3OnEnterBattle } from "./rm/rm3Effects";
 import { tryXg7OnEnterBattle } from "./xg7/xg7Effects";
 import { xg7BlocksStrike } from "./xg7/xg7Fields";
@@ -295,6 +297,8 @@ export function resolveEnterBattleEffectsImpl(
         nextState = tryRm3OnEnterBattle(nextState, playerId, battleCard);
         // XG7-024【獣力開花】・XG7-029・XG7-030（コマンドゾーン）・XG7-040（手札）（rules/xg7/xg7Effects.ts）。
         nextState = tryXg7OnEnterBattle(nextState, playerId, battleCard, battleBeforeEnter);
+        // XG6-008 炎神剣（コマンドゾーンから。OT の自軍 L ユニットがバトルエリアに出たとき。rules/xg6/xg6Hooks.ts）。
+        nextState = tryXg6OnEnterBattle(nextState, playerId, battleCard);
         if (nextState.pendingEffectChoice) {
           return { state: nextState, logs, enterResumeFrom: resumeAt(1) };
         }
@@ -817,6 +821,8 @@ export function canStrikeUnit(
   // XG1-028 アバレンオージ: ※これはホールド状態のときストライクできない（出典: atwiki/page-1665）。
   if (instance.cardId === "XG1-028" && instance.commandHeld) return false;
   if (state && playerId) {
+    // XG6-041【死神のパーティータイムだ】（アルファベットを3文字以上含むユニットはストライクできない。rules/xg6/xg6Fields.ts）。
+    if (xg6BlocksStrike(state, instance)) return false;
     if (hasBakiBakiExtraAttackOnly(state, playerId, instance.instanceId)) {
       return false;
     }

@@ -44,8 +44,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-040::raidakiku",
-          "duration": "turn"
+          "keyword": "xg6::XG6-040::rider_kick",
+          "duration": "permanent"
         }
       ]
     }

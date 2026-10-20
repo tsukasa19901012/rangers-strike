@@ -104,6 +104,24 @@ export function isValidZordDownMaterial(
   }
 }
 
+/**
+ * 「必要パワーの数字がN以上の自軍パワーをM枚捨札にすれば必要パワー0になる」（zord_down_discard_power_cards。XG6-032）の
+ * 素材にできる自軍パワーと必要な枚数。この追加条件でなければ null。
+ */
+export function zordDownPowerCardMaterials(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+): { ids: string[]; needed: number } | null {
+  const condition = getZordDownCondition(rushingCardId, getDefinition(definitions, rushingCardId));
+  if (condition?.conditionId !== "zord_down_discard_power_cards") return null;
+  const minCost = condition.minPrintedPowerCost ?? 0;
+  const ids = player.power
+    .filter((card) => printedPowerCostNumber(getDefinition(definitions, card.cardId)?.powerCost) >= minCost)
+    .map((card) => card.instanceId);
+  return { ids, needed: condition.unitCount ?? 1 };
+}
+
 export function collectZordDownMaterials(
   player: PlayerState,
   definitions: Record<string, CardDefinition>,
@@ -156,16 +174,23 @@ export function findZordDownMaterial(
   return null;
 }
 
+/**
+ * 素材をコマンドゾーンに送るか捨札にするかを選べる追加条件。zord_down_send_to_command_or_discard のほか、
+ * 「「X」を１体コマンドゾーンに送るか捨て札にすれば必要パワー0になる」（zord_down_discard_named。XG6-038）。
+ */
+function zordDownOffersCommand(condition: { conditionId: string; text?: string } | undefined): boolean {
+  if (!condition) return false;
+  if (condition.conditionId === "zord_down_send_to_command_or_discard") return true;
+  return condition.conditionId === "zord_down_discard_named" && /コマンドゾーンに送るか捨て?札/.test(condition.text ?? "");
+}
+
 export function needsZordDownDestinationChoice(
   rushingCardId: string,
   definitions: Record<string, CardDefinition>,
   commandZoneHasSpace: boolean,
 ): boolean {
   const condition = getZordDownCondition(rushingCardId, getDefinition(definitions, rushingCardId));
-  return (
-    condition?.conditionId === "zord_down_send_to_command_or_discard" &&
-    commandZoneHasSpace
-  );
+  return zordDownOffersCommand(condition) && commandZoneHasSpace;
 }
 
 export function validateZordDownPayment(
@@ -183,7 +208,8 @@ export function validateZordDownPayment(
   const multiIds =
     materialInstanceIds ?? (materialInstanceId ? [materialInstanceId] : []);
   const neededCount = condition.unitCount ?? 1;
-  if (multiIds.length > 1 || (neededCount > 1 && multiIds.length > 0)) {
+  // パワーカードの素材（zord_down_discard_power_cards）は下の専用の判定で見る（素材はパワーゾーンのカード）。
+  if (condition.conditionId !== "zord_down_discard_power_cards" && (multiIds.length > 1 || (neededCount > 1 && multiIds.length > 0))) {
     if (multiIds.length !== neededCount) return false;
     const used = new Set<string>();
     for (const id of multiIds) {
@@ -228,7 +254,7 @@ export function validateZordDownPayment(
   );
   if (!material) return false;
 
-  if (condition.conditionId === "zord_down_send_to_command_or_discard") {
+  if (zordDownOffersCommand(condition)) {
     if (materialDestination === "command") {
       return player.command.length < COMMAND_ZONE_MAX;
     }
@@ -262,7 +288,8 @@ export function applyZordDownMaterial(
   const [, zoneCards] = removeAt(player[material.zone], material.index);
   let nextPlayer: PlayerState = { ...player, [material.zone]: zoneCards };
 
-  switch (condition.conditionId) {
+  const conditionId = zordDownOffersCommand(condition) ? "zord_down_send_to_command_or_discard" : condition.conditionId;
+  switch (conditionId) {
     case "zord_down_discard_fusion":
     case "zord_down_discard_named":
     case "zord_down_discard_feature":

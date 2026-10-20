@@ -38,13 +38,13 @@
       "id": "unnamed_e280bbe38193e3828ce4bba5",
       "text": "※これ以外のユニットがSユニットだけなら、これはLユニットになり、BP+2000される。",
       "trigger": {
-        "type": "nc"
+        "type": "while_in_field"
       },
       "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "note_card::XG6-053::korenoyunitogasy",
+          "keyword": "xg6::XG6-053::field",
           "duration": "permanent"
         }
       ]
@@ -60,8 +60,8 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-053::gotouheru",
-          "duration": "turn"
+          "keyword": "xg6::XG6-053::go_to_hell",
+          "duration": "permanent"
         }
       ]
     }

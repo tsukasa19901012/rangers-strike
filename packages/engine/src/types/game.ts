@@ -96,8 +96,11 @@ export type CardInstance = {
    * ルール: R-BP-01 — 指定の値になる効果が最優先で、増減の計算は行わない。
    */
   bpSetValue?: number;
-  /** このターン「Sユニットになる」（RK-154【頭が高い！】で選んだ M ユニット）。ターン終了時にクリア。 */
-  sizeOverride?: "S";
+  /**
+   * このターン「Sユニットになる」（RK-154【頭が高い！】で選んだ M ユニット）。ターン終了時にクリア。
+   * "L" は XG6-053 仮面ライダーアーク の※「これはLユニットになり」（条件を満たす間。rules/xg6/xg6cEffects.ts が行動の後に合わせる）。
+   */
+  sizeOverride?: "S" | "L";
   /** XG1-048【エレキ光線】で選ばれたターン番号（そのターンを終えるとき隣のユニットが撃破される）。 */
   electroBeamTurn?: number;
   /** XG7-001〜XG7-068 のこのターンだけの付与（クロス・ライドオフ不可。rules/xg7/xg7Types.ts）。 */
@@ -163,6 +166,8 @@ export type PlayerState = {
 };
 
 export type PendingStrike = {
+  /** XG6 の「ストライクをするとき」の選択を出したカード（rules/xg6/）。 */
+  xg6Offered?: string[];
   strikerPlayerId: PlayerId;
   strikerInstanceId: string;
   damage: number;
@@ -221,6 +226,8 @@ export type PendingDamagePayment = {
 };
 
 export type PendingBattle = {
+  /** XG6 の「アタックされたとき」等の選択を出したカード（rules/xg6/）。 */
+  xg6Offered?: string[];
   attackerPlayerId: PlayerId;
   attackerInstanceId: string;
   defenderPlayerId: PlayerId;
@@ -326,6 +333,8 @@ export type PendingLeave = {
   /** XG7-001〜XG7-068 の離場の置換で見送ったもの・捨札のかわりに除外する（rules/xg7/xg7Effects.ts）。 */
   xg7Declined?: string[];
   xg7Exile?: boolean;
+  /** XG6-031 ジョーカーアンデッドの※「自軍捨札を3枚選びゲームから除外すれば、その場に留まる」を見送った（rules/xg6/）。 */
+  xg6StayDeclined?: boolean;
   /** RK-128 仮面ライダーレンゲルの※「かわりに…捨札にしてもよい」を見送った（再度は尋ねない）。 */
   rk7SubstituteDeclined?: boolean;
   ownerPlayerId: PlayerId;
@@ -793,6 +802,8 @@ export type PendingEffectChoice = {
     battle?: PendingBattle;
     wingAttackFromRush?: boolean;
   };
+  /** クロスギャザー ザ・ギガンティックタイタン XG6 の選択の続き（rules/xg6/）。 */
+  xg6Meta?: Xg6ChoiceMeta;
   /** スペシャルメタルエディション RM-001〜RM-021 の選択の続き（rules/rm/rm1Effects.ts）。 */
   rm1Meta?: {
     /** RM-006: 選べる数（「メカ」「人型」の自軍ユニットの数）。 */
@@ -1444,6 +1455,8 @@ export type GameState = {
   queuedFieldLeaves?: PendingLeave[];
   /** RM-026 グランドバース【収容】の、チェイス等の選択を待っている「その後、選んだビークルをパワーゾーンに送る」（rules/rm/rm2Effects.ts applyRm2AfterAction）。 */
   rm2PendingTriggers?: Array<{ kind: "rm026_vehicle"; playerId: PlayerId; instanceId: string; phasePlayerId: PlayerId }>;
+  /** クロスギャザー ザ・ギガンティックタイタン XG6 のターン中の記録（rules/xg6/）。 */
+  xg6?: Xg6Records;
   /** RM-017 オメデトロフィーの、まだ開いていない発動（rules/rm/rm1Effects.ts applyRm1AfterAction）。 */
   rm1PendingTriggers?: Array<{ kind: "rm017"; playerId: PlayerId; sourceInstanceId: string; unitCardId: string }>;
   /** クロスギャザー XG5 の継続中の効果・まだ開いていない発動（rules/xg5/xg5Types.ts）。 */
@@ -1524,6 +1537,29 @@ export type PendingEffectRush = {
   };
 };
 
+/** クロスギャザー ザ・ギガンティックタイタン XG6 の選択の続き（rules/xg6/）。 */
+export type Xg6ChoiceMeta = {
+  /** 選んだ（見せた・オモテにした）カード等。 */
+  ids?: string[];
+  /** 数の上限・数。 */
+  limit?: number;
+  /** 状態の名前（段階）。 */
+  step?: string;
+  /** 対象のプレイヤー。 */
+  targetPlayerId?: PlayerId;
+  /** カテゴリ等の文字列。 */
+  tags?: string[];
+};
+
+/** クロスギャザー ザ・ギガンティックタイタン XG6 のターン中の記録（rules/xg6/）。key はカードと効果の名前。 */
+export type Xg6Records = {
+  marks?: Array<{ key: string; playerId: PlayerId; instanceId?: string; turn: number; value?: number; ref?: string }>;
+  /** XG6-025【ここからは私のターンだ】: このプレイヤーのバトルフェイズを終了する（core/applyAction.ts の後処理）。 */
+  endBattlePhase?: PlayerId;
+  /** XG6-042【ゼロのスタート】: 次のスタートフェイズにドローできないプレイヤーと、記録したターン。 */
+  noStartDraw?: Array<{ playerId: PlayerId; turn: number }>;
+};
+
 export type TurnEndProgress = {
   endingPlayerId: PlayerId;
   /** まだ処理していない「ターンを終えるとき」の常駐（持ち主と instanceId）。 */
@@ -1557,6 +1593,8 @@ export type TurnEndProgress = {
   rk11Queue?: string[];
   /** RK-258・RK-260 の「自分がターンを終えるとき」（rules/rk/rk13UnitEffects.ts）。 */
   rk13Queue?: string[];
+  /** クロスギャザー ザ・ギガンティックタイタン XG6 の「ターンを終えるとき」（rules/xg6/）。 */
+  xg6Queue?: string[];
   /** RK-323【シャドウベール】（rules/rk/rk16UnitEffects.ts）。 */
   rk16Queue?: string[];
   /** XG7-041・XG7-042 の「自分がターンを終えるとき」（rules/xg7/xg7Effects.ts）。 */

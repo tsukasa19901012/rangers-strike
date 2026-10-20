@@ -43,11 +43,11 @@
       "trigger": {
         "type": "while_in_field"
       },
-      "optional": true,
+      "optional": false,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-019::noe5a5a5",
+          "keyword": "xg6::XG6-019::trump",
           "duration": "permanent"
         }
       ]

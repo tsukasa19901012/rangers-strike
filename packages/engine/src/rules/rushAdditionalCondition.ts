@@ -113,14 +113,15 @@ function parseAlternateConditionText(text: string): RushAdditionalCondition | un
   }
 
   // 「特徴「母艦」を持つ自軍ユニットを1体捨札にする」（RS-440 バトルフィーバーロボ（2nd）atwiki/page-780）。
-  const featureDiscard = text.match(/^特徴「([^」]+)」を持つ自軍(S|M|L)?ユニットを(\d+)体捨札にする$/);
+  // 「特徴「イエロー」を持つ自軍Sユニット1体を捨札にする」（XG6-019 ダイボウケン atwiki/page-2328）も同じ。
+  const featureDiscard = text.match(/^特徴「([^」]+)」を持つ自軍(S|M|L)?ユニット(?:を(\d+)体|(\d+)体を)捨札にする$/);
   if (featureDiscard) {
     return {
       conditionId: "discard_feature_unit",
       text,
       requiredFeature: featureDiscard[1],
       ...(featureDiscard[2] ? { requiredSize: featureDiscard[2] as "S" | "M" | "L" } : {}),
-      unitCount: Number(featureDiscard[3]),
+      unitCount: Number(featureDiscard[3] ?? featureDiscard[4]),
     };
   }
 

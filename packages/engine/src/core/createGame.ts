@@ -1,6 +1,7 @@
 import { noteEngineSideEffect } from "./sideEffects";
 import { countLogicalBattleSlots } from "../rules/battleLine";
 import { rk12ResidentsNegated } from "../rules/rk/rk12Fields";
+import { xg6LoseDamageThreshold } from "../rules/xg6/xg6Fields";
 import { rngFromSeed, seedFromRng } from "./rng";
 import { allCardsCatalog, type CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/game";
@@ -148,6 +149,8 @@ export function loseDamageThreshold(
   if (meditationActive(state, playerId)) {
     threshold = Math.max(threshold, 14);
   }
+  // XG6-020【究極の大冒険】: これが自軍エリアにある間、ダメージが10点になるまで負けない（rules/xg6/xg6Fields.ts）。
+  threshold = Math.max(threshold, xg6LoseDamageThreshold(state, playerId));
   return threshold;
 }
 

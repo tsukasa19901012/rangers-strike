@@ -46,7 +46,7 @@
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG6-005::majikarushotaimu",
+          "keyword": "xg6::XG6-005::magical_showtime",
           "duration": "permanent"
         }
       ]

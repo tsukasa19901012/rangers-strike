@@ -233,6 +233,41 @@ function namedOrFusionMaterial(
   return null;
 }
 
+const DISCARD_THRESHOLD_FUSION_RE = /このカードの合体ユニットは、?自軍捨札が(\d+)枚以上のとき、?次のように変更される(?:⇒|→)\s*合体[―─-]([^\s【]+)/;
+
+/**
+ * 「※このカードの合体ユニットは、自軍捨札がN枚以上のとき、次のように変更される⇒合体―A＋B」（XG6-007 ゲキリントージャ。atwiki/page-2352）
+ * — 条件を満たせば、合体ユニットは A・B（カード名）だけになる。条件を満たしていれば undefined 以外（素材がそろわなければ null）を返す。
+ */
+function discardThresholdFusionChange(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+  rushingInstanceId: string,
+): FusionMaterialFound[] | null | undefined {
+  const m = getDefinition(definitions, rushingCardId)?.text?.match(DISCARD_THRESHOLD_FUSION_RE);
+  if (!m || player.discard.length < Number(m[1])) return undefined;
+  const names = m[2]!.split(/[＋+]/).map((n) => canonicalCardName(n)).filter(Boolean);
+  const found: FusionMaterialFound[] = [];
+  const used = new Set<string>();
+  for (const name of names) {
+    let hit: FusionMaterialFound | null = null;
+    for (const zone of ZORD_MATERIAL_ZONES) {
+      for (let index = 0; index < player[zone].length && !hit; index++) {
+        const card = player[zone][index]!;
+        if (card.instanceId === rushingInstanceId || used.has(card.instanceId)) continue;
+        const def = getDefinition(definitions, card.cardId);
+        if (def?.type === "unit" && canonicalCardName(def.name) === name) hit = { zone, index, card };
+      }
+      if (hit) break;
+    }
+    if (!hit) return null;
+    used.add(hit.card.instanceId);
+    found.push(hit);
+  }
+  return found;
+}
+
 /** ゾードカードに列挙された全合体パートナー（例: RS-050 → 051/052/053）。 */
 export function collectRequiredFusionMaterials(
   player: PlayerState,
@@ -242,6 +277,8 @@ export function collectRequiredFusionMaterials(
 ): FusionMaterialFound[] | null {
   const threshold = discardThresholdFusionMaterial(player, definitions, rushingCardId, rushingInstanceId);
   if (threshold !== undefined) return threshold;
+  const changed = discardThresholdFusionChange(player, definitions, rushingCardId, rushingInstanceId);
+  if (changed !== undefined) return changed;
   const plain = collectRequiredFusionMaterialsWith(player, definitions, rushingCardId, rushingInstanceId, null);
   if (plain) return plain;
   // 「自軍「X」1体または自軍合体ユニットを捨札にする」（XG1-039 テンクウシンケンオー。atwiki/page-1589）— 合体の素材のかわりに「X」1体。
@@ -367,6 +404,15 @@ function matchFusionCombination(
     if (preassigned?.slots.has(slotIndex)) continue;
     // 「X（または、A＋B＋…）」— X のかわりに A・B…をすべてそろえてもよい（RS-236）。
     const parts = useAlt.has(slotIndex) ? alternatives.get(slotIndex)! : [slot];
+    // 「※これは「A＋B」としてつかえる」カード（XG6-018 アバレキラー）1枚で、A・B の枠（XG6-003 の「キラーオー（または A＋B）」）をまとめて満たす。
+    if (useAlt.has(slotIndex)) {
+      const alias = findMultiAliasForParts(player, definitions, parts, rushingInstanceId, usedInstanceIds);
+      if (alias) {
+        usedInstanceIds.add(alias.card.instanceId);
+        found.push(alias);
+        continue;
+      }
+    }
     for (const part of parts) {
       const match = matchSlot(part);
       if (!match) return null;
@@ -376,6 +422,32 @@ function matchFusionCombination(
   }
 
   return found;
+}
+
+/** parts（「A＋B＋…」の枠）の名前をすべて「※これは「A＋B＋…」としてつかえる」で持つ場のカード。 */
+function findMultiAliasForParts(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  parts: string[][],
+  rushingInstanceId: string,
+  usedInstanceIds: Set<string>,
+): FusionMaterialFound | null {
+  for (const zone of ZORD_MATERIAL_ZONES) {
+    for (let index = 0; index < player[zone].length; index++) {
+      const card = player[zone][index]!;
+      if (card.instanceId === rushingInstanceId || usedInstanceIds.has(card.instanceId)) continue;
+      const names = multiFusionAliasNames(getDefinition(definitions, card.cardId));
+      if (names.length !== parts.length || !fusionAliasUsable(definitions, card.cardId, player)) continue;
+      const covered = new Set<number>();
+      for (const name of names) {
+        const i = parts.findIndex((part, k) => !covered.has(k) && part.some((id) => partnerNamesForId(definitions, id).has(name)));
+        if (i < 0) break;
+        covered.add(i);
+      }
+      if (covered.size === parts.length) return { zone, index, card };
+    }
+  }
+  return null;
 }
 
 export function hasAllRequiredFusionMaterials(
@@ -443,7 +515,8 @@ export function fusionMaterialsGoToPower(
   rushingCardId: string,
 ): boolean {
   const text = getDefinition(definitions, rushingCardId)?.rushAdditionalCondition?.text ?? "";
-  return /合体ユニットを(?:自軍)?パワーゾーンに送る/.test(text.normalize("NFKC"));
+  // XG6-010 グレートタイタン「自軍「フラッシュタイタン」1体と「タイタンボーイ」1体をパワーゾーンに送る」も、合体の枠の素材をパワーゾーンに送る。
+  return /(?:合体ユニット|自軍「[^」]+」1体と「[^」]+」1体)を(?:自軍)?パワーゾーンに送る/.test(text.normalize("NFKC"));
 }
 
 export function isValidFusionMaterial(

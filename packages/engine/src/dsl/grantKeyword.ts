@@ -128,6 +128,7 @@ import { tryRk14CardEffect } from "../rules/rk/rk14UnitEffects";
 import { tryRk15CardEffect } from "../rules/rk/rk15UnitEffects";
 import { tryRk16CardEffect } from "../rules/rk/rk16UnitEffects";
 import { tryRm1CardEffect } from "../rules/rm/rm1Effects";
+import { tryXg6CardEffect } from "../rules/xg6/xg6Hooks";
 import { tryRm2CardEffect } from "../rules/rm/rm2Effects";
 import { tryRm3CardEffect } from "../rules/rm/rm3Effects";
 import { tryXg5CardEffect } from "../rules/xg5/xg5Effects";
@@ -492,6 +493,9 @@ export function applyGrantKeyword(
   // スペシャルメタルエディション RM-001〜RM-021 のカード固有の効果（`rm1::` キーワード。rules/rm/rm1Effects.ts）。
   const rm1 = tryRm1CardEffect(state, ctx, keyword);
   if (rm1) return rm1;
+  // クロスギャザー ザ・ギガンティックタイタン XG6 のカード固有の効果（`xg6::` キーワード。rules/xg6/xg6Hooks.ts）。
+  const xg6 = tryXg6CardEffect(state, ctx, keyword);
+  if (xg6) return xg6;
   // スペシャルメタルエディション RM-022〜RM-042 のカード固有の効果（`rm2::` キーワード。rules/rm/rm2Effects.ts）。
   const rm2 = tryRm2CardEffect(state, ctx, keyword);
   if (rm2) return rm2;

@@ -6549,7 +6549,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "features": [
+        "カンドロイド"
+      ]
     },
     {
       "id": "XG6-061",

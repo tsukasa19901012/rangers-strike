@@ -42,6 +42,7 @@ import {
   collectZordDownMaterials,
   needsZordDownDestinationChoice,
   needsZordDownPayment,
+  zordDownPowerCardMaterials,
 } from "./zordDown";
 import {
   collectZordMaterials,
@@ -348,6 +349,21 @@ function createZordDownSetup(
   rushingCard: { cardId: string; instanceId: string },
 ): PendingZordSetup | null {
   const player = state.players[playerId];
+  // パワーカードを素材にする追加条件（XG6-032）: 1枚ずつ必要な枚数を選ぶ（行き先は捨札）。
+  const powerMaterials = zordDownPowerCardMaterials(player, state.definitions, rushingCard.cardId);
+  if (powerMaterials) {
+    if (powerMaterials.ids.length < powerMaterials.needed) return null;
+    return {
+      playerId,
+      zordInstanceId: rushingCard.instanceId,
+      zordCardId: rushingCard.cardId,
+      direction: "down",
+      validInstanceIds: powerMaterials.ids,
+      mothershipAvailable: false,
+      step: "material",
+      materialDestination: "discard",
+    };
+  }
   const materials = collectZordDownMaterials(
     player,
     state.definitions,
@@ -460,6 +476,16 @@ export function advanceZordSetup(
       const materialId = input.materialInstanceId;
       if (!materialId || !setup.validInstanceIds.includes(materialId)) {
         return { kind: "error", error: "invalid_material" };
+      }
+      const powerMaterials = zordDownPowerCardMaterials(player, state.definitions, setup.zordCardId);
+      if (powerMaterials) {
+        const chosen = [...(setup.chosenMaterialIds ?? []), materialId];
+        if (chosen.length < powerMaterials.needed) {
+          const remaining = setup.validInstanceIds.filter((id) => !chosen.includes(id));
+          if (remaining.length < powerMaterials.needed - chosen.length) return { kind: "error", error: "invalid_material" };
+          return { kind: "continue", setup: { ...setup, chosenMaterialIds: chosen, validInstanceIds: remaining } };
+        }
+        return completeZordDownPayment(state, setup, chosen[0]!, "discard", chosen);
       }
       const destination =
         setup.materialDestination ??
@@ -766,35 +792,42 @@ function completeZordDownPayment(
   setup: PendingZordSetup,
   materialInstanceId: string,
   materialDestination: ZordMaterialDestination | undefined,
+  /** 複数の素材（パワーカードを素材にする追加条件。XG6-032）。 */
+  materialInstanceIds?: string[],
 ): ZordSetupAdvanceResult {
   const playerId = setup.playerId;
   const player = state.players[playerId];
   const def = getDefinition(state.definitions, setup.zordCardId);
   if (!def) return { kind: "error", error: "invalid_card" };
+  const single = materialInstanceIds ? undefined : materialInstanceId;
 
   const shironRush = isShironLightRushTarget(player, setup.zordInstanceId);
-  const canRush = shironRush
+  // 複数の素材（XG6-032）・素材をコマンドゾーンに送る選び方（XG6-038）はこの後にカテゴリの支払いを開くので、
+  // コマンドのホールドはまだ問わない（支払えなければ buildCategoryPayment が null）。
+  const canRush = shironRush || materialInstanceIds || materialDestination === "command"
     ? canRushUnitExceptCommandHold(
         player,
         state.definitions,
         def,
         setup.zordInstanceId,
-        materialInstanceId,
+        single,
         undefined,
         materialDestination,
         rushPowerBudget(state, playerId, player, def!),
         { ...state, playerId },
+        materialInstanceIds,
       )
     : canRushUnit(
         player,
         state.definitions,
         def,
         setup.zordInstanceId,
-        materialInstanceId,
+        single,
         undefined,
         materialDestination,
         rushPowerBudget(state, playerId, player, def!),
         { ...state, playerId },
+        materialInstanceIds,
       );
 
   if (!canRush) return { kind: "error", error: "cannot_complete_zord" };
@@ -806,7 +839,8 @@ function completeZordDownPayment(
         type: "rush",
         playerId,
         instanceId: setup.zordInstanceId,
-        zordMaterialInstanceId: materialInstanceId,
+        zordMaterialInstanceId: single,
+        zordMaterialInstanceIds: materialInstanceIds,
         zordMaterialDestination: materialDestination,
       },
     };
@@ -821,7 +855,8 @@ function completeZordDownPayment(
     categories,
     {
       type: "rush",
-      zordMaterialInstanceId: materialInstanceId,
+      zordMaterialInstanceId: single,
+      zordMaterialInstanceIds: materialInstanceIds,
       zordMaterialDestination: materialDestination,
     },
     false,

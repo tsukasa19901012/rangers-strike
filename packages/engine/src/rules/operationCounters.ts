@@ -14,6 +14,8 @@ import { isRk9BattleCounterCard, rk9AfterBattle, rk9BattleCounterConditionMet, r
 import { rk15WinButDestroyed } from "./rk/rk15UnitEffects";
 import { rk16OnBattleDestroy } from "./rk/rk16UnitEffects";
 import { rk13OnAttackWin, rk13OnBattleDestroy } from "./rk/rk13UnitEffects";
+import { openXg6StayOnLeave, xg6OnAttackWin } from "./xg6/xg6Hooks";
+import { xg6WinButDestroyed } from "./xg6/xg6Fields";
 import { rk13BattleUsesPrintedBp, rk13BlocksResist, rk13PrintedBp } from "./rk/rk13Fields";
 import { rk10OnAttackWin } from "./rk/rk10UnitEffects";
 import { rk11KyosukeWinButDestroyed } from "./rk/rk11Fields";
@@ -44,6 +46,7 @@ import type {
 } from "../types/game";
 import { COMMAND_ZONE_MAX } from "../types/game";
 import { unitFeatures } from "./addedFeatures";
+import { cardHasKeyword } from "../keywords/cardKeywords";
 import { addTurnRuleModifier } from "../core/scopedModifiers";
 import {
   allCategoriesExistInCommandZone,
@@ -182,6 +185,10 @@ function winDestroyOpponentQualifies(
   const text = state.definitions[selfCardId]?.text ?? "";
   const feature = text.match(/※これは敵軍ターン中、特徴「([^」]+)」を持つユニットとバトルしたとき/)?.[1];
   if (feature) return unitFeatures(state, opponentOwner, opponentCard).includes(feature);
+  // 「※これは敵軍ターン中、ウイングを持つユニットとバトルしたとき…」（XG6-030）。
+  if (/※これは敵軍ターン中、ウイングを持つユニットとバトルしたとき/.test(text)) {
+    return cardHasKeyword(state.definitions, opponentCard.cardId, "wing", { state, playerId: opponentOwner });
+  }
   return canStrikeUnit(state.definitions, opponentCard, state, opponentOwner);
 }
 
@@ -1460,7 +1467,7 @@ export function resolveBattlePendingCore(
   const destroyDefender = compareDefenderBp <= compareAttackerBp;
 
   const winButSelfDestruct =
-    !destroyAttacker &&
+    (!destroyAttacker &&
     destroyDefender &&
     battleState.activePlayer !== attackerId &&
     (winButDestroyedVsSp1(refreshedAttackerFound.card.cardId) ||
@@ -1472,10 +1479,12 @@ export function resolveBattlePendingCore(
       refreshedAttackerFound.card.cardId,
       refreshedDefenderFound.card,
       defenderOwner,
-    );
+    )) ||
+    // XG6-049 ※: ウイングを持つユニットとバトルしたとき、バトルに勝っても撃破される（自軍ターンも含む。rules/xg6/xg6Fields.ts）。
+    (!destroyAttacker && destroyDefender && xg6WinButDestroyed(battleState, refreshedAttackerFound.card, refreshedDefenderFound.card, defenderOwner));
 
   const winButDefenderSelfDestruct =
-    destroyAttacker &&
+    (destroyAttacker &&
     !destroyDefender &&
     battleState.activePlayer !== defenderOwner &&
     (winButDestroyedVsSp1(refreshedDefenderFound.card.cardId) ||
@@ -1487,7 +1496,8 @@ export function resolveBattlePendingCore(
       refreshedDefenderFound.card.cardId,
       refreshedAttackerFound.card,
       attackerId,
-    );
+    )) ||
+    (destroyAttacker && !destroyDefender && xg6WinButDestroyed(battleState, refreshedDefenderFound.card, refreshedAttackerFound.card, attackerId));
 
   // RS-220【反射バリア】: 自軍 S ユニットとバトルした敵軍 S ユニットは、バトルに勝っても撃破される。
   const reflectBarrierDefender =
@@ -1733,6 +1743,8 @@ export function resolveBattlePendingCore(
           withAttacker = applyXg5AttackWin(withAttacker, attackerId, pending.attackerInstanceId, pending.phasePlayerId, refreshedDefenderFound.card.instanceId);
           // XG7-025【正義のツバサ】・XG7-037 ※（rules/xg7/xg7Effects.ts）。
           withAttacker = xg7OnAttackWin(withAttacker, battleState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+          // XG6-035【ビッカーチャージブレイク】（rules/xg6/xg6bEffects.ts）。
+          withAttacker = xg6OnAttackWin(withAttacker, attackerId, pending.attackerInstanceId);
         }
         withAttacker = drainDeferredDestroyTriggers(withAttacker);
       }
@@ -1860,6 +1872,8 @@ export function resolveBattlePendingCore(
     if (!pending.effectBattle) nextState = applyXg5AttackWin(nextState, attackerId, pending.attackerInstanceId, pending.phasePlayerId, refreshedDefenderFound.card.instanceId);
     // XG7-025【正義のツバサ】・XG7-037 ※: アタックして敵軍ユニットを撃破したとき（rules/xg7/xg7Effects.ts）。
     if (!pending.effectBattle) nextState = xg7OnAttackWin(nextState, battleState, attackerId, pending.attackerInstanceId, defenderOwner, defenderInstanceId, defenderBp);
+    // XG6-035【ビッカーチャージブレイク】: アタックして敵軍ユニットを撃破したとき（rules/xg6/xg6bEffects.ts）。
+    if (!pending.effectBattle) nextState = xg6OnAttackWin(nextState, attackerId, pending.attackerInstanceId);
   } else {
     nextState = markAttackerActed(nextState);
   }
@@ -2214,6 +2228,9 @@ export function tryLeaveField(
   // RS-303【シティガーディアンズ隊長】: 撃破されたとき、「戦闘員」2体をかわりに捨札にしてもよい。
   const cityGuardians = openCityGuardiansSubstitute(state, intent);
   if (cityGuardians) return { state: cityGuardians, deferred: true };
+  // XG6-031 ジョーカーアンデッド ※: ユニットでなくなるとき、自軍捨札を3枚除外すればその場に留まる（rules/xg6/xg6bEffects.ts）。
+  const xg6Stay = openXg6StayOnLeave(state, intent);
+  if (xg6Stay) return { state: xg6Stay, deferred: true };
   // RK-128 仮面ライダーレンゲル ※: 撃破されて捨札になるとき、かわりに DA の自軍 S ユニットを捨札にするか（rules/rk/rk7UnitEffects.ts）。
   const rengel = openRk7RengelSubstitute(state, intent);
   if (rengel) return { state: rengel, deferred: true };
