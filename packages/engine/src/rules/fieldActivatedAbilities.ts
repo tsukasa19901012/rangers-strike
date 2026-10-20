@@ -1,5 +1,6 @@
 import { activateRm2FieldAbility, canActivateRm2FieldAbility, isRm2FieldAbilityCard } from "./rm/rm2Effects";
 import { activateXg1aFieldAbility, canActivateXg1aFieldAbility, isXg1aFieldAbilityCard } from "./xg1/xg1aEffects";
+import { activateXg1eFieldAbility, canActivateXg1eFieldAbility } from "./xg1/xg1eEffects";
 import { tryLeaveField } from "./operationCounters";
 import { liveCommentaryStayAvailable } from "./legend1/set7NamedEffectsA";
 import { kuugaStayCandidates } from "./legend1/otherLinesNamedEffects";
@@ -490,6 +491,18 @@ for (const [effectId, phase, zones] of [
     resolve: (state, playerId, card) => activateXg1aFieldAbility(state, playerId, card),
   });
 }
+
+// XG1-099 ガンツ先生【採点】（自軍バトルフェイズ・自軍エリア）（rules/xg1/xg1eEffects.ts）。回数の制限はない。
+ABILITIES.push({
+  cardId: "XG1-099",
+  effectId: "xg1_099_saiten",
+  zones: ["rush", "battle"],
+  phase: "battle",
+  discardSelf: false,
+  repeatable: true,
+  canActivate: (state, playerId, card) => canActivateXg1eFieldAbility(state, playerId, card),
+  resolve: (state, playerId, card) => activateXg1eFieldAbility(state, playerId, card),
+});
 
 // 能力の当てはめはカード ID（とカードの文言）だけで決まるので、ID ごとに覚える。表に能力が足されたら捨てる。
 const abilityForCache = new Map<string, FieldActivatedAbility | undefined>();

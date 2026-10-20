@@ -11,6 +11,7 @@ import { tryRk16OnEnterBattle } from "./rk/rk16UnitEffects";
 import { openWarriorSoulNcChoice } from "./legend1/set9NamedEffectsA";
 import { tryResidentRushOnAllyEnterBattle } from "./residentAllyEnterRush";
 import { xg1bOnEnterBattle } from "./xg1/xg1bEffects";
+import { xg1eOnEnterTail } from "./xg1/xg1eEffects";
 import { listNcColumnNamedEffects, getNumberComboEffect } from "@rangers-strike/cards";
 import { registerBattleCommandHooks, tryOpenBattleCommand } from "./battleCommand";
 import { applyGorengerHurricaneOnEnter } from "./legend3/gorengerHurricane";
@@ -713,6 +714,12 @@ export function resolveEnterBattleEffectsImpl(
     nextState = jointResult.state;
     logs.push(...jointResult.logs);
 
+    // XG1-085【レディスナイパー】・「○○からコンビネーションするときはナンバーに関係なく発動する」RC（XG1-088・094〜096。rules/xg1/xg1eEffects.ts）。
+    if (isOwnBattlePhase(nextState, playerId)) {
+      const xg1e = xg1eOnEnterTail(nextState, playerId, card, battleBeforeEnter, !!options?.rideOff);
+      nextState = xg1e.state;
+      logs.push(...xg1e.logs);
+    }
     if (options?.rideOff) {
       const rcResult = resolveRidingComboOnRideOff(nextState, playerId, card);
       nextState = rcResult.state;

@@ -72,7 +72,7 @@ describe("XG1-095 ビーファイターカブト", () => {
 
   const p2 = { battle: [inst("SPEC-MAN", "m")], command: [inst("SPEC-MAN", "cm"), inst("SPEC-WOM", "cw"), inst("TST-OP", "co")] };
 
-  it.fails("XG1-095: 【カブトランサー】RC — ライドオフしたターンにバトルで敵軍ユニット（特徴「男」）を撃破すると、「男」を持つ敵軍コマンドを1つ選び捨札にできる（任意。同じ特徴を持たないコマンドは選べない）（既知の不具合: CARD-XG1-095 選択が開かない）（出典: atwiki/page-1523「これが撃破したユニットと同じ特徴を1つ以上持つ敵軍コマンドを1つ選び捨札にしてもよい」・カード評価「リリース状態のコマンドも除去できる」）", () => {
+  it("XG1-095: 【カブトランサー】RC — ライドオフしたターンにバトルで敵軍ユニット（特徴「男」）を撃破すると、「男」を持つ敵軍コマンドを1つ選び捨札にできる（任意。同じ特徴を持たないコマンドは選べない）（既知の不具合: CARD-XG1-095 選択が開かない）（出典: atwiki/page-1523「これが撃破したユニットと同じ特徴を1つ以上持つ敵軍コマンドを1つ選び捨札にしてもよい」・カード評価「リリース状態のコマンドも除去できる」）", () => {
     const s = attackSettled(resolveAll(rcAt("XG1-095:kb", {}, p2, EXTRA)), "XG1-095:kb", "SPEC-MAN:m");
     expect(zoneOf(s, "player2", "SPEC-MAN:m")).toBe("discard");
     expectChoiceFrom(s, "player1", "XG1-095");
@@ -81,7 +81,7 @@ describe("XG1-095 ビーファイターカブト", () => {
     expect(zoneOf(resolveAll(pick(s, "SPEC-MAN:cm")), "player2", "SPEC-MAN:cm")).toBe("discard");
   });
 
-  it.fails("XG1-095: 特徴「昆虫」を持つユニットからコンビネーションしたときも、ライドせずに発動する（既知の不具合: CARD-XG1-095 発動しない）（出典: atwiki/page-1523「（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）」）", () => {
+  it("XG1-095: 特徴「昆虫」を持つユニットからコンビネーションしたときも、ライドせずに発動する（既知の不具合: CARD-XG1-095 発動しない）（出典: atwiki/page-1523「（この効果は特徴「昆虫」を持つユニットからコンビネーションするときはナンバーに関係なく発動する）」）", () => {
     const s = attackSettled(enteredFromRush("XG1-095:kb", { battle: [inst("SPEC-INS", "i")] }, p2, EXTRA), "XG1-095:kb", "SPEC-MAN:m");
     expectChoiceFrom(s, "player1", "XG1-095");
   });
@@ -113,14 +113,14 @@ describe("XG1-096 ビーファイタークワガー", () => {
 
   const rc = () => rcAt("XG1-096:kw", {}, { battle: [inst("SPEC-B3", "a"), inst("SPEC-B45", "b"), heldUnit("TST-UNIT-0", "h")], rush: [inst("TST-UNIT-0", "r")] }, EXTRA);
 
-  it.fails("XG1-096: 【クワガーチョッパー】RC — 敵軍バトルエリアのリリース状態の S ユニットを2体選べる（任意。ホールド状態・ラッシュエリアのユニットは選べない）（既知の不具合: CARD-XG1-096 選択が開かない）（出典: atwiki/page-1661「敵軍バトルエリアからリリース状態のSユニットを2体選んでもよい」）", () => {
+  it("XG1-096: 【クワガーチョッパー】RC — 敵軍バトルエリアのリリース状態の S ユニットを2体選べる（任意。ホールド状態・ラッシュエリアのユニットは選べない）（既知の不具合: CARD-XG1-096 選択が開かない）（出典: atwiki/page-1661「敵軍バトルエリアからリリース状態のSユニットを2体選んでもよい」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "XG1-096");
     expect(canSkip(s)).toBe(true);
     expect([...choiceIds(s)].sort()).toEqual(["SPEC-B3:a", "SPEC-B45:b"]);
   });
 
-  it.fails("XG1-096: 2体を選ぶと、相手が「2体ともホールドする」か「どちらか1体を撃破する」かを選ぶ（既知の不具合: CARD-XG1-096）（出典: atwiki/page-1661「相手は次のようにする⇒その2体をホールドするか、どちらか1体選び撃破する」）", () => {
+  it("XG1-096: 2体を選ぶと、相手が「2体ともホールドする」か「どちらか1体を撃破する」かを選ぶ（既知の不具合: CARD-XG1-096）（出典: atwiki/page-1661「相手は次のようにする⇒その2体をホールドするか、どちらか1体選び撃破する」）", () => {
     const s = pick(pick(rc(), "SPEC-B3:a"), "SPEC-B45:b");
     expect(s.pendingEffectChoice?.playerId).toBe("player2");
     const t = resolveAll(s, ["hold"]);
@@ -152,19 +152,19 @@ describe("XG1-097 ビーファイターアゲハ", () => {
     expect(zoneOf(t, "player2", "SPEC-B3:a")).toBe("battle");
   });
 
-  it.fails("XG1-097: ほかに「昆虫」の自軍ユニットが2体なら、BP の合計が5000 以下の2体（BP3000＋2000）を撃破できる（既知の不具合: CARD-XG1-097 1体しか選べない）（出典: atwiki/page-1577「選べるユニットの数は、これ以外の特徴「昆虫」を持つ自軍バトルエリアのユニットの数まで」）", () => {
+  it("XG1-097: ほかに「昆虫」の自軍ユニットが2体なら、BP の合計が5000 以下の2体（BP3000＋2000）を撃破できる（既知の不具合: CARD-XG1-097 1体しか選べない）（出典: atwiki/page-1577「選べるユニットの数は、これ以外の特徴「昆虫」を持つ自軍バトルエリアのユニットの数まで」）", () => {
     const s = resolveAll(pick(nc([inst("SPEC-INS", "i1"), inst("SPEC-INS", "i2"), inst("TST-UNIT-0", "f")], { battle: [inst("SPEC-B3", "a"), inst("SPEC-B2", "b"), inst("SPEC-B45", "c")] }), "SPEC-B3:a"), ["SPEC-B2:b"]);
     expect(zoneOf(s, "player2", "SPEC-B3:a")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-B2:b")).toBe("discard");
     expect(zoneOf(s, "player2", "SPEC-B45:c")).toBe("battle");
   });
 
-  it.fails("XG1-097: ほかに「昆虫」の自軍ユニットがいなければ、1体も選べない（既知の不具合: CARD-XG1-097 選択が開き撃破できる）（出典: atwiki/page-1577「これ以外の特徴「昆虫」を持つ自軍バトルエリアのユニットの数までとする」）", () => {
+  it("XG1-097: ほかに「昆虫」の自軍ユニットがいなければ、1体も選べない（既知の不具合: CARD-XG1-097 選択が開き撃破できる）（出典: atwiki/page-1577「これ以外の特徴「昆虫」を持つ自軍バトルエリアのユニットの数までとする」）", () => {
     const s = nc(fill(3), { battle: [inst("SPEC-B3", "a")] });
     expect(s.pendingEffectChoice?.sourceCardId === "XG1-097").toBe(false);
   });
 
-  it.fails("XG1-097: 敵軍ラッシュエリアのユニットも選べる（既知の不具合: CARD-XG1-097 敵軍バトルエリアのユニットしか候補にならない）（出典: atwiki/page-1577「敵軍ユニット」・カード評価「エリアとサイズを問わない除去効果」）", () => {
+  it("XG1-097: 敵軍ラッシュエリアのユニットも選べる（既知の不具合: CARD-XG1-097 敵軍バトルエリアのユニットしか候補にならない）（出典: atwiki/page-1577「敵軍ユニット」・カード評価「エリアとサイズを問わない除去効果」）", () => {
     const s = nc([inst("SPEC-INS", "i1"), inst("TST-UNIT-0", "f"), inst("TST-UNIT-0", "g")], { battle: [inst("SPEC-B3", "a")], rush: [inst("SPEC-B2", "r")] });
     expect(choiceIds(s)).toContain("SPEC-B2:r");
   });
@@ -181,7 +181,7 @@ describe("XG1-098 猛毒鎧将デスコーピオン", () => {
     expectRarityIn("XG1-098", ["N"]);
   });
 
-  it.fails("XG1-098: 【ポイズンアンカー】自分がターンを終えるとき、「男」「女」等を持つホールド状態のユニット（自軍・敵軍とも。「メカ」だけのユニットは除く）を1体選び撃破する（見送れない）（既知の不具合: CARD-XG1-098 選択が開かない）（出典: atwiki/page-1562「ホールド状態のユニットを1体選び撃破する」・カード評価「お互いに相手のユニットを選べる」「エリア・サイズを問わず撃破できる」）", () => {
+  it("XG1-098: 【ポイズンアンカー】自分がターンを終えるとき、「男」「女」等を持つホールド状態のユニット（自軍・敵軍とも。「メカ」だけのユニットは除く）を1体選び撃破する（見送れない）（既知の不具合: CARD-XG1-098 選択が開かない）（出典: atwiki/page-1562「ホールド状態のユニットを1体選び撃破する」・カード評価「お互いに相手のユニットを選べる」「エリア・サイズを問わず撃破できる」）", () => {
     const s = endTurn(p1Battle({ battle: [inst("XG1-098", "ds"), heldUnit("SPEC-MAN", "own"), heldUnit("SPEC-MEC", "mec")] }, { rush: [heldUnit("SPEC-WOM", "w")] }, EXTRA));
     expectChoiceFrom(s, "player1", "XG1-098");
     expect(canSkip(s)).toBe(false);
@@ -189,7 +189,7 @@ describe("XG1-098 猛毒鎧将デスコーピオン", () => {
     expect(zoneOf(resolveAll(pick(s, "SPEC-WOM:w")), "player2", "SPEC-WOM:w")).toBe("discard");
   });
 
-  it.fails("XG1-098: 相手も自分自身のターンを終えるとき、同じように1体選び撃破する（既知の不具合: CARD-XG1-098 選択が開かない）（出典: atwiki/page-1562「自分も相手も次のようにする」）", () => {
+  it("XG1-098: 相手も自分自身のターンを終えるとき、同じように1体選び撃破する（既知の不具合: CARD-XG1-098 選択が開かない）（出典: atwiki/page-1562「自分も相手も次のようにする」）", () => {
     const s = endTurn(enemyBoard({ battle: [inst("XG1-098", "ds"), heldUnit("SPEC-MAN", "own")] }, { battle: [inst("TST-UNIT-0", "x")] }, EXTRA));
     expectChoiceFrom(s, "player2", "XG1-098");
   });
@@ -214,7 +214,7 @@ describe("XG1-099 ガンツ先生", () => {
     expect(legal(s).some((a) => a.type === "move_to_battle" && a.instanceId === "TST-UNIT-0:u")).toBe(true);
   });
 
-  it.fails("XG1-099: 【採点】自軍バトルフェイズ中、自軍エリアにあれば起動できる（既知の不具合: CARD-XG1-099 起動の手がない）（出典: atwiki/page-1590「自軍バトルフェイズ中、次の効果を発動できる」）", () => {
+  it("XG1-099: 【採点】自軍バトルフェイズ中、自軍エリアにあれば起動できる（既知の不具合: CARD-XG1-099 起動の手がない）（出典: atwiki/page-1590「自軍バトルフェイズ中、次の効果を発動できる」）", () => {
     expect(canActivateField(board(), "XG1-099:gz")).toBe(true);
   });
 });
@@ -234,7 +234,7 @@ describe("XG1-100 ロボコン", () => {
     expect(registerOffered(attackUntilRegister({ battle: [inst("XG1-100", "rb")] }, "XG1-100:rb"))).toBe(true);
   });
 
-  it.fails("XG1-100: 【お手伝いロボット】自軍スタートフェイズにバトルエリアからラッシュエリアに戻るとき、山札の上の1枚を自軍コマンドゾーンにホールド状態で置くかを選べる（任意）（既知の不具合: CARD-XG1-100 選択が開かない）（出典: atwiki/page-1669「自軍山札の上から1枚引いて、そのカードを自軍コマンドゾーンにホールド状態で置いてもよい」・カード評価「開始直後ならばほぼ確実にコマンド加速」）", () => {
+  it("XG1-100: 【お手伝いロボット】自軍スタートフェイズにバトルエリアからラッシュエリアに戻るとき、山札の上の1枚を自軍コマンドゾーンにホールド状態で置くかを選べる（任意）（既知の不具合: CARD-XG1-100 選択が開かない）（出典: atwiki/page-1669「自軍山札の上から1枚引いて、そのカードを自軍コマンドゾーンにホールド状態で置いてもよい」・カード評価「開始直後ならばほぼ確実にコマンド加速」）", () => {
     const s = returnedAtStart({ battle: [inst("XG1-100", "rb")], deck: [inst("TST-OP", "top"), ...deckCards(3)] }, {}, EXTRA);
     expectChoiceFrom(s, "player1", "XG1-100");
     expect(canSkip(s)).toBe(true);

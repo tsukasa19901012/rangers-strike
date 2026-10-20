@@ -2,6 +2,7 @@
  * XG1 のカード固有の効果で共通に使う小さな部品（コマンドのホールド・候補の絞り込み）。
  * 選択の組み立て（openAfter・proceed 等）は rules/rm/rm1Effects.ts のものを使う。
  */
+import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
 import { cardCategories, effectiveCommandCategories, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
@@ -116,6 +117,14 @@ export function residentZoneCards(state: GameState, ownerId: PlayerId): Array<{ 
     for (const s of op.stackedCards ?? []) out.push({ card: s, parent: op.instanceId });
   }
   return out;
+}
+
+/**
+ * XG1-081 磁雷神【パコの守護神】「これが自軍エリアにある間、自軍常駐置き場にあるカードは相手に選ばれない。」（atwiki/page-1587）。
+ * ownerId の常駐置き場のカードが相手に選ばれないか。
+ */
+export function residentsGuarded(state: GameState, ownerId: PlayerId): boolean {
+  return fieldUnits(state, ownerId).some((c) => isSameCardIdentity(c.cardId, "XG1-081"));
 }
 
 /** このターンの記録（kind "rule"・scope "turn"、payload に instanceId）を付ける。 */

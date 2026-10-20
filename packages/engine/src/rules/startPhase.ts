@@ -1,5 +1,7 @@
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import { xg1cBattleToRush } from "./xg1/xg1cEffects";
+import { xg1eBattleToRush } from "./xg1/xg1eEffects";
+import { xg1HostageStaysAtStart } from "./xg1/xg1Fields";
 import { rm3StaysInBattleAtStart } from "./rm/rm3Fields";
 import { unitFeatures } from "./addedFeatures";
 import { isRk8BattleToRushTrigger, rk8StaysInBattleAtStart, tryRk8BattleToRush } from "./rk/rk8UnitEffects";
@@ -57,7 +59,9 @@ function collectBattleToRushEffectQueue(cards: CardInstance[]): string[] {
         // RK-155 キングライナー・RK-156 マシンデンバード・RK-157 バットイマジン（rules/rk/rk8UnitEffects.ts）。
         isRk8BattleToRushTrigger(card) ||
         // XG1-060 コーカサスビートルアンデッド【カード強奪】（rules/xg1/xg1cEffects.ts）。
-        isSameCardIdentity(card.cardId, "XG1-060"),
+        isSameCardIdentity(card.cardId, "XG1-060") ||
+        // XG1-100 ロボコン【お手伝いロボット】（rules/xg1/xg1eEffects.ts）。
+        isSameCardIdentity(card.cardId, "XG1-100"),
     )
     .map((card) => card.instanceId);
 }
@@ -159,6 +163,8 @@ export function continueBattleToRushEffectQueue(state: GameState): GameState {
     if (!withChoice.pendingEffectChoice) withChoice = tryRk8BattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     // XG1-060【カード強奪】（rules/xg1/xg1cEffects.ts）。
     if (!withChoice.pendingEffectChoice) withChoice = xg1cBattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
+    // XG1-100【お手伝いロボット】（rules/xg1/xg1eEffects.ts）。
+    if (!withChoice.pendingEffectChoice) withChoice = xg1eBattleToRush(withChoice, phasePlayerId, card, phasePlayerId);
     return continueBattleToRushEffectQueue({ ...withChoice, pendingBattleToRushQueue: rest });
   }
 
@@ -274,6 +280,8 @@ export function listReturnableStartGroupIds(state: GameState, playerId: PlayerId
 
 /** RM-052【マグネアタッチメント】で戻せないユニットか（今の特徴で「メカ」を見る）。 */
 function rm3StaysAtStart(state: GameState, playerId: PlayerId, instanceId: string): boolean {
+  // XG1-084 マッドギャラン【人質と脅迫】: 相手のバトルエリアにある間、ホールド状態の S ユニットは戻せない（rules/xg1/xg1Fields.ts）。
+  if (xg1HostageStaysAtStart(state, playerId, instanceId)) return true;
   return rm3StaysInBattleAtStart(state, playerId, instanceId, (card) => unitFeatures(state, playerId, card));
 }
 

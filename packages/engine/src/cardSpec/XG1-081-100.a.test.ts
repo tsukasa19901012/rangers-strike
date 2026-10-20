@@ -33,6 +33,7 @@ import {
   ncAt,
   p1Battle,
   pick,
+  PLAIN_VEHICLE,
   powerCards,
   rcAt,
   resolveAll,
@@ -56,7 +57,8 @@ const C3 = sUnit("SPEC-C3", { powerCost: 3 });
 const C6 = sUnit("SPEC-C6", { powerCost: 6 });
 const B45 = sUnit("SPEC-B45", { bp: 4500 });
 const B3 = sUnit("SPEC-B3", { bp: 3000 });
-const EXTRA = [NIN, OTET, VEH2, C3, C6, B45, B3];
+// SPEC-VEHICLE（XG1-082 の power で使うビークルカード）の定義も加える（RK4-064-084.helpers.ts PLAIN_VEHICLE）。
+const EXTRA = [NIN, OTET, VEH2, C3, C6, B45, B3, PLAIN_VEHICLE];
 
 // ===========================================================================
 describe("XG1-081 磁雷神", () => {
@@ -84,7 +86,7 @@ describe("XG1-081 磁雷神", () => {
   /** 自軍（player1）デンジレッド（XG1-002）の NC で、敵軍常駐置き場のカードを選ぶ。敵軍エリアに rush。 */
   const denji = (rush: ReturnType<typeof inst>[]) => ncAt("XG1-002:dr", 2, {}, { operation: [inst("XG1-015", "o1"), inst("RS-244", "o2")], rush }, EXTRA);
 
-  it.fails("XG1-081: 【パコの守護神】これが自軍エリアにある間、自軍常駐置き場のカードは相手の効果（敵軍デンジレッドの NC）に選ばれない（既知の不具合: CARD-XG1-081 候補に入る）（出典: atwiki/page-1587「自軍常駐置き場にあるカードは相手に選ばれない」・カード評価「レッドワンや仮面ライダーキバBFなどへのメタ効果」）", () => {
+  it("XG1-081: 【パコの守護神】これが自軍エリアにある間、自軍常駐置き場のカードは相手の効果（敵軍デンジレッドの NC）に選ばれない（既知の不具合: CARD-XG1-081 候補に入る）（出典: atwiki/page-1587「自軍常駐置き場にあるカードは相手に選ばれない」・カード評価「レッドワンや仮面ライダーキバBFなどへのメタ効果」）", () => {
     const s = denji([inst("XG1-081", "jr")]);
     expect(s.pendingEffectChoice?.sourceCardId === "XG1-002" ? choiceIds(s) : []).toEqual([]);
   });
@@ -125,7 +127,7 @@ describe("XG1-082 ブルホーク", () => {
 
   const power = [inst("SPEC-VEHICLE", "pv"), { ...inst("SPEC-VEH2", "pd"), faceDown: true }, inst("TST-P", "p")];
 
-  it.fails("XG1-082: 【戦士シャイダーの遺産】チェイスで捨札になったとき、自軍パワーゾーンのオモテ向きのビークルカードを1枚選び手札に加えられる（任意。ウラ向きのカード・ビークル以外は選べない）（既知の不具合: CARD-XG1-082 選択が開かない）（出典: atwiki/page-1566「このビークルが捨札になったとき…ビークルカードを1枚選び、自分の手札に加えてもよい」・カード評価「チェイスとの相性が良い」）", () => {
+  it("XG1-082: 【戦士シャイダーの遺産】チェイスで捨札になったとき、自軍パワーゾーンのオモテ向きのビークルカードを1枚選び手札に加えられる（任意。ウラ向きのカード・ビークル以外は選べない）（既知の不具合: CARD-XG1-082 選択が開かない）（出典: atwiki/page-1566「このビークルが捨札になったとき…ビークルカードを1枚選び、自分の手札に加えてもよい」・カード評価「チェイスとの相性が良い」）", () => {
     const s = chaseToVeh2(shaiderAttacked({ power }));
     expect(zoneOf(s, "player2", "XG1-082:bh")).toBe("discard");
     expectChoiceFrom(s, "player2", "XG1-082");
@@ -155,14 +157,14 @@ describe("XG1-083 宇宙刑事シャイダー", () => {
   const rc = () =>
     rcAt("XG1-083:sh", {}, { power: [inst("SPEC-C3", "p3"), inst("SPEC-C6", "p6"), { ...inst("SPEC-C3", "pd"), faceDown: true }, inst("TST-P", "p0")] }, EXTRA);
 
-  it.fails("XG1-083: 【シャイダーブルーフラッシュ】RC — 敵軍パワーゾーンのオモテ向きの、必要パワー3以下のカードを選べる（任意。必要パワー6・ウラ向きのカードは選べない）（既知の不具合: CARD-XG1-083 選択が開かない）（出典: atwiki/page-1611「必要パワーの数字が3以下のカードを1枚選び、ダメージにしてもよい」）", () => {
+  it("XG1-083: 【シャイダーブルーフラッシュ】RC — 敵軍パワーゾーンのオモテ向きの、必要パワー3以下のカードを選べる（任意。必要パワー6・ウラ向きのカードは選べない）（既知の不具合: CARD-XG1-083 選択が開かない）（出典: atwiki/page-1611「必要パワーの数字が3以下のカードを1枚選び、ダメージにしてもよい」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "XG1-083");
     expect(canSkip(s)).toBe(true);
     expect([...choiceIds(s)].sort()).toEqual(["SPEC-C3:p3", "TST-P:p0"]);
   });
 
-  it.fails("XG1-083: 選んだカードをダメージにする（相手のダメージが1点増える）（既知の不具合: CARD-XG1-083）（出典: atwiki/page-1611「ダメージにしてもよい」・カード評価「ストライク以外のダメージ」）", () => {
+  it("XG1-083: 選んだカードをダメージにする（相手のダメージが1点増える）（既知の不具合: CARD-XG1-083）（出典: atwiki/page-1611「ダメージにしてもよい」・カード評価「ストライク以外のダメージ」）", () => {
     const s = resolveAll(rc(), ["SPEC-C3:p3"]);
     expect(isDamageCard(s, "player2", "SPEC-C3:p3")).toBe(true);
     expect(s.players.player2.damage).toBe(1);
@@ -180,12 +182,12 @@ describe("XG1-084 マッドギャラン", () => {
     expectRarityIn("XG1-084", ["SR"]);
   });
 
-  it.fails("XG1-084: 【人質と脅迫】相手は手札がなければこれにアタックできない（既知の不具合: CARD-XG1-084 手札がなくてもアタックできる）（出典: atwiki/page-1677「自分自身の手札を1枚選び捨札にしなければ、このユニットにアタックすることができない」）", () => {
+  it("XG1-084: 【人質と脅迫】相手は手札がなければこれにアタックできない（既知の不具合: CARD-XG1-084 手札がなくてもアタックできる）（出典: atwiki/page-1677「自分自身の手札を1枚選び捨札にしなければ、このユニットにアタックすることができない」）", () => {
     const s = enemyBoard({ battle: [inst("XG1-084", "mg"), inst("TST-UNIT-0", "o")] }, { battle: [inst("TST-UNIT-7", "a")] }, EXTRA);
     expect(targetsOf(s, "TST-UNIT-7:a", "player2")).toEqual(["TST-UNIT-0:o"]);
   });
 
-  it.fails("XG1-084: 相手がこれにアタックするときは、手札を1枚捨札にする（既知の不具合: CARD-XG1-084 手札を捨てずにアタックできる）（出典: atwiki/page-1677「手札を1枚選び捨札にしなければ」・コメント「アタックの際に手札を捨てさせる制限」）", () => {
+  it("XG1-084: 相手がこれにアタックするときは、手札を1枚捨札にする（既知の不具合: CARD-XG1-084 手札を捨てずにアタックできる）（出典: atwiki/page-1677「手札を1枚選び捨札にしなければ」・コメント「アタックの際に手札を捨てさせる制限」）", () => {
     const s = resolveAll(enemyAttack(enemyBoard({ battle: [inst("XG1-084", "mg")] }, { battle: [inst("TST-UNIT-7", "a")], hand: [inst("TST-OP", "h")] }, EXTRA), "TST-UNIT-7:a", "XG1-084:mg"), ["TST-OP:h"]);
     expect(zoneOf(s, "player2", "TST-OP:h")).toBe("discard");
   });
@@ -197,7 +199,7 @@ describe("XG1-084 マッドギャラン", () => {
     expect(zoneOf(t, "player1", "TST-UNIT-0:o")).toBe("discard");
   });
 
-  it.fails("XG1-084: 相手のバトルエリアのホールド状態の S ユニットは、相手のスタートフェイズにラッシュエリアに戻らない（既知の不具合: CARD-XG1-084 戻る）（出典: atwiki/page-1677「自分自身のバトルエリアにあるホールド状態のSユニットはラッシュエリアに戻せない」・R-HOLD-02）", () => {
+  it("XG1-084: 相手のバトルエリアのホールド状態の S ユニットは、相手のスタートフェイズにラッシュエリアに戻らない（既知の不具合: CARD-XG1-084 戻る）（出典: atwiki/page-1677「自分自身のバトルエリアにあるホールド状態のSユニットはラッシュエリアに戻せない」・R-HOLD-02）", () => {
     const s = toEnemyBattle(p1Battle({ battle: [inst("XG1-084", "mg")] }, { battle: [heldUnit("TST-UNIT-0", "h"), inst("TST-UNIT-0", "r")] }, EXTRA));
     expect(zoneOf(s, "player2", "TST-UNIT-0:h")).toBe("battle");
   });
@@ -222,13 +224,13 @@ describe("XG1-085 ダイアナレディ", () => {
   const spielban = () =>
     enteredFromRush("XG1-086:sp", { battle: [inst("XG1-085", "dl")] }, { battle: [inst("SPEC-B45", "x"), inst("TST-UNIT-0", "y")] }, EXTRA);
 
-  it.fails("XG1-085: 【レディスナイパー】次に並ぶ OT・「男」の S ユニット（スピルバン XG1-086）は BP+2000（BP5000）され、スピルバン自身の効果で SP1 になる（既知の不具合: CARD-XG1-085 BP が上がらない）（出典: atwiki/page-1567「BP+2000され」・atwiki/page-1674 カード評価「相方のダイアナレディと組めばBP5000、SP1になり」）", () => {
+  it("XG1-085: 【レディスナイパー】次に並ぶ OT・「男」の S ユニット（スピルバン XG1-086）は BP+2000（BP5000）され、スピルバン自身の効果で SP1 になる（既知の不具合: CARD-XG1-085 BP が上がらない）（出典: atwiki/page-1567「BP+2000され」・atwiki/page-1674 カード評価「相方のダイアナレディと組めばBP5000、SP1になり」）", () => {
     const s = spielban();
     expect(bpOf(s, "player1", "XG1-086:sp")).toBe(5000);
     expect(spOf(s, "player1", "XG1-086:sp")).toBe(1);
   });
 
-  it.fails("XG1-085: ナンバーに RC を持っていれば、ライドオフしなくても RC の効果（スピルバンの【アークインパルス】）を発動する（既知の不具合: CARD-XG1-085 発動しない）（出典: atwiki/page-1567「ライドオフしなくてもその効果を発動できる」・コメント「ビークルに乗ってなきゃ…発動しませんよね？」「します。」）", () => {
+  it("XG1-085: ナンバーに RC を持っていれば、ライドオフしなくても RC の効果（スピルバンの【アークインパルス】）を発動する（既知の不具合: CARD-XG1-085 発動しない）（出典: atwiki/page-1567「ライドオフしなくてもその効果を発動できる」・コメント「ビークルに乗ってなきゃ…発動しませんよね？」「します。」）", () => {
     expectChoiceFrom(spielban(), "player1", "XG1-086");
   });
 
@@ -254,14 +256,14 @@ describe("XG1-086 スピルバン", () => {
     expect(spOf(rc(), "player1", "XG1-086:sp")).toBe(0);
   });
 
-  it.fails("XG1-086: 【アークインパルス】RC — 候補はこのユニットの BP（3000）以下の敵軍 S ユニット（バトルエリア・ラッシュエリア）で、見送れる（既知の不具合: CARD-XG1-086 候補がスピルバン自身だけで、見送れない）（出典: atwiki/page-1674「このユニットのBP以下のBPを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送ってもよい」・カード評価「エリアに制限されない除去効果」）", () => {
+  it("XG1-086: 【アークインパルス】RC — 候補はこのユニットの BP（3000）以下の敵軍 S ユニット（バトルエリア・ラッシュエリア）で、見送れる（既知の不具合: CARD-XG1-086 候補がスピルバン自身だけで、見送れない）（出典: atwiki/page-1674「このユニットのBP以下のBPを持つ敵軍Sユニットを1体選び、持ち主のパワーゾーンに送ってもよい」・カード評価「エリアに制限されない除去効果」）", () => {
     const s = rc();
     expectChoiceFrom(s, "player1", "XG1-086");
     expect(canSkip(s)).toBe(true);
     expect([...choiceIds(s)].sort()).toEqual(["SPEC-B3:y", "TST-UNIT-0:r"]);
   });
 
-  it.fails("XG1-086: 選んだユニットを持ち主のパワーゾーンに送る（既知の不具合: CARD-XG1-086）（出典: atwiki/page-1674「持ち主のパワーゾーンに送って」）", () => {
+  it("XG1-086: 選んだユニットを持ち主のパワーゾーンに送る（既知の不具合: CARD-XG1-086）（出典: atwiki/page-1674「持ち主のパワーゾーンに送って」）", () => {
     const s = resolveAll(rc(), ["SPEC-B3:y"]);
     expect(zoneOf(s, "player2", "SPEC-B3:y")).toBe("power");
   });
@@ -281,13 +283,13 @@ describe("XG1-087 少女仮面ヘルバイラ", () => {
   const attacked = (battle: ReturnType<typeof inst>[]) =>
     enemyAttack(enemyBoard({ battle }, { battle: [inst("TST-UNIT-7", "a")] }, EXTRA), "TST-UNIT-7:a", "XG1-087:hv");
 
-  it.fails("XG1-087: 【瞬間移動】2番目にあってアタックされたとき、左隣のユニットと置き替えるかを選べる（任意）（既知の不具合: CARD-XG1-087 選択が開かず、そのままバトルして撃破される）（出典: atwiki/page-1568「左隣のユニットと置き替えてもよい」）", () => {
+  it("XG1-087: 【瞬間移動】2番目にあってアタックされたとき、左隣のユニットと置き替えるかを選べる（任意）（既知の不具合: CARD-XG1-087 選択が開かず、そのままバトルして撃破される）（出典: atwiki/page-1568「左隣のユニットと置き替えてもよい」）", () => {
     const s = attacked([inst("TST-UNIT-0", "l"), inst("XG1-087", "hv")]);
     expectChoiceFrom(s, "player1", "XG1-087");
     expect(canSkip(s)).toBe(true);
   });
 
-  it.fails("XG1-087: 置き替えると並び順が入れ替わり、バトルは行われない（どちらも撃破されない）（既知の不具合: CARD-XG1-087）（出典: atwiki/page-1568「そうしたとき、バトルは行われない」）", () => {
+  it("XG1-087: 置き替えると並び順が入れ替わり、バトルは行われない（どちらも撃破されない）（既知の不具合: CARD-XG1-087）（出典: atwiki/page-1568「そうしたとき、バトルは行われない」）", () => {
     const s = resolveAll(attacked([inst("TST-UNIT-0", "l"), inst("XG1-087", "hv")]), ["accept"]);
     expect(s.players.player1.battle.map((c) => c.instanceId)).toEqual(["XG1-087:hv", "TST-UNIT-0:l"]);
     expect(zoneOf(s, "player1", "TST-UNIT-0:l")).toBe("battle");

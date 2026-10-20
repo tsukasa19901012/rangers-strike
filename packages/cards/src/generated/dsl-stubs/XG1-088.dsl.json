@@ -28,11 +28,10 @@
       "trigger": {
         "type": "riding_combo"
       },
-      "optional": true,
       "effects": [
         {
           "type": "grant_keyword",
-          "keyword": "effect_card::XG1-088::noe981bf",
+          "keyword": "xg1::XG1-088::escape_route",
           "duration": "turn"
         }
       ]

@@ -10,6 +10,7 @@ import { rk11IsHandSubstitute } from "../rules/rk/rk11Fields";
 import { rk12PlacesHeldOnRush } from "../rules/rk/rk12Fields";
 import { openRk12GorgomWindow, trackRk12UnitHolds } from "../rules/rk/rk12UnitEffects";
 import { xg1dTrackHandDiscards } from "../rules/xg1/xg1dEffects";
+import { isXg1eAttackedChoice, openXg1eAttacked, resolveXg1eAttacked, skipXg1eAttacked, xg1eAfterAction } from "../rules/xg1/xg1eEffects";
 import { applyRk13AfterAction } from "../rules/rk/rk13UnitEffects";
 import { applyRk8AfterAction } from "../rules/rk/rk8UnitEffects";
 import { applyRk10AfterAction, rk10CraneDeclined, rk10CraneIntercept, runRk10OnRush } from "../rules/rk/rk10UnitEffects";
@@ -529,6 +530,12 @@ function continueAttackAfterDeclaration(
     const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...tentrina, pendingBattleEntry: undefined } : tentrina;
     return ok(parked, buildSimpleLogEntry(playerId, "rm062_lina_stick_choice"));
   }
+  // XG1-084【人質と脅迫】（アタックした相手が手札を1枚捨札にする）・XG1-087【瞬間移動】（rules/xg1/xg1eEffects.ts）。
+  const xg1eAttacked = openXg1eAttacked(battleState, pending, wingAttackFromRush);
+  if (xg1eAttacked) {
+    const parked = battleState.pendingBattleEntry?.instanceId === pending.attackerInstanceId ? { ...xg1eAttacked, pendingBattleEntry: undefined } : xg1eAttacked;
+    return ok(parked, buildSimpleLogEntry(playerId, "xg1e_attacked_choice"));
+  }
   // RS-215【不滅のマシン帝国】: メカの自軍ユニットがアタックされたとき、手札2枚を捨札にしてバトルを行わなくてもよい。
   const machineEmpire = openMachineEmpireChoice(battleState, pending, wingAttackFromRush);
   // RS-414【ディオネを守る壁】: 冥府神の自軍ユニットがアタックされたとき、常駐を捨札にしてバトルを行わなくてもよい。
@@ -1040,6 +1047,8 @@ function applyActionWithRng(
   next = trackRk12UnitHolds(state, next);
   // XG1-063【トルネードチェイサー】: 手札のカードが捨札に置かれたか（いちばん外側のアクションの前後で見る。rules/xg1/xg1dEffects.ts）。
   if (applyActionDepth === 0) next = xg1dTrackHandDiscards(state, next, action);
+  // XG1-082【戦士シャイダーの遺産】（捨札になったとき）・XG1-092 の数え上げ（rules/xg1/xg1eEffects.ts）。
+  if (applyActionDepth === 0) next = xg1eAfterAction(state, next, action);
   // RK-251 ゴルゴムの仕業を使わなかった: オペレーションの使用（効果の実行）を続ける（rules/rk/rk12UnitEffects.ts）。
   if (next.rk12ResumeOperation && !next.pendingEffectChoice) {
     const op = next.rk12ResumeOperation;
@@ -3195,6 +3204,11 @@ function applyActionCore(
         if ("error" in picked) return fail(picked.error);
         return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
       }
+      if (isXg1eAttackedChoice(pending)) {
+        const picked = resolveXg1eAttacked(state, playerId, action.instanceId);
+        if ("error" in picked) return fail(picked.error);
+        return continueAttackAfterDeclaration(picked.state, picked.battle, picked.wingAttackFromRush);
+      }
       if (pending?.effectId === DIONE_WALL_EFFECT_ID && pending.machineEmpireMeta) {
         const picked = resolveDioneWallPick(state, playerId, action.instanceId);
         if ("error" in picked) return fail(picked.error);
@@ -3315,6 +3329,11 @@ function applyActionCore(
       }
       if (isRm3TentrinaChoice(pending)) {
         const skipped = skipRm3Tentrina(state, playerId);
+        if (!skipped) return fail("invalid_target");
+        return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
+      }
+      if (isXg1eAttackedChoice(pending)) {
+        const skipped = skipXg1eAttacked(state, playerId);
         if (!skipped) return fail("invalid_target");
         return continueAttackAfterDeclaration(skipped.state, skipped.battle, skipped.wingAttackFromRush);
       }

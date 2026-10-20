@@ -42,7 +42,8 @@ import {
 import { XG1_KEYWORDS, XG1_RESOLVERS, XG1_SKIPPERS, noop } from "./xg1Core";
 import { xg1bAfterBattle } from "./xg1bEffects";
 import { xg1cAfterBattle } from "./xg1cEffects";
-import { costNumber, enemySUnits, fieldUnitToCommandReleased, holdThen, isUnitDef, registerHold, releasedCommands, residentZoneCards, unitCatsNow } from "./xg1Shared";
+import { xg1eAfterBattle } from "./xg1eEffects";
+import { costNumber, enemySUnits, fieldUnitToCommandReleased, holdThen, isUnitDef, registerHold, releasedCommands, residentZoneCards, residentsGuarded, unitCatsNow } from "./xg1Shared";
 
 const CATEGORIES = ["WB", "MA", "OT", "ET", "DA"];
 
@@ -87,7 +88,8 @@ XG1_KEYWORDS["XG1-002::denji_stick"] = (state, ctx) => {
   const enemyId = opponent(ctx.playerId);
   const cards = residentZoneCards(state, enemyId);
   if (cards.length < 2) return { state, detail: "xg1_002:fewer_than_two" };
-  const ids = cards.map((e) => e.card.instanceId);
+  // XG1-081【パコの守護神】: 磁雷神のある相手の常駐置き場のカードは選べない（rules/xg1/xg1Shared.ts）。
+  const ids = residentsGuarded(state, enemyId) ? [] : cards.map((e) => e.card.instanceId);
   if (ids.length === 0) return { state, detail: "xg1_002:no_targets" };
   return { state: openAfter(state, { ...pickOne(ctxBase(ctx), "XG1-002", DENJI_STICK_EFFECT_ID, ids, true), kind: "select_unit" }), detail: DENJI_STICK_EFFECT_ID };
 };
@@ -141,7 +143,10 @@ export function xg1aAfterBattle(
   // XG1-037【虚空からの一撃】（rules/xg1/xg1bEffects.ts）。
   const kokuu = xg1bAfterBattle(state, pending.attackerPlayerId, r.attacker, r.defenderOwner, r.defender, r.defenderDestroyed);
   // XG1-042【吸血】・XG1-053【バーニングライダーパンチ】（rules/xg1/xg1cEffects.ts）。
-  const c = xg1cAfterBattle(state, pending, r);
+  const c0 = xg1cAfterBattle(state, pending, r);
+  // XG1-095【カブトランサー】（rules/xg1/xg1eEffects.ts）。
+  const e = xg1eAfterBattle(state, pending, r);
+  const c = c0 && e ? (s: GameState) => e(c0(s)) : (c0 ?? e);
   const before = kokuu && c ? (s: GameState) => c(kokuu(s)) : (kokuu ?? c);
   if (hits.length === 0) return before;
   return (s) => {

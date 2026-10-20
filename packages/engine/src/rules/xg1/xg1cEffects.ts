@@ -14,6 +14,7 @@
  *   - `xg1ForcedAttackFilter`: XG1-053 の「可能なら追加でアタックする」（core/legalActions.ts getLegalActions）。
  * 継続効果（XG1-043 のアタック先・XG1-044 のコマンドゾーンから出す・XG1-045 の特徴・XG1-058 の BP）は rules/xg1/xg1Fields.ts。
  */
+import { collectXg1eTurnEndQueue, openXg1eTurnEndEntry } from "./xg1eEffects";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { GameAction } from "../../types/actions";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
@@ -65,6 +66,7 @@ import {
   registerHold,
   releasedCommands,
   residentZoneCards,
+  residentsGuarded,
   unitCatsNow,
 } from "./xg1Shared";
 
@@ -349,6 +351,8 @@ const ZX_KICK_EFFECT_ID = "xg1_051_zx_kick";
 XG1_KEYWORDS["XG1-051::zx_kick"] = (state, ctx) => {
   const cards = residentZoneCards(state, opponent(ctx.playerId));
   if (cards.length < 2) return { state, detail: "xg1_051:fewer_than_two" };
+  // XG1-081【パコの守護神】: 磁雷神のある相手の常駐置き場のカードは選べない（rules/xg1/xg1Shared.ts）。
+  if (residentsGuarded(state, opponent(ctx.playerId))) return { state, detail: "xg1_051:guarded" };
   return { state: openAfter(state, pickOne(ctxBase(ctx), "XG1-051", ZX_KICK_EFFECT_ID, cards.map((e) => e.card.instanceId), true)), detail: ZX_KICK_EFFECT_ID };
 };
 
@@ -396,10 +400,14 @@ export function collectXg1TurnEndQueue(state: GameState, endingPlayerId: PlayerI
   const otherId = opponent(endingPlayerId);
   for (const c of fieldUnits(state, otherId)) if (isSameCardIdentity(c.cardId, "XG1-052")) out.push(`fire:${c.instanceId}`);
   for (const c of fieldUnits(state, endingPlayerId)) if (isSameCardIdentity(c.cardId, "XG1-053")) out.push(`burn:${c.instanceId}`);
+  // XG1-098【ポイズンアンカー】（rules/xg1/xg1eEffects.ts）。
+  out.push(...collectXg1eTurnEndQueue(state));
   return out;
 }
 
 export function openXg1TurnEndEntry(state: GameState, endingPlayerId: PlayerId, entry: string): GameState {
+  const e = openXg1eTurnEndEntry(state, endingPlayerId, entry);
+  if (e) return e;
   const [kind, instanceId] = entry.split(/:(.*)/s) as [string, string];
   if (kind === "fire") {
     const ownerId = opponent(endingPlayerId);

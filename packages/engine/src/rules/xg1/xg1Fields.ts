@@ -59,6 +59,8 @@ export function xg1EffectiveSp(
   if (isSameCardIdentity(id, "XG1-012") && state.players[playerId].command.every((c) => !c.commandHeld)) return Math.max(sp, 1);
   if (isSameCardIdentity(id, "XG1-026") && state.players[playerId].damage <= 3) return Math.max(sp, 1);
   if (isSameCardIdentity(id, "XG1-020") && effectiveBp(state, playerId, instance) >= 10000) return Math.max(sp, 1);
+  // XG1-086 スピルバン ※「これはBP5000以上のとき「SP1」になる。」（atwiki/page-1674）
+  if (isSameCardIdentity(id, "XG1-086") && effectiveBp(state, playerId, instance) >= 5000) return Math.max(sp, 1);
   return sp;
 }
 
@@ -77,6 +79,16 @@ function areaHas(state: GameState, playerId: PlayerId, cardId: string, zones: Ar
  * - XG1-018 サイレンダーPM【治安維持】: これが自軍バトルエリアにある間、相手は — S ユニットは、M・SC・L ユニットにアタックできない（atwiki/page-1585）。
  */
 export function xg1DefenderBlocksAttack(state: GameState, attackerPlayerId: PlayerId, attacker: CardInstance, defenderPlayerId: PlayerId, defender: CardInstance): boolean {
+  // XG1-084 マッドギャラン【人質と脅迫】「…自分自身の手札を1枚選び捨札にしなければ、このユニットにアタックすることができない。」（atwiki/page-1677）。
+  // 自軍バトルエリアにあるこれには、手札のない相手はアタックできない（捨てる手札はアタックされたとき。rules/xg1/xg1eEffects.ts）。
+  if (
+    isSameCardIdentity(defender.cardId, "XG1-084") &&
+    attackerPlayerId !== defenderPlayerId &&
+    state.players[defenderPlayerId].battle.some((c) => c.instanceId === defender.instanceId) &&
+    state.players[attackerPlayerId].hand.length === 0
+  ) {
+    return true;
+  }
   if (def(state, attacker.cardId)?.size !== "S") return false;
   const d = def(state, defender.cardId);
   if (!d || d.type !== "unit") return false;
@@ -85,6 +97,17 @@ export function xg1DefenderBlocksAttack(state: GameState, attackerPlayerId: Play
   if ((size === "M" || size === "SC" || size === "L") && areaHas(state, other(attackerPlayerId), "XG1-018", ["battle"])) return true;
   void defenderPlayerId;
   return false;
+}
+
+/**
+ * XG1-084 マッドギャラン【人質と脅迫】「これが自軍バトルエリアにある間、相手は次の制限を受ける⇒自分自身のバトルエリアにあるホールド状態のSユニットは
+ * ラッシュエリアに戻せない。…」（atwiki/page-1677）。スタートフェイズに戻さない（rules/startPhase.ts）。
+ */
+export function xg1HostageStaysAtStart(state: GameState, playerId: PlayerId, instanceId: string): boolean {
+  const card = state.players[playerId].battle.find((c) => c.instanceId === instanceId);
+  const d = card ? def(state, card.cardId) : undefined;
+  if (!card || !card.commandHeld || d?.type !== "unit" || d.size !== "S") return false;
+  return state.players[other(playerId)].battle.some((c) => isSameCardIdentity(c.cardId, "XG1-084"));
 }
 
 /**
@@ -253,8 +276,23 @@ export function xg1BpBonus(state: GameState, ownerId: PlayerId, card: CardInstan
     });
     bonus += 1000 * police.length;
   }
+  // XG1-085 ダイアナレディ【レディスナイパー】で得た「BP+2000」（rules/xg1/xg1eEffects.ts xg1eOnEnterTail）。
+  if (rk12TurnPayloads<{ instanceId?: string }>(state, ownerId, XG1_085_LADY_RULE).some((p) => p.instanceId === card.instanceId)) bonus += 2000;
+  // XG1-092 ソルブレイバー【ケルベロスΔ】: このターンに自軍捨札から手札に加えた S ユニットのカード1枚につき BP+2000（rules/xg1/xg1eEffects.ts）。
+  if (isSameCardIdentity(card.cardId, "XG1-092") && rk12TurnPayloads<{ instanceId?: string }>(state, ownerId, XG1_092_KERBEROS_RULE).some((p) => p.instanceId === card.instanceId)) {
+    bonus += 2000 * rk12TurnPayloads(state, ownerId, XG1_092_RECOVER_RULE).length;
+  }
   return bonus;
 }
+
+/** XG1-085【レディスナイパー】で BP+2000 を得たユニット（payload: { instanceId }）。 */
+export const XG1_085_LADY_RULE = "xg1_085_lady_sniper";
+/** XG1-092【ケルベロスΔ】を発動したユニット（payload: { instanceId }）。 */
+export const XG1_092_KERBEROS_RULE = "xg1_092_kerberos_delta";
+/** このターンに自軍捨札から手札に加えた S ユニットのカード（payload: { instanceId }。XG1-092 を持つプレイヤーだけ記録する）。 */
+export const XG1_092_RECOVER_RULE = "xg1_092_recovered_s_unit";
+/** XG1-099【採点】で必要パワーの数字を変えたユニット（payload: { instanceId, cost }）。 */
+export const XG1_099_SAITEN_RULE = "xg1_099_saiten";
 
 /** XG1-068 ディケイド クウガMF【アタックライド】を発動した記録（payload: { instanceId }。rules/xg1/xg1dEffects.ts）。 */
 export const XG1_068_KUUGA_RULE = "xg1_068_kuuga_police";
