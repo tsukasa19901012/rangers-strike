@@ -29,7 +29,7 @@ describe("unitEffectCatalog wiring", () => {
   });
 
   it("lists conditional battle-entry effects excluding super_shield", () => {
-    // Promo reprints (PR-005, PR-007) share an effect with their originals, so compare distinct ids.
+    // PR-005・PR-007 は RS-042・RS-126 の再録で、同じ効果 ID を持つ。
     expect([...new Set(conditional.map((entry) => entry.effectId))].sort()).toEqual(
       [...IMPLEMENTED_CONDITIONAL_EFFECT_IDS].sort(),
     );

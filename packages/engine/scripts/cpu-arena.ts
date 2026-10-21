@@ -44,6 +44,9 @@ const shards = Number(arg("shards", "1"));
 const MAX_STEPS = 6_000;
 const maxMs = { A: 0, B: 0 };
 const moves = { A: 0, B: 0 };
+/** 山札切れで負けた回数（負けた側）。 */
+const deckOuts = { A: 0, B: 0 };
+let turnsTotal = 0;
 
 function play(seed: number, deck1: string, deck2: string, aSeat: PlayerId): { winner: "A" | "B" | null; steps: number; ms: Record<"A" | "B", number> } {
   let state = createStarterGame({
@@ -54,7 +57,11 @@ function play(seed: number, deck1: string, deck2: string, aSeat: PlayerId): { wi
   });
   const ms = { A: 0, B: 0 };
   for (let step = 0; step < MAX_STEPS; step++) {
-    if (state.winner) return { winner: state.winner === aSeat ? "A" : "B", steps: step, ms };
+    if (state.winner) {
+      if (state.log.slice(-4).some((l) => l.includes("deck_out"))) deckOuts[state.winner === aSeat ? "B" : "A"]++;
+      turnsTotal += state.turn;
+      return { winner: state.winner === aSeat ? "A" : "B", steps: step, ms };
+    }
     const actions = getLegalActions(state);
     if (actions.length === 0) break;
     const actor = actions[0]!.playerId;
@@ -107,7 +114,7 @@ const n = a + b;
 const rate = n ? a / n : 0;
 const se = n ? Math.sqrt((rate * (1 - rate)) / n) : 0;
 if (process.argv.includes("--json")) {
-  console.log(JSON.stringify({ a, b, draws, msA: ms.A, msB: ms.B, maxA: maxMs.A, maxB: maxMs.B, movesA: moves.A, movesB: moves.B }));
+  console.log(JSON.stringify({ a, b, draws, msA: ms.A, msB: ms.B, maxA: maxMs.A, maxB: maxMs.B, movesA: moves.A, movesB: moves.B, deckOutA: deckOuts.A, deckOutB: deckOuts.B, turns: turnsTotal }));
   process.exit(0);
 }
 console.log(
