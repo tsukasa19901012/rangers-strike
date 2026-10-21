@@ -388,7 +388,7 @@ export function ridingStep(geometry: GuiGeometry, row: number): number {
 }
 
 /** A held command lies sideways, so its slot is this much wider than an upright card's. */
-export const HELD_SLOT_SCALE = 1.5;
+export const HELD_SLOT_SCALE = 1.3;
 
 type RowTileFields = Pick<GuiTile, "ridingOn" | "instanceId" | "held">;
 
