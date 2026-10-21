@@ -18,6 +18,7 @@ import type { ActionOption, GameSession, StepResult } from "../session/session";
 import { ACTION_LABELS, PHASE_LABELS } from "../text/labels";
 import { clipLine, fitLine, measureText, wrapText, type WrapOptions } from "../text/wrap";
 import { buildPendingView } from "../view/board";
+import { assistMove, DEFAULT_ASSIST, endTurnMove, type AssistSettings } from "./assist";
 import {
   actionExtrasKey,
   actionInstanceIds,
@@ -112,6 +113,16 @@ type DialogItem = { kind: "card"; id: string; items: MenuItem[] } | { kind: "but
 
 const BOARD_MOVES = new Set(["battle", "strike", "pass_battle_entry", "move_to_battle", "end_phase", "charge_power", "rush"]);
 const PASS_LIKE = /^(pass_|skip_|cancel_|end_phase$)/;
+/** Drag and drop: the moves a card dropped on a zone (not on a card) can mean. */
+const DROP_ZONES: Record<string, (action: GameAction) => boolean> = {
+  [`${HUMAN}:rush`]: (a) => a.type === "rush" || (a.type === "initiate_command_payment" && a.kind === "category_use"),
+  [`${HUMAN}:battle`]: (a) => a.type === "move_to_battle" || (a.type === "initiate_command_payment" && a.kind === "battle_entry"),
+  [`${HUMAN}:command`]: (a) => a.type === "charge_command",
+  [`${HUMAN}:power`]: (a) => a.type === "charge_power",
+  [`${CPU}:rush`]: (a) => a.type === "battle" || a.type === "strike",
+  [`${CPU}:battle`]: (a) => a.type === "battle" || a.type === "strike",
+  [`${CPU}:command`]: (a) => a.type === "strike",
+};
 export const TYPE_LABELS: Record<string, string> = {
   unit: "ユニット",
   operation: "オペレーション",
@@ -144,6 +155,10 @@ export class GuiMatch {
   private syncedVersion = -1;
   private toastText = "";
   private toastFrames = 0;
+  /** Moves the GUI makes for the human on its own (assist.ts). */
+  assist: AssistSettings = { ...DEFAULT_ASSIST };
+  /** Turn number the "end turn" button was pressed on, while it is still ending phases. */
+  private endTurnOn: number | null = null;
 
   constructor(
     private readonly engine: EngineApi,
@@ -470,6 +485,82 @@ export class GuiMatch {
     const primary = this.primaryItem();
     if (primary) return this.execute(primary);
     this.openPopup("全体の操作", this.geometry.endButton, this.globalVerbs(), true);
+    return null;
+  }
+
+  // ------------------------------------------------------------ automatic moves
+
+  /** The "end turn" button: ends phases and passes battle entries until the turn is over or a choice comes up. */
+  requestEndTurn(): void {
+    if (!this.humanActive() || this.state().activePlayer !== HUMAN) {
+      this.message = "自分のターンではありません";
+      return;
+    }
+    this.mode = { kind: "board" };
+    this.endTurnOn = this.state().turn;
+  }
+
+  /** The "end turn" button is still working. */
+  get endingTurn(): boolean {
+    return this.endTurnOn !== null;
+  }
+
+  /**
+   * The move the GUI would make for the human now (assist settings, the end-turn
+   * button), or null. Nothing happens while a popup, list or targeting is open.
+   */
+  private autoItem(): { item: MenuItem; endTurn: boolean } | null {
+    if (!this.humanActive() || this.mode.kind !== "board") return null;
+    const options = this.options();
+    if (this.endTurnOn !== null) {
+      const index = this.state().turn === this.endTurnOn ? endTurnMove(this.state(), options) : null;
+      if (index !== null) return { item: { option: options[index]!, index }, endTurn: true };
+      if (this.state().turn === this.endTurnOn) this.message = "ターン終了を止めました: 選ぶ操作があります";
+      this.endTurnOn = null;
+    }
+    const index = assistMove(this.state(), options, this.assist);
+    return index === null ? null : { item: { option: options[index]!, index }, endTurn: false };
+  }
+
+  /** There is a move the GUI will make on its own (the controller paces it like a CPU move). */
+  hasAutoMove(): boolean {
+    this.sync();
+    return this.autoItem() !== null;
+  }
+
+  /** Makes that move. */
+  autoMove(): StepResult | null {
+    this.sync();
+    const auto = this.autoItem();
+    if (!auto) return null;
+    const result = this.execute(auto.item);
+    if (result.ok) this.message = `自動: ${result.label}`;
+    else this.endTurnOn = null;
+    return result;
+  }
+
+  /**
+   * Drag and drop: `fromId` (a card the human can act with) dropped on a card
+   * (`to.instanceId`) or a zone (`to.zone`: a row key such as "player1:battle",
+   * or "player1:power"). The moves of that card that fit the drop run as if
+   * picked from its popup; several of them open the list to pick from.
+   */
+  dropCard(fromId: string, to: { instanceId?: string; zone?: string }): StepResult | null {
+    this.sync();
+    if (!this.humanActive() || this.dialogShown()) return null;
+    this.mode = { kind: "board" };
+    const own = this.allItems().filter((item) => actionSubjectId(item.option.action) === fromId);
+    const onCard = to.instanceId && to.instanceId !== fromId ? own.filter((item) => actionInstanceIds(item.option.action).includes(to.instanceId!)) : [];
+    const fits = DROP_ZONES[to.zone ?? ""];
+    const items = onCard.length > 0 ? onCard : fits ? own.filter((item) => fits(item.option.action)) : [];
+    if (items.length === 0) {
+      if (own.length > 0) this.message = "そこへは動かせません";
+      return null;
+    }
+    const at = this.findTile(fromId);
+    if (at) this.setFocus(at.row, at.index);
+    if (items.length === 1) return this.execute(items[0]!);
+    this.openList(this.instanceName(fromId), items, true);
     return null;
   }
 
