@@ -81,7 +81,8 @@ function hoverMatch(view: GuiView, point: { x: number; y: number }): LogicalInpu
 /** Where a dragged card was dropped: a card on the board, a board row, or the own pile column (power zone). */
 function dropTarget(view: GuiView, p: { x: number; y: number }): { instanceId?: string; zone?: string } {
   for (const row of view.rows) {
-    const tile = row.tiles.find((t) => inside(t.rect, p));
+    // Last first: a riding unit is drawn over its vehicle.
+    const tile = [...row.tiles].reverse().find((t) => inside(t.rect, p));
     if (tile) return { instanceId: tile.instanceId, zone: row.key };
     // The row's band, label column included, takes drops between and beside its cards.
     if (p.y >= row.rect.y && p.y < row.rect.y + row.rect.h && p.x >= view.geometry.board.x && p.x < row.rect.x + row.rect.w) return { zone: row.key };
@@ -291,7 +292,8 @@ export default function App() {
     }
     if (e.kind === "down") {
       pressed = e;
-      const tile = !gui.menuOpen && !gui.dialog && e.button === 0 ? gui.rows.flatMap((row) => row.tiles).find((t) => t.actionable && inside(t.rect, p)) : undefined;
+      let tile = !gui.menuOpen && !gui.dialog && e.button === 0 ? [...gui.rows.flatMap((row) => row.tiles)].reverse().find((t) => inside(t.rect, p)) : undefined;
+      if (tile && !tile.actionable) tile = undefined;
       dragFrom = tile ? { instanceId: tile.instanceId, cardId: tile.cardId, w: tile.rect.w, h: tile.rect.h } : null;
       return false;
     }

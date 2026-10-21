@@ -33,6 +33,7 @@ import {
   locateInstance,
   PHASE_ORDER,
   playerStrip,
+  rowTileRects,
   tileRect,
   topBarText,
   zoneLabel,
@@ -410,7 +411,9 @@ export class GuiMatch {
   private focusedRect(): Rect {
     const row = this.rows[this.focusRow];
     const offset = row ? (this.offsets.get(row.key) ?? 0) : 0;
-    return tileRect(this.geometry, this.focusRow, this.focusIndex - offset);
+    if (!row) return tileRect(this.geometry, this.focusRow, 0);
+    const visible = row.tiles.slice(offset, offset + this.geometry.tilesPerRow);
+    return rowTileRects(this.geometry, this.focusRow, visible)[this.focusIndex - offset] ?? tileRect(this.geometry, this.focusRow, this.focusIndex - offset);
   }
 
   private openCardPopup(): void {
@@ -942,6 +945,7 @@ export class GuiMatch {
     const rows: GuiRowView[] = this.rows.map((row, r) => {
       const offset = this.offsets.get(row.key) ?? 0;
       const visible = row.tiles.slice(offset, offset + g.tilesPerRow);
+      const rects = rowTileRects(g, r, visible);
       return {
         key: row.key,
         zone: row.zone,
@@ -949,7 +953,7 @@ export class GuiMatch {
         active: r === this.focusRow && !dialogShown,
         tiles: visible.map((tile, slot) => {
           const focused = !dialogShown && r === this.focusRow && offset + slot === this.focusIndex;
-          const rect = tileRect(g, r, slot);
+          const rect = rects[slot]!;
           const raised = focused && row.zone === "hand";
           return {
             ...tile,

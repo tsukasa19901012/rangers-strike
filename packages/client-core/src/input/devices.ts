@@ -110,7 +110,8 @@ export function hitTestGui(view: GuiView, point: Point): LogicalInput | null {
     if (view.popup && !view.list) {
       for (let row = 0; row < view.rows.length; row++) {
         const tiles = view.rows[row]!.tiles;
-        for (let slot = 0; slot < tiles.length; slot++) if (inside(tiles[slot]!.rect)) return { type: "focusTile", row, slot, open: true };
+        // Last first: a riding unit is drawn over its vehicle.
+        for (let slot = tiles.length - 1; slot >= 0; slot--) if (inside(tiles[slot]!.rect)) return { type: "focusTile", row, slot, open: true };
       }
     }
     return inside(box.rect) ? null : { type: "cancel" };
@@ -127,7 +128,7 @@ export function hitTestGui(view: GuiView, point: Point): LogicalInput | null {
   }
   for (let row = 0; row < view.rows.length; row++) {
     const tiles = view.rows[row]!.tiles;
-    for (let slot = 0; slot < tiles.length; slot++) {
+    for (let slot = tiles.length - 1; slot >= 0; slot--) {
       if (inside(tiles[slot]!.rect)) return { type: "focusTile", row, slot, open: true };
     }
   }

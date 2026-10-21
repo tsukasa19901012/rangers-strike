@@ -123,6 +123,44 @@ describe("web geometry", () => {
   });
 });
 
+describe("riding pairs", () => {
+  it("stacks a riding unit on its vehicle, and a click on the overlap picks the unit", () => {
+    const app = new AppController({
+      platform: testPlatform(),
+      viewport: { width: 1280, height: 720 },
+      cpuDelayFrames: 0,
+      seed: () => 11,
+      gui: true,
+      cardArt: true,
+      layouts: { match: computeWebGuiGeometry, deck: computeWebDeckGeometry },
+    });
+    app.startMatch();
+    const session = app.session!;
+    const s = session.state;
+    const inst = (cardId: string, suffix: string) => ({ instanceId: `${cardId}:${suffix}`, cardId });
+    // The rider listed before its vehicle still draws on top of it.
+    session.state = {
+      ...s,
+      players: {
+        ...s.players,
+        [HUMAN]: { ...s.players[HUMAN], battle: [{ ...inst("RK-023", "r"), mountedOnInstanceId: "RK-058:v" }, inst("RK-024", "x"), inst("RK-058", "v")] },
+      },
+    };
+    session.version++;
+    const gui = app.view().gui!;
+    const row = gui.rows.find((r) => r.key === `${HUMAN}:battle`)!;
+    expect(row.tiles.map((t) => t.instanceId)).toEqual(["RK-058:v", "RK-023:r", "RK-024:x"]);
+    const [vehicle, rider, other] = row.tiles;
+    expect(rider!.ridingOn).toBe("RK-058:v");
+    expect(rider!.rect.x - vehicle!.rect.x).toBeGreaterThan(0);
+    expect(rider!.rect.x - vehicle!.rect.x).toBeLessThan(vehicle!.rect.w);
+    expect(other!.rect.x).toBeGreaterThanOrEqual(rider!.rect.x + rider!.rect.w);
+    const r = gui.rows.indexOf(row);
+    expect(hitTestGui(gui, { x: rider!.rect.x + 2, y: rider!.rect.y + 10 })).toMatchObject({ type: "focusTile", row: r, slot: 1 });
+    expect(hitTestGui(gui, { x: vehicle!.rect.x + 2, y: vehicle!.rect.y + 10 })).toMatchObject({ type: "focusTile", row: r, slot: 0 });
+  });
+});
+
 describe("pointer shell over the web layout", () => {
   it("plays a match by clicking at the drawn rectangles", () => {
     const app = new AppController({

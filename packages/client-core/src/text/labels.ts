@@ -320,6 +320,10 @@ export function describeAction(
   if (action.type === "end_phase") {
     return `${PHASE_LABELS[state.phase] ?? state.phase}${base}`;
   }
+  // Both answers are legal (ライドしたまま進むのも可 — atwiki p594 Q3): say plainly what each one does.
+  if (action.type === "resolve_ride_off_choice") {
+    return action.rideOff ? "ライドオフする（ビークルから降りる）" : "ライドしたまま進む";
+  }
   // Card names first (they matter most when a narrow screen truncates the row),
   // then the remaining fields in parentheses.
   const cards: string[] = [];
