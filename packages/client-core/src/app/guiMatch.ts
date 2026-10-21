@@ -15,10 +15,10 @@ import { CPU, HUMAN } from "../engineApi";
 import type { LogicalInput } from "../input/actions";
 import { ListCursor } from "../input/actions";
 import type { ActionOption, GameSession, StepResult } from "../session/session";
-import { ACTION_LABELS, PHASE_LABELS } from "../text/labels";
+import { ACTION_LABELS, PHASE_LABELS, revealDestination, revealSummary } from "../text/labels";
 import { cardFieldLines, effectParagraphs } from "../view/cardFields";
 import { clipLine, fitLine, fitLineKeepTail, measureText, wrapText, type WrapOptions } from "../text/wrap";
-import { buildPendingView } from "../view/board";
+import { buildPendingView, viewedCardIds } from "../view/board";
 import { assistMove, DEFAULT_ASSIST, endTurnMove, type AssistSettings } from "./assist";
 import {
   actionExtrasKey,
@@ -72,7 +72,8 @@ export type GuiBox = { rect: Rect; title: string; titleRect: Rect; rows: MenuRow
 export type GuiDialogView = {
   rect: Rect;
   titleLines: PanelLine[];
-  cards: (GuiTile & { rect: Rect; focused: boolean; caption: string; captionRect: Rect })[];
+  /** `note`: a caption that is not where the card is (「見ている」, a revealed card's destination); the card can't be picked. */
+  cards: (GuiTile & { rect: Rect; focused: boolean; caption: string; captionRect: Rect; note?: string })[];
   buttons: MenuRowView[];
   /** Index of the first visible button among all buttons. */
   buttonOffset: number;
@@ -154,6 +155,11 @@ export class GuiMatch {
   private dialogOffset = 0;
   private dialogHidden = false;
   private dialogVersion = -1;
+  /** Seq of the last reveal notice (GameState.lastReveal) shown; a newer one opens the reveal window. */
+  private revealSeen: number;
+  private revealOpen: NonNullable<GameState["lastReveal"]> | null = null;
+  /** A card the shell points at outside the board rows (a discard or power zone card): shown in the detail panel. */
+  inspectCardId: string | null = null;
   private showLog = false;
   private syncedVersion = -1;
   private toastText = "";
@@ -173,6 +179,13 @@ export class GuiMatch {
     private readonly layout: (viewport: Viewport) => GuiGeometry = computeGuiGeometry,
   ) {
     this.geometry = layout(viewport);
+    this.revealSeen = session.state.lastReveal?.seq ?? 0;
+  }
+
+  /** A reveal window is open: the controller holds CPU and assist moves until it is closed. */
+  get revealShown(): boolean {
+    this.sync();
+    return this.revealOpen !== null;
   }
 
   setViewport(viewport: Viewport): void {
@@ -220,6 +233,11 @@ export class GuiMatch {
     this.syncedVersion = this.session.version;
     this.rows = buildGuiRows(this.engine, this.state(), this.geometry, this.options().map((o) => o.action));
     this.mode = { kind: "board" };
+    const reveal = this.state().lastReveal;
+    if (reveal && reveal.seq > this.revealSeen) {
+      this.revealSeen = reveal.seq;
+      this.revealOpen = reveal;
+    }
     if (this.dialogVersion !== this.session.version) {
       this.dialogVersion = this.session.version;
       this.dialogCursor = 0;
@@ -327,7 +345,11 @@ export class GuiMatch {
         cards.set(id, list);
       } else (PASS_LIKE.test(item.option.action.type) ? pass : buttons).push({ kind: "button", items: [item] });
     }
-    return [...[...cards].map(([id, items]) => ({ kind: "card" as const, id, items })), ...buttons, ...pass];
+    // Deck cards the choice is about ("山札の上から1枚を見る"): shown first, only to look at.
+    const viewed = viewedCardIds(this.state())
+      .filter((id) => !cards.has(id))
+      .map((id) => ({ kind: "card" as const, id, items: [] as MenuItem[] }));
+    return [...viewed, ...[...cards].map(([id, items]) => ({ kind: "card" as const, id, items })), ...buttons, ...pass];
   }
 
   // ------------------------------------------------------------ popups
@@ -597,8 +619,15 @@ export class GuiMatch {
       default:
         break;
     }
+    if (this.revealOpen) return this.dispatchReveal(event);
     if (this.dialogShown()) return this.dispatchDialog(event);
     return this.dispatchBoard(event);
+  }
+
+  /** The reveal window closes on a tap, ○ or ×; other input waits until it does. */
+  private dispatchReveal(event: LogicalInput): StepResult | null {
+    if (event.type === "confirm" || event.type === "cancel" || event.type === "select") this.revealOpen = null;
+    return null;
   }
 
   private dispatchBoard(event: LogicalInput): StepResult | null {
@@ -713,7 +742,7 @@ export class GuiMatch {
   }
 
   private pickDialog(item: DialogItem | undefined): StepResult | null {
-    if (!item) return null;
+    if (!item || item.items.length === 0) return null;
     const title = item.kind === "card" ? this.instanceName(item.id) : item.items[0]!.option.label;
     return this.runItems(item.items, title);
   }
@@ -900,7 +929,8 @@ export class GuiMatch {
     const g = this.geometry;
     const state = this.state();
     const mode = this.mode;
-    const dialogShown = this.dialogShown();
+    const reveal = this.revealOpen;
+    const dialogShown = this.dialogShown() && !reveal;
     const dialogItems = this.dialogActive() ? this.dialogItems() : [];
     const targetIds = new Set<string>(
       mode.kind === "target"
@@ -968,14 +998,17 @@ export class GuiMatch {
         const shown = cardItems.slice(this.dialogOffset, this.dialogOffset + visible);
         shown.forEach((item, slot) => {
           const at = locateInstance(state, item.id)!;
-          const tile = cardTile(this.engine, state, at.player, at.zone, at.card, fitTile, true, false);
+          const viewing = item.items.length === 0;
+          // A card the human is looking at is face up to them, even from the enemy deck.
+          const tile = cardTile(this.engine, state, viewing ? HUMAN : at.player, at.zone, at.card, fitTile, !viewing, false);
           const index = this.dialogOffset + slot;
           const rect = { x: base.x + 4 + (slot % per) * (g.tileW + g.tileGap), y: y + Math.floor(slot / per) * (g.tileH + g.lineHeight + 2), w: g.tileW, h: g.tileH };
           cards.push({
             ...tile,
             rect,
             focused: index === this.dialogCursor,
-            caption: clipLine(`${at.player === HUMAN ? "自" : "敵"}${zoneLabel(at.zone)}`, fitTile),
+            caption: clipLine(viewing ? "見ている" : `${at.player === HUMAN ? "自" : "敵"}${zoneLabel(at.zone)}`, fitTile),
+            ...(viewing ? { note: "見ている" } : {}),
             captionRect: { x: rect.x, y: rect.y + rect.h, w: rect.w, h: g.lineHeight },
           });
           if (index === this.dialogCursor) detailCard = { cardId: tile.kind === "hidden" ? null : at.card.cardId, hidden: tile.kind === "hidden" };
@@ -1009,6 +1042,35 @@ export class GuiMatch {
         moreRight: Math.max(0, cardItems.length - this.dialogOffset - visible),
       };
     }
+
+    // --- reveal window: cards an effect turned face up, for both players to see
+    if (reveal) {
+      const base = this.dialogRect();
+      const wrap: WrapOptions = { fontPx: g.fontPx, maxWidthPx: base.w - 8 };
+      let y = base.y + 4;
+      const titleLines: PanelLine[] = wrapText(revealSummary(state, reveal), { ...wrap, maxLines: 2 }).map((text, i) => {
+        const line = { text, tone: (i === 0 ? "accent" : "dim") as PanelTone, rect: { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight } };
+        y += g.lineHeight;
+        return line;
+      });
+      const per = this.dialogCardsPerRow();
+      const shown = reveal.cards.slice(0, this.dialogVisibleCards(reveal.cards.length));
+      const fitTile: WrapOptions = { fontPx: g.fontPx, maxWidthPx: g.tileW - 4 };
+      y += 2;
+      const cards: GuiDialogView["cards"] = shown.map((card, slot) => {
+        const tile = cardTile(this.engine, state, HUMAN, "revealed", { instanceId: card.instanceId, cardId: card.cardId } as never, fitTile, false, false);
+        const rect = { x: base.x + 4 + (slot % per) * (g.tileW + g.tileGap), y: y + Math.floor(slot / per) * (g.tileH + g.lineHeight + 2), w: g.tileW, h: g.tileH };
+        const note = revealDestination(card.destination);
+        return { ...tile, rect, focused: slot === 0, caption: clipLine(note, fitTile), note, captionRect: { x: rect.x, y: rect.y + rect.h, w: rect.w, h: g.lineHeight } };
+      });
+      if (shown[0]) detailCard = { cardId: shown[0].cardId, hidden: false };
+      y += Math.ceil(shown.length / per) * (g.tileH + g.lineHeight + 2);
+      const buttons: MenuRowView[] = [{ text: "閉じる", selected: true, rect: { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight } }];
+      y += g.lineHeight + 4;
+      dialog = { rect: { ...base, h: y - base.y }, titleLines, cards, buttons, buttonOffset: 0, moreLeft: 0, moreRight: Math.max(0, reveal.cards.length - shown.length) };
+    }
+
+    if (this.inspectCardId && !reveal && !dialogShown) detailCard = { cardId: this.inspectCardId, hidden: false };
 
     // --- detail panel (left)
     const detailLines: PanelLine[] = [];
@@ -1168,7 +1230,7 @@ export class GuiMatch {
       dialog,
       footer: fitLine(footer, { fontPx: g.fontPx, maxWidthPx: g.footer.w - 8 }),
       footerAccent: mode.kind === "target" || dialogShown,
-      menuOpen: mode.kind !== "board" || dialogShown,
+      menuOpen: mode.kind !== "board" || dialogShown || !!reveal,
     };
   }
 }

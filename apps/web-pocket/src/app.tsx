@@ -31,7 +31,7 @@ import {
 } from "@rangers-strike/client-core";
 import { webPlatform } from "./platform";
 import { pollCardArt } from "./cardArt";
-import { MatchView, matchButtons, pileHit, pileLayout, type DragView, type PilePeek } from "./MatchView";
+import { MatchView, matchButtons, peekLayout, pileHit, pileLayout, type DragView, type PilePeek } from "./MatchView";
 import { DeckView, deckButtons } from "./DeckView";
 import { TitleView } from "./TitleView";
 import { ResultView } from "./ResultView";
@@ -138,6 +138,11 @@ export default function App() {
       const gui = controller.view().gui;
       return gui && controller.session ? pileLayout(controller.session.state, player, webPileRect(gui.geometry, player)) : null;
     },
+    peekCards: () => {
+      const gui = controller.view().gui;
+      const shown = peek();
+      return gui && shown ? peekLayout(gui.geometry, shown).cards : null;
+    },
   };
   const repeater = new ButtonRepeater(BINDINGS);
 
@@ -159,20 +164,40 @@ export default function App() {
   };
 
   let peekPinned = false;
+  // The detail panel shows a discard or power card the pointer is on (re-rendered here: a hover may change nothing else).
+  const inspect = (cardId: string | null) => {
+    if (controller.inspectCard(cardId)) refresh();
+  };
   function onMatchPointer(e: PointerEvent, gui: GuiView): boolean {
     const p = { x: e.x, y: e.y };
     const buttons = matchButtons(gui.geometry);
     const state = controller.session!.state;
     const pileCard = () =>
       gui.menuOpen ? null : pileHit([CPU, HUMAN].map((player) => pileLayout(state, player, webPileRect(gui.geometry, player))), p);
+    // A face-up card among the enlarged ones under the pointer (its text goes to the detail panel).
+    const shown = peek();
+    const shownLayout = shown ? peekLayout(gui.geometry, shown) : null;
+    const peekCard = () => (shownLayout ? shownLayout.cards.find((c) => !c.hidden && inside(c.rect, p)) ?? null : null);
     // A tapped zone stays open (a touch ends with a leave) until another tap or hovering another zone.
     if (e.kind === "leave") {
-      if (!peekPinned) setPeek(null);
+      if (!peekPinned) {
+        setPeek(null);
+        inspect(null);
+      }
     } else if (e.kind === "move") {
+      const over = peekCard();
       const hit = pileCard();
-      if (hit || !peekPinned) {
-        setPeek(hit);
-        peekPinned = false;
+      if (over) inspect(over.cardId);
+      else {
+        if (hit || !peekPinned) {
+          setPeek(hit);
+          peekPinned = false;
+        }
+        // Hovering a single zone card (a power card) shows it in the detail panel too,
+        // and the discard pile its newest card.
+        const first = hit?.cards[0];
+        const single = hit && first && !first.hidden && (hit.cards.length === 1 || hit.key.startsWith("d:")) ? first.cardId : null;
+        if (hit || !peekPinned) inspect(single);
       }
     }
     if (e.kind === "move" && dragFrom && pressed && Math.abs(pressed.x - e.x) + Math.abs(pressed.y - e.y) > 12) {
@@ -239,6 +264,15 @@ export default function App() {
       setFullText(true);
       return true;
     }
+    // A tap on one of the enlarged cards (the discard pile, the power zone) shows it in the detail panel.
+    const tappedShown = !covering ? peekCard() : null;
+    if (tappedShown) {
+      inspect(tappedShown.cardId);
+      peekPinned = true;
+      return true;
+    }
+    if (shownLayout && !covering && inside(shownLayout.panel, p)) return true;
+    inspect(null);
     // A tap on a pile zone opens what its cards can do (self-rush from the power zone, 常駐 effects);
     // with nothing to do it shows them enlarged (phones have no hover). Any other tap hides them.
     const tapped = pileCard();
@@ -382,7 +416,7 @@ export default function App() {
             hot={hot()}
             footer={matchFooter(gui())}
             leaving={leaving()}
-            peek={peek()}
+            peek={gui().dialog ? null : peek()}
             endingTurn={(gui(), controller.endingTurn)}
             drag={drag()}
             fullText={fullText()}

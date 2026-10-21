@@ -255,3 +255,53 @@ describe("dropCardName", () => {
     expect(dropCardName("ラッシュ: アバレッドAM / アバレッド", "アバレッド")).toBe("ラッシュ: アバレッドAM / アバレッド");
   });
 });
+
+describe("cards an effect shows", () => {
+  it("opens a reveal window for a new lastReveal and holds the CPU until it is closed", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const card = session.state.players.player2.deck[0]!;
+    session.state = {
+      ...session.state,
+      lastReveal: { seq: 1, playerId: "player2", ownerId: "player2", effectLabel: "潜行捜索", from: "deck_top", cards: [{ instanceId: card.instanceId, cardId: card.cardId, destination: "hand" }] },
+    };
+    session.version++;
+    const dialog = app.view().gui!.dialog!;
+    expect(dialog.titleLines[0]!.text).toContain("CPUが山札の上から1枚オモテにした");
+    expect(dialog.cards.map((c) => c.caption)).toEqual(["手札へ"]);
+    expect(dialog.cards[0]!.kind).not.toBe("hidden");
+    const version = session.version;
+    for (let i = 0; i < 20; i++) app.tick();
+    expect(session.version).toBe(version);
+    app.dispatch(input.confirm);
+    expect(app.view().gui!.dialog?.buttons.map((b) => b.text)).not.toEqual(["閉じる"]);
+  });
+
+  it("shows the deck card a choice is looking at (RM-017 オメデトロフィー)", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const top = session.state.players.player1.deck[0]!;
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "rm017_omedetrophy",
+        sourceCardId: "RM-017",
+        kind: "confirm",
+        validInstanceIds: ["deck_top", "deck_bottom"],
+        selectCount: 1,
+        optional: false,
+        rm1Meta: { topInstanceId: top.instanceId },
+      } as never,
+    };
+    session.version++;
+    const dialog = app.view().gui!.dialog!;
+    expect(dialog.cards.map((c) => [c.instanceId, c.caption])).toEqual([[top.instanceId, "見ている"]]);
+    expect(dialog.buttons.map((b) => b.text)).toEqual(["選ぶ: 山札の上", "選ぶ: 山札の下"]);
+    // Picking the card itself does nothing; the buttons still answer the choice.
+    app.dispatch(input.confirm);
+    expect(session.state.pendingEffectChoice?.effectId).toBe("rm017_omedetrophy");
+  });
+});

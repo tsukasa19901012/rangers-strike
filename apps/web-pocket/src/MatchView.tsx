@@ -341,39 +341,41 @@ export function MenuBox(props: { box: GuiBox; accent: boolean }) {
 }
 
 /** A zone's cards enlarged in a row (wrapping): beside the pile column, or over the board on a phone. */
-function PeekPanel(props: { g: GuiGeometry; peek: PilePeek }) {
-  const layout = () => {
-    const g = props.g;
-    const n = props.peek.cards.length;
-    const portrait = isPortrait(g);
-    const pile = webPileRect(g, HUMAN);
-    const captionH = props.peek.cards.some((c) => c.caption) ? 18 : 0;
-    const maxH = g.board.h - 8;
-    // A few cards stay large; many (a long discard pile) take a wider panel and smaller cards so all fit.
-    const fit = (maxW: number, cols: number) => {
-      const gap = cols > 6 ? 4 : 8;
-      const cardW = Math.min(portrait ? 130 : 150, Math.floor((maxW - 16 - gap * (cols - 1)) / cols));
-      const rows = Math.ceil(n / cols);
-      const rowH = Math.round(cardW * CARD_RATIO) + captionH + gap;
-      return { cols, gap, cardW, rowH, fits: 30 + rows * rowH + 4 <= maxH };
-    };
-    const narrowW = portrait ? g.board.w - 16 : 420;
-    const wideW = portrait ? g.board.w - 16 : Math.max(narrowW, pile.x - g.board.x - 20);
-    let best = fit(narrowW, Math.min(n, portrait ? 3 : 4));
-    for (let cols = best.cols + 1; !best.fits && cols <= n; cols++) best = fit(cols > 4 ? wideW : narrowW, cols);
-    const { cols, gap, cardW, rowH } = best;
-    const cardH = Math.round(cardW * CARD_RATIO);
+/** Where the enlarged cards of a pile zone go (also used to hit-test a card in it). */
+export function peekLayout(g: GuiGeometry, peek: PilePeek) {
+  const n = peek.cards.length;
+  const portrait = isPortrait(g);
+  const pile = webPileRect(g, HUMAN);
+  const captionH = peek.cards.some((c) => c.caption) ? 18 : 0;
+  const maxH = g.board.h - 8;
+  // A few cards stay large; many (a long discard pile) take a wider panel and smaller cards so all fit.
+  const fit = (maxW: number, cols: number) => {
+    const gap = cols > 6 ? 4 : 8;
+    const cardW = Math.min(portrait ? 130 : 150, Math.floor((maxW - 16 - gap * (cols - 1)) / cols));
     const rows = Math.ceil(n / cols);
-    const w = cols * cardW + gap * (cols - 1) + 16;
-    const h = 30 + rows * rowH + 4;
-    const x = portrait ? Math.round((g.width - w) / 2) : pile.x - w - 12;
-    const y = portrait ? g.board.y + 8 : Math.max(g.board.y, Math.min(props.peek.anchor.y - 40, g.board.y + g.board.h - h));
-    const cards = props.peek.cards.map((card, i) => ({
-      ...card,
-      rect: { x: x + 8 + (i % cols) * (cardW + gap), y: y + 30 + Math.floor(i / cols) * rowH, w: cardW, h: cardH },
-    }));
-    return { panel: { x, y, w, h }, cards };
+    const rowH = Math.round(cardW * CARD_RATIO) + captionH + gap;
+    return { cols, gap, cardW, rowH, fits: 30 + rows * rowH + 4 <= maxH };
   };
+  const narrowW = portrait ? g.board.w - 16 : 420;
+  const wideW = portrait ? g.board.w - 16 : Math.max(narrowW, pile.x - g.board.x - 20);
+  let best = fit(narrowW, Math.min(n, portrait ? 3 : 4));
+  for (let cols = best.cols + 1; !best.fits && cols <= n; cols++) best = fit(cols > 4 ? wideW : narrowW, cols);
+  const { cols, gap, cardW, rowH } = best;
+  const cardH = Math.round(cardW * CARD_RATIO);
+  const rows = Math.ceil(n / cols);
+  const w = cols * cardW + gap * (cols - 1) + 16;
+  const h = 30 + rows * rowH + 4;
+  const x = portrait ? Math.round((g.width - w) / 2) : pile.x - w - 12;
+  const y = portrait ? g.board.y + 8 : Math.max(g.board.y, Math.min(peek.anchor.y - 40, g.board.y + g.board.h - h));
+  const cards = peek.cards.map((card, i) => ({
+    ...card,
+    rect: { x: x + 8 + (i % cols) * (cardW + gap), y: y + 30 + Math.floor(i / cols) * rowH, w: cardW, h: cardH },
+  }));
+  return { panel: { x, y, w, h }, cards };
+}
+
+function PeekPanel(props: { g: GuiGeometry; peek: PilePeek }) {
+  const layout = () => peekLayout(props.g, props.peek);
   return (
     <>
       <View class="absolute rounded-[12] bg-[#0b1220f5] border-[2] border-amber-300 shadow-lg" style={at(layout().panel)} />
@@ -672,9 +674,9 @@ export function MatchView(props: {
             <Index each={dialog().cards}>
               {(card) => (
                 <>
-                  <Tile tile={card()} rect={card().rect} focused={card().focused} targetable={!card().focused} dimmed={false} actionable={false} />
+                  <Tile tile={card()} rect={card().rect} focused={card().focused} targetable={!card().focused && !card().note} dimmed={false} actionable={false} />
                   <View class="absolute flex-row justify-center" style={at(card().captionRect)}>
-                    <Text class="text-xs text-slate-400">{caption(card().instanceId) ?? card().caption}</Text>
+                    <Text class={card().note ? "text-xs text-amber-200" : "text-xs text-slate-400"}>{card().note ?? caption(card().instanceId) ?? card().caption}</Text>
                   </View>
                 </>
               )}
