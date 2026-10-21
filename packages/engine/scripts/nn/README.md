@@ -80,5 +80,5 @@ python3 scripts/nn/train.py .cache/selfplay/run1 --out .cache/nn/value-v1.json
 scripts/cpu-arena-par.sh --a 5 --b 5 --mirror --games 368 --decks <46 デッキ> --nna .cache/nn/value-v1.json
 ```
 
-`--nna` / `--nnb` を付けた側だけが、決着していない盤面の評価に学習したネットを使います。`ARENA_PROCS=10` で M1 Max の全コアを使えます。
+`--nna` / `--nnb` を付けた側だけが、決着していない盤面の評価に学習したネットを使います。`--nn-blend 0.5` を足すと、ネットだけでなく「手書き評価 + ネットの評価 × 0.5」を使います（約 7,000 試合のネットで Lv5 同士 55.0%、ネットだけでは 49.2%。2026-10-21）。`ARENA_PROCS=10` で M1 Max の全コアを使えます。
 学習版同士で対戦データを集め直すとき（Phase 5）は、`selfplay-par.sh` に `--nn .cache/nn/value-v1.json` を付けます。
