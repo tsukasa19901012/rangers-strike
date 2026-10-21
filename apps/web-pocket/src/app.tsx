@@ -197,12 +197,13 @@ export default function App() {
     hoverKey = "";
     if (e.button === 2) return dispatch(input.cancel);
     if (e.button !== 0) return false;
-    // Any tap closes the whole card text; a tap on a detail panel that cut its text opens it.
+    // Any tap closes the whole card text; a tap on a detail panel that cut its text opens it
+    // (unless a popup or window drawn over the panel takes the tap).
     if (fullText()) {
       setFullText(false);
       return true;
     }
-    if (gui.detailFull && inside(gui.geometry.detail, p)) {
+    if (gui.detailFull && inside(gui.geometry.detail, p) && !hitTestGui(gui, p)) {
       setFullText(true);
       return true;
     }
