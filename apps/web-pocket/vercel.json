@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd ../.. && npm ci --no-audit --no-fund && npm ci --prefix apps/vita/toolchain --no-audit --no-fund",
+  "buildCommand": "node scripts/fetch-fonts.mjs && node scripts/build.mjs",
+  "outputDirectory": "dist",
+  "headers": [
+    {
+      "source": "/cards/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+    },
+    {
+      "source": "/pocket/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" }]
+    }
+  ]
+}
