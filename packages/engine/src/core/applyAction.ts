@@ -78,6 +78,7 @@ import { openBlueMoonSlash, openChargeInsteadOfBattle } from "../rules/legend1/s
 import { withZordFeatureContext } from "../rules/zordFeatureContext";
 import { applySet8AAfterAction, applyThunderboltSword, isSet8AResident } from "../rules/legend1/set8NamedEffectsA";
 import { applySet7DStrikeDamageTriggers, RIDE_OFF_RC_MARK, rideOffBlockedBySet7D } from "../rules/legend1/set7NamedEffectsD";
+import { resolveJointCombosOnEnter } from "../rules/jointComboProcedure";
 import { applyFatalBladeDraws, applySet5StrikeDamageTriggers } from "../rules/legend1/set5AuditFixes";
 import {
   applyGiantBombCounter,
@@ -3865,6 +3866,12 @@ function applyActionCore(
         nextState = applyXg4RideOff(nextState, playerId, unmounted);
       }
 
+      // ライドしたまま進むときは、ビークルと合わせた1つの並びで JC を判定する（進入時は選択の後まで保留。rules/combo.ts）。
+      // ライドオフしたユニットはビークルからコンビネーションするので、ビークルの左のユニットとの JC にはならない。
+      if (!action.rideOff) {
+        const joint = resolveJointCombosOnEnter(nextState, playerId, pending.instanceId);
+        nextState = { ...joint.state, log: [...joint.state.log, ...joint.logs] };
+      }
       // RK-017 ミッションメモリー: ライドしたまま進むことを選んでも、RC の効果を発動する（rules/rk/rk1NamedEffects.ts）。
       if (!action.rideOff) nextState = rk1MissionMemoryOnEntry(nextState, playerId, pending.instanceId) ?? nextState;
       // RK-120 サイドバッシャーVM【ニーラーシャトル】: ライドしたまま進んでも RC の効果を発動する（rules/rk/rk6UnitEffects.ts）。

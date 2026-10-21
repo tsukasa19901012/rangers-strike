@@ -55,6 +55,7 @@ import {
   shouldRunConditionalOnEnter,
 } from "./legend3/battleEffects";
 import { resolveJointCombosOnEnter } from "./jointComboProcedure";
+import { rideOffBlockedBySet7D } from "./legend1/set7NamedEffectsD";
 import { ncGateAllows } from "./ncGatedEffects";
 import { patchPlayer } from "./playerPatches";
 import { applyDestroyOnEnterBattle } from "./destroyOnEnterBattle";
@@ -724,7 +725,16 @@ export function resolveEnterBattleEffectsImpl(
   }
 
   if (shouldRunEnterStep(resumeFrom, "tail")) {
-    const jointResult = resolveJointCombosOnEnter(nextState, playerId, card.instanceId);
+    // ライドして出て、このあとライドオフするかを選ぶときは、並び順が決まる選択の後（resolve_ride_off_choice で
+    // ライドしたまま進んだとき）に JC を判定する。ルール: R-BA（並び順はライドオフするかしないかを選んだ後で確定する）。
+    const entered = nextState.players[playerId].battle.find((c) => c.instanceId === card.instanceId);
+    const rideOffChoiceAhead =
+      !!entered?.mountedOnInstanceId &&
+      !entered.xg7Turn?.noRideOff &&
+      !rideOffBlockedBySet7D(nextState, playerId);
+    const jointResult = rideOffChoiceAhead
+      ? { state: nextState, logs: [] as string[] }
+      : resolveJointCombosOnEnter(nextState, playerId, card.instanceId);
     nextState = jointResult.state;
     logs.push(...jointResult.logs);
 
