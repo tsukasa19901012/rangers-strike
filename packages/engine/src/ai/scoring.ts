@@ -135,6 +135,10 @@ export function setValueEvaluator(evaluator?: ValueEvaluator | null): void {
   valueEvaluator = evaluator ?? null;
 }
 
+export function getValueEvaluator(): ValueEvaluator | null {
+  return valueEvaluator;
+}
+
 /** 指定プレイヤー視点での盤面評価。価値ネットワークが設定されていればそれを使う。 */
 export function evaluateState(state: GameState, playerId: PlayerId): number {
   if (state.winner === playerId) return 100_000;

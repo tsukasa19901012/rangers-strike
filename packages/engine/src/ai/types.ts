@@ -21,6 +21,8 @@ export type CpuLevelConfig = {
   deckGuard?: number;
   /** チャージの先読みで、デッキの中身から決めた方針（パワーの上限・最初のコマンド）を守る。 */
   deckAwareCharge?: boolean;
+  /** 盤面の評価に、同梱の価値ネットワーク（ai/weights）の評価をこの倍率で足す（0／省略で手書きの評価だけ）。 */
+  valueNetBlend?: number;
 };
 
 let overrides: Partial<Record<CpuLevel, Partial<CpuLevelConfig>>> = {};
@@ -41,7 +43,7 @@ const LEVEL_CONFIG: Record<CpuLevel, CpuLevelConfig> = {
   // XG1-C・ライダーEXP1-C などで勝ち数が戻り（32 局で 7→12・10→17）、全体では同等で考える時間が 3 割減（2026-10-21）。
   3: { enableSearch: true, maxCandidates: 44, maxResponseDepth: 14, searchPly: 1, planSamples: 1, planPhases: ["charge"], planChargeTop: 2, comboOrder: 2, deckGuard: 10, deckAwareCharge: true },
   4: { enableSearch: true, maxCandidates: 56, maxResponseDepth: 20, searchPly: 2, planSamples: 1, planPhases: ["charge"], comboOrder: 2, deckGuard: 10, deckAwareCharge: true },
-  5: { enableSearch: true, maxCandidates: 64, maxResponseDepth: 28, searchPly: 2, planSamples: 2, planPhases: ["charge"], comboOrder: 2, deckGuard: 10, deckAwareCharge: true },
+  5: { enableSearch: true, maxCandidates: 64, maxResponseDepth: 28, searchPly: 2, planSamples: 2, planPhases: ["charge"], comboOrder: 2, deckGuard: 10, deckAwareCharge: true, valueNetBlend: 0.5 },
 };
 
 export function getCpuLevelConfig(level: CpuLevel): CpuLevelConfig {

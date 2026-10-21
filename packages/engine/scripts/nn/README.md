@@ -82,3 +82,15 @@ scripts/cpu-arena-par.sh --a 5 --b 5 --mirror --games 368 --decks <46 デッキ>
 
 `--nna` / `--nnb` を付けた側だけが、決着していない盤面の評価に学習したネットを使います。`--nn-blend 0.5` を足すと、ネットだけでなく「手書き評価 + ネットの評価 × 0.5」を使います（約 7,000 試合のネットで Lv5 同士 55.0%、ネットだけでは 49.2%。2026-10-21）。`ARENA_PROCS=10` で M1 Max の全コアを使えます。
 学習版同士で対戦データを集め直すとき（Phase 5）は、`selfplay-par.sh` に `--nn .cache/nn/value-v1.json` を付けます。
+
+## ゲームに同梱する
+
+Lv5 は、手書きの評価に同梱のネットの評価を 0.5 倍して足す（`ai/types.ts` の `valueNetBlend`）。重みを入れ替えるときは:
+
+```bash
+python3 scripts/nn/pack.py .cache/nn/value-v1.json --out src/ai/weights/valueNetV1.ts
+```
+
+- 層の重みは float16 を base64 にした文字列になる（2.9 MB の JSON が 400 KB ほど）。詰める前後の logit の差の最大値も出す。
+- 入れ替える前に、今の Lv5 と対戦台で比べる: `scripts/cpu-arena-par.sh --a 5 --b 5 --ob '{"valueNetBlend":0}' --decks "$(cat .cache/decks.txt)" --mirror`（B が手書きの評価だけの Lv5）。
+- `setValueEvaluator` で外から評価を差し替えているとき（`--nna` など）は、そちらが優先される。

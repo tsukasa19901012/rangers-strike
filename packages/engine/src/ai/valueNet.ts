@@ -7,8 +7,11 @@ export type ValueNetWeights = {
   featureVersion: number;
   mean: number[];
   std: number[];
-  /** w は [出力][入力]。最後の層以外は ReLU を通す。 */
-  layers: { w: number[][]; b: number[] }[];
+  /**
+   * w は [出力][入力]。最後の層以外は ReLU を通す。
+   * 同梱用に詰めたもの（scripts/nn/pack.py）は、w が float16（リトルエンディアン）を base64 にした文字列で、out・inp に形を持つ。
+   */
+  layers: ({ w: number[][]; b: number[] } | { out: number; inp: number; w: string; b: number[] })[];
 };
 
 /** 勝つ確率の logit をこの倍率で手書き評価と同じくらいの幅にする（勝ち負けが決まった盤面の ±100000 よりは十分小さい）。 */
@@ -30,7 +33,11 @@ export function createValueNet(weights: ValueNetWeights): ValueNet {
   if (weights.mean.length !== FEATURE_DIM) throw new Error(`value net expects ${weights.mean.length} features, engine has ${FEATURE_DIM}`);
   const mean = Float32Array.from(weights.mean);
   const invStd = Float32Array.from(weights.std, (s) => 1 / s);
-  const layers = weights.layers.map((l) => ({ out: l.b.length, inp: l.w[0]!.length, w: Float32Array.from(l.w.flat()), b: Float32Array.from(l.b) }));
+  const layers = weights.layers.map((l) =>
+    typeof l.w === "string"
+      ? { out: l.b.length, inp: (l as { inp: number }).inp, w: decodeFloat16(l.w), b: Float32Array.from(l.b) }
+      : { out: l.b.length, inp: l.w[0]!.length, w: Float32Array.from(l.w.flat()), b: Float32Array.from(l.b) },
+  );
 
   const logitFromFeatures = (features: Float32Array): number => {
     let x = Float32Array.from(features);
@@ -55,4 +62,30 @@ export function createValueNet(weights: ValueNetWeights): ValueNet {
     evaluate: (state, playerId) => logit(state, playerId) * LOGIT_SCALE,
     logitFromFeatures,
   };
+}
+
+const BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+/** base64 の float16 列を Float32Array にする（atob の無い実行環境でも動くよう自前で読む）。 */
+function decodeFloat16(text: string): Float32Array {
+  const lookup = new Uint8Array(128);
+  for (let i = 0; i < BASE64.length; i++) lookup[BASE64.charCodeAt(i)] = i;
+  const clean = text.replace(/=+$/, "");
+  const bytes = new Uint8Array(Math.floor((clean.length * 3) / 4));
+  let o = 0;
+  for (let i = 0; i < clean.length; i += 4) {
+    const n = (lookup[clean.charCodeAt(i)]! << 18) | (lookup[clean.charCodeAt(i + 1)]! << 12) | (lookup[clean.charCodeAt(i + 2) || 65]! << 6) | lookup[clean.charCodeAt(i + 3) || 65]!;
+    if (o < bytes.length) bytes[o++] = n >> 16;
+    if (o < bytes.length) bytes[o++] = (n >> 8) & 255;
+    if (o < bytes.length) bytes[o++] = n & 255;
+  }
+  const out = new Float32Array(bytes.length >> 1);
+  for (let i = 0; i < out.length; i++) {
+    const h = bytes[2 * i]! | (bytes[2 * i + 1]! << 8);
+    const sign = h & 0x8000 ? -1 : 1;
+    const exp = (h >> 10) & 0x1f;
+    const frac = h & 0x3ff;
+    out[i] = exp === 0 ? sign * frac * 2 ** -24 : exp === 31 ? (frac ? NaN : sign * Infinity) : sign * (1 + frac / 1024) * 2 ** (exp - 15);
+  }
+  return out;
 }

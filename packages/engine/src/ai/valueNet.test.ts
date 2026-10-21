@@ -3,6 +3,9 @@ import { createValueNet, type ValueNetWeights } from "./valueNet";
 import { FEATURE_DIM, FEATURE_NAMES, FEATURE_VERSION, encodeState } from "./valueFeatures";
 import { evaluateState, heuristicEvaluate, setValueEvaluator } from "./scoring";
 import { deckCards, inst, st } from "../cardSpec/RK1-001-021.helpers";
+import { VALUE_NET_V1 } from "./weights/valueNetV1";
+import { getCpuLevelConfig } from "./types";
+import { pickCpuAction } from "./index";
 
 /** 隠れ層 1 つ（2 ユニット）の小さなネット。self_battle の列だけを見る。 */
 function tinyNet(): ValueNetWeights {
@@ -50,5 +53,23 @@ describe("価値ネットワーク（valueNet）", () => {
       setValueEvaluator(null);
     }
     expect(evaluateState(s, "player1")).toBe(heuristicEvaluate(s, "player1"));
+  });
+
+  it("同梱用に詰めた重み（float16 の base64）を読み、元の重みと同じ値を出す", () => {
+    const base = tinyNet();
+    // [[1, -1]] を float16 にすると 00 3C 00 BC。
+    const packed: ValueNetWeights = { ...base, layers: [base.layers[0]!, { out: 1, inp: 2, w: "ADwAvA==", b: [-0.5] }] };
+    const s = board(1);
+    expect(createValueNet(packed).logitFromFeatures(encodeState(s, "player1"))).toBeCloseTo(0.5, 5);
+  });
+
+  it("同梱の重みは今の特徴の版で読め、Lv5 だけが使う", () => {
+    const net = createValueNet(VALUE_NET_V1);
+    expect(Number.isFinite(net.evaluate(board(2), "player1"))).toBe(true);
+    expect(getCpuLevelConfig(5).valueNetBlend).toBeGreaterThan(0);
+    expect(getCpuLevelConfig(4).valueNetBlend ?? 0).toBe(0);
+    // 指し終わったら評価の差し替えは残さない。
+    pickCpuAction(board(2), "player1", 5);
+    expect(evaluateState(board(2), "player1")).toBe(heuristicEvaluate(board(2), "player1"));
   });
 });
