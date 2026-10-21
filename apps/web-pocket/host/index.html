@@ -11,6 +11,13 @@
   #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
   #screen { display: block; outline: none; touch-action: none; cursor: default; }
   #screen.pointer { cursor: pointer; }
+  .field {
+    position: fixed; display: none; box-sizing: border-box; margin: 0; border: 0; outline: none;
+    background: transparent; color: #e2e8f0; caret-color: #38bdf8; border-radius: 8px;
+    font-family: "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+  }
+  .field:focus { box-shadow: 0 0 0 2px #38bdf8; }
+  .field::placeholder { color: #64748b; }
   #boot {
     position: fixed; inset: 0; display: flex; flex-direction: column; gap: 14px;
     align-items: center; justify-content: center; color: #7dd3fc;

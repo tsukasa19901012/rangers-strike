@@ -1,6 +1,8 @@
 // The deck builder: draws DeckBuilderView (client-core) at the rectangles of
 // the web geometry (computeWebDeckGeometry). The app turns clicks into the
-// builder's logical inputs. No deck rules here.
+// builder's logical inputs. No deck rules here. The search and deck-name
+// fields are only boxes here: the host page puts real text inputs over them
+// (app.tsx sends their rectangles), so phones get their own keyboard and IME.
 import { Index, Show } from "solid-js";
 import { Text, View } from "@pocketjs/framework/solid/components";
 import { isPortrait, type DeckBuilderView, type DeckGeometry } from "@rangers-strike/client-core";
@@ -17,6 +19,12 @@ export function deckButtons(g: DeckGeometry): { menu: Box; prev: Box; next: Box;
     next: { x: g.grid.x + g.grid.w - pagerW, y, w: pagerW, h: 30 },
     pager: { x: g.grid.x + pagerW + 10, y, w: g.grid.w - 2 * (pagerW + 10), h: 30 },
   };
+}
+
+/** Landscape toast: over the bottom of the grid, above the pager (the top bar holds the name field). */
+function toastBox(g: DeckGeometry): Box {
+  const w = Math.round(Math.min(g.grid.w * 0.7, g.width * 0.46));
+  return { x: g.grid.x + Math.round((g.grid.w - w) / 2), y: g.grid.y + g.grid.h - 34, w, h: 28 };
 }
 
 /** Chip captions without the console button names ("(L)", "(△)", "(R)"). */
@@ -41,7 +49,7 @@ export function DeckView(props: { view: DeckBuilderView; hot: string | null; foo
       <Show when={v().toast}>
         <View
           class="absolute flex-row items-center px-[14] rounded-[16] bg-gradient-to-r from-emerald-600 to-teal-700 shadow-md"
-          style={at(portrait() ? { x: 8, y: 6, w: g().width - 120, h: 28 } : { x: Math.round(g().width * 0.45), y: 8, w: Math.round(g().width * 0.32), h: 28 })}
+          style={at(portrait() ? { x: 8, y: 6, w: g().width - 120, h: 28 } : toastBox(g()))}
         >
           <Text class="text-sm text-white font-bold">{v().toast}</Text>
         </View>
@@ -59,6 +67,11 @@ export function DeckView(props: { view: DeckBuilderView; hot: string | null; foo
             <Text class={TONE[line().tone]}>{line().text}</Text>
           </View>
         )}
+      </Index>
+
+      {/* text fields (the host's inputs sit on top) */}
+      <Index each={v().textFields}>
+        {(field) => <View class="absolute rounded-[8] bg-[#0b1220] border border-[#475569]" style={at(field().rect)} />}
       </Index>
 
       {/* filters */}

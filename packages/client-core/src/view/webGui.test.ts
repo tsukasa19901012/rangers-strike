@@ -100,6 +100,22 @@ describe("web geometry", () => {
     }
   });
 
+  it("gives the deck builder non-overlapping chips, search and name fields", () => {
+    const overlap = (a: Rect, b: Rect) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+    for (const size of [...SIZES, ...PORTRAIT_SIZES]) {
+      const g = computeWebDeckGeometry(size);
+      const screen = { x: 0, y: 0, w: g.width, h: g.height };
+      expect(g.chipKeys?.length).toBe(g.chips.length);
+      const boxes = [...g.chips, g.search!, g.nameField!];
+      for (const r of boxes) {
+        expect(within(r, screen)).toBe(true);
+        expect(overlap(r, g.grid)).toBe(false);
+        expect(overlap(r, g.detail)).toBe(false);
+      }
+      for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) expect(overlap(boxes[i]!, boxes[j]!)).toBe(false);
+    }
+  });
+
   it("never lays out below the minimum screen", () => {
     const g = computeWebGuiGeometry({ width: 640, height: 400 });
     expect(g.width).toBe(WEB_MIN_VIEWPORT.width);
