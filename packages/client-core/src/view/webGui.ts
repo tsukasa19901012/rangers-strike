@@ -170,7 +170,9 @@ const PORTRAIT_PHASE_H = 28;
 const PORTRAIT_BUTTONS_H = 48;
 const PORTRAIT_FOOTER_H = 24;
 /** Hand cards that fit across a phone held upright (more are a swipe away). */
-const PORTRAIT_HAND_CARDS = 4;
+const PORTRAIT_HAND_CARDS = 5;
+/** Board cards that fit across one row beside the pile column. */
+const PORTRAIT_BOARD_CARDS = 5;
 
 function computePortraitGuiGeometry(viewport: Viewport): GuiGeometry {
   const width = Math.max(WEB_MIN_PORTRAIT.width, Math.floor(viewport.width));
@@ -197,9 +199,15 @@ function computePortraitGuiGeometry(viewport: Viewport): GuiGeometry {
   const handFit = Math.floor((board.w + gap) / PORTRAIT_HAND_CARDS) - gap;
   const handH = Math.min(Math.round(handFit * CARD_ASPECT), Math.round(rowsHeight(board.h, stripH, gap) * 0.3));
   const handW = Math.floor(handH / CARD_ASPECT);
-  const { rows, tileH, strips } = stackRows(board, board.y, board.h, stripH, gap, handH);
-  const tileW = Math.floor(tileH / CARD_ASPECT);
-  const pileW = clamp(tileW + 12, 56, 80);
+  const stacked = stackRows(board, board.y, board.h, stripH, gap, handH);
+  const { rows, strips } = stacked;
+  // Board tiles stay small enough for PORTRAIT_BOARD_CARDS across (a tall phone leaves room under them).
+  const fitW = (w: number) => Math.floor((w + gap) / PORTRAIT_BOARD_CARDS) - gap;
+  const pileFor = (tileW: number) => clamp(tileW + 12, 56, 80);
+  let tileW = Math.floor(stacked.tileH / CARD_ASPECT);
+  while (tileW > fitW(board.w - pileFor(tileW) - 6)) tileW--;
+  const tileH = Math.min(stacked.tileH, Math.round(tileW * CARD_ASPECT));
+  const pileW = pileFor(tileW);
   rows.forEach((row, i) => {
     if (WEB_GUI_ROWS[i]!.zone !== "hand") row.w -= pileW + 6;
   });
