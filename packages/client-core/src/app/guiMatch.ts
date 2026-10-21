@@ -67,7 +67,10 @@ export type GuiRowView = {
   moreRight: number;
 };
 
-export type GuiBox = { rect: Rect; title: string; titleRect: Rect; rows: MenuRowView[] };
+/** A tappable "more above / below" mark of a window that shows only part of its cards or rows. */
+export type ScrollMark = { text: string; rect: Rect; area: "cards" | "rows"; direction: 1 | -1 };
+
+export type GuiBox = { rect: Rect; title: string; titleRect: Rect; rows: MenuRowView[]; marks?: ScrollMark[] };
 
 export type GuiDialogView = {
   rect: Rect;
@@ -79,6 +82,7 @@ export type GuiDialogView = {
   buttonOffset: number;
   moreLeft: number;
   moreRight: number;
+  marks: ScrollMark[];
 };
 
 export type GuiView = {
@@ -155,6 +159,8 @@ export class GuiMatch {
   private dialogOffset = 0;
   private dialogHidden = false;
   private dialogVersion = -1;
+  /** Buttons the selection window showed at once (a page for scrolling them). */
+  private dialogButtonRows = DIALOG_BUTTONS;
   /** Seq of the last reveal notice (GameState.lastReveal) shown; a newer one opens the reveal window. */
   private revealSeen: number;
   private revealOpen: NonNullable<GameState["lastReveal"]> | null = null;
@@ -711,6 +717,21 @@ export class GuiMatch {
           if (cards < items.length) this.dialogCursor = cards;
         } else this.dialogCursor = clamp(this.dialogCursor + 1);
         break;
+      case "scroll":
+        if (event.area === "cards" && cards > 0) {
+          // A page of cards: the first card of the next (previous) page gets the cursor.
+          const page = this.dialogVisibleCards(cards);
+          const from = onCards ? this.dialogOffset : 0;
+          this.dialogCursor = Math.max(0, Math.min(cards - 1, from + event.direction * page));
+          this.dialogOffset = Math.max(0, Math.min(this.dialogCursor, Math.max(0, cards - page)));
+          if (event.direction < 0) this.dialogCursor = this.dialogOffset;
+          return null;
+        }
+        if (event.area === "rows" && items.length > cards) {
+          const button = onCards ? 0 : this.dialogCursor - cards;
+          this.dialogCursor = cards + Math.max(0, Math.min(items.length - cards - 1, button + event.direction * this.dialogButtonRows));
+        }
+        break;
       case "confirm":
         return this.pickDialog(items[this.dialogCursor]);
       case "select":
@@ -755,6 +776,9 @@ export class GuiMatch {
       case "next":
         mode.cursor.move(1);
         return null;
+      case "scroll":
+        mode.cursor.page(event.direction);
+        return null;
       case "confirm":
         return this.runVerb(mode.verbs[mode.cursor.index]!);
       case "select": {
@@ -793,6 +817,9 @@ export class GuiMatch {
         return null;
       case "pageNext":
         mode.cursor.page(1);
+        return null;
+      case "scroll":
+        mode.cursor.page(event.direction);
         return null;
       case "confirm":
         return this.execute(mode.items[mode.cursor.index]!);
@@ -992,6 +1019,7 @@ export class GuiMatch {
       const per = this.dialogCardsPerRow();
       const visible = this.dialogVisibleCards(cardItems.length);
       const cards: GuiDialogView["cards"] = [];
+      const marks: ScrollMark[] = [];
       const fitTile: WrapOptions = { fontPx: g.fontPx, maxWidthPx: g.tileW - 4 };
       if (cardItems.length > 0) {
         y += 2;
@@ -1014,11 +1042,19 @@ export class GuiMatch {
           if (index === this.dialogCursor) detailCard = { cardId: tile.kind === "hidden" ? null : at.card.cardId, hidden: tile.kind === "hidden" };
         });
         y += Math.ceil(shown.length / per) * (g.tileH + g.lineHeight + 2);
+        const moreRight = Math.max(0, cardItems.length - this.dialogOffset - visible);
+        if (this.dialogOffset > 0 || moreRight > 0) {
+          marks.push(...scrollMarks("cards", this.dialogOffset, moreRight, "枚", { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight }));
+          y += g.lineHeight + 2;
+        }
       }
       const cursor = new ListCursor();
       // As many buttons as the board has room for (a number choice can offer 0〜9 and 選ばない), at least DIALOG_BUTTONS.
       const board = this.geometry.board;
-      cursor.reset(buttonItems.length, Math.max(DIALOG_BUTTONS, Math.floor((board.y + board.h - y - 8) / g.lineHeight)));
+      const room = Math.max(DIALOG_BUTTONS, Math.floor((board.y + board.h - y - 8) / g.lineHeight));
+      // A line for the ▲▼ marks when the buttons don't all fit.
+      cursor.reset(buttonItems.length, buttonItems.length > room ? room - 1 : room);
+      this.dialogButtonRows = cursor.rows;
       const buttonCursor = this.dialogCursor - cardItems.length;
       if (buttonCursor >= 0) {
         cursor.index = buttonCursor;
@@ -1027,7 +1063,13 @@ export class GuiMatch {
       const buttons = this.boxRows(cursor, buttonItems.map((i) => i.items[0]!.option.label), y, base.x + 4, base.w - 8, wrap).map(
         (row) => ({ ...row, selected: row.selected && buttonCursor >= 0 }),
       );
-      y += buttons.length * g.lineHeight + 4;
+      y += buttons.length * g.lineHeight;
+      const below = Math.max(0, buttonItems.length - cursor.offset - cursor.rows);
+      if (cursor.offset > 0 || below > 0) {
+        marks.push(...scrollMarks("rows", cursor.offset, below, "件", { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight }));
+        y += g.lineHeight;
+      }
+      y += 4;
       if (buttonCursor >= 0 || cardItems.length === 0) {
         const sourceId = state.pendingEffectChoice?.sourceCardId ?? state.pendingCommandPayment?.sourceCardId ?? null;
         detailCard = { cardId: sourceId, hidden: false };
@@ -1040,6 +1082,7 @@ export class GuiMatch {
         buttonOffset: cursor.offset,
         moreLeft: this.dialogOffset,
         moreRight: Math.max(0, cardItems.length - this.dialogOffset - visible),
+        marks,
       };
     }
 
@@ -1067,7 +1110,7 @@ export class GuiMatch {
       y += Math.ceil(shown.length / per) * (g.tileH + g.lineHeight + 2);
       const buttons: MenuRowView[] = [{ text: "閉じる", selected: true, rect: { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight } }];
       y += g.lineHeight + 4;
-      dialog = { rect: { ...base, h: y - base.y }, titleLines, cards, buttons, buttonOffset: 0, moreLeft: 0, moreRight: Math.max(0, reveal.cards.length - shown.length) };
+      dialog = { rect: { ...base, h: y - base.y }, titleLines, cards, buttons, buttonOffset: 0, moreLeft: 0, moreRight: Math.max(0, reveal.cards.length - shown.length), marks: [] };
     }
 
     if (this.inspectCardId && !reveal && !dialogShown) detailCard = { cardId: this.inspectCardId, hidden: false };
@@ -1156,7 +1199,8 @@ export class GuiMatch {
       const widest = Math.max(...[mode.title, ...mode.verbs.map((v) => v.label)].map((t) => measureText(t, g.fontPx)));
       const w = Math.min(g.board.w, Math.max(110, Math.ceil(widest) + 12));
       const rowsShown = Math.min(mode.verbs.length, POPUP_ROWS);
-      const h = (rowsShown + 1) * g.lineHeight + 4;
+      const more = mode.verbs.length > POPUP_ROWS ? 1 : 0;
+      const h = (rowsShown + 1 + more) * g.lineHeight + 4;
       const a = mode.anchor;
       const below = a.y + a.h + 2;
       const above = a.y - h - 2;
@@ -1168,11 +1212,13 @@ export class GuiMatch {
         title: fitLine(mode.title, wrap),
         titleRect: { x: x + 4, y: y + 2, w: w - 8, h: g.lineHeight },
         rows: this.boxRows(mode.cursor, mode.verbs.map((v) => v.label), y + 2 + g.lineHeight, x + 4, w - 8, wrap),
+        marks: boxMarks(mode.cursor, { x: x + 4, y: y + 2 + (rowsShown + 1) * g.lineHeight, w: w - 8, h: g.lineHeight }),
       };
     } else if (mode.kind === "list") {
       const b = g.board;
       const rowsShown = Math.min(mode.items.length, LIST_ROWS);
-      const h = (rowsShown + 1) * g.lineHeight + 6;
+      const more = mode.items.length > LIST_ROWS ? 1 : 0;
+      const h = (rowsShown + 1 + more) * g.lineHeight + 6;
       const rect = { x: b.x + 4, y: Math.max(b.y + 2, b.y + Math.floor((b.h - h) / 2)), w: b.w - 8, h };
       const wrap: WrapOptions = { fontPx: g.fontPx, maxWidthPx: rect.w - 8 };
       list = {
@@ -1180,6 +1226,7 @@ export class GuiMatch {
         title: fitLine(`${mode.title} ${mode.cursor.index + 1}/${mode.items.length}`, wrap),
         titleRect: { x: rect.x + 4, y: rect.y + 3, w: rect.w - 8, h: g.lineHeight },
         rows: this.boxRows(mode.cursor, mode.labels, rect.y + 3 + g.lineHeight, rect.x + 4, rect.w - 8, wrap),
+        marks: boxMarks(mode.cursor, { x: rect.x + 4, y: rect.y + 3 + (rowsShown + 1) * g.lineHeight, w: rect.w - 8, h: g.lineHeight }),
       };
     }
 
@@ -1233,6 +1280,19 @@ export class GuiMatch {
       menuOpen: mode.kind !== "board" || dialogShown || !!reveal,
     };
   }
+}
+
+/** "▲ 前へ（3件）" on the left and "▼ 次へ（5件）" on the right of one line, for what is hidden above and below. */
+function scrollMarks(area: ScrollMark["area"], above: number, below: number, unit: string, line: Rect): ScrollMark[] {
+  const half = Math.floor(line.w / 2);
+  const marks: ScrollMark[] = [];
+  if (above > 0) marks.push({ text: `▲ 前へ（${above}${unit}）`, rect: { ...line, w: half - 2 }, area, direction: -1 });
+  if (below > 0) marks.push({ text: `▼ 次へ（${below}${unit}）`, rect: { ...line, x: line.x + half + 2, w: line.w - half - 2 }, area, direction: 1 });
+  return marks;
+}
+
+function boxMarks(cursor: ListCursor, line: Rect): ScrollMark[] {
+  return scrollMarks("rows", cursor.offset, Math.max(0, cursor.count - cursor.offset - cursor.rows), "件", line);
 }
 
 /**

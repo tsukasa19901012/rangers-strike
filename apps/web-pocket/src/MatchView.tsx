@@ -13,6 +13,7 @@ import {
   zoneLabel,
   type GameState,
   type GuiBox,
+  type ScrollMark,
   type GuiGeometry,
   type GuiTile,
   type GuiView,
@@ -318,6 +319,22 @@ function Tile(props: TileState) {
 }
 
 /** Popup next to a card, or the centred list (variants / every action). */
+/** "▲ 前へ（3件）" / "▼ 次へ（5件）": what a window keeps out of view, tapped (or swiped) to page through it. */
+function ScrollMarks(props: { marks: ScrollMark[] | undefined }) {
+  return (
+    <Index each={props.marks ?? []}>
+      {(mark) => (
+        <View
+          class={mark().direction > 0 ? "absolute flex-row items-center justify-end px-[8] rounded-[6] bg-[#334155]" : "absolute flex-row items-center justify-start px-[8] rounded-[6] bg-[#334155]"}
+          style={at({ x: mark().rect.x, y: mark().rect.y + 1, w: mark().rect.w, h: mark().rect.h - 2 })}
+        >
+          <Text class="text-sm text-amber-200 font-bold">{mark().text}</Text>
+        </View>
+      )}
+    </Index>
+  );
+}
+
 export function MenuBox(props: { box: GuiBox; accent: boolean }) {
   return (
     <>
@@ -338,11 +355,11 @@ export function MenuBox(props: { box: GuiBox; accent: boolean }) {
           </View>
         )}
       </Index>
+      <ScrollMarks marks={props.box.marks} />
     </>
   );
 }
 
-/** A zone's cards enlarged in a row (wrapping): beside the pile column, or over the board on a phone. */
 /** Where the enlarged cards of a pile zone go (also used to hit-test a card in it). */
 export function peekLayout(g: GuiGeometry, peek: PilePeek) {
   const n = peek.cards.length;
@@ -376,6 +393,7 @@ export function peekLayout(g: GuiGeometry, peek: PilePeek) {
   return { panel: { x, y, w, h }, cards };
 }
 
+/** A zone's cards enlarged in a row (wrapping): beside the pile column, or over the board on a phone. */
 function PeekPanel(props: { g: GuiGeometry; peek: PilePeek }) {
   const layout = () => peekLayout(props.g, props.peek);
   return (
@@ -700,6 +718,7 @@ export function MatchView(props: {
                 </View>
               )}
             </Index>
+            <ScrollMarks marks={dialog().marks} />
           </>
         )}
       </Show>

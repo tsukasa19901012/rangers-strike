@@ -305,3 +305,52 @@ describe("cards an effect shows", () => {
     expect(session.state.pendingEffectChoice?.effectId).toBe("rm017_omedetrophy");
   });
 });
+
+describe("windows that keep cards or rows out of view", () => {
+  it("pages the selection window's cards and buttons with ▲▼ marks (a phone has no wheel)", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const deck = session.state.players.player1.deck.slice(0, 20).map((c) => c.instanceId);
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "rk319_deck_search",
+        sourceCardId: "RK-319",
+        kind: "select_unit",
+        validInstanceIds: deck,
+        selectCount: 1,
+        optional: true,
+      } as never,
+    };
+    session.version++;
+    let dialog = app.view().gui!.dialog!;
+    const shownCards = dialog.cards.length;
+    expect(shownCards).toBeLessThan(deck.length);
+    const next = dialog.marks.find((m) => m.area === "cards" && m.direction === 1)!;
+    expect(next.text).toBe(`▼ 次へ（${deck.length - shownCards}枚）`);
+    // A tap on the mark shows the next page.
+    app.dispatch(hitTestGui(app.view().gui!, { x: next.rect.x + 2, y: next.rect.y + 2 })!);
+    dialog = app.view().gui!.dialog!;
+    expect(dialog.moreLeft).toBe(shownCards);
+    expect(dialog.marks.some((m) => m.area === "cards" && m.direction === -1)).toBe(true);
+    // Every card can be reached, the last one included.
+    for (let i = 0; i < 10; i++) app.dispatch(input.scroll("cards", 1));
+    dialog = app.view().gui!.dialog!;
+    expect(dialog.cards.map((c) => c.instanceId)).toContain(deck[deck.length - 1]);
+    expect(dialog.moreRight).toBe(0);
+  });
+
+  it("pages a list longer than its window", () => {
+    const app = startGui(5);
+    const gui = () => app.view().gui!;
+    app.dispatch(input.allActions);
+    const list = gui().list;
+    expect(list?.marks?.length).toBeGreaterThan(0);
+    const before = list.rows[0]!.text;
+    app.dispatch(input.scroll("rows", 1));
+    expect(gui().list!.rows[0]!.text).not.toBe(before);
+  });
+});
