@@ -8,11 +8,11 @@
 //   <out>/shard-<k>.f32   Float32 の行。1 行 = [label, game, turn, ...features]（列名は features.json）
 //   <out>/shard-<k>.jsonl 1 試合 1 行のメタ情報（デッキ・レベル・勝者・手数）
 //   <out>/features.json   列名と FEATURE_VERSION
-import { closeSync, mkdirSync, openSync, writeFileSync, writeSync } from "node:fs";
+import { closeSync, mkdirSync, openSync, readFileSync, writeFileSync, writeSync } from "node:fs";
 import { join } from "node:path";
 import { applyAction } from "../src/core/applyAction";
 import { getLegalActions, isLegalAction } from "../src/core/legalActions";
-import { pickCpuAction } from "../src/ai/index";
+import { createValueNet, pickCpuAction, setValueEvaluator } from "../src/ai/index";
 import type { CpuLevel } from "../src/ai/types";
 import { FEATURE_DIM, FEATURE_NAMES, FEATURE_VERSION, encodeState } from "../src/ai/valueFeatures";
 import { ALL_STARTER_DECK_IDS, createStarterGame } from "../src/verticalSlice/createStarterGame";
@@ -41,6 +41,9 @@ const mix = arg("mix", "2:2=45,3:2=20,3:3=20,5:5=15")
 const mixTotal = mix.reduce((s, m) => s + m.w, 0);
 // --explore: この確率で CPU の手のかわりに無作為な合法手を指す（似た局面ばかりになるのを防ぐ）。
 const explore = Number(arg("explore", "0"));
+
+// --nn: 両方の CPU の盤面評価に学習した価値ネットワークを使う（ロードマップ Phase 5 の、学習版同士で集め直すサイクル）。
+if (process.argv.includes("--nn")) setValueEvaluator(createValueNet(JSON.parse(readFileSync(arg("nn", ""), "utf8"))).evaluate);
 
 const MAX_STEPS = 6_000;
 

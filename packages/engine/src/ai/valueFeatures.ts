@@ -12,7 +12,7 @@ import { opponent } from "../core/helpers";
 import { collectZordMaterials, isValidZordUpMaterial, needsZordMaterial } from "../rules/zord";
 import { isZordUpCost } from "@rangers-strike/cards";
 import { deckProfile } from "./deckProfile";
-import { evaluateState } from "./scoring";
+import { heuristicEvaluate } from "./scoring";
 
 export const FEATURE_VERSION = 2;
 
@@ -223,7 +223,7 @@ export function encodeState(state: GameState, playerId: PlayerId): Float32Array 
   put(state.pendingStrike ? 1 : 0);
   put(state.pendingRush ? 1 : 0);
   // 今の手書き評価も入れておく。ネットはここから補正を学べばよいので、少ないデータでも今より悪くなりにくい。
-  put(Math.tanh(evaluateState(state, playerId) / 20_000));
+  put(Math.tanh(heuristicEvaluate(state, playerId) / 20_000));
 
   for (const id of [playerId, enemyId]) {
     const p = state.players[id];
