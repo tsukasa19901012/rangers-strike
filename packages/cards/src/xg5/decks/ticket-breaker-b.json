@@ -1,0 +1,29 @@
+{
+  "id": "ticket-breaker-b",
+  "name": "ザ・チケットブレイカー スターター（type B：カードヒーローデッキ WB+MA）",
+  "starterType": "B",
+  "expansion": "xg5",
+  "source": "https://w.atwiki.jp/renst/pages/2155.html",
+  "entries": [
+    { "cardId": "XG5-068", "count": 1 },
+    { "cardId": "XG5-037", "count": 2 },
+    { "cardId": "XG5-074", "count": 2 },
+    { "cardId": "XG5-038", "count": 2 },
+    { "cardId": "XG5-064", "count": 2 },
+    { "cardId": "XG5-066", "count": 2 },
+    { "cardId": "RS-577", "count": 1 },
+    { "cardId": "RS-574", "count": 2 },
+    { "cardId": "RK-313", "count": 1 },
+    { "cardId": "RK-246", "count": 1 },
+    { "cardId": "RS-335", "count": 1 },
+    { "cardId": "RS-576", "count": 2 },
+    { "cardId": "RK-280", "count": 2 },
+    { "cardId": "RK-237", "count": 3 },
+    { "cardId": "RS-039", "count": 3 },
+    { "cardId": "RS-059", "count": 3 },
+    { "cardId": "RS-575", "count": 2 },
+    { "cardId": "RK-239", "count": 2 },
+    { "cardId": "XG1-067", "count": 3 },
+    { "cardId": "XG1-072", "count": 3 }
+  ]
+}

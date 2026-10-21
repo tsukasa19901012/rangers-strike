@@ -1,0 +1,27 @@
+{
+  "id": "dragon-tiger-a",
+  "name": "ザ・ドラゴンタイガー スターター（type A：ドラゴンストライクデッキ）",
+  "starterType": "A",
+  "expansion": "xg2",
+  "source": "https://w.atwiki.jp/renst/pages/1861.html",
+  "entries": [
+    { "cardId": "XG2-017", "count": 1 },
+    { "cardId": "XG2-079", "count": 2 },
+    { "cardId": "XG2-027", "count": 2 },
+    { "cardId": "XG2-026", "count": 2 },
+    { "cardId": "XG2-010", "count": 2 },
+    { "cardId": "XG2-016", "count": 3 },
+    { "cardId": "RK-243", "count": 3 },
+    { "cardId": "RS-535", "count": 3 },
+    { "cardId": "RS-437", "count": 1 },
+    { "cardId": "RS-291", "count": 2 },
+    { "cardId": "XG1-013", "count": 3 },
+    { "cardId": "XG1-041", "count": 2 },
+    { "cardId": "RS-549", "count": 2 },
+    { "cardId": "RK-201", "count": 3 },
+    { "cardId": "RK-043", "count": 3 },
+    { "cardId": "RS-059", "count": 2 },
+    { "cardId": "RS-681", "count": 2 },
+    { "cardId": "XG1-036", "count": 2 }
+  ]
+}

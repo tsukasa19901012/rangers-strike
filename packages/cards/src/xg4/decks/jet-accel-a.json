@@ -1,0 +1,27 @@
+{
+  "id": "jet-accel-a",
+  "name": "ザ・ジェットアクセル スターター（type A：ライディングデッキ ET+WB）",
+  "starterType": "A",
+  "expansion": "xg4",
+  "source": "https://w.atwiki.jp/renst/pages/1997.html",
+  "entries": [
+    { "cardId": "XG4-088", "count": 1 },
+    { "cardId": "XG4-065", "count": 2 },
+    { "cardId": "XG4-064", "count": 2 },
+    { "cardId": "XG4-077", "count": 3 },
+    { "cardId": "XG4-078", "count": 3 },
+    { "cardId": "XG4-087", "count": 3 },
+    { "cardId": "XG4-086", "count": 3 },
+    { "cardId": "RM-012", "count": 2 },
+    { "cardId": "RM-010", "count": 1 },
+    { "cardId": "XG2-044", "count": 3 },
+    { "cardId": "RM-051", "count": 2 },
+    { "cardId": "XG3-081", "count": 2 },
+    { "cardId": "XG3-078", "count": 2 },
+    { "cardId": "XG3-092", "count": 2 },
+    { "cardId": "XG3-091", "count": 3 },
+    { "cardId": "RM-052", "count": 2 },
+    { "cardId": "RM-053", "count": 2 },
+    { "cardId": "RM-054", "count": 2 }
+  ]
+}

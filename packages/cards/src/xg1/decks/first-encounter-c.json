@@ -1,0 +1,28 @@
+{
+  "id": "first-encounter-c",
+  "name": "ザ・ファーストエンカウント スターター（type C：メカニカルデッキ）",
+  "starterType": "C",
+  "expansion": "xg1",
+  "source": "https://w.atwiki.jp/renst/pages/1692.html",
+  "entries": [
+    { "cardId": "XG1-083", "count": 1 },
+    { "cardId": "XG1-020", "count": 2 },
+    { "cardId": "XG1-016", "count": 1 },
+    { "cardId": "XG1-019", "count": 2 },
+    { "cardId": "XG1-051", "count": 2 },
+    { "cardId": "XG1-015", "count": 2 },
+    { "cardId": "XG1-018", "count": 2 },
+    { "cardId": "XG1-088", "count": 3 },
+    { "cardId": "XG1-090", "count": 3 },
+    { "cardId": "XG1-081", "count": 2 },
+    { "cardId": "RM-003", "count": 1 },
+    { "cardId": "RS-359", "count": 3 },
+    { "cardId": "RK-166", "count": 1 },
+    { "cardId": "RM-020", "count": 3 },
+    { "cardId": "RM-046", "count": 1 },
+    { "cardId": "RS-512", "count": 3 },
+    { "cardId": "RS-357", "count": 3 },
+    { "cardId": "RK-031", "count": 2 },
+    { "cardId": "RS-406", "count": 3 }
+  ]
+}

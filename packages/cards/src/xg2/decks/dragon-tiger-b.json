@@ -1,0 +1,27 @@
+{
+  "id": "dragon-tiger-b",
+  "name": "ザ・ドラゴンタイガー スターター（type B：ファイナルフォームライドデッキ）",
+  "starterType": "B",
+  "expansion": "xg2",
+  "source": "https://w.atwiki.jp/renst/pages/1861.html",
+  "entries": [
+    { "cardId": "XG2-071", "count": 1 },
+    { "cardId": "XG2-076", "count": 2 },
+    { "cardId": "XG2-074", "count": 1 },
+    { "cardId": "XG2-081", "count": 2 },
+    { "cardId": "XG2-078", "count": 2 },
+    { "cardId": "XG2-077", "count": 3 },
+    { "cardId": "XG2-045", "count": 3 },
+    { "cardId": "XG2-073", "count": 2 },
+    { "cardId": "RK-166", "count": 2 },
+    { "cardId": "RK-014", "count": 3 },
+    { "cardId": "RS-455", "count": 1 },
+    { "cardId": "XG1-051", "count": 2 },
+    { "cardId": "RK-146", "count": 3 },
+    { "cardId": "RS-454", "count": 3 },
+    { "cardId": "RS-349", "count": 2 },
+    { "cardId": "RK-031", "count": 3 },
+    { "cardId": "RK-058", "count": 2 },
+    { "cardId": "XG1-081", "count": 3 }
+  ]
+}

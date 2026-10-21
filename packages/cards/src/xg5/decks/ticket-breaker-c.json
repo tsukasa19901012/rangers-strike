@@ -1,0 +1,29 @@
+{
+  "id": "ticket-breaker-c",
+  "name": "ザ・チケットブレイカー スターター（type C：合体ロボデッキ ET）",
+  "starterType": "C",
+  "expansion": "xg5",
+  "source": "https://w.atwiki.jp/renst/pages/2155.html",
+  "entries": [
+    { "cardId": "XG5-006", "count": 1 },
+    { "cardId": "XG5-020", "count": 2 },
+    { "cardId": "XG5-007", "count": 2 },
+    { "cardId": "XG5-008", "count": 2 },
+    { "cardId": "XG5-009", "count": 2 },
+    { "cardId": "XG5-024", "count": 2 },
+    { "cardId": "XG1-089", "count": 1 },
+    { "cardId": "XG1-100", "count": 1 },
+    { "cardId": "RS-439", "count": 1 },
+    { "cardId": "RM-017", "count": 2 },
+    { "cardId": "RS-446", "count": 1 },
+    { "cardId": "RS-472", "count": 2 },
+    { "cardId": "RS-076", "count": 3 },
+    { "cardId": "RS-196", "count": 2 },
+    { "cardId": "RS-197", "count": 2 },
+    { "cardId": "RS-386", "count": 3 },
+    { "cardId": "RS-448", "count": 2 },
+    { "cardId": "XG1-088", "count": 3 },
+    { "cardId": "XG1-090", "count": 3 },
+    { "cardId": "XG4-077", "count": 3 }
+  ]
+}

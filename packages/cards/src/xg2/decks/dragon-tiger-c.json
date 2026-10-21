@@ -1,0 +1,27 @@
+{
+  "id": "dragon-tiger-c",
+  "name": "ザ・ドラゴンタイガー スターター（type C：スペースメカニックデッキ）",
+  "starterType": "C",
+  "expansion": "xg2",
+  "source": "https://w.atwiki.jp/renst/pages/1861.html",
+  "entries": [
+    { "cardId": "XG2-056", "count": 1 },
+    { "cardId": "XG2-035", "count": 2 },
+    { "cardId": "XG2-032", "count": 2 },
+    { "cardId": "XG2-031", "count": 2 },
+    { "cardId": "XG2-034", "count": 2 },
+    { "cardId": "XG2-002", "count": 3 },
+    { "cardId": "XG2-003", "count": 3 },
+    { "cardId": "RM-017", "count": 3 },
+    { "cardId": "RM-012", "count": 2 },
+    { "cardId": "RK-012", "count": 1 },
+    { "cardId": "XG1-066", "count": 3 },
+    { "cardId": "RK-274", "count": 3 },
+    { "cardId": "XG1-088", "count": 3 },
+    { "cardId": "RS-383", "count": 2 },
+    { "cardId": "RK-155", "count": 1 },
+    { "cardId": "RS-130", "count": 2 },
+    { "cardId": "RS-106", "count": 2 },
+    { "cardId": "RK-135", "count": 3 }
+  ]
+}
