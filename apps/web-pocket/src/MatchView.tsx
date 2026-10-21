@@ -283,14 +283,23 @@ function PileCardFace(props: { card: PileCard }) {
   );
 }
 
-type TileState = { tile: GuiTile; rect: Box; focused: boolean; targetable: boolean; dimmed: boolean; actionable: boolean };
+/** `covered`: a unit rides this vehicle and is drawn over all but its left edge. */
+type TileState = { tile: GuiTile; rect: Box; focused: boolean; targetable: boolean; dimmed: boolean; actionable: boolean; covered?: boolean };
 
 function Tile(props: TileState) {
   const badgeH = 20;
   return (
     <>
       <CardFace cardId={props.tile.cardId} hidden={props.tile.kind === "hidden"} name={props.tile.name} rect={props.rect} />
-      <Show when={props.tile.kind !== "hidden" && props.tile.sub}>
+      <Show when={props.tile.ridingOn}>
+        <View
+          class="absolute flex-row items-center justify-center bg-[#0e7490e0] rounded-[3]"
+          style={{ insetL: props.rect.x + 2, insetT: props.rect.y + 2, width: props.rect.w - 4, height: 16 }}
+        >
+          <Text class="text-xs text-white font-bold">ライド中</Text>
+        </View>
+      </Show>
+      <Show when={props.tile.kind !== "hidden" && props.tile.sub && !props.covered}>
         <View
           class="absolute flex-row items-center justify-center bg-[#000000c0] rounded-[3]"
           style={{ insetL: props.rect.x + 2, insetT: props.rect.y + props.rect.h - badgeH - 2, width: props.rect.w - 4, height: badgeH }}
@@ -526,8 +535,9 @@ export function MatchView(props: {
                 </View>
               </Show>
               <Index each={row().tiles}>
-                {(tile) => (
+                {(tile, i) => (
                   <Tile
+                    covered={row().tiles[i + 1]?.ridingOn === tile().instanceId}
                     tile={tile()}
                     rect={tile().rect}
                     focused={tile().focused}

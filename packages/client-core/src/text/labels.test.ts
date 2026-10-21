@@ -25,6 +25,11 @@ describe("describeAction", () => {
     expect(label).toBe(`コマンドを支払って使う: ${name}（種類:カテゴリ）`);
   });
 
+  it("says what each answer of the ride-off choice does", () => {
+    expect(describeAction(state, { type: "resolve_ride_off_choice", playerId: "player1", rideOff: true })).toBe("ライドオフする（ビークルから降りる）");
+    expect(describeAction(state, { type: "resolve_ride_off_choice", playerId: "player1", rideOff: false })).toBe("ライドしたまま進む");
+  });
+
   it("rewrites structured log entries and hides internal markers", () => {
     expect(humanizeLogEntry("phase:battle->end", state)).toBe("── エンドフェイズ ──");
     expect(humanizeLogEntry("player2|pass_battle_entry", state)).toBe("CPU: 進入を終える");
