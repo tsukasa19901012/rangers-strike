@@ -24,7 +24,9 @@ export type LogicalInput =
   /** GUI: direct pick of a visible tile (touch). `open` also opens its action menu. */
   | { type: "focusTile"; row: number; slot: number; open?: boolean }
   /** GUI: open the action menu of cards outside the board rows (power zone, 常駐), anchored at their pile. */
-  | { type: "openCards"; instanceIds: string[]; title: string; anchor: { x: number; y: number; w: number; h: number } };
+  | { type: "openCards"; instanceIds: string[]; title: string; anchor: { x: number; y: number; w: number; h: number } }
+  /** GUI (touch): show the next / previous page of a window's cards or rows (a swipe, or a tap on its ▲▼ mark). */
+  | { type: "scroll"; area: "cards" | "rows"; direction: 1 | -1 };
 
 export const input = {
   prev: { type: "prev" } as LogicalInput,
@@ -42,6 +44,7 @@ export const input = {
   toggleLog: { type: "toggleLog" } as LogicalInput,
   alt: { type: "alt" } as LogicalInput,
   focusTile: (row: number, slot: number, open = false): LogicalInput => ({ type: "focusTile", row, slot, open }),
+  scroll: (area: "cards" | "rows", direction: 1 | -1): LogicalInput => ({ type: "scroll", area, direction }),
   openCards: (instanceIds: string[], title: string, anchor: { x: number; y: number; w: number; h: number }): LogicalInput => ({
     type: "openCards",
     instanceIds,

@@ -222,6 +222,20 @@ export default function App() {
   const inspect = (cardId: string | null) => {
     if (controller.inspectCard(cardId)) refresh();
   };
+  /** Which part of an open window a point is on: its cards or its rows (buttons, menu rows). */
+  function swipeArea(gui: GuiView, p: { x: number; y: number }): "cards" | "rows" | null {
+    const box = gui.list ?? gui.popup;
+    if (box) return inside(box.rect, p) ? "rows" : null;
+    const d = gui.dialog;
+    if (!d || !inside(d.rect, p)) return null;
+    const cards = [...d.cards.map((c) => ({ ...c.rect, h: c.rect.h + 18 })), ...d.marks.filter((m) => m.area === "cards").map((m) => m.rect)];
+    if (cards.length > 0) {
+      const top = Math.min(...cards.map((r) => r.y));
+      const bottom = Math.max(...cards.map((r) => r.y + r.h));
+      if (p.y >= top && p.y < bottom) return "cards";
+    }
+    return "rows";
+  }
   function onMatchPointer(e: PointerEvent, gui: GuiView): boolean {
     const p = { x: e.x, y: e.y };
     const buttons = matchButtons(gui.geometry);
@@ -287,6 +301,8 @@ export default function App() {
       return dispatch(hover) || true;
     }
     if (e.kind === "wheel") {
+      // Over the selection window's cards the wheel moves through the cards, elsewhere through the rows.
+      if (gui.dialog && !gui.popup && !gui.list && swipeArea(gui, p) === "cards") return dispatch((e.dy ?? 0) > 0 ? input.pageNext : input.pagePrev);
       if (gui.popup || gui.list || gui.dialog) return dispatch((e.dy ?? 0) > 0 ? input.next : input.prev);
       return false;
     }
@@ -305,6 +321,11 @@ export default function App() {
     if (down && from && Math.abs(down.x - e.x) + Math.abs(down.y - e.y) > 12) {
       controller.dropCard(from.instanceId, dropTarget(gui, p));
       return true;
+    }
+    // A vertical swipe over a window pages through what it keeps out of view (a phone has no wheel).
+    if (down && Math.abs(down.y - e.y) > 30 && Math.abs(down.y - e.y) > Math.abs(down.x - e.x)) {
+      const area = swipeArea(gui, down);
+      if (area) return dispatch(input.scroll(area, down.y > e.y ? 1 : -1));
     }
     if (!down || Math.abs(down.x - e.x) + Math.abs(down.y - e.y) > 12) return false;
     hoverKey = "";
