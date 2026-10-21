@@ -561,9 +561,6 @@ function pickCpuActionInner(
       const hold = pickHoldBeforeBattle(state, playerId, actions);
       if (hold) return hold;
 
-      const mandatory = pickMandatoryBattleMove(state, playerId, actions);
-      if (mandatory) return mandatory;
-
       const lethalStrike = pickBestStrike(state, playerId, actions);
       if (lethalStrike?.type === "strike") {
         const enemy = state.players[opponent(playerId)];
@@ -577,10 +574,16 @@ function pickCpuActionInner(
       }
 
       // NC が成立する並べ方の最初の 1 体（comboOrder: 1 = 今成立する手だけ、2 = 後の NC のための先出しも）。
+      // 「毎ターン、可能ならバトルエリアに出る」ユニットより先に見る。出る順番までは決まっていない（出ないまま
+      // バトルフェイズを終えられないだけ）のに、先に出して NC の位置をふさいでいた（7弾スターターC の
+      // ゴーオンレッド等。同デッキ同士の Lv2 対戦で 96% 勝つようになった、2026-10-21）。
       if (options.comboOrder) {
         const plan = planComboEntry(state, playerId, actions);
         if (plan && (plan.triggersNow || options.comboOrder >= 2)) return plan.move;
       }
+
+      const mandatory = pickMandatoryBattleMove(state, playerId, actions);
+      if (mandatory) return mandatory;
 
       if (enableSearch) {
         // 出なければならないユニットは上の pickMandatoryBattleMove で見て無かった（同じ状態・同じ合法手なので調べ直さない）。
