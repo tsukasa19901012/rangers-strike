@@ -35,12 +35,14 @@ import {
   fill,
   inst,
   legal,
+  mount,
   p1Battle,
   pick,
   powerCards,
   rcRideOff,
   releasedCat,
   resolveAll,
+  rideOff,
   rushFromHand,
   rushOpen,
   settle,
@@ -433,6 +435,19 @@ describe("RK-147 デンライナーイスルギ", () => {
     // 1番目: クロス1 のユニット（XG7-010）、2番目: イスルギ、3番目に SP1/5 の S ユニット（クロスで 1/4）。
     const s = enter(board({ battle: [inst("XG7-010", "cr"), inst("RK-147", "is")], rush: [inst("SPEC-KAMEN5", "p")] }), "SPEC-KAMEN5:p");
     expect(spOf(s, "player1", "SPEC-KAMEN5:p")).toBe(1);
+  });
+
+  it("RK-147: 仮面ライダー電王RF（SP1/4）がビークルにライドしたまま次に並べば「SP1」になる（ライド中のペアは1つの並び順。出典: atwiki/page-673・R-BA 並び順・grnrngr/faq-rider-1 RK-023）", () => {
+    const entered = mount(board({ battle: [inst("RK-147", "is")], rush: [inst("RK-061", "rf"), inst("SPEC-VEHICLE", "v")] }), "RK-061:rf", "SPEC-VEHICLE:v");
+    const s = resolveAll(rideOff(entered, false));
+    expect(spOf(s, "player1", "RK-061:rf")).toBe(1);
+    expect(canStrike(s, "RK-061:rf")).toBe(true);
+  });
+
+  it("RK-147: ライドオフした電王RF はビークルからコンビネーションするので能力を得ない（出典: atwiki/page-673「このユニットからコンビネーションする」・R-KW-RIDE-05「ライドオフしたユニットはビークルの次に並び、コンビネーションしている扱い」）", () => {
+    const entered = mount(board({ battle: [inst("RK-147", "is")], rush: [inst("RK-061", "rf"), inst("SPEC-VEHICLE", "v")] }), "RK-061:rf", "SPEC-VEHICLE:v");
+    const s = resolveAll(rideOff(entered, true));
+    expect(spOf(s, "player1", "RK-061:rf")).toBe(0);
   });
 
   it.todo(

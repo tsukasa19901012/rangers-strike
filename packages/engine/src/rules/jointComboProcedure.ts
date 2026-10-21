@@ -137,21 +137,29 @@ export function findJointComboTriggersOnEnter(
     }
   }
 
+  // ルール: R-BA（05 §並び順）— ビークルにライドしたまま出たユニットは、ビークルと合わせて1つの並び順を占める。
+  // 左隣の並びは、自分が乗っているビークルのさらに左。
+  const leftIndex =
+    entering.mountedOnInstanceId !== undefined &&
+    battle[enterIndex - 1]?.instanceId === entering.mountedOnInstanceId
+      ? enterIndex - 2
+      : enterIndex - 1;
+
   if (enteringDef.comboNumber === "R") {
-    const partner = battle[enterIndex - 1];
+    const partner = battle[leftIndex];
     if (partner && isJointRPartnerMatch(definitions, entering, partner, categoriesOf)) {
-      triggers.push({ kind: "joint_r", rIndex: enterIndex, partnerIndex: enterIndex - 1 });
+      triggers.push({ kind: "joint_r", rIndex: enterIndex, partnerIndex: leftIndex });
     }
   }
 
-  const left = battle[enterIndex - 1];
+  const left = battle[leftIndex];
   const leftDef = left ? getDefinition(definitions, left.cardId) : undefined;
   if (
     left &&
     leftDef?.comboNumber === "L" &&
     isJointLPartnerMatch(definitions, left, entering, categoriesOf, battle)
   ) {
-    triggers.push({ kind: "joint_l", lIndex: enterIndex - 1, partnerIndex: enterIndex });
+    triggers.push({ kind: "joint_l", lIndex: leftIndex, partnerIndex: enterIndex });
   }
 
   return triggers;
