@@ -9,6 +9,7 @@ import {
   isPortrait,
   locateInstance,
   webPileRect,
+  wrapText,
   zoneLabel,
   type GameState,
   type GuiBox,
@@ -83,7 +84,7 @@ export type PileCard = { cardId: string; hidden: boolean; rect: Box; stack?: Pil
 /** A card in the enlarged view; a caption says what is stacked on what. */
 export type PeekCard = { cardId: string; hidden: boolean; caption?: string };
 type PileSection = { title: string; label: string; tone: string; labelRect: Box; cards: PileCard[]; all: PeekCard[]; count: number; ids: string[] };
-export type PileLayout = { narrow: boolean; deck: Box | null; discard: PileCard | null; discardIds: string[]; discardTap: { rect: Box; top: PeekCard } | null; counts: { text: string; rect: Box }[]; sections: PileSection[] };
+export type PileLayout = { narrow: boolean; deck: Box | null; discard: PileCard | null; discardAll: { title: string; cards: PeekCard[] }; discardIds: string[]; discardTap: { rect: Box } | null; counts: { text: string; rect: Box }[]; sections: PileSection[] };
 /** Cards shown enlarged together: a whole zone, so both cards of a tag operation are side by side. `ids`: the cards a tap can act on. */
 export type PilePeek = { key: string; title: string; cards: PeekCard[]; anchor: Box; ids: string[] };
 
@@ -139,6 +140,8 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
   const all = (cards: readonly ZoneCard[]) => peekCards(cards);
   const bottom = rect.y + rect.h - 6;
   const sections: PileSection[] = [];
+  // The whole discard pile, newest first: hovering or tapping it shows every card, not just the top one.
+  const discardAll = { title: `${who}の捨札（${p.discard.length}枚・新しい順）`, cards: [...p.discard].reverse().map((c) => ({ cardId: c.cardId, hidden: false })) };
   if (narrow) {
     let y = rect.y + 6;
     let discardRow: Box | null = null;
@@ -147,9 +150,8 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
       discardRow = { x: rect.x, y, w: rect.w, h: 18 };
       y += 18;
     }
-    const lastDiscard = p.discard[p.discard.length - 1];
     // No room for the discard image: its count row takes the tap instead.
-    const discardTap = lastDiscard && discardRow ? { rect: discardRow, top: { cardId: lastDiscard.cardId, hidden: false } } : null;
+    const discardTap = p.discard.length > 0 && discardRow ? { rect: discardRow } : null;
     sections.push({ title: `${who}のパワー`, label: `パワー ${p.power.length}`, tone: "text-xs text-amber-300 font-bold", labelRect: { x: rect.x, y, w: rect.w, h: 18 }, cards: [], all: all(p.power), count: p.power.length, ids: p.power.map((c) => c.instanceId) });
     y += 22;
     if (p.operation.length) {
@@ -161,7 +163,7 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
       const cards = p.operation.map((c, i) => ({ cardId: c.cardId, hidden: false, rect: { x: rect.x + Math.round((rect.w - w) / 2), y: y + i * (h + 4), w, h }, stack: pileStack(c), peek: operationPeek(state, who, c) }));
       sections.push({ title: `${who}の常駐`, label: `常駐 ${n}`, tone: "text-xs text-violet-300 font-bold", labelRect, cards, all: all(p.operation), count: n, ids: p.operation.map((c) => c.instanceId) });
     }
-    return { narrow, deck: null, discard: null, discardIds: p.discard.map((c) => c.instanceId), discardTap, counts, sections };
+    return { narrow, deck: null, discard: null, discardAll, discardIds: p.discard.map((c) => c.instanceId), discardTap, counts, sections };
   }
   const cardW = Math.min(64, Math.floor((rect.w - 18) / 2));
   const deckRect: Box = { x: x0, y: rect.y + 8, w: cardW, h: Math.round(cardW * CARD_RATIO) };
@@ -196,6 +198,7 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
     narrow,
     deck: p.deck.length > 0 ? deckRect : null,
     discard: top ? { cardId: top.cardId, hidden: false, rect: discardRect } : null,
+    discardAll,
     // A tap on the discard pile opens what its cards can do (self-rush from the discard, discard-paid commands).
     discardIds: p.discard.map((c) => c.instanceId),
     discardTap: null,
@@ -207,12 +210,10 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
 /** The zone under a point (a pile card or a zone label), as the cards to show enlarged. */
 export function pileHit(layouts: PileLayout[], point: { x: number; y: number }): PilePeek | null {
   for (const layout of layouts) {
-    if (layout.discardTap && inside(layout.discardTap.rect, point)) {
-      const tap = layout.discardTap;
-      return { key: `d:${tap.rect.x}:${tap.rect.y}`, title: "捨札の一番上", cards: [tap.top], anchor: tap.rect, ids: layout.discardIds };
-    }
-    if (layout.discard && inside(layout.discard.rect, point)) {
-      return { key: `d:${layout.discard.rect.x}:${layout.discard.rect.y}`, title: "捨札の一番上", cards: [layout.discard], anchor: layout.discard.rect, ids: layout.discardIds };
+    const discardHit = [layout.discardTap?.rect, layout.discard?.rect].find((r) => r && inside(r, point));
+    if (discardHit) {
+      const { title, cards } = layout.discardAll;
+      return { key: `d:${discardHit.x}:${discardHit.y}:${cards.length}`, title, cards, anchor: discardHit, ids: layout.discardIds };
     }
     for (const section of layout.sections) {
       // The last card drawn is on top where cards overlap.
@@ -345,17 +346,26 @@ function PeekPanel(props: { g: GuiGeometry; peek: PilePeek }) {
     const g = props.g;
     const n = props.peek.cards.length;
     const portrait = isPortrait(g);
-    const maxW = portrait ? g.board.w - 16 : 420;
-    const cols = Math.min(n, portrait ? 3 : 4);
-    const gap = 8;
-    const cardW = Math.min(portrait ? 130 : 150, Math.floor((maxW - 16 - gap * (cols - 1)) / cols));
+    const pile = webPileRect(g, HUMAN);
+    const captionH = props.peek.cards.some((c) => c.caption) ? 18 : 0;
+    const maxH = g.board.h - 8;
+    // A few cards stay large; many (a long discard pile) take a wider panel and smaller cards so all fit.
+    const fit = (maxW: number, cols: number) => {
+      const gap = cols > 6 ? 4 : 8;
+      const cardW = Math.min(portrait ? 130 : 150, Math.floor((maxW - 16 - gap * (cols - 1)) / cols));
+      const rows = Math.ceil(n / cols);
+      const rowH = Math.round(cardW * CARD_RATIO) + captionH + gap;
+      return { cols, gap, cardW, rowH, fits: 30 + rows * rowH + 4 <= maxH };
+    };
+    const narrowW = portrait ? g.board.w - 16 : 420;
+    const wideW = portrait ? g.board.w - 16 : Math.max(narrowW, pile.x - g.board.x - 20);
+    let best = fit(narrowW, Math.min(n, portrait ? 3 : 4));
+    for (let cols = best.cols + 1; !best.fits && cols <= n; cols++) best = fit(cols > 4 ? wideW : narrowW, cols);
+    const { cols, gap, cardW, rowH } = best;
     const cardH = Math.round(cardW * CARD_RATIO);
     const rows = Math.ceil(n / cols);
-    const captionH = props.peek.cards.some((c) => c.caption) ? 18 : 0;
-    const rowH = cardH + captionH + gap;
     const w = cols * cardW + gap * (cols - 1) + 16;
     const h = 30 + rows * rowH + 4;
-    const pile = webPileRect(g, HUMAN);
     const x = portrait ? Math.round((g.width - w) / 2) : pile.x - w - 12;
     const y = portrait ? g.board.y + 8 : Math.max(g.board.y, Math.min(props.peek.anchor.y - 40, g.board.y + g.board.h - h));
     const cards = props.peek.cards.map((card, i) => ({
@@ -386,6 +396,39 @@ function PeekPanel(props: { g: GuiGeometry; peek: PilePeek }) {
   );
 }
 
+/** The whole card in the detail panel (attributes and text), over the board, when the panel left some out (a phone). */
+function FullTextPanel(props: { g: GuiGeometry; full: NonNullable<GuiView["detailFull"]> }) {
+  const layout = () => {
+    const g = props.g;
+    const w = Math.min(g.board.w - 16, 520);
+    const wrap = { fontPx: 14, maxWidthPx: w - 24 };
+    const lines = [
+      ...wrapText(props.full.name, wrap).map((text) => ({ text, cls: "text-base text-amber-200 font-bold" })),
+      ...props.full.fields.flatMap((field) => wrapText(field, wrap).map((text) => ({ text, cls: "text-sm text-sky-200" }))),
+      ...wrapText(props.full.text, wrap).map((text) => ({ text, cls: "text-sm text-slate-100" })),
+      { text: "タップで閉じる", cls: "text-xs text-slate-400" },
+    ];
+    const lineH = 20;
+    const h = Math.min(g.board.h - 8, lines.length * lineH + 20);
+    const x = g.board.x + Math.round((g.board.w - w) / 2);
+    const y = g.board.y + 4;
+    const rows = lines.map((l, i) => ({ ...l, rect: { x: x + 12, y: y + 10 + i * lineH, w: w - 24, h: lineH } }));
+    return { panel: { x, y, w, h }, lines: rows.filter((l) => l.rect.y + lineH <= y + h) };
+  };
+  return (
+    <>
+      <View class="absolute rounded-[12] bg-[#0b1220f8] border-[2] border-sky-400 shadow-lg" style={at(layout().panel)} />
+      <Index each={layout().lines}>
+        {(line) => (
+          <View class="absolute flex-row items-center" style={at(line().rect)}>
+            <Text class={line().cls}>{line().text}</Text>
+          </View>
+        )}
+      </Index>
+    </>
+  );
+}
+
 export function MatchView(props: {
   view: GuiView;
   state: GameState;
@@ -396,6 +439,7 @@ export function MatchView(props: {
   /** The end-turn button is still ending phases. */
   endingTurn: boolean;
   drag: DragView | null;
+  fullText: boolean;
 }) {
   const v = () => props.view;
   // Where a selection-window card is ("自コマンド"), unclipped: the 12px caption fits the tile.
@@ -593,6 +637,7 @@ export function MatchView(props: {
 
       {/* a pile zone enlarged: hovered, or tapped on a phone */}
       <Show when={props.peek}>{(peek) => <PeekPanel g={g()} peek={peek()} />}</Show>
+      <Show when={props.fullText && v().detailFull}>{(full) => <FullTextPanel g={g()} full={full()} />}</Show>
 
       {/* toast: over the top bar, or over the phase pills on a phone */}
       <Show when={v().toast}>

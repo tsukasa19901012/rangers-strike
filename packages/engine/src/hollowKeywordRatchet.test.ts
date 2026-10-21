@@ -11,6 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
  * grant_keyword がエンジンで未消費のキーワードは allowlist にあるものだけ許す。
  * 新たな未消費キーワード（実装漏れ）が増えたら fail する。
  * 実装したら allowlist から削除して前進を固定する。
+ * 監査スクリプトを子プロセスで走らせるので、並列実行中でも落ちないよう時間に余裕を持たせる。
  */
 describe("hollow resident ratchet", () => {
   it("does not add new hollow resident operations", () => {
@@ -30,7 +31,7 @@ describe("hollow resident ratchet", () => {
       .filter((k): k is string => !!k);
     const newOnes = current.filter((k) => !allow.has(k));
     expect(newOnes, `未実装の常駐オペが増えています: ${newOnes.join(", ")}`).toEqual([]);
-  });
+  }, 60_000);
 });
 
 describe("hollow keyword ratchet", () => {
@@ -51,5 +52,5 @@ describe("hollow keyword ratchet", () => {
       .filter((k): k is string => !!k);
     const newOnes = current.filter((k) => !allow.has(k));
     expect(newOnes, `未実装キーワードが増えています: ${newOnes.join(", ")}`).toEqual([]);
-  });
+  }, 60_000);
 });

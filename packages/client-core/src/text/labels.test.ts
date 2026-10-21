@@ -43,4 +43,23 @@ describe("describeAction option tokens", () => {
     const action = { type: "resolve_effect_choice", playerId: "player1", instanceId: "deck_top" } as unknown as Parameters<typeof describeAction>[1];
     expect(describeAction(state, action, new Map())).toBe("選ぶ: 山札の上");
   });
+
+  it("labels the reaction windows of the simultaneous order choice", () => {
+    const state = { players: {}, definitions: {}, pendingEffectChoice: { effectId: "simultaneous_order" } } as unknown as Parameters<typeof describeAction>[0];
+    const pick = (instanceId: string) =>
+      describeAction(state, { type: "resolve_effect_choice", playerId: "player1", instanceId } as never, new Map());
+    expect(pick("pendingLeave")).toBe("選ぶ: 場を離れたユニットへの反応を先に処理");
+    expect(pick("pendingStrike")).toBe("選ぶ: ストライクへの反応を先に処理");
+  });
+
+  it("labels card-specific branches and lone confirmations", () => {
+    const choice = (effectId: string) => ({ players: {}, definitions: {}, pendingEffectChoice: { effectId } }) as unknown as Parameters<typeof describeAction>[0];
+    const pick = (effectId: string, instanceId: string) =>
+      describeAction(choice(effectId), { type: "resolve_effect_choice", playerId: "player1", instanceId } as never, new Map());
+    expect(pick("xg1_076_decadriver", "mode_1")).toBe("選ぶ: 「仮面ライダーディケイド」をラッシュ");
+    expect(pick("bk1_belt_mode", "release")).toBe("選ぶ: Sユニットを1体リリース");
+    expect(pick("xg5_007_gogo_change", "release")).toBe("選ぶ: リリース状態で置く");
+    expect(pick("rs384_water_discharge", "rs384_water_discharge")).toBe("選ぶ: 使う");
+    expect(pick("rs485_hamster_destroy_draw", "draw:2")).toBe("選ぶ: 2枚ドロー");
+  });
 });

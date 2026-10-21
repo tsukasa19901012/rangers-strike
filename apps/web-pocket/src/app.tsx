@@ -121,6 +121,8 @@ export default function App() {
   const [hot, setHot] = createSignal<string | null>(null);
   // A pile zone (power, operation, top discard) shown enlarged: hovered, or tapped on a phone.
   const [peek, setPeek] = createSignal<PilePeek | null>(null, { equals: (a, b) => a?.key === b?.key });
+  // The detail panel's card text shown whole over the board (it was cut on a phone).
+  const [fullText, setFullText] = createSignal(false);
   // "Leave the match" asks for a second click within LEAVE_FRAMES.
   const LEAVE_FRAMES = 180;
   let leaveFrames = 0;
@@ -226,14 +228,27 @@ export default function App() {
     hoverKey = "";
     if (e.button === 2) return dispatch(input.cancel);
     if (e.button !== 0) return false;
+    // Any tap closes the whole card text; a tap on a detail panel that cut its text opens it
+    // (unless a popup or window drawn over the panel takes the tap).
+    if (fullText()) {
+      setFullText(false);
+      return true;
+    }
+    const covering = [gui.list?.rect, gui.popup?.rect, gui.dialog?.rect].some((r) => r && inside(r, p));
+    if (gui.detailFull && inside(gui.geometry.detail, p) && !covering) {
+      setFullText(true);
+      return true;
+    }
     // A tap on a pile zone opens what its cards can do (self-rush from the power zone, 常駐 effects);
     // with nothing to do it shows them enlarged (phones have no hover). Any other tap hides them.
     const tapped = pileCard();
     if (tapped && tapped.ids.length > 0) {
       dispatch(input.openCards(tapped.ids, tapped.key.startsWith("d:") ? "捨札" : tapped.title, tapped.anchor));
       if (controller.view().gui?.popup) {
-        setPeek(null);
-        peekPinned = false;
+        // The discard pile stays shown under its menu, so every card in it can be seen on a phone too.
+        const discard = tapped.key.startsWith("d:");
+        setPeek(discard ? tapped : null);
+        peekPinned = discard;
         return true;
       }
     }
@@ -370,6 +385,7 @@ export default function App() {
             peek={peek()}
             endingTurn={(gui(), controller.endingTurn)}
             drag={drag()}
+            fullText={fullText()}
           />
         )}
       </Match>
