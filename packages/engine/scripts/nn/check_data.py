@@ -16,7 +16,9 @@ import numpy as np
 
 def load(run_dir):
     cols = json.load(open(os.path.join(run_dir, "features.json")))["columns"]
-    parts = [np.fromfile(f, dtype=np.float32).reshape(-1, len(cols)) for f in sorted(glob.glob(os.path.join(run_dir, "shard-*.f32")))]
+    raws = [np.fromfile(f, dtype=np.float32) for f in sorted(glob.glob(os.path.join(run_dir, "shard-*.f32")))]
+    # 途中で止めたシャードは最後の行が欠けていることがあるので、行の幅で切り詰める。
+    parts = [r[: len(r) // len(cols) * len(cols)].reshape(-1, len(cols)) for r in raws]
     return cols, np.concatenate(parts)
 
 
@@ -41,11 +43,12 @@ def report(name, p, y):
 def main():
     run_dir = sys.argv[1] if len(sys.argv) > 1 else ".cache/selfplay/run"
     cols, data = load(run_dir)
-    metas = [json.loads(l) for f in glob.glob(os.path.join(run_dir, "shard-*.jsonl")) for l in open(f)]
+    metas = [json.loads(l) for f in glob.glob(os.path.join(run_dir, "shard-*.jsonl")) for l in open(f) if l.strip()]
     y, game, x = data[:, 0].astype(np.float64), data[:, 1].astype(np.int64), data[:, 3:].astype(np.float64)
     print(f"rows {len(y)}, games {len(np.unique(game))} decided / {len(metas)} played, features {x.shape[1]}, label mean {y.mean():.3f}")
-    draws = sum(1 for m in metas if m["winner"] is None)
-    print(f"draws {draws}, avg sec/game {np.mean([m['ms'] for m in metas]) / 1000:.2f}")
+    draws = sum(1 for m in metas if m["winner"] is None and "error" not in m)
+    errors = sum(1 for m in metas if "error" in m)
+    print(f"draws {draws}, errors {errors}, avg sec/game {np.mean([m['ms'] for m in metas if 'ms' in m]) / 1000:.2f}")
     val = (game * 2654435761 % 10) == 0
     ev = cols.index("eval") - 3
     print("validation (10% of games):")

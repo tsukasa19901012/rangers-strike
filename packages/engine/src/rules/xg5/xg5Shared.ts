@@ -86,8 +86,13 @@ export function fieldUnitCount(state: GameState, ownerId: PlayerId): number {
   return fieldUnits(state, ownerId).length;
 }
 
-/** 山札・捨札・手札のカードを持ち主のコマンドゾーンにホールド状態で置く（空きは呼び出し側で確かめる）。 */
-export function cmdHeldPut(state: GameState, ownerId: PlayerId, card: CardInstance, from: "deck" | "discard" | "hand"): GameState {
+/**
+ * 山札・捨札・手札のカードを持ち主のコマンドゾーンにホールド状態で置く（空きは呼び出し側で確かめる）。
+ * 選んだカードがもうそのゾーンにないときは何もしない。選択の途中に割り込んだ効果がそのカードを動かすことがある
+ * （XG5-008 で山札の L ユニットを選ぶ前に、RM-017【オメデトロフィー】がそのカードをコマンドゾーンに置いた。自己対戦 seed 1 game 4907）。
+ */
+export function cmdHeldPut(state: GameState, ownerId: PlayerId, card: CardInstance | undefined, from: "deck" | "discard" | "hand"): GameState {
+  if (!card || !state.players[ownerId][from].some((c) => c.instanceId === card.instanceId)) return state;
   return patchPlayer(state, ownerId, (p) => ({
     ...p,
     [from]: p[from].filter((c) => c.instanceId !== card.instanceId),
