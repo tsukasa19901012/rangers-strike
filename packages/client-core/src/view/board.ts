@@ -101,8 +101,14 @@ export type PendingView = {
   detail?: string;
 };
 
+const ENGINE_EFFECT_LABELS: Record<string, string> = {
+  turn_end_exodus_order: "ターン終了時の処理順（先に処理するユニットを選ぶ）",
+};
+
 /** An effect's name; effects without one (only an internal id such as "rs518_beast_rod") take their card's name. */
 function effectLabel(engine: EngineApi, state: GameState, effectId: string, sourceCardId: string | undefined): string {
+  // Rule-driven choices the engine opens itself have no card behind them.
+  if (sourceCardId === "engine") return ENGINE_EFFECT_LABELS[effectId] ?? "処理順の選択";
   const label = engine.getEffectLabel(effectId);
   if (label !== effectId && !/^[a-z0-9_]+$/.test(label)) return label;
   return (sourceCardId && cardName(state, sourceCardId)) || label;
@@ -136,14 +142,22 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
       detail: sourceText(choice.sourceCardId),
     };
   }
+  if (choice?.kind === "simultaneous_order") {
+    return {
+      actor: who(choice.playerId),
+      title: "処理順の選択: 同時に起きた効果のうち、先に処理するものを選ぶ",
+      source: choice.sourceCardId === "engine" ? undefined : cardName(state, choice.sourceCardId),
+      detail: choice.sourceCardId === "engine" ? undefined : sourceText(choice.sourceCardId),
+    };
+  }
   if (choice) {
     const selected = choice.selectedInstanceIds?.length ?? 0;
     const count = choice.selectCount ? ` ${selected}/${choice.selectCount}` : "";
     return {
       actor: who(choice.playerId),
       title: `効果の選択「${effectLabel(engine, state, choice.effectId, choice.sourceCardId)}」${count}${choice.optional ? "（任意）" : ""}`,
-      source: cardName(state, choice.sourceCardId),
-      detail: sourceText(choice.sourceCardId),
+      source: choice.sourceCardId === "engine" ? undefined : cardName(state, choice.sourceCardId),
+      detail: choice.sourceCardId === "engine" ? undefined : sourceText(choice.sourceCardId),
     };
   }
   const payment = state.pendingCommandPayment;
