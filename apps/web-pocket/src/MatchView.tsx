@@ -52,22 +52,27 @@ export const TONE: Record<PanelTone, string> = {
 };
 
 /** Buttons beside the end-phase button (not part of GuiView; the app handles their clicks). */
-export function matchButtons(g: GuiGeometry): { all: Box; log: Box; leave: Box } {
+export function matchButtons(g: GuiGeometry): { turn: Box; all: Box; log: Box; leave: Box } {
   const e = g.endButton;
   if (isPortrait(g)) {
-    const w = Math.floor((e.x - 8 - 8 - 6) / 2);
+    const w = Math.floor((e.x - 8 - 8 - 12) / 3);
     return {
       leave: { x: g.width - 116, y: 6, w: 108, h: 28 },
-      all: { x: 8, y: e.y, w, h: e.h },
-      log: { x: 8 + w + 6, y: e.y, w, h: e.h },
+      turn: { x: 8, y: e.y, w, h: e.h },
+      all: { x: 8 + w + 6, y: e.y, w, h: e.h },
+      log: { x: 8 + (w + 6) * 2, y: e.y, w, h: e.h },
     };
   }
   return {
     leave: { x: g.width - 176, y: 7, w: 168, h: 30 },
-    all: { x: e.x, y: e.y + e.h + 14, w: e.w, h: 36 },
-    log: { x: e.x, y: e.y + e.h + 58, w: e.w, h: 36 },
+    turn: { x: e.x, y: e.y + e.h + 14, w: e.w, h: 36 },
+    all: { x: e.x, y: e.y + e.h + 58, w: e.w, h: 36 },
+    log: { x: e.x, y: e.y + e.h + 102, w: e.w, h: 36 },
   };
 }
+
+/** A card being dragged: drawn under the pointer. */
+export type DragView = { cardId: string; x: number; y: number; w: number; h: number };
 
 const CARD_RATIO = 190 / 130;
 
@@ -381,7 +386,17 @@ function PeekPanel(props: { g: GuiGeometry; peek: PilePeek }) {
   );
 }
 
-export function MatchView(props: { view: GuiView; state: GameState; hot: string | null; footer: string; leaving: boolean; peek: PilePeek | null }) {
+export function MatchView(props: {
+  view: GuiView;
+  state: GameState;
+  hot: string | null;
+  footer: string;
+  leaving: boolean;
+  peek: PilePeek | null;
+  /** The end-turn button is still ending phases. */
+  endingTurn: boolean;
+  drag: DragView | null;
+}) {
   const v = () => props.view;
   // Where a selection-window card is ("自コマンド"), unclipped: the 12px caption fits the tile.
   const caption = (instanceId: string) => {
@@ -552,16 +567,28 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
         </Show>
       </View>
       <View
+        class={
+          props.endingTurn
+            ? "absolute flex-row items-center justify-center rounded-[8] bg-amber-700 border border-amber-400"
+            : props.hot === "turn"
+              ? "absolute flex-row items-center justify-center rounded-[8] bg-slate-600 border border-slate-400"
+              : "absolute flex-row items-center justify-center rounded-[8] bg-[#1e293b] border border-[#334155]"
+        }
+        style={at(buttons().turn)}
+      >
+        <Text class={props.endingTurn ? "text-sm text-white font-bold" : "text-sm text-slate-100"}>{props.endingTurn ? "終了中…" : "ターン終了"}</Text>
+      </View>
+      <View
         class={props.hot === "all" ? "absolute flex-row items-center justify-center rounded-[8] bg-slate-600 border border-slate-400" : "absolute flex-row items-center justify-center rounded-[8] bg-[#1e293b] border border-[#334155]"}
         style={at(buttons().all)}
       >
-        <Text class="text-sm text-slate-100">すべての操作</Text>
+        <Text class="text-sm text-slate-100">{portrait() ? "全操作" : "すべての操作"}</Text>
       </View>
       <View
         class={props.hot === "log" ? "absolute flex-row items-center justify-center rounded-[8] bg-slate-600 border border-slate-400" : "absolute flex-row items-center justify-center rounded-[8] bg-[#1e293b] border border-[#334155]"}
         style={at(buttons().log)}
       >
-        <Text class="text-sm text-slate-100">ログ / 詳細</Text>
+        <Text class="text-sm text-slate-100">{portrait() ? "ログ" : "ログ / 詳細"}</Text>
       </View>
 
       {/* a pile zone enlarged: hovered, or tapped on a phone */}
@@ -618,6 +645,14 @@ export function MatchView(props: { view: GuiView; state: GameState; hot: string 
               )}
             </Index>
           </>
+        )}
+      </Show>
+
+      <Show when={props.drag}>
+        {(drag) => (
+          <View class="absolute rounded-[8] border-[2] border-amber-300 shadow-lg" style={at({ x: drag().x - drag().w / 2 - 2, y: drag().y - drag().h / 2 - 2, w: drag().w + 4, h: drag().h + 4 })}>
+            <CardFace cardId={drag().cardId} rect={{ x: 2, y: 2, w: drag().w, h: drag().h }} />
+          </View>
         )}
       </Show>
 

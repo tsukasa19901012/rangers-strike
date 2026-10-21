@@ -5,6 +5,8 @@ export type Settings = {
   humanDeck: string;
   cpuDeck: string;
   cpuLevel: number;
+  /** The match makes moves with only one answer for the player (app/assist.ts). Default on. */
+  autoAssist?: boolean;
 };
 
 export type MatchRecord = {
@@ -64,6 +66,7 @@ export class SettingsStore {
         humanDeck: typeof parsed.humanDeck === "string" ? parsed.humanDeck : defaults.humanDeck,
         cpuDeck: typeof parsed.cpuDeck === "string" ? parsed.cpuDeck : defaults.cpuDeck,
         cpuLevel: typeof parsed.cpuLevel === "number" ? parsed.cpuLevel : defaults.cpuLevel,
+        ...(typeof parsed.autoAssist === "boolean" ? { autoAssist: parsed.autoAssist } : defaults.autoAssist !== undefined ? { autoAssist: defaults.autoAssist } : {}),
       };
     } catch {
       return { ...defaults };

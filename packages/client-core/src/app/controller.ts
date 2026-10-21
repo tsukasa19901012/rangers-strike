@@ -12,6 +12,7 @@ import { fitLine, wrapText, type WrapOptions } from "../text/wrap";
 import { boardLines, buildBoardView, buildPendingView, pendingLines } from "../view/board";
 import { computeLayout, type FontPx, type Layout, type Viewport } from "../view/layout";
 import { GuiMatch, type GuiView } from "./guiMatch";
+import { DEFAULT_ASSIST, type AssistSettings } from "./assist";
 import { DeckBuilder, type DeckBuilderView, type DeckGeometry } from "./deckBuilder";
 import type { GuiGeometry } from "../view/gui";
 import { CUSTOM_DECK_PREFIX } from "../platform/settings";
@@ -65,6 +66,12 @@ export type DeckChoice = { id: string; name: string; custom: boolean };
 const MATCH_TABS = ["盤面:CPU", "盤面:自分", "ログ", "詳細"];
 const TITLE_TABS = ["説明", "記録"];
 const CPU_LEVEL_MAX = 5;
+/** Frames before a move the GUI makes for the human, so it can still be seen. */
+const AUTO_DELAY_FRAMES = 12;
+
+function assistSettings(on: boolean): AssistSettings {
+  return on ? { ...DEFAULT_ASSIST } : { autoStep: false, autoStart: false, autoPay: false };
+}
 
 export class AppController {
   private readonly platform: Platform;
@@ -108,6 +115,7 @@ export class AppController {
       humanDeck: options.defaults?.humanDeck ?? "abarenoh",
       cpuDeck: options.defaults?.cpuDeck ?? "dekaranger",
       cpuLevel: options.defaults?.cpuLevel ?? 2,
+      ...(options.defaults?.autoAssist !== undefined ? { autoAssist: options.defaults.autoAssist } : {}),
     });
     // Deck list comes from the engine; the title screen loads it eagerly.
     const loaded = this.platform.assets.loadMatchData({ decks: [] });
@@ -153,6 +161,25 @@ export class AppController {
   }
 
   // ---------------------------------------------------------------- input
+
+  /** Match: the "end turn" button (ends phases until the turn is over or a choice comes up). */
+  endTurn(): void {
+    if (!this.gui || this.screen !== "match") return;
+    this.gui.requestEndTurn();
+    this.touch();
+  }
+
+  /** The end-turn button is still ending phases. */
+  get endingTurn(): boolean {
+    return this.gui?.endingTurn ?? false;
+  }
+
+  /** Match: a card dragged onto a card or a zone (GuiMatch.dropCard). */
+  dropCard(fromId: string, to: { instanceId?: string; zone?: string }): void {
+    if (!this.gui || this.screen !== "match") return;
+    if (this.gui.dropCard(fromId, to)) this.afterStateChange();
+    this.touch();
+  }
 
   dispatch(event: LogicalInput): void {
     if (this.builder && this.screen === "deck") {
@@ -273,6 +300,10 @@ export class AppController {
     if (patch.humanDeck !== undefined && this.deckIds.includes(patch.humanDeck)) this.settings.humanDeck = patch.humanDeck;
     if (patch.cpuDeck !== undefined && this.deckIds.includes(patch.cpuDeck)) this.settings.cpuDeck = patch.cpuDeck;
     if (patch.cpuLevel !== undefined) this.settings.cpuLevel = Math.max(1, Math.min(CPU_LEVEL_MAX, Math.round(patch.cpuLevel)));
+    if (patch.autoAssist !== undefined) {
+      this.settings.autoAssist = patch.autoAssist;
+      if (this.gui) this.gui.assist = assistSettings(patch.autoAssist);
+    }
     this.settingsStore.save(this.settings);
     this.touch();
   }
@@ -369,6 +400,7 @@ export class AppController {
         log: this.platform.log,
       });
       this.gui = this.guiEnabled ? new GuiMatch(engine, this.session, this.viewport, this.cardArt, this.layouts.match) : null;
+      if (this.gui) this.gui.assist = assistSettings(this.settings.autoAssist ?? true);
       this.screen = "match";
       this.tab = 1;
       this.message = "対戦開始";
@@ -409,6 +441,14 @@ export class AppController {
     }
     const toastChanged = this.gui?.frame() ?? false;
     if (toastChanged) this.touch();
+    if (this.gui && session.turnOwner() === "human" && this.gui.hasAutoMove()) {
+      // A move the GUI makes for the human (assist, end-turn button): paced faster than a CPU move.
+      if (++this.framesSinceCpu < Math.min(this.cpuDelayFrames, AUTO_DELAY_FRAMES)) return toastChanged;
+      this.framesSinceCpu = 0;
+      this.gui.autoMove();
+      this.afterStateChange();
+      return true;
+    }
     if (session.turnOwner() !== "cpu") return toastChanged;
     this.framesSinceCpu++;
     if (this.framesSinceCpu < this.cpuDelayFrames) return false;
