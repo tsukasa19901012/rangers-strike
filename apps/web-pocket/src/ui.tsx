@@ -23,13 +23,27 @@ export function TextureImage(props: { texture: number; style: Record<string, num
 }
 
 /**
+ * A held card lies on its side (rules: ホールド = 横向き). The upright card is
+ * shrunk so that, turned 90°, its long side spans the slot width, and it sits
+ * centred above the tile's bottom badge.
+ */
+function sidewaysStyle(slot: Box) {
+  const badge = 22;
+  const long = slot.w;
+  const short = Math.round((slot.w * slot.w) / slot.h);
+  const cx = slot.x + slot.w / 2;
+  const cy = slot.y + Math.max(short / 2, (slot.h - badge) / 2);
+  return { ...at({ x: cx - short / 2, y: cy - long / 2, w: short, h: long }), rotate: 90 };
+}
+
+/**
  * A whole card at `rect`: its image once loaded, a framed placeholder with the
  * name until then (and for cards without an image).
  */
-export function CardFace(props: { cardId: string; hidden?: boolean; name?: string; rect: Box }) {
+export function CardFace(props: { cardId: string; hidden?: boolean; name?: string; rect: Box; sideways?: boolean }) {
   const texture = () => cardTexture(props.hidden ? "back" : props.cardId);
   return (
-    <View class="absolute overflow-hidden rounded-[5] bg-slate-800 border border-slate-600" style={at(props.rect)}>
+    <View class="absolute overflow-hidden rounded-[5] bg-slate-800 border border-slate-600" style={props.sideways ? sidewaysStyle(props.rect) : at(props.rect)}>
       <Show
         when={texture() >= 0}
         fallback={

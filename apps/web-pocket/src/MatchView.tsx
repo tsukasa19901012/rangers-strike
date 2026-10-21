@@ -309,7 +309,7 @@ function Tile(props: TileState) {
   const badgeH = 20;
   return (
     <>
-      <CardFace cardId={props.tile.cardId} hidden={props.tile.kind === "hidden"} name={props.tile.name} rect={props.rect} />
+      <CardFace cardId={props.tile.cardId} hidden={props.tile.kind === "hidden"} name={props.tile.name} rect={props.rect} sideways={props.tile.held} />
       <Show when={props.tile.ridingOn}>
         <View
           class="absolute flex-row items-center justify-center bg-[#0e7490e0] rounded-[3]"
