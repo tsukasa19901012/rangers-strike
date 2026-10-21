@@ -74,14 +74,9 @@ function rowsHeight(height: number, stripH: number, rowGap: number): number {
   return height - stripH * 2 - 12 - rowGap * (WEB_GUI_ROWS.length - 1);
 }
 
-/**
- * Rows and strips stacked from `top`, the tile size filling `height`.
- * `handH`: the hand row's own height (a phone's larger hand); the other rows share the rest.
- */
-function stackRows(board: Rect, top: number, height: number, stripH: number, rowGap: number, handH?: number) {
-  const rowCount = WEB_GUI_ROWS.length;
-  const shared = rowsHeight(height, stripH, rowGap);
-  const tileH = handH === undefined ? Math.floor(shared / rowCount) : Math.floor((shared - handH) / (rowCount - 1));
+/** Rows and strips stacked from `top`, the tile size filling `height`. */
+function stackRows(board: Rect, top: number, height: number, stripH: number, rowGap: number) {
+  const tileH = Math.floor(rowsHeight(height, stripH, rowGap) / WEB_GUI_ROWS.length);
   const rows: Rect[] = [];
   let y = top;
   const cpuStrip: Rect = { x: board.x, y, w: board.w, h: stripH };
@@ -93,9 +88,8 @@ function stackRows(board: Rect, top: number, height: number, stripH: number, row
       humanStrip = { x: board.x, y, w: board.w, h: stripH };
       y += stripH + 4;
     }
-    const h = def.zone === "hand" && handH !== undefined ? handH : tileH;
-    rows.push({ x: board.x, y, w: board.w, h });
-    y += h + rowGap;
+    rows.push({ x: board.x, y, w: board.w, h: tileH });
+    y += tileH + rowGap;
   }
   return { rows, tileH, strips: [cpuStrip, humanStrip] as [Rect, Rect] };
 }
@@ -169,8 +163,6 @@ const PORTRAIT_TOP_H = 40;
 const PORTRAIT_PHASE_H = 28;
 const PORTRAIT_BUTTONS_H = 48;
 const PORTRAIT_FOOTER_H = 24;
-/** Hand cards that fit across a phone held upright (more are a swipe away). */
-const PORTRAIT_HAND_CARDS = 5;
 /** Board cards that fit across one row beside the pile column. */
 const PORTRAIT_BOARD_CARDS = 5;
 
@@ -195,13 +187,9 @@ function computePortraitGuiGeometry(viewport: Viewport): GuiGeometry {
 
   const gap = 4;
   const stripH = 22;
-  // The hand: PORTRAIT_HAND_CARDS across the whole width, at most 30% of the rows' height.
-  const handFit = Math.floor((board.w + gap) / PORTRAIT_HAND_CARDS) - gap;
-  const handH = Math.min(Math.round(handFit * CARD_ASPECT), Math.round(rowsHeight(board.h, stripH, gap) * 0.3));
-  const handW = Math.floor(handH / CARD_ASPECT);
-  const stacked = stackRows(board, board.y, board.h, stripH, gap, handH);
+  const stacked = stackRows(board, board.y, board.h, stripH, gap);
   const { rows, strips } = stacked;
-  // Board tiles stay small enough for PORTRAIT_BOARD_CARDS across (a tall phone leaves room under them).
+  // Every row, the hand too, uses one tile size: small enough for PORTRAIT_BOARD_CARDS beside the pile.
   const fitW = (w: number) => Math.floor((w + gap) / PORTRAIT_BOARD_CARDS) - gap;
   const pileFor = (tileW: number) => clamp(tileW + 12, 56, 80);
   let tileW = Math.floor(stacked.tileH / CARD_ASPECT);
@@ -212,8 +200,9 @@ function computePortraitGuiGeometry(viewport: Viewport): GuiGeometry {
     if (WEB_GUI_ROWS[i]!.zone !== "hand") row.w -= pileW + 6;
   });
   const tilesPerRow = Math.max(3, Math.floor((rows[0]!.w + gap) / (tileW + gap)));
+  // The hand has no pile beside it, so the same tiles fit more across.
   const rowTiles = WEB_GUI_ROWS.map((def) =>
-    def.zone === "hand" ? { tileW: handW, tileH: handH, tilesPerRow: Math.max(3, Math.floor((board.w + gap) / (handW + gap))) } : undefined,
+    def.zone === "hand" ? { tileW, tileH, tilesPerRow: Math.max(3, Math.floor((board.w + gap) / (tileW + gap))) } : undefined,
   );
   return {
     width,
