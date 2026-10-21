@@ -80,6 +80,8 @@ function hoverMatch(view: GuiView, point: { x: number; y: number }): LogicalInpu
 
 /** A press held this many frames without moving shows the card under it whole (CardSheet). */
 const LONG_PRESS_FRAMES = 27;
+/** A swipe over a row released within this many ms is a flick: it pages the row at least a screenful. */
+const FLICK_MS = 300;
 
 /** The band of board row `index`, its label column included (drops and swipes over it count). */
 function inRowBand(view: GuiView, index: number, p: { x: number; y: number }): boolean {
@@ -159,8 +161,11 @@ export default function App() {
   let pressCard: string | null = null;
   let pressFrames = 0;
   let longPressed = false;
-  // The board row a press started on, when it hides some cards: a sideways swipe over it pages it.
+  // The board row a press started on, when it hides some cards: a sideways swipe over it moves its cards
+  // with the finger (`swiping` once it has gone sideways), from the first card shown at the press.
   let swipeRow = -1;
+  let swiping = false;
+  let swipeStart = { offset: 0, at: 0 };
   // The automatic-move settings panel, over the title or the match. `settingsHot`: the row under the pointer (-2: close).
   const [settingsOpen, setSettingsOpen] = createSignal(false);
   const [settingsHot, setSettingsHot] = createSignal(-1);
@@ -326,11 +331,23 @@ export default function App() {
       }
     }
     if (e.kind === "move" && pressed && Math.abs(pressed.x - e.x) + Math.abs(pressed.y - e.y) > 12) pressCard = null;
+    // Sideways along a row that hides cards is a swipe through them, not a drag: the cards follow the finger.
+    if (e.kind === "move" && pressed && swipeRow >= 0 && !drag()) {
+      const dx = pressed.x - e.x;
+      if (!swiping && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(pressed.y - e.y) && inRowBand(gui, swipeRow, p)) {
+        swiping = true;
+        dragFrom = null;
+      }
+      if (swiping) {
+        const row = gui.rows[swipeRow]!;
+        const step = (row.tiles[0]?.rect.w ?? 60) + gui.geometry.tileGap;
+        controller.scrollRow(swipeRow, swipeStart.offset + Math.round(dx / step) - row.moreLeft);
+        return true;
+      }
+    }
     if (e.kind === "move" && dragFrom && pressed && Math.abs(pressed.x - e.x) + Math.abs(pressed.y - e.y) > 12) {
-      // Sideways along a row that hides cards is a swipe through them, not a drag.
-      const swiping = swipeRow >= 0 && Math.abs(pressed.x - e.x) > Math.abs(pressed.y - e.y) && inRowBand(gui, swipeRow, p);
-      setDrag(swiping ? null : { cardId: dragFrom.cardId, x: e.x, y: e.y, w: dragFrom.w, h: dragFrom.h });
-      setCursor(!swiping);
+      setDrag({ cardId: dragFrom.cardId, x: e.x, y: e.y, w: dragFrom.w, h: dragFrom.h });
+      setCursor(true);
       return true;
     }
     if (e.kind === "move" || e.kind === "leave") {
@@ -373,6 +390,8 @@ export default function App() {
       pressCard = e.button === 0 && isPortrait(gui.geometry) ? cardUnder(gui, p) : null;
       pressFrames = 0;
       swipeRow = scrollableRow(gui, p);
+      swiping = false;
+      swipeStart = { offset: swipeRow >= 0 ? gui.rows[swipeRow]!.moreLeft : 0, at: webPlatform.clock() };
       let tile = !gui.menuOpen && !gui.dialog && e.button === 0 ? [...gui.rows.flatMap((row) => row.tiles)].reverse().find((t) => inside(t.rect, p)) : undefined;
       if (tile && !tile.actionable) tile = undefined;
       dragFrom = tile ? { instanceId: tile.instanceId, cardId: tile.cardId, w: tile.rect.w, h: tile.rect.h } : null;
@@ -386,11 +405,17 @@ export default function App() {
     if (drag()) setDrag(null);
     const row = swipeRow;
     swipeRow = -1;
-    if (down && row >= 0 && Math.abs(down.x - e.x) > 30 && Math.abs(down.x - e.x) > Math.abs(down.y - e.y) && inRowBand(gui, row, p)) {
-      // A swipe moves the row by about as many cards as the finger travelled (at least one).
-      const step = (gui.rows[row]!.tiles[0]?.rect.w ?? 60) + gui.geometry.tileGap;
-      const cards = Math.max(1, Math.round(Math.abs(down.x - e.x) / step));
-      return controller.scrollRow(row, down.x > e.x ? cards : -cards) || true;
+    if (down && swiping) {
+      swiping = false;
+      // A quick flick goes on to the next screenful (all but one of the cards shown) in its direction.
+      const dx = down.x - e.x;
+      if (webPlatform.clock() - swipeStart.at <= FLICK_MS && Math.abs(dx) > 30) {
+        const page = Math.max(1, gui.rows[row]!.tiles.length - 1);
+        const moved = gui.rows[row]!.moreLeft - swipeStart.offset;
+        const want = dx > 0 ? page : -page;
+        if (Math.abs(moved) < page) controller.scrollRow(row, want - moved);
+      }
+      return true;
     }
     if (down && from && Math.abs(down.x - e.x) + Math.abs(down.y - e.y) > 12) {
       controller.dropCard(from.instanceId, dropTarget(gui, p));

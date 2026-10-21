@@ -76,17 +76,17 @@ describe("web geometry", () => {
         expect(tiles.tilesPerRow * (tiles.tileW + g.tileGap) - g.tileGap).toBeLessThanOrEqual(row.w);
         expect(tiles.tileH).toBeLessThanOrEqual(row.h);
       });
-      // The hand takes the whole width with larger cards than the other rows.
+      // The hand takes the whole width with the board's card size, so it fits more across.
       const hand = WEB_GUI_ROWS.findIndex((r) => r.zone === "hand");
       expect(g.rows[hand]!.w).toBe(g.board.w);
-      expect(rowTiles(g, hand).tileW).toBeGreaterThan(g.tileW);
-      expect(rowTiles(g, hand).tilesPerRow).toBeGreaterThanOrEqual(4);
+      expect(rowTiles(g, hand).tileW).toBe(g.tileW);
+      expect(rowTiles(g, hand).tileH).toBe(g.tileH);
+      expect(rowTiles(g, hand).tilesPerRow).toBeGreaterThan(g.tilesPerRow);
       // The pile panel overhangs its rows by a few px, like the row backgrounds.
       const around = { x: g.board.x, y: g.board.y - 4, w: g.board.w, h: g.board.h + 8 };
       for (const player of [CPU, HUMAN]) expect(within(webPileRect(g, player), around)).toBe(true);
       expect(g.tilesPerRow).toBeGreaterThanOrEqual(5);
       expect(g.tileH).toBeGreaterThanOrEqual(50);
-      expect(rowTiles(g, hand).tileH).toBeGreaterThanOrEqual(100);
     }
   });
 
