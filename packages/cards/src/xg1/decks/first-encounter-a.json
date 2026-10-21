@@ -1,0 +1,28 @@
+{
+  "id": "first-encounter-a",
+  "name": "ザ・ファーストエンカウント スターター（type A：10人ライダーコンボデッキ）",
+  "starterType": "A",
+  "expansion": "xg1",
+  "source": "https://w.atwiki.jp/renst/pages/1692.html",
+  "entries": [
+    { "cardId": "XG1-047", "count": 1 },
+    { "cardId": "XG1-068", "count": 2 },
+    { "cardId": "XG1-050", "count": 1 },
+    { "cardId": "XG1-007", "count": 2 },
+    { "cardId": "XG1-049", "count": 3 },
+    { "cardId": "XG1-044", "count": 3 },
+    { "cardId": "XG1-069", "count": 2 },
+    { "cardId": "XG1-064", "count": 2 },
+    { "cardId": "XG1-072", "count": 3 },
+    { "cardId": "XG1-093", "count": 3 },
+    { "cardId": "RK-097", "count": 2 },
+    { "cardId": "RK-175", "count": 1 },
+    { "cardId": "RK-176", "count": 1 },
+    { "cardId": "RK-142", "count": 2 },
+    { "cardId": "RS-488", "count": 2 },
+    { "cardId": "RM-041", "count": 2 },
+    { "cardId": "RK-026", "count": 3 },
+    { "cardId": "RK-030", "count": 3 },
+    { "cardId": "RS-434", "count": 2 }
+  ]
+}

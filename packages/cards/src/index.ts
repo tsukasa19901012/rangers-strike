@@ -29,6 +29,21 @@ import riderExp43Deck from "./rider-exp-4/decks/rider-exp-4-3.json";
 import wImpactADeck from "./xg3/decks/w-impact-a.json";
 import wImpactBDeck from "./xg3/decks/w-impact-b.json";
 import wImpactCDeck from "./xg3/decks/w-impact-c.json";
+import firstEncounterADeck from "./xg1/decks/first-encounter-a.json";
+import firstEncounterBDeck from "./xg1/decks/first-encounter-b.json";
+import firstEncounterCDeck from "./xg1/decks/first-encounter-c.json";
+import dragonTigerADeck from "./xg2/decks/dragon-tiger-a.json";
+import dragonTigerBDeck from "./xg2/decks/dragon-tiger-b.json";
+import dragonTigerCDeck from "./xg2/decks/dragon-tiger-c.json";
+import jetAccelADeck from "./xg4/decks/jet-accel-a.json";
+import jetAccelBDeck from "./xg4/decks/jet-accel-b.json";
+import jetAccelCDeck from "./xg4/decks/jet-accel-c.json";
+import ticketBreakerADeck from "./xg5/decks/ticket-breaker-a.json";
+import ticketBreakerBDeck from "./xg5/decks/ticket-breaker-b.json";
+import ticketBreakerCDeck from "./xg5/decks/ticket-breaker-c.json";
+import bestPartnerADeck from "./best-partner/decks/best-partner-a.json";
+import bestPartnerBDeck from "./best-partner/decks/best-partner-b.json";
+import bestPartnerCDeck from "./best-partner/decks/best-partner-c.json";
 import type { DeckDefinition } from "./schema";
 import { validateDeckEntries } from "./deckRules";
 import {
@@ -143,6 +158,21 @@ export const starterDecks = {
   "w-impact-a": wImpactADeck as DeckDefinition,
   "w-impact-b": wImpactBDeck as DeckDefinition,
   "w-impact-c": wImpactCDeck as DeckDefinition,
+  "first-encounter-a": firstEncounterADeck as DeckDefinition,
+  "first-encounter-b": firstEncounterBDeck as DeckDefinition,
+  "first-encounter-c": firstEncounterCDeck as DeckDefinition,
+  "dragon-tiger-a": dragonTigerADeck as DeckDefinition,
+  "dragon-tiger-b": dragonTigerBDeck as DeckDefinition,
+  "dragon-tiger-c": dragonTigerCDeck as DeckDefinition,
+  "jet-accel-a": jetAccelADeck as DeckDefinition,
+  "jet-accel-b": jetAccelBDeck as DeckDefinition,
+  "jet-accel-c": jetAccelCDeck as DeckDefinition,
+  "ticket-breaker-a": ticketBreakerADeck as DeckDefinition,
+  "ticket-breaker-b": ticketBreakerBDeck as DeckDefinition,
+  "ticket-breaker-c": ticketBreakerCDeck as DeckDefinition,
+  "best-partner-a": bestPartnerADeck as DeckDefinition,
+  "best-partner-b": bestPartnerBDeck as DeckDefinition,
+  "best-partner-c": bestPartnerCDeck as DeckDefinition,
 } as const;
 
 export type StarterDeckId = keyof typeof starterDecks;

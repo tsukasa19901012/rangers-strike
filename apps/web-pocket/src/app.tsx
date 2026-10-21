@@ -31,7 +31,7 @@ import {
 } from "@rangers-strike/client-core";
 import { webPlatform } from "./platform";
 import { pollCardArt } from "./cardArt";
-import { MatchView, matchButtons, pileHit, pileLayout, type PilePeek } from "./MatchView";
+import { MatchView, matchButtons, pileHit, pileLayout, type DragView, type PilePeek } from "./MatchView";
 import { DeckView, deckButtons } from "./DeckView";
 import { TitleView } from "./TitleView";
 import { ResultView } from "./ResultView";
@@ -71,6 +71,18 @@ function hoverMatch(view: GuiView, point: { x: number; y: number }): LogicalInpu
   return null;
 }
 
+/** Where a dragged card was dropped: a card on the board, a board row, or the own pile column (power zone). */
+function dropTarget(view: GuiView, p: { x: number; y: number }): { instanceId?: string; zone?: string } {
+  for (const row of view.rows) {
+    const tile = row.tiles.find((t) => inside(t.rect, p));
+    if (tile) return { instanceId: tile.instanceId, zone: row.key };
+    // The row's band, label column included, takes drops between and beside its cards.
+    if (p.y >= row.rect.y && p.y < row.rect.y + row.rect.h && p.x >= view.geometry.board.x && p.x < row.rect.x + row.rect.w) return { zone: row.key };
+  }
+  if (inside(webPileRect(view.geometry, HUMAN), p)) return { zone: `${HUMAN}:power` };
+  return {};
+}
+
 function matchFooter(v: GuiView): string {
   if (isPortrait(v.geometry)) return touchFooter(v);
   if (v.list || v.popup) return "クリック: 決定 / 右クリック・Esc: 閉じる / ホイール・↑↓: 選ぶ";
@@ -78,7 +90,7 @@ function matchFooter(v: GuiView): string {
   if (v.footerAccent) return `${v.footer.replace(/（[^）]*）$/, "")}（クリック: 決定 / 右クリック・Esc: やめる）`;
   if (v.footer.startsWith("盤面を確認中")) return "盤面を確認中（L・Esc・Space で選択ウィンドウに戻る）";
   if (v.footer === "CPU の手番") return "CPU の手番です…";
-  return "カードにマウスを乗せると詳細 / クリック: そのカードの操作 / Space: フェイズ終了 / Tab: すべての操作 / L: ログ";
+  return "マウスを乗せると詳細 / クリック: 操作 / ドラッグ: 登場・移動・アタック / Space: フェイズ終了 / Tab: すべての操作 / L: ログ";
 }
 
 /** Phone (portrait) hints: no mouse, no keyboard. */
@@ -87,7 +99,7 @@ function touchFooter(v: GuiView): string {
   if (v.dialog) return "カードかボタンをタップして選ぶ";
   if (v.footerAccent) return v.footer.replace(/（[^）]*）$/, "");
   if (v.footer === "CPU の手番") return "CPU の手番です…";
-  return "カードをタップ: 詳細と操作";
+  return "タップ: 詳細と操作 / ドラッグ: 登場・移動・アタック";
 }
 
 const DECK_TOUCH_FOOTER = "タップ: 1枚入れる / 下の枠: カードの詳細";
@@ -115,6 +127,9 @@ export default function App() {
   const LEAVE_FRAMES = 180;
   let leaveFrames = 0;
   const [leaving, setLeaving] = createSignal(false);
+  // A card picked up by a drag (pointer down on a card the player can act with, then moved).
+  const [drag, setDrag] = createSignal<DragView | null>(null);
+  let dragFrom: { instanceId: string; cardId: string; w: number; h: number } | null = null;
   const refresh = () => setView(controller.view());
   // For browser tests and debugging from the console.
   (globalThis as unknown as { __rsApp?: unknown }).__rsApp = {
@@ -160,6 +175,11 @@ export default function App() {
         peekPinned = false;
       }
     }
+    if (e.kind === "move" && dragFrom && pressed && Math.abs(pressed.x - e.x) + Math.abs(pressed.y - e.y) > 12) {
+      setDrag({ cardId: dragFrom.cardId, x: e.x, y: e.y, w: dragFrom.w, h: dragFrom.h });
+      setCursor(true);
+      return true;
+    }
     if (e.kind === "move" || e.kind === "leave") {
       const overlay = gui.list ?? gui.popup;
       const spot =
@@ -167,7 +187,9 @@ export default function App() {
           ? null
           : inside(gui.endButton.rect, p)
             ? "end"
-            : inside(buttons.all, p)
+            : inside(buttons.turn, p)
+              ? "turn"
+              : inside(buttons.all, p)
               ? "all"
               : inside(buttons.log, p)
                 ? "log"
@@ -189,10 +211,19 @@ export default function App() {
     }
     if (e.kind === "down") {
       pressed = e;
+      const tile = !gui.menuOpen && !gui.dialog && e.button === 0 ? gui.rows.flatMap((row) => row.tiles).find((t) => t.actionable && inside(t.rect, p)) : undefined;
+      dragFrom = tile ? { instanceId: tile.instanceId, cardId: tile.cardId, w: tile.rect.w, h: tile.rect.h } : null;
       return false;
     }
     const down = pressed;
     pressed = null;
+    const from = dragFrom;
+    dragFrom = null;
+    if (drag()) setDrag(null);
+    if (down && from && Math.abs(down.x - e.x) + Math.abs(down.y - e.y) > 12) {
+      controller.dropCard(from.instanceId, dropTarget(gui, p));
+      return true;
+    }
     if (!down || Math.abs(down.x - e.x) + Math.abs(down.y - e.y) > 12) return false;
     hoverKey = "";
     if (e.button === 2) return dispatch(input.cancel);
@@ -235,6 +266,10 @@ export default function App() {
         setLeaving(true);
         leaveFrames = LEAVE_FRAMES;
       }
+      return true;
+    }
+    if (inside(buttons.turn, p)) {
+      controller.endTurn();
       return true;
     }
     if (inside(buttons.all, p)) return dispatch(input.allActions);
@@ -340,7 +375,19 @@ export default function App() {
       fallback={<TitleView controller={controller} view={view} refresh={refresh} width={size().width} height={size().height} />}
     >
       <Match when={view().gui}>
-        {(gui) => <MatchView view={gui()} state={(gui(), controller.session!.state)} hot={hot()} footer={matchFooter(gui())} leaving={leaving()} peek={peek()} fullText={fullText()} />}
+        {(gui) => (
+          <MatchView
+            view={gui()}
+            state={(gui(), controller.session!.state)}
+            hot={hot()}
+            footer={matchFooter(gui())}
+            leaving={leaving()}
+            peek={peek()}
+            endingTurn={(gui(), controller.endingTurn)}
+            drag={drag()}
+            fullText={fullText()}
+          />
+        )}
       </Match>
       <Match when={view().deck}>{(deck) => <DeckView view={deck()} hot={hot()} footer={isPortrait(deck().geometry) ? DECK_TOUCH_FOOTER : DECK_FOOTER} />}</Match>
       <Match when={view().screen === "result"}>

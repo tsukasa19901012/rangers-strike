@@ -1,0 +1,27 @@
+{
+  "id": "jet-accel-c",
+  "name": "ザ・ジェットアクセル スターター（type C：ゾードアップデッキ ET+MA）",
+  "starterType": "C",
+  "expansion": "xg4",
+  "source": "https://w.atwiki.jp/renst/pages/1997.html",
+  "entries": [
+    { "cardId": "XG4-035", "count": 1 },
+    { "cardId": "XG4-022", "count": 2 },
+    { "cardId": "XG4-034", "count": 2 },
+    { "cardId": "XG4-019", "count": 3 },
+    { "cardId": "XG4-058", "count": 3 },
+    { "cardId": "XG4-083", "count": 3 },
+    { "cardId": "XG4-082", "count": 3 },
+    { "cardId": "RS-382", "count": 2 },
+    { "cardId": "RS-324", "count": 3 },
+    { "cardId": "RS-177", "count": 1 },
+    { "cardId": "RS-293", "count": 1 },
+    { "cardId": "RS-675", "count": 3 },
+    { "cardId": "RS-347", "count": 1 },
+    { "cardId": "RS-383", "count": 2 },
+    { "cardId": "RS-385", "count": 2 },
+    { "cardId": "XG3-006", "count": 2 },
+    { "cardId": "RS-224", "count": 3 },
+    { "cardId": "XG3-035", "count": 3 }
+  ]
+}

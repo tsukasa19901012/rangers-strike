@@ -1,0 +1,28 @@
+{
+  "id": "best-partner-c",
+  "name": "ザ・ベストパートナー アニバーサリーセット（type C：仮面ライダー40周年記念デッキ）",
+  "starterType": "C",
+  "expansion": "xg7",
+  "source": "https://w.atwiki.jp/renst/pages/2367.html",
+  "entries": [
+    { "cardId": "XG7-037", "count": 1 },
+    { "cardId": "XG7-031", "count": 2 },
+    { "cardId": "XG7-055", "count": 2 },
+    { "cardId": "XG7-056", "count": 2 },
+    { "cardId": "XG7-057", "count": 2 },
+    { "cardId": "RK-127", "count": 1 },
+    { "cardId": "RK-261", "count": 1 },
+    { "cardId": "RM-045", "count": 1 },
+    { "cardId": "XG3-079", "count": 2 },
+    { "cardId": "XG1-041", "count": 2 },
+    { "cardId": "XG1-050", "count": 2 },
+    { "cardId": "RK-264", "count": 2 },
+    { "cardId": "XG2-055", "count": 2 },
+    { "cardId": "RK-214", "count": 3 },
+    { "cardId": "XG1-053", "count": 3 },
+    { "cardId": "XG2-048", "count": 3 },
+    { "cardId": "XG3-050", "count": 3 },
+    { "cardId": "XG4-074", "count": 3 },
+    { "cardId": "XG4-087", "count": 3 }
+  ]
+}

@@ -93,6 +93,21 @@ export function TitleView(props: Props) {
             </Index>
           </View>
         </View>
+        <View
+          focusable
+          onPress={() => {
+            c.updateSettings({ autoAssist: !(settings().autoAssist ?? true) });
+            props.refresh();
+          }}
+          class="flex-row items-center justify-between px-[14] h-[44] rounded-[10] bg-[#0b1220] border border-[#334155] focus:bg-[#13203a] focus:border-sky-400"
+          style={{ width: panelW() - 40 }}
+        >
+          <View class="flex-col">
+            <Text class="text-sm text-white">自動進行</Text>
+            <Text class="text-xs text-slate-400">ドロー・何もないフェイズ・1通りの支払いを自動で</Text>
+          </View>
+          <Text class={(settings().autoAssist ?? true) ? "text-sm text-sky-300 font-bold" : "text-sm text-slate-500 font-bold"}>{(settings().autoAssist ?? true) ? "ON" : "OFF"}</Text>
+        </View>
       </View>
 
       <View class="flex-col gap-3 items-center" style={{ width: panelW() }}>

@@ -1,0 +1,28 @@
+{
+  "id": "best-partner-a",
+  "name": "ザ・ベストパートナー アニバーサリーセット（type A：スーパー戦隊シリーズ35作品記念デッキ）",
+  "starterType": "A",
+  "expansion": "xg7",
+  "source": "https://w.atwiki.jp/renst/pages/2367.html",
+  "entries": [
+    { "cardId": "XG7-003", "count": 1 },
+    { "cardId": "XG7-028", "count": 2 },
+    { "cardId": "XG7-017", "count": 2 },
+    { "cardId": "XG7-019", "count": 2 },
+    { "cardId": "XG7-029", "count": 2 },
+    { "cardId": "RS-674", "count": 1 },
+    { "cardId": "RS-360", "count": 1 },
+    { "cardId": "RS-325", "count": 1 },
+    { "cardId": "RS-505", "count": 2 },
+    { "cardId": "XG2-014", "count": 2 },
+    { "cardId": "XG2-015", "count": 2 },
+    { "cardId": "RS-182", "count": 2 },
+    { "cardId": "RS-521", "count": 2 },
+    { "cardId": "XG1-008", "count": 3 },
+    { "cardId": "XG1-002", "count": 3 },
+    { "cardId": "RS-637", "count": 3 },
+    { "cardId": "RS-432", "count": 3 },
+    { "cardId": "RS-130", "count": 3 },
+    { "cardId": "RS-043", "count": 3 }
+  ]
+}
