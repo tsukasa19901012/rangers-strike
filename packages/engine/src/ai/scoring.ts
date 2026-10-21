@@ -1,6 +1,6 @@
 import type { GameState, PlayerId } from "../types/game";
 import { WIN_DAMAGE } from "../types/game";
-import { effectiveBp } from "../core/catalog";
+import { effectiveBp, getDefinition, parsePowerCost } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { strikeDamageFor } from "../rules/combo";
 
@@ -53,6 +53,41 @@ function totalStrikePotential(
   return total;
 }
 
+const powerCapCache = new WeakMap<object, Partial<Record<PlayerId, number>>>();
+
+/** そのプレイヤーのカード（全ゾーン）で一番重いパワーコスト。対戦中は変わらないので、定義表ごとに覚えておく。 */
+function maxPowerCost(state: GameState, playerId: PlayerId): number {
+  const byPlayer = powerCapCache.get(state.definitions) ?? {};
+  const cached = byPlayer[playerId];
+  if (cached !== undefined) return cached;
+  const p = state.players[playerId];
+  let max = 0;
+  for (const card of [...p.deck, ...p.hand, ...p.rush, ...p.battle, ...p.power, ...p.command, ...p.discard]) {
+    const def = getDefinition(state.definitions, card.cardId);
+    if (!def || (def.type !== "unit" && def.type !== "operation")) continue;
+    max = Math.max(max, parsePowerCost(def.powerCost));
+  }
+  byPlayer[playerId] = max;
+  powerCapCache.set(state.definitions, byPlayer);
+  return max;
+}
+
+const CLOCK_UP_IDS = new Set(["RK-021", "RK-078"]);
+
+/**
+ * クロックアップに重ねたカードの枚数（場に「加速」のユニットがいるときだけ数える）。
+ * 1 枚ごとに「加速」のユニットへのアタックを 1 回止めるので、相手はアタックして減らす価値がある。
+ * これが無いと、そのアタックは「バトルが行われない」だけの手に見え、CPU は「加速」のユニットにアタックしなかった。
+ */
+function clockUpShields(state: GameState, playerId: PlayerId): number {
+  const p = state.players[playerId];
+  let stacked = 0;
+  for (const op of p.operation) if (CLOCK_UP_IDS.has(op.cardId)) stacked += op.stackedCards?.length ?? 0;
+  if (stacked === 0) return 0;
+  const accel = [...p.battle, ...p.rush].some((c) => getDefinition(state.definitions, c.cardId)?.features?.includes("加速"));
+  return accel ? stacked : 0;
+}
+
 /** 盤面評価の重み。CPU の調整（scripts/cpu-arena.ts）で差し替えられる。 */
 export const DEFAULT_EVAL_WEIGHTS = {
   enemyDamage: 1400,
@@ -70,6 +105,8 @@ export const DEFAULT_EVAL_WEIGHTS = {
   selfRush: 260,
   enemyRush: 190,
   selfPower: 200,
+  /** デッキで一番重いカードのパワーコストを超えた分のパワー 1 枚の価値。 */
+  selfPowerOverCap: 200,
   enemyPower: 140,
   selfCommand: 65,
   heldCommand: 100,
@@ -96,6 +133,8 @@ export const DEFAULT_EVAL_WEIGHTS = {
   rushActive: 350,
   chargeActive: 200,
   battleWidth: 110,
+  /** クロックアップ（RK-021 / RK-078）に重ねたカード 1 枚（「加速」のユニットへのアタックを 1 回止める）。 */
+  clockUpShield: 300,
 };
 export type EvalWeights = typeof DEFAULT_EVAL_WEIGHTS;
 
@@ -139,7 +178,9 @@ export function evaluateState(state: GameState, playerId: PlayerId): number {
   score += self.rush.length * W.selfRush;
   score -= enemy.rush.length * W.enemyRush;
 
-  score += self.power.length * W.selfPower;
+  const powerCap = maxPowerCost(state, playerId);
+  score += Math.min(self.power.length, powerCap) * W.selfPower;
+  score += Math.max(0, self.power.length - powerCap) * W.selfPowerOverCap;
   score -= enemy.power.length * W.enemyPower;
   score += self.command.length * W.selfCommand;
   const heldCommands = self.command.filter((c) => c.commandHeld).length;
@@ -183,6 +224,8 @@ export function evaluateState(state: GameState, playerId: PlayerId): number {
   if (self.damage + strikeThreat >= WIN_DAMAGE) {
     score -= W.enemyLethalThreat;
   }
+
+  score += (clockUpShields(state, playerId) - clockUpShields(state, enemyId)) * W.clockUpShield;
 
   if (state.phase === "rush") {
     score += heldCommands * W.rushHeldCommand;
