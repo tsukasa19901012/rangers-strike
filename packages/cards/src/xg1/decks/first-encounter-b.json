@@ -1,0 +1,28 @@
+{
+  "id": "first-encounter-b",
+  "name": "ザ・ファーストエンカウント スターター（type B：パワーアップヒーローデッキ）",
+  "starterType": "B",
+  "expansion": "xg1",
+  "source": "https://w.atwiki.jp/renst/pages/1692.html",
+  "entries": [
+    { "cardId": "XG1-062", "count": 1 },
+    { "cardId": "XG1-028", "count": 2 },
+    { "cardId": "XG1-030", "count": 2 },
+    { "cardId": "XG1-032", "count": 2 },
+    { "cardId": "XG1-061", "count": 2 },
+    { "cardId": "RS-234", "count": 2 },
+    { "cardId": "RS-233", "count": 2 },
+    { "cardId": "RS-231", "count": 2 },
+    { "cardId": "RK-188", "count": 3 },
+    { "cardId": "RS-426", "count": 2 },
+    { "cardId": "RK-102", "count": 2 },
+    { "cardId": "RK-272", "count": 2 },
+    { "cardId": "RK-225", "count": 2 },
+    { "cardId": "RK-172", "count": 1 },
+    { "cardId": "RS-184", "count": 2 },
+    { "cardId": "RS-055", "count": 3 },
+    { "cardId": "RS-145", "count": 2 },
+    { "cardId": "RS-051", "count": 3 },
+    { "cardId": "RS-052", "count": 3 }
+  ]
+}

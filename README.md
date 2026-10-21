@@ -121,7 +121,7 @@ Web 版は `apps/web-pocket` の静的サイト（`dist/`）を Vercel で配信
 | `complexity-promoted` | 620 | 複合効果の昇格カード |
 | `full-playable` | **1,832** | 上の合計（`fullPlayableCatalog`）。対戦とデッキ構築で使うプール |
 
-スターターデッキは 31 種（各 40 枚）で、`packages/cards/src/index.ts` の `starterDecks` にあります。
+スターターデッキは 46 種（各 40 枚）で、`packages/cards/src/index.ts` の `starterDecks` にあります。
 
 | シリーズ | デッキ ID |
 |---|---|
@@ -131,7 +131,12 @@ Web 版は `apps/web-pocket` の静的サイト（`dist/`）を Vercel で配信
 | レジェンド 7（七忍の炎陣） | `seven-ninja-a`〜`c` |
 | レジェンド 9（青の九の翼） | `blue-nine-a`〜`c` |
 | ライダー EXP vol.1〜4 | `rider-exp-1-a`〜`d`、`rider-exp-2-a`〜`d`、`rider-exp-3-a` / `b`、`rider-exp-4-1`〜`3` |
+| ザ・ファーストエンカウント（XG1） | `first-encounter-a`〜`c` |
+| ザ・ドラゴンタイガー（XG2） | `dragon-tiger-a`〜`c`（コマンダーカードは未対応のため除外） |
 | ザ・W インパクト（XG3） | `w-impact-a`〜`c`（コマンダーカードは未対応のため除外） |
+| ザ・ジェットアクセル（XG4） | `jet-accel-a`〜`c`（コマンダーカードは未対応のため除外） |
+| ザ・チケットブレイカー（XG5） | `ticket-breaker-a`〜`c` |
+| ザ・ベストパートナー アニバーサリーセット | `best-partner-a`〜`c` |
 
 デッキ構築のルール（40 枚以上・同名 3 枚まで、例外あり）は `packages/cards/src/deckRules.ts` の `validateDeckEntries` です。
 

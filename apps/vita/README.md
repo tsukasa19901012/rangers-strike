@@ -1,6 +1,6 @@
 # apps/vita — PS Vita 版（PocketJS）
 
-人間 1 人と CPU が、スターターデッキ（31 種）や自作デッキで対戦できる PS Vita アプリです。全プレイアブルカード（1,832 枚）でのデッキ構築もできます。
+人間 1 人と CPU が、スターターデッキ（46 種）や自作デッキで対戦できる PS Vita アプリです。全プレイアブルカード（1,832 枚）でのデッキ構築もできます。
 対戦画面とデッキ構築はカードを並べた GUI、タイトルと結果はテキストです。
 UI は [PocketJS](https://github.com/pocket-stack/pocketjs)（npm `@pocketjs/framework` / `@pocketjs/cli` 0.14.0、Solid）で書いています。
 ゲームの進行・表示内容・入力の解釈はすべて共有パッケージ `packages/client-core` にあり、このディレクトリは **PocketJS 向けの薄い描画・入力層** です。
@@ -50,7 +50,7 @@ apps/vita              PocketJS シェル（このディレクトリ）
 
 エンジン（`packages/engine`）の挙動は変更していません。エンジンのソースは esbuild で 1 ファイルに束ね、
 **全プレイアブルカード（1,832 枚＋スターターの 1 枚、計 1,833 枚）** を入れます（`scripts/build-engine.ts`）。
-`--starter` を付けると、31 種のスターターデッキに含まれる 452 枚へ刈り込んだ版を `.cache/engine-starter.js` に作ります
+`--starter` を付けると、46 種のスターターデッキに含まれる 655 枚へ刈り込んだ版を `.cache/engine-starter.js` に作ります
 （ルールは `client-core/src/data/split.ts`）。刈り込み版と全カード版で同じ乱数種の CPU 対 CPU 56 試合を再生し、
 ログが完全一致することを `npm run verify:prune` で確認できます。
 

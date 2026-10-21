@@ -23,7 +23,7 @@
 
 | 内容 | ファイル |
 |---|---|
-| スターターデッキ 31 種（各 40 枚） | `src/index.ts` の `starterDecks`、定義は `src/<弾>/decks/*.json` |
+| スターターデッキ 46 種（各 40 枚） | `src/index.ts` の `starterDecks`、定義は `src/<弾>/decks/*.json` |
 | デッキ構築ルール（`validateDeckEntries`・同名判定・枚数上限） | `src/deckRules.ts` |
 | ユニット効果（CardDocument → UnitEffectBlock） | `src/unitEffects.ts`、`src/catalog/cardDocumentToUnitBlock.ts` |
 | 実装済み効果 ID 一覧 | `src/unitEffectCatalog.ts` |

@@ -1,6 +1,6 @@
 import type { StarterDeckId } from "@rangers-strike/cards";
 
-/** 全31種スターターデッキ（1〜9弾＋ライダーEXP vol.1〜4＋XG3 ザ・Wインパクト）。 */
+/** 全46種スターターデッキ（1〜9弾＋ライダーEXP vol.1〜4＋クロスギャザー XG1〜XG5＋ザ・ベストパートナー）。 */
 export const ALL_STARTER_DECK_IDS = [
   "abarenoh",
   "dekaranger",
@@ -33,6 +33,21 @@ export const ALL_STARTER_DECK_IDS = [
   "w-impact-a",
   "w-impact-b",
   "w-impact-c",
+  "first-encounter-a",
+  "first-encounter-b",
+  "first-encounter-c",
+  "dragon-tiger-a",
+  "dragon-tiger-b",
+  "dragon-tiger-c",
+  "jet-accel-a",
+  "jet-accel-b",
+  "jet-accel-c",
+  "ticket-breaker-a",
+  "ticket-breaker-b",
+  "ticket-breaker-c",
+  "best-partner-a",
+  "best-partner-b",
+  "best-partner-c",
 ] as const satisfies readonly StarterDeckId[];
 
 export type AllStarterDeckId = (typeof ALL_STARTER_DECK_IDS)[number];
