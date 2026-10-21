@@ -427,11 +427,11 @@ function PeekPanel(props: { g: GuiGeometry; peek: PilePeek }) {
   );
 }
 
-/** The whole card in the detail panel (attributes and text), over the board, when the panel left some out (a phone). */
-function FullTextPanel(props: { g: GuiGeometry; full: NonNullable<GuiView["detailFull"]> }) {
+/** The whole card in the detail panel (attributes and text), over `area`, when the panel left some out (a phone). */
+export function FullTextPanel(props: { area: Box; full: { name: string; fields: string[]; text: string } }) {
   const layout = () => {
-    const g = props.g;
-    const w = Math.min(g.board.w - 16, 520);
+    const area = props.area;
+    const w = Math.min(area.w - 16, 520);
     const wrap = { fontPx: 14, maxWidthPx: w - 24 };
     const lines = [
       ...wrapText(props.full.name, wrap).map((text) => ({ text, cls: "text-base text-amber-200 font-bold" })),
@@ -440,9 +440,9 @@ function FullTextPanel(props: { g: GuiGeometry; full: NonNullable<GuiView["detai
       { text: "タップで閉じる", cls: "text-xs text-slate-400" },
     ];
     const lineH = 20;
-    const h = Math.min(g.board.h - 8, lines.length * lineH + 20);
-    const x = g.board.x + Math.round((g.board.w - w) / 2);
-    const y = g.board.y + 4;
+    const h = Math.min(area.h - 8, lines.length * lineH + 20);
+    const x = area.x + Math.round((area.w - w) / 2);
+    const y = area.y + 4;
     const rows = lines.map((l, i) => ({ ...l, rect: { x: x + 12, y: y + 10 + i * lineH, w: w - 24, h: lineH } }));
     return { panel: { x, y, w, h }, lines: rows.filter((l) => l.rect.y + lineH <= y + h) };
   };
@@ -676,7 +676,7 @@ export function MatchView(props: {
 
       {/* a pile zone enlarged: hovered, or tapped on a phone */}
       <Show when={props.peek}>{(peek) => <PeekPanel g={g()} peek={peek()} />}</Show>
-      <Show when={props.fullText && v().detailFull}>{(full) => <FullTextPanel g={g()} full={full()} />}</Show>
+      <Show when={props.fullText && v().detailFull}>{(full) => <FullTextPanel area={g().board} full={full()} />}</Show>
 
       {/* toast: over the top bar, or over the phase pills on a phone */}
       <Show when={v().toast}>

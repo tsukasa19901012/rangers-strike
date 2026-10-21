@@ -166,4 +166,21 @@ describe("DeckBuilder", () => {
     expect(app.view().deck!.menu!.title).toMatch(/コスト/);
     expect(app.view().deck!.textFields).toEqual([]);
   });
+
+  it("shows the wiki-style attributes in the detail panel, and the whole card on a phone", () => {
+    const open = (viewport: { width: number; height: number }) => {
+      const app = new AppController({ platform: testPlatform(), viewport, cpuDelayFrames: 0, seed: () => 5, gui: true, cardArt: true, layouts: { deck: computeWebDeckGeometry } });
+      app.openDeckBuilder();
+      pickMenu(app, /空のデッキ/);
+      return app.view().deck!;
+    };
+    const pc = open({ width: 1280, height: 720 });
+    const lines = pc.detailLines.map((l) => l.text);
+    expect(lines.some((t) => t.startsWith("カテゴリ："))).toBe(true);
+    expect(lines.some((t) => t.startsWith("必要パワー："))).toBe(true);
+    const phone = open({ width: 390, height: 844 });
+    expect(phone.detailLines.some((l) => l.text.startsWith("カテゴリ："))).toBe(false);
+    expect(phone.detailLines.at(-1)!.text).toMatch(/▼ タップで(詳細|全文)/);
+    expect(phone.detailFull!.fields[0]).toMatch(/^カテゴリ：/);
+  });
 });

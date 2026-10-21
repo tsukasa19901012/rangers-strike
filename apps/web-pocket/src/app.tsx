@@ -436,6 +436,15 @@ export default function App() {
     if (!down || Math.abs(down.x - e.x) + Math.abs(down.y - e.y) > 12) return false;
     hoverKey = "";
     if (deck.menu) return dispatch(e.button === 2 ? input.cancel : hitTestDeck(deck, p));
+    // Any tap closes the whole card text; a tap on a detail panel that left some out opens it.
+    if (fullText()) {
+      setFullText(false);
+      return true;
+    }
+    if (e.button === 0 && deck.detailFull && inside(g.detail, p)) {
+      setFullText(true);
+      return true;
+    }
     const tile = tileAt();
     if (e.button === 2) {
       if (!tile) return false;
@@ -518,7 +527,7 @@ export default function App() {
           />
         )}
       </Match>
-      <Match when={view().deck}>{(deck) => <DeckView view={deck()} hot={hot()} footer={isPortrait(deck().geometry) ? DECK_TOUCH_FOOTER : DECK_FOOTER} />}</Match>
+      <Match when={view().deck}>{(deck) => <DeckView view={deck()} hot={hot()} footer={isPortrait(deck().geometry) ? DECK_TOUCH_FOOTER : DECK_FOOTER} fullText={fullText()} />}</Match>
       <Match when={view().screen === "result"}>
         <ResultView
           controller={controller}
