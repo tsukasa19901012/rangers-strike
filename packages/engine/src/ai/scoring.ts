@@ -1,6 +1,6 @@
 import type { GameState, PlayerId } from "../types/game";
 import { WIN_DAMAGE } from "../types/game";
-import { effectiveBp, getDefinition, parsePowerCost } from "../core/catalog";
+import { effectiveBp, getDefinition } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { strikeDamageFor } from "../rules/combo";
 
@@ -53,25 +53,6 @@ function totalStrikePotential(
   return total;
 }
 
-const powerCapCache = new WeakMap<object, Partial<Record<PlayerId, number>>>();
-
-/** そのプレイヤーのカード（全ゾーン）で一番重いパワーコスト。対戦中は変わらないので、定義表ごとに覚えておく。 */
-function maxPowerCost(state: GameState, playerId: PlayerId): number {
-  const byPlayer = powerCapCache.get(state.definitions) ?? {};
-  const cached = byPlayer[playerId];
-  if (cached !== undefined) return cached;
-  const p = state.players[playerId];
-  let max = 0;
-  for (const card of [...p.deck, ...p.hand, ...p.rush, ...p.battle, ...p.power, ...p.command, ...p.discard]) {
-    const def = getDefinition(state.definitions, card.cardId);
-    if (!def || (def.type !== "unit" && def.type !== "operation")) continue;
-    max = Math.max(max, parsePowerCost(def.powerCost));
-  }
-  byPlayer[playerId] = max;
-  powerCapCache.set(state.definitions, byPlayer);
-  return max;
-}
-
 const CLOCK_UP_IDS = new Set(["RK-021", "RK-078"]);
 
 /**
@@ -105,8 +86,6 @@ export const DEFAULT_EVAL_WEIGHTS = {
   selfRush: 260,
   enemyRush: 190,
   selfPower: 200,
-  /** デッキで一番重いカードのパワーコストを超えた分のパワー 1 枚の価値。 */
-  selfPowerOverCap: 200,
   enemyPower: 140,
   selfCommand: 65,
   heldCommand: 100,
@@ -178,9 +157,7 @@ export function evaluateState(state: GameState, playerId: PlayerId): number {
   score += self.rush.length * W.selfRush;
   score -= enemy.rush.length * W.enemyRush;
 
-  const powerCap = maxPowerCost(state, playerId);
-  score += Math.min(self.power.length, powerCap) * W.selfPower;
-  score += Math.max(0, self.power.length - powerCap) * W.selfPowerOverCap;
+  score += self.power.length * W.selfPower;
   score -= enemy.power.length * W.enemyPower;
   score += self.command.length * W.selfCommand;
   const heldCommands = self.command.filter((c) => c.commandHeld).length;
