@@ -91,7 +91,13 @@ npm run audit:catalog-parity -w @rangers-strike/cards
 
 ## CI
 
-`.github/workflows/ci.yml` が `main` / `master` への push と全 PR で `npm ci` → `npm test` → `npm run build` を実行します（Node 20）。
+`.github/workflows/ci.yml` が `main` / `master` への push と全 PR で、`npm test` と `npm run build` と同じ内容を 3 種類のジョブに分けて並列に実行します（Node 20）。
+
+- `test-and-build`: engine 以外のテストと全パッケージのビルド
+- `engine-unit`: engine の `test:unit` を 2 分割
+- `engine-sim`: engine の `test:sim` を `test:sim:starters` / `test:sim:monkey` / `test:sim:rest` の 3 グループに分けたもの
+
+各ジョブは turbo のキャッシュ（`.turbo/cache`）を actions/cache で次の実行に引き継ぎます。入力が変わっていないタスク（UI だけの PR での engine のテストなど）は、実行せずにキャッシュの結果を再生します。
 
 ## デプロイ
 
