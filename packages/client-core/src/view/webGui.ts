@@ -13,7 +13,7 @@
 //
 // Tiles keep the printed card's 130:190 aspect so the whole card image fits.
 import type { DeckChipKey, DeckGeometry } from "../app/deckBuilder";
-import { detailArtWidth, PHASE_ORDER, type GuiGeometry, type GuiRowDef } from "./gui";
+import { PHASE_ORDER, type GuiGeometry, type GuiRowDef } from "./gui";
 import type { Rect, Viewport } from "./layout";
 import { CPU, HUMAN, type PlayerId } from "../engineApi";
 
@@ -59,7 +59,9 @@ export function webPileWidth(tileW: number): number {
 /** Pile column (deck, discard, power) at the right end of a player's rows. */
 export function webPileRect(g: GuiGeometry, player: PlayerId): Rect {
   const defs = g.rowDefs ?? WEB_GUI_ROWS;
-  const rows = g.rows.filter((_, i) => defs[i]?.player === player);
+  // A phone's hand row takes the whole width, under the pile column.
+  const portrait = isPortrait(g);
+  const rows = g.rows.filter((_, i) => defs[i]?.player === player && !(portrait && defs[i]?.zone === "hand"));
   const first = rows[0]!;
   const last = rows[rows.length - 1]!;
   const gap = isPortrait(g) ? 6 : 10;
@@ -67,10 +69,19 @@ export function webPileRect(g: GuiGeometry, player: PlayerId): Rect {
   return { x, y: first.y - 3, w: g.board.x + g.board.w - x, h: last.y + last.h - first.y + 6 };
 }
 
-/** Rows and strips stacked from `top`, the tile size filling `height`. */
-function stackRows(board: Rect, top: number, height: number, stripH: number, rowGap: number) {
+/** Height the card rows of a board `height` high share (the two strips and the gaps taken out). */
+function rowsHeight(height: number, stripH: number, rowGap: number): number {
+  return height - stripH * 2 - 12 - rowGap * (WEB_GUI_ROWS.length - 1);
+}
+
+/**
+ * Rows and strips stacked from `top`, the tile size filling `height`.
+ * `handH`: the hand row's own height (a phone's larger hand); the other rows share the rest.
+ */
+function stackRows(board: Rect, top: number, height: number, stripH: number, rowGap: number, handH?: number) {
   const rowCount = WEB_GUI_ROWS.length;
-  const tileH = Math.floor((height - stripH * 2 - 12 - rowGap * (rowCount - 1)) / rowCount);
+  const shared = rowsHeight(height, stripH, rowGap);
+  const tileH = handH === undefined ? Math.floor(shared / rowCount) : Math.floor((shared - handH) / (rowCount - 1));
   const rows: Rect[] = [];
   let y = top;
   const cpuStrip: Rect = { x: board.x, y, w: board.w, h: stripH };
@@ -82,8 +93,9 @@ function stackRows(board: Rect, top: number, height: number, stripH: number, row
       humanStrip = { x: board.x, y, w: board.w, h: stripH };
       y += stripH + 4;
     }
-    rows.push({ x: board.x, y, w: board.w, h: tileH });
-    y += tileH + rowGap;
+    const h = def.zone === "hand" && handH !== undefined ? handH : tileH;
+    rows.push({ x: board.x, y, w: board.w, h });
+    y += h + rowGap;
   }
   return { rows, tileH, strips: [cpuStrip, humanStrip] as [Rect, Rect] };
 }
@@ -146,14 +158,19 @@ export function computeWebGuiGeometry(viewport: Viewport): GuiGeometry {
 //   [top bar: turn                    leave]
 //   [phase pills                           ]
 //   [CPU command / rush / battle     |piles]
-//   [own battle / rush / command / hand    ]
-//   [card detail (image + text)            ]
+//   [own battle / rush / command     |piles]
+//   [hand: larger cards, the whole width   ]
 //   [every action | log | end phase        ]
 //   [footer hints                          ]
+// The card detail has no place of its own: the shell shows it over the
+// board when a card is long-pressed, and the log (`detail`) over the board's
+// lower half when the log button is on.
 const PORTRAIT_TOP_H = 40;
 const PORTRAIT_PHASE_H = 28;
 const PORTRAIT_BUTTONS_H = 48;
 const PORTRAIT_FOOTER_H = 24;
+/** Hand cards that fit across a phone held upright (more are a swipe away). */
+const PORTRAIT_HAND_CARDS = 4;
 
 function computePortraitGuiGeometry(viewport: Viewport): GuiGeometry {
   const width = Math.max(WEB_MIN_PORTRAIT.width, Math.floor(viewport.width));
@@ -162,26 +179,34 @@ function computePortraitGuiGeometry(viewport: Viewport): GuiGeometry {
   const topBar: Rect = { x: 0, y: 0, w: width, h: PORTRAIT_TOP_H };
   const footer: Rect = { x: 0, y: height - PORTRAIT_FOOTER_H, w: width, h: PORTRAIT_FOOTER_H };
   const buttonsY = footer.y - 6 - PORTRAIT_BUTTONS_H;
-  const detailH = clamp(Math.round(height * 0.16), 112, 170);
-  const detail: Rect = { x: pad, y: buttonsY - 6 - detailH, w: width - pad * 2, h: detailH };
   const phaseY = PORTRAIT_TOP_H + 4;
   const phaseW = Math.floor((width - pad * 2 - 4 * 4) / PHASE_ORDER.length);
   const phaseRects = PHASE_ORDER.map((_, i) => ({ x: pad + i * (phaseW + 4), y: phaseY, w: phaseW, h: PORTRAIT_PHASE_H }));
   const boardY = phaseY + PORTRAIT_PHASE_H + 6;
-  const board: Rect = { x: pad, y: boardY, w: width - pad * 2, h: detail.y - 6 - boardY };
+  const board: Rect = { x: pad, y: boardY, w: width - pad * 2, h: buttonsY - 6 - boardY };
+  const detailY = board.y + Math.round(board.h * 0.45);
+  const detail: Rect = { x: pad, y: detailY, w: board.w, h: board.y + board.h - detailY };
   // No side column: popups may use the whole width.
   const side: Rect = { x: width - pad, y: board.y, w: 0, h: board.h };
   const endW = Math.round(board.w * 0.42);
   const endButton: Rect = { x: width - pad - endW, y: buttonsY, w: endW, h: PORTRAIT_BUTTONS_H };
 
-  const { rows, tileH, strips } = stackRows(board, board.y, board.h, 22, 4);
+  const gap = 4;
+  const stripH = 22;
+  // The hand: PORTRAIT_HAND_CARDS across the whole width, at most 30% of the rows' height.
+  const handFit = Math.floor((board.w + gap) / PORTRAIT_HAND_CARDS) - gap;
+  const handH = Math.min(Math.round(handFit * CARD_ASPECT), Math.round(rowsHeight(board.h, stripH, gap) * 0.3));
+  const handW = Math.floor(handH / CARD_ASPECT);
+  const { rows, tileH, strips } = stackRows(board, board.y, board.h, stripH, gap, handH);
   const tileW = Math.floor(tileH / CARD_ASPECT);
   const pileW = clamp(tileW + 12, 56, 80);
-  rows.forEach((row) => {
-    row.w -= pileW + 6;
+  rows.forEach((row, i) => {
+    if (WEB_GUI_ROWS[i]!.zone !== "hand") row.w -= pileW + 6;
   });
-  const gap = 4;
   const tilesPerRow = Math.max(3, Math.floor((rows[0]!.w + gap) / (tileW + gap)));
+  const rowTiles = WEB_GUI_ROWS.map((def) =>
+    def.zone === "hand" ? { tileW: handW, tileH: handH, tilesPerRow: Math.max(3, Math.floor((board.w + gap) / (handW + gap))) } : undefined,
+  );
   return {
     width,
     height,
@@ -199,10 +224,11 @@ function computePortraitGuiGeometry(viewport: Viewport): GuiGeometry {
     tileH,
     tileGap: gap,
     tilesPerRow,
+    rowTiles,
     phaseRects,
     endButton,
     detailLines: Math.max(3, Math.floor((detail.h - 8) / WEB_LINE_H)),
-    detailTextWidth: detail.w - detailArtWidth(detail) - 16,
+    detailTextWidth: detail.w - 16,
   };
 }
 

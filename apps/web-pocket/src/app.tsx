@@ -33,7 +33,7 @@ import {
 } from "@rangers-strike/client-core";
 import { webPlatform } from "./platform";
 import { pollCardArt } from "./cardArt";
-import { MatchView, matchButtons, peekLayout, pileHit, pileLayout, type DragView, type PilePeek } from "./MatchView";
+import { MatchView, matchButtons, peekLayout, pileHit, pileLayout, rowMarks, type DragView, type PilePeek } from "./MatchView";
 import { DeckView, deckButtons } from "./DeckView";
 import { TitleView } from "./TitleView";
 import { ResultView } from "./ResultView";
@@ -78,6 +78,22 @@ function hoverMatch(view: GuiView, point: { x: number; y: number }): LogicalInpu
   return null;
 }
 
+/** A press held this many frames without moving shows the card under it whole (CardSheet). */
+const LONG_PRESS_FRAMES = 27;
+
+/** The band of board row `index`, its label column included (drops and swipes over it count). */
+function inRowBand(view: GuiView, index: number, p: { x: number; y: number }): boolean {
+  const row = view.rows[index];
+  return !!row && p.y >= row.rect.y && p.y < row.rect.y + row.rect.h && p.x >= view.geometry.board.x && p.x < row.rect.x + row.rect.w;
+}
+
+/** The board row under a point that keeps some of its cards out of view (a swipe or the wheel pages it), or -1. */
+function scrollableRow(view: GuiView, p: { x: number; y: number }): number {
+  const covered = [view.list?.rect, view.popup?.rect, view.dialog?.rect].some((r) => r && inside(r, p));
+  if (covered) return -1;
+  return view.rows.findIndex((row, i) => row.moreLeft + row.moreRight > 0 && inRowBand(view, i, p));
+}
+
 /** Where a dragged card was dropped: a card on the board, a board row, or the own pile column (power zone). */
 function dropTarget(view: GuiView, p: { x: number; y: number }): { instanceId?: string; zone?: string } {
   for (const row of view.rows) {
@@ -85,7 +101,7 @@ function dropTarget(view: GuiView, p: { x: number; y: number }): { instanceId?: 
     const tile = [...row.tiles].reverse().find((t) => inside(t.rect, p));
     if (tile) return { instanceId: tile.instanceId, zone: row.key };
     // The row's band, label column included, takes drops between and beside its cards.
-    if (p.y >= row.rect.y && p.y < row.rect.y + row.rect.h && p.x >= view.geometry.board.x && p.x < row.rect.x + row.rect.w) return { zone: row.key };
+    if (inRowBand(view, view.rows.indexOf(row), p)) return { zone: row.key };
   }
   if (inside(webPileRect(view.geometry, HUMAN), p)) return { zone: `${HUMAN}:power` };
   return {};
@@ -104,10 +120,10 @@ function matchFooter(v: GuiView): string {
 /** Phone (portrait) hints: no mouse, no keyboard. */
 function touchFooter(v: GuiView): string {
   if (v.list || v.popup) return "タップ: 決定 / 枠の外: 閉じる";
-  if (v.dialog) return "カードかボタンをタップして選ぶ";
+  if (v.dialog) return "タップ: 選ぶ / 長押し: カードの詳細";
   if (v.footerAccent) return v.footer.replace(/（[^）]*）$/, "");
-  if (v.footer === "CPU の手番") return "CPU の手番です…";
-  return "タップ: 詳細と操作 / ドラッグ: 登場・移動・アタック";
+  if (v.footer === "CPU の手番") return "CPU の手番です… / 長押し: カードの詳細";
+  return "タップ: 操作 / 長押し: 詳細 / 左右スワイプ: 送る";
 }
 
 const DECK_TOUCH_FOOTER = "タップ: 1枚入れる / 下の枠: カードの詳細";
@@ -137,6 +153,14 @@ export default function App() {
   const [leaving, setLeaving] = createSignal(false);
   // A card picked up by a drag (pointer down on a card the player can act with, then moved).
   const [drag, setDrag] = createSignal<DragView | null>(null);
+  // A long-pressed card shown whole (MatchView's CardSheet); any tap closes it.
+  const [sheet, setSheet] = createSignal<string | null>(null);
+  // The press that may become a long press: the card under it and how long it has been held.
+  let pressCard: string | null = null;
+  let pressFrames = 0;
+  let longPressed = false;
+  // The board row a press started on, when it hides some cards: a sideways swipe over it pages it.
+  let swipeRow = -1;
   // The automatic-move settings panel, over the title or the match. `settingsHot`: the row under the pointer (-2: close).
   const [settingsOpen, setSettingsOpen] = createSignal(false);
   const [settingsHot, setSettingsHot] = createSignal(-1);
@@ -236,8 +260,41 @@ export default function App() {
     }
     return "rows";
   }
+  /** The face-up card a long press at `p` shows: in the selection window, the enlarged zone, the pile column or the board. */
+  function cardUnder(gui: GuiView, p: { x: number; y: number }): string | null {
+    const box = gui.list ?? gui.popup;
+    if (box && inside(box.rect, p)) return null;
+    const faceUp = (card: { cardId: string; hidden?: boolean; kind?: string; rect: { x: number; y: number; w: number; h: number } } | undefined) =>
+      card && !card.hidden && card.kind !== "hidden" && card.cardId !== "back" ? card.cardId : null;
+    if (gui.dialog && inside(gui.dialog.rect, p)) return faceUp(gui.dialog.cards.find((c) => inside(c.rect, p)));
+    const shown = peek();
+    if (shown && !gui.dialog) {
+      const layout = peekLayout(gui.geometry, shown);
+      if (inside(layout.panel, p)) return faceUp(layout.cards.find((c) => inside(c.rect, p)));
+    }
+    const state = controller.session!.state;
+    for (const player of [CPU, HUMAN]) {
+      const layout = pileLayout(state, player, webPileRect(gui.geometry, player));
+      const card = [layout.discard, ...layout.sections.flatMap((section) => section.cards)].filter((c) => c && inside(c.rect, p)).pop();
+      if (card) return faceUp(card);
+    }
+    return faceUp([...gui.rows.flatMap((row) => row.tiles)].reverse().find((t) => inside(t.rect, p)));
+  }
   function onMatchPointer(e: PointerEvent, gui: GuiView): boolean {
     const p = { x: e.x, y: e.y };
+    // The release of a long press only ends it; while the sheet is up, a tap closes it.
+    if (e.kind === "up" && longPressed) {
+      longPressed = false;
+      pressed = null;
+      return true;
+    }
+    if (sheet()) {
+      if (e.kind === "down") pressed = e;
+      if (e.kind !== "up") return false;
+      pressed = null;
+      setSheet(null);
+      return true;
+    }
     const buttons = matchButtons(gui.geometry);
     const state = controller.session!.state;
     const pileCard = () =>
@@ -268,9 +325,12 @@ export default function App() {
         if (hit || !peekPinned) inspect(single);
       }
     }
+    if (e.kind === "move" && pressed && Math.abs(pressed.x - e.x) + Math.abs(pressed.y - e.y) > 12) pressCard = null;
     if (e.kind === "move" && dragFrom && pressed && Math.abs(pressed.x - e.x) + Math.abs(pressed.y - e.y) > 12) {
-      setDrag({ cardId: dragFrom.cardId, x: e.x, y: e.y, w: dragFrom.w, h: dragFrom.h });
-      setCursor(true);
+      // Sideways along a row that hides cards is a swipe through them, not a drag.
+      const swiping = swipeRow >= 0 && Math.abs(pressed.x - e.x) > Math.abs(pressed.y - e.y) && inRowBand(gui, swipeRow, p);
+      setDrag(swiping ? null : { cardId: dragFrom.cardId, x: e.x, y: e.y, w: dragFrom.w, h: dragFrom.h });
+      setCursor(!swiping);
       return true;
     }
     if (e.kind === "move" || e.kind === "leave") {
@@ -304,10 +364,15 @@ export default function App() {
       // Over the selection window's cards the wheel moves through the cards, elsewhere through the rows.
       if (gui.dialog && !gui.popup && !gui.list && swipeArea(gui, p) === "cards") return dispatch((e.dy ?? 0) > 0 ? input.pageNext : input.pagePrev);
       if (gui.popup || gui.list || gui.dialog) return dispatch((e.dy ?? 0) > 0 ? input.next : input.prev);
-      return false;
+      const row = scrollableRow(gui, p);
+      return row >= 0 && controller.scrollRow(row, (e.dy ?? 0) > 0 ? 1 : -1);
     }
     if (e.kind === "down") {
       pressed = e;
+      // A phone has no detail panel and no hover: a long press shows a card instead.
+      pressCard = e.button === 0 && isPortrait(gui.geometry) ? cardUnder(gui, p) : null;
+      pressFrames = 0;
+      swipeRow = scrollableRow(gui, p);
       let tile = !gui.menuOpen && !gui.dialog && e.button === 0 ? [...gui.rows.flatMap((row) => row.tiles)].reverse().find((t) => inside(t.rect, p)) : undefined;
       if (tile && !tile.actionable) tile = undefined;
       dragFrom = tile ? { instanceId: tile.instanceId, cardId: tile.cardId, w: tile.rect.w, h: tile.rect.h } : null;
@@ -315,9 +380,18 @@ export default function App() {
     }
     const down = pressed;
     pressed = null;
+    pressCard = null;
     const from = dragFrom;
     dragFrom = null;
     if (drag()) setDrag(null);
+    const row = swipeRow;
+    swipeRow = -1;
+    if (down && row >= 0 && Math.abs(down.x - e.x) > 30 && Math.abs(down.x - e.x) > Math.abs(down.y - e.y) && inRowBand(gui, row, p)) {
+      // A swipe moves the row by about as many cards as the finger travelled (at least one).
+      const step = (gui.rows[row]!.tiles[0]?.rect.w ?? 60) + gui.geometry.tileGap;
+      const cards = Math.max(1, Math.round(Math.abs(down.x - e.x) / step));
+      return controller.scrollRow(row, down.x > e.x ? cards : -cards) || true;
+    }
     if (down && from && Math.abs(down.x - e.x) + Math.abs(down.y - e.y) > 12) {
       controller.dropCard(from.instanceId, dropTarget(gui, p));
       return true;
@@ -338,14 +412,18 @@ export default function App() {
       return true;
     }
     const covering = [gui.list?.rect, gui.popup?.rect, gui.dialog?.rect].some((r) => r && inside(r, p));
-    if (gui.detailFull && inside(gui.geometry.detail, p) && !covering) {
+    // A phone shows the log over the board: a tap on it puts it away.
+    if (isPortrait(gui.geometry) && gui.logShown && inside(gui.geometry.detail, p) && !covering) return dispatch(input.toggleLog);
+    if (!isPortrait(gui.geometry) && gui.detailFull && inside(gui.geometry.detail, p) && !covering) {
       setFullText(true);
       return true;
     }
     // A tap on one of the enlarged cards (the discard pile, the power zone) shows it in the detail panel.
     const tappedShown = !covering ? peekCard() : null;
     if (tappedShown) {
-      inspect(tappedShown.cardId);
+      // A phone has no detail panel: the card opens whole.
+      if (isPortrait(gui.geometry)) setSheet(tappedShown.cardId);
+      else inspect(tappedShown.cardId);
       peekPinned = true;
       return true;
     }
@@ -370,6 +448,13 @@ export default function App() {
     // An open popup can cover the buttons under the end button (全操作 / ログ): its rows come first.
     const overlay = gui.list ?? gui.popup;
     if (overlay && inside(overlay.rect, p)) return dispatch(hitTestGui(gui, p));
+    // A tap on a row's ‹n / n› mark shows the next cards (as many as the row shows at once).
+    if (!(gui.dialog && inside(gui.dialog.rect, p))) {
+      for (let i = 0; i < gui.rows.length; i++) {
+        const mark = rowMarks(gui.rows[i]!).find((m) => inside(m.tap, p));
+        if (mark) return controller.scrollRow(i, mark.direction * Math.max(1, gui.rows[i]!.tiles.length - 1)) || true;
+      }
+    }
     if (inside(buttons.leave, p)) {
       if (leaving()) {
         setLeaving(false);
@@ -496,6 +581,16 @@ export default function App() {
       else if (event.kind === "move") setCursor(false);
     }
     if (leaveFrames > 0 && --leaveFrames === 0) setLeaving(false);
+    // A press held still on a card shows it whole (the drag it might have started is dropped).
+    if (pressed && pressCard && !longPressed && ++pressFrames >= LONG_PRESS_FRAMES) {
+      setSheet(pressCard);
+      longPressed = true;
+      pressCard = null;
+      dragFrom = null;
+      setDrag(null);
+      changed = true;
+    }
+    if (sheet() && !controller.view().gui) setSheet(null);
     if (controller.tick()) changed = true;
     pollCardArt();
     if (changed) refresh();
@@ -524,6 +619,7 @@ export default function App() {
             endingTurn={(gui(), controller.endingTurn)}
             drag={drag()}
             fullText={fullText()}
+            sheet={sheet()}
           />
         )}
       </Match>

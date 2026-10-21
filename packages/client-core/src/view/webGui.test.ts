@@ -4,6 +4,7 @@ import { input } from "../input/actions";
 import { hitTestGui } from "../input/devices";
 import { testPlatform } from "../testing/engine";
 import type { Rect } from "./layout";
+import { rowTiles } from "./gui";
 import { CPU, HUMAN } from "../engineApi";
 import { computeWebDeckGeometry, computeWebGuiGeometry, isPortrait, webPileRect, WEB_GUI_ROWS, WEB_MIN_VIEWPORT } from "./webGui";
 
@@ -63,21 +64,29 @@ describe("web geometry", () => {
       expect(isPortrait(g)).toBe(true);
       const screen = { x: 0, y: 0, w: size.width, h: size.height };
       for (const r of [g.topBar, g.footer, g.detail, g.board, g.endButton, ...g.phaseRects, ...g.strips]) expect(within(r, screen)).toBe(true);
-      // Phases, board, detail, buttons and footer from top to bottom.
+      // Phases, board, buttons and footer from top to bottom; the log (detail) is drawn over the board.
       expect(g.phaseRects[0]!.y).toBeGreaterThanOrEqual(g.topBar.y + g.topBar.h);
       expect(g.board.y).toBeGreaterThanOrEqual(g.phaseRects[0]!.y + g.phaseRects[0]!.h);
-      expect(g.detail.y).toBeGreaterThanOrEqual(g.board.y + g.board.h);
-      expect(g.endButton.y).toBeGreaterThanOrEqual(g.detail.y + g.detail.h);
+      expect(within(g.detail, g.board)).toBe(true);
+      expect(g.endButton.y).toBeGreaterThanOrEqual(g.board.y + g.board.h);
       expect(g.footer.y).toBeGreaterThanOrEqual(g.endButton.y + g.endButton.h);
-      for (const row of g.rows) {
+      g.rows.forEach((row, i) => {
+        const tiles = rowTiles(g, i);
         expect(within(row, g.board)).toBe(true);
-        expect(g.tilesPerRow * (g.tileW + g.tileGap) - g.tileGap).toBeLessThanOrEqual(row.w);
-      }
+        expect(tiles.tilesPerRow * (tiles.tileW + g.tileGap) - g.tileGap).toBeLessThanOrEqual(row.w);
+        expect(tiles.tileH).toBeLessThanOrEqual(row.h);
+      });
+      // The hand takes the whole width with larger cards than the other rows.
+      const hand = WEB_GUI_ROWS.findIndex((r) => r.zone === "hand");
+      expect(g.rows[hand]!.w).toBe(g.board.w);
+      expect(rowTiles(g, hand).tileW).toBeGreaterThan(g.tileW);
+      expect(rowTiles(g, hand).tilesPerRow).toBeGreaterThanOrEqual(4);
       // The pile panel overhangs its rows by a few px, like the row backgrounds.
       const around = { x: g.board.x, y: g.board.y - 4, w: g.board.w, h: g.board.h + 8 };
       for (const player of [CPU, HUMAN]) expect(within(webPileRect(g, player), around)).toBe(true);
       expect(g.tilesPerRow).toBeGreaterThanOrEqual(5);
       expect(g.tileH).toBeGreaterThanOrEqual(50);
+      expect(rowTiles(g, hand).tileH).toBeGreaterThanOrEqual(100);
     }
   });
 
@@ -158,6 +167,47 @@ describe("riding pairs", () => {
     const r = gui.rows.indexOf(row);
     expect(hitTestGui(gui, { x: rider!.rect.x + 2, y: rider!.rect.y + 10 })).toMatchObject({ type: "focusTile", row: r, slot: 1 });
     expect(hitTestGui(gui, { x: vehicle!.rect.x + 2, y: vehicle!.rect.y + 10 })).toMatchObject({ type: "focusTile", row: r, slot: 0 });
+  });
+});
+
+describe("rows that do not fit their cards", () => {
+  it("pages a phone's hand and battle area by scrollRow", () => {
+    const app = new AppController({
+      platform: testPlatform(),
+      viewport: PORTRAIT_SIZES[0]!,
+      cpuDelayFrames: 0,
+      seed: () => 11,
+      gui: true,
+      cardArt: true,
+      layouts: { match: computeWebGuiGeometry, deck: computeWebDeckGeometry },
+    });
+    app.startMatch();
+    const session = app.session!;
+    const s = session.state;
+    const cards = (zone: string, n: number) => Array.from({ length: n }, (_, i) => ({ instanceId: `RS-052:${zone}${i}`, cardId: "RS-052" }));
+    session.state = { ...s, players: { ...s.players, [HUMAN]: { ...s.players[HUMAN], hand: cards("h", 11), battle: cards("b", 12) } } };
+    session.version++;
+    const row = (key: string) => {
+      const gui = app.view().gui!;
+      const index = gui.rows.findIndex((r) => r.key === key);
+      return { index, view: gui.rows[index]! };
+    };
+    for (const key of [`${HUMAN}:hand`, `${HUMAN}:battle`]) {
+      const { index, view } = row(key);
+      const shown = view.tiles.length;
+      expect(view.moreLeft).toBe(0);
+      expect(view.moreRight).toBeGreaterThan(0);
+      expect(app.scrollRow(index, 2)).toBe(true);
+      expect(row(key).view.moreLeft).toBe(2);
+      expect(row(key).view.tiles[0]!.instanceId).toBe(view.tiles[2]!.instanceId);
+      // Past the end it stops at the last card; back at the start nothing moves.
+      app.scrollRow(index, 99);
+      expect(row(key).view.moreRight).toBe(0);
+      expect(row(key).view.tiles.length).toBe(shown);
+      app.scrollRow(index, -99);
+      expect(row(key).view.moreLeft).toBe(0);
+      expect(app.scrollRow(index, -1)).toBe(false);
+    }
   });
 });
 

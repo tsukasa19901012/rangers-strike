@@ -73,11 +73,21 @@ export type GuiGeometry = {
   tileH: number;
   tileGap: number;
   tilesPerRow: number;
+  /** Rows whose tiles differ from tileW / tileH / tilesPerRow (a phone's larger hand), by row index. */
+  rowTiles?: readonly (RowTiles | undefined)[];
   phaseRects: Rect[];
   endButton: Rect;
   detailLines: number;
   detailTextWidth: number;
 };
+
+/** Tile size and how many fit, for one board row. */
+export type RowTiles = { tileW: number; tileH: number; tilesPerRow: number };
+
+/** The tiles of board row `row` (rowTiles where it has its own, else the geometry's). */
+export function rowTiles(geometry: GuiGeometry, row: number): RowTiles {
+  return geometry.rowTiles?.[row] ?? geometry;
+}
 
 /** A detail panel much wider than tall (phone portrait) shows its text beside the card image. */
 export function isWideDetail(detail: Rect): boolean {
@@ -373,8 +383,8 @@ function turnPlayer(state: GameState): PlayerId {
 }
 
 /** How far a riding unit's tile sits right of its vehicle's (the vehicle shows on its left). */
-export function ridingStep(geometry: GuiGeometry): number {
-  return Math.round(geometry.tileW * 0.42);
+export function ridingStep(geometry: GuiGeometry, row: number): number {
+  return Math.round(rowTiles(geometry, row).tileW * 0.42);
 }
 
 /**
@@ -385,7 +395,7 @@ export function rowTileRects(geometry: GuiGeometry, row: number, tiles: readonly
   const base = tileRect(geometry, row, 0);
   let x = base.x;
   return tiles.map((tile, slot) => {
-    if (slot > 0) x += tile.ridingOn && tiles[slot - 1]!.instanceId === tile.ridingOn ? ridingStep(geometry) : geometry.tileW + geometry.tileGap;
+    if (slot > 0) x += tile.ridingOn && tiles[slot - 1]!.instanceId === tile.ridingOn ? ridingStep(geometry, row) : base.w + geometry.tileGap;
     return { ...base, x };
   });
 }
@@ -393,10 +403,11 @@ export function rowTileRects(geometry: GuiGeometry, row: number, tiles: readonly
 /** Tile rectangle for slot `slot` (0-based within the visible window) of row `row`. */
 export function tileRect(geometry: GuiGeometry, row: number, slot: number): Rect {
   const r = geometry.rows[row]!;
+  const { tileW, tileH } = rowTiles(geometry, row);
   return {
-    x: r.x + slot * (geometry.tileW + geometry.tileGap),
+    x: r.x + slot * (tileW + geometry.tileGap),
     y: r.y,
-    w: geometry.tileW,
-    h: geometry.tileH,
+    w: tileW,
+    h: tileH,
   };
 }
