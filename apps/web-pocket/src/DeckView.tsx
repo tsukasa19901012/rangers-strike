@@ -6,7 +6,7 @@
 import { Index, Show } from "solid-js";
 import { Text, View } from "@pocketjs/framework/solid/components";
 import { isPortrait, type DeckBuilderView, type DeckGeometry } from "@rangers-strike/client-core";
-import { MenuBox, TONE } from "./MatchView";
+import { FullTextPanel, MenuBox, TONE } from "./MatchView";
 import { at, CardFace, type Box } from "./ui";
 
 /** Header and pager buttons (not part of DeckBuilderView; the app handles their clicks). */
@@ -33,7 +33,7 @@ const chipText = (text: string) => text.replace(/\s*\([^)]*\)$/, "");
 const BUTTON = "absolute flex-row items-center justify-center rounded-[8] bg-[#1e293b] border border-[#334155]";
 const BUTTON_HOT = "absolute flex-row items-center justify-center rounded-[8] bg-slate-600 border border-slate-400";
 
-export function DeckView(props: { view: DeckBuilderView; hot: string | null; footer: string }) {
+export function DeckView(props: { view: DeckBuilderView; hot: string | null; footer: string; fullText: boolean }) {
   const v = () => props.view;
   const g = () => props.view.geometry;
   const b = () => deckButtons(g());
@@ -131,6 +131,8 @@ export function DeckView(props: { view: DeckBuilderView; hot: string | null; foo
       <View class={props.hot === "next" ? BUTTON_HOT : BUTTON} style={at(b().next)}>
         <Text class="text-sm text-slate-100">{portrait() ? "次へ ›" : "次のページ ›"}</Text>
       </View>
+
+      <Show when={props.fullText && !v().menu && v().detailFull}>{(full) => <FullTextPanel area={g().grid} full={full()} />}</Show>
 
       <Show when={v().menu}>
         {(menu) => (

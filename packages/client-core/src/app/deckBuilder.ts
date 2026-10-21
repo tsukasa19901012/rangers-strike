@@ -16,7 +16,7 @@ import type { CardDefinition, DeckApi, DeckEntry, EngineApi } from "../engineApi
 import { ListCursor, type LogicalInput } from "../input/actions";
 import type { CustomDeck } from "../platform/settings";
 import { fitLine, wrapText, type WrapOptions } from "../text/wrap";
-import { effectParagraphs } from "../view/cardFields";
+import { cardFieldLines, effectParagraphs } from "../view/cardFields";
 import { detailArtWidth, isWideDetail } from "../view/gui";
 import type { Rect, Viewport } from "../view/layout";
 import { TYPE_LABELS, type GuiBox, type MenuRowView, type PanelLine, type PanelTone } from "./guiMatch";
@@ -93,6 +93,8 @@ export type DeckBuilderView = {
   emptyText: string;
   detailArt?: { cardId: string; hidden: boolean; rect: Rect };
   detailLines: PanelLine[];
+  /** The whole card (attributes and text), set when the detail panel left some of it out. */
+  detailFull?: { name: string; fields: string[]; text: string };
   menu?: GuiBox;
   footer: string;
 };
@@ -596,13 +598,18 @@ export class DeckBuilder {
     // Detail panel: the focused card.
     const detailLines: PanelLine[] = [];
     let detailArt: DeckBuilderView["detailArt"];
+    let detailFull: DeckBuilderView["detailFull"];
     let y = g.detail.y + 4;
     let textX = g.detail.x + 4;
     let textW = g.detail.w - 6;
     const bottom = g.detail.y + g.detail.h - 2;
+    let clipped = false;
     const push = (tone: PanelTone, texts: string[]) => {
       for (const text of texts) {
-        if (y + g.lineHeight > bottom) return;
+        if (y + g.lineHeight > bottom) {
+          clipped = true;
+          return;
+        }
         detailLines.push({ text, tone, rect: { x: textX, y, w: textW, h: g.lineHeight } });
         y += g.lineHeight;
       }
@@ -616,8 +623,16 @@ export class DeckBuilder {
         card.bp !== undefined ? `BP${card.bp}` : "",
         this.deck.categories(card).join("/"),
       ].filter(Boolean);
+      const fields = cardFieldLines(card);
+      const text = effectParagraphs(card.text ?? "");
+      const count = this.entries.get(card.id) ?? 0;
+      const remaining = this.remaining(card);
+      const countLine = `デッキに${count}枚${Number.isFinite(remaining) ? ` あと${remaining}枚` : ""}`;
+      let beside = false;
       if (this.cardArt && isWideDetail(g.detail)) {
-        // Wide, short panel (phone portrait): every line beside the image.
+        // Wide, short panel (phone portrait): every line beside the image; the
+        // attributes are left out (a tap opens the whole card, `detailFull`).
+        beside = true;
         const artW = detailArtWidth(g.detail);
         const rect = { x: g.detail.x + 4, y, w: artW, h: Math.round(artW * CARD_ASPECT) };
         detailArt = { cardId: card.id, hidden: false, rect };
@@ -626,29 +641,42 @@ export class DeckBuilder {
         wrap = { ...wrap, maxWidthPx: textW };
         push("head", wrapText(card.name, { ...wrap, maxLines: 1 }));
         push("dim", wrapText(stats.join(" "), { ...wrap, maxLines: 1 }));
+        push("accent", wrapText(countLine, { ...wrap, maxLines: 1 }));
+        push("body", wrapText(text, wrap));
       } else if (this.cardArt) {
+        // Beside the image: number, type and size; under it the name, the wiki-style attributes and the text.
         const artW = Math.round(g.detail.w * 0.5);
         const rect = { x: g.detail.x + 4, y, w: artW, h: Math.round(artW * CARD_ASPECT) };
         detailArt = { cardId: card.id, hidden: false, rect };
         const sideX = rect.x + rect.w + 4;
         const sideW = g.detail.x + g.detail.w - sideX - 2;
-        stats.slice(0, Math.floor(rect.h / g.lineHeight)).forEach((text, i) =>
+        const tokens = [card.id, TYPE_LABELS[card.type] ?? card.type, card.size ? `サイズ：${card.size}` : ""].filter(Boolean);
+        tokens.slice(0, Math.floor(rect.h / g.lineHeight)).forEach((token, i) =>
           detailLines.push({
-            text: fitLine(text, { fontPx: g.fontPx, maxWidthPx: sideW }),
+            text: fitLine(token, { fontPx: g.fontPx, maxWidthPx: sideW }),
             tone: i === 0 ? "dim" : "body",
             rect: { x: sideX, y: rect.y + i * g.lineHeight, w: sideW, h: g.lineHeight },
           }),
         );
         y = rect.y + rect.h + 3;
         push("head", wrapText(card.name, { ...wrap, maxLines: 2 }));
+        push("accent", wrapText(countLine, { ...wrap, maxLines: 2 }));
+        for (const field of fields) push("dim", wrapText(field, wrap));
+        push("body", wrapText(text, wrap));
       } else {
         push("head", wrapText(card.name, { ...wrap, maxLines: 2 }));
         push("dim", wrapText(stats.join(" "), { ...wrap, maxLines: 2 }));
+        push("accent", wrapText(countLine, { ...wrap, maxLines: 2 }));
+        push("body", wrapText(text, wrap));
       }
-      const count = this.entries.get(card.id) ?? 0;
-      const remaining = this.remaining(card);
-      push("accent", wrapText(`デッキに${count}枚${Number.isFinite(remaining) ? ` あと${remaining}枚` : ""}`, { ...wrap, maxLines: 2 }));
-      push("body", wrapText(effectParagraphs(card.text ?? ""), wrap));
+      // As on the match screen: when the panel left something out, its last line says the whole card opens on a tap.
+      if (this.cardArt && (clipped || beside)) {
+        const hint = clipped ? "▼ タップで全文" : "▼ タップで詳細";
+        if (!clipped) push("accent", [hint]);
+        const last = detailLines[detailLines.length - 1];
+        if (last && last.text !== hint) detailLines[detailLines.length - 1] = { ...last, text: hint, tone: "accent" };
+        detailFull = { name: card.name, fields, text };
+      }
     }
 
     let menu: GuiBox | undefined;
@@ -716,6 +744,7 @@ export class DeckBuilder {
           : "条件に合うカードがありません",
       detailArt,
       detailLines,
+      detailFull,
       menu,
       footer: this.menu
         ? "↑↓:選ぶ ○:決定 ×:閉じる"
