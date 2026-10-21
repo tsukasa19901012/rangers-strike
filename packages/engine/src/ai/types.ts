@@ -19,6 +19,8 @@ export type CpuLevelConfig = {
   comboOrder?: number;
   /** 山札がこの枚数以下で相手より少ないとき、追加ドローをしない（山札切れの負けを遅らせる）。 */
   deckGuard?: number;
+  /** チャージの先読みで、デッキの中身から決めた方針（パワーの上限・最初のコマンド）を守る。 */
+  deckAwareCharge?: boolean;
 };
 
 let overrides: Partial<Record<CpuLevel, Partial<CpuLevelConfig>>> = {};
@@ -35,9 +37,11 @@ const LEVEL_CONFIG: Record<CpuLevel, CpuLevelConfig> = {
   // 探索の広さ・深さだけを増やした以前の Lv3〜5 は、Lv2 と同じ手しか選ばなかった（2026-10-20 scripts/cpu-arena.ts、
   // 340 局面で差 0）。対 旧Lv2（comboOrder・deckGuard なし、各 400 局、席入れ替え、2026-10-20）:
   // Lv2 57.3%、Lv4 61.3%、Lv5 62.3%。バトル進入の先読み（"entry"）は効果が見えなかったので外した。
-  3: { enableSearch: true, maxCandidates: 44, maxResponseDepth: 14, searchPly: 1, planSamples: 1, planPhases: ["charge"], planChargeTop: 2, comboOrder: 2, deckGuard: 10 },
-  4: { enableSearch: true, maxCandidates: 56, maxResponseDepth: 20, searchPly: 2, planSamples: 1, planPhases: ["charge"], comboOrder: 2, deckGuard: 10 },
-  5: { enableSearch: true, maxCandidates: 64, maxResponseDepth: 28, searchPly: 2, planSamples: 2, planPhases: ["charge"], comboOrder: 2, deckGuard: 10 },
+  // deckAwareCharge: デッキの一番重いカードの必要パワーに届いたら先読みしない等（ai/deckProfile.ts）。先読みが逆効果だった
+  // XG1-C・ライダーEXP1-C などで勝ち数が戻り（32 局で 7→12・10→17）、全体では同等で考える時間が 3 割減（2026-10-21）。
+  3: { enableSearch: true, maxCandidates: 44, maxResponseDepth: 14, searchPly: 1, planSamples: 1, planPhases: ["charge"], planChargeTop: 2, comboOrder: 2, deckGuard: 10, deckAwareCharge: true },
+  4: { enableSearch: true, maxCandidates: 56, maxResponseDepth: 20, searchPly: 2, planSamples: 1, planPhases: ["charge"], comboOrder: 2, deckGuard: 10, deckAwareCharge: true },
+  5: { enableSearch: true, maxCandidates: 64, maxResponseDepth: 28, searchPly: 2, planSamples: 2, planPhases: ["charge"], comboOrder: 2, deckGuard: 10, deckAwareCharge: true },
 };
 
 export function getCpuLevelConfig(level: CpuLevel): CpuLevelConfig {

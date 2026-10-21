@@ -86,13 +86,16 @@ function play(seed: number, deck1: string, deck2: string, aSeat: PlayerId): { wi
   return { winner: null, steps: MAX_STEPS, ms };
 }
 
+/** A が使ったデッキごとの [A の勝ち, 決着した試合数]。 */
+const byDeck: Record<string, [number, number]> = {};
 let a = 0, b = 0, draws = 0;
 const ms = { A: 0, B: 0 };
 const pairs: [string, string][] = [];
 // 先頭のデッキに偏らないよう、組み合わせを散らした順に並べる。
 for (let i = 0; i < decks.length * decks.length; i++) {
   const d1 = i % decks.length;
-  const d2 = (Math.floor(i / decks.length) + d1 * 5) % decks.length;
+  // --mirror: 同じデッキ同士だけで戦う（デッキの強弱を除いて、CPU の差だけを見る）。
+  const d2 = process.argv.includes("--mirror") ? d1 : (Math.floor(i / decks.length) + d1 * 5) % decks.length;
   pairs.push([decks[d1]!, decks[d2]!]);
 }
 const started = performance.now();
@@ -103,6 +106,10 @@ for (let g = 0; g < games; g++) {
   // 偶数回は A が player1、奇数回は同じ条件で席を入れ替える。
   const aSeat: PlayerId = g % 2 === 0 ? "player1" : "player2";
   const r = play(seed, d1, d2, aSeat);
+  const aDeck = aSeat === "player1" ? d1 : d2;
+  const tally = (byDeck[aDeck] ??= [0, 0]);
+  if (r.winner) tally[1]++;
+  if (r.winner === "A") tally[0]++;
   if (r.winner === "A") a++;
   else if (r.winner === "B") b++;
   else draws++;
@@ -114,7 +121,7 @@ const n = a + b;
 const rate = n ? a / n : 0;
 const se = n ? Math.sqrt((rate * (1 - rate)) / n) : 0;
 if (process.argv.includes("--json")) {
-  console.log(JSON.stringify({ a, b, draws, msA: ms.A, msB: ms.B, maxA: maxMs.A, maxB: maxMs.B, movesA: moves.A, movesB: moves.B, deckOutA: deckOuts.A, deckOutB: deckOuts.B, turns: turnsTotal }));
+  console.log(JSON.stringify({ a, b, draws, msA: ms.A, msB: ms.B, maxA: maxMs.A, maxB: maxMs.B, movesA: moves.A, movesB: moves.B, deckOutA: deckOuts.A, deckOutB: deckOuts.B, turns: turnsTotal, byDeck }));
   process.exit(0);
 }
 console.log(

@@ -1,6 +1,6 @@
 import type { GameState, PlayerId } from "../types/game";
 import { WIN_DAMAGE } from "../types/game";
-import { effectiveBp } from "../core/catalog";
+import { effectiveBp, getDefinition } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { strikeDamageFor } from "../rules/combo";
 
@@ -53,6 +53,22 @@ function totalStrikePotential(
   return total;
 }
 
+const CLOCK_UP_IDS = new Set(["RK-021", "RK-078"]);
+
+/**
+ * クロックアップに重ねたカードの枚数（場に「加速」のユニットがいるときだけ数える）。
+ * 1 枚ごとに「加速」のユニットへのアタックを 1 回止めるので、相手はアタックして減らす価値がある。
+ * これが無いと、そのアタックは「バトルが行われない」だけの手に見え、CPU は「加速」のユニットにアタックしなかった。
+ */
+function clockUpShields(state: GameState, playerId: PlayerId): number {
+  const p = state.players[playerId];
+  let stacked = 0;
+  for (const op of p.operation) if (CLOCK_UP_IDS.has(op.cardId)) stacked += op.stackedCards?.length ?? 0;
+  if (stacked === 0) return 0;
+  const accel = [...p.battle, ...p.rush].some((c) => getDefinition(state.definitions, c.cardId)?.features?.includes("加速"));
+  return accel ? stacked : 0;
+}
+
 /** 盤面評価の重み。CPU の調整（scripts/cpu-arena.ts）で差し替えられる。 */
 export const DEFAULT_EVAL_WEIGHTS = {
   enemyDamage: 1400,
@@ -96,6 +112,8 @@ export const DEFAULT_EVAL_WEIGHTS = {
   rushActive: 350,
   chargeActive: 200,
   battleWidth: 110,
+  /** クロックアップ（RK-021 / RK-078）に重ねたカード 1 枚（「加速」のユニットへのアタックを 1 回止める）。 */
+  clockUpShield: 300,
 };
 export type EvalWeights = typeof DEFAULT_EVAL_WEIGHTS;
 
@@ -183,6 +201,8 @@ export function evaluateState(state: GameState, playerId: PlayerId): number {
   if (self.damage + strikeThreat >= WIN_DAMAGE) {
     score -= W.enemyLethalThreat;
   }
+
+  score += (clockUpShields(state, playerId) - clockUpShields(state, enemyId)) * W.clockUpShield;
 
   if (state.phase === "rush") {
     score += heldCommands * W.rushHeldCommand;

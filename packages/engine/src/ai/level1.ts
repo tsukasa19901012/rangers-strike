@@ -38,6 +38,7 @@ import {
   pickWinningBattle,
 } from "./helpers";
 import { planComboEntry } from "./comboOrder";
+import { deckProfile } from "./deckProfile";
 import { dedupeActions, pickBestByRollout, pickBestBySearch, type SearchOptions } from "./simulation";
 
 export type PickCpuActionOptions = {
@@ -62,6 +63,8 @@ export type PickCpuActionOptions = {
   comboOrder?: number;
   /** 山札がこの枚数以下で相手より少ないとき、追加ドローをしない。 */
   deckGuard?: number;
+  /** チャージの先読みで、デッキの中身から決めた方針（パワーの上限・最初のコマンド）を守る。 */
+  deckAwareCharge?: boolean;
 };
 
 function tacticalSearchOptions(
@@ -499,20 +502,31 @@ function pickCpuActionInner(
     }
 
     case "charge": {
+      const heuristicCharge = pickChargeAction(state, playerId, actions) ?? endPhase(actions);
       if (plans("charge")) {
+        const choices = options.planChargeTop
+          ? chargeCandidates(state, playerId, actions, options.planChargeTop)
+          : sameCardOnce(state, playerId, actions.filter((a) => a.type === "charge_power" || a.type === "charge_command" || a.type === "end_phase"));
+        if (options.deckAwareCharge) {
+          const self = state.players[playerId];
+          // コマンドが 1 枚もないのに簡易判断がコマンドを置くなら従う（先読みはパワーを選びがちで、
+          // コマンドが無いままラッシュできずに何ターンも過ごしていた。XG1 スターターC など）。
+          if (self.command.length === 0 && heuristicCharge?.type === "charge_command") return heuristicCharge;
+          // デッキで一番重いカードの必要パワーに届いたら、先読みせず簡易判断に従う。先読みは手札を減らす手を
+          // 好み、使い道のないパワーを 10 枚以上溜めたり、後でラッシュできるユニットをコマンドに置いたりしていた。
+          if (self.power.length >= deckProfile(state, playerId).maxPowerCost) return heuristicCharge;
+        }
         const planned = pickBestByRollout(
           state,
           playerId,
-          options.planChargeTop
-            ? chargeCandidates(state, playerId, actions, options.planChargeTop)
-            : sameCardOnce(state, playerId, actions.filter((a) => a.type === "charge_power" || a.type === "charge_command" || a.type === "end_phase")),
+          choices,
           plans("charge"),
           options.planTurns,
           options.planMaxSteps,
         );
         if (planned) return planned;
       }
-      return pickChargeAction(state, playerId, actions) ?? endPhase(actions);
+      return heuristicCharge;
     }
 
     case "rush": {
@@ -561,9 +575,6 @@ function pickCpuActionInner(
       const hold = pickHoldBeforeBattle(state, playerId, actions);
       if (hold) return hold;
 
-      const mandatory = pickMandatoryBattleMove(state, playerId, actions);
-      if (mandatory) return mandatory;
-
       const lethalStrike = pickBestStrike(state, playerId, actions);
       if (lethalStrike?.type === "strike") {
         const enemy = state.players[opponent(playerId)];
@@ -577,10 +588,16 @@ function pickCpuActionInner(
       }
 
       // NC が成立する並べ方の最初の 1 体（comboOrder: 1 = 今成立する手だけ、2 = 後の NC のための先出しも）。
+      // 「毎ターン、可能ならバトルエリアに出る」ユニットより先に見る。出る順番までは決まっていない（出ないまま
+      // バトルフェイズを終えられないだけ）のに、先に出して NC の位置をふさいでいた（7弾スターターC の
+      // ゴーオンレッド等。同デッキ同士の Lv2 対戦で 96% 勝つようになった、2026-10-21）。
       if (options.comboOrder) {
         const plan = planComboEntry(state, playerId, actions);
         if (plan && (plan.triggersNow || options.comboOrder >= 2)) return plan.move;
       }
+
+      const mandatory = pickMandatoryBattleMove(state, playerId, actions);
+      if (mandatory) return mandatory;
 
       if (enableSearch) {
         // 出なければならないユニットは上の pickMandatoryBattleMove で見て無かった（同じ状態・同じ合法手なので調べ直さない）。
