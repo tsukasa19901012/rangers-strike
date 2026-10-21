@@ -3,7 +3,7 @@
 // desktop pointer gives hover (focus) and click (onPress) to every button.
 import { createSignal, For, Index, Show } from "solid-js";
 import { Text, View } from "@pocketjs/framework/solid/components";
-import { START_ORDERS, START_STEP_LABELS, startOrder, type AppController, type DeckChoice, type ScreenView } from "@rangers-strike/client-core";
+import { START_STEP_LABELS, startOrder, type AppController, type DeckChoice, type ScreenView, type Settings } from "@rangers-strike/client-core";
 import { engine } from "./engine";
 
 const PICKER_PAGE = 12;
@@ -15,6 +15,8 @@ type Props = {
   refresh: () => void;
   width: number;
   height: number;
+  /** Opens the automatic-move settings (SettingsPanel). */
+  openSettings: () => void;
 };
 
 function SelectButton(props: { label: string; value: string; width: number; onPress: () => void }) {
@@ -34,27 +36,11 @@ function SelectButton(props: { label: string; value: string; width: number; onPr
   );
 }
 
-/** A settings row: ON/OFF, or `value` for a row that cycles through choices. */
-function Toggle(props: { label: string; note: string; on: boolean; value?: string; width: number; onPress: () => void }) {
-  return (
-    <View
-      focusable
-      onPress={props.onPress}
-      class="flex-row items-center justify-between px-[14] h-[44] rounded-[10] bg-[#0b1220] border border-[#334155] focus:bg-[#13203a] focus:border-sky-400"
-      style={{ width: props.width }}
-    >
-      <View class="flex-col">
-        <Text class="text-sm text-white">{props.label}</Text>
-        <Text class="text-xs text-slate-400">{props.note}</Text>
-      </View>
-      <Show
-        when={props.value}
-        fallback={<Text class={props.on ? "text-sm text-sky-300 font-bold" : "text-sm text-slate-500 font-bold"}>{props.on ? "ON" : "OFF"}</Text>}
-      >
-        {(value) => <Text class="text-sm text-sky-300 font-bold">{value()}</Text>}
-      </Show>
-    </View>
-  );
+/** One line on the automatic-move settings for the title screen. */
+function assistSummary(s: Readonly<Settings>): string {
+  if (!(s.autoAssist ?? true)) return "自動進行 OFF";
+  if (!(s.autoStart ?? true)) return "自動進行 ON / スタートフェイズは手動";
+  return `自動進行 ON / スタート: ${startOrder(s.startOrder).map((step) => START_STEP_LABELS[step]).join("→")}`;
 }
 
 export function TitleView(props: Props) {
@@ -116,39 +102,18 @@ export function TitleView(props: Props) {
             </Index>
           </View>
         </View>
-        <Toggle
-          label="自動進行"
-          note="何もないフェイズ・1通りの支払いを自動で"
-          on={settings().autoAssist ?? true}
-          width={panelW() - 40}
-          onPress={() => {
-            c.updateSettings({ autoAssist: !(settings().autoAssist ?? true) });
-            props.refresh();
-          }}
-        />
-        <Toggle
-          label="スタートフェイズ自動"
-          note={(settings().autoAssist ?? true) ? "リリース・戻す・ドローを自動で" : "自動進行が OFF のため使われません"}
-          on={(settings().autoAssist ?? true) && (settings().autoStart ?? true)}
-          width={panelW() - 40}
-          onPress={() => {
-            c.updateSettings({ autoStart: !(settings().autoStart ?? true) });
-            props.refresh();
-          }}
-        />
-        <Toggle
-          label="スタートフェイズの順番"
-          note="押すたびに切り替わります"
-          on={false}
-          value={startOrder(settings().startOrder).map((step) => START_STEP_LABELS[step]).join(" → ")}
-          width={panelW() - 40}
-          onPress={() => {
-            const now = startOrder(settings().startOrder);
-            const next = START_ORDERS[(START_ORDERS.indexOf(now) + 1) % START_ORDERS.length]!;
-            c.updateSettings({ startOrder: [...next] });
-            props.refresh();
-          }}
-        />
+        <View
+          focusable
+          onPress={props.openSettings}
+          class="flex-row items-center justify-between px-[14] h-[48] rounded-[10] bg-[#0b1220] border border-[#334155] focus:bg-[#13203a] focus:border-sky-400"
+          style={{ width: panelW() - 40 }}
+        >
+          <View class="flex-col">
+            <Text class="text-sm text-white">自動進行の設定</Text>
+            <Text class="text-xs text-slate-400">{assistSummary(settings())}</Text>
+          </View>
+          <Text class="text-xs text-slate-400">▶</Text>
+        </View>
       </View>
 
       <View class="flex-col gap-3 items-center" style={{ width: panelW() }}>

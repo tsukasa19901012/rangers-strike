@@ -6,8 +6,9 @@
 // - view: one component per screen draws the core's view model.
 // The game logic (legal moves, CPU, deck rules) all lives in client-core and
 // the engine; this file only maps input and picks the screen.
-import { createSignal, Match, Switch } from "solid-js";
+import { createSignal, Match, Show, Switch } from "solid-js";
 import { onFrame } from "@pocketjs/framework/lifecycle";
+import { View } from "@pocketjs/framework/solid/components";
 import { BTN } from "@pocketjs/framework/input";
 import { getOps } from "@pocketjs/framework/solid";
 import { connectOverlay } from "@pocketjs/framework/overlay-host";
@@ -36,6 +37,7 @@ import { DeckView, deckButtons } from "./DeckView";
 import { TitleView } from "./TitleView";
 import { ResultView } from "./ResultView";
 import { inside } from "./ui";
+import { applySettingsAction, SettingsPanel, settingsHit, settingsLayout } from "./SettingsPanel";
 
 /** A pointer event as host/host.js sends it (logical px). */
 type PointerEvent = { kind: "move" | "down" | "up" | "wheel" | "leave"; x: number; y: number; button?: number; dy?: number };
@@ -129,6 +131,43 @@ export default function App() {
   const [leaving, setLeaving] = createSignal(false);
   // A card picked up by a drag (pointer down on a card the player can act with, then moved).
   const [drag, setDrag] = createSignal<DragView | null>(null);
+  // The automatic-move settings panel, over the title or the match. `settingsHot`: the row under the pointer (-2: close).
+  const [settingsOpen, setSettingsOpen] = createSignal(false);
+  const [settingsHot, setSettingsHot] = createSignal(-1);
+  let settingsPressed: PointerEvent | null = null;
+  const openSettings = () => {
+    settingsPressed = null;
+    setSettingsHot(-1);
+    setSettingsOpen(true);
+  };
+  const panelLayout = () => (view(), settingsLayout(size().width, size().height, controller.matchSettings));
+  /** Pointer input while the panel is open: it takes every event (the screen under it waits). */
+  function onSettingsPointer(e: PointerEvent): boolean {
+    const layout = panelLayout();
+    const p = { x: e.x, y: e.y };
+    if (e.kind === "move" || e.kind === "leave") {
+      const row = e.kind === "leave" ? -1 : layout.rows.findIndex((r) => inside(r.rect, p));
+      const hot = e.kind !== "leave" && inside(layout.close, p) ? -2 : row;
+      setCursor(hot !== -1);
+      if (hot === settingsHot()) return false;
+      setSettingsHot(hot);
+      return true;
+    }
+    if (e.kind === "wheel") return false;
+    if (e.kind === "down") {
+      settingsPressed = e;
+      return false;
+    }
+    const down = settingsPressed;
+    settingsPressed = null;
+    // A click that started before the panel opened (the press that opened it) does nothing here.
+    if (!down || Math.abs(down.x - e.x) + Math.abs(down.y - e.y) > 12) return false;
+    const action = settingsHit(layout, p);
+    if (!action) return false;
+    if (action.type === "close") setSettingsOpen(false);
+    else applySettingsAction(controller, action);
+    return true;
+  }
   let dragFrom: { instanceId: string; cardId: string; w: number; h: number } | null = null;
   const refresh = () => setView(controller.view());
   // For browser tests and debugging from the console.
@@ -189,6 +228,8 @@ export default function App() {
             ? "end"
             : inside(buttons.turn, p)
               ? "turn"
+              : inside(buttons.settings, p)
+                ? "settings"
               : inside(buttons.all, p)
               ? "all"
               : inside(buttons.log, p)
@@ -266,6 +307,10 @@ export default function App() {
         setLeaving(true);
         leaveFrames = LEAVE_FRAMES;
       }
+      return true;
+    }
+    if (inside(buttons.settings, p)) {
+      openSettings();
       return true;
     }
     if (inside(buttons.turn, p)) {
@@ -360,7 +405,8 @@ export default function App() {
     } else repeater.frame(buttons);
     for (const event of pointerEvents.splice(0)) {
       const screen = controller.view();
-      if (screen.gui) changed = onMatchPointer(event, screen.gui) || changed;
+      if (settingsOpen()) changed = onSettingsPointer(event) || changed;
+      else if (screen.gui) changed = onMatchPointer(event, screen.gui) || changed;
       else if (screen.deck) changed = onDeckPointer(event, screen.deck) || changed;
       else if (event.kind === "move") setCursor(false);
     }
@@ -371,8 +417,14 @@ export default function App() {
   });
 
   return (
+    <>
     <Switch
-      fallback={<TitleView controller={controller} view={view} refresh={refresh} width={size().width} height={size().height} />}
+      fallback={
+        // The title's buttons take clicks through focus, so the title steps aside while the panel is open.
+        <Show when={!settingsOpen()} fallback={<View class="w-full h-full bg-gradient-to-b from-[#0f1b33] to-[#04070d]" />}>
+          <TitleView controller={controller} view={view} refresh={refresh} width={size().width} height={size().height} openSettings={openSettings} />
+        </Show>
+      }
     >
       <Match when={view().gui}>
         {(gui) => (
@@ -401,5 +453,9 @@ export default function App() {
         />
       </Match>
     </Switch>
+    <Show when={settingsOpen()}>
+      <SettingsPanel layout={panelLayout()} width={size().width} height={size().height} hot={settingsHot()} />
+    </Show>
+    </>
   );
 }
