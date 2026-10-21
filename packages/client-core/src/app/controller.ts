@@ -188,6 +188,13 @@ export class AppController {
     return true;
   }
 
+  /** Match: shows other cards of a board row that does not fit them all (GuiMatch.scrollRow). */
+  scrollRow(row: number, delta: number): boolean {
+    if (!this.gui || this.screen !== "match" || !this.gui.scrollRow(row, delta)) return false;
+    this.touch();
+    return true;
+  }
+
   /** Match: a card dragged onto a card or a zone (GuiMatch.dropCard). */
   dropCard(fromId: string, to: { instanceId?: string; zone?: string }): void {
     if (!this.gui || this.screen !== "match") return;

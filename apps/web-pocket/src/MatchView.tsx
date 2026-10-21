@@ -4,7 +4,9 @@
 import { Index, Show } from "solid-js";
 import { Text, View } from "@pocketjs/framework/solid/components";
 import {
+  cardFieldLines,
   CPU,
+  effectParagraphs,
   HUMAN,
   isPortrait,
   locateInstance,
@@ -15,6 +17,7 @@ import {
   type GuiBox,
   type ScrollMark,
   type GuiGeometry,
+  type GuiRowView,
   type GuiTile,
   type GuiView,
   type PanelTone,
@@ -77,6 +80,21 @@ export function matchButtons(g: GuiGeometry): { turn: Box; all: Box; log: Box; l
 
 /** A card being dragged: drawn under the pointer. */
 export type DragView = { cardId: string; x: number; y: number; w: number; h: number };
+
+/**
+ * The ‹n / n› marks of a board row that shows only some of its cards, with
+ * the larger area a tap on them takes (the app pages the row by its cards).
+ */
+export function rowMarks(row: GuiRowView): { direction: -1 | 1; text: string; rect: Box; tap: Box }[] {
+  const y = row.rect.y + row.rect.h / 2 - 12;
+  const marks: { direction: -1 | 1; text: string; rect: Box; tap: Box }[] = [];
+  if (row.moreLeft > 0) marks.push({ direction: -1, text: `‹${row.moreLeft}`, rect: { x: row.rect.x - 8, y, w: 34, h: 24 }, tap: { x: row.rect.x - 12, y: y - 10, w: 44, h: 44 } });
+  if (row.moreRight > 0) {
+    const x = row.rect.x + row.rect.w - 28;
+    marks.push({ direction: 1, text: `${row.moreRight}›`, rect: { x, y, w: 34, h: 24 }, tap: { x: x - 6, y: y - 10, w: 44, h: 44 } });
+  }
+  return marks;
+}
 
 const CARD_RATIO = 190 / 130;
 
@@ -460,6 +478,74 @@ export function FullTextPanel(props: { area: Box; full: { name: string; fields: 
   );
 }
 
+/** The highest a long-pressed card's sheet may reach (it grows up from the bottom of the screen to fit the card). */
+function cardSheetTop(g: GuiGeometry): number {
+  return Math.round(g.height * (isPortrait(g) ? 0.2 : 0.12));
+}
+
+/**
+ * A long-pressed card shown whole: a large image with its name and the
+ * wiki-style attributes beside it, the effect text under it. A tap closes it.
+ */
+function CardSheet(props: { g: GuiGeometry; state: GameState; cardId: string }) {
+  const layout = () => {
+    const g = props.g;
+    const w = isPortrait(g) ? g.width : Math.min(720, g.width - 40);
+    const x = Math.round((g.width - w) / 2);
+    const def = props.state.definitions[props.cardId];
+    const artW = Math.min(220, Math.round(w * 0.4));
+    const sideX = x + 16 + artW + 12;
+    const sideW = x + w - 16 - sideX;
+    // Laid out from y = 0, then moved so the sheet ends at the bottom of the screen.
+    const lines: { text: string; cls: string; rect: Box }[] = [];
+    let y = 24;
+    const push = (texts: string[], cls: string, lx: number, lw: number, lineH: number) => {
+      for (const text of texts) {
+        lines.push({ text, cls, rect: { x: lx, y, w: lw, h: lineH } });
+        y += lineH;
+      }
+    };
+    push(wrapText(def?.name ?? props.cardId, { fontPx: 18, maxWidthPx: sideW, maxLines: 3 }), "text-lg text-white font-bold", sideX, sideW, 26);
+    y += 4;
+    if (def) push([def.id, ...cardFieldLines(def)].flatMap((f) => wrapText(f, { fontPx: 14, maxWidthPx: sideW })), "text-sm text-slate-300", sideX, sideW, 21);
+    // The text goes under the image (or under the attributes, if they run longer).
+    const artH = Math.round(artW * CARD_RATIO);
+    y = Math.max(y, 24 + artH) + 12;
+    const textW = w - 32;
+    const text = wrapText(effectParagraphs(def?.text ?? ""), { fontPx: 16, maxWidthPx: textW });
+    const room = Math.max(0, Math.floor((g.height - cardSheetTop(g) - y - 36) / 24));
+    push(text.length > room ? [...text.slice(0, Math.max(0, room - 1)), "…"] : text, "text-base text-slate-100", x + 16, textW, 24);
+    const h = y + 36;
+    const top = g.height - h;
+    const move = (r: Box) => ({ ...r, y: r.y + top });
+    return {
+      sheet: { x, y: top, w, h: h + 20 },
+      grip: { x: x + w / 2 - 22, y: top + 8, w: 44, h: 5 },
+      art: { x: x + 16, y: top + 24, w: artW, h: artH },
+      lines: lines.map((l) => ({ ...l, rect: move(l.rect) })),
+      hint: { x, y: g.height - 28, w, h: 22 },
+    };
+  };
+  return (
+    <>
+      <View class="absolute bg-[#020617b0]" style={at({ x: 0, y: 0, w: props.g.width, h: props.g.height })} />
+      <View class="absolute rounded-[18] bg-[#111a2e] border-[2] border-sky-400 shadow-lg" style={at(layout().sheet)} />
+      <View class="absolute rounded-[3] bg-slate-500" style={at(layout().grip)} />
+      <CardFace cardId={props.cardId} rect={layout().art} />
+      <Index each={layout().lines}>
+        {(line) => (
+          <View class="absolute flex-row items-center" style={at(line().rect)}>
+            <Text class={line().cls}>{line().text}</Text>
+          </View>
+        )}
+      </Index>
+      <View class="absolute flex-row items-center justify-center" style={at(layout().hint)}>
+        <Text class="text-xs text-slate-400">タップで閉じる</Text>
+      </View>
+    </>
+  );
+}
+
 export function MatchView(props: {
   view: GuiView;
   state: GameState;
@@ -471,6 +557,8 @@ export function MatchView(props: {
   endingTurn: boolean;
   drag: DragView | null;
   fullText: boolean;
+  /** A long-pressed card shown whole from the bottom of the screen (CardSheet). */
+  sheet: string | null;
 }) {
   const v = () => props.view;
   // Where a selection-window card is ("自コマンド"), unclipped: the 12px caption fits the tile.
@@ -514,16 +602,6 @@ export function MatchView(props: {
         <Text class="text-xs text-slate-300">設定</Text>
       </View>
 
-      {/* left: card detail / log */}
-      <View class="absolute rounded-[10] bg-[#0b1220e0] border border-[#1e293b]" style={at(g().detail)} />
-      <Show when={v().detailArt}>{(art) => <CardFace cardId={art().cardId} hidden={art().hidden} rect={art().rect} />}</Show>
-      <Index each={v().detailLines}>
-        {(line) => (
-          <View class="absolute flex-row items-center" style={at(line().rect)}>
-            <Text class={TONE[line().tone]}>{line().text}</Text>
-          </View>
-        )}
-      </Index>
 
       {/* board */}
       <Index each={v().rows}>
@@ -565,19 +643,13 @@ export function MatchView(props: {
                   />
                 )}
               </Index>
-              <Show when={row().moreLeft > 0}>
-                <View class="absolute flex-row items-center justify-center rounded-[10] bg-amber-500" style={at({ x: row().rect.x - 8, y: row().rect.y + row().rect.h / 2 - 12, w: 34, h: 24 })}>
-                  <Text class="text-xs text-slate-950 font-bold">{`‹${row().moreLeft}`}</Text>
-                </View>
-              </Show>
-              <Show when={row().moreRight > 0}>
-                <View
-                  class="absolute flex-row items-center justify-center rounded-[10] bg-amber-500"
-                  style={at({ x: row().rect.x + row().rect.w - 28, y: row().rect.y + row().rect.h / 2 - 12, w: 34, h: 24 })}
-                >
-                  <Text class="text-xs text-slate-950 font-bold">{`${row().moreRight}›`}</Text>
-                </View>
-              </Show>
+              <Index each={rowMarks(row())}>
+                {(mark) => (
+                  <View class="absolute flex-row items-center justify-center rounded-[10] bg-amber-500" style={at(mark().rect)}>
+                    <Text class="text-xs text-slate-950 font-bold">{mark().text}</Text>
+                  </View>
+                )}
+              </Index>
             </>
           );
         }}
@@ -674,6 +746,19 @@ export function MatchView(props: {
         <Text class="text-sm text-slate-100">{portrait() ? "ログ" : "ログ / 詳細"}</Text>
       </View>
 
+      {/* card detail / log: on the left, or (a phone) the log over the board's lower half */}
+      <Show when={!portrait() || v().logShown}>
+        <View class={portrait() ? "absolute rounded-[10] bg-[#0b1220f5] border-[2] border-slate-500 shadow-lg" : "absolute rounded-[10] bg-[#0b1220e0] border border-[#1e293b]"} style={at(g().detail)} />
+        <Show when={v().detailArt}>{(art) => <CardFace cardId={art().cardId} hidden={art().hidden} rect={art().rect} />}</Show>
+        <Index each={v().detailLines}>
+          {(line) => (
+            <View class="absolute flex-row items-center" style={at(line().rect)}>
+              <Text class={TONE[line().tone]}>{line().text}</Text>
+            </View>
+          )}
+        </Index>
+      </Show>
+
       {/* a pile zone enlarged: hovered, or tapped on a phone */}
       <Show when={props.peek}>{(peek) => <PeekPanel g={g()} peek={peek()} />}</Show>
       <Show when={props.fullText && v().detailFull}>{(full) => <FullTextPanel area={g().board} full={full()} />}</Show>
@@ -747,6 +832,7 @@ export function MatchView(props: {
       <View class={v().footerAccent ? "absolute flex-row items-center px-[16] bg-[#451a03e0]" : "absolute flex-row items-center px-[16] bg-[#0f172acc]"} style={at(g().footer)}>
         <Text class={v().footerAccent ? "text-xs text-amber-200" : "text-xs text-slate-400"}>{props.footer}</Text>
       </View>
+      <Show when={props.sheet}>{(cardId) => <CardSheet g={g()} state={props.state} cardId={cardId()} />}</Show>
     </View>
   );
 }

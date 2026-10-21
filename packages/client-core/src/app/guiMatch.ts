@@ -34,6 +34,7 @@ import {
   PHASE_ORDER,
   playerStrip,
   rowTileRects,
+  rowTiles,
   tileRect,
   topBarText,
   zoneLabel,
@@ -106,6 +107,8 @@ export type GuiView = {
   footerAccent: boolean;
   /** Any overlay (popup / list / dialog / targeting) has the input. */
   menuOpen: boolean;
+  /** The detail panel shows the log, not a card. */
+  logShown: boolean;
 };
 
 type MenuItem = { option: ActionOption; index: number };
@@ -294,12 +297,32 @@ export class GuiMatch {
     this.focusIndex = Math.max(0, Math.min(index, tiles.length - 1));
     this.focusedId = tiles[this.focusIndex]!.instanceId;
     const key = this.rows[row]!.key;
-    const per = this.geometry.tilesPerRow;
+    const per = rowTiles(this.geometry, row).tilesPerRow;
     let offset = this.offsets.get(key) ?? 0;
     if (this.focusIndex < offset) offset = this.focusIndex;
     if (this.focusIndex >= offset + per) offset = this.focusIndex - per + 1;
     offset = Math.max(0, Math.min(offset, Math.max(0, tiles.length - per)));
     this.offsets.set(key, offset);
+  }
+
+  /**
+   * Shows the cards of board row `row` that are `delta` cards further right (left when negative):
+   * a swipe over the row, or a tap on its ‹n / n› mark. A focus in the row stays on a shown card.
+   */
+  scrollRow(row: number, delta: number): boolean {
+    this.sync();
+    const target = this.rows[row];
+    if (!target) return false;
+    const per = rowTiles(this.geometry, row).tilesPerRow;
+    const before = this.offsets.get(target.key) ?? 0;
+    const offset = Math.max(0, Math.min(before + delta, target.tiles.length - per));
+    if (offset === before) return false;
+    this.offsets.set(target.key, offset);
+    if (this.focusRow === row && target.tiles.length > 0) {
+      this.focusIndex = Math.max(offset, Math.min(this.focusIndex, offset + per - 1));
+      this.focusedId = target.tiles[this.focusIndex]!.instanceId;
+    }
+    return true;
   }
 
   private focusedTile(): GuiTile | null {
@@ -418,7 +441,7 @@ export class GuiMatch {
     const row = this.rows[this.focusRow];
     const offset = row ? (this.offsets.get(row.key) ?? 0) : 0;
     if (!row) return tileRect(this.geometry, this.focusRow, 0);
-    const visible = row.tiles.slice(offset, offset + this.geometry.tilesPerRow);
+    const visible = row.tiles.slice(offset, offset + rowTiles(this.geometry, this.focusRow).tilesPerRow);
     return rowTileRects(this.geometry, this.focusRow, visible)[this.focusIndex - offset] ?? tileRect(this.geometry, this.focusRow, this.focusIndex - offset);
   }
 
@@ -971,7 +994,7 @@ export class GuiMatch {
 
     const rows: GuiRowView[] = this.rows.map((row, r) => {
       const offset = this.offsets.get(row.key) ?? 0;
-      const visible = row.tiles.slice(offset, offset + g.tilesPerRow);
+      const visible = row.tiles.slice(offset, offset + rowTiles(g, r).tilesPerRow);
       const rects = rowTileRects(g, r, visible);
       return {
         key: row.key,
@@ -1282,6 +1305,7 @@ export class GuiMatch {
       footer: fitLine(footer, { fontPx: g.fontPx, maxWidthPx: g.footer.w - 8 }),
       footerAccent: mode.kind === "target" || dialogShown,
       menuOpen: mode.kind !== "board" || dialogShown || !!reveal,
+      logShown: this.showLog && !dialogShown,
     };
   }
 }
