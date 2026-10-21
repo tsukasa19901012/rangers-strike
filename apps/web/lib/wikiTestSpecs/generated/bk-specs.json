@@ -9,6 +9,9 @@
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
     ],
+    "expectedDslKeywords": [
+      "bk1::BK-001::typhoon"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -24,6 +27,9 @@
     "category": "ET",
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "expectedDslKeywords": [
+      "bk1::BK-002::double_typhoon"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -41,6 +47,9 @@
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
     ],
+    "expectedDslKeywords": [
+      "bk1::BK-003::ridol"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -56,6 +65,9 @@
     "category": "WB",
     "textSnippets": [
       "自軍Sユニットを1体選ぶ。このターン、選んだユニ"
+    ],
+    "expectedDslKeywords": [
+      "bk1::BK-004::condorer"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -73,6 +85,9 @@
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
     ],
+    "expectedDslKeywords": [
+      "bk1::BK-005::electrer"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -88,6 +103,9 @@
     "category": "ET",
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "expectedDslKeywords": [
+      "bk1::BK-006::tornado"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -105,6 +123,9 @@
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
     ],
+    "expectedDslKeywords": [
+      "bk1::BK-007::cyclode"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -120,6 +141,9 @@
     "category": "ET",
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
+    ],
+    "expectedDslKeywords": [
+      "bk1::BK-008::zx_belt"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
@@ -232,6 +256,9 @@
     "textSnippets": [
       "次の効果から1つ選び発動する⇒ ◎自軍山札から「"
     ],
+    "expectedDslKeywords": [
+      "bk1::BK-014::faiz_driver"
+    ],
     "operationKind": "instant",
     "expectedMechanisms": [
       "operation_drag_direct"
@@ -266,6 +293,9 @@
     "category": "MA",
     "textSnippets": [
       "特徴「猛士」を持つ自軍ユニット2体につき1枚ドロ"
+    ],
+    "expectedDslKeywords": [
+      "bk1::BK-016::kaenko"
     ],
     "operationKind": "instant",
     "expectedMechanisms": [
