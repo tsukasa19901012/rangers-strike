@@ -64,12 +64,13 @@ npm run web:dev      # dist/ をビルドして http://127.0.0.1:8140/ で配信
 
 ## Vercel で公開
 
-`vercel.json` に設定があります（Next.js 版の Vercel プロジェクトとは別のプロジェクトにします）。
+`vercel.json` に設定があります。Next.js 版で使っていた Vercel プロジェクトをそのまま PocketJS 版に切り替えます
+（Project → Settings → Build and Deployment）。
 
-1. Vercel で **Add New → Project** から `rangers-strike` リポジトリを選ぶ
-2. **Root Directory** を `apps/web-pocket` にする（「Include files outside the root directory」は有効のまま）
-3. **Framework Preset** は `Other`。Build / Install / Output は `vercel.json` の値が使われるので空欄のまま
-4. Node.js は 20 以上（既定の 22 で可）
+1. **Root Directory** を `apps/web` から `apps/web-pocket` に変える（「Include files outside the root directory」は有効のまま）
+2. **Framework Preset** を `Other` にする。Build / Install / Output の上書きはオフ（`vercel.json` の値が使われます）
+3. Node.js は 20 以上（既定の 22 で可）
+4. Deployments から最新の main を **Redeploy**
 
 ビルドはリポジトリ全体の `npm ci` → PocketJS ツールチェーンの `npm ci` → フォント取得 → `scripts/build.mjs` の順で、
 `dist/` を静的サイトとして配信します。
