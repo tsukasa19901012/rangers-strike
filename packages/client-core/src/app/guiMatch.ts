@@ -33,6 +33,8 @@ import {
   locateInstance,
   PHASE_ORDER,
   playerStrip,
+  rowFit,
+  rowMaxOffset,
   rowTileRects,
   rowTiles,
   tileRect,
@@ -297,11 +299,10 @@ export class GuiMatch {
     this.focusIndex = Math.max(0, Math.min(index, tiles.length - 1));
     this.focusedId = tiles[this.focusIndex]!.instanceId;
     const key = this.rows[row]!.key;
-    const per = rowTiles(this.geometry, row).tilesPerRow;
     let offset = this.offsets.get(key) ?? 0;
     if (this.focusIndex < offset) offset = this.focusIndex;
-    if (this.focusIndex >= offset + per) offset = this.focusIndex - per + 1;
-    offset = Math.max(0, Math.min(offset, Math.max(0, tiles.length - per)));
+    while (this.focusIndex >= offset + rowFit(this.geometry, row, tiles, offset)) offset++;
+    offset = Math.max(0, Math.min(offset, rowMaxOffset(this.geometry, row, tiles)));
     this.offsets.set(key, offset);
   }
 
@@ -313,13 +314,12 @@ export class GuiMatch {
     this.sync();
     const target = this.rows[row];
     if (!target) return false;
-    const per = rowTiles(this.geometry, row).tilesPerRow;
     const before = this.offsets.get(target.key) ?? 0;
-    const offset = Math.max(0, Math.min(before + delta, target.tiles.length - per));
+    const offset = Math.max(0, Math.min(before + delta, rowMaxOffset(this.geometry, row, target.tiles)));
     if (offset === before) return false;
     this.offsets.set(target.key, offset);
     if (this.focusRow === row && target.tiles.length > 0) {
-      this.focusIndex = Math.max(offset, Math.min(this.focusIndex, offset + per - 1));
+      this.focusIndex = Math.max(offset, Math.min(this.focusIndex, offset + rowFit(this.geometry, row, target.tiles, offset) - 1));
       this.focusedId = target.tiles[this.focusIndex]!.instanceId;
     }
     return true;
@@ -441,7 +441,7 @@ export class GuiMatch {
     const row = this.rows[this.focusRow];
     const offset = row ? (this.offsets.get(row.key) ?? 0) : 0;
     if (!row) return tileRect(this.geometry, this.focusRow, 0);
-    const visible = row.tiles.slice(offset, offset + rowTiles(this.geometry, this.focusRow).tilesPerRow);
+    const visible = row.tiles.slice(offset, offset + rowFit(this.geometry, this.focusRow, row.tiles, offset));
     return rowTileRects(this.geometry, this.focusRow, visible)[this.focusIndex - offset] ?? tileRect(this.geometry, this.focusRow, this.focusIndex - offset);
   }
 
@@ -994,7 +994,7 @@ export class GuiMatch {
 
     const rows: GuiRowView[] = this.rows.map((row, r) => {
       const offset = this.offsets.get(row.key) ?? 0;
-      const visible = row.tiles.slice(offset, offset + rowTiles(g, r).tilesPerRow);
+      const visible = row.tiles.slice(offset, offset + rowFit(g, r, row.tiles, offset));
       const rects = rowTileRects(g, r, visible);
       return {
         key: row.key,

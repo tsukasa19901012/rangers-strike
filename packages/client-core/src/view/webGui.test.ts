@@ -4,7 +4,7 @@ import { input } from "../input/actions";
 import { hitTestGui } from "../input/devices";
 import { testPlatform } from "../testing/engine";
 import type { Rect } from "./layout";
-import { rowTiles } from "./gui";
+import { HELD_SLOT_SCALE, rowFit, rowMaxOffset, rowTileRects, rowTiles } from "./gui";
 import { CPU, HUMAN } from "../engineApi";
 import { computeWebDeckGeometry, computeWebGuiGeometry, isPortrait, webPileRect, WEB_GUI_ROWS, WEB_MIN_VIEWPORT } from "./webGui";
 
@@ -262,5 +262,35 @@ describe("pointer shell over the web layout", () => {
       expect(app.currentScreen).toBe("title");
       expect(app.session).toBeNull();
     }
+  });
+});
+
+describe("held command slots", () => {
+  const tile = (n: number, held: boolean) => ({ instanceId: `c${n}`, held });
+
+  it("widens held commands and keeps the visible window inside the row", () => {
+    for (const size of [...SIZES, ...PORTRAIT_SIZES]) {
+      const g = computeWebGuiGeometry(size);
+      const row = WEB_GUI_ROWS.findIndex((r) => r.zone === "command");
+      const { tileW, tilesPerRow } = rowTiles(g, row);
+      const tiles = Array.from({ length: tilesPerRow + 2 }, (_, i) => tile(i, i % 2 === 0));
+      const n = rowFit(g, row, tiles, 0);
+      expect(n).toBeLessThanOrEqual(tilesPerRow);
+      const rects = rowTileRects(g, row, tiles.slice(0, n));
+      expect(rects[0]!.w).toBe(Math.round(tileW * HELD_SLOT_SCALE));
+      expect(rects[1]!.w).toBe(tileW);
+      for (const rect of rects) expect(within(rect, g.rows[row]!)).toBe(true);
+      const last = rowMaxOffset(g, row, tiles);
+      expect(last + rowFit(g, row, tiles, last)).toBe(tiles.length);
+    }
+  });
+
+  it("leaves a row without held cards at its usual count", () => {
+    const g = computeWebGuiGeometry(SIZES[0]!);
+    const row = WEB_GUI_ROWS.findIndex((r) => r.zone === "command");
+    const { tilesPerRow } = rowTiles(g, row);
+    const tiles = Array.from({ length: tilesPerRow + 2 }, (_, i) => tile(i, false));
+    expect(rowFit(g, row, tiles, 0)).toBe(tilesPerRow);
+    expect(rowMaxOffset(g, row, tiles)).toBe(2);
   });
 });

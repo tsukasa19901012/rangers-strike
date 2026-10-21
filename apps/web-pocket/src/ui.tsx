@@ -22,23 +22,45 @@ export function TextureImage(props: { texture: number; style: Record<string, num
   return image;
 }
 
+/** Upright card width : height (63 × 88 mm). */
+const CARD_ASPECT = 63 / 88;
+
+/**
+ * A held card lies on its side (rules: ホールド = 横向き). Its slot is wider than an upright
+ * card's; the turned card is as large as fits there above the tile's bottom badge.
+ */
+function sidewaysSize(slot: Box) {
+  const badge = 22;
+  const long = Math.round(Math.min(slot.w, (slot.h - badge) / CARD_ASPECT));
+  return { w: Math.round(long * CARD_ASPECT), h: long };
+}
+
+function sidewaysStyle(slot: Box) {
+  const badge = 22;
+  const { w: short, h: long } = sidewaysSize(slot);
+  const cx = slot.x + slot.w / 2;
+  const cy = slot.y + Math.max(short / 2, (slot.h - badge) / 2);
+  return { ...at({ x: cx - short / 2, y: cy - long / 2, w: short, h: long }), rotate: 90 };
+}
+
 /**
  * A whole card at `rect`: its image once loaded, a framed placeholder with the
  * name until then (and for cards without an image).
  */
-export function CardFace(props: { cardId: string; hidden?: boolean; name?: string; rect: Box }) {
+export function CardFace(props: { cardId: string; hidden?: boolean; name?: string; rect: Box; sideways?: boolean }) {
   const texture = () => cardTexture(props.hidden ? "back" : props.cardId);
+  const size = () => (props.sideways ? sidewaysSize(props.rect) : { w: props.rect.w, h: props.rect.h });
   return (
-    <View class="absolute overflow-hidden rounded-[5] bg-slate-800 border border-slate-600" style={at(props.rect)}>
+    <View class="absolute overflow-hidden rounded-[5] bg-slate-800 border border-slate-600" style={props.sideways ? sidewaysStyle(props.rect) : at(props.rect)}>
       <Show
         when={texture() >= 0}
         fallback={
-          <View class="absolute flex-col p-[4] bg-gradient-to-b from-slate-700 to-slate-900" style={{ insetL: 0, insetT: 0, width: props.rect.w, height: props.rect.h }}>
+          <View class="absolute flex-col p-[4] bg-gradient-to-b from-slate-700 to-slate-900" style={{ insetL: 0, insetT: 0, width: size().w, height: size().h }}>
             <Text class="text-xs text-slate-300">{props.hidden ? "" : (props.name ?? props.cardId)}</Text>
           </View>
         }
       >
-        <TextureImage texture={texture()} style={{ posType: 1, insetL: 0, insetT: 0, width: props.rect.w, height: props.rect.h }} />
+        <TextureImage texture={texture()} style={{ posType: 1, insetL: 0, insetT: 0, width: size().w, height: size().h }} />
       </Show>
     </View>
   );
