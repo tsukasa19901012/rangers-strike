@@ -2,6 +2,7 @@
  * クロスギャザー XG1 の継続効果の判定（低水準。SP・アタックの制限・特徴やキーワードの付与など）。
  * 選択を開く処理（rules/xg1/xg1Effects.ts）からは独立させ、core/catalog.ts・rules/legend3/fieldEffects.ts 等から循環なく読めるようにする。
  */
+import { hasNameOrAlias } from "../../core/cardNames";
 import { isSameCardIdentity, resolveRushAdditionalCondition } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PlayerId, PlayerState } from "../../types/game";
@@ -314,8 +315,10 @@ export const XG1_068_KUUGA_RULE = "xg1_068_kuuga_police";
 
 export function xg1CanDeployFromCommand(state: Pick<GameState, "players" | "definitions">, playerId: PlayerId, card: CardInstance): boolean {
   if (!isSameCardIdentity(card.cardId, "XG1-044")) return false;
-  const names = new Set(state.players[playerId].discard.map((c) => def(state, c.cardId)?.name));
-  return names.has("仮面ライダー1号") && names.has("仮面ライダー2号");
+  // 「※これは「仮面ライダー1号」としてつかえる」（RK-175 等）も数える（atwiki/page-1668 Q1）。1号と2号は別のカードで満たす
+  // （XG7-032「「仮面ライダー1号」または「仮面ライダー2号」としてつかえる」1枚では両方にならない）。
+  const defs = state.players[playerId].discard.map((c) => def(state, c.cardId));
+  return defs.some((a, i) => hasNameOrAlias(a, "仮面ライダー1号") && defs.some((b, j) => j !== i && hasNameOrAlias(b, "仮面ライダー2号")));
 }
 
 export { other as xg1Other, cats as xg1PrintedCategories };

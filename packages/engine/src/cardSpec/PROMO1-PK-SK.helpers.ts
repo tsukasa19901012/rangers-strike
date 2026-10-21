@@ -211,6 +211,11 @@ export function v3Tests(id: string, page: string, rarity: string, text: string):
     expect(canSkip(s)).toBe(true);
   });
 
+  it(`${id}: 【ダブルタイフーン】「仮面ライダー1号」「仮面ライダー2号」としてつかえる新1号（RK-175）・新2号（RK-176）・XG7-032 も選べる（出典: ${page}「「仮面ライダー1号」か「仮面ライダー2号」のカード」・atwiki/page-1668 Q1「としてつかえる」は全ての場で常に有効）`, () => {
+    const s = typhoon([inst("RK-175", "a1"), inst("RK-176", "a2"), inst("XG7-032", "w"), inst("TST-OP-ET", "et")]);
+    expect(choiceIds(s)).toEqual(["RK-175:a1", "RK-176:a2", "XG7-032:w"]);
+  });
+
   it(`${id}: 公式Q&A — RK-023 仮面ライダー1号をホールドすると、【技の1号】の「SP1」をこのユニットの効果として発動し、V3 は SP1 を得る（出典: grnrngr/faq-rider-2 SK-002 Q1「はい、SP1を得ます」・${page} Q1）`, () => {
     const s = resolveAll(pick(typhoon(), "RK-023:n1"));
     expect(cardIn(s, "player1", "RK-023:n1")?.commandHeld).toBe(true);

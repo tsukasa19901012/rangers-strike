@@ -3,6 +3,7 @@
  * 起点は DSL の grant_keyword（`promo::XP-NNN::name`。rules/promo/promoRegistry.ts）。
  * 選択の組み立ては rules/rm/rm1Effects.ts の共通の部品を使う。
  */
+import { hasNameOrAlias } from "../../core/cardNames";
 import { canonicalCardName, fusionMaterialAliasNames } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingEffectChoice, PlayerId } from "../../types/game";
 import { effectiveBp, getDefinition, unitSizeOf } from "../../core/catalog";
@@ -376,8 +377,8 @@ export function resolvePromoAttacked(state: GameState, playerId: PlayerId, insta
   const hold = (cards: CardInstance[]) => cards.map((c) => (c.instanceId === attackedId ? { ...c, commandHeld: true } : c));
   next = patchPlayer(next, playerId, (p) => ({ ...p, battle: hold(p.battle), rush: hold(p.rush) }));
   const decade = fieldUnits(next, playerId).some((c) => {
-    const name = getDefinition(next.definitions, c.cardId)?.name;
-    return !!name && canonicalCardName(name) === canonicalCardName(DECADE_NAME);
+    // 「※これは「仮面ライダーディケイド」…としてつかえる」（XG7-042）も含む（atwiki/page-1668 Q1）。
+    return hasNameOrAlias(getDefinition(next.definitions, c.cardId), DECADE_NAME);
   });
   next = { ...next, log: [...next.log, logFor(state, playerId, pending.sourceCardId, `${RED_EYE}:hold:${attackedId}${decade ? ":decade" : ""}`)] };
   const battle: PendingBattle = {

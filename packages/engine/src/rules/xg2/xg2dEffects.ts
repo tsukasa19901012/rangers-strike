@@ -3,10 +3,11 @@
  * 登録は rules/xg2/xg2Core.ts。継続効果の判定（XG2-065 のアタックされない・XG2-067 の SP・XG2-068 の「可能なら出る」・XG2-074 のライドなしの進入・
  * XG2-080 の BP）は rules/xg2/xg2Fields.ts。
  */
+import { hasNameOrAlias } from "../../core/cardNames";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
 import { COMMAND_ZONE_MAX } from "../../types/game";
-import { cardName, effectiveBp, getDefinition } from "../../core/catalog";
+import { effectiveBp, getDefinition } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
 import { shuffleCards } from "../../core/deckShuffle";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
@@ -107,7 +108,7 @@ function enemyUnits(state: GameState, playerId: PlayerId, sourceCardId: string, 
 }
 
 function isDecadeName(state: GameState, cardId: string): boolean {
-  return XG2_DECADE_NAMES.includes(cardName(state.definitions, cardId));
+  return XG2_DECADE_NAMES.some((n) => hasNameOrAlias(state.definitions[cardId], n));
 }
 
 /** 撃破されて捨札になったカードを、持ち主のパワーゾーンにダメージ（ウラ向き）として置き直す。 */

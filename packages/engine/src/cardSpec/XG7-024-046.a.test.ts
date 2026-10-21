@@ -419,6 +419,11 @@ describe("XG7-031 新サイクロン号", () => {
     expect(s.log.some((l) => l.includes("number_combo") && l.includes("XG1-007"))).toBe(true);
   });
 
+  it("XG7-031: ※ 「仮面ライダー1号」としてつかえる新1号（RK-175）がライドしていてもクロス1を得る（出典: atwiki/page-2429「「仮面ライダー1号」または「仮面ライダー2号」ならクロス1を得る」・atwiki/page-1668 Q1「としてつかえる」は全ての場で常に有効）", () => {
+    const s = enter(p1Battle({ battle: ridingPair("RK-175", "r", "XG7-031", "v"), rush: [inst("XG1-007", "cd")] }, {}, EXTRA), "XG1-007:cd");
+    expect(s.log.some((l) => l.includes("number_combo") && l.includes("XG1-007"))).toBe(true);
+  });
+
   it("XG7-031: 【サイクロンアタック】の「選ばれない」は敵軍 S の効果だけ — 敵軍 M ユニット RS-155 ガオバイソンの効果では選べる（出典: atwiki/page-2429「敵軍Sユニットまたは敵軍Sビークルの効果に選ばれない」）", () => {
     let s = enemyTurnOf(
       { battle: ridingPair("RK-023", "r", "XG7-031", "v"), damage: 6, power: Array.from({ length: 6 }, (_, i) => ({ ...inst("TST-P", `d${i}`), faceDown: true })) },

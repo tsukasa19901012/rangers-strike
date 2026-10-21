@@ -3,6 +3,7 @@
  * 入口は rules/xg3/xg3Effects.ts、登録簿は rules/xg3/xg3Registry.ts。選択の組み立ては rules/rm/rm1Effects.ts の共通の部品を使う。
  * 継続効果（XG3-051・XG3-052 の BP、XG3-054 のアタックの制限）は rules/xg3/xg3Fields.ts、XG3-059 は rules/keywordGapRuntime.ts battleActBlocked。
  */
+import { hasNameOrAlias } from "../../core/cardNames";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardDefinition } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PendingLeave, PlayerId } from "../../types/game";
@@ -469,7 +470,9 @@ const ONGEKIKO_EFFECT_ID = "xg3057_ongekiko";
 ENTER_BATTLE_HOOKS.push((state, playerId, card, battleBeforeEnter) => {
   const left = battleBeforeEnter[battleBeforeEnter.length - 1];
   if (!left || !left.commandHeld || !isSameCardIdentity(left.cardId, "XG3-057")) return state;
-  const fits = nameIs(state, card.cardId, "仮面ライダーディケイド") || nameIs(state, card.cardId, "仮面ライダーディエンド") || unitFeatures(state, playerId, card).includes("猛士");
+  const d = state.definitions[card.cardId];
+  // 「※これは「仮面ライダーディケイド」…としてつかえる」（XG7-042）も含む（atwiki/page-1668 Q1）。
+  const fits = hasNameOrAlias(d, "仮面ライダーディケイド") || hasNameOrAlias(d, "仮面ライダーディエンド") || unitFeatures(state, playerId, card).includes("猛士");
   if (!fits) return state;
   const enemyId = opponent(playerId);
   const ids = state.players[enemyId].battle

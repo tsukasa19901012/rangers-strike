@@ -569,6 +569,13 @@ describe("RS-051 爆竜ティラノサウルス", () => {
     expect(s.players.player2.damage).toBe(1);
   });
 
+  it("RS-051: 「爆竜ティラノサウルス」としてつかえる XG7-012 も手札から捨札にできる（出典: atwiki/page-83「手札から「爆竜ティラノサウルス」のカードを1枚捨札にしてもよい」・atwiki/page-1668 Q1「としてつかえる」は全ての場で常に有効）", () => {
+    let s = tyrannoEnters([inst("XG7-012", "h")]);
+    expect(s.pendingEffectChoice?.validInstanceIds).toContain("XG7-012:h");
+    s = act(s, { type: "resolve_effect_choice", playerId: "player1", instanceId: "XG7-012:h" });
+    expect(unitIn(s, "player1", "RS-051:t")?.spModifier).toBe(1);
+  });
+
   it("RS-051: 捨札にしないことを選べ、その場合は「SP1」を得ずストライクできない（出典: atwiki/page-83）", () => {
     let s = tyrannoEnters([inst("RS-051", "h")]);
     s = act(s, { type: "skip_effect_choice", playerId: "player1" });

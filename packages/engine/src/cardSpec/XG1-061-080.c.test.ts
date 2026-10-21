@@ -131,6 +131,16 @@ describe("XG1-076 ディケイドライバー", () => {
     expect(zoneOf(t, "player1", "XG1-077:dc")).toBe("rush");
   });
 
+  it("XG1-076: ◎1つ目 — 「※これは「仮面ライダーディケイド」または「仮面ライダークウガ」としてつかえる」XG7-042 も選べる（出典: atwiki/page-1616「「仮面ライダーディケイド」のカードを1枚選び」・atwiki/page-1668 Q1「としてつかえる」は全ての場で常に有効）", () => {
+    const s = useCard(
+      rushPhaseBoard({ hand: [inst("XG1-076", "dd")], command: releasedCat("OT", 1), power: powerCards(1), deck: [inst("TST-OP", "x"), inst("XG7-042", "kd"), ...deckCards(3)] }, {}, EXTRA),
+      "player1",
+      "XG1-076:dd",
+    );
+    const t = resolveAll(s, ["XG7-042:kd"]);
+    expect(zoneOf(t, "player1", "XG7-042:kd")).toBe("rush");
+  });
+
   it("XG1-076: ◎2つ目 — 山札の特徴「ディケイドライバー」を持つユニットカード（XG1-064）を1枚選び自軍パワーゾーンに置ける（オペレーションは選べない）（既知の不具合: CARD-XG1-076 何も起きずに終わる）（出典: atwiki/page-1616「特徴「ディケイドライバー」を持つユニットカードを1枚選び、自軍パワーゾーンに置いてもよい」）", () => {
     const s = used();
     expectChoiceFrom(s, "player1", "XG1-076");
