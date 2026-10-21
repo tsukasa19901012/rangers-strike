@@ -120,3 +120,36 @@ describe("automatic moves in a match", () => {
     throw new Error(`no move_to_battle came up (${testEngine.ALL_STARTER_DECK_IDS.length} decks)`);
   });
 });
+
+describe("bonus draw", () => {
+  it("asks for the bonus draw in the selection window after the automatic draw", () => {
+    const app = start(5);
+    for (let frame = 0; frame < 20000; frame++) {
+      const session = app.session!;
+      if (session.turnOwner() === "human" && session.state.phase === "start" && session.state.turn > 2) {
+        // Hand smaller than damage: the bonus draw becomes possible after the draw.
+        const p = session.state.players[HUMAN];
+        session.state = { ...session.state, players: { ...session.state.players, [HUMAN]: { ...p, damage: 5, hand: p.hand.slice(0, 1) } } };
+        session.version++;
+        for (let i = 0; i < 40; i++) app.tick();
+        expect(session.humanOptions().map((o) => o.action.type).sort()).toEqual(["bonus_draw", "skip_bonus_draw"]);
+        const dialog = app.view().gui!.dialog!;
+        expect(dialog.titleLines[0]!.text).toContain("追加ドロー");
+        expect(dialog.buttons.map((b) => b.text)).toEqual(expect.arrayContaining([expect.stringContaining("追加ドロー")]));
+        return;
+      }
+      if (session.turnOwner() === "human") {
+        app.endTurn();
+        const before = session.version;
+        for (let i = 0; i < 400 && session.version === before; i++) app.tick();
+        if (session.version === before) {
+          app.dispatch(input.allActions);
+          app.dispatch(input.confirm);
+        }
+        continue;
+      }
+      app.tick();
+    }
+    throw new Error("no human start phase after turn 2");
+  });
+});

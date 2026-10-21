@@ -290,7 +290,22 @@ export class GuiMatch {
     const options = this.options();
     // The human's own battle entry is played on the board (attack targeting, strike, pass).
     if (options.some((o) => BOARD_MOVES.has(o.action.type))) return false;
-    return buildPendingView(this.engine, this.state()) !== null && options.length > 0;
+    return this.pendingView() !== null && options.length > 0;
+  }
+
+  /**
+   * What the selection window asks. Besides the engine's pending decisions, the
+   * start-phase bonus draw is asked here: on the board it was only a menu behind
+   * the end button and easy to miss (more so once the draw before it is automatic).
+   */
+  private pendingView(): { title: string; source?: string } | null {
+    const pending = buildPendingView(this.engine, this.state());
+    if (pending) return pending;
+    if (this.options().some((o) => o.action.type === "bonus_draw")) {
+      const p = this.state().players[HUMAN];
+      return { title: `追加ドロー: 手札（${p.hand.length}枚）がダメージ（${p.damage}）より少ないので、もう1枚引けます` };
+    }
+    return null;
   }
 
   private dialogShown(): boolean {
@@ -926,7 +941,7 @@ export class GuiMatch {
     };
     if (dialogShown) {
       const base = this.dialogRect();
-      const pending = buildPendingView(this.engine, state);
+      const pending = this.pendingView();
       const wrap: WrapOptions = { fontPx: g.fontPx, maxWidthPx: base.w - 8 };
       const titleTexts = pending
         ? [...wrapText(pending.title, { ...wrap, maxLines: 2 }), ...(pending.source ? [fitLine(`カード: ${pending.source}`, wrap)] : [])]

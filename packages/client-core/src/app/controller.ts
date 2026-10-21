@@ -115,6 +115,7 @@ export class AppController {
       humanDeck: options.defaults?.humanDeck ?? "abarenoh",
       cpuDeck: options.defaults?.cpuDeck ?? "dekaranger",
       cpuLevel: options.defaults?.cpuLevel ?? 2,
+      ...(options.defaults?.autoAssist !== undefined ? { autoAssist: options.defaults.autoAssist } : {}),
     });
     // Deck list comes from the engine; the title screen loads it eagerly.
     const loaded = this.platform.assets.loadMatchData({ decks: [] });
