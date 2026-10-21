@@ -7,6 +7,10 @@ export type Settings = {
   cpuLevel: number;
   /** The match makes moves with only one answer for the player (app/assist.ts). Default on. */
   autoAssist?: boolean;
+  /** The start phase (release, return, draw) runs on its own (app/assist.ts autoStart). Default on. */
+  autoStart?: boolean;
+  /** Order of the automatic start-phase steps (action types; app/assist.ts START_ORDERS). */
+  startOrder?: string[];
 };
 
 export type MatchRecord = {
@@ -67,6 +71,8 @@ export class SettingsStore {
         cpuDeck: typeof parsed.cpuDeck === "string" ? parsed.cpuDeck : defaults.cpuDeck,
         cpuLevel: typeof parsed.cpuLevel === "number" ? parsed.cpuLevel : defaults.cpuLevel,
         ...(typeof parsed.autoAssist === "boolean" ? { autoAssist: parsed.autoAssist } : defaults.autoAssist !== undefined ? { autoAssist: defaults.autoAssist } : {}),
+        ...(typeof parsed.autoStart === "boolean" ? { autoStart: parsed.autoStart } : defaults.autoStart !== undefined ? { autoStart: defaults.autoStart } : {}),
+        ...(Array.isArray(parsed.startOrder) ? { startOrder: parsed.startOrder.map(String) } : defaults.startOrder ? { startOrder: defaults.startOrder } : {}),
       };
     } catch {
       return { ...defaults };
