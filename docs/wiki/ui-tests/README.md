@@ -2,9 +2,11 @@
 
 `docs/wiki` のルール・カード仕様に**完全準拠した完成版**を想定したテストケース一覧。
 
-現状の実装ギャップ（`engine-gaps.md`）はテストに含めず、wiki 通りに動くことを検証する。
+現状の実装ギャップ（[`engine-gaps.md`](../engine-gaps.md)）はテストに含めず、wiki 通りに動くことを検証する。
 
 ## 構成
+
+> カード層のテストは旧 Next.js 版（`apps/web`）にあります。`apps/web` は削除予定のため、削除時にはこれらのテストを `packages/` 側へ移す必要があります。
 
 | レイヤ | 対象 | 実装 | 件数 |
 |--------|------|------|------|
@@ -79,4 +81,4 @@ cd apps/web && npm test -- rkUiLogic.batch
 
 1. **カード**: wiki 効果文・ステータスとカタログ/DSL が一致し、UI が `promoted-ui`
 2. **ルール**: `docs/wiki/*.md` の HIGH confidence セクションがエンジン E2E で再現
-3. **既知スコープ外**: タッグストライク、XG ブラスト等は `engine-gaps.md` 参照のうえテスト対象外
+3. **既知スコープ外**: タッグストライク、XG ブラスト等は [`engine-gaps.md`](../engine-gaps.md) 参照のうえテスト対象外

@@ -1,6 +1,7 @@
-# apps/vita — PS Vita 版試作（PocketJS）
+# apps/vita — PS Vita 版（PocketJS）
 
-人間 1 人と CPU が、既存のスターターデッキで 1 試合を最後まで遊べる PS Vita アプリの試作です。対戦画面はカードを並べた GUI、タイトルと結果はテキストです。
+人間 1 人と CPU が、スターターデッキ（31 種）や自作デッキで対戦できる PS Vita アプリです。全プレイアブルカード（1,832 枚）でのデッキ構築もできます。
+対戦画面とデッキ構築はカードを並べた GUI、タイトルと結果はテキストです。
 UI は [PocketJS](https://github.com/pocket-stack/pocketjs)（npm `@pocketjs/framework` / `@pocketjs/cli` 0.14.0、Solid）で書いています。
 ゲームの進行・表示内容・入力の解釈はすべて共有パッケージ `packages/client-core` にあり、このディレクトリは **PocketJS 向けの薄い描画・入力層** です。
 
@@ -18,47 +19,58 @@ packages/client-core   プラットフォーム非依存（DOM / Node / PocketJS
   session/             1 試合: 合法手→ラベル付き選択肢、CPU 1 手の実行と時間計測、ログ整形
   view/board.ts        GameState → 盤面テキスト・保留中の選択の表示モデル
   view/layout.ts       画面サイズ・向きから各ペインの矩形・行数・折り返し幅を計算
+  view/webGui.ts       ブラウザ版（apps/web-pocket）用の対戦・デッキ構築の配置
   text/wrap.ts         日本語の折り返し（行頭・行末禁則、英数字の語はまとめる、省略記号）
   text/labels.ts       フェイズ・行動・ログの日本語ラベル
   input/actions.ts     論理入力（prev/next/pagePrev/pageNext/confirm/cancel/tab*/select）
   input/devices.ts     ボタン→論理入力（オートリピート）、タップ認識、座標→論理入力のヒットテスト
   app/controller.ts    タイトル→対戦→結果の状態機械。毎フレーム tick() で CPU を 1 手ずつ進める
   app/guiMatch.ts      対戦画面の GUI 状態（カードのフォーカス・操作メニュー）。合法手をカードごとに振り分ける
+  app/deckBuilder.ts   デッキ構築画面の状態（一覧・絞り込み・保存）
   view/gui.ts          GameState → カードタイルの表示モデルと、描画・タッチ判定共通の座標
-  platform/            Clock / LogSink / MemoryProbe / KeyValueStore / AssetLoader のインターフェースと汎用実装
+  platform/            Clock / LogSink / MemoryProbe / KeyValueStore / AssetLoader のインターフェースと汎用実装、設定・デッキ・戦績の保存
   data/split.ts        カードデータ分割（デッキ→カード ID、生成 JSON の刈り込み、デッキ単位チャンク）
+  data/deckApi.ts      デッキ構築ルール（cards の validateDeckEntries 等）を EngineApi に渡す口
 
 apps/vita              PocketJS シェル（このディレクトリ）
+  src/main.tsx         エントリ
   src/app.tsx          ScreenView を描くだけ。Vita ボタン/タッチ → 論理入力
   src/GuiMatchView.tsx 対戦画面（ScreenView.gui）をコアが決めた座標に描く
   src/DeckBuilderView.tsx デッキ構築画面（ScreenView.deck）を描く
   src/cardTextures.ts  カード画像のテクスチャ（試合ごとに両デッキ分だけアップロード・解放）
   src/platform.ts      Vita 用 Platform 実装（保存は Vita の rsStore、ブラウザ host では localStorage）
   src/engine.ts        事前バンドル済みエンジンを EngineApi として渡す
+  src/fonts.json       文字アトラスの設定（Noto Sans JP をフォールバック書体に使う）
   engine/entry.ts      エンジンのバンドル入口（使う関数だけ re-export）
-  scripts/             エンジンのバンドル、PocketJS 呼び出し、QuickJS スモーク、ブラウザ確認
+  native/rs_store.rs   Vita host に組み込む保存機能（globalThis.rsStore）
+  smoke/qjs-main.ts    QuickJS スモークの入口
+  scripts/             エンジンのバンドル、カード画像の変換、PocketJS 呼び出し・パッチ、QuickJS スモーク、ブラウザ確認
   toolchain/           PocketJS ツールチェーン（npm workspace の外。npm ci --prefix で入れる）
 ```
 
 エンジン（`packages/engine`）の挙動は変更していません。エンジンのソースは esbuild で 1 ファイルに束ね、
 **全プレイアブルカード（1,832 枚＋スターターの 1 枚、計 1,833 枚）** を入れます（`scripts/build-engine.ts`）。
-`--starter` を付けると、28 種のスターターデッキに含まれる 405 枚へ刈り込んだ版を `.cache/engine-starter.js` に作ります
+`--starter` を付けると、31 種のスターターデッキに含まれる 452 枚へ刈り込んだ版を `.cache/engine-starter.js` に作ります
 （ルールは `client-core/src/data/split.ts`）。刈り込み版と全カード版で同じ乱数種の CPU 対 CPU 56 試合を再生し、
 ログが完全一致することを `npm run verify:prune` で確認できます。
 
 **カード画像**も同じビルド手順で焼き込みます（`scripts/bake-card-images.ts`、リポジトリ直下の `npm install` で入る sharp を使用）。
-`apps/web/public/cards` の JPEG（130×190）を、全 1,833 枚と裏面を 128×128・256 色（CLUT8、1 枚 17KB）の
+`apps/web/public/cards` の JPEG（130×190）を、全 1,833 枚（画像のあるもの）と裏面を 128×128・256 色（CLUT8、1 枚 17KB）の
 PocketJS IMG エントリに変換し、`src/pak.json` 経由で pak に入れます（計 30.4MB。初回の変換は約 2 分、生成物は gitignore 済みで 2 回目以降は差分だけ）。
 キーは `app:card.<カードID>` で、起動時には読み込みません。試合が始まると両デッキのカード（多くて 80 枚前後、約 1.4MB）だけを
 テクスチャにアップロードし、デッキ外から出たカードはその場で読み、対戦画面を閉じると全部解放します。
 デッキ構築画面では表示中のページの分だけを読み、最大 96 枚（約 1.6MB）を超えると古いものから解放します。
 sharp がない環境では画像なしでビルドし、従来の文字タイルで表示します。
+なお、画像の元（`apps/web/public/cards`）と sharp（いまは `next` の依存として入る）はどちらも旧 Next.js 版に属しているため、
+`apps/web` を削除するときは画像の置き場所と sharp の依存を移す必要があります。
 
 | バンドル | サイズ |
 |---|---|
-| エンジン（全カード、minify） | 8.33 MiB |
-| Vita 用 JS（エンジン＋client-core＋PocketJS＋Solid） | 9.63 MiB |
-| Vita 用 pak（カード画像 1,834 枚 30.4 MiB＋12px/12px 太字/16px 既定スロットの文字アトラス 各 1,359 字） | 34.2 MiB |
+| エンジン（全カード、minify） | 8.35 MiB |
+| Vita 用 JS（エンジン＋client-core＋PocketJS＋Solid） | 9.66 MiB |
+| Vita 用 pak（カード画像 裏面込み 1,833 枚 30.4 MiB＋12px/12px 太字/16px 既定スロットの文字アトラス 各 1,359 字） | 34.2 MiB |
+
+（2026-10-21 に `npm run pocket:compile` で確認）
 
 日本語の文字は `src/generated/chars.txt`（ビルド時に、エンジン（カード名・本文を含む）と UI ソースに現れる非 ASCII 文字 約 1,260 字を収集）を
 `src/fonts.json` の `characterFiles` で指定し、Noto Sans JP（npm `@expo-google-fonts/noto-sans-jp`、SIL OFL）を
@@ -83,7 +95,7 @@ npm の install-script 承認設定で `bun` の postinstall が止まっても�
 
 ```sh
 npm run smoke:qjs        # QuickJS（qjs）で client-core＋全カード版エンジンを動かし 3 試合を最後まで進める
-npm run verify:prune     # スターター刈り込み版と全カード版で 56 試合を再生し一致を確認（約 90 秒）
+npm run verify:prune     # スターター刈り込み版と全カード版で 56 試合を再生し一致を確認（約 2 分）
 npm run pocket:check     # PocketJS の型検査（Vita プロファイル）
 npm run pocket:compile   # Vita 用 JS と pak を dist/ に出力（VitaSDK 不要）
 npm run web:preview      # PocketJS のブラウザ host（WASM）で起動 → http://127.0.0.1:8130/ で "main" を選ぶ
@@ -240,41 +252,28 @@ CPU 1 手の思考 平均 192.7 ms・最大 2,805 ms（197 手）、GameState �
 USB status の空きメモリ CDRAM 約 57 MB（起動前 約 73 MB）。Mac の QuickJS 比でおよそ 25 倍遅く、
 最大の手では画面が約 3 秒止まるため、本番では CPU の思考を複数フレームに分けるか、別スレッドで実行する必要があります。
 
-## 10. Web アプリ・スマホ／タブレットへの展開
+## 10. ほかのプラットフォームとの共有
 
-client-core は DOM・Node・PocketJS に依存しないので、そのまま別のシェルから使えます。シェルが用意するのは次の 4 点だけです。
+client-core は DOM・Node・PocketJS に依存しないので、そのまま別のシェルから使えます。
+ブラウザ版は同じ client-core と PocketJS を使う [`apps/web-pocket`](../web-pocket/README.md) で、旧 Next.js 版（`apps/web`）を置き換えます。
+ブラウザ版は `AppController` の `layouts` に `client-core/src/view/webGui.ts` の配置を渡すだけで、Vita の既定配置には手を入れていません。
+PocketJS ツールチェーン（`toolchain/`）とエンジンのバンドル（`scripts/build-engine.ts`）もブラウザ版と共用です。
 
-1. `EngineApi` の実装: Web なら `import * as engine from "@rangers-strike/engine"` と `getEffectLabel`・`starterDecks`（cards）を束ねるだけ。
-2. `Platform`: `clock`（`performance.now`）、`log`（console）、`memory`（`heapOrEstimateProbe`）、`storage`（localStorage／IndexedDB、ネイティブなら AsyncStorage や SQLite）、
+シェルが用意するのは次の 4 点だけです。
+
+1. `EngineApi` の実装: `engine/entry.ts` のようにエンジンと cards から必要な関数を束ねる（デッキ構築には `createDeckApi`）。
+2. `Platform`: `clock`（`performance.now`）、`log`（console）、`memory`（`heapOrEstimateProbe`）、`storage`（localStorage、Vita は rsStore）、
    `assets`（`loadMatchData` は Promise を返してよい。`data/split.ts` の `buildDeckChunks`／`chunksForMatch` で対戦に必要なデッキ分だけ取得する設計にできる）。
-3. 入力: クリック／タップ座標を `hitTest(view, point)` に、キーボードを `ButtonRepeater` か直接 `controller.dispatch(input.…)` に渡す。
-4. 描画: `controller.view()` の `ScreenView`（ヘッダ・タブ・行・選択肢・フッタと `layout` の矩形）を描く。`controller.setViewport()` で回転・リサイズに追従します（横長は 2 列、縦長は上下 2 段、短辺に応じて 12/14/16px）。
-
-既存の React 版（`apps/web`）に組み込む場合は、`GameApp.tsx` の CPU ループ（`setTimeout` で `pickCpuAction`）を `GameSession.cpuStep()` に、
-選択肢の文言を `describeAction` に、ログの整形を `humanizeLogEntry` に置き換えていくのが段階的な道筋です。
-Web 版の豊富な専用モーダル（ゾード・バトルダンス等）はそのまま残せます。
-
-### 移植経路の比較: PocketJS のブラウザ／WASM host か、既存 React Web アプリか
-
-| 観点 | PocketJS ブラウザ host（WASM コア） | 既存 React／Next.js（apps/web） |
-|---|---|---|
-| コードの共有 | Vita と同じ `src/app.tsx` がそのまま動く（`npm run web:preview` で確認済み） | client-core を共有し、描画は React で別に書く |
-| 表示 | Canvas に自前描画。文字はビルド時の焼き込みアトラス（ブラウザでは不足字を実行時に補う機能あり） | DOM・CSS。カード画像・アクセシビリティ・選択コピー・ブラウザ翻訳がそのまま使える |
-| スマホ／タブレット | 固定論理解像度（Vita は 480×272）を整数倍表示。縦画面や可変サイズは PocketJS の window 系ターゲット次第 | レスポンシブ CSS、PWA、Capacitor 等でネイティブ包装しやすい |
-| 依存・配布 | Bun・WASM コア・PocketJS（0.x で API 変化が速い） | 既存の Next.js 構成・Vercel 配備・Playwright テストを流用 |
-| 向く用途 | 携帯機と同じ見た目の確認、Vita 版の開発ループ | 本番の Web／モバイル版 |
-
-結論: **本番の Web／スマホ版は既存 React アプリに client-core を取り込む** のが自然で、PocketJS のブラウザ host は Vita 版の開発・確認用と位置づけるのが妥当です。
+3. 入力: クリック／タップ座標を `hitTestGui` / `hitTestDeck` に、ボタンを `ButtonRepeater` か直接 `controller.dispatch(input.…)` に渡す。
+4. 描画: `controller.view()` の `ScreenView` を描く。`controller.setViewport()` で回転・リサイズに追従します。
 
 ## 11. 既知の制約・未解決
 
-- VitaSDK・cargo-vita・Rust nightly・Vita3K はこの試作の作業環境に入っていないため、**VPK の生成と Vita3K／実機での起動は未確認** です（`pocket build` は `VITASDK` 未設定で止まるところまで確認）。
-  PocketJS の Vita ホストの Cargo マニフェストが npm 版パッケージ内で解決できることは `cargo metadata --offline` で確認しています。
-- ブラウザ host（WASM コア＋ブラウザの JS エンジン）とホスト側 QuickJS では最後まで対戦できますが、Vita の QuickJS 上での実行速度とメモリは未計測です。
+- 実機では CPU の思考が最大約 3 秒かかり、その間は画面が止まります（9 節）。思考を複数フレームに分けるか、別スレッドで実行する必要があります。
 - カードデータは全カードを 1 チャンクとしてバンドルに焼き込んでいます。実行時にデッキごとのチャンクを読み込む仕組み（`AssetLoader.loadMatchData` の非同期版）は
   インターフェースと分割計画（`PER_DECK_CHUNKS`）まで用意してあります。
-- 16px の既定フォントスロットは PocketJS が常に焼き込むため、使わなくても pak に 1.6 MB 含まれます。
+- 16px の既定フォントスロットは PocketJS が常に焼き込むため、使わなくても pak に 1.7 MB 含まれます。
 - 選択肢はエンジンの合法手をそのまま並べるため、複数枚の支払い候補などで行数が多くなることがあります（左右キーでページ送り）。
-- デッキ構築で作ったデッキは `KeyValueStore` に保存し、Vita では `ux0:data/rangers-strike/rs.decks.v1.json` に残ります。
-  デッキ名は自動で付けます（文字入力は未対応）。
-- 全カード版の pak は約 34MB（カード画像 30.4MB＋文字アトラス）で、VPK の実行ファイルに埋め込まれます。実機でのメモリと起動時間は未計測です。
+- デッキ名は自動で付けます（文字入力は未対応）。
+- 全カード版の pak は約 34 MiB（カード画像 30.4 MiB＋文字アトラス）で、VPK の実行ファイルに埋め込まれます。実機での起動時間とメモリは未計測です。
+- `npm run smoke:qjs` は QuickJS CLI（`qjs`）が必要です。
