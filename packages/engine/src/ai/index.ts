@@ -9,7 +9,8 @@ export type { CpuLevel, CpuLevelConfig } from "./types";
 export { CPU_LEVELS, getCpuLevelConfig, setCpuLevelOverrides } from "./types";
 export { isCpuTurn } from "./level1";
 export { pickCpuFallbackAction } from "./helpers";
-export { evaluateState, setEvalWeights, DEFAULT_EVAL_WEIGHTS, type EvalWeights } from "./scoring";
+export { evaluateState, heuristicEvaluate, setEvalWeights, setValueEvaluator, DEFAULT_EVAL_WEIGHTS, type EvalWeights } from "./scoring";
+export { createValueNet, type ValueNet, type ValueNetWeights } from "./valueNet";
 
 export function pickCpuAction(
   state: GameState,

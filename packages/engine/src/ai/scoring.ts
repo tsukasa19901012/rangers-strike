@@ -124,8 +124,26 @@ export function setEvalWeights(weights?: Partial<EvalWeights>): void {
   W = weights ? { ...DEFAULT_EVAL_WEIGHTS, ...weights } : DEFAULT_EVAL_WEIGHTS;
 }
 
-/** 指定プレイヤー視点でのヒューリスティック盤面評価。 */
+type ValueEvaluator = (state: GameState, playerId: PlayerId) => number;
+let valueEvaluator: ValueEvaluator | null = null;
+
+/**
+ * 決着していない盤面の評価を、学習した価値ネットワーク（ai/valueNet.ts の evaluate）に差し替える（省略で手書きに戻す）。
+ * 対戦台（scripts/cpu-arena.ts --nna / --nnb）での比較用。
+ */
+export function setValueEvaluator(evaluator?: ValueEvaluator | null): void {
+  valueEvaluator = evaluator ?? null;
+}
+
+/** 指定プレイヤー視点での盤面評価。価値ネットワークが設定されていればそれを使う。 */
 export function evaluateState(state: GameState, playerId: PlayerId): number {
+  if (state.winner === playerId) return 100_000;
+  if (state.winner === opponent(playerId)) return -100_000;
+  return valueEvaluator ? valueEvaluator(state, playerId) : heuristicEvaluate(state, playerId);
+}
+
+/** 指定プレイヤー視点でのヒューリスティック盤面評価（手書きの重み）。 */
+export function heuristicEvaluate(state: GameState, playerId: PlayerId): number {
   if (state.winner === playerId) return 100_000;
   if (state.winner === opponent(playerId)) return -100_000;
 

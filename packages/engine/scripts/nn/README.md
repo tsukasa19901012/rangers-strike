@@ -1,7 +1,7 @@
 # CPU の学習（自己対戦データ）
 
 手書きの盤面評価（`src/ai/scoring.ts` の `evaluateState`）を、自己対戦で学習した価値ネットワークに置き換えるための道具です。
-今あるのはデータを作るところ（ロードマップの Phase 0〜2）までです。
+データ作り（ロードマップの Phase 0〜2）と、学習・対戦台での比較（Phase 3〜4）の道具があります。
 
 | ファイル | 役割 |
 |---|---|
@@ -9,6 +9,8 @@
 | `scripts/selfplay.ts` | CPU 同士を対戦させ、途中の盤面と勝敗を書き出す |
 | `scripts/selfplay-par.sh` | `selfplay.ts` をコア数ぶん並列に回す |
 | `scripts/nn/check_data.py` | 書き出したデータの件数と、勝敗の当てやすさを確かめる（numpy だけで動く） |
+| `scripts/nn/train.py` | 価値ネットワークを学習して、重みを JSON で書き出す（PyTorch） |
+| `src/ai/valueNet.ts` | その JSON を読んで盤面を評価する（TypeScript だけで計算） |
 
 ## M1 Max で 10 万試合を集める（Phase 2）
 
@@ -59,3 +61,23 @@ rows = np.fromfile("shard-0.f32", dtype=np.float32).reshape(-1, len(cols))
 ```
 
 特徴の列を変えたら `valueFeatures.ts` の `FEATURE_VERSION` を上げてください。古いデータとは混ぜられません。
+
+## 学習する（Phase 3）
+
+```sh
+pip3 install torch numpy      # M1 では GPU（MPS）が自動で使われる
+python3 scripts/nn/train.py .cache/selfplay/run1 --out .cache/nn/value-v1.json
+```
+
+- 検証の logloss が一番よかったエポックの重みを書き出します。手書き評価だけの場合の logloss も並べて出すので、下回っていれば Phase 3 の完了条件を満たします。
+- 隠れ層の幅は `--hidden 256,128`（既定）で変えられます。
+- 複数の run をまとめて学習できます: `train.py .cache/selfplay/run1 .cache/selfplay/run2 ...`
+
+## 対戦台で比べる（Phase 4）
+
+```sh
+scripts/cpu-arena-par.sh --a 5 --b 5 --mirror --games 368 --decks <46 デッキ> --nna .cache/nn/value-v1.json
+```
+
+`--nna` / `--nnb` を付けた側だけが、決着していない盤面の評価に学習したネットを使います。`ARENA_PROCS=10` で M1 Max の全コアを使えます。
+学習版同士で対戦データを集め直すとき（Phase 5）は、`selfplay-par.sh` に `--nn .cache/nn/value-v1.json` を付けます。
