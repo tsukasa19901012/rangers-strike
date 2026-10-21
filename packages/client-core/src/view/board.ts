@@ -221,3 +221,26 @@ export function pendingLines(view: PendingView | null, wrap: WrapOptions, maxDet
   if (view.detail) lines.push(...wrapText(view.detail, { ...wrap, maxLines: maxDetailLines }));
   return lines;
 }
+
+// Fields of an effect choice's card-specific metadata that hold the deck card(s) the chooser is looking at
+// (RM-017 rm1Meta.topInstanceId, RK-270 rk13Meta.target, XG6-045 xg6Meta.ids, ...).
+const VIEWED_META_KEYS = new Set(["top", "topId", "topInstanceId", "revealedId", "revealedInstanceIds", "picked", "remainingIds", "target", "ids"]);
+
+/**
+ * Deck cards the human is looking at while answering an effect choice ("山札の上から1枚を見る"), which the
+ * choice's options don't show because they are words (山札の上 / 山札の下) rather than the card itself.
+ */
+export function viewedCardIds(state: GameState): string[] {
+  const choice = state.pendingEffectChoice;
+  if (!choice || choice.playerId !== HUMAN) return [];
+  const inDeck = new Set([...state.players.player1.deck, ...state.players.player2.deck].map((c) => c.instanceId));
+  const ids = [...(choice.viewedInstanceIds ?? [])];
+  for (const [key, value] of Object.entries(choice as unknown as Record<string, unknown>)) {
+    if (!key.endsWith("Meta") || !value || typeof value !== "object") continue;
+    for (const [field, v] of Object.entries(value as Record<string, unknown>)) {
+      if (VIEWED_META_KEYS.has(field)) ids.push(...(Array.isArray(v) ? v : [v]).filter((x): x is string => typeof x === "string"));
+    }
+  }
+  const options = new Set(choice.validInstanceIds);
+  return [...new Set(ids)].filter((id) => inDeck.has(id) && !options.has(id));
+}

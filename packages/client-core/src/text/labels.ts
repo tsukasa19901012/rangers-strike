@@ -181,6 +181,44 @@ function optionLabel(state: GameState, id: string): string | undefined {
   return undefined;
 }
 
+const REVEAL_DESTINATIONS: Record<string, string> = {
+  hand: "手札へ",
+  deck_top: "山札の上へ",
+  deck_bottom: "山札の下へ",
+  discard: "捨札へ",
+  rush: "ラッシュエリアへ",
+  power: "パワーゾーンへ",
+  command: "コマンドゾーンへ",
+  deck_shuffle: "山札に戻した",
+  stay: "そのまま",
+};
+
+const REVEAL_FROM: Record<string, string> = {
+  deck_top: "山札の上",
+  deck_bottom: "山札の下",
+  hand: "手札",
+  power: "パワーゾーン",
+  discard: "捨札",
+};
+
+type RevealNoticeLike = NonNullable<GameState["lastReveal"]>;
+
+/** 「CPUが山札の上から1枚オモテにした（潜行捜索）」: what a reveal notice (GameState.lastReveal) shows. */
+export function revealSummary(state: GameState, reveal: RevealNoticeLike): string {
+  const actor = PLAYER_LABELS[reveal.playerId] ?? reveal.playerId;
+  const mutual = reveal.cards.some((c) => c.ownerId !== undefined && c.ownerId !== reveal.ownerId);
+  const owner = mutual ? "お互いの" : reveal.ownerId === reveal.playerId ? "" : `${PLAYER_LABELS[reveal.ownerId] ?? reveal.ownerId}の`;
+  const source = reveal.sourceCardId ? cardName(state, reveal.sourceCardId) : "";
+  const label = reveal.effectLabel || source;
+  const declared = reveal.declaredNumber !== undefined ? ` 宣言:${reveal.declaredNumber}${reveal.matched === undefined ? "" : reveal.matched ? "（一致）" : "（不一致）"}` : "";
+  return `${actor}が${owner}${REVEAL_FROM[reveal.from] ?? reveal.from}から${reveal.cards.length}枚オモテにした${label ? `（${label}）` : ""}${declared}`;
+}
+
+/** Where a revealed card went: 「手札へ」. */
+export function revealDestination(destination: string): string {
+  return REVEAL_DESTINATIONS[destination] ?? destination;
+}
+
 /**
  * Readable fallback for log entries the engine's formatGameLog leaves in the
  * structured "player|action|..." / "phase:a->b" form. Returns null for purely

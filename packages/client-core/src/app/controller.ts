@@ -180,6 +180,14 @@ export class AppController {
     return this.gui?.endingTurn ?? false;
   }
 
+  /** Match: show a card outside the board rows (discard pile, power zone) in the detail panel; null goes back to the focused card. */
+  inspectCard(cardId: string | null): boolean {
+    if (!this.gui || this.gui.inspectCardId === cardId) return false;
+    this.gui.inspectCardId = cardId;
+    this.touch();
+    return true;
+  }
+
   /** Match: a card dragged onto a card or a zone (GuiMatch.dropCard). */
   dropCard(fromId: string, to: { instanceId?: string; zone?: string }): void {
     if (!this.gui || this.screen !== "match") return;
@@ -447,6 +455,8 @@ export class AppController {
     }
     const toastChanged = this.gui?.frame() ?? false;
     if (toastChanged) this.touch();
+    // Cards an effect turned face up stay on screen until the human closes them.
+    if (this.gui?.revealShown) return toastChanged;
     if (this.gui && session.turnOwner() === "human" && this.gui.hasAutoMove()) {
       // A move the GUI makes for the human (assist, end-turn button): paced faster than a CPU move.
       if (++this.framesSinceCpu < Math.min(this.cpuDelayFrames, AUTO_DELAY_FRAMES)) return toastChanged;
