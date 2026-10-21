@@ -3,7 +3,7 @@
 // desktop pointer gives hover (focus) and click (onPress) to every button.
 import { createSignal, For, Index, Show } from "solid-js";
 import { Text, View } from "@pocketjs/framework/solid/components";
-import type { AppController, DeckChoice, ScreenView } from "@rangers-strike/client-core";
+import { START_STEP_LABELS, startOrder, type AppController, type DeckChoice, type ScreenView, type Settings } from "@rangers-strike/client-core";
 import { engine } from "./engine";
 
 const PICKER_PAGE = 12;
@@ -15,6 +15,8 @@ type Props = {
   refresh: () => void;
   width: number;
   height: number;
+  /** Opens the automatic-move settings (SettingsPanel). */
+  openSettings: () => void;
 };
 
 function SelectButton(props: { label: string; value: string; width: number; onPress: () => void }) {
@@ -32,6 +34,13 @@ function SelectButton(props: { label: string; value: string; width: number; onPr
       </View>
     </View>
   );
+}
+
+/** One line on the automatic-move settings for the title screen. */
+function assistSummary(s: Readonly<Settings>): string {
+  if (!(s.autoAssist ?? true)) return "自動進行 OFF";
+  if (!(s.autoStart ?? true)) return "自動進行 ON / スタートフェイズは手動";
+  return `自動進行 ON / スタート: ${startOrder(s.startOrder).map((step) => START_STEP_LABELS[step]).join("→")}`;
 }
 
 export function TitleView(props: Props) {
@@ -95,18 +104,15 @@ export function TitleView(props: Props) {
         </View>
         <View
           focusable
-          onPress={() => {
-            c.updateSettings({ autoAssist: !(settings().autoAssist ?? true) });
-            props.refresh();
-          }}
-          class="flex-row items-center justify-between px-[14] h-[44] rounded-[10] bg-[#0b1220] border border-[#334155] focus:bg-[#13203a] focus:border-sky-400"
+          onPress={props.openSettings}
+          class="flex-row items-center justify-between px-[14] h-[48] rounded-[10] bg-[#0b1220] border border-[#334155] focus:bg-[#13203a] focus:border-sky-400"
           style={{ width: panelW() - 40 }}
         >
           <View class="flex-col">
-            <Text class="text-sm text-white">自動進行</Text>
-            <Text class="text-xs text-slate-400">ドロー・何もないフェイズ・1通りの支払いを自動で</Text>
+            <Text class="text-sm text-white">自動進行の設定</Text>
+            <Text class="text-xs text-slate-400">{assistSummary(settings())}</Text>
           </View>
-          <Text class={(settings().autoAssist ?? true) ? "text-sm text-sky-300 font-bold" : "text-sm text-slate-500 font-bold"}>{(settings().autoAssist ?? true) ? "ON" : "OFF"}</Text>
+          <Text class="text-xs text-slate-400">▶</Text>
         </View>
       </View>
 

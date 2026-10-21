@@ -3,7 +3,8 @@
 // - autoStep: the only legal move is bookkeeping (draw, end a phase with
 //   nothing left to do, pass a battle entry with no attacker);
 // - autoStart: the start phase's rule steps (release, return battle units,
-//   draw), unless a start-phase ability or a return order can be chosen;
+//   draw), unless a start-phase ability or a return order can be chosen.
+//   Off, the player makes every start-phase step, even a lone draw;
 // - autoPay: a payment that can be made only one way is confirmed.
 // endTurnMove plays the "end turn" button: it ends phases and passes battle
 // entries until the turn is over or a real choice comes up.
@@ -15,27 +16,54 @@ export type AssistSettings = {
   autoStep: boolean;
   autoStart: boolean;
   autoPay: boolean;
+  /** Order of the automatic start-phase steps (default: release, return, draw). */
+  startOrder?: readonly StartStep[];
 };
+
+/** The start phase's rule steps, which the rules let the player take in any order. */
+export type StartStep = "release_start_commands" | "return_all_battle_to_rush" | "draw";
+
+export const START_STEP_LABELS: Record<StartStep, string> = {
+  release_start_commands: "リリース",
+  return_all_battle_to_rush: "戻す",
+  draw: "ドロー",
+};
+
+/** Every order the start-phase steps can run in, the default first. */
+export const START_ORDERS: readonly (readonly StartStep[])[] = [
+  ["release_start_commands", "return_all_battle_to_rush", "draw"],
+  ["release_start_commands", "draw", "return_all_battle_to_rush"],
+  ["return_all_battle_to_rush", "release_start_commands", "draw"],
+  ["return_all_battle_to_rush", "draw", "release_start_commands"],
+  ["draw", "release_start_commands", "return_all_battle_to_rush"],
+  ["draw", "return_all_battle_to_rush", "release_start_commands"],
+];
+
+/** A saved order if it names each step once, else the default. */
+export function startOrder(saved: readonly string[] | undefined): readonly StartStep[] {
+  return START_ORDERS.find((order) => saved && order.length === saved.length && order.every((step, i) => saved[i] === step)) ?? START_ORDERS[0]!;
+}
 
 export const DEFAULT_ASSIST: AssistSettings = { autoStep: true, autoStart: true, autoPay: true };
 
 /** Single legal moves that carry no decision. */
 const AUTO_SINGLE = new Set(["draw", "end_phase", "pass_battle_entry", "release_start_commands", "return_all_battle_to_rush", "resolve_damage_payment"]);
-const START_STEPS: string[] = ["release_start_commands", "return_all_battle_to_rush", "draw"];
+const START_STEPS: string[] = [...START_ORDERS[0]!];
 
 /** Index (into `options`) of the move to make for the human, or null when the human must choose. */
 export function assistMove(state: GameState, options: readonly ActionOption[], settings: AssistSettings): number | null {
   if (options.length === 0 || state.winner) return null;
   const types: string[] = options.map((o) => o.action.type);
-  if (settings.autoStep && options.length === 1) {
+  const ownStart = state.phase === "start" && state.activePlayer === HUMAN;
+  if (settings.autoStep && options.length === 1 && (settings.autoStart || !ownStart)) {
     const type = types[0]!;
     if (AUTO_SINGLE.has(type) || /^pass_/.test(type)) return 0;
   }
-  if (settings.autoStart && state.phase === "start" && state.activePlayer === HUMAN) {
+  if (settings.autoStart && ownStart) {
     // A return with an instanceId means the order can be chosen (R-START-01): leave it to the player.
     const plain = options.every((o) => START_STEPS.includes(o.action.type) && !("instanceId" in o.action && o.action.instanceId));
     if (plain) {
-      for (const step of START_STEPS) {
+      for (const step of settings.startOrder ?? START_ORDERS[0]!) {
         const index = types.indexOf(step);
         if (index >= 0) return index;
       }

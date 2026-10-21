@@ -53,12 +53,13 @@ export const TONE: Record<PanelTone, string> = {
 };
 
 /** Buttons beside the end-phase button (not part of GuiView; the app handles their clicks). */
-export function matchButtons(g: GuiGeometry): { turn: Box; all: Box; log: Box; leave: Box } {
+export function matchButtons(g: GuiGeometry): { turn: Box; all: Box; log: Box; leave: Box; settings: Box } {
   const e = g.endButton;
   if (isPortrait(g)) {
     const w = Math.floor((e.x - 8 - 8 - 12) / 3);
     return {
       leave: { x: g.width - 116, y: 6, w: 108, h: 28 },
+      settings: { x: g.width - 116 - 8 - 64, y: 6, w: 64, h: 28 },
       turn: { x: 8, y: e.y, w, h: e.h },
       all: { x: 8 + w + 6, y: e.y, w, h: e.h },
       log: { x: 8 + (w + 6) * 2, y: e.y, w, h: e.h },
@@ -66,6 +67,7 @@ export function matchButtons(g: GuiGeometry): { turn: Box; all: Box; log: Box; l
   }
   return {
     leave: { x: g.width - 176, y: 7, w: 168, h: 30 },
+    settings: { x: g.width - 176 - 10 - 96, y: 7, w: 96, h: 30 },
     turn: { x: e.x, y: e.y + e.h + 14, w: e.w, h: 36 },
     all: { x: e.x, y: e.y + e.h + 58, w: e.w, h: 36 },
     log: { x: e.x, y: e.y + e.h + 102, w: e.w, h: 36 },
@@ -474,6 +476,13 @@ export function MatchView(props: {
         style={at(buttons().leave)}
       >
         <Text class={props.leaving ? "text-xs text-white font-bold" : "text-xs text-slate-300"}>{props.leaving ? (portrait() ? "もう一度で退出" : "もう一度押すと退出") : "対戦をやめる"}</Text>
+      </View>
+
+      <View
+        class={props.hot === "settings" ? "absolute flex-row items-center justify-center rounded-[8] bg-slate-600 border border-slate-400" : "absolute flex-row items-center justify-center rounded-[8] bg-[#1e293b] border border-[#334155]"}
+        style={at(buttons().settings)}
+      >
+        <Text class="text-xs text-slate-300">設定</Text>
       </View>
 
       {/* left: card detail / log */}
