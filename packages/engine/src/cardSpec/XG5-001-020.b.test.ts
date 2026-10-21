@@ -110,6 +110,21 @@ describe("XG5-008 ゴーグルタンク", () => {
     expect(s.players.player1.command).toHaveLength(5);
   });
 
+  it("XG5-008: 選ぶ前にそのカードが山札から離れていたら（割り込んだ効果で動いた）、何も置かずに終わる（自己対戦 seed 1 game 4907 で、RM-017【オメデトロフィー】がそのカードをコマンドゾーンに置いた後に選んで落ちた）", () => {
+    const opened = nc("XG5-008:t", 1, { deck: DECK() });
+    const moved = opened.players.player1.deck.find((c) => c.instanceId === "SPEC-L-PLAIN:l2")!;
+    const s0 = {
+      ...opened,
+      players: {
+        ...opened.players,
+        player1: { ...opened.players.player1, deck: opened.players.player1.deck.filter((c) => c !== moved), command: [...opened.players.player1.command, moved] },
+      },
+    };
+    const s = resolveAll(s0, ["SPEC-L-PLAIN:l2"]);
+    expect(zoneOf(s, "player1", "SPEC-L-PLAIN:l2")).toBe("command");
+    expect(s.players.player1.command).toHaveLength(s0.players.player1.command.length);
+  });
+
   it("XG5-008: 2番目以外では発動しない（出典: atwiki/page-2189「CN：2」）", () => {
     const s = resolveAll(nc("XG5-008:t", 2, { deck: DECK() }), ["SPEC-L-MECHA:l1"]);
     expect(zoneOf(s, "player1", "SPEC-L-MECHA:l1")).toBe("deck");

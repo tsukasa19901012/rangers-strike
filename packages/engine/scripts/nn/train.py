@@ -20,7 +20,10 @@ from torch import nn
 
 
 def load_runs(dirs):
-    cols, parts = None, []
+    """全シャードの行と、試合ごとに一意な番号（int64）を返す。"""
+    cols, parts, games = None, [], []
+    # features.json の無いフォルダは、その下の run（小分けにして回したもの）をまとめて読む。
+    dirs = [d for top in dirs for d in ([top] if os.path.exists(os.path.join(top, "features.json")) else sorted(glob.glob(os.path.join(top, "*", ""))))]
     for d in dirs:
         meta = json.load(open(os.path.join(d, "features.json")))
         if cols is None:
@@ -28,11 +31,13 @@ def load_runs(dirs):
         elif meta["columns"] != cols:
             raise SystemExit(f"{d}: 特徴の列が他のデータと違います（FEATURE_VERSION {meta['version']} と {version}）")
         for f in sorted(glob.glob(os.path.join(d, "shard-*.f32"))):
-            a = np.fromfile(f, dtype=np.float32).reshape(-1, len(cols))
-            # 別の run の同じ試合番号と混ざらないよう、run ごとにずらす。
-            a[:, 1] += len(parts) * 10_000_000
+            raw = np.fromfile(f, dtype=np.float32)
+            # 途中で止めたシャードは最後の行が欠けていることがあるので、行の幅で切り詰める。
+            a = raw[: len(raw) // len(cols) * len(cols)].reshape(-1, len(cols))
+            # 別のシャード・run の同じ試合番号と混ざらないよう、ファイルごとにずらす（float32 では桁が足りないので int64 で持つ）。
+            games.append(a[:, 1].astype(np.int64) + len(parts) * 10_000_000)
             parts.append(a)
-    return cols, version, np.concatenate(parts)
+    return cols, version, np.concatenate(parts), np.concatenate(games)
 
 
 def pick_device():
@@ -76,9 +81,8 @@ def main():
     ap.add_argument("--patience", type=int, default=5, help="検証が改善しないエポックがこれだけ続いたら止める")
     args = ap.parse_args()
 
-    cols, version, data = load_runs(args.runs)
+    cols, version, data, game = load_runs(args.runs)
     y_all = data[:, 0]
-    game = data[:, 1].astype(np.int64)
     x_all = data[:, 3:]
     val = (game * 2654435761 % 10) == 0
     print(f"rows {len(y_all)} (train {int((~val).sum())}, val {int(val.sum())}), features {x_all.shape[1]}, FEATURE_VERSION {version}")

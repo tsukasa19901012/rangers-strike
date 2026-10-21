@@ -152,7 +152,7 @@ XG5_KEYWORDS["XG5-022::knuckle_cannon"] = (state, ctx) => {
 };
 CHOICE_RESOLVERS[KNUCKLE] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
-  const card = state.players[playerId].discard.find((c) => c.instanceId === instanceId)!;
+  const card = state.players[playerId].discard.find((c) => c.instanceId === instanceId);
   const next = cmdHeldPut(close(state, pending), playerId, card, "discard");
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG5-022", `${KNUCKLE}:${instanceId}`) };
 };

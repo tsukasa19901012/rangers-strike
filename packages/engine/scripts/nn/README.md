@@ -17,6 +17,7 @@
 ```sh
 cd packages/engine
 npm ci                        # リポジトリの直下で一度だけ
+npx turbo run build --filter=@rangers-strike/cards   # 初回だけ（cards の dist が無いと selfplay が起動しない）
 caffeinate -i scripts/selfplay-par.sh --games 100000 --seed 1 --out .cache/selfplay/run1
 python3 scripts/nn/check_data.py .cache/selfplay/run1
 ```

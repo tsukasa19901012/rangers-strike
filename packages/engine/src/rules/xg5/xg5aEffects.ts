@@ -280,7 +280,7 @@ XG5_KEYWORDS["XG5-008::gogo_change"] = (state, ctx) => {
 };
 CHOICE_RESOLVERS[TANK_PICK] = (state, playerId, instanceId) => {
   const pending = state.pendingEffectChoice!;
-  const card = state.players[playerId].deck.find((c) => c.instanceId === instanceId)!;
+  const card = state.players[playerId].deck.find((c) => c.instanceId === instanceId);
   const next = shuffleDeck(cmdHeldPut(close(state, pending), playerId, card, "deck"), playerId);
   return { state: proceed(next, pending), log: logFor(state, playerId, "XG5-008", `${TANK_PICK}:${instanceId}`) };
 };

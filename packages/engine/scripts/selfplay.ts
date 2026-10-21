@@ -41,6 +41,8 @@ const mix = arg("mix", "2:2=45,3:2=20,3:3=20,5:5=15")
 const mixTotal = mix.reduce((s, m) => s + m.w, 0);
 // --explore: この確率で CPU の手のかわりに無作為な合法手を指す（似た局面ばかりになるのを防ぐ）。
 const explore = Number(arg("explore", "0"));
+// --only g: その試合番号だけを回す（落ちた試合の再現用。同じ --seed なら同じ試合になる）。
+const only = process.argv.includes("--only") ? Number(arg("only", "0")) : null;
 
 // --nn: 両方の CPU の盤面評価に学習した価値ネットワークを使う（ロードマップ Phase 5 の、学習版同士で集め直すサイクル）。
 if (process.argv.includes("--nn")) setValueEvaluator(createValueNet(JSON.parse(readFileSync(arg("nn", ""), "utf8"))).evaluate);
@@ -98,7 +100,7 @@ const width = 3 + FEATURE_DIM;
 const started = performance.now();
 let played = 0, decided = 0, rows = 0;
 for (let g = 0; g < games; g++) {
-  if (g % shards !== shard) continue;
+  if (only !== null ? g !== only : g % shards !== shard) continue;
   const rand = rng(seed0 * 1_000_003 + g);
   const d1 = decks[Math.floor(rand() * decks.length)]!;
   const d2 = decks[Math.floor(rand() * decks.length)]!;
@@ -108,7 +110,16 @@ for (let g = 0; g < games; g++) {
   const swap = rand() < 0.5;
   const levels: Record<PlayerId, CpuLevel> = { player1: swap ? m.b : m.a, player2: swap ? m.a : m.b };
   const t = performance.now();
-  const r = play(seed0 + g, d1, d2, levels, rand);
+  let r: Result;
+  try {
+    r = play(seed0 + g, d1, d2, levels, rand);
+  } catch (e) {
+    // エンジンの例外で 1 試合落ちても、そのシャードの残りは続ける（再現は --only g）。
+    writeSync(metaFd, JSON.stringify({ game: g, d1, d2, lv1: levels.player1, lv2: levels.player2, winner: null, error: String(e).slice(0, 300) }) + "\n");
+    console.error(`game ${g} failed: ${String(e)}`);
+    played++;
+    continue;
+  }
   played++;
   const meta = { game: g, d1, d2, lv1: levels.player1, lv2: levels.player2, winner: r.winner, steps: r.steps, turn: r.states.at(-1)?.turn ?? 0, ms: Math.round(performance.now() - t) };
   writeSync(metaFd, JSON.stringify(meta) + "\n");
