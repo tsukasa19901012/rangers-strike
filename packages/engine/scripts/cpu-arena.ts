@@ -1,6 +1,6 @@
 // CPU 同士の対戦で強さを比べる。
 //   npx tsx scripts/cpu-arena.ts --a 2 --b 2 [--b-src ../../.cache/base/packages/engine/src/ai/index.ts] [--games 40] [--decks abarenoh,dekaranger,magiking]
-//   学習した評価を試す: --a 2 --b 2 --nna .cache/nn/value.json
+//   学習した評価を試す: --a 2 --b 2 --nna .cache/nn/value.json [--nn-blend 0.5]
 // 各対戦は席と先攻を入れ替えて2回ずつ行うので、デッキ・先攻の有利不利は打ち消される。
 // --b-src を渡すと B 側は別の作業ツリーの AI（改良前など）を使う。
 import { readFileSync } from "node:fs";
@@ -8,7 +8,7 @@ import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { applyAction } from "../src/core/applyAction";
 import { getLegalActions, isLegalAction } from "../src/core/legalActions";
-import { createValueNet, pickCpuAction, setCpuLevelOverrides, setEvalWeights, setValueEvaluator, type CpuLevelConfig, type EvalWeights } from "../src/ai/index";
+import { createValueNet, heuristicEvaluate, pickCpuAction, setCpuLevelOverrides, setEvalWeights, setValueEvaluator, type CpuLevelConfig, type EvalWeights } from "../src/ai/index";
 import type { CpuLevel } from "../src/ai/types";
 import { createStarterGame } from "../src/verticalSlice/createStarterGame";
 import type { GameState, PlayerId } from "../src/types/game";
@@ -42,7 +42,11 @@ const overB = JSON.parse(arg("ob", "{}")) as Partial<CpuLevelConfig>;
 // --nna / --nnb: その側の盤面評価に、学習した価値ネットワーク（scripts/nn/train.py の JSON）を使う。
 const loadNet = (flag: string) => {
   const path = process.argv.includes(`--${flag}`) ? arg(flag, "") : "";
-  return path ? createValueNet(JSON.parse(readFileSync(path, "utf8"))).evaluate : null;
+  if (!path) return null;
+  const net = createValueNet(JSON.parse(readFileSync(path, "utf8")));
+  // --nn-blend w: 手書き評価にネットの評価の w 倍を足す（0 / 省略でネットだけ）。
+  const blend = Number(arg("nn-blend", "0"));
+  return blend > 0 ? (s: GameState, p: PlayerId) => heuristicEvaluate(s, p) + blend * net.evaluate(s, p) : net.evaluate;
 };
 const netA = loadNet("nna");
 const netB = loadNet("nnb");
