@@ -203,7 +203,8 @@ export default function App() {
       setFullText(false);
       return true;
     }
-    if (gui.detailFull && inside(gui.geometry.detail, p) && !hitTestGui(gui, p)) {
+    const covering = [gui.list?.rect, gui.popup?.rect, gui.dialog?.rect].some((r) => r && inside(r, p));
+    if (gui.detailFull && inside(gui.geometry.detail, p) && !covering) {
       setFullText(true);
       return true;
     }
