@@ -38,6 +38,7 @@ import {
   pickWinningBattle,
 } from "./helpers";
 import { planComboEntry } from "./comboOrder";
+import { deckProfile } from "./deckProfile";
 import { dedupeActions, pickBestByRollout, pickBestBySearch, type SearchOptions } from "./simulation";
 
 export type PickCpuActionOptions = {
@@ -62,6 +63,8 @@ export type PickCpuActionOptions = {
   comboOrder?: number;
   /** 山札がこの枚数以下で相手より少ないとき、追加ドローをしない。 */
   deckGuard?: number;
+  /** チャージの先読みで、デッキの中身から決めた方針（パワーの上限・最初のコマンド）を守る。 */
+  deckAwareCharge?: boolean;
 };
 
 function tacticalSearchOptions(
@@ -499,20 +502,31 @@ function pickCpuActionInner(
     }
 
     case "charge": {
+      const heuristicCharge = pickChargeAction(state, playerId, actions) ?? endPhase(actions);
       if (plans("charge")) {
+        const choices = options.planChargeTop
+          ? chargeCandidates(state, playerId, actions, options.planChargeTop)
+          : sameCardOnce(state, playerId, actions.filter((a) => a.type === "charge_power" || a.type === "charge_command" || a.type === "end_phase"));
+        if (options.deckAwareCharge) {
+          const self = state.players[playerId];
+          // コマンドが 1 枚もないのに簡易判断がコマンドを置くなら従う（先読みはパワーを選びがちで、
+          // コマンドが無いままラッシュできずに何ターンも過ごしていた。XG1 スターターC など）。
+          if (self.command.length === 0 && heuristicCharge?.type === "charge_command") return heuristicCharge;
+          // デッキで一番重いカードの必要パワーに届いたら、先読みせず簡易判断に従う。先読みは手札を減らす手を
+          // 好み、使い道のないパワーを 10 枚以上溜めたり、後でラッシュできるユニットをコマンドに置いたりしていた。
+          if (self.power.length >= deckProfile(state, playerId).maxPowerCost) return heuristicCharge;
+        }
         const planned = pickBestByRollout(
           state,
           playerId,
-          options.planChargeTop
-            ? chargeCandidates(state, playerId, actions, options.planChargeTop)
-            : sameCardOnce(state, playerId, actions.filter((a) => a.type === "charge_power" || a.type === "charge_command" || a.type === "end_phase")),
+          choices,
           plans("charge"),
           options.planTurns,
           options.planMaxSteps,
         );
         if (planned) return planned;
       }
-      return pickChargeAction(state, playerId, actions) ?? endPhase(actions);
+      return heuristicCharge;
     }
 
     case "rush": {
