@@ -387,17 +387,45 @@ export function ridingStep(geometry: GuiGeometry, row: number): number {
   return Math.round(rowTiles(geometry, row).tileW * 0.42);
 }
 
+/** A held command lies sideways, so its slot is this much wider than an upright card's. */
+export const HELD_SLOT_SCALE = 1.5;
+
+type RowTileFields = Pick<GuiTile, "ridingOn" | "instanceId" | "held">;
+
 /**
  * Tile rectangles of the visible window of a row: one slot per card, except that a riding unit is
- * stacked on its vehicle (shifted right by `ridingStep`), so the pair takes about one and a half slots.
+ * stacked on its vehicle (shifted right by `ridingStep`), so the pair takes about one and a half slots,
+ * and a held command gets a wider slot (`HELD_SLOT_SCALE`) to lie in sideways.
  */
-export function rowTileRects(geometry: GuiGeometry, row: number, tiles: readonly Pick<GuiTile, "ridingOn" | "instanceId">[]): Rect[] {
+export function rowTileRects(geometry: GuiGeometry, row: number, tiles: readonly RowTileFields[]): Rect[] {
   const base = tileRect(geometry, row, 0);
   let x = base.x;
+  let prevW = base.w;
   return tiles.map((tile, slot) => {
-    if (slot > 0) x += tile.ridingOn && tiles[slot - 1]!.instanceId === tile.ridingOn ? ridingStep(geometry, row) : base.w + geometry.tileGap;
-    return { ...base, x };
+    if (slot > 0) x += tile.ridingOn && tiles[slot - 1]!.instanceId === tile.ridingOn ? ridingStep(geometry, row) : prevW + geometry.tileGap;
+    const w = tile.held ? Math.round(base.w * HELD_SLOT_SCALE) : base.w;
+    prevW = w;
+    return { ...base, x, w };
   });
+}
+
+/** How many of `tiles`, from `offset` on, fit across row `row` (at least one). */
+export function rowFit(geometry: GuiGeometry, row: number, tiles: readonly RowTileFields[], offset: number): number {
+  const per = rowTiles(geometry, row).tilesPerRow;
+  const window = tiles.slice(offset, offset + per);
+  if (!window.some((t) => t.held)) return window.length;
+  const right = geometry.rows[row]!.x + geometry.rows[row]!.w;
+  const rects = rowTileRects(geometry, row, window);
+  let n = 1;
+  while (n < rects.length && rects[n]!.x + rects[n]!.w <= right + 1) n++;
+  return n;
+}
+
+/** The largest offset that still fills row `row` up to its last card. */
+export function rowMaxOffset(geometry: GuiGeometry, row: number, tiles: readonly RowTileFields[]): number {
+  let offset = Math.max(0, tiles.length - rowTiles(geometry, row).tilesPerRow);
+  while (offset < tiles.length - 1 && offset + rowFit(geometry, row, tiles, offset) < tiles.length) offset++;
+  return offset;
 }
 
 /** Tile rectangle for slot `slot` (0-based within the visible window) of row `row`. */

@@ -22,13 +22,17 @@ export function TextureImage(props: { texture: number; style: Record<string, num
   return image;
 }
 
+/** Upright card width : height (63 × 88 mm). */
+const CARD_ASPECT = 63 / 88;
+
 /**
- * A held card lies on its side (rules: ホールド = 横向き). The upright card is
- * shrunk so that, turned 90°, its long side spans the slot width, and it sits
- * centred above the tile's bottom badge.
+ * A held card lies on its side (rules: ホールド = 横向き). Its slot is wider than an upright
+ * card's; the turned card is as large as fits there above the tile's bottom badge.
  */
 function sidewaysSize(slot: Box) {
-  return { w: Math.round((slot.w * slot.w) / slot.h), h: slot.w };
+  const badge = 22;
+  const long = Math.round(Math.min(slot.w, (slot.h - badge) / CARD_ASPECT));
+  return { w: Math.round(long * CARD_ASPECT), h: long };
 }
 
 function sidewaysStyle(slot: Box) {
