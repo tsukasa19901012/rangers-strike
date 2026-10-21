@@ -16,6 +16,7 @@ import type { LogicalInput } from "../input/actions";
 import { ListCursor } from "../input/actions";
 import type { ActionOption, GameSession, StepResult } from "../session/session";
 import { ACTION_LABELS, PHASE_LABELS } from "../text/labels";
+import { cardFieldLines, effectParagraphs } from "../view/cardFields";
 import { clipLine, fitLine, fitLineKeepTail, measureText, wrapText, type WrapOptions } from "../text/wrap";
 import { buildPendingView } from "../view/board";
 import {
@@ -89,6 +90,8 @@ export type GuiView = {
   detailLines: PanelLine[];
   /** Card image at the top of the detail panel (only with `cardArt`). */
   detailArt?: { cardId: string; hidden: boolean; rect: Rect };
+  /** The detail panel cut the card's text: the whole of it, for a shell to show on request. */
+  detailFull?: { name: string; fields: string[]; text: string };
   popup?: GuiBox;
   list?: GuiBox;
   dialog?: GuiDialogView;
@@ -751,11 +754,13 @@ export class GuiMatch {
     return Math.max(1, Math.floor((this.dialogRect().w - 8 + this.geometry.tileGap) / (this.geometry.tileW + this.geometry.tileGap)));
   }
 
-  private detailFor(cardId: string | null, hidden = false): string[] {
-    if (hidden) return ["裏向きのカード"];
-    if (!cardId) return [];
+  /** Name, one-line stats, text, and the wiki-style attribute lines (cardFieldLines). */
+  private detailFor(cardId: string | null, hidden = false): { name: string; stats: string; text: string; fields: string[] } {
+    const empty = { name: "", stats: "", text: "", fields: [] as string[] };
+    if (hidden) return { ...empty, name: "裏向きのカード" };
+    if (!cardId) return empty;
     const def = this.state().definitions[cardId];
-    if (!def) return [cardId];
+    if (!def) return { ...empty, name: cardId };
     const stats = [
       TYPE_LABELS[def.type] ?? def.type,
       def.powerCost !== undefined ? `P${def.powerCost}` : "",
@@ -764,7 +769,7 @@ export class GuiMatch {
     ]
       .filter(Boolean)
       .join(" ");
-    return [def.name, `${def.id} ${stats}`, def.text ?? ""];
+    return { name: def.name, stats: `${def.id} ${stats}`, text: effectParagraphs(def.text ?? ""), fields: cardFieldLines(def) };
   }
 
   private boxRows(cursor: ListCursor, labels: string[], top: number, x: number, w: number, wrap: WrapOptions): MenuRowView[] {
@@ -906,23 +911,31 @@ export class GuiMatch {
     let textX = g.detail.x + 4;
     let textW = g.detail.w - 6;
     const detailBottom = g.detail.y + g.detail.h - 2;
+    let detailClipped = false;
     const pushDetail = (tone: PanelTone, texts: string[]) => {
       for (const text of texts) {
-        if (lineY + g.lineHeight > detailBottom) return;
+        if (lineY + g.lineHeight > detailBottom) {
+          detailClipped = true;
+          return;
+        }
         detailLines.push({ text, tone, rect: { x: textX, y: lineY, w: textW, h: g.lineHeight } });
         lineY += g.lineHeight;
       }
     };
+    let detailFull: GuiView["detailFull"];
     if (this.showLog && !dialogShown) {
       const lines = this.session.log.slice(-g.detailLines * 2).flatMap((l) => wrapText(l, wrapDetail));
       pushDetail("dim", ["── ログ ──"]);
       pushDetail("body", lines.slice(-(g.detailLines - 1)));
     } else {
-      const [name, stats, text] = this.detailFor(detailCard.cardId, detailCard.hidden);
+      const { name, stats, text, fields } = this.detailFor(detailCard.cardId, detailCard.hidden);
+      const def = detailCard.cardId && !detailCard.hidden ? this.state().definitions[detailCard.cardId] : undefined;
+      detailClipped = false;
+      let beside = false;
       if (this.cardArt && (detailCard.cardId || detailCard.hidden)) {
         // Card image on the left, its stats one per line beside it. A wide,
         // short panel (phone portrait) puts all of the text beside the image.
-        const beside = isWideDetail(g.detail);
+        beside = isWideDetail(g.detail);
         const artW = beside ? detailArtWidth(g.detail) : Math.round(g.detail.w * 0.5);
         const rect = { x: g.detail.x + 4, y: g.detail.y + 4, w: artW, h: Math.round((artW * 190) / 130) };
         detailArt = { cardId: detailCard.cardId ?? "", hidden: detailCard.hidden, rect };
@@ -937,7 +950,8 @@ export class GuiMatch {
           if (stats) pushDetail("dim", wrapText(stats, { ...wrapSide, maxLines: 1 }));
           if (text) pushDetail("body", wrapText(text, wrapSide));
         } else {
-          const tokens = stats ? stats.split(" ") : [];
+          // Beside the image: number, type and size; under it the name, the wiki-style attributes and the text.
+          const tokens = def ? [def.id, TYPE_LABELS[def.type] ?? def.type, def.size ? `サイズ：${def.size}` : ""].filter(Boolean) : stats ? stats.split(" ") : [];
           tokens.slice(0, Math.floor(rect.h / g.lineHeight)).forEach((token, i) => {
             detailLines.push({
               text: fitLine(token, { fontPx: g.fontPx, maxWidthPx: sideW }),
@@ -947,12 +961,22 @@ export class GuiMatch {
           });
           lineY = rect.y + rect.h + 3;
           if (name) pushDetail("head", wrapText(name, { ...wrapDetail, maxLines: 2 }));
+          for (const field of fields) pushDetail("dim", wrapText(field, wrapDetail));
           if (text) pushDetail("body", wrapText(text, wrapDetail));
         }
       } else {
         if (name) pushDetail("head", wrapText(name, { ...wrapDetail, maxLines: 2 }));
         if (stats) pushDetail("dim", wrapText(stats, { ...wrapDetail, maxLines: 2 }));
         if (text) pushDetail("body", wrapText(text, wrapDetail));
+      }
+      // A phone's short panel leaves out the attributes, and a long text may not fit: the last
+      // line says the whole card can be opened (the shell shows `detailFull`).
+      if (this.cardArt && def && (detailClipped || beside)) {
+        const hint = detailClipped ? "▼ タップで全文" : "▼ タップで詳細";
+        if (!detailClipped) pushDetail("accent", [hint]);
+        const last = detailLines[detailLines.length - 1];
+        if (last && last.text !== hint) detailLines[detailLines.length - 1] = { ...last, text: hint, tone: "accent" };
+        detailFull = { name, fields, text };
       }
     }
 
@@ -1032,6 +1056,7 @@ export class GuiMatch {
       rows,
       detailLines,
       detailArt,
+      detailFull,
       popup,
       list,
       dialog,

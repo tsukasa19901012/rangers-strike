@@ -10,6 +10,7 @@ import type { CardDefinition, DeckApi, DeckEntry, EngineApi } from "../engineApi
 import { ListCursor, type LogicalInput } from "../input/actions";
 import type { CustomDeck } from "../platform/settings";
 import { fitLine, wrapText, type WrapOptions } from "../text/wrap";
+import { effectParagraphs } from "../view/cardFields";
 import { detailArtWidth, isWideDetail } from "../view/gui";
 import type { Rect, Viewport } from "../view/layout";
 import { TYPE_LABELS, type GuiBox, type MenuRowView, type PanelLine, type PanelTone } from "./guiMatch";
@@ -506,7 +507,7 @@ export class DeckBuilder {
       const count = this.entries.get(card.id) ?? 0;
       const remaining = this.remaining(card);
       push("accent", wrapText(`デッキに${count}枚${Number.isFinite(remaining) ? ` あと${remaining}枚` : ""}`, { ...wrap, maxLines: 2 }));
-      push("body", wrapText(card.text ?? "", wrap));
+      push("body", wrapText(effectParagraphs(card.text ?? ""), wrap));
     }
 
     let menu: GuiBox | undefined;
