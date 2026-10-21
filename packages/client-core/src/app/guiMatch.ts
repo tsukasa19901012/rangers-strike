@@ -15,9 +15,10 @@ import { CPU, HUMAN } from "../engineApi";
 import type { LogicalInput } from "../input/actions";
 import { ListCursor } from "../input/actions";
 import type { ActionOption, GameSession, StepResult } from "../session/session";
-import { ACTION_LABELS, PHASE_LABELS } from "../text/labels";
-import { clipLine, fitLine, measureText, wrapText, type WrapOptions } from "../text/wrap";
-import { buildPendingView } from "../view/board";
+import { ACTION_LABELS, PHASE_LABELS, revealDestination, revealSummary } from "../text/labels";
+import { cardFieldLines, effectParagraphs } from "../view/cardFields";
+import { clipLine, fitLine, fitLineKeepTail, measureText, wrapText, type WrapOptions } from "../text/wrap";
+import { buildPendingView, viewedCardIds } from "../view/board";
 import { assistMove, DEFAULT_ASSIST, endTurnMove, type AssistSettings } from "./assist";
 import {
   actionExtrasKey,
@@ -32,6 +33,7 @@ import {
   locateInstance,
   PHASE_ORDER,
   playerStrip,
+  rowTileRects,
   tileRect,
   topBarText,
   zoneLabel,
@@ -66,17 +68,22 @@ export type GuiRowView = {
   moreRight: number;
 };
 
-export type GuiBox = { rect: Rect; title: string; titleRect: Rect; rows: MenuRowView[] };
+/** A tappable "more above / below" mark of a window that shows only part of its cards or rows. */
+export type ScrollMark = { text: string; rect: Rect; area: "cards" | "rows"; direction: 1 | -1 };
+
+export type GuiBox = { rect: Rect; title: string; titleRect: Rect; rows: MenuRowView[]; marks?: ScrollMark[] };
 
 export type GuiDialogView = {
   rect: Rect;
   titleLines: PanelLine[];
-  cards: (GuiTile & { rect: Rect; focused: boolean; caption: string; captionRect: Rect })[];
+  /** `note`: a caption that is not where the card is (「見ている」, a revealed card's destination); the card can't be picked. */
+  cards: (GuiTile & { rect: Rect; focused: boolean; caption: string; captionRect: Rect; note?: string })[];
   buttons: MenuRowView[];
   /** Index of the first visible button among all buttons. */
   buttonOffset: number;
   moreLeft: number;
   moreRight: number;
+  marks: ScrollMark[];
 };
 
 export type GuiView = {
@@ -90,6 +97,8 @@ export type GuiView = {
   detailLines: PanelLine[];
   /** Card image at the top of the detail panel (only with `cardArt`). */
   detailArt?: { cardId: string; hidden: boolean; rect: Rect };
+  /** The detail panel cut the card's text: the whole of it, for a shell to show on request. */
+  detailFull?: { name: string; fields: string[]; text: string };
   popup?: GuiBox;
   list?: GuiBox;
   dialog?: GuiDialogView;
@@ -151,6 +160,13 @@ export class GuiMatch {
   private dialogOffset = 0;
   private dialogHidden = false;
   private dialogVersion = -1;
+  /** Buttons the selection window showed at once (a page for scrolling them). */
+  private dialogButtonRows = DIALOG_BUTTONS;
+  /** Seq of the last reveal notice (GameState.lastReveal) shown; a newer one opens the reveal window. */
+  private revealSeen: number;
+  private revealOpen: NonNullable<GameState["lastReveal"]> | null = null;
+  /** A card the shell points at outside the board rows (a discard or power zone card): shown in the detail panel. */
+  inspectCardId: string | null = null;
   private showLog = false;
   private syncedVersion = -1;
   private toastText = "";
@@ -170,6 +186,13 @@ export class GuiMatch {
     private readonly layout: (viewport: Viewport) => GuiGeometry = computeGuiGeometry,
   ) {
     this.geometry = layout(viewport);
+    this.revealSeen = session.state.lastReveal?.seq ?? 0;
+  }
+
+  /** A reveal window is open: the controller holds CPU and assist moves until it is closed. */
+  get revealShown(): boolean {
+    this.sync();
+    return this.revealOpen !== null;
   }
 
   setViewport(viewport: Viewport): void {
@@ -217,6 +240,11 @@ export class GuiMatch {
     this.syncedVersion = this.session.version;
     this.rows = buildGuiRows(this.engine, this.state(), this.geometry, this.options().map((o) => o.action));
     this.mode = { kind: "board" };
+    const reveal = this.state().lastReveal;
+    if (reveal && reveal.seq > this.revealSeen) {
+      this.revealSeen = reveal.seq;
+      this.revealOpen = reveal;
+    }
     if (this.dialogVersion !== this.session.version) {
       this.dialogVersion = this.session.version;
       this.dialogCursor = 0;
@@ -324,7 +352,11 @@ export class GuiMatch {
         cards.set(id, list);
       } else (PASS_LIKE.test(item.option.action.type) ? pass : buttons).push({ kind: "button", items: [item] });
     }
-    return [...[...cards].map(([id, items]) => ({ kind: "card" as const, id, items })), ...buttons, ...pass];
+    // Deck cards the choice is about ("山札の上から1枚を見る"): shown first, only to look at.
+    const viewed = viewedCardIds(this.state())
+      .filter((id) => !cards.has(id))
+      .map((id) => ({ kind: "card" as const, id, items: [] as MenuItem[] }));
+    return [...viewed, ...[...cards].map(([id, items]) => ({ kind: "card" as const, id, items })), ...buttons, ...pass];
   }
 
   // ------------------------------------------------------------ popups
@@ -378,14 +410,16 @@ export class GuiMatch {
     if (items.length === 0) return;
     const cursor = new ListCursor();
     cursor.reset(items.length, LIST_ROWS);
-    const labels = this.placeDuplicates(items, items.map((i) => i.option.label));
-    this.mode = { kind: "list", title, items, labels: variants ? variantLabels(labels) : labels, cursor };
+    const labels = items.map((i) => i.option.label);
+    this.mode = { kind: "list", title, items, labels: this.placeDuplicates(items, labels, variants ? variantLabels(labels) : labels), cursor };
   }
 
   private focusedRect(): Rect {
     const row = this.rows[this.focusRow];
     const offset = row ? (this.offsets.get(row.key) ?? 0) : 0;
-    return tileRect(this.geometry, this.focusRow, this.focusIndex - offset);
+    if (!row) return tileRect(this.geometry, this.focusRow, 0);
+    const visible = row.tiles.slice(offset, offset + this.geometry.tilesPerRow);
+    return rowTileRects(this.geometry, this.focusRow, visible)[this.focusIndex - offset] ?? tileRect(this.geometry, this.focusRow, this.focusIndex - offset);
   }
 
   private openCardPopup(): void {
@@ -406,7 +440,7 @@ export class GuiMatch {
    * Rows that read the same (two copies of a card, オーラパワー on one of several CS-S1) get where
    * the card they differ by is: "（自ラッシュ2）".
    */
-  private placeDuplicates(items: MenuItem[], labels: string[]): string[] {
+  private placeDuplicates(items: MenuItem[], labels: string[], shown: string[]): string[] {
     const state = this.state();
     const groups = new Map<string, number[]>();
     labels.forEach((label, i) => groups.set(label, [...(groups.get(label) ?? []), i]));
@@ -418,17 +452,17 @@ export class GuiMatch {
     };
     return labels.map((label, i) => {
       const group = groups.get(label)!;
-      if (group.length < 2) return label;
+      if (group.length < 2) return shown[i]!;
       // The cards this row names and not every row of the group does (ゴードム: 2 of 3 戦闘員 → 「自ラッシュ2・3」).
       const idSets = group.map((j) => new Set(actionInstanceIds(items[j]!.option.action)));
       const own = actionInstanceIds(items[i]!.option.action).filter((id) => !idSets.every((set) => set.has(id)));
       const places = own.map(where).filter((w): w is { place: string; position: number } => w !== null);
-      if (places.length === 0) return label;
+      if (places.length === 0) return shown[i]!;
       const samePlace = places.every((w) => w.place === places[0]!.place);
       const text = samePlace
         ? `${places[0]!.place}${places.map((w) => w.position).join("・")}`
         : places.map((w) => `${w.place}${w.position}`).join("・");
-      return `${label}（${text}）`;
+      return `${shown[i]}（${text}）`;
     });
   }
 
@@ -594,8 +628,15 @@ export class GuiMatch {
       default:
         break;
     }
+    if (this.revealOpen) return this.dispatchReveal(event);
     if (this.dialogShown()) return this.dispatchDialog(event);
     return this.dispatchBoard(event);
+  }
+
+  /** The reveal window closes on a tap, ○ or ×; other input waits until it does. */
+  private dispatchReveal(event: LogicalInput): StepResult | null {
+    if (event.type === "confirm" || event.type === "cancel" || event.type === "select") this.revealOpen = null;
+    return null;
   }
 
   private dispatchBoard(event: LogicalInput): StepResult | null {
@@ -679,6 +720,21 @@ export class GuiMatch {
           if (cards < items.length) this.dialogCursor = cards;
         } else this.dialogCursor = clamp(this.dialogCursor + 1);
         break;
+      case "scroll":
+        if (event.area === "cards" && cards > 0) {
+          // A page of cards: the first card of the next (previous) page gets the cursor.
+          const page = this.dialogVisibleCards(cards);
+          const from = onCards ? this.dialogOffset : 0;
+          this.dialogCursor = Math.max(0, Math.min(cards - 1, from + event.direction * page));
+          this.dialogOffset = Math.max(0, Math.min(this.dialogCursor, Math.max(0, cards - page)));
+          if (event.direction < 0) this.dialogCursor = this.dialogOffset;
+          return null;
+        }
+        if (event.area === "rows" && items.length > cards) {
+          const button = onCards ? 0 : this.dialogCursor - cards;
+          this.dialogCursor = cards + Math.max(0, Math.min(items.length - cards - 1, button + event.direction * this.dialogButtonRows));
+        }
+        break;
       case "confirm":
         return this.pickDialog(items[this.dialogCursor]);
       case "select":
@@ -710,7 +766,7 @@ export class GuiMatch {
   }
 
   private pickDialog(item: DialogItem | undefined): StepResult | null {
-    if (!item) return null;
+    if (!item || item.items.length === 0) return null;
     const title = item.kind === "card" ? this.instanceName(item.id) : item.items[0]!.option.label;
     return this.runItems(item.items, title);
   }
@@ -722,6 +778,9 @@ export class GuiMatch {
         return null;
       case "next":
         mode.cursor.move(1);
+        return null;
+      case "scroll":
+        mode.cursor.page(event.direction);
         return null;
       case "confirm":
         return this.runVerb(mode.verbs[mode.cursor.index]!);
@@ -761,6 +820,9 @@ export class GuiMatch {
         return null;
       case "pageNext":
         mode.cursor.page(1);
+        return null;
+      case "scroll":
+        mode.cursor.page(event.direction);
         return null;
       case "confirm":
         return this.execute(mode.items[mode.cursor.index]!);
@@ -857,11 +919,13 @@ export class GuiMatch {
     return Math.max(1, Math.floor((this.dialogRect().w - 8 + this.geometry.tileGap) / (this.geometry.tileW + this.geometry.tileGap)));
   }
 
-  private detailFor(cardId: string | null, hidden = false): string[] {
-    if (hidden) return ["裏向きのカード"];
-    if (!cardId) return [];
+  /** Name, one-line stats, text, and the wiki-style attribute lines (cardFieldLines). */
+  private detailFor(cardId: string | null, hidden = false): { name: string; stats: string; text: string; fields: string[] } {
+    const empty = { name: "", stats: "", text: "", fields: [] as string[] };
+    if (hidden) return { ...empty, name: "裏向きのカード" };
+    if (!cardId) return empty;
     const def = this.state().definitions[cardId];
-    if (!def) return [cardId];
+    if (!def) return { ...empty, name: cardId };
     const stats = [
       TYPE_LABELS[def.type] ?? def.type,
       def.powerCost !== undefined ? `P${def.powerCost}` : "",
@@ -870,7 +934,7 @@ export class GuiMatch {
     ]
       .filter(Boolean)
       .join(" ");
-    return [def.name, `${def.id} ${stats}`, def.text ?? ""];
+    return { name: def.name, stats: `${def.id} ${stats}`, text: effectParagraphs(def.text ?? ""), fields: cardFieldLines(def) };
   }
 
   private boxRows(cursor: ListCursor, labels: string[], top: number, x: number, w: number, wrap: WrapOptions): MenuRowView[] {
@@ -880,7 +944,7 @@ export class GuiMatch {
       const index = cursor.rowToIndex(r);
       if (index < 0) break;
       rows.push({
-        text: fitLine(labels[index]!, wrap),
+        text: fitLineKeepTail(labels[index]!, wrap),
         selected: index === cursor.index,
         rect: { x, y: top + r * g.lineHeight, w, h: g.lineHeight },
       });
@@ -895,7 +959,8 @@ export class GuiMatch {
     const g = this.geometry;
     const state = this.state();
     const mode = this.mode;
-    const dialogShown = this.dialogShown();
+    const reveal = this.revealOpen;
+    const dialogShown = this.dialogShown() && !reveal;
     const dialogItems = this.dialogActive() ? this.dialogItems() : [];
     const targetIds = new Set<string>(
       mode.kind === "target"
@@ -907,6 +972,7 @@ export class GuiMatch {
     const rows: GuiRowView[] = this.rows.map((row, r) => {
       const offset = this.offsets.get(row.key) ?? 0;
       const visible = row.tiles.slice(offset, offset + g.tilesPerRow);
+      const rects = rowTileRects(g, r, visible);
       return {
         key: row.key,
         zone: row.zone,
@@ -914,7 +980,7 @@ export class GuiMatch {
         active: r === this.focusRow && !dialogShown,
         tiles: visible.map((tile, slot) => {
           const focused = !dialogShown && r === this.focusRow && offset + slot === this.focusIndex;
-          const rect = tileRect(g, r, slot);
+          const rect = rects[slot]!;
           const raised = focused && row.zone === "hand";
           return {
             ...tile,
@@ -957,30 +1023,42 @@ export class GuiMatch {
       const per = this.dialogCardsPerRow();
       const visible = this.dialogVisibleCards(cardItems.length);
       const cards: GuiDialogView["cards"] = [];
+      const marks: ScrollMark[] = [];
       const fitTile: WrapOptions = { fontPx: g.fontPx, maxWidthPx: g.tileW - 4 };
       if (cardItems.length > 0) {
         y += 2;
         const shown = cardItems.slice(this.dialogOffset, this.dialogOffset + visible);
         shown.forEach((item, slot) => {
           const at = locateInstance(state, item.id)!;
-          const tile = cardTile(this.engine, state, at.player, at.zone, at.card, fitTile, true, false);
+          const viewing = item.items.length === 0;
+          // A card the human is looking at is face up to them, even from the enemy deck.
+          const tile = cardTile(this.engine, state, viewing ? HUMAN : at.player, at.zone, at.card, fitTile, !viewing, false);
           const index = this.dialogOffset + slot;
           const rect = { x: base.x + 4 + (slot % per) * (g.tileW + g.tileGap), y: y + Math.floor(slot / per) * (g.tileH + g.lineHeight + 2), w: g.tileW, h: g.tileH };
           cards.push({
             ...tile,
             rect,
             focused: index === this.dialogCursor,
-            caption: clipLine(`${at.player === HUMAN ? "自" : "敵"}${zoneLabel(at.zone)}`, fitTile),
+            caption: clipLine(viewing ? "見ている" : `${at.player === HUMAN ? "自" : "敵"}${zoneLabel(at.zone)}`, fitTile),
+            ...(viewing ? { note: "見ている" } : {}),
             captionRect: { x: rect.x, y: rect.y + rect.h, w: rect.w, h: g.lineHeight },
           });
           if (index === this.dialogCursor) detailCard = { cardId: tile.kind === "hidden" ? null : at.card.cardId, hidden: tile.kind === "hidden" };
         });
         y += Math.ceil(shown.length / per) * (g.tileH + g.lineHeight + 2);
+        const moreRight = Math.max(0, cardItems.length - this.dialogOffset - visible);
+        if (this.dialogOffset > 0 || moreRight > 0) {
+          marks.push(...scrollMarks("cards", this.dialogOffset, moreRight, "枚", { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight }));
+          y += g.lineHeight + 2;
+        }
       }
       const cursor = new ListCursor();
       // As many buttons as the board has room for (a number choice can offer 0〜9 and 選ばない), at least DIALOG_BUTTONS.
       const board = this.geometry.board;
-      cursor.reset(buttonItems.length, Math.max(DIALOG_BUTTONS, Math.floor((board.y + board.h - y - 8) / g.lineHeight)));
+      const room = Math.max(DIALOG_BUTTONS, Math.floor((board.y + board.h - y - 8) / g.lineHeight));
+      // A line for the ▲▼ marks when the buttons don't all fit.
+      cursor.reset(buttonItems.length, buttonItems.length > room ? room - 1 : room);
+      this.dialogButtonRows = cursor.rows;
       const buttonCursor = this.dialogCursor - cardItems.length;
       if (buttonCursor >= 0) {
         cursor.index = buttonCursor;
@@ -989,7 +1067,13 @@ export class GuiMatch {
       const buttons = this.boxRows(cursor, buttonItems.map((i) => i.items[0]!.option.label), y, base.x + 4, base.w - 8, wrap).map(
         (row) => ({ ...row, selected: row.selected && buttonCursor >= 0 }),
       );
-      y += buttons.length * g.lineHeight + 4;
+      y += buttons.length * g.lineHeight;
+      const below = Math.max(0, buttonItems.length - cursor.offset - cursor.rows);
+      if (cursor.offset > 0 || below > 0) {
+        marks.push(...scrollMarks("rows", cursor.offset, below, "件", { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight }));
+        y += g.lineHeight;
+      }
+      y += 4;
       if (buttonCursor >= 0 || cardItems.length === 0) {
         const sourceId = state.pendingEffectChoice?.sourceCardId ?? state.pendingCommandPayment?.sourceCardId ?? null;
         detailCard = { cardId: sourceId, hidden: false };
@@ -1002,8 +1086,38 @@ export class GuiMatch {
         buttonOffset: cursor.offset,
         moreLeft: this.dialogOffset,
         moreRight: Math.max(0, cardItems.length - this.dialogOffset - visible),
+        marks,
       };
     }
+
+    // --- reveal window: cards an effect turned face up, for both players to see
+    if (reveal) {
+      const base = this.dialogRect();
+      const wrap: WrapOptions = { fontPx: g.fontPx, maxWidthPx: base.w - 8 };
+      let y = base.y + 4;
+      const titleLines: PanelLine[] = wrapText(revealSummary(state, reveal), { ...wrap, maxLines: 2 }).map((text, i) => {
+        const line = { text, tone: (i === 0 ? "accent" : "dim") as PanelTone, rect: { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight } };
+        y += g.lineHeight;
+        return line;
+      });
+      const per = this.dialogCardsPerRow();
+      const shown = reveal.cards.slice(0, this.dialogVisibleCards(reveal.cards.length));
+      const fitTile: WrapOptions = { fontPx: g.fontPx, maxWidthPx: g.tileW - 4 };
+      y += 2;
+      const cards: GuiDialogView["cards"] = shown.map((card, slot) => {
+        const tile = cardTile(this.engine, state, HUMAN, "revealed", { instanceId: card.instanceId, cardId: card.cardId } as never, fitTile, false, false);
+        const rect = { x: base.x + 4 + (slot % per) * (g.tileW + g.tileGap), y: y + Math.floor(slot / per) * (g.tileH + g.lineHeight + 2), w: g.tileW, h: g.tileH };
+        const note = revealDestination(card.destination);
+        return { ...tile, rect, focused: slot === 0, caption: clipLine(note, fitTile), note, captionRect: { x: rect.x, y: rect.y + rect.h, w: rect.w, h: g.lineHeight } };
+      });
+      if (shown[0]) detailCard = { cardId: shown[0].cardId, hidden: false };
+      y += Math.ceil(shown.length / per) * (g.tileH + g.lineHeight + 2);
+      const buttons: MenuRowView[] = [{ text: "閉じる", selected: true, rect: { x: base.x + 4, y, w: base.w - 8, h: g.lineHeight } }];
+      y += g.lineHeight + 4;
+      dialog = { rect: { ...base, h: y - base.y }, titleLines, cards, buttons, buttonOffset: 0, moreLeft: 0, moreRight: Math.max(0, reveal.cards.length - shown.length), marks: [] };
+    }
+
+    if (this.inspectCardId && !reveal && !dialogShown) detailCard = { cardId: this.inspectCardId, hidden: false };
 
     // --- detail panel (left)
     const detailLines: PanelLine[] = [];
@@ -1012,23 +1126,31 @@ export class GuiMatch {
     let textX = g.detail.x + 4;
     let textW = g.detail.w - 6;
     const detailBottom = g.detail.y + g.detail.h - 2;
+    let detailClipped = false;
     const pushDetail = (tone: PanelTone, texts: string[]) => {
       for (const text of texts) {
-        if (lineY + g.lineHeight > detailBottom) return;
+        if (lineY + g.lineHeight > detailBottom) {
+          detailClipped = true;
+          return;
+        }
         detailLines.push({ text, tone, rect: { x: textX, y: lineY, w: textW, h: g.lineHeight } });
         lineY += g.lineHeight;
       }
     };
+    let detailFull: GuiView["detailFull"];
     if (this.showLog && !dialogShown) {
       const lines = this.session.log.slice(-g.detailLines * 2).flatMap((l) => wrapText(l, wrapDetail));
       pushDetail("dim", ["── ログ ──"]);
       pushDetail("body", lines.slice(-(g.detailLines - 1)));
     } else {
-      const [name, stats, text] = this.detailFor(detailCard.cardId, detailCard.hidden);
+      const { name, stats, text, fields } = this.detailFor(detailCard.cardId, detailCard.hidden);
+      const def = detailCard.cardId && !detailCard.hidden ? this.state().definitions[detailCard.cardId] : undefined;
+      detailClipped = false;
+      let beside = false;
       if (this.cardArt && (detailCard.cardId || detailCard.hidden)) {
         // Card image on the left, its stats one per line beside it. A wide,
         // short panel (phone portrait) puts all of the text beside the image.
-        const beside = isWideDetail(g.detail);
+        beside = isWideDetail(g.detail);
         const artW = beside ? detailArtWidth(g.detail) : Math.round(g.detail.w * 0.5);
         const rect = { x: g.detail.x + 4, y: g.detail.y + 4, w: artW, h: Math.round((artW * 190) / 130) };
         detailArt = { cardId: detailCard.cardId ?? "", hidden: detailCard.hidden, rect };
@@ -1043,7 +1165,8 @@ export class GuiMatch {
           if (stats) pushDetail("dim", wrapText(stats, { ...wrapSide, maxLines: 1 }));
           if (text) pushDetail("body", wrapText(text, wrapSide));
         } else {
-          const tokens = stats ? stats.split(" ") : [];
+          // Beside the image: number, type and size; under it the name, the wiki-style attributes and the text.
+          const tokens = def ? [def.id, TYPE_LABELS[def.type] ?? def.type, def.size ? `サイズ：${def.size}` : ""].filter(Boolean) : stats ? stats.split(" ") : [];
           tokens.slice(0, Math.floor(rect.h / g.lineHeight)).forEach((token, i) => {
             detailLines.push({
               text: fitLine(token, { fontPx: g.fontPx, maxWidthPx: sideW }),
@@ -1053,12 +1176,22 @@ export class GuiMatch {
           });
           lineY = rect.y + rect.h + 3;
           if (name) pushDetail("head", wrapText(name, { ...wrapDetail, maxLines: 2 }));
+          for (const field of fields) pushDetail("dim", wrapText(field, wrapDetail));
           if (text) pushDetail("body", wrapText(text, wrapDetail));
         }
       } else {
         if (name) pushDetail("head", wrapText(name, { ...wrapDetail, maxLines: 2 }));
         if (stats) pushDetail("dim", wrapText(stats, { ...wrapDetail, maxLines: 2 }));
         if (text) pushDetail("body", wrapText(text, wrapDetail));
+      }
+      // A phone's short panel leaves out the attributes, and a long text may not fit: the last
+      // line says the whole card can be opened (the shell shows `detailFull`).
+      if (this.cardArt && def && (detailClipped || beside)) {
+        const hint = detailClipped ? "▼ タップで全文" : "▼ タップで詳細";
+        if (!detailClipped) pushDetail("accent", [hint]);
+        const last = detailLines[detailLines.length - 1];
+        if (last && last.text !== hint) detailLines[detailLines.length - 1] = { ...last, text: hint, tone: "accent" };
+        detailFull = { name, fields, text };
       }
     }
 
@@ -1070,7 +1203,8 @@ export class GuiMatch {
       const widest = Math.max(...[mode.title, ...mode.verbs.map((v) => v.label)].map((t) => measureText(t, g.fontPx)));
       const w = Math.min(g.board.w, Math.max(110, Math.ceil(widest) + 12));
       const rowsShown = Math.min(mode.verbs.length, POPUP_ROWS);
-      const h = (rowsShown + 1) * g.lineHeight + 4;
+      const more = mode.verbs.length > POPUP_ROWS ? 1 : 0;
+      const h = (rowsShown + 1 + more) * g.lineHeight + 4;
       const a = mode.anchor;
       const below = a.y + a.h + 2;
       const above = a.y - h - 2;
@@ -1082,11 +1216,13 @@ export class GuiMatch {
         title: fitLine(mode.title, wrap),
         titleRect: { x: x + 4, y: y + 2, w: w - 8, h: g.lineHeight },
         rows: this.boxRows(mode.cursor, mode.verbs.map((v) => v.label), y + 2 + g.lineHeight, x + 4, w - 8, wrap),
+        marks: boxMarks(mode.cursor, { x: x + 4, y: y + 2 + (rowsShown + 1) * g.lineHeight, w: w - 8, h: g.lineHeight }),
       };
     } else if (mode.kind === "list") {
       const b = g.board;
       const rowsShown = Math.min(mode.items.length, LIST_ROWS);
-      const h = (rowsShown + 1) * g.lineHeight + 6;
+      const more = mode.items.length > LIST_ROWS ? 1 : 0;
+      const h = (rowsShown + 1 + more) * g.lineHeight + 6;
       const rect = { x: b.x + 4, y: Math.max(b.y + 2, b.y + Math.floor((b.h - h) / 2)), w: b.w - 8, h };
       const wrap: WrapOptions = { fontPx: g.fontPx, maxWidthPx: rect.w - 8 };
       list = {
@@ -1094,6 +1230,7 @@ export class GuiMatch {
         title: fitLine(`${mode.title} ${mode.cursor.index + 1}/${mode.items.length}`, wrap),
         titleRect: { x: rect.x + 4, y: rect.y + 3, w: rect.w - 8, h: g.lineHeight },
         rows: this.boxRows(mode.cursor, mode.labels, rect.y + 3 + g.lineHeight, rect.x + 4, rect.w - 8, wrap),
+        marks: boxMarks(mode.cursor, { x: rect.x + 4, y: rect.y + 3 + (rowsShown + 1) * g.lineHeight, w: rect.w - 8, h: g.lineHeight }),
       };
     }
 
@@ -1138,14 +1275,28 @@ export class GuiMatch {
       rows,
       detailLines,
       detailArt,
+      detailFull,
       popup,
       list,
       dialog,
       footer: fitLine(footer, { fontPx: g.fontPx, maxWidthPx: g.footer.w - 8 }),
       footerAccent: mode.kind === "target" || dialogShown,
-      menuOpen: mode.kind !== "board" || dialogShown,
+      menuOpen: mode.kind !== "board" || dialogShown || !!reveal,
     };
   }
+}
+
+/** "▲ 前へ（3件）" on the left and "▼ 次へ（5件）" on the right of one line, for what is hidden above and below. */
+function scrollMarks(area: ScrollMark["area"], above: number, below: number, unit: string, line: Rect): ScrollMark[] {
+  const half = Math.floor(line.w / 2);
+  const marks: ScrollMark[] = [];
+  if (above > 0) marks.push({ text: `▲ 前へ（${above}${unit}）`, rect: { ...line, w: half - 2 }, area, direction: -1 });
+  if (below > 0) marks.push({ text: `▼ 次へ（${below}${unit}）`, rect: { ...line, x: line.x + half + 2, w: line.w - half - 2 }, area, direction: 1 });
+  return marks;
+}
+
+function boxMarks(cursor: ListCursor, line: Rect): ScrollMark[] {
+  return scrollMarks("rows", cursor.offset, Math.max(0, cursor.count - cursor.offset - cursor.rows), "件", line);
 }
 
 /**
@@ -1168,7 +1319,8 @@ export function variantLabels(labels: string[]): string[] {
   const cut = Math.max(at("（", 0), at(": ", 1), at(" / ", 2));
   if (cut <= 0) return labels;
   const short = labels.map((label) => label.slice(cut).trim());
-  return short.some((label) => label.length === 0) || new Set(short).size < labels.length ? labels : short;
+  // Rows that still read the same get their cards' places added (placeDuplicates).
+  return short.some((label) => label.length === 0) || new Set(short).size < new Set(labels).size ? labels : short;
 }
 
 /**

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ellipsize, fitLine, isWide, measureText, wrapText } from "./wrap";
+import { ellipsize, fitLine, fitLineKeepTail, isWide, measureText, wrapText } from "./wrap";
 
 const opts = (cols: number) => ({ fontPx: 10, maxWidthPx: cols * 10 });
 
@@ -45,5 +45,20 @@ describe("wrapText", () => {
     expect(fitLine("あい", opts(4))).toBe("あい");
     expect(fitLine("あいうえお", opts(4))).toBe(ellipsize("あいうえお", opts(4)));
     expect(measureText(fitLine("あいうえお", opts(4)), 10)).toBeLessThanOrEqual(40);
+  });
+});
+
+describe("fitLineKeepTail", () => {
+  it("keeps a trailing place in brackets and cuts the text before it", () => {
+    const opts = { fontPx: 10, maxWidthPx: 160 };
+    const a = fitLineKeepTail("ジャッジメント / Test Striker（種類:カテゴリ）（敵ラッシュ1）", opts);
+    const b = fitLineKeepTail("ジャッジメント / Test Striker（種類:カテゴリ）（敵ラッシュ2）", opts);
+    expect(a.endsWith("…（敵ラッシュ1）")).toBe(true);
+    expect(a).not.toBe(b);
+    expect(measureText(a, 10)).toBeLessThanOrEqual(160);
+  });
+
+  it("returns a line that fits unchanged", () => {
+    expect(fitLineKeepTail("短い（自1）", { fontPx: 10, maxWidthPx: 400 })).toBe("短い（自1）");
   });
 });

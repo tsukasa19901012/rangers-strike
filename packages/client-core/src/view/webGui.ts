@@ -12,7 +12,7 @@
 // the board in the middle, the card detail and the buttons at the bottom.
 //
 // Tiles keep the printed card's 130:190 aspect so the whole card image fits.
-import type { DeckGeometry } from "../app/deckBuilder";
+import type { DeckChipKey, DeckGeometry } from "../app/deckBuilder";
 import { detailArtWidth, PHASE_ORDER, type GuiGeometry, type GuiRowDef } from "./gui";
 import type { Rect, Viewport } from "./layout";
 import { CPU, HUMAN, type PlayerId } from "../engineApi";
@@ -216,9 +216,17 @@ export function computeWebDeckGeometry(viewport: Viewport): DeckGeometry {
   const detail: Rect = { x: 8, y: TOP_H + 8, w: detailW, h: footer.y - TOP_H - 16 };
   const left = detail.x + detail.w + 12;
   const right = width - 8;
-  const chipW = Math.min(240, Math.floor((right - left - 2 * 8) / 3));
-  const chips = [0, 1, 2].map((i) => ({ x: left + i * (chipW + 8), y: TOP_H + 8, w: chipW, h: 32 }));
-  const gridTop = TOP_H + 8 + 32 + 10;
+  // Top bar: title and count on the left, the deck name field, the menu button (DeckView) on the right.
+  const nameField: Rect = { x: 380, y: 6, w: clamp(width - 380 - 184, 200, 360), h: 32 };
+  // Row 1: view and filter chips. Row 2: the search field and "clear".
+  const keys = LANDSCAPE_CHIPS;
+  const chipW = Math.min(180, Math.floor((right - left - (keys.length - 1) * 8) / keys.length));
+  const chips = keys.map((_, i) => ({ x: left + i * (chipW + 8), y: TOP_H + 8, w: chipW, h: 32 }));
+  const clearW = 96;
+  const searchY = TOP_H + 8 + 32 + 8;
+  const search: Rect = { x: left, y: searchY, w: right - left - clearW - 8, h: 32 };
+  chips.push({ x: right - clearW, y: searchY, w: clearW, h: 32 });
+  const gridTop = searchY + 32 + 10;
   const pagerH = 36;
   const grid: Rect = { x: left, y: gridTop, w: right - left, h: footer.y - gridTop - pagerH - 8 };
   const gap = 8;
@@ -227,11 +235,32 @@ export function computeWebDeckGeometry(viewport: Viewport): DeckGeometry {
   const tileH = Math.floor((grid.h + gap) / rows) - gap;
   const tileW = Math.floor(tileH / CARD_ASPECT);
   const cols = Math.max(4, Math.floor((grid.w + gap) / (tileW + gap)));
-  return { width, height, fontPx: WEB_FONT_PX, lineHeight: WEB_LINE_H, topBar, footer, detail, chips, grid, cols, rows, tileW, tileH, gap };
+  return {
+    width,
+    height,
+    fontPx: WEB_FONT_PX,
+    lineHeight: WEB_LINE_H,
+    topBar,
+    footer,
+    detail,
+    chips,
+    chipKeys: [...keys, "clear"],
+    search,
+    nameField,
+    grid,
+    cols,
+    rows,
+    tileW,
+    tileH,
+    gap,
+  };
 }
 
+const LANDSCAPE_CHIPS: readonly DeckChipKey[] = ["view", "type", "category", "set", "cost", "bp"];
+
 //   [top bar: count                  menu]
-//   [chips                               ]
+//   [deck name field          list/deck ]
+//   [search field             filters   ]
 //   [card grid                           ]
 //   [prev        page              next  ]
 //   [card detail (image + text)          ]
@@ -244,9 +273,15 @@ function computePortraitDeckGeometry(viewport: Viewport): DeckGeometry {
   const footer: Rect = { x: 0, y: height - PORTRAIT_FOOTER_H, w: width, h: PORTRAIT_FOOTER_H };
   const detailH = clamp(Math.round(height * 0.18), 120, 190);
   const detail: Rect = { x: pad, y: footer.y - 6 - detailH, w: width - pad * 2, h: detailH };
-  const chipW = Math.floor((width - pad * 2 - 2 * 6) / 3);
-  const chips = [0, 1, 2].map((i) => ({ x: pad + i * (chipW + 6), y: PORTRAIT_TOP_H + 6, w: chipW, h: 32 }));
-  const gridTop = PORTRAIT_TOP_H + 6 + 32 + 8;
+  // Chips: list/deck beside the name, the filter menu beside the search field.
+  const chipW = 110;
+  const fieldW = width - pad * 2 - chipW - 6;
+  const row1 = PORTRAIT_TOP_H + 6;
+  const row2 = row1 + 32 + 6;
+  const nameField: Rect = { x: pad, y: row1, w: fieldW, h: 32 };
+  const search: Rect = { x: pad, y: row2, w: fieldW, h: 32 };
+  const chips = [row1, row2].map((y) => ({ x: width - pad - chipW, y, w: chipW, h: 32 }));
+  const gridTop = row2 + 32 + 8;
   const pagerH = 36;
   const grid: Rect = { x: pad, y: gridTop, w: width - pad * 2, h: detail.y - 8 - pagerH - gridTop };
   const gap = 6;
@@ -254,5 +289,6 @@ function computePortraitDeckGeometry(viewport: Viewport): DeckGeometry {
   const tileW = Math.floor((grid.w + gap) / cols) - gap;
   const tileH = Math.floor(tileW * CARD_ASPECT);
   const rows = Math.max(1, Math.floor((grid.h + gap) / (tileH + gap)));
-  return { width, height, fontPx: WEB_FONT_PX, lineHeight: WEB_LINE_H, topBar, footer, detail, chips, grid, cols, rows, tileW, tileH, gap };
+  const chipKeys: DeckChipKey[] = ["view", "filters"];
+  return { width, height, fontPx: WEB_FONT_PX, lineHeight: WEB_LINE_H, topBar, footer, detail, chips, chipKeys, search, nameField, grid, cols, rows, tileW, tileH, gap };
 }

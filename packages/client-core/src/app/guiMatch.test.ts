@@ -255,3 +255,102 @@ describe("dropCardName", () => {
     expect(dropCardName("ラッシュ: アバレッドAM / アバレッド", "アバレッド")).toBe("ラッシュ: アバレッドAM / アバレッド");
   });
 });
+
+describe("cards an effect shows", () => {
+  it("opens a reveal window for a new lastReveal and holds the CPU until it is closed", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const card = session.state.players.player2.deck[0]!;
+    session.state = {
+      ...session.state,
+      lastReveal: { seq: 1, playerId: "player2", ownerId: "player2", effectLabel: "潜行捜索", from: "deck_top", cards: [{ instanceId: card.instanceId, cardId: card.cardId, destination: "hand" }] },
+    };
+    session.version++;
+    const dialog = app.view().gui!.dialog!;
+    expect(dialog.titleLines[0]!.text).toContain("CPUが山札の上から1枚オモテにした");
+    expect(dialog.cards.map((c) => c.caption)).toEqual(["手札へ"]);
+    expect(dialog.cards[0]!.kind).not.toBe("hidden");
+    const version = session.version;
+    for (let i = 0; i < 20; i++) app.tick();
+    expect(session.version).toBe(version);
+    app.dispatch(input.confirm);
+    expect(app.view().gui!.dialog?.buttons.map((b) => b.text)).not.toEqual(["閉じる"]);
+  });
+
+  it("shows the deck card a choice is looking at (RM-017 オメデトロフィー)", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const top = session.state.players.player1.deck[0]!;
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "rm017_omedetrophy",
+        sourceCardId: "RM-017",
+        kind: "confirm",
+        validInstanceIds: ["deck_top", "deck_bottom"],
+        selectCount: 1,
+        optional: false,
+        rm1Meta: { topInstanceId: top.instanceId },
+      } as never,
+    };
+    session.version++;
+    const dialog = app.view().gui!.dialog!;
+    expect(dialog.cards.map((c) => [c.instanceId, c.caption])).toEqual([[top.instanceId, "見ている"]]);
+    expect(dialog.buttons.map((b) => b.text)).toEqual(["選ぶ: 山札の上", "選ぶ: 山札の下"]);
+    // Picking the card itself does nothing; the buttons still answer the choice.
+    app.dispatch(input.confirm);
+    expect(session.state.pendingEffectChoice?.effectId).toBe("rm017_omedetrophy");
+  });
+});
+
+describe("windows that keep cards or rows out of view", () => {
+  it("pages the selection window's cards and buttons with ▲▼ marks (a phone has no wheel)", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const deck = session.state.players.player1.deck.slice(0, 20).map((c) => c.instanceId);
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "rk319_deck_search",
+        sourceCardId: "RK-319",
+        kind: "select_unit",
+        validInstanceIds: deck,
+        selectCount: 1,
+        optional: true,
+      } as never,
+    };
+    session.version++;
+    let dialog = app.view().gui!.dialog!;
+    const shownCards = dialog.cards.length;
+    expect(shownCards).toBeLessThan(deck.length);
+    const next = dialog.marks.find((m) => m.area === "cards" && m.direction === 1)!;
+    expect(next.text).toBe(`▼ 次へ（${deck.length - shownCards}枚）`);
+    // A tap on the mark shows the next page.
+    app.dispatch(hitTestGui(app.view().gui!, { x: next.rect.x + 2, y: next.rect.y + 2 })!);
+    dialog = app.view().gui!.dialog!;
+    expect(dialog.moreLeft).toBe(shownCards);
+    expect(dialog.marks.some((m) => m.area === "cards" && m.direction === -1)).toBe(true);
+    // Every card can be reached, the last one included.
+    for (let i = 0; i < 10; i++) app.dispatch(input.scroll("cards", 1));
+    dialog = app.view().gui!.dialog!;
+    expect(dialog.cards.map((c) => c.instanceId)).toContain(deck[deck.length - 1]);
+    expect(dialog.moreRight).toBe(0);
+  });
+
+  it("pages a list longer than its window", () => {
+    const app = startGui(5);
+    const gui = () => app.view().gui!;
+    app.dispatch(input.allActions);
+    const list = gui().list;
+    expect(list?.marks?.length).toBeGreaterThan(0);
+    const before = list.rows[0]!.text;
+    app.dispatch(input.scroll("rows", 1));
+    expect(gui().list!.rows[0]!.text).not.toBe(before);
+  });
+});

@@ -254,6 +254,14 @@ describe("XG2-065 仮面ライダーカブトHF", () => {
     expect(canStartRush(board([inst("XG2-066", "rf")], 6), "player1", "XG2-065:hf")).toBe(false);
   });
 
+  it("XG2-065: 追加条件 — 「※これは「仮面ライダーカブトRF」としてつかえる」ディケイド カブトRF（XG1-070・XG4-079）でも満たす（出典: atwiki/page-895「自軍「仮面ライダーカブトRF」1枚をパワーゾーンに送る」、atwiki/page-1668 Q1「としてつかえる」は全ての場で常に有効）", () => {
+    for (const id of ["XG1-070", "XG4-079"]) {
+      const r = rushFromHand(board([inst(id, "dk")]), "player1", "XG2-065:hf");
+      expect(r.ok, `${id}: ${r.error}`).toBe(true);
+      expect(zoneOf(r.state, "player1", `${id}:dk`)).toBe("power");
+    }
+  });
+
   it("XG2-065: 追加条件 — 「仮面ライダーカブトRF」以外のユニットでは満たさない（出典: atwiki/page-895「自軍「仮面ライダーカブトRF」1枚をパワーゾーンに送る」）", () => {
     expect(canStartRush(board([inst("TST-UNIT-0", "u")]), "player1", "XG2-065:hf")).toBe(false);
   });

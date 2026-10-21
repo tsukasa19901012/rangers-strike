@@ -2,6 +2,7 @@
  * クロスギャザー XG2 の継続効果の判定（軽い・純粋な判定だけ。cardSpec XG2-* の監査）。
  * 選択を開く効果は rules/xg2/xg2aEffects.ts ほか。central のファイル（SP・BP・制限の計算）から呼ぶ。
  */
+import { hasNameOrAlias } from "../../core/cardNames";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
 import type { CardDefinition, RushAdditionalCondition } from "@rangers-strike/cards";
@@ -82,7 +83,7 @@ export function xg2FieldBpBonus(state: Board & Partial<Pick<GameState, "activePl
   if (isSameCardIdentity(instance.cardId, "XG2-029")) bonus += 500 * xg2FaceDownStacked(instance).length;
   // XG2-080 リュウキドラグレッダー【ファイナルアタックライド】「このユニットからコンビネーションする、「仮面ライダーディケイド」または
   // 「仮面ライダーディエンド」は、次の能力を得る⇒BP+3000」（atwiki/page-1778）: 自軍バトルエリアでこれのすぐ次に並んでいるとき。
-  if (XG2_DECADE_NAMES.includes(cardName(state.definitions, instance.cardId))) {
+  if (XG2_DECADE_NAMES.some((n) => hasNameOrAlias(state.definitions[instance.cardId], n))) {
     const battle = state.players[playerId].battle;
     const i = battle.findIndex((c) => c.instanceId === instance.instanceId);
     if (i > 0 && isSameCardIdentity(battle[i - 1]!.cardId, "XG2-080")) bonus += 3000;
@@ -326,6 +327,7 @@ export function xg2PowerPartnerFeature(text: string | undefined): string | undef
 }
 
 /** 「仮面ライダーディケイド」または「仮面ライダーディエンド」（XG2-075・076・078・080 のかっこ書き）。 */
+// 「※これは「仮面ライダーディケイド」…としてつかえる」（XG7-042）も含めて照合する（core/cardNames.ts hasNameOrAlias。atwiki/page-1668 Q1）。
 export const XG2_DECADE_NAMES = ["仮面ライダーディケイド", "仮面ライダーディエンド"];
 
 /**
@@ -367,5 +369,5 @@ export function xg2RequiresBattleEntry(state: Board, playerId: PlayerId, card: C
  */
 export function xg2VehicleMayEnterUnridden(state: Board, playerId: PlayerId, vehicle: CardInstance): boolean {
   if (!isSameCardIdentity(vehicle.cardId, "XG2-074")) return false;
-  return areaCards(state, playerId).some((c) => c.instanceId !== vehicle.instanceId && cardName(state.definitions, c.cardId) === "仮面ライダーディケイド");
+  return areaCards(state, playerId).some((c) => c.instanceId !== vehicle.instanceId && hasNameOrAlias(state.definitions[c.cardId], "仮面ライダーディケイド"));
 }

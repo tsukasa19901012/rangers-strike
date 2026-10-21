@@ -147,6 +147,20 @@ export function fitLine(line: string, options: WrapOptions): string {
     : ellipsize(line, options);
 }
 
+/**
+ * Fits one line, keeping a trailing 「（…）」 part (a place or variant that tells
+ * rows apart) visible: when it must be cut, the text before it is ellipsized.
+ */
+export function fitLineKeepTail(line: string, options: WrapOptions): string {
+  if (measureText(line, options.fontPx, options.charWidth) <= options.maxWidthPx) return line;
+  const open = line.endsWith("）") ? line.lastIndexOf("（") : -1;
+  if (open <= 0) return ellipsize(line, options);
+  const tail = line.slice(open);
+  const tailPx = measureText(tail, options.fontPx, options.charWidth);
+  if (tailPx > options.maxWidthPx / 2) return ellipsize(line, options);
+  return ellipsize(line.slice(0, open), { ...options, maxWidthPx: options.maxWidthPx - tailPx }) + tail;
+}
+
 /** Cuts one line to the width without an ellipsis (tiny labels where every glyph counts). */
 export function clipLine(line: string, options: WrapOptions): string {
   const width = options.charWidth ?? defaultCharWidth;

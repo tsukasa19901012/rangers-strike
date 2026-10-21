@@ -10,6 +10,7 @@ import type { CardInstance, GameState, PlayerId, PlayerState } from "../types/ga
 
 type StateGateContext = Pick<GameState, "players" | "definitions">;
 import { COMMAND_ZONE_MAX } from "../types/game";
+import { namesWithAliases } from "../core/cardNames";
 import { xg1HoldSubstituteAvailable } from "./xg1/xg1Fields";
 import {
   cardName,
@@ -42,8 +43,8 @@ function normalizeName(value: string): string {
 }
 
 function matchesPartnerName(def: CardDefinition | undefined, partnerName: string): boolean {
-  if (!def) return false;
-  return normalizeName(def.name).includes(normalizeName(partnerName));
+  // 「※これは「X」としてつかえる」（XG1-065 ディケイド 龍騎 等）も X として扱う（atwiki/page-1668 Q1。core/cardNames.ts namesWithAliases）。
+  return namesWithAliases(def).some((n) => normalizeName(n).includes(normalizeName(partnerName)));
 }
 
 /**

@@ -1,4 +1,5 @@
 import { recordReveal } from "./revealNotice";
+import { hasNameOrAlias } from "../core/cardNames";
 import { shuffleCards as shuffleDeckCards } from "../core/deckShuffle";
 import { redRacerPowerCostBonus } from "../core/power";
 import { isSet6LowChoiceEffect, tryResolveSet6LowChoice, trySkipSet6LowChoice } from "./legend1/set6NamedEffects348";
@@ -595,7 +596,7 @@ function collectHandIdsByName(
   name: string,
 ): string[] {
   return state.players[playerId].hand
-    .filter((c) => cardName(state.definitions, c.cardId) === name)
+    .filter((c) => hasNameOrAlias(state.definitions[c.cardId], name))
     .map((c) => c.instanceId);
 }
 
@@ -604,8 +605,10 @@ function collectHandIdsByCardId(
   playerId: PlayerId,
   cardId: string,
 ): string[] {
+  // 「「X」のカード」は同じカード名（（2nd）等の別版、「※これは「X」としてつかえる」の XG7-012 等も。atwiki/page-1668 Q1）。
+  const name = state.definitions[cardId]?.name;
   return state.players[playerId].hand
-    .filter((c) => c.cardId === cardId)
+    .filter((c) => c.cardId === cardId || (!!name && hasNameOrAlias(state.definitions[c.cardId], name)))
     .map((c) => c.instanceId);
 }
 

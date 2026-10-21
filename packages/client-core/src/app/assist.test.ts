@@ -3,7 +3,7 @@ import { AppController } from "./controller";
 import { input } from "../input/actions";
 import { testEngine, testPlatform } from "../testing/engine";
 import { HUMAN } from "../engineApi";
-import { assistMove, DEFAULT_ASSIST } from "./assist";
+import { assistMove, DEFAULT_ASSIST, START_ORDERS, startOrder } from "./assist";
 import type { ActionOption } from "../session/session";
 import type { GameAction, GameState } from "../engineApi";
 
@@ -151,5 +151,62 @@ describe("bonus draw", () => {
       app.tick();
     }
     throw new Error("no human start phase after turn 2");
+  });
+});
+
+describe("start phase setting", () => {
+  it("leaves the whole start phase to the player when it is off", () => {
+    const off = { ...DEFAULT_ASSIST, autoStart: false };
+    const state = { phase: "start", activePlayer: HUMAN, winner: null } as unknown as GameState;
+    expect(assistMove(state, opts([{ type: "draw" }]), off)).toBeNull();
+    expect(assistMove(state, opts([{ type: "draw" }, { type: "release_start_commands" }]), off)).toBeNull();
+    // Other phases still run on their own.
+    expect(assistMove({ ...state, phase: "rush" } as GameState, opts([{ type: "end_phase" }]), off)).toBe(0);
+  });
+
+  it("takes the start-phase steps in the chosen order", () => {
+    const state = { phase: "start", activePlayer: HUMAN, winner: null } as unknown as GameState;
+    const all = opts([{ type: "release_start_commands" }, { type: "return_all_battle_to_rush" }, { type: "draw" }]);
+    expect(assistMove(state, all, DEFAULT_ASSIST)).toBe(0);
+    expect(assistMove(state, all, { ...DEFAULT_ASSIST, startOrder: ["draw", "return_all_battle_to_rush", "release_start_commands"] })).toBe(2);
+    expect(assistMove(state, all, { ...DEFAULT_ASSIST, startOrder: ["return_all_battle_to_rush", "draw", "release_start_commands"] })).toBe(1);
+    // A saved order that is not a whole order falls back to the default.
+    expect(startOrder(["draw", "draw"])).toEqual(START_ORDERS[0]);
+    const app = new AppController({ platform: testPlatform(), viewport: WEB, gui: true });
+    app.updateSettings({ startOrder: ["draw", "release_start_commands", "return_all_battle_to_rush"] });
+    expect(app.matchSettings.startOrder).toEqual(["draw", "release_start_commands", "return_all_battle_to_rush"]);
+  });
+
+  it("is saved and applies to the match", () => {
+    const platform = testPlatform();
+    const app = new AppController({ platform, viewport: WEB, cpuDelayFrames: 0, seed: () => 5, gui: true });
+    app.updateSettings({ autoStart: false });
+    expect(app.matchSettings.autoStart).toBe(false);
+    const again = new AppController({ platform, viewport: WEB, cpuDelayFrames: 0, seed: () => 5, gui: true });
+    expect(again.matchSettings.autoStart).toBe(false);
+    again.dispatch(input.select(3, true));
+    for (let frame = 0; frame < 20000; frame++) {
+      const session = again.session!;
+      if (session.turnOwner() === "human" && session.state.phase === "start" && session.state.activePlayer === HUMAN) {
+        const version = session.version;
+        for (let i = 0; i < 60; i++) again.tick();
+        // Nothing ran: the draw waits for the player.
+        expect(session.version).toBe(version);
+        expect(session.humanOptions().some((o) => o.action.type === "draw")).toBe(true);
+        return;
+      }
+      if (session.turnOwner() === "human") {
+        again.endTurn();
+        const before = session.version;
+        for (let i = 0; i < 400 && session.version === before; i++) again.tick();
+        if (session.version === before) {
+          again.dispatch(input.allActions);
+          again.dispatch(input.confirm);
+        }
+        continue;
+      }
+      again.tick();
+    }
+    throw new Error("no human start phase");
   });
 });

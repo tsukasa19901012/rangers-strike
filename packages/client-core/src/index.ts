@@ -14,6 +14,8 @@ export * from "./app/controller";
 export * from "./app/guiMatch";
 export * from "./app/assist";
 export * from "./app/deckBuilder";
+export * from "./app/cardSearch";
 export * from "./view/gui";
+export * from "./view/cardFields";
 export * from "./view/webGui";
 export * from "./input/devices";

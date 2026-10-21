@@ -39,6 +39,8 @@ npm run test:sim -w @rangers-strike/engine    # src/verticalSlice とモンキ�
 npm run test:monkey -w @rangers-strike/engine # ランダム対戦のモンキーテストだけ
 ```
 
+CI は `test:sim` を `test:sim:starters`（simulateAllStarters）・`test:sim:monkey`（2 つのモンキーテスト）・`test:sim:rest`（それ以外の `src/verticalSlice`）に分けて並列に流します。
+
 ## CPU の強さを測る
 
 `scripts/cpu-arena.ts` は CPU 同士を、席と先攻を入れ替えて対戦させます。

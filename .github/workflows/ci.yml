@@ -5,6 +5,10 @@ on:
     branches: [main, master]
   pull_request:
 
+# Each job keeps its own turbo cache (.turbo/cache) between runs, so a task
+# whose inputs did not change (e.g. engine tests on a UI-only PR) is replayed
+# from the cache instead of run again.
+
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
@@ -16,8 +20,61 @@ jobs:
           node-version: "20"
           cache: npm
 
+      - uses: actions/cache@v4
+        with:
+          path: .turbo/cache
+          key: turbo-test-and-build-${{ github.sha }}
+          restore-keys: turbo-test-and-build-
+
       - run: npm ci
 
-      - run: npm test
+      # Engine tests run in the jobs below.
+      - run: npx turbo run test build --filter='!@rangers-strike/engine'
 
-      - run: npm run build
+  engine-unit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [1, 2]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - uses: actions/cache@v4
+        with:
+          path: .turbo/cache
+          key: turbo-engine-unit-${{ matrix.shard }}-${{ github.sha }}
+          restore-keys: turbo-engine-unit-${{ matrix.shard }}-
+
+      - run: npm ci
+
+      - run: npx turbo run test:unit --filter=@rangers-strike/engine -- --shard=${{ matrix.shard }}/2
+
+  # The long simulations (npm run test:sim), split into groups of similar length.
+  engine-sim:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [starters, monkey, rest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - uses: actions/cache@v4
+        with:
+          path: .turbo/cache
+          key: turbo-engine-sim-${{ matrix.group }}-${{ github.sha }}
+          restore-keys: turbo-engine-sim-${{ matrix.group }}-
+
+      - run: npm ci
+
+      - run: npx turbo run test:sim:${{ matrix.group }} --filter=@rangers-strike/engine

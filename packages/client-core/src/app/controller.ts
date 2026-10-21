@@ -12,7 +12,7 @@ import { fitLine, wrapText, type WrapOptions } from "../text/wrap";
 import { boardLines, buildBoardView, buildPendingView, pendingLines } from "../view/board";
 import { computeLayout, type FontPx, type Layout, type Viewport } from "../view/layout";
 import { GuiMatch, type GuiView } from "./guiMatch";
-import { DEFAULT_ASSIST, type AssistSettings } from "./assist";
+import { DEFAULT_ASSIST, startOrder, type AssistSettings } from "./assist";
 import { DeckBuilder, type DeckBuilderView, type DeckGeometry } from "./deckBuilder";
 import type { GuiGeometry } from "../view/gui";
 import { CUSTOM_DECK_PREFIX } from "../platform/settings";
@@ -69,8 +69,12 @@ const CPU_LEVEL_MAX = 5;
 /** Frames before a move the GUI makes for the human, so it can still be seen. */
 const AUTO_DELAY_FRAMES = 12;
 
-function assistSettings(on: boolean): AssistSettings {
-  return on ? { ...DEFAULT_ASSIST } : { autoStep: false, autoStart: false, autoPay: false };
+/** The assist the match uses for the saved settings: 自動進行 switches all of it, スタートフェイズ自動 the start phase alone. */
+function assistSettings(settings: Settings): AssistSettings {
+  const on = settings.autoAssist ?? true;
+  return on
+    ? { ...DEFAULT_ASSIST, autoStart: settings.autoStart ?? true, startOrder: startOrder(settings.startOrder) }
+    : { autoStep: false, autoStart: false, autoPay: false };
 }
 
 export class AppController {
@@ -116,6 +120,8 @@ export class AppController {
       cpuDeck: options.defaults?.cpuDeck ?? "dekaranger",
       cpuLevel: options.defaults?.cpuLevel ?? 2,
       ...(options.defaults?.autoAssist !== undefined ? { autoAssist: options.defaults.autoAssist } : {}),
+      ...(options.defaults?.autoStart !== undefined ? { autoStart: options.defaults.autoStart } : {}),
+      ...(options.defaults?.startOrder ? { startOrder: options.defaults.startOrder } : {}),
     });
     // Deck list comes from the engine; the title screen loads it eagerly.
     const loaded = this.platform.assets.loadMatchData({ decks: [] });
@@ -172,6 +178,14 @@ export class AppController {
   /** The end-turn button is still ending phases. */
   get endingTurn(): boolean {
     return this.gui?.endingTurn ?? false;
+  }
+
+  /** Match: show a card outside the board rows (discard pile, power zone) in the detail panel; null goes back to the focused card. */
+  inspectCard(cardId: string | null): boolean {
+    if (!this.gui || this.gui.inspectCardId === cardId) return false;
+    this.gui.inspectCardId = cardId;
+    this.touch();
+    return true;
   }
 
   /** Match: a card dragged onto a card or a zone (GuiMatch.dropCard). */
@@ -300,10 +314,10 @@ export class AppController {
     if (patch.humanDeck !== undefined && this.deckIds.includes(patch.humanDeck)) this.settings.humanDeck = patch.humanDeck;
     if (patch.cpuDeck !== undefined && this.deckIds.includes(patch.cpuDeck)) this.settings.cpuDeck = patch.cpuDeck;
     if (patch.cpuLevel !== undefined) this.settings.cpuLevel = Math.max(1, Math.min(CPU_LEVEL_MAX, Math.round(patch.cpuLevel)));
-    if (patch.autoAssist !== undefined) {
-      this.settings.autoAssist = patch.autoAssist;
-      if (this.gui) this.gui.assist = assistSettings(patch.autoAssist);
-    }
+    if (patch.autoAssist !== undefined) this.settings.autoAssist = patch.autoAssist;
+    if (patch.autoStart !== undefined) this.settings.autoStart = patch.autoStart;
+    if (patch.startOrder !== undefined) this.settings.startOrder = [...startOrder(patch.startOrder)];
+    if (this.gui) this.gui.assist = assistSettings(this.settings);
     this.settingsStore.save(this.settings);
     this.touch();
   }
@@ -342,6 +356,13 @@ export class AppController {
     this.builder = new DeckBuilder(this.engine, this.viewport, () => this.settingsStore.customDecks(), this.cardArt, this.layouts.deck);
     this.screen = "deck";
     this.message = "";
+    this.touch();
+  }
+
+  /** Deck builder: text typed into the shell's search or deck-name field. */
+  setDeckText(id: "search" | "name", text: string): void {
+    if (!this.builder || this.screen !== "deck") return;
+    this.builder.setText(id, text);
     this.touch();
   }
 
@@ -400,7 +421,7 @@ export class AppController {
         log: this.platform.log,
       });
       this.gui = this.guiEnabled ? new GuiMatch(engine, this.session, this.viewport, this.cardArt, this.layouts.match) : null;
-      if (this.gui) this.gui.assist = assistSettings(this.settings.autoAssist ?? true);
+      if (this.gui) this.gui.assist = assistSettings(this.settings);
       this.screen = "match";
       this.tab = 1;
       this.message = "対戦開始";
@@ -441,6 +462,8 @@ export class AppController {
     }
     const toastChanged = this.gui?.frame() ?? false;
     if (toastChanged) this.touch();
+    // Cards an effect turned face up stay on screen until the human closes them.
+    if (this.gui?.revealShown) return toastChanged;
     if (this.gui && session.turnOwner() === "human" && this.gui.hasAutoMove()) {
       // A move the GUI makes for the human (assist, end-turn button): paced faster than a CPU move.
       if (++this.framesSinceCpu < Math.min(this.cpuDelayFrames, AUTO_DELAY_FRAMES)) return toastChanged;

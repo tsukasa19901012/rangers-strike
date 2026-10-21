@@ -12,6 +12,18 @@
     "test": {
       "dependsOn": ["^build", "build"]
     },
+    "test:unit": {
+      "dependsOn": ["^build", "build"]
+    },
+    "test:sim:starters": {
+      "dependsOn": ["^build", "build"]
+    },
+    "test:sim:monkey": {
+      "dependsOn": ["^build", "build"]
+    },
+    "test:sim:rest": {
+      "dependsOn": ["^build", "build"]
+    },
     "lint": {},
     "typecheck": {
       "dependsOn": ["^build"]

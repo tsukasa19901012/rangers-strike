@@ -6,8 +6,9 @@
 // - view: one component per screen draws the core's view model.
 // The game logic (legal moves, CPU, deck rules) all lives in client-core and
 // the engine; this file only maps input and picks the screen.
-import { createSignal, Match, Switch } from "solid-js";
+import { createSignal, Match, Show, Switch } from "solid-js";
 import { onFrame } from "@pocketjs/framework/lifecycle";
+import { View } from "@pocketjs/framework/solid/components";
 import { BTN } from "@pocketjs/framework/input";
 import { getOps } from "@pocketjs/framework/solid";
 import { connectOverlay } from "@pocketjs/framework/overlay-host";
@@ -24,6 +25,7 @@ import {
   HUMAN,
   webPileRect,
   type DeckBuilderView,
+  type DeckTextField,
   type GuiView,
   type LogicalInput,
   type ScreenView,
@@ -31,14 +33,19 @@ import {
 } from "@rangers-strike/client-core";
 import { webPlatform } from "./platform";
 import { pollCardArt } from "./cardArt";
-import { MatchView, matchButtons, pileHit, pileLayout, type DragView, type PilePeek } from "./MatchView";
+import { MatchView, matchButtons, peekLayout, pileHit, pileLayout, type DragView, type PilePeek } from "./MatchView";
 import { DeckView, deckButtons } from "./DeckView";
 import { TitleView } from "./TitleView";
 import { ResultView } from "./ResultView";
 import { inside } from "./ui";
+import { applySettingsAction, SettingsPanel, settingsHit, settingsLayout } from "./SettingsPanel";
 
 /** A pointer event as host/host.js sends it (logical px). */
 type PointerEvent = { kind: "move" | "down" | "up" | "wheel" | "leave"; x: number; y: number; button?: number; dy?: number };
+/** Text typed into one of the host's inputs (deck builder search / deck name). */
+type TextEvent = { kind: "text"; id: "search" | "name"; text: string };
+/** Commands to the host: the pointer cursor, and where to show text inputs. */
+type HostCommand = { type: "rs.cursor"; pointer: boolean } | { type: "rs.fields"; fields: DeckTextField[] };
 
 /**
  * Keys (host/host.js maps them to these buttons): arrows move over cards,
@@ -74,7 +81,8 @@ function hoverMatch(view: GuiView, point: { x: number; y: number }): LogicalInpu
 /** Where a dragged card was dropped: a card on the board, a board row, or the own pile column (power zone). */
 function dropTarget(view: GuiView, p: { x: number; y: number }): { instanceId?: string; zone?: string } {
   for (const row of view.rows) {
-    const tile = row.tiles.find((t) => inside(t.rect, p));
+    // Last first: a riding unit is drawn over its vehicle.
+    const tile = [...row.tiles].reverse().find((t) => inside(t.rect, p));
     if (tile) return { instanceId: tile.instanceId, zone: row.key };
     // The row's band, label column included, takes drops between and beside its cards.
     if (p.y >= row.rect.y && p.y < row.rect.y + row.rect.h && p.x >= view.geometry.board.x && p.x < row.rect.x + row.rect.w) return { zone: row.key };
@@ -103,7 +111,7 @@ function touchFooter(v: GuiView): string {
 }
 
 const DECK_TOUCH_FOOTER = "タップ: 1枚入れる / 下の枠: カードの詳細";
-const DECK_FOOTER = "クリック: 1枚入れる / 右クリック: 1枚抜く / マウスを乗せると詳細 / ホイール: スクロール / Esc: メニュー";
+const DECK_FOOTER = "クリック: 1枚入れる / 右クリック: 1枚抜く / マウスを乗せると詳細 / ホイール: スクロール / /: 検索 / Esc: メニュー";
 
 export default function App() {
   let viewport = readViewport();
@@ -121,12 +129,51 @@ export default function App() {
   const [hot, setHot] = createSignal<string | null>(null);
   // A pile zone (power, operation, top discard) shown enlarged: hovered, or tapped on a phone.
   const [peek, setPeek] = createSignal<PilePeek | null>(null, { equals: (a, b) => a?.key === b?.key });
+  // The detail panel's card text shown whole over the board (it was cut on a phone).
+  const [fullText, setFullText] = createSignal(false);
   // "Leave the match" asks for a second click within LEAVE_FRAMES.
   const LEAVE_FRAMES = 180;
   let leaveFrames = 0;
   const [leaving, setLeaving] = createSignal(false);
   // A card picked up by a drag (pointer down on a card the player can act with, then moved).
   const [drag, setDrag] = createSignal<DragView | null>(null);
+  // The automatic-move settings panel, over the title or the match. `settingsHot`: the row under the pointer (-2: close).
+  const [settingsOpen, setSettingsOpen] = createSignal(false);
+  const [settingsHot, setSettingsHot] = createSignal(-1);
+  let settingsPressed: PointerEvent | null = null;
+  const openSettings = () => {
+    settingsPressed = null;
+    setSettingsHot(-1);
+    setSettingsOpen(true);
+  };
+  const panelLayout = () => (view(), settingsLayout(size().width, size().height, controller.matchSettings));
+  /** Pointer input while the panel is open: it takes every event (the screen under it waits). */
+  function onSettingsPointer(e: PointerEvent): boolean {
+    const layout = panelLayout();
+    const p = { x: e.x, y: e.y };
+    if (e.kind === "move" || e.kind === "leave") {
+      const row = e.kind === "leave" ? -1 : layout.rows.findIndex((r) => inside(r.rect, p));
+      const hot = e.kind !== "leave" && inside(layout.close, p) ? -2 : row;
+      setCursor(hot !== -1);
+      if (hot === settingsHot()) return false;
+      setSettingsHot(hot);
+      return true;
+    }
+    if (e.kind === "wheel") return false;
+    if (e.kind === "down") {
+      settingsPressed = e;
+      return false;
+    }
+    const down = settingsPressed;
+    settingsPressed = null;
+    // A click that started before the panel opened (the press that opened it) does nothing here.
+    if (!down || Math.abs(down.x - e.x) + Math.abs(down.y - e.y) > 12) return false;
+    const action = settingsHit(layout, p);
+    if (!action) return false;
+    if (action.type === "close") setSettingsOpen(false);
+    else applySettingsAction(controller, action);
+    return true;
+  }
   let dragFrom: { instanceId: string; cardId: string; w: number; h: number } | null = null;
   const refresh = () => setView(controller.view());
   // For browser tests and debugging from the console.
@@ -136,11 +183,25 @@ export default function App() {
       const gui = controller.view().gui;
       return gui && controller.session ? pileLayout(controller.session.state, player, webPileRect(gui.geometry, player)) : null;
     },
+    peekCards: () => {
+      const gui = controller.view().gui;
+      const shown = peek();
+      return gui && shown ? peekLayout(gui.geometry, shown).cards : null;
+    },
   };
   const repeater = new ButtonRepeater(BINDINGS);
 
-  const pointerEvents: PointerEvent[] = [];
-  const overlay = connectOverlay<PointerEvent, { type: string; pointer: boolean }>((event) => pointerEvents.push(event));
+  const pointerEvents: (PointerEvent | TextEvent)[] = [];
+  const overlay = connectOverlay<PointerEvent | TextEvent, HostCommand>((event) => pointerEvents.push(event));
+  // The host's text inputs follow the deck builder's fields (none while a menu or the settings panel is open).
+  let fieldsKey = "[]";
+  const syncFields = () => {
+    const fields = settingsOpen() ? [] : (view().deck?.textFields ?? []);
+    const key = JSON.stringify(fields);
+    if (key === fieldsKey) return;
+    fieldsKey = key;
+    overlay.send({ type: "rs.fields", fields });
+  };
   let pressed: PointerEvent | null = null;
   let hoverKey = "";
   let pointerCursor = false;
@@ -157,20 +218,54 @@ export default function App() {
   };
 
   let peekPinned = false;
+  // The detail panel shows a discard or power card the pointer is on (re-rendered here: a hover may change nothing else).
+  const inspect = (cardId: string | null) => {
+    if (controller.inspectCard(cardId)) refresh();
+  };
+  /** Which part of an open window a point is on: its cards or its rows (buttons, menu rows). */
+  function swipeArea(gui: GuiView, p: { x: number; y: number }): "cards" | "rows" | null {
+    const box = gui.list ?? gui.popup;
+    if (box) return inside(box.rect, p) ? "rows" : null;
+    const d = gui.dialog;
+    if (!d || !inside(d.rect, p)) return null;
+    const cards = [...d.cards.map((c) => ({ ...c.rect, h: c.rect.h + 18 })), ...d.marks.filter((m) => m.area === "cards").map((m) => m.rect)];
+    if (cards.length > 0) {
+      const top = Math.min(...cards.map((r) => r.y));
+      const bottom = Math.max(...cards.map((r) => r.y + r.h));
+      if (p.y >= top && p.y < bottom) return "cards";
+    }
+    return "rows";
+  }
   function onMatchPointer(e: PointerEvent, gui: GuiView): boolean {
     const p = { x: e.x, y: e.y };
     const buttons = matchButtons(gui.geometry);
     const state = controller.session!.state;
     const pileCard = () =>
       gui.menuOpen ? null : pileHit([CPU, HUMAN].map((player) => pileLayout(state, player, webPileRect(gui.geometry, player))), p);
+    // A face-up card among the enlarged ones under the pointer (its text goes to the detail panel).
+    const shown = peek();
+    const shownLayout = shown ? peekLayout(gui.geometry, shown) : null;
+    const peekCard = () => (shownLayout ? shownLayout.cards.find((c) => !c.hidden && inside(c.rect, p)) ?? null : null);
     // A tapped zone stays open (a touch ends with a leave) until another tap or hovering another zone.
     if (e.kind === "leave") {
-      if (!peekPinned) setPeek(null);
+      if (!peekPinned) {
+        setPeek(null);
+        inspect(null);
+      }
     } else if (e.kind === "move") {
+      const over = peekCard();
       const hit = pileCard();
-      if (hit || !peekPinned) {
-        setPeek(hit);
-        peekPinned = false;
+      if (over) inspect(over.cardId);
+      else {
+        if (hit || !peekPinned) {
+          setPeek(hit);
+          peekPinned = false;
+        }
+        // Hovering a single zone card (a power card) shows it in the detail panel too,
+        // and the discard pile its newest card.
+        const first = hit?.cards[0];
+        const single = hit && first && !first.hidden && (hit.cards.length === 1 || hit.key.startsWith("d:")) ? first.cardId : null;
+        if (hit || !peekPinned) inspect(single);
       }
     }
     if (e.kind === "move" && dragFrom && pressed && Math.abs(pressed.x - e.x) + Math.abs(pressed.y - e.y) > 12) {
@@ -187,6 +282,8 @@ export default function App() {
             ? "end"
             : inside(buttons.turn, p)
               ? "turn"
+              : inside(buttons.settings, p)
+                ? "settings"
               : inside(buttons.all, p)
               ? "all"
               : inside(buttons.log, p)
@@ -204,12 +301,15 @@ export default function App() {
       return dispatch(hover) || true;
     }
     if (e.kind === "wheel") {
+      // Over the selection window's cards the wheel moves through the cards, elsewhere through the rows.
+      if (gui.dialog && !gui.popup && !gui.list && swipeArea(gui, p) === "cards") return dispatch((e.dy ?? 0) > 0 ? input.pageNext : input.pagePrev);
       if (gui.popup || gui.list || gui.dialog) return dispatch((e.dy ?? 0) > 0 ? input.next : input.prev);
       return false;
     }
     if (e.kind === "down") {
       pressed = e;
-      const tile = !gui.menuOpen && !gui.dialog && e.button === 0 ? gui.rows.flatMap((row) => row.tiles).find((t) => t.actionable && inside(t.rect, p)) : undefined;
+      let tile = !gui.menuOpen && !gui.dialog && e.button === 0 ? [...gui.rows.flatMap((row) => row.tiles)].reverse().find((t) => inside(t.rect, p)) : undefined;
+      if (tile && !tile.actionable) tile = undefined;
       dragFrom = tile ? { instanceId: tile.instanceId, cardId: tile.cardId, w: tile.rect.w, h: tile.rect.h } : null;
       return false;
     }
@@ -222,18 +322,45 @@ export default function App() {
       controller.dropCard(from.instanceId, dropTarget(gui, p));
       return true;
     }
+    // A vertical swipe over a window pages through what it keeps out of view (a phone has no wheel).
+    if (down && Math.abs(down.y - e.y) > 30 && Math.abs(down.y - e.y) > Math.abs(down.x - e.x)) {
+      const area = swipeArea(gui, down);
+      if (area) return dispatch(input.scroll(area, down.y > e.y ? 1 : -1));
+    }
     if (!down || Math.abs(down.x - e.x) + Math.abs(down.y - e.y) > 12) return false;
     hoverKey = "";
     if (e.button === 2) return dispatch(input.cancel);
     if (e.button !== 0) return false;
+    // Any tap closes the whole card text; a tap on a detail panel that cut its text opens it
+    // (unless a popup or window drawn over the panel takes the tap).
+    if (fullText()) {
+      setFullText(false);
+      return true;
+    }
+    const covering = [gui.list?.rect, gui.popup?.rect, gui.dialog?.rect].some((r) => r && inside(r, p));
+    if (gui.detailFull && inside(gui.geometry.detail, p) && !covering) {
+      setFullText(true);
+      return true;
+    }
+    // A tap on one of the enlarged cards (the discard pile, the power zone) shows it in the detail panel.
+    const tappedShown = !covering ? peekCard() : null;
+    if (tappedShown) {
+      inspect(tappedShown.cardId);
+      peekPinned = true;
+      return true;
+    }
+    if (shownLayout && !covering && inside(shownLayout.panel, p)) return true;
+    inspect(null);
     // A tap on a pile zone opens what its cards can do (self-rush from the power zone, 常駐 effects);
     // with nothing to do it shows them enlarged (phones have no hover). Any other tap hides them.
     const tapped = pileCard();
     if (tapped && tapped.ids.length > 0) {
       dispatch(input.openCards(tapped.ids, tapped.key.startsWith("d:") ? "捨札" : tapped.title, tapped.anchor));
       if (controller.view().gui?.popup) {
-        setPeek(null);
-        peekPinned = false;
+        // The discard pile stays shown under its menu, so every card in it can be seen on a phone too.
+        const discard = tapped.key.startsWith("d:");
+        setPeek(discard ? tapped : null);
+        peekPinned = discard;
         return true;
       }
     }
@@ -251,6 +378,10 @@ export default function App() {
         setLeaving(true);
         leaveFrames = LEAVE_FRAMES;
       }
+      return true;
+    }
+    if (inside(buttons.settings, p)) {
+      openSettings();
       return true;
     }
     if (inside(buttons.turn, p)) {
@@ -305,6 +436,15 @@ export default function App() {
     if (!down || Math.abs(down.x - e.x) + Math.abs(down.y - e.y) > 12) return false;
     hoverKey = "";
     if (deck.menu) return dispatch(e.button === 2 ? input.cancel : hitTestDeck(deck, p));
+    // Any tap closes the whole card text; a tap on a detail panel that left some out opens it.
+    if (fullText()) {
+      setFullText(false);
+      return true;
+    }
+    if (e.button === 0 && deck.detailFull && inside(g.detail, p)) {
+      setFullText(true);
+      return true;
+    }
     const tile = tileAt();
     if (e.button === 2) {
       if (!tile) return false;
@@ -344,8 +484,14 @@ export default function App() {
       }
     } else repeater.frame(buttons);
     for (const event of pointerEvents.splice(0)) {
+      if (event.kind === "text") {
+        controller.setDeckText(event.id, event.text);
+        changed = true;
+        continue;
+      }
       const screen = controller.view();
-      if (screen.gui) changed = onMatchPointer(event, screen.gui) || changed;
+      if (settingsOpen()) changed = onSettingsPointer(event) || changed;
+      else if (screen.gui) changed = onMatchPointer(event, screen.gui) || changed;
       else if (screen.deck) changed = onDeckPointer(event, screen.deck) || changed;
       else if (event.kind === "move") setCursor(false);
     }
@@ -353,11 +499,18 @@ export default function App() {
     if (controller.tick()) changed = true;
     pollCardArt();
     if (changed) refresh();
+    syncFields();
   });
 
   return (
+    <>
     <Switch
-      fallback={<TitleView controller={controller} view={view} refresh={refresh} width={size().width} height={size().height} />}
+      fallback={
+        // The title's buttons take clicks through focus, so the title steps aside while the panel is open.
+        <Show when={!settingsOpen()} fallback={<View class="w-full h-full bg-gradient-to-b from-[#0f1b33] to-[#04070d]" />}>
+          <TitleView controller={controller} view={view} refresh={refresh} width={size().width} height={size().height} openSettings={openSettings} />
+        </Show>
+      }
     >
       <Match when={view().gui}>
         {(gui) => (
@@ -367,13 +520,14 @@ export default function App() {
             hot={hot()}
             footer={matchFooter(gui())}
             leaving={leaving()}
-            peek={peek()}
+            peek={gui().dialog ? null : peek()}
             endingTurn={(gui(), controller.endingTurn)}
             drag={drag()}
+            fullText={fullText()}
           />
         )}
       </Match>
-      <Match when={view().deck}>{(deck) => <DeckView view={deck()} hot={hot()} footer={isPortrait(deck().geometry) ? DECK_TOUCH_FOOTER : DECK_FOOTER} />}</Match>
+      <Match when={view().deck}>{(deck) => <DeckView view={deck()} hot={hot()} footer={isPortrait(deck().geometry) ? DECK_TOUCH_FOOTER : DECK_FOOTER} fullText={fullText()} />}</Match>
       <Match when={view().screen === "result"}>
         <ResultView
           controller={controller}
@@ -385,5 +539,9 @@ export default function App() {
         />
       </Match>
     </Switch>
+    <Show when={settingsOpen()}>
+      <SettingsPanel layout={panelLayout()} width={size().width} height={size().height} hot={settingsHot()} />
+    </Show>
+    </>
   );
 }

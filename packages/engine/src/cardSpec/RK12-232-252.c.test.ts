@@ -495,6 +495,11 @@ describe("RK-252 変身音叉 音角", () => {
     expect(canSkip(s)).toBe(true);
   });
 
+  it("RK-252: ◎1つ目 — 「※これは「仮面ライダー響鬼」としてつかえる」ディケイド 響鬼（XG1-069）も選べる（出典: atwiki/page-1339「「仮面ライダー響鬼」のカードを1枚選び」・atwiki/page-1668 Q1「としてつかえる」は全ての場で常に有効）", () => {
+    const s = pick(played(rushPhase({ hand: [inst("RK-252", "ok"), inst("XG1-069", "dk")], command: releasedCat("MA", 1), power: powerCards(2) }), "RK-252:ok"), "hibiki_rush");
+    expect(choiceIds(s)).toEqual(["XG1-069:dk"]);
+  });
+
   it("RK-252: 選んだ「仮面ライダー響鬼」は自軍ラッシュエリアに出る（必要パワーを満たしていなくてよい）（出典: atwiki/page-1339）", () => {
     const s = resolveAll(pick(pick(used(), "hibiki_rush"), "RK-221:hb"));
     expect(zoneOf(s, "player1", "RK-221:hb")).toBe("rush");

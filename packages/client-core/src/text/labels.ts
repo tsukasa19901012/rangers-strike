@@ -82,6 +82,7 @@ const FIELD_LABELS: Record<string, string> = {
   branch: "分岐",
   rideOff: "降りる",
   prismSubstitute: "プリズム代用",
+  raiaDiscard: "コマンドから捨札にして使う",
 };
 
 const VALUE_LABELS: Record<string, string> = {
@@ -97,7 +98,126 @@ const VALUE_LABELS: Record<string, string> = {
   category_use: "カテゴリ",
   mothership_hold: "母艦",
   effect_hold: "効果",
+  // Reaction windows open at the same time (simultaneous_order): which one resolves first.
+  pendingLeave: "場を離れたユニットへの反応を先に処理",
+  pendingStrike: "ストライクへの反応を先に処理",
+  pendingBattle: "アタックへの反応を先に処理",
+  pendingRush: "ラッシュへの反応を先に処理",
+  super_radar: "超電子レーダーを先に処理",
+  // Option tokens the engine offers in resolve_effect_choice (branches and confirmations).
+  accept: "使う",
+  use: "使う",
+  confirm: "決定",
+  draw: "ドローする",
+  hold: "ホールドする",
+  destroy: "撃破する",
+  release: "リリースする",
+  shuffle: "シャッフルする",
+  reveal: "山札の上をオモテにする",
+  reveal_top: "山札の上をオモテにする",
+  faceup: "オモテにする",
+  exile: "ゲームから除外",
+  return: "ラッシュエリアに戻す",
+  place_in_power: "パワーゾーンに置く",
+  to_command: "コマンドゾーンに置く",
+  attack: "アタック",
+  strike: "ストライク",
+  bp: "BP",
+  power_cost: "必要パワーの数字",
+  number: "ナンバーの数字",
+  deck_own: "自軍の山札",
+  deck_enemy: "敵軍の山札",
+  search: "山札から探して手札に加える",
+  rush: "カードをラッシュエリアに出す",
+  scry: "山札の上を見て上か下に戻す",
+  add_feature: "特徴「仮面ライダー」を追加",
+  discard_to_deck_bottom: "捨札のSユニットを山札の下に戻す",
+  sp_1_2: "SユニットをSP1/2にする",
+  sp_1_4: "SユニットをSP1/4にする",
+  sp_1_5: "SユニットをSP1/5にする",
+  air_battle: "航空機のMユニットとバトル",
+  discard_to_command: "捨札の改造人間をコマンドゾーンへ",
+  command_rush: "コマンドの改造人間をラッシュエリアへ",
+  vehicle_without_ride: "ビークルをライドなしでバトルエリアへ",
+  draw_return: "1枚ドローし、1枚を山札の上に戻す",
+  mirror_cost: "ミラーライダーの必要パワーを減らす",
+  deck_to_command: "山札の上をコマンドゾーンへ",
+  accel_waive: "加速ユニットの追加条件をなくす",
+  gavan_rush: "「宇宙刑事ギャバン」をラッシュ",
+  sharivan_rush: "「宇宙刑事シャリバン」をラッシュ",
+  shaider_rush: "「宇宙刑事シャイダー」をラッシュ",
+  add_red: "特徴「レッド」を追加",
+  add_blue: "特徴「ブルー」を追加",
+  hibiki_rush: "「仮面ライダー響鬼」をラッシュ",
+  reveal_draw: "敵軍山札の上をオモテにする",
+  recruit_abaredo_on_destroy: "「アバレッド」を出す効果を先に処理",
+  xg6_done: "選ぶのを終える",
+  plasma_done: "撃破するのを終える",
+  __none__: "発動しない",
+  __set9a_done__: "選ぶのを終える",
+  mothership: "母艦で支払う",
+  material: "素材で支払う",
 };
+
+/** Tokens whose meaning depends on the card: effectId -> token -> label. */
+const EFFECT_VALUE_LABELS: Record<string, Record<string, string>> = {
+  bk1_belt_mode: { release: "Sユニットを1体リリース" },
+  xg5_007_gogo_change: { release: "リリース状態で置く", discard: "捨札にする" },
+  xg1_076_decadriver: { mode_1: "「仮面ライダーディケイド」をラッシュ", mode_2: "ディケイドライバーのカードをパワーゾーンへ" },
+  xg7054_ooo_driver: { mode1_rush: "オーズドライバーのカードをラッシュ", mode2_cost: "次のカードの必要パワーを3減らす" },
+  sx010_movie_war_mode: { deck_bottom: "山札の下に戻す" },
+};
+
+/** Label for an option token (not a card instance) of the pending effect choice. */
+function optionLabel(state: GameState, id: string): string | undefined {
+  const choice = state.pendingEffectChoice;
+  const own = choice ? EFFECT_VALUE_LABELS[choice.effectId]?.[id] : undefined;
+  if (own) return own;
+  if (VALUE_LABELS[id]) return VALUE_LABELS[id];
+  const draws = /^draw:(\d+)$/.exec(id);
+  if (draws) return `${draws[1]}枚ドロー`;
+  // A lone confirmation named after the effect itself (e.g. "rs384_water_discharge").
+  if (choice && (id === choice.effectId || id.endsWith(`_${choice.effectId}`) || (id.length > 4 && choice.effectId.endsWith(id)))) return "使う";
+  return undefined;
+}
+
+const REVEAL_DESTINATIONS: Record<string, string> = {
+  hand: "手札へ",
+  deck_top: "山札の上へ",
+  deck_bottom: "山札の下へ",
+  discard: "捨札へ",
+  rush: "ラッシュエリアへ",
+  power: "パワーゾーンへ",
+  command: "コマンドゾーンへ",
+  deck_shuffle: "山札に戻した",
+  stay: "そのまま",
+};
+
+const REVEAL_FROM: Record<string, string> = {
+  deck_top: "山札の上",
+  deck_bottom: "山札の下",
+  hand: "手札",
+  power: "パワーゾーン",
+  discard: "捨札",
+};
+
+type RevealNoticeLike = NonNullable<GameState["lastReveal"]>;
+
+/** 「CPUが山札の上から1枚オモテにした（潜行捜索）」: what a reveal notice (GameState.lastReveal) shows. */
+export function revealSummary(state: GameState, reveal: RevealNoticeLike): string {
+  const actor = PLAYER_LABELS[reveal.playerId] ?? reveal.playerId;
+  const mutual = reveal.cards.some((c) => c.ownerId !== undefined && c.ownerId !== reveal.ownerId);
+  const owner = mutual ? "お互いの" : reveal.ownerId === reveal.playerId ? "" : `${PLAYER_LABELS[reveal.ownerId] ?? reveal.ownerId}の`;
+  const source = reveal.sourceCardId ? cardName(state, reveal.sourceCardId) : "";
+  const label = reveal.effectLabel || source;
+  const declared = reveal.declaredNumber !== undefined ? ` 宣言:${reveal.declaredNumber}${reveal.matched === undefined ? "" : reveal.matched ? "（一致）" : "（不一致）"}` : "";
+  return `${actor}が${owner}${REVEAL_FROM[reveal.from] ?? reveal.from}から${reveal.cards.length}枚オモテにした${label ? `（${label}）` : ""}${declared}`;
+}
+
+/** Where a revealed card went: 「手札へ」. */
+export function revealDestination(destination: string): string {
+  return REVEAL_DESTINATIONS[destination] ?? destination;
+}
 
 /**
  * Readable fallback for log entries the engine's formatGameLog leaves in the
@@ -166,8 +286,11 @@ function formatValue(
     const ids = Array.isArray(value) ? value : [value];
     if (ids.length === 0) return "なし";
     // The engine also passes option tokens in instanceId (e.g. "deck_top" for RK-002).
+    // "effectId:instanceId" names one of two effects of the same card (battleDestroyOrderMeta).
+    const name = (id: string) =>
+      index.has(id) ? instanceName(state, id, index) : (optionLabel(state, id) ?? instanceName(state, id.replace(/^[^:]*:/, ""), index));
     return ids
-      .map((id) => (index.has(String(id)) ? instanceName(state, String(id), index) : (VALUE_LABELS[String(id)] ?? instanceName(state, String(id), index))))
+      .map((id) => name(String(id)))
       .join("・");
   }
   if (typeof value === "boolean") return value ? (FIELD_LABELS[key] ?? key) : null;
@@ -196,6 +319,10 @@ export function describeAction(
   }
   if (action.type === "end_phase") {
     return `${PHASE_LABELS[state.phase] ?? state.phase}${base}`;
+  }
+  // Both answers are legal (ライドしたまま進むのも可 — atwiki p594 Q3): say plainly what each one does.
+  if (action.type === "resolve_ride_off_choice") {
+    return action.rideOff ? "ライドオフする（ビークルから降りる）" : "ライドしたまま進む";
   }
   // Card names first (they matter most when a narrow screen truncates the row),
   // then the remaining fields in parentheses.

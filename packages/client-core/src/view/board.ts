@@ -101,8 +101,14 @@ export type PendingView = {
   detail?: string;
 };
 
+const ENGINE_EFFECT_LABELS: Record<string, string> = {
+  turn_end_exodus_order: "ターン終了時の処理順（先に処理するユニットを選ぶ）",
+};
+
 /** An effect's name; effects without one (only an internal id such as "rs518_beast_rod") take their card's name. */
 function effectLabel(engine: EngineApi, state: GameState, effectId: string, sourceCardId: string | undefined): string {
+  // Rule-driven choices the engine opens itself have no card behind them.
+  if (sourceCardId === "engine") return ENGINE_EFFECT_LABELS[effectId] ?? "処理順の選択";
   const label = engine.getEffectLabel(effectId);
   if (label !== effectId && !/^[a-z0-9_]+$/.test(label)) return label;
   return (sourceCardId && cardName(state, sourceCardId)) || label;
@@ -113,6 +119,18 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
   const index = indexInstances(state);
   const who = (p: PlayerId | undefined) => (p ? PLAYER_LABELS[p] : "?");
   const sourceText = (cardId: string | undefined) => (cardId ? state.definitions[cardId]?.text : undefined);
+  // The engine asks these before anything else (getLegalActions checks them first).
+  const register = state.pendingRegister;
+  if (register) {
+    return {
+      actor: who(register.ownerPlayerId),
+      title: `レジスト: 「${instanceName(state, register.instanceId, index)}」がバトルエリアから離れる。レジストするか選ぶ`,
+      source: cardName(state, register.leavingCardId),
+      detail: sourceText(register.leavingCardId),
+    };
+  }
+  const chase = state.pendingChase;
+  if (chase) return { actor: who(chase.chaserPlayerId), title: "チェイス: 乗り換えるビークルを選ぶか、チェイスしない" };
   const morph = state.pendingMorph;
   const choice = state.pendingEffectChoice;
   if (morph && choice) {
@@ -124,14 +142,22 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
       detail: sourceText(choice.sourceCardId),
     };
   }
+  if (choice?.kind === "simultaneous_order") {
+    return {
+      actor: who(choice.playerId),
+      title: "処理順の選択: 同時に起きた効果のうち、先に処理するものを選ぶ",
+      source: choice.sourceCardId === "engine" ? undefined : cardName(state, choice.sourceCardId),
+      detail: choice.sourceCardId === "engine" ? undefined : sourceText(choice.sourceCardId),
+    };
+  }
   if (choice) {
     const selected = choice.selectedInstanceIds?.length ?? 0;
     const count = choice.selectCount ? ` ${selected}/${choice.selectCount}` : "";
     return {
       actor: who(choice.playerId),
       title: `効果の選択「${effectLabel(engine, state, choice.effectId, choice.sourceCardId)}」${count}${choice.optional ? "（任意）" : ""}`,
-      source: cardName(state, choice.sourceCardId),
-      detail: sourceText(choice.sourceCardId),
+      source: choice.sourceCardId === "engine" ? undefined : cardName(state, choice.sourceCardId),
+      detail: choice.sourceCardId === "engine" ? undefined : sourceText(choice.sourceCardId),
     };
   }
   const payment = state.pendingCommandPayment;
@@ -151,6 +177,14 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
       title: `ダメージ支払い: あと${damage.remainingFlips}枚を裏返す（計${damage.totalDamage}）`,
     };
   }
+  const rideOff = state.pendingRideOffChoice;
+  if (rideOff) {
+    return {
+      actor: who(rideOff.playerId),
+      title: `ライドオフ: 「${instanceName(state, rideOff.vehicleInstanceId, index)}」からライドオフするか選ぶ`,
+      source: instanceName(state, rideOff.instanceId, index),
+    };
+  }
   const zord = state.pendingZordSetup;
   if (zord) {
     return {
@@ -168,6 +202,7 @@ export function buildPendingView(engine: EngineApi, state: GameState): PendingVi
     };
   }
   if (state.pendingRush) return { actor: "", title: "ラッシュへの反応" };
+  if (state.pendingGiantBomb) return { actor: who(state.pendingGiantBomb.ownerId), title: "撃破されたユニットへの反応: 使うか、反応しない" };
   if (state.pendingLeave) return { actor: who(state.pendingLeave.ownerPlayerId), title: "離れるユニットへの反応" };
   if (state.pendingBattleEntry) {
     return {
@@ -185,4 +220,27 @@ export function pendingLines(view: PendingView | null, wrap: WrapOptions, maxDet
   if (view.source) lines.push(...wrapText(`カード: ${view.source}`, wrap));
   if (view.detail) lines.push(...wrapText(view.detail, { ...wrap, maxLines: maxDetailLines }));
   return lines;
+}
+
+// Fields of an effect choice's card-specific metadata that hold the deck card(s) the chooser is looking at
+// (RM-017 rm1Meta.topInstanceId, RK-270 rk13Meta.target, XG6-045 xg6Meta.ids, ...).
+const VIEWED_META_KEYS = new Set(["top", "topId", "topInstanceId", "revealedId", "revealedInstanceIds", "picked", "remainingIds", "target", "ids"]);
+
+/**
+ * Deck cards the human is looking at while answering an effect choice ("山札の上から1枚を見る"), which the
+ * choice's options don't show because they are words (山札の上 / 山札の下) rather than the card itself.
+ */
+export function viewedCardIds(state: GameState): string[] {
+  const choice = state.pendingEffectChoice;
+  if (!choice || choice.playerId !== HUMAN) return [];
+  const inDeck = new Set([...state.players.player1.deck, ...state.players.player2.deck].map((c) => c.instanceId));
+  const ids = [...(choice.viewedInstanceIds ?? [])];
+  for (const [key, value] of Object.entries(choice as unknown as Record<string, unknown>)) {
+    if (!key.endsWith("Meta") || !value || typeof value !== "object") continue;
+    for (const [field, v] of Object.entries(value as Record<string, unknown>)) {
+      if (VIEWED_META_KEYS.has(field)) ids.push(...(Array.isArray(v) ? v : [v]).filter((x): x is string => typeof x === "string"));
+    }
+  }
+  const options = new Set(choice.validInstanceIds);
+  return [...new Set(ids)].filter((id) => inDeck.has(id) && !options.has(id));
 }

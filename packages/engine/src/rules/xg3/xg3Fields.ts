@@ -5,6 +5,7 @@
  * - `isXg3StackedUnderUnitCard`: XG3-004 芋長の芋ヨーカン・XG3-010 ジークジェンヌ（ユニットの下に重ね、ユニットでなくなるとき捨札。rules/rk/rk1Features.ts）。
  * - `xg3FieldBpBonus`: BP の増減（rules/fieldAuras.ts）。
  */
+import { hasNameOrAlias } from "../../core/cardNames";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PlayerId } from "../../types/game";
 import { cardHasKeyword } from "../../keywords/cardKeywords";
@@ -176,11 +177,12 @@ export function xg3EffectiveSp(state: View, playerId: PlayerId, instance: CardIn
   // XG3-073 仮面ライダーJジャンボフォーメーション【とっておきのお宝】自軍「仮面ライダーディエンド」があれば「SP1/3」（atwiki/page-1932）。
   if (isSameCardIdentity(instance.cardId, "XG3-073")) {
     const p = state.players[playerId];
-    const diend = [...p.battle, ...p.rush].some((c) => getDefinition(state.definitions, c.cardId)?.name === "仮面ライダーディエンド");
+    const diend = [...p.battle, ...p.rush].some((c) => hasNameOrAlias(getDefinition(state.definitions, c.cardId), "仮面ライダーディエンド"));
     if (diend && logicalBattlePosition(p.battle, instance.instanceId) === 3) sp = Math.max(sp, 1);
   }
   // XG3-077 アギトトルネイダー ※「これにライドしているユニットは、「仮面ライダーディケイド」なら「SP1」になる」（atwiki/page-1935）。
-  if (instance.mountedOnInstanceId && getDefinition(state.definitions, instance.cardId)?.name === "仮面ライダーディケイド") {
+  // 「※これは「仮面ライダーディケイド」…としてつかえる」（XG7-042）も含む（atwiki/page-1668 Q1）。
+  if (instance.mountedOnInstanceId && hasNameOrAlias(getDefinition(state.definitions, instance.cardId), "仮面ライダーディケイド")) {
     const p = state.players[playerId];
     const vehicle = [...p.battle, ...p.rush].find((c) => c.instanceId === instance.mountedOnInstanceId);
     if (vehicle && isSameCardIdentity(vehicle.cardId, "XG3-077")) sp = Math.max(sp, 1);

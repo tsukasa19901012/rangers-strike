@@ -43,6 +43,8 @@ export type GuiTile = {
   actionable: boolean;
   /** Already picked in the pending effect choice. */
   selected: boolean;
+  /** Board rows: the vehicle this unit rides (it is the tile just before; the two are drawn stacked). */
+  ridingOn?: string;
 };
 
 export type GuiRow = {
@@ -215,6 +217,22 @@ function zoneCards(state: GameState, player: PlayerId, zone: GuiZone): CardInsta
   return zone === "hand" ? p.hand : p[zone];
 }
 
+/** A row's cards with each vehicle placed just before the unit riding it (in the zone's own order otherwise). */
+function ridingOrder(cards: readonly CardInstance[]): CardInstance[] {
+  const ids = new Set(cards.map((c) => c.instanceId));
+  const ridden = new Set(cards.flatMap((c) => (c.mountedOnInstanceId && ids.has(c.mountedOnInstanceId) ? [c.mountedOnInstanceId] : [])));
+  const out: CardInstance[] = [];
+  for (const card of cards) {
+    if (ridden.has(card.instanceId)) continue;
+    const vehicle = card.mountedOnInstanceId && ridden.has(card.mountedOnInstanceId) ? cards.find((c) => c.instanceId === card.mountedOnInstanceId) : undefined;
+    if (vehicle && !out.includes(vehicle)) out.push(vehicle);
+    out.push(card);
+  }
+  // A vehicle whose rider is listed twice or not at all keeps its place at the end.
+  for (const card of cards) if (!out.includes(card)) out.push(card);
+  return out;
+}
+
 /** Tile for any card instance (board rows, dialogs). */
 export function cardTile(
   engine: EngineApi,
@@ -279,9 +297,10 @@ export function buildGuiRows(
     key: `${def.player}:${def.zone}` as GuiRowKey,
     player: def.player,
     zone: def.zone,
-    tiles: zoneCards(state, def.player, def.zone).map((card) =>
-      cardTile(engine, state, def.player, def.zone, card, fit, actionable.has(card.instanceId), selected.has(card.instanceId)),
-    ),
+    tiles: ridingOrder(zoneCards(state, def.player, def.zone)).map((card, i, cards) => {
+      const tile = cardTile(engine, state, def.player, def.zone, card, fit, actionable.has(card.instanceId), selected.has(card.instanceId));
+      return card.mountedOnInstanceId && cards[i - 1]?.instanceId === card.mountedOnInstanceId ? { ...tile, ridingOn: card.mountedOnInstanceId } : tile;
+    }),
   }));
 }
 
@@ -351,6 +370,24 @@ function turnPlayer(state: GameState): PlayerId {
     if (phasePlayer) return phasePlayer;
   }
   return state.activePlayer;
+}
+
+/** How far a riding unit's tile sits right of its vehicle's (the vehicle shows on its left). */
+export function ridingStep(geometry: GuiGeometry): number {
+  return Math.round(geometry.tileW * 0.42);
+}
+
+/**
+ * Tile rectangles of the visible window of a row: one slot per card, except that a riding unit is
+ * stacked on its vehicle (shifted right by `ridingStep`), so the pair takes about one and a half slots.
+ */
+export function rowTileRects(geometry: GuiGeometry, row: number, tiles: readonly Pick<GuiTile, "ridingOn" | "instanceId">[]): Rect[] {
+  const base = tileRect(geometry, row, 0);
+  let x = base.x;
+  return tiles.map((tile, slot) => {
+    if (slot > 0) x += tile.ridingOn && tiles[slot - 1]!.instanceId === tile.ridingOn ? ridingStep(geometry) : geometry.tileW + geometry.tileGap;
+    return { ...base, x };
+  });
 }
 
 /** Tile rectangle for slot `slot` (0-based within the visible window) of row `row`. */

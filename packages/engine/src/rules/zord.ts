@@ -711,7 +711,9 @@ export function isValidZordUpMaterial(
           return (
             card.instanceId !== rushingInstanceId &&
             def.type === "unit" &&
-            normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(named))
+            (normalizeName(zordMaterialAlteredName(card) ?? def.name).includes(normalizeName(named)) ||
+              // 「※これは「X」としてつかえる」（XG1-070 ディケイド カブトRF で XG2-065 仮面ライダーカブトHF をラッシュ）。
+              fusionMaterialAliasNames(def.text).some((n) => normalizeName(n).includes(normalizeName(named))))
           );
         }
         // 「特徴「X」を持つ自軍Sユニットを1体パワーゾーンに送る」はその特徴を持つ S ユニットだけ（XG1-018 サイレンダーPM atwiki/page-1585）。

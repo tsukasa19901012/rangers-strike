@@ -368,6 +368,10 @@ describe("XG2-074 クウガゴウラム", () => {
     expect(canEnter(p1Battle({ rush: [inst("XG2-074", "kg"), inst("XG2-077", "dc")] }), "XG2-074:kg")).toBe(true);
   });
 
+  it("XG2-074: ※2つ目 — 「仮面ライダーディケイド」としてつかえる XG7-042 があってもライドされずにバトルエリアに出られる（出典: atwiki/page-1775「自軍「仮面ライダーディケイド」があれば」・atwiki/page-1668 Q1「としてつかえる」は全ての場で常に有効）", () => {
+    expect(canEnter(p1Battle({ rush: [inst("XG2-074", "kg"), inst("XG7-042", "kd")] }), "XG2-074:kg")).toBe(true);
+  });
+
   it("XG2-074: ※2つ目 — 「仮面ライダーディケイド」がなければ、ライドされずにバトルエリアに出られない（出典: atwiki/page-1775）", () => {
     expect(canEnter(p1Battle({ rush: [inst("XG2-074", "kg")] }), "XG2-074:kg")).toBe(false);
   });

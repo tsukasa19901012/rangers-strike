@@ -1,5 +1,5 @@
 import type { EffectPrimitive } from "@rangers-strike/cards/dsl/types";
-import { canonicalCardName } from "@rangers-strike/cards";
+import { hasNameOrAlias } from "../core/cardNames";
 import {
   decodeFeatureKeywordSlug,
   rematchEffectPrimitives,
@@ -7,7 +7,7 @@ import {
 } from "@rangers-strike/cards/pipeline/extractEffects";
 import { isCatchallGrantKeyword } from "../dsl/hashGrantKeywordStub";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
-import { cardName, getDefinition, isSmallUnit, unitSizeOf } from "../core/catalog";
+import { getDefinition, isSmallUnit, unitSizeOf } from "../core/catalog";
 import { findInZone, updatePlayer } from "../core/helpers";
 import { getDslEffectById } from "../dsl/effectLookup";
 import { interpretEffectPrimitives } from "../dsl/cardInterpreter";
@@ -31,10 +31,9 @@ function collectHandByCanonicalName(
   playerId: PlayerId,
   targetName: string,
 ): string[] {
-  const target = canonicalCardName(targetName);
   const player = state.players[playerId];
   return player.hand
-    .filter((c) => canonicalCardName(cardName(state.definitions, c.cardId)) === target)
+    .filter((c) => hasNameOrAlias(state.definitions[c.cardId], targetName))
     .map((c) => c.instanceId);
 }
 
@@ -43,10 +42,9 @@ function collectDeckByCanonicalName(
   playerId: PlayerId,
   targetName: string,
 ): string[] {
-  const target = canonicalCardName(targetName);
   const player = state.players[playerId];
   return player.deck
-    .filter((c) => canonicalCardName(cardName(state.definitions, c.cardId)) === target)
+    .filter((c) => hasNameOrAlias(state.definitions[c.cardId], targetName))
     .map((c) => c.instanceId);
 }
 
@@ -75,11 +73,10 @@ function collectOwnSUnitsInCommand(state: GameState, playerId: PlayerId): string
 }
 
 function collectDeckByName(state: GameState, playerId: PlayerId, name: string): string[] {
-  const target = canonicalCardName(name);
   const player = state.players[playerId];
   const viewedInstanceIds = player.deck.map((c) => c.instanceId);
   const validInstanceIds = player.deck
-    .filter((c) => canonicalCardName(cardName(state.definitions, c.cardId)) === target)
+    .filter((c) => hasNameOrAlias(state.definitions[c.cardId], name))
     .map((c) => c.instanceId);
   return viewedInstanceIds.length > 0 && validInstanceIds.length > 0
     ? validInstanceIds
