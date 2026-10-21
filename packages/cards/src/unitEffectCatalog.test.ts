@@ -29,7 +29,8 @@ describe("unitEffectCatalog wiring", () => {
   });
 
   it("lists conditional battle-entry effects excluding super_shield", () => {
-    expect(conditional.map((entry) => entry.effectId).sort()).toEqual(
+    // Promo reprints (PR-005, PR-007) share an effect with their originals, so compare distinct ids.
+    expect([...new Set(conditional.map((entry) => entry.effectId))].sort()).toEqual(
       [...IMPLEMENTED_CONDITIONAL_EFFECT_IDS].sort(),
     );
     expect(conditional.some((entry) => entry.effectId === "super_shield")).toBe(false);

@@ -16,8 +16,9 @@
     "人型"
   ],
   "rushAdditionalCondition": {
-    "conditionId": "discard_fusion_unit",
-    "text": "自軍「フラッシュタイタン」１体と「タイタンボーイ」１体をパワーゾーンに送る"
+    "conditionId": "send_s_unit_to_power",
+    "text": "自軍「フラッシュタイタン」１体と「タイタンボーイ」１体をパワーゾーンに送る",
+    "unitCount": 1
   },
   "effects": [
     {
