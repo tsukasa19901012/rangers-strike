@@ -365,6 +365,12 @@ describe("XP-016 仮面ライダークウガRU・レッドアイ", () => {
     expect(zoneOf(s, "player2", "SPEC-7000:a")).toBe("discard");
   });
 
+  it("XP-016: 【赤い瞳に宿るもの】「仮面ライダーディケイド」としてつかえる XG7-042 が自軍エリアにいても BP+2000 される（出典: atwiki/page-1982「自軍エリアに「仮面ライダーディケイド」があれば」・atwiki/page-1668 Q1「としてつかえる」は全ての場で常に有効）", () => {
+    const s = resolveAll(accept(attacked({ rush: [inst("XG7-042", "kd")] })));
+    expect(zoneOf(s, "player1", "XP-016:ru")).toBe("rush");
+    expect(zoneOf(s, "player2", "SPEC-7000:a")).toBe("discard");
+  });
+
   it("XP-016: 【赤い瞳に宿るもの】ホールドしなければ、アタックされたユニットがそのままバトルする（出典: atwiki/page-1982「ホールドしてもよい」）", () => {
     const s0 = attacked();
     const s = resolveAll(s0.pendingEffectChoice ? skip(s0) : s0);

@@ -16,7 +16,7 @@ import { getCardById, isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingBattle, PendingLeave, PlayerId } from "../../types/game";
 import { effectiveBp, getDefinition, unitEffectiveCategories, unitSizeOf } from "../../core/catalog";
 import { opponent } from "../../core/helpers";
-import { sameCardName } from "../../core/cardNames";
+import { hasNameOrAlias, sameCardName } from "../../core/cardNames";
 import { unitFeatures } from "../addedFeatures";
 import { hasFlag } from "./xg7Registry";
 import { isSameVehicleTextIdentity } from "../xg6/xg6dFields";
@@ -291,8 +291,9 @@ export function xg7RiderCross(battle: readonly CardInstance[], index: number): n
   if (!card?.mountedOnInstanceId) return 0;
   const vehicle = battle.find((c) => c.instanceId === card.mountedOnInstanceId);
   if (!vehicle || !isId(vehicle.cardId, "XG7-031")) return 0;
-  const name = getCardById(card.cardId)?.name;
-  return sameCardName(name, "仮面ライダー1号") || sameCardName(name, "仮面ライダー2号") ? 1 : 0;
+  // 「※これは「仮面ライダー1号」としてつかえる」（RK-175・XG7-032 等）も含む（atwiki/page-1668 Q1）。
+  const d = getCardById(card.cardId);
+  return hasNameOrAlias(d, "仮面ライダー1号") || hasNameOrAlias(d, "仮面ライダー2号") ? 1 : 0;
 }
 
 // ---------------------------------------------------------------------------

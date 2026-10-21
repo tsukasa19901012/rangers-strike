@@ -182,6 +182,12 @@ describe("XG1-044 仮面ライダーV3", () => {
     expect(zoneOf(resolveAll(act(s, a!)), "player1", "XG1-044:v3")).toBe("rush");
   });
 
+  it("XG1-044: ※ 「仮面ライダー1号」「仮面ライダー2号」としてつかえる新1号（RK-175）・新2号（RK-176）でも満たす。XG7-032（「1号」または「2号」）1枚だけでは満たさない（出典: atwiki/page-1619「「仮面ライダー1号」のカードと「仮面ライダー2号」のカード」・atwiki/page-1668 Q1「としてつかえる」は全ての場で常に有効）", () => {
+    expect(selfRushActions(fromCommand([inst("RK-175", "n1"), inst("RK-176", "n2")]))).not.toHaveLength(0);
+    expect(selfRushActions(fromCommand([inst("XG7-032", "w"), inst("RK-073", "g2")]))).not.toHaveLength(0);
+    expect(selfRushActions(fromCommand([inst("XG7-032", "w")]))).toHaveLength(0);
+  });
+
   it("XG1-044: ※ 1号しかなければ、コマンドゾーンから出す手はない（出典: atwiki/page-1619「「仮面ライダー1号」のカードと「仮面ライダー2号」のカードがあれば」）", () => {
     expect(selfRushActions(fromCommand([inst("RK-023", "g1")]))).toHaveLength(0);
   });

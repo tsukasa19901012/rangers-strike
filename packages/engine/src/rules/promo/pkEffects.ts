@@ -2,6 +2,7 @@
  * プロモーションカード PK・PM・SM・SK のカード固有の効果（cardSpec PROMO1-PK-SK の監査）。
  * 起点は DSL の grant_keyword（`promo::<ID>::name`。rules/promo/promoRegistry.ts）。
  */
+import { hasNameOrAlias } from "../../core/cardNames";
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
 import { getDefinition } from "../../core/catalog";
@@ -56,7 +57,8 @@ function applyDoubleTyphoon(state: GameState, ctx: GrantKeywordContext): GrantKe
   const ids = state.players[ctx.playerId].command
     .filter((c) => {
       const d = getDefinition(state.definitions, c.cardId);
-      return !c.commandHeld && d?.type === "unit" && TYPHOON_NAMES.includes((d.name ?? "").trim());
+      // 「※これは「仮面ライダー1号」としてつかえる」（RK-175 等）も選べる（atwiki/page-1668 Q1）。
+      return !c.commandHeld && d?.type === "unit" && TYPHOON_NAMES.some((n) => hasNameOrAlias(d, n));
     })
     .map((c) => c.instanceId);
   if (ids.length === 0) return { state, detail: `${DOUBLE_TYPHOON}:no_targets` };

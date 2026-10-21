@@ -20,7 +20,7 @@ import { canPlayOperationExceptCommandHold, cardName, effectiveBp, effectiveComm
 import { opponent } from "../../core/helpers";
 import { getPlayerModifiers } from "../../core/scopedModifiers";
 import { shuffleCards } from "../../core/deckShuffle";
-import { sameCardName } from "../../core/cardNames";
+import { hasNameOrAlias, sameCardName } from "../../core/cardNames";
 import type { GrantKeywordContext, GrantKeywordResult } from "../../dsl/grantKeyword";
 import { buildLogEntry } from "../../log/formatLog";
 import { isSelectableByOpponentEffect } from "../../keywords/effectTargetability";
@@ -1340,7 +1340,8 @@ CHOICE_RESOLVERS[ONKAKU_EFFECT_ID] = (state, playerId, mode) => {
   const cleared = close(state, pending);
   if (mode === "hibiki_rush") {
     const ids = cleared.players[playerId].hand
-      .filter((c) => isUnitCard(cleared, c.cardId) && sameCardName(getDefinition(cleared.definitions, c.cardId)?.name, "仮面ライダー響鬼"))
+      // 「※これは「仮面ライダー響鬼」としてつかえる」（XG1-069）も選べる（atwiki/page-1668 Q1）。
+      .filter((c) => isUnitCard(cleared, c.cardId) && hasNameOrAlias(getDefinition(cleared.definitions, c.cardId), "仮面ライダー響鬼"))
       .map((c) => c.instanceId);
     const log = logFor(state, playerId, "RK-252", `${ONKAKU_EFFECT_ID}:hibiki_rush`);
     if (ids.length === 0) return { state: proceed(cleared, pending), log };
