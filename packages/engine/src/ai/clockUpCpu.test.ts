@@ -2,7 +2,7 @@
 // 重ねたカードが 1 枚山札の下に戻るだけ。CPU はこれを「何も起きない」と見てアタックしなかったので、
 // ストライクできないユニットでも出たまま何もせず、重ねたカードがいつまでも減らなかった。
 import { describe, expect, it } from "vitest";
-import { pickCpuAction } from "./index";
+import { pickCpuAction, setCpuLevelOverrides } from "./index";
 import type { CpuLevel } from "./types";
 import { act, deckCards, inst, st, sUnit } from "../cardSpec/RK1-001-021.helpers";
 
@@ -33,8 +33,15 @@ describe("CPU とクロックアップ", () => {
     it(`Lv${level}: ストライクできないユニットは、重ねたカードを減らすために「加速」のユニットにアタックする`, () => {
       const s = entered(3);
       expect(s.pendingBattleEntry?.instanceId).toBe("SPEC-BIG-NOSP:a");
-      const picked = pickCpuAction(s, "player2", level);
-      expect(picked).toMatchObject({ type: "battle", defenderInstanceId: "SPEC-ACCEL:d" });
+      // Lv5 の価値ネットワークは、この作った盤面（山札だけの小さな盤面）ではアタックしない方を選ぶ。
+      // クロックアップを使う rider-exp-1-c 同士では、ネットを足した Lv5 が手書きだけの Lv5 に 64% 勝つので、ここは手書きの評価の側を確かめる。
+      setCpuLevelOverrides({ 5: { valueNetBlend: 0 } });
+      try {
+        const picked = pickCpuAction(s, "player2", level);
+        expect(picked).toMatchObject({ type: "battle", defenderInstanceId: "SPEC-ACCEL:d" });
+      } finally {
+        setCpuLevelOverrides({});
+      }
     });
 
     it(`Lv${level}: ストライクできるユニットは、止められるアタックよりストライクを選ぶ`, () => {
