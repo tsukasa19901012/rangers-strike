@@ -8,6 +8,9 @@
 //   - mouse / pen / touch reach the guest over the "pocket.overlay" service
 //     channel (hover, press and the raw position for card hit tests);
 //   - keyboard keys map to the console buttons the app also understands;
+//   - text fields (deck builder search / deck name) are real <input>s laid
+//     over the canvas where the guest asks for them, so phones get their own
+//     keyboard and IME; typed text goes back over the same channel;
 //   - card images are decoded by the browser and uploaded as textures on
 //     demand (globalThis.__rsCardArt);
 //   - the rules engine is a separate ESM file (globalThis.__rsEngine);
@@ -106,7 +109,53 @@ async function start() {
     canvas.style.width = `${Math.floor(view.w * scale)}px`;
     canvas.style.height = `${Math.floor(view.h * scale)}px`;
     image = ctx.createImageData(canvas.width, canvas.height);
+    placeFields();
   };
+
+  // ---- text inputs over the canvas (the guest sends {type:"rs.fields"})
+  const inputs = new Map(); // field id -> <input>
+  let fields = [];
+  function placeFields() {
+    const rect = canvas.getBoundingClientRect();
+    const scale = rect.width / view.w;
+    const shown = new Set();
+    for (const f of fields) {
+      shown.add(f.id);
+      let el = inputs.get(f.id);
+      if (!el) {
+        el = document.createElement("input");
+        el.type = f.id === "search" ? "search" : "text";
+        el.className = "field";
+        el.dataset.field = f.id;
+        el.enterKeyHint = f.id === "search" ? "search" : "done";
+        el.autocomplete = "off";
+        el.spellcheck = false;
+        el.addEventListener("input", () => {
+          inbox.push(JSON.stringify({ type: "state", value: { kind: "text", id: f.id, text: el.value } }));
+        });
+        document.body.appendChild(el);
+        inputs.set(f.id, el);
+      }
+      el.placeholder = f.placeholder;
+      el.maxLength = f.maxLength;
+      if (el.value !== f.text && document.activeElement !== el) el.value = f.text;
+      Object.assign(el.style, {
+        display: "block",
+        left: `${rect.left + f.rect.x * scale}px`,
+        top: `${rect.top + f.rect.y * scale}px`,
+        width: `${f.rect.w * scale}px`,
+        height: `${f.rect.h * scale}px`,
+        // 16 px at least: smaller text makes iOS zoom the page when the field is focused.
+        fontSize: `${Math.max(16, Math.round(15 * scale))}px`,
+        padding: `0 ${Math.round(10 * scale)}px`,
+      });
+    }
+    for (const [id, el] of inputs) {
+      if (shown.has(id)) continue;
+      if (document.activeElement === el) canvas.focus();
+      el.style.display = "none";
+    }
+  }
   sizeCanvas();
 
   // ---- service channel: pointer events for the guest (framework overlay-host)
@@ -118,6 +167,10 @@ async function start() {
     try {
       const msg = JSON.parse(line);
       if (msg && msg.type === "rs.cursor") canvas.classList.toggle("pointer", !!msg.pointer);
+      else if (msg && msg.type === "rs.fields") {
+        fields = msg.fields || [];
+        placeFields();
+      }
     } catch {
       // not ours
     }
@@ -165,6 +218,19 @@ async function start() {
   let held = 0;
   let tapped = 0;
   window.addEventListener("keydown", (e) => {
+    // Typing in a text field: keys are text, not buttons. Enter / Esc leave the field.
+    if (e.target instanceof HTMLInputElement) {
+      if (!e.isComposing && (e.key === "Enter" || e.key === "Escape")) {
+        e.preventDefault();
+        canvas.focus();
+      }
+      return;
+    }
+    if (e.key === "/" && inputs.get("search")?.style.display === "block") {
+      e.preventDefault();
+      inputs.get("search").focus();
+      return;
+    }
     const bit = KEYMAP[e.code];
     if (bit === undefined || e.metaKey || e.ctrlKey || e.altKey) return;
     e.preventDefault();

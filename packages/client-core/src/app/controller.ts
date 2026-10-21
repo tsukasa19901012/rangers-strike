@@ -359,6 +359,13 @@ export class AppController {
     this.touch();
   }
 
+  /** Deck builder: text typed into the shell's search or deck-name field. */
+  setDeckText(id: "search" | "name", text: string): void {
+    if (!this.builder || this.screen !== "deck") return;
+    this.builder.setText(id, text);
+    this.touch();
+  }
+
   private afterBuilder(): void {
     const result = this.builder?.result;
     if (!result) return;

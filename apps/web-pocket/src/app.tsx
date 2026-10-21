@@ -25,6 +25,7 @@ import {
   HUMAN,
   webPileRect,
   type DeckBuilderView,
+  type DeckTextField,
   type GuiView,
   type LogicalInput,
   type ScreenView,
@@ -41,6 +42,10 @@ import { applySettingsAction, SettingsPanel, settingsHit, settingsLayout } from 
 
 /** A pointer event as host/host.js sends it (logical px). */
 type PointerEvent = { kind: "move" | "down" | "up" | "wheel" | "leave"; x: number; y: number; button?: number; dy?: number };
+/** Text typed into one of the host's inputs (deck builder search / deck name). */
+type TextEvent = { kind: "text"; id: "search" | "name"; text: string };
+/** Commands to the host: the pointer cursor, and where to show text inputs. */
+type HostCommand = { type: "rs.cursor"; pointer: boolean } | { type: "rs.fields"; fields: DeckTextField[] };
 
 /**
  * Keys (host/host.js maps them to these buttons): arrows move over cards,
@@ -105,7 +110,7 @@ function touchFooter(v: GuiView): string {
 }
 
 const DECK_TOUCH_FOOTER = "タップ: 1枚入れる / 下の枠: カードの詳細";
-const DECK_FOOTER = "クリック: 1枚入れる / 右クリック: 1枚抜く / マウスを乗せると詳細 / ホイール: スクロール / Esc: メニュー";
+const DECK_FOOTER = "クリック: 1枚入れる / 右クリック: 1枚抜く / マウスを乗せると詳細 / ホイール: スクロール / /: 検索 / Esc: メニュー";
 
 export default function App() {
   let viewport = readViewport();
@@ -185,8 +190,17 @@ export default function App() {
   };
   const repeater = new ButtonRepeater(BINDINGS);
 
-  const pointerEvents: PointerEvent[] = [];
-  const overlay = connectOverlay<PointerEvent, { type: string; pointer: boolean }>((event) => pointerEvents.push(event));
+  const pointerEvents: (PointerEvent | TextEvent)[] = [];
+  const overlay = connectOverlay<PointerEvent | TextEvent, HostCommand>((event) => pointerEvents.push(event));
+  // The host's text inputs follow the deck builder's fields (none while a menu or the settings panel is open).
+  let fieldsKey = "[]";
+  const syncFields = () => {
+    const fields = settingsOpen() ? [] : (view().deck?.textFields ?? []);
+    const key = JSON.stringify(fields);
+    if (key === fieldsKey) return;
+    fieldsKey = key;
+    overlay.send({ type: "rs.fields", fields });
+  };
   let pressed: PointerEvent | null = null;
   let hoverKey = "";
   let pointerCursor = false;
@@ -438,6 +452,11 @@ export default function App() {
       }
     } else repeater.frame(buttons);
     for (const event of pointerEvents.splice(0)) {
+      if (event.kind === "text") {
+        controller.setDeckText(event.id, event.text);
+        changed = true;
+        continue;
+      }
       const screen = controller.view();
       if (settingsOpen()) changed = onSettingsPointer(event) || changed;
       else if (screen.gui) changed = onMatchPointer(event, screen.gui) || changed;
@@ -448,6 +467,7 @@ export default function App() {
     if (controller.tick()) changed = true;
     pollCardArt();
     if (changed) refresh();
+    syncFields();
   });
 
   return (
