@@ -61,3 +61,16 @@ npm run web:dev      # dist/ をビルドして http://127.0.0.1:8140/ で配信
 
 `dist/` の主なサイズ: `app/main.pak` 12.4 MiB（gzip 1.7 MiB、日本語フォントアトラス）、
 `engine.js` 8.3 MiB（gzip 1.3 MiB）、`app/main.js` 0.35 MiB、カード画像 38 MiB。
+
+## Vercel で公開
+
+`vercel.json` に設定があります。Next.js 版で使っていた Vercel プロジェクトをそのまま PocketJS 版に切り替えます
+（Project → Settings → Build and Deployment）。
+
+1. **Root Directory** を `apps/web` から `apps/web-pocket` に変える（「Include files outside the root directory」は有効のまま）
+2. **Framework Preset** を `Other` にする。Build / Install / Output の上書きはオフ（`vercel.json` の値が使われます）
+3. Node.js は 20 以上（既定の 22 で可）
+4. Deployments から最新の main を **Redeploy**
+
+ビルドはリポジトリ全体の `npm ci` → PocketJS ツールチェーンの `npm ci` → フォント取得 → `scripts/build.mjs` の順で、
+`dist/` を静的サイトとして配信します。
