@@ -69,6 +69,23 @@ export function DeckView(props: { view: DeckBuilderView; hot: string | null; foo
         )}
       </Index>
 
+      <Index each={v().detailButtons}>
+        {(button) => (
+          <View
+            class={
+              !button().enabled
+                ? "absolute flex-row items-center justify-center rounded-[8] bg-[#1e293b80] border border-[#334155]"
+                : button().id === "add"
+                  ? "absolute flex-row items-center justify-center rounded-[8] bg-gradient-to-r from-sky-600 to-blue-700 border border-sky-400"
+                  : "absolute flex-row items-center justify-center rounded-[8] bg-gradient-to-r from-rose-600 to-red-700 border border-rose-400"
+            }
+            style={at(button().rect)}
+          >
+            <Text class={button().enabled ? "text-sm text-white font-bold" : "text-sm text-slate-500"}>{button().text}</Text>
+          </View>
+        )}
+      </Index>
+
       {/* text fields (the host's inputs sit on top) */}
       <Index each={v().textFields}>
         {(field) => <View class="absolute rounded-[8] bg-[#0b1220] border border-[#475569]" style={at(field().rect)} />}

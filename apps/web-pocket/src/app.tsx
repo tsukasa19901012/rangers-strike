@@ -134,7 +134,7 @@ function touchFooter(v: GuiView): string {
   return "タップ: 操作 / 長押し: 詳細 / 左右スワイプ: 送る";
 }
 
-const DECK_TOUCH_FOOTER = "タップ: 1枚入れる / 下の枠: カードの詳細";
+const DECK_TOUCH_FOOTER = "タップ: 選ぶ / もう一度タップか＋: 1枚入れる / －: 1枚抜く";
 const DECK_FOOTER = "クリック: 1枚入れる / 右クリック: 1枚抜く / マウスを乗せると詳細 / ホイール: スクロール / /: 検索 / Esc: メニュー";
 
 export default function App() {
@@ -599,6 +599,8 @@ export default function App() {
       setFullText(false);
       return true;
     }
+    const button = e.button === 0 ? deck.detailButtons.find((b) => inside(b.rect, p)) : undefined;
+    if (button) return button.enabled && dispatch(button.id === "add" ? input.confirm : input.alt);
     if (e.button === 0 && deck.detailFull && inside(g.detail, p)) {
       setFullText(true);
       return true;
@@ -617,6 +619,8 @@ export default function App() {
       return true;
     }
     if (tile) {
+      // With ＋/－ buttons (a phone) the first tap only picks the card (its detail shows), a second tap adds it.
+      if (deck.detailButtons.length) return dispatch(input.focusTile(tile.row, tile.slot, true));
       dispatch(input.focusTile(tile.row, tile.slot, false));
       return dispatch(input.confirm);
     }

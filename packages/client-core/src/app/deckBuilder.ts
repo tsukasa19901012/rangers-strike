@@ -95,6 +95,8 @@ export type DeckBuilderView = {
   detailLines: PanelLine[];
   /** The whole card (attributes and text), set when the detail panel left some of it out. */
   detailFull?: { name: string; fields: string[]; text: string };
+  /** Add / remove buttons for the focused card in a phone's detail panel (no right click there). */
+  detailButtons: { id: "add" | "remove"; text: string; enabled: boolean; rect: Rect }[];
   menu?: GuiBox;
   footer: string;
 };
@@ -599,6 +601,7 @@ export class DeckBuilder {
     const detailLines: PanelLine[] = [];
     let detailArt: DeckBuilderView["detailArt"];
     let detailFull: DeckBuilderView["detailFull"];
+    let detailButtons: DeckBuilderView["detailButtons"] = [];
     let y = g.detail.y + 4;
     let textX = g.detail.x + 4;
     let textW = g.detail.w - 6;
@@ -636,8 +639,16 @@ export class DeckBuilder {
         const artW = detailArtWidth(g.detail);
         const rect = { x: g.detail.x + 4, y, w: artW, h: Math.round(artW * CARD_ASPECT) };
         detailArt = { cardId: card.id, hidden: false, rect };
+        // A touch screen has no right click: ＋/－ buttons on the right add and remove a copy.
+        const buttonW = 64;
+        const buttonX = g.detail.x + g.detail.w - buttonW - 4;
+        const buttonH = Math.floor((g.detail.h - 14) / 2);
+        detailButtons = [
+          { id: "add", text: "＋ 入れる", enabled: remaining > 0, rect: { x: buttonX, y: g.detail.y + 4, w: buttonW, h: buttonH } },
+          { id: "remove", text: "－ 抜く", enabled: count > 0, rect: { x: buttonX, y: g.detail.y + 10 + buttonH, w: buttonW, h: buttonH } },
+        ];
         textX = rect.x + rect.w + 6;
-        textW = g.detail.x + g.detail.w - textX - 2;
+        textW = buttonX - textX - 4;
         wrap = { ...wrap, maxWidthPx: textW };
         push("head", wrapText(card.name, { ...wrap, maxLines: 1 }));
         push("dim", wrapText(stats.join(" "), { ...wrap, maxLines: 1 }));
@@ -745,6 +756,7 @@ export class DeckBuilder {
       detailArt,
       detailLines,
       detailFull,
+      detailButtons,
       menu,
       footer: this.menu
         ? "↑↓:選ぶ ○:決定 ×:閉じる"

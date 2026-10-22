@@ -182,5 +182,22 @@ describe("DeckBuilder", () => {
     expect(phone.detailLines.some((l) => l.text.startsWith("カテゴリ："))).toBe(false);
     expect(phone.detailLines.at(-1)!.text).toMatch(/▼ タップで(詳細|全文)/);
     expect(phone.detailFull!.fields[0]).toMatch(/^カテゴリ：/);
+    expect(pc.detailButtons).toEqual([]);
+    expect(phone.detailButtons.map((b) => [b.id, b.enabled])).toEqual([["add", true], ["remove", false]]);
+  });
+
+  it("picks a card on the first phone tap, adds on the second, and removes with －", () => {
+    const app = new AppController({ platform: testPlatform(), viewport: { width: 390, height: 844 }, cpuDelayFrames: 0, seed: () => 5, gui: true, cardArt: true, layouts: { deck: computeWebDeckGeometry } });
+    app.openDeckBuilder();
+    pickMenu(app, /空のデッキ/);
+    app.dispatch(input.focusTile(0, 1, true));
+    const picked = app.view().deck!;
+    expect(picked.tiles[1]!.focused).toBe(true);
+    expect(picked.tiles[1]!.count).toBe(0);
+    app.dispatch(input.focusTile(0, 1, true));
+    expect(app.view().deck!.tiles[1]!.count).toBe(1);
+    expect(app.view().deck!.detailButtons.find((b) => b.id === "remove")!.enabled).toBe(true);
+    app.dispatch(input.alt);
+    expect(app.view().deck!.tiles[1]!.count).toBe(0);
   });
 });
