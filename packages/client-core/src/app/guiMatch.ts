@@ -111,6 +111,8 @@ export type GuiView = {
   menuOpen: boolean;
   /** The popup asks what the unit that just entered the battle area does: a tap on a lit enemy unit attacks it. */
   battleEntry: boolean;
+  /** The popup lists the start phase's steps (opened on its own when the phase begins). */
+  startPhase: boolean;
   /** The detail panel shows the log, not a card. */
   logShown: boolean;
 };
@@ -129,6 +131,8 @@ type Mode =
       cursor: ListCursor;
       /** The unit that just entered the battle area: its attack / strike / pass, asked once (entryPopup). */
       entry?: string;
+      /** The start phase's steps, asked once when the phase begins and assist leaves a choice (askStartPhase). */
+      start?: boolean;
     }
   | { kind: "target"; prompt: string; targets: Target[]; cursor: number }
   | { kind: "list"; title: string; items: MenuItem[]; labels: string[]; cursor: ListCursor };
@@ -192,6 +196,8 @@ export class GuiMatch {
   private endTurnOn: number | null = null;
   /** Session version the battle-entry popup was opened on (it opens once per entry; closed, the board plays as before). */
   private entryAsked = -1;
+  /** Session version the start-phase popup was opened on (it opens again after each step). */
+  private startAsked = -1;
 
   constructor(
     private readonly engine: EngineApi,
@@ -278,6 +284,32 @@ export class GuiMatch {
       else this.focusedId = null;
     }
     this.askBattleEntry();
+    this.askStartPhase();
+  }
+
+  /**
+   * The human's start phase leaves a choice (start-phase abilities, the order battle units
+   * return in, or every step with 自動進行 for the start phase off): its steps open as a popup
+   * by the end button, without a tap on the button first, and again after each step; closed, the
+   * board plays as before until the next step. Not while the end-turn button, a reveal or a selection window runs.
+   */
+  private askStartPhase(): void {
+    const state = this.state();
+    if (state.phase !== "start" || state.activePlayer !== HUMAN || this.startAsked === this.session.version) return;
+    if (this.mode.kind !== "board" || this.endTurnOn !== null || this.revealOpen || !this.humanActive() || this.dialogActive()) return;
+    const options = this.options();
+    if (!options.some((o) => o.action.type !== "end_phase")) return;
+    // The move assist makes on its own comes first; the popup waits for a real choice.
+    if (assistMove(state, options, this.assist) !== null) return;
+    this.startAsked = this.session.version;
+    this.openStartPopup();
+  }
+
+  private openStartPopup(): void {
+    const rank = (item: MenuItem) => (item.option.action.type === "end_phase" ? 1 : 0);
+    const verbs = [...this.allItems()].sort((a, b) => rank(a) - rank(b)).map((item) => ({ label: item.option.label, items: [item] }));
+    this.openPopup("スタートフェイズ", this.geometry.endButton, verbs);
+    if (this.mode.kind === "popup") this.mode.start = true;
   }
 
   /**
@@ -711,6 +743,7 @@ export class GuiMatch {
     if (event.type === "confirm" || event.type === "cancel" || event.type === "select") {
       this.revealOpen = null;
       this.askBattleEntry();
+      this.askStartPhase();
     }
     return null;
   }
@@ -880,7 +913,7 @@ export class GuiMatch {
         const row = this.rows[event.row];
         const id = row?.tiles[(this.offsets.get(row.key) ?? 0) + event.slot]?.instanceId;
         // Pointing at a card (mouse hover) shows it in the detail panel and keeps the popup.
-        if (mode.entry && !event.open) {
+        if ((mode.entry || mode.start) && !event.open) {
           if (id) this.setFocus(event.row, (this.offsets.get(row!.key) ?? 0) + event.slot);
           return null;
         }
@@ -1377,6 +1410,7 @@ export class GuiMatch {
       footerAccent: mode.kind === "target" || dialogShown,
       menuOpen: mode.kind !== "board" || dialogShown || !!reveal,
       battleEntry: mode.kind === "popup" && !!mode.entry,
+      startPhase: mode.kind === "popup" && !!mode.start,
       logShown: this.showLog && !dialogShown,
     };
   }
