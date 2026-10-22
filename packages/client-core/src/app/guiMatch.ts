@@ -452,11 +452,12 @@ export class GuiMatch {
         cards.set(id, list);
       } else (PASS_LIKE.test(item.option.action.type) ? pass : buttons).push({ kind: "button", items: [item] });
     }
-    // Deck cards the choice is about ("山札の上から1枚を見る"): shown first, only to look at.
+    // Deck cards the choice is about ("山札の上から1枚を見る"), only to look at: after the cards that
+    // can be picked, so a search of the whole deck (XG3-061【キャストオフ】) opens on a card that can be picked.
     const viewed = viewedCardIds(this.state())
       .filter((id) => !cards.has(id))
       .map((id) => ({ kind: "card" as const, id, items: [] as MenuItem[] }));
-    return [...viewed, ...[...cards].map(([id, items]) => ({ kind: "card" as const, id, items })), ...buttons, ...pass];
+    return [...[...cards].map(([id, items]) => ({ kind: "card" as const, id, items })), ...viewed, ...buttons, ...pass];
   }
 
   // ------------------------------------------------------------ popups
