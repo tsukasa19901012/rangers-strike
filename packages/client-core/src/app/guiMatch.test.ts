@@ -128,6 +128,65 @@ describe("GUI match (commercial-style controls)", () => {
     expect(found).toBe(true);
   });
 
+  it("asks a unit that entered the battle area in a popup, and a tap on a lit enemy attacks it", () => {
+    let attacked = false;
+    let passed = false;
+    for (const seed of [1, 2, 3, 4, 5, 6, 7, 8]) {
+      const app = startGui(seed);
+      for (let i = 0; i < 6000 && app.currentScreen === "match" && !(attacked && passed); i++) {
+        if (!humanTurn(app)) {
+          app.tick();
+          continue;
+        }
+        const state = app.session!.state;
+        const options = app.session!.humanOptions();
+        const entering = state.pendingBattleEntry?.playerId === "player1" ? state.pendingBattleEntry.instanceId : null;
+        const battles = options.filter((o) => o.action.type === "battle");
+        if (!entering || battles.length === 0) {
+          playOneStep(app, i);
+          continue;
+        }
+        const gui = app.view().gui!;
+        expect(gui.battleEntry).toBe(true);
+        const rows = gui.popup!.rows.map((r) => r.text);
+        expect(rows[0]).toMatch(/^アタック/);
+        expect(rows[rows.length - 1]).toBe("何もしない");
+        if (options.some((o) => o.action.type === "strike")) expect(rows).toContain("ストライク");
+        const version = app.session!.version;
+        if (!attacked) {
+          const defender = (battles[0]!.action as { defenderInstanceId: string }).defenderInstanceId;
+          const row = gui.rows.findIndex((r) => r.tiles.some((t) => t.instanceId === defender));
+          const slot = gui.rows[row]!.tiles.findIndex((t) => t.instanceId === defender);
+          // Hovering the defender shows it and keeps the popup open.
+          app.dispatch(input.focusTile(row, slot, false));
+          expect(app.view().gui!.battleEntry).toBe(true);
+          expect(app.view().gui!.detailLines.some((l) => l.text.includes(app.session!.state.definitions[gui.rows[row]!.tiles[slot]!.cardId]!.name))).toBe(true);
+          const session = app.session!;
+          const chosen: string[] = [];
+          const choose = session.chooseHuman.bind(session);
+          session.chooseHuman = (index) => {
+            const action = session.humanOptions()[index]!.action as { type: string; defenderInstanceId?: string };
+            chosen.push(`${action.type}:${action.defenderInstanceId}`);
+            return choose(index);
+          };
+          app.dispatch(input.focusTile(row, slot, true));
+          if (app.view().gui?.list) app.dispatch(input.confirm);
+          session.chooseHuman = choose;
+          expect(session.version).toBeGreaterThan(version);
+          expect(chosen).toEqual([`battle:${defender}`]);
+          attacked = true;
+        } else {
+          app.dispatch(input.select(rows.length - 1, true));
+          expect(app.session!.version).toBeGreaterThan(version);
+          expect(app.session!.state.pendingBattleEntry?.instanceId).not.toBe(entering);
+          passed = true;
+        }
+      }
+      if (attacked && passed) break;
+    }
+    expect(attacked && passed).toBe(true);
+  });
+
   it("opens a selection window for pending decisions and resolves it", () => {
     let seen = 0;
     for (const seed of [3, 11, 21]) {
