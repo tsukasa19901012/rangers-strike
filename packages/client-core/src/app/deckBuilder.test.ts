@@ -26,6 +26,21 @@ function pickMenu(app: AppController, label: RegExp) {
   throw new Error(`menu row ${label} not found in ${menu.title}`);
 }
 
+/** 40 cards: 3 copies each of 13 different names, then 1 more. */
+function legalDeck(app: AppController) {
+  const api = app.deckApi!;
+  const names = new Set<string>();
+  const picked = api.cards.filter((c) => {
+    const key = api.sameNameKey(c);
+    if (c.type !== "unit" || api.maxCopies(c) < 3 || names.has(key)) return false;
+    names.add(key);
+    return true;
+  });
+  const entries = picked.slice(0, 14).map((c, i) => ({ cardId: c.id, count: i < 13 ? 3 : 1 }));
+  expect(api.validate(entries).ok).toBe(true);
+  return entries;
+}
+
 describe("DeckBuilder", () => {
   it("starts from a starter, edits, saves and plays the custom deck", () => {
     const app = openBuilder();
@@ -199,5 +214,47 @@ describe("DeckBuilder", () => {
     expect(app.view().deck!.detailButtons.find((b) => b.id === "remove")!.enabled).toBe(true);
     app.dispatch(input.alt);
     expect(app.view().deck!.tiles[1]!.count).toBe(0);
+  });
+
+  it("shares and imports decks when the shell can (web), and hides the rows on Vita", () => {
+    const vita = openBuilder();
+    expect(vita.view().deck!.menu!.rows.some((r) => /テキストから取り込む/.test(r.text))).toBe(false);
+
+    const app = new AppController({ platform: testPlatform(), viewport: VITA, cpuDelayFrames: 0, seed: () => 5, gui: true, cardArt: true, deckSharing: true });
+    app.dispatch(input.select(4, true));
+    // The paste row asks the shell for its box and leaves the start menu under it.
+    pickMenu(app, /テキストから取り込む/);
+    expect(app.takeDeckRequest()).toBe("paste");
+    expect(app.takeDeckRequest()).toBeNull();
+    expect(app.view().deck!.menu!.title).toMatch(/始め方/);
+    const entries = legalDeck(app);
+    app.importDeckToBuilder("赤の戦士", entries);
+    expect(app.view().deck!.menu).toBeUndefined();
+    expect(app.view().deck!.topBar).toMatch(/40枚 対戦可（未保存）/);
+    expect(app.builderDeck()!.name).toBe("赤の戦士");
+    // 共有する asks for the share panel.
+    app.dispatch(input.cancel);
+    pickMenu(app, /共有する/);
+    expect(app.takeDeckRequest()).toBe("share");
+    expect(app.builderDeck()!.entries.reduce((n, e) => n + e.count, 0)).toBe(40);
+  });
+
+  it("saves a deck opened from a URL once, then edits or plays it", () => {
+    const app = new AppController({ platform: testPlatform(), viewport: VITA, cpuDelayFrames: 0, seed: () => 5, gui: true, cardArt: true, deckSharing: true });
+    const entries = legalDeck(app);
+    const deck = app.saveSharedDeck("共有デッキ", entries);
+    expect(app.saveSharedDeck("共有デッキ", [...entries].reverse()).id).toBe(deck.id);
+    const other = app.saveSharedDeck("共有デッキ", entries.slice(1));
+    expect(other.name).toBe("共有デッキ2");
+    app.editSavedDeck(deck.id);
+    expect(app.currentScreen).toBe("deck");
+    expect(app.view().deck!.menu).toBeUndefined();
+    expect(app.view().deck!.textFields).toEqual([]);
+    expect(app.builderDeck()!.name).toBe("共有デッキ");
+    app.dispatch(input.cancel);
+    pickMenu(app, /^戻る/);
+    app.playSavedDeck(deck.id);
+    expect(app.currentScreen).toBe("match");
+    expect(app.matchSettings.humanDeck).toBe(`custom:${deck.id}`);
   });
 });

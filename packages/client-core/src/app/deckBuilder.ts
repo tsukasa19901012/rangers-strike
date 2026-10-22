@@ -103,6 +103,9 @@ export type DeckBuilderView = {
 
 export type DeckBuilderResult = { kind: "saved"; deck: CustomDeck } | { kind: "deleted"; id: string } | { kind: "closed" };
 
+/** What the builder asks the shell to show over it: the share panel, or the box to paste a card list into. */
+export type DeckShellRequest = "share" | "paste";
+
 type MenuItem = { label: string; run: () => void };
 
 export function computeDeckGeometry(viewport: Viewport): DeckGeometry {
@@ -151,6 +154,8 @@ export class DeckBuilder {
   private readonly byId: Map<string, CardDefinition>;
   /** Set when the builder wants to close; the controller reads and clears it. */
   result: DeckBuilderResult | null = null;
+  /** Set when a menu row asks for the shell's share panel or paste box; the shell takes it. */
+  request: DeckShellRequest | null = null;
 
   constructor(
     private readonly engine: EngineApi,
@@ -159,6 +164,8 @@ export class DeckBuilder {
     private readonly cardArt = false,
     /** Screen geometry for a viewport (the Vita layout unless a shell supplies its own). */
     private readonly layout: (viewport: Viewport) => DeckGeometry = computeDeckGeometry,
+    /** The shell can share decks and read pasted card lists (web; Vita has neither). */
+    private readonly sharing = false,
   ) {
     this.deck = engine.deckApi;
     this.byId = new Map(this.deck.cards.map((card) => [card.id, card]));
@@ -190,6 +197,25 @@ export class DeckBuilder {
     this.index = 0;
     this.page = 0;
     this.recount();
+  }
+
+  /** Opens a saved deck for editing (skips the start menu). */
+  open(deck: CustomDeck): void {
+    this.load(deck.entries, deck.name, deck.id);
+    this.menu = null;
+  }
+
+  /** Starts a new, unsaved deck from a pasted card list. */
+  importDeck(name: string, entries: readonly DeckEntry[]): void {
+    this.load(entries, this.nextName(name.trim() || "取り込んだデッキ"), null);
+    this.dirty = true;
+    this.menu = null;
+    this.toast(`${this.validation.total}枚を取り込みました`);
+  }
+
+  /** The deck being edited, for the share panel. */
+  currentDeck(): { name: string; entries: DeckEntry[] } {
+    return { name: this.deckName.trim() || "名前なし", entries: this.deckEntries() };
   }
 
   private deckEntries(): DeckEntry[] {
@@ -407,6 +433,18 @@ export class DeckBuilder {
         run: () => this.load(deck.entries, deck.name, deck.id),
       })),
       { label: "空のデッキから作る", run: () => this.load([], this.nextName("自作デッキ"), null) },
+      ...(this.sharing
+        ? [
+            {
+              label: "テキストから取り込む",
+              // The start menu stays under the paste box: cancelling it comes back here.
+              run: () => {
+                this.openStartMenu();
+                this.request = "paste";
+              },
+            },
+          ]
+        : []),
       ...starters.map((deck) => ({
         label: `元にする: ${deck.name}`,
         run: () => this.load(deck.entries, this.nextName(`${deck.name}改`), null),
@@ -430,6 +468,7 @@ export class DeckBuilder {
         run: () => this.save(),
       },
       { label: this.dirty ? "保存せずに戻る（変更を捨てる）" : "戻る", run: () => (this.result = { kind: "closed" }) },
+      ...(this.sharing ? [{ label: "共有する（URL・テキスト・QR）", run: () => (this.request = "share") }] : []),
       { label: "絞り込み", run: () => this.openFiltersMenu() },
       { label: "別のデッキを開く", run: () => this.openStartMenu() },
     ];

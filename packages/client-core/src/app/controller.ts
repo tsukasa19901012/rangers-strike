@@ -1,11 +1,11 @@
 // Top-level client state machine: title (deck select) -> match -> result.
 // Consumes logical input, schedules CPU moves on frame ticks and produces a
 // renderer-agnostic ScreenView. A shell only maps input and draws the view.
-import type { CpuLevel, EngineApi } from "../engineApi";
+import type { CpuLevel, DeckApi, DeckEntry, EngineApi } from "../engineApi";
 import { HUMAN } from "../engineApi";
 import { ListCursor, type LogicalInput } from "../input/actions";
 import type { Platform } from "../platform/interfaces";
-import { SettingsStore, type AutoplayRequest, type Settings } from "../platform/settings";
+import { SettingsStore, type AutoplayRequest, type CustomDeck, type Settings } from "../platform/settings";
 import { GameSession } from "../session/session";
 import { PLAYER_LABELS } from "../text/labels";
 import { fitLine, wrapText, type WrapOptions } from "../text/wrap";
@@ -13,7 +13,8 @@ import { boardLines, buildBoardView, buildPendingView, pendingLines } from "../v
 import { computeLayout, type FontPx, type Layout, type Viewport } from "../view/layout";
 import { GuiMatch, type GuiView } from "./guiMatch";
 import { DEFAULT_ASSIST, startOrder, type AssistSettings } from "./assist";
-import { DeckBuilder, type DeckBuilderView, type DeckGeometry } from "./deckBuilder";
+import { DeckBuilder, type DeckBuilderView, type DeckGeometry, type DeckShellRequest } from "./deckBuilder";
+import { sameDeckEntries } from "./deckShare";
 import type { GuiGeometry } from "../view/gui";
 import { CUSTOM_DECK_PREFIX } from "../platform/settings";
 import { buildSharePayload, type SharePayload } from "./share";
@@ -54,6 +55,8 @@ export type ControllerOptions = {
   gui?: boolean;
   /** With `gui`: the shell draws card images (see GuiView.detailArt). */
   cardArt?: boolean;
+  /** The shell shares decks and reads pasted card lists (adds the deck builder's 共有する / テキストから取り込む rows). */
+  deckSharing?: boolean;
   /** Shell-specific screen geometry for the match and the deck builder (defaults: the Vita layout). */
   layouts?: {
     match?: (viewport: Viewport) => GuiGeometry;
@@ -99,6 +102,7 @@ export class AppController {
   private viewport: Viewport;
   private readonly guiEnabled: boolean;
   private readonly cardArt: boolean;
+  private readonly deckSharing: boolean;
   private gui: GuiMatch | null = null;
   private builder: DeckBuilder | null = null;
   private readonly layouts: NonNullable<ControllerOptions["layouts"]>;
@@ -113,6 +117,7 @@ export class AppController {
     this.viewport = options.viewport;
     this.guiEnabled = !!options.gui;
     this.cardArt = !!options.cardArt;
+    this.deckSharing = !!options.deckSharing;
     this.fontPx = options.fontPx;
     this.layout = computeLayout(options.viewport, options.fontPx);
     this.cpuDelayFrames = options.cpuDelayFrames ?? 8;
@@ -369,9 +374,76 @@ export class AppController {
 
   openDeckBuilder(): void {
     if (!this.engine) return;
-    this.builder = new DeckBuilder(this.engine, this.viewport, () => this.settingsStore.customDecks(), this.cardArt, this.layouts.deck);
+    this.builder = new DeckBuilder(this.engine, this.viewport, () => this.settingsStore.customDecks(), this.cardArt, this.layouts.deck, this.deckSharing);
     this.screen = "deck";
     this.message = "";
+    this.touch();
+  }
+
+  // ------------------------------------------------- deck sharing (web shell)
+
+  /** Deck rules and the card pool (null while the engine loads). */
+  get deckApi(): DeckApi | null {
+    return this.engine?.deckApi ?? null;
+  }
+
+  /** What the deck builder asked the shell to show (the share panel, the paste box); taking it clears it. */
+  takeDeckRequest(): DeckShellRequest | null {
+    if (!this.builder || this.screen !== "deck") return null;
+    const request = this.builder.request;
+    this.builder.request = null;
+    return request;
+  }
+
+  /** The deck open in the builder, for the share panel. */
+  builderDeck(): { name: string; entries: DeckEntry[] } | null {
+    return this.builder && this.screen === "deck" ? this.builder.currentDeck() : null;
+  }
+
+  /** A pasted card list becomes the builder's deck (new and unsaved). */
+  importDeckToBuilder(name: string, entries: readonly DeckEntry[]): void {
+    if (!this.builder || this.screen !== "deck") return;
+    this.builder.importDeck(name, entries);
+    this.touch();
+  }
+
+  /**
+   * Saves a deck opened from a shared URL as the player's own. A saved deck with
+   * the same cards and name is reused, so opening a URL twice adds one deck.
+   */
+  saveSharedDeck(name: string, entries: readonly DeckEntry[]): CustomDeck {
+    const saved = this.settingsStore.customDecks();
+    const base = name.trim() || "共有されたデッキ";
+    const same = saved.find((d) => d.name === base && sameDeckEntries(d.entries, entries));
+    if (same) return same;
+    const names = new Set(saved.map((d) => d.name));
+    let unique = base;
+    for (let n = 2; names.has(unique); n++) unique = `${base}${n}`;
+    const deck: CustomDeck = {
+      id: `d${Date.now().toString(36)}${Math.floor(Math.random() * 1296).toString(36)}`,
+      name: unique,
+      entries: entries.filter((e) => e.count > 0).map((e) => ({ ...e })),
+      updatedAt: Date.now(),
+    };
+    this.settingsStore.saveCustomDeck(deck);
+    this.refreshDeckIds();
+    this.touch();
+    return deck;
+  }
+
+  /** Opens a saved deck in the builder. */
+  editSavedDeck(id: string): void {
+    const deck = this.settingsStore.customDecks().find((d) => d.id === id);
+    this.openDeckBuilder();
+    if (deck && this.builder) this.builder.open(deck);
+    this.touch();
+  }
+
+  /** Starts a match with a saved deck as the player's deck (the CPU's deck and level as set). */
+  playSavedDeck(id: string): void {
+    this.updateSettings({ humanDeck: `${CUSTOM_DECK_PREFIX}${id}` });
+    this.message = "";
+    this.startMatch();
     this.touch();
   }
 

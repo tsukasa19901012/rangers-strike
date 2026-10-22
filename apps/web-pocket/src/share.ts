@@ -21,18 +21,18 @@ type BrowserGlobals = {
 };
 const g = globalThis as unknown as BrowserGlobals;
 
-async function pipe(bytes: Uint8Array<ArrayBuffer>, stream: GenericTransformStream): Promise<Uint8Array> {
+export async function pipe(bytes: Uint8Array<ArrayBuffer>, stream: GenericTransformStream): Promise<Uint8Array> {
   const out = new g.Blob!([bytes]).stream().pipeThrough(stream);
   return new Uint8Array(await new g.Response!(out).arrayBuffer());
 }
 
-function toBase64Url(bytes: Uint8Array): string {
+export function toBase64Url(bytes: Uint8Array): string {
   let bin = "";
   for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
   return g.btoa!(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
-function fromBase64Url(text: string): Uint8Array<ArrayBuffer> {
+export function fromBase64Url(text: string): Uint8Array<ArrayBuffer> {
   const bin = g.atob!(text.replace(/-/g, "+").replace(/_/g, "/"));
   const bytes = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);

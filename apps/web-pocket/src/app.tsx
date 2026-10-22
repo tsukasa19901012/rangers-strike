@@ -24,6 +24,8 @@ import {
   CPU,
   HUMAN,
   webPileRect,
+  formatDeckText,
+  parseDeckText,
   type DeckBuilderView,
   type DeckTextField,
   type GuiView,
@@ -40,13 +42,27 @@ import { ResultView } from "./ResultView";
 import { inside } from "./ui";
 import { shareBoard, sharedBoardFromLocation } from "./share";
 import { applySettingsAction, SettingsPanel, settingsHit, settingsLayout } from "./SettingsPanel";
+import { deckPanelHit, deckPanelLayout, DeckSharePanelView, isHostAction, PASTE_PLACEHOLDER, type DeckPanel, type HostActionId } from "./DeckSharePanel";
+import { deckUrl, sharedDeckFromLocation } from "./deckShare";
+import { qrBits } from "./qr";
 
 /** A pointer event as host/host.js sends it (logical px). */
 type PointerEvent = { kind: "move" | "down" | "up" | "wheel" | "leave"; x: number; y: number; button?: number; dy?: number };
-/** Text typed into one of the host's inputs (deck builder search / deck name). */
-type TextEvent = { kind: "text"; id: "search" | "name"; text: string };
-/** Commands to the host: the pointer cursor, and where to show text inputs. */
-type HostCommand = { type: "rs.cursor"; pointer: boolean } | { type: "rs.fields"; fields: DeckTextField[] };
+/** Text typed into one of the host's inputs (deck builder search / deck name / the paste box). */
+type TextEvent = { kind: "text"; id: "search" | "name" | "paste"; text: string };
+/** A button the host page pressed itself (copy, save the QR image) and how it went. */
+type HostActionEvent = { kind: "hostAction"; id: HostActionId; result: "copied" | "saved" | "shared" | "cancelled" | "failed" };
+/** A text input the host lays over the canvas (`multiline`: a textarea). */
+type HostField = Omit<DeckTextField, "id"> & { id: TextEvent["id"]; multiline?: boolean };
+/** A button the host page handles inside the click (the clipboard and the share sheet need the click itself). */
+type HostAction = {
+  id: HostActionId;
+  rect: { x: number; y: number; w: number; h: number };
+  copy?: string;
+  qr?: { bits: string; size: number; caption: string; name: string; sub: string; url: string; file: string };
+};
+/** Commands to the host: the pointer cursor, where to show text inputs, and the buttons it presses itself. */
+type HostCommand = { type: "rs.cursor"; pointer: boolean } | { type: "rs.fields"; fields: HostField[] } | { type: "rs.actions"; actions: HostAction[] };
 
 /**
  * Keys (host/host.js maps them to these buttons): arrows move over cards,
@@ -147,6 +163,7 @@ export default function App() {
     gui: true,
     cardArt: true,
     layouts: { match: computeWebGuiGeometry, deck: computeWebDeckGeometry },
+    deckSharing: true,
   });
   const [view, setView] = createSignal<ScreenView>(controller.view(), { equals: false });
   const [size, setSize] = createSignal(viewport);
@@ -237,6 +254,116 @@ export default function App() {
     else applySettingsAction(controller, action);
     return true;
   }
+  // Deck sharing: the share panel, a deck opened from a URL, the paste box (DeckSharePanel).
+  const [deckPanel, setDeckPanel] = createSignal<DeckPanel | null>(null);
+  const [panelHot, setPanelHot] = createSignal<string | null>(null);
+  const [panelNotice, setPanelNotice] = createSignal<string | null>(null);
+  let panelNoticeFrames = 0;
+  let panelPressed: PointerEvent | null = null;
+  const showPanelNotice = (text: string) => {
+    setPanelNotice(text);
+    panelNoticeFrames = NOTICE_FRAMES;
+  };
+  const deckApi = controller.deckApi;
+  const knownIds = new Set(deckApi?.cards.map((c) => c.id) ?? []);
+  const cardNames = new Map(deckApi?.cards.map((c) => [c.id, c.name]) ?? []);
+  const checkDeck = (entries: Parameters<NonNullable<typeof deckApi>["validate"]>[0]) => deckApi?.validate(entries) ?? { ok: false, total: 0, errors: [] };
+  const deckPanelBox = () => {
+    const panel = deckPanel();
+    return panel ? deckPanelLayout(panel, size().width, size().height) : null;
+  };
+  /** Opens the share panel for the deck in the builder; the URL (and its QR code) follow when the server answers. */
+  const openSharePanel = () => {
+    const deck = controller.builderDeck();
+    if (!deck) return;
+    const text = formatDeckText(deck.name, deck.entries, (id) => cardNames.get(id));
+    setPanelNotice(null);
+    setDeckPanel({ kind: "share", name: deck.name, entries: deck.entries, text, url: null, qr: null });
+    deckUrl(deck.name, deck.entries)
+      .then(({ url }) => {
+        const panel = deckPanel();
+        if (panel?.kind === "share" && panel.text === text) setDeckPanel({ ...panel, url, qr: qrBits(url) });
+      })
+      .catch(() => showPanelNotice("URL を作れませんでした"));
+  };
+  const closePanel = () => {
+    setDeckPanel(null);
+    setPanelNotice(null);
+    setPanelHot(null);
+    panelPressed = null;
+    refresh();
+  };
+  /** A button of the panel (the host's copy / save buttons arrive as host actions instead). */
+  const runPanelAction = (id: string) => {
+    const panel = deckPanel();
+    if (!panel) return;
+    if (id === "close" || id === "cancel" || id === "skip" || id === "outside") {
+      // A click beside the box does not throw away pasted text or a deck from a URL.
+      if (id !== "outside" || panel.kind === "share") closePanel();
+      return;
+    }
+    if (panel.kind === "open" && (id === "edit" || id === "play")) {
+      const saved = controller.saveSharedDeck(panel.deck.name, panel.deck.entries);
+      closePanel();
+      if (id === "edit") controller.editSavedDeck(saved.id);
+      else controller.playSavedDeck(saved.id);
+      refresh();
+      return;
+    }
+    if (panel.kind === "paste" && id === "import") {
+      controller.importDeckToBuilder(panel.parsed.name || "取り込んだデッキ", panel.parsed.entries);
+      closePanel();
+    }
+  };
+  const HOST_RESULTS: Record<HostActionEvent["result"], string | null> = {
+    copied: "コピーしました",
+    saved: "QR画像を保存しました",
+    shared: null,
+    cancelled: null,
+    failed: "できませんでした（ブラウザが許可していません）",
+  };
+  const onHostAction = (e: HostActionEvent) => {
+    const text = e.result === "copied" ? (e.id === "copyUrl" ? "URLをコピーしました" : "テキストをコピーしました") : HOST_RESULTS[e.result];
+    if (text) showPanelNotice(e.result === "failed" ? (e.id === "saveQr" ? `保存${text}` : `コピー${text}`) : text);
+  };
+  /** Pointer input while a deck panel is open: it takes every event. */
+  function onPanelPointer(e: PointerEvent): boolean {
+    const layout = deckPanelBox();
+    if (!layout) return false;
+    const p = { x: e.x, y: e.y };
+    if (e.kind === "move" || e.kind === "leave") {
+      const hit = e.kind === "leave" ? null : deckPanelHit(layout, p);
+      const hot = hit && hit !== "outside" ? hit : null;
+      setCursor(!!hot);
+      if (hot === panelHot()) return false;
+      setPanelHot(hot);
+      return true;
+    }
+    if (e.kind === "wheel") return false;
+    if (e.kind === "down") {
+      panelPressed = e;
+      return false;
+    }
+    const down = panelPressed;
+    panelPressed = null;
+    if (!down || Math.abs(down.x - e.x) + Math.abs(down.y - e.y) > 12) return false;
+    const hit = e.button === 2 ? "close" : deckPanelHit(layout, p);
+    // The host page pressed its own buttons already (copy, save).
+    if (!hit || isHostAction(hit)) return false;
+    runPanelAction(hit === "close" && deckPanel()?.kind === "open" ? "skip" : hit);
+    return true;
+  }
+  // Opened from a shared deck's URL: show it over the title. A long URL opened in a tab that
+  // already shows the app only changes the hash, so that is watched too.
+  const openDeckFromLocation = () =>
+    void sharedDeckFromLocation(knownIds).then((shared) => {
+      if (!shared) return;
+      if (shared === "error") controller.notify("共有されたデッキを開けませんでした（URL が壊れています）");
+      else if (controller.currentScreen === "title") setDeckPanel({ kind: "open", deck: shared, check: checkDeck(shared.entries) });
+      refresh();
+    });
+  openDeckFromLocation();
+  (globalThis as unknown as { addEventListener?: (type: string, listener: () => void) => void }).addEventListener?.("hashchange", openDeckFromLocation);
   let dragFrom: { instanceId: string; cardId: string; w: number; h: number } | null = null;
   const refresh = () => setView(controller.view());
   // For browser tests and debugging from the console.
@@ -246,6 +373,8 @@ export default function App() {
       const gui = controller.view().gui;
       return gui && controller.session ? pileLayout(controller.session.state, player, webPileRect(gui.geometry, player)) : null;
     },
+    /** The open deck panel's rectangles (share / open / paste). */
+    deckPanel: () => deckPanelBox(),
     peekCards: () => {
       const gui = controller.view().gui;
       const shown = peek();
@@ -254,16 +383,47 @@ export default function App() {
   };
   const repeater = new ButtonRepeater(BINDINGS);
 
-  const pointerEvents: (PointerEvent | TextEvent)[] = [];
-  const overlay = connectOverlay<PointerEvent | TextEvent, HostCommand>((event) => pointerEvents.push(event));
-  // The host's text inputs follow the deck builder's fields (none while a menu or the settings panel is open).
+  const pointerEvents: (PointerEvent | TextEvent | HostActionEvent)[] = [];
+  const overlay = connectOverlay<PointerEvent | TextEvent | HostActionEvent, HostCommand>((event) => pointerEvents.push(event));
+  // The host's text inputs follow the deck builder's fields (none while a menu or the settings panel is open),
+  // or the paste box; its own buttons follow the share panel.
   let fieldsKey = "[]";
+  let actionsKey = "[]";
   const syncFields = () => {
-    const fields = settingsOpen() ? [] : (view().deck?.textFields ?? []);
+    const panel = deckPanel();
+    const layout = deckPanelBox();
+    const fields: HostField[] =
+      panel?.kind === "paste" && layout?.textBox
+        ? [{ id: "paste", rect: layout.textBox, text: panel.text, placeholder: PASTE_PLACEHOLDER, maxLength: 8000, multiline: true }]
+        : settingsOpen() || panel
+          ? []
+          : (view().deck?.textFields ?? []);
     const key = JSON.stringify(fields);
-    if (key === fieldsKey) return;
-    fieldsKey = key;
-    overlay.send({ type: "rs.fields", fields });
+    if (key !== fieldsKey) {
+      fieldsKey = key;
+      overlay.send({ type: "rs.fields", fields });
+    }
+    const actions: HostAction[] = [];
+    if (panel?.kind === "share" && layout) {
+      for (const button of layout.buttons) {
+        if (!button.enabled || !isHostAction(button.id)) continue;
+        if (button.id === "copyText") actions.push({ id: button.id, rect: button.rect, copy: panel.text });
+        else if (button.id === "copyUrl" && panel.url) actions.push({ id: button.id, rect: button.rect, copy: panel.url });
+        else if (button.id === "saveQr" && panel.url && panel.qr) {
+          const total = panel.entries.reduce((n, e) => n + e.count, 0);
+          actions.push({
+            id: button.id,
+            rect: button.rect,
+            qr: { ...panel.qr, caption: "レンジャーズストライク デッキ", name: panel.name, sub: `${total}枚・${panel.entries.length}種類`, url: panel.url, file: `${panel.name}.png` },
+          });
+        }
+      }
+    }
+    const aKey = JSON.stringify(actions);
+    if (aKey !== actionsKey) {
+      actionsKey = aKey;
+      overlay.send({ type: "rs.actions", actions });
+    }
   };
   let pressed: PointerEvent | null = null;
   let hoverKey = "";
@@ -643,7 +803,10 @@ export default function App() {
     const current = controller.view();
     // Keys drive the match and the deck builder; on the title and result
     // screens the framework moves focus between buttons itself.
-    if (current.gui || current.deck) {
+    if (deckPanel()) {
+      // Keys belong to the panel: Esc / × closes it (a deck from a URL is then not taken).
+      for (const event of repeater.frame(buttons)) if (event.type === "cancel") runPanelAction(deckPanel()?.kind === "open" ? "skip" : "close");
+    } else if (current.gui || current.deck) {
       for (const event of repeater.frame(buttons)) {
         controller.dispatch(event);
         changed = true;
@@ -651,12 +814,20 @@ export default function App() {
     } else repeater.frame(buttons);
     for (const event of pointerEvents.splice(0)) {
       if (event.kind === "text") {
-        controller.setDeckText(event.id, event.text);
+        const panel = deckPanel();
+        if (event.id === "paste") {
+          if (panel?.kind === "paste") setDeckPanel({ ...panel, text: event.text, parsed: parseDeckText(event.text, knownIds) });
+        } else controller.setDeckText(event.id, event.text);
         changed = true;
         continue;
       }
+      if (event.kind === "hostAction") {
+        onHostAction(event);
+        continue;
+      }
       const screen = controller.view();
-      if (settingsOpen()) changed = onSettingsPointer(event) || changed;
+      if (deckPanel()) changed = onPanelPointer(event) || changed;
+      else if (settingsOpen()) changed = onSettingsPointer(event) || changed;
       else if (screen.gui) changed = onMatchPointer(event, screen.gui) || changed;
       else if (screen.deck) changed = onDeckPointer(event, screen.deck) || changed;
       else if (event.kind === "move") setCursor(false);
@@ -666,6 +837,17 @@ export default function App() {
       setNotice(null);
       changed = true;
     }
+    if (panelNoticeFrames > 0 && --panelNoticeFrames === 0) setPanelNotice(null);
+    // The deck builder's 共有する / テキストから取り込む rows.
+    const request = controller.takeDeckRequest();
+    if (request === "share") openSharePanel();
+    else if (request === "paste") {
+      setPanelNotice(null);
+      setDeckPanel({ kind: "paste", text: "", parsed: { name: "", entries: [], unreadable: [] } });
+    }
+    // The share panel belongs to the deck builder, a deck from a URL to the title (a match may have started under it).
+    const open = deckPanel();
+    if (open && ((open.kind !== "open" && !controller.view().deck) || (open.kind === "open" && controller.view().screen !== "title"))) setDeckPanel(null);
     // A press held still on a card shows it whole (the drag it might have started is dropped).
     if (pressed && pressCard && !longPressed && ++pressFrames >= LONG_PRESS_FRAMES) {
       setSheet(pressCard);
@@ -687,7 +869,7 @@ export default function App() {
     <Switch
       fallback={
         // The title's buttons take clicks through focus, so the title steps aside while the panel is open.
-        <Show when={!settingsOpen()} fallback={<View class="w-full h-full bg-gradient-to-b from-[#0f1b33] to-[#04070d]" />}>
+        <Show when={!settingsOpen() && !deckPanel()} fallback={<View class="w-full h-full bg-gradient-to-b from-[#0f1b33] to-[#04070d]" />}>
           <TitleView controller={controller} view={view} refresh={refresh} width={size().width} height={size().height} openSettings={openSettings} />
         </Show>
       }
@@ -724,6 +906,9 @@ export default function App() {
     </Switch>
     <Show when={settingsOpen()}>
       <SettingsPanel layout={panelLayout()} width={size().width} height={size().height} hot={settingsHot()} />
+    </Show>
+    <Show when={deckPanel()}>
+      {(panel) => <DeckSharePanelView panel={panel()} layout={deckPanelBox()!} width={size().width} height={size().height} hot={panelHot()} notice={panelNotice()} />}
     </Show>
     </>
   );

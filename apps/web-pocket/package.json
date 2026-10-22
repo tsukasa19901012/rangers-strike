@@ -13,7 +13,8 @@
     "pocket:check": "node scripts/pocket-check.mjs"
   },
   "dependencies": {
-    "@rangers-strike/client-core": "*"
+    "@rangers-strike/client-core": "*",
+    "qrcode-generator": "^1.4.4"
   },
   "devDependencies": {
     "tsx": "^4.20.3"

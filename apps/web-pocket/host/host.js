@@ -8,9 +8,14 @@
 //   - mouse / pen / touch reach the guest over the "pocket.overlay" service
 //     channel (hover, press and the raw position for card hit tests);
 //   - keyboard keys map to the console buttons the app also understands;
-//   - text fields (deck builder search / deck name) are real <input>s laid
-//     over the canvas where the guest asks for them, so phones get their own
-//     keyboard and IME; typed text goes back over the same channel;
+//   - text fields (deck builder search / deck name, the deck paste box) are
+//     real <input>s / <textarea>s laid over the canvas where the guest asks
+//     for them, so phones get their own keyboard and IME; typed text goes back
+//     over the same channel;
+//   - buttons that need the click itself (copy to the clipboard, save or
+//     share the deck's QR image) are pressed here: the guest sends their
+//     rectangles ("rs.actions") and hears back how it went;
+//   - QR codes the guest computed are drawn into textures (globalThis.__rsQr);
 //   - card images are decoded by the browser and uploaded as textures on
 //     demand (globalThis.__rsCardArt);
 //   - the rules engine is a separate ESM file (globalThis.__rsEngine);
@@ -123,11 +128,13 @@ async function start() {
       shown.add(f.id);
       let el = inputs.get(f.id);
       if (!el) {
-        el = document.createElement("input");
-        el.type = f.id === "search" ? "search" : "text";
+        el = document.createElement(f.multiline ? "textarea" : "input");
+        if (!f.multiline) {
+          el.type = f.id === "search" ? "search" : "text";
+          el.enterKeyHint = f.id === "search" ? "search" : "done";
+        }
         el.className = "field";
         el.dataset.field = f.id;
-        el.enterKeyHint = f.id === "search" ? "search" : "done";
         el.autocomplete = "off";
         el.spellcheck = false;
         el.addEventListener("input", () => {
@@ -149,7 +156,7 @@ async function start() {
         height: `${f.rect.h * scale}px`,
         // 16 px at least: smaller text makes iOS zoom the page when the field is focused.
         fontSize: `${Math.max(16, Math.round(15 * scale))}px`,
-        padding: `0 ${Math.round(10 * scale)}px`,
+        padding: f.multiline ? `${Math.round(10 * scale)}px` : `0 ${Math.round(10 * scale)}px`,
       });
     }
     for (const [id, el] of inputs) {
@@ -172,7 +179,7 @@ async function start() {
       else if (msg && msg.type === "rs.fields") {
         fields = msg.fields || [];
         placeFields();
-      }
+      } else if (msg && msg.type === "rs.actions") setActions(msg.actions || []);
     } catch {
       // not ours
     }
@@ -196,11 +203,15 @@ async function start() {
   };
   canvas.addEventListener("pointermove", (e) => send("move", e));
   canvas.addEventListener("pointerdown", (e) => {
+    actionDown = toLogical(e);
     canvas.focus();
     canvas.setPointerCapture?.(e.pointerId);
     send("down", e, { button: e.button });
   });
-  canvas.addEventListener("pointerup", (e) => send("up", e, { button: e.button }));
+  canvas.addEventListener("pointerup", (e) => {
+    if (e.button === 0) pressAction(e);
+    send("up", e, { button: e.button });
+  });
   canvas.addEventListener("pointerleave", () => {
     inbox.push(JSON.stringify({ type: "pointer", event: { kind: "move", x: null, y: null } }));
     inbox.push(JSON.stringify({ type: "state", value: { kind: "leave", x: -1, y: -1 } }));
@@ -220,7 +231,14 @@ async function start() {
   let held = 0;
   let tapped = 0;
   window.addEventListener("keydown", (e) => {
-    // Typing in a text field: keys are text, not buttons. Enter / Esc leave the field.
+    // Typing in a text field: keys are text, not buttons. Enter / Esc leave the field (Enter is a new line in the paste box).
+    if (e.target instanceof HTMLTextAreaElement) {
+      if (!e.isComposing && e.key === "Escape") {
+        e.preventDefault();
+        canvas.focus();
+      }
+      return;
+    }
     if (e.target instanceof HTMLInputElement) {
       if (!e.isComposing && (e.key === "Enter" || e.key === "Escape")) {
         e.preventDefault();
@@ -286,6 +304,175 @@ async function start() {
     },
     version: () => artVersion,
   };
+
+  // ---- QR codes: the guest sends the modules ("1" = dark, row by row), drawn here as textures
+  const QR_TEX = 512;
+  const qrTextures = new Map(); // bits -> handle
+  const drawQr = (c2d, bits, size, x, y, side) => {
+    const quiet = 2;
+    const cell = side / (size + quiet * 2);
+    c2d.fillStyle = "#ffffff";
+    c2d.fillRect(x, y, side, side);
+    c2d.fillStyle = "#000000";
+    for (let r = 0; r < size; r++) {
+      for (let col = 0; col < size; col++) {
+        if (bits.charCodeAt(r * size + col) !== 49) continue;
+        // Whole pixels, so neighbouring modules leave no seams.
+        const x0 = Math.round(x + (col + quiet) * cell);
+        const y0 = Math.round(y + (r + quiet) * cell);
+        c2d.fillRect(x0, y0, Math.round(x + (col + quiet + 1) * cell) - x0, Math.round(y + (r + quiet + 1) * cell) - y0);
+      }
+    }
+  };
+  globalThis.__rsQr = {
+    texture(bits, size) {
+      const known = qrTextures.get(bits);
+      if (known !== undefined) return known;
+      const qrCanvas = document.createElement("canvas");
+      qrCanvas.width = QR_TEX;
+      qrCanvas.height = QR_TEX;
+      const c2d = qrCanvas.getContext("2d", { willReadFrequently: true });
+      drawQr(c2d, bits, size, 0, 0, QR_TEX);
+      const rgba = c2d.getImageData(0, 0, QR_TEX, QR_TEX).data;
+      const blob = new Uint8Array(8 + rgba.length);
+      const dv = new DataView(blob.buffer);
+      dv.setUint16(0, QR_TEX, true);
+      dv.setUint16(2, QR_TEX, true);
+      blob[4] = PSM_8888;
+      blob[5] = IMG_FLAG_LINEAR; // drawn smaller than this: smoothing keeps every module the same width
+      blob.set(rgba, 8);
+      const handle = wasm.ops.uploadImgEntry ? wasm.ops.uploadImgEntry(blob) : wasm.ops.uploadTexture(blob.subarray(8), QR_TEX, QR_TEX, PSM_8888);
+      qrTextures.set(bits, handle);
+      return handle;
+    },
+  };
+
+  /** The PNG 「QR画像を保存」 saves: the title, the deck name, its size, the code and the URL. */
+  function qrImage(qr) {
+    const W = 600;
+    const H = 690;
+    const out = document.createElement("canvas");
+    out.width = W * 2;
+    out.height = H * 2;
+    const c2d = out.getContext("2d");
+    c2d.scale(2, 2);
+    const bg = c2d.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, "#0b1426");
+    bg.addColorStop(1, "#04070d");
+    c2d.fillStyle = bg;
+    c2d.fillRect(0, 0, W, H);
+    const font = '"Hiragino Sans", "Noto Sans JP", system-ui, sans-serif';
+    c2d.textAlign = "center";
+    c2d.textBaseline = "middle";
+    c2d.fillStyle = "#7dd3fc";
+    c2d.font = `700 18px ${font}`;
+    c2d.fillText(qr.caption, W / 2, 48);
+    // The deck name on one line: smaller type for a long name.
+    let px = 24;
+    c2d.font = `700 ${px}px ${font}`;
+    while (px > 12 && c2d.measureText(qr.name).width > W - 48) c2d.font = `700 ${--px}px ${font}`;
+    c2d.fillStyle = "#f1f5f9";
+    c2d.fillText(qr.name, W / 2, 88);
+    c2d.fillStyle = "#94a3b8";
+    c2d.font = `400 17px ${font}`;
+    c2d.fillText(qr.sub, W / 2, 122);
+    const side = 420;
+    const qx = (W - side) / 2;
+    c2d.fillStyle = "#ffffff";
+    c2d.beginPath();
+    c2d.roundRect?.(qx - 10, 150, side + 20, side + 20, 14);
+    c2d.fill();
+    drawQr(c2d, qr.bits, qr.size, qx, 160, side);
+    c2d.fillStyle = "#94a3b8";
+    c2d.font = `400 15px ${font}`;
+    // A long URL (no server) does not fit: its start is enough to tell where it goes.
+    let url = qr.url;
+    if (c2d.measureText(url).width > W - 40) {
+      while (url.length > 20 && c2d.measureText(`${url}…`).width > W - 40) url = url.slice(0, -1);
+      url += "…";
+    }
+    c2d.fillText(url, W / 2, 620);
+    return out;
+  }
+
+  // ---- buttons pressed here inside the click (clipboard, share sheet, download)
+  let actions = [];
+  let actionDown = null;
+  const qrFiles = new Map(); // action key -> { blob, file }
+  function setActions(next) {
+    actions = next;
+    for (const a of actions) {
+      if (!a.qr) continue;
+      const key = JSON.stringify(a.qr);
+      if (qrFiles.has(key)) continue;
+      qrFiles.set(key, null);
+      // Made ahead: a phone's share sheet only opens inside the click itself.
+      qrImage(a.qr).toBlob((blob) => {
+        if (!blob) return;
+        const name = a.qr.file.replace(/[\\/:*?"<>|]/g, "_");
+        qrFiles.set(key, { blob, file: typeof File === "function" ? new File([blob], name, { type: "image/png" }) : null, name });
+      }, "image/png");
+    }
+  }
+  const tell = (id, result) => inbox.push(JSON.stringify({ type: "state", value: { kind: "hostAction", id, result } }));
+  function copyText(text) {
+    if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(text).then(() => true, () => legacyCopy(text));
+    return Promise.resolve(legacyCopy(text));
+  }
+  function legacyCopy(text) {
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.cssText = "position:fixed;top:0;left:0;opacity:0;";
+    document.body.appendChild(area);
+    area.select();
+    let ok = false;
+    try {
+      ok = document.execCommand("copy");
+    } catch {
+      ok = false;
+    }
+    area.remove();
+    canvas.focus();
+    return ok;
+  }
+  function download(blob, name) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10_000);
+  }
+  function pressAction(e) {
+    const up = toLogical(e);
+    const down = actionDown;
+    actionDown = null;
+    const hit = (p) => actions.find((a) => p.x >= a.rect.x && p.x < a.rect.x + a.rect.w && p.y >= a.rect.y && p.y < a.rect.y + a.rect.h);
+    const action = down && hit(up);
+    if (!action || hit(down) !== action) return;
+    if (action.copy !== undefined) {
+      copyText(action.copy).then((ok) => tell(action.id, ok ? "copied" : "failed"));
+      return;
+    }
+    if (action.qr) {
+      const made = qrFiles.get(JSON.stringify(action.qr));
+      if (!made) return tell(action.id, "failed");
+      // A phone opens its share sheet (save to photos, send to a chat); a computer downloads the PNG.
+      const phone = window.matchMedia?.("(pointer: coarse)").matches;
+      if (phone && made.file && navigator.canShare?.({ files: [made.file] })) {
+        navigator.share({ files: [made.file], title: action.qr.name }).then(
+          () => tell(action.id, "shared"),
+          (err) => tell(action.id, err && err.name === "AbortError" ? "cancelled" : "failed"),
+        );
+        return;
+      }
+      download(made.blob, made.name);
+      tell(action.id, "saved");
+    }
+  }
 
   // ---- guest
   globalThis.__rsEngine = engine;
