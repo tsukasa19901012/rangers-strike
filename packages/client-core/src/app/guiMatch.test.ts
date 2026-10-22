@@ -363,6 +363,37 @@ describe("cards an effect shows", () => {
     app.dispatch(input.confirm);
     expect(session.state.pendingEffectChoice?.effectId).toBe("rm017_omedetrophy");
   });
+
+  it("opens a whole-deck search on the card that can be picked (XG3-061【キャストオフ】)", () => {
+    const app = startGui(5);
+    const session = app.session!;
+    const deck = session.state.players.player1.deck.map((c) => c.instanceId);
+    const pick = deck[deck.length - 1]!;
+    session.state = {
+      ...session.state,
+      activePlayer: "player1",
+      pendingEffectChoice: {
+        playerId: "player1",
+        phasePlayerId: "player1",
+        effectId: "castoff_deck_rush",
+        sourceCardId: "XG3-061",
+        kind: "scry_keep_one",
+        validInstanceIds: [pick],
+        viewedInstanceIds: deck,
+        selectCount: 1,
+        optional: false,
+        unitDestination: "rush",
+      } as never,
+    };
+    session.version++;
+    const dialog = app.view().gui!.dialog!;
+    // The deck cards shown only to look at come after it, not in front of it on the first page.
+    expect(dialog.cards[0]).toMatchObject({ instanceId: pick, actionable: true, focused: true });
+    expect(dialog.cards.slice(1).every((c) => !c.actionable)).toBe(true);
+    const version = session.version;
+    app.dispatch(input.confirm);
+    expect(session.version).not.toBe(version);
+  });
 });
 
 describe("windows that keep cards or rows out of view", () => {
