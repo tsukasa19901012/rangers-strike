@@ -12,6 +12,8 @@ export {
   formatGameLog,
   formatActionError,
   effectiveBp,
+  countAvailablePower,
+  countOpponentMultiCategoryCommands,
   ALL_STARTER_DECK_IDS,
   WIN_DAMAGE,
 } from "../../../packages/engine/src/index";

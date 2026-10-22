@@ -347,16 +347,53 @@ export function zoneLabel(zone: string): string {
   return ZONE_LABELS[zone] ?? zone;
 }
 
-/** "CPU ダメージ2/7 手5 山30 捨3 P4(裏1) C3" — the zones not drawn as rows. */
+export type PowerCount = {
+  /** The power rush and costs check against. */
+  total: number;
+  /** Cards in the power zone, and how many of them are face down. */
+  zone: number;
+  faceDown: number;
+  /** Multi-category cards in the opponent's command zone (each counts as 1 power; R-POW-01). */
+  multi: number;
+  /** Anything else an effect adds. */
+  other: number;
+};
+
+/**
+ * A player's power. It is not the power zone's card count: every multi-category card in the
+ * opponent's command zone adds 1 (atwiki page-110, page-1559), and some effects add more.
+ */
+export function powerCount(engine: EngineApi, state: GameState, player: PlayerId): PowerCount {
+  const p = state.players[player];
+  const zone = p.power.length;
+  const faceDown = p.power.filter((c) => c.faceDown).length;
+  const multi = engine.countOpponentMultiCategoryCommands(state, player);
+  const total = engine.countAvailablePower(state, player);
+  return { total, zone, faceDown, multi, other: total - zone - multi };
+}
+
+/** "裏1・マルチ+1": what a bare power number leaves out (empty when nothing). */
+export function powerNotes(count: PowerCount): string {
+  return [
+    count.faceDown ? `裏${count.faceDown}` : "",
+    count.multi ? `マルチ+${count.multi}` : "",
+    count.other ? `効果${count.other > 0 ? "+" : ""}${count.other}` : "",
+  ]
+    .filter(Boolean)
+    .join("・");
+}
+
+/** "CPU ダメージ2/7 手5 山30 捨3 P5(裏1・マルチ+1) C3" — the zones not drawn as rows. */
 export function playerStrip(engine: EngineApi, state: GameState, player: PlayerId): string {
   const p = state.players[player];
-  const faceDown = p.power.filter((c) => c.faceDown).length;
+  const power = powerCount(engine, state, player);
+  const notes = powerNotes(power);
   const parts = [
     `${PLAYER_LABELS[player]} ダメージ${p.damage}/${engine.WIN_DAMAGE}`,
     player === HUMAN ? "" : `手${p.hand.length}`,
     `山${p.deck.length}`,
     `捨${p.discard.length}`,
-    `P${p.power.length}${faceDown ? `(裏${faceDown})` : ""}`,
+    `P${power.total}${notes ? `(${notes})` : ""}`,
     player === HUMAN ? "" : `C${p.command.length}`,
     p.operation.length ? `常${p.operation.length}` : "",
   ];
