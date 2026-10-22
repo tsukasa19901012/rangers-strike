@@ -30,5 +30,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "text": "このターン、Sユニットだけでコンビネーションするとき、4番目のユニットは「SP1」「BP8000」になる。",
+  "rawText": "このターン、Sユニットだけでコンビネーションするとき、4番目のユニットは「SP1」「BP8000」になる。"
 }

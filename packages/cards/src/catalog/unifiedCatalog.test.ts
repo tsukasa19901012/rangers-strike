@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getCardById } from "../catalog";
+import { getCardEffect } from "../effects";
 import { allParityGatesPassed, runCatalogParityAudit } from "./parity";
 import { FULL_PLAYABLE_CARD_COUNT, CORE_PLAYABLE_CARD_COUNT } from "./tiers";
 import { loadCorePlayableCards } from "./coreCatalogSources";
@@ -41,6 +42,13 @@ describe("unifiedCatalog", () => {
   it("getCardDefinition(core) matches legacy getCardById", () => {
     expect(getCardDefinition("RS-006", "core")).toEqual(getCardById("RS-006"));
     expect(getCardDefinition("RS-006")).toEqual(getCardById("RS-006"));
+  });
+
+  it("every card with effect text carries it in the catalog (the UI shows only def.text)", () => {
+    const missing = fullPlayableCatalog.cards
+      .filter((card) => !resolvePlayableCard(card.id)?.text?.trim() && getCardEffect(card.id)?.text?.trim())
+      .map((card) => card.id);
+    expect(missing).toEqual([]);
   });
 
   it("resolvePlayableCard returns core and promoted cards", () => {

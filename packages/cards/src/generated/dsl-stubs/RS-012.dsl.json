@@ -31,5 +31,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "text": "自軍捨札から、特徴「メカ」を持つユニットのカードを1枚選んで手札に加える。",
+  "rawText": "自軍捨札から、特徴「メカ」を持つユニットのカードを1枚選んで手札に加える。"
 }

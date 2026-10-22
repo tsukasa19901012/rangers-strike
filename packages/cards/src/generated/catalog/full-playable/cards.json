@@ -8619,7 +8619,8 @@
       "expansion": "legend1",
       "powerCost": 8,
       "imageUrl": "/cards/legend1/RS-001.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-001.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-001.jpg",
+      "text": "このターン、Sユニットだけでコンビネーションするとき、5番目のユニットは「SP1」「BP12000」になる。"
     },
     {
       "id": "RS-002",
@@ -8630,7 +8631,8 @@
       "expansion": "legend1",
       "powerCost": 6,
       "imageUrl": "/cards/legend1/RS-002.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-002.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-002.jpg",
+      "text": "このターン、Sユニットだけでコンビネーションするとき、4番目のユニットは「SP1」「BP8000」になる。"
     },
     {
       "id": "RS-003",
@@ -8656,7 +8658,8 @@
       "expansion": "legend1",
       "powerCost": 4,
       "imageUrl": "/cards/legend1/RS-004.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-004.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-004.jpg",
+      "text": "自軍山札の上から3枚をオモテにして相手に見せる。その中からSユニットのカードをすべて手札に加え、それ以外は好きな順で山札の下に戻す。"
     },
     {
       "id": "RS-005",
@@ -8667,7 +8670,8 @@
       "expansion": "legend1",
       "powerCost": 3,
       "imageUrl": "/cards/legend1/RS-005.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-005.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-005.jpg",
+      "text": "自軍コマンドゾーンからリリース状態のSユニットのカードを2枚まで選び、ラッシュエリアに出してもよい。ただし、ラッシュするための必要パワーと追加条件は満たすこと。"
     },
     {
       "id": "RS-006",
@@ -8681,7 +8685,8 @@
         "カウンター"
       ],
       "imageUrl": "/cards/legend1/RS-006.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-006.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-006.jpg",
+      "text": "自軍Sユニットがアタックされたとき発動できる。アタックされたユニットをラッシュエリアに戻す。このときバトルは行われない。"
     },
     {
       "id": "RS-007",
@@ -8707,7 +8712,8 @@
         "常駐"
       ],
       "imageUrl": "/cards/legend1/RS-008.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-008.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-008.jpg",
+      "text": "自分はドローするとき2枚ひいて、そのうちの1枚を手札に加え、もう1枚を捨札にする。"
     },
     {
       "id": "RS-009",
@@ -8718,7 +8724,8 @@
       "expansion": "legend1",
       "powerCost": 8,
       "imageUrl": "/cards/legend1/RS-009.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-009.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-009.jpg",
+      "text": "敵軍Lユニットを1体選んで撃破する。そうして撃破したLユニットが捨札になったとき、相手はそのLユニットの合体に必要なユニットのカードを捨札から探してバトルエリアに戻す。このとき、戻したユニットの効果は発動しない。"
     },
     {
       "id": "RS-010",
@@ -8756,7 +8763,8 @@
       "expansion": "legend1",
       "powerCost": 3,
       "imageUrl": "/cards/legend1/RS-012.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-012.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-012.jpg",
+      "text": "自軍捨札から、特徴「メカ」を持つユニットのカードを1枚選んで手札に加える。"
     },
     {
       "id": "RS-013",
@@ -8770,7 +8778,8 @@
         "常駐"
       ],
       "imageUrl": "/cards/legend1/RS-013.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-013.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-013.jpg",
+      "text": "自分のラッシュフェイズごとに1度だけ発動できる。自分の手札から相手に1枚選ばせ見せる。ユニットカードが選ばれたならラッシュエリアに出してよい。ただしラッシュのための必要パワーと追加条件は満たすこと。"
     },
     {
       "id": "RS-014",
@@ -8796,7 +8805,8 @@
       "expansion": "legend1",
       "powerCost": 2,
       "imageUrl": "/cards/legend1/RS-015.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-015.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-015.jpg",
+      "text": "このターン、すべての自軍ユニットのコンビネーションナンバーは1少なくなる。ただし、2より少なくならない。"
     },
     {
       "id": "RS-016",
@@ -8810,7 +8820,8 @@
         "カウンター"
       ],
       "imageUrl": "/cards/legend1/RS-016.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-016.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-016.jpg",
+      "text": "自軍ユニットが場を離れるとき発動できる。場を離れるユニットと同じ名前のユニットのカードが自軍捨札にあれば、その場に留まる。"
     },
     {
       "id": "RS-017",
@@ -8839,7 +8850,8 @@
         "カウンター"
       ],
       "imageUrl": "/cards/legend1/RS-018.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-018.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-018.jpg",
+      "text": "自軍ユニットがアタックされたとき発動できる。アタックしてきたユニット以外のユニットをすべての場から1体選んで、かわりにバトルさせる。"
     },
     {
       "id": "RS-019",
@@ -8853,7 +8865,8 @@
         "常駐"
       ],
       "imageUrl": "/cards/legend1/RS-019.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-019.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-019.jpg",
+      "text": "自軍Sユニットがアタックするとき発動できる。アタックするユニットは、自軍コマンドを1つホールドするごとにBP＋1000される。"
     },
     {
       "id": "RS-020",
@@ -8915,7 +8928,8 @@
       "expansion": "legend1",
       "powerCost": 6,
       "imageUrl": "/cards/legend1/RS-024.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-024.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-024.jpg",
+      "text": "BP8000以下のユニットを1体選ぶ。選んだユニットを持ち主のパワーゾーンに送る。"
     },
     {
       "id": "RS-025",
@@ -8941,7 +8955,8 @@
         "カウンター"
       ],
       "imageUrl": "/cards/legend1/RS-026.jpg",
-      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-026.jpg"
+      "imageSourceUrl": "https://www.grnrngr.com/cards/rangers-strike/cards/RS-026.jpg",
+      "text": "BP8000以下のユニットがラッシュされたとき発動できる。そのユニットを持ち主の山札の上に戻す。"
     },
     {
       "id": "RS-027",

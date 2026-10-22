@@ -31,5 +31,7 @@
     "source": "dsl",
     "handler": "interpreter",
     "testGenerated": true
-  }
+  },
+  "text": "BP8000以下のユニットを1体選ぶ。選んだユニットを持ち主のパワーゾーンに送る。",
+  "rawText": "BP8000以下のユニットを1体選ぶ。選んだユニットを持ち主のパワーゾーンに送る。"
 }
