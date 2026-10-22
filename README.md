@@ -114,7 +114,9 @@ Web 版は `apps/web-pocket` の静的サイト（`dist/`）を Vercel で配信
 | Lv2 | 1 手探索（候補 28・応答深度 10）。NC が成立する並べ方の先読み（`comboOrder`）と、山札切れを避ける追加ドロー抑制（`deckGuard`） |
 | Lv3 | Lv2 に加え、チャージの判断を相手の次のターンの終わりまで進めて比べる（候補 44・応答深度 14） |
 | Lv4 | 2 手読み（候補 56・応答深度 20）＋チャージの先読み |
-| Lv5 | 2 手読み（候補 64・応答深度 28）＋チャージの先読み（試行 2 回） |
+| Lv5 | 2 手読み（候補 64・応答深度 28）＋チャージの先読み（試行 2 回）。盤面の評価は、手書きの評価に、自己対戦から学習した価値ネットワークの評価を 0.5 倍して足す（`valueNetBlend`） |
+
+Lv5 の価値ネットワークの重みは `packages/engine/src/ai/weights/valueNetV1.ts`（約 380 kB）に同梱しています。手書きだけの Lv5 には、46 デッキのミラー戦 368 試合で 62% 勝ちます。学習のしかたは [packages/engine/scripts/nn/README.md](packages/engine/scripts/nn/README.md) を見てください。
 
 強さの比較は `packages/engine/scripts/cpu-arena.ts`（並列版 `cpu-arena-par.sh`）で行います。
 

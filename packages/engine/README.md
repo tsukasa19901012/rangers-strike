@@ -25,7 +25,8 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 | `src/keywords/` | キーワード能力（チェイス・ライド・ウイング・モーフ等） |
 | `src/events/` | イベントキューとリスナー |
 | `src/effects/` | オペレーション解決などの効果ブリッジ |
-| `src/ai/` | CPU AI（ヒューリスティック・探索・チャージの先読み・NC の並べ方） |
+| `src/ai/` | CPU AI（ヒューリスティック・探索・チャージの先読み・NC の並べ方・価値ネットワーク） |
+| `src/ai/weights/` | Lv5 が使う価値ネットワークの重み（`scripts/nn/pack.py` が作る。手で書き換えない） |
 | `src/cardSpec/`, `src/rulesSpec/` | カードごと・ルール章ごとのテスト |
 | `src/verticalSlice/` | スターター対戦の生成と、CPU 同士の長い対戦テスト |
 | `scripts/` | CPU の対戦台・監査・負荷テスト・デバッグ用スクリプト |
@@ -52,6 +53,8 @@ ARENA_PROCS=4 scripts/cpu-arena-par.sh --a 3 --b 2 --games 40   # 4 プロセス
 ```
 
 `--b-src <別の作業ツリーの src/ai/index.ts>` で改良前の AI と比べられます。
+学習した価値ネットワークを試すときは `--nna <重みの JSON> [--nn-blend 0.5]`、レベル設定を片側だけ変えるときは `--oa` / `--ob`（例 `--ob '{"valueNetBlend":0}'` で B を手書きの評価だけの Lv5 にする）を使います。
+自己対戦データの集め方・学習・重みの同梱は [scripts/nn/README.md](scripts/nn/README.md) にまとめています。
 スターター同士の行動の内訳は `npx tsx scripts/starter-sim-stats.ts --p1 w-impact-b --p2 w-impact-a --games 10` で数えられます。
 
 ## ビルド

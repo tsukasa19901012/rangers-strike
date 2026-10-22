@@ -1,7 +1,8 @@
 # CPU の学習（自己対戦データ）
 
 手書きの盤面評価（`src/ai/scoring.ts` の `evaluateState`）を、自己対戦で学習した価値ネットワークに置き換えるための道具です。
-データ作り（ロードマップの Phase 0〜2）と、学習・対戦台での比較（Phase 3〜4）の道具があります。
+データ作り（ロードマップの Phase 0〜2）、学習・対戦台での比較（Phase 3〜4）、ゲームへの同梱、学習版で集め直す（Phase 5）ための道具があります。
+今の Lv5 は、手書きの評価に同梱のネット（`src/ai/weights/valueNetV1.ts`）の評価を 0.5 倍して足しています。
 
 | ファイル | 役割 |
 |---|---|
@@ -11,6 +12,7 @@
 | `scripts/nn/check_data.py` | 書き出したデータの件数と、勝敗の当てやすさを確かめる（numpy だけで動く） |
 | `scripts/nn/train.py` | 価値ネットワークを学習して、重みを JSON で書き出す（PyTorch） |
 | `src/ai/valueNet.ts` | その JSON を読んで盤面を評価する（TypeScript だけで計算） |
+| `scripts/nn/pack.py` | 重みの JSON を、ゲームに同梱する TS ファイル（float16 + base64）に詰める |
 
 ## M1 Max で 10 万試合を集める（Phase 2）
 
@@ -25,9 +27,10 @@ python3 scripts/nn/check_data.py .cache/selfplay/run1
 - `caffeinate -i` は回している間 Mac をスリープさせないためのものです。
 - 既定ではコア数（M1 Max なら 10）のプロセスで回ります。`SELFPLAY_PROCS=8` のように減らすと、その間も Mac を使いやすくなります。
 - 途中経過は `.cache/selfplay/run1/shard-<k>.jsonl`（1 試合 1 行）の行数で分かります: `cat .cache/selfplay/run1/shard-*.jsonl | wc -l`
-- 時間の目安は 1 試合あたり約 3〜4 コア秒（開発用コンテナでの実測）です。10 コアで 8〜10 時間を見込んでください（最初に `--games 2000` で測ると確実です）。
+- 時間の目安は、既定の組み合わせで M1 Max（10 プロセス、ほかの重い処理を止めた状態）が約 7 試合/秒、10 万試合で約 3.5 時間です（2026-10-21 の実測）。Lv5 同士を 50% にした組み合わせでは約 3.7 試合/秒に落ちます。開発用コンテナでは 1 試合あたり約 3〜4 コア秒です。最初に `--games 2000` で測ると確実です。
 - 出力は 1 試合 約 40 KB、10 万試合で約 4 GB です。`.cache/` は git の管理外です。
 - 途中で止めた場合は、`--seed` を変えて別の `--out` に続きを回せば、あとでまとめて学習に使えます。
+- エンジンの例外で 1 試合が落ちても、そのシャードの残りは続けます。落ちた試合は `shard-<k>.jsonl` に `error` 付きで残るので、`selfplay.ts --seed <同じ値> --only <試合番号>` で再現できます。
 
 ## 入力に入れているもの
 
@@ -73,6 +76,9 @@ python3 scripts/nn/train.py .cache/selfplay/run1 --out .cache/nn/value-v1.json
 - 検証の logloss が一番よかったエポックの重みを書き出します。手書き評価だけの場合の logloss も並べて出すので、下回っていれば Phase 3 の完了条件を満たします。
 - 隠れ層の幅は `--hidden 256,128`（既定）で変えられます。
 - 複数の run をまとめて学習できます: `train.py .cache/selfplay/run1 .cache/selfplay/run2 ...`
+- `features.json` の無いフォルダを渡すと、その下の run（`run2/chunk-0` など、小分けにして回したもの）をまとめて読みます。
+- 途中で止めたシャードの最後の欠けた行は、読むときに切り捨てます。
+- 2026-10-22 の value-v1（21.8 万試合、513 万行）は、MPS で 11 エポック約 100 秒でした。検証 logloss は 0.4145 で、手書き評価だけだと 0.5590 です。
 
 ## 対戦台で比べる（Phase 4）
 
@@ -80,8 +86,19 @@ python3 scripts/nn/train.py .cache/selfplay/run1 --out .cache/nn/value-v1.json
 scripts/cpu-arena-par.sh --a 5 --b 5 --mirror --games 368 --decks <46 デッキ> --nna .cache/nn/value-v1.json
 ```
 
-`--nna` / `--nnb` を付けた側だけが、決着していない盤面の評価に学習したネットを使います。`--nn-blend 0.5` を足すと、ネットだけでなく「手書き評価 + ネットの評価 × 0.5」を使います（約 7,000 試合のネットで Lv5 同士 55.0%、ネットだけでは 49.2%。2026-10-21）。`ARENA_PROCS=10` で M1 Max の全コアを使えます。
-学習版同士で対戦データを集め直すとき（Phase 5）は、`selfplay-par.sh` に `--nn .cache/nn/value-v1.json` を付けます。
+`--nna` / `--nnb` を付けた側だけが、決着していない盤面の評価に学習したネットを使います。`--nn-blend 0.5` を足すと、ネットだけでなく「手書き評価 + ネットの評価 × 0.5」を使います（21.8 万試合の value-v1 で、Lv5 同士 62.2% と 61.2%（seed 2 つ）、ネットだけでは 56.9%。Lv2 ではネットだけだと 46.1% で、手書きに負けます）。`ARENA_PROCS=10` で M1 Max の全コアを使えます。
+46 デッキの一覧は、`src/verticalSlice/starterDeckIds.ts` の `ALL_STARTER_DECK_IDS` をカンマでつないだものです（以下では `.cache/decks.txt` に書いておいたものを使います）。
+
+## 学習版で集め直す（Phase 5）
+
+Lv5 は同梱のネットをもう使っているので、`--nn` は付けずに、Lv5 を多めにした組み合わせで集めます。
+
+```sh
+scripts/selfplay-par.sh --games 2000 --seed 500000 --mix 5:5=50,5:3=20,3:3=15,2:2=15 --out .cache/selfplay/run3/chunk-0
+```
+
+`--nn <JSON>` を付けると、どのレベルも手書きの評価を使わず、ネットの評価だけで指します。本番の Lv5 とは違う CPU になるので、ネットだけの CPU を試すとき以外は使いません。
+集めたら前の run と合わせて学習し、新しい重みを `--nna <新しい JSON> --nn-blend 0.5` の側にして、同梱の重みを使う Lv5（`--nnb` なし）と対戦台で比べます。
 
 ## ゲームに同梱する
 
@@ -92,5 +109,5 @@ python3 scripts/nn/pack.py .cache/nn/value-v1.json --out src/ai/weights/valueNet
 ```
 
 - 層の重みは float16 を base64 にした文字列になる（2.9 MB の JSON が 400 KB ほど）。詰める前後の logit の差の最大値も出す。
-- 入れ替える前に、今の Lv5 と対戦台で比べる: `scripts/cpu-arena-par.sh --a 5 --b 5 --ob '{"valueNetBlend":0}' --decks "$(cat .cache/decks.txt)" --mirror`（B が手書きの評価だけの Lv5）。
+- 入れ替える前に、今の Lv5 と対戦台で比べる: `scripts/cpu-arena-par.sh --a 5 --b 5 --ob '{"valueNetBlend":0}' --decks "$(cat .cache/decks.txt)" --mirror --games 368`（B が手書きの評価だけの Lv5）。
 - `setValueEvaluator` で外から評価を差し替えているとき（`--nna` など）は、そちらが優先される。
