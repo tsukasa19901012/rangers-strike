@@ -157,6 +157,10 @@ describe("GUI match (commercial-style controls)", () => {
           const defender = (battles[0]!.action as { defenderInstanceId: string }).defenderInstanceId;
           const row = gui.rows.findIndex((r) => r.tiles.some((t) => t.instanceId === defender));
           const slot = gui.rows[row]!.tiles.findIndex((t) => t.instanceId === defender);
+          // Hovering the defender shows it and keeps the popup open.
+          app.dispatch(input.focusTile(row, slot, false));
+          expect(app.view().gui!.battleEntry).toBe(true);
+          expect(app.view().gui!.detailLines.some((l) => l.text.includes(app.session!.state.definitions[gui.rows[row]!.tiles[slot]!.cardId]!.name))).toBe(true);
           const session = app.session!;
           const chosen: string[] = [];
           const choose = session.chooseHuman.bind(session);

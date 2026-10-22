@@ -879,7 +879,12 @@ export class GuiMatch {
         // The battle-entry popup leaves the attack targets lit on the board: a tap on one attacks it.
         const row = this.rows[event.row];
         const id = row?.tiles[(this.offsets.get(row.key) ?? 0) + event.slot]?.instanceId;
-        const attacks = mode.entry && id && event.open !== false ? this.attackItems(mode.entry, id) : [];
+        // Pointing at a card (mouse hover) shows it in the detail panel and keeps the popup.
+        if (mode.entry && !event.open) {
+          if (id) this.setFocus(event.row, (this.offsets.get(row!.key) ?? 0) + event.slot);
+          return null;
+        }
+        const attacks = mode.entry && id ? this.attackItems(mode.entry, id) : [];
         if (attacks.length > 0) return this.runItems(attacks, this.instanceName(id!));
         this.mode = { kind: "board" };
         return this.dispatchBoard(event);

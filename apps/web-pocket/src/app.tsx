@@ -74,7 +74,8 @@ function readViewport(): { width: number; height: number } {
 function hoverMatch(view: GuiView, point: { x: number; y: number }): LogicalInput | null {
   const event = hitTestGui(view, point);
   if (event?.type === "select") return { ...event, confirm: false };
-  if (event?.type === "focusTile" && !view.menuOpen) return { ...event, open: false };
+  // The battle-entry popup keeps the board readable: the hovered card still goes to the detail panel.
+  if (event?.type === "focusTile" && (!view.menuOpen || view.battleEntry)) return { ...event, open: false };
   return null;
 }
 
