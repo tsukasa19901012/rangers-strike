@@ -254,6 +254,12 @@ export default function App() {
   const inspect = (cardId: string | null) => {
     if (controller.inspectCard(cardId)) refresh();
   };
+  /** The enlarged cards' panel stretched over to the zone they came from. */
+  function bridge(panel: { x: number; y: number; w: number; h: number }, anchor: { x: number; y: number; w: number; h: number }) {
+    const x = Math.min(panel.x, anchor.x);
+    const y = Math.min(panel.y, anchor.y);
+    return { x, y, w: Math.max(panel.x + panel.w, anchor.x + anchor.w) - x, h: Math.max(panel.y + panel.h, anchor.y + anchor.h) - y };
+  }
   /** Which part of an open window a point is on: its cards or its rows (buttons, menu rows). */
   function swipeArea(gui: GuiView, p: { x: number; y: number }): "cards" | "rows" | null {
     const box = gui.list ?? gui.popup;
@@ -320,8 +326,11 @@ export default function App() {
     } else if (e.kind === "move") {
       const over = peekCard();
       const hit = pileCard();
+      // On the way from the zone to its enlarged cards (and between them) the cards stay shown.
+      const panel = shownLayout?.panel;
+      const onPanel = !hit && !!panel && !!shown && inside(bridge(panel, shown.anchor), p);
       if (over) inspect(over.cardId);
-      else {
+      else if (!onPanel) {
         if (hit || !peekPinned) {
           setPeek(hit);
           peekPinned = false;
