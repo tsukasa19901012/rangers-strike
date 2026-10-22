@@ -18,6 +18,10 @@ UI は Vita 版と同じ [PocketJS](https://github.com/pocket-stack/pocketjs)（
   文字列検索（カード名・効果文・特徴・カード番号。スペース区切りで AND、ひらがな／カタカナ・全角／半角を区別しない）。
   デッキ名は上部の欄で付け替え（検索欄・デッキ名欄はホストページの `<input>` をキャンバスに重ねたもので、スマホの IME が使えます）
 - スマホを縦に持つと、縦積みのスマホ用レイアウトに切り替わり、タップで操作します
+- 共有: 対戦中に上の「共有」を押すと、その場面（盤面・フェイズ・選択待ち・ログ）の URL をクリップボードにコピーします。
+  開いた人は同じ場面から CPU 相手に続きを遊べます（デバッグで盤面を伝える用。結果は戦績に残りません）。
+  URL は短い形 `/?s=<8文字>`（盤面は `api/share.js` が Upstash Redis に 30 日保存）で、保存先がないときは
+  盤面を圧縮して入れた長い形 `/#s=RS1.…`（終盤で約 2,000〜3,500 文字）になります。クリップボードに書けないブラウザでは URL を表示します
 - 保存（設定・自作デッキ・戦績）は localStorage（キー `rs.settings.v1` / `rs.decks.v1` / `rs.records.v1`）
 
 ## 構成
@@ -32,6 +36,8 @@ src/ResultView.tsx  結果画面
 src/cardArt.ts      カード画像テクスチャ（ホストがデコードしてアップロード）
 src/engine.ts       ホストが読み込んだエンジン（globalThis.__rsEngine）を EngineApi として渡す
 src/platform.ts     ブラウザ用 Platform 実装（localStorage、プライベートウィンドウではメモリ）
+src/share.ts        共有 URL を作る・開く（gzip + base64url、/api/share）
+api/share.js        Vercel Function: 共有された盤面を Upstash Redis に保存・取得（開発用サーバではメモリに保存）
 src/ui.tsx          画面共通の描画ヘルパ
 host/               ブラウザホスト（index.html, host.js）
 scripts/            ビルド・開発用静的サーバ・フォント取得・pocket check
@@ -80,7 +86,7 @@ npm run web:dev      # dist/ をビルドして http://127.0.0.1:8140/ で配信
 |---|---|
 | `npm run web:build` | `dist/` を作る（エンジン・UI・カード画像すべて） |
 | `npm run web:build:app` | UI とホストだけ再ビルド（エンジンとカード画像は前回のもの。engine / cards を変えたら `web:build`） |
-| `npm run web:serve` | `dist/` を http://127.0.0.1:8140/ で配信（`node scripts/serve.mjs --port=…` で変更可。開発用） |
+| `npm run web:serve` | `dist/` を http://127.0.0.1:8140/ で配信（`node scripts/serve.mjs --port=…` で変更可。開発用。`/api/share` はメモリに保存） |
 | `npm run pocket:check` | `pocket.json` を PocketJS の web-app プロファイルで検査し、型検査 |
 
 `web:*` / `pocket:*` はルートの turbo（`build` / `test` / `typecheck`）や CI からは実行されません。
@@ -108,3 +114,12 @@ npm run web:dev      # dist/ をビルドして http://127.0.0.1:8140/ で配信
 
 ビルドはリポジトリ全体の `npm ci` → PocketJS ツールチェーンの `npm ci` → フォント取得 → `scripts/build.mjs` の順で、
 `dist/` を静的サイトとして配信します。
+
+### 共有 URL の保存先（Upstash Redis）
+
+短い共有 URL には保存先が要ります。Project → Storage から Upstash の Redis（無料プラン）を作り、このプロジェクトに Connect すると、
+`KV_REST_API_URL` / `KV_REST_API_TOKEN` が環境変数に入り、`api/share.js` が使います（`UPSTASH_REDIS_REST_URL` / `_TOKEN` の名前でも可）。
+環境変数を足したあとは Redeploy が要ります。
+
+- `POST /api/share {"code": "RS1.…"}` → `{"id": "k3F9xQ2a"}`、`GET /api/share?id=…` → `{"code": …}`
+- 1 件 64 KiB まで、30 日で自動削除。保存先がなければ 503 を返し、アプリは長い URL をコピーします

@@ -16,6 +16,7 @@ import { DEFAULT_ASSIST, startOrder, type AssistSettings } from "./assist";
 import { DeckBuilder, type DeckBuilderView, type DeckGeometry } from "./deckBuilder";
 import type { GuiGeometry } from "../view/gui";
 import { CUSTOM_DECK_PREFIX } from "../platform/settings";
+import { buildSharePayload, type SharePayload } from "./share";
 
 export type Row = { text: string; selected: boolean };
 
@@ -103,6 +104,8 @@ export class AppController {
   private readonly layouts: NonNullable<ControllerOptions["layouts"]>;
   private autoplay: AutoplayRequest | null = null;
   private autoplayWait = 0;
+  /** The match continues a shared board: it is not added to the records. */
+  private sharedMatch = false;
 
   constructor(options: ControllerOptions) {
     this.platform = options.platform;
@@ -339,6 +342,12 @@ export class AppController {
     return this.message;
   }
 
+  /** Shows a notice from the shell (e.g. a shared board that could not be opened). */
+  notify(text: string): void {
+    this.message = text;
+    this.touch();
+  }
+
   /** Abandons the match in progress and returns to the title (no record is kept). */
   leaveMatch(): void {
     if (this.screen !== "match") return;
@@ -401,14 +410,31 @@ export class AppController {
     return { cards: engine.deckApi.build(deck.entries) };
   }
 
-  startMatch(): void {
+  /** The board of the match in progress, for the share button (null outside a match). */
+  sharePayload(): SharePayload | null {
+    return this.screen === "match" && this.session ? buildSharePayload(this.session) : null;
+  }
+
+  /**
+   * Starts a match from a shared board: the same state, with the CPU on the
+   * other side at the sharer's level. The decks on the title screen are not used.
+   */
+  startSharedMatch(shared: SharePayload): void {
+    this.startMatch(shared);
+  }
+
+  startMatch(shared?: SharePayload): void {
+    // A shared board brings its own cards: the session is created from starter decks and then replaced.
+    const starters = this.engine?.ALL_STARTER_DECK_IDS ?? [];
+    const humanDeck = shared ? (starters[0] ?? this.settings.humanDeck) : this.settings.humanDeck;
+    const cpuDeck = shared ? (starters[1] ?? starters[0] ?? this.settings.cpuDeck) : this.settings.cpuDeck;
     const loaded = this.platform.assets.loadMatchData({
-      decks: [this.settings.humanDeck, this.settings.cpuDeck],
+      decks: [humanDeck, cpuDeck],
     });
     const begin = (engine: EngineApi) => {
       this.engine = engine;
-      const human = this.customCards(engine, this.settings.humanDeck);
-      const cpu = this.customCards(engine, this.settings.cpuDeck);
+      const human = this.customCards(engine, humanDeck);
+      const cpu = this.customCards(engine, cpuDeck);
       if (human.error || cpu.error) {
         this.screen = "title";
         this.message = human.error ?? cpu.error ?? "";
@@ -416,22 +442,24 @@ export class AppController {
       }
       this.session = new GameSession({
         engine,
-        humanDeck: this.settings.humanDeck,
-        cpuDeck: this.settings.cpuDeck,
+        humanDeck,
+        cpuDeck,
         humanCards: human.cards,
         cpuCards: cpu.cards,
         seed: this.seed(),
-        cpuLevel: (this.autoplay?.cpuLevel ?? this.settings.cpuLevel) as CpuLevel,
-        humanLevel: this.autoplay ? ((this.autoplay.humanLevel ?? 2) as CpuLevel) : undefined,
+        cpuLevel: (shared?.cpuLevel ?? this.autoplay?.cpuLevel ?? this.settings.cpuLevel) as CpuLevel,
+        humanLevel: this.autoplay && !shared ? ((this.autoplay.humanLevel ?? 2) as CpuLevel) : undefined,
         clock: this.platform.clock,
         memory: this.platform.memory,
         log: this.platform.log,
       });
+      this.sharedMatch = !!shared;
+      if (shared) this.session.loadState({ ...shared.state, definitions: this.session.state.definitions } as GameSession["state"]);
       this.gui = this.guiEnabled ? new GuiMatch(engine, this.session, this.viewport, this.cardArt, this.layouts.match) : null;
       if (this.gui) this.gui.assist = assistSettings(this.settings);
       this.screen = "match";
       this.tab = 1;
-      this.message = "対戦開始";
+      this.message = shared ? "共有された場面から再開" : "対戦開始";
       this.framesSinceCpu = 0;
       this.afterStateChange();
     };
@@ -494,7 +522,7 @@ export class AppController {
     const session = this.session;
     if (!session || this.screen !== "match") return;
     this.screen = "result";
-    this.settingsStore.addRecord({
+    if (!this.sharedMatch) this.settingsStore.addRecord({
       humanDeck: session.options.humanDeck,
       cpuDeck: session.options.cpuDeck,
       winner: session.winner,

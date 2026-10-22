@@ -202,6 +202,21 @@ export class GameSession {
     return { ok: true, label: `${PLAYER_LABELS[actor]}: ${label}` };
   }
 
+  /**
+   * Continues from another match's state (a shared board): the log is rebuilt
+   * from the loaded state's entries and the CPU timings start over.
+   */
+  loadState(next: GameState): void {
+    this.state = next;
+    this.lastError = null;
+    this.version++;
+    this.cachedOptions = null;
+    this.log.length = 0;
+    this.loggedEntries = 0;
+    this.turnMoves = { turn: -1, count: 0 };
+    this.syncLog();
+  }
+
   private commit(next: GameState): void {
     this.state = next;
     this.lastError = null;
