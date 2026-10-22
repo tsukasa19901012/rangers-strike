@@ -46,14 +46,6 @@ export function DeckView(props: { view: DeckBuilderView; hot: string | null; foo
         </Show>
         <Text class={v().valid ? "text-sm text-emerald-300 font-bold" : "text-sm text-amber-300 font-bold"}>{v().topBar}</Text>
       </View>
-      <Show when={v().toast}>
-        <View
-          class="absolute flex-row items-center px-[14] rounded-[16] bg-gradient-to-r from-emerald-600 to-teal-700 shadow-md"
-          style={at(portrait() ? { x: 8, y: 6, w: g().width - 120, h: 28 } : toastBox(g()))}
-        >
-          <Text class="text-sm text-white font-bold">{v().toast}</Text>
-        </View>
-      </Show>
       <View class={props.hot === "menu" ? BUTTON_HOT : BUTTON} style={at(b().menu)}>
         <Text class="text-sm text-slate-100">{portrait() ? "メニュー" : "保存・メニュー"}</Text>
       </View>
@@ -137,6 +129,15 @@ export function DeckView(props: { view: DeckBuilderView; hot: string | null; foo
       <Show when={v().emptyText}>
         <View class="absolute flex-row items-center justify-center" style={at(g().grid)}>
           <Text class="text-sm text-slate-400">{v().emptyText}</Text>
+        </View>
+      </Show>
+      {/* the toast over the grid's bottom (drawn after the cards so they do not cover it) */}
+      <Show when={v().toast}>
+        <View
+          class="absolute flex-row items-center px-[14] rounded-[16] bg-gradient-to-r from-emerald-600 to-teal-700 shadow-md"
+          style={at(portrait() ? { x: 8, y: 6, w: g().width - 120, h: 28 } : toastBox(g()))}
+        >
+          <Text class="text-sm text-white font-bold">{v().toast}</Text>
         </View>
       </Show>
       <View class={props.hot === "prev" ? BUTTON_HOT : BUTTON} style={at(b().prev)}>

@@ -14,7 +14,8 @@ DOM・Node・PocketJS には依存しません（`lib` は ES2022、`types` な�
 | `src/engineApi.ts` | クライアントが使うエンジンの最小 API（型のみ import） |
 | `src/app/controller.ts` | `AppController`: タイトル → 対戦 → 結果の状態機械。毎フレーム `tick()` で CPU を 1 手ずつ進める |
 | `src/app/guiMatch.ts` | 対戦画面の GUI 状態（カードのフォーカス・操作メニュー）。合法手をカードごとに振り分ける |
-| `src/app/deckBuilder.ts` | デッキ構築画面の状態（一覧・絞り込み・保存） |
+| `src/app/deckBuilder.ts` | デッキ構築画面の状態（一覧・絞り込み・保存）。`deckSharing` のシェルでは「共有する」「テキストから取り込む」も出す |
+| `src/app/deckShare.ts` | デッキの共有形式（URL 用の `{v, name, cards}` とテキストのカードリスト）の作成と読み取り |
 | `src/session/session.ts` | 1 試合: 合法手 → ラベル付き選択肢、CPU 1 手の実行と時間計測、ログ整形 |
 | `src/view/gui.ts` | GameState → カードタイルの表示モデルと、Vita 用の配置 |
 | `src/view/webGui.ts` | ブラウザ版の配置（`computeWebGuiGeometry` / `computeWebDeckGeometry`、縦持ちのスマホ配置を含む） |
