@@ -463,10 +463,9 @@ export default function App() {
     if (tapped && tapped.ids.length > 0) {
       dispatch(input.openCards(tapped.ids, tapped.key.startsWith("d:") ? "捨札" : tapped.title, tapped.anchor));
       if (controller.view().gui?.popup) {
-        // The discard pile stays shown under its menu, so every card in it can be seen on a phone too.
-        const discard = tapped.key.startsWith("d:");
-        setPeek(discard ? tapped : null);
-        peekPinned = discard;
+        // The zone stays shown under its menu, so every card in it can be seen (and tapped) on a phone too.
+        setPeek(tapped);
+        peekPinned = true;
         return true;
       }
     }
