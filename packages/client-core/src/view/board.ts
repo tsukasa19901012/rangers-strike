@@ -4,6 +4,7 @@ import type { EngineApi, GameState, PlayerId } from "../engineApi";
 import { CPU, HUMAN } from "../engineApi";
 import { PHASE_LABELS, PLAYER_LABELS, cardName, indexInstances, instanceName } from "../text/labels";
 import { wrapText, type WrapOptions } from "../text/wrap";
+import { powerCount } from "./gui";
 
 export type ZoneLine = { label: string; text: string };
 
@@ -41,8 +42,11 @@ export function buildPlayerBoard(
   revealHand: boolean,
 ): PlayerBoardView {
   const p = state.players[playerId];
-  const faceDown = p.power.filter((c) => c.faceDown).length;
-  const faceUp = p.power.length - faceDown;
+  const power = powerCount(engine, state, playerId);
+  const powerExtras = [
+    power.multi ? `相手のマルチカテゴリ+${power.multi}` : "",
+    power.other ? `効果${power.other > 0 ? "+" : ""}${power.other}` : "",
+  ].filter(Boolean);
   const list = (cards: typeof p.battle, units = true) =>
     cards.length === 0
       ? "-"
@@ -57,7 +61,10 @@ export function buildPlayerBoard(
           ? "-"
           : p.command.map((c) => `${cardName(state, c.cardId)}${c.commandHeld ? "[H]" : ""}`).join("、"),
     },
-    { label: "パワー", text: `${p.power.length}枚（表${faceUp}・裏${faceDown}）` },
+    {
+      label: "パワー",
+      text: `${power.total}（パワーゾーン${power.zone}枚：表${power.zone - power.faceDown}・裏${power.faceDown}${powerExtras.map((e) => `、${e}`).join("")}）`,
+    },
   ];
   if (p.operation.length > 0) zones.push({ label: "オペ", text: list(p.operation, false) });
   if (revealHand) zones.push({ label: "手札", text: list(p.hand, false) });

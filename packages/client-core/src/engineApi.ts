@@ -57,6 +57,10 @@ export interface EngineApi {
   formatGameLog(entry: string, definitions: GameState["definitions"]): string;
   formatActionError(error: string): string;
   effectiveBp(state: GameState, playerId: PlayerId, instance: CardInstance): number;
+  /** The player's power: power zone + the opponent's multi-category commands (+ effect bonuses). */
+  countAvailablePower(state: GameState, playerId: PlayerId): number;
+  /** How much of that comes from multi-category cards in the opponent's command zone. */
+  countOpponentMultiCategoryCommands(state: GameState, playerId: PlayerId): number;
   getEffectLabel(effectId: string): string;
   readonly starterDecks: Readonly<Record<string, StarterDeckInfo>>;
   readonly ALL_STARTER_DECK_IDS: readonly string[];

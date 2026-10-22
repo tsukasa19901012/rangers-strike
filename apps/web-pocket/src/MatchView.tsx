@@ -10,6 +10,8 @@ import {
   HUMAN,
   isPortrait,
   locateInstance,
+  powerCount,
+  powerNotes,
   webPileRect,
   wrapText,
   zoneLabel,
@@ -23,6 +25,7 @@ import {
   type PanelTone,
   type PlayerId,
 } from "@rangers-strike/client-core";
+import { engine } from "./engine";
 import { at, CardFace, inside, type Box } from "./ui";
 
 const ROW_LABELS: Record<string, [string, string]> = {
@@ -157,7 +160,10 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
   const x0 = rect.x + 6;
   const availW = rect.w - 12;
   const counts: { text: string; rect: Box }[] = [];
-  const faceDown = p.power.filter((c) => c.faceDown).length;
+  // Power is not the zone's card count: the opponent's multi-category commands add to it.
+  const power = powerCount(engine, state, player);
+  const notes = powerNotes(power);
+  const powerTitle = `${who}のパワー ${power.total}（パワーゾーン${power.zone}枚${power.multi ? `＋相手のマルチカテゴリ${power.multi}` : ""}${power.other ? `＋効果${power.other}` : ""}）`;
   const all = (cards: readonly ZoneCard[]) => peekCards(cards);
   const bottom = rect.y + rect.h - 6;
   const sections: PileSection[] = [];
@@ -173,7 +179,7 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
     }
     // No room for the discard image: its count row takes the tap instead.
     const discardTap = p.discard.length > 0 && discardRow ? { rect: discardRow } : null;
-    sections.push({ title: `${who}のパワー`, label: `パワー ${p.power.length}`, tone: "text-xs text-amber-300 font-bold", labelRect: { x: rect.x, y, w: rect.w, h: 18 }, cards: [], all: all(p.power), count: p.power.length, ids: p.power.map((c) => c.instanceId) });
+    sections.push({ title: powerTitle, label: `パワー ${power.total}`, tone: "text-xs text-amber-300 font-bold", labelRect: { x: rect.x, y, w: rect.w, h: 18 }, cards: [], all: all(p.power), count: p.power.length, ids: p.power.map((c) => c.instanceId) });
     y += 22;
     if (p.operation.length) {
       const labelRect = { x: rect.x, y, w: rect.w, h: 18 };
@@ -195,7 +201,7 @@ export function pileLayout(state: GameState, player: PlayerId, rect: Box): PileL
   counts.push({ text: `捨札 ${p.discard.length}`, rect: { ...discardRect, y, h: 20 } });
   y += 22;
   const zones = [
-    { title: `${who}のパワー`, label: `パワー ${p.power.length}${faceDown ? `（裏${faceDown}）` : ""}`, tone: "text-xs text-amber-300 font-bold", cards: p.power, operation: false },
+    { title: powerTitle, label: `パワー ${power.total}${notes ? `(${notes})` : ""}`, tone: "text-xs text-amber-300 font-bold", cards: p.power, operation: false },
     ...(p.operation.length ? [{ title: `${who}の常駐`, label: `常駐 ${p.operation.length}`, tone: "text-xs text-violet-300 font-bold", cards: p.operation, operation: true }] : []),
   ];
   const share = Math.floor((bottom - y) / zones.length);
