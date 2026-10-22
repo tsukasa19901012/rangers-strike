@@ -133,6 +133,8 @@ async function start() {
         el.addEventListener("input", () => {
           inbox.push(JSON.stringify({ type: "state", value: { kind: "text", id: f.id, text: el.value } }));
         });
+        // iOS pans the page up to keep the field above the keyboard and can leave it there.
+        el.addEventListener("blur", () => window.scrollTo(0, 0));
         document.body.appendChild(el);
         inputs.set(f.id, el);
       }

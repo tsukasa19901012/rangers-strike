@@ -54,6 +54,7 @@ scripts/            ビルド・開発用静的サーバ・フォント取得・
 - キーは Vita のボタンに割り当てて渡します（下の表）
 - カード画像（`apps/web/public/cards` のコピー）はブラウザでデコードしてテクスチャにします
 - ルールエンジン（`dist/engine.js`）は UI と別ファイルの ESM として読み込みます
+- 入力欄は文字 16px 以上、viewport は `maximum-scale=1`、ページ全体を `touch-action: manipulation` にして、iPhone で入力欄に触れたときの自動ズーム・ダブルタップズームを止めています（入力を終えたらキーボードでずれたページ位置を戻します）
 - テスト用に `window.__rsApp`（`controller` と `pile(player)`）を公開しています
 
 ## 操作
