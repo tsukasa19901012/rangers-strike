@@ -38,6 +38,7 @@ import { DeckView, deckButtons } from "./DeckView";
 import { TitleView } from "./TitleView";
 import { ResultView } from "./ResultView";
 import { inside } from "./ui";
+import { shareBoard, sharedBoardFromLocation } from "./share";
 import { applySettingsAction, SettingsPanel, settingsHit, settingsLayout } from "./SettingsPanel";
 
 /** A pointer event as host/host.js sends it (logical px). */
@@ -158,6 +159,34 @@ export default function App() {
   const LEAVE_FRAMES = 180;
   let leaveFrames = 0;
   const [leaving, setLeaving] = createSignal(false);
+  // The 共有 button: making the URL, then a notice for NOTICE_FRAMES.
+  const NOTICE_FRAMES = 240;
+  let noticeFrames = 0;
+  const [sharing, setSharing] = createSignal(false);
+  const [notice, setNotice] = createSignal<string | null>(null);
+  const showNotice = (text: string) => {
+    setNotice(text);
+    noticeFrames = NOTICE_FRAMES;
+  };
+  const share = () => {
+    const payload = controller.sharePayload();
+    if (!payload || sharing()) return;
+    setSharing(true);
+    shareBoard(payload)
+      .then((r) => showNotice(r.copied ? (r.short ? "この場面の URL をコピーしました" : "この場面の URL（長い形）をコピーしました") : "URL を表示しました"))
+      .catch(() => showNotice("共有 URL を作れませんでした"))
+      .finally(() => {
+        setSharing(false);
+        refresh();
+      });
+  };
+  // Opened from a shared URL: continue that board.
+  void sharedBoardFromLocation().then((shared) => {
+    if (!shared) return;
+    if (shared === "error") controller.notify("共有された場面を開けませんでした（期限切れか、URL が壊れています）");
+    else controller.startSharedMatch(shared);
+    refresh();
+  });
   // A card picked up by a drag (pointer down on a card the player can act with, then moved).
   const [drag, setDrag] = createSignal<DragView | null>(null);
   // A long-pressed card shown whole (MatchView's CardSheet); any tap closes it.
@@ -366,6 +395,8 @@ export default function App() {
               ? "turn"
               : inside(buttons.settings, p)
                 ? "settings"
+              : inside(buttons.share, p)
+                ? "share"
               : inside(buttons.all, p)
               ? "all"
               : inside(buttons.log, p)
@@ -499,6 +530,10 @@ export default function App() {
       openSettings();
       return true;
     }
+    if (inside(buttons.share, p)) {
+      share();
+      return true;
+    }
     if (inside(buttons.turn, p)) {
       controller.endTurn();
       return true;
@@ -611,6 +646,10 @@ export default function App() {
       else if (event.kind === "move") setCursor(false);
     }
     if (leaveFrames > 0 && --leaveFrames === 0) setLeaving(false);
+    if (noticeFrames > 0 && --noticeFrames === 0) {
+      setNotice(null);
+      changed = true;
+    }
     // A press held still on a card shows it whole (the drag it might have started is dropped).
     if (pressed && pressCard && !longPressed && ++pressFrames >= LONG_PRESS_FRAMES) {
       setSheet(pressCard);
@@ -650,6 +689,8 @@ export default function App() {
             drag={drag()}
             fullText={fullText()}
             sheet={sheet()}
+            sharing={sharing()}
+            notice={notice()}
           />
         )}
       </Match>

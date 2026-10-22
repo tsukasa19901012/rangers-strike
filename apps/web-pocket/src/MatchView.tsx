@@ -60,13 +60,14 @@ export const TONE: Record<PanelTone, string> = {
 };
 
 /** Buttons beside the end-phase button (not part of GuiView; the app handles their clicks). */
-export function matchButtons(g: GuiGeometry): { turn: Box; all: Box; log: Box; leave: Box; settings: Box } {
+export function matchButtons(g: GuiGeometry): { turn: Box; all: Box; log: Box; leave: Box; settings: Box; share: Box } {
   const e = g.endButton;
   if (isPortrait(g)) {
     const w = Math.floor((e.x - 8 - 8 - 12) / 3);
     return {
       leave: { x: g.width - 116, y: 6, w: 108, h: 28 },
       settings: { x: g.width - 116 - 8 - 64, y: 6, w: 64, h: 28 },
+      share: { x: g.width - 116 - (8 + 64) * 2, y: 6, w: 64, h: 28 },
       turn: { x: 8, y: e.y, w, h: e.h },
       all: { x: 8 + w + 6, y: e.y, w, h: e.h },
       log: { x: 8 + (w + 6) * 2, y: e.y, w, h: e.h },
@@ -75,6 +76,7 @@ export function matchButtons(g: GuiGeometry): { turn: Box; all: Box; log: Box; l
   return {
     leave: { x: g.width - 176, y: 7, w: 168, h: 30 },
     settings: { x: g.width - 176 - 10 - 96, y: 7, w: 96, h: 30 },
+    share: { x: g.width - 176 - (10 + 96) * 2, y: 7, w: 96, h: 30 },
     turn: { x: e.x, y: e.y + e.h + 14, w: e.w, h: 36 },
     all: { x: e.x, y: e.y + e.h + 58, w: e.w, h: 36 },
     log: { x: e.x, y: e.y + e.h + 102, w: e.w, h: 36 },
@@ -565,6 +567,10 @@ export function MatchView(props: {
   fullText: boolean;
   /** A long-pressed card shown whole from the bottom of the screen (CardSheet). */
   sheet: string | null;
+  /** The 共有 button is making the URL. */
+  sharing: boolean;
+  /** A short message under the top bar (the share result). */
+  notice: string | null;
 }) {
   const v = () => props.view;
   // Where a selection-window card is ("自コマンド"), unclipped: the 12px caption fits the tile.
@@ -607,6 +613,14 @@ export function MatchView(props: {
       >
         <Text class="text-xs text-slate-300">設定</Text>
       </View>
+
+      <View
+        class={props.hot === "share" ? "absolute flex-row items-center justify-center rounded-[8] bg-slate-600 border border-slate-400" : "absolute flex-row items-center justify-center rounded-[8] bg-[#1e293b] border border-[#334155]"}
+        style={at(buttons().share)}
+      >
+        <Text class="text-xs text-slate-300">{props.sharing ? "作成中…" : "共有"}</Text>
+      </View>
+
 
 
       {/* board */}
@@ -839,6 +853,14 @@ export function MatchView(props: {
         <Text class={v().footerAccent ? "text-xs text-amber-200" : "text-xs text-slate-400"}>{props.footer}</Text>
       </View>
       <Show when={props.sheet}>{(cardId) => <CardSheet g={g()} state={props.state} cardId={cardId()} />}</Show>
+      <Show when={props.notice}>
+        <View
+          class="absolute flex-row items-center justify-center rounded-[8] bg-[#0c4a6e] border border-sky-400"
+          style={at({ x: Math.max(8, g().width / 2 - 200), y: g().topBar.h + 6, w: Math.min(400, g().width - 16), h: 30 })}
+        >
+          <Text class="text-xs text-white font-bold">{props.notice}</Text>
+        </View>
+      </Show>
     </View>
   );
 }
