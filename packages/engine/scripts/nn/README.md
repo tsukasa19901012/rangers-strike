@@ -3,7 +3,16 @@
 手書きの盤面評価（`src/ai/scoring.ts` の `evaluateState`）を、自己対戦で学習した価値ネットワークに置き換えるための道具です。
 データ作り（ロードマップの Phase 0〜2）、学習・対戦台での比較（Phase 3〜4）、ゲームへの同梱、学習版で集め直す（Phase 5）ための道具があります。
 今の Lv5 は、手書きの評価に同梱のネット（`src/ai/weights/valueNetV1.ts`）の評価を 0.5 倍して足しています。
-2026-10-22 の Phase 5 の 1 周目（Lv5 中心の 4 万試合を足して学習した v2）は、v1 の Lv5 に 52.0%（736 試合、±3.7%）で、はっきり強くならなかったので同梱は v1 のままです。
+同梱しているのは Phase 5 の 2 周目で学習した v3b です（2026-10-22）。
+
+| 版 | 学習データ | v1 の Lv5 との対戦 |
+|---|---|---|
+| v1 | 手書き評価の CPU 同士 21.8 万試合（run1・run2） | ―（手書きだけの Lv5 に 62%） |
+| v2 | run1〜run3（新しい Lv5 中心の 4 万試合を足す） | 52.0%（736 試合、±3.7%） |
+| v3a | run1〜run4（run3・run4 を 2 倍に重み付け） | 50.6%（720 試合、±3.7%） |
+| **v3b** | **run3・run4 だけ（新しい Lv5 中心の 16 万試合）** | **54.3%（6 seed 2,154 試合、±2.1%）。手書きだけの Lv5 には 65.2%** |
+
+古い CPU の試合を混ぜた v2・v3a は検証 logloss では同等以上でも、対戦では v1 と差がありませんでした。強くなった CPU 同士の試合だけで学び直すのが効きます。
 
 | ファイル | 役割 |
 |---|---|
@@ -79,6 +88,7 @@ python3 scripts/nn/train.py .cache/selfplay/run1 --out .cache/nn/value-v1.json
 - 複数の run をまとめて学習できます: `train.py .cache/selfplay/run1 .cache/selfplay/run2 ...`
 - `features.json` の無いフォルダを渡すと、その下の run（`run2/chunk-0` など、小分けにして回したもの）をまとめて読みます。
 - 途中で止めたシャードの最後の欠けた行は、読むときに切り捨てます。
+- run3・run4 は `--mix 5:5=50,5:3=20,3:3=15,2:2=15` で集めたものです。v3b は `train.py .cache/selfplay/run3 .cache/selfplay/run4 --out .cache/nn/value-v3b.json`。
 - `--run-weights 1,1,4` のように、run ごとに学習での重みを付けられます（run と同じ順）。新しい CPU の試合を重く見たいときに使います。run を 2 つ以上渡すと、最後に run ごとの検証 logloss も出します。
 - データは CPU のメモリに置き、バッチごとに GPU へ送ります。MPS は 1 つのテンソルに約 21 億要素までしか載らないので、以前は 500 万行を超えると落ちていました。
 - 2026-10-22 の value-v1（21.8 万試合、513 万行）は、MPS で 11 エポック約 100 秒でした。検証 logloss は 0.4145 で、手書き評価だけだと 0.5590 です。
@@ -108,7 +118,7 @@ scripts/selfplay-par.sh --games 2000 --seed 500000 --mix 5:5=50,5:3=20,3:3=15,2:
 Lv5 は、手書きの評価に同梱のネットの評価を 0.5 倍して足す（`ai/types.ts` の `valueNetBlend`）。重みを入れ替えるときは:
 
 ```bash
-python3 scripts/nn/pack.py .cache/nn/value-v1.json --out src/ai/weights/valueNetV1.ts
+python3 scripts/nn/pack.py .cache/nn/value-v3b.json --out src/ai/weights/valueNetV1.ts
 ```
 
 - 層の重みは float16 を base64 にした文字列になる（2.9 MB の JSON が 400 KB ほど）。詰める前後の logit の差の最大値も出す。
