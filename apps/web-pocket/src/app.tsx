@@ -111,6 +111,7 @@ function dropTarget(view: GuiView, p: { x: number; y: number }): { instanceId?: 
 
 function matchFooter(v: GuiView): string {
   if (isPortrait(v.geometry)) return touchFooter(v);
+  if (v.battleEntry) return "クリック: 決定 / 光っている敵ユニットをクリック: そのままアタック / 右クリック・Esc: 閉じて盤面を見る";
   if (v.list || v.popup) return "クリック: 決定 / 右クリック・Esc: 閉じる / ホイール・↑↓: 選ぶ";
   if (v.dialog) return "カードかボタンをクリックして選ぶ / L・枠の外をクリック: 盤面を見る / Tab: すべての操作";
   if (v.footerAccent) return `${v.footer.replace(/（[^）]*）$/, "")}（クリック: 決定 / 右クリック・Esc: やめる）`;
@@ -121,6 +122,7 @@ function matchFooter(v: GuiView): string {
 
 /** Phone (portrait) hints: no mouse, no keyboard. */
 function touchFooter(v: GuiView): string {
+  if (v.battleEntry) return "タップ: 決定 / 光る敵をタップ: そのままアタック";
   if (v.list || v.popup) return "タップ: 決定 / 枠の外: 閉じる";
   if (v.dialog) return "タップ: 選ぶ / 長押し: カードの詳細";
   if (v.footerAccent) return v.footer.replace(/（[^）]*）$/, "");

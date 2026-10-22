@@ -109,6 +109,8 @@ export type GuiView = {
   footerAccent: boolean;
   /** Any overlay (popup / list / dialog / targeting) has the input. */
   menuOpen: boolean;
+  /** The popup asks what the unit that just entered the battle area does: a tap on a lit enemy unit attacks it. */
+  battleEntry: boolean;
   /** The detail panel shows the log, not a card. */
   logShown: boolean;
 };
@@ -119,7 +121,15 @@ type Target = { id: string; row: number; index: number; items: MenuItem[] };
 
 type Mode =
   | { kind: "board" }
-  | { kind: "popup"; title: string; anchor: Rect; verbs: Verb[]; cursor: ListCursor }
+  | {
+      kind: "popup";
+      title: string;
+      anchor: Rect;
+      verbs: Verb[];
+      cursor: ListCursor;
+      /** The unit that just entered the battle area: its attack / strike / pass, asked once (entryPopup). */
+      entry?: string;
+    }
   | { kind: "target"; prompt: string; targets: Target[]; cursor: number }
   | { kind: "list"; title: string; items: MenuItem[]; labels: string[]; cursor: ListCursor };
 
@@ -180,6 +190,8 @@ export class GuiMatch {
   assist: AssistSettings = { ...DEFAULT_ASSIST };
   /** Turn number the "end turn" button was pressed on, while it is still ending phases. */
   private endTurnOn: number | null = null;
+  /** Session version the battle-entry popup was opened on (it opens once per entry; closed, the board plays as before). */
+  private entryAsked = -1;
 
   constructor(
     private readonly engine: EngineApi,
@@ -265,6 +277,39 @@ export class GuiMatch {
       if (fallback >= 0) this.setFocus(fallback, Math.min(this.focusIndex, this.rows[fallback]!.tiles.length - 1));
       else this.focusedId = null;
     }
+    this.askBattleEntry();
+  }
+
+  /**
+   * A unit of the human's just entered the battle area: its one decision (attack, strike or
+   * nothing) opens as a popup by the unit, without a tap on it first. Not while the end-turn
+   * button or a reveal window runs, and not when passing is all there is (assist plays that).
+   */
+  private askBattleEntry(): void {
+    const pending = this.state().pendingBattleEntry;
+    if (!pending || pending.playerId !== HUMAN || this.entryAsked === this.session.version) return;
+    if (this.mode.kind !== "board" || this.endTurnOn !== null || this.revealOpen || !this.humanActive()) return;
+    if (!this.options().some((o) => o.action.type !== "pass_battle_entry")) return;
+    const at = this.findTile(pending.instanceId);
+    if (!at) return;
+    this.entryAsked = this.session.version;
+    this.setFocus(at.row, at.index);
+    this.openEntryPopup(pending.instanceId);
+  }
+
+  private openEntryPopup(instanceId: string): void {
+    const name = this.instanceName(instanceId);
+    const verbs = this.cardVerbs(instanceId).map((verb) => {
+      const type = verb.items[0]!.option.action.type;
+      if (type === "battle" && verb.items.length > 1) return { ...verb, label: "アタック（相手を選ぶ）" };
+      return { ...verb, label: dropCardName(verb.label, name) };
+    });
+    const rank = (verb: Verb) => ["battle", "strike"].indexOf(verb.items[0]!.option.action.type) >>> 0;
+    verbs.sort((a, b) => rank(a) - rank(b));
+    const pass = this.allItems().find((item) => item.option.action.type === "pass_battle_entry");
+    if (pass) verbs.push({ label: "何もしない", items: [pass] });
+    this.openPopup(`${name}がバトルエリアへ`, this.focusedRect(), verbs);
+    if (this.mode.kind === "popup") this.mode.entry = instanceId;
   }
 
   private findTile(instanceId: string): { row: number; index: number; tile: GuiTile } | null {
@@ -447,6 +492,11 @@ export class GuiMatch {
 
   private openCardPopup(): void {
     const tile = this.focusedTile();
+    const pending = this.state().pendingBattleEntry;
+    if (tile && pending?.playerId === HUMAN && tile.instanceId === pending.instanceId && this.humanActive()) {
+      this.openEntryPopup(tile.instanceId);
+      return;
+    }
     const verbs = tile ? this.cardVerbs(tile.instanceId) : [];
     if (tile && verbs.length > 0) {
       // The popup title already names the card, so drop it from each row.
@@ -658,7 +708,10 @@ export class GuiMatch {
 
   /** The reveal window closes on a tap, ○ or ×; other input waits until it does. */
   private dispatchReveal(event: LogicalInput): StepResult | null {
-    if (event.type === "confirm" || event.type === "cancel" || event.type === "select") this.revealOpen = null;
+    if (event.type === "confirm" || event.type === "cancel" || event.type === "select") {
+      this.revealOpen = null;
+      this.askBattleEntry();
+    }
     return null;
   }
 
@@ -822,12 +875,25 @@ export class GuiMatch {
       case "allActions":
         this.openList("すべての操作", this.allItems());
         return null;
-      case "focusTile":
+      case "focusTile": {
+        // The battle-entry popup leaves the attack targets lit on the board: a tap on one attacks it.
+        const row = this.rows[event.row];
+        const id = row?.tiles[(this.offsets.get(row.key) ?? 0) + event.slot]?.instanceId;
+        const attacks = mode.entry && id && event.open !== false ? this.attackItems(mode.entry, id) : [];
+        if (attacks.length > 0) return this.runItems(attacks, this.instanceName(id!));
         this.mode = { kind: "board" };
         return this.dispatchBoard(event);
+      }
       default:
         return null;
     }
+  }
+
+  private attackItems(attackerId: string, defenderId: string): MenuItem[] {
+    return this.allItems().filter((item) => {
+      const a = item.option.action;
+      return a.type === "battle" && a.attackerInstanceId === attackerId && a.defenderInstanceId === defenderId;
+    });
   }
 
   private dispatchList(mode: Extract<Mode, { kind: "list" }>, event: LogicalInput): StepResult | null {
@@ -1231,7 +1297,7 @@ export class GuiMatch {
       const a = mode.anchor;
       const below = a.y + a.h + 2;
       const above = a.y - h - 2;
-      const y = a.y < g.board.y + g.board.h / 2 ? Math.min(below, g.footer.y - h) : Math.max(g.board.y, above);
+      const y = a.y < g.board.y + g.board.h / 2 || mode.entry ? Math.min(below, g.footer.y - h) : Math.max(g.board.y, above);
       const x = Math.max(g.board.x, Math.min(a.x, g.side.x + g.side.w - w - 2));
       const wrap: WrapOptions = { fontPx: g.fontPx, maxWidthPx: w - 8 };
       popup = {
@@ -1305,6 +1371,7 @@ export class GuiMatch {
       footer: fitLine(footer, { fontPx: g.fontPx, maxWidthPx: g.footer.w - 8 }),
       footerAccent: mode.kind === "target" || dialogShown,
       menuOpen: mode.kind !== "board" || dialogShown || !!reveal,
+      battleEntry: mode.kind === "popup" && !!mode.entry,
       logShown: this.showLog && !dialogShown,
     };
   }
