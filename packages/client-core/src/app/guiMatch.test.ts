@@ -187,6 +187,30 @@ describe("GUI match (commercial-style controls)", () => {
     expect(attacked && passed).toBe(true);
   });
 
+  it("asks the start phase's steps in a popup when assist leaves them to the player", () => {
+    const app = startGui(3);
+    app.updateSettings({ autoStart: false });
+    let steps = 0;
+    for (let i = 0; i < 6000 && app.currentScreen === "match" && steps < 3; i++) {
+      const state = app.session!.state;
+      if (!humanTurn(app) || state.phase !== "start" || state.activePlayer !== "player1" || app.view().gui!.dialog) {
+        if (humanTurn(app)) playOneStep(app, i);
+        else app.tick();
+        continue;
+      }
+      const gui = app.view().gui!;
+      expect(gui.startPhase).toBe(true);
+      expect(gui.popup!.title).toBe("スタートフェイズ");
+      const labels = app.session!.humanOptions().filter((o) => o.action.type !== "end_phase").map((o) => o.label);
+      expect(gui.popup!.rows.map((r) => r.text).slice(0, labels.length).sort()).toEqual([...labels].sort());
+      const version = app.session!.version;
+      app.dispatch(input.select(0, true));
+      expect(app.session!.version).toBeGreaterThan(version);
+      steps++;
+    }
+    expect(steps).toBeGreaterThanOrEqual(3);
+  });
+
   it("opens a selection window for pending decisions and resolves it", () => {
     let seen = 0;
     for (const seed of [3, 11, 21]) {
