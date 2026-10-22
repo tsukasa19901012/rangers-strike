@@ -548,7 +548,11 @@ export default function App() {
     }
     if (inside(buttons.all, p)) return dispatch(input.allActions);
     if (inside(buttons.log, p)) return dispatch(input.toggleLog);
-    return dispatch(hitTestGui(gui, p));
+    const hit = hitTestGui(gui, p);
+    // On a phone only the ログ button opens the log: the core's hit test also opens it on a tap
+    // over the top bar, the lower board (where the log is drawn) or outside a window, which there is empty space.
+    if (isPortrait(gui.geometry) && hit?.type === "toggleLog") return false;
+    return dispatch(hit);
   }
 
   function onDeckPointer(e: PointerEvent, deck: DeckBuilderView): boolean {
