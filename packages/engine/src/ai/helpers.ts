@@ -632,6 +632,9 @@ export function pickRushCategoryPayment(
       (c) => c.instanceId === action.sourceInstanceId,
     );
     if (!card) continue;
+    // 払えずに取り消すことになる支払いは選ばない（選び続けると始めては取り消すのを繰り返す。
+    // 先読みの試し打ちがこれで毎回 400 手まで回り、Lv5 の 1 手が 5 秒以上かかっていた）。
+    if (cpuWouldCancelProcedure(state, playerId, action)) continue;
     const rushAction = actions.find(
       (a): a is Extract<GameAction, { type: "rush" }> =>
         a.type === "rush" &&

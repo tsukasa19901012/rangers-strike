@@ -58,6 +58,26 @@ function hideDeckOrder(state: GameState, sample = 0): GameState {
   };
 }
 
+/**
+ * 相手の手札の中身は CPU には見えないので、相手の手札と山札を混ぜて、同じ枚数を配り直す
+ * （枚数は見えているのでそのまま）。読みの前にこれを通すと、相手の手札を覗かずに読む。
+ */
+export function hideOpponentHand(state: GameState, playerId: PlayerId, sample = 0): GameState {
+  const enemyId = opponent(playerId);
+  const enemy = state.players[enemyId];
+  if (enemy.hand.length === 0) return state;
+  const rng = mix((state.turn * 6151 + state.log.length * 31 + sample * 92_821) | 0);
+  const pool = [...enemy.hand, ...enemy.deck];
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [pool[i], pool[j]] = [pool[j]!, pool[i]!];
+  }
+  return {
+    ...state,
+    players: { ...state.players, [enemyId]: { ...enemy, hand: pool.slice(0, enemy.hand.length), deck: pool.slice(enemy.hand.length) } },
+  };
+}
+
 /** 探索なしの CPU で、相手の次のターンが終わるまで（または決着まで）進める。 */
 function rollout(state: GameState, playerId: PlayerId, startTurn: number, sample = 0, turns = 2, maxSteps = ROLLOUT_MAX_STEPS): GameState {
   let current = hideDeckOrder(state, sample);
