@@ -43,6 +43,9 @@ function sidewaysStyle(slot: Box) {
   return { ...at({ x: cx - short / 2, y: cy - long / 2, w: short, h: long }), rotate: 90 };
 }
 
+/** Upright. `rotate: 0` is explicit: a style key that is left out keeps its old value, so a released card would stay turned. */
+const uprightStyle = (rect: Box) => ({ ...at(rect), rotate: 0 });
+
 /**
  * A whole card at `rect`: its image once loaded, a framed placeholder with the
  * name until then (and for cards without an image).
@@ -51,7 +54,7 @@ export function CardFace(props: { cardId: string; hidden?: boolean; name?: strin
   const texture = () => cardTexture(props.hidden ? "back" : props.cardId);
   const size = () => (props.sideways ? sidewaysSize(props.rect) : { w: props.rect.w, h: props.rect.h });
   return (
-    <View class="absolute overflow-hidden rounded-[5] bg-slate-800 border border-slate-600" style={props.sideways ? sidewaysStyle(props.rect) : at(props.rect)}>
+    <View class="absolute overflow-hidden rounded-[5] bg-slate-800 border border-slate-600" style={props.sideways ? sidewaysStyle(props.rect) : uprightStyle(props.rect)}>
       <Show
         when={texture() >= 0}
         fallback={

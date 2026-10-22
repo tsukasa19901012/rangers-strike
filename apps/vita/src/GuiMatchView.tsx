@@ -54,7 +54,10 @@ export function CardImage(props: { texture: number; style: Record<string, number
   return image;
 }
 
-/** A held card lies on its side (rules: ホールド = 横向き): its long side spans the tile, centred. */
+/**
+ * A held card lies on its side (rules: ホールド = 横向き): its long side spans the tile, centred.
+ * The upright style sets `rotate: 0` explicitly: a style key left out keeps its old value.
+ */
 function sidewaysArt(rect: Box) {
   const long = rect.w;
   const short = Math.round(long / CARD_ASPECT);
@@ -68,7 +71,7 @@ function ArtTile(props: TileProps & { texture: number }) {
       <View class="absolute overflow-hidden rounded-[3] bg-slate-800" style={at(props.rect)}>
         <CardImage
           texture={props.texture}
-          style={props.tile.held ? sidewaysArt(props.rect) : { posType: 1, insetL: 0, insetT: -Math.round(artH() * 0.1), width: props.rect.w, height: artH() }}
+          style={props.tile.held ? sidewaysArt(props.rect) : { posType: 1, insetL: 0, insetT: -Math.round(artH() * 0.1), width: props.rect.w, height: artH(), rotate: 0 }}
         />
         <Show when={props.tile.kind !== "hidden"}>
           <View class="absolute flex-row items-center px-[2] bg-[#000000b0]" style={{ insetL: 0, insetT: props.rect.h - 15, width: props.rect.w, height: 15 }}>
