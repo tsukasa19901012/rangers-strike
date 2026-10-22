@@ -324,6 +324,23 @@ describe("XG2-066 仮面ライダーカブトRF", () => {
     expect(canStartRush(board([], 6), "player1", "XG2-066:h")).toBe(false);
   });
 
+  // 「自軍「仮面ライダーカブトMF」」は自軍ラッシュエリア・バトルエリアのユニット。手札・捨札のカードは素材にならない（RS-230 公式Q「自軍ラッシュエリアに「RS-054 アバレッド」がある状態で」と同じ読み）。
+  const handBoard = (power: number) =>
+    rushBoard({ hand: [inst("XG2-066", "h"), inst("XG2-064", "mf")], discard: [inst("XG2-064", "mf2")], power: powerCards(power), command: releasedCat("OT", 1) });
+
+  it("XG2-066: 追加条件 — 手札・捨札の「仮面ライダーカブトMF」では必要パワー0にならない（パワー6ではラッシュできない）（出典: atwiki/page-1771「自軍「仮面ライダーカブトMF」1枚をパワーゾーンに送れば」）", () => {
+    expect(canStartRush(handBoard(6), "player1", "XG2-066:h")).toBe(false);
+  });
+
+  it("XG2-066: 追加条件 — パワー7でラッシュしても、手札・捨札の「仮面ライダーカブトMF」はパワーゾーンに送られない（出典: atwiki/page-1771）", () => {
+    const r = rushFromHand(handBoard(7), "player1", "XG2-066:h");
+    expect(r.ok, r.error).toBe(true);
+    const s = resolveAll(r.state);
+    expect(zoneOf(s, "player1", "XG2-066:h")).toBe("rush");
+    expect(zoneOf(s, "player1", "XG2-064:mf")).toBe("hand");
+    expect(zoneOf(s, "player1", "XG2-064:mf2")).toBe("discard");
+  });
+
   it("XG2-066: ※ 相手の効果（RS-687 ギンガイオー【ガルコンボーガン】）では選ばれない（出典: atwiki/page-1771「これはアタックされる以外では相手に選ばれない」）", () => {
     let s = st({ activePlayer: "player2", player1: { rush: [inst("XG2-066", "rf"), inst("TST-UNIT-0", "ctl")], deck: deckCards(3) }, player2: { rush: [inst("RS-687", "gg")], deck: deckCards(3, "e") } });
     s = enter(s, "RS-687:gg", "player2");

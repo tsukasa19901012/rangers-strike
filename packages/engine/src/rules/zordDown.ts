@@ -37,15 +37,25 @@ import { rk11IsHandSubstitute } from "./rk/rk11Fields";
 import { collectRequiredFusionMaterials } from "./zord";
 import { resolveZordFusionPartnerIds } from "../dsl/zordBridge";
 
-/** ゾードダウン素材を取れるゾーン（手札・捨札・フィールド）。 */
-export type ZordDownMaterialZone = "hand" | "discard" | "rush" | "battle";
+/**
+ * ゾードダウン素材を取れるゾーン。「自軍「X」1体を捨札にすれば／パワーゾーンに送れば」の「自軍「X」」は
+ * 自軍のラッシュエリア・バトルエリアのユニット（RS-230 公式Q「自軍ラッシュエリアに「RS-054 アバレッド」がある状態で」、
+ * rules/zord.ts の ZORD_MATERIAL_ZONES と同じ）。手札は RK-217・RK-218 の※（手札にある間だけ代わりになる）のときだけ。
+ */
+export type ZordDownMaterialZone = "hand" | "rush" | "battle";
 
-const ZORD_DOWN_MATERIAL_ZONES: ZordDownMaterialZone[] = [
-  "hand",
-  "discard",
-  "rush",
-  "battle",
-];
+const ZORD_DOWN_MATERIAL_ZONES: ZordDownMaterialZone[] = ["rush", "battle", "hand"];
+
+function isAllowedFromZone(
+  player: PlayerState,
+  definitions: Record<string, CardDefinition>,
+  rushingCardId: string,
+  zone: ZordDownMaterialZone,
+  card: CardInstance,
+): boolean {
+  if (zone !== "hand") return true;
+  return rk11IsHandSubstitute({ definitions }, player.hand, card, rushingCardId);
+}
 
 export { needsZordDownPayment };
 
@@ -159,6 +169,7 @@ export function collectZordDownMaterials(
   for (const zone of ZORD_DOWN_MATERIAL_ZONES) {
     for (const card of player[zone]) {
       if (
+        isAllowedFromZone(player, definitions, rushingCardId, zone, card) &&
         isValidZordDownMaterial(player, definitions, rushingCardId, rushingInstanceId, card)
       ) {
         candidates.push(card);
@@ -178,6 +189,7 @@ export function findZordDownMaterial(
   for (const zone of ZORD_DOWN_MATERIAL_ZONES) {
     const found = findInZone(player, zone, materialInstanceId);
     if (!found) continue;
+    if (!isAllowedFromZone(player, definitions, rushingCardId, zone, found.card)) continue;
     if (
       !isValidZordDownMaterial(
         player,

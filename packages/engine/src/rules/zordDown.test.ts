@@ -77,11 +77,12 @@ describe("zord down rush", () => {
     expect(needsZordDownPayment("RS-230", "7-", RS230)).toBe(true);
   });
 
-  it("collects named partner from hand for zero-cost rush", () => {
+  it("collects named partner from the field for zero-cost rush", () => {
     const material = { cardId: "RS-054", instanceId: "mat-1" };
     const rusher = { cardId: "RS-230", instanceId: "rush-1" };
     const player = basePlayer({
-      hand: [rusher, material],
+      hand: [rusher],
+      rush: [material],
     });
     const materials = collectZordDownMaterials(player, definitions, "RS-230", "rush-1");
     expect(materials.map((c) => c.instanceId)).toEqual(["mat-1"]);
@@ -96,11 +97,25 @@ describe("zord down rush", () => {
     ).toBe(true);
   });
 
+  // 「自軍「アバレッド」1体」は場のユニット。手札・捨札の「アバレッド」は素材にならない（RS-230 公式Q「自軍ラッシュエリアに「RS-054 アバレッド」がある状態で」）。
+  it("does not use a named partner in hand or discard", () => {
+    const rusher = { cardId: "RS-230", instanceId: "rush-1" };
+    const player = basePlayer({
+      hand: [rusher, { cardId: "RS-054", instanceId: "hand-mat" }],
+      discard: [{ cardId: "RS-054", instanceId: "discard-mat" }],
+    });
+    expect(collectZordDownMaterials(player, definitions, "RS-230", "rush-1")).toEqual([]);
+    expect(listZordDownRushPaymentVariants(player, definitions, "RS-230", "rush-1")).toEqual([]);
+    expect(validateZordDownPayment(player, definitions, "RS-230", "rush-1", "hand-mat")).toBe(false);
+    expect(validateZordDownPayment(player, definitions, "RS-230", "rush-1", "discard-mat")).toBe(false);
+  });
+
   it("does not allow zero-cost rush without paying material", () => {
     const material = { cardId: "RS-054", instanceId: "mat-1" };
     const rusher = { cardId: "RS-230", instanceId: "rush-1" };
     const player = basePlayer({
-      hand: [rusher, material],
+      hand: [rusher],
+      battle: [material],
       power: [{ cardId: "P-1", instanceId: "p1" }],
     });
 
