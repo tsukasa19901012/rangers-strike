@@ -2,6 +2,7 @@ import type { GameAction } from "../types/actions";
 import type { GameState, PlayerId } from "../types/game";
 import { WIN_DAMAGE } from "../types/game";
 import { effectiveBp } from "../core/catalog";
+import { applyAction } from "../core/applyAction";
 import { getLegalActions } from "../core/legalActions";
 import { opponent, rushReactorId } from "../core/helpers";
 import { damagePaymentChoosingPlayer } from "../rules/damagePayment";
@@ -39,7 +40,7 @@ import {
 } from "./helpers";
 import { planComboEntry } from "./comboOrder";
 import { deckProfile } from "./deckProfile";
-import { dedupeActions, pickBestByRollout, pickBestBySearch, type SearchOptions } from "./simulation";
+import { dedupeActions, pickBestByRollout, pickBestBySearch, scoreAction, type SearchOptions } from "./simulation";
 
 export type PickCpuActionOptions = {
   /** false のとき相手応答シミュレーションをスキップ（再帰回避の内部用）。 */
@@ -172,6 +173,80 @@ function pickReactionAction(
   if (pass) candidates.push(pass);
 
   return pickBestBySearch(state, playerId, candidates, sim) ?? heuristic ?? pass ?? null;
+}
+
+/**
+ * 残りの合法手として足さない手。途中の手続きの取り消し（取り消すなら最初から始めなければよい）と、
+ * フェイズを終える・見送る手（いつ終えるかは決めた順の候補の側で決めている。足すと、ラッシュできるのに
+ * ラッシュフェイズを終える・出せるのにバトルエリアへの登場を見送る、を選んで大きく弱くなった）。
+ */
+const NOT_CANDIDATE_TYPES = new Set<GameAction["type"]>(["cancel_command_payment", "cancel_zord_setup", "cancel_wing_hold", "end_phase"]);
+
+/**
+ * 決めた順の候補（collectRushCandidates など）に入っていない合法手。手の種類を列挙して候補を作っていたので、
+ * 列挙に無い手（常駐の起動、場のユニットの起動効果、ゾーンからのラッシュ など）は一度も選ばれなかった。
+ * 支払いやゾード・セットアップを始める手は、CPU が最後まで払えずに取り消すもの（cpuWouldCancelProcedure）を除く。
+ */
+function remainingActions(
+  state: GameState,
+  playerId: PlayerId,
+  candidates: GameAction[],
+  actions: GameAction[],
+): GameAction[] {
+  const taken = new Set(candidates.map((a) => JSON.stringify(a)));
+  return dedupeActions(
+    actions.filter((a) => {
+      if (NOT_CANDIDATE_TYPES.has(a.type) || a.type.startsWith("pass_") || taken.has(JSON.stringify(a))) return false;
+      if (a.type === "begin_zord_setup" || a.type === "initiate_command_payment") return !cpuWouldCancelProcedure(state, playerId, a);
+      return true;
+    }),
+  );
+}
+
+/** 局面の中身（ログなどを除く）。 */
+function positionKey(state: GameState): string {
+  return JSON.stringify([state.phase, state.activePlayer, state.players, state.pendingEffectChoice ?? null]);
+}
+
+/**
+ * その手を打ち、続く自分の選択も CPU が選ぶとおりに進めたとき、局面が元に戻るか。
+ * ミラーワールド（RK-016）のように、起動 → 任意の効果を見送る、で何も変わらない手を候補から外す。
+ */
+function isNoOpForCpu(state: GameState, playerId: PlayerId, action: GameAction, cpuOptions: PickCpuActionOptions): boolean {
+  const before = positionKey(state);
+  const first = applyAction(state, action);
+  if (!first.ok) return true;
+  let next = first.state;
+  for (let i = 0; i < 8 && !next.winner && next.pendingEffectChoice?.playerId === playerId; i++) {
+    const follow = pickCpuActionInner(next, playerId, { ...cpuOptions, simulationDepth: 1 });
+    if (!follow) break;
+    const r = applyAction(next, follow);
+    if (!r.ok) break;
+    next = r.state;
+  }
+  return positionKey(next) === before;
+}
+
+/**
+ * 決めた順の候補から読みで選んだ手と、残りの合法手（remainingActions）で一番よい手を比べ、残りの手は
+ * はっきり良いときだけ選ぶ。ライダーパスの入れ替えのように何度でも使える手が、同じ点のまま選ばれ続けて
+ * 入れ替えを繰り返さないようにする（評価が上がる手だけなら、行って戻る繰り返しにはならない）。
+ */
+function pickBestWithRemaining(
+  state: GameState,
+  playerId: PlayerId,
+  candidates: GameAction[],
+  actions: GameAction[],
+  options: SearchOptions | undefined,
+  cpuOptions: PickCpuActionOptions,
+): GameAction | null {
+  const best = pickBestBySearch(state, playerId, candidates, options);
+  const rest = remainingActions(state, playerId, candidates, actions).filter((a) => !isNoOpForCpu(state, playerId, a, cpuOptions));
+  if (rest.length === 0) return best;
+  const bestRest = pickBestBySearch(state, playerId, rest, options);
+  if (!bestRest) return best;
+  if (!best) return bestRest;
+  return scoreAction(state, playerId, bestRest, options) > scoreAction(state, playerId, best, options) ? bestRest : best;
 }
 
 function collectRushCandidates(
@@ -409,8 +484,9 @@ function pickCpuActionInner(
       }
     }
 
-    if (enableSearch && pending.optional && pending.kind !== "scry_keep_one") {
-      const pay = actions.filter((a) => a.type === "resolve_effect_choice");
+    if (enableSearch && (pending.optional || pending.mayConfirm) && pending.kind !== "scry_keep_one") {
+      // 「～してもよい」の確認（confirm_effect_choice）も「行う」の手として比べる（以前は候補に無く、一度も選ばれなかった）。
+      const pay = actions.filter((a) => a.type === "resolve_effect_choice" || a.type === "confirm_effect_choice");
       const skip = actions.find((a) => a.type === "skip_effect_choice");
       if (pay.length > 0 && skip) {
         const searched = pickBestBySearch(state, playerId, [...pay, skip], simShallow());
@@ -485,20 +561,14 @@ function pickCpuActionInner(
 
   switch (state.phase) {
     case "start": {
-      const release = actions.find((action) => action.type === "release_start_commands");
-      if (release) return release;
-      // 既定は並び順で1体ずつすべて戻す（instanceId なし）。
-      const returnBattle = actions.find(
-        (action) => action.type === "return_all_battle_to_rush" && !action.instanceId,
-      );
-      if (returnBattle) return returnBattle;
-      const draw = actions.find((action) => action.type === "draw");
-      if (draw) return draw;
-      const upkeep = actions.find((action) => action.type === "resolve_effect_choice");
-      if (upkeep) return upkeep;
-      const bonus = actions.find((action) => action.type === "bonus_draw");
-      if (bonus && !(options.deckGuard && avoidBonusDraw(state, playerId, options.deckGuard))) return bonus;
-      return actions.find((action) => action.type === "skip_bonus_draw") ?? bonus ?? null;
+      // スタートフェイズに使える起動効果（場のユニットの起動など）は、いつもの進め方と読み比べる。
+      const activations = actions.filter((a) => a.type === "activate_field_unit_ability" || a.type === "activate_resident_operation");
+      if (enableSearch && activations.length > 0) {
+        const usual = pickStartPhaseAction(state, playerId, actions, options);
+        const best = pickBestBySearch(state, playerId, usual ? [...activations, usual] : activations, simShallow());
+        if (best) return best;
+      }
+      return pickStartPhaseAction(state, playerId, actions, options);
     }
 
     case "charge": {
@@ -537,6 +607,7 @@ function pickCpuActionInner(
       if (plans("rush")) {
         const candidates = collectRushCandidates(state, playerId, actions);
         if (beginZord) candidates.unshift(beginZord);
+        candidates.push(...remainingActions(state, playerId, candidates, actions).filter((a) => !isNoOpForCpu(state, playerId, a, options)));
         const planned = pickBestByRollout(state, playerId, candidates, plans("rush"), options.planTurns);
         if (planned) return planned;
       }
@@ -550,7 +621,7 @@ function pickCpuActionInner(
           candidates = candidates.filter((a) => a.type !== "end_phase");
         }
         candidates = dedupeActions(candidates);
-        const best = pickBestBySearch(state, playerId, candidates, simShallow());
+        const best = pickBestWithRemaining(state, playerId, candidates, actions, simShallow(), options);
         if (best) return best;
       }
 
@@ -609,7 +680,7 @@ function pickCpuActionInner(
         if (hasRushUnits || hasCombat) {
           candidates = candidates.filter((a) => a.type !== "end_phase");
         }
-        const best = pickBestBySearch(state, playerId, candidates, simTactical(actions));
+        const best = pickBestWithRemaining(state, playerId, candidates, actions, simTactical(actions), options);
         if (best) return best;
       }
 
@@ -633,6 +704,29 @@ function pickCpuActionInner(
     default:
       return endPhase(actions);
   }
+}
+
+/** スタートフェイズのいつもの進め方（コマンドを戻す → バトルエリアを戻す → ドロー → 追加ドロー）。 */
+function pickStartPhaseAction(
+  state: GameState,
+  playerId: PlayerId,
+  actions: GameAction[],
+  options: PickCpuActionOptions,
+): GameAction | null {
+  const release = actions.find((action) => action.type === "release_start_commands");
+  if (release) return release;
+  // 既定は並び順で1体ずつすべて戻す（instanceId なし）。
+  const returnBattle = actions.find(
+    (action) => action.type === "return_all_battle_to_rush" && !action.instanceId,
+  );
+  if (returnBattle) return returnBattle;
+  const draw = actions.find((action) => action.type === "draw");
+  if (draw) return draw;
+  const upkeep = actions.find((action) => action.type === "resolve_effect_choice");
+  if (upkeep) return upkeep;
+  const bonus = actions.find((action) => action.type === "bonus_draw");
+  if (bonus && !(options.deckGuard && avoidBonusDraw(state, playerId, options.deckGuard))) return bonus;
+  return actions.find((action) => action.type === "skip_bonus_draw") ?? bonus ?? null;
 }
 
 export function isCpuTurn(state: GameState, cpuPlayer: PlayerId = "player2"): boolean {

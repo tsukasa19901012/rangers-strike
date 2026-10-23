@@ -291,6 +291,14 @@ describe("XG7-036 仮面ライダーナイト×仮面ライダー龍騎", () => 
   it("XG7-036: 【戦わなければ生き残れない】自軍バトルフェイズには宣言できない（出典: atwiki/page-2436「自軍ラッシュフェイズごとに」）", () => {
     expect(canActivate(p1Battle({ battle: [inst("XG7-036", "n")] }, {}, EXTRA), "XG7-036:n")).toBe(false);
   });
+
+  it("XG7-036: 【戦わなければ生き残れない】宣言は自軍ラッシュフェイズごとに1度だけ — 宣言したあとは同じラッシュフェイズにもう起動できない（出典: atwiki/page-2436「自軍ラッシュフェイズごとに1度だけ」）", () => {
+    const s = rushPhaseOf({ rush: [inst("XG7-036", "n")] }, {}, EXTRA);
+    const opened = act(s, { type: "activate_field_unit_ability", playerId: "player1", unitInstanceId: "XG7-036:n" });
+    const declared = act(opened, { type: "resolve_effect_choice", playerId: "player1", instanceId: "cross1" });
+    expect(declared.pendingEffectChoice).toBeFalsy();
+    expect(canActivate(declared, "XG7-036:n")).toBe(false);
+  });
 });
 
 // ===========================================================================
