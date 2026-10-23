@@ -3,6 +3,7 @@ import { WIN_DAMAGE } from "../types/game";
 import { effectiveBp, getDefinition } from "../core/catalog";
 import { opponent } from "../core/helpers";
 import { strikeDamageFor } from "../rules/combo";
+import { isMirrorWorld, mirrorWorldCopies } from "../rules/rk/rk1NamedEffects";
 
 function maxEnemyStrikeThreat(
   state: GameState,
@@ -69,6 +70,20 @@ function clockUpShields(state: GameState, playerId: PlayerId): number {
   return accel ? stacked : 0;
 }
 
+/**
+ * ミラーワールド（RK-016 / RK-075）の評価: 重ねたカードと同名の場の自軍ユニットの数（相手は選ぶのに1つ、アタックするのにさらに2つ
+ * 自分のコマンドをホールドしなければならない）と、重ねたカードの枚数（離れるとき手札に戻る）。これが無いと、場のユニットが1体減る損
+ * だけが見え、CPU はミラーワールドに一度も重ねなかった。
+ */
+function mirrorWorldValue(state: GameState, playerId: PlayerId): number {
+  const p = state.players[playerId];
+  let stacked = 0;
+  for (const op of p.operation) if (isMirrorWorld(op.cardId)) stacked += op.stackedCards?.length ?? 0;
+  if (stacked === 0) return 0;
+  const guarded = [...p.battle, ...p.rush].filter((c) => mirrorWorldCopies(state, playerId, c) > 0).length;
+  return guarded * W.mirrorGuarded + stacked * W.mirrorStacked;
+}
+
 /** 盤面評価の重み。CPU の調整（scripts/cpu-arena.ts）で差し替えられる。 */
 export const DEFAULT_EVAL_WEIGHTS = {
   enemyDamage: 1400,
@@ -114,6 +129,10 @@ export const DEFAULT_EVAL_WEIGHTS = {
   battleWidth: 110,
   /** クロックアップ（RK-021 / RK-078）に重ねたカード 1 枚（「加速」のユニットへのアタックを 1 回止める）。 */
   clockUpShield: 300,
+  /** ミラーワールドに重ねたカードと同名の場の自軍ユニット 1 体。 */
+  mirrorGuarded: 700,
+  /** ミラーワールドに重ねたカード 1 枚（離れるとき手札に戻る）。 */
+  mirrorStacked: 250,
 };
 export type EvalWeights = typeof DEFAULT_EVAL_WEIGHTS;
 
@@ -225,6 +244,7 @@ export function heuristicEvaluate(state: GameState, playerId: PlayerId): number 
   }
 
   score += (clockUpShields(state, playerId) - clockUpShields(state, enemyId)) * W.clockUpShield;
+  score += mirrorWorldValue(state, playerId) - mirrorWorldValue(state, enemyId);
 
   if (state.phase === "rush") {
     score += heldCommands * W.rushHeldCommand;

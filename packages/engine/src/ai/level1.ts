@@ -41,6 +41,7 @@ import {
 } from "./helpers";
 import { planComboEntry } from "./comboOrder";
 import { deckProfile } from "./deckProfile";
+import { pickMirrorWorldActivation, pickMirrorWorldChoice } from "./mirrorWorld";
 import { dedupeActions, pickBestByRollout, pickBestBySearch, pickBestByTurnPlan, scoreAction, type SearchOptions } from "./simulation";
 
 export type PickCpuActionOptions = {
@@ -529,6 +530,8 @@ function pickCpuActionInner(
     // 配置するときに山札から重ねる選択（ライダーパス等）は読まずに上限まで重ねる（盤面評価では重ねない方が良く見える）。
     const deckStack = pickDeckStackChoice(state, pending, actions);
     if (deckStack) return deckStack;
+    const mirrorStack = pickMirrorWorldChoice(state, playerId);
+    if (mirrorStack) return mirrorStack;
 
     if (enableSearch && pending.kind === "deck_top_or_bottom") {
       const placements = actionsOfType(actions, "resolve_ruin_survey");
@@ -673,6 +676,8 @@ function pickCpuActionInner(
     }
 
     case "rush": {
+      const mirror = pickMirrorWorldActivation(state, playerId, actions);
+      if (mirror) return mirror;
       const beginZord = pickBeginZordSetup(state, playerId, actions);
       if (beginZord && !enableSearch) return beginZord;
 
