@@ -213,9 +213,30 @@ function remainingActions(
     actions.filter((a) => {
       if (NOT_CANDIDATE_TYPES.has(a.type) || a.type.startsWith("pass_") || taken.has(JSON.stringify(a))) return false;
       if (a.type === "begin_zord_setup" || a.type === "initiate_command_payment") return !cpuWouldCancelProcedure(state, playerId, a);
+      if ((a.type === "activate_resident_operation" || a.type === "activate_field_unit_ability") && activatedThisPhase(state, a)) return false;
       return true;
     }),
   );
+}
+
+/**
+ * 同じカード（カード番号）の起動を、このフェイズにもうしているか。CPU は 1 フェイズに 1 回までにする。
+ * XG5-066 仮面ライダーベルデ【コピーベント】は、場のベルデとパワーゾーンのもう 1 枚のベルデを入れ替えると、
+ * 入れ替わったベルデがまた起動でき、入れ替えを永久に繰り返していた（インスタンスが変わるので、同じカードの
+ * 1 ターン 1 回の印にもかからない。読むたびに相手の手札の配り直しが変わり、評価の揺れで「良い手」に見える）。
+ */
+function activatedThisPhase(state: GameState, action: GameAction): boolean {
+  const id = action.type === "activate_resident_operation" ? action.operationInstanceId : action.type === "activate_field_unit_ability" ? action.unitInstanceId : null;
+  if (!id) return false;
+  const p = state.players[action.playerId];
+  const cardId = [...p.operation, ...p.rush, ...p.battle, ...p.hand, ...p.power].find((c) => c.instanceId === id)?.cardId;
+  if (!cardId) return false;
+  for (let i = state.log.length - 1; i >= 0; i--) {
+    const line = state.log[i]!;
+    if (line.startsWith("phase:")) return false;
+    if (line.startsWith(`${action.playerId}|activate_`) && line.includes(`|${cardId}|`)) return true;
+  }
+  return false;
 }
 
 /** 局面の中身（ログなどを除く）。 */
