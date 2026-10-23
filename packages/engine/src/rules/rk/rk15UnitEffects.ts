@@ -467,7 +467,7 @@ function previousIsRiddenKabutoExtender(state: GameState, battleBefore: CardInst
 }
 
 // ---------------------------------------------------------------------------
-// RK-302 スコルピオワーム【ワームの頂点に立つ男】の後半・RK-303 ワームサナギ体（4弾）【擬態の解除】（場を離れたとき）
+// RK-302 スコルピオワーム【ワームの頂点に立つ男】の後半・RK-303 ワームサナギ体【擬態の解除】（場を離れたとき）
 // - RK-302「また、敵軍ターン中、これが撃破されたとき、特徴「ワーム」または特徴「怪人」を持つすべてのユニットを撃破する。」（atwiki/page-1342）。
 //   自軍・敵軍、エリアを問わない（カード評価「両軍の怪人かワームを持つユニットをすべて巻き添え」）。特徴は今の特徴。前半は rules/rk/rk15Fields.ts。
 // - RK-303「これが自分の手札にある間、敵軍ターン中、特徴「男」または「女」を持つ自軍ユニットが撃破されて捨札になったとき、捨札になったユニット
@@ -508,7 +508,7 @@ export function applyRk15OnUnitLeft(state: GameState, event: Rk15LeaveEvent): Ga
     );
     if (ids.length > 0) next = destroyAll(next, { playerId: owner, phasePlayerId: turnPlayer, sourceInstanceId: event.instanceId }, "RK-302", "rk302_worm_apex_destroy", ids);
   }
-  // RK-303（手札に「ワームサナギ体（4弾）」があるとき）。
+  // RK-303（手札に「ワームサナギ体」があるとき）。
   const features = rk1ZoneCardFeatures(next, owner, event.cardId);
   if (isUnitCard(next, event.cardId) && (features.includes("男") || features.includes("女")) && next.players[owner].hand.some((c) => isSameCardIdentity(c.cardId, "RK-303"))) {
     const ids = pupaIds(next, owner);

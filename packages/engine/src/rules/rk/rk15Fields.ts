@@ -123,9 +123,9 @@ export function rk15RequiresBattleEntry(state: Pick<GameState, "players" | "defi
   return state.players[other(playerId)].battle.some((c) => isUnit(state, c));
 }
 
-/** 名前が「ワームサナギ体」のカードか（RK-137「ワームサナギ体」・RK-303「ワームサナギ体（4弾）」。wiki の区別表記を除いて比べる）。 */
+/** 名前が「ワームサナギ体」のカードか（RK-137「ワームサナギ体」・RK-303「ワームサナギ体」）。 */
 export function rk15IsWormPupa(state: Pick<GameState, "definitions">, cardId: string): boolean {
   if (isSameCardIdentity(cardId, "RK-303") || isSameCardIdentity(cardId, "RK-137")) return true;
   const name = state.definitions[cardId]?.name;
-  return !!name && normalizeSameCardName(name.replace(/（\d+弾）$/, "")) === "ワームサナギ体";
+  return !!name && normalizeSameCardName(name) === "ワームサナギ体";
 }
