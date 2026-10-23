@@ -51,6 +51,7 @@ import {
   nextPhase,
   p1Battle,
   pick,
+  playOp,
   powerCards,
   raw,
   registerOffered,
@@ -575,9 +576,14 @@ describe("RK-245 仮面ライダーキバ", () => {
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("RK-245");
   });
 
-  it.todo(
-    "RK-245: 公式Q&A — XG2-055 変身一発でラッシュしても「ラッシュするとき、可能ならホールド状態で置く」は発動する（ホールド状態で出る）（出典: atwiki/page-876 Q2）— XG2-055 変身一発が未実装（本範囲外のカード。DSL がない）",
-  );
+  it("RK-245: 公式Q&A — XG2-055 変身一発でラッシュしても「ラッシュするとき、可能ならホールド状態で置く」は発動する（ホールド状態で出る）（出典: atwiki/page-876 Q2・atwiki/page-1764 Q2）", () => {
+    const s0 = st({ phase: "rush", player1: { hand: [inst("XG2-055", "ip"), inst("RK-245", "kb")], command: releasedCat("ET", 1), deck: deckCards(3) }, player2: { deck: deckCards(3, "e") } });
+    const r = playOp(s0, "player1", "XG2-055:ip");
+    expect(r.ok, r.error).toBe(true);
+    const s = resolveAll(pick(r.state, "RK-245:kb"));
+    expect(zoneOf(s, "player1", "RK-245:kb")).toBe("rush");
+    expect(cardIn(s, "player1", "RK-245:kb")?.commandHeld).toBe(true);
+  });
   it.todo(
     "RK-245: 公式Q&A — 自軍 XG5-025 ボウケンブルーAT があるとき相手がラッシュしたキバはホールド状態で出るので【上空からの牽制】の対象外（出典: atwiki/page-876 Q3）— XG5-025【上空からの牽制】が未実装（本範囲外のカード。DSL がない）",
   );

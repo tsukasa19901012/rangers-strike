@@ -22,6 +22,8 @@ import { patchPlayer } from "../playerPatches";
 import { unitFeatures } from "../addedFeatures";
 import { moveToExile } from "../exile";
 import { markRushedThisTurn } from "../turnModifiers";
+import { rk12PlacesHeldOnRush } from "../rk/rk12Fields";
+import { sendFieldCardsToCommandOrDiscard } from "../fieldLeaveQueue";
 import { applyDamageToPlayer } from "../damagePayment";
 import { filthyAirActive } from "../legend1/otherLinesNamedEffects";
 import { rk1IsSmallNow } from "../rk/rk1Features";
@@ -682,7 +684,15 @@ registerXg2Choice(HENSHIN_EFFECT_ID, {
     if (card) {
       next = patchPlayer(next, playerId, (p) =>
         addTurnRestrictionModifier(
-          markRushedThisTurn({ ...p, hand: p.hand.filter((c) => c.instanceId !== instanceId), rush: [...p.rush, { instanceId: card.instanceId, cardId: card.cardId }] }, instanceId),
+          markRushedThisTurn(
+            {
+              ...p,
+              hand: p.hand.filter((c) => c.instanceId !== instanceId),
+              // RK-245 等「※これはラッシュするとき、可能ならホールド状態で置く。」はラッシュする時点の制限なので発動する（atwiki/page-1764 Q2・page-876 Q2）。
+              rush: [...p.rush, { instanceId: card.instanceId, cardId: card.cardId, ...(rk12PlacesHeldOnRush(next, card.cardId) ? { commandHeld: true } : {}) }],
+            },
+            instanceId,
+          ),
           instanceId,
           XG2_NO_STRIKE_RESTRICTION,
         ),
@@ -710,11 +720,10 @@ xg2Hook("turnEnd", (state, endingPlayerId) => {
   const henshin = xg2List<Xg2TurnEntry>(next, XG2_HENSHIN_KEY);
   if (henshin.length > 0) {
     next = withXg2List(next, XG2_HENSHIN_KEY, henshin.filter((e) => e.ownerId !== endingPlayerId));
-    for (const e of henshin) {
-      if (e.ownerId !== endingPlayerId || !findField(next, e.ownerId, e.instanceId)) continue;
-      const full = next.players[e.ownerId].command.length >= COMMAND_ZONE_MAX;
-      next = moveFieldUnit(next, e.ownerId, e.instanceId, endingPlayerId, full ? "discard" : "command_held");
-    }
+    // 置けない分の捨札も撃破ではない離場として処理を通す（チェイス・XG2-042 の「その場に留まる」・RK-250 サバイブの機会を出す）。
+    const ids = henshin.filter((e) => e.ownerId === endingPlayerId && findField(next, e.ownerId, e.instanceId)).map((e) => e.instanceId);
+    const room = Math.max(0, COMMAND_ZONE_MAX - next.players[endingPlayerId].command.length);
+    next = sendFieldCardsToCommandOrDiscard(next, endingPlayerId, ids.slice(0, room), ids.slice(room), endingPlayerId);
   }
   return next;
 });

@@ -124,7 +124,13 @@ describe("XP-017 仮面ライダーディケイド激情態", () => {
     expect(s.players.player2.power).toHaveLength(6);
   });
 
-  it.todo("XP-017: 公式Q&A — XG2-055 変身一発・RK-160 シザーズジャガーなど「手札から選んで出す」効果ではラッシュできる（出典: atwiki/page-1981 Q1）— XG2-055 は XG 側（別の担当）のカード、RK-160 側は cardSpec/RK8-148-168.b の it.todo と同じ");
+  it("XP-017: 公式Q&A — XG2-055 変身一発の「手札から選んで出す」効果ではラッシュできる（出典: atwiki/page-1981 Q1・atwiki/page-1764 Q4）", () => {
+    const r = playOp(rushPhase({ hand: [inst("XG2-055", "ip"), inst("XP-017", "gj")], command: releasedCat("ET", 1) }), "player1", "XG2-055:ip");
+    expect(r.ok, r.error).toBe(true);
+    expect(choiceIds(r.state)).toContain("XP-017:gj");
+    expect(zoneOf(resolveAll(pick(r.state, "XP-017:gj")), "player1", "XP-017:gj")).toBe("rush");
+  });
+  it.todo("XP-017: 公式Q&A — RK-160 シザーズジャガーなど「手札から選んで出す」効果ではラッシュできる（出典: atwiki/page-1981 Q1）— RK-160 側は cardSpec/RK8-148-168.b の it.todo と同じ");
 });
 
 // ===========================================================================

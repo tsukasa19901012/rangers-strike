@@ -11,13 +11,14 @@
  *
  * 既存の照合と重なるもの（ここでは繰り返さない）:
  *  - XG2-052 ユナイトベント Q1〜Q4（RS-437 白熱する実況で重ねたカードとの順番・BP 修正）は cardSpec/RS7-432-452.a.test.ts、Q6 は cardSpec/RK16-316-335.a.test.ts（RK-321）。
- *  - XG2-055 変身一発 Q2（RK-245 仮面ライダーキバ）は cardSpec/RK12-232-252.b.test.ts。
+ *  - XG2-055 変身一発 Q2（RK-245 仮面ライダーキバ）は cardSpec/RK12-232-252.b.test.ts、Q4（XP-017 ディケイド激情態）は cardSpec/XP-017-032.a.test.ts。
  */
 import { describe, expect, it } from "vitest";
 import type { CardInstance, GameState } from "../types/game";
 import {
   accept,
   act,
+  attack,
   attackUntilRegister,
   attackedInEnemyTurn,
   bpOf,
@@ -38,6 +39,7 @@ import {
   expectOpStats,
   expectRarityIn,
   expectUnit,
+  fillers,
   faceDownCard,
   held,
   inst,
@@ -46,7 +48,12 @@ import {
   p1Battle,
   pick,
   playOp,
+  passEntry,
   powerCards,
+  released,
+  rideOff,
+  mount,
+  useCounter,
   rcBoard,
   reanimateTests,
   registerOffered,
@@ -386,5 +393,150 @@ describe("XG2-055 変身一発", () => {
     s = settle(pick(s, "XG2-025:gr"));
     expect(zoneOf(s, "player1", "XG2-025:gr")).toBe("rush");
     expect(s.pendingEffectChoice?.sourceCardId).not.toBe("XG2-025");
+  });
+
+  // -------------------------------------------------------------------------
+  // ターンを跨いだ場合（atwiki/page-1764 カード評価「チェイスやサバイブなど何らかの方法でコマンドや捨札送りを免れてターンを跨げば、繋がりが切れて
+  // ストライクは可能になる」「ラッシュしたユニットをモーフさせることでデメリットを消すこともできる」）。
+
+  const MAN = sUnit("SPEC-HENSHIN-MAN", { bp: 2000, features: ["男"] });
+  const MORPH_MAN = sUnit("SPEC-HENSHIN-MORPH", { bp: 2000, features: ["仮面ライダー", "男"], text: "※モーフ（敵軍ユニットがモーフ以外でラッシュされたとき、特徴がこのユニットと完全一致するオモテ向きのユニットカードを自軍ゾーンから1枚選びこれと置き換えてもよい）" });
+  const MORPH_TARGET = sUnit("SPEC-HENSHIN-MORPH-T", { bp: 6000, powerCost: 5, features: ["仮面ライダー", "男"] });
+  const KAIZO = sUnit("SPEC-HENSHIN-KAIZO", { features: ["改造人間"] });
+  const CROSS = [...EXTRA, MAN, MORPH_MAN, MORPH_TARGET, KAIZO];
+
+  /** 変身一発で unit を出したところ（反応はパス）。 */
+  const henshin = (unit: CardInstance, p1: Partial<GameState["players"]["player1"]> = {}, p2: Partial<GameState["players"]["player2"]> = {}) => {
+    const r = playOp(rushBoard({ command: releasedCat("ET", 1), ...p1, hand: [inst("XG2-055", "ip"), unit, ...(p1.hand ?? [])] }, p2, CROSS), "player1", "XG2-055:ip");
+    expect(r.ok, r.error).toBe(true);
+    return resolveAll(pick(r.state, unit.instanceId));
+  };
+
+  /** フェイズを進める（スタートフェイズの「戻す」・リリース・ドローを含む）。player の phase になるまで。 */
+  const advanceTo = (s0: GameState, playerId: "player1" | "player2", phase: GameState["phase"]) => {
+    let s = s0;
+    for (let i = 0; i < 20 && !(s.activePlayer === playerId && s.phase === phase && !s.pendingEffectChoice); i++) {
+      s = settle(s);
+      const a = legal(s).find((x) => x.playerId === s.activePlayer && ["return_all_battle_to_rush", "release_start_commands", "draw", "end_phase"].includes(x.type));
+      if (!a) break;
+      s = act(s, a);
+    }
+    return s;
+  };
+
+  /**
+   * 次の自軍ターンのバトルフェイズで id をバトルエリアに出し、ストライクできるか。
+   * XG1-083・XG2-042 の SP は「1/4」（R-STK-03: バトルエリアの4番目のときだけ SP1）なので、先に before を出して4番目にする。
+   */
+  const strikesNextTurn = (s0: GameState, id: string, before: string[] = []) => {
+    let s = advanceTo(advanceTo(s0, "player2", "start"), "player1", "battle");
+    expect(s.turn).toBeGreaterThan(s0.turn);
+    for (const b of before) s = passEntry(settle(enter(s, b)));
+    expect(["rush", "battle"]).toContain(zoneOf(s, "player1", id));
+    if (zoneOf(s, "player1", id) === "rush") s = enter(s, id);
+    if (legal(s).some((a) => a.type === "resolve_ride_off_choice")) s = rideOff(s, false);
+    return canStrike(settle(s), id);
+  };
+  const FILL3 = ["TST-UNIT-0:fill0", "TST-UNIT-0:fill1", "TST-UNIT-0:fill2"];
+
+  /** 自軍ターンを終える（エンドフェイズで止まったときは、そこで返す）。 */
+  const toEnd = (s0: GameState) => {
+    let s = settle(s0);
+    for (let i = 0; i < 5 && s.activePlayer === "player1" && !s.pendingEffectChoice && !s.pendingChase; i++) {
+      const e = legal(s).find((a) => a.type === "end_phase");
+      if (!e) break;
+      s = act(s, e);
+    }
+    return s;
+  };
+
+  it("XG2-055: コミュニティの記述 — 出したユニットがコマンドゾーンに置かれるとき、ライド中のチェイス（XG1-083 シャイダー）で別のビークルに乗り換えればその場に留まり、次の自軍ターンにはストライクできる（出典: atwiki/page-1764 カード評価「チェイスやサバイブなど…ターンを跨げば、繋がりが切れてストライクは可能になる」・R-KW-CHASE-01「コマンド送りにも使える」）", () => {
+    let s = henshin(inst("XG1-083", "sh"), { rush: [inst("RS-466", "v1"), inst("RS-466", "v2"), ...fillers(3)] });
+    s = rideOff(mount(nextPhase(s), "XG1-083:sh", "RS-466:v1"), false);
+    s = passEntry(settle(s));
+    expect(canStrike(s, "XG1-083:sh")).toBe(false);
+    s = toEnd(s);
+    // チェイスは終えるプレイヤーのターン中（エンドフェイズ）に選ぶ（R-END-01）。
+    expect(s.activePlayer).toBe("player1");
+    expect(s.pendingChase?.chaserInstanceId).toBe("XG1-083:sh");
+    s = act(s, { type: "resolve_chase", playerId: "player1", newVehicleInstanceId: "RS-466:v2" });
+    expect(s.activePlayer).toBe("player2");
+    expect(zoneOf(s, "player1", "XG1-083:sh")).toBe("rush");
+    expect(cardIn(s, "player1", "XG1-083:sh")?.mountedOnInstanceId).toBe("RS-466:v2");
+    expect(zoneOf(s, "player1", "RS-466:v1")).toBe("discard");
+    expect(strikesNextTurn(s, "XG1-083:sh", FILL3)).toBe(true);
+  });
+
+  it("XG2-055: チェイスを使わなければ、ふつうにコマンドゾーンにホールド状態で置かれる（出典: atwiki/page-1764・R-KW-CHASE-01「…ライドさせてもよい」）", () => {
+    let s = henshin(inst("XG1-083", "sh"), { rush: [inst("RS-466", "v1"), inst("RS-466", "v2")] });
+    s = passEntry(settle(rideOff(mount(nextPhase(s), "XG1-083:sh", "RS-466:v1"), false)));
+    s = act(toEnd(s), { type: "pass_chase", playerId: "player1" });
+    expect(s.activePlayer).toBe("player2");
+    expect(zoneOf(s, "player1", "XG1-083:sh")).toBe("command");
+    expect(cardIn(s, "player1", "XG1-083:sh")?.commandHeld).toBe(true);
+  });
+
+  it("XG2-055: コミュニティの記述 — RK-250 サバイブを重ねたユニットは、コマンドゾーンに置かれるかわりにサバイブを捨札にしてその場に留まり、次の自軍ターンにはストライクできる（出典: atwiki/page-1764 カード評価「チェイスやサバイブなど…」・atwiki/page-1350「重ねたユニットがユニットでなくなるとき、このカードを捨札にしてその場に留める」）", () => {
+    let s = henshin(inst("SPEC-HENSHIN-MAN", "m"), { hand: [inst("RK-250", "sv")], command: [...releasedCat("ET", 1), ...releasedCat("WB", 1)], power: powerCards(5) });
+    const r = playOp(s, "player1", "RK-250:sv");
+    expect(r.ok, r.error).toBe(true);
+    s = resolveAll(pick(r.state, "SPEC-HENSHIN-MAN:m"));
+    expect((cardIn(s, "player1", "SPEC-HENSHIN-MAN:m")?.stackedCards ?? []).map((c) => c.instanceId)).toContain("RK-250:sv");
+    s = resolveAll(toEnd(s));
+    s = advanceTo(s, "player2", "start");
+    expect(zoneOf(s, "player1", "SPEC-HENSHIN-MAN:m")).toBe("rush");
+    expect(zoneOf(s, "player1", "RK-250:sv")).toBe("discard");
+    expect(strikesNextTurn(s, "SPEC-HENSHIN-MAN:m")).toBe(true);
+  });
+
+  it("XG2-055: XG2-042 ディケイドCF の「これがユニットでなくなるとき、…パワーから特徴「仮面ライダー」を持つカードを1枚選び捨札にすれば、その場に留まる」で留まれば、次の自軍ターンにはストライクできる（出典: atwiki/page-1764 カード評価「何らかの方法でコマンドや捨札送りを免れてターンを跨げば…ストライクは可能になる」・atwiki/page-1687）", () => {
+    let s = henshin(inst("XG2-042", "cf"), { power: [inst("XG2-042", "pw")], rush: fillers(3) });
+    s = toEnd(s);
+    expectChoiceFrom(s, "player1", "XG2-042");
+    s = resolveAll(pick(s, "XG2-042:pw"));
+    s = advanceTo(s, "player2", "start");
+    expect(zoneOf(s, "player1", "XG2-042:cf")).toBe("rush");
+    expect(zoneOf(s, "player1", "XG2-042:pw")).toBe("discard");
+    expect(strikesNextTurn(s, "XG2-042:cf", FILL3)).toBe(true);
+  });
+
+  it("XG2-055: 自軍コマンドゾーンが5枚で置けず捨札にするときも、撃破ではない離場として処理し、XG2-042 の「その場に留まる」を使える（出典: atwiki/page-1764「置けなければ捨札にする」・atwiki/page-1687「これがユニットでなくなるとき」）", () => {
+    let s = henshin(inst("XG2-042", "cf"), { power: [inst("XG2-042", "pw")], command: releasedCat("ET", 5) });
+    s = toEnd(s);
+    expectChoiceFrom(s, "player1", "XG2-042");
+    s = advanceTo(resolveAll(pick(s, "XG2-042:pw")), "player2", "start");
+    expect(zoneOf(s, "player1", "XG2-042:cf")).toBe("rush");
+  });
+
+  it("XG2-055: 自軍コマンドゾーンが5枚なら、出したユニットは捨札になる（出典: atwiki/page-1764「置けなければ捨札にする」）", () => {
+    let s = henshin(inst("XG2-042", "cf"), { power: [inst("XG2-042", "pw")], command: releasedCat("ET", 5) });
+    s = toEnd(s);
+    s = advanceTo(resolveAll(skip(s)), "player2", "start");
+    expect(zoneOf(s, "player1", "XG2-042:cf")).toBe("discard");
+    expect(s.players.player1.command).toHaveLength(5);
+  });
+
+  it("XG2-055: コミュニティの記述 — 出したユニットがモーフで自軍コマンドゾーンのユニットカードと置き換わると、出てきたユニットは変身一発のデメリットを受けず、ターンを終えてもその場に留まり次の自軍ターンにストライクできる（敵軍の RK-008 メカニック忍者でのラッシュに反応）（出典: atwiki/page-1764 カード評価「ラッシュしたユニットをモーフさせることでデメリットを消すこともできる」・R-KW-MORPH-01・R-KW-MORPH-02）", () => {
+    let s = henshin(
+      inst("SPEC-HENSHIN-MORPH", "m"),
+      { battle: [inst("TST-UNIT-0", "a")], command: [...releasedCat("ET", 1), released("SPEC-HENSHIN-MORPH-T", "t")] },
+      { battle: [inst("TST-UNIT-0", "d")], hand: [inst("RK-008", "nin")], command: [released("SPEC-HENSHIN-KAIZO", "k"), ...releasedCat("ET", 1, "e")], power: powerCards(4, "ep") },
+    );
+    s = attack(nextPhase(s), "TST-UNIT-0:a", "TST-UNIT-0:d");
+    s = useCounter(s, "RK-008:nin", "player2");
+    if (s.pendingEffectChoice?.playerId === "player2") s = pick(s, "SPEC-HENSHIN-KAIZO:k");
+    expect(s.pendingEffectChoice?.effectId).toBe("morph_replacement");
+    s = settle(pick(s, "SPEC-HENSHIN-MORPH-T:t"));
+    expect(zoneOf(s, "player1", "SPEC-HENSHIN-MORPH-T:t")).toBe("rush");
+    expect(zoneOf(s, "player1", "SPEC-HENSHIN-MORPH:m")).toBe("command");
+    s = advanceTo(resolveAll(toEnd(s)), "player2", "start");
+    expect(zoneOf(s, "player1", "SPEC-HENSHIN-MORPH-T:t")).toBe("rush");
+    expect(strikesNextTurn(s, "SPEC-HENSHIN-MORPH-T:t")).toBe(true);
+  });
+
+  it("XG2-055: 公式Q&A — RK-245 仮面ライダーキバの「※これはラッシュするとき、可能ならホールド状態で置く」は発動する（ホールド状態でラッシュエリアに出る）（出典: atwiki/page-1764 Q2「いいえ、発動します。…ラッシュする時点で行わなければならない制限効果だからです」・カード評価「「ラッシュするとき」に発動する仮面ライダーキバのデメリット効果などは普通に発動する」）", () => {
+    const s = henshin(inst("RK-245", "kb"));
+    expect(zoneOf(s, "player1", "RK-245:kb")).toBe("rush");
+    expect(cardIn(s, "player1", "RK-245:kb")?.commandHeld).toBe(true);
   });
 });
