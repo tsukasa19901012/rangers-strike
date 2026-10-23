@@ -391,3 +391,64 @@ export function pickBestByRollout(
   }
   return best;
 }
+
+/**
+ * 自分のターンの残りを、ownPolicy の CPU（相手のリアクションは探索なしの CPU）で、相手の手番になるまで（または決着まで）進める。
+ * 山札の並びは伏せる。budget.steps（指した手の数）を使い切ったら null。
+ */
+function playOutTurn(
+  state: GameState,
+  playerId: PlayerId,
+  ownPolicy: PickCpuActionOptions,
+  budget: { steps: number },
+): GameState | null {
+  let current = hideDeckOrder(state);
+  const turn = state.turn;
+  for (;;) {
+    if (current.winner || current.turn !== turn) return current;
+    if (budget.steps <= 0) return null;
+    budget.steps -= 1;
+    const legal = getLegalActions(current);
+    const actor = legal[0]?.playerId;
+    if (!actor) return current;
+    const action = pickCpuAction(current, actor, actor === playerId ? ownPolicy : { enableSearch: false }) ?? legal[0]!;
+    const result = applyAction(current, action);
+    if (!result.ok) return current;
+    current = result.state;
+  }
+}
+
+/**
+ * ターン単位の読み: 候補の手それぞれについて、そのあと自分のターンの終わりまで ownPolicy の CPU で指し進め、
+ * ターンの終わりの盤面の評価で比べる（1 手ずつの読みでは途中の手が悪く見える、手順で勝つ動きのため）。
+ * 並べた順（先頭はいつもの読みの一番よい手）に読み、指し進めた手の数の合計が budgetSteps に達したら、読み終えた手の中から選ぶ
+ * （時間ではなく手の数で区切るので、端末の速さで選ぶ手は変わらない）。
+ */
+export function pickBestByTurnPlan(
+  state: GameState,
+  playerId: PlayerId,
+  candidates: GameAction[],
+  ownPolicy: PickCpuActionOptions,
+  budgetSteps: number,
+  maxCandidates = 8,
+): GameAction | null {
+  const ordered = dedupeActions(candidates)
+    .filter((a) => a.playerId === playerId)
+    .slice(0, maxCandidates);
+  if (ordered.length <= 1) return ordered[0] ?? null;
+  const budget = { steps: budgetSteps };
+  let best: GameAction | null = ordered[0]!;
+  let bestScore = Number.NEGATIVE_INFINITY;
+  for (const action of ordered) {
+    const result = applyAction(state, action);
+    if (!result.ok) continue;
+    const end = playOutTurn(result.state, playerId, ownPolicy, budget);
+    if (!end) break;
+    const score = evaluateState(end, playerId);
+    if (score > bestScore) {
+      bestScore = score;
+      best = action;
+    }
+  }
+  return best;
+}

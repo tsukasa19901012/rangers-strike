@@ -25,7 +25,7 @@ UI 側（`packages/client-core`）は合法手をそのまま選択肢にし、�
 | `src/keywords/` | キーワード能力（チェイス・ライド・ウイング・モーフ等） |
 | `src/events/` | イベントキューとリスナー |
 | `src/effects/` | オペレーション解決などの効果ブリッジ |
-| `src/ai/` | CPU AI（ヒューリスティック・探索・チャージの先読み・NC の並べ方・価値ネットワーク） |
+| `src/ai/` | CPU AI（ヒューリスティック・探索・チャージの先読み・ターン単位の読み・NC の並べ方・価値ネットワーク） |
 | `src/ai/weights/` | Lv5 が使う価値ネットワークの重み（`scripts/nn/pack.py` が作る。手で書き換えない） |
 | `src/cardSpec/`, `src/rulesSpec/` | カードごと・ルール章ごとのテスト |
 | `src/verticalSlice/` | スターター対戦の生成と、CPU 同士の長い対戦テスト |

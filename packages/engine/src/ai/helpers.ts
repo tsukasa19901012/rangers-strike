@@ -12,6 +12,7 @@ import { getCardEffect, listZordFusionPartnerIds } from "@rangers-strike/cards";
 import type { GameAction } from "../types/actions";
 import type { GameState, PendingEffectChoice, PlayerId } from "../types/game";
 import { applyAction } from "../core/applyAction";
+import { memoizeInSearch } from "../core/searchCache";
 import {
   cardCategories,
   effectiveBp,
@@ -718,6 +719,13 @@ export function godomDiscardPenalty(state: GameState, playerId: PlayerId, ids: s
  * 取り消すと元の状態に戻るので、選び続けると同じ手を永久に繰り返す（2026-10-20 対戦台で確認）。
  */
 export function cpuWouldCancelProcedure(state: GameState, playerId: PlayerId, action: GameAction): boolean {
+  // 探索の間は同じ状態・同じ手の結果を使い回す（候補を作るたびに試し打ちしていた。Lv5 の思考時間の約 14%）。
+  return memoizeInSearch(state, `wouldCancel:${playerId}:${JSON.stringify(action)}`, () =>
+    cpuWouldCancelProcedureUncached(state, playerId, action),
+  );
+}
+
+function cpuWouldCancelProcedureUncached(state: GameState, playerId: PlayerId, action: GameAction): boolean {
   const first = applyAction(state, action);
   if (!first.ok) return true;
   let current = first.state;
