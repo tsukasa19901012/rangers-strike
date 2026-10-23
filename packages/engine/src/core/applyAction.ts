@@ -3792,7 +3792,8 @@ function applyActionCore(
       if (pending.abductionResume) {
         return ok(resumeAbductionAfterChase(result.state, pending, false), result.log);
       }
-      return ok(result.state, result.log);
+      // 「ターンを終えるとき」の離場で出たチェイスなら、解決後に残りの処理へ進みターンを渡す。
+      return withEndPhaseAutoFinalize(ok(result.state, result.log), playerId);
     }
 
     case "pass_chase": {
@@ -3809,7 +3810,7 @@ function applyActionCore(
           damageCancelled: pending.leaveIntent.resumePendingStrike.damageCancelled,
         });
       }
-      return ok(nextState, buildSimpleLogEntry(playerId, "pass_chase"));
+      return withEndPhaseAutoFinalize(ok(nextState, buildSimpleLogEntry(playerId, "pass_chase")), playerId);
     }
 
     case "mount_ride": {

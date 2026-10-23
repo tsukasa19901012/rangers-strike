@@ -41,6 +41,9 @@ export function hasEndPhaseBlockingPending(state: GameState): boolean {
     state.pendingRush ||
     state.pendingMorph ||
     state.pendingLeave ||
+    // 「ターンを終えるとき」の離場（XG2-055 変身一発のコマンド送り等）で出たチェイス・続きの離場もこのターン中に処理する（R-END-01）。
+    state.pendingChase ||
+    (state.queuedFieldLeaves?.length ?? 0) > 0 ||
     state.pendingScry ||
     state.pendingZordSetup
   );
