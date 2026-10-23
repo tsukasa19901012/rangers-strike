@@ -530,7 +530,7 @@ describe("RS-375 レッドレーサー（2nd）", () => {
   it("RS-375: カタログ本文・スペックが出典と一致（出典: atwiki/page-552）", () => {
     expectCatalogText("RS-375", TEXT);
     expectStats("RS-375", {
-      name: "レッドレーサー（2nd）",
+      name: "レッドレーサー",
       category: "OT",
       size: "S",
       bp: 4000,

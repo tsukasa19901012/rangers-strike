@@ -216,7 +216,7 @@ describe("RK-269 シャドームーン（2nd）", () => {
 
   it("RK-269: カタログ本文・スペックが出典と一致（出典: atwiki/page-1283）", () => {
     expectCatalogText("RK-269", TEXT);
-    expectStats("RK-269", { name: "シャドームーン（2nd）", category: "DA", size: "S", bp: 5000, sp: 1, powerCost: 5, features: ["男", "改造人間", "2nd"] });
+    expectStats("RK-269", { name: "シャドームーン", category: "DA", size: "S", bp: 5000, sp: 1, powerCost: 5, features: ["男", "改造人間", "2nd"] });
     expectRarityIn("RK-269", ["SR"]);
   });
 

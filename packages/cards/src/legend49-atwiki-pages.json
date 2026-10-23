@@ -1033,7 +1033,7 @@
   },
   "RS-351": {
     "page": 538,
-    "name": "アカレンジャー（2nd）",
+    "name": "アカレンジャー",
     "expansion": 6,
     "expansionTitle": "紅き六戦士の帰還"
   },
@@ -1093,19 +1093,19 @@
   },
   "RS-361": {
     "page": 512,
-    "name": "バルイーグル（2nd）",
+    "name": "バルイーグル",
     "expansion": 6,
     "expansionTitle": "紅き六戦士の帰還"
   },
   "RS-362": {
     "page": 526,
-    "name": "バルシャーク（2nd）",
+    "name": "バルシャーク",
     "expansion": 6,
     "expansionTitle": "紅き六戦士の帰還"
   },
   "RS-363": {
     "page": 527,
-    "name": "バルパンサー（2nd）",
+    "name": "バルパンサー",
     "expansion": 6,
     "expansionTitle": "紅き六戦士の帰還"
   },
@@ -1177,7 +1177,7 @@
   },
   "RS-375": {
     "page": 552,
-    "name": "レッドレーサー（2nd）",
+    "name": "レッドレーサー",
     "expansion": 6,
     "expansionTitle": "紅き六戦士の帰還"
   },
@@ -1255,7 +1255,7 @@
   },
   "RS-388": {
     "page": 537,
-    "name": "ゴーレッド（2nd）",
+    "name": "ゴーレッド",
     "expansion": 6,
     "expansionTitle": "紅き六戦士の帰還"
   },
@@ -1339,13 +1339,13 @@
   },
   "RS-402": {
     "page": 543,
-    "name": "ガオレッド（2nd）",
+    "name": "ガオレッド",
     "expansion": 6,
     "expansionTitle": "紅き六戦士の帰還"
   },
   "RS-403": {
     "page": 560,
-    "name": "デカレッド（2nd）",
+    "name": "デカレッド",
     "expansion": 6,
     "expansionTitle": "紅き六戦士の帰還"
   },
@@ -1567,7 +1567,7 @@
   },
   "RS-440": {
     "page": 780,
-    "name": "バトルフィーバーロボ（2nd）",
+    "name": "バトルフィーバーロボ",
     "expansion": 7,
     "expansionTitle": "七忍の炎陣"
   },
@@ -2089,13 +2089,13 @@
   },
   "RS-527": {
     "page": 1156,
-    "name": "バルジオン（2nd）",
+    "name": "バルジオン",
     "expansion": 8,
     "expansionTitle": "究極の八神"
   },
   "RS-528": {
     "page": 1232,
-    "name": "バイオハンター・シルバ（2nd）",
+    "name": "バイオハンター・シルバ",
     "expansion": 8,
     "expansionTitle": "究極の八神"
   },
@@ -2215,13 +2215,13 @@
   },
   "RS-548": {
     "page": 1225,
-    "name": "ティラノレンジャー（2nd）",
+    "name": "ティラノレンジャー",
     "expansion": 8,
     "expansionTitle": "究極の八神"
   },
   "RS-549": {
     "page": 1172,
-    "name": "トリケラレンジャー（2nd）",
+    "name": "トリケラレンジャー",
     "expansion": 8,
     "expansionTitle": "究極の八神"
   },
@@ -2359,13 +2359,13 @@
   },
   "RS-572": {
     "page": 1215,
-    "name": "デカマスター（2nd）",
+    "name": "デカマスター",
     "expansion": 8,
     "expansionTitle": "究極の八神"
   },
   "RS-573": {
     "page": 1191,
-    "name": "ファイヤーカイザー（2nd）",
+    "name": "ファイヤーカイザー",
     "expansion": 8,
     "expansionTitle": "究極の八神"
   },
@@ -2389,7 +2389,7 @@
   },
   "RS-577": {
     "page": 1228,
-    "name": "マジレッド（2nd）",
+    "name": "マジレッド",
     "expansion": 8,
     "expansionTitle": "究極の八神"
   },
@@ -2413,7 +2413,7 @@
   },
   "RS-581": {
     "page": 1195,
-    "name": "魔導馬バリキオン（2nd）",
+    "name": "魔導馬バリキオン",
     "expansion": 8,
     "expansionTitle": "究極の八神"
   },
@@ -2437,7 +2437,7 @@
   },
   "RS-585": {
     "page": 1141,
-    "name": "ボウケンシルバー（2nd）",
+    "name": "ボウケンシルバー",
     "expansion": 8,
     "expansionTitle": "究極の八神"
   },
@@ -2845,13 +2845,13 @@
   },
   "RS-653": {
     "page": 1518,
-    "name": "レッドファルコン（2nd）",
+    "name": "レッドファルコン",
     "expansion": 9,
     "expansionTitle": "蒼九の翼"
   },
   "RS-654": {
     "page": 1519,
-    "name": "ガオイエロー（2nd）",
+    "name": "ガオイエロー",
     "expansion": 9,
     "expansionTitle": "蒼九の翼"
   },
@@ -3037,7 +3037,7 @@
   },
   "RS-685": {
     "page": 1530,
-    "name": "ブラックコンドル（2nd）",
+    "name": "ブラックコンドル",
     "expansion": 9,
     "expansionTitle": "蒼九の翼"
   },
@@ -3061,7 +3061,7 @@
   },
   "RS-689": {
     "page": 1531,
-    "name": "レッドホーク（2nd）",
+    "name": "レッドホーク",
     "expansion": 9,
     "expansionTitle": "蒼九の翼"
   },

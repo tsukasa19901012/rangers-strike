@@ -66,7 +66,7 @@ describe("RS-527 バルジオン（2nd）", () => {
   it("RS-527: カタログ本文・スペック（L ビークル・DA・必要パワー5・特徴）が出典と一致（出典: atwiki/page-1156）", () => {
     expectCatalogText("RS-527", TEXT);
     const d = DEFS["RS-527"]!;
-    expect(d.name).toBe("バルジオン（2nd）");
+    expect(d.name).toBe("バルジオン");
     expect(d.type).toBe("vehicle");
     expect(d.category).toBe("DA");
     expect(d.size).toBe("L");
@@ -154,7 +154,7 @@ describe("RS-528 バイオハンター・シルバ（2nd）", () => {
   it("RS-528: カタログ本文・スペックが出典と一致（出典: atwiki/page-1232）", () => {
     expectCatalogText("RS-528", TEXT);
     expectStats("RS-528", {
-      name: "バイオハンター・シルバ（2nd）",
+      name: "バイオハンター・シルバ",
       category: "DA",
       size: "S",
       bp: 4000,

@@ -107,7 +107,7 @@ describe("RK-309 ウラタロス（2nd）", () => {
 
   it("RK-309: カタログ本文・スペックが出典と一致（出典: atwiki/page-1280）", () => {
     expectCatalogText("RK-309", TEXT);
-    expectStats("RK-309", { name: "ウラタロス（2nd）", category: "OT", size: "S", bp: 1000, sp: "1/4", powerCost: 1, comboNumber: 3, features: ["イマジン", "2nd"] });
+    expectStats("RK-309", { name: "ウラタロス", category: "OT", size: "S", bp: 1000, sp: "1/4", powerCost: 1, comboNumber: 3, features: ["イマジン", "2nd"] });
     expectRarityIn("RK-309", ["N"]);
   });
 
@@ -162,7 +162,7 @@ describe("RK-310 モモタロス（2nd）", () => {
 
   it("RK-310: カタログ本文・スペックが出典と一致（出典: atwiki/page-1279）", () => {
     expectCatalogText("RK-310", TEXT);
-    expectStats("RK-310", { name: "モモタロス（2nd）", category: "OT", size: "S", bp: 4000, sp: "special", powerCost: 3, comboNumber: 4, features: ["イマジン", "2nd"] });
+    expectStats("RK-310", { name: "モモタロス", category: "OT", size: "S", bp: 4000, sp: "special", powerCost: 3, comboNumber: 4, features: ["イマジン", "2nd"] });
     expectRarityIn("RK-310", ["R"]);
   });
 
@@ -199,7 +199,7 @@ describe("RK-311 キンタロス（2nd）", () => {
 
   it("RK-311: カタログ本文・スペックが出典と一致（出典: atwiki/page-1281）", () => {
     expectCatalogText("RK-311", TEXT);
-    expectStats("RK-311", { name: "キンタロス（2nd）", category: "OT", size: "S", bp: 5000, sp: undefined, powerCost: 2, comboNumber: 5, features: ["イマジン", "2nd"] });
+    expectStats("RK-311", { name: "キンタロス", category: "OT", size: "S", bp: 5000, sp: undefined, powerCost: 2, comboNumber: 5, features: ["イマジン", "2nd"] });
     expectRarityIn("RK-311", ["N"]);
   });
 

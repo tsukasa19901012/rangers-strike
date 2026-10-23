@@ -121,8 +121,8 @@ describe("deck build rules", () => {
   it("limits copies across different ids with the same name", () => {
     const deka2nd = getFullPlayableCardById("RS-572");
     const dekaCore = getFullPlayableCardById("RS-319");
-    // wiki 準拠で 2nd は区別表記付きだが、同名判定では同じ名前として扱う
-    expect(deka2nd?.name).toBe("デカマスター（2nd）");
+    // 2nd の版も印刷名は同じ（「（2nd）」は wiki の区別表記）
+    expect(deka2nd?.name).toBe("デカマスター");
     expect(dekaCore?.name).toBe("デカマスター");
 
     const entries = [

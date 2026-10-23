@@ -720,7 +720,7 @@
     },
     {
       "id": "PR-026",
-      "name": "デカマスター（2nd）",
+      "name": "デカマスター",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -3832,7 +3832,7 @@
     },
     {
       "id": "RK-240",
-      "name": "仮面ライダー電王CF（2nd）",
+      "name": "仮面ライダー電王CF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -4069,7 +4069,7 @@
     },
     {
       "id": "RK-255",
-      "name": "電波人間タックル（2nd）",
+      "name": "電波人間タックル",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -4247,7 +4247,7 @@
     },
     {
       "id": "RK-269",
-      "name": "シャドームーン（2nd）",
+      "name": "シャドームーン",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -4349,7 +4349,7 @@
     },
     {
       "id": "RK-278",
-      "name": "仮面ライダーナイト（2nd）",
+      "name": "仮面ライダーナイト",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -4691,7 +4691,7 @@
     },
     {
       "id": "RK-304",
-      "name": "仮面ライダー電王RF（2nd）",
+      "name": "仮面ライダー電王RF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -4707,7 +4707,7 @@
     },
     {
       "id": "RK-305",
-      "name": "仮面ライダー電王SF（2nd）",
+      "name": "仮面ライダー電王SF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -4723,7 +4723,7 @@
     },
     {
       "id": "RK-306",
-      "name": "仮面ライダー電王AF（2nd）",
+      "name": "仮面ライダー電王AF",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -4742,7 +4742,7 @@
     },
     {
       "id": "RK-307",
-      "name": "仮面ライダー電王GF（2nd）",
+      "name": "仮面ライダー電王GF",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -4758,7 +4758,7 @@
     },
     {
       "id": "RK-308",
-      "name": "リュウタロス（2nd）",
+      "name": "リュウタロス",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -4777,7 +4777,7 @@
     },
     {
       "id": "RK-310",
-      "name": "モモタロス（2nd）",
+      "name": "モモタロス",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -4796,7 +4796,7 @@
     },
     {
       "id": "RK-311",
-      "name": "キンタロス（2nd）",
+      "name": "キンタロス",
       "primaryCategory": "timing_exception",
       "categories": [
         "timing_exception",
@@ -5113,7 +5113,7 @@
     },
     {
       "id": "RK-332",
-      "name": "仮面ライダー龍騎（2nd）",
+      "name": "仮面ライダー龍騎",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -5145,7 +5145,7 @@
     },
     {
       "id": "RK-335",
-      "name": "モモタロス（2nd）",
+      "name": "モモタロス",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -9485,7 +9485,7 @@
     },
     {
       "id": "RS-351",
-      "name": "アカレンジャー（2nd）",
+      "name": "アカレンジャー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -9568,7 +9568,7 @@
     },
     {
       "id": "RS-361",
-      "name": "バルイーグル（2nd）",
+      "name": "バルイーグル",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -9590,7 +9590,7 @@
     },
     {
       "id": "RS-362",
-      "name": "バルシャーク（2nd）",
+      "name": "バルシャーク",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -9606,7 +9606,7 @@
     },
     {
       "id": "RS-363",
-      "name": "バルパンサー（2nd）",
+      "name": "バルパンサー",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -9745,7 +9745,7 @@
     },
     {
       "id": "RS-375",
-      "name": "レッドレーサー（2nd）",
+      "name": "レッドレーサー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -9821,7 +9821,7 @@
     },
     {
       "id": "RS-388",
-      "name": "ゴーレッド（2nd）",
+      "name": "ゴーレッド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override"
@@ -10365,7 +10365,7 @@
     },
     {
       "id": "RS-440",
-      "name": "バトルフィーバーロボ（2nd）",
+      "name": "バトルフィーバーロボ",
       "primaryCategory": "state_rewrite",
       "categories": [
         "state_rewrite",
@@ -11459,7 +11459,7 @@
     },
     {
       "id": "RS-527",
-      "name": "バルジオン（2nd）",
+      "name": "バルジオン",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -11475,7 +11475,7 @@
     },
     {
       "id": "RS-528",
-      "name": "バイオハンター・シルバ（2nd）",
+      "name": "バイオハンター・シルバ",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -11764,7 +11764,7 @@
     },
     {
       "id": "RS-548",
-      "name": "ティラノレンジャー（2nd）",
+      "name": "ティラノレンジャー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -11783,7 +11783,7 @@
     },
     {
       "id": "RS-549",
-      "name": "トリケラレンジャー（2nd）",
+      "name": "トリケラレンジャー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -12066,7 +12066,7 @@
     },
     {
       "id": "RS-572",
-      "name": "デカマスター（2nd）",
+      "name": "デカマスター",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -12082,7 +12082,7 @@
     },
     {
       "id": "RS-573",
-      "name": "ファイヤーカイザー（2nd）",
+      "name": "ファイヤーカイザー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -12138,7 +12138,7 @@
     },
     {
       "id": "RS-577",
-      "name": "マジレッド（2nd）",
+      "name": "マジレッド",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -12210,7 +12210,7 @@
     },
     {
       "id": "RS-581",
-      "name": "魔導馬バリキオン（2nd）",
+      "name": "魔導馬バリキオン",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"
@@ -13237,7 +13237,7 @@
     },
     {
       "id": "RS-653",
-      "name": "レッドファルコン（2nd）",
+      "name": "レッドファルコン",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -13256,7 +13256,7 @@
     },
     {
       "id": "RS-654",
-      "name": "ガオイエロー（2nd）",
+      "name": "ガオイエロー",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -13670,7 +13670,7 @@
     },
     {
       "id": "RS-685",
-      "name": "ブラックコンドル（2nd）",
+      "name": "ブラックコンドル",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -13750,7 +13750,7 @@
     },
     {
       "id": "RS-689",
-      "name": "レッドホーク（2nd）",
+      "name": "レッドホーク",
       "primaryCategory": "rule_override",
       "categories": [
         "rule_override",
@@ -13857,7 +13857,7 @@
     },
     {
       "id": "SR-004",
-      "name": "ヘドリアン女王（2nd）",
+      "name": "ヘドリアン女王",
       "primaryCategory": "continuous_effect",
       "categories": [
         "continuous_effect"

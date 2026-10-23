@@ -81,7 +81,7 @@ describe("RS-361 バルイーグル（2nd）", () => {
 
   it("RS-361: カタログ本文・スペックが出典と一致（出典: atwiki/page-512）", () => {
     expectCatalogText("RS-361", TEXT);
-    expectStats("RS-361", { name: "バルイーグル（2nd）", category: "ET", size: "S", bp: 4000, sp: "special", powerCost: 5, comboNumber: 5, features: ["レッド", "男", "2nd"] });
+    expectStats("RS-361", { name: "バルイーグル", category: "ET", size: "S", bp: 4000, sp: "special", powerCost: 5, comboNumber: 5, features: ["レッド", "男", "2nd"] });
   });
 
   wbInBattleTests("RS-361", "atwiki/page-512");
@@ -116,7 +116,7 @@ describe("RS-362 バルシャーク（2nd）", () => {
 
   it("RS-362: カタログ本文・スペックが出典と一致（出典: atwiki/page-526）", () => {
     expectCatalogText("RS-362", TEXT);
-    expectStats("RS-362", { name: "バルシャーク（2nd）", category: "ET", size: "S", bp: 2000, sp: undefined, powerCost: 3, comboNumber: 2, features: ["ブルー", "男", "2nd"] });
+    expectStats("RS-362", { name: "バルシャーク", category: "ET", size: "S", bp: 2000, sp: undefined, powerCost: 3, comboNumber: 2, features: ["ブルー", "男", "2nd"] });
   });
 
   wbInBattleTests("RS-362", "atwiki/page-526");
@@ -161,7 +161,7 @@ describe("RS-363 バルパンサー（2nd）", () => {
 
   it("RS-363: カタログ本文・スペックが出典と一致（出典: atwiki/page-527）", () => {
     expectCatalogText("RS-363", TEXT);
-    expectStats("RS-363", { name: "バルパンサー（2nd）", category: "ET", size: "S", bp: 3000, sp: undefined, powerCost: 2, comboNumber: 1, features: ["イエロー", "男", "2nd"] });
+    expectStats("RS-363", { name: "バルパンサー", category: "ET", size: "S", bp: 3000, sp: undefined, powerCost: 2, comboNumber: 1, features: ["イエロー", "男", "2nd"] });
   });
 
   wbInBattleTests("RS-363", "atwiki/page-527");

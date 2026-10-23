@@ -351,7 +351,7 @@ describe("RS-351 アカレンジャー（2nd）", () => {
 
   it("RS-351: カタログ本文・スペックが出典と一致（出典: atwiki/page-538）", () => {
     expectCatalogText("RS-351", TEXT);
-    expectStats("RS-351", { name: "アカレンジャー（2nd）", category: "ET", size: "S", bp: 4000, sp: "special", powerCost: 3, comboNumber: 5, features: ["レッド", "男", "2nd"] });
+    expectStats("RS-351", { name: "アカレンジャー", category: "ET", size: "S", bp: 4000, sp: "special", powerCost: 3, comboNumber: 5, features: ["レッド", "男", "2nd"] });
   });
 
   it("RS-351: ※ ラッシュしたターンにはバトルエリアに出られず、次の自軍ターンには出られる（出典: atwiki/page-538「ラッシュしたターンにバトルエリアに出られない」）", () => {

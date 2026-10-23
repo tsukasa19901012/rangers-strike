@@ -213,7 +213,7 @@ describe("RK-332 仮面ライダー龍騎（2nd）", () => {
 
   it("RK-332: カタログ本文・スペックが出典と一致（出典: atwiki/page-1252）", () => {
     expectCatalogText("RK-332", TEXT);
-    expectStats("RK-332", { name: "仮面ライダー龍騎（2nd）", category: "WB", size: "S", bp: 3000, sp: "1/2", powerCost: 5, features: ["仮面ライダー", "男", "ミラーライダー", "2nd"] });
+    expectStats("RK-332", { name: "仮面ライダー龍騎", category: "WB", size: "S", bp: 3000, sp: "1/2", powerCost: 5, features: ["仮面ライダー", "男", "ミラーライダー", "2nd"] });
     expectRarityIn("RK-332", ["R"]);
   });
 
@@ -340,7 +340,7 @@ describe("RK-334 仮面ライダー電王LF（2nd）", () => {
 
   it("RK-334: カタログ本文・スペックが出典と一致（出典: atwiki/page-1369）", () => {
     expectCatalogText("RK-334", TEXT);
-    expectStats("RK-334", { name: "仮面ライダー電王LF（2nd）", category: "OT", size: "S", bp: 4500, sp: "special", powerCost: "7-", comboNumber: 1, features: ["仮面ライダー", "男", "DEN-O", "2nd"], rushCondition: "zord_down_discard_feature" });
+    expectStats("RK-334", { name: "仮面ライダー電王LF", category: "OT", size: "S", bp: 4500, sp: "special", powerCost: "7-", comboNumber: 1, features: ["仮面ライダー", "男", "DEN-O", "2nd"], rushCondition: "zord_down_discard_feature" });
     expectRarityIn("RK-334", ["SR"]);
   });
 
@@ -400,7 +400,7 @@ describe("RK-335 モモタロス（2nd）", () => {
 
   it("RK-335: カタログ本文・スペックが出典と一致（出典: atwiki/page-1279（RK-310 と同じページ。スターター版））", () => {
     expectCatalogText("RK-335", TEXT);
-    expectStats("RK-335", { name: "モモタロス（2nd）", category: "OT", size: "S", bp: 4000, sp: "special", powerCost: 3, comboNumber: 4, features: ["イマジン", "2nd"] });
+    expectStats("RK-335", { name: "モモタロス", category: "OT", size: "S", bp: 4000, sp: "special", powerCost: 3, comboNumber: 4, features: ["イマジン", "2nd"] });
     expectRarityIn("RK-335", ["R"]);
   });
 

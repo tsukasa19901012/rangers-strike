@@ -68,7 +68,7 @@ describe("RS-685 ブラックコンドル（2nd）", () => {
 
   it("RS-685: カタログ本文・スペックが出典と一致（出典: atwiki/page-1530）", () => {
     expectCatalogText("RS-685", TEXT);
-    expectStats("RS-685", { name: "ブラックコンドル（2nd）", category: "ET", size: "S", bp: 2000, sp: "special", powerCost: 4, comboNumber: 5, features: ["ブラック", "男", "2nd"] });
+    expectStats("RS-685", { name: "ブラックコンドル", category: "ET", size: "S", bp: 2000, sp: "special", powerCost: 4, comboNumber: 5, features: ["ブラック", "男", "2nd"] });
   });
 
   it("RS-685: レアリティはスーパーレア（出典: atwiki/page-1530「レアリティ：スーパーレア」）", () => {
@@ -413,7 +413,7 @@ describe("RS-689 レッドホーク（2nd）", () => {
 
   it("RS-689: カタログ本文・スペックが出典と一致（出典: atwiki/page-1531）", () => {
     expectCatalogText("RS-689", TEXT);
-    expectStats("RS-689", { name: "レッドホーク（2nd）", category: "ET", size: "S", bp: 2000, sp: undefined, powerCost: 3, comboNumber: 1, features: ["レッド", "男", "2nd"] });
+    expectStats("RS-689", { name: "レッドホーク", category: "ET", size: "S", bp: 2000, sp: undefined, powerCost: 3, comboNumber: 1, features: ["レッド", "男", "2nd"] });
   });
 
   it("RS-689: レアリティはスーパーレア（出典: atwiki/page-1531「レアリティ：スーパーレア」）", () => {

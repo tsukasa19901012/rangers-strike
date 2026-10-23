@@ -183,7 +183,7 @@ describe("RK-240 仮面ライダー電王CF（2nd）", () => {
   it("RK-240: カタログ本文・スペックが出典と一致（出典: atwiki/page-954）", () => {
     expectCatalogText("RK-240", TEXT);
     expectStats("RK-240", {
-      name: "仮面ライダー電王CF（2nd）",
+      name: "仮面ライダー電王CF",
       category: "OT",
       size: "S",
       bp: 5000,

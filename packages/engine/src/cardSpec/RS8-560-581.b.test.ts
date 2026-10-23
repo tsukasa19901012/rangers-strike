@@ -508,7 +508,7 @@ describe("RS-572 デカマスター（2nd）", () => {
 
   it("RS-572: カタログ本文・スペックが出典と一致（出典: atwiki/page-1215）", () => {
     expectCatalogText("RS-572", TEXT);
-    expectStats("RS-572", { name: "デカマスター（2nd）", category: "OT", size: "S", bp: 6500, sp: undefined, powerCost: "7-", features: ["男", "警察", "2nd"], rushCondition: "zord_down_discard_named" });
+    expectStats("RS-572", { name: "デカマスター", category: "OT", size: "S", bp: 6500, sp: undefined, powerCost: "7-", features: ["男", "警察", "2nd"], rushCondition: "zord_down_discard_named" });
   });
 
   zordDownTests("RS-572", DOGGIE, "ドギー・クルーガー", "atwiki/page-1215", "OT");
@@ -559,7 +559,7 @@ describe("RS-573 ファイヤーカイザー（2nd）", () => {
 
   it("RS-573: カタログ本文・スペックが出典と一致（追加条件「自軍合体ユニットを捨札にする」）（出典: atwiki/page-1191）", () => {
     expectCatalogText("RS-573", TEXT);
-    expectStats("RS-573", { name: "ファイヤーカイザー（2nd）", category: "MA", size: "L", bp: 6000, sp: "special", powerCost: "5+", features: ["魔法", "人型", "2nd"], rushCondition: "discard_fusion_unit" });
+    expectStats("RS-573", { name: "ファイヤーカイザー", category: "MA", size: "L", bp: 6000, sp: "special", powerCost: "5+", features: ["魔法", "人型", "2nd"], rushCondition: "discard_fusion_unit" });
   });
 
   const rushState = (materials: string[], power = 5) =>

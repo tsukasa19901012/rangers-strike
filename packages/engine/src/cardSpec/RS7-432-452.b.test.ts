@@ -154,7 +154,7 @@ describe("RS-440 バトルフィーバーロボ（2nd）", () => {
   it("RS-440: カタログ本文・スペックが出典と一致（L・SP1・必要パワー6+・追加条件「自軍Sユニットを5体捨札にする」）（出典: atwiki/page-780）", () => {
     expectCatalogText("RS-440", TEXT);
     expectStats("RS-440", {
-      name: "バトルフィーバーロボ（2nd）",
+      name: "バトルフィーバーロボ",
       category: "ET",
       size: "L",
       bp: 6000,

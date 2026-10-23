@@ -419,7 +419,7 @@ describe("RK-278 仮面ライダーナイト（2nd）", () => {
 
   it("RK-278: カタログ本文・スペックが出典と一致（出典: atwiki/page-1382）", () => {
     expectCatalogText("RK-278", TEXT);
-    expectStats("RK-278", { name: "仮面ライダーナイト（2nd）", category: "WB", size: "S", bp: 4000, sp: "1/2", powerCost: 6, features: ["仮面ライダー", "男", "ミラーライダー", "2nd"] });
+    expectStats("RK-278", { name: "仮面ライダーナイト", category: "WB", size: "S", bp: 4000, sp: "1/2", powerCost: 6, features: ["仮面ライダー", "男", "ミラーライダー", "2nd"] });
     expectRarityIn("RK-278", ["R"]);
   });
 

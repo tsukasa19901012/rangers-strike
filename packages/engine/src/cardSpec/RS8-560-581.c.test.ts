@@ -306,7 +306,7 @@ describe("RS-577 マジレッド（2nd）", () => {
 
   it("RS-577: カタログ本文・スペックが出典と一致（出典: atwiki/page-1228）", () => {
     expectCatalogText("RS-577", TEXT);
-    expectStats("RS-577", { name: "マジレッド（2nd）", category: "MA", size: "S", bp: 2000, sp: "special", powerCost: 4, comboNumber: 3, features: ["レッド", "男", "魔法", "2nd"] });
+    expectStats("RS-577", { name: "マジレッド", category: "MA", size: "S", bp: 2000, sp: "special", powerCost: 4, comboNumber: 3, features: ["レッド", "男", "魔法", "2nd"] });
   });
 
   it("RS-577: ※ 「マジフェニックス」としてつかえる — ファイヤーカイザー（RS-113）の合体ユニットになる（出典: atwiki/page-1228「これは「マジフェニックス」としてつかえる」）", () => {
@@ -594,7 +594,7 @@ describe("RS-581 魔導馬バリキオン（2nd）", () => {
 
   it("RS-581: カタログ本文・スペックが出典と一致（M ビークル・DA・必要パワー2）（出典: atwiki/page-1195）", () => {
     expectCatalogText("RS-581", TEXT);
-    expectVehicleStats("RS-581", { name: "魔導馬バリキオン（2nd）", category: "DA", size: "M", powerCost: 2, features: ["魔法", "2nd"] });
+    expectVehicleStats("RS-581", { name: "魔導馬バリキオン", category: "DA", size: "M", powerCost: 2, features: ["魔法", "2nd"] });
   });
 
   const rideState = () =>
