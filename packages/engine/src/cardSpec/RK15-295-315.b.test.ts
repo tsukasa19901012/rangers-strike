@@ -181,13 +181,13 @@ describe("RK-302 スコルピオワーム", () => {
 });
 
 // ===========================================================================
-describe("RK-303 ワームサナギ体（4弾）", () => {
+describe("RK-303 ワームサナギ体", () => {
   const TEXT =
     "※このカードはデッキに好きな枚数入れてもよい。 【擬態の解除】これが自分の手札にある間、敵軍ターン中、特徴「男」または「女」を持つ自軍ユニットが撃破されて捨札になったとき、捨札になったユニットカード1枚につき、自分の手札から「ワームサナギ体」のカードを1枚選び、自軍ラッシュエリアに出してもよい。";
 
   it("RK-303: カタログ本文・スペックが出典と一致（出典: atwiki/page-1278）", () => {
     expectCatalogText("RK-303", TEXT);
-    expectStats("RK-303", { name: "ワームサナギ体（4弾）", category: "DA", size: "S", bp: 500, sp: undefined, powerCost: 2, features: ["ワーム", "怪人"] });
+    expectStats("RK-303", { name: "ワームサナギ体", category: "DA", size: "S", bp: 500, sp: undefined, powerCost: 2, features: ["ワーム", "怪人"] });
     expectRarityIn("RK-303", ["N"]);
   });
 
