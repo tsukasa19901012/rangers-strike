@@ -1,6 +1,6 @@
 // Card search for the deck builder: filters over the card data fields (type,
 // category, set, power cost, BP) and free-text search over a card's number,
-// name, features and effect text. No UI here; DeckBuilder keeps the state.
+// name, features, works (作品名) and effect text. No UI here; DeckBuilder keeps the state.
 import type { CardDefinition } from "../engineApi";
 
 export type FilterKey = "type" | "category" | "set" | "cost" | "bp";
@@ -129,9 +129,9 @@ export function searchTerms(query: string): string[] {
   return foldSearchText(query).split(/\s+/).filter(Boolean);
 }
 
-/** What free-text search looks at: number, name, features and effect text. */
+/** What free-text search looks at: number, name, features, works (作品名) and effect text. */
 export function cardSearchText(card: CardDefinition): string {
-  return foldSearchText([card.id, card.name, ...(card.features ?? []), card.text ?? ""].join("\n"));
+  return foldSearchText([card.id, card.name, ...(card.features ?? []), ...(card.works ?? []), card.text ?? ""].join("\n"));
 }
 
 export function matchesTerms(haystack: string, terms: readonly string[]): boolean {

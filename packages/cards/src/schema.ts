@@ -63,6 +63,11 @@ export type CardDefinition = {
   tags?: string[];
   /** メカ、男 などのユニット特徴。 */
   features?: string[];
+  /**
+   * 作品名（atwiki の「作品：」。表記揺れはそろえてある）。2 作品にまたがるカード（SX-009）は 2 つ持つ。
+   * 生成: scripts/generate-card-works.mjs（各カタログの cards.json に書き込む）。
+   */
+  works?: string[];
   /** Web アプリルートから配信するパス（例: /cards/legend1/RS-001.jpg） */
   imageUrl?: string;
   /** ダウンロード / 出典表示用の元画像 URL */

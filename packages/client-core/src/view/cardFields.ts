@@ -1,5 +1,5 @@
 // The card's attributes as the wiki lists them (カテゴリ, BP, SP, 必要パワー,
-// 追加条件, CN, 特徴), one "label：value" line each, for card detail views.
+// 追加条件, CN, 特徴, 作品), one "label：value" line each, for card detail views.
 import type { CardDefinition } from "../engineApi";
 
 export const CATEGORY_NAMES: Record<string, string> = {
@@ -22,6 +22,8 @@ export function cardFieldLines(def: CardDefinition): string[] {
   if (field) lines.push(`追加条件：${def.rushAdditionalCondition?.text ?? "なし"}`);
   if (def.comboNumber !== undefined && def.comboNumber !== null) lines.push(`CN：${def.comboNumber}`);
   if (def.features?.length) lines.push(`特徴：${def.features.join("/")}`);
+  // A card from two works (SX-009) lists both, one line each: a title can contain "/" itself (仮面ライダーオーズ/OOO).
+  for (const work of def.works ?? []) lines.push(`作品：${work}`);
   return lines;
 }
 

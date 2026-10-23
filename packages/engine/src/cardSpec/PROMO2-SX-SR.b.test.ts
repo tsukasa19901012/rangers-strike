@@ -353,7 +353,21 @@ describe("SX-009 ゴセイレッド×ゴーカイレッド", () => {
     expect(zoneOf(s, "player2", "SPEC-E1000:e")).toBe("discard");
   });
 
-  it.todo("SX-009: 【バトンタッチ】「捨札にしたユニットと作品名が異なる」— カタログに作品名のデータがなく、同じ作品のユニットを選べないことを確かめられない");
+  /** 捨札にするユニットと山札を変えた起動直後（捨札にするユニットを選んだあと）の候補。 */
+  const batonChoices = (discarded: CardInstance, deck: CardInstance[]) => {
+    const s0 = rushPhase({ rush: [inst("SX-009", "x"), discarded], power: powerCards(3), deck }, { battle: [inst("SPEC-E1000", "e")] });
+    return [...choiceIds(pick(act(s0, batonAction(s0)!), discarded.instanceId))].sort();
+  };
+
+  it("SX-009: 【バトンタッチ】「捨札にしたユニットと作品名が異なる」— 作品名はカタログの works で見る。名前に「ゴセイ」がなくても XG5-046 データス（天装戦隊ゴセイジャー）は選べず、2作品を持つ SX-009 もゴセイジャーを含むので選べない（出典: atwiki/page-2457「捨札にしたユニットと作品名が異なるSユニットのカード」・各カードの「作品：」）", () => {
+    const deck = [inst("XG5-046", "ds"), inst("XG7-003", "gk"), inst("XG4-001", "gs"), inst("SX-009", "x2")];
+    expect(batonChoices(inst("XG5-037", "gr"), deck)).toEqual(["XG4-001:gs", "XG7-003:gk"]);
+  });
+
+  it("SX-009: 【バトンタッチ】「捨札にしたユニットと作品名が異なる」— ゴセイジャーでもゴーカイジャーでもないユニット（XG4-001 牛靴仮面、秘密戦隊ゴレンジャー）を捨札にしても、同じ作品（RS-258 アオレンジャー）は選べない（出典: atwiki/page-2457）", () => {
+    const deck = [inst("RS-258", "ao"), inst("XG7-003", "gk"), inst("XG5-046", "ds")];
+    expect(batonChoices(inst("XG4-001", "gs"), deck)).toEqual(["XG5-046:ds", "XG7-003:gk"]);
+  });
 });
 
 // ===========================================================================

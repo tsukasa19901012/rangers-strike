@@ -18,4 +18,9 @@ describe("card search text", () => {
     expect(matchesTerms(haystack, searchTerms("ゴーカイ ブルー"))).toBe(false);
     expect(searchTerms("  ")).toEqual([]);
   });
+
+  it("matches the card's works (作品名)", () => {
+    const card = { id: "XG7-003", name: "ゴーカイレッド", works: ["海賊戦隊ゴーカイジャー"] } as unknown as CardDefinition;
+    expect(matchesTerms(cardSearchText(card), searchTerms("海賊戦隊"))).toBe(true);
+  });
 });

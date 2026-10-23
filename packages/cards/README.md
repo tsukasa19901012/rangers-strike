@@ -18,6 +18,10 @@
 - カタログ API: `src/catalog/unifiedCatalog.ts`、ローダーは `src/dsl/loader.ts`、後方互換の re-export は `src/extendedCatalog.ts`（`fullPlayableCatalog` 等）
 - 効果 DSL: `src/generated/dsl-stubs/`（Wiki 収録カードごとの stub）と `src/dsl/generated/`（overlay。ビルド時に `overlays-bundle.json` へ束ねる）
 - コマンダーカードはプレイ可能な定義がないため、プールに入りません
+- 作品名 `works`: atwiki の「作品：」を、表記揺れ（全角/半角・誤記）をそろえて各カタログのカードに入れます。
+  2 作品にまたがるカード（SX-009 ゴセイレッド×ゴーカイレッド）は 2 つ持ちます。
+  `node packages/cards/scripts/generate-card-works.mjs`（ルートから）が各カタログの `cards.json` を更新します。
+  XG5-028・SX-009 の判定と、カード詳細の「作品：」行・デッキ構築の文字列検索が使います
 
 ## 主なモジュール
 

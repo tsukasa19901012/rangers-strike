@@ -8,7 +8,10 @@
       "category": "WB",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "PK-002",
@@ -17,7 +20,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "PK-003",
@@ -26,7 +32,10 @@
       "category": "WB",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "PK-004",
@@ -35,7 +44,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー電王"
+      ]
     },
     {
       "id": "PK-005",
@@ -44,7 +56,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "仮面ライダー電王"
+      ]
     },
     {
       "id": "PK-006",
@@ -53,7 +68,10 @@
       "category": "DA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーBLACK"
+      ]
     },
     {
       "id": "PK-007",
@@ -62,7 +80,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダー電王"
+      ]
     },
     {
       "id": "PK-008",
@@ -71,7 +92,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーV3"
+      ]
     },
     {
       "id": "PK-009",
@@ -80,7 +104,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーV3"
+      ]
     },
     {
       "id": "PK-010",
@@ -89,7 +116,10 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー電王&キバ"
+      ]
     },
     {
       "id": "PK-011",
@@ -98,7 +128,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダー電王&キバ"
+      ]
     },
     {
       "id": "PK-012",
@@ -107,7 +140,10 @@
       "category": "WB",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "10-"
+      "powerCost": "10-",
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "PK-013",
@@ -116,7 +152,10 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダー響鬼"
+      ]
     },
     {
       "id": "PK-014",
@@ -125,7 +164,10 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "仮面ライダーキバ"
+      ]
     },
     {
       "id": "PM-001",
@@ -134,7 +176,10 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "世界忍者戦ジライヤ"
+      ]
     },
     {
       "id": "PR-001",
@@ -143,7 +188,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "PR-002",
@@ -152,7 +200,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "PR-003",
@@ -161,7 +212,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "PR-004",
@@ -170,7 +224,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "太陽戦隊サンバルカン"
+      ]
     },
     {
       "id": "PR-005",
@@ -179,7 +236,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "8+"
+      "powerCost": "8+",
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "PR-006",
@@ -188,7 +248,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "PR-007",
@@ -197,7 +260,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "秘密戦隊ゴレンジャー"
+      ]
     },
     {
       "id": "PR-008",
@@ -206,7 +272,10 @@
       "category": "DA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "超電子バイオマン"
+      ]
     },
     {
       "id": "PR-009",
@@ -215,7 +284,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "太陽戦隊サンバルカン"
+      ]
     },
     {
       "id": "PR-010",
@@ -224,7 +296,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 8
+      "powerCost": 8,
+      "works": [
+        "秘密戦隊ゴレンジャー"
+      ]
     },
     {
       "id": "PR-011",
@@ -233,7 +308,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "PR-012",
@@ -242,7 +320,10 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "忍者戦隊カクレンジャー"
+      ]
     },
     {
       "id": "PR-013",
@@ -251,7 +332,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "PR-014",
@@ -260,7 +344,10 @@
       "category": "DA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "科学戦隊ダイナマン"
+      ]
     },
     {
       "id": "PR-015",
@@ -269,7 +356,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "超電子バイオマン"
+      ]
     },
     {
       "id": "PR-016",
@@ -278,7 +368,10 @@
       "category": "WB",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "PR-017",
@@ -287,7 +380,10 @@
       "category": "WB",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "PR-018",
@@ -296,7 +392,10 @@
       "category": "WB",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "PR-019",
@@ -305,7 +404,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "超獣戦隊ライブマン"
+      ]
     },
     {
       "id": "PR-020",
@@ -314,7 +416,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "未来戦隊タイムレンジャー"
+      ]
     },
     {
       "id": "PR-021",
@@ -323,7 +428,10 @@
       "category": "WB",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "PR-022",
@@ -332,7 +440,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "炎神戦隊ゴーオンジャー"
+      ]
     },
     {
       "id": "PR-023",
@@ -341,7 +452,10 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "忍風戦隊ハリケンジャー"
+      ]
     },
     {
       "id": "PR-024",
@@ -350,7 +464,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "PR-025",
@@ -359,7 +476,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "炎神戦隊ゴーオンジャー"
+      ]
     },
     {
       "id": "PR-026",
@@ -368,7 +488,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "PR-027",
@@ -377,7 +500,10 @@
       "category": "DA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "RM-001",
@@ -386,7 +512,10 @@
       "category": "OT",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "宇宙刑事ギャバン"
+      ]
     },
     {
       "id": "RM-002",
@@ -395,7 +524,10 @@
       "category": "OT",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "宇宙刑事シャリバン"
+      ]
     },
     {
       "id": "RM-003",
@@ -404,7 +536,10 @@
       "category": "OT",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "宇宙刑事シャイダー"
+      ]
     },
     {
       "id": "RM-004",
@@ -413,7 +548,10 @@
       "category": "OT",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 8
+      "powerCost": 8,
+      "works": [
+        "巨獣特捜ジャスピオン"
+      ]
     },
     {
       "id": "RM-005",
@@ -422,7 +560,10 @@
       "category": "OT",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "時空戦士スピルバン"
+      ]
     },
     {
       "id": "RM-006",
@@ -431,7 +572,10 @@
       "category": "ET",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "超人機メタルダー"
+      ]
     },
     {
       "id": "RM-007",
@@ -440,7 +584,10 @@
       "category": "MA",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "世界忍者戦ジライヤ"
+      ]
     },
     {
       "id": "RM-008",
@@ -449,7 +596,10 @@
       "category": "ET",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "機動刑事ジバン"
+      ]
     },
     {
       "id": "RM-009",
@@ -458,7 +608,10 @@
       "category": "ET",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "特警ウインスペクター"
+      ]
     },
     {
       "id": "RM-010",
@@ -467,7 +620,10 @@
       "category": "ET",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "特救指令ソルブレイン"
+      ]
     },
     {
       "id": "RM-011",
@@ -476,7 +632,10 @@
       "category": "ET",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "特捜エクシードラフト"
+      ]
     },
     {
       "id": "RM-012",
@@ -485,7 +644,10 @@
       "category": "ET",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "特捜ロボ ジャンパーソン"
+      ]
     },
     {
       "id": "RM-013",
@@ -494,7 +656,10 @@
       "category": "ET",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "ブルースワット"
+      ]
     },
     {
       "id": "RM-014",
@@ -503,7 +668,10 @@
       "category": "WB",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "RM-015",
@@ -512,7 +680,10 @@
       "category": "WB",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "RM-016",
@@ -521,7 +692,10 @@
       "category": "OT",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 13
+      "powerCost": 13,
+      "works": [
+        "ビーロボカブタック"
+      ]
     },
     {
       "id": "RM-017",
@@ -530,7 +704,10 @@
       "category": "ET",
       "rarity": "MR",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "テツワン探偵ロボタック"
+      ]
     },
     {
       "id": "RM-018",
@@ -539,7 +716,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "legend3",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "宇宙刑事ギャバン"
+      ]
     },
     {
       "id": "RM-019",
@@ -548,7 +728,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "宇宙刑事ギャバン"
+      ]
     },
     {
       "id": "RM-020",
@@ -557,7 +740,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "legend3",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "宇宙刑事ギャバン"
+      ]
     },
     {
       "id": "RM-021",
@@ -566,7 +752,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "宇宙刑事ギャバン"
+      ]
     },
     {
       "id": "RM-022",
@@ -575,7 +764,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "宇宙刑事ギャバン"
+      ]
     },
     {
       "id": "RM-023",
@@ -584,7 +776,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "宇宙刑事ギャバン"
+      ]
     },
     {
       "id": "RM-024",
@@ -593,7 +788,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "宇宙刑事ギャバン"
+      ]
     },
     {
       "id": "RM-025",
@@ -602,7 +800,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "legend3",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "宇宙刑事シャリバン"
+      ]
     },
     {
       "id": "RM-026",
@@ -611,7 +812,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "宇宙刑事シャリバン"
+      ]
     },
     {
       "id": "RM-027",
@@ -620,7 +824,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "legend3",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "宇宙刑事シャリバン"
+      ]
     },
     {
       "id": "RM-028",
@@ -629,7 +836,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "宇宙刑事シャリバン"
+      ]
     },
     {
       "id": "RM-029",
@@ -638,7 +848,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "巨獣特捜ジャスピオン"
+      ]
     },
     {
       "id": "RM-030",
@@ -647,7 +860,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "巨獣特捜ジャスピオン"
+      ]
     },
     {
       "id": "RM-031",
@@ -656,7 +872,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "legend3",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "巨獣特捜ジャスピオン"
+      ]
     },
     {
       "id": "RM-032",
@@ -665,7 +884,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "巨獣特捜ジャスピオン"
+      ]
     },
     {
       "id": "RM-033",
@@ -674,7 +896,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "超人機メタルダー"
+      ]
     },
     {
       "id": "RM-034",
@@ -683,7 +908,10 @@
       "category": "DA",
       "rarity": "SR",
       "expansion": "legend3",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "超人機メタルダー"
+      ]
     },
     {
       "id": "RM-035",
@@ -692,7 +920,10 @@
       "category": "DA",
       "rarity": "NR",
       "expansion": "legend3",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "超人機メタルダー"
+      ]
     },
     {
       "id": "RM-036",
@@ -701,7 +932,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "超人機メタルダー"
+      ]
     },
     {
       "id": "RM-037",
@@ -710,7 +944,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "超人機メタルダー"
+      ]
     },
     {
       "id": "RM-038",
@@ -719,7 +956,10 @@
       "category": "DA",
       "rarity": "NR",
       "expansion": "legend3",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "超人機メタルダー"
+      ]
     },
     {
       "id": "RM-039",
@@ -728,7 +968,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "legend3",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "世界忍者戦ジライヤ"
+      ]
     },
     {
       "id": "RM-040",
@@ -737,7 +980,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "世界忍者戦ジライヤ"
+      ]
     },
     {
       "id": "RM-041",
@@ -746,7 +992,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "世界忍者戦ジライヤ"
+      ]
     },
     {
       "id": "RM-042",
@@ -755,7 +1004,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "世界忍者戦ジライヤ"
+      ]
     },
     {
       "id": "RM-043",
@@ -764,7 +1016,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "世界忍者戦ジライヤ"
+      ]
     },
     {
       "id": "RM-044",
@@ -773,7 +1028,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "legend3",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "特捜ロボ ジャンパーソン"
+      ]
     },
     {
       "id": "RM-045",
@@ -782,7 +1040,10 @@
       "category": "DA",
       "rarity": "SR",
       "expansion": "legend3",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "特捜ロボ ジャンパーソン"
+      ]
     },
     {
       "id": "RM-046",
@@ -791,7 +1052,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "特捜ロボ ジャンパーソン"
+      ]
     },
     {
       "id": "RM-047",
@@ -800,7 +1064,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "特捜ロボ ジャンパーソン"
+      ]
     },
     {
       "id": "RM-048",
@@ -809,7 +1076,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "ブルースワット"
+      ]
     },
     {
       "id": "RM-049",
@@ -818,7 +1088,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "ブルースワット"
+      ]
     },
     {
       "id": "RM-050",
@@ -827,7 +1100,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "ブルースワット"
+      ]
     },
     {
       "id": "RM-051",
@@ -836,7 +1112,10 @@
       "category": "WB",
       "rarity": "NR",
       "expansion": "legend3",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "RM-052",
@@ -845,7 +1124,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "RM-053",
@@ -854,7 +1136,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "RM-054",
@@ -863,7 +1148,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "RM-055",
@@ -872,7 +1160,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "legend3",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "RM-056",
@@ -881,7 +1172,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "RM-057",
@@ -890,7 +1184,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "RM-058",
@@ -899,7 +1196,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "RM-059",
@@ -908,7 +1208,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "RM-060",
@@ -917,7 +1220,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "RM-061",
@@ -926,7 +1232,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": "2+"
+      "powerCost": "2+",
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "RM-062",
@@ -935,7 +1244,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "legend3",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "ビーロボカブタック"
+      ]
     },
     {
       "id": "SK-000",
@@ -944,7 +1256,10 @@
       "category": "WB",
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "SK-001",
@@ -953,7 +1268,10 @@
       "category": "DA",
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーBLACK"
+      ]
     },
     {
       "id": "SK-002",
@@ -962,7 +1280,10 @@
       "category": "ET",
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーV3"
+      ]
     },
     {
       "id": "SK-003",
@@ -971,7 +1292,10 @@
       "category": "WB",
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー龍騎 EPISODE FINAL"
+      ]
     },
     {
       "id": "SK-004",
@@ -980,7 +1304,10 @@
       "category": "MA",
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "仮面ライダークウガ"
+      ]
     },
     {
       "id": "SM-001",
@@ -989,7 +1316,10 @@
       "category": "OT",
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": 7
+      "powerCost": 7,
+      "works": [
+        "宇宙刑事シャイダー"
+      ]
     },
     {
       "id": "SX-001",
@@ -998,7 +1328,10 @@
       "category": "OT",
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "劇場版 超・仮面ライダー電王&ディケイド NEOジェネレーションズ 鬼ヶ島の戦艦"
+      ]
     },
     {
       "id": "SX-002",
@@ -1010,7 +1343,10 @@
       ],
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "SX-003",
@@ -1019,7 +1355,10 @@
       "category": "DA",
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "仮面ライダー×仮面ライダーW&ディケイドMOVIE大戦2010"
+      ]
     },
     {
       "id": "SX-004",
@@ -1031,7 +1370,10 @@
       ],
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "侍戦隊シンケンジャーVSゴーオンジャー 銀幕BANG!!"
+      ]
     },
     {
       "id": "SX-005",
@@ -1043,7 +1385,10 @@
       ],
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "SX-006",
@@ -1052,7 +1397,10 @@
       "category": "OT",
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "超・電王トリロジー"
+      ]
     },
     {
       "id": "SX-007",
@@ -1061,7 +1409,10 @@
       "category": "MA",
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "SX-008",
@@ -1074,7 +1425,10 @@
       ],
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "超・電王トリロジー"
+      ]
     },
     {
       "id": "SX-009",
@@ -1086,7 +1440,11 @@
       ],
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": "0+"
+      "powerCost": "0+",
+      "works": [
+        "天装戦隊ゴセイジャー",
+        "海賊戦隊ゴーカイジャー"
+      ]
     },
     {
       "id": "SX-010",
@@ -1098,7 +1456,10 @@
       ],
       "rarity": "SC",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "仮面ライダー×仮面ライダーオーズ&ダブルfeat.スカル MOVIE大戦CORE"
+      ]
     },
     {
       "id": "XC-001",
@@ -1107,7 +1468,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダー"
+      ]
     },
     {
       "id": "XC-002",
@@ -1116,7 +1480,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XC-003",
@@ -1125,7 +1492,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XC-004",
@@ -1134,7 +1504,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "魔法戦隊マジレンジャー"
+      ]
     },
     {
       "id": "XC-005",
@@ -1143,7 +1516,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダー"
+      ]
     },
     {
       "id": "XC-006",
@@ -1152,7 +1528,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XC-007",
@@ -1161,7 +1540,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "宇宙刑事ギャバン"
+      ]
     },
     {
       "id": "XC-008",
@@ -1170,7 +1552,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG1-001",
@@ -1179,7 +1564,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "バトルフィーバーJ"
+      ]
     },
     {
       "id": "XG1-002",
@@ -1188,7 +1576,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "電子戦隊デンジマン"
+      ]
     },
     {
       "id": "XG1-003",
@@ -1197,7 +1588,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "太陽戦隊サンバルカン"
+      ]
     },
     {
       "id": "XG1-004",
@@ -1206,7 +1600,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "大戦隊ゴーグルファイブ"
+      ]
     },
     {
       "id": "XG1-005",
@@ -1215,7 +1612,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "科学戦隊ダイナマン"
+      ]
     },
     {
       "id": "XG1-006",
@@ -1224,7 +1624,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "超電子バイオマン"
+      ]
     },
     {
       "id": "XG1-007",
@@ -1236,7 +1639,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "電撃戦隊チェンジマン"
+      ]
     },
     {
       "id": "XG1-008",
@@ -1245,7 +1651,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "超新星フラッシュマン"
+      ]
     },
     {
       "id": "XG1-009",
@@ -1254,7 +1663,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "光戦隊マスクマン"
+      ]
     },
     {
       "id": "XG1-010",
@@ -1263,7 +1675,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "超獣戦隊ライブマン"
+      ]
     },
     {
       "id": "XG1-011",
@@ -1272,7 +1687,10 @@
       "category": "DA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "超力戦隊オーレンジャー"
+      ]
     },
     {
       "id": "XG1-012",
@@ -1281,7 +1699,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "超力戦隊オーレンジャー"
+      ]
     },
     {
       "id": "XG1-013",
@@ -1290,7 +1711,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "超力戦隊オーレンジャー"
+      ]
     },
     {
       "id": "XG1-014",
@@ -1299,7 +1723,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "超力戦隊オーレンジャー"
+      ]
     },
     {
       "id": "XG1-015",
@@ -1308,7 +1735,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XG1-016",
@@ -1317,7 +1747,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "激走戦隊カーレンジャー"
+      ]
     },
     {
       "id": "XG1-017",
@@ -1326,7 +1759,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "激走戦隊カーレンジャー"
+      ]
     },
     {
       "id": "XG1-018",
@@ -1335,7 +1771,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "激走戦隊カーレンジャー"
+      ]
     },
     {
       "id": "XG1-019",
@@ -1344,7 +1783,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "高速戦隊ターボレンジャー"
+      ]
     },
     {
       "id": "XG1-020",
@@ -1353,7 +1795,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "高速戦隊ターボレンジャー"
+      ]
     },
     {
       "id": "XG1-021",
@@ -1365,7 +1810,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "高速戦隊ターボレンジャー"
+      ]
     },
     {
       "id": "XG1-022",
@@ -1377,7 +1825,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "高速戦隊ターボレンジャー"
+      ]
     },
     {
       "id": "XG1-023",
@@ -1389,7 +1840,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "高速戦隊ターボレンジャー"
+      ]
     },
     {
       "id": "XG1-024",
@@ -1401,7 +1855,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "高速戦隊ターボレンジャー"
+      ]
     },
     {
       "id": "XG1-025",
@@ -1413,7 +1870,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "高速戦隊ターボレンジャー"
+      ]
     },
     {
       "id": "XG1-026",
@@ -1422,7 +1882,10 @@
       "category": "DA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "高速戦隊ターボレンジャー"
+      ]
     },
     {
       "id": "XG1-027",
@@ -1431,7 +1894,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "高速戦隊ターボレンジャー"
+      ]
     },
     {
       "id": "XG1-028",
@@ -1440,7 +1906,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG1-029",
@@ -1449,7 +1918,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG1-030",
@@ -1458,7 +1930,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG1-031",
@@ -1470,7 +1945,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "炎神戦隊ゴーオンジャー VS ゲキレンジャー"
+      ]
     },
     {
       "id": "XG1-032",
@@ -1482,7 +1960,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "炎神戦隊ゴーオンジャー VS ゲキレンジャー"
+      ]
     },
     {
       "id": "XG1-033",
@@ -1491,7 +1972,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "炎神戦隊ゴーオンジャー"
+      ]
     },
     {
       "id": "XG1-034",
@@ -1500,7 +1984,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "炎神戦隊ゴーオンジャー"
+      ]
     },
     {
       "id": "XG1-035",
@@ -1509,7 +1996,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG1-036",
@@ -1518,7 +2008,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG1-037",
@@ -1527,7 +2020,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG1-038",
@@ -1536,7 +2032,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG1-039",
@@ -1545,7 +2044,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG1-040",
@@ -1554,7 +2056,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG1-041",
@@ -1566,7 +2071,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーアマゾン"
+      ]
     },
     {
       "id": "XG1-042",
@@ -1575,7 +2083,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーアマゾン"
+      ]
     },
     {
       "id": "XG1-043",
@@ -1584,7 +2095,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーV3"
+      ]
     },
     {
       "id": "XG1-044",
@@ -1593,7 +2107,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーV3"
+      ]
     },
     {
       "id": "XG1-045",
@@ -1602,7 +2119,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーV3"
+      ]
     },
     {
       "id": "XG1-046",
@@ -1611,7 +2131,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダースーパー1"
+      ]
     },
     {
       "id": "XG1-047",
@@ -1620,7 +2143,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダースーパー1"
+      ]
     },
     {
       "id": "XG1-048",
@@ -1629,7 +2155,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダースーパー1"
+      ]
     },
     {
       "id": "XG1-049",
@@ -1638,7 +2167,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー（新）"
+      ]
     },
     {
       "id": "XG1-050",
@@ -1647,7 +2179,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "仮面ライダーZX"
+      ]
     },
     {
       "id": "XG1-051",
@@ -1656,7 +2191,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーZX"
+      ]
     },
     {
       "id": "XG1-052",
@@ -1665,7 +2203,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "仮面ライダーアギト"
+      ]
     },
     {
       "id": "XG1-053",
@@ -1674,7 +2215,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーアギト"
+      ]
     },
     {
       "id": "XG1-054",
@@ -1683,7 +2227,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "仮面ライダーアギト"
+      ]
     },
     {
       "id": "XG1-055",
@@ -1692,7 +2239,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダーアギト"
+      ]
     },
     {
       "id": "XG1-056",
@@ -1701,7 +2251,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーアギト"
+      ]
     },
     {
       "id": "XG1-057",
@@ -1710,7 +2263,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG1-058",
@@ -1719,7 +2275,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG1-059",
@@ -1728,7 +2287,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG1-060",
@@ -1737,7 +2299,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG1-061",
@@ -1746,7 +2311,10 @@
       "category": "WB",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG1-062",
@@ -1755,7 +2323,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG1-063",
@@ -1764,7 +2335,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG1-064",
@@ -1773,7 +2347,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG1-065",
@@ -1782,7 +2359,10 @@
       "category": "WB",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG1-066",
@@ -1791,7 +2371,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG1-067",
@@ -1800,7 +2383,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG1-068",
@@ -1809,7 +2395,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG1-069",
@@ -1818,7 +2407,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG1-070",
@@ -1827,7 +2419,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG1-071",
@@ -1836,7 +2431,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG1-072",
@@ -1845,7 +2443,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG1-073",
@@ -1854,7 +2455,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "XG1-074",
@@ -1863,7 +2467,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "XG1-075",
@@ -1875,7 +2482,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "仮面ライダーキバ"
+      ]
     },
     {
       "id": "XG1-076",
@@ -1884,7 +2494,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG1-077",
@@ -1893,7 +2506,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG1-078",
@@ -1902,7 +2518,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "XG1-079",
@@ -1911,7 +2530,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG1-080",
@@ -1923,7 +2545,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG1-081",
@@ -1935,7 +2560,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "世界忍者戦ジライヤ"
+      ]
     },
     {
       "id": "XG1-082",
@@ -1944,7 +2572,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "宇宙刑事シャイダー"
+      ]
     },
     {
       "id": "XG1-083",
@@ -1953,7 +2584,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "宇宙刑事シャイダー"
+      ]
     },
     {
       "id": "XG1-084",
@@ -1962,7 +2596,10 @@
       "category": "DA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "巨獣特捜ジャスピオン"
+      ]
     },
     {
       "id": "XG1-085",
@@ -1971,7 +2608,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "時空戦士スピルバン"
+      ]
     },
     {
       "id": "XG1-086",
@@ -1980,7 +2620,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "時空戦士スピルバン"
+      ]
     },
     {
       "id": "XG1-087",
@@ -1989,7 +2632,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "時空戦士スピルバン"
+      ]
     },
     {
       "id": "XG1-088",
@@ -1998,7 +2644,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "特警ウインスペクター"
+      ]
     },
     {
       "id": "XG1-089",
@@ -2007,7 +2656,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "特警ウインスペクター"
+      ]
     },
     {
       "id": "XG1-090",
@@ -2016,7 +2668,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "特警ウインスペクター"
+      ]
     },
     {
       "id": "XG1-091",
@@ -2025,7 +2680,10 @@
       "category": "DA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "特警ウインスペクター"
+      ]
     },
     {
       "id": "XG1-092",
@@ -2034,7 +2692,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "特救指令ソルブレイン"
+      ]
     },
     {
       "id": "XG1-093",
@@ -2043,7 +2704,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "特救指令ソルブレイン"
+      ]
     },
     {
       "id": "XG1-094",
@@ -2055,7 +2719,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "XG1-095",
@@ -2067,7 +2734,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "XG1-096",
@@ -2079,7 +2749,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "XG1-097",
@@ -2091,7 +2764,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "XG1-098",
@@ -2103,7 +2779,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "XG1-099",
@@ -2112,7 +2791,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "燃えろ!!ロボコン"
+      ]
     },
     {
       "id": "XG1-100",
@@ -2121,7 +2803,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "燃えろ!!ロボコン"
+      ]
     },
     {
       "id": "XG2-001",
@@ -2133,7 +2818,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "地球戦隊ファイブマン"
+      ]
     },
     {
       "id": "XG2-002",
@@ -2145,7 +2833,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "地球戦隊ファイブマン"
+      ]
     },
     {
       "id": "XG2-003",
@@ -2157,7 +2848,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "地球戦隊ファイブマン"
+      ]
     },
     {
       "id": "XG2-004",
@@ -2169,7 +2863,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "8+"
+      "powerCost": "8+",
+      "works": [
+        "地球戦隊ファイブマン"
+      ]
     },
     {
       "id": "XG2-005",
@@ -2181,7 +2878,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "地球戦隊ファイブマン"
+      ]
     },
     {
       "id": "XG2-006",
@@ -2193,7 +2893,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "地球戦隊ファイブマン"
+      ]
     },
     {
       "id": "XG2-007",
@@ -2205,7 +2908,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "地球戦隊ファイブマン"
+      ]
     },
     {
       "id": "XG2-008",
@@ -2214,7 +2920,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "科学戦隊ダイナマン"
+      ]
     },
     {
       "id": "XG2-009",
@@ -2223,7 +2932,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "科学戦隊ダイナマン"
+      ]
     },
     {
       "id": "XG2-010",
@@ -2232,7 +2944,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "五星戦隊ダイレンジャー"
+      ]
     },
     {
       "id": "XG2-011",
@@ -2241,7 +2956,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "五星戦隊ダイレンジャー"
+      ]
     },
     {
       "id": "XG2-012",
@@ -2250,7 +2968,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "五星戦隊ダイレンジャー"
+      ]
     },
     {
       "id": "XG2-013",
@@ -2259,7 +2980,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "五星戦隊ダイレンジャー"
+      ]
     },
     {
       "id": "XG2-014",
@@ -2271,7 +2995,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "五星戦隊ダイレンジャー"
+      ]
     },
     {
       "id": "XG2-015",
@@ -2280,7 +3007,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "五星戦隊ダイレンジャー"
+      ]
     },
     {
       "id": "XG2-016",
@@ -2289,7 +3019,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "五星戦隊ダイレンジャー"
+      ]
     },
     {
       "id": "XG2-017",
@@ -2298,7 +3031,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "五星戦隊ダイレンジャー"
+      ]
     },
     {
       "id": "XG2-018",
@@ -2310,7 +3046,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XG2-019",
@@ -2319,7 +3058,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG2-020",
@@ -2328,7 +3070,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG2-021",
@@ -2337,7 +3082,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG2-022",
@@ -2346,7 +3094,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG2-023",
@@ -2355,7 +3106,10 @@
       "category": "WB",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG2-024",
@@ -2364,7 +3118,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG2-025",
@@ -2376,7 +3133,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG2-026",
@@ -2388,7 +3148,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG2-027",
@@ -2400,7 +3163,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG2-028",
@@ -2409,7 +3175,10 @@
       "category": "DA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "9+"
+      "powerCost": "9+",
+      "works": [
+        "救急戦隊ゴーゴーファイブ"
+      ]
     },
     {
       "id": "XG2-029",
@@ -2418,7 +3187,10 @@
       "category": "DA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "救急戦隊ゴーゴーファイブ"
+      ]
     },
     {
       "id": "XG2-030",
@@ -2427,7 +3199,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XG2-031",
@@ -2436,7 +3211,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XG2-032",
@@ -2445,7 +3223,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XG2-033",
@@ -2454,7 +3235,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XG2-034",
@@ -2463,7 +3247,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "2+"
+      "powerCost": "2+",
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XG2-035",
@@ -2472,7 +3259,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XG2-036",
@@ -2481,7 +3271,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "14-"
+      "powerCost": "14-",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG2-037",
@@ -2490,7 +3283,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG2-038",
@@ -2499,7 +3295,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG2-039",
@@ -2508,7 +3307,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG2-040",
@@ -2517,7 +3319,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG2-041",
@@ -2526,7 +3331,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG2-042",
@@ -2535,7 +3343,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG2-043",
@@ -2547,7 +3358,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG2-044",
@@ -2556,7 +3370,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG2-045",
@@ -2568,7 +3385,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG2-046",
@@ -2577,7 +3397,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダースーパー1"
+      ]
     },
     {
       "id": "XG2-047",
@@ -2586,7 +3409,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダースーパー1"
+      ]
     },
     {
       "id": "XG2-048",
@@ -2595,7 +3421,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダースーパー1"
+      ]
     },
     {
       "id": "XG2-049",
@@ -2604,7 +3433,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーアギト"
+      ]
     },
     {
       "id": "XG2-050",
@@ -2613,7 +3445,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "仮面ライダーアギト"
+      ]
     },
     {
       "id": "XG2-051",
@@ -2622,7 +3457,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "仮面ライダーアギト"
+      ]
     },
     {
       "id": "XG2-052",
@@ -2634,6 +3472,9 @@
       "powerCost": 5,
       "features": [
         "アドベントカード"
+      ],
+      "works": [
+        "仮面ライダー龍騎"
       ]
     },
     {
@@ -2643,7 +3484,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "XG2-054",
@@ -2652,7 +3496,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG2-055",
@@ -2661,7 +3508,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダー555"
+      ]
     },
     {
       "id": "XG2-056",
@@ -2670,7 +3520,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "仮面ライダー555"
+      ]
     },
     {
       "id": "XG2-057",
@@ -2679,7 +3532,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー555"
+      ]
     },
     {
       "id": "XG2-058",
@@ -2688,7 +3544,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG2-059",
@@ -2700,7 +3559,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG2-060",
@@ -2709,7 +3571,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG2-061",
@@ -2724,6 +3589,9 @@
       ],
       "tags": [
         "カウンター"
+      ],
+      "works": [
+        "仮面ライダー響鬼"
       ]
     },
     {
@@ -2733,7 +3601,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "仮面ライダー響鬼"
+      ]
     },
     {
       "id": "XG2-063",
@@ -2742,7 +3613,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダー響鬼"
+      ]
     },
     {
       "id": "XG2-064",
@@ -2751,7 +3625,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "XG2-065",
@@ -2760,7 +3637,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "XG2-066",
@@ -2769,7 +3649,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "XG2-067",
@@ -2778,7 +3661,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "仮面ライダー電王"
+      ]
     },
     {
       "id": "XG2-068",
@@ -2787,7 +3673,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダー電王"
+      ]
     },
     {
       "id": "XG2-069",
@@ -2796,7 +3685,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "劇場版 さらば仮面ライダー電王 ファイナル・カウントダウン"
+      ]
     },
     {
       "id": "XG2-070",
@@ -2805,7 +3697,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG2-071",
@@ -2814,7 +3709,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG2-072",
@@ -2826,7 +3724,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "仮面ライダークウガ"
+      ]
     },
     {
       "id": "XG2-073",
@@ -2835,7 +3736,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG2-074",
@@ -2844,7 +3748,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG2-075",
@@ -2853,7 +3760,10 @@
       "category": "WB",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG2-076",
@@ -2862,7 +3772,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG2-077",
@@ -2871,7 +3784,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG2-078",
@@ -2880,7 +3796,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG2-079",
@@ -2889,7 +3808,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG2-080",
@@ -2898,7 +3820,10 @@
       "category": "WB",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG2-081",
@@ -2907,7 +3832,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG2-082",
@@ -2916,7 +3844,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "宇宙刑事ギャバン"
+      ]
     },
     {
       "id": "XG2-083",
@@ -2925,7 +3856,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "宇宙刑事ギャバン"
+      ]
     },
     {
       "id": "XG2-084",
@@ -2934,7 +3868,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "宇宙刑事シャイダー"
+      ]
     },
     {
       "id": "XG2-085",
@@ -2943,7 +3880,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "ブルースワット"
+      ]
     },
     {
       "id": "XG2-086",
@@ -2955,7 +3895,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "10-"
+      "powerCost": "10-",
+      "works": [
+        "ブルースワット"
+      ]
     },
     {
       "id": "XG2-087",
@@ -2964,7 +3907,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "ブルースワット"
+      ]
     },
     {
       "id": "XG2-088",
@@ -2973,7 +3919,10 @@
       "category": "DA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "機動刑事ジバン"
+      ]
     },
     {
       "id": "XG2-089",
@@ -2982,7 +3931,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "機動刑事ジバン"
+      ]
     },
     {
       "id": "XG2-090",
@@ -2991,7 +3943,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "機動刑事ジバン"
+      ]
     },
     {
       "id": "XG2-091",
@@ -3000,7 +3955,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "特警ウィンスペクター"
+      ]
     },
     {
       "id": "XG2-092",
@@ -3009,7 +3967,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "特救指令ソルブレイン"
+      ]
     },
     {
       "id": "XG2-093",
@@ -3018,7 +3979,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "特救指令ソルブレイン"
+      ]
     },
     {
       "id": "XG2-094",
@@ -3027,7 +3991,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "XG2-095",
@@ -3039,7 +4006,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "XG2-096",
@@ -3051,7 +4021,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "XG2-097",
@@ -3063,7 +4036,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "XG2-098",
@@ -3072,7 +4048,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "テツワン探偵ロボタック"
+      ]
     },
     {
       "id": "XG2-099",
@@ -3081,7 +4060,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "テツワン探偵ロボタック"
+      ]
     },
     {
       "id": "XG2-100",
@@ -3090,7 +4072,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "人造人間キカイダー"
+      ]
     },
     {
       "id": "XG2-101",
@@ -3099,7 +4084,10 @@
       "category": "DA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "人造人間キカイダー"
+      ]
     },
     {
       "id": "XG2-102",
@@ -3108,7 +4096,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "人造人間キカイダー"
+      ]
     },
     {
       "id": "XG2-103",
@@ -3117,7 +4108,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "人造人間キカイダー"
+      ]
     },
     {
       "id": "XG3-001",
@@ -3126,7 +4120,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "激走戦隊カーレンジャー"
+      ]
     },
     {
       "id": "XG3-002",
@@ -3135,7 +4132,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "激走戦隊カーレンジャー"
+      ]
     },
     {
       "id": "XG3-003",
@@ -3144,7 +4144,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "激走戦隊カーレンジャー"
+      ]
     },
     {
       "id": "XG3-004",
@@ -3153,7 +4156,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "激走戦隊カーレンジャー"
+      ]
     },
     {
       "id": "XG3-005",
@@ -3162,7 +4168,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "救急戦隊ゴーゴーファイブ"
+      ]
     },
     {
       "id": "XG3-006",
@@ -3171,7 +4180,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "救急戦隊ゴーゴーファイブ"
+      ]
     },
     {
       "id": "XG3-007",
@@ -3180,7 +4192,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "救急戦隊ゴーゴーファイブ"
+      ]
     },
     {
       "id": "XG3-008",
@@ -3189,7 +4204,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "救急戦隊ゴーゴーファイブ"
+      ]
     },
     {
       "id": "XG3-009",
@@ -3198,7 +4216,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "救急戦隊ゴーゴーファイブ"
+      ]
     },
     {
       "id": "XG3-010",
@@ -3207,7 +4228,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "救急戦隊ゴーゴーファイブ"
+      ]
     },
     {
       "id": "XG3-011",
@@ -3216,7 +4240,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "救急戦隊ゴーゴーファイブ 激突!新たなる超戦士"
+      ]
     },
     {
       "id": "XG3-012",
@@ -3228,7 +4255,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG3-013",
@@ -3237,7 +4267,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "百獣戦隊ガオレンジャー"
+      ]
     },
     {
       "id": "XG3-014",
@@ -3246,7 +4279,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "百獣戦隊ガオレンジャー"
+      ]
     },
     {
       "id": "XG3-015",
@@ -3255,7 +4291,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "百獣戦隊ガオレンジャー"
+      ]
     },
     {
       "id": "XG3-016",
@@ -3264,7 +4303,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "百獣戦隊ガオレンジャー"
+      ]
     },
     {
       "id": "XG3-017",
@@ -3273,7 +4315,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "百獣戦隊ガオレンジャー"
+      ]
     },
     {
       "id": "XG3-018",
@@ -3282,7 +4327,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "忍風戦隊ハリケンジャー"
+      ]
     },
     {
       "id": "XG3-019",
@@ -3291,7 +4339,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "忍風戦隊ハリケンジャー"
+      ]
     },
     {
       "id": "XG3-020",
@@ -3300,7 +4351,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "忍風戦隊ハリケンジャー"
+      ]
     },
     {
       "id": "XG3-021",
@@ -3309,7 +4363,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "忍風戦隊ハリケンジャー"
+      ]
     },
     {
       "id": "XG3-022",
@@ -3318,7 +4375,10 @@
       "category": "WB",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG3-023",
@@ -3327,7 +4387,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG3-024",
@@ -3336,7 +4399,10 @@
       "category": "DA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG3-025",
@@ -3345,7 +4411,10 @@
       "category": "DA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG3-026",
@@ -3354,7 +4423,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG3-027",
@@ -3363,7 +4435,10 @@
       "category": "WB",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG3-028",
@@ -3375,7 +4450,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "魔法戦隊マジレンジャー"
+      ]
     },
     {
       "id": "XG3-029",
@@ -3387,7 +4465,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "魔法戦隊マジレンジャー"
+      ]
     },
     {
       "id": "XG3-030",
@@ -3399,7 +4480,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "魔法戦隊マジレンジャー"
+      ]
     },
     {
       "id": "XG3-031",
@@ -3411,7 +4495,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XG3-032",
@@ -3423,7 +4510,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XG3-033",
@@ -3432,7 +4522,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG3-034",
@@ -3441,7 +4534,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG3-035",
@@ -3450,7 +4546,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG3-036",
@@ -3459,7 +4558,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG3-037",
@@ -3468,7 +4570,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "2+"
+      "powerCost": "2+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG3-038",
@@ -3477,7 +4582,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG3-039",
@@ -3486,7 +4594,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG3-040",
@@ -3495,7 +4606,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG3-041",
@@ -3504,7 +4618,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG3-042",
@@ -3513,7 +4630,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダー"
+      ]
     },
     {
       "id": "XG3-043",
@@ -3522,7 +4642,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーV3"
+      ]
     },
     {
       "id": "XG3-044",
@@ -3531,7 +4654,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーストロンガー"
+      ]
     },
     {
       "id": "XG3-045",
@@ -3540,7 +4666,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "仮面ライダーストロンガー"
+      ]
     },
     {
       "id": "XG3-046",
@@ -3549,7 +4678,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーBLACK"
+      ]
     },
     {
       "id": "XG3-047",
@@ -3558,7 +4690,10 @@
       "category": "DA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーBLACK"
+      ]
     },
     {
       "id": "XG3-048",
@@ -3567,7 +4702,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG3-049",
@@ -3579,6 +4717,9 @@
       "powerCost": 4,
       "features": [
         "アドベントカード"
+      ],
+      "works": [
+        "仮面ライダー龍騎"
       ]
     },
     {
@@ -3588,7 +4729,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "XG3-051",
@@ -3597,7 +4741,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "XG3-052",
@@ -3606,7 +4753,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダー555"
+      ]
     },
     {
       "id": "XG3-053",
@@ -3615,7 +4765,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー響鬼"
+      ]
     },
     {
       "id": "XG3-054",
@@ -3624,7 +4777,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG3-055",
@@ -3636,6 +4792,9 @@
       "powerCost": 4,
       "features": [
         "ディスクアニマル"
+      ],
+      "works": [
+        "仮面ライダー響鬼"
       ]
     },
     {
@@ -3645,7 +4804,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG3-057",
@@ -3654,7 +4816,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "2+"
+      "powerCost": "2+",
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG3-058",
@@ -3663,7 +4828,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー響鬼"
+      ]
     },
     {
       "id": "XG3-059",
@@ -3672,7 +4840,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー響鬼"
+      ]
     },
     {
       "id": "XG3-060",
@@ -3681,7 +4852,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG3-061",
@@ -3690,7 +4864,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "XG3-062",
@@ -3699,7 +4876,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "XG3-063",
@@ -3708,7 +4888,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "XG3-064",
@@ -3717,7 +4900,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "XG3-065",
@@ -3726,7 +4912,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "XG3-066",
@@ -3735,7 +4924,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "XG3-067",
@@ -3744,7 +4936,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG3-068",
@@ -3753,7 +4948,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG3-069",
@@ -3762,7 +4960,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG3-070",
@@ -3771,7 +4972,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダークウガ"
+      ]
     },
     {
       "id": "XG3-071",
@@ -3780,7 +4984,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG3-072",
@@ -3789,7 +4996,10 @@
       "category": "DA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー×仮面ライダーW&ディケイドMOVIE大戦2010"
+      ]
     },
     {
       "id": "XG3-073",
@@ -3798,7 +5008,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG3-074",
@@ -3807,7 +5020,10 @@
       "category": "DA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "9+"
+      "powerCost": "9+",
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XG3-075",
@@ -3819,7 +5035,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XG3-076",
@@ -3828,7 +5047,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG3-077",
@@ -3837,7 +5059,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG3-078",
@@ -3849,7 +5074,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG3-079",
@@ -3861,7 +5089,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG3-080",
@@ -3873,7 +5104,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG3-081",
@@ -3885,7 +5119,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG3-082",
@@ -3894,7 +5131,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "宇宙刑事ギャバン"
+      ]
     },
     {
       "id": "XG3-083",
@@ -3906,7 +5146,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "世界忍者戦ジライヤ"
+      ]
     },
     {
       "id": "XG3-084",
@@ -3915,7 +5158,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "XG3-085",
@@ -3924,7 +5170,10 @@
       "category": "DA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "XG3-086",
@@ -3936,7 +5185,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "XG3-087",
@@ -3948,7 +5200,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "XG3-088",
@@ -3960,7 +5215,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "XG3-089",
@@ -3972,7 +5230,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "XG3-090",
@@ -3984,7 +5245,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "XG3-091",
@@ -3996,7 +5260,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "XG3-092",
@@ -4008,7 +5275,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "重甲ビーファイター"
+      ]
     },
     {
       "id": "XG3-093",
@@ -4020,7 +5290,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "ビーファイターカブト"
+      ]
     },
     {
       "id": "XG3-094",
@@ -4029,7 +5302,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "ビーロボカブタック"
+      ]
     },
     {
       "id": "XG3-095",
@@ -4038,7 +5314,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "ビーロボカブタック"
+      ]
     },
     {
       "id": "XG3-096",
@@ -4047,7 +5326,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "テツワン探偵ロボタック"
+      ]
     },
     {
       "id": "XG3-097",
@@ -4056,7 +5338,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "ビーロボカブタック"
+      ]
     },
     {
       "id": "XG3-098",
@@ -4065,7 +5350,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "テツワン探偵ロボタック"
+      ]
     },
     {
       "id": "XG3-099",
@@ -4074,7 +5362,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "テツワン探偵ロボタック"
+      ]
     },
     {
       "id": "XG3-100",
@@ -4083,7 +5374,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "イナズマン"
+      ]
     },
     {
       "id": "XG3-101",
@@ -4092,7 +5386,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "イナズマン"
+      ]
     },
     {
       "id": "XG3-102",
@@ -4101,7 +5398,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "イナズマン"
+      ]
     },
     {
       "id": "XG3-103",
@@ -4110,7 +5410,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "イナズマン"
+      ]
     },
     {
       "id": "XG4-001",
@@ -4119,7 +5422,10 @@
       "category": "DA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "秘密戦隊ゴレンジャー"
+      ]
     },
     {
       "id": "XG4-002",
@@ -4128,7 +5434,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "秘密戦隊ゴレンジャー"
+      ]
     },
     {
       "id": "XG4-003",
@@ -4137,7 +5446,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "激走戦隊カーレンジャー"
+      ]
     },
     {
       "id": "XG4-004",
@@ -4146,7 +5458,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "激走戦隊カーレンジャー"
+      ]
     },
     {
       "id": "XG4-005",
@@ -4155,7 +5470,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "激走戦隊カーレンジャー"
+      ]
     },
     {
       "id": "XG4-006",
@@ -4164,7 +5482,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "恐竜戦隊ジュウレンジャー"
+      ]
     },
     {
       "id": "XG4-007",
@@ -4173,7 +5494,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "恐竜戦隊ジュウレンジャー"
+      ]
     },
     {
       "id": "XG4-008",
@@ -4182,7 +5506,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "電磁戦隊メガレンジャー"
+      ]
     },
     {
       "id": "XG4-009",
@@ -4191,7 +5518,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "電磁戦隊メガレンジャー"
+      ]
     },
     {
       "id": "XG4-010",
@@ -4203,7 +5533,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG4-011",
@@ -4215,7 +5548,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG4-012",
@@ -4227,7 +5563,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG4-013",
@@ -4239,7 +5578,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG4-014",
@@ -4251,7 +5593,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG4-015",
@@ -4260,7 +5605,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG4-016",
@@ -4269,7 +5617,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "未来戦隊タイムレンジャー"
+      ]
     },
     {
       "id": "XG4-017",
@@ -4278,7 +5629,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "百獣戦隊ガオレンジャー"
+      ]
     },
     {
       "id": "XG4-018",
@@ -4287,7 +5641,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "百獣戦隊ガオレンジャー"
+      ]
     },
     {
       "id": "XG4-019",
@@ -4296,7 +5653,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "忍風戦隊ハリケンジャー"
+      ]
     },
     {
       "id": "XG4-020",
@@ -4305,7 +5665,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "忍風戦隊ハリケンジャー"
+      ]
     },
     {
       "id": "XG4-021",
@@ -4314,7 +5677,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "忍風戦隊ハリケンジャー"
+      ]
     },
     {
       "id": "XG4-022",
@@ -4323,7 +5689,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "忍風戦隊ハリケンジャー"
+      ]
     },
     {
       "id": "XG4-023",
@@ -4332,7 +5701,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "忍風戦隊ハリケンジャー"
+      ]
     },
     {
       "id": "XG4-024",
@@ -4341,7 +5713,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XG4-025",
@@ -4350,7 +5725,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XG4-026",
@@ -4359,7 +5737,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "魔法戦隊マジレンジャー"
+      ]
     },
     {
       "id": "XG4-027",
@@ -4368,7 +5749,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "魔法戦隊マジレンジャー"
+      ]
     },
     {
       "id": "XG4-028",
@@ -4377,7 +5761,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XG4-029",
@@ -4389,7 +5776,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XG4-030",
@@ -4401,7 +5791,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XG4-031",
@@ -4410,7 +5803,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "炎神戦隊ゴーオンジャー"
+      ]
     },
     {
       "id": "XG4-032",
@@ -4419,7 +5815,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "侍戦隊シンケンジャーVSゴーオンジャー 銀幕BANG!!"
+      ]
     },
     {
       "id": "XG4-033",
@@ -4428,7 +5827,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "侍戦隊シンケンジャーVSゴーオンジャー 銀幕BANG!!"
+      ]
     },
     {
       "id": "XG4-034",
@@ -4437,7 +5839,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG4-035",
@@ -4449,7 +5854,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "侍戦隊シンケンジャーVSゴーオンジャー 銀幕BANG!!"
+      ]
     },
     {
       "id": "XG4-036",
@@ -4458,7 +5866,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG4-037",
@@ -4467,7 +5878,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG4-038",
@@ -4476,7 +5890,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG4-039",
@@ -4485,7 +5902,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "11+"
+      "powerCost": "11+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG4-040",
@@ -4497,7 +5917,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG4-041",
@@ -4509,7 +5932,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG4-042",
@@ -4521,7 +5947,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG4-043",
@@ -4533,7 +5962,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG4-044",
@@ -4545,7 +5977,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG4-045",
@@ -4557,7 +5992,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG4-046",
@@ -4566,7 +6004,10 @@
       "category": "DA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG4-047",
@@ -4575,7 +6016,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "侍戦隊シンケンジャーVSゴーオンジャー 銀幕BANG!!"
+      ]
     },
     {
       "id": "XG4-048",
@@ -4584,7 +6028,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "侍戦隊シンケンジャーVSゴーオンジャー 銀幕BANG!!"
+      ]
     },
     {
       "id": "XG4-049",
@@ -4593,7 +6040,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーBLACK RX"
+      ]
     },
     {
       "id": "XG4-050",
@@ -4602,7 +6052,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーBLACK RX"
+      ]
     },
     {
       "id": "XG4-051",
@@ -4611,7 +6064,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダーBLACK RX"
+      ]
     },
     {
       "id": "XG4-052",
@@ -4620,7 +6076,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 7
+      "powerCost": 7,
+      "works": [
+        "仮面ライダークウガ"
+      ]
     },
     {
       "id": "XG4-053",
@@ -4629,7 +6088,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーアギト"
+      ]
     },
     {
       "id": "XG4-054",
@@ -4638,7 +6100,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG4-055",
@@ -4647,7 +6112,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "XG4-056",
@@ -4656,7 +6124,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "XG4-057",
@@ -4665,7 +6136,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 7
+      "powerCost": 7,
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "XG4-058",
@@ -4674,7 +6148,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー555"
+      ]
     },
     {
       "id": "XG4-059",
@@ -4683,7 +6160,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダー555"
+      ]
     },
     {
       "id": "XG4-060",
@@ -4692,7 +6172,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダー555"
+      ]
     },
     {
       "id": "XG4-061",
@@ -4701,7 +6184,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG4-062",
@@ -4710,7 +6196,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG4-063",
@@ -4719,7 +6208,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダー×仮面ライダーW&ディケイドMOVIE大戦2010"
+      ]
     },
     {
       "id": "XG4-064",
@@ -4728,7 +6220,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG4-065",
@@ -4740,7 +6235,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG4-066",
@@ -4752,7 +6250,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG4-067",
@@ -4761,7 +6262,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG4-068",
@@ -4773,7 +6277,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG4-069",
@@ -4782,7 +6289,10 @@
       "category": "DA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG4-070",
@@ -4791,7 +6301,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG4-071",
@@ -4800,7 +6313,10 @@
       "category": "DA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG4-072",
@@ -4809,7 +6325,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG4-073",
@@ -4818,7 +6337,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XG4-074",
@@ -4827,7 +6349,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XG4-075",
@@ -4836,7 +6361,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG4-076",
@@ -4845,7 +6373,10 @@
       "category": "DA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG4-077",
@@ -4854,7 +6385,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XG4-078",
@@ -4863,7 +6397,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XG4-079",
@@ -4872,7 +6409,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XG4-080",
@@ -4881,7 +6421,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XG4-081",
@@ -4890,7 +6433,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XG4-082",
@@ -4899,7 +6445,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XG4-083",
@@ -4908,7 +6457,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XG4-084",
@@ -4917,7 +6469,10 @@
       "category": "DA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "劇場版 さらば仮面ライダー電王 ファイナル・カウントダウン"
+      ]
     },
     {
       "id": "XG4-085",
@@ -4926,7 +6481,10 @@
       "category": "DA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "劇場版 さらば仮面ライダー電王 ファイナル・カウントダウン"
+      ]
     },
     {
       "id": "XG4-086",
@@ -4935,7 +6493,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XG4-087",
@@ -4944,7 +6505,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XG4-088",
@@ -4953,7 +6517,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー×仮面ライダーW&ディケイドMOVIE大戦2010"
+      ]
     },
     {
       "id": "XG4-089",
@@ -4962,7 +6529,10 @@
       "category": "DA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー×仮面ライダーW&ディケイドMOVIE大戦2010"
+      ]
     },
     {
       "id": "XG4-090",
@@ -4971,7 +6541,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "特捜ロボ ジャンパーソン"
+      ]
     },
     {
       "id": "XG4-091",
@@ -4980,7 +6553,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "特捜ロボ ジャンパーソン"
+      ]
     },
     {
       "id": "XG4-092",
@@ -4989,7 +6565,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "特捜ロボ ジャンパーソン"
+      ]
     },
     {
       "id": "XG4-093",
@@ -4998,7 +6577,10 @@
       "category": "DA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "特捜ロボ ジャンパーソン"
+      ]
     },
     {
       "id": "XG4-094",
@@ -5007,7 +6589,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "宇宙刑事シャイダー"
+      ]
     },
     {
       "id": "XG4-095",
@@ -5016,7 +6601,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "宇宙刑事シャイダー"
+      ]
     },
     {
       "id": "XG4-096",
@@ -5025,7 +6613,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "宇宙刑事シャイダー"
+      ]
     },
     {
       "id": "XG4-097",
@@ -5034,7 +6625,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "時空戦士スピルバン"
+      ]
     },
     {
       "id": "XG4-098",
@@ -5043,7 +6637,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "時空戦士スピルバン"
+      ]
     },
     {
       "id": "XG4-099",
@@ -5052,7 +6649,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "時空戦士スピルバン"
+      ]
     },
     {
       "id": "XG4-100",
@@ -5061,7 +6661,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "兄弟拳バイクロッサー"
+      ]
     },
     {
       "id": "XG4-101",
@@ -5070,7 +6673,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "兄弟拳バイクロッサー"
+      ]
     },
     {
       "id": "XG4-102",
@@ -5079,7 +6685,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "兄弟拳バイクロッサー"
+      ]
     },
     {
       "id": "XG5-001",
@@ -5088,7 +6697,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "大戦隊ゴーグルファイブ"
+      ]
     },
     {
       "id": "XG5-002",
@@ -5097,7 +6709,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "大戦隊ゴーグルファイブ"
+      ]
     },
     {
       "id": "XG5-003",
@@ -5106,7 +6721,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "大戦隊ゴーグルファイブ"
+      ]
     },
     {
       "id": "XG5-004",
@@ -5115,7 +6733,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "大戦隊ゴーグルファイブ"
+      ]
     },
     {
       "id": "XG5-005",
@@ -5124,7 +6745,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "大戦隊ゴーグルファイブ"
+      ]
     },
     {
       "id": "XG5-006",
@@ -5133,7 +6757,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "大戦隊ゴーグルファイブ"
+      ]
     },
     {
       "id": "XG5-007",
@@ -5142,7 +6769,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "大戦隊ゴーグルファイブ"
+      ]
     },
     {
       "id": "XG5-008",
@@ -5151,7 +6781,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "大戦隊ゴーグルファイブ"
+      ]
     },
     {
       "id": "XG5-009",
@@ -5160,7 +6793,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "大戦隊ゴーグルファイブ"
+      ]
     },
     {
       "id": "XG5-010",
@@ -5169,7 +6805,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "恐竜戦隊ジュウレンジャー"
+      ]
     },
     {
       "id": "XG5-011",
@@ -5178,7 +6817,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "救急戦隊ゴーゴーファイブ"
+      ]
     },
     {
       "id": "XG5-012",
@@ -5187,7 +6829,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "救急戦隊ゴーゴーファイブ"
+      ]
     },
     {
       "id": "XG5-013",
@@ -5196,7 +6841,10 @@
       "category": "DA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "救急戦隊ゴーゴーファイブ"
+      ]
     },
     {
       "id": "XG5-014",
@@ -5205,7 +6853,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "救急戦隊ゴーゴーファイブ"
+      ]
     },
     {
       "id": "XG5-015",
@@ -5214,7 +6865,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG5-016",
@@ -5223,7 +6877,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XG5-017",
@@ -5232,7 +6889,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "魔法戦隊マジレンジャー"
+      ]
     },
     {
       "id": "XG5-018",
@@ -5241,7 +6901,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XG5-019",
@@ -5250,7 +6913,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XG5-020",
@@ -5259,7 +6925,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XG5-021",
@@ -5268,7 +6937,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XG5-022",
@@ -5277,7 +6949,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XG5-023",
@@ -5286,7 +6961,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XG5-024",
@@ -5295,7 +6973,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XG5-025",
@@ -5304,7 +6985,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XG5-026",
@@ -5313,7 +6997,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XG5-027",
@@ -5322,7 +7009,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XG5-028",
@@ -5334,7 +7024,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "轟轟戦隊ボウケンジャー VS スーパー戦隊"
+      ]
     },
     {
       "id": "XG5-029",
@@ -5346,7 +7039,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XG5-030",
@@ -5358,7 +7054,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XG5-031",
@@ -5370,7 +7069,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XG5-032",
@@ -5382,7 +7084,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "2+"
+      "powerCost": "2+",
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XG5-033",
@@ -5391,7 +7096,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG5-034",
@@ -5400,7 +7108,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG5-035",
@@ -5409,7 +7120,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG5-036",
@@ -5418,7 +7132,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG5-037",
@@ -5430,7 +7147,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG5-038",
@@ -5442,7 +7162,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG5-039",
@@ -5454,7 +7177,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG5-040",
@@ -5466,7 +7192,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG5-041",
@@ -5478,7 +7207,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG5-042",
@@ -5490,7 +7222,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG5-043",
@@ -5502,7 +7237,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG5-044",
@@ -5514,7 +7252,10 @@
       ],
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG5-045",
@@ -5526,7 +7267,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG5-046",
@@ -5535,7 +7279,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG5-047",
@@ -5544,7 +7291,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 7
+      "powerCost": 7,
+      "works": [
+        "炎神戦隊ゴーオンジャー"
+      ]
     },
     {
       "id": "XG5-048",
@@ -5553,7 +7303,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーX"
+      ]
     },
     {
       "id": "XG5-049",
@@ -5562,7 +7315,10 @@
       "category": "DA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "仮面ライダーX"
+      ]
     },
     {
       "id": "XG5-050",
@@ -5571,7 +7327,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー響鬼"
+      ]
     },
     {
       "id": "XG5-051",
@@ -5580,7 +7339,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 7
+      "powerCost": 7,
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "XG5-052",
@@ -5589,7 +7351,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー電王"
+      ]
     },
     {
       "id": "XG5-053",
@@ -5598,7 +7363,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーキバ"
+      ]
     },
     {
       "id": "XG5-054",
@@ -5607,7 +7375,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG5-055",
@@ -5616,7 +7387,10 @@
       "category": "WB",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG5-056",
@@ -5625,7 +7399,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG5-057",
@@ -5634,7 +7411,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG5-058",
@@ -5643,7 +7423,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG5-059",
@@ -5655,7 +7438,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG5-060",
@@ -5667,7 +7453,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG5-061",
@@ -5676,7 +7465,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG5-062",
@@ -5685,7 +7477,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG5-063",
@@ -5694,7 +7489,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG5-064",
@@ -5703,7 +7501,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "XG5-065",
@@ -5712,7 +7513,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 8
+      "powerCost": 8,
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "XG5-066",
@@ -5721,7 +7525,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー龍騎スペシャル [13 RIDERS]"
+      ]
     },
     {
       "id": "XG5-067",
@@ -5730,7 +7537,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "XG5-068",
@@ -5739,7 +7549,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 7
+      "powerCost": 7,
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "XG5-069",
@@ -5748,7 +7561,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダー響鬼"
+      ]
     },
     {
       "id": "XG5-070",
@@ -5757,7 +7573,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダー響鬼"
+      ]
     },
     {
       "id": "XG5-071",
@@ -5766,7 +7585,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー響鬼"
+      ]
     },
     {
       "id": "XG5-072",
@@ -5775,7 +7597,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー響鬼"
+      ]
     },
     {
       "id": "XG5-073",
@@ -5784,7 +7609,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー電王"
+      ]
     },
     {
       "id": "XG5-074",
@@ -5793,7 +7621,10 @@
       "category": "MA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーキバ"
+      ]
     },
     {
       "id": "XG5-075",
@@ -5802,7 +7633,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーキバ 魔界城の王"
+      ]
     },
     {
       "id": "XG5-076",
@@ -5811,7 +7645,10 @@
       "category": "ET",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーキバ 魔界城の王"
+      ]
     },
     {
       "id": "XG5-077",
@@ -5820,7 +7657,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー×仮面ライダーW&ディケイドMOVIE大戦2010"
+      ]
     },
     {
       "id": "XG5-078",
@@ -5829,7 +7669,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG5-079",
@@ -5838,7 +7681,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG5-080",
@@ -5847,7 +7693,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG5-081",
@@ -5856,7 +7705,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG5-082",
@@ -5865,7 +7717,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG5-083",
@@ -5874,7 +7729,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG5-084",
@@ -5886,7 +7744,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG5-085",
@@ -5895,7 +7756,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "時空戦士スピルバン"
+      ]
     },
     {
       "id": "XG5-086",
@@ -5904,7 +7768,10 @@
       "category": "OT",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "時空戦士スピルバン"
+      ]
     },
     {
       "id": "XG5-087",
@@ -5913,7 +7780,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "時空戦士スピルバン"
+      ]
     },
     {
       "id": "XG5-088",
@@ -5922,7 +7792,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "テツワン探偵ロボタック"
+      ]
     },
     {
       "id": "XG5-089",
@@ -5931,7 +7804,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "テツワン探偵ロボタック"
+      ]
     },
     {
       "id": "XG5-090",
@@ -5940,7 +7816,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "ビーロボカブタック"
+      ]
     },
     {
       "id": "XG5-091",
@@ -5949,7 +7828,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "キカイダー01"
+      ]
     },
     {
       "id": "XG5-092",
@@ -5961,7 +7843,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "キカイダー01"
+      ]
     },
     {
       "id": "XG5-093",
@@ -5970,7 +7855,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "キカイダー01"
+      ]
     },
     {
       "id": "XG5-094",
@@ -5979,7 +7867,10 @@
       "category": "DA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "キカイダー01"
+      ]
     },
     {
       "id": "XG5-095",
@@ -5988,7 +7879,10 @@
       "category": "DA",
       "rarity": "NR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "キカイダー01"
+      ]
     },
     {
       "id": "XG5-096",
@@ -5997,7 +7891,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "キカイダー01"
+      ]
     },
     {
       "id": "XG6-001",
@@ -6006,7 +7903,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "百獣戦隊ガオレンジャー 火の山、吠える"
+      ]
     },
     {
       "id": "XG6-002",
@@ -6015,7 +7915,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 8
+      "powerCost": 8,
+      "works": [
+        "忍風戦隊ハリケンジャー シュシュッとTHE MOVIE"
+      ]
     },
     {
       "id": "XG6-003",
@@ -6024,7 +7927,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7+"
+      "powerCost": "7+",
+      "works": [
+        "爆竜戦隊アバレンジャー DELUXE アバレサマーはキンキン中!"
+      ]
     },
     {
       "id": "XG6-004",
@@ -6033,7 +7939,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 8
+      "powerCost": 8,
+      "works": [
+        "特捜戦隊デカレンジャー THE MOVIE フルブラスト・アクション"
+      ]
     },
     {
       "id": "XG6-005",
@@ -6042,7 +7951,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "魔法戦隊マジレンジャー THE MOVIE インフェルシアの花嫁"
+      ]
     },
     {
       "id": "XG6-006",
@@ -6051,7 +7963,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "轟轟戦隊ボウケンジャー THE MOVIE 最強のプレシャス"
+      ]
     },
     {
       "id": "XG6-007",
@@ -6063,7 +7978,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "電影版 獣拳戦隊ゲキレンジャー ネイネイ!ホウホウ!香港大決戦"
+      ]
     },
     {
       "id": "XG6-008",
@@ -6072,7 +7990,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "炎神戦隊ゴーオンジャー BUNBUN!BANBAN!劇場BANG!!"
+      ]
     },
     {
       "id": "XG6-009",
@@ -6081,7 +8002,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "侍戦隊シンケンジャー銀幕版 天下分け目の戦"
+      ]
     },
     {
       "id": "XG6-010",
@@ -6090,7 +8014,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "超新星フラッシュマン"
+      ]
     },
     {
       "id": "XG6-011",
@@ -6099,7 +8026,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "超新星フラッシュマン"
+      ]
     },
     {
       "id": "XG6-012",
@@ -6108,7 +8038,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "超新星フラッシュマン"
+      ]
     },
     {
       "id": "XG6-013",
@@ -6117,7 +8050,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "超新星フラッシュマン"
+      ]
     },
     {
       "id": "XG6-014",
@@ -6126,7 +8062,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "超新星フラッシュマン"
+      ]
     },
     {
       "id": "XG6-015",
@@ -6135,7 +8074,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG6-016",
@@ -6144,7 +8086,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG6-017",
@@ -6153,7 +8098,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 8
+      "powerCost": 8,
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG6-018",
@@ -6162,7 +8110,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "爆竜戦隊アバレンジャー DELUXE アバレサマーはキンキン中!"
+      ]
     },
     {
       "id": "XG6-019",
@@ -6171,7 +8122,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XG6-020",
@@ -6180,7 +8134,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "10+"
+      "powerCost": "10+",
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XG6-021",
@@ -6189,7 +8146,10 @@
       "category": "DA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "電影版 獣拳戦隊ゲキレンジャー ネイネイ!ホウホウ!香港大決戦"
+      ]
     },
     {
       "id": "XG6-022",
@@ -6198,7 +8158,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "2+"
+      "powerCost": "2+",
+      "works": [
+        "電影版 獣拳戦隊ゲキレンジャー ネイネイ!ホウホウ!香港大決戦"
+      ]
     },
     {
       "id": "XG6-023",
@@ -6207,7 +8170,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG6-024",
@@ -6216,7 +8182,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG6-025",
@@ -6225,7 +8194,10 @@
       "category": "MA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG6-026",
@@ -6234,7 +8206,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG6-027",
@@ -6243,7 +8218,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG6-028",
@@ -6252,7 +8230,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG6-029",
@@ -6261,7 +8242,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー（新）"
+      ]
     },
     {
       "id": "XG6-030",
@@ -6270,7 +8254,10 @@
       "category": "DA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダー（新）"
+      ]
     },
     {
       "id": "XG6-031",
@@ -6279,7 +8266,10 @@
       "category": "DA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG6-032",
@@ -6288,7 +8278,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "14-"
+      "powerCost": "14-",
+      "works": [
+        "仮面ライダー剣 MISSING ACE"
+      ]
     },
     {
       "id": "XG6-033",
@@ -6297,7 +8290,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー響鬼と7人の戦鬼"
+      ]
     },
     {
       "id": "XG6-034",
@@ -6306,7 +8302,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー響鬼と7人の戦鬼"
+      ]
     },
     {
       "id": "XG6-035",
@@ -6315,7 +8314,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG6-036",
@@ -6324,7 +8326,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG6-037",
@@ -6333,7 +8338,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG6-038",
@@ -6342,7 +8350,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG6-039",
@@ -6351,7 +8362,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG6-040",
@@ -6360,7 +8374,10 @@
       "category": "DA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーW FOREVER AtoZ/運命のガイアメモリ"
+      ]
     },
     {
       "id": "XG6-041",
@@ -6369,7 +8386,10 @@
       "category": "DA",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーW FOREVER AtoZ/運命のガイアメモリ"
+      ]
     },
     {
       "id": "XG6-042",
@@ -6378,7 +8398,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "超・電王トリロジー"
+      ]
     },
     {
       "id": "XG6-043",
@@ -6387,7 +8410,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "0+"
+      "powerCost": "0+",
+      "works": [
+        "超・電王トリロジー"
+      ]
     },
     {
       "id": "XG6-044",
@@ -6396,7 +8422,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "超・電王トリロジー"
+      ]
     },
     {
       "id": "XG6-045",
@@ -6405,7 +8434,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "超・電王トリロジー"
+      ]
     },
     {
       "id": "XG6-046",
@@ -6414,7 +8446,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 8
+      "powerCost": 8,
+      "works": [
+        "超・電王トリロジー"
+      ]
     },
     {
       "id": "XG6-047",
@@ -6426,7 +8461,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 6
+      "powerCost": 6,
+      "works": [
+        "仮面ライダーアギト PROJECT G4"
+      ]
     },
     {
       "id": "XG6-048",
@@ -6438,7 +8476,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー龍騎 EPISODE FINAL"
+      ]
     },
     {
       "id": "XG6-049",
@@ -6450,7 +8491,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー555 パラダイス・ロスト"
+      ]
     },
     {
       "id": "XG6-050",
@@ -6462,7 +8506,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダー剣 MISSING ACE"
+      ]
     },
     {
       "id": "XG6-051",
@@ -6474,7 +8521,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダー響鬼と7人の戦鬼"
+      ]
     },
     {
       "id": "XG6-052",
@@ -6486,7 +8536,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 7
+      "powerCost": 7,
+      "works": [
+        "仮面ライダーカブト GOD SPEED LOVE"
+      ]
     },
     {
       "id": "XG6-053",
@@ -6498,7 +8551,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーキバ 魔界城の王"
+      ]
     },
     {
       "id": "XG6-054",
@@ -6510,7 +8566,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダー×仮面ライダーW&ディケイドMOVIE大戦2010"
+      ]
     },
     {
       "id": "XG6-055",
@@ -6519,7 +8578,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG6-056",
@@ -6528,7 +8590,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG6-057",
@@ -6537,7 +8602,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG6-058",
@@ -6546,7 +8614,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG6-059",
@@ -6555,7 +8626,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG6-060",
@@ -6567,6 +8641,9 @@
       "powerCost": 1,
       "features": [
         "カンドロイド"
+      ],
+      "works": [
+        "仮面ライダーオーズ/OOO"
       ]
     },
     {
@@ -6576,7 +8653,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG6-062",
@@ -6585,7 +8665,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "大鉄人17"
+      ]
     },
     {
       "id": "XG6-063",
@@ -6597,7 +8680,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 8
+      "powerCost": 8,
+      "works": [
+        "大鉄人17"
+      ]
     },
     {
       "id": "XG6-064",
@@ -6606,7 +8692,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "大鉄人17"
+      ]
     },
     {
       "id": "XG6-065",
@@ -6615,7 +8704,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "大鉄人17"
+      ]
     },
     {
       "id": "XG7-001",
@@ -6624,7 +8716,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "海賊戦隊ゴーカイジャー"
+      ]
     },
     {
       "id": "XG7-002",
@@ -6633,7 +8728,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "海賊戦隊ゴーカイジャー"
+      ]
     },
     {
       "id": "XG7-003",
@@ -6642,7 +8740,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "海賊戦隊ゴーカイジャー"
+      ]
     },
     {
       "id": "XG7-004",
@@ -6651,7 +8752,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "海賊戦隊ゴーカイジャー"
+      ]
     },
     {
       "id": "XG7-005",
@@ -6660,7 +8764,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "海賊戦隊ゴーカイジャー"
+      ]
     },
     {
       "id": "XG7-006",
@@ -6669,7 +8776,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG7-007",
@@ -6678,7 +8788,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "恐竜戦隊ジュウレンジャー"
+      ]
     },
     {
       "id": "XG7-008",
@@ -6690,7 +8803,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "星獣戦隊ギンガマン"
+      ]
     },
     {
       "id": "XG7-009",
@@ -6699,7 +8815,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "未来戦隊タイムレンジャー"
+      ]
     },
     {
       "id": "XG7-010",
@@ -6708,7 +8827,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "百獣戦隊ガオレンジャー"
+      ]
     },
     {
       "id": "XG7-011",
@@ -6717,7 +8839,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "忍風戦隊ハリケンジャー"
+      ]
     },
     {
       "id": "XG7-012",
@@ -6726,7 +8851,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "爆竜戦隊アバレンジャー"
+      ]
     },
     {
       "id": "XG7-013",
@@ -6735,7 +8863,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XG7-014",
@@ -6744,7 +8875,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "魔法戦隊マジレンジャー"
+      ]
     },
     {
       "id": "XG7-015",
@@ -6753,7 +8887,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "轟轟戦隊ボウケンジャー"
+      ]
     },
     {
       "id": "XG7-016",
@@ -6765,7 +8902,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XG7-017",
@@ -6774,7 +8914,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "炎神戦隊ゴーオンジャー"
+      ]
     },
     {
       "id": "XG7-018",
@@ -6783,7 +8926,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG7-019",
@@ -6792,7 +8938,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "2+"
+      "powerCost": "2+",
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG7-020",
@@ -6801,7 +8950,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "1+"
+      "powerCost": "1+",
+      "works": [
+        "忍風戦隊ハリケンジャー"
+      ]
     },
     {
       "id": "XG7-021",
@@ -6810,7 +8962,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XG7-022",
@@ -6819,7 +8974,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "魔法戦隊マジレンジャー"
+      ]
     },
     {
       "id": "XG7-023",
@@ -6831,7 +8989,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XG7-024",
@@ -6843,7 +9004,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "獣拳戦隊ゲキレンジャー"
+      ]
     },
     {
       "id": "XG7-025",
@@ -6852,7 +9016,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "炎神戦隊ゴーオンジャー"
+      ]
     },
     {
       "id": "XG7-026",
@@ -6861,7 +9028,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG7-027",
@@ -6870,7 +9040,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XG7-028",
@@ -6879,7 +9052,10 @@
       "category": "MA",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG7-029",
@@ -6888,7 +9064,10 @@
       "category": "MA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG7-030",
@@ -6900,7 +9079,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XG7-031",
@@ -6909,7 +9091,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー"
+      ]
     },
     {
       "id": "XG7-032",
@@ -6918,7 +9103,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "仮面ライダー"
+      ]
     },
     {
       "id": "XG7-033",
@@ -6927,7 +9115,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "仮面ライダーV3"
+      ]
     },
     {
       "id": "XG7-034",
@@ -6936,7 +9127,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "2+"
+      "powerCost": "2+",
+      "works": [
+        "仮面ライダーストロンガー"
+      ]
     },
     {
       "id": "XG7-035",
@@ -6945,7 +9139,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーストロンガー"
+      ]
     },
     {
       "id": "XG7-036",
@@ -6954,7 +9151,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "仮面ライダー龍騎"
+      ]
     },
     {
       "id": "XG7-037",
@@ -6963,7 +9163,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "仮面ライダー555"
+      ]
     },
     {
       "id": "XG7-038",
@@ -6972,7 +9175,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "0+"
+      "powerCost": "0+",
+      "works": [
+        "仮面ライダー剣"
+      ]
     },
     {
       "id": "XG7-039",
@@ -6981,7 +9187,10 @@
       "category": "OT",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 7
+      "powerCost": 7,
+      "works": [
+        "仮面ライダーカブト"
+      ]
     },
     {
       "id": "XG7-040",
@@ -6990,7 +9199,10 @@
       "category": "OT",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "仮面ライダー電王"
+      ]
     },
     {
       "id": "XG7-041",
@@ -6999,7 +9211,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "仮面ライダーW FOREVER AtoZ/運命のガイアメモリ"
+      ]
     },
     {
       "id": "XG7-042",
@@ -7011,7 +9226,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "1+"
+      "powerCost": "1+",
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG7-043",
@@ -7020,7 +9238,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XG7-044",
@@ -7029,7 +9250,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "2+"
+      "powerCost": "2+",
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XG7-045",
@@ -7038,7 +9262,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダー×仮面ライダーオーズ&ダブルfeat.スカル MOVIE大戦CORE"
+      ]
     },
     {
       "id": "XG7-046",
@@ -7047,7 +9274,10 @@
       "category": "WB",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG7-047",
@@ -7056,7 +9286,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG7-048",
@@ -7065,7 +9298,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG7-049",
@@ -7074,7 +9310,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG7-050",
@@ -7086,7 +9325,10 @@
       ],
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG7-051",
@@ -7095,7 +9337,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG7-052",
@@ -7104,7 +9349,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG7-053",
@@ -7113,7 +9361,10 @@
       "category": "WB",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG7-054",
@@ -7122,7 +9373,10 @@
       "category": "WB",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XG7-055",
@@ -7131,7 +9385,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダーW FOREVER AtoZ/運命のガイアメモリ"
+      ]
     },
     {
       "id": "XG7-056",
@@ -7140,7 +9397,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "仮面ライダーW FOREVER AtoZ/運命のガイアメモリ"
+      ]
     },
     {
       "id": "XG7-057",
@@ -7149,7 +9409,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーW FOREVER AtoZ/運命のガイアメモリ"
+      ]
     },
     {
       "id": "XG7-058",
@@ -7158,7 +9421,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダーW FOREVER AtoZ/運命のガイアメモリ"
+      ]
     },
     {
       "id": "XG7-059",
@@ -7167,7 +9433,10 @@
       "category": "DA",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーW FOREVER AtoZ/運命のガイアメモリ"
+      ]
     },
     {
       "id": "XG7-060",
@@ -7179,7 +9448,10 @@
       ],
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "ビーロボカブタック"
+      ]
     },
     {
       "id": "XG7-061",
@@ -7191,7 +9463,10 @@
       ],
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "ビーロボカブタック"
+      ]
     },
     {
       "id": "XG7-062",
@@ -7200,7 +9475,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 0
+      "powerCost": 0,
+      "works": [
+        "ビーロボカブタック"
+      ]
     },
     {
       "id": "XG7-063",
@@ -7209,7 +9487,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "ビーロボカブタック"
+      ]
     },
     {
       "id": "XG7-064",
@@ -7218,7 +9499,10 @@
       "category": "ET",
       "rarity": "R",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "特捜エクシードラフト"
+      ]
     },
     {
       "id": "XG7-065",
@@ -7227,7 +9511,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "特捜エクシードラフト"
+      ]
     },
     {
       "id": "XG7-066",
@@ -7236,7 +9523,10 @@
       "category": "ET",
       "rarity": "N",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "特捜エクシードラフト"
+      ]
     },
     {
       "id": "XG7-067",
@@ -7245,7 +9535,10 @@
       "category": "ET",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "特捜エクシードラフト"
+      ]
     },
     {
       "id": "XG7-068",
@@ -7254,7 +9547,10 @@
       "category": "OT",
       "rarity": "SR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "宇宙刑事シャイダー"
+      ]
     },
     {
       "id": "XP-001",
@@ -7263,7 +9559,10 @@
       "category": "WB",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "百獣戦隊ガオレンジャー VS スーパー戦隊"
+      ]
     },
     {
       "id": "XP-002",
@@ -7272,7 +9571,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "百獣戦隊ガオレンジャー VS スーパー戦隊"
+      ]
     },
     {
       "id": "XP-003",
@@ -7281,7 +9583,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "魔法戦隊マジレンジャーVSデカレンジャー"
+      ]
     },
     {
       "id": "XP-004",
@@ -7290,7 +9595,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XP-005",
@@ -7299,7 +9607,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XP-006",
@@ -7308,7 +9619,10 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 7
+      "powerCost": 7,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XP-007",
@@ -7317,7 +9631,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "劇場版 さらば仮面ライダー電王 ファイナル・カウントダウン"
+      ]
     },
     {
       "id": "XP-008",
@@ -7326,7 +9643,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "10-"
+      "powerCost": "10-",
+      "works": [
+        "劇場版 超・仮面ライダー電王&ディケイド NEOジェネレーションズ 鬼ヶ島の戦艦"
+      ]
     },
     {
       "id": "XP-009",
@@ -7335,7 +9655,10 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダーディケイド"
+      ]
     },
     {
       "id": "XP-010",
@@ -7344,7 +9667,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XP-011",
@@ -7353,7 +9679,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "特捜戦隊デカレンジャー"
+      ]
     },
     {
       "id": "XP-012",
@@ -7362,7 +9691,10 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XP-013",
@@ -7371,7 +9703,10 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "7-"
+      "powerCost": "7-",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XP-014",
@@ -7380,7 +9715,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "2+"
+      "powerCost": "2+",
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XP-015",
@@ -7395,6 +9733,9 @@
       "powerCost": 6,
       "features": [
         "メカ"
+      ],
+      "works": [
+        "仮面ライダーW"
       ]
     },
     {
@@ -7408,7 +9749,10 @@
       "rushAdditionalCondition": {
         "conditionId": "state_gate",
         "text": "特徴「仮面ライダー」を持つ捨札が自軍と敵軍で合計8枚以上ある"
-      }
+      },
+      "works": [
+        "仮面ライダー×仮面ライダーW&ディケイドMOVIE大戦2010"
+      ]
     },
     {
       "id": "XP-017",
@@ -7420,7 +9764,10 @@
       ],
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー×仮面ライダーW&ディケイドMOVIE大戦2010"
+      ]
     },
     {
       "id": "XP-018",
@@ -7432,7 +9779,10 @@
       ],
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XP-019",
@@ -7441,7 +9791,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 4
+      "powerCost": 4,
+      "works": [
+        "仮面ライダー"
+      ]
     },
     {
       "id": "XP-020",
@@ -7450,7 +9803,10 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 2
+      "powerCost": 2,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XP-021",
@@ -7459,7 +9815,10 @@
       "category": "OT",
       "rarity": "LR",
       "expansion": "wiki_stub",
-      "powerCost": 25
+      "powerCost": 25,
+      "works": [
+        "劇場版 仮面ライダーディケイド オールライダー対大ショッカー"
+      ]
     },
     {
       "id": "XP-022",
@@ -7471,7 +9830,10 @@
       ],
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "天装戦隊ゴセイジャー"
+      ]
     },
     {
       "id": "XP-023",
@@ -7480,7 +9842,10 @@
       "category": "WB",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "恐竜戦隊ジュウレンジャー"
+      ]
     },
     {
       "id": "XP-024",
@@ -7489,7 +9854,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 3
+      "powerCost": 3,
+      "works": [
+        "仮面ライダー"
+      ]
     },
     {
       "id": "XP-025",
@@ -7498,7 +9866,10 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "侍戦隊シンケンジャー"
+      ]
     },
     {
       "id": "XP-026",
@@ -7507,7 +9878,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 1
+      "powerCost": 1,
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XP-027",
@@ -7516,7 +9890,10 @@
       "category": "WB",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "恐竜戦隊ジュウレンジャー"
+      ]
     },
     {
       "id": "XP-028",
@@ -7525,7 +9902,10 @@
       "category": "MA",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "4+"
+      "powerCost": "4+",
+      "works": [
+        "天装戦隊ゴセイジャー エピック ON THE ムービー"
+      ]
     },
     {
       "id": "XP-029",
@@ -7534,7 +9914,10 @@
       "category": "ET",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "5+"
+      "powerCost": "5+",
+      "works": [
+        "仮面ライダーW"
+      ]
     },
     {
       "id": "XP-030",
@@ -7543,7 +9926,10 @@
       "category": "WB",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": 5
+      "powerCost": 5,
+      "works": [
+        "仮面ライダーオーズ/OOO"
+      ]
     },
     {
       "id": "XP-031",
@@ -7555,7 +9941,10 @@
       ],
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "3+"
+      "powerCost": "3+",
+      "works": [
+        "オーズ・電王・オールライダー レッツゴー仮面ライダー"
+      ]
     },
     {
       "id": "XP-032",
@@ -7564,7 +9953,10 @@
       "category": "OT",
       "rarity": "PR",
       "expansion": "wiki_stub",
-      "powerCost": "6+"
+      "powerCost": "6+",
+      "works": [
+        "海賊戦隊ゴーカイジャー"
+      ]
     }
   ]
 }

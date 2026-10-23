@@ -5,7 +5,7 @@
  */
 import { isSameCardIdentity } from "@rangers-strike/cards";
 import type { CardInstance, GameState, PendingEffectChoice, PlayerId } from "../../types/game";
-import { cardCategories, effectiveCommandCategories, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
+import { cardCategories, cardWorks, effectiveCommandCategories, getDefinition, parsePowerCost, unitSizeOf } from "../../core/catalog";
 import { drawOne, opponent } from "../../core/helpers";
 import { countAvailablePower } from "../../core/power";
 import { addTurnRuleModifier, getPlayerModifiers } from "../../core/scopedModifiers";
@@ -419,20 +419,15 @@ registerPromoChoice(
 // 「これ以外の自軍Sユニットを捨札にしてもよい。そうしたとき、自軍山札を見て、捨札にしたユニットと作品名が異なるSユニットのカードを1枚選び
 //  自軍ラッシュエリアに出す（必要パワーと追加条件は満たすこと）。このとき、捨札にしたユニットの作品名が「天装戦隊ゴセイジャー」、
 //  ラッシュしたユニットの作品名が「海賊戦隊ゴーカイジャー」だったなら、敵軍Sユニットを1体選び撃破する。その後、山札をシャッフルする。」
-// （atwiki/page-2457）。カタログに作品名がないので、カード名に「ゴセイ」を含むものをゴセイジャー、「ゴーカイ」を含むものをゴーカイジャーと
-// みなす（両方を含む・どちらも含まないカードは作品名が分からないものとして、作品名が異なる側の判定で除かない）。
+// （atwiki/page-2457）。作品名はカタログの works（atwiki の「作品：」）。「作品名が異なる」は作品名を 1 つも共有しないこと
+// （SX-009 のように 2 作品を持つカードは、どちらかが同じなら異なるとしない）。作品名の分からないカード（works なし）は除かない。
 
 const BATON = "sx009_baton_touch";
 const BATON_PICK = "sx009_baton_touch_pick";
 const BATON_DESTROY = "sx009_baton_touch_destroy";
 
-function workTitle(state: GameState, cardId: string): "gosei" | "gokai" | undefined {
-  const name = getDefinition(state.definitions, cardId)?.name ?? "";
-  const gosei = name.includes("ゴセイ");
-  const gokai = name.includes("ゴーカイ");
-  if (gosei === gokai) return undefined;
-  return gosei ? "gosei" : "gokai";
-}
+const GOSEIGER = "天装戦隊ゴセイジャー";
+const GOKAIGER = "海賊戦隊ゴーカイジャー";
 
 function batonOthers(state: GameState, playerId: PlayerId, selfId: string): string[] {
   return fieldUnits(state, playerId)
@@ -460,18 +455,18 @@ registerPromoChoice(
     const pending = state.pendingEffectChoice!;
     const discarded = fieldUnits(state, playerId).find((c) => c.instanceId === instanceId);
     if (!discarded || !pending.validInstanceIds.includes(instanceId)) return { error: "invalid_target" };
-    const title = workTitle(state, discarded.cardId);
+    const works = cardWorks(state.definitions, discarded.cardId);
     const next = moveFieldUnit(close(state, pending), playerId, instanceId, pending.phasePlayerId, "discard");
     const log = logFor(state, playerId, pending.sourceCardId, `${BATON}:${instanceId}`);
     const ids = next.players[playerId].deck
       .filter((c) => {
         const d = getDefinition(next.definitions, c.cardId);
-        return d?.type === "unit" && unitSizeOf(next.definitions, c) === "S" && (!title || workTitle(next, c.cardId) !== title);
+        return d?.type === "unit" && unitSizeOf(next.definitions, c) === "S" && !cardWorks(next.definitions, c.cardId).some((w) => works.includes(w));
       })
       .map((c) => c.instanceId);
     if (ids.length === 0) return { state: proceed(shuffleDeck(next, playerId), pending), log };
     return {
-      state: openNext(next, pending, { ...pending, effectId: BATON_PICK, validInstanceIds: ids, selectedInstanceIds: [], optional: false, promoMeta: { title: title ?? "" } }),
+      state: openNext(next, pending, { ...pending, effectId: BATON_PICK, validInstanceIds: ids, selectedInstanceIds: [], optional: false, promoMeta: { gosei: works.includes(GOSEIGER) } }),
       log,
     };
   },
@@ -498,7 +493,7 @@ registerPromoChoice(BATON_PICK, (state, playerId, instanceId) => {
   const rushed = onField(next, playerId, card);
   next = shuffleDeck(next, playerId);
   const log = logFor(state, playerId, pending.sourceCardId, `${BATON_PICK}:${instanceId}:${rushed ? "rushed" : "not_rushed"}`);
-  const combo = rushed && pending.promoMeta?.title === "gosei" && workTitle(next, card.cardId) === "gokai";
+  const combo = rushed && pending.promoMeta?.gosei === true && cardWorks(next.definitions, card.cardId).includes(GOKAIGER);
   const targets = combo ? enemySUnits(next, playerId, pending.sourceCardId) : [];
   if (targets.length === 0) return { state: proceed(next, pending), log };
   const ctx = { playerId, phasePlayerId: pending.phasePlayerId, sourceInstanceId: pending.sourceInstanceId };

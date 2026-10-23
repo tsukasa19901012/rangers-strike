@@ -242,6 +242,14 @@ export function cardName(
   return getDefinition(definitions, cardId)?.name ?? cardId;
 }
 
+/** 作品名（カタログの works。atwiki の「作品：」）。2 作品にまたがるカード（SX-009）は 2 つ。分からなければ空。 */
+export function cardWorks(
+  definitions: Record<string, CardDefinition>,
+  cardId: string,
+): readonly string[] {
+  return getDefinition(definitions, cardId)?.works ?? [];
+}
+
 export function hasOperationEffect(
   player: PlayerState,
   effectId: string,
