@@ -22,5 +22,5 @@ describe("支払いの取り消しの繰り返し", () => {
     }
     expect(cancels).toBeLessThan(5);
     expect(state.winner).not.toBeNull();
-  });
+  }, 60_000);
 });

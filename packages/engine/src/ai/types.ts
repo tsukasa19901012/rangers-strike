@@ -25,6 +25,8 @@ export type CpuLevelConfig = {
   valueNetBlend?: number;
   /** 読みの前に相手の手札を山札と混ぜて配り直す（相手の手札を覗かない）。 */
   hideOpponentHand?: boolean;
+  /** 自分のラッシュ・バトルフェイズの決定を、候補ごとにターンの終わりまで指し進めて比べる（1 回の決定で指し進める手の数の上限。0／省略で行わない）。 */
+  turnPlanSteps?: number;
 };
 
 let overrides: Partial<Record<CpuLevel, Partial<CpuLevelConfig>>> = {};
@@ -46,7 +48,9 @@ const LEVEL_CONFIG: Record<CpuLevel, CpuLevelConfig> = {
   3: { enableSearch: true, maxCandidates: 44, maxResponseDepth: 14, searchPly: 1, planSamples: 1, planPhases: ["charge"], planChargeTop: 2, comboOrder: 2, deckGuard: 10, deckAwareCharge: true },
   4: { enableSearch: true, maxCandidates: 56, maxResponseDepth: 20, searchPly: 2, planSamples: 1, planPhases: ["charge"], comboOrder: 2, deckGuard: 10, deckAwareCharge: true },
   // hideOpponentHand: 読みの前に相手の手札を山札と混ぜて配り直し、相手の手札を覗かない（強さは同等、1,104 局で 50.1%）。
-  5: { enableSearch: true, maxCandidates: 64, maxResponseDepth: 28, searchPly: 2, planSamples: 2, planPhases: ["charge"], comboOrder: 2, deckGuard: 10, deckAwareCharge: true, valueNetBlend: 0.5, hideOpponentHand: true },
+  // turnPlanSteps: ラッシュ・バトルフェイズの決定を、候補ごとに自分のターンの終わりまで指し進めて比べる（ターン単位の読み）。
+  // 前の Lv5 に、同デッキ 1,840 試合で 57.4%・違うデッキ 1,104 試合で 55.8%。1 手の平均の思考は約 20 ms → 約 40 ms（2026-10-23）。
+  5: { enableSearch: true, maxCandidates: 64, maxResponseDepth: 28, searchPly: 2, planSamples: 2, planPhases: ["charge"], comboOrder: 2, deckGuard: 10, deckAwareCharge: true, valueNetBlend: 0.5, hideOpponentHand: true, turnPlanSteps: 60 },
 };
 
 export function getCpuLevelConfig(level: CpuLevel): CpuLevelConfig {

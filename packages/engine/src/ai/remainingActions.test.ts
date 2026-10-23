@@ -7,7 +7,8 @@ import { pickCpuAction } from "./index";
 
 /** 同じデッキ同士で Lv5 に最後まで打たせ、手の種類ごとに「合法だった局面の数」と「選んだ数」を数える（scripts/selfplay.ts と同じ進め方）。 */
 function playAndCount(deck: AllStarterDeckId, maxSteps = 4000) {
-  let s: GameState = createStarterGame({ player1Starter: deck, player2Starter: deck });
+  // seed を決めて、毎回同じ対戦にする（決めないと山札の並びが毎回変わり、起動しない対戦を引くことがある）。
+  let s: GameState = createStarterGame({ player1Starter: deck, player2Starter: deck, seed: 1 });
   const legal: Record<string, number> = {};
   const chosen: Record<string, number> = {};
   for (let step = 0; step < maxSteps && !s.winner; step++) {

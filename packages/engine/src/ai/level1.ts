@@ -40,7 +40,7 @@ import {
 } from "./helpers";
 import { planComboEntry } from "./comboOrder";
 import { deckProfile } from "./deckProfile";
-import { dedupeActions, pickBestByRollout, pickBestBySearch, scoreAction, type SearchOptions } from "./simulation";
+import { dedupeActions, pickBestByRollout, pickBestBySearch, pickBestByTurnPlan, scoreAction, type SearchOptions } from "./simulation";
 
 export type PickCpuActionOptions = {
   /** false のとき相手応答シミュレーションをスキップ（再帰回避の内部用）。 */
@@ -66,6 +66,21 @@ export type PickCpuActionOptions = {
   deckGuard?: number;
   /** チャージの先読みで、デッキの中身から決めた方針（パワーの上限・最初のコマンド）を守る。 */
   deckAwareCharge?: boolean;
+  /**
+   * 0 より大きいと、自分のラッシュ・バトルフェイズの決定を、候補ごとにターンの終わりまで指し進めて比べる
+   * （ターン単位の読み。1 回の決定で指し進める手の数の合計の上限）。
+   */
+  turnPlanSteps?: number;
+};
+
+/** ターン単位の読みで、自分の残りの手を指す CPU（Lv2 相当。読みの中なので先読みはしない）。 */
+const TURN_PLAN_POLICY: PickCpuActionOptions = {
+  enableSearch: true,
+  maxCandidates: 28,
+  maxResponseDepth: 10,
+  searchPly: 1,
+  comboOrder: 2,
+  simulationDepth: 1,
 };
 
 function tacticalSearchOptions(
@@ -240,13 +255,43 @@ function pickBestWithRemaining(
   options: SearchOptions | undefined,
   cpuOptions: PickCpuActionOptions,
 ): GameAction | null {
+  return searchWithRemaining(state, playerId, candidates, actions, options, cpuOptions).pick;
+}
+
+/** pickBestWithRemaining の結果と、残りの合法手の中で一番よい手（rest。ターン単位の読みで候補に足す）。 */
+function searchWithRemaining(
+  state: GameState,
+  playerId: PlayerId,
+  candidates: GameAction[],
+  actions: GameAction[],
+  options: SearchOptions | undefined,
+  cpuOptions: PickCpuActionOptions,
+): { pick: GameAction | null; rest: GameAction | null } {
   const best = pickBestBySearch(state, playerId, candidates, options);
   const rest = remainingActions(state, playerId, candidates, actions).filter((a) => !isNoOpForCpu(state, playerId, a, cpuOptions));
-  if (rest.length === 0) return best;
+  if (rest.length === 0) return { pick: best, rest: null };
   const bestRest = pickBestBySearch(state, playerId, rest, options);
-  if (!bestRest) return best;
-  if (!best) return bestRest;
-  return scoreAction(state, playerId, bestRest, options) > scoreAction(state, playerId, best, options) ? bestRest : best;
+  if (!bestRest) return { pick: best, rest: null };
+  if (!best) return { pick: bestRest, rest: bestRest };
+  const pick = scoreAction(state, playerId, bestRest, options) > scoreAction(state, playerId, best, options) ? bestRest : best;
+  return { pick, rest: bestRest };
+}
+
+/**
+ * ターン単位の読み（turnPlanSteps）。いつもの読みの一番よい手を先頭に、残りの合法手の一番よい手、決めた順の候補と並べて読む。
+ */
+function pickByTurnPlan(
+  state: GameState,
+  playerId: PlayerId,
+  candidates: GameAction[],
+  actions: GameAction[],
+  options: SearchOptions | undefined,
+  cpuOptions: PickCpuActionOptions,
+  steps: number,
+): GameAction | null {
+  const { pick, rest } = searchWithRemaining(state, playerId, candidates, actions, options, cpuOptions);
+  const ordered = [pick, rest, ...candidates].filter((a): a is GameAction => a !== null);
+  return pickBestByTurnPlan(state, playerId, ordered, TURN_PLAN_POLICY, steps) ?? pick;
 }
 
 function collectRushCandidates(
@@ -395,6 +440,7 @@ function pickCpuActionInner(
   const enableSearch = options.enableSearch ?? (options.maxCandidates ?? 0) > 0;
   // 読みの中（simulationDepth が入る）では行わない。
   const planning = options.simulationDepth ? 0 : (options.planSamples ?? 0);
+  const turnPlan = options.simulationDepth ? 0 : (options.turnPlanSteps ?? 0);
   const plans = (kind: "charge" | "rush" | "entry") => (planning > 0 && (!options.planPhases || options.planPhases.includes(kind)) ? planning : 0);
   const simShallow = (): SearchOptions | undefined => tacticalSearchOptions(state, options);
   const simTactical = (actions: GameAction[]): SearchOptions | undefined =>
@@ -543,6 +589,7 @@ function pickCpuActionInner(
         ...actions.filter((a) => a.type === "pass_battle_entry"),
       ];
       const searched = pickBestBySearch(state, playerId, candidates, simTactical(actions));
+      if (turnPlan > 0) return pickBestByTurnPlan(state, playerId, searched ? [searched, ...candidates] : candidates, TURN_PLAN_POLICY, turnPlan) ?? searched;
       if (searched) return searched;
     }
 
@@ -621,6 +668,7 @@ function pickCpuActionInner(
           candidates = candidates.filter((a) => a.type !== "end_phase");
         }
         candidates = dedupeActions(candidates);
+        if (turnPlan > 0) return pickByTurnPlan(state, playerId, candidates, actions, simShallow(), options, turnPlan);
         const best = pickBestWithRemaining(state, playerId, candidates, actions, simShallow(), options);
         if (best) return best;
       }
@@ -680,6 +728,7 @@ function pickCpuActionInner(
         if (hasRushUnits || hasCombat) {
           candidates = candidates.filter((a) => a.type !== "end_phase");
         }
+        if (turnPlan > 0) return pickByTurnPlan(state, playerId, candidates, actions, simTactical(actions), options, turnPlan);
         const best = pickBestWithRemaining(state, playerId, candidates, actions, simTactical(actions), options);
         if (best) return best;
       }
