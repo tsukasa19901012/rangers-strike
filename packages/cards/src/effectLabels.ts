@@ -150,6 +150,8 @@ export const EFFECT_LABELS: Record<string, string> = {
   super_moa_cannon: "超力モアキャノン",
   battle_entry_hand_discard: "手札捨札",
   dolphin_arrow: "ドルフィンアロー",
+  // XG2-055 変身一発（atwiki/page-1764 Q3）
+  xg2_055_turn_end_order: "ターン終了時の処理順（選ぶとユニットの置き換えを先に、選ばないと変身一発のコマンド送りを先に処理）",
 };
 
 export function getEffectLabel(effectId: string): string {

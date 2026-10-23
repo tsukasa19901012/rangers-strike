@@ -415,10 +415,11 @@ export function resolveTurnEndingEffectsImpl(
     if (turnEndBlocked(nextState)) return save(nextState);
   }
   // XG2-042【ファイナルアタックライド】・XG2-055 変身一発で出したユニット（rules/xg2/xg2cEffects.ts）。
+  // 処理順の選択（XG2-055 Q3）で止まったときは、解決後にもう一度呼ぶ（移動を済ませた後の呼び出しは何もしない）。
   if (!progress.xg2Done) {
-    progress = { ...progress, xg2Done: true };
     nextState = applyXg2TurnEnd(nextState, endingPlayerId);
     if (turnEndBlocked(nextState)) return save(nextState);
+    progress = { ...progress, xg2Done: true };
   }
   // クロスギャザー ザ・Wインパクト XG3 の「自分がターンを終えるとき」（XG3-003・XG3-045・XG3-095 の置き換え等。rules/xg3/xg3Effects.ts）。
   if (!progress.xg3Queue) progress = { ...progress, xg3Queue: collectXg3TurnEndQueue(nextState, endingPlayerId) };

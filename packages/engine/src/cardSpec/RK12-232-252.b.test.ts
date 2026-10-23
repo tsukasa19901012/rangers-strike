@@ -584,7 +584,12 @@ describe("RK-245 仮面ライダーキバ", () => {
     expect(zoneOf(s, "player1", "RK-245:kb")).toBe("rush");
     expect(cardIn(s, "player1", "RK-245:kb")?.commandHeld).toBe(true);
   });
-  it.todo(
-    "RK-245: 公式Q&A — 自軍 XG5-025 ボウケンブルーAT があるとき相手がラッシュしたキバはホールド状態で出るので【上空からの牽制】の対象外（出典: atwiki/page-876 Q3）— XG5-025【上空からの牽制】が未実装（本範囲外のカード。DSL がない）",
-  );
+  it("RK-245: 公式Q&A — 敵軍に XG5-025 ボウケンブルーAT があっても、これは最初からホールド状態でラッシュされる（【上空からの牽制】の対象外）（出典: atwiki/page-876 Q3「ホールド状態になります」）", () => {
+    const s0 = st({ phase: "rush", activePlayer: "player2", player1: { deck: deckCards(5), rush: [inst("XG5-025", "at")] }, player2: { deck: deckCards(5, "e"), hand: [inst("RK-245", "kb")], command: releasedCat("MA", 1), power: powerCards(4) } });
+    const r = rushFromHand(s0, "player2", "RK-245:kb");
+    expect(r.ok, r.error).toBe(true);
+    const s = resolveAll(r.state);
+    expect(zoneOf(s, "player2", "RK-245:kb")).toBe("rush");
+    expect(cardIn(s, "player2", "RK-245:kb")?.commandHeld).toBe(true);
+  });
 });

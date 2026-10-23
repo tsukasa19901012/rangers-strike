@@ -3,7 +3,7 @@
  *
  * 出典（優先順、docs/rules/README.md §1.2）:
  *  1. docs/rules/08-errata.md（本範囲のエラッタなし）。grnrngr の公式FAQ を「XP-」とカード名で検索: 本範囲のカードの項はない。
- *     atwiki に転載された公式 Q&A: XP-017 Q1（atwiki/page-1981。RK-160 側の確認は cardSpec/RK8-148-168.b の it.todo）・XP-018 Q1（atwiki/page-2130）
+ *     atwiki に転載された公式 Q&A: XP-017 Q1（atwiki/page-1981。XG2-055・RK-160 の両方をここで確認）・XP-018 Q1（atwiki/page-2130）
  *  2. atwiki カードページ（docs/wiki/sources/atwiki/page-N-XP-NNN.md。ライブ写し pages/N.txt はなし）
  *  3. docs/rules/*.md の一般ルール（R-CAT-02 マルチカテゴリ・R-KW-RC-01・R-KW-MORPH-03・R-KW-REG・R-KW-PERM-01）・atwiki のカード評価
  * 期待値は出典に従う。エンジンが誤っている箇所は it.fails（「既知の不具合: CARD-XP-NNN …」）で残す。
@@ -130,7 +130,25 @@ describe("XP-017 仮面ライダーディケイド激情態", () => {
     expect(choiceIds(r.state)).toContain("XP-017:gj");
     expect(zoneOf(resolveAll(pick(r.state, "XP-017:gj")), "player1", "XP-017:gj")).toBe("rush");
   });
-  it.todo("XP-017: 公式Q&A — RK-160 シザーズジャガーなど「手札から選んで出す」効果ではラッシュできる（出典: atwiki/page-1981 Q1）— RK-160 側は cardSpec/RK8-148-168.b の it.todo と同じ");
+  it("XP-017: 公式Q&A — RK-160 シザーズジャガー【ナノロボット散布実験】の「手札から1枚選び、ラッシュエリアに出す」でもラッシュできる（必要パワー4の敵軍 S ユニットのラッシュに反応。XP-017 は DA を持つ）（出典: atwiki/page-1981 Q1「はい、できます」）", () => {
+    const E4 = sUnit("SPEC-E4", { category: "WB", bp: 1000, powerCost: 4 });
+    const s0 = st(
+      {
+        phase: "rush",
+        activePlayer: "player2",
+        player1: { rush: [inst("RK-160", "sj")], hand: [inst("XP-017", "gj")], command: releasedCat("DA", 1), deck: deckCards(3) },
+        player2: { hand: [inst("SPEC-E4", "er")], command: releasedCat("WB", 1), power: powerCards(4, "ep"), deck: deckCards(3, "e") },
+      },
+      [E4],
+    );
+    const r = rushFromHand(s0, "player2", "SPEC-E4:er");
+    expect(r.ok, r.error).toBe(true);
+    expectChoiceFrom(r.state, "player1", "RK-160");
+    expect(choiceIds(r.state)).toContain("XP-017:gj");
+    const s = resolveAll(pick(r.state, "XP-017:gj"));
+    expect(zoneOf(s, "player1", "XP-017:gj")).toBe("rush");
+    expect(zoneOf(s, "player2", "SPEC-E4:er")).toBe("discard");
+  });
 });
 
 // ===========================================================================

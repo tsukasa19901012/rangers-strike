@@ -27,6 +27,7 @@ import {
   canStartRush,
   cardIn,
   choiceIds,
+  deckCards,
   damageOf,
   endTurn,
   enemyTurn,
@@ -39,6 +40,7 @@ import {
   faceDownCard,
   held,
   inst,
+  legal,
   morphCandidates,
   morphRush,
   ncEnter,
@@ -162,7 +164,34 @@ describe("XG2-042 仮面ライダーディケイドCF", () => {
     expect(zoneOf(s, "player1", "XG2-043:fd")).toBe("power");
   });
 
-  it.todo("XG2-042: 公式Q&A Q2（RS-322 ベン・G【人身略取】で「自軍Sユニットを1体捨札にする」追加条件を満たすためにこれを捨札にするときも、その場に留まる効果を使え、追加条件は満たしたものとして続ける）— ベン・G の処理で相手が追加条件を満たす手順と、※ の「その場に留まる」（上の it.fails）がエンジンになく、盤面を進められない（出典: atwiki/page-1687 Q2）");
+  it("XG2-042: 【ファイナルアタックライド】で出したユニットを捨札にするときも撃破ではない離場として処理し、出したのが XG2-042 なら ※「その場に留まる」を使える（出典: atwiki/page-1687「自分がターンを終えるとき、自軍エリアにあれば捨札にする」・※「これがユニットでなくなるとき」）", () => {
+    let s = resolveAll(pick(far({ power: [inst("XG2-042", "pw2"), inst("XG2-043", "pw")] }), "XG2-042:pw2"));
+    expect(zoneOf(s, "player1", "XG2-042:pw2")).toBe("rush");
+    s = settle(passEntry(s));
+    for (let i = 0; i < 5 && !s.pendingEffectChoice && s.activePlayer === "player1"; i++) s = act(s, legal(s).find((a) => a.type === "end_phase")!);
+    expectChoiceFrom(s, "player1", "XG2-042");
+    expect(choiceIds(s)).toEqual(["XG2-043:pw"]);
+    s = resolveAll(pick(s, "XG2-043:pw"));
+    expect(zoneOf(s, "player1", "XG2-042:pw2")).toBe("rush");
+    expect(zoneOf(s, "player1", "XG2-043:pw")).toBe("discard");
+  });
+
+  it("XG2-042: 公式Q&A — 敵軍 RS-322 ベン・G【人身略取】の「自軍Sユニットを1体捨札にする」追加条件でこれを捨札にするときも、その場に留まる効果を使える。留まったときは、追加条件はまだ満たせるものとしてベン・G の効果を続ける（出典: atwiki/page-1687 Q2「「その場に留まる」という効果を発動することは出来ます。…追加条件を満たすことは可能であるとして、「RS-322 ベン・G」の効果を続行して下さい」）", () => {
+    let s = st({ activePlayer: "player2", player1: { rush: [inst("XG2-042", "cf")], power: [inst("XG2-043", "pw")], deck: deckCards(5) }, player2: { rush: [inst("RS-322", "b")], hand: [inst("RS-311", "m")], deck: deckCards(5, "e") } });
+    s = enter(s, "RS-322:b", "player2");
+    s = pick(s, "RS-311:m");
+    expectChoiceFrom(s, "player1", "RS-322");
+    expect(choiceIds(s)).toEqual(["XG2-042:cf"]);
+    s = pick(s, "XG2-042:cf");
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    expect(choiceIds(s)).toEqual(["XG2-043:pw"]);
+    s = pick(s, "XG2-043:pw");
+    expect(zoneOf(s, "player1", "XG2-042:cf")).toBe("rush");
+    expect(zoneOf(s, "player1", "XG2-043:pw")).toBe("discard");
+    // まだ場にいるので追加条件は満たせるものとして続行する（もう一度 S ユニットを選ぶ。cardSpec/RS5-306-326.c の RS-322 Q5 と同じ読み）。
+    expect(s.pendingEffectChoice?.playerId).toBe("player1");
+    expect(choiceIds(s)).toContain("XG2-042:cf");
+  });
 });
 
 // ===========================================================================
